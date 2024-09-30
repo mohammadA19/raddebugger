@@ -259,9 +259,20 @@ cstring32_length(uint* c){
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((ubyte*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(ubyte*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
+
+public String8 
+str8_lit(string str)
+{
+  return str8((ubyte*)str, str.length - 1);
+}
+
+public String8
+str8_lit_comp(string str)
+{
+  // {(ubyte*)str, str.length - 1)}
+  return str8((ubyte*)str, str.length - 1);
+}
 
 #define str8_array(S,C) str8((ubyte*)(S), sizeof(*(S))*(C))
 #define str8_array_fixed(S) str8((ubyte*)(S), sizeof(S))
@@ -968,7 +979,7 @@ str8_list_copy(Arena* arena, String8List* list){
   return(result);
 }
 
-#define str8_list_first(list) ((list).first ? (list).first.string : str8_zero())
+public String8 str8_list_first(String8List list) => list.first ? list.first.string : str8_zero();
 
 public String8List
 str8_split(Arena* arena, String8 string, ubyte* split_chars, ulong split_char_count, StringSplitFlags flags){
@@ -1164,16 +1175,16 @@ str8_skip_last_dot(String8 string){
 
 public PathStyle
 path_style_from_str8(String8 string){
-  PathStyle result = PathStyle_Relative;
+  PathStyle result = PathStyle.Relative;
   if (string.size >= 1 && string.str[0] == '/'){
-    result = PathStyle_UnixAbsolute;
+    result = PathStyle.UnixAbsolute;
   }
   else if (string.size >= 2 &&
            char_is_alpha(string.str[0]) &&
            string.str[1] == ':'){
     if (string.size == 2 ||
         char_is_slash(string.str[2])){
-      result = PathStyle_WindowsAbsolute;
+      result = PathStyle.WindowsAbsolute;
     }
   }
   return(result);
@@ -1201,7 +1212,7 @@ str8_path_list_resolve_dots_in_place(String8List* path, PathStyle style){
     next = node.next;
     
     // cases:
-    if (node == first && style == PathStyle_WindowsAbsolute){
+    if (node == first && style == PathStyle.WindowsAbsolute){
       goto save_without_stack;
     }
     if (node.string.size == 1 && node.string.str[0] == '.'){
@@ -1268,13 +1279,13 @@ public String8
 str8_path_list_join_by_style(Arena* arena, String8List* path, PathStyle style){
   StringJoin params = {0};
   switch (style){
-    case PathStyle_Relative:
-    case PathStyle_WindowsAbsolute:
+    case PathStyle.Relative:
+    case PathStyle.WindowsAbsolute:
     {
       params.sep = str8_lit("/");
     }break;
     
-    case PathStyle_UnixAbsolute:
+    case PathStyle.UnixAbsolute:
     {
       params.pre = str8_lit("/");
       params.sep = str8_lit("/");
@@ -2028,8 +2039,17 @@ str8_serial_push_string(Arena* arena, String8List* srl, String8 str){
   str8_serial_push_data(arena, srl, str.str, str.size);
 }
 
-#define str8_serial_push_array(arena, srl, ptr, count) str8_serial_push_data(arena, srl, ptr, sizeof(*(ptr)) * (count))
-#define str8_serial_push_struct(arena, srl, ptr) str8_serial_push_array(arena, srl, ptr, 1)
+public void
+str8_serial_push_array(PtrType)(Arena* arena, String8List* srl, PtrType* ptr, ulong count)
+{
+  return str8_serial_push_data(arena, srl, ptr, PtrType.sizeof * count);
+}
+
+public void
+str8_serial_push_struct(PtrType)((Arena* arena, String8List* srl, PtrType* ptr)
+{
+  return str8_serial_push_array!PtrType(arena, srl, ptr, 1);
+}
 
 ////////////////////////////////
 //~ rjf: Deserialization Helpers
@@ -2106,5 +2126,14 @@ str8_deserial_read_block(String8 string, ulong off, ulong size, String8* block_o
   return block_out.size;
 }
 
-#define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
-#define str8_deserial_read_struct(string, off, ptr) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr)), sizeof(*(ptr)))
+public void
+str8_deserial_read_array(PtrType)(String8 str, ulong off, PtrType* ptr, ulong count)
+{
+  return str8_deserial_read(str, off, ptr, PtrType.sizeof*count, PtrType.sizeof);
+}
+
+public void
+str8_deserial_read_struct(PtrType)(String8 str, ulong off, PtrType* ptr)
+{
+  return str8_deserial_read(str, off, ptr, PtrType.sizeof, PtrType.sizeof);
+}
