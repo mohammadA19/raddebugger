@@ -6,19 +6,19 @@
 
 public struct String8
 {
-  ubyte *str;
+  ubyte* str;
   ulong size;
 }
 
 public struct String16
 {
-  U16 *str;
+  ushort* str;
   ulong size;
 }
 
 public struct String32
 {
-  uint *str;
+  uint* str;
   ulong size;
 }
 
@@ -27,27 +27,27 @@ public struct String32
 
 public struct String8Node
 {
-  String8Node *next;
+  String8Node* next;
   String8 string;
 }
 
 public struct String8MetaNode
 {
-  String8MetaNode *next;
-  String8Node *node;
+  String8MetaNode* next;
+  String8Node* node;
 }
 
 public struct String8List
 {
-  String8Node *first;
-  String8Node *last;
+  String8Node* first;
+  String8Node* last;
   ulong node_count;
   ulong total_size;
 }
 
 public struct String8Array
 {
-  String8 *v;
+  String8* v;
   ulong count;
 }
 
@@ -86,7 +86,6 @@ public enum PathStyle
   }
 }
 
-typedef struct StringJoin StringJoin;
 struct StringJoin
 {
   String8 pre;
@@ -97,7 +96,6 @@ struct StringJoin
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-typedef struct String8TxtPtPair String8TxtPtPair;
 struct String8TxtPtPair
 {
   String8 string;
@@ -118,14 +116,14 @@ public struct UnicodeDecode
 
 public struct FuzzyMatchRangeNode
 {
-  FuzzyMatchRangeNode *next;
+  FuzzyMatchRangeNode* next;
   Rng1U64 range;
 }
 
 public struct FuzzyMatchRangeList
 {
-  FuzzyMatchRangeNode *first;
-  FuzzyMatchRangeNode *last;
+  FuzzyMatchRangeNode* first;
+  FuzzyMatchRangeNode* last;
   ulong count;
   ulong needle_part_count;
   ulong total_dim;
@@ -238,22 +236,22 @@ char_to_correct_slash(ubyte c){
 //~ rjf: C-String Measurement
 
 public ulong
-cstring8_length(ubyte *c){
-  ubyte *p = c;
+cstring8_length(ubyte* c){
+  ubyte* p = c;
   for (;*p != 0; p += 1);
   return(p - c);
 }
 
 public ulong
-cstring16_length(U16 *c){
-  U16 *p = c;
+cstring16_length(ushort* c){
+  ushort* p = c;
   for (;*p != 0; p += 1);
   return(p - c);
 }
 
 public ulong
-cstring32_length(uint *c){
-  uint *p = c;
+cstring32_length(uint* c){
+  uint* p = c;
   for (;*p != 0; p += 1);
   return(p - c);
 }
@@ -270,13 +268,13 @@ cstring32_length(uint *c){
 #define str8_struct(S) str8((ubyte*)(S), sizeof(*(S)))
 
 public String8
-str8(ubyte *str, ulong size){
+str8(ubyte* str, ulong size){
   String8 result = {str, size};
   return(result);
 }
 
 public String8
-str8_range(ubyte *first, ubyte *one_past_last){
+str8_range(ubyte* first, ubyte* one_past_last){
   String8 result = {first, (ulong)(one_past_last - first)};
   return(result);
 }
@@ -288,13 +286,13 @@ str8_zero(){
 }
 
 public String16
-str16(U16 *str, ulong size){
+str16(ushort* str, ulong size){
   String16 result = {str, size};
   return(result);
 }
 
 public String16
-str16_range(U16 *first, U16 *one_past_last){
+str16_range(ushort* first, ushort* one_past_last){
   String16 result = {first, (ulong)(one_past_last - first)};
   return(result);
 }
@@ -306,13 +304,13 @@ str16_zero(){
 }
 
 public String32
-str32(uint *str, ulong size){
+str32(uint* str, ulong size){
   String32 result = {str, size};
   return(result);
 }
 
 public String32
-str32_range(uint *first, uint *one_past_last){
+str32_range(uint* first, uint* one_past_last){
   String32 result = {first, (ulong)(one_past_last - first)};
   return(result);
 }
@@ -324,28 +322,28 @@ str32_zero(){
 }
 
 public String8
-str8_cstring(char *c){
+str8_cstring(char* c){
   String8 result = {(ubyte*)c, cstring8_length((ubyte*)c)};
   return(result);
 }
 
 public String16
-str16_cstring(U16 *c){
-  String16 result = {(U16*)c, cstring16_length((U16*)c)};
+str16_cstring(ushort* c){
+  String16 result = {(ushort*)c, cstring16_length((ushort*)c)};
   return(result);
 }
 
 public String32
-str32_cstring(uint *c){
+str32_cstring(uint* c){
   String32 result = {(uint*)c, cstring32_length((uint*)c)};
   return(result);
 }
 
 public String8
-str8_cstring_capped(void *cstr, void *cap)
+str8_cstring_capped(void* cstr, void* cap)
 {
-  char *ptr = (char*)cstr;
-  char *opl = (char*)cap;
+  char* ptr = (char*)cstr;
+  char* opl = (char*)cap;
   for (;ptr < opl && *ptr != 0; ptr += 1);
   ulong size = (ulong)(ptr - (char *)cstr);
   String8 result = {(ubyte*)cstr, size};
@@ -356,7 +354,7 @@ str8_cstring_capped(void *cstr, void *cap)
 //~ rjf: String Stylization
 
 public String8
-upper_from_str8(Arena *arena, String8 string)
+upper_from_str8(Arena* arena, String8 string)
 {
   string = push_str8_copy(arena, string);
   for(ulong idx = 0; idx < string.size; idx += 1)
@@ -367,7 +365,7 @@ upper_from_str8(Arena *arena, String8 string)
 }
 
 public String8
-lower_from_str8(Arena *arena, String8 string)
+lower_from_str8(Arena* arena, String8 string)
 {
   string = push_str8_copy(arena, string);
   for(ulong idx = 0; idx < string.size; idx += 1)
@@ -378,7 +376,7 @@ lower_from_str8(Arena *arena, String8 string)
 }
 
 public String8
-backslashed_from_str8(Arena *arena, String8 string)
+backslashed_from_str8(Arena* arena, String8 string)
 {
   string = push_str8_copy(arena, string);
   for(ulong idx = 0; idx < string.size; idx += 1)
@@ -421,11 +419,11 @@ str8_match(String8 a, String8 b, StringMatchFlags flags){
 
 public ulong
 str8_find_needle(String8 string, ulong start_pos, String8 needle, StringMatchFlags flags){
-  ubyte *p = string.str + start_pos;
+  ubyte* p = string.str + start_pos;
   ulong stop_offset = Max(string.size + 1, needle.size) - needle.size;
-  ubyte *stop_p = string.str + stop_offset;
+  ubyte* stop_p = string.str + stop_offset;
   if (needle.size > 0){
-    ubyte *string_opl = string.str + string.size;
+    ubyte* string_opl = string.str + string.size;
     String8 needle_tail = str8_skip(needle, 1);
     StringMatchFlags adjusted_flags = flags | StringMatchFlag_RightSideSloppy;
     ubyte needle_first_char_adjusted = needle.str[0];
@@ -501,8 +499,8 @@ str8_chop(String8 str, ulong amt){
 
 public String8
 str8_skip_chop_whitespace(String8 string){
-  ubyte *first = string.str;
-  ubyte *opl = first + string.size;
+  ubyte* first = string.str;
+  ubyte* opl = first + string.size;
   for (;first < opl; first += 1){
     if (!char_is_space(*first)){
       break;
@@ -523,7 +521,7 @@ str8_skip_chop_whitespace(String8 string){
 //~ rjf: String Formatting & Copying
 
 public String8
-push_str8_cat(Arena *arena, String8 s1, String8 s2){
+push_str8_cat(Arena* arena, String8 s1, String8 s2){
   String8 str;
   str.size = s1.size + s2.size;
   str.str = push_array_no_zero(arena, ubyte, str.size + 1);
@@ -534,7 +532,7 @@ push_str8_cat(Arena *arena, String8 s1, String8 s2){
 }
 
 public String8
-push_str8_copy(Arena *arena, String8 s){
+push_str8_copy(Arena* arena, String8 s){
   String8 str;
   str.size = s.size;
   str.str = push_array_no_zero(arena, ubyte, str.size + 1);
@@ -544,7 +542,7 @@ push_str8_copy(Arena *arena, String8 s){
 }
 
 public String8
-push_str8fv(Arena *arena, char *fmt, va_list args){
+push_str8fv(Arena* arena, char* fmt, va_list args){
   va_list args2;
   va_copy(args2, args);
   uint needed_bytes = raddbg_vsnprintf(0, 0, fmt, args) + 1;
@@ -557,7 +555,7 @@ push_str8fv(Arena *arena, char *fmt, va_list args){
 }
 
 public String8
-push_str8f(Arena *arena, char *fmt, ...){
+push_str8f(Arena* arena, char* fmt, ...){
   va_list args;
   va_start(args, fmt);
   String8 result = push_str8fv(arena, fmt, args);
@@ -571,7 +569,7 @@ push_str8f(Arena *arena, char *fmt, ...){
 //- rjf: string -> integer
 
 public long
-sign_from_str8(String8 string, String8 *string_tail){
+sign_from_str8(String8 string, String8* string_tail){
   // count negative signs
   ulong neg_count = 0;
   ulong i = 0;
@@ -630,7 +628,7 @@ s64_from_str8(String8 string, uint radix){
 }
 
 public bool
-try_u64_from_str8_c_rules(String8 string, ulong *x){
+try_u64_from_str8_c_rules(String8 string, ulong* x){
   bool is_integer = 0;
   if (str8_is_integer(string, 10)){
     is_integer = 1;
@@ -661,7 +659,7 @@ try_u64_from_str8_c_rules(String8 string, ulong *x){
 }
 
 public bool
-try_s64_from_str8_c_rules(String8 string, long *x){
+try_s64_from_str8_c_rules(String8 string, long* x){
   String8 string_tail = {0};
   long sign = sign_from_str8(string, &string_tail);
   ulong x_u64 = 0;
@@ -673,7 +671,7 @@ try_s64_from_str8_c_rules(String8 string, long *x){
 //- rjf: integer -> string
 
 public String8
-str8_from_memory_size(Arena *arena, ulong z){
+str8_from_memory_size(Arena* arena, ulong z){
   String8 result = {0};
   if (z < KB(1)){
     result = push_str8f(arena, "%llu  b", z);
@@ -691,7 +689,7 @@ str8_from_memory_size(Arena *arena, ulong z){
 }
 
 public String8
-str8_from_u64(Arena *arena, ulong u64, uint radix, ubyte min_digits, ubyte digit_group_separator)
+str8_from_u64(Arena* arena, ulong u64, uint radix, ubyte min_digits, ubyte digit_group_separator)
 {
   String8 result = {0};
   {
@@ -784,7 +782,7 @@ str8_from_u64(Arena *arena, ulong u64, uint radix, ubyte min_digits, ubyte digit
 }
 
 public String8
-str8_from_s64(Arena *arena, long s64, uint radix, ubyte min_digits, ubyte digit_group_separator)
+str8_from_s64(Arena* arena, long s64, uint radix, ubyte min_digits, ubyte digit_group_separator)
 {
   String8 result = {0};
   // TODO(rjf): preeeeetty sloppy...
@@ -805,15 +803,15 @@ str8_from_s64(Arena *arena, long s64, uint radix, ubyte min_digits, ubyte digit_
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
 
-public F64
+public double
 f64_from_str8(String8 string)
 {
   // TODO(rjf): crappy implementation for now that just uses atof.
-  F64 result = 0;
+  double result = 0;
   if(string.size > 0)
   {
     // rjf: find starting pos of numeric string, as well as sign
-    F64 sign = +1.0;
+    double sign = +1.0;
     //ulong first_numeric = 0;
     if(string.str[0] == '-')
     {
@@ -828,7 +826,7 @@ f64_from_str8(String8 string)
     
     // rjf: gather numerics
     ulong num_valid_chars = 0;
-    char buffer[64];
+    char[64] buffer;
     for(ulong idx = 0; idx < string.size && num_valid_chars < sizeof(buffer)-1; idx += 1)
     {
       if(char_is_digit(string.str[idx], 10) || string.str[idx] == '.')
@@ -851,7 +849,7 @@ f64_from_str8(String8 string)
 //~ rjf: String List Construction Functions
 
 public String8Node*
-str8_list_push_node(String8List *list, String8Node *node){
+str8_list_push_node(String8List* list, String8Node* node){
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
   list.total_size += node.string.size;
@@ -859,7 +857,7 @@ str8_list_push_node(String8List *list, String8Node *node){
 }
 
 public String8Node*
-str8_list_push_node_set_string(String8List *list, String8Node *node, String8 string){
+str8_list_push_node_set_string(String8List* list, String8Node* node, String8 string){
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
   list.total_size += string.size;
@@ -868,7 +866,7 @@ str8_list_push_node_set_string(String8List *list, String8Node *node, String8 str
 }
 
 public String8Node*
-str8_list_push_node_front(String8List *list, String8Node *node){
+str8_list_push_node_front(String8List* list, String8Node* node){
   SLLQueuePushFront(list.first, list.last, node);
   list.node_count += 1;
   list.total_size += node.string.size;
@@ -876,7 +874,7 @@ str8_list_push_node_front(String8List *list, String8Node *node){
 }
 
 public String8Node*
-str8_list_push_node_front_set_string(String8List *list, String8Node *node, String8 string){
+str8_list_push_node_front_set_string(String8List* list, String8Node* node, String8 string){
   SLLQueuePushFront(list.first, list.last, node);
   list.node_count += 1;
   list.total_size += string.size;
@@ -885,21 +883,21 @@ str8_list_push_node_front_set_string(String8List *list, String8Node *node, Strin
 }
 
 public String8Node*
-str8_list_push(Arena *arena, String8List *list, String8 string){
-  String8Node *node = push_array_no_zero(arena, String8Node, 1);
+str8_list_push(Arena* arena, String8List* list, String8 string){
+  String8Node* node = push_array_no_zero(arena, String8Node, 1);
   str8_list_push_node_set_string(list, node, string);
   return(node);
 }
 
 public String8Node*
-str8_list_push_front(Arena *arena, String8List *list, String8 string){
+str8_list_push_front(Arena* arena, String8List* list, String8 string){
   String8Node *node = push_array_no_zero(arena, String8Node, 1);
   str8_list_push_node_front_set_string(list, node, string);
   return(node);
 }
 
 public void
-str8_list_concat_in_place(String8List *list, String8List *to_push){
+str8_list_concat_in_place(String8List* list, String8List* to_push){
   if(to_push.node_count != 0){
     if (list.last){
       list.node_count += to_push.node_count;
@@ -915,8 +913,8 @@ str8_list_concat_in_place(String8List *list, String8List *to_push){
 }
 
 public String8Node*
-str8_list_push_aligner(Arena *arena, String8List *list, ulong min, ulong align){
-  String8Node *node = push_array_no_zero(arena, String8Node, 1);
+str8_list_push_aligner(Arena* arena, String8List* list, ulong min, ulong align){
+  String8Node* node = push_array_no_zero(arena, String8Node, 1);
   ulong new_size = list.total_size + min;
   ulong increase_size = 0;
   if (align > 1){
@@ -938,32 +936,32 @@ str8_list_push_aligner(Arena *arena, String8List *list, ulong min, ulong align){
 }
 
 public String8Node*
-str8_list_pushf(Arena *arena, String8List *list, char *fmt, ...){
+str8_list_pushf(Arena* arena, String8List* list, char* fmt, ...){
   va_list args;
   va_start(args, fmt);
   String8 string = push_str8fv(arena, fmt, args);
-  String8Node *result = str8_list_push(arena, list, string);
+  String8Node* result = str8_list_push(arena, list, string);
   va_end(args);
   return(result);
 }
 
 public String8Node*
-str8_list_push_frontf(Arena *arena, String8List *list, char *fmt, ...){
+str8_list_push_frontf(Arena* arena, String8List* list, char* fmt, ...){
   va_list args;
   va_start(args, fmt);
   String8 string = push_str8fv(arena, fmt, args);
-  String8Node *result = str8_list_push_front(arena, list, string);
+  String8Node* result = str8_list_push_front(arena, list, string);
   va_end(args);
   return(result);
 }
 
 public String8List
-str8_list_copy(Arena *arena, String8List *list){
+str8_list_copy(Arena* arena, String8List* list){
   String8List result = {0};
-  for (String8Node *node = list.first;
+  for (String8Node* node = list.first;
        node != 0;
        node = node.next){
-    String8Node *new_node = push_array_no_zero(arena, String8Node, 1);
+    String8Node* new_node = push_array_no_zero(arena, String8Node, 1);
     String8 new_string = push_str8_copy(arena, node.string);
     str8_list_push_node_set_string(&result, new_node, new_string);
   }
@@ -973,13 +971,13 @@ str8_list_copy(Arena *arena, String8List *list){
 #define str8_list_first(list) ((list).first ? (list).first.string : str8_zero())
 
 public String8List
-str8_split(Arena *arena, String8 string, ubyte *split_chars, ulong split_char_count, StringSplitFlags flags){
+str8_split(Arena* arena, String8 string, ubyte* split_chars, ulong split_char_count, StringSplitFlags flags){
   String8List list = {0};
   
-  bool keep_empties = (flags & StringSplitFlag_KeepEmpties);
+  bool keep_empties = (flags & StringSplitFlag.KeepEmpties);
   
-  ubyte *ptr = string.str;
-  ubyte *opl = string.str + string.size;
+  ubyte* ptr = string.str;
+  ubyte* opl = string.str + string.size;
   for (;ptr < opl;){
     ubyte *first = ptr;
     for (;ptr < opl; ptr += 1){
@@ -1007,15 +1005,15 @@ str8_split(Arena *arena, String8 string, ubyte *split_chars, ulong split_char_co
 }
 
 public String8List
-str8_split_by_string_chars(Arena *arena, String8 string, String8 split_chars, StringSplitFlags flags){
+str8_split_by_string_chars(Arena* arena, String8 string, String8 split_chars, StringSplitFlags flags){
   String8List list = str8_split(arena, string, split_chars.str, split_chars.size, flags);
   return list;
 }
 
 public String8List
-str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_chars, StringSplitFlags flags){
+str8_list_split_by_string_chars(Arena* arena, String8List list, String8 split_chars, StringSplitFlags flags){
   String8List result = {0};
-  for (String8Node *node = list.first; node != 0; node = node.next){
+  for (String8Node* node = list.first; node != 0; node = node.next){
     String8List split = str8_split_by_string_chars(arena, node.string, split_chars, flags);
     str8_list_concat_in_place(&result, &split);
   }
@@ -1023,7 +1021,7 @@ str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_ch
 }
 
 public String8
-str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params){
+str8_list_join(Arena* arena, String8List* list, StringJoin* optional_params){
   StringJoin join = {0};
   if (optional_params != 0){
     MemoryCopyStruct(&join, optional_params);
@@ -1059,8 +1057,8 @@ str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params){
 }
 
 public void
-str8_list_from_flags(Arena *arena, String8List *list,
-                     uint flags, String8 *flag_string_table, uint flag_string_count){
+str8_list_from_flags(Arena* arena, String8List* list,
+                     uint flags, String8* flag_string_table, uint flag_string_count){
   for (uint i = 0; i < flag_string_count; i += 1){
     uint flag = (1 << i);
     if (flags & flag){
@@ -1073,13 +1071,13 @@ str8_list_from_flags(Arena *arena, String8List *list,
 //~ rjf; String Arrays
 
 public String8Array
-str8_array_from_list(Arena *arena, String8List *list)
+str8_array_from_list(Arena* arena, String8List* list)
 {
   String8Array array;
   array.count   = list.node_count;
   array.v = push_array_no_zero(arena, String8, array.count);
   ulong idx = 0;
-  for(String8Node *n = list.first; n != 0; n = n.next, idx += 1)
+  for(String8Node* n = list.first; n != 0; n = n.next, idx += 1)
   {
     array.v[idx] = n.string;
   }
@@ -1087,7 +1085,7 @@ str8_array_from_list(Arena *arena, String8List *list)
 }
 
 public String8Array
-str8_array_reserve(Arena *arena, ulong count)
+str8_array_reserve(Arena* arena, ulong count)
 {
   String8Array arr;
   arr.count = 0;
@@ -1101,7 +1099,7 @@ str8_array_reserve(Arena *arena, ulong count)
 public String8
 str8_chop_last_slash(String8 string){
   if (string.size > 0){
-    ubyte *ptr = string.str + string.size - 1;
+    ubyte* ptr = string.str + string.size - 1;
     for (;ptr >= string.str; ptr -= 1){
       if (*ptr == '/' || *ptr == '\\'){
         break;
@@ -1120,7 +1118,7 @@ str8_chop_last_slash(String8 string){
 public String8
 str8_skip_last_slash(String8 string){
   if (string.size > 0){
-    ubyte *ptr = string.str + string.size - 1;
+    ubyte* ptr = string.str + string.size - 1;
     for (;ptr >= string.str; ptr -= 1){
       if (*ptr == '/' || *ptr == '\\'){
         break;
@@ -1182,21 +1180,21 @@ path_style_from_str8(String8 string){
 }
 
 public String8List
-str8_split_path(Arena *arena, String8 string){
+str8_split_path(Arena* arena, String8 string){
   String8List result = str8_split(arena, string, (ubyte*)"/\\", 2, 0);
   return(result);
 }
 
 public void
-str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style){
+str8_path_list_resolve_dots_in_place(String8List* path, PathStyle style){
   Temp scratch = scratch_begin(0, 0);
   
-  String8MetaNode *stack = 0;
-  String8MetaNode *free_meta_node = 0;
-  String8Node *first = path.first;
+  String8MetaNode* stack = 0;
+  String8MetaNode* free_meta_node = 0;
+  String8Node* first = path.first;
   
   MemoryZeroStruct(path);
-  for (String8Node *node = first, *next = 0;
+  for (String8Node* node = first, next = 0;
        node != 0;
        node = next){
     // save next now
@@ -1267,7 +1265,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style){
 }
 
 public String8
-str8_path_list_join_by_style(Arena *arena, String8List *path, PathStyle style){
+str8_path_list_join_by_style(Arena* arena, String8List* path, PathStyle style){
   StringJoin params = {0};
   switch (style){
     case PathStyle_Relative:
@@ -1342,12 +1340,12 @@ str8_txt_pt_pair_from_string(String8 string)
 ////////////////////////////////
 //~ rjf: UTF-8 & UTF-16 Decoding/Encoding
 
-read_only global ubyte utf8_class[32] = {
+read_only global ubyte[32] utf8_class = {
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,2,2,2,2,3,3,4,5,
 };
 
 public UnicodeDecode
-utf8_decode(ubyte *str, ulong max){
+utf8_decode(ubyte* str, ulong max){
   UnicodeDecode result = {1, max_U32};
   ubyte byte = str[0];
   ubyte byte_class = utf8_class[byte >> 3];
@@ -1407,7 +1405,7 @@ utf8_decode(ubyte *str, ulong max){
 }
 
 public UnicodeDecode
-utf16_decode(U16 *str, ulong max){
+utf16_decode(ushort* str, ulong max){
   UnicodeDecode result = {1, max_U32};
   result.codepoint = str[0];
   result.inc = 1;
@@ -1419,7 +1417,7 @@ utf16_decode(U16 *str, ulong max){
 }
 
 public uint
-utf8_encode(ubyte *str, uint codepoint){
+utf8_encode(ubyte* str, uint codepoint){
   uint inc = 0;
   if (codepoint <= 0x7F){
     str[0] = (ubyte)codepoint;
@@ -1451,13 +1449,13 @@ utf8_encode(ubyte *str, uint codepoint){
 }
 
 public uint
-utf16_encode(U16 *str, uint codepoint){
+utf16_encode(ushort* str, uint codepoint){
   uint inc = 1;
   if (codepoint == max_U32){
-    str[0] = (U16)'?';
+    str[0] = (ushort)'?';
   }
   else if (codepoint < 0x10000){
-    str[0] = (U16)codepoint;
+    str[0] = (ushort)codepoint;
   }
   else{
     uint v = codepoint - 0x10000;
@@ -1469,7 +1467,7 @@ utf16_encode(U16 *str, uint codepoint){
 }
 
 public uint
-utf8_from_utf32_single(ubyte *buffer, uint character){
+utf8_from_utf32_single(ubyte* buffer, uint character){
   return(utf8_encode(buffer, character));
 }
 
@@ -1477,11 +1475,11 @@ utf8_from_utf32_single(ubyte *buffer, uint character){
 //~ rjf: Unicode String Conversions
 
 public String8
-str8_from_16(Arena *arena, String16 in){
+str8_from_16(Arena* arena, String16 in){
   ulong cap = in.size*3;
-  ubyte *str = push_array_no_zero(arena, ubyte, cap + 1);
-  U16 *ptr = in.str;
-  U16 *opl = ptr + in.size;
+  ubyte* str = push_array_no_zero(arena, ubyte, cap + 1);
+  ushort* ptr = in.str;
+  ushort* opl = ptr + in.size;
   ulong size = 0;
   UnicodeDecode consume;
   for (;ptr < opl; ptr += consume.inc){
@@ -1494,11 +1492,11 @@ str8_from_16(Arena *arena, String16 in){
 }
 
 public String16
-str16_from_8(Arena *arena, String8 in){
+str16_from_8(Arena* arena, String8 in){
   ulong cap = in.size*2;
-  U16 *str = push_array_no_zero(arena, U16, cap + 1);
-  ubyte *ptr = in.str;
-  ubyte *opl = ptr + in.size;
+  ushort* str = push_array_no_zero(arena, ushort, cap + 1);
+  ubyte* ptr = in.str;
+  ubyte* opl = ptr + in.size;
   ulong size = 0;
   UnicodeDecode consume;
   for (;ptr < opl; ptr += consume.inc){
@@ -1511,11 +1509,11 @@ str16_from_8(Arena *arena, String8 in){
 }
 
 public String8
-str8_from_32(Arena *arena, String32 in){
+str8_from_32(Arena* arena, String32 in){
   ulong cap = in.size*4;
-  ubyte *str = push_array_no_zero(arena, ubyte, cap + 1);
-  uint *ptr = in.str;
-  uint *opl = ptr + in.size;
+  ubyte* str = push_array_no_zero(arena, ubyte, cap + 1);
+  uint* ptr = in.str;
+  uint* opl = ptr + in.size;
   ulong size = 0;
   for (;ptr < opl; ptr += 1){
     size += utf8_encode(str + size, *ptr);
@@ -1526,11 +1524,11 @@ str8_from_32(Arena *arena, String32 in){
 }
 
 public String32
-str32_from_8(Arena *arena, String8 in){
+str32_from_8(Arena* arena, String8 in){
   ulong cap = in.size;
-  uint *str = push_array_no_zero(arena, uint, cap + 1);
-  ubyte *ptr = in.str;
-  ubyte *opl = ptr + in.size;
+  uint* str = push_array_no_zero(arena, uint, cap + 1);
+  ubyte* ptr = in.str;
+  ubyte* opl = ptr + in.size;
   ulong size = 0;
   UnicodeDecode consume;
   for (;ptr < opl; ptr += consume.inc){
@@ -1548,7 +1546,7 @@ str32_from_8(Arena *arena, String8 in){
 
 public String8
 string_from_dimension(Dimension dimension){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("X"),
     str8_lit_comp("Y"),
     str8_lit_comp("Z"),
@@ -1563,7 +1561,7 @@ string_from_dimension(Dimension dimension){
 
 public String8
 string_from_side(Side side){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("Min"),
     str8_lit_comp("Max"),
   };
@@ -1576,7 +1574,7 @@ string_from_side(Side side){
 
 public String8
 string_from_operating_system(OperatingSystem os){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("Null"),
     str8_lit_comp("Windows"),
     str8_lit_comp("Linux"),
@@ -1591,7 +1589,7 @@ string_from_operating_system(OperatingSystem os){
 
 public String8
 string_from_architecture(Architecture arch){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("Null"),
     str8_lit_comp("x64"),
     str8_lit_comp("x86"),
@@ -1610,7 +1608,7 @@ string_from_architecture(Architecture arch){
 
 public String8
 string_from_week_day(WeekDay week_day){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("Sun"),
     str8_lit_comp("Mon"),
     str8_lit_comp("Tue"),
@@ -1628,7 +1626,7 @@ string_from_week_day(WeekDay week_day){
 
 public String8
 string_from_month(Month month){
-  local_persist String8 strings[] = {
+  local_persist String8[] strings = {
     str8_lit_comp("Jan"),
     str8_lit_comp("Feb"),
     str8_lit_comp("Mar"),
@@ -1650,13 +1648,13 @@ string_from_month(Month month){
 }
 
 public String8
-push_date_time_string(Arena *arena, DateTime *date_time){
-  char *mon_str = (char*)string_from_month(date_time.month).str;
+push_date_time_string(Arena* arena, DateTime* date_time){
+  char* mon_str = (char*)string_from_month(date_time.month).str;
   uint adjusted_hour = date_time.hour%12;
   if (adjusted_hour == 0){
     adjusted_hour = 12;
   }
-  char *ampm = "am";
+  char* ampm = "am";
   if (date_time.hour >= 12){
     ampm = "pm";
   }
@@ -1667,8 +1665,8 @@ push_date_time_string(Arena *arena, DateTime *date_time){
 }
 
 public String8
-push_file_name_date_time_string(Arena *arena, DateTime *date_time){
-  char *mon_str = (char*)string_from_month(date_time.month).str;
+push_file_name_date_time_string(Arena* arena, DateTime* date_time){
+  char* mon_str = (char*)string_from_month(date_time.month).str;
   String8 result = push_str8f(arena, "%d-%s-%0d--%02d-%02d-%02d",
                               date_time.year, mon_str, date_time.day,
                               date_time.hour, date_time.min, date_time.sec);
@@ -1676,7 +1674,7 @@ push_file_name_date_time_string(Arena *arena, DateTime *date_time){
 }
 
 public String8
-string_from_elapsed_time(Arena *arena, DateTime dt){
+string_from_elapsed_time(Arena* arena, DateTime dt){
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
   if (dt.year){
@@ -1700,7 +1698,7 @@ string_from_elapsed_time(Arena *arena, DateTime dt){
 //~ rjf: Basic Text Indentation
 
 public String8
-indented_from_string(Arena *arena, String8 string)
+indented_from_string(Arena* arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   read_only local_persist ubyte indentation_bytes[] = "                                                                                                                                ";
@@ -1738,12 +1736,12 @@ indented_from_string(Arena *arena, String8 string)
 //~ rjf: Text Wrapping
 
 public String8List
-wrapped_lines_from_string(Arena *arena, String8 string, ulong first_line_max_width, ulong max_width, ulong wrap_indent)
+wrapped_lines_from_string(Arena* arena, String8 string, ulong first_line_max_width, ulong max_width, ulong wrap_indent)
 {
   String8List list = {0};
   Rng1U64 line_range = r1u64(0, 0);
   ulong wrapped_indent_level = 0;
-  static char *spaces = "                                                                ";
+  static char* spaces = "                                                                ";
   for (ulong idx = 0; idx <= string.size; idx += 1){
     ubyte chr = idx < string.size ? string.str[idx] : 0;
     if (chr == '\n'){
@@ -1796,7 +1794,7 @@ wrapped_lines_from_string(Arena *arena, String8 string, ulong first_line_max_wid
 //~ rjf: String <. Color
 
 public String8
-hex_string_from_rgba_4f32(Arena *arena, Vec4F32 rgba)
+hex_string_from_rgba_4f32(Arena* arena, Vec4F32 rgba)
 {
   String8 hex_string = push_str8f(arena, "%02x%02x%02x%02x", (ubyte)(rgba.x*255.f), (ubyte)(rgba.y*255.f), (ubyte)(rgba.z*255.f), (ubyte)(rgba.w*255.f));
   return hex_string;
@@ -1805,7 +1803,7 @@ hex_string_from_rgba_4f32(Arena *arena, Vec4F32 rgba)
 public Vec4F32
 rgba_from_hex_string_4f32(String8 hex_string)
 {
-  ubyte byte_text[8] = {0};
+  ubyte[8] byte_text = {0};
   ulong byte_text_idx = 0;
   for(ulong idx = 0; idx < hex_string.size && byte_text_idx < ArrayCount(byte_text); idx += 1)
   {
@@ -1815,7 +1813,7 @@ rgba_from_hex_string_4f32(String8 hex_string)
       byte_text_idx += 1;
     }
   }
-  ubyte byte_vals[4] = {0};
+  ubyte[4] byte_vals = {0};
   for(ulong idx = 0; idx < 4; idx += 1)
   {
     byte_vals[idx] = (ubyte)u64_from_str8(str8(&byte_text[idx*2], 2), 16);
@@ -1828,20 +1826,20 @@ rgba_from_hex_string_4f32(String8 hex_string)
 //~ rjf: String Fuzzy Matching
 
 public FuzzyMatchRangeList
-fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
+fuzzy_match_find(Arena* arena, String8 needle, String8 haystack)
 {
   FuzzyMatchRangeList result = {0};
   Temp scratch = scratch_begin(&arena, 1);
   String8List needles = str8_split(scratch.arena, needle, (ubyte*)" ", 1, 0);
   result.needle_part_count = needles.node_count;
-  for(String8Node *needle_n = needles.first; needle_n != 0; needle_n = needle_n.next)
+  for(String8Node* needle_n = needles.first; needle_n != 0; needle_n = needle_n.next)
   {
     ulong find_pos = 0;
     for(;find_pos < haystack.size;)
     {
       find_pos = str8_find_needle(haystack, find_pos, needle_n.string, StringMatchFlag_CaseInsensitive);
       bool is_in_gathered_ranges = 0;
-      for(FuzzyMatchRangeNode *n = result.first; n != 0; n = n.next)
+      for(FuzzyMatchRangeNode* n = result.first; n != 0; n = n.next)
       {
         if(n.range.min <= find_pos && find_pos < n.range.max)
         {
@@ -1858,7 +1856,7 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
     if(find_pos < haystack.size)
     {
       Rng1U64 range = r1u64(find_pos, find_pos+needle_n.string.size);
-      FuzzyMatchRangeNode *n = push_array(arena, FuzzyMatchRangeNode, 1);
+      FuzzyMatchRangeNode* n = push_array(arena, FuzzyMatchRangeNode, 1);
       n.range = range;
       SLLQueuePush(result.first, result.last, n);
       result.count += 1;
@@ -1870,12 +1868,12 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
 }
 
 public FuzzyMatchRangeList
-fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
+fuzzy_match_range_list_copy(Arena* arena, FuzzyMatchRangeList* src)
 {
   FuzzyMatchRangeList dst = {0};
-  for(FuzzyMatchRangeNode *src_n = src.first; src_n != 0; src_n = src_n.next)
+  for(FuzzyMatchRangeNode* src_n = src.first; src_n != 0; src_n = src_n.next)
   {
-    FuzzyMatchRangeNode *dst_n = push_array(arena, FuzzyMatchRangeNode, 1);
+    FuzzyMatchRangeNode* dst_n = push_array(arena, FuzzyMatchRangeNode, 1);
     SLLQueuePush(dst.first, dst.last, dst_n);
     dst_n.range = src_n.range;
   }
@@ -1889,8 +1887,8 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 //~ NOTE(allen): Serialization Helpers
 
 public void
-str8_serial_begin(Arena *arena, String8List *srl){
-  String8Node *node = push_array(arena, String8Node, 1);
+str8_serial_begin(Arena* arena, String8List* srl){
+  String8Node* node = push_array(arena, String8Node, 1);
   node.string.str = push_array_no_zero(arena, ubyte, 0);
   srl.first = srl.last = node;
   srl.node_count = 1;
@@ -1898,18 +1896,18 @@ str8_serial_begin(Arena *arena, String8List *srl){
 }
 
 public String8
-str8_serial_end(Arena *arena, String8List *srl){
+str8_serial_end(Arena* arena, String8List* srl){
   ulong size = srl.total_size;
-  ubyte *out = push_array_no_zero(arena, ubyte, size);
+  ubyte* out = push_array_no_zero(arena, ubyte, size);
   str8_serial_write_to_dst(srl, out);
   String8 result = str8(out, size);
   return result;
 }
 
 public void
-str8_serial_write_to_dst(String8List *srl, void *out){
-  ubyte *ptr = (ubyte*)out;
-  for (String8Node *node = srl.first;
+str8_serial_write_to_dst(String8List* srl, void* out){
+  ubyte* ptr = (ubyte*)out;
+  for (String8Node* node = srl.first;
        node != 0;
        node = node.next){
     ulong size = node.string.size;
@@ -1919,7 +1917,7 @@ str8_serial_write_to_dst(String8List *srl, void *out){
 }
 
 public ulong
-str8_serial_push_align(Arena *arena, String8List *srl, ulong align){
+str8_serial_push_align(Arena* arena, String8List* srl, ulong align){
   Assert(IsPow2(align));
   
   ulong pos = srl.total_size;
@@ -1942,14 +1940,14 @@ str8_serial_push_align(Arena *arena, String8List *srl, ulong align){
   return size;
 }
 
-public void *
-str8_serial_push_size(Arena *arena, String8List *srl, ulong size)
+public void*
+str8_serial_push_size(Arena* arena, String8List* srl, ulong size)
 {
-  void *result = 0;
+  void* result = 0;
   if(size != 0)
   {
-    ubyte *buf = push_array_no_zero(arena, ubyte, size);
-    String8 *str = &srl.last.string;
+    ubyte* buf = push_array_no_zero(arena, ubyte, size);
+    String8* str = &srl.last.string;
     if (str.str + str.size == buf){
       srl.last.string.size += size;
       srl.total_size += size;
@@ -1962,9 +1960,9 @@ str8_serial_push_size(Arena *arena, String8List *srl, ulong size)
   return result;
 }
 
-public void *
-str8_serial_push_data(Arena *arena, String8List *srl, void *data, ulong size){
-  void *result = str8_serial_push_size(arena, srl, size);
+public void*
+str8_serial_push_data(Arena* arena, String8List* srl, void* data, ulong size){
+  void* result = str8_serial_push_size(arena, srl, size);
   if(result != 0)
   {
     MemoryCopy(result, data, size);
@@ -1973,8 +1971,8 @@ str8_serial_push_data(Arena *arena, String8List *srl, void *data, ulong size){
 }
 
 public void
-str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first){
-  for (String8Node *node = first;
+str8_serial_push_data_list(Arena* arena, String8List* srl, String8Node* first){
+  for (String8Node* node = first;
        node != 0;
        node = node.next){
     str8_serial_push_data(arena, srl, node.string.str, node.string.size);
@@ -1982,10 +1980,10 @@ str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first){
 }
 
 public void
-str8_serial_push_u64(Arena *arena, String8List *srl, ulong x){
-  ubyte *buf = push_array_no_zero(arena, ubyte, 8);
+str8_serial_push_u64(Arena* arena, String8List* srl, ulong x){
+  ubyte* buf = push_array_no_zero(arena, ubyte, 8);
   MemoryCopy(buf, &x, 8);
-  String8 *str = &srl.last.string;
+  String8* str = &srl.last.string;
   if (str.str + str.size == buf){
     srl.last.string.size += 8;
     srl.total_size += 8;
@@ -1996,10 +1994,10 @@ str8_serial_push_u64(Arena *arena, String8List *srl, ulong x){
 }
 
 public void
-str8_serial_push_u32(Arena *arena, String8List *srl, uint x){
-  ubyte *buf = push_array_no_zero(arena, ubyte, 4);
+str8_serial_push_u32(Arena* arena, String8List* srl, uint x){
+  ubyte* buf = push_array_no_zero(arena, ubyte, 4);
   MemoryCopy(buf, &x, 4);
-  String8 *str = &srl.last.string;
+  String8* str = &srl.last.string;
   if (str.str + str.size == buf){
     srl.last.string.size += 4;
     srl.total_size += 4;
@@ -2010,23 +2008,23 @@ str8_serial_push_u32(Arena *arena, String8List *srl, uint x){
 }
 
 public void
-str8_serial_push_u16(Arena *arena, String8List *srl, U16 x){
+str8_serial_push_u16(Arena* arena, String8List* srl, ushort x){
   str8_serial_push_data(arena, srl, &x, sizeof(x));
 }
 
 public void
-str8_serial_push_u8(Arena *arena, String8List *srl, ubyte x){
+str8_serial_push_u8(Arena* arena, String8List* srl, ubyte x){
   str8_serial_push_data(arena, srl, &x, sizeof(x));
 }
 
 public void
-str8_serial_push_cstr(Arena *arena, String8List *srl, String8 str){
+str8_serial_push_cstr(Arena* arena, String8List* srl, String8 str){
   str8_serial_push_data(arena, srl, str.str, str.size);
   str8_serial_push_u8(arena, srl, 0);
 }
 
 public void
-str8_serial_push_string(Arena *arena, String8List *srl, String8 str){
+str8_serial_push_string(Arena* arena, String8List* srl, String8 str){
   str8_serial_push_data(arena, srl, str.str, str.size);
 }
 
@@ -2037,7 +2035,7 @@ str8_serial_push_string(Arena *arena, String8List *srl, String8 str){
 //~ rjf: Deserialization Helpers
 
 public ulong
-str8_deserial_read(String8 string, ulong off, void *read_dst, ulong read_size, ulong granularity)
+str8_deserial_read(String8 string, ulong off, void* read_dst, ulong read_size, ulong granularity)
 {
   ulong bytes_left = string.size-Min(off, string.size);
   ulong actually_readable_size = Min(bytes_left, read_size);
@@ -2050,11 +2048,11 @@ str8_deserial_read(String8 string, ulong off, void *read_dst, ulong read_size, u
 }
 
 public ulong
-str8_deserial_find_first_match(String8 string, ulong off, U16 scan_val)
+str8_deserial_find_first_match(String8 string, ulong off, ushort scan_val)
 {
   ulong cursor = off;
   for (;;) {
-    U16 val = 0;
+    ushort val = 0;
     str8_deserial_read_struct(string, cursor, &val);
     if (val == scan_val) {
       break;
@@ -2064,10 +2062,10 @@ str8_deserial_find_first_match(String8 string, ulong off, U16 scan_val)
   return cursor;
 }
 
-public void *
+public void*
 str8_deserial_get_raw_ptr(String8 string, ulong off, ulong size)
 {
-  void *raw_ptr = 0;
+  void* raw_ptr = 0;
   if (off + size <= string.size) {
     raw_ptr = string.str + off;
   }
@@ -2075,7 +2073,7 @@ str8_deserial_get_raw_ptr(String8 string, ulong off, ulong size)
 }
 
 public ulong
-str8_deserial_read_cstr(String8 string, ulong off, String8 *cstr_out)
+str8_deserial_read_cstr(String8 string, ulong off, String8* cstr_out)
 {
   ulong cstr_size = 0;
   if (off < string.size) {
@@ -2088,11 +2086,11 @@ str8_deserial_read_cstr(String8 string, ulong off, String8 *cstr_out)
 }
 
 public ulong
-str8_deserial_read_windows_utf16_string16(String8 string, ulong off, String16 *str_out)
+str8_deserial_read_windows_utf16_string16(String8 string, ulong off, String16* str_out)
 {
   ulong null_off = str8_deserial_find_first_match(string, off, 0);
   ulong size = null_off - off;
-  U16 *str = (U16 *)str8_deserial_get_raw_ptr(string, off, size);
+  ushort* str = (ushort*)str8_deserial_get_raw_ptr(string, off, size);
   ulong count = size / sizeof(*str);
   *str_out = str16(str, count);
   
@@ -2101,7 +2099,7 @@ str8_deserial_read_windows_utf16_string16(String8 string, ulong off, String16 *s
 }
 
 public ulong
-str8_deserial_read_block(String8 string, ulong off, ulong size, String8 *block_out)
+str8_deserial_read_block(String8 string, ulong off, ulong size, String8* block_out)
 {
   Rng1U64 range = rng_1u64(off, off + size);
   *block_out = str8_substr(string, range);
