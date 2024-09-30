@@ -18,7 +18,7 @@ public enum ArenaFlags
   LargePages = (1<<1),
 }
 
-public struct ArenaParams
+public struct ArenaParams // TODO: to be removed
 {
   ArenaFlags flags;
   ulong reserve_size;
@@ -53,12 +53,21 @@ public struct Temp
 //- rjf: arena creation/destruction
 
 public Arena*
-arena_alloc_(ArenaParams *params)
+arena_alloc_(ArenaParams *params) // TODO: to be removed
+{
+  return arena_alloc(params.flags, params.reserve_size, params.commit_size, params.optional_backing_buffer);
+}
+
+public Arena*
+arena_alloc(ArenaFlags flags = 0,
+  ulong reserve_size = MB(64),
+  ulong commit_size = KB(64),
+  void* optional_backing_buffer = null)
 {
   // rjf: round up reserve/commit sizes
-  ulong reserve_size = params.reserve_size;
-  ulong commit_size = params.commit_size;
-  if(params.flags & ArenaFlag.LargePages)
+  ulong original_reserve_size = reserve_size;
+  ulong original_commit_size = commit_size;
+  if(flags & ArenaFlag.LargePages)
   {
     reserve_size = AlignPow2(reserve_size, os_get_system_info().large_page_size);
     commit_size  = AlignPow2(commit_size,  os_get_system_info().large_page_size);
@@ -70,10 +79,10 @@ arena_alloc_(ArenaParams *params)
   }
   
   // rjf: reserve/commit initial block
-  void* base = params.optional_backing_buffer;
+  void* base = optional_backing_buffer;
   if(base == 0)
   {
-    if(params.flags & ArenaFlag.LargePages)
+    if(flags & ArenaFlag.LargePages)
     {
       base = os_reserve_large(reserve_size);
       os_commit_large(base, commit_size);
@@ -98,9 +107,9 @@ arena_alloc_(ArenaParams *params)
   // rjf: extract arena header & fill
   Arena* arena = (Arena*)base;
   arena.current = arena;
-  arena.flags = params.flags;
-  arena.cmt_size = (uint)params.commit_size;
-  arena.res_size = params.reserve_size;
+  arena.flags = flags;
+  arena.cmt_size = (uint)original_commit_size;
+  arena.res_size = original_reserve_size;
   arena.base_pos = 0;
   arena.pos = ARENA_HEADER_SIZE;
   arena.cmt = commit_size;
@@ -109,8 +118,6 @@ arena_alloc_(ArenaParams *params)
   AsanUnpoisonMemoryRegion(base, ARENA_HEADER_SIZE);
   return arena;
 }
-
-#define arena_alloc(...) arena_alloc_(&(ArenaParams){.reserve_size = MB(64), .commit_size = KB(64), __VA_ARGS__})
 
 public void
 arena_release(Arena* arena)
