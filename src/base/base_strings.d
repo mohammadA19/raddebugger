@@ -936,7 +936,7 @@ str8_list_push_aligner(Arena* arena, String8List* list, ulong min, ulong align){
     new_size &= (~mask);
     increase_size = new_size - list.total_size;
   }
-  local_persist const ubyte zeroes_buffer[64] = {0};
+  const ubyte[64] zeroes_buffer;
   Assert(increase_size <= ArrayCount(zeroes_buffer));
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
@@ -1557,12 +1557,12 @@ str32_from_8(Arena* arena, String8 in){
 
 public String8
 string_from_dimension(Dimension dimension){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("X"),
     str8_lit_comp("Y"),
     str8_lit_comp("Z"),
     str8_lit_comp("W"),
-  };
+  ];
   String8 result = str8_lit("error");
   if ((uint)dimension < 4){
     result = strings[dimension];
@@ -1572,10 +1572,10 @@ string_from_dimension(Dimension dimension){
 
 public String8
 string_from_side(Side side){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("Min"),
     str8_lit_comp("Max"),
-  };
+  ];
   String8 result = str8_lit("error");
   if ((uint)side < 2){
     result = strings[side];
@@ -1585,12 +1585,12 @@ string_from_side(Side side){
 
 public String8
 string_from_operating_system(OperatingSystem os){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("Null"),
     str8_lit_comp("Windows"),
     str8_lit_comp("Linux"),
     str8_lit_comp("Mac"),
-  };
+  ];
   String8 result = str8_lit("error");
   if (os < OperatingSystem_COUNT){
     result = strings[os];
@@ -1600,13 +1600,13 @@ string_from_operating_system(OperatingSystem os){
 
 public String8
 string_from_architecture(Architecture arch){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("Null"),
     str8_lit_comp("x64"),
     str8_lit_comp("x86"),
     str8_lit_comp("arm64"),
     str8_lit_comp("arm32"),
-  };
+  ];
   String8 result = str8_lit("error");
   if (arch < Architecture_COUNT){
     result = strings[arch];
@@ -1619,7 +1619,7 @@ string_from_architecture(Architecture arch){
 
 public String8
 string_from_week_day(WeekDay week_day){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("Sun"),
     str8_lit_comp("Mon"),
     str8_lit_comp("Tue"),
@@ -1627,7 +1627,7 @@ string_from_week_day(WeekDay week_day){
     str8_lit_comp("Thu"),
     str8_lit_comp("Fri"),
     str8_lit_comp("Sat"),
-  };
+  ];
   String8 result = str8_lit("Err");
   if ((uint)week_day < WeekDay_COUNT){
     result = strings[week_day];
@@ -1637,7 +1637,7 @@ string_from_week_day(WeekDay week_day){
 
 public String8
 string_from_month(Month month){
-  local_persist String8[] strings = {
+  String8[] strings = [
     str8_lit_comp("Jan"),
     str8_lit_comp("Feb"),
     str8_lit_comp("Mar"),
@@ -1650,7 +1650,7 @@ string_from_month(Month month){
     str8_lit_comp("Oct"),
     str8_lit_comp("Nov"),
     str8_lit_comp("Dec"),
-  };
+  ];
   String8 result = str8_lit("Err");
   if ((uint)month < Month_COUNT){
     result = strings[month];
@@ -1712,7 +1712,7 @@ public String8
 indented_from_string(Arena* arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  immutable local_persist ubyte[] indentation_bytes = "                                                                                                                                ";
+  static immutable ubyte[] indentation_bytes = "                                                                                                                                ";
   String8List indented_strings = {0};
   long depth = 0;
   long next_depth = 0;
