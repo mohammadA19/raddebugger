@@ -25,20 +25,59 @@ type Arena struct {
 }
 // static assert : sizeof(Arena) <= ArenaHeaderSize
 
-type ArenaBuilder struct {
-	params ArenaParams
-}
-
 type Temp struct {
 	arena *Arena
 	pos uint64
 }
 
-func ArenaAllocWithParams(params *ArenaParams) *Arena {
+func NewArenaWithParams(params *ArenaParams) *Arena {
 
 }
 
-func ArenaAlloc() *Arena {
-	return ArenaAllocWithParams( &{ 0, MB(64), KB(64), nil } )
+func NewArena() *Arena {
+	return NewArenaWithParams( &{ 0, MB(64), KB(64), nil } )
 }
 
+func (arena *Arena) Release {
+
+}
+
+func (arena *Arena) Push(size, align uint64) []byte {
+
+}
+
+func (arena *Arena) Pos() uint64 {
+
+}
+
+func (arena *Arena) PopTo(pos uint64) {
+
+}
+
+func (arena *Arena) Clear() {
+
+}
+
+func (arena *Arena) Pop(amount uint64) {
+
+}
+
+func BeginTemp(arena *Arena) Temp {
+
+}
+
+func (temp *Temp) End() {
+
+}
+
+// missing:
+// PushArrayNoZeroAligned
+// PushArrayAligned
+
+func (arena *Arena) PushArrayNoZero[T any](count uint64) []T {
+
+}
+
+func (arena *Arena) PushArray[T any](count uint64) []T {
+
+}
