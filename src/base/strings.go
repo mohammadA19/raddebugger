@@ -69,3 +69,13 @@ type UnicodeDecode struct {
     inc, codepoint  uint32
 }
 
+type FuzzyMatchRangeNode struct {
+    next *FuzzyMatchRangeNode
+    range Range1U64
+}
+
+type FuzzyMatchRangeList struct {
+    first, last                       *FuzzyMatchRangeNode
+    count, needlePartCount, totalDim  uint64
+}
+
