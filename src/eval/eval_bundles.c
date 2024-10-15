@@ -247,7 +247,7 @@ e_member_eval_from_eval_member_name(E_Eval eval, String8 member_name)
           U64 member_size = e_type_byte_size_from_key(member.type_key);
           MemoryCopy((U8 *)(&result.value.u512[0]),
                      (U8 *)(&eval.value.u512[0]) + member.off,
-                     Min(member_size, sizeof(eval.value) - member.off));
+                     min(member_size, sizeof(eval.value) - member.off));
         }break;
         case E_Mode_Offset:
         {

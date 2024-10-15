@@ -116,7 +116,7 @@ fzy_init(void)
     fzy_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     fzy_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
-  fzy_shared->thread_count = Min(os_get_system_info()->logical_processor_count, 2);
+  fzy_shared->thread_count = min(os_get_system_info()->logical_processor_count, 2);
   fzy_shared->threads = push_array(arena, FZY_Thread, fzy_shared->thread_count);
   for(U64 idx = 0; idx < fzy_shared->thread_count; idx += 1)
   {

@@ -215,7 +215,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   //- rjf: cap at line
   if(event->flags & UI_EventFlag_CapAtLine)
   {
-    next_cursor.column = Clamp(1, next_cursor.column, (S64)(string.size+1));
+    next_cursor.column = clamp(1, next_cursor.column, (S64)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
@@ -282,8 +282,8 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
     {
       flags |= UI_TxtOpFlag_Invalid;
     }
-    next_cursor.column = Clamp(1, next_cursor.column, string.size+replace.size+1);
-    next_mark.column = Clamp(1, next_mark.column, string.size+replace.size+1);
+    next_cursor.column = clamp(1, next_cursor.column, string.size+replace.size+1);
+    next_mark.column = clamp(1, next_mark.column, string.size+replace.size+1);
   }
   
   //- rjf: build+fill
@@ -1401,8 +1401,8 @@ ui_end_build(void)
             ClampBot(0, box->view_bounds.x - box->fixed_size.x),
             ClampBot(0, box->view_bounds.y - box->fixed_size.y),
           };
-          if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-          if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+          if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = clamp(0, box->view_off_target.x, max_view_off_target.x); }
+          if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = clamp(0, box->view_off_target.y, max_view_off_target.y); }
         }
         
         // rjf: animate view offset
@@ -1529,7 +1529,7 @@ ui_end_build(void)
             B32 text_is_truncated = (drawn_text_dim.x + text_pos.x > rect.x1);
             B32 mouse_is_hovering = contains_2f32(r2f32p(text_pos.x,
                                                          rect.y0,
-                                                         Min(text_pos.x+drawn_text_dim.x, rect.x1),
+                                                         min(text_pos.x+drawn_text_dim.x, rect.x1),
                                                          rect.y1),
                                                   ui_state->mouse);
             if(text_is_truncated && mouse_is_hovering && !(b->flags & UI_BoxFlag_DisableTruncatedHover))
@@ -1680,7 +1680,7 @@ ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
           }
           else
           {
-            sum = Max(sum, child->fixed_size.v[axis]);
+            sum = max(sum, child->fixed_size.v[axis]);
           }
         }
       }
@@ -1713,7 +1713,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
         F32 child_size = child->fixed_size.v[axis];
         F32 violation = child_size - allowed_size;
         F32 max_fixup = child_size;
-        F32 fixup = Clamp(0, violation, max_fixup);
+        F32 fixup = clamp(0, violation, max_fixup);
         if(fixup > 0)
         {
           child->fixed_size.v[axis] -= fixup;
@@ -1768,7 +1768,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
             F32 fixup_pct = (violation / total_weighted_size);
-            fixup_pct = Clamp(0, fixup_pct, 1);
+            fixup_pct = clamp(0, fixup_pct, 1);
             child->fixed_size.v[axis] -= child_fixups[child_idx] * fixup_pct;
           }
         }
@@ -1810,7 +1810,7 @@ ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
   for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
   {
     // rjf: grab original position
-    F32 original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    F32 original_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: calculate fixed position & size
     if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1823,7 +1823,7 @@ ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
       }
       else
       {
-        bounds = Max(bounds, child->fixed_size.v[axis]);
+        bounds = max(bounds, child->fixed_size.v[axis]);
       }
     }
     
@@ -1847,7 +1847,7 @@ ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
     child->rect.p1.y = floor_f32(child->rect.p1.y);
     
     // rjf: grab new position
-    F32 new_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    F32 new_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: store position delta
     child->position_delta.v[axis] = new_position - original_position;
@@ -2795,8 +2795,8 @@ ui_signal_from_box(UI_Box *box)
       ClampBot(0, box->view_bounds.x - box->fixed_size.x),
       ClampBot(0, box->view_bounds.y - box->fixed_size.y),
     };
-    if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-    if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+    if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = clamp(0, box->view_off_target.x, max_view_off_target.x); }
+    if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = clamp(0, box->view_off_target.y, max_view_off_target.y); }
   }
   
   //////////////////////////////

@@ -41,7 +41,7 @@ arena_alloc_(ArenaParams *params)
   
   // rjf: panic on arena creation failure
 #if OS_FEATURE_GRAPHICAL
-  if(Unlikely(base == 0))
+  if(@unlikely(base == 0))
   {
     os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."));
     os_abort(1);
@@ -132,7 +132,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   
   // rjf: panic on failure
 #if OS_FEATURE_GRAPHICAL
-  if(Unlikely(result == 0))
+  if(@unlikely(result == 0))
   {
     os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."));
     os_abort(1);

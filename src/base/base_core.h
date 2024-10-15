@@ -1,6 +1,8 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
+import std::math;
+
 #ifndef BASE_CORE_H
 #define BASE_CORE_H
 
@@ -71,38 +73,10 @@
 #define Billion(n)    ((n)*1000000000)
 
 ////////////////////////////////
-//~ rjf: Branch Predictor Hints
-
-#if defined(__clang__)
-# define Expect(expr, val) __builtin_expect((expr), (val))
-#else
-# define Expect(expr, val) (expr)
-#endif
-
-#define Likely(expr)            Expect(expr,1)
-#define Unlikely(expr)          Expect(expr,0)
-
-////////////////////////////////
 //~ rjf: Clamps, Mins, Maxes
 
-#define Min(A,B) (((A)<(B))?(A):(B))
-#define Max(A,B) (((A)>(B))?(A):(B))
-#define ClampTop(A,X) Min(A,X)
-#define ClampBot(X,B) Max(X,B)
-#define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
-
-////////////////////////////////
-//~ rjf: Type -> Alignment
-
-#if COMPILER_MSVC
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_CLANG
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_GCC
-# define AlignOf(T) __alignof__(T)
-#else
-# error AlignOf not defined for this compiler.
-#endif
+#define ClampTop(A,X) min(A,X)
+#define ClampBot(X,B) max(X,B)
 
 ////////////////////////////////
 //~ rjf: Member Offsets

@@ -199,7 +199,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   if(accel->members.count != 0)
   {
     E_MemberArray *members = &accel->members;
-    result.row_exprs_count = Min(needed_row_count, members->count);
+    result.row_exprs_count = min(needed_row_count, members->count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -218,7 +218,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   else if(accel->enum_vals.count != 0)
   {
     E_EnumValArray *enumvals = &accel->enum_vals;
-    result.row_exprs_count = Min(needed_row_count, enumvals->count);
+    result.row_exprs_count = min(needed_row_count, enumvals->count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -237,7 +237,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   else if(accel->array_count != 0)
   {
     E_Expr *array_expr = accel->array_need_extra_deref ? e_expr_ref_deref(arena, expr) : expr;
-    result.row_exprs_count = Min(needed_row_count, accel->array_count);
+    result.row_exprs_count = min(needed_row_count, accel->array_count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);

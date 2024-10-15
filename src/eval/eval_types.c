@@ -627,7 +627,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
                 for(U64 idx = 0; idx < type->count; idx += 1)
                 {
                   U64 opl_byte = type->members[idx].off + e_type_byte_size_from_key(type->members[idx].type_key);
-                  type->byte_size = Max(type->byte_size, opl_byte);
+                  type->byte_size = max(type->byte_size, opl_byte);
                 }
               }break;
               case E_TypeKind_Enum:

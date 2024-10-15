@@ -32,8 +32,8 @@ typedef RAD_UINTr UINTr;
 
 #define OOINLINE	RADFORCEINLINE
 
-#define if_unlikely(exp)	if ( RAD_UNLIKELY( exp ) )
-#define if_likely(  exp)	if ( RAD_LIKELY( exp ) )
+#define if_unlikely(exp)	if ( @unlikely( exp ) )
+#define if_likely(  exp)	if ( @likely( exp ) )
 
 // Raw byte IO
 

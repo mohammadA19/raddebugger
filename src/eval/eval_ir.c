@@ -154,7 +154,7 @@ e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
   E_Op *node = push_array_no_zero(arena, E_Op, 1);
   node->opcode = opcode;
   node->string = string;
-  node->value.u64 = Min(string.size, 64);
+  node->value.u64 = min(string.size, 64);
   SLLQueuePush(list->first, list->last, node);
   list->op_count += 1;
   list->encoded_size += 1 + p_size + node->value.u64;
@@ -278,7 +278,7 @@ e_irtree_mem_read_type(Arena *arena, E_Space space, E_IRNode *c, E_TypeKey type_
 {
   E_IRNode *result = &e_irnode_nil;
   U64 byte_size = e_type_byte_size_from_key(type_key);
-  byte_size = Min(64, byte_size);
+  byte_size = min(64, byte_size);
   
   // rjf: build the read node
   E_IRNode *read_node = e_push_irnode(arena, RDI_EvalOp_MemRead);

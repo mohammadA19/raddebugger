@@ -53,7 +53,7 @@ fs_init(void)
   fs_shared->u2s_ring_base = push_array_no_zero(arena, U8, fs_shared->u2s_ring_size);
   fs_shared->u2s_ring_cv = os_condition_variable_alloc();
   fs_shared->u2s_ring_mutex = os_mutex_alloc();
-  fs_shared->streamer_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
+  fs_shared->streamer_count = clamp(1, os_get_system_info()->logical_processor_count-1, 4);
   fs_shared->streamers = push_array(arena, OS_Handle, 1);
   for(U64 idx = 0; idx < fs_shared->streamer_count; idx += 1)
   {
@@ -270,7 +270,7 @@ internal B32
 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
 {
   B32 result = 0;
-  path.size = Min(path.size, fs_shared->u2s_ring_size);
+  path.size = min(path.size, fs_shared->u2s_ring_size);
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
     U64 unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
@@ -342,7 +342,7 @@ fs_streamer_thread__entry_point(void *p)
     ProfBegin("load \"%.*s\"", str8_varg(path));
     FileProperties pre_props = os_properties_from_file_path(path);
     U64 range_size = dim_1u64(range);
-    U64 read_size = Min(pre_props.size, range_size);
+    U64 read_size = min(pre_props.size, range_size);
     OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite, path);
     U64 data_arena_size = read_size+ARENA_HEADER_SIZE;
     data_arena_size += KB(4)-1;

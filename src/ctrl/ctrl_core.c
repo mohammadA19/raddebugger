@@ -505,7 +505,7 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
     str8_serial_push_struct(scratch.arena, &srl, &event->rgba);
     str8_serial_push_struct(scratch.arena, &srl, &event->exception_code);
     String8 string = event->string;
-    string.size = Min(string.size, max-srl.total_size);
+    string.size = min(string.size, max-srl.total_size);
     str8_serial_push_struct(scratch.arena, &srl, &string.size);
     str8_serial_push_data(scratch.arena, &srl, string.str, string.size);
   }
@@ -1277,7 +1277,7 @@ ctrl_init(void)
   ctrl_state->u2ms_ring_cv = os_condition_variable_alloc();
   ctrl_state->ctrl_thread_log = log_alloc();
   ctrl_state->ctrl_thread = os_thread_launch(ctrl_thread__entry_point, 0, 0);
-  ctrl_state->ms_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
+  ctrl_state->ms_thread_count = clamp(1, os_get_system_info()->logical_processor_count-1, 4);
   ctrl_state->ms_threads = push_array(arena, OS_Handle, ctrl_state->ms_thread_count);
   for(U64 idx = 0; idx < ctrl_state->ms_thread_count; idx += 1)
   {
@@ -1414,9 +1414,9 @@ ctrl_stored_hash_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B3
               range_n->zero_terminated = zero_terminated;
               range_n->vaddr_range_clamped = range;
               {
-                range_n->vaddr_range_clamped.max = Max(range_n->vaddr_range_clamped.max, range_n->vaddr_range_clamped.min);
-                U64 max_size_cap = Min(max_U64-range_n->vaddr_range_clamped.min, GB(1));
-                range_n->vaddr_range_clamped.max = Min(range_n->vaddr_range_clamped.max, range_n->vaddr_range_clamped.min+max_size_cap);
+                range_n->vaddr_range_clamped.max = max(range_n->vaddr_range_clamped.max, range_n->vaddr_range_clamped.min);
+                U64 max_size_cap = min(max_U64-range_n->vaddr_range_clamped.min, GB(1));
+                range_n->vaddr_range_clamped.max = min(range_n->vaddr_range_clamped.max, range_n->vaddr_range_clamped.min+max_size_cap);
               }
               break;
             }
@@ -4213,7 +4213,7 @@ ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
         {
           result = 1;
           U64 range_dim = dim_1u64(range);
-          U64 bytes_to_read = Min(range_dim, (legal_range.max - range.min));
+          U64 bytes_to_read = min(range_dim, (legal_range.max - range.min));
           MemoryCopy(out, ((U8 *)meval_read) + range.min, bytes_to_read);
           if(bytes_to_read < range_dim)
           {
@@ -5073,7 +5073,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
           DI_Scope *di_scope = di_scope_open();
           
           // rjf: gather evaluation modules
-          U64 eval_modules_count = Max(1, ctrl_state->ctrl_thread_entity_store->entity_kind_counts[CTRL_EntityKind_Module]);
+          U64 eval_modules_count = max(1, ctrl_state->ctrl_thread_entity_store->entity_kind_counts[CTRL_EntityKind_Module]);
           E_Module *eval_modules = push_array(temp.arena, E_Module, eval_modules_count);
           E_Module *eval_modules_primary = &eval_modules[0];
           eval_modules_primary->rdi = &di_rdi_parsed_nil;

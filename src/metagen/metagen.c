@@ -286,7 +286,7 @@ mg_c_array_literal_contents_from_data(String8 data)
   {
     for(U64 off = 0; off < data.size;)
     {
-      U64 chunk_size = Min(data.size-off, 64);
+      U64 chunk_size = min(data.size-off, 64);
       U8 *chunk_bytes = data.str+off;
       String8 chunk_text_string = {0};
       chunk_text_string.size = chunk_size*5;
@@ -536,7 +536,7 @@ mg_node_grid_make_from_node(Arena *arena, MD_Node *root)
   for MD_EachNode(row, root->first)
   {
     U64 cell_count_this_row = md_child_count_from_node(row);
-    column_count = Max(column_count, cell_count_this_row);
+    column_count = max(column_count, cell_count_this_row);
   }
   
   // rjf: fill grid

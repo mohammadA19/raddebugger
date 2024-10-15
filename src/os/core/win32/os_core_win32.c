@@ -1565,7 +1565,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
        str8_match(arg8, str8_lit("-large_pages"), StringMatchFlag_CaseInsensitive))
     {
       arena_default_flags        = ArenaFlag_LargePages;
-      arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);
+      arena_default_reserve_size = max(MB(64), os_w32_state.system_info.large_page_size);
       arena_default_commit_size  = arena_default_reserve_size;
     }
     argv[i] = (char *)arg8.str;

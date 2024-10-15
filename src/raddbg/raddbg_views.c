@@ -106,14 +106,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
                                                 scroll_pos.y.idx + 1 + num_possible_visible_lines);
   U64 visible_line_count = 0;
   {
-    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
-    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
-    visible_line_num_range.min = Max(1, visible_line_num_range.min);
-    visible_line_num_range.max = Max(1, visible_line_num_range.max);
-    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
-    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
-    target_visible_line_num_range.min = Max(1, target_visible_line_num_range.min);
-    target_visible_line_num_range.max = Max(1, target_visible_line_num_range.max);
+    visible_line_num_range.min = clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
+    visible_line_num_range.max = clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
+    visible_line_num_range.min = max(1, visible_line_num_range.min);
+    visible_line_num_range.max = max(1, visible_line_num_range.max);
+    target_visible_line_num_range.min = clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
+    target_visible_line_num_range.max = clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
+    target_visible_line_num_range.min = max(1, target_visible_line_num_range.min);
+    target_visible_line_num_range.max = max(1, target_visible_line_num_range.max);
     visible_line_count = (U64)dim_1s64(visible_line_num_range)+1;
   }
   
@@ -538,7 +538,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   {
     S64 line_num = cv->goto_line_num;
     cv->goto_line_num = 0;
-    line_num = Clamp(1, line_num, text_info->lines_count);
+    line_num = clamp(1, line_num, text_info->lines_count);
     rd_regs()->cursor = rd_regs()->mark = txt_pt(line_num, 1);
     cv->center_cursor = !cv->contain_cursor || (line_num < target_visible_line_num_range.min+4 || target_visible_line_num_range.max-4 < line_num);
   }
@@ -635,7 +635,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       // rjf: scroll x
       {
         S64 new_idx = (S64)(cursor_advance - code_area_dim.x/2);
-        new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
+        new_idx = clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
         ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
         snap[Axis2_X] = 0;
       }
@@ -643,7 +643,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       // rjf: scroll y
       {
         S64 new_idx = (rd_regs()->cursor.line-1) - num_possible_visible_lines/2 + 2;
-        new_idx = Clamp(scroll_idx_rng[Axis2_Y].min, new_idx, scroll_idx_rng[Axis2_Y].max);
+        new_idx = clamp(scroll_idx_rng[Axis2_Y].min, new_idx, scroll_idx_rng[Axis2_Y].max);
         ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
         snap[Axis2_Y] = 0;
       }
@@ -664,10 +664,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         cursor_off - (S64)(big_glyph_advance*4) - (S64)(priority_margin_width_px + catchall_margin_width_px + line_num_width_px),
         cursor_off + (S64)(big_glyph_advance*4),
       };
-      S64 min_delta = Min(0, cursor_pixel_range.min - visible_pixel_range.min);
-      S64 max_delta = Max(0, cursor_pixel_range.max - visible_pixel_range.max);
+      S64 min_delta = min(0, cursor_pixel_range.min - visible_pixel_range.min);
+      S64 max_delta = max(0, cursor_pixel_range.max - visible_pixel_range.max);
       S64 new_idx = scroll_pos.x.idx+min_delta+max_delta;
-      new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
+      new_idx = clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
       ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
     }
     
@@ -677,10 +677,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       Rng1S64 cursor_visibility_range = r1s64(rd_regs()->cursor.line-4, rd_regs()->cursor.line+4);
       cursor_visibility_range.min = ClampBot(0, cursor_visibility_range.min);
       cursor_visibility_range.max = ClampBot(0, cursor_visibility_range.max);
-      S64 min_delta = Min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
-      S64 max_delta = Max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
+      S64 min_delta = min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
+      S64 max_delta = max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
       S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
-      new_idx = Clamp(0, new_idx, (S64)text_info->lines_count-1);
+      new_idx = clamp(0, new_idx, (S64)text_info->lines_count-1);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
   }
@@ -1201,11 +1201,11 @@ rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, 
   wv->column_count += 1;
   col->kind = kind;
   col->pct = pct;
-  col->string_size = Min(sizeof(col->string_buffer), params->string.size);
+  col->string_size = min(sizeof(col->string_buffer), params->string.size);
   MemoryCopy(col->string_buffer, params->string.str, col->string_size);
-  col->display_string_size = Min(sizeof(col->display_string_buffer), params->display_string.size);
+  col->display_string_size = min(sizeof(col->display_string_buffer), params->display_string.size);
   MemoryCopy(col->display_string_buffer, params->display_string.str, col->display_string_size);
-  col->view_rule_size = Min(sizeof(col->view_rule_buffer), params->view_rule.size);
+  col->view_rule_size = min(sizeof(col->view_rule_buffer), params->view_rule.size);
   MemoryCopy(col->view_rule_buffer, params->view_rule.str, col->view_rule_size);
   col->is_non_code = params->is_non_code;
   col->dequote_string = params->dequote_string;
@@ -1459,8 +1459,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         }
         
         // rjf: form selection range table coordinates
-        selection_tbl = r2s64p(Min(cursor_tbl.x, mark_tbl.x), Min(cursor_tbl.y, mark_tbl.y),
-                               Max(cursor_tbl.x, mark_tbl.x), Max(cursor_tbl.y, mark_tbl.y));
+        selection_tbl = r2s64p(min(cursor_tbl.x, mark_tbl.x), min(cursor_tbl.y, mark_tbl.y),
+                               max(cursor_tbl.x, mark_tbl.x), max(cursor_tbl.y, mark_tbl.y));
       }
       
       //////////////////////////
@@ -1493,8 +1493,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           }
           
           //- rjf: compute deltas & apply
-          S64 min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
-          S64 max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
+          S64 min_delta = min(0, cursor_visibility_row_range.min-visible_row_range.min);
+          S64 max_delta = max(0, cursor_visibility_row_range.max-visible_row_range.max);
           S64 new_idx = scroll_pt->idx+min_delta+max_delta;
           new_idx = clamp_1s64(scroll_row_idx_range, new_idx);
           ui_scroll_pt_target_idx(scroll_pt, new_idx);
@@ -1542,7 +1542,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         Vec2S64 selection_dim = dim_2s64(selection_tbl);
         arena_clear(ewv->text_edit_arena);
         ewv->text_edit_state_slots_count = u64_up_to_pow2(selection_dim.y+1);
-        ewv->text_edit_state_slots_count = Max(ewv->text_edit_state_slots_count, 64);
+        ewv->text_edit_state_slots_count = max(ewv->text_edit_state_slots_count, 64);
         ewv->text_edit_state_slots = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState*, ewv->text_edit_state_slots_count);
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
@@ -1558,7 +1558,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             {
               RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
               String8 string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
-              string.size = Min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
+              string.size = min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
               RD_WatchViewPoint pt = {x, row->block->key, row->key};
               U64 hash = ev_hash_from_key(pt.key);
               U64 slot_idx = hash%ewv->text_edit_state_slots_count;
@@ -1680,7 +1680,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 String8 word_query = rd_autocomp_query_word_from_input_string_off(string, edit_state->cursor.column-1);
                 U64 word_off = (U64)(word_query.str - string.str);
                 String8 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
-                new_string.size = Min(sizeof(edit_state->input_buffer), new_string.size);
+                new_string.size = min(sizeof(edit_state->input_buffer), new_string.size);
                 MemoryCopy(edit_state->input_buffer, new_string.str, new_string.size);
                 edit_state->input_size = new_string.size;
                 edit_state->cursor = edit_state->mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
@@ -1702,7 +1702,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               }
               
               // rjf: commit to edit state
-              new_string.size = Min(new_string.size, sizeof(edit_state->input_buffer));
+              new_string.size = min(new_string.size, sizeof(edit_state->input_buffer));
               MemoryCopy(edit_state->input_buffer, new_string.str, new_string.size);
               edit_state->input_size = new_string.size;
               edit_state->cursor = op.cursor;
@@ -2264,7 +2264,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(row_eval.space.kind == RD_EvalSpaceKind_CtrlEntity && space_entity->kind == CTRL_EntityKind_Process)
               {
                 U64 size = e_type_byte_size_from_key(row_eval.type_key);
-                size = Min(size, 64);
+                size = min(size, 64);
                 Rng1U64 vaddr_rng = r1u64(row_eval.value.u64, row_eval.value.u64+size);
                 CTRL_ProcessMemorySlice slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, space_entity->handle, vaddr_rng, 0);
                 for(U64 idx = 0; idx < (slice.data.size+63)/64; idx += 1)
@@ -3939,7 +3939,7 @@ rd_path_query_from_string(String8 string)
 internal int
 rd_qsort_compare_file_info__filename(RD_FileInfo *a, RD_FileInfo *b)
 {
-  return strncmp((char *)a->filename.str, (char *)b->filename.str, Min(a->filename.size, b->filename.size));
+  return strncmp((char *)a->filename.str, (char *)b->filename.str, min(a->filename.size, b->filename.size));
 }
 
 internal int
@@ -4316,7 +4316,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     }
     
     // rjf: file buttons
-    for(U64 row_idx = Max(visible_row_range.min, 1);
+    for(U64 row_idx = max(visible_row_range.min, 1);
         row_idx <= visible_row_range.max && row_idx <= file_count;
         row_idx += 1, row_num += 1)
     {
@@ -6501,11 +6501,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       {
         if(evt->delta_2s32.x < 0 || evt->delta_2s32.y < 0)
         {
-          next_cursor = Min(cursor, mark);
+          next_cursor = min(cursor, mark);
         }
         else
         {
-          next_cursor = Max(cursor, mark);
+          next_cursor = max(cursor, mark);
         }
       }
       if(good_action && !(evt->flags & UI_EventFlag_KeepMark))
@@ -6555,8 +6555,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     mv->contain_cursor = 0;
     S64 cursor_row_idx = cursor/num_columns;
     Rng1S64 cursor_viz_range = r1s64(clamp_1s64(scroll_idx_rng, cursor_row_idx-2), clamp_1s64(scroll_idx_rng, cursor_row_idx+3));
-    S64 min_delta = Min(0, cursor_viz_range.min-viz_range_rows.min);
-    S64 max_delta = Max(0, cursor_viz_range.max-viz_range_rows.max);
+    S64 min_delta = min(0, cursor_viz_range.min-viz_range_rows.min);
+    S64 max_delta = max(0, cursor_viz_range.max-viz_range_rows.max);
     S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
     new_idx = clamp_1s64(scroll_idx_rng, new_idx);
     ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
@@ -6846,7 +6846,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         mouse_hover_byte_num = viz_range_bytes.min + row_idx*num_columns + col_idx + 1;
       }
       
-      mouse_hover_byte_num = Clamp(1, mouse_hover_byte_num, 0x7FFFFFFFFFFFull+1);
+      mouse_hover_byte_num = clamp(1, mouse_hover_byte_num, 0x7FFFFFFFFFFFull+1);
     }
     
     // rjf: press -> focus panel
@@ -7230,7 +7230,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
   Rng2F32 rect_scrn = box->rect;
   Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data->view_center_pos, draw_data->zoom, rect_scrn, rect_scrn);
   F32 grid_cell_size_cvs = box->font_size*10.f;
-  F32 grid_line_thickness_px = Max(2.f, box->font_size*0.1f);
+  F32 grid_line_thickness_px = max(2.f, box->font_size*0.1f);
   Vec4F32 grid_line_color = rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
   for EachEnumVal(Axis2, axis)
   {
@@ -7351,7 +7351,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     if(canvas_sig.scroll.y != 0)
     {
       F32 new_zoom = zoom - zoom*canvas_sig.scroll.y/10.f;
-      new_zoom = Clamp(1.f/256.f, new_zoom, 256.f);
+      new_zoom = clamp(1.f/256.f, new_zoom, 256.f);
       Vec2F32 mouse_scr_pre = sub_2f32(ui_mouse(), rect.p0);
       Vec2F32 mouse_cvs = rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, canvas_rect, mouse_scr_pre);
       zoom = new_zoom;
@@ -7759,8 +7759,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
       pitch_target = drag_start_data.y + drag_delta.y/dim.y;
     }
     zoom_target += sig.scroll.y;
-    zoom_target = Clamp(0.1f, zoom_target, 100.f);
-    pitch_target = Clamp(-0.49f, pitch_target, -0.01f);
+    zoom_target = clamp(0.1f, zoom_target, 100.f);
+    pitch_target = clamp(-0.49f, pitch_target, -0.01f);
     RD_Geo3DBoxDrawData *draw_data = push_array(ui_build_arena(), RD_Geo3DBoxDrawData, 1);
     draw_data->yaw   = state->yaw;
     draw_data->pitch = state->pitch;

@@ -81,7 +81,7 @@ internal void temp_end(Temp temp);
 //- rjf: push helper macros
 #define push_array_no_zero_aligned(a, T, c, align) (T *)arena_push((a), sizeof(T)*(c), (align))
 #define push_array_aligned(a, T, c, align) (T *)MemoryZero(push_array_no_zero_aligned(a, T, c, align), sizeof(T)*(c))
-#define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, Max(8, AlignOf(T)))
-#define push_array(a, T, c) push_array_aligned(a, T, c, Max(8, AlignOf(T)))
+#define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, max(8, T.alignof))
+#define push_array(a, T, c) push_array_aligned(a, T, c, max(8, T.alignof))
 
 #endif // BASE_ARENA_H

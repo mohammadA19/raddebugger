@@ -1964,7 +1964,7 @@ cv_stringize_leaf_range(Arena *arena, String8List *out,
                           vftable->offset_in_object_layout);
           str8_list_pushf(arena, out, " names_len=%u\n", vftable->names_len);
           
-          U64 names_cap = Min(sizeof(*vftable) + vftable->names_len, cap);
+          U64 names_cap = min(sizeof(*vftable) + vftable->names_len, cap);
           
           str8_list_push(arena, out, str8_lit(" names=\n"));
           U8 *ptr = (U8*)(vftable + 1);

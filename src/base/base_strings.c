@@ -268,7 +268,7 @@ str8_match(String8 a, String8 b, StringMatchFlags flags){
   if (a.size == b.size || (flags & StringMatchFlag_RightSideSloppy)){
     B32 case_insensitive = (flags & StringMatchFlag_CaseInsensitive);
     B32 slash_insensitive = (flags & StringMatchFlag_SlashInsensitive);
-    U64 size = Min(a.size, b.size);
+    U64 size = min(a.size, b.size);
     result = 1;
     for (U64 i = 0; i < size; i += 1){
       U8 at = a.str[i];
@@ -293,7 +293,7 @@ str8_match(String8 a, String8 b, StringMatchFlags flags){
 internal U64
 str8_find_needle(String8 string, U64 start_pos, String8 needle, StringMatchFlags flags){
   U8 *p = string.str + start_pos;
-  U64 stop_offset = Max(string.size + 1, needle.size) - needle.size;
+  U64 stop_offset = max(string.size + 1, needle.size) - needle.size;
   U8 *stop_p = string.str + stop_offset;
   if (needle.size > 0){
     U8 *string_opl = string.str + string.size;
@@ -1433,8 +1433,8 @@ string_from_dimension(Dimension dimension){
 internal String8
 string_from_side(Side side){
   local_persist String8 strings[] = {
-    str8_lit_comp("Min"),
-    str8_lit_comp("Max"),
+    str8_lit_comp("min"),
+    str8_lit_comp("max"),
   };
   String8 result = str8_lit("error");
   if ((U32)side < 2){
@@ -1583,8 +1583,8 @@ indented_from_string(Arena *arena, String8 string)
     switch(byte)
     {
       default:{}break;
-      case '{':case '[':case '(':{next_depth += 1; next_depth = Max(0, next_depth);}break;
-      case '}':case ']':case ')':{next_depth -= 1; next_depth = Max(0, next_depth); depth = next_depth;}break;
+      case '{':case '[':case '(':{next_depth += 1; next_depth = max(0, next_depth);}break;
+      case '}':case ']':case ')':{next_depth -= 1; next_depth = max(0, next_depth); depth = next_depth;}break;
       case '\n':
       case 0:
       {
@@ -2003,8 +2003,8 @@ str8_serial_push_string(Arena *arena, String8List *srl, String8 str){
 internal U64
 str8_deserial_read(String8 string, U64 off, void *read_dst, U64 read_size, U64 granularity)
 {
-  U64 bytes_left = string.size-Min(off, string.size);
-  U64 actually_readable_size = Min(bytes_left, read_size);
+  U64 bytes_left = string.size-min(off, string.size);
+  U64 actually_readable_size = min(bytes_left, read_size);
   U64 legally_readable_size = actually_readable_size - actually_readable_size%granularity;
   if(legally_readable_size > 0)
   {

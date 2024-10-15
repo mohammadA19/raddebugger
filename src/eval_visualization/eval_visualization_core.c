@@ -1063,12 +1063,12 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 
         if(visible_range.min > block_global_range.min)
         {
           num_skipped = (visible_range.min - block_global_range.min);
-          num_skipped = Min(num_skipped, block_num_visual_rows);
+          num_skipped = min(num_skipped, block_num_visual_rows);
         }
         if(visible_range.max < block_global_range.max)
         {
           num_chopped = (block_global_range.max - visible_range.max);
-          num_chopped = Min(num_chopped, block_num_visual_rows);
+          num_chopped = min(num_chopped, block_num_visual_rows);
         }
       }
       

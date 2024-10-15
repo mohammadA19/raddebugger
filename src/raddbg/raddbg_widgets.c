@@ -43,8 +43,8 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
                indicator_region_rect.y0,
                indicator_region_rect.x0 + width*t + min_thickness/2 + trail*v,
                indicator_region_rect.y1);
-      indicator_rect.x0 = Clamp(indicator_region_rect.x0, indicator_rect.x0, indicator_region_rect.x1);
-      indicator_rect.x1 = Clamp(indicator_region_rect.x0, indicator_rect.x1, indicator_region_rect.x1);
+      indicator_rect.x0 = clamp(indicator_region_rect.x0, indicator_rect.x0, indicator_region_rect.x1);
+      indicator_rect.x1 = clamp(indicator_region_rect.x0, indicator_rect.x1, indicator_region_rect.x1);
       indicator_rect = pad_2f32(indicator_rect, -1.f);
       
       // rjf: does the view have loading *progress* info? -> draw extra progress layer
@@ -1168,7 +1168,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                   Vec4F32 weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
                   F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
-                  progress_t = Clamp(0, progress_t, 1);
+                  progress_t = clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
               }
@@ -1314,7 +1314,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                   Vec4F32 weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
                   F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
-                  progress_t = Clamp(0, progress_t, 1);
+                  progress_t = clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
               }
@@ -1584,7 +1584,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     {
       String8 line_text = params->line_text[line_idx];
       F32 line_text_dim = fnt_dim_from_tag_size_string(params->font, params->font_size, 0, params->tab_size, line_text).x + params->line_num_width_px;
-      line_extras_off[line_idx] = Max(line_text_dim, params->font_size*50);
+      line_extras_off[line_idx] = max(line_text_dim, params->font_size*50);
     }
   }
   
@@ -2454,7 +2454,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       if(evt->delta_unit == UI_EventDeltaUnit_Char && delta.y > 0 && cursor->line+1 <= line_count)
       {
         cursor->line += 1;
-        cursor->column = Min(*preferred_column, next_line.size+1);
+        cursor->column = min(*preferred_column, next_line.size+1);
         change = 1;
         taken = 1;
       }
@@ -2463,7 +2463,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       if(evt->delta_unit == UI_EventDeltaUnit_Char && delta.y < 0 && cursor->line-1 >= 1)
       {
         cursor->line -= 1;
-        cursor->column = Min(*preferred_column, prev_line.size+1);
+        cursor->column = min(*preferred_column, prev_line.size+1);
         change = 1;
         taken = 1;
       }
@@ -2519,7 +2519,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       {
         cursor->line += line_count_per_page;
         cursor->column = 1;
-        cursor->line = Clamp(1, cursor->line, line_count);
+        cursor->line = clamp(1, cursor->line, line_count);
         change = 1;
         taken = 1;
       }
@@ -2529,7 +2529,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       {
         cursor->line -= line_count_per_page;
         cursor->column = 1;
-        cursor->line = Clamp(1, cursor->line, line_count);
+        cursor->line = clamp(1, cursor->line, line_count);
         change = 1;
         taken = 1;
       }
@@ -3002,7 +3002,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
     if(start_editing_via_sig || start_editing_via_typing)
     {
       String8 edit_string = pre_edit_value;
-      edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
+      edit_string.size = min(edit_buffer_size, pre_edit_value.size);
       MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
       edit_string_size_out[0] = edit_string.size;
       ui_set_auto_focus_active_key(key);
@@ -3055,7 +3055,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
         String8 word_query = rd_autocomp_query_word_from_input_string_off(edit_string, cursor->column-1);
         U64 word_off = (U64)(word_query.str - edit_string.str);
         String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
-        new_string.size = Min(edit_buffer_size, new_string.size);
+        new_string.size = min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
         *cursor = *mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
@@ -3068,7 +3068,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
       {
         String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
-        new_string.size = Min(edit_buffer_size, new_string.size);
+        new_string.size = min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
       }
@@ -3270,8 +3270,8 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       cursor_range_px.max = ClampBot(0, cursor_range_px.max);
       F32 min_delta = cursor_range_px.min-visible_range_px.min;
       F32 max_delta = cursor_range_px.max-visible_range_px.max;
-      min_delta = Min(min_delta, 0);
-      max_delta = Max(max_delta, 0);
+      min_delta = min(min_delta, 0);
+      max_delta = max(max_delta, 0);
       scrollable_box->view_off_target.x += min_delta;
       scrollable_box->view_off_target.x += max_delta;
     }

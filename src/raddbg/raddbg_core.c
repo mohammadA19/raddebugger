@@ -2432,7 +2432,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
       {
         result = 1;
         U64 range_dim = dim_1u64(range);
-        U64 bytes_to_read = Min(range_dim, (meval_legal_range.max - range.min));
+        U64 bytes_to_read = min(range_dim, (meval_legal_range.max - range.min));
         MemoryCopy(out, ((U8 *)meval_read) + range.min, bytes_to_read);
         if(bytes_to_read < range_dim)
         {
@@ -2658,7 +2658,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
     {
       E_Eval src_eval = e_eval_from_string(scratch.arena, string);
       commit_data = push_str8_copy(scratch.arena, str8_struct(&src_eval.value));
-      commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(type_key));
+      commit_data.size = min(commit_data.size, e_type_byte_size_from_key(type_key));
     }
     else if(type_kind == E_TypeKind_Ptr || type_kind == E_TypeKind_Array)
     {
@@ -2699,8 +2699,8 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
               src_eval_value.mode == E_Mode_Value)
       {
         commit_data = push_str8_copy(scratch.arena, str8_struct(&src_eval.value));
-        commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(src_eval.type_key));
-        commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(type_key));
+        commit_data.size = min(commit_data.size, e_type_byte_size_from_key(src_eval.type_key));
+        commit_data.size = min(commit_data.size, e_type_byte_size_from_key(type_key));
       }
     }
     if(commit_data.size != 0 && e_type_byte_size_from_key(type_key) != 0)
@@ -2980,7 +2980,7 @@ rd_view_equip_spec(RD_View *view, RD_ViewRuleInfo *spec, String8 query, MD_Node 
 internal void
 rd_view_equip_query(RD_View *view, String8 query)
 {
-  view->query_string_size = Min(sizeof(view->query_buffer), query.size);
+  view->query_string_size = min(sizeof(view->query_buffer), query.size);
   MemoryCopy(view->query_buffer, query.str, view->query_string_size);
   view->query_cursor = view->query_mark = txt_pt(1, query.size+1);
 }
@@ -5230,7 +5230,7 @@ rd_window_frame(RD_Window *ws)
           // rjf: animate target # of rows
           {
             F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? (1 - pow_f32(2, (-60.f * rd_state->frame_dt))) : 1.f;
-            F32 target = Min((F32)item_array.count, 16.f);
+            F32 target = min((F32)item_array.count, 16.f);
             if(abs_f32(target - ws->autocomp_num_visible_rows_t) > 0.01f)
             {
               rd_request_frame();
@@ -6571,7 +6571,7 @@ rd_window_frame(RD_Window *ws)
             // rjf: animate height
             {
               F32 fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-              F32 hover_eval_container_height_target = row_height * Min(30, block_tree.total_row_count);
+              F32 hover_eval_container_height_target = row_height * min(30, block_tree.total_row_count);
               ws->hover_eval_num_visible_rows_t += (hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) * fish_rate;
               if(abs_f32(hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) > 0.5f)
               {
@@ -6612,7 +6612,7 @@ rd_window_frame(RD_Window *ws)
             expr_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_expr_string).x + ui_top_font_size()*10.f;
             value_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_display_value).x + ui_top_font_size()*5.f;
             F32 total_dim_px = (expr_column_width_px + value_column_width_px);
-            width_px = Min(80.f*ui_top_font_size(), total_dim_px*1.5f);
+            width_px = min(80.f*ui_top_font_size(), total_dim_px*1.5f);
           }
           
           //- rjf: build hover eval box
@@ -6674,7 +6674,7 @@ rd_window_frame(RD_Window *ws)
                   if(space_entity->kind == CTRL_EntityKind_Process)
                   {
                     U64 size = e_type_byte_size_from_key(row_eval.type_key);
-                    size = Min(size, 64);
+                    size = min(size, 64);
                     Rng1U64 vaddr_rng = r1u64(row_eval.value.u64, row_eval.value.u64+size);
                     CTRL_ProcessMemorySlice slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, space_entity->handle, vaddr_rng, 0);
                     for(U64 idx = 0; idx < (slice.data.size+63)/64; idx += 1)
@@ -7753,7 +7753,7 @@ rd_window_frame(RD_Window *ws)
               // rjf: store off drop-site
               drop_sites[view_idx].p = tab_column_box->rect.x0 - tab_spacing/2;
               drop_sites[view_idx].prev_view = view->order_prev;
-              drop_site_max_p = Max(tab_column_box->rect.x1, drop_site_max_p);
+              drop_site_max_p = max(tab_column_box->rect.x1, drop_site_max_p);
             }
             
             // rjf: build add-new-tab button
@@ -8301,8 +8301,8 @@ rd_window_frame(RD_Window *ws)
             (box->rect.x1 - box->rect.x0)*0.60f*box->active_t,
             (box->rect.y1 - box->rect.y0)*0.60f*box->active_t,
           };
-          shadow_size.x = Clamp(0, shadow_size.x, box->font_size*2.f);
-          shadow_size.y = Clamp(0, shadow_size.y, box->font_size*2.f);
+          shadow_size.x = clamp(0, shadow_size.x, box->font_size*2.f);
+          shadow_size.y = clamp(0, shadow_size.y, box->font_size*2.f);
           
           // rjf: top -> bottom dark effect
           {
@@ -8556,7 +8556,7 @@ rd_window_frame(RD_Window *ws)
         U64 y = bucket_idx / heatmap_bucket_pitch;
         U64 bucket = heatmap_buckets[bucket_idx];
         F32 pct = (F32)bucket / uniform_dist_count;
-        pct = Clamp(0, pct, 1);
+        pct = clamp(0, pct, 1);
         Vec3F32 hsv = v3f32((1-pct) * 0.9411f, 1, 0.5f);
         Vec3F32 rgb = rgb_from_hsv(hsv);
         Rng2F32 rect = r2f32p(x*heatmap_bucket_size, y*heatmap_bucket_size, (x+1)*heatmap_bucket_size, (y+1)*heatmap_bucket_size);
@@ -8876,7 +8876,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(locals)
   EV_ExpandRangeInfo result = {0};
   {
     U64 needed_row_count = dim_1u64(idx_range);
-    result.row_exprs_count = Min(needed_row_count, accel->count);
+    result.row_exprs_count = min(needed_row_count, accel->count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -8931,7 +8931,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(registers)
   EV_ExpandRangeInfo result = {0};
   {
     U64 needed_row_count = dim_1u64(idx_range);
-    result.row_exprs_count = Min(needed_row_count, accel->count);
+    result.row_exprs_count = min(needed_row_count, accel->count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -9022,7 +9022,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena *arena, EV_View *vie
   {
     U64 entities_base_idx = (U64)!!add_new_at_top;
     U64 needed_row_count = dim_1u64(idx_range);
-    result.row_exprs_count = Min(needed_row_count, accel->entities.count+1);
+    result.row_exprs_count = min(needed_row_count, accel->entities.count+1);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -9138,7 +9138,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_ctrl_entities(Arena *arena, EV_View
   EV_ExpandRangeInfo result = {0};
   {
     U64 needed_row_count = dim_1u64(idx_range);
-    result.row_exprs_count = Min(needed_row_count, accel->entities.count);
+    result.row_exprs_count = min(needed_row_count, accel->entities.count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -9234,7 +9234,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena *arena, EV_View 
   EV_ExpandRangeInfo result = {0};
   {
     U64 needed_row_count = dim_1u64(idx_range);
-    result.row_exprs_count = Min(needed_row_count, accel->items.count);
+    result.row_exprs_count = min(needed_row_count, accel->items.count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -9628,7 +9628,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 defaul
           }break;
           case E_Mode_Value:
           {
-            MemoryCopy(string_buffer, &eval.value.u512[0], Min(string_buffer_size, sizeof(eval.value)));
+            MemoryCopy(string_buffer, &eval.value.u512[0], min(string_buffer_size, sizeof(eval.value)));
           }break;
         }
         string_buffer[string_buffer_size-1] = 0;
@@ -9870,7 +9870,7 @@ rd_autocomp_lister_item_qsort_compare(RD_AutoCompListerItem *a, RD_AutoCompListe
   }
   else
   {
-    result = strncmp((char *)a->string.str, (char *)b->string.str, Min(a->string.size, b->string.size));
+    result = strncmp((char *)a->string.str, (char *)b->string.str, min(a->string.size, b->string.size));
   }
   return result;
 }
@@ -10095,7 +10095,7 @@ rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams *params, S
   arena_clear(window->autocomp_lister_params_arena);
   MemoryCopyStruct(&window->autocomp_lister_params, params);
   window->autocomp_lister_params.strings = str8_list_copy(window->autocomp_lister_params_arena, &window->autocomp_lister_params.strings);
-  window->autocomp_lister_input_size = Min(input.size, sizeof(window->autocomp_lister_input_buffer));
+  window->autocomp_lister_input_size = min(input.size, sizeof(window->autocomp_lister_input_buffer));
   MemoryCopy(window->autocomp_lister_input_buffer, input.str, window->autocomp_lister_input_size);
   window->autocomp_last_frame_idx = rd_state->frame_index;
 }
@@ -10364,7 +10364,7 @@ rd_setting_val_from_code(RD_SettingCode code)
 internal int
 rd_qsort_compare__cfg_string_bindings(RD_StringBindingPair *a, RD_StringBindingPair *b)
 {
-  return strncmp((char *)a->string.str, (char *)b->string.str, Min(a->string.size, b->string.size));
+  return strncmp((char *)a->string.str, (char *)b->string.str, min(a->string.size, b->string.size));
 }
 
 internal String8List
@@ -10399,7 +10399,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
           String8 title_name = d_entity_kind_name_lower_plural_table[k];
           str8_list_pushf(arena, &strs, "/// %S %.*s\n\n",
                           title_name,
-                          (int)Max(0, 79 - (title_name.size + 5)),
+                          (int)max(0, 79 - (title_name.size + 5)),
                           slashes);
         }
         RD_EntityRec rec = {0};
@@ -11470,7 +11470,7 @@ rd_init(CmdLine *cmdln)
     ICO_Entry *entries = push_array(scratch.arena, ICO_Entry, hdr.num_images);
     {
       U64 bytes_to_read = sizeof(ICO_Entry)*entries_count;
-      bytes_to_read = Min(bytes_to_read, opl-ptr);
+      bytes_to_read = min(bytes_to_read, opl-ptr);
       MemoryCopy(entries, ptr, bytes_to_read);
       ptr += bytes_to_read;
     }
@@ -11580,7 +11580,7 @@ rd_frame(void)
   if(rd_state->frame_index > 32)
   {
     // rjf: calculate average frame time out of the last N
-    U64 num_frames_in_history = Min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
+    U64 num_frames_in_history = min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
     U64 frame_time_history_sum_us = 0;
     for(U64 idx = 0; idx < num_frames_in_history; idx += 1)
     {
@@ -11817,7 +11817,7 @@ rd_frame(void)
     U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
     U64 tls_root_vaddr = ctrl_query_cached_tls_root_vaddr_from_thread(d_state->ctrl_entity_store, thread->handle);
     CTRL_EntityList all_modules = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Module);
-    U64 eval_modules_count = Max(1, all_modules.count);
+    U64 eval_modules_count = max(1, all_modules.count);
     E_Module *eval_modules = push_array(scratch.arena, E_Module, eval_modules_count);
     E_Module *eval_modules_primary = &eval_modules[0];
     eval_modules_primary->rdi = &di_rdi_parsed_nil;
@@ -11839,7 +11839,7 @@ rd_frame(void)
         }
       }
     }
-    U64 rdis_count = Max(1, all_modules.count);
+    U64 rdis_count = max(1, all_modules.count);
     RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
     rdis[0] = &di_rdi_parsed_nil;
     U64 rdis_primary_idx = 0;
@@ -16627,7 +16627,7 @@ rd_frame(void)
     {
       for(RD_Window *w = rd_state->first_window; w != 0; w = w->next)
       {
-        w->error_string_size = Min(sizeof(w->error_buffer), log.strings[LogMsgKind_UserError].size);
+        w->error_string_size = min(sizeof(w->error_buffer), log.strings[LogMsgKind_UserError].size);
         MemoryCopy(w->error_buffer, log.strings[LogMsgKind_UserError].str, w->error_string_size);
         w->error_t = 1.f;
       }

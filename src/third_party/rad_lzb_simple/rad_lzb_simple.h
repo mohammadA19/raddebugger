@@ -86,15 +86,6 @@ typedef S32 RAD_S32;
 
 #define RR_COMPILER_ASSERT(exp)   typedef char RR_NUMBERNAME(_dummy_array) [ (exp) ? 1 : -1 ]
 
-#if defined(__clang__)
-# define Expect(expr, val) __builtin_expect((expr), (val))
-#else
-# define Expect(expr, val) (expr)
-#endif
-
-#define RAD_LIKELY(expr)            Expect(expr,1)
-#define RAD_UNLIKELY(expr)          Expect(expr,0)
-
 #define __RADLITTLEENDIAN__ 1
 #define RAD_PTRBYTES 8
 #define RR_MIN(a,b)    ( (a) < (b) ? (a) : (b) )

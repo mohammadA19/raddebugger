@@ -133,7 +133,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
       B32 has_arguments = 0;
       U64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
       U64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
-      U64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
+      U64 arg_signifier_position = min(arg_signifier_position1, arg_signifier_position2);
       String8 arg_portion_this_string = str8_skip(option_name, arg_signifier_position+1);
       if(arg_signifier_position < option_name.size)
       {

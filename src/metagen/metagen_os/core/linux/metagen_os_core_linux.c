@@ -409,11 +409,11 @@ os_copy_file_path(String8 dst, String8 src)
     for(;bytes_left_to_copy > 0;)
     {
       Temp scratch = scratch_begin(0, 0);
-      U64 buffer_size = Min(bytes_left_to_copy, MB(8));
+      U64 buffer_size = min(bytes_left_to_copy, MB(8));
       U8 *buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
       U64 bytes_read = os_file_read(src_h, r1u64(total_bytes_copied, total_bytes_copied+buffer_size), buffer);
       U64 bytes_written = os_file_write(dst_h, r1u64(total_bytes_copied, total_bytes_copied+bytes_read), buffer);
-      U64 bytes_copied = Min(bytes_read, bytes_written);
+      U64 bytes_copied = min(bytes_read, bytes_written);
       bytes_left_to_copy -= bytes_copied;
       total_bytes_copied += bytes_copied;
       scratch_end(scratch);

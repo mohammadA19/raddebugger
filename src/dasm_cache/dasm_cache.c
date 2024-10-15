@@ -254,7 +254,7 @@ dasm_init(void)
   dasm_shared = push_array(arena, DASM_Shared, 1);
   dasm_shared->arena = arena;
   dasm_shared->slots_count = 1024;
-  dasm_shared->stripes_count = Min(dasm_shared->slots_count, os_get_system_info()->logical_processor_count);
+  dasm_shared->stripes_count = min(dasm_shared->slots_count, os_get_system_info()->logical_processor_count);
   dasm_shared->slots = push_array(arena, DASM_Slot, dasm_shared->slots_count);
   dasm_shared->stripes = push_array(arena, DASM_Stripe, dasm_shared->stripes_count);
   for(U64 idx = 0; idx < dasm_shared->stripes_count; idx += 1)

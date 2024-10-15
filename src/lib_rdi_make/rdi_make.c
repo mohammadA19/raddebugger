@@ -1358,7 +1358,7 @@ rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena *arena, RDIM_BakeStr
             {
               if(n->v[idx].string.size > t->string_off+1)
               {
-                max_size_left_to_sort = Max(max_size_left_to_sort, (n->v[idx].string.size - t->string_off+1));
+                max_size_left_to_sort = max(max_size_left_to_sort, (n->v[idx].string.size - t->string_off+1));
               }
             }
           }
@@ -2561,7 +2561,7 @@ rdim_bake_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Ba
               
               // rjf: update unique voff counter & max line number
               voff_count += 1;
-              max_line_num = Max(max_line_num, line_num);
+              max_line_num = max(max_line_num, line_num);
               
               // rjf: find match
               RDIM_SrcLineMapBucket *match = 0;

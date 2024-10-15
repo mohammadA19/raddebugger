@@ -85,7 +85,7 @@ di_init(void)
   di_shared->arena = arena;
   di_shared->slots_count = 1024;
   di_shared->slots = push_array(arena, DI_Slot, di_shared->slots_count);
-  di_shared->stripes_count = Min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
+  di_shared->stripes_count = min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
   di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
   for(U64 idx = 0; idx < di_shared->stripes_count; idx += 1)
   {
@@ -101,7 +101,7 @@ di_init(void)
   di_shared->p2u_ring_cv = os_condition_variable_alloc();
   di_shared->p2u_ring_size = KB(64);
   di_shared->p2u_ring_base = push_array_no_zero(arena, U8, di_shared->p2u_ring_size);
-  di_shared->parse_thread_count = Max(2, os_get_system_info()->logical_processor_count/2);
+  di_shared->parse_thread_count = max(2, os_get_system_info()->logical_processor_count/2);
   di_shared->parse_threads = push_array(arena, OS_Handle, di_shared->parse_thread_count);
   for(U64 idx = 0; idx < di_shared->parse_thread_count; idx += 1)
   {

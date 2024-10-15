@@ -289,8 +289,8 @@ demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 ph
       {
         U64 min = p_vaddr;
         U64 max = p_vaddr + p_memsz;
-        result.range.min = Min(result.range.min, min);
-        result.range.max = Max(result.range.max, max);
+        result.range.min = min(result.range.min, min);
+        result.range.max = max(result.range.max, max);
       }break;
     }
   }

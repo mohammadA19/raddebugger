@@ -2218,7 +2218,7 @@ internal TS_TASK_FUNCTION_DEF(p2r_symbol_stream_convert_task__entry_point)
           if(procedure_num > procedure_frameprocs_cap) { break; }
           CV_SymFrameproc *frameproc = (CV_SymFrameproc*)sym_header_struct_base;
           procedure_frameprocs[procedure_num-1] = frameproc;
-          procedure_frameprocs_count = Max(procedure_frameprocs_count, procedure_num);
+          procedure_frameprocs_count = max(procedure_frameprocs_count, procedure_num);
         }break;
         
         //- rjf: LPROC32/GPROC32
@@ -3300,7 +3300,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
     for(;coff_sec_ptr < coff_ptr_opl; coff_sec_ptr += 1)
     {
       U64 sec_voff_max = coff_sec_ptr->voff + coff_sec_ptr->vsize;
-      exe_voff_max = Max(exe_voff_max, sec_voff_max);
+      exe_voff_max = max(exe_voff_max, sec_voff_max);
     }
   }
   
@@ -4470,7 +4470,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           P2R_BakeTypesStringsInNode *n = push_array(scratch.arena, P2R_BakeTypesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -4502,7 +4502,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           P2R_BakeUDTsStringsInNode *n = push_array(scratch.arena, P2R_BakeUDTsStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -4542,7 +4542,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
           U64 items_left = items_per_task;
           for(;chunk != 0 && items_left > 0;)
           {
-            U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+            U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
             P2R_BakeSymbolsStringsInNode *n = push_array(scratch.arena, P2R_BakeSymbolsStringsInNode, 1);
             SLLQueuePush(in->first, in->last, n);
             n->v = chunk->v + chunk_off;
@@ -4575,7 +4575,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           P2R_BakeScopesStringsInNode *n = push_array(scratch.arena, P2R_BakeScopesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -4637,7 +4637,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
       in->src_maps_count = ts_thread_count();
       in->dst_map = unsorted_bake_string_map;
       in->slot_idx_range = r1u64(task_idx*slots_per_task, task_idx*slots_per_task + slots_per_task);
-      in->slot_idx_range.max = Min(in->slot_idx_range.max, in->top->slots_count);
+      in->slot_idx_range.max = min(in->slot_idx_range.max, in->top->slots_count);
       task_tickets[task_idx] = ts_kickoff(p2r_bake_string_map_join_task__entry_point, 0, in);
     }
     

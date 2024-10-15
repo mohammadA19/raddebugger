@@ -1338,7 +1338,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
             {
               U64 past_next_dbl_colon_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("::"), 0)+2;
               U64 past_next_dot_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("."), 0)+1;
-              U64 past_next_scope_resolution_pos = Min(past_next_dbl_colon_pos, past_next_dot_pos);
+              U64 past_next_scope_resolution_pos = min(past_next_dbl_colon_pos, past_next_dot_pos);
               if(past_next_scope_resolution_pos >= containing_procedure_name.size)
               {
                 break;

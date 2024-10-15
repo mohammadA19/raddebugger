@@ -115,8 +115,8 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
     else if (vals.node_count >= 2){
       U64 idx_a = u64_from_str8(vals.first->string, 10);
       U64 idx_b = u64_from_str8(vals.first->next->string, 10);
-      result->unit_idx_min = Min(idx_a, idx_b);
-      result->unit_idx_max = Max(idx_a, idx_b);
+      result->unit_idx_min = min(idx_a, idx_b);
+      result->unit_idx_max = max(idx_a, idx_b);
     }
   }
   

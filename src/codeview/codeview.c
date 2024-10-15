@@ -598,7 +598,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, PDB_Strtbl *strtbl, PDB_
             U32 *extra_file_count_ptr = (U32 *)(first + read_off);
             read_off += sizeof(*extra_file_count_ptr);
             U32 max_extra_file_count = (read_off_opl-read_off)/sizeof(U32);
-            extra_file_count = Min(*extra_file_count_ptr, max_extra_file_count);
+            extra_file_count = min(*extra_file_count_ptr, max_extra_file_count);
             extra_files      = (U32 *)(first + read_off);
             read_off += sizeof(*extra_files)*extra_file_count;
           }
