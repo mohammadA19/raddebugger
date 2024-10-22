@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+
 String8 rd_cfg_src_string_table[4] =
 {
 str8_lit_comp("user"),
@@ -2009,5 +2009,5 @@ Rng1S32 rd_setting_code_s32_range_table[19] =
 {0, 1},
 };
 
-C_LINKAGE_END
+
 

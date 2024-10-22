@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+
 D_ViewRuleSpecInfo d_core_view_rule_spec_info_table[21] =
 {
 {str8_lit_comp("default"), str8_lit_comp("Default"), str8_lit_comp(""), str8_lit_comp(""), (D_ViewRuleSpecInfoFlag_Inherited*0)|(D_ViewRuleSpecInfoFlag_Expandable*0)|(D_ViewRuleSpecInfoFlag_ExprResolution*0)|(D_ViewRuleSpecInfoFlag_VizBlockProd*1), },
@@ -29,5 +29,5 @@ D_ViewRuleSpecInfo d_core_view_rule_spec_info_table[21] =
 {str8_lit_comp("geo3d"), str8_lit_comp("Geometry (3D)"), str8_lit_comp("x:{'count':expr, 'vtx':expr, 'vtx_size':expr}"), str8_lit_comp("Displays as geometry, interpreting the data as index or vertex data."), (D_ViewRuleSpecInfoFlag_Inherited*0)|(D_ViewRuleSpecInfoFlag_Expandable*1)|(D_ViewRuleSpecInfoFlag_ExprResolution*0)|(D_ViewRuleSpecInfoFlag_VizBlockProd*1), },
 };
 
-C_LINKAGE_END
+
 

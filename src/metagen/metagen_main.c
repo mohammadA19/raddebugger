@@ -574,7 +574,7 @@ entry_point(CmdLine *cmdline)
             {
               if(!layer->is_library)
               {
-                fprintf(h, "C_LINKAGE_BEGIN\n");
+                fprintf(h, "\n");
               }
               for(String8Node *n = layer->h_tables.first; n != 0; n = n->next)
               {
@@ -583,7 +583,7 @@ entry_point(CmdLine *cmdline)
               fprintf(h, "\n");
               if(!layer->is_library)
               {
-                fprintf(h, "C_LINKAGE_END\n\n");
+                fprintf(h, "\n\n");
               }
             }
             if(layer->h_footer.first == 0)
@@ -616,7 +616,7 @@ entry_point(CmdLine *cmdline)
             {
               if(!layer->is_library)
               {
-                fprintf(c, "C_LINKAGE_BEGIN\n");
+                fprintf(c, "\n");
               }
               for(String8Node *n = layer->c_tables.first; n != 0; n = n->next)
               {
@@ -624,7 +624,7 @@ entry_point(CmdLine *cmdline)
               }
               if(!layer->is_library)
               {
-                fprintf(c, "C_LINKAGE_END\n\n");
+                fprintf(c, "\n\n");
               }
             }
             for(String8Node *n = layer->c_functions.first; n != 0; n = n->next)

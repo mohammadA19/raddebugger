@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+
 EV_ViewRuleInfo ev_builtin_view_rule_info_table[14] =
 {
 {str8_lit_comp("default"), (EV_ViewRuleInfoFlag_Inherited*0)|(EV_ViewRuleInfoFlag_Expandable*0),  EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(identity), EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(default) , EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(default) , EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity), EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity) },
@@ -22,5 +22,5 @@ EV_ViewRuleInfo ev_builtin_view_rule_info_table[14] =
 {str8_lit_comp("no_addr"), (EV_ViewRuleInfoFlag_Inherited*1)|(EV_ViewRuleInfoFlag_Expandable*0),  EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(identity),  EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil),  EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(nil), EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity), EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity) },
 };
 
-C_LINKAGE_END
+
 

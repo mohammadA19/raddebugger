@@ -158,7 +158,7 @@ E_InterpretationCode_MalformedBytecode,
 E_InterpretationCode_COUNT,
 } E_InterpretationCode;
 
-C_LINKAGE_BEGIN
+
 extern String8 e_token_kind_strings[6];
 extern String8 e_expr_kind_strings[48];
 extern String8 e_interpretation_code_display_strings[11];
@@ -166,6 +166,6 @@ extern E_OpInfo e_expr_kind_op_info_table[48];
 extern U8 e_kind_basic_byte_size_table[56];
 extern String8 e_kind_basic_string_table[56];
 
-C_LINKAGE_END
+
 
 #endif // EVAL_META_H

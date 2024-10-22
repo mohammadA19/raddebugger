@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+
 String8 e_token_kind_strings[6] =
 {
 str8_lit_comp("Null"),
@@ -253,5 +253,5 @@ str8_lit_comp("variadic"),
 str8_lit_comp("collection"),
 };
 
-C_LINKAGE_END
+
 

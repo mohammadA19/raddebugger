@@ -49,26 +49,16 @@
 # define shared_function C_LINKAGE
 #endif
 
-#if LANG_CPP
-# define C_LINKAGE_BEGIN extern "C"{
-# define C_LINKAGE_END }
-# define C_LINKAGE extern "C"
-#else
-# define C_LINKAGE_BEGIN
-# define C_LINKAGE_END
-# define C_LINKAGE
-#endif
-
 ////////////////////////////////
 //~ rjf: Units
 
-#define KB(n)  (((U64)(n)) << 10)
-#define MB(n)  (((U64)(n)) << 20)
-#define GB(n)  (((U64)(n)) << 30)
-#define TB(n)  (((U64)(n)) << 40)
-#define Thousand(n)   ((n)*1000)
-#define Million(n)    ((n)*1000000)
-#define Billion(n)    ((n)*1000000000)
+#define KB(n)  (((U64)n) << 10)
+#define MB(n)  (((U64)n) << 20)
+#define GB(n)  (((U64)n) << 30)
+#define TB(n)  (((U64)n) << 40)
+#define Thousand(n)   (n*1000)
+#define Million(n)    (n*1000000)
+#define Billion(n)    (n*1000000000)
 
 ////////////////////////////////
 //~ rjf: Branch Predictor Hints

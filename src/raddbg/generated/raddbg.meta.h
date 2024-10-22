@@ -761,7 +761,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap);
 RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox);
 RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba);
 RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d);
-C_LINKAGE_BEGIN
+
 extern String8 rd_cfg_src_string_table[4];
 extern RD_CmdKind rd_cfg_src_load_cmd_kind_table[4];
 extern RD_CmdKind rd_cfg_src_write_cmd_kind_table[4];
@@ -5513,6 +5513,6 @@ read_only global U8 rd_icon_file_bytes__data[] =
 
 read_only global String8 rd_icon_file_bytes = {rd_icon_file_bytes__data, sizeof(rd_icon_file_bytes__data)};
 
-C_LINKAGE_END
+
 
 #endif // RADDBG_META_H

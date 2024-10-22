@@ -102,7 +102,7 @@ case Arch_x86:{result = regs_g_alias_code_x86_usage_kind_table;}break;
 }
 return result;
 }
-C_LINKAGE_BEGIN
+
 REGS_UsageKind regs_g_reg_code_x64_usage_kind_table[101] =
 {
 REGS_UsageKind_Normal,
@@ -1033,5 +1033,5 @@ REGS_Slice regs_g_alias_code_x86_slice_table[36] =
 {REGS_RegCodeX86_fpr7, 0, 8},
 };
 
-C_LINKAGE_END
+
 

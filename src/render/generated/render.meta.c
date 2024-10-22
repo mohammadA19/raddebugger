@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+
 String8 r_tex2d_format_display_string_table[9] =
 {
 str8_lit_comp("R8"),
@@ -64,5 +64,5 @@ sizeof(R_PassParams_Blur),
 sizeof(R_PassParams_Geo3D),
 };
 
-C_LINKAGE_END
+
 
