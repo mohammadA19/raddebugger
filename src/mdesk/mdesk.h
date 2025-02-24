@@ -35,8 +35,7 @@ struct MD_MsgList
 ////////////////////////////////
 //~ rjf: Token Types
 
-typedef U32 MD_TokenFlags;
-enum
+enum MD_TokenFlags : U32
 {
   // rjf: base kind info
   MD_TokenFlag_Identifier          = (1<<0),
@@ -60,8 +59,7 @@ enum
   MD_TokenFlag_BadCharacter        = (1<<14),
 };
 
-typedef U32 MD_TokenGroups;
-enum
+enum MD_TokenGroups : U32
 {
   MD_TokenGroup_Comment    = MD_TokenFlag_Comment,
   MD_TokenGroup_Whitespace = (MD_TokenFlag_Whitespace|
@@ -121,8 +119,7 @@ typedef enum MD_NodeKind
   MD_NodeKind_COUNT
 };
 
-typedef U32 MD_NodeFlags;
-enum
+enum MD_NodeFlags : U32
 {
   MD_NodeFlag_MaskSetDelimiters          = (0x3F<<0),
   MD_NodeFlag_HasParenLeft               = (1<<0),

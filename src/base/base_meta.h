@@ -90,8 +90,7 @@ typedef enum TypeKind
   TypeKind_COUNT
 };
 
-typedef U32 TypeFlags;
-enum
+enum TypeFlags : U32
 {
   TypeFlag_IsExternal  = (1<<0),
   TypeFlag_IsPlainText = (1<<1),
@@ -99,8 +98,7 @@ enum
   TypeFlag_IsPathText  = (1<<3),
 };
 
-typedef U32 MemberFlags;
-enum
+enum MemberFlags : U32
 {
   MemberFlag_DoNotSerialize  = (1<<0),
 };

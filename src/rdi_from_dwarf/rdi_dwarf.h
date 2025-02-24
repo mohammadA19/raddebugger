@@ -135,8 +135,7 @@ X(rnglistsptr,   12)\
 X(string,        13)\
 X(stroffsetsptr, 14)
 
-typedef U32 DWARF_AttributeClassFlags;
-enum{
+enum DWARF_AttributeClassFlags : U32{
 #define X(N,C) DWARF_AttributeClassFlag_##N = (1 << C),
   DWARF_AttributeClassXList(X)
 #undef X
@@ -1272,8 +1271,7 @@ if (success__)                             \
 // * applies to (any X: unwind(ELF/DW, X))
 
 // EH: Exception Frames
-typedef U8 UNW_DW_EhPtrEnc;
-enum{
+enum UNW_DW_EhPtrEnc : U8{
   UNW_DW_EhPtrEnc_TYPE_MASK = 0x0F,
   UNW_DW_EhPtrEnc_PTR     = 0x00, // Pointer sized unsigned value
   UNW_DW_EhPtrEnc_ULEB128 = 0x01, // Unsigned LE base-128 value
@@ -1401,8 +1399,7 @@ typedef struct UNW_DW_CFIMachine{
   U64 fde_ip;
 } UNW_DW_CFIMachine;
 
-typedef U8 UNW_DW_CFADecode;
-enum{
+enum UNW_DW_CFADecode : U8{
   UNW_DW_CFADecode_NOP     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
   UNW_DW_CFADecode_ADDRESS = 0x9,
@@ -1410,8 +1407,7 @@ enum{
   UNW_DW_CFADecode_SLEB128 = 0xB,
 };
 
-typedef U16 UNW_DW_CFAControlBits;
-enum{
+enum UNW_DW_CFAControlBits : U16{
   UNW_DW_CFAControlBits_DEC1_MASK = 0x00F,
   UNW_DW_CFAControlBits_DEC2_MASK = 0x0F0,
   UNW_DW_CFAControlBits_IS_REG_0  = 0x100,

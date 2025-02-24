@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Scroll List Types
 
-typedef U32 UI_ScrollListFlags;
-enum
+enum UI_ScrollListFlags : U32
 {
   UI_ScrollListFlag_Nav  = (1<<0),
   UI_ScrollListFlag_Snap = (1<<1),

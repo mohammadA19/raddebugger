@@ -676,8 +676,7 @@ typedef U64 DenseTime;
 ////////////////////////////////
 //~ allen: Files
 
-typedef U32 FilePropertyFlags;
-enum
+enum FilePropertyFlags : U32
 {
   FilePropertyFlag_IsFolder = (1 << 0),
 };

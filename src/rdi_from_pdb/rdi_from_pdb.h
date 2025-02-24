@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Export Artifact Flags
 
-typedef U32 P2R_ConvertFlags;
-enum
+enum P2R_ConvertFlags : U32
 {
   P2R_ConvertFlag_Strings                 = (1<<0),
   P2R_ConvertFlag_IndexRuns               = (1<<1),

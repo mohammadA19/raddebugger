@@ -29,8 +29,7 @@ struct RD_HandleList
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef U64 RD_EvalSpaceKind;
-enum
+enum RD_EvalSpaceKind : U64
 {
   RD_EvalSpaceKind_CtrlEntity = E_SpaceKind_FirstUserDefined,
   RD_EvalSpaceKind_MetaEntity,
@@ -41,8 +40,7 @@ enum
 ////////////////////////////////
 //~ rjf: Entity Kind Flags
 
-typedef U32 RD_EntityKindFlags;
-enum
+enum RD_EntityKindFlags : U32
 {
   //- rjf: allowed operations
   RD_EntityKindFlag_CanDelete                = (1<<0),
@@ -67,8 +65,7 @@ enum
 ////////////////////////////////
 //~ rjf: Entity Flags
 
-typedef U32 RD_EntityFlags;
-enum
+enum RD_EntityFlags : U32
 {
   //- rjf: allocationless, simple equipment
   RD_EntityFlag_HasTextPoint      = (1<<0),
@@ -138,8 +135,7 @@ struct RD_SettingVal
 ////////////////////////////////
 //~ rjf: View Rule Info Types
 
-typedef U32 RD_ViewRuleInfoFlags;
-enum
+enum RD_ViewRuleInfoFlags : U32
 {
   RD_ViewRuleInfoFlag_ShowInDocs                 = (1<<0),
   RD_ViewRuleInfoFlag_CanFilter                  = (1<<1),
@@ -297,8 +293,7 @@ typedef enum RD_DragDropState
 ////////////////////////////////
 //~ rjf: Command Kind Types
 
-typedef U32 RD_QueryFlags;
-enum
+enum RD_QueryFlags : U32
 {
   RD_QueryFlag_AllowFiles       = (1<<0),
   RD_QueryFlag_AllowFolders     = (1<<1),
@@ -308,8 +303,7 @@ enum
   RD_QueryFlag_Required         = (1<<5),
 };
 
-typedef U32 RD_CmdKindFlags;
-enum
+enum RD_CmdKindFlags : U32
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
@@ -517,8 +511,7 @@ typedef enum RD_PaletteCode
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister Types
 
-typedef U32 RD_AutoCompListerFlags;
-enum
+enum RD_AutoCompListerFlags : U32
 {
   RD_AutoCompListerFlag_Locals        = (1<<0),
   RD_AutoCompListerFlag_Registers     = (1<<1),

@@ -12,8 +12,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U32 ArenaFlags;
-enum
+enum ArenaFlags : U32
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),

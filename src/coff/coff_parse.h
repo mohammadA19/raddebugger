@@ -56,8 +56,7 @@ typedef struct COFF_ParsedSymbol
   U8                   aux_symbol_count;
 } COFF_ParsedSymbol;
 
-typedef U32 COFF_SymbolValueInterpType;
-enum
+enum COFF_SymbolValueInterpType : U32
 {
   COFF_SymbolValueInterp_Regular,   // symbol has section and offset.
   COFF_SymbolValueInterp_Weak,      // symbol is overridable.
@@ -96,8 +95,7 @@ typedef struct COFF_RelocInfo
 
 ////////////////////////////////
 
-typedef U32 COFF_ResourceIDType;
-enum  COFF_ResourceIDTypeEnum
+enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
 {
   COFF_ResourceIDType_Null,
   COFF_ResourceIDType_Number,

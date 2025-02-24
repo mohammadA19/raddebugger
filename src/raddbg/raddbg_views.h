@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Code View Types
 
-typedef U32 RD_CodeViewBuildFlags;
-enum
+enum RD_CodeViewBuildFlags : U32
 {
   RD_CodeViewBuildFlag_Margins = (1<<0),
   RD_CodeViewBuildFlag_All     = 0xffffffff,
@@ -39,8 +38,7 @@ struct RD_CodeViewBuildResult
 ////////////////////////////////
 //~ rjf: Watch View Types
 
-typedef U32 RD_WatchViewFlags;
-enum
+enum RD_WatchViewFlags : U32
 {
   RD_WatchViewFlag_NoHeader                   = (1<<0),
   RD_WatchViewFlag_PrettyNameMembers          = (1<<1),

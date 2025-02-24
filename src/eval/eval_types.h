@@ -58,8 +58,7 @@ typedef enum E_MemberKind
   E_MemberKind_COUNT
 };
 
-typedef U32 E_TypeFlags;
-enum
+enum E_TypeFlags : U32
 {
   E_TypeFlag_Const      = (1<<0),
   E_TypeFlag_Volatile   = (1<<1),
