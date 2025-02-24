@@ -2821,7 +2821,6 @@ enum CV_TypeIndexSource
   CV_TypeIndexSource_IPI,
   CV_TypeIndexSource_COUNT
 };
-typedef enum CV_TypeIndexSource CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
 {
