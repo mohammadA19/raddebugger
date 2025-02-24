@@ -37,7 +37,6 @@ struct E_MsgList
 ////////////////////////////////
 //~ rjf: Register-Sized Value Type
 
-typedef union E_Value E_Value;
 union E_Value
 {
   U64 u512[8];

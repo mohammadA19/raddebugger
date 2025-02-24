@@ -281,7 +281,6 @@ struct UI_ScrollPt
   F32 off;
 };
 
-typedef union UI_ScrollPt2 UI_ScrollPt2;
 union UI_ScrollPt2
 {
   UI_ScrollPt v[2];
