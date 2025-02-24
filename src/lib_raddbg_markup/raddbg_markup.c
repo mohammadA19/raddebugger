@@ -48,7 +48,6 @@ extern "C"
 
 //- helpers
 
-typedef struct RADDBG_MARKUP_UnicodeDecode RADDBG_MARKUP_UnicodeDecode;
 struct RADDBG_MARKUP_UnicodeDecode
 {
   unsigned __int32 inc;

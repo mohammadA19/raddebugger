@@ -94,7 +94,6 @@ typedef enum DMN_W32_EntityKind
 }
 DMN_W32_EntityKind;
 
-typedef struct DMN_W32_Entity DMN_W32_Entity;
 struct DMN_W32_Entity
 {
   DMN_W32_Entity *first;
@@ -133,14 +132,12 @@ struct DMN_W32_Entity
   };
 };
 
-typedef struct DMN_W32_EntityNode DMN_W32_EntityNode;
 struct DMN_W32_EntityNode
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
 };
 
-typedef struct DMN_W32_EntityIDHashNode DMN_W32_EntityIDHashNode;
 struct DMN_W32_EntityIDHashNode
 {
   DMN_W32_EntityIDHashNode *next;
@@ -149,7 +146,6 @@ struct DMN_W32_EntityIDHashNode
   DMN_W32_Entity *entity;
 };
 
-typedef struct DMN_W32_EntityIDHashSlot DMN_W32_EntityIDHashSlot;
 struct DMN_W32_EntityIDHashSlot
 {
   DMN_W32_EntityIDHashNode *first;
@@ -159,7 +155,6 @@ struct DMN_W32_EntityIDHashSlot
 ////////////////////////////////
 //~ rjf: Injection Types
 
-typedef struct DMN_W32_InjectedBreak DMN_W32_InjectedBreak;
 struct DMN_W32_InjectedBreak
 {
   U64 code;
@@ -171,7 +166,6 @@ struct DMN_W32_InjectedBreak
 ////////////////////////////////
 //~ rjf: Image Info Types
 
-typedef struct DMN_W32_ImageInfo DMN_W32_ImageInfo;
 struct DMN_W32_ImageInfo
 {
   Arch arch;
@@ -186,7 +180,6 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct DMN_W32_Shared DMN_W32_Shared;
 struct DMN_W32_Shared
 {
   // rjf: top-level info

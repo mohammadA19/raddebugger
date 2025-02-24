@@ -12,14 +12,12 @@
 ////////////////////////////////
 //~ rjf: Token Types
 
-typedef struct E_Token E_Token;
 struct E_Token
 {
   E_TokenKind kind;
   Rng1U64 range;
 };
 
-typedef struct E_TokenChunkNode E_TokenChunkNode;
 struct E_TokenChunkNode
 {
   E_TokenChunkNode *next;
@@ -28,7 +26,6 @@ struct E_TokenChunkNode
   U64 cap;
 };
 
-typedef struct E_TokenChunkList E_TokenChunkList;
 struct E_TokenChunkList
 {
   E_TokenChunkNode *first;
@@ -37,7 +34,6 @@ struct E_TokenChunkList
   U64 total_count;
 };
 
-typedef struct E_TokenArray E_TokenArray;
 struct E_TokenArray
 {
   E_Token *v;
@@ -47,7 +43,6 @@ struct E_TokenArray
 ////////////////////////////////
 //~ rjf: Expression Tree Types
 
-typedef struct E_Expr E_Expr;
 struct E_Expr
 {
   E_Expr *first;
@@ -70,7 +65,6 @@ struct E_Expr
 
 //- rjf: string -> num
 
-typedef struct E_String2NumMapNode E_String2NumMapNode;
 struct E_String2NumMapNode
 {
   E_String2NumMapNode *order_next;
@@ -79,21 +73,18 @@ struct E_String2NumMapNode
   U64 num;
 };
 
-typedef struct E_String2NumMapNodeArray E_String2NumMapNodeArray;
 struct E_String2NumMapNodeArray
 {
   E_String2NumMapNode **v;
   U64 count;
 };
 
-typedef struct E_String2NumMapSlot E_String2NumMapSlot;
 struct E_String2NumMapSlot
 {
   E_String2NumMapNode *first;
   E_String2NumMapNode *last;
 };
 
-typedef struct E_String2NumMap E_String2NumMap;
 struct E_String2NumMap
 {
   U64 slots_count;
@@ -105,7 +96,6 @@ struct E_String2NumMap
 
 //- rjf: string -> expr
 
-typedef struct E_String2ExprMapNode E_String2ExprMapNode;
 struct E_String2ExprMapNode
 {
   E_String2ExprMapNode *hash_next;
@@ -114,14 +104,12 @@ struct E_String2ExprMapNode
   U64 poison_count;
 };
 
-typedef struct E_String2ExprMapSlot E_String2ExprMapSlot;
 struct E_String2ExprMapSlot
 {
   E_String2ExprMapNode *first;
   E_String2ExprMapNode *last;
 };
 
-typedef struct E_String2ExprMap E_String2ExprMap;
 struct E_String2ExprMap
 {
   U64 slots_count;
@@ -131,7 +119,6 @@ struct E_String2ExprMap
 ////////////////////////////////
 //~ rjf: Parse Context
 
-typedef struct E_ParseCtx E_ParseCtx;
 struct E_ParseCtx
 {
   // rjf: instruction pointer info
@@ -154,7 +141,6 @@ struct E_ParseCtx
 ////////////////////////////////
 //~ rjf: Parse Results
 
-typedef struct E_Parse E_Parse;
 struct E_Parse
 {
   E_Token *last_token;

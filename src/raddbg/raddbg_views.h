@@ -14,7 +14,6 @@ enum
   RD_CodeViewBuildFlag_All     = 0xffffffff,
 };
 
-typedef struct RD_CodeViewState RD_CodeViewState;
 struct RD_CodeViewState
 {
   // rjf: stable state
@@ -32,7 +31,6 @@ struct RD_CodeViewState
   String8 find_text_bwd;
 };
 
-typedef struct RD_CodeViewBuildResult RD_CodeViewBuildResult;
 struct RD_CodeViewBuildResult
 {
   DI_KeyList dbgi_keys;
@@ -64,7 +62,6 @@ typedef enum RD_WatchViewColumnKind
 }
 RD_WatchViewColumnKind;
 
-typedef struct RD_WatchViewColumnParams RD_WatchViewColumnParams;
 struct RD_WatchViewColumnParams
 {
   String8 string;
@@ -75,7 +72,6 @@ struct RD_WatchViewColumnParams
   B32 rangify_braces;
 };
 
-typedef struct RD_WatchViewColumn RD_WatchViewColumn;
 struct RD_WatchViewColumn
 {
   RD_WatchViewColumn *next;
@@ -93,7 +89,6 @@ struct RD_WatchViewColumn
   B32 rangify_braces;
 };
 
-typedef struct RD_WatchViewRowCtrl RD_WatchViewRowCtrl;
 struct RD_WatchViewRowCtrl
 {
   RD_EntityKind entity_kind;
@@ -110,7 +105,6 @@ typedef enum RD_WatchViewRowKind
 }
 RD_WatchViewRowKind;
 
-typedef struct RD_WatchViewPoint RD_WatchViewPoint;
 struct RD_WatchViewPoint
 {
   S64 x;
@@ -118,7 +112,6 @@ struct RD_WatchViewPoint
   EV_Key key;
 };
 
-typedef struct RD_WatchViewRowInfo RD_WatchViewRowInfo;
 struct RD_WatchViewRowInfo
 {
   RD_EntityKind collection_entity_kind;
@@ -130,7 +123,6 @@ struct RD_WatchViewRowInfo
   U64 callstack_inline_depth;
 };
 
-typedef struct RD_WatchViewTextEditState RD_WatchViewTextEditState;
 struct RD_WatchViewTextEditState
 {
   RD_WatchViewTextEditState *pt_hash_next;
@@ -143,7 +135,6 @@ struct RD_WatchViewTextEditState
   U64 initial_size;
 };
 
-typedef struct RD_WatchViewState RD_WatchViewState;
 struct RD_WatchViewState
 {
   B32 initialized;

@@ -7,13 +7,11 @@
 ////////////////////////////////
 //~ rjf: Handles
 
-typedef struct RD_Handle RD_Handle;
 struct RD_Handle
 {
   U64 u64[2];
 };
 
-typedef struct RD_HandleNode RD_HandleNode;
 struct RD_HandleNode
 {
   RD_HandleNode *next;
@@ -21,7 +19,6 @@ struct RD_HandleNode
   RD_Handle handle;
 };
 
-typedef struct RD_HandleList RD_HandleList;
 struct RD_HandleList
 {
   RD_HandleNode *first;
@@ -87,21 +84,18 @@ enum
 ////////////////////////////////
 //~ rjf: Binding Types
 
-typedef struct RD_Binding RD_Binding;
 struct RD_Binding
 {
   OS_Key key;
   OS_Modifiers modifiers;
 };
 
-typedef struct RD_BindingNode RD_BindingNode;
 struct RD_BindingNode
 {
   RD_BindingNode *next;
   RD_Binding binding;
 };
 
-typedef struct RD_BindingList RD_BindingList;
 struct RD_BindingList
 {
   RD_BindingNode *first;
@@ -109,7 +103,6 @@ struct RD_BindingList
   U64 count;
 };
 
-typedef struct RD_StringBindingPair RD_StringBindingPair;
 struct RD_StringBindingPair
 {
   String8 string;
@@ -119,7 +112,6 @@ struct RD_StringBindingPair
 ////////////////////////////////
 //~ rjf: Key Map Types
 
-typedef struct RD_KeyMapNode RD_KeyMapNode;
 struct RD_KeyMapNode
 {
   RD_KeyMapNode *hash_next;
@@ -128,7 +120,6 @@ struct RD_KeyMapNode
   RD_Binding binding;
 };
 
-typedef struct RD_KeyMapSlot RD_KeyMapSlot;
 struct RD_KeyMapSlot
 {
   RD_KeyMapNode *first;
@@ -138,7 +129,6 @@ struct RD_KeyMapSlot
 ////////////////////////////////
 //~ rjf: Setting Types
 
-typedef struct RD_SettingVal RD_SettingVal;
 struct RD_SettingVal
 {
   B32 set;
@@ -169,16 +159,13 @@ typedef RD_VIEW_RULE_UI_FUNCTION_SIG(RD_ViewRuleUIFunctionType);
 ////////////////////////////////
 //~ rjf: View Types
 
-typedef struct RD_View RD_View;
 
-typedef struct RD_ArenaExt RD_ArenaExt;
 struct RD_ArenaExt
 {
   RD_ArenaExt *next;
   Arena *arena;
 };
 
-typedef struct RD_TransientViewNode RD_TransientViewNode;
 struct RD_TransientViewNode
 {
   RD_TransientViewNode *next;
@@ -191,14 +178,12 @@ struct RD_TransientViewNode
   U64 last_frame_index_touched;
 };
 
-typedef struct RD_TransientViewSlot RD_TransientViewSlot;
 struct RD_TransientViewSlot
 {
   RD_TransientViewNode *first;
   RD_TransientViewNode *last;
 };
 
-typedef struct RD_View RD_View;
 struct RD_View
 {
   // rjf: allocation links (for iterating all views)
@@ -261,7 +246,6 @@ struct RD_View
 ////////////////////////////////
 //~ rjf: Panel Types
 
-typedef struct RD_Panel RD_Panel;
 struct RD_Panel
 {
   // rjf: tree links/data
@@ -292,7 +276,6 @@ struct RD_Panel
   RD_Handle selected_tab_view;
 };
 
-typedef struct RD_PanelRec RD_PanelRec;
 struct RD_PanelRec
 {
   RD_Panel *next;
@@ -341,7 +324,6 @@ enum
 ////////////////////////////////
 //~ rjf: Config Types
 
-typedef struct RD_CfgTree RD_CfgTree;
 struct RD_CfgTree
 {
   RD_CfgTree *next;
@@ -349,7 +331,6 @@ struct RD_CfgTree
   MD_Node *root;
 };
 
-typedef struct RD_CfgVal RD_CfgVal;
 struct RD_CfgVal
 {
   RD_CfgVal *hash_next;
@@ -360,13 +341,11 @@ struct RD_CfgVal
   String8 string;
 };
 
-typedef struct RD_CfgSlot RD_CfgSlot;
 struct RD_CfgSlot
 {
   RD_CfgVal *first;
 };
 
-typedef struct RD_CfgTable RD_CfgTable;
 struct RD_CfgTable
 {
   U64 slot_count;
@@ -379,7 +358,6 @@ struct RD_CfgTable
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure
 
-typedef struct RD_Cfg RD_Cfg;
 struct RD_Cfg
 {
   RD_Cfg *first;
@@ -391,14 +369,12 @@ struct RD_Cfg
   String8 string;
 };
 
-typedef struct RD_CfgNode RD_CfgNode;
 struct RD_CfgNode
 {
   RD_CfgNode *next;
   RD_Cfg *v;
 };
 
-typedef struct RD_CfgList RD_CfgList;
 struct RD_CfgList
 {
   RD_CfgNode *first;
@@ -406,7 +382,6 @@ struct RD_CfgList
   U64 count;
 };
 
-typedef struct RD_CfgRec RD_CfgRec;
 struct RD_CfgRec
 {
   RD_Cfg *next;
@@ -419,7 +394,6 @@ struct RD_CfgRec
 
 typedef U64 RD_EntityID;
 
-typedef struct RD_Entity RD_Entity;
 struct RD_Entity
 {
   // rjf: tree links
@@ -450,14 +424,12 @@ struct RD_Entity
   String8 string;
 };
 
-typedef struct RD_EntityNode RD_EntityNode;
 struct RD_EntityNode
 {
   RD_EntityNode *next;
   RD_Entity *entity;
 };
 
-typedef struct RD_EntityList RD_EntityList;
 struct RD_EntityList
 {
   RD_EntityNode *first;
@@ -465,14 +437,12 @@ struct RD_EntityList
   U64 count;
 };
 
-typedef struct RD_EntityArray RD_EntityArray;
 struct RD_EntityArray
 {
   RD_Entity **v;
   U64 count;
 };
 
-typedef struct RD_EntityRec RD_EntityRec;
 struct RD_EntityRec
 {
   RD_Entity *next;
@@ -483,14 +453,12 @@ struct RD_EntityRec
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct RD_Cmd RD_Cmd;
 struct RD_Cmd
 {
   String8 name;
   RD_Regs *regs;
 };
 
-typedef struct RD_CmdNode RD_CmdNode;
 struct RD_CmdNode
 {
   RD_CmdNode *next;
@@ -498,7 +466,6 @@ struct RD_CmdNode
   RD_Cmd cmd;
 };
 
-typedef struct RD_CmdList RD_CmdList;
 struct RD_CmdList
 {
   RD_CmdNode *first;
@@ -509,7 +476,6 @@ struct RD_CmdList
 ////////////////////////////////
 //~ rjf: Context Register Types
 
-typedef struct RD_RegsNode RD_RegsNode;
 struct RD_RegsNode
 {
   RD_RegsNode *next;
@@ -519,7 +485,6 @@ struct RD_RegsNode
 ////////////////////////////////
 //~ rjf: Theme Types
 
-typedef struct RD_Theme RD_Theme;
 struct RD_Theme
 {
   Vec4F32 colors[RD_ThemeColor_COUNT];
@@ -573,7 +538,6 @@ enum
   RD_AutoCompListerFlag_Files         = (1<<12),
 };
 
-typedef struct RD_AutoCompListerItem RD_AutoCompListerItem;
 struct RD_AutoCompListerItem
 {
   String8 string;
@@ -583,7 +547,6 @@ struct RD_AutoCompListerItem
   B32 is_non_code;
 };
 
-typedef struct RD_AutoCompListerItemChunkNode RD_AutoCompListerItemChunkNode;
 struct RD_AutoCompListerItemChunkNode
 {
   RD_AutoCompListerItemChunkNode *next;
@@ -592,7 +555,6 @@ struct RD_AutoCompListerItemChunkNode
   U64 cap;
 };
 
-typedef struct RD_AutoCompListerItemChunkList RD_AutoCompListerItemChunkList;
 struct RD_AutoCompListerItemChunkList
 {
   RD_AutoCompListerItemChunkNode *first;
@@ -601,14 +563,12 @@ struct RD_AutoCompListerItemChunkList
   U64 total_count;
 };
 
-typedef struct RD_AutoCompListerItemArray RD_AutoCompListerItemArray;
 struct RD_AutoCompListerItemArray
 {
   RD_AutoCompListerItem *v;
   U64 count;
 };
 
-typedef struct RD_AutoCompListerParams RD_AutoCompListerParams;
 struct RD_AutoCompListerParams
 {
   RD_AutoCompListerFlags flags;
@@ -618,7 +578,6 @@ struct RD_AutoCompListerParams
 ////////////////////////////////
 //~ rjf: Per-Window State
 
-typedef struct RD_Window RD_Window;
 struct RD_Window
 {
   // rjf: links & metadata
@@ -723,7 +682,6 @@ struct RD_Window
 ////////////////////////////////
 //~ rjf: Eval Visualization View Cache Types
 
-typedef struct RD_EvalVizViewCacheNode RD_EvalVizViewCacheNode;
 struct RD_EvalVizViewCacheNode
 {
   RD_EvalVizViewCacheNode *next;
@@ -732,7 +690,6 @@ struct RD_EvalVizViewCacheNode
   EV_View *v;
 };
 
-typedef struct RD_EvalVizViewCacheSlot RD_EvalVizViewCacheSlot;
 struct RD_EvalVizViewCacheSlot
 {
   RD_EvalVizViewCacheNode *first;
@@ -742,7 +699,6 @@ struct RD_EvalVizViewCacheSlot
 ////////////////////////////////
 //~ rjf: Meta Evaluation Cache Types
 
-typedef struct RD_CtrlEntityMetaEvalCacheNode RD_CtrlEntityMetaEvalCacheNode;
 struct RD_CtrlEntityMetaEvalCacheNode
 {
   RD_CtrlEntityMetaEvalCacheNode *next;
@@ -751,7 +707,6 @@ struct RD_CtrlEntityMetaEvalCacheNode
   Rng1U64 range;
 };
 
-typedef struct RD_CtrlEntityMetaEvalCacheSlot RD_CtrlEntityMetaEvalCacheSlot;
 struct RD_CtrlEntityMetaEvalCacheSlot
 {
   RD_CtrlEntityMetaEvalCacheNode *first;
@@ -761,14 +716,12 @@ struct RD_CtrlEntityMetaEvalCacheSlot
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
 
-typedef struct RD_NameChunkNode RD_NameChunkNode;
 struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
   U64 size;
 };
 
-typedef struct RD_EntityListCache RD_EntityListCache;
 struct RD_EntityListCache
 {
   Arena *arena;
@@ -776,7 +729,6 @@ struct RD_EntityListCache
   RD_EntityList list;
 };
 
-typedef struct RD_AmbiguousPathNode RD_AmbiguousPathNode;
 struct RD_AmbiguousPathNode
 {
   RD_AmbiguousPathNode *next;
@@ -784,7 +736,6 @@ struct RD_AmbiguousPathNode
   String8List paths;
 };
 
-typedef struct RD_State RD_State;
 struct RD_State
 {
   // rjf: basics

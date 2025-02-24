@@ -3592,7 +3592,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
 ////////////////////////////////
 //~ rjf: commands @view_hook_impl
 
-typedef struct RD_CmdListerItem RD_CmdListerItem;
 struct RD_CmdListerItem
 {
   String8 cmd_name;
@@ -3603,14 +3602,12 @@ struct RD_CmdListerItem
   FuzzyMatchRangeList tags_match_ranges;
 };
 
-typedef struct RD_CmdListerItemNode RD_CmdListerItemNode;
 struct RD_CmdListerItemNode
 {
   RD_CmdListerItemNode *next;
   RD_CmdListerItem item;
 };
 
-typedef struct RD_CmdListerItemList RD_CmdListerItemList;
 struct RD_CmdListerItemList
 {
   RD_CmdListerItemNode *first;
@@ -3618,7 +3615,6 @@ struct RD_CmdListerItemList
   U64 count;
 };
 
-typedef struct RD_CmdListerItemArray RD_CmdListerItemArray;
 struct RD_CmdListerItemArray
 {
   RD_CmdListerItem *v;
@@ -3898,7 +3894,6 @@ typedef enum RD_FileSortKind
 }
 RD_FileSortKind;
 
-typedef struct RD_FileInfo RD_FileInfo;
 struct RD_FileInfo
 {
   String8 filename;
@@ -3906,14 +3901,12 @@ struct RD_FileInfo
   FuzzyMatchRangeList match_ranges;
 };
 
-typedef struct RD_FileInfoNode RD_FileInfoNode;
 struct RD_FileInfoNode
 {
   RD_FileInfoNode *next;
   RD_FileInfo file_info;
 };
 
-typedef struct RD_FileSystemViewPathState RD_FileSystemViewPathState;
 struct RD_FileSystemViewPathState
 {
   RD_FileSystemViewPathState *hash_next;
@@ -3921,7 +3914,6 @@ struct RD_FileSystemViewPathState
   Vec2S64 cursor;
 };
 
-typedef struct RD_FileSystemViewState RD_FileSystemViewState;
 struct RD_FileSystemViewState
 {
   B32 initialized;
@@ -3938,7 +3930,6 @@ struct RD_FileSystemViewState
   F32 col_pcts[3];
 };
 
-typedef struct RD_PathQuery RD_PathQuery;
 struct RD_PathQuery
 {
   String8 prefix;
@@ -4474,7 +4465,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
 ////////////////////////////////
 //~ rjf: system_processes  @view_hook_impl
 
-typedef struct RD_ProcessInfo RD_ProcessInfo;
 struct RD_ProcessInfo
 {
   DMN_ProcessInfo info;
@@ -4484,14 +4474,12 @@ struct RD_ProcessInfo
   FuzzyMatchRangeList pid_match_ranges;
 };
 
-typedef struct RD_ProcessInfoNode RD_ProcessInfoNode;
 struct RD_ProcessInfoNode
 {
   RD_ProcessInfoNode *next;
   RD_ProcessInfo info;
 };
 
-typedef struct RD_ProcessInfoList RD_ProcessInfoList;
 struct RD_ProcessInfoList
 {
   RD_ProcessInfoNode *first;
@@ -4499,7 +4487,6 @@ struct RD_ProcessInfoList
   U64 count;
 };
 
-typedef struct RD_ProcessInfoArray RD_ProcessInfoArray;
 struct RD_ProcessInfoArray
 {
   RD_ProcessInfo *v;
@@ -4794,21 +4781,18 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
 ////////////////////////////////
 //~ rjf: entity_lister @view_hook_impl
 
-typedef struct RD_EntityListerItem RD_EntityListerItem;
 struct RD_EntityListerItem
 {
   RD_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
 };
 
-typedef struct RD_EntityListerItemNode RD_EntityListerItemNode;
 struct RD_EntityListerItemNode
 {
   RD_EntityListerItemNode *next;
   RD_EntityListerItem item;
 };
 
-typedef struct RD_EntityListerItemList RD_EntityListerItemList;
 struct RD_EntityListerItemList
 {
   RD_EntityListerItemNode *first;
@@ -4816,7 +4800,6 @@ struct RD_EntityListerItemList
   U64 count;
 };
 
-typedef struct RD_EntityListerItemArray RD_EntityListerItemArray;
 struct RD_EntityListerItemArray
 {
   RD_EntityListerItem *v;
@@ -5001,21 +4984,18 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
 ////////////////////////////////
 //~ rjf: ctrl_entity_lister @view_hook_impl
 
-typedef struct RD_CtrlEntityListerItem RD_CtrlEntityListerItem;
 struct RD_CtrlEntityListerItem
 {
   CTRL_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
 };
 
-typedef struct RD_CtrlEntityListerItemNode RD_CtrlEntityListerItemNode;
 struct RD_CtrlEntityListerItemNode
 {
   RD_CtrlEntityListerItemNode *next;
   RD_CtrlEntityListerItem item;
 };
 
-typedef struct RD_CtrlEntityListerItemList RD_CtrlEntityListerItemList;
 struct RD_CtrlEntityListerItemList
 {
   RD_CtrlEntityListerItemNode *first;
@@ -5023,7 +5003,6 @@ struct RD_CtrlEntityListerItemList
   U64 count;
 };
 
-typedef struct RD_CtrlEntityListerItemArray RD_CtrlEntityListerItemArray;
 struct RD_CtrlEntityListerItemArray
 {
   RD_CtrlEntityListerItem *v;
@@ -5668,7 +5647,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
 ////////////////////////////////
 //~ rjf: pending_file @view_hook_impl
 
-typedef struct RD_PendingFileViewState RD_PendingFileViewState;
 struct RD_PendingFileViewState
 {
   Arena *deferred_cmd_arena;
@@ -6031,7 +6009,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
 ////////////////////////////////
 //~ rjf: disasm @view_hook_impl
 
-typedef struct RD_DisasmViewState RD_DisasmViewState;
 struct RD_DisasmViewState
 {
   B32 initialized;
@@ -6263,7 +6240,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
 ////////////////////////////////
 //~ rjf: output @view_hook_impl
 
-typedef struct RD_OutputViewState RD_OutputViewState;
 struct RD_OutputViewState
 {
   U128 last_hash;
@@ -6364,7 +6340,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
 ////////////////////////////////
 //~ rjf: memory @view_hook_impl
 
-typedef struct RD_MemoryViewState RD_MemoryViewState;
 struct RD_MemoryViewState
 {
   B32 center_cursor;
@@ -7217,7 +7192,6 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(graph)
 ////////////////////////////////
 //~ rjf: bitmap @view_hook_impl
 
-typedef struct RD_BitmapBoxDrawData RD_BitmapBoxDrawData;
 struct RD_BitmapBoxDrawData
 {
   Rng2F32 src;
@@ -7228,7 +7202,6 @@ struct RD_BitmapBoxDrawData
   F32 ui_per_bmp_px;
 };
 
-typedef struct RD_BitmapCanvasBoxDrawData RD_BitmapCanvasBoxDrawData;
 struct RD_BitmapCanvasBoxDrawData
 {
   Vec2F32 view_center_pos;
@@ -7660,7 +7633,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
 ////////////////////////////////
 //~ rjf: geo3d @view_hook_impl
 
-typedef struct RD_Geo3DViewState RD_Geo3DViewState;
 struct RD_Geo3DViewState
 {
   F32 yaw;
@@ -7668,7 +7640,6 @@ struct RD_Geo3DViewState
   F32 zoom;
 };
 
-typedef struct RD_Geo3DBoxDrawData RD_Geo3DBoxDrawData;
 struct RD_Geo3DBoxDrawData
 {
   F32 yaw;
@@ -7980,7 +7951,6 @@ typedef enum RD_SettingsItemKind
 }
 RD_SettingsItemKind;
 
-typedef struct RD_SettingsItem RD_SettingsItem;
 struct RD_SettingsItem
 {
   RD_SettingsItemKind kind;
@@ -7995,14 +7965,12 @@ struct RD_SettingsItem
   RD_SettingsItemKind category;
 };
 
-typedef struct RD_SettingsItemNode RD_SettingsItemNode;
 struct RD_SettingsItemNode
 {
   RD_SettingsItemNode *next;
   RD_SettingsItem v;
 };
 
-typedef struct RD_SettingsItemList RD_SettingsItemList;
 struct RD_SettingsItemList
 {
   RD_SettingsItemNode *first;
@@ -8010,7 +7978,6 @@ struct RD_SettingsItemList
   U64 count;
 };
 
-typedef struct RD_SettingsItemArray RD_SettingsItemArray;
 struct RD_SettingsItemArray
 {
   RD_SettingsItem *v;

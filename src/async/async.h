@@ -22,7 +22,6 @@ typedef enum ASYNC_Priority
 }
 ASYNC_Priority;
 
-typedef struct ASYNC_WorkParams ASYNC_WorkParams;
 struct ASYNC_WorkParams
 {
   void *input;
@@ -33,7 +32,6 @@ struct ASYNC_WorkParams
   ASYNC_Priority priority;
 };
 
-typedef struct ASYNC_Work ASYNC_Work;
 struct ASYNC_Work
 {
   ASYNC_WorkFunctionType *work_function;
@@ -46,21 +44,18 @@ struct ASYNC_Work
 ////////////////////////////////
 //~ rjf: Task-Based Work Types
 
-typedef struct ASYNC_Task ASYNC_Task;
 struct ASYNC_Task
 {
   OS_Handle semaphore;
   void *output;
 };
 
-typedef struct ASYNC_TaskNode ASYNC_TaskNode;
 struct ASYNC_TaskNode
 {
   ASYNC_TaskNode *next;
   ASYNC_Task *v;
 };
 
-typedef struct ASYNC_TaskList ASYNC_TaskList;
 struct ASYNC_TaskList
 {
   ASYNC_TaskNode *first;
@@ -71,7 +66,6 @@ struct ASYNC_TaskList
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct ASYNC_Ring ASYNC_Ring;
 struct ASYNC_Ring
 {
   U64 ring_size;
@@ -82,7 +76,6 @@ struct ASYNC_Ring
   OS_Handle ring_cv;
 };
 
-typedef struct ASYNC_Shared ASYNC_Shared;
 struct ASYNC_Shared
 {
   Arena *arena;

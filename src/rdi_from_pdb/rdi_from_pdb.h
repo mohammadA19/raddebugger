@@ -35,7 +35,6 @@ enum
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
 
-typedef struct P2R_User2Convert P2R_User2Convert;
 struct P2R_User2Convert
 {
   String8 input_pdb_name;
@@ -47,19 +46,16 @@ struct P2R_User2Convert
   String8List errors;
 };
 
-typedef struct P2R_Convert2Bake P2R_Convert2Bake;
 struct P2R_Convert2Bake
 {
   RDIM_BakeParams bake_params;
 };
 
-typedef struct P2R_Bake2Serialize P2R_Bake2Serialize;
 struct P2R_Bake2Serialize
 {
   RDIM_BakeResults bake_results;
 };
 
-typedef struct P2R_Serialize2File P2R_Serialize2File;
 struct P2R_Serialize2File
 {
   RDIM_SerializedSectionBundle bundle;
@@ -70,7 +66,6 @@ struct P2R_Serialize2File
 
 //- rjf: tpi hash parsing
 
-typedef struct P2R_TPIHashParseIn P2R_TPIHashParseIn;
 struct P2R_TPIHashParseIn
 {
   PDB_Strtbl *strtbl;
@@ -81,7 +76,6 @@ struct P2R_TPIHashParseIn
 
 //- rjf: tpi leaves parsing
 
-typedef struct P2R_TPILeafParseIn P2R_TPILeafParseIn;
 struct P2R_TPILeafParseIn
 {
   String8 leaf_data;
@@ -90,7 +84,6 @@ struct P2R_TPILeafParseIn
 
 //- rjf: exe hashing
 
-typedef struct P2R_EXEHashIn P2R_EXEHashIn;
 struct P2R_EXEHashIn
 {
   String8 exe_data;
@@ -98,7 +91,6 @@ struct P2R_EXEHashIn
 
 //- rjf: symbol stream parsing
 
-typedef struct P2R_SymbolStreamParseIn P2R_SymbolStreamParseIn;
 struct P2R_SymbolStreamParseIn
 {
   String8 data;
@@ -106,7 +98,6 @@ struct P2R_SymbolStreamParseIn
 
 //- rjf: c13 line info stream parsing
 
-typedef struct P2R_C13StreamParseIn P2R_C13StreamParseIn;
 struct P2R_C13StreamParseIn
 {
   String8 data;
@@ -116,7 +107,6 @@ struct P2R_C13StreamParseIn
 
 //- rjf: comp unit parsing
 
-typedef struct P2R_CompUnitParseIn P2R_CompUnitParseIn;
 struct P2R_CompUnitParseIn
 {
   String8 data;
@@ -124,7 +114,6 @@ struct P2R_CompUnitParseIn
 
 //- rjf: comp unit contribution table parsing
 
-typedef struct P2R_CompUnitContributionsParseIn P2R_CompUnitContributionsParseIn;
 struct P2R_CompUnitContributionsParseIn
 {
   String8 data;
@@ -136,7 +125,6 @@ struct P2R_CompUnitContributionsParseIn
 
 //- rjf: link name map (voff -> string)
 
-typedef struct P2R_LinkNameNode P2R_LinkNameNode;
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
@@ -144,7 +132,6 @@ struct P2R_LinkNameNode
   String8 name;
 };
 
-typedef struct P2R_LinkNameMap P2R_LinkNameMap;
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode **buckets;
@@ -155,14 +142,12 @@ struct P2R_LinkNameMap
 
 //- rjf: normalized file path -> source file map
 
-typedef struct P2R_SrcFileNode P2R_SrcFileNode;
 struct P2R_SrcFileNode
 {
   P2R_SrcFileNode *next;
   RDIM_SrcFile *src_file;
 };
 
-typedef struct P2R_SrcFileMap P2R_SrcFileMap;
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
@@ -171,7 +156,6 @@ struct P2R_SrcFileMap
 
 //- rjf: unit conversion tasks
 
-typedef struct P2R_UnitConvertIn P2R_UnitConvertIn;
 struct P2R_UnitConvertIn
 {
   PDB_Strtbl *pdb_strtbl;
@@ -182,7 +166,6 @@ struct P2R_UnitConvertIn
   CV_C13Parsed **comp_unit_c13s;
 };
 
-typedef struct P2R_UnitConvertOut P2R_UnitConvertOut;
 struct P2R_UnitConvertOut
 {
   RDIM_UnitChunkList units;
@@ -193,7 +176,6 @@ struct P2R_UnitConvertOut
 
 //- rjf: link name map building tasks
 
-typedef struct P2R_LinkNameMapBuildIn P2R_LinkNameMapBuildIn;
 struct P2R_LinkNameMapBuildIn
 {
   CV_SymParsed *sym;
@@ -203,7 +185,6 @@ struct P2R_LinkNameMapBuildIn
 
 //- rjf: type forward resolution map build
 
-typedef struct P2R_ITypeFwdMapFillIn P2R_ITypeFwdMapFillIn;
 struct P2R_ITypeFwdMapFillIn
 {
   PDB_TpiHashParsed *tpi_hash;
@@ -215,14 +196,12 @@ struct P2R_ITypeFwdMapFillIn
 
 //- rjf: itype chain build
 
-typedef struct P2R_TypeIdChain P2R_TypeIdChain;
 struct P2R_TypeIdChain
 {
   P2R_TypeIdChain *next;
   CV_TypeId itype;
 };
 
-typedef struct P2R_ITypeChainBuildIn P2R_ITypeChainBuildIn;
 struct P2R_ITypeChainBuildIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -234,7 +213,6 @@ struct P2R_ITypeChainBuildIn
 
 //- rjf: udt conversion
 
-typedef struct P2R_UDTConvertIn P2R_UDTConvertIn;
 struct P2R_UDTConvertIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -246,7 +224,6 @@ struct P2R_UDTConvertIn
 
 //- rjf: symbol stream conversion
 
-typedef struct P2R_SymbolStreamConvertIn P2R_SymbolStreamConvertIn;
 struct P2R_SymbolStreamConvertIn
 {
   RDI_Arch arch;
@@ -263,7 +240,6 @@ struct P2R_SymbolStreamConvertIn
   RDIM_LineTable *first_inline_site_line_table;
 };
 
-typedef struct P2R_SymbolStreamConvertOut P2R_SymbolStreamConvertOut;
 struct P2R_SymbolStreamConvertOut
 {
   RDIM_SymbolChunkList procedures;
@@ -278,7 +254,6 @@ struct P2R_SymbolStreamConvertOut
 
 //- rjf: line table baking task types
 
-typedef struct P2R_BakeLineTablesIn P2R_BakeLineTablesIn;
 struct P2R_BakeLineTablesIn
 {
   RDIM_LineTableChunkList *line_tables;
@@ -286,7 +261,6 @@ struct P2R_BakeLineTablesIn
 
 //- rjf: string map baking task types
 
-typedef struct P2R_BakeSrcFilesStringsIn P2R_BakeSrcFilesStringsIn;
 struct P2R_BakeSrcFilesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -294,7 +268,6 @@ struct P2R_BakeSrcFilesStringsIn
   RDIM_SrcFileChunkList *list;
 };
 
-typedef struct P2R_BakeUnitsStringsIn P2R_BakeUnitsStringsIn;
 struct P2R_BakeUnitsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -302,7 +275,6 @@ struct P2R_BakeUnitsStringsIn
   RDIM_UnitChunkList *list;
 };
 
-typedef struct P2R_BakeTypesStringsInNode P2R_BakeTypesStringsInNode;
 struct P2R_BakeTypesStringsInNode
 {
   P2R_BakeTypesStringsInNode *next;
@@ -310,7 +282,6 @@ struct P2R_BakeTypesStringsInNode
   RDI_U64 count;
 };
 
-typedef struct P2R_BakeTypesStringsIn P2R_BakeTypesStringsIn;
 struct P2R_BakeTypesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -319,7 +290,6 @@ struct P2R_BakeTypesStringsIn
   P2R_BakeTypesStringsInNode *last;
 };
 
-typedef struct P2R_BakeUDTsStringsInNode P2R_BakeUDTsStringsInNode;
 struct P2R_BakeUDTsStringsInNode
 {
   P2R_BakeUDTsStringsInNode *next;
@@ -327,7 +297,6 @@ struct P2R_BakeUDTsStringsInNode
   RDI_U64 count;
 };
 
-typedef struct P2R_BakeUDTsStringsIn P2R_BakeUDTsStringsIn;
 struct P2R_BakeUDTsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -336,7 +305,6 @@ struct P2R_BakeUDTsStringsIn
   P2R_BakeUDTsStringsInNode *last;
 };
 
-typedef struct P2R_BakeSymbolsStringsInNode P2R_BakeSymbolsStringsInNode;
 struct P2R_BakeSymbolsStringsInNode
 {
   P2R_BakeSymbolsStringsInNode *next;
@@ -344,7 +312,6 @@ struct P2R_BakeSymbolsStringsInNode
   RDI_U64 count;
 };
 
-typedef struct P2R_BakeSymbolsStringsIn P2R_BakeSymbolsStringsIn;
 struct P2R_BakeSymbolsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -353,7 +320,6 @@ struct P2R_BakeSymbolsStringsIn
   P2R_BakeSymbolsStringsInNode *last;
 };
 
-typedef struct P2R_BakeInlineSiteStringsInNode P2R_BakeInlineSiteStringsInNode;
 struct P2R_BakeInlineSiteStringsInNode
 {
   P2R_BakeInlineSiteStringsInNode *next;
@@ -361,7 +327,6 @@ struct P2R_BakeInlineSiteStringsInNode
   RDI_U64 count;
 };
 
-typedef struct P2R_BakeInlineSiteStringsIn P2R_BakeInlineSiteStringsIn;
 struct P2R_BakeInlineSiteStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -370,7 +335,6 @@ struct P2R_BakeInlineSiteStringsIn
   P2R_BakeInlineSiteStringsInNode *last;
 };
 
-typedef struct P2R_BakeScopesStringsInNode P2R_BakeScopesStringsInNode;
 struct P2R_BakeScopesStringsInNode
 {
   P2R_BakeScopesStringsInNode *next;
@@ -378,7 +342,6 @@ struct P2R_BakeScopesStringsInNode
   RDI_U64 count;
 };
 
-typedef struct P2R_BakeScopesStringsIn P2R_BakeScopesStringsIn;
 struct P2R_BakeScopesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -389,7 +352,6 @@ struct P2R_BakeScopesStringsIn
 
 //- rjf: string map joining task types
 
-typedef struct P2R_JoinBakeStringMapSlotsIn P2R_JoinBakeStringMapSlotsIn;
 struct P2R_JoinBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -401,7 +363,6 @@ struct P2R_JoinBakeStringMapSlotsIn
 
 //- rjf: string map sorting task types
 
-typedef struct P2R_SortBakeStringMapSlotsIn P2R_SortBakeStringMapSlotsIn;
 struct P2R_SortBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -413,14 +374,12 @@ struct P2R_SortBakeStringMapSlotsIn
 
 //- rjf: OLD string map baking types
 
-typedef struct P2R_BuildBakeStringMapIn P2R_BuildBakeStringMapIn;
 struct P2R_BuildBakeStringMapIn
 {
   RDIM_BakePathTree *path_tree;
   RDIM_BakeParams *params;
 };
 
-typedef struct P2R_BuildBakeNameMapIn P2R_BuildBakeNameMapIn;
 struct P2R_BuildBakeNameMapIn
 {
   RDI_NameMapKind k;
@@ -429,7 +388,6 @@ struct P2R_BuildBakeNameMapIn
 
 //- rjf: debug info baking task types
 
-typedef struct P2R_BakeUnitsIn P2R_BakeUnitsIn;
 struct P2R_BakeUnitsIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -437,13 +395,11 @@ struct P2R_BakeUnitsIn
   RDIM_UnitChunkList *units;
 };
 
-typedef struct P2R_BakeUnitVMapIn P2R_BakeUnitVMapIn;
 struct P2R_BakeUnitVMapIn
 {
   RDIM_UnitChunkList *units;
 };
 
-typedef struct P2R_BakeSrcFilesIn P2R_BakeSrcFilesIn;
 struct P2R_BakeSrcFilesIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -451,74 +407,63 @@ struct P2R_BakeSrcFilesIn
   RDIM_SrcFileChunkList *src_files;
 };
 
-typedef struct P2R_BakeUDTsIn P2R_BakeUDTsIn;
 struct P2R_BakeUDTsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_UDTChunkList *udts;
 };
 
-typedef struct P2R_BakeGlobalVariablesIn P2R_BakeGlobalVariablesIn;
 struct P2R_BakeGlobalVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *global_variables;
 };
 
-typedef struct P2R_BakeGlobalVMapIn P2R_BakeGlobalVMapIn;
 struct P2R_BakeGlobalVMapIn
 {
   RDIM_SymbolChunkList *global_variables;
 };
 
-typedef struct P2R_BakeThreadVariablesIn P2R_BakeThreadVariablesIn;
 struct P2R_BakeThreadVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *thread_variables;
 };
 
-typedef struct P2R_BakeProceduresIn P2R_BakeProceduresIn;
 struct P2R_BakeProceduresIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *procedures;
 };
 
-typedef struct P2R_BakeScopesIn P2R_BakeScopesIn;
 struct P2R_BakeScopesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_ScopeChunkList *scopes;
 };
 
-typedef struct P2R_BakeScopeVMapIn P2R_BakeScopeVMapIn;
 struct P2R_BakeScopeVMapIn
 {
   RDIM_ScopeChunkList *scopes;
 };
 
-typedef struct P2R_BakeInlineSitesIn P2R_BakeInlineSitesIn;
 struct P2R_BakeInlineSitesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_InlineSiteChunkList *inline_sites;
 };
 
-typedef struct P2R_BakeFilePathsIn P2R_BakeFilePathsIn;
 struct P2R_BakeFilePathsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_BakePathTree *path_tree;
 };
 
-typedef struct P2R_BakeStringsIn P2R_BakeStringsIn;
 struct P2R_BakeStringsIn
 {
   RDIM_BakeStringMapTight *strings;
 };
 
-typedef struct P2R_BakeTypeNodesIn P2R_BakeTypeNodesIn;
 struct P2R_BakeTypeNodesIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -526,7 +471,6 @@ struct P2R_BakeTypeNodesIn
   RDIM_TypeChunkList *types;
 };
 
-typedef struct P2R_BakeNameMapIn P2R_BakeNameMapIn;
 struct P2R_BakeNameMapIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -535,7 +479,6 @@ struct P2R_BakeNameMapIn
   RDI_NameMapKind kind;
 };
 
-typedef struct P2R_BakeIdxRunsIn P2R_BakeIdxRunsIn;
 struct P2R_BakeIdxRunsIn
 {
   RDIM_BakeIdxRunMap *idx_runs;
@@ -544,7 +487,6 @@ struct P2R_BakeIdxRunsIn
 ////////////////////////////////
 //~ rjf: Top-Level State
 
-typedef struct P2R_State P2R_State;
 struct P2R_State
 {
   Arena *arena;

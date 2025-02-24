@@ -13,7 +13,6 @@
 # define thread_var __thread
 #endif
 
-typedef struct OnlyInModule OnlyInModule;
 struct OnlyInModule
 {
   int x;
@@ -22,7 +21,6 @@ struct OnlyInModule
   char *name;
 };
 
-typedef struct Basics Basics;
 struct Basics
 {
   int a;

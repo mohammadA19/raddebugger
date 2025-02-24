@@ -15,14 +15,12 @@ enum
   UI_ScrollListFlag_All  = 0xffffffff,
 };
 
-typedef struct UI_ScrollListRowBlock UI_ScrollListRowBlock;
 struct UI_ScrollListRowBlock
 {
   U64 row_count;
   U64 item_count;
 };
 
-typedef struct UI_ScrollListRowBlockChunkNode UI_ScrollListRowBlockChunkNode;
 struct UI_ScrollListRowBlockChunkNode
 {
   UI_ScrollListRowBlockChunkNode *next;
@@ -31,7 +29,6 @@ struct UI_ScrollListRowBlockChunkNode
   U64 cap;
 };
 
-typedef struct UI_ScrollListRowBlockChunkList UI_ScrollListRowBlockChunkList;
 struct UI_ScrollListRowBlockChunkList
 {
   UI_ScrollListRowBlockChunkNode *first;
@@ -40,14 +37,12 @@ struct UI_ScrollListRowBlockChunkList
   U64 total_count;
 };
 
-typedef struct UI_ScrollListRowBlockArray UI_ScrollListRowBlockArray;
 struct UI_ScrollListRowBlockArray
 {
   UI_ScrollListRowBlock *v;
   U64 count;
 };
 
-typedef struct UI_ScrollListParams UI_ScrollListParams;
 struct UI_ScrollListParams
 {
   UI_ScrollListFlags flags;
@@ -59,7 +54,6 @@ struct UI_ScrollListParams
   B32 cursor_min_is_empty_selection[Axis2_COUNT];
 };
 
-typedef struct UI_ScrollListSignal UI_ScrollListSignal;
 struct UI_ScrollListSignal
 {
   B32 cursor_moved;

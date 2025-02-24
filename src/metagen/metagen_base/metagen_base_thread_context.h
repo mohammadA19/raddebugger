@@ -7,7 +7,6 @@
 ////////////////////////////////
 // NOTE(allen): Thread Context
 
-typedef struct TCTX TCTX;
 struct TCTX
 {
   Arena *arenas[2];

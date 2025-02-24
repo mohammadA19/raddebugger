@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Parsed Command Line Types
 
-typedef struct CmdLineOpt CmdLineOpt;
 struct CmdLineOpt
 {
   CmdLineOpt *next;
@@ -18,7 +17,6 @@ struct CmdLineOpt
   String8 value_string;
 };
 
-typedef struct CmdLineOptList CmdLineOptList;
 struct CmdLineOptList
 {
   U64 count;
@@ -26,7 +24,6 @@ struct CmdLineOptList
   CmdLineOpt *last;
 };
 
-typedef struct CmdLine CmdLine;
 struct CmdLine
 {
   String8 exe_name;

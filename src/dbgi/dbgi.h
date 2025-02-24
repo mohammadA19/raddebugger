@@ -7,21 +7,18 @@
 ////////////////////////////////
 //~ rjf: Cache Key Type
 
-typedef struct DI_Key DI_Key;
 struct DI_Key
 {
   String8 path;
   U64 min_timestamp;
 };
 
-typedef struct DI_KeyNode DI_KeyNode;
 struct DI_KeyNode
 {
   DI_KeyNode *next;
   DI_Key v;
 };
 
-typedef struct DI_KeyList DI_KeyList;
 struct DI_KeyList
 {
   DI_KeyNode *first;
@@ -29,7 +26,6 @@ struct DI_KeyList
   U64 count;
 };
 
-typedef struct DI_KeyArray DI_KeyArray;
 struct DI_KeyArray
 {
   DI_Key *v;
@@ -49,21 +45,18 @@ typedef enum DI_EventKind
 }
 DI_EventKind;
 
-typedef struct DI_Event DI_Event;
 struct DI_Event
 {
   DI_EventKind kind;
   String8 string;
 };
 
-typedef struct DI_EventNode DI_EventNode;
 struct DI_EventNode
 {
   DI_EventNode *next;
   DI_Event v;
 };
 
-typedef struct DI_EventList DI_EventList;
 struct DI_EventList
 {
   DI_EventNode *first;
@@ -74,14 +67,12 @@ struct DI_EventList
 ////////////////////////////////
 //~ rjf: Debug Info Cache Types
 
-typedef struct DI_StringChunkNode DI_StringChunkNode;
 struct DI_StringChunkNode
 {
   DI_StringChunkNode *next;
   U64 size;
 };
 
-typedef struct DI_Node DI_Node;
 struct DI_Node
 {
   // rjf: links
@@ -108,14 +99,12 @@ struct DI_Node
   B32 parse_done;
 };
 
-typedef struct DI_Slot DI_Slot;
 struct DI_Slot
 {
   DI_Node *first;
   DI_Node *last;
 };
 
-typedef struct DI_Stripe DI_Stripe;
 struct DI_Stripe
 {
   Arena *arena;
@@ -128,7 +117,6 @@ struct DI_Stripe
 ////////////////////////////////
 //~ rjf: Search Cache Types
 
-typedef struct DI_SearchItem DI_SearchItem;
 struct DI_SearchItem
 {
   U64 idx;
@@ -137,7 +125,6 @@ struct DI_SearchItem
   FuzzyMatchRangeList match_ranges;
 };
 
-typedef struct DI_SearchItemChunk DI_SearchItemChunk;
 struct DI_SearchItemChunk
 {
   DI_SearchItemChunk *next;
@@ -146,7 +133,6 @@ struct DI_SearchItemChunk
   U64 cap;
 };
 
-typedef struct DI_SearchItemChunkList DI_SearchItemChunkList;
 struct DI_SearchItemChunkList
 {
   DI_SearchItemChunk *first;
@@ -155,21 +141,18 @@ struct DI_SearchItemChunkList
   U64 total_count;
 };
 
-typedef struct DI_SearchItemArray DI_SearchItemArray;
 struct DI_SearchItemArray
 {
   DI_SearchItem *v;
   U64 count;
 };
 
-typedef struct DI_SearchParams DI_SearchParams;
 struct DI_SearchParams
 {
   RDI_SectionKind target;
   DI_KeyArray dbgi_keys;
 };
 
-typedef struct DI_SearchBucket DI_SearchBucket;
 struct DI_SearchBucket
 {
   Arena *arena;
@@ -178,7 +161,6 @@ struct DI_SearchBucket
   DI_SearchParams params;
 };
 
-typedef struct DI_SearchNode DI_SearchNode;
 struct DI_SearchNode
 {
   DI_SearchNode *next;
@@ -194,14 +176,12 @@ struct DI_SearchNode
   DI_SearchItemArray items;
 };
 
-typedef struct DI_SearchSlot DI_SearchSlot;
 struct DI_SearchSlot
 {
   DI_SearchNode *first;
   DI_SearchNode *last;
 };
 
-typedef struct DI_SearchStripe DI_SearchStripe;
 struct DI_SearchStripe
 {
   Arena *arena;
@@ -213,7 +193,6 @@ struct DI_SearchStripe
 ////////////////////////////////
 //~ rjf: Scoped Access Types
 
-typedef struct DI_Touch DI_Touch;
 struct DI_Touch
 {
   DI_Touch *next;
@@ -221,7 +200,6 @@ struct DI_Touch
   DI_SearchNode *search_node;
 };
 
-typedef struct DI_Scope DI_Scope;
 struct DI_Scope
 {
   DI_Scope *next;
@@ -229,7 +207,6 @@ struct DI_Scope
   DI_Touch *last_touch;
 };
 
-typedef struct DI_TCTX DI_TCTX;
 struct DI_TCTX
 {
   Arena *arena;
@@ -240,7 +217,6 @@ struct DI_TCTX
 ////////////////////////////////
 //~ rjf: Search Thread State Types
 
-typedef struct DI_SearchThread DI_SearchThread;
 struct DI_SearchThread
 {
   OS_Handle thread;
@@ -255,7 +231,6 @@ struct DI_SearchThread
 ////////////////////////////////
 //~ rjf: Match Cache State Types
 
-typedef struct DI_Match DI_Match;
 struct DI_Match
 {
   DI_Match *next;
@@ -265,7 +240,6 @@ struct DI_Match
   U32 idx;
 };
 
-typedef struct DI_MatchNameNode DI_MatchNameNode;
 struct DI_MatchNameNode
 {
   // rjf: synchronously written by usage code
@@ -289,14 +263,12 @@ struct DI_MatchNameNode
   // DI_Match *last_match;
 };
 
-typedef struct DI_MatchNameSlot DI_MatchNameSlot;
 struct DI_MatchNameSlot
 {
   DI_MatchNameNode *first;
   DI_MatchNameNode *last;
 };
 
-typedef struct DI_MatchStore DI_MatchStore;
 struct DI_MatchStore
 {
   Arena *arena;
@@ -332,7 +304,6 @@ struct DI_MatchStore
 ////////////////////////////////
 //~ rjf: Shared State Types
 
-typedef struct DI_Shared DI_Shared;
 struct DI_Shared
 {
   Arena *arena;

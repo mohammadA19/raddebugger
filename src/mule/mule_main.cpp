@@ -1518,7 +1518,6 @@ extended_type_coverage_eval_tests(void){
 ////////////////////////////////
 //~ rjf: Templated Function Eval Tests
 
-typedef struct TemplateArg TemplateArg;
 struct TemplateArg
 {
   int x;

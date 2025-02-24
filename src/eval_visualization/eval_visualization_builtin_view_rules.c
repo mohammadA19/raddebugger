@@ -99,7 +99,6 @@ ev_arch_from_eval_params(E_Eval eval, MD_Node *params)
 ////////////////////////////////
 //~ rjf: default
 
-typedef struct EV_DefaultExpandAccel EV_DefaultExpandAccel;
 struct EV_DefaultExpandAccel
 {
   E_MemberArray members;

@@ -18,7 +18,6 @@ typedef enum E_TypeKeyKind
 }
 E_TypeKeyKind;
 
-typedef struct E_TypeKey E_TypeKey;
 struct E_TypeKey
 {
   E_TypeKeyKind kind;
@@ -28,14 +27,12 @@ struct E_TypeKey
   // [2] -> RDI Index (Ext)
 };
 
-typedef struct E_TypeKeyNode E_TypeKeyNode;
 struct E_TypeKeyNode
 {
   E_TypeKeyNode *next;
   E_TypeKey v;
 };
 
-typedef struct E_TypeKeyList E_TypeKeyList;
 struct E_TypeKeyList
 {
   E_TypeKeyNode *first;
@@ -74,7 +71,6 @@ enum
   E_TypeFlag_IsPathText = (1<<5),
 };
 
-typedef struct E_Member E_Member;
 struct E_Member
 {
   E_MemberKind kind;
@@ -85,14 +81,12 @@ struct E_Member
   E_TypeKeyList inheritance_key_chain;
 };
 
-typedef struct E_MemberNode E_MemberNode;
 struct E_MemberNode
 {
   E_MemberNode *next;
   E_Member v;
 };
 
-typedef struct E_MemberList E_MemberList;
 struct E_MemberList
 {
   E_MemberNode *first;
@@ -100,28 +94,24 @@ struct E_MemberList
   U64 count;
 };
 
-typedef struct E_MemberArray E_MemberArray;
 struct E_MemberArray
 {
   E_Member *v;
   U64 count;
 };
 
-typedef struct E_EnumVal E_EnumVal;
 struct E_EnumVal
 {
   String8 name;
   U64 val;
 };
 
-typedef struct E_EnumValArray E_EnumValArray;
 struct E_EnumValArray
 {
   E_EnumVal *v;
   U64 count;
 };
 
-typedef struct E_Type E_Type;
 struct E_Type
 {
   E_TypeKind kind;
@@ -142,7 +132,6 @@ struct E_Type
 
 //- rjf: constructed type cache types
 
-typedef struct E_ConsTypeParams E_ConsTypeParams;
 struct E_ConsTypeParams
 {
   Arch arch;
@@ -165,7 +154,6 @@ struct E_ConsTypeNode
   U64 byte_size;
 };
 
-typedef struct E_ConsTypeSlot E_ConsTypeSlot;
 struct E_ConsTypeSlot
 {
   E_ConsTypeNode *first;
@@ -174,21 +162,18 @@ struct E_ConsTypeSlot
 
 //- rjf: member lookup cache types
 
-typedef struct E_MemberHashNode E_MemberHashNode;
 struct E_MemberHashNode
 {
   E_MemberHashNode *next;
   U64 member_idx;
 };
 
-typedef struct E_MemberHashSlot E_MemberHashSlot;
 struct E_MemberHashSlot
 {
   E_MemberHashNode *first;
   E_MemberHashNode *last;
 };
 
-typedef struct E_MemberCacheNode E_MemberCacheNode;
 struct E_MemberCacheNode
 {
   E_MemberCacheNode *next;
@@ -198,7 +183,6 @@ struct E_MemberCacheNode
   E_MemberHashSlot *member_hash_slots;
 };
 
-typedef struct E_MemberCacheSlot E_MemberCacheSlot;
 struct E_MemberCacheSlot
 {
   E_MemberCacheNode *first;
@@ -207,7 +191,6 @@ struct E_MemberCacheSlot
 
 //- rjf: context parameterization
 
-typedef struct E_TypeCtx E_TypeCtx;
 struct E_TypeCtx
 {
   // rjf: instruction pointer info
@@ -222,7 +205,6 @@ struct E_TypeCtx
 
 //- rjf: stateful machine part of context (not provided by user)
 
-typedef struct E_TypeState E_TypeState;
 struct E_TypeState
 {
   Arena *arena;

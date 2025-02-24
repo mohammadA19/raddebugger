@@ -537,7 +537,6 @@ RD_SettingCode_HintCodeText,
 RD_SettingCode_COUNT,
 } RD_SettingCode;
 
-typedef struct RD_Regs RD_Regs;
 struct RD_Regs
 {
 CTRL_Handle machine;
@@ -575,7 +574,6 @@ MD_Node * params_tree;
 OS_Event * os_event;
 };
 
-typedef struct RD_Query RD_Query;
 struct RD_Query
 {
 RD_QueryFlags flags;
@@ -585,7 +583,6 @@ RD_EntityKind entity_kind;
 CTRL_EntityKind ctrl_entity_kind;
 };
 
-typedef struct RD_CmdKindInfo RD_CmdKindInfo;
 struct RD_CmdKindInfo
 {
 String8 string;
@@ -597,7 +594,6 @@ RD_CmdKindFlags flags;
 RD_Query query;
 };
 
-typedef struct RD_ViewRuleInfo RD_ViewRuleInfo;
 struct RD_ViewRuleInfo
 {
 String8 string;

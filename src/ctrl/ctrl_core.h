@@ -17,7 +17,6 @@ typedef U64 CTRL_MachineID;
 
 //- rjf: auto-checkbox b32s
 
-typedef struct CTRL_CheckB32 CTRL_CheckB32;
 struct CTRL_CheckB32
 {
   B32 b32;
@@ -55,7 +54,6 @@ named_struct_type(CTRL_PathString8,  String8, .name = str8_lit_comp("string"));
 
 //- rjf: meta evaluation callstack types
 
-typedef struct CTRL_MetaEvalFrame CTRL_MetaEvalFrame;
 struct CTRL_MetaEvalFrame
 {
   U64 vaddr;
@@ -68,7 +66,6 @@ struct_members(CTRL_MetaEvalFrame)
   member_lit_comp(CTRL_MetaEvalFrame, type(U64), inline_depth),
 };
 struct_type(CTRL_MetaEvalFrame, .name = str8_lit_comp("callstack_frame"));
-typedef struct CTRL_MetaEvalFrameArray CTRL_MetaEvalFrameArray;
 struct CTRL_MetaEvalFrameArray
 {
   U64 count;
@@ -84,7 +81,6 @@ struct_type(CTRL_MetaEvalFrameArray, .name = str8_lit_comp("callstack_frames"));
 
 //- rjf: meta evaluation instance types
 
-typedef struct CTRL_MetaEval CTRL_MetaEval;
 struct CTRL_MetaEval
 {
 #define CTRL_MetaEval_MemberXList \
@@ -221,7 +217,6 @@ named_struct_type(CTRL_ThreadMetaEval,      CTRL_MetaEval, .name = str8_lit_comp
 
 //- rjf: meta evaluation array
 
-typedef struct CTRL_MetaEvalArray CTRL_MetaEvalArray;
 struct CTRL_MetaEvalArray
 {
   CTRL_MetaEval *v;
@@ -238,21 +233,18 @@ struct_type(CTRL_MetaEvalArray);
 ////////////////////////////////
 //~ rjf: Entity Handle Types
 
-typedef struct CTRL_Handle CTRL_Handle;
 struct CTRL_Handle
 {
   CTRL_MachineID machine_id;
   DMN_Handle dmn_handle;
 };
 
-typedef struct CTRL_HandleNode CTRL_HandleNode;
 struct CTRL_HandleNode
 {
   CTRL_HandleNode *next;
   CTRL_Handle v;
 };
 
-typedef struct CTRL_HandleList CTRL_HandleList;
 struct CTRL_HandleList
 {
   CTRL_HandleNode *first;
@@ -268,7 +260,6 @@ struct CTRL_HandleList
 ////////////////////////////////
 //~ rjf: Entity Types
 
-typedef struct CTRL_Entity CTRL_Entity;
 struct CTRL_Entity
 {
   CTRL_Entity *first;
@@ -288,14 +279,12 @@ struct CTRL_Entity
   String8 string;
 };
 
-typedef struct CTRL_EntityNode CTRL_EntityNode;
 struct CTRL_EntityNode
 {
   CTRL_EntityNode *next;
   CTRL_Entity *v;
 };
 
-typedef struct CTRL_EntityList CTRL_EntityList;
 struct CTRL_EntityList
 {
   CTRL_EntityNode *first;
@@ -303,14 +292,12 @@ struct CTRL_EntityList
   U64 count;
 };
 
-typedef struct CTRL_EntityArray CTRL_EntityArray;
 struct CTRL_EntityArray
 {
   CTRL_Entity **v;
   U64 count;
 };
 
-typedef struct CTRL_EntityRec CTRL_EntityRec;
 struct CTRL_EntityRec
 {
   CTRL_Entity *next;
@@ -318,7 +305,6 @@ struct CTRL_EntityRec
   S64 pop_count;
 };
 
-typedef struct CTRL_EntityHashNode CTRL_EntityHashNode;
 struct CTRL_EntityHashNode
 {
   CTRL_EntityHashNode *next;
@@ -326,21 +312,18 @@ struct CTRL_EntityHashNode
   CTRL_Entity *entity;
 };
 
-typedef struct CTRL_EntityHashSlot CTRL_EntityHashSlot;
 struct CTRL_EntityHashSlot
 {
   CTRL_EntityHashNode *first;
   CTRL_EntityHashNode *last;
 };
 
-typedef struct CTRL_EntityStringChunkNode CTRL_EntityStringChunkNode;
 struct CTRL_EntityStringChunkNode
 {
   CTRL_EntityStringChunkNode *next;
   U64 size;
 };
 
-typedef struct CTRL_EntityStore CTRL_EntityStore;
 struct CTRL_EntityStore
 {
   Arena *arena;
@@ -367,19 +350,16 @@ enum
   CTRL_UnwindFlag_Stale = (1<<1),
 };
 
-typedef struct CTRL_UnwindStepResult CTRL_UnwindStepResult;
 struct CTRL_UnwindStepResult
 {
   CTRL_UnwindFlags flags;
 };
 
-typedef struct CTRL_UnwindFrame CTRL_UnwindFrame;
 struct CTRL_UnwindFrame
 {
   void *regs;
 };
 
-typedef struct CTRL_UnwindFrameNode CTRL_UnwindFrameNode;
 struct CTRL_UnwindFrameNode
 {
   CTRL_UnwindFrameNode *next;
@@ -387,14 +367,12 @@ struct CTRL_UnwindFrameNode
   CTRL_UnwindFrame v;
 };
 
-typedef struct CTRL_UnwindFrameArray CTRL_UnwindFrameArray;
 struct CTRL_UnwindFrameArray
 {
   CTRL_UnwindFrame *v;
   U64 count;
 };
 
-typedef struct CTRL_Unwind CTRL_Unwind;
 struct CTRL_Unwind
 {
   CTRL_UnwindFrameArray frames;
@@ -404,7 +382,6 @@ struct CTRL_Unwind
 ////////////////////////////////
 //~ rjf: Call Stack Types
 
-typedef struct CTRL_CallStackInlineFrame CTRL_CallStackInlineFrame;
 struct CTRL_CallStackInlineFrame
 {
   CTRL_CallStackInlineFrame *next;
@@ -412,7 +389,6 @@ struct CTRL_CallStackInlineFrame
   RDI_InlineSite *inline_site;
 };
 
-typedef struct CTRL_CallStackFrame CTRL_CallStackFrame;
 struct CTRL_CallStackFrame
 {
   CTRL_CallStackInlineFrame *first_inline_frame;
@@ -423,7 +399,6 @@ struct CTRL_CallStackFrame
   RDI_Procedure *procedure;
 };
 
-typedef struct CTRL_CallStack CTRL_CallStack;
 struct CTRL_CallStack
 {
   CTRL_CallStackFrame *frames;
@@ -445,21 +420,18 @@ enum
   CTRL_TrapFlag_EndStepping             = (1<<4),
 };
 
-typedef struct CTRL_Trap CTRL_Trap;
 struct CTRL_Trap
 {
   CTRL_TrapFlags flags;
   U64 vaddr;
 };
 
-typedef struct CTRL_TrapNode CTRL_TrapNode;
 struct CTRL_TrapNode
 {
   CTRL_TrapNode *next;
   CTRL_Trap v;
 };
 
-typedef struct CTRL_TrapList CTRL_TrapList;
 struct CTRL_TrapList
 {
   CTRL_TrapNode *first;
@@ -467,7 +439,6 @@ struct CTRL_TrapList
   U64 count;
 };
 
-typedef struct CTRL_Spoof CTRL_Spoof;
 struct CTRL_Spoof
 {
   DMN_Handle process;
@@ -489,7 +460,6 @@ typedef enum CTRL_UserBreakpointKind
 }
 CTRL_UserBreakpointKind;
 
-typedef struct CTRL_UserBreakpoint CTRL_UserBreakpoint;
 struct CTRL_UserBreakpoint
 {
   CTRL_UserBreakpointKind kind;
@@ -499,14 +469,12 @@ struct CTRL_UserBreakpoint
   String8 condition;
 };
 
-typedef struct CTRL_UserBreakpointNode CTRL_UserBreakpointNode;
 struct CTRL_UserBreakpointNode
 {
   CTRL_UserBreakpointNode *next;
   CTRL_UserBreakpoint v;
 };
 
-typedef struct CTRL_UserBreakpointList CTRL_UserBreakpointList;
 struct CTRL_UserBreakpointList
 {
   CTRL_UserBreakpointNode *first;
@@ -551,7 +519,6 @@ enum
   CTRL_RunFlag_StopOnEntryPoint = (1<<0),
 };
 
-typedef struct CTRL_Msg CTRL_Msg;
 struct CTRL_Msg
 {
   CTRL_MsgKind kind;
@@ -576,14 +543,12 @@ struct CTRL_Msg
   CTRL_MetaEvalArray meta_evals;
 };
 
-typedef struct CTRL_MsgNode CTRL_MsgNode;
 struct CTRL_MsgNode
 {
   CTRL_MsgNode *next;
   CTRL_Msg v;
 };
 
-typedef struct CTRL_MsgList CTRL_MsgList;
 struct CTRL_MsgList
 {
   CTRL_MsgNode *first;
@@ -658,7 +623,6 @@ typedef enum CTRL_ExceptionKind
 }
 CTRL_ExceptionKind;
 
-typedef struct CTRL_Event CTRL_Event;
 struct CTRL_Event
 {
   CTRL_EventKind kind;
@@ -680,14 +644,12 @@ struct CTRL_Event
   String8 string;
 };
 
-typedef struct CTRL_EventNode CTRL_EventNode;
 struct CTRL_EventNode
 {
   CTRL_EventNode *next;
   CTRL_Event v;
 };
 
-typedef struct CTRL_EventList CTRL_EventList;
 struct CTRL_EventList
 {
   CTRL_EventNode *first;
@@ -698,7 +660,6 @@ struct CTRL_EventList
 ////////////////////////////////
 //~ rjf: Process Memory Cache Types
 
-typedef struct CTRL_ProcessMemoryRangeHashNode CTRL_ProcessMemoryRangeHashNode;
 struct CTRL_ProcessMemoryRangeHashNode
 {
   CTRL_ProcessMemoryRangeHashNode *next;
@@ -711,14 +672,12 @@ struct CTRL_ProcessMemoryRangeHashNode
   B32 is_taken;
 };
 
-typedef struct CTRL_ProcessMemoryRangeHashSlot CTRL_ProcessMemoryRangeHashSlot;
 struct CTRL_ProcessMemoryRangeHashSlot
 {
   CTRL_ProcessMemoryRangeHashNode *first;
   CTRL_ProcessMemoryRangeHashNode *last;
 };
 
-typedef struct CTRL_ProcessMemoryCacheNode CTRL_ProcessMemoryCacheNode;
 struct CTRL_ProcessMemoryCacheNode
 {
   CTRL_ProcessMemoryCacheNode *next;
@@ -729,21 +688,18 @@ struct CTRL_ProcessMemoryCacheNode
   CTRL_ProcessMemoryRangeHashSlot *range_hash_slots;
 };
 
-typedef struct CTRL_ProcessMemoryCacheSlot CTRL_ProcessMemoryCacheSlot;
 struct CTRL_ProcessMemoryCacheSlot
 {
   CTRL_ProcessMemoryCacheNode *first;
   CTRL_ProcessMemoryCacheNode *last;
 };
 
-typedef struct CTRL_ProcessMemoryCacheStripe CTRL_ProcessMemoryCacheStripe;
 struct CTRL_ProcessMemoryCacheStripe
 {
   OS_Handle rw_mutex;
   OS_Handle cv;
 };
 
-typedef struct CTRL_ProcessMemoryCache CTRL_ProcessMemoryCache;
 struct CTRL_ProcessMemoryCache
 {
   U64 slots_count;
@@ -752,7 +708,6 @@ struct CTRL_ProcessMemoryCache
   CTRL_ProcessMemoryCacheStripe *stripes;
 };
 
-typedef struct CTRL_ProcessMemorySlice CTRL_ProcessMemorySlice;
 struct CTRL_ProcessMemorySlice
 {
   String8 data;
@@ -766,7 +721,6 @@ struct CTRL_ProcessMemorySlice
 ////////////////////////////////
 //~ rjf: Thread Register Cache Types
 
-typedef struct CTRL_ThreadRegCacheNode CTRL_ThreadRegCacheNode;
 struct CTRL_ThreadRegCacheNode
 {
   CTRL_ThreadRegCacheNode *next;
@@ -777,21 +731,18 @@ struct CTRL_ThreadRegCacheNode
   U64 reg_gen;
 };
 
-typedef struct CTRL_ThreadRegCacheSlot CTRL_ThreadRegCacheSlot;
 struct CTRL_ThreadRegCacheSlot
 {
   CTRL_ThreadRegCacheNode *first;
   CTRL_ThreadRegCacheNode *last;
 };
 
-typedef struct CTRL_ThreadRegCacheStripe CTRL_ThreadRegCacheStripe;
 struct CTRL_ThreadRegCacheStripe
 {
   Arena *arena;
   OS_Handle rw_mutex;
 };
 
-typedef struct CTRL_ThreadRegCache CTRL_ThreadRegCache;
 struct CTRL_ThreadRegCache
 {
   U64 slots_count;
@@ -803,7 +754,6 @@ struct CTRL_ThreadRegCache
 ////////////////////////////////
 //~ rjf: Module Image Info Cache Types
 
-typedef struct CTRL_ModuleImageInfoCacheNode CTRL_ModuleImageInfoCacheNode;
 struct CTRL_ModuleImageInfoCacheNode
 {
   CTRL_ModuleImageInfoCacheNode *next;
@@ -817,21 +767,18 @@ struct CTRL_ModuleImageInfoCacheNode
   String8 initial_debug_info_path;
 };
 
-typedef struct CTRL_ModuleImageInfoCacheSlot CTRL_ModuleImageInfoCacheSlot;
 struct CTRL_ModuleImageInfoCacheSlot
 {
   CTRL_ModuleImageInfoCacheNode *first;
   CTRL_ModuleImageInfoCacheNode *last;
 };
 
-typedef struct CTRL_ModuleImageInfoCacheStripe CTRL_ModuleImageInfoCacheStripe;
 struct CTRL_ModuleImageInfoCacheStripe
 {
   Arena *arena;
   OS_Handle rw_mutex;
 };
 
-typedef struct CTRL_ModuleImageInfoCache CTRL_ModuleImageInfoCache;
 struct CTRL_ModuleImageInfoCache
 {
   U64 slots_count;
@@ -843,7 +790,6 @@ struct CTRL_ModuleImageInfoCache
 ////////////////////////////////
 //~ rjf: Touched Debug Info Directory Cache
 
-typedef struct CTRL_DbgDirNode CTRL_DbgDirNode;
 struct CTRL_DbgDirNode
 {
   CTRL_DbgDirNode *first;
@@ -866,7 +812,6 @@ typedef CTRL_WAKEUP_FUNCTION_DEF(CTRL_WakeupFunctionType);
 ////////////////////////////////
 //~ rjf: Main State Types
 
-typedef struct CTRL_State CTRL_State;
 struct CTRL_State
 {
   Arena *arena;

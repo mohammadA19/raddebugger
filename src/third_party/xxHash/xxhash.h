@@ -606,7 +606,6 @@ XXH_PUBLIC_API XXH_PUREF XXH32_hash_t XXH32 (const void* input, size_t length, X
  *
  * @see XXH32_state_s for details.
  */
-typedef struct XXH32_state_s XXH32_state_t;
 
 /*!
  * @brief Allocates an @ref XXH32_state_t.
@@ -1127,7 +1126,6 @@ XXH_PUBLIC_API XXH_PUREF XXH64_hash_t XXH3_64bits_withSecret(XXH_NOESCAPE const 
  *
  * @see XXH3_state_s for details.
  */
-typedef struct XXH3_state_s XXH3_state_t;
 XXH_PUBLIC_API XXH_MALLOCF XXH3_state_t* XXH3_createState(void);
 XXH_PUBLIC_API XXH_errorcode XXH3_freeState(XXH3_state_t* statePtr);
 

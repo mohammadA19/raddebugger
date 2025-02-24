@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Bundled Evaluation Path Types
 
-typedef struct E_Eval E_Eval;
 struct E_Eval
 {
   E_Value value;
