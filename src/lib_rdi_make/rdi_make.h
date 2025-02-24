@@ -698,8 +698,7 @@ typedef enum RDIM_SymbolKind
   RDIM_SymbolKind_ThreadVariable,
   RDIM_SymbolKind_Procedure,
   RDIM_SymbolKind_COUNT
-}
-RDIM_SymbolKind;
+};
 
 struct RDIM_Symbol
 {

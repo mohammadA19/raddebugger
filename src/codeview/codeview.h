@@ -293,8 +293,7 @@ typedef enum CV_Regx86Enum
 #define X(CVN,C,RDN,BP,BZ) CV_Regx86_##CVN = C,
   CV_Reg_X86_XList(X)
 #undef X
-}
-CV_Regx86Enum;
+};
 
 // X(NAME, CODE, (RDI_RegisterCode_X64) NAME, BYTE_POS, BYTE_SIZE)
 #define CV_Reg_X64_XList(X)       \
@@ -1010,8 +1009,7 @@ typedef enum CV_Regx64Enum
 #define X(CVN,C,RDN,BP,BZ) CV_Regx64_##CVN = C,
   CV_Reg_X64_XList(X)
 #undef X
-}
-CV_Regx64Enum;
+};
 
 
 #define CV_SignatureXList(X) \
@@ -1027,8 +1025,7 @@ typedef enum CV_SignatureEnum
 #define X(N,c) CV_Signature_##N = c,
   CV_SignatureXList(X)
 #undef X
-}
-CV_SignatureEnum;
+};
 
 
 #define CV_LanguageXList(X) \
@@ -1056,8 +1053,7 @@ typedef enum CV_LanguageEnum
 #define X(N,c) CV_Language_##N = c,
   CV_LanguageXList(X)
 #undef X
-}
-CV_LanguageEnum;
+};
 
 #pragma pack(push, 1)
 
@@ -1157,8 +1153,7 @@ typedef enum CV_GenericStyleEnum
   CV_GenericStyle_IRAN,   //  "indirect returnee allocated near"
   CV_GenericStyle_IRAF,   //  "indirect returnee allocated far"
   CV_GenericStyle_UNUSED,
-}
-CV_GenericStyleEnum;
+};
 
 typedef U16 CV_GenericFlags;
 enum
@@ -1210,8 +1205,7 @@ typedef enum CV_EncodedFramePtrRegEnum
   CV_EncodedFramePtrReg_StackPtr,
   CV_EncodedFramePtrReg_FramePtr,
   CV_EncodedFramePtrReg_BasePtr,
-}
-CV_EncodedFramePtrRegEnum;
+};
 
 typedef U32 CV_FrameprocFlags;
 enum
@@ -1282,8 +1276,7 @@ typedef enum CV_ThunkOrdinalEnum
   CV_ThunkOrdinal_Load,
   CV_ThunkOrdinal_TrampIncremental,
   CV_ThunkOrdinal_TrampBranchIsland,
-}
-CV_ThunkOrdinalEnum;
+};
 
 struct CV_SymThunk32
 {
@@ -1548,8 +1541,7 @@ typedef enum CV_TrampolineKindEnum
 {
   CV_TrampolineKind_Incremental,
   CV_TrampolineKind_BranchIsland,
-}
-CV_TrampolineKindEnum;
+};
 
 struct CV_SymTrampoline
 {
@@ -1645,8 +1637,7 @@ typedef enum CV_FrameCookieKindEnum
   CV_FrameCookieKind_XorSP,
   CV_FrameCookieKind_XorBP,
   CV_FrameCookieKind_XorR13,
-}
-CV_FrameCookieKindEnum;
+};
 
 struct CV_SymFrameCookie
 {
@@ -1664,8 +1655,7 @@ typedef enum CV_DiscardedKindEnum
   CV_DiscardedKind_Unknown,
   CV_DiscardedKind_NotSelected,
   CV_DiscardedKind_NotReferenced,
-}
-CV_DiscardedKindEnum;
+};
 
 struct CV_SymDiscarded
 {
@@ -1865,16 +1855,14 @@ typedef enum CV_InlineBinaryAnnotationEnum
   CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset,
   CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset,
   CV_InlineBinaryAnnotation_ChangeColumnEnd
-}
-CV_InlineBinaryAnnotationEnum;
+};
 
 typedef U32 CV_InlineRangeKind;
 typedef enum CV_InlineRangeKindEnum
 {
   CV_InlineRangeKind_Expr,
   CV_InlineRangeKind_Stmt
-}
-CV_InlineRangeKindEnum;
+};
 
 struct CV_SymInlineSite
 {
@@ -1923,8 +1911,7 @@ typedef enum CV_ArmSwitchKindEnum
   CV_ArmSwitchKind_UINT2SHL1,
   CV_ArmSwitchKind_INT1SSHL1,
   CV_ArmSwitchKind_INT2SSHL1,
-}
-CV_ArmSwitchKindEnum;
+};
 
 struct CV_SymArmSwitchTable
 {
@@ -2131,8 +2118,7 @@ typedef enum CV_PointerModeEnum
   CV_PointerMode_PtrMem,
   CV_PointerMode_PtrMethod,
   CV_PointerMode_RRef,
-}
-CV_PointerModeEnum;
+};
 
 typedef U16 CV_MemberPointerKind;
 typedef enum CV_MemberPointerKindEnum
@@ -2146,8 +2132,7 @@ typedef enum CV_MemberPointerKindEnum
   CV_MemberPointerKind_FuncMultiple,
   CV_MemberPointerKind_FuncVirtual,
   CV_MemberPointerKind_FuncGeneral,
-}
-CV_MemberPointerKindEnum;
+};
 
 typedef U32 CV_VirtualTableShape;
 typedef enum CV_VirtualTableShapeEnum
@@ -2159,8 +2144,7 @@ typedef enum CV_VirtualTableShapeEnum
   CV_VirtualTableShape_Meta,    // far pointer to metaclass descriptor entry[-2]
   CV_VirtualTableShape_Near32,  // 32 bit ptr
   CV_VirtualTableShape_Far32,   // ???
-}
-CV_VirtualTableShapeEnum;
+};
 
 typedef U8 CV_MethodProp;
 enum
@@ -2181,8 +2165,7 @@ typedef enum CV_MemberAccessEnum
   CV_MemberAccess_Private,
   CV_MemberAccess_Protected,
   CV_MemberAccess_Public
-}
-CV_MemberAccessEnum;
+};
 
 typedef U16 CV_FieldAttribs;
 enum
@@ -2203,8 +2186,7 @@ typedef enum CV_LabelKindEnum
 {
   CV_LabelKind_Near = 0,
   CV_LabelKind_Far  = 4,
-}
-CV_LabelKindEnum;
+};
 
 typedef U8 CV_FunctionAttribs;
 enum
@@ -2242,8 +2224,7 @@ typedef enum CV_CallKindEnum
   CV_CallKind_Clr,
   CV_CallKind_Inline,
   CV_CallKind_NearVector,
-}
-CV_CallKindEnum;
+};
 
 //- (LeafKind: PRECOMP)
 
@@ -2633,8 +2614,7 @@ typedef enum CV_BuildInfoIndexEnum
   CV_BuildInfoIndex_TargetSourceFile   = 2,
   CV_BuildInfoIndex_CombinedPdb        = 3,
   CV_BuildInfoIndex_CompileArguments   = 4,
-}
-CV_BuildInfoIndexEnum;
+};
 
 struct CV_LeafBuildInfo
 {
@@ -2697,8 +2677,7 @@ typedef enum CV_C13SubSectionKindEnum
 #define X(N,c) CV_C13SubSectionKind_##N = c,
   CV_C13SubSectionKindXList(X)
 #undef X
-}
-CV_C13SubSectionKindEnum;
+};
 
 struct CV_C13SubSectionHeader
 {
@@ -2715,8 +2694,7 @@ typedef enum CV_C13ChecksumKindEnum
   CV_C13ChecksumKind_MD5,
   CV_C13ChecksumKind_SHA1,
   CV_C13ChecksumKind_SHA256,
-}
-CV_C13ChecksumKindEnum;
+};
 
 struct CV_C13Checksum
 {

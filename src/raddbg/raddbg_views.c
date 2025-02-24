@@ -3891,8 +3891,7 @@ typedef enum RD_FileSortKind
   RD_FileSortKind_LastModified,
   RD_FileSortKind_Size,
   RD_FileSortKind_COUNT
-}
-RD_FileSortKind;
+};
 
 struct RD_FileInfo
 {
@@ -7948,8 +7947,7 @@ typedef enum RD_SettingsItemKind
   RD_SettingsItemKind_ThemeColor,
   RD_SettingsItemKind_ThemePreset,
   RD_SettingsItemKind_COUNT
-}
-RD_SettingsItemKind;
+};
 
 struct RD_SettingsItem
 {

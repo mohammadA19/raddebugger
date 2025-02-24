@@ -420,8 +420,7 @@ typedef enum ExecMode
   ExecMode_IPCSender,
   ExecMode_Converter,
   ExecMode_Help,
-}
-ExecMode;
+};
 
 struct IPCInfo
 {

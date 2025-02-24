@@ -14,8 +14,7 @@ typedef enum MD_MsgKind
   MD_MsgKind_Warning,
   MD_MsgKind_Error,
   MD_MsgKind_FatalError,
-}
-MD_MsgKind;
+};
 
 struct MD_Msg
 {
@@ -120,8 +119,7 @@ typedef enum MD_NodeKind
   MD_NodeKind_List,
   MD_NodeKind_Reference,
   MD_NodeKind_COUNT
-}
-MD_NodeKind;
+};
 
 typedef U32 MD_NodeFlags;
 enum

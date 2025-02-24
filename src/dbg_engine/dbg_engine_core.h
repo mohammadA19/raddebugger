@@ -62,8 +62,7 @@ typedef enum D_EventKind
   D_EventKind_ProcessEnd,
   D_EventKind_Stop,
   D_EventKind_COUNT
-}
-D_EventKind;
+};
 
 typedef enum D_EventCause
 {
@@ -72,8 +71,7 @@ typedef enum D_EventCause
   D_EventCause_Halt,
   D_EventCause_SoftHalt,
   D_EventCause_COUNT
-}
-D_EventCause;
+};
 
 struct D_Event
 {
@@ -137,8 +135,7 @@ typedef enum D_RunKind
   D_RunKind_SingleStep,
   D_RunKind_Step,
   D_RunKind_COUNT
-}
-D_RunKind;
+};
 
 ////////////////////////////////
 //~ rjf: Generated Code

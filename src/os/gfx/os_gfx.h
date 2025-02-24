@@ -38,8 +38,7 @@ typedef enum OS_Cursor
   OS_Cursor_HandPoint,
   OS_Cursor_Disabled,
   OS_Cursor_COUNT,
-}
-OS_Cursor;
+};
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -62,8 +61,7 @@ typedef enum OS_EventKind
   OS_EventKind_FileDrop,
   OS_EventKind_Wakeup,
   OS_EventKind_COUNT
-}
-OS_EventKind;
+};
 
 typedef U32 OS_Modifiers;
 enum

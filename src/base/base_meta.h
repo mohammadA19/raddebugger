@@ -88,8 +88,7 @@ typedef enum TypeKind
   TypeKind_Enum,
   
   TypeKind_COUNT
-}
-TypeKind;
+};
 
 typedef U32 TypeFlags;
 enum

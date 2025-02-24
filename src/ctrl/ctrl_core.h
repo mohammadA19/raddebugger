@@ -457,8 +457,7 @@ typedef enum CTRL_UserBreakpointKind
   CTRL_UserBreakpointKind_SymbolNameAndOffset,
   CTRL_UserBreakpointKind_VirtualAddress,
   CTRL_UserBreakpointKind_COUNT
-}
-CTRL_UserBreakpointKind;
+};
 
 struct CTRL_UserBreakpoint
 {
@@ -510,8 +509,7 @@ typedef enum CTRL_MsgKind
   CTRL_MsgKind_FreezeThread,
   CTRL_MsgKind_ThawThread,
   CTRL_MsgKind_COUNT,
-}
-CTRL_MsgKind;
+};
 
 typedef U32 CTRL_RunFlags;
 enum
@@ -595,8 +593,7 @@ typedef enum CTRL_EventKind
   CTRL_EventKind_MemRelease,
   
   CTRL_EventKind_COUNT
-}
-CTRL_EventKind;
+};
 
 typedef enum CTRL_EventCause
 {
@@ -609,8 +606,7 @@ typedef enum CTRL_EventCause
   CTRL_EventCause_InterruptedByException,
   CTRL_EventCause_InterruptedByHalt,
   CTRL_EventCause_COUNT
-}
-CTRL_EventCause;
+};
 
 typedef enum CTRL_ExceptionKind
 {
@@ -620,8 +616,7 @@ typedef enum CTRL_ExceptionKind
   CTRL_ExceptionKind_MemoryExecute,
   CTRL_ExceptionKind_CppThrow,
   CTRL_ExceptionKind_COUNT
-}
-CTRL_ExceptionKind;
+};
 
 struct CTRL_Event
 {

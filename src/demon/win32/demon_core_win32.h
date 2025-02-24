@@ -91,8 +91,7 @@ typedef enum DMN_W32_EntityKind
   DMN_W32_EntityKind_Thread,
   DMN_W32_EntityKind_Module,
   DMN_W32_EntityKind_COUNT
-}
-DMN_W32_EntityKind;
+};
 
 struct DMN_W32_Entity
 {

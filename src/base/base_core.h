@@ -393,8 +393,7 @@ typedef enum Dimension
   Dimension_Y,
   Dimension_Z,
   Dimension_W,
-}
-Dimension;
+};
 
 typedef enum Side
 {
@@ -402,8 +401,7 @@ typedef enum Side
   Side_Min,
   Side_Max,
   Side_COUNT,
-}
-Side;
+};
 #define side_flip(s) ((Side)(!(s)))
 
 typedef enum Axis2
@@ -412,8 +410,7 @@ typedef enum Axis2
   Axis2_X,
   Axis2_Y,
   Axis2_COUNT,
-}
-Axis2;
+};
 #define axis2_flip(a) ((Axis2)(!(a)))
 
 typedef enum Corner
@@ -424,8 +421,7 @@ typedef enum Corner
   Corner_10,
   Corner_11,
   Corner_COUNT
-}
-Corner;
+};
 
 typedef enum Dir2
 {
@@ -435,8 +431,7 @@ typedef enum Dir2
   Dir2_Right,
   Dir2_Down,
   Dir2_COUNT
-}
-Dir2;
+};
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
 #define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
 
@@ -450,8 +445,7 @@ typedef enum OperatingSystem
   OperatingSystem_Linux,
   OperatingSystem_Mac,
   OperatingSystem_COUNT,
-}
-OperatingSystem;
+};
 
 typedef enum ImageType
 {
@@ -470,8 +464,7 @@ typedef enum Arch
   Arch_arm64,
   Arch_arm32,
   Arch_COUNT,
-}
-Arch;
+};
 
 typedef enum Compiler
 {
@@ -480,8 +473,7 @@ typedef enum Compiler
   Compiler_gcc,
   Compiler_clang,
   Compiler_COUNT,
-}
-Compiler;
+};
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
@@ -712,8 +704,7 @@ typedef enum WeekDay
   WeekDay_Fri,
   WeekDay_Sat,
   WeekDay_COUNT,
-}
-WeekDay;
+};
 
 typedef enum Month
 {
@@ -730,8 +721,7 @@ typedef enum Month
   Month_Nov,
   Month_Dec,
   Month_COUNT,
-}
-Month;
+};
 
 struct DateTime
 {

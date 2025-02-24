@@ -45,8 +45,7 @@ typedef enum OS_W32_EntityKind
   OS_W32_EntityKind_Mutex,
   OS_W32_EntityKind_RWMutex,
   OS_W32_EntityKind_ConditionVariable,
-}
-OS_W32_EntityKind;
+};
 
 struct OS_W32_Entity
 {

@@ -15,8 +15,7 @@ typedef enum E_TypeKeyKind
   E_TypeKeyKind_Cons,
   E_TypeKeyKind_Reg,
   E_TypeKeyKind_RegAlias,
-}
-E_TypeKeyKind;
+};
 
 struct E_TypeKey
 {
@@ -57,8 +56,7 @@ typedef enum E_MemberKind
   E_MemberKind_NestedType,
   E_MemberKind_Padding,
   E_MemberKind_COUNT
-}
-E_MemberKind;
+};
 
 typedef U32 E_TypeFlags;
 enum

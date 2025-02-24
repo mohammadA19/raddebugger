@@ -11,8 +11,7 @@ typedef enum REGS_UsageKind
 {
   REGS_UsageKind_Normal,
   REGS_UsageKind_Vector,
-}
-REGS_UsageKind;
+};
 
 ////////////////////////////////
 //~ rjf: Register Types

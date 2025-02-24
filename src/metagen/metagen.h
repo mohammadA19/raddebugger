@@ -80,8 +80,7 @@ typedef enum MG_StrExprOpKind
   MG_StrExprOpKind_Postfix,
   MG_StrExprOpKind_Binary,
   MG_StrExprOpKind_COUNT
-}
-MG_StrExprOpKind;
+};
 
 typedef enum MG_StrExprOp
 {
@@ -114,8 +113,7 @@ typedef enum MG_StrExprOp
 #define MG_StrExprOp_LastNumeric MG_StrExprOp_DoesNotEqual
   
   MG_StrExprOp_COUNT,
-}
-MG_StrExprOp;
+};
 
 struct MG_StrExpr
 {
@@ -156,8 +154,7 @@ typedef enum MG_ColumnKind
   MG_ColumnKind_CheckForTag,
   MG_ColumnKind_TagChild,
   MG_ColumnKind_COUNT
-}
-MG_ColumnKind;
+};
 
 struct MG_ColumnDesc
 {

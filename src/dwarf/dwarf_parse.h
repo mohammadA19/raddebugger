@@ -99,8 +99,7 @@ typedef enum DW_AbbrevKind
   DW_Abbrev_AttribSequenceEnd,
   DW_Abbrev_DIEBegin,
   DW_Abbrev_DIEEnd,
-}
-DW_AbbrevKind;
+};
 
 typedef U32 DW_AbbrevFlags;
 enum{

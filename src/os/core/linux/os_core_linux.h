@@ -63,8 +63,7 @@ typedef enum OS_LNX_EntityKind
   OS_LNX_EntityKind_Mutex,
   OS_LNX_EntityKind_RWMutex,
   OS_LNX_EntityKind_ConditionVariable,
-}
-OS_LNX_EntityKind;
+};
 
 struct OS_LNX_Entity
 {
