@@ -549,7 +549,7 @@ struct P2R_State
 {
   Arena arena;
   U64 work_thread_arenas_count;
-  Arena *work_thread_arenas;
+  Arena work_thread_arenas;
 };
 
 ////////////////////////////////

@@ -1189,7 +1189,7 @@ struct DI_SearchWorkIn
 {
   U128 key;
   U64 initial_bucket_write_gen;
-  Arena *work_thread_arenas;
+  Arena work_thread_arenas;
   RDI_Parsed *rdi;
   RDI_SectionKind section_kind;
   Rng1U64 element_range;
@@ -1390,7 +1390,7 @@ di_search_thread__entry_point(void *p)
     
     //- rjf: kick off search tasks
     ASYNC_TaskList tasks = {0};
-    Arena *work_thread_arenas = 0;
+    Arena work_thread_arenas = 0;
     if(arena != 0)
     {
       U64 elements_per_task = 16384;

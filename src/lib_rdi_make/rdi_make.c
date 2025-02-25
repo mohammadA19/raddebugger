@@ -82,7 +82,7 @@ rdim_arena_pop_to_fallback(RDIM_Arena arena, RDI_U64 pos)
 static RDIM_THREAD_LOCAL RDIM_Arena rdim_thread_scratches[2];
 
 RDI_PROC RDIM_Temp
-rdim_scratch_begin_fallback(RDIM_Arena *conflicts, RDI_U64 conflicts_count)
+rdim_scratch_begin_fallback(RDIM_Arena conflicts, RDI_U64 conflicts_count)
 {
   if(rdim_thread_scratches[0] == 0)
   {

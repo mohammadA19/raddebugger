@@ -129,7 +129,7 @@ internal void hs_tctx_ensure_inited(void);
 ////////////////////////////////
 //~ rjf: Cache Submission/Derefs
 
-internal U128 hs_submit_data(U128 key, Arena *data_arena, String8 data);
+internal U128 hs_submit_data(U128 key, Arena data_arena, String8 data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access

@@ -12,7 +12,7 @@ C_LINKAGE thread_static TCTX* tctx_thread_local = 0;
 internal void
 tctx_init_and_equip(TCTX *tctx){
   MemoryZeroStruct(tctx);
-  Arena *arena_ptr = tctx->arenas;
+  Arena arena_ptr = tctx->arenas;
   for (U64 i = 0; i < ArrayCount(tctx->arenas); i += 1, arena_ptr += 1){
     *arena_ptr = new Arena();
   }
@@ -34,13 +34,13 @@ tctx_get_equipped(void){
 }
 
 internal Arena*
-tctx_get_scratch(Arena *conflicts, U64 count){
+tctx_get_scratch(Arena conflicts, U64 count){
   TCTX *tctx = tctx_get_equipped();
   
   Arena result = 0;
-  Arena *arena_ptr = tctx->arenas;
+  Arena arena_ptr = tctx->arenas;
   for (U64 i = 0; i < ArrayCount(tctx->arenas); i += 1, arena_ptr += 1){
-    Arena *conflict_ptr = conflicts;
+    Arena conflict_ptr = conflicts;
     B32 has_conflict = 0;
     for (U64 j = 0; j < count; j += 1, conflict_ptr += 1){
       if (*arena_ptr == *conflict_ptr){

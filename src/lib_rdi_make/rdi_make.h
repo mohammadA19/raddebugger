@@ -168,7 +168,7 @@ struct RDIM_Arena
 // #define RDIM_SCRATCH_OVERRIDE
 // #define RDIM_Temp <name of arena temp block type - generally struct: (Arena*, U64)
 // #define rdim_temp_arena <name of temp -> arena implementation - must be (Temp) -> (Arena*)>
-// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena *conflicts, U64 conflict_count) -> Temp>
+// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena conflicts, U64 conflict_count) -> Temp>
 // #define rdim_scratch_end <name of scratch end function - must be (Temp) -> void
 
 #if !defined(RDIM_Temp)
@@ -1308,7 +1308,7 @@ RDI_PROC void rdim_arena_pop_to_fallback(RDIM_Arena arena, RDI_U64 pos);
 
 //- rjf: thread-local scratch arenas
 #if !defined (RDIM_SCRATCH_OVERRIDE)
-RDI_PROC RDIM_Temp rdim_scratch_begin_fallback(RDIM_Arena *conflicts, RDI_U64 conflicts_count);
+RDI_PROC RDIM_Temp rdim_scratch_begin_fallback(RDIM_Arena conflicts, RDI_U64 conflicts_count);
 RDI_PROC void rdim_scratch_end_fallback(RDIM_Temp temp);
 #endif
 
