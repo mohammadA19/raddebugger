@@ -423,14 +423,14 @@ ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 internal UI_State *
 ui_state_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   UI_State *ui = push_array(arena, UI_State, 1);
   ui->arena = arena;
   ui->external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
-  ui->build_arenas[0] = arena_alloc();
-  ui->build_arenas[1] = arena_alloc();
-  ui->drag_state_arena = arena_alloc();
-  ui->string_hover_arena = arena_alloc();
+  ui->build_arenas[0] = new Arena();
+  ui->build_arenas[1] = new Arena();
+  ui->drag_state_arena = new Arena();
+  ui->string_hover_arena = new Arena();
   ui->box_table_size = 4096;
   ui->box_table = push_array(arena, UI_BoxHashSlot, ui->box_table_size);
   ui->anim_slots_count = 4096;

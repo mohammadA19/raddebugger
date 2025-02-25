@@ -2912,13 +2912,13 @@ rd_view_alloc(void)
   }
   
   // rjf: initialize
-  view->arena = arena_alloc();
+  view->arena = new Arena();
   view->spec = &rd_nil_view_rule_info;
-  view->project_path_arena = arena_alloc();
+  view->project_path_arena = new Arena();
   view->project_path = str8_zero();
   for(U64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
   {
-    view->params_arenas[idx] = arena_alloc();
+    view->params_arenas[idx] = new Arena();
     view->params_roots[idx] = &md_nil_node;
   }
   view->query_cursor = view->query_mark = txt_pt(1, 1);
@@ -3036,7 +3036,7 @@ internal Arena *
 rd_view_push_arena_ext(RD_View *view)
 {
   RD_ArenaExt *ext = push_array(view->arena, RD_ArenaExt, 1);
-  ext->arena = arena_alloc();
+  ext->arena = new Arena();
   SLLQueuePush(view->first_arena_ext, view->last_arena_ext, ext);
   return ext->arena;
 }
@@ -3235,7 +3235,7 @@ rd_transient_view_node_from_ev_key(RD_View *owner_view, EV_Key key)
     DLLPushBack(slot->first, slot->last, node);
     node->key = key;
     node->view = rd_view_alloc();
-    node->initial_params_arena = arena_alloc();
+    node->initial_params_arena = new Arena();
     node->first_frame_index_touched = node->last_frame_index_touched = rd_state->frame_index;
     DLLPushBack_NPZ(&rd_nil_view, owner_view->first_transient, owner_view->last_transient, node->view, order_next, order_prev);
   }
@@ -3309,24 +3309,24 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   window->gen += 1;
   window->frames_alive = 0;
   window->cfg_src = cfg_src;
-  window->arena = arena_alloc();
+  window->arena = new Arena();
   {
     String8 title = str8_lit_comp(BUILD_TITLE_STRING_LITERAL);
     window->os = os_window_open(size, OS_WindowFlag_CustomBorder, title);
   }
   window->r = r_window_equip(window->os);
   window->ui = ui_state_alloc();
-  window->ctx_menu_arena = arena_alloc();
+  window->ctx_menu_arena = new Arena();
   window->ctx_menu_regs = push_array(window->ctx_menu_arena, RD_Regs, 1);
   window->ctx_menu_input_buffer_size = KB(4);
   window->ctx_menu_input_buffer = push_array(window->arena, U8, window->ctx_menu_input_buffer_size);
-  window->drop_completion_arena = arena_alloc();
-  window->hover_eval_arena = arena_alloc();
-  window->autocomp_lister_params_arena = arena_alloc();
+  window->drop_completion_arena = new Arena();
+  window->hover_eval_arena = new Arena();
+  window->autocomp_lister_params_arena = new Arena();
   window->free_panel = &rd_nil_panel;
   window->root_panel = rd_panel_alloc(window);
   window->focused_panel = window->root_panel;
-  window->query_cmd_arena = arena_alloc();
+  window->query_cmd_arena = new Arena();
   window->query_view_stack_top = &rd_nil_view;
   window->last_dpi = os_dpi_from_window(window->os);
   for EachEnumVal(RD_SettingCode, code)
@@ -11189,7 +11189,7 @@ rd_query_cached_entity_list_with_kind(RD_EntityKind kind)
     cache->alloc_gen = rd_state->kind_alloc_gens[kind];
     if(cache->arena == 0)
     {
-      cache->arena = arena_alloc();
+      cache->arena = new Arena();
     }
     arena_clear(cache->arena);
     cache->list = rd_push_entity_list_with_kind(cache->arena, kind);
@@ -11443,14 +11443,14 @@ internal void
 rd_init(CmdLine *cmdln)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   rd_state = push_array(arena, RD_State, 1);
   rd_state->arena = arena;
   rd_state->quit_after_success = (cmd_line_has_flag(cmdln, str8_lit("quit_after_success")) ||
                                   cmd_line_has_flag(cmdln, str8_lit("q")));
   for(U64 idx = 0; idx < ArrayCount(rd_state->frame_arenas); idx += 1)
   {
-    rd_state->frame_arenas[idx] = arena_alloc();
+    rd_state->frame_arenas[idx] = new Arena();
   }
   rd_state->log = log_alloc();
   log_select(rd_state->log);
@@ -11468,24 +11468,24 @@ rd_init(CmdLine *cmdln)
   rd_state->match_store = di_match_store_alloc();
   for(U64 idx = 0; idx < ArrayCount(rd_state->cmds_arenas); idx += 1)
   {
-    rd_state->cmds_arenas[idx] = arena_alloc();
+    rd_state->cmds_arenas[idx] = new Arena();
   }
-  rd_state->entities_arena = arena_alloc(.reserve_size = GB(64), .commit_size = KB(64));
+  rd_state->entities_arena = new Arena(ReserveSize = GB(64), CommitSize = KB(64));
   rd_state->entities_root = &rd_nil_entity;
   rd_state->entities_base = push_array(rd_state->entities_arena, RD_Entity, 0);
   rd_state->entities_count = 0;
   rd_state->entities_root = rd_entity_alloc(&rd_nil_entity, RD_EntityKind_Root);
-  rd_state->key_map_arena = arena_alloc();
-  rd_state->popup_arena = arena_alloc();
+  rd_state->key_map_arena = new Arena();
+  rd_state->popup_arena = new Arena();
   rd_state->ctx_menu_key = ui_key_from_string(ui_key_zero(), str8_lit("top_level_ctx_menu"));
   rd_state->drop_completion_key = ui_key_from_string(ui_key_zero(), str8_lit("drop_completion_ctx_menu"));
-  rd_state->string_search_arena = arena_alloc();
+  rd_state->string_search_arena = new Arena();
   rd_state->eval_viz_view_cache_slots_count = 1024;
   rd_state->eval_viz_view_cache_slots = push_array(arena, RD_EvalVizViewCacheSlot, rd_state->eval_viz_view_cache_slots_count);
-  rd_state->cfg_main_font_path_arena = arena_alloc();
-  rd_state->cfg_code_font_path_arena = arena_alloc();
-  rd_state->bind_change_arena = arena_alloc();
-  rd_state->drag_drop_arena = arena_alloc();
+  rd_state->cfg_main_font_path_arena = new Arena();
+  rd_state->cfg_code_font_path_arena = new Arena();
+  rd_state->bind_change_arena = new Arena();
+  rd_state->drag_drop_arena = new Arena();
   rd_state->drag_drop_regs = push_array(rd_state->drag_drop_arena, RD_Regs, 1);
   rd_state->top_regs = &rd_state->base_regs;
   rd_clear_bindings();
@@ -11528,12 +11528,12 @@ rd_init(CmdLine *cmdln)
     String8 cfg_src_paths[RD_CfgSrc_COUNT] = {user_cfg_path, project_cfg_path};
     for(RD_CfgSrc src = (RD_CfgSrc)0; src < RD_CfgSrc_COUNT; src = (RD_CfgSrc)(src+1))
     {
-      rd_state->cfg_path_arenas[src] = arena_alloc();
+      rd_state->cfg_path_arenas[src] = new Arena();
       rd_cmd(rd_cfg_src_load_cmd_kind_table[src], .file_path = path_normalized_from_string(scratch.arena, cfg_src_paths[src]));
     }
     
     // rjf: set up config table arena
-    rd_state->cfg_arena = arena_alloc();
+    rd_state->cfg_arena = new Arena();
     scratch_end(scratch);
   }
   
@@ -11646,7 +11646,7 @@ rd_init(CmdLine *cmdln)
     Temp scratch = scratch_begin(0, 0);
     String8 current_path = os_get_current_path(scratch.arena);
     String8 current_path_with_slash = push_str8f(scratch.arena, "%S/", current_path);
-    rd_state->current_path_arena = arena_alloc();
+    rd_state->current_path_arena = new Arena();
     rd_state->current_path = push_str8_copy(rd_state->current_path_arena, current_path_with_slash);
     scratch_end(scratch);
   }

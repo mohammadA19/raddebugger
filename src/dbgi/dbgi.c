@@ -196,7 +196,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
 internal void
 di_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   di_shared = push_array(arena, DI_Shared, 1);
   di_shared->arena = arena;
   di_shared->slots_count = 4096;
@@ -205,7 +205,7 @@ di_init(void)
   di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
   for(U64 idx = 0; idx < di_shared->stripes_count; idx += 1)
   {
-    di_shared->stripes[idx].arena = arena_alloc();
+    di_shared->stripes[idx].arena = new Arena();
     di_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     di_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -215,7 +215,7 @@ di_init(void)
   di_shared->search_stripes = push_array(arena, DI_SearchStripe, di_shared->search_stripes_count);
   for(U64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
   {
-    di_shared->search_stripes[idx].arena = arena_alloc();
+    di_shared->search_stripes[idx].arena = new Arena();
     di_shared->search_stripes[idx].rw_mutex = os_rw_mutex_alloc();
     di_shared->search_stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -248,7 +248,7 @@ di_scope_open(void)
 {
   if(di_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     di_tctx = push_array(arena, DI_TCTX, 1);
     di_tctx->arena = arena;
   }
@@ -691,7 +691,7 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
         node->key = key;
         for(U64 idx = 0; idx < ArrayCount(node->buckets); idx += 1)
         {
-          node->buckets[idx].arena = arena_alloc();
+          node->buckets[idx].arena = new Arena();
         }
       }
       
@@ -1099,7 +1099,7 @@ ASYNC_WORK_DEF(di_parse_work)
     U64 decompressed_size = rdi_decompressed_size_from_parsed(&rdi_parsed_maybe_compressed);
     if(decompressed_size > file_props.size)
     {
-      rdi_parsed_arena = arena_alloc();
+      rdi_parsed_arena = new Arena();
       U8 *decompressed_data = push_array_no_zero(rdi_parsed_arena, U8, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, &rdi_parsed_maybe_compressed);
       RDI_ParseStatus parse_status = rdi_parse(decompressed_data, decompressed_size, &rdi_parsed);
@@ -1210,7 +1210,7 @@ ASYNC_WORK_DEF(di_search_work)
   DI_SearchWorkIn *in = (DI_SearchWorkIn *)input;
   if(in->work_thread_arenas[thread_idx] == 0)
   {
-    in->work_thread_arenas[thread_idx] = arena_alloc();
+    in->work_thread_arenas[thread_idx] = new Arena();
   }
   Arena *arena = in->work_thread_arenas[thread_idx];
   U128 key = in->key;
@@ -1553,14 +1553,14 @@ di_search_evictor_thread__entry_point(void *p)
 internal DI_MatchStore *
 di_match_store_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);
   store->arena                  = arena;
   for EachElement(idx, store->gen_arenas)
   {
-    store->gen_arenas[idx] = arena_alloc();
+    store->gen_arenas[idx] = new Arena();
   }
-  store->params_arena           = arena_alloc();
+  store->params_arena           = new Arena();
   store->params_rw_mutex        = os_rw_mutex_alloc();
   store->match_name_slots_count = 4096;
   store->match_name_slots       = push_array(arena, DI_MatchNameSlot, store->match_name_slots_count);

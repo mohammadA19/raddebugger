@@ -167,7 +167,7 @@ global read_only struct
 internal void
 entry_point(CmdLine *cmdline)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
 
   // make indent
   String8List *out = push_array(arena, String8List, 1);

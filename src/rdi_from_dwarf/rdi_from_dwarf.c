@@ -409,7 +409,7 @@ dump_entry_tree(Arena *arena, String8List *out,
 internal void
 entry_point(CmdLine *cmd_line)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   
   // parse arguments
   DWARFCONV_Params *params = dwarf_convert_params_from_cmd_line(arena, cmd_line);

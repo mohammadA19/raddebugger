@@ -7,7 +7,7 @@
 internal void
 mtx_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   mtx_shared = push_array(arena, MTX_Shared, 1);
   mtx_shared->arena = arena;
   mtx_shared->slots_count = 256;
@@ -16,7 +16,7 @@ mtx_init(void)
   mtx_shared->stripes = push_array(arena, MTX_Stripe, mtx_shared->stripes_count);
   for(U64 idx = 0; idx < mtx_shared->stripes_count; idx += 1)
   {
-    mtx_shared->stripes[idx].arena = arena_alloc();
+    mtx_shared->stripes[idx].arena = new Arena();
     mtx_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   mtx_shared->mut_threads_count = Min(os_get_system_info()->logical_processor_count, 4);
@@ -113,7 +113,7 @@ mtx_mut_thread__entry_point(void *p)
     if(op.range.max != op.range.min || op.replace.size != 0)
     {
       U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
-      Arena *arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
+      Arena *arena = new Arena(CommitSize = new_data_size + ARENA_HEADER_SIZE, ReserveSize = new_data_size + ARENA_HEADER_SIZE);
       U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
       String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
       String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));

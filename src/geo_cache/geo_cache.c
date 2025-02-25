@@ -7,7 +7,7 @@
 internal void
 geo_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   geo_shared = push_array(arena, GEO_Shared, 1);
   geo_shared->arena = arena;
   geo_shared->slots_count = 1024;
@@ -17,7 +17,7 @@ geo_init(void)
   geo_shared->stripes_free_nodes = push_array(arena, GEO_Node *, geo_shared->stripes_count);
   for(U64 idx = 0; idx < geo_shared->stripes_count; idx += 1)
   {
-    geo_shared->stripes[idx].arena = arena_alloc();
+    geo_shared->stripes[idx].arena = new Arena();
     geo_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     geo_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -36,7 +36,7 @@ geo_tctx_ensure_inited(void)
 {
   if(geo_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     geo_tctx = push_array(arena, GEO_TCTX, 1);
     geo_tctx->arena = arena;
   }

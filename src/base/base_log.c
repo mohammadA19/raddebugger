@@ -15,7 +15,7 @@ C_LINKAGE thread_static Log *log_active = 0;
 internal Log *
 log_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena arena = new Arena();
   Log *log = push_array(arena, Log, 1);
   log->arena = arena;
   return log;

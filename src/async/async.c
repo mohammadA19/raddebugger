@@ -7,7 +7,7 @@
 internal void
 async_init(CmdLine *cmdline)
 {
-  Arena *arena = arena_alloc();
+  Arena arena = new Arena();
   async_shared = push_array(arena, ASYNC_Shared, 1);
   async_shared->arena = arena;
   for EachEnumVal(ASYNC_Priority, p)

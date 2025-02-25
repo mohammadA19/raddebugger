@@ -1347,7 +1347,7 @@ d_query_cached_unwind_from_thread(CTRL_Entity *thread)
       }
       MemoryZeroStruct(node);
       DLLPushBack(slot->first, slot->last, node);
-      node->arena = arena_alloc();
+      node->arena = new Arena();
       node->thread = handle;
     }
     if(!d_state->ctrl_is_running && (node->reggen != reg_gen || node->memgen != mem_gen))
@@ -1590,16 +1590,16 @@ d_next_cmd(D_Cmd **cmd)
 internal void
 d_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   d_state = push_array(arena, D_State, 1);
   d_state->arena = arena;
-  d_state->cmds_arena = arena_alloc();
+  d_state->cmds_arena = new Arena();
   d_state->output_log_key = hs_hash_from_data(str8_lit("output_log_key"));
   d_state->ctrl_entity_store = ctrl_entity_store_alloc();
-  d_state->ctrl_stop_arena = arena_alloc();
+  d_state->ctrl_stop_arena = new Arena();
   d_state->view_rule_spec_table_size = 1024;
   d_state->view_rule_spec_table = push_array(arena, D_ViewRuleSpec *, d_state->view_rule_spec_table_size);
-  d_state->ctrl_msg_arena = arena_alloc();
+  d_state->ctrl_msg_arena = new Arena();
   
   // rjf: register core view rules
   {
@@ -1612,19 +1612,19 @@ d_init(void)
   d_state->unwind_cache.slots = push_array(arena, D_UnwindCacheSlot, d_state->unwind_cache.slots_count);
   for(U64 idx = 0; idx < ArrayCount(d_state->tls_base_caches); idx += 1)
   {
-    d_state->tls_base_caches[idx].arena = arena_alloc();
+    d_state->tls_base_caches[idx].arena = new Arena();
   }
   for(U64 idx = 0; idx < ArrayCount(d_state->locals_caches); idx += 1)
   {
-    d_state->locals_caches[idx].arena = arena_alloc();
+    d_state->locals_caches[idx].arena = new Arena();
   }
   for(U64 idx = 0; idx < ArrayCount(d_state->member_caches); idx += 1)
   {
-    d_state->member_caches[idx].arena = arena_alloc();
+    d_state->member_caches[idx].arena = new Arena();
   }
   
   // rjf: set up run state
-  d_state->ctrl_last_run_arena = arena_alloc();
+  d_state->ctrl_last_run_arena = new Arena();
 }
 
 internal D_EventList

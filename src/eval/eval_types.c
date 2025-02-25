@@ -236,7 +236,7 @@ e_select_type_ctx(E_TypeCtx *ctx)
 {
   if(e_type_state == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     e_type_state = push_array(arena, E_TypeState, 1);
     e_type_state->arena = arena;
     e_type_state->arena_eval_start_pos = arena_pos(e_type_state->arena);

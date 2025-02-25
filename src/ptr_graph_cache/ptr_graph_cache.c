@@ -7,7 +7,7 @@
 internal void
 ptg_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   ptg_shared = push_array(arena, PTG_Shared, 1);
   ptg_shared->arena = arena;
   ptg_shared->slots_count = 1024;
@@ -16,7 +16,7 @@ ptg_init(void)
   ptg_shared->stripes = push_array(arena, PTG_GraphStripe, ptg_shared->stripes_count);
   for(U64 idx = 0; idx < ptg_shared->stripes_count; idx += 1)
   {
-    ptg_shared->stripes[idx].arena = arena_alloc();
+    ptg_shared->stripes[idx].arena = new Arena();
     ptg_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     ptg_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -56,7 +56,7 @@ ptg_scope_open(void)
 {
   if(ptg_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     ptg_tctx = push_array(arena, PTG_TCTX, 1);
     ptg_tctx->arena = arena;
   }

@@ -238,7 +238,7 @@ lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data, String8 path)
 internal LNK_LibWriter *
 lnk_lib_writer_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   LNK_LibWriter *writer = push_array(arena, LNK_LibWriter, 1);
   writer->arena = arena;
   return writer;

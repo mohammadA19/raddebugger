@@ -1593,7 +1593,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
 internal void
 txt_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   txt_shared = push_array(arena, TXT_Shared, 1);
   txt_shared->arena = arena;
   txt_shared->slots_count = 1024;
@@ -1603,7 +1603,7 @@ txt_init(void)
   txt_shared->stripes_free_nodes = push_array(arena, TXT_Node *, txt_shared->stripes_count);
   for(U64 idx = 0; idx < txt_shared->stripes_count; idx += 1)
   {
-    txt_shared->stripes[idx].arena = arena_alloc();
+    txt_shared->stripes[idx].arena = new Arena();
     txt_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     txt_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -1622,7 +1622,7 @@ txt_tctx_ensure_inited(void)
 {
   if(txt_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     txt_tctx = push_array(arena, TXT_TCTX, 1);
     txt_tctx->arena = arena;
   }
@@ -2173,7 +2173,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   TXT_TextInfo info = {0};
   if(got_task && !u128_match(hash, u128_zero()))
   {
-    info_arena = arena_alloc();
+    info_arena = new Arena();
     
     //- rjf: grab pointers to working counters
     U64 *bytes_processed_ptr = 0;

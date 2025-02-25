@@ -166,7 +166,7 @@ fp_init(void)
   
   //- rjf: initialize main state
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     fp_dwrite_state = push_array(arena, FP_DWrite_State, 1);
     fp_dwrite_state->arena = arena;
   }

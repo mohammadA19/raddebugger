@@ -1136,12 +1136,12 @@ dmn_w32_inject_thread(HANDLE process, U64 start_address)
 internal void
 dmn_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   dmn_w32_shared = push_array(arena, DMN_W32_Shared, 1);
   dmn_w32_shared->arena = arena;
   dmn_w32_shared->access_mutex = os_mutex_alloc();
-  dmn_w32_shared->detach_arena = arena_alloc();
-  dmn_w32_shared->entities_arena = arena_alloc(.reserve_size = GB(8), .commit_size = KB(64));
+  dmn_w32_shared->detach_arena = new Arena();
+  dmn_w32_shared->entities_arena = new Arena(ReserveSize = GB(8), CommitSize = KB(64));
   dmn_w32_shared->entities_base = dmn_w32_entity_alloc(&dmn_w32_entity_nil, DMN_W32_EntityKind_Root, 0);
   dmn_w32_shared->entities_id_hash_slots_count = 4096;
   dmn_w32_shared->entities_id_hash_slots = push_array(arena, DMN_W32_EntityIDHashSlot, dmn_w32_shared->entities_id_hash_slots_count);

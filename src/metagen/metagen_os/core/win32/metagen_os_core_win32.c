@@ -1549,7 +1549,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     tctx_init_and_equip(&tctx);
     
     // rjf: set up dynamically-alloc'd state
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     {
       os_w32_state.arena = arena;
       {
@@ -1610,11 +1610,11 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     
     // rjf: set up entity storage
     InitializeCriticalSection(&os_w32_state.entity_mutex);
-    os_w32_state.entity_arena = arena_alloc();
+    os_w32_state.entity_arena = new Arena();
   }
   
   //- rjf: extract arguments
-  Arena *args_arena = arena_alloc(.reserve_size = MB(1), .commit_size = KB(32));
+  Arena *args_arena = new Arena(ReserveSize = MB(1), CommitSize = KB(32));
   char **argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {

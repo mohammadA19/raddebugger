@@ -612,14 +612,14 @@ ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 internal CTRL_EntityStore *
 ctrl_entity_store_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   CTRL_EntityStore *store = push_array(arena, CTRL_EntityStore, 1);
   store->arena = arena;
   store->hash_slots_count = 1024;
   store->hash_slots = push_array(arena, CTRL_EntityHashSlot, store->hash_slots_count);
   for EachEnumVal(CTRL_EntityKind, k)
   {
-    store->entity_kind_lists_arenas[k] = arena_alloc();
+    store->entity_kind_lists_arenas[k] = new Arena();
   }
   CTRL_Entity *root = store->root = ctrl_entity_alloc(store, &ctrl_entity_nil, CTRL_EntityKind_Root, Arch_Null, ctrl_handle_zero(), 0);
   CTRL_Entity *local_machine = ctrl_entity_alloc(store, root, CTRL_EntityKind_Machine, arch_from_context(), ctrl_handle_make(CTRL_MachineID_Local, dmn_handle_zero()), 0);
@@ -1237,7 +1237,7 @@ ctrl_entity_store_apply_events(CTRL_EntityStore *store, CTRL_EventList *list)
 internal void
 ctrl_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   ctrl_state = push_array(arena, CTRL_State, 1);
   ctrl_state->arena = arena;
   for(Arch arch = (Arch)0; arch < Arch_COUNT; arch = (Arch)(arch+1))
@@ -1272,7 +1272,7 @@ ctrl_init(void)
   ctrl_state->thread_reg_cache.stripes = push_array(arena, CTRL_ThreadRegCacheStripe, ctrl_state->thread_reg_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->thread_reg_cache.stripes_count; idx += 1)
   {
-    ctrl_state->thread_reg_cache.stripes[idx].arena = arena_alloc();
+    ctrl_state->thread_reg_cache.stripes[idx].arena = new Arena();
     ctrl_state->thread_reg_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->module_image_info_cache.slots_count = 1024;
@@ -1281,7 +1281,7 @@ ctrl_init(void)
   ctrl_state->module_image_info_cache.stripes = push_array(arena, CTRL_ModuleImageInfoCacheStripe, ctrl_state->module_image_info_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->module_image_info_cache.stripes_count; idx += 1)
   {
-    ctrl_state->module_image_info_cache.stripes[idx].arena = arena_alloc();
+    ctrl_state->module_image_info_cache.stripes[idx].arena = new Arena();
     ctrl_state->module_image_info_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->u2c_ring_size = KB(64);
@@ -1303,10 +1303,10 @@ ctrl_init(void)
     scratch_end(scratch);
   }
   ctrl_state->ctrl_thread_entity_store = ctrl_entity_store_alloc();
-  ctrl_state->dmn_event_arena = arena_alloc();
-  ctrl_state->user_entry_point_arena = arena_alloc();
-  ctrl_state->user_meta_eval_arena = arena_alloc();
-  ctrl_state->dbg_dir_arena = arena_alloc();
+  ctrl_state->dmn_event_arena = new Arena;
+  ctrl_state->user_entry_point_arena = new Arena();
+  ctrl_state->user_meta_eval_arena = new Arena();
+  ctrl_state->dbg_dir_arena = new Arena();
   for(CTRL_ExceptionCodeKind k = (CTRL_ExceptionCodeKind)0; k < CTRL_ExceptionCodeKind_COUNT; k = (CTRL_ExceptionCodeKind)(k+1))
   {
     if(ctrl_exception_code_kind_default_enable_table[k])
@@ -1410,7 +1410,7 @@ ctrl_stored_hash_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B3
         }
         if(!process_node_exists)
         {
-          Arena *node_arena = arena_alloc();
+          Arena *node_arena = new Arena();
           CTRL_ProcessMemoryCacheNode *node = push_array(node_arena, CTRL_ProcessMemoryCacheNode, 1);
           node->arena = node_arena;
           node->handle = process;
@@ -3450,7 +3450,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   //////////////////////////////
   //- rjf: parse module image info
   //
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PE_IntelPdata *pdatas = 0;
   U64 pdatas_count = 0;
   U64 entry_point_voff = 0;
@@ -6042,7 +6042,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
     range_size = dim_1u64(vaddr_range_clamped);
     U64 page_size = os_get_system_info()->page_size;
     U64 arena_size = AlignPow2(range_size + ARENA_HEADER_SIZE, page_size);
-    range_arena = arena_alloc(.reserve_size = range_size+ARENA_HEADER_SIZE, .commit_size = range_size+ARENA_HEADER_SIZE);
+    range_arena = new Arena() { ReserveSize = range_size+ARENA_HEADER_SIZE, CommitSize = range_size+ARENA_HEADER_SIZE };
     if(range_arena == 0)
     {
       range_size = 0;

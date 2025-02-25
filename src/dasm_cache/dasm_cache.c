@@ -257,7 +257,7 @@ dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx)
 internal void
 dasm_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   dasm_shared = push_array(arena, DASM_Shared, 1);
   dasm_shared->arena = arena;
   dasm_shared->slots_count = 1024;
@@ -266,7 +266,7 @@ dasm_init(void)
   dasm_shared->stripes = push_array(arena, DASM_Stripe, dasm_shared->stripes_count);
   for(U64 idx = 0; idx < dasm_shared->stripes_count; idx += 1)
   {
-    dasm_shared->stripes[idx].arena = arena_alloc();
+    dasm_shared->stripes[idx].arena = new Arena();
     dasm_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     dasm_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -285,7 +285,7 @@ dasm_scope_open(void)
 {
   if(dasm_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     dasm_tctx = push_array(arena, DASM_TCTX, 1);
     dasm_tctx->arena = arena;
   }
@@ -712,7 +712,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
   if(got_task)
   {
     //- rjf: produce joined text
-    Arena *text_arena = arena_alloc();
+    Arena *text_arena = new Arena();
     StringJoin text_join = {0};
     text_join.sep = str8_lit("\n");
     String8 text = str8_list_join(text_arena, &inst_strings, &text_join);
@@ -738,7 +738,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
     U128 text_hash = hs_submit_data(text_key, &text_arena, text);
     
     //- rjf: produce value bundle
-    info_arena = arena_alloc();
+    info_arena = new Arena();
     info.text_key = text_key;
     info.lines = dasm_line_array_from_chunk_list(info_arena, &line_list);
   }

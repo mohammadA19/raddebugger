@@ -270,7 +270,7 @@ internal LNK_SectionTable *
 lnk_section_table_alloc(U64 section_virt_off, U64 sect_align, U64 file_align)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   LNK_SectionTable *st = push_array(arena, LNK_SectionTable, 1);
   st->arena            = arena;
   st->section_virt_off = section_virt_off;
@@ -324,7 +324,7 @@ lnk_section_table_push(LNK_SectionTable *st, String8 name, COFF_SectionFlags fla
   st->id_max += 1;
   
   LNK_Section *sect  = &sect_node->data;
-  sect->arena        = arena_alloc();
+  sect->arena        = new Arena();
   sect->id           = sect_id;
   sect->name         = push_str8_copy(sect->arena, name);
   sect->sort_index   = sort_index;

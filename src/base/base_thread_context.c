@@ -14,7 +14,7 @@ tctx_init_and_equip(TCTX *tctx){
   MemoryZeroStruct(tctx);
   Arena **arena_ptr = tctx->arenas;
   for (U64 i = 0; i < ArrayCount(tctx->arenas); i += 1, arena_ptr += 1){
-    *arena_ptr = arena_alloc();
+    *arena_ptr = new Arena();
   }
   tctx_thread_local = tctx;
 }

@@ -1241,8 +1241,8 @@ main(int argc, char **argv)
     tctx_init_and_equip(&tctx);
     
     //- rjf: set up dynamically allocated state
-    os_lnx_state.arena = arena_alloc();
-    os_lnx_state.entity_arena = arena_alloc();
+    os_lnx_state.arena = new Arena();
+    os_lnx_state.entity_arena = new Arena();
     pthread_mutex_init(&os_lnx_state.entity_mutex, 0);
     
     //- rjf: grab dynamically allocated system info

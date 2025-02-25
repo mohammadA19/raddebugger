@@ -836,7 +836,7 @@ os_init(void)
   }
   
   // NOTE(allen): Permanent memory allocator for this layer
-  Arena *perm_arena = arena_alloc();
+  Arena *perm_arena = new Arena();
   lnx_perm_arena = perm_arena;
   
   // NOTE(allen): Initialize Paths

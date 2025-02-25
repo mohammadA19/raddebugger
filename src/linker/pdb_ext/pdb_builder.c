@@ -15,7 +15,7 @@ internal void
 pdb_hash_table_alloc(PDB_HashTable *ht, U32 max)
 {
   ProfBeginFunction();
-  ht->arena        = arena_alloc();
+  ht->arena        = new Arena();
   ht->bucket_arr   = push_array(ht->arena, PDB_HashTableBucket, max);
   ht->present_bits = bit_array_init32(ht->arena, max);
   ht->deleted_bits = bit_array_init32(ht->arena, max);
@@ -89,7 +89,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
     B32 is_present_bits_ok = present_bits.count <= AlignPow2(max, 32);
     B32 is_deleted_bits_ok = deleted_bits.count <= AlignPow2(max, 32);
     if (is_count_ok && is_load_factor_ok && is_present_bits_ok && is_deleted_bits_ok) {
-      Arena *arena = arena_alloc();
+      Arena *arena = new Arena();
       PDB_HashTableBucket *bucket_arr = push_array_no_zero(arena, PDB_HashTableBucket, max);
       U32Array present_bits_new = bit_array_init32(arena, max);
       U32Array deleted_bits_new = bit_array_init32(arena, max);
@@ -510,7 +510,7 @@ pdb_strtab_alloc(PDB_StringTable *strtab, U32 max)
   U64 bucket_max  = (U64)((F64)max * 1.3);
   bucket_max     += 1; // reserve space for null string
   
-  strtab->arena         = arena_alloc();
+  strtab->arena         = new Arena();
   strtab->version       = 1;
   strtab->size          = 0;
   strtab->bucket_count  = 0;
@@ -546,7 +546,7 @@ pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
     if (header.version == PDB_StringTableHeader_CurrentVersion) {
       Temp scratch = scratch_begin(0,0);
 
-      arena = arena_alloc();
+      arena = new Arena();
 
       U32     string_size;
       String8 offset_buffer;
@@ -970,7 +970,7 @@ pdb_type_server_alloc(U64 bucket_cap)
   ProfBeginFunction();
   AssertAlways(0x1000 <= bucket_cap && bucket_cap <= 0x40000);
 
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_TypeServer *ts  = push_array(arena, PDB_TypeServer, 1);
   ts->arena      = arena;
   ts->hash_sn    = MSF_INVALID_STREAM_NUMBER;
@@ -1651,7 +1651,7 @@ internal PDB_InfoContext *
 pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_InfoContext *info = push_array(arena, PDB_InfoContext, 1);
   info->arena      = arena;
   info->flags      = PDB_FeatureFlag_HAS_ID_STREAM;
@@ -1764,7 +1764,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
   }
     
   // fill out info
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_InfoContext *info = push_array_no_zero(arena, PDB_InfoContext, 1);
   info->arena               = arena;
   info->time_stamp          = parse.time_stamp;
@@ -2003,7 +2003,7 @@ internal PDB_GsiContext *
 gsi_alloc(void)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_GsiContext *gsi  = push_array(arena, PDB_GsiContext, 1);
   gsi->arena        = arena;
   gsi->word_size    = PDB_GSI_V70_WORD_SIZE;
@@ -2022,7 +2022,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
   PDB_GsiHeader header = {0};
   msf_stream_read_struct(msf, sn, &header);
   
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_GsiContext *gsi = push_array(arena, PDB_GsiContext, 1);
   gsi->arena        = arena;
   gsi->word_size    = PDB_GSI_V70_WORD_SIZE;
@@ -2546,7 +2546,7 @@ internal PDB_PsiContext *
 psi_alloc(void)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_PsiContext *psi = push_array(arena, PDB_PsiContext, 1);
   psi->arena = arena;
   psi->gsi = gsi_alloc();
@@ -2559,7 +2559,7 @@ psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
 {
   ProfBeginFunction();
   
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_PsiContext *psi = push_array(arena, PDB_PsiContext, 1);
   psi->arena = arena;
   
@@ -2667,7 +2667,7 @@ internal PDB_DbiContext *
 dbi_alloc(COFF_MachineType machine, U32 age)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_DbiContext *dbi = push_array(arena, PDB_DbiContext, 1);
   dbi->arena      = arena;
   dbi->age        = age;
@@ -2892,7 +2892,7 @@ dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
   PDB_DbiHeader header = {0};
   msf_stream_read_struct(msf, sn, &header);
   
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_DbiContext *dbi = push_array(arena, PDB_DbiContext, 1);
   dbi->arena      = arena;
   dbi->age        = header.age;
@@ -3532,7 +3532,7 @@ internal PDB_Context *
 pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid)
 {
   ProfBeginFunction();
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   PDB_Context *pdb = push_array(arena, PDB_Context, 1);
   pdb->arena = arena;
   pdb->msf   = pdb_alloc_msf(page_size);
@@ -3559,7 +3559,7 @@ pdb_open(String8 data)
   MSF_Context *msf = 0;
   MSF_Error msf_err = msf_open(data, &msf);
   if (msf_err == MSF_Error_OK) {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     pdb = push_array(arena, PDB_Context, 1);
     pdb->arena = arena;
     pdb->msf = msf;

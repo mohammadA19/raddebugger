@@ -26,7 +26,7 @@ internal void
 os_gfx_init(void)
 {
   //- rjf: initialize basics
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   os_lnx_gfx_state = push_array(arena, OS_LNX_GfxState, 1);
   os_lnx_gfx_state->arena = arena;
   os_lnx_gfx_state->display = XOpenDisplay(0);

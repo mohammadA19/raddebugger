@@ -31,7 +31,7 @@ entry_point(CmdLine *cmdline)
   //- rjf: set up state
   //
   MG_MsgList msgs = {0};
-  mg_arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(64));
+  mg_arena = new Arena(ReserveSize = GB(64), .commit_size = MB(64));
   mg_state = push_array(mg_arena, MG_State, 1);
   mg_state->slots_count = 256;
   mg_state->slots = push_array(mg_arena, MG_LayerSlot, mg_state->slots_count);

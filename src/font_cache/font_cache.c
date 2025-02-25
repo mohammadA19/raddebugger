@@ -1056,10 +1056,10 @@ fnt_line_height_from_metrics(FNT_Metrics *metrics)
 internal void
 fnt_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   f_state = push_array(arena, FNT_State, 1);
   f_state->permanent_arena = arena;
-  f_state->raster_arena = arena_alloc();
+  f_state->raster_arena = new Arena();
   f_state->font_hash_table_size = 64;
   f_state->font_hash_table = push_array(f_state->permanent_arena, FNT_FontHashSlot, f_state->font_hash_table_size);
   fnt_reset();

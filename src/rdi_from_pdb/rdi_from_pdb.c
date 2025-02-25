@@ -4359,14 +4359,14 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work)
 internal void
 p2r_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   p2r_state = push_array(arena, P2R_State, 1);
   p2r_state->arena = arena;
   p2r_state->work_thread_arenas_count = async_thread_count();
   p2r_state->work_thread_arenas = push_array(arena, Arena *, p2r_state->work_thread_arenas_count);
   for EachIndex(idx, p2r_state->work_thread_arenas_count)
   {
-    p2r_state->work_thread_arenas[idx] = arena_alloc();
+    p2r_state->work_thread_arenas[idx] = new Arena();
   }
 }
 

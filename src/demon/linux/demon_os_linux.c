@@ -795,7 +795,7 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
 
 internal void
 demon_os_init(void){
-  demon_lnx_event_arena = arena_alloc();
+  demon_lnx_event_arena = new Arena();
 }
 
 ////////////////////////////////

@@ -700,7 +700,7 @@ lnk_make_res_obj(TP_Context       *tp,
   TP_Arena *temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
   temp_tp_arena->v        = push_array(scratch.arena, Arena *, 1);
   temp_tp_arena->count    = 1;
-  temp_tp_arena->v[0]     = arena_alloc();
+  temp_tp_arena->v[0]     = new Arena();
   
   LNK_SymbolTable  *symtab      = lnk_symbol_table_init(temp_tp_arena);
   LNK_SectionTable *st          = lnk_section_table_alloc(0, sect_virt_align, sect_file_align);
@@ -3228,7 +3228,7 @@ lnk_run(int argc, char **argv)
   LNK_ImportTable     *imptab_static                    = 0;
   LNK_ImportTable     *imptab_delayed                   = 0;
   LNK_ExportTable     *exptab                           = lnk_export_table_alloc();
-  Arena               *ht_arena                         = arena_alloc();
+  Arena               *ht_arena                         = new Arena();
   HashTable           *disallow_lib_ht                  = hash_table_init(scratch.arena, 0x100);
   HashTable           *delay_load_dll_ht                = hash_table_init(scratch.arena, 0x100);
   HashTable           *loaded_lib_ht                    = hash_table_init(scratch.arena, 0x100);

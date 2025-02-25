@@ -150,7 +150,7 @@ ev_type_key_is_editable(E_TypeKey type_key)
 internal EV_View *
 ev_view_alloc(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   EV_View *view = push_array(arena, EV_View, 1);
   view->arena = arena;
   view->expand_slots_count = 256;

@@ -141,7 +141,7 @@ tp_arena_alloc(TP_Context *pool)
   Temp scratch = scratch_begin(0,0);
   Arena **arr = push_array(scratch.arena, Arena *, pool->worker_count);
   for (U64 i = 0; i < pool->worker_count; ++i) {
-    arr[i] = arena_alloc();
+    arr[i] = new Arena();
   }
   Arena **dst = push_array(arr[0], Arena *, pool->worker_count);
   MemoryCopy(dst, arr, sizeof(Arena*) * pool->worker_count);

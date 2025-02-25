@@ -25,7 +25,7 @@ hs_hash_from_data(String8 data)
 internal void
 hs_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   hs_shared = push_array(arena, HS_Shared, 1);
   hs_shared->arena = arena;
   hs_shared->slots_count = 4096;
@@ -36,7 +36,7 @@ hs_init(void)
   for(U64 idx = 0; idx < hs_shared->stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->stripes[idx];
-    stripe->arena = arena_alloc();
+    stripe->arena = new Arena();
     stripe->rw_mutex = os_rw_mutex_alloc();
     stripe->cv = os_condition_variable_alloc();
   }
@@ -47,7 +47,7 @@ hs_init(void)
   for(U64 idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->key_stripes[idx];
-    stripe->arena = arena_alloc();
+    stripe->arena = new Arena();
     stripe->rw_mutex = os_rw_mutex_alloc();
     stripe->cv = os_condition_variable_alloc();
   }
@@ -62,7 +62,7 @@ hs_tctx_ensure_inited(void)
 {
   if(hs_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     hs_tctx = push_array(arena, HS_TCTX, 1);
     hs_tctx->arena = arena;
   }

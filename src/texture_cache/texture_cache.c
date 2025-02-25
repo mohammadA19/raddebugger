@@ -20,7 +20,7 @@ tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 internal void
 tex_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   tex_shared = push_array(arena, TEX_Shared, 1);
   tex_shared->arena = arena;
   tex_shared->slots_count = 1024;
@@ -30,7 +30,7 @@ tex_init(void)
   tex_shared->stripes_free_nodes = push_array(arena, TEX_Node *, tex_shared->stripes_count);
   for(U64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
   {
-    tex_shared->stripes[idx].arena = arena_alloc();
+    tex_shared->stripes[idx].arena = new Arena();
     tex_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     tex_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
@@ -49,7 +49,7 @@ tex_tctx_ensure_inited(void)
 {
   if(tex_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena *arena = new Arena();
     tex_tctx = push_array(arena, TEX_TCTX, 1);
     tex_tctx->arena = arena;
   }

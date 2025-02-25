@@ -796,7 +796,7 @@ internal void
 os_gfx_init(void)
 {
   //- rjf: set up base shared state
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   os_w32_gfx_state = push_array(arena, OS_W32_GfxState, 1);
   os_w32_gfx_state->arena = arena;
   os_w32_gfx_state->gfx_thread_tid = (U32)GetCurrentThreadId();
@@ -1061,7 +1061,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
   if(flags & OS_WindowFlag_CustomBorder)
   {
     window->custom_border = 1;
-    window->paint_arena = arena_alloc();
+    window->paint_arena = new Arena();
   }
   
   //- rjf: convert to handle + return

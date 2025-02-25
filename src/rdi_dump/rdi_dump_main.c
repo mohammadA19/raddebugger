@@ -35,7 +35,7 @@ entry_point(CmdLine *cmd_line)
   //////////////////////////////
   //- rjf: set up
   //
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   String8List errors = {0};
   
   //////////////////////////////

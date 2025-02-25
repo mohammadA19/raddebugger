@@ -55,7 +55,7 @@ internal void
 entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   B32 do_help = (cmd_line_has_flag(cmdline, str8_lit("help")) ||
                  cmd_line_has_flag(cmdline, str8_lit("h")) ||
                  cmd_line_has_flag(cmdline, str8_lit("?")));

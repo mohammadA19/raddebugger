@@ -1349,7 +1349,7 @@ msf_alloc__(MSF_UInt page_size, MSF_PageNumber active_fpm)
   Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
   Assert(IsPow2(page_size));
   
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   
   MSF_Context *msf = push_array(arena, MSF_Context, 1);
   msf->arena = arena;

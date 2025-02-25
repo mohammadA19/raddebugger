@@ -35,7 +35,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 internal void
 fs_init(void)
 {
-  Arena *arena = arena_alloc();
+  Arena *arena = new Arena();
   fs_shared = push_array(arena, FS_Shared, 1);
   fs_shared->arena = arena;
   fs_shared->change_gen = 1;
@@ -45,7 +45,7 @@ fs_init(void)
   fs_shared->stripes = push_array(arena, FS_Stripe, fs_shared->stripes_count);
   for(U64 idx = 0; idx < fs_shared->stripes_count; idx += 1)
   {
-    fs_shared->stripes[idx].arena = arena_alloc();
+    fs_shared->stripes[idx].arena = new Arena();
     fs_shared->stripes[idx].cv = os_condition_variable_alloc();
     fs_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
@@ -320,7 +320,7 @@ ASYNC_WORK_DEF(fs_stream_work)
   data_arena_size += KB(4)-1;
   data_arena_size -= data_arena_size%KB(4);
   ProfBegin("allocate");
-  Arena *data_arena = arena_alloc(.reserve_size = data_arena_size, .commit_size = data_arena_size);
+  Arena *data_arena = new Arena(ReserveSize = data_arena_size, CommitSize = data_arena_size);
   ProfEnd();
   ProfBegin("read");
   String8 data = os_string_from_file_range(data_arena, file, r1u64(range.min, range.min+read_size));
