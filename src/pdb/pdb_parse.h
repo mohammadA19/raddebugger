@@ -186,27 +186,27 @@ typedef struct PDB_GsiParsed
 ////////////////////////////////
 //~ PDB Parser Functions
 
-internal PDB_Info*            pdb_info_from_data(Arena *arena, String8 pdb_info_data);
-internal PDB_NamedStreamTable*pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info);
-internal PDB_Strtbl*          pdb_strtbl_from_data(Arena *arena, String8 strtbl_data);
+internal PDB_Info*            pdb_info_from_data(Arena arena, String8 pdb_info_data);
+internal PDB_NamedStreamTable*pdb_named_stream_table_from_info(Arena arena, PDB_Info *info);
+internal PDB_Strtbl*          pdb_strtbl_from_data(Arena arena, String8 strtbl_data);
 
-internal PDB_DbiParsed*       pdb_dbi_from_data(Arena *arena, String8 dbi_data);
-internal PDB_TpiParsed*       pdb_tpi_from_data(Arena *arena, String8 tpi_data);
-internal PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena *arena,
+internal PDB_DbiParsed*       pdb_dbi_from_data(Arena arena, String8 dbi_data);
+internal PDB_TpiParsed*       pdb_tpi_from_data(Arena arena, String8 tpi_data);
+internal PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena arena,
                                                      PDB_Strtbl *strtbl,
                                                      PDB_TpiParsed *tpi,
                                                      String8 tpi_hash_data,
                                                      String8 tpi_hash_aux_data);
-internal PDB_GsiParsed*       pdb_gsi_from_data(Arena *arena, String8 gsi_data);
+internal PDB_GsiParsed*       pdb_gsi_from_data(Arena arena, String8 gsi_data);
 internal U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 string);
 
-internal COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena *arena, String8 section_data);
+internal COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena arena, String8 section_data);
 
-internal PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena *arena,
+internal PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena arena,
                                                             String8 module_info_data);
 
 internal PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 seccontrib_data,
+pdb_comp_unit_contribution_array_from_data(Arena arena, String8 seccontrib_data,
                                            COFF_SectionHeaderArray sections);
 
 ////////////////////////////////
@@ -221,7 +221,7 @@ internal String8              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_Comp
 
 internal String8              pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi);
 
-internal CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena *arena,
+internal CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena arena,
                                                        PDB_TpiHashParsed *tpi_hash,
                                                        CV_LeafParsed *tpi_leaf,
                                                        String8 name,

@@ -103,7 +103,7 @@ struct DI_Node
   FileProperties file_props;
   
   // rjf: parse artifacts
-  Arena *arena;
+  Arena arena;
   RDI_Parsed rdi;
   B32 parse_done;
 };
@@ -118,7 +118,7 @@ struct DI_Slot
 typedef struct DI_Stripe DI_Stripe;
 struct DI_Stripe
 {
-  Arena *arena;
+  Arena arena;
   DI_Node *free_node;
   DI_StringChunkNode *free_string_chunks[8];
   OS_Handle rw_mutex;
@@ -172,7 +172,7 @@ struct DI_SearchParams
 typedef struct DI_SearchBucket DI_SearchBucket;
 struct DI_SearchBucket
 {
-  Arena *arena;
+  Arena arena;
   String8 query;
   U64 params_hash;
   DI_SearchParams params;
@@ -204,7 +204,7 @@ struct DI_SearchSlot
 typedef struct DI_SearchStripe DI_SearchStripe;
 struct DI_SearchStripe
 {
-  Arena *arena;
+  Arena arena;
   DI_SearchNode *free_node;
   OS_Handle rw_mutex;
   OS_Handle cv;
@@ -232,7 +232,7 @@ struct DI_Scope
 typedef struct DI_TCTX DI_TCTX;
 struct DI_TCTX
 {
-  Arena *arena;
+  Arena arena;
   DI_Scope *free_scope;
   DI_Touch *free_touch;
 };
@@ -299,12 +299,12 @@ struct DI_MatchNameSlot
 typedef struct DI_MatchStore DI_MatchStore;
 struct DI_MatchStore
 {
-  Arena *arena;
+  Arena arena;
   U64 gen;
-  Arena *gen_arenas[2];
+  Arena gen_arenas[2];
   
   // rjf: parameters
-  Arena *params_arena;
+  Arena params_arena;
   OS_Handle params_rw_mutex;
   U64 params_hash;
   DI_KeyArray params_keys;
@@ -335,7 +335,7 @@ struct DI_MatchStore
 typedef struct DI_Shared DI_Shared;
 struct DI_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: debug info cache
   U64 slots_count;
@@ -386,12 +386,12 @@ internal U64 di_hash_from_string(String8 string, StringMatchFlags match_flags);
 internal U64 di_hash_from_key(DI_Key *k);
 internal DI_Key di_key_zero(void);
 internal B32 di_key_match(DI_Key *a, DI_Key *b);
-internal DI_Key di_key_copy(Arena *arena, DI_Key *src);
-internal DI_Key di_normalized_key_from_key(Arena *arena, DI_Key *src);
-internal void di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key);
-internal DI_KeyArray di_key_array_from_list(Arena *arena, DI_KeyList *list);
-internal DI_KeyArray di_key_array_copy(Arena *arena, DI_KeyArray *src);
-internal DI_SearchParams di_search_params_copy(Arena *arena, DI_SearchParams *src);
+internal DI_Key di_key_copy(Arena arena, DI_Key *src);
+internal DI_Key di_normalized_key_from_key(Arena arena, DI_Key *src);
+internal void di_key_list_push(Arena arena, DI_KeyList *list, DI_Key *key);
+internal DI_KeyArray di_key_array_from_list(Arena arena, DI_KeyList *list);
+internal DI_KeyArray di_key_array_copy(Arena arena, DI_KeyArray *src);
+internal DI_SearchParams di_search_params_copy(Arena arena, DI_SearchParams *src);
 internal U64 di_hash_from_search_params(DI_SearchParams *params);
 internal void di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList *dst, DI_SearchItemChunkList *to_push);
 internal U64 di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray *array, U64 element_idx);
@@ -442,10 +442,10 @@ internal DI_SearchItemArray di_search_items_from_key_params_query(DI_Scope *scop
 //~ rjf: Asynchronous Parse Work
 
 internal B32 di_u2p_enqueue_key(DI_Key *key, U64 endt_us);
-internal void di_u2p_dequeue_key(Arena *arena, DI_Key *out_key);
+internal void di_u2p_dequeue_key(Arena arena, DI_Key *out_key);
 
 internal void di_p2u_push_event(DI_Event *event);
-internal DI_EventList di_p2u_pop_events(Arena *arena, U64 endt_us);
+internal DI_EventList di_p2u_pop_events(Arena arena, U64 endt_us);
 
 ASYNC_WORK_DEF(di_parse_work);
 

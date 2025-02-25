@@ -154,7 +154,7 @@ coff_parse_symbol16(String8 raw_coff, U64 string_table_off, COFF_Symbol16 *sym16
 }
 
 internal COFF_Symbol32Array
-coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_off, U64 symbol_count)
+coff_symbol_array_from_data_16(Arena arena, String8 raw_coff, U64 symbol_array_off, U64 symbol_count)
 {
   COFF_Symbol32Array result = {0};
   result.count              = symbol_count;
@@ -199,7 +199,7 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
 }
 
 internal COFF_Symbol32Array
-coff_symbol_array_from_data_32(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count)
+coff_symbol_array_from_data_32(Arena arena, String8 data, U64 symbol_array_off, U64 symbol_count)
 {
   COFF_Symbol32Array result;
   result.count = symbol_count;
@@ -208,7 +208,7 @@ coff_symbol_array_from_data_32(Arena *arena, String8 data, U64 symbol_array_off,
 }
 
 internal COFF_Symbol32Array
-coff_symbol_array_from_data(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size)
+coff_symbol_array_from_data(Arena arena, String8 data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size)
 {
   COFF_Symbol32Array result = {0};
   switch (symbol_size) {
@@ -219,7 +219,7 @@ coff_symbol_array_from_data(Arena *arena, String8 data, U64 symbol_array_off, U6
 }
 
 internal COFF_Symbol16Node *
-coff_symbol16_list_push(Arena *arena, COFF_Symbol16List *list, COFF_Symbol16 symbol)
+coff_symbol16_list_push(Arena arena, COFF_Symbol16List *list, COFF_Symbol16 symbol)
 {
   COFF_Symbol16Node *node = push_array(arena, COFF_Symbol16Node, 1);
   node->next = 0;
@@ -254,7 +254,7 @@ coff_interp_symbol(U32 section_number, U32 value, COFF_SymStorageClass storage_c
 }
 
 internal COFF_RelocNode *
-coff_reloc_list_push(Arena *arena, COFF_RelocList *list, COFF_Reloc reloc)
+coff_reloc_list_push(Arena arena, COFF_RelocList *list, COFF_Reloc reloc)
 {
   COFF_RelocNode *node = push_array(arena, COFF_RelocNode, 1);
   node->data = reloc;
@@ -282,7 +282,7 @@ coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader *header)
 }
 
 internal String8
-coff_resource_string_from_str16(Arena *arena, String16 string)
+coff_resource_string_from_str16(Arena arena, String16 string)
 {
   AssertAlways(string.size <= max_U16);
   U16 size16 = (U16)string.size;
@@ -295,7 +295,7 @@ coff_resource_string_from_str16(Arena *arena, String16 string)
 }
 
 internal String8
-coff_resource_string_from_str8(Arena *arena, String8 string)
+coff_resource_string_from_str8(Arena arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String16 string16 = str16_from_8(scratch.arena, string);
@@ -305,7 +305,7 @@ coff_resource_string_from_str8(Arena *arena, String8 string)
 }
 
 internal String8
-coff_resource_number_from_u16(Arena *arena, U16 number)
+coff_resource_number_from_u16(Arena arena, U16 number)
 {
   U16 *buffer = push_array_no_zero(arena, U16, 2);
   buffer[0] = max_U16;
@@ -314,7 +314,7 @@ coff_resource_number_from_u16(Arena *arena, U16 number)
 }
 
 internal COFF_ResourceID
-coff_utf8_resource_id_from_utf16(Arena *arena, COFF_ResourceID16 *id_16)
+coff_utf8_resource_id_from_utf16(Arena arena, COFF_ResourceID16 *id_16)
 {
   COFF_ResourceID id = {0};
   id.type = id_16->type;
@@ -354,7 +354,7 @@ coff_read_resource_id_utf16(String8 raw_res, U64 off, COFF_ResourceID16 *id_out)
 }
 
 internal U64
-coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *res_out)
+coff_read_resource(Arena arena, String8 raw_res, U64 off, COFF_ParsedResource *res_out)
 {
   String8 raw_header    = str8_skip(raw_res, off);
   U64     header_cursor = 0;
@@ -392,7 +392,7 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
 }
 
 internal COFF_ParsedResourceList
-coff_resource_list_from_data(Arena *arena, String8 data)
+coff_resource_list_from_data(Arena arena, String8 data)
 {
   COFF_ParsedResourceList list = {0};
   U64 cursor;
@@ -407,7 +407,7 @@ coff_resource_list_from_data(Arena *arena, String8 data)
 }
 
 internal String8
-coff_write_resource_id(Arena *arena, COFF_ResourceID id)
+coff_write_resource_id(Arena arena, COFF_ResourceID id)
 {
   String8 result = str8_zero();
   switch (id.type) {

@@ -239,8 +239,8 @@ global read_only MD_Node md_nil_node =
 ////////////////////////////////
 //~ rjf: Message Type Functions
 
-internal void md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string);
-internal void md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, char *fmt, ...);
+internal void md_msg_list_push(Arena arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string);
+internal void md_msg_list_pushf(Arena arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, char *fmt, ...);
 internal void md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push);
 
 ////////////////////////////////
@@ -248,9 +248,9 @@ internal void md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push);
 
 internal MD_Token md_token_make(Rng1U64 range, MD_TokenFlags flags);
 internal B32 md_token_match(MD_Token a, MD_Token b);
-internal String8List md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags);
-internal void md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Token token);
-internal MD_TokenArray md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks);
+internal String8List md_string_list_from_token_flags(Arena arena, MD_TokenFlags flags);
+internal void md_token_chunk_list_push(Arena arena, MD_TokenChunkList *list, U64 cap, MD_Token token);
+internal MD_TokenArray md_token_array_from_chunk_list(Arena arena, MD_TokenChunkList *chunks);
 internal String8 md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string);
 
 ////////////////////////////////
@@ -269,7 +269,7 @@ internal MD_NodeRec md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root
 #define md_node_rec_depth_first_pre_rev(node, subtree_root) md_node_rec_depth_first((node), (subtree_root), OffsetOf(MD_Node, last), OffsetOf(MD_Node, prev))
 
 //- rjf: tree building
-internal MD_Node *md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset);
+internal MD_Node *md_push_node(Arena arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset);
 internal void md_node_insert_child(MD_Node *parent, MD_Node *prev_child, MD_Node *node);
 internal void md_node_insert_tag(MD_Node *parent, MD_Node *prev_child, MD_Node *node);
 internal void md_node_push_child(MD_Node *parent, MD_Node *node);
@@ -292,34 +292,34 @@ internal B32        md_node_has_child(MD_Node *node, String8 string, StringMatch
 internal B32        md_node_has_tag(MD_Node *node, String8 string, StringMatchFlags flags);
 internal U64        md_child_count_from_node(MD_Node *node);
 internal U64        md_tag_count_from_node(MD_Node *node);
-internal String8    md_string_from_children(Arena *arena, MD_Node *root);
+internal String8    md_string_from_children(Arena arena, MD_Node *root);
 
 //- rjf: tree comparison
 internal B32 md_tree_match(MD_Node *a, MD_Node *b, StringMatchFlags flags);
 internal B32 md_node_match(MD_Node *a, MD_Node *b, StringMatchFlags flags);
 
 //- rjf: tree duplication
-internal MD_Node *md_tree_copy(Arena *arena, MD_Node *src_root);
+internal MD_Node *md_tree_copy(Arena arena, MD_Node *src_root);
 
 ////////////////////////////////
 //~ rjf: Text -> Tokens Functions
 
-internal MD_TokenizeResult md_tokenize_from_text(Arena *arena, String8 text);
+internal MD_TokenizeResult md_tokenize_from_text(Arena arena, String8 text);
 
 ////////////////////////////////
 //~ rjf: Tokens -> Tree Functions
 
-internal MD_ParseResult md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_TokenArray tokens);
+internal MD_ParseResult md_parse_from_text_tokens(Arena arena, String8 filename, String8 text, MD_TokenArray tokens);
 
 ////////////////////////////////
 //~ rjf: Bundled Text -> Tree Functions
 
-internal MD_ParseResult md_parse_from_text(Arena *arena, String8 filename, String8 text);
+internal MD_ParseResult md_parse_from_text(Arena arena, String8 filename, String8 text);
 #define md_tree_from_string(arena, string) (md_parse_from_text((arena), str8_zero(), (string)).root)
 
 ////////////////////////////////
 //~ rjf: Tree -> Text Functions
 
-internal String8List md_debug_string_list_from_tree(Arena *arena, MD_Node *root);
+internal String8List md_debug_string_list_from_tree(Arena arena, MD_Node *root);
 
 #endif // MDESK_H

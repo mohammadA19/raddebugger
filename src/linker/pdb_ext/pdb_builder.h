@@ -11,7 +11,7 @@
 ////////////////////////////////
 // Hash table
 
-#define PDB_HASH_TABLE_PACK_FUNC(name) void name(Arena *arena, String8List *local_data_srl, String8List *key_value_srl, String8 key, String8 value, void *ud)
+#define PDB_HASH_TABLE_PACK_FUNC(name) void name(Arena arena, String8List *local_data_srl, String8List *key_value_srl, String8 key, String8 value, void *ud)
 typedef PDB_HASH_TABLE_PACK_FUNC(PDB_HashTablePackFunc);
 
 #define PDB_HASH_TABLE_UNPACK_FUNC(name) B32 name(void *ud, String8 local_data, String8 key_value_data, U64 *key_value_cursor, String8 *key_out, String8 *value_out)
@@ -52,7 +52,7 @@ typedef struct PDB_StringTableBucket
 
 typedef struct PDB_StringTable
 {
-  Arena *arena;
+  Arena arena;
   U32    version;
   U32    size;
   U32    bucket_count;
@@ -239,7 +239,7 @@ typedef struct PDB_GsiSerializeSymbolsTask
 
 typedef struct PDB_PsiContext
 {
-  Arena *arena;
+  Arena arena;
   PDB_GsiContext *gsi;
 } PDB_PsiContext;
 
@@ -350,7 +350,7 @@ typedef struct
 internal PDB_Context *    pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid);
 internal PDB_Context *    pdb_open(String8 data);
 internal void             pdb_release(PDB_Context **pdb_ptr);
-internal void             pdb_build(TP_Context *tp, TP_Arena *pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht);
+internal void             pdb_build(TP_Context *tp, TP_Arena pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht);
 internal void             pdb_set_machine(PDB_Context *pdb, COFF_MachineType machine);
 internal void             pdb_set_guid(PDB_Context *pdb, Guid guid);
 internal void             pdb_set_time_stamp(PDB_Context *pdb, COFF_TimeStamp time_stamp);
@@ -380,7 +380,7 @@ internal PDB_GsiContext *   gsi_open(MSF_Context *msf, MSF_StreamNumber sn, Stri
 internal void               gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumber gsi_sn, MSF_StreamNumber symbols_sn);
 internal void               gsi_release(PDB_GsiContext **gsi_ptr);
 internal void               gsi_write_build_result(TP_Context *tp, PDB_GsiBuildResult build, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn);
-internal PDB_GsiBuildResult gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 export_symbol_ptr_arr, U64 msf_page_size);
+internal PDB_GsiBuildResult gsi_build_ex(TP_Context *tp, Arena arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 export_symbol_ptr_arr, U64 msf_page_size);
 internal U32                gsi_hash(PDB_GsiContext *gsi, String8 input);
 internal CV_SymbolNode *    gsi_push(PDB_GsiContext *gsi, CV_Symbol *symbol);
 internal void               gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode **symbol_arr);
@@ -408,16 +408,16 @@ internal PDB_DbiContext *          dbi_open(MSF_Context *msf, MSF_StreamNumber s
 internal void                      dbi_build(TP_Context *tp, PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber dbi_sn, CV_StringHashTable string_ht);
 internal void                      dbi_release(PDB_DbiContext **dbi_ptr);
 internal PDB_DbiModule *           dbi_push_module(PDB_DbiContext *dbi, String8 obj_path, String8 lib_path);
-internal String8                   dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod);
-internal String8                   dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod);
-internal String8                   dbi_module_read_c13_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod);
+internal String8                   dbi_module_read_symbol_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod);
+internal String8                   dbi_module_read_c11_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod);
+internal String8                   dbi_module_read_c13_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod);
 internal void                      dbi_module_push_section_contrib(PDB_DbiContext *dbi, PDB_DbiModule *mod, ISectOff isect_off, U32 size,  U32 data_crc, U32 reloc_crc, COFF_SectionFlags flags);
-internal String8List *             dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
-internal PDB_DbiModuleList         dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info);
-internal PDB_DbiSectionContribList dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
-internal PDB_StringTable           dbi_open_ec_names(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
+internal String8List *             dbi_open_file_info(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
+internal PDB_DbiModuleList         dbi_open_module_info(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info);
+internal PDB_DbiSectionContribList dbi_open_sec_contrib(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
+internal PDB_StringTable           dbi_open_ec_names(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
 internal void                      dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header);
-internal PDB_DbiSectionList        dbi_open_section_headers(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn);
+internal PDB_DbiSectionList        dbi_open_section_headers(Arena arena, MSF_Context *msf, MSF_StreamNumber sn);
 internal void                      dbi_build_section_header_stream(PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber sn);
 
 ////////////////////////////////
@@ -426,7 +426,7 @@ internal void                      dbi_build_section_header_stream(PDB_DbiContex
 internal void                    pdb_hash_table_alloc(PDB_HashTable *ht, U32 max);
 internal void                    pdb_hash_table_release(PDB_HashTable *ht);
 internal PDB_HashTableParseError pdb_hash_table_from_data(PDB_HashTable *ht, String8 data, B32 has_local_data, PDB_HashTableUnpackFunc *unpack_func, void *unpack_ud, U64 *read_bytes_out);
-internal String8                 pdb_data_from_hash_table(Arena *arena, PDB_HashTable *ht, B32 has_local_data, PDB_HashTablePackFunc *pack_func, void *pack_ud);
+internal String8                 pdb_data_from_hash_table(Arena arena, PDB_HashTable *ht, B32 has_local_data, PDB_HashTablePackFunc *pack_func, void *pack_ud);
 internal void                    pdb_hash_table_set(PDB_HashTable *ht, String8 key, String8 value);
 internal B32                     pdb_hash_table_get(PDB_HashTable *ht, String8 key, String8 *value_out);
 internal void                    pdb_hash_table_delete(PDB_HashTable *ht, String8 key);
@@ -435,7 +435,7 @@ internal B32                     pdb_hash_table_is_present(PDB_HashTable *ht, U3
 internal B32                     pdb_hash_table_is_deleted(PDB_HashTable *ht, U32 k);
 internal U32                     pdb_hash_table_hash(String8 key);
 internal void                    pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity);
-internal void                    pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out);
+internal void                    pdb_hash_table_get_present_keys_and_values(Arena arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out);
 
 ////////////////////////////////
 
@@ -443,9 +443,9 @@ internal PDB_HashTableParseError pdb_hash_adj_hash_table_from_data(PDB_HashTable
 internal PDB_HashTableParseError pdb_src_header_block_ht_from_data(PDB_HashTable *ht, String8 data, PDB_StringTable *strtab, U64 *read_bytes_out);
 internal PDB_HashTableParseError pdb_named_stream_ht_from_data(PDB_HashTable *ht, String8 data, U64 *read_bytes_out);
 
-internal String8 pdb_data_from_hash_adj_hash_table(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab);
-internal String8 pdb_data_from_src_header_block_ht(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab);
-internal String8 pdb_data_from_named_stream_ht(Arena *arena, PDB_HashTable *ht);
+internal String8 pdb_data_from_hash_adj_hash_table(Arena arena, PDB_HashTable *ht, PDB_StringTable *strtab);
+internal String8 pdb_data_from_src_header_block_ht(Arena arena, PDB_HashTable *ht, PDB_StringTable *strtab);
+internal String8 pdb_data_from_named_stream_ht(Arena arena, PDB_HashTable *ht);
 
 ////////////////////////////////
 // String Table

@@ -35,7 +35,7 @@
 internal void
 entry_point(CmdLine *cmdline)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   String8 list_path = str8_list_first(&cmdline->inputs);
   String8 list_data = os_data_from_file_path(arena, list_path);
   U8 splits[] = {'\n'};

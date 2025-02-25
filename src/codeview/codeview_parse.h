@@ -275,10 +275,10 @@ internal B32                cv_is_leaf_type_server(CV_LeafKind kind);
 internal B32                cv_is_leaf_pch(CV_LeafKind kind);
 internal CV_TypeIndexSource cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind);
 
-internal CV_TypeIndexInfoList cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, String8 data);
-internal CV_TypeIndexInfoList cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data);
-internal CV_TypeIndexInfoList cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data);
-internal String8Array         cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, String8 data);
+internal CV_TypeIndexInfoList cv_get_symbol_type_index_offsets(Arena arena, CV_SymKind kind, String8 data);
+internal CV_TypeIndexInfoList cv_get_leaf_type_index_offsets(Arena arena, CV_LeafKind leaf_kind, String8 data);
+internal CV_TypeIndexInfoList cv_get_inlinee_type_index_offsets(Arena arena, String8 raw_data);
+internal String8Array         cv_get_data_around_type_indices(Arena arena, CV_TypeIndexInfoList ti_list, String8 data);
 
 internal U64     cv_name_offset_from_symbol(CV_SymKind kind, String8 data);
 internal String8 cv_name_from_symbol(CV_SymKind kind, String8 data);
@@ -287,15 +287,15 @@ internal CV_UDTInfo cv_get_udt_info(CV_LeafKind kind, String8 data);
 internal String8    cv_name_from_udt_info(CV_UDTInfo udt_info);
 
 //- rjf: record range stream parsing
-internal CV_RecRangeStream * cv_rec_range_stream_from_data(Arena *arena, String8 data, U64 align);
-internal CV_RecRangeArray    cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream);
+internal CV_RecRangeStream * cv_rec_range_stream_from_data(Arena arena, String8 data, U64 align);
+internal CV_RecRangeArray    cv_rec_range_array_from_stream(Arena arena, CV_RecRangeStream *stream);
 
 //- rjf: sym stream parsing
-internal CV_SymParsed * cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align);
+internal CV_SymParsed * cv_sym_from_data(Arena arena, String8 sym_data, U64 sym_align);
 
 //- rjf: leaf stream parsing
-internal CV_LeafParsed * cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId first);
-internal CV_C13Parsed  * cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_SectionHeaderArray sections);
+internal CV_LeafParsed * cv_leaf_from_data(Arena arena, String8 leaf_data, CV_TypeId first);
+internal CV_C13Parsed  * cv_c13_parsed_from_data(Arena arena, String8 c13_data, String8 strtbl, COFF_SectionHeaderArray sections);
 
 #endif // CODEVIEW_PARSE_H
 

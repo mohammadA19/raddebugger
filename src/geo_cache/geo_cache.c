@@ -7,7 +7,7 @@
 internal void
 geo_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   geo_shared = push_array(arena, GEO_Shared, 1);
   geo_shared->arena = arena;
   geo_shared->slots_count = 1024;
@@ -36,7 +36,7 @@ geo_tctx_ensure_inited(void)
 {
   if(geo_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     geo_tctx = push_array(arena, GEO_TCTX, 1);
     geo_tctx->arena = arena;
   }

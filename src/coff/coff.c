@@ -182,7 +182,7 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 }
 
 internal String8
-coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
+coff_make_import_lookup(Arena arena, U16 hint, String8 name)
 {
   U64 buffer_size = sizeof(hint) + (name.size + 1);
   U8 *buffer = push_array(arena, U8, buffer_size);

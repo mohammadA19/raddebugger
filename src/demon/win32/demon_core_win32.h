@@ -190,7 +190,7 @@ typedef struct DMN_W32_Shared DMN_W32_Shared;
 struct DMN_W32_Shared
 {
   // rjf: top-level info
-  Arena *arena;
+  Arena arena;
   String8List env_strings;
   
   // rjf: access locking mechanism
@@ -203,11 +203,11 @@ struct DMN_W32_Shared
   U64 reg_gen;
   
   // rjf: detaching info
-  Arena *detach_arena;
+  Arena detach_arena;
   DMN_HandleList detach_processes;
   
   // rjf: entity state
-  Arena *entities_arena;
+  Arena entities_arena;
   DMN_W32_Entity *entities_base;
   DMN_W32_Entity *entities_first_free;
   U64 entities_count;
@@ -260,7 +260,7 @@ internal DMN_W32_Entity *dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U6
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
+internal String8 dmn_w32_full_path_from_module(Arena arena, DMN_W32_Entity *module);
 
 ////////////////////////////////
 //~ rjf: Win32-Level Process/Thread Reads/Writes
@@ -268,8 +268,8 @@ internal String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *mod
 //- rjf: processes
 internal U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst);
 internal B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src);
-internal String8 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address);
-internal String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address);
+internal String8 dmn_w32_read_memory_str(Arena arena, HANDLE process_handle, U64 address);
+internal String16 dmn_w32_read_memory_str16(Arena arena, HANDLE process_handle, U64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 internal DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr);

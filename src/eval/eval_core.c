@@ -24,7 +24,7 @@ e_hash_from_string(U64 seed, String8 string)
 //~ rjf: Message Functions
 
 internal void
-e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text)
+e_msg(Arena arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text)
 {
   E_Msg *msg = push_array(arena, E_Msg, 1);
   SLLQueuePush(msgs->first, msgs->last, msg);
@@ -36,7 +36,7 @@ e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 tex
 }
 
 internal void
-e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...)
+e_msgf(Arena arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);

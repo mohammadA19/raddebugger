@@ -1424,23 +1424,23 @@ enum{
 ////////////////////////////////
 //~ Dwarf Parser Functions
 
-static DWARF_Parsed*         dwarf_parsed_from_elf(Arena *arena, ELF_Parsed *elf);
+static DWARF_Parsed*         dwarf_parsed_from_elf(Arena arena, ELF_Parsed *elf);
 
-static DWARF_IndexParsed*    dwarf_index_from_data(Arena *arena, String8 data);
-static DWARF_SupParsed*      dwarf_sup_from_data(Arena *arena, String8 data);
-static DWARF_InfoParsed*     dwarf_info_from_data(Arena *arena, String8 data);
-static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena *arena, String8 data);
-static DWARF_NamesParsed*    dwarf_names_from_data(Arena *arena, String8 data);
-static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena *arena, String8 data);
-static DWARF_LineParsed*     dwarf_line_from_data(Arena *arena, String8 data);
-static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena *arena, String8 data);
-static DWARF_MacroParsed*    dwarf_macro_from_data(Arena *arena, String8 data);
-static DWARF_FrameParsed*    dwarf_frame_from_data(Arena *arena, String8 data);
-static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena *arena, String8 data);
-static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena *arena, String8 data);
-static DWARF_AddrParsed*     dwarf_addr_from_data(Arena *arena, String8 data);
-static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena *arena, String8 data);
-static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena *arena, String8 data);
+static DWARF_IndexParsed*    dwarf_index_from_data(Arena arena, String8 data);
+static DWARF_SupParsed*      dwarf_sup_from_data(Arena arena, String8 data);
+static DWARF_InfoParsed*     dwarf_info_from_data(Arena arena, String8 data);
+static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena arena, String8 data);
+static DWARF_NamesParsed*    dwarf_names_from_data(Arena arena, String8 data);
+static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena arena, String8 data);
+static DWARF_LineParsed*     dwarf_line_from_data(Arena arena, String8 data);
+static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena arena, String8 data);
+static DWARF_MacroParsed*    dwarf_macro_from_data(Arena arena, String8 data);
+static DWARF_FrameParsed*    dwarf_frame_from_data(Arena arena, String8 data);
+static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena arena, String8 data);
+static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena arena, String8 data);
+static DWARF_AddrParsed*     dwarf_addr_from_data(Arena arena, String8 data);
+static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena arena, String8 data);
+static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena arena, String8 data);
 
 
 // parse helpers

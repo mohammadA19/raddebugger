@@ -807,7 +807,7 @@ dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip)
 }
 
 internal DW_CFIRow*
-dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row)
+dw_unwind_row_alloc_x64(Arena arena, U64 cells_per_row)
 {
   DW_CFIRow *result = push_array(arena, DW_CFIRow, 1);
   result->cells     = push_array(arena, DW_CFICell, cells_per_row);

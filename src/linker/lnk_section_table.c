@@ -52,7 +52,7 @@ lnk_section_list_search(LNK_SectionList *list, String8 name)
 }
 
 internal LNK_SectionArray
-lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
+lnk_section_array_from_list(Arena arena, LNK_SectionList list)
 {
   LNK_SectionArray result;
   result.count = 0;
@@ -65,7 +65,7 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
 }
 
 internal LNK_SectionPtrArray
-lnk_section_ptr_array_from_list(Arena *arena, LNK_SectionList list)
+lnk_section_ptr_array_from_list(Arena arena, LNK_SectionList list)
 {
   LNK_SectionPtrArray result;
   result.count = 0;
@@ -78,7 +78,7 @@ lnk_section_ptr_array_from_list(Arena *arena, LNK_SectionList list)
 }
 
 internal String8
-lnk_make_section_sort_index(Arena *arena, String8 name, COFF_SectionFlags flags, U64 section_index)
+lnk_make_section_sort_index(Arena arena, String8 name, COFF_SectionFlags flags, U64 section_index)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -270,7 +270,7 @@ internal LNK_SectionTable *
 lnk_section_table_alloc(U64 section_virt_off, U64 sect_align, U64 file_align)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   LNK_SectionTable *st = push_array(arena, LNK_SectionTable, 1);
   st->arena            = arena;
   st->section_virt_off = section_virt_off;
@@ -494,7 +494,7 @@ lnk_section_table_remove_empties(LNK_SectionTable *st, LNK_SymbolTable *symtab)
 }
 
 internal LNK_SectionArray
-lnk_section_table_get_output_sections(Arena *arena, LNK_SectionTable *st)
+lnk_section_table_get_output_sections(Arena arena, LNK_SectionTable *st)
 {
   LNK_SectionArray result = {0};
   result.count            = 0;
@@ -596,7 +596,7 @@ lnk_section_table_assign_indices(LNK_SectionTable *st)
 }
 
 internal String8
-lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *st, COFF_MachineType machine)
+lnk_section_table_serialize(TP_Context *tp, Arena arena, LNK_SectionTable *st, COFF_MachineType machine)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -641,7 +641,7 @@ lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *st, 
 }
 
 internal LNK_ChunkPtr **
-lnk_chunk_id_map_from_section_table(Arena *arena, LNK_SectionTable *st)
+lnk_chunk_id_map_from_section_table(Arena arena, LNK_SectionTable *st)
 {
   ProfBeginFunction();
   LNK_ChunkPtr **chunk_id_map = push_array(arena, LNK_ChunkPtr *, st->id_max);
@@ -658,7 +658,7 @@ lnk_chunk_id_map_from_section_table(Arena *arena, LNK_SectionTable *st)
 }
 
 internal LNK_Section **
-lnk_sect_id_map_from_section_table(Arena *arena, LNK_SectionTable *st)
+lnk_sect_id_map_from_section_table(Arena arena, LNK_SectionTable *st)
 {
   ProfBeginFunction();
   LNK_Section **map = push_array(arena, LNK_Section *, st->id_max);

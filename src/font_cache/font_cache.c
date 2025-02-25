@@ -238,7 +238,7 @@ fnt_path_from_tag(FNT_Tag tag)
 //~ rjf: Atlas
 
 internal Rng2S16
-fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
+fnt_atlas_region_alloc(Arena arena, FNT_Atlas *atlas, Vec2S16 needed_size)
 {
   ProfBeginFunction();
   
@@ -464,7 +464,7 @@ fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region)
 //~ rjf: Piece Type Functions
 
 internal FNT_Piece *
-fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
+fnt_piece_chunk_list_push_new(Arena arena, FNT_PieceChunkList *list, U64 cap)
 {
   FNT_PieceChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -482,14 +482,14 @@ fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
 }
 
 internal void
-fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece)
+fnt_piece_chunk_list_push(Arena arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece)
 {
   FNT_Piece *new_piece = fnt_piece_chunk_list_push_new(arena, list, cap);
   MemoryCopyStruct(new_piece, piece);
 }
 
 internal FNT_PieceArray
-fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
+fnt_piece_array_from_chunk_list(Arena arena, FNT_PieceChunkList *list)
 {
   FNT_PieceArray array = {0};
   array.count = list->total_piece_count;
@@ -504,7 +504,7 @@ fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
 }
 
 internal FNT_PieceArray
-fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
+fnt_piece_array_copy(Arena arena, FNT_PieceArray *src)
 {
   FNT_PieceArray dst = {0};
   dst.count = src->count;
@@ -568,7 +568,7 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
 }
 
 internal FNT_Run
-fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string)
+fnt_push_run_from_string(Arena arena, FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   
@@ -850,7 +850,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
 }
 
 internal String8List
-fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max)
+fnt_wrapped_string_lines_from_font_size_string_max(Arena arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max)
 {
   String8List list = {0};
   {
@@ -1056,7 +1056,7 @@ fnt_line_height_from_metrics(FNT_Metrics *metrics)
 internal void
 fnt_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   f_state = push_array(arena, FNT_State, 1);
   f_state->permanent_arena = arena;
   f_state->raster_arena = new Arena();

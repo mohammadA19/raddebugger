@@ -146,7 +146,7 @@ os_get_process_info(void)
 }
 
 internal String8
-os_get_current_path(Arena *arena)
+os_get_current_path(Arena arena)
 {
   char *cwdir = getcwd(0, 0);
   String8 string = push_str8_copy(arena, str8_cstring(cwdir));
@@ -444,7 +444,7 @@ os_copy_file_path(String8 dst, String8 src)
 }
 
 internal String8
-os_full_path_from_path(Arena *arena, String8 path)
+os_full_path_from_path(Arena arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 path_copy = push_str8_copy(scratch.arena, path);
@@ -544,7 +544,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena arena, String8 path, OS_FileIterFlags flags)
 {
   OS_FileIter *base_iter = push_array(arena, OS_FileIter, 1);
   base_iter->flags = flags;
@@ -558,7 +558,7 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
   B32 good = 0;
   OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter->memory;

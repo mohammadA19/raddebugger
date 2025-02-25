@@ -99,11 +99,11 @@ struct OS_LNX_Entity
 typedef struct OS_LNX_State OS_LNX_State;
 struct OS_LNX_State
 {
-  Arena *arena;
+  Arena arena;
   OS_SystemInfo system_info;
   OS_ProcessInfo process_info;
   pthread_mutex_t entity_mutex;
-  Arena *entity_arena;
+  Arena entity_arena;
   OS_LNX_Entity *entity_free;
 };
 

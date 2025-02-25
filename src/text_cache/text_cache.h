@@ -120,7 +120,7 @@ typedef enum TXT_LangKind
 }
 TXT_LangKind;
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena arena, U64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -137,7 +137,7 @@ struct TXT_Node
   TXT_LangKind lang;
   
   // rjf: artifacts
-  Arena *arena;
+  Arena arena;
   TXT_TextInfo info;
   
   // rjf: metadata
@@ -158,7 +158,7 @@ struct TXT_Slot
 typedef struct TXT_Stripe TXT_Stripe;
 struct TXT_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 };
@@ -187,7 +187,7 @@ struct TXT_Scope
 typedef struct TXT_TCTX TXT_TCTX;
 struct TXT_TCTX
 {
-  Arena *arena;
+  Arena arena;
   TXT_Scope *free_scope;
   TXT_Touch *free_touch;
 };
@@ -198,7 +198,7 @@ struct TXT_TCTX
 typedef struct TXT_Shared TXT_Shared;
 struct TXT_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: user clock
   U64 user_clock_idx;
@@ -239,19 +239,19 @@ internal TXT_LangLexFunctionType *txt_lex_function_from_lang_kind(TXT_LangKind k
 ////////////////////////////////
 //~ rjf: Token Type Functions
 
-internal void txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token);
-internal void txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token);
-internal TXT_TokenArray txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list);
-internal TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *list);
+internal void txt_token_chunk_list_push(Arena arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token);
+internal void txt_token_list_push(Arena arena, TXT_TokenList *list, TXT_Token *token);
+internal TXT_TokenArray txt_token_array_from_chunk_list(Arena arena, TXT_TokenChunkList *list);
+internal TXT_TokenArray txt_token_array_from_list(Arena arena, TXT_TokenList *list);
 
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__odin(Arena arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__jai(Arena arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__zig(Arena arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena arena, U64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -286,7 +286,7 @@ internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, R
 internal Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt);
 internal String8 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng);
 internal String8 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num);
-internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range);
+internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range);
 
 ////////////////////////////////
 //~ rjf: Parse Threads

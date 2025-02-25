@@ -2224,7 +2224,7 @@ rd_help_label(String8 string)
 }
 
 internal DR_FancyStringList
-rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_fancy_string_list_from_code_string(Arena arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

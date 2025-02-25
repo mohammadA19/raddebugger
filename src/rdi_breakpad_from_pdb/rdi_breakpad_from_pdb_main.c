@@ -66,7 +66,7 @@ struct P2B_BakeUnitVMapIn
 ASYNC_WORK_DEF(p2b_bake_unit_vmap_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2B_BakeUnitVMapIn *in = (P2B_BakeUnitVMapIn *)input;
   RDIM_UnitVMapBakeResult *out = push_array(arena, RDIM_UnitVMapBakeResult, 1);
   *out = rdim_bake_unit_vmap(arena, in->units);
@@ -85,7 +85,7 @@ struct P2B_BakeLineTablesIn
 ASYNC_WORK_DEF(p2b_bake_line_table_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2B_BakeLineTablesIn *in = (P2B_BakeLineTablesIn *)input;
   RDIM_LineTableBakeResult *out = push_array(arena, RDIM_LineTableBakeResult, 1);
   *out = rdim_bake_line_tables(arena, in->line_tables);
@@ -109,7 +109,7 @@ struct P2B_DumpProcChunkIn
 ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2B_DumpProcChunkIn *in = (P2B_DumpProcChunkIn *)input;
   String8List *out = push_array(arena, String8List, 1);
   RDI_LineTable *line_tables = in->line_tables_bake->line_tables;
@@ -186,7 +186,7 @@ internal void
 entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   B32 do_help = (cmd_line_has_flag(cmdline, str8_lit("help")) ||
                  cmd_line_has_flag(cmdline, str8_lit("h")) ||
                  cmd_line_has_flag(cmdline, str8_lit("?")));

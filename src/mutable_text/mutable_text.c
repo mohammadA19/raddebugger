@@ -7,7 +7,7 @@
 internal void
 mtx_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   mtx_shared = push_array(arena, MTX_Shared, 1);
   mtx_shared->arena = arena;
   mtx_shared->slots_count = 256;
@@ -67,7 +67,7 @@ mtx_enqueue_op(MTX_MutThread *thread, U128 buffer_key, MTX_Op op)
 }
 
 internal void
-mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op *op_out)
+mtx_dequeue_op(Arena arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op *op_out)
 {
   OS_MutexScope(thread->mutex) for(;;)
   {
@@ -113,7 +113,7 @@ mtx_mut_thread__entry_point(void *p)
     if(op.range.max != op.range.min || op.replace.size != 0)
     {
       U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
-      Arena *arena = new Arena(CommitSize = new_data_size + ARENA_HEADER_SIZE, ReserveSize = new_data_size + ARENA_HEADER_SIZE);
+      Arena arena = new Arena(CommitSize = new_data_size + ARENA_HEADER_SIZE, ReserveSize = new_data_size + ARENA_HEADER_SIZE);
       U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
       String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
       String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));

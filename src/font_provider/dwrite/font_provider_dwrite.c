@@ -166,7 +166,7 @@ fp_init(void)
   
   //- rjf: initialize main state
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     fp_dwrite_state = push_array(arena, FP_DWrite_State, 1);
     fp_dwrite_state->arena = arena;
   }
@@ -392,7 +392,7 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

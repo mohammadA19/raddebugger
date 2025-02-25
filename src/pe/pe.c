@@ -187,7 +187,7 @@ pe_resource_kind_to_string(PE_ResourceKind x)
 }
 
 internal String8
-pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
+pe_string_from_fpo_flags(Arena arena, PE_FPOFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List l = {0};
@@ -206,7 +206,7 @@ pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
 }
 
 internal String8
-pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
+pe_string_from_global_flags(Arena arena, PE_GlobalFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -310,7 +310,7 @@ pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
 }
 
 internal String8
-pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags)
+pe_string_from_load_config_guard_flags(Arena arena, PE_LoadConfigGuardFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -352,7 +352,7 @@ pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags fla
 }
 
 internal String8
-pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars)
+pe_string_from_dll_characteristics(Arena arena, PE_DllCharacteristics dll_chars)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List l = {0};
@@ -409,7 +409,7 @@ pe_subsystem_from_string(String8 string)
 //~ rjf: Parser Functions
 
 internal PE_BinInfo
-pe_bin_info_from_data(Arena *arena, String8 data)
+pe_bin_info_from_data(Arena arena, String8 data)
 {
   PE_BinInfo info = {0};
   B32 valid = 1;
@@ -606,7 +606,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
 }
 
 internal PE_DebugInfoList
-pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir)
+pe_parse_debug_directory(Arena arena, String8 raw_image, String8 raw_debug_dir)
 {
   PE_DebugInfoList result = {0};
 
@@ -835,7 +835,7 @@ pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 }
 
 internal PE_BaseRelocBlockList
-pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
+pe_base_reloc_block_list_from_data(Arena arena, String8 raw_base_relocs)
 {
   PE_BaseRelocBlockList list = {0};
   for(U64 off = 0; off < raw_base_relocs.size;)
@@ -1129,7 +1129,7 @@ pe_parsed_imports_from_data(Arena              *arena,
 }
 
 internal U64 *
-pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U64 range, U64 *count_out)
+pe_array_from_null_term_addr(Arena arena, B32 is_pe32, String8 raw_data, Rng1U64 range, U64 *count_out)
 {
   U64 *result = 0;
   *count_out = 0;
@@ -1300,7 +1300,7 @@ pe_delay_imports_from_data(Arena              *arena,
 }
 
 internal PE_ParsedExportTable
-pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
+pe_exports_from_data(Arena arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1482,7 +1482,7 @@ pe_is_res(String8 data)
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir_node(Arena arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
 {
   PE_ResourceList *list = 0;
   switch (id.type) {
@@ -1511,7 +1511,7 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry_node(Arena arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
 {
   PE_ResourceList *list = NULL;
   switch (id.type) {
@@ -1538,14 +1538,14 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
 }
 
 internal PE_Resource *
-pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry(Arena arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
 {
   PE_ResourceNode *node = pe_resource_dir_push_entry_node(arena, dir, id, type, data_version, version, memory_flags, data);
   return &node->data;
 }
 
 internal PE_Resource *
-pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir(Arena arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
 {
   PE_ResourceNode *dir_node = pe_resource_dir_push_dir_node(arena, dir, id, characteristics, time_stamp, major_version, minor_version); 
   return &dir_node->data;
@@ -1570,7 +1570,7 @@ pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id)
 }
 
 internal PE_ResourceArray
-pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
+pe_resource_list_to_array(Arena arena, PE_ResourceList *list)
 {
   PE_ResourceArray result;
   result.count = 0;
@@ -1582,7 +1582,7 @@ pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
 }
 
 internal void
-pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 res_file)
+pe_resource_dir_push_res_file(Arena arena, PE_ResourceDir *root_dir, String8 res_file)
 {
   // parse file into resource list
   String8 res_data = str8_substr(res_file, rng_1u64(sizeof(PE_RES_MAGIC), res_file.size));
@@ -1619,7 +1619,7 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 re
 }
 
 internal PE_ResourceDir *
-pe_resource_table_from_directory_data(Arena *arena, String8 data)
+pe_resource_table_from_directory_data(Arena arena, String8 data)
 {
   struct stack_s {
     struct stack_s *next;
@@ -1737,7 +1737,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
 }
 
 internal String8
-pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
+pe_make_manifest_resource(Arena arena, U32 resource_id, String8 manifest_data)
 {
   COFF_ResourceID type = {0};
   type.type            = COFF_ResourceIDType_Number;
@@ -1755,7 +1755,7 @@ pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
 //~ Debug Directory
 
 internal String8
-pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path)
+pe_make_debug_header_pdb70(Arena arena, Guid guid, U32 age, String8 pdb_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1776,7 +1776,7 @@ pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path)
 }
 
 internal String8
-pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path)
+pe_make_debug_header_rdi(Arena arena, Guid guid, String8 rdi_path)
 {
   Temp scratch = scratch_begin(&arena,1);
 

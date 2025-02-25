@@ -149,8 +149,8 @@ internal U64 e_hash_from_string(U64 seed, String8 string);
 ////////////////////////////////
 //~ rjf: Message Functions
 
-internal void e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text);
-internal void e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...);
+internal void e_msg(Arena arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text);
+internal void e_msgf(Arena arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...);
 internal void e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push);
 
 ////////////////////////////////

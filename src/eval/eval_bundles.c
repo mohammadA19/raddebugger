@@ -5,7 +5,7 @@
 //~ rjf: Bundled Evaluation Functions
 
 internal E_Eval
-e_eval_from_expr(Arena *arena, E_Expr *expr)
+e_eval_from_expr(Arena arena, E_Expr *expr)
 {
   E_IRTreeAndType  irtree   = e_irtree_and_type_from_expr(arena, expr);
   E_OpList         oplist   = e_oplist_from_irtree(arena, irtree.root);
@@ -31,7 +31,7 @@ e_eval_from_expr(Arena *arena, E_Expr *expr)
 }
 
 internal E_Eval
-e_eval_from_string(Arena *arena, String8 string)
+e_eval_from_string(Arena arena, String8 string)
 {
   E_TokenArray     tokens   = e_token_array_from_text(arena, string);
   E_Parse          parse    = e_parse_expr_from_text_tokens(arena, string, &tokens);

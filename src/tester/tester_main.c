@@ -31,7 +31,7 @@ internal B32 frame(void) { return 0; }
 internal void
 entry_point(CmdLine *cmdline)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   
   //////////////////////////////
   //- rjf: unpack command line

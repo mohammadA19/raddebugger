@@ -99,7 +99,7 @@ txt_lex_function_from_lang_kind(TXT_LangKind kind)
 //~ rjf: Token Type Functions
 
 internal void
-txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token)
+txt_token_chunk_list_push(Arena arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token)
 {
   TXT_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -116,7 +116,7 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
 }
 
 internal void
-txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
+txt_token_list_push(Arena arena, TXT_TokenList *list, TXT_Token *token)
 {
   TXT_TokenNode *node = push_array(arena, TXT_TokenNode, 1);
   MemoryCopyStruct(&node->v, token);
@@ -125,7 +125,7 @@ txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
 }
 
 internal TXT_TokenArray
-txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
+txt_token_array_from_chunk_list(Arena arena, TXT_TokenChunkList *list)
 {
   TXT_TokenArray array = {0};
   array.count = list->token_count;
@@ -140,7 +140,7 @@ txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
 }
 
 internal TXT_TokenArray
-txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
+txt_token_array_from_list(Arena arena, TXT_TokenList *list)
 {
   TXT_TokenArray array = {0};
   array.count = list->count;
@@ -158,7 +158,7 @@ txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 //~ rjf: Lexing Functions
 
 internal TXT_TokenArray
-txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__c_cpp(Arena arena, U64 *bytes_processed_counter, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -504,7 +504,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__odin(Arena arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -790,7 +790,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__jai(Arena arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1075,7 +1075,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__zig(Arena arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1366,7 +1366,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__disasm_x64_intel(Arena arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1593,7 +1593,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
 internal void
 txt_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   txt_shared = push_array(arena, TXT_Shared, 1);
   txt_shared->arena = arena;
   txt_shared->slots_count = 1024;
@@ -1622,7 +1622,7 @@ txt_tctx_ensure_inited(void)
 {
   if(txt_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     txt_tctx = push_array(arena, TXT_TCTX, 1);
     txt_tctx->arena = arena;
   }
@@ -1992,7 +1992,7 @@ txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_nu
 }
 
 internal TXT_LineTokensSlice
-txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range)
+txt_line_tokens_slice_from_info_data_line_range(Arena arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range)
 {
   TXT_LineTokensSlice result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -2169,7 +2169,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   }
   
   //- rjf: data -> text info
-  Arena *info_arena = 0;
+  Arena info_arena = 0;
   TXT_TextInfo info = {0};
   if(got_task && !u128_match(hash, u128_zero()))
   {

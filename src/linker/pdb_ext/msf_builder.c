@@ -10,7 +10,7 @@ msf_get_data_node_size(MSF_UInt page_size)
 }
 
 internal void
-msf_page_data_list_push(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size, MSF_UInt count)
+msf_page_data_list_push(Arena arena, MSF_PageDataList *list, MSF_UInt page_size, MSF_UInt count)
 {
   U64 data_size = msf_get_data_node_size(page_size);
   for (MSF_UInt i = 0; i < count; i += 1) {
@@ -63,7 +63,7 @@ msf_page_data_list_concat_in_place(MSF_PageDataList *list, MSF_PageDataList *to_
 }
 
 internal void
-msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size, String8 data)
+msf_set_page_data_list(Arena arena, MSF_PageDataList *list, MSF_UInt page_size, String8 data)
 {
   ProfBeginFunction();
 
@@ -117,7 +117,7 @@ msf_data_from_pn(MSF_PageDataList list, MSF_UInt page_size, MSF_PageNumber pn)
 ////////////////////////////////
 
 internal MSF_StreamNode *
-msf_stream_list_push(Arena *arena, MSF_StreamList *list)
+msf_stream_list_push(Arena arena, MSF_StreamList *list)
 {
   MSF_StreamNode *n = push_array(arena, MSF_StreamNode, 1);
   DLLPushBack(list->first, list->last, n);
@@ -143,7 +143,7 @@ msf_page_list_push_node(MSF_PageList *list, MSF_PageNode *node)
 }
 
 internal MSF_PageNode *
-msf_page_list_push(Arena *arena, MSF_PageList *list)
+msf_page_list_push(Arena arena, MSF_PageList *list)
 {
   MSF_PageNode *node = push_array(arena, MSF_PageNode, 1);
   msf_page_list_push_node(list, node);
@@ -169,7 +169,7 @@ msf_page_list_concat_in_place(MSF_PageList *list, MSF_PageList *to_concat)
 }
 
 internal MSF_PageNumber *
-msf_page_list_to_arr(Arena *arena, MSF_PageList list)
+msf_page_list_to_arr(Arena arena, MSF_PageList list)
 {
   MSF_PageNumber *arr = push_array(arena, MSF_PageNumber, list.count);
   MSF_UInt i = 0;
@@ -208,7 +208,7 @@ msf_page_from_index(MSF_PageList page_list, MSF_UInt index)
 }
 
 internal void
-msf_page_list_push_extant_page_arr(Arena *arena, MSF_PageList *list,
+msf_page_list_push_extant_page_arr(Arena arena, MSF_PageList *list,
                                    MSF_PageDataList page_data_list, MSF_UInt page_size,
                                    MSF_PageNumber *pn_arr, MSF_UInt pn_count)
 {
@@ -225,7 +225,7 @@ msf_page_list_push_extant_page_arr(Arena *arena, MSF_PageList *list,
 }
 
 internal void
-msf_page_list_push_extant_page(Arena *arena, MSF_PageList *list, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber pn)
+msf_page_list_push_extant_page(Arena arena, MSF_PageList *list, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber pn)
 {
   msf_page_list_push_extant_page_arr(arena, list, page_data_list, page_size, &pn, 1);
 }
@@ -304,7 +304,7 @@ msf_get_fpm_page_count(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_
 }
 
 internal MSF_PageNumberArray
-msf_get_fpm_page_arr(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_UInt active_fpm)
+msf_get_fpm_page_arr(Arena arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_UInt active_fpm)
 {
   Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
@@ -486,7 +486,7 @@ msf_shrink(MSF_Context *msf, MSF_PageNumber new_page_count)
 #endif
 
 internal MSF_PageNumber *
-msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
+msf_alloc_pn_arr(Arena arena, MSF_Context *msf, MSF_UInt alloc_count)
 {
   // make sure FPM has enough space for new page numbers
   // 
@@ -785,7 +785,7 @@ msf_read(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_
 ////////////////////////////////
 
 internal MSF_StreamNode * 
-msf_stream_alloc_(Arena *arena, MSF_StreamList *list)
+msf_stream_alloc_(Arena arena, MSF_StreamList *list)
 {
   Assert(list->count < MSF_STREAM_NUMBER_MAX);
   MSF_UInt sn = list->count;
@@ -1304,7 +1304,7 @@ msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal String8
-msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size)
+msf_stream_read_block(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size)
 {
   U8 *block_buffer = push_array(arena, U8, block_size);
   MSF_UInt block_read = msf_stream_read(msf, sn, block_buffer, block_size);
@@ -1314,7 +1314,7 @@ msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 b
 }
 
 internal String8
-msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_string(Arena arena, MSF_Context *msf, MSF_StreamNumber sn)
 {
   MSF_UInt start_pos = msf_stream_get_pos(msf, sn);
   U64 size = 0;
@@ -1349,7 +1349,7 @@ msf_alloc__(MSF_UInt page_size, MSF_PageNumber active_fpm)
   Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
   Assert(IsPow2(page_size));
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   
   MSF_Context *msf = push_array(arena, MSF_Context, 1);
   msf->arena = arena;
@@ -1402,7 +1402,7 @@ msf_find_stream(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal MSF_Error
-msf_open_header(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList *page_list)
+msf_open_header(Arena arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList *page_list)
 {
   ProfBeginFunction();
   msf_page_list_push_extant_page(arena, page_list, page_data_list, page_size, 0);
@@ -1411,7 +1411,7 @@ msf_open_header(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_siz
 }
 
 internal MSF_Error
-msf_open_root(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber root_pn, MSF_UInt stream_table_size, MSF_PageList *page_list)
+msf_open_root(Arena arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber root_pn, MSF_UInt stream_table_size, MSF_PageList *page_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1429,7 +1429,7 @@ msf_open_root(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size,
 }
 
 internal MSF_Error
-msf_open_stream_table_page_list(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList root_page_list, MSF_UInt stream_table_size, MSF_PageList *page_list)
+msf_open_stream_table_page_list(Arena arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList root_page_list, MSF_UInt stream_table_size, MSF_PageList *page_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1449,7 +1449,7 @@ msf_open_stream_table_page_list(Arena *arena, MSF_PageDataList page_data_list, M
 }
 
 internal MSF_Error
-msf_open_stream_table(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList st_page_list, MSF_UInt stream_table_size, MSF_StreamList *stream_list)
+msf_open_stream_table(Arena arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList st_page_list, MSF_UInt stream_table_size, MSF_StreamList *stream_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1678,7 +1678,7 @@ msf_release(MSF_Context **msf_ptr)
 }
 
 internal String8List
-msf_build_stream_table_data(Arena *arena, MSF_StreamList *st, MSF_UInt page_size, MSF_UInt page_count)
+msf_build_stream_table_data(Arena arena, MSF_StreamList *st, MSF_UInt page_size, MSF_UInt page_count)
 {
   ProfBeginFunction();
   
@@ -1865,7 +1865,7 @@ msf_build(MSF_Context *msf)
 }
 
 internal String8List
-msf_get_page_data_nodes(Arena *arena, MSF_Context *msf)
+msf_get_page_data_nodes(Arena arena, MSF_Context *msf)
 {
   String8List list; MemoryZeroStruct(&list);
 
@@ -1932,7 +1932,7 @@ msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
 }
 
 internal MSF_Error
-msf_save_arena(Arena *arena, MSF_Context *msf, String8 *data_out)
+msf_save_arena(Arena arena, MSF_Context *msf, String8 *data_out)
 {
   ProfBeginFunction();
   MSF_Error err = msf_build(msf);

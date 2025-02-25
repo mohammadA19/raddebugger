@@ -20,7 +20,7 @@ tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 internal void
 tex_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   tex_shared = push_array(arena, TEX_Shared, 1);
   tex_shared->arena = arena;
   tex_shared->slots_count = 1024;
@@ -49,7 +49,7 @@ tex_tctx_ensure_inited(void)
 {
   if(tex_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     tex_tctx = push_array(arena, TEX_TCTX, 1);
     tex_tctx->arena = arena;
   }

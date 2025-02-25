@@ -10,7 +10,7 @@
 typedef struct TCTX TCTX;
 struct TCTX
 {
-  Arena *arenas[2];
+  Arena arenas[2];
   
   U8 thread_name[32];
   U64 thread_name_size;
@@ -26,7 +26,7 @@ internal void      tctx_init_and_equip(TCTX *tctx);
 internal void      tctx_release(void);
 internal TCTX*     tctx_get_equipped(void);
 
-internal Arena*    tctx_get_scratch(Arena **conflicts, U64 countt);
+internal Arena*    tctx_get_scratch(Arena *conflicts, U64 countt);
 
 internal void      tctx_set_thread_name(String8 name);
 internal String8   tctx_get_thread_name(void);

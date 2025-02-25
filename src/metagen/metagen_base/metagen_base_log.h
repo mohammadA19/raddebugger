@@ -32,7 +32,7 @@ struct LogScopeResult
 typedef struct Log Log;
 struct Log
 {
-  Arena *arena;
+  Arena arena;
   LogScope *top_scope;
 };
 
@@ -60,6 +60,6 @@ internal void log_msgf(LogMsgKind kind, char *fmt, ...);
 //~ rjf: Log Scopes
 
 internal void log_scope_begin(void);
-internal LogScopeResult log_scope_end(Arena *arena);
+internal LogScopeResult log_scope_end(Arena arena);
 
 #endif // BASE_LOG_H

@@ -32,7 +32,7 @@ struct OS_LNX_Window
 typedef struct OS_LNX_GfxState OS_LNX_GfxState;
 struct OS_LNX_GfxState
 {
-  Arena *arena;
+  Arena arena;
   Display *display;
   OS_LNX_Window *first_window;
   OS_LNX_Window *last_window;

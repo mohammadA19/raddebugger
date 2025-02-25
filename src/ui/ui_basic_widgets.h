@@ -149,8 +149,8 @@ internal UI_Box *  ui_table_cell_sized_begin(UI_Size size);
 ////////////////////////////////
 //~ rjf: Scroll Regions
 
-internal void ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block);
-internal UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list);
+internal void ui_scroll_list_row_block_chunk_list_push(Arena arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block);
+internal UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena arena, UI_ScrollListRowBlockChunkList *list);
 internal U64 ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, U64 item);
 internal U64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row);
 

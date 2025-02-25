@@ -26,7 +26,7 @@ internal void
 os_gfx_init(void)
 {
   //- rjf: initialize basics
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   os_lnx_gfx_state = push_array(arena, OS_LNX_GfxState, 1);
   os_lnx_gfx_state->arena = arena;
   os_lnx_gfx_state->display = XOpenDisplay(0);
@@ -61,7 +61,7 @@ os_set_clipboard_text(String8 string)
 }
 
 internal String8
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena arena)
 {
   String8 result = {0};
   return result;
@@ -251,7 +251,7 @@ os_dpi_from_window(OS_Handle handle)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 internal OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena arena)
 {
   OS_HandleArray result = {0};
   return result;
@@ -272,7 +272,7 @@ os_monitor_from_window(OS_Handle window)
 }
 
 internal String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena arena, OS_Handle monitor)
 {
   return str8_zero();
 }
@@ -293,7 +293,7 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena arena, B32 wait)
 {
   OS_EventList evts = {0};
   for(;XPending(os_lnx_gfx_state->display) > 0 || (wait && evts.count == 0);)

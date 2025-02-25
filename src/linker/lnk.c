@@ -147,7 +147,7 @@
 ////////////////////////////////
 
 internal LNK_InputImport *
-lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
+lnk_input_import_list_push(Arena arena, LNK_InputImportList *list)
 {
   LNK_InputImport *node = push_array(arena, LNK_InputImport, 1);
   SLLQueuePush(list->first, list->last, node);
@@ -162,7 +162,7 @@ lnk_input_import_list_concat_in_place(LNK_InputImportList *list, LNK_InputImport
 }
 
 internal LNK_InputImport **
-lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
+lnk_input_import_arr_from_list(Arena arena, LNK_InputImportList list)
 {
   LNK_InputImport **result = push_array_no_zero(arena, LNK_InputImport *, list.count);
   U64 idx = 0;
@@ -211,7 +211,7 @@ lnk_input_import_compar(const void *raw_a, const void *raw_b)
 ////////////////////////////////
 
 internal String8
-lnk_make_full_path(Arena *arena, String8 work_dir, PathStyle system_path_style, String8 path)
+lnk_make_full_path(Arena arena, String8 work_dir, PathStyle system_path_style, String8 path)
 {
   ProfBeginFunction();
   String8 result = str8(0,0);
@@ -697,8 +697,8 @@ lnk_make_res_obj(TP_Context       *tp,
   static const U64 sect_virt_align = 1;
   static const U64 sect_file_align = 1;
 
-  TP_Arena *temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
-  temp_tp_arena->v        = push_array(scratch.arena, Arena *, 1);
+  TP_Arena temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
+  temp_tp_arena->v        = push_array(scratch.arena, Arena , 1);
   temp_tp_arena->count    = 1;
   temp_tp_arena->v[0]     = new Arena();
   
@@ -1022,7 +1022,7 @@ lnk_make_linker_coff_obj(TP_Context       *tp,
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  TP_Arena *temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
+  TP_Arena temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
   temp_tp_arena->v        = &scratch.arena;
   temp_tp_arena->count    = 1;
   
@@ -1211,14 +1211,14 @@ lnk_is_lib_loaded(HashTable *loaded_lib_ht, String8 path)
 }
 
 internal void
-lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, String8 path)
+lnk_push_disallow_lib(Arena arena, HashTable *disallow_lib_ht, String8 path)
 {
   String8 lib_name = lnk_get_lib_name(path);
   hash_table_push_path_u64(arena, disallow_lib_ht, lib_name, 0);
 }
 
 internal void
-lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path)
+lnk_push_loaded_lib(Arena arena, HashTable *loaded_lib_ht, String8 path)
 {
   if (!hash_table_search_path(loaded_lib_ht, path)) {
     String8 path_copy = push_str8_copy(arena, path);
@@ -1227,7 +1227,7 @@ lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path)
 }
 
 internal void
-lnk_push_input_from_lazy(Arena *arena, PathStyle path_style, LNK_LazySymbol *lazy, LNK_InputImportList *input_import_list, LNK_InputObjList *input_obj_list)
+lnk_push_input_from_lazy(Arena arena, PathStyle path_style, LNK_LazySymbol *lazy, LNK_InputImportList *input_import_list, LNK_InputObjList *input_obj_list)
 {
   // parse member
   COFF_ArchiveMember member_info = coff_archive_member_from_offset(lazy->lib->data, lazy->member_offset);
@@ -1308,7 +1308,7 @@ lnk_push_linker_symbols(LNK_SymbolTable *symtab, COFF_MachineType machine)
 ////////////////////////////////
 
 internal void
-lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
+lnk_push_coff_symbols_from_data(Arena arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
 {
   if (data.size % sizeof(U32)) {
     // TODO: report invalid data size
@@ -1327,7 +1327,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
 }
 
 internal String8
-lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
+lnk_build_guard_data(Arena arena, U64Array voff_arr, U64 stride)
 {
   Assert(stride >= sizeof(U32));
   
@@ -2895,7 +2895,7 @@ lnk_init_section_table(LNK_SymbolTable *symtab, U64 section_virt_off, U64 sect_a
 }
 
 internal LNK_MergeDirectiveList
-lnk_init_merge_directive_list(Arena *arena, LNK_ObjList obj_list)
+lnk_init_merge_directive_list(Arena arena, LNK_ObjList obj_list)
 {
   ProfBeginFunction();
   

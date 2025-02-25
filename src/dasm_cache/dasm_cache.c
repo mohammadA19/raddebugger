@@ -10,7 +10,7 @@
 #endif
 
 internal DASM_Inst
-dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax)
+dasm_inst_from_code(Arena arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax)
 {
   DASM_Inst inst = {0};
   switch(arch)
@@ -145,7 +145,7 @@ dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Synta
 //~ rjf: Control Flow Analysis
 
 internal DASM_CtrlFlowInfo
-dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code)
+dasm_ctrl_flow_info_from_arch_vaddr_code(Arena arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DASM_CtrlFlowInfo info = {0};
@@ -190,7 +190,7 @@ dasm_params_match(DASM_Params *a, DASM_Params *b)
 //~ rjf: Line Type Functions
 
 internal void
-dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *inst)
+dasm_line_chunk_list_push(Arena arena, DASM_LineChunkList *list, U64 cap, DASM_Line *inst)
 {
   DASM_LineChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -207,7 +207,7 @@ dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_
 }
 
 internal DASM_LineArray
-dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
+dasm_line_array_from_chunk_list(Arena arena, DASM_LineChunkList *list)
 {
   DASM_LineArray array = {0};
   array.count = list->line_count;
@@ -257,7 +257,7 @@ dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx)
 internal void
 dasm_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   dasm_shared = push_array(arena, DASM_Shared, 1);
   dasm_shared->arena = arena;
   dasm_shared->slots_count = 1024;
@@ -285,7 +285,7 @@ dasm_scope_open(void)
 {
   if(dasm_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     dasm_tctx = push_array(arena, DASM_TCTX, 1);
     dasm_tctx->arena = arena;
   }
@@ -473,7 +473,7 @@ dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, U64 endt_us)
 }
 
 internal void
-dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out)
+dasm_u2p_dequeue_req(Arena arena, U128 *hash_out, DASM_Params *params_out)
 {
   OS_MutexScope(dasm_shared->u2p_ring_mutex) for(;;)
   {
@@ -707,12 +707,12 @@ ASYNC_WORK_DEF(dasm_parse_work)
   }
   
   //- rjf: artifacts -> value bundle
-  Arena *info_arena = 0;
+  Arena info_arena = 0;
   DASM_Info info = {0};
   if(got_task)
   {
     //- rjf: produce joined text
-    Arena *text_arena = new Arena();
+    Arena text_arena = new Arena();
     StringJoin text_join = {0};
     text_join.sep = str8_lit("\n");
     String8 text = str8_list_join(text_arena, &inst_strings, &text_join);

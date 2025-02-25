@@ -108,7 +108,7 @@ internal B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count
 internal UI_Signal rd_label(String8 string);
 internal UI_Signal rd_error_label(String8 string);
 internal B32 rd_help_label(String8 string);
-internal DR_FancyStringList rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+internal DR_FancyStringList rd_fancy_string_list_from_code_string(Arena arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
 internal UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
 
 ////////////////////////////////

@@ -623,13 +623,13 @@ typedef struct UI_State UI_State;
 struct UI_State
 {
   //- rjf: main arena
-  Arena *arena;
+  Arena arena;
   
   //- rjf: fixed keys
   UI_Key external_key;
   
   //- rjf: build arenas
-  Arena *build_arenas[2];
+  Arena build_arenas[2];
   U64 build_index;
   
   //- rjf: box cache
@@ -676,9 +676,9 @@ struct UI_State
   UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 drag_start_mouse;
-  Arena *drag_state_arena;
+  Arena drag_state_arena;
   String8 drag_state_data;
-  Arena *string_hover_arena;
+  Arena string_hover_arena;
   String8 string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
   U64 string_hover_begin_us;
@@ -720,7 +720,7 @@ internal B32     ui_key_match(UI_Key a, UI_Key b);
 ////////////////////////////////
 //~ rjf: Event Type Functions
 
-internal UI_EventNode *ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v);
+internal UI_EventNode *ui_event_list_push(Arena arena, UI_EventList *list, UI_Event *v);
 internal void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 
 ////////////////////////////////
@@ -728,8 +728,8 @@ internal void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 
 internal B32 ui_char_is_scan_boundary(U8 c);
 internal S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
-internal UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
-internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);
+internal UI_TxtOp ui_single_line_txt_op_from_event(Arena arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
+internal String8 ui_push_string_replace_range(Arena arena, String8 string, Rng1S64 range, String8 replace);
 
 ////////////////////////////////
 //~ rjf: Size Type Functions
@@ -770,7 +770,7 @@ internal B32 ui_box_is_nil(UI_Box *box);
 internal UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off);
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
 #define ui_box_rec_df_post(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, prev), OffsetOf(UI_Box, last))
-internal void ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box);
+internal void ui_box_list_push(Arena arena, UI_BoxList *list, UI_Box *box);
 
 ////////////////////////////////
 //~ rjf: State Allocating / Selection
@@ -786,7 +786,7 @@ internal UI_State *ui_get_selected_state(void);
 //~ rjf: Implicit State Accessors/Mutators
 
 //- rjf: per-frame info
-internal Arena *           ui_build_arena(void);
+internal Arena            ui_build_arena(void);
 internal OS_Handle         ui_window(void);
 internal Vec2F32           ui_mouse(void);
 internal FNT_Tag             ui_icon_font(void);
@@ -813,7 +813,7 @@ internal String8           ui_get_drag_data(U64 min_required_size);
 
 //- rjf: hovered string info
 internal B32               ui_string_hover_active(void);
-internal DR_FancyRunList    ui_string_hover_runs(Arena *arena);
+internal DR_FancyRunList    ui_string_hover_runs(Arena arena);
 
 //- rjf: interaction keys
 internal UI_Key            ui_hot_key(void);

@@ -64,7 +64,7 @@ dwarf_leb128_decode_U32(U8 *ptr, U8 *opl){
 //~ Dwarf Parser Functions
 
 static DWARF_Parsed*
-dwarf_parsed_from_elf(Arena *arena, ELF_Parsed *elf){
+dwarf_parsed_from_elf(Arena arena, ELF_Parsed *elf){
   DWARF_Parsed *result = 0;
   
   if (elf != 0){
@@ -97,21 +97,21 @@ dwarf_parsed_from_elf(Arena *arena, ELF_Parsed *elf){
 }
 
 static DWARF_IndexParsed*
-dwarf_index_from_data(Arena *arena, String8 data){
+dwarf_index_from_data(Arena arena, String8 data){
   DWARF_IndexParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_SupParsed*
-dwarf_sup_from_data(Arena *arena, String8 data){
+dwarf_sup_from_data(Arena arena, String8 data){
   DWARF_SupParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_InfoParsed*
-dwarf_info_from_data(Arena *arena, String8 data){
+dwarf_info_from_data(Arena arena, String8 data){
   // supported version numbers: 4,5
   
   
@@ -242,7 +242,7 @@ dwarf_info_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_PubNamesParsed*
-dwarf_pubnames_from_data(Arena *arena, String8 data){
+dwarf_pubnames_from_data(Arena arena, String8 data){
   // supported version numbers: 2
   
   
@@ -320,7 +320,7 @@ dwarf_pubnames_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_NamesParsed*
-dwarf_names_from_data(Arena *arena, String8 data){
+dwarf_names_from_data(Arena arena, String8 data){
   // supported version numbers: 5
   
   
@@ -415,7 +415,7 @@ dwarf_names_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_ArangesParsed*
-dwarf_aranges_from_data(Arena *arena, String8 data){
+dwarf_aranges_from_data(Arena arena, String8 data){
   // supported version numbers: 2
   
   
@@ -491,7 +491,7 @@ dwarf_aranges_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_LineParsed*
-dwarf_line_from_data(Arena *arena, String8 data){
+dwarf_line_from_data(Arena arena, String8 data){
   // supported version numbers: 4, 5
   
   
@@ -768,42 +768,42 @@ dwarf_line_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_MacInfoParsed*
-dwarf_mac_info_from_data(Arena *arena, String8 data){
+dwarf_mac_info_from_data(Arena arena, String8 data){
   DWARF_MacInfoParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_MacroParsed*
-dwarf_macro_from_data(Arena *arena, String8 data){
+dwarf_macro_from_data(Arena arena, String8 data){
   DWARF_MacroParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_FrameParsed*
-dwarf_frame_from_data(Arena *arena, String8 data){
+dwarf_frame_from_data(Arena arena, String8 data){
   DWARF_FrameParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_RangesParsed*
-dwarf_ranges_from_data(Arena *arena, String8 data){
+dwarf_ranges_from_data(Arena arena, String8 data){
   DWARF_RangesParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_StrOffsetsParsed*
-dwarf_str_offsets_from_data(Arena *arena, String8 data){
+dwarf_str_offsets_from_data(Arena arena, String8 data){
   DWARF_StrOffsetsParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_AddrParsed*
-dwarf_addr_from_data(Arena *arena, String8 data){
+dwarf_addr_from_data(Arena arena, String8 data){
   // supported version numbers: 5
   
   
@@ -868,14 +868,14 @@ dwarf_addr_from_data(Arena *arena, String8 data){
 }
 
 static DWARF_RngListsParsed*
-dwarf_rng_lists_from_data(Arena *arena, String8 data){
+dwarf_rng_lists_from_data(Arena arena, String8 data){
   DWARF_RngListsParsed *result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_LocListsParsed*
-dwarf_loc_lists_from_data(Arena *arena, String8 data){
+dwarf_loc_lists_from_data(Arena arena, String8 data){
   DWARF_LocListsParsed *result = 0;
   // TODO(allen): 
   return(result);
@@ -1303,7 +1303,7 @@ dwarf_string_from_section_code(DWARF_SectionCode sec_code){
 
 #if 0
 static DWARF_InfoParsed*
-dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
+dwarf_info_from_data(Arena arena, String8 data, DWARF_InfoParams *params,
                      DWARF_AbbrevParsed *abbrev){
   
   // unit index range to extract
@@ -1707,7 +1707,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
 }
 
 static DWARF_AbbrevParsed*
-dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
+dwarf_abbrev_from_data(Arena arena, String8 data, DWARF_AbbrevParams *params){
   /* .debug_abbrev
   ** Layout
   **  List(Tag)

@@ -196,9 +196,9 @@ internal String8  str8_cstring_capped(void *cstr, void *cap);
 ////////////////////////////////
 //~ rjf: String Stylization
 
-internal String8 upper_from_str8(Arena *arena, String8 string);
-internal String8 lower_from_str8(Arena *arena, String8 string);
-internal String8 backslashed_from_str8(Arena *arena, String8 string);
+internal String8 upper_from_str8(Arena arena, String8 string);
+internal String8 lower_from_str8(Arena arena, String8 string);
+internal String8 backslashed_from_str8(Arena arena, String8 string);
 
 ////////////////////////////////
 //~ rjf: String Matching
@@ -220,10 +220,10 @@ internal String8 str8_skip_chop_whitespace(String8 string);
 ////////////////////////////////
 //~ rjf: String Formatting & Copying
 
-internal String8 push_str8_cat(Arena *arena, String8 s1, String8 s2);
-internal String8 push_str8_copy(Arena *arena, String8 s);
-internal String8 push_str8fv(Arena *arena, char *fmt, va_list args);
-internal String8 push_str8f(Arena *arena, char *fmt, ...);
+internal String8 push_str8_cat(Arena arena, String8 s1, String8 s2);
+internal String8 push_str8_copy(Arena arena, String8 s);
+internal String8 push_str8fv(Arena arena, char *fmt, va_list args);
+internal String8 push_str8f(Arena arena, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
@@ -237,9 +237,9 @@ internal B32 try_u64_from_str8_c_rules(String8 string, U64 *x);
 internal B32 try_s64_from_str8_c_rules(String8 string, S64 *x);
 
 //- rjf: integer -> string
-internal String8 str8_from_memory_size(Arena *arena, U64 z);
-internal String8 str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_separator);
-internal String8 str8_from_s64(Arena *arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_separator);
+internal String8 str8_from_memory_size(Arena arena, U64 z);
+internal String8 str8_from_u64(Arena arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_separator);
+internal String8 str8_from_s64(Arena arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_separator);
 
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
@@ -253,29 +253,29 @@ internal String8Node* str8_list_push_node(String8List *list, String8Node *node);
 internal String8Node* str8_list_push_node_set_string(String8List *list, String8Node *node, String8 string);
 internal String8Node* str8_list_push_node_front(String8List *list, String8Node *node);
 internal String8Node* str8_list_push_node_front_set_string(String8List *list, String8Node *node, String8 string);
-internal String8Node* str8_list_push(Arena *arena, String8List *list, String8 string);
-internal String8Node* str8_list_push_front(Arena *arena, String8List *list, String8 string);
+internal String8Node* str8_list_push(Arena arena, String8List *list, String8 string);
+internal String8Node* str8_list_push_front(Arena arena, String8List *list, String8 string);
 internal void         str8_list_concat_in_place(String8List *list, String8List *to_push);
-internal String8Node* str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align);
-internal String8Node* str8_list_pushf(Arena *arena, String8List *list, char *fmt, ...);
-internal String8Node* str8_list_push_frontf(Arena *arena, String8List *list, char *fmt, ...);
-internal String8List  str8_list_copy(Arena *arena, String8List *list);
+internal String8Node* str8_list_push_aligner(Arena arena, String8List *list, U64 min, U64 align);
+internal String8Node* str8_list_pushf(Arena arena, String8List *list, char *fmt, ...);
+internal String8Node* str8_list_push_frontf(Arena arena, String8List *list, char *fmt, ...);
+internal String8List  str8_list_copy(Arena arena, String8List *list);
 #define str8_list_first(list) ((list)->first ? (list)->first->string : str8_zero())
 
 ////////////////////////////////
 //~ rjf: String Splitting & Joining
 
-internal String8List  str8_split(Arena *arena, String8 string, U8 *split_chars, U64 split_char_count, StringSplitFlags flags);
-internal String8List  str8_split_by_string_chars(Arena *arena, String8 string, String8 split_chars, StringSplitFlags flags);
-internal String8List  str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_chars, StringSplitFlags flags);
-internal String8      str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params);
-internal void         str8_list_from_flags(Arena *arena, String8List *list, U32 flags, String8 *flag_string_table, U32 flag_string_count);
+internal String8List  str8_split(Arena arena, String8 string, U8 *split_chars, U64 split_char_count, StringSplitFlags flags);
+internal String8List  str8_split_by_string_chars(Arena arena, String8 string, String8 split_chars, StringSplitFlags flags);
+internal String8List  str8_list_split_by_string_chars(Arena arena, String8List list, String8 split_chars, StringSplitFlags flags);
+internal String8      str8_list_join(Arena arena, String8List *list, StringJoin *optional_params);
+internal void         str8_list_from_flags(Arena arena, String8List *list, U32 flags, String8 *flag_string_table, U32 flag_string_count);
 
 ////////////////////////////////
 //~ rjf; String Arrays
 
-internal String8Array str8_array_from_list(Arena *arena, String8List *list);
-internal String8Array str8_array_reserve(Arena *arena, U64 count);
+internal String8Array str8_array_from_list(Arena arena, String8List *list);
+internal String8Array str8_array_reserve(Arena arena, U64 count);
 
 ////////////////////////////////
 //~ rjf: String Path Helpers
@@ -286,9 +286,9 @@ internal String8 str8_chop_last_dot(String8 string);
 internal String8 str8_skip_last_dot(String8 string);
 
 internal PathStyle   path_style_from_str8(String8 string);
-internal String8List str8_split_path(Arena *arena, String8 string);
+internal String8List str8_split_path(Arena arena, String8 string);
 internal void        str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style);
-internal String8     str8_path_list_join_by_style(Arena *arena, String8List *path, PathStyle style);
+internal String8     str8_path_list_join_by_style(Arena arena, String8List *path, PathStyle style);
 
 internal String8TxtPtPair str8_txt_pt_pair_from_string(String8 string);
 
@@ -304,10 +304,10 @@ internal U32 utf8_from_utf32_single(U8 *buffer, U32 character);
 ////////////////////////////////
 //~ rjf: Unicode String Conversions
 
-internal String8 str8_from_16(Arena *arena, String16 in);
-internal String16 str16_from_8(Arena *arena, String8 in);
-internal String8 str8_from_32(Arena *arena, String32 in);
-internal String32 str32_from_8(Arena *arena, String8 in);
+internal String8 str8_from_16(Arena arena, String16 in);
+internal String16 str16_from_8(Arena arena, String8 in);
+internal String8 str8_from_32(Arena arena, String32 in);
+internal String32 str32_from_8(Arena arena, String8 in);
 
 ////////////////////////////////
 //~ rjf: Basic Types & Space Enum -> String Conversions
@@ -322,48 +322,48 @@ internal String8 string_from_architecture(Architecture arch);
 
 internal String8 string_from_week_day(WeekDay week_day);
 internal String8 string_from_month(Month month);
-internal String8 push_date_time_string(Arena *arena, DateTime *date_time);
-internal String8 push_file_name_date_time_string(Arena *arena, DateTime *date_time);
-internal String8 string_from_elapsed_time(Arena *arena, DateTime dt);
+internal String8 push_date_time_string(Arena arena, DateTime *date_time);
+internal String8 push_file_name_date_time_string(Arena arena, DateTime *date_time);
+internal String8 string_from_elapsed_time(Arena arena, DateTime dt);
 
 ////////////////////////////////
 //~ rjf: Basic Text Indentation
 
-internal String8 indented_from_string(Arena *arena, String8 string);
+internal String8 indented_from_string(Arena arena, String8 string);
 
 ////////////////////////////////
 //~ rjf: Text Wrapping
 
-internal String8List wrapped_lines_from_string(Arena *arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent);
+internal String8List wrapped_lines_from_string(Arena arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent);
 
 ////////////////////////////////
 //~ rjf: String <-> Color
 
-internal String8 hex_string_from_rgba_4f32(Arena *arena, Vec4F32 rgba);
+internal String8 hex_string_from_rgba_4f32(Arena arena, Vec4F32 rgba);
 internal Vec4F32 rgba_from_hex_string_4f32(String8 hex_string);
 
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching
 
-internal FuzzyMatchRangeList fuzzy_match_find(Arena *arena, String8 needle, String8 haystack);
-internal FuzzyMatchRangeList fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src);
+internal FuzzyMatchRangeList fuzzy_match_find(Arena arena, String8 needle, String8 haystack);
+internal FuzzyMatchRangeList fuzzy_match_range_list_copy(Arena arena, FuzzyMatchRangeList *src);
 
 ////////////////////////////////
 //~ NOTE(allen): Serialization Helpers
 
-internal void    str8_serial_begin(Arena *arena, String8List *srl);
-internal String8 str8_serial_end(Arena *arena, String8List *srl);
+internal void    str8_serial_begin(Arena arena, String8List *srl);
+internal String8 str8_serial_end(Arena arena, String8List *srl);
 internal void    str8_serial_write_to_dst(String8List *srl, void *out);
-internal U64     str8_serial_push_align(Arena *arena, String8List *srl, U64 align);
-internal void *  str8_serial_push_size(Arena *arena, String8List *srl, U64 size);
-internal void *  str8_serial_push_data(Arena *arena, String8List *srl, void *data, U64 size);
-internal void    str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first);
-internal void    str8_serial_push_u64(Arena *arena, String8List *srl, U64 x);
-internal void    str8_serial_push_u32(Arena *arena, String8List *srl, U32 x);
-internal void    str8_serial_push_u16(Arena *arena, String8List *srl, U16 x);
-internal void    str8_serial_push_u8(Arena *arena, String8List *srl, U8 x);
-internal void    str8_serial_push_cstr(Arena *arena, String8List *srl, String8 str);
-internal void    str8_serial_push_string(Arena *arena, String8List *srl, String8 str);
+internal U64     str8_serial_push_align(Arena arena, String8List *srl, U64 align);
+internal void *  str8_serial_push_size(Arena arena, String8List *srl, U64 size);
+internal void *  str8_serial_push_data(Arena arena, String8List *srl, void *data, U64 size);
+internal void    str8_serial_push_data_list(Arena arena, String8List *srl, String8Node *first);
+internal void    str8_serial_push_u64(Arena arena, String8List *srl, U64 x);
+internal void    str8_serial_push_u32(Arena arena, String8List *srl, U32 x);
+internal void    str8_serial_push_u16(Arena arena, String8List *srl, U16 x);
+internal void    str8_serial_push_u8(Arena arena, String8List *srl, U8 x);
+internal void    str8_serial_push_cstr(Arena arena, String8List *srl, String8 str);
+internal void    str8_serial_push_string(Arena arena, String8List *srl, String8 str);
 #define str8_serial_push_array(arena, srl, ptr, count) str8_serial_push_data(arena, srl, ptr, sizeof(*(ptr)) * (count))
 #define str8_serial_push_struct(arena, srl, ptr) str8_serial_push_array(arena, srl, ptr, 1)
 

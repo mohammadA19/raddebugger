@@ -17,7 +17,7 @@ global U64 demon_lnx_halt_user_data = 0;
 
 global B32 demon_lnx_new_process_pending = false;
 
-global Arena *demon_lnx_event_arena = 0;
+global Arena demon_lnx_event_arena = 0;
 global DEMON_EventList demon_lnx_queued_events = {0};
 
 global U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
@@ -36,7 +36,7 @@ demon_lnx_thread_ext(DEMON_Entity *entity){
 }
 
 internal B32
-demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
+demon_lnx_attach_pid(Arena arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
   B32 result = false;
   
   int attach_result = ptrace(PTRACE_ATTACH, pid, 0, 0);
@@ -71,7 +71,7 @@ demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
 }
 
 internal String8
-demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
+demon_lnx_executable_path_from_pid(Arena arena, pid_t pid){
   // get symbolic path
   Temp scratch = scratch_begin(&arena, 1);
   String8 exe_symbol_path = push_str8f(scratch.arena, "/proc/%d/exe", pid);
@@ -299,7 +299,7 @@ demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 ph
 }
 
 internal DEMON_LNX_ModuleNode*
-demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
+demon_lnx_module_list_from_process(Arena arena, DEMON_Entity *process){
   Arch arch = (Arch)process->arch;
   B32 is_32bit = (arch == Arch_x86 || arch == Arch_arm32);
   int memory_fd = (int)process->ext_u64;
@@ -462,7 +462,7 @@ demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size){
 }
 
 internal String8
-demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
+demon_lnx_read_memory_str(Arena arena, int memory_fd, U64 address){
   // TODO(allen): this could be done better with a demon_lnx_read_memory
   // that returns a read amount instead of a success/fail.
   
@@ -568,7 +568,7 @@ demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64 *dst, SYMS_RegX64 *sr
 ////////////////////////////////
 
 internal String8
-demon_lnx_read_int_string(Arena *arena, int fd, int radix){
+demon_lnx_read_int_string(Arena arena, int fd, int radix){
   String8 integer = str8(0,0);
   
   int to_read = 0;
@@ -639,7 +639,7 @@ demon_lnx_read_whitespace(int fd){
 }
 
 internal String8
-demon_lnx_read_string(Arena *arena, int fd){
+demon_lnx_read_string(Arena arena, int fd){
   String8 result = str8(0,0);
   
   int to_read = 0;
@@ -676,7 +676,7 @@ demon_lnx_open_maps(pid_t pid){
 }
 
 internal B32
-demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
+demon_lnx_next_map(Arena arena, int maps, DEMON_LNX_MapsEntry *entry_out){
   B32 is_parsed = false;
   MemoryZeroStruct(entry_out);
   do{
@@ -802,7 +802,7 @@ demon_os_init(void){
 //~ rjf: @demon_os_hooks Running/Halting
 
 internal DEMON_EventList
-demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
+demon_os_run(Arena arena, DEMON_OS_RunCtrls *controls){
   DEMON_EventList result = {0};
   
   if (demon_ent_root == 0){
@@ -1771,7 +1771,7 @@ demon_os_entity_cleanup(DEMON_Entity *entity)
 //- rjf: introspection
 
 internal String8
-demon_os_full_path_from_module(Arena *arena, DEMON_Entity *module){
+demon_os_full_path_from_module(Arena arena, DEMON_Entity *module){
   DEMON_Entity *process = module->parent;
   int memory_fd = (int)process->ext_u64;
   U64 name_va = module->ext_u64;
@@ -2046,7 +2046,7 @@ demon_os_proc_iter_begin(DEMON_ProcessIter *iter){
 }
 
 internal B32
-demon_os_proc_iter_next(Arena *arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo *info_out){
+demon_os_proc_iter_next(Arena arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo *info_out){
   // scan for a process id
   B32 got_pid = false;
   String8 pid_string = {0};

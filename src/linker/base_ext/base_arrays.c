@@ -27,7 +27,7 @@ void_node_concat_atomic(VoidNode **head, VoidNode *node)
 }
 
 internal U64Node *
-u64_list_push(Arena *arena, U64List *list, U64 data)
+u64_list_push(Arena arena, U64List *list, U64 data)
 {
   U64Node *n = push_array(arena, U64Node, 1);
   n->next = 0;
@@ -46,7 +46,7 @@ u64_list_concat_in_place(U64List *list, U64List *to_concat)
 }
 
 internal U64Array
-u64_array_from_list(Arena *arena, U64List *list)
+u64_array_from_list(Arena arena, U64List *list)
 {
   U64Array result;
   result.count = 0;
@@ -130,7 +130,7 @@ u32_array_compare(U32Array a, U32Array b)
 }
 
 internal U64Array
-u64_array_remove_duplicates(Arena *arena, U64Array in)
+u64_array_remove_duplicates(Arena arena, U64Array in)
 {
   U64Array result;
   result.count = 0;
@@ -219,7 +219,7 @@ counts_to_offsets_array_u64(U64 count, U64 *arr)
 }
 
 internal U32 *
-offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count)
+offsets_from_counts_array_u32(Arena arena, U32 *v, U64 count)
 {
   U32 *result = push_array_copy_u32(arena, v, count);
   counts_to_offsets_array_u32(count, result);
@@ -227,7 +227,7 @@ offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count)
 }
 
 internal U64 *
-offsets_from_counts_array_u64(Arena *arena, U64 *v, U64 count)
+offsets_from_counts_array_u64(Arena arena, U64 *v, U64 count)
 {
   U64 *result = push_array_copy_u64(arena, v, count);
   counts_to_offsets_array_u64(count, result);

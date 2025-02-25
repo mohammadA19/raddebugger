@@ -31,7 +31,7 @@ struct GEO_Slot
 typedef struct GEO_Stripe GEO_Stripe;
 struct GEO_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 };
@@ -59,7 +59,7 @@ struct GEO_Scope
 typedef struct GEO_TCTX GEO_TCTX;
 struct GEO_TCTX
 {
-  Arena *arena;
+  Arena arena;
   GEO_Scope *free_scope;
   GEO_Touch *free_touch;
 };
@@ -70,7 +70,7 @@ struct GEO_TCTX
 typedef struct GEO_Shared GEO_Shared;
 struct GEO_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: cache
   U64 slots_count;

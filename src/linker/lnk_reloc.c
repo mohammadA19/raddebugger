@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal LNK_Reloc *
-lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
+lnk_reloc_list_reserve(Arena arena, LNK_RelocList *list, U64 count)
 {
   LNK_Reloc *arr = NULL;
   if (count) {
@@ -16,7 +16,7 @@ lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
 }
 
 internal LNK_Reloc *
-lnk_reloc_list_push(Arena *arena, LNK_RelocList *list)
+lnk_reloc_list_push(Arena arena, LNK_RelocList *list)
 {
   LNK_Reloc *node = push_array(arena, LNK_Reloc, 1);
   SLLQueuePush(list->first, list->last, node);
@@ -25,7 +25,7 @@ lnk_reloc_list_push(Arena *arena, LNK_RelocList *list)
 }
 
 internal LNK_RelocList
-lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list)
+lnk_reloc_list_copy(Arena arena, LNK_RelocList *list)
 {
   LNK_RelocList result = {0};
   for (LNK_Reloc *n = list->first; n != NULL; n = n->next) {
@@ -51,7 +51,7 @@ lnk_reloc_list_concat_in_place_arr(LNK_RelocList *list, LNK_RelocList *arr, U64 
 }
 
 internal LNK_RelocList **
-lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
+lnk_make_reloc_list_arr_arr(Arena arena, U64 slot_count, U64 per_count)
 {
   LNK_RelocList **arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
   for (U64 i = 0; i < slot_count; i += 1) {
@@ -61,7 +61,7 @@ lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
 }
 
 internal LNK_RelocList
-lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK_Chunk *chunk, LNK_SymbolArray symbol_array, COFF_Reloc *reloc_v, U64 reloc_count)
+lnk_reloc_list_from_coff_reloc_array(Arena arena, COFF_MachineType machine, LNK_Chunk *chunk, LNK_SymbolArray symbol_array, COFF_Reloc *reloc_v, U64 reloc_count)
 {
   LNK_RelocList reloc_list = {0};
 
@@ -101,7 +101,7 @@ lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK
 }
 
 internal LNK_Reloc **
-lnk_reloc_array_from_list(Arena *arena, LNK_RelocList list)
+lnk_reloc_array_from_list(Arena arena, LNK_RelocList list)
 {
   LNK_Reloc **arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
   U64 count = 0;

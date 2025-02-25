@@ -42,7 +42,7 @@ struct TEX_Slot
 typedef struct TEX_Stripe TEX_Stripe;
 struct TEX_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 };
@@ -71,7 +71,7 @@ struct TEX_Scope
 typedef struct TEX_TCTX TEX_TCTX;
 struct TEX_TCTX
 {
-  Arena *arena;
+  Arena arena;
   TEX_Scope *free_scope;
   TEX_Touch *free_touch;
 };
@@ -82,7 +82,7 @@ struct TEX_TCTX
 typedef struct TEX_Shared TEX_Shared;
 struct TEX_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: cache
   U64 slots_count;

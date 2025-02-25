@@ -214,7 +214,7 @@ internal DW_CFIMachine dw_unwind_make_machine_x64(U64 cells_per_row, DW_CIEUnpac
 internal void          dw_unwind_machine_equip_initial_row_x64(DW_CFIMachine *machine, DW_CFIRow *initial_row);
 internal void          dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip);
 
-internal DW_CFIRow* dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row);
+internal DW_CFIRow* dw_unwind_row_alloc_x64(Arena arena, U64 cells_per_row);
 internal void       dw_unwind_row_zero_x64(DW_CFIRow *row, U64 cells_per_row);
 internal void       dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, U64 cells_per_row);
 

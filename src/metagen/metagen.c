@@ -116,7 +116,7 @@ mg_txt_pt_from_string_off(String8 string, U64 off)
 //~ rjf: Message Lists
 
 internal void
-mg_msg_list_push(Arena *arena, MG_MsgList *msgs, MG_Msg *msg)
+mg_msg_list_push(Arena arena, MG_MsgList *msgs, MG_Msg *msg)
 {
   MG_MsgNode *n = push_array(arena, MG_MsgNode, 1);
   MemoryCopyStruct(&n->v, msg);
@@ -128,7 +128,7 @@ mg_msg_list_push(Arena *arena, MG_MsgList *msgs, MG_Msg *msg)
 //~ rjf: String Escaping
 
 internal String8
-mg_escaped_from_str8(Arena *arena, String8 string)
+mg_escaped_from_str8(Arena arena, String8 string)
 {
   // NOTE(rjf): This doesn't handle hex/octal/unicode escape sequences right
   // now, just the simple stuff.
@@ -184,7 +184,7 @@ mg_escaped_from_str8(Arena *arena, String8 string)
 //~ rjf: String Wrapping
 
 internal String8List
-mg_wrapped_lines_from_string(Arena *arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent)
+mg_wrapped_lines_from_string(Arena arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent)
 {
   String8List list = {0};
   Rng1U64 line_range = r1u64(0, 0);
@@ -310,7 +310,7 @@ mg_c_array_literal_contents_from_data(String8 data)
 //~ rjf: Map Functions
 
 internal MG_Map
-mg_push_map(Arena *arena, U64 slot_count)
+mg_push_map(Arena arena, U64 slot_count)
 {
   MG_Map map = {0};
   map.slots_count = slot_count;
@@ -339,7 +339,7 @@ mg_map_ptr_from_string(MG_Map *map, String8 string)
 }
 
 internal void
-mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
+mg_map_insert_ptr(Arena arena, MG_Map *map, String8 string, void *val)
 {
   U64 hash = mg_hash_from_string(string);
   U64 slot_idx = hash%map->slots_count;
@@ -354,7 +354,7 @@ mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
 //~ rjf: String Expression Parsing
 
 internal MG_StrExpr *
-mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
+mg_push_str_expr(Arena arena, MG_StrExprOp op, MD_Node *node)
 {
   MG_StrExpr *expr = push_array(arena, MG_StrExpr, 1);
   MemoryCopyStruct(expr, &mg_str_expr_nil);
@@ -364,7 +364,7 @@ mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
 }
 
 internal MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec)
+mg_str_expr_parse_from_first_opl__min_prec(Arena arena, MD_Node *first, MD_Node *opl, S8 min_prec)
 {
   MG_StrExprParseResult parse = {&mg_str_expr_nil};
   {
@@ -483,14 +483,14 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
 }
 
 internal MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl(Arena *arena, MD_Node *first, MD_Node *opl)
+mg_str_expr_parse_from_first_opl(Arena arena, MD_Node *first, MD_Node *opl)
 {
   MG_StrExprParseResult parse = mg_str_expr_parse_from_first_opl__min_prec(arena, first, opl, 0);
   return parse;
 }
 
 internal MG_StrExprParseResult
-mg_str_expr_parse_from_root(Arena *arena, MD_Node *root)
+mg_str_expr_parse_from_root(Arena arena, MD_Node *root)
 {
   MG_StrExprParseResult parse = mg_str_expr_parse_from_first_opl__min_prec(arena, root->first, &md_nil_node, 0);
   return parse;
@@ -500,7 +500,7 @@ mg_str_expr_parse_from_root(Arena *arena, MD_Node *root)
 //~ rjf: Table Generation Functions
 
 internal MG_NodeArray
-mg_node_array_make(Arena *arena, U64 count)
+mg_node_array_make(Arena arena, U64 count)
 {
   MG_NodeArray result = {0};
   result.count = count;
@@ -513,7 +513,7 @@ mg_node_array_make(Arena *arena, U64 count)
 }
 
 internal MG_NodeArray
-mg_child_array_from_node(Arena *arena, MD_Node *node)
+mg_child_array_from_node(Arena arena, MD_Node *node)
 {
   MG_NodeArray children = mg_node_array_make(arena, md_child_count_from_node(node));
   U64 idx = 0;
@@ -526,7 +526,7 @@ mg_child_array_from_node(Arena *arena, MD_Node *node)
 }
 
 internal MG_NodeGrid
-mg_node_grid_make_from_node(Arena *arena, MD_Node *root)
+mg_node_grid_make_from_node(Arena arena, MD_Node *root)
 {
   MG_NodeGrid grid = {0};
   
@@ -577,7 +577,7 @@ mg_row_from_index(MG_NodeGrid grid, U64 index)
 }
 
 internal MG_NodeArray
-mg_column_from_index(Arena *arena, MG_NodeGrid grid, U64 index)
+mg_column_from_index(Arena arena, MG_NodeGrid grid, U64 index)
 {
   MG_NodeArray result = {0};
   if(0 <= index && index < grid.y_stride)
@@ -606,7 +606,7 @@ mg_node_from_grid_xy(MG_NodeGrid grid, U64 x, U64 y)
 }
 
 internal MG_ColumnDescArray
-mg_column_desc_array_make(Arena *arena, U64 count, MG_ColumnDesc *descs)
+mg_column_desc_array_make(Arena arena, U64 count, MG_ColumnDesc *descs)
 {
   MG_ColumnDescArray result = {0};
   result.count = count;
@@ -616,7 +616,7 @@ mg_column_desc_array_make(Arena *arena, U64 count, MG_ColumnDesc *descs)
 }
 
 internal MG_ColumnDescArray
-mg_column_desc_array_from_tag(Arena *arena, MD_Node *tag)
+mg_column_desc_array_from_tag(Arena arena, MD_Node *tag)
 {
   MG_ColumnDescArray result = {0};
   result.count = md_child_count_from_node(tag);
@@ -803,7 +803,7 @@ mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
 }
 
 internal void
-mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpandInfo *info, String8List *out)
+mg_eval_table_expand_expr__string(Arena arena, MG_StrExpr *expr, MG_TableExpandInfo *info, String8List *out)
 {
   MG_StrExprOp op = expr->op;
   
@@ -941,7 +941,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
 }
 
 internal void
-mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo *info, MG_TableExpandTask *task, String8List *out)
+mg_loop_table_column_expansion(Arena arena, String8 strexpr, MG_TableExpandInfo *info, MG_TableExpandTask *task, String8List *out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   for(U64 it_idx = 0; it_idx < task->count; it_idx += 1)
@@ -1022,7 +1022,7 @@ mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo
 }
 
 internal String8List
-mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node *gen)
+mg_string_list_from_table_gen(Arena arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node *gen)
 {
   String8List result = {0};
   Temp scratch = scratch_begin(&arena, 1);

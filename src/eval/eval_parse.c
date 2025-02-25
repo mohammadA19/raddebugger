@@ -25,7 +25,7 @@ global read_only S64 e_max_precedence = 15;
 //- rjf: string -> num
 
 internal E_String2NumMap
-e_string2num_map_make(Arena *arena, U64 slot_count)
+e_string2num_map_make(Arena arena, U64 slot_count)
 {
   E_String2NumMap map = {0};
   map.slots_count = slot_count;
@@ -34,7 +34,7 @@ e_string2num_map_make(Arena *arena, U64 slot_count)
 }
 
 internal void
-e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 num)
+e_string2num_map_insert(Arena arena, E_String2NumMap *map, String8 string, U64 num)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map->slots_count;
@@ -84,7 +84,7 @@ e_num_from_string(E_String2NumMap *map, String8 string)
 }
 
 internal E_String2NumMapNodeArray
-e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
+e_string2num_map_node_array_from_map(Arena arena, E_String2NumMap *map)
 {
   E_String2NumMapNodeArray result = {0};
   result.count = map->node_count;
@@ -121,7 +121,7 @@ e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array)
 //- rjf: string -> expr
 
 internal E_String2ExprMap
-e_string2expr_map_make(Arena *arena, U64 slot_count)
+e_string2expr_map_make(Arena arena, U64 slot_count)
 {
   E_String2ExprMap map = {0};
   map.slots_count = slot_count;
@@ -130,7 +130,7 @@ e_string2expr_map_make(Arena *arena, U64 slot_count)
 }
 
 internal void
-e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_Expr *expr)
+e_string2expr_map_insert(Arena arena, E_String2ExprMap *map, String8 string, E_Expr *expr)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map->slots_count;
@@ -218,7 +218,7 @@ e_string2expr_lookup(E_String2ExprMap *map, String8 string)
 //~ rjf: Debug-Info-Driven Map Building Functions
 
 internal E_String2NumMap *
-e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_locals_map_from_rdi_voff(Arena arena, RDI_Parsed *rdi, U64 voff)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -297,7 +297,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
 }
 
 internal E_String2NumMap *
-e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_member_map_from_rdi_voff(Arena arena, RDI_Parsed *rdi, U64 voff)
 {
   //- rjf: voff -> tightest scope
   U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
@@ -348,7 +348,7 @@ e_token_zero(void)
 }
 
 internal void
-e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
+e_token_chunk_list_push(Arena arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
 {
   E_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -365,7 +365,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
 }
 
 internal E_TokenArray
-e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
+e_token_array_from_chunk_list(Arena arena, E_TokenChunkList *list)
 {
   E_TokenArray array = {0};
   array.count = list->total_count;
@@ -379,7 +379,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 }
 
 internal E_TokenArray
-e_token_array_from_text(Arena *arena, String8 text)
+e_token_array_from_text(Arena arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -646,7 +646,7 @@ e_parse_ctx_module_idx_from_rdi(RDI_Parsed *rdi)
 //~ rjf: Expression Tree Building Functions
 
 internal E_Expr *
-e_push_expr(Arena *arena, E_ExprKind kind, void *location)
+e_push_expr(Arena arena, E_ExprKind kind, void *location)
 {
   E_Expr *e = push_array(arena, E_Expr, 1);
   e->first = e->last = e->next = e->ref = &e_expr_nil;
@@ -674,7 +674,7 @@ e_expr_remove_child(E_Expr *parent, E_Expr *child)
 }
 
 internal E_Expr *
-e_expr_ref(Arena *arena, E_Expr *ref)
+e_expr_ref(Arena arena, E_Expr *ref)
 {
   E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, 0);
   expr->ref = ref;
@@ -682,7 +682,7 @@ e_expr_ref(Arena *arena, E_Expr *ref)
 }
 
 internal E_Expr *
-e_expr_ref_addr(Arena *arena, E_Expr *rhs)
+e_expr_ref_addr(Arena arena, E_Expr *rhs)
 {
   E_Expr *expr = e_push_expr(arena, E_ExprKind_Address, 0);
   E_Expr *rhs_ref = e_expr_ref(arena, rhs);
@@ -691,7 +691,7 @@ e_expr_ref_addr(Arena *arena, E_Expr *rhs)
 }
 
 internal E_Expr *
-e_expr_ref_member_access(Arena *arena, E_Expr *lhs, String8 member_name)
+e_expr_ref_member_access(Arena arena, E_Expr *lhs, String8 member_name)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_MemberAccess, 0);
   E_Expr *lhs_ref = e_expr_ref(arena, lhs);
@@ -703,7 +703,7 @@ e_expr_ref_member_access(Arena *arena, E_Expr *lhs, String8 member_name)
 }
 
 internal E_Expr *
-e_expr_ref_array_index(Arena *arena, E_Expr *lhs, U64 index)
+e_expr_ref_array_index(Arena arena, E_Expr *lhs, U64 index)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_ArrayIndex, 0);
   E_Expr *lhs_ref = e_expr_ref(arena, lhs);
@@ -715,7 +715,7 @@ e_expr_ref_array_index(Arena *arena, E_Expr *lhs, U64 index)
 }
 
 internal E_Expr *
-e_expr_ref_deref(Arena *arena, E_Expr *rhs)
+e_expr_ref_deref(Arena arena, E_Expr *rhs)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_Deref, 0);
   E_Expr *rhs_ref = e_expr_ref(arena, rhs);
@@ -724,7 +724,7 @@ e_expr_ref_deref(Arena *arena, E_Expr *rhs)
 }
 
 internal E_Expr *
-e_expr_ref_cast(Arena *arena, E_TypeKey type_key, E_Expr *rhs)
+e_expr_ref_cast(Arena arena, E_TypeKey type_key, E_Expr *rhs)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_Cast, 0);
   E_Expr *lhs = e_push_expr(arena, E_ExprKind_TypeIdent, 0);
@@ -736,7 +736,7 @@ e_expr_ref_cast(Arena *arena, E_TypeKey type_key, E_Expr *rhs)
 }
 
 internal E_Expr *
-e_expr_ref_bswap(Arena *arena, E_Expr *rhs)
+e_expr_ref_bswap(Arena arena, E_Expr *rhs)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_ByteSwap, 0);
   E_Expr *rhs_ref = e_expr_ref(arena, rhs);
@@ -748,7 +748,7 @@ e_expr_ref_bswap(Arena *arena, E_Expr *rhs)
 //~ rjf: Expression Tree -> String Conversions
 
 internal void
-e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8List *out)
+e_append_strings_from_expr(Arena arena, E_Expr *expr, String8List *out)
 {
   switch(expr->kind)
   {
@@ -829,7 +829,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8List *out)
 }
 
 internal String8
-e_string_from_expr(Arena *arena, E_Expr *expr)
+e_string_from_expr(Arena arena, E_Expr *expr)
 {
   String8List strings = {0};
   e_append_strings_from_expr(arena, expr, &strings);
@@ -975,7 +975,7 @@ e_type_from_expr(E_Expr *expr)
 }
 
 internal void
-e_push_leaf_ident_exprs_from_expr__in_place(Arena *arena, E_String2ExprMap *map, E_Expr *expr)
+e_push_leaf_ident_exprs_from_expr__in_place(Arena arena, E_String2ExprMap *map, E_Expr *expr)
 {
   switch(expr->kind)
   {
@@ -999,7 +999,7 @@ e_push_leaf_ident_exprs_from_expr__in_place(Arena *arena, E_String2ExprMap *map,
 }
 
 internal E_Parse
-e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens)
+e_parse_type_from_text_tokens(Arena arena, String8 text, E_TokenArray *tokens)
 {
   E_Parse parse = {0, &e_expr_nil};
   E_Token *token_it = tokens->v;
@@ -1090,7 +1090,7 @@ e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens)
 }
 
 internal E_Parse
-e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, S64 max_precedence)
+e_parse_expr_from_text_tokens__prec(Arena arena, String8 text, E_TokenArray *tokens, S64 max_precedence)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2116,7 +2116,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
 }
 
 internal E_Parse
-e_parse_expr_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens)
+e_parse_expr_from_text_tokens(Arena arena, String8 text, E_TokenArray *tokens)
 {
   ProfBegin("parse '%.*s'", str8_varg(text));
   E_Parse parse = e_parse_expr_from_text_tokens__prec(arena, text, tokens, e_max_precedence);
@@ -2125,7 +2125,7 @@ e_parse_expr_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens)
 }
 
 internal E_Expr *
-e_parse_expr_from_text(Arena *arena, String8 text)
+e_parse_expr_from_text(Arena arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TokenArray tokens = e_token_array_from_text(scratch.arena, text);

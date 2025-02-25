@@ -114,7 +114,7 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
 //~ rjf: Task-Based Work Helper
 
 internal void
-async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
+async_task_list_push(Arena arena, ASYNC_TaskList *list, ASYNC_Task *t)
 {
   ASYNC_TaskNode *n = push_array(arena, ASYNC_TaskNode, 1);
   SLLQueuePush(list->first, list->last, n);
@@ -123,7 +123,7 @@ async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
 }
 
 internal ASYNC_Task *
-async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
+async_task_launch_(Arena arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
 {
   ASYNC_Task *task = push_array(arena, ASYNC_Task, 1);
   task->semaphore = os_semaphore_alloc(1, 1, str8_zero());

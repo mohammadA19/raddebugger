@@ -5,7 +5,7 @@
 //~ PDB Stringize Functions
 
 internal void
-pdb_stringize_tpi_hash(Arena *arena, String8List *out, PDB_TpiHashParsed *hash){
+pdb_stringize_tpi_hash(Arena arena, String8List *out, PDB_TpiHashParsed *hash){
   U32 bucket_count = hash->bucket_count;
   str8_list_pushf(arena, out, "bucket_count=%u\n\n", bucket_count);
   for (U32 i = 0; i < bucket_count; i += 1){

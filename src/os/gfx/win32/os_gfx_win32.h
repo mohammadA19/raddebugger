@@ -46,7 +46,7 @@ struct OS_W32_Window
   F32 custom_border_title_thickness;
   F32 custom_border_edge_thickness;
   B32 custom_border_composition_enabled;
-  Arena *paint_arena;
+  Arena paint_arena;
   OS_W32_TitleBarClientArea *first_title_bar_client_area;
   OS_W32_TitleBarClientArea *last_title_bar_client_area;
 };
@@ -57,7 +57,7 @@ struct OS_W32_Window
 typedef struct OS_W32_MonitorGatherBundle OS_W32_MonitorGatherBundle;
 struct OS_W32_MonitorGatherBundle
 {
-  Arena *arena;
+  Arena arena;
   OS_HandleList *list;
 };
 
@@ -67,7 +67,7 @@ struct OS_W32_MonitorGatherBundle
 typedef struct OS_W32_GfxState OS_W32_GfxState;
 struct OS_W32_GfxState
 {
-  Arena *arena;
+  Arena arena;
   U32 gfx_thread_tid;
   HINSTANCE hInstance;
   HCURSOR hCursor;
@@ -83,7 +83,7 @@ struct OS_W32_GfxState
 
 global OS_W32_GfxState *os_w32_gfx_state = 0;
 global OS_EventList os_w32_event_list = {0};
-global Arena *os_w32_event_arena = 0;
+global Arena os_w32_event_arena = 0;
 global B32 os_w32_resizing = 0;
 global B32 os_w32_new_window_custom_border = 0;
 

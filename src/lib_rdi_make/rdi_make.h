@@ -135,8 +135,8 @@ enum
 typedef struct RDIM_Arena RDIM_Arena;
 struct RDIM_Arena
 {
-  RDIM_Arena *prev;
-  RDIM_Arena *current;
+  RDIM_Arena prev;
+  RDIM_Arena current;
   RDI_U64 base_pos;
   RDI_U64 pos;
   RDI_U64 cmt;
@@ -168,7 +168,7 @@ struct RDIM_Arena
 // #define RDIM_SCRATCH_OVERRIDE
 // #define RDIM_Temp <name of arena temp block type - generally struct: (Arena*, U64)
 // #define rdim_temp_arena <name of temp -> arena implementation - must be (Temp) -> (Arena*)>
-// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena **conflicts, U64 conflict_count) -> Temp>
+// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena *conflicts, U64 conflict_count) -> Temp>
 // #define rdim_scratch_end <name of scratch end function - must be (Temp) -> void
 
 #if !defined(RDIM_Temp)
@@ -176,7 +176,7 @@ struct RDIM_Arena
 typedef struct RDIM_Temp RDIM_Temp;
 struct RDIM_Temp
 {
-  RDIM_Arena *arena;
+  RDIM_Arena arena;
   RDI_U64 pos;
 };
 #define rdim_temp_arena(t) ((t).arena)
@@ -1297,94 +1297,94 @@ RDI_PROC void *rdim_memcpy_fallback(void *dst, void *src, RDI_U64 size);
 
 //- rjf: arenas
 #if !defined(RDIM_ARENA_OVERRIDE)
-RDI_PROC RDIM_Arena *rdim_arena_alloc_fallback(void);
-RDI_PROC void rdim_arena_release_fallback(RDIM_Arena *arena);
-RDI_PROC RDI_U64 rdim_arena_pos_fallback(RDIM_Arena *arena);
-RDI_PROC void *rdim_arena_push_fallback(RDIM_Arena *arena, RDI_U64 align, RDI_U64 size);
-RDI_PROC void rdim_arena_pop_to_fallback(RDIM_Arena *arena, RDI_U64 pos);
+RDI_PROC RDIM_Arena rdim_arena_alloc_fallback(void);
+RDI_PROC void rdim_arena_release_fallback(RDIM_Arena arena);
+RDI_PROC RDI_U64 rdim_arena_pos_fallback(RDIM_Arena arena);
+RDI_PROC void *rdim_arena_push_fallback(RDIM_Arena arena, RDI_U64 align, RDI_U64 size);
+RDI_PROC void rdim_arena_pop_to_fallback(RDIM_Arena arena, RDI_U64 pos);
 #endif
 #define rdim_push_array_no_zero(a,T,c) (T*)rdim_arena_push((a), sizeof(T)*(c), RDIM_AlignOf(T))
 #define rdim_push_array(a,T,c) (T*)rdim_memzero(rdim_push_array_no_zero(a,T,c), sizeof(T)*(c))
 
 //- rjf: thread-local scratch arenas
 #if !defined (RDIM_SCRATCH_OVERRIDE)
-RDI_PROC RDIM_Temp rdim_scratch_begin_fallback(RDIM_Arena **conflicts, RDI_U64 conflicts_count);
+RDI_PROC RDIM_Temp rdim_scratch_begin_fallback(RDIM_Arena *conflicts, RDI_U64 conflicts_count);
 RDI_PROC void rdim_scratch_end_fallback(RDIM_Temp temp);
 #endif
 
 //- rjf: strings
 RDI_PROC RDIM_String8 rdim_str8(RDI_U8 *str, RDI_U64 size);
-RDI_PROC RDIM_String8 rdim_str8_copy(RDIM_Arena *arena, RDIM_String8 src);
-RDI_PROC RDIM_String8 rdim_str8f(RDIM_Arena *arena, char *fmt, ...);
-RDI_PROC RDIM_String8 rdim_str8fv(RDIM_Arena *arena, char *fmt, va_list args);
+RDI_PROC RDIM_String8 rdim_str8_copy(RDIM_Arena arena, RDIM_String8 src);
+RDI_PROC RDIM_String8 rdim_str8f(RDIM_Arena arena, char *fmt, ...);
+RDI_PROC RDIM_String8 rdim_str8fv(RDIM_Arena arena, char *fmt, va_list args);
 RDI_PROC RDI_S32 rdim_str8_match(RDIM_String8 a, RDIM_String8 b, RDIM_StringMatchFlags flags);
 #define rdim_str8_lit(S)              rdim_str8((RDI_U8*)(S), sizeof(S) - 1)
 #define rdim_str8_struct(S)           rdim_str8((RDI_U8*)(S), sizeof(*(S)))
 #define rdim_str8_struct_array(S, C)  rdim_str8((RDI_U8*)(S), sizeof(*(S)) * (C))
 
 //- rjf: string lists
-RDI_PROC void rdim_str8_list_push(RDIM_Arena *arena, RDIM_String8List *list, RDIM_String8 string);
-RDI_PROC void rdim_str8_list_push_front(RDIM_Arena *arena, RDIM_String8List *list, RDIM_String8 string);
-RDI_PROC void rdim_str8_list_push_align(RDIM_Arena *arena, RDIM_String8List *list, RDI_U64 align);
-RDI_PROC RDIM_String8 rdim_str8_list_join(RDIM_Arena *arena, RDIM_String8List *list, RDIM_String8 sep);
+RDI_PROC void rdim_str8_list_push(RDIM_Arena arena, RDIM_String8List *list, RDIM_String8 string);
+RDI_PROC void rdim_str8_list_push_front(RDIM_Arena arena, RDIM_String8List *list, RDIM_String8 string);
+RDI_PROC void rdim_str8_list_push_align(RDIM_Arena arena, RDIM_String8List *list, RDI_U64 align);
+RDI_PROC RDIM_String8 rdim_str8_list_join(RDIM_Arena arena, RDIM_String8List *list, RDIM_String8 sep);
 
 //- rjf: sortable range sorting
-RDI_PROC RDIM_SortKey *rdim_sort_key_array(RDIM_Arena *arena, RDIM_SortKey *keys, RDI_U64 count);
+RDI_PROC RDIM_SortKey *rdim_sort_key_array(RDIM_Arena arena, RDIM_SortKey *keys, RDI_U64 count);
 
 //- rjf: rng1u64 list
-RDI_PROC void rdim_rng1u64_list_push(RDIM_Arena *arena, RDIM_Rng1U64List *list, RDIM_Rng1U64 r);
+RDI_PROC void rdim_rng1u64_list_push(RDIM_Arena arena, RDIM_Rng1U64List *list, RDIM_Rng1U64 r);
 
 ////////////////////////////////
 //~ rjf: [Building] Binary Section Info Building
 
-RDI_PROC RDIM_BinarySection *rdim_binary_section_list_push(RDIM_Arena *arena, RDIM_BinarySectionList *list);
+RDI_PROC RDIM_BinarySection *rdim_binary_section_list_push(RDIM_Arena arena, RDIM_BinarySectionList *list);
 
 ////////////////////////////////
 //~ rjf: [Building] Source File Info Building
 
-RDI_PROC RDIM_SrcFile *rdim_src_file_chunk_list_push(RDIM_Arena *arena, RDIM_SrcFileChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_SrcFile *rdim_src_file_chunk_list_push(RDIM_Arena arena, RDIM_SrcFileChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_src_file(RDIM_SrcFile *src_file);
 RDI_PROC void rdim_src_file_chunk_list_concat_in_place(RDIM_SrcFileChunkList *dst, RDIM_SrcFileChunkList *to_push);
-RDI_PROC void rdim_src_file_push_line_sequence(RDIM_Arena *arena, RDIM_SrcFileChunkList *src_files, RDIM_SrcFile *src_file, RDIM_LineSequence *seq);
+RDI_PROC void rdim_src_file_push_line_sequence(RDIM_Arena arena, RDIM_SrcFileChunkList *src_files, RDIM_SrcFile *src_file, RDIM_LineSequence *seq);
 
 ////////////////////////////////
 //~ rjf: [Building] Line Info Building
 
-RDI_PROC RDIM_LineTable *rdim_line_table_chunk_list_push(RDIM_Arena *arena, RDIM_LineTableChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_LineTable *rdim_line_table_chunk_list_push(RDIM_Arena arena, RDIM_LineTableChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_line_table(RDIM_LineTable *line_table);
 RDI_PROC void rdim_line_table_chunk_list_concat_in_place(RDIM_LineTableChunkList *dst, RDIM_LineTableChunkList *to_push);
-RDI_PROC RDIM_LineSequence *rdim_line_table_push_sequence(RDIM_Arena *arena, RDIM_LineTableChunkList *line_tables, RDIM_LineTable *line_table, RDIM_SrcFile *src_file, RDI_U64 *voffs, RDI_U32 *line_nums, RDI_U16 *col_nums, RDI_U64 line_count);
+RDI_PROC RDIM_LineSequence *rdim_line_table_push_sequence(RDIM_Arena arena, RDIM_LineTableChunkList *line_tables, RDIM_LineTable *line_table, RDIM_SrcFile *src_file, RDI_U64 *voffs, RDI_U32 *line_nums, RDI_U16 *col_nums, RDI_U64 line_count);
 
 ////////////////////////////////
 //~ rjf: [Building] Unit Info Building
 
-RDI_PROC RDIM_Unit *rdim_unit_chunk_list_push(RDIM_Arena *arena, RDIM_UnitChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_Unit *rdim_unit_chunk_list_push(RDIM_Arena arena, RDIM_UnitChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_unit(RDIM_Unit *unit);
 RDI_PROC void rdim_unit_chunk_list_concat_in_place(RDIM_UnitChunkList *dst, RDIM_UnitChunkList *to_push);
 
 ////////////////////////////////
 //~ rjf: [Building] Type Info & UDT Building
 
-RDI_PROC RDIM_Type *rdim_type_chunk_list_push(RDIM_Arena *arena, RDIM_TypeChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_Type *rdim_type_chunk_list_push(RDIM_Arena arena, RDIM_TypeChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_type(RDIM_Type *type);
 RDI_PROC void rdim_type_chunk_list_concat_in_place(RDIM_TypeChunkList *dst, RDIM_TypeChunkList *to_push);
-RDI_PROC RDIM_UDT *rdim_udt_chunk_list_push(RDIM_Arena *arena, RDIM_UDTChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_UDT *rdim_udt_chunk_list_push(RDIM_Arena arena, RDIM_UDTChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_udt(RDIM_UDT *udt);
 RDI_PROC void rdim_udt_chunk_list_concat_in_place(RDIM_UDTChunkList *dst, RDIM_UDTChunkList *to_push);
-RDI_PROC RDIM_UDTMember *rdim_udt_push_member(RDIM_Arena *arena, RDIM_UDTChunkList *list, RDIM_UDT *udt);
-RDI_PROC RDIM_UDTEnumVal *rdim_udt_push_enum_val(RDIM_Arena *arena, RDIM_UDTChunkList *list, RDIM_UDT *udt);
+RDI_PROC RDIM_UDTMember *rdim_udt_push_member(RDIM_Arena arena, RDIM_UDTChunkList *list, RDIM_UDT *udt);
+RDI_PROC RDIM_UDTEnumVal *rdim_udt_push_enum_val(RDIM_Arena arena, RDIM_UDTChunkList *list, RDIM_UDT *udt);
 
 ////////////////////////////////
 //~ rjf: [Building] Symbol Info Building
 
-RDI_PROC RDIM_Symbol *rdim_symbol_chunk_list_push(RDIM_Arena *arena, RDIM_SymbolChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_Symbol *rdim_symbol_chunk_list_push(RDIM_Arena arena, RDIM_SymbolChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_symbol(RDIM_Symbol *symbol);
 RDI_PROC void rdim_symbol_chunk_list_concat_in_place(RDIM_SymbolChunkList *dst, RDIM_SymbolChunkList *to_push);
 
 ////////////////////////////////
 //~ rjf: [Building] Inline Site Info Building
 
-RDI_PROC RDIM_InlineSite *rdim_inline_site_chunk_list_push(RDIM_Arena *arena, RDIM_InlineSiteChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_InlineSite *rdim_inline_site_chunk_list_push(RDIM_Arena arena, RDIM_InlineSiteChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_inline_site(RDIM_InlineSite *inline_site);
 RDI_PROC void rdim_inline_site_chunk_list_concat_in_place(RDIM_InlineSiteChunkList *dst, RDIM_InlineSiteChunkList *to_push);
 
@@ -1392,135 +1392,135 @@ RDI_PROC void rdim_inline_site_chunk_list_concat_in_place(RDIM_InlineSiteChunkLi
 //~ rjf: [Building] Scope Info Building
 
 //- rjf: scopes
-RDI_PROC RDIM_Scope *rdim_scope_chunk_list_push(RDIM_Arena *arena, RDIM_ScopeChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_Scope *rdim_scope_chunk_list_push(RDIM_Arena arena, RDIM_ScopeChunkList *list, RDI_U64 cap);
 RDI_PROC RDI_U64 rdim_idx_from_scope(RDIM_Scope *scope);
 RDI_PROC void rdim_scope_chunk_list_concat_in_place(RDIM_ScopeChunkList *dst, RDIM_ScopeChunkList *to_push);
-RDI_PROC void rdim_scope_push_voff_range(RDIM_Arena *arena, RDIM_ScopeChunkList *list, RDIM_Scope *scope, RDIM_Rng1U64 range);
-RDI_PROC RDIM_Local *rdim_scope_push_local(RDIM_Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_Scope *scope);
+RDI_PROC void rdim_scope_push_voff_range(RDIM_Arena arena, RDIM_ScopeChunkList *list, RDIM_Scope *scope, RDIM_Rng1U64 range);
+RDI_PROC RDIM_Local *rdim_scope_push_local(RDIM_Arena arena, RDIM_ScopeChunkList *scopes, RDIM_Scope *scope);
 
 //- rjf: bytecode
-RDI_PROC void rdim_bytecode_push_op(RDIM_Arena *arena, RDIM_EvalBytecode *bytecode, RDI_EvalOp op, RDI_U64 p);
-RDI_PROC void rdim_bytecode_push_uconst(RDIM_Arena *arena, RDIM_EvalBytecode *bytecode, RDI_U64 x);
-RDI_PROC void rdim_bytecode_push_sconst(RDIM_Arena *arena, RDIM_EvalBytecode *bytecode, RDI_S64 x);
+RDI_PROC void rdim_bytecode_push_op(RDIM_Arena arena, RDIM_EvalBytecode *bytecode, RDI_EvalOp op, RDI_U64 p);
+RDI_PROC void rdim_bytecode_push_uconst(RDIM_Arena arena, RDIM_EvalBytecode *bytecode, RDI_U64 x);
+RDI_PROC void rdim_bytecode_push_sconst(RDIM_Arena arena, RDIM_EvalBytecode *bytecode, RDI_S64 x);
 RDI_PROC void rdim_bytecode_concat_in_place(RDIM_EvalBytecode *left_dst, RDIM_EvalBytecode *right_destroyed);
 
 //- rjf: individual locations
-RDI_PROC RDIM_Location *rdim_push_location_addr_bytecode_stream(RDIM_Arena *arena, RDIM_EvalBytecode *bytecode);
-RDI_PROC RDIM_Location *rdim_push_location_val_bytecode_stream(RDIM_Arena *arena, RDIM_EvalBytecode *bytecode);
-RDI_PROC RDIM_Location *rdim_push_location_addr_reg_plus_u16(RDIM_Arena *arena, RDI_U8 reg_code, RDI_U16 offset);
-RDI_PROC RDIM_Location *rdim_push_location_addr_addr_reg_plus_u16(RDIM_Arena *arena, RDI_U8 reg_code, RDI_U16 offset);
-RDI_PROC RDIM_Location *rdim_push_location_val_reg(RDIM_Arena *arena, RDI_U8 reg_code);
+RDI_PROC RDIM_Location *rdim_push_location_addr_bytecode_stream(RDIM_Arena arena, RDIM_EvalBytecode *bytecode);
+RDI_PROC RDIM_Location *rdim_push_location_val_bytecode_stream(RDIM_Arena arena, RDIM_EvalBytecode *bytecode);
+RDI_PROC RDIM_Location *rdim_push_location_addr_reg_plus_u16(RDIM_Arena arena, RDI_U8 reg_code, RDI_U16 offset);
+RDI_PROC RDIM_Location *rdim_push_location_addr_addr_reg_plus_u16(RDIM_Arena arena, RDI_U8 reg_code, RDI_U16 offset);
+RDI_PROC RDIM_Location *rdim_push_location_val_reg(RDIM_Arena arena, RDI_U8 reg_code);
 
 //- rjf: location sets
-RDI_PROC void rdim_location_set_push_case(RDIM_Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Rng1U64 voff_range, RDIM_Location *location);
+RDI_PROC void rdim_location_set_push_case(RDIM_Arena arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Rng1U64 voff_range, RDIM_Location *location);
 
 ////////////////////////////////
 //~ rjf: [Baking Helpers] Baked VMap Building
 
-RDI_PROC RDIM_BakeVMap rdim_bake_vmap_from_markers(RDIM_Arena *arena, RDIM_VMapMarker *markers, RDIM_SortKey *keys, RDI_U64 marker_count);
+RDI_PROC RDIM_BakeVMap rdim_bake_vmap_from_markers(RDIM_Arena arena, RDIM_VMapMarker *markers, RDIM_SortKey *keys, RDI_U64 marker_count);
 
 ////////////////////////////////
 //~ rjf: [Baking Helpers] Interned / Deduplicated Blob Data Structure Helpers
 
 //- rjf: bake string chunk lists
-RDI_PROC RDIM_BakeString *rdim_bake_string_chunk_list_push(RDIM_Arena *arena, RDIM_BakeStringChunkList *list, RDI_U64 cap);
+RDI_PROC RDIM_BakeString *rdim_bake_string_chunk_list_push(RDIM_Arena arena, RDIM_BakeStringChunkList *list, RDI_U64 cap);
 RDI_PROC void rdim_bake_string_chunk_list_concat_in_place(RDIM_BakeStringChunkList *dst, RDIM_BakeStringChunkList *to_push);
-RDI_PROC RDIM_BakeStringChunkList rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena *arena, RDIM_BakeStringChunkList *src);
+RDI_PROC RDIM_BakeStringChunkList rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena arena, RDIM_BakeStringChunkList *src);
 
 //- rjf: bake string chunk list maps
-RDI_PROC RDIM_BakeStringMapLoose *rdim_bake_string_map_loose_make(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top);
-RDI_PROC void rdim_bake_string_map_loose_insert(RDIM_Arena *arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapLoose *map, RDI_U64 chunk_cap, RDIM_String8 string);
+RDI_PROC RDIM_BakeStringMapLoose *rdim_bake_string_map_loose_make(RDIM_Arena arena, RDIM_BakeStringMapTopology *top);
+RDI_PROC void rdim_bake_string_map_loose_insert(RDIM_Arena arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapLoose *map, RDI_U64 chunk_cap, RDIM_String8 string);
 RDI_PROC void rdim_bake_string_map_loose_join_in_place(RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapLoose *dst, RDIM_BakeStringMapLoose *src);
-RDI_PROC RDIM_BakeStringMapBaseIndices rdim_bake_string_map_base_indices_from_map_loose(RDIM_Arena *arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapLoose *map);
+RDI_PROC RDIM_BakeStringMapBaseIndices rdim_bake_string_map_base_indices_from_map_loose(RDIM_Arena arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapLoose *map);
 
 //- rjf: finalized bake string map
-RDI_PROC RDIM_BakeStringMapTight rdim_bake_string_map_tight_from_loose(RDIM_Arena *arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapBaseIndices *map_base_indices, RDIM_BakeStringMapLoose *map);
+RDI_PROC RDIM_BakeStringMapTight rdim_bake_string_map_tight_from_loose(RDIM_Arena arena, RDIM_BakeStringMapTopology *map_topology, RDIM_BakeStringMapBaseIndices *map_base_indices, RDIM_BakeStringMapLoose *map);
 RDI_PROC RDI_U32 rdim_bake_idx_from_string(RDIM_BakeStringMapTight *map, RDIM_String8 string);
 
 //- rjf: bake idx run map reading/writing
 RDI_PROC RDI_U64 rdim_hash_from_idx_run(RDI_U32 *idx_run, RDI_U32 count);
 RDI_PROC RDI_U32 rdim_bake_idx_from_idx_run(RDIM_BakeIdxRunMap *map, RDI_U32 *idx_run, RDI_U32 count);
-RDI_PROC RDI_U32 rdim_bake_idx_run_map_insert(RDIM_Arena *arena, RDIM_BakeIdxRunMap *map, RDI_U32 *idx_run, RDI_U32 count);
+RDI_PROC RDI_U32 rdim_bake_idx_run_map_insert(RDIM_Arena arena, RDIM_BakeIdxRunMap *map, RDI_U32 *idx_run, RDI_U32 count);
 
 //- rjf: bake path tree reading/writing
 RDI_PROC RDIM_BakePathNode *rdim_bake_path_node_from_string(RDIM_BakePathTree *tree, RDIM_String8 string);
 RDI_PROC RDI_U32 rdim_bake_path_node_idx_from_string(RDIM_BakePathTree *tree, RDIM_String8 string);
-RDI_PROC RDIM_BakePathNode *rdim_bake_path_tree_insert(RDIM_Arena *arena, RDIM_BakePathTree *tree, RDIM_String8 string);
+RDI_PROC RDIM_BakePathNode *rdim_bake_path_tree_insert(RDIM_Arena arena, RDIM_BakePathTree *tree, RDIM_String8 string);
 
 //- rjf: bake name maps writing
-RDI_PROC void rdim_bake_name_map_push(RDIM_Arena *arena, RDIM_BakeNameMap *map, RDIM_String8 string, RDI_U32 idx);
+RDI_PROC void rdim_bake_name_map_push(RDIM_Arena arena, RDIM_BakeNameMap *map, RDIM_String8 string, RDI_U32 idx);
 
 ////////////////////////////////
 //~ rjf: [Baking Helpers] Data Section List Building Helpers
 
-RDI_PROC RDIM_BakeSection *rdim_bake_section_list_push(RDIM_Arena *arena, RDIM_BakeSectionList *list);
-RDI_PROC RDIM_BakeSection *rdim_bake_section_list_push_new_unpacked(RDIM_Arena *arena, RDIM_BakeSectionList *list, void *data, RDI_U64 size, RDI_SectionKind tag, RDI_U64 tag_idx);
+RDI_PROC RDIM_BakeSection *rdim_bake_section_list_push(RDIM_Arena arena, RDIM_BakeSectionList *list);
+RDI_PROC RDIM_BakeSection *rdim_bake_section_list_push_new_unpacked(RDIM_Arena arena, RDIM_BakeSectionList *list, void *data, RDI_U64 size, RDI_SectionKind tag, RDI_U64 tag_idx);
 RDI_PROC void rdim_bake_section_list_concat_in_place(RDIM_BakeSectionList *dst, RDIM_BakeSectionList *to_push);
 
 ////////////////////////////////
 //~ rjf: [Baking] Build Artifacts -> Interned/Deduplicated Data Structures
 
 //- rjf: basic bake string gathering passes
-RDI_PROC void rdim_bake_string_map_loose_push_top_level_info(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_TopLevelInfo *tli);
-RDI_PROC void rdim_bake_string_map_loose_push_binary_sections(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_BinarySectionList *secs);
-RDI_PROC void rdim_bake_string_map_loose_push_path_tree(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_BakePathTree *path_tree);
+RDI_PROC void rdim_bake_string_map_loose_push_top_level_info(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_TopLevelInfo *tli);
+RDI_PROC void rdim_bake_string_map_loose_push_binary_sections(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_BinarySectionList *secs);
+RDI_PROC void rdim_bake_string_map_loose_push_path_tree(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_BakePathTree *path_tree);
 
 //- rjf: slice-granularity bake string gathering passes
-RDI_PROC void rdim_bake_string_map_loose_push_src_file_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SrcFile *v, RDI_U64 count);
-RDI_PROC void rdim_bake_string_map_loose_push_unit_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Unit *v, RDI_U64 count);
-RDI_PROC void rdim_bake_string_map_loose_push_type_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Type *v, RDI_U64 count);
-RDI_PROC void rdim_bake_string_map_loose_push_udt_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UDT *v, RDI_U64 count);
-RDI_PROC void rdim_bake_string_map_loose_push_symbol_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Symbol *v, RDI_U64 count);
-RDI_PROC void rdim_bake_string_map_loose_push_inline_site_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_InlineSite *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_src_file_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SrcFile *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_unit_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Unit *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_type_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Type *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_udt_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UDT *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_symbol_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Symbol *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_inline_site_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_InlineSite *v, RDI_U64 count);
 
-RDI_PROC void rdim_bake_string_map_loose_push_scope_slice(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Scope *v, RDI_U64 count);
+RDI_PROC void rdim_bake_string_map_loose_push_scope_slice(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_Scope *v, RDI_U64 count);
 
 //- rjf: list-granularity bake string gathering passes
-RDI_PROC void rdim_bake_string_map_loose_push_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SrcFileChunkList *list);
-RDI_PROC void rdim_bake_string_map_loose_push_units(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UnitChunkList *list);
-RDI_PROC void rdim_bake_string_map_loose_push_types(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_TypeChunkList *list);
-RDI_PROC void rdim_bake_string_map_loose_push_udts(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UDTChunkList *list);
-RDI_PROC void rdim_bake_string_map_loose_push_symbols(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SymbolChunkList *list);
-RDI_PROC void rdim_bake_string_map_loose_push_scopes(RDIM_Arena *arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_ScopeChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_src_files(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SrcFileChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_units(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UnitChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_types(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_TypeChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_udts(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_UDTChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_symbols(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_SymbolChunkList *list);
+RDI_PROC void rdim_bake_string_map_loose_push_scopes(RDIM_Arena arena, RDIM_BakeStringMapTopology *top, RDIM_BakeStringMapLoose *map, RDIM_ScopeChunkList *list);
 
 //- rjf: bake name map building
-RDI_PROC RDIM_BakeNameMap *rdim_bake_name_map_from_kind_params(RDIM_Arena *arena, RDI_NameMapKind kind, RDIM_BakeParams *params);
+RDI_PROC RDIM_BakeNameMap *rdim_bake_name_map_from_kind_params(RDIM_Arena arena, RDI_NameMapKind kind, RDIM_BakeParams *params);
 
 //- rjf: bake idx run map building
-RDI_PROC RDIM_BakeIdxRunMap *rdim_bake_idx_run_map_from_params(RDIM_Arena *arena, RDIM_BakeNameMap *name_maps[RDI_NameMapKind_COUNT], RDIM_BakeParams *params);
+RDI_PROC RDIM_BakeIdxRunMap *rdim_bake_idx_run_map_from_params(RDIM_Arena arena, RDIM_BakeNameMap *name_maps[RDI_NameMapKind_COUNT], RDIM_BakeParams *params);
 
 //- rjf: bake path tree building
-RDI_PROC RDIM_BakePathTree *rdim_bake_path_tree_from_params(RDIM_Arena *arena, RDIM_BakeParams *params);
+RDI_PROC RDIM_BakePathTree *rdim_bake_path_tree_from_params(RDIM_Arena arena, RDIM_BakeParams *params);
 
 ////////////////////////////////
 //~ rjf: [Baking] Build Artifacts -> Baked Versions
 
 //- rjf: partial/joinable baking functions
-RDI_PROC RDIM_NameMapBakeResult         rdim_bake_name_map(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_BakeNameMap *src);
+RDI_PROC RDIM_NameMapBakeResult         rdim_bake_name_map(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_BakeNameMap *src);
 
 //- rjf: partial bakes -> final bake functions
-RDI_PROC RDIM_NameMapBakeResult         rdim_name_map_bake_results_combine(RDIM_Arena *arena, RDIM_NameMapBakeResult *results, RDI_U64 results_count);
+RDI_PROC RDIM_NameMapBakeResult         rdim_name_map_bake_results_combine(RDIM_Arena arena, RDIM_NameMapBakeResult *results, RDI_U64 results_count);
 
 //- rjf: independent (top-level, global) baking functions
-RDI_PROC RDIM_TopLevelInfoBakeResult    rdim_bake_top_level_info(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_TopLevelInfo *src);
-RDI_PROC RDIM_BinarySectionBakeResult   rdim_bake_binary_sections(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BinarySectionList *src);
-RDI_PROC RDIM_UnitBakeResult            rdim_bake_units(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree, RDIM_UnitChunkList *src);
-RDI_PROC RDIM_UnitVMapBakeResult        rdim_bake_unit_vmap(RDIM_Arena *arena, RDIM_UnitChunkList *units);
-RDI_PROC RDIM_SrcFileBakeResult         rdim_bake_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree, RDIM_SrcFileChunkList *src);
-RDI_PROC RDIM_LineTableBakeResult       rdim_bake_line_tables(RDIM_Arena *arena, RDIM_LineTableChunkList *src);
-RDI_PROC RDIM_TypeNodeBakeResult        rdim_bake_types(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_TypeChunkList *src);
-RDI_PROC RDIM_UDTBakeResult             rdim_bake_udts(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_UDTChunkList *src);
-RDI_PROC RDIM_GlobalVariableBakeResult  rdim_bake_global_variables(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
-RDI_PROC RDIM_GlobalVMapBakeResult      rdim_bake_global_vmap(RDIM_Arena *arena, RDIM_SymbolChunkList *src);
-RDI_PROC RDIM_ThreadVariableBakeResult  rdim_bake_thread_variables(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
-RDI_PROC RDIM_ProcedureBakeResult       rdim_bake_procedures(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
-RDI_PROC RDIM_ScopeBakeResult           rdim_bake_scopes(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_ScopeChunkList *src);
-RDI_PROC RDIM_ScopeVMapBakeResult       rdim_bake_scope_vmap(RDIM_Arena *arena, RDIM_ScopeChunkList *src);
-RDI_PROC RDIM_InlineSiteBakeResult      rdim_bake_inline_sites(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_InlineSiteChunkList *src);
-RDI_PROC RDIM_TopLevelNameMapBakeResult rdim_bake_name_maps_top_level(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_BakeNameMap *name_maps[RDI_NameMapKind_COUNT]);
-RDI_PROC RDIM_FilePathBakeResult        rdim_bake_file_paths(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree);
-RDI_PROC RDIM_StringBakeResult          rdim_bake_strings(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings);
-RDI_PROC RDIM_IndexRunBakeResult        rdim_bake_index_runs(RDIM_Arena *arena, RDIM_BakeIdxRunMap *idx_runs);
+RDI_PROC RDIM_TopLevelInfoBakeResult    rdim_bake_top_level_info(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_TopLevelInfo *src);
+RDI_PROC RDIM_BinarySectionBakeResult   rdim_bake_binary_sections(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BinarySectionList *src);
+RDI_PROC RDIM_UnitBakeResult            rdim_bake_units(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree, RDIM_UnitChunkList *src);
+RDI_PROC RDIM_UnitVMapBakeResult        rdim_bake_unit_vmap(RDIM_Arena arena, RDIM_UnitChunkList *units);
+RDI_PROC RDIM_SrcFileBakeResult         rdim_bake_src_files(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree, RDIM_SrcFileChunkList *src);
+RDI_PROC RDIM_LineTableBakeResult       rdim_bake_line_tables(RDIM_Arena arena, RDIM_LineTableChunkList *src);
+RDI_PROC RDIM_TypeNodeBakeResult        rdim_bake_types(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_TypeChunkList *src);
+RDI_PROC RDIM_UDTBakeResult             rdim_bake_udts(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_UDTChunkList *src);
+RDI_PROC RDIM_GlobalVariableBakeResult  rdim_bake_global_variables(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
+RDI_PROC RDIM_GlobalVMapBakeResult      rdim_bake_global_vmap(RDIM_Arena arena, RDIM_SymbolChunkList *src);
+RDI_PROC RDIM_ThreadVariableBakeResult  rdim_bake_thread_variables(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
+RDI_PROC RDIM_ProcedureBakeResult       rdim_bake_procedures(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_SymbolChunkList *src);
+RDI_PROC RDIM_ScopeBakeResult           rdim_bake_scopes(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_ScopeChunkList *src);
+RDI_PROC RDIM_ScopeVMapBakeResult       rdim_bake_scope_vmap(RDIM_Arena arena, RDIM_ScopeChunkList *src);
+RDI_PROC RDIM_InlineSiteBakeResult      rdim_bake_inline_sites(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_InlineSiteChunkList *src);
+RDI_PROC RDIM_TopLevelNameMapBakeResult rdim_bake_name_maps_top_level(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakeIdxRunMap *idx_runs, RDIM_BakeNameMap *name_maps[RDI_NameMapKind_COUNT]);
+RDI_PROC RDIM_FilePathBakeResult        rdim_bake_file_paths(RDIM_Arena arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree);
+RDI_PROC RDIM_StringBakeResult          rdim_bake_strings(RDIM_Arena arena, RDIM_BakeStringMapTight *strings);
+RDI_PROC RDIM_IndexRunBakeResult        rdim_bake_index_runs(RDIM_Arena arena, RDIM_BakeIdxRunMap *idx_runs);
 
 ////////////////////////////////
 //~ rjf: [Serializing] Bake Results -> String Blobs
@@ -1529,6 +1529,6 @@ RDI_PROC RDIM_SerializedSection rdim_serialized_section_make_unpacked(void *data
 #define rdim_serialized_section_make_unpacked_struct(ptr) rdim_serialized_section_make_unpacked((ptr), sizeof(*(ptr)))
 #define rdim_serialized_section_make_unpacked_array(ptr, count) rdim_serialized_section_make_unpacked((ptr), sizeof(*(ptr))*(count))
 RDI_PROC RDIM_SerializedSectionBundle rdim_serialized_section_bundle_from_bake_results(RDIM_BakeResults *results);
-RDI_PROC RDIM_String8List rdim_file_blobs_from_section_bundle(RDIM_Arena *arena, RDIM_SerializedSectionBundle *bundle);
+RDI_PROC RDIM_String8List rdim_file_blobs_from_section_bundle(RDIM_Arena arena, RDIM_SerializedSectionBundle *bundle);
 
 #endif // RDI_MAKE_H

@@ -181,7 +181,7 @@ struct DASM_Node
   U64 change_gen;
   
   // rjf: value
-  Arena *info_arena;
+  Arena info_arena;
   DASM_Info info;
   
   // rjf: metadata
@@ -204,7 +204,7 @@ struct DASM_Slot
 typedef struct DASM_Stripe DASM_Stripe;
 struct DASM_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
   DASM_Node *free_node;
@@ -235,7 +235,7 @@ struct DASM_Scope
 typedef struct DASM_TCTX DASM_TCTX;
 struct DASM_TCTX
 {
-  Arena *arena;
+  Arena arena;
 };
 
 ////////////////////////////////
@@ -244,7 +244,7 @@ struct DASM_TCTX
 typedef struct DASM_Shared DASM_Shared;
 struct DASM_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: cache
   U64 slots_count;
@@ -273,12 +273,12 @@ global DASM_Shared *dasm_shared = 0;
 ////////////////////////////////
 //~ rjf: Instruction Decoding/Disassembling Type Functions
 
-internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
+internal DASM_Inst dasm_inst_from_code(Arena arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
 
 ////////////////////////////////
 //~ rjf: Control Flow Analysis
 
-internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
+internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
 
 ////////////////////////////////
 //~ rjf: Parameter Type Functions
@@ -288,8 +288,8 @@ internal B32 dasm_params_match(DASM_Params *a, DASM_Params *b);
 ////////////////////////////////
 //~ rjf: Line Type Functions
 
-internal void dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *line);
-internal DASM_LineArray dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list);
+internal void dasm_line_chunk_list_push(Arena arena, DASM_LineChunkList *list, U64 cap, DASM_Line *line);
+internal DASM_LineArray dasm_line_array_from_chunk_list(Arena arena, DASM_LineChunkList *list);
 internal U64 dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off);
 internal U64 dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx);
 
@@ -315,7 +315,7 @@ internal DASM_Info dasm_info_from_key_params(DASM_Scope *scope, U128 key, DASM_P
 //~ rjf: Parse Threads
 
 internal B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, U64 endt_us);
-internal void dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out);
+internal void dasm_u2p_dequeue_req(Arena arena, U128 *hash_out, DASM_Params *params_out);
 ASYNC_WORK_DEF(dasm_parse_work);
 
 ////////////////////////////////

@@ -25,7 +25,7 @@ hs_hash_from_data(String8 data)
 internal void
 hs_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   hs_shared = push_array(arena, HS_Shared, 1);
   hs_shared->arena = arena;
   hs_shared->slots_count = 4096;
@@ -62,7 +62,7 @@ hs_tctx_ensure_inited(void)
 {
   if(hs_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     hs_tctx = push_array(arena, HS_TCTX, 1);
     hs_tctx->arena = arena;
   }
@@ -72,7 +72,7 @@ hs_tctx_ensure_inited(void)
 //~ rjf: Cache Submission
 
 internal U128
-hs_submit_data(U128 key, Arena **data_arena, String8 data)
+hs_submit_data(U128 key, Arena *data_arena, String8 data)
 {
   U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
   U64 key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;

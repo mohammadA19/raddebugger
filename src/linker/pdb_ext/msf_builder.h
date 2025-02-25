@@ -131,13 +131,13 @@ internal MSF_Error        msf_open(String8 data, MSF_Context **msf_out);
 internal void             msf_release(MSF_Context **msf_ptr);
 internal MSF_Error        msf_build(MSF_Context *msf);
 internal U64              msf_get_save_size(MSF_Context *msf);
-internal String8List      msf_get_page_data_nodes(Arena *arena, MSF_Context *msf);
+internal String8List      msf_get_page_data_nodes(Arena arena, MSF_Context *msf);
 internal B32              msf_save(MSF_Context *msf, void *buffer, U64 buffer_size);
-internal MSF_Error        msf_save_arena(Arena *arena, MSF_Context *msf, String8 *data_out);
+internal MSF_Error        msf_save_arena(Arena arena, MSF_Context *msf, String8 *data_out);
 internal MSF_StreamNode * msf_find_stream_node(MSF_Context *msf, MSF_StreamNumber sn);
 internal MSF_Stream *     msf_find_stream(MSF_Context *msf, MSF_StreamNumber sn);
 internal B32              msf_grow(MSF_Context *msf, MSF_PageNumber page_count);
-internal MSF_PageNumber * msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count);
+internal MSF_PageNumber * msf_alloc_pn_arr(Arena arena, MSF_Context *msf, MSF_UInt alloc_count);
 internal void             msf_free_pn_arr(MSF_Context *msf, MSF_PageNumber *pn_arr, MSF_UInt pn_count);
 internal MSF_PageList     msf_alloc_pages(MSF_Context *msf, MSF_UInt alloc_count);
 internal void             msf_free_pages(MSF_Context *msf, MSF_PageList *page_list);
@@ -158,8 +158,8 @@ internal B32              msf_stream_seek_start(MSF_Context *msf, MSF_StreamNumb
 internal B32              msf_stream_seek_end(MSF_Context *msf, MSF_StreamNumber sn);
 
 internal MSF_UInt msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *dst, MSF_UInt dst_len);
-internal String8  msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size);
-internal String8  msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn);
+internal String8  msf_stream_read_block(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size);
+internal String8  msf_stream_read_string(Arena arena, MSF_Context *msf, MSF_StreamNumber sn);
 internal S8       msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn);
 internal S16      msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn);
 internal S32      msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn);

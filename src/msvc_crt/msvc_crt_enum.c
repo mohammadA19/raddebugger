@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal String8
-mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjectives)
+mscrt_string_from_eh_adjectives(Arena arena, MSCRT_EhHandlerTypeFlags adjectives)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List adj_list = {0};

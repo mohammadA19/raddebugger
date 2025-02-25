@@ -187,8 +187,8 @@ struct FNT_Metrics
 typedef struct FNT_State FNT_State;
 struct FNT_State
 {
-  Arena *permanent_arena;
-  Arena *raster_arena;
+  Arena permanent_arena;
+  Arena raster_arena;
   
   // rjf: font table
   U64 font_hash_table_size;
@@ -229,23 +229,23 @@ internal String8 fnt_path_from_tag(FNT_Tag tag);
 ////////////////////////////////
 //~ rjf: Atlas
 
-internal Rng2S16 fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size);
+internal Rng2S16 fnt_atlas_region_alloc(Arena arena, FNT_Atlas *atlas, Vec2S16 needed_size);
 internal void fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region);
 
 ////////////////////////////////
 //~ rjf: Piece Type Functions
 
-internal FNT_Piece *fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap);
-internal void fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece);
-internal FNT_PieceArray fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list);
-internal FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src);
+internal FNT_Piece *fnt_piece_chunk_list_push_new(Arena arena, FNT_PieceChunkList *list, U64 cap);
+internal void fnt_piece_chunk_list_push(Arena arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece);
+internal FNT_PieceArray fnt_piece_array_from_chunk_list(Arena arena, FNT_PieceChunkList *list);
+internal FNT_PieceArray fnt_piece_array_copy(Arena arena, FNT_PieceArray *src);
 
 ////////////////////////////////
 //~ rjf: Rasterization Cache
 
 internal FNT_Hash2StyleRasterCacheNode *fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags);
-internal FNT_Run fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string);
-internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max);
+internal FNT_Run fnt_push_run_from_string(Arena arena, FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string);
+internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max);
 internal Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string);
 internal Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list);
 internal F32 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size);

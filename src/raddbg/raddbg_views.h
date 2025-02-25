@@ -27,7 +27,7 @@ struct RD_CodeViewState
   B32 center_cursor;
   B32 contain_cursor;
   B32 watch_expr_at_mouse;
-  Arena *find_text_arena;
+  Arena find_text_arena;
   String8 find_text_fwd;
   String8 find_text_bwd;
 };
@@ -149,7 +149,7 @@ struct RD_WatchViewState
   B32 initialized;
   
   // rjf: column state
-  Arena *column_arena;
+  Arena column_arena;
   RD_WatchViewColumn *first_column;
   RD_WatchViewColumn *last_column;
   RD_WatchViewColumn *free_column;
@@ -162,7 +162,7 @@ struct RD_WatchViewState
   RD_WatchViewPoint next_mark;
   
   // rjf: text input state
-  Arena *text_edit_arena;
+  Arena text_edit_arena;
   U64 text_edit_state_slots_count;
   RD_WatchViewTextEditState dummy_text_edit_state;
   RD_WatchViewTextEditState **text_edit_state_slots;
@@ -173,7 +173,7 @@ struct RD_WatchViewState
 //~ rjf: Code View Functions
 
 internal void rd_code_view_init(RD_CodeViewState *cv);
-internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
+internal RD_CodeViewBuildResult rd_code_view_build(Arena arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
 
 ////////////////////////////////
 //~ rjf: Watch View Functions
@@ -193,8 +193,8 @@ internal RD_WatchViewRowInfo rd_watch_view_row_info_from_row(EV_Row *row);
 internal RD_WatchViewRowKind rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row, RD_WatchViewRowInfo *info);
 
 //- rjf: row/column -> exprs / strings
-internal E_Expr *rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col);
-internal String8 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px);
+internal E_Expr *rd_expr_from_watch_view_row_column(Arena arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col);
+internal String8 rd_string_from_eval_viz_row_column(Arena arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px);
 
 //- rjf: table coordinates -> text edit state
 internal RD_WatchViewTextEditState *rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint pt);

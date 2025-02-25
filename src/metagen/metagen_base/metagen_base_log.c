@@ -15,7 +15,7 @@ C_LINKAGE thread_static Log *log_active = 0;
 internal Log *
 log_alloc(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   Log *log = push_array(arena, Log, 1);
   log->arena = arena;
   return log;
@@ -77,7 +77,7 @@ log_scope_begin(void)
 }
 
 internal LogScopeResult
-log_scope_end(Arena *arena)
+log_scope_end(Arena arena)
 {
   LogScopeResult result = {0};
   if(log_active != 0)

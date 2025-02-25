@@ -493,7 +493,7 @@ typedef struct ELF_SymArray{
 ////////////////////////////////
 //~ ELF Parser Functions
 
-static ELF_Parsed* elf_parsed_from_data(Arena *arena, String8 elf_data);
+static ELF_Parsed* elf_parsed_from_data(Arena arena, String8 elf_data);
 
 static ELF_SectionArray elf_section_array_from_elf(ELF_Parsed *elf);
 static String8Array     elf_section_name_array_from_elf(ELF_Parsed *elf);
@@ -505,7 +505,7 @@ static U32     elf_section_idx_from_name(ELF_Parsed *elf, String8 name);
 
 static String8 elf_section_data_from_idx(ELF_Parsed *elf, U32 idx);
 
-static ELF_SymArray elf_sym_array_from_data(Arena *arena, ELF_Class elf_class, String8 data);
+static ELF_SymArray elf_sym_array_from_data(Arena arena, ELF_Class elf_class, String8 data);
 
 // string functions
 

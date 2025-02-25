@@ -18,7 +18,7 @@ os_handle_match(OS_Handle a, OS_Handle b)
 }
 
 internal void
-os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
+os_handle_list_push(Arena arena, OS_HandleList *handles, OS_Handle handle)
 {
   OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
   n->v = handle;
@@ -27,7 +27,7 @@ os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 }
 
 internal OS_HandleArray
-os_handle_array_from_list(Arena *arena, OS_HandleList *list)
+os_handle_array_from_list(Arena arena, OS_HandleList *list)
 {
   OS_HandleArray result = {0};
   result.count = list->count;
@@ -44,7 +44,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
 internal String8List
-os_string_list_from_argcv(Arena *arena, int argc, char **argv)
+os_string_list_from_argcv(Arena arena, int argc, char **argv)
 {
   String8List result = {0};
   for(int i = 0; i < argc; i += 1)
@@ -59,7 +59,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
 internal String8
-os_data_from_file_path(Arena *arena, String8 path)
+os_data_from_file_path(Arena arena, String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   FileProperties props = os_properties_from_file(file);
@@ -136,7 +136,7 @@ os_file_id_compare(OS_FileID a, OS_FileID b)
 }
 
 internal String8
-os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
+os_string_from_file_range(Arena arena, OS_Handle file, Rng1U64 range)
 {
   U64 pre_pos = arena_pos(arena);
   String8 result;

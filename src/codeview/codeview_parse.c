@@ -573,7 +573,7 @@ cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind)
 }
 
 internal CV_TypeIndexInfo *
-cv_symbol_type_index_info_push(Arena *arena, CV_TypeIndexInfoList *list, CV_TypeIndexSource source, U64 offset)
+cv_symbol_type_index_info_push(Arena arena, CV_TypeIndexInfoList *list, CV_TypeIndexSource source, U64 offset)
 {
   CV_TypeIndexInfo *info = push_array_no_zero(arena, CV_TypeIndexInfo, 1);
   info->next   = 0;
@@ -587,7 +587,7 @@ cv_symbol_type_index_info_push(Arena *arena, CV_TypeIndexInfoList *list, CV_Type
 }
 
 internal CV_TypeIndexInfoList
-cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, String8 data)
+cv_get_symbol_type_index_offsets(Arena arena, CV_SymKind kind, String8 data)
 {
   CV_TypeIndexInfoList list = {0};
   switch (kind) {
@@ -653,7 +653,7 @@ cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, String8 data)
 }
 
 internal CV_TypeIndexInfoList
-cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data)
+cv_get_leaf_type_index_offsets(Arena arena, CV_LeafKind leaf_kind, String8 data)
 {
   CV_TypeIndexInfoList list = {0};
   switch (leaf_kind) {
@@ -951,7 +951,7 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
 }
 
 internal CV_TypeIndexInfoList
-cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data)
+cv_get_inlinee_type_index_offsets(Arena arena, String8 raw_data)
 {
   CV_TypeIndexInfoList list = {0};
 
@@ -986,7 +986,7 @@ cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data)
 }
 
 internal String8Array
-cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, String8 data)
+cv_get_data_around_type_indices(Arena arena, CV_TypeIndexInfoList ti_list, String8 data)
 {
   String8Array result;
   if(ti_list.count > 0)
@@ -1209,7 +1209,7 @@ cv_name_from_udt_info(CV_UDTInfo udt_info)
 //- rjf: record range stream parsing
 
 internal CV_RecRangeStream*
-cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
+cv_rec_range_stream_from_data(Arena arena, String8 sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   CV_RecRangeStream *result = push_array(arena, CV_RecRangeStream, 1);
@@ -1243,7 +1243,7 @@ cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
 }
 
 internal CV_RecRangeArray
-cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream)
+cv_rec_range_array_from_stream(Arena arena, CV_RecRangeStream *stream)
 {
   U64 total_count = stream->total_count;
   CV_RecRange *ranges = push_array_no_zero_aligned(arena, CV_RecRange, total_count, 8);
@@ -1264,7 +1264,7 @@ cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream)
 //- rjf: sym stream parsing
 
 internal CV_SymParsed *
-cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
+cv_sym_from_data(Arena arena, String8 sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   ProfBeginFunction();
@@ -1338,7 +1338,7 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
 //- rjf: leaf stream parsing
 
 internal CV_LeafParsed *
-cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId itype_first)
+cv_leaf_from_data(Arena arena, String8 leaf_data, CV_TypeId itype_first)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1359,7 +1359,7 @@ cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId itype_first)
 }
 
 internal CV_C13Parsed *
-cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_SectionHeaderArray sections)
+cv_c13_parsed_from_data(Arena arena, String8 c13_data, String8 strtbl, COFF_SectionHeaderArray sections)
 {
   ProfBeginFunction();
   

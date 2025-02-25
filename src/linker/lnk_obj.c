@@ -21,7 +21,7 @@ lnk_input_obj_list_push_node(LNK_InputObjList *list, LNK_InputObj *node)
 }
 
 internal LNK_InputObj *
-lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
+lnk_input_obj_list_push(Arena arena, LNK_InputObjList *list)
 {
   LNK_InputObj *node = push_array(arena, LNK_InputObj, 1);
   lnk_input_obj_list_push_node(list, node);
@@ -29,7 +29,7 @@ lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
 }
 
 internal LNK_InputObj **
-lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
+lnk_array_from_input_obj_list(Arena arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
   U64 i = 0;
@@ -77,7 +77,7 @@ lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
 }
 
 internal LNK_InputObjList
-lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
+lnk_input_obj_list_from_string_list(Arena arena, String8List list)
 {
   LNK_InputObjList input_list = {0};
   for (String8Node *path = list.first; path != 0; path = path->next) {
@@ -92,7 +92,7 @@ lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
 ////////////////////////////////
 
 internal LNK_Obj **
-lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
+lnk_obj_arr_from_list(Arena arena, LNK_ObjList list)
 {
   LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
   U64 idx = 0;
@@ -103,7 +103,7 @@ lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
 }
 
 internal LNK_ObjNodeArray
-lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, U64 count)
+lnk_obj_list_reserve(Arena arena, LNK_ObjList *list, U64 count)
 {
   LNK_ObjNodeArray arr = {0};
   if (count) {
@@ -121,7 +121,7 @@ lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, U64 count)
 }
 
 internal LNK_ChunkList
-lnk_obj_search_chunks(Arena *arena, LNK_Obj *obj, String8 name, String8 postfix, B32 collect_discarded)
+lnk_obj_search_chunks(Arena arena, LNK_Obj *obj, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_ChunkList list = {0};
   for (U64 sect_idx = 0; sect_idx < obj->chunk_count; ++sect_idx) {
@@ -160,7 +160,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 }
 
 internal LNK_ChunkList *
-lnk_collect_obj_chunks(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
+lnk_collect_obj_chunks(TP_Context *tp, TP_Arena arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_CollectObjChunksTaskData task_data = {0};
   task_data.obj_arr                      = obj_arr;
@@ -189,7 +189,7 @@ THREAD_POOL_TASK_FUNC(lnk_symbol_collector)
 }
 
 internal LNK_SymbolList
-lnk_run_symbol_collector(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray arr, LNK_SymbolType symbol_type)
+lnk_run_symbol_collector(TP_Context *tp, TP_Arena arena, LNK_ObjNodeArray arr, LNK_SymbolType symbol_type)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -227,7 +227,7 @@ THREAD_POOL_TASK_FUNC(lnk_default_lib_collector)
 }
 
 internal LNK_InputLibList
-lnk_collect_default_lib_obj_arr(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray arr)
+lnk_collect_default_lib_obj_arr(TP_Context *tp, TP_Arena arena, LNK_ObjNodeArray arr)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -264,7 +264,7 @@ THREAD_POOL_TASK_FUNC(lnk_manifest_dependency_collector)
 }
 
 internal String8List
-lnk_collect_manifest_dependency_list(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray obj_node_arr)
+lnk_collect_manifest_dependency_list(TP_Context *tp, TP_Arena arena, LNK_ObjNodeArray obj_node_arr)
 {
   Temp scratch = scratch_begin(arena->v, arena->count);
 
@@ -288,7 +288,7 @@ lnk_sect_defn_list_push_node(LNK_SectDefnList *list, LNK_SectDefn *node)
 }
 
 internal LNK_SectDefn *
-lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, U64 idx, COFF_SectionFlags flags)
+lnk_sect_defn_list_push(Arena arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, U64 idx, COFF_SectionFlags flags)
 {
   LNK_SectDefn *node = push_array_no_zero(arena, LNK_SectDefn, 1);
   node->next         = 0;
@@ -1020,7 +1020,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
 }
 
 internal LNK_RelocList *
-lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 coff_data, U64 sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
+lnk_reloc_list_array_from_coff(Arena arena, COFF_MachineType machine, String8 coff_data, U64 sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
 {
   LNK_RelocList *reloc_list_arr = push_array_no_zero(arena, LNK_RelocList, sect_count);
   for (U64 sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
@@ -1034,7 +1034,7 @@ lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 c
 }
 
 internal void
-lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path, LNK_DirectiveInfo *directive_info, String8 buffer)
+lnk_parse_msvc_linker_directive(Arena arena, String8 obj_path, String8 lib_path, LNK_DirectiveInfo *directive_info, String8 buffer)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

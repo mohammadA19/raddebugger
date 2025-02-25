@@ -128,7 +128,7 @@ typedef struct R_D3D11_State R_D3D11_State;
 struct R_D3D11_State
 {
   // rjf: state
-  Arena *arena;
+  Arena arena;
   R_D3D11_Window *first_free_window;
   R_D3D11_Tex2D *first_free_tex2d;
   R_D3D11_Buffer *first_free_buffer;
@@ -162,7 +162,7 @@ struct R_D3D11_State
   ID3D11Buffer *uniform_type_kind_buffers[R_D3D11_UniformTypeKind_COUNT];
   
   // rjf: buffers to flush at subsequent frame
-  Arena *buffer_flush_arena;
+  Arena buffer_flush_arena;
   R_D3D11_FlushBuffer *first_buffer_to_flush;
   R_D3D11_FlushBuffer *last_buffer_to_flush;
 };

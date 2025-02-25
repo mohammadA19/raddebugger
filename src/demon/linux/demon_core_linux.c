@@ -48,7 +48,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
 }
 
 internal DMN_EventList
-dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
+dmn_ctrl_run(Arena arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 {
 }
 
@@ -164,7 +164,7 @@ dmn_process_iter_begin(DMN_ProcessIter *iter)
 }
 
 internal B32
-dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
+dmn_process_iter_next(Arena arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
 {
 }
 

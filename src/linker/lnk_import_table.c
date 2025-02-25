@@ -24,7 +24,7 @@ lnk_import_table_alloc_static(LNK_SectionTable *st, LNK_SymbolTable *symtab, COF
   lnk_symbol_table_push_defined_chunk(symtab, str8_cstring(LNK_IMPORT_ILT_SYMBOL_NAME)       , LNK_DefinedSymbolVisibility_Internal, 0, ilt_chunk      , 0, 0, 0);
   lnk_symbol_table_push_defined_chunk(symtab, str8_cstring(LNK_IMPORT_JMP_SYMBOL_NAME)       , LNK_DefinedSymbolVisibility_Internal, 0, code_chunk     , 0, 0, 0);
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   LNK_ImportTable *imptab = push_array(arena, LNK_ImportTable, 1);
   imptab->machine         = machine;
   imptab->arena           = arena;
@@ -90,7 +90,7 @@ lnk_import_table_alloc_delayed(LNK_SectionTable *st, LNK_SymbolTable *symtab, CO
     flags |= LNK_ImportTableFlag_EmitBiat;
   }
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   LNK_ImportTable *imptab    = push_array(arena, LNK_ImportTable, 1);
   imptab->arena              = arena;
   imptab->machine            = machine;
@@ -620,7 +620,7 @@ lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *sym
 }
 
 internal String8
-lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
+lnk_ordinal_data_from_hint(Arena arena, COFF_MachineType machine, U16 hint)
 {
   String8 ordinal_data = str8_zero();
   switch (machine) {

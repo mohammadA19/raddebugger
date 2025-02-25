@@ -547,9 +547,9 @@ struct P2R_BakeIdxRunsIn
 typedef struct P2R_State P2R_State;
 struct P2R_State
 {
-  Arena *arena;
+  Arena arena;
   U64 work_thread_arenas_count;
-  Arena **work_thread_arenas;
+  Arena *work_thread_arenas;
 };
 
 ////////////////////////////////
@@ -566,7 +566,7 @@ internal U64 p2r_hash_from_voff(U64 voff);
 ////////////////////////////////
 //~ rjf: Command Line -> Conversion Inputs
 
-internal P2R_User2Convert *p2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline);
+internal P2R_User2Convert *p2r_user2convert_from_cmdln(Arena arena, CmdLine *cmdline);
 
 ////////////////////////////////
 //~ rjf: COFF => RDI Canonical Conversions
@@ -584,9 +584,9 @@ internal RDI_TypeKind p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_ty
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
+internal RDIM_Location *p2r_location_from_addr_reg_off(Arena arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
 internal RDI_RegCode p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count);
+internal void p2r_location_over_lvar_addr_range(Arena arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count);
 
 ////////////////////////////////
 //~ rjf: Initial Parsing & Preparation Pass Tasks
@@ -628,7 +628,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 ////////////////////////////////
 //~ rjf: Top-Level Conversion Entry Point
 
-internal P2R_Convert2Bake *p2r_convert(Arena *arena, P2R_User2Convert *in);
+internal P2R_Convert2Bake *p2r_convert(Arena arena, P2R_User2Convert *in);
 
 ////////////////////////////////
 //~ rjf: Baking Stage Tasks
@@ -678,12 +678,12 @@ internal void p2r_init(void);
 ////////////////////////////////
 //~ rjf: Top-Level Baking Entry Point
 
-internal P2R_Bake2Serialize *p2r_bake(Arena *arena, P2R_Convert2Bake *in);
+internal P2R_Bake2Serialize *p2r_bake(Arena arena, P2R_Convert2Bake *in);
 
 ////////////////////////////////
 //~ rjf: Top-Level Compression Entry Point
 
-internal P2R_Serialize2File *p2r_compress(Arena *arena, P2R_Serialize2File *in);
+internal P2R_Serialize2File *p2r_compress(Arena arena, P2R_Serialize2File *in);
 
 ////////////////////////////////
 

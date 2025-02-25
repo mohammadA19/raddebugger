@@ -100,7 +100,7 @@ ui_key_match(UI_Key a, UI_Key b)
 //~ rjf: Event Type Functions
 
 internal UI_EventNode *
-ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
+ui_event_list_push(Arena arena, UI_EventList *list, UI_Event *v)
 {
   UI_EventNode *n = push_array(arena, UI_EventNode, 1);
   MemoryCopyStruct(&n->v, v);
@@ -160,7 +160,7 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
 }
 
 internal UI_TxtOp
-ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark)
+ui_single_line_txt_op_from_event(Arena arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
@@ -302,7 +302,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
 }
 
 internal String8
-ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, String8 replace)
+ui_push_string_replace_range(Arena arena, String8 string, Rng1S64 col_range, String8 replace)
 {
   //- rjf: convert to offset range
   Rng1U64 range =
@@ -409,7 +409,7 @@ ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_of
 }
 
 internal void
-ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
+ui_box_list_push(Arena arena, UI_BoxList *list, UI_Box *box)
 {
   UI_BoxNode *n = push_array(arena, UI_BoxNode, 1);
   n->box = box;
@@ -423,7 +423,7 @@ ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 internal UI_State *
 ui_state_alloc(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   UI_State *ui = push_array(arena, UI_State, 1);
   ui->arena = arena;
   ui->external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
@@ -480,10 +480,10 @@ ui_get_selected_state(void)
 
 //- rjf: per-frame info
 
-internal Arena *
+internal Arena 
 ui_build_arena(void)
 {
-  Arena *result = ui_state->build_arenas[ui_state->build_index%ArrayCount(ui_state->build_arenas)];
+  Arena result = ui_state->build_arenas[ui_state->build_index%ArrayCount(ui_state->build_arenas)];
   return result;
 }
 
@@ -718,14 +718,14 @@ ui_string_hover_begin_time_us(void)
 }
 
 internal String8
-ui_string_hover_string(Arena *arena)
+ui_string_hover_string(Arena arena)
 {
   String8 result = push_str8_copy(arena, ui_state->string_hover_string);
   return result;
 }
 
 internal DR_FancyRunList
-ui_string_hover_runs(Arena *arena)
+ui_string_hover_runs(Arena arena)
 {
   DR_FancyRunList result = dr_fancy_run_list_copy(arena, &ui_state->string_hover_fancy_runs);
   return result;

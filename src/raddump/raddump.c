@@ -43,7 +43,7 @@ rd_stderr(char *fmt, ...)
 }
 
 internal String8
-rd_invoke_rdi_converter(Arena *arena, String8 exe_name, String8 exe_data, String8 pdb_path)
+rd_invoke_rdi_converter(Arena arena, String8 exe_name, String8 exe_data, String8 pdb_path)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -66,7 +66,7 @@ rd_invoke_rdi_converter(Arena *arena, String8 exe_name, String8 exe_data, String
 }
 
 internal RDI_Parsed *
-rd_rdi_from_pe(Arena *arena, String8 data_path, String8 raw_data)
+rd_rdi_from_pe(Arena arena, String8 data_path, String8 raw_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -155,7 +155,7 @@ rd_proc_name_from_voff(RDI_Parsed *rdi, U64 voff)
 }
 
 internal String8
-rd_format_proc_line(Arena *arena, RDI_Parsed *rdi, U64 voff)
+rd_format_proc_line(Arena arena, RDI_Parsed *rdi, U64 voff)
 {
   RDI_Scope     *scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure *proc  = rdi_procedure_from_scope(rdi, scope);
@@ -174,7 +174,7 @@ rd_format_proc_line(Arena *arena, RDI_Parsed *rdi, U64 voff)
 }
 
 internal String8
-rd_path_from_file_path_node_idx(Arena *arena, RDI_Parsed *rdi, U32 file_path_node_idx, PathStyle style)
+rd_path_from_file_path_node_idx(Arena arena, RDI_Parsed *rdi, U32 file_path_node_idx, PathStyle style)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
@@ -191,7 +191,7 @@ rd_path_from_file_path_node_idx(Arena *arena, RDI_Parsed *rdi, U32 file_path_nod
 }
 
 internal RD_Line
-rd_line_from_voff(Arena *arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
+rd_line_from_voff(Arena arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
 {
   RDI_Line        line      = rdi_line_from_voff(rdi, voff);
   RDI_SourceFile *src_file  = rdi_source_file_from_line(rdi, &line);
@@ -205,7 +205,7 @@ rd_line_from_voff(Arena *arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
 }
 
 internal String8
-rd_format_line_from_voff(Arena *arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
+rd_format_line_from_voff(Arena arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_Line line   = rd_line_from_voff(scratch.arena, rdi, voff, path_style);
@@ -234,7 +234,7 @@ rd_is_rdi(String8 raw_data)
 }
 
 internal String8
-rd_string_from_flags(Arena *arena, String8List list, U64 remaining_flags)
+rd_string_from_flags(Arena arena, String8List list, U64 remaining_flags)
 {
   String8 result;
   if (list.node_count == 0 && remaining_flags == 0) {
@@ -251,7 +251,7 @@ rd_string_from_flags(Arena *arena, String8List list, U64 remaining_flags)
 }
 
 internal String8
-rd_string_from_array_u32(Arena *arena, U32 *v, U64 count)
+rd_string_from_array_u32(Arena arena, U32 *v, U64 count)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -264,7 +264,7 @@ rd_string_from_array_u32(Arena *arena, U32 *v, U64 count)
 }
 
 internal String8
-rd_string_from_array_hex_u32(Arena *arena, U32 *v, U64 count)
+rd_string_from_array_hex_u32(Arena arena, U32 *v, U64 count)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -277,7 +277,7 @@ rd_string_from_array_hex_u32(Arena *arena, U32 *v, U64 count)
 }
 
 internal String8
-rd_string_from_array_hex_u64(Arena *arena, U64 *v, U64 count)
+rd_string_from_array_hex_u64(Arena arena, U64 *v, U64 count)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -290,7 +290,7 @@ rd_string_from_array_hex_u64(Arena *arena, U64 *v, U64 count)
 }
 
 internal String8
-rd_string_from_range_array_u64_hex(Arena *arena, U64 *v, U64 count)
+rd_string_from_range_array_u64_hex(Arena arena, U64 *v, U64 count)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -303,7 +303,7 @@ rd_string_from_range_array_u64_hex(Arena *arena, U64 *v, U64 count)
 }
 
 internal void
-rd_format_preamble(Arena *arena, String8List *out, String8 indent, String8 input_path, String8 raw_data)
+rd_format_preamble(Arena arena, String8List *out, String8 indent, String8 input_path, String8 raw_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -373,7 +373,7 @@ rd_range_bsearch(Rng1U64 *ranges, U64 count, U64 x)
 }
 
 internal RD_MarkerArray *
-rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
+rd_section_markers_from_rdi(Arena arena, RDI_Parsed *rdi)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -434,7 +434,7 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
 }
 
 internal RD_MarkerArray *
-rd_section_markers_from_coff_symbol_table(Arena *arena, String8 raw_data, U64 string_table_off, U64 section_count, COFF_Symbol32Array symbols)
+rd_section_markers_from_coff_symbol_table(Arena arena, String8 raw_data, U64 string_table_off, U64 section_count, COFF_Symbol32Array symbols)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -524,7 +524,7 @@ rd_dw_sections_from_coff_section_table(Arena              *arena,
 }
 
 internal RD_DisasmResult
-rd_disasm_next_instruction(Arena *arena, Arch arch, U64 addr, String8 raw_code)
+rd_disasm_next_instruction(Arena arena, Arch arch, U64 addr, String8 raw_code)
 {
   RD_DisasmResult result = {0};
 
@@ -614,7 +614,7 @@ rd_print_disasm(Arena            *arena,
 }
 
 internal String8
-rd_format_hex_array(Arena *arena, U8 *ptr, U64 size)
+rd_format_hex_array(Arena arena, U8 *ptr, U64 size)
 {
   U64   buf_max  = 32 + size * 8;
   char *buf      = push_array(arena, char, buf_max);
@@ -692,7 +692,7 @@ str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
 }
 
 internal String8
-rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
+rdi_string_from_data_section_kind(Arena arena, RDI_SectionKind v)
 {
   String8 result;
   switch (v) {
@@ -705,7 +705,7 @@ rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
 }
 
 internal String8
-rdi_string_from_arch(Arena *arena, RDI_Arch v)
+rdi_string_from_arch(Arena arena, RDI_Arch v)
 {
   String8 result;
   switch (v) {
@@ -718,7 +718,7 @@ rdi_string_from_arch(Arena *arena, RDI_Arch v)
 }
 
 internal String8
-rdi_string_from_language(Arena *arena, RDI_Language v)
+rdi_string_from_language(Arena arena, RDI_Language v)
 {
   String8 result;
   switch (v) {
@@ -731,7 +731,7 @@ rdi_string_from_language(Arena *arena, RDI_Language v)
 }
 
 internal String8
-rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
+rdi_string_from_local_kind(Arena arena, RDI_LocalKind v)
 {
   String8 result;
   switch(v)
@@ -745,7 +745,7 @@ rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
 }
 
 internal String8
-rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
+rdi_string_from_type_kind(Arena arena, RDI_TypeKind v)
 {
   String8 result;
   switch (v) {
@@ -758,7 +758,7 @@ rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
 }
 
 internal String8
-rdi_string_from_member_kind(Arena *arena, RDI_MemberKind v)
+rdi_string_from_member_kind(Arena arena, RDI_MemberKind v)
 {
   String8 result;
   switch (v) {
@@ -793,7 +793,7 @@ rdi_string_from_reg_code_x64(U64 reg_code)
 }
 
 internal String8
-rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
+rdi_string_from_reg_code(Arena arena, RDI_Arch arch, U64 reg_code)
 {
   switch (arch) {
   case RDI_Arch_NULL: break;
@@ -805,7 +805,7 @@ rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 }
 
 internal String8
-rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
+rdi_string_from_binary_section_flags(Arena arena, RDI_BinarySectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -818,7 +818,7 @@ rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
 }
 
 internal String8
-rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
+rdi_string_from_type_modifier_flags(Arena arena, RDI_TypeModifierFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -831,7 +831,7 @@ rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
 }
 
 internal String8
-rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
+rdi_string_from_udt_flags(Arena arena, RDI_UDTFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -844,7 +844,7 @@ rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
 }
 
 internal String8
-rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
+rdi_string_from_link_flags(Arena arena, RDI_LinkFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -857,7 +857,7 @@ rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
 }
 
 internal void
-rdi_print_data_sections(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi)
+rdi_print_data_sections(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi)
 {
   Temp scratch = scratch_begin(&arena, 1);
   for(U64 idx = 0; idx < rdi->sections_count; idx += 1) {
@@ -870,7 +870,7 @@ rdi_print_data_sections(Arena *arena, String8List *out, String8 indent, RDI_Pars
 }
 
 internal void
-rdi_print_top_level_info(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TopLevelInfo *tli)
+rdi_print_top_level_info(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TopLevelInfo *tli)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("arch         =%S",      rdi_string_from_arch(scratch.arena, tli->arch));
@@ -881,7 +881,7 @@ rdi_print_top_level_info(Arena *arena, String8List *out, String8 indent, RDI_Par
 }
 
 internal void
-rdi_print_binary_section(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_BinarySection *bin_section)
+rdi_print_binary_section(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_BinarySection *bin_section)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("name      ='%S'",  str8_from_rdi_string_idx(rdi, bin_section->name_string_idx));
@@ -894,7 +894,7 @@ rdi_print_binary_section(Arena *arena, String8List *out, String8 indent, RDI_Par
 }
 
 internal void
-rdi_print_file_path(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_FilePathNode *file_path)
+rdi_print_file_path(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_FilePathNode *file_path)
 {
   U64               file_path_count = 0;
   RDI_FilePathNode *file_path_array = rdi_table_from_name(rdi, FilePathNodes, &file_path_count);
@@ -929,7 +929,7 @@ rdi_print_file_path(Arena *arena, String8List *out, String8 indent, RDI_Parsed *
 }
 
 internal void
-rdi_print_source_file(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceFile *source_file)
+rdi_print_source_file(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceFile *source_file)
 {
   rd_printf("{ file_path_node_idx= ");
   rd_printf("file_path_node_idx= %u",   source_file->file_path_node_idx);
@@ -938,7 +938,7 @@ rdi_print_source_file(Arena *arena, String8List *out, String8 indent, RDI_Parsed
 }
 
 internal void
-rdi_print_line_table(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_LineTable *line_table)
+rdi_print_line_table(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_LineTable *line_table)
 {
   RDI_ParsedLineTable parsed_line_table = {0};
   rdi_parsed_from_line_table(rdi, line_table, &parsed_line_table);
@@ -961,7 +961,7 @@ rdi_print_line_table(Arena *arena, String8List *out, String8 indent, RDI_Parsed 
 }
 
 internal void
-rdi_print_source_line_map(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceLineMap *map)
+rdi_print_source_line_map(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceLineMap *map)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -989,7 +989,7 @@ rdi_print_source_line_map(Arena *arena, String8List *out, String8 indent, RDI_Pa
 }
 
 internal void
-rdi_print_unit(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Unit *unit)
+rdi_print_unit(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Unit *unit)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("unit_name        ='%S'", str8_from_rdi_string_idx(rdi, unit->unit_name_string_idx));
@@ -1004,7 +1004,7 @@ rdi_print_unit(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, 
 }
 
 internal void
-rdi_print_type_node(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TypeNode *type)
+rdi_print_type_node(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TypeNode *type)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1055,7 +1055,7 @@ rdi_print_type_node(Arena *arena, String8List *out, String8 indent, RDI_Parsed *
 }
 
 internal void
-rdi_print_udt(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_UDT *udt)
+rdi_print_udt(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_UDT *udt)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1108,7 +1108,7 @@ rdi_print_udt(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, R
 }
 
 internal void
-rdi_print_global_variable(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_GlobalVariable *gvar)
+rdi_print_global_variable(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_GlobalVariable *gvar)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("name         ='%S'",  str8_from_rdi_string_idx(rdi, gvar->name_string_idx));
@@ -1120,7 +1120,7 @@ rdi_print_global_variable(Arena *arena, String8List *out, String8 indent, RDI_Pa
 }
 
 internal void
-rdi_print_thread_variable(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_ThreadVariable *tvar)
+rdi_print_thread_variable(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_ThreadVariable *tvar)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("name         ='%S'",  str8_from_rdi_string_idx(rdi, tvar->name_string_idx));
@@ -1132,7 +1132,7 @@ rdi_print_thread_variable(Arena *arena, String8List *out, String8 indent, RDI_Pa
 }
 
 internal void
-rdi_print_procedure(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Procedure *proc)
+rdi_print_procedure(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Procedure *proc)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("name          ='%S'", str8_from_rdi_string_idx(rdi, proc->name_string_idx));
@@ -1145,7 +1145,7 @@ rdi_print_procedure(Arena *arena, String8List *out, String8 indent, RDI_Parsed *
 }
 
 internal void
-rdi_print_scope(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Scope *scope, RDI_Arch arch)
+rdi_print_scope(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Scope *scope, RDI_Arch arch)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1293,7 +1293,7 @@ rdi_print_scope(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi,
 }
 
 internal void
-rdi_print_inline_site(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_InlineSite *inline_site)
+rdi_print_inline_site(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_InlineSite *inline_site)
 {
   rd_printf("name          ='%S'", str8_from_rdi_string_idx(rdi, inline_site->name_string_idx));
   rd_printf("type_idx      =%u",   inline_site->type_idx);
@@ -1302,13 +1302,13 @@ rdi_print_inline_site(Arena *arena, String8List *out, String8 indent, RDI_Parsed
 }
 
 internal void
-rdi_print_vmap_entry(Arena *arena, String8List *out, String8 indent, RDI_VMapEntry *v)
+rdi_print_vmap_entry(Arena arena, String8List *out, String8 indent, RDI_VMapEntry *v)
 {
   rd_printf("%#llx: %llu", v->voff, v->idx);
 }
 
 internal void
-rdi_print(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RD_Option opts)
+rdi_print(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, RD_Option opts)
 {
   RDI_TopLevelInfo *tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
 
@@ -1597,7 +1597,7 @@ rdi_print(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RD_Op
 }
 
 internal String8List
-dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
+dw_string_list_from_expression(Arena arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List result = {0};
@@ -1840,7 +1840,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size,
 }
 
 internal String8
-dw_format_expression_single_line(Arena *arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
+dw_format_expression_single_line(Arena arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
 {
   Temp        scratch    = scratch_begin(&arena, 1);
   String8List list       = dw_string_list_from_expression(scratch.arena, raw_data, address_size, arch, ver, ext, is_dwarf64);
@@ -1850,7 +1850,7 @@ dw_format_expression_single_line(Arena *arena, String8 raw_data, U64 address_siz
 }
 
 internal void
-dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
+dw_print_cfi_program(Arena arena, String8List *out, String8 indent, String8 raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -2054,7 +2054,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
 }
 
 internal String8
-dw_format_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
+dw_format_eh_ptr_enc(Arena arena, DW_EhPtrEnc enc)
 {
   U8 type = enc & DW_EhPtrEnc_TypeMask;
   String8 type_str = str8_lit("NULL");
@@ -2086,7 +2086,7 @@ dw_format_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
 }
 
 internal void
-dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx)
+dw_print_eh_frame(Arena arena, String8List *out, String8 indent, String8 raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DW_CIEUnpacked cie = {0};
@@ -2180,7 +2180,7 @@ rd_dw_resolve_params_from_comp_root(DW_CompRoot comp_root)
 }
 
 internal void
-dw_print_debug_info(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
+dw_print_debug_info(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -2360,7 +2360,7 @@ dw_print_debug_info(Arena *arena, String8List *out, String8 indent, DW_SectionAr
 }
 
 internal void
-dw_print_debug_abbrev(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_abbrev(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -2413,7 +2413,7 @@ dw_print_debug_abbrev(Arena *arena, String8List *out, String8 indent, DW_Section
 }
 
 internal void
-dw_print_debug_line(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, B32 relaxed)
+dw_print_debug_line(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, B32 relaxed)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -2685,7 +2685,7 @@ dw_print_debug_line(Arena *arena, String8List *out, String8 indent, DW_SectionAr
 }
 
 internal void
-dw_print_debug_str(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_str(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   String8 data = sections->v[DW_Section_Str].data;
   rd_printf("# %S", sections->v[DW_Section_Str].name);
@@ -2699,7 +2699,7 @@ dw_print_debug_str(Arena *arena, String8List *out, String8 indent, DW_SectionArr
 }
 
 internal void
-dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
+dw_print_debug_loc(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
 {
   DW_Section info = sections->v[DW_Section_Info];
   DW_Section loc  = sections->v[DW_Section_Loc];
@@ -2847,7 +2847,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_SectionArr
 }
 
 internal void
-dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
+dw_print_debug_ranges(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed)
 {
   DW_Section  ranges = sections->v[DW_Section_Ranges];
   void       *base   = dw_base_from_sec(sections, DW_Section_Ranges);
@@ -2952,7 +2952,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Section
 }
 
 internal void
-dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_aranges(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_ARanges);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_ARanges);
@@ -3038,7 +3038,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_Sectio
 }
 
 internal void
-dw_print_debug_addr(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_addr(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_Addr);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_Addr);
@@ -3144,7 +3144,7 @@ dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array 
 }
 
 internal void
-dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_virtual_ranges, Arch arch)
+dw_print_debug_loclists(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_virtual_ranges, Arch arch)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_LocLists);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_LocLists);
@@ -3292,7 +3292,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Secti
 }
 
 internal void
-dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_ranges)
+dw_print_debug_rnglists(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_ranges)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_RngLists);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_RngLists);
@@ -3428,7 +3428,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Secti
 }
 
 internal void
-dw_format_string_table(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, DW_SectionKind sec)
+dw_format_string_table(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections, DW_SectionKind sec)
 {
   void    *base  = dw_base_from_sec(sections, sec);
   Rng1U64  range = dw_range_from_sec(sections, sec);
@@ -3487,19 +3487,19 @@ dw_format_string_table(Arena *arena, String8List *out, String8 indent, DW_Sectio
 }
 
 internal void
-dw_print_debug_pubnames(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_pubnames(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   dw_format_string_table(arena, out, indent, sections, DW_Section_PubNames);
 }
 
 internal void
-dw_print_debug_pubtypes(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_pubtypes(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   dw_format_string_table(arena, out, indent, sections, DW_Section_PubTypes);
 }
 
 internal void
-dw_print_debug_line_str(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_line_str(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_LineStr);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_LineStr);
@@ -3526,7 +3526,7 @@ dw_print_debug_line_str(Arena *arena, String8List *out, String8 indent, DW_Secti
 }
 
 internal void
-dw_print_debug_str_offsets(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections)
+dw_print_debug_str_offsets(Arena arena, String8List *out, String8 indent, DW_SectionArray *sections)
 {
   void    *base  = dw_base_from_sec(sections, DW_Section_StrOffsets);
   Rng1U64  range = dw_range_from_sec(sections, DW_Section_StrOffsets);
@@ -3589,7 +3589,7 @@ dw_print_debug_str_offsets(Arena *arena, String8List *out, String8 indent, DW_Se
 }
 
 internal void
-dw_format(Arena *arena, String8List *out, String8 indent, RD_Option opts, DW_SectionArray *sections, Arch arch, ImageType image_type)
+dw_format(Arena arena, String8List *out, String8 indent, RD_Option opts, DW_SectionArray *sections, Arch arch, ImageType image_type)
 {
   Rng1U64Array segment_vranges = {0};
 
@@ -3642,7 +3642,7 @@ dw_format(Arena *arena, String8List *out, String8 indent, RD_Option opts, DW_Sec
 // CodeView
 
 internal void
-cv_print_binary_annots(Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data)
+cv_print_binary_annots(Arena arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data)
 {
   if (raw_data.size) {
     Temp scratch = scratch_begin(&arena, 1);
@@ -3682,13 +3682,13 @@ cv_print_binary_annots(Arena *arena, String8List *out, String8 indent, CV_Arch a
 }
 
 internal void
-cv_print_lvar_addr_range(Arena *arena, String8List *out, String8 indent, CV_LvarAddrRange range)
+cv_print_lvar_addr_range(Arena arena, String8List *out, String8 indent, CV_LvarAddrRange range)
 {
   rd_printf("Address Range: %04x:%08x Size: %#x", range.sec, range.off, range.len);
 }
 
 internal void
-cv_print_lvar_addr_gap(Arena *arena, String8List *out, String8 indent, String8 raw_data)
+cv_print_lvar_addr_gap(Arena arena, String8List *out, String8 indent, String8 raw_data)
 {
   U64 count = raw_data.size / sizeof(CV_LvarAddrGap);
   if (count > 0) {
@@ -3705,7 +3705,7 @@ cv_print_lvar_addr_gap(Arena *arena, String8List *out, String8 indent, String8 r
 }
 
 internal void
-cv_print_lvar_attr(Arena *arena, String8List *out, String8 indent, CV_LocalVarAttr attr)
+cv_print_lvar_attr(Arena arena, String8List *out, String8 indent, CV_LocalVarAttr attr)
 {
   Temp scratch = scratch_begin(&arena,1);
   rd_printf("Address: %S", cv_string_sec_off(scratch.arena, attr.seg, attr.off));
@@ -3714,7 +3714,7 @@ cv_print_lvar_attr(Arena *arena, String8List *out, String8 indent, CV_LocalVarAt
 }
 
 internal void
-cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV_TypeIndex min_itype, CV_SymKind type, String8 raw_symbol)
+cv_print_symbol(Arena arena, String8List *out, String8 indent, CV_Arch arch, CV_TypeIndex min_itype, CV_SymKind type, String8 raw_symbol)
 {
   Temp scratch = scratch_begin(&arena, 1);
   U64 cursor = 0;
@@ -4661,7 +4661,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
 }
 
 internal U64
-cv_print_leaf(Arena *arena, String8List *out, String8 indent, CV_TypeIndex min_itype, CV_LeafKind kind, String8 raw_leaf)
+cv_print_leaf(Arena arena, String8List *out, String8 indent, CV_TypeIndex min_itype, CV_LeafKind kind, String8 raw_leaf)
 {
   Temp scratch = scratch_begin(&arena, 1);
   U64 cursor = 0;
@@ -5197,7 +5197,7 @@ cv_print_leaf(Arena *arena, String8List *out, String8 indent, CV_TypeIndex min_i
 }
 
 internal void
-cv_print_debug_t(Arena *arena, String8List *out, String8 indent, CV_DebugT debug_t)
+cv_print_debug_t(Arena arena, String8List *out, String8 indent, CV_DebugT debug_t)
 {
   Temp scratch = scratch_begin(&arena, 1);
   for (U64 lf_idx = 0; lf_idx < debug_t.count; ++lf_idx) {
@@ -5213,7 +5213,7 @@ cv_print_debug_t(Arena *arena, String8List *out, String8 indent, CV_DebugT debug
 }
 
 internal void
-cv_print_symbols_c13(Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data)
+cv_print_symbols_c13(Arena arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -5260,7 +5260,7 @@ cv_print_symbols_c13(Arena *arena, String8List *out, String8 indent, CV_Arch arc
 }
 
 internal void 
-cv_print_lines_c13(Arena *arena, String8List *out, String8 indent, String8 raw_lines)
+cv_print_lines_c13(Arena arena, String8List *out, String8 indent, String8 raw_lines)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -5321,7 +5321,7 @@ cv_print_lines_c13(Arena *arena, String8List *out, String8 indent, String8 raw_l
 }
 
 internal void
-cv_print_file_checksums(Arena *arena, String8List *out, String8 indent, String8 raw_chksums)
+cv_print_file_checksums(Arena arena, String8List *out, String8 indent, String8 raw_chksums)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -5353,7 +5353,7 @@ cv_print_file_checksums(Arena *arena, String8List *out, String8 indent, String8 
 }
 
 internal void
-cv_print_string_table(Arena *arena, String8List *out, String8 indent, String8 raw_strtab)
+cv_print_string_table(Arena arena, String8List *out, String8 indent, String8 raw_strtab)
 {
   for (U64 cursor = 0; cursor < raw_strtab.size; ) {
     String8 str = {0};
@@ -5363,7 +5363,7 @@ cv_print_string_table(Arena *arena, String8List *out, String8 indent, String8 ra
 }
 
 internal void
-cv_print_inlinee_lines(Arena *arena, String8List *out, String8 indent, String8 raw_data)
+cv_print_inlinee_lines(Arena arena, String8List *out, String8 indent, String8 raw_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -5494,7 +5494,7 @@ cv_print_symbols_section(Arena       *arena,
 }
 
 internal void
-cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8 raw_image, U64 string_table_off, U64 section_count, COFF_SectionHeader *sections)
+cv_format_debug_sections(Arena arena, String8List *out, String8 indent, String8 raw_image, U64 string_table_off, U64 section_count, COFF_SectionHeader *sections)
 {
   CV_Arch arch = ~0;
   {
@@ -5582,7 +5582,7 @@ cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8
 // COFF
 
 internal void
-coff_print_archive_member_header(Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveMemberHeader header, String8 long_names)
+coff_print_archive_member_header(Arena arena, String8List *out, String8 indent, COFF_ParsedArchiveMemberHeader header, String8 long_names)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 time_stamp = coff_string_from_time_stamp(scratch.arena, header.time_stamp);
@@ -6030,7 +6030,7 @@ coff_print_symbol_table(Arena              *arena,
 }
 
 internal void
-coff_print_big_obj_header(Arena *arena, String8List *out, String8 indent, COFF_BigObjHeader *header)
+coff_print_big_obj_header(Arena arena, String8List *out, String8 indent, COFF_BigObjHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6050,7 +6050,7 @@ coff_print_big_obj_header(Arena *arena, String8List *out, String8 indent, COFF_B
 }
 
 internal void
-coff_print_file_header(Arena *arena, String8List *out, String8 indent, COFF_FileHeader *header)
+coff_print_file_header(Arena arena, String8List *out, String8 indent, COFF_FileHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6073,7 +6073,7 @@ coff_print_file_header(Arena *arena, String8List *out, String8 indent, COFF_File
 }
 
 internal void
-coff_print_import(Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveImportHeader *header)
+coff_print_import(Arena arena, String8List *out, String8 indent, COFF_ParsedArchiveImportHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6097,7 +6097,7 @@ coff_print_import(Arena *arena, String8List *out, String8 indent, COFF_ParsedArc
 }
 
 internal void
-coff_print_big_obj(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
+coff_print_big_obj(Arena arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6150,7 +6150,7 @@ exit:;
 }
 
 internal void
-coff_print_obj(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
+coff_print_obj(Arena arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6227,7 +6227,7 @@ exit:;
 }
 
 internal void
-coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_archive, RD_Option opts)
+coff_print_archive(Arena arena, String8List *out, String8 indent, String8 raw_archive, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6388,7 +6388,7 @@ coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_a
 }
 
 internal String8
-coff_string_from_resource_id(Arena *arena, COFF_ResourceID id)
+coff_string_from_resource_id(Arena arena, COFF_ResourceID id)
 {
   String8 result = str8_zero();
   switch (id.type) {
@@ -6400,7 +6400,7 @@ coff_string_from_resource_id(Arena *arena, COFF_ResourceID id)
 }
 
 internal void
-coff_print_parsed_res(Arena *arena, String8List *out, String8 indent, COFF_ParsedResource *res)
+coff_print_parsed_res(Arena arena, String8List *out, String8 indent, COFF_ParsedResource *res)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6426,7 +6426,7 @@ coff_print_parsed_res(Arena *arena, String8List *out, String8 indent, COFF_Parse
 }
 
 internal void
-coff_print_res(Arena *arena, String8List *out, String8 indent, String8 raw_res)
+coff_print_res(Arena arena, String8List *out, String8 indent, String8 raw_res)
 {
   Temp scratch = scratch_begin(&arena, 1);
   COFF_ParsedResourceList res_list = coff_resource_list_from_data(scratch.arena, raw_res);
@@ -6440,7 +6440,7 @@ coff_print_res(Arena *arena, String8List *out, String8 indent, String8 raw_res)
 // MSVC CRT
 
 internal void
-mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler)
+mscrt_print_eh_handler_type32(Arena arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 catch_line     = rd_format_line_from_voff(scratch.arena, rdi, handler->catch_handler_voff, PathStyle_WindowsAbsolute);
@@ -6457,7 +6457,7 @@ mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RD
 //~ PE
 
 internal void
-pe_print_data_directory_ranges(Arena *arena, String8List *out, String8 indent, U64 count, PE_DataDirectory *dirs)
+pe_print_data_directory_ranges(Arena arena, String8List *out, String8 indent, U64 count, PE_DataDirectory *dirs)
 {
   Temp scratch = scratch_begin(&arena, 1);
   rd_printf("# Data Directories");
@@ -6476,7 +6476,7 @@ pe_print_data_directory_ranges(Arena *arena, String8List *out, String8 indent, U
 }
 
 internal void
-pe_print_optional_header32(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32 *opt_header, PE_DataDirectory *dirs)
+pe_print_optional_header32(Arena arena, String8List *out, String8 indent, PE_OptionalHeader32 *opt_header, PE_DataDirectory *dirs)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 subsystem = pe_string_from_subsystem(opt_header->subsystem);
@@ -6520,7 +6520,7 @@ pe_print_optional_header32(Arena *arena, String8List *out, String8 indent, PE_Op
 }
 
 internal void
-pe_print_optional_header32plus(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32Plus *opt_header, PE_DataDirectory *dirs)
+pe_print_optional_header32plus(Arena arena, String8List *out, String8 indent, PE_OptionalHeader32Plus *opt_header, PE_DataDirectory *dirs)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 subsystem = pe_string_from_subsystem(opt_header->subsystem);
@@ -6563,7 +6563,7 @@ pe_print_optional_header32plus(Arena *arena, String8List *out, String8 indent, P
 }
 
 internal void
-pe_print_load_config32(Arena *arena, String8List *out, String8 indent, PE_LoadConfig32 *lc)
+pe_print_load_config32(Arena arena, String8List *out, String8 indent, PE_LoadConfig32 *lc)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6647,7 +6647,7 @@ exit:;
 }
 
 internal void
-pe_print_load_config64(Arena *arena, String8List *out, String8 indent, PE_LoadConfig64 *lc)
+pe_print_load_config64(Arena arena, String8List *out, String8 indent, PE_LoadConfig64 *lc)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6731,7 +6731,7 @@ exit:;
 }
 
 internal void
-pe_print_tls(Arena *arena, String8List *out, String8 indent, PE_ParsedTLS tls)
+pe_print_tls(Arena arena, String8List *out, String8 indent, PE_ParsedTLS tls)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6763,7 +6763,7 @@ pe_print_tls(Arena *arena, String8List *out, String8 indent, PE_ParsedTLS tls)
 }
 
 internal void
-pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 raw_data, String8 raw_dir)
+pe_print_debug_diretory(Arena arena, String8List *out, String8 indent, String8 raw_data, String8 raw_dir)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6928,7 +6928,7 @@ pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 
 }
 
 internal void
-pe_print_export_table(Arena *arena, String8List *out, String8 indent, PE_ParsedExportTable exptab)
+pe_print_export_table(Arena arena, String8List *out, String8 indent, PE_ParsedExportTable exptab)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6959,7 +6959,7 @@ pe_print_export_table(Arena *arena, String8List *out, String8 indent, PE_ParsedE
 }
 
 internal void
-pe_print_static_import_table(Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedStaticImportTable imptab)
+pe_print_static_import_table(Arena arena, String8List *out, String8 indent, U64 image_base, PE_ParsedStaticImportTable imptab)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -6996,7 +6996,7 @@ pe_print_static_import_table(Arena *arena, String8List *out, String8 indent, U64
 }
 
 internal void
-pe_print_delay_import_table(Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedDelayImportTable imptab)
+pe_print_delay_import_table(Arena arena, String8List *out, String8 indent, U64 image_base, PE_ParsedDelayImportTable imptab)
 {
   if (imptab.count) {
     Temp scratch = scratch_begin(&arena, 1);
@@ -7049,7 +7049,7 @@ pe_print_delay_import_table(Arena *arena, String8List *out, String8 indent, U64 
 }
 
 internal void
-pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDir *root)
+pe_print_resources(Arena arena, String8List *out, String8 indent, PE_ResourceDir *root)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -7753,7 +7753,7 @@ pe_print_base_relocs(Arena              *arena,
 }
 
 internal void
-pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed *rdi)
+pe_print(Arena arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed *rdi)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

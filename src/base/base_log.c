@@ -77,7 +77,7 @@ log_scope_begin(void)
 }
 
 internal LogScopeResult
-log_scope_end(Arena *arena)
+log_scope_end(Arena arena)
 {
   LogScopeResult result = {0};
   if(log_active != 0)

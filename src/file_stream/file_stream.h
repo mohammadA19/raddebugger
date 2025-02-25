@@ -49,7 +49,7 @@ struct FS_Slot
 typedef struct FS_Stripe FS_Stripe;
 struct FS_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle cv;
   OS_Handle rw_mutex;
 };
@@ -60,7 +60,7 @@ struct FS_Stripe
 typedef struct FS_Shared FS_Shared;
 struct FS_Shared
 {
-  Arena *arena;
+  Arena arena;
   U64 change_gen;
   
   // rjf: path info cache
@@ -115,7 +115,7 @@ internal U64 fs_size_from_path(String8 path);
 //~ rjf: Streaming Work
 
 internal B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us);
-internal void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out);
+internal void fs_u2s_dequeue_req(Arena arena, Rng1U64 *range_out, String8 *path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////

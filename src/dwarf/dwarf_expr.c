@@ -552,7 +552,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
 //- full eval
 
 internal DW_Location
-dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_ExprMachineConfig *config)
+dw_expr__eval(Arena arena_optional, void *expr_base, Rng1U64 expr_range, DW_ExprMachineConfig *config)
 {
   Temp scratch = scratch_begin(&arena_optional, 1);
 
@@ -1327,14 +1327,14 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
 //- dw expr val stack
 
 internal DW_ExprStack
-dw_expr__stack_make(Arena *arena)
+dw_expr__stack_make(Arena arena)
 {
   DW_ExprStack result = {0};
   return result;
 }
 
 internal void
-dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
+dw_expr__stack_push(Arena arena, DW_ExprStack *stack, U64 x)
 {
   DW_ExprStackNode *node = stack->free_nodes;
   if (node == 0) {
@@ -1392,7 +1392,7 @@ dw_expr__call_top(DW_ExprCallStack *stack)
 }
 
 internal void
-dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
+dw_expr__call_push(Arena arena, DW_ExprCallStack *stack, void *ptr, U64 size)
 {
   DW_ExprCall *call = 0;
   if (call != 0) {

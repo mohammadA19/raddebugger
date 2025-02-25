@@ -50,7 +50,7 @@ d_hash_from_string__case_insensitive(String8 string)
 //~ rjf: Breakpoints
 
 internal D_BreakpointArray
-d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
+d_breakpoint_array_copy(Arena arena, D_BreakpointArray *src)
 {
   D_BreakpointArray dst = {0};
   dst.count = src->count;
@@ -69,7 +69,7 @@ d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
 //~ rjf: Path Map Application
 
 internal String8List
-d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path)
+d_possible_path_overrides_from_maps_path(Arena arena, D_PathMapArray *path_maps, String8 file_path)
 {
   // NOTE(rjf): This path, given some target file path, scans all file path map
   // overrides, and collects the set of file paths which could've redirected
@@ -142,7 +142,7 @@ d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps
 //~ rjf: Debug Info Extraction Type Pure Functions
 
 internal D_LineList
-d_line_list_copy(Arena *arena, D_LineList *list)
+d_line_list_copy(Arena arena, D_LineList *list)
 {
   D_LineList dst = {0};
   for(D_LineNode *src_n = list->first; src_n != 0; src_n = src_n->next)
@@ -163,7 +163,7 @@ d_line_list_copy(Arena *arena, D_LineList *list)
 //- rjf: command parameters
 
 internal D_CmdParams
-d_cmd_params_copy(Arena *arena, D_CmdParams *src)
+d_cmd_params_copy(Arena arena, D_CmdParams *src)
 {
   D_CmdParams dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -185,7 +185,7 @@ d_cmd_params_copy(Arena *arena, D_CmdParams *src)
 //- rjf: command lists
 
 internal void
-d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params)
+d_cmd_list_push_new(Arena arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params)
 {
   D_CmdNode *n = push_array(arena, D_CmdNode, 1);
   n->cmd.kind = kind;
@@ -343,7 +343,7 @@ d_view_rule_spec_from_string(String8 string)
 //     at them with the "save-stack-pointer | single-step-after" behaviors.
 
 internal CTRL_TrapList
-d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread)
+d_trap_net_from_thread__step_over_inst(Arena arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_TrapList result = {0};
@@ -380,7 +380,7 @@ d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread)
 }
 
 internal CTRL_TrapList
-d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread)
+d_trap_net_from_thread__step_over_line(Arena arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   log_infof("step_over_line:\n{\n");
@@ -542,7 +542,7 @@ d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread)
 }
 
 internal CTRL_TrapList
-d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread)
+d_trap_net_from_thread__step_into_line(Arena arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_TrapList result = {0};
@@ -667,7 +667,7 @@ d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread)
 //- rjf: symbol lookups
 
 internal String8
-d_symbol_name_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff, B32 decorated)
+d_symbol_name_from_dbgi_key_voff(Arena arena, DI_Key *dbgi_key, U64 voff, B32 decorated)
 {
   String8 result = {0};
   {
@@ -711,7 +711,7 @@ d_symbol_name_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff, B32 d
 }
 
 internal String8
-d_symbol_name_from_process_vaddr(Arena *arena, CTRL_Entity *process, U64 vaddr, B32 decorated)
+d_symbol_name_from_process_vaddr(Arena arena, CTRL_Entity *process, U64 vaddr, B32 decorated)
 {
   ProfBeginFunction();
   String8 result = {0};
@@ -850,7 +850,7 @@ d_type_num_from_dbgi_key_name(DI_Key *dbgi_key, String8 name)
 //- rjf: voff -> line info
 
 internal D_LineList
-d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
+d_lines_from_dbgi_key_voff(Arena arena, DI_Key *dbgi_key, U64 voff)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DI_Scope *scope = di_scope_open();
@@ -943,7 +943,7 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
 // TODO(rjf): this depends on file path maps, needs to move
 
 internal D_LineListArray
-d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range)
+d_lines_array_from_dbgi_key_file_path_line_range(Arena arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -1037,7 +1037,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
 }
 
 internal D_LineListArray
-d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range)
+d_lines_array_from_file_path_line_range(Arena arena, String8 file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -1142,7 +1142,7 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
 }
 
 internal D_LineList
-d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num)
+d_lines_from_dbgi_key_file_path_line_num(Arena arena, DI_Key dbgi_key, String8 file_path, S64 line_num)
 {
   D_LineListArray array = d_lines_array_from_dbgi_key_file_path_line_range(arena, dbgi_key, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1154,7 +1154,7 @@ d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 
 }
 
 internal D_LineList
-d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num)
+d_lines_from_file_path_line_num(Arena arena, String8 file_path, S64 line_num)
 {
   D_LineListArray array = d_lines_array_from_file_path_line_range(arena, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1296,7 +1296,7 @@ d_ctrl_targets_running(void)
 //- rjf: active entity based queries
 
 internal DI_KeyList
-d_push_active_dbgi_key_list(Arena *arena)
+d_push_active_dbgi_key_list(Arena arena)
 {
   DI_KeyList dbgis = {0};
   CTRL_EntityList modules = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Module);
@@ -1590,7 +1590,7 @@ d_next_cmd(D_Cmd **cmd)
 internal void
 d_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   d_state = push_array(arena, D_State, 1);
   d_state->arena = arena;
   d_state->cmds_arena = new Arena();
@@ -1628,7 +1628,7 @@ d_init(void)
 }
 
 internal D_EventList
-d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray *meta_evals)
+d_tick(Arena arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray *meta_evals)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

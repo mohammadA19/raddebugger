@@ -592,7 +592,7 @@ u32_from_rgba(Vec4F32 rgba)
 //~ rjf: List Type Functions
 
 internal void
-rng1u64_list_push(Arena *arena, Rng1U64List *list, Rng1U64 rng)
+rng1u64_list_push(Arena arena, Rng1U64List *list, Rng1U64 rng)
 {
   Rng1U64Node *n = push_array(arena, Rng1U64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
@@ -620,7 +620,7 @@ rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
 }
 
 internal Rng1U64Array
-rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
+rng1u64_array_from_list(Arena arena, Rng1U64List *list)
 {
   Rng1U64Array arr = {0};
   arr.count        = list->count;
@@ -635,7 +635,7 @@ rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 }
 
 internal void
-rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
+rng1s64_list_push(Arena arena, Rng1S64List *list, Rng1S64 rng)
 {
   Rng1S64Node *n = push_array(arena, Rng1S64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
@@ -644,7 +644,7 @@ rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
 }
 
 internal Rng1S64Array
-rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
+rng1s64_array_from_list(Arena arena, Rng1S64List *list)
 {
   Rng1S64Array arr = {0};
   arr.count = list->count;

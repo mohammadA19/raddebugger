@@ -249,7 +249,7 @@ struct D_UnwindCacheNode
   D_UnwindCacheNode *prev;
   U64 reggen;
   U64 memgen;
-  Arena *arena;
+  Arena arena;
   CTRL_Handle thread;
   CTRL_Unwind unwind;
 };
@@ -291,7 +291,7 @@ struct D_RunTLSBaseCacheSlot
 typedef struct D_RunTLSBaseCache D_RunTLSBaseCache;
 struct D_RunTLSBaseCache
 {
-  Arena *arena;
+  Arena arena;
   U64 slots_count;
   D_RunTLSBaseCacheSlot *slots;
 };
@@ -317,7 +317,7 @@ struct D_RunLocalsCacheSlot
 typedef struct D_RunLocalsCache D_RunLocalsCache;
 struct D_RunLocalsCache
 {
-  Arena *arena;
+  Arena arena;
   U64 table_size;
   D_RunLocalsCacheSlot *table;
 };
@@ -329,12 +329,12 @@ typedef struct D_State D_State;
 struct D_State
 {
   // rjf: top-level state
-  Arena *arena;
+  Arena arena;
   U64 frame_index;
   U64 frame_eval_memread_endt_us;
   
   // rjf: commands
-  Arena *cmds_arena;
+  Arena cmds_arena;
   D_CmdList cmds;
   
   // rjf: output log key
@@ -358,7 +358,7 @@ struct D_State
   D_ViewRuleSpec **view_rule_spec_table;
   
   // rjf: user -> ctrl driving state
-  Arena *ctrl_last_run_arena;
+  Arena ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
   U64 ctrl_last_run_frame_idx;
   CTRL_Handle ctrl_last_run_thread_handle;
@@ -369,12 +369,12 @@ struct D_State
   B32 ctrl_is_running;
   B32 ctrl_thread_run_state;
   B32 ctrl_soft_halt_issued;
-  Arena *ctrl_msg_arena;
+  Arena ctrl_msg_arena;
   CTRL_MsgList ctrl_msgs;
   
   // rjf: ctrl -> user reading state
   CTRL_EntityStore *ctrl_entity_store;
-  Arena *ctrl_stop_arena;
+  Arena ctrl_stop_arena;
   CTRL_Event ctrl_last_stop_event;
 };
 
@@ -395,26 +395,26 @@ internal U64 d_hash_from_string__case_insensitive(String8 string);
 ////////////////////////////////
 //~ rjf: Breakpoints
 
-internal D_BreakpointArray d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src);
+internal D_BreakpointArray d_breakpoint_array_copy(Arena arena, D_BreakpointArray *src);
 
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-internal String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path);
+internal String8List d_possible_path_overrides_from_maps_path(Arena arena, D_PathMapArray *path_maps, String8 file_path);
 
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
 
-internal D_LineList d_line_list_copy(Arena *arena, D_LineList *list);
+internal D_LineList d_line_list_copy(Arena arena, D_LineList *list);
 
 ////////////////////////////////
 //~ rjf: Command Type Functions
 
 //- rjf: command parameters
-internal D_CmdParams d_cmd_params_copy(Arena *arena, D_CmdParams *src);
+internal D_CmdParams d_cmd_params_copy(Arena arena, D_CmdParams *src);
 
 //- rjf: command lists
-internal void d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params);
+internal void d_cmd_list_push_new(Arena arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params);
 
 ////////////////////////////////
 //~ rjf: View Rule Spec Stateful Functions
@@ -425,31 +425,31 @@ internal D_ViewRuleSpec *d_view_rule_spec_from_string(String8 string);
 ////////////////////////////////
 //~ rjf: Stepping "Trap Net" Builders
 
-internal CTRL_TrapList d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread);
+internal CTRL_TrapList d_trap_net_from_thread__step_over_inst(Arena arena, CTRL_Entity *thread);
+internal CTRL_TrapList d_trap_net_from_thread__step_over_line(Arena arena, CTRL_Entity *thread);
+internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena arena, CTRL_Entity *thread);
 
 ////////////////////////////////
 //~ rjf: Debug Info Lookups
 
 //- rjf: voff|vaddr -> symbol lookups
-internal String8 d_symbol_name_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff, B32 decorated);
-internal String8 d_symbol_name_from_process_vaddr(Arena *arena, CTRL_Entity *process, U64 vaddr, B32 decorated);
+internal String8 d_symbol_name_from_dbgi_key_voff(Arena arena, DI_Key *dbgi_key, U64 voff, B32 decorated);
+internal String8 d_symbol_name_from_process_vaddr(Arena arena, CTRL_Entity *process, U64 vaddr, B32 decorated);
 
 //- rjf: symbol -> voff lookups
 internal U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name);
 internal U64 d_type_num_from_dbgi_key_name(DI_Key *dbgi_key, String8 name);
 
 //- rjf: voff -> line info
-internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff);
+internal D_LineList d_lines_from_dbgi_key_voff(Arena arena, DI_Key *dbgi_key, U64 voff);
 
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
-internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range);
-internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num);
-internal D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num);
+internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
+internal D_LineListArray d_lines_array_from_file_path_line_range(Arena arena, String8 file_path, Rng1S64 line_num_range);
+internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena arena, DI_Key dbgi_key, String8 file_path, S64 line_num);
+internal D_LineList d_lines_from_file_path_line_num(Arena arena, String8 file_path, S64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
@@ -474,7 +474,7 @@ internal U64 d_ctrl_last_run_frame_idx(void);
 internal B32 d_ctrl_targets_running(void);
 
 //- rjf: active entity based queries
-internal DI_KeyList d_push_active_dbgi_key_list(Arena *arena);
+internal DI_KeyList d_push_active_dbgi_key_list(Arena arena);
 
 //- rjf: per-run caches
 internal CTRL_Unwind d_query_cached_unwind_from_thread(CTRL_Entity *thread);
@@ -495,6 +495,6 @@ internal B32 d_next_cmd(D_Cmd **cmd);
 //~ rjf: Main Layer Top-Level Calls
 
 internal void d_init(void);
-internal D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray *meta_evals);
+internal D_EventList d_tick(Arena arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray *meta_evals);
 
 #endif // DBG_ENGINE_CORE_H

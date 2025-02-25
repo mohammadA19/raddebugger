@@ -3,7 +3,7 @@
 
 #pragma once
 
-internal U32Array  bit_array_init32(Arena *arena, U64 word_count);
+internal U32Array  bit_array_init32(Arena arena, U64 word_count);
 internal U64       bit_array_scan_left_to_right32(U32Array bit_array, U64 lo, U64 hi, B32 state);
 internal U64       bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state);
 internal Rng1U64   bit_array_scan_left_to_right32_contiguous(U32Array bit_array, U64 lo, U64 hi, B32 state, U64 in_row_count);

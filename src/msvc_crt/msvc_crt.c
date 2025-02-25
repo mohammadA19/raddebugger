@@ -250,7 +250,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *e
 }
 
 internal U64
-mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
+mscrt_parse_unwind_map_v4(Arena arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
 {
   U64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out->count);

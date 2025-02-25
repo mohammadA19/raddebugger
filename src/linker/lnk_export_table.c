@@ -22,7 +22,7 @@ internal LNK_ExportTable *
 lnk_export_table_alloc(void)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
 
   LNK_ExportTable *exptab  = push_array(arena, LNK_ExportTable, 1);
   exptab->arena            = arena;
@@ -157,7 +157,7 @@ lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, L
 }
 
 internal LNK_ExportArray
-lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
+lnk_export_array_from_list(Arena arena, LNK_ExportList list)
 {
   ProfBeginFunction();
   LNK_ExportArray arr;

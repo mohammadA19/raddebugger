@@ -45,7 +45,7 @@ dr_hash_from_string(String8 string)
 //~ rjf: Fancy String Type Functions
 
 internal void
-dr_fancy_string_list_push(Arena *arena, DR_FancyStringList *list, DR_FancyString *str)
+dr_fancy_string_list_push(Arena arena, DR_FancyStringList *list, DR_FancyString *str)
 {
   DR_FancyStringNode *n = push_array_no_zero(arena, DR_FancyStringNode, 1);
   MemoryCopyStruct(&n->v, str);
@@ -72,7 +72,7 @@ dr_fancy_string_list_concat_in_place(DR_FancyStringList *dst, DR_FancyStringList
 }
 
 internal String8
-dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
+dr_string_from_fancy_string_list(Arena arena, DR_FancyStringList *list)
 {
   String8 result = {0};
   result.size = list->total_size;
@@ -87,7 +87,7 @@ dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
 }
 
 internal DR_FancyRunList
-dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList *strs)
+dr_fancy_run_list_from_fancy_string_list(Arena arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList *strs)
 {
   ProfBeginFunction();
   DR_FancyRunList run_list = {0};
@@ -110,7 +110,7 @@ dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_Rast
 }
 
 internal DR_FancyRunList
-dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src)
+dr_fancy_run_list_copy(Arena arena, DR_FancyRunList *src)
 {
   DR_FancyRunList dst = {0};
   for(DR_FancyRunNode *src_n = src->first; src_n != 0; src_n = src_n->next)
@@ -135,7 +135,7 @@ dr_begin_frame(void)
 {
   if(dr_thread_ctx == 0)
   {
-    Arena *arena = new Arena(ReserveSize = GB(64), CommitSize = MB(8));
+    Arena arena = new Arena(ReserveSize = GB(64), CommitSize = MB(8));
     dr_thread_ctx = push_array(arena, DR_ThreadCtx, 1);
     dr_thread_ctx->arena = arena;
     dr_thread_ctx->arena_frame_start_pos = arena_pos(arena);
@@ -216,7 +216,7 @@ dr_top_bucket(void)
 internal inline R_Rect2DInst *
 dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
   R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
   R_PassParams_UI *params = pass->params_ui;
@@ -257,7 +257,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
 internal inline R_Rect2DInst *
 dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
   R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
   R_PassParams_UI *params = pass->params_ui;
@@ -302,7 +302,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
 internal R_PassParams_Blur *
 dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
   R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Blur);
   R_PassParams_Blur *params = pass->params_blur;
@@ -321,7 +321,7 @@ dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 internal R_PassParams_Geo3D *
 dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
   R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
   R_PassParams_Geo3D *params = pass->params_geo3d;
@@ -336,7 +336,7 @@ dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 internal R_Mesh3DInst *
 dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
   R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
   R_PassParams_Geo3D *params = pass->params_geo3d;
@@ -408,7 +408,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
 internal void
 dr_sub_bucket(DR_Bucket *bucket)
 {
-  Arena *arena = dr_thread_ctx->arena;
+  Arena arena = dr_thread_ctx->arena;
   DR_Bucket *src = bucket;
   DR_Bucket *dst = dr_top_bucket();
   Rng2F32 dst_clip = dr_top_clip();

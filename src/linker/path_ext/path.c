@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal String8
-make_file_name_with_ext(Arena *arena, String8 file_name, String8 ext)
+make_file_name_with_ext(Arena arena, String8 file_name, String8 ext)
 {
   String8 file_name_no_ext = str8_chop_last_dot(file_name);
   String8 result           = push_str8f(arena, "%S.%S", file_name_no_ext, ext);
@@ -23,7 +23,7 @@ path_char_from_style(PathStyle style)
 }
 
 internal String8
-path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
+path_convert_slashes(Arena arena, String8 path, PathStyle path_style)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = str8_split_path(scratch.arena, path);
@@ -35,7 +35,7 @@ path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
 }
 
 internal String8
-path_canon_from_regular_path(Arena *arena, String8 path)
+path_canon_from_regular_path(Arena arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 result;

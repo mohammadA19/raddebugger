@@ -796,7 +796,7 @@ internal void
 os_gfx_init(void)
 {
   //- rjf: set up base shared state
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   os_w32_gfx_state = push_array(arena, OS_W32_GfxState, 1);
   os_w32_gfx_state->arena = arena;
   os_w32_gfx_state->gfx_thread_tid = (U32)GetCurrentThreadId();
@@ -985,7 +985,7 @@ os_set_clipboard_text(String8 string)
 }
 
 internal String8
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena arena)
 {
   String8 result = {0};
   if(IsClipboardFormatAvailable(CF_TEXT) &&
@@ -1324,7 +1324,7 @@ os_dpi_from_window(OS_Handle handle)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 internal OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   OS_HandleList list = {0};
@@ -1356,7 +1356,7 @@ os_monitor_from_window(OS_Handle window)
 }
 
 internal String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena arena, OS_Handle monitor)
 {
   String8 result = {0};
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1395,7 +1395,7 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena arena, B32 wait)
 {
   os_w32_event_arena = arena;
   MemoryZeroStruct(&os_w32_event_list);

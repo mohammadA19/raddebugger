@@ -7,7 +7,7 @@
 //~ rjf: Globals
 
 global pthread_mutex_t lnx_mutex = {0};
-global Arena *lnx_perm_arena = 0;
+global Arena lnx_perm_arena = 0;
 global String8List lnx_cmd_line_args = {0};
 global LNX_Entity lnx_entity_buffer[1024];
 global LNX_Entity *lnx_entity_free = 0;
@@ -836,7 +836,7 @@ os_init(void)
   }
   
   // NOTE(allen): Permanent memory allocator for this layer
-  Arena *perm_arena = new Arena();
+  Arena perm_arena = new Arena();
   lnx_perm_arena = perm_arena;
   
   // NOTE(allen): Initialize Paths
@@ -1005,7 +1005,7 @@ os_environment(void)
 }
 
 internal U64
-os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *out){
+os_string_list_from_system_path(Arena arena, OS_SystemPath path, String8List *out){
   U64 result = 0;
   
   switch (path){
@@ -1170,7 +1170,7 @@ os_copy_file_path(String8 dst, String8 src)
 }
 
 internal String8
-os_full_path_from_path(Arena *arena, String8 path)
+os_full_path_from_path(Arena arena, String8 path)
 {
   // TODO: realpath can be used to resolve full path
   String8 result = {0};
@@ -1225,14 +1225,14 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena arena, String8 path, OS_FileIterFlags flags)
 {
   NotImplemented;
   return 0;
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
   NotImplemented;
   return 0;

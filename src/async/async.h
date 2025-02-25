@@ -85,7 +85,7 @@ struct ASYNC_Ring
 typedef struct ASYNC_Shared ASYNC_Shared;
 struct ASYNC_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: user -> work thread ring buffers
   ASYNC_Ring rings[ASYNC_Priority_COUNT];
@@ -124,8 +124,8 @@ internal B32 async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkP
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper
 
-internal void async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t);
-internal ASYNC_Task *async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
+internal void async_task_list_push(Arena arena, ASYNC_TaskList *list, ASYNC_Task *t);
+internal ASYNC_Task *async_task_launch_(Arena arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
 #define async_task_launch(arena, work_function, ...) async_task_launch_((arena), (work_function), &(ASYNC_WorkParams){.endt_us = max_U64, __VA_ARGS__})
 internal void *async_task_join(ASYNC_Task *task);
 #define async_task_join_struct(task, T) (T *)async_task_join(task)

@@ -587,9 +587,9 @@ internal U64 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x);
 internal U32 coff_make_ordinal32(U16 hint);
 internal U64 coff_make_ordinal64(U16 hint);
 
-internal String8 coff_make_import_lookup           (Arena *arena, U16 hint, String8 name);
-internal String8 coff_make_import_header_by_name   (Arena *arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 name, U16 hint, COFF_ImportType type);
-internal String8 coff_make_import_header_by_ordinal(Arena *arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, U16 ordinal, COFF_ImportType type);
+internal String8 coff_make_import_lookup           (Arena arena, U16 hint, String8 name);
+internal String8 coff_make_import_header_by_name   (Arena arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 name, U16 hint, COFF_ImportType type);
+internal String8 coff_make_import_header_by_ordinal(Arena arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, U16 ordinal, COFF_ImportType type);
 
 ////////////////////////////////
 // Misc

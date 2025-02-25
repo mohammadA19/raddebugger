@@ -42,7 +42,7 @@ p2r_hash_from_voff(U64 voff)
 //~ rjf: Command Line -> Conversion Inputs
 
 internal P2R_User2Convert *
-p2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline)
+p2r_user2convert_from_cmdln(Arena arena, CmdLine *cmdline)
 {
   P2R_User2Convert *result = push_array(arena, P2R_User2Convert, 1);
   
@@ -384,7 +384,7 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 //~ rjf: Location Info Building Helpers
 
 internal RDIM_Location *
-p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
+p2r_location_from_addr_reg_off(Arena arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
   if(0 <= offset && offset <= (S64)max_U16)
@@ -463,7 +463,7 @@ p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encod
 }
 
 internal void
-p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
+p2r_location_over_lvar_addr_range(Arena arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
 {
   //- rjf: extract range info
   U64 voff_first = 0;
@@ -503,7 +503,7 @@ p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDI
 ASYNC_WORK_DEF(p2r_exe_hash_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_EXEHashIn *in = (P2R_EXEHashIn *)input;
   U64 *out = push_array(arena, U64, 1);
   ProfScope("hash exe") *out = rdi_hash(in->exe_data.str, in->exe_data.size);
@@ -514,7 +514,7 @@ ASYNC_WORK_DEF(p2r_exe_hash_work)
 ASYNC_WORK_DEF(p2r_tpi_hash_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_TPIHashParseIn *in = (P2R_TPIHashParseIn *)input;
   void *out = 0;
   ProfScope("parse tpi hash") out = pdb_tpi_hash_from_data(arena, in->strtbl, in->tpi, in->hash_data, in->aux_data);
@@ -525,7 +525,7 @@ ASYNC_WORK_DEF(p2r_tpi_hash_parse_work)
 ASYNC_WORK_DEF(p2r_tpi_leaf_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_TPILeafParseIn *in = (P2R_TPILeafParseIn *)input;
   void *out = 0;
   ProfScope("parse tpi leaf") out = cv_leaf_from_data(arena, in->leaf_data, in->itype_first);
@@ -536,7 +536,7 @@ ASYNC_WORK_DEF(p2r_tpi_leaf_parse_work)
 ASYNC_WORK_DEF(p2r_symbol_stream_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_SymbolStreamParseIn *in = (P2R_SymbolStreamParseIn *)input;
   void *out = 0;
   ProfScope("parse symbol stream") out = cv_sym_from_data(arena, in->data, 4);
@@ -547,7 +547,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_parse_work)
 ASYNC_WORK_DEF(p2r_c13_stream_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_C13StreamParseIn *in = (P2R_C13StreamParseIn *)input;
   void *out = 0;
   ProfScope("parse c13 stream") out = cv_c13_parsed_from_data(arena, in->data, in->strtbl, in->coff_sections);
@@ -558,7 +558,7 @@ ASYNC_WORK_DEF(p2r_c13_stream_parse_work)
 ASYNC_WORK_DEF(p2r_comp_unit_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_CompUnitParseIn *in = (P2R_CompUnitParseIn *)input;
   void *out = 0;
   ProfScope("parse comp units") out = pdb_comp_unit_array_from_data(arena, in->data);
@@ -569,7 +569,7 @@ ASYNC_WORK_DEF(p2r_comp_unit_parse_work)
 ASYNC_WORK_DEF(p2r_comp_unit_contributions_parse_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_CompUnitContributionsParseIn *in = (P2R_CompUnitContributionsParseIn *)input;
   void *out = 0;
   ProfScope("parse comp unit contributions") out = pdb_comp_unit_contribution_array_from_data(arena, in->data, in->coff_sections);
@@ -583,7 +583,7 @@ ASYNC_WORK_DEF(p2r_comp_unit_contributions_parse_work)
 ASYNC_WORK_DEF(p2r_units_convert_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   Temp scratch = scratch_begin(&arena, 1);
   P2R_UnitConvertIn *in = (P2R_UnitConvertIn *)input;
   P2R_UnitConvertOut *out = push_array(arena, P2R_UnitConvertOut, 1);
@@ -942,7 +942,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
 ASYNC_WORK_DEF(p2r_link_name_map_build_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_LinkNameMapBuildIn *in = (P2R_LinkNameMapBuildIn *)input;
   CV_RecRange *rec_ranges_first = in->sym->sym_ranges.ranges;
   CV_RecRange *rec_ranges_opl   = rec_ranges_first + in->sym->sym_ranges.count;
@@ -1000,7 +1000,7 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
 ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_ITypeFwdMapFillIn *in = (P2R_ITypeFwdMapFillIn *)input;
   ProfScope("fill itype fwd map") for(CV_TypeId itype = in->itype_first; itype < in->itype_opl; itype += 1)
   {
@@ -1130,7 +1130,7 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
 ASYNC_WORK_DEF(p2r_itype_chain_build_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   Temp scratch = scratch_begin(&arena, 1);
   P2R_ITypeChainBuildIn *in = (P2R_ITypeChainBuildIn *)input;
   ProfScope("dependency itype chain build")
@@ -1433,7 +1433,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
 ASYNC_WORK_DEF(p2r_udt_convert_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_UDTConvertIn *in = (P2R_UDTConvertIn *)input;
 #define p2r_type_ptr_from_itype(itype) ((in->itype_type_ptrs && (itype) < in->tpi_leaf->itype_opl) ? (in->itype_type_ptrs[(in->itype_fwd_map[(itype)] ? in->itype_fwd_map[(itype)] : (itype))]) : 0)
   RDIM_UDTChunkList *udts = push_array(arena, RDIM_UDTChunkList, 1);
@@ -2070,7 +2070,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
 ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   Temp scratch = scratch_begin(&arena, 1);
   P2R_SymbolStreamConvertIn *in = (P2R_SymbolStreamConvertIn *)input;
 #define p2r_type_ptr_from_itype(itype) ((in->itype_type_ptrs && (itype) < in->tpi_leaf->itype_opl) ? (in->itype_type_ptrs[(in->itype_fwd_map[(itype)] ? in->itype_fwd_map[(itype)] : (itype))]) : 0)
@@ -2931,7 +2931,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 //~ rjf: Top-Level Conversion Entry Point
 
 internal P2R_Convert2Bake *
-p2r_convert(Arena *arena, P2R_User2Convert *in)
+p2r_convert(Arena arena, P2R_User2Convert *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -3982,7 +3982,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
 ASYNC_WORK_DEF(p2r_bake_src_files_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeSrcFilesStringsIn *in = (P2R_BakeSrcFilesStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake src file strings") rdim_bake_string_map_loose_push_src_files(arena, in->top, in->maps[thread_idx], in->list);
@@ -3993,7 +3993,7 @@ ASYNC_WORK_DEF(p2r_bake_src_files_strings_work)
 ASYNC_WORK_DEF(p2r_bake_units_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeUnitsStringsIn *in = (P2R_BakeUnitsStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake unit strings") rdim_bake_string_map_loose_push_units(arena, in->top, in->maps[thread_idx], in->list);
@@ -4004,7 +4004,7 @@ ASYNC_WORK_DEF(p2r_bake_units_strings_work)
 ASYNC_WORK_DEF(p2r_bake_types_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeTypesStringsIn *in = (P2R_BakeTypesStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake type strings")
@@ -4021,7 +4021,7 @@ ASYNC_WORK_DEF(p2r_bake_types_strings_work)
 ASYNC_WORK_DEF(p2r_bake_udts_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeUDTsStringsIn *in = (P2R_BakeUDTsStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake udt strings")
@@ -4038,7 +4038,7 @@ ASYNC_WORK_DEF(p2r_bake_udts_strings_work)
 ASYNC_WORK_DEF(p2r_bake_symbols_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeSymbolsStringsIn *in = (P2R_BakeSymbolsStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake symbol strings")
@@ -4055,7 +4055,7 @@ ASYNC_WORK_DEF(p2r_bake_symbols_strings_work)
 ASYNC_WORK_DEF(p2r_bake_inline_site_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeInlineSiteStringsIn *in = input;
   p2r_make_string_map_if_needed();
   ProfScope("bake inline site strings")
@@ -4072,7 +4072,7 @@ ASYNC_WORK_DEF(p2r_bake_inline_site_strings_work)
 ASYNC_WORK_DEF(p2r_bake_scopes_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeScopesStringsIn *in = (P2R_BakeScopesStringsIn *)input;
   p2r_make_string_map_if_needed();
   ProfScope("bake scope strings")
@@ -4089,7 +4089,7 @@ ASYNC_WORK_DEF(p2r_bake_scopes_strings_work)
 ASYNC_WORK_DEF(p2r_bake_line_tables_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeLineTablesIn *in = (P2R_BakeLineTablesIn *)input;
   RDIM_LineTableBakeResult *out = push_array(arena, RDIM_LineTableBakeResult, 1);
   ProfScope("bake line tables") *out = rdim_bake_line_tables(arena, in->line_tables);
@@ -4104,7 +4104,7 @@ ASYNC_WORK_DEF(p2r_bake_line_tables_work)
 ASYNC_WORK_DEF(p2r_bake_string_map_join_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_JoinBakeStringMapSlotsIn *in = (P2R_JoinBakeStringMapSlotsIn *)input;
   ProfScope("join bake string maps")
   {
@@ -4134,7 +4134,7 @@ ASYNC_WORK_DEF(p2r_bake_string_map_join_work)
 ASYNC_WORK_DEF(p2r_bake_string_map_sort_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_SortBakeStringMapSlotsIn *in = (P2R_SortBakeStringMapSlotsIn *)input;
   ProfScope("sort bake string chunk list map range")
   {
@@ -4165,7 +4165,7 @@ ASYNC_WORK_DEF(p2r_bake_string_map_sort_work)
 ASYNC_WORK_DEF(p2r_build_bake_name_map_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BuildBakeNameMapIn *in = (P2R_BuildBakeNameMapIn *)input;
   RDIM_BakeNameMap *name_map = 0;
   ProfScope("build name map %i", in->k) name_map = rdim_bake_name_map_from_kind_params(arena, in->k, in->params);
@@ -4178,7 +4178,7 @@ ASYNC_WORK_DEF(p2r_build_bake_name_map_work)
 ASYNC_WORK_DEF(p2r_bake_units_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeUnitsIn *in = (P2R_BakeUnitsIn *)input;
   RDIM_UnitBakeResult *out = push_array(arena, RDIM_UnitBakeResult, 1);
   ProfScope("bake units") *out = rdim_bake_units(arena, in->strings, in->path_tree, in->units);
@@ -4189,7 +4189,7 @@ ASYNC_WORK_DEF(p2r_bake_units_work)
 ASYNC_WORK_DEF(p2r_bake_unit_vmap_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeUnitVMapIn *in = (P2R_BakeUnitVMapIn *)input;
   RDIM_UnitVMapBakeResult *out = push_array(arena, RDIM_UnitVMapBakeResult, 1);
   ProfScope("bake unit vmap") *out = rdim_bake_unit_vmap(arena, in->units);
@@ -4200,7 +4200,7 @@ ASYNC_WORK_DEF(p2r_bake_unit_vmap_work)
 ASYNC_WORK_DEF(p2r_bake_src_files_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeSrcFilesIn *in = (P2R_BakeSrcFilesIn *)input;
   RDIM_SrcFileBakeResult *out = push_array(arena, RDIM_SrcFileBakeResult, 1);
   ProfScope("bake src files") *out = rdim_bake_src_files(arena, in->strings, in->path_tree, in->src_files);
@@ -4211,7 +4211,7 @@ ASYNC_WORK_DEF(p2r_bake_src_files_work)
 ASYNC_WORK_DEF(p2r_bake_udts_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeUDTsIn *in = (P2R_BakeUDTsIn *)input;
   RDIM_UDTBakeResult *out = push_array(arena, RDIM_UDTBakeResult, 1);
   ProfScope("bake udts") *out = rdim_bake_udts(arena, in->strings, in->udts);
@@ -4222,7 +4222,7 @@ ASYNC_WORK_DEF(p2r_bake_udts_work)
 ASYNC_WORK_DEF(p2r_bake_global_variables_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeGlobalVariablesIn *in = (P2R_BakeGlobalVariablesIn *)input;
   RDIM_GlobalVariableBakeResult *out = push_array(arena, RDIM_GlobalVariableBakeResult, 1);
   ProfScope("bake global variables") *out = rdim_bake_global_variables(arena, in->strings, in->global_variables);
@@ -4233,7 +4233,7 @@ ASYNC_WORK_DEF(p2r_bake_global_variables_work)
 ASYNC_WORK_DEF(p2r_bake_global_vmap_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeGlobalVMapIn *in = (P2R_BakeGlobalVMapIn *)input;
   RDIM_GlobalVMapBakeResult *out = push_array(arena, RDIM_GlobalVMapBakeResult, 1);
   ProfScope("bake global vmap") *out = rdim_bake_global_vmap(arena, in->global_variables);
@@ -4244,7 +4244,7 @@ ASYNC_WORK_DEF(p2r_bake_global_vmap_work)
 ASYNC_WORK_DEF(p2r_bake_thread_variables_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeThreadVariablesIn *in = (P2R_BakeThreadVariablesIn *)input;
   RDIM_ThreadVariableBakeResult *out = push_array(arena, RDIM_ThreadVariableBakeResult, 1);
   ProfScope("bake thread variables") *out = rdim_bake_thread_variables(arena, in->strings, in->thread_variables);
@@ -4255,7 +4255,7 @@ ASYNC_WORK_DEF(p2r_bake_thread_variables_work)
 ASYNC_WORK_DEF(p2r_bake_procedures_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeProceduresIn *in = (P2R_BakeProceduresIn *)input;
   RDIM_ProcedureBakeResult *out = push_array(arena, RDIM_ProcedureBakeResult, 1);
   ProfScope("bake procedures") *out = rdim_bake_procedures(arena, in->strings, in->procedures);
@@ -4266,7 +4266,7 @@ ASYNC_WORK_DEF(p2r_bake_procedures_work)
 ASYNC_WORK_DEF(p2r_bake_scopes_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeScopesIn *in = (P2R_BakeScopesIn *)input;
   RDIM_ScopeBakeResult *out = push_array(arena, RDIM_ScopeBakeResult, 1);
   ProfScope("bake scopes") *out = rdim_bake_scopes(arena, in->strings, in->scopes);
@@ -4277,7 +4277,7 @@ ASYNC_WORK_DEF(p2r_bake_scopes_work)
 ASYNC_WORK_DEF(p2r_bake_scope_vmap_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeScopeVMapIn *in = (P2R_BakeScopeVMapIn *)input;
   RDIM_ScopeVMapBakeResult *out = push_array(arena, RDIM_ScopeVMapBakeResult, 1);
   ProfScope("bake scope vmap") *out = rdim_bake_scope_vmap(arena, in->scopes);
@@ -4288,7 +4288,7 @@ ASYNC_WORK_DEF(p2r_bake_scope_vmap_work)
 ASYNC_WORK_DEF(p2r_bake_inline_sites_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeInlineSitesIn *in = (P2R_BakeInlineSitesIn *)input;
   RDIM_InlineSiteBakeResult *out = push_array(arena, RDIM_InlineSiteBakeResult, 1);
   ProfScope("bake inline sites") *out = rdim_bake_inline_sites(arena, in->strings, in->inline_sites);
@@ -4299,7 +4299,7 @@ ASYNC_WORK_DEF(p2r_bake_inline_sites_work)
 ASYNC_WORK_DEF(p2r_bake_file_paths_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeFilePathsIn *in = (P2R_BakeFilePathsIn *)input;
   RDIM_FilePathBakeResult *out = push_array(arena, RDIM_FilePathBakeResult, 1);
   ProfScope("bake file paths") *out = rdim_bake_file_paths(arena, in->strings, in->path_tree);
@@ -4310,7 +4310,7 @@ ASYNC_WORK_DEF(p2r_bake_file_paths_work)
 ASYNC_WORK_DEF(p2r_bake_strings_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeStringsIn *in = (P2R_BakeStringsIn *)input;
   RDIM_StringBakeResult *out = push_array(arena, RDIM_StringBakeResult, 1);
   ProfScope("bake strings") *out = rdim_bake_strings(arena, in->strings);
@@ -4323,7 +4323,7 @@ ASYNC_WORK_DEF(p2r_bake_strings_work)
 ASYNC_WORK_DEF(p2r_bake_type_nodes_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeTypeNodesIn *in = (P2R_BakeTypeNodesIn *)input;
   RDIM_TypeNodeBakeResult *out = push_array(arena, RDIM_TypeNodeBakeResult, 1);
   ProfScope("bake type nodes") *out = rdim_bake_types(arena, in->strings, in->idx_runs, in->types);
@@ -4334,7 +4334,7 @@ ASYNC_WORK_DEF(p2r_bake_type_nodes_work)
 ASYNC_WORK_DEF(p2r_bake_name_map_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeNameMapIn *in = (P2R_BakeNameMapIn *)input;
   RDIM_NameMapBakeResult *out = push_array(arena, RDIM_NameMapBakeResult, 1);
   ProfScope("bake name map %i", in->kind) *out = rdim_bake_name_map(arena, in->strings, in->idx_runs, in->map);
@@ -4345,7 +4345,7 @@ ASYNC_WORK_DEF(p2r_bake_name_map_work)
 ASYNC_WORK_DEF(p2r_bake_idx_runs_work)
 {
   ProfBeginFunction();
-  Arena *arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeIdxRunsIn *in = (P2R_BakeIdxRunsIn *)input;
   RDIM_IndexRunBakeResult *out = push_array(arena, RDIM_IndexRunBakeResult, 1);
   ProfScope("bake idx runs") *out = rdim_bake_index_runs(arena, in->idx_runs);
@@ -4359,11 +4359,11 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work)
 internal void
 p2r_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   p2r_state = push_array(arena, P2R_State, 1);
   p2r_state->arena = arena;
   p2r_state->work_thread_arenas_count = async_thread_count();
-  p2r_state->work_thread_arenas = push_array(arena, Arena *, p2r_state->work_thread_arenas_count);
+  p2r_state->work_thread_arenas = push_array(arena, Arena , p2r_state->work_thread_arenas_count);
   for EachIndex(idx, p2r_state->work_thread_arenas_count)
   {
     p2r_state->work_thread_arenas[idx] = new Arena();
@@ -4374,7 +4374,7 @@ p2r_init(void)
 //~ rjf: Top-Level Baking Entry Point
 
 internal P2R_Bake2Serialize *
-p2r_bake(Arena *arena, P2R_Convert2Bake *in)
+p2r_bake(Arena arena, P2R_Convert2Bake *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RDIM_BakeParams *in_params = &in->bake_params;
@@ -4844,7 +4844,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
 //~ rjf: Top-Level Compression Entry Point
 
 internal P2R_Serialize2File *
-p2r_compress(Arena *arena, P2R_Serialize2File *in)
+p2r_compress(Arena arena, P2R_Serialize2File *in)
 {
   P2R_Serialize2File *out = push_array(arena, P2R_Serialize2File, 1);
   {

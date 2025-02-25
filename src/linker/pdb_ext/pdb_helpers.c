@@ -26,7 +26,7 @@ pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
 }
 
 internal U64
-pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32Array *bits_out)
+pdb_read_bit_vector_msf(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, U32Array *bits_out)
 {
   // peek word count
   MSF_UInt pos = msf_stream_get_pos(msf, sn);

@@ -106,7 +106,7 @@ struct PTG_GraphNode
   B32 is_working;
   
   // rjf: content
-  Arena *arena;
+  Arena arena;
   PTG_Graph graph;
 };
 
@@ -120,7 +120,7 @@ struct PTG_GraphSlot
 typedef struct PTG_GraphStripe PTG_GraphStripe;
 struct PTG_GraphStripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
   PTG_GraphNode *free_node;
@@ -149,7 +149,7 @@ struct PTG_Scope
 typedef struct PTG_TCTX PTG_TCTX;
 struct PTG_TCTX
 {
-  Arena *arena;
+  Arena arena;
   PTG_Scope *free_scope;
   PTG_Touch *free_touch;
 };
@@ -160,7 +160,7 @@ struct PTG_TCTX
 typedef struct PTG_Shared PTG_Shared;
 struct PTG_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: user clock
   U64 user_clock_idx;

@@ -76,7 +76,7 @@ typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
 }
 
 internal String8
-serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+serialized_from_typed_data(Arena arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strings = {0};
@@ -237,7 +237,7 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
 }
 
 internal String8
-deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+deserialized_from_typed_data(Arena arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   String8 result = {0};
   result.size = type->size;
@@ -412,7 +412,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
 }
 
 internal String8
-deep_copy_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+deep_copy_from_typed_data(Arena arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);

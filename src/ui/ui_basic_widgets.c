@@ -1129,7 +1129,7 @@ ui_table_cell_sized_begin(UI_Size size)
 //~ rjf: Scroll Regions
 
 internal void
-ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block)
+ui_scroll_list_row_block_chunk_list_push(Arena arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block)
 {
   UI_ScrollListRowBlockChunkNode *n = list->last;
   if(n == 0 || n->count >= n->cap)
@@ -1146,7 +1146,7 @@ ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChun
 }
 
 internal UI_ScrollListRowBlockArray
-ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list)
+ui_scroll_list_row_block_array_from_chunk_list(Arena arena, UI_ScrollListRowBlockChunkList *list)
 {
   UI_ScrollListRowBlockArray array = {0};
   array.count = list->total_count;

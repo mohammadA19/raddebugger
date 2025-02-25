@@ -5,7 +5,7 @@
 //~ ELF Parser Functions
 
 static ELF_Parsed*
-elf_parsed_from_data(Arena *arena, String8 elf_data){
+elf_parsed_from_data(Arena arena, String8 elf_data){
   //- test magic number
   B32 has_good_magic_number = 0;
   if (elf_data.size >= sizeof(ELF_NIDENT) &&
@@ -471,7 +471,7 @@ elf_section_data_from_idx(ELF_Parsed *elf, U32 idx){
 }
 
 static ELF_SymArray
-elf_sym_array_from_data(Arena *arena, ELF_Class elf_class, String8 data){
+elf_sym_array_from_data(Arena arena, ELF_Class elf_class, String8 data){
   // converge to sym64 layout
   ELF_Sym64 *symbols = 0;
   U64 count = 0;

@@ -89,7 +89,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
     B32 is_present_bits_ok = present_bits.count <= AlignPow2(max, 32);
     B32 is_deleted_bits_ok = deleted_bits.count <= AlignPow2(max, 32);
     if (is_count_ok && is_load_factor_ok && is_present_bits_ok && is_deleted_bits_ok) {
-      Arena *arena = new Arena();
+      Arena arena = new Arena();
       PDB_HashTableBucket *bucket_arr = push_array_no_zero(arena, PDB_HashTableBucket, max);
       U32Array present_bits_new = bit_array_init32(arena, max);
       U32Array deleted_bits_new = bit_array_init32(arena, max);
@@ -149,7 +149,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
 }
 
 internal String8
-pdb_data_from_hash_table(Arena *arena,
+pdb_data_from_hash_table(Arena arena,
                          PDB_HashTable *ht,
                          B32 has_local_data,
                          PDB_HashTablePackFunc *pack_func,
@@ -329,7 +329,7 @@ pdb_hash_table_is_deleted(PDB_HashTable *ht, U32 k)
 }
 
 internal void
-pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out)
+pdb_hash_table_get_present_keys_and_values(Arena arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out)
 {
   *keys_out   = str8_array_reserve(arena, ht->count);
   *values_out = str8_array_reserve(arena, ht->count);
@@ -480,21 +480,21 @@ pdb_named_stream_ht_from_data(PDB_HashTable *ht, String8 data, U64 *read_bytes_o
 }
 
 internal String8
-pdb_data_from_hash_adj_hash_table(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
+pdb_data_from_hash_adj_hash_table(Arena arena, PDB_HashTable *ht, PDB_StringTable *strtab)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 0, pdb_hash_adj_ht_pack, strtab);
   return data;
 }
 
 internal String8
-pdb_data_from_src_header_block_ht(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
+pdb_data_from_src_header_block_ht(Arena arena, PDB_HashTable *ht, PDB_StringTable *strtab)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 0, pdb_src_header_block_ht_pack, strtab);
   return data;
 }
 
 internal String8
-pdb_data_from_named_stream_ht(Arena *arena, PDB_HashTable *ht)
+pdb_data_from_named_stream_ht(Arena arena, PDB_HashTable *ht)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 1, pdb_named_stream_ht_pack, 0);
   return data;
@@ -970,7 +970,7 @@ pdb_type_server_alloc(U64 bucket_cap)
   ProfBeginFunction();
   AssertAlways(0x1000 <= bucket_cap && bucket_cap <= 0x40000);
 
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_TypeServer *ts  = push_array(arena, PDB_TypeServer, 1);
   ts->arena      = arena;
   ts->hash_sn    = MSF_INVALID_STREAM_NUMBER;
@@ -1651,7 +1651,7 @@ internal PDB_InfoContext *
 pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_InfoContext *info = push_array(arena, PDB_InfoContext, 1);
   info->arena      = arena;
   info->flags      = PDB_FeatureFlag_HAS_ID_STREAM;
@@ -1764,7 +1764,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
   }
     
   // fill out info
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_InfoContext *info = push_array_no_zero(arena, PDB_InfoContext, 1);
   info->arena               = arena;
   info->time_stamp          = parse.time_stamp;
@@ -2003,7 +2003,7 @@ internal PDB_GsiContext *
 gsi_alloc(void)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_GsiContext *gsi  = push_array(arena, PDB_GsiContext, 1);
   gsi->arena        = arena;
   gsi->word_size    = PDB_GSI_V70_WORD_SIZE;
@@ -2022,7 +2022,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
   PDB_GsiHeader header = {0};
   msf_stream_read_struct(msf, sn, &header);
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_GsiContext *gsi = push_array(arena, PDB_GsiContext, 1);
   gsi->arena        = arena;
   gsi->word_size    = PDB_GSI_V70_WORD_SIZE;
@@ -2325,7 +2325,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_symbols_task)
 }
 
 internal PDB_GsiBuildResult
-gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 is_pub32, U64 msf_page_size)
+gsi_build_ex(TP_Context *tp, Arena arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 is_pub32, U64 msf_page_size)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena,1);
@@ -2546,7 +2546,7 @@ internal PDB_PsiContext *
 psi_alloc(void)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_PsiContext *psi = push_array(arena, PDB_PsiContext, 1);
   psi->arena = arena;
   psi->gsi = gsi_alloc();
@@ -2559,7 +2559,7 @@ psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
 {
   ProfBeginFunction();
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_PsiContext *psi = push_array(arena, PDB_PsiContext, 1);
   psi->arena = arena;
   
@@ -2649,7 +2649,7 @@ dbi_sec_contrib_list_push_node(PDB_DbiSectionContribList *list, PDB_DbiSectionCo
 }
 
 internal PDB_DbiSectionContribNode *
-dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
+dbi_sec_contrib_list_push(Arena arena, PDB_DbiSectionContribList *list)
 {
   PDB_DbiSectionContribNode *node = push_array_no_zero(arena, PDB_DbiSectionContribNode, 1);
   node->next = 0;
@@ -2667,7 +2667,7 @@ internal PDB_DbiContext *
 dbi_alloc(COFF_MachineType machine, U32 age)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_DbiContext *dbi = push_array(arena, PDB_DbiContext, 1);
   dbi->arena      = arena;
   dbi->age        = age;
@@ -2684,7 +2684,7 @@ dbi_alloc(COFF_MachineType machine, U32 age)
 }
 
 internal String8List *
-dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+dbi_open_file_info(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2741,7 +2741,7 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
 }
 
 internal PDB_DbiModuleList
-dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info)
+dbi_open_module_info(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info)
 {
   ProfBeginFunction();
   
@@ -2784,7 +2784,7 @@ dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
 }
 
 internal PDB_DbiSectionContribList
-dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+dbi_open_sec_contrib(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   
@@ -2832,7 +2832,7 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
 }
 
 internal PDB_StringTable
-dbi_open_ec_names(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+dbi_open_ec_names(Arena arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   PDB_StringTable ec_names = {0};
@@ -2868,7 +2868,7 @@ dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_Stream
 }
 
 internal PDB_DbiSectionList
-dbi_open_section_headers(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
+dbi_open_section_headers(Arena arena, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   PDB_DbiSectionList sec_list = {0};
@@ -2892,7 +2892,7 @@ dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
   PDB_DbiHeader header = {0};
   msf_stream_read_struct(msf, sn, &header);
   
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_DbiContext *dbi = push_array(arena, PDB_DbiContext, 1);
   dbi->arena      = arena;
   dbi->age        = header.age;
@@ -2972,7 +2972,7 @@ THREAD_POOL_TASK_FUNC(dbi_build_file_info_assign_file_offsets_task)
 }
 
 internal String8List
-dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV_StringHashTable string_ht)
+dbi_build_file_info(Arena arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3030,7 +3030,7 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
 }
 
 internal String8List
-dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
+dbi_build_module_info(Arena arena, PDB_DbiContext *dbi, MSF_Context *msf)
 {
   ProfBeginFunction();
 
@@ -3230,7 +3230,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
 }
 
 internal String8List
-dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
+dbi_build_sec_con(Arena arena, PDB_DbiContext *dbi)
 {
   ProfBeginFunction();
 
@@ -3261,7 +3261,7 @@ dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
 }
 
 internal String8List
-dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
+dbi_build_sec_map(Arena arena, PDB_DbiContext *dbi)
 {
   ProfBeginFunction();
 
@@ -3314,7 +3314,7 @@ dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
 }
 
 internal String8List
-dbi_build_dbg_header(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
+dbi_build_dbg_header(Arena arena, PDB_DbiContext *dbi, MSF_Context *msf)
 {
   ProfBeginFunction();
   if (dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER] == MSF_INVALID_STREAM_NUMBER) {
@@ -3453,7 +3453,7 @@ dbi_module_push_section_contrib(PDB_DbiContext *dbi,
 }
 
 internal String8
-dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+dbi_module_read_symbol_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 symbol_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3466,7 +3466,7 @@ dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
 }
 
 internal String8
-dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+dbi_module_read_c11_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 c11_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3480,7 +3480,7 @@ dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
 }
 
 internal String8
-dbi_module_read_c13_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+dbi_module_read_c13_data(Arena arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 c13_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3532,7 +3532,7 @@ internal PDB_Context *
 pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid)
 {
   ProfBeginFunction();
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   PDB_Context *pdb = push_array(arena, PDB_Context, 1);
   pdb->arena = arena;
   pdb->msf   = pdb_alloc_msf(page_size);
@@ -3559,7 +3559,7 @@ pdb_open(String8 data)
   MSF_Context *msf = 0;
   MSF_Error msf_err = msf_open(data, &msf);
   if (msf_err == MSF_Error_OK) {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     pdb = push_array(arena, PDB_Context, 1);
     pdb->arena = arena;
     pdb->msf = msf;
@@ -3650,7 +3650,7 @@ pdb_get_guid(PDB_Context *pdb)
 }
 
 internal void
-pdb_build(TP_Context *tp, TP_Arena *pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht)
+pdb_build(TP_Context *tp, TP_Arena pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
   

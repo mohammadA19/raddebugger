@@ -18,7 +18,7 @@ rd_code_view_init(RD_CodeViewState *cv)
 }
 
 internal RD_CodeViewBuildResult
-rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
+rd_code_view_build(Arena arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -995,7 +995,7 @@ rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row,
 //- rjf: row/column -> strings
 
 internal E_Expr *
-rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col)
+rd_expr_from_watch_view_row_column(Arena arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col)
 {
   E_Expr *expr = row->expr;
   switch(col->kind)
@@ -1022,7 +1022,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
 }
 
 internal String8
-rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
+rd_string_from_eval_viz_row_column(Arena arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   ProfBeginFunction();
   String8 result = {0};
@@ -3626,7 +3626,7 @@ struct RD_CmdListerItemArray
 };
 
 internal RD_CmdListerItemList
-rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
+rd_cmd_lister_item_list_from_needle(Arena arena, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CmdListerItemList result = {0};
@@ -3664,7 +3664,7 @@ rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
 }
 
 internal RD_CmdListerItemArray
-rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
+rd_cmd_lister_item_array_from_list(Arena arena, RD_CmdListerItemList list)
 {
   RD_CmdListerItemArray result = {0};
   result.count = list.count;
@@ -3929,7 +3929,7 @@ struct RD_FileSystemViewState
   RD_FileSystemViewPathState **path_state_table;
   RD_FileSortKind sort_kind;
   Side sort_side;
-  Arena *cached_files_arena;
+  Arena cached_files_arena;
   String8 cached_files_path;
   RD_FileSortKind cached_files_sort_kind;
   Side cached_files_sort_side;
@@ -4507,7 +4507,7 @@ struct RD_ProcessInfoArray
 };
 
 internal RD_ProcessInfoList
-rd_process_info_list_from_query(Arena *arena, String8 query)
+rd_process_info_list_from_query(Arena arena, String8 query)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -4587,7 +4587,7 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
 }
 
 internal RD_ProcessInfoArray
-rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
+rd_process_info_array_from_list(Arena arena, RD_ProcessInfoList list)
 {
   RD_ProcessInfoArray array = {0};
   array.count = list.count;
@@ -4650,7 +4650,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
     B32 initialized;
     B32 need_initial_gather;
     U32 selected_pid;
-    Arena *cached_process_arena;
+    Arena cached_process_arena;
     String8 cached_process_arg;
     RD_ProcessInfoArray cached_process_array;
   };
@@ -4824,7 +4824,7 @@ struct RD_EntityListerItemArray
 };
 
 internal RD_EntityListerItemList
-rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
+rd_entity_lister_item_list_from_needle(Arena arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_EntityListerItemList result = {0};
@@ -4852,7 +4852,7 @@ rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_Enti
 }
 
 internal RD_EntityListerItemArray
-rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list)
+rd_entity_lister_item_array_from_list(Arena arena, RD_EntityListerItemList list)
 {
   RD_EntityListerItemArray result = {0};
   result.count = list.count;
@@ -5031,7 +5031,7 @@ struct RD_CtrlEntityListerItemArray
 };
 
 internal RD_CtrlEntityListerItemList
-rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, String8 needle)
+rd_ctrl_entity_lister_item_list_from_needle(Arena arena, CTRL_EntityKind kind, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CtrlEntityListerItemList result = {0};
@@ -5056,7 +5056,7 @@ rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, 
 }
 
 internal RD_CtrlEntityListerItemArray
-rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItemList list)
+rd_ctrl_entity_lister_item_array_from_list(Arena arena, RD_CtrlEntityListerItemList list)
 {
   RD_CtrlEntityListerItemArray result = {0};
   result.count = list.count;
@@ -5671,7 +5671,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
 typedef struct RD_PendingFileViewState RD_PendingFileViewState;
 struct RD_PendingFileViewState
 {
-  Arena *deferred_cmd_arena;
+  Arena deferred_cmd_arena;
   RD_CmdList deferred_cmds;
 };
 

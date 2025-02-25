@@ -51,7 +51,7 @@ cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 }
 
 internal CmdLineOpt *
-cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values)
+cmd_line_insert_opt(Arena arena, CmdLine *cmd_line, String8 string, String8List values)
 {
   CmdLineOpt *var = 0;
   CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
@@ -79,7 +79,7 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List
 }
 
 internal CmdLine
-cmd_line_from_string_list(Arena *arena, String8List command_line)
+cmd_line_from_string_list(Arena arena, String8List command_line)
 {
   CmdLine parsed = {0};
   parsed.exe_name = command_line.first->string;

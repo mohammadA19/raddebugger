@@ -168,7 +168,7 @@ os_get_process_info(void)
 }
 
 internal String8
-os_get_current_path(Arena *arena)
+os_get_current_path(Arena arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
@@ -491,7 +491,7 @@ os_copy_file_path(String8 dst, String8 src)
 }
 
 internal String8
-os_full_path_from_path(Arena *arena, String8 path)
+os_full_path_from_path(Arena arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
@@ -639,7 +639,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena arena, String8 path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
@@ -673,7 +673,7 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
   B32 result = 0;
   OS_FileIterFlags flags = iter->flags;
@@ -1631,7 +1631,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   }
   
   //- rjf: extract arguments
-  Arena *args_arena = new Arena(ReserveSize = MB(1), CommitSize = KB(32));
+  Arena args_arena = new Arena(ReserveSize = MB(1), CommitSize = KB(32));
   char **argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {
@@ -1657,7 +1657,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   tctx_init_and_equip(&tctx);
   
   //- rjf: set up dynamically-alloc'd state
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   {
     os_w32_state.arena = arena;
     {

@@ -207,7 +207,7 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
 //~ rjf: Module Info Extraction
 
 internal String8
-dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
+dmn_w32_full_path_from_module(Arena arena, DMN_W32_Entity *module)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -352,7 +352,7 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
 }
 
 internal String8
-dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
+dmn_w32_read_memory_str(Arena arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
   //
@@ -401,7 +401,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
 }
 
 internal String16
-dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
+dmn_w32_read_memory_str16(Arena arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
   //
@@ -1136,7 +1136,7 @@ dmn_w32_inject_thread(HANDLE process, U64 start_address)
 internal void
 dmn_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   dmn_w32_shared = push_array(arena, DMN_W32_Shared, 1);
   dmn_w32_shared->arena = arena;
   dmn_w32_shared->access_mutex = os_mutex_alloc();
@@ -1411,7 +1411,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
 }
 
 internal DMN_EventList
-dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
+dmn_ctrl_run(Arena arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 {
   DMN_EventList events = {0};
   dmn_access_open();
@@ -2882,7 +2882,7 @@ dmn_process_iter_begin(DMN_ProcessIter *iter)
 }
 
 internal B32
-dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
+dmn_process_iter_next(Arena arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
 {
   B32 result = 0;
   

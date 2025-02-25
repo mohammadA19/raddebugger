@@ -146,7 +146,7 @@ print_inline_binary_annotations(String8 binary_annots)
 internal void
 entry_point(CmdLine *cmdl)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
 
   B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
                 cmd_line_has_flag(cmdl, str8_lit("h")) ||

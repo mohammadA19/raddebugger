@@ -474,7 +474,7 @@ dw_base_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
 //~ rjf: Abbrev Table
 
 internal DW_AbbrevTable
-dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 abbrev_offset)
+dw_make_abbrev_table(Arena arena, DW_SectionArray *sections, U64 abbrev_offset)
 {
   void    *file_base    = dw_base_from_sec(sections, DW_Section_Abbrev);
   Rng1U64  abbrev_range = dw_range_from_sec(sections, DW_Section_Abbrev);
@@ -582,7 +582,7 @@ dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id)
 //- rjf: .debug_ranges (DWARF V4)
 
 internal Rng1U64List
-dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off)
+dw_v4_range_list_from_range_offset(Arena arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off)
 {
   void    *base = dw_base_from_sec(sections, DW_Section_Ranges);
   Rng1U64  rng  = dw_range_from_sec(sections, DW_Section_Ranges);
@@ -625,7 +625,7 @@ dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 
 //- rjf: .debug_pubtypes + .debug_pubnames (DWARF V4)
 
 internal DW_PubStringsTable
-dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *sections, DW_SectionKind section_kind)
+dw_v4_pub_strings_table_from_section_kind(Arena arena, DW_SectionArray *sections, DW_SectionKind section_kind)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -860,7 +860,7 @@ dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sec
 }
 
 internal Rng1U64List
-dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset)
+dw_v5_range_list_from_rnglist_offset(Arena arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset)
 {
   Rng1U64List list = {0};
   
@@ -1164,7 +1164,7 @@ dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value)
 }
 
 internal Rng1U64List
-dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value)
+dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value)
 {
   Rng1U64List list = {0};
   switch(ranges_value.section)
@@ -1441,7 +1441,7 @@ dw_v5_header_offset_from_table_offset(DW_SectionArray *sections, DW_SectionKind 
 }
 
 internal Rng1U64List
-dw_comp_unit_ranges_from_info(Arena *arena, DW_Section info)
+dw_comp_unit_ranges_from_info(Arena arena, DW_Section info)
 {
   Rng1U64List  result = {0};
   void        *base   = info.data.str;
@@ -1500,7 +1500,7 @@ dw_ext_from_params(String8 producer, Arch arch, ImageType image_type)
 }
 
 internal DW_CompRoot
-dw_comp_root_from_range(Arena *arena, DW_SectionArray *sections, Rng1U64 range, B32 relaxed)
+dw_comp_root_from_range(Arena arena, DW_SectionArray *sections, Rng1U64 range, B32 relaxed)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1773,7 +1773,7 @@ dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl)
 }
 
 internal DW_LineNode *
-dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence)
+dw_push_line(Arena arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence)
 {
   DW_LineNode *n = 0;
   if(vm_state->busted_seq == 0)
@@ -1799,7 +1799,7 @@ dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_stat
 }
 
 internal DW_LineTableParseResult
-dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root)
+dw_parsed_line_table_from_comp_root(Arena arena, DW_SectionArray *sections, DW_CompRoot *root)
 {
   DW_Mode  mode            = sections->v[DW_Section_Line].mode;
   void    *base            = dw_base_from_sec(sections, DW_Section_Line);
@@ -2033,7 +2033,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
 }
 
 internal String8
-dw_path_from_file_idx(Arena *arena, DW_LineVMHeader *vm, U64 file_idx)
+dw_path_from_file_idx(Arena arena, DW_LineVMHeader *vm, U64 file_idx)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

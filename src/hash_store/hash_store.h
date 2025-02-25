@@ -31,7 +31,7 @@ struct HS_Node
   HS_Node *next;
   HS_Node *prev;
   U128 hash;
-  Arena *arena;
+  Arena arena;
   String8 data;
   U64 scope_ref_count;
   U64 key_ref_count;
@@ -47,7 +47,7 @@ struct HS_Slot
 typedef struct HS_Stripe HS_Stripe;
 struct HS_Stripe
 {
-  Arena *arena;
+  Arena arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 };
@@ -75,7 +75,7 @@ struct HS_Scope
 typedef struct HS_TCTX HS_TCTX;
 struct HS_TCTX
 {
-  Arena *arena;
+  Arena arena;
   HS_Scope *free_scope;
   HS_Touch *free_touch;
 };
@@ -86,7 +86,7 @@ struct HS_TCTX
 typedef struct HS_Shared HS_Shared;
 struct HS_Shared
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: main data cache
   U64 slots_count;
@@ -129,7 +129,7 @@ internal void hs_tctx_ensure_inited(void);
 ////////////////////////////////
 //~ rjf: Cache Submission/Derefs
 
-internal U128 hs_submit_data(U128 key, Arena **data_arena, String8 data);
+internal U128 hs_submit_data(U128 key, Arena *data_arena, String8 data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access

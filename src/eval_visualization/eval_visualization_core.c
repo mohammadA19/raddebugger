@@ -150,7 +150,7 @@ ev_type_key_is_editable(E_TypeKey type_key)
 internal EV_View *
 ev_view_alloc(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   EV_View *view = push_array(arena, EV_View, 1);
   view->arena = arena;
   view->expand_slots_count = 256;
@@ -337,7 +337,7 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 //~ rjf: View Rule Info Table Building / Selection / Lookups
 
 internal void
-ev_view_rule_info_table_push(Arena *arena, EV_ViewRuleInfoTable *table, EV_ViewRuleInfo *info)
+ev_view_rule_info_table_push(Arena arena, EV_ViewRuleInfoTable *table, EV_ViewRuleInfo *info)
 {
   if(table->slots_count == 0)
   {
@@ -354,7 +354,7 @@ ev_view_rule_info_table_push(Arena *arena, EV_ViewRuleInfoTable *table, EV_ViewR
 }
 
 internal void
-ev_view_rule_info_table_push_builtins(Arena *arena, EV_ViewRuleInfoTable *table)
+ev_view_rule_info_table_push_builtins(Arena arena, EV_ViewRuleInfoTable *table)
 {
   for EachEnumVal(EV_ViewRuleKind, kind)
   {
@@ -395,7 +395,7 @@ ev_view_rule_info_from_string(String8 string)
 //~ rjf: Automatic Type -> View Rule Table Building / Selection / Lookups
 
 internal void
-ev_auto_view_rule_table_push_new(Arena *arena, EV_AutoViewRuleTable *table, E_TypeKey type_key, String8 view_rule, B32 is_required)
+ev_auto_view_rule_table_push_new(Arena arena, EV_AutoViewRuleTable *table, E_TypeKey type_key, String8 view_rule, B32 is_required)
 {
   if(table->slots_count == 0)
   {
@@ -431,7 +431,7 @@ ev_select_auto_view_rule_table(EV_AutoViewRuleTable *table)
 }
 
 internal EV_ViewRuleList *
-ev_auto_view_rules_from_type_key(Arena *arena, E_TypeKey type_key, B32 gather_required, B32 gather_optional)
+ev_auto_view_rules_from_type_key(Arena arena, E_TypeKey type_key, B32 gather_required, B32 gather_optional)
 {
   EV_ViewRuleList *result = &ev_nil_view_rule_list;
   if(ev_auto_view_rule_table != 0 && ev_auto_view_rule_table->slots_count != 0)
@@ -459,7 +459,7 @@ ev_auto_view_rules_from_type_key(Arena *arena, E_TypeKey type_key, B32 gather_re
 //~ rjf: View Rule Instance List Building
 
 internal void
-ev_view_rule_list_push_tree(Arena *arena, EV_ViewRuleList *list, MD_Node *root)
+ev_view_rule_list_push_tree(Arena arena, EV_ViewRuleList *list, MD_Node *root)
 {
   EV_ViewRuleNode *n = push_array(arena, EV_ViewRuleNode, 1);
   n->v.root = root;
@@ -468,7 +468,7 @@ ev_view_rule_list_push_tree(Arena *arena, EV_ViewRuleList *list, MD_Node *root)
 }
 
 internal void
-ev_view_rule_list_push_string(Arena *arena, EV_ViewRuleList *list, String8 string)
+ev_view_rule_list_push_string(Arena arena, EV_ViewRuleList *list, String8 string)
 {
   if(string.size != 0)
   {
@@ -481,7 +481,7 @@ ev_view_rule_list_push_string(Arena *arena, EV_ViewRuleList *list, String8 strin
 }
 
 internal EV_ViewRuleList *
-ev_view_rule_list_from_string(Arena *arena, String8 string)
+ev_view_rule_list_from_string(Arena arena, String8 string)
 {
   EV_ViewRuleList *dst = push_array(arena, EV_ViewRuleList, 1);
   ev_view_rule_list_push_string(arena, dst, string);
@@ -489,7 +489,7 @@ ev_view_rule_list_from_string(Arena *arena, String8 string)
 }
 
 internal EV_ViewRuleList *
-ev_view_rule_list_from_expr_fastpaths(Arena *arena, String8 string)
+ev_view_rule_list_from_expr_fastpaths(Arena arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -545,7 +545,7 @@ ev_view_rule_list_from_expr_fastpaths(Arena *arena, String8 string)
 }
 
 internal EV_ViewRuleList *
-ev_view_rule_list_from_inheritance(Arena *arena, EV_ViewRuleList *src)
+ev_view_rule_list_from_inheritance(Arena arena, EV_ViewRuleList *src)
 {
   EV_ViewRuleList *dst = push_array(arena, EV_ViewRuleList, 1);
   for(EV_ViewRuleNode *n = src->first; n != 0; n = n->next)
@@ -560,7 +560,7 @@ ev_view_rule_list_from_inheritance(Arena *arena, EV_ViewRuleList *src)
 }
 
 internal EV_ViewRuleList *
-ev_view_rule_list_copy(Arena *arena, EV_ViewRuleList *src)
+ev_view_rule_list_copy(Arena arena, EV_ViewRuleList *src)
 {
   EV_ViewRuleList *dst = push_array(arena, EV_ViewRuleList, 1);
   for(EV_ViewRuleNode *n = src->first; n != 0; n = n->next)
@@ -590,7 +590,7 @@ ev_view_rule_list_concat_in_place(EV_ViewRuleList *dst, EV_ViewRuleList **src)
 //~ rjf: Expression Resolution (Dynamic Overrides, View Rule Application)
 
 internal E_Expr *
-ev_resolved_from_expr(Arena *arena, E_Expr *expr, EV_ViewRuleList *view_rules)
+ev_resolved_from_expr(Arena arena, E_Expr *expr, EV_ViewRuleList *view_rules)
 {
   ProfBeginFunction();
   {
@@ -671,7 +671,7 @@ ev_resolved_from_expr(Arena *arena, E_Expr *expr, EV_ViewRuleList *view_rules)
 //~ rjf: Block Building
 
 internal EV_BlockTree
-ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 string, E_Expr *expr, EV_ViewRuleList *view_rules)
+ev_block_tree_from_expr(Arena arena, EV_View *view, String8 filter, String8 string, E_Expr *expr, EV_ViewRuleList *view_rules)
 {
   ProfBeginFunction();
   EV_BlockTree tree = {&ev_nil_block};
@@ -885,7 +885,7 @@ ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 str
 }
 
 internal EV_BlockTree
-ev_block_tree_from_string(Arena *arena, EV_View *view, String8 filter, String8 string, EV_ViewRuleList *view_rules)
+ev_block_tree_from_string(Arena arena, EV_View *view, String8 filter, String8 string, EV_ViewRuleList *view_rules)
 {
   ProfBeginFunction();
   EV_BlockTree tree = {0};
@@ -918,7 +918,7 @@ ev_depth_from_block(EV_Block *block)
 //~ rjf: Block Coordinate Spaces
 
 internal EV_BlockRangeList
-ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
+ev_block_range_list_from_tree(Arena arena, EV_BlockTree *block_tree)
 {
   EV_BlockRangeList list = {0};
   {
@@ -1053,7 +1053,7 @@ ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
 //~ rjf: Row Building
 
 internal EV_WindowedRowList
-ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 filter, EV_BlockRangeList *block_ranges, Rng1U64 visible_range)
+ev_windowed_row_list_from_block_range_list(Arena arena, EV_View *view, String8 filter, EV_BlockRangeList *block_ranges, Rng1U64 visible_range)
 {
   EV_WindowedRowList rows = {0};
   {
@@ -1206,7 +1206,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 
 }
 
 internal String8
-ev_expr_string_from_row(Arena *arena, EV_Row *row, EV_StringFlags flags)
+ev_expr_string_from_row(Arena arena, EV_Row *row, EV_StringFlags flags)
 {
   String8 result = row->string;
   E_Expr *notable_expr = row->expr;
@@ -1300,7 +1300,7 @@ ev_row_is_editable(EV_Row *row)
 //- rjf: leaf stringification
 
 internal String8
-ev_string_from_ascii_value(Arena *arena, U8 val)
+ev_string_from_ascii_value(Arena arena, U8 val)
 {
   String8 result = {0};
   switch(val)
@@ -1479,7 +1479,7 @@ ev_string_from_hresult_code(U32 code)
 }
 
 internal String8
-ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval)
+ev_string_from_simple_typed_eval(Arena arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval)
 {
   String8 result = {0};
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
@@ -1651,7 +1651,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, 
 }
 
 internal String8
-ev_escaped_from_raw_string(Arena *arena, String8 raw)
+ev_escaped_from_raw_string(Arena arena, String8 raw)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};

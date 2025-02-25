@@ -40,7 +40,7 @@
 //~ Program Parameters Parser
 
 static DWARFCONV_Params*
-dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
+dwarf_convert_params_from_cmd_line(Arena arena, CmdLine *cmdline){
   DWARFCONV_Params *result = push_array(arena, DWARFCONV_Params, 1);
   result->unit_idx_max = ~0ull;
   
@@ -181,7 +181,7 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
 //~ Entry Point
 
 static void
-dump_symtab(Arena *arena, String8List *out, ELF_SymArray *symbols, String8 strtab,
+dump_symtab(Arena arena, String8List *out, ELF_SymArray *symbols, String8 strtab,
             U32 indent){
   static char spaces[] = "                                ";
   
@@ -218,7 +218,7 @@ dump_symtab(Arena *arena, String8List *out, ELF_SymArray *symbols, String8 strta
 
 #if 0
 static void
-dump_entry_tree(Arena *arena, String8List *out,
+dump_entry_tree(Arena arena, String8List *out,
                 DWARF_Parsed *dwarf, DWARF_InfoUnit *unit,
                 DWARF_InfoEntry *entry, U32 indent){
   static char spaces[] = "                                ";
@@ -409,7 +409,7 @@ dump_entry_tree(Arena *arena, String8List *out,
 internal void
 entry_point(CmdLine *cmd_line)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   
   // parse arguments
   DWARFCONV_Params *params = dwarf_convert_params_from_cmd_line(arena, cmd_line);

@@ -25,7 +25,7 @@ os_set_clipboard_text(String8 string)
 }
 
 internal String8
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena arena)
 {
   return str8_zero();
 }
@@ -148,7 +148,7 @@ os_dpi_from_window(OS_Handle window)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 internal OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena arena)
 {
   OS_HandleArray arr = {0};
   return arr;
@@ -169,7 +169,7 @@ os_monitor_from_window(OS_Handle window)
 }
 
 internal String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena arena, OS_Handle monitor)
 {
   return str8_zero();
 }
@@ -190,7 +190,7 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena arena, B32 wait)
 {
   OS_EventList evts = {0};
   return evts;

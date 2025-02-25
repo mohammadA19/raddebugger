@@ -43,7 +43,7 @@ di_key_match(DI_Key *a, DI_Key *b)
 }
 
 internal DI_Key
-di_key_copy(Arena *arena, DI_Key *src)
+di_key_copy(Arena arena, DI_Key *src)
 {
   DI_Key dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -52,7 +52,7 @@ di_key_copy(Arena *arena, DI_Key *src)
 }
 
 internal DI_Key
-di_normalized_key_from_key(Arena *arena, DI_Key *src)
+di_normalized_key_from_key(Arena arena, DI_Key *src)
 {
   ProfBeginFunction();
   DI_Key dst = {path_normalized_from_string(arena, src->path), src->min_timestamp};
@@ -61,7 +61,7 @@ di_normalized_key_from_key(Arena *arena, DI_Key *src)
 }
 
 internal void
-di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
+di_key_list_push(Arena arena, DI_KeyList *list, DI_Key *key)
 {
   DI_KeyNode *n = push_array(arena, DI_KeyNode, 1);
   MemoryCopyStruct(&n->v, key);
@@ -70,7 +70,7 @@ di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
 }
 
 internal DI_KeyArray
-di_key_array_from_list(Arena *arena, DI_KeyList *list)
+di_key_array_from_list(Arena arena, DI_KeyList *list)
 {
   DI_KeyArray array = {0};
   array.count = list->count;
@@ -84,7 +84,7 @@ di_key_array_from_list(Arena *arena, DI_KeyList *list)
 }
 
 internal DI_KeyArray
-di_key_array_copy(Arena *arena, DI_KeyArray *src)
+di_key_array_copy(Arena arena, DI_KeyArray *src)
 {
   DI_KeyArray dst = {0};
   dst.count = src->count;
@@ -97,7 +97,7 @@ di_key_array_copy(Arena *arena, DI_KeyArray *src)
 }
 
 internal DI_SearchParams
-di_search_params_copy(Arena *arena, DI_SearchParams *src)
+di_search_params_copy(Arena arena, DI_SearchParams *src)
 {
   DI_SearchParams dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -196,7 +196,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
 internal void
 di_init(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   di_shared = push_array(arena, DI_Shared, 1);
   di_shared->arena = arena;
   di_shared->slots_count = 4096;
@@ -248,7 +248,7 @@ di_scope_open(void)
 {
   if(di_tctx == 0)
   {
-    Arena *arena = new Arena();
+    Arena arena = new Arena();
     di_tctx = push_array(arena, DI_TCTX, 1);
     di_tctx->arena = arena;
   }
@@ -780,7 +780,7 @@ di_u2p_enqueue_key(DI_Key *key, U64 endt_us)
 }
 
 internal void
-di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
+di_u2p_dequeue_key(Arena arena, DI_Key *out_key)
 {
   OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
   {
@@ -819,7 +819,7 @@ di_p2u_push_event(DI_Event *event)
 }
 
 internal DI_EventList
-di_p2u_pop_events(Arena *arena, U64 endt_us)
+di_p2u_pop_events(Arena arena, U64 endt_us)
 {
   DI_EventList events = {0};
   OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
@@ -1093,7 +1093,7 @@ ASYNC_WORK_DEF(di_parse_work)
   ////////////////////////////
   //- rjf: decompress & re-parse, if necessary
   //
-  Arena *rdi_parsed_arena = 0;
+  Arena rdi_parsed_arena = 0;
   RDI_Parsed rdi_parsed = rdi_parsed_maybe_compressed;
   {
     U64 decompressed_size = rdi_decompressed_size_from_parsed(&rdi_parsed_maybe_compressed);
@@ -1189,7 +1189,7 @@ struct DI_SearchWorkIn
 {
   U128 key;
   U64 initial_bucket_write_gen;
-  Arena **work_thread_arenas;
+  Arena *work_thread_arenas;
   RDI_Parsed *rdi;
   RDI_SectionKind section_kind;
   Rng1U64 element_range;
@@ -1212,7 +1212,7 @@ ASYNC_WORK_DEF(di_search_work)
   {
     in->work_thread_arenas[thread_idx] = new Arena();
   }
-  Arena *arena = in->work_thread_arenas[thread_idx];
+  Arena arena = in->work_thread_arenas[thread_idx];
   U128 key = in->key;
   U64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
   U64               stripe_idx = slot_idx%di_shared->search_stripes_count;
@@ -1359,7 +1359,7 @@ di_search_thread__entry_point(void *p)
     DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
     
     //- rjf: map key -> output arena & search parameters
-    Arena *arena = 0;
+    Arena arena = 0;
     String8 query = {0};
     DI_SearchParams params = {0};
     U64 initial_bucket_write_gen = 0;
@@ -1390,11 +1390,11 @@ di_search_thread__entry_point(void *p)
     
     //- rjf: kick off search tasks
     ASYNC_TaskList tasks = {0};
-    Arena **work_thread_arenas = 0;
+    Arena *work_thread_arenas = 0;
     if(arena != 0)
     {
       U64 elements_per_task = 16384;
-      work_thread_arenas = push_array(arena, Arena *, async_thread_count());
+      work_thread_arenas = push_array(arena, Arena , async_thread_count());
       for EachIndex(idx, rdis_count)
       {
         RDI_Parsed *rdi = rdis[idx];
@@ -1553,7 +1553,7 @@ di_search_evictor_thread__entry_point(void *p)
 internal DI_MatchStore *
 di_match_store_alloc(void)
 {
-  Arena *arena = new Arena();
+  Arena arena = new Arena();
   DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);
   store->arena                  = arena;
   for EachElement(idx, store->gen_arenas)

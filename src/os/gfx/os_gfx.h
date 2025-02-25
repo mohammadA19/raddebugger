@@ -110,15 +110,15 @@ internal B32 frame(void);
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
 internal String8 os_string_from_event_kind(OS_EventKind kind);
-internal String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
+internal String8List os_string_list_from_modifiers(Arena arena, OS_Modifiers flags);
 internal U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 internal void os_eat_event(OS_EventList *events, OS_Event *event);
 internal B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
 internal B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
 internal B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
-internal OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
+internal OS_EventList os_event_list_copy(Arena arena, OS_EventList *src);
 internal void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
-internal OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);
+internal OS_Event *os_event_list_push_new(Arena arena, OS_EventList *evts, OS_EventKind kind);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
@@ -134,7 +134,7 @@ internal OS_GfxInfo *os_get_gfx_info(void);
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 internal void    os_set_clipboard_text(String8 string);
-internal String8 os_get_clipboard_text(Arena *arena);
+internal String8 os_get_clipboard_text(Arena arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
@@ -163,17 +163,17 @@ internal F32            os_dpi_from_window(OS_Handle window);
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
-internal OS_HandleArray os_push_monitors_array(Arena *arena);
+internal OS_HandleArray os_push_monitors_array(Arena arena);
 internal OS_Handle      os_primary_monitor(void);
 internal OS_Handle      os_monitor_from_window(OS_Handle window);
-internal String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
+internal String8        os_name_from_monitor(Arena arena, OS_Handle monitor);
 internal Vec2F32        os_dim_from_monitor(OS_Handle monitor);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
 internal void           os_send_wakeup_event(void);
-internal OS_EventList   os_get_events(Arena *arena, B32 wait);
+internal OS_EventList   os_get_events(Arena arena, B32 wait);
 internal OS_Modifiers   os_get_modifiers(void);
 internal B32            os_key_is_down(OS_Key key);
 internal Vec2F32        os_mouse_from_window(OS_Handle window);

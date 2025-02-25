@@ -60,7 +60,7 @@ lnk_log_read(String8 path, U64 size)
 }
 
 internal String8
-lnk_read_data_from_file_path(Arena *arena, String8 path)
+lnk_read_data_from_file_path(Arena arena, String8 path)
 {
   String8 data = str8_zero();
   OS_Handle handle = {0};
@@ -121,7 +121,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 }
 
 internal String8Array
-lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array path_arr)
+lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena arena, String8Array path_arr)
 {
   Temp scratch = scratch_begin(&arena,1);
 
@@ -209,7 +209,7 @@ lnk_write_data_to_file_path(String8 path, String8 data)
 }
 
 internal String8List
-lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
+lnk_file_search(Arena arena, String8List dir_list, String8 file_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

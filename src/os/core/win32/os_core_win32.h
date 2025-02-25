@@ -75,7 +75,7 @@ struct OS_W32_Entity
 typedef struct OS_W32_State OS_W32_State;
 struct OS_W32_State
 {
-  Arena *arena;
+  Arena arena;
   
   // rjf: info
   OS_SystemInfo system_info;
@@ -84,7 +84,7 @@ struct OS_W32_State
   
   // rjf: entity storage
   CRITICAL_SECTION entity_mutex;
-  Arena *entity_arena;
+  Arena entity_arena;
   OS_W32_Entity *entity_free;
 };
 

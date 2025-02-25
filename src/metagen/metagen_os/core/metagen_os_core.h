@@ -145,36 +145,36 @@ typedef void OS_ThreadFunctionType(void *ptr);
 
 internal OS_Handle os_handle_zero(void);
 internal B32 os_handle_match(OS_Handle a, OS_Handle b);
-internal void os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle);
-internal OS_HandleArray os_handle_array_from_list(Arena *arena, OS_HandleList *list);
+internal void os_handle_list_push(Arena arena, OS_HandleList *handles, OS_Handle handle);
+internal OS_HandleArray os_handle_array_from_list(Arena arena, OS_HandleList *list);
 
 ////////////////////////////////
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
-internal String8List os_string_list_from_argcv(Arena *arena, int argc, char **argv);
+internal String8List os_string_list_from_argcv(Arena arena, int argc, char **argv);
 
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-internal String8        os_data_from_file_path(Arena *arena, String8 path);
+internal String8        os_data_from_file_path(Arena arena, String8 path);
 internal B32            os_write_data_to_file_path(String8 path, String8 data);
 internal B32            os_write_data_list_to_file_path(String8 path, String8List list);
 internal B32            os_append_data_to_file_path(String8 path, String8 data);
 internal OS_FileID      os_id_from_file_path(String8 path);
 internal S64            os_file_id_compare(OS_FileID a, OS_FileID b);
-internal String8        os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range);
+internal String8        os_string_from_file_range(Arena arena, OS_Handle file, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: GUID Helpers (Helpers, Implemented Once)
 
-internal String8 os_string_from_guid(Arena *arena, OS_Guid guid);
+internal String8 os_string_from_guid(Arena arena, OS_Guid guid);
 
 ////////////////////////////////
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
 internal OS_SystemInfo *os_get_system_info(void);
 internal OS_ProcessInfo *os_get_process_info(void);
-internal String8 os_get_current_path(Arena *arena);
+internal String8 os_get_current_path(Arena arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
@@ -213,7 +213,7 @@ internal FileProperties os_properties_from_file(OS_Handle file);
 internal OS_FileID      os_id_from_file(OS_Handle file);
 internal B32            os_delete_file_at_path(String8 path);
 internal B32            os_copy_file_path(String8 dst, String8 src);
-internal String8        os_full_path_from_path(Arena *arena, String8 path);
+internal String8        os_full_path_from_path(Arena arena, String8 path);
 internal B32            os_file_path_exists(String8 path);
 internal FileProperties os_properties_from_file_path(String8 path);
 
@@ -224,8 +224,8 @@ internal void *    os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rn
 internal void      os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range);
 
 //- rjf: directory iteration
-internal OS_FileIter *os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags);
-internal B32          os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out);
+internal OS_FileIter *os_file_iter_begin(Arena arena, String8 path, OS_FileIterFlags flags);
+internal B32          os_file_iter_next(Arena arena, OS_FileIter *iter, OS_FileInfo *info_out);
 internal void         os_file_iter_end(OS_FileIter *iter);
 
 //- rjf: directory creation

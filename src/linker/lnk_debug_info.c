@@ -38,7 +38,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_s_task)
 }
 
 internal CV_DebugS *
-lnk_parse_debug_s_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, LNK_ChunkList *sect_list_arr)
+lnk_parse_debug_s_sections(TP_Context *tp, TP_Arena arena, U64 obj_count, LNK_Obj **obj_arr, LNK_ChunkList *sect_list_arr)
 {
   ProfBeginFunction();
 
@@ -113,7 +113,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_t_task)
 }
 
 internal CV_DebugT *
-lnk_parse_debug_t_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, LNK_ChunkList *debug_t_list_arr)
+lnk_parse_debug_t_sections(TP_Context *tp, TP_Arena arena, U64 obj_count, LNK_Obj **obj_arr, LNK_ChunkList *debug_t_list_arr)
 {
   ProfBeginFunction();
   
@@ -145,7 +145,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_cv_symbols_task)
 }
 
 internal LNK_PchInfo *
-lnk_setup_pch(Arena *arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr, CV_SymbolListArray *parsed_symbols)
+lnk_setup_pch(Arena arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr, CV_SymbolListArray *parsed_symbols)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -285,7 +285,7 @@ THREAD_POOL_TASK_FUNC(lnk_msf_parsed_from_data_task)
 }
 
 internal MSF_Parsed **
-lnk_msf_parsed_from_data_parallel(TP_Arena *arena, TP_Context *tp, String8Array data_arr)
+lnk_msf_parsed_from_data_parallel(TP_Arena arena, TP_Context *tp, String8Array data_arr)
 {
   ProfBeginFunction();
   LNK_MsfParsedFromDataTask task = {0};
@@ -343,7 +343,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_external_leaves_task)
 }
 
 internal CV_DebugT *
-lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr)
+lnk_merge_debug_t_and_debug_p(Arena arena, U64 obj_count, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr)
 {
   CV_DebugT *result = push_array_no_zero(arena, CV_DebugT, obj_count);
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
@@ -363,7 +363,7 @@ lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_ar
 }
 
 internal LNK_CodeViewInput
-lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, String8List lib_dir_list, LNK_ObjList obj_list)
+lnk_make_code_view_input(TP_Context *tp, TP_Arena tp_arena, String8List lib_dir_list, LNK_ObjList obj_list)
 {
   ProfBegin("Extract CodeView");
   Temp scratch = scratch_begin(0,0);
@@ -1090,7 +1090,7 @@ lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef
 }
 
 internal B32
-lnk_match_leaf_ref_deep(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b)
+lnk_match_leaf_ref_deep(Arena arena, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b)
 {
   B32 are_equal = 0;
 
@@ -1714,7 +1714,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_present_buckets_task)
 }
 
 internal LNK_LeafBucketArray
-lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena *arena, LNK_LeafHashTable *ht)
+lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena arena, LNK_LeafHashTable *ht)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2203,7 +2203,7 @@ THREAD_POOL_TASK_FUNC(lnk_unbucket_raw_leaves_task)
 }
 
 internal CV_DebugT
-lnk_unbucket_leaf_array(TP_Context *tp, Arena *arena, LNK_CodeViewInput *input, LNK_LeafBucketArray bucket_arr)
+lnk_unbucket_leaf_array(TP_Context *tp, Arena arena, LNK_CodeViewInput *input, LNK_LeafBucketArray bucket_arr)
 {
   ProfBeginDynamic("Unbucket Leaves [Count %llu]", bucket_arr.count);
   Temp scratch = scratch_begin(&arena, 1);
@@ -2278,7 +2278,7 @@ THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
 }
 
 internal CV_DebugT *
-lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
+lnk_import_types(TP_Context *tp, TP_Arena tp_temp, LNK_CodeViewInput *input)
 {
   ProfBegin("Import Types");
 
@@ -2641,7 +2641,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
 }
 
 internal void
-lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, U64 hash_length, String8 map_name)
+lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, U64 hash_length, String8 map_name)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);
@@ -2805,7 +2805,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
 }
 
 internal LNK_ProcessedCodeViewC11Data
-lnk_process_c11_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
+lnk_process_c11_data(TP_Context *tp, TP_Arena arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
 {
   // TODO: handle c11 data
   String8List *data_list_arr = push_array(arena->v[0], String8List, obj_count);
@@ -2869,7 +2869,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_c13_data_task)
 }
 
 internal LNK_ProcessedCodeViewC13Data
-lnk_process_c13_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
+lnk_process_c13_data(TP_Context *tp, TP_Arena arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
 {
   ProfBeginFunction();
 
@@ -2952,7 +2952,7 @@ THREAD_POOL_TASK_FUNC(lnk_cv_symbol_ptr_array_hasher)
 }
 
 internal U64 *
-lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena *arena, CV_SymbolPtrArray arr)
+lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena arena, CV_SymbolPtrArray arr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3496,7 +3496,7 @@ lnk_udt_name_hash_table_lookup_itype(LNK_UDTNameBucket **buckets, U64 cap, Strin
 }
 
 internal RDIB_Type *
-lnk_push_converted_codeview_type(Arena *arena, RDIB_TypeChunkList *list, RDIB_Type **itype_map, CV_TypeIndex itype)
+lnk_push_converted_codeview_type(Arena arena, RDIB_TypeChunkList *list, RDIB_Type **itype_map, CV_TypeIndex itype)
 {
   RDIB_Type *type = rdib_type_chunk_list_push(arena, list, 8196);
   type->final_idx = 0;
@@ -3509,7 +3509,7 @@ lnk_push_converted_codeview_type(Arena *arena, RDIB_TypeChunkList *list, RDIB_Ty
 }
 
 internal void
-lnk_push_basic_itypes(Arena *arena, RDIB_DataModel data_model, RDIB_Type **itype_map, RDIB_TypeChunkList *rdib_types_list)
+lnk_push_basic_itypes(Arena arena, RDIB_DataModel data_model, RDIB_Type **itype_map, RDIB_TypeChunkList *rdib_types_list)
 {
   RDI_TypeKind short_type      = rdib_short_type_from_data_model(data_model);
   RDI_TypeKind ushort_type     = rdib_unsigned_short_type_from_data_model(data_model);
@@ -4203,7 +4203,7 @@ lnk_src_file_hash_cv(String8 normal_full_path, CV_C13ChecksumKind checksum_kind,
 }
 
 internal String8
-lnk_normalize_src_file_path(Arena *arena, String8 file_path)
+lnk_normalize_src_file_path(Arena arena, String8 file_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 result = file_path;
