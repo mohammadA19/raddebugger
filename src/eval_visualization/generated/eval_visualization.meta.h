@@ -6,7 +6,7 @@
 #ifndef EVAL_VISUALIZATION_META_H
 #define EVAL_VISUALIZATION_META_H
 
-typedef enum EV_ViewRuleKind
+enum EV_ViewRuleKind
 {
 EV_ViewRuleKind_Default,
 EV_ViewRuleKind_Array,

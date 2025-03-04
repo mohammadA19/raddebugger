@@ -75,7 +75,7 @@ enum StringSplitFlags : U32
   StringSplitFlag_KeepEmpties = (1 << 0),
 };
 
-typedef enum PathStyle
+enum PathStyle
 {
   PathStyle_Relative,
   PathStyle_WindowsAbsolute,

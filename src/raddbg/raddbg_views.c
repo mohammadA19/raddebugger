@@ -1618,7 +1618,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
             //- rjf: determine operation for this cell
-            typedef enum OpKind
+            enum OpKind
             {
               OpKind_Null,
               OpKind_DoExpand,
@@ -3880,7 +3880,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
 ////////////////////////////////
 //~ rjf: file_system @view_hook_impl
 
-typedef enum RD_FileSortKind
+enum RD_FileSortKind
 {
   RD_FileSortKind_Null,
   RD_FileSortKind_Filename,
@@ -7924,7 +7924,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
 ////////////////////////////////
 //~ rjf: settings @view_hook_impl
 
-typedef enum RD_SettingsItemKind
+enum RD_SettingsItemKind
 {
   RD_SettingsItemKind_CategoryHeader,
   RD_SettingsItemKind_GlobalSetting,

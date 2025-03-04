@@ -29,7 +29,7 @@ X(split_type, 0x06)\
 X(lo_user, 0x80)\
 X(hi_user, 0xff)
 
-typedef enum DWARF_UnitType{
+enum DWARF_UnitType{
 #define X(N,C) DWARF_UnitType_##N = C,
   DWARF_UnitTypeXList(X)
 #undef X
@@ -110,7 +110,7 @@ X(immutable_type,   0x4b)\
 X(lo_user,        0x4080)\
 X(hi_user,        0xffff)
 
-typedef enum DWARF_Tag{
+enum DWARF_Tag{
 #define X(N,C) DWARF_Tag_##N = C,
   DWARF_TagXList(X)
 #undef X
@@ -281,7 +281,7 @@ X(loclists_base,           0x8c, loclistsptr,   0,         0,         0)\
 X(lo_user,               0x2000, 0, 0, 0, 0)\
 X(hi_user,               0x3fff, 0, 0, 0, 0)
 
-typedef enum DWARF_AttributeName{
+enum DWARF_AttributeName{
 #define X(N,C,f1,f2,f3,f4) DWARF_AttributeName_##N = C,
   DWARF_AttributeNameXList(X)
 #undef X
@@ -335,7 +335,7 @@ X(addrx2,         0x2a, address)\
 X(addrx3,         0x2b, address)\
 X(addrx4,         0x2c, address)
 
-typedef enum DWARF_AttributeForm{
+enum DWARF_AttributeForm{
 #define X(N,C,f) DWARF_AttributeForm_##N = C,
   DWARF_AttributeFormXList(X)
 #undef X
@@ -424,7 +424,7 @@ X(reinterpret,         0xa9, 1)\
 X(lo_user,             0xe0, 0)\
 X(hi_user,             0xff, 0)
 
-typedef enum DWARF_Op{
+enum DWARF_Op{
 #define X(N,C,k) DWARF_Op_##N = C,
   DWARF_OpXList(X)
 #undef X
@@ -443,7 +443,7 @@ X(base_address,     0x06)\
 X(start_end,        0x07)\
 X(start_length,     0x08)
 
-typedef enum DWARF_LocationListEntry{
+enum DWARF_LocationListEntry{
 #define X(N,C) DWARF_LocationListEntry_##N = C,
   DWARF_LocationListEntryXList(X)
 #undef X
@@ -473,7 +473,7 @@ X(ASCII,           0x12)\
 X(lo_user,         0x80)\
 X(hi_user,         0xff)
 
-typedef enum DWARF_BaseType{
+enum DWARF_BaseType{
 #define X(N,C) DWARF_BaseType_##N = C,
   DWARF_BaseTypeXList(X)
 #undef X
@@ -488,7 +488,7 @@ X(trailing_overpunch, 0x03)\
 X(leading_separate,   0x04)\
 X(trailing_separate,  0x05)
 
-typedef enum DWARF_DecimalSign{
+enum DWARF_DecimalSign{
 #define X(N,C) DWARF_DecimalSign_##N = C,
   DWARF_DecimalSignXList(X)
 #undef X
@@ -503,7 +503,7 @@ X(little,  0x02)\
 X(lo_user, 0x40)\
 X(hi_user, 0xff)
 
-typedef enum DWARF_Endianity{
+enum DWARF_Endianity{
 #define X(N,C) DWARF_Endianity_##N = C,
   DWARF_EndianityXList(X)
 #undef X
@@ -516,7 +516,7 @@ X(public,    0x01)\
 X(protected, 0x02)\
 X(private,   0x03)
 
-typedef enum DWARF_Access{
+enum DWARF_Access{
 #define X(N,C) DWARF_Access_##N = C,
   DWARF_AccessXList(X)
 #undef X
@@ -529,7 +529,7 @@ X(local,     0x01)\
 X(exported,  0x02)\
 X(qualified, 0x03)
 
-typedef enum DWARF_Visibility{
+enum DWARF_Visibility{
 #define X(N,C) DWARF_Visibility_##N = C,
   DWARF_VisibilityXList(X)
 #undef X
@@ -542,7 +542,7 @@ X(none,         0x00)\
 X(virtual,      0x01)\
 X(pure_virtual, 0x02)
 
-typedef enum DWARF_Virtuality{
+enum DWARF_Virtuality{
 #define X(N,C) DWARF_Virtuality_##N = C,
   DWARF_VirtualityXList(X)
 #undef X
@@ -591,7 +591,7 @@ X(BLISS,          0x0025, 0)\
 X(lo_user,        0x8000, 0)\
 X(hi_user,        0xffff, 0)
 
-typedef enum DWARF_Language{
+enum DWARF_Language{
 #define X(N,C,k) DWARF_Language_##N = C,
   DWARF_LanguageXList(X)
 #undef X
@@ -605,7 +605,7 @@ X(up_case,          0x01)\
 X(down_case,        0x02)\
 X(case_insensitive, 0x03)
 
-typedef enum DWARF_IdentifierCase{
+enum DWARF_IdentifierCase{
 #define X(N,C) DWARF_IdentifierCase_##N = C,
   DWARF_IdentifierCaseXList(X)
 #undef X
@@ -622,7 +622,7 @@ X(pass_by_value,     0x05)\
 X(lo_user,           0x40)\
 X(hi_user,           0xff)
 
-typedef enum DWARF_CallingConvention{
+enum DWARF_CallingConvention{
 #define X(N,C) DWARF_CallingConvention_##N = C,
   DWARF_CallingConventionXList(X)
 #undef X
@@ -636,7 +636,7 @@ X(inlined, 0x01)\
 X(declared_not_inlined, 0x02)\
 X(declared_inlined, 0x03)
 
-typedef enum DWARF_Inline{
+enum DWARF_Inline{
 #define X(N,C) DWARF_Inline_##N = C,
   DWARF_InlineXList(X)
 #undef X
@@ -648,7 +648,7 @@ typedef enum DWARF_Inline{
 X(row_major, 0x00)\
 X(col_major, 0x01)
 
-typedef enum DWARF_ArrayOrdering{
+enum DWARF_ArrayOrdering{
 #define X(N,C) DWARF_ArrayOrdering_##N = C,
   DWARF_ArrayOrderingXList(X)
 #undef X
@@ -660,7 +660,7 @@ typedef enum DWARF_ArrayOrdering{
 X(label, 0x00)\
 X(range, 0x01)
 
-typedef enum DWARF_Discriminant{
+enum DWARF_Discriminant{
 #define X(N,C) DWARF_Discriminant_##N = C,
   DWARF_DiscriminantXList(X)
 #undef X
@@ -677,7 +677,7 @@ X(type_hash,    5)\
 X(lo_user, 0x2000)\
 X(hi_user, 0x3fff)
 
-typedef enum DWARF_NameIndex{
+enum DWARF_NameIndex{
 #define X(N,C) DWARF_NameIndex_##N = C,
   DWARF_NameIndexXList(X)
 #undef X
@@ -690,7 +690,7 @@ X(no,           0x00)\
 X(in_class,     0x01)\
 X(out_of_class, 0x02)
 
-typedef enum DWARF_Defaulted{
+enum DWARF_Defaulted{
 #define X(N,C) DWARF_Defaulted_##N = C,
   DWARF_DefaultedXList(X)
 #undef X
@@ -746,7 +746,7 @@ X(set_prologue_end,   0x0a)\
 X(set_epilogue_begin, 0x0b)\
 X(set_isa,            0x0c)
 
-typedef enum DWARF_LineStdOp{
+enum DWARF_LineStdOp{
 #define X(N,C) DWARF_LineStdOp_##N = C,
   DWARF_LineStdOpXList(X)
 #undef X
@@ -761,7 +761,7 @@ X(set_discriminator, 0x04)\
 X(lo_user,           0x80)\
 X(hi_user,           0xff)
 
-typedef enum DWARF_LineExtOp{
+enum DWARF_LineExtOp{
 #define X(N,C) DWARF_LineExtOp_##N = C,
   DWARF_LineExtOpXList(X)
 #undef X
@@ -777,7 +777,7 @@ X(MD5,             0x5)\
 X(lo_user,      0x2000)\
 X(hi_user,      0x3fff)
 
-typedef enum DWARF_LineEntryFormat{
+enum DWARF_LineEntryFormat{
 #define X(N,C) DWARF_LineEntryFormat_##N = C,
   DWARF_LineEntryFormatXList(X)
 #undef X
@@ -814,7 +814,7 @@ X(RngLists,   V5,    ".debug_rnglists",    ".debug_rnglists.dwo",    "__debug_rn
 X(LocLists,   V5,    ".debug_loclists",    ".debug_loclists.dwo",    "__debug_loclists")
 
 
-typedef enum DWARF_SectionCode{
+enum DWARF_SectionCode{
 #define X(c,vf,n0,n1,n2) DWARF_SectionCode_##c,
   DWARF_SectionNameXList(X,0,0)
 #undef X
@@ -1347,7 +1347,7 @@ typedef struct UNW_DW_CFIRecords{
   UNW_DW_FDEUnpacked fde;
 } UNW_DW_CFIRecords;
 
-typedef enum UNW_DW_CFICFARule{
+enum UNW_DW_CFICFARule{
   UNW_DW_CFICFARule_REGOFF,
   UNW_DW_CFICFARule_EXPR,
 } UNW_DW_CFICFARule;
@@ -1364,7 +1364,7 @@ typedef struct UNW_DW_CFICFACell{
   };
 } UNW_DW_CFICFACell;
 
-typedef enum UNW_DW_CFIRegisterRule{
+enum UNW_DW_CFIRegisterRule{
   UNW_DW_CFIRegisterRule_SAME_VALUE,
   UNW_DW_CFIRegisterRule_UNDEFINED,
   UNW_DW_CFIRegisterRule_OFFSET,

@@ -83,7 +83,7 @@ DMN_W32_CTX_INTEL_DEBUG)
 ////////////////////////////////
 //~ rjf: Per-Entity State
 
-typedef enum DMN_W32_EntityKind
+enum DMN_W32_EntityKind
 {
   DMN_W32_EntityKind_Null,
   DMN_W32_EntityKind_Root,

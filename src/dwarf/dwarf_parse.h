@@ -91,7 +91,7 @@ struct DW_LineVMFileArray
 ////////////////////////////////
 //~ rjf: Abbrevs
 
-typedef enum DW_AbbrevKind
+enum DW_AbbrevKind
 {
   DW_Abbrev_Null,
   DW_Abbrev_Tag,

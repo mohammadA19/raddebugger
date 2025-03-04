@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Messages
 
-typedef enum MD_MsgKind
+enum MD_MsgKind
 {
   MD_MsgKind_Null,
   MD_MsgKind_Note,
@@ -107,7 +107,7 @@ struct MD_TokenArray
 ////////////////////////////////
 //~ rjf: Node Types
 
-typedef enum MD_NodeKind
+enum MD_NodeKind
 {
   MD_NodeKind_Nil,
   MD_NodeKind_File,

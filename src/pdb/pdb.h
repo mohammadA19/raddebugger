@@ -32,7 +32,7 @@ typedef struct PDB_StringTableHeader
 
 ////////////////////////////////
 
-typedef enum PDB_FixedStream
+enum PDB_FixedStream
 {
   PDB_FixedStream_Info = 1,
   PDB_FixedStream_Tpi  = 2,

@@ -25,7 +25,7 @@ enum OS_WindowFlags : U32
 ////////////////////////////////
 //~ rjf: Cursor Types
 
-typedef enum OS_Cursor
+enum OS_Cursor
 {
   OS_Cursor_Pointer,
   OS_Cursor_IBar,
@@ -47,7 +47,7 @@ typedef enum OS_Cursor
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef enum OS_EventKind
+enum OS_EventKind
 {
   OS_EventKind_Null,
   OS_EventKind_Press,

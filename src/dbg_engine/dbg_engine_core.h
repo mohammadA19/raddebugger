@@ -56,7 +56,7 @@ struct D_PathMapArray
 ////////////////////////////////
 //~ rjf: Tick Output Types
 
-typedef enum D_EventKind
+enum D_EventKind
 {
   D_EventKind_Null,
   D_EventKind_ProcessEnd,
@@ -64,7 +64,7 @@ typedef enum D_EventKind
   D_EventKind_COUNT
 };
 
-typedef enum D_EventCause
+enum D_EventCause
 {
   D_EventCause_Null,
   D_EventCause_UserBreakpoint,
@@ -129,7 +129,7 @@ struct D_LineListArray
 ////////////////////////////////
 //~ rjf: Debug Engine Control Communication Types
 
-typedef enum D_RunKind
+enum D_RunKind
 {
   D_RunKind_Run,
   D_RunKind_SingleStep,
@@ -145,8 +145,7 @@ typedef enum D_RunKind
 ////////////////////////////////
 //~ rjf: View Rules
 
-typedef U32 D_ViewRuleSpecInfoFlags; // NOTE(rjf): see @view_rule_info
-enum
+enum D_ViewRuleSpecInfoFlags : U32 // NOTE(rjf): see @view_rule_info
 {
   D_ViewRuleSpecInfoFlag_Inherited      = (1<<0),
   D_ViewRuleSpecInfoFlag_Expandable     = (1<<1),

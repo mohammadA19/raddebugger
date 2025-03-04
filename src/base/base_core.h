@@ -387,7 +387,7 @@ struct U128
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-typedef enum Dimension
+enum Dimension
 {
   Dimension_X,
   Dimension_Y,
@@ -395,7 +395,7 @@ typedef enum Dimension
   Dimension_W,
 };
 
-typedef enum Side
+enum Side
 {
   Side_Invalid = -1,
   Side_Min,
@@ -404,7 +404,7 @@ typedef enum Side
 };
 #define side_flip(s) ((Side)(!(s)))
 
-typedef enum Axis2
+enum Axis2
 {
   Axis2_Invalid = -1,
   Axis2_X,
@@ -413,7 +413,7 @@ typedef enum Axis2
 };
 #define axis2_flip(a) ((Axis2)(!(a)))
 
-typedef enum Corner
+enum Corner
 {
   Corner_Invalid = -1,
   Corner_00,
@@ -423,7 +423,7 @@ typedef enum Corner
   Corner_COUNT
 };
 
-typedef enum Dir2
+enum Dir2
 {
   Dir2_Invalid = -1,
   Dir2_Left,
@@ -438,7 +438,7 @@ typedef enum Dir2
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums
 
-typedef enum OperatingSystem
+enum OperatingSystem
 {
   OperatingSystem_Null,
   OperatingSystem_Windows,
@@ -447,7 +447,7 @@ typedef enum OperatingSystem
   OperatingSystem_COUNT,
 };
 
-typedef enum ImageType
+enum ImageType
 {
   Image_Null,
   Image_CoffPe,
@@ -456,7 +456,7 @@ typedef enum ImageType
   Image_Macho
 } ImageType;
 
-typedef enum Arch
+enum Arch
 {
   Arch_Null,
   Arch_x64,
@@ -466,7 +466,7 @@ typedef enum Arch
   Arch_COUNT,
 };
 
-typedef enum Compiler
+enum Compiler
 {
   Compiler_Null,
   Compiler_msvc,
@@ -694,7 +694,7 @@ global const U64 bit64 = (1ull<<63);
 ////////////////////////////////
 //~ allen: Time
 
-typedef enum WeekDay
+enum WeekDay
 {
   WeekDay_Sun,
   WeekDay_Mon,
@@ -706,7 +706,7 @@ typedef enum WeekDay
   WeekDay_COUNT,
 };
 
-typedef enum Month
+enum Month
 {
   Month_Jan,
   Month_Feb,

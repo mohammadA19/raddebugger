@@ -690,7 +690,7 @@ struct RDIM_LocationSet
 ////////////////////////////////
 //~ rjf: Symbol Info Types
 
-typedef enum RDIM_SymbolKind
+enum RDIM_SymbolKind
 {
   RDIM_SymbolKind_NULL,
   RDIM_SymbolKind_GlobalVariable,
