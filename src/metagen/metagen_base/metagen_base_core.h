@@ -355,7 +355,6 @@ typedef S64      B64;
 typedef float    F32;
 typedef double   F64;
 typedef void VoidProc(void);
-typedef struct U128 U128;
 struct U128
 {
   U64 u64[2];
@@ -454,14 +453,12 @@ Compiler;
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
-typedef struct TxtPt TxtPt;
 struct TxtPt
 {
   S64 line;
   S64 column;
 };
 
-typedef struct TxtRng TxtRng;
 struct TxtRng
 {
   TxtPt min;
@@ -663,7 +660,6 @@ enum Month
 }
 Month;
 
-typedef struct DateTime DateTime;
 struct DateTime
 {
   U16 micro_sec; // [0,999]
@@ -695,7 +691,6 @@ enum FilePropertyFlags : U32
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
-typedef struct FileProperties FileProperties;
 struct FileProperties
 {
   U64 size;

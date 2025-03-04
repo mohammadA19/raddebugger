@@ -54,7 +54,6 @@ enum RDI_ParseStatus
 }
 RDI_ParseStatus;
 
-typedef struct RDI_Parsed RDI_Parsed;
 struct RDI_Parsed
 {
   RDI_U8 *raw_data;
@@ -63,7 +62,6 @@ struct RDI_Parsed
   RDI_U64 sections_count;
 };
 
-typedef struct RDI_ParsedLineTable RDI_ParsedLineTable;
 struct RDI_ParsedLineTable
 {
   // NOTE: Mapping VOFF -> LINE_INFO
@@ -77,7 +75,6 @@ struct RDI_ParsedLineTable
   RDI_U64 col_count;
 };
 
-typedef struct RDI_ParsedSourceLineMap RDI_ParsedSourceLineMap;
 struct RDI_ParsedSourceLineMap
 {
   // NOTE: Mapping LINE_NUMBER -> VOFFs
@@ -95,7 +92,6 @@ struct RDI_ParsedSourceLineMap
   RDI_U64 voff_count;
 };
 
-typedef struct RDI_ParsedNameMap RDI_ParsedNameMap;
 struct RDI_ParsedNameMap
 {
   RDI_NameMapBucket *buckets;

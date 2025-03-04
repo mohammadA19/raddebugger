@@ -13,21 +13,18 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-typedef struct String8 String8;
 struct String8
 {
   U8 *str;
   U64 size;
 };
 
-typedef struct String16 String16;
 struct String16
 {
   U16 *str;
   U64 size;
 };
 
-typedef struct String32 String32;
 struct String32
 {
   U32 *str;
@@ -37,21 +34,18 @@ struct String32
 ////////////////////////////////
 //~ rjf: String List & Array Types
 
-typedef struct String8Node String8Node;
 struct String8Node
 {
   String8Node *next;
   String8 string;
 };
 
-typedef struct String8MetaNode String8MetaNode;
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
 };
 
-typedef struct String8List String8List;
 struct String8List
 {
   String8Node *first;
@@ -60,7 +54,6 @@ struct String8List
   U64 total_size;
 };
 
-typedef struct String8Array String8Array;
 struct String8Array
 {
   String8 *v;
@@ -98,7 +91,6 @@ enum PathStyle
 }
 PathStyle;
 
-typedef struct StringJoin StringJoin;
 struct StringJoin
 {
   String8 pre;
@@ -109,7 +101,6 @@ struct StringJoin
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-typedef struct String8TxtPtPair String8TxtPtPair;
 struct String8TxtPtPair
 {
   String8 string;
@@ -119,7 +110,6 @@ struct String8TxtPtPair
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
 
-typedef struct UnicodeDecode UnicodeDecode;
 struct UnicodeDecode
 {
   U32 inc;
@@ -129,14 +119,12 @@ struct UnicodeDecode
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
 
-typedef struct FuzzyMatchRangeNode FuzzyMatchRangeNode;
 struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
 };
 
-typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
 struct FuzzyMatchRangeList
 {
   FuzzyMatchRangeNode *first;

@@ -17,7 +17,6 @@ enum MD_MsgKind
 }
 MD_MsgKind;
 
-typedef struct MD_Msg MD_Msg;
 struct MD_Msg
 {
   MD_Msg *next;
@@ -26,7 +25,6 @@ struct MD_Msg
   String8 string;
 };
 
-typedef struct MD_MsgList MD_MsgList;
 struct MD_MsgList
 {
   MD_Msg *first;
@@ -81,14 +79,12 @@ enum
                               MD_TokenFlag_BadCharacter),
 };
 
-typedef struct MD_Token MD_Token;
 struct MD_Token
 {
   Rng1U64 range;
   MD_TokenFlags flags;
 };
 
-typedef struct MD_TokenChunkNode MD_TokenChunkNode;
 struct MD_TokenChunkNode
 {
   MD_TokenChunkNode *next;
@@ -97,7 +93,6 @@ struct MD_TokenChunkNode
   U64 cap;
 };
 
-typedef struct MD_TokenChunkList MD_TokenChunkList;
 struct MD_TokenChunkList
 {
   MD_TokenChunkNode *first;
@@ -106,7 +101,6 @@ struct MD_TokenChunkList
   U64 total_token_count;
 };
 
-typedef struct MD_TokenArray MD_TokenArray;
 struct MD_TokenArray
 {
   MD_Token *v;
@@ -160,7 +154,6 @@ enum
 };
 #define MD_NodeFlag_AfterFromBefore(f) ((f) << 1)
 
-typedef struct MD_Node MD_Node;
 struct MD_Node
 {
   // rjf: tree links
@@ -194,7 +187,6 @@ struct MD_Node
   U64 _unused_[2];
 };
 
-typedef struct MD_NodeRec MD_NodeRec;
 struct MD_NodeRec
 {
   MD_Node *next;
@@ -205,7 +197,6 @@ struct MD_NodeRec
 ////////////////////////////////
 //~ rjf: Text -> Tokens Types
 
-typedef struct MD_TokenizeResult MD_TokenizeResult;
 struct MD_TokenizeResult
 {
   MD_TokenArray tokens;
@@ -215,7 +206,6 @@ struct MD_TokenizeResult
 ////////////////////////////////
 //~ rjf: Tokens -> Tree Types
 
-typedef struct MD_ParseResult MD_ParseResult;
 struct MD_ParseResult
 {
   MD_Node *root;

@@ -14,7 +14,6 @@ enum
   E_IRExtKind_COUNT
 };
 
-typedef struct E_Op E_Op;
 struct E_Op
 {
   E_Op *next;
@@ -23,7 +22,6 @@ struct E_Op
   String8 string;
 };
 
-typedef struct E_OpList E_OpList;
 struct E_OpList
 {
   E_Op *first;
@@ -35,7 +33,6 @@ struct E_OpList
 ////////////////////////////////
 //~ rjf: IR Tree Types
 
-typedef struct E_IRNode E_IRNode;
 struct E_IRNode
 {
   E_IRNode *first;
@@ -46,7 +43,6 @@ struct E_IRNode
   E_Value value;
 };
 
-typedef struct E_IRTreeAndType E_IRTreeAndType;
 struct E_IRTreeAndType
 {
   E_IRNode *root;
@@ -59,7 +55,6 @@ struct E_IRTreeAndType
 ////////////////////////////////
 //~ rjf: Parse Context
 
-typedef struct E_IRCtx E_IRCtx;
 struct E_IRCtx
 {
   E_String2ExprMap *macro_map;

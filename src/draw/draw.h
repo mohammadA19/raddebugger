@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Fancy String Types
 
-typedef struct DR_FancyString DR_FancyString;
 struct DR_FancyString
 {
   FNT_Tag font;
@@ -18,14 +17,12 @@ struct DR_FancyString
   F32 strikethrough_thickness;
 };
 
-typedef struct DR_FancyStringNode DR_FancyStringNode;
 struct DR_FancyStringNode
 {
   DR_FancyStringNode *next;
   DR_FancyString v;
 };
 
-typedef struct DR_FancyStringList DR_FancyStringList;
 struct DR_FancyStringList
 {
   DR_FancyStringNode *first;
@@ -34,7 +31,6 @@ struct DR_FancyStringList
   U64 total_size;
 };
 
-typedef struct DR_FancyRun DR_FancyRun;
 struct DR_FancyRun
 {
   FNT_Run run;
@@ -43,14 +39,12 @@ struct DR_FancyRun
   F32 strikethrough_thickness;
 };
 
-typedef struct DR_FancyRunNode DR_FancyRunNode;
 struct DR_FancyRunNode
 {
   DR_FancyRunNode *next;
   DR_FancyRun v;
 };
 
-typedef struct DR_FancyRunList DR_FancyRunList;
 struct DR_FancyRunList
 {
   DR_FancyRunNode *first;
@@ -67,7 +61,6 @@ struct DR_FancyRunList
 ////////////////////////////////
 //~ rjf: Draw Bucket Types
 
-typedef struct DR_Bucket DR_Bucket;
 struct DR_Bucket
 {
   R_PassList passes;
@@ -79,14 +72,12 @@ struct DR_Bucket
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct DR_BucketSelectionNode DR_BucketSelectionNode;
 struct DR_BucketSelectionNode
 {
   DR_BucketSelectionNode *next;
   DR_Bucket *bucket;
 };
 
-typedef struct DR_ThreadCtx DR_ThreadCtx;
 struct DR_ThreadCtx
 {
   Arena *arena;

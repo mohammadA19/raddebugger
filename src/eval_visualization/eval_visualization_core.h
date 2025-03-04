@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Key Type (Uniquely Refers To One Tree Node)
 
-typedef struct EV_Key EV_Key;
 struct EV_Key
 {
   U64 parent_hash;
@@ -19,7 +18,6 @@ struct EV_Key
 
 //- rjf: expand hash table & tree
 
-typedef struct EV_ExpandNode EV_ExpandNode;
 struct EV_ExpandNode
 {
   EV_ExpandNode *hash_next;
@@ -33,7 +31,6 @@ struct EV_ExpandNode
   B32 expanded;
 };
 
-typedef struct EV_ExpandSlot EV_ExpandSlot;
 struct EV_ExpandSlot
 {
   EV_ExpandNode *first;
@@ -42,7 +39,6 @@ struct EV_ExpandSlot
 
 //- rjf: hash table for view rules
 
-typedef struct EV_KeyViewRuleNode EV_KeyViewRuleNode;
 struct EV_KeyViewRuleNode
 {
   EV_KeyViewRuleNode *hash_next;
@@ -53,7 +49,6 @@ struct EV_KeyViewRuleNode
   U64 buffer_string_size;
 };
 
-typedef struct EV_KeyViewRuleSlot EV_KeyViewRuleSlot;
 struct EV_KeyViewRuleSlot
 {
   EV_KeyViewRuleNode *first;
@@ -62,7 +57,6 @@ struct EV_KeyViewRuleSlot
 
 //- rjf: view state bundle
 
-typedef struct EV_View EV_View;
 struct EV_View
 {
   Arena *arena;
@@ -77,20 +71,17 @@ struct EV_View
 ////////////////////////////////
 //~ rjf: View Rule Instance Types
 
-typedef struct EV_ViewRule EV_ViewRule;
 struct EV_ViewRule
 {
   MD_Node *root;
 };
 
-typedef struct EV_ViewRuleNode EV_ViewRuleNode;
 struct EV_ViewRuleNode
 {
   EV_ViewRuleNode *next;
   EV_ViewRule v;
 };
 
-typedef struct EV_ViewRuleList EV_ViewRuleList;
 struct EV_ViewRuleList
 {
   EV_ViewRuleNode *first;
@@ -101,7 +92,6 @@ struct EV_ViewRuleList
 ////////////////////////////////
 //~ rjf: View Rule Info Types
 
-typedef struct EV_ExpandInfo EV_ExpandInfo;
 struct EV_ExpandInfo
 {
   void *user_data;
@@ -111,7 +101,6 @@ struct EV_ExpandInfo
   B32 rows_default_expanded;
 };
 
-typedef struct EV_ExpandRangeInfo EV_ExpandRangeInfo;
 struct EV_ExpandRangeInfo
 {
   U64 row_exprs_count;
@@ -153,7 +142,6 @@ enum EV_ViewRuleInfoFlags : U32 // NOTE(rjf): see @view_rule_info
   EV_ViewRuleInfoFlag_Expandable          = (1<<1),
 };
 
-typedef struct EV_ViewRuleInfo EV_ViewRuleInfo;
 struct EV_ViewRuleInfo
 {
   String8 string;
@@ -165,21 +153,18 @@ struct EV_ViewRuleInfo
   EV_ViewRuleExprExpandIDFromNumHookFunctionType *expr_expand_num_from_id;
 };
 
-typedef struct EV_ViewRuleInfoNode EV_ViewRuleInfoNode;
 struct EV_ViewRuleInfoNode
 {
   EV_ViewRuleInfoNode *next;
   EV_ViewRuleInfo v;
 };
 
-typedef struct EV_ViewRuleInfoSlot EV_ViewRuleInfoSlot;
 struct EV_ViewRuleInfoSlot
 {
   EV_ViewRuleInfoNode *first;
   EV_ViewRuleInfoNode *last;
 };
 
-typedef struct EV_ViewRuleInfoTable EV_ViewRuleInfoTable;
 struct EV_ViewRuleInfoTable
 {
   EV_ViewRuleInfoSlot *slots;
@@ -189,7 +174,6 @@ struct EV_ViewRuleInfoTable
 ////////////////////////////////
 //~ rjf: Blocks
 
-typedef struct EV_Block EV_Block;
 struct EV_Block
 {
   // rjf: links
@@ -219,7 +203,6 @@ struct EV_Block
   B32 rows_default_expanded;
 };
 
-typedef struct EV_BlockTree EV_BlockTree;
 struct EV_BlockTree
 {
   EV_Block *root;
@@ -227,21 +210,18 @@ struct EV_BlockTree
   U64 total_item_count;
 };
 
-typedef struct EV_BlockRange EV_BlockRange;
 struct EV_BlockRange
 {
   EV_Block *block;
   Rng1U64 range;
 };
 
-typedef struct EV_BlockRangeNode EV_BlockRangeNode;
 struct EV_BlockRangeNode
 {
   EV_BlockRangeNode *next;
   EV_BlockRange v;
 };
 
-typedef struct EV_BlockRangeList EV_BlockRangeList;
 struct EV_BlockRangeList
 {
   EV_BlockRangeNode *first;
@@ -252,7 +232,6 @@ struct EV_BlockRangeList
 ////////////////////////////////
 //~ rjf: Rows
 
-typedef struct EV_Row EV_Row;
 struct EV_Row
 {
   EV_Row *next;
@@ -273,7 +252,6 @@ struct EV_Row
   EV_ViewRuleList *view_rules;
 };
 
-typedef struct EV_WindowedRowList EV_WindowedRowList;
 struct EV_WindowedRowList
 {
   EV_Row *first;
@@ -286,7 +264,6 @@ struct EV_WindowedRowList
 ////////////////////////////////
 //~ rjf: Automatic Type -> View Rule Map Types
 
-typedef struct EV_AutoViewRuleNode EV_AutoViewRuleNode;
 struct EV_AutoViewRuleNode
 {
   EV_AutoViewRuleNode *next;
@@ -295,7 +272,6 @@ struct EV_AutoViewRuleNode
   B32 is_required;
 };
 
-typedef struct EV_AutoViewRuleSlot EV_AutoViewRuleSlot;
 struct EV_AutoViewRuleSlot
 {
   EV_AutoViewRuleNode *first;
@@ -303,7 +279,6 @@ struct EV_AutoViewRuleSlot
   U64 count;
 };
 
-typedef struct EV_AutoViewRuleTable EV_AutoViewRuleTable;
 struct EV_AutoViewRuleTable
 {
   EV_AutoViewRuleSlot *slots;

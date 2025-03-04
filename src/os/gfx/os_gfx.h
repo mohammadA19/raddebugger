@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Graphics System Info
 
-typedef struct OS_GfxInfo OS_GfxInfo;
 struct OS_GfxInfo
 {
   F32 double_click_time;
@@ -72,7 +71,6 @@ enum OS_Modifiers : U32
   OS_Modifier_Alt   = (1<<2),
 };
 
-typedef struct OS_Event OS_Event;
 struct OS_Event
 {
   OS_Event *next;
@@ -91,7 +89,6 @@ struct OS_Event
   String8List strings;
 };
 
-typedef struct OS_EventList OS_EventList;
 struct OS_EventList
 {
   U64 count;

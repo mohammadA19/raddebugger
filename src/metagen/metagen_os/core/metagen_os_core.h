@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: System Info
 
-typedef struct OS_SystemInfo OS_SystemInfo;
 struct OS_SystemInfo
 {
   U32 logical_processor_count;
@@ -20,7 +19,6 @@ struct OS_SystemInfo
 ////////////////////////////////
 //~ rjf: Process Info
 
-typedef struct OS_ProcessInfo OS_ProcessInfo;
 struct OS_ProcessInfo
 {
   U32 pid;
@@ -55,14 +53,12 @@ enum OS_FileIterFlags : U32
   OS_FileIterFlag_Done            = (1 << 31),
 };
 
-typedef struct OS_FileIter OS_FileIter;
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
   U8 memory[800];
 };
 
-typedef struct OS_FileInfo OS_FileInfo;
 struct OS_FileInfo
 {
   String8 name;
@@ -70,7 +66,6 @@ struct OS_FileInfo
 };
 
 // nick: on-disk file identifier
-typedef struct OS_FileID OS_FileID;
 struct OS_FileID
 {
   U64 v[3];
@@ -79,7 +74,6 @@ struct OS_FileID
 ////////////////////////////////
 //~ rjf: Process Launch Parameters
 
-typedef struct OS_ProcessLaunchParams OS_ProcessLaunchParams;
 struct OS_ProcessLaunchParams
 {
   String8List cmd_line;
@@ -92,20 +86,17 @@ struct OS_ProcessLaunchParams
 ////////////////////////////////
 //~ rjf: Handle Type
 
-typedef struct OS_Handle OS_Handle;
 struct OS_Handle
 {
   U64 u64[1];
 };
 
-typedef struct OS_HandleNode OS_HandleNode;
 struct OS_HandleNode
 {
   OS_HandleNode *next;
   OS_Handle v;
 };
 
-typedef struct OS_HandleList OS_HandleList;
 struct OS_HandleList
 {
   OS_HandleNode *first;
@@ -113,7 +104,6 @@ struct OS_HandleList
   U64 count;
 };
 
-typedef struct OS_HandleArray OS_HandleArray;
 struct OS_HandleArray
 {
   OS_Handle *v;
@@ -123,7 +113,6 @@ struct OS_HandleArray
 ////////////////////////////////
 //~ rjf: Globally Unique IDs
 
-typedef struct OS_Guid OS_Guid;
 struct OS_Guid
 {
   U32 data1;

@@ -24,7 +24,6 @@ enum UI_IconKind
 }
 UI_IconKind;
 
-typedef struct UI_IconInfo UI_IconInfo;
 struct UI_IconInfo
 {
   FNT_Tag icon_font;
@@ -130,7 +129,6 @@ enum UI_EventDeltaUnit
 }
 UI_EventDeltaUnit;
 
-typedef struct UI_Event UI_Event;
 struct UI_Event
 {
   UI_EventKind kind;
@@ -147,7 +145,6 @@ struct UI_Event
   U64 timestamp_us;
 };
 
-typedef struct UI_EventNode UI_EventNode;
 struct UI_EventNode
 {
   UI_EventNode *next;
@@ -155,7 +152,6 @@ struct UI_EventNode
   UI_Event v;
 };
 
-typedef struct UI_EventList UI_EventList;
 struct UI_EventList
 {
   UI_EventNode *first;
@@ -172,7 +168,6 @@ enum UI_TxtOpFlags : U32
   UI_TxtOpFlag_Copy    = (1<<1),
 };
 
-typedef struct UI_TxtOp UI_TxtOp;
 struct UI_TxtOp
 {
   UI_TxtOpFlags flags;
@@ -186,7 +181,6 @@ struct UI_TxtOp
 ////////////////////////////////
 //~ rjf: Keys
 
-typedef struct UI_Key UI_Key;
 struct UI_Key
 {
   U64 u64[1];
@@ -205,7 +199,6 @@ enum UI_SizeKind
 }
 UI_SizeKind;
 
-typedef struct UI_Size UI_Size;
 struct UI_Size
 {
   UI_SizeKind kind;
@@ -230,7 +223,6 @@ enum UI_ColorCode
 }
 UI_ColorCode;
 
-typedef struct UI_Palette UI_Palette;
 struct UI_Palette
 {
   union
@@ -250,7 +242,6 @@ struct UI_Palette
   };
 };
 
-typedef struct UI_WidgetPaletteInfo UI_WidgetPaletteInfo;
 struct UI_WidgetPaletteInfo
 {
   UI_Palette *tooltip_palette;
@@ -272,7 +263,6 @@ enum UI_AnimationInfoFlags : U32
   UI_AnimationInfoFlag_All = 0xffffffff,
 };
 
-typedef struct UI_AnimationInfo UI_AnimationInfo;
 struct UI_AnimationInfo
 {
   UI_AnimationInfoFlags flags;
@@ -281,7 +271,6 @@ struct UI_AnimationInfo
 ////////////////////////////////
 //~ rjf: Scroll Positions
 
-typedef struct UI_ScrollPt UI_ScrollPt;
 struct UI_ScrollPt
 {
   S64 idx;
@@ -387,7 +376,6 @@ typedef U64 UI_BoxFlags;
 # define UI_BoxFlag_DisableFocusEffects (UI_BoxFlag_DisableFocusBorder|UI_BoxFlag_DisableFocusOverlay)
 //}
 
-typedef struct UI_Box UI_Box;
 struct UI_Box
 {
   //- rjf: persistent links
@@ -454,7 +442,6 @@ struct UI_Box
   UI_Key default_nav_focus_next_active_key;
 };
 
-typedef struct UI_BoxRec UI_BoxRec;
 struct UI_BoxRec
 {
   UI_Box *next;
@@ -462,14 +449,12 @@ struct UI_BoxRec
   S32 pop_count;
 };
 
-typedef struct UI_BoxNode UI_BoxNode;
 struct UI_BoxNode
 {
   UI_BoxNode *next;
   UI_Box *box;
 };
 
-typedef struct UI_BoxList UI_BoxList;
 struct UI_BoxList
 {
   UI_BoxNode *first;
@@ -538,7 +523,6 @@ enum UI_SignalFlags : U32
   UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
 };
 
-typedef struct UI_Signal UI_Signal;
 struct UI_Signal
 {
   UI_Box *box;
@@ -559,7 +543,6 @@ struct UI_Signal
 #define ui_mouse_over(s)     !!((s).f&UI_SignalFlag_MouseOver)
 #define ui_committed(s)      !!((s).f&UI_SignalFlag_Commit)
 
-typedef struct UI_Nav UI_Nav;
 struct UI_Nav
 {
   B32 moved;
@@ -569,7 +552,6 @@ struct UI_Nav
 ////////////////////////////////
 //~ rjf: Animation State Types
 
-typedef struct UI_AnimParams UI_AnimParams;
 struct UI_AnimParams
 {
   F32 initial;
@@ -578,7 +560,6 @@ struct UI_AnimParams
   F32 epsilon;
 };
 
-typedef struct UI_AnimNode UI_AnimNode;
 struct UI_AnimNode
 {
   UI_AnimNode *slot_next;
@@ -592,7 +573,6 @@ struct UI_AnimNode
   F32 current;
 };
 
-typedef struct UI_AnimSlot UI_AnimSlot;
 struct UI_AnimSlot
 {
   UI_AnimNode *first;
@@ -607,14 +587,12 @@ struct UI_AnimSlot
 ////////////////////////////////
 //~ rjf: State Types
 
-typedef struct UI_BoxHashSlot UI_BoxHashSlot;
 struct UI_BoxHashSlot
 {
   UI_Box *hash_first;
   UI_Box *hash_last;
 };
 
-typedef struct UI_State UI_State;
 struct UI_State
 {
   //- rjf: main arena

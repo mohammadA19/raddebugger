@@ -30,7 +30,6 @@ enum DASM_InstFlags : U32
   DASM_InstFlag_ChangesStackPointerVariably = (1<<7),
 };
 
-typedef struct DASM_Inst DASM_Inst;
 struct DASM_Inst
 {
   DASM_InstFlags flags;
@@ -42,7 +41,6 @@ struct DASM_Inst
 ////////////////////////////////
 //~ rjf: Control Flow Analysis Types
 
-typedef struct DASM_CtrlFlowPoint DASM_CtrlFlowPoint;
 struct DASM_CtrlFlowPoint
 {
   U64 vaddr;
@@ -50,14 +48,12 @@ struct DASM_CtrlFlowPoint
   DASM_InstFlags inst_flags;
 };
 
-typedef struct DASM_CtrlFlowPointNode DASM_CtrlFlowPointNode;
 struct DASM_CtrlFlowPointNode
 {
   DASM_CtrlFlowPointNode *next;
   DASM_CtrlFlowPoint v;
 };
 
-typedef struct DASM_CtrlFlowPointList DASM_CtrlFlowPointList;
 struct DASM_CtrlFlowPointList
 {
   DASM_CtrlFlowPointNode *first;
@@ -65,7 +61,6 @@ struct DASM_CtrlFlowPointList
   U64 count;
 };
 
-typedef struct DASM_CtrlFlowInfo DASM_CtrlFlowInfo;
 struct DASM_CtrlFlowInfo
 {
   DASM_CtrlFlowPointList exit_points;
@@ -87,7 +82,6 @@ enum DASM_StyleFlags : U32
 ////////////////////////////////
 //~ rjf: Disassembling Parameters Bundle
 
-typedef struct DASM_Params DASM_Params;
 struct DASM_Params
 {
   U64 vaddr;
@@ -106,7 +100,6 @@ enum DASM_LineFlags : U32
   DASM_LineFlag_Decorative = (1<<0),
 };
 
-typedef struct DASM_Line DASM_Line;
 struct DASM_Line
 {
   U32 code_off;
@@ -115,7 +108,6 @@ struct DASM_Line
   Rng1U64 text_range;
 };
 
-typedef struct DASM_LineChunkNode DASM_LineChunkNode;
 struct DASM_LineChunkNode
 {
   DASM_LineChunkNode *next;
@@ -124,7 +116,6 @@ struct DASM_LineChunkNode
   U64 count;
 };
 
-typedef struct DASM_LineChunkList DASM_LineChunkList;
 struct DASM_LineChunkList
 {
   DASM_LineChunkNode *first;
@@ -133,7 +124,6 @@ struct DASM_LineChunkList
   U64 line_count;
 };
 
-typedef struct DASM_LineArray DASM_LineArray;
 struct DASM_LineArray
 {
   DASM_Line *v;
@@ -143,7 +133,6 @@ struct DASM_LineArray
 ////////////////////////////////
 //~ rjf: Disassembly Result Bundle
 
-typedef struct DASM_Result DASM_Result;
 struct DASM_Result
 {
   String8 text;
@@ -153,7 +142,6 @@ struct DASM_Result
 ////////////////////////////////
 //~ rjf: Value Bundle Type
 
-typedef struct DASM_Info DASM_Info;
 struct DASM_Info
 {
   U128 text_key;
@@ -163,7 +151,6 @@ struct DASM_Info
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct DASM_Node DASM_Node;
 struct DASM_Node
 {
   // rjf: links
@@ -191,14 +178,12 @@ struct DASM_Node
   U64 last_user_clock_idx_requested;
 };
 
-typedef struct DASM_Slot DASM_Slot;
 struct DASM_Slot
 {
   DASM_Node *first;
   DASM_Node *last;
 };
 
-typedef struct DASM_Stripe DASM_Stripe;
 struct DASM_Stripe
 {
   Arena *arena;
@@ -210,7 +195,6 @@ struct DASM_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access Types
 
-typedef struct DASM_Touch DASM_Touch;
 struct DASM_Touch
 {
   DASM_Touch *next;
@@ -218,7 +202,6 @@ struct DASM_Touch
   DASM_Params params;
 };
 
-typedef struct DASM_Scope DASM_Scope;
 struct DASM_Scope
 {
   DASM_Scope *next;
@@ -229,7 +212,6 @@ struct DASM_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct DASM_TCTX DASM_TCTX;
 struct DASM_TCTX
 {
   Arena *arena;
@@ -238,7 +220,6 @@ struct DASM_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct DASM_Shared DASM_Shared;
 struct DASM_Shared
 {
   Arena *arena;

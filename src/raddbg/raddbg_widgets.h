@@ -32,7 +32,6 @@ enum RD_CodeSliceFlags : U32
   RD_CodeSliceFlag_LineNums          = (1<<3),
 };
 
-typedef struct RD_CodeSliceParams RD_CodeSliceParams;
 struct RD_CodeSliceParams
 {
   // rjf: content
@@ -61,7 +60,6 @@ struct RD_CodeSliceParams
   F32 margin_float_off_px;
 };
 
-typedef struct RD_CodeSliceSignal RD_CodeSliceSignal;
 struct RD_CodeSliceSignal
 {
   UI_Signal base;

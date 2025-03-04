@@ -18,7 +18,6 @@ enum E_MsgKind
 }
 E_MsgKind;
 
-typedef struct E_Msg E_Msg;
 struct E_Msg
 {
   E_Msg *next;
@@ -27,7 +26,6 @@ struct E_Msg
   String8 text;
 };
 
-typedef struct E_MsgList E_MsgList;
 struct E_MsgList
 {
   E_Msg *first;
@@ -66,7 +64,6 @@ enum E_OpKind
 }
 E_OpKind;
 
-typedef struct E_OpInfo E_OpInfo;
 struct E_OpInfo
 {
   E_OpKind kind;
@@ -96,7 +93,6 @@ enum E_SpaceKind : U64
   E_SpaceKind_FirstUserDefined,
 };
 
-typedef struct E_Space E_Space;
 struct E_Space
 {
   E_SpaceKind kind;
@@ -125,7 +121,6 @@ E_Mode;
 ////////////////////////////////
 //~ rjf: Modules
 
-typedef struct E_Module E_Module;
 struct E_Module
 {
   RDI_Parsed *rdi;
