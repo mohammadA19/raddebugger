@@ -177,7 +177,7 @@ ctrl_user_breakpoint_list_copy(Arena *arena, CTRL_UserBreakpointList *src)
   CTRL_UserBreakpointList dst = {0};
   for(CTRL_UserBreakpointNode *src_n = src->first; src_n != 0; src_n = src_n->next)
   {
-    CTRL_UserBreakpoint dst_bp = zero_struct;
+    CTRL_UserBreakpoint dst_bp = {};
     MemoryCopyStruct(&dst_bp, &src_n->v);
     dst_bp.string = push_str8_copy(arena, src_n->v.string);
     dst_bp.condition = push_str8_copy(arena, src_n->v.condition);
@@ -539,7 +539,7 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
 CTRL_Event
 ctrl_event_from_serialized_string(Arena *arena, String8 string)
 {
-  CTRL_Event event = zero_struct;
+  CTRL_Event event = {};
   {
     U64 read_off = 0;
     read_off += str8_deserial_read_struct(string, read_off, &event.kind);
@@ -5448,7 +5448,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
           for(String8Node *condition_n = conditions.first; condition_n != 0; condition_n = condition_n->next)
           {
             // rjf: build eval type context
-            E_TypeCtx type_ctx = zero_struct;
+            E_TypeCtx type_ctx = {};
             {
               E_TypeCtx *ctx = &type_ctx;
               ctx->ip_vaddr          = thread_rip_vaddr;
@@ -5460,7 +5460,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             e_select_type_ctx(&type_ctx);
             
             // rjf: build eval parse context
-            E_ParseCtx parse_ctx = zero_struct;
+            E_ParseCtx parse_ctx = {};
             ProfScope("build eval parse context")
             {
               E_ParseCtx *ctx = &parse_ctx;
@@ -5479,7 +5479,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             e_select_parse_ctx(&parse_ctx);
             
             // rjf: build eval IR context
-            E_IRCtx ir_ctx = zero_struct;
+            E_IRCtx ir_ctx = {};
             {
               E_IRCtx *ctx = &ir_ctx;
               ctx->macro_map     = push_array(temp.arena, E_String2ExprMap, 1);
@@ -5498,7 +5498,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             e_select_ir_ctx(&ir_ctx);
             
             // rjf: build eval interpretation context
-            E_InterpretCtx interpret_ctx = zero_struct;
+            E_InterpretCtx interpret_ctx = {};
             {
               E_InterpretCtx *ctx = &interpret_ctx;
               ctx->space_rw_user_data = ctrl_state->ctrl_thread_entity_store;
@@ -5514,7 +5514,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             e_select_interpret_ctx(&interpret_ctx);
             
             // rjf: evaluate
-            E_Eval eval = zero_struct;
+            E_Eval eval = {};
             ProfScope("evaluate expression")
             {
               eval = e_eval_from_string(temp.arena, condition_n->string);

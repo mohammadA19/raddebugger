@@ -342,7 +342,7 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
 E_Token
 e_token_zero(void)
 {
-  E_Token t = zero_struct;
+  E_Token t = {};
   return t;
 }
 
@@ -842,7 +842,7 @@ e_string_from_expr(Arena *arena, E_Expr *expr)
 E_TypeKey
 e_leaf_type_from_name(String8 name)
 {
-  E_TypeKey key = zero_struct;
+  E_TypeKey key = {};
   B32 found = 0;
   for(U64 module_idx = 0; module_idx < e_parse_ctx->modules_count; module_idx += 1)
   {
@@ -948,7 +948,7 @@ e_leaf_type_from_name(String8 name)
 E_TypeKey
 e_type_from_expr(E_Expr *expr)
 {
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   E_ExprKind kind = expr->kind;
   switch(kind)
   {
@@ -1319,7 +1319,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
           U64                     constant_value = 0;
           REGS_RegCode            reg_code = 0;
           REGS_AliasCode          alias_code = 0;
-          E_TypeKey               type_key = zero_struct;
+          E_TypeKey               type_key = {};
           String8                 local_lookup_string = token_string;
           E_Space                 space = {0};
           Arch                    arch = Arch_Null;
@@ -2051,7 +2051,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
         
         // rjf: expect :
         B32 got_colon = 0;
-        E_Token colon_token = zero_struct;
+        E_Token colon_token = {};
         String8 colon_token_string = {0};
         {
           E_Token colon_token_maybe = e_token_at_it(it, tokens);

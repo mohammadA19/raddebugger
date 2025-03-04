@@ -5298,12 +5298,12 @@ rd_window_frame(RD_Window *ws)
               UI_Signal item_sig = ui_signal_from_box(item_box);
               if(ui_clicked(item_sig))
               {
-                UI_Event move_back_evt = zero_struct;
+                UI_Event move_back_evt = {};
                 move_back_evt.kind = UI_EventKind_Navigate;
                 move_back_evt.flags = UI_EventFlag_KeepMark;
                 move_back_evt.delta_2s32.x = -(S32)query_word.size;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &move_back_evt);
-                UI_Event paste_evt = zero_struct;
+                UI_Event paste_evt = {};
                 paste_evt.kind = UI_EventKind_Text;
                 paste_evt.string = item->string;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &paste_evt);
@@ -5311,7 +5311,7 @@ rd_window_frame(RD_Window *ws)
               }
               else if(item_box->flags & UI_BoxFlag_FocusHot && !(item_box->flags & UI_BoxFlag_FocusHotDisabled))
               {
-                UI_Event evt = zero_struct;
+                UI_Event evt = {};
                 evt.kind   = UI_EventKind_AutocompleteHint;
                 evt.string = item->string;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &evt);
@@ -11773,7 +11773,7 @@ rd_frame(void)
          event->key != OS_Key_Shift)
       {
         rd_state->bind_change_active = 0;
-        RD_Binding binding = zero_struct;
+        RD_Binding binding = {};
         {
           binding.key = event->key;
           binding.modifiers = event->modifiers;
@@ -15837,7 +15837,7 @@ rd_frame(void)
             RD_Window *ws = rd_window_from_os_handle(os_event->window);
             if(os_event != 0 && ws != 0)
             {
-              UI_Event ui_event = zero_struct;
+              UI_Event ui_event = {};
               UI_EventKind kind = UI_EventKind_Null;
               {
                 switch(os_event->kind)
@@ -15955,7 +15955,7 @@ rd_frame(void)
           case RD_CmdKind_Edit:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Edit;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -15963,7 +15963,7 @@ rd_frame(void)
           case RD_CmdKind_Accept:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Accept;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -15971,7 +15971,7 @@ rd_frame(void)
           case RD_CmdKind_Cancel:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Cancel;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -15986,7 +15986,7 @@ rd_frame(void)
           case RD_CmdKind_MoveLeft:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -15996,7 +15996,7 @@ rd_frame(void)
           case RD_CmdKind_MoveRight:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16006,7 +16006,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUp:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16016,7 +16016,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDown:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16026,7 +16026,7 @@ rd_frame(void)
           case RD_CmdKind_MoveLeftSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16036,7 +16036,7 @@ rd_frame(void)
           case RD_CmdKind_MoveRightSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16046,7 +16046,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16056,7 +16056,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16066,7 +16066,7 @@ rd_frame(void)
           case RD_CmdKind_MoveLeftChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16076,7 +16076,7 @@ rd_frame(void)
           case RD_CmdKind_MoveRightChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16086,7 +16086,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16096,7 +16096,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16106,7 +16106,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpPage:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Page;
             evt.delta_2s32 = v2s32(+0, -1);
@@ -16115,7 +16115,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownPage:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Page;
             evt.delta_2s32 = v2s32(+0, +1);
@@ -16124,7 +16124,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpWhole:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
             evt.delta_2s32 = v2s32(+0, -1);
@@ -16133,7 +16133,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownWhole:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
             evt.delta_2s32 = v2s32(+0, +1);
@@ -16142,7 +16142,7 @@ rd_frame(void)
           case RD_CmdKind_MoveLeftChunkSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16152,7 +16152,7 @@ rd_frame(void)
           case RD_CmdKind_MoveRightChunkSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16162,7 +16162,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpChunkSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16172,7 +16172,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownChunkSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16182,7 +16182,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpPageSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16192,7 +16192,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownPageSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16202,7 +16202,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpWholeSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16212,7 +16212,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownWholeSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16222,7 +16222,7 @@ rd_frame(void)
           case RD_CmdKind_MoveUpReorder:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Reorder;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16232,7 +16232,7 @@ rd_frame(void)
           case RD_CmdKind_MoveDownReorder:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Reorder;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16242,7 +16242,7 @@ rd_frame(void)
           case RD_CmdKind_MoveHome:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Line;
             evt.delta_2s32 = v2s32(-1, +0);
@@ -16251,7 +16251,7 @@ rd_frame(void)
           case RD_CmdKind_MoveEnd:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Line;
             evt.delta_2s32 = v2s32(+1, +0);
@@ -16260,7 +16260,7 @@ rd_frame(void)
           case RD_CmdKind_MoveHomeSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Line;
@@ -16270,7 +16270,7 @@ rd_frame(void)
           case RD_CmdKind_MoveEndSelect:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Line;
@@ -16280,12 +16280,12 @@ rd_frame(void)
           case RD_CmdKind_SelectAll:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt1 = zero_struct;
+            UI_Event evt1 = {};
             evt1.kind       = UI_EventKind_Navigate;
             evt1.delta_unit = UI_EventDeltaUnit_Whole;
             evt1.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt1);
-            UI_Event evt2 = zero_struct;
+            UI_Event evt2 = {};
             evt2.kind       = UI_EventKind_Navigate;
             evt2.flags      = UI_EventFlag_KeepMark;
             evt2.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16295,7 +16295,7 @@ rd_frame(void)
           case RD_CmdKind_DeleteSingle:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16305,7 +16305,7 @@ rd_frame(void)
           case RD_CmdKind_DeleteChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16315,7 +16315,7 @@ rd_frame(void)
           case RD_CmdKind_BackspaceSingle:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16325,7 +16325,7 @@ rd_frame(void)
           case RD_CmdKind_BackspaceChunk:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16335,7 +16335,7 @@ rd_frame(void)
           case RD_CmdKind_Copy:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind  = UI_EventKind_Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_KeepMark;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16343,7 +16343,7 @@ rd_frame(void)
           case RD_CmdKind_Cut:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind  = UI_EventKind_Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_Delete;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16351,7 +16351,7 @@ rd_frame(void)
           case RD_CmdKind_Paste:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
             evt.string = os_get_clipboard_text(scratch.arena);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16359,7 +16359,7 @@ rd_frame(void)
           case RD_CmdKind_InsertText:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
             evt.string = rd_regs()->string;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);

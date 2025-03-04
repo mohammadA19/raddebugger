@@ -487,7 +487,7 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
   }
   
   // rjf: get arch and size
-  DMN_W32_ImageInfo result = zero_struct;
+  DMN_W32_ImageInfo result = {};
   if(got_file_header)
   {
     U64 optional_size_off = 0;

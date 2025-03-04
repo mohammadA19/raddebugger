@@ -513,7 +513,7 @@ e_irtree_and_type_from_expr(Arena *arena, E_Expr *expr)
       
       // rjf: look up member
       B32 r_found = 0;
-      E_TypeKey r_type = zero_struct;
+      E_TypeKey r_type = {};
       U64 r_value = 0;
       B32 r_is_constant_value = 0;
       {
@@ -758,7 +758,7 @@ e_irtree_and_type_from_expr(Arena *arena, E_Expr *expr)
     {
       // rjf: unpack operand
       E_Expr *r_expr = expr->first;
-      E_TypeKey r_type = zero_struct;
+      E_TypeKey r_type = {};
       E_Space space = r_expr->space;
       switch(r_expr->kind)
       {
@@ -1249,7 +1249,7 @@ e_irtree_and_type_from_expr(Arena *arena, E_Expr *expr)
     {
       U64 val = expr->value.u64;
       E_IRNode *new_tree = e_irtree_const_u(arena, val);
-      E_TypeKey type_key = zero_struct;
+      E_TypeKey type_key = {};
       if(0){}
       else if(val <= max_S32){type_key = e_type_key_basic(E_TypeKind_S32);}
       else if(val <= max_S64){type_key = e_type_key_basic(E_TypeKind_S64);}

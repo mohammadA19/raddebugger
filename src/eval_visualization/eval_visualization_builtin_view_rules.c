@@ -347,7 +347,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     }
     
     // rjf: generate new struct slice type
-    E_TypeKey slice_type_key = zero_struct;
+    E_TypeKey slice_type_key = {};
     if(base_ptr_member != 0 && count_member != 0)
     {
       String8 struct_name = e_type_string_from_key(scratch.arena, irtree.type_key);

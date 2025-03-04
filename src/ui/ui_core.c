@@ -3069,7 +3069,7 @@ ui_set_next_rect(Rng2F32 rect)
 UI_Size
 ui_push_pref_size(Axis2 axis, UI_Size v)
 {
-  UI_Size result = zero_struct;
+  UI_Size result = {};
   switch(axis)
   {
     default: break;
@@ -3082,7 +3082,7 @@ ui_push_pref_size(Axis2 axis, UI_Size v)
 UI_Size
 ui_pop_pref_size(Axis2 axis)
 {
-  UI_Size result = zero_struct;
+  UI_Size result = {};
   switch(axis)
   {
     default: break;

@@ -277,7 +277,7 @@ r_init(CmdLine *cmdln)
   //- rjf: create nearest-neighbor sampler
   ProfScope("create nearest-neighbor sampler")
   {
-    D3D11_SAMPLER_DESC desc = zero_struct;
+    D3D11_SAMPLER_DESC desc = {};
     {
       desc.Filter         = D3D11_FILTER_MIN_MAG_MIP_POINT;
       desc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -291,7 +291,7 @@ r_init(CmdLine *cmdln)
   //- rjf: create bilinear sampler
   ProfScope("create bilinear sampler")
   {
-    D3D11_SAMPLER_DESC desc = zero_struct;
+    D3D11_SAMPLER_DESC desc = {};
     {
       desc.Filter         = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
       desc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -885,18 +885,18 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
       
       // rjf: create stage color targets
       {
-        D3D11_TEXTURE2D_DESC color_desc = zero_struct;
+        D3D11_TEXTURE2D_DESC color_desc = {};
         {
           wnd->framebuffer->lpVtbl->GetDesc(wnd->framebuffer, &color_desc);
           color_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
           color_desc.BindFlags = D3D11_BIND_RENDER_TARGET|D3D11_BIND_SHADER_RESOURCE;
         }
-        D3D11_RENDER_TARGET_VIEW_DESC rtv_desc = zero_struct;
+        D3D11_RENDER_TARGET_VIEW_DESC rtv_desc = {};
         {
           rtv_desc.Format         = color_desc.Format;
           rtv_desc.ViewDimension  = D3D11_RTV_DIMENSION_TEXTURE2D;
         }
-        D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc = zero_struct;
+        D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
         {
           srv_desc.Format                    = DXGI_FORMAT_R8G8B8A8_UNORM;
           srv_desc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -912,37 +912,37 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
       
       // rjf: create geo3d targets
       {
-        D3D11_TEXTURE2D_DESC color_desc = zero_struct;
+        D3D11_TEXTURE2D_DESC color_desc = {};
         {
           wnd->framebuffer->lpVtbl->GetDesc(wnd->framebuffer, &color_desc);
           color_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
           color_desc.BindFlags = D3D11_BIND_RENDER_TARGET|D3D11_BIND_SHADER_RESOURCE;
         }
-        D3D11_RENDER_TARGET_VIEW_DESC color_rtv_desc = zero_struct;
+        D3D11_RENDER_TARGET_VIEW_DESC color_rtv_desc = {};
         {
           color_rtv_desc.Format         = color_desc.Format;
           color_rtv_desc.ViewDimension  = D3D11_RTV_DIMENSION_TEXTURE2D;
         }
-        D3D11_SHADER_RESOURCE_VIEW_DESC color_srv_desc = zero_struct;
+        D3D11_SHADER_RESOURCE_VIEW_DESC color_srv_desc = {};
         {
           color_srv_desc.Format                    = DXGI_FORMAT_R8G8B8A8_UNORM;
           color_srv_desc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;
           color_srv_desc.Texture2D.MipLevels       = -1;
         }
-        D3D11_TEXTURE2D_DESC depth_desc = zero_struct;
+        D3D11_TEXTURE2D_DESC depth_desc = {};
         {
           wnd->framebuffer->lpVtbl->GetDesc(wnd->framebuffer, &depth_desc);
           depth_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
           depth_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL|D3D11_BIND_SHADER_RESOURCE;
         }
-        D3D11_DEPTH_STENCIL_VIEW_DESC depth_dsv_desc = zero_struct;
+        D3D11_DEPTH_STENCIL_VIEW_DESC depth_dsv_desc = {};
         {
           depth_dsv_desc.Flags = 0;
           depth_dsv_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
           depth_dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
           depth_dsv_desc.Texture2D.MipSlice = 0;
         }
-        D3D11_SHADER_RESOURCE_VIEW_DESC depth_srv_desc = zero_struct;
+        D3D11_SHADER_RESOURCE_VIEW_DESC depth_srv_desc = {};
         {
           depth_srv_desc.Format                    = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
           depth_srv_desc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;

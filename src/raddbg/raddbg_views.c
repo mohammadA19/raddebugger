@@ -821,7 +821,7 @@ rd_watch_view_point_match(RD_WatchViewPoint a, RD_WatchViewPoint b)
 RD_WatchViewPoint
 rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 {
-  RD_WatchViewPoint pt = zero_struct;
+  RD_WatchViewPoint pt = {};
   pt.x           = tbl.x;
   pt.key         = ev_key_from_num(block_ranges, (U64)tbl.y);
   pt.parent_key  = ev_block_range_from_num(block_ranges, (U64)tbl.y).block->key;
@@ -1543,7 +1543,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       {
         break;
       }
-      UI_Event dummy_evt = zero_struct;
+      UI_Event dummy_evt = {};
       UI_Event *evt = &dummy_evt;
       if(next_event_good)
       {

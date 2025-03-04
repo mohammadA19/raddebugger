@@ -326,9 +326,9 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 #define ExtractBit(word, idx) (((word) >> (idx)) & 1)
 
 #if LANG_CPP
-# define zero_struct {}
+# define {} {}
 #else
-# define zero_struct {0}
+# define {} {0}
 #endif
 
 #if COMPILER_MSVC && COMPILER_MSVC_YEAR < 2015
