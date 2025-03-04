@@ -33,7 +33,7 @@ srtuct PDB_HashTable
   U32                  count;
 };
 
-typedef enum
+enum
 {
   PDB_HashTableParseError_OK,
   PDB_HashTableParseError_OUT_OF_BYTES,
@@ -61,7 +61,7 @@ srtuct PDB_StringTable
   PDB_StringTableBucket **bucket_array;
 };
 
-typedef enum
+enum
 {
   PDB_StringTableOpenError_OK,
   PDB_StringTableOpenError_BAD_MAGIC,
@@ -77,7 +77,7 @@ typedef enum
 #define PDB_TYPE_HINT_STEP 128
 #define PDB_LEAF_ALIGN PDB_NATURAL_ALIGN 
 
-typedef enum
+enum
 {
   PDB_OpenTypeServerError_OK,
   PDB_OpenTypeServerError_UNKNOWN,
@@ -173,7 +173,7 @@ srtuct PDB_InfoContext
 ////////////////////////////////
 // SRC Header Block
 
-typedef enum
+enum
 {
   PDB_SrcError_OK,
   PDB_SrcError_DUPLICATE_NAME_STREAM,

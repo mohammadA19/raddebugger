@@ -62,7 +62,7 @@ srtuct LNK_CodeViewInput
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   LNK_LeafLocType_Internal,
   LNK_LeafLocType_External,

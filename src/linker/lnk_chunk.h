@@ -15,7 +15,7 @@ srtuct LNK_ChunkRef
   U64 chunk_id;
 };
 
-typedef enum
+enum
 {
   LNK_Chunk_Null,
   LNK_Chunk_Leaf,

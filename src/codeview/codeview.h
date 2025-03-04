@@ -2030,7 +2030,7 @@ struct CV_SymInlinees
   X(64BIT,      0x6)
 
 typedef U8 CV_BasicPointerKind;
-typedef enum
+enum
 {
 #define X(N,c) CV_BasicPointerKind_##N = c,
   CV_BasicPointerKindXList(X)
@@ -2778,7 +2778,7 @@ enum CV_TypeIndexSource
   CV_TypeIndexSource_IPI,
   CV_TypeIndexSource_COUNT
 };
-typedef enum CV_TypeIndexSource CV_TypeIndexSource;
+enum CV_TypeIndexSource CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
 {

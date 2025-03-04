@@ -71,7 +71,7 @@ enum PDB_DbiRange
 };
 
 //  (this is not "literally" defined by the format - but helpful to have)
-typedef enum
+enum
 {
   PDB_DbiCompUnitRange_Symbols,
   PDB_DbiCompUnitRange_C11,

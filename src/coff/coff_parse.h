@@ -148,7 +148,7 @@ srtuct COFF_ParsedResourceList
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   COFF_DataType_Null,
   COFF_DataType_Obj,
@@ -156,7 +156,7 @@ typedef enum
   COFF_DataType_Import
 };
 
-typedef enum
+enum
 {
   COFF_Archive_Null,
   COFF_Archive_Regular,

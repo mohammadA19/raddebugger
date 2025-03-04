@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum
+enum
 {
   LNK_Reloc_NULL,
   LNK_Reloc_ADDR_16,

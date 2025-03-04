@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum
+enum
 {
   LNK_Log_Null,
   LNK_Log_Debug,
