@@ -47,7 +47,7 @@ typedef struct ELF_Ehdr64{
   U16 e_shstrndx;
 } ELF_Ehdr64;
 
-typedef enum ELF_Type{
+enum ELF_Type{
   ELF_Type_NONE   = 0,
   ELF_Type_REL    = 1,
   ELF_Type_EXEC   = 2,
@@ -59,7 +59,7 @@ typedef enum ELF_Type{
   ELF_Type_HIPROC = 0xffff,
 } ELF_Type;
 
-typedef enum ELF_Machine{
+enum ELF_Machine{
   ELF_Machine_NONE  = 0,
   ELF_Machine_M32   = 1,
   ELF_Machine_SPARC = 2,
@@ -144,12 +144,12 @@ typedef enum ELF_Machine{
   ELF_Machine_ST200 = 100,
 } ELF_Machine;
 
-typedef enum ELF_Version{
+enum ELF_Version{
   ELF_Version_NONE = 0,
   ELF_Version_CURRENT = 1,
 } ELF_Version;
 
-typedef enum ELF_Identification{
+enum ELF_Identification{
   ELF_Identification_MAG0 = 0,
   ELF_Identification_MAG1 = 1,
   ELF_Identification_MAG2 = 2,
@@ -164,19 +164,19 @@ typedef enum ELF_Identification{
 
 read_only global U8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
 
-typedef enum ELF_Class{
+enum ELF_Class{
   ELF_Class_NONE = 0,
   ELF_Class_32 = 1,
   ELF_Class_64 = 2,
 } ELF_Class;
 
-typedef enum ELF_DataEncoding{
+enum ELF_DataEncoding{
   ELF_DataEncoding_NONE = 0,
   ELF_DataEncoding_2LSB = 1,
   ELF_DataEncoding_2MSB = 2,
 } ELF_DataEncoding;
 
-typedef enum ELF_OsAbi{
+enum ELF_OsAbi{
   ELF_OsAbi_NONE = 0,
   ELF_OsAbi_HPUX = 1,
   ELF_OsAbi_NETBSD = 2,
@@ -194,7 +194,7 @@ typedef enum ELF_OsAbi{
 
 // sections
 
-typedef enum ELF_ReservedSectionIndex{
+enum ELF_ReservedSectionIndex{
   ELF_ReservedSectionIndex_UNDEF = 0,
   ELF_ReservedSectionIndex_LORESERVE = 0xFF00,
   ELF_ReservedSectionIndex_LOPROC = 0xFF00,
@@ -259,13 +259,13 @@ X(HIPROC, 0x7FFFFFFF)\
 X(LOUSER, 0x80000000)\
 X(HIUSER, 0x8FFFFFFF)
 
-typedef enum ELF_SectionType{
+enum ELF_SectionType{
 #define X(N,C) ELF_SectionType_##N = C,
   ELF_SectionTypeXList(X)
 #undef X
 } ELF_SectionType;
 
-typedef enum ELF_SectionAttributeFlags{
+enum ELF_SectionAttributeFlags{
   ELF_SectionAttributeFlag_WRITE      = 0x001,
   ELF_SectionAttributeFlag_ALLOC      = 0x002,
   ELF_SectionAttributeFlag_EXECINSTR  = 0x004,
@@ -280,13 +280,13 @@ typedef enum ELF_SectionAttributeFlags{
   ELF_SectionAttributeFlag_MASKPROC   = 0xF0000000,
 } ELF_SectionAttributeFlags;
 
-typedef enum ELF_SectionGroupFlags{
+enum ELF_SectionGroupFlags{
   ELF_SectionGroupFlag_COMDAT   = 0x1,
   ELF_SectionGroupFlag_MASKOS   = 0x0FF00000,
   ELF_SectionGroupFlag_MASKPROC = 0xF0000000,
 } ELF_SectionGroupFlags;
 
-typedef enum ELF_ReservedSymbolTableIndex{
+enum ELF_ReservedSymbolTableIndex{
   ELF_ReservedSymbolTableIndex_UNDEF = 0,
 } ELF_ReservedSymbolTableIndex;
 
@@ -326,7 +326,7 @@ X(HIOS,   12)\
 X(LOPROC, 13)\
 X(HIPROC, 15)\
 
-typedef enum ELF_SymbolBinding{
+enum ELF_SymbolBinding{
 #define X(N,C) ELF_SymbolBinding_##N = C,
   ELF_SymbolBindingXList(X)
 #undef X
@@ -345,7 +345,7 @@ X(HIOS,   12)\
 X(LOPROC, 13)\
 X(HIPROC, 15)
 
-typedef enum ELF_SymbolType{
+enum ELF_SymbolType{
 #define X(N,C) ELF_SymbolType_##N = C,
   ELF_SymbolTypeXList(X)
 #undef X
@@ -357,7 +357,7 @@ X(INTERNAL,  1)\
 X(HIDDEN,    2)\
 X(PROTECTED, 3)
 
-typedef enum ELF_SymbolVisibility{
+enum ELF_SymbolVisibility{
 #define X(N,C) ELF_SymbolVisibility_##N = C,
   ELF_SymbolVisibilityXList(X)
 #undef X
@@ -421,7 +421,7 @@ typedef struct ELF_Phdr64{
   U64 p_align;
 } ELF_Phdr64;
 
-typedef enum ELF_SegmentType{
+enum ELF_SegmentType{
   ELF_SegmentType_NULL    = 0,
   ELF_SegmentType_LOAD    = 1,
   ELF_SegmentType_DYNAMIC = 2,
@@ -436,7 +436,7 @@ typedef enum ELF_SegmentType{
   ELF_SegmentType_HIPROC  = 0x7fffffff,
 } ELF_SegmentType;
 
-typedef enum ELF_SegmentFlags{
+enum ELF_SegmentFlags{
   ELF_SegmentFlag_X = 0x1,
   ELF_SegmentFlag_W = 0x2,
   ELF_SegmentFlag_R = 0x4,

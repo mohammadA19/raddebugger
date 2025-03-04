@@ -85,7 +85,7 @@ typedef struct MSF_Context
   MSF_StreamList   st;
 } MSF_Context;
 
-typedef enum MSF_Error
+enum MSF_Error
 {
   MSF_Error_OK,
   

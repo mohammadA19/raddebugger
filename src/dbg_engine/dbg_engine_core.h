@@ -62,7 +62,7 @@ struct D_PathMapArray
 ////////////////////////////////
 //~ rjf: Tick Output Types
 
-typedef enum D_EventKind
+enum D_EventKind
 {
   D_EventKind_Null,
   D_EventKind_ProcessEnd,
@@ -71,7 +71,7 @@ typedef enum D_EventKind
 }
 D_EventKind;
 
-typedef enum D_EventCause
+enum D_EventCause
 {
   D_EventCause_Null,
   D_EventCause_UserBreakpoint,
@@ -144,7 +144,7 @@ struct D_LineListArray
 ////////////////////////////////
 //~ rjf: Debug Engine Control Communication Types
 
-typedef enum D_RunKind
+enum D_RunKind
 {
   D_RunKind_Run,
   D_RunKind_SingleStep,

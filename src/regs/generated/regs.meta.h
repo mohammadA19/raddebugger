@@ -6,7 +6,7 @@
 #ifndef REGS_META_H
 #define REGS_META_H
 
-typedef enum REGS_RegCodeX64
+enum REGS_RegCodeX64
 {
 REGS_RegCodeX64_NULL,
 REGS_RegCodeX64_rax,
@@ -112,7 +112,7 @@ REGS_RegCodeX64_k7,
 REGS_RegCodeX64_COUNT,
 } REGS_RegCodeX64;
 
-typedef enum REGS_AliasCodeX64
+enum REGS_AliasCodeX64
 {
 REGS_AliasCodeX64_NULL,
 REGS_AliasCodeX64_eax,
@@ -213,7 +213,7 @@ REGS_AliasCodeX64_mm7,
 REGS_AliasCodeX64_COUNT,
 } REGS_AliasCodeX64;
 
-typedef enum REGS_RegCodeX86
+enum REGS_RegCodeX86
 {
 REGS_RegCodeX86_NULL,
 REGS_RegCodeX86_eax,
@@ -279,7 +279,7 @@ REGS_RegCodeX86_ymm7,
 REGS_RegCodeX86_COUNT,
 } REGS_RegCodeX86;
 
-typedef enum REGS_AliasCodeX86
+enum REGS_AliasCodeX86
 {
 REGS_AliasCodeX86_NULL,
 REGS_AliasCodeX86_ax,

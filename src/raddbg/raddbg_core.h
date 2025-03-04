@@ -299,7 +299,7 @@ struct RD_PanelRec
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
 
-typedef enum RD_DragDropState
+enum RD_DragDropState
 {
   RD_DragDropState_Null,
   RD_DragDropState_Dragging,
@@ -519,7 +519,7 @@ struct RD_Theme
   Vec4F32 colors[RD_ThemeColor_COUNT];
 };
 
-typedef enum RD_FontSlot
+enum RD_FontSlot
 {
   RD_FontSlot_Main,
   RD_FontSlot_Code,
@@ -528,7 +528,7 @@ typedef enum RD_FontSlot
 }
 RD_FontSlot;
 
-typedef enum RD_PaletteCode
+enum RD_PaletteCode
 {
   RD_PaletteCode_Base,
   RD_PaletteCode_MenuBar,

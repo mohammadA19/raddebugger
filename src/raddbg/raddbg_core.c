@@ -14373,7 +14373,7 @@ rd_frame(void)
             panel_reset_done = 1;
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             
-            typedef enum Layout
+            enum Layout
             {
               Layout_Default,
               Layout_Compact,

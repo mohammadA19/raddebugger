@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Disassembly Syntax Types
 
-typedef enum DASM_Syntax
+enum DASM_Syntax
 {
   DASM_Syntax_Intel,
   DASM_Syntax_ATT,

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Implicit Type Graph Key Types
 
-typedef enum E_TypeKeyKind
+enum E_TypeKeyKind
 {
   E_TypeKeyKind_Null,
   E_TypeKeyKind_Basic,
@@ -46,7 +46,7 @@ struct E_TypeKeyList
 ////////////////////////////////
 //~ rjf: Full Extracted Type Information Types
 
-typedef enum E_MemberKind
+enum E_MemberKind
 {
   E_MemberKind_Null,
   E_MemberKind_DataField,

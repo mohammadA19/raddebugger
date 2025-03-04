@@ -156,7 +156,7 @@ struct PE_OptionalHeader32Plus
   U32                   data_dir_count;
 };
 
-typedef enum PE_DataDirectoryIndex
+enum PE_DataDirectoryIndex
 {
   PE_DataDirectoryIndex_EXPORT,
   PE_DataDirectoryIndex_IMPORT,
@@ -645,7 +645,7 @@ enum PE_ResourceKind : U32
   PE_ResourceKind_DIALOG_NEW   = 0x2005,
 };
 
-typedef enum PE_ResDataKind
+enum PE_ResDataKind
 {
   PE_ResDataKind_NULL,
   PE_ResDataKind_DIR,

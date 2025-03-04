@@ -477,7 +477,7 @@ struct CTRL_Spoof
 ////////////////////////////////
 //~ rjf: User Breakpoint Types
 
-typedef enum CTRL_UserBreakpointKind
+enum CTRL_UserBreakpointKind
 {
   CTRL_UserBreakpointKind_Null,
   CTRL_UserBreakpointKind_FileNameAndLineColNumber,
@@ -524,7 +524,7 @@ enum CTRL_EvalSpaceKind : U64
 ////////////////////////////////
 //~ rjf: Message Types
 
-typedef enum CTRL_MsgKind
+enum CTRL_MsgKind
 {
   CTRL_MsgKind_Null,
   CTRL_MsgKind_Launch,
@@ -590,7 +590,7 @@ struct CTRL_MsgList
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef enum CTRL_EventKind
+enum CTRL_EventKind
 {
   CTRL_EventKind_Null,
   CTRL_EventKind_Error,
@@ -629,7 +629,7 @@ typedef enum CTRL_EventKind
 }
 CTRL_EventKind;
 
-typedef enum CTRL_EventCause
+enum CTRL_EventCause
 {
   CTRL_EventCause_Null,
   CTRL_EventCause_Error,
@@ -643,7 +643,7 @@ typedef enum CTRL_EventCause
 }
 CTRL_EventCause;
 
-typedef enum CTRL_ExceptionKind
+enum CTRL_ExceptionKind
 {
   CTRL_ExceptionKind_Null,
   CTRL_ExceptionKind_MemoryRead,

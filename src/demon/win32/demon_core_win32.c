@@ -1419,7 +1419,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
   //////////////////////////////
   //- rjf: determine event generation path
   //
-  typedef enum DMN_W32_EventGenPath
+  enum DMN_W32_EventGenPath
   {
     DMN_W32_EventGenPath_NotAttached,
     DMN_W32_EventGenPath_Run,

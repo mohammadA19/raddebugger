@@ -96,7 +96,7 @@ typedef struct DW_CFIRecords
   DW_FDEUnpacked fde;
 } DW_CFIRecords;
 
-typedef enum DW_CFICFARule{
+enum DW_CFICFARule{
   DW_CFI_CFA_Rule_RegOff,
   DW_CFI_CFA_Rule_Expr,
 } DW_CFICFARule;
@@ -113,7 +113,7 @@ typedef struct DW_CFICFACell
   };
 } DW_CFICFACell;
 
-typedef enum DW_CFIRegisterRule
+enum DW_CFIRegisterRule
 {
   DW_CFIRegisterRule_SameValue,
   DW_CFIRegisterRule_Undefined,

@@ -48,7 +48,7 @@ enum RD_WatchViewFlags : U32
   RD_WatchViewFlag_DisableCacheLines          = (1<<3),
 };
 
-typedef enum RD_WatchViewColumnKind
+enum RD_WatchViewColumnKind
 {
   RD_WatchViewColumnKind_Expr,
   RD_WatchViewColumnKind_Value,
@@ -99,7 +99,7 @@ struct RD_WatchViewRowCtrl
   RD_CmdKind kind;
 };
 
-typedef enum RD_WatchViewRowKind
+enum RD_WatchViewRowKind
 {
   RD_WatchViewRowKind_Normal,
   RD_WatchViewRowKind_Header,

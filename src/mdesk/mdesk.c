@@ -824,7 +824,7 @@ md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_Token
   MD_Node *root = md_push_node(arena, MD_NodeKind_File, 0, filename, text, 0);
   
   //- rjf: set up parse rule stack
-  typedef enum MD_ParseWorkKind
+  enum MD_ParseWorkKind
   {
     MD_ParseWorkKind_Main,
     MD_ParseWorkKind_MainImplicit,

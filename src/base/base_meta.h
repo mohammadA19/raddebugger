@@ -63,7 +63,7 @@ struct EmbedInfoTable
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-typedef enum TypeKind
+enum TypeKind
 {
   TypeKind_Null,
   

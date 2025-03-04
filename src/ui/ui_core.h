@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Icon Info
 
-typedef enum UI_IconKind
+enum UI_IconKind
 {
   UI_IconKind_Null,
   UI_IconKind_RightArrow,
@@ -34,7 +34,7 @@ struct UI_IconInfo
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
 
-typedef enum UI_MouseButtonKind
+enum UI_MouseButtonKind
 {
   UI_MouseButtonKind_Left,
   UI_MouseButtonKind_Middle,
@@ -64,7 +64,7 @@ enum UI_PermissionFlags : U32
 ////////////////////////////////
 //~ rjf: Focus Types
 
-typedef enum UI_FocusKind
+enum UI_FocusKind
 {
   UI_FocusKind_Null,
   UI_FocusKind_Off,
@@ -79,7 +79,7 @@ UI_FocusKind;
 
 // TODO(rjf): clean all this up
 
-typedef enum UI_EventKind
+enum UI_EventKind
 {
   UI_EventKind_Null,
   UI_EventKind_Press,
@@ -95,7 +95,7 @@ typedef enum UI_EventKind
 }
 UI_EventKind;
 
-typedef enum UI_EventActionSlot
+enum UI_EventActionSlot
 {
   UI_EventActionSlot_Null,
   UI_EventActionSlot_Accept,
@@ -118,7 +118,7 @@ enum UI_EventFlags : U32
   UI_EventFlag_Reorder             = (1<<8),
 };
 
-typedef enum UI_EventDeltaUnit
+enum UI_EventDeltaUnit
 {
   UI_EventDeltaUnit_Null,
   UI_EventDeltaUnit_Char,
@@ -195,7 +195,7 @@ struct UI_Key
 ////////////////////////////////
 //~ rjf: Sizes
 
-typedef enum UI_SizeKind
+enum UI_SizeKind
 {
   UI_SizeKind_Null,
   UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
@@ -216,7 +216,7 @@ struct UI_Size
 ////////////////////////////////
 //~ rjf: Palettes
 
-typedef enum UI_ColorCode
+enum UI_ColorCode
 {
   UI_ColorCode_Null,
   UI_ColorCode_Background,
@@ -302,7 +302,7 @@ union UI_ScrollPt2
 ////////////////////////////////
 //~ rjf: Box Types
 
-typedef enum UI_TextAlign
+enum UI_TextAlign
 {
   UI_TextAlign_Left,
   UI_TextAlign_Center,

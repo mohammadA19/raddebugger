@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Messages
 
-typedef enum E_MsgKind
+enum E_MsgKind
 {
   E_MsgKind_Null,
   E_MsgKind_MalformedInput,
@@ -58,7 +58,7 @@ union E_Value
 ////////////////////////////////
 //~ rjf: Operator Info
 
-typedef enum E_OpKind
+enum E_OpKind
 {
   E_OpKind_Null,
   E_OpKind_UnaryPrefix,
@@ -114,7 +114,7 @@ struct E_Space
 ////////////////////////////////
 //~ rjf: Evaluation Modes
 
-typedef enum E_Mode
+enum E_Mode
 {
   E_Mode_Null,
   E_Mode_Value,
