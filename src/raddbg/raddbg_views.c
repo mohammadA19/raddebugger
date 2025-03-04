@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Code Views
 
-internal void
+void
 rd_code_view_init(RD_CodeViewState *cv)
 {
   if(cv->initialized == 0)
@@ -17,7 +17,7 @@ rd_code_view_init(RD_CodeViewState *cv)
   }
 }
 
-internal RD_CodeViewBuildResult
+RD_CodeViewBuildResult
 rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
@@ -792,7 +792,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
 
 //- rjf: index -> column
 
-internal RD_WatchViewColumn *
+RD_WatchViewColumn *
 rd_watch_view_column_from_x(RD_WatchViewState *wv, S64 index)
 {
   RD_WatchViewColumn *result = wv->first_column;
@@ -810,7 +810,7 @@ rd_watch_view_column_from_x(RD_WatchViewState *wv, S64 index)
 
 //- rjf: watch view points <-> table coordinates
 
-internal B32
+B32
 rd_watch_view_point_match(RD_WatchViewPoint a, RD_WatchViewPoint b)
 {
   return (a.x == b.x &&
@@ -818,7 +818,7 @@ rd_watch_view_point_match(RD_WatchViewPoint a, RD_WatchViewPoint b)
           ev_key_match(a.key, b.key));
 }
 
-internal RD_WatchViewPoint
+RD_WatchViewPoint
 rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 {
   RD_WatchViewPoint pt = zero_struct;
@@ -828,7 +828,7 @@ rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
   return pt;
 }
 
-internal Vec2S64
+Vec2S64
 rd_tbl_from_watch_view_point(EV_BlockRangeList *block_ranges, RD_WatchViewPoint pt)
 {
   Vec2S64 tbl = {0};
@@ -839,7 +839,7 @@ rd_tbl_from_watch_view_point(EV_BlockRangeList *block_ranges, RD_WatchViewPoint 
 
 //- rjf: row -> context info
 
-internal RD_WatchViewRowInfo
+RD_WatchViewRowInfo
 rd_watch_view_row_info_from_row(EV_Row *row)
 {
   RD_WatchViewRowInfo info = {0};
@@ -958,7 +958,7 @@ rd_watch_view_row_info_from_row(EV_Row *row)
 
 //- rjf: watch view flags & row info -> row kind
 
-internal RD_WatchViewRowKind
+RD_WatchViewRowKind
 rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row, RD_WatchViewRowInfo *info)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -994,7 +994,7 @@ rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row,
 
 //- rjf: row/column -> strings
 
-internal E_Expr *
+E_Expr *
 rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col)
 {
   E_Expr *expr = row->expr;
@@ -1021,7 +1021,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
   return expr;
 }
 
-internal String8
+String8
 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   ProfBeginFunction();
@@ -1187,7 +1187,7 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
 
 //- rjf: table coordinates -> text edit state
 
-internal RD_WatchViewTextEditState *
+RD_WatchViewTextEditState *
 rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint pt)
 {
   RD_WatchViewTextEditState *result = &wv->dummy_text_edit_state;
@@ -1209,7 +1209,7 @@ rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint p
 
 //- rjf: watch view column state mutation
 
-internal RD_WatchViewColumn *
+RD_WatchViewColumn *
 rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, F32 pct, RD_WatchViewColumnParams *params)
 {
   if(!wv->free_column)
@@ -1235,7 +1235,7 @@ rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, 
   return col;
 }
 
-internal void
+void
 rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewColumn *col)
 {
   DLLRemove(wv->first_column, wv->last_column, col);
@@ -1245,7 +1245,7 @@ rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewColumn *col)
 
 //- rjf: watch view main hooks
 
-internal void
+void
 rd_watch_view_init(RD_WatchViewState *ewv)
 {
   if(ewv->initialized == 0)
@@ -1256,7 +1256,7 @@ rd_watch_view_init(RD_WatchViewState *ewv)
   }
 }
 
-internal void
+void
 rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, U32 default_radix, Rng2F32 rect)
 {
   ProfBeginFunction();
@@ -3618,7 +3618,7 @@ struct RD_CmdListerItemArray
   U64 count;
 };
 
-internal RD_CmdListerItemList
+RD_CmdListerItemList
 rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -3656,7 +3656,7 @@ rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
   return result;
 }
 
-internal RD_CmdListerItemArray
+RD_CmdListerItemArray
 rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
 {
   RD_CmdListerItemArray result = {0};
@@ -3670,7 +3670,7 @@ rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
   return result;
 }
 
-internal int
+int
 rd_qsort_compare_cmd_lister__strength(RD_CmdListerItem *a, RD_CmdListerItem *b)
 {
   int result = 0;
@@ -3717,7 +3717,7 @@ rd_qsort_compare_cmd_lister__strength(RD_CmdListerItem *a, RD_CmdListerItem *b)
   return result;
 }
 
-internal void
+void
 rd_cmd_lister_item_array_sort_by_strength__in_place(RD_CmdListerItemArray array)
 {
   quick_sort(array.v, array.count, sizeof(RD_CmdListerItem), rd_qsort_compare_cmd_lister__strength);
@@ -3932,7 +3932,7 @@ struct RD_PathQuery
   String8 search;
 };
 
-internal RD_PathQuery
+RD_PathQuery
 rd_path_query_from_string(String8 string)
 {
   String8 dir_str_in_input = {0};
@@ -3985,13 +3985,13 @@ rd_path_query_from_string(String8 string)
   return path_query;
 }
 
-internal int
+int
 rd_qsort_compare_file_info__filename(RD_FileInfo *a, RD_FileInfo *b)
 {
   return strncmp((char *)a->filename.str, (char *)b->filename.str, Min(a->filename.size, b->filename.size));
 }
 
-internal int
+int
 rd_qsort_compare_file_info__default(RD_FileInfo *a, RD_FileInfo *b)
 {
   int result = 0;
@@ -4010,7 +4010,7 @@ rd_qsort_compare_file_info__default(RD_FileInfo *a, RD_FileInfo *b)
   return result;
 }
 
-internal int
+int
 rd_qsort_compare_file_info__default_filtered(RD_FileInfo *a, RD_FileInfo *b)
 {
   int result = 0;
@@ -4025,7 +4025,7 @@ rd_qsort_compare_file_info__default_filtered(RD_FileInfo *a, RD_FileInfo *b)
   return result;
 }
 
-internal int
+int
 rd_qsort_compare_file_info__last_modified(RD_FileInfo *a, RD_FileInfo *b)
 {
   return ((a->props.modified < b->props.modified) ? -1 :
@@ -4033,7 +4033,7 @@ rd_qsort_compare_file_info__last_modified(RD_FileInfo *a, RD_FileInfo *b)
           0);
 }
 
-internal int
+int
 rd_qsort_compare_file_info__size(RD_FileInfo *a, RD_FileInfo *b)
 {
   return ((a->props.size < b->props.size) ? -1 :
@@ -4488,7 +4488,7 @@ struct RD_ProcessInfoArray
   U64 count;
 };
 
-internal RD_ProcessInfoList
+RD_ProcessInfoList
 rd_process_info_list_from_query(Arena *arena, String8 query)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -4568,7 +4568,7 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
   return list;
 }
 
-internal RD_ProcessInfoArray
+RD_ProcessInfoArray
 rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
 {
   RD_ProcessInfoArray array = {0};
@@ -4582,7 +4582,7 @@ rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
   return array;
 }
 
-internal int
+int
 rd_qsort_compare_process_info(RD_ProcessInfo *a, RD_ProcessInfo *b)
 {
   int result = 0;
@@ -4613,7 +4613,7 @@ rd_qsort_compare_process_info(RD_ProcessInfo *a, RD_ProcessInfo *b)
   return result;
 }
 
-internal void
+void
 rd_process_info_array_sort_by_strength__in_place(RD_ProcessInfoArray array)
 {
   quick_sort(array.v, array.count, sizeof(RD_ProcessInfo), rd_qsort_compare_process_info);
@@ -4800,7 +4800,7 @@ struct RD_EntityListerItemArray
   U64 count;
 };
 
-internal RD_EntityListerItemList
+RD_EntityListerItemList
 rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -4828,7 +4828,7 @@ rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_Enti
   return result;
 }
 
-internal RD_EntityListerItemArray
+RD_EntityListerItemArray
 rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list)
 {
   RD_EntityListerItemArray result = {0};
@@ -4844,7 +4844,7 @@ rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list
   return result;
 }
 
-internal int
+int
 rd_qsort_compare_entity_lister__strength(RD_EntityListerItem *a, RD_EntityListerItem *b)
 {
   int result = 0;
@@ -4859,7 +4859,7 @@ rd_qsort_compare_entity_lister__strength(RD_EntityListerItem *a, RD_EntityLister
   return result;
 }
 
-internal void
+void
 rd_entity_lister_item_array_sort_by_strength__in_place(RD_EntityListerItemArray array)
 {
   quick_sort(array.v, array.count, sizeof(RD_EntityListerItem), rd_qsort_compare_entity_lister__strength);
@@ -5002,7 +5002,7 @@ struct RD_CtrlEntityListerItemArray
   U64 count;
 };
 
-internal RD_CtrlEntityListerItemList
+RD_CtrlEntityListerItemList
 rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -5027,7 +5027,7 @@ rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, 
   return result;
 }
 
-internal RD_CtrlEntityListerItemArray
+RD_CtrlEntityListerItemArray
 rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItemList list)
 {
   RD_CtrlEntityListerItemArray result = {0};
@@ -5043,7 +5043,7 @@ rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItem
   return result;
 }
 
-internal int
+int
 rd_qsort_compare_ctrl_entity_lister__strength(RD_CtrlEntityListerItem *a, RD_CtrlEntityListerItem *b)
 {
   int result = 0;
@@ -5058,7 +5058,7 @@ rd_qsort_compare_ctrl_entity_lister__strength(RD_CtrlEntityListerItem *a, RD_Ctr
   return result;
 }
 
-internal void
+void
 rd_ctrl_entity_lister_item_array_sort_by_strength__in_place(RD_CtrlEntityListerItemArray array)
 {
   quick_sort(array.v, array.count, sizeof(RD_CtrlEntityListerItem), rd_qsort_compare_ctrl_entity_lister__strength);
@@ -7197,7 +7197,7 @@ struct RD_BitmapCanvasBoxDrawData
   F32 zoom;
 };
 
-internal Vec2F32
+Vec2F32
 rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 cvs)
 {
   Vec2F32 scr =
@@ -7208,14 +7208,14 @@ rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
   return scr;
 }
 
-internal Rng2F32
+Rng2F32
 rd_bitmap_screen_from_canvas_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 cvs)
 {
   Rng2F32 scr = r2f32(rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p0), rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p1));
   return scr;
 }
 
-internal Vec2F32
+Vec2F32
 rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 scr)
 {
   Vec2F32 cvs =
@@ -7226,14 +7226,14 @@ rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
   return cvs;
 }
 
-internal Rng2F32
+Rng2F32
 rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 scr)
 {
   Rng2F32 cvs = r2f32(rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p0), rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p1));
   return cvs;
 }
 
-internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
+UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
 {
   RD_BitmapCanvasBoxDrawData *draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
   Rng2F32 rect_scrn = box->rect;
@@ -7486,7 +7486,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox)
 ////////////////////////////////
 //~ rjf: color_rgba @view_hook_impl
 
-internal Vec4F32
+Vec4F32
 rd_rgba_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Vec4F32 rgba = {0};
@@ -7638,7 +7638,7 @@ struct RD_Geo3DBoxDrawData
   R_Handle index_buffer;
 };
 
-internal UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
+UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
 {
   RD_Geo3DBoxDrawData *draw_data = (RD_Geo3DBoxDrawData *)user_data;
   
@@ -7967,7 +7967,7 @@ struct RD_SettingsItemArray
   U64 count;
 };
 
-internal int
+int
 rd_qsort_compare_settings_item(RD_SettingsItem *a, RD_SettingsItem *b)
 {
   int result = 0;

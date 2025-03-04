@@ -19,6 +19,6 @@ srtuct LNK_Timer
   U64 end;
 };
 
-internal void lnk_timer_begin(LNK_TimerType timer);
-internal void lnk_timer_end(LNK_TimerType timer);
+void lnk_timer_begin(LNK_TimerType timer);
+void lnk_timer_end(LNK_TimerType timer);
 

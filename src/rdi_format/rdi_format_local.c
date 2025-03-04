@@ -4,7 +4,7 @@
 #include "lib_rdi_format/rdi_format.c"
 #include "lib_rdi_format/rdi_format_parse.c"
 
-internal void
+void
 rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header

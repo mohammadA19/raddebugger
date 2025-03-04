@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+U64
 dmn_w32_hash_from_string(String8 string)
 {
   U64 result = 5381;
@@ -15,7 +15,7 @@ dmn_w32_hash_from_string(String8 string)
   return result;
 }
 
-internal U64
+U64
 dmn_w32_hash_from_id(U64 id)
 {
   return dmn_w32_hash_from_string(str8_struct(&id));
@@ -26,7 +26,7 @@ dmn_w32_hash_from_id(U64 id)
 
 //- rjf: entity <-> handle
 
-internal DMN_Handle
+DMN_Handle
 dmn_w32_handle_from_entity(DMN_W32_Entity *entity)
 {
   U32 idx = (U32)(entity - dmn_w32_shared->entities_base);
@@ -35,7 +35,7 @@ dmn_w32_handle_from_entity(DMN_W32_Entity *entity)
   return handle;
 }
 
-internal DMN_W32_Entity *
+DMN_W32_Entity *
 dmn_w32_entity_from_handle(DMN_Handle handle)
 {
   U32 idx = handle.u32[0];
@@ -50,7 +50,7 @@ dmn_w32_entity_from_handle(DMN_Handle handle)
 
 //- rjf: entity allocation/deallocation
 
-internal DMN_W32_Entity *
+DMN_W32_Entity *
 dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
 {
   // rjf: allocate
@@ -117,7 +117,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
   return e;
 }
 
-internal void
+void
 dmn_w32_entity_release(DMN_W32_Entity *entity)
 {
   // rjf: unhook root
@@ -179,7 +179,7 @@ dmn_w32_entity_release(DMN_W32_Entity *entity)
 
 //- rjf: kind*id -> entity
 
-internal DMN_W32_Entity *
+DMN_W32_Entity *
 dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
 {
   DMN_W32_Entity *result = &dmn_w32_entity_nil;
@@ -205,7 +205,7 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal String8
+String8
 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -304,7 +304,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
 
 //- rjf: processes
 
-internal U64
+U64
 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
 {
   U64 bytes_read = 0;
@@ -327,7 +327,7 @@ dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
   return bytes_read;
 }
 
-internal B32
+B32
 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
 {
   B32 result = 1;
@@ -350,7 +350,7 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
   return result;
 }
 
-internal String8
+String8
 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
@@ -399,7 +399,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
   return(result);
 }
 
-internal String16
+String16
 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
@@ -451,7 +451,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
   return(result);
 }
 
-internal DMN_W32_ImageInfo
+DMN_W32_ImageInfo
 dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
 {
   // rjf: find PE offset
@@ -524,7 +524,7 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
 
 //- rjf: threads
 
-internal U16
+U16
 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
 {
   U16 result = 0;
@@ -560,7 +560,7 @@ dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
   return result;
 }
 
-internal U16
+U16
 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw)
 {
   U16 compact = 0;
@@ -575,7 +575,7 @@ dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw)
   return compact;
 }
 
-internal B32
+B32
 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
 {
   B32 result = 0;
@@ -869,7 +869,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
   return result;
 }
 
-internal B32
+B32
 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
 {
   B32 result = 0;
@@ -1116,7 +1116,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
 
 //- rjf: remote thread injection
 
-internal DWORD
+DWORD
 dmn_w32_inject_thread(HANDLE process, U64 start_address)
 {
   LPTHREAD_START_ROUTINE start = (LPTHREAD_START_ROUTINE)start_address;
@@ -1132,7 +1132,7 @@ dmn_w32_inject_thread(HANDLE process, U64 start_address)
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Main Layer Initialization (Implemented Per-OS)
 
-internal void
+void
 dmn_init(void)
 {
   Arena *arena = arena_alloc();
@@ -1177,7 +1177,7 @@ dmn_init(void)
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Blocking Control Thread Operations (Implemented Per-OS)
 
-internal DMN_CtrlCtx *
+DMN_CtrlCtx *
 dmn_ctrl_begin(void)
 {
   DMN_CtrlCtx *ctx = (DMN_CtrlCtx *)1;
@@ -1185,7 +1185,7 @@ dmn_ctrl_begin(void)
   return ctx;
 }
 
-internal void
+void
 dmn_ctrl_exclusive_access_begin(void)
 {
   OS_MutexScope(dmn_w32_shared->access_mutex)
@@ -1194,7 +1194,7 @@ dmn_ctrl_exclusive_access_begin(void)
   }
 }
 
-internal void
+void
 dmn_ctrl_exclusive_access_end(void)
 {
   OS_MutexScope(dmn_w32_shared->access_mutex)
@@ -1203,7 +1203,7 @@ dmn_ctrl_exclusive_access_end(void)
   }
 }
 
-internal U32
+U32
 dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1327,7 +1327,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
   return result;
 }
 
-internal B32
+B32
 dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
 {
   B32 result = 0;
@@ -1355,7 +1355,7 @@ dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
   return result;
 }
 
-internal B32
+B32
 dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
 {
   B32 result = 0;
@@ -1370,7 +1370,7 @@ dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
   return result;
 }
 
-internal B32
+B32
 dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
 {
   B32 result = 0;
@@ -1408,7 +1408,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
   return result;
 }
 
-internal DMN_EventList
+DMN_EventList
 dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 {
   DMN_EventList events = {0};
@@ -2592,7 +2592,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Halting (Implemented Per-OS)
 
-internal void
+void
 dmn_halt(U64 code, U64 user_data)
 {
   if(dmn_handle_match(dmn_handle_zero(), dmn_w32_shared->halter_process))
@@ -2624,21 +2624,21 @@ dmn_halt(U64 code, U64 user_data)
 
 //- rjf: run/memory/register counters
 
-internal U64
+U64
 dmn_run_gen(void)
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->run_gen);
   return result;
 }
 
-internal U64
+U64
 dmn_mem_gen(void)
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->mem_gen);
   return result;
 }
 
-internal U64
+U64
 dmn_reg_gen(void)
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->reg_gen);
@@ -2647,7 +2647,7 @@ dmn_reg_gen(void)
 
 //- rjf: non-blocking-control-thread access barriers
 
-internal B32
+B32
 dmn_access_open(void)
 {
   B32 result = 0;
@@ -2663,7 +2663,7 @@ dmn_access_open(void)
   return result;
 }
 
-internal void
+void
 dmn_access_close(void)
 {
   if(!dmn_w32_ctrl_thread)
@@ -2674,7 +2674,7 @@ dmn_access_close(void)
 
 //- rjf: processes
 
-internal U64
+U64
 dmn_process_memory_reserve(DMN_Handle process, U64 vaddr, U64 size)
 {
   U64 result = 0;
@@ -2690,7 +2690,7 @@ dmn_process_memory_reserve(DMN_Handle process, U64 vaddr, U64 size)
   return result;
 }
 
-internal void
+void
 dmn_process_memory_commit(DMN_Handle process, U64 vaddr, U64 size)
 {
   DMN_AccessScope
@@ -2700,7 +2700,7 @@ dmn_process_memory_commit(DMN_Handle process, U64 vaddr, U64 size)
   }
 }
 
-internal void
+void
 dmn_process_memory_decommit(DMN_Handle process, U64 vaddr, U64 size)
 {
   DMN_AccessScope
@@ -2710,7 +2710,7 @@ dmn_process_memory_decommit(DMN_Handle process, U64 vaddr, U64 size)
   }
 }
 
-internal void
+void
 dmn_process_memory_release(DMN_Handle process, U64 vaddr, U64 size)
 {
   DMN_AccessScope
@@ -2720,7 +2720,7 @@ dmn_process_memory_release(DMN_Handle process, U64 vaddr, U64 size)
   }
 }
 
-internal void
+void
 dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFlags flags)
 {
   DMN_AccessScope
@@ -2741,7 +2741,7 @@ dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFla
   }
 }
 
-internal U64
+U64
 dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
 {
   U64 result = 0;
@@ -2753,7 +2753,7 @@ dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
   return result;
 }
 
-internal B32
+B32
 dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
 {
   B32 result = 0;
@@ -2767,7 +2767,7 @@ dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
 
 //- rjf: threads
 
-internal Arch
+Arch
 dmn_arch_from_thread(DMN_Handle handle)
 {
   Arch arch = Arch_Null;
@@ -2779,7 +2779,7 @@ dmn_arch_from_thread(DMN_Handle handle)
   return arch;
 }
 
-internal U64
+U64
 dmn_stack_base_vaddr_from_thread(DMN_Handle handle)
 {
   U64 result = 0;
@@ -2814,7 +2814,7 @@ dmn_stack_base_vaddr_from_thread(DMN_Handle handle)
   return result;
 }
 
-internal U64
+U64
 dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
 {
   U64 result = 0;
@@ -2846,7 +2846,7 @@ dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
   return result;
 }
 
-internal B32
+B32
 dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
 {
   B32 result = 0;
@@ -2858,7 +2858,7 @@ dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
   return result;
 }
 
-internal B32
+B32
 dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
 {
   B32 result = 0;
@@ -2872,14 +2872,14 @@ dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
 
 //- rjf: system process listing
 
-internal void
+void
 dmn_process_iter_begin(DMN_ProcessIter *iter)
 {
   MemoryZeroStruct(iter);
   iter->v[0] = (U64)CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 }
 
-internal B32
+B32
 dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
 {
   B32 result = 0;
@@ -2915,7 +2915,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
   return result;
 }
 
-internal void
+void
 dmn_process_iter_end(DMN_ProcessIter *iter)
 {
   CloseHandle((HANDLE)iter->v[0]);

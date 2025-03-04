@@ -32,7 +32,7 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();

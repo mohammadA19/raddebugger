@@ -106,22 +106,22 @@ thread_static OS_LNX_SafeCallChain *os_lnx_safe_call_chain = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal DateTime os_lnx_date_time_from_tm(tm in, U32 msec);
-internal tm os_lnx_tm_from_date_time(DateTime dt);
-internal timespec os_lnx_timespec_from_date_time(DateTime dt);
-internal DenseTime os_lnx_dense_time_from_timespec(timespec in);
-internal FileProperties os_lnx_file_properties_from_stat(struct stat *s);
-internal void os_lnx_safe_call_sig_handler(int x);
+DateTime os_lnx_date_time_from_tm(tm in, U32 msec);
+tm os_lnx_tm_from_date_time(DateTime dt);
+timespec os_lnx_timespec_from_date_time(DateTime dt);
+DenseTime os_lnx_dense_time_from_timespec(timespec in);
+FileProperties os_lnx_file_properties_from_stat(struct stat *s);
+void os_lnx_safe_call_sig_handler(int x);
 
 ////////////////////////////////
 //~ rjf: Entities
 
-internal OS_LNX_Entity *os_lnx_entity_alloc(OS_LNX_EntityKind kind);
-internal void os_lnx_entity_release(OS_LNX_Entity *entity);
+OS_LNX_Entity *os_lnx_entity_alloc(OS_LNX_EntityKind kind);
+void os_lnx_entity_release(OS_LNX_Entity *entity);
 
 ////////////////////////////////
 //~ rjf: Thread Entry Point
 
-internal void *os_lnx_thread_entry_point(void *ptr);
+void *os_lnx_thread_entry_point(void *ptr);
 
 #endif // OS_CORE_LINUX_H

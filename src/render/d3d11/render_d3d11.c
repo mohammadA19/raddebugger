@@ -35,7 +35,7 @@ global D3D11_INPUT_ELEMENT_DESC r_d3d11_g_mesh_ilay_elements[] =
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal R_D3D11_Window *
+R_D3D11_Window *
 r_d3d11_window_from_handle(R_Handle handle)
 {
   R_D3D11_Window *window = (R_D3D11_Window *)handle.u64[0];
@@ -46,7 +46,7 @@ r_d3d11_window_from_handle(R_Handle handle)
   return window;
 }
 
-internal R_Handle
+R_Handle
 r_d3d11_handle_from_window(R_D3D11_Window *window)
 {
   R_Handle handle = {0};
@@ -54,7 +54,7 @@ r_d3d11_handle_from_window(R_D3D11_Window *window)
   return handle;
 }
 
-internal R_D3D11_Tex2D *
+R_D3D11_Tex2D *
 r_d3d11_tex2d_from_handle(R_Handle handle)
 {
   R_D3D11_Tex2D *texture = (R_D3D11_Tex2D *)handle.u64[0];
@@ -65,7 +65,7 @@ r_d3d11_tex2d_from_handle(R_Handle handle)
   return texture;
 }
 
-internal R_Handle
+R_Handle
 r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture)
 {
   R_Handle handle = {0};
@@ -73,7 +73,7 @@ r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture)
   return handle;
 }
 
-internal R_D3D11_Buffer *
+R_D3D11_Buffer *
 r_d3d11_buffer_from_handle(R_Handle handle)
 {
   R_D3D11_Buffer *buffer = (R_D3D11_Buffer *)handle.u64[0];
@@ -84,7 +84,7 @@ r_d3d11_buffer_from_handle(R_Handle handle)
   return buffer;
 }
 
-internal R_Handle
+R_Handle
 r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer)
 {
   R_Handle handle = {0};
@@ -92,7 +92,7 @@ r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer)
   return handle;
 }
 
-internal ID3D11Buffer *
+ID3D11Buffer *
 r_d3d11_instance_buffer_from_size(U64 size)
 {
   ID3D11Buffer *buffer = r_d3d11_state->instance_scratch_buffer_64kb;
@@ -122,7 +122,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
   return buffer;
 }
 
-internal void
+void
 r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags)
 {
   switch(kind)

@@ -5,13 +5,13 @@ static LNK_ErrorMode g_error_mode_arr[LNK_Error_Count];
 static LNK_ErrorCodeStatus g_error_code_status_arr[LNK_Error_Count];
 static B32 g_log_status[LNK_Log_Count];
 
-internal void
+void
 lnk_exit(int code)
 {
   exit(code);
 }
 
-internal void
+void
 lnk_init_error_handler(void)
 {
   for (int i = LNK_Error_StopFirst; i < LNK_Error_StopLast; ++i) {
@@ -25,7 +25,7 @@ lnk_init_error_handler(void)
   }
 }
 
-internal String8
+String8
 lnk_string_from_error_mode(LNK_ErrorMode mode)
 {
   switch (mode) {
@@ -37,7 +37,7 @@ lnk_string_from_error_mode(LNK_ErrorMode mode)
   return str8_zero();
 }
 
-internal void
+void
 lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
 {
   if (g_error_mode_arr[code] == LNK_ErrorMode_Ignore) {
@@ -58,7 +58,7 @@ lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
   }
 }
 
-internal void
+void
 lnk_error(LNK_ErrorCode code, char *fmt, ...)
 {
   va_list args;
@@ -67,7 +67,7 @@ lnk_error(LNK_ErrorCode code, char *fmt, ...)
   va_end(args);
 }
 
-internal void
+void
 lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, va_list args)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -84,7 +84,7 @@ lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, ch
   scratch_end(scratch);
 }
 
-internal void
+void
 lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, ...)
 {
   va_list args; va_start(args, fmt);
@@ -92,7 +92,7 @@ lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char 
   va_end(args);
 }
 
-internal void
+void
 lnk_supplement_error(char *fmt, ...)
 {
   va_list args;
@@ -109,7 +109,7 @@ lnk_supplement_error(char *fmt, ...)
   scratch_end(scratch);
 }
 
-internal void
+void
 lnk_supplement_error_list(String8List list)
 {
   for (String8Node *node = list.first; node != 0; node = node->next) {
@@ -117,19 +117,19 @@ lnk_supplement_error_list(String8List list)
   }
 }
 
-internal void
+void
 lnk_suppress_error(LNK_ErrorCode code)
 {
   g_error_code_status_arr[code] = LNK_ErrorCodeStatus_Ignore;
 }
 
-internal LNK_ErrorCodeStatus
+LNK_ErrorCodeStatus
 lnk_get_error_code_status(LNK_ErrorCode code)
 {
   return g_error_code_status_arr[code];
 }
 
-internal void
+void
 lnk_internal_error(LNK_InternalError code, char *file, int line, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);

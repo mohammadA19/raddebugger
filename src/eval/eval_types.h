@@ -232,81 +232,81 @@ thread_static E_TypeState *e_type_state = 0;
 ////////////////////////////////
 //~ rjf: Type Kind Enum Functions
 
-internal E_TypeKind e_type_kind_from_base(TypeKind kind);
-internal E_TypeKind e_type_kind_from_rdi(RDI_TypeKind kind);
-internal E_MemberKind e_member_kind_from_rdi(RDI_MemberKind kind);
-internal RDI_EvalTypeGroup e_type_group_from_kind(E_TypeKind kind);
-internal B32 e_type_kind_is_integer(E_TypeKind kind);
-internal B32 e_type_kind_is_signed(E_TypeKind kind);
-internal B32 e_type_kind_is_basic_or_enum(E_TypeKind kind);
-internal B32 e_type_kind_is_pointer_or_ref(E_TypeKind kind);
+E_TypeKind e_type_kind_from_base(TypeKind kind);
+E_TypeKind e_type_kind_from_rdi(RDI_TypeKind kind);
+E_MemberKind e_member_kind_from_rdi(RDI_MemberKind kind);
+RDI_EvalTypeGroup e_type_group_from_kind(E_TypeKind kind);
+B32 e_type_kind_is_integer(E_TypeKind kind);
+B32 e_type_kind_is_signed(E_TypeKind kind);
+B32 e_type_kind_is_basic_or_enum(E_TypeKind kind);
+B32 e_type_kind_is_pointer_or_ref(E_TypeKind kind);
 
 ////////////////////////////////
 //~ rjf: Member Functions
 
-internal void e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member);
+void e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member);
 #define e_member_list_push_new(arena, list, ...) e_member_list_push((arena), (list), &(E_Member){.kind = E_MemberKind_DataField, __VA_ARGS__})
-internal E_MemberArray e_member_array_from_list(Arena *arena, E_MemberList *list);
+E_MemberArray e_member_array_from_list(Arena *arena, E_MemberList *list);
 
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal E_TypeCtx *e_selected_type_ctx(void);
-internal void e_select_type_ctx(E_TypeCtx *ctx);
+E_TypeCtx *e_selected_type_ctx(void);
+void e_select_type_ctx(E_TypeCtx *ctx);
 
 ////////////////////////////////
 //~ rjf: Type Operation Functions
 
 //- rjf: basic key constructors
-internal E_TypeKey e_type_key_zero(void);
-internal E_TypeKey e_type_key_basic(E_TypeKind kind);
-internal E_TypeKey e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx);
-internal E_TypeKey e_type_key_reg(Arch arch, REGS_RegCode code);
-internal E_TypeKey e_type_key_reg_alias(Arch arch, REGS_AliasCode code);
+E_TypeKey e_type_key_zero(void);
+E_TypeKey e_type_key_basic(E_TypeKind kind);
+E_TypeKey e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx);
+E_TypeKey e_type_key_reg(Arch arch, REGS_RegCode code);
+E_TypeKey e_type_key_reg_alias(Arch arch, REGS_AliasCode code);
 
 //- rjf: constructed type construction
-internal U64 e_hash_from_cons_type_params(E_ConsTypeParams *params);
-internal B32 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r);
-internal E_TypeKey e_type_key_cons_(E_ConsTypeParams *params);
+U64 e_hash_from_cons_type_params(E_ConsTypeParams *params);
+B32 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r);
+E_TypeKey e_type_key_cons_(E_ConsTypeParams *params);
 #define e_type_key_cons(...) e_type_key_cons_(&(E_ConsTypeParams){.kind = E_TypeKind_Null, __VA_ARGS__})
 
 //- rjf: constructed type construction helpers
-internal E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, U64 count);
-internal E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, E_TypeFlags flags);
-internal E_TypeKey e_type_key_cons_base(Type *type);
+E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, U64 count);
+E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, E_TypeFlags flags);
+E_TypeKey e_type_key_cons_base(Type *type);
 
 //- rjf: basic type key functions
-internal B32 e_type_key_match(E_TypeKey l, E_TypeKey r);
+B32 e_type_key_match(E_TypeKey l, E_TypeKey r);
 
 //- rjf: key -> info extraction
-internal U64 e_hash_from_type_key(E_TypeKey key);
-internal E_TypeKind e_type_kind_from_key(E_TypeKey key);
-internal U64 e_type_byte_size_from_key(E_TypeKey key);
-internal E_Type *e_type_from_key(Arena *arena, E_TypeKey key);
-internal E_TypeKey e_type_direct_from_key(E_TypeKey key);
-internal E_TypeKey e_type_owner_from_key(E_TypeKey key);
-internal E_TypeKey e_type_ptee_from_key(E_TypeKey key);
-internal E_TypeKey e_type_unwrap_enum(E_TypeKey key);
-internal E_TypeKey e_type_unwrap(E_TypeKey key);
-internal E_TypeKey e_type_promote(E_TypeKey key);
-internal B32 e_type_match(E_TypeKey l, E_TypeKey r);
-internal E_Member *e_type_member_copy(Arena *arena, E_Member *src);
-internal int e_type_qsort_compare_members_offset(E_Member *a, E_Member *b);
-internal E_MemberArray e_type_data_members_from_key(Arena *arena, E_TypeKey key);
-internal E_Member *e_type_member_from_array_name(E_MemberArray *members, String8 name);
-internal void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return);
-internal void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec);
-internal String8 e_type_string_from_key(Arena *arena, E_TypeKey key);
+U64 e_hash_from_type_key(E_TypeKey key);
+E_TypeKind e_type_kind_from_key(E_TypeKey key);
+U64 e_type_byte_size_from_key(E_TypeKey key);
+E_Type *e_type_from_key(Arena *arena, E_TypeKey key);
+E_TypeKey e_type_direct_from_key(E_TypeKey key);
+E_TypeKey e_type_owner_from_key(E_TypeKey key);
+E_TypeKey e_type_ptee_from_key(E_TypeKey key);
+E_TypeKey e_type_unwrap_enum(E_TypeKey key);
+E_TypeKey e_type_unwrap(E_TypeKey key);
+E_TypeKey e_type_promote(E_TypeKey key);
+B32 e_type_match(E_TypeKey l, E_TypeKey r);
+E_Member *e_type_member_copy(Arena *arena, E_Member *src);
+int e_type_qsort_compare_members_offset(E_Member *a, E_Member *b);
+E_MemberArray e_type_data_members_from_key(Arena *arena, E_TypeKey key);
+E_Member *e_type_member_from_array_name(E_MemberArray *members, String8 name);
+void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return);
+void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec);
+String8 e_type_string_from_key(Arena *arena, E_TypeKey key);
 
 //- rjf: type key data structures
-internal void e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key);
-internal E_TypeKeyList e_type_key_list_copy(Arena *arena, E_TypeKeyList *src);
+void e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key);
+E_TypeKeyList e_type_key_list_copy(Arena *arena, E_TypeKeyList *src);
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal E_MemberCacheNode *e_member_cache_node_from_type_key(E_TypeKey key);
-internal E_MemberArray e_type_data_members_from_key__cached(E_TypeKey key);
-internal E_Member e_type_member_from_key_name__cached(E_TypeKey key, String8 name);
+E_MemberCacheNode *e_member_cache_node_from_type_key(E_TypeKey key);
+E_MemberArray e_type_data_members_from_key__cached(E_TypeKey key);
+E_Member e_type_member_from_key_name__cached(E_TypeKey key, String8 name);
 
 #endif // EVAL_TYPES_H

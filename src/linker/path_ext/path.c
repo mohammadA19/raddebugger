@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+String8
 make_file_name_with_ext(Arena *arena, String8 file_name, String8 ext)
 {
   String8 file_name_no_ext = str8_chop_last_dot(file_name);
@@ -9,7 +9,7 @@ make_file_name_with_ext(Arena *arena, String8 file_name, String8 ext)
   return result;
 }
 
-internal String8
+String8
 path_char_from_style(PathStyle style)
 {
   String8 result = str8_zero();
@@ -22,7 +22,7 @@ path_char_from_style(PathStyle style)
   return result;
 }
 
-internal String8
+String8
 path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -34,7 +34,7 @@ path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
   return result;
 }
 
-internal String8
+String8
 path_canon_from_regular_path(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -54,7 +54,7 @@ struct {
   { str8_lit_comp("system"),  PathStyle_SystemAbsolute  },
 };
 
-internal PathStyle
+PathStyle
 path_style_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_path_style_map); ++i) {

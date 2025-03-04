@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ allen: Path Helper Functions
 
-internal StringMatchFlags
+StringMatchFlags
 path_match_flags_from_os(OperatingSystem os)
 {
   StringMatchFlags flags = StringMatchFlag_SlashInsensitive;
@@ -24,7 +24,7 @@ path_match_flags_from_os(OperatingSystem os)
   return flags;
 }
 
-internal String8
+String8
 path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -105,7 +105,7 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
   return dst_path;
 }
 
-internal String8
+String8
 path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
 {
   String8 result = dst;
@@ -121,7 +121,7 @@ path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
   return result;
 }
 
-internal String8List
+String8List
 path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *style_out){
   // analyze path
   PathStyle path_style = path_style_from_str8(path_string);
@@ -151,7 +151,7 @@ path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *s
   return(path);
 }
 
-internal String8
+String8
 path_normalized_from_string(Arena *arena, String8 path_string){
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -163,7 +163,7 @@ path_normalized_from_string(Arena *arena, String8 path_string){
   return(result);
 }
 
-internal B32
+B32
 path_match_normalized(String8 left, String8 right)
 {
   B32 result = 0;

@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+U64
 p2r_end_of_cplusplus_container_name(String8 str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
@@ -31,7 +31,7 @@ p2r_end_of_cplusplus_container_name(String8 str)
   return(result);
 }
 
-internal U64
+U64
 p2r_hash_from_voff(U64 voff)
 {
   U64 hash = (voff >> 3) ^ ((7 & voff) << 6);
@@ -41,7 +41,7 @@ p2r_hash_from_voff(U64 voff)
 ////////////////////////////////
 //~ rjf: Command Line -> Conversion Inputs
 
-internal P2R_User2Convert *
+P2R_User2Convert *
 p2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline)
 {
   P2R_User2Convert *result = push_array(arena, P2R_User2Convert, 1);
@@ -157,7 +157,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
 ////////////////////////////////
 //~ rjf: COFF <-> RDI Canonical Conversions
 
-internal RDI_BinarySectionFlags
+RDI_BinarySectionFlags
 p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 {
   RDI_BinarySectionFlags result = 0;
@@ -179,7 +179,7 @@ p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 ////////////////////////////////
 //~ rjf: CodeView <-> RDI Canonical Conversions
 
-internal RDI_Arch
+RDI_Arch
 p2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
 {
   RDI_Arch result = 0;
@@ -249,7 +249,7 @@ p2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
   return(result);
 }
 
-internal RDI_RegCode
+RDI_RegCode
 p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
 {
   RDI_RegCode result = 0;
@@ -277,7 +277,7 @@ p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
   return(result);
 }
 
-internal RDI_Language
+RDI_Language
 p2r_rdi_language_from_cv_language(CV_Language cv_language)
 {
   RDI_Language result = 0;
@@ -304,7 +304,7 @@ p2r_rdi_language_from_cv_language(CV_Language cv_language)
   return(result);
 }
 
-internal RDI_TypeKind
+RDI_TypeKind
 p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 {
   RDI_TypeKind result = RDI_TypeKind_NULL;
@@ -383,7 +383,7 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *
+RDIM_Location *
 p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
@@ -415,7 +415,7 @@ p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code
   return result;
 }
 
-internal RDI_RegCode
+RDI_RegCode
 p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg)
 {
   RDI_RegCode result = 0;
@@ -462,7 +462,7 @@ p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encod
   return(result);
 }
 
-internal void
+void
 p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
 {
   //- rjf: extract range info
@@ -2926,7 +2926,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 ////////////////////////////////
 //~ rjf: Top-Level Conversion Entry Point
 
-internal P2R_Convert2Bake *
+P2R_Convert2Bake *
 p2r_convert(Arena *arena, P2R_User2Convert *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -4352,7 +4352,7 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work)
 ////////////////////////////////
 //~ rjf: Top-Level Initialization
 
-internal void
+void
 p2r_init(void)
 {
   Arena *arena = arena_alloc();
@@ -4369,7 +4369,7 @@ p2r_init(void)
 ////////////////////////////////
 //~ rjf: Top-Level Baking Entry Point
 
-internal P2R_Bake2Serialize *
+P2R_Bake2Serialize *
 p2r_bake(Arena *arena, P2R_Convert2Bake *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -4839,7 +4839,7 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
 ////////////////////////////////
 //~ rjf: Top-Level Compression Entry Point
 
-internal P2R_Serialize2File *
+P2R_Serialize2File *
 p2r_compress(Arena *arena, P2R_Serialize2File *in)
 {
   P2R_Serialize2File *out = push_array(arena, P2R_Serialize2File, 1);
@@ -4875,7 +4875,7 @@ p2r_compress(Arena *arena, P2R_Serialize2File *in)
 
 ////////////////////////////////
 
-internal B32
+B32
 p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st)
 {
   Temp scratch = scratch_begin(0,0);
@@ -4908,7 +4908,7 @@ p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable
   return has_ref;
 }
 
-internal B32
+B32
 p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st)
 {
   Temp scratch = scratch_begin(0,0);
@@ -4944,7 +4944,7 @@ p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st
   return has_ref;
 }
 
-internal B32
+B32
 p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list)
 {
   Temp scratch = scratch_begin(0,0);

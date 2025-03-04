@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: RDI Enum -> String Functions
 
-internal String8
+String8
 rdi_string_from_reg_code_x86(U64 reg_code)
 {
 #define X(name, value) case RDI_RegCodeX86_##name: return str8_lit(#name);
@@ -15,7 +15,7 @@ rdi_string_from_reg_code_x86(U64 reg_code)
   return str8_lit("");
 }
 
-internal String8
+String8
 rdi_string_from_reg_code_x64(U64 reg_code)
 {
 #define X(name, value) case RDI_RegCodeX64_##name: return str8_lit(#name);
@@ -26,7 +26,7 @@ rdi_string_from_reg_code_x64(U64 reg_code)
   return str8_lit("");
 }
 
-internal String8
+String8
 rdi_string_from_reg_code(RDI_Arch arch, U64 reg_code)
 {
   switch (arch) {
@@ -38,7 +38,7 @@ rdi_string_from_reg_code(RDI_Arch arch, U64 reg_code)
   return str8_lit("");
 }
 
-internal String8
+String8
 rdi_string_from_data_section_kind(RDI_SectionKind v)
 {
   String8 result = str8_lit("<invalid RDI_SectionKind>");
@@ -52,7 +52,7 @@ rdi_string_from_data_section_kind(RDI_SectionKind v)
   return result;
 }
 
-internal String8
+String8
 rdi_string_from_arch(RDI_Arch v)
 {
   String8 result = str8_lit("<invalid RDI_Arch>");
@@ -66,7 +66,7 @@ rdi_string_from_arch(RDI_Arch v)
   return result;
 }
 
-internal String8
+String8
 rdi_string_from_language(RDI_Language v)
 {
   String8 result = str8_lit("<invalid RDI_Language>");
@@ -80,7 +80,7 @@ rdi_string_from_language(RDI_Language v)
   return result;
 }
 
-internal String8
+String8
 rdi_string_from_type_kind(RDI_TypeKind v)
 {
   String8 result = str8_lit("<invalid RDI_TypeKind>");
@@ -94,7 +94,7 @@ rdi_string_from_type_kind(RDI_TypeKind v)
   return result;
 }
 
-internal String8
+String8
 rdi_string_from_member_kind(RDI_MemberKind v)
 {
   String8 result = str8_lit("<invalid RDI_MemberKind>");
@@ -108,7 +108,7 @@ rdi_string_from_member_kind(RDI_MemberKind v)
   return result;
 }
 
-internal String8
+String8
 rdi_string_from_local_kind(RDI_LocalKind v)
 {
   String8 result = str8_lit("<invalid RDI_LocalKind>");
@@ -125,7 +125,7 @@ rdi_string_from_local_kind(RDI_LocalKind v)
 ////////////////////////////////
 //~ rjf: RDI Flags -> String Functions
 
-internal void
+void
 rdi_stringize_binary_section_flags(Arena *arena, String8List *out, RDI_BinarySectionFlags flags)
 {
   if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
@@ -134,7 +134,7 @@ rdi_stringize_binary_section_flags(Arena *arena, String8List *out, RDI_BinarySec
 #undef X
 }
 
-internal void
+void
 rdi_stringize_type_modifier_flags(Arena *arena, String8List *out,
                                   RDI_TypeModifierFlags flags)
 {
@@ -144,7 +144,7 @@ rdi_stringize_type_modifier_flags(Arena *arena, String8List *out,
 #undef X
 }
 
-internal void
+void
 rdi_stringize_udt_flags(Arena *arena, String8List *out, RDI_UDTFlags flags)
 {
   if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
@@ -153,7 +153,7 @@ rdi_stringize_udt_flags(Arena *arena, String8List *out, RDI_UDTFlags flags)
 #undef X
 }
 
-internal void
+void
 rdi_stringize_link_flags(Arena *arena, String8List *out, RDI_LinkFlags flags)
 {
   if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
@@ -164,7 +164,7 @@ rdi_stringize_link_flags(Arena *arena, String8List *out, RDI_LinkFlags flags)
 
 ////////////////////////////////
 
-internal String8
+String8
 rdi_format_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 {
   String8 result = {0};
@@ -182,7 +182,7 @@ rdi_format_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 
 global char rdi_stringize_spaces[] = "                                ";
 
-internal void
+void
 rdi_stringize_data_sections(Arena *arena, String8List *out, RDI_Parsed *rdi, U32 indent_level)
 {
   for(U64 idx = 0; idx < rdi->sections_count; idx += 1)
@@ -196,7 +196,7 @@ rdi_stringize_data_sections(Arena *arena, String8List *out, RDI_Parsed *rdi, U32
   }
 }
 
-internal void
+void
 rdi_stringize_top_level_info(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_TopLevelInfo *tli, U32 indent_level)
 {
   String8 arch_str = rdi_string_from_arch(tli->arch);
@@ -210,7 +210,7 @@ rdi_stringize_top_level_info(Arena *arena, String8List *out, RDI_Parsed *rdi, RD
   str8_list_pushf(arena, out, "%.*sproducer_name='%S'\n", indent_level, rdi_stringize_spaces, producer_name);
 }
 
-internal void
+void
 rdi_stringize_binary_section(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_BinarySection *bin_section, U32 indent_level)
 {
   String8 name = {0};
@@ -227,7 +227,7 @@ rdi_stringize_binary_section(Arena *arena, String8List *out, RDI_Parsed *rdi, RD
   str8_list_pushf(arena, out, "%.*sfoff_opl  =0x%08x\n", indent_level, rdi_stringize_spaces, bin_section->foff_opl);
 }
 
-internal void
+void
 rdi_stringize_file_path(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_FilePathBundle *bundle, RDI_FilePathNode *file_path, U32 indent_level)
 {
   String8 name = {0};
@@ -265,7 +265,7 @@ rdi_stringize_file_path(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Fil
   }
 }
 
-internal void
+void
 rdi_stringize_source_file(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_SourceFile *source_file, U32 indent_level)
 {
   // file path node idx
@@ -280,7 +280,7 @@ rdi_stringize_source_file(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_S
   str8_list_pushf(arena, out, "%.*ssource_line_map: %u\n", indent_level, rdi_stringize_spaces, source_file->source_line_map_idx);
 }
 
-internal void
+void
 rdi_stringize_line_table(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_LineTable *line_table, U32 indent_level)
 {
   // rjf: parse line table
@@ -315,7 +315,7 @@ rdi_stringize_line_table(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Li
   }
 }
 
-internal void
+void
 rdi_stringize_source_line_map(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_SourceLineMap *map, U32 indent_level)
 {
   RDI_ParsedSourceLineMap line_map = {0};
@@ -361,7 +361,7 @@ rdi_stringize_source_line_map(Arena *arena, String8List *out, RDI_Parsed *rdi, R
   }
 }
 
-internal void
+void
 rdi_stringize_unit(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Unit *unit, U32 indent_level)
 {
   String8 unit_name = {0};
@@ -383,7 +383,7 @@ rdi_stringize_unit(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Unit *un
   str8_list_pushf(arena, out, "%.*sline_table_idx=%u\n", indent_level, rdi_stringize_spaces, unit->line_table_idx);
 }
 
-internal void
+void
 rdi_stringize_type_node(Arena *arena, String8List *out, RDI_Parsed *rdi,
                         RDI_TypeNode *type, U32 indent_level){
   RDI_TypeKind kind = type->kind;
@@ -487,7 +487,7 @@ rdi_stringize_type_node(Arena *arena, String8List *out, RDI_Parsed *rdi,
   }
 }
 
-internal void
+void
 rdi_stringize_udt(Arena *arena, String8List *out, RDI_Parsed *rdi,
                   RDI_UDTMemberBundle *member_bundle, RDI_UDT *udt,
                   U32 indent_level){
@@ -561,7 +561,7 @@ rdi_stringize_udt(Arena *arena, String8List *out, RDI_Parsed *rdi,
   }
 }
 
-internal void
+void
 rdi_stringize_global_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
                               RDI_GlobalVariable *global_variable, U32 indent_level){
   String8 name = {0};
@@ -583,7 +583,7 @@ rdi_stringize_global_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
                   indent_level, rdi_stringize_spaces, global_variable->container_idx);
 }
 
-internal void
+void
 rdi_stringize_thread_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
                               RDI_ThreadVariable *thread_var,
                               U32 indent_level){
@@ -606,7 +606,7 @@ rdi_stringize_thread_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
                   indent_level, rdi_stringize_spaces, thread_var->container_idx);
 }
 
-internal void
+void
 rdi_stringize_procedure(Arena *arena, String8List *out, RDI_Parsed *rdi,
                         RDI_Procedure *proc, U32 indent_level){
   String8 name = {0};
@@ -633,7 +633,7 @@ rdi_stringize_procedure(Arena *arena, String8List *out, RDI_Parsed *rdi,
                   indent_level, rdi_stringize_spaces, proc->container_idx);
 }
 
-internal void
+void
 rdi_stringize_scope(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Arch arch,
                     RDI_ScopeBundle *bundle, RDI_Scope *scope, U32 indent_level)
 {
@@ -831,7 +831,7 @@ rdi_stringize_scope(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Arch ar
   scratch_end(scratch);
 }
 
-internal void
+void
 rdi_stringize_inline_site(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_InlineSite *inline_site, U32 indent_level)
 {
   String8 name = {0};

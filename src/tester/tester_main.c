@@ -26,9 +26,9 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32 frame(void) { return 0; }
+B32 frame(void) { return 0; }
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();

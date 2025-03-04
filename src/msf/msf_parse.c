@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: MSF Parser Functions
 
-internal MSF_RawStreamTable *
+MSF_RawStreamTable *
 msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -229,7 +229,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
   return result;
 }
 
-internal String8
+String8
 msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
 {
   MSF_RawStream stream = st->streams[sn];
@@ -270,7 +270,7 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
   return result;
 }
 
-internal MSF_Parsed *
+MSF_Parsed *
 msf_parsed_from_data(Arena *arena, String8 msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -295,7 +295,7 @@ msf_parsed_from_data(Arena *arena, String8 msf_data)
   return result;
 }
 
-internal String8
+String8
 msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn)
 {
   String8 result = {0};

@@ -179,7 +179,7 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line

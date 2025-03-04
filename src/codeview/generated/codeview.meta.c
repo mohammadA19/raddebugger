@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-internal String8
+String8
 cv_string_from_numeric_kind(CV_NumericKind v)
 {
 String8 result = str8_lit("<Unknown CV_NumericKind>");
@@ -37,7 +37,7 @@ case CV_NumericKind_FLOAT16:{result = str8_lit("FLOAT16");}break;
 return result;
 }
 
-internal String8
+String8
 cv_string_from_arch(CV_Arch v)
 {
 String8 result = str8_lit("<Unknown CV_Arch>");
@@ -108,7 +108,7 @@ case CV_Arch_D3D11_SHADER:{result = str8_lit("D3D11_SHADER");}break;
 return result;
 }
 
-internal String8
+String8
 cv_string_from_sym_kind(CV_SymKind v)
 {
 String8 result = str8_lit("<Unknown CV_SymKind>");
@@ -312,7 +312,7 @@ case CV_SymKind_INLINEES:{result = str8_lit("INLINEES");}break;
 return result;
 }
 
-internal String8
+String8
 cv_string_from_basic_type(CV_BasicType v)
 {
 String8 result = str8_lit("<Unknown CV_BasicType>");
@@ -376,7 +376,7 @@ case CV_BasicType_PTR:{result = str8_lit("PTR");}break;
 return result;
 }
 
-internal String8
+String8
 cv_type_name_from_basic_type(CV_BasicType v)
 {
 String8 result = str8_lit("<Unknown CV_BasicType>");
@@ -440,7 +440,7 @@ case CV_BasicType_PTR:{result = str8_lit("PTR");}break;
 return result;
 }
 
-internal String8
+String8
 cv_string_from_leaf_kind(CV_LeafKind v)
 {
 String8 result = str8_lit("<Unknown CV_LeafKind>");
@@ -585,7 +585,7 @@ case CV_LeafKind_STRUCT2:{result = str8_lit("STRUCT2");}break;
 return result;
 }
 
-internal U64
+U64
 cv_header_struct_size_from_sym_kind(CV_SymKind v)
 {
 U64 result = 0;
@@ -664,7 +664,7 @@ case CV_SymKind_INLINEES:{result = sizeof(CV_SymInlinees);}break;
 }
 return result;
 }
-internal U64
+U64
 cv_header_struct_size_from_leaf_kind(CV_LeafKind v)
 {
 U64 result = 0;

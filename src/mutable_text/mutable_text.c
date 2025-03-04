@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+void
 mtx_init(void)
 {
   Arena *arena = arena_alloc();
@@ -34,7 +34,7 @@ mtx_init(void)
 ////////////////////////////////
 //~ rjf: Buffer Operations
 
-internal void
+void
 mtx_push_op(U128 buffer_key, MTX_Op op)
 {
   MTX_MutThread *thread = &mtx_shared->mut_threads[buffer_key.u64[1]%mtx_shared->mut_threads_count];
@@ -44,7 +44,7 @@ mtx_push_op(U128 buffer_key, MTX_Op op)
 ////////////////////////////////
 //~ rjf: Mutation Threads
 
-internal void
+void
 mtx_enqueue_op(MTX_MutThread *thread, U128 buffer_key, MTX_Op op)
 {
   // TODO(rjf): if op.replace is too big, need to split into multiple edits
@@ -66,7 +66,7 @@ mtx_enqueue_op(MTX_MutThread *thread, U128 buffer_key, MTX_Op op)
   os_condition_variable_broadcast(thread->cv);
 }
 
-internal void
+void
 mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op *op_out)
 {
   OS_MutexScope(thread->mutex) for(;;)
@@ -86,7 +86,7 @@ mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op
   os_condition_variable_broadcast(thread->cv);
 }
 
-internal void
+void
 mtx_mut_thread__entry_point(void *p)
 {
   MTX_MutThread *mut_thread = (MTX_MutThread *)p;

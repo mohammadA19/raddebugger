@@ -18,14 +18,14 @@ thread_static UI_State *ui_state = 0;
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U64
+U64
 ui_hash_from_string(U64 seed, String8 string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-internal String8
+String8
 ui_hash_part_from_key_string(String8 string)
 {
   String8 result = string;
@@ -41,7 +41,7 @@ ui_hash_part_from_key_string(String8 string)
   return result;
 }
 
-internal String8
+String8
 ui_display_part_from_key_string(String8 string)
 {
   U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
@@ -49,21 +49,21 @@ ui_display_part_from_key_string(String8 string)
   return string;
 }
 
-internal UI_Key
+UI_Key
 ui_key_zero(void)
 {
   UI_Key result = {0};
   return result;
 }
 
-internal UI_Key
+UI_Key
 ui_key_make(U64 v)
 {
   UI_Key result = {v};
   return result;
 }
 
-internal UI_Key
+UI_Key
 ui_key_from_string(UI_Key seed_key, String8 string)
 {
   ProfBeginFunction();
@@ -77,7 +77,7 @@ ui_key_from_string(UI_Key seed_key, String8 string)
   return result;
 }
 
-internal UI_Key
+UI_Key
 ui_key_from_stringf(UI_Key seed_key, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -90,7 +90,7 @@ ui_key_from_stringf(UI_Key seed_key, char *fmt, ...)
   return key;
 }
 
-internal B32
+B32
 ui_key_match(UI_Key a, UI_Key b)
 {
   return a.u64[0] == b.u64[0];
@@ -99,7 +99,7 @@ ui_key_match(UI_Key a, UI_Key b)
 ////////////////////////////////
 //~ rjf: Event Type Functions
 
-internal UI_EventNode *
+UI_EventNode *
 ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
 {
   UI_EventNode *n = push_array(arena, UI_EventNode, 1);
@@ -110,7 +110,7 @@ ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
   return n;
 }
 
-internal void
+void
 ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
 {
   DLLRemove(list->first, list->last, node);
@@ -120,13 +120,13 @@ ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
 ////////////////////////////////
 //~ rjf: Text Operation Functions
 
-internal B32
+B32
 ui_char_is_scan_boundary(U8 c)
 {
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
 
-internal S64
+S64
 ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
 {
   S64 new_column = start_column;
@@ -159,7 +159,7 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
   return new_column;
 }
 
-internal UI_TxtOp
+UI_TxtOp
 ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
@@ -301,7 +301,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   return op;
 }
 
-internal String8
+String8
 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, String8 replace)
 {
   //- rjf: convert to offset range
@@ -343,7 +343,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
 ////////////////////////////////
 //~ rjf: Sizes
 
-internal UI_Size
+UI_Size
 ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 {
   UI_Size size = {kind, value, strictness};
@@ -353,21 +353,21 @@ ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 ////////////////////////////////
 //~ rjf: Scroll Point Type Functions
 
-internal UI_ScrollPt
+UI_ScrollPt
 ui_scroll_pt(S64 idx, F32 off)
 {
   UI_ScrollPt pt = {idx, off};
   return pt;
 }
 
-internal void
+void
 ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx)
 {
   v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(S64)v->off - idx);
   v->idx = idx;
 }
 
-internal void
+void
 ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 {
   if(v->idx < range.min || range.max < v->idx)
@@ -380,13 +380,13 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 ////////////////////////////////
 //~ rjf: Boxes
 
-internal B32
+B32
 ui_box_is_nil(UI_Box *box)
 {
   return box == 0 || box == &ui_nil_box;
 }
 
-internal UI_BoxRec
+UI_BoxRec
 ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off)
 {
   UI_BoxRec result = {0};
@@ -408,7 +408,7 @@ ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_of
   return result;
 }
 
-internal void
+void
 ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 {
   UI_BoxNode *n = push_array(arena, UI_BoxNode, 1);
@@ -420,7 +420,7 @@ ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 ////////////////////////////////
 //~ rjf: State Building / Selecting
 
-internal UI_State *
+UI_State *
 ui_state_alloc(void)
 {
   Arena *arena = arena_alloc();
@@ -439,7 +439,7 @@ ui_state_alloc(void)
   return ui;
 }
 
-internal void
+void
 ui_state_release(UI_State *state)
 {
   arena_release(state->string_hover_arena);
@@ -451,25 +451,25 @@ ui_state_release(UI_State *state)
   arena_release(state->arena);
 }
 
-internal UI_Box *
+UI_Box *
 ui_root_from_state(UI_State *state)
 {
   return state->root;
 }
 
-internal B32
+B32
 ui_animating_from_state(UI_State *state)
 {
   return state->is_animating;
 }
 
-internal void
+void
 ui_select_state(UI_State *state)
 {
   ui_state = state;
 }
 
-internal UI_State *
+UI_State *
 ui_get_selected_state(void)
 {
   return ui_state;
@@ -480,38 +480,38 @@ ui_get_selected_state(void)
 
 //- rjf: per-frame info
 
-internal Arena *
+Arena *
 ui_build_arena(void)
 {
   Arena *result = ui_state->build_arenas[ui_state->build_index%ArrayCount(ui_state->build_arenas)];
   return result;
 }
 
-internal OS_Handle
+OS_Handle
 ui_window(void)
 {
   return ui_state->window;
 }
 
-internal Vec2F32
+Vec2F32
 ui_mouse(void)
 {
   return ui_state->mouse;
 }
 
-internal FNT_Tag
+FNT_Tag
 ui_icon_font(void)
 {
   return ui_state->icon_info.icon_font;
 }
 
-internal String8
+String8
 ui_icon_string_from_kind(UI_IconKind icon_kind)
 {
   return ui_state->icon_info.icon_kind_text_map[icon_kind];
 }
 
-internal F32
+F32
 ui_dt(void)
 {
   return ui_state->animation_dt;
@@ -519,7 +519,7 @@ ui_dt(void)
 
 //- rjf: event pumping
 
-internal B32
+B32
 ui_next_event(UI_Event **ev)
 {
   UI_EventList *events = ui_state->events;
@@ -589,7 +589,7 @@ ui_next_event(UI_Event **ev)
   return result;
 }
 
-internal void
+void
 ui_eat_event(UI_Event *ev)
 {
   if(ev != 0)
@@ -601,7 +601,7 @@ ui_eat_event(UI_Event *ev)
 
 //- rjf: event consumption helpers
 
-internal B32
+B32
 ui_key_press(OS_Modifiers mods, OS_Key key)
 {
   B32 result = 0;
@@ -617,7 +617,7 @@ ui_key_press(OS_Modifiers mods, OS_Key key)
   return result;
 }
 
-internal B32
+B32
 ui_key_release(OS_Modifiers mods, OS_Key key)
 {
   B32 result = 0;
@@ -633,7 +633,7 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
   return result;
 }
 
-internal B32
+B32
 ui_text(U32 character)
 {
   B32 result = 0;
@@ -652,7 +652,7 @@ ui_text(U32 character)
   return result;
 }
 
-internal B32
+B32
 ui_slot_press(UI_EventActionSlot slot)
 {
   B32 result = 0;
@@ -670,26 +670,26 @@ ui_slot_press(UI_EventActionSlot slot)
 
 //- rjf: drag data
 
-internal Vec2F32
+Vec2F32
 ui_drag_start_mouse(void)
 {
   return ui_state->drag_start_mouse;
 }
 
-internal Vec2F32
+Vec2F32
 ui_drag_delta(void)
 {
   return sub_2f32(ui_mouse(), ui_state->drag_start_mouse);
 }
 
-internal void
+void
 ui_store_drag_data(String8 string)
 {
   arena_clear(ui_state->drag_state_arena);
   ui_state->drag_state_data = push_str8_copy(ui_state->drag_state_arena, string);
 }
 
-internal String8
+String8
 ui_get_drag_data(U64 min_required_size)
 {
   if(ui_state->drag_state_data.size < min_required_size)
@@ -704,27 +704,27 @@ ui_get_drag_data(U64 min_required_size)
 
 //- rjf: hovered string info
 
-internal B32
+B32
 ui_string_hover_active(void)
 {
   return (ui_state->build_index > 0 && ui_state->string_hover_build_index >= ui_state->build_index-1 &&
           os_now_microseconds() >= ui_state->string_hover_begin_us + 500000);
 }
 
-internal U64
+U64
 ui_string_hover_begin_time_us(void)
 {
   return ui_state->string_hover_begin_us;
 }
 
-internal String8
+String8
 ui_string_hover_string(Arena *arena)
 {
   String8 result = push_str8_copy(arena, ui_state->string_hover_string);
   return result;
 }
 
-internal DR_FancyRunList
+DR_FancyRunList
 ui_string_hover_runs(Arena *arena)
 {
   DR_FancyRunList result = dr_fancy_run_list_copy(arena, &ui_state->string_hover_fancy_runs);
@@ -733,19 +733,19 @@ ui_string_hover_runs(Arena *arena)
 
 //- rjf: interaction keys
 
-internal UI_Key
+UI_Key
 ui_hot_key(void)
 {
   return ui_state->hot_box_key;
 }
 
-internal UI_Key
+UI_Key
 ui_active_key(UI_MouseButtonKind button_kind)
 {
   return ui_state->active_box_key[button_kind];
 }
 
-internal UI_Key
+UI_Key
 ui_drop_hot_key(void)
 {
   return ui_state->drop_hot_box_key;
@@ -753,7 +753,7 @@ ui_drop_hot_key(void)
 
 //- rjf: controls over interaction
 
-internal void
+void
 ui_kill_action(void)
 {
   for EachEnumVal(UI_MouseButtonKind, k)
@@ -764,7 +764,7 @@ ui_kill_action(void)
 
 //- rjf: box cache lookup
 
-internal UI_Box *
+UI_Box *
 ui_box_from_key(UI_Key key)
 {
   ProfBeginFunction();
@@ -788,7 +788,7 @@ ui_box_from_key(UI_Key key)
 ////////////////////////////////
 //~ rjf: Top-Level Building API
 
-internal void
+void
 ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_WidgetPaletteInfo *widget_palette_info, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt)
 {
   //- rjf: reset per-build ui state
@@ -1171,7 +1171,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
 }
 
-internal void
+void
 ui_end_build(void)
 {
   ProfBeginFunction();
@@ -1583,7 +1583,7 @@ ui_end_build(void)
   ProfEnd();
 }
 
-internal void
+void
 ui_calc_sizes_standalone__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
@@ -1613,7 +1613,7 @@ ui_calc_sizes_standalone__in_place_rec(UI_Box *root, Axis2 axis)
   ProfEnd();
 }
 
-internal void
+void
 ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
@@ -1657,7 +1657,7 @@ ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
   ProfEnd();
 }
 
-internal void
+void
 ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
@@ -1701,7 +1701,7 @@ ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
   ProfEnd();
 }
 
-internal void
+void
 ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
@@ -1806,7 +1806,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
   ProfEnd();
 }
 
-internal void
+void
 ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
@@ -1874,7 +1874,7 @@ ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
   ProfEnd();
 }
 
-internal void
+void
 ui_layout_root(UI_Box *root, Axis2 axis)
 {
   ProfBegin("ui layout pass (%s)", axis == Axis2_X ? "x" : "y");
@@ -1891,7 +1891,7 @@ ui_layout_root(UI_Box *root, Axis2 axis)
 
 //- rjf: spacers
 
-internal UI_Signal
+UI_Signal
 ui_spacer(UI_Size size)
 {
   UI_Box *parent = ui_top_parent();
@@ -1903,7 +1903,7 @@ ui_spacer(UI_Size size)
 
 //- rjf: tooltips
 
-internal void
+void
 ui_tooltip_begin_base(void)
 {
   ui_state->tooltip_open = 1;
@@ -1914,7 +1914,7 @@ ui_tooltip_begin_base(void)
   ui_push_palette(ui_bottom_palette());
 }
 
-internal void
+void
 ui_tooltip_end_base(void)
 {
   ui_pop_palette();
@@ -1924,7 +1924,7 @@ ui_tooltip_end_base(void)
   ui_pop_parent();
 }
 
-internal void
+void
 ui_tooltip_begin(void)
 {
   ui_tooltip_begin_base();
@@ -1949,7 +1949,7 @@ ui_tooltip_begin(void)
   ui_push_text_alignment(UI_TextAlign_Center);
 }
 
-internal void
+void
 ui_tooltip_end(void)
 {
   ui_pop_text_alignment();
@@ -1966,7 +1966,7 @@ ui_tooltip_end(void)
 
 //- rjf: context menus
 
-internal void
+void
 ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
 {
   anchor_off.x = (F32)(int)anchor_off.x;
@@ -1983,13 +1983,13 @@ ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
   ui_state->ctx_menu_root->default_nav_focus_next_active_key = ui_key_zero();
 }
 
-internal void
+void
 ui_ctx_menu_close(void)
 {
   ui_state->next_ctx_menu_open = 0;
 }
 
-internal B32
+B32
 ui_begin_ctx_menu(UI_Key key)
 {
   ui_push_parent(ui_root_from_state(ui_state));
@@ -2019,7 +2019,7 @@ ui_begin_ctx_menu(UI_Key key)
   return is_open;
 }
 
-internal void
+void
 ui_end_ctx_menu(void)
 {
   if(ui_state->is_in_open_ctx_menu)
@@ -2036,13 +2036,13 @@ ui_end_ctx_menu(void)
   ui_pop_parent();
 }
 
-internal B32
+B32
 ui_ctx_menu_is_open(UI_Key key)
 {
   return (ui_state->ctx_menu_open && ui_key_match(key, ui_state->ctx_menu_key));
 }
 
-internal B32
+B32
 ui_any_ctx_menu_is_open(void)
 {
   return ui_state->ctx_menu_open;
@@ -2050,7 +2050,7 @@ ui_any_ctx_menu_is_open(void)
 
 //- rjf: focus tree coloring
 
-internal B32
+B32
 ui_is_focus_hot(void)
 {
   B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
@@ -2072,7 +2072,7 @@ ui_is_focus_hot(void)
   return result;
 }
 
-internal B32
+B32
 ui_is_focus_active(void)
 {
   B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
@@ -2096,7 +2096,7 @@ ui_is_focus_active(void)
 
 //- rjf: implicit auto-managed tree-based focus state
 
-internal B32
+B32
 ui_is_key_auto_focus_active(UI_Key key)
 {
   B32 result = 0;
@@ -2114,7 +2114,7 @@ ui_is_key_auto_focus_active(UI_Key key)
   return result;
 }
 
-internal B32
+B32
 ui_is_key_auto_focus_hot(UI_Key key)
 {
   B32 result = 0;
@@ -2135,7 +2135,7 @@ ui_is_key_auto_focus_hot(UI_Key key)
   return result;
 }
 
-internal void
+void
 ui_set_auto_focus_active_key(UI_Key key)
 {
   for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
@@ -2148,7 +2148,7 @@ ui_set_auto_focus_active_key(UI_Key key)
   }
 }
 
-internal void
+void
 ui_set_auto_focus_hot_key(UI_Key key)
 {
   for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
@@ -2163,7 +2163,7 @@ ui_set_auto_focus_hot_key(UI_Key key)
 
 //- rjf: palette forming
 
-internal UI_Palette *
+UI_Palette *
 ui_build_palette_(UI_Palette *base, UI_Palette *overrides)
 {
   UI_Palette *palette = push_array(ui_build_arena(), UI_Palette, 1);
@@ -2186,7 +2186,7 @@ ui_build_palette_(UI_Palette *base, UI_Palette *overrides)
 
 //- rjf: box node construction
 
-internal UI_Box *
+UI_Box *
 ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
 {
   ProfBeginFunction();
@@ -2356,7 +2356,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   return box;
 }
 
-internal UI_Key
+UI_Key
 ui_active_seed_key(void)
 {
   UI_Box *keyed_ancestor = &ui_nil_box;
@@ -2373,7 +2373,7 @@ ui_active_seed_key(void)
   return keyed_ancestor->key;
 }
 
-internal UI_Box *
+UI_Box *
 ui_build_box_from_string(UI_BoxFlags flags, String8 string)
 {
   ProfBeginFunction();
@@ -2396,7 +2396,7 @@ ui_build_box_from_string(UI_BoxFlags flags, String8 string)
   return box;
 }
 
-internal UI_Box *
+UI_Box *
 ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -2411,7 +2411,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
 
 //- rjf: box node equipment
 
-internal void
+void
 ui_box_equip_display_string(UI_Box *box, String8 string)
 {
   ProfBeginFunction();
@@ -2451,7 +2451,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
   ProfEnd();
 }
 
-internal void
+void
 ui_box_equip_display_fancy_strings(UI_Box *box, DR_FancyStringList *strings)
 {
   box->flags |= UI_BoxFlag_HasDisplayString;
@@ -2459,7 +2459,7 @@ ui_box_equip_display_fancy_strings(UI_Box *box, DR_FancyStringList *strings)
   box->display_string_runs = dr_fancy_run_list_from_fancy_string_list(ui_build_arena(), box->tab_size, box->text_raster_flags, strings);
 }
 
-internal inline void
+inline void
 ui_box_equip_display_string_fancy_runs(UI_Box *box, String8 string, DR_FancyRunList *runs)
 {
   box->flags |= UI_BoxFlag_HasDisplayString;
@@ -2467,14 +2467,14 @@ ui_box_equip_display_string_fancy_runs(UI_Box *box, String8 string, DR_FancyRunL
   box->display_string_runs = dr_fancy_run_list_copy(ui_build_arena(), runs);
 }
 
-internal inline void
+inline void
 ui_box_equip_fuzzy_match_ranges(UI_Box *box, FuzzyMatchRangeList *matches)
 {
   box->flags |= UI_BoxFlag_HasFuzzyMatchRanges;
   box->fuzzy_match_ranges = fuzzy_match_range_list_copy(ui_build_arena(), matches);
 }
 
-internal void
+void
 ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
 {
   box->flags |= UI_BoxFlag_DrawBucket;
@@ -2488,7 +2488,7 @@ ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
   }
 }
 
-internal void
+void
 ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw, void *user_data)
 {
   box->custom_draw = custom_draw;
@@ -2497,7 +2497,7 @@ ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw,
 
 //- rjf: box accessors / queries
 
-internal String8
+String8
 ui_box_display_string(UI_Box *box)
 {
   String8 result = box->string;
@@ -2508,7 +2508,7 @@ ui_box_display_string(UI_Box *box)
   return result;
 }
 
-internal Vec2F32
+Vec2F32
 ui_box_text_position(UI_Box *box)
 {
   Vec2F32 result = {0};
@@ -2544,7 +2544,7 @@ ui_box_text_position(UI_Box *box)
   return result;
 }
 
-internal U64
+U64
 ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
@@ -2557,7 +2557,7 @@ ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 ////////////////////////////////
 //~ rjf: Box Interaction
 
-internal UI_Signal
+UI_Signal
 ui_signal_from_box(UI_Box *box)
 {
   ProfBeginFunction();
@@ -2974,7 +2974,7 @@ ui_signal_from_box(UI_Box *box)
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-internal F32
+F32
 ui_anim_(UI_Key key, UI_AnimParams *params)
 {
   // rjf: get animation cache node
@@ -3033,7 +3033,7 @@ ui_anim_(UI_Key key, UI_AnimParams *params)
 
 //- rjf: helpers
 
-internal Rng2F32
+Rng2F32
 ui_push_rect(Rng2F32 rect)
 {
   Rng2F32 replaced = {0};
@@ -3045,7 +3045,7 @@ ui_push_rect(Rng2F32 rect)
   return replaced;
 }
 
-internal Rng2F32
+Rng2F32
 ui_pop_rect(void)
 {
   Rng2F32 popped = {0};
@@ -3056,7 +3056,7 @@ ui_pop_rect(void)
   return popped;
 }
 
-internal void
+void
 ui_set_next_rect(Rng2F32 rect)
 {
   Vec2F32 size = dim_2f32(rect);
@@ -3066,7 +3066,7 @@ ui_set_next_rect(Rng2F32 rect)
   ui_set_next_fixed_height(size.y);
 }
 
-internal UI_Size
+UI_Size
 ui_push_pref_size(Axis2 axis, UI_Size v)
 {
   UI_Size result = zero_struct;
@@ -3079,7 +3079,7 @@ ui_push_pref_size(Axis2 axis, UI_Size v)
   return result;
 }
 
-internal UI_Size
+UI_Size
 ui_pop_pref_size(Axis2 axis)
 {
   UI_Size result = zero_struct;
@@ -3092,13 +3092,13 @@ ui_pop_pref_size(Axis2 axis)
   return result;
 }
 
-internal UI_Size
+UI_Size
 ui_set_next_pref_size(Axis2 axis, UI_Size v)
 {
   return (axis == Axis2_X ? ui_set_next_pref_width : ui_set_next_pref_height)(v);
 }
 
-internal void
+void
 ui_push_corner_radius(F32 v)
 {
   ui_push_corner_radius_00(v);
@@ -3107,7 +3107,7 @@ ui_push_corner_radius(F32 v)
   ui_push_corner_radius_11(v);
 }
 
-internal void
+void
 ui_pop_corner_radius(void)
 {
   ui_pop_corner_radius_00();

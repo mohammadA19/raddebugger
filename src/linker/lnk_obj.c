@@ -3,7 +3,7 @@
 
 ////////////////////////////////
 
-internal void
+void
 lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 {
   va_list args; va_start(args, fmt);
@@ -13,14 +13,14 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 
 ////////////////////////////////
 
-internal void
+void
 lnk_input_obj_list_push_node(LNK_InputObjList *list, LNK_InputObj *node)
 {
   SLLQueuePush(list->first, list->last, node);
   ++list->count;
 }
 
-internal LNK_InputObj *
+LNK_InputObj *
 lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
 {
   LNK_InputObj *node = push_array(arena, LNK_InputObj, 1);
@@ -28,7 +28,7 @@ lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
   return node;
 }
 
-internal LNK_InputObj **
+LNK_InputObj **
 lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
@@ -40,13 +40,13 @@ lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
   return result;
 }
 
-internal void
+void
 lnk_input_obj_list_concat_in_place(LNK_InputObjList *list, LNK_InputObjList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal int
+int
 lnk_input_obj_compar(const void *raw_a, const void *raw_b)
 {
   const LNK_InputObj **a = (const LNK_InputObj **) raw_a;
@@ -55,7 +55,7 @@ lnk_input_obj_compar(const void *raw_a, const void *raw_b)
   return cmp;
 }
 
-internal int
+int
 lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
 {
   LNK_InputObj **a = raw_a;
@@ -65,7 +65,7 @@ lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal LNK_InputObjList
+LNK_InputObjList
 lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
 {
   LNK_InputObjList list = {0};
@@ -76,7 +76,7 @@ lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
   return list;
 }
 
-internal LNK_InputObjList
+LNK_InputObjList
 lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
 {
   LNK_InputObjList input_list = {0};
@@ -91,7 +91,7 @@ lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
 
 ////////////////////////////////
 
-internal LNK_Obj **
+LNK_Obj **
 lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
 {
   LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
@@ -102,7 +102,7 @@ lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
   return arr;
 }
 
-internal LNK_ObjNodeArray
+LNK_ObjNodeArray
 lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, U64 count)
 {
   LNK_ObjNodeArray arr = {0};
@@ -120,7 +120,7 @@ lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, U64 count)
   return arr;
 }
 
-internal LNK_ChunkList
+LNK_ChunkList
 lnk_obj_search_chunks(Arena *arena, LNK_Obj *obj, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_ChunkList list = {0};
@@ -159,7 +159,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
   *list_ptr = lnk_obj_search_chunks(arena, obj, task->name, task->postfix, task->collect_discarded);
 }
 
-internal LNK_ChunkList *
+LNK_ChunkList *
 lnk_collect_obj_chunks(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_CollectObjChunksTaskData task_data = {0};
@@ -188,7 +188,7 @@ THREAD_POOL_TASK_FUNC(lnk_symbol_collector)
   }
 }
 
-internal LNK_SymbolList
+LNK_SymbolList
 lnk_run_symbol_collector(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray arr, LNK_SymbolType symbol_type)
 {
   ProfBeginFunction();
@@ -226,7 +226,7 @@ THREAD_POOL_TASK_FUNC(lnk_default_lib_collector)
   }
 }
 
-internal LNK_InputLibList
+LNK_InputLibList
 lnk_collect_default_lib_obj_arr(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray arr)
 {
   Temp scratch = scratch_begin(0,0);
@@ -263,7 +263,7 @@ THREAD_POOL_TASK_FUNC(lnk_manifest_dependency_collector)
   }
 }
 
-internal String8List
+String8List
 lnk_collect_manifest_dependency_list(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray obj_node_arr)
 {
   Temp scratch = scratch_begin(arena->v, arena->count);
@@ -280,14 +280,14 @@ lnk_collect_manifest_dependency_list(TP_Context *tp, TP_Arena *arena, LNK_ObjNod
   return result;
 }
 
-internal void
+void
 lnk_sect_defn_list_push_node(LNK_SectDefnList *list, LNK_SectDefn *node)
 {
   SLLQueuePush(list->first, list->last, node);
   ++list->count;
 }
 
-internal LNK_SectDefn *
+LNK_SectDefn *
 lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, U64 idx, COFF_SectionFlags flags)
 {
   LNK_SectDefn *node = push_array_no_zero(arena, LNK_SectDefn, 1);
@@ -300,13 +300,13 @@ lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, Stri
   return node;
 }
 
-internal void
+void
 lnk_sect_defn_list_concat_in_place(LNK_SectDefnList *list, LNK_SectDefnList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal void
+void
 lnk_sect_defn_list_concat_in_place_arr(LNK_SectDefnList *list, LNK_SectDefnList *to_concat_arr, U64 count)
 {
   SLLConcatInPlaceArray(list, to_concat_arr, count);
@@ -585,7 +585,7 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_ref_assigner)
   }
 }
 
-internal LNK_ObjNodeArray
+LNK_ObjNodeArray
 lnk_obj_list_push_parallel(TP_Context        *tp,
                            TP_Arena          *arena,
                            LNK_ObjList       *obj_list,
@@ -734,7 +734,7 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
   return obj_arr;
 }
 
-internal LNK_SymbolArray
+LNK_SymbolArray
 lnk_symbol_array_from_coff(Arena              *arena,
                            String8             raw_coff,
                            LNK_Obj            *obj,
@@ -1019,7 +1019,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
   return symbol_array;
 }
 
-internal LNK_RelocList *
+LNK_RelocList *
 lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 coff_data, U64 sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
 {
   LNK_RelocList *reloc_list_arr = push_array_no_zero(arena, LNK_RelocList, sect_count);
@@ -1033,7 +1033,7 @@ lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 c
   return reloc_list_arr;
 }
 
-internal void
+void
 lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path, LNK_DirectiveInfo *directive_info, String8 buffer)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1105,7 +1105,7 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
   scratch_end(scratch);
 }
 
-internal LNK_DirectiveInfo
+LNK_DirectiveInfo
 lnk_directive_info_from_sections(Arena         *arena,
                                  String8        obj_path,
                                  String8        lib_path,
@@ -1139,7 +1139,7 @@ lnk_directive_info_from_sections(Arena         *arena,
   return directive_info;
 }
 
-internal MSCRT_FeatFlags
+MSCRT_FeatFlags
 lnk_obj_get_features(LNK_Obj *obj)
 {
   MSCRT_FeatFlags result = 0;
@@ -1152,7 +1152,7 @@ lnk_obj_get_features(LNK_Obj *obj)
   return result;
 }
 
-internal U32
+U32
 lnk_obj_get_comp_id(LNK_Obj *obj)
 {
   U32 result = 0;
@@ -1165,7 +1165,7 @@ lnk_obj_get_comp_id(LNK_Obj *obj)
   return result;
 }
 
-internal U32
+U32
 lnk_obj_get_vol_md(LNK_Obj *obj)
 {
   U32 result = 0;

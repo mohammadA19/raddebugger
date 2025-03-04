@@ -406,7 +406,7 @@ dump_entry_tree(Arena *arena, String8List *out,
 }
 #endif
 
-internal void
+void
 entry_point(CmdLine *cmd_line)
 {
   Arena *arena = arena_alloc();

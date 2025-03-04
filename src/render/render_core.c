@@ -9,14 +9,14 @@
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal R_Handle
+R_Handle
 r_handle_zero(void)
 {
   R_Handle handle = {0};
   return handle;
 }
 
-internal B32
+B32
 r_handle_match(R_Handle a, R_Handle b)
 {
   return MemoryMatchStruct(&a, &b);
@@ -25,7 +25,7 @@ r_handle_match(R_Handle a, R_Handle b)
 ////////////////////////////////
 //~ rjf: Batch Type Functions
 
-internal R_BatchList
+R_BatchList
 r_batch_list_make(U64 instance_size)
 {
   R_BatchList list = {0};
@@ -33,7 +33,7 @@ r_batch_list_make(U64 instance_size)
   return list;
 }
 
-internal void *
+void *
 r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
 {
   void *inst = 0;
@@ -57,7 +57,7 @@ r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
 ////////////////////////////////
 //~ rjf: Pass Type Functions
 
-internal R_Pass *
+R_Pass *
 r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind)
 {
   R_PassNode *n = list->last;

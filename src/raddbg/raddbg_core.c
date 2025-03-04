@@ -12,27 +12,27 @@
 ////////////////////////////////
 //~ rjf: Handles
 
-internal RD_Handle
+RD_Handle
 rd_handle_zero(void)
 {
   RD_Handle result = {0};
   return result;
 }
 
-internal B32
+B32
 rd_handle_match(RD_Handle a, RD_Handle b)
 {
   return (a.u64[0] == b.u64[0] && a.u64[1] == b.u64[1]);
 }
 
-internal void
+void
 rd_handle_list_push_node(RD_HandleList *list, RD_HandleNode *node)
 {
   DLLPushBack(list->first, list->last, node);
   list->count += 1;
 }
 
-internal void
+void
 rd_handle_list_push(Arena *arena, RD_HandleList *list, RD_Handle handle)
 {
   RD_HandleNode *n = push_array(arena, RD_HandleNode, 1);
@@ -40,7 +40,7 @@ rd_handle_list_push(Arena *arena, RD_HandleList *list, RD_Handle handle)
   rd_handle_list_push_node(list, n);
 }
 
-internal RD_HandleList
+RD_HandleList
 rd_handle_list_copy(Arena *arena, RD_HandleList list)
 {
   RD_HandleList result = {0};
@@ -54,7 +54,7 @@ rd_handle_list_copy(Arena *arena, RD_HandleList list)
 ////////////////////////////////
 //~ rjf: Config Type Functions
 
-internal void
+void
 rd_cfg_table_push_unparsed_string(Arena *arena, RD_CfgTable *table, String8 string, RD_CfgSrc source)
 {
   if(table->slot_count == 0)
@@ -102,7 +102,7 @@ rd_cfg_table_push_unparsed_string(Arena *arena, RD_CfgTable *table, String8 stri
   }
 }
 
-internal RD_CfgVal *
+RD_CfgVal *
 rd_cfg_val_from_string(RD_CfgTable *table, String8 string)
 {
   RD_CfgVal *result = &d_nil_cfg_val;
@@ -126,7 +126,7 @@ rd_cfg_val_from_string(RD_CfgTable *table, String8 string)
 ////////////////////////////////
 //~ rjf: Registers Type Functions
 
-internal void
+void
 rd_regs_copy_contents(Arena *arena, RD_Regs *dst, RD_Regs *src)
 {
   MemoryCopyStruct(dst, src);
@@ -143,7 +143,7 @@ rd_regs_copy_contents(Arena *arena, RD_Regs *dst, RD_Regs *src)
   }
 }
 
-internal RD_Regs *
+RD_Regs *
 rd_regs_copy(Arena *arena, RD_Regs *src)
 {
   RD_Regs *dst = push_array(arena, RD_Regs, 1);
@@ -154,7 +154,7 @@ rd_regs_copy(Arena *arena, RD_Regs *src)
 ////////////////////////////////
 //~ rjf: Commands Type Functions
 
-internal void
+void
 rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs)
 {
   RD_CmdNode *n = push_array(arena, RD_CmdNode, 1);
@@ -169,7 +169,7 @@ rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs
 
 //- rjf: nil
 
-internal B32
+B32
 rd_entity_is_nil(RD_Entity *entity)
 {
   return (entity == 0 || entity == &rd_nil_entity);
@@ -177,13 +177,13 @@ rd_entity_is_nil(RD_Entity *entity)
 
 //- rjf: handle <-> entity conversions
 
-internal U64
+U64
 rd_index_from_entity(RD_Entity *entity)
 {
   return (U64)(entity - rd_state->entities_base);
 }
 
-internal RD_Handle
+RD_Handle
 rd_handle_from_entity(RD_Entity *entity)
 {
   RD_Handle handle = rd_handle_zero();
@@ -195,7 +195,7 @@ rd_handle_from_entity(RD_Entity *entity)
   return handle;
 }
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_from_handle(RD_Handle handle)
 {
   RD_Entity *result = rd_state->entities_base + handle.u64[0];
@@ -208,7 +208,7 @@ rd_entity_from_handle(RD_Handle handle)
 
 //- rjf: entity recursion iterators
 
-internal RD_EntityRec
+RD_EntityRec
 rd_entity_rec_depth_first(RD_Entity *entity, RD_Entity *subtree_root, U64 sib_off, U64 child_off)
 {
   RD_EntityRec result = {0};
@@ -231,7 +231,7 @@ rd_entity_rec_depth_first(RD_Entity *entity, RD_Entity *subtree_root, U64 sib_of
 
 //- rjf: ancestor/child introspection
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_child_from_kind(RD_Entity *entity, RD_EntityKind kind)
 {
   RD_Entity *result = &rd_nil_entity;
@@ -248,7 +248,7 @@ rd_entity_child_from_kind(RD_Entity *entity, RD_EntityKind kind)
 
 //- rjf: entity list building
 
-internal void
+void
 rd_entity_list_push(Arena *arena, RD_EntityList *list, RD_Entity *entity)
 {
   RD_EntityNode *n = push_array(arena, RD_EntityNode, 1);
@@ -257,7 +257,7 @@ rd_entity_list_push(Arena *arena, RD_EntityList *list, RD_Entity *entity)
   list->count += 1;
 }
 
-internal RD_EntityArray
+RD_EntityArray
 rd_entity_array_from_list(Arena *arena, RD_EntityList *list)
 {
   RD_EntityArray result = {0};
@@ -273,7 +273,7 @@ rd_entity_array_from_list(Arena *arena, RD_EntityList *list)
 
 //- rjf: entity -> color operations
 
-internal Vec4F32
+Vec4F32
 rd_hsva_from_entity(RD_Entity *entity)
 {
   Vec4F32 result = {0};
@@ -284,7 +284,7 @@ rd_hsva_from_entity(RD_Entity *entity)
   return result;
 }
 
-internal Vec4F32
+Vec4F32
 rd_rgba_from_entity(RD_Entity *entity)
 {
   Vec4F32 result = {0};
@@ -307,7 +307,7 @@ rd_rgba_from_entity(RD_Entity *entity)
 
 //- rjf: entity -> expansion tree keys
 
-internal EV_Key
+EV_Key
 rd_ev_key_from_entity(RD_Entity *entity)
 {
   EV_Key parent_key = rd_parent_ev_key_from_entity(entity);
@@ -315,7 +315,7 @@ rd_ev_key_from_entity(RD_Entity *entity)
   return key;
 }
 
-internal EV_Key
+EV_Key
 rd_parent_ev_key_from_entity(RD_Entity *entity)
 {
   EV_Key parent_key = ev_key_make(5381, (U64)entity);
@@ -325,13 +325,13 @@ rd_parent_ev_key_from_entity(RD_Entity *entity)
 ////////////////////////////////
 //~ rjf: View Type Functions
 
-internal B32
+B32
 rd_view_is_nil(RD_View *view)
 {
   return (view == 0 || view == &rd_nil_view);
 }
 
-internal B32
+B32
 rd_view_is_project_filtered(RD_View *view)
 {
   B32 result = 0;
@@ -357,7 +357,7 @@ rd_view_is_project_filtered(RD_View *view)
   return result;
 }
 
-internal RD_Handle
+RD_Handle
 rd_handle_from_view(RD_View *view)
 {
   RD_Handle handle = rd_handle_zero();
@@ -369,7 +369,7 @@ rd_handle_from_view(RD_View *view)
   return handle;
 }
 
-internal RD_View *
+RD_View *
 rd_view_from_handle(RD_Handle handle)
 {
   RD_View *result = (RD_View *)handle.u64[0];
@@ -383,7 +383,7 @@ rd_view_from_handle(RD_Handle handle)
 ////////////////////////////////
 //~ rjf: View Spec Type Functions
 
-internal RD_ViewRuleKind
+RD_ViewRuleKind
 rd_view_rule_kind_from_string(String8 string)
 {
   RD_ViewRuleKind kind = RD_ViewRuleKind_Null;
@@ -398,13 +398,13 @@ rd_view_rule_kind_from_string(String8 string)
   return kind;
 }
 
-internal RD_ViewRuleInfo *
+RD_ViewRuleInfo *
 rd_view_rule_info_from_kind(RD_ViewRuleKind kind)
 {
   return &rd_view_rule_kind_info_table[kind];
 }
 
-internal RD_ViewRuleInfo *
+RD_ViewRuleInfo *
 rd_view_rule_info_from_string(String8 string)
 {
   RD_ViewRuleInfo *result = &rd_nil_view_rule_info;
@@ -423,13 +423,13 @@ rd_view_rule_info_from_string(String8 string)
 
 //- rjf: basic type functions
 
-internal B32
+B32
 rd_panel_is_nil(RD_Panel *panel)
 {
   return panel == 0 || panel == &rd_nil_panel;
 }
 
-internal RD_Handle
+RD_Handle
 rd_handle_from_panel(RD_Panel *panel)
 {
   RD_Handle h = {0};
@@ -438,7 +438,7 @@ rd_handle_from_panel(RD_Panel *panel)
   return h;
 }
 
-internal RD_Panel *
+RD_Panel *
 rd_panel_from_handle(RD_Handle handle)
 {
   RD_Panel *panel = (RD_Panel *)handle.u64[0];
@@ -449,7 +449,7 @@ rd_panel_from_handle(RD_Handle handle)
   return panel;
 }
 
-internal UI_Key
+UI_Key
 rd_ui_key_from_panel(RD_Panel *panel)
 {
   UI_Key panel_key = ui_key_from_stringf(ui_key_zero(), "panel_window_%p", panel);
@@ -458,7 +458,7 @@ rd_ui_key_from_panel(RD_Panel *panel)
 
 //- rjf: tree construction
 
-internal void
+void
 rd_panel_insert(RD_Panel *parent, RD_Panel *prev_child, RD_Panel *new_child)
 {
   DLLInsert_NPZ(&rd_nil_panel, parent->first, parent->last, prev_child, new_child, next, prev);
@@ -466,7 +466,7 @@ rd_panel_insert(RD_Panel *parent, RD_Panel *prev_child, RD_Panel *new_child)
   new_child->parent = parent;
 }
 
-internal void
+void
 rd_panel_remove(RD_Panel *parent, RD_Panel *child)
 {
   DLLRemove_NPZ(&rd_nil_panel, parent->first, parent->last, child, next, prev);
@@ -476,7 +476,7 @@ rd_panel_remove(RD_Panel *parent, RD_Panel *child)
 
 //- rjf: tree walk
 
-internal RD_PanelRec
+RD_PanelRec
 rd_panel_rec_depth_first(RD_Panel *panel, U64 sib_off, U64 child_off)
 {
   RD_PanelRec rec = {0};
@@ -508,7 +508,7 @@ rd_panel_rec_depth_first(RD_Panel *panel, U64 sib_off, U64 child_off)
 
 //- rjf: panel -> rect calculations
 
-internal Rng2F32
+Rng2F32
 rd_target_rect_from_panel_child(Rng2F32 parent_rect, RD_Panel *parent, RD_Panel *panel)
 {
   Rng2F32 rect = parent_rect;
@@ -536,7 +536,7 @@ rd_target_rect_from_panel_child(Rng2F32 parent_rect, RD_Panel *parent, RD_Panel 
   return rect;
 }
 
-internal Rng2F32
+Rng2F32
 rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel *root, RD_Panel *panel)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -582,7 +582,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel *root, RD_Panel *panel)
 
 //- rjf: view ownership insertion/removal
 
-internal void
+void
 rd_panel_insert_tab_view(RD_Panel *panel, RD_View *prev_view, RD_View *view)
 {
   DLLInsert_NPZ(&rd_nil_view, panel->first_tab_view, panel->last_tab_view, prev_view, view, order_next, order_prev);
@@ -593,7 +593,7 @@ rd_panel_insert_tab_view(RD_Panel *panel, RD_View *prev_view, RD_View *view)
   }
 }
 
-internal void
+void
 rd_panel_remove_tab_view(RD_Panel *panel, RD_View *view)
 {
   if(rd_view_from_handle(panel->selected_tab_view) == view)
@@ -626,7 +626,7 @@ rd_panel_remove_tab_view(RD_Panel *panel, RD_View *view)
   panel->tab_view_count -= 1;
 }
 
-internal RD_View *
+RD_View *
 rd_selected_tab_from_panel(RD_Panel *panel)
 {
   RD_View *view = rd_view_from_handle(panel->selected_tab_view);
@@ -639,14 +639,14 @@ rd_selected_tab_from_panel(RD_Panel *panel)
 
 //- rjf: icons & display strings
 
-internal RD_IconKind
+RD_IconKind
 rd_icon_kind_from_view(RD_View *view)
 {
   RD_IconKind result = view->spec->icon_kind;
   return result;
 }
 
-internal DR_FancyStringList
+DR_FancyStringList
 rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec4F32 secondary_color, F32 size)
 {
   DR_FancyStringList result = {0};
@@ -792,7 +792,7 @@ rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec
 ////////////////////////////////
 //~ rjf: Window Type Functions
 
-internal RD_Handle
+RD_Handle
 rd_handle_from_window(RD_Window *window)
 {
   RD_Handle handle = {0};
@@ -804,7 +804,7 @@ rd_handle_from_window(RD_Window *window)
   return handle;
 }
 
-internal RD_Window *
+RD_Window *
 rd_window_from_handle(RD_Handle handle)
 {
   RD_Window *window = (RD_Window *)handle.u64[0];
@@ -818,7 +818,7 @@ rd_window_from_handle(RD_Handle handle)
 ////////////////////////////////
 //~ rjf: Command Parameters From Context
 
-internal B32
+B32
 rd_prefer_dasm_from_window(RD_Window *window)
 {
   RD_Panel *panel = window->focused_panel;
@@ -859,14 +859,14 @@ rd_prefer_dasm_from_window(RD_Window *window)
 ////////////////////////////////
 //~ rjf: Global Cross-Window UI Interaction State Functions
 
-internal B32
+B32
 rd_drag_is_active(void)
 {
   return ((rd_state->drag_drop_state == RD_DragDropState_Dragging) ||
           (rd_state->drag_drop_state == RD_DragDropState_Dropping));
 }
 
-internal void
+void
 rd_drag_begin(RD_RegSlot slot)
 {
   if(!rd_drag_is_active())
@@ -878,7 +878,7 @@ rd_drag_begin(RD_RegSlot slot)
   }
 }
 
-internal B32
+B32
 rd_drag_drop(void)
 {
   B32 result = 0;
@@ -890,26 +890,26 @@ rd_drag_drop(void)
   return result;
 }
 
-internal void
+void
 rd_drag_kill(void)
 {
   rd_state->drag_drop_state = RD_DragDropState_Null;
 }
 
-internal void
+void
 rd_set_hover_regs(RD_RegSlot slot)
 {
   rd_state->next_hover_regs = rd_regs_copy(rd_frame_arena(), rd_regs());
   rd_state->next_hover_regs_slot = slot;
 }
 
-internal RD_Regs *
+RD_Regs *
 rd_get_hover_regs(void)
 {
   return rd_state->hover_regs;
 }
 
-internal void
+void
 rd_open_ctx_menu(UI_Key anchor_box_key, Vec2F32 anchor_box_off, RD_RegSlot slot)
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
@@ -925,7 +925,7 @@ rd_open_ctx_menu(UI_Key anchor_box_key, Vec2F32 anchor_box_off, RD_RegSlot slot)
 ////////////////////////////////
 //~ rjf: Name Allocation
 
-internal U64
+U64
 rd_name_bucket_idx_from_string_size(U64 size)
 {
   U64 size_rounded = u64_up_to_pow2(size+1);
@@ -945,7 +945,7 @@ rd_name_bucket_idx_from_string_size(U64 size)
   return bucket_idx;
 }
 
-internal String8
+String8
 rd_name_alloc(String8 string)
 {
   if(string.size == 0) {return str8_zero();}
@@ -1021,7 +1021,7 @@ rd_name_alloc(String8 string)
   return allocated_string;
 }
 
-internal void
+void
 rd_name_release(String8 string)
 {
   if(string.size == 0) {return;}
@@ -1034,7 +1034,7 @@ rd_name_release(String8 string)
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure Functions
 
-internal RD_Cfg *
+RD_Cfg *
 rd_cfg_alloc(void)
 {
   RD_Cfg *result = rd_state->free_cfg;
@@ -1053,7 +1053,7 @@ rd_cfg_alloc(void)
   return result;
 }
 
-internal void
+void
 rd_cfg_release(RD_Cfg *cfg)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1073,7 +1073,7 @@ rd_cfg_release(RD_Cfg *cfg)
   scratch_end(scratch);
 }
 
-internal RD_Cfg *
+RD_Cfg *
 rd_cfg_new(RD_Cfg *parent, String8 string)
 {
   RD_Cfg *cfg = rd_cfg_alloc();
@@ -1082,7 +1082,7 @@ rd_cfg_new(RD_Cfg *parent, String8 string)
   return cfg;
 }
 
-internal RD_Cfg *
+RD_Cfg *
 rd_cfg_newf(RD_Cfg *parent, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1095,7 +1095,7 @@ rd_cfg_newf(RD_Cfg *parent, char *fmt, ...)
   return result;
 }
 
-internal void
+void
 rd_cfg_equip_string(RD_Cfg *cfg, String8 string)
 {
   if(cfg->string.size != 0)
@@ -1105,14 +1105,14 @@ rd_cfg_equip_string(RD_Cfg *cfg, String8 string)
   cfg->string = rd_name_alloc(string);
 }
 
-internal void
+void
 rd_cfg_insert_child(RD_Cfg *parent, RD_Cfg *prev_child, RD_Cfg *new_child)
 {
   DLLInsert_NPZ(&rd_nil_cfg, parent->first, parent->last, prev_child, new_child, next, prev);
   new_child->parent = parent;
 }
 
-internal void
+void
 rd_cfg_unhook(RD_Cfg *parent, RD_Cfg *child)
 {
   if(parent == child->parent && parent != &rd_nil_cfg)
@@ -1122,7 +1122,7 @@ rd_cfg_unhook(RD_Cfg *parent, RD_Cfg *child)
   }
 }
 
-internal RD_Cfg *
+RD_Cfg *
 rd_cfg_child_from_string(RD_Cfg *parent, String8 string)
 {
   RD_Cfg *child = &rd_nil_cfg;
@@ -1137,7 +1137,7 @@ rd_cfg_child_from_string(RD_Cfg *parent, String8 string)
   return child;
 }
 
-internal RD_CfgList
+RD_CfgList
 rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, String8 string)
 {
   RD_CfgList result = {0};
@@ -1151,7 +1151,7 @@ rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, String8 string)
   return result;
 }
 
-internal RD_CfgList
+RD_CfgList
 rd_cfg_top_level_list_from_string(Arena *arena, String8 string)
 {
   RD_CfgList result = {0};
@@ -1168,7 +1168,7 @@ rd_cfg_top_level_list_from_string(Arena *arena, String8 string)
   return result;
 }
 
-internal RD_CfgList
+RD_CfgList
 rd_cfg_tree_list_from_string(Arena *arena, String8 string)
 {
   RD_CfgList result = {0};
@@ -1207,7 +1207,7 @@ rd_cfg_tree_list_from_string(Arena *arena, String8 string)
   return result;
 }
 
-internal String8
+String8
 rd_string_from_cfg_tree(Arena *arena, RD_Cfg *cfg)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1322,7 +1322,7 @@ rd_string_from_cfg_tree(Arena *arena, RD_Cfg *cfg)
   return result;
 }
 
-internal RD_CfgRec
+RD_CfgRec
 rd_cfg_rec__depth_first(RD_Cfg *root, RD_Cfg *cfg)
 {
   RD_CfgRec rec = {&rd_nil_cfg};
@@ -1342,7 +1342,7 @@ rd_cfg_rec__depth_first(RD_Cfg *root, RD_Cfg *cfg)
   return rec;
 }
 
-internal void
+void
 rd_cfg_list_push(Arena *arena, RD_CfgList *list, RD_Cfg *cfg)
 {
   RD_CfgNode *n = push_array(arena, RD_CfgNode, 1);
@@ -1356,7 +1356,7 @@ rd_cfg_list_push(Arena *arena, RD_CfgList *list, RD_Cfg *cfg)
 
 //- rjf: entity allocation + tree forming
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_alloc(RD_Entity *parent, RD_EntityKind kind)
 {
   B32 user_defined_lifetime = !!(rd_entity_kind_flags_table[kind] & RD_EntityKindFlag_UserDefinedLifetime);
@@ -1425,7 +1425,7 @@ rd_entity_alloc(RD_Entity *parent, RD_EntityKind kind)
   return entity;
 }
 
-internal void
+void
 rd_entity_mark_for_deletion(RD_Entity *entity)
 {
   if(!rd_entity_is_nil(entity))
@@ -1435,7 +1435,7 @@ rd_entity_mark_for_deletion(RD_Entity *entity)
   }
 }
 
-internal void
+void
 rd_entity_release(RD_Entity *entity)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1479,7 +1479,7 @@ rd_entity_release(RD_Entity *entity)
   scratch_end(scratch);
 }
 
-internal void
+void
 rd_entity_change_parent(RD_Entity *entity, RD_Entity *old_parent, RD_Entity *new_parent, RD_Entity *prev_child)
 {
   Assert(entity->parent == old_parent);
@@ -1502,7 +1502,7 @@ rd_entity_change_parent(RD_Entity *entity, RD_Entity *old_parent, RD_Entity *new
   }
 }
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_child_from_kind_or_alloc(RD_Entity *entity, RD_EntityKind kind)
 {
   RD_Entity *child = rd_entity_child_from_kind(entity, kind);
@@ -1515,7 +1515,7 @@ rd_entity_child_from_kind_or_alloc(RD_Entity *entity, RD_EntityKind kind)
 
 //- rjf: entity simple equipment
 
-internal void
+void
 rd_entity_equip_txt_pt(RD_Entity *entity, TxtPt point)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1523,14 +1523,14 @@ rd_entity_equip_txt_pt(RD_Entity *entity, TxtPt point)
   entity->flags |= RD_EntityFlag_HasTextPoint;
 }
 
-internal void
+void
 rd_entity_equip_disabled(RD_Entity *entity, B32 value)
 {
   rd_require_entity_nonnil(entity, return);
   entity->disabled = value;
 }
 
-internal void
+void
 rd_entity_equip_u64(RD_Entity *entity, U64 u64)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1538,7 +1538,7 @@ rd_entity_equip_u64(RD_Entity *entity, U64 u64)
   entity->flags |= RD_EntityFlag_HasU64;
 }
 
-internal void
+void
 rd_entity_equip_color_rgba(RD_Entity *entity, Vec4F32 rgba)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1548,7 +1548,7 @@ rd_entity_equip_color_rgba(RD_Entity *entity, Vec4F32 rgba)
   rd_entity_equip_color_hsva(entity, hsva);
 }
 
-internal void
+void
 rd_entity_equip_color_hsva(RD_Entity *entity, Vec4F32 hsva)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1556,14 +1556,14 @@ rd_entity_equip_color_hsva(RD_Entity *entity, Vec4F32 hsva)
   entity->flags |= RD_EntityFlag_HasColor;
 }
 
-internal void
+void
 rd_entity_equip_cfg_src(RD_Entity *entity, RD_CfgSrc cfg_src)
 {
   rd_require_entity_nonnil(entity, return);
   entity->cfg_src = cfg_src;
 }
 
-internal void
+void
 rd_entity_equip_timestamp(RD_Entity *entity, U64 timestamp)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1572,7 +1572,7 @@ rd_entity_equip_timestamp(RD_Entity *entity, U64 timestamp)
 
 //- rjf: control layer correllation equipment
 
-internal void
+void
 rd_entity_equip_vaddr(RD_Entity *entity, U64 vaddr)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1582,7 +1582,7 @@ rd_entity_equip_vaddr(RD_Entity *entity, U64 vaddr)
 
 //- rjf: name equipment
 
-internal void
+void
 rd_entity_equip_name(RD_Entity *entity, String8 name)
 {
   rd_require_entity_nonnil(entity, return);
@@ -1602,7 +1602,7 @@ rd_entity_equip_name(RD_Entity *entity, String8 name)
 
 //- rjf: file path map override lookups
 
-internal String8
+String8
 rd_mapped_from_file_path(Arena *arena, String8 file_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1661,7 +1661,7 @@ rd_mapped_from_file_path(Arena *arena, String8 file_path)
   return result;
 }
 
-internal String8List
+String8List
 rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
 {
   // NOTE(rjf): This path, given some target file path, scans all file path map
@@ -1736,13 +1736,13 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
 
 //- rjf: top-level state queries
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_root(void)
 {
   return rd_state->entities_root;
 }
 
-internal RD_EntityList
+RD_EntityList
 rd_push_entity_list_with_kind(Arena *arena, RD_EntityKind kind)
 {
   ProfBeginFunction();
@@ -1760,7 +1760,7 @@ rd_push_entity_list_with_kind(Arena *arena, RD_EntityKind kind)
   return result;
 }
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_from_id(RD_EntityID id)
 {
   RD_Entity *result = &rd_nil_entity;
@@ -1777,7 +1777,7 @@ rd_entity_from_id(RD_EntityID id)
   return result;
 }
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_from_name_and_kind(String8 string, RD_EntityKind kind)
 {
   RD_Entity *result = &rd_nil_entity;
@@ -1796,7 +1796,7 @@ rd_entity_from_name_and_kind(String8 string, RD_EntityKind kind)
 ////////////////////////////////
 //~ rjf: Frontend Entity Info Extraction
 
-internal D_Target
+D_Target
 rd_d_target_from_entity(RD_Entity *entity)
 {
   RD_Entity *src_target_exe   = rd_entity_child_from_kind(entity, RD_EntityKind_Executable);
@@ -1818,7 +1818,7 @@ rd_d_target_from_entity(RD_Entity *entity)
   return target;
 }
 
-internal DR_FancyStringList
+DR_FancyStringList
 rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_color, F32 size)
 {
   DR_FancyStringList result = {0};
@@ -2004,7 +2004,7 @@ rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_co
 ////////////////////////////////
 //~ rjf: Control Entity Info Extraction
 
-internal Vec4F32
+Vec4F32
 rd_rgba_from_ctrl_entity(CTRL_Entity *entity)
 {
   Vec4F32 result = rd_rgba_from_theme_color(RD_ThemeColor_Text);
@@ -2032,7 +2032,7 @@ rd_rgba_from_ctrl_entity(CTRL_Entity *entity)
   return result;
 }
 
-internal String8
+String8
 rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
 {
   String8 string = entity->string;
@@ -2047,7 +2047,7 @@ rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
   return string;
 }
 
-internal DR_FancyStringList
+DR_FancyStringList
 rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secondary_color, F32 size, B32 include_extras)
 {
   DR_FancyStringList result = {0};
@@ -2156,7 +2156,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secon
 
 //- rjf: entity <-> eval space
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_from_eval_space(E_Space space)
 {
   RD_Entity *entity = &rd_nil_entity;
@@ -2168,7 +2168,7 @@ rd_entity_from_eval_space(E_Space space)
   return entity;
 }
 
-internal E_Space
+E_Space
 rd_eval_space_from_entity(RD_Entity *entity)
 {
   E_Space space = e_space_make(RD_EvalSpaceKind_MetaEntity);
@@ -2180,7 +2180,7 @@ rd_eval_space_from_entity(RD_Entity *entity)
 
 //- rjf: ctrl entity <-> eval space
 
-internal CTRL_Entity *
+CTRL_Entity *
 rd_ctrl_entity_from_eval_space(E_Space space)
 {
   CTRL_Entity *entity = &ctrl_entity_nil;
@@ -2195,7 +2195,7 @@ rd_ctrl_entity_from_eval_space(E_Space space)
   return entity;
 }
 
-internal E_Space
+E_Space
 rd_eval_space_from_ctrl_entity(CTRL_Entity *entity, E_SpaceKind kind)
 {
   E_Space space = e_space_make(kind);
@@ -2206,7 +2206,7 @@ rd_eval_space_from_ctrl_entity(CTRL_Entity *entity, E_SpaceKind kind)
 
 //- rjf: entity -> meta eval
 
-internal CTRL_MetaEval *
+CTRL_MetaEval *
 rd_ctrl_meta_eval_from_entity(Arena *arena, RD_Entity *entity)
 {
   ProfBeginFunction();
@@ -2273,7 +2273,7 @@ rd_ctrl_meta_eval_from_entity(Arena *arena, RD_Entity *entity)
   return meval;
 }
 
-internal CTRL_MetaEval *
+CTRL_MetaEval *
 rd_ctrl_meta_eval_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
 {
   ProfBeginFunction();
@@ -2319,7 +2319,7 @@ rd_ctrl_meta_eval_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
 
 //- rjf: eval space reads/writes
 
-internal B32
+B32
 rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -2457,7 +2457,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
   return result;
 }
 
-internal B32
+B32
 rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
 {
   B32 result = 0;
@@ -2594,7 +2594,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
 
 //- rjf: asynchronous streamed reads -> hashes from spaces
 
-internal U128
+U128
 rd_key_from_eval_space_range(E_Space space, Rng1U64 range, B32 zero_terminated)
 {
   U128 result = {0};
@@ -2618,7 +2618,7 @@ rd_key_from_eval_space_range(E_Space space, Rng1U64 range, B32 zero_terminated)
 
 //- rjf: space -> entire range
 
-internal Rng1U64
+Rng1U64
 rd_whole_range_from_eval_space(E_Space space)
 {
   Rng1U64 result = {0};
@@ -2657,7 +2657,7 @@ rd_whole_range_from_eval_space(E_Space space)
 
 //- rjf: writing values back to child processes
 
-internal B32
+B32
 rd_commit_eval_value_string(E_Eval dst_eval, String8 string, B32 string_needs_unescaping)
 {
   B32 result = 0;
@@ -2740,7 +2740,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string, B32 string_needs_un
 
 //- rjf: view rule config tree info extraction
 
-internal U64
+U64
 rd_base_offset_from_eval(E_Eval eval)
 {
   if(e_type_kind_is_pointer_or_ref(e_type_kind_from_key(eval.type_key)))
@@ -2750,7 +2750,7 @@ rd_base_offset_from_eval(E_Eval eval)
   return eval.value.u64;
 }
 
-internal E_Value
+E_Value
 rd_value_from_params_key(MD_Node *params, String8 key)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -2762,7 +2762,7 @@ rd_value_from_params_key(MD_Node *params, String8 key)
   return value_eval.value;
 }
 
-internal Rng1U64
+Rng1U64
 rd_range_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -2796,7 +2796,7 @@ rd_range_from_eval_params(E_Eval eval, MD_Node *params)
   return result;
 }
 
-internal TXT_LangKind
+TXT_LangKind
 rd_lang_kind_from_eval_params(E_Eval eval, MD_Node *params)
 {
   TXT_LangKind lang_kind = TXT_LangKind_Null;
@@ -2813,7 +2813,7 @@ rd_lang_kind_from_eval_params(E_Eval eval, MD_Node *params)
   return lang_kind;
 }
 
-internal Arch
+Arch
 rd_arch_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Arch arch = Arch_Null;
@@ -2826,7 +2826,7 @@ rd_arch_from_eval_params(E_Eval eval, MD_Node *params)
   return arch;
 }
 
-internal Vec2S32
+Vec2S32
 rd_dim2s32_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Vec2S32 dim = v2s32(1, 1);
@@ -2837,7 +2837,7 @@ rd_dim2s32_from_eval_params(E_Eval eval, MD_Node *params)
   return dim;
 }
 
-internal R_Tex2DFormat
+R_Tex2DFormat
 rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node *params)
 {
   R_Tex2DFormat result = R_Tex2DFormat_RGBA8;
@@ -2857,7 +2857,7 @@ rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node *params)
 
 //- rjf: eval <-> file path
 
-internal String8
+String8
 rd_file_path_from_eval_string(Arena *arena, String8 string)
 {
   String8 result = {0};
@@ -2873,7 +2873,7 @@ rd_file_path_from_eval_string(Arena *arena, String8 string)
   return result;
 }
 
-internal String8
+String8
 rd_eval_string_from_file_path(Arena *arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -2888,7 +2888,7 @@ rd_eval_string_from_file_path(Arena *arena, String8 string)
 
 //- rjf: allocation/releasing
 
-internal RD_View *
+RD_View *
 rd_view_alloc(void)
 {
   // rjf: allocate
@@ -2926,7 +2926,7 @@ rd_view_alloc(void)
   return view;
 }
 
-internal void
+void
 rd_view_release(RD_View *view)
 {
   DLLRemove_NPZ(&rd_nil_view, rd_state->first_view, rd_state->last_view, view, alloc_next, alloc_prev);
@@ -2957,7 +2957,7 @@ rd_view_release(RD_View *view)
 
 //- rjf: equipment
 
-internal void
+void
 rd_view_equip_spec(RD_View *view, RD_ViewRuleInfo *spec, String8 query, MD_Node *params)
 {
   // rjf: fill params tree
@@ -2997,7 +2997,7 @@ rd_view_equip_spec(RD_View *view, RD_ViewRuleInfo *spec, String8 query, MD_Node 
   view->is_filtering_t = 0;
 }
 
-internal void
+void
 rd_view_equip_query(RD_View *view, String8 query)
 {
   view->query_string_size = Min(sizeof(view->query_buffer), query.size);
@@ -3005,7 +3005,7 @@ rd_view_equip_query(RD_View *view, String8 query)
   view->query_cursor = view->query_mark = txt_pt(1, query.size+1);
 }
 
-internal void
+void
 rd_view_equip_loading_info(RD_View *view, B32 is_loading, U64 progress_v, U64 progress_target)
 {
   view->loading_t_target = (F32)!!is_loading;
@@ -3019,7 +3019,7 @@ rd_view_equip_loading_info(RD_View *view, B32 is_loading, U64 progress_v, U64 pr
 
 //- rjf: user state extensions
 
-internal void *
+void *
 rd_view_get_or_push_user_state(RD_View *view, U64 size)
 {
   void *result = view->user_data;
@@ -3030,7 +3030,7 @@ rd_view_get_or_push_user_state(RD_View *view, U64 size)
   return result;
 }
 
-internal Arena *
+Arena *
 rd_view_push_arena_ext(RD_View *view)
 {
   RD_ArenaExt *ext = push_array(view->arena, RD_ArenaExt, 1);
@@ -3041,7 +3041,7 @@ rd_view_push_arena_ext(RD_View *view)
 
 //- rjf: param saving
 
-internal void
+void
 rd_view_store_param(RD_View *view, String8 key, String8 value)
 {
   B32 new_copy = 0;
@@ -3080,7 +3080,7 @@ rd_view_store_param(RD_View *view, String8 key, String8 value)
   key_node->last = value_parse.root->last;
 }
 
-internal void
+void
 rd_view_store_paramf(RD_View *view, String8 key, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3097,21 +3097,21 @@ rd_view_store_paramf(RD_View *view, String8 key, char *fmt, ...)
 
 //- rjf: view info extraction
 
-internal Arena *
+Arena *
 rd_view_arena(void)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   return view->arena;
 }
 
-internal UI_ScrollPt2
+UI_ScrollPt2
 rd_view_scroll_pos(void)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   return view->scroll_pos;
 }
 
-internal String8
+String8
 rd_view_expr_string(void)
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
@@ -3120,7 +3120,7 @@ rd_view_expr_string(void)
   return expr_string;
 }
 
-internal String8
+String8
 rd_view_filter(void)
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
@@ -3131,7 +3131,7 @@ rd_view_filter(void)
 
 //- rjf: pushing/attaching view resources
 
-internal void *
+void *
 rd_view_state_by_size(U64 size)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
@@ -3139,7 +3139,7 @@ rd_view_state_by_size(U64 size)
   return result;
 }
 
-internal Arena *
+Arena *
 rd_push_view_arena(void)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
@@ -3149,7 +3149,7 @@ rd_push_view_arena(void)
 
 //- rjf: storing view-attached state
 
-internal void
+void
 rd_store_view_expr_string(String8 string)
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
@@ -3157,7 +3157,7 @@ rd_store_view_expr_string(String8 string)
   rd_view_equip_query(view, string);
 }
 
-internal void
+void
 rd_store_view_filter(String8 string)
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
@@ -3165,28 +3165,28 @@ rd_store_view_filter(String8 string)
   rd_view_equip_query(view, string);
 }
 
-internal void
+void
 rd_store_view_loading_info(B32 is_loading, U64 progress_u64, U64 progress_u64_target)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   rd_view_equip_loading_info(view, is_loading, progress_u64, progress_u64_target);
 }
 
-internal void
+void
 rd_store_view_scroll_pos(UI_ScrollPt2 pos)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   view->scroll_pos = pos;
 }
 
-internal void
+void
 rd_store_view_param(String8 key, String8 value)
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   rd_view_store_param(view, key, value);
 }
 
-internal void
+void
 rd_store_view_paramf(String8 key, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3201,7 +3201,7 @@ rd_store_view_paramf(String8 key, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Expand-Keyed Transient View Functions
 
-internal RD_TransientViewNode *
+RD_TransientViewNode *
 rd_transient_view_node_from_ev_key(RD_View *owner_view, EV_Key key)
 {
   if(owner_view->transient_view_slots_count == 0)
@@ -3243,7 +3243,7 @@ rd_transient_view_node_from_ev_key(RD_View *owner_view, EV_Key key)
 ////////////////////////////////
 //~ rjf: Panel State Functions
 
-internal RD_Panel *
+RD_Panel *
 rd_panel_alloc(RD_Window *ws)
 {
   RD_Panel *panel = ws->free_panel;
@@ -3265,7 +3265,7 @@ rd_panel_alloc(RD_Window *ws)
   return panel;
 }
 
-internal void
+void
 rd_panel_release(RD_Window *ws, RD_Panel *panel)
 {
   rd_panel_release_all_views(panel);
@@ -3273,7 +3273,7 @@ rd_panel_release(RD_Window *ws, RD_Panel *panel)
   panel->generation += 1;
 }
 
-internal void
+void
 rd_panel_release_all_views(RD_Panel *panel)
 {
   for(RD_View *view = panel->first_tab_view, *next = 0; !rd_view_is_nil(view); view = next)
@@ -3289,7 +3289,7 @@ rd_panel_release_all_views(RD_Panel *panel)
 ////////////////////////////////
 //~ rjf: Window State Functions
 
-internal RD_Window *
+RD_Window *
 rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
 {
   RD_Window *window = rd_state->free_window;
@@ -3389,7 +3389,7 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   return window;
 }
 
-internal RD_Window *
+RD_Window *
 rd_window_from_os_handle(OS_Handle os)
 {
   RD_Window *result = 0;
@@ -3408,7 +3408,7 @@ rd_window_from_os_handle(OS_Handle os)
 #pragma optimize("", off)
 #endif
 
-internal void
+void
 rd_window_frame(RD_Window *ws)
 {
   ProfBeginFunction();
@@ -8936,7 +8936,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(procedures)      {return rd_ev_
 EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_DEF(procedures)     {return rd_ev_view_rule_expr_id_from_num__debug_info_tables(num, user_data, RDI_SectionKind_Procedures); }
 EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_DEF(procedures)     {return rd_ev_view_rule_expr_num_from_id__debug_info_tables(id,  user_data, RDI_SectionKind_Procedures); }
 
-internal EV_ExpandInfo
+EV_ExpandInfo
 rd_ev_view_rule_expr_expand_info__meta_entities(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, RD_EntityKind kind)
 {
   RD_EntityExpandAccel *accel = push_array(arena, RD_EntityExpandAccel, 1);
@@ -8985,7 +8985,7 @@ rd_ev_view_rule_expr_expand_info__meta_entities(Arena *arena, EV_View *view, Str
   return info;
 }
 
-internal EV_ExpandRangeInfo
+EV_ExpandRangeInfo
 rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, Rng1U64 idx_range, void *user_data, RD_EntityKind kind, B32 add_new_at_top)
 {
   RD_EntityExpandAccel *accel = (RD_EntityExpandAccel *)user_data;
@@ -9026,7 +9026,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena *arena, EV_View *vie
   return result;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_id_from_num__meta_entities(U64 num, void *user_data, RD_EntityKind kind, B32 add_new_at_top)
 {
   U64 id = 0;
@@ -9043,7 +9043,7 @@ rd_ev_view_rule_expr_id_from_num__meta_entities(U64 num, void *user_data, RD_Ent
   return id;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_num_from_id__meta_entities(U64 id, void *user_data, RD_EntityKind kind, B32 add_new_at_top)
 {
   RD_EntityExpandAccel *accel = (RD_EntityExpandAccel *)user_data;
@@ -9064,7 +9064,7 @@ rd_ev_view_rule_expr_num_from_id__meta_entities(U64 id, void *user_data, RD_Enti
   return num;
 }
 
-internal EV_ExpandInfo
+EV_ExpandInfo
 rd_ev_view_rule_expr_expand_info__meta_ctrl_entities(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel *accel = push_array(arena, RD_CtrlEntityExpandAccel, 1);
@@ -9102,7 +9102,7 @@ rd_ev_view_rule_expr_expand_info__meta_ctrl_entities(Arena *arena, EV_View *view
   return info;
 }
 
-internal EV_ExpandRangeInfo
+EV_ExpandRangeInfo
 rd_ev_view_rule_expr_expand_range_info__meta_ctrl_entities(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, Rng1U64 idx_range, void *user_data, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel *accel = (RD_CtrlEntityExpandAccel *)user_data;
@@ -9125,7 +9125,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_ctrl_entities(Arena *arena, EV_View
   return result;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_id_from_num__meta_ctrl_entities(U64 num, void *user_data, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel *accel = (RD_CtrlEntityExpandAccel *)user_data;
@@ -9137,7 +9137,7 @@ rd_ev_view_rule_expr_id_from_num__meta_ctrl_entities(U64 num, void *user_data, C
   return id;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(U64 id, void *user_data, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel *accel = (RD_CtrlEntityExpandAccel *)user_data;
@@ -9164,7 +9164,7 @@ struct RD_DebugInfoTableExpandAccel
   DI_SearchItemArray items;
 };
 
-internal EV_ExpandInfo
+EV_ExpandInfo
 rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel *accel = push_array(arena, RD_DebugInfoTableExpandAccel, 1);
@@ -9201,7 +9201,7 @@ rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena *arena, EV_View *view,
   return info;
 }
 
-internal EV_ExpandRangeInfo
+EV_ExpandRangeInfo
 rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, Rng1U64 idx_range, void *user_data, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel *accel = (RD_DebugInfoTableExpandAccel *)user_data;
@@ -9305,7 +9305,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena *arena, EV_View 
   return result;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_id_from_num__debug_info_tables(U64 num, void *user_data, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel *accel = (RD_DebugInfoTableExpandAccel *)user_data;
@@ -9317,7 +9317,7 @@ rd_ev_view_rule_expr_id_from_num__debug_info_tables(U64 num, void *user_data, RD
   return id;
 }
 
-internal U64
+U64
 rd_ev_view_rule_expr_num_from_id__debug_info_tables(U64 id, void *user_data, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel *accel = (RD_DebugInfoTableExpandAccel *)user_data;
@@ -9325,7 +9325,7 @@ rd_ev_view_rule_expr_num_from_id__debug_info_tables(U64 id, void *user_data, RDI
   return num;
 }
 
-internal EV_View *
+EV_View *
 rd_ev_view_from_key(U64 key)
 {
   U64 slot_idx = key % rd_state->eval_viz_view_cache_slots_count;
@@ -9357,7 +9357,7 @@ rd_ev_view_from_key(U64 key)
   return node->v;
 }
 
-internal F32
+F32
 rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, S32 depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out)
 {
   ProfBeginFunction();
@@ -9737,7 +9737,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 defaul
   return space_taken;
 }
 
-internal String8
+String8
 rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -9751,7 +9751,7 @@ rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix,
 ////////////////////////////////
 //~ rjf: Hover Eval
 
-internal void
+void
 rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, U64 vaddr, String8 string)
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
@@ -9779,7 +9779,7 @@ rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, U64 vaddr, String8 s
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister
 
-internal void
+void
 rd_autocomp_lister_item_chunk_list_push(Arena *arena, RD_AutoCompListerItemChunkList *list, U64 cap, RD_AutoCompListerItem *item)
 {
   RD_AutoCompListerItemChunkNode *n = list->last;
@@ -9796,7 +9796,7 @@ rd_autocomp_lister_item_chunk_list_push(Arena *arena, RD_AutoCompListerItemChunk
   list->total_count += 1;
 }
 
-internal RD_AutoCompListerItemArray
+RD_AutoCompListerItemArray
 rd_autocomp_lister_item_array_from_chunk_list(Arena *arena, RD_AutoCompListerItemChunkList *list)
 {
   RD_AutoCompListerItemArray array = {0};
@@ -9811,7 +9811,7 @@ rd_autocomp_lister_item_array_from_chunk_list(Arena *arena, RD_AutoCompListerIte
   return array;
 }
 
-internal int
+int
 rd_autocomp_lister_item_qsort_compare(RD_AutoCompListerItem *a, RD_AutoCompListerItem *b)
 {
   int result = 0;
@@ -9846,13 +9846,13 @@ rd_autocomp_lister_item_qsort_compare(RD_AutoCompListerItem *a, RD_AutoCompListe
   return result;
 }
 
-internal void
+void
 rd_autocomp_lister_item_array_sort__in_place(RD_AutoCompListerItemArray *array)
 {
   quick_sort(array->v, array->count, sizeof(array->v[0]), rd_autocomp_lister_item_qsort_compare);
 }
 
-internal String8
+String8
 rd_autocomp_query_word_from_input_string_off(String8 input, U64 cursor_off)
 {
   U64 word_start_off = 0;
@@ -9867,7 +9867,7 @@ rd_autocomp_query_word_from_input_string_off(String8 input, U64 cursor_off)
   return query;
 }
 
-internal String8
+String8
 rd_autocomp_query_path_from_input_string_off(String8 input, U64 cursor_off)
 {
   // rjf: find start of path
@@ -9901,7 +9901,7 @@ rd_autocomp_query_path_from_input_string_off(String8 input, U64 cursor_off)
   return path;
 }
 
-internal RD_AutoCompListerParams
+RD_AutoCompListerParams
 rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 string, U64 cursor_off)
 {
   RD_AutoCompListerParams params = {0};
@@ -10042,7 +10042,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 stri
   return params;
 }
 
-internal void
+void
 rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams *params, String8 input, U64 cursor_off)
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
@@ -10073,14 +10073,14 @@ rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams *params, S
 ////////////////////////////////
 //~ rjf: Search Strings
 
-internal void
+void
 rd_set_search_string(String8 string)
 {
   arena_clear(rd_state->string_search_arena);
   rd_state->string_search_string = push_str8_copy(rd_state->string_search_arena, string);
 }
 
-internal String8
+String8
 rd_push_search_string(Arena *arena)
 {
   String8 result = push_str8_copy(arena, rd_state->string_search_string);
@@ -10092,7 +10092,7 @@ rd_push_search_string(Arena *arena)
 
 //- rjf: keybindings
 
-internal OS_Key
+OS_Key
 rd_os_key_from_cfg_string(String8 string)
 {
   OS_Key result = OS_Key_Null;
@@ -10109,7 +10109,7 @@ rd_os_key_from_cfg_string(String8 string)
   return result;
 }
 
-internal void
+void
 rd_clear_bindings(void)
 {
   arena_clear(rd_state->key_map_arena);
@@ -10118,7 +10118,7 @@ rd_clear_bindings(void)
   rd_state->key_map_total_count = 0;
 }
 
-internal RD_BindingList
+RD_BindingList
 rd_bindings_from_name(Arena *arena, String8 name)
 {
   RD_BindingList result = {0};
@@ -10137,7 +10137,7 @@ rd_bindings_from_name(Arena *arena, String8 name)
   return result;
 }
 
-internal void
+void
 rd_bind_name(String8 name, RD_Binding binding)
 {
   if(binding.key != OS_Key_Null)
@@ -10172,7 +10172,7 @@ rd_bind_name(String8 name, RD_Binding binding)
   }
 }
 
-internal void
+void
 rd_unbind_name(String8 name, RD_Binding binding)
 {
   U64 hash = d_hash_from_string(name);
@@ -10190,7 +10190,7 @@ rd_unbind_name(String8 name, RD_Binding binding)
   }
 }
 
-internal String8List
+String8List
 rd_cmd_name_list_from_binding(Arena *arena, RD_Binding binding)
 {
   String8List result = {0};
@@ -10209,13 +10209,13 @@ rd_cmd_name_list_from_binding(Arena *arena, RD_Binding binding)
 
 //- rjf: colors
 
-internal Vec4F32
+Vec4F32
 rd_rgba_from_theme_color(RD_ThemeColor color)
 {
   return rd_state->cfg_theme.colors[color];
 }
 
-internal RD_ThemeColor
+RD_ThemeColor
 rd_theme_color_from_txt_token_kind(TXT_TokenKind kind)
 {
   RD_ThemeColor color = RD_ThemeColor_CodeDefault;
@@ -10232,7 +10232,7 @@ rd_theme_color_from_txt_token_kind(TXT_TokenKind kind)
   return color;
 }
 
-internal RD_ThemeColor
+RD_ThemeColor
 rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 string)
 {
   RD_ThemeColor color = RD_ThemeColor_CodeDefault;
@@ -10336,7 +10336,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
 
 //- rjf: code -> palette
 
-internal UI_Palette *
+UI_Palette *
 rd_palette_from_code(RD_PaletteCode code)
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
@@ -10346,14 +10346,14 @@ rd_palette_from_code(RD_PaletteCode code)
 
 //- rjf: fonts/sizes
 
-internal FNT_Tag
+FNT_Tag
 rd_font_from_slot(RD_FontSlot slot)
 {
   FNT_Tag result = rd_state->cfg_font_tags[slot];
   return result;
 }
 
-internal F32
+F32
 rd_font_size_from_slot(RD_FontSlot slot)
 {
   F32 result = 0;
@@ -10392,7 +10392,7 @@ rd_font_size_from_slot(RD_FontSlot slot)
   return result;
 }
 
-internal FNT_RasterFlags
+FNT_RasterFlags
 rd_raster_flags_from_slot(RD_FontSlot slot)
 {
   FNT_RasterFlags flags = FNT_RasterFlag_Smooth|FNT_RasterFlag_Hinted;
@@ -10408,7 +10408,7 @@ rd_raster_flags_from_slot(RD_FontSlot slot)
 
 //- rjf: settings
 
-internal RD_SettingVal
+RD_SettingVal
 rd_setting_val_from_code(RD_SettingCode code)
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
@@ -10433,13 +10433,13 @@ rd_setting_val_from_code(RD_SettingCode code)
 
 //- rjf: config serialization
 
-internal int
+int
 rd_qsort_compare__cfg_string_bindings(RD_StringBindingPair *a, RD_StringBindingPair *b)
 {
   return strncmp((char *)a->string.str, (char *)b->string.str, Min(a->string.size, b->string.size));
 }
 
-internal String8List
+String8List
 rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
 {
   ProfBeginFunction();
@@ -10981,7 +10981,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
 ////////////////////////////////
 //~ rjf: Process Control Info Stringification
 
-internal String8
+String8
 rd_string_from_exception_code(U32 code)
 {
   String8 string = {0};
@@ -10996,7 +10996,7 @@ rd_string_from_exception_code(U32 code)
   return string;
 }
 
-internal DR_FancyStringList
+DR_FancyStringList
 rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
 {
   CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, event->entity);
@@ -11142,7 +11142,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
 ////////////////////////////////
 //~ rjf: Continuous Frame Requests
 
-internal void
+void
 rd_request_frame(void)
 {
   rd_state->num_frames_requested = 4;
@@ -11153,7 +11153,7 @@ rd_request_frame(void)
 
 //- rjf: per-frame arena
 
-internal Arena *
+Arena *
 rd_frame_arena(void)
 {
   return rd_state->frame_arenas[rd_state->frame_index%ArrayCount(rd_state->frame_arenas)];
@@ -11161,7 +11161,7 @@ rd_frame_arena(void)
 
 //- rjf: config paths
 
-internal String8
+String8
 rd_cfg_path_from_src(RD_CfgSrc src)
 {
   return rd_state->cfg_paths[src];
@@ -11169,7 +11169,7 @@ rd_cfg_path_from_src(RD_CfgSrc src)
 
 //- rjf: entity cache queries
 
-internal RD_EntityList
+RD_EntityList
 rd_query_cached_entity_list_with_kind(RD_EntityKind kind)
 {
   ProfBeginFunction();
@@ -11193,7 +11193,7 @@ rd_query_cached_entity_list_with_kind(RD_EntityKind kind)
   return result;
 }
 
-internal RD_EntityList
+RD_EntityList
 rd_push_active_target_list(Arena *arena)
 {
   RD_EntityList active_targets = {0};
@@ -11208,7 +11208,7 @@ rd_push_active_target_list(Arena *arena)
   return active_targets;
 }
 
-internal RD_Entity *
+RD_Entity *
 rd_entity_from_ev_key_and_kind(EV_Key key, RD_EntityKind kind)
 {
   RD_Entity *result = &rd_nil_entity;
@@ -11227,7 +11227,7 @@ rd_entity_from_ev_key_and_kind(EV_Key key, RD_EntityKind kind)
 
 //- rjf: config state
 
-internal RD_CfgTable *
+RD_CfgTable *
 rd_cfg_table(void)
 {
   return &rd_state->cfg_table;
@@ -11236,21 +11236,21 @@ rd_cfg_table(void)
 ////////////////////////////////
 //~ rjf: Registers
 
-internal RD_Regs *
+RD_Regs *
 rd_regs(void)
 {
   RD_Regs *regs = &rd_state->top_regs->v;
   return regs;
 }
 
-internal RD_Regs *
+RD_Regs *
 rd_base_regs(void)
 {
   RD_Regs *regs = &rd_state->base_regs.v;
   return regs;
 }
 
-internal RD_Regs *
+RD_Regs *
 rd_push_regs_(RD_Regs *regs)
 {
   RD_RegsNode *n = push_array(rd_frame_arena(), RD_RegsNode, 1);
@@ -11259,7 +11259,7 @@ rd_push_regs_(RD_Regs *regs)
   return &n->v;
 }
 
-internal RD_Regs *
+RD_Regs *
 rd_pop_regs(void)
 {
   RD_Regs *regs = &rd_state->top_regs->v;
@@ -11271,7 +11271,7 @@ rd_pop_regs(void)
   return regs;
 }
 
-internal void
+void
 rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string)
 {
   String8 error = {0};
@@ -11363,7 +11363,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string)
 
 //- rjf: name -> info
 
-internal RD_CmdKind
+RD_CmdKind
 rd_cmd_kind_from_string(String8 string)
 {
   RD_CmdKind result = RD_CmdKind_Null;
@@ -11378,7 +11378,7 @@ rd_cmd_kind_from_string(String8 string)
   return result;
 }
 
-internal RD_CmdKindInfo *
+RD_CmdKindInfo *
 rd_cmd_kind_info_from_string(String8 string)
 {
   RD_CmdKindInfo *info = &rd_nil_cmd_kind_info;
@@ -11395,7 +11395,7 @@ rd_cmd_kind_info_from_string(String8 string)
 
 //- rjf: pushing
 
-internal void
+void
 rd_push_cmd(String8 name, RD_Regs *regs)
 {
   rd_cmd_list_push_new(rd_state->cmds_arenas[0], &rd_state->cmds[0], name, regs);
@@ -11403,7 +11403,7 @@ rd_push_cmd(String8 name, RD_Regs *regs)
 
 //- rjf: iterating
 
-internal B32
+B32
 rd_next_cmd(RD_Cmd **cmd)
 {
   U64 slot = rd_state->cmds_gen%ArrayCount(rd_state->cmds);
@@ -11431,7 +11431,7 @@ rd_next_cmd(RD_Cmd **cmd)
 # include "third_party/stb/stb_image.h"
 #endif
 
-internal void
+void
 rd_init(CmdLine *cmdln)
 {
   ProfBeginFunction();
@@ -11644,7 +11644,7 @@ rd_init(CmdLine *cmdln)
   ProfEnd();
 }
 
-internal void
+void
 rd_frame(void)
 {
   ProfBeginFunction();

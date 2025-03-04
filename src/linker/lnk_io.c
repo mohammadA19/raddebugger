@@ -53,13 +53,13 @@ lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_
 
 ////////////////////////////////
 
-internal void
+void
 lnk_log_read(String8 path, U64 size)
 {
   lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
 
-internal String8
+String8
 lnk_read_data_from_file_path(Arena *arena, String8 path)
 {
   String8 data = str8_zero();
@@ -120,7 +120,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   task->data_arr.v[task_id] = str8(buffer, read_size);
 }
 
-internal String8Array
+String8Array
 lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array path_arr)
 {
   Temp scratch = scratch_begin(&arena,1);
@@ -162,7 +162,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
   return result;
 }
 
-internal void
+void
 lnk_write_data_list_to_file_path(String8 path, String8List data)
 {
   ProfBeginV("Write %M to %S", data.total_size, path);
@@ -198,7 +198,7 @@ lnk_write_data_list_to_file_path(String8 path, String8List data)
   ProfEnd();
 }
 
-internal void
+void
 lnk_write_data_to_file_path(String8 path, String8 data)
 {
   Temp scratch = scratch_begin(0,0);
@@ -208,7 +208,7 @@ lnk_write_data_to_file_path(String8 path, String8 data)
   scratch_end(scratch);
 }
 
-internal String8List
+String8List
 lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
 {
   ProfBeginFunction();

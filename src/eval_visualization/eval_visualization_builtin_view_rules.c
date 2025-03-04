@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: View Rule Tree Info Extraction Helpers
 
-internal U64
+U64
 ev_base_offset_from_eval(E_Eval eval)
 {
   if(e_type_kind_is_pointer_or_ref(e_type_kind_from_key(eval.type_key)))
@@ -14,7 +14,7 @@ ev_base_offset_from_eval(E_Eval eval)
   return eval.value.u64;
 }
 
-internal E_Value
+E_Value
 ev_value_from_params(MD_Node *params)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -25,7 +25,7 @@ ev_value_from_params(MD_Node *params)
   return value_eval.value;
 }
 
-internal E_TypeKey
+E_TypeKey
 ev_type_key_from_params(MD_Node *params)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -37,7 +37,7 @@ ev_type_key_from_params(MD_Node *params)
   return type_key;
 }
 
-internal E_Value
+E_Value
 ev_value_from_params_key(MD_Node *params, String8 key)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -49,7 +49,7 @@ ev_value_from_params_key(MD_Node *params, String8 key)
   return value_eval.value;
 }
 
-internal Rng1U64
+Rng1U64
 ev_range_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -83,7 +83,7 @@ ev_range_from_eval_params(E_Eval eval, MD_Node *params)
   return result;
 }
 
-internal Arch
+Arch
 ev_arch_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Arch arch = Arch_Null;

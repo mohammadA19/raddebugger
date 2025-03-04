@@ -18,7 +18,7 @@ lnk_export_ordinal_compar(const void *a_, const void *b_)
   return cmp;
 }
 
-internal LNK_ExportTable *
+LNK_ExportTable *
 lnk_export_table_alloc(void)
 {
   ProfBeginFunction();
@@ -36,7 +36,7 @@ lnk_export_table_alloc(void)
   return exptab;
 }
 
-internal void
+void
 lnk_export_table_release(LNK_ExportTable **exptab_ptr)
 {
   ProfBeginFunction();
@@ -45,7 +45,7 @@ lnk_export_table_release(LNK_ExportTable **exptab_ptr)
   ProfEnd();
 }
 
-internal LNK_Export *
+LNK_Export *
 lnk_export_table_search(LNK_ExportTable *exptab, String8 name)
 {
   KeyValuePair *kv = hash_table_search_string(exptab->name_export_ht, name);
@@ -55,7 +55,7 @@ lnk_export_table_search(LNK_ExportTable *exptab, String8 name)
   return 0;
 }
 
-internal LNK_Export *
+LNK_Export *
 lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, LNK_ExportParse *exp_parse)
 {
   LNK_Export *exp = 0;
@@ -156,7 +156,7 @@ lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, L
   return exp;
 }
 
-internal LNK_ExportArray
+LNK_ExportArray
 lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
 {
   ProfBeginFunction();
@@ -170,7 +170,7 @@ lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
   return arr;
 }
 
-internal void
+void
 lnk_build_edata(LNK_ExportTable *exptab, LNK_SectionTable *st, LNK_SymbolTable *symtab, String8 image_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
@@ -287,7 +287,7 @@ exit:;
   ProfEnd();
 }
 
-internal void
+void
 lnk_collect_exports_from_obj_directives(LNK_ExportTable *exptab, LNK_ObjList obj_list, LNK_SymbolTable *symtab)
 {
   ProfBeginFunction();

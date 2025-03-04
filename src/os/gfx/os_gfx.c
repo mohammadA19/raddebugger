@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-internal String8
+String8
 os_string_from_event_kind(OS_EventKind kind)
 {
   String8 result = {0};
@@ -31,7 +31,7 @@ os_string_from_event_kind(OS_EventKind kind)
   return result;
 }
 
-internal String8List
+String8List
 os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
 {
   String8List result = {0};
@@ -45,7 +45,7 @@ os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
   return result;
 }
 
-internal U32
+U32
 os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
 {
   U32 result = 0;
@@ -159,14 +159,14 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   return result;
 }
 
-internal void
+void
 os_eat_event(OS_EventList *events, OS_Event *event)
 {
   DLLRemove(events->first, events->last, event);
   events->count -= 1;
 }
 
-internal B32
+B32
 os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
@@ -183,7 +183,7 @@ os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_
   return result;
 }
 
-internal B32
+B32
 os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
@@ -200,7 +200,7 @@ os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, O
   return result;
 }
 
-internal B32
+B32
 os_text(OS_EventList *events, OS_Handle window, U32 character)
 {
   B32 result = 0;
@@ -217,7 +217,7 @@ os_text(OS_EventList *events, OS_Handle window, U32 character)
   return result;
 }
 
-internal OS_EventList
+OS_EventList
 os_event_list_copy(Arena *arena, OS_EventList *src)
 {
   OS_EventList dst = {0};
@@ -232,7 +232,7 @@ os_event_list_copy(Arena *arena, OS_EventList *src)
   return dst;
 }
 
-internal void
+void
 os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
 {
   if(dst->last && to_push->first)
@@ -249,7 +249,7 @@ os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
   MemoryZeroStruct(to_push);
 }
 
-internal OS_Event *
+OS_Event *
 os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind)
 {
   OS_Event *evt = push_array(arena, OS_Event, 1);

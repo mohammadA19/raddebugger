@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Type Kind Enum Functions
 
-internal E_TypeKind
+E_TypeKind
 e_type_kind_from_base(TypeKind kind)
 {
   E_TypeKind result = E_TypeKind_Null;
@@ -35,7 +35,7 @@ e_type_kind_from_base(TypeKind kind)
   return result;
 }
 
-internal E_TypeKind
+E_TypeKind
 e_type_kind_from_rdi(RDI_TypeKind kind)
 {
   E_TypeKind result = E_TypeKind_Null;
@@ -100,7 +100,7 @@ e_type_kind_from_rdi(RDI_TypeKind kind)
   return result;
 }
 
-internal E_MemberKind
+E_MemberKind
 e_member_kind_from_rdi(RDI_MemberKind kind)
 {
   E_MemberKind result = E_MemberKind_Null;
@@ -120,7 +120,7 @@ e_member_kind_from_rdi(RDI_MemberKind kind)
   return result;
 }
 
-internal RDI_EvalTypeGroup
+RDI_EvalTypeGroup
 e_type_group_from_kind(E_TypeKind kind)
 {
   RDI_EvalTypeGroup result = 0;
@@ -164,14 +164,14 @@ e_type_group_from_kind(E_TypeKind kind)
   return result;
 }
 
-internal B32
+B32
 e_type_kind_is_integer(E_TypeKind kind)
 {
   B32 result = (E_TypeKind_FirstInteger <= kind && kind <= E_TypeKind_LastInteger);
   return result;
 }
 
-internal B32
+B32
 e_type_kind_is_signed(E_TypeKind kind)
 {
   B32 result = ((E_TypeKind_FirstSigned1 <= kind && kind <= E_TypeKind_LastSigned1) ||
@@ -179,7 +179,7 @@ e_type_kind_is_signed(E_TypeKind kind)
   return result;
 }
 
-internal B32
+B32
 e_type_kind_is_basic_or_enum(E_TypeKind kind)
 {
   B32 result = ((E_TypeKind_FirstBasic <= kind && kind <= E_TypeKind_LastBasic) ||
@@ -187,7 +187,7 @@ e_type_kind_is_basic_or_enum(E_TypeKind kind)
   return result;
 }
 
-internal B32
+B32
 e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 {
   B32 result = (kind == E_TypeKind_Ptr || kind == E_TypeKind_LRef || kind == E_TypeKind_RRef);
@@ -197,7 +197,7 @@ e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 ////////////////////////////////
 //~ rjf: Member Functions
 
-internal void
+void
 e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
 {
   E_MemberNode *n = push_array(arena, E_MemberNode, 1);
@@ -206,7 +206,7 @@ e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
   list->count += 1;
 }
 
-internal E_MemberArray
+E_MemberArray
 e_member_array_from_list(Arena *arena, E_MemberList *list)
 {
   E_MemberArray array = {0};
@@ -225,13 +225,13 @@ e_member_array_from_list(Arena *arena, E_MemberList *list)
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal E_TypeCtx *
+E_TypeCtx *
 e_selected_type_ctx(void)
 {
   return e_type_state->ctx;
 }
 
-internal void
+void
 e_select_type_ctx(E_TypeCtx *ctx)
 {
   if(e_type_state == 0)
@@ -257,14 +257,14 @@ e_select_type_ctx(E_TypeCtx *ctx)
 
 //- rjf: key constructors
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_zero(void)
 {
   E_TypeKey k = zero_struct;
   return k;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_basic(E_TypeKind kind)
 {
   E_TypeKey key = {E_TypeKeyKind_Basic};
@@ -272,7 +272,7 @@ e_type_key_basic(E_TypeKind kind)
   return key;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
 {
   E_TypeKey key = {E_TypeKeyKind_Ext};
@@ -289,7 +289,7 @@ e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
   return key;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_reg(Arch arch, REGS_RegCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_Reg};
@@ -298,7 +298,7 @@ e_type_key_reg(Arch arch, REGS_RegCode code)
   return key;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_RegAlias};
@@ -309,7 +309,7 @@ e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 
 //- rjf: constructed type construction
 
-internal U64
+U64
 e_hash_from_cons_type_params(E_ConsTypeParams *params)
 {
   U32 buffer[] =
@@ -327,7 +327,7 @@ e_hash_from_cons_type_params(E_ConsTypeParams *params)
   return hash;
 }
 
-internal B32
+B32
 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
 {
   B32 result = (l->kind == r->kind &&
@@ -364,7 +364,7 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_cons_(E_ConsTypeParams *params)
 {
   U64 content_hash = e_hash_from_cons_type_params(params);
@@ -444,21 +444,21 @@ e_type_key_cons_(E_ConsTypeParams *params)
 
 //- rjf: constructed type helpers
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_cons_array(E_TypeKey element_type_key, U64 count)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_Array, .direct_key = element_type_key, .count = count);
   return key;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, E_TypeFlags flags)
 {
   E_TypeKey key = e_type_key_cons(.arch = arch, .kind = E_TypeKind_Ptr, .flags = flags, .direct_key = element_type_key);
   return key;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_key_cons_base(Type *type)
 {
   E_TypeKey result = e_type_key_zero();
@@ -508,7 +508,7 @@ e_type_key_cons_base(Type *type)
 
 //- rjf: basic type key functions
 
-internal B32
+B32
 e_type_key_match(E_TypeKey l, E_TypeKey r)
 {
   B32 result = MemoryMatchStruct(&l, &r);
@@ -517,7 +517,7 @@ e_type_key_match(E_TypeKey l, E_TypeKey r)
 
 //- rjf: key -> info extraction
 
-internal U64
+U64
 e_hash_from_type_key(E_TypeKey key)
 {
   U64 hash = 0;
@@ -565,7 +565,7 @@ e_hash_from_type_key(E_TypeKey key)
   return hash;
 }
 
-internal E_TypeKind
+E_TypeKind
 e_type_kind_from_key(E_TypeKey key)
 {
   E_TypeKind kind = E_TypeKind_Null;
@@ -581,7 +581,7 @@ e_type_kind_from_key(E_TypeKey key)
   return kind;
 }
 
-internal E_Type *
+E_Type *
 e_type_from_key(Arena *arena, E_TypeKey key)
 {
   ProfBeginFunction();
@@ -1127,7 +1127,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
   return type;
 }
 
-internal U64
+U64
 e_type_byte_size_from_key(E_TypeKey key)
 {
   ProfBeginFunction();
@@ -1169,7 +1169,7 @@ e_type_byte_size_from_key(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_direct_from_key(E_TypeKey key)
 {
   E_TypeKey result = zero_struct;
@@ -1188,7 +1188,7 @@ e_type_direct_from_key(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_owner_from_key(E_TypeKey key)
 {
   E_TypeKey result = zero_struct;
@@ -1207,7 +1207,7 @@ e_type_owner_from_key(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_ptee_from_key(E_TypeKey key)
 {
   E_TypeKey result = key;
@@ -1239,7 +1239,7 @@ e_type_ptee_from_key(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_unwrap_enum(E_TypeKey key)
 {
   E_TypeKey result = key;
@@ -1258,7 +1258,7 @@ e_type_unwrap_enum(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_unwrap(E_TypeKey key)
 {
   E_TypeKey result = key;
@@ -1279,7 +1279,7 @@ e_type_unwrap(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
+E_TypeKey
 e_type_promote(E_TypeKey key)
 {
   E_TypeKey result = key;
@@ -1295,7 +1295,7 @@ e_type_promote(E_TypeKey key)
   return result;
 }
 
-internal B32
+B32
 e_type_match(E_TypeKey l, E_TypeKey r)
 {
   // rjf: unpack parameters
@@ -1406,7 +1406,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
   return result;
 }
 
-internal E_Member *
+E_Member *
 e_type_member_copy(Arena *arena, E_Member *src)
 {
   E_Member *dst = push_array(arena, E_Member, 1);
@@ -1417,7 +1417,7 @@ e_type_member_copy(Arena *arena, E_Member *src)
   return dst;
 }
 
-internal int
+int
 e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
 {
   int result = 0;
@@ -1432,7 +1432,7 @@ e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
   return result;
 }
 
-internal E_MemberArray
+E_MemberArray
 e_type_data_members_from_key(Arena *arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1574,7 +1574,7 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   return members;
 }
 
-internal E_Member *
+E_Member *
 e_type_member_from_array_name(E_MemberArray *members, String8 name)
 {
   E_Member *member = 0;
@@ -1591,7 +1591,7 @@ e_type_member_from_array_name(E_MemberArray *members, String8 name)
   return member;
 }
 
-internal void
+void
 e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
 {
   String8 keyword = {0};
@@ -1731,7 +1731,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
   }
 }
 
-internal void
+void
 e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec)
 {
   E_TypeKind kind = e_type_kind_from_key(key);
@@ -1809,7 +1809,7 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
   }
 }
 
-internal String8
+String8
 e_type_string_from_key(Arena *arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1824,7 +1824,7 @@ e_type_string_from_key(Arena *arena, E_TypeKey key)
 
 //- rjf: type key data structures
 
-internal void
+void
 e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 {
   E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
@@ -1833,7 +1833,7 @@ e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
   list->count += 1;
 }
 
-internal E_TypeKeyList
+E_TypeKeyList
 e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 {
   E_TypeKeyList dst = {0};
@@ -1847,7 +1847,7 @@ e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal E_MemberCacheNode *
+E_MemberCacheNode *
 e_member_cache_node_from_type_key(E_TypeKey key)
 {
   U64 hash = e_hash_from_string(5381, str8_struct(&key));
@@ -1882,7 +1882,7 @@ e_member_cache_node_from_type_key(E_TypeKey key)
   return node;
 }
 
-internal E_MemberArray
+E_MemberArray
 e_type_data_members_from_key__cached(E_TypeKey key)
 {
   E_MemberArray members = {0};
@@ -1894,7 +1894,7 @@ e_type_data_members_from_key__cached(E_TypeKey key)
   return members;
 }
 
-internal E_Member
+E_Member
 e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
 {
   E_Member result = {0};

@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal U64
+U64
 ctrl_hash_from_string(String8 string)
 {
   U64 result = 5381;
@@ -20,7 +20,7 @@ ctrl_hash_from_string(String8 string)
   return result;
 }
 
-internal U64
+U64
 ctrl_hash_from_handle(CTRL_Handle handle)
 {
   U64 buf[] = {handle.machine_id, handle.dmn_handle.u64[0]};
@@ -28,7 +28,7 @@ ctrl_hash_from_handle(CTRL_Handle handle)
   return hash;
 }
 
-internal CTRL_EventCause
+CTRL_EventCause
 ctrl_event_cause_from_dmn_event_kind(DMN_EventKind event_kind)
 {
   CTRL_EventCause cause = CTRL_EventCause_Null;
@@ -43,7 +43,7 @@ ctrl_event_cause_from_dmn_event_kind(DMN_EventKind event_kind)
   return cause;
 }
 
-internal String8
+String8
 ctrl_string_from_event_kind(CTRL_EventKind kind)
 {
   String8 result = {0};
@@ -71,7 +71,7 @@ ctrl_string_from_event_kind(CTRL_EventKind kind)
   return result;
 }
 
-internal String8
+String8
 ctrl_string_from_msg_kind(CTRL_MsgKind kind)
 {
   String8 result = {0};
@@ -94,21 +94,21 @@ ctrl_string_from_msg_kind(CTRL_MsgKind kind)
 ////////////////////////////////
 //~ rjf: Machine/Handle Pair Type Functions
 
-internal CTRL_Handle
+CTRL_Handle
 ctrl_handle_zero(void)
 {
   CTRL_Handle handle = {0};
   return handle;
 }
 
-internal CTRL_Handle
+CTRL_Handle
 ctrl_handle_make(CTRL_MachineID machine_id, DMN_Handle dmn_handle)
 {
   CTRL_Handle handle = {machine_id, dmn_handle};
   return handle;
 }
 
-internal B32
+B32
 ctrl_handle_match(CTRL_Handle a, CTRL_Handle b)
 {
   B32 result = (a.machine_id == b.machine_id &&
@@ -116,7 +116,7 @@ ctrl_handle_match(CTRL_Handle a, CTRL_Handle b)
   return result;
 }
 
-internal void
+void
 ctrl_handle_list_push(Arena *arena, CTRL_HandleList *list, CTRL_Handle *pair)
 {
   CTRL_HandleNode *n = push_array(arena, CTRL_HandleNode, 1);
@@ -125,7 +125,7 @@ ctrl_handle_list_push(Arena *arena, CTRL_HandleList *list, CTRL_Handle *pair)
   list->count += 1;
 }
 
-internal CTRL_HandleList
+CTRL_HandleList
 ctrl_handle_list_copy(Arena *arena, CTRL_HandleList *src)
 {
   CTRL_HandleList dst = {0};
@@ -139,7 +139,7 @@ ctrl_handle_list_copy(Arena *arena, CTRL_HandleList *src)
 ////////////////////////////////
 //~ rjf: Trap Type Functions
 
-internal void
+void
 ctrl_trap_list_push(Arena *arena, CTRL_TrapList *list, CTRL_Trap *trap)
 {
   CTRL_TrapNode *node = push_array(arena, CTRL_TrapNode, 1);
@@ -148,7 +148,7 @@ ctrl_trap_list_push(Arena *arena, CTRL_TrapList *list, CTRL_Trap *trap)
   list->count += 1;
 }
 
-internal CTRL_TrapList
+CTRL_TrapList
 ctrl_trap_list_copy(Arena *arena, CTRL_TrapList *src)
 {
   CTRL_TrapList dst = {0};
@@ -162,7 +162,7 @@ ctrl_trap_list_copy(Arena *arena, CTRL_TrapList *src)
 ////////////////////////////////
 //~ rjf: User Breakpoint Type Functions
 
-internal void
+void
 ctrl_user_breakpoint_list_push(Arena *arena, CTRL_UserBreakpointList *list, CTRL_UserBreakpoint *bp)
 {
   CTRL_UserBreakpointNode *n = push_array(arena, CTRL_UserBreakpointNode, 1);
@@ -171,7 +171,7 @@ ctrl_user_breakpoint_list_push(Arena *arena, CTRL_UserBreakpointList *list, CTRL
   list->count += 1;
 }
 
-internal CTRL_UserBreakpointList
+CTRL_UserBreakpointList
 ctrl_user_breakpoint_list_copy(Arena *arena, CTRL_UserBreakpointList *src)
 {
   CTRL_UserBreakpointList dst = {0};
@@ -191,7 +191,7 @@ ctrl_user_breakpoint_list_copy(Arena *arena, CTRL_UserBreakpointList *src)
 
 //- rjf: deep copying
 
-internal void
+void
 ctrl_msg_deep_copy(Arena *arena, CTRL_Msg *dst, CTRL_Msg *src)
 {
   MemoryCopyStruct(dst, src);
@@ -206,7 +206,7 @@ ctrl_msg_deep_copy(Arena *arena, CTRL_Msg *dst, CTRL_Msg *src)
 
 //- rjf: list building
 
-internal CTRL_Msg *
+CTRL_Msg *
 ctrl_msg_list_push(Arena *arena, CTRL_MsgList *list)
 {
   CTRL_MsgNode *n = push_array(arena, CTRL_MsgNode, 1);
@@ -216,7 +216,7 @@ ctrl_msg_list_push(Arena *arena, CTRL_MsgList *list)
   return msg;
 }
 
-internal CTRL_MsgList
+CTRL_MsgList
 ctrl_msg_list_deep_copy(Arena *arena, CTRL_MsgList *src)
 {
   CTRL_MsgList dst = {0};
@@ -229,7 +229,7 @@ ctrl_msg_list_deep_copy(Arena *arena, CTRL_MsgList *src)
   return dst;
 }
 
-internal void
+void
 ctrl_msg_list_concat_in_place(CTRL_MsgList *dst, CTRL_MsgList *src)
 {
   if(dst->last && src->first)
@@ -247,7 +247,7 @@ ctrl_msg_list_concat_in_place(CTRL_MsgList *dst, CTRL_MsgList *src)
 
 //- rjf: serialization
 
-internal String8
+String8
 ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -343,7 +343,7 @@ ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs)
   return string;
 }
 
-internal CTRL_MsgList
+CTRL_MsgList
 ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
 {
   CTRL_MsgList msgs = {0};
@@ -475,7 +475,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
 
 //- rjf: list building
 
-internal CTRL_Event *
+CTRL_Event *
 ctrl_event_list_push(Arena *arena, CTRL_EventList *list)
 {
   CTRL_EventNode *n = push_array(arena, CTRL_EventNode, 1);
@@ -485,7 +485,7 @@ ctrl_event_list_push(Arena *arena, CTRL_EventList *list)
   return event;
 }
 
-internal void
+void
 ctrl_event_list_concat_in_place(CTRL_EventList *dst, CTRL_EventList *to_push)
 {
   if(dst->last == 0)
@@ -503,7 +503,7 @@ ctrl_event_list_concat_in_place(CTRL_EventList *dst, CTRL_EventList *to_push)
 
 //- rjf: serialization
 
-internal String8
+String8
 ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -536,7 +536,7 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
   return string;
 }
 
-internal CTRL_Event
+CTRL_Event
 ctrl_event_from_serialized_string(Arena *arena, String8 string)
 {
   CTRL_Event event = zero_struct;
@@ -570,7 +570,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
 
 //- rjf: entity list data structures
 
-internal void
+void
 ctrl_entity_list_push(Arena *arena, CTRL_EntityList *list, CTRL_Entity *entity)
 {
   CTRL_EntityNode *n = push_array(arena, CTRL_EntityNode, 1);
@@ -579,7 +579,7 @@ ctrl_entity_list_push(Arena *arena, CTRL_EntityList *list, CTRL_Entity *entity)
   list->count += 1;
 }
 
-internal CTRL_EntityList
+CTRL_EntityList
 ctrl_entity_list_from_handle_list(Arena *arena, CTRL_EntityStore *store, CTRL_HandleList *list)
 {
   CTRL_EntityList result = {0};
@@ -593,7 +593,7 @@ ctrl_entity_list_from_handle_list(Arena *arena, CTRL_EntityStore *store, CTRL_Ha
 
 //- rjf: entity array data structure
 
-internal CTRL_EntityArray
+CTRL_EntityArray
 ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 {
   CTRL_EntityArray result = {0};
@@ -609,7 +609,7 @@ ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 
 //- rjf: cache creation/destruction
 
-internal CTRL_EntityStore *
+CTRL_EntityStore *
 ctrl_entity_store_alloc(void)
 {
   Arena *arena = arena_alloc();
@@ -630,7 +630,7 @@ ctrl_entity_store_alloc(void)
   return store;
 }
 
-internal void
+void
 ctrl_entity_store_release(CTRL_EntityStore *cache)
 {
   arena_release(cache->arena);
@@ -638,7 +638,7 @@ ctrl_entity_store_release(CTRL_EntityStore *cache)
 
 //- rjf: string allocation/deletion
 
-internal U64
+U64
 ctrl_name_bucket_idx_from_string_size(U64 size)
 {
   U64 size_rounded = u64_up_to_pow2(size+1);
@@ -658,7 +658,7 @@ ctrl_name_bucket_idx_from_string_size(U64 size)
   return bucket_idx;
 }
 
-internal String8
+String8
 ctrl_entity_string_alloc(CTRL_EntityStore *store, String8 string)
 {
   if(string.size == 0) {return str8_zero();}
@@ -720,7 +720,7 @@ ctrl_entity_string_alloc(CTRL_EntityStore *store, String8 string)
   return allocated_string;
 }
 
-internal void
+void
 ctrl_entity_string_release(CTRL_EntityStore *store, String8 string)
 {
   if(string.size == 0) {return;}
@@ -732,7 +732,7 @@ ctrl_entity_string_release(CTRL_EntityStore *store, String8 string)
 
 //- rjf: entity construction/deletion
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_entity_alloc(CTRL_EntityStore *store, CTRL_Entity *parent, CTRL_EntityKind kind, Arch arch, CTRL_Handle handle, U64 id)
 {
   CTRL_Entity *entity = &ctrl_entity_nil;
@@ -803,7 +803,7 @@ ctrl_entity_alloc(CTRL_EntityStore *store, CTRL_Entity *parent, CTRL_EntityKind 
   return entity;
 }
 
-internal void
+void
 ctrl_entity_release(CTRL_EntityStore *store, CTRL_Entity *entity)
 {
   // rjf: unhook root
@@ -863,7 +863,7 @@ ctrl_entity_release(CTRL_EntityStore *store, CTRL_Entity *entity)
 
 //- rjf: entity equipment
 
-internal void
+void
 ctrl_entity_equip_string(CTRL_EntityStore *store, CTRL_Entity *entity, String8 string)
 {
   if(entity->string.size != 0)
@@ -875,7 +875,7 @@ ctrl_entity_equip_string(CTRL_EntityStore *store, CTRL_Entity *entity, String8 s
 
 //- rjf: entity store lookups
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_entity_from_handle(CTRL_EntityStore *store, CTRL_Handle handle)
 {
   CTRL_Entity *entity = &ctrl_entity_nil;
@@ -897,7 +897,7 @@ ctrl_entity_from_handle(CTRL_EntityStore *store, CTRL_Handle handle)
   return entity;
 }
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_entity_child_from_kind(CTRL_Entity *parent, CTRL_EntityKind kind)
 {
   CTRL_Entity *result = &ctrl_entity_nil;
@@ -914,7 +914,7 @@ ctrl_entity_child_from_kind(CTRL_Entity *parent, CTRL_EntityKind kind)
   return result;
 }
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_entity_ancestor_from_kind(CTRL_Entity *entity, CTRL_EntityKind kind)
 {
   CTRL_Entity *result = &ctrl_entity_nil;
@@ -929,7 +929,7 @@ ctrl_entity_ancestor_from_kind(CTRL_Entity *entity, CTRL_EntityKind kind)
   return result;
 }
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_process_from_entity(CTRL_Entity *entity)
 {
   CTRL_Entity *result = &ctrl_entity_nil;
@@ -944,7 +944,7 @@ ctrl_process_from_entity(CTRL_Entity *entity)
   return result;
 }
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_module_from_process_vaddr(CTRL_Entity *process, U64 vaddr)
 {
   CTRL_Entity *result = &ctrl_entity_nil;
@@ -961,7 +961,7 @@ ctrl_module_from_process_vaddr(CTRL_Entity *process, U64 vaddr)
   return result;
 }
 
-internal DI_Key
+DI_Key
 ctrl_dbgi_key_from_module(CTRL_Entity *module)
 {
   CTRL_Entity *debug_info_path = ctrl_entity_child_from_kind(module, CTRL_EntityKind_DebugInfoPath);
@@ -969,7 +969,7 @@ ctrl_dbgi_key_from_module(CTRL_Entity *module)
   return dbgi_key;
 }
 
-internal CTRL_EntityList
+CTRL_EntityList
 ctrl_modules_from_dbgi_key(Arena *arena, CTRL_EntityStore *store, DI_Key *dbgi_key)
 {
   CTRL_EntityList list = {0};
@@ -986,7 +986,7 @@ ctrl_modules_from_dbgi_key(Arena *arena, CTRL_EntityStore *store, DI_Key *dbgi_k
   return list;
 }
 
-internal CTRL_Entity *
+CTRL_Entity *
 ctrl_module_from_thread_candidates(CTRL_EntityStore *store, CTRL_Entity *thread, CTRL_EntityList *candidates)
 {
   CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
@@ -1009,7 +1009,7 @@ ctrl_module_from_thread_candidates(CTRL_EntityStore *store, CTRL_Entity *thread,
   return module;
 }
 
-internal CTRL_EntityList
+CTRL_EntityList
 ctrl_entity_list_from_kind(CTRL_EntityStore *store, CTRL_EntityKind kind)
 {
   if(store->entity_kind_lists_gens[kind] != store->entity_kind_alloc_gens[kind])
@@ -1030,21 +1030,21 @@ ctrl_entity_list_from_kind(CTRL_EntityStore *store, CTRL_EntityKind kind)
   return store->entity_kind_lists[kind];
 }
 
-internal U64
+U64
 ctrl_vaddr_from_voff(CTRL_Entity *module, U64 voff)
 {
   U64 result = voff + module->vaddr_range.min;
   return result;
 }
 
-internal U64
+U64
 ctrl_voff_from_vaddr(CTRL_Entity *module, U64 vaddr)
 {
   U64 result = vaddr - module->vaddr_range.min;
   return result;
 }
 
-internal Rng1U64
+Rng1U64
 ctrl_vaddr_range_from_voff_range(CTRL_Entity *module, Rng1U64 voff_range)
 {
   U64 dim = dim_1u64(voff_range);
@@ -1053,7 +1053,7 @@ ctrl_vaddr_range_from_voff_range(CTRL_Entity *module, Rng1U64 voff_range)
   return result;
 }
 
-internal Rng1U64
+Rng1U64
 ctrl_voff_range_from_vaddr_range(CTRL_Entity *module, Rng1U64 vaddr_range)
 {
   U64 dim = dim_1u64(vaddr_range);
@@ -1062,7 +1062,7 @@ ctrl_voff_range_from_vaddr_range(CTRL_Entity *module, Rng1U64 vaddr_range)
   return result;
 }
 
-internal B32
+B32
 ctrl_entity_tree_is_frozen(CTRL_Entity *root)
 {
   B32 is_frozen = 1;
@@ -1079,7 +1079,7 @@ ctrl_entity_tree_is_frozen(CTRL_Entity *root)
 
 //- rjf: entity tree iteration
 
-internal CTRL_EntityRec
+CTRL_EntityRec
 ctrl_entity_rec_depth_first(CTRL_Entity *entity, CTRL_Entity *subtree_root, U64 sib_off, U64 child_off)
 {
   CTRL_EntityRec result = {0};
@@ -1103,7 +1103,7 @@ ctrl_entity_rec_depth_first(CTRL_Entity *entity, CTRL_Entity *subtree_root, U64 
 
 //- rjf: applying events to entity caches
 
-internal void
+void
 ctrl_entity_store_apply_events(CTRL_EntityStore *store, CTRL_EventList *list)
 {
   //- rjf: scan events & construct entities
@@ -1233,7 +1233,7 @@ ctrl_entity_store_apply_events(CTRL_EntityStore *store, CTRL_EventList *list)
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+void
 ctrl_init(void)
 {
   Arena *arena = arena_alloc();
@@ -1324,7 +1324,7 @@ ctrl_init(void)
 ////////////////////////////////
 //~ rjf: Wakeup Callback Registration
 
-internal void
+void
 ctrl_set_wakeup_hook(CTRL_WakeupFunctionType *wakeup_hook)
 {
   ctrl_state->wakeup_hook = wakeup_hook;
@@ -1335,7 +1335,7 @@ ctrl_set_wakeup_hook(CTRL_WakeupFunctionType *wakeup_hook)
 
 //- rjf: process memory cache interaction
 
-internal U128
+U128
 ctrl_calc_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B32 zero_terminated)
 {
   U64 key_hash_data[] =
@@ -1350,7 +1350,7 @@ ctrl_calc_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 r
   return key;
 }
 
-internal U128
+U128
 ctrl_stored_hash_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B32 zero_terminated, B32 *out_is_stale, U64 endt_us)
 {
   ProfBeginFunction();
@@ -1516,7 +1516,7 @@ ctrl_stored_hash_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B3
 
 //- rjf: bundled key/stream helper
 
-internal U128
+U128
 ctrl_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range, B32 zero_terminated)
 {
   U128 key = ctrl_calc_hash_store_key_from_process_vaddr_range(process, range, zero_terminated);
@@ -1526,7 +1526,7 @@ ctrl_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 range,
 
 //- rjf: process memory cache reading helpers
 
-internal CTRL_ProcessMemorySlice
+CTRL_ProcessMemorySlice
 ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle process, Rng1U64 range, U64 endt_us)
 {
   ProfBeginFunction();
@@ -1670,7 +1670,7 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle proces
   return result;
 }
 
-internal CTRL_ProcessMemorySlice
+CTRL_ProcessMemorySlice
 ctrl_query_cached_zero_terminated_data_from_process_vaddr_limit(Arena *arena, CTRL_Handle process, U64 vaddr, U64 limit, U64 element_size, U64 endt_us)
 {
   CTRL_ProcessMemorySlice result = ctrl_query_cached_data_from_process_vaddr_range(arena, process, r1u64(vaddr, vaddr+limit), endt_us);
@@ -1695,7 +1695,7 @@ ctrl_query_cached_zero_terminated_data_from_process_vaddr_limit(Arena *arena, CT
   return result;
 }
 
-internal B32
+B32
 ctrl_read_cached_process_memory(CTRL_Handle process, Rng1U64 range, B32 *is_stale_out, void *out, U64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1716,7 +1716,7 @@ ctrl_read_cached_process_memory(CTRL_Handle process, Rng1U64 range, B32 *is_stal
 
 //- rjf: process memory writing
 
-internal B32
+B32
 ctrl_process_write(CTRL_Handle process, Rng1U64 range, void *src)
 {
   ProfBeginFunction();
@@ -1788,7 +1788,7 @@ ctrl_process_write(CTRL_Handle process, Rng1U64 range, void *src)
 
 //- rjf: thread register cache reading
 
-internal void *
+void *
 ctrl_query_cached_reg_block_from_thread(Arena *arena, CTRL_EntityStore *store, CTRL_Handle handle)
 {
   CTRL_ThreadRegCache *cache = &ctrl_state->thread_reg_cache;
@@ -1847,14 +1847,14 @@ ctrl_query_cached_reg_block_from_thread(Arena *arena, CTRL_EntityStore *store, C
   return result;
 }
 
-internal U64
+U64
 ctrl_query_cached_tls_root_vaddr_from_thread(CTRL_EntityStore *store, CTRL_Handle handle)
 {
   U64 result = dmn_tls_root_vaddr_from_thread(handle.dmn_handle);
   return result;
 }
 
-internal U64
+U64
 ctrl_query_cached_rip_from_thread(CTRL_EntityStore *store, CTRL_Handle handle)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1866,7 +1866,7 @@ ctrl_query_cached_rip_from_thread(CTRL_EntityStore *store, CTRL_Handle handle)
   return result;
 }
 
-internal U64
+U64
 ctrl_query_cached_rsp_from_thread(CTRL_EntityStore *store, CTRL_Handle handle)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1880,7 +1880,7 @@ ctrl_query_cached_rsp_from_thread(CTRL_EntityStore *store, CTRL_Handle handle)
 
 //- rjf: thread register writing
 
-internal B32
+B32
 ctrl_thread_write_reg_block(CTRL_Handle thread, void *block)
 {
   B32 good = dmn_thread_write_reg_block(thread.dmn_handle, block);
@@ -1892,7 +1892,7 @@ ctrl_thread_write_reg_block(CTRL_Handle thread, void *block)
 
 //- rjf: cache lookups
 
-internal PE_IntelPdata *
+PE_IntelPdata *
 ctrl_intel_pdata_from_module_voff(Arena *arena, CTRL_Handle module_handle, U64 voff)
 {
   PE_IntelPdata *first_pdata = 0;
@@ -1959,7 +1959,7 @@ ctrl_intel_pdata_from_module_voff(Arena *arena, CTRL_Handle module_handle, U64 v
   return first_pdata;
 }
 
-internal U64
+U64
 ctrl_entry_point_voff_from_module(CTRL_Handle module_handle)
 {
   U64 result = 0;
@@ -1979,7 +1979,7 @@ ctrl_entry_point_voff_from_module(CTRL_Handle module_handle)
   return result;
 }
 
-internal Rng1U64
+Rng1U64
 ctrl_tls_vaddr_range_from_module(CTRL_Handle module_handle)
 {
   Rng1U64 result = {0};
@@ -1999,7 +1999,7 @@ ctrl_tls_vaddr_range_from_module(CTRL_Handle module_handle)
   return result;
 }
 
-internal String8
+String8
 ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle)
 {
   String8 result = {0};
@@ -2024,7 +2024,7 @@ ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle
 
 //- rjf: unwind deep copier
 
-internal CTRL_Unwind
+CTRL_Unwind
 ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
 {
   CTRL_Unwind dst = {0};
@@ -2045,7 +2045,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
 
 //- rjf: [x64]
 
-internal REGS_Reg64 *
+REGS_Reg64 *
 ctrl_unwind_reg_from_pe_gpr_reg__pe_x64(REGS_RegBlockX64 *regs, PE_UnwindGprRegX64 gpr_reg)
 {
   local_persist REGS_Reg64 dummy = {0};
@@ -2072,7 +2072,7 @@ ctrl_unwind_reg_from_pe_gpr_reg__pe_x64(REGS_RegBlockX64 *regs, PE_UnwindGprRegX
   return result;
 }
 
-internal CTRL_UnwindStepResult
+CTRL_UnwindStepResult
 ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CTRL_Handle module_handle, REGS_RegBlockX64 *regs, U64 endt_us)
 {
   B32 is_stale = 0;
@@ -2887,7 +2887,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
 
 //- rjf: abstracted unwind step
 
-internal CTRL_UnwindStepResult
+CTRL_UnwindStepResult
 ctrl_unwind_step(CTRL_EntityStore *store, CTRL_Handle process, CTRL_Handle module, Arch arch, void *reg_block, U64 endt_us)
 {
   CTRL_UnwindStepResult result = {0};
@@ -2904,7 +2904,7 @@ ctrl_unwind_step(CTRL_EntityStore *store, CTRL_Handle process, CTRL_Handle modul
 
 //- rjf: abstracted full unwind
 
-internal CTRL_Unwind
+CTRL_Unwind
 ctrl_unwind_from_thread(Arena *arena, CTRL_EntityStore *store, CTRL_Handle thread, U64 endt_us)
 {
   ProfBeginFunction();
@@ -2989,7 +2989,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityStore *store, CTRL_Handle threa
 ////////////////////////////////
 //~ rjf: Call Stack Building Functions
 
-internal CTRL_CallStack
+CTRL_CallStack
 ctrl_call_stack_from_unwind(Arena *arena, DI_Scope *di_scope, CTRL_Entity *process, CTRL_Unwind *base_unwind)
 {
   Arch arch = process->arch;
@@ -3033,7 +3033,7 @@ ctrl_call_stack_from_unwind(Arena *arena, DI_Scope *di_scope, CTRL_Entity *proce
 ////////////////////////////////
 //~ rjf: Halting All Attached Processes
 
-internal void
+void
 ctrl_halt(void)
 {
   dmn_halt(0, 0);
@@ -3044,21 +3044,21 @@ ctrl_halt(void)
 
 //- rjf: run generation counter
 
-internal U64
+U64
 ctrl_run_gen(void)
 {
   U64 result = dmn_run_gen();
   return result;
 }
 
-internal U64
+U64
 ctrl_mem_gen(void)
 {
   U64 result = dmn_mem_gen();
   return result;
 }
 
-internal U64
+U64
 ctrl_reg_gen(void)
 {
   U64 result = dmn_reg_gen();
@@ -3067,13 +3067,13 @@ ctrl_reg_gen(void)
 
 //- rjf: name -> register/alias hash tables, for eval
 
-internal E_String2NumMap *
+E_String2NumMap *
 ctrl_string2reg_from_arch(Arch arch)
 {
   return &ctrl_state->arch_string2reg_tables[arch];
 }
 
-internal E_String2NumMap *
+E_String2NumMap *
 ctrl_string2alias_from_arch(Arch arch)
 {
   return &ctrl_state->arch_string2alias_tables[arch];
@@ -3084,7 +3084,7 @@ ctrl_string2alias_from_arch(Arch arch)
 
 //- rjf: user -> control thread communication
 
-internal B32
+B32
 ctrl_u2c_push_msgs(CTRL_MsgList *msgs, U64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3116,7 +3116,7 @@ ctrl_u2c_push_msgs(CTRL_MsgList *msgs, U64 endt_us)
   return good;
 }
 
-internal CTRL_MsgList
+CTRL_MsgList
 ctrl_u2c_pop_msgs(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -3143,7 +3143,7 @@ ctrl_u2c_pop_msgs(Arena *arena)
 
 //- rjf: control -> user thread communication
 
-internal void
+void
 ctrl_c2u_push_events(CTRL_EventList *events)
 {
   if(events->count != 0) ProfScope("ctrl_c2u_push_events")
@@ -3176,7 +3176,7 @@ ctrl_c2u_push_events(CTRL_EventList *events)
   }
 }
 
-internal CTRL_EventList
+CTRL_EventList
 ctrl_c2u_pop_events(Arena *arena)
 {
   ProfBeginFunction();
@@ -3209,7 +3209,7 @@ ctrl_c2u_pop_events(Arena *arena)
 
 //- rjf: entry point
 
-internal void
+void
 ctrl_thread__entry_point(void *p)
 {
   ThreadNameF("[ctrl] thread");
@@ -3328,7 +3328,7 @@ ctrl_thread__entry_point(void *p)
 
 //- rjf: breakpoint resolution
 
-internal void
+void
 ctrl_thread__append_resolved_module_user_bp_traps(Arena *arena, CTRL_Handle process, CTRL_Handle module, CTRL_UserBreakpointList *user_bps, DMN_TrapChunkList *traps_out)
 {
   if(user_bps->first == 0) { return; }
@@ -3426,7 +3426,7 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena *arena, CTRL_Handle proc
   scratch_end(scratch);
 }
 
-internal void
+void
 ctrl_thread__append_resolved_process_user_bp_traps(Arena *arena, CTRL_Handle process, CTRL_UserBreakpointList *user_bps, DMN_TrapChunkList *traps_out)
 {
   for(CTRL_UserBreakpointNode *n = user_bps->first; n != 0; n = n->next)
@@ -3442,7 +3442,7 @@ ctrl_thread__append_resolved_process_user_bp_traps(Arena *arena, CTRL_Handle pro
 
 //- rjf: module lifetime open/close work
 
-internal void
+void
 ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, String8 path)
 {
   //////////////////////////////
@@ -3736,7 +3736,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   }
 }
 
-internal void
+void
 ctrl_thread__module_close(CTRL_Handle module)
 {
   //////////////////////////////
@@ -3770,7 +3770,7 @@ ctrl_thread__module_close(CTRL_Handle module)
 
 //- rjf: attached process running/event gathering
 
-internal DMN_Event *
+DMN_Event *
 ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, DMN_RunCtrls *run_ctrls, CTRL_Spoof *spoof)
 {
   ProfBeginFunction();
@@ -4363,7 +4363,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
 
 //- rjf: eval helpers
 
-internal B32
+B32
 ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
 {
   B32 result = 0;
@@ -4439,13 +4439,13 @@ ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
 
 //- rjf: log flusher
 
-internal void
+void
 ctrl_thread__flush_info_log(String8 string)
 {
   os_append_data_to_file_path(ctrl_state->ctrl_thread_log_path, string);
 }
 
-internal void
+void
 ctrl_thread__end_and_flush_info_log(void)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -4456,7 +4456,7 @@ ctrl_thread__end_and_flush_info_log(void)
 
 //- rjf: msg kind implementations
 
-internal void
+void
 ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   //- rjf: obtain stdout/stderr/stdin handles
@@ -4508,7 +4508,7 @@ ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   }
 }
 
-internal void
+void
 ctrl_thread__attach(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -4562,7 +4562,7 @@ ctrl_thread__attach(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   ProfEnd();
 }
 
-internal void
+void
 ctrl_thread__kill(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -4617,7 +4617,7 @@ ctrl_thread__kill(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   ProfEnd();
 }
 
-internal void
+void
 ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -4700,7 +4700,7 @@ ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   ProfEnd();
 }
 
-internal void
+void
 ctrl_thread__detach(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -4750,7 +4750,7 @@ ctrl_thread__detach(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   ProfEnd();
 }
 
-internal void
+void
 ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -5853,7 +5853,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   ProfEnd();
 }
 
-internal void
+void
 ctrl_thread__single_step(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 {
   ProfBeginFunction();
@@ -5932,7 +5932,7 @@ ctrl_thread__single_step(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
 
 //- rjf: user -> memory stream communication
 
-internal B32
+B32
 ctrl_u2ms_enqueue_req(CTRL_Handle process, Rng1U64 vaddr_range, B32 zero_terminated, U64 endt_us)
 {
   B32 good = 0;
@@ -5955,7 +5955,7 @@ ctrl_u2ms_enqueue_req(CTRL_Handle process, Rng1U64 vaddr_range, B32 zero_termina
   return good;
 }
 
-internal void
+void
 ctrl_u2ms_dequeue_req(CTRL_Handle *out_process, Rng1U64 *out_vaddr_range, B32 *out_zero_terminated)
 {
   OS_MutexScope(ctrl_state->u2ms_ring_mutex) for(;;)

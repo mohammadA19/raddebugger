@@ -83,38 +83,38 @@ global FS_Shared *fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 fs_little_hash_from_string(String8 string);
-internal U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
+U64 fs_little_hash_from_string(String8 string);
+U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Top-Level API
 
-internal void fs_init(void);
+void fs_init(void);
 
 ////////////////////////////////
 //~ rjf: Change Generation
 
-internal U64 fs_change_gen(void);
+U64 fs_change_gen(void);
 
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
-internal U128 fs_key_from_path_range(String8 path, Rng1U64 range);
+U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
+U128 fs_key_from_path_range(String8 path, Rng1U64 range);
 
-internal U64 fs_timestamp_from_path(String8 path);
-internal U64 fs_size_from_path(String8 path);
+U64 fs_timestamp_from_path(String8 path);
+U64 fs_size_from_path(String8 path);
 
 ////////////////////////////////
 //~ rjf: Streaming Work
 
-internal B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us);
-internal void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out);
+B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us);
+void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////
 //~ rjf: Change Detector Thread
 
-internal void fs_detector_thread__entry_point(void *p);
+void fs_detector_thread__entry_point(void *p);
 
 #endif // FILE_STREAM_H

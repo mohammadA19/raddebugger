@@ -329,96 +329,96 @@ global read_only EV_Block ev_nil_block = {&ev_nil_block, &ev_nil_block, &ev_nil_
 ////////////////////////////////
 //~ rjf: Key Functions
 
-internal EV_Key ev_key_make(U64 parent_hash, U64 child_id);
-internal EV_Key ev_key_zero(void);
-internal EV_Key ev_key_root(void);
-internal B32 ev_key_match(EV_Key a, EV_Key b);
-internal U64 ev_hash_from_seed_string(U64 seed, String8 string);
-internal U64 ev_hash_from_key(EV_Key key);
+EV_Key ev_key_make(U64 parent_hash, U64 child_id);
+EV_Key ev_key_zero(void);
+EV_Key ev_key_root(void);
+B32 ev_key_match(EV_Key a, EV_Key b);
+U64 ev_hash_from_seed_string(U64 seed, String8 string);
+U64 ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Type Info Helpers
 
 //- rjf: type info -> expandability/editablity
-internal B32 ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode);
-internal B32 ev_type_key_is_editable(E_TypeKey type_key);
+B32 ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode);
+B32 ev_type_key_is_editable(E_TypeKey type_key);
 
 ////////////////////////////////
 //~ rjf: View Functions
 
 //- rjf: creation / deletion
-internal EV_View *ev_view_alloc(void);
-internal void ev_view_release(EV_View *view);
+EV_View *ev_view_alloc(void);
+void ev_view_release(EV_View *view);
 
 //- rjf: lookups / mutations
-internal EV_ExpandNode *ev_expand_node_from_key(EV_View *view, EV_Key key);
-internal B32 ev_expansion_from_key(EV_View *view, EV_Key key);
-internal String8 ev_view_rule_from_key(EV_View *view, EV_Key key);
-internal void ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded);
-internal void ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string);
+EV_ExpandNode *ev_expand_node_from_key(EV_View *view, EV_Key key);
+B32 ev_expansion_from_key(EV_View *view, EV_Key key);
+String8 ev_view_rule_from_key(EV_View *view, EV_Key key);
+void ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded);
+void ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string);
 
 ////////////////////////////////
 //~ rjf: View Rule Info Table Building / Selection / Lookups
 
-internal void ev_view_rule_info_table_push(Arena *arena, EV_ViewRuleInfoTable *table, EV_ViewRuleInfo *info);
-internal void ev_view_rule_info_table_push_builtins(Arena *arena, EV_ViewRuleInfoTable *table);
-internal void ev_select_view_rule_info_table(EV_ViewRuleInfoTable *table);
-internal EV_ViewRuleInfo *ev_view_rule_info_from_string(String8 string);
+void ev_view_rule_info_table_push(Arena *arena, EV_ViewRuleInfoTable *table, EV_ViewRuleInfo *info);
+void ev_view_rule_info_table_push_builtins(Arena *arena, EV_ViewRuleInfoTable *table);
+void ev_select_view_rule_info_table(EV_ViewRuleInfoTable *table);
+EV_ViewRuleInfo *ev_view_rule_info_from_string(String8 string);
 
 ////////////////////////////////
 //~ rjf: Automatic Type -> View Rule Table Building / Selection / Lookups
 
-internal void ev_auto_view_rule_table_push_new(Arena *arena, EV_AutoViewRuleTable *table, E_TypeKey type_key, String8 view_rule, B32 is_required);
-internal void ev_select_auto_view_rule_table(EV_AutoViewRuleTable *table);
-internal EV_ViewRuleList *ev_auto_view_rules_from_type_key(Arena *arena, E_TypeKey type_key, B32 gather_required, B32 gather_optional);
+void ev_auto_view_rule_table_push_new(Arena *arena, EV_AutoViewRuleTable *table, E_TypeKey type_key, String8 view_rule, B32 is_required);
+void ev_select_auto_view_rule_table(EV_AutoViewRuleTable *table);
+EV_ViewRuleList *ev_auto_view_rules_from_type_key(Arena *arena, E_TypeKey type_key, B32 gather_required, B32 gather_optional);
 
 ////////////////////////////////
 //~ rjf: View Rule Instance List Building
 
-internal void ev_view_rule_list_push_tree(Arena *arena, EV_ViewRuleList *list, MD_Node *root);
-internal void ev_view_rule_list_push_string(Arena *arena, EV_ViewRuleList *list, String8 string);
-internal EV_ViewRuleList *ev_view_rule_list_from_string(Arena *arena, String8 string);
-internal EV_ViewRuleList *ev_view_rule_list_from_expr_fastpaths(Arena *arena, String8 string);
-internal EV_ViewRuleList *ev_view_rule_list_from_inheritance(Arena *arena, EV_ViewRuleList *src);
-internal EV_ViewRuleList *ev_view_rule_list_copy(Arena *arena, EV_ViewRuleList *src);
-internal void ev_view_rule_list_concat_in_place(EV_ViewRuleList *dst, EV_ViewRuleList **src);
+void ev_view_rule_list_push_tree(Arena *arena, EV_ViewRuleList *list, MD_Node *root);
+void ev_view_rule_list_push_string(Arena *arena, EV_ViewRuleList *list, String8 string);
+EV_ViewRuleList *ev_view_rule_list_from_string(Arena *arena, String8 string);
+EV_ViewRuleList *ev_view_rule_list_from_expr_fastpaths(Arena *arena, String8 string);
+EV_ViewRuleList *ev_view_rule_list_from_inheritance(Arena *arena, EV_ViewRuleList *src);
+EV_ViewRuleList *ev_view_rule_list_copy(Arena *arena, EV_ViewRuleList *src);
+void ev_view_rule_list_concat_in_place(EV_ViewRuleList *dst, EV_ViewRuleList **src);
 
 ////////////////////////////////
 //~ rjf: Expression Resolution (Dynamic Overrides, View Rule Application)
 
-internal E_Expr *ev_resolved_from_expr(Arena *arena, E_Expr *expr, EV_ViewRuleList *view_rules);
+E_Expr *ev_resolved_from_expr(Arena *arena, E_Expr *expr, EV_ViewRuleList *view_rules);
 
 ////////////////////////////////
 //~ rjf: Block Building
 
-internal EV_BlockTree ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 string, E_Expr *expr, EV_ViewRuleList *view_rules);
-internal EV_BlockTree ev_block_tree_from_string(Arena *arena, EV_View *view, String8 filter, String8 string, EV_ViewRuleList *view_rules);
-internal U64 ev_depth_from_block(EV_Block *block);
+EV_BlockTree ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 string, E_Expr *expr, EV_ViewRuleList *view_rules);
+EV_BlockTree ev_block_tree_from_string(Arena *arena, EV_View *view, String8 filter, String8 string, EV_ViewRuleList *view_rules);
+U64 ev_depth_from_block(EV_Block *block);
 
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
-internal EV_BlockRangeList ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree);
-internal EV_BlockRange ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal EV_Key ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal U64    ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key);
+EV_BlockRangeList ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree);
+EV_BlockRange ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num);
+EV_Key ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num);
+U64    ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Row Building
 
-internal EV_WindowedRowList ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 filter, EV_BlockRangeList *block_ranges, Rng1U64 visible_range);
-internal String8 ev_expr_string_from_row(Arena *arena, EV_Row *row, EV_StringFlags flags);
-internal B32 ev_row_is_expandable(EV_Row *row);
-internal B32 ev_row_is_editable(EV_Row *row);
+EV_WindowedRowList ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 filter, EV_BlockRangeList *block_ranges, Rng1U64 visible_range);
+String8 ev_expr_string_from_row(Arena *arena, EV_Row *row, EV_StringFlags flags);
+B32 ev_row_is_expandable(EV_Row *row);
+B32 ev_row_is_editable(EV_Row *row);
 
 ////////////////////////////////
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-internal String8 ev_string_from_ascii_value(Arena *arena, U8 val);
-internal String8 ev_string_from_hresult_facility_code(U32 code);
-internal String8 ev_string_from_hresult_code(U32 code);
-internal String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval);
-internal String8 ev_escaped_from_raw_string(Arena *arena, String8 raw);
+String8 ev_string_from_ascii_value(Arena *arena, U8 val);
+String8 ev_string_from_hresult_facility_code(U32 code);
+String8 ev_string_from_hresult_code(U32 code);
+String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval);
+String8 ev_escaped_from_raw_string(Arena *arena, String8 raw);
 
 #endif // EVAL_VISUALIZATION_CORE_H

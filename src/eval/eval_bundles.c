@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Bundled Evaluation Functions
 
-internal E_Eval
+E_Eval
 e_eval_from_expr(Arena *arena, E_Expr *expr)
 {
   E_IRTreeAndType  irtree   = e_irtree_and_type_from_expr(arena, expr);
@@ -30,7 +30,7 @@ e_eval_from_expr(Arena *arena, E_Expr *expr)
   return eval;
 }
 
-internal E_Eval
+E_Eval
 e_eval_from_string(Arena *arena, String8 string)
 {
   E_TokenArray     tokens   = e_token_array_from_text(arena, string);
@@ -40,7 +40,7 @@ e_eval_from_string(Arena *arena, String8 string)
   return eval;
 }
 
-internal E_Eval
+E_Eval
 e_autoresolved_eval_from_eval(E_Eval eval)
 {
   if(e_parse_ctx &&
@@ -69,7 +69,7 @@ e_autoresolved_eval_from_eval(E_Eval eval)
   return eval;
 }
 
-internal E_Eval
+E_Eval
 e_dynamically_typed_eval_from_eval(E_Eval eval)
 {
   E_TypeKey type_key = eval.type_key;
@@ -141,7 +141,7 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
   return eval;
 }
 
-internal E_Eval
+E_Eval
 e_value_eval_from_eval(E_Eval eval)
 {
   ProfBeginFunction();
@@ -198,7 +198,7 @@ e_value_eval_from_eval(E_Eval eval)
   return eval;
 }
 
-internal E_Eval
+E_Eval
 e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
 {
   E_Eval result = {0};
@@ -227,7 +227,7 @@ e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
   return result;
 }
 
-internal E_Eval
+E_Eval
 e_member_eval_from_eval_member_name(E_Eval eval, String8 member_name)
 {
   E_Eval result = {0};

@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_ChunkRef
+LNK_ChunkRef
 lnk_chunk_ref(U64 sect_id, U64 chunk_id)
 {
   LNK_ChunkRef ref = {0};
@@ -10,14 +10,14 @@ lnk_chunk_ref(U64 sect_id, U64 chunk_id)
   return ref;
 }
 
-internal B32
+B32
 lnk_chunk_ref_is_equal(LNK_ChunkRef a, LNK_ChunkRef b)
 {
   B32 is_equal = a.sect_id == b.sect_id && a.chunk_id == b.chunk_id;
   return is_equal;
 }
 
-internal LNK_ChunkNode *
+LNK_ChunkNode *
 lnk_chunk_list_push(Arena *arena, LNK_ChunkList *list, LNK_Chunk *chunk)
 {
   LNK_ChunkNode *node = push_array_no_zero(arena, LNK_ChunkNode, 1);
@@ -30,19 +30,19 @@ lnk_chunk_list_push(Arena *arena, LNK_ChunkList *list, LNK_Chunk *chunk)
   return node;
 }
 
-internal void
+void
 lnk_chunk_list_concat_in_place(LNK_ChunkList *list, LNK_ChunkList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal void
+void
 lnk_chunk_list_concat_in_place_arr(LNK_ChunkList *list, LNK_ChunkList *arr, U64 count)
 {
   SLLConcatInPlaceArray(list, arr, count);
 }
 
-internal LNK_ChunkList **
+LNK_ChunkList **
 lnk_make_chunk_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
 {
   LNK_ChunkList **arr_arr = push_array_no_zero(arena, LNK_ChunkList *, slot_count);
@@ -52,7 +52,7 @@ lnk_make_chunk_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
   return arr_arr;
 }
 
-internal int
+int
 lnk_chunk_sort_index_is_before(void *raw_a, void *raw_b)
 {
   // Grouped Sections (PE Format)
@@ -73,13 +73,13 @@ lnk_chunk_sort_index_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal void
+void
 lnk_chunk_array_sort(LNK_ChunkArray arr)
 {
   radsort(arr.v, arr.count, lnk_chunk_sort_index_is_before);
 }
 
-internal LNK_ChunkManager *
+LNK_ChunkManager *
 lnk_chunk_manager_alloc(Arena *arena, U64 id, U64 align)
 {
   ProfBeginFunction();
@@ -102,7 +102,7 @@ lnk_chunk_manager_alloc(Arena *arena, U64 id, U64 align)
   return cman;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_chunk_push_(Arena *arena, LNK_Chunk *parent, U64 chunk_id, String8 sort_index)
 {
   ProfBeginFunction();
@@ -127,7 +127,7 @@ lnk_chunk_push_(Arena *arena, LNK_Chunk *parent, U64 chunk_id, String8 sort_inde
   return chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_chunk_push(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index)
 {
   U64 chunk_id = cman->total_chunk_count;
@@ -136,7 +136,7 @@ lnk_chunk_push(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 
   return chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_chunk_push_leaf(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index, void *raw_ptr, U64 raw_size)
 {
   LNK_Chunk *chunk = lnk_chunk_push(arena, cman, parent, sort_index);
@@ -145,7 +145,7 @@ lnk_chunk_push_leaf(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, Str
   return chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_chunk_push_list(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index)
 {
   LNK_Chunk *chunk = lnk_chunk_push(arena, cman, parent, sort_index);
@@ -154,7 +154,7 @@ lnk_chunk_push_list(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, Str
   return chunk;
 }
 
-internal LNK_ChunkNode *
+LNK_ChunkNode *
 lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
 {
   ProfBeginFunction();
@@ -241,7 +241,7 @@ lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
   return dst_root_node;
 }
 
-internal LNK_ChunkNode *
+LNK_ChunkNode *
 lnk_merge_chunks(Arena *arena, LNK_ChunkManager *dst_cman, LNK_Chunk *dst, LNK_Chunk *src, U64 *id_map_out, U64 id_map_max)
 {
   ProfBeginFunction();
@@ -309,7 +309,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_set_associate_on_chunks)
   return 0;
 }
 
-internal void
+void
 lnk_chunk_associate(LNK_Chunk *head, LNK_Chunk *chunk)
 {
   // for simplicity we don't support multiple associations,
@@ -318,7 +318,7 @@ lnk_chunk_associate(LNK_Chunk *head, LNK_Chunk *chunk)
   lnk_visit_chunks(0, chunk, lnk_set_associate_on_chunks, head);
 }
 
-internal B32
+B32
 lnk_chunk_is_discarded(LNK_Chunk *chunk)
 {
   B32        is_discarded = chunk->is_discarded;
@@ -330,7 +330,7 @@ lnk_chunk_is_discarded(LNK_Chunk *chunk)
   return is_discarded;
 }
 
-internal U64
+U64
 lnk_chunk_get_size(LNK_Chunk *chunk)
 {
   U64 result = 0;
@@ -347,14 +347,14 @@ lnk_chunk_get_size(LNK_Chunk *chunk)
   return result;
 }
 
-internal U64
+U64
 lnk_chunk_list_get_node_count(LNK_Chunk *chunk)
 {
   Assert(chunk->type == LNK_Chunk_List);
   return chunk->u.list->count;
 }
 
-internal void
+void
 lnk_chunk_pad_array_list_push(Arena *arena, Arena *scratch, LNK_ChunkPadArrayList *list, U64 cap, U64 align_off, U64 align_size)
 {
   if (align_size > 0) {
@@ -386,7 +386,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_offset_chunks)
   return 0;
 }
 
-internal LNK_ChunkLayout
+LNK_ChunkLayout
 lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
 {
   ProfBeginV("lnk_layout_from_chunk [total_chunk_count = %llu]", total_chunk_count);
@@ -599,7 +599,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
   return layout;
 }
 
-internal LNK_ChunkLayout
+LNK_ChunkLayout
 lnk_build_chunk_layout(Arena *arena, LNK_ChunkManager *cman)
 {
   ProfBeginFunction();
@@ -666,7 +666,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
   ProfEnd();
 }
 
-internal void
+void
 lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffer, U8 fill_byte)
 {
   ProfBeginFunction();
@@ -691,7 +691,7 @@ lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffe
   ProfEnd();
 }
 
-internal B32
+B32
 lnk_visit_chunks_(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *ud)
 {
   // visit chunk
@@ -726,7 +726,7 @@ lnk_visit_chunks_(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *
   return is_done;
 }
 
-internal void
+void
 lnk_visit_chunks(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *ud)
 {
   lnk_visit_chunks_(sect_id, chunk, cb, ud);
@@ -741,7 +741,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_save_chunk_ptr)
   return 0;
 }
 
-internal LNK_ChunkPtr *
+LNK_ChunkPtr *
 lnk_make_chunk_id_map(Arena *arena, LNK_ChunkManager *cman)
 {
   LNK_ChunkPtr *map = push_array_no_zero(arena, LNK_ChunkPtr, cman->total_chunk_count);
@@ -750,7 +750,7 @@ lnk_make_chunk_id_map(Arena *arena, LNK_ChunkManager *cman)
   return map;
 }
 
-internal LNK_ChunkNode *
+LNK_ChunkNode *
 lnk_chunk_ptr_list_reserve(Arena *arena, LNK_ChunkList *list, U64 count)
 {
   LNK_ChunkNode *arr = 0;
@@ -766,7 +766,7 @@ lnk_chunk_ptr_list_reserve(Arena *arena, LNK_ChunkList *list, U64 count)
   return arr;
 }
 
-internal String8Array
+String8Array
 lnk_data_arr_from_chunk_ptr_list(Arena *arena, LNK_ChunkList list)
 {
   String8Array arr = {0};
@@ -780,7 +780,7 @@ lnk_data_arr_from_chunk_ptr_list(Arena *arena, LNK_ChunkList list)
   return arr;
 }
 
-internal String8Array *
+String8Array *
 lnk_data_arr_from_chunk_ptr_list_arr(Arena *arena, LNK_ChunkList *list_arr, U64 count)
 {
   String8Array *result = push_array(arena, String8Array, count);

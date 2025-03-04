@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal TXT_LangKind
+TXT_LangKind
 txt_lang_kind_from_extension(String8 extension)
 {
   TXT_LangKind kind = TXT_LangKind_Null;
@@ -47,7 +47,7 @@ txt_lang_kind_from_extension(String8 extension)
   return kind;
 }
 
-internal String8
+String8
 txt_extension_from_lang_kind(TXT_LangKind kind)
 {
   String8 result = {0};
@@ -66,7 +66,7 @@ txt_extension_from_lang_kind(TXT_LangKind kind)
   return result;
 }
 
-internal TXT_LangKind
+TXT_LangKind
 txt_lang_kind_from_arch(Arch arch)
 {
   TXT_LangKind kind = TXT_LangKind_Null;
@@ -78,7 +78,7 @@ txt_lang_kind_from_arch(Arch arch)
   return kind;
 }
 
-internal TXT_LangLexFunctionType *
+TXT_LangLexFunctionType *
 txt_lex_function_from_lang_kind(TXT_LangKind kind)
 {
   TXT_LangLexFunctionType *fn = 0;
@@ -98,7 +98,7 @@ txt_lex_function_from_lang_kind(TXT_LangKind kind)
 ////////////////////////////////
 //~ rjf: Token Type Functions
 
-internal void
+void
 txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token)
 {
   TXT_TokenChunkNode *node = list->last;
@@ -115,7 +115,7 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
   list->token_count += 1;
 }
 
-internal void
+void
 txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
 {
   TXT_TokenNode *node = push_array(arena, TXT_TokenNode, 1);
@@ -124,7 +124,7 @@ txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
   list->count += 1;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
 {
   TXT_TokenArray array = {0};
@@ -139,7 +139,7 @@ txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
   return array;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 {
   TXT_TokenArray array = {0};
@@ -157,7 +157,7 @@ txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string)
 {
   ProfBeginFunction();
@@ -503,7 +503,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
   return result;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -789,7 +789,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
   return result;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1074,7 +1074,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
   return result;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1365,7 +1365,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
   return result;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1590,7 +1590,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+void
 txt_init(void)
 {
   Arena *arena = arena_alloc();
@@ -1617,7 +1617,7 @@ txt_init(void)
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void
+void
 txt_tctx_ensure_inited(void)
 {
   if(txt_tctx == 0)
@@ -1631,7 +1631,7 @@ txt_tctx_ensure_inited(void)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal TXT_Scope *
+TXT_Scope *
 txt_scope_open(void)
 {
   txt_tctx_ensure_inited();
@@ -1648,7 +1648,7 @@ txt_scope_open(void)
   return scope;
 }
 
-internal void
+void
 txt_scope_close(TXT_Scope *scope)
 {
   for(TXT_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
@@ -1675,7 +1675,7 @@ txt_scope_close(TXT_Scope *scope)
   SLLStackPush(txt_tctx->free_scope, scope);
 }
 
-internal void
+void
 txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
 {
   TXT_Touch *touch = txt_tctx->free_touch;
@@ -1699,7 +1699,7 @@ txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal TXT_TextInfo
+TXT_TextInfo
 txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
 {
   TXT_TextInfo info = {0};
@@ -1767,7 +1767,7 @@ txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
   return info;
 }
 
-internal TXT_TextInfo
+TXT_TextInfo
 txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 *hash_out)
 {
   TXT_TextInfo result = {0};
@@ -1790,7 +1790,7 @@ txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 
 ////////////////////////////////
 //~ rjf: Text Info Extractor Helpers
 
-internal U64
+U64
 txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt)
 {
   U64 off = 0;
@@ -1802,7 +1802,7 @@ txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt)
   return off;
 }
 
-internal TxtPt
+TxtPt
 txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
 {
   TxtPt pt = {0};
@@ -1819,7 +1819,7 @@ txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
   return pt;
 }
 
-internal TXT_TokenArray
+TXT_TokenArray
 txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num)
 {
   TXT_TokenArray line_tokens = {0};
@@ -1847,7 +1847,7 @@ txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num
   return line_tokens;
 }
 
-internal Rng1U64
+Rng1U64
 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens)
 {
   Rng1U64 result = {0};
@@ -1949,7 +1949,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
   return result;
 }
 
-internal Rng1U64
+Rng1U64
 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
 {
   Rng1U64 result = {0};
@@ -1972,7 +1972,7 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
   return result;
 }
 
-internal String8
+String8
 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
 {
   Rng1U64 rng_off = r1u64(txt_off_from_info_pt(info, rng.min), txt_off_from_info_pt(info, rng.max));
@@ -1980,7 +1980,7 @@ txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
   return result;
 }
 
-internal String8
+String8
 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num)
 {
   String8 result = {0};
@@ -1991,7 +1991,7 @@ txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_nu
   return result;
 }
 
-internal TXT_LineTokensSlice
+TXT_LineTokensSlice
 txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range)
 {
   TXT_LineTokensSlice result = {0};
@@ -2086,7 +2086,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32
+B32
 txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us)
 {
   B32 good = 0;
@@ -2114,7 +2114,7 @@ txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us)
   return good;
 }
 
-internal void
+void
 txt_u2p_dequeue_req(U128 *hash_out, TXT_LangKind *lang_out)
 {
   OS_MutexScope(txt_shared->u2p_ring_mutex) for(;;)
@@ -2332,7 +2332,7 @@ ASYNC_WORK_DEF(txt_parse_work)
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void
+void
 txt_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[txt] evictor thread");

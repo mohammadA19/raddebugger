@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+String8
 coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
 {
   String8 result;
@@ -57,7 +57,7 @@ read_only static struct {
   { "Const", COFF_ImportHeader_Const },
 };
 
-internal String8
+String8
 coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 {
   String8 result = str8_zero();
@@ -73,7 +73,7 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
   return result;
 }
 
-internal String8
+String8
 coff_string_from_machine_type(COFF_MachineType machine)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
@@ -84,7 +84,7 @@ coff_string_from_machine_type(COFF_MachineType machine)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -133,7 +133,7 @@ coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
   return result;
 }
 
-internal String8
+String8
 coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -214,7 +214,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
   return result;
 }
 
-internal String8
+String8
 coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -243,7 +243,7 @@ coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags fl
   return result;
 }
 
-internal String8
+String8
 coff_string_from_import_header_type(COFF_ImportType type)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
@@ -254,7 +254,7 @@ coff_string_from_import_header_type(COFF_ImportType type)
   return str8(0,0);
 }
 
-internal String8
+String8
 coff_string_from_sym_dtype(COFF_SymDType x)
 {
   switch (x) {
@@ -266,7 +266,7 @@ coff_string_from_sym_dtype(COFF_SymDType x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_sym_type(COFF_SymType x)
 {
   switch (x) {
@@ -290,7 +290,7 @@ coff_string_from_sym_type(COFF_SymType x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_sym_storage_class(COFF_SymStorageClass x)
 {
   switch (x) {
@@ -325,7 +325,7 @@ coff_string_from_sym_storage_class(COFF_SymStorageClass x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_weak_ext_type(COFF_WeakExtType x)
 {
   switch (x) {
@@ -336,7 +336,7 @@ coff_string_from_weak_ext_type(COFF_WeakExtType x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_reloc_x86(COFF_Reloc_X86 x)
 {
   switch (x) {
@@ -364,7 +364,7 @@ coff_string_from_reloc_x86(COFF_Reloc_X86 x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_reloc_x64(COFF_Reloc_X64 x)
 {
   switch (x) {
@@ -389,7 +389,7 @@ coff_string_from_reloc_x64(COFF_Reloc_X64 x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_reloc_arm(COFF_Reloc_Arm x)
 {
   switch (x) {
@@ -417,7 +417,7 @@ coff_string_from_reloc_arm(COFF_Reloc_Arm x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
 {
   switch (x) {
@@ -442,7 +442,7 @@ coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
   return str8_zero();
 }
 
-internal String8
+String8
 coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 {
   switch (machine) {
@@ -454,7 +454,7 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
   return str8_zero();
 }
 
-internal COFF_MachineType
+COFF_MachineType
 coff_machine_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
@@ -465,7 +465,7 @@ coff_machine_from_string(String8 string)
   return COFF_Machine_Unknown;
 }
 
-internal COFF_ImportType
+COFF_ImportType
 coff_import_header_type_from_string(String8 name)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {

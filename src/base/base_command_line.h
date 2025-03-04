@@ -38,16 +38,16 @@ struct CmdLine
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-internal U64              cmd_line_hash_from_string(String8 string);
-internal CmdLineOpt**     cmd_line_slot_from_string(CmdLine *cmd_line, String8 string);
-internal CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string);
-internal void             cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var);
-internal CmdLineOpt*      cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values);
-internal CmdLine          cmd_line_from_string_list(Arena *arena, String8List arguments);
-internal CmdLineOpt*      cmd_line_opt_from_string(CmdLine *cmd_line, String8 name);
-internal String8List      cmd_line_strings(CmdLine *cmd_line, String8 name);
-internal String8          cmd_line_string(CmdLine *cmd_line, String8 name);
-internal B32              cmd_line_has_flag(CmdLine *cmd_line, String8 name);
-internal B32              cmd_line_has_argument(CmdLine *cmd_line, String8 name);
+U64              cmd_line_hash_from_string(String8 string);
+CmdLineOpt**     cmd_line_slot_from_string(CmdLine *cmd_line, String8 string);
+CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string);
+void             cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var);
+CmdLineOpt*      cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values);
+CmdLine          cmd_line_from_string_list(Arena *arena, String8List arguments);
+CmdLineOpt*      cmd_line_opt_from_string(CmdLine *cmd_line, String8 name);
+String8List      cmd_line_strings(CmdLine *cmd_line, String8 name);
+String8          cmd_line_string(CmdLine *cmd_line, String8 name);
+B32              cmd_line_has_flag(CmdLine *cmd_line, String8 name);
+B32              cmd_line_has_argument(CmdLine *cmd_line, String8 name);
 
 #endif // BASE_COMMAND_LINE_H

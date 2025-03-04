@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-internal RDI_RegCode regs_rdi_code_from_arch_reg_code(Arch arch, REGS_RegCode code)
+RDI_RegCode regs_rdi_code_from_arch_reg_code(Arch arch, REGS_RegCode code)
 {
 RDI_RegCode result = 0;
 switch(arch)
@@ -186,7 +186,7 @@ case REGS_RegCodeX86_ymm7:{result = RDI_RegCodeX86_ymm7;}break;
 }
 return result;
 }
-internal REGS_RegCode regs_reg_code_from_arch_rdi_code(Arch arch, RDI_RegCode code)
+REGS_RegCode regs_reg_code_from_arch_rdi_code(Arch arch, RDI_RegCode code)
 {
 REGS_RegCode result = 0;
 switch(arch)

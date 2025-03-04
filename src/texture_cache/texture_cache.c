@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal TEX_Topology
+TEX_Topology
 tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 {
   TEX_Topology top = {0};
@@ -17,7 +17,7 @@ tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+void
 tex_init(void)
 {
   Arena *arena = arena_alloc();
@@ -44,7 +44,7 @@ tex_init(void)
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void
+void
 tex_tctx_ensure_inited(void)
 {
   if(tex_tctx == 0)
@@ -58,7 +58,7 @@ tex_tctx_ensure_inited(void)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal TEX_Scope *
+TEX_Scope *
 tex_scope_open(void)
 {
   tex_tctx_ensure_inited();
@@ -75,7 +75,7 @@ tex_scope_open(void)
   return scope;
 }
 
-internal void
+void
 tex_scope_close(TEX_Scope *scope)
 {
   for(TEX_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
@@ -102,7 +102,7 @@ tex_scope_close(TEX_Scope *scope)
   SLLStackPush(tex_tctx->free_scope, scope);
 }
 
-internal void
+void
 tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
 {
   TEX_Touch *touch = tex_tctx->free_touch;
@@ -126,7 +126,7 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal R_Handle
+R_Handle
 tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topology)
 {
   R_Handle handle = {0};
@@ -192,7 +192,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
   return handle;
 }
 
-internal R_Handle
+R_Handle
 tex_texture_from_key_topology(TEX_Scope *scope, U128 key, TEX_Topology topology, U128 *hash_out)
 {
   R_Handle handle = {0};
@@ -215,7 +215,7 @@ tex_texture_from_key_topology(TEX_Scope *scope, U128 key, TEX_Topology topology,
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32
+B32
 tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
 {
   B32 good = 0;
@@ -243,7 +243,7 @@ tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
   return good;
 }
 
-internal void
+void
 tex_u2x_dequeue_req(U128 *hash_out, TEX_Topology *top_out)
 {
   OS_MutexScope(tex_shared->u2x_ring_mutex) for(;;)
@@ -327,7 +327,7 @@ ASYNC_WORK_DEF(tex_xfer_work)
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void
+void
 tex_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[tex] evictor thread");

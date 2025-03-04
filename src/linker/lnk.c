@@ -146,7 +146,7 @@
 
 ////////////////////////////////
 
-internal LNK_InputImport *
+LNK_InputImport *
 lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
 {
   LNK_InputImport *node = push_array(arena, LNK_InputImport, 1);
@@ -155,13 +155,13 @@ lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
   return node; 
 }
 
-internal void
+void
 lnk_input_import_list_concat_in_place(LNK_InputImportList *list, LNK_InputImportList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal LNK_InputImport **
+LNK_InputImport **
 lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 {
   LNK_InputImport **result = push_array_no_zero(arena, LNK_InputImport *, list.count);
@@ -173,7 +173,7 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
   return result;
 }
 
-internal LNK_InputImportList
+LNK_InputImportList
 lnk_list_from_input_import_arr(LNK_InputImport **arr, U64 count)
 {
   LNK_InputImportList list = {0};
@@ -210,7 +210,7 @@ lnk_input_import_compar(const void *raw_a, const void *raw_b)
 
 ////////////////////////////////
 
-internal String8
+String8
 lnk_make_full_path(Arena *arena, String8 work_dir, PathStyle system_path_style, String8 path)
 {
   ProfBeginFunction();
@@ -232,7 +232,7 @@ lnk_make_full_path(Arena *arena, String8 work_dir, PathStyle system_path_style, 
 
 ////////////////////////////////
 
-internal String8
+String8
 lnk_make_linker_manifest(Arena      *arena,
                          B32         manifest_uac,
                          String8     manifest_level,
@@ -294,7 +294,7 @@ lnk_make_linker_manifest(Arena      *arena,
   return result;
 }
 
-internal void
+void
 lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest_path_list)
 {
   ProfBeginFunction();
@@ -338,7 +338,7 @@ lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest
   ProfEnd();
 } 
 
-internal String8
+String8
 lnk_manifest_from_inputs(Arena       *arena,
                          String8      mt_path,
                          String8      manifest_name,
@@ -388,7 +388,7 @@ lnk_manifest_from_inputs(Arena       *arena,
 
 ////////////////////////////////
 
-internal int
+int
 lnk_res_string_id_is_before(void *raw_a, void *raw_b)
 {
   PE_Resource *a = raw_a;
@@ -399,7 +399,7 @@ lnk_res_string_id_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal int
+int
 lnk_res_number_id_is_before(void *raw_a, void *raw_b)
 {
   PE_Resource *a = raw_a;
@@ -410,7 +410,7 @@ lnk_res_number_id_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal void
+void
 lnk_serialize_pe_resource_tree(LNK_SectionTable *st, LNK_SymbolTable *symtab, PE_ResourceDir *root_dir)
 {
   ProfBeginFunction();
@@ -576,7 +576,7 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable *st, LNK_SymbolTable *symtab, PE
   ProfEnd();
 }
 
-internal void
+void
 lnk_add_resource_debug_s(LNK_SectionTable *st,
                          LNK_SymbolTable  *symtab,
                          String8           obj_path,
@@ -679,7 +679,7 @@ lnk_add_resource_debug_s(LNK_SectionTable *st,
   ProfEnd();
 }
 
-internal String8
+String8
 lnk_make_res_obj(TP_Context       *tp,
                  Arena            *arena,
                  PE_ResourceDir   *root_dir,
@@ -952,7 +952,7 @@ lnk_make_res_obj(TP_Context       *tp,
   return res_obj;
 }
 
-internal String8
+String8
 lnk_obj_from_res_file_list(TP_Context       *tp,
                            Arena            *arena,
                            LNK_SectionTable *st,
@@ -1009,7 +1009,7 @@ lnk_obj_from_res_file_list(TP_Context       *tp,
 
 ////////////////////////////////
 
-internal String8
+String8
 lnk_make_linker_coff_obj(TP_Context       *tp,
                          Arena            *arena,
                          COFF_TimeStamp    time_stamp,
@@ -1179,7 +1179,7 @@ THREAD_POOL_TASK_FUNC(lnk_load_thin_objs_task)
   }
 }
 
-internal String8
+String8
 lnk_get_lib_name(String8 path)
 {
   static String8 LIB_EXT = str8_lit_comp(".LIB");
@@ -1196,28 +1196,28 @@ lnk_get_lib_name(String8 path)
   return name;
 }
 
-internal B32
+B32
 lnk_is_lib_disallowed(HashTable *disallow_lib_ht, String8 path)
 {
   String8 lib_name = lnk_get_lib_name(path);
   return hash_table_search_path(disallow_lib_ht, lib_name) != 0;
 }
 
-internal B32
+B32
 lnk_is_lib_loaded(HashTable *loaded_lib_ht, String8 path)
 {
   KeyValuePair *is_loaded = hash_table_search_path(loaded_lib_ht, path);
   return is_loaded != 0;
 }
 
-internal void
+void
 lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, String8 path)
 {
   String8 lib_name = lnk_get_lib_name(path);
   hash_table_push_path_u64(arena, disallow_lib_ht, lib_name, 0);
 }
 
-internal void
+void
 lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path)
 {
   if (!hash_table_search_path(loaded_lib_ht, path)) {
@@ -1226,7 +1226,7 @@ lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path)
   }
 }
 
-internal void
+void
 lnk_push_input_from_lazy(Arena *arena, PathStyle path_style, LNK_LazySymbol *lazy, LNK_InputImportList *input_import_list, LNK_InputObjList *input_obj_list)
 {
   // parse member
@@ -1272,7 +1272,7 @@ lnk_push_input_from_lazy(Arena *arena, PathStyle path_style, LNK_LazySymbol *laz
   }
 }
 
-internal void
+void
 lnk_push_linker_symbols(LNK_SymbolTable *symtab, COFF_MachineType machine)
 {
   // Emit __ImageBase symbol.
@@ -1307,7 +1307,7 @@ lnk_push_linker_symbols(LNK_SymbolTable *symtab, COFF_MachineType machine)
 
 ////////////////////////////////
 
-internal void
+void
 lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
 {
   if (data.size % sizeof(U32)) {
@@ -1326,7 +1326,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
   }
 }
 
-internal String8
+String8
 lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
 {
   Assert(stride >= sizeof(U32));
@@ -1349,7 +1349,7 @@ lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
   return guard_data;
 }
 
-internal void
+void
 lnk_push_pe_debug_data_directory(LNK_Section           *sect,
                                  LNK_Chunk             *dir_array_chunk,
                                  LNK_Symbol            *data_symbol,
@@ -1374,7 +1374,7 @@ lnk_push_pe_debug_data_directory(LNK_Section           *sect,
   lnk_section_push_reloc(sect, dir_entry_chunk, LNK_Reloc_CHUNK_SIZE_VIRT_32, OffsetOf(PE_DebugDirectory, size), data_symbol);
 }
 
-internal void
+void
 lnk_build_debug_pdb(LNK_SectionTable *st,
                     LNK_SymbolTable  *symtab,
                     LNK_Section      *sect,
@@ -1401,7 +1401,7 @@ lnk_build_debug_pdb(LNK_SectionTable *st,
   ProfEnd();
 }
 
-internal void
+void
 lnk_build_debug_rdi(LNK_SectionTable *st,
                     LNK_SymbolTable  *symtab,
                     LNK_Section      *debug_sect,
@@ -1429,7 +1429,7 @@ lnk_build_debug_rdi(LNK_SectionTable *st,
   ProfEnd();
 }
 
-internal void
+void
 lnk_build_guard_tables(TP_Context       *tp,
                        LNK_SectionTable *st,
                        LNK_SymbolTable  *symtab,
@@ -1729,7 +1729,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   ProfEnd();
 }
 
-internal void
+void
 lnk_emit_base_reloc_info(Arena                 *arena,
                          LNK_Section          **sect_id_map,
                          B32                    is_large_addr_aware,
@@ -1808,7 +1808,7 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_objs_task)
   ProfEnd();
 }
 
-internal LNK_BaseRelocPageArray
+LNK_BaseRelocPageArray
 lnk_base_reloc_page_array_from_list(Arena* arena, LNK_BaseRelocPageList list)
 {
   LNK_BaseRelocPageArray result = {0};
@@ -1837,7 +1837,7 @@ lnk_base_reloc_page_compar(const void *raw_a, const void *raw_b)
   return u64_compar(&a->voff, &b->voff);
 }
 
-internal void
+void
 lnk_base_reloc_page_array_sort(LNK_BaseRelocPageArray arr)
 {
   ProfBeginFunction();
@@ -1846,7 +1846,7 @@ lnk_base_reloc_page_array_sort(LNK_BaseRelocPageArray arr)
   ProfEnd();
 }
 
-internal void
+void
 lnk_build_base_relocs(TP_Context                  *tp,
                       TP_Arena                    *tp_arena,
                       LNK_SectionTable            *st,
@@ -2022,7 +2022,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
   ProfEnd();
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_dos_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk)
 {
   U32 dos_stub_size = sizeof(PE_DosHeader) + pe_dos_program.size;
@@ -2063,7 +2063,7 @@ lnk_build_dos_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chun
   return dos_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_pe_magic(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent)
 {
   U32 *pe_magic = push_array_no_zero(header_sect->arena, U32, 1);
@@ -2077,7 +2077,7 @@ lnk_build_pe_magic(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk 
   return pe_magic_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_coff_file_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent,
                            COFF_MachineType machine, COFF_TimeStamp time_stamp, PE_ImageFileCharacteristics file_characteristics)
 {
@@ -2105,7 +2105,7 @@ lnk_build_coff_file_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LN
   return file_header_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_pe_optional_header_x64(LNK_SymbolTable       *symtab,
                                  LNK_Section           *header_sect,
                                  LNK_Chunk             *parent,
@@ -2213,7 +2213,7 @@ lnk_build_pe_optional_header_x64(LNK_SymbolTable       *symtab,
   return opt_header_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_pe_directories(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent)
 {
   static struct {
@@ -2258,7 +2258,7 @@ lnk_build_pe_directories(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_
   return directory_array_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_coff_section_table(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk, LNK_SectionArray sect_arr)
 {
   // register section symbols
@@ -2334,7 +2334,7 @@ lnk_build_coff_section_table(LNK_SymbolTable *symtab, LNK_Section *header_sect, 
   return COFF_FileHeader_array_chunk;
 }
 
-internal LNK_Chunk *
+LNK_Chunk *
 lnk_build_win32_image_header(LNK_SymbolTable     *symtab,
                              LNK_Section         *header_sect,
                              LNK_Chunk           *parent_chunk,
@@ -2498,7 +2498,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
   }
 }
 
-internal LNK_SymbolFinderResult
+LNK_SymbolFinderResult
 lnk_run_symbol_finder(TP_Context      *tp,
                       TP_Arena        *arena,
                       PathStyle        path_style,
@@ -2572,7 +2572,7 @@ THREAD_POOL_TASK_FUNC(lnk_defined_symbol_pusher_task)
   }
 }
 
-internal void
+void
 lnk_push_defined_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_ObjNodeArray objs)
 {
   ProfBeginFunction();
@@ -2602,7 +2602,7 @@ THREAD_POOL_TASK_FUNC(lnk_lazy_symbol_pusher_task)
   }
 }
 
-internal void
+void
 lnk_push_lazy_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray libs)
 {
   ProfBeginFunction();
@@ -2615,7 +2615,7 @@ lnk_push_lazy_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray 
 
 ////////////////////////////////
 
-internal void
+void
 lnk_apply_reloc(U64               base_addr,
                 U64               virt_align,
                 U64               file_align,
@@ -2787,7 +2787,7 @@ THREAD_POOL_TASK_FUNC(lnk_section_reloc_patcher)
   }
 }
 
-internal void
+void
 lnk_patch_relocs_linker(TP_Context *tp, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr)
 {
   ProfBeginFunction();
@@ -2830,7 +2830,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
   }
 }
 
-internal void
+void
 lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr)
 {
   ProfBeginFunction();
@@ -2851,7 +2851,7 @@ lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symt
 
 ////////////////////////////////
 
-internal LNK_SectionTable *
+LNK_SectionTable *
 lnk_init_section_table(LNK_SymbolTable *symtab, U64 section_virt_off, U64 sect_align, U64 file_align)
 {
   ProfBeginFunction();
@@ -2894,7 +2894,7 @@ lnk_init_section_table(LNK_SymbolTable *symtab, U64 section_virt_off, U64 sect_a
   return st;
 }
 
-internal LNK_MergeDirectiveList
+LNK_MergeDirectiveList
 lnk_init_merge_directive_list(Arena *arena, LNK_ObjList obj_list)
 {
   ProfBeginFunction();
@@ -2922,7 +2922,7 @@ lnk_init_merge_directive_list(Arena *arena, LNK_ObjList obj_list)
   return result;
 }
 
-internal void
+void
 lnk_discard_meta_data_sections(LNK_SectionTable *st)
 {
   static char * meta_data_sect_arr[] = {
@@ -2943,7 +2943,7 @@ lnk_discard_meta_data_sections(LNK_SectionTable *st)
 
 ////////////////////////////////
 
-internal int
+int
 lnk_pdata_is_before_x8664(void *raw_a, void *raw_b)
 {
   PE_IntelPdata *a = raw_a;
@@ -2954,7 +2954,7 @@ lnk_pdata_is_before_x8664(void *raw_a, void *raw_b)
 
 ////////////////////////////////
 
-internal void
+void
 lnk_log_size_breakdown(LNK_SectionTable *st, LNK_SymbolTable *symtab)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3014,7 +3014,7 @@ lnk_log_size_breakdown(LNK_SectionTable *st, LNK_SymbolTable *symtab)
   scratch_end(scratch);
 }
 
-internal void
+void
 lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTable *st)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3041,7 +3041,7 @@ lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTabl
   scratch_end(scratch);
 }
 
-internal void
+void
 lnk_log_timers(void)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -3074,7 +3074,7 @@ lnk_log_timers(void)
   scratch_end(scratch);
 }
 
-internal void
+void
 lnk_write_thread(void *raw_ctx)
 {
   ProfBeginFunction();
@@ -3099,7 +3099,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
   ProfEnd();
 }
 
-internal U128
+U128
 lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
 {
   ProfBeginFunction();
@@ -3136,7 +3136,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_max_tls_align)
   return 0;
 }
 
-internal void
+void
 lnk_run(int argc, char **argv)
 {
   enum State {
@@ -4350,7 +4350,7 @@ lnk_run(int argc, char **argv)
 #undef state_list_pop
 }
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   lnk_init_error_handler();
@@ -4359,7 +4359,7 @@ entry_point(CmdLine *cmdline)
 
 ////////////////////////////////
 
-internal String8
+String8
 lnk_string_from_input_source(LNK_InputSourceType input_source)
 {
   String8 result = str8_zero();

@@ -4,20 +4,20 @@
 ////////////////////////////////
 //~ rjf: Handle Type Functions (Helpers, Implemented Once)
 
-internal OS_Handle
+OS_Handle
 os_handle_zero(void)
 {
   OS_Handle handle = {0};
   return handle;
 }
 
-internal B32
+B32
 os_handle_match(OS_Handle a, OS_Handle b)
 {
   return a.u64[0] == b.u64[0];
 }
 
-internal void
+void
 os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 {
   OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
@@ -26,7 +26,7 @@ os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
   handles->count += 1;
 }
 
-internal OS_HandleArray
+OS_HandleArray
 os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 {
   OS_HandleArray result = {0};
@@ -43,7 +43,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 ////////////////////////////////
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
-internal String8List
+String8List
 os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 {
   String8List result = {0};
@@ -58,7 +58,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-internal String8
+String8
 os_data_from_file_path(Arena *arena, String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
@@ -68,7 +68,7 @@ os_data_from_file_path(Arena *arena, String8 path)
   return data;
 }
 
-internal B32
+B32
 os_write_data_to_file_path(String8 path, String8 data)
 {
   B32 good = 0;
@@ -82,7 +82,7 @@ os_write_data_to_file_path(String8 path, String8 data)
   return good;
 }
 
-internal B32
+B32
 os_write_data_list_to_file_path(String8 path, String8List list)
 {
   B32 good = 0;
@@ -101,7 +101,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   return good;
 }
 
-internal B32
+B32
 os_append_data_to_file_path(String8 path, String8 data)
 {
   B32 good = 0;
@@ -119,7 +119,7 @@ os_append_data_to_file_path(String8 path, String8 data)
   return good;
 }
 
-internal OS_FileID
+OS_FileID
 os_id_from_file_path(String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
@@ -128,14 +128,14 @@ os_id_from_file_path(String8 path)
   return id;
 }
 
-internal S64
+S64
 os_file_id_compare(OS_FileID a, OS_FileID b)
 {
   S64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
   return cmp;
 }
 
-internal String8
+String8
 os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 {
   U64 pre_pos = arena_pos(arena);
@@ -154,7 +154,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: Process Launcher Helpers
 
-internal OS_Handle
+OS_Handle
 os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -225,7 +225,7 @@ os_cmd_line_launch(String8 string)
   return handle;
 }
 
-internal OS_Handle
+OS_Handle
 os_cmd_line_launchf(char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);

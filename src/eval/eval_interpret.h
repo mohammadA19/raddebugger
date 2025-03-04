@@ -40,18 +40,18 @@ thread_static E_InterpretCtx *e_interpret_ctx = 0;
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal E_InterpretCtx *e_selected_interpret_ctx(void);
-internal void e_select_interpret_ctx(E_InterpretCtx *ctx);
+E_InterpretCtx *e_selected_interpret_ctx(void);
+void e_select_interpret_ctx(E_InterpretCtx *ctx);
 
 ////////////////////////////////
 //~ rjf: Space Reading Helpers
 
-internal B32 e_space_read(E_Space space, void *out, Rng1U64 range);
-internal B32 e_space_write(E_Space space, void *in, Rng1U64 range);
+B32 e_space_read(E_Space space, void *out, Rng1U64 range);
+B32 e_space_write(E_Space space, void *in, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Interpretation Functions
 
-internal E_Interpretation e_interpret(String8 bytecode);
+E_Interpretation e_interpret(String8 bytecode);
 
 #endif // EVAL_INTERPRET_H

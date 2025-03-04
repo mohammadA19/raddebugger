@@ -1,13 +1,13 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+String8
 cv_string_from_unknown_value(Arena *arena, U32 x)
 {
   return push_str8f(arena, "%#x", x);
 }
 
-internal String8
+String8
 cv_string_from_type_index_source(CV_TypeIndexSource ti_source)
 {
   switch (ti_source) {
@@ -19,7 +19,7 @@ cv_string_from_type_index_source(CV_TypeIndexSource ti_source)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_language(CV_Language x)
 {
   switch (x) {
@@ -30,7 +30,7 @@ CV_LanguageXList(X)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
 {
   String8 result = str8_zero();
@@ -52,7 +52,7 @@ cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
   return result;
 }
 
-internal String8 
+String8 
 cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
 {
   String8 result = str8_zero();
@@ -79,7 +79,7 @@ cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_member_access(CV_MemberAccess x)
 {
   switch (x) {
@@ -91,7 +91,7 @@ cv_string_from_member_access(CV_MemberAccess x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_method_prop(CV_MethodProp x)
 {
   switch (x) {
@@ -106,7 +106,7 @@ cv_string_from_method_prop(CV_MethodProp x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_hfa(CV_HFAKind x)
 {
   switch (x) {
@@ -118,7 +118,7 @@ cv_string_from_hfa(CV_HFAKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_mcom(CV_MoComUDTKind x)
 {
   switch (x) {
@@ -130,7 +130,7 @@ cv_string_from_mcom(CV_MoComUDTKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x)
 {
   switch (x) {
@@ -152,7 +152,7 @@ cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_thunk_ordinal(CV_ThunkOrdinal x)
 {
   switch (x) {
@@ -167,7 +167,7 @@ cv_string_from_thunk_ordinal(CV_ThunkOrdinal x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_frame_cookie_kind(CV_FrameCookieKind x)
 {
   switch (x) {
@@ -178,7 +178,7 @@ cv_string_from_frame_cookie_kind(CV_FrameCookieKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_generic_style(CV_GenericStyle x)
 {
   switch (x) {
@@ -193,7 +193,7 @@ cv_string_from_generic_style(CV_GenericStyle x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_trampoline_kind(CV_TrampolineKind x)
 {
   switch (x) {
@@ -203,7 +203,7 @@ cv_string_from_trampoline_kind(CV_TrampolineKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x)
 {
   switch (x) {
@@ -218,7 +218,7 @@ cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_call_kind(CV_CallKind x)
 {
   switch (x) {
@@ -251,7 +251,7 @@ cv_string_from_call_kind(CV_CallKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_member_pointer_kind(CV_MemberPointerKind x)
 {
   switch (x) {
@@ -267,7 +267,7 @@ cv_string_from_member_pointer_kind(CV_MemberPointerKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_pointer_kind(CV_PointerKind x)
 {
   switch (x) {
@@ -288,7 +288,7 @@ cv_string_from_pointer_kind(CV_PointerKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_pointer_mode(CV_PointerMode x)
 {
   switch (x) {
@@ -301,7 +301,7 @@ cv_string_from_pointer_mode(CV_PointerMode x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x)
 {
   switch (x) {
@@ -313,7 +313,7 @@ cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_label_kind(Arena *arena, CV_LabelKind x)
 {
   switch (x) {
@@ -323,7 +323,7 @@ cv_string_from_label_kind(Arena *arena, CV_LabelKind x)
   return cv_string_from_unknown_value(arena, x);
 }
 
-internal String8
+String8
 cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x)
 {
   switch (x) {
@@ -334,7 +334,7 @@ cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x)
   return str8_zero();
 }
 
-internal String8
+String8
 cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -353,7 +353,7 @@ cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -419,7 +419,7 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -438,7 +438,7 @@ cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_export_flags(Arena *arena, CV_ExportFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -466,7 +466,7 @@ cv_string_from_export_flags(Arena *arena, CV_ExportFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x)
 {
   Temp scratch = scratch_begin(&arena,1);
@@ -482,7 +482,7 @@ cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -504,7 +504,7 @@ cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -520,7 +520,7 @@ cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -587,7 +587,7 @@ cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -668,7 +668,7 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_local_flags(Arena *arena, CV_LocalFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -711,7 +711,7 @@ cv_string_from_local_flags(Arena *arena, CV_LocalFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -761,7 +761,7 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
 { (void)arena;
   String8 result = str8_lit("None");
@@ -771,7 +771,7 @@ cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x)
 { (void)arena;
   String8 result = str8_lit("None");
@@ -781,7 +781,7 @@ cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelF
   return result;
 }
 
-internal String8
+String8
 cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -833,7 +833,7 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
 {
   String8 result = str8_zero();
@@ -923,14 +923,14 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_itemid(Arena *arena, CV_ItemId itemid)
 {
   String8 result = push_str8f(arena, "%x", itemid);
   return result;
 }
 
-internal String8
+String8
 cv_string_from_reg_off(Arena *arena, CV_Arch arch, U32 reg, U32 off)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -939,7 +939,7 @@ cv_string_from_reg_off(Arena *arena, CV_Arch arch, U32 reg, U32 off)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type)
 {
   String8 str    = cv_string_from_sym_kind(symbol_type);
@@ -947,7 +947,7 @@ cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind)
 {
   String8 str    = cv_string_from_sym_kind(kind);
@@ -955,7 +955,7 @@ cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind)
   return result;
 }
 
-internal String8
+String8
 cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
 {
   String8 str    = cv_string_from_leaf_kind(leaf_type);
@@ -963,7 +963,7 @@ cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
   return result;
 }
 
-internal String8 
+String8 
 cv_string_sec_off(Arena *arena, U32 sec, U32 off)
 {
   return push_str8f(arena, "%04x:%08x", sec, off);

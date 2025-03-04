@@ -160,73 +160,73 @@ thread_static E_ParseCtx *e_parse_ctx = 0;
 //~ rjf: Basic Map Functions
 
 //- rjf: string -> num
-internal E_String2NumMap e_string2num_map_make(Arena *arena, U64 slot_count);
-internal void e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 num);
-internal U64 e_num_from_string(E_String2NumMap *map, String8 string);
-internal E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map);
-internal int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_String2NumMapNode **b);
-internal void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array);
+E_String2NumMap e_string2num_map_make(Arena *arena, U64 slot_count);
+void e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 num);
+U64 e_num_from_string(E_String2NumMap *map, String8 string);
+E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map);
+int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_String2NumMapNode **b);
+void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array);
 
 //- rjf: string -> expr
-internal E_String2ExprMap e_string2expr_map_make(Arena *arena, U64 slot_count);
-internal void e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_Expr *expr);
-internal void e_string2expr_map_inc_poison(E_String2ExprMap *map, String8 string);
-internal void e_string2expr_map_dec_poison(E_String2ExprMap *map, String8 string);
-internal E_Expr *e_string2expr_lookup(E_String2ExprMap *map, String8 string);
+E_String2ExprMap e_string2expr_map_make(Arena *arena, U64 slot_count);
+void e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_Expr *expr);
+void e_string2expr_map_inc_poison(E_String2ExprMap *map, String8 string);
+void e_string2expr_map_dec_poison(E_String2ExprMap *map, String8 string);
+E_Expr *e_string2expr_lookup(E_String2ExprMap *map, String8 string);
 
 ////////////////////////////////
 //~ rjf: Debug-Info-Driven Map Building Functions
 
-internal E_String2NumMap *e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff);
-internal E_String2NumMap *e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff);
+E_String2NumMap *e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff);
+E_String2NumMap *e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff);
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
 #define e_token_at_it(it, arr) (((it) < (arr)->v+(arr)->count) ? (*(it)) : e_token_zero())
-internal E_Token e_token_zero(void);
-internal void e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token);
-internal E_TokenArray e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list);
-internal E_TokenArray e_token_array_from_text(Arena *arena, String8 text);
-internal E_TokenArray e_token_array_make_first_opl(E_Token *first, E_Token *opl);
+E_Token e_token_zero(void);
+void e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token);
+E_TokenArray e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list);
+E_TokenArray e_token_array_from_text(Arena *arena, String8 text);
+E_TokenArray e_token_array_make_first_opl(E_Token *first, E_Token *opl);
 
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal E_ParseCtx *e_selected_parse_ctx(void);
-internal void e_select_parse_ctx(E_ParseCtx *ctx);
-internal U32 e_parse_ctx_module_idx_from_rdi(RDI_Parsed *rdi);
+E_ParseCtx *e_selected_parse_ctx(void);
+void e_select_parse_ctx(E_ParseCtx *ctx);
+U32 e_parse_ctx_module_idx_from_rdi(RDI_Parsed *rdi);
 
 ////////////////////////////////
 //~ rjf: Expression Tree Building Functions
 
-internal E_Expr *e_push_expr(Arena *arena, E_ExprKind kind, void *location);
-internal void e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child);
-internal void e_expr_push_child(E_Expr *parent, E_Expr *child);
-internal void e_expr_remove_child(E_Expr *parent, E_Expr *child);
-internal E_Expr *e_expr_ref(Arena *arena, E_Expr *ref);
-internal E_Expr *e_expr_ref_addr(Arena *arena, E_Expr *rhs);
-internal E_Expr *e_expr_ref_member_access(Arena *arena, E_Expr *lhs, String8 member_name);
-internal E_Expr *e_expr_ref_array_index(Arena *arena, E_Expr *lhs, U64 index);
-internal E_Expr *e_expr_ref_deref(Arena *arena, E_Expr *rhs);
-internal E_Expr *e_expr_ref_cast(Arena *arena, E_TypeKey type_key, E_Expr *rhs);
-internal E_Expr *e_expr_ref_bswap(Arena *arena, E_Expr *rhs);
+E_Expr *e_push_expr(Arena *arena, E_ExprKind kind, void *location);
+void e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child);
+void e_expr_push_child(E_Expr *parent, E_Expr *child);
+void e_expr_remove_child(E_Expr *parent, E_Expr *child);
+E_Expr *e_expr_ref(Arena *arena, E_Expr *ref);
+E_Expr *e_expr_ref_addr(Arena *arena, E_Expr *rhs);
+E_Expr *e_expr_ref_member_access(Arena *arena, E_Expr *lhs, String8 member_name);
+E_Expr *e_expr_ref_array_index(Arena *arena, E_Expr *lhs, U64 index);
+E_Expr *e_expr_ref_deref(Arena *arena, E_Expr *rhs);
+E_Expr *e_expr_ref_cast(Arena *arena, E_TypeKey type_key, E_Expr *rhs);
+E_Expr *e_expr_ref_bswap(Arena *arena, E_Expr *rhs);
 
 ////////////////////////////////
 //~ rjf: Expression Tree -> String Conversions
 
-internal void e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8List *out);
-internal String8 e_string_from_expr(Arena *arena, E_Expr *expr);
+void e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8List *out);
+String8 e_string_from_expr(Arena *arena, E_Expr *expr);
 
 ////////////////////////////////
 //~ rjf: Parsing Functions
 
-internal E_TypeKey e_leaf_type_from_name(String8 name);
-internal E_TypeKey e_type_from_expr(E_Expr *expr);
-internal void e_push_leaf_ident_exprs_from_expr__in_place(Arena *arena, E_String2ExprMap *map, E_Expr *expr);
-internal E_Parse e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
-internal E_Parse e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, S64 max_precedence);
-internal E_Parse e_parse_expr_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
-internal E_Expr *e_parse_expr_from_text(Arena *arena, String8 text);
+E_TypeKey e_leaf_type_from_name(String8 name);
+E_TypeKey e_type_from_expr(E_Expr *expr);
+void e_push_leaf_ident_exprs_from_expr__in_place(Arena *arena, E_String2ExprMap *map, E_Expr *expr);
+E_Parse e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
+E_Parse e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, S64 max_precedence);
+E_Parse e_parse_expr_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
+E_Expr *e_parse_expr_from_text(Arena *arena, String8 text);
 
 #endif // EVAL_PARSE_H

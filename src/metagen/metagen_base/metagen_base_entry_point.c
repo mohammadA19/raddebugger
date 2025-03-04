@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
+void
 main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **arguments, U64 arguments_count)
 {
 #if PROFILE_TELEMETRY
@@ -82,7 +82,7 @@ main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **argum
   scratch_end(scratch);
 }
 
-internal void
+void
 supplement_thread_base_entry_point(void (*entry_point)(void *params), void *params)
 {
   TCTX tctx;

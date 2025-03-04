@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+String8
 push_cstr(Arena *arena, String8 str)
 {
   U64 buffer_size = str.size + 1;
@@ -12,7 +12,7 @@ push_cstr(Arena *arena, String8 str)
   return result;
 }
 
-internal U32 *
+U32 *
 push_u32(Arena *arena, U32 value)
 {
   U32 *result = push_array_no_zero(arena, U32, 1);
@@ -20,7 +20,7 @@ push_u32(Arena *arena, U32 value)
   return result;
 }
 
-internal U64 *
+U64 *
 push_u64(Arena *arena, U64 value)
 {
   U64 *result = push_array_no_zero(arena, U64, 1);
@@ -28,7 +28,7 @@ push_u64(Arena *arena, U64 value)
   return result;
 }
 
-internal U32 *
+U32 *
 push_array_copy_u32(Arena *arena, U32 *v, U64 count)
 {
   U32 *result = push_array_no_zero(arena, U32, count);
@@ -36,7 +36,7 @@ push_array_copy_u32(Arena *arena, U32 *v, U64 count)
   return result;
 }
 
-internal U64 *
+U64 *
 push_array_copy_u64(Arena *arena, U64 *v, U64 count)
 {
   U64 *result = push_array_no_zero(arena, U64, count);
@@ -44,7 +44,7 @@ push_array_copy_u64(Arena *arena, U64 *v, U64 count)
   return result;
 }
 
-internal U64 **
+U64 **
 push_matrix_u64(Arena *arena, U64 rows, U64 columns)
 {
   U64 **result = push_array_no_zero(arena, U64 *, rows);
@@ -54,7 +54,7 @@ push_matrix_u64(Arena *arena, U64 rows, U64 columns)
   return result;
 }
 
-internal Arena **
+Arena **
 alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
 {
   U64 data_size = sizeof(count) + sizeof(Arena *) * count;
@@ -75,7 +75,7 @@ alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
   return arr;
 }
 
-internal void
+void
 release_arena_array(Arena **arr)
 {
   U64 *count_ptr = (U64 *)arr - 1;

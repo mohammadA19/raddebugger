@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+String8
 dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
   String8 result = {0};
@@ -44,7 +44,7 @@ exit:;
   return result;
 }
 
-internal String8
+String8
 dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
 {
   switch (kind) {
@@ -57,7 +57,7 @@ dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
+String8
 dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
   #define X(_N,...) case DW_Attrib_##_N: return str8_lit(Stringify(_N));
@@ -110,7 +110,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   return str8_zero();
 }
 
-internal String8
+String8
 dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
 {
   #define X(_N,...) case DW_Form_##_N: return str8_lit(Stringify(_N));
@@ -138,7 +138,7 @@ dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
   return result;
 }
 
-internal String8
+String8
 dw_string_from_language(Arena *arena, DW_Language kind)
 {
   switch (kind) {
@@ -149,7 +149,7 @@ dw_string_from_language(Arena *arena, DW_Language kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+String8
 dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
 {
   switch (kind) {
@@ -160,7 +160,7 @@ dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+String8
 dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
 {
   switch (kind) {
@@ -172,28 +172,28 @@ dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+String8
 dw_string_from_loc_list_entry_kind(Arena *arena, DW_LocListEntryKind kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
+String8
 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
+String8
 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RngListEntryKind kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
+String8
 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
 {
   String8 reg_str = str8_zero();

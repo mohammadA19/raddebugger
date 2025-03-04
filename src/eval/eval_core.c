@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helper Functions
 
-internal U64
+U64
 e_hash_from_string(U64 seed, String8 string)
 {
   U64 result = seed;
@@ -23,7 +23,7 @@ e_hash_from_string(U64 seed, String8 string)
 ////////////////////////////////
 //~ rjf: Message Functions
 
-internal void
+void
 e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text)
 {
   E_Msg *msg = push_array(arena, E_Msg, 1);
@@ -35,7 +35,7 @@ e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 tex
   msg->text = text;
 }
 
-internal void
+void
 e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...)
 {
   va_list args;
@@ -45,7 +45,7 @@ e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt,
   e_msg(arena, msgs, kind, location, text);
 }
 
-internal void
+void
 e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
 {
   if(dst->last != 0 && to_push->first != 0)
@@ -65,7 +65,7 @@ e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
 ////////////////////////////////
 //~ rjf: Space Functions
 
-internal E_Space
+E_Space
 e_space_make(E_SpaceKind kind)
 {
   E_Space space = {0};

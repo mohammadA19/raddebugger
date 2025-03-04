@@ -384,78 +384,78 @@ struct DW_PubStringsTable
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 dw_hash_from_string(String8 string);
+U64 dw_hash_from_string(String8 string);
 
 ////////////////////////////////
 //~ Specific Based Range Helpers
 
 #define dw_based_range_read_struct(base, range, offset, out) dw_based_range_read(base, range, offset, sizeof(*out), out)
 
-internal U64     dw_based_range_read(void *base, Rng1U64 range, U64 offset, U64 size, void *out);
-internal String8 dw_based_range_read_string(void *base, Rng1U64 range, U64 offset);
-internal void*   dw_based_range_ptr(void *base, Rng1U64 range, U64 offset);
-internal void*   dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size);
-internal U64     dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_value);
-internal U64     dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_value);
-internal U64     dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value);
-internal U64     dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
-internal U64     dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
-internal U64     dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_Mode mode, U64 address_size, DW_FormKind form_kind, U64 implicit_const, DW_AttribValue *form_value_out);
+U64     dw_based_range_read(void *base, Rng1U64 range, U64 offset, U64 size, void *out);
+String8 dw_based_range_read_string(void *base, Rng1U64 range, U64 offset);
+void*   dw_based_range_ptr(void *base, Rng1U64 range, U64 offset);
+void*   dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size);
+U64     dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_value);
+U64     dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_value);
+U64     dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value);
+U64     dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
+U64     dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
+U64     dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_Mode mode, U64 address_size, DW_FormKind form_kind, U64 implicit_const, DW_AttribValue *form_value_out);
 
-internal DW_Mode dw_mode_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
-internal B32     dw_sec_is_present(DW_SectionArray *sections, DW_SectionKind kind);
-internal void*   dw_base_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
-internal Rng1U64 dw_range_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
+DW_Mode dw_mode_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
+B32     dw_sec_is_present(DW_SectionArray *sections, DW_SectionKind kind);
+void*   dw_base_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
+Rng1U64 dw_range_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
 
 ////////////////////////////////
 //~ rjf: Abbrev Table
 
-internal DW_AbbrevTable dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 start_abbrev_off);
-internal U64            dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id);
+DW_AbbrevTable dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 start_abbrev_off);
+U64            dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id);
 
 ////////////////////////////////
 //~ rjf: Miscellaneous DWARF Section Parsing
 
 //- rjf: .debug_ranges (DWARF V4)
-internal Rng1U64List dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off);
+Rng1U64List dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off);
 
 //- rjf: .debug_pubtypes + .debug_pubnames (DWARF V4)
-internal DW_PubStringsTable dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *sections, DW_SectionKind section_kind);
+DW_PubStringsTable dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *sections, DW_SectionKind section_kind);
 
 //- rjf: .debug_str_offsets (DWARF V5)
-internal U64 dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
+U64 dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
 
 //- rjf: .debug_addr (DWARF V5)
-internal U64 dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
+U64 dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
 
 //- rjf: .debug_rnglists parsing (DWARF V5)
-internal U64         dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sections, DW_SectionKind section_kind, U64 base, U64 index);
-internal Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset);
+U64         dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sections, DW_SectionKind section_kind, U64 base, U64 index);
+Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset);
 
 ////////////////////////////////
 //~ rjf: Attrib Value Parsing
 
-internal DW_AttribValueResolveParams dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot *root);
-internal DW_AttribValue              dw_attrib_value_from_form_value(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_FormKind form_kind, DW_AttribClass value_class, DW_AttribValue form_value);
-internal String8                     dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value);
-internal Rng1U64List                 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value);
+DW_AttribValueResolveParams dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot *root);
+DW_AttribValue              dw_attrib_value_from_form_value(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_FormKind form_kind, DW_AttribClass value_class, DW_AttribValue form_value);
+String8                     dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value);
+Rng1U64List                 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value);
 
 ////////////////////////////////
 //~ rjf: Tag Parsing
 
-internal DW_AttribListParseResult dw_parse_attrib_list_from_info_abbrev_offsets(Arena *arena, DW_SectionArray *sections, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_off, U64 abbrev_off, B32 relaxed);
-internal DW_Tag*                  dw_tag_from_info_offset(Arena *arena, DW_SectionArray *sections, DW_AbbrevTable abbrev_table, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_offset, B32 relaxed);
-internal DW_TagStub               dw_stub_from_tag(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_Tag *tag);
+DW_AttribListParseResult dw_parse_attrib_list_from_info_abbrev_offsets(Arena *arena, DW_SectionArray *sections, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_off, U64 abbrev_off, B32 relaxed);
+DW_Tag*                  dw_tag_from_info_offset(Arena *arena, DW_SectionArray *sections, DW_AbbrevTable abbrev_table, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_offset, B32 relaxed);
+DW_TagStub               dw_stub_from_tag(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_Tag *tag);
 
 //- rjf: line info
-internal void dw_line_vm_reset(DW_LineVMState *state, B32 default_is_stmt);
-internal void dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max_ops_for_inst);
+void dw_line_vm_reset(DW_LineVMState *state, B32 default_is_stmt);
+void dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max_ops_for_inst);
 
-internal DW_LineSeqNode*         dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl);
-internal DW_LineNode*            dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence);
-internal DW_LineTableParseResult dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root);
-internal U64                     dw_read_line_file(void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, U8 address_size, U64 format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
-internal U64                     dw_read_line_vm_header(Arena *arena, void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader *header_out);
+DW_LineSeqNode*         dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl);
+DW_LineNode*            dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence);
+DW_LineTableParseResult dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root);
+U64                     dw_read_line_file(void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, U8 address_size, U64 format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
+U64                     dw_read_line_vm_header(Arena *arena, void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader *header_out);
 
 #endif // DWARF_PARSE_H
 

@@ -179,36 +179,36 @@ global PTG_Shared *ptg_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void ptg_init(void);
+void ptg_init(void);
 
 ////////////////////////////////
 //~ rjf: User Clock
 
-internal void ptg_user_clock_tick(void);
-internal U64 ptg_user_clock_idx(void);
+void ptg_user_clock_tick(void);
+U64 ptg_user_clock_idx(void);
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal PTG_Scope *ptg_scope_open(void);
-internal void ptg_scope_close(PTG_Scope *scope);
-internal void ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node);
+PTG_Scope *ptg_scope_open(void);
+void ptg_scope_close(PTG_Scope *scope);
+void ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node);
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal PTG_Graph *ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key);
+PTG_Graph *ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key);
 
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32 ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us);
-internal void ptg_u2b_dequeue_req(PTG_Key *key_out);
-internal void ptg_builder_thread__entry_point(void *p);
+B32 ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us);
+void ptg_u2b_dequeue_req(PTG_Key *key_out);
+void ptg_builder_thread__entry_point(void *p);
 
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void ptg_evictor_thread__entry_point(void *p);
+void ptg_evictor_thread__entry_point(void *p);
 
 #endif // PTR_GRAPH_CACHE_H

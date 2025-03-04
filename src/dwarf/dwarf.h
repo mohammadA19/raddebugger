@@ -1651,37 +1651,37 @@ enum DW_RegX64Enum
 //- Attrib Class Encodings
 
 // Speced Encodings
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_v2(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_v3(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_v4(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_v5(DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_v2(DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_v3(DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_v4(DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_v5(DW_AttribKind k);
 
 // Extensions
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_gnu  (DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_llvm (DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_apple(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_kind_mips (DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_gnu  (DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_llvm (DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_apple(DW_AttribKind k);
+DW_AttribClass dw_attrib_class_from_attrib_kind_mips (DW_AttribKind k);
 
-internal DW_AttribClass dw_attrib_class_from_attrib_kind(DW_Version ver, DW_Ext ext, DW_AttribKind v);
+DW_AttribClass dw_attrib_class_from_attrib_kind(DW_Version ver, DW_Ext ext, DW_AttribKind v);
 
 //- Form Class Encodings
 
-internal DW_AttribClass dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k);
+DW_AttribClass dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k);
 
-internal B32 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attrib_class, DW_FormKind form_kind);
+B32 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attrib_class, DW_FormKind form_kind);
 
 //- Section Names
 
-internal String8 dw_name_string_from_section_kind     (DW_SectionKind k);
-internal String8 dw_mach_name_string_from_section_kind(DW_SectionKind k);
-internal String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
+String8 dw_name_string_from_section_kind     (DW_SectionKind k);
+String8 dw_mach_name_string_from_section_kind(DW_SectionKind k);
+String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
 
 ////////////////////////////////
 
-internal U64 dw_offset_size_from_mode(DW_Mode mode);
+U64 dw_offset_size_from_mode(DW_Mode mode);
 
 ////////////////////////////////
 
-internal DW_AttribClass dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, DW_Language lang, B32 relaxed, DW_AttribKind attrib, DW_FormKind form_kind);
+DW_AttribClass dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, DW_Language lang, B32 relaxed, DW_AttribKind attrib, DW_FormKind form_kind);
 
 #endif // DWARF_H

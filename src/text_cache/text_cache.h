@@ -212,73 +212,73 @@ global TXT_Shared *txt_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal TXT_LangKind txt_lang_kind_from_extension(String8 extension);
-internal String8 txt_extension_from_lang_kind(TXT_LangKind kind);
-internal TXT_LangKind txt_lang_kind_from_arch(Arch arch);
-internal TXT_LangLexFunctionType *txt_lex_function_from_lang_kind(TXT_LangKind kind);
+TXT_LangKind txt_lang_kind_from_extension(String8 extension);
+String8 txt_extension_from_lang_kind(TXT_LangKind kind);
+TXT_LangKind txt_lang_kind_from_arch(Arch arch);
+TXT_LangLexFunctionType *txt_lex_function_from_lang_kind(TXT_LangKind kind);
 
 ////////////////////////////////
 //~ rjf: Token Type Functions
 
-internal void txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token);
-internal void txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token);
-internal TXT_TokenArray txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list);
-internal TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *list);
+void txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token);
+void txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token);
+TXT_TokenArray txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list);
+TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *list);
 
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void txt_init(void);
+void txt_init(void);
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void txt_tctx_ensure_inited(void);
+void txt_tctx_ensure_inited(void);
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal TXT_Scope *txt_scope_open(void);
-internal void txt_scope_close(TXT_Scope *scope);
-internal void txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node);
+TXT_Scope *txt_scope_open(void);
+void txt_scope_close(TXT_Scope *scope);
+void txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node);
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal TXT_TextInfo txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang);
-internal TXT_TextInfo txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 *hash_out);
+TXT_TextInfo txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang);
+TXT_TextInfo txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 *hash_out);
 
 ////////////////////////////////
 //~ rjf: Text Info Extractor Helpers
 
-internal U64 txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt);
-internal TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off);
-internal TXT_TokenArray txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num);
-internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens);
-internal Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt);
-internal String8 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng);
-internal String8 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num);
-internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range);
+U64 txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt);
+TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off);
+TXT_TokenArray txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num);
+Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens);
+Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt);
+String8 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng);
+String8 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num);
+TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range);
 
 ////////////////////////////////
 //~ rjf: Parse Threads
 
-internal B32 txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us);
-internal void txt_u2p_dequeue_req(U128 *hash_out, TXT_LangKind *lang_out);
+B32 txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us);
+void txt_u2p_dequeue_req(U128 *hash_out, TXT_LangKind *lang_out);
 ASYNC_WORK_DEF(txt_parse_work);
 
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void txt_evictor_thread__entry_point(void *p);
+void txt_evictor_thread__entry_point(void *p);
 
 #endif // TEXT_CACHE_H

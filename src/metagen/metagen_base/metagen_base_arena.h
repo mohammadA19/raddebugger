@@ -50,22 +50,22 @@ struct Temp
 //~ rjf: Arena Functions
 
 //- rjf: arena creation/destruction
-internal Arena *arena_alloc_(ArenaParams *params);
+Arena *arena_alloc_(ArenaParams *params);
 #define arena_alloc(...) arena_alloc_(&(ArenaParams){.reserve_size = MB(64), .commit_size = KB(64), __VA_ARGS__})
-internal void arena_release(Arena *arena);
+void arena_release(Arena *arena);
 
 //- rjf: arena push/pop/pos core functions
-internal void *arena_push(Arena *arena, U64 size, U64 align);
-internal U64   arena_pos(Arena *arena);
-internal void  arena_pop_to(Arena *arena, U64 pos);
+void *arena_push(Arena *arena, U64 size, U64 align);
+U64   arena_pos(Arena *arena);
+void  arena_pop_to(Arena *arena, U64 pos);
 
 //- rjf: arena push/pop helpers
-internal void arena_clear(Arena *arena);
-internal void arena_pop(Arena *arena, U64 amt);
+void arena_clear(Arena *arena);
+void arena_pop(Arena *arena, U64 amt);
 
 //- rjf: temporary arena scopes
-internal Temp temp_begin(Arena *arena);
-internal void temp_end(Temp temp);
+Temp temp_begin(Arena *arena);
+void temp_end(Temp temp);
 
 //- rjf: push helper macros
 #define push_array_no_zero_aligned(a, T, c, align) (T *)arena_push((a), sizeof(T)*(c), (align))

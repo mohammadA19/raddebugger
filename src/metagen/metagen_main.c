@@ -24,7 +24,7 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   //////////////////////////////

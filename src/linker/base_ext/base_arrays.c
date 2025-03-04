@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64
+U64
 void_list_count_nodes(VoidNode *head)
 {
   U64 node_count = 0;
@@ -11,7 +11,7 @@ void_list_count_nodes(VoidNode *head)
   return node_count;
 }
 
-internal void
+void
 void_node_concat(VoidNode **head, VoidNode *node)
 {
   Assert(*head != node);
@@ -19,14 +19,14 @@ void_node_concat(VoidNode **head, VoidNode *node)
   *head = node;
 }
 
-internal void
+void
 void_node_concat_atomic(VoidNode **head, VoidNode *node)
 {
   Assert(*head != node);
   node->next = ins_atomic_ptr_eval_assign(head, node);
 }
 
-internal U64Node *
+U64Node *
 u64_list_push(Arena *arena, U64List *list, U64 data)
 {
   U64Node *n = push_array(arena, U64Node, 1);
@@ -39,13 +39,13 @@ u64_list_push(Arena *arena, U64List *list, U64 data)
   return n;
 }
 
-internal void
+void
 u64_list_concat_in_place(U64List *list, U64List *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal U64Array
+U64Array
 u64_array_from_list(Arena *arena, U64List *list)
 {
   U64Array result;
@@ -57,19 +57,19 @@ u64_array_from_list(Arena *arena, U64List *list)
   return result;
 }
 
-internal void
+void
 u32_array_sort(U64 count, U32 *v)
 {
   radsort(v, count, u32_is_before);
 }
 
-internal void
+void
 u64_array_sort(U64 count, U64 *v)
 {
   radsort(v, count, u64_is_before);
 }
 
-internal void
+void
 u32_pair_radix_sort(U64 count, PairU32 *arr)
 {
   Temp scratch = scratch_begin(0,0);
@@ -118,7 +118,7 @@ u32_pair_radix_sort(U64 count, PairU32 *arr)
   scratch_end(scratch);
 }
 
-internal B32
+B32
 u32_array_compare(U32Array a, U32Array b)
 {
   B32 are_equal = 0;
@@ -129,7 +129,7 @@ u32_array_compare(U32Array a, U32Array b)
   return are_equal;
 }
 
-internal U64Array
+U64Array
 u64_array_remove_duplicates(Arena *arena, U64Array in)
 {
   U64Array result;
@@ -156,7 +156,7 @@ u64_array_remove_duplicates(Arena *arena, U64Array in)
   return result;
 }
 
-internal U64
+U64
 sum_array_u64(U64 count, U64 *v)
 {
   U64 result = 0;
@@ -166,7 +166,7 @@ sum_array_u64(U64 count, U64 *v)
   return result;
 }
 
-internal U64
+U64
 sum_matrix_u64(U64 rows, U64 cols, U64 **v)
 {
   U64 result = 0;
@@ -176,7 +176,7 @@ sum_matrix_u64(U64 rows, U64 cols, U64 **v)
   return result;
 }
 
-internal U64
+U64
 max_array_u64(U64 count, U64 *v)
 {
   U64 result = 0;
@@ -186,7 +186,7 @@ max_array_u64(U64 count, U64 *v)
   return result;
 }
 
-internal U64
+U64
 min_array_u64(U64 count, U64 *v)
 {
   U64 result = max_U64;
@@ -196,7 +196,7 @@ min_array_u64(U64 count, U64 *v)
   return result;
 }
 
-internal void
+void
 counts_to_offsets_array_u32(U64 count, U32 *arr)
 {
   U32 next_offset = 0;
@@ -207,7 +207,7 @@ counts_to_offsets_array_u32(U64 count, U32 *arr)
   }
 }
 
-internal void
+void
 counts_to_offsets_array_u64(U64 count, U64 *arr)
 {
   U64 next_offset = 0;
@@ -218,7 +218,7 @@ counts_to_offsets_array_u64(U64 count, U64 *arr)
   }
 }
 
-internal U32 *
+U32 *
 offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count)
 {
   U32 *result = push_array_copy_u32(arena, v, count);
@@ -226,7 +226,7 @@ offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count)
   return result;
 }
 
-internal U64 *
+U64 *
 offsets_from_counts_array_u64(Arena *arena, U64 *v, U64 count)
 {
   U64 *result = push_array_copy_u64(arena, v, count);

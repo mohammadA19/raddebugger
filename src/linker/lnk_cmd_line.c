@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8List
+String8List
 lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -81,14 +81,14 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
   return list;
 }
 
-internal void
+void
 lnk_cmd_line_push_option_node(LNK_CmdLine *cmd_line, LNK_CmdOption *opt)
 {
   SLLQueuePush(cmd_line->first_option, cmd_line->last_option, opt);
   cmd_line->option_count += 1;
 }
 
-internal LNK_CmdOption *
+LNK_CmdOption *
 lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8List value_strings)
 {
   // fill out node
@@ -103,7 +103,7 @@ lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 strin
   return opt;
 }
 
-internal LNK_CmdOption *
+LNK_CmdOption *
 lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8 value)
 {
   String8List value_list = str8_split_by_string_chars(arena, value, str8_lit(","), StringSplitFlag_KeepEmpties);
@@ -111,13 +111,13 @@ lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, String8 str
   return opt;
 }
 
-internal LNK_CmdOption *
+LNK_CmdOption *
 lnk_cmd_line_push_option(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value)
 {
   return lnk_cmd_line_push_option_string(arena, cmd_line, str8_cstring(string), str8_cstring(value));
 }
 
-internal LNK_CmdOption *
+LNK_CmdOption *
 lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value)
 {
   if (!lnk_cmd_line_has_option(*cmd_line, string)) {
@@ -126,7 +126,7 @@ lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, cha
   return 0;
 }
 
-internal LNK_CmdLine
+LNK_CmdLine
 lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -161,7 +161,7 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
   return cmd_line;
 }
 
-internal LNK_CmdOption *
+LNK_CmdOption *
 lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
 {
   LNK_CmdOption *opt;
@@ -173,7 +173,7 @@ lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
   return opt;
 }
 
-internal B32
+B32
 lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, String8 string)
 {
   LNK_CmdOption *opt = lnk_cmd_line_option_from_string(cmd_line, string);
@@ -181,13 +181,13 @@ lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, String8 string)
   return has_option;
 }
 
-internal B32
+B32
 lnk_cmd_line_has_option(LNK_CmdLine cmd_line, char *string)
 {
   return lnk_cmd_line_has_option_string(cmd_line, str8_cstring(string));
 }
 
-internal String8List
+String8List
 lnk_unwrap_rsp(Arena *arena, String8List arg_list)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -227,7 +227,7 @@ lnk_unwrap_rsp(Arena *arena, String8List arg_list)
   return result;
 }
 
-internal String8List
+String8List
 lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line)
 {
   String8List result = {0};

@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_Reloc *
+LNK_Reloc *
 lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
 {
   LNK_Reloc *arr = NULL;
@@ -15,7 +15,7 @@ lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
   return arr;
 }
 
-internal LNK_Reloc *
+LNK_Reloc *
 lnk_reloc_list_push(Arena *arena, LNK_RelocList *list)
 {
   LNK_Reloc *node = push_array(arena, LNK_Reloc, 1);
@@ -24,7 +24,7 @@ lnk_reloc_list_push(Arena *arena, LNK_RelocList *list)
   return node;
 }
 
-internal LNK_RelocList
+LNK_RelocList
 lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list)
 {
   LNK_RelocList result = {0};
@@ -38,19 +38,19 @@ lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list)
   return result;
 }
 
-internal void
+void
 lnk_reloc_list_concat_in_place(LNK_RelocList *list, LNK_RelocList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal void
+void
 lnk_reloc_list_concat_in_place_arr(LNK_RelocList *list, LNK_RelocList *arr, U64 count)
 {
   SLLConcatInPlaceArray(list, arr, count);
 }
 
-internal LNK_RelocList **
+LNK_RelocList **
 lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
 {
   LNK_RelocList **arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
@@ -60,7 +60,7 @@ lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
   return arr_arr;
 }
 
-internal LNK_RelocList
+LNK_RelocList
 lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK_Chunk *chunk, LNK_SymbolArray symbol_array, COFF_Reloc *reloc_v, U64 reloc_count)
 {
   LNK_RelocList reloc_list = {0};
@@ -100,7 +100,7 @@ lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK
   return reloc_list;
 }
 
-internal LNK_Reloc **
+LNK_Reloc **
 lnk_reloc_array_from_list(Arena *arena, LNK_RelocList list)
 {
   LNK_Reloc **arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
@@ -112,7 +112,7 @@ lnk_reloc_array_from_list(Arena *arena, LNK_RelocList list)
   return arr;
 }
 
-internal LNK_RelocType
+LNK_RelocType
 lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type)
 {
   LNK_RelocType result = LNK_Reloc_NULL;
@@ -145,7 +145,7 @@ lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type)
   return result;
 }
 
-internal U32
+U32
 lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type)
 {
   U32 result = 0;

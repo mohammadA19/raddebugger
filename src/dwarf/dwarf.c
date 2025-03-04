@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_v2(DW_AttribKind k)
 {
   switch (k) {
@@ -12,7 +12,7 @@ dw_attrib_class_from_attrib_kind_v2(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_v3(DW_AttribKind k)
 {
   switch (k) {
@@ -23,7 +23,7 @@ dw_attrib_class_from_attrib_kind_v3(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_v4(DW_AttribKind k)
 {
   switch (k) {
@@ -34,7 +34,7 @@ dw_attrib_class_from_attrib_kind_v4(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_v5(DW_AttribKind k)
 {
   switch (k) {
@@ -45,7 +45,7 @@ dw_attrib_class_from_attrib_kind_v5(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_gnu(DW_AttribKind k)
 {
   switch (k) {
@@ -56,7 +56,7 @@ dw_attrib_class_from_attrib_kind_gnu(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_llvm(DW_AttribKind k)
 {
   switch (k) {
@@ -67,7 +67,7 @@ dw_attrib_class_from_attrib_kind_llvm(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_apple(DW_AttribKind k)
 {
   switch (k) {
@@ -78,7 +78,7 @@ dw_attrib_class_from_attrib_kind_apple(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind_mips(DW_AttribKind k)
 {
   switch (k) {
@@ -89,7 +89,7 @@ dw_attrib_class_from_attrib_kind_mips(DW_AttribKind k)
   return DW_AttribClass_Null;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_attrib_kind(DW_Version ver, DW_Ext ext, DW_AttribKind k)
 {
   DW_AttribClass result = DW_AttribClass_Null;
@@ -131,7 +131,7 @@ dw_attrib_class_from_attrib_kind(DW_Version ver, DW_Ext ext, DW_AttribKind k)
   return result;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k)
 {
   #define X(_N,_C) case DW_Form_##_N: return _C;
@@ -165,7 +165,7 @@ dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k)
   return DW_AttribClass_Null;
 }
 
-internal B32
+B32
 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attrib_class, DW_FormKind form_kind)
 {
   DW_AttribClass compat_flags = dw_attrib_class_from_form_kind(ver, form_kind);
@@ -173,7 +173,7 @@ dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attr
   return are_compat;
 }
 
-internal String8
+String8
 dw_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -184,7 +184,7 @@ dw_name_string_from_section_kind(DW_SectionKind k)
   return str8_zero();
 }
 
-internal String8
+String8
 dw_mach_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -195,7 +195,7 @@ dw_mach_name_string_from_section_kind(DW_SectionKind k)
   return str8_zero();
 }
 
-internal String8
+String8
 dw_dwo_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -206,7 +206,7 @@ dw_dwo_name_string_from_section_kind(DW_SectionKind k)
   return str8_zero();
 }
 
-internal U64
+U64
 dw_offset_size_from_mode(DW_Mode mode)
 {
   U64 result = 0;
@@ -219,7 +219,7 @@ dw_offset_size_from_mode(DW_Mode mode)
   return result;
 }
 
-internal DW_AttribClass
+DW_AttribClass
 dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, DW_Language lang, B32 relaxed, DW_AttribKind attrib_kind, DW_FormKind form_kind)
 {
   // NOTE(rjf): DWARF's spec specifies two mappings:

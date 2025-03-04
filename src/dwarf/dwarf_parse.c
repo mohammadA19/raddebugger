@@ -61,7 +61,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+U64
 dw_hash_from_string(String8 string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
@@ -71,14 +71,14 @@ dw_hash_from_string(String8 string)
 ////////////////////////////////
 //~ rjf: DWARF-Specific Based Range Reads
 
-internal U64
+U64
 dw_based_range_read(void *base, Rng1U64 range, U64 offset, U64 size, void *out)
 {
   String8 data = str8((U8*)base+range.min, dim_1u64(range));
   return str8_deserial_read(data, offset, out, size, 1);
 }
 
-internal String8
+String8
 dw_based_range_read_string(void *base, Rng1U64 range, U64 offset)
 {
   String8 data = str8((U8*)base+range.min, dim_1u64(range));
@@ -87,7 +87,7 @@ dw_based_range_read_string(void *base, Rng1U64 range, U64 offset)
   return result;
 }
 
-internal void *
+void *
 dw_based_range_ptr(void *base, Rng1U64 range, U64 offset)
 {
   Assert(offset < dim_1u64(range));
@@ -95,7 +95,7 @@ dw_based_range_ptr(void *base, Rng1U64 range, U64 offset)
   return data;
 }
 
-internal void *
+void *
 dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size)
 {
   void *ptr = 0;
@@ -105,7 +105,7 @@ dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size)
   return ptr;
 }
 
-internal U64
+U64
 dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_value)
 {
   U64 value      = 0;
@@ -132,7 +132,7 @@ dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_valu
   return bytes_read;
 }
 
-internal U64
+U64
 dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_value)
 {
   U64 value      = 0;
@@ -163,7 +163,7 @@ dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_valu
   return bytes_read;
 }
 
-internal U64
+U64
 dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value)
 {
   U64 bytes_read = 0;
@@ -191,7 +191,7 @@ dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value
   return bytes_read;
 }
 
-internal U64
+U64
 dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev)
 {
   U64 total_bytes_read = 0;
@@ -241,7 +241,7 @@ dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev 
   return total_bytes_read;
 }
 
-internal U64
+U64
 dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev)
 {
   U64 total_bytes_read = 0;
@@ -292,7 +292,7 @@ dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW
   return total_bytes_read;
 }
 
-internal U64
+U64
 dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_Mode mode, U64 address_size, DW_FormKind form_kind, U64 implicit_const, DW_AttribValue *form_value_out)
 {
   U64            bytes_read    = 0;
@@ -444,7 +444,7 @@ dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_
 
 //- rjf: important DWARF section base/range accessors
 
-internal DW_Mode
+DW_Mode
 dw_mode_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
 {
   if(sections->v[kind].data.size > 0xffffffff)
@@ -457,14 +457,14 @@ dw_mode_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
   }
 }
 
-internal Rng1U64
+Rng1U64
 dw_range_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
 {
   Rng1U64 result = rng_1u64(0, sections->v[kind].data.size);
   return result;
 }
 
-internal void *
+void *
 dw_base_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
 {
   return sections->v[kind].data.str;
@@ -473,7 +473,7 @@ dw_base_from_sec(DW_SectionArray *sections, DW_SectionKind kind)
 ////////////////////////////////
 //~ rjf: Abbrev Table
 
-internal DW_AbbrevTable
+DW_AbbrevTable
 dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 abbrev_offset)
 {
   void    *file_base    = dw_base_from_sec(sections, DW_Section_Abbrev);
@@ -547,7 +547,7 @@ dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 abbrev_offset)
   return table;
 }
 
-internal U64
+U64
 dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id)
 {
   U64 abbrev_offset = max_U64;
@@ -581,7 +581,7 @@ dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id)
 
 //- rjf: .debug_ranges (DWARF V4)
 
-internal Rng1U64List
+Rng1U64List
 dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off)
 {
   void    *base = dw_base_from_sec(sections, DW_Section_Ranges);
@@ -624,7 +624,7 @@ dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 
 
 //- rjf: .debug_pubtypes + .debug_pubnames (DWARF V4)
 
-internal DW_PubStringsTable
+DW_PubStringsTable
 dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *sections, DW_SectionKind section_kind)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -705,7 +705,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *section
 
 //- rjf: .debug_str_offsets (DWARF V5)
 
-internal U64
+U64
 dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index)
 {
   U64 result = 0;
@@ -753,7 +753,7 @@ dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionK
 
 //- rjf: .debug_addr parsing
 
-internal U64
+U64
 dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index)
 {
   U64 result = 0;
@@ -798,7 +798,7 @@ dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKi
 
 //- rjf: .debug_rnglists + .debug_loclists parsing
 
-internal U64
+U64
 dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sections, DW_SectionKind section_kind, U64 base, U64 index)
 {
   //
@@ -859,7 +859,7 @@ dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sec
   return result;
 }
 
-internal Rng1U64List
+Rng1U64List
 dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset)
 {
   Rng1U64List list = {0};
@@ -958,7 +958,7 @@ dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW
 ////////////////////////////////
 //~ rjf: Attrib Value Parsing
 
-internal DW_AttribValueResolveParams
+DW_AttribValueResolveParams
 dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot *root)
 {
   DW_AttribValueResolveParams params = {0};
@@ -973,7 +973,7 @@ dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot *root)
   return params;
 }
 
-internal DW_AttribValue
+DW_AttribValue
 dw_attrib_value_from_form_value(DW_SectionArray             *sections,
                                 DW_AttribValueResolveParams  resolve_params,
                                 DW_FormKind                  form_kind,
@@ -1150,7 +1150,7 @@ dw_attrib_value_from_form_value(DW_SectionArray             *sections,
   return value;
 }
 
-internal String8
+String8
 dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value)
 {
   DW_SectionKind  section_kind = value.section;
@@ -1163,7 +1163,7 @@ dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value)
   return string;
 }
 
-internal Rng1U64List
+Rng1U64List
 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value)
 {
   Rng1U64List list = {0};
@@ -1193,7 +1193,7 @@ dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionA
 ////////////////////////////////
 //~ rjf: Tag Parsing
 
-internal DW_AttribListParseResult
+DW_AttribListParseResult
 dw_parse_attrib_list_from_info_abbrev_offsets(Arena           *arena,
                                               DW_SectionArray *sections,
                                               DW_Version       ver,
@@ -1271,7 +1271,7 @@ dw_parse_attrib_list_from_info_abbrev_offsets(Arena           *arena,
   return result;
 }
 
-internal DW_Tag *
+DW_Tag *
 dw_tag_from_info_offset(Arena           *arena,
                         DW_SectionArray *sections,
                         DW_AbbrevTable   abbrev_table,
@@ -1347,7 +1347,7 @@ dw_tag_from_info_offset(Arena           *arena,
 
 ////////////////////////////////
 
-internal U64
+U64
 dw_v5_header_offset_from_table_offset(DW_SectionArray *sections, DW_SectionKind section, U64 table_off)
 {
   // NOTE(rjf): From the DWARF V5 spec (February 13, 2017), page 401:
@@ -1440,7 +1440,7 @@ dw_v5_header_offset_from_table_offset(DW_SectionArray *sections, DW_SectionKind 
   return table_off - header_size;
 }
 
-internal Rng1U64List
+Rng1U64List
 dw_comp_unit_ranges_from_info(Arena *arena, DW_Section info)
 {
   Rng1U64List  result = {0};
@@ -1467,7 +1467,7 @@ dw_comp_unit_ranges_from_info(Arena *arena, DW_Section info)
   return result;
 }
 
-internal DW_Ext
+DW_Ext
 dw_ext_from_params(String8 producer, Arch arch, ImageType image_type)
 {
   DW_Ext ext = DW_Ext_Null;
@@ -1499,7 +1499,7 @@ dw_ext_from_params(String8 producer, Arch arch, ImageType image_type)
   return ext;
 }
 
-internal DW_CompRoot
+DW_CompRoot
 dw_comp_root_from_range(Arena *arena, DW_SectionArray *sections, Rng1U64 range, B32 relaxed)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1728,7 +1728,7 @@ dw_comp_root_from_range(Arena *arena, DW_SectionArray *sections, Rng1U64 range, 
   return unit;
 }
 
-internal DW_ExtDebugRef
+DW_ExtDebugRef
 dw_ext_debug_ref_from_comp_root(DW_CompRoot *root)
 {
   DW_ExtDebugRef ref = {0};
@@ -1739,7 +1739,7 @@ dw_ext_debug_ref_from_comp_root(DW_CompRoot *root)
 
 //- rjf: line info
 
-internal void
+void
 dw_line_vm_reset(DW_LineVMState *state, B32 default_is_stmt)
 {
   state->address         = 0;
@@ -1755,7 +1755,7 @@ dw_line_vm_reset(DW_LineVMState *state, B32 default_is_stmt)
   state->discriminator   = 0;
 }
 
-internal void
+void
 dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max_ops_for_inst)
 {
   U64 op_index = state->op_index + advance;
@@ -1763,7 +1763,7 @@ dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max
   state->op_index = op_index % max_ops_for_inst;
 }
 
-internal DW_LineSeqNode *
+DW_LineSeqNode *
 dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl)
 {
   DW_LineSeqNode *new_seq = push_array(arena, DW_LineSeqNode, 1);
@@ -1772,7 +1772,7 @@ dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl)
   return new_seq;
 }
 
-internal DW_LineNode *
+DW_LineNode *
 dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence)
 {
   DW_LineNode *n = 0;
@@ -1798,7 +1798,7 @@ dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_stat
   return n;
 }
 
-internal DW_LineTableParseResult
+DW_LineTableParseResult
 dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root)
 {
   DW_Mode  mode            = sections->v[DW_Section_Line].mode;
@@ -2032,7 +2032,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
   return result;
 }
 
-internal String8
+String8
 dw_path_from_file_idx(Arena *arena, DW_LineVMHeader *vm, U64 file_idx)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -2064,7 +2064,7 @@ dw_path_from_file_idx(Arena *arena, DW_LineVMHeader *vm, U64 file_idx)
   return path;
 }
 
-internal U64
+U64
 dw_read_line_file(void                        *line_base,
                   Rng1U64                      line_rng,
                   U64                          line_off,
@@ -2141,7 +2141,7 @@ dw_read_line_file(void                        *line_base,
   return result;
 }
 
-internal U64
+U64
 dw_read_line_vm_header(Arena                       *arena,
                        void                        *line_base,
                        Rng1U64                      line_rng,

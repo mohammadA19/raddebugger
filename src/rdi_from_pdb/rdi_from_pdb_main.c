@@ -51,7 +51,7 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
+void
 entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line

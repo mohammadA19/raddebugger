@@ -174,48 +174,48 @@ global read_only LNK_Symbol  *g_null_symbol_ptr = &g_null_symbol;
 
 ////////////////////////////////
 
-internal void lnk_init_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolType type);
-internal void lnk_init_defined_symbol(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags);
-internal void lnk_init_defined_symbol_chunk(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum);
-internal void lnk_init_defined_symbol_va(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va);
-internal void lnk_init_undefined_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolScopeFlags scope_flags);
-internal void lnk_init_weak_symbol(LNK_Symbol *symbol, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback);
+void lnk_init_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolType type);
+void lnk_init_defined_symbol(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags);
+void lnk_init_defined_symbol_chunk(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum);
+void lnk_init_defined_symbol_va(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va);
+void lnk_init_undefined_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolScopeFlags scope_flags);
+void lnk_init_weak_symbol(LNK_Symbol *symbol, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback);
 
-internal LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags);
-internal LNK_Symbol * lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum);
-internal LNK_Symbol * lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va);
-internal LNK_Symbol * lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags scope_flags);
-internal LNK_Symbol * lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback);
-internal LNK_Symbol * lnk_make_lazy_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset);
+LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags);
+LNK_Symbol * lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum);
+LNK_Symbol * lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va);
+LNK_Symbol * lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags scope_flags);
+LNK_Symbol * lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback);
+LNK_Symbol * lnk_make_lazy_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset);
 
-internal LNK_Chunk * lnk_chunk_from_symbol(LNK_Symbol *symbol);
-
-////////////////////////////////
-
-internal void                lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node);
-internal LNK_SymbolNode *    lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol);
-internal void                lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat);
-internal LNK_SymbolList      lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr);
-internal LNK_SymbolNodeArray lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list);
-internal LNK_SymbolArray     lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list);
+LNK_Chunk * lnk_chunk_from_symbol(LNK_Symbol *symbol);
 
 ////////////////////////////////
 
-internal void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunk_list, LNK_SymbolHashTrie **trie, U64 hash, LNK_Symbol *new_symbol);
-internal LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name);
-internal void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie);
+void                lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node);
+LNK_SymbolNode *    lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol);
+void                lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat);
+LNK_SymbolList      lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr);
+LNK_SymbolNodeArray lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list);
+LNK_SymbolArray     lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list);
 
 ////////////////////////////////
 
-internal U64  lnk_symbol_hash(String8 string);
+void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunk_list, LNK_SymbolHashTrie **trie, U64 hash, LNK_Symbol *new_symbol);
+LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name);
+void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie);
 
-internal LNK_SymbolTable * lnk_symbol_table_init(TP_Arena *arena);
-internal LNK_Symbol *      lnk_symbol_table_search_hash(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, U64 hash, String8 name);
-internal LNK_Symbol *      lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, String8 name);
-internal LNK_Symbol *      lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, char *fmt, ...);
-internal void              lnk_symbol_table_push_hash(LNK_SymbolTable *symtab, U64 hash, LNK_Symbol *symbol);
-internal void              lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_Symbol *symbol);
-internal void              lnk_symbol_table_remove(LNK_SymbolTable *symtab, LNK_SymbolScopeIndex scope, String8 name);
+////////////////////////////////
 
-internal LNK_Symbol * lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_Symbol *resolve_symbol);
+U64  lnk_symbol_hash(String8 string);
+
+LNK_SymbolTable * lnk_symbol_table_init(TP_Arena *arena);
+LNK_Symbol *      lnk_symbol_table_search_hash(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, U64 hash, String8 name);
+LNK_Symbol *      lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, String8 name);
+LNK_Symbol *      lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, char *fmt, ...);
+void              lnk_symbol_table_push_hash(LNK_SymbolTable *symtab, U64 hash, LNK_Symbol *symbol);
+void              lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_Symbol *symbol);
+void              lnk_symbol_table_remove(LNK_SymbolTable *symtab, LNK_SymbolScopeIndex scope, String8 name);
+
+LNK_Symbol * lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_Symbol *resolve_symbol);
 
