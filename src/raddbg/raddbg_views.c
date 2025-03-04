@@ -3258,7 +3258,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   //- rjf: [DEV] hovering -> eval system tooltips
                   if(DEV_eval_compiler_tooltips && x == 0 && ui_hovering(sig)) UI_Tooltip RD_Font(RD_FontSlot_Code)
                   {
-                    local_persist char *spaces = "                                                                        ";
+                    static char *spaces = "                                                                        ";
                     String8         string      = ev_expr_string_from_row(scratch.arena, row, 0);
                     E_TokenArray    tokens      = e_token_array_from_text(scratch.arena, string);
                     E_Parse         parse       = e_parse_expr_from_text_tokens(scratch.arena, string, &tokens);

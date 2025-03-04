@@ -2048,7 +2048,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
 REGS_Reg64 *
 ctrl_unwind_reg_from_pe_gpr_reg__pe_x64(REGS_RegBlockX64 *regs, PE_UnwindGprRegX64 gpr_reg)
 {
-  local_persist REGS_Reg64 dummy = {0};
+  static REGS_Reg64 dummy = {0};
   REGS_Reg64 *result = &dummy;
   switch(gpr_reg)
   {

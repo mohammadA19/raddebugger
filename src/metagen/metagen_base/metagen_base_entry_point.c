@@ -5,7 +5,7 @@ void
 main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **arguments, U64 arguments_count)
 {
 #if PROFILE_TELEMETRY
-  local_persist U8 tm_data[MB(64)];
+  static U8 tm_data[MB(64)];
   tmLoadLibrary(TM_RELEASE);
   tmSetMaxThreadCount(256);
   tmInitialize(sizeof(tm_data), (char *)tm_data);

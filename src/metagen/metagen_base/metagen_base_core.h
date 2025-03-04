@@ -18,7 +18,7 @@
 
 #define internal      static
 #define static        static
-#define local_persist static
+#define static static
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 # pragma section(".rdata$", read)

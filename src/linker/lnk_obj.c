@@ -1038,8 +1038,8 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  local_persist B32 init_table = 1;
-  local_persist B8  is_legal[LNK_CmdSwitch_Count];
+  static B32 init_table = 1;
+  static B8  is_legal[LNK_CmdSwitch_Count];
   if (init_table) {
     init_table = 0;
     is_legal[LNK_CmdSwitch_AlternateName]      = 1;
@@ -1065,8 +1065,8 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
   
   String8 to_parse;
   {
-    local_persist const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
-    local_persist const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
+    static const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
+    static const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
     if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
       to_parse = str8_zero();
       lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "TODO: support for BOM encoding");

@@ -10443,8 +10443,8 @@ String8List
 rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
 {
   ProfBeginFunction();
-  local_persist char *spaces = "                                                                                ";
-  local_persist char *slashes= "////////////////////////////////////////////////////////////////////////////////";
+  static char *spaces = "                                                                                ";
+  static char *slashes= "////////////////////////////////////////////////////////////////////////////////";
   String8List strs = {0};
   
   //- rjf: write all entities
@@ -11649,7 +11649,7 @@ rd_frame(void)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  local_persist S32 depth = 0;
+  static S32 depth = 0;
   log_scope_begin();
   
   //- TODO(rjf): @cfg debugging: stringify the current cfg tree

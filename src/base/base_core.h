@@ -16,8 +16,6 @@
 ////////////////////////////////
 //~ rjf: Codebase Keywords
 
-#define local_persist static
-
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 # pragma section(".rdata$", read)
 # define read_only __declspec(allocate(".rdata$"))

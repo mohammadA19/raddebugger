@@ -1119,7 +1119,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
     if (value_strings.node_count == 0) {
       config->function_pad_min = 0; // :function_pad_min
     } else {
-      local_persist U64 function_pad_min;
+      static U64 function_pad_min;
       lnk_cmd_switch_parse_u64(obj_path, lib_path, cmd_switch, value_strings, &function_pad_min, LNK_ParseU64Flag_CheckUnder32bit);
       config->function_pad_min = &function_pad_min;
     }

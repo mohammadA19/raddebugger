@@ -313,7 +313,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 cpp_keywords[] =
+          read_only static String8 cpp_keywords[] =
           {
             str8_lit_comp("alignas"),
             str8_lit_comp("alignof"),
@@ -428,7 +428,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 c_cpp_multichar_symbol_strings[] =
+          read_only static String8 c_cpp_multichar_symbol_strings[] =
           {
             str8_lit_comp("<<"),
             str8_lit_comp(">>"),
@@ -657,7 +657,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 odin_keywords[] =
+          read_only static String8 odin_keywords[] =
           {
             str8_lit_comp("align_of"),
             str8_lit_comp("asm"),
@@ -715,7 +715,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 odin_multichar_symbol_strings[] =
+          read_only static String8 odin_multichar_symbol_strings[] =
           {
             str8_lit_comp("<<"),
             str8_lit_comp(">>"),
@@ -943,7 +943,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 jai_keywords[] =
+          read_only static String8 jai_keywords[] =
           {
             str8_lit_comp("bool"),
             str8_lit_comp("true"),
@@ -1000,7 +1000,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 jai_multichar_symbol_strings[] =
+          read_only static String8 jai_multichar_symbol_strings[] =
           {
             str8_lit_comp("<<"),
             str8_lit_comp(">>"),
@@ -1224,7 +1224,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 zig_keywords[] =
+          read_only static String8 zig_keywords[] =
           {
             str8_lit_comp("addrspace"),
             str8_lit_comp("align"),
@@ -1291,7 +1291,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 zig_multichar_symbol_strings[] =
+          read_only static String8 zig_multichar_symbol_strings[] =
           {
             str8_lit_comp("<<"),
             str8_lit_comp(">>"),

@@ -51,7 +51,7 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   U32 result = 0;
   
   // rjf: special-case map
-  local_persist read_only struct {U32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
+  static read_only struct {U32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
   {
     {'!', OS_Key_1, OS_Modifier_Shift},
     {'@', OS_Key_2, OS_Modifier_Shift},

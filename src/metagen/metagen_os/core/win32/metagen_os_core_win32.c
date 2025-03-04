@@ -1544,7 +1544,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     }
     
     // rjf: set up thread context
-    local_persist TCTX tctx;
+    static TCTX tctx;
     tctx_init_and_equip(&tctx);
     
     // rjf: set up dynamically-alloc'd state

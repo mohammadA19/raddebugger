@@ -12,7 +12,7 @@ os_gfx_init(void)
 OS_GfxInfo *
 os_get_gfx_info(void)
 {
-  local_persist OS_GfxInfo g = {0};
+  static OS_GfxInfo g = {0};
   return &g;
 }
 
