@@ -45,7 +45,7 @@ typedef enum
   LNK_DefinedSymbolValue_VA
 };
 
-typedef struct LNK_DefinedSymbol
+srtuct LNK_DefinedSymbol
 {
   LNK_DefinedSymbolFlags     flags;
   LNK_DefinedSymbolValueType value_type;
@@ -60,19 +60,19 @@ typedef struct LNK_DefinedSymbol
   } u;
 };
 
-typedef struct LNK_WeakSymbol
+srtuct LNK_WeakSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
   COFF_WeakExtType     lookup_type;
   struct LNK_Symbol   *fallback_symbol;
 };
 
-typedef struct LNK_UndefinedSymbol
+srtuct LNK_UndefinedSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
 };
 
-typedef struct LNK_LazySymbol
+srtuct LNK_LazySymbol
 {
   struct LNK_Lib *lib;
   U64             member_offset;
@@ -90,7 +90,7 @@ typedef enum
   LNK_Symbol_Undefined,
 };
 
-typedef struct LNK_Symbol
+srtuct LNK_Symbol
 {
   String8         name;
   LNK_SymbolType  type;
@@ -103,39 +103,39 @@ typedef struct LNK_Symbol
   } u;
 };
 
-typedef struct LNK_SymbolNode
+srtuct LNK_SymbolNode
 {
   struct LNK_SymbolNode *next;
   LNK_Symbol            *data;
 };
 
-typedef struct LNK_SymbolList
+srtuct LNK_SymbolList
 {
   U64             count;
   LNK_SymbolNode *first;
   LNK_SymbolNode *last;
 };
 
-typedef struct LNK_SymbolNodeArray
+srtuct LNK_SymbolNodeArray
 {
   U64              count;
   LNK_SymbolNode **v;
 };
 
-typedef struct LNK_SymbolArray
+srtuct LNK_SymbolArray
 {
   U64         count;
   LNK_Symbol *v;
 };
 
-typedef struct LNK_SymbolHashTrie
+srtuct LNK_SymbolHashTrie
 {
   String8                   *name;
   LNK_Symbol                *symbol;
   struct LNK_SymbolHashTrie *child[4];
 };
 
-typedef struct LNK_SymbolHashTrieChunk
+srtuct LNK_SymbolHashTrieChunk
 {
   struct LNK_SymbolHashTrieChunk *next;
   U64                             count;
@@ -143,14 +143,14 @@ typedef struct LNK_SymbolHashTrieChunk
   LNK_SymbolHashTrie             *v;
 };
 
-typedef struct LNK_SymbolHashTrieChunkList
+srtuct LNK_SymbolHashTrieChunkList
 {
   U64                      count;
   LNK_SymbolHashTrieChunk *first;
   LNK_SymbolHashTrieChunk *last;
 };
 
-typedef struct LNK_SymbolTable
+srtuct LNK_SymbolTable
 {
   TP_Arena                    *arena;
   LNK_SymbolHashTrie          *scopes[LNK_SymbolScopeIndex_Count];
@@ -160,7 +160,7 @@ typedef struct LNK_SymbolTable
 ////////////////////////////////
 // parallel for wrappers
 
-typedef struct
+srtuct
 {
   LNK_SymbolTable *symtab;
   Rng1U64         *ranges;

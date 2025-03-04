@@ -3,20 +3,20 @@
 
 #pragma once
 
-typedef struct U64Node
+srtuct U64Node
 {
   struct U64Node *next;
   U64             data;
 };
 
-typedef struct U64List
+srtuct U64List
 {
   U64      count;
   U64Node *first;
   U64Node *last;
 };
 
-typedef struct VoidNode
+srtuct VoidNode
 {
   struct VoidNode *next;
   void            *v;

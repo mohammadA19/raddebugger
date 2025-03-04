@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef struct LNK_Section
+srtuct LNK_Section
 {
   Arena            *arena;
   U64               id;
@@ -35,32 +35,32 @@ typedef struct LNK_Section
   LNK_ChunkLayout layout;
 };
 
-typedef struct LNK_SectionNode
+srtuct LNK_SectionNode
 {
   struct LNK_SectionNode *next;
   LNK_Section             data;
 };
 
-typedef struct LNK_SectionList
+srtuct LNK_SectionList
 {
   U64              count;
   LNK_SectionNode *first;
   LNK_SectionNode *last;
 };
 
-typedef struct LNK_SectionArray
+srtuct LNK_SectionArray
 {
   U64          count;
   LNK_Section *v;
 };
 
-typedef struct LNK_SectionPtrArray
+srtuct LNK_SectionPtrArray
 {
   U64           count;
   LNK_Section **v;
 };
 
-typedef struct LNK_SectionTable
+srtuct LNK_SectionTable
 {
   Arena           *arena;
   U64              section_virt_off;
@@ -75,7 +75,7 @@ typedef struct LNK_SectionTable
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   COFF_MachineType  machine;
   Rng1U64          *range_arr;

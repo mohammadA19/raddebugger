@@ -466,7 +466,7 @@ struct RDIM_SrcFileChunkNode
   RDI_U64 base_idx;
 };
 
-typedef struct  RDIM_SrcFileChunkList RDIM_SrcFileChunkList;
+srtuct  RDIM_SrcFileChunkList RDIM_SrcFileChunkList;
 struct RDIM_SrcFileChunkList
 {
   RDIM_SrcFileChunkNode *first;

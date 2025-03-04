@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef struct LNK_Export
+srtuct LNK_Export
 {
   struct LNK_Export  *next;
   String8             name;
@@ -14,20 +14,20 @@ typedef struct LNK_Export
   B32                 is_private;
 };
 
-typedef struct LNK_ExportList
+srtuct LNK_ExportList
 {
   U64         count;
   LNK_Export *first;
   LNK_Export *last;
 };
 
-typedef struct LNK_ExportArray
+srtuct LNK_ExportArray
 {
   U64         count;
   LNK_Export *v;
 };
 
-typedef struct LNK_ExportTable
+srtuct LNK_ExportTable
 {
   Arena         *arena;
   HashTable     *name_export_ht;

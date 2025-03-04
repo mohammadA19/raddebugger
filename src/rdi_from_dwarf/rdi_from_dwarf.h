@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ Program Parameters Type
 
-typedef struct DWARFCONV_Params{
+srtuct DWARFCONV_Params{
   String8 input_elf_name;
   String8 input_elf_data;
   

@@ -2,7 +2,7 @@
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   String8Array path_arr;
   String8Array data_arr;

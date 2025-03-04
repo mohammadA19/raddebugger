@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef struct KeyValuePair
+srtuct KeyValuePair
 {
   union {
     String8 key_string;
@@ -18,19 +18,19 @@ typedef struct KeyValuePair
   };
 };
 
-typedef struct BucketNode
+srtuct BucketNode
 {
   struct BucketNode *next;
   KeyValuePair       v;
 };
 
-typedef struct BucketList
+srtuct BucketList
 {
   BucketNode *first;
   BucketNode *last;
 };
 
-typedef struct HashTable
+srtuct HashTable
 {
   U64         count;
   U64         cap;

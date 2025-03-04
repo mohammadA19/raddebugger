@@ -223,13 +223,13 @@ typedef enum
   LNK_ManifestOpt_No,
 };
 
-typedef struct LNK_AltNameList
+srtuct LNK_AltNameList
 {
   String8List from_list;
   String8List to_list;
 };
 
-typedef struct LNK_ExportParse
+srtuct LNK_ExportParse
 {
   struct LNK_ExportParse *next;
   String8                 name;
@@ -237,26 +237,26 @@ typedef struct LNK_ExportParse
   String8                 type;
 };
 
-typedef struct LNK_ExportParseList
+srtuct LNK_ExportParseList
 {
   U64              count;
   LNK_ExportParse *first;
   LNK_ExportParse *last;
 };
 
-typedef struct LNK_MergeDirective
+srtuct LNK_MergeDirective
 {
   String8 src;
   String8 dst;
 };
 
-typedef struct LNK_MergeDirectiveNode
+srtuct LNK_MergeDirectiveNode
 {
   struct LNK_MergeDirectiveNode *next;
   LNK_MergeDirective             data;
 };
 
-typedef struct LNK_MergeDirectiveList
+srtuct LNK_MergeDirectiveList
 {
   U64                     count;
   LNK_MergeDirectiveNode *first;
@@ -289,7 +289,7 @@ typedef enum
 
 #define LNK_DEFAULT_THREAD_POOL_NAME "RADLINK_THREAD_POOL"
 
-typedef struct LNK_Config
+srtuct LNK_Config
 {
   LNK_ConfigFlags             flags;
   LNK_DebugMode               debug_mode;

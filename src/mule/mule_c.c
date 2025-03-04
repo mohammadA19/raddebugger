@@ -29,7 +29,7 @@ c_type_coverage_eval_tests(void){
 
 #include <stdint.h>
 
-typedef struct Basics{
+srtuct Basics{
   double a;
   float b;
   unsigned long long c;
@@ -44,7 +44,7 @@ typedef struct Basics{
   int z;
 };
 
-typedef struct Basics_Stdint{
+srtuct Basics_Stdint{
   double   x1;
   float    x2;
   uint64_t x3;
@@ -57,7 +57,7 @@ typedef struct Basics_Stdint{
   int8_t   x0;
 };
 
-typedef struct Pair{
+srtuct Pair{
   int i;
   float f;
 };

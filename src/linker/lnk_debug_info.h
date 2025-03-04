@@ -5,21 +5,21 @@
 
 ////////////////////////////////
 
-typedef struct LNK_PchInfo
+srtuct LNK_PchInfo
 {
   CV_TypeIndex ti_lo;
   CV_TypeIndex ti_hi;
   U64          debug_p_obj_idx;
 };
 
-typedef struct LNK_CodeViewSymbolsInput
+srtuct LNK_CodeViewSymbolsInput
 {
   U64            obj_idx;
   CV_SymbolList *symbol_list;
   String8        raw_symbols;
 };
 
-typedef struct LNK_CodeViewInput
+srtuct LNK_CodeViewInput
 {
   U64             count;
   U64             internal_count;
@@ -71,39 +71,39 @@ typedef enum
 
 #define LNK_LeafRefFlag_LocIdxExternal (1 << 31)
 #define LNK_LeafRefFlag_LeafIdxIPI     (1 << 31)
-typedef struct
+srtuct
 {
   U32 enc_loc_idx;
   U32 enc_leaf_idx;
 };
 
-typedef struct LNK_LeafRange
+srtuct LNK_LeafRange
 {
   struct LNK_LeafRange *next;
   Rng1U64               range;
   CV_DebugT            *debug_t;
 };
 
-typedef struct LNK_LeafRangeList
+srtuct LNK_LeafRangeList
 {
   U64            count;
   LNK_LeafRange *first;
   LNK_LeafRange *last;
 };
 
-typedef struct
+srtuct
 {
   LNK_LeafRef  leaf_ref;
   CV_TypeIndex type_index;
 };
 
-typedef struct
+srtuct
 {
   U64              count;
   LNK_LeafBucket **v;
 };
 
-typedef struct
+srtuct
 {
   U64              cap;
   LNK_LeafBucket **bucket_arr;
@@ -120,33 +120,33 @@ typedef union
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   LNK_Obj      **obj_arr;
   LNK_ChunkList *sect_list_arr;
   CV_DebugS     *debug_s_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
   CV_DebugT    *debug_t_arr;
 };
 
-typedef struct
+srtuct
 {
   String8Array   data_arr;
   MSF_Parsed   **msf_parse_arr;
 };
 
-typedef struct
+srtuct
 {
   CV_TypeServerInfo  *ts_info_arr;
   MSF_Parsed        **msf_parse_arr;
@@ -157,13 +157,13 @@ typedef struct
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   LNK_LeafRangeList  *leaf_ranges_per_task;
   U64               **count_arr_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
@@ -171,7 +171,7 @@ typedef struct
   CV_DebugT         *debug_t_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -179,7 +179,7 @@ typedef struct
   CV_DebugT          *debug_t_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -187,7 +187,7 @@ typedef struct
   CV_TypeIndexSource  dedup_ti_source;
 };
 
-typedef struct
+srtuct
 {
   LNK_LeafHashTable   *ht;
   U64                 *count_arr;
@@ -196,7 +196,7 @@ typedef struct
   LNK_LeafBucketArray  result;
 };
 
-typedef struct
+srtuct
 {
   U64             loc_idx_bit_count_0;
   U64             loc_idx_bit_count_1;
@@ -210,7 +210,7 @@ typedef struct
   U64             pass_idx;
 };
 
-typedef struct
+srtuct
 {
   U32             *counts;
   U32             *offsets;
@@ -219,14 +219,14 @@ typedef struct
   Rng1U64         *ranges;
 };
 
-typedef struct
+srtuct
 {
   Rng1U64            *range_arr;
   CV_TypeIndex        min_type_index;
   LNK_LeafBucketArray bucket_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafBucket    **bucket_arr;
@@ -234,7 +234,7 @@ typedef struct
   Rng1U64            *range_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -243,7 +243,7 @@ typedef struct
   Arena             **arena_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
@@ -251,7 +251,7 @@ typedef struct
   CV_DebugS         *debug_s_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -263,23 +263,23 @@ typedef struct
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   String8List *data_list_arr;
 };
 
-typedef struct
+srtuct
 {
   String8List *data_list_arr;
   String8List *source_file_names_list_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_CodeViewSymbolsInput *inputs;
 };
 
-typedef struct
+srtuct
 {
   U64                        total_symbol_input_count;
   LNK_CodeViewSymbolsInput  *symbol_inputs;
@@ -289,7 +289,7 @@ typedef struct
   CV_SymbolList             *gsi_list_arr;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugS          *debug_s_arr;
   MSF_Context        *msf;
@@ -300,7 +300,7 @@ typedef struct
   CV_StringHashTable  string_ht;
 };
 
-typedef struct
+srtuct
 {
   MSF_Context    *msf;
   PDB_DbiModule **mod_arr;
@@ -310,7 +310,7 @@ typedef struct
   String8List    *globrefs_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_Obj                    *obj_arr;
   LNK_Section               **sect_id_map;
@@ -319,20 +319,20 @@ typedef struct
   String8                     image_data;
 };
 
-typedef struct
+srtuct
 {
   U32Array      *hash_arr_arr;
   CV_SymbolList *list_arr;
 };
 
-typedef struct
+srtuct
 {
   U64            *hash_arr;
   CV_SymbolNode **arr;
   Rng1U64        *range_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_Section                 **sect_id_map;
   LNK_SymbolHashTrieChunkList  *chunk_lists;
@@ -344,7 +344,7 @@ typedef struct
   U32               *hashes;
 };
 
-typedef struct
+srtuct
 {
   CV_TypeIndex              ipi_min_type_index;
   CV_DebugT                 ipi_types;
@@ -352,7 +352,7 @@ typedef struct
   CV_SymbolListArray       *parsed_symbols;
 };
 
-typedef struct
+srtuct
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
@@ -360,7 +360,7 @@ typedef struct
   U64               *out_count_arr;
 };
 
-typedef struct
+srtuct
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
@@ -368,7 +368,7 @@ typedef struct
   CV_SymbolNode    **symbol_arr;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugT    debug_t;
   Rng1U64     *ranges;
@@ -381,13 +381,13 @@ typedef struct
 ////////////////////////////////
 // RAD Debug Info
 
-typedef struct
+srtuct
 {
   String8 name;
   U64     leaf_idx;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugT           debug_t;
   Rng1U64            *ranges;
@@ -395,7 +395,7 @@ typedef struct
   LNK_UDTNameBucket **buckets;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugT           debug_t;
   CV_TypeIndex        ti_lo;
@@ -407,7 +407,7 @@ typedef struct
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   CV_DebugT               *types;
   U64                      type_cap;
@@ -429,13 +429,13 @@ typedef struct
   Rng1U64                 *ranges;
 };
 
-typedef struct
+srtuct
 {
   U64              obj_idx;
   RDIB_SourceFile *src_file;
 };
 
-typedef struct
+srtuct
 {
   LNK_Obj               *obj_arr;
   CV_DebugS             *debug_s_arr;
@@ -444,14 +444,14 @@ typedef struct
   U64                    src_file_buckets_cap;
 };
 
-typedef struct
+srtuct
 {
   CV_Arch     arch;
   CV_Language language;
   String8     compiler_name;
 };
 
-typedef struct
+srtuct
 {
   LNK_SectionArray          image_sects;
   LNK_Section             **sect_id_map;

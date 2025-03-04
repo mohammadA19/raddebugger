@@ -28,7 +28,7 @@ typedef enum
   LNK_Reloc_VIRT_OFF_32,
 };
 
-typedef struct LNK_Reloc
+srtuct LNK_Reloc
 {
   struct LNK_Reloc  *next;
   LNK_Chunk         *chunk;
@@ -37,7 +37,7 @@ typedef struct LNK_Reloc
   struct LNK_Symbol *symbol;
 };
 
-typedef struct LNK_RelocList
+srtuct LNK_RelocList
 {
   U64        count;
   LNK_Reloc *first;

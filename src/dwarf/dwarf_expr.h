@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ Dwarf Register Layout
 
-typedef struct DW_RegsX64
+srtuct DW_RegsX64
 {
   union {
     struct {
@@ -42,13 +42,13 @@ typedef DW_READ_MEMORY_SIG(DW_ReadMemorySig);
 //- machine configuration types
 typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
 
-typedef struct DW_ExprMachineCallConfig
+srtuct DW_ExprMachineCallConfig
 {
   void                   *user_ptr;
   DW_ExprResolveCallFunc *func;
 };
 
-typedef struct DW_ExprMachineConfig
+srtuct DW_ExprMachineConfig
 {
   U64                       max_step_count; // (read only in the eval functions)
   DW_ReadMemorySig         *read_memory;
@@ -81,12 +81,12 @@ enum DW_ExprFlags : U32
   DW_ExprFlag_NonLinearFlow = (1 << 18)
 };
 
-typedef struct DW_ExprAnalysis
+srtuct DW_ExprAnalysis
 {
   DW_ExprFlags flags;
 };
 
-typedef struct DW_ExprAnalysisTask
+srtuct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask *next;
   U64                         p;
@@ -130,7 +130,7 @@ enum DW_LocFailKind
   DW_LocFailKind_MissingArenaForComposite,
 };
 
-typedef struct DW_SimpleLoc
+srtuct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
   union {
@@ -145,7 +145,7 @@ typedef struct DW_SimpleLoc
   };
 };
 
-typedef struct DW_Piece
+srtuct DW_Piece
 {
   // Hint for Interpreting Pieces
   //
@@ -160,7 +160,7 @@ typedef struct DW_Piece
   B32              is_bit_loc;
 };
 
-typedef struct DW_Location
+srtuct DW_Location
 {
   // Interpreting a Dwarf Location
   //
@@ -194,20 +194,20 @@ typedef struct DW_Location
 
 
 //- full evaluator state types
-typedef struct DW_ExprStackNode
+srtuct DW_ExprStackNode
 {
   struct DW_ExprStackNode *next;
   U64                      val;
 };
 
-typedef struct DW_ExprStack
+srtuct DW_ExprStack
 {
   DW_ExprStackNode *stack;
   DW_ExprStackNode *free_nodes;
   U64               count;
 };
 
-typedef struct DW_ExprCall
+srtuct DW_ExprCall
 {
   struct DW_ExprCall *next;
   void               *ptr;
@@ -215,7 +215,7 @@ typedef struct DW_ExprCall
   U64                 cursor;
 };
 
-typedef struct DW_ExprCallStack
+srtuct DW_ExprCallStack
 {
   DW_ExprCall *stack;
   DW_ExprCall *free_calls;

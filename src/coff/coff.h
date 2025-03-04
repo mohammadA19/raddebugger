@@ -72,7 +72,7 @@ enum COFF_MachineType : U16
   COFF_Machine_WceMipsV2  = 0x169
 };
 
-typedef struct COFF_FileHeader
+srtuct COFF_FileHeader
 {
   COFF_MachineType     machine;
   U16                  section_count;
@@ -83,7 +83,7 @@ typedef struct COFF_FileHeader
   COFF_FileHeaderFlags flags;
 };
 
-typedef struct COFF_BigObjHeader
+srtuct COFF_BigObjHeader
 {
   U16              sig1;              // COFF_Machine_Unknown
   U16              sig2;              // max_U16
@@ -143,7 +143,7 @@ enum COFF_SectionFlags : U32
 #define COFF_SectionFlags_ExtractAlign(f) (COFF_SectionAlign)(((f) >> COFF_SectionFlag_AlignShift) & COFF_SectionFlag_AlignMask)
 #define COFF_SectionFlags_LnkFlags        ((COFF_SectionFlag_AlignMask << COFF_SectionFlag_AlignShift) | COFF_SectionFlag_LnkCOMDAT | COFF_SectionFlag_LnkInfo | COFF_SectionFlag_LnkOther | COFF_SectionFlag_LnkRemove | COFF_SectionFlag_LnkNRelocOvfl)
 
-typedef struct COFF_SectionHeader
+srtuct COFF_SectionHeader
 {
   U8                name[8];
   U32               vsize;
@@ -248,7 +248,7 @@ typedef union COFF_SymbolType
   U16 v;
 };
 
-typedef struct COFF_Symbol16
+srtuct COFF_Symbol16
 {
   COFF_SymbolName      name;
   U32                  value;
@@ -258,7 +258,7 @@ typedef struct COFF_Symbol16
   U8                   aux_symbol_count;
 };
 
-typedef struct COFF_Symbol32
+srtuct COFF_Symbol32
 {
   COFF_SymbolName      name;
   U32                  value;
@@ -279,7 +279,7 @@ enum COFF_WeakExtType : U32
 };
 
 // storage class: External
-typedef struct COFF_SymbolFuncDef
+srtuct COFF_SymbolFuncDef
 {
   U32 tag_index;
   U32 total_size;
@@ -289,7 +289,7 @@ typedef struct COFF_SymbolFuncDef
 };
 
 // storage class: Function
-typedef struct COFF_SymbolFunc
+srtuct COFF_SymbolFunc
 {
   U8  unused[4];
   U16 ln;
@@ -299,14 +299,14 @@ typedef struct COFF_SymbolFunc
 };
 
 // storage class: WeakExternal
-typedef struct COFF_SymbolWeakExt
+srtuct COFF_SymbolWeakExt
 {
   U32              tag_index;
   COFF_WeakExtType characteristics;
   U8               unused[10];
 };
 
-typedef struct COFF_SymbolFile 
+srtuct COFF_SymbolFile 
 {
   U8 name[18];
 };
@@ -324,7 +324,7 @@ enum COFF_ComdatSelectType : U8
 
 // provides information about section to which symbol refers to.
 // storage class: Static
-typedef struct COFF_SymbolSecDef
+srtuct COFF_SymbolSecDef
 {
   U32                   length;
   U16                   number_of_relocations;
@@ -430,7 +430,7 @@ enum COFF_Reloc_Arm64 : COFF_RelocType
   COFF_Reloc_Arm64_Rel32         = 0x11
 };
 
-typedef struct COFF_Reloc
+srtuct COFF_Reloc
 {
   U32            apply_off; // section relative offset where relocation is placed
   U32            isymbol;   // zero based index into coff symbol table
@@ -441,7 +441,7 @@ typedef struct COFF_Reloc
 
 #define COFF_ResourceAlign 4u
 
-typedef struct COFF_ResourceHeaderPrefix
+srtuct COFF_ResourceHeaderPrefix
 {
   U32 data_size;
   U32 header_size;
@@ -455,7 +455,7 @@ enum COFF_ResourceMemoryFlags : U16
   COFF_ResourceMemoryFlag_Discardable = 0x1000
 };
 
-typedef struct COFF_ResourceDataEntry
+srtuct COFF_ResourceDataEntry
 {
   U32 data_voff;
   U32 data_size;
@@ -463,7 +463,7 @@ typedef struct COFF_ResourceDataEntry
   U32 reserved;
 };
 
-typedef struct COFF_ResourceDirTable
+srtuct COFF_ResourceDirTable
 {
   U32            characteristics;
   COFF_TimeStamp time_stamp;
@@ -474,7 +474,7 @@ typedef struct COFF_ResourceDirTable
 };
 
 #define COFF_Resource_SubDirFlag (1u << 31u)
-typedef struct COFF_ResourceDirEntry
+srtuct COFF_ResourceDirEntry
 {
   union {
     U32 offset;
@@ -491,7 +491,7 @@ typedef struct COFF_ResourceDirEntry
 #define COFF_Archive_MemberAlign      2
 #define COFF_Archive_MaxShortNameSize 15
 
-typedef struct COFF_ArchiveMemberHeader
+srtuct COFF_ArchiveMemberHeader
 {
   U8 name[16];
   U8 date[12];
@@ -528,7 +528,7 @@ enum COFF_ImportHeaderFlags : U16
 #define COFF_ImportHeader_ExtractType(x)     (((x) >> COFF_ImportHeader_TypeShift    ) & COFF_ImportHeader_TypeMask    )
 #define COFF_ImportHeader_ExtractImportBy(x) (((x) >> COFF_ImportHeader_ImportByShift) & COFF_ImportHeader_ImportByMask)
 
-typedef struct COFF_ImportHeader
+srtuct COFF_ImportHeader
 {
   U16                    sig1;     // COFF_Machine_Unknown
   U16                    sig2;     // max_U16

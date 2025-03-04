@@ -5,13 +5,13 @@
 
 //- Symbol and Leaf Headers
 
-typedef struct CV_LeafHeader
+srtuct CV_LeafHeader
 {
   CV_LeafSize size;
   CV_LeafKind kind;
 };
 
-typedef struct CV_SymbolHeader
+srtuct CV_SymbolHeader
 {
   CV_SymSize size;
   CV_SymKind kind;
@@ -22,27 +22,27 @@ typedef struct CV_SymbolHeader
 
 //- $$Symbols
 
-typedef struct CV_Symbol
+srtuct CV_Symbol
 {
   CV_SymKind kind;
   U64        offset;
   String8    data;
 };
 
-typedef struct CV_SymbolNode
+srtuct CV_SymbolNode
 {
   struct CV_SymbolNode *next;
   struct CV_SymbolNode *prev;
   CV_Symbol             data;
 };
 
-typedef struct CV_SymbolPtrNode
+srtuct CV_SymbolPtrNode
 {
   struct CV_SymbolPtrNode *next;
   CV_Symbol               *data;
 };
 
-typedef struct CV_SymbolList
+srtuct CV_SymbolList
 {
   U64            count;
   CV_Signature   signature;
@@ -50,19 +50,19 @@ typedef struct CV_SymbolList
   CV_SymbolNode *last;
 };
 
-typedef struct CV_SymbolListArray
+srtuct CV_SymbolListArray
 {
   U64            count;
   CV_SymbolList *v;
 };
 
-typedef struct CV_SymbolPtrArray
+srtuct CV_SymbolPtrArray
 {
   U64             count;
   CV_SymbolNode **v;
 };
 
-typedef struct CV_Scope
+srtuct CV_Scope
 {
   struct CV_ScopeList *children;
   struct CV_Scope     *next;
@@ -70,13 +70,13 @@ typedef struct CV_Scope
   CV_Symbol            symbol;
 };
 
-typedef struct CV_ScopeList
+srtuct CV_ScopeList
 {
   CV_Scope *first;
   CV_Scope *last;
 };
 
-typedef struct CV_ScopeFrame
+srtuct CV_ScopeFrame
 {
   struct        CV_ScopeFrame *next;
   CV_ScopeList *list;
@@ -88,19 +88,19 @@ typedef struct CV_ScopeFrame
 
 //- $$FileChksms
 
-typedef struct CV_Checksum
+srtuct CV_Checksum
 {
   CV_C13Checksum *header;
   String8 value;
 };
 
-typedef struct CV_ChecksumNode
+srtuct CV_ChecksumNode
 {
   struct CV_ChecksumNode *next;
   CV_Checksum data;
 };
 
-typedef struct CV_ChecksumList
+srtuct CV_ChecksumList
 {
   U64 count;
   CV_ChecksumNode *first;
@@ -109,7 +109,7 @@ typedef struct CV_ChecksumList
 
 //- $$Lines
 
-typedef struct CV_LineArray
+srtuct CV_LineArray
 {
   U32  file_off;
   U64  line_count;
@@ -119,13 +119,13 @@ typedef struct CV_LineArray
   U16 *col_nums;  // [line_count * 2]
 };
 
-typedef struct CV_File
+srtuct CV_File
 {
   U32          file_off;
   CV_LineArray lines;
 };
 
-typedef struct CV_C13LinesHeader
+srtuct CV_C13LinesHeader
 {
   U64 sec_idx;
   U64 sec_off_lo;
@@ -137,13 +137,13 @@ typedef struct CV_C13LinesHeader
   U64 col_array_off;
 };
 
-typedef struct CV_C13LinesHeaderNode
+srtuct CV_C13LinesHeaderNode
 {
   struct CV_C13LinesHeaderNode *next;
   CV_C13LinesHeader             v;
 };
 
-typedef struct CV_C13LinesHeaderList
+srtuct CV_C13LinesHeaderList
 {
   CV_C13LinesHeaderNode *first;
   CV_C13LinesHeaderNode *last;
@@ -152,27 +152,27 @@ typedef struct CV_C13LinesHeaderList
 
 ////////////////////////////////
 
-typedef struct CV_TypeServerInfo
+srtuct CV_TypeServerInfo
 {
   String8 name;
   Guid    sig;
   U32     age;
 };
 
-typedef struct CV_TypeServerInfoNode
+srtuct CV_TypeServerInfoNode
 {
   struct CV_TypeServerInfoNode *next;
   CV_TypeServerInfo             data;
 };
 
-typedef struct CV_TypeServerInfoList
+srtuct CV_TypeServerInfoList
 {
   CV_TypeServerInfoNode *first;
   CV_TypeServerInfoNode *last;
   U64                    count;
 };
 
-typedef struct CV_PrecompInfo
+srtuct CV_PrecompInfo
 {
   CV_TypeIndex start_index;
   U32          sig;
@@ -180,7 +180,7 @@ typedef struct CV_PrecompInfo
   String8      obj_name;
 };
 
-typedef struct CV_ObjInfo
+srtuct CV_ObjInfo
 {
   U32     sig;
   String8 name;
@@ -189,7 +189,7 @@ typedef struct CV_ObjInfo
 ////////////////////////////////
 // Accels
 
-typedef struct CV_Line
+srtuct CV_Line
 {
   U64 voff;
   U32 file_off;
@@ -197,27 +197,27 @@ typedef struct CV_Line
   U16 col_num;
 };
 
-typedef struct CV_LinesAccel
+srtuct CV_LinesAccel
 {
   U64      map_count;
   CV_Line *map;
 };
 
-typedef struct CV_InlineeLinesAccel
+srtuct CV_InlineeLinesAccel
 {
   U64                        bucket_count;
   U64                        bucket_max;
   CV_C13InlineeLinesParsed **buckets;
 };
 
-typedef struct CV_InlineBinaryAnnotsParsed
+srtuct CV_InlineBinaryAnnotsParsed
 {
   U64           lines_count;
   CV_LineArray *lines;
   Rng1U64List   code_ranges;
 };
 
-typedef struct CV_C13InlineeLinesParsedList
+srtuct CV_C13InlineeLinesParsedList
 {
   CV_C13InlineeLinesParsedNode *first;
   CV_C13InlineeLinesParsedNode *last;
@@ -235,7 +235,7 @@ enum CV_C13SubSectionIdxKind : U32
   CV_C13SubSectionIdxKind_COUNT
 };
 
-typedef struct CV_C13SubSectionList
+srtuct CV_C13SubSectionList
 {
   CV_C13SubSectionNode *first;
   CV_C13SubSectionNode *last;
@@ -244,12 +244,12 @@ typedef struct CV_C13SubSectionList
 
 ////////////////////////////////
 
-typedef struct CV_DebugS
+srtuct CV_DebugS
 {
   String8List data_list[CV_C13SubSectionIdxKind_COUNT];
 };
 
-typedef struct CV_DebugT
+srtuct CV_DebugT
 {
   U64  size;
   U64  count;
@@ -259,19 +259,19 @@ typedef struct CV_DebugT
 ////////////////////////////////
 //~ Leaf Helpers
 
-typedef struct CV_Leaf
+srtuct CV_Leaf
 {
   CV_LeafKind kind;
   String8     data;
 };
 
-typedef struct CV_LeafNode
+srtuct CV_LeafNode
 {
   struct CV_LeafNode *next;
   CV_Leaf             data;
 };
 
-typedef struct CV_LeafList
+srtuct CV_LeafList
 {
   U64          count;
   CV_LeafNode *first;
@@ -281,14 +281,14 @@ typedef struct CV_LeafList
 ////////////////////////////////
 //~ String Hash Table
 
-typedef struct CV_StringTableRange
+srtuct CV_StringTableRange
 {
   struct CV_StringTableRange *next;
   Rng1U64                     range;
   U64                         debug_s_idx;
 };
 
-typedef struct CV_StringBucket
+srtuct CV_StringBucket
 {
   String8 string;
   union {
@@ -300,7 +300,7 @@ typedef struct CV_StringBucket
   } u;
 };
 
-typedef struct CV_StringHashTable
+srtuct CV_StringHashTable
 {
   U64               total_string_size;
   U64               total_insert_count;
@@ -308,7 +308,7 @@ typedef struct CV_StringHashTable
   CV_StringBucket **buckets;
 };
 
-typedef struct CV_StringHashTableResult
+srtuct CV_StringHashTableResult
 {
   U64               string_count;
   CV_StringBucket **buckets;
@@ -317,7 +317,7 @@ typedef struct CV_StringHashTableResult
 ////////////////////////////////
 //~ Task Contexts
 
-typedef struct
+srtuct
 {
   U64              cap;
   union {
@@ -328,7 +328,7 @@ typedef struct
   CV_SymbolNode  **symbols;
 };
 
-typedef struct
+srtuct
 {
   CV_SymbolList  *list_arr;
   Rng1U64        *list_range_arr;
@@ -336,7 +336,7 @@ typedef struct
   CV_SymbolNode **symbol_arr;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugS            *arr;
   CV_StringTableRange **range_lists;
@@ -347,14 +347,14 @@ typedef struct
   U64                   total_insert_count;
 };
 
-typedef struct
+srtuct
 {
   U8               *buffer;
   Rng1U64          *ranges;
   CV_StringBucket **buckets;
 };
 
-typedef struct
+srtuct
 {
   CV_DebugT    debug_t;
   Rng1U64     *ranges;

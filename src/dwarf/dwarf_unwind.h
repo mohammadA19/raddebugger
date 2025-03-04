@@ -4,7 +4,7 @@
 #ifndef DWARF_UNWIND_H
 #define DWARF_UNWIND_H
 
-typedef struct DW_UnwindResult
+srtuct DW_UnwindResult
 {
   B32 is_invalid;
   B32 missed_read;
@@ -45,7 +45,7 @@ enum
   DW_EhPtrEnc_Omit     = 0xFF,
 };
 
-typedef struct DW_EhPtrCtx
+srtuct DW_EhPtrCtx
 {
   U64 raw_base_vaddr; // address where pointer is being read
   U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
@@ -54,7 +54,7 @@ typedef struct DW_EhPtrCtx
 };
 
 // CIE: Common Information Entry
-typedef struct DW_CIEUnpacked
+srtuct DW_CIEUnpacked
 {
   U8          version;
   DW_EhPtrEnc lsda_encoding;
@@ -73,7 +73,7 @@ typedef struct DW_CIEUnpacked
   Rng1U64 cfi_range;
 };
 
-typedef struct DW_CIEUnpackedNode
+srtuct DW_CIEUnpackedNode
 {
   struct DW_CIEUnpackedNode *next;
   DW_CIEUnpacked             cie;
@@ -81,7 +81,7 @@ typedef struct DW_CIEUnpackedNode
 };
 
 // FDE: Frame Description Entry
-typedef struct DW_FDEUnpacked
+srtuct DW_FDEUnpacked
 {
   Rng1U64 ip_voff_range;
   U64     lsda_ip;
@@ -89,7 +89,7 @@ typedef struct DW_FDEUnpacked
 };
 
 // CFI: Call Frame Information
-typedef struct DW_CFIRecords
+srtuct DW_CFIRecords
 {
   B32            valid;
   DW_CIEUnpacked cie;
@@ -101,7 +101,7 @@ enum DW_CFICFARule{
   DW_CFI_CFA_Rule_Expr,
 };
 
-typedef struct DW_CFICFACell
+srtuct DW_CFICFACell
 {
   DW_CFICFARule rule;
   union {
@@ -124,7 +124,7 @@ enum DW_CFIRegisterRule
   DW_CFIRegisterRule_ValExpression,
 };
 
-typedef struct DW_CFICell
+srtuct DW_CFICell
 {
   DW_CFIRegisterRule rule;
   union {
@@ -133,14 +133,14 @@ typedef struct DW_CFICell
   };
 };
 
-typedef struct DW_CFIRow
+srtuct DW_CFIRow
 {
   struct DW_CFIRow *next;
   DW_CFICell       *cells;
   DW_CFICFACell     cfa_cell;
 };
 
-typedef struct DW_CFIMachine
+srtuct DW_CFIMachine
 {
   U64             cells_per_row;
   DW_CIEUnpacked *cie;

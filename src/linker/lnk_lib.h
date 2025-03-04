@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef struct LNK_Lib
+srtuct LNK_Lib
 {
   String8          path;
   String8          data;
@@ -15,19 +15,19 @@ typedef struct LNK_Lib
   U64              input_idx;
 };
 
-typedef struct LNK_LibNode
+srtuct LNK_LibNode
 {
   struct LNK_LibNode *next;
   LNK_Lib             data;
 };
 
-typedef struct LNK_LibNodeArray
+srtuct LNK_LibNodeArray
 {
   U64          count;
   LNK_LibNode *v;
 };
 
-typedef struct LNK_LibList
+srtuct LNK_LibList
 {
   U64                 count;
   struct LNK_LibNode *first;
@@ -36,52 +36,52 @@ typedef struct LNK_LibList
 
 ////////////////////////////////
 
-typedef struct LNK_LibMember
+srtuct LNK_LibMember
 {
   String8 name;
   String8 data;
 };
 
-typedef struct LNK_LibMemberNode
+srtuct LNK_LibMemberNode
 {
   struct LNK_LibMemberNode *next;
   LNK_LibMember             data;
 };
 
-typedef struct LNK_LibMemberList
+srtuct LNK_LibMemberList
 {
   U64                count;
   LNK_LibMemberNode *first;
   LNK_LibMemberNode *last;
 };
 
-typedef struct LNK_LibSymbol
+srtuct LNK_LibSymbol
 {
   String8 name;
   U64     member_idx;
 };
 
-typedef struct LNK_LibSymbolNode
+srtuct LNK_LibSymbolNode
 {
   struct LNK_LibSymbolNode *next;
   LNK_LibSymbol             data;
 };
 
-typedef struct LNK_LibSymbolList
+srtuct LNK_LibSymbolList
 {
   U64                count;
   LNK_LibSymbolNode *first;
   LNK_LibSymbolNode *last;
 };
 
-typedef struct LNK_LibWriter
+srtuct LNK_LibWriter
 {
   Arena            *arena;
   LNK_LibMemberList member_list;
   LNK_LibSymbolList symbol_list;
 };
 
-typedef struct LNK_LibBuild
+srtuct LNK_LibBuild
 {
   U64            symbol_count;
   U64            member_count;
@@ -91,7 +91,7 @@ typedef struct LNK_LibBuild
 
 ////////////////////////////////
 
-typedef struct
+srtuct
 {
   LNK_LibNode     *node_arr;
   String8         *data_arr;

@@ -112,13 +112,13 @@ typedef enum
 typedef String8Node LNK_InputLib;
 typedef String8List LNK_InputLibList;
 
-typedef struct LNK_InputImport
+srtuct LNK_InputImport
 {
   COFF_ParsedArchiveImportHeader       import_header;
   struct LNK_InputImport *next;
 };
 
-typedef struct LNK_InputImportList
+srtuct LNK_InputImportList
 {
   U64              count;
   LNK_InputImport *first;
@@ -127,33 +127,33 @@ typedef struct LNK_InputImportList
 
 ////////////////////////////////
 
-typedef struct LNK_BaseRelocPage
+srtuct LNK_BaseRelocPage
 {
   U64     voff;
   U64List entries_addr32;
   U64List entries_addr64;
 };
 
-typedef struct LNK_BaseRelocPageNode
+srtuct LNK_BaseRelocPageNode
 {
   struct LNK_BaseRelocPageNode *next;
   LNK_BaseRelocPage             v;
 };
 
-typedef struct LNK_BaseRelocPageList
+srtuct LNK_BaseRelocPageList
 {
   U64                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
 };
 
-typedef struct LNK_BaseRelocPageArray
+srtuct LNK_BaseRelocPageArray
 {
   U64                count;
   LNK_BaseRelocPage *v;
 };
 
-typedef struct
+srtuct
 {
   U64                     page_size;
   LNK_Section           **sect_id_map;
@@ -164,7 +164,7 @@ typedef struct
   B32                     is_large_addr_aware;
 };
 
-typedef struct
+srtuct
 {
   Rng1U64                *ranges;
   U64                     page_size;
@@ -175,14 +175,14 @@ typedef struct
   B32                     is_large_addr_aware;
 };
 
-typedef struct
+srtuct
 {
   LNK_InputObjList    input_obj_list;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
 };
 
-typedef struct
+srtuct
 {
   PathStyle               path_style;
   LNK_SymbolTable        *symtab;
@@ -191,7 +191,7 @@ typedef struct
   Rng1U64                *range_arr;
 };
 
-typedef struct
+srtuct
 {
   LNK_SymbolTable  *symtab;
   union {
@@ -200,7 +200,7 @@ typedef struct
   } u;
 };
 
-typedef struct
+srtuct
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -211,7 +211,7 @@ typedef struct
   Rng1U64           *range_arr;
 };
 
-typedef struct
+srtuct
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -221,13 +221,13 @@ typedef struct
   LNK_Obj          **obj_arr;
 };
 
-typedef struct
+srtuct
 {
   String8 path;
   String8 data;
 };
 
-typedef struct
+srtuct
 {
   String8  data;
   Rng1U64 *ranges;

@@ -19,7 +19,7 @@ typedef const WCHAR *LPCWSTR, *PCWSTR;
 typedef LONG HRESULT;
 typedef void *HANDLE;
 struct HINSTANCE__;
-typedef struct HINSTANCE__ *HMODULE;
+srtuct HINSTANCE__ *HMODULE;
 typedef __int64 INT_PTR;
 typedef INT_PTR (*FARPROC)();
 

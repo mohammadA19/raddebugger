@@ -4,7 +4,7 @@
 #ifndef COFF_PARSE_H
 #define COFF_PARSE_H
 
-typedef struct COFF_FileHeaderInfo
+srtuct COFF_FileHeaderInfo
 {
   B32              is_big_obj;
   COFF_MachineType machine;
@@ -19,7 +19,7 @@ typedef struct COFF_FileHeaderInfo
 
 ////////////////////////////////
 
-typedef struct COFF_SectionHeaderArray
+srtuct COFF_SectionHeaderArray
 {
   U64                 count;
   COFF_SectionHeader *v;
@@ -27,26 +27,26 @@ typedef struct COFF_SectionHeaderArray
 
 ////////////////////////////////
 
-typedef struct COFF_Symbol16Node
+srtuct COFF_Symbol16Node
 {
   struct COFF_Symbol16Node *next;
   COFF_Symbol16             data;
 };
 
-typedef struct COFF_Symbol16List
+srtuct COFF_Symbol16List
 {
   U64                count;
   COFF_Symbol16Node *first;
   COFF_Symbol16Node *last;
 };
 
-typedef struct COFF_Symbol32Array
+srtuct COFF_Symbol32Array
 {
   U64            count;
   COFF_Symbol32 *v;
 };
 
-typedef struct COFF_ParsedSymbol
+srtuct COFF_ParsedSymbol
 {
   String8              name;
   U32                  value;
@@ -68,26 +68,26 @@ enum COFF_SymbolValueInterpType : U32
 
 ////////////////////////////////
 
-typedef struct COFF_RelocNode
+srtuct COFF_RelocNode
 {
   struct COFF_RelocNode *next;
   COFF_Reloc             data;
 };
 
-typedef struct COFF_RelocList
+srtuct COFF_RelocList
 {
   U64             count;
   COFF_RelocNode *first;
   COFF_RelocNode *last;
 };
 
-typedef struct COFF_RelocArray
+srtuct COFF_RelocArray
 {
   U64         count;
   COFF_Reloc *v;
 };
 
-typedef struct COFF_RelocInfo
+srtuct COFF_RelocInfo
 {
   U64 array_off;
   U64 count;
@@ -103,7 +103,7 @@ enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
   COFF_ResourceIDType_Count
 };
 
-typedef struct COFF_ResourceID16
+srtuct COFF_ResourceID16
 {
   COFF_ResourceIDType type;
   union {
@@ -112,7 +112,7 @@ typedef struct COFF_ResourceID16
   } u;
 };
 
-typedef struct COFF_ResourceID
+srtuct COFF_ResourceID
 {
   COFF_ResourceIDType type;
   union {
@@ -121,7 +121,7 @@ typedef struct COFF_ResourceID
   } u;
 };
 
-typedef struct COFF_ParsedResource
+srtuct COFF_ParsedResource
 {
   COFF_ResourceID          type;
   COFF_ResourceID          name;
@@ -133,13 +133,13 @@ typedef struct COFF_ParsedResource
   String8                  data;
 };
 
-typedef struct COFF_ParsedResourceNode
+srtuct COFF_ParsedResourceNode
 {
   struct COFF_ParsedResourceNode *next;
   COFF_ParsedResource             data;
 };
 
-typedef struct COFF_ParsedResourceList
+srtuct COFF_ParsedResourceList
 {
   U64                      count;
   COFF_ParsedResourceNode *first;
@@ -163,7 +163,7 @@ typedef enum
   COFF_Archive_Thin
 };
 
-typedef struct COFF_ParsedArchiveMemberHeader
+srtuct COFF_ParsedArchiveMemberHeader
 {
   String8        name;           // padded to 16 bytes with spaces
   COFF_TimeStamp time_stamp;
@@ -174,7 +174,7 @@ typedef struct COFF_ParsedArchiveMemberHeader
   Rng1U64        data_range;
 };
 
-typedef struct COFF_ParsedArchiveImportHeader
+srtuct COFF_ParsedArchiveImportHeader
 {
   B32               is_sig_correct;
   U16               version;
@@ -188,14 +188,14 @@ typedef struct COFF_ParsedArchiveImportHeader
   String8           dll_name;
 };
 
-typedef struct COFF_ArchiveMember
+srtuct COFF_ArchiveMember
 {
   COFF_ParsedArchiveMemberHeader header;
   U64                      offset;
   String8                  data;
 };
 
-typedef struct COFF_ArchiveFirstMember
+srtuct COFF_ArchiveFirstMember
 {
   U32      symbol_count;
   U64      member_offset_count;
@@ -203,7 +203,7 @@ typedef struct COFF_ArchiveFirstMember
   String8  string_table;
 };
 
-typedef struct COFF_ArchiveSecondMember
+srtuct COFF_ArchiveSecondMember
 {
   U32      member_count;
   U32      symbol_count;
@@ -214,20 +214,20 @@ typedef struct COFF_ArchiveSecondMember
   String8  string_table;
 };
 
-typedef struct COFF_ArchiveMemberNode
+srtuct COFF_ArchiveMemberNode
 {
   struct COFF_ArchiveMemberNode *next;
   COFF_ArchiveMember             data;
 };
 
-typedef struct COFF_ArchiveMemberList
+srtuct COFF_ArchiveMemberList
 {
   U64                     count;
   COFF_ArchiveMemberNode *first;
   COFF_ArchiveMemberNode *last;
 };
 
-typedef struct COFF_ArchiveParse
+srtuct COFF_ArchiveParse
 {
   B32                      has_second_header;
   B32                      has_long_names;
