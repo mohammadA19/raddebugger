@@ -99,8 +99,7 @@ enum DW_AbbrevKind
   DW_Abbrev_AttribSequenceEnd,
   DW_Abbrev_DIEBegin,
   DW_Abbrev_DIEEnd,
-}
-DW_AbbrevKind;
+};
 
 enum DW_AbbrevFlags : U32{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),

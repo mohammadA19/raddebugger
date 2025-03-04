@@ -21,8 +21,7 @@ enum UI_IconKind
   UI_IconKind_CheckHollow,
   UI_IconKind_CheckFilled,
   UI_IconKind_COUNT
-}
-UI_IconKind;
+};
 
 struct UI_IconInfo
 {
@@ -39,8 +38,7 @@ enum UI_MouseButtonKind
   UI_MouseButtonKind_Middle,
   UI_MouseButtonKind_Right,
   UI_MouseButtonKind_COUNT
-}
-UI_MouseButtonKind;
+};
 
 ////////////////////////////////
 //~ rjf: Codepath Permissions
@@ -70,8 +68,7 @@ enum UI_FocusKind
   UI_FocusKind_On,
   UI_FocusKind_Root,
   UI_FocusKind_COUNT
-}
-UI_FocusKind;
+};
 
 ////////////////////////////////
 //~ rjf: Events
@@ -91,8 +88,7 @@ enum UI_EventKind
   UI_EventKind_AutocompleteHint,
   UI_EventKind_FileDrop,
   UI_EventKind_COUNT
-}
-UI_EventKind;
+};
 
 enum UI_EventActionSlot
 {
@@ -101,8 +97,7 @@ enum UI_EventActionSlot
   UI_EventActionSlot_Cancel,
   UI_EventActionSlot_Edit,
   UI_EventActionSlot_COUNT
-}
-UI_EventActionSlot;
+};
 
 enum UI_EventFlags : U32
 {
@@ -126,8 +121,7 @@ enum UI_EventDeltaUnit
   UI_EventDeltaUnit_Page,
   UI_EventDeltaUnit_Whole,
   UI_EventDeltaUnit_COUNT
-}
-UI_EventDeltaUnit;
+};
 
 struct UI_Event
 {
@@ -196,8 +190,7 @@ enum UI_SizeKind
   UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
   UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
   UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
-}
-UI_SizeKind;
+};
 
 struct UI_Size
 {
@@ -220,8 +213,7 @@ enum UI_ColorCode
   UI_ColorCode_Cursor,
   UI_ColorCode_Selection,
   UI_ColorCode_COUNT
-}
-UI_ColorCode;
+};
 
 struct UI_Palette
 {
@@ -297,8 +289,7 @@ enum UI_TextAlign
   UI_TextAlign_Center,
   UI_TextAlign_Right,
   UI_TextAlign_COUNT
-}
-UI_TextAlign;
+};
 
 struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)

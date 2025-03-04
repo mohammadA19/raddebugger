@@ -88,8 +88,7 @@ enum TypeKind
   TypeKind_Enum,
   
   TypeKind_COUNT
-}
-TypeKind;
+};
 
 enum TypeFlags : U32
 {

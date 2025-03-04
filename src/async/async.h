@@ -19,8 +19,7 @@ enum ASYNC_Priority
   ASYNC_Priority_Low,
   ASYNC_Priority_High,
   ASYNC_Priority_COUNT
-}
-ASYNC_Priority;
+};
 
 struct ASYNC_WorkParams
 {

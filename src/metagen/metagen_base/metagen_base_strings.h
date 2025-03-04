@@ -88,8 +88,7 @@ enum PathStyle
 #else
 # error "absolute path style is undefined for this OS"
 #endif
-}
-PathStyle;
+};
 
 struct StringJoin
 {

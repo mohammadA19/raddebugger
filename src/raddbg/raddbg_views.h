@@ -57,8 +57,7 @@ enum RD_WatchViewColumnKind
   RD_WatchViewColumnKind_CallStackFrameSelection,
   RD_WatchViewColumnKind_Module,
   RD_WatchViewColumnKind_COUNT
-}
-RD_WatchViewColumnKind;
+};
 
 struct RD_WatchViewColumnParams
 {
@@ -100,8 +99,7 @@ enum RD_WatchViewRowKind
   RD_WatchViewRowKind_Header,
   RD_WatchViewRowKind_Canvas,
   RD_WatchViewRowKind_PrettyEntityControls,
-}
-RD_WatchViewRowKind;
+};
 
 struct RD_WatchViewPoint
 {

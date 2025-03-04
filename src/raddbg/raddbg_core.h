@@ -289,8 +289,7 @@ enum RD_DragDropState
   RD_DragDropState_Dragging,
   RD_DragDropState_Dropping,
   RD_DragDropState_COUNT
-}
-RD_DragDropState;
+};
 
 ////////////////////////////////
 //~ rjf: Command Kind Types
@@ -491,8 +490,7 @@ enum RD_FontSlot
   RD_FontSlot_Code,
   RD_FontSlot_Icons,
   RD_FontSlot_COUNT
-}
-RD_FontSlot;
+};
 
 enum RD_PaletteCode
 {
@@ -509,8 +507,7 @@ enum RD_PaletteCode
   RD_PaletteCode_TabInactive,
   RD_PaletteCode_DropSiteOverlay,
   RD_PaletteCode_COUNT
-}
-RD_PaletteCode;
+};
 
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister Types

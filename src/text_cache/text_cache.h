@@ -13,8 +13,7 @@ enum TXT_LineEndKind
   TXT_LineEndKind_LF,
   TXT_LineEndKind_CRLF,
   TXT_LineEndKind_COUNT
-}
-TXT_LineEndKind;
+};
 
 enum TXT_TokenKind
 {
@@ -29,8 +28,7 @@ enum TXT_TokenKind
   TXT_TokenKind_Comment,
   TXT_TokenKind_Meta, // preprocessor, etc.
   TXT_TokenKind_COUNT
-}
-TXT_TokenKind;
+};
 
 struct TXT_Token
 {
@@ -108,8 +106,7 @@ enum TXT_LangKind
   TXT_LangKind_Zig,
   TXT_LangKind_DisasmX64Intel,
   TXT_LangKind_COUNT
-}
-TXT_LangKind;
+};
 
 typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
 
