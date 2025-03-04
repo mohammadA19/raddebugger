@@ -1291,7 +1291,6 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   //- rjf: pt * signals -> new pt
   UI_ScrollPt new_pt = pt;
   {
-    typedef struct UI_ScrollBarDragData UI_ScrollBarDragData;
     struct UI_ScrollBarDragData
     {
       UI_ScrollPt start_pt;

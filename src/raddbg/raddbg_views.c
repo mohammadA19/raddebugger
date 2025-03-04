@@ -1092,7 +1092,6 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
       RDI_Parsed *rdi = di_rdi_from_key(di_scope, &dbgi, 0);
       if(rdi != &di_rdi_parsed_nil)
       {
-        typedef struct ScopeTask ScopeTask;
         struct ScopeTask
         {
           ScopeTask *next;
@@ -3277,7 +3276,6 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Expression:");
                     {
-                      typedef struct Task Task;
                       struct Task
                       {
                         Task *next;
@@ -3330,7 +3328,6 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("IR Tree:");
                     {
-                      typedef struct Task Task;
                       struct Task
                       {
                         Task *next;
@@ -3732,7 +3729,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: grab state
-  typedef struct RD_CmdsViewState RD_CmdsViewState;
   struct RD_CmdsViewState
   {
     U64 selected_cmd_hash;
@@ -4630,7 +4626,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   
   //- rjf: grab state
-  typedef struct RD_SystemProcessesViewState RD_SystemProcessesViewState;
   struct RD_SystemProcessesViewState
   {
     B32 initialized;
@@ -4881,7 +4876,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   
   //- rjf: grab state
-  typedef struct RD_EntityListerViewState RD_EntityListerViewState;
   struct RD_EntityListerViewState
   {
     RD_Handle selected_entity_handle;
@@ -5081,7 +5075,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   
   //- rjf: grab state
-  typedef struct RD_CtrlEntityListerViewState RD_CtrlEntityListerViewState;
   struct RD_CtrlEntityListerViewState
   {
     CTRL_Handle selected_entity_handle;
@@ -5229,7 +5222,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   }
   
   //- rjf: grab state
-  typedef struct RD_SymbolListerViewState RD_SymbolListerViewState;
   struct RD_SymbolListerViewState
   {
     Vec2S64 cursor;
@@ -6616,7 +6608,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: grab annotations for windowed range of memory
   //
-  typedef struct Annotation Annotation;
   struct Annotation
   {
     Annotation *next;
@@ -6626,7 +6617,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     Vec4F32 color;
     Rng1U64 vaddr_range;
   };
-  typedef struct AnnotationList AnnotationList;
   struct AnnotationList
   {
     Annotation *first;
@@ -7810,7 +7800,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   String8 query = string;
   
   //- rjf: get state
-  typedef struct RD_ExceptionFiltersViewState RD_ExceptionFiltersViewState;
   struct RD_ExceptionFiltersViewState
   {
     Vec2S64 cursor;
@@ -7818,7 +7807,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   RD_ExceptionFiltersViewState *sv = rd_view_state(RD_ExceptionFiltersViewState);
   
   //- rjf: get list of options
-  typedef struct RD_ExceptionFiltersOption RD_ExceptionFiltersOption;
   struct RD_ExceptionFiltersOption
   {
     String8 name;
@@ -7826,7 +7814,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     B32 is_enabled;
     CTRL_ExceptionCodeKind exception_code_kind;
   };
-  typedef struct RD_ExceptionFiltersOptionChunkNode RD_ExceptionFiltersOptionChunkNode;
   struct RD_ExceptionFiltersOptionChunkNode
   {
     RD_ExceptionFiltersOptionChunkNode *next;
@@ -7834,7 +7821,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     U64 cap;
     U64 count;
   };
-  typedef struct RD_ExceptionFiltersOptionChunkList RD_ExceptionFiltersOptionChunkList;
   struct RD_ExceptionFiltersOptionChunkList
   {
     RD_ExceptionFiltersOptionChunkNode *first;
@@ -7842,7 +7828,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     U64 option_count;
     U64 node_count;
   };
-  typedef struct RD_ExceptionFiltersOptionArray RD_ExceptionFiltersOptionArray;
   struct RD_ExceptionFiltersOptionArray
   {
     RD_ExceptionFiltersOption *v;
@@ -8017,7 +8002,6 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   //////////////////////////////
   //- rjf: get state
   //
-  typedef struct RD_SettingsViewState RD_SettingsViewState;
   struct RD_SettingsViewState
   {
     B32 initialized;

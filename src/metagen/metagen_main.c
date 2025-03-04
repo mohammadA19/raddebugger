@@ -49,7 +49,6 @@ entry_point(CmdLine *cmdline)
   String8List file_paths = {0};
   DeferLoop(printf("searching %.*s...", str8_varg(code_dir_path)), printf(" %i files found\n", (int)file_paths.node_count))
   {
-    typedef struct Task Task;
     struct Task
     {
       Task *next;

@@ -223,7 +223,6 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: gather scopes to walk
-  typedef struct Task Task;
   struct Task
   {
     Task *next;
@@ -1099,7 +1098,6 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
   E_Parse result = {0, &e_expr_nil};
   
   //- rjf: parse prefix unaries
-  typedef struct PrefixUnaryNode PrefixUnaryNode;
   struct PrefixUnaryNode
   {
     PrefixUnaryNode *next;

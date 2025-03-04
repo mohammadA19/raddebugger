@@ -407,7 +407,6 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(wrap)
   if(wrap_expr != &e_expr_nil)
   {
     Temp scratch = scratch_begin(&arena, 1);
-    typedef struct Task Task;
     struct Task
     {
       Task *next;

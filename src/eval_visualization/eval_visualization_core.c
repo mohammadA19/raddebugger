@@ -699,7 +699,6 @@ ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 str
     tree.total_item_count += 1;
     
     //- rjf: iterate all expansions & generate blocks for each
-    typedef struct Task Task;
     struct Task
     {
       Task *next;
@@ -923,7 +922,6 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
   EV_BlockRangeList list = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
-    typedef struct BlockTask BlockTask;
     struct BlockTask
     {
       BlockTask *next;

@@ -29,7 +29,6 @@ internal void
 typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
 {
   Temp scratch = scratch_begin(0, 0);
-  typedef struct RebaseTypeTask RebaseTypeTask;
   struct RebaseTypeTask
   {
     RebaseTypeTask *next;
@@ -82,7 +81,6 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
   String8List strings = {0};
   str8_serial_begin(scratch.arena, &strings);
   {
-    typedef struct SerializeTypeTask SerializeTypeTask;
     struct SerializeTypeTask
     {
       SerializeTypeTask *next;
@@ -244,7 +242,6 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
   result.str  = push_array(arena, U8, result.size);
   {
     Temp scratch = scratch_begin(&arena, 1);
-    typedef struct DeserializeTypeTask DeserializeTypeTask;
     struct DeserializeTypeTask
     {
       DeserializeTypeTask *next;

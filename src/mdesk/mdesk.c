@@ -832,7 +832,6 @@ md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_Token
     MD_ParseWorkKind_NodeChildrenStyleScan,
   }
   MD_ParseWorkKind;
-  typedef struct MD_ParseWorkNode MD_ParseWorkNode;
   struct MD_ParseWorkNode
   {
     MD_ParseWorkNode *next;

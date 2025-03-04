@@ -1213,7 +1213,6 @@ rd_string_from_cfg_tree(Arena *arena, RD_Cfg *cfg)
   Temp scratch = scratch_begin(&arena, 1);
   String8List strings = {0};
   {
-    typedef struct NestTask NestTask;
     struct NestTask
     {
       NestTask *next;
@@ -1445,7 +1444,6 @@ rd_entity_release(RD_Entity *entity)
   U64 free_list_idx = !!(rd_entity_kind_flags_table[entity->kind] & RD_EntityKindFlag_UserDefinedLifetime);
   
   // rjf: release whole tree
-  typedef struct Task Task;
   struct Task
   {
     Task *next;
@@ -7552,7 +7550,6 @@ rd_window_frame(RD_Window *ws)
           Temp scratch = scratch_begin(0, 0);
           
           // rjf: types
-          typedef struct DropSite DropSite;
           struct DropSite
           {
             F32 p;
@@ -7944,7 +7941,6 @@ rd_window_frame(RD_Window *ws)
     //
     {
       Temp scratch = scratch_begin(0, 0);
-      typedef struct Task Task;
       struct Task
       {
         Task *next;
@@ -9916,7 +9912,6 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 stri
     MD_TokenizeResult input_tokenize = md_tokenize_from_text(scratch.arena, string);
     
     //- rjf: find descension steps to cursor
-    typedef struct DescendStep DescendStep;
     struct DescendStep
     {
       DescendStep *next;
@@ -11552,14 +11547,12 @@ rd_init(CmdLine *cmdln)
     
     // rjf: read header
 #pragma pack(push, 1)
-    typedef struct ICO_Header ICO_Header;
     struct ICO_Header
     {
       U16 reserved_padding; // must be 0
       U16 image_type; // if 1 -> ICO, if 2 -> CUR
       U16 num_images;
     };
-    typedef struct ICO_Entry ICO_Entry;
     struct ICO_Entry
     {
       U8 image_width_px;
@@ -12767,7 +12760,6 @@ rd_frame(void)
                     rd_entity_equip_cfg_src(entity, k_tree->source);
                     
                     // rjf: iterate config tree
-                    typedef struct Task Task;
                     struct Task
                     {
                       Task *next;
@@ -15436,7 +15428,6 @@ rd_frame(void)
             RD_Entity *src = rd_entity_from_handle(rd_regs()->entity);
             if(!rd_entity_is_nil(src))
             {
-              typedef struct Task Task;
               struct Task
               {
                 Task *next;
@@ -16407,7 +16398,6 @@ rd_frame(void)
     CTRL_MetaEvalArray meta_evals = {0};
     ProfScope("gather breakpoints & meta-evals")
     {
-      typedef struct MetaEvalNode MetaEvalNode;
       struct MetaEvalNode
       {
         MetaEvalNode *next;
@@ -16444,7 +16434,6 @@ rd_frame(void)
         B32 is_static_for_ctrl_thread = 0;
         if(src_bp_cnd->string.size != 0)
         {
-          typedef struct ExprWalkTask ExprWalkTask;
           struct ExprWalkTask
           {
             ExprWalkTask *next;

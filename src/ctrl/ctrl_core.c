@@ -816,7 +816,6 @@ ctrl_entity_release(CTRL_EntityStore *store, CTRL_Entity *entity)
   if(entity != &ctrl_entity_nil)
   {
     Temp scratch = scratch_begin(0, 0);
-    typedef struct Task Task;
     struct Task
     {
       Task *next;
@@ -1732,7 +1731,6 @@ ctrl_process_write(CTRL_Handle process, Rng1U64 range, void *src)
     U64 endt_us = os_now_microseconds()+5000;
     
     //- rjf: gather tasks for all affected cached regions
-    typedef struct Task Task;
     struct Task
     {
       Task *next;
@@ -4246,7 +4244,6 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
           
           //- rjf: iterate downwards from this directory recursively, locate
           // debug infos, and pre-emptively convert
-          typedef struct Task Task;
           struct Task
           {
             Task *next;
@@ -4629,7 +4626,6 @@ ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   
   //- rjf: gather all currently existing processes
   CTRL_EntityList initial_processes = ctrl_entity_list_from_kind(ctrl_state->ctrl_thread_entity_store, CTRL_EntityKind_Process);
-  typedef struct Task Task;
   struct Task
   {
     Task *next;

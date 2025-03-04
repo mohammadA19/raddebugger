@@ -858,7 +858,6 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
   D_LineList result = {0};
   {
     //- rjf: gather line tables
-    typedef struct LineTableNode LineTableNode;
     struct LineTableNode
     {
       LineTableNode *next;

@@ -1132,7 +1132,6 @@ rdim_bake_vmap_from_markers(RDIM_Arena *arena, RDIM_VMapMarker *markers, RDIM_So
   RDI_VMapEntry *vmap = rdim_push_array(arena, RDI_VMapEntry, vmap_count_raw + 1);
   RDI_U32 vmap_entry_count_pass_1 = 0;
   {
-    typedef struct RDIM_VMapRangeTracker RDIM_VMapRangeTracker;
     struct RDIM_VMapRangeTracker
     {
       RDIM_VMapRangeTracker *next;
@@ -1316,7 +1315,6 @@ rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena *arena, RDIM_BakeStr
   if(dst.first != 0)
   {
     RDIM_Temp scratch = rdim_scratch_begin(&arena, 1);
-    typedef struct SortTask SortTask;
     struct SortTask
     {
       SortTask *next;
@@ -2264,13 +2262,11 @@ rdim_bake_name_map(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Bak
       RDIM_Temp scratch = rdim_scratch_begin(&arena, 1);
       
       // rjf: setup the final bucket layouts
-      typedef struct RDIM_NameMapSemiNode RDIM_NameMapSemiNode;
       struct RDIM_NameMapSemiNode
       {
         RDIM_NameMapSemiNode *next;
         RDIM_BakeNameMapNode *node;
       };
-      typedef struct RDIM_NameMapSemiBucket RDIM_NameMapSemiBucket;
       struct RDIM_NameMapSemiBucket
       {
         RDIM_NameMapSemiNode *first;
@@ -2543,7 +2539,6 @@ rdim_bake_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Ba
   ////////////////////////////
   //- rjf: iterate all source files, fill serialized version, fill line maps, fill line map tables
   //
-  typedef struct RDIM_DataNode RDIM_DataNode;
   struct RDIM_DataNode
   {
     RDIM_DataNode *next;
@@ -2584,13 +2579,11 @@ rdim_bake_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Ba
       RDI_U32  src_file_voff_count  = 0;
       {
         //- rjf: gather line number map
-        typedef struct RDIM_SrcLineMapVoffBlock RDIM_SrcLineMapVoffBlock;
         struct RDIM_SrcLineMapVoffBlock
         {
           RDIM_SrcLineMapVoffBlock *next;
           RDI_U64 voff;
         };
-        typedef struct RDIM_SrcLineMapBucket RDIM_SrcLineMapBucket;
         struct RDIM_SrcLineMapBucket
         {
           RDIM_SrcLineMapBucket *order_next;
@@ -2827,7 +2820,6 @@ rdim_bake_line_tables(RDIM_Arena *arena, RDIM_LineTableChunkList *src)
           // [1] keys: sortable array; pairs voffs with line info records; null records are sequence enders
           // [2] recs: contains all the source coordinates for a range of voffs
           //
-          typedef struct RDIM_LineRec RDIM_LineRec;
           struct RDIM_LineRec
           {
             RDI_U32 file_id;

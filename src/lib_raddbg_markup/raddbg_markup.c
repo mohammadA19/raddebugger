@@ -194,7 +194,6 @@ raddbg_thread_name__impl(char *fmt, ...)
   // rjf: set thread name, raise-exception style
   {
 #pragma pack(push, 8)
-    typedef struct THREADNAME_INFO THREADNAME_INFO;
     struct THREADNAME_INFO
     {
       DWORD dwType;

@@ -1623,7 +1623,6 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: (cursor*mark*list(flash_range)) -> list(text_range*color)
   //
-  typedef struct TxtRngColorPairNode TxtRngColorPairNode;
   struct TxtRngColorPairNode
   {
     TxtRngColorPairNode *next;
@@ -2124,7 +2123,6 @@ rd_label(String8 string)
     StringPartFlag_Underline = (1<<1),
     StringPartFlag_Bright    = (1<<2),
   };
-  typedef struct StringPart StringPart;
   struct StringPart
   {
     StringPart *next;

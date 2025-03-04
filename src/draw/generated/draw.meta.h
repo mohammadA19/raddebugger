@@ -6,10 +6,10 @@
 #ifndef DRAW_META_H
 #define DRAW_META_H
 
-typedef struct DR_Tex2DSampleKindNode DR_Tex2DSampleKindNode; struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
-typedef struct DR_XForm2DNode DR_XForm2DNode; struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
-typedef struct DR_ClipNode DR_ClipNode; struct DR_ClipNode {DR_ClipNode *next; Rng2F32 v;};
-typedef struct DR_TransparencyNode DR_TransparencyNode; struct DR_TransparencyNode {DR_TransparencyNode *next; F32 v;};
+struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
+struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
+struct DR_ClipNode {DR_ClipNode *next; Rng2F32 v;};
+struct DR_TransparencyNode {DR_TransparencyNode *next; F32 v;};
 #define DR_BucketStackDecls struct{\
 DR_Tex2DSampleKindNode *top_tex2d_sample_kind;\
 DR_XForm2DNode *top_xform2d;\

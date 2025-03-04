@@ -794,7 +794,6 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
               CV_C13SubSectionNode *file_chksms = unit_c13->file_chksms_sub_section;
 
               // rjf: gathered lines
-              typedef struct LineChunk LineChunk;
               struct LineChunk
               {
                 LineChunk *next;
@@ -1513,7 +1512,6 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
           }
           
           //- rjf: gather all fields
-          typedef struct FieldListTask FieldListTask;
           struct FieldListTask
           {
             FieldListTask *next;
@@ -1934,7 +1932,6 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
           }
           
           //- rjf: gather all fields
-          typedef struct FieldListTask FieldListTask;
           struct FieldListTask
           {
             FieldListTask *next;
@@ -2163,7 +2160,6 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
     U64 procedure_base_voff = 0;
     CV_RecRange *rec_ranges_first = in->sym->sym_ranges.ranges + in->sym_ranges_first;
     CV_RecRange *rec_ranges_opl   = in->sym->sym_ranges.ranges + in->sym_ranges_opl;
-    typedef struct P2R_ScopeNode P2R_ScopeNode;
     struct P2R_ScopeNode
     {
       P2R_ScopeNode *next;

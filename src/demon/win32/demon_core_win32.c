@@ -130,7 +130,6 @@ dmn_w32_entity_release(DMN_W32_Entity *entity)
   if(entity != &dmn_w32_entity_nil)
   {
     Temp scratch = scratch_begin(0, 0);
-    typedef struct Task Task;
     struct Task
     {
       Task *next;
@@ -1340,7 +1339,6 @@ dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
 #if 0
     // TODO(rjf): JIT debugging info
     {
-      typedef struct JIT_DEBUG_INFO JIT_DEBUG_INFO;
       struct JIT_DEBUG_INFO
       {
         DWORD dwSize;

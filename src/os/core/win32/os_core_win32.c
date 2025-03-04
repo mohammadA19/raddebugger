@@ -268,7 +268,6 @@ os_set_thread_name(String8 name)
   {
     String8 name_copy = push_str8_copy(scratch.arena, name);
 #pragma pack(push,8)
-    typedef struct THREADNAME_INFO THREADNAME_INFO;
     struct THREADNAME_INFO
     {
       U32 dwType;     // Must be 0x1000.

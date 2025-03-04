@@ -1443,7 +1443,6 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   B32 members_need_offset_sort = 0;
   {
     E_Type *root_type = e_type_from_key(scratch.arena, key);
-    typedef struct Task Task;
     struct Task
     {
       Task *next;
@@ -1512,7 +1511,6 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   }
   
   //- rjf: find all padding instances
-  typedef struct PaddingNode PaddingNode;
   struct PaddingNode
   {
     PaddingNode *next;
