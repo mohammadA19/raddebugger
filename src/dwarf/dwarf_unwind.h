@@ -14,8 +14,7 @@ typedef struct DW_UnwindResult
 
 // EH: Exception Frames
 
-typedef U8 DW_EhPtrEnc;
-enum
+enum DW_EhPtrEnc : U8
 {
   DW_EhPtrEnc_TypeMask = 0x0F,
   DW_EhPtrEnc_Ptr       = 0x00, // Pointer sized unsigned value
@@ -150,8 +149,7 @@ typedef struct DW_CFIMachine
   U64             fde_ip;
 } DW_CFIMachine;
 
-typedef U8 DW_CFADecode;
-enum
+enum DW_CFADecode : U8
 {
   DW_CFADecode_Nop     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
@@ -160,8 +158,7 @@ enum
   DW_CFADecode_SLEB128 = 0xB,
 };
 
-typedef U16 DW_CFAControlBits;
-enum
+enum DW_CFAControlBits : U16
 {
   DW_CFAControlBits_Dec1Mask = 0x00F,
   DW_CFAControlBits_Dec2Mask = 0x0F0,

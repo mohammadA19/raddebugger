@@ -111,8 +111,7 @@ typedef enum DW_AbbrevKind
 }
 DW_AbbrevKind;
 
-typedef U32 DW_AbbrevFlags;
-enum{
+enum DW_AbbrevFlags : U32{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),
   DW_AbbrevFlag_HasChildren      = (1<<1),
 };
@@ -250,8 +249,7 @@ struct DW_Tag
   DW_AttribList  attribs;
 };
 
-typedef U32 DW_TagStubFlags;
-enum
+enum DW_TagStubFlags : U32
 {
   DW_TagStubFlag_HasObjectPointerArg  = (1<<0),
   DW_TagStubFlag_HasLocation          = (1<<1),

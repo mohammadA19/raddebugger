@@ -111,8 +111,7 @@ struct RDIM_String8List
 };
 #endif
 
-typedef RDI_U32 RDIM_StringMatchFlags;
-enum
+enum RDIM_StringMatchFlags : RDI_U32
 {
   RDIM_StringMatchFlag_CaseInsensitive = (1<<0),
 };

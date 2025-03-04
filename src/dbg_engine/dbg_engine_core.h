@@ -161,8 +161,7 @@ D_RunKind;
 ////////////////////////////////
 //~ rjf: View Rules
 
-typedef U32 D_ViewRuleSpecInfoFlags; // NOTE(rjf): see @view_rule_info
-enum
+enum D_ViewRuleSpecInfoFlags : U32 // NOTE(rjf): see @view_rule_info
 {
   D_ViewRuleSpecInfoFlag_Inherited      = (1<<0),
   D_ViewRuleSpecInfoFlag_Expandable     = (1<<1),

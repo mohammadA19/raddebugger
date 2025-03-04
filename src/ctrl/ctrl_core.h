@@ -360,8 +360,7 @@ struct CTRL_EntityStore
 ////////////////////////////////
 //~ rjf: Unwind Types
 
-typedef U32 CTRL_UnwindFlags;
-enum
+enum CTRL_UnwindFlags : U32
 {
   CTRL_UnwindFlag_Error = (1<<0),
   CTRL_UnwindFlag_Stale = (1<<1),
@@ -435,8 +434,7 @@ struct CTRL_CallStack
 ////////////////////////////////
 //~ rjf: Trap Types
 
-typedef U32 CTRL_TrapFlags;
-enum
+enum CTRL_TrapFlags : U32
 {
   CTRL_TrapFlag_IgnoreStackPointerCheck = (1<<0),
   CTRL_TrapFlag_SingleStepAfterHit      = (1<<1),
@@ -517,8 +515,7 @@ struct CTRL_UserBreakpointList
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef U64 CTRL_EvalSpaceKind;
-enum
+enum CTRL_EvalSpaceKind : U64
 {
   CTRL_EvalSpaceKind_Entity = E_SpaceKind_FirstUserDefined,
   CTRL_EvalSpaceKind_Meta,
@@ -545,8 +542,7 @@ typedef enum CTRL_MsgKind
 }
 CTRL_MsgKind;
 
-typedef U32 CTRL_RunFlags;
-enum
+enum CTRL_RunFlags : U32
 {
   CTRL_RunFlag_StopOnEntryPoint = (1<<0),
 };

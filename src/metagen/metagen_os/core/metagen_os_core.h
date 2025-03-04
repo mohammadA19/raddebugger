@@ -34,8 +34,7 @@ struct OS_ProcessInfo
 ////////////////////////////////
 //~ rjf: Access Flags
 
-typedef U32 OS_AccessFlags;
-enum
+enum OS_AccessFlags : U32
 {
   OS_AccessFlag_Read       = (1<<0),
   OS_AccessFlag_Write      = (1<<1),
@@ -48,8 +47,7 @@ enum
 ////////////////////////////////
 //~ rjf: Files
 
-typedef U32 OS_FileIterFlags;
-enum
+enum OS_FileIterFlags : U32
 {
   OS_FileIterFlag_SkipFolders     = (1 << 0),
   OS_FileIterFlag_SkipFiles       = (1 << 1),

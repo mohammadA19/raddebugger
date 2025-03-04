@@ -35,8 +35,7 @@ typedef struct MSCRT_VCFeatures
 #define MSCRT_GSHandler_GetFlags(x)        (((x) & 0x00000007) >> 0)
 #define MSCRT_GSHandler_GetCookieOffset(x) (((x) & 0xFFFFFFF8) >> 3)
 
-typedef U8 MSCRT_GSHandlerFlags;
-enum
+enum MSCRT_GSHandlerFlags : U8
 {
   MSCRT_GSHandlerFlag_EHandler     = (1 << 0),
   MSCRT_GSHandlerFlag_UHandler     = (1 << 1),
@@ -67,8 +66,7 @@ enum
   MSCRT_MagicFlag_EHNOEXCEPT  = (1 << 2)
 };
 
-typedef U32 MSCRT_Flags;
-enum
+enum MSCRT_Flags : U32
 {
   MSCRT_Flag_SynchronousExceptionOnly = (1 << 0),
   MSCRT_Flag_UNKNOWN                  = (1 << 1),
@@ -93,8 +91,7 @@ enum
   MSCRT_ThrowInfo_IsWinRT     = (1 << 4)  // thrown object is a WinRT exception
 };
 
-typedef U32 MSCRT_EhHandlerTypeFlags;
-enum
+enum MSCRT_EhHandlerTypeFlags : U32
 {
   MSCRT_EhHandlerTypeFlag_IsConst     = (1 << 0), // referenced type is 'const'
   MSCRT_EhHandlerTypeFlag_IsVolatile  = (1 << 1), // referenced type is 'volatile'
@@ -187,8 +184,7 @@ typedef struct MSCRT_FuncInfo
 ////////////////////////////////
 // C++ Exceptions V4
 
-typedef U8 MSCRT_FuncInfoV4Flags;
-enum
+enum MSCRT_FuncInfoV4Flags : U8
 {
   MSCRT_FuncInfoV4Flag_IsCatch     = (1 << 0), // catch funclet
   MSCRT_FuncInfoV4Flag_IsSeparated = (1 << 1), // func has separate code segment
@@ -200,8 +196,7 @@ enum
   MSCRT_FuncInfoV4Flag_Reserved    = (1 << 7)
 };
 
-typedef U32 MSCRT_UnwindMapV4Type;
-enum
+enum MSCRT_UnwindMapV4Type : U32
 {
   MSCRT_UnwindMapV4Type_NoUW             = 0, // no unwind action associated with this state
   MSCRT_UnwindMapV4Type_DtorWithObj      = 1, // dtor with an object offset
@@ -217,8 +212,7 @@ enum
 };
 
 #define MSCRT__EH_HANDLER_V4_FLAGS_EXTRACT_CONT_TYPE(x) (((x) & MSCRT_EhHandlerV4Flag_ContVOffMask) >> MSVC_CRTHandlerV4Flag_ContVOffShift)
-typedef U8 MSCRT_EhHandlerV4Flags;
-enum
+enum MSCRT_EhHandlerV4Flags : U8
 {
   MSCRT_EhHandlerV4Flag_Adjectives   = (1 << 0), // set if adjectives are present
   MSCRT_EhHandlerV4Flag_DispType     = (1 << 1), // set if type descriptors are present

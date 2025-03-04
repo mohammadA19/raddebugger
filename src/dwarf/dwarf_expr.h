@@ -64,8 +64,7 @@ typedef struct DW_ExprMachineConfig
 
 
 //- detail analysis types
-typedef U32 DW_ExprFlags;
-enum
+enum DW_ExprFlags : U32
 {
   DW_ExprFlag_UsesTextBase       = (1 << 0),
   DW_ExprFlag_UsesMemory         = (1 << 1),

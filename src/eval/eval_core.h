@@ -89,8 +89,7 @@ struct E_OpInfo
 // value for understanding a key *into* a space, e.g. 1+2 -> 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
-typedef U64 E_SpaceKind;
-enum
+enum E_SpaceKind : U64
 {
   E_SpaceKind_Null,
   E_SpaceKind_FileSystem,

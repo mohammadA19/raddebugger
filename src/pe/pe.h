@@ -33,8 +33,7 @@ struct PE_DosHeader
   U32 coff_file_offset;
 };
 
-typedef U16 PE_WindowsSubsystem;
-enum
+enum PE_WindowsSubsystem : U16
 {
   PE_WindowsSubsystem_UNKNOWN                  = 0,
   PE_WindowsSubsystem_NATIVE                   = 1,
@@ -53,8 +52,7 @@ enum
   PE_WindowsSubsystem_COUNT                    = 14
 };
 
-typedef U16 PE_ImageFileCharacteristics;
-enum
+enum PE_ImageFileCharacteristics : U16
 {
   PE_ImageFileCharacteristic_STRIPPED                     = (1 << 0),
   PE_ImageFileCharacteristic_EXE                          = (1 << 1),
@@ -74,8 +72,7 @@ enum
   PE_ImageFileCharacteristic_BYTES_RESERVED_HI            = (1 << 15),
 };
 
-typedef U16 PE_DllCharacteristics;
-enum
+enum PE_DllCharacteristics : U16
 {
   PE_DllCharacteristic_HIGH_ENTROPY_VA       = (1 << 5),
   PE_DllCharacteristic_DYNAMIC_BASE          = (1 << 6),
@@ -188,8 +185,7 @@ struct PE_DataDirectory
   U32 virt_size;
 };
 
-typedef U32 PE_DebugDirectoryType;
-enum
+enum PE_DebugDirectoryType : U32
 {
   PE_DebugDirectoryType_UNKNOWN               = 0,
   PE_DebugDirectoryType_COFF                  = 1,
@@ -212,8 +208,7 @@ enum
   PE_DebugDirectoryType_COUNT                 = 18
 };
 
-typedef U8 PE_FPOFlags;
-enum
+enum PE_FPOFlags : U8
 {
   PE_FPOFlags_HAS_SEH    = 0x800,
   PE_FPOFlags_USE_BP_REG = 0x1000,
@@ -221,8 +216,7 @@ enum
   PE_FPOFlags_COUNT      = 3
 };
 
-typedef U16 PE_FPOEncoded;
-enum
+enum PE_FPOEncoded : U16
 {
   PE_FPOEncoded_PROLOG_SIZE_SHIFT     = 0,  PE_FPOEncoded_PROLOG_SIZE_MASK     = 0xff,
   PE_FPOEncoded_SAVED_REGS_SIZE_SHIFT = 8,  PE_FPOEncoded_SAVED_REGS_SIZE_MASK = 0x7,
@@ -234,8 +228,7 @@ enum
 #define PE_FPOEncoded_Extract_FLAGS(f)           (U8)(((f) >> PE_FPOEncoded_FLAGS_SHIFT)           & PE_FPOEncoded_FLAGS_MASK)
 #define PE_FPOEncoded_Extract_FRAME_TYPE(f)      (U8)(((f) >> PE_FPOEncoded_FRAME_TYPE_SHIFT)      & PE_FPOEncoded_FRAME_TYPE_MASK)
 
-typedef U8 PE_FPOType;
-enum
+enum PE_FPOType : U8
 {
   PE_FPOType_FPO   = 0,
   PE_FPOType_TRAP  = 1,
@@ -255,8 +248,7 @@ struct PE_DebugFPO
   U16 flags;
 };
 
-typedef U32 PE_DebugMiscType;
-enum
+enum PE_DebugMiscType : U32
 {
   PE_DebugMiscType_NULL,
   PE_DebugMiscType_EXE_NAME,
@@ -301,8 +293,7 @@ struct PE_DebugDirectory
   U32                   foff;
 };
 
-typedef U32 PE_GlobalFlags;
-enum
+enum PE_GlobalFlags : U32
 {
   PE_GlobalFlags_STOP_ON_EXCEPTION          = (1 << 0),
   PE_GlobalFlags_SHOW_LDR_SNAPS             = (1 << 1),
@@ -337,8 +328,7 @@ enum
   PE_GlobalFlags_DISABLE_PROTDLLS           = (1 << 31),
 };
 
-typedef U32 PE_LoadConfigGuardFlags;
-enum
+enum PE_LoadConfigGuardFlags : U32
 {
   PE_LoadConfigGuardFlags_CF_INSTRUMENTED                    = (1 << 8),
   PE_LoadConfigGuardFlags_CFW_INSTRUMENTED                   = (1 << 9),
@@ -627,8 +617,7 @@ global read_only U8 PE_RES_MAGIC[] =
   0x00, 0x00, 0x00, 0x00
 };
 
-typedef U32 PE_ResourceKind;
-enum
+enum PE_ResourceKind : U32
 {
   PE_ResourceKind_CURSOR       = 0x1,
   PE_ResourceKind_BITMAP       = 0x2,
@@ -680,8 +669,7 @@ struct PE_ResourceHeader
   U32                       characteristics;
 };
 
-typedef U16 PE_BaseRelocKind;
-enum
+enum PE_BaseRelocKind : U16
 {
   PE_BaseRelocKind_ABSOLUTE            = 0, // No reallocation is applied. Can be used as padding.
   PE_BaseRelocKind_HIGH                = 1,
@@ -704,8 +692,7 @@ enum
 #define PE_BaseRelocKindFromEntry(x)   (((x) >> 12) & 0xf)
 #define PE_BaseRelocMake(k, off)       ((((U16)(k) & 0xf) << 12) | (U16)((off) & 0x1fff))
 
-typedef U32 PE_UnwindOpCode;
-enum
+enum PE_UnwindOpCode : U32
 {
   PE_UnwindOpCode_PUSH_NONVOL      = 0,
   PE_UnwindOpCode_ALLOC_LARGE      = 1,
@@ -720,8 +707,7 @@ enum
   PE_UnwindOpCode_PUSH_MACHFRAME   = 10,
 };
 
-typedef U8 PE_UnwindGprRegX64;
-enum
+enum PE_UnwindGprRegX64 : U8
 {
   PE_UnwindGprRegX64_RAX = 0,
   PE_UnwindGprRegX64_RCX = 1,
@@ -741,8 +727,7 @@ enum
   PE_UnwindGprRegX64_R15 = 15,
 };
 
-typedef U8 PE_UnwindInfoFlags;
-enum
+enum PE_UnwindInfoFlags : U8
 {
   PE_UnwindInfoFlag_EHANDLER = (1<<0),
   PE_UnwindInfoFlag_UHANDLER = (1<<1),

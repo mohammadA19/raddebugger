@@ -18,8 +18,7 @@ struct OS_GfxInfo
 ////////////////////////////////
 //~ rjf: Window Types
 
-typedef U32 OS_WindowFlags;
-enum
+enum OS_WindowFlags : U32
 {
   OS_WindowFlag_CustomBorder = (1<<0),
 };
@@ -66,8 +65,7 @@ typedef enum OS_EventKind
 }
 OS_EventKind;
 
-typedef U32 OS_Modifiers;
-enum
+enum OS_Modifiers : U32
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),

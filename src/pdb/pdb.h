@@ -143,8 +143,7 @@ typedef struct PDB_SrcHeaderBlockEntry
 ////////////////////////////////
 //~ PDB Format DBI Types
 
-typedef U32 PDB_DbiStream;
-enum
+enum PDB_DbiStream : U32
 {
   PDB_DbiStream_FPO,
   PDB_DbiStream_EXCEPTION,
@@ -160,14 +159,12 @@ enum
   PDB_DbiStream_COUNT
 };
 
-typedef U32 PDB_DbiHeaderSignature;
-enum
+enum PDB_DbiHeaderSignature : U32
 {
   PDB_DbiHeaderSignature_V1 = 0xFFFFFFFF
 };
 
-typedef U32 PDB_DbiVersion;
-enum
+enum PDB_DbiVersion : U32
 {
   PDB_DbiVersion_41  =   930803,
   PDB_DbiVersion_50  = 19960307,
@@ -183,8 +180,7 @@ typedef U16 PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormat(bn) (!!((bn)&PDB_DbiBuildNumberNewFormatFlag))
 #define PDB_DbiMakeBuildNumber(maj, min) (PDB_DbiBuildNumber)(PDB_DbiBuildNumberNewFormatFlag | ((min)&0xFF) | (((maj)&0x7F) << 16))
 
-typedef U16 PDB_DbiHeaderFlags;
-enum
+enum PDB_DbiHeaderFlags : U16
 {
   PDB_DbiHeaderFlag_Incremental = 0x1,
   PDB_DbiHeaderFlag_Stripped    = 0x2,
@@ -311,8 +307,7 @@ typedef struct PDB_DbiSecMapHeader
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
 
-typedef U32 PDB_TpiVersion;
-enum
+enum PDB_TpiVersion : U32
 {
   PDB_TpiVersion_INTV_VC2       = 920924,
   PDB_TpiVersion_IMPV40         = 19950410,
@@ -371,14 +366,12 @@ typedef struct PDB_TpiHeader
 ////////////////////////////////
 //~ PDB Format GSI Types
 
-typedef U32 PDB_GsiSignature;
-enum
+enum PDB_GsiSignature : U32
 {
   PDB_GsiSignature_Basic = 0xffffffff,
 };
 
-typedef U32 PDB_GsiVersion;
-enum
+enum PDB_GsiVersion : U32
 {
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
 };

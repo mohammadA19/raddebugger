@@ -46,8 +46,7 @@ UI_MouseButtonKind;
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-typedef U32 UI_PermissionFlags;
-enum
+enum UI_PermissionFlags : U32
 {
   UI_PermissionFlag_ClicksLeft   = (1<<0),
   UI_PermissionFlag_ClicksMiddle = (1<<1),
@@ -106,8 +105,7 @@ typedef enum UI_EventActionSlot
 }
 UI_EventActionSlot;
 
-typedef U32 UI_EventFlags;
-enum
+enum UI_EventFlags : U32
 {
   UI_EventFlag_KeepMark            = (1<<0),
   UI_EventFlag_Delete              = (1<<1),
@@ -168,8 +166,7 @@ struct UI_EventList
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-typedef U32 UI_TxtOpFlags;
-enum
+enum UI_TxtOpFlags : U32
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
@@ -264,8 +261,7 @@ struct UI_WidgetPaletteInfo
 ////////////////////////////////
 //~ rjf: Animation Info
 
-typedef U32 UI_AnimationInfoFlags;
-enum
+enum UI_AnimationInfoFlags : U32
 {
   UI_AnimationInfoFlag_HotAnimations          = (1<<0),
   UI_AnimationInfoFlag_ActiveAnimations       = (1<<1),
@@ -481,8 +477,7 @@ struct UI_BoxList
   U64 count;
 };
 
-typedef U32 UI_SignalFlags;
-enum
+enum UI_SignalFlags : U32
 {
   // rjf: mouse press -> box was pressed while hovering
   UI_SignalFlag_LeftPressed         = (1<<0),
