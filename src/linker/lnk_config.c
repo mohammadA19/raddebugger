@@ -875,7 +875,7 @@ lnk_print_build_info()
 }
 
 void
-lnk_print_help(void)
+lnk_print_help()
 {
   Temp scratch = scratch_begin(0,0);
 

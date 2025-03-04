@@ -109,17 +109,17 @@ TEX_Topology tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt);
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void tex_init(void);
+void tex_init();
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-void tex_tctx_ensure_inited(void);
+void tex_tctx_ensure_inited();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-TEX_Scope *tex_scope_open(void);
+TEX_Scope *tex_scope_open();
 void tex_scope_close(TEX_Scope *scope);
 void tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node);
 

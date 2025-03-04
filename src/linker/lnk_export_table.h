@@ -37,7 +37,7 @@ srtuct LNK_ExportTable
   B8            *is_ordinal_used;
 };
 
-LNK_ExportTable * lnk_export_table_alloc(void);
+LNK_ExportTable * lnk_export_table_alloc();
 void              lnk_export_table_release(LNK_ExportTable **exptab_ptr);
 LNK_Export *      lnk_export_table_search(LNK_ExportTable *exptab, String8 name);
 void              lnk_collect_exports_from_def_files(LNK_ExportTable *exptab, String8List path_list);

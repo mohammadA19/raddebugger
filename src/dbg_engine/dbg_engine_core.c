@@ -1256,7 +1256,7 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64
 //- rjf: stopped info from the control thread
 
 CTRL_Event
-d_ctrl_last_stop_event(void)
+d_ctrl_last_stop_event()
 {
   return d_state->ctrl_last_stop_event;
 }
@@ -1267,7 +1267,7 @@ d_ctrl_last_stop_event(void)
 //- rjf: frame data
 
 U64
-d_frame_index(void)
+d_frame_index()
 {
   return d_state->frame_index;
 }
@@ -1275,19 +1275,19 @@ d_frame_index(void)
 //- rjf: control state
 
 D_RunKind
-d_ctrl_last_run_kind(void)
+d_ctrl_last_run_kind()
 {
   return d_state->ctrl_last_run_kind;
 }
 
 U64
-d_ctrl_last_run_frame_idx(void)
+d_ctrl_last_run_frame_idx()
 {
   return d_state->ctrl_last_run_frame_idx;
 }
 
 B32
-d_ctrl_targets_running(void)
+d_ctrl_targets_running()
 {
   return d_state->ctrl_is_running;
 }
@@ -1587,7 +1587,7 @@ d_next_cmd(D_Cmd **cmd)
 #endif
 
 void
-d_init(void)
+d_init()
 {
   Arena *arena = arena_alloc();
   d_state = push_array(arena, D_State, 1);

@@ -226,7 +226,7 @@ e_member_array_from_list(Arena *arena, E_MemberList *list)
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
 E_TypeCtx *
-e_selected_type_ctx(void)
+e_selected_type_ctx()
 {
   return e_type_state->ctx;
 }
@@ -258,7 +258,7 @@ e_select_type_ctx(E_TypeCtx *ctx)
 //- rjf: key constructors
 
 E_TypeKey
-e_type_key_zero(void)
+e_type_key_zero()
 {
   E_TypeKey k = {};
   return k;
@@ -1782,7 +1782,7 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       }
       if(type->count == 0)
       {
-        str8_list_push(arena, out, str8_lit("(void)"));
+        str8_list_push(arena, out, str8_lit("()"));
       }
       else
       {

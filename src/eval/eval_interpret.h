@@ -40,7 +40,7 @@ thread_static E_InterpretCtx *e_interpret_ctx = 0;
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-E_InterpretCtx *e_selected_interpret_ctx(void);
+E_InterpretCtx *e_selected_interpret_ctx();
 void e_select_interpret_ctx(E_InterpretCtx *ctx);
 
 ////////////////////////////////

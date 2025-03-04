@@ -178,7 +178,7 @@ struct R_PassList
 ////////////////////////////////
 //~ rjf: Handle Type Functions
 
-R_Handle r_handle_zero(void);
+R_Handle r_handle_zero();
 B32 r_handle_match(R_Handle a, R_Handle b);
 
 ////////////////////////////////
@@ -215,8 +215,8 @@ r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, U64 size, void *dat
 r_hook void              r_buffer_release(R_Handle buffer);
 
 //- rjf: frame markers
-r_hook void              r_begin_frame(void);
-r_hook void              r_end_frame(void);
+r_hook void              r_begin_frame();
+r_hook void              r_end_frame();
 r_hook void              r_window_begin_frame(OS_Handle window, R_Handle window_equip);
 r_hook void              r_window_end_frame(OS_Handle window, R_Handle window_equip);
 

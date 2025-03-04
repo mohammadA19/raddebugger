@@ -5,7 +5,7 @@
 //~ rjf: Handle Type Functions (Helpers, Implemented Once)
 
 OS_Handle
-os_handle_zero(void)
+os_handle_zero()
 {
   OS_Handle handle = {0};
   return handle;

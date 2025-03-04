@@ -236,7 +236,7 @@ lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data, String8 path)
 ////////////////////////////////
 
 LNK_LibWriter *
-lnk_lib_writer_alloc(void)
+lnk_lib_writer_alloc()
 {
   Arena *arena = arena_alloc();
   LNK_LibWriter *writer = push_array(arena, LNK_LibWriter, 1);

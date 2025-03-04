@@ -199,7 +199,7 @@ Vec2S32 fnt_vertex_from_corner(Corner corner);
 ////////////////////////////////
 //~ rjf: Font Tags
 
-FNT_Tag fnt_tag_zero(void);
+FNT_Tag fnt_tag_zero();
 B32 fnt_tag_match(FNT_Tag a, FNT_Tag b);
 FP_Handle fnt_handle_from_tag(FNT_Tag tag);
 FP_Metrics fnt_fp_metrics_from_tag(FNT_Tag tag);
@@ -241,7 +241,7 @@ F32 fnt_line_height_from_metrics(FNT_Metrics *metrics);
 ////////////////////////////////
 //~ rjf: Main Calls
 
-void fnt_init(void);
-void fnt_reset(void);
+void fnt_init();
+void fnt_reset();
 
 #endif // FONT_CACHE_H

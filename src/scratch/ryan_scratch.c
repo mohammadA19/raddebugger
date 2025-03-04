@@ -46,7 +46,7 @@
 //~ rjf: Entry Points
 
 B32
-frame(void)
+frame()
 {
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);

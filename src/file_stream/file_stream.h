@@ -89,12 +89,12 @@ U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
 ////////////////////////////////
 //~ rjf: Top-Level API
 
-void fs_init(void);
+void fs_init();
 
 ////////////////////////////////
 //~ rjf: Change Generation
 
-U64 fs_change_gen(void);
+U64 fs_change_gen();
 
 ////////////////////////////////
 //~ rjf: Cache Interaction

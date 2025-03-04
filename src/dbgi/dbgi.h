@@ -354,7 +354,7 @@ static RDI_Parsed di_rdi_parsed_nil = {0};
 U64 di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags);
 U64 di_hash_from_string(String8 string, StringMatchFlags match_flags);
 U64 di_hash_from_key(DI_Key *k);
-DI_Key di_key_zero(void);
+DI_Key di_key_zero();
 B32 di_key_match(DI_Key *a, DI_Key *b);
 DI_Key di_key_copy(Arena *arena, DI_Key *src);
 DI_Key di_normalized_key_from_key(Arena *arena, DI_Key *src);
@@ -370,12 +370,12 @@ String8 di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_S
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void di_init(void);
+void di_init();
 
 ////////////////////////////////
 //~ rjf: Scope Functions
 
-DI_Scope *di_scope_open(void);
+DI_Scope *di_scope_open();
 void di_scope_close(DI_Scope *scope);
 void di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Node *node);
 void di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchNode *node);
@@ -434,7 +434,7 @@ void di_search_evictor_thread__entry_point(void *p);
 ////////////////////////////////
 //~ rjf: Match Store
 
-DI_MatchStore *di_match_store_alloc(void);
+DI_MatchStore *di_match_store_alloc();
 void di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys);
 RDI_SectionKind di_match_store_section_kind_from_name(DI_MatchStore *store, String8 name, U64 endt_us);
 ASYNC_WORK_DEF(di_match_work);

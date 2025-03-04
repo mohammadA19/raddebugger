@@ -3710,7 +3710,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       CV_PointerKind  ptr_kind = CV_PointerAttribs_Extract_Kind(ptr->attribs);
       CV_PointerMode  ptr_mode = CV_PointerAttribs_Extract_Mode(ptr->attribs);
       U32             ptr_size = CV_PointerAttribs_Extract_Size(ptr->attribs);
-      (void)ptr_kind;
+      ()ptr_kind;
 
       // parse ahead type chain and squash modifiers
       RDI_TypeModifierFlags modifier_flags = rdi_type_modifier_flags_from_cv_pointer_attribs(ptr->attribs);

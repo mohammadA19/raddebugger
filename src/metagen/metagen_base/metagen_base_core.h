@@ -160,11 +160,11 @@
 #if BUILD_DEBUG
 # define Assert(x) AssertAlways(x)
 #else
-# define Assert(x) (void)(x)
+# define Assert(x) ()(x)
 #endif
 #define InvalidPath        Assert(!"Invalid Path!")
 #define NotImplemented     Assert(!"Not Implemented!")
-#define NoOp               ((void)0)
+#define NoOp               (()0)
 #define StaticAssert(C, ID) static U8 Glue(ID, __LINE__)[(C)?1:-1]
 
 ////////////////////////////////
@@ -288,8 +288,8 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 # define AsanPoisonMemoryRegion(addr, size)   __asan_poison_memory_region((addr), (size))
 # define AsanUnpoisonMemoryRegion(addr, size) __asan_unpoison_memory_region((addr), (size))
 #else
-# define AsanPoisonMemoryRegion(addr, size)   ((void)(addr), (void)(size))
-# define AsanUnpoisonMemoryRegion(addr, size) ((void)(addr), (void)(size))
+# define AsanPoisonMemoryRegion(addr, size)   (()(addr), ()(size))
+# define AsanUnpoisonMemoryRegion(addr, size) (()(addr), ()(size))
 #endif
 
 ////////////////////////////////
@@ -354,7 +354,7 @@ typedef S32      B32;
 typedef S64      B64;
 typedef float    F32;
 typedef double   F64;
-typedef void VoidProc(void);
+typedef void VoidProc();
 struct U128
 {
   U64 u64[2];
@@ -699,7 +699,7 @@ S32 safe_cast_s32(S64 x);
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
 
-U128 u128_zero(void);
+U128 u128_zero();
 U128 u128_make(U64 v0, U64 v1);
 B32 u128_match(U128 a, U128 b);
 
@@ -711,8 +711,8 @@ U64 u64_up_to_pow2(U64 x);
 S32 extend_sign32(U32 x, U32 size);
 S64 extend_sign64(U64 x, U64 size);
 
-F32 inf32(void);
-F32 neg_inf32(void);
+F32 inf32();
+F32 neg_inf32();
 
 U16 bswap_u16(U16 x);
 U32 bswap_u32(U32 x);
@@ -757,9 +757,9 @@ B32 txt_rng_contains(TxtRng r, TxtPt pt);
 U64 bit_size_from_arch(Architecture arch);
 U64 max_instruction_size_from_arch(Architecture arch);
 
-OperatingSystem operating_system_from_context(void);
-Architecture architecture_from_context(void);
-Compiler compiler_from_context(void);
+OperatingSystem operating_system_from_context();
+Architecture architecture_from_context();
+Compiler compiler_from_context();
 
 ////////////////////////////////
 //~ rjf: Time Functions

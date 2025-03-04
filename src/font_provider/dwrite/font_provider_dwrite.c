@@ -159,7 +159,7 @@ fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream 
 //~ rjf: Backend Implementations
 
 fp_hook void
-fp_init(void)
+fp_init()
 {
   ProfBeginFunction();
   HRESULT error = 0;

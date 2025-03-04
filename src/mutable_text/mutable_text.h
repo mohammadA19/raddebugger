@@ -73,7 +73,7 @@ static MTX_Shared *mtx_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void mtx_init(void);
+void mtx_init();
 
 ////////////////////////////////
 //~ rjf: Buffer Operations

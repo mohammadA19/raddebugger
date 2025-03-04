@@ -134,13 +134,13 @@ os_lnx_thread_entry_point(void *ptr)
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
 OS_SystemInfo *
-os_get_system_info(void)
+os_get_system_info()
 {
   return &os_lnx_state.system_info;
 }
 
 OS_ProcessInfo *
-os_get_process_info(void)
+os_get_process_info()
 {
   return &os_lnx_state.process_info;
 }
@@ -205,7 +205,7 @@ os_commit_large(void *ptr, U64 size)
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
 U32
-os_tid(void)
+os_tid()
 {
   U32 result = 0;
 #if defined(SYS_gettid)
@@ -651,7 +651,7 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
 U64
-os_now_microseconds(void)
+os_now_microseconds()
 {
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
@@ -660,14 +660,14 @@ os_now_microseconds(void)
 }
 
 U32
-os_now_unix(void)
+os_now_unix()
 {
   time_t t = time(0);
   return (U32)t;
 }
 
 DateTime
-os_now_universal_time(void)
+os_now_universal_time()
 {
   time_t t = 0;
   time(&t);
@@ -783,7 +783,7 @@ os_thread_detach(OS_Handle handle)
 //- rjf: mutexes
 
 OS_Handle
-os_mutex_alloc(void)
+os_mutex_alloc()
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_Mutex);
   pthread_mutexattr_t attr;
@@ -828,7 +828,7 @@ os_mutex_drop(OS_Handle mutex)
 //- rjf: reader/writer mutexes
 
 OS_Handle
-os_rw_mutex_alloc(void)
+os_rw_mutex_alloc()
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_RWMutex);
   int init_result = pthread_rwlock_init(&entity->rwmutex_handle, 0);
@@ -885,7 +885,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 //- rjf: condition variables
 
 OS_Handle
-os_condition_variable_alloc(void)
+os_condition_variable_alloc()
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_ConditionVariable);
   int init_result = pthread_cond_init(&entity->cv.cond_handle, 0);
@@ -1131,7 +1131,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
 //~ rjf: @os_hooks GUIDs (Implemented Per-OS)
 
 OS_Guid
-os_make_guid(void)
+os_make_guid()
 {
   U8 random_bytes[16] = {0};
   StaticAssert(sizeof(random_bytes) == sizeof(OS_Guid), os_lnx_guid_size_check);

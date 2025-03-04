@@ -20,7 +20,7 @@ tctx_init_and_equip(TCTX *tctx){
 }
 
 void
-tctx_release(void)
+tctx_release()
 {
   for(U64 i = 0; i < ArrayCount(tctx_thread_local->arenas); i += 1)
   {
@@ -29,7 +29,7 @@ tctx_release(void)
 }
 
 TCTX*
-tctx_get_equipped(void){
+tctx_get_equipped(){
   return(tctx_thread_local);
 }
 
@@ -66,7 +66,7 @@ tctx_set_thread_name(String8 string){
 }
 
 String8
-tctx_get_thread_name(void){
+tctx_get_thread_name(){
   TCTX *tctx = tctx_get_equipped();
   String8 result = str8(tctx->thread_name, tctx->thread_name_size);
   return(result);

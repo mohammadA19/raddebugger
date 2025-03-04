@@ -110,14 +110,14 @@ supplement_thread_base_entry_point(void (*entry_point)(void *params), void *para
 }
 
 U64
-update_tick_idx(void)
+update_tick_idx()
 {
   U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
   return result;
 }
 
 B32
-update(void)
+update()
 {
   ProfTick(0);
   ins_atomic_u64_inc_eval(&global_update_tick_idx);

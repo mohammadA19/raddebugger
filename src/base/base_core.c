@@ -32,7 +32,7 @@ safe_cast_s32(S64 x)
 //~ rjf: Large Base Type Functions
 
 U128
-u128_zero(void)
+u128_zero()
 {
   U128 v = {0};
   return v;
@@ -95,14 +95,14 @@ extend_sign64(U64 x, U64 size){
 }
 
 F32
-inf32(void){
+inf32(){
   union { U32 u; F32 f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
 F32
-neg_inf32(void){
+neg_inf32(){
   union { U32 u; F32 f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
@@ -410,7 +410,7 @@ max_instruction_size_from_arch(Arch arch)
 }
 
 OperatingSystem
-operating_system_from_context(void){
+operating_system_from_context(){
   OperatingSystem os = OperatingSystem_Null;
 #if OS_WINDOWS
   os = OperatingSystem_Windows;
@@ -423,7 +423,7 @@ operating_system_from_context(void){
 }
 
 Arch
-arch_from_context(void){
+arch_from_context(){
   Arch arch = Arch_Null;
 #if ARCH_X64
   arch = Arch_x64;
@@ -438,7 +438,7 @@ arch_from_context(void){
 }
 
 Compiler
-compiler_from_context(void){
+compiler_from_context(){
   Compiler compiler = Compiler_Null;
 #if COMPILER_MSVC
   compiler = Compiler_msvc;

@@ -120,7 +120,7 @@ enum RDIM_StringMatchFlags : RDI_U32
 //
 // #define RDIM_ARENA_OVERRIDE
 // #define RDIM_Arena <name of your arena type here>
-// #define rdim_arena_alloc   <name of your creation function - must be (void) -> Arena*>
+// #define rdim_arena_alloc   <name of your creation function - must be () -> Arena*>
 // #define rdim_arena_release <name of your release function  - must be (Arena*) -> void>
 // #define rdim_arena_pos     <name of your position function - must be (Arena*) -> U64>
 // #define rdim_arena_push    <name of your pushing function  - must be (Arena*, U64 size) -> void*>
@@ -192,10 +192,10 @@ struct RDIM_Temp
 // #define RDIM_ProfEnd() <some expression, like a function call, to end profiling some zone>
 
 #if !defined(RDIM_ProfBegin)
-# define RDIM_ProfBegin(...) ((void)0)
+# define RDIM_ProfBegin(...) (()0)
 #endif
 #if !defined(RDIM_ProfEnd)
-# define RDIM_ProfEnd() ((void)0)
+# define RDIM_ProfEnd() (()0)
 #endif
 
 #define RDIM_ProfScope(...) for(int _i_ = ((RDIM_ProfBegin(__VA_ARGS__)), 0); !_i_; _i_ += 1, (RDIM_ProfEnd()))
@@ -299,9 +299,9 @@ RDIM_CheckNil(nil,p) ? \
 #if !defined(NDEBUG)
 # define rdim_assert(x) rdim_assert_always(x)
 #else
-# define rdim_assert(x) (void)(x)
+# define rdim_assert(x) ()(x)
 #endif
-#define rdim_noop ((void)0)
+#define rdim_noop (()0)
 
 ////////////////////////////////
 //~ rjf: Auxiliary Data Structure Types
@@ -1196,7 +1196,7 @@ RDI_PROC void *rdim_memcpy_fallback(void *dst, void *src, RDI_U64 size);
 
 //- rjf: arenas
 #if !defined(RDIM_ARENA_OVERRIDE)
-RDI_PROC RDIM_Arena *rdim_arena_alloc_fallback(void);
+RDI_PROC RDIM_Arena *rdim_arena_alloc_fallback();
 RDI_PROC void rdim_arena_release_fallback(RDIM_Arena *arena);
 RDI_PROC RDI_U64 rdim_arena_pos_fallback(RDIM_Arena *arena);
 RDI_PROC void *rdim_arena_push_fallback(RDIM_Arena *arena, RDI_U64 align, RDI_U64 size);

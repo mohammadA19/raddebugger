@@ -79,12 +79,12 @@ r_buffer_release(R_Handle buffer)
 //- rjf: frame markers
 
 r_hook void
-r_begin_frame(void)
+r_begin_frame()
 {
 }
 
 r_hook void
-r_end_frame(void)
+r_end_frame()
 {
 }
 

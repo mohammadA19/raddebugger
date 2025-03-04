@@ -251,14 +251,14 @@ E_MemberArray e_member_array_from_list(Arena *arena, E_MemberList *list);
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-E_TypeCtx *e_selected_type_ctx(void);
+E_TypeCtx *e_selected_type_ctx();
 void e_select_type_ctx(E_TypeCtx *ctx);
 
 ////////////////////////////////
 //~ rjf: Type Operation Functions
 
 //- rjf: basic key constructors
-E_TypeKey e_type_key_zero(void);
+E_TypeKey e_type_key_zero();
 E_TypeKey e_type_key_basic(E_TypeKind kind);
 E_TypeKey e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx);
 E_TypeKey e_type_key_reg(Arch arch, REGS_RegCode code);

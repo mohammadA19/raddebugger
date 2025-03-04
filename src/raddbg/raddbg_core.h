@@ -956,7 +956,7 @@ static RD_Handle rd_last_drag_drop_prev_tab = {0};
 ////////////////////////////////
 //~ rjf: Handle Type Pure Functions
 
-RD_Handle rd_handle_zero(void);
+RD_Handle rd_handle_zero();
 B32 rd_handle_match(RD_Handle a, RD_Handle b);
 void rd_handle_list_push_node(RD_HandleList *list, RD_HandleNode *node);
 void rd_handle_list_push(Arena *arena, RD_HandleList *list, RD_Handle handle);
@@ -1072,13 +1072,13 @@ B32 rd_prefer_dasm_from_window(RD_Window *window);
 ////////////////////////////////
 //~ rjf: Global Cross-Window UI Interaction State Functions
 
-B32 rd_drag_is_active(void);
+B32 rd_drag_is_active();
 void rd_drag_begin(RD_RegSlot slot);
-B32 rd_drag_drop(void);
-void rd_drag_kill(void);
+B32 rd_drag_drop();
+void rd_drag_kill();
 
 void rd_set_hover_regs(RD_RegSlot slot);
-RD_Regs *rd_get_hover_regs(void);
+RD_Regs *rd_get_hover_regs();
 
 void rd_open_ctx_menu(UI_Key anchor_box_key, Vec2F32 anchor_box_off, RD_RegSlot slot);
 
@@ -1092,7 +1092,7 @@ void rd_name_release(String8 string);
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure Functions
 
-RD_Cfg *rd_cfg_alloc(void);
+RD_Cfg *rd_cfg_alloc();
 void rd_cfg_release(RD_Cfg *cfg);
 RD_Cfg *rd_cfg_new(RD_Cfg *parent, String8 string);
 RD_Cfg *rd_cfg_newf(RD_Cfg *parent, char *fmt, ...);
@@ -1137,7 +1137,7 @@ String8 rd_mapped_from_file_path(Arena *arena, String8 file_path);
 String8List rd_possible_overrides_from_file_path(Arena *arena, String8 file_path);
 
 //- rjf: top-level state queries
-RD_Entity *rd_entity_root(void);
+RD_Entity *rd_entity_root();
 RD_EntityList rd_push_entity_list_with_kind(Arena *arena, RD_EntityKind kind);
 RD_Entity *rd_entity_from_id(RD_EntityID id);
 RD_Entity *rd_entity_from_name_and_kind(String8 string, RD_EntityKind kind);
@@ -1203,7 +1203,7 @@ String8 rd_eval_string_from_file_path(Arena *arena, String8 string);
 //~ rjf: View State Functions
 
 //- rjf: allocation/releasing
-RD_View *rd_view_alloc(void);
+RD_View *rd_view_alloc();
 void rd_view_release(RD_View *view);
 
 //- rjf: equipment
@@ -1227,15 +1227,15 @@ void rd_view_store_paramf(RD_View *view, String8 key, char *fmt, ...);
 //~ rjf: View Building API
 
 //- rjf: view info extraction
-Arena *rd_view_arena(void);
-UI_ScrollPt2 rd_view_scroll_pos(void);
-String8 rd_view_expr_string(void);
-String8 rd_view_filter(void);
+Arena *rd_view_arena();
+UI_ScrollPt2 rd_view_scroll_pos();
+String8 rd_view_expr_string();
+String8 rd_view_filter();
 
 //- rjf: pushing/attaching view resources
 void *rd_view_state_by_size(U64 size);
 #define rd_view_state(T) (T *)rd_view_state_by_size(sizeof(T))
-Arena *rd_push_view_arena(void);
+Arena *rd_push_view_arena();
 
 //- rjf: storing view-attached state
 void rd_store_view_expr_string(String8 string);
@@ -1320,7 +1320,7 @@ String8 rd_push_search_string(Arena *arena);
 
 //- rjf: keybindings
 OS_Key rd_os_key_from_cfg_string(String8 string);
-void rd_clear_bindings(void);
+void rd_clear_bindings();
 RD_BindingList rd_bindings_from_name(Arena *arena, String8 name);
 void rd_bind_name(String8 name, RD_Binding binding);
 void rd_unbind_name(String8 name, RD_Binding binding);
@@ -1355,13 +1355,13 @@ DR_FancyStringList rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_
 ////////////////////////////////
 //~ rjf: Continuous Frame Requests
 
-void rd_request_frame(void);
+void rd_request_frame();
 
 ////////////////////////////////
 //~ rjf: Main State Accessors
 
 //- rjf: per-frame arena
-Arena *rd_frame_arena(void);
+Arena *rd_frame_arena();
 
 //- rjf: config paths
 String8 rd_cfg_path_from_src(RD_CfgSrc src);
@@ -1372,16 +1372,16 @@ RD_EntityList rd_push_active_target_list(Arena *arena);
 RD_Entity *rd_entity_from_ev_key_and_kind(EV_Key key, RD_EntityKind kind);
 
 //- rjf: config state
-RD_CfgTable *rd_cfg_table(void);
+RD_CfgTable *rd_cfg_table();
 
 ////////////////////////////////
 //~ rjf: Registers
 
-RD_Regs *rd_regs(void);
-RD_Regs *rd_base_regs(void);
+RD_Regs *rd_regs();
+RD_Regs *rd_base_regs();
 RD_Regs *rd_push_regs_(RD_Regs *regs);
 #define rd_push_regs(...) rd_push_regs_(&(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
-RD_Regs *rd_pop_regs(void);
+RD_Regs *rd_pop_regs();
 #define RD_RegsScope(...) DeferLoop(rd_push_regs(__VA_ARGS__), rd_pop_regs())
 void rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string);
 
@@ -1403,6 +1403,6 @@ B32 rd_next_cmd(RD_Cmd **cmd);
 //~ rjf: Main Layer Top-Level Calls
 
 void rd_init(CmdLine *cmdln);
-void rd_frame(void);
+void rd_frame();
 
 #endif // RADDBG_CORE_H

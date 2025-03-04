@@ -59,7 +59,7 @@ e_expr_kind_is_comparison(E_ExprKind kind)
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
 E_IRCtx *
-e_selected_ir_ctx(void)
+e_selected_ir_ctx()
 {
   return e_ir_ctx;
 }

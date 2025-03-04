@@ -95,7 +95,7 @@ ctrl_string_from_msg_kind(CTRL_MsgKind kind)
 //~ rjf: Machine/Handle Pair Type Functions
 
 CTRL_Handle
-ctrl_handle_zero(void)
+ctrl_handle_zero()
 {
   CTRL_Handle handle = {0};
   return handle;
@@ -610,7 +610,7 @@ ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 //- rjf: cache creation/destruction
 
 CTRL_EntityStore *
-ctrl_entity_store_alloc(void)
+ctrl_entity_store_alloc()
 {
   Arena *arena = arena_alloc();
   CTRL_EntityStore *store = push_array(arena, CTRL_EntityStore, 1);
@@ -1234,7 +1234,7 @@ ctrl_entity_store_apply_events(CTRL_EntityStore *store, CTRL_EventList *list)
 //~ rjf: Main Layer Initialization
 
 void
-ctrl_init(void)
+ctrl_init()
 {
   Arena *arena = arena_alloc();
   ctrl_state = push_array(arena, CTRL_State, 1);
@@ -3034,7 +3034,7 @@ ctrl_call_stack_from_unwind(Arena *arena, DI_Scope *di_scope, CTRL_Entity *proce
 //~ rjf: Halting All Attached Processes
 
 void
-ctrl_halt(void)
+ctrl_halt()
 {
   dmn_halt(0, 0);
 }
@@ -3045,21 +3045,21 @@ ctrl_halt(void)
 //- rjf: run generation counter
 
 U64
-ctrl_run_gen(void)
+ctrl_run_gen()
 {
   U64 result = dmn_run_gen();
   return result;
 }
 
 U64
-ctrl_mem_gen(void)
+ctrl_mem_gen()
 {
   U64 result = dmn_mem_gen();
   return result;
 }
 
 U64
-ctrl_reg_gen(void)
+ctrl_reg_gen()
 {
   U64 result = dmn_reg_gen();
   return result;
@@ -4446,7 +4446,7 @@ ctrl_thread__flush_info_log(String8 string)
 }
 
 void
-ctrl_thread__end_and_flush_info_log(void)
+ctrl_thread__end_and_flush_info_log()
 {
   Temp scratch = scratch_begin(0, 0);
   LogScopeResult log = log_scope_end(scratch.arena);

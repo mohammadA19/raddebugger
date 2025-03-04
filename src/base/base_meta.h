@@ -184,7 +184,7 @@ read_only static Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, st
 read_only static Type *type_kind_type_table[] =
 {
   &type_nil,
-  type(void),
+  type(),
   type(U8),
   type(U16),
   type(U32),

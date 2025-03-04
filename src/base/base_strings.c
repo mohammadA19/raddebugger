@@ -153,7 +153,7 @@ str8_range(U8 *first, U8 *one_past_last){
 }
 
 String8
-str8_zero(void){
+str8_zero(){
   String8 result = {0};
   return(result);
 }
@@ -171,7 +171,7 @@ str16_range(U16 *first, U16 *one_past_last){
 }
 
 String16
-str16_zero(void){
+str16_zero(){
   String16 result = {0};
   return(result);
 }
@@ -189,7 +189,7 @@ str32_range(U32 *first, U32 *one_past_last){
 }
 
 String32
-str32_zero(void){
+str32_zero(){
   String32 result = {0};
   return(result);
 }

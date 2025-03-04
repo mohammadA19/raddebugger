@@ -111,7 +111,7 @@ DR_FancyRunList dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src);
 //
 // (Frame boundaries & bucket submission)
 
-void dr_begin_frame(void);
+void dr_begin_frame();
 void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket);
 
 ////////////////////////////////
@@ -119,10 +119,10 @@ void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 //
 // (Bucket: Handle to sequence of many render passes, constructed by this layer)
 
-DR_Bucket *dr_bucket_make(void);
+DR_Bucket *dr_bucket_make();
 void dr_push_bucket(DR_Bucket *bucket);
-void dr_pop_bucket(void);
-DR_Bucket *dr_top_bucket(void);
+void dr_pop_bucket();
+DR_Bucket *dr_top_bucket();
 #define DR_BucketScope(b) DeferLoop(dr_push_bucket(b), dr_pop_bucket())
 
 ////////////////////////////////
@@ -134,14 +134,14 @@ R_Tex2DSampleKind          dr_push_tex2d_sample_kind(R_Tex2DSampleKind v);
 Mat3x3F32                  dr_push_xform2d(Mat3x3F32 v);
 Rng2F32                    dr_push_clip(Rng2F32 v);
 F32                        dr_push_transparency(F32 v);
-R_Tex2DSampleKind          dr_pop_tex2d_sample_kind(void);
-Mat3x3F32                  dr_pop_xform2d(void);
-Rng2F32                    dr_pop_clip(void);
-F32                        dr_pop_transparency(void);
-R_Tex2DSampleKind          dr_top_tex2d_sample_kind(void);
-Mat3x3F32                  dr_top_xform2d(void);
-Rng2F32                    dr_top_clip(void);
-F32                        dr_top_transparency(void);
+R_Tex2DSampleKind          dr_pop_tex2d_sample_kind();
+Mat3x3F32                  dr_pop_xform2d();
+Rng2F32                    dr_pop_clip();
+F32                        dr_pop_transparency();
+R_Tex2DSampleKind          dr_top_tex2d_sample_kind();
+Mat3x3F32                  dr_top_xform2d();
+Rng2F32                    dr_top_clip();
+F32                        dr_top_transparency();
 
 #define DR_Tex2DSampleKindScope(v)   DeferLoop(dr_push_tex2d_sample_kind(v), dr_pop_tex2d_sample_kind())
 #define DR_XForm2DScope(v)           DeferLoop(dr_push_xform2d(v), dr_pop_xform2d())

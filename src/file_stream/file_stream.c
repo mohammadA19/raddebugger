@@ -33,7 +33,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 //~ rjf: Top-Level API
 
 void
-fs_init(void)
+fs_init()
 {
   Arena *arena = arena_alloc();
   fs_shared = push_array(arena, FS_Shared, 1);
@@ -60,7 +60,7 @@ fs_init(void)
 //~ rjf: Change Generation
 
 U64
-fs_change_gen(void)
+fs_change_gen()
 {
   return ins_atomic_u64_eval(&fs_shared->change_gen);
 }

@@ -13,7 +13,7 @@
 //~ rjf: Handles
 
 RD_Handle
-rd_handle_zero(void)
+rd_handle_zero()
 {
   RD_Handle result = {0};
   return result;
@@ -860,7 +860,7 @@ rd_prefer_dasm_from_window(RD_Window *window)
 //~ rjf: Global Cross-Window UI Interaction State Functions
 
 B32
-rd_drag_is_active(void)
+rd_drag_is_active()
 {
   return ((rd_state->drag_drop_state == RD_DragDropState_Dragging) ||
           (rd_state->drag_drop_state == RD_DragDropState_Dropping));
@@ -879,7 +879,7 @@ rd_drag_begin(RD_RegSlot slot)
 }
 
 B32
-rd_drag_drop(void)
+rd_drag_drop()
 {
   B32 result = 0;
   if(rd_state->drag_drop_state == RD_DragDropState_Dropping)
@@ -891,7 +891,7 @@ rd_drag_drop(void)
 }
 
 void
-rd_drag_kill(void)
+rd_drag_kill()
 {
   rd_state->drag_drop_state = RD_DragDropState_Null;
 }
@@ -904,7 +904,7 @@ rd_set_hover_regs(RD_RegSlot slot)
 }
 
 RD_Regs *
-rd_get_hover_regs(void)
+rd_get_hover_regs()
 {
   return rd_state->hover_regs;
 }
@@ -1035,7 +1035,7 @@ rd_name_release(String8 string)
 //~ rjf: New Config/Entity Data Structure Functions
 
 RD_Cfg *
-rd_cfg_alloc(void)
+rd_cfg_alloc()
 {
   RD_Cfg *result = rd_state->free_cfg;
   if(result)
@@ -1737,7 +1737,7 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
 //- rjf: top-level state queries
 
 RD_Entity *
-rd_entity_root(void)
+rd_entity_root()
 {
   return rd_state->entities_root;
 }
@@ -2889,7 +2889,7 @@ rd_eval_string_from_file_path(Arena *arena, String8 string)
 //- rjf: allocation/releasing
 
 RD_View *
-rd_view_alloc(void)
+rd_view_alloc()
 {
   // rjf: allocate
   RD_View *view = rd_state->free_view;
@@ -3098,21 +3098,21 @@ rd_view_store_paramf(RD_View *view, String8 key, char *fmt, ...)
 //- rjf: view info extraction
 
 Arena *
-rd_view_arena(void)
+rd_view_arena()
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   return view->arena;
 }
 
 UI_ScrollPt2
-rd_view_scroll_pos(void)
+rd_view_scroll_pos()
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   return view->scroll_pos;
 }
 
 String8
-rd_view_expr_string(void)
+rd_view_expr_string()
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
   RD_View *view = rd_view_from_handle(rd_regs()->view);
@@ -3121,7 +3121,7 @@ rd_view_expr_string(void)
 }
 
 String8
-rd_view_filter(void)
+rd_view_filter()
 {
   // TODO(rjf): @entity_simplification filter and expr string need to be different
   RD_View *view = rd_view_from_handle(rd_regs()->view);
@@ -3140,7 +3140,7 @@ rd_view_state_by_size(U64 size)
 }
 
 Arena *
-rd_push_view_arena(void)
+rd_push_view_arena()
 {
   RD_View *view = rd_view_from_handle(rd_regs()->view);
   Arena *result = rd_view_push_arena_ext(view);
@@ -10110,7 +10110,7 @@ rd_os_key_from_cfg_string(String8 string)
 }
 
 void
-rd_clear_bindings(void)
+rd_clear_bindings()
 {
   arena_clear(rd_state->key_map_arena);
   rd_state->key_map_table_size = 1024;
@@ -11143,7 +11143,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
 //~ rjf: Continuous Frame Requests
 
 void
-rd_request_frame(void)
+rd_request_frame()
 {
   rd_state->num_frames_requested = 4;
 }
@@ -11154,7 +11154,7 @@ rd_request_frame(void)
 //- rjf: per-frame arena
 
 Arena *
-rd_frame_arena(void)
+rd_frame_arena()
 {
   return rd_state->frame_arenas[rd_state->frame_index%ArrayCount(rd_state->frame_arenas)];
 }
@@ -11228,7 +11228,7 @@ rd_entity_from_ev_key_and_kind(EV_Key key, RD_EntityKind kind)
 //- rjf: config state
 
 RD_CfgTable *
-rd_cfg_table(void)
+rd_cfg_table()
 {
   return &rd_state->cfg_table;
 }
@@ -11237,14 +11237,14 @@ rd_cfg_table(void)
 //~ rjf: Registers
 
 RD_Regs *
-rd_regs(void)
+rd_regs()
 {
   RD_Regs *regs = &rd_state->top_regs->v;
   return regs;
 }
 
 RD_Regs *
-rd_base_regs(void)
+rd_base_regs()
 {
   RD_Regs *regs = &rd_state->base_regs.v;
   return regs;
@@ -11260,7 +11260,7 @@ rd_push_regs_(RD_Regs *regs)
 }
 
 RD_Regs *
-rd_pop_regs(void)
+rd_pop_regs()
 {
   RD_Regs *regs = &rd_state->top_regs->v;
   SLLStackPop(rd_state->top_regs);
@@ -11645,7 +11645,7 @@ rd_init(CmdLine *cmdln)
 }
 
 void
-rd_frame(void)
+rd_frame()
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);

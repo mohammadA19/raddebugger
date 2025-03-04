@@ -5,7 +5,7 @@
 //~ rjf: Basic Type Functions
 
 FP_Handle
-fp_handle_zero(void)
+fp_handle_zero()
 {
   FP_Handle result = {0};
   return result;

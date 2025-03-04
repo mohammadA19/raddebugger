@@ -794,7 +794,7 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
 //~ rjf: @demon_os_hooks Main Layer Initialization
 
 void
-demon_os_init(void){
+demon_os_init(){
   demon_lnx_event_arena = arena_alloc();
 }
 

@@ -49,7 +49,7 @@ fnt_vertex_from_corner(Corner corner)
 //~ rjf: Font Tags
 
 FNT_Tag
-fnt_tag_zero(void)
+fnt_tag_zero()
 {
   FNT_Tag result = {0};
   return result;
@@ -1054,7 +1054,7 @@ fnt_line_height_from_metrics(FNT_Metrics *metrics)
 //~ rjf: Main Calls
 
 void
-fnt_init(void)
+fnt_init()
 {
   Arena *arena = arena_alloc();
   f_state = push_array(arena, FNT_State, 1);
@@ -1066,7 +1066,7 @@ fnt_init(void)
 }
 
 void
-fnt_reset(void)
+fnt_reset()
 {
   for(FNT_Atlas *a = f_state->first_atlas; a != 0; a = a->next)
   {

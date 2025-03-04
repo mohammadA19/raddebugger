@@ -110,12 +110,12 @@ U128 hs_hash_from_data(String8 data);
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void hs_init(void);
+void hs_init();
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-void hs_tctx_ensure_inited(void);
+void hs_tctx_ensure_inited();
 
 ////////////////////////////////
 //~ rjf: Cache Submission/Derefs
@@ -125,7 +125,7 @@ U128 hs_submit_data(U128 key, Arena **data_arena, String8 data);
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-HS_Scope *hs_scope_open(void);
+HS_Scope *hs_scope_open();
 void hs_scope_close(HS_Scope *scope);
 void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node);
 

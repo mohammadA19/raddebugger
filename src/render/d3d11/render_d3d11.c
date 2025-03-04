@@ -798,7 +798,7 @@ r_buffer_release(R_Handle handle)
 //- rjf: frame markers
 
 r_hook void
-r_begin_frame(void)
+r_begin_frame()
 {
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
@@ -807,7 +807,7 @@ r_begin_frame(void)
 }
 
 r_hook void
-r_end_frame(void)
+r_end_frame()
 {
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {

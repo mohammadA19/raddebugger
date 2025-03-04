@@ -12,7 +12,7 @@
 //- rjf: handles
 
 DMN_Handle
-dmn_handle_zero(void)
+dmn_handle_zero()
 {
   DMN_Handle h = {0};
   return h;

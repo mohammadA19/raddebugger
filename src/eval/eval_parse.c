@@ -340,7 +340,7 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
 //~ rjf: Tokenization Functions
 
 E_Token
-e_token_zero(void)
+e_token_zero()
 {
   E_Token t = {};
   return t;
@@ -615,7 +615,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
 E_ParseCtx *
-e_selected_parse_ctx(void)
+e_selected_parse_ctx()
 {
   return e_parse_ctx;
 }

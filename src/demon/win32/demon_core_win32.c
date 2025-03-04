@@ -427,7 +427,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
     read_p += cap;
     
     U16 *block16 = (U16*)block;
-    (void)block16;
+    ()block16;
     U64 block_opl = 0;
     for (;block_opl < cap; block_opl += 2){
       if (*(U16*)(block + block_opl) == 0){
@@ -1133,7 +1133,7 @@ dmn_w32_inject_thread(HANDLE process, U64 start_address)
 //~ rjf: @dmn_os_hooks Main Layer Initialization (Implemented Per-OS)
 
 void
-dmn_init(void)
+dmn_init()
 {
   Arena *arena = arena_alloc();
   dmn_w32_shared = push_array(arena, DMN_W32_Shared, 1);
@@ -1178,7 +1178,7 @@ dmn_init(void)
 //~ rjf: @dmn_os_hooks Blocking Control Thread Operations (Implemented Per-OS)
 
 DMN_CtrlCtx *
-dmn_ctrl_begin(void)
+dmn_ctrl_begin()
 {
   DMN_CtrlCtx *ctx = (DMN_CtrlCtx *)1;
   dmn_w32_ctrl_thread = 1;
@@ -1186,7 +1186,7 @@ dmn_ctrl_begin(void)
 }
 
 void
-dmn_ctrl_exclusive_access_begin(void)
+dmn_ctrl_exclusive_access_begin()
 {
   OS_MutexScope(dmn_w32_shared->access_mutex)
   {
@@ -1195,7 +1195,7 @@ dmn_ctrl_exclusive_access_begin(void)
 }
 
 void
-dmn_ctrl_exclusive_access_end(void)
+dmn_ctrl_exclusive_access_end()
 {
   OS_MutexScope(dmn_w32_shared->access_mutex)
   {
@@ -1386,7 +1386,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
       if(child->kind == DMN_W32_EntityKind_Thread)
       {
         DWORD resume_result = ResumeThread(child->handle);
-        (void)resume_result;
+        ()resume_result;
       }
     }
     
@@ -1897,7 +1897,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               
               // rjf: suspend thread immediately upon creation, to match with expected suspension state
               DWORD sus_result = SuspendThread(thread->handle);
-              (void)sus_result;
+              ()sus_result;
               
               // rjf: unpack thread name
               String8 thread_name = {0};
@@ -2625,21 +2625,21 @@ dmn_halt(U64 code, U64 user_data)
 //- rjf: run/memory/register counters
 
 U64
-dmn_run_gen(void)
+dmn_run_gen()
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->run_gen);
   return result;
 }
 
 U64
-dmn_mem_gen(void)
+dmn_mem_gen()
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->mem_gen);
   return result;
 }
 
 U64
-dmn_reg_gen(void)
+dmn_reg_gen()
 {
   U64 result = ins_atomic_u64_eval(&dmn_w32_shared->reg_gen);
   return result;
@@ -2648,7 +2648,7 @@ dmn_reg_gen(void)
 //- rjf: non-blocking-control-thread access barriers
 
 B32
-dmn_access_open(void)
+dmn_access_open()
 {
   B32 result = 0;
   if(dmn_w32_ctrl_thread)
@@ -2664,7 +2664,7 @@ dmn_access_open(void)
 }
 
 void
-dmn_access_close(void)
+dmn_access_close()
 {
   if(!dmn_w32_ctrl_thread)
   {

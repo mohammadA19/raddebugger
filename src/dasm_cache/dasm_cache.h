@@ -273,12 +273,12 @@ U64 dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx);
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void dasm_init(void);
+void dasm_init();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-DASM_Scope *dasm_scope_open(void);
+DASM_Scope *dasm_scope_open();
 void dasm_scope_close(DASM_Scope *scope);
 void dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node);
 

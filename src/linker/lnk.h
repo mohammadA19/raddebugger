@@ -298,7 +298,7 @@ void lnk_apply_reloc(U64 base_addr, U64 virt_align, U64 file_align, LNK_Section 
 
 void lnk_log_size_breakdown(LNK_SectionTable *st, LNK_SymbolTable *symtab);
 void lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTable *st);
-void lnk_log_timers(void);
+void lnk_log_timers();
 
 ////////////////////////////////
 // Enum <-> String

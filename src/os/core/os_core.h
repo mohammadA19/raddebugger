@@ -124,7 +124,7 @@ typedef void OS_ThreadFunctionType(void *ptr);
 ////////////////////////////////
 //~ rjf: Handle Type Functions (Helpers, Implemented Once)
 
-OS_Handle os_handle_zero(void);
+OS_Handle os_handle_zero();
 B32 os_handle_match(OS_Handle a, OS_Handle b);
 void os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle);
 OS_HandleArray os_handle_array_from_list(Arena *arena, OS_HandleList *list);
@@ -154,10 +154,10 @@ OS_Handle os_cmd_line_launchf(char *fmt, ...);
 ////////////////////////////////
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
-OS_SystemInfo  *os_get_system_info(void);
-OS_ProcessInfo *os_get_process_info(void);
+OS_SystemInfo  *os_get_system_info();
+OS_ProcessInfo *os_get_process_info();
 String8         os_get_current_path(Arena *arena);
-U32             os_get_process_start_time_unix(void);
+U32             os_get_process_start_time_unix();
 
 ////////////////////////////////
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
@@ -175,7 +175,7 @@ B32 os_commit_large(void *ptr, U64 size);
 ////////////////////////////////
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
-U32 os_tid(void);
+U32 os_tid();
 void os_set_thread_name(String8 string);
 
 ////////////////////////////////
@@ -227,9 +227,9 @@ void      os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-U64         os_now_microseconds(void);
-U32         os_now_unix(void);
-DateTime    os_now_universal_time(void);
+U64         os_now_microseconds();
+U32         os_now_unix();
+DateTime    os_now_universal_time();
 DateTime    os_universal_time_from_local(DateTime *local_time);
 DateTime    os_local_time_from_universal(DateTime *universal_time);
 void        os_sleep_milliseconds(U32 msec);
@@ -252,13 +252,13 @@ void      os_thread_detach(OS_Handle handle);
 //~ rjf: @os_hooks Synchronization Primitives (Implemented Per-OS)
 
 //- rjf: recursive mutexes
-OS_Handle os_mutex_alloc(void);
+OS_Handle os_mutex_alloc();
 void      os_mutex_release(OS_Handle mutex);
 void      os_mutex_take(OS_Handle mutex);
 void      os_mutex_drop(OS_Handle mutex);
 
 //- rjf: reader/writer mutexes
-OS_Handle os_rw_mutex_alloc(void);
+OS_Handle os_rw_mutex_alloc();
 void      os_rw_mutex_release(OS_Handle rw_mutex);
 void      os_rw_mutex_take_r(OS_Handle mutex);
 void      os_rw_mutex_drop_r(OS_Handle mutex);
@@ -266,7 +266,7 @@ void      os_rw_mutex_take_w(OS_Handle mutex);
 void      os_rw_mutex_drop_w(OS_Handle mutex);
 
 //- rjf: condition variables
-OS_Handle os_condition_variable_alloc(void);
+OS_Handle os_condition_variable_alloc();
 void      os_condition_variable_release(OS_Handle cv);
 // returns false on timeout, true on signal, (max_wait_ms = max_U64) -> no timeout
 B32       os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us);
@@ -304,7 +304,7 @@ void os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handl
 ////////////////////////////////
 //~ rjf: @os_hooks GUIDs (Implemented Per-OS)
 
-Guid os_make_guid(void);
+Guid os_make_guid();
 
 ////////////////////////////////
 //~ rjf: @os_hooks Entry Points (Implemented Per-OS)

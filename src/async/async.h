@@ -105,7 +105,7 @@ void async_init(CmdLine *cmdline);
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-U64 async_thread_count(void);
+U64 async_thread_count();
 
 ////////////////////////////////
 //~ rjf: Work Kickoffs
@@ -125,7 +125,7 @@ void *async_task_join(ASYNC_Task *task);
 ////////////////////////////////
 //~ rjf: Work Execution
 
-ASYNC_Work async_pop_work(void);
+ASYNC_Work async_pop_work();
 void async_execute_work(ASYNC_Work work);
 
 ////////////////////////////////

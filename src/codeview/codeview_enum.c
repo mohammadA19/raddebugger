@@ -763,7 +763,7 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
 
 String8
 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
-{ (void)arena;
+{ ()arena;
   String8 result = str8_lit("None");
   if (x == CV_RangeAttrib_Maybe) {
     result = str8_lit("Maybe");
@@ -773,7 +773,7 @@ cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
 
 String8
 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x)
-{ (void)arena;
+{ ()arena;
   String8 result = str8_lit("None");
   if (x == CV_DefrangeRegisterRelFlag_SpilledOutUDTMember) {
     result = str8_lit("SpilledOutUDTMember");

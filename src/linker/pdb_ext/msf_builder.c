@@ -920,7 +920,7 @@ msf_stream_get_pos(MSF_Context *msf, MSF_StreamNumber sn)
 
 B32
 msf_stream_seek__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt new_pos) 
-{ (void)msf;
+{ ()msf;
   stream->pos = Min(new_pos, stream->size);
   stream->pos_page = 0;
   return 1;
@@ -2090,7 +2090,7 @@ msf_hexdump_stream_to_file(char *name, MSF_Context *msf, MSF_StreamNumber sn, U6
 
 #if 0
 void
-test_msf_open_save(void)
+test_msf_open_save()
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -2136,7 +2136,7 @@ test_msf_open_save(void)
 }
 
 void
-test_size_limit(void)
+test_size_limit()
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -2202,7 +2202,7 @@ test_size_limit(void)
 }
 
 void
-test_msf(void)
+test_msf()
 {
   test_size_limit();
   test_msf_open_save();

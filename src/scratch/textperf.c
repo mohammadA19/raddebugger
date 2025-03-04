@@ -36,7 +36,7 @@ static R_Handle r_window = {0};
 //~ rjf: Entry Points
 
 B32
-frame(void)
+frame()
 {
   ProfBeginFunction();
   B32 quit = 0;

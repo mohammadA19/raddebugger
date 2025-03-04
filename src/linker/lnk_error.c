@@ -12,7 +12,7 @@ lnk_exit(int code)
 }
 
 void
-lnk_init_error_handler(void)
+lnk_init_error_handler()
 {
   for (int i = LNK_Error_StopFirst; i < LNK_Error_StopLast; ++i) {
     g_error_mode_arr[i] = LNK_ErrorMode_Stop;

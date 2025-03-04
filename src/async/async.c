@@ -36,7 +36,7 @@ async_init(CmdLine *cmdline)
 //~ rjf: Top-Level Accessors
 
 U64
-async_thread_count(void)
+async_thread_count()
 {
   return async_shared->work_threads_count;
 }
@@ -157,7 +157,7 @@ async_task_join(ASYNC_Task *task)
 //~ rjf: Work Execution
 
 ASYNC_Work
-async_pop_work(void)
+async_pop_work()
 {
   ProfBeginFunction();
   ASYNC_Work work = {0};

@@ -13,7 +13,7 @@ C_LINKAGE thread_static Log *log_active = 0;
 //~ rjf: Log Creation/Selection
 
 Log *
-log_alloc(void)
+log_alloc()
 {
   Arena *arena = arena_alloc();
   Log *log = push_array(arena, Log, 1);
@@ -65,7 +65,7 @@ log_msgf(LogMsgKind kind, char *fmt, ...)
 //~ rjf: Log Scopes
 
 void
-log_scope_begin(void)
+log_scope_begin()
 {
   if(log_active != 0)
   {

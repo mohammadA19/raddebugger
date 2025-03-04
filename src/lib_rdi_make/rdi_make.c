@@ -41,7 +41,7 @@ rdim_memcpy_fallback(void *dst, void *src, RDI_U64 size)
 #if !defined (RDIM_ARENA_OVERRIDE)
 
 RDI_PROC RDIM_Arena *
-rdim_arena_alloc_fallback(void)
+rdim_arena_alloc_fallback()
 {
   RDIM_Arena *arena = 0;
   // TODO(rjf)

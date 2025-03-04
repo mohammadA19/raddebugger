@@ -179,18 +179,18 @@ static PTG_Shared *ptg_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void ptg_init(void);
+void ptg_init();
 
 ////////////////////////////////
 //~ rjf: User Clock
 
-void ptg_user_clock_tick(void);
-U64 ptg_user_clock_idx(void);
+void ptg_user_clock_tick();
+U64 ptg_user_clock_idx();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-PTG_Scope *ptg_scope_open(void);
+PTG_Scope *ptg_scope_open();
 void ptg_scope_close(PTG_Scope *scope);
 void ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node);
 

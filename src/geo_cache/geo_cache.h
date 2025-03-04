@@ -93,17 +93,17 @@ static GEO_Shared *geo_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void geo_init(void);
+void geo_init();
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-void geo_tctx_ensure_inited(void);
+void geo_tctx_ensure_inited();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-GEO_Scope *geo_scope_open(void);
+GEO_Scope *geo_scope_open();
 void geo_scope_close(GEO_Scope *scope);
 void geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node);
 

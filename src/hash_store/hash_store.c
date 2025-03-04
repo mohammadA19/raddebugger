@@ -23,7 +23,7 @@ hs_hash_from_data(String8 data)
 //~ rjf: Main Layer Initialization
 
 void
-hs_init(void)
+hs_init()
 {
   Arena *arena = arena_alloc();
   hs_shared = push_array(arena, HS_Shared, 1);
@@ -58,7 +58,7 @@ hs_init(void)
 //~ rjf: Thread Context Initialization
 
 void
-hs_tctx_ensure_inited(void)
+hs_tctx_ensure_inited()
 {
   if(hs_tctx == 0)
   {
@@ -180,7 +180,7 @@ hs_submit_data(U128 key, Arena **data_arena, String8 data)
 //~ rjf: Scoped Access
 
 HS_Scope *
-hs_scope_open(void)
+hs_scope_open()
 {
   hs_tctx_ensure_inited();
   HS_Scope *scope = hs_tctx->free_scope;

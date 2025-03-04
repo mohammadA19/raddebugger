@@ -59,7 +59,7 @@ struct CTRL_MetaEvalFrame
   U64 vaddr;
   U64 inline_depth;
 };
-ptr_type(CTRL_MetaEvalFrame__vaddr_type, type(void), .flags = TypeFlag_IsExternal, .size = sizeof(U64));
+ptr_type(CTRL_MetaEvalFrame__vaddr_type, type(), .flags = TypeFlag_IsExternal, .size = sizeof(U64));
 struct_members(CTRL_MetaEvalFrame)
 {
   member_lit_comp(CTRL_MetaEvalFrame, &CTRL_MetaEvalFrame__vaddr_type, vaddr),
@@ -797,7 +797,7 @@ struct CTRL_DbgDirNode
 ////////////////////////////////
 //~ rjf: Wakeup Hook Function Types
 
-#define CTRL_WAKEUP_FUNCTION_DEF(name) void name(void)
+#define CTRL_WAKEUP_FUNCTION_DEF(name) void name()
 typedef CTRL_WAKEUP_FUNCTION_DEF(CTRL_WakeupFunctionType);
 
 ////////////////////////////////
@@ -891,7 +891,7 @@ String8 ctrl_string_from_msg_kind(CTRL_MsgKind kind);
 ////////////////////////////////
 //~ rjf: Handle Type Functions
 
-CTRL_Handle ctrl_handle_zero(void);
+CTRL_Handle ctrl_handle_zero();
 CTRL_Handle ctrl_handle_make(CTRL_MachineID machine_id, DMN_Handle dmn_handle);
 B32 ctrl_handle_match(CTRL_Handle a, CTRL_Handle b);
 void ctrl_handle_list_push(Arena *arena, CTRL_HandleList *list, CTRL_Handle *pair);
@@ -947,7 +947,7 @@ CTRL_EntityList ctrl_entity_list_from_handle_list(Arena *arena, CTRL_EntityStore
 CTRL_EntityArray ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list);
 
 //- rjf: cache creation/destruction
-CTRL_EntityStore *ctrl_entity_store_alloc(void);
+CTRL_EntityStore *ctrl_entity_store_alloc();
 void ctrl_entity_store_release(CTRL_EntityStore *store);
 
 //- rjf: string allocation/deletion
@@ -989,7 +989,7 @@ void ctrl_entity_store_apply_events(CTRL_EntityStore *store, CTRL_EventList *lis
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void ctrl_init(void);
+void ctrl_init();
 
 ////////////////////////////////
 //~ rjf: Wakeup Callback Registration
@@ -1060,15 +1060,15 @@ CTRL_CallStack ctrl_call_stack_from_unwind(Arena *arena, DI_Scope *di_scope, CTR
 ////////////////////////////////
 //~ rjf: Halting All Attached Processes
 
-void ctrl_halt(void);
+void ctrl_halt();
 
 ////////////////////////////////
 //~ rjf: Shared Accessor Functions
 
 //- rjf: generation counters
-U64 ctrl_run_gen(void);
-U64 ctrl_mem_gen(void);
-U64 ctrl_reg_gen(void);
+U64 ctrl_run_gen();
+U64 ctrl_mem_gen();
+U64 ctrl_reg_gen();
 
 //- rjf: name -> register/alias hash tables, for eval
 E_String2NumMap *ctrl_string2reg_from_arch(Arch arch);
@@ -1104,7 +1104,7 @@ B32 ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 vaddr_range)
 
 //- rjf: log flusher
 void ctrl_thread__flush_info_log(String8 string);
-void ctrl_thread__end_and_flush_info_log(void);
+void ctrl_thread__end_and_flush_info_log();
 
 //- rjf: msg kind implementations
 void ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg);

@@ -5,7 +5,7 @@
 //~ rjf: Main Layer Initialization
 
 void
-mtx_init(void)
+mtx_init()
 {
   Arena *arena = arena_alloc();
   mtx_shared = push_array(arena, MTX_Shared, 1);

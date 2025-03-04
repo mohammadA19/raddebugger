@@ -19,7 +19,7 @@ lnk_export_ordinal_compar(const void *a_, const void *b_)
 }
 
 LNK_ExportTable *
-lnk_export_table_alloc(void)
+lnk_export_table_alloc()
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();

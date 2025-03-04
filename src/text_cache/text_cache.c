@@ -1591,7 +1591,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
 //~ rjf: Main Layer Initialization
 
 void
-txt_init(void)
+txt_init()
 {
   Arena *arena = arena_alloc();
   txt_shared = push_array(arena, TXT_Shared, 1);
@@ -1618,7 +1618,7 @@ txt_init(void)
 //~ rjf: Thread Context Initialization
 
 void
-txt_tctx_ensure_inited(void)
+txt_tctx_ensure_inited()
 {
   if(txt_tctx == 0)
   {
@@ -1632,7 +1632,7 @@ txt_tctx_ensure_inited(void)
 //~ rjf: Scoped Access
 
 TXT_Scope *
-txt_scope_open(void)
+txt_scope_open()
 {
   txt_tctx_ensure_inited();
   TXT_Scope *scope = txt_tctx->free_scope;

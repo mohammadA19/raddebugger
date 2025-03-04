@@ -5,7 +5,7 @@
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
 E_InterpretCtx *
-e_selected_interpret_ctx(void)
+e_selected_interpret_ctx()
 {
   return e_interpret_ctx;
 }

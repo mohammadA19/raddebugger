@@ -131,7 +131,7 @@ dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src)
 // (Frame boundaries)
 
 void
-dr_begin_frame(void)
+dr_begin_frame()
 {
   if(dr_thread_ctx == 0)
   {
@@ -157,7 +157,7 @@ dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 // (Bucket: Handle to sequence of many render passes, constructed by this layer)
 
 DR_Bucket *
-dr_bucket_make(void)
+dr_bucket_make()
 {
   DR_Bucket *bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
   DR_BucketStackInits(bucket);
@@ -181,7 +181,7 @@ dr_push_bucket(DR_Bucket *bucket)
 }
 
 void
-dr_pop_bucket(void)
+dr_pop_bucket()
 {
   DR_BucketSelectionNode *node = dr_thread_ctx->top_bucket;
   SLLStackPop(dr_thread_ctx->top_bucket);
@@ -189,7 +189,7 @@ dr_pop_bucket(void)
 }
 
 DR_Bucket *
-dr_top_bucket(void)
+dr_top_bucket()
 {
   DR_Bucket *bucket = 0;
   if(dr_thread_ctx->top_bucket != 0)

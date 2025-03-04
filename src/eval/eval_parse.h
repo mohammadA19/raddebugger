@@ -184,7 +184,7 @@ E_String2NumMap *e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, 
 //~ rjf: Tokenization Functions
 
 #define e_token_at_it(it, arr) (((it) < (arr)->v+(arr)->count) ? (*(it)) : e_token_zero())
-E_Token e_token_zero(void);
+E_Token e_token_zero();
 void e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token);
 E_TokenArray e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list);
 E_TokenArray e_token_array_from_text(Arena *arena, String8 text);
@@ -193,7 +193,7 @@ E_TokenArray e_token_array_make_first_opl(E_Token *first, E_Token *opl);
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-E_ParseCtx *e_selected_parse_ctx(void);
+E_ParseCtx *e_selected_parse_ctx();
 void e_select_parse_ctx(E_ParseCtx *ctx);
 U32 e_parse_ctx_module_idx_from_rdi(RDI_Parsed *rdi);
 

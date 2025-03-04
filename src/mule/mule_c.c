@@ -12,7 +12,7 @@
 #include <complex.h>
 
 void
-c_type_coverage_eval_tests(void){
+c_type_coverage_eval_tests(){
 #if _WIN32
   _Fcomplex x = _FCbuild(0.f, 1.f);
   _Dcomplex y = _Cbuild(0.f, -1.f);
@@ -63,7 +63,7 @@ srtuct Pair{
 };
 
 void
-c_versions_of_same_types(void){
+c_versions_of_same_types(){
   Basics basics = { 1.5f, 1.50000000000001, -1, 1, -2, 2, -4, 4, -8, 8, };
   Basics_Stdint basics_stdint = { 1.5f, 1.50000000000001, -1, 1, -2, 2, -4, 4, -8, 8, };
   Pair memory_[] = {
@@ -97,7 +97,7 @@ struct BitfieldType64
 };
 
 void
-c_type_with_bitfield_usage(void)
+c_type_with_bitfield_usage()
 {
   TypeWithBitfield b = {0};
   b.v = 100;

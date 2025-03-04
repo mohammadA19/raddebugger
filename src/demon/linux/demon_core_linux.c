@@ -5,7 +5,7 @@
 //~ rjf: @dmn_os_hooks Main Layer Initialization (Implemented Per-OS)
 
 void
-dmn_init(void)
+dmn_init()
 {
 }
 
@@ -13,17 +13,17 @@ dmn_init(void)
 //~ rjf: @dmn_os_hooks Blocking Control Thread Operations (Implemented Per-OS)
 
 DMN_CtrlCtx *
-dmn_ctrl_begin(void)
+dmn_ctrl_begin()
 {
 }
 
 void
-dmn_ctrl_exclusive_access_begin(void)
+dmn_ctrl_exclusive_access_begin()
 {
 }
 
 void
-dmn_ctrl_exclusive_access_end(void)
+dmn_ctrl_exclusive_access_end()
 {
 }
 
@@ -66,29 +66,29 @@ dmn_halt(U64 code, U64 user_data)
 //- rjf: run/memory/register counters
 
 U64
-dmn_run_gen(void)
+dmn_run_gen()
 {
 }
 
 U64
-dmn_mem_gen(void)
+dmn_mem_gen()
 {
 }
 
 U64
-dmn_reg_gen(void)
+dmn_reg_gen()
 {
 }
 
 //- rjf: non-blocking-control-thread access barriers
 
 B32
-dmn_access_open(void)
+dmn_access_open()
 {
 }
 
 void
-dmn_access_close(void)
+dmn_access_close()
 {
 }
 

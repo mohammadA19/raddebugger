@@ -2267,7 +2267,7 @@ lnk_build_coff_section_table(LNK_SymbolTable *symtab, LNK_Section *header_sect, 
        sect += 1) {
     // was section symbol defined elsewhere?
     LNK_Symbol *test_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, sect->name);
-    Assert(!test_symbol); (void)test_symbol;
+    Assert(!test_symbol); ()test_symbol;
     
     // define symbol
     String8 sect_symbol_name = push_str8_copy(symtab->arena->v[0], sect->name);
@@ -2470,7 +2470,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
           if (str8_match_lit(".weak.", symbol->name, StringMatchFlag_RightSideSloppy)) {
             // TODO: Clang and MingGW encode extra info in alias
             // 
-            // __attribute__((weak,alias("foo"))) void bar(void);
+            // __attribute__((weak,alias("foo"))) void bar();
             // static void foo() {}
             //
             // Clang write these COFF symbols in obj for code above:
@@ -2782,7 +2782,7 @@ THREAD_POOL_TASK_FUNC(lnk_section_reloc_patcher)
       }
       String8 chunk_data = lnk_data_from_chunk_ref(sect_id_map, image_data, chunk->ref);
       lnk_apply_reloc(base_addr, st->sect_align, st->file_align, sect_id_map, symtab, chunk_data, reloc);
-      int bad_vs = 0; (void)bad_vs;
+      int bad_vs = 0; ()bad_vs;
     }
   }
 }
@@ -2825,7 +2825,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
       }
       String8 chunk_data = lnk_data_from_chunk_ref(sect_id_map, image_data, reloc->chunk->ref);
       lnk_apply_reloc(task->base_addr, task->st->sect_align, task->st->file_align, task->sect_id_map, task->symtab, chunk_data, reloc);
-      int bad_vs = 0; (void)bad_vs;
+      int bad_vs = 0; ()bad_vs;
     }
   }
 }
@@ -3042,7 +3042,7 @@ lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTabl
 }
 
 void
-lnk_log_timers(void)
+lnk_log_timers()
 {
   Temp scratch = scratch_begin(0, 0);
   

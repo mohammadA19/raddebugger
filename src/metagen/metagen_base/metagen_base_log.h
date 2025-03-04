@@ -35,7 +35,7 @@ struct Log
 ////////////////////////////////
 //~ rjf: Log Creation/Selection
 
-Log *log_alloc(void);
+Log *log_alloc();
 void log_release(Log *log);
 void log_select(Log *log);
 
@@ -55,7 +55,7 @@ void log_msgf(LogMsgKind kind, char *fmt, ...);
 ////////////////////////////////
 //~ rjf: Log Scopes
 
-void log_scope_begin(void);
+void log_scope_begin();
 LogScopeResult log_scope_end(Arena *arena);
 
 #endif // BASE_LOG_H

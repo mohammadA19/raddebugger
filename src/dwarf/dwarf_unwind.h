@@ -196,7 +196,7 @@ DW_UnwindResult dw_unwind_x64__apply_frame_rules(String8 raw_eh_frame, DW_CFIRow
 ////////////////////////////////
 // x64 Unwind Helper Functions
 
-void dw_unwind_init_x64(void);
+void dw_unwind_init_x64();
 U64  dw_unwind_parse_pointer_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_EhPtrEnc ptr_enc, U64 off, U64 *ptr_out);
 
 //- eh_frame parsing

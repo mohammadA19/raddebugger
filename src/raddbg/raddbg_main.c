@@ -491,7 +491,7 @@ CTRL_WAKEUP_FUNCTION_DEF(wakeup_hook_ctrl)
 //~ rjf: Per-Frame Entry Point
 
 B32
-frame(void)
+frame()
 {
   rd_frame();
   return rd_state->quit;

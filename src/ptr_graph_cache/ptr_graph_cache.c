@@ -5,7 +5,7 @@
 //~ rjf: Main Layer Initialization
 
 void
-ptg_init(void)
+ptg_init()
 {
   Arena *arena = arena_alloc();
   ptg_shared = push_array(arena, PTG_Shared, 1);
@@ -37,13 +37,13 @@ ptg_init(void)
 //~ rjf: User Clock
 
 void
-ptg_user_clock_tick(void)
+ptg_user_clock_tick()
 {
   ins_atomic_u64_inc_eval(&ptg_shared->user_clock_idx);
 }
 
 U64
-ptg_user_clock_idx(void)
+ptg_user_clock_idx()
 {
   return ins_atomic_u64_eval(&ptg_shared->user_clock_idx);
 }
@@ -52,7 +52,7 @@ ptg_user_clock_idx(void)
 //~ rjf: Scoped Access
 
 PTG_Scope *
-ptg_scope_open(void)
+ptg_scope_open()
 {
   if(ptg_tctx == 0)
   {

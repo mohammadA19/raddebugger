@@ -6,7 +6,7 @@ int main(int argc, char **argv)
   int lib_loaded = 0;
   HANDLE lib = {0};
   FILETIME lib_last_filetime = {0};
-  int (*get_number)(void) = 0;
+  int (*get_number)() = 0;
   for(;;)
   {
     //- rjf: hot-load dll
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
           {
             reloaded = 1;
             lib_last_filetime = modified;
-            get_number = (int(*)(void))GetProcAddress(lib, "get_number");
+            get_number = (int(*)())GetProcAddress(lib, "get_number");
             lib_loaded = 1;
           }
         }

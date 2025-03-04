@@ -109,34 +109,34 @@ UI_Signal ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...);
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
 
-UI_Box *ui_row_begin(void);
-UI_Signal ui_row_end(void);
-UI_Box *ui_column_begin(void);
-UI_Signal ui_column_end(void);
+UI_Box *ui_row_begin();
+UI_Signal ui_row_end();
+UI_Box *ui_column_begin();
+UI_Signal ui_column_end();
 UI_Box *ui_named_row_begin(String8 string);
-UI_Signal ui_named_row_end(void);
+UI_Signal ui_named_row_end();
 UI_Box *ui_named_column_begin(String8 string);
-UI_Signal ui_named_column_end(void);
+UI_Signal ui_named_column_end();
 
 ////////////////////////////////
 //~ rjf: Floating Panes
 
 UI_Box *ui_pane_begin(Rng2F32 rect, String8 string);
 UI_Box *ui_pane_beginf(Rng2F32 rect, char *fmt, ...);
-UI_Signal ui_pane_end(void);
+UI_Signal ui_pane_end();
 
 ////////////////////////////////
 //~ rjf: Tables
 
 void ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string);
 void ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...);
-void ui_table_end(void);
+void ui_table_end();
 UI_Box *  ui_named_table_vector_begin(String8 string);
 UI_Box *  ui_named_table_vector_beginf(char *fmt, ...);
-UI_Box *  ui_table_vector_begin(void);
-UI_Signal ui_table_vector_end(void);
-UI_Box *  ui_table_cell_begin(void);
-UI_Signal ui_table_cell_end(void);
+UI_Box *  ui_table_vector_begin();
+UI_Signal ui_table_vector_end();
+UI_Box *  ui_table_cell_begin();
+UI_Signal ui_table_cell_end();
 UI_Box *  ui_table_cell_sized_begin(UI_Size size);
 
 ////////////////////////////////
@@ -149,7 +149,7 @@ U64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row);
 
 UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, S64 view_num_indices);
 void ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt_out, Vec2S64 *cursor_out, Vec2S64 *mark_out, Rng1S64 *visible_row_range_out, UI_ScrollListSignal *signal_out);
-void ui_scroll_list_end(void);
+void ui_scroll_list_end();
 
 ////////////////////////////////
 //~ rjf: Macro Loop Wrappers

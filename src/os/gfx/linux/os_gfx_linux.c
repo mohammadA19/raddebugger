@@ -23,7 +23,7 @@ os_lnx_window_from_x11window(Window window)
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
 void
-os_gfx_init(void)
+os_gfx_init()
 {
   //- rjf: initialize basics
   Arena *arena = arena_alloc();
@@ -46,7 +46,7 @@ os_gfx_init(void)
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
 OS_GfxInfo *
-os_get_gfx_info(void)
+os_get_gfx_info()
 {
   return &os_lnx_gfx_state->gfx_info;
 }
@@ -258,7 +258,7 @@ os_push_monitors_array(Arena *arena)
 }
 
 OS_Handle
-os_primary_monitor(void)
+os_primary_monitor()
 {
   OS_Handle result = {0};
   return result;
@@ -287,7 +287,7 @@ os_dim_from_monitor(OS_Handle monitor)
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
 void
-os_send_wakeup_event(void)
+os_send_wakeup_event()
 {
   
 }
@@ -449,7 +449,7 @@ os_get_events(Arena *arena, B32 wait)
 }
 
 OS_Modifiers
-os_get_modifiers(void)
+os_get_modifiers()
 {
   return 0;
 }

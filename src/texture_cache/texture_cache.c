@@ -18,7 +18,7 @@ tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 //~ rjf: Main Layer Initialization
 
 void
-tex_init(void)
+tex_init()
 {
   Arena *arena = arena_alloc();
   tex_shared = push_array(arena, TEX_Shared, 1);
@@ -45,7 +45,7 @@ tex_init(void)
 //~ rjf: Thread Context Initialization
 
 void
-tex_tctx_ensure_inited(void)
+tex_tctx_ensure_inited()
 {
   if(tex_tctx == 0)
   {
@@ -59,7 +59,7 @@ tex_tctx_ensure_inited(void)
 //~ rjf: Scoped Access
 
 TEX_Scope *
-tex_scope_open(void)
+tex_scope_open()
 {
   tex_tctx_ensure_inited();
   TEX_Scope *scope = tex_tctx->free_scope;

@@ -426,18 +426,18 @@ U64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr,
 //~ rjf: Target Controls
 
 //- rjf: stopped info from the control thread
-CTRL_Event d_ctrl_last_stop_event(void);
+CTRL_Event d_ctrl_last_stop_event();
 
 ////////////////////////////////
 //~ rjf: Main State Accessors/Mutators
 
 //- rjf: frame data
-U64 d_frame_index(void);
+U64 d_frame_index();
 
 //- rjf: control state
-D_RunKind d_ctrl_last_run_kind(void);
-U64 d_ctrl_last_run_frame_idx(void);
-B32 d_ctrl_targets_running(void);
+D_RunKind d_ctrl_last_run_kind();
+U64 d_ctrl_last_run_frame_idx();
+B32 d_ctrl_targets_running();
 
 //- rjf: active entity based queries
 DI_KeyList d_push_active_dbgi_key_list(Arena *arena);
@@ -460,7 +460,7 @@ B32 d_next_cmd(D_Cmd **cmd);
 ////////////////////////////////
 //~ rjf: Main Layer Top-Level Calls
 
-void d_init(void);
+void d_init();
 D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray *meta_evals);
 
 #endif // DBG_ENGINE_CORE_H

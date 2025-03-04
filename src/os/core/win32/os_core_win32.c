@@ -156,13 +156,13 @@ os_w32_thread_entry_point(void *ptr)
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
 OS_SystemInfo *
-os_get_system_info(void)
+os_get_system_info()
 {
   return &os_w32_state.system_info;
 }
 
 OS_ProcessInfo *
-os_get_process_info(void)
+os_get_process_info()
 {
   return &os_w32_state.process_info;
 }
@@ -180,7 +180,7 @@ os_get_current_path(Arena *arena)
 }
 
 U32
-os_get_process_start_time_unix(void)
+os_get_process_start_time_unix()
 {
   HANDLE handle = GetCurrentProcess();
   FILETIME start_time = {0};
@@ -246,7 +246,7 @@ os_commit_large(void *ptr, U64 size)
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
 U32
-os_tid(void)
+os_tid()
 {
   DWORD id = GetCurrentThreadId();
   return (U32)id;
@@ -346,7 +346,7 @@ os_file_close(OS_Handle file)
   if(os_handle_match(file, os_handle_zero())) { return; }
   HANDLE handle = (HANDLE)file.u64[0];
   BOOL result = CloseHandle(handle);
-  (void)result;
+  ()result;
 }
 
 U64
@@ -588,7 +588,7 @@ os_file_map_close(OS_Handle map)
 {
   HANDLE handle = (HANDLE)map.u64[0];
   BOOL result = CloseHandle(handle);
-  (void)result;
+  ()result;
 }
 
 void *
@@ -632,7 +632,7 @@ void
 os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 {
   BOOL result = UnmapViewOfFile(ptr);
-  (void)result;
+  ()result;
 }
 
 //- rjf: directory iteration
@@ -845,7 +845,7 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
 U64
-os_now_microseconds(void)
+os_now_microseconds()
 {
   U64 result = 0;
   LARGE_INTEGER large_int_counter;
@@ -857,7 +857,7 @@ os_now_microseconds(void)
 }
 
 U32
-os_now_unix(void)
+os_now_unix()
 {
   FILETIME file_time;
   GetSystemTimeAsFileTime(&file_time);
@@ -866,7 +866,7 @@ os_now_unix(void)
 }
 
 DateTime
-os_now_universal_time(void)
+os_now_universal_time()
 {
   SYSTEMTIME systime = {0};
   GetSystemTime(&systime);
@@ -1076,7 +1076,7 @@ os_thread_detach(OS_Handle thread)
 //- rjf: mutexes
 
 OS_Handle
-os_mutex_alloc(void)
+os_mutex_alloc()
 {
   OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Mutex);
   InitializeCriticalSection(&entity->mutex);
@@ -1108,7 +1108,7 @@ os_mutex_drop(OS_Handle mutex)
 //- rjf: reader/writer mutexes
 
 OS_Handle
-os_rw_mutex_alloc(void)
+os_rw_mutex_alloc()
 {
   OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_RWMutex);
   InitializeSRWLock(&entity->rw_mutex);
@@ -1154,7 +1154,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 //- rjf: condition variables
 
 OS_Handle
-os_condition_variable_alloc(void)
+os_condition_variable_alloc()
 {
   OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_ConditionVariable);
   InitializeConditionVariable(&entity->cv);
@@ -1337,7 +1337,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
 //~ rjf: @os_hooks GUIDs (Implemented Per-OS)
 
 Guid
-os_make_guid(void)
+os_make_guid()
 {
   Guid result; MemoryZeroStruct(&result);
   UUID uuid;

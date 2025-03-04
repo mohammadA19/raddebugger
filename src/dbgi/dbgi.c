@@ -30,7 +30,7 @@ di_hash_from_key(DI_Key *k)
 }
 
 DI_Key
-di_key_zero(void)
+di_key_zero()
 {
   DI_Key key = {0};
   return key;
@@ -194,7 +194,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
 //~ rjf: Main Layer Initialization
 
 void
-di_init(void)
+di_init()
 {
   Arena *arena = arena_alloc();
   di_shared = push_array(arena, DI_Shared, 1);
@@ -244,7 +244,7 @@ di_init(void)
 //~ rjf: Scope Functions
 
 DI_Scope *
-di_scope_open(void)
+di_scope_open()
 {
   if(di_tctx == 0)
   {
@@ -1087,7 +1087,7 @@ ASYNC_WORK_DEF(di_parse_work)
   RDI_Parsed rdi_parsed_maybe_compressed = di_rdi_parsed_nil;
   {
     RDI_ParseStatus parse_status = rdi_parse((U8 *)file_base, file_props.size, &rdi_parsed_maybe_compressed);
-    (void)parse_status;
+    ()parse_status;
   }
   
   ////////////////////////////
@@ -1103,7 +1103,7 @@ ASYNC_WORK_DEF(di_parse_work)
       U8 *decompressed_data = push_array_no_zero(rdi_parsed_arena, U8, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, &rdi_parsed_maybe_compressed);
       RDI_ParseStatus parse_status = rdi_parse(decompressed_data, decompressed_size, &rdi_parsed);
-      (void)parse_status;
+      ()parse_status;
     }
   }
   
@@ -1549,7 +1549,7 @@ di_search_evictor_thread__entry_point(void *p)
 //~ rjf: Match Store
 
 DI_MatchStore *
-di_match_store_alloc(void)
+di_match_store_alloc()
 {
   Arena *arena = arena_alloc();
   DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);

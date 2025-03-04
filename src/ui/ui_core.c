@@ -50,7 +50,7 @@ ui_display_part_from_key_string(String8 string)
 }
 
 UI_Key
-ui_key_zero(void)
+ui_key_zero()
 {
   UI_Key result = {0};
   return result;
@@ -421,7 +421,7 @@ ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 //~ rjf: State Building / Selecting
 
 UI_State *
-ui_state_alloc(void)
+ui_state_alloc()
 {
   Arena *arena = arena_alloc();
   UI_State *ui = push_array(arena, UI_State, 1);
@@ -470,7 +470,7 @@ ui_select_state(UI_State *state)
 }
 
 UI_State *
-ui_get_selected_state(void)
+ui_get_selected_state()
 {
   return ui_state;
 }
@@ -481,26 +481,26 @@ ui_get_selected_state(void)
 //- rjf: per-frame info
 
 Arena *
-ui_build_arena(void)
+ui_build_arena()
 {
   Arena *result = ui_state->build_arenas[ui_state->build_index%ArrayCount(ui_state->build_arenas)];
   return result;
 }
 
 OS_Handle
-ui_window(void)
+ui_window()
 {
   return ui_state->window;
 }
 
 Vec2F32
-ui_mouse(void)
+ui_mouse()
 {
   return ui_state->mouse;
 }
 
 FNT_Tag
-ui_icon_font(void)
+ui_icon_font()
 {
   return ui_state->icon_info.icon_font;
 }
@@ -512,7 +512,7 @@ ui_icon_string_from_kind(UI_IconKind icon_kind)
 }
 
 F32
-ui_dt(void)
+ui_dt()
 {
   return ui_state->animation_dt;
 }
@@ -671,13 +671,13 @@ ui_slot_press(UI_EventActionSlot slot)
 //- rjf: drag data
 
 Vec2F32
-ui_drag_start_mouse(void)
+ui_drag_start_mouse()
 {
   return ui_state->drag_start_mouse;
 }
 
 Vec2F32
-ui_drag_delta(void)
+ui_drag_delta()
 {
   return sub_2f32(ui_mouse(), ui_state->drag_start_mouse);
 }
@@ -705,14 +705,14 @@ ui_get_drag_data(U64 min_required_size)
 //- rjf: hovered string info
 
 B32
-ui_string_hover_active(void)
+ui_string_hover_active()
 {
   return (ui_state->build_index > 0 && ui_state->string_hover_build_index >= ui_state->build_index-1 &&
           os_now_microseconds() >= ui_state->string_hover_begin_us + 500000);
 }
 
 U64
-ui_string_hover_begin_time_us(void)
+ui_string_hover_begin_time_us()
 {
   return ui_state->string_hover_begin_us;
 }
@@ -734,7 +734,7 @@ ui_string_hover_runs(Arena *arena)
 //- rjf: interaction keys
 
 UI_Key
-ui_hot_key(void)
+ui_hot_key()
 {
   return ui_state->hot_box_key;
 }
@@ -746,7 +746,7 @@ ui_active_key(UI_MouseButtonKind button_kind)
 }
 
 UI_Key
-ui_drop_hot_key(void)
+ui_drop_hot_key()
 {
   return ui_state->drop_hot_box_key;
 }
@@ -754,7 +754,7 @@ ui_drop_hot_key(void)
 //- rjf: controls over interaction
 
 void
-ui_kill_action(void)
+ui_kill_action()
 {
   for EachEnumVal(UI_MouseButtonKind, k)
   {
@@ -1172,7 +1172,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
 }
 
 void
-ui_end_build(void)
+ui_end_build()
 {
   ProfBeginFunction();
   
@@ -1904,7 +1904,7 @@ ui_spacer(UI_Size size)
 //- rjf: tooltips
 
 void
-ui_tooltip_begin_base(void)
+ui_tooltip_begin_base()
 {
   ui_state->tooltip_open = 1;
   ui_push_parent(ui_root_from_state(ui_state));
@@ -1915,7 +1915,7 @@ ui_tooltip_begin_base(void)
 }
 
 void
-ui_tooltip_end_base(void)
+ui_tooltip_end_base()
 {
   ui_pop_palette();
   ui_pop_text_raster_flags();
@@ -1925,7 +1925,7 @@ ui_tooltip_end_base(void)
 }
 
 void
-ui_tooltip_begin(void)
+ui_tooltip_begin()
 {
   ui_tooltip_begin_base();
   ui_push_palette(ui_state->widget_palette_info.tooltip_palette);
@@ -1950,7 +1950,7 @@ ui_tooltip_begin(void)
 }
 
 void
-ui_tooltip_end(void)
+ui_tooltip_end()
 {
   ui_pop_text_alignment();
   ui_pop_pref_width();
@@ -1984,7 +1984,7 @@ ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
 }
 
 void
-ui_ctx_menu_close(void)
+ui_ctx_menu_close()
 {
   ui_state->next_ctx_menu_open = 0;
 }
@@ -2020,7 +2020,7 @@ ui_begin_ctx_menu(UI_Key key)
 }
 
 void
-ui_end_ctx_menu(void)
+ui_end_ctx_menu()
 {
   if(ui_state->is_in_open_ctx_menu)
   {
@@ -2043,7 +2043,7 @@ ui_ctx_menu_is_open(UI_Key key)
 }
 
 B32
-ui_any_ctx_menu_is_open(void)
+ui_any_ctx_menu_is_open()
 {
   return ui_state->ctx_menu_open;
 }
@@ -2051,7 +2051,7 @@ ui_any_ctx_menu_is_open(void)
 //- rjf: focus tree coloring
 
 B32
-ui_is_focus_hot(void)
+ui_is_focus_hot()
 {
   B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
   if(result)
@@ -2073,7 +2073,7 @@ ui_is_focus_hot(void)
 }
 
 B32
-ui_is_focus_active(void)
+ui_is_focus_active()
 {
   B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
   if(result)
@@ -2357,7 +2357,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
 }
 
 UI_Key
-ui_active_seed_key(void)
+ui_active_seed_key()
 {
   UI_Box *keyed_ancestor = &ui_nil_box;
   {
@@ -3046,7 +3046,7 @@ ui_push_rect(Rng2F32 rect)
 }
 
 Rng2F32
-ui_pop_rect(void)
+ui_pop_rect()
 {
   Rng2F32 popped = {0};
   popped.x0 = ui_pop_fixed_x();
@@ -3108,7 +3108,7 @@ ui_push_corner_radius(F32 v)
 }
 
 void
-ui_pop_corner_radius(void)
+ui_pop_corner_radius()
 {
   ui_pop_corner_radius_00();
   ui_pop_corner_radius_01();

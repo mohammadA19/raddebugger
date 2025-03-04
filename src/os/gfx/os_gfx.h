@@ -97,7 +97,7 @@ struct OS_EventList
 ////////////////////////////////
 //~ rjf: Application-Defined Frame Hook Forward Declaration
 
-B32 frame(void);
+B32 frame();
 
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
@@ -116,12 +116,12 @@ OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind 
 ////////////////////////////////
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
-void os_gfx_init(void);
+void os_gfx_init();
 
 ////////////////////////////////
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
-OS_GfxInfo *os_get_gfx_info(void);
+OS_GfxInfo *os_get_gfx_info();
 
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
@@ -157,7 +157,7 @@ F32            os_dpi_from_window(OS_Handle window);
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 OS_HandleArray os_push_monitors_array(Arena *arena);
-OS_Handle      os_primary_monitor(void);
+OS_Handle      os_primary_monitor();
 OS_Handle      os_monitor_from_window(OS_Handle window);
 String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
 Vec2F32        os_dim_from_monitor(OS_Handle monitor);
@@ -165,9 +165,9 @@ Vec2F32        os_dim_from_monitor(OS_Handle monitor);
 ////////////////////////////////
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
-void           os_send_wakeup_event(void);
+void           os_send_wakeup_event();
 OS_EventList   os_get_events(Arena *arena, B32 wait);
-OS_Modifiers   os_get_modifiers(void);
+OS_Modifiers   os_get_modifiers();
 B32            os_key_is_down(OS_Key key);
 Vec2F32        os_mouse_from_window(OS_Handle window);
 

@@ -31,14 +31,14 @@ R_Tex2DSampleKind          dr_push_tex2d_sample_kind(R_Tex2DSampleKind v);
 Mat3x3F32                  dr_push_xform2d(Mat3x3F32 v);
 Rng2F32                    dr_push_clip(Rng2F32 v);
 F32                        dr_push_transparency(F32 v);
-R_Tex2DSampleKind          dr_pop_tex2d_sample_kind(void);
-Mat3x3F32                  dr_pop_xform2d(void);
-Rng2F32                    dr_pop_clip(void);
-F32                        dr_pop_transparency(void);
-R_Tex2DSampleKind          dr_top_tex2d_sample_kind(void);
-Mat3x3F32                  dr_top_xform2d(void);
-Rng2F32                    dr_top_clip(void);
-F32                        dr_top_transparency(void);
+R_Tex2DSampleKind          dr_pop_tex2d_sample_kind();
+Mat3x3F32                  dr_pop_xform2d();
+Rng2F32                    dr_pop_clip();
+F32                        dr_pop_transparency();
+R_Tex2DSampleKind          dr_top_tex2d_sample_kind();
+Mat3x3F32                  dr_top_xform2d();
+Rng2F32                    dr_top_clip();
+F32                        dr_top_transparency();
 #endif
 #if 0
 #define DR_Tex2DSampleKindScope(v)  DeferLoop(dr_push_tex2d_sample_kind(v), dr_pop_tex2d_sample_kind())

@@ -144,7 +144,7 @@ struct DMN_ProcessInfo
 //~ rjf: Basic Type Functions (Helpers, Implemented Once)
 
 //- rjf: handles
-DMN_Handle dmn_handle_zero(void);
+DMN_Handle dmn_handle_zero();
 B32 dmn_handle_match(DMN_Handle a, DMN_Handle b);
 
 //- rjf: trap chunk lists
@@ -169,14 +169,14 @@ U64 dmn_rsp_from_thread(DMN_Handle thread);
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Main Layer Initialization (Implemented Per-OS)
 
-void dmn_init(void);
+void dmn_init();
 
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Blocking Control Thread Operations (Implemented Per-OS)
 
-DMN_CtrlCtx *dmn_ctrl_begin(void);
-void dmn_ctrl_exclusive_access_begin(void);
-void dmn_ctrl_exclusive_access_end(void);
+DMN_CtrlCtx *dmn_ctrl_begin();
+void dmn_ctrl_exclusive_access_begin();
+void dmn_ctrl_exclusive_access_end();
 #define DMN_CtrlExclusiveAccessScope DeferLoop(dmn_ctrl_exclusive_access_begin(), dmn_ctrl_exclusive_access_end())
 U32 dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params);
 B32 dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid);
@@ -193,13 +193,13 @@ void dmn_halt(U64 code, U64 user_data);
 //~ rjf: @dmn_os_hooks Introspection Functions (Implemented Per-OS)
 
 //- rjf: run/memory/register counters
-U64 dmn_run_gen(void);
-U64 dmn_mem_gen(void);
-U64 dmn_reg_gen(void);
+U64 dmn_run_gen();
+U64 dmn_mem_gen();
+U64 dmn_reg_gen();
 
 //- rjf: non-blocking-control-thread access barriers
-B32 dmn_access_open(void);
-void dmn_access_close(void);
+B32 dmn_access_open();
+void dmn_access_close();
 #define DMN_AccessScope DeferLoopChecked(dmn_access_open(), dmn_access_close())
 
 //- rjf: processes

@@ -5,7 +5,7 @@
 //~ rjf: Main Layer Initialization
 
 void
-geo_init(void)
+geo_init()
 {
   Arena *arena = arena_alloc();
   geo_shared = push_array(arena, GEO_Shared, 1);
@@ -32,7 +32,7 @@ geo_init(void)
 //~ rjf: Thread Context Initialization
 
 void
-geo_tctx_ensure_inited(void)
+geo_tctx_ensure_inited()
 {
   if(geo_tctx == 0)
   {
@@ -46,7 +46,7 @@ geo_tctx_ensure_inited(void)
 //~ rjf: Scoped Access
 
 GEO_Scope *
-geo_scope_open(void)
+geo_scope_open()
 {
   geo_tctx_ensure_inited();
   GEO_Scope *scope = geo_tctx->free_scope;

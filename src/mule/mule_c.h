@@ -6,5 +6,5 @@
 * single threaded stepping, breakpoints, evaluation.
 */
 
-void c_type_coverage_eval_tests(void);
-void c_type_with_bitfield_usage(void);
+void c_type_coverage_eval_tests();
+void c_type_with_bitfield_usage();

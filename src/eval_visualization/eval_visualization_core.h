@@ -330,8 +330,8 @@ static read_only EV_Block ev_nil_block = {&ev_nil_block, &ev_nil_block, &ev_nil_
 //~ rjf: Key Functions
 
 EV_Key ev_key_make(U64 parent_hash, U64 child_id);
-EV_Key ev_key_zero(void);
-EV_Key ev_key_root(void);
+EV_Key ev_key_zero();
+EV_Key ev_key_root();
 B32 ev_key_match(EV_Key a, EV_Key b);
 U64 ev_hash_from_seed_string(U64 seed, String8 string);
 U64 ev_hash_from_key(EV_Key key);
@@ -347,7 +347,7 @@ B32 ev_type_key_is_editable(E_TypeKey type_key);
 //~ rjf: View Functions
 
 //- rjf: creation / deletion
-EV_View *ev_view_alloc(void);
+EV_View *ev_view_alloc();
 void ev_view_release(EV_View *view);
 
 //- rjf: lookups / mutations

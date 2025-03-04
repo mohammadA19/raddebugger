@@ -57,14 +57,14 @@ ev_key_make(U64 parent_hash, U64 child_id)
 }
 
 EV_Key
-ev_key_zero(void)
+ev_key_zero()
 {
   EV_Key key = {0};
   return key;
 }
 
 EV_Key
-ev_key_root(void)
+ev_key_root()
 {
   EV_Key key = ev_key_make(5381, 1);
   return key;
@@ -148,7 +148,7 @@ ev_type_key_is_editable(E_TypeKey type_key)
 //- rjf: creation / deletion
 
 EV_View *
-ev_view_alloc(void)
+ev_view_alloc()
 {
   Arena *arena = arena_alloc();
   EV_View *view = push_array(arena, EV_View, 1);

@@ -166,13 +166,13 @@ U64 cstring32_length(U32 *c);
 
 String8  str8(U8 *str, U64 size);
 String8  str8_range(U8 *first, U8 *one_past_last);
-String8  str8_zero(void);
+String8  str8_zero();
 String16 str16(U16 *str, U64 size);
 String16 str16_range(U16 *first, U16 *one_past_last);
-String16 str16_zero(void);
+String16 str16_zero();
 String32 str32(U32 *str, U64 size);
 String32 str32_range(U32 *first, U32 *one_past_last);
-String32 str32_zero(void);
+String32 str32_zero();
 String8  str8_cstring(char *c);
 String16 str16_cstring(U16 *c);
 String32 str32_cstring(U32 *c);

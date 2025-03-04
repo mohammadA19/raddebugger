@@ -1894,7 +1894,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     next_read_ptr = (U8 *)(lf+1);
                     
                     // NOTE(rjf): currently no-op this case
-                    (void)lf;
+                    ()lf;
                   }break;
                 }
                 
@@ -4353,7 +4353,7 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work)
 //~ rjf: Top-Level Initialization
 
 void
-p2r_init(void)
+p2r_init()
 {
   Arena *arena = arena_alloc();
   p2r_state = push_array(arena, P2R_State, 1);

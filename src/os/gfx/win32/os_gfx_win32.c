@@ -66,7 +66,7 @@ os_w32_hwnd_from_window(OS_W32_Window *window)
 }
 
 OS_W32_Window *
-os_w32_window_alloc(void)
+os_w32_window_alloc()
 {
   OS_W32_Window *result = os_w32_gfx_state->free_window;
   if(result)
@@ -793,7 +793,7 @@ os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM b
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
 void
-os_gfx_init(void)
+os_gfx_init()
 {
   //- rjf: set up base shared state
   Arena *arena = arena_alloc();
@@ -829,7 +829,7 @@ os_gfx_init(void)
     wndclass.hIcon = LoadIcon(os_w32_gfx_state->hInstance, MAKEINTRESOURCE(1));
     wndclass.style = CS_VREDRAW|CS_HREDRAW;
     ATOM wndatom = RegisterClassExW(&wndclass);
-    (void)wndatom;
+    ()wndatom;
   }
   
   //- rjf: grab graphics system info
@@ -957,7 +957,7 @@ os_gfx_init(void)
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
 OS_GfxInfo *
-os_get_gfx_info(void)
+os_get_gfx_info()
 {
   return &os_w32_gfx_state->gfx_info;
 }
@@ -1338,7 +1338,7 @@ os_push_monitors_array(Arena *arena)
 }
 
 OS_Handle
-os_primary_monitor(void)
+os_primary_monitor()
 {
   POINT zero_pt = {0, 0};
   HMONITOR monitor = MonitorFromPoint(zero_pt, MONITOR_DEFAULTTOPRIMARY);
@@ -1389,7 +1389,7 @@ os_dim_from_monitor(OS_Handle monitor)
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
 void
-os_send_wakeup_event(void)
+os_send_wakeup_event()
 {
   PostThreadMessageA(os_w32_gfx_state->gfx_thread_tid, 0x401, 0, 0);
 }
@@ -1417,7 +1417,7 @@ os_get_events(Arena *arena, B32 wait)
 }
 
 OS_Modifiers
-os_get_modifiers(void)
+os_get_modifiers()
 {
   OS_Modifiers modifiers = 0;
   if(GetKeyState(VK_CONTROL) & 0x8000)
@@ -1541,7 +1541,7 @@ os_show_in_filesystem_ui(String8 path)
   {
     HRESULT hr = SHOpenFolderAndSelectItems(list, 0, 0, 0);
     CoTaskMemFree(list);
-    (void)hr;
+    ()hr;
   }
   scratch_end(scratch);
 }

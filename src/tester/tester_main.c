@@ -26,7 +26,7 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-B32 frame(void) { return 0; }
+B32 frame() { return 0; }
 
 void
 entry_point(CmdLine *cmdline)

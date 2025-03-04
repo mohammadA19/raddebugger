@@ -237,17 +237,17 @@ TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-void txt_init(void);
+void txt_init();
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-void txt_tctx_ensure_inited(void);
+void txt_tctx_ensure_inited();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-TXT_Scope *txt_scope_open(void);
+TXT_Scope *txt_scope_open();
 void txt_scope_close(TXT_Scope *scope);
 void txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node);
 

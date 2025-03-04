@@ -2000,7 +2000,7 @@ pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 file_path, String8 
 ////////////////////////////////
 
 PDB_GsiContext *
-gsi_alloc(void)
+gsi_alloc()
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -2437,7 +2437,7 @@ gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumbe
 
 U32
 gsi_hash(PDB_GsiContext *gsi, String8 input)
-{ (void)gsi;
+{ ()gsi;
   U32 hash = pdb_hash_v1(input);
   return hash;
 }
@@ -2543,7 +2543,7 @@ gsi_search(PDB_GsiContext *gsi, CV_Symbol *symbol)
 ////////////////////////////////
 
 PDB_PsiContext *
-psi_alloc(void)
+psi_alloc()
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();

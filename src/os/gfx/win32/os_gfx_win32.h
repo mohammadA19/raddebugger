@@ -95,7 +95,7 @@ OS_Handle       os_w32_handle_from_window(OS_W32_Window *window);
 OS_W32_Window * os_w32_window_from_handle(OS_Handle window);
 OS_W32_Window * os_w32_window_from_hwnd(HWND hwnd);
 HWND            os_w32_hwnd_from_window(OS_W32_Window *window);
-OS_W32_Window * os_w32_window_alloc(void);
+OS_W32_Window * os_w32_window_alloc();
 void            os_w32_window_release(OS_W32_Window *window);
 OS_Event *      os_w32_push_event(OS_EventKind kind, OS_W32_Window *window);
 OS_Key          os_w32_os_key_from_vkey(WPARAM vkey);

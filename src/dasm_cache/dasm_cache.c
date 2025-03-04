@@ -255,7 +255,7 @@ dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx)
 //~ rjf: Main Layer Initialization
 
 void
-dasm_init(void)
+dasm_init()
 {
   Arena *arena = arena_alloc();
   dasm_shared = push_array(arena, DASM_Shared, 1);
@@ -281,7 +281,7 @@ dasm_init(void)
 //~ rjf: Scoped Access
 
 DASM_Scope *
-dasm_scope_open(void)
+dasm_scope_open()
 {
   if(dasm_tctx == 0)
   {

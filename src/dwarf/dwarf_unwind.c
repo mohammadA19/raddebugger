@@ -277,7 +277,7 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
 // Helper Functions
 
 void
-dw_unwind_init_x64(void)
+dw_unwind_init_x64()
 {
   static B32 did_init = 0;
   

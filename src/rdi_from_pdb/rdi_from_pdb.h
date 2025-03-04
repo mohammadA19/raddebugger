@@ -614,7 +614,7 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work);
 ////////////////////////////////
 //~ rjf: Top-Level Initialization
 
-void p2r_init(void);
+void p2r_init();
 
 ////////////////////////////////
 //~ rjf: Top-Level Baking Entry Point

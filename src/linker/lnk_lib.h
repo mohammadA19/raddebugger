@@ -118,7 +118,7 @@ LNK_LibNode *    lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data
 
 ////////////////////////////////
 
-LNK_LibWriter * lnk_lib_writer_alloc(void);
+LNK_LibWriter * lnk_lib_writer_alloc();
 void            lnk_lib_writer_release(LNK_LibWriter **writer_ptr);
 void            lnk_lib_writer_push_obj(LNK_LibWriter *writer, LNK_Obj *obj);
 void            lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, U64 time_stamp, String8 dll_name, LNK_Export *exp);

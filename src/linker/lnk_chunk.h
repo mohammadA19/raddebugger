@@ -202,6 +202,6 @@ String8Array *  lnk_data_arr_from_chunk_ptr_list_arr(Arena *arena, LNK_ChunkList
 #if LNK_DEBUG_CHUNKS
 #define lnk_chunk_set_debugf(a, c, f, ...) do { (c)->debug = push_str8f((a), f, __VA_ARGS__); } while(0)
 #else
-#define lnk_chunk_set_debugf(a, c, f, ...) (void)(c)
+#define lnk_chunk_set_debugf(a, c, f, ...) ()(c)
 #endif
 

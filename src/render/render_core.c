@@ -10,7 +10,7 @@
 //~ rjf: Basic Type Functions
 
 R_Handle
-r_handle_zero(void)
+r_handle_zero()
 {
   R_Handle handle = {0};
   return handle;

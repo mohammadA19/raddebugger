@@ -375,7 +375,7 @@ PDB_SrcError      pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 f
 ////////////////////////////////
 // GSI
 
-PDB_GsiContext *   gsi_alloc(void);
+PDB_GsiContext *   gsi_alloc();
 PDB_GsiContext *   gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data);
 void               gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumber gsi_sn, MSF_StreamNumber symbols_sn);
 void               gsi_release(PDB_GsiContext **gsi_ptr);
@@ -390,7 +390,7 @@ CV_SymbolNode *    gsi_search(PDB_GsiContext *gsi, CV_Symbol *symbol);
 ////////////////////////////////
 // PSI
 
-PDB_PsiContext * psi_alloc(void);
+PDB_PsiContext * psi_alloc();
 PDB_PsiContext * psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data);
 void             psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn);
 void             psi_release(PDB_PsiContext **psi_ptr);

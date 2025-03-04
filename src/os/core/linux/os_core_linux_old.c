@@ -813,7 +813,7 @@ lnx_safe_call_sig_handler(int){
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
 void
-os_init(void)
+os_init()
 {
   // NOTE(allen): Initialize linux layer mutex
   {
@@ -892,14 +892,14 @@ os_set_large_pages_enabled(B32 flag)
 }
 
 B32
-os_large_pages_enabled(void)
+os_large_pages_enabled()
 {
   NotImplemented;
   return 0;
 }
 
 U64
-os_large_page_size(void)
+os_large_page_size()
 {
   NotImplemented;
   return 0;
@@ -909,7 +909,7 @@ os_large_page_size(void)
 //~ rjf: @os_hooks System Info (Implemented Per-OS)
 
 String8
-os_machine_name(void){
+os_machine_name(){
   static B32 first = true;
   static String8 name = {0};
   
@@ -951,20 +951,20 @@ os_machine_name(void){
 }
 
 U64
-os_page_size(void){
+os_page_size(){
   int size = getpagesize();
   return((U64)size);
 }
 
 U64
-os_allocation_granularity(void)
+os_allocation_granularity()
 {
   // On linux there is no equivalent of "dwAllocationGranularity"
   os_page_size();
 }
 
 U64
-os_logical_core_count(void)
+os_logical_core_count()
 {
   // TODO(rjf): check this
   return get_nprocs();
@@ -974,19 +974,19 @@ os_logical_core_count(void)
 //~ rjf: @os_hooks Process & Thread Info (Implemented Per-OS)
 
 String8List
-os_get_command_line_arguments(void)
+os_get_command_line_arguments()
 {
   return lnx_cmd_line_args;
 }
 
 S32
-os_pid(void){
+os_pid(){
   S32 result = getpid();
   return(result);
 }
 
 S32
-os_tid(void){
+os_tid(){
   S32 result = 0;
 #ifdef SYS_gettid
   result = syscall(SYS_gettid);
@@ -997,7 +997,7 @@ os_tid(void){
 }
 
 String8List
-os_environment(void)
+os_environment()
 {
   NotImplemented;
   String8List result = {0};
@@ -1301,14 +1301,14 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
 U32
-os_now_unix(void)
+os_now_unix()
 {
   time_t t = time(0);
   return (U32)t;
 }
 
 DateTime
-os_now_universal_time(void){
+os_now_universal_time(){
   time_t t = 0;
   time(&t);
   struct tm universal_tm = {0};
@@ -1351,7 +1351,7 @@ os_local_time_from_universal(DateTime *universal_time){
 }
 
 U64
-os_now_microseconds(void){
+os_now_microseconds(){
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
   U64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
@@ -1419,7 +1419,7 @@ os_release_thread_handle(OS_Handle thread){
 //- rjf: recursive mutexes
 
 OS_Handle
-os_mutex_alloc(void){
+os_mutex_alloc(){
   // entity
   LNX_Entity *entity = lnx_alloc_entity(LNX_EntityKind_Mutex);
   
@@ -1461,7 +1461,7 @@ os_mutex_drop_(OS_Handle mutex){
 //- rjf: reader/writer mutexes
 
 OS_Handle
-os_rw_mutex_alloc(void)
+os_rw_mutex_alloc()
 {
   OS_Handle result = {0};
   NotImplemented;
@@ -1501,7 +1501,7 @@ os_rw_mutex_drop_w_(OS_Handle mutex)
 //- rjf: condition variables
 
 OS_Handle
-os_condition_variable_alloc(void){
+os_condition_variable_alloc(){
   // entity
   LNX_Entity *entity = lnx_alloc_entity(LNX_EntityKind_ConditionVariable);
   
@@ -1670,7 +1670,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
 ////////////////////////////////
 
 OS_Guid
-os_make_guid(void)
+os_make_guid()
 {
   NotImplemented;
 }

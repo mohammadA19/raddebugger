@@ -836,10 +836,10 @@ ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
 
-UI_Box *ui_row_begin(void)    { return ui_named_row_begin(str8_lit("")); }
-UI_Signal ui_row_end(void)    { return ui_named_row_end(); }
-UI_Box *ui_column_begin(void) { return ui_named_column_begin(str8_lit("")); }
-UI_Signal ui_column_end(void) { return ui_named_column_end(); }
+UI_Box *ui_row_begin()    { return ui_named_row_begin(str8_lit("")); }
+UI_Signal ui_row_end()    { return ui_named_row_end(); }
+UI_Box *ui_column_begin() { return ui_named_column_begin(str8_lit("")); }
+UI_Signal ui_column_end() { return ui_named_column_end(); }
 
 UI_Box *
 ui_named_row_begin(String8 string)
@@ -851,7 +851,7 @@ ui_named_row_begin(String8 string)
 }
 
 UI_Signal
-ui_named_row_end(void)
+ui_named_row_end()
 {
   UI_Box *box = ui_pop_parent();
   UI_Signal sig = ui_signal_from_box(box);
@@ -868,7 +868,7 @@ ui_named_column_begin(String8 string)
 }
 
 UI_Signal
-ui_named_column_end(void)
+ui_named_column_end()
 {
   UI_Box *box = ui_pop_parent();
   UI_Signal sig = ui_signal_from_box(box);
@@ -904,7 +904,7 @@ ui_pane_beginf(Rng2F32 rect, char *fmt, ...)
 }
 
 UI_Signal
-ui_pane_end(void)
+ui_pane_end()
 {
   ui_pop_pref_width();
   UI_Box *box = ui_pop_parent();
@@ -1047,7 +1047,7 @@ ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...)
 }
 
 void
-ui_table_end(void)
+ui_table_end()
 {
   ui_pop_parent();
 }
@@ -1078,7 +1078,7 @@ ui_named_table_vector_beginf(char *fmt, ...)
 }
 
 UI_Box *
-ui_table_vector_begin(void)
+ui_table_vector_begin()
 {
   UI_Box *table = ui_top_parent();
   UI_Box *vector = ui_named_table_vector_beginf("###tbl_vec_%p_%I64u", table, ui_ts_vector_idx);
@@ -1086,14 +1086,14 @@ ui_table_vector_begin(void)
 }
 
 UI_Signal
-ui_table_vector_end(void)
+ui_table_vector_end()
 {
   UI_Box *box = ui_pop_parent();
   return ui_signal_from_box(box);
 }
 
 UI_Box *
-ui_table_cell_begin(void)
+ui_table_cell_begin()
 {
   U64 column_idx = ui_ts_cell_idx;
   F32 width_pct = column_idx < ui_ts_col_pct_count ? ui_ts_col_pcts_stable[column_idx] : 1.f;
@@ -1101,7 +1101,7 @@ ui_table_cell_begin(void)
 }
 
 UI_Signal
-ui_table_cell_end(void)
+ui_table_cell_end()
 {
   UI_Box *cell = ui_pop_parent();
   return ui_signal_from_box(cell);
@@ -1491,7 +1491,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
 }
 
 void
-ui_scroll_list_end(void)
+ui_scroll_list_end()
 {
   ui_pop_pref_height();
   UI_Box *scrollable_container_box = ui_pop_parent();

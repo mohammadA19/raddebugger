@@ -34,8 +34,8 @@ extern "C"
   __declspec(dllimport) HMODULE LoadLibraryA(LPCSTR name);
   __declspec(dllimport) FARPROC GetProcAddress(HMODULE module, LPCSTR name);
   __declspec(dllimport) BOOL FreeLibrary(HMODULE mod);
-  __declspec(dllimport) HANDLE GetCurrentThread(void);
-  __declspec(dllimport) DWORD GetCurrentThreadId(void);
+  __declspec(dllimport) HANDLE GetCurrentThread();
+  __declspec(dllimport) DWORD GetCurrentThreadId();
   __declspec(dllimport) void RaiseException(DWORD dwExceptionCode, DWORD dwExceptionFlags, DWORD nNumberOfArguments, const ULONG_PTR *lpArguments);
   long long _InterlockedCompareExchange64(long long volatile*, long long, long long);
   long long _InterlockedExchangeAdd64(long long volatile*, long long);
@@ -135,7 +135,7 @@ raddbg_encode_utf16(wchar_t *str, unsigned __int32 codepoint)
 //- implementations
 
 static inline int
-raddbg_is_attached__impl(void)
+raddbg_is_attached__impl()
 {
   // TODO(rjf)
   return 0;
