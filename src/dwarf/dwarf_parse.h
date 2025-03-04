@@ -19,7 +19,6 @@
 ////////////////////////////////
 //~ rjf: Files + External Debug References
 
-typedef struct DW_ExtDebugRef DW_ExtDebugRef;
 struct DW_ExtDebugRef
 {
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
@@ -30,14 +29,12 @@ struct DW_ExtDebugRef
 ////////////////////////////////
 //~ rjf: Abbrev Table
 
-typedef struct DW_AbbrevTableEntry DW_AbbrevTableEntry;
 struct DW_AbbrevTableEntry
 {
   U64 id;
   U64 off;
 };
 
-typedef struct DW_AbbrevTable DW_AbbrevTable;
 struct DW_AbbrevTable
 {
   U64                  count;
@@ -47,7 +44,6 @@ struct DW_AbbrevTable
 ////////////////////////////////
 //~ Sections
 
-typedef struct DW_Section DW_Section;
 struct DW_Section
 {
   String8 name;
@@ -56,7 +52,6 @@ struct DW_Section
   B32     is_dwo;
 };
 
-typedef struct DW_SectionArray DW_SectionArray;
 struct DW_SectionArray
 {
   DW_Section v[DW_Section_Count];
@@ -65,7 +60,6 @@ struct DW_SectionArray
 ////////////////////////////////
 //~ rjf: Basic Line Info
 
-typedef struct DW_LineFile DW_LineFile;
 struct DW_LineFile
 {
   String8 file_name;
@@ -75,14 +69,12 @@ struct DW_LineFile
   U64     file_size;
 };
 
-typedef struct DW_LineVMFileNode DW_LineVMFileNode;
 struct DW_LineVMFileNode
 {
   DW_LineVMFileNode *next;
   DW_LineFile        file;
 };
 
-typedef struct DW_LineVMFileList DW_LineVMFileList;
 struct DW_LineVMFileList
 {
   U64                node_count;
@@ -90,7 +82,6 @@ struct DW_LineVMFileList
   DW_LineVMFileNode *last;
 };
 
-typedef struct DW_LineVMFileArray DW_LineVMFileArray;
 struct DW_LineVMFileArray
 {
   U64          count;
@@ -116,7 +107,6 @@ enum DW_AbbrevFlags : U32{
   DW_AbbrevFlag_HasChildren      = (1<<1),
 };
 
-typedef struct DW_Abbrev DW_Abbrev;
 struct DW_Abbrev
 {
   DW_AbbrevKind  kind;
@@ -130,7 +120,6 @@ struct DW_Abbrev
 ////////////////////////////////
 //~ rjf: Attribs
 
-typedef struct DW_AttribValueResolveParams DW_AttribValueResolveParams;
 struct DW_AttribValueResolveParams
 {
   DW_Version  version;
@@ -143,14 +132,12 @@ struct DW_AttribValueResolveParams
   U64         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
 };
 
-typedef struct DW_AttribValue DW_AttribValue;
 struct DW_AttribValue
 {
   DW_SectionKind section;
   U64            v[2];
 };
 
-typedef struct DW_Attrib DW_Attrib;
 struct DW_Attrib
 {
   U64            info_off;
@@ -161,21 +148,18 @@ struct DW_Attrib
   DW_AttribValue form_value;
 };
 
-typedef struct DW_AttribArray DW_AttribArray;
 struct DW_AttribArray
 {
   DW_Attrib *v;
   U64        count;
 };
 
-typedef struct DW_AttribNode DW_AttribNode;
 struct DW_AttribNode
 {
   DW_AttribNode *next;
   DW_Attrib      attrib;
 };
 
-typedef struct DW_AttribList DW_AttribList;
 struct DW_AttribList
 {
   DW_AttribNode *first;
@@ -183,7 +167,6 @@ struct DW_AttribList
   U64            count;
 };
 
-typedef struct DW_AttribListParseResult DW_AttribListParseResult;
 struct DW_AttribListParseResult
 {
   DW_AttribList attribs;
@@ -194,7 +177,6 @@ struct DW_AttribListParseResult
 ////////////////////////////////
 //~ rjf: Compilation Units + Accelerators
 
-typedef struct DW_CompRoot DW_CompRoot;
 struct DW_CompRoot
 {
   // NOTE(rjf): Header Data
@@ -232,7 +214,6 @@ struct DW_CompRoot
 ////////////////////////////////
 //~ rjf: Tags
 
-typedef struct DW_Tag DW_Tag;
 struct DW_Tag
 {
   DW_Tag        *next_sibling;
@@ -257,7 +238,6 @@ enum DW_TagStubFlags : U32
   DW_TagStubFlag_HasSpecification     = (1<<3),
 };
 
-typedef struct DW_TagStub DW_TagStub;
 struct DW_TagStub
 {
   U64             info_off;
@@ -287,14 +267,12 @@ struct DW_TagStub
   U64 _unused_;
 };
 
-typedef struct DW_TagStubNode DW_TagStubNode;
 struct DW_TagStubNode
 {
   DW_TagStubNode *next;
   DW_TagStub      stub;
 };
 
-typedef struct DW_TagStubList DW_TagStubList;
 struct DW_TagStubList
 {
   DW_TagStubNode *first;
@@ -305,7 +283,6 @@ struct DW_TagStubList
 ////////////////////////////////
 //~ rjf: Line Info VM Types
 
-typedef struct DW_LineVMHeader DW_LineVMHeader;
 struct DW_LineVMHeader
 {
   U64                 unit_length;
@@ -327,7 +304,6 @@ struct DW_LineVMHeader
   DW_LineVMFileArray  file_table;
 };
 
-typedef struct DW_LineVMState DW_LineVMState;
 struct DW_LineVMState
 {
   U64 address;  // Address of a machine instruction.
@@ -360,7 +336,6 @@ struct DW_LineVMState
   B32 busted_seq;
 };
 
-typedef struct DW_Line DW_Line;
 struct DW_Line
 {
   U64 file_index;
@@ -369,14 +344,12 @@ struct DW_Line
   U64 voff;
 };
 
-typedef struct DW_LineNode DW_LineNode;
 struct DW_LineNode
 {
   DW_LineNode *next;
   DW_Line      v;
 };
 
-typedef struct DW_LineSeqNode DW_LineSeqNode;
 struct DW_LineSeqNode
 {
   DW_LineSeqNode *next;
@@ -385,7 +358,6 @@ struct DW_LineSeqNode
   DW_LineNode    *last;
 };
 
-typedef struct DW_LineTableParseResult DW_LineTableParseResult;
 struct DW_LineTableParseResult
 {
   U64             seq_count;
@@ -396,7 +368,6 @@ struct DW_LineTableParseResult
 ////////////////////////////////
 //~ rjf: .debug_pubnames and .debug_pubtypes
 
-typedef struct DW_PubStringsBucket DW_PubStringsBucket;
 struct DW_PubStringsBucket
 {
   DW_PubStringsBucket *next;
@@ -405,7 +376,6 @@ struct DW_PubStringsBucket
   U64                  cu_info_off;
 };
 
-typedef struct DW_PubStringsTable DW_PubStringsTable;
 struct DW_PubStringsTable
 {
   U64 size;

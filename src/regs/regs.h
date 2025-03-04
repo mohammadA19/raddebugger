@@ -44,7 +44,6 @@ union REGS_Reg64
 };
 
 #pragma pack(push, 1)
-typedef struct REGS_Reg80 REGS_Reg80;
 struct REGS_Reg80
 {
   U64 int1_frac63;
@@ -85,14 +84,12 @@ union REGS_Reg512
 ////////////////////////////////
 //~ rjf: Register Slicing Types
 
-typedef struct REGS_Rng REGS_Rng;
 struct REGS_Rng
 {
   U16 byte_off;
   U16 byte_size;
 };
 
-typedef struct REGS_Slice REGS_Slice;
 struct REGS_Slice
 {
   U16 code;

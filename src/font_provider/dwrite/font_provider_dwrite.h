@@ -248,7 +248,6 @@ struct FP_DWrite_FontFileStreamNode
 
 //- rjf: state & underlying handle types
 
-typedef struct FP_DWrite_State FP_DWrite_State;
 struct FP_DWrite_State
 {
   Arena *arena;
@@ -267,7 +266,6 @@ struct FP_DWrite_State
   FP_DWrite_FontFileStreamNode *free_stream_node;
 };
 
-typedef struct FP_DWrite_Font FP_DWrite_Font;
 struct FP_DWrite_Font
 {
   IDWriteFontFile *file;
