@@ -97,14 +97,14 @@ RDI_SectionKind_NameMaps             = 0x0021,
 RDI_SectionKind_NameMapBuckets       = 0x0022,
 RDI_SectionKind_NameMapNodes         = 0x0023,
 RDI_SectionKind_COUNT                = 0x0024,
-} RDI_SectionKindEnum;
+};
 
 typedef RDI_U32 RDI_SectionEncoding;
 enum RDI_SectionEncodingEnum
 {
 RDI_SectionEncoding_Unpacked   = 0,
 RDI_SectionEncoding_LZB        = 1,
-} RDI_SectionEncodingEnum;
+};
 
 typedef RDI_U32 RDI_Arch;
 enum RDI_ArchEnum
@@ -112,13 +112,13 @@ enum RDI_ArchEnum
 RDI_Arch_NULL       = 0,
 RDI_Arch_X86        = 1,
 RDI_Arch_X64        = 2,
-} RDI_ArchEnum;
+};
 
 typedef RDI_U8 RDI_RegCode;
 enum RDI_RegCodeEnum
 {
 RDI_RegCode_nil,
-} RDI_RegCodeEnum;
+};
 
 typedef RDI_U8 RDI_RegCodeX86;
 enum RDI_RegCodeX86Enum
@@ -184,7 +184,7 @@ RDI_RegCodeX86_ymm4       = 57,
 RDI_RegCodeX86_ymm5       = 58,
 RDI_RegCodeX86_ymm6       = 59,
 RDI_RegCodeX86_ymm7       = 60,
-} RDI_RegCodeX86Enum;
+};
 
 typedef RDI_U8 RDI_RegCodeX64;
 enum RDI_RegCodeX64Enum
@@ -290,7 +290,7 @@ RDI_RegCodeX64_fds        = 97,
 RDI_RegCodeX64_fip        = 98,
 RDI_RegCodeX64_fdp        = 99,
 RDI_RegCodeX64_mxcsr_mask = 100,
-} RDI_RegCodeX64Enum;
+};
 
 typedef RDI_U32 RDI_BinarySectionFlags;
 enum RDI_BinarySectionFlagsEnum
@@ -298,7 +298,7 @@ enum RDI_BinarySectionFlagsEnum
 RDI_BinarySectionFlag_Read       = 1<<0,
 RDI_BinarySectionFlag_Write      = 1<<1,
 RDI_BinarySectionFlag_Execute    = 1<<2,
-} RDI_BinarySectionFlagsEnum;
+};
 
 typedef RDI_U32 RDI_Language;
 enum RDI_LanguageEnum
@@ -308,7 +308,7 @@ RDI_Language_C          = 1,
 RDI_Language_CPlusPlus  = 2,
 RDI_Language_Masm       = 3,
 RDI_Language_COUNT      = 4,
-} RDI_LanguageEnum;
+};
 
 typedef RDI_U16 RDI_TypeKind;
 enum RDI_TypeKindEnum
@@ -379,20 +379,20 @@ RDI_TypeKind_FirstIncomplete      = RDI_TypeKind_IncompleteStruct,
 RDI_TypeKind_LastIncomplete       = RDI_TypeKind_IncompleteEnum,
 RDI_TypeKind_FirstRecord          = RDI_TypeKind_Struct,
 RDI_TypeKind_LastUserDefined      = RDI_TypeKind_IncompleteEnum,
-} RDI_TypeKindEnum;
+};
 
 typedef RDI_U16 RDI_TypeModifierFlags;
 enum RDI_TypeModifierFlagsEnum
 {
 RDI_TypeModifierFlag_Const                = 1<<0,
 RDI_TypeModifierFlag_Volatile             = 1<<1,
-} RDI_TypeModifierFlagsEnum;
+};
 
 typedef RDI_U32 RDI_UDTFlags;
 enum RDI_UDTFlagsEnum
 {
 RDI_UDTFlag_EnumMembers          = 1<<0,
-} RDI_UDTFlagsEnum;
+};
 
 typedef RDI_U16 RDI_MemberKind;
 enum RDI_MemberKindEnum
@@ -407,7 +407,7 @@ RDI_MemberKind_VTablePtr                 = 0x0200,
 RDI_MemberKind_Base                      = 0x0201,
 RDI_MemberKind_VirtualBase               = 0x0202,
 RDI_MemberKind_NestedType                = 0x0300,
-} RDI_MemberKindEnum;
+};
 
 typedef RDI_U32 RDI_LinkFlags;
 enum RDI_LinkFlagsEnum
@@ -415,7 +415,7 @@ enum RDI_LinkFlagsEnum
 RDI_LinkFlag_External             = 1<<0,
 RDI_LinkFlag_TypeScoped           = 1<<1,
 RDI_LinkFlag_ProcScoped           = 1<<2,
-} RDI_LinkFlagsEnum;
+};
 
 typedef RDI_U32 RDI_LocalKind;
 enum RDI_LocalKindEnum
@@ -423,7 +423,7 @@ enum RDI_LocalKindEnum
 RDI_LocalKind_NULL                 = 0x0,
 RDI_LocalKind_Parameter            = 0x1,
 RDI_LocalKind_Variable             = 0x2,
-} RDI_LocalKindEnum;
+};
 
 typedef RDI_U8 RDI_LocationKind;
 enum RDI_LocationKindEnum
@@ -434,7 +434,7 @@ RDI_LocationKind_ValBytecodeStream    = 0x2,
 RDI_LocationKind_AddrRegPlusU16       = 0x3,
 RDI_LocationKind_AddrAddrRegPlusU16   = 0x4,
 RDI_LocationKind_ValReg               = 0x5,
-} RDI_LocationKindEnum;
+};
 
 typedef RDI_U8 RDI_EvalOp;
 enum RDI_EvalOpEnum
@@ -488,7 +488,7 @@ RDI_EvalOp_Insert               = 45,
 RDI_EvalOp_ValueRead            = 46,
 RDI_EvalOp_ByteSwap             = 47,
 RDI_EvalOp_COUNT                = 48,
-} RDI_EvalOpEnum;
+};
 
 typedef RDI_U8 RDI_EvalTypeGroup;
 enum RDI_EvalTypeGroupEnum
@@ -499,7 +499,7 @@ RDI_EvalTypeGroup_S                    = 2,
 RDI_EvalTypeGroup_F32                  = 3,
 RDI_EvalTypeGroup_F64                  = 4,
 RDI_EvalTypeGroup_COUNT                = 5,
-} RDI_EvalTypeGroupEnum;
+};
 
 typedef RDI_U8 RDI_EvalConversionKind;
 enum RDI_EvalConversionKindEnum
@@ -510,7 +510,7 @@ RDI_EvalConversionKind_OtherToOther         = 2,
 RDI_EvalConversionKind_ToOther              = 3,
 RDI_EvalConversionKind_FromOther            = 4,
 RDI_EvalConversionKind_COUNT                = 5,
-} RDI_EvalConversionKindEnum;
+};
 
 typedef RDI_U32 RDI_NameMapKind;
 enum RDI_NameMapKindEnum
@@ -523,7 +523,7 @@ RDI_NameMapKind_Types                = 4,
 RDI_NameMapKind_LinkNameProcedures   = 5,
 RDI_NameMapKind_NormalSourcePaths    = 6,
 RDI_NameMapKind_COUNT                = 7,
-} RDI_NameMapKindEnum;
+};
 
 #define RDI_Header_XList \
 X(RDI_U64, magic)\

@@ -21,7 +21,7 @@ typedef struct PDB_HashTableBucket
 {
   String8 key;
   String8 value;
-} PDB_HashTableBucket;
+};
 
 typedef struct PDB_HashTable
 {
@@ -31,14 +31,14 @@ typedef struct PDB_HashTable
   U32Array             deleted_bits;
   U32   			         max;
   U32                  count;
-} PDB_HashTable;
+};
 
 typedef enum
 {
   PDB_HashTableParseError_OK,
   PDB_HashTableParseError_OUT_OF_BYTES,
   PDB_HashTableParseError_CORRUPTED
-} PDB_HashTableParseError;
+};
 
 ////////////////////////////////
 // String Table
@@ -48,7 +48,7 @@ typedef struct PDB_StringTableBucket
   String8          data;
   PDB_StringOffset offset;
   PDB_StringIndex  istr;
-} PDB_StringTableBucket;
+};
 
 typedef struct PDB_StringTable
 {
@@ -59,7 +59,7 @@ typedef struct PDB_StringTable
   U32    bucket_max;
   U32   *ibucket_array;
   PDB_StringTableBucket **bucket_array;
-} PDB_StringTable;
+};
 
 typedef enum
 {
@@ -69,7 +69,7 @@ typedef enum
   PDB_StringTableOpenError_CORRUPTED,
   PDB_StringTableOpenError_STRING_OFFSET_OUT_OF_BOUNDS,
   PDB_StringTableOpenError_OFFSETS_EXCEED_BUCKET_COUNT
-} PDB_StringTableOpenError;
+};
 
 ////////////////////////////////
 // Type Server
@@ -84,14 +84,14 @@ typedef enum
   PDB_OpenTypeServerError_INVALID_BUCKET_COUNT,
   PDB_OpenTypeServerError_INVALID_TI_RANGE,
   PDB_OpenTypeServerError_UNSUPPORTED_VERSION,
-} PDB_OpenTypeServerError;
+};
 
 typedef struct PDB_TypeBucket
 {
   struct PDB_TypeBucket *next;
   String8                raw_leaf;
   CV_TypeIndex           type_index;
-} PDB_TypeBucket;
+};
 
 typedef struct PDB_TypeServer
 {
@@ -102,20 +102,20 @@ typedef struct PDB_TypeServer
   PDB_TypeBucket   **buckets;
   MSF_StreamNumber   hash_sn;
   PDB_HashTable      hash_adj;
-} PDB_TypeServer;
+};
 
 typedef struct PDB_TypeHashStreamInfo
 {
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize ti_offs;
   PDB_OffsetSize hash_adj;
-} PDB_TypeHashStreamInfo;
+};
 
 typedef struct PDB_TypeServerParse
 {
   Rng1U64 ti_range;
   String8 leaf_data;
-} PDB_TypeServerParse;
+};
 
 typedef struct
 {
@@ -125,13 +125,13 @@ typedef struct
   Rng1U64        *ranges;
   PDB_TypeServer *type_server;
   PDB_TypeBucket *udt_buckets;
-} PDB_PushLeafTask;
+};
 
 typedef struct
 {
   PDB_TypeServer *ts;
   U32            *map;
-} PDB_WriteTypeToBucketMap;
+};
 
 typedef struct
 {
@@ -144,7 +144,7 @@ typedef struct
   U64            *lf_cursor_arr;
   U8             *lf_buf;
   U64             lf_buf_size;
-} PDB_WriteTypesTask;
+};
 
 ////////////////////////////////
 // Info
@@ -156,7 +156,7 @@ typedef struct PDB_InfoParse
   U32              age;
   Guid             guid;
   String8          extra_info;
-} PDB_InfoParse;
+};
 
 typedef struct PDB_InfoContext
 {
@@ -168,7 +168,7 @@ typedef struct PDB_InfoContext
   PDB_HashTable     named_stream_ht;
   PDB_HashTable     src_header_block_ht;
   PDB_StringTable   strtab;
-} PDB_InfoContext;
+};
 
 ////////////////////////////////
 // SRC Header Block
@@ -181,7 +181,7 @@ typedef enum
   PDB_SrcError_UNABLE_TO_WRITE_DATA,
   PDB_SrcError_UNSUPPORTED_COMPRESSION,
   PDB_SrcError_UNKNOWN
-} PDB_SrcError;
+};
 
 ////////////////////////////////
 // GSI
@@ -200,14 +200,14 @@ typedef struct PDB_GsiContext
   U64            bucket_count;
   U64            symbol_count;
   CV_SymbolList *bucket_arr;
-} PDB_GsiContext;
+};
 
 typedef struct PDB_GsiSortRecord
 {
   ISectOff isect_off;
   String8 name;
   U64 offset;
-} PDB_GsiSortRecord;
+};
 
 typedef struct PDB_GsiBuildResult
 {
@@ -221,7 +221,7 @@ typedef struct PDB_GsiBuildResult
   U32               *compressed_bucket_arr;
   U64                total_hash_size;
   String8            symbol_data;
-} PDB_GsiBuildResult;
+};
 
 typedef struct PDB_GsiSerializeSymbolsTask
 {
@@ -232,7 +232,7 @@ typedef struct PDB_GsiSerializeSymbolsTask
   U8                  *buffer;
   PDB_GsiSortRecord  **sort_record_arr_arr;
   PDB_GsiSortRecord   *sort_record_arr;
-} PDB_GsiSerializeSymbolsTask;
+};
 
 ////////////////////////////////
 // PSI
@@ -241,7 +241,7 @@ typedef struct PDB_PsiContext
 {
   Arena *arena;
   PDB_GsiContext *gsi;
-} PDB_PsiContext;
+};
 
 ////////////////////////////////
 // DBI
@@ -261,40 +261,40 @@ typedef struct PDB_DbiModule
   String8               obj_path;
   String8               lib_path;
   String8List           source_file_list;
-} PDB_DbiModule;
+};
 
 typedef struct PDB_DbiModuleList
 {
   PDB_DbiModule *first;
   PDB_DbiModule *last;
   U64            count;
-} PDB_DbiModuleList;
+};
 
 typedef struct PDB_DbiSectionContribNode
 {
   struct PDB_DbiSectionContribNode *next;
   PDB_DbiSectionContrib             data;
-} PDB_DbiSectionContribNode;
+};
 
 typedef struct PDB_DbiSectionContribList
 {
   PDB_DbiSectionContribNode *first;
   PDB_DbiSectionContribNode *last;
   U64                        count;
-} PDB_DbiSectionContribList;
+};
 
 typedef struct PDB_DbiSectionNode
 {
   struct PDB_DbiSectionNode *next;
   COFF_SectionHeader         data;
-} PDB_DbiSectionNode;
+};
 
 typedef struct PDB_DbiSectionList
 {
   U64                 count;
   PDB_DbiSectionNode *first;
   PDB_DbiSectionNode *last;
-} PDB_DbiSectionList;
+};
 
 typedef struct PDB_DbiContext
 {
@@ -309,7 +309,7 @@ typedef struct PDB_DbiContext
   PDB_DbiSectionList    section_list;
   PDB_StringTable       ec_names;
   MSF_StreamNumber      dbg_streams[PDB_DbiStream_COUNT];
-} PDB_DbiContext;
+};
 
 ////////////////////////////////
 // PDB
@@ -323,7 +323,7 @@ typedef struct PDB_Context
   PDB_GsiContext  *gsi;
   PDB_PsiContext  *psi;
   PDB_TypeServer  *type_servers[CV_TypeIndexSource_COUNT];
-} PDB_Context;
+};
 
 ////////////////////////////////
 
@@ -333,7 +333,7 @@ typedef struct
   Rng1U64        *ranges;
   CV_SymbolNode **symbols;
   U32            *hashes;
-} GSI_SymbolHasherTask;
+};
 
 typedef struct
 {
@@ -342,7 +342,7 @@ typedef struct
   U16                 *imod_arr;
   U16                 *source_file_name_count_arr;
   U32                **source_file_name_offset_arr;
-} PDB_DbiBuildFileInfoTask;
+};
 
 ////////////////////////////////
 // PDB

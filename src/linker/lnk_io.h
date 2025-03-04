@@ -10,7 +10,7 @@ typedef struct
   U64         *size_arr;
   U64         *off_arr;
   U8          *buffer;
-} LNK_DiskReader;
+};
 
 ////////////////////////////////
 // Shared File API

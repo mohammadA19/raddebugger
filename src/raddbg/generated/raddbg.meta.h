@@ -13,7 +13,7 @@ RD_CfgSrc_Project,
 RD_CfgSrc_CommandLine,
 RD_CfgSrc_Transient,
 RD_CfgSrc_COUNT,
-} RD_CfgSrc;
+};
 
 enum RD_EntityKind
 {
@@ -45,7 +45,7 @@ RD_EntityKind_Dest,
 RD_EntityKind_ConversionTask,
 RD_EntityKind_ConversionFail,
 RD_EntityKind_COUNT,
-} RD_EntityKind;
+};
 
 enum RD_RegSlot
 {
@@ -84,7 +84,7 @@ RD_RegSlot_CmdName,
 RD_RegSlot_ParamsTree,
 RD_RegSlot_OSEvent,
 RD_RegSlot_COUNT,
-} RD_RegSlot;
+};
 
 enum RD_CmdKind
 {
@@ -302,7 +302,7 @@ RD_CmdKind_CancelQuery,
 RD_CmdKind_ToggleDevMenu,
 RD_CmdKind_LogMarker,
 RD_CmdKind_COUNT,
-} RD_CmdKind;
+};
 
 enum RD_IconKind
 {
@@ -376,7 +376,7 @@ RD_IconKind_Person,
 RD_IconKind_Briefcase,
 RD_IconKind_Dot,
 RD_IconKind_COUNT,
-} RD_IconKind;
+};
 
 enum RD_ViewRuleKind
 {
@@ -416,7 +416,7 @@ RD_ViewRuleKind_Checkbox,
 RD_ViewRuleKind_ColorRGBA,
 RD_ViewRuleKind_Geo3D,
 RD_ViewRuleKind_COUNT,
-} RD_ViewRuleKind;
+};
 
 enum RD_ThemeColor
 {
@@ -497,7 +497,7 @@ RD_ThemeColor_ThreadError,
 RD_ThemeColor_Breakpoint,
 RD_ThemeColor_CacheLineBoundary,
 RD_ThemeColor_COUNT,
-} RD_ThemeColor;
+};
 
 enum RD_ThemePreset
 {
@@ -511,7 +511,7 @@ RD_ThemePreset_HandmadeHero,
 RD_ThemePreset_FourCoder,
 RD_ThemePreset_FarManager,
 RD_ThemePreset_COUNT,
-} RD_ThemePreset;
+};
 
 enum RD_SettingCode
 {
@@ -535,7 +535,7 @@ RD_SettingCode_SmoothCodeText,
 RD_SettingCode_HintUIText,
 RD_SettingCode_HintCodeText,
 RD_SettingCode_COUNT,
-} RD_SettingCode;
+};
 
 struct RD_Regs
 {

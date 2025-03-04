@@ -8,7 +8,7 @@ typedef struct LNK_CmdOption
   struct LNK_CmdOption *next;
   String8               string;
   String8List           value_strings;
-} LNK_CmdOption;
+};
 
 typedef struct LNK_CmdLine
 {
@@ -16,7 +16,7 @@ typedef struct LNK_CmdLine
   LNK_CmdOption *first_option;
   LNK_CmdOption *last_option;
   String8List    input_list;
-} LNK_CmdLine;
+};
 
 internal String8List     lnk_arg_list_parse_windows_rules(Arena *arena, String8 string);
 internal LNK_CmdLine     lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list);

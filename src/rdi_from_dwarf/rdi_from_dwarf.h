@@ -38,7 +38,7 @@ typedef struct DWARFCONV_Params{
   B8 dump__last;
   
   String8List errors;
-} DWARFCONV_Params;
+};
 
 ////////////////////////////////
 //~ Program Parameters Parser

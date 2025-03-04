@@ -27,7 +27,7 @@ typedef struct MSCRT_VCFeatures
   U32 gs;
   U32 sdl;
   U32 guard_n;
-} MSCRT_VCFeatures;
+};
 
 ////////////////////////////////
 // GS Handler
@@ -114,19 +114,19 @@ typedef struct MSCRT_FuncInfo32
   U32         frame_offset_unwind_helper;
   U32         es_type_list_voff;           // llvm emits zero, not sure what this supposed to be
   MSCRT_Flags eh_flags;
-} MSCRT_FuncInfo32;
+};
 
 typedef struct MSCRT_IPState32
 {
   U32 ip;
   S32 state;
-} MSCRT_IPState32;
+};
 
 typedef struct MSCRT_UnwindMap32
 {
   S32 next_state;
   U32 action_virt_off;
-} MSCRT_UnwindMap32;
+};
 
 typedef struct MSCRT_EhHandlerType32
 {
@@ -135,7 +135,7 @@ typedef struct MSCRT_EhHandlerType32
   U32                      catch_obj_frame_offset;
   U32                      catch_handler_voff;
   U32                      fp_distance;
-} MSCRT_EhHandlerType32;
+};
 
 typedef struct MSCRT_TryMapBlock32
 {
@@ -144,13 +144,13 @@ typedef struct MSCRT_TryMapBlock32
   S32 catch_high;
   S32 catch_handlers_count;
   U32 catch_handlers_voff;
-} MSCRT_TryMapBlock32;
+};
 
 typedef struct MSCRT_ExceptionSpecTypeList32
 {
   S32 count;
   U32 handlers_voff;
-} MSCRT_ExceptionSpecTypeList32;
+};
 
 typedef struct MSCRT_TryMapBlock
 {
@@ -159,13 +159,13 @@ typedef struct MSCRT_TryMapBlock
   S32                    catch_high;
   S32                    catch_handlers_count;
   MSCRT_EhHandlerType32 *catch_handlers;
-} MSCRT_TryMapBlock;
+};
 
 typedef struct MSCRT_ExceptionSpecTypeList
 {
   S32                    count;
   MSCRT_EhHandlerType32 *handlers;
-} MSCRT_ExceptionSpecTypeList;
+};
 
 typedef struct MSCRT_FuncInfo
 {
@@ -179,7 +179,7 @@ typedef struct MSCRT_FuncInfo
   U32                          frame_offset_unwind_helper;
   MSCRT_ExceptionSpecTypeList  es_type_list;
   MSCRT_Flags                  eh_flags;
-} MSCRT_FuncInfo;
+};
 
 ////////////////////////////////
 // C++ Exceptions V4
@@ -232,13 +232,13 @@ typedef struct MSCRT_EhHandlerTypeV4
   S32                      catch_code_voff;
   U64                      catch_funclet_cont_addr[2];
   U32                      catch_funclet_cont_addr_count;
-} MSCRT_EhHandlerTypeV4;
+};
 
 typedef struct MSCRT_EhHandlerTypeV4Array
 {
   U64                    count;
   MSCRT_EhHandlerTypeV4 *v;
-} MSCRT_EhHandlerTypeV4Array;
+};
 
 typedef struct MSCRT_TryBlockMap32V4
 {
@@ -246,20 +246,20 @@ typedef struct MSCRT_TryBlockMap32V4
   U32 try_high;
   U32 catch_high;
   S32 handler_array_voff;
-} MSCRT_TryBlockMap32V4;
+};
 
 typedef struct MSCRT_IP2State32V4
 {
   U32  count;
   U32 *voffs;
   S32 *states;
-} MSCRT_IP2State32V4;
+};
 
 typedef struct MSCRT_SepIPState32V4
 {
   S32 func_start_voff;
   S32 ip_map_voff;
-} MSCRT_SepIPState32V4;
+};
 
 typedef struct MSCRT_FuncInfo32V4
 {
@@ -269,7 +269,7 @@ typedef struct MSCRT_FuncInfo32V4
   S32                   try_block_map_voff;
   S32                   ip_to_state_map_voff;
   S32                   wrt_frame_establisher_voff; // used only in catch funclets
-} MSCRT_FuncInfo32V4;
+};
 
 typedef struct MSCRT_UnwindEntryV4
 {
@@ -277,13 +277,13 @@ typedef struct MSCRT_UnwindEntryV4
   S32                   action;
   U32                   object;
   U32                   next_off;
-} MSCRT_UnwindEntryV4;
+};
 
 typedef struct MSCRT_UnwindMapV4
 {
   U32                  count;
   MSCRT_UnwindEntryV4 *v;
-} MSCRT_UnwindMapV4;
+};
 
 typedef struct MSCRT_TryBlockMapV4
 {
@@ -291,13 +291,13 @@ typedef struct MSCRT_TryBlockMapV4
   U32                        try_high;
   U32                        catch_high;
   MSCRT_EhHandlerTypeV4Array handlers;
-} MSCRT_TryBlockMapV4;
+};
 
 typedef struct MSCRT_TryBlockMapV4Array
 {
   U64                  count;
   MSCRT_TryBlockMapV4 *v;
-} MSCRT_TryBlockMapV4Array;
+};
 
 typedef struct MSCRT_ParsedFuncInfoV4
 {
@@ -306,7 +306,7 @@ typedef struct MSCRT_ParsedFuncInfoV4
   MSCRT_UnwindMapV4        unwind_map;
   MSCRT_TryBlockMapV4Array try_block_map;
   MSCRT_IP2State32V4       ip2state_map;
-} MSCRT_ParsedFuncInfoV4;
+};
 
 //- Exception info < v4
 

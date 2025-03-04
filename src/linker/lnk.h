@@ -107,7 +107,7 @@ typedef enum
   LNK_InputSource_Default, // specified through defaultlib switch
   LNK_InputSource_Obj,     // refrenced from objects
   LNK_InputSource_Count
-} LNK_InputSourceType;
+};
 
 typedef String8Node LNK_InputLib;
 typedef String8List LNK_InputLibList;
@@ -116,14 +116,14 @@ typedef struct LNK_InputImport
 {
   COFF_ParsedArchiveImportHeader       import_header;
   struct LNK_InputImport *next;
-} LNK_InputImport;
+};
 
 typedef struct LNK_InputImportList
 {
   U64              count;
   LNK_InputImport *first;
   LNK_InputImport *last;
-} LNK_InputImportList;
+};
 
 ////////////////////////////////
 
@@ -132,26 +132,26 @@ typedef struct LNK_BaseRelocPage
   U64     voff;
   U64List entries_addr32;
   U64List entries_addr64;
-} LNK_BaseRelocPage;
+};
 
 typedef struct LNK_BaseRelocPageNode
 {
   struct LNK_BaseRelocPageNode *next;
   LNK_BaseRelocPage             v;
-} LNK_BaseRelocPageNode;
+};
 
 typedef struct LNK_BaseRelocPageList
 {
   U64                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
-} LNK_BaseRelocPageList;
+};
 
 typedef struct LNK_BaseRelocPageArray
 {
   U64                count;
   LNK_BaseRelocPage *v;
-} LNK_BaseRelocPageArray;
+};
 
 typedef struct
 {
@@ -162,7 +162,7 @@ typedef struct
   LNK_BaseRelocPageList  *list_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-} LNK_BaseRelocTask;
+};
 
 typedef struct
 {
@@ -173,14 +173,14 @@ typedef struct
   LNK_Obj               **obj_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-} LNK_ObjBaseRelocTask;
+};
 
 typedef struct
 {
   LNK_InputObjList    input_obj_list;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
-} LNK_SymbolFinderResult;
+};
 
 typedef struct
 {
@@ -189,7 +189,7 @@ typedef struct
   LNK_SymbolNodeArray     lookup_node_arr;
   LNK_SymbolFinderResult *result_arr;
   Rng1U64                *range_arr;
-} LNK_SymbolFinder;
+};
 
 typedef struct
 {
@@ -198,7 +198,7 @@ typedef struct
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
   } u;
-} LNK_SymbolPusher;
+};
 
 typedef struct
 {
@@ -209,7 +209,7 @@ typedef struct
   U64                base_addr;
   LNK_Section      **sect_arr;
   Rng1U64           *range_arr;
-} LNK_SectionRelocPatcher;
+};
 
 typedef struct
 {
@@ -219,20 +219,20 @@ typedef struct
   LNK_Section      **sect_id_map;
   U64                base_addr;
   LNK_Obj          **obj_arr;
-} LNK_ObjRelocPatcher;
+};
 
 typedef struct
 {
   String8 path;
   String8 data;
-} LNK_WriteThreadContext;
+};
 
 typedef struct
 {
   String8  data;
   Rng1U64 *ranges;
   U128    *hashes;
-} LNK_Blake3Hasher;
+};
 
 ////////////////////////////////
 

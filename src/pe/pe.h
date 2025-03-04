@@ -974,20 +974,20 @@ typedef struct PE_DebugInfo
     } codeview;
     String8 raw_data;
   } u;
-} PE_DebugInfo;
+};
 
 typedef struct PE_DebugInfoNode
 {
   struct PE_DebugInfoNode *next;
   PE_DebugInfo             v;
-} PE_DebugInfoNode;
+};
 
 typedef struct PE_DebugInfoList
 {
   PE_DebugInfoNode *first;
   PE_DebugInfoNode *last;
   U64               count;
-} PE_DebugInfoList;
+};
 
 ////////////////////////////////
 //~ rjf: Basic Enum Functions

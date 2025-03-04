@@ -10,7 +10,7 @@ typedef struct DW_UnwindResult
   B32 missed_read;
   U64 missed_read_addr;
   U64 stack_pointer;
-} DW_UnwindResult;
+};
 
 // EH: Exception Frames
 
@@ -51,7 +51,7 @@ typedef struct DW_EhPtrCtx
   U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
   U64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
   U64 func_vaddr;     // base address of function where IP is located
-} DW_EhPtrCtx;
+};
 
 // CIE: Common Information Entry
 typedef struct DW_CIEUnpacked
@@ -71,14 +71,14 @@ typedef struct DW_CIEUnpacked
   U64 handler_ip;
   
   Rng1U64 cfi_range;
-} DW_CIEUnpacked;
+};
 
 typedef struct DW_CIEUnpackedNode
 {
   struct DW_CIEUnpackedNode *next;
   DW_CIEUnpacked             cie;
   U64                        offset;
-} DW_CIEUnpackedNode;
+};
 
 // FDE: Frame Description Entry
 typedef struct DW_FDEUnpacked
@@ -86,7 +86,7 @@ typedef struct DW_FDEUnpacked
   Rng1U64 ip_voff_range;
   U64     lsda_ip;
   Rng1U64 cfi_range;
-} DW_FDEUnpacked;
+};
 
 // CFI: Call Frame Information
 typedef struct DW_CFIRecords
@@ -94,12 +94,12 @@ typedef struct DW_CFIRecords
   B32            valid;
   DW_CIEUnpacked cie;
   DW_FDEUnpacked fde;
-} DW_CFIRecords;
+};
 
 enum DW_CFICFARule{
   DW_CFI_CFA_Rule_RegOff,
   DW_CFI_CFA_Rule_Expr,
-} DW_CFICFARule;
+};
 
 typedef struct DW_CFICFACell
 {
@@ -111,7 +111,7 @@ typedef struct DW_CFICFACell
     };
     Rng1U64 expr;
   };
-} DW_CFICFACell;
+};
 
 enum DW_CFIRegisterRule
 {
@@ -122,7 +122,7 @@ enum DW_CFIRegisterRule
   DW_CFIRegisterRule_Register,
   DW_CFIRegisterRule_Expression,
   DW_CFIRegisterRule_ValExpression,
-} DW_CFIRegisterRule;
+};
 
 typedef struct DW_CFICell
 {
@@ -131,14 +131,14 @@ typedef struct DW_CFICell
     S64 n;
     Rng1U64 expr;
   };
-} DW_CFICell;
+};
 
 typedef struct DW_CFIRow
 {
   struct DW_CFIRow *next;
   DW_CFICell       *cells;
   DW_CFICFACell     cfa_cell;
-} DW_CFIRow;
+};
 
 typedef struct DW_CFIMachine
 {
@@ -147,7 +147,7 @@ typedef struct DW_CFIMachine
   DW_EhPtrCtx    *ptr_ctx;
   DW_CFIRow      *initial_row;
   U64             fde_ip;
-} DW_CFIMachine;
+};
 
 enum DW_CFADecode : U8
 {

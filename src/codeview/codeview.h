@@ -2035,7 +2035,7 @@ typedef enum
 #define X(N,c) CV_BasicPointerKind_##N = c,
   CV_BasicPointerKindXList(X)
 #undef X
-} CV_BasicPointerKindEnum;
+};
 
 #define CV_BasicTypeFromTypeId(x)        ((x)&0xFF)
 #define CV_BasicPointerKindFromTypeId(x) (((x)>>8)&0xFF)
@@ -2047,7 +2047,7 @@ enum CV_HFAKindEnum
   CV_HFAKind_Float,
   CV_HFAKind_Double,
   CV_HFAKind_Other
-} CV_HFAKindEnum;
+};
 
 typedef U8 CV_MoComUDTKind;
 enum CV_MoComUDTKindEnum
@@ -2056,7 +2056,7 @@ enum CV_MoComUDTKindEnum
   CV_MoComUDTKind_Ref,
   CV_MoComUDTKind_Value,
   CV_MoComUDTKind_Interface
-} CV_MoComUDTKindEnum;
+};
 
 typedef U16 CV_TypeProps;
 enum CV_TypeProps32 : U32
@@ -2095,7 +2095,7 @@ enum CV_PointerKindEnum
   CV_PointerKind_Near32,    // 32 bit
   CV_PointerKind_Far32,     // 16:32 bit
   CV_PointerKind_64,        // 64 bit
-} CV_PointerKindEnum;
+};
 
 typedef U8 CV_PointerMode;
 enum CV_PointerModeEnum

@@ -33,32 +33,32 @@ typedef struct LNK_Section
   U64             virt_off;
   U64             file_off;
   LNK_ChunkLayout layout;
-} LNK_Section;
+};
 
 typedef struct LNK_SectionNode
 {
   struct LNK_SectionNode *next;
   LNK_Section             data;
-} LNK_SectionNode;
+};
 
 typedef struct LNK_SectionList
 {
   U64              count;
   LNK_SectionNode *first;
   LNK_SectionNode *last;
-} LNK_SectionList;
+};
 
 typedef struct LNK_SectionArray
 {
   U64          count;
   LNK_Section *v;
-} LNK_SectionArray;
+};
 
 typedef struct LNK_SectionPtrArray
 {
   U64           count;
   LNK_Section **v;
-} LNK_SectionPtrArray;
+};
 
 typedef struct LNK_SectionTable
 {
@@ -71,7 +71,7 @@ typedef struct LNK_SectionTable
   LNK_SectionList  merge_list;
   LNK_SectionList  empties_list;
   LNK_SectionNode *null_sect;
-} LNK_SectionTable;
+};
 
 ////////////////////////////////
 
@@ -80,7 +80,7 @@ typedef struct
   COFF_MachineType  machine;
   Rng1U64          *range_arr;
   LNK_Section      **sect_arr;
-} LNK_SectionDataBuilder;
+};
 
 ////////////////////////////////
 

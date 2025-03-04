@@ -163,14 +163,14 @@ typedef enum
   LNK_CmdSwitch_Help,
 
   LNK_CmdSwitch_Count
-} LNK_CmdSwitchType;
+};
 
 typedef enum
 {
   LNK_SwitchState_Null,
   LNK_SwitchState_No,
   LNK_SwitchState_Yes
-} LNK_SwitchState;
+};
 
 typedef enum 
 {
@@ -180,7 +180,7 @@ typedef enum
   LNK_Input_Res,
   LNK_Input_Manifest,
   LNK_Input_Count
-} LNK_InputType;
+};
 
 enum
 {
@@ -203,7 +203,7 @@ typedef enum
   LNK_DebugMode_FastLink,
   LNK_DebugMode_GHash,
   LNK_DebugMode_Full,
-} LNK_DebugMode;
+};
 
 enum
 {
@@ -221,13 +221,13 @@ typedef enum
   LNK_ManifestOpt_WriteToFile,
   LNK_ManifestOpt_Embed,
   LNK_ManifestOpt_No,
-} LNK_ManifestOpt;
+};
 
 typedef struct LNK_AltNameList
 {
   String8List from_list;
   String8List to_list;
-} LNK_AltNameList;
+};
 
 typedef struct LNK_ExportParse
 {
@@ -235,33 +235,33 @@ typedef struct LNK_ExportParse
   String8                 name;
   String8                 alias;
   String8                 type;
-} LNK_ExportParse;
+};
 
 typedef struct LNK_ExportParseList
 {
   U64              count;
   LNK_ExportParse *first;
   LNK_ExportParse *last;
-} LNK_ExportParseList;
+};
 
 typedef struct LNK_MergeDirective
 {
   String8 src;
   String8 dst;
-} LNK_MergeDirective;
+};
 
 typedef struct LNK_MergeDirectiveNode
 {
   struct LNK_MergeDirectiveNode *next;
   LNK_MergeDirective             data;
-} LNK_MergeDirectiveNode;
+};
 
 typedef struct LNK_MergeDirectiveList
 {
   U64                     count;
   LNK_MergeDirectiveNode *first;
   LNK_MergeDirectiveNode *last;
-} LNK_MergeDirectiveList;
+};
 
 
 
@@ -269,7 +269,7 @@ typedef enum
 {
   LNK_DebugInfoGuid_Null,
   Lnk_DebugInfoGuid_ImageBlake3,
-} LNK_DebugInfoGuidType;
+};
 
 typedef enum
 {
@@ -277,7 +277,7 @@ typedef enum
   LNK_TypeNameHashMode_None,
   LNK_TypeNameHashMode_Lenient,
   LNK_TypeNameHashMode_Full,
-} LNK_TypeNameHashMode;
+};
 
 #if OS_WINDOWS
 # define LNK_MANIFEST_MERGE_TOOL_NAME "mt.exe"
@@ -364,13 +364,13 @@ typedef struct LNK_Config
   U64                         symbol_table_cap_lib;
   B32                         build_imp_lib;
   B32                         build_exp;
-} LNK_Config;
+};
 
 typedef enum
 {
   LNK_ParseU64Flag_CheckUnder32bit = (1 << 0),
   LNK_ParseU64Flag_CheckPow2       = (1 << 1),
-} LNK_ParseU64Flags;
+};
 
 ////////////////////////////////
 
@@ -497,7 +497,7 @@ typedef enum
   LNK_MsWarningCode_Lnk4253 = 4253,
   LNK_MsWarningCode_Lnk4254 = 4254,
   LNK_MsWarningCode_Lnk4286 = 4286,
-} LNK_MsErrorCode;
+};
 
 ////////////////////////////////
 // Enum <-> String

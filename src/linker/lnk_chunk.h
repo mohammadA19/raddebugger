@@ -13,7 +13,7 @@ typedef struct LNK_ChunkRef
 {
   U64 sect_id;
   U64 chunk_id;
-} LNK_ChunkRef;
+};
 
 typedef enum
 {
@@ -21,7 +21,7 @@ typedef enum
   LNK_Chunk_Leaf,
   LNK_Chunk_LeafArray,
   LNK_Chunk_List,
-} LNK_ChunkType;
+};
 
 typedef struct LNK_Chunk
 {
@@ -49,20 +49,20 @@ typedef struct LNK_ChunkNode
 {
   struct LNK_ChunkNode *next;
   LNK_ChunkPtr          data;
-} LNK_ChunkNode;
+};
 
 typedef struct LNK_ChunkArray
 {
   U64           count;
   LNK_ChunkPtr *v;
-} LNK_ChunkArray;
+};
 
 typedef struct LNK_ChunkList
 {
   U64            count;
   LNK_ChunkNode *first;
   LNK_ChunkNode *last;
-} LNK_ChunkList;
+};
 
 enum LNK_ChunkOpType
 {
@@ -72,7 +72,7 @@ enum LNK_ChunkOpType
   LNK_ChunkOp_Begin,
   LNK_ChunkOp_End,
   LNK_ChunkOp_EndVirt,
-} LNK_ChunkOpType;
+};
 
 typedef struct LNK_ChunkOp
 {
@@ -87,38 +87,38 @@ typedef struct LNK_ChunkOp
     } align;
     LNK_Chunk *leaf;
   } u;
-} LNK_ChunkOp;
+};
 
 typedef struct LNK_ChunkOpList
 {
   U64          total_chunk_count;
   LNK_ChunkOp *first;
   LNK_ChunkOp *last;
-} LNK_ChunkOpList;
+};
 
 typedef struct LNK_ChunkPad
 {
   U64 off;
   U64 size;
-} LNK_ChunkPad;
+};
 
 typedef struct LNK_ChunkPadArray
 {
   U64           count;
   LNK_ChunkPad *v;
-} LNK_ChunkPadArray;
+};
 typedef struct LNK_ChunkPadArrayNode
 {
   struct LNK_ChunkPadArrayNode *next;
   U64                 cap;
   LNK_ChunkPadArray data;
-} LNK_ChunkPadArrayNode;
+};
 typedef struct LNK_ChunkPadArrayList
 {
   U64                      count;
   LNK_ChunkPadArrayNode *first;
   LNK_ChunkPadArrayNode *last;
-} LNK_ChunkPadArrayList;
+};
 
 typedef struct LNK_ChunkLayout
 {
@@ -129,13 +129,13 @@ typedef struct LNK_ChunkLayout
   U64                    *chunk_virt_size_array; // discarded chunks have offset set to max_U64
   U64                     pad_array_count;
   LNK_ChunkPadArray      *pad_array;
-} LNK_ChunkLayout;
+};
 
 typedef struct LNK_ChunkManager
 {
   LNK_Chunk *root;
   U64        total_chunk_count;
-} LNK_ChunkManager;
+};
 
 ////////////////////////////////
 
@@ -143,7 +143,7 @@ typedef struct
 {
   U64              offset;
   LNK_ChunkLayout *layout;
-} LNK_OffsetChunks;
+};
 
 typedef struct
 {
@@ -151,7 +151,7 @@ typedef struct
   String8          buffer;
   U8               fill_byte;
   Rng1U64         *ranges;
-} LNK_ChunkLayoutSerializer;
+};
 
 ////////////////////////////////
 

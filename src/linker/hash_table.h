@@ -16,19 +16,19 @@ typedef struct KeyValuePair
     U32      value_u32;
     U64      value_u64;
   };
-} KeyValuePair;
+};
 
 typedef struct BucketNode
 {
   struct BucketNode *next;
   KeyValuePair       v;
-} BucketNode;
+};
 
 typedef struct BucketList
 {
   BucketNode *first;
   BucketNode *last;
-} BucketList;
+};
 
 typedef struct HashTable
 {
@@ -36,7 +36,7 @@ typedef struct HashTable
   U64         cap;
   BucketList *buckets;
   BucketList  free_buckets;
-} HashTable;
+};
 
 ////////////////////////////////
 

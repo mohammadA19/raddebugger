@@ -28,7 +28,7 @@ typedef struct PDB_StringTableHeader
 {
   U32 magic;
   U32 version;
-} PDB_StringTableHeader;
+};
 
 ////////////////////////////////
 
@@ -38,7 +38,7 @@ enum PDB_FixedStream
   PDB_FixedStream_Tpi  = 2,
   PDB_FixedStream_Dbi  = 3,
   PDB_FixedStream_Ipi  = 4
-} PDB_FixedStream;
+};
 
 ////////////////////////////////
 //~ PDB Info Types
@@ -84,7 +84,7 @@ typedef struct PDB_InfoHeaderV70
   Guid               guid;
   // PDB_HashTable   named_stream_hash_table
   // PDB_FeatureFlag features[*]
-} PDB_InfoHeaderV70;
+};
 
 #pragma pack(pop)
 StaticAssert(sizeof(PDB_InfoHeaderV70) == 28, pdb_info_header_v70_size_check);
@@ -105,7 +105,7 @@ typedef struct PDB_SrcHeaderBlockHeader
   U64 file_time;
   U32 age;
   U8  pad[44];
-} PDB_SrcHeaderBlockHeader;
+};
 
 enum
 {
@@ -137,7 +137,7 @@ typedef struct PDB_SrcHeaderBlockEntry
   PDB_SrcHeaderFlags flags;
   U8                 pad[2];
   U8                 reserved[8];
-} PDB_SrcHeaderBlockEntry;
+};
 
 ////////////////////////////////
 //~ PDB Format DBI Types
@@ -214,7 +214,7 @@ typedef struct PDB_DbiHeader
   COFF_MachineType machine;
   
   U32 reserved;
-} PDB_DbiHeader;
+};
 
 // "ModuleInfo" DBI range
 
@@ -231,14 +231,14 @@ typedef struct PDB_DbiSectionContrib40
   U32 flags;
   CV_ModIndex mod;
   U16 pad1;
-} PDB_DbiSectionContrib40;
+};
 
 typedef struct PDB_DbiSectionContrib
 {
   PDB_DbiSectionContrib40 base;
   U32 data_crc;
   U32 reloc_crc;
-} PDB_DbiSectionContrib;
+};
 
 typedef struct PDB_DbiSectionContrib2
 {
@@ -246,7 +246,7 @@ typedef struct PDB_DbiSectionContrib2
   U32 data_crc;
   U32 reloc_crc;
   U32 sec_coff;
-} PDB_DbiSectionContrib2;
+};
 
 typedef struct PDB_DbiCompUnitHeader
 {
@@ -268,7 +268,7 @@ typedef struct PDB_DbiCompUnitHeader
   
   // U8[] module_name (null terminated)
   // U8[] obj_name (null terminated)
-} PDB_DbiCompUnitHeader;
+};
 
 ////////////////////////////////
 
@@ -295,13 +295,13 @@ typedef struct PDB_DbiSecMapEntry
   U16        class_name;
   U32        offset;
   U32        sec_size;
-} PDB_DbiSecMapEntry;
+};
 
 typedef struct PDB_DbiSecMapHeader
 {
   U16 section_count;
   U16 segment_count;
-} PDB_DbiSecMapHeader;
+};
 
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
@@ -334,13 +334,13 @@ typedef struct PDB_TpiOffHint
 {
   CV_TypeId itype;
   PDB_TypeOffset off;
-} PDB_TpiOffHint;
+};
 
 typedef struct PDB_OffsetSize
 {
   U32 off;
   U32 size;
-} PDB_OffsetSize;
+};
 
 typedef struct PDB_TpiHeader
 {
@@ -359,7 +359,7 @@ typedef struct PDB_TpiHeader
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize itype_offs;
   PDB_OffsetSize hash_adj;
-} PDB_TpiHeader;
+};
 
 
 ////////////////////////////////
@@ -381,20 +381,20 @@ typedef struct PDB_GsiHeader
   PDB_GsiVersion version;
   U32 hash_record_arr_size;
   U32 bucket_data_size;
-} PDB_GsiHeader;
+};
 
 typedef struct PDB_GsiHashRecord
 {
   U32 symbol_off;
   U32 cref;
-} PDB_GsiHashRecord;
+};
 
 typedef struct PDB_GsiHashRecordOffsetCalc
 {
   U32 next;
   U32 off;
   U32 cref;
-} PDB_GsiHashRecordOffsetCalc;
+};
 
 typedef struct PDB_PsiHeader
 {
@@ -406,7 +406,7 @@ typedef struct PDB_PsiHeader
   U16 padding;
   U32 sec_thunk_table_off;
   U32 sec_count;
-} PDB_PsiHeader;
+};
 
 ////////////////////////////////
 

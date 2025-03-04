@@ -16,21 +16,21 @@ typedef struct MSF_PageNumberArray
 {
   U64             count;
   MSF_PageNumber *v;
-} MSF_PageNumberArray;
+};
 
 typedef struct MSF_PageNode
 {
   struct MSF_PageNode *next;
   struct MSF_PageNode *prev;
   MSF_PageNumber       pn;
-} MSF_PageNode;
+};
 
 typedef struct MSF_PageList
 {
   MSF_PageNode *first;
   MSF_PageNode *last;
   MSF_UInt      count;
-} MSF_PageList;
+};
 
 typedef struct MSF_Stream
 {
@@ -39,35 +39,35 @@ typedef struct MSF_Stream
   MSF_UInt         pos;
   MSF_PageNode    *pos_page;
   MSF_PageList     page_list;
-} MSF_Stream;
+};
 
 typedef struct MSF_StreamNode
 {
   struct MSF_StreamNode *next;
   struct MSF_StreamNode *prev;
   MSF_Stream             data;
-} MSF_StreamNode;
+};
 
 typedef struct MSF_StreamList
 {
   MSF_UInt        count;
   MSF_StreamNode *first;
   MSF_StreamNode *last;
-} MSF_StreamList;
+};
 
 typedef struct MSF_PageDataNode
 {
   struct MSF_PageDataNode *next;
   struct MSF_PageDataNode *prev;
   U8                      *data;
-} MSF_PageDataNode;
+};
 
 typedef struct MSF_PageDataList
 {
   MSF_PageDataNode *first;
   MSF_PageDataNode *last;
   MSF_UInt          count;
-} MSF_PageDataList;
+};
 
 typedef struct MSF_Context
 {
@@ -83,7 +83,7 @@ typedef struct MSF_Context
   MSF_PageList     st_page_list;
   MSF_PageList     page_pool;
   MSF_StreamList   st;
-} MSF_Context;
+};
 
 enum MSF_Error
 {
@@ -110,7 +110,7 @@ enum MSF_Error
   MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE_PAGE_NUMBER_DIRECTORY,
   MSF_BuildError_UNABLE_TO_WRITE_ROOT_DIRECTORY,
   MSF_BuildError_UNABLE_TO_WRITE_HEADER,
-} MSF_Error;
+};
 
 ////////////////////////////////
 
@@ -122,7 +122,7 @@ typedef struct
   MSF_UInt         stream_pos;
   String8          data;
   Rng1U64         *range_arr;
-} MSF_WriteTask;
+};
 
 ////////////////////////////////
 

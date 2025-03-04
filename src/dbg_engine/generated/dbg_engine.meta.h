@@ -43,7 +43,7 @@ D_CmdKind_SetEntityColor,
 D_CmdKind_SetEntityName,
 D_CmdKind_Attach,
 D_CmdKind_COUNT,
-} D_CmdKind;
+};
 
 enum D_ViewRuleKind
 {
@@ -69,7 +69,7 @@ D_ViewRuleKind_Graph,
 D_ViewRuleKind_Bitmap,
 D_ViewRuleKind_Geo3D,
 D_ViewRuleKind_COUNT,
-} D_ViewRuleKind;
+};
 
 global B32 DEV_simulate_lag = 0;
 global B32 DEV_draw_ui_text_pos = 0;

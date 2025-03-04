@@ -23,7 +23,7 @@ EV_ViewRuleKind_Dec,
 EV_ViewRuleKind_Hex,
 EV_ViewRuleKind_NoAddress,
 EV_ViewRuleKind_COUNT,
-} EV_ViewRuleKind;
+};
 
 EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(array);
 EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice);

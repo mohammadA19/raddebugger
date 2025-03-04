@@ -15,7 +15,7 @@ typedef enum
   LNK_Log_LinkStats,
   LNK_Log_Timers,
   LNK_Log_Count
-} LNK_LogType;
+};
 
 internal void set_log_level(LNK_LogType type, B32 is_enabled);
 internal B32  lnk_get_log_status(LNK_LogType type);

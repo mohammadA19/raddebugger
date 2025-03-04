@@ -42,7 +42,7 @@ typedef struct Basics{
   char j;
   
   int z;
-} Basics;
+};
 
 typedef struct Basics_Stdint{
   double   x1;
@@ -55,12 +55,12 @@ typedef struct Basics_Stdint{
   int16_t  x8;
   uint8_t  x9;
   int8_t   x0;
-} Basics_Stdint;
+};
 
 typedef struct Pair{
   int i;
   float f;
-} Pair;
+};
 
 void
 c_versions_of_same_types(void){

@@ -454,7 +454,7 @@ enum ImageType
   Image_Elf32,
   Image_Elf64,
   Image_Macho
-} ImageType;
+};
 
 enum Arch
 {

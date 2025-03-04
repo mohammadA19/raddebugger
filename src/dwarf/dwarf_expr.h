@@ -31,7 +31,7 @@ typedef struct DW_RegsX64
     };
     U64 r[17];
   };
-} DW_RegsX64;
+};
 
 ////////////////////////////////
 //~ Dwarf Expression Eval Types
@@ -46,7 +46,7 @@ typedef struct DW_ExprMachineCallConfig
 {
   void                   *user_ptr;
   DW_ExprResolveCallFunc *func;
-} DW_ExprMachineCallConfig;
+};
 
 typedef struct DW_ExprMachineConfig
 {
@@ -60,7 +60,7 @@ typedef struct DW_ExprMachineConfig
   U64                      *tls_address;
   U64                      *cfa;
   DW_ExprMachineCallConfig  call;
-} DW_ExprMachineConfig;
+};
 
 
 //- detail analysis types
@@ -84,14 +84,14 @@ enum DW_ExprFlags : U32
 typedef struct DW_ExprAnalysis
 {
   DW_ExprFlags flags;
-} DW_ExprAnalysis;
+};
 
 typedef struct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask *next;
   U64                         p;
   String8                     data;
-} DW_ExprAnalysisTask;
+};
 
 
 //- location types
@@ -103,7 +103,7 @@ enum DW_SimpleLocKind
   DW_SimpleLocKind_ValueLong,
   DW_SimpleLocKind_Empty,
   DW_SimpleLocKind_Fail,
-} DW_SimpleLocKind;
+};
 
 enum DW_LocFailKind
 {
@@ -128,7 +128,7 @@ enum DW_LocFailKind
   DW_LocFailKind_MissingCFA,
   DW_LocFailKind_MissingCallResolution,
   DW_LocFailKind_MissingArenaForComposite,
-} DW_LocFailKind;
+};
 
 typedef struct DW_SimpleLoc
 {
@@ -143,7 +143,7 @@ typedef struct DW_SimpleLoc
       U64 fail_data;
     };
   };
-} DW_SimpleLoc;
+};
 
 typedef struct DW_Piece
 {
@@ -158,7 +158,7 @@ typedef struct DW_Piece
   U64              bit_size;
   U64              bit_off;
   B32              is_bit_loc;
-} DW_Piece;
+};
 
 typedef struct DW_Location
 {
@@ -190,7 +190,7 @@ typedef struct DW_Location
   U64       count;
   
   DW_SimpleLoc non_piece_loc;
-} DW_Location;
+};
 
 
 //- full evaluator state types
@@ -198,14 +198,14 @@ typedef struct DW_ExprStackNode
 {
   struct DW_ExprStackNode *next;
   U64                      val;
-} DW_ExprStackNode;
+};
 
 typedef struct DW_ExprStack
 {
   DW_ExprStackNode *stack;
   DW_ExprStackNode *free_nodes;
   U64               count;
-} DW_ExprStack;
+};
 
 typedef struct DW_ExprCall
 {
@@ -213,14 +213,14 @@ typedef struct DW_ExprCall
   void               *ptr;
   U64                 size;
   U64                 cursor;
-} DW_ExprCall;
+};
 
 typedef struct DW_ExprCallStack
 {
   DW_ExprCall *stack;
   DW_ExprCall *free_calls;
   U64          depth;
-} DW_ExprCallStack;
+};
 
 ////////////////////////////////
 //~ Dwarf Expression Analysis & Eval Functions

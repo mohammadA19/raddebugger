@@ -14,14 +14,14 @@ typedef struct LNK_InputObj
   String8              path;
   String8              data;
   String8              lib_path;
-} LNK_InputObj;
+};
 
 typedef struct LNK_InputObjList
 {
   U64           count;
   LNK_InputObj *first;
   LNK_InputObj *last;
-} LNK_InputObjList;
+};
 
 ////////////////////////////////
 
@@ -30,19 +30,19 @@ typedef struct LNK_Directive
   struct LNK_Directive *next;
   String8               id;
   String8List           value_list;
-} LNK_Directive;
+};
 
 typedef struct LNK_DirectiveList
 {
   U64            count;
   LNK_Directive *first;
   LNK_Directive *last;
-} LNK_DirectiveList;
+};
 
 typedef struct LNK_DirectiveInfo
 {
   LNK_DirectiveList v[LNK_CmdSwitch_Count];
-} LNK_DirectiveInfo;
+};
 
 ////////////////////////////////
 
@@ -67,26 +67,26 @@ typedef struct LNK_Obj
   LNK_ExportParseList export_parse;
   String8List         include_symbol_list;
   LNK_AltNameList     alt_name_list;
-} LNK_Obj;
+};
 
 typedef struct LNK_ObjNode
 {
   struct LNK_ObjNode *next;
   LNK_Obj             data;
-} LNK_ObjNode;
+};
 
 typedef struct LNK_ObjList
 {
   U64          count;
   LNK_ObjNode *first;
   LNK_ObjNode *last;
-} LNK_ObjList;
+};
 
 typedef struct LNK_ObjNodeArray
 {
   U64          count;
   LNK_ObjNode *v;
-} LNK_ObjNodeArray;
+};
 
 ////////////////////////////////
 
@@ -97,14 +97,14 @@ typedef struct LNK_SectDefn
   String8              name;
   COFF_SectionFlags    flags;
   U64                  idx;
-} LNK_SectDefn;
+};
 
 typedef struct
 {
   U64           count;
   LNK_SectDefn *first;
   LNK_SectDefn *last;
-} LNK_SectDefnList;
+};
 
 typedef struct
 {
@@ -114,7 +114,7 @@ typedef struct
   LNK_SectDefnList *defn_arr;
   LNK_SectionTable *st;
   U64              *function_pad_min;
-} LNK_ObjIniter;
+};
 
 typedef struct
 {
@@ -122,21 +122,21 @@ typedef struct
   LNK_ObjNode      *obj_node_arr;
   LNK_SectDefnList *defn_arr;
   LNK_SectDefnList *conf_arr;
-} LNK_ObjNewSectScanner;
+};
 
 typedef struct
 {
   LNK_SectionTable *st;
   LNK_ObjNode      *obj_arr;
   U64             **chunk_count_arr_arr;
-} LNK_ChunkCounter;
+};
 
 typedef struct
 {
   LNK_ChunkManager *cman;
   U64             **chunk_id_arr_arr;
   U64               obj_idx;
-} LNK_ChunkRefAssign;
+};
 
 typedef struct
 {
@@ -146,7 +146,7 @@ typedef struct
   LNK_ObjNode      *obj_arr;
   LNK_ChunkList   **nosort_chunk_list_arr_arr;
   LNK_ChunkList   **chunk_list_arr_arr;
-} LNK_ChunkRefAssigner;
+};
 
 typedef struct
 {
@@ -154,7 +154,7 @@ typedef struct
   LNK_ObjNodeArray in_arr;
   LNK_SymbolList  *out_arr;
   Rng1U64         *range_arr;
-} LNK_SymbolCollector;
+};
 
 typedef struct
 {
@@ -163,21 +163,21 @@ typedef struct
   String8        postfix;
   B32            collect_discarded;
   LNK_ChunkList *list_arr;
-} LNK_CollectObjChunksTaskData;
+};
 
 typedef struct
 {
   Rng1U64          *range_arr;
   LNK_ObjNodeArray  in_arr;
   String8List      *out_arr;
-} LNK_DefaultLibCollector;
+};
 
 typedef struct
 {
   LNK_ObjNode  *in_arr;
   String8List  *out_arr;
   Rng1U64      *range_arr;
-} LNK_ManifestDependencyCollector;
+};
 
 ////////////////////////////////
 

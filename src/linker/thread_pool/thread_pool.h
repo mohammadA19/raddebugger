@@ -10,20 +10,20 @@ typedef struct TP_Arena
 {
   U64     count;
   Arena **v;
-} TP_Arena;
+};
 
 typedef struct TP_Temp
 {
   U64   count;
   Temp *v;
-} TP_Temp;
+};
 
 typedef struct TP_Worker
 {
   U64                id;
   struct TP_Context *pool;
   OS_Handle          handle;
-} TP_Worker;
+};
 
 typedef struct TP_Context
 {
@@ -41,7 +41,7 @@ typedef struct TP_Context
   U64          task_count;
   U64          task_done;
   S64          task_left;
-} TP_Context;
+};
 
 internal TP_Context * tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name);
 internal void         tp_release(TP_Context *pool);

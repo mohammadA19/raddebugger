@@ -21,7 +21,7 @@ typedef enum
   RDI_Checksum_SHA1,
   RDI_Checksum_SHA256,
   RDI_Checksum_TimeStamp
-} RDI_ChecksumKind;
+};
 
 ////////////////////////////////
 
@@ -33,7 +33,7 @@ typedef enum
   RDIB_DataModel_LP64,
   RDIB_DataModel_ILP64,
   RDIB_DataModel_SILP64
-} RDIB_DataModel;
+};
 
 ////////////////////////////////
 
@@ -45,7 +45,7 @@ typedef struct RDIB_EvalBytecodeOp
   RDI_EvalOp                  op;
   U64                         p_size;
   U64                         p;
-} RDIB_EvalBytecodeOp;
+};
 
 typedef struct RDIB_EvalBytecode
 {
@@ -53,7 +53,7 @@ typedef struct RDIB_EvalBytecode
   U64                  size;
   RDIB_EvalBytecodeOp *first;
   RDIB_EvalBytecodeOp *last;
-} RDIB_EvalBytecode;
+};
 
 typedef struct RDIB_Location
 {
@@ -69,20 +69,20 @@ typedef struct RDIB_Location
 
   // used by RDI builder
   U64 data_offset;
-} RDIB_Location;
+};
 
 typedef struct RDIB_LocationNode
 {
   struct RDIB_LocationNode *next;
   RDIB_Location             v;
-} RDIB_LocationNode;
+};
 
 typedef struct RDIB_LocationList
 {
   U64                count;
   RDIB_LocationNode *first;
   RDIB_LocationNode *last;
-} RDIB_LocationList;
+};
 
 
 typedef struct RDIB_Variable
@@ -97,20 +97,20 @@ typedef struct RDIB_Variable
   RDIB_LocationList          locations;
   struct RDIB_VariableChunk *chunk;
   struct RDIB_Variable      *next;
-} RDIB_Variable;
+};
 
 typedef struct RDIB_VariableNode
 {
   struct RDIB_VariableNode  *next;
   RDIB_Variable              v;
-} RDIB_VariableNode;
+};
 
 typedef struct RDIB_VariableList
 {
   U64                count;
   RDIB_VariableNode *first;
   RDIB_VariableNode *last;
-} RDIB_VariableList;
+};
 
 ////////////////////////////////
 
@@ -121,7 +121,7 @@ typedef struct
   U64      voff_max;
   String8  exe_name;
   String8  producer_string;
-} RDIB_TopLevelInfo;
+};
 
 typedef struct
 {
@@ -131,7 +131,7 @@ typedef struct
   U64                    voff_opl;
   U64                    foff_first;
   U64                    foff_opl;
-} RDIB_BinarySection;
+};
 
 typedef struct RDIB_LineTableFragment
 {
@@ -145,7 +145,7 @@ typedef struct RDIB_LineTableFragment
   struct RDIB_LineTableFragment *next_src_file;
   struct RDIB_LineTableFragment *next_line_table;
   struct RDIB_LineTableFragmentChunk *chunk;
-} RDIB_LineTableFragment;
+};
 
 typedef struct RDIB_LineTableFragmentChunk
 {
@@ -154,14 +154,14 @@ typedef struct RDIB_LineTableFragmentChunk
   U64 count;
   U64 cap;
   RDIB_LineTableFragment *v;
-} RDIB_LineTableFragmentChunk;
+};
 
 typedef struct RDIB_LineTableFragmentChunkList
 {
   U64 count;
   RDIB_LineTableFragmentChunk *first;
   RDIB_LineTableFragmentChunk *last;
-} RDIB_LineTableFragmentChunkList;
+};
 
 typedef struct RDIB_LineTable
 {
@@ -170,7 +170,7 @@ typedef struct RDIB_LineTable
   RDIB_LineTableFragment     *first;
   RDIB_LineTableFragment     *last;
   U32                         output_array_idx;
-} RDIB_LineTable;
+};
 
 typedef struct RDIB_LineTableChunk
 {
@@ -179,14 +179,14 @@ typedef struct RDIB_LineTableChunk
   U64                         count;
   U64                         cap;
   RDIB_LineTable             *v;
-} RDIB_LineTableChunk;
+};
 
 typedef struct RDIB_LineTableChunkList
 {
   U64                  count;
   RDIB_LineTableChunk *first;
   RDIB_LineTableChunk *last;
-} RDIB_LineTableChunkList;
+};
 
 typedef struct RDIB_SourceFile
 {
@@ -200,7 +200,7 @@ typedef struct RDIB_SourceFile
   U64 line_table_idx;
 
   struct RDIB_SourceFileChunk *chunk;
-} RDIB_SourceFile;
+};
 
 typedef struct RDIB_SourceFileChunk
 {
@@ -209,14 +209,14 @@ typedef struct RDIB_SourceFileChunk
   U64                          count;
   U64                          cap;
   RDIB_SourceFile             *v;
-} RDIB_SourceFileChunk;
+};
 
 typedef struct RDIB_SourceFileChunkList
 {
   U64                   count;
   RDIB_SourceFileChunk *first;
   RDIB_SourceFileChunk *last;
-} RDIB_SourceFileChunkList;
+};
 
 typedef struct RDIB_Procedure
 {
@@ -233,7 +233,7 @@ typedef struct RDIB_Procedure
   
   U64                         scope_count;
   struct RDIB_ProcedureChunk *chunk;
-} RDIB_Procedure;
+};
 
 typedef struct RDIB_Scope
 {
@@ -252,7 +252,7 @@ typedef struct RDIB_Scope
   U64 local_first_idx;
 
   struct RDIB_ScopeChunk *chunk;
-} RDIB_Scope;
+};
 
 typedef struct RDIB_InlineSite
 {
@@ -268,7 +268,7 @@ typedef struct RDIB_InlineSite
       U64   ud2;
     } convert_ref;
   };
-} RDIB_InlineSite;
+};
 
 enum RDI_MemberKindExt : RDI_MemberKind
 {
@@ -316,14 +316,14 @@ typedef struct RDIB_UDTMember
   };
   struct RDIB_UDTMember      *next;
   struct RDIB_UDTMemberChunk *chunk;
-} RDIB_UDTMember;
+};
 
 typedef struct RDIB_UDTMemberList
 {
   U64             count;
   RDIB_UDTMember *first;
   RDIB_UDTMember *last;
-} RDIB_UDTMemberList;
+};
 
 typedef struct RDIB_UDT
 {
@@ -332,7 +332,7 @@ typedef struct RDIB_UDT
   RDIB_SourceFile  *decl_src_file;
   U32               decl_line_num;
   U32               decl_col_num;
-} RDIB_UDT;
+};
 
 enum
 {
@@ -427,7 +427,7 @@ typedef struct RDIB_Type
     } members, enum_members;
   };
   struct RDIB_TypeChunk *chunk;
-} RDIB_Type;
+};
 
 typedef struct RDIB_Unit
 {
@@ -444,26 +444,26 @@ typedef struct RDIB_Unit
   Rng1U64        *virt_ranges;
 
   struct RDIB_UnitChunk *chunk;
-} RDIB_Unit;
+};
 
 typedef struct RDIB_DataSection
 {
   RDI_SectionKind tag;
   String8List     data;
-} RDIB_DataSection;
+};
 
 typedef struct RDIB_DataSectionNode
 {
   struct RDIB_DataSectionNode *next;
   RDIB_DataSection             v;
-} RDIB_DataSectionNode;
+};
 
 typedef struct RDIB_DataSectionList
 {
   U64                   count;
   RDIB_DataSectionNode *first;
   RDIB_DataSectionNode *last;
-} RDIB_DataSectionList;
+};
 
 
 typedef struct RDIB_UnitChunk
@@ -473,14 +473,14 @@ typedef struct RDIB_UnitChunk
   U64                    cap;
   RDIB_Unit             *v;
   struct RDIB_UnitChunk *next;
-} RDIB_UnitChunk;
+};
 
 typedef struct RDIB_UnitChunkList
 {
   U64             count;
   RDIB_UnitChunk *first;
   RDIB_UnitChunk *last;
-} RDIB_UnitChunkList;
+};
 
 typedef struct RDIB_VariableChunk
 {
@@ -489,14 +489,14 @@ typedef struct RDIB_VariableChunk
   U64                        count;
   U64                        cap;
   RDIB_Variable             *v;
-} RDIB_VariableChunk;
+};
 
 typedef struct RDIB_VariableChunkList
 {
   U64                 count;
   RDIB_VariableChunk *first;
   RDIB_VariableChunk *last;
-} RDIB_VariableChunkList;
+};
 
 typedef struct RDIB_ProcedureChunk
 {
@@ -505,14 +505,14 @@ typedef struct RDIB_ProcedureChunk
   U64                         count;
   U64                         cap;
   RDIB_Procedure             *v;
-} RDIB_ProcedureChunk;
+};
 
 typedef struct RDIB_ProcedureChunkList
 {
   U64                  count;
   RDIB_ProcedureChunk *first;
   RDIB_ProcedureChunk *last;
-} RDIB_ProcedureChunkList;
+};
 
 typedef struct RDIB_ScopeChunk
 {
@@ -521,27 +521,27 @@ typedef struct RDIB_ScopeChunk
   U64                     count;
   U64                     cap;
   RDIB_Scope             *v;
-} RDIB_ScopeChunk;
+};
 
 typedef struct RDIB_ScopeChunkList
 {
   U64              count;
   RDIB_ScopeChunk *first;
   RDIB_ScopeChunk *last;
-} RDIB_ScopeChunkList;
+};
 
 typedef struct RDIB_ScopeNode
 {
   struct RDIB_ScopeNode *next;
   RDIB_Scope            *v;
-} RDIB_ScopeNode;
+};
 
 typedef struct RDIB_ScopeList
 {
   U64         count;
   RDIB_Scope *first;
   RDIB_Scope *last;
-} RDIB_ScopeList;
+};
 
 typedef struct RDIB_InlineSiteChunk
 {
@@ -550,14 +550,14 @@ typedef struct RDIB_InlineSiteChunk
   U64                          count;
   U64                          cap;
   RDIB_InlineSite             *v;
-} RDIB_InlineSiteChunk;
+};
 
 typedef struct RDIB_InlineSiteChunkList
 {
   U64                   count;
   RDIB_InlineSiteChunk *first;
   RDIB_InlineSiteChunk *last;
-} RDIB_InlineSiteChunkList;
+};
 
 typedef struct RDIB_TypeChunk
 {
@@ -566,14 +566,14 @@ typedef struct RDIB_TypeChunk
   U64                    count;
   U64                    cap;
   RDIB_Type             *v;
-} RDIB_TypeChunk;
+};
 
 typedef struct
 {
   U64             count;
   RDIB_TypeChunk *first;
   RDIB_TypeChunk *last;
-} RDIB_TypeChunkList;
+};
 
 typedef struct RDIB_UDTMemberChunk
 {
@@ -582,14 +582,14 @@ typedef struct RDIB_UDTMemberChunk
   U64                         count;
   U64                         cap;
   RDIB_UDTMember             *v;
-} RDIB_UDTMemberChunk;
+};
 
 typedef struct RDIB_UDTMemberChunkList
 {
   U64                  count;
   RDIB_UDTMemberChunk *first;
   RDIB_UDTMemberChunk *last;
-} RDIB_UDTMemberChunkList;
+};
 
 ////////////////////////////////
 // UDT Forward Ref Map
@@ -598,7 +598,7 @@ typedef struct
 {
   struct RDIB_Type *type;
   U64 idx;
-} RDIB_UDTFwdrefBucket;
+};
 
 ////////////////////////////////
 // String Map
@@ -635,13 +635,13 @@ typedef struct RDIB_StringMapBucket
       };
     };
   };
-} RDIB_StringMapBucket;
+};
 
 typedef struct RDIB_StringMap
 {
   U64                    cap;
   RDIB_StringMapBucket **buckets;
-} RDIB_StringMap;
+};
 
 #define RDIB_STRING_MAP_UPDATE_FUNC(name) void name(VoidNode **head, VoidNode *node)
 typedef RDIB_STRING_MAP_UPDATE_FUNC(RDIB_StringMapUpdateFunc);
@@ -653,7 +653,7 @@ typedef struct
   U64                   *counts;
   U64                   *offsets;
   RDIB_StringMapBucket **result;
-} RDIB_GetExtantBucketsStringMapTask;
+};
 
 typedef struct
 {
@@ -662,7 +662,7 @@ typedef struct
   U8                    *string_data;
   RDIB_StringMapBucket **buckets;
   Rng1U64               *ranges;
-} RDIB_CopyStringDataTask;
+};
 
 typedef struct
 {
@@ -672,7 +672,7 @@ typedef struct
   RDIB_StringMapBucket **dst;
   U32                   *chunk_histo;
   U32                   *chunk_offsets;
-} RDIB_StringMapRadixSort;
+};
 
 ////////////////////////////////
 // Index Run Map
@@ -688,13 +688,13 @@ typedef struct RDIB_IndexRunBucket
   } sorter;
   U32Array indices;
   U64      index_in_output_array;
-} RDIB_IndexRunBucket;
+};
 
 typedef struct RDIB_IndexRunMap
 {
   U64                   cap;
   RDIB_IndexRunBucket **buckets;
-} RDIB_IndexRunMap;
+};
 
 ////////////////////////////////
 
@@ -703,7 +703,7 @@ typedef struct
   U64 voff;
   U32 size;
   U32 idx;
-} RDIB_VMapRange;
+};
 
 ////////////////////////////////
 
@@ -719,14 +719,14 @@ typedef struct RDIB_PathTreeNode
   U64                       node_idx;
   String8                   sub_path;
   RDIB_SourceFile          *src_file;
-} RDIB_PathTreeNode;
+};
 
 typedef struct RDIB_PathTreeNodeList
 {
   U64                count;
   RDIB_PathTreeNode *first;
   RDIB_PathTreeNode *last;
-} RDIB_PathTreeNodeList;
+};
 
 typedef struct RDIB_PathTree
 {
@@ -735,7 +735,7 @@ typedef struct RDIB_PathTree
   U64                    next_list_idx;
   U64                    list_count;
   RDIB_PathTreeNodeList *node_lists;
-} RDIB_PathTree;
+};
 
 ////////////////////////////////
 
@@ -797,7 +797,7 @@ typedef struct RDIB_Input
   //RDIB_TypeChunkList       union_list;
   //RDIB_TypeChunkList       enum_list;
   //RDIB_TypeChunkList       param_types;
-} RDIB_Input;
+};
 
 ////////////////////////////////
 // Parallel For Tasks
@@ -805,13 +805,13 @@ typedef struct RDIB_Input
 typedef struct
 {
   U64 *udt_counts;
-} RDIB_TypeStats;
+};
 
 typedef struct
 {
   RDIB_TypeChunk **chunks;
   RDIB_TypeStats  *type_stats;
-} RDIB_TypeStatsTask;
+};
 
 typedef struct
 {
@@ -824,7 +824,7 @@ typedef struct
     RDI_Member     *udt_members_rdi;
     RDI_EnumMember *enum_members_rdi;
   };
-} RDIB_MembersTask;
+};
 
 typedef struct
 {
@@ -832,7 +832,7 @@ typedef struct
   RDIB_TypeStats      type_stats;
   U64                *udt_base_idx;
   RDI_UDT            *udts;
-} RDIB_UserDefinesTask;
+};
 
 typedef struct
 {
@@ -842,7 +842,7 @@ typedef struct
   RDIB_TypeChunk    **type_chunks;
   RDIB_TypeStats      type_stats;
   RDI_TypeNode       *type_nodes;
-} RDIB_TypeNodesTask;
+};
 
 typedef struct
 {
@@ -865,7 +865,7 @@ typedef struct
     RDIB_TypeChunk        **types;
     RDIB_PathTreeNodeList  *path_node_lists;
   };
-} RDIB_CollectStringsTask;
+};
 
 typedef struct
 {
@@ -873,7 +873,7 @@ typedef struct
   Rng1U64         *ranges;
   RDIB_TypeChunk **chunks;
   String8List     *data_lists;
-} RDIB_BuildTypeDataTask;
+};
 
 typedef struct
 {
@@ -909,7 +909,7 @@ typedef struct
       U8                *loc_data_rdi;
     };
   };
-} RDIB_BuildSymbolSectionTask;
+};
 
 typedef union
 {
@@ -930,7 +930,7 @@ typedef union
     RDIB_VMapRange *vmaps[3];
     String8List     raw_vmaps[3];
   };
-} RDIB_VMapBuilderTask;
+};
 
 typedef struct
 {
@@ -943,14 +943,14 @@ typedef struct
     RDIB_TypeChunk       **type_chunks;
     RDIB_StringMapBucket **name_map_buckets;
   };
-} RDIB_BuildIndexRunsTask;
+};
 
 typedef struct
 {
   RDIB_IndexRunBucket **buckets;
   Rng1U64             *ranges;
   U32                 *output_array;
-} RDIB_IdxRunCopyTask;
+};
 
 typedef struct
 {
@@ -959,7 +959,7 @@ typedef struct
   U64                  *counts;
   U64                  *offsets;
   RDIB_IndexRunBucket **result;
-} RDIB_GetExtantBucketsIndexRunMapTask;
+};
 
 typedef struct
 {
@@ -969,7 +969,7 @@ typedef struct
   RDIB_IndexRunBucket **dst;
   U32                  *chunk_histo;
   U32                  *chunk_offsets;
-} RDIB_IndexRunMapRadixSort;
+};
 
 typedef struct
 {
@@ -982,14 +982,14 @@ typedef struct
   RDI_NameMapNode   **out_nodes;
   U64                *out_bucket_counts;
   U64                *out_node_counts;
-} RDIB_NameMapBuilderTask;
+};
 
 typedef struct
 {
   RDIB_PathTree    *path_tree;
   RDIB_StringMap   *string_map;
   RDI_FilePathNode *nodes_dst;
-} RDIB_BuildFilePathNodesTask;
+};
 
 typedef struct
 {
@@ -999,7 +999,7 @@ typedef struct
   U32             **out_line_nums;
   U32             **out_line_ranges;
   U64             **out_voffs;
-} RDIB_SrcLineMapsTask;
+};
 
 typedef struct
 {
@@ -1009,7 +1009,7 @@ typedef struct
   U64       *out_line_table_counts;
   U64      **out_line_table_voffs;
   RDI_Line **out_line_table_lines;
-} RDIB_BuildLineTablesTask;
+};
 
 typedef struct
 {
@@ -1018,7 +1018,7 @@ typedef struct
   RDIB_PathTree         *path_tree;
   RDIB_SourceFileChunk **src_file_chunks;
   RDI_SourceFile        *src_files_dst;
-} RDIB_FillSourceFilesTask;
+};
 
 ////////////////////////////////
 // Data Model Helpers

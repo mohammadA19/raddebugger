@@ -110,7 +110,7 @@ REGS_RegCodeX64_k5,
 REGS_RegCodeX64_k6,
 REGS_RegCodeX64_k7,
 REGS_RegCodeX64_COUNT,
-} REGS_RegCodeX64;
+};
 
 enum REGS_AliasCodeX64
 {
@@ -211,7 +211,7 @@ REGS_AliasCodeX64_mm5,
 REGS_AliasCodeX64_mm6,
 REGS_AliasCodeX64_mm7,
 REGS_AliasCodeX64_COUNT,
-} REGS_AliasCodeX64;
+};
 
 enum REGS_RegCodeX86
 {
@@ -277,7 +277,7 @@ REGS_RegCodeX86_ymm5,
 REGS_RegCodeX86_ymm6,
 REGS_RegCodeX86_ymm7,
 REGS_RegCodeX86_COUNT,
-} REGS_RegCodeX86;
+};
 
 enum REGS_AliasCodeX86
 {
@@ -318,7 +318,7 @@ REGS_AliasCodeX86_mm5,
 REGS_AliasCodeX86_mm6,
 REGS_AliasCodeX86_mm7,
 REGS_AliasCodeX86_COUNT,
-} REGS_AliasCodeX86;
+};
 
 struct REGS_RegBlockX64
 {

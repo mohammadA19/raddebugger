@@ -118,7 +118,7 @@ typedef struct
 {
   U64 major;
   U64 minor;
-} Version;
+};
 
 ////////////////////////////////
 
@@ -126,7 +126,7 @@ typedef struct ISectOff
 {
   U32 isect;
   U32 off;
-} ISectOff;
+};
 
 ////////////////////////////////
 
@@ -134,13 +134,13 @@ typedef struct PairU32
 {
   U32 v0;
   U32 v1;
-} PairU32;
+};
 
 typedef struct PairU64
 {
   U64 v0;
   U64 v1;
-} PairU64;
+};
 
 ////////////////////////////////
 

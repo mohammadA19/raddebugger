@@ -81,7 +81,7 @@ typedef struct COFF_FileHeader
   U32                  symbol_count;
   U16                  optional_header_size;
   COFF_FileHeaderFlags flags;
-} COFF_FileHeader;
+};
 
 typedef struct COFF_BigObjHeader
 {
@@ -95,7 +95,7 @@ typedef struct COFF_BigObjHeader
   U32              section_count;
   U32              symbol_table_foff;
   U32              symbol_count;
-} COFF_BigObjHeader;
+};
 
 enum COFF_SectionAlign : U32
 {
@@ -155,7 +155,7 @@ typedef struct COFF_SectionHeader
   U16               reloc_count;
   U16               line_count;
   COFF_SectionFlags flags;
-} COFF_SectionHeader;
+};
 
 ////////////////////////////////
 
@@ -235,7 +235,7 @@ typedef union COFF_SymbolName
     U32 zeroes;
     U32 string_table_offset;
   } long_name;
-} COFF_SymbolName;
+};
 
 #define COFF_SymbolType_IsFunc(x) ((x).u.lsb == COFF_SymType_Null && (x).u.msb == COFF_SymDType_Func)
 
@@ -246,7 +246,7 @@ typedef union COFF_SymbolType
     COFF_SymType lsb;
   } u;
   U16 v;
-} COFF_SymbolType;
+};
 
 typedef struct COFF_Symbol16
 {
@@ -256,7 +256,7 @@ typedef struct COFF_Symbol16
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   U8                   aux_symbol_count;
-} COFF_Symbol16;
+};
 
 typedef struct COFF_Symbol32
 {
@@ -266,7 +266,7 @@ typedef struct COFF_Symbol32
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   U8                   aux_symbol_count;
-} COFF_Symbol32;
+};
 
 // Auxilary symbols are allocated with fixed size so that symbol table could be maintaned as array of regular size.
 #define COFF_AuxSymbolSize 18
@@ -286,7 +286,7 @@ typedef struct COFF_SymbolFuncDef
   U32 ptr_to_ln;
   U32 ptr_to_next_func;
   U8  unused[2];
-} COFF_SymbolFuncDef;
+};
 
 // storage class: Function
 typedef struct COFF_SymbolFunc
@@ -296,7 +296,7 @@ typedef struct COFF_SymbolFunc
   U8  unused2[2];
   U32 ptr_to_next_func;
   U8  unused3[2];
-} COFF_SymbolFunc;
+};
 
 // storage class: WeakExternal
 typedef struct COFF_SymbolWeakExt
@@ -304,12 +304,12 @@ typedef struct COFF_SymbolWeakExt
   U32              tag_index;
   COFF_WeakExtType characteristics;
   U8               unused[10];
-} COFF_SymbolWeakExt;
+};
 
 typedef struct COFF_SymbolFile 
 {
   U8 name[18];
-} COFF_SymbolFile;
+};
 
 enum COFF_ComdatSelectType : U8
 {
@@ -334,7 +334,7 @@ typedef struct COFF_SymbolSecDef
   COFF_ComdatSelectType selection;
   U8                    unused;
   U16                   number_hi;
-} COFF_SymbolSecDef;
+};
 
 ////////////////////////////////
 
@@ -435,7 +435,7 @@ typedef struct COFF_Reloc
   U32            apply_off; // section relative offset where relocation is placed
   U32            isymbol;   // zero based index into coff symbol table
   COFF_RelocType type;      // relocation type that depends on the arch
-} COFF_Reloc;
+};
 
 ////////////////////////////////
 
@@ -445,7 +445,7 @@ typedef struct COFF_ResourceHeaderPrefix
 {
   U32 data_size;
   U32 header_size;
-} COFF_ResourceHeaderPrefix;
+};
 
 enum COFF_ResourceMemoryFlags : U16
 {
@@ -461,7 +461,7 @@ typedef struct COFF_ResourceDataEntry
   U32 data_size;
   U32 code_page;
   U32 reserved;
-} COFF_ResourceDataEntry;
+};
 
 typedef struct COFF_ResourceDirTable
 {
@@ -471,7 +471,7 @@ typedef struct COFF_ResourceDirTable
   U16            minor_version;
   U16            name_entry_count;
   U16            id_entry_count;
-} COFF_ResourceDirTable;
+};
 
 #define COFF_Resource_SubDirFlag (1u << 31u)
 typedef struct COFF_ResourceDirEntry
@@ -484,7 +484,7 @@ typedef struct COFF_ResourceDirEntry
     U32 data_entry_offset;
     U32 sub_dir_offset;
   } id;
-} COFF_ResourceDirEntry;
+};
 
 ////////////////////////////////
 
@@ -500,7 +500,7 @@ typedef struct COFF_ArchiveMemberHeader
   U8 mode[8];
   U8 size[10];
   U8 end[2];
-} COFF_ArchiveMemberHeader;
+};
 
 #define COFF_ImportType_Invalid max_U16
 enum COFF_ImportType : U16
@@ -540,7 +540,7 @@ typedef struct COFF_ImportHeader
   COFF_ImportHeaderFlags flags;
   // char *func_name;
   // char *dll_name;
-} COFF_ImportHeader;
+};
 
 #pragma pack(pop)
 

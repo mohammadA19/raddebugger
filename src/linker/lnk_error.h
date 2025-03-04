@@ -84,7 +84,7 @@ typedef enum
   LNK_Warning_Last,
   
   LNK_Error_Count
-} LNK_ErrorCode;
+};
 
 typedef enum
 {
@@ -92,7 +92,7 @@ typedef enum
   LNK_ErrorMode_Stop,
   LNK_ErrorMode_Continue,
   LNK_ErrorMode_Warn,
-} LNK_ErrorMode;
+};
 
 typedef enum
 {
@@ -101,13 +101,13 @@ typedef enum
   LNK_InternalError_InvalidPath,
   LNK_InternalError_IncompleteSwitch,
   LNK_InternalError_OutOfMemory
-} LNK_InternalError;
+};
 
 typedef enum
 {
   LNK_ErrorCodeStatus_Active,
   LNK_ErrorCodeStatus_Ignore,
-} LNK_ErrorCodeStatus;
+};
 
 internal void lnk_init_error_handler(void);
 internal void lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args);

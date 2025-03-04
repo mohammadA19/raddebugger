@@ -12,7 +12,7 @@ typedef struct LNK_ImportFunc
   String8                name;
   String8                thunk_symbol_name;
   String8                iat_symbol_name;
-} LNK_ImportFunc;
+};
 
 typedef struct LNK_ImportDLL
 {
@@ -30,7 +30,7 @@ typedef struct LNK_ImportDLL
   String8                name;
   COFF_MachineType       machine;
   HashTable             *func_ht;
-} LNK_ImportDLL;
+};
 
 enum
 {
@@ -57,7 +57,7 @@ typedef struct LNK_ImportTable
   LNK_Chunk            *code_chunk;
   LNK_ImportTableFlags  flags;
   HashTable            *dll_ht;
-} LNK_ImportTable;
+};
 
 internal LNK_ImportTable * lnk_import_table_alloc_static(LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType machine);
 internal LNK_ImportTable * lnk_import_table_alloc_delayed(LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable);
