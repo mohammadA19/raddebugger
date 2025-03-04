@@ -4,7 +4,7 @@
 ////////////////////////////////
 // Enum <-> String
 
-global read_only struct
+static read_only struct
 {
   LNK_CmdSwitchType type;
   char             *name;
@@ -167,7 +167,7 @@ global read_only struct
   { LNK_CmdSwitch_Help, "?",    "", "" },
 };
 
-global read_only struct
+static read_only struct
 {
   char         *name;
   LNK_InputType type;
@@ -179,7 +179,7 @@ global read_only struct
   { "res",  LNK_Input_Res },
 };
 
-global read_only struct
+static read_only struct
 {
   char         *name;
   LNK_DebugMode mode;
@@ -191,7 +191,7 @@ global read_only struct
   { "full",     LNK_DebugMode_Full     },
 }; 
 
-global read_only struct
+static read_only struct
 {
    char                 *name;
    LNK_TypeNameHashMode  mode;

@@ -180,7 +180,7 @@ rdi_format_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 ////////////////////////////////
 //~ rjf: RADDBG Compound Stringize Functions
 
-global char rdi_stringize_spaces[] = "                                ";
+static char rdi_stringize_spaces[] = "                                ";
 
 void
 rdi_stringize_data_sections(Arena *arena, String8List *out, RDI_Parsed *rdi, U32 indent_level)

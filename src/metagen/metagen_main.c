@@ -418,7 +418,7 @@ entry_point(CmdLine *cmdline)
         String8 layer_key = mg_layer_key_from_path(file->string);
         MG_Layer *layer = mg_layer_from_key(layer_key);
         String8 embed_string = mg_c_string_literal_from_multiline_string(node->first->string);
-        str8_list_pushf(mg_arena, &layer->h_tables, "read_only global String8 %S =\nstr8_lit_comp(\n", node->string);
+        str8_list_pushf(mg_arena, &layer->h_tables, "read_only static String8 %S =\nstr8_lit_comp(\n", node->string);
         str8_list_push (mg_arena, &layer->h_tables, embed_string);
         str8_list_pushf(mg_arena, &layer->h_tables, ");\n\n");
       }
@@ -428,10 +428,10 @@ entry_point(CmdLine *cmdline)
         MG_Layer *layer = mg_layer_from_key(layer_key);
         String8 data = os_data_from_file_path(mg_arena, node->first->string);
         String8 embed_string = mg_c_array_literal_contents_from_data(data);
-        str8_list_pushf(mg_arena, &layer->h_tables, "read_only global U8 %S__data[] =\n{\n", node->string);
+        str8_list_pushf(mg_arena, &layer->h_tables, "read_only static U8 %S__data[] =\n{\n", node->string);
         str8_list_push (mg_arena, &layer->h_tables, embed_string);
         str8_list_pushf(mg_arena, &layer->h_tables, "};\n\n");
-        str8_list_pushf(mg_arena, &layer->h_tables, "read_only global String8 %S = {%S__data, sizeof(%S__data)};\n",
+        str8_list_pushf(mg_arena, &layer->h_tables, "read_only static String8 %S = {%S__data, sizeof(%S__data)};\n",
                         node->string,
                         node->string,
                         node->string);

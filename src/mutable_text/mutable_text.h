@@ -68,7 +68,7 @@ struct MTX_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-global MTX_Shared *mtx_shared = 0;
+static MTX_Shared *mtx_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization

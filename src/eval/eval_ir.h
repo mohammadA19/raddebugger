@@ -63,7 +63,7 @@ struct E_IRCtx
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only E_IRNode e_irnode_nil = {&e_irnode_nil, &e_irnode_nil, &e_irnode_nil};
+static read_only E_IRNode e_irnode_nil = {&e_irnode_nil, &e_irnode_nil, &e_irnode_nil};
 thread_static E_IRCtx *e_ir_ctx = 0;
 
 ////////////////////////////////

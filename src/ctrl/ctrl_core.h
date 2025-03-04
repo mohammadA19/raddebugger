@@ -864,8 +864,8 @@ struct CTRL_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global CTRL_State *ctrl_state = 0;
-read_only global CTRL_Entity ctrl_entity_nil =
+static CTRL_State *ctrl_state = 0;
+read_only static CTRL_Entity ctrl_entity_nil =
 {
   &ctrl_entity_nil,
   &ctrl_entity_nil,

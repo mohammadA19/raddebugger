@@ -1063,7 +1063,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, String8 
       U64 block_num_visual_rows = dim_1u64(block_relative_range);
       Rng1U64 block_global_range = r1u64(visual_idx_off, visual_idx_off + block_num_visual_rows);
       
-      // rjf: get skip/chop of global range
+      // rjf: get skip/chop of static range
       U64 num_skipped = 0;
       U64 num_chopped = 0;
       {

@@ -74,12 +74,12 @@ lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, L
   LNK_DefinedSymbol *def = &symbol->u.defined;
 
   
-  // NOTE: It is possible to export a global variable as CODE
+  // NOTE: It is possible to export a static variable as CODE
   // with following snippet:
   //    int global_bar = 0;
   //    #pragma comment(linker, "/export:global_bar")
   // for some reason MSVC and LLD don't check symbol type and default
-  // to CODE instead of DATA. But if you try export global variable with:
+  // to CODE instead of DATA. But if you try export static variable with:
   //    #pragma comment(linker, "/export:global_bar,CODE")
   // MSVC and LLD issue an error. For compatibility sake we do the same thing too.
   COFF_ImportType type = coff_import_header_type_from_string(exp_parse->type);

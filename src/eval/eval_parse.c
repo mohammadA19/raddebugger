@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Lexing/Parsing Data Tables
 
-global read_only String8 e_multichar_symbol_strings[] =
+static read_only String8 e_multichar_symbol_strings[] =
 {
   str8_lit_comp("<<"),
   str8_lit_comp(">>"),
@@ -17,7 +17,7 @@ global read_only String8 e_multichar_symbol_strings[] =
   str8_lit_comp("||"),
 };
 
-global read_only S64 e_max_precedence = 15;
+static read_only S64 e_max_precedence = 15;
 
 ////////////////////////////////
 //~ rjf: Basic Map Functions
@@ -1469,8 +1469,8 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
             }
           }
           
-          //- rjf: try global variables
-          if(mapped_identifier == 0 && (resolution_qualifier.size == 0 || str8_match(resolution_qualifier, str8_lit("global"), 0))) ProfScope("try to map name as global variable")
+          //- rjf: try static variables
+          if(mapped_identifier == 0 && (resolution_qualifier.size == 0 || str8_match(resolution_qualifier, str8_lit("static"), 0))) ProfScope("try to map name as static variable")
           {
             for(U64 module_idx = 0; module_idx < e_parse_ctx->modules_count; module_idx += 1)
             {
@@ -1495,7 +1495,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
                 // NOTE(rjf): apparently, PDBs can be produced such that they
                 // also keep stale *GLOBAL VARIABLE SYMBOLS* around too. I
                 // don't know of a magic hash table fixup path in PDBs, so
-                // in this case, I'm going to prefer the latest-added global.
+                // in this case, I'm going to prefer the latest-added static.
                 U32 match_idx = matches[matches_count-1];
                 RDI_GlobalVariable *global_var = rdi_element_from_name_idx(rdi, GlobalVariables, match_idx);
                 E_OpList oplist = {0};

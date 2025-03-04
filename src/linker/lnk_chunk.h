@@ -155,8 +155,8 @@ srtuct
 
 ////////////////////////////////
 
-read_only global LNK_Chunk  g_null_chunk      = { 0, 0, /* is_discarded: */ 1 };
-read_only global LNK_Chunk *g_null_chunk_ptr  = &g_null_chunk;
+read_only static LNK_Chunk  g_null_chunk      = { 0, 0, /* is_discarded: */ 1 };
+read_only static LNK_Chunk *g_null_chunk_ptr  = &g_null_chunk;
 
 ////////////////////////////////
 

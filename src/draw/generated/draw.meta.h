@@ -16,10 +16,10 @@ DR_XForm2DNode *top_xform2d;\
 DR_ClipNode *top_clip;\
 DR_TransparencyNode *top_transparency;\
 }
-read_only global DR_Tex2DSampleKindNode dr_nil_tex2d_sample_kind = {0, R_Tex2DSampleKind_Nearest};
-read_only global DR_XForm2DNode dr_nil_xform2d = {0, {1, 0, 0, 0, 1, 0, 0, 0, 1}};
-read_only global DR_ClipNode dr_nil_clip = {0, {0}};
-read_only global DR_TransparencyNode dr_nil_transparency = {0, 0};
+read_only static DR_Tex2DSampleKindNode dr_nil_tex2d_sample_kind = {0, R_Tex2DSampleKind_Nearest};
+read_only static DR_XForm2DNode dr_nil_xform2d = {0, {1, 0, 0, 0, 1, 0, 0, 0, 1}};
+read_only static DR_ClipNode dr_nil_clip = {0, {0}};
+read_only static DR_TransparencyNode dr_nil_transparency = {0, 0};
 #define DR_BucketStackInits(b) do{\
 (b)->top_tex2d_sample_kind = &dr_nil_tex2d_sample_kind;\
 (b)->top_xform2d = &dr_nil_xform2d;\

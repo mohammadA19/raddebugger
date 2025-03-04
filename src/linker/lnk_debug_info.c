@@ -5023,7 +5023,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       scope_stack->defrange_target = 0;
 
       if (sym_local->flags & CV_LocalFlag_Global) {
-        // TODO: apply global modifications
+        // TODO: apply static modifications
       } else if (sym_local->flags & CV_LocalFlag_Static) {
         // TODO: apply local modifications
       }

@@ -2085,7 +2085,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
                 symbol.data = str8(data_ptr, *size_ptr - sizeof(*kind_ptr));
                 gsi_push(gsi, &symbol);
               } else {
-                Assert(!"invalid global codeview symbol");
+                Assert(!"invalid static codeview symbol");
               }
             }
             

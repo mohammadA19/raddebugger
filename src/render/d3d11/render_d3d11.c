@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Input Layout Element Tables
 
-global D3D11_INPUT_ELEMENT_DESC r_d3d11_g_rect_ilay_elements[] =
+static D3D11_INPUT_ELEMENT_DESC r_d3d11_g_rect_ilay_elements[] =
 {
   { "POS",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,                            0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
   { "TEX",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
@@ -19,7 +19,7 @@ global D3D11_INPUT_ELEMENT_DESC r_d3d11_g_rect_ilay_elements[] =
   { "STY",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 };
 
-global D3D11_INPUT_ELEMENT_DESC r_d3d11_g_mesh_ilay_elements[] =
+static D3D11_INPUT_ELEMENT_DESC r_d3d11_g_mesh_ilay_elements[] =
 {
   { "POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   { "NOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },

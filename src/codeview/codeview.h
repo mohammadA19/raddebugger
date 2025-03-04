@@ -23,7 +23,7 @@ typedef U16 CV_ModIndex;
 typedef U16 CV_SectionIndex;
 typedef U16 CV_Reg;
 
-read_only global CV_TypeId cv_type_id_variadic = 0xFFFFFFFF;
+read_only static CV_TypeId cv_type_id_variadic = 0xFFFFFFFF;
 
 ////////////////////////////////
 //~ rjf: Generated Code

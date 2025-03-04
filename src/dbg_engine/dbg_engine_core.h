@@ -347,8 +347,8 @@ struct D_State
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global D_ViewRuleSpec d_nil_core_view_rule_spec = {0};
-global D_State *d_state = 0;
+read_only static D_ViewRuleSpec d_nil_core_view_rule_spec = {0};
+static D_State *d_state = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

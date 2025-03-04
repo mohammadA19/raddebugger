@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global LNK_Timer g_timers[LNK_Timer_Count];
+static LNK_Timer g_timers[LNK_Timer_Count];
 
 void
 lnk_timer_begin(LNK_TimerType timer)

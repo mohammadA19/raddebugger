@@ -883,7 +883,7 @@ struct RD_State
   String8 cfg_code_font_path;
   FNT_Tag cfg_font_tags[RD_FontSlot_COUNT]; // derivative from font paths
   
-  // rjf: global settings
+  // rjf: static settings
   RD_SettingVal cfg_setting_vals[RD_CfgSrc_COUNT][RD_SettingCode_COUNT];
   
   //-
@@ -894,10 +894,10 @@ struct RD_State
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global RD_CfgTree d_nil_cfg_tree = {&d_nil_cfg_tree, RD_CfgSrc_User, &md_nil_node};
-read_only global RD_CfgVal d_nil_cfg_val = {&d_nil_cfg_val, &d_nil_cfg_val, &d_nil_cfg_tree, &d_nil_cfg_tree};
+read_only static RD_CfgTree d_nil_cfg_tree = {&d_nil_cfg_tree, RD_CfgSrc_User, &md_nil_node};
+read_only static RD_CfgVal d_nil_cfg_val = {&d_nil_cfg_val, &d_nil_cfg_val, &d_nil_cfg_tree, &d_nil_cfg_tree};
 
-read_only global RD_Cfg rd_nil_cfg =
+read_only static RD_Cfg rd_nil_cfg =
 {
   &rd_nil_cfg,
   &rd_nil_cfg,
@@ -906,7 +906,7 @@ read_only global RD_Cfg rd_nil_cfg =
   &rd_nil_cfg,
 };
 
-read_only global RD_Entity rd_nil_entity =
+read_only static RD_Entity rd_nil_entity =
 {
   &rd_nil_entity,
   &rd_nil_entity,
@@ -915,9 +915,9 @@ read_only global RD_Entity rd_nil_entity =
   &rd_nil_entity,
 };
 
-read_only global RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
+read_only static RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
 
-read_only global RD_ViewRuleInfo rd_nil_view_rule_info =
+read_only static RD_ViewRuleInfo rd_nil_view_rule_info =
 {
   {0},
   {0},
@@ -929,7 +929,7 @@ read_only global RD_ViewRuleInfo rd_nil_view_rule_info =
   RD_VIEW_RULE_UI_FUNCTION_NAME(null)
 };
 
-read_only global RD_View rd_nil_view =
+read_only static RD_View rd_nil_view =
 {
   &rd_nil_view,
   &rd_nil_view,
@@ -940,7 +940,7 @@ read_only global RD_View rd_nil_view =
   &rd_nil_view_rule_info,
 };
 
-read_only global RD_Panel rd_nil_panel =
+read_only static RD_Panel rd_nil_panel =
 {
   &rd_nil_panel,
   &rd_nil_panel,
@@ -949,9 +949,9 @@ read_only global RD_Panel rd_nil_panel =
   &rd_nil_panel,
 };
 
-global RD_State *rd_state = 0;
-global RD_Handle rd_last_drag_drop_panel = {0};
-global RD_Handle rd_last_drag_drop_prev_tab = {0};
+static RD_State *rd_state = 0;
+static RD_Handle rd_last_drag_drop_panel = {0};
+static RD_Handle rd_last_drag_drop_prev_tab = {0};
 
 ////////////////////////////////
 //~ rjf: Handle Type Pure Functions

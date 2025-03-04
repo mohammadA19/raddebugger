@@ -1564,7 +1564,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   }
   
   //////////////////////////////
-  //- rjf: mouse -> set global frontend hovered line info
+  //- rjf: mouse -> set static frontend hovered line info
   //
   if(ui_hovering(text_container_sig) && contains_1s64(params->line_num_range, mouse_pt.line) && (ui_mouse().x - text_container_box->rect.x0 < params->line_num_width_px + line_num_padding_px))
   {

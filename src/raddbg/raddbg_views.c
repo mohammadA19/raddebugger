@@ -8029,7 +8029,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   {
     RD_SettingsItemList items_list = {0};
     
-    //- rjf: global settings header
+    //- rjf: static settings header
     if(query.size == 0)
     {
       RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
@@ -8041,7 +8041,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       n->v.category = RD_SettingsItemKind_GlobalSetting;
     }
     
-    //- rjf: gather all global settings
+    //- rjf: gather all static settings
     if(sv->category_opened[RD_SettingsItemKind_GlobalSetting] || query.size != 0)
     {
       for EachEnumVal(RD_SettingCode, code)

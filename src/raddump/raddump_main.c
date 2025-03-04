@@ -90,7 +90,7 @@
 
 ////////////////////////////////
 
-global read_only struct
+static read_only struct
 {
   RD_Option opt;
   char     *name;
@@ -145,7 +145,7 @@ global read_only struct
   { RD_Option_RdiUnitVMap,         "rdi_units_virtual_map", "Dump units virtual map"  },
   { RD_Option_RdiTypeNodes,        "rdi_type_nodes",        "Dump type nodes"         },
   { RD_Option_RdiUserDefinedTypes, "rdi_udt",               "Dump user defined types" },
-  { RD_Option_RdiGlobalVars,       "rdi_global_vars",       "Dump global variables"   },
+  { RD_Option_RdiGlobalVars,       "rdi_global_vars",       "Dump static variables"   },
   { RD_Option_RdiThreadVars,       "rdi_thread_vars",       "Dump thread variables"   },
   { RD_Option_RdiScopes,           "rdi_scopes",            "Dump scopes"             },
   { RD_Option_RdiScopeVMap,        "rdi_scope_virtual_map", "Dump scope virtual map"  },

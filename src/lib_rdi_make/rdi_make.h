@@ -1400,7 +1400,7 @@ RDI_PROC RDIM_NameMapBakeResult         rdim_bake_name_map(RDIM_Arena *arena, RD
 //- rjf: partial bakes -> final bake functions
 RDI_PROC RDIM_NameMapBakeResult         rdim_name_map_bake_results_combine(RDIM_Arena *arena, RDIM_NameMapBakeResult *results, RDI_U64 results_count);
 
-//- rjf: independent (top-level, global) baking functions
+//- rjf: independent (top-level, static) baking functions
 RDI_PROC RDIM_TopLevelInfoBakeResult    rdim_bake_top_level_info(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_TopLevelInfo *src);
 RDI_PROC RDIM_BinarySectionBakeResult   rdim_bake_binary_sections(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BinarySectionList *src);
 RDI_PROC RDIM_UnitBakeResult            rdim_bake_units(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakePathTree *path_tree, RDIM_UnitChunkList *src);

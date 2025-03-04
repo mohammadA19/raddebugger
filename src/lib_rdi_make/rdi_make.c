@@ -2390,7 +2390,7 @@ rdim_name_map_bake_results_combine(RDIM_Arena *arena, RDIM_NameMapBakeResult *re
   return result;
 }
 
-//- rjf: independent (top-level, global) baking functions
+//- rjf: independent (top-level, static) baking functions
 
 RDI_PROC RDIM_TopLevelInfoBakeResult
 rdim_bake_top_level_info(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_TopLevelInfo *src)
@@ -3106,7 +3106,7 @@ rdim_bake_global_variables(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, 
 RDI_PROC RDIM_GlobalVMapBakeResult
 rdim_bake_global_vmap(RDIM_Arena *arena, RDIM_SymbolChunkList *src)
 {
-  //- rjf: build global vmap
+  //- rjf: build static vmap
   RDIM_BakeVMap global_vmap = {0};
   {
     RDIM_Temp scratch = rdim_scratch_begin(&arena, 1);
@@ -3149,7 +3149,7 @@ rdim_bake_global_vmap(RDIM_Arena *arena, RDIM_SymbolChunkList *src)
         }
       }
       
-      // rjf: fill nil global
+      // rjf: fill nil static
       {
         RDI_U32 global_idx = 0;
         RDI_U64 first = 0;

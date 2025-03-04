@@ -496,7 +496,7 @@ struct P2R_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global P2R_State *p2r_state = 0;
+static P2R_State *p2r_state = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

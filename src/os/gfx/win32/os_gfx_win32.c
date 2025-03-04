@@ -10,8 +10,8 @@ typedef BOOL w32_SetProcessDpiAwarenessContext_Type(void* value);
 typedef UINT w32_GetDpiForWindow_Type(HWND hwnd);
 typedef int w32_GetSystemMetricsForDpi_Type(int nIndex, UINT dpi);
 #define w32_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((void*)-4)
-global w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
-global w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
+static w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
+static w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

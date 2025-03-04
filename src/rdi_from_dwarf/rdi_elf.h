@@ -162,7 +162,7 @@ enum ELF_Identification{
   ELF_Identification_PAD = 9,
 };
 
-read_only global U8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
+read_only static U8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
 
 enum ELF_Class{
   ELF_Class_NONE = 0,

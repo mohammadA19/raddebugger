@@ -187,7 +187,7 @@ struct FNT_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global FNT_State *f_state = 0;
+static FNT_State *f_state = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Functions

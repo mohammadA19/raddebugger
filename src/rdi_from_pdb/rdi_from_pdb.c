@@ -2262,7 +2262,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           COFF_SectionHeader *section = (0 < data32->sec && data32->sec <= in->coff_sections.count) ? &in->coff_sections.v[data32->sec-1] : 0;
           U64 voff = (section ? section->voff : 0) + data32->off;
           
-          // rjf: determine if this is an exact duplicate global
+          // rjf: determine if this is an exact duplicate static
           //
           // PDB likes to have duplicates of these spread across different
           // symbol streams so we deduplicate across the entire translation
@@ -2270,16 +2270,16 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           //
           B32 is_duplicate = 0;
           {
-            // TODO(rjf): @important global symbol dedup
+            // TODO(rjf): @important static symbol dedup
           }
           
-          // rjf: is not duplicate -> push new global
+          // rjf: is not duplicate -> push new static
           if(!is_duplicate)
           {
-            // rjf: unpack global variable's type
+            // rjf: unpack static variable's type
             RDIM_Type *type = p2r_type_ptr_from_itype(data32->itype);
             
-            // rjf: unpack global's container type
+            // rjf: unpack static's container type
             RDIM_Type *container_type = 0;
             U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
             if(container_name_opl > 2)
@@ -2289,7 +2289,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
               container_type = p2r_type_ptr_from_itype(cv_type_id);
             }
             
-            // rjf: unpack global's container symbol
+            // rjf: unpack static's container symbol
             RDIM_Symbol *container_symbol = 0;
             if(container_type == 0 && top_scope_node != 0)
             {
@@ -2544,7 +2544,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           String8 name = str8_cstring_capped(slocal+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(slocal->itype);
           
-          // rjf: determine if this symbol encodes the beginning of a global modification
+          // rjf: determine if this symbol encodes the beginning of a static modification
           B32 is_global_modification = 0;
           if((slocal->flags & CV_LocalFlag_Global) ||
              (slocal->flags & CV_LocalFlag_Static))
@@ -2552,15 +2552,15 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             is_global_modification = 1;
           }
           
-          // rjf: is global modification -> emit global modification symbol
+          // rjf: is static modification -> emit static modification symbol
           if(is_global_modification)
           {
-            // TODO(rjf): add global modification symbols
+            // TODO(rjf): add static modification symbols
             defrange_target = 0;
             defrange_target_is_param = 0;
           }
           
-          // rjf: is not a global modification -> emit a local variable
+          // rjf: is not a static modification -> emit a local variable
           if(!is_global_modification)
           {
             // rjf: determine local kind
@@ -2765,7 +2765,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_SymFileStatic *file_static = (CV_SymFileStatic*)sym_header_struct_base;
           String8 name = str8_cstring_capped(file_static+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(file_static->itype);
-          // TODO(rjf): emit a global modifier symbol
+          // TODO(rjf): emit a static modifier symbol
           defrange_target = 0;
           defrange_target_is_param = 0;
         }break;
@@ -3089,7 +3089,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
   }
   
   //////////////////////////////////////////////////////////////
-  //- rjf: kickoff top-level global symbol stream parse
+  //- rjf: kickoff top-level static symbol stream parse
   //
   P2R_SymbolStreamParseIn sym_parse_in = {dbi ? msf_data_from_stream(msf, dbi->sym_sn) : str8_zero()};
   ASYNC_Task *sym_parse_task = !dbi ? 0 : async_task_launch(scratch.arena, p2r_symbol_stream_parse_work, .input = &sym_parse_in);
@@ -3242,7 +3242,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
   ASYNC_Task *unit_convert_task = async_task_launch(scratch.arena, p2r_units_convert_work, .input = &unit_convert_in);
   
   //////////////////////////////////////////////////////////////
-  //- rjf: join global sym stream parse
+  //- rjf: join static sym stream parse
   //
   CV_SymParsed *sym = async_task_join_struct(sym_parse_task, CV_SymParsed);
   
@@ -4221,7 +4221,7 @@ ASYNC_WORK_DEF(p2r_bake_global_variables_work)
   Arena *arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeGlobalVariablesIn *in = (P2R_BakeGlobalVariablesIn *)input;
   RDIM_GlobalVariableBakeResult *out = push_array(arena, RDIM_GlobalVariableBakeResult, 1);
-  ProfScope("bake global variables") *out = rdim_bake_global_variables(arena, in->strings, in->global_variables);
+  ProfScope("bake static variables") *out = rdim_bake_global_variables(arena, in->strings, in->global_variables);
   ProfEnd();
   return out;
 }
@@ -4232,7 +4232,7 @@ ASYNC_WORK_DEF(p2r_bake_global_vmap_work)
   Arena *arena = p2r_state->work_thread_arenas[thread_idx];
   P2R_BakeGlobalVMapIn *in = (P2R_BakeGlobalVMapIn *)input;
   RDIM_GlobalVMapBakeResult *out = push_array(arena, RDIM_GlobalVMapBakeResult, 1);
-  ProfScope("bake global vmap") *out = rdim_bake_global_vmap(arena, in->global_variables);
+  ProfScope("bake static vmap") *out = rdim_bake_global_vmap(arena, in->global_variables);
   ProfEnd();
   return out;
 }
@@ -4795,8 +4795,8 @@ p2r_bake(Arena *arena, P2R_Convert2Bake *in)
   ProfScope("unit vmap")                    out_results->unit_vmap             = *async_task_join_struct(bake_unit_vmap_task, RDIM_UnitVMapBakeResult);
   ProfScope("source files")                 out_results->src_files             = *async_task_join_struct(bake_src_files_task, RDIM_SrcFileBakeResult);
   ProfScope("UDTs")                         out_results->udts                  = *async_task_join_struct(bake_udts_task, RDIM_UDTBakeResult);
-  ProfScope("global variables")             out_results->global_variables      = *async_task_join_struct(bake_global_variables_task, RDIM_GlobalVariableBakeResult);
-  ProfScope("global vmap")                  out_results->global_vmap           = *async_task_join_struct(bake_global_vmap_task, RDIM_GlobalVMapBakeResult);
+  ProfScope("static variables")             out_results->global_variables      = *async_task_join_struct(bake_global_variables_task, RDIM_GlobalVariableBakeResult);
+  ProfScope("static vmap")                  out_results->global_vmap           = *async_task_join_struct(bake_global_vmap_task, RDIM_GlobalVMapBakeResult);
   ProfScope("thread variables")             out_results->thread_variables      = *async_task_join_struct(bake_thread_variables_task, RDIM_ThreadVariableBakeResult);
   ProfScope("procedures")                   out_results->procedures            = *async_task_join_struct(bake_procedures_task, RDIM_ProcedureBakeResult);
   ProfScope("scopes")                       out_results->scopes                = *async_task_join_struct(bake_scopes_task, RDIM_ScopeBakeResult);

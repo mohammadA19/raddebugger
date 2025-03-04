@@ -151,37 +151,37 @@ struct TypeSerializeParams
 //~ rjf: Type Info Table Initializer Helpers
 
 #define member_lit_comp(S, ti, m, ...) {str8_lit_comp(#m), {0}, (ti), OffsetOf(S, m), __VA_ARGS__}
-#define struct_members(S) read_only global Member S##__members[] =
-#define struct_type(S, ...) read_only global Type S##__type = {TypeKind_Struct, 0, sizeof(S), &type_nil, str8_lit_comp(#S), {0}, ArrayCount(S##__members), S##__members, __VA_ARGS__}
-#define named_struct_type(name, S, ...) read_only global Type name##__type = {TypeKind_Struct, 0, sizeof(S), &type_nil, str8_lit_comp(#name), {0}, ArrayCount(name##__members), name##__members, __VA_ARGS__}
-#define ptr_type(name, ti, ...) read_only global Type name = {TypeKind_Ptr, 0, sizeof(void *), (ti), __VA_ARGS__}
+#define struct_members(S) read_only static Member S##__members[] =
+#define struct_type(S, ...) read_only static Type S##__type = {TypeKind_Struct, 0, sizeof(S), &type_nil, str8_lit_comp(#S), {0}, ArrayCount(S##__members), S##__members, __VA_ARGS__}
+#define named_struct_type(name, S, ...) read_only static Type name##__type = {TypeKind_Struct, 0, sizeof(S), &type_nil, str8_lit_comp(#name), {0}, ArrayCount(name##__members), name##__members, __VA_ARGS__}
+#define ptr_type(name, ti, ...) read_only static Type name = {TypeKind_Ptr, 0, sizeof(void *), (ti), __VA_ARGS__}
 
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global Type type_nil   = {TypeKind_Null, 0, 0, &type_nil};
-read_only global Member member_nil = {{0}, {0}, &type_nil};
+read_only static Type type_nil   = {TypeKind_Null, 0, 0, &type_nil};
+read_only static Member member_nil = {{0}, {0}, &type_nil};
 
 ////////////////////////////////
 //~ rjf: Built-In Types
 
 //- rjf: leaves
-read_only global Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
-read_only global Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
-read_only global Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
-read_only global Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
-read_only global Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
-read_only global Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
-read_only global Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
-read_only global Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
-read_only global Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
-read_only global Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
-read_only global Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
-read_only global Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
-read_only global Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
-read_only global Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
-read_only global Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
-read_only global Type *type_kind_type_table[] =
+read_only static Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
+read_only static Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
+read_only static Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
+read_only static Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
+read_only static Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
+read_only static Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
+read_only static Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
+read_only static Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
+read_only static Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
+read_only static Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
+read_only static Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
+read_only static Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
+read_only static Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
+read_only static Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
+read_only static Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
+read_only static Type *type_kind_type_table[] =
 {
   &type_nil,
   type(void),

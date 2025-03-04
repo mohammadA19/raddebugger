@@ -7,17 +7,17 @@
 ////////////////////////////////
 //~ rjf: COFF Format Types
 
-read_only global U8 g_coff_big_header_magic[] =
+read_only static U8 g_coff_big_header_magic[] =
 {
   0xc7, 0xa1, 0xba, 0xd1, 0xee, 0xba, 0xa9, 0x4b, 0xaf, 0x20, 0xfa, 0xf6, 0x6a, 0xa4, 0xdc, 0xb8
 };
-read_only global U8 g_coff_res_magic[] =
+read_only static U8 g_coff_res_magic[] =
 {
   0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-read_only global U8 g_coff_archive_sig[8]      = "!<arch>\n";
-read_only global U8 g_coff_thin_archive_sig[8] = "!<thin>\n";
+read_only static U8 g_coff_archive_sig[8]      = "!<arch>\n";
+read_only static U8 g_coff_thin_archive_sig[8] = "!<thin>\n";
 
 #pragma pack(push, 1)
 
@@ -314,7 +314,7 @@ srtuct COFF_SymbolFile
 enum COFF_ComdatSelectType : U8
 {
   COFF_ComdatSelect_Null         = 0, 
-  COFF_ComdatSelect_NoDuplicates = 1, // Only one symbol is allowed to be in global symbol table, otherwise multiply defintion error is thrown.
+  COFF_ComdatSelect_NoDuplicates = 1, // Only one symbol is allowed to be in static symbol table, otherwise multiply defintion error is thrown.
   COFF_ComdatSelect_Any          = 2, // Select any symbol, even if there are multiple definitions. (we default to first declaration)
   COFF_ComdatSelect_SameSize     = 3, // Sections that symbols reference must match in size, otherwise multiply definition error is thrown.
   COFF_ComdatSelect_ExactMatch   = 4, // Sections that symbols reference must have identical checksums, otherwise multiply defintion error is thrown.

@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: String Expression Operator Tables
 
-read_only global String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] =
+read_only static String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] =
 {
   str8_lit_comp(""),
   str8_lit_comp("."),  // MG_StrExprOp_Dot
@@ -29,7 +29,7 @@ read_only global String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] 
   str8_lit_comp("!="), // MG_StrExprOp_DoesNotEqual
 };
 
-read_only global S8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
+read_only static S8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
 {
   0,
   20, // MG_StrExprOp_Dot
@@ -54,7 +54,7 @@ read_only global S8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
   4,  // MG_StrExprOp_DoesNotEqual
 };
 
-read_only global MG_StrExprOpKind mg_str_expr_op_kind_table[MG_StrExprOp_COUNT] =
+read_only static MG_StrExprOpKind mg_str_expr_op_kind_table[MG_StrExprOp_COUNT] =
 {
   MG_StrExprOpKind_Null,
   MG_StrExprOpKind_Binary, // MG_StrExprOp_Dot

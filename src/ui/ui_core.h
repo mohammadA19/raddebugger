@@ -707,7 +707,7 @@ UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
 ////////////////////////////////
 //~ rjf: Color Scheme Type Functions
 
-read_only global UI_Palette ui_g_nil_palette = {0};
+read_only static UI_Palette ui_g_nil_palette = {0};
 
 ////////////////////////////////
 //~ rjf: Scroll Point Type Functions
@@ -719,7 +719,7 @@ void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range);
 ////////////////////////////////
 //~ rjf: Box Type Functions
 
-read_only global UI_Box ui_nil_box =
+read_only static UI_Box ui_nil_box =
 {
   &ui_nil_box,
   &ui_nil_box,
@@ -862,7 +862,7 @@ UI_Signal ui_signal_from_box(UI_Box *box);
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-read_only global UI_AnimNode ui_nil_anim_node =
+read_only static UI_AnimNode ui_nil_anim_node =
 {
   &ui_nil_anim_node,
   &ui_nil_anim_node,

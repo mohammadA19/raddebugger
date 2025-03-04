@@ -10947,7 +10947,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
     str8_list_push(arena, &strs, str8_lit("\n"));
   }
   
-  //- rjf: serialize global settings
+  //- rjf: serialize static settings
   {
     B32 first = 1;
     for EachEnumVal(RD_SettingCode, code)
@@ -10962,7 +10962,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
         if(first)
         {
           first = 0;
-          str8_list_push(arena, &strs, str8_lit("/// global settings ///////////////////////////////////////////////////////////\n"));
+          str8_list_push(arena, &strs, str8_lit("/// static settings ///////////////////////////////////////////////////////////\n"));
           str8_list_push(arena, &strs, str8_lit("\n"));
         }
         str8_list_pushf(arena, &strs, "%S: %i\n", rd_setting_code_lower_string_table[code], current.s32);
@@ -12405,7 +12405,7 @@ rd_frame(void)
               else
               {
                 // NOTE(rjf): we need to explicitly release all panel views, because views
-                // are a global concept and otherwise would leak.
+                // are a static concept and otherwise would leak.
                 for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
                 {
                   rd_panel_release_all_views(panel);

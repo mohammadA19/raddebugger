@@ -151,9 +151,9 @@ struct E_Parse
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only E_String2NumMap e_string2num_map_nil = {0};
-global read_only E_String2ExprMap e_string2expr_map_nil = {0};
-global read_only E_Expr e_expr_nil = {&e_expr_nil, &e_expr_nil, &e_expr_nil};
+static read_only E_String2NumMap e_string2num_map_nil = {0};
+static read_only E_String2ExprMap e_string2expr_map_nil = {0};
+static read_only E_Expr e_expr_nil = {&e_expr_nil, &e_expr_nil, &e_expr_nil};
 thread_static E_ParseCtx *e_parse_ctx = 0;
 
 ////////////////////////////////

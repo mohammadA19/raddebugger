@@ -657,7 +657,7 @@ rdi_inline_site_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
   return inline_site;
 }
 
-//- global variables
+//- static variables
 
 RDI_PROC RDI_GlobalVariable *
 rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
