@@ -110,8 +110,7 @@ struct CV_C13InlineSiteDecoder
   U64                file_last_ln;
 }
 
-enum CV_C13InlineSiteDecoderStepFlags : U32
-{
+CV_C13InlineSiteDecoderStepFlags :: enum U32 {
   CV_C13InlineSiteDecoderStepFlag_EmitRange       = (1 << 0),
   CV_C13InlineSiteDecoderStepFlag_ExtendLastRange = (1 << 1),
   CV_C13InlineSiteDecoderStepFlag_EmitFile        = (1 << 2),

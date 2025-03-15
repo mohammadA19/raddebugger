@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Messages
 
-enum MD_MsgKind
+MD_MsgKind :: enum
 {
   MD_MsgKind_Null,
   MD_MsgKind_Note,
@@ -35,7 +35,7 @@ struct MD_MsgList
 ////////////////////////////////
 //~ rjf: Token Types
 
-enum MD_TokenFlags : U32
+MD_TokenFlags :: enum U32
 {
   // rjf: base kind info
   MD_TokenFlag_Identifier          = (1<<0),
@@ -59,7 +59,7 @@ enum MD_TokenFlags : U32
   MD_TokenFlag_BadCharacter        = (1<<14),
 }
 
-enum MD_TokenGroups : U32
+MD_TokenGroups :: enum U32
 {
   MD_TokenGroup_Comment    = MD_TokenFlag_Comment,
   MD_TokenGroup_Whitespace = (MD_TokenFlag_Whitespace|
@@ -107,7 +107,7 @@ struct MD_TokenArray
 ////////////////////////////////
 //~ rjf: Node Types
 
-enum MD_NodeKind
+MD_NodeKind :: enum
 {
   MD_NodeKind_Nil,
   MD_NodeKind_File,
@@ -119,7 +119,7 @@ enum MD_NodeKind
   MD_NodeKind_COUNT
 }
 
-enum MD_NodeFlags : U32
+MD_NodeFlags :: enum U32
 {
   MD_NodeFlag_MaskSetDelimiters          = (0x3F<<0),
   MD_NodeFlag_HasParenLeft               = (1<<0),

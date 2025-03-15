@@ -29,7 +29,7 @@ struct RD_HandleList
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-enum RD_EvalSpaceKind : U64
+RD_EvalSpaceKind :: enum U64
 {
   RD_EvalSpaceKind_CtrlEntity = E_SpaceKind_FirstUserDefined,
   RD_EvalSpaceKind_MetaEntity,
@@ -40,7 +40,7 @@ enum RD_EvalSpaceKind : U64
 ////////////////////////////////
 //~ rjf: Entity Kind Flags
 
-enum RD_EntityKindFlags : U32
+RD_EntityKindFlags :: enum U32
 {
   //- rjf: allowed operations
   RD_EntityKindFlag_CanDelete                = (1<<0),
@@ -65,7 +65,7 @@ enum RD_EntityKindFlags : U32
 ////////////////////////////////
 //~ rjf: Entity Flags
 
-enum RD_EntityFlags : U32
+RD_EntityFlags :: enum U32
 {
   //- rjf: allocationless, simple equipment
   RD_EntityFlag_HasTextPoint      = (1<<0),
@@ -135,7 +135,7 @@ struct RD_SettingVal
 ////////////////////////////////
 //~ rjf: View Rule Info Types
 
-enum RD_ViewRuleInfoFlags : U32
+RD_ViewRuleInfoFlags :: enum U32
 {
   RD_ViewRuleInfoFlag_ShowInDocs                 = (1<<0),
   RD_ViewRuleInfoFlag_CanFilter                  = (1<<1),
@@ -282,7 +282,7 @@ struct RD_PanelRec
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
 
-enum RD_DragDropState
+RD_DragDropState :: enum
 {
   RD_DragDropState_Null,
   RD_DragDropState_Dragging,
@@ -293,7 +293,7 @@ enum RD_DragDropState
 ////////////////////////////////
 //~ rjf: Command Kind Types
 
-enum RD_QueryFlags : U32
+RD_QueryFlags :: enum U32
 {
   RD_QueryFlag_AllowFiles       = (1<<0),
   RD_QueryFlag_AllowFolders     = (1<<1),
@@ -303,7 +303,7 @@ enum RD_QueryFlags : U32
   RD_QueryFlag_Required         = (1<<5),
 }
 
-enum RD_CmdKindFlags : U32
+RD_CmdKindFlags :: enum U32
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
@@ -483,7 +483,7 @@ struct RD_Theme
   Vec4F32 colors[RD_ThemeColor_COUNT];
 }
 
-enum RD_FontSlot
+RD_FontSlot :: enum
 {
   RD_FontSlot_Main,
   RD_FontSlot_Code,
@@ -491,7 +491,7 @@ enum RD_FontSlot
   RD_FontSlot_COUNT
 }
 
-enum RD_PaletteCode
+RD_PaletteCode :: enum
 {
   RD_PaletteCode_Base,
   RD_PaletteCode_MenuBar,
@@ -511,7 +511,7 @@ enum RD_PaletteCode
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister Types
 
-enum RD_AutoCompListerFlags : U32
+RD_AutoCompListerFlags :: enum U32
 {
   RD_AutoCompListerFlag_Locals        = (1<<0),
   RD_AutoCompListerFlag_Registers     = (1<<1),

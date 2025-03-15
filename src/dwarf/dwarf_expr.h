@@ -64,8 +64,7 @@ srtuct DW_ExprMachineConfig
 
 
 //- detail analysis types
-enum DW_ExprFlags : U32
-{
+DW_ExprFlags :: enum U32 {
   DW_ExprFlag_UsesTextBase       = (1 << 0),
   DW_ExprFlag_UsesMemory         = (1 << 1),
   DW_ExprFlag_UsesRegisters      = (1 << 2),
@@ -95,8 +94,7 @@ srtuct DW_ExprAnalysisTask
 
 
 //- location types
-enum DW_SimpleLocKind
-{
+DW_SimpleLocKind :: enum {
   DW_SimpleLocKind_Address,
   DW_SimpleLocKind_Register,
   DW_SimpleLocKind_Value,
@@ -105,8 +103,7 @@ enum DW_SimpleLocKind
   DW_SimpleLocKind_Fail,
 }
 
-enum DW_LocFailKind
-{
+DW_LocFailKind :: enum {
   // Interpreting Fail Kinds
   //
   // BadData:        the evaluator detected that the dwarf expression operation is incorrectly formed

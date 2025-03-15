@@ -39,7 +39,7 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), fil
 ////////////////////////////////
 //~ rjf: Entity Types
 
-enum OS_W32_EntityKind
+OS_W32_EntityKind :: enum
 {
   OS_W32_EntityKind_Null,
   OS_W32_EntityKind_Thread,

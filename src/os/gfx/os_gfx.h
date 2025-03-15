@@ -17,7 +17,7 @@ struct OS_GfxInfo
 ////////////////////////////////
 //~ rjf: Window Types
 
-enum OS_WindowFlags : U32
+OS_WindowFlags :: enum U32
 {
   OS_WindowFlag_CustomBorder = (1<<0),
 }
@@ -25,7 +25,7 @@ enum OS_WindowFlags : U32
 ////////////////////////////////
 //~ rjf: Cursor Types
 
-enum OS_Cursor
+OS_Cursor :: enum
 {
   OS_Cursor_Pointer,
   OS_Cursor_IBar,
@@ -47,7 +47,7 @@ enum OS_Cursor
 ////////////////////////////////
 //~ rjf: Event Types
 
-enum OS_EventKind
+OS_EventKind :: enum
 {
   OS_EventKind_Null,
   OS_EventKind_Press,
@@ -62,7 +62,7 @@ enum OS_EventKind
   OS_EventKind_COUNT
 }
 
-enum OS_Modifiers : U32
+OS_Modifiers :: enum U32
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),

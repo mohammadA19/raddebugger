@@ -6,7 +6,7 @@
 #ifndef RADDBG_META_H
 #define RADDBG_META_H
 
-enum RD_CfgSrc
+RD_CfgSrc :: enum
 {
 RD_CfgSrc_User,
 RD_CfgSrc_Project,
@@ -15,7 +15,7 @@ RD_CfgSrc_Transient,
 RD_CfgSrc_COUNT,
 }
 
-enum RD_EntityKind
+RD_EntityKind :: enum
 {
 RD_EntityKind_Nil,
 RD_EntityKind_Root,
@@ -47,7 +47,7 @@ RD_EntityKind_ConversionFail,
 RD_EntityKind_COUNT,
 }
 
-enum RD_RegSlot
+RD_RegSlot :: enum
 {
 RD_RegSlot_Null,
 RD_RegSlot_Machine,
@@ -86,7 +86,7 @@ RD_RegSlot_OSEvent,
 RD_RegSlot_COUNT,
 }
 
-enum RD_CmdKind
+RD_CmdKind :: enum
 {
 RD_CmdKind_Null,
 RD_CmdKind_LaunchAndRun,
@@ -304,7 +304,7 @@ RD_CmdKind_LogMarker,
 RD_CmdKind_COUNT,
 }
 
-enum RD_IconKind
+RD_IconKind :: enum
 {
 RD_IconKind_Null,
 RD_IconKind_FolderOpenOutline,
@@ -378,7 +378,7 @@ RD_IconKind_Dot,
 RD_IconKind_COUNT,
 }
 
-enum RD_ViewRuleKind
+RD_ViewRuleKind :: enum
 {
 RD_ViewRuleKind_Null,
 RD_ViewRuleKind_Empty,
@@ -418,7 +418,7 @@ RD_ViewRuleKind_Geo3D,
 RD_ViewRuleKind_COUNT,
 }
 
-enum RD_ThemeColor
+RD_ThemeColor :: enum
 {
 RD_ThemeColor_Null,
 RD_ThemeColor_Text,
@@ -499,7 +499,7 @@ RD_ThemeColor_CacheLineBoundary,
 RD_ThemeColor_COUNT,
 }
 
-enum RD_ThemePreset
+RD_ThemePreset :: enum
 {
 RD_ThemePreset_DefaultDark,
 RD_ThemePreset_DefaultLight,
@@ -513,7 +513,7 @@ RD_ThemePreset_FarManager,
 RD_ThemePreset_COUNT,
 }
 
-enum RD_SettingCode
+RD_SettingCode :: enum
 {
 RD_SettingCode_HoverAnimations,
 RD_SettingCode_PressAnimations,

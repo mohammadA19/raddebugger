@@ -20,8 +20,7 @@ srtuct PDB_Strtbl
 ////////////////////////////////
 //~ PDB Parser Info Types
 
-enum PDB_NamedStream
-{
+PDB_NamedStream :: enum {
   PDB_NamedStream_HeaderBlock,
   PDB_NamedStream_StringTable,
   PDB_NamedStream_LinkInfo,
@@ -58,8 +57,7 @@ srtuct PDB_InfoHeader
 //~ PDB Parser DBI Types
 
 //  (this is not "literally" defined by the format - but helpful to have)
-enum PDB_DbiRange
-{
+PDB_DbiRange :: enum {
   PDB_DbiRange_ModuleInfo,
   PDB_DbiRange_SecCon,
   PDB_DbiRange_SecMap,

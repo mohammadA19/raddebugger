@@ -226,8 +226,7 @@ srtuct CV_C13InlineeLinesParsedList
 
 ////////////////////////////////
 
-enum CV_C13SubSectionIdxKind : U32
-{
+CV_C13SubSectionIdxKind :: enum U32 {
   CV_C13SubSectionIdxKind_NULL,
 #define X(N,c) CV_C13SubSectionIdxKind_##N,
   CV_C13SubSectionKindXList(X)

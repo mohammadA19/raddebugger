@@ -64,8 +64,7 @@ srtuct LNK_ChunkList
   LNK_ChunkNode *last;
 }
 
-enum LNK_ChunkOpType
-{
+LNK_ChunkOpType :: enum {
   LNK_ChunkOp_Null,
   LNK_ChunkOp_WriteString,
   LNK_ChunkOp_Align,

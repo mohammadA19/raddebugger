@@ -2116,7 +2116,7 @@ UI_Signal
 rd_label(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
-  enum StringPartFlags : U32
+  StringPartFlags :: enum U32
   {
     StringPartFlag_Code      = (1<<0),
     StringPartFlag_Underline = (1<<1),

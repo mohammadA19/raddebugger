@@ -377,7 +377,7 @@ struct U128
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-enum Dimension
+Dimension :: enum
 {
   Dimension_X,
   Dimension_Y,
@@ -385,7 +385,7 @@ enum Dimension
   Dimension_W,
 }
 
-enum Side
+Side :: enum
 {
   Side_Invalid = -1,
   Side_Min,
@@ -394,7 +394,7 @@ enum Side
 }
 #define side_flip(s) ((Side)(!(s)))
 
-enum Axis2
+Axis2 :: enum
 {
   Axis2_Invalid = -1,
   Axis2_X,
@@ -403,7 +403,7 @@ enum Axis2
 }
 #define axis2_flip(a) ((Axis2)(!(a)))
 
-enum Corner
+Corner :: enum
 {
   Corner_Invalid = -1,
   Corner_00,
@@ -413,7 +413,7 @@ enum Corner
   Corner_COUNT
 }
 
-enum Dir2
+Dir2 :: enum
 {
   Dir2_Invalid = -1,
   Dir2_Left,
@@ -428,7 +428,7 @@ enum Dir2
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums
 
-enum OperatingSystem
+OperatingSystem :: enum
 {
   OperatingSystem_Null,
   OperatingSystem_Windows,
@@ -437,7 +437,7 @@ enum OperatingSystem
   OperatingSystem_COUNT,
 }
 
-enum ImageType
+ImageType :: enum
 {
   Image_Null,
   Image_CoffPe,
@@ -446,7 +446,7 @@ enum ImageType
   Image_Macho
 }
 
-enum Arch
+Arch :: enum
 {
   Arch_Null,
   Arch_x64,
@@ -456,7 +456,7 @@ enum Arch
   Arch_COUNT,
 }
 
-enum Compiler
+Compiler :: enum
 {
   Compiler_Null,
   Compiler_msvc,
@@ -684,7 +684,7 @@ static const U64 bit64 = (1ull<<63);
 ////////////////////////////////
 //~ allen: Time
 
-enum WeekDay
+WeekDay :: enum
 {
   WeekDay_Sun,
   WeekDay_Mon,
@@ -696,7 +696,7 @@ enum WeekDay
   WeekDay_COUNT,
 }
 
-enum Month
+Month :: enum
 {
   Month_Jan,
   Month_Feb,
@@ -739,7 +739,7 @@ typedef U64 DenseTime;
 ////////////////////////////////
 //~ allen: Files
 
-enum FilePropertyFlags : U32
+FilePropertyFlags :: enum U32
 {
   FilePropertyFlag_IsFolder = (1 << 0),
 }

@@ -32,7 +32,7 @@ srtuct PDB_StringTableHeader
 
 ////////////////////////////////
 
-enum PDB_FixedStream
+PDB_FixedStream :: enum
 {
   PDB_FixedStream_Info = 1,
   PDB_FixedStream_Tpi  = 2,
@@ -43,7 +43,7 @@ enum PDB_FixedStream
 ////////////////////////////////
 //~ PDB Info Types
 
-enum PDB_InfoVersion : U32{
+PDB_InfoVersion :: enum U32{
   PDB_InfoVersion_VC2      = 19941610,
   PDB_InfoVersion_VC4      = 19950623,
   PDB_InfoVersion_VC41     = 19950814,
@@ -142,7 +142,7 @@ srtuct PDB_SrcHeaderBlockEntry
 ////////////////////////////////
 //~ PDB Format DBI Types
 
-enum PDB_DbiStream : U32
+PDB_DbiStream :: enum U32
 {
   PDB_DbiStream_FPO,
   PDB_DbiStream_EXCEPTION,
@@ -158,12 +158,12 @@ enum PDB_DbiStream : U32
   PDB_DbiStream_COUNT
 }
 
-enum PDB_DbiHeaderSignature : U32
+PDB_DbiHeaderSignature :: enum U32
 {
   PDB_DbiHeaderSignature_V1 = 0xFFFFFFFF
 }
 
-enum PDB_DbiVersion : U32
+PDB_DbiVersion :: enum U32
 {
   PDB_DbiVersion_41  =   930803,
   PDB_DbiVersion_50  = 19960307,
@@ -179,7 +179,7 @@ typedef U16 PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormat(bn) (!!((bn)&PDB_DbiBuildNumberNewFormatFlag))
 #define PDB_DbiMakeBuildNumber(maj, min) (PDB_DbiBuildNumber)(PDB_DbiBuildNumberNewFormatFlag | ((min)&0xFF) | (((maj)&0x7F) << 16))
 
-enum PDB_DbiHeaderFlags : U16
+PDB_DbiHeaderFlags :: enum U16
 {
   PDB_DbiHeaderFlag_Incremental = 0x1,
   PDB_DbiHeaderFlag_Stripped    = 0x2,
@@ -306,7 +306,7 @@ srtuct PDB_DbiSecMapHeader
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
 
-enum PDB_TpiVersion : U32
+PDB_TpiVersion :: enum U32
 {
   PDB_TpiVersion_INTV_VC2       = 920924,
   PDB_TpiVersion_IMPV40         = 19950410,
@@ -365,12 +365,12 @@ srtuct PDB_TpiHeader
 ////////////////////////////////
 //~ PDB Format GSI Types
 
-enum PDB_GsiSignature : U32
+PDB_GsiSignature :: enum U32
 {
   PDB_GsiSignature_Basic = 0xffffffff,
 }
 
-enum PDB_GsiVersion : U32
+PDB_GsiVersion :: enum U32
 {
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
 }

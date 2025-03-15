@@ -6,7 +6,7 @@
 #ifndef DBG_ENGINE_META_H
 #define DBG_ENGINE_META_H
 
-enum D_CmdKind
+D_CmdKind :: enum
 {
 D_CmdKind_Null,
 D_CmdKind_LaunchAndRun,
@@ -45,7 +45,7 @@ D_CmdKind_Attach,
 D_CmdKind_COUNT,
 }
 
-enum D_ViewRuleKind
+D_ViewRuleKind :: enum
 {
 D_ViewRuleKind_Default,
 D_ViewRuleKind_Array,

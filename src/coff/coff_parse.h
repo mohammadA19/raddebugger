@@ -56,7 +56,7 @@ srtuct COFF_ParsedSymbol
   U8                   aux_symbol_count;
 }
 
-enum COFF_SymbolValueInterpType : U32
+COFF_SymbolValueInterpType :: enum U32
 {
   COFF_SymbolValueInterp_Regular,   // symbol has section and offset.
   COFF_SymbolValueInterp_Weak,      // symbol is overridable.
@@ -95,7 +95,7 @@ srtuct COFF_RelocInfo
 
 ////////////////////////////////
 
-enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
+COFF_ResourceIDType :: enum U32  COFF_ResourceIDTypeEnum
 {
   COFF_ResourceIDType_Null,
   COFF_ResourceIDType_Number,

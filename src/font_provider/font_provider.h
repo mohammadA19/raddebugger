@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum FP_RasterFlags : U32
+FP_RasterFlags :: enum U32
 {
   FP_RasterFlag_Smooth = (1<<0),
   FP_RasterFlag_Hinted = (1<<1),

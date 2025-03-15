@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Register Usage Kinds
 
-enum REGS_UsageKind
-{
+REGS_UsageKind :: enum {
   REGS_UsageKind_Normal,
   REGS_UsageKind_Vector,
 }

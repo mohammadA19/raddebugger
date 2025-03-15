@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Icon Info
 
-enum UI_IconKind
+UI_IconKind :: enum
 {
   UI_IconKind_Null,
   UI_IconKind_RightArrow,
@@ -32,7 +32,7 @@ struct UI_IconInfo
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
 
-enum UI_MouseButtonKind
+UI_MouseButtonKind :: enum
 {
   UI_MouseButtonKind_Left,
   UI_MouseButtonKind_Middle,
@@ -43,7 +43,7 @@ enum UI_MouseButtonKind
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-enum UI_PermissionFlags : U32
+UI_PermissionFlags :: enum U32
 {
   UI_PermissionFlag_ClicksLeft   = (1<<0),
   UI_PermissionFlag_ClicksMiddle = (1<<1),
@@ -61,7 +61,7 @@ enum UI_PermissionFlags : U32
 ////////////////////////////////
 //~ rjf: Focus Types
 
-enum UI_FocusKind
+UI_FocusKind :: enum
 {
   UI_FocusKind_Null,
   UI_FocusKind_Off,
@@ -75,7 +75,7 @@ enum UI_FocusKind
 
 // TODO(rjf): clean all this up
 
-enum UI_EventKind
+UI_EventKind :: enum
 {
   UI_EventKind_Null,
   UI_EventKind_Press,
@@ -90,7 +90,7 @@ enum UI_EventKind
   UI_EventKind_COUNT
 }
 
-enum UI_EventActionSlot
+UI_EventActionSlot :: enum
 {
   UI_EventActionSlot_Null,
   UI_EventActionSlot_Accept,
@@ -99,7 +99,7 @@ enum UI_EventActionSlot
   UI_EventActionSlot_COUNT
 }
 
-enum UI_EventFlags : U32
+UI_EventFlags :: enum U32
 {
   UI_EventFlag_KeepMark            = (1<<0),
   UI_EventFlag_Delete              = (1<<1),
@@ -112,7 +112,7 @@ enum UI_EventFlags : U32
   UI_EventFlag_Reorder             = (1<<8),
 }
 
-enum UI_EventDeltaUnit
+UI_EventDeltaUnit :: enum
 {
   UI_EventDeltaUnit_Null,
   UI_EventDeltaUnit_Char,
@@ -156,7 +156,7 @@ struct UI_EventList
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-enum UI_TxtOpFlags : U32
+UI_TxtOpFlags :: enum U32
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
@@ -183,7 +183,7 @@ struct UI_Key
 ////////////////////////////////
 //~ rjf: Sizes
 
-enum UI_SizeKind
+UI_SizeKind :: enum
 {
   UI_SizeKind_Null,
   UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
@@ -202,7 +202,7 @@ struct UI_Size
 ////////////////////////////////
 //~ rjf: Palettes
 
-enum UI_ColorCode
+UI_ColorCode :: enum
 {
   UI_ColorCode_Null,
   UI_ColorCode_Background,
@@ -244,7 +244,7 @@ struct UI_WidgetPaletteInfo
 ////////////////////////////////
 //~ rjf: Animation Info
 
-enum UI_AnimationInfoFlags : U32
+UI_AnimationInfoFlags :: enum U32
 {
   UI_AnimationInfoFlag_HotAnimations          = (1<<0),
   UI_AnimationInfoFlag_ActiveAnimations       = (1<<1),
@@ -282,7 +282,7 @@ union UI_ScrollPt2
 ////////////////////////////////
 //~ rjf: Box Types
 
-enum UI_TextAlign
+UI_TextAlign :: enum
 {
   UI_TextAlign_Left,
   UI_TextAlign_Center,
@@ -452,7 +452,7 @@ struct UI_BoxList
   U64 count;
 }
 
-enum UI_SignalFlags : U32
+UI_SignalFlags :: enum U32
 {
   // rjf: mouse press -> box was pressed while hovering
   UI_SignalFlag_LeftPressed         = (1<<0),

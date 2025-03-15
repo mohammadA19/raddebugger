@@ -23,8 +23,7 @@ read_only static U8 g_coff_thin_archive_sig[8] = "!<thin>\n";
 
 typedef U32 COFF_TimeStamp;
 
-enum COFF_FileHeaderFlags : U16
-{
+COFF_FileHeaderFlags :: enum U16 {
   COFF_FileHeaderFlag_RelocStripped        = (1 << 0),
   COFF_FileHeaderFlag_ExecutableImage      = (1 << 1),
   COFF_FileHeaderFlag_LineNumbersStripped  = (1 << 2),
@@ -43,8 +42,7 @@ enum COFF_FileHeaderFlags : U16
   COFF_FileHeaderFlag_BytesReservedHi      = (1 << 15)
 }
 
-enum COFF_MachineType : U16
-{
+COFF_MachineType :: enum U16 {
   COFF_Machine_Unknown    = 0x0,
   COFF_Machine_X86        = 0x14c,
   COFF_Machine_X64        = 0x8664,
@@ -97,8 +95,7 @@ srtuct COFF_BigObjHeader
   U32              symbol_count;
 }
 
-enum COFF_SectionAlign : U32
-{
+COFF_SectionAlign :: enum U32 {
   COFF_SectionAlign_1Bytes    = 0x1,
   COFF_SectionAlign_2Bytes    = 0x2,
   COFF_SectionAlign_4Bytes    = 0x3,
@@ -115,8 +112,7 @@ enum COFF_SectionAlign : U32
   COFF_SectionAlign_8192Bytes = 0xe
 }
 
-enum COFF_SectionFlags : U32
-{
+COFF_SectionFlags :: enum U32 {
   COFF_SectionFlag_TypeNoPad            = (1 << 3),
   COFF_SectionFlag_CntCode              = (1 << 5),
   COFF_SectionFlag_CntInitializedData   = (1 << 6),
@@ -159,8 +155,7 @@ srtuct COFF_SectionHeader
 
 ////////////////////////////////
 
-enum COFF_SymType : U8
-{
+COFF_SymType :: enum U8 {
   COFF_SymType_Null,
   COFF_SymType_Void,
   COFF_SymType_Char,
@@ -179,8 +174,7 @@ enum COFF_SymType : U8
   COFF_SymType_DWord
 }
 
-enum COFF_SymStorageClass : U8
-{
+COFF_SymStorageClass :: enum U8 {
   COFF_SymStorageClass_Null            = 0x00,
   COFF_SymStorageClass_Automatic       = 0x01,
   COFF_SymStorageClass_External        = 0x02,
@@ -210,8 +204,7 @@ enum COFF_SymStorageClass : U8
   COFF_SymStorageClass_EndOfFunction   = 0xff
 }
 
-enum COFF_SymDType : U8
-{
+COFF_SymDType :: enum U8 {
   COFF_SymDType_Null  = 0x00,
   COFF_SymDType_Ptr   = 0x10,
   COFF_SymDType_Func  = 0x20,
@@ -271,8 +264,7 @@ srtuct COFF_Symbol32
 // Auxilary symbols are allocated with fixed size so that symbol table could be maintaned as array of regular size.
 #define COFF_AuxSymbolSize 18
 
-enum COFF_WeakExtType : U32
-{
+COFF_WeakExtType :: enum U32 {
   COFF_WeakExt_NoLibrary     = 1,
   COFF_WeakExt_SearchLibrary = 2,
   COFF_WeakExt_SearchAlias   = 3
@@ -311,8 +303,7 @@ srtuct COFF_SymbolFile
   U8 name[18];
 }
 
-enum COFF_ComdatSelectType : U8
-{
+COFF_ComdatSelectType :: enum U8 {
   COFF_ComdatSelect_Null         = 0, 
   COFF_ComdatSelect_NoDuplicates = 1, // Only one symbol is allowed to be in static symbol table, otherwise multiply defintion error is thrown.
   COFF_ComdatSelect_Any          = 2, // Select any symbol, even if there are multiple definitions. (we default to first declaration)
@@ -340,8 +331,7 @@ srtuct COFF_SymbolSecDef
 
 typedef U16 COFF_RelocType;
 
-enum COFF_Reloc_X64 : COFF_RelocType
-{
+COFF_Reloc_X64 :: enum COFF_RelocType {
   COFF_Reloc_X64_Abs      = 0x0,
   COFF_Reloc_X64_Addr64   = 0x1,
   COFF_Reloc_X64_Addr32   = 0x2,
@@ -361,8 +351,7 @@ enum COFF_Reloc_X64 : COFF_RelocType
   COFF_Reloc_X64_SSpan32  = 0x10
 }
 
-enum COFF_Reloc_X86 : COFF_RelocType
-{
+COFF_Reloc_X86 :: enum COFF_RelocType {
   COFF_Reloc_X86_Abs      = 0x0,  //  relocation is ignored
   COFF_Reloc_X86_Dir16    = 0x1,  //  no support
   COFF_Reloc_X86_Rel16    = 0x2,  //  no support
@@ -385,8 +374,7 @@ enum COFF_Reloc_X86 : COFF_RelocType
   COFF_Reloc_X86_Rel32    = 0x14
 }
 
-enum COFF_Reloc_Arm : COFF_RelocType
-{
+COFF_Reloc_Arm :: enum COFF_RelocType {
   COFF_Reloc_Arm_Abs           = 0x0,
   COFF_Reloc_Arm_Addr32        = 0x1,
   COFF_Reloc_Arm_Addr32Nb      = 0x2,
@@ -409,8 +397,7 @@ enum COFF_Reloc_Arm : COFF_RelocType
   COFF_Reloc_Arm_Pair          = 0x16
 }
 
-enum COFF_Reloc_Arm64 : COFF_RelocType
-{
+COFF_Reloc_Arm64 :: enum COFF_RelocType {
   COFF_Reloc_Arm64_Abs           = 0x0,
   COFF_Reloc_Arm64_Addr32        = 0x1,
   COFF_Reloc_Arm64_Addr32Nb      = 0x2,
@@ -447,8 +434,7 @@ srtuct COFF_ResourceHeaderPrefix
   U32 header_size;
 }
 
-enum COFF_ResourceMemoryFlags : U16
-{
+COFF_ResourceMemoryFlags :: enum U16 {
   COFF_ResourceMemoryFlag_Moveable    = 0x10,
   COFF_ResourceMemoryFlag_Pure        = 0x20,
   COFF_ResourceMemoryFlag_PreLoad     = 0x40,
@@ -503,23 +489,20 @@ srtuct COFF_ArchiveMemberHeader
 }
 
 #define COFF_ImportType_Invalid max_U16
-enum COFF_ImportType : U16
-{
+COFF_ImportType :: enum U16 {
   COFF_ImportHeader_Code  = 0,
   COFF_ImportHeader_Data  = 1,
   COFF_ImportHeader_Const = 2
 }
 
-enum COFF_ImportByType : U32
-{
+COFF_ImportByType :: enum U32 {
   COFF_ImportBy_Ordinal      = 0,
   COFF_ImportBy_Name         = 1,
   COFF_ImportBy_NameNoPrefix = 2,
   COFF_ImportBy_Undecorate   = 3
 }
 
-enum COFF_ImportHeaderFlags : U16
-{
+COFF_ImportHeaderFlags :: enum U16 {
   COFF_ImportHeader_TypeShift = 0,
   COFF_ImportHeader_TypeMask  = 3,
   COFF_ImportHeader_ImportByShift = 2,

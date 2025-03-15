@@ -6,7 +6,7 @@
 #ifndef OS_GFX_META_H
 #define OS_GFX_META_H
 
-enum OS_Key
+OS_Key :: enum
 {
 OS_Key_Null,
 OS_Key_Esc,

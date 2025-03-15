@@ -270,8 +270,7 @@ srtuct RDIB_InlineSite
   };
 }
 
-enum RDI_MemberKindExt : RDI_MemberKind
-{
+RDI_MemberKindExt :: enum RDI_MemberKind {
   RDI_MemberKind_COUNT = RDI_MemberKind_NestedType,
   RDI_MemberKindExt_MemberListPointer // NOTE: must always be last in the list!
 }

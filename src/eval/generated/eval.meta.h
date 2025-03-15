@@ -6,7 +6,7 @@
 #ifndef EVAL_META_H
 #define EVAL_META_H
 
-enum E_TokenKind
+E_TokenKind :: enum
 {
 E_TokenKind_Null,
 E_TokenKind_Identifier,
@@ -17,7 +17,7 @@ E_TokenKind_Symbol,
 E_TokenKind_COUNT,
 }
 
-enum E_TypeKind
+E_TypeKind :: enum
 {
 E_TypeKind_Null,
 E_TypeKind_Void,
@@ -89,7 +89,7 @@ E_TypeKind_LastIncomplete  = E_TypeKind_IncompleteEnum,
 }
 
 typedef U32 E_ExprKind;
-enum E_ExprKindEnum
+E_ExprKindEnum :: enum
 {
 E_ExprKind_Nil,
 E_ExprKind_Ref,
@@ -142,7 +142,7 @@ E_ExprKind_Define,
 E_ExprKind_COUNT,
 }
 
-enum E_InterpretationCode
+E_InterpretationCode :: enum
 {
 E_InterpretationCode_Good,
 E_InterpretationCode_DivideByZero,

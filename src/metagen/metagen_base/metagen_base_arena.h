@@ -12,7 +12,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum ArenaFlags : U32
+ArenaFlags :: enum U32
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),

@@ -3880,7 +3880,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
 ////////////////////////////////
 //~ rjf: file_system @view_hook_impl
 
-enum RD_FileSortKind
+RD_FileSortKind :: enum
 {
   RD_FileSortKind_Null,
   RD_FileSortKind_Filename,
@@ -7924,7 +7924,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
 ////////////////////////////////
 //~ rjf: settings @view_hook_impl
 
-enum RD_SettingsItemKind
+RD_SettingsItemKind :: enum
 {
   RD_SettingsItemKind_CategoryHeader,
   RD_SettingsItemKind_GlobalSetting,

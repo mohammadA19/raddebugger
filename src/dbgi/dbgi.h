@@ -35,7 +35,7 @@ struct DI_KeyArray
 ////////////////////////////////
 //~ rjf: Event Types
 
-enum DI_EventKind
+DI_EventKind :: enum
 {
   DI_EventKind_Null,
   DI_EventKind_ConversionStarted,

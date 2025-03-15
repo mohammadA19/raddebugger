@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Code View Types
 
-enum RD_CodeViewBuildFlags : U32
+RD_CodeViewBuildFlags :: enum U32
 {
   RD_CodeViewBuildFlag_Margins = (1<<0),
   RD_CodeViewBuildFlag_All     = 0xffffffff,
@@ -38,7 +38,7 @@ struct RD_CodeViewBuildResult
 ////////////////////////////////
 //~ rjf: Watch View Types
 
-enum RD_WatchViewFlags : U32
+RD_WatchViewFlags :: enum U32
 {
   RD_WatchViewFlag_NoHeader                   = (1<<0),
   RD_WatchViewFlag_PrettyNameMembers          = (1<<1),
@@ -46,7 +46,7 @@ enum RD_WatchViewFlags : U32
   RD_WatchViewFlag_DisableCacheLines          = (1<<3),
 }
 
-enum RD_WatchViewColumnKind
+RD_WatchViewColumnKind :: enum
 {
   RD_WatchViewColumnKind_Expr,
   RD_WatchViewColumnKind_Value,
@@ -93,7 +93,7 @@ struct RD_WatchViewRowCtrl
   RD_CmdKind kind;
 }
 
-enum RD_WatchViewRowKind
+RD_WatchViewRowKind :: enum
 {
   RD_WatchViewRowKind_Normal,
   RD_WatchViewRowKind_Header,

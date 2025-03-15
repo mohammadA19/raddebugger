@@ -3,8 +3,7 @@
 
 #pragma once
 
-enum LNK_TimerType
-{
+LNK_TimerType :: enum {
   LNK_Timer_Image,
   LNK_Timer_Pdb,
   LNK_Timer_Rdi,

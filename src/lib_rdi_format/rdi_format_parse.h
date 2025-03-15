@@ -44,7 +44,7 @@
 ////////////////////////////////////////////////////////////////
 //~ Parsed Information Types
 
-enum RDI_ParseStatus
+RDI_ParseStatus :: enum
 {
   RDI_ParseStatus_Good = 0,
   RDI_ParseStatus_HeaderDoesNotMatch = 1,

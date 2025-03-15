@@ -35,8 +35,7 @@ srtuct MSCRT_VCFeatures
 #define MSCRT_GSHandler_GetFlags(x)        (((x) & 0x00000007) >> 0)
 #define MSCRT_GSHandler_GetCookieOffset(x) (((x) & 0xFFFFFFF8) >> 3)
 
-enum MSCRT_GSHandlerFlags : U8
-{
+MSCRT_GSHandlerFlags :: enum U8 {
   MSCRT_GSHandlerFlag_EHandler     = (1 << 0),
   MSCRT_GSHandlerFlag_UHandler     = (1 << 1),
   MSCRT_GSHandlerFlag_HasAlignment = (1 << 2)
@@ -66,8 +65,7 @@ enum
   MSCRT_MagicFlag_EHNOEXCEPT  = (1 << 2)
 }
 
-enum MSCRT_Flags : U32
-{
+MSCRT_Flags :: enum U32 {
   MSCRT_Flag_SynchronousExceptionOnly = (1 << 0),
   MSCRT_Flag_UNKNOWN                  = (1 << 1),
   MSCRT_Flag_StopUnwind               = (1 << 2), // When set unwinding can't continue.
@@ -91,8 +89,7 @@ enum
   MSCRT_ThrowInfo_IsWinRT     = (1 << 4)  // thrown object is a WinRT exception
 }
 
-enum MSCRT_EhHandlerTypeFlags : U32
-{
+MSCRT_EhHandlerTypeFlags :: enum U32 {
   MSCRT_EhHandlerTypeFlag_IsConst     = (1 << 0), // referenced type is 'const'
   MSCRT_EhHandlerTypeFlag_IsVolatile  = (1 << 1), // referenced type is 'volatile'
   MSCRT_EhHandlerTypeFlag_IsUnaligned = (1 << 2), // referenced type is 'unaligned'
@@ -184,8 +181,7 @@ srtuct MSCRT_FuncInfo
 ////////////////////////////////
 // C++ Exceptions V4
 
-enum MSCRT_FuncInfoV4Flags : U8
-{
+MSCRT_FuncInfoV4Flags :: enum U8 {
   MSCRT_FuncInfoV4Flag_IsCatch     = (1 << 0), // catch funclet
   MSCRT_FuncInfoV4Flag_IsSeparated = (1 << 1), // func has separate code segment
   MSCRT_FuncInfoV4Flag_IsBBT       = (1 << 2), // flags set by basic block trasformations
@@ -196,8 +192,7 @@ enum MSCRT_FuncInfoV4Flags : U8
   MSCRT_FuncInfoV4Flag_Reserved    = (1 << 7)
 }
 
-enum MSCRT_UnwindMapV4Type : U32
-{
+MSCRT_UnwindMapV4Type :: enum U32 {
   MSCRT_UnwindMapV4Type_NoUW             = 0, // no unwind action associated with this state
   MSCRT_UnwindMapV4Type_DtorWithObj      = 1, // dtor with an object offset
   MSCRT_UnwindMapV4Type_DtorWithPtrToObj = 2, // dtor with an offset that contains a pointer to the object to be destroyed
@@ -212,8 +207,7 @@ enum
 }
 
 #define MSCRT__EH_HANDLER_V4_FLAGS_EXTRACT_CONT_TYPE(x) (((x) & MSCRT_EhHandlerV4Flag_ContVOffMask) >> MSVC_CRTHandlerV4Flag_ContVOffShift)
-enum MSCRT_EhHandlerV4Flags : U8
-{
+MSCRT_EhHandlerV4Flags :: enum U8 {
   MSCRT_EhHandlerV4Flag_Adjectives   = (1 << 0), // set if adjectives are present
   MSCRT_EhHandlerV4Flag_DispType     = (1 << 1), // set if type descriptors are present
   MSCRT_EhHandlerV4Flag_DispCatchObj = (1 << 2), // set if catch object object is present

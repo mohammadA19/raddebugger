@@ -73,7 +73,7 @@ struct MG_Map
 ////////////////////////////////
 //~ rjf: String Expression Types
 
-enum MG_StrExprOpKind
+MG_StrExprOpKind :: enum
 {
   MG_StrExprOpKind_Null,
   MG_StrExprOpKind_Prefix,
@@ -82,7 +82,7 @@ enum MG_StrExprOpKind
   MG_StrExprOpKind_COUNT
 }
 
-enum MG_StrExprOp
+MG_StrExprOp :: enum
 {
   MG_StrExprOp_Null,
   
@@ -148,7 +148,7 @@ struct MG_NodeGrid
   MG_NodeArray row_parents;
 }
 
-enum MG_ColumnKind
+MG_ColumnKind :: enum
 {
   MG_ColumnKind_DirectCell,
   MG_ColumnKind_CheckForTag,

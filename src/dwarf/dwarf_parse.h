@@ -91,8 +91,7 @@ struct DW_LineVMFileArray
 ////////////////////////////////
 //~ rjf: Abbrevs
 
-enum DW_AbbrevKind
-{
+DW_AbbrevKind :: enum {
   DW_Abbrev_Null,
   DW_Abbrev_Tag,
   DW_Abbrev_Attrib,
@@ -101,7 +100,7 @@ enum DW_AbbrevKind
   DW_Abbrev_DIEEnd,
 }
 
-enum DW_AbbrevFlags : U32{
+DW_AbbrevFlags :: enum U32{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),
   DW_AbbrevFlag_HasChildren      = (1<<1),
 }
@@ -229,8 +228,7 @@ struct DW_Tag
   DW_AttribList  attribs;
 }
 
-enum DW_TagStubFlags : U32
-{
+DW_TagStubFlags :: enum U32 {
   DW_TagStubFlag_HasObjectPointerArg  = (1<<0),
   DW_TagStubFlag_HasLocation          = (1<<1),
   DW_TagStubFlag_HasExternal          = (1<<2),

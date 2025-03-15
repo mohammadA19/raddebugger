@@ -57,7 +57,7 @@ struct OS_LNX_SafeCallChain
 ////////////////////////////////
 //~ rjf: Entities
 
-enum OS_LNX_EntityKind
+OS_LNX_EntityKind :: enum
 {
   OS_LNX_EntityKind_Thread,
   OS_LNX_EntityKind_Mutex,

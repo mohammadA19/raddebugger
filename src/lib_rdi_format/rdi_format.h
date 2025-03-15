@@ -58,7 +58,7 @@ typedef int64_t  RDI_S64;
 //~ Format Types & Functions
 
 typedef RDI_U32 RDI_SectionKind;
-enum RDI_SectionKindEnum
+RDI_SectionKindEnum :: enum
 {
 RDI_SectionKind_NULL                 = 0x0000,
 RDI_SectionKind_TopLevelInfo         = 0x0001,
@@ -100,14 +100,14 @@ RDI_SectionKind_COUNT                = 0x0024,
 }
 
 typedef RDI_U32 RDI_SectionEncoding;
-enum RDI_SectionEncodingEnum
+RDI_SectionEncodingEnum :: enum
 {
 RDI_SectionEncoding_Unpacked   = 0,
 RDI_SectionEncoding_LZB        = 1,
 }
 
 typedef RDI_U32 RDI_Arch;
-enum RDI_ArchEnum
+RDI_ArchEnum :: enum
 {
 RDI_Arch_NULL       = 0,
 RDI_Arch_X86        = 1,
@@ -115,13 +115,13 @@ RDI_Arch_X64        = 2,
 }
 
 typedef RDI_U8 RDI_RegCode;
-enum RDI_RegCodeEnum
+RDI_RegCodeEnum :: enum
 {
 RDI_RegCode_nil,
 }
 
 typedef RDI_U8 RDI_RegCodeX86;
-enum RDI_RegCodeX86Enum
+RDI_RegCodeX86Enum :: enum
 {
 RDI_RegCodeX86_nil        = 0,
 RDI_RegCodeX86_eax        = 1,
@@ -187,7 +187,7 @@ RDI_RegCodeX86_ymm7       = 60,
 }
 
 typedef RDI_U8 RDI_RegCodeX64;
-enum RDI_RegCodeX64Enum
+RDI_RegCodeX64Enum :: enum
 {
 RDI_RegCodeX64_nil        = 0,
 RDI_RegCodeX64_rax        = 1,
@@ -293,7 +293,7 @@ RDI_RegCodeX64_mxcsr_mask = 100,
 }
 
 typedef RDI_U32 RDI_BinarySectionFlags;
-enum RDI_BinarySectionFlagsEnum
+RDI_BinarySectionFlagsEnum :: enum
 {
 RDI_BinarySectionFlag_Read       = 1<<0,
 RDI_BinarySectionFlag_Write      = 1<<1,
@@ -301,7 +301,7 @@ RDI_BinarySectionFlag_Execute    = 1<<2,
 }
 
 typedef RDI_U32 RDI_Language;
-enum RDI_LanguageEnum
+RDI_LanguageEnum :: enum
 {
 RDI_Language_NULL       = 0,
 RDI_Language_C          = 1,
@@ -311,7 +311,7 @@ RDI_Language_COUNT      = 4,
 }
 
 typedef RDI_U16 RDI_TypeKind;
-enum RDI_TypeKindEnum
+RDI_TypeKindEnum :: enum
 {
 RDI_TypeKind_NULL                 = 0x0000,
 RDI_TypeKind_Void                 = 0x0001,
@@ -382,20 +382,20 @@ RDI_TypeKind_LastUserDefined      = RDI_TypeKind_IncompleteEnum,
 }
 
 typedef RDI_U16 RDI_TypeModifierFlags;
-enum RDI_TypeModifierFlagsEnum
+RDI_TypeModifierFlagsEnum :: enum
 {
 RDI_TypeModifierFlag_Const                = 1<<0,
 RDI_TypeModifierFlag_Volatile             = 1<<1,
 }
 
 typedef RDI_U32 RDI_UDTFlags;
-enum RDI_UDTFlagsEnum
+RDI_UDTFlagsEnum :: enum
 {
 RDI_UDTFlag_EnumMembers          = 1<<0,
 }
 
 typedef RDI_U16 RDI_MemberKind;
-enum RDI_MemberKindEnum
+RDI_MemberKindEnum :: enum
 {
 RDI_MemberKind_NULL                      = 0x0000,
 RDI_MemberKind_DataField                 = 0x0001,
@@ -410,7 +410,7 @@ RDI_MemberKind_NestedType                = 0x0300,
 }
 
 typedef RDI_U32 RDI_LinkFlags;
-enum RDI_LinkFlagsEnum
+RDI_LinkFlagsEnum :: enum
 {
 RDI_LinkFlag_External             = 1<<0,
 RDI_LinkFlag_TypeScoped           = 1<<1,
@@ -418,7 +418,7 @@ RDI_LinkFlag_ProcScoped           = 1<<2,
 }
 
 typedef RDI_U32 RDI_LocalKind;
-enum RDI_LocalKindEnum
+RDI_LocalKindEnum :: enum
 {
 RDI_LocalKind_NULL                 = 0x0,
 RDI_LocalKind_Parameter            = 0x1,
@@ -426,7 +426,7 @@ RDI_LocalKind_Variable             = 0x2,
 }
 
 typedef RDI_U8 RDI_LocationKind;
-enum RDI_LocationKindEnum
+RDI_LocationKindEnum :: enum
 {
 RDI_LocationKind_NULL                 = 0x0,
 RDI_LocationKind_AddrBytecodeStream   = 0x1,
@@ -437,7 +437,7 @@ RDI_LocationKind_ValReg               = 0x5,
 }
 
 typedef RDI_U8 RDI_EvalOp;
-enum RDI_EvalOpEnum
+RDI_EvalOpEnum :: enum
 {
 RDI_EvalOp_Stop                 = 0,
 RDI_EvalOp_Noop                 = 1,
@@ -491,7 +491,7 @@ RDI_EvalOp_COUNT                = 48,
 }
 
 typedef RDI_U8 RDI_EvalTypeGroup;
-enum RDI_EvalTypeGroupEnum
+RDI_EvalTypeGroupEnum :: enum
 {
 RDI_EvalTypeGroup_Other                = 0,
 RDI_EvalTypeGroup_U                    = 1,
@@ -502,7 +502,7 @@ RDI_EvalTypeGroup_COUNT                = 5,
 }
 
 typedef RDI_U8 RDI_EvalConversionKind;
-enum RDI_EvalConversionKindEnum
+RDI_EvalConversionKindEnum :: enum
 {
 RDI_EvalConversionKind_Noop                 = 0,
 RDI_EvalConversionKind_Legal                = 1,
@@ -513,7 +513,7 @@ RDI_EvalConversionKind_COUNT                = 5,
 }
 
 typedef RDI_U32 RDI_NameMapKind;
-enum RDI_NameMapKindEnum
+RDI_NameMapKindEnum :: enum
 {
 RDI_NameMapKind_NULL                 = 0,
 RDI_NameMapKind_GlobalVariables      = 1,

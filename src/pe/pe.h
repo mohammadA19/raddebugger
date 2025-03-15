@@ -32,7 +32,7 @@ struct PE_DosHeader
   U32 coff_file_offset;
 }
 
-enum PE_WindowsSubsystem : U16
+PE_WindowsSubsystem :: enum U16
 {
   PE_WindowsSubsystem_UNKNOWN                  = 0,
   PE_WindowsSubsystem_NATIVE                   = 1,
@@ -51,7 +51,7 @@ enum PE_WindowsSubsystem : U16
   PE_WindowsSubsystem_COUNT                    = 14
 }
 
-enum PE_ImageFileCharacteristics : U16
+PE_ImageFileCharacteristics :: enum U16
 {
   PE_ImageFileCharacteristic_STRIPPED                     = (1 << 0),
   PE_ImageFileCharacteristic_EXE                          = (1 << 1),
@@ -71,7 +71,7 @@ enum PE_ImageFileCharacteristics : U16
   PE_ImageFileCharacteristic_BYTES_RESERVED_HI            = (1 << 15),
 }
 
-enum PE_DllCharacteristics : U16
+PE_DllCharacteristics :: enum U16
 {
   PE_DllCharacteristic_HIGH_ENTROPY_VA       = (1 << 5),
   PE_DllCharacteristic_DYNAMIC_BASE          = (1 << 6),
@@ -153,7 +153,7 @@ struct PE_OptionalHeader32Plus
   U32                   data_dir_count;
 }
 
-enum PE_DataDirectoryIndex
+PE_DataDirectoryIndex :: enum
 {
   PE_DataDirectoryIndex_EXPORT,
   PE_DataDirectoryIndex_IMPORT,
@@ -180,7 +180,7 @@ struct PE_DataDirectory
   U32 virt_size;
 }
 
-enum PE_DebugDirectoryType : U32
+PE_DebugDirectoryType :: enum U32
 {
   PE_DebugDirectoryType_UNKNOWN               = 0,
   PE_DebugDirectoryType_COFF                  = 1,
@@ -203,7 +203,7 @@ enum PE_DebugDirectoryType : U32
   PE_DebugDirectoryType_COUNT                 = 18
 }
 
-enum PE_FPOFlags : U8
+PE_FPOFlags :: enum U8
 {
   PE_FPOFlags_HAS_SEH    = 0x800,
   PE_FPOFlags_USE_BP_REG = 0x1000,
@@ -211,7 +211,7 @@ enum PE_FPOFlags : U8
   PE_FPOFlags_COUNT      = 3
 }
 
-enum PE_FPOEncoded : U16
+PE_FPOEncoded :: enum U16
 {
   PE_FPOEncoded_PROLOG_SIZE_SHIFT     = 0,  PE_FPOEncoded_PROLOG_SIZE_MASK     = 0xff,
   PE_FPOEncoded_SAVED_REGS_SIZE_SHIFT = 8,  PE_FPOEncoded_SAVED_REGS_SIZE_MASK = 0x7,
@@ -223,7 +223,7 @@ enum PE_FPOEncoded : U16
 #define PE_FPOEncoded_Extract_FLAGS(f)           (U8)(((f) >> PE_FPOEncoded_FLAGS_SHIFT)           & PE_FPOEncoded_FLAGS_MASK)
 #define PE_FPOEncoded_Extract_FRAME_TYPE(f)      (U8)(((f) >> PE_FPOEncoded_FRAME_TYPE_SHIFT)      & PE_FPOEncoded_FRAME_TYPE_MASK)
 
-enum PE_FPOType : U8
+PE_FPOType :: enum U8
 {
   PE_FPOType_FPO   = 0,
   PE_FPOType_TRAP  = 1,
@@ -242,7 +242,7 @@ struct PE_DebugFPO
   U16 flags;
 }
 
-enum PE_DebugMiscType : U32
+PE_DebugMiscType :: enum U32
 {
   PE_DebugMiscType_NULL,
   PE_DebugMiscType_EXE_NAME,
@@ -284,7 +284,7 @@ struct PE_DebugDirectory
   U32                   foff;
 }
 
-enum PE_GlobalFlags : U32
+PE_GlobalFlags :: enum U32
 {
   PE_GlobalFlags_STOP_ON_EXCEPTION          = (1 << 0),
   PE_GlobalFlags_SHOW_LDR_SNAPS             = (1 << 1),
@@ -319,7 +319,7 @@ enum PE_GlobalFlags : U32
   PE_GlobalFlags_DISABLE_PROTDLLS           = (1 << 31),
 }
 
-enum PE_LoadConfigGuardFlags : U32
+PE_LoadConfigGuardFlags :: enum U32
 {
   PE_LoadConfigGuardFlags_CF_INSTRUMENTED                    = (1 << 8),
   PE_LoadConfigGuardFlags_CFW_INSTRUMENTED                   = (1 << 9),
@@ -594,7 +594,7 @@ static read_only U8 PE_RES_MAGIC[] =
   0x00, 0x00, 0x00, 0x00
 }
 
-enum PE_ResourceKind : U32
+PE_ResourceKind :: enum U32
 {
   PE_ResourceKind_CURSOR       = 0x1,
   PE_ResourceKind_BITMAP       = 0x2,
@@ -622,7 +622,7 @@ enum PE_ResourceKind : U32
   PE_ResourceKind_DIALOG_NEW   = 0x2005,
 }
 
-enum PE_ResDataKind
+PE_ResDataKind :: enum
 {
   PE_ResDataKind_NULL,
   PE_ResDataKind_DIR,
@@ -644,7 +644,7 @@ struct PE_ResourceHeader
   U32                       characteristics;
 }
 
-enum PE_BaseRelocKind : U16
+PE_BaseRelocKind :: enum U16
 {
   PE_BaseRelocKind_ABSOLUTE            = 0, // No reallocation is applied. Can be used as padding.
   PE_BaseRelocKind_HIGH                = 1,
@@ -667,7 +667,7 @@ enum PE_BaseRelocKind : U16
 #define PE_BaseRelocKindFromEntry(x)   (((x) >> 12) & 0xf)
 #define PE_BaseRelocMake(k, off)       ((((U16)(k) & 0xf) << 12) | (U16)((off) & 0x1fff))
 
-enum PE_UnwindOpCode : U32
+PE_UnwindOpCode :: enum U32
 {
   PE_UnwindOpCode_PUSH_NONVOL      = 0,
   PE_UnwindOpCode_ALLOC_LARGE      = 1,
@@ -682,7 +682,7 @@ enum PE_UnwindOpCode : U32
   PE_UnwindOpCode_PUSH_MACHFRAME   = 10,
 }
 
-enum PE_UnwindGprRegX64 : U8
+PE_UnwindGprRegX64 :: enum U8
 {
   PE_UnwindGprRegX64_RAX = 0,
   PE_UnwindGprRegX64_RCX = 1,
@@ -702,7 +702,7 @@ enum PE_UnwindGprRegX64 : U8
   PE_UnwindGprRegX64_R15 = 15,
 }
 
-enum PE_UnwindInfoFlags : U8
+PE_UnwindInfoFlags :: enum U8
 {
   PE_UnwindInfoFlag_EHANDLER = (1<<0),
   PE_UnwindInfoFlag_UHANDLER = (1<<1),
@@ -848,7 +848,7 @@ struct PE_ParsedExportTable
   PE_ParsedExport *exports;
 }
 
-enum PE_ParsedImportType : U32 PE_ParsedImportTypeEnum
+PE_ParsedImportType :: enum U32 PE_ParsedImportTypeEnum
 {
   PE_ParsedImport_Null,
   PE_ParsedImport_Ordinal,

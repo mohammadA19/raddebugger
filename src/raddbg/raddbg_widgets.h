@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Line Edit Types
 
-enum RD_LineEditFlags : U32
+RD_LineEditFlags :: enum U32
 {
   RD_LineEditFlag_Expander            = (1<<0),
   RD_LineEditFlag_ExpanderSpace       = (1<<1),
@@ -24,7 +24,7 @@ enum RD_LineEditFlags : U32
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-enum RD_CodeSliceFlags : U32
+RD_CodeSliceFlags :: enum U32
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
   RD_CodeSliceFlag_PriorityMargin    = (1<<1),

@@ -14,8 +14,7 @@ srtuct DW_UnwindResult
 
 // EH: Exception Frames
 
-enum DW_EhPtrEnc : U8
-{
+DW_EhPtrEnc :: enum U8 {
   DW_EhPtrEnc_TypeMask = 0x0F,
   DW_EhPtrEnc_Ptr       = 0x00, // Pointer sized unsigned value
   DW_EhPtrEnc_ULEB128   = 0x01, // Unsigned LE base-128 value
@@ -96,7 +95,7 @@ srtuct DW_CFIRecords
   DW_FDEUnpacked fde;
 }
 
-enum DW_CFICFARule{
+DW_CFICFARule :: enum{
   DW_CFI_CFA_Rule_RegOff,
   DW_CFI_CFA_Rule_Expr,
 }
@@ -113,8 +112,7 @@ srtuct DW_CFICFACell
   };
 }
 
-enum DW_CFIRegisterRule
-{
+DW_CFIRegisterRule :: enum {
   DW_CFIRegisterRule_SameValue,
   DW_CFIRegisterRule_Undefined,
   DW_CFIRegisterRule_Offset,
@@ -149,8 +147,7 @@ srtuct DW_CFIMachine
   U64             fde_ip;
 }
 
-enum DW_CFADecode : U8
-{
+DW_CFADecode :: enum U8 {
   DW_CFADecode_Nop     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
   DW_CFADecode_Address = 0x9,
@@ -158,8 +155,7 @@ enum DW_CFADecode : U8
   DW_CFADecode_SLEB128 = 0xB,
 }
 
-enum DW_CFAControlBits : U16
-{
+DW_CFAControlBits :: enum U16 {
   DW_CFAControlBits_Dec1Mask = 0x00F,
   DW_CFAControlBits_Dec2Mask = 0x0F0,
   DW_CFAControlBits_IsReg0   = 0x100,

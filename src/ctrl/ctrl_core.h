@@ -343,7 +343,7 @@ struct CTRL_EntityStore
 ////////////////////////////////
 //~ rjf: Unwind Types
 
-enum CTRL_UnwindFlags : U32
+CTRL_UnwindFlags :: enum U32
 {
   CTRL_UnwindFlag_Error = (1<<0),
   CTRL_UnwindFlag_Stale = (1<<1),
@@ -409,7 +409,7 @@ struct CTRL_CallStack
 ////////////////////////////////
 //~ rjf: Trap Types
 
-enum CTRL_TrapFlags : U32
+CTRL_TrapFlags :: enum U32
 {
   CTRL_TrapFlag_IgnoreStackPointerCheck = (1<<0),
   CTRL_TrapFlag_SingleStepAfterHit      = (1<<1),
@@ -448,7 +448,7 @@ struct CTRL_Spoof
 ////////////////////////////////
 //~ rjf: User Breakpoint Types
 
-enum CTRL_UserBreakpointKind
+CTRL_UserBreakpointKind :: enum
 {
   CTRL_UserBreakpointKind_Null,
   CTRL_UserBreakpointKind_FileNameAndLineColNumber,
@@ -482,7 +482,7 @@ struct CTRL_UserBreakpointList
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-enum CTRL_EvalSpaceKind : U64
+CTRL_EvalSpaceKind :: enum U64
 {
   CTRL_EvalSpaceKind_Entity = E_SpaceKind_FirstUserDefined,
   CTRL_EvalSpaceKind_Meta,
@@ -491,7 +491,7 @@ enum CTRL_EvalSpaceKind : U64
 ////////////////////////////////
 //~ rjf: Message Types
 
-enum CTRL_MsgKind
+CTRL_MsgKind :: enum
 {
   CTRL_MsgKind_Null,
   CTRL_MsgKind_Launch,
@@ -508,7 +508,7 @@ enum CTRL_MsgKind
   CTRL_MsgKind_COUNT,
 }
 
-enum CTRL_RunFlags : U32
+CTRL_RunFlags :: enum U32
 {
   CTRL_RunFlag_StopOnEntryPoint = (1<<0),
 }
@@ -553,7 +553,7 @@ struct CTRL_MsgList
 ////////////////////////////////
 //~ rjf: Event Types
 
-enum CTRL_EventKind
+CTRL_EventKind :: enum
 {
   CTRL_EventKind_Null,
   CTRL_EventKind_Error,
@@ -591,7 +591,7 @@ enum CTRL_EventKind
   CTRL_EventKind_COUNT
 }
 
-enum CTRL_EventCause
+CTRL_EventCause :: enum
 {
   CTRL_EventCause_Null,
   CTRL_EventCause_Error,
@@ -604,7 +604,7 @@ enum CTRL_EventCause
   CTRL_EventCause_COUNT
 }
 
-enum CTRL_ExceptionKind
+CTRL_ExceptionKind :: enum
 {
   CTRL_ExceptionKind_Null,
   CTRL_ExceptionKind_MemoryRead,

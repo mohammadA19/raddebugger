@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Disassembly Syntax Types
 
-enum DASM_Syntax
+DASM_Syntax :: enum
 {
   DASM_Syntax_Intel,
   DASM_Syntax_ATT,
@@ -17,7 +17,7 @@ enum DASM_Syntax
 ////////////////////////////////
 //~ rjf: Disassembly Instruction Info Types
 
-enum DASM_InstFlags : U32
+DASM_InstFlags :: enum U32
 {
   DASM_InstFlag_Call                        = (1<<0),
   DASM_InstFlag_Branch                      = (1<<1),
@@ -69,7 +69,7 @@ struct DASM_CtrlFlowInfo
 ////////////////////////////////
 //~ rjf: Disassembly Text Decoration Types
 
-enum DASM_StyleFlags : U32
+DASM_StyleFlags :: enum U32
 {
   DASM_StyleFlag_Addresses        = (1<<0),
   DASM_StyleFlag_CodeBytes        = (1<<1),
@@ -94,7 +94,7 @@ struct DASM_Params
 ////////////////////////////////
 //~ rjf: Disassembly Text Line Types
 
-enum DASM_LineFlags : U32
+DASM_LineFlags :: enum U32
 {
   DASM_LineFlag_Decorative = (1<<0),
 }

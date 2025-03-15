@@ -35,7 +35,7 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(LNX_FileIter), file_i
 ////////////////////////////////
 //~ NOTE(allen): Threading Entities
 
-enum LNX_EntityKind{
+LNX_EntityKind :: enum{
   LNX_EntityKind_Null,
   LNX_EntityKind_Thread,
   LNX_EntityKind_Mutex,

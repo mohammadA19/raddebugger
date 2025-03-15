@@ -41,7 +41,7 @@ entry_point(CmdLine *cmd_line)
   //////////////////////////////
   //- rjf: extract command line parameters
   //
-  enum DumpFlags : U32
+  DumpFlags :: enum U32
   {
     DumpFlag_DataSections       = (1<<0),
     DumpFlag_TopLevelInfo       = (1<<1),

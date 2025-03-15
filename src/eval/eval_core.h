@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Messages
 
-enum E_MsgKind
+E_MsgKind :: enum
 {
   E_MsgKind_Null,
   E_MsgKind_MalformedInput,
@@ -54,7 +54,7 @@ union E_Value
 ////////////////////////////////
 //~ rjf: Operator Info
 
-enum E_OpKind
+E_OpKind :: enum
 {
   E_OpKind_Null,
   E_OpKind_UnaryPrefix,
@@ -83,7 +83,7 @@ struct E_OpInfo
 // value for understanding a key *into* a space, e.g. 1+2 -> 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
-enum E_SpaceKind : U64
+E_SpaceKind :: enum U64
 {
   E_SpaceKind_Null,
   E_SpaceKind_FileSystem,
@@ -107,7 +107,7 @@ struct E_Space
 ////////////////////////////////
 //~ rjf: Evaluation Modes
 
-enum E_Mode
+E_Mode :: enum
 {
   E_Mode_Null,
   E_Mode_Value,

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Implicit Type Graph Key Types
 
-enum E_TypeKeyKind
+E_TypeKeyKind :: enum
 {
   E_TypeKeyKind_Null,
   E_TypeKeyKind_Basic,
@@ -42,7 +42,7 @@ struct E_TypeKeyList
 ////////////////////////////////
 //~ rjf: Full Extracted Type Information Types
 
-enum E_MemberKind
+E_MemberKind :: enum
 {
   E_MemberKind_Null,
   E_MemberKind_DataField,
@@ -58,7 +58,7 @@ enum E_MemberKind
   E_MemberKind_COUNT
 }
 
-enum E_TypeFlags : U32
+E_TypeFlags :: enum U32
 {
   E_TypeFlag_Const      = (1<<0),
   E_TypeFlag_Volatile   = (1<<1),

@@ -29,7 +29,7 @@ X(split_type, 0x06)\
 X(lo_user, 0x80)\
 X(hi_user, 0xff)
 
-enum DWARF_UnitType{
+DWARF_UnitType :: enum{
 #define X(N,C) DWARF_UnitType_##N = C,
   DWARF_UnitTypeXList(X)
 #undef X
@@ -110,7 +110,7 @@ X(immutable_type,   0x4b)\
 X(lo_user,        0x4080)\
 X(hi_user,        0xffff)
 
-enum DWARF_Tag{
+DWARF_Tag :: enum{
 #define X(N,C) DWARF_Tag_##N = C,
   DWARF_TagXList(X)
 #undef X
@@ -135,7 +135,7 @@ X(rnglistsptr,   12)\
 X(string,        13)\
 X(stroffsetsptr, 14)
 
-enum DWARF_AttributeClassFlags : U32{
+DWARF_AttributeClassFlags :: enum U32{
 #define X(N,C) DWARF_AttributeClassFlag_##N = (1 << C),
   DWARF_AttributeClassXList(X)
 #undef X
@@ -281,7 +281,7 @@ X(loclists_base,           0x8c, loclistsptr,   0,         0,         0)\
 X(lo_user,               0x2000, 0, 0, 0, 0)\
 X(hi_user,               0x3fff, 0, 0, 0, 0)
 
-enum DWARF_AttributeName{
+DWARF_AttributeName :: enum{
 #define X(N,C,f1,f2,f3,f4) DWARF_AttributeName_##N = C,
   DWARF_AttributeNameXList(X)
 #undef X
@@ -335,7 +335,7 @@ X(addrx2,         0x2a, address)\
 X(addrx3,         0x2b, address)\
 X(addrx4,         0x2c, address)
 
-enum DWARF_AttributeForm{
+DWARF_AttributeForm :: enum{
 #define X(N,C,f) DWARF_AttributeForm_##N = C,
   DWARF_AttributeFormXList(X)
 #undef X
@@ -424,7 +424,7 @@ X(reinterpret,         0xa9, 1)\
 X(lo_user,             0xe0, 0)\
 X(hi_user,             0xff, 0)
 
-enum DWARF_Op{
+DWARF_Op :: enum{
 #define X(N,C,k) DWARF_Op_##N = C,
   DWARF_OpXList(X)
 #undef X
@@ -443,7 +443,7 @@ X(base_address,     0x06)\
 X(start_end,        0x07)\
 X(start_length,     0x08)
 
-enum DWARF_LocationListEntry{
+DWARF_LocationListEntry :: enum{
 #define X(N,C) DWARF_LocationListEntry_##N = C,
   DWARF_LocationListEntryXList(X)
 #undef X
@@ -473,7 +473,7 @@ X(ASCII,           0x12)\
 X(lo_user,         0x80)\
 X(hi_user,         0xff)
 
-enum DWARF_BaseType{
+DWARF_BaseType :: enum{
 #define X(N,C) DWARF_BaseType_##N = C,
   DWARF_BaseTypeXList(X)
 #undef X
@@ -488,7 +488,7 @@ X(trailing_overpunch, 0x03)\
 X(leading_separate,   0x04)\
 X(trailing_separate,  0x05)
 
-enum DWARF_DecimalSign{
+DWARF_DecimalSign :: enum{
 #define X(N,C) DWARF_DecimalSign_##N = C,
   DWARF_DecimalSignXList(X)
 #undef X
@@ -503,7 +503,7 @@ X(little,  0x02)\
 X(lo_user, 0x40)\
 X(hi_user, 0xff)
 
-enum DWARF_Endianity{
+DWARF_Endianity :: enum{
 #define X(N,C) DWARF_Endianity_##N = C,
   DWARF_EndianityXList(X)
 #undef X
@@ -516,7 +516,7 @@ X(public,    0x01)\
 X(protected, 0x02)\
 X(private,   0x03)
 
-enum DWARF_Access{
+DWARF_Access :: enum{
 #define X(N,C) DWARF_Access_##N = C,
   DWARF_AccessXList(X)
 #undef X
@@ -529,7 +529,7 @@ X(local,     0x01)\
 X(exported,  0x02)\
 X(qualified, 0x03)
 
-enum DWARF_Visibility{
+DWARF_Visibility :: enum{
 #define X(N,C) DWARF_Visibility_##N = C,
   DWARF_VisibilityXList(X)
 #undef X
@@ -542,7 +542,7 @@ X(none,         0x00)\
 X(virtual,      0x01)\
 X(pure_virtual, 0x02)
 
-enum DWARF_Virtuality{
+DWARF_Virtuality :: enum{
 #define X(N,C) DWARF_Virtuality_##N = C,
   DWARF_VirtualityXList(X)
 #undef X
@@ -591,7 +591,7 @@ X(BLISS,          0x0025, 0)\
 X(lo_user,        0x8000, 0)\
 X(hi_user,        0xffff, 0)
 
-enum DWARF_Language{
+DWARF_Language :: enum{
 #define X(N,C,k) DWARF_Language_##N = C,
   DWARF_LanguageXList(X)
 #undef X
@@ -605,7 +605,7 @@ X(up_case,          0x01)\
 X(down_case,        0x02)\
 X(case_insensitive, 0x03)
 
-enum DWARF_IdentifierCase{
+DWARF_IdentifierCase :: enum{
 #define X(N,C) DWARF_IdentifierCase_##N = C,
   DWARF_IdentifierCaseXList(X)
 #undef X
@@ -622,7 +622,7 @@ X(pass_by_value,     0x05)\
 X(lo_user,           0x40)\
 X(hi_user,           0xff)
 
-enum DWARF_CallingConvention{
+DWARF_CallingConvention :: enum{
 #define X(N,C) DWARF_CallingConvention_##N = C,
   DWARF_CallingConventionXList(X)
 #undef X
@@ -636,7 +636,7 @@ X(inlined, 0x01)\
 X(declared_not_inlined, 0x02)\
 X(declared_inlined, 0x03)
 
-enum DWARF_Inline{
+DWARF_Inline :: enum{
 #define X(N,C) DWARF_Inline_##N = C,
   DWARF_InlineXList(X)
 #undef X
@@ -648,7 +648,7 @@ enum DWARF_Inline{
 X(row_major, 0x00)\
 X(col_major, 0x01)
 
-enum DWARF_ArrayOrdering{
+DWARF_ArrayOrdering :: enum{
 #define X(N,C) DWARF_ArrayOrdering_##N = C,
   DWARF_ArrayOrderingXList(X)
 #undef X
@@ -660,7 +660,7 @@ enum DWARF_ArrayOrdering{
 X(label, 0x00)\
 X(range, 0x01)
 
-enum DWARF_Discriminant{
+DWARF_Discriminant :: enum{
 #define X(N,C) DWARF_Discriminant_##N = C,
   DWARF_DiscriminantXList(X)
 #undef X
@@ -677,7 +677,7 @@ X(type_hash,    5)\
 X(lo_user, 0x2000)\
 X(hi_user, 0x3fff)
 
-enum DWARF_NameIndex{
+DWARF_NameIndex :: enum{
 #define X(N,C) DWARF_NameIndex_##N = C,
   DWARF_NameIndexXList(X)
 #undef X
@@ -690,7 +690,7 @@ X(no,           0x00)\
 X(in_class,     0x01)\
 X(out_of_class, 0x02)
 
-enum DWARF_Defaulted{
+DWARF_Defaulted :: enum{
 #define X(N,C) DWARF_Defaulted_##N = C,
   DWARF_DefaultedXList(X)
 #undef X
@@ -746,7 +746,7 @@ X(set_prologue_end,   0x0a)\
 X(set_epilogue_begin, 0x0b)\
 X(set_isa,            0x0c)
 
-enum DWARF_LineStdOp{
+DWARF_LineStdOp :: enum{
 #define X(N,C) DWARF_LineStdOp_##N = C,
   DWARF_LineStdOpXList(X)
 #undef X
@@ -761,7 +761,7 @@ X(set_discriminator, 0x04)\
 X(lo_user,           0x80)\
 X(hi_user,           0xff)
 
-enum DWARF_LineExtOp{
+DWARF_LineExtOp :: enum{
 #define X(N,C) DWARF_LineExtOp_##N = C,
   DWARF_LineExtOpXList(X)
 #undef X
@@ -777,7 +777,7 @@ X(MD5,             0x5)\
 X(lo_user,      0x2000)\
 X(hi_user,      0x3fff)
 
-enum DWARF_LineEntryFormat{
+DWARF_LineEntryFormat :: enum{
 #define X(N,C) DWARF_LineEntryFormat_##N = C,
   DWARF_LineEntryFormatXList(X)
 #undef X
@@ -814,7 +814,7 @@ X(RngLists,   V5,    ".debug_rnglists",    ".debug_rnglists.dwo",    "__debug_rn
 X(LocLists,   V5,    ".debug_loclists",    ".debug_loclists.dwo",    "__debug_loclists")
 
 
-enum DWARF_SectionCode{
+DWARF_SectionCode :: enum{
 #define X(c,vf,n0,n1,n2) DWARF_SectionCode_##c,
   DWARF_SectionNameXList(X,0,0)
 #undef X
@@ -1271,7 +1271,7 @@ if (success__)                             \
 // * applies to (any X: unwind(ELF/DW, X))
 
 // EH: Exception Frames
-enum UNW_DW_EhPtrEnc : U8{
+UNW_DW_EhPtrEnc :: enum U8{
   UNW_DW_EhPtrEnc_TYPE_MASK = 0x0F,
   UNW_DW_EhPtrEnc_PTR     = 0x00, // Pointer sized unsigned value
   UNW_DW_EhPtrEnc_ULEB128 = 0x01, // Unsigned LE base-128 value
@@ -1347,7 +1347,7 @@ srtuct UNW_DW_CFIRecords{
   UNW_DW_FDEUnpacked fde;
 }
 
-enum UNW_DW_CFICFARule{
+UNW_DW_CFICFARule :: enum{
   UNW_DW_CFICFARule_REGOFF,
   UNW_DW_CFICFARule_EXPR,
 }
@@ -1364,7 +1364,7 @@ srtuct UNW_DW_CFICFACell{
   };
 }
 
-enum UNW_DW_CFIRegisterRule{
+UNW_DW_CFIRegisterRule :: enum{
   UNW_DW_CFIRegisterRule_SAME_VALUE,
   UNW_DW_CFIRegisterRule_UNDEFINED,
   UNW_DW_CFIRegisterRule_OFFSET,
@@ -1399,7 +1399,7 @@ srtuct UNW_DW_CFIMachine{
   U64 fde_ip;
 }
 
-enum UNW_DW_CFADecode : U8{
+UNW_DW_CFADecode :: enum U8{
   UNW_DW_CFADecode_NOP     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
   UNW_DW_CFADecode_ADDRESS = 0x9,
@@ -1407,7 +1407,7 @@ enum UNW_DW_CFADecode : U8{
   UNW_DW_CFADecode_SLEB128 = 0xB,
 }
 
-enum UNW_DW_CFAControlBits : U16{
+UNW_DW_CFAControlBits :: enum U16{
   UNW_DW_CFAControlBits_DEC1_MASK = 0x00F,
   UNW_DW_CFAControlBits_DEC2_MASK = 0x0F0,
   UNW_DW_CFAControlBits_IS_REG_0  = 0x100,

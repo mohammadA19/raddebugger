@@ -6,7 +6,7 @@
 #ifndef RENDER_D3D11_META_H
 #define RENDER_D3D11_META_H
 
-enum R_D3D11_VShadKind
+R_D3D11_VShadKind :: enum
 {
 R_D3D11_VShadKind_Rect,
 R_D3D11_VShadKind_Blur,
@@ -16,7 +16,7 @@ R_D3D11_VShadKind_Finalize,
 R_D3D11_VShadKind_COUNT,
 }
 
-enum R_D3D11_PShadKind
+R_D3D11_PShadKind :: enum
 {
 R_D3D11_PShadKind_Rect,
 R_D3D11_PShadKind_Blur,
@@ -26,7 +26,7 @@ R_D3D11_PShadKind_Finalize,
 R_D3D11_PShadKind_COUNT,
 }
 
-enum R_D3D11_UniformTypeKind
+R_D3D11_UniformTypeKind :: enum
 {
 R_D3D11_UniformTypeKind_Rect,
 R_D3D11_UniformTypeKind_Blur,

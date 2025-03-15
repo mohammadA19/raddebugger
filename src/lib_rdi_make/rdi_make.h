@@ -108,7 +108,7 @@ struct RDIM_String8List
 }
 #endif
 
-enum RDIM_StringMatchFlags : RDI_U32
+RDIM_StringMatchFlags :: enum RDI_U32
 {
   RDIM_StringMatchFlag_CaseInsensitive = (1<<0),
 }
@@ -690,7 +690,7 @@ struct RDIM_LocationSet
 ////////////////////////////////
 //~ rjf: Symbol Info Types
 
-enum RDIM_SymbolKind
+RDIM_SymbolKind :: enum
 {
   RDIM_SymbolKind_NULL,
   RDIM_SymbolKind_GlobalVariable,

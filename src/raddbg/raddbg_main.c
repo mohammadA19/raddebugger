@@ -414,7 +414,7 @@
 ////////////////////////////////
 //~ rjf: Top-Level Execution Types
 
-enum ExecMode
+ExecMode :: enum
 {
   ExecMode_Normal,
   ExecMode_IPCSender,

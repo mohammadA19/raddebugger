@@ -57,7 +57,7 @@ struct EmbedInfoTable
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-enum TypeKind
+TypeKind :: enum
 {
   TypeKind_Null,
   
@@ -90,7 +90,7 @@ enum TypeKind
   TypeKind_COUNT
 }
 
-enum TypeFlags : U32
+TypeFlags :: enum U32
 {
   TypeFlag_IsExternal  = (1<<0),
   TypeFlag_IsPlainText = (1<<1),
@@ -98,7 +98,7 @@ enum TypeFlags : U32
   TypeFlag_IsPathText  = (1<<3),
 }
 
-enum MemberFlags : U32
+MemberFlags :: enum U32
 {
   MemberFlag_DoNotSerialize  = (1<<0),
 }

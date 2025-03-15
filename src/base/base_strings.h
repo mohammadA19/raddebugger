@@ -63,19 +63,19 @@ struct String8Array
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
 
-enum StringMatchFlags : U32
+StringMatchFlags :: enum U32
 {
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
 }
 
-enum StringSplitFlags : U32
+StringSplitFlags :: enum U32
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
 }
 
-enum PathStyle
+PathStyle :: enum
 {
   PathStyle_Null,
   PathStyle_Relative,

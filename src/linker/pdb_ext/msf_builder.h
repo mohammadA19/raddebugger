@@ -85,8 +85,7 @@ srtuct MSF_Context
   MSF_StreamList   st;
 }
 
-enum MSF_Error
-{
+MSF_Error :: enum {
   MSF_Error_OK,
   
   // if you get this error this means stream table was divided into too many

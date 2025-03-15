@@ -136,7 +136,7 @@ typedef EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_SIG(EV_ViewRuleExprExpandRa
 typedef EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(EV_ViewRuleExprExpandIDFromNumHookFunctionType);
 typedef EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(EV_ViewRuleExprExpandNumFromIDHookFunctionType);
 
-enum EV_ViewRuleInfoFlags : U32 // NOTE(rjf): see @view_rule_info
+EV_ViewRuleInfoFlags :: enum U32 // NOTE(rjf): see @view_rule_info
 {
   EV_ViewRuleInfoFlag_Inherited           = (1<<0),
   EV_ViewRuleInfoFlag_Expandable          = (1<<1),
@@ -293,7 +293,7 @@ struct EV_AutoViewRuleTable
 ////////////////////////////////
 //~ rjf: String Generation Types
 
-enum EV_StringFlags : U32
+EV_StringFlags :: enum U32
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
   EV_StringFlag_PrettyNames          = (1<<1),

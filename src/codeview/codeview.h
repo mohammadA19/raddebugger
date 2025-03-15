@@ -288,7 +288,7 @@ read_only static CV_TypeId cv_type_id_variadic = 0xFFFFFFFF;
   X(YMM7D3, 395, ymm7,   24, 8)
 
 typedef U16 CV_Regx86;
-enum CV_Regx86Enum
+CV_Regx86Enum :: enum
 {
 #define X(CVN,C,RDN,BP,BZ) CV_Regx86_##CVN = C,
   CV_Reg_X86_XList(X)
@@ -1005,7 +1005,7 @@ enum CV_Regx86Enum
   X(ZMM15H,  781, zmm15,  32, 32)
 
 typedef U16 CV_Regx64;
-enum CV_Regx64Enum
+CV_Regx64Enum :: enum
 {
 #define X(CVN,C,RDN,BP,BZ) CV_Regx64_##CVN = C,
   CV_Reg_X64_XList(X)
@@ -1021,7 +1021,7 @@ enum CV_Regx64Enum
   X(RESERVED, 5)
 
 typedef U32 CV_Signature;
-enum CV_SignatureEnum
+CV_SignatureEnum :: enum
 {
 #define X(N,c) CV_Signature_##N = c,
   CV_SignatureXList(X)
@@ -1049,7 +1049,7 @@ enum CV_SignatureEnum
   X(HLSL,    0x10)
 
 typedef U16 CV_Language;
-enum CV_LanguageEnum
+CV_LanguageEnum :: enum
 {
 #define X(N,c) CV_Language_##N = c,
   CV_LanguageXList(X)
@@ -1079,7 +1079,7 @@ struct CV_RecHeader
 // (per-compilation-unit info, variables, procedures, etc.)
 //
 
-enum CV_ProcFlags : U8
+CV_ProcFlags :: enum U8
 {
   CV_ProcFlag_NoFPO       = (1 << 0),
   CV_ProcFlag_IntReturn   = (1 << 1),
@@ -1091,7 +1091,7 @@ enum CV_ProcFlags : U8
   CV_ProcFlag_OptDbgInfo  = (1 << 7),
 }
 
-enum CV_LocalFlags : U16
+CV_LocalFlags :: enum U16
 {
   CV_LocalFlag_Param           = (1 << 0),
   CV_LocalFlag_AddrTaken       = (1 << 1),
@@ -1143,7 +1143,7 @@ struct CV_SymStartSearch
 //- (SymKind: RETURN)
 
 typedef U8 CV_GenericStyle;
-enum CV_GenericStyleEnum
+CV_GenericStyleEnum :: enum
 {
   CV_GenericStyle_VOID,
   CV_GenericStyle_REG,    //  "return data is in register"
@@ -1154,7 +1154,7 @@ enum CV_GenericStyleEnum
   CV_GenericStyle_UNUSED,
 }
 
-enum CV_GenericFlags : U16
+CV_GenericFlags :: enum U16
 {
   CV_GenericFlags_CSTYLE  = (1 << 0),
   CV_GenericFlags_RSCLEAN = (1 << 1), //  "returnee stack cleanup"
@@ -1197,7 +1197,7 @@ struct CV_SymVPath32
 //- (SymKind: FRAMEPROC)
 
 typedef U8 CV_EncodedFramePtrReg;
-enum CV_EncodedFramePtrRegEnum
+CV_EncodedFramePtrRegEnum :: enum
 {
   CV_EncodedFramePtrReg_None,
   CV_EncodedFramePtrReg_StackPtr,
@@ -1205,7 +1205,7 @@ enum CV_EncodedFramePtrRegEnum
   CV_EncodedFramePtrReg_BasePtr,
 }
 
-enum CV_FrameprocFlags : U32
+CV_FrameprocFlags :: enum U32
 {
   CV_FrameprocFlag_UsesAlloca        = (1 << 0),
   CV_FrameprocFlag_UsesSetJmp        = (1 << 1),
@@ -1264,7 +1264,7 @@ struct CV_SymObjName
 //- (SymKind: THUNK32)
 
 typedef U8 CV_ThunkOrdinal;
-enum CV_ThunkOrdinalEnum
+CV_ThunkOrdinalEnum :: enum
 {
   CV_ThunkOrdinal_NoType,
   CV_ThunkOrdinal_Adjustor,
@@ -1366,7 +1366,7 @@ struct CV_SymData32
 
 //- (SymKind: PUB32)
 
-enum CV_Pub32Flags : U32
+CV_Pub32Flags :: enum U32
 {
   CV_Pub32Flag_Code        = (1 << 0),
   CV_Pub32Flag_Function    = (1 << 1),
@@ -1533,7 +1533,7 @@ struct CV_SymRef2
 //- (SymKind: TRAMPOLINE)
 
 typedef U16 CV_TrampolineKind;
-enum CV_TrampolineKindEnum
+CV_TrampolineKindEnum :: enum
 {
   CV_TrampolineKind_Incremental,
   CV_TrampolineKind_BranchIsland,
@@ -1551,7 +1551,7 @@ struct CV_SymTrampoline
 
 //- (SymKind: SEPCODE)
 
-enum CV_SepcodeFlags : U32
+CV_SepcodeFlags :: enum U32
 {
   CV_SepcodeFlag_IsLexicalScope  = (1 << 0),
   CV_SepcodeFlag_ReturnsToParent = (1 << 1),
@@ -1595,7 +1595,7 @@ struct CV_SymCoffGroup
 
 //- (SymKind: EXPORT)
 
-enum CV_ExportFlags : U16
+CV_ExportFlags :: enum U16
 {
   CV_ExportFlag_Constant  = (1 << 0),
   CV_ExportFlag_Data      = (1 << 1),
@@ -1625,7 +1625,7 @@ struct CV_SymCallSiteInfo
 //- (SymKind: FRAMECOOKIE)
 
 typedef U8 CV_FrameCookieKind;
-enum CV_FrameCookieKindEnum
+CV_FrameCookieKindEnum :: enum
 {
   CV_FrameCookieKind_Copy,
   CV_FrameCookieKind_XorSP,
@@ -1644,7 +1644,7 @@ struct CV_SymFrameCookie
 //- (SymKind: DISCARDED)
 
 typedef U8 CV_DiscardedKind;
-enum CV_DiscardedKindEnum
+CV_DiscardedKindEnum :: enum
 {
   CV_DiscardedKind_Unknown,
   CV_DiscardedKind_NotSelected,
@@ -1660,7 +1660,7 @@ struct CV_SymDiscarded
 }
 
 //- (SymKind: COMPILE3)
-enum CV_Compile3Flags : U32
+CV_Compile3Flags :: enum U32
 {
   CV_Compile3Flag_EC             = (1 << 8),
   CV_Compile3Flag_NoDbgInfo      = (1 << 9),
@@ -1740,7 +1740,7 @@ struct CV_LvarAddrGap
   U16 len;
 }
 
-enum CV_RangeAttribs : U16
+CV_RangeAttribs :: enum U16
 {
   CV_RangeAttrib_Maybe = (1 << 0),
 }
@@ -1805,7 +1805,7 @@ struct CV_SymDefrangeFramepointerRelFullScope
 
 //- (SymKind: DEFRANGE_REGISTER_REL)
 
-enum CV_DefrangeRegisterRelFlags : U16
+CV_DefrangeRegisterRelFlags :: enum U16
 {
   CV_DefrangeRegisterRelFlag_SpilledOutUDTMember = (1 << 0),
 }
@@ -1830,7 +1830,7 @@ struct CV_SymBuildInfo
 //- (SymKind: INLINESITE)
 
 typedef U32 CV_InlineBinaryAnnotation;
-enum CV_InlineBinaryAnnotationEnum
+CV_InlineBinaryAnnotationEnum :: enum
 {
   CV_InlineBinaryAnnotation_Null,
   CV_InlineBinaryAnnotation_CodeOffset,
@@ -1849,7 +1849,7 @@ enum CV_InlineBinaryAnnotationEnum
 }
 
 typedef U32 CV_InlineRangeKind;
-enum CV_InlineRangeKindEnum
+CV_InlineRangeKindEnum :: enum
 {
   CV_InlineRangeKind_Expr,
   CV_InlineRangeKind_Stmt
@@ -1889,7 +1889,7 @@ struct CV_SymFileStatic
 //- (SymKind: ARMSWITCHTABLE)
 
 typedef U16 CV_ArmSwitchKind;
-enum CV_ArmSwitchKindEnum
+CV_ArmSwitchKindEnum :: enum
 {
   CV_ArmSwitchKind_INT1,
   CV_ArmSwitchKind_UINT1,
@@ -1947,7 +1947,7 @@ struct CV_SymHeapAllocSite
 
 //- (SymKind: MOD_TYPEREF)
 
-enum CV_ModTypeRefFlags : U32
+CV_ModTypeRefFlags :: enum U32
 {
   CV_ModTypeRefFlag_None     = (1 << 0),
   CV_ModTypeRefFlag_RefTMPCT = (1 << 1),
@@ -1967,7 +1967,7 @@ struct CV_SymModTypeRef
 
 //- (SymKind: REF_MINIPDB)
 
-enum CV_RefMiniPdbFlags : U16
+CV_RefMiniPdbFlags :: enum U16
 {
   CV_RefMiniPdbFlag_Local = (1 << 0),
   CV_RefMiniPdbFlag_Data  = (1 << 1),
@@ -1986,7 +1986,7 @@ struct CV_SymRefMiniPdb
 
 //- (SymKind: FASTLINK)
 
-enum CV_FastLinkFlags : U16
+CV_FastLinkFlags :: enum U16
 {
   CV_FastLinkFlag_IsGlobalData = (1 << 0),
   CV_FastLinkFlag_IsData       = (1 << 1),
@@ -2041,7 +2041,7 @@ enum
 #define CV_BasicPointerKindFromTypeId(x) (((x)>>8)&0xFF)
 
 typedef U8 CV_HFAKind;
-enum CV_HFAKindEnum
+CV_HFAKindEnum :: enum
 {
   CV_HFAKind_None,
   CV_HFAKind_Float,
@@ -2050,7 +2050,7 @@ enum CV_HFAKindEnum
 }
 
 typedef U8 CV_MoComUDTKind;
-enum CV_MoComUDTKindEnum
+CV_MoComUDTKindEnum :: enum
 {
   CV_MoComUDTKind_None,
   CV_MoComUDTKind_Ref,
@@ -2059,7 +2059,7 @@ enum CV_MoComUDTKindEnum
 }
 
 typedef U16 CV_TypeProps;
-enum CV_TypeProps32 : U32
+CV_TypeProps32 :: enum U32
 {
   CV_TypeProp_Packed                     = (1 << 0),
   CV_TypeProp_HasConstructorsDestructors = (1 << 1),
@@ -2080,7 +2080,7 @@ enum CV_TypeProps32 : U32
 #define CV_TypeProps_Extract_MOCOM(f) (((f)>>14)&0x3)
 
 typedef U8 CV_PointerKind;
-enum CV_PointerKindEnum
+CV_PointerKindEnum :: enum
 {
   CV_PointerKind_Near,      // 16 bit
   CV_PointerKind_Far,       // 16:16 bit
@@ -2098,7 +2098,7 @@ enum CV_PointerKindEnum
 }
 
 typedef U8 CV_PointerMode;
-enum CV_PointerModeEnum
+CV_PointerModeEnum :: enum
 {
   CV_PointerMode_Ptr,
   CV_PointerMode_LRef,
@@ -2108,7 +2108,7 @@ enum CV_PointerModeEnum
 }
 
 typedef U16 CV_MemberPointerKind;
-enum CV_MemberPointerKindEnum
+CV_MemberPointerKindEnum :: enum
 {
   CV_MemberPointerKind_Undef,
   CV_MemberPointerKind_DataSingle,
@@ -2122,7 +2122,7 @@ enum CV_MemberPointerKindEnum
 }
 
 typedef U32 CV_VirtualTableShape;
-enum CV_VirtualTableShapeEnum
+CV_VirtualTableShapeEnum :: enum
 {
   CV_VirtualTableShape_Near,    // 16 bit ptr
   CV_VirtualTableShape_Far,     // 16:16 bit ptr
@@ -2133,7 +2133,7 @@ enum CV_VirtualTableShapeEnum
   CV_VirtualTableShape_Far32,   // ???
 }
 
-enum CV_MethodProp : U8
+CV_MethodProp :: enum U8
 {
   CV_MethodProp_Vanilla,
   CV_MethodProp_Virtual,
@@ -2145,7 +2145,7 @@ enum CV_MethodProp : U8
 }
 
 typedef U8 CV_MemberAccess;
-enum CV_MemberAccessEnum
+CV_MemberAccessEnum :: enum
 {
   CV_MemberAccess_Null,
   CV_MemberAccess_Private,
@@ -2153,7 +2153,7 @@ enum CV_MemberAccessEnum
   CV_MemberAccess_Public
 }
 
-enum CV_FieldAttribs : U16
+CV_FieldAttribs :: enum U16
 {
   // Access: 0,1
   // MethodProp: [2:4]
@@ -2167,13 +2167,13 @@ enum CV_FieldAttribs : U16
 #define CV_FieldAttribs_Extract_MethodProp(f) (((f)>>2)&0x7)
 
 typedef U16 CV_LabelKind;
-enum CV_LabelKindEnum
+CV_LabelKindEnum :: enum
 {
   CV_LabelKind_Near = 0,
   CV_LabelKind_Far  = 4,
 }
 
-enum CV_FunctionAttribs : U8
+CV_FunctionAttribs :: enum U8
 {
   CV_FunctionAttrib_CxxReturnUDT     = (1<<0),
   CV_FunctionAttrib_Constructor      = (1<<1),
@@ -2181,7 +2181,7 @@ enum CV_FunctionAttribs : U8
 }
 
 typedef U8 CV_CallKind;
-enum CV_CallKindEnum
+CV_CallKindEnum :: enum
 {
   CV_CallKind_NearC,
   CV_CallKind_FarC,
@@ -2269,7 +2269,7 @@ struct CV_LeafLabel
 
 //- (LeafKind: MODIFIER)
 
-enum CV_ModifierFlags : U16
+CV_ModifierFlags :: enum U16
 {
   CV_ModifierFlag_Const     = (1 << 0),
   CV_ModifierFlag_Volatile  = (1 << 1),
@@ -2284,7 +2284,7 @@ struct CV_LeafModifier
 
 //- (LeafKind: POINTER)
 
-enum CV_PointerAttribs : U32
+CV_PointerAttribs :: enum U32
 {
   // Kind: [0:4]
   // Mode: [5:7]
@@ -2589,7 +2589,7 @@ struct CV_LeafStringId
 
 //- (LeafIDKind: BUILDINFO)
 
-enum CV_BuildInfoIndexEnum
+CV_BuildInfoIndexEnum :: enum
 {
   CV_BuildInfoIndex_BuildDirectory     = 0,
   CV_BuildInfoIndex_CompilerExecutable = 1,
@@ -2654,7 +2654,7 @@ struct CV_LeafUDTModSrcLine
   X(XfgHashVirtual,      0x100)
 
 typedef U32 CV_C13SubSectionKind;
-enum CV_C13SubSectionKindEnum
+CV_C13SubSectionKindEnum :: enum
 {
 #define X(N,c) CV_C13SubSectionKind_##N = c,
   CV_C13SubSectionKindXList(X)
@@ -2670,7 +2670,7 @@ struct CV_C13SubSectionHeader
 //- FileChksms sub-section
 
 typedef U8 CV_C13ChecksumKind;
-enum CV_C13ChecksumKindEnum
+CV_C13ChecksumKindEnum :: enum
 {
   CV_C13ChecksumKind_Null,
   CV_C13ChecksumKind_MD5,
@@ -2687,7 +2687,7 @@ struct CV_C13Checksum
 
 //- Lines sub-section
 
-enum CV_C13SubSecLinesFlags : U16
+CV_C13SubSecLinesFlags :: enum U16
 {
   CV_C13SubSecLinesFlag_HasColumns = (1 << 0)
 }
@@ -2728,7 +2728,7 @@ struct CV_C13Column
 
 //- FrameData sub-section
 
-enum CV_C13FrameDataFlags : U32
+CV_C13FrameDataFlags :: enum U32
 {
   CV_C13FrameDataFlag_HasStructuredExceptionHandling = (1 << 0),
   CV_C13FrameDataFlag_HasExceptionHandling           = (1 << 1),
@@ -2750,7 +2750,7 @@ struct CV_C13FrameData
 
 //- InlineLines sub-section 
 
-enum CV_C13InlineeLinesSig : U32
+CV_C13InlineeLinesSig :: enum U32
 {
   CV_C13InlineeLinesSig_NORMAL,
   CV_C13InlineeLinesSig_EXTRA_FILES,
@@ -2771,14 +2771,14 @@ struct CV_C13InlineeSourceLineHeader
 ////////////////////////////////
 //~ Type Index Helper
 
-enum CV_TypeIndexSource
+CV_TypeIndexSource :: enum
 {
   CV_TypeIndexSource_NULL,
   CV_TypeIndexSource_TPI,
   CV_TypeIndexSource_IPI,
   CV_TypeIndexSource_COUNT
 }
-enum CV_TypeIndexSource CV_TypeIndexSource;
+CV_TypeIndexSource :: enum CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
 {

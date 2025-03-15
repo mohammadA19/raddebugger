@@ -7,7 +7,7 @@
 #define CODEVIEW_META_H
 
 typedef U16 CV_NumericKind;
-enum CV_NumericKindEnum
+CV_NumericKindEnum :: enum
 {
 CV_NumericKind_CHAR = 0x8000,
 CV_NumericKind_SHORT = 0x8001,
@@ -35,7 +35,7 @@ CV_NumericKind_FLOAT16 = 0x801c,
 }
 
 typedef U16 CV_Arch;
-enum CV_ArchEnum
+CV_ArchEnum :: enum
 {
 CV_Arch_8080 = 0x00,
 CV_Arch_8086 = 0x01,
@@ -105,7 +105,7 @@ CV_Arch_AMD64       = CV_Arch_X64,
 }
 
 typedef U16 CV_AllReg;
-enum CV_AllRegEnum
+CV_AllRegEnum :: enum
 {
 CV_AllReg_ERR = 30000,
 CV_AllReg_TEB = 30001,
@@ -123,7 +123,7 @@ CV_AllReg_CMDLN = 30012,
 }
 
 typedef U16 CV_SymKind;
-enum CV_SymKindEnum
+CV_SymKindEnum :: enum
 {
 CV_SymKind_COMPILE = 0x0001,
 CV_SymKind_REGISTER_16t = 0x0002,
@@ -321,7 +321,7 @@ CV_SymKind_INLINEES = 0x1168,
 }
 
 typedef U8 CV_BasicType;
-enum CV_BasicTypeEnum
+CV_BasicTypeEnum :: enum
 {
 CV_BasicType_NOTYPE = 0x00,
 CV_BasicType_ABS = 0x01,
@@ -379,7 +379,7 @@ CV_BasicType_PTR = 0xf0,
 }
 
 typedef U16 CV_LeafKind;
-enum CV_LeafKindEnum
+CV_LeafKindEnum :: enum
 {
 CV_LeafKind_NOTYPE = 0x0000,
 CV_LeafKind_MODIFIER_16t = 0x0001,

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Value Types
 
-enum TXT_LineEndKind
+TXT_LineEndKind :: enum
 {
   TXT_LineEndKind_Null,
   TXT_LineEndKind_LF,
@@ -15,7 +15,7 @@ enum TXT_LineEndKind
   TXT_LineEndKind_COUNT
 }
 
-enum TXT_TokenKind
+TXT_TokenKind :: enum
 {
   TXT_TokenKind_Null,
   TXT_TokenKind_Error,
@@ -96,7 +96,7 @@ struct TXT_LineTokensSlice
 ////////////////////////////////
 //~ rjf: Language Kind Types
 
-enum TXT_LangKind
+TXT_LangKind :: enum
 {
   TXT_LangKind_Null,
   TXT_LangKind_C,
