@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Bytecode Interpretation Types
 
-struct E_Interpretation
+E_Interpretation :: struct
 {
   E_Value value;
   E_InterpretationCode code;
@@ -18,7 +18,7 @@ struct E_Interpretation
 
 typedef B32 E_SpaceRWFunction(void *user_data, E_Space space, void *out, Rng1U64 offset_range);
 
-struct E_InterpretCtx
+E_InterpretCtx :: struct
 {
   void *space_rw_user_data;
   E_SpaceRWFunction *space_read;

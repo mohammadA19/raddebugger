@@ -19,8 +19,7 @@
 ////////////////////////////////
 //~ rjf: Files + External Debug References
 
-struct DW_ExtDebugRef
-{
+DW_ExtDebugRef :: struct {
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
   String8 dwo_path;
   U64     dwo_id;
@@ -29,14 +28,12 @@ struct DW_ExtDebugRef
 ////////////////////////////////
 //~ rjf: Abbrev Table
 
-struct DW_AbbrevTableEntry
-{
+DW_AbbrevTableEntry :: struct {
   U64 id;
   U64 off;
 }
 
-struct DW_AbbrevTable
-{
+DW_AbbrevTable :: struct {
   U64                  count;
   DW_AbbrevTableEntry *entries;
 }
@@ -44,24 +41,21 @@ struct DW_AbbrevTable
 ////////////////////////////////
 //~ Sections
 
-struct DW_Section
-{
+DW_Section :: struct {
   String8 name;
   String8 data;
   DW_Mode mode;
   B32     is_dwo;
 }
 
-struct DW_SectionArray
-{
+DW_SectionArray :: struct {
   DW_Section v[DW_Section_Count];
 }
 
 ////////////////////////////////
 //~ rjf: Basic Line Info
 
-struct DW_LineFile
-{
+DW_LineFile :: struct {
   String8 file_name;
   U64     dir_idx;
   U64     modify_time;
@@ -69,21 +63,18 @@ struct DW_LineFile
   U64     file_size;
 }
 
-struct DW_LineVMFileNode
-{
+DW_LineVMFileNode :: struct {
   DW_LineVMFileNode *next;
   DW_LineFile        file;
 }
 
-struct DW_LineVMFileList
-{
+DW_LineVMFileList :: struct {
   U64                node_count;
   DW_LineVMFileNode *first;
   DW_LineVMFileNode *last;
 }
 
-struct DW_LineVMFileArray
-{
+DW_LineVMFileArray :: struct {
   U64          count;
   DW_LineFile *v;
 }
@@ -105,8 +96,7 @@ DW_AbbrevFlags :: enum U32{
   DW_AbbrevFlag_HasChildren      = (1<<1),
 }
 
-struct DW_Abbrev
-{
+DW_Abbrev :: struct {
   DW_AbbrevKind  kind;
   Rng1U64        abbrev_range;
   U64            sub_kind;
@@ -118,8 +108,7 @@ struct DW_Abbrev
 ////////////////////////////////
 //~ rjf: Attribs
 
-struct DW_AttribValueResolveParams
-{
+DW_AttribValueResolveParams :: struct {
   DW_Version  version;
   DW_Language language;
   U64         addr_size;                // NOTE(rjf): size in bytes of containing compilation unit's addresses
@@ -130,14 +119,12 @@ struct DW_AttribValueResolveParams
   U64         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
 }
 
-struct DW_AttribValue
-{
+DW_AttribValue :: struct {
   DW_SectionKind section;
   U64            v[2];
 }
 
-struct DW_Attrib
-{
+DW_Attrib :: struct {
   U64            info_off;
   U64            abbrev_id;
   DW_AttribKind  attrib_kind;
@@ -146,27 +133,23 @@ struct DW_Attrib
   DW_AttribValue form_value;
 }
 
-struct DW_AttribArray
-{
+DW_AttribArray :: struct {
   DW_Attrib *v;
   U64        count;
 }
 
-struct DW_AttribNode
-{
+DW_AttribNode :: struct {
   DW_AttribNode *next;
   DW_Attrib      attrib;
 }
 
-struct DW_AttribList
-{
+DW_AttribList :: struct {
   DW_AttribNode *first;
   DW_AttribNode *last;
   U64            count;
 }
 
-struct DW_AttribListParseResult
-{
+DW_AttribListParseResult :: struct {
   DW_AttribList attribs;
   U64           max_info_off;
   U64           max_abbrev_off;
@@ -175,8 +158,7 @@ struct DW_AttribListParseResult
 ////////////////////////////////
 //~ rjf: Compilation Units + Accelerators
 
-struct DW_CompRoot
-{
+DW_CompRoot :: struct {
   // NOTE(rjf): Header Data
   U64             size;
   DW_CompUnitKind kind;
@@ -212,8 +194,7 @@ struct DW_CompRoot
 ////////////////////////////////
 //~ rjf: Tags
 
-struct DW_Tag
-{
+DW_Tag :: struct {
   DW_Tag        *next_sibling;
   DW_Tag        *first_child;
   DW_Tag        *last_child;
@@ -235,8 +216,7 @@ DW_TagStubFlags :: enum U32 {
   DW_TagStubFlag_HasSpecification     = (1<<3),
 }
 
-struct DW_TagStub
-{
+DW_TagStub :: struct {
   U64             info_off;
   DW_TagKind      kind;
   DW_TagStubFlags flags;
@@ -264,14 +244,12 @@ struct DW_TagStub
   U64 _unused_;
 }
 
-struct DW_TagStubNode
-{
+DW_TagStubNode :: struct {
   DW_TagStubNode *next;
   DW_TagStub      stub;
 }
 
-struct DW_TagStubList
-{
+DW_TagStubList :: struct {
   DW_TagStubNode *first;
   DW_TagStubNode *last;
   U64             count;
@@ -280,8 +258,7 @@ struct DW_TagStubList
 ////////////////////////////////
 //~ rjf: Line Info VM Types
 
-struct DW_LineVMHeader
-{
+DW_LineVMHeader :: struct {
   U64                 unit_length;
   U64                 unit_opl;
   DW_Version          version;
@@ -301,8 +278,7 @@ struct DW_LineVMHeader
   DW_LineVMFileArray  file_table;
 }
 
-struct DW_LineVMState
-{
+DW_LineVMState :: struct {
   U64 address;  // Address of a machine instruction.
   U32 op_index; // This is used by the VLIW instructions to indicate index of operation inside the instruction.
   
@@ -333,30 +309,26 @@ struct DW_LineVMState
   B32 busted_seq;
 }
 
-struct DW_Line
-{
+DW_Line :: struct {
   U64 file_index;
   U32 line;
   U32 column;
   U64 voff;
 }
 
-struct DW_LineNode
-{
+DW_LineNode :: struct {
   DW_LineNode *next;
   DW_Line      v;
 }
 
-struct DW_LineSeqNode
-{
+DW_LineSeqNode :: struct {
   DW_LineSeqNode *next;
   U64             count;
   DW_LineNode    *first;
   DW_LineNode    *last;
 }
 
-struct DW_LineTableParseResult
-{
+DW_LineTableParseResult :: struct {
   U64             seq_count;
   DW_LineSeqNode *first_seq;
   DW_LineSeqNode *last_seq;
@@ -365,16 +337,14 @@ struct DW_LineTableParseResult
 ////////////////////////////////
 //~ rjf: .debug_pubnames and .debug_pubtypes
 
-struct DW_PubStringsBucket
-{
+DW_PubStringsBucket :: struct {
   DW_PubStringsBucket *next;
   String8              string;
   U64                  info_off;
   U64                  cu_info_off;
 }
 
-struct DW_PubStringsTable
-{
+DW_PubStringsTable :: struct {
   U64 size;
   DW_PubStringsBucket **buckets;
 }

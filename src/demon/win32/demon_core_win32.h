@@ -93,7 +93,7 @@ DMN_W32_EntityKind :: enum
   DMN_W32_EntityKind_COUNT
 }
 
-struct DMN_W32_Entity
+DMN_W32_Entity :: struct
 {
   DMN_W32_Entity *first;
   DMN_W32_Entity *last;
@@ -131,13 +131,13 @@ struct DMN_W32_Entity
   };
 }
 
-struct DMN_W32_EntityNode
+DMN_W32_EntityNode :: struct
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
 }
 
-struct DMN_W32_EntityIDHashNode
+DMN_W32_EntityIDHashNode :: struct
 {
   DMN_W32_EntityIDHashNode *next;
   DMN_W32_EntityIDHashNode *prev;
@@ -145,7 +145,7 @@ struct DMN_W32_EntityIDHashNode
   DMN_W32_Entity *entity;
 }
 
-struct DMN_W32_EntityIDHashSlot
+DMN_W32_EntityIDHashSlot :: struct
 {
   DMN_W32_EntityIDHashNode *first;
   DMN_W32_EntityIDHashNode *last;
@@ -154,7 +154,7 @@ struct DMN_W32_EntityIDHashSlot
 ////////////////////////////////
 //~ rjf: Injection Types
 
-struct DMN_W32_InjectedBreak
+DMN_W32_InjectedBreak :: struct
 {
   U64 code;
   U64 user_data;
@@ -165,7 +165,7 @@ struct DMN_W32_InjectedBreak
 ////////////////////////////////
 //~ rjf: Image Info Types
 
-struct DMN_W32_ImageInfo
+DMN_W32_ImageInfo :: struct
 {
   Arch arch;
   U32 size;
@@ -179,7 +179,7 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-struct DMN_W32_Shared
+DMN_W32_Shared :: struct
 {
   // rjf: top-level info
   Arena *arena;

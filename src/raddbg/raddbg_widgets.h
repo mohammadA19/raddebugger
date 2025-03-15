@@ -32,7 +32,7 @@ RD_CodeSliceFlags :: enum U32
   RD_CodeSliceFlag_LineNums          = (1<<3),
 }
 
-struct RD_CodeSliceParams
+RD_CodeSliceParams :: struct
 {
   // rjf: content
   RD_CodeSliceFlags flags;
@@ -60,7 +60,7 @@ struct RD_CodeSliceParams
   F32 margin_float_off_px;
 }
 
-struct RD_CodeSliceSignal
+RD_CodeSliceSignal :: struct
 {
   UI_Signal base;
   TxtPt mouse_pt;

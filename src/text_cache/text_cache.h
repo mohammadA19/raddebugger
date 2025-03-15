@@ -30,13 +30,13 @@ TXT_TokenKind :: enum
   TXT_TokenKind_COUNT
 }
 
-struct TXT_Token
+TXT_Token :: struct
 {
   TXT_TokenKind kind;
   Rng1U64 range;
 }
 
-struct TXT_TokenChunkNode
+TXT_TokenChunkNode :: struct
 {
   TXT_TokenChunkNode *next;
   U64 count;
@@ -44,7 +44,7 @@ struct TXT_TokenChunkNode
   TXT_Token *v;
 }
 
-struct TXT_TokenChunkList
+TXT_TokenChunkList :: struct
 {
   TXT_TokenChunkNode *first;
   TXT_TokenChunkNode *last;
@@ -52,32 +52,32 @@ struct TXT_TokenChunkList
   U64 token_count;
 }
 
-struct TXT_TokenNode
+TXT_TokenNode :: struct
 {
   TXT_TokenNode *next;
   TXT_Token v;
 }
 
-struct TXT_TokenList
+TXT_TokenList :: struct
 {
   TXT_TokenNode *first;
   TXT_TokenNode *last;
   U64 count;
 }
 
-struct TXT_TokenArray
+TXT_TokenArray :: struct
 {
   U64 count;
   TXT_Token *v;
 }
 
-struct TXT_TokenArrayArray
+TXT_TokenArrayArray :: struct
 {
   U64 count;
   TXT_TokenArray *v;
 }
 
-struct TXT_TextInfo
+TXT_TextInfo :: struct
 {
   U64 lines_count;
   Rng1U64 *lines_ranges;
@@ -88,7 +88,7 @@ struct TXT_TextInfo
   U64 bytes_to_process;
 }
 
-struct TXT_LineTokensSlice
+TXT_LineTokensSlice :: struct
 {
   TXT_TokenArray *line_tokens;
 }
@@ -113,7 +113,7 @@ typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processe
 ////////////////////////////////
 //~ rjf: Cache Types
 
-struct TXT_Node
+TXT_Node :: struct
 {
   // rjf: links
   TXT_Node *next;
@@ -135,13 +135,13 @@ struct TXT_Node
   U64 load_count;
 }
 
-struct TXT_Slot
+TXT_Slot :: struct
 {
   TXT_Node *first;
   TXT_Node *last;
 }
 
-struct TXT_Stripe
+TXT_Stripe :: struct
 {
   Arena *arena;
   OS_Handle rw_mutex;
@@ -151,14 +151,14 @@ struct TXT_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-struct TXT_Touch
+TXT_Touch :: struct
 {
   TXT_Touch *next;
   U128 hash;
   TXT_LangKind lang;
 }
 
-struct TXT_Scope
+TXT_Scope :: struct
 {
   TXT_Scope *next;
   TXT_Touch *top_touch;
@@ -167,7 +167,7 @@ struct TXT_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct TXT_TCTX
+TXT_TCTX :: struct
 {
   Arena *arena;
   TXT_Scope *free_scope;
@@ -177,7 +177,7 @@ struct TXT_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-struct TXT_Shared
+TXT_Shared :: struct
 {
   Arena *arena;
   

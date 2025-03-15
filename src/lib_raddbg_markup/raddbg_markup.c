@@ -18,7 +18,7 @@ typedef char const *LPCSTR;
 typedef const WCHAR *LPCWSTR, *PCWSTR;
 typedef LONG HRESULT;
 typedef void *HANDLE;
-struct HINSTANCE__;
+HINSTANCE__ :: struct;
 srtuct HINSTANCE__ *HMODULE;
 typedef __int64 INT_PTR;
 typedef INT_PTR (*FARPROC)();
@@ -48,7 +48,7 @@ extern "C"
 
 //- helpers
 
-struct RADDBG_MARKUP_UnicodeDecode
+RADDBG_MARKUP_UnicodeDecode :: struct
 {
   unsigned __int32 inc;
   unsigned __int32 codepoint;

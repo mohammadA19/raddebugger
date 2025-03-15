@@ -9,7 +9,7 @@
 
 //- rjf: 2-vectors
 
-union Vec2F32
+Vec2F32 :: struct #raw_union
 {
   struct
   {
@@ -19,7 +19,7 @@ union Vec2F32
   F32 v[2];
 }
 
-union Vec2S64
+Vec2S64 :: struct #raw_union
 {
   struct
   {
@@ -29,7 +29,7 @@ union Vec2S64
   S64 v[2];
 }
 
-union Vec2S32
+Vec2S32 :: struct #raw_union
 {
   struct
   {
@@ -39,7 +39,7 @@ union Vec2S32
   S32 v[2];
 }
 
-union Vec2S16
+Vec2S16 :: struct #raw_union
 {
   struct
   {
@@ -51,7 +51,7 @@ union Vec2S16
 
 //- rjf: 3-vectors
 
-union Vec3F32
+Vec3F32 :: struct #raw_union
 {
   struct
   {
@@ -72,7 +72,7 @@ union Vec3F32
   F32 v[3];
 }
 
-union Vec3S32
+Vec3S32 :: struct #raw_union
 {
   struct
   {
@@ -95,7 +95,7 @@ union Vec3S32
 
 //- rjf: 4-vectors
 
-union Vec4F32
+Vec4F32 :: struct #raw_union
 {
   struct
   {
@@ -122,7 +122,7 @@ union Vec4F32
   F32 v[4];
 }
 
-union Vec4S32
+Vec4S32 :: struct #raw_union
 {
   struct
   {
@@ -152,12 +152,12 @@ union Vec4S32
 ////////////////////////////////
 //~ rjf: Matrix Types
 
-struct Mat3x3F32
+Mat3x3F32 :: struct
 {
   F32 v[3][3];
 }
 
-struct Mat4x4F32
+Mat4x4F32 :: struct
 {
   F32 v[4][4];
 }
@@ -167,7 +167,7 @@ struct Mat4x4F32
 
 //- rjf: 1-range
 
-union Rng1U32
+Rng1U32 :: struct #raw_union
 {
   struct
   {
@@ -177,7 +177,7 @@ union Rng1U32
   U32 v[2];
 }
 
-union Rng1S32
+Rng1S32 :: struct #raw_union
 {
   struct
   {
@@ -187,7 +187,7 @@ union Rng1S32
   S32 v[2];
 }
 
-union Rng1U64
+Rng1U64 :: struct #raw_union
 {
   struct
   {
@@ -197,7 +197,7 @@ union Rng1U64
   U64 v[2];
 }
 
-union Rng1S64
+Rng1S64 :: struct #raw_union
 {
   struct
   {
@@ -207,7 +207,7 @@ union Rng1S64
   S64 v[2];
 }
 
-union Rng1F32
+Rng1F32 :: struct #raw_union
 {
   struct
   {
@@ -219,7 +219,7 @@ union Rng1F32
 
 //- rjf: 2-range (rectangles)
 
-union Rng2S16
+Rng2S16 :: struct #raw_union
 {
   struct
   {
@@ -241,7 +241,7 @@ union Rng2S16
   Vec2S16 v[2];
 }
 
-union Rng2S32
+Rng2S32 :: struct #raw_union
 {
   struct
   {
@@ -263,7 +263,7 @@ union Rng2S32
   Vec2S32 v[2];
 }
 
-union Rng2F32
+Rng2F32 :: struct #raw_union
 {
   struct
   {
@@ -285,7 +285,7 @@ union Rng2F32
   Vec2F32 v[2];
 }
 
-union Rng2S64
+Rng2S64 :: struct #raw_union
 {
   struct
   {
@@ -310,20 +310,20 @@ union Rng2S64
 ////////////////////////////////
 //~ rjf: List Types
 
-struct Rng1S64Node
+Rng1S64Node :: struct
 {
   Rng1S64Node *next;
   Rng1S64 v;
 }
 
-struct Rng1S64List
+Rng1S64List :: struct
 {
   Rng1S64Node *first;
   Rng1S64Node *last;
   U64 count;
 }
 
-struct Rng1S64Array
+Rng1S64Array :: struct
 {
   Rng1S64 *v;
   U64 count;

@@ -18,7 +18,7 @@ ArenaFlags :: enum U32
   ArenaFlag_LargePages = (1<<1),
 }
 
-struct ArenaParams
+ArenaParams :: struct
 {
   ArenaFlags flags;
   U64 reserve_size;
@@ -26,7 +26,7 @@ struct ArenaParams
   void *optional_backing_buffer;
 }
 
-struct Arena
+Arena :: struct
 {
   Arena *prev;    // previous arena in chain
   Arena *current; // current arena in chain
@@ -40,7 +40,7 @@ struct Arena
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
-struct Temp
+Temp :: struct
 {
   Arena *arena;
   U64 pos;

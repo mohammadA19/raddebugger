@@ -9,7 +9,7 @@
 
 #define HS_KEY_HASH_HISTORY_COUNT 64
 
-struct HS_KeyNode
+HS_KeyNode :: struct
 {
   HS_KeyNode *next;
   U128 key;
@@ -17,13 +17,13 @@ struct HS_KeyNode
   U64 hash_history_gen;
 }
 
-struct HS_KeySlot
+HS_KeySlot :: struct
 {
   HS_KeyNode *first;
   HS_KeyNode *last;
 }
 
-struct HS_Node
+HS_Node :: struct
 {
   HS_Node *next;
   HS_Node *prev;
@@ -34,13 +34,13 @@ struct HS_Node
   U64 key_ref_count;
 }
 
-struct HS_Slot
+HS_Slot :: struct
 {
   HS_Node *first;
   HS_Node *last;
 }
 
-struct HS_Stripe
+HS_Stripe :: struct
 {
   Arena *arena;
   OS_Handle rw_mutex;
@@ -50,13 +50,13 @@ struct HS_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-struct HS_Touch
+HS_Touch :: struct
 {
   HS_Touch *next;
   U128 hash;
 }
 
-struct HS_Scope
+HS_Scope :: struct
 {
   HS_Scope *next;
   HS_Touch *top_touch;
@@ -65,7 +65,7 @@ struct HS_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct HS_TCTX
+HS_TCTX :: struct
 {
   Arena *arena;
   HS_Scope *free_scope;
@@ -75,7 +75,7 @@ struct HS_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-struct HS_Shared
+HS_Shared :: struct
 {
   Arena *arena;
   

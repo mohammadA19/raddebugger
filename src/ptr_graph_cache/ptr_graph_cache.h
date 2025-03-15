@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Graph Search Key
 
-struct PTG_Key
-{
+PTG_Key :: struct {
   U128 root_hash;
   U64 link_offsets[8];
   U64 link_offsets_count;
@@ -17,69 +16,59 @@ struct PTG_Key
 ////////////////////////////////
 //~ rjf: Cache Types
 
-struct PTG_Node
-{
+PTG_Node :: struct {
   U64 value;
 }
 
-struct PTG_Link
-{
+PTG_Link :: struct {
   U32 from;
   U32 to;
 }
 
-struct PTG_NodeChunkNode
-{
+PTG_NodeChunkNode :: struct {
   PTG_NodeChunkNode *next;
   PTG_Node *v;
   U64 count;
   U64 cap;
 }
 
-struct PTG_NodeChunkList
-{
+PTG_NodeChunkList :: struct {
   PTG_NodeChunkNode *first;
   PTG_NodeChunkNode *last;
   U64 chunk_count;
   U64 total_count;
 }
 
-struct PTG_NodeArray
-{
+PTG_NodeArray :: struct {
   PTG_Node *v;
   U64 count;
 }
 
-struct PTG_LinkChunkNode
-{
+PTG_LinkChunkNode :: struct {
   PTG_LinkChunkNode *next;
   PTG_Link *v;
   U64 count;
   U64 cap;
 }
 
-struct PTG_LinkChunkList
-{
+PTG_LinkChunkList :: struct {
   PTG_LinkChunkNode *first;
   PTG_LinkChunkNode *last;
   U64 chunk_count;
   U64 total_count;
 }
 
-struct PTG_LinkArray
-{
+PTG_LinkArray :: struct {
   PTG_Link *v;
   U64 count;
 }
 
-struct PTG_Graph
-{
+PTG_Graph :: struct {
   PTG_NodeArray nodes;
   PTG_LinkArray links;
 }
 
-struct PTG_GraphNode
-{
+PTG_GraphNode :: struct {
   // rjf: links
   PTG_GraphNode *next;
   PTG_GraphNode *prev;
@@ -99,14 +88,12 @@ struct PTG_GraphNode
   PTG_Graph graph;
 }
 
-struct PTG_GraphSlot
-{
+PTG_GraphSlot :: struct {
   PTG_GraphNode *first;
   PTG_GraphNode *last;
 }
 
-struct PTG_GraphStripe
-{
+PTG_GraphStripe :: struct {
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
@@ -116,14 +103,12 @@ struct PTG_GraphStripe
 ////////////////////////////////
 //~ rjf: Scoped Access Types
 
-struct PTG_Touch
-{
+PTG_Touch :: struct {
   PTG_Touch *next;
   PTG_GraphNode *node;
 }
 
-struct PTG_Scope
-{
+PTG_Scope :: struct {
   PTG_Scope *next;
   PTG_Touch *top_touch;
 }
@@ -131,8 +116,7 @@ struct PTG_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct PTG_TCTX
-{
+PTG_TCTX :: struct {
   Arena *arena;
   PTG_Scope *free_scope;
   PTG_Touch *free_touch;
@@ -141,8 +125,7 @@ struct PTG_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-struct PTG_Shared
-{
+PTG_Shared :: struct {
   Arena *arena;
   
   // rjf: user clock

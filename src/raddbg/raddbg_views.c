@@ -3589,7 +3589,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
 ////////////////////////////////
 //~ rjf: commands @view_hook_impl
 
-struct RD_CmdListerItem
+RD_CmdListerItem :: struct
 {
   String8 cmd_name;
   U64 registrar_idx;
@@ -3599,20 +3599,20 @@ struct RD_CmdListerItem
   FuzzyMatchRangeList tags_match_ranges;
 }
 
-struct RD_CmdListerItemNode
+RD_CmdListerItemNode :: struct
 {
   RD_CmdListerItemNode *next;
   RD_CmdListerItem item;
 }
 
-struct RD_CmdListerItemList
+RD_CmdListerItemList :: struct
 {
   RD_CmdListerItemNode *first;
   RD_CmdListerItemNode *last;
   U64 count;
 }
 
-struct RD_CmdListerItemArray
+RD_CmdListerItemArray :: struct
 {
   RD_CmdListerItem *v;
   U64 count;
@@ -3889,27 +3889,27 @@ RD_FileSortKind :: enum
   RD_FileSortKind_COUNT
 }
 
-struct RD_FileInfo
+RD_FileInfo :: struct
 {
   String8 filename;
   FileProperties props;
   FuzzyMatchRangeList match_ranges;
 }
 
-struct RD_FileInfoNode
+RD_FileInfoNode :: struct
 {
   RD_FileInfoNode *next;
   RD_FileInfo file_info;
 }
 
-struct RD_FileSystemViewPathState
+RD_FileSystemViewPathState :: struct
 {
   RD_FileSystemViewPathState *hash_next;
   String8 normalized_path;
   Vec2S64 cursor;
 }
 
-struct RD_FileSystemViewState
+RD_FileSystemViewState :: struct
 {
   B32 initialized;
   U64 path_state_table_size;
@@ -3925,7 +3925,7 @@ struct RD_FileSystemViewState
   F32 col_pcts[3];
 }
 
-struct RD_PathQuery
+RD_PathQuery :: struct
 {
   String8 prefix;
   String8 path;
@@ -4460,7 +4460,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
 ////////////////////////////////
 //~ rjf: system_processes  @view_hook_impl
 
-struct RD_ProcessInfo
+RD_ProcessInfo :: struct
 {
   DMN_ProcessInfo info;
   B32 is_attached;
@@ -4469,20 +4469,20 @@ struct RD_ProcessInfo
   FuzzyMatchRangeList pid_match_ranges;
 }
 
-struct RD_ProcessInfoNode
+RD_ProcessInfoNode :: struct
 {
   RD_ProcessInfoNode *next;
   RD_ProcessInfo info;
 }
 
-struct RD_ProcessInfoList
+RD_ProcessInfoList :: struct
 {
   RD_ProcessInfoNode *first;
   RD_ProcessInfoNode *last;
   U64 count;
 }
 
-struct RD_ProcessInfoArray
+RD_ProcessInfoArray :: struct
 {
   RD_ProcessInfo *v;
   U64 count;
@@ -4775,26 +4775,26 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
 ////////////////////////////////
 //~ rjf: entity_lister @view_hook_impl
 
-struct RD_EntityListerItem
+RD_EntityListerItem :: struct
 {
   RD_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
 }
 
-struct RD_EntityListerItemNode
+RD_EntityListerItemNode :: struct
 {
   RD_EntityListerItemNode *next;
   RD_EntityListerItem item;
 }
 
-struct RD_EntityListerItemList
+RD_EntityListerItemList :: struct
 {
   RD_EntityListerItemNode *first;
   RD_EntityListerItemNode *last;
   U64 count;
 }
 
-struct RD_EntityListerItemArray
+RD_EntityListerItemArray :: struct
 {
   RD_EntityListerItem *v;
   U64 count;
@@ -4977,26 +4977,26 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
 ////////////////////////////////
 //~ rjf: ctrl_entity_lister @view_hook_impl
 
-struct RD_CtrlEntityListerItem
+RD_CtrlEntityListerItem :: struct
 {
   CTRL_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
 }
 
-struct RD_CtrlEntityListerItemNode
+RD_CtrlEntityListerItemNode :: struct
 {
   RD_CtrlEntityListerItemNode *next;
   RD_CtrlEntityListerItem item;
 }
 
-struct RD_CtrlEntityListerItemList
+RD_CtrlEntityListerItemList :: struct
 {
   RD_CtrlEntityListerItemNode *first;
   RD_CtrlEntityListerItemNode *last;
   U64 count;
 }
 
-struct RD_CtrlEntityListerItemArray
+RD_CtrlEntityListerItemArray :: struct
 {
   RD_CtrlEntityListerItem *v;
   U64 count;
@@ -5638,7 +5638,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
 ////////////////////////////////
 //~ rjf: pending_file @view_hook_impl
 
-struct RD_PendingFileViewState
+RD_PendingFileViewState :: struct
 {
   Arena *deferred_cmd_arena;
   RD_CmdList deferred_cmds;
@@ -6000,7 +6000,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
 ////////////////////////////////
 //~ rjf: disasm @view_hook_impl
 
-struct RD_DisasmViewState
+RD_DisasmViewState :: struct
 {
   B32 initialized;
   TxtPt cursor;
@@ -6231,7 +6231,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
 ////////////////////////////////
 //~ rjf: output @view_hook_impl
 
-struct RD_OutputViewState
+RD_OutputViewState :: struct
 {
   U128 last_hash;
   RD_CodeViewState cv;
@@ -6331,7 +6331,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
 ////////////////////////////////
 //~ rjf: memory @view_hook_impl
 
-struct RD_MemoryViewState
+RD_MemoryViewState :: struct
 {
   B32 center_cursor;
   B32 contain_cursor;
@@ -7181,7 +7181,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(graph)
 ////////////////////////////////
 //~ rjf: bitmap @view_hook_impl
 
-struct RD_BitmapBoxDrawData
+RD_BitmapBoxDrawData :: struct
 {
   Rng2F32 src;
   R_Handle texture;
@@ -7191,7 +7191,7 @@ struct RD_BitmapBoxDrawData
   F32 ui_per_bmp_px;
 }
 
-struct RD_BitmapCanvasBoxDrawData
+RD_BitmapCanvasBoxDrawData :: struct
 {
   Vec2F32 view_center_pos;
   F32 zoom;
@@ -7622,14 +7622,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
 ////////////////////////////////
 //~ rjf: geo3d @view_hook_impl
 
-struct RD_Geo3DViewState
+RD_Geo3DViewState :: struct
 {
   F32 yaw;
   F32 pitch;
   F32 zoom;
 }
 
-struct RD_Geo3DBoxDrawData
+RD_Geo3DBoxDrawData :: struct
 {
   F32 yaw;
   F32 pitch;
@@ -7934,7 +7934,7 @@ RD_SettingsItemKind :: enum
   RD_SettingsItemKind_COUNT
 }
 
-struct RD_SettingsItem
+RD_SettingsItem :: struct
 {
   RD_SettingsItemKind kind;
   String8 kind_string;
@@ -7948,20 +7948,20 @@ struct RD_SettingsItem
   RD_SettingsItemKind category;
 }
 
-struct RD_SettingsItemNode
+RD_SettingsItemNode :: struct
 {
   RD_SettingsItemNode *next;
   RD_SettingsItem v;
 }
 
-struct RD_SettingsItemList
+RD_SettingsItemList :: struct
 {
   RD_SettingsItemNode *first;
   RD_SettingsItemNode *last;
   U64 count;
 }
 
-struct RD_SettingsItemArray
+RD_SettingsItemArray :: struct
 {
   RD_SettingsItem *v;
   U64 count;

@@ -422,7 +422,7 @@ ExecMode :: enum
   ExecMode_Help,
 }
 
-struct IPCInfo
+IPCInfo :: struct
 {
   U64 msg_size;
 }

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Parsed Command Line Types
 
-struct CmdLineOpt
+CmdLineOpt :: struct
 {
   CmdLineOpt *next;
   CmdLineOpt *hash_next;
@@ -17,14 +17,14 @@ struct CmdLineOpt
   String8 value_string;
 }
 
-struct CmdLineOptList
+CmdLineOptList :: struct
 {
   U64 count;
   CmdLineOpt *first;
   CmdLineOpt *last;
 }
 
-struct CmdLine
+CmdLine :: struct
 {
   String8 exe_name;
   CmdLineOptList options;

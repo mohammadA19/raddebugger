@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Bundled Evaluation Path Types
 
-struct E_Eval
+E_Eval :: struct
 {
   E_Value value;
   E_Mode mode;

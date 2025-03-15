@@ -16,7 +16,7 @@ FNT_RasterFlags :: enum U32
 ////////////////////////////////
 //~ rjf: Handles & Tags
 
-struct FNT_Tag
+FNT_Tag :: struct
 {
   U64 u64[2];
 }
@@ -24,7 +24,7 @@ struct FNT_Tag
 ////////////////////////////////
 //~ rjf: Draw Package Types (For Cache Queries)
 
-struct FNT_Piece
+FNT_Piece :: struct
 {
   R_Handle texture;
   Rng2S16 subrect;
@@ -33,7 +33,7 @@ struct FNT_Piece
   U16 decode_size;
 }
 
-struct FNT_PieceChunkNode
+FNT_PieceChunkNode :: struct
 {
   FNT_PieceChunkNode *next;
   FNT_Piece *v;
@@ -41,7 +41,7 @@ struct FNT_PieceChunkNode
   U64 cap;
 }
 
-struct FNT_PieceChunkList
+FNT_PieceChunkList :: struct
 {
   FNT_PieceChunkNode *first;
   FNT_PieceChunkNode *last;
@@ -49,13 +49,13 @@ struct FNT_PieceChunkList
   U64 total_piece_count;
 }
 
-struct FNT_PieceArray
+FNT_PieceArray :: struct
 {
   FNT_Piece *v;
   U64 count;
 }
 
-struct FNT_Run
+FNT_Run :: struct
 {
   FNT_PieceArray pieces;
   Vec2F32 dim;
@@ -66,7 +66,7 @@ struct FNT_Run
 ////////////////////////////////
 //~ rjf: Font Path -> Handle * Metrics * Path Cache Types
 
-struct FNT_FontHashNode
+FNT_FontHashNode :: struct
 {
   FNT_FontHashNode *hash_next;
   FNT_Tag tag;
@@ -75,7 +75,7 @@ struct FNT_FontHashNode
   String8 path;
 }
 
-struct FNT_FontHashSlot
+FNT_FontHashSlot :: struct
 {
   FNT_FontHashNode *first;
   FNT_FontHashNode *last;
@@ -84,7 +84,7 @@ struct FNT_FontHashSlot
 ////////////////////////////////
 //~ rjf: Rasterization Cache Types
 
-struct F_RasterCacheInfo
+F_RasterCacheInfo :: struct
 {
   Rng2S16 subrect;
   Vec2S16 raster_dim;
@@ -92,7 +92,7 @@ struct F_RasterCacheInfo
   F32 advance;
 }
 
-struct F_Hash2InfoRasterCacheNode
+F_Hash2InfoRasterCacheNode :: struct
 {
   F_Hash2InfoRasterCacheNode *hash_next;
   F_Hash2InfoRasterCacheNode *hash_prev;
@@ -100,13 +100,13 @@ struct F_Hash2InfoRasterCacheNode
   F_RasterCacheInfo info;
 }
 
-struct FNT_Hash2InfoRasterCacheSlot
+FNT_Hash2InfoRasterCacheSlot :: struct
 {
   F_Hash2InfoRasterCacheNode *first;
   F_Hash2InfoRasterCacheNode *last;
 }
 
-struct FNT_Hash2StyleRasterCacheNode
+FNT_Hash2StyleRasterCacheNode :: struct
 {
   FNT_Hash2StyleRasterCacheNode *hash_next;
   FNT_Hash2StyleRasterCacheNode *hash_prev;
@@ -120,7 +120,7 @@ struct FNT_Hash2StyleRasterCacheNode
   FNT_Hash2InfoRasterCacheSlot *hash2info_slots;
 }
 
-struct FNT_Hash2StyleRasterCacheSlot
+FNT_Hash2StyleRasterCacheSlot :: struct
 {
   FNT_Hash2StyleRasterCacheNode *first;
   FNT_Hash2StyleRasterCacheNode *last;
@@ -134,7 +134,7 @@ FNT_AtlasRegionNodeFlags :: enum U32
   FNT_AtlasRegionNodeFlag_Taken = (1<<0),
 }
 
-struct FNT_AtlasRegionNode
+FNT_AtlasRegionNode :: struct
 {
   FNT_AtlasRegionNode *parent;
   FNT_AtlasRegionNode *children[Corner_COUNT];
@@ -143,7 +143,7 @@ struct FNT_AtlasRegionNode
   U64 num_allocated_descendants;
 }
 
-struct FNT_Atlas
+FNT_Atlas :: struct
 {
   FNT_Atlas *next;
   FNT_Atlas *prev;
@@ -155,7 +155,7 @@ struct FNT_Atlas
 ////////////////////////////////
 //~ rjf: Metrics
 
-struct FNT_Metrics
+FNT_Metrics :: struct
 {
   F32 ascent;
   F32 descent;
@@ -166,7 +166,7 @@ struct FNT_Metrics
 ////////////////////////////////
 //~ rjf: Main State Type
 
-struct FNT_State
+FNT_State :: struct
 {
   Arena *permanent_arena;
   Arena *raster_arena;

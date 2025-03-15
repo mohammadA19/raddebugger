@@ -320,7 +320,7 @@ REGS_AliasCodeX86_mm7,
 REGS_AliasCodeX86_COUNT,
 }
 
-struct REGS_RegBlockX64
+REGS_RegBlockX64 :: struct
 {
 REGS_Reg64 rax;
 REGS_Reg64 rcx;
@@ -424,7 +424,7 @@ REGS_Reg64 k6;
 REGS_Reg64 k7;
 }
 
-struct REGS_RegBlockX86
+REGS_RegBlockX86 :: struct
 {
 REGS_Reg32 eax;
 REGS_Reg32 ecx;

@@ -25,7 +25,7 @@
 ////////////////////////////////
 //~ rjf: File Iterator Types
 
-struct OS_W32_FileIter
+OS_W32_FileIter :: struct
 {
   HANDLE handle;
   WIN32_FIND_DATAW find_data;
@@ -47,7 +47,7 @@ OS_W32_EntityKind :: enum
   OS_W32_EntityKind_ConditionVariable,
 }
 
-struct OS_W32_Entity
+OS_W32_Entity :: struct
 {
   OS_W32_Entity *next;
   OS_W32_EntityKind kind;
@@ -69,7 +69,7 @@ struct OS_W32_Entity
 ////////////////////////////////
 //~ rjf: State
 
-struct OS_W32_State
+OS_W32_State :: struct
 {
   Arena *arena;
   

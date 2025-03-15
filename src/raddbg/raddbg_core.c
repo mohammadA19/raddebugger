@@ -8600,12 +8600,12 @@ rd_window_frame(RD_Window *ws)
 ////////////////////////////////
 //~ rjf: Eval Visualization
 
-struct RD_EntityExpandAccel
+RD_EntityExpandAccel :: struct
 {
   RD_EntityArray entities;
 }
 
-struct RD_CtrlEntityExpandAccel
+RD_CtrlEntityExpandAccel :: struct
 {
   CTRL_EntityArray entities;
 }
@@ -9157,7 +9157,7 @@ rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(U64 id, void *user_data, CT
   return num;
 }
 
-struct RD_DebugInfoTableExpandAccel
+RD_DebugInfoTableExpandAccel :: struct
 {
   U64 rdis_count;
   RDI_Parsed **rdis;

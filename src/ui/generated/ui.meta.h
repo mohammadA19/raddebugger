@@ -6,35 +6,35 @@
 #ifndef UI_META_H
 #define UI_META_H
 
-struct UI_ParentNode{UI_ParentNode *next; UI_Box * v;};
-struct UI_ChildLayoutAxisNode{UI_ChildLayoutAxisNode *next; Axis2 v;};
-struct UI_FixedXNode{UI_FixedXNode *next; F32 v;};
-struct UI_FixedYNode{UI_FixedYNode *next; F32 v;};
-struct UI_FixedWidthNode{UI_FixedWidthNode *next; F32 v;};
-struct UI_FixedHeightNode{UI_FixedHeightNode *next; F32 v;};
-struct UI_PrefWidthNode{UI_PrefWidthNode *next; UI_Size v;};
-struct UI_PrefHeightNode{UI_PrefHeightNode *next; UI_Size v;};
-struct UI_PermissionFlagsNode{UI_PermissionFlagsNode *next; UI_PermissionFlags v;};
-struct UI_FlagsNode{UI_FlagsNode *next; UI_BoxFlags v;};
-struct UI_FocusHotNode{UI_FocusHotNode *next; UI_FocusKind v;};
-struct UI_FocusActiveNode{UI_FocusActiveNode *next; UI_FocusKind v;};
-struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; U32 v;};
-struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
-struct UI_TransparencyNode{UI_TransparencyNode *next; F32 v;};
-struct UI_PaletteNode{UI_PaletteNode *next; UI_Palette*     v;};
-struct UI_SquishNode{UI_SquishNode *next; F32 v;};
-struct UI_HoverCursorNode{UI_HoverCursorNode *next; OS_Cursor v;};
-struct UI_FontNode{UI_FontNode *next; FNT_Tag v;};
-struct UI_FontSizeNode{UI_FontSizeNode *next; F32 v;};
-struct UI_TextRasterFlagsNode{UI_TextRasterFlagsNode *next; FNT_RasterFlags v;};
-struct UI_TabSizeNode{UI_TabSizeNode *next; F32 v;};
-struct UI_CornerRadius00Node{UI_CornerRadius00Node *next; F32 v;};
-struct UI_CornerRadius01Node{UI_CornerRadius01Node *next; F32 v;};
-struct UI_CornerRadius10Node{UI_CornerRadius10Node *next; F32 v;};
-struct UI_CornerRadius11Node{UI_CornerRadius11Node *next; F32 v;};
-struct UI_BlurSizeNode{UI_BlurSizeNode *next; F32 v;};
-struct UI_TextPaddingNode{UI_TextPaddingNode *next; F32 v;};
-struct UI_TextAlignmentNode{UI_TextAlignmentNode *next; UI_TextAlign v;};
+UI_ParentNode :: struct{UI_ParentNode *next; UI_Box * v;};
+UI_ChildLayoutAxisNode :: struct{UI_ChildLayoutAxisNode *next; Axis2 v;};
+UI_FixedXNode :: struct{UI_FixedXNode *next; F32 v;};
+UI_FixedYNode :: struct{UI_FixedYNode *next; F32 v;};
+UI_FixedWidthNode :: struct{UI_FixedWidthNode *next; F32 v;};
+UI_FixedHeightNode :: struct{UI_FixedHeightNode *next; F32 v;};
+UI_PrefWidthNode :: struct{UI_PrefWidthNode *next; UI_Size v;};
+UI_PrefHeightNode :: struct{UI_PrefHeightNode *next; UI_Size v;};
+UI_PermissionFlagsNode :: struct{UI_PermissionFlagsNode *next; UI_PermissionFlags v;};
+UI_FlagsNode :: struct{UI_FlagsNode *next; UI_BoxFlags v;};
+UI_FocusHotNode :: struct{UI_FocusHotNode *next; UI_FocusKind v;};
+UI_FocusActiveNode :: struct{UI_FocusActiveNode *next; UI_FocusKind v;};
+UI_FastpathCodepointNode :: struct{UI_FastpathCodepointNode *next; U32 v;};
+UI_GroupKeyNode :: struct{UI_GroupKeyNode *next; UI_Key v;};
+UI_TransparencyNode :: struct{UI_TransparencyNode *next; F32 v;};
+UI_PaletteNode :: struct{UI_PaletteNode *next; UI_Palette*     v;};
+UI_SquishNode :: struct{UI_SquishNode *next; F32 v;};
+UI_HoverCursorNode :: struct{UI_HoverCursorNode *next; OS_Cursor v;};
+UI_FontNode :: struct{UI_FontNode *next; FNT_Tag v;};
+UI_FontSizeNode :: struct{UI_FontSizeNode *next; F32 v;};
+UI_TextRasterFlagsNode :: struct{UI_TextRasterFlagsNode *next; FNT_RasterFlags v;};
+UI_TabSizeNode :: struct{UI_TabSizeNode *next; F32 v;};
+UI_CornerRadius00Node :: struct{UI_CornerRadius00Node *next; F32 v;};
+UI_CornerRadius01Node :: struct{UI_CornerRadius01Node *next; F32 v;};
+UI_CornerRadius10Node :: struct{UI_CornerRadius10Node *next; F32 v;};
+UI_CornerRadius11Node :: struct{UI_CornerRadius11Node *next; F32 v;};
+UI_BlurSizeNode :: struct{UI_BlurSizeNode *next; F32 v;};
+UI_TextPaddingNode :: struct{UI_TextPaddingNode *next; F32 v;};
+UI_TextAlignmentNode :: struct{UI_TextAlignmentNode *next; UI_TextAlign v;};
 #define UI_DeclStackNils \
 struct\
 {\

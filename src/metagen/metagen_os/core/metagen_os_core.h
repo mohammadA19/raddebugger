@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: System Info
 
-struct OS_SystemInfo
+OS_SystemInfo :: struct
 {
   U32 logical_processor_count;
   U64 page_size;
@@ -19,7 +19,7 @@ struct OS_SystemInfo
 ////////////////////////////////
 //~ rjf: Process Info
 
-struct OS_ProcessInfo
+OS_ProcessInfo :: struct
 {
   U32 pid;
   String8 binary_path;
@@ -53,20 +53,20 @@ OS_FileIterFlags :: enum U32
   OS_FileIterFlag_Done            = (1 << 31),
 }
 
-struct OS_FileIter
+OS_FileIter :: struct
 {
   OS_FileIterFlags flags;
   U8 memory[800];
 }
 
-struct OS_FileInfo
+OS_FileInfo :: struct
 {
   String8 name;
   FileProperties props;
 }
 
 // nick: on-disk file identifier
-struct OS_FileID
+OS_FileID :: struct
 {
   U64 v[3];
 }
@@ -74,7 +74,7 @@ struct OS_FileID
 ////////////////////////////////
 //~ rjf: Process Launch Parameters
 
-struct OS_ProcessLaunchParams
+OS_ProcessLaunchParams :: struct
 {
   String8List cmd_line;
   String8 path;
@@ -86,25 +86,25 @@ struct OS_ProcessLaunchParams
 ////////////////////////////////
 //~ rjf: Handle Type
 
-struct OS_Handle
+OS_Handle :: struct
 {
   U64 u64[1];
 }
 
-struct OS_HandleNode
+OS_HandleNode :: struct
 {
   OS_HandleNode *next;
   OS_Handle v;
 }
 
-struct OS_HandleList
+OS_HandleList :: struct
 {
   OS_HandleNode *first;
   OS_HandleNode *last;
   U64 count;
 }
 
-struct OS_HandleArray
+OS_HandleArray :: struct
 {
   OS_Handle *v;
   U64 count;
@@ -113,7 +113,7 @@ struct OS_HandleArray
 ////////////////////////////////
 //~ rjf: Globally Unique IDs
 
-struct OS_Guid
+OS_Guid :: struct
 {
   U32 data1;
   U16 data2;

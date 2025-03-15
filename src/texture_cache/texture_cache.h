@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Texture Topology
 
-struct TEX_Topology
+TEX_Topology :: struct
 {
   Vec2S16 dim;
   R_Tex2DFormat fmt;
@@ -16,7 +16,7 @@ struct TEX_Topology
 ////////////////////////////////
 //~ rjf: Cache Types
 
-struct TEX_Node
+TEX_Node :: struct
 {
   TEX_Node *next;
   TEX_Node *prev;
@@ -30,13 +30,13 @@ struct TEX_Node
   U64 load_count;
 }
 
-struct TEX_Slot
+TEX_Slot :: struct
 {
   TEX_Node *first;
   TEX_Node *last;
 }
 
-struct TEX_Stripe
+TEX_Stripe :: struct
 {
   Arena *arena;
   OS_Handle rw_mutex;
@@ -46,14 +46,14 @@ struct TEX_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-struct TEX_Touch
+TEX_Touch :: struct
 {
   TEX_Touch *next;
   U128 hash;
   TEX_Topology topology;
 }
 
-struct TEX_Scope
+TEX_Scope :: struct
 {
   TEX_Scope *next;
   TEX_Touch *top_touch;
@@ -62,7 +62,7 @@ struct TEX_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct TEX_TCTX
+TEX_TCTX :: struct
 {
   Arena *arena;
   TEX_Scope *free_scope;
@@ -72,7 +72,7 @@ struct TEX_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-struct TEX_Shared
+TEX_Shared :: struct
 {
   Arena *arena;
   

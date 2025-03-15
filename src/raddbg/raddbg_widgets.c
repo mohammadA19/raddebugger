@@ -418,7 +418,7 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: UI Widgets: Text View
 
-struct RD_ThreadBoxDrawExtData
+RD_ThreadBoxDrawExtData :: struct
 {
   Vec4F32 thread_color;
   F32 progress_t;
@@ -501,7 +501,7 @@ UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   }
 }
 
-struct RD_BreakpointBoxDrawExtData
+RD_BreakpointBoxDrawExtData :: struct
 {
   Vec4F32 color;
   F32 alive_t;

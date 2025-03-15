@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Graphics System Info
 
-struct OS_GfxInfo
+OS_GfxInfo :: struct
 {
   F32 double_click_time;
   F32 caret_blink_time;
@@ -69,7 +69,7 @@ OS_Modifiers :: enum U32
   OS_Modifier_Alt   = (1<<2),
 }
 
-struct OS_Event
+OS_Event :: struct
 {
   OS_Event *next;
   OS_Event *prev;
@@ -87,7 +87,7 @@ struct OS_Event
   String8List strings;
 }
 
-struct OS_EventList
+OS_EventList :: struct
 {
   U64 count;
   OS_Event *first;

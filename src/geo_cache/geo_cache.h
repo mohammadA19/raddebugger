@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Cache Types
 
-struct GEO_Node
+GEO_Node :: struct
 {
   GEO_Node *next;
   GEO_Node *prev;
@@ -20,13 +20,13 @@ struct GEO_Node
   U64 load_count;
 }
 
-struct GEO_Slot
+GEO_Slot :: struct
 {
   GEO_Node *first;
   GEO_Node *last;
 }
 
-struct GEO_Stripe
+GEO_Stripe :: struct
 {
   Arena *arena;
   OS_Handle rw_mutex;
@@ -36,13 +36,13 @@ struct GEO_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-struct GEO_Touch
+GEO_Touch :: struct
 {
   GEO_Touch *next;
   U128 hash;
 }
 
-struct GEO_Scope
+GEO_Scope :: struct
 {
   GEO_Scope *next;
   GEO_Touch *top_touch;
@@ -51,7 +51,7 @@ struct GEO_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct GEO_TCTX
+GEO_TCTX :: struct
 {
   Arena *arena;
   GEO_Scope *free_scope;
@@ -61,7 +61,7 @@ struct GEO_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-struct GEO_Shared
+GEO_Shared :: struct
 {
   Arena *arena;
   

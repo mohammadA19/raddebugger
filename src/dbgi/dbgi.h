@@ -7,26 +7,26 @@
 ////////////////////////////////
 //~ rjf: Cache Key Type
 
-struct DI_Key
+DI_Key :: struct
 {
   String8 path;
   U64 min_timestamp;
 }
 
-struct DI_KeyNode
+DI_KeyNode :: struct
 {
   DI_KeyNode *next;
   DI_Key v;
 }
 
-struct DI_KeyList
+DI_KeyList :: struct
 {
   DI_KeyNode *first;
   DI_KeyNode *last;
   U64 count;
 }
 
-struct DI_KeyArray
+DI_KeyArray :: struct
 {
   DI_Key *v;
   U64 count;
@@ -44,19 +44,19 @@ DI_EventKind :: enum
   DI_EventKind_COUNT
 }
 
-struct DI_Event
+DI_Event :: struct
 {
   DI_EventKind kind;
   String8 string;
 }
 
-struct DI_EventNode
+DI_EventNode :: struct
 {
   DI_EventNode *next;
   DI_Event v;
 }
 
-struct DI_EventList
+DI_EventList :: struct
 {
   DI_EventNode *first;
   DI_EventNode *last;
@@ -66,13 +66,13 @@ struct DI_EventList
 ////////////////////////////////
 //~ rjf: Debug Info Cache Types
 
-struct DI_StringChunkNode
+DI_StringChunkNode :: struct
 {
   DI_StringChunkNode *next;
   U64 size;
 }
 
-struct DI_Node
+DI_Node :: struct
 {
   // rjf: links
   DI_Node *next;
@@ -98,13 +98,13 @@ struct DI_Node
   B32 parse_done;
 }
 
-struct DI_Slot
+DI_Slot :: struct
 {
   DI_Node *first;
   DI_Node *last;
 }
 
-struct DI_Stripe
+DI_Stripe :: struct
 {
   Arena *arena;
   DI_Node *free_node;
@@ -116,7 +116,7 @@ struct DI_Stripe
 ////////////////////////////////
 //~ rjf: Search Cache Types
 
-struct DI_SearchItem
+DI_SearchItem :: struct
 {
   U64 idx;
   U64 dbgi_idx;
@@ -124,7 +124,7 @@ struct DI_SearchItem
   FuzzyMatchRangeList match_ranges;
 }
 
-struct DI_SearchItemChunk
+DI_SearchItemChunk :: struct
 {
   DI_SearchItemChunk *next;
   DI_SearchItem *v;
@@ -132,7 +132,7 @@ struct DI_SearchItemChunk
   U64 cap;
 }
 
-struct DI_SearchItemChunkList
+DI_SearchItemChunkList :: struct
 {
   DI_SearchItemChunk *first;
   DI_SearchItemChunk *last;
@@ -140,19 +140,19 @@ struct DI_SearchItemChunkList
   U64 total_count;
 }
 
-struct DI_SearchItemArray
+DI_SearchItemArray :: struct
 {
   DI_SearchItem *v;
   U64 count;
 }
 
-struct DI_SearchParams
+DI_SearchParams :: struct
 {
   RDI_SectionKind target;
   DI_KeyArray dbgi_keys;
 }
 
-struct DI_SearchBucket
+DI_SearchBucket :: struct
 {
   Arena *arena;
   String8 query;
@@ -160,7 +160,7 @@ struct DI_SearchBucket
   DI_SearchParams params;
 }
 
-struct DI_SearchNode
+DI_SearchNode :: struct
 {
   DI_SearchNode *next;
   DI_SearchNode *prev;
@@ -175,13 +175,13 @@ struct DI_SearchNode
   DI_SearchItemArray items;
 }
 
-struct DI_SearchSlot
+DI_SearchSlot :: struct
 {
   DI_SearchNode *first;
   DI_SearchNode *last;
 }
 
-struct DI_SearchStripe
+DI_SearchStripe :: struct
 {
   Arena *arena;
   DI_SearchNode *free_node;
@@ -192,21 +192,21 @@ struct DI_SearchStripe
 ////////////////////////////////
 //~ rjf: Scoped Access Types
 
-struct DI_Touch
+DI_Touch :: struct
 {
   DI_Touch *next;
   DI_Node *node;
   DI_SearchNode *search_node;
 }
 
-struct DI_Scope
+DI_Scope :: struct
 {
   DI_Scope *next;
   DI_Touch *first_touch;
   DI_Touch *last_touch;
 }
 
-struct DI_TCTX
+DI_TCTX :: struct
 {
   Arena *arena;
   DI_Scope *free_scope;
@@ -216,7 +216,7 @@ struct DI_TCTX
 ////////////////////////////////
 //~ rjf: Search Thread State Types
 
-struct DI_SearchThread
+DI_SearchThread :: struct
 {
   OS_Handle thread;
   OS_Handle ring_mutex;
@@ -230,7 +230,7 @@ struct DI_SearchThread
 ////////////////////////////////
 //~ rjf: Match Cache State Types
 
-struct DI_Match
+DI_Match :: struct
 {
   DI_Match *next;
   DI_Match *prev;
@@ -239,7 +239,7 @@ struct DI_Match
   U32 idx;
 }
 
-struct DI_MatchNameNode
+DI_MatchNameNode :: struct
 {
   // rjf: synchronously written by usage code
   DI_MatchNameNode *next;
@@ -262,13 +262,13 @@ struct DI_MatchNameNode
   // DI_Match *last_match;
 }
 
-struct DI_MatchNameSlot
+DI_MatchNameSlot :: struct
 {
   DI_MatchNameNode *first;
   DI_MatchNameNode *last;
 }
 
-struct DI_MatchStore
+DI_MatchStore :: struct
 {
   Arena *arena;
   U64 gen;
@@ -303,7 +303,7 @@ struct DI_MatchStore
 ////////////////////////////////
 //~ rjf: Shared State Types
 
-struct DI_Shared
+DI_Shared :: struct
 {
   Arena *arena;
   

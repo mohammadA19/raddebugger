@@ -7,19 +7,19 @@
 ////////////////////////////////
 //~ rjf: Handles
 
-struct RD_Handle
+RD_Handle :: struct
 {
   U64 u64[2];
 }
 
-struct RD_HandleNode
+RD_HandleNode :: struct
 {
   RD_HandleNode *next;
   RD_HandleNode *prev;
   RD_Handle handle;
 }
 
-struct RD_HandleList
+RD_HandleList :: struct
 {
   RD_HandleNode *first;
   RD_HandleNode *last;
@@ -81,26 +81,26 @@ RD_EntityFlags :: enum U32
 ////////////////////////////////
 //~ rjf: Binding Types
 
-struct RD_Binding
+RD_Binding :: struct
 {
   OS_Key key;
   OS_Modifiers modifiers;
 }
 
-struct RD_BindingNode
+RD_BindingNode :: struct
 {
   RD_BindingNode *next;
   RD_Binding binding;
 }
 
-struct RD_BindingList
+RD_BindingList :: struct
 {
   RD_BindingNode *first;
   RD_BindingNode *last;
   U64 count;
 }
 
-struct RD_StringBindingPair
+RD_StringBindingPair :: struct
 {
   String8 string;
   RD_Binding binding;
@@ -109,7 +109,7 @@ struct RD_StringBindingPair
 ////////////////////////////////
 //~ rjf: Key Map Types
 
-struct RD_KeyMapNode
+RD_KeyMapNode :: struct
 {
   RD_KeyMapNode *hash_next;
   RD_KeyMapNode *hash_prev;
@@ -117,7 +117,7 @@ struct RD_KeyMapNode
   RD_Binding binding;
 }
 
-struct RD_KeyMapSlot
+RD_KeyMapSlot :: struct
 {
   RD_KeyMapNode *first;
   RD_KeyMapNode *last;
@@ -126,7 +126,7 @@ struct RD_KeyMapSlot
 ////////////////////////////////
 //~ rjf: Setting Types
 
-struct RD_SettingVal
+RD_SettingVal :: struct
 {
   B32 set;
   S32 s32;
@@ -156,13 +156,13 @@ typedef RD_VIEW_RULE_UI_FUNCTION_SIG(RD_ViewRuleUIFunctionType);
 //~ rjf: View Types
 
 
-struct RD_ArenaExt
+RD_ArenaExt :: struct
 {
   RD_ArenaExt *next;
   Arena *arena;
 }
 
-struct RD_TransientViewNode
+RD_TransientViewNode :: struct
 {
   RD_TransientViewNode *next;
   RD_TransientViewNode *prev;
@@ -174,13 +174,13 @@ struct RD_TransientViewNode
   U64 last_frame_index_touched;
 }
 
-struct RD_TransientViewSlot
+RD_TransientViewSlot :: struct
 {
   RD_TransientViewNode *first;
   RD_TransientViewNode *last;
 }
 
-struct RD_View
+RD_View :: struct
 {
   // rjf: allocation links (for iterating all views)
   RD_View *alloc_next;
@@ -242,7 +242,7 @@ struct RD_View
 ////////////////////////////////
 //~ rjf: Panel Types
 
-struct RD_Panel
+RD_Panel :: struct
 {
   // rjf: tree links/data
   RD_Panel *first;
@@ -272,7 +272,7 @@ struct RD_Panel
   RD_Handle selected_tab_view;
 }
 
-struct RD_PanelRec
+RD_PanelRec :: struct
 {
   RD_Panel *next;
   int push_count;
@@ -317,14 +317,14 @@ RD_CmdKindFlags :: enum U32
 ////////////////////////////////
 //~ rjf: Config Types
 
-struct RD_CfgTree
+RD_CfgTree :: struct
 {
   RD_CfgTree *next;
   RD_CfgSrc source;
   MD_Node *root;
 }
 
-struct RD_CfgVal
+RD_CfgVal :: struct
 {
   RD_CfgVal *hash_next;
   RD_CfgVal *linear_next;
@@ -334,12 +334,12 @@ struct RD_CfgVal
   String8 string;
 }
 
-struct RD_CfgSlot
+RD_CfgSlot :: struct
 {
   RD_CfgVal *first;
 }
 
-struct RD_CfgTable
+RD_CfgTable :: struct
 {
   U64 slot_count;
   RD_CfgSlot *slots;
@@ -351,7 +351,7 @@ struct RD_CfgTable
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure
 
-struct RD_Cfg
+RD_Cfg :: struct
 {
   RD_Cfg *first;
   RD_Cfg *last;
@@ -362,20 +362,20 @@ struct RD_Cfg
   String8 string;
 }
 
-struct RD_CfgNode
+RD_CfgNode :: struct
 {
   RD_CfgNode *next;
   RD_Cfg *v;
 }
 
-struct RD_CfgList
+RD_CfgList :: struct
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
   U64 count;
 }
 
-struct RD_CfgRec
+RD_CfgRec :: struct
 {
   RD_Cfg *next;
   S32 push_count;
@@ -387,7 +387,7 @@ struct RD_CfgRec
 
 typedef U64 RD_EntityID;
 
-struct RD_Entity
+RD_Entity :: struct
 {
   // rjf: tree links
   RD_Entity *first;
@@ -417,26 +417,26 @@ struct RD_Entity
   String8 string;
 }
 
-struct RD_EntityNode
+RD_EntityNode :: struct
 {
   RD_EntityNode *next;
   RD_Entity *entity;
 }
 
-struct RD_EntityList
+RD_EntityList :: struct
 {
   RD_EntityNode *first;
   RD_EntityNode *last;
   U64 count;
 }
 
-struct RD_EntityArray
+RD_EntityArray :: struct
 {
   RD_Entity **v;
   U64 count;
 }
 
-struct RD_EntityRec
+RD_EntityRec :: struct
 {
   RD_Entity *next;
   S32 push_count;
@@ -446,20 +446,20 @@ struct RD_EntityRec
 ////////////////////////////////
 //~ rjf: Command Types
 
-struct RD_Cmd
+RD_Cmd :: struct
 {
   String8 name;
   RD_Regs *regs;
 }
 
-struct RD_CmdNode
+RD_CmdNode :: struct
 {
   RD_CmdNode *next;
   RD_CmdNode *prev;
   RD_Cmd cmd;
 }
 
-struct RD_CmdList
+RD_CmdList :: struct
 {
   RD_CmdNode *first;
   RD_CmdNode *last;
@@ -469,7 +469,7 @@ struct RD_CmdList
 ////////////////////////////////
 //~ rjf: Context Register Types
 
-struct RD_RegsNode
+RD_RegsNode :: struct
 {
   RD_RegsNode *next;
   RD_Regs v;
@@ -478,7 +478,7 @@ struct RD_RegsNode
 ////////////////////////////////
 //~ rjf: Theme Types
 
-struct RD_Theme
+RD_Theme :: struct
 {
   Vec4F32 colors[RD_ThemeColor_COUNT];
 }
@@ -528,7 +528,7 @@ RD_AutoCompListerFlags :: enum U32
   RD_AutoCompListerFlag_Files         = (1<<12),
 }
 
-struct RD_AutoCompListerItem
+RD_AutoCompListerItem :: struct
 {
   String8 string;
   String8 kind_string;
@@ -537,7 +537,7 @@ struct RD_AutoCompListerItem
   B32 is_non_code;
 }
 
-struct RD_AutoCompListerItemChunkNode
+RD_AutoCompListerItemChunkNode :: struct
 {
   RD_AutoCompListerItemChunkNode *next;
   RD_AutoCompListerItem *v;
@@ -545,7 +545,7 @@ struct RD_AutoCompListerItemChunkNode
   U64 cap;
 }
 
-struct RD_AutoCompListerItemChunkList
+RD_AutoCompListerItemChunkList :: struct
 {
   RD_AutoCompListerItemChunkNode *first;
   RD_AutoCompListerItemChunkNode *last;
@@ -553,13 +553,13 @@ struct RD_AutoCompListerItemChunkList
   U64 total_count;
 }
 
-struct RD_AutoCompListerItemArray
+RD_AutoCompListerItemArray :: struct
 {
   RD_AutoCompListerItem *v;
   U64 count;
 }
 
-struct RD_AutoCompListerParams
+RD_AutoCompListerParams :: struct
 {
   RD_AutoCompListerFlags flags;
   String8List strings;
@@ -568,7 +568,7 @@ struct RD_AutoCompListerParams
 ////////////////////////////////
 //~ rjf: Per-Window State
 
-struct RD_Window
+RD_Window :: struct
 {
   // rjf: links & metadata
   RD_Window *next;
@@ -672,7 +672,7 @@ struct RD_Window
 ////////////////////////////////
 //~ rjf: Eval Visualization View Cache Types
 
-struct RD_EvalVizViewCacheNode
+RD_EvalVizViewCacheNode :: struct
 {
   RD_EvalVizViewCacheNode *next;
   RD_EvalVizViewCacheNode *prev;
@@ -680,7 +680,7 @@ struct RD_EvalVizViewCacheNode
   EV_View *v;
 }
 
-struct RD_EvalVizViewCacheSlot
+RD_EvalVizViewCacheSlot :: struct
 {
   RD_EvalVizViewCacheNode *first;
   RD_EvalVizViewCacheNode *last;
@@ -689,7 +689,7 @@ struct RD_EvalVizViewCacheSlot
 ////////////////////////////////
 //~ rjf: Meta Evaluation Cache Types
 
-struct RD_CtrlEntityMetaEvalCacheNode
+RD_CtrlEntityMetaEvalCacheNode :: struct
 {
   RD_CtrlEntityMetaEvalCacheNode *next;
   CTRL_Handle handle;
@@ -697,7 +697,7 @@ struct RD_CtrlEntityMetaEvalCacheNode
   Rng1U64 range;
 }
 
-struct RD_CtrlEntityMetaEvalCacheSlot
+RD_CtrlEntityMetaEvalCacheSlot :: struct
 {
   RD_CtrlEntityMetaEvalCacheNode *first;
   RD_CtrlEntityMetaEvalCacheNode *last;
@@ -706,27 +706,27 @@ struct RD_CtrlEntityMetaEvalCacheSlot
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
 
-struct RD_NameChunkNode
+RD_NameChunkNode :: struct
 {
   RD_NameChunkNode *next;
   U64 size;
 }
 
-struct RD_EntityListCache
+RD_EntityListCache :: struct
 {
   Arena *arena;
   U64 alloc_gen;
   RD_EntityList list;
 }
 
-struct RD_AmbiguousPathNode
+RD_AmbiguousPathNode :: struct
 {
   RD_AmbiguousPathNode *next;
   String8 name;
   String8List paths;
 }
 
-struct RD_State
+RD_State :: struct
 {
   // rjf: basics
   Arena *arena;

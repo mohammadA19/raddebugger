@@ -53,7 +53,7 @@ RDI_ParseStatus :: enum
   RDI_ParseStatus_MissingRequiredSection = 4,
 }
 
-struct RDI_Parsed
+RDI_Parsed :: struct
 {
   RDI_U8 *raw_data;
   RDI_U64 raw_data_size;
@@ -61,7 +61,7 @@ struct RDI_Parsed
   RDI_U64 sections_count;
 }
 
-struct RDI_ParsedLineTable
+RDI_ParsedLineTable :: struct
 {
   // NOTE: Mapping VOFF -> LINE_INFO
   //
@@ -74,7 +74,7 @@ struct RDI_ParsedLineTable
   RDI_U64 col_count;
 }
 
-struct RDI_ParsedSourceLineMap
+RDI_ParsedSourceLineMap :: struct
 {
   // NOTE: Mapping LINE_NUMBER -> VOFFs
   //
@@ -91,7 +91,7 @@ struct RDI_ParsedSourceLineMap
   RDI_U64 voff_count;
 }
 
-struct RDI_ParsedNameMap
+RDI_ParsedNameMap :: struct
 {
   RDI_NameMapBucket *buckets;
   RDI_NameMapNode *nodes;

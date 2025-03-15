@@ -16,7 +16,7 @@ MD_MsgKind :: enum
   MD_MsgKind_FatalError,
 }
 
-struct MD_Msg
+MD_Msg :: struct
 {
   MD_Msg *next;
   struct MD_Node *node;
@@ -24,7 +24,7 @@ struct MD_Msg
   String8 string;
 }
 
-struct MD_MsgList
+MD_MsgList :: struct
 {
   MD_Msg *first;
   MD_Msg *last;
@@ -76,13 +76,13 @@ MD_TokenGroups :: enum U32
                               MD_TokenFlag_BadCharacter),
 }
 
-struct MD_Token
+MD_Token :: struct
 {
   Rng1U64 range;
   MD_TokenFlags flags;
 }
 
-struct MD_TokenChunkNode
+MD_TokenChunkNode :: struct
 {
   MD_TokenChunkNode *next;
   MD_Token *v;
@@ -90,7 +90,7 @@ struct MD_TokenChunkNode
   U64 cap;
 }
 
-struct MD_TokenChunkList
+MD_TokenChunkList :: struct
 {
   MD_TokenChunkNode *first;
   MD_TokenChunkNode *last;
@@ -98,7 +98,7 @@ struct MD_TokenChunkList
   U64 total_token_count;
 }
 
-struct MD_TokenArray
+MD_TokenArray :: struct
 {
   MD_Token *v;
   U64 count;
@@ -149,7 +149,7 @@ MD_NodeFlags :: enum U32
 }
 #define MD_NodeFlag_AfterFromBefore(f) ((f) << 1)
 
-struct MD_Node
+MD_Node :: struct
 {
   // rjf: tree links
   MD_Node *next;
@@ -182,7 +182,7 @@ struct MD_Node
   U64 _unused_[2];
 }
 
-struct MD_NodeRec
+MD_NodeRec :: struct
 {
   MD_Node *next;
   S32 push_count;
@@ -192,7 +192,7 @@ struct MD_NodeRec
 ////////////////////////////////
 //~ rjf: Text -> Tokens Types
 
-struct MD_TokenizeResult
+MD_TokenizeResult :: struct
 {
   MD_TokenArray tokens;
   MD_MsgList msgs;
@@ -201,7 +201,7 @@ struct MD_TokenizeResult
 ////////////////////////////////
 //~ rjf: Tokens -> Tree Types
 
-struct MD_ParseResult
+MD_ParseResult :: struct
 {
   MD_Node *root;
   MD_MsgList msgs;

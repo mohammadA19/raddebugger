@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Tick Input Types
 
-struct D_Target
+D_Target :: struct
 {
   String8 exe;
   String8 args;
@@ -20,13 +20,13 @@ struct D_Target
   String8List env;
 }
 
-struct D_TargetArray
+D_TargetArray :: struct
 {
   D_Target *v;
   U64 count;
 }
 
-struct D_Breakpoint
+D_Breakpoint :: struct
 {
   String8 file_path;
   TxtPt pt;
@@ -35,19 +35,19 @@ struct D_Breakpoint
   String8 condition;
 }
 
-struct D_BreakpointArray
+D_BreakpointArray :: struct
 {
   D_Breakpoint *v;
   U64 count;
 }
 
-struct D_PathMap
+D_PathMap :: struct
 {
   String8 src;
   String8 dst;
 }
 
-struct D_PathMapArray
+D_PathMapArray :: struct
 {
   D_PathMap *v;
   U64 count;
@@ -73,7 +73,7 @@ D_EventCause :: enum
   D_EventCause_COUNT
 }
 
-struct D_Event
+D_Event :: struct
 {
   D_EventKind kind;
   D_EventCause cause;
@@ -82,13 +82,13 @@ struct D_Event
   U64 code;
 }
 
-struct D_EventNode
+D_EventNode :: struct
 {
   D_EventNode *next;
   D_Event v;
 }
 
-struct D_EventList
+D_EventList :: struct
 {
   D_EventNode *first;
   D_EventNode *last;
@@ -98,7 +98,7 @@ struct D_EventList
 ////////////////////////////////
 //~ rjf: Line Info Types
 
-struct D_Line
+D_Line :: struct
 {
   String8 file_path;
   TxtPt pt;
@@ -106,20 +106,20 @@ struct D_Line
   DI_Key dbgi_key;
 }
 
-struct D_LineNode
+D_LineNode :: struct
 {
   D_LineNode *next;
   D_Line v;
 }
 
-struct D_LineList
+D_LineList :: struct
 {
   D_LineNode *first;
   D_LineNode *last;
   U64 count;
 }
 
-struct D_LineListArray
+D_LineListArray :: struct
 {
   D_LineList *v;
   U64 count;
@@ -153,7 +153,7 @@ D_ViewRuleSpecInfoFlags :: enum U32 // NOTE(rjf): see @view_rule_info
   D_ViewRuleSpecInfoFlag_VizBlockProd   = (1<<3),
 }
 
-struct D_ViewRuleSpecInfo
+D_ViewRuleSpecInfo :: struct
 {
   String8 string;
   String8 display_string;
@@ -162,13 +162,13 @@ struct D_ViewRuleSpecInfo
   D_ViewRuleSpecInfoFlags flags;
 }
 
-struct D_ViewRuleSpecInfoArray
+D_ViewRuleSpecInfoArray :: struct
 {
   D_ViewRuleSpecInfo *v;
   U64 count;
 }
 
-struct D_ViewRuleSpec
+D_ViewRuleSpec :: struct
 {
   D_ViewRuleSpec *hash_next;
   D_ViewRuleSpecInfo info;
@@ -177,7 +177,7 @@ struct D_ViewRuleSpec
 ////////////////////////////////
 //~ rjf: Command Types
 
-struct D_CmdParams
+D_CmdParams :: struct
 {
   CTRL_Handle machine;
   CTRL_Handle process;
@@ -193,20 +193,20 @@ struct D_CmdParams
   D_TargetArray targets;
 }
 
-struct D_Cmd
+D_Cmd :: struct
 {
   D_CmdKind kind;
   D_CmdParams params;
 }
 
-struct D_CmdNode
+D_CmdNode :: struct
 {
   D_CmdNode *next;
   D_CmdNode *prev;
   D_Cmd cmd;
 }
 
-struct D_CmdList
+D_CmdList :: struct
 {
   D_CmdNode *first;
   D_CmdNode *last;
@@ -218,7 +218,7 @@ struct D_CmdList
 
 //- rjf: per-thread unwind cache
 
-struct D_UnwindCacheNode
+D_UnwindCacheNode :: struct
 {
   D_UnwindCacheNode *next;
   D_UnwindCacheNode *prev;
@@ -229,13 +229,13 @@ struct D_UnwindCacheNode
   CTRL_Unwind unwind;
 }
 
-struct D_UnwindCacheSlot
+D_UnwindCacheSlot :: struct
 {
   D_UnwindCacheNode *first;
   D_UnwindCacheNode *last;
 }
 
-struct D_UnwindCache
+D_UnwindCache :: struct
 {
   U64 slots_count;
   D_UnwindCacheSlot *slots;
@@ -244,7 +244,7 @@ struct D_UnwindCache
 
 //- rjf: per-run tls-base-vaddr cache
 
-struct D_RunTLSBaseCacheNode
+D_RunTLSBaseCacheNode :: struct
 {
   D_RunTLSBaseCacheNode *hash_next;
   CTRL_Handle process;
@@ -253,13 +253,13 @@ struct D_RunTLSBaseCacheNode
   U64 tls_base_vaddr;
 }
 
-struct D_RunTLSBaseCacheSlot
+D_RunTLSBaseCacheSlot :: struct
 {
   D_RunTLSBaseCacheNode *first;
   D_RunTLSBaseCacheNode *last;
 }
 
-struct D_RunTLSBaseCache
+D_RunTLSBaseCache :: struct
 {
   Arena *arena;
   U64 slots_count;
@@ -268,7 +268,7 @@ struct D_RunTLSBaseCache
 
 //- rjf: per-run locals cache
 
-struct D_RunLocalsCacheNode
+D_RunLocalsCacheNode :: struct
 {
   D_RunLocalsCacheNode *hash_next;
   DI_Key dbgi_key;
@@ -276,13 +276,13 @@ struct D_RunLocalsCacheNode
   E_String2NumMap *locals_map;
 }
 
-struct D_RunLocalsCacheSlot
+D_RunLocalsCacheSlot :: struct
 {
   D_RunLocalsCacheNode *first;
   D_RunLocalsCacheNode *last;
 }
 
-struct D_RunLocalsCache
+D_RunLocalsCache :: struct
 {
   Arena *arena;
   U64 table_size;
@@ -292,7 +292,7 @@ struct D_RunLocalsCache
 ////////////////////////////////
 //~ rjf: Main State Types
 
-struct D_State
+D_State :: struct
 {
   // rjf: top-level state
   Arena *arena;

@@ -7,20 +7,20 @@
 ////////////////////////////////
 //~ rjf: Message Type
 
-struct MG_Msg
+MG_Msg :: struct
 {
   String8 location;
   String8 kind;
   String8 msg;
 }
 
-struct MG_MsgNode
+MG_MsgNode :: struct
 {
   MG_MsgNode *next;
   MG_Msg v;
 }
 
-struct MG_MsgList
+MG_MsgList :: struct
 {
   MG_MsgNode *first;
   MG_MsgNode *last;
@@ -30,18 +30,18 @@ struct MG_MsgList
 ////////////////////////////////
 //~ rjf: Parse Artifact Types
 
-struct MG_FileParse
+MG_FileParse :: struct
 {
   MD_Node *root;
 }
 
-struct MG_FileParseNode
+MG_FileParseNode :: struct
 {
   MG_FileParseNode *next;
   MG_FileParse v;
 }
 
-struct MG_FileParseList
+MG_FileParseList :: struct
 {
   MG_FileParseNode *first;
   MG_FileParseNode *last;
@@ -51,20 +51,20 @@ struct MG_FileParseList
 ////////////////////////////////
 //~ rjf: Map Type
 
-struct MG_MapNode
+MG_MapNode :: struct
 {
   MG_MapNode *next;
   String8 key;
   void *val;
 }
 
-struct MG_MapSlot
+MG_MapSlot :: struct
 {
   MG_MapNode *first;
   MG_MapNode *last;
 }
 
-struct MG_Map
+MG_Map :: struct
 {
   MG_MapSlot *slots;
   U64 slots_count;
@@ -115,7 +115,7 @@ MG_StrExprOp :: enum
   MG_StrExprOp_COUNT,
 }
 
-struct MG_StrExpr
+MG_StrExpr :: struct
 {
   MG_StrExpr *parent;
   MG_StrExpr *left;
@@ -124,7 +124,7 @@ struct MG_StrExpr
   MD_Node *node;
 }
 
-struct MG_StrExprParseResult
+MG_StrExprParseResult :: struct
 {
   MG_StrExpr *root;
   MD_MsgList msgs;
@@ -134,13 +134,13 @@ struct MG_StrExprParseResult
 ////////////////////////////////
 //~ rjf: Table Generation Types
 
-struct MG_NodeArray
+MG_NodeArray :: struct
 {
   MD_Node **v;
   U64 count;
 }
 
-struct MG_NodeGrid
+MG_NodeGrid :: struct
 {
   U64 x_stride;
   U64 y_stride;
@@ -156,20 +156,20 @@ MG_ColumnKind :: enum
   MG_ColumnKind_COUNT
 }
 
-struct MG_ColumnDesc
+MG_ColumnDesc :: struct
 {
   String8 name;
   MG_ColumnKind kind;
   String8 tag_name;
 }
 
-struct MG_ColumnDescArray
+MG_ColumnDescArray :: struct
 {
   U64 count;
   MG_ColumnDesc *v;
 }
 
-struct MG_TableExpandTask
+MG_TableExpandTask :: struct
 {
   MG_TableExpandTask *next;
   String8 expansion_label;
@@ -179,7 +179,7 @@ struct MG_TableExpandTask
   U64 idx;
 }
 
-struct MG_TableExpandInfo
+MG_TableExpandInfo :: struct
 {
   MG_TableExpandTask *first_expand_task;
   String8 missing_value_fallback;
@@ -188,7 +188,7 @@ struct MG_TableExpandInfo
 ////////////////////////////////
 //~ rjf: Main Output Path Types
 
-struct MG_Layer
+MG_Layer :: struct
 {
   String8 key;
   B32 is_library;
@@ -209,19 +209,19 @@ struct MG_Layer
   String8List c_footer;
 }
 
-struct MG_LayerNode
+MG_LayerNode :: struct
 {
   MG_LayerNode *next;
   MG_Layer v;
 }
 
-struct MG_LayerSlot
+MG_LayerSlot :: struct
 {
   MG_LayerNode *first;
   MG_LayerNode *last;
 }
 
-struct MG_State
+MG_State :: struct
 {
   U64 slots_count;
   MG_LayerSlot *slots;

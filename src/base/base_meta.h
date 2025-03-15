@@ -14,14 +14,14 @@
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
 
-struct TweakB32Info
+TweakB32Info :: struct
 {
   String8 name;
   B32 default_value;
   B32 *value_ptr;
 }
 
-struct TweakF32Info
+TweakF32Info :: struct
 {
   String8 name;
   F32 default_value;
@@ -29,26 +29,26 @@ struct TweakF32Info
   F32 *value_ptr;
 }
 
-struct TweakB32InfoTable
+TweakB32InfoTable :: struct
 {
   TweakB32Info *v;
   U64 count;
 }
 
-struct TweakF32InfoTable
+TweakF32InfoTable :: struct
 {
   TweakF32Info *v;
   U64 count;
 }
 
-struct EmbedInfo
+EmbedInfo :: struct
 {
   String8 name;
   String8 *data;
   U128 *hash;
 }
 
-struct EmbedInfoTable
+EmbedInfoTable :: struct
 {
   EmbedInfo *v;
   U64 count;
@@ -103,7 +103,7 @@ MemberFlags :: enum U32
   MemberFlag_DoNotSerialize  = (1<<0),
 }
 
-struct Member
+Member :: struct
 {
   String8 name;
   String8 pretty_name;
@@ -112,7 +112,7 @@ struct Member
   MemberFlags flags;
 }
 
-struct Type
+Type :: struct
 {
   TypeKind kind;
   TypeFlags flags;
@@ -127,7 +127,7 @@ struct Type
 ////////////////////////////////
 //~ rjf: Type Serialization Parameters
 
-struct TypeSerializePtrRefInfo
+TypeSerializePtrRefInfo :: struct
 {
   Type *type;           // pointers to this
   void *indexify_base;  // can be indexified using this
@@ -135,7 +135,7 @@ struct TypeSerializePtrRefInfo
   void *nil_ptr;        // is terminal if matching 0 or this
 }
 
-struct TypeSerializeParams
+TypeSerializeParams :: struct
 {
   U64 *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;

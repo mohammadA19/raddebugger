@@ -16,7 +16,7 @@
 ////////////////////////////////
 //~ rjf: Window State
 
-struct OS_LNX_Window
+OS_LNX_Window :: struct
 {
   OS_LNX_Window *next;
   OS_LNX_Window *prev;
@@ -28,7 +28,7 @@ struct OS_LNX_Window
 ////////////////////////////////
 //~ rjf: State Bundle
 
-struct OS_LNX_GfxState
+OS_LNX_GfxState :: struct
 {
   Arena *arena;
   Display *display;

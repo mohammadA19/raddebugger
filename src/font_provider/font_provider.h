@@ -15,12 +15,12 @@ FP_RasterFlags :: enum U32
   FP_RasterFlag_Hinted = (1<<1),
 }
 
-struct FP_Handle
+FP_Handle :: struct
 {
   U64 u64[2];
 }
 
-struct FP_Metrics
+FP_Metrics :: struct
 {
   F32 design_units_per_em;
   F32 ascent;
@@ -29,7 +29,7 @@ struct FP_Metrics
   F32 capital_height;
 }
 
-struct FP_RasterResult
+FP_RasterResult :: struct
 {
   Vec2S16 atlas_dim;
   void *atlas;

@@ -12,13 +12,13 @@
 ////////////////////////////////
 //~ rjf: Token Types
 
-struct E_Token
+E_Token :: struct
 {
   E_TokenKind kind;
   Rng1U64 range;
 }
 
-struct E_TokenChunkNode
+E_TokenChunkNode :: struct
 {
   E_TokenChunkNode *next;
   E_Token *v;
@@ -26,7 +26,7 @@ struct E_TokenChunkNode
   U64 cap;
 }
 
-struct E_TokenChunkList
+E_TokenChunkList :: struct
 {
   E_TokenChunkNode *first;
   E_TokenChunkNode *last;
@@ -34,7 +34,7 @@ struct E_TokenChunkList
   U64 total_count;
 }
 
-struct E_TokenArray
+E_TokenArray :: struct
 {
   E_Token *v;
   U64 count;
@@ -43,7 +43,7 @@ struct E_TokenArray
 ////////////////////////////////
 //~ rjf: Expression Tree Types
 
-struct E_Expr
+E_Expr :: struct
 {
   E_Expr *first;
   E_Expr *last;
@@ -65,7 +65,7 @@ struct E_Expr
 
 //- rjf: string -> num
 
-struct E_String2NumMapNode
+E_String2NumMapNode :: struct
 {
   E_String2NumMapNode *order_next;
   E_String2NumMapNode *hash_next;
@@ -73,19 +73,19 @@ struct E_String2NumMapNode
   U64 num;
 }
 
-struct E_String2NumMapNodeArray
+E_String2NumMapNodeArray :: struct
 {
   E_String2NumMapNode **v;
   U64 count;
 }
 
-struct E_String2NumMapSlot
+E_String2NumMapSlot :: struct
 {
   E_String2NumMapNode *first;
   E_String2NumMapNode *last;
 }
 
-struct E_String2NumMap
+E_String2NumMap :: struct
 {
   U64 slots_count;
   U64 node_count;
@@ -96,7 +96,7 @@ struct E_String2NumMap
 
 //- rjf: string -> expr
 
-struct E_String2ExprMapNode
+E_String2ExprMapNode :: struct
 {
   E_String2ExprMapNode *hash_next;
   String8 string;
@@ -104,13 +104,13 @@ struct E_String2ExprMapNode
   U64 poison_count;
 }
 
-struct E_String2ExprMapSlot
+E_String2ExprMapSlot :: struct
 {
   E_String2ExprMapNode *first;
   E_String2ExprMapNode *last;
 }
 
-struct E_String2ExprMap
+E_String2ExprMap :: struct
 {
   U64 slots_count;
   E_String2ExprMapSlot *slots;
@@ -119,7 +119,7 @@ struct E_String2ExprMap
 ////////////////////////////////
 //~ rjf: Parse Context
 
-struct E_ParseCtx
+E_ParseCtx :: struct
 {
   // rjf: instruction pointer info
   U64 ip_vaddr;
@@ -141,7 +141,7 @@ struct E_ParseCtx
 ////////////////////////////////
 //~ rjf: Parse Results
 
-struct E_Parse
+E_Parse :: struct
 {
   E_Token *last_token;
   E_Expr *expr;

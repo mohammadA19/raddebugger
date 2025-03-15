@@ -12,7 +12,7 @@
 // control thread, which blocks to control & receive events, will take this
 // parameter. All other APIs can be called from any thread.
 
-struct DMN_CtrlCtx
+DMN_CtrlCtx :: struct
 {
   U64 u64[1];
 }
@@ -20,26 +20,26 @@ struct DMN_CtrlCtx
 ////////////////////////////////
 //~ rjf: Handle Types
 
-union DMN_Handle
+DMN_Handle :: struct #raw_union
 {
   U32 u32[2];
   U64 u64[1];
 }
 
-struct DMN_HandleNode
+DMN_HandleNode :: struct
 {
   DMN_HandleNode *next;
   DMN_Handle v;
 }
 
-struct DMN_HandleList
+DMN_HandleList :: struct
 {
   DMN_HandleNode *first;
   DMN_HandleNode *last;
   U64 count;
 }
 
-struct DMN_HandleArray
+DMN_HandleArray :: struct
 {
   DMN_Handle *handles;
   U64 count;
@@ -53,7 +53,7 @@ struct DMN_HandleArray
 ////////////////////////////////
 //~ rjf: Event Types
 
-struct DMN_Event
+DMN_Event :: struct
 {
   DMN_EventKind kind;
   DMN_ErrorKind error_kind;
@@ -76,13 +76,13 @@ struct DMN_Event
   B32 exception_repeated;
 }
 
-struct DMN_EventNode
+DMN_EventNode :: struct
 {
   DMN_EventNode *next;
   DMN_Event v;
 }
 
-struct DMN_EventList
+DMN_EventList :: struct
 {
   DMN_EventNode *first;
   DMN_EventNode *last;
@@ -92,14 +92,14 @@ struct DMN_EventList
 ////////////////////////////////
 //~ rjf: Run Control Types
 
-struct DMN_Trap
+DMN_Trap :: struct
 {
   DMN_Handle process;
   U64 vaddr;
   U64 id;
 }
 
-struct DMN_TrapChunkNode
+DMN_TrapChunkNode :: struct
 {
   DMN_TrapChunkNode *next;
   DMN_Trap *v;
@@ -107,7 +107,7 @@ struct DMN_TrapChunkNode
   U64 count;
 }
 
-struct DMN_TrapChunkList
+DMN_TrapChunkList :: struct
 {
   DMN_TrapChunkNode *first;
   DMN_TrapChunkNode *last;
@@ -115,7 +115,7 @@ struct DMN_TrapChunkList
   U64 trap_count;
 }
 
-struct DMN_RunCtrls
+DMN_RunCtrls :: struct
 {
   DMN_Handle single_step_thread;
   B8 ignore_previous_exception;
@@ -129,12 +129,12 @@ struct DMN_RunCtrls
 ////////////////////////////////
 //~ rjf: System Process Listing Types
 
-struct DMN_ProcessIter
+DMN_ProcessIter :: struct
 {
   U64 v[2];
 }
 
-struct DMN_ProcessInfo
+DMN_ProcessInfo :: struct
 {
   String8 name;
   U32 pid;

@@ -7,7 +7,7 @@
 ////////////////////////////////
 // NOTE(allen): Thread Context
 
-struct TCTX
+TCTX :: struct
 {
   Arena *arenas[2];
   

@@ -13,19 +13,19 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-struct String8
+String8 :: struct
 {
   U8 *str;
   U64 size;
 }
 
-struct String16
+String16 :: struct
 {
   U16 *str;
   U64 size;
 }
 
-struct String32
+String32 :: struct
 {
   U32 *str;
   U64 size;
@@ -34,19 +34,19 @@ struct String32
 ////////////////////////////////
 //~ rjf: String List & Array Types
 
-struct String8Node
+String8Node :: struct
 {
   String8Node *next;
   String8 string;
 }
 
-struct String8MetaNode
+String8MetaNode :: struct
 {
   String8MetaNode *next;
   String8Node *node;
 }
 
-struct String8List
+String8List :: struct
 {
   String8Node *first;
   String8Node *last;
@@ -54,7 +54,7 @@ struct String8List
   U64 total_size;
 }
 
-struct String8Array
+String8Array :: struct
 {
   String8 *v;
   U64 count;
@@ -90,7 +90,7 @@ PathStyle :: enum
 #endif
 }
 
-struct StringJoin
+StringJoin :: struct
 {
   String8 pre;
   String8 sep;
@@ -100,7 +100,7 @@ struct StringJoin
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-struct String8TxtPtPair
+String8TxtPtPair :: struct
 {
   String8 string;
   TxtPt pt;
@@ -109,7 +109,7 @@ struct String8TxtPtPair
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
 
-struct UnicodeDecode
+UnicodeDecode :: struct
 {
   U32 inc;
   U32 codepoint;
@@ -118,13 +118,13 @@ struct UnicodeDecode
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
 
-struct FuzzyMatchRangeNode
+FuzzyMatchRangeNode :: struct
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
 }
 
-struct FuzzyMatchRangeList
+FuzzyMatchRangeList :: struct
 {
   FuzzyMatchRangeNode *first;
   FuzzyMatchRangeNode *last;

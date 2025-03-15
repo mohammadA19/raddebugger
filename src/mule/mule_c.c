@@ -81,7 +81,7 @@ c_versions_of_same_types(){
 ////////////////////////////////
 //~ NOTE(rjf): Bitfields
 
-struct TypeWithBitfield
+TypeWithBitfield :: struct
 {
   int v : 14;
   int w : 4;
@@ -90,7 +90,7 @@ struct TypeWithBitfield
   int z : 10;
 }
 
-struct BitfieldType64
+BitfieldType64 :: struct
 {
   uint64_t size    : 63;
   uint64_t is_free : 1;

@@ -33,19 +33,19 @@
 //  Thread : ext_u64 cast to DEMON_LNX_ThreadExt
 //  Module : ext_u64 set to U64 (address of name)
 
-struct DEMON_LNX_ThreadExt{
+DEMON_LNX_ThreadExt :: struct{
   B32 expecting_dummy_sigstop;
 }
 StaticAssert(sizeof(DEMON_LNX_ThreadExt) <= sizeof(Member(DEMON_Entity, ext_u64)), check_demon_lnx_thread_ext);
 
 //- helpers
 
-struct DEMON_LNX_AttachNode{
+DEMON_LNX_AttachNode :: struct{
   DEMON_LNX_AttachNode *next;
   pid_t pid;
 }
 
-struct DEMON_LNX_ProcessAux{
+DEMON_LNX_ProcessAux :: struct{
   B32 filled;
   U64 phnum;
   U64 phent;
@@ -53,12 +53,12 @@ struct DEMON_LNX_ProcessAux{
   U64 execfn;
 }
 
-struct DEMON_LNX_PhdrInfo{
+DEMON_LNX_PhdrInfo :: struct{
   Rng1U64 range;
   U64 dynamic;
 }
 
-struct DEMON_LNX_ModuleNode{
+DEMON_LNX_ModuleNode :: struct{
   DEMON_LNX_ModuleNode *next;
   U64 vaddr;
   U64 size;
@@ -66,7 +66,7 @@ struct DEMON_LNX_ModuleNode{
   U64 already_known;
 }
 
-struct DEMON_LNX_EntityNode{
+DEMON_LNX_EntityNode :: struct{
   DEMON_LNX_EntityNode *next;
   DEMON_Entity *entity;
 }
@@ -78,7 +78,7 @@ struct DEMON_LNX_EntityNode{
 //  (and we can't really trick it into giving us both in any obvious way)
 // we define them here so that we have them all "at once"
 
-struct DEMON_LNX_UserRegsX64{
+DEMON_LNX_UserRegsX64 :: struct{
   U64 r15;
 	U64 r14;
 	U64 r13;
@@ -108,7 +108,7 @@ struct DEMON_LNX_UserRegsX64{
 	U64 gs;
 }
 
-struct DEMON_LNX_UserX64{
+DEMON_LNX_UserX64 :: struct{
   DEMON_LNX_UserRegsX64 regs;
   S32 u_fpvalid, _pad0;
   SYMS_XSaveLegacy i387;
@@ -121,7 +121,7 @@ struct DEMON_LNX_UserX64{
   U64 u_debugreg[8];
 }
 
-struct DEMON_LNX_UserRegsX86{
+DEMON_LNX_UserRegsX86 :: struct{
   U32 ebx;
 	U32 ecx;
 	U32 edx;
@@ -141,7 +141,7 @@ struct DEMON_LNX_UserRegsX86{
 	U32 ss;
 }
 
-struct DEMON_LNX_UserX86{
+DEMON_LNX_UserX86 :: struct{
   DEMON_LNX_UserRegsX86 regs;
   S32 u_fpvalid;
   SYMS_FSave i387;
@@ -174,7 +174,7 @@ enum
 }
 typedef int DEMON_LNX_MapsEntryType;
 
-struct DEMON_LNX_MapsEntry
+DEMON_LNX_MapsEntry :: struct
 {
   U64 address_lo;
   U64 address_hi;

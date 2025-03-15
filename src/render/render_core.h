@@ -25,7 +25,7 @@ R_GeoVertexFlags :: enum U32
 ////////////////////////////////
 //~ rjf: Handle Type
 
-union R_Handle
+R_Handle :: struct #raw_union
 {
   U64 u64[1];
   U32 u32[2];
@@ -35,7 +35,7 @@ union R_Handle
 ////////////////////////////////
 //~ rjf: Instance Types
 
-struct R_Rect2DInst
+R_Rect2DInst :: struct
 {
   Rng2F32 dst;
   Rng2F32 src;
@@ -47,7 +47,7 @@ struct R_Rect2DInst
   F32 _unused_[1];
 }
 
-struct R_Mesh3DInst
+R_Mesh3DInst :: struct
 {
   Mat4x4F32 xform;
 }
@@ -55,20 +55,20 @@ struct R_Mesh3DInst
 ////////////////////////////////
 //~ rjf: Batch Types
 
-struct R_Batch
+R_Batch :: struct
 {
   U8 *v;
   U64 byte_count;
   U64 byte_cap;
 }
 
-struct R_BatchNode
+R_BatchNode :: struct
 {
   R_BatchNode *next;
   R_Batch v;
 }
 
-struct R_BatchList
+R_BatchList :: struct
 {
   R_BatchNode *first;
   R_BatchNode *last;
@@ -77,7 +77,7 @@ struct R_BatchList
   U64 bytes_per_inst;
 }
 
-struct R_BatchGroup2DParams
+R_BatchGroup2DParams :: struct
 {
   R_Handle tex;
   R_Tex2DSampleKind tex_sample_kind;
@@ -86,21 +86,21 @@ struct R_BatchGroup2DParams
   F32 transparency;
 }
 
-struct R_BatchGroup2DNode
+R_BatchGroup2DNode :: struct
 {
   R_BatchGroup2DNode *next;
   R_BatchList batches;
   R_BatchGroup2DParams params;
 }
 
-struct R_BatchGroup2DList
+R_BatchGroup2DList :: struct
 {
   R_BatchGroup2DNode *first;
   R_BatchGroup2DNode *last;
   U64 count;
 }
 
-struct R_BatchGroup3DParams
+R_BatchGroup3DParams :: struct
 {
   R_Handle mesh_vertices;
   R_Handle mesh_indices;
@@ -111,7 +111,7 @@ struct R_BatchGroup3DParams
   Mat4x4F32 xform;
 }
 
-struct R_BatchGroup3DMapNode
+R_BatchGroup3DMapNode :: struct
 {
   R_BatchGroup3DMapNode *next;
   U64 hash;
@@ -119,7 +119,7 @@ struct R_BatchGroup3DMapNode
   R_BatchGroup3DParams params;
 }
 
-struct R_BatchGroup3DMap
+R_BatchGroup3DMap :: struct
 {
   R_BatchGroup3DMapNode **slots;
   U64 slots_count;
@@ -128,12 +128,12 @@ struct R_BatchGroup3DMap
 ////////////////////////////////
 //~ rjf: Pass Types
 
-struct R_PassParams_UI
+R_PassParams_UI :: struct
 {
   R_BatchGroup2DList rects;
 }
 
-struct R_PassParams_Blur
+R_PassParams_Blur :: struct
 {
   Rng2F32 rect;
   Rng2F32 clip;
@@ -141,7 +141,7 @@ struct R_PassParams_Blur
   F32 corner_radii[Corner_COUNT];
 }
 
-struct R_PassParams_Geo3D
+R_PassParams_Geo3D :: struct
 {
   Rng2F32 viewport;
   Rng2F32 clip;
@@ -150,7 +150,7 @@ struct R_PassParams_Geo3D
   R_BatchGroup3DMap mesh_batches;
 }
 
-struct R_Pass
+R_Pass :: struct
 {
   R_PassKind kind;
   union
@@ -162,13 +162,13 @@ struct R_Pass
   };
 }
 
-struct R_PassNode
+R_PassNode :: struct
 {
   R_PassNode *next;
   R_Pass v;
 }
 
-struct R_PassList
+R_PassList :: struct
 {
   R_PassNode *first;
   R_PassNode *last;

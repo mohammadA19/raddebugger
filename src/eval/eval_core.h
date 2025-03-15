@@ -17,7 +17,7 @@ E_MsgKind :: enum
   E_MsgKind_COUNT
 }
 
-struct E_Msg
+E_Msg :: struct
 {
   E_Msg *next;
   E_MsgKind kind;
@@ -25,7 +25,7 @@ struct E_Msg
   String8 text;
 }
 
-struct E_MsgList
+E_MsgList :: struct
 {
   E_Msg *first;
   E_Msg *last;
@@ -36,7 +36,7 @@ struct E_MsgList
 ////////////////////////////////
 //~ rjf: Register-Sized Value Type
 
-union E_Value
+E_Value :: struct #raw_union
 {
   U64 u512[8];
   U64 u256[4];
@@ -61,7 +61,7 @@ E_OpKind :: enum
   E_OpKind_Binary,
 }
 
-struct E_OpInfo
+E_OpInfo :: struct
 {
   E_OpKind kind;
   S64 precedence;
@@ -90,7 +90,7 @@ E_SpaceKind :: enum U64
   E_SpaceKind_FirstUserDefined,
 }
 
-struct E_Space
+E_Space :: struct
 {
   E_SpaceKind kind;
   union
@@ -117,7 +117,7 @@ E_Mode :: enum
 ////////////////////////////////
 //~ rjf: Modules
 
-struct E_Module
+E_Module :: struct
 {
   RDI_Parsed *rdi;
   Rng1U64 vaddr_range;

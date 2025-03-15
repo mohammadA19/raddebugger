@@ -99,7 +99,7 @@ ev_arch_from_eval_params(E_Eval eval, MD_Node *params)
 ////////////////////////////////
 //~ rjf: default
 
-struct EV_DefaultExpandAccel
+EV_DefaultExpandAccel :: struct
 {
   E_MemberArray members;
   E_EnumValArray enum_vals;

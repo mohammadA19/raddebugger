@@ -7,13 +7,13 @@
 ////////////////////////////////
 //~ rjf: RADDBG Stringize Helper Types
 
-struct RDI_FilePathBundle
+RDI_FilePathBundle :: struct
 {
   RDI_FilePathNode *file_paths;
   U64 file_path_count;
 }
 
-struct RDI_UDTMemberBundle
+RDI_UDTMemberBundle :: struct
 {
   RDI_Member *members;
   RDI_EnumMember *enum_members;
@@ -21,7 +21,7 @@ struct RDI_UDTMemberBundle
   U32 enum_member_count;
 }
 
-struct RDI_ScopeBundle
+RDI_ScopeBundle :: struct
 {
   RDI_Scope *scopes;
   U64 *scope_voffs;

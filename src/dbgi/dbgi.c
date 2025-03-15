@@ -1184,7 +1184,7 @@ di_u2s_dequeue_req(U64 thread_idx)
   return key;
 }
 
-struct DI_SearchWorkIn
+DI_SearchWorkIn :: struct
 {
   U128 key;
   U64 initial_bucket_write_gen;
@@ -1195,7 +1195,7 @@ struct DI_SearchWorkIn
   String8 query;
   U64 dbgi_idx;
 }
-struct DI_SearchWorkOut
+DI_SearchWorkOut :: struct
 {
   B32 cancelled;
   DI_SearchItemChunkList items;

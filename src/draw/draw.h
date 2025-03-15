@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Fancy String Types
 
-struct DR_FancyString
+DR_FancyString :: struct
 {
   FNT_Tag font;
   String8 string;
@@ -17,13 +17,13 @@ struct DR_FancyString
   F32 strikethrough_thickness;
 }
 
-struct DR_FancyStringNode
+DR_FancyStringNode :: struct
 {
   DR_FancyStringNode *next;
   DR_FancyString v;
 }
 
-struct DR_FancyStringList
+DR_FancyStringList :: struct
 {
   DR_FancyStringNode *first;
   DR_FancyStringNode *last;
@@ -31,7 +31,7 @@ struct DR_FancyStringList
   U64 total_size;
 }
 
-struct DR_FancyRun
+DR_FancyRun :: struct
 {
   FNT_Run run;
   Vec4F32 color;
@@ -39,13 +39,13 @@ struct DR_FancyRun
   F32 strikethrough_thickness;
 }
 
-struct DR_FancyRunNode
+DR_FancyRunNode :: struct
 {
   DR_FancyRunNode *next;
   DR_FancyRun v;
 }
 
-struct DR_FancyRunList
+DR_FancyRunList :: struct
 {
   DR_FancyRunNode *first;
   DR_FancyRunNode *last;
@@ -61,7 +61,7 @@ struct DR_FancyRunList
 ////////////////////////////////
 //~ rjf: Draw Bucket Types
 
-struct DR_Bucket
+DR_Bucket :: struct
 {
   R_PassList passes;
   U64 stack_gen;
@@ -72,13 +72,13 @@ struct DR_Bucket
 ////////////////////////////////
 //~ rjf: Thread Context
 
-struct DR_BucketSelectionNode
+DR_BucketSelectionNode :: struct
 {
   DR_BucketSelectionNode *next;
   DR_Bucket *bucket;
 }
 
-struct DR_ThreadCtx
+DR_ThreadCtx :: struct
 {
   Arena *arena;
   U64 arena_frame_start_pos;

@@ -23,7 +23,7 @@ UI_IconKind :: enum
   UI_IconKind_COUNT
 }
 
-struct UI_IconInfo
+UI_IconInfo :: struct
 {
   FNT_Tag icon_font;
   String8 icon_kind_text_map[UI_IconKind_COUNT];
@@ -123,7 +123,7 @@ UI_EventDeltaUnit :: enum
   UI_EventDeltaUnit_COUNT
 }
 
-struct UI_Event
+UI_Event :: struct
 {
   UI_EventKind kind;
   UI_EventActionSlot slot;
@@ -139,14 +139,14 @@ struct UI_Event
   U64 timestamp_us;
 }
 
-struct UI_EventNode
+UI_EventNode :: struct
 {
   UI_EventNode *next;
   UI_EventNode *prev;
   UI_Event v;
 }
 
-struct UI_EventList
+UI_EventList :: struct
 {
   UI_EventNode *first;
   UI_EventNode *last;
@@ -162,7 +162,7 @@ UI_TxtOpFlags :: enum U32
   UI_TxtOpFlag_Copy    = (1<<1),
 }
 
-struct UI_TxtOp
+UI_TxtOp :: struct
 {
   UI_TxtOpFlags flags;
   String8 replace;
@@ -175,7 +175,7 @@ struct UI_TxtOp
 ////////////////////////////////
 //~ rjf: Keys
 
-struct UI_Key
+UI_Key :: struct
 {
   U64 u64[1];
 }
@@ -192,7 +192,7 @@ UI_SizeKind :: enum
   UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
 }
 
-struct UI_Size
+UI_Size :: struct
 {
   UI_SizeKind kind;
   F32 value;
@@ -215,7 +215,7 @@ UI_ColorCode :: enum
   UI_ColorCode_COUNT
 }
 
-struct UI_Palette
+UI_Palette :: struct
 {
   union
   {
@@ -234,7 +234,7 @@ struct UI_Palette
   };
 }
 
-struct UI_WidgetPaletteInfo
+UI_WidgetPaletteInfo :: struct
 {
   UI_Palette *tooltip_palette;
   UI_Palette *ctx_menu_palette;
@@ -255,7 +255,7 @@ UI_AnimationInfoFlags :: enum U32
   UI_AnimationInfoFlag_All = 0xffffffff,
 }
 
-struct UI_AnimationInfo
+UI_AnimationInfo :: struct
 {
   UI_AnimationInfoFlags flags;
 }
@@ -263,13 +263,13 @@ struct UI_AnimationInfo
 ////////////////////////////////
 //~ rjf: Scroll Positions
 
-struct UI_ScrollPt
+UI_ScrollPt :: struct
 {
   S64 idx;
   F32 off;
 }
 
-union UI_ScrollPt2
+UI_ScrollPt2 :: struct #raw_union
 {
   UI_ScrollPt v[2];
   struct
@@ -290,7 +290,7 @@ UI_TextAlign :: enum
   UI_TextAlign_COUNT
 }
 
-struct UI_Box;
+UI_Box :: struct;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
@@ -366,7 +366,7 @@ typedef U64 UI_BoxFlags;
 # define UI_BoxFlag_DisableFocusEffects (UI_BoxFlag_DisableFocusBorder|UI_BoxFlag_DisableFocusOverlay)
 //}
 
-struct UI_Box
+UI_Box :: struct
 {
   //- rjf: persistent links
   UI_Box *hash_next;
@@ -432,20 +432,20 @@ struct UI_Box
   UI_Key default_nav_focus_next_active_key;
 }
 
-struct UI_BoxRec
+UI_BoxRec :: struct
 {
   UI_Box *next;
   S32 push_count;
   S32 pop_count;
 }
 
-struct UI_BoxNode
+UI_BoxNode :: struct
 {
   UI_BoxNode *next;
   UI_Box *box;
 }
 
-struct UI_BoxList
+UI_BoxList :: struct
 {
   UI_BoxNode *first;
   UI_BoxNode *last;
@@ -513,7 +513,7 @@ UI_SignalFlags :: enum U32
   UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
 }
 
-struct UI_Signal
+UI_Signal :: struct
 {
   UI_Box *box;
   OS_Modifiers event_flags;
@@ -533,7 +533,7 @@ struct UI_Signal
 #define ui_mouse_over(s)     !!((s).f&UI_SignalFlag_MouseOver)
 #define ui_committed(s)      !!((s).f&UI_SignalFlag_Commit)
 
-struct UI_Nav
+UI_Nav :: struct
 {
   B32 moved;
   Vec2S64 new_p;
@@ -542,7 +542,7 @@ struct UI_Nav
 ////////////////////////////////
 //~ rjf: Animation State Types
 
-struct UI_AnimParams
+UI_AnimParams :: struct
 {
   F32 initial;
   F32 target;
@@ -550,7 +550,7 @@ struct UI_AnimParams
   F32 epsilon;
 }
 
-struct UI_AnimNode
+UI_AnimNode :: struct
 {
   UI_AnimNode *slot_next;
   UI_AnimNode *slot_prev;
@@ -563,7 +563,7 @@ struct UI_AnimNode
   F32 current;
 }
 
-struct UI_AnimSlot
+UI_AnimSlot :: struct
 {
   UI_AnimNode *first;
   UI_AnimNode *last;
@@ -577,13 +577,13 @@ struct UI_AnimSlot
 ////////////////////////////////
 //~ rjf: State Types
 
-struct UI_BoxHashSlot
+UI_BoxHashSlot :: struct
 {
   UI_Box *hash_first;
   UI_Box *hash_last;
 }
 
-struct UI_State
+UI_State :: struct
 {
   //- rjf: main arena
   Arena *arena;

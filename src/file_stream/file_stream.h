@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Per-Path Info Cache Types
 
-struct FS_RangeNode
+FS_RangeNode :: struct
 {
   FS_RangeNode *next;
   Rng1U64 range;
@@ -16,13 +16,13 @@ struct FS_RangeNode
   U64 last_time_requested_us;
 }
 
-struct FS_RangeSlot
+FS_RangeSlot :: struct
 {
   FS_RangeNode *first;
   FS_RangeNode *last;
 }
 
-struct FS_Node
+FS_Node :: struct
 {
   FS_Node *next;
   
@@ -36,13 +36,13 @@ struct FS_Node
   FS_RangeSlot *slots;
 }
 
-struct FS_Slot
+FS_Slot :: struct
 {
   FS_Node *first;
   FS_Node *last;
 }
 
-struct FS_Stripe
+FS_Stripe :: struct
 {
   Arena *arena;
   OS_Handle cv;
@@ -52,7 +52,7 @@ struct FS_Stripe
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-struct FS_Shared
+FS_Shared :: struct
 {
   Arena *arena;
   U64 change_gen;

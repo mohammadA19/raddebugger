@@ -120,7 +120,7 @@ ui_hover_labelf(char *fmt, ...)
   return sig;
 }
 
-struct UI_LineEditDrawData
+UI_LineEditDrawData :: struct
 {
   String8 edited_string;
   TxtPt cursor;
@@ -331,7 +331,7 @@ ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size,
 ////////////////////////////////
 //~ rjf: Images
 
-struct UI_ImageDrawData
+UI_ImageDrawData :: struct
 {
   R_Handle texture;
   R_Tex2DSampleKind sample_kind;
@@ -550,7 +550,7 @@ ui_do_color_tooltip_hsva(Vec4F32 hsva)
 
 //- rjf: saturation/value picker
 
-struct UI_SatValDrawData
+UI_SatValDrawData :: struct
 {
   F32 hue;
   F32 sat;
@@ -648,7 +648,7 @@ ui_sat_val_pickerf(F32 hue, F32 *out_sat, F32 *out_val, char *fmt, ...)
 
 //- rjf: hue picker
 
-struct UI_HueDrawData
+UI_HueDrawData :: struct
 {
   F32 hue;
   F32 sat;
@@ -751,7 +751,7 @@ ui_hue_pickerf(F32 *out_hue, F32 sat, F32 val, char *fmt, ...)
 
 //- rjf: alpha picker
 
-struct UI_AlphaDrawData
+UI_AlphaDrawData :: struct
 {
   F32 alpha;
 }

@@ -14,19 +14,19 @@ LogMsgKind :: enum
   LogMsgKind_COUNT
 }
 
-struct LogScope
+LogScope :: struct
 {
   LogScope *next;
   U64 pos;
   String8List strings[LogMsgKind_COUNT];
 }
 
-struct LogScopeResult
+LogScopeResult :: struct
 {
   String8 strings[LogMsgKind_COUNT];
 }
 
-struct Log
+Log :: struct
 {
   Arena *arena;
   LogScope *top_scope;

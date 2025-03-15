@@ -17,7 +17,7 @@ E_TypeKeyKind :: enum
   E_TypeKeyKind_RegAlias,
 }
 
-struct E_TypeKey
+E_TypeKey :: struct
 {
   E_TypeKeyKind kind;
   U32 u32[3];
@@ -26,13 +26,13 @@ struct E_TypeKey
   // [2] -> RDI Index (Ext)
 }
 
-struct E_TypeKeyNode
+E_TypeKeyNode :: struct
 {
   E_TypeKeyNode *next;
   E_TypeKey v;
 }
 
-struct E_TypeKeyList
+E_TypeKeyList :: struct
 {
   E_TypeKeyNode *first;
   E_TypeKeyNode *last;
@@ -68,7 +68,7 @@ E_TypeFlags :: enum U32
   E_TypeFlag_IsPathText = (1<<5),
 }
 
-struct E_Member
+E_Member :: struct
 {
   E_MemberKind kind;
   E_TypeKey type_key;
@@ -78,38 +78,38 @@ struct E_Member
   E_TypeKeyList inheritance_key_chain;
 }
 
-struct E_MemberNode
+E_MemberNode :: struct
 {
   E_MemberNode *next;
   E_Member v;
 }
 
-struct E_MemberList
+E_MemberList :: struct
 {
   E_MemberNode *first;
   E_MemberNode *last;
   U64 count;
 }
 
-struct E_MemberArray
+E_MemberArray :: struct
 {
   E_Member *v;
   U64 count;
 }
 
-struct E_EnumVal
+E_EnumVal :: struct
 {
   String8 name;
   U64 val;
 }
 
-struct E_EnumValArray
+E_EnumValArray :: struct
 {
   E_EnumVal *v;
   U64 count;
 }
 
-struct E_Type
+E_Type :: struct
 {
   E_TypeKind kind;
   E_TypeFlags flags;
@@ -129,7 +129,7 @@ struct E_Type
 
 //- rjf: constructed type cache types
 
-struct E_ConsTypeParams
+E_ConsTypeParams :: struct
 {
   Arch arch;
   E_TypeKind kind;
@@ -142,7 +142,7 @@ struct E_ConsTypeParams
 }
 
 srtuct E_ConsTypeNode  E_ConsTypeNode;
-struct E_ConsTypeNode
+E_ConsTypeNode :: struct
 {
   E_ConsTypeNode *key_next;
   E_ConsTypeNode *content_next;
@@ -151,7 +151,7 @@ struct E_ConsTypeNode
   U64 byte_size;
 }
 
-struct E_ConsTypeSlot
+E_ConsTypeSlot :: struct
 {
   E_ConsTypeNode *first;
   E_ConsTypeNode *last;
@@ -159,19 +159,19 @@ struct E_ConsTypeSlot
 
 //- rjf: member lookup cache types
 
-struct E_MemberHashNode
+E_MemberHashNode :: struct
 {
   E_MemberHashNode *next;
   U64 member_idx;
 }
 
-struct E_MemberHashSlot
+E_MemberHashSlot :: struct
 {
   E_MemberHashNode *first;
   E_MemberHashNode *last;
 }
 
-struct E_MemberCacheNode
+E_MemberCacheNode :: struct
 {
   E_MemberCacheNode *next;
   E_TypeKey key;
@@ -180,7 +180,7 @@ struct E_MemberCacheNode
   E_MemberHashSlot *member_hash_slots;
 }
 
-struct E_MemberCacheSlot
+E_MemberCacheSlot :: struct
 {
   E_MemberCacheNode *first;
   E_MemberCacheNode *last;
@@ -188,7 +188,7 @@ struct E_MemberCacheSlot
 
 //- rjf: context parameterization
 
-struct E_TypeCtx
+E_TypeCtx :: struct
 {
   // rjf: instruction pointer info
   U64 ip_vaddr;
@@ -202,7 +202,7 @@ struct E_TypeCtx
 
 //- rjf: stateful machine part of context (not provided by user)
 
-struct E_TypeState
+E_TypeState :: struct
 {
   Arena *arena;
   U64 arena_eval_start_pos;

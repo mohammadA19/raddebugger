@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: MSF Parser Helper Types
 
-struct MSF_RawStream
-{
+MSF_RawStream :: struct {
   U64 size;
   U64 page_count;
   union {
@@ -17,8 +16,7 @@ struct MSF_RawStream
   } u;
 }
 
-struct MSF_RawStreamTable
-{
+MSF_RawStreamTable :: struct {
   U64            total_page_count;
   U64            index_size;
   U64            page_size;
@@ -26,8 +24,7 @@ struct MSF_RawStreamTable
   MSF_RawStream *streams;
 }
 
-struct MSF_Parsed
-{
+MSF_Parsed :: struct {
   String8 *streams;
   U64      stream_count;
   U64      page_size;

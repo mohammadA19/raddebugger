@@ -33,7 +33,7 @@ int pthread_getname_np(pthread_t thread, char *name, size_t size);
 ////////////////////////////////
 //~ rjf: File Iterator
 
-struct OS_LNX_FileIter
+OS_LNX_FileIter :: struct
 {
   DIR *dir;
   struct dirent *dp;
@@ -44,7 +44,7 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_
 ////////////////////////////////
 //~ rjf: Safe Call Handler Chain
 
-struct OS_LNX_SafeCallChain
+OS_LNX_SafeCallChain :: struct
 {
   OS_LNX_SafeCallChain *next;
   OS_ThreadFunctionType *fail_handler;
@@ -62,7 +62,7 @@ OS_LNX_EntityKind :: enum
   OS_LNX_EntityKind_ConditionVariable,
 }
 
-struct OS_LNX_Entity
+OS_LNX_Entity :: struct
 {
   OS_LNX_Entity *next;
   OS_LNX_EntityKind kind;
@@ -87,7 +87,7 @@ struct OS_LNX_Entity
 ////////////////////////////////
 //~ rjf: State
 
-struct OS_LNX_State
+OS_LNX_State :: struct
 {
   Arena *arena;
   OS_SystemInfo system_info;

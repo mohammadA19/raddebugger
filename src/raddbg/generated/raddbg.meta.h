@@ -537,7 +537,7 @@ RD_SettingCode_HintCodeText,
 RD_SettingCode_COUNT,
 }
 
-struct RD_Regs
+RD_Regs :: struct
 {
 CTRL_Handle machine;
 CTRL_Handle module;
@@ -574,7 +574,7 @@ MD_Node * params_tree;
 OS_Event * os_event;
 }
 
-struct RD_Query
+RD_Query :: struct
 {
 RD_QueryFlags flags;
 RD_RegSlot slot;
@@ -583,7 +583,7 @@ RD_EntityKind entity_kind;
 CTRL_EntityKind ctrl_entity_kind;
 }
 
-struct RD_CmdKindInfo
+RD_CmdKindInfo :: struct
 {
 String8 string;
 String8 description;
@@ -594,7 +594,7 @@ RD_CmdKindFlags flags;
 RD_Query query;
 }
 
-struct RD_ViewRuleInfo
+RD_ViewRuleInfo :: struct
 {
 String8 string;
 String8 description;

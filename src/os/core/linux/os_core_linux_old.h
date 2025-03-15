@@ -26,7 +26,7 @@
 ////////////////////////////////
 //~ NOTE(allen): File Iterator
 
-struct LNX_FileIter{
+LNX_FileIter :: struct{
   int fd;
   DIR *dir;
 }
@@ -42,7 +42,7 @@ LNX_EntityKind :: enum{
   LNX_EntityKind_ConditionVariable,
 }
 
-struct LNX_Entity{
+LNX_Entity :: struct{
   LNX_Entity *next;
   LNX_EntityKind kind;
   volatile U32 reference_mask;
@@ -60,7 +60,7 @@ struct LNX_Entity{
 ////////////////////////////////
 //~ NOTE(allen): Safe Call Chain
 
-struct LNX_SafeCallChain{
+LNX_SafeCallChain :: struct{
   LNX_SafeCallChain *next;
   OS_ThreadFunctionType *fail_handler;
   void *ptr;

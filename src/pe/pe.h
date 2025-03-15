@@ -9,7 +9,7 @@
 
 #pragma pack(push,1)
 
-struct PE_DosHeader
+PE_DosHeader :: struct
 {
   U16 magic;
   U16 last_page_size;
@@ -86,7 +86,7 @@ PE_DllCharacteristics :: enum U16
   PE_DllCharacteristic_TERMINAL_SERVER_AWARE = (1 << 15),
 }
 
-struct PE_OptionalHeader32
+PE_OptionalHeader32 :: struct
 {
   U16                   magic;
   U8                    major_linker_version;
@@ -120,7 +120,7 @@ struct PE_OptionalHeader32
   U32                   data_dir_count;
 }
 
-struct PE_OptionalHeader32Plus
+PE_OptionalHeader32Plus :: struct
 {
   U16                   magic;
   U8                    major_linker_version;
@@ -174,7 +174,7 @@ PE_DataDirectoryIndex :: enum
   PE_DataDirectoryIndex_COUNT = 16
 }
 
-struct PE_DataDirectory
+PE_DataDirectory :: struct
 {
   U32 virt_off;
   U32 virt_size;
@@ -233,7 +233,7 @@ PE_FPOType :: enum U8
 }
 
 // winnt.h: FPO_DATA
-struct PE_DebugFPO
+PE_DebugFPO :: struct
 {
   U32 func_code_off;
   U32 func_size;
@@ -250,7 +250,7 @@ PE_DebugMiscType :: enum U32
 }
 
 // winnt.h: IMAGE_DEBUG_MISC
-struct PE_DebugMisc
+PE_DebugMisc :: struct
 {
   PE_DebugMiscType data_type;
   U32              size;
@@ -260,7 +260,7 @@ struct PE_DebugMisc
 }
 
 // winnt.h: IMAGE_COFF_SYMBOLS_HEADER
-struct PE_DebugCoff
+PE_DebugCoff :: struct
 {
   U32 symbol_count;
   U32 lva_to_first_symbol;
@@ -272,7 +272,7 @@ struct PE_DebugCoff
   U32 virt_off_to_last_byte_of_data;
 }
 
-struct PE_DebugDirectory
+PE_DebugDirectory :: struct
 {
   U32                   characteristics;
   COFF_TimeStamp        time_stamp;
@@ -335,7 +335,7 @@ PE_LoadConfigGuardFlags :: enum U32
 }
 #define PE_LoadConfigGuardFlags_Extract_CF_FUNCTION_TABLE_SIZE(f) (U32)(((f) >> PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_SHIFT) & PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_MASK)
 
-struct PE_LoadConfigCodeIntegrity
+PE_LoadConfigCodeIntegrity :: struct
 {
   U16 flags;
   U16 catalog;
@@ -343,7 +343,7 @@ struct PE_LoadConfigCodeIntegrity
   U32 reserved;
 }
 
-struct PE_LoadConfig32
+PE_LoadConfig32 :: struct
 {
   U32            size;
   COFF_TimeStamp time_stamp;
@@ -401,7 +401,7 @@ struct PE_LoadConfig32
   U32 cast_guard_os_determined_failure_mode;
 }
 
-struct PE_LoadConfig64
+PE_LoadConfig64 :: struct
 {
   U32            size;
   COFF_TimeStamp time_stamp;
@@ -465,7 +465,7 @@ struct PE_LoadConfig64
 #define PE_PE32_MAGIC     0x010bu
 #define PE_PE32PLUS_MAGIC 0x020bu
 
-struct PE_MipsPdata
+PE_MipsPdata :: struct
 {
   U32 voff_first;
   U32 voff_one_past_last;
@@ -474,7 +474,7 @@ struct PE_MipsPdata
   U32 voff_one_past_prolog;
 }
 
-struct PE_ArmPdata
+PE_ArmPdata :: struct
 {
   U32 voff_first;
   // NOTE(allen):
@@ -486,7 +486,7 @@ struct PE_ArmPdata
   U32 combined;
 }
 
-struct PE_IntelPdata
+PE_IntelPdata :: struct
 {
   U32 voff_first;
   U32 voff_one_past_last;
@@ -497,7 +497,7 @@ struct PE_IntelPdata
 #define PE_CODEVIEW_PDB70_MAGIC 0x53445352
 #define PE_CODEVIEW_RDI_MAGIC   '0IDR' 
 
-struct PE_CvHeaderPDB20
+PE_CvHeaderPDB20 :: struct
 {
   U32            magic;
   U32            offset;
@@ -506,7 +506,7 @@ struct PE_CvHeaderPDB20
   // file name packed after struct
 }
 
-struct PE_CvHeaderPDB70
+PE_CvHeaderPDB70 :: struct
 {
   U32  magic;
   Guid guid;
@@ -514,14 +514,14 @@ struct PE_CvHeaderPDB70
   // file name packed after struct
 }
 
-struct PE_CvHeaderRDI
+PE_CvHeaderRDI :: struct
 {
   U32  magic;
   Guid guid;
   // file name packed after struct
 }
 
-struct PE_ImportEntry
+PE_ImportEntry :: struct
 {
   U32            lookup_table_voff;
   COFF_TimeStamp time_stamp;
@@ -530,7 +530,7 @@ struct PE_ImportEntry
   U32            import_addr_table_voff;
 }
 
-struct PE_DelayedImportEntry
+PE_DelayedImportEntry :: struct
 {
   // According to COFF/PE spec this field is unused and should be set zero,
   // but when I compile mule with MSVC 2019 this is set to 1.
@@ -547,7 +547,7 @@ struct PE_DelayedImportEntry
   COFF_TimeStamp time_stamp;
 }
 
-struct PE_ExportTableHeader
+PE_ExportTableHeader :: struct
 {
   U32            flags;                       // must be zero
   COFF_TimeStamp time_stamp;                  // time and date when export table was created
@@ -562,7 +562,7 @@ struct PE_ExportTableHeader
   U32            ordinal_table_voff;
 }
 
-struct PE_TLSHeader32
+PE_TLSHeader32 :: struct
 {
   U32               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
   U32               raw_data_end;      // (Typically points to .tls section)
@@ -572,7 +572,7 @@ struct PE_TLSHeader32
   COFF_SectionFlags characteristics;   // COFF_SectionFlags but only align flags are used.
 }
 
-struct PE_TLSHeader64
+PE_TLSHeader64 :: struct
 {
   U64               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
   U64               raw_data_end;      // (Typically points to .tls section)
@@ -630,7 +630,7 @@ PE_ResDataKind :: enum
   PE_ResDataKind_COFF_RESOURCE,
 }
 
-struct PE_ResourceHeader
+PE_ResourceHeader :: struct
 {
   COFF_ResourceHeaderPrefix prefix;
   U16                       type;
@@ -713,7 +713,7 @@ PE_UnwindInfoFlags :: enum U8
 #define PE_UNWIND_OPCODE_FROM_FLAGS(f) ((f)&0xF)
 #define PE_UNWIND_INFO_FROM_FLAGS(f) (((f) >> 4)&0xF)
 
-union PE_UnwindCode
+PE_UnwindCode :: struct #raw_union
 {
   struct
   {
@@ -729,7 +729,7 @@ union PE_UnwindCode
 #define PE_UNWIND_INFO_OFF_FROM_FRAME(x)   (((x) >> 4)&0xF)
 #define PE_UNWIND_INFO_GET_CODE_COUNT(x)   (((x)+1) & ~1)
 
-struct PE_UnwindInfo
+PE_UnwindInfo :: struct
 {
   U8 header;
   U8 prolog_size;
@@ -757,20 +757,20 @@ read_only static String8 pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_pr
 
 //- rjf: relocation blocks
 
-struct PE_BaseRelocBlock
+PE_BaseRelocBlock :: struct
 {
   U64  page_virt_off;
   U64  entry_count;
   U16 *entries;
 }
 
-struct PE_BaseRelocBlockNode
+PE_BaseRelocBlockNode :: struct
 {
   PE_BaseRelocBlockNode *next;
   PE_BaseRelocBlock      v;
 }
 
-struct PE_BaseRelocBlockList
+PE_BaseRelocBlockList :: struct
 {
   PE_BaseRelocBlockNode *first;
   PE_BaseRelocBlockNode *last;
@@ -779,7 +779,7 @@ struct PE_BaseRelocBlockList
 
 //- rjf: resources
 
-struct PE_Resource
+PE_Resource :: struct
 {
   COFF_ResourceID id;
   PE_ResDataKind  kind;
@@ -798,26 +798,26 @@ struct PE_Resource
   } u;
 }
 
-struct PE_ResourceNode
+PE_ResourceNode :: struct
 {
   PE_ResourceNode *next;
   PE_Resource      data;
 }
 
-struct PE_ResourceList
+PE_ResourceList :: struct
 {
   PE_ResourceNode *first;
   PE_ResourceNode *last;
   U64              count;
 }
 
-struct PE_ResourceArray
+PE_ResourceArray :: struct
 {
   PE_Resource *v;
   U64          count;
 }
 
-struct PE_ResourceDir
+PE_ResourceDir :: struct
 {
   U32             characteristics;
   COFF_TimeStamp  time_stamp;
@@ -829,7 +829,7 @@ struct PE_ResourceDir
 
 //- exports & imports
 
-struct PE_ParsedExport
+PE_ParsedExport :: struct
 {
   String8 forwarder;
   String8 name;
@@ -837,7 +837,7 @@ struct PE_ParsedExport
   U64     ordinal;
 }
 
-struct PE_ParsedExportTable
+PE_ParsedExportTable :: struct
 {
   U32              flags;
   COFF_TimeStamp   time_stamp;
@@ -855,7 +855,7 @@ PE_ParsedImportType :: enum U32 PE_ParsedImportTypeEnum
   PE_ParsedImport_Name,
 }
 
-struct PE_ParsedImport
+PE_ParsedImport :: struct
 {
   PE_ParsedImportType type;
   union
@@ -869,7 +869,7 @@ struct PE_ParsedImport
   } u;
 }
 
-struct PE_ParsedStaticDLLImport
+PE_ParsedStaticDLLImport :: struct
 {
   String8          name;
   U64              import_address_table_voff;
@@ -880,13 +880,13 @@ struct PE_ParsedStaticDLLImport
   PE_ParsedImport *imports;
 }
 
-struct PE_ParsedStaticImportTable
+PE_ParsedStaticImportTable :: struct
 {
   U64                       count;
   PE_ParsedStaticDLLImport *v;
 }
 
-struct PE_ParsedDelayDLLImport
+PE_ParsedDelayDLLImport :: struct
 {
   U32              attributes;
   String8          name;
@@ -904,13 +904,13 @@ struct PE_ParsedDelayDLLImport
   PE_ParsedImport *imports;
 }
 
-struct PE_ParsedDelayImportTable
+PE_ParsedDelayImportTable :: struct
 {
   U64                      count;
   PE_ParsedDelayDLLImport *v;
 }
 
-struct PE_ParsedTLS
+PE_ParsedTLS :: struct
 {
   PE_TLSHeader64 header;
   U64            callback_count;
@@ -920,7 +920,7 @@ struct PE_ParsedTLS
 ////////////////////////////////
 // SEH Scope Table
 
-struct PE_HandlerScope
+PE_HandlerScope :: struct
 {
   U32 begin;
   U32 end;
@@ -930,7 +930,7 @@ struct PE_HandlerScope
 
 //- rjf: bundle
 
-struct PE_BinInfo
+PE_BinInfo :: struct
 {
   U64             image_base;
   U64             entry_point;
