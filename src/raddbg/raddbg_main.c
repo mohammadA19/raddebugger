@@ -420,12 +420,12 @@ enum ExecMode
   ExecMode_IPCSender,
   ExecMode_Converter,
   ExecMode_Help,
-};
+}
 
 struct IPCInfo
 {
   U64 msg_size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

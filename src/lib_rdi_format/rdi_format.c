@@ -49,7 +49,7 @@ sizeof(RDI_NameMap),
 sizeof(RDI_NameMapBucket),
 sizeof(RDI_NameMapNode),
 sizeof(RDI_U8),
-};
+}
 
 RDI_U8 rdi_section_is_required_table[37] =
 {
@@ -90,7 +90,7 @@ RDI_U8 rdi_section_is_required_table[37] =
 0,
 0,
 0,
-};
+}
 
 RDI_U16 rdi_eval_op_ctrlbits_table[49] =
 {
@@ -143,7 +143,7 @@ RDI_EVAL_CTRLBITS(1, 0, 0),
 RDI_EVAL_CTRLBITS(1, 2, 1),
 RDI_EVAL_CTRLBITS(1, 1, 1),
 RDI_EVAL_CTRLBITS(0, 0, 0),
-};
+}
 
 struct {RDI_EvalConversionKind dst_typegroups[RDI_EvalTypeGroup_COUNT];} rdi_eval_typegroup_conversion_kind_matrix[6] =
 {
@@ -153,7 +153,7 @@ struct {RDI_EvalConversionKind dst_typegroups[RDI_EvalTypeGroup_COUNT];} rdi_eva
 {{RDI_EvalConversionKind_ToOther, RDI_EvalConversionKind_Legal, RDI_EvalConversionKind_Legal, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Legal}},
 {{RDI_EvalConversionKind_ToOther, RDI_EvalConversionKind_Legal, RDI_EvalConversionKind_Legal, RDI_EvalConversionKind_Legal, RDI_EvalConversionKind_Noop}},
 {{RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop}},
-};
+}
 
 struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_table[6] =
 {
@@ -163,7 +163,7 @@ struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_tabl
 {(RDI_U8 *)"F32", sizeof("F32")},
 {(RDI_U8 *)"F64", sizeof("F64")},
 {(RDI_U8 *)"COUNT", sizeof("COUNT")},
-};
+}
 
 RDI_PROC RDI_U64
 rdi_hash(RDI_U8 *ptr, RDI_U64 size)

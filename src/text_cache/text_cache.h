@@ -13,7 +13,7 @@ enum TXT_LineEndKind
   TXT_LineEndKind_LF,
   TXT_LineEndKind_CRLF,
   TXT_LineEndKind_COUNT
-};
+}
 
 enum TXT_TokenKind
 {
@@ -28,13 +28,13 @@ enum TXT_TokenKind
   TXT_TokenKind_Comment,
   TXT_TokenKind_Meta, // preprocessor, etc.
   TXT_TokenKind_COUNT
-};
+}
 
 struct TXT_Token
 {
   TXT_TokenKind kind;
   Rng1U64 range;
-};
+}
 
 struct TXT_TokenChunkNode
 {
@@ -42,7 +42,7 @@ struct TXT_TokenChunkNode
   U64 count;
   U64 cap;
   TXT_Token *v;
-};
+}
 
 struct TXT_TokenChunkList
 {
@@ -50,32 +50,32 @@ struct TXT_TokenChunkList
   TXT_TokenChunkNode *last;
   U64 chunk_count;
   U64 token_count;
-};
+}
 
 struct TXT_TokenNode
 {
   TXT_TokenNode *next;
   TXT_Token v;
-};
+}
 
 struct TXT_TokenList
 {
   TXT_TokenNode *first;
   TXT_TokenNode *last;
   U64 count;
-};
+}
 
 struct TXT_TokenArray
 {
   U64 count;
   TXT_Token *v;
-};
+}
 
 struct TXT_TokenArrayArray
 {
   U64 count;
   TXT_TokenArray *v;
-};
+}
 
 struct TXT_TextInfo
 {
@@ -86,12 +86,12 @@ struct TXT_TextInfo
   TXT_TokenArray tokens;
   U64 bytes_processed;
   U64 bytes_to_process;
-};
+}
 
 struct TXT_LineTokensSlice
 {
   TXT_TokenArray *line_tokens;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Language Kind Types
@@ -106,7 +106,7 @@ enum TXT_LangKind
   TXT_LangKind_Zig,
   TXT_LangKind_DisasmX64Intel,
   TXT_LangKind_COUNT
-};
+}
 
 typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
 
@@ -133,20 +133,20 @@ struct TXT_Node
   U64 last_time_touched_us;
   U64 last_user_clock_idx_touched;
   U64 load_count;
-};
+}
 
 struct TXT_Slot
 {
   TXT_Node *first;
   TXT_Node *last;
-};
+}
 
 struct TXT_Stripe
 {
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -156,13 +156,13 @@ struct TXT_Touch
   TXT_Touch *next;
   U128 hash;
   TXT_LangKind lang;
-};
+}
 
 struct TXT_Scope
 {
   TXT_Scope *next;
   TXT_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -172,7 +172,7 @@ struct TXT_TCTX
   Arena *arena;
   TXT_Scope *free_scope;
   TXT_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -201,7 +201,7 @@ struct TXT_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

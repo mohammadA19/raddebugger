@@ -35,7 +35,7 @@
 
 struct DEMON_LNX_ThreadExt{
   B32 expecting_dummy_sigstop;
-};
+}
 StaticAssert(sizeof(DEMON_LNX_ThreadExt) <= sizeof(Member(DEMON_Entity, ext_u64)), check_demon_lnx_thread_ext);
 
 //- helpers
@@ -43,7 +43,7 @@ StaticAssert(sizeof(DEMON_LNX_ThreadExt) <= sizeof(Member(DEMON_Entity, ext_u64)
 struct DEMON_LNX_AttachNode{
   DEMON_LNX_AttachNode *next;
   pid_t pid;
-};
+}
 
 struct DEMON_LNX_ProcessAux{
   B32 filled;
@@ -51,12 +51,12 @@ struct DEMON_LNX_ProcessAux{
   U64 phent;
   U64 phdr;
   U64 execfn;
-};
+}
 
 struct DEMON_LNX_PhdrInfo{
   Rng1U64 range;
   U64 dynamic;
-};
+}
 
 struct DEMON_LNX_ModuleNode{
   DEMON_LNX_ModuleNode *next;
@@ -64,12 +64,12 @@ struct DEMON_LNX_ModuleNode{
   U64 size;
   U64 name;
   U64 already_known;
-};
+}
 
 struct DEMON_LNX_EntityNode{
   DEMON_LNX_EntityNode *next;
   DEMON_Entity *entity;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(allen): Linux Demon Register Layouts
@@ -106,7 +106,7 @@ struct DEMON_LNX_UserRegsX64{
 	U64 es;
 	U64 fs;
 	U64 gs;
-};
+}
 
 struct DEMON_LNX_UserX64{
   DEMON_LNX_UserRegsX64 regs;
@@ -119,7 +119,7 @@ struct DEMON_LNX_UserX64{
   U64 magic;
   U8  u_comm[32];
   U64 u_debugreg[8];
-};
+}
 
 struct DEMON_LNX_UserRegsX86{
   U32 ebx;
@@ -139,7 +139,7 @@ struct DEMON_LNX_UserRegsX86{
 	U32 eflags;
 	U32 sp;
 	U32 ss;
-};
+}
 
 struct DEMON_LNX_UserX86{
   DEMON_LNX_UserRegsX86 regs;
@@ -151,7 +151,7 @@ struct DEMON_LNX_UserX86{
   U32 magic;
   U8  u_comm[32];
   U32 u_debugreg[8];
-};
+}
 
 ////////////////////////////////
 
@@ -161,7 +161,7 @@ enum
   DEMON_LNX_PermFlags_Write   = (1 << 1),
   DEMON_LNX_PermFlags_Exec    = (1 << 2),
   DEMON_LNX_PermFlags_Private = (1 << 3)
-};
+}
 typedef int DEMON_LNX_PermFlags;
 
 enum
@@ -171,7 +171,7 @@ enum
   DEMON_LNX_MapsEntryType_Heap,
   DEMON_LNX_MapsEntryType_Stack,
   DEMON_LNX_MapsEntryType_VDSO,
-};
+}
 typedef int DEMON_LNX_MapsEntryType;
 
 struct DEMON_LNX_MapsEntry
@@ -186,7 +186,7 @@ struct DEMON_LNX_MapsEntry
   String8 pathname;
   DEMON_LNX_MapsEntryType type;
   pid_t stack_tid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Helpers

@@ -31,7 +31,7 @@ srtuct DW_RegsX64
     };
     U64 r[17];
   };
-};
+}
 
 ////////////////////////////////
 //~ Dwarf Expression Eval Types
@@ -46,7 +46,7 @@ srtuct DW_ExprMachineCallConfig
 {
   void                   *user_ptr;
   DW_ExprResolveCallFunc *func;
-};
+}
 
 srtuct DW_ExprMachineConfig
 {
@@ -60,7 +60,7 @@ srtuct DW_ExprMachineConfig
   U64                      *tls_address;
   U64                      *cfa;
   DW_ExprMachineCallConfig  call;
-};
+}
 
 
 //- detail analysis types
@@ -79,19 +79,19 @@ enum DW_ExprFlags : U32
   DW_ExprFlag_NotSupported  = (1 << 16),
   DW_ExprFlag_BadData       = (1 << 17),
   DW_ExprFlag_NonLinearFlow = (1 << 18)
-};
+}
 
 srtuct DW_ExprAnalysis
 {
   DW_ExprFlags flags;
-};
+}
 
 srtuct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask *next;
   U64                         p;
   String8                     data;
-};
+}
 
 
 //- location types
@@ -103,7 +103,7 @@ enum DW_SimpleLocKind
   DW_SimpleLocKind_ValueLong,
   DW_SimpleLocKind_Empty,
   DW_SimpleLocKind_Fail,
-};
+}
 
 enum DW_LocFailKind
 {
@@ -128,7 +128,7 @@ enum DW_LocFailKind
   DW_LocFailKind_MissingCFA,
   DW_LocFailKind_MissingCallResolution,
   DW_LocFailKind_MissingArenaForComposite,
-};
+}
 
 srtuct DW_SimpleLoc
 {
@@ -143,7 +143,7 @@ srtuct DW_SimpleLoc
       U64 fail_data;
     };
   };
-};
+}
 
 srtuct DW_Piece
 {
@@ -158,7 +158,7 @@ srtuct DW_Piece
   U64              bit_size;
   U64              bit_off;
   B32              is_bit_loc;
-};
+}
 
 srtuct DW_Location
 {
@@ -190,7 +190,7 @@ srtuct DW_Location
   U64       count;
   
   DW_SimpleLoc non_piece_loc;
-};
+}
 
 
 //- full evaluator state types
@@ -198,14 +198,14 @@ srtuct DW_ExprStackNode
 {
   struct DW_ExprStackNode *next;
   U64                      val;
-};
+}
 
 srtuct DW_ExprStack
 {
   DW_ExprStackNode *stack;
   DW_ExprStackNode *free_nodes;
   U64               count;
-};
+}
 
 srtuct DW_ExprCall
 {
@@ -213,14 +213,14 @@ srtuct DW_ExprCall
   void               *ptr;
   U64                 size;
   U64                 cursor;
-};
+}
 
 srtuct DW_ExprCallStack
 {
   DW_ExprCall *stack;
   DW_ExprCall *free_calls;
   U64          depth;
-};
+}
 
 ////////////////////////////////
 //~ Dwarf Expression Analysis & Eval Functions

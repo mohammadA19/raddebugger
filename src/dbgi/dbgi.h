@@ -11,26 +11,26 @@ struct DI_Key
 {
   String8 path;
   U64 min_timestamp;
-};
+}
 
 struct DI_KeyNode
 {
   DI_KeyNode *next;
   DI_Key v;
-};
+}
 
 struct DI_KeyList
 {
   DI_KeyNode *first;
   DI_KeyNode *last;
   U64 count;
-};
+}
 
 struct DI_KeyArray
 {
   DI_Key *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Event Types
@@ -42,26 +42,26 @@ enum DI_EventKind
   DI_EventKind_ConversionEnded,
   DI_EventKind_ConversionFailureUnsupportedFormat,
   DI_EventKind_COUNT
-};
+}
 
 struct DI_Event
 {
   DI_EventKind kind;
   String8 string;
-};
+}
 
 struct DI_EventNode
 {
   DI_EventNode *next;
   DI_Event v;
-};
+}
 
 struct DI_EventList
 {
   DI_EventNode *first;
   DI_EventNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Debug Info Cache Types
@@ -70,7 +70,7 @@ struct DI_StringChunkNode
 {
   DI_StringChunkNode *next;
   U64 size;
-};
+}
 
 struct DI_Node
 {
@@ -96,13 +96,13 @@ struct DI_Node
   Arena *arena;
   RDI_Parsed rdi;
   B32 parse_done;
-};
+}
 
 struct DI_Slot
 {
   DI_Node *first;
   DI_Node *last;
-};
+}
 
 struct DI_Stripe
 {
@@ -111,7 +111,7 @@ struct DI_Stripe
   DI_StringChunkNode *free_string_chunks[8];
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Search Cache Types
@@ -122,7 +122,7 @@ struct DI_SearchItem
   U64 dbgi_idx;
   U64 missed_size;
   FuzzyMatchRangeList match_ranges;
-};
+}
 
 struct DI_SearchItemChunk
 {
@@ -130,7 +130,7 @@ struct DI_SearchItemChunk
   DI_SearchItem *v;
   U64 count;
   U64 cap;
-};
+}
 
 struct DI_SearchItemChunkList
 {
@@ -138,19 +138,19 @@ struct DI_SearchItemChunkList
   DI_SearchItemChunk *last;
   U64 chunk_count;
   U64 total_count;
-};
+}
 
 struct DI_SearchItemArray
 {
   DI_SearchItem *v;
   U64 count;
-};
+}
 
 struct DI_SearchParams
 {
   RDI_SectionKind target;
   DI_KeyArray dbgi_keys;
-};
+}
 
 struct DI_SearchBucket
 {
@@ -158,7 +158,7 @@ struct DI_SearchBucket
   String8 query;
   U64 params_hash;
   DI_SearchParams params;
-};
+}
 
 struct DI_SearchNode
 {
@@ -173,13 +173,13 @@ struct DI_SearchNode
   U64 bucket_items_gen;
   DI_SearchBucket buckets[6];
   DI_SearchItemArray items;
-};
+}
 
 struct DI_SearchSlot
 {
   DI_SearchNode *first;
   DI_SearchNode *last;
-};
+}
 
 struct DI_SearchStripe
 {
@@ -187,7 +187,7 @@ struct DI_SearchStripe
   DI_SearchNode *free_node;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access Types
@@ -197,21 +197,21 @@ struct DI_Touch
   DI_Touch *next;
   DI_Node *node;
   DI_SearchNode *search_node;
-};
+}
 
 struct DI_Scope
 {
   DI_Scope *next;
   DI_Touch *first_touch;
   DI_Touch *last_touch;
-};
+}
 
 struct DI_TCTX
 {
   Arena *arena;
   DI_Scope *free_scope;
   DI_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Search Thread State Types
@@ -225,7 +225,7 @@ struct DI_SearchThread
   U8 *ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Match Cache State Types
@@ -237,7 +237,7 @@ struct DI_Match
   U64 dbgi_idx;
   RDI_SectionKind section;
   U32 idx;
-};
+}
 
 struct DI_MatchNameNode
 {
@@ -260,13 +260,13 @@ struct DI_MatchNameNode
   RDI_SectionKind section_kind;
   // DI_Match *first_match;
   // DI_Match *last_match;
-};
+}
 
 struct DI_MatchNameSlot
 {
   DI_MatchNameNode *first;
   DI_MatchNameNode *last;
-};
+}
 
 struct DI_MatchStore
 {
@@ -298,7 +298,7 @@ struct DI_MatchStore
   U8 *u2m_ring_base;
   U64 u2m_ring_write_pos;
   U64 u2m_ring_read_pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Types
@@ -339,7 +339,7 @@ struct DI_Shared
   U64 search_threads_count;
   DI_SearchThread *search_threads;
   OS_Handle search_evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

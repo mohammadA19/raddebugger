@@ -52,7 +52,7 @@ struct {
   { str8_lit_comp("windows"), PathStyle_WindowsAbsolute },
   { str8_lit_comp("unix"),    PathStyle_UnixAbsolute    },
   { str8_lit_comp("system"),  PathStyle_SystemAbsolute  },
-};
+}
 
 PathStyle
 path_style_from_string(String8 string)

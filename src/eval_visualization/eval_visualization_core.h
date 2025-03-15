@@ -11,7 +11,7 @@ struct EV_Key
 {
   U64 parent_hash;
   U64 child_id;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Visualization State Type
@@ -29,13 +29,13 @@ struct EV_ExpandNode
   EV_ExpandNode *parent;
   EV_Key key;
   B32 expanded;
-};
+}
 
 struct EV_ExpandSlot
 {
   EV_ExpandNode *first;
   EV_ExpandNode *last;
-};
+}
 
 //- rjf: hash table for view rules
 
@@ -47,13 +47,13 @@ struct EV_KeyViewRuleNode
   U8 *buffer;
   U64 buffer_cap;
   U64 buffer_string_size;
-};
+}
 
 struct EV_KeyViewRuleSlot
 {
   EV_KeyViewRuleNode *first;
   EV_KeyViewRuleNode *last;
-};
+}
 
 //- rjf: view state bundle
 
@@ -66,7 +66,7 @@ struct EV_View
   EV_KeyViewRuleSlot *key_view_rule_slots;
   U64 key_view_rule_slots_count;
   EV_KeyViewRuleNode *free_key_view_rule_node;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Instance Types
@@ -74,20 +74,20 @@ struct EV_View
 struct EV_ViewRule
 {
   MD_Node *root;
-};
+}
 
 struct EV_ViewRuleNode
 {
   EV_ViewRuleNode *next;
   EV_ViewRule v;
-};
+}
 
 struct EV_ViewRuleList
 {
   EV_ViewRuleNode *first;
   EV_ViewRuleNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Info Types
@@ -99,7 +99,7 @@ struct EV_ExpandInfo
   B32 single_item; // all rows form a single "item" - a singular, but large, row
   B32 add_new_row; // also supports an 'add new row', as the final row, within `row_count`
   B32 rows_default_expanded;
-};
+}
 
 struct EV_ExpandRangeInfo
 {
@@ -108,7 +108,7 @@ struct EV_ExpandRangeInfo
   String8 *row_view_rules;
   E_Expr **row_exprs;
   E_Member **row_members;
-};
+}
 
 #define EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_SIG(name) E_Expr *name(Arena *arena, E_Expr *expr, MD_Node *params)
 #define EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(name) ev_view_rule_expr_resolution__##name
@@ -140,7 +140,7 @@ enum EV_ViewRuleInfoFlags : U32 // NOTE(rjf): see @view_rule_info
 {
   EV_ViewRuleInfoFlag_Inherited           = (1<<0),
   EV_ViewRuleInfoFlag_Expandable          = (1<<1),
-};
+}
 
 struct EV_ViewRuleInfo
 {
@@ -151,25 +151,25 @@ struct EV_ViewRuleInfo
   EV_ViewRuleExprExpandRangeInfoHookFunctionType *expr_expand_range_info;
   EV_ViewRuleExprExpandIDFromNumHookFunctionType *expr_expand_id_from_num;
   EV_ViewRuleExprExpandIDFromNumHookFunctionType *expr_expand_num_from_id;
-};
+}
 
 struct EV_ViewRuleInfoNode
 {
   EV_ViewRuleInfoNode *next;
   EV_ViewRuleInfo v;
-};
+}
 
 struct EV_ViewRuleInfoSlot
 {
   EV_ViewRuleInfoNode *first;
   EV_ViewRuleInfoNode *last;
-};
+}
 
 struct EV_ViewRuleInfoTable
 {
   EV_ViewRuleInfoSlot *slots;
   U64 slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Blocks
@@ -201,33 +201,33 @@ struct EV_Block
   U64 row_count;
   B32 single_item;
   B32 rows_default_expanded;
-};
+}
 
 struct EV_BlockTree
 {
   EV_Block *root;
   U64 total_row_count;
   U64 total_item_count;
-};
+}
 
 struct EV_BlockRange
 {
   EV_Block *block;
   Rng1U64 range;
-};
+}
 
 struct EV_BlockRangeNode
 {
   EV_BlockRangeNode *next;
   EV_BlockRange v;
-};
+}
 
 struct EV_BlockRangeList
 {
   EV_BlockRangeNode *first;
   EV_BlockRangeNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Rows
@@ -250,7 +250,7 @@ struct EV_Row
   E_Expr *expr;
   E_Member *member;
   EV_ViewRuleList *view_rules;
-};
+}
 
 struct EV_WindowedRowList
 {
@@ -259,7 +259,7 @@ struct EV_WindowedRowList
   U64 count;
   U64 count_before_visual;
   U64 count_before_semantic;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Automatic Type -> View Rule Map Types
@@ -270,20 +270,20 @@ struct EV_AutoViewRuleNode
   E_TypeKey key;
   String8 view_rule;
   B32 is_required;
-};
+}
 
 struct EV_AutoViewRuleSlot
 {
   EV_AutoViewRuleNode *first;
   EV_AutoViewRuleNode *last;
   U64 count;
-};
+}
 
 struct EV_AutoViewRuleTable
 {
   EV_AutoViewRuleSlot *slots;
   U64 slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -297,7 +297,7 @@ enum EV_StringFlags : U32
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
   EV_StringFlag_PrettyNames          = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Nil/Identity View Rule Hooks
@@ -320,7 +320,7 @@ static read_only EV_ViewRuleInfo ev_nil_view_rule_info =
   EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(nil),
   EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
   EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
-};
+}
 thread_static EV_ViewRuleInfoTable *ev_view_rule_info_table = 0;
 static read_only EV_ViewRuleList ev_nil_view_rule_list = {0};
 thread_static EV_AutoViewRuleTable *ev_auto_view_rule_table = 0;

@@ -162,7 +162,7 @@ static read_only struct
   { RD_Option_LoadConfig,       "l",                   "Alias for -loadconifg" },
   { RD_Option_Resources,        "c",                   "Alias for -resources"  },
   { RD_Option_Relocs,           "r",                   "Alias for -relocs"     },
-};
+}
 
 void
 entry_point(CmdLine *cmdline)

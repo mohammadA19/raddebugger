@@ -10,7 +10,7 @@ enum
   LNK_SymbolScopeIndex_Weak,
   LNK_SymbolScopeIndex_Lib,
   LNK_SymbolScopeIndex_Count
-};
+}
 
 enum
 {
@@ -21,7 +21,7 @@ enum
   
   LNK_SymbolScopeFlag_Main = LNK_SymbolScopeFlag_Defined | LNK_SymbolScopeFlag_Weak,
   LNK_SymbolScopeFlag_All  = LNK_SymbolScopeFlag_Defined | LNK_SymbolScopeFlag_Weak | LNK_SymbolScopeFlag_Lib | LNK_SymbolScopeFlag_Internal
-};
+}
 typedef U64 LNK_SymbolScopeFlags;
 
 enum
@@ -29,13 +29,13 @@ enum
   LNK_DefinedSymbolVisibility_Static,
   LNK_DefinedSymbolVisibility_Extern,
   LNK_DefinedSymbolVisibility_Internal,
-};
+}
 
 enum
 {
   LNK_DefinedSymbolFlag_IsFunc  = (1 << 0),
   LNK_DefinedSymbolFlag_IsThunk = (1 << 1),
-};
+}
 typedef U64 LNK_DefinedSymbolFlags;
 
 enum
@@ -43,7 +43,7 @@ enum
   LNK_DefinedSymbolValue_Null,
   LNK_DefinedSymbolValue_Chunk,
   LNK_DefinedSymbolValue_VA
-};
+}
 
 srtuct LNK_DefinedSymbol
 {
@@ -58,25 +58,25 @@ srtuct LNK_DefinedSymbol
     };
     U64 va;
   } u;
-};
+}
 
 srtuct LNK_WeakSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
   COFF_WeakExtType     lookup_type;
   struct LNK_Symbol   *fallback_symbol;
-};
+}
 
 srtuct LNK_UndefinedSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
-};
+}
 
 srtuct LNK_LazySymbol
 {
   struct LNK_Lib *lib;
   U64             member_offset;
-};
+}
 
 #define LNK_Symbol_IsDefined(type) ((type) == LNK_Symbol_DefinedStatic || (type) == LNK_Symbol_DefinedExtern || (type) == LNK_Symbol_DefinedInternal)
 enum 
@@ -88,7 +88,7 @@ enum
   LNK_Symbol_Weak,
   LNK_Symbol_Lazy,
   LNK_Symbol_Undefined,
-};
+}
 
 srtuct LNK_Symbol
 {
@@ -101,39 +101,39 @@ srtuct LNK_Symbol
     LNK_UndefinedSymbol undefined;
     LNK_LazySymbol      lazy;
   } u;
-};
+}
 
 srtuct LNK_SymbolNode
 {
   struct LNK_SymbolNode *next;
   LNK_Symbol            *data;
-};
+}
 
 srtuct LNK_SymbolList
 {
   U64             count;
   LNK_SymbolNode *first;
   LNK_SymbolNode *last;
-};
+}
 
 srtuct LNK_SymbolNodeArray
 {
   U64              count;
   LNK_SymbolNode **v;
-};
+}
 
 srtuct LNK_SymbolArray
 {
   U64         count;
   LNK_Symbol *v;
-};
+}
 
 srtuct LNK_SymbolHashTrie
 {
   String8                   *name;
   LNK_Symbol                *symbol;
   struct LNK_SymbolHashTrie *child[4];
-};
+}
 
 srtuct LNK_SymbolHashTrieChunk
 {
@@ -141,21 +141,21 @@ srtuct LNK_SymbolHashTrieChunk
   U64                             count;
   U64                             cap;
   LNK_SymbolHashTrie             *v;
-};
+}
 
 srtuct LNK_SymbolHashTrieChunkList
 {
   U64                      count;
   LNK_SymbolHashTrieChunk *first;
   LNK_SymbolHashTrieChunk *last;
-};
+}
 
 srtuct LNK_SymbolTable
 {
   TP_Arena                    *arena;
   LNK_SymbolHashTrie          *scopes[LNK_SymbolScopeIndex_Count];
   LNK_SymbolHashTrieChunkList *chunk_lists[LNK_SymbolScopeIndex_Count];
-};
+}
 
 ////////////////////////////////
 // parallel for wrappers
@@ -165,7 +165,7 @@ srtuct
   LNK_SymbolTable *symtab;
   Rng1U64         *ranges;
   LNK_Symbol      *arr;
-};
+}
 
 ////////////////////////////////
 

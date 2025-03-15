@@ -9,13 +9,13 @@ srtuct CV_LeafHeader
 {
   CV_LeafSize size;
   CV_LeafKind kind;
-};
+}
 
 srtuct CV_SymbolHeader
 {
   CV_SymSize size;
   CV_SymKind kind;
-};
+}
 
 ////////////////////////////////
 // Type Index Helpers
@@ -27,20 +27,20 @@ srtuct CV_Symbol
   CV_SymKind kind;
   U64        offset;
   String8    data;
-};
+}
 
 srtuct CV_SymbolNode
 {
   struct CV_SymbolNode *next;
   struct CV_SymbolNode *prev;
   CV_Symbol             data;
-};
+}
 
 srtuct CV_SymbolPtrNode
 {
   struct CV_SymbolPtrNode *next;
   CV_Symbol               *data;
-};
+}
 
 srtuct CV_SymbolList
 {
@@ -48,19 +48,19 @@ srtuct CV_SymbolList
   CV_Signature   signature;
   CV_SymbolNode *first;
   CV_SymbolNode *last;
-};
+}
 
 srtuct CV_SymbolListArray
 {
   U64            count;
   CV_SymbolList *v;
-};
+}
 
 srtuct CV_SymbolPtrArray
 {
   U64             count;
   CV_SymbolNode **v;
-};
+}
 
 srtuct CV_Scope
 {
@@ -68,13 +68,13 @@ srtuct CV_Scope
   struct CV_Scope     *next;
   struct CV_Scope     *prev;
   CV_Symbol            symbol;
-};
+}
 
 srtuct CV_ScopeList
 {
   CV_Scope *first;
   CV_Scope *last;
-};
+}
 
 srtuct CV_ScopeFrame
 {
@@ -84,7 +84,7 @@ srtuct CV_ScopeFrame
   U64           symbol_off;
   U32          *parent_off_ptr;
   U32          *end_off_ptr;
-};
+}
 
 //- $$FileChksms
 
@@ -92,20 +92,20 @@ srtuct CV_Checksum
 {
   CV_C13Checksum *header;
   String8 value;
-};
+}
 
 srtuct CV_ChecksumNode
 {
   struct CV_ChecksumNode *next;
   CV_Checksum data;
-};
+}
 
 srtuct CV_ChecksumList
 {
   U64 count;
   CV_ChecksumNode *first;
   CV_ChecksumNode *last;
-};
+}
 
 //- $$Lines
 
@@ -117,13 +117,13 @@ srtuct CV_LineArray
   U64 *voffs;     // [line_count + 1]
   U32 *line_nums; // [line_count]
   U16 *col_nums;  // [line_count * 2]
-};
+}
 
 srtuct CV_File
 {
   U32          file_off;
   CV_LineArray lines;
-};
+}
 
 srtuct CV_C13LinesHeader
 {
@@ -135,20 +135,20 @@ srtuct CV_C13LinesHeader
   U64 col_count;
   U64 line_array_off;
   U64 col_array_off;
-};
+}
 
 srtuct CV_C13LinesHeaderNode
 {
   struct CV_C13LinesHeaderNode *next;
   CV_C13LinesHeader             v;
-};
+}
 
 srtuct CV_C13LinesHeaderList
 {
   CV_C13LinesHeaderNode *first;
   CV_C13LinesHeaderNode *last;
   U64                    count;
-};
+}
 
 ////////////////////////////////
 
@@ -157,20 +157,20 @@ srtuct CV_TypeServerInfo
   String8 name;
   Guid    sig;
   U32     age;
-};
+}
 
 srtuct CV_TypeServerInfoNode
 {
   struct CV_TypeServerInfoNode *next;
   CV_TypeServerInfo             data;
-};
+}
 
 srtuct CV_TypeServerInfoList
 {
   CV_TypeServerInfoNode *first;
   CV_TypeServerInfoNode *last;
   U64                    count;
-};
+}
 
 srtuct CV_PrecompInfo
 {
@@ -178,13 +178,13 @@ srtuct CV_PrecompInfo
   U32          sig;
   U32          leaf_count;
   String8      obj_name;
-};
+}
 
 srtuct CV_ObjInfo
 {
   U32     sig;
   String8 name;
-};
+}
 
 ////////////////////////////////
 // Accels
@@ -195,34 +195,34 @@ srtuct CV_Line
   U32 file_off;
   U32 line_num;
   U16 col_num;
-};
+}
 
 srtuct CV_LinesAccel
 {
   U64      map_count;
   CV_Line *map;
-};
+}
 
 srtuct CV_InlineeLinesAccel
 {
   U64                        bucket_count;
   U64                        bucket_max;
   CV_C13InlineeLinesParsed **buckets;
-};
+}
 
 srtuct CV_InlineBinaryAnnotsParsed
 {
   U64           lines_count;
   CV_LineArray *lines;
   Rng1U64List   code_ranges;
-};
+}
 
 srtuct CV_C13InlineeLinesParsedList
 {
   CV_C13InlineeLinesParsedNode *first;
   CV_C13InlineeLinesParsedNode *last;
   U64                           count;
-};
+}
 
 ////////////////////////////////
 
@@ -233,28 +233,28 @@ enum CV_C13SubSectionIdxKind : U32
   CV_C13SubSectionKindXList(X)
 #undef X
   CV_C13SubSectionIdxKind_COUNT
-};
+}
 
 srtuct CV_C13SubSectionList
 {
   CV_C13SubSectionNode *first;
   CV_C13SubSectionNode *last;
   U64                   count;
-};
+}
 
 ////////////////////////////////
 
 srtuct CV_DebugS
 {
   String8List data_list[CV_C13SubSectionIdxKind_COUNT];
-};
+}
 
 srtuct CV_DebugT
 {
   U64  size;
   U64  count;
   U8 **v;
-};
+}
 
 ////////////////////////////////
 //~ Leaf Helpers
@@ -263,20 +263,20 @@ srtuct CV_Leaf
 {
   CV_LeafKind kind;
   String8     data;
-};
+}
 
 srtuct CV_LeafNode
 {
   struct CV_LeafNode *next;
   CV_Leaf             data;
-};
+}
 
 srtuct CV_LeafList
 {
   U64          count;
   CV_LeafNode *first;
   CV_LeafNode *last;
-};
+}
 
 ////////////////////////////////
 //~ String Hash Table
@@ -286,7 +286,7 @@ srtuct CV_StringTableRange
   struct CV_StringTableRange *next;
   Rng1U64                     range;
   U64                         debug_s_idx;
-};
+}
 
 srtuct CV_StringBucket
 {
@@ -298,7 +298,7 @@ srtuct CV_StringBucket
     };
     U64 offset;
   } u;
-};
+}
 
 srtuct CV_StringHashTable
 {
@@ -306,13 +306,13 @@ srtuct CV_StringHashTable
   U64               total_insert_count;
   U64               bucket_cap;
   CV_StringBucket **buckets;
-};
+}
 
 srtuct CV_StringHashTableResult
 {
   U64               string_count;
   CV_StringBucket **buckets;
-};
+}
 
 ////////////////////////////////
 //~ Task Contexts
@@ -326,7 +326,7 @@ srtuct
   } u;
   Rng1U64         *ranges;
   CV_SymbolNode  **symbols;
-};
+}
 
 srtuct
 {
@@ -334,7 +334,7 @@ srtuct
   Rng1U64        *list_range_arr;
   U64            *symbol_base_arr;
   CV_SymbolNode **symbol_arr;
-};
+}
 
 srtuct
 {
@@ -345,14 +345,14 @@ srtuct
   CV_StringBucket     **buckets;
   U64                   total_string_size;
   U64                   total_insert_count;
-};
+}
 
 srtuct
 {
   U8               *buffer;
   Rng1U64          *ranges;
   CV_StringBucket **buckets;
-};
+}
 
 srtuct
 {
@@ -360,7 +360,7 @@ srtuct
   Rng1U64     *ranges;
   String8List *lists;
   String8Node *nodes;
-};
+}
 
 ////////////////////////////////
 

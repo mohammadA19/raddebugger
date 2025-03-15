@@ -15,7 +15,7 @@ E_TokenKind_StringLiteral,
 E_TokenKind_CharLiteral,
 E_TokenKind_Symbol,
 E_TokenKind_COUNT,
-};
+}
 
 enum E_TypeKind
 {
@@ -86,7 +86,7 @@ E_TypeKind_FirstSigned2    = E_TypeKind_S8,
 E_TypeKind_LastSigned2     = E_TypeKind_S512,
 E_TypeKind_FirstIncomplete = E_TypeKind_IncompleteStruct,
 E_TypeKind_LastIncomplete  = E_TypeKind_IncompleteEnum,
-};
+}
 
 typedef U32 E_ExprKind;
 enum E_ExprKindEnum
@@ -140,7 +140,7 @@ E_ExprKind_Array,
 E_ExprKind_Func,
 E_ExprKind_Define,
 E_ExprKind_COUNT,
-};
+}
 
 enum E_InterpretationCode
 {
@@ -156,7 +156,7 @@ E_InterpretationCode_BadTLSBase,
 E_InterpretationCode_InsufficientStackSpace,
 E_InterpretationCode_MalformedBytecode,
 E_InterpretationCode_COUNT,
-};
+}
 
 C_LINKAGE_BEGIN
 extern String8 e_token_kind_strings[6];

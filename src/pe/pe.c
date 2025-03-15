@@ -44,7 +44,7 @@ read_only struct
   { str8_lit_comp("efi_rom"),                  PE_WindowsSubsystem_EFI_ROM                  },
   { str8_lit_comp("xbox"),                     PE_WindowsSubsystem_XBOX                     },
   { str8_lit_comp("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
-};
+}
 StaticAssert(ArrayCount(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_subsystem_map_count_check);
 
 String8

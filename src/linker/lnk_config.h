@@ -163,14 +163,14 @@ enum
   LNK_CmdSwitch_Help,
 
   LNK_CmdSwitch_Count
-};
+}
 
 enum
 {
   LNK_SwitchState_Null,
   LNK_SwitchState_No,
   LNK_SwitchState_Yes
-};
+}
 
 enum 
 {
@@ -180,7 +180,7 @@ enum
   LNK_Input_Res,
   LNK_Input_Manifest,
   LNK_Input_Count
-};
+}
 
 enum
 {
@@ -193,7 +193,7 @@ enum
   LNK_ConfigFlag_NoTsAware               = (1 << 6),
   LNK_ConfigFlag_WriteImageChecksum      = (1 << 8),
   LNK_ConfigFlag_ManifestEmbed           = (1 << 9),
-};
+}
 typedef U64 LNK_ConfigFlags;
 
 enum
@@ -203,7 +203,7 @@ enum
   LNK_DebugMode_FastLink,
   LNK_DebugMode_GHash,
   LNK_DebugMode_Full,
-};
+}
 
 enum
 {
@@ -212,7 +212,7 @@ enum
   LNK_Guard_LongJmp = (1 << 1),
   LNK_Guard_EhCont  = (1 << 2),
   LNK_Guard_All     = LNK_Guard_Cf | LNK_Guard_LongJmp | LNK_Guard_EhCont
-};
+}
 typedef U32 LNK_GuardFlags;
 
 enum
@@ -221,13 +221,13 @@ enum
   LNK_ManifestOpt_WriteToFile,
   LNK_ManifestOpt_Embed,
   LNK_ManifestOpt_No,
-};
+}
 
 srtuct LNK_AltNameList
 {
   String8List from_list;
   String8List to_list;
-};
+}
 
 srtuct LNK_ExportParse
 {
@@ -235,33 +235,33 @@ srtuct LNK_ExportParse
   String8                 name;
   String8                 alias;
   String8                 type;
-};
+}
 
 srtuct LNK_ExportParseList
 {
   U64              count;
   LNK_ExportParse *first;
   LNK_ExportParse *last;
-};
+}
 
 srtuct LNK_MergeDirective
 {
   String8 src;
   String8 dst;
-};
+}
 
 srtuct LNK_MergeDirectiveNode
 {
   struct LNK_MergeDirectiveNode *next;
   LNK_MergeDirective             data;
-};
+}
 
 srtuct LNK_MergeDirectiveList
 {
   U64                     count;
   LNK_MergeDirectiveNode *first;
   LNK_MergeDirectiveNode *last;
-};
+}
 
 
 
@@ -269,7 +269,7 @@ enum
 {
   LNK_DebugInfoGuid_Null,
   Lnk_DebugInfoGuid_ImageBlake3,
-};
+}
 
 enum
 {
@@ -277,7 +277,7 @@ enum
   LNK_TypeNameHashMode_None,
   LNK_TypeNameHashMode_Lenient,
   LNK_TypeNameHashMode_Full,
-};
+}
 
 #if OS_WINDOWS
 # define LNK_MANIFEST_MERGE_TOOL_NAME "mt.exe"
@@ -364,13 +364,13 @@ srtuct LNK_Config
   U64                         symbol_table_cap_lib;
   B32                         build_imp_lib;
   B32                         build_exp;
-};
+}
 
 enum
 {
   LNK_ParseU64Flag_CheckUnder32bit = (1 << 0),
   LNK_ParseU64Flag_CheckPow2       = (1 << 1),
-};
+}
 
 ////////////////////////////////
 
@@ -497,7 +497,7 @@ enum
   LNK_MsWarningCode_Lnk4253 = 4253,
   LNK_MsWarningCode_Lnk4254 = 4254,
   LNK_MsWarningCode_Lnk4286 = 4286,
-};
+}
 
 ////////////////////////////////
 // Enum <-> String

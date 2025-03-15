@@ -46,7 +46,7 @@ read_only struct
   { str8_lit_comp("Sh5"),       COFF_Machine_Sh5       },
   { str8_lit_comp("Thumb"),     COFF_Machine_Thumb     },
   { str8_lit_comp("WceMipsV2"), COFF_Machine_WceMipsV2 },
-};
+}
 
 read_only static struct {
   char *                name;
@@ -55,7 +55,7 @@ read_only static struct {
   { "Code",  COFF_ImportHeader_Code  },
   { "Data",  COFF_ImportHeader_Data  },
   { "Const", COFF_ImportHeader_Const },
-};
+}
 
 String8
 coff_string_from_comdat_select_type(COFF_ComdatSelectType type)

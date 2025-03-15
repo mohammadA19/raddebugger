@@ -107,7 +107,7 @@ enum
   LNK_InputSource_Default, // specified through defaultlib switch
   LNK_InputSource_Obj,     // refrenced from objects
   LNK_InputSource_Count
-};
+}
 
 typedef String8Node LNK_InputLib;
 typedef String8List LNK_InputLibList;
@@ -116,14 +116,14 @@ srtuct LNK_InputImport
 {
   COFF_ParsedArchiveImportHeader       import_header;
   struct LNK_InputImport *next;
-};
+}
 
 srtuct LNK_InputImportList
 {
   U64              count;
   LNK_InputImport *first;
   LNK_InputImport *last;
-};
+}
 
 ////////////////////////////////
 
@@ -132,26 +132,26 @@ srtuct LNK_BaseRelocPage
   U64     voff;
   U64List entries_addr32;
   U64List entries_addr64;
-};
+}
 
 srtuct LNK_BaseRelocPageNode
 {
   struct LNK_BaseRelocPageNode *next;
   LNK_BaseRelocPage             v;
-};
+}
 
 srtuct LNK_BaseRelocPageList
 {
   U64                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
-};
+}
 
 srtuct LNK_BaseRelocPageArray
 {
   U64                count;
   LNK_BaseRelocPage *v;
-};
+}
 
 srtuct
 {
@@ -162,7 +162,7 @@ srtuct
   LNK_BaseRelocPageList  *list_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-};
+}
 
 srtuct
 {
@@ -173,14 +173,14 @@ srtuct
   LNK_Obj               **obj_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-};
+}
 
 srtuct
 {
   LNK_InputObjList    input_obj_list;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
-};
+}
 
 srtuct
 {
@@ -189,7 +189,7 @@ srtuct
   LNK_SymbolNodeArray     lookup_node_arr;
   LNK_SymbolFinderResult *result_arr;
   Rng1U64                *range_arr;
-};
+}
 
 srtuct
 {
@@ -198,7 +198,7 @@ srtuct
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
   } u;
-};
+}
 
 srtuct
 {
@@ -209,7 +209,7 @@ srtuct
   U64                base_addr;
   LNK_Section      **sect_arr;
   Rng1U64           *range_arr;
-};
+}
 
 srtuct
 {
@@ -219,20 +219,20 @@ srtuct
   LNK_Section      **sect_id_map;
   U64                base_addr;
   LNK_Obj          **obj_arr;
-};
+}
 
 srtuct
 {
   String8 path;
   String8 data;
-};
+}
 
 srtuct
 {
   String8  data;
   Rng1U64 *ranges;
   U128    *hashes;
-};
+}
 
 ////////////////////////////////
 

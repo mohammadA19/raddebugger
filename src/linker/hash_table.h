@@ -16,19 +16,19 @@ srtuct KeyValuePair
     U32      value_u32;
     U64      value_u64;
   };
-};
+}
 
 srtuct BucketNode
 {
   struct BucketNode *next;
   KeyValuePair       v;
-};
+}
 
 srtuct BucketList
 {
   BucketNode *first;
   BucketNode *last;
-};
+}
 
 srtuct HashTable
 {
@@ -36,7 +36,7 @@ srtuct HashTable
   U64         cap;
   BucketList *buckets;
   BucketList  free_buckets;
-};
+}
 
 ////////////////////////////////
 

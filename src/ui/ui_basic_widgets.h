@@ -12,13 +12,13 @@ enum UI_ScrollListFlags : U32
   UI_ScrollListFlag_Nav  = (1<<0),
   UI_ScrollListFlag_Snap = (1<<1),
   UI_ScrollListFlag_All  = 0xffffffff,
-};
+}
 
 struct UI_ScrollListRowBlock
 {
   U64 row_count;
   U64 item_count;
-};
+}
 
 struct UI_ScrollListRowBlockChunkNode
 {
@@ -26,7 +26,7 @@ struct UI_ScrollListRowBlockChunkNode
   UI_ScrollListRowBlock *v;
   U64 count;
   U64 cap;
-};
+}
 
 struct UI_ScrollListRowBlockChunkList
 {
@@ -34,13 +34,13 @@ struct UI_ScrollListRowBlockChunkList
   UI_ScrollListRowBlockChunkNode *last;
   U64 chunk_count;
   U64 total_count;
-};
+}
 
 struct UI_ScrollListRowBlockArray
 {
   UI_ScrollListRowBlock *v;
   U64 count;
-};
+}
 
 struct UI_ScrollListParams
 {
@@ -51,12 +51,12 @@ struct UI_ScrollListParams
   Rng2S64 cursor_range;
   Rng1S64 item_range;
   B32 cursor_min_is_empty_selection[Axis2_COUNT];
-};
+}
 
 struct UI_ScrollListSignal
 {
   B32 cursor_moved;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Widgets

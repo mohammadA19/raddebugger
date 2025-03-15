@@ -7,20 +7,20 @@ srtuct U64Node
 {
   struct U64Node *next;
   U64             data;
-};
+}
 
 srtuct U64List
 {
   U64      count;
   U64Node *first;
   U64Node *last;
-};
+}
 
 srtuct VoidNode
 {
   struct VoidNode *next;
   void            *v;
-};
+}
 
 ////////////////////////////////
 

@@ -21,13 +21,13 @@ enum UI_IconKind
   UI_IconKind_CheckHollow,
   UI_IconKind_CheckFilled,
   UI_IconKind_COUNT
-};
+}
 
 struct UI_IconInfo
 {
   FNT_Tag icon_font;
   String8 icon_kind_text_map[UI_IconKind_COUNT];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
@@ -38,7 +38,7 @@ enum UI_MouseButtonKind
   UI_MouseButtonKind_Middle,
   UI_MouseButtonKind_Right,
   UI_MouseButtonKind_COUNT
-};
+}
 
 ////////////////////////////////
 //~ rjf: Codepath Permissions
@@ -56,7 +56,7 @@ enum UI_PermissionFlags : U32
   //- rjf bundles
   UI_PermissionFlag_Clicks = (UI_PermissionFlag_ClicksLeft|UI_PermissionFlag_ClicksMiddle|UI_PermissionFlag_ClicksRight),
   UI_PermissionFlag_All = 0xffffffff,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Focus Types
@@ -68,7 +68,7 @@ enum UI_FocusKind
   UI_FocusKind_On,
   UI_FocusKind_Root,
   UI_FocusKind_COUNT
-};
+}
 
 ////////////////////////////////
 //~ rjf: Events
@@ -88,7 +88,7 @@ enum UI_EventKind
   UI_EventKind_AutocompleteHint,
   UI_EventKind_FileDrop,
   UI_EventKind_COUNT
-};
+}
 
 enum UI_EventActionSlot
 {
@@ -97,7 +97,7 @@ enum UI_EventActionSlot
   UI_EventActionSlot_Cancel,
   UI_EventActionSlot_Edit,
   UI_EventActionSlot_COUNT
-};
+}
 
 enum UI_EventFlags : U32
 {
@@ -110,7 +110,7 @@ enum UI_EventFlags : U32
   UI_EventFlag_CapAtLine           = (1<<6),
   UI_EventFlag_ExplicitDirectional = (1<<7),
   UI_EventFlag_Reorder             = (1<<8),
-};
+}
 
 enum UI_EventDeltaUnit
 {
@@ -121,7 +121,7 @@ enum UI_EventDeltaUnit
   UI_EventDeltaUnit_Page,
   UI_EventDeltaUnit_Whole,
   UI_EventDeltaUnit_COUNT
-};
+}
 
 struct UI_Event
 {
@@ -137,21 +137,21 @@ struct UI_Event
   Vec2F32 delta_2f32;
   Vec2S32 delta_2s32;
   U64 timestamp_us;
-};
+}
 
 struct UI_EventNode
 {
   UI_EventNode *next;
   UI_EventNode *prev;
   UI_Event v;
-};
+}
 
 struct UI_EventList
 {
   UI_EventNode *first;
   UI_EventNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Textual Operations
@@ -160,7 +160,7 @@ enum UI_TxtOpFlags : U32
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
-};
+}
 
 struct UI_TxtOp
 {
@@ -170,7 +170,7 @@ struct UI_TxtOp
   TxtRng range;
   TxtPt cursor;
   TxtPt mark;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Keys
@@ -178,7 +178,7 @@ struct UI_TxtOp
 struct UI_Key
 {
   U64 u64[1];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Sizes
@@ -190,14 +190,14 @@ enum UI_SizeKind
   UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
   UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
   UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
-};
+}
 
 struct UI_Size
 {
   UI_SizeKind kind;
   F32 value;
   F32 strictness;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Palettes
@@ -213,7 +213,7 @@ enum UI_ColorCode
   UI_ColorCode_Cursor,
   UI_ColorCode_Selection,
   UI_ColorCode_COUNT
-};
+}
 
 struct UI_Palette
 {
@@ -232,14 +232,14 @@ struct UI_Palette
       Vec4F32 selection;
     };
   };
-};
+}
 
 struct UI_WidgetPaletteInfo
 {
   UI_Palette *tooltip_palette;
   UI_Palette *ctx_menu_palette;
   UI_Palette *scrollbar_palette;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Animation Info
@@ -253,12 +253,12 @@ enum UI_AnimationInfoFlags : U32
   UI_AnimationInfoFlag_ContextMenuAnimations  = (1<<4),
   UI_AnimationInfoFlag_ScrollingAnimations    = (1<<5),
   UI_AnimationInfoFlag_All = 0xffffffff,
-};
+}
 
 struct UI_AnimationInfo
 {
   UI_AnimationInfoFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scroll Positions
@@ -267,7 +267,7 @@ struct UI_ScrollPt
 {
   S64 idx;
   F32 off;
-};
+}
 
 union UI_ScrollPt2
 {
@@ -277,7 +277,7 @@ union UI_ScrollPt2
     UI_ScrollPt x;
     UI_ScrollPt y;
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: Box Types
@@ -288,7 +288,7 @@ enum UI_TextAlign
   UI_TextAlign_Center,
   UI_TextAlign_Right,
   UI_TextAlign_COUNT
-};
+}
 
 struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
@@ -430,27 +430,27 @@ struct UI_Box
   UI_Key default_nav_focus_active_key;
   UI_Key default_nav_focus_next_hot_key;
   UI_Key default_nav_focus_next_active_key;
-};
+}
 
 struct UI_BoxRec
 {
   UI_Box *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
 struct UI_BoxNode
 {
   UI_BoxNode *next;
   UI_Box *box;
-};
+}
 
 struct UI_BoxList
 {
   UI_BoxNode *first;
   UI_BoxNode *last;
   U64 count;
-};
+}
 
 enum UI_SignalFlags : U32
 {
@@ -511,7 +511,7 @@ enum UI_SignalFlags : U32
   UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
   UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
   UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
-};
+}
 
 struct UI_Signal
 {
@@ -519,7 +519,7 @@ struct UI_Signal
   OS_Modifiers event_flags;
   Vec2S16 scroll;
   UI_SignalFlags f;
-};
+}
 
 #define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
 #define ui_clicked(s)        !!((s).f&UI_SignalFlag_Clicked)
@@ -537,7 +537,7 @@ struct UI_Nav
 {
   B32 moved;
   Vec2S64 new_p;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Animation State Types
@@ -548,7 +548,7 @@ struct UI_AnimParams
   F32 target;
   F32 rate;
   F32 epsilon;
-};
+}
 
 struct UI_AnimNode
 {
@@ -561,13 +561,13 @@ struct UI_AnimNode
   UI_Key key;
   UI_AnimParams params;
   F32 current;
-};
+}
 
 struct UI_AnimSlot
 {
   UI_AnimNode *first;
   UI_AnimNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -581,7 +581,7 @@ struct UI_BoxHashSlot
 {
   UI_Box *hash_first;
   UI_Box *hash_last;
-};
+}
 
 struct UI_State
 {
@@ -666,7 +666,7 @@ struct UI_State
   //- rjf: build phase stacks
   UI_DeclStackNils;
   UI_DeclStacks;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions
@@ -728,7 +728,7 @@ read_only static UI_Box ui_nil_box =
   &ui_nil_box,
   &ui_nil_box,
   &ui_nil_box,
-};
+}
 B32 ui_box_is_nil(UI_Box *box);
 UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off);
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
@@ -866,7 +866,7 @@ read_only static UI_AnimNode ui_nil_anim_node =
 {
   &ui_nil_anim_node,
   &ui_nil_anim_node,
-};
+}
 
 F32 ui_anim_(UI_Key key, UI_AnimParams *params);
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})

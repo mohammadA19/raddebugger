@@ -11,7 +11,7 @@ struct E_Interpretation
 {
   E_Value value;
   E_InterpretationCode code;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Interpretation Context
@@ -30,7 +30,7 @@ struct E_InterpretCtx
   U64 *module_base;
   U64 *frame_base;
   U64 *tls_base;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

@@ -15,7 +15,7 @@ enum E_TypeKeyKind
   E_TypeKeyKind_Cons,
   E_TypeKeyKind_Reg,
   E_TypeKeyKind_RegAlias,
-};
+}
 
 struct E_TypeKey
 {
@@ -24,20 +24,20 @@ struct E_TypeKey
   // [0] -> E_TypeKind (Basic, Cons, Ext); Arch (Reg, RegAlias)
   // [1] -> Type Index In RDI (Ext); Code (Reg, RegAlias); Type Index In Constructed (Cons)
   // [2] -> RDI Index (Ext)
-};
+}
 
 struct E_TypeKeyNode
 {
   E_TypeKeyNode *next;
   E_TypeKey v;
-};
+}
 
 struct E_TypeKeyList
 {
   E_TypeKeyNode *first;
   E_TypeKeyNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Full Extracted Type Information Types
@@ -56,7 +56,7 @@ enum E_MemberKind
   E_MemberKind_NestedType,
   E_MemberKind_Padding,
   E_MemberKind_COUNT
-};
+}
 
 enum E_TypeFlags : U32
 {
@@ -66,7 +66,7 @@ enum E_TypeFlags : U32
   E_TypeFlag_IsPlainText= (1<<3),
   E_TypeFlag_IsCodeText = (1<<4),
   E_TypeFlag_IsPathText = (1<<5),
-};
+}
 
 struct E_Member
 {
@@ -76,38 +76,38 @@ struct E_Member
   String8 pretty_name;
   U64 off;
   E_TypeKeyList inheritance_key_chain;
-};
+}
 
 struct E_MemberNode
 {
   E_MemberNode *next;
   E_Member v;
-};
+}
 
 struct E_MemberList
 {
   E_MemberNode *first;
   E_MemberNode *last;
   U64 count;
-};
+}
 
 struct E_MemberArray
 {
   E_Member *v;
   U64 count;
-};
+}
 
 struct E_EnumVal
 {
   String8 name;
   U64 val;
-};
+}
 
 struct E_EnumValArray
 {
   E_EnumVal *v;
   U64 count;
-};
+}
 
 struct E_Type
 {
@@ -122,7 +122,7 @@ struct E_Type
   E_TypeKey *param_type_keys;
   E_Member *members;
   E_EnumVal *enum_vals;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Context
@@ -139,7 +139,7 @@ struct E_ConsTypeParams
   U64 count;
   E_Member *members;
   E_EnumVal *enum_vals;
-};
+}
 
 srtuct E_ConsTypeNode  E_ConsTypeNode;
 struct E_ConsTypeNode
@@ -149,13 +149,13 @@ struct E_ConsTypeNode
   E_TypeKey key;
   E_ConsTypeParams params;
   U64 byte_size;
-};
+}
 
 struct E_ConsTypeSlot
 {
   E_ConsTypeNode *first;
   E_ConsTypeNode *last;
-};
+}
 
 //- rjf: member lookup cache types
 
@@ -163,13 +163,13 @@ struct E_MemberHashNode
 {
   E_MemberHashNode *next;
   U64 member_idx;
-};
+}
 
 struct E_MemberHashSlot
 {
   E_MemberHashNode *first;
   E_MemberHashNode *last;
-};
+}
 
 struct E_MemberCacheNode
 {
@@ -178,13 +178,13 @@ struct E_MemberCacheNode
   E_MemberArray members;
   U64 member_hash_slots_count;
   E_MemberHashSlot *member_hash_slots;
-};
+}
 
 struct E_MemberCacheSlot
 {
   E_MemberCacheNode *first;
   E_MemberCacheNode *last;
-};
+}
 
 //- rjf: context parameterization
 
@@ -198,7 +198,7 @@ struct E_TypeCtx
   E_Module *modules;
   U64 modules_count;
   E_Module *primary_module;
-};
+}
 
 //- rjf: stateful machine part of context (not provided by user)
 
@@ -220,7 +220,7 @@ struct E_TypeState
   // rjf: member cache table
   U64 member_cache_slots_count;
   E_MemberCacheSlot *member_cache_slots;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

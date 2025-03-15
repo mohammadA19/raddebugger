@@ -26,7 +26,7 @@ DMN_EventKind_Memory,
 DMN_EventKind_DebugString,
 DMN_EventKind_SetThreadName,
 DMN_EventKind_COUNT,
-};
+}
 
 enum DMN_ErrorKind
 {
@@ -35,7 +35,7 @@ DMN_ErrorKind_NotAttached,
 DMN_ErrorKind_UnexpectedFailure,
 DMN_ErrorKind_InvalidHandle,
 DMN_ErrorKind_COUNT,
-};
+}
 
 enum DMN_MemoryEventKind
 {
@@ -45,7 +45,7 @@ DMN_MemoryEventKind_Reserve,
 DMN_MemoryEventKind_Decommit,
 DMN_MemoryEventKind_Release,
 DMN_MemoryEventKind_COUNT,
-};
+}
 
 enum DMN_ExceptionKind
 {
@@ -55,7 +55,7 @@ DMN_ExceptionKind_MemoryWrite,
 DMN_ExceptionKind_MemoryExecute,
 DMN_ExceptionKind_CppThrow,
 DMN_ExceptionKind_COUNT,
-};
+}
 
 C_LINKAGE_BEGIN
 extern String8 dmn_event_kind_string_table[17];

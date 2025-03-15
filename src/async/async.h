@@ -19,7 +19,7 @@ enum ASYNC_Priority
   ASYNC_Priority_Low,
   ASYNC_Priority_High,
   ASYNC_Priority_COUNT
-};
+}
 
 struct ASYNC_WorkParams
 {
@@ -29,7 +29,7 @@ struct ASYNC_WorkParams
   U64 *completion_counter;
   U64 endt_us;
   ASYNC_Priority priority;
-};
+}
 
 struct ASYNC_Work
 {
@@ -38,7 +38,7 @@ struct ASYNC_Work
   void **output;
   OS_Handle semaphore;
   U64 *completion_counter;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Task-Based Work Types
@@ -47,20 +47,20 @@ struct ASYNC_Task
 {
   OS_Handle semaphore;
   void *output;
-};
+}
 
 struct ASYNC_TaskNode
 {
   ASYNC_TaskNode *next;
   ASYNC_Task *v;
-};
+}
 
 struct ASYNC_TaskList
 {
   ASYNC_TaskNode *first;
   ASYNC_TaskNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
@@ -73,7 +73,7 @@ struct ASYNC_Ring
   U64 ring_read_pos;
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
-};
+}
 
 struct ASYNC_Shared
 {
@@ -88,7 +88,7 @@ struct ASYNC_Shared
   OS_Handle *work_threads;
   U64 work_threads_count;
   U64 work_threads_live_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

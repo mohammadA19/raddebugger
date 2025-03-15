@@ -10,7 +10,7 @@ str8_lit_comp("user"),
 str8_lit_comp("project"),
 str8_lit_comp("command_line"),
 str8_lit_comp("transient"),
-};
+}
 
 RD_CmdKind rd_cfg_src_load_cmd_kind_table[4] =
 {
@@ -18,7 +18,7 @@ RD_CmdKind_OpenUser,
 RD_CmdKind_OpenProject,
 RD_CmdKind_Null,
 RD_CmdKind_Null,
-};
+}
 
 RD_CmdKind rd_cfg_src_write_cmd_kind_table[4] =
 {
@@ -26,7 +26,7 @@ RD_CmdKind_WriteUserData,
 RD_CmdKind_WriteProjectData,
 RD_CmdKind_Null,
 RD_CmdKind_Null,
-};
+}
 
 RD_CmdKind rd_cfg_src_apply_cmd_kind_table[4] =
 {
@@ -34,7 +34,7 @@ RD_CmdKind_ApplyUserData,
 RD_CmdKind_ApplyProjectData,
 RD_CmdKind_Null,
 RD_CmdKind_Null,
-};
+}
 
 String8 d_entity_kind_display_string_table[27] =
 {
@@ -65,7 +65,7 @@ str8_lit_comp("Source"),
 str8_lit_comp("Destination"),
 str8_lit_comp("Conversion Task"),
 str8_lit_comp("Conversion Failure"),
-};
+}
 
 String8 d_entity_kind_name_lower_table[27] =
 {
@@ -96,7 +96,7 @@ str8_lit_comp("source"),
 str8_lit_comp("dest"),
 str8_lit_comp("conversion_task"),
 str8_lit_comp("conversion_fail"),
-};
+}
 
 String8 d_entity_kind_name_lower_plural_table[27] =
 {
@@ -127,7 +127,7 @@ str8_lit_comp("sources"),
 str8_lit_comp("dests"),
 str8_lit_comp("conversion_tasks"),
 str8_lit_comp("conversion_fails"),
-};
+}
 
 String8 d_entity_kind_name_label_table[27] =
 {
@@ -158,7 +158,7 @@ str8_lit_comp("Path"),
 str8_lit_comp("Path"),
 str8_lit_comp("Label"),
 str8_lit_comp("Label"),
-};
+}
 
 RD_EntityKindFlags rd_entity_kind_flags_table[27] =
 {
@@ -189,7 +189,7 @@ RD_EntityKindFlags rd_entity_kind_flags_table[27] =
 (0*RD_EntityKindFlag_CanDelete) | (0*RD_EntityKindFlag_CanFreeze) | (0*RD_EntityKindFlag_CanEdit) | (0*RD_EntityKindFlag_CanRename) | (0*RD_EntityKindFlag_CanEnable) | (0*RD_EntityKindFlag_CanCondition) | (0*RD_EntityKindFlag_CanDuplicate) | (0*RD_EntityKindFlag_NameIsCode) | (0*RD_EntityKindFlag_NameIsPath) | (0*RD_EntityKindFlag_UserDefinedLifetime) | (0*RD_EntityKindFlag_IsSerializedToConfig),
 (0*RD_EntityKindFlag_CanDelete) | (0*RD_EntityKindFlag_CanFreeze) | (0*RD_EntityKindFlag_CanEdit) | (1*RD_EntityKindFlag_CanRename) | (0*RD_EntityKindFlag_CanEnable) | (0*RD_EntityKindFlag_CanCondition) | (0*RD_EntityKindFlag_CanDuplicate) | (0*RD_EntityKindFlag_NameIsCode) | (0*RD_EntityKindFlag_NameIsPath) | (0*RD_EntityKindFlag_UserDefinedLifetime) | (0*RD_EntityKindFlag_IsSerializedToConfig),
 (0*RD_EntityKindFlag_CanDelete) | (0*RD_EntityKindFlag_CanFreeze) | (0*RD_EntityKindFlag_CanEdit) | (1*RD_EntityKindFlag_CanRename) | (0*RD_EntityKindFlag_CanEnable) | (0*RD_EntityKindFlag_CanCondition) | (0*RD_EntityKindFlag_CanDuplicate) | (0*RD_EntityKindFlag_NameIsCode) | (0*RD_EntityKindFlag_NameIsPath) | (0*RD_EntityKindFlag_UserDefinedLifetime) | (0*RD_EntityKindFlag_IsSerializedToConfig),
-};
+}
 
 Rng1U64 rd_reg_slot_range_table[34] =
 {
@@ -227,7 +227,7 @@ Rng1U64 rd_reg_slot_range_table[34] =
 {OffsetOf(RD_Regs, cmd_name), OffsetOf(RD_Regs, cmd_name) + sizeof(String8)},
 {OffsetOf(RD_Regs, params_tree), OffsetOf(RD_Regs, params_tree) + sizeof(MD_Node *)},
 {OffsetOf(RD_Regs, os_event), OffsetOf(RD_Regs, os_event) + sizeof(OS_Event *)},
-};
+}
 
 RD_CmdKindInfo rd_cmd_kind_info_table[213] =
 {
@@ -444,7 +444,7 @@ RD_CmdKindInfo rd_cmd_kind_info_table[213] =
 { str8_lit_comp("cancel_query"), str8_lit_comp("Cancels a query."), str8_lit_comp(""), str8_lit_comp("Cancel Query"), RD_IconKind_Null, (RD_CmdKindFlag_ListInUI*0)|(RD_CmdKindFlag_ListInIPCDocs*0), {(RD_QueryFlag_AllowFiles*0)|(RD_QueryFlag_AllowFolders*0)|(RD_QueryFlag_CodeInput*0)|(RD_QueryFlag_KeepOldInput*0)|(RD_QueryFlag_SelectOldInput*0)|(RD_QueryFlag_Required*0), RD_RegSlot_Null, str8_lit_comp(""), RD_EntityKind_Nil, CTRL_EntityKind_Null}},
 { str8_lit_comp("toggle_dev_menu"), str8_lit_comp("Opens and closes the developer menu."), str8_lit_comp(""), str8_lit_comp("Toggle Developer Menu"), RD_IconKind_Null, (RD_CmdKindFlag_ListInUI*1)|(RD_CmdKindFlag_ListInIPCDocs*1), {(RD_QueryFlag_AllowFiles*0)|(RD_QueryFlag_AllowFolders*0)|(RD_QueryFlag_CodeInput*0)|(RD_QueryFlag_KeepOldInput*0)|(RD_QueryFlag_SelectOldInput*0)|(RD_QueryFlag_Required*0), RD_RegSlot_Null, str8_lit_comp(""), RD_EntityKind_Nil, CTRL_EntityKind_Null}},
 { str8_lit_comp("log_marker"), str8_lit_comp("Logs a marker in the application log, to denote specific points in time within the log."), str8_lit_comp(""), str8_lit_comp("Log Marker"), RD_IconKind_Null, (RD_CmdKindFlag_ListInUI*1)|(RD_CmdKindFlag_ListInIPCDocs*1), {(RD_QueryFlag_AllowFiles*0)|(RD_QueryFlag_AllowFolders*0)|(RD_QueryFlag_CodeInput*0)|(RD_QueryFlag_KeepOldInput*0)|(RD_QueryFlag_SelectOldInput*0)|(RD_QueryFlag_Required*0), RD_RegSlot_Null, str8_lit_comp(""), RD_EntityKind_Nil, CTRL_EntityKind_Null}},
-};
+}
 
 RD_StringBindingPair rd_default_binding_table[110] =
 {
@@ -558,7 +558,7 @@ RD_StringBindingPair rd_default_binding_table[110] =
 {str8_lit_comp("filter"), {OS_Key_Slash, 0 |OS_Modifier_Ctrl  }},
 {str8_lit_comp("run_command"), {OS_Key_F1, 0   }},
 {str8_lit_comp("log_marker"), {OS_Key_M, 0 |OS_Modifier_Ctrl |OS_Modifier_Shift |OS_Modifier_Alt}},
-};
+}
 
 String8 rd_binding_version_remap_old_name_table[8] =
 {
@@ -570,7 +570,7 @@ str8_lit_comp("open_profile"),
 str8_lit_comp("address_breakpoint"),
 str8_lit_comp("function_breakpoint"),
 str8_lit_comp("toggle_breakpoint_cursor"),
-};
+}
 
 String8 rd_binding_version_remap_new_name_table[8] =
 {
@@ -582,7 +582,7 @@ str8_lit_comp("open_project"),
 str8_lit_comp("add_address_breakpoint"),
 str8_lit_comp("add_function_breakpoint"),
 str8_lit_comp("toggle_breakpoint"),
-};
+}
 
 String8 rd_icon_kind_text_table[69] =
 {
@@ -655,7 +655,7 @@ str8_lit_comp("?"),
 str8_lit_comp("4"),
 str8_lit_comp("5"),
 str8_lit_comp("c"),
-};
+}
 
 String8 rd_collection_name_table[18] =
 {
@@ -677,7 +677,7 @@ str8_lit_comp("globals"),
 str8_lit_comp("thread_locals"),
 str8_lit_comp("types"),
 str8_lit_comp("procedures"),
-};
+}
 
 RD_EntityKind rd_collection_entity_kind_table[18] =
 {
@@ -699,7 +699,7 @@ RD_EntityKind_Nil,
 RD_EntityKind_Nil,
 RD_EntityKind_Nil,
 RD_EntityKind_Nil,
-};
+}
 
 CTRL_EntityKind rd_collection_ctrl_entity_kind_table[18] =
 {
@@ -721,7 +721,7 @@ CTRL_EntityKind_Null,
 CTRL_EntityKind_Null,
 CTRL_EntityKind_Null,
 CTRL_EntityKind_Null,
-};
+}
 
 EV_ViewRuleExprExpandInfoHookFunctionType * rd_collection_expr_expand_info_hook_function_table[18] =
 {
@@ -743,7 +743,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(globals),
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(thread_locals),
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(types),
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(procedures),
-};
+}
 
 EV_ViewRuleExprExpandRangeInfoHookFunctionType * rd_collection_expr_expand_range_info_hook_function_table[18] =
 {
@@ -765,7 +765,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(globals),
 EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(thread_locals),
 EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(types),
 EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(procedures),
-};
+}
 
 EV_ViewRuleExprExpandIDFromNumHookFunctionType * rd_collection_expr_expand_id_from_num_hook_function_table[18] =
 {
@@ -787,7 +787,7 @@ EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(globals),
 EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(thread_locals),
 EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(types),
 EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(procedures),
-};
+}
 
 EV_ViewRuleExprExpandIDFromNumHookFunctionType * rd_collection_expr_expand_num_from_id_hook_function_table[18] =
 {
@@ -809,7 +809,7 @@ EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(globals),
 EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(thread_locals),
 EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(types),
 EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(procedures),
-};
+}
 
 RD_ViewRuleInfo rd_view_rule_kind_info_table[35] =
 {
@@ -848,7 +848,7 @@ RD_ViewRuleInfo rd_view_rule_kind_info_table[35] =
 {str8_lit_comp("checkbox"), str8_lit_comp("Visualizes memory as an RGBA color."), str8_lit_comp("Checkbox"), str8_lit_comp(""), RD_IconKind_CheckFilled, (RD_ViewRuleInfoFlag_ShowInDocs*1|RD_ViewRuleInfoFlag_CanFilter*0|RD_ViewRuleInfoFlag_FilterIsCode*0|RD_ViewRuleInfoFlag_TypingAutomaticallyFilters*0|RD_ViewRuleInfoFlag_CanUseInWatchTable*1|RD_ViewRuleInfoFlag_CanFillValueCell*1|RD_ViewRuleInfoFlag_CanExpand*0),  EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil), RD_VIEW_RULE_UI_FUNCTION_NAME(checkbox)},
 {str8_lit_comp("color_rgba"), str8_lit_comp("Visualizes memory as an RGBA color."), str8_lit_comp("Color (RGBA)"), str8_lit_comp(""), RD_IconKind_Palette, (RD_ViewRuleInfoFlag_ShowInDocs*1|RD_ViewRuleInfoFlag_CanFilter*0|RD_ViewRuleInfoFlag_FilterIsCode*0|RD_ViewRuleInfoFlag_TypingAutomaticallyFilters*0|RD_ViewRuleInfoFlag_CanUseInWatchTable*1|RD_ViewRuleInfoFlag_CanFillValueCell*1|RD_ViewRuleInfoFlag_CanExpand*1), EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(color_rgba) , RD_VIEW_RULE_UI_FUNCTION_NAME(color_rgba)},
 {str8_lit_comp("geo3d"), str8_lit_comp("Visualizes memory as 3D geometry."), str8_lit_comp("Geometry (3D)"), str8_lit_comp("x:{'count':expr, 'vtx':expr, 'vtx_size':expr}"), RD_IconKind_Binoculars, (RD_ViewRuleInfoFlag_ShowInDocs*1|RD_ViewRuleInfoFlag_CanFilter*0|RD_ViewRuleInfoFlag_FilterIsCode*0|RD_ViewRuleInfoFlag_TypingAutomaticallyFilters*0|RD_ViewRuleInfoFlag_CanUseInWatchTable*1|RD_ViewRuleInfoFlag_CanFillValueCell*0|RD_ViewRuleInfoFlag_CanExpand*1), EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(geo3d) , RD_VIEW_RULE_UI_FUNCTION_NAME(geo3d)},
-};
+}
 
 RD_IconKind rd_entity_kind_icon_kind_table[27] =
 {
@@ -879,7 +879,7 @@ RD_IconKind_Null,
 RD_IconKind_Null,
 RD_IconKind_Null,
 RD_IconKind_Null,
-};
+}
 
 String8 rd_theme_preset_display_string_table[9] =
 {
@@ -892,7 +892,7 @@ str8_lit_comp("Solarized (Light)"),
 str8_lit_comp("Handmade Hero"),
 str8_lit_comp("4coder"),
 str8_lit_comp("Far Manager"),
-};
+}
 
 String8 rd_theme_preset_code_string_table[9] =
 {
@@ -905,7 +905,7 @@ str8_lit_comp("solarized_light"),
 str8_lit_comp("handmade_hero"),
 str8_lit_comp("four_coder"),
 str8_lit_comp("far_manager"),
-};
+}
 
 String8 rd_theme_color_version_remap_old_name_table[22] =
 {
@@ -931,7 +931,7 @@ str8_lit_comp("highlight_0"),
 str8_lit_comp("success_background"),
 str8_lit_comp("failure_background"),
 str8_lit_comp("action_background"),
-};
+}
 
 String8 rd_theme_color_version_remap_new_name_table[22] =
 {
@@ -957,7 +957,7 @@ str8_lit_comp("focus"),
 str8_lit_comp("positive_pop_button_background"),
 str8_lit_comp("negative_pop_button_background"),
 str8_lit_comp("neutral_pop_button_background"),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__default_dark[76] =
 {
@@ -1037,7 +1037,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x355b6eff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__default_light[76] =
 {
@@ -1117,7 +1117,7 @@ rgba_from_u32_lit_comp(0x49606aff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xff2800ff),
 rgba_from_u32_lit_comp(0xa6becaff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__vs_dark[76] =
 {
@@ -1197,7 +1197,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x355b6eff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__vs_light[76] =
 {
@@ -1277,7 +1277,7 @@ rgba_from_u32_lit_comp(0x49606aff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x6e9db5ff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__solarized_dark[76] =
 {
@@ -1357,7 +1357,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x355b6eff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__solarized_light[76] =
 {
@@ -1437,7 +1437,7 @@ rgba_from_u32_lit_comp(0x49606aff),
 rgba_from_u32_lit_comp(0xb23218ff),
 rgba_from_u32_lit_comp(0xff684bff),
 rgba_from_u32_lit_comp(0xb2d3e3ff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__handmade_hero[76] =
 {
@@ -1517,7 +1517,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x15445cff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__four_coder[76] =
 {
@@ -1597,7 +1597,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xa72911ff),
 rgba_from_u32_lit_comp(0x1b323eff),
-};
+}
 
 Vec4F32 rd_theme_preset_colors__far_manager[76] =
 {
@@ -1677,7 +1677,7 @@ rgba_from_u32_lit_comp(0xb2ccd8ff),
 rgba_from_u32_lit_comp(0xb23219ff),
 rgba_from_u32_lit_comp(0xff2800ff),
 rgba_from_u32_lit_comp(0x933100ff),
-};
+}
 
 Vec4F32* rd_theme_preset_colors_table[9] =
 {
@@ -1690,7 +1690,7 @@ rd_theme_preset_colors__solarized_light,
 rd_theme_preset_colors__handmade_hero,
 rd_theme_preset_colors__four_coder,
 rd_theme_preset_colors__far_manager,
-};
+}
 
 String8 rd_theme_color_display_string_table[76] =
 {
@@ -1770,7 +1770,7 @@ str8_lit_comp("Thread (Unwound)"),
 str8_lit_comp("Thread (Error)"),
 str8_lit_comp("Breakpoint"),
 str8_lit_comp("Cache Line Boundary"),
-};
+}
 
 String8 rd_theme_color_cfg_string_table[76] =
 {
@@ -1850,7 +1850,7 @@ str8_lit_comp("thread_unwound"),
 str8_lit_comp("thread_error"),
 str8_lit_comp("breakpoint"),
 str8_lit_comp("cache_line_boundary"),
-};
+}
 
 String8 rd_setting_code_display_string_table[19] =
 {
@@ -1873,7 +1873,7 @@ str8_lit_comp("Smooth UI Text"),
 str8_lit_comp("Smooth Code Text"),
 str8_lit_comp("Hint UI Text"),
 str8_lit_comp("Hint Code Text"),
-};
+}
 
 String8 rd_setting_code_lower_string_table[19] =
 {
@@ -1896,7 +1896,7 @@ str8_lit_comp("smooth_ui_text"),
 str8_lit_comp("smooth_code_text"),
 str8_lit_comp("hint_ui_text"),
 str8_lit_comp("hint_code_text"),
-};
+}
 
 B8 rd_setting_code_default_is_per_window_table[19] =
 {
@@ -1919,7 +1919,7 @@ B8 rd_setting_code_default_is_per_window_table[19] =
 1,
 1,
 1,
-};
+}
 
 RD_SettingVal rd_setting_code_default_val_table[19] =
 {
@@ -1942,7 +1942,7 @@ RD_SettingVal rd_setting_code_default_val_table[19] =
 {1, 0},
 {1, 1},
 {1, 1},
-};
+}
 
 Rng1S32 rd_setting_code_s32_range_table[19] =
 {
@@ -1965,7 +1965,7 @@ Rng1S32 rd_setting_code_s32_range_table[19] =
 {0, 1},
 {0, 1},
 {0, 1},
-};
+}
 
 C_LINKAGE_END
 

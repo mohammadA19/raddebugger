@@ -33,7 +33,7 @@ struct R_D3D11_Uniforms_Rect
   Vec2F32 translate;
   Vec4F32 xform[3];
   Vec2F32 xform_scale;
-};
+}
 
 struct R_D3D11_Uniforms_BlurPass
 {
@@ -43,19 +43,19 @@ struct R_D3D11_Uniforms_BlurPass
   Vec2F32 viewport_size;
   U32 blur_count;
   U8 _padding0_[204];
-};
+}
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 
 struct R_D3D11_Uniforms_Blur
 {
   R_D3D11_Uniforms_BlurPass passes[Axis2_COUNT];
   Vec4F32 kernel[32];
-};
+}
 
 struct R_D3D11_Uniforms_Mesh
 {
   Mat4x4F32 xform;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main State Types
@@ -69,7 +69,7 @@ struct R_D3D11_Tex2D
   R_ResourceKind kind;
   Vec2S32 size;
   R_Tex2DFormat format;
-};
+}
 
 struct R_D3D11_Buffer
 {
@@ -78,7 +78,7 @@ struct R_D3D11_Buffer
   ID3D11Buffer *buffer;
   R_ResourceKind kind;
   U64 size;
-};
+}
 
 struct R_D3D11_Window
 {
@@ -108,13 +108,13 @@ struct R_D3D11_Window
   
   // rjf: last state
   Vec2S32 last_resolution;
-};
+}
 
 struct R_D3D11_FlushBuffer
 {
   R_D3D11_FlushBuffer *next;
   ID3D11Buffer *buffer;
-};
+}
 
 struct R_D3D11_State
 {
@@ -156,7 +156,7 @@ struct R_D3D11_State
   Arena *buffer_flush_arena;
   R_D3D11_FlushBuffer *first_buffer_to_flush;
   R_D3D11_FlushBuffer *last_buffer_to_flush;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

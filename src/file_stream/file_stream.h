@@ -14,13 +14,13 @@ struct FS_RangeNode
   U64 request_count;
   U64 completion_count;
   U64 last_time_requested_us;
-};
+}
 
 struct FS_RangeSlot
 {
   FS_RangeNode *first;
   FS_RangeNode *last;
-};
+}
 
 struct FS_Node
 {
@@ -34,20 +34,20 @@ struct FS_Node
   // rjf: sub-table of per-requested-file-range info
   U64 slots_count;
   FS_RangeSlot *slots;
-};
+}
 
 struct FS_Slot
 {
   FS_Node *first;
   FS_Node *last;
-};
+}
 
 struct FS_Stripe
 {
   Arena *arena;
   OS_Handle cv;
   OS_Handle rw_mutex;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
@@ -73,7 +73,7 @@ struct FS_Shared
   
   // rjf: change detector threads
   OS_Handle detector_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

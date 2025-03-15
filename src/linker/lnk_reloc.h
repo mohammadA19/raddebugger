@@ -26,7 +26,7 @@ enum
   LNK_Reloc_SECT_IDX,
   LNK_Reloc_VIRT_ALIGN_32,
   LNK_Reloc_VIRT_OFF_32,
-};
+}
 
 srtuct LNK_Reloc
 {
@@ -35,14 +35,14 @@ srtuct LNK_Reloc
   LNK_RelocType      type;
   U64                apply_off;
   struct LNK_Symbol *symbol;
-};
+}
 
 srtuct LNK_RelocList
 {
   U64        count;
   LNK_Reloc *first;
   LNK_Reloc *last;
-};
+}
 
 LNK_Reloc *      lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count);
 LNK_Reloc *      lnk_reloc_list_push(Arena *arena, LNK_RelocList *list);

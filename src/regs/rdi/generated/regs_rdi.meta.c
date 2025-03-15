@@ -115,7 +115,7 @@ case REGS_RegCodeX64_k5:{result = RDI_RegCodeX64_k5;}break;
 case REGS_RegCodeX64_k6:{result = RDI_RegCodeX64_k6;}break;
 case REGS_RegCodeX64_k7:{result = RDI_RegCodeX64_k7;}break;
 }
-};
+}
 case Arch_x86:
 {
 switch(code)
@@ -182,7 +182,7 @@ case REGS_RegCodeX86_ymm5:{result = RDI_RegCodeX86_ymm5;}break;
 case REGS_RegCodeX86_ymm6:{result = RDI_RegCodeX86_ymm6;}break;
 case REGS_RegCodeX86_ymm7:{result = RDI_RegCodeX86_ymm7;}break;
 }
-};
+}
 }
 return result;
 }
@@ -298,7 +298,7 @@ case RDI_RegCodeX64_k5:{result = REGS_RegCodeX64_k5;}break;
 case RDI_RegCodeX64_k6:{result = REGS_RegCodeX64_k6;}break;
 case RDI_RegCodeX64_k7:{result = REGS_RegCodeX64_k7;}break;
 }
-};
+}
 case Arch_x86:
 {
 switch(code)
@@ -365,7 +365,7 @@ case RDI_RegCodeX86_ymm5:{result = REGS_RegCodeX86_ymm5;}break;
 case RDI_RegCodeX86_ymm6:{result = REGS_RegCodeX86_ymm6;}break;
 case RDI_RegCodeX86_ymm7:{result = REGS_RegCodeX86_ymm7;}break;
 }
-};
+}
 }
 return result;
 }

@@ -15,14 +15,14 @@ struct CmdLineOpt
   String8 string;
   String8List value_strings;
   String8 value_string;
-};
+}
 
 struct CmdLineOptList
 {
   U64 count;
   CmdLineOpt *first;
   CmdLineOpt *last;
-};
+}
 
 struct CmdLine
 {
@@ -31,7 +31,7 @@ struct CmdLine
   String8List inputs;
   U64 option_table_size;
   CmdLineOpt **option_table;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing

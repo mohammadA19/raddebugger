@@ -18,7 +18,7 @@ CTRL_EntityKind_EntryPoint,
 CTRL_EntityKind_DebugInfoPath,
 CTRL_EntityKind_PendingThreadName,
 CTRL_EntityKind_COUNT,
-};
+}
 
 enum CTRL_ExceptionCodeKind
 {
@@ -61,7 +61,7 @@ CTRL_ExceptionCodeKind_Win32SanitizerErrorDetected,
 CTRL_ExceptionCodeKind_Win32SanitizerRawAccessViolation,
 CTRL_ExceptionCodeKind_Win32DirectXDebugLayer,
 CTRL_ExceptionCodeKind_COUNT,
-};
+}
 
 C_LINKAGE_BEGIN
 extern String8 ctrl_entity_kind_display_string_table[9];

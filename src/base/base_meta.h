@@ -19,7 +19,7 @@ struct TweakB32Info
   String8 name;
   B32 default_value;
   B32 *value_ptr;
-};
+}
 
 struct TweakF32Info
 {
@@ -27,32 +27,32 @@ struct TweakF32Info
   F32 default_value;
   Rng1F32 value_range;
   F32 *value_ptr;
-};
+}
 
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
   U64 count;
-};
+}
 
 struct TweakF32InfoTable
 {
   TweakF32Info *v;
   U64 count;
-};
+}
 
 struct EmbedInfo
 {
   String8 name;
   String8 *data;
   U128 *hash;
-};
+}
 
 struct EmbedInfoTable
 {
   EmbedInfo *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Type Info Types
@@ -88,7 +88,7 @@ enum TypeKind
   TypeKind_Enum,
   
   TypeKind_COUNT
-};
+}
 
 enum TypeFlags : U32
 {
@@ -96,12 +96,12 @@ enum TypeFlags : U32
   TypeFlag_IsPlainText = (1<<1),
   TypeFlag_IsCodeText  = (1<<2),
   TypeFlag_IsPathText  = (1<<3),
-};
+}
 
 enum MemberFlags : U32
 {
   MemberFlag_DoNotSerialize  = (1<<0),
-};
+}
 
 struct Member
 {
@@ -110,7 +110,7 @@ struct Member
   Type *type;
   U64 value;
   MemberFlags flags;
-};
+}
 
 struct Type
 {
@@ -122,7 +122,7 @@ struct Type
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
   U64 count;
   Member *members;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Type Serialization Parameters
@@ -133,14 +133,14 @@ struct TypeSerializePtrRefInfo
   void *indexify_base;  // can be indexified using this
   void *offsetify_base; // can be offsetified using this
   void *nil_ptr;        // is terminal if matching 0 or this
-};
+}
 
 struct TypeSerializeParams
 {
   U64 *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
   U64 ptr_ref_infos_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Type Name -> Type Info
@@ -204,14 +204,14 @@ read_only static Type *type_kind_type_table[] =
   &type_nil,
   &type_nil,
   &type_nil,
-};
+}
 
 //- rjf: Rng1U64
 struct_members(Rng1U64)
 {
   member_lit_comp(Rng1U64, type(U64), min),
   member_lit_comp(Rng1U64, type(U64), max),
-};
+}
 struct_type(Rng1U64);
 
 //- rjf: String8
@@ -220,7 +220,7 @@ struct_members(String8)
 {
   member_lit_comp(String8, &String8__str_ptr_type, str),
   member_lit_comp(String8, type(U64),              size),
-};
+}
 struct_type(String8);
 
 //- rjf: String8Node
@@ -230,7 +230,7 @@ Member String8Node__members[] =
 {
   {str8_lit_comp("next"),   {0}, &String8Node__ptr_type,     OffsetOf(String8Node, next)},
   {str8_lit_comp("string"), {0}, type(String8),              OffsetOf(String8Node, string)},
-};
+}
 Type String8Node__type =
 {
   TypeKind_Struct,
@@ -241,7 +241,7 @@ Type String8Node__type =
   {0},
   ArrayCount(String8Node__members),
   String8Node__members,
-};
+}
 
 //- rjf: String8List
 Member String8List__members[] =
@@ -250,7 +250,7 @@ Member String8List__members[] =
   {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
   {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
   {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
-};
+}
 Type String8List__type =
 {
   TypeKind_Struct,
@@ -261,7 +261,7 @@ Type String8List__type =
   {0},
   ArrayCount(String8List__members),
   String8List__members,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Type Info Lookups

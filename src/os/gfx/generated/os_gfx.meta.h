@@ -152,7 +152,7 @@ OS_Key_LeftMouseButton,
 OS_Key_MiddleMouseButton,
 OS_Key_RightMouseButton,
 OS_Key_COUNT,
-};
+}
 
 C_LINKAGE_BEGIN
 extern String8 os_g_key_display_string_table[143];

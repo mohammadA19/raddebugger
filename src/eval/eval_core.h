@@ -15,7 +15,7 @@ enum E_MsgKind
   E_MsgKind_ResolutionFailure,
   E_MsgKind_InterpretationError,
   E_MsgKind_COUNT
-};
+}
 
 struct E_Msg
 {
@@ -23,7 +23,7 @@ struct E_Msg
   E_MsgKind kind;
   void *location;
   String8 text;
-};
+}
 
 struct E_MsgList
 {
@@ -31,7 +31,7 @@ struct E_MsgList
   E_Msg *last;
   E_MsgKind max_kind;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Register-Sized Value Type
@@ -49,7 +49,7 @@ union E_Value
   S32 s16;
   F64 f64;
   F32 f32;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Operator Info
@@ -59,7 +59,7 @@ enum E_OpKind
   E_OpKind_Null,
   E_OpKind_UnaryPrefix,
   E_OpKind_Binary,
-};
+}
 
 struct E_OpInfo
 {
@@ -68,7 +68,7 @@ struct E_OpInfo
   String8 pre;
   String8 sep;
   String8 post;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -88,7 +88,7 @@ enum E_SpaceKind : U64
   E_SpaceKind_Null,
   E_SpaceKind_FileSystem,
   E_SpaceKind_FirstUserDefined,
-};
+}
 
 struct E_Space
 {
@@ -102,7 +102,7 @@ struct E_Space
       U128 u128;
     };
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Modes
@@ -112,7 +112,7 @@ enum E_Mode
   E_Mode_Null,
   E_Mode_Value,
   E_Mode_Offset,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Modules
@@ -123,7 +123,7 @@ struct E_Module
   Rng1U64 vaddr_range;
   Arch arch;
   E_Space space;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code

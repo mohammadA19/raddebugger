@@ -12,20 +12,20 @@ srtuct LNK_Export
   U16                 ordinal;
   COFF_ImportType     type;
   B32                 is_private;
-};
+}
 
 srtuct LNK_ExportList
 {
   U64         count;
   LNK_Export *first;
   LNK_Export *last;
-};
+}
 
 srtuct LNK_ExportArray
 {
   U64         count;
   LNK_Export *v;
-};
+}
 
 srtuct LNK_ExportTable
 {
@@ -35,7 +35,7 @@ srtuct LNK_ExportTable
   U64            voff_size;
   U64            max_ordinal;
   B8            *is_ordinal_used;
-};
+}
 
 LNK_ExportTable * lnk_export_table_alloc();
 void              lnk_export_table_release(LNK_ExportTable **exptab_ptr);

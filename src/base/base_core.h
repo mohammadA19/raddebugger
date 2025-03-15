@@ -372,7 +372,7 @@ typedef void VoidProc();
 struct U128
 {
   U64 u64[2];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
@@ -383,7 +383,7 @@ enum Dimension
   Dimension_Y,
   Dimension_Z,
   Dimension_W,
-};
+}
 
 enum Side
 {
@@ -391,7 +391,7 @@ enum Side
   Side_Min,
   Side_Max,
   Side_COUNT,
-};
+}
 #define side_flip(s) ((Side)(!(s)))
 
 enum Axis2
@@ -400,7 +400,7 @@ enum Axis2
   Axis2_X,
   Axis2_Y,
   Axis2_COUNT,
-};
+}
 #define axis2_flip(a) ((Axis2)(!(a)))
 
 enum Corner
@@ -411,7 +411,7 @@ enum Corner
   Corner_10,
   Corner_11,
   Corner_COUNT
-};
+}
 
 enum Dir2
 {
@@ -421,7 +421,7 @@ enum Dir2
   Dir2_Right,
   Dir2_Down,
   Dir2_COUNT
-};
+}
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
 #define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
 
@@ -435,7 +435,7 @@ enum OperatingSystem
   OperatingSystem_Linux,
   OperatingSystem_Mac,
   OperatingSystem_COUNT,
-};
+}
 
 enum ImageType
 {
@@ -444,7 +444,7 @@ enum ImageType
   Image_Elf32,
   Image_Elf64,
   Image_Macho
-};
+}
 
 enum Arch
 {
@@ -454,7 +454,7 @@ enum Arch
   Arch_arm64,
   Arch_arm32,
   Arch_COUNT,
-};
+}
 
 enum Compiler
 {
@@ -463,7 +463,7 @@ enum Compiler
   Compiler_gcc,
   Compiler_clang,
   Compiler_COUNT,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
@@ -472,13 +472,13 @@ struct TxtPt
 {
   S64 line;
   S64 column;
-};
+}
 
 struct TxtRng
 {
   TxtPt min;
   TxtPt max;
-};
+}
 
 ////////////////////////////////
 //~ Globally Unique Ids
@@ -493,7 +493,7 @@ union Guid
     U8  data4[8];
   };
   U8 v[16];
-};
+}
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
 ////////////////////////////////
@@ -503,22 +503,22 @@ struct U16Array
 {
   U64  count;
   U16 *v;
-};
+}
 struct U32Array
 {
   U64  count;
   U32 *v;
-};
+}
 struct U64Array
 {
   U64  count;
   U64 *v;
-};
+}
 struct U128Array
 {
   U64   count;
   U128 *v;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(allen): Constants
@@ -694,7 +694,7 @@ enum WeekDay
   WeekDay_Fri,
   WeekDay_Sat,
   WeekDay_COUNT,
-};
+}
 
 enum Month
 {
@@ -711,7 +711,7 @@ enum Month
   Month_Nov,
   Month_Dec,
   Month_COUNT,
-};
+}
 
 struct DateTime
 {
@@ -732,7 +732,7 @@ struct DateTime
     U32 mon;
   };
   U32 year; // 1 = 1 CE, 0 = 1 BC
-};
+}
 
 typedef U64 DenseTime;
 
@@ -742,7 +742,7 @@ typedef U64 DenseTime;
 enum FilePropertyFlags : U32
 {
   FilePropertyFlag_IsFolder = (1 << 0),
-};
+}
 
 struct FileProperties
 {
@@ -750,7 +750,7 @@ struct FileProperties
   DenseTime modified;
   DenseTime created;
   FilePropertyFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Safe Casts

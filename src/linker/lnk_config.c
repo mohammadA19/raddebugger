@@ -165,7 +165,7 @@ static read_only struct
 
   { LNK_CmdSwitch_Help, "HELP", "", "" },
   { LNK_CmdSwitch_Help, "?",    "", "" },
-};
+}
 
 static read_only struct
 {
@@ -177,7 +177,7 @@ static read_only struct
   { "lib",  LNK_Input_Lib },
   { "rlib", LNK_Input_Lib }, // rust libs
   { "res",  LNK_Input_Res },
-};
+}
 
 static read_only struct
 {
@@ -199,7 +199,7 @@ static read_only struct
   { "none",    LNK_TypeNameHashMode_None    },
   { "lenient", LNK_TypeNameHashMode_Lenient },
   { "full",    LNK_TypeNameHashMode_Full    }
-};
+}
 
 LNK_CmdSwitchType
 lnk_cmd_switch_type_from_string(String8 name)

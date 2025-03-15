@@ -29,7 +29,7 @@ enum P2R_ConvertFlags : U32
   P2R_ConvertFlag_NormalSourcePathNameMap = (1<<17),
   P2R_ConvertFlag_Deterministic           = (1<<18),
   P2R_ConvertFlag_All = 0xffffffff,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
@@ -43,22 +43,22 @@ struct P2R_User2Convert
   String8 output_name;
   P2R_ConvertFlags flags;
   String8List errors;
-};
+}
 
 struct P2R_Convert2Bake
 {
   RDIM_BakeParams bake_params;
-};
+}
 
 struct P2R_Bake2Serialize
 {
   RDIM_BakeResults bake_results;
-};
+}
 
 struct P2R_Serialize2File
 {
   RDIM_SerializedSectionBundle bundle;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Initial PDB Information Extraction & Conversion Preparation Task Types
@@ -71,7 +71,7 @@ struct P2R_TPIHashParseIn
   PDB_TpiParsed *tpi;
   String8 hash_data;
   String8 aux_data;
-};
+}
 
 //- rjf: tpi leaves parsing
 
@@ -79,21 +79,21 @@ struct P2R_TPILeafParseIn
 {
   String8 leaf_data;
   CV_TypeId itype_first;
-};
+}
 
 //- rjf: exe hashing
 
 struct P2R_EXEHashIn
 {
   String8 exe_data;
-};
+}
 
 //- rjf: symbol stream parsing
 
 struct P2R_SymbolStreamParseIn
 {
   String8 data;
-};
+}
 
 //- rjf: c13 line info stream parsing
 
@@ -102,14 +102,14 @@ struct P2R_C13StreamParseIn
   String8 data;
   String8 strtbl;
   COFF_SectionHeaderArray coff_sections;
-};
+}
 
 //- rjf: comp unit parsing
 
 struct P2R_CompUnitParseIn
 {
   String8 data;
-};
+}
 
 //- rjf: comp unit contribution table parsing
 
@@ -117,7 +117,7 @@ struct P2R_CompUnitContributionsParseIn
 {
   String8 data;
   COFF_SectionHeaderArray coff_sections;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Conversion Data Structure & Task Types
@@ -129,7 +129,7 @@ struct P2R_LinkNameNode
   P2R_LinkNameNode *next;
   U64 voff;
   String8 name;
-};
+}
 
 struct P2R_LinkNameMap
 {
@@ -137,7 +137,7 @@ struct P2R_LinkNameMap
   U64 buckets_count;
   U64 bucket_collision_count;
   U64 link_name_count;
-};
+}
 
 //- rjf: normalized file path -> source file map
 
@@ -145,13 +145,13 @@ struct P2R_SrcFileNode
 {
   P2R_SrcFileNode *next;
   RDIM_SrcFile *src_file;
-};
+}
 
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
   U64 slots_count;
-};
+}
 
 //- rjf: unit conversion tasks
 
@@ -163,7 +163,7 @@ struct P2R_UnitConvertIn
   PDB_CompUnitContributionArray *comp_unit_contributions;
   CV_SymParsed **comp_unit_syms;
   CV_C13Parsed **comp_unit_c13s;
-};
+}
 
 struct P2R_UnitConvertOut
 {
@@ -171,7 +171,7 @@ struct P2R_UnitConvertOut
   RDIM_SrcFileChunkList src_files;
   RDIM_LineTableChunkList line_tables;
   RDIM_LineTable **units_first_inline_site_line_tables;
-};
+}
 
 //- rjf: link name map building tasks
 
@@ -180,7 +180,7 @@ struct P2R_LinkNameMapBuildIn
   CV_SymParsed *sym;
   COFF_SectionHeaderArray coff_sections;
   P2R_LinkNameMap *link_name_map;
-};
+}
 
 //- rjf: type forward resolution map build
 
@@ -191,7 +191,7 @@ struct P2R_ITypeFwdMapFillIn
   CV_TypeId itype_first;
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
-};
+}
 
 //- rjf: itype chain build
 
@@ -199,7 +199,7 @@ struct P2R_TypeIdChain
 {
   P2R_TypeIdChain *next;
   CV_TypeId itype;
-};
+}
 
 struct P2R_ITypeChainBuildIn
 {
@@ -208,7 +208,7 @@ struct P2R_ITypeChainBuildIn
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
   P2R_TypeIdChain **itype_chains;
-};
+}
 
 //- rjf: udt conversion
 
@@ -219,7 +219,7 @@ struct P2R_UDTConvertIn
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
   RDIM_Type **itype_type_ptrs;
-};
+}
 
 //- rjf: symbol stream conversion
 
@@ -237,7 +237,7 @@ struct P2R_SymbolStreamConvertIn
   RDIM_Type **itype_type_ptrs;
   P2R_LinkNameMap *link_name_map;
   RDIM_LineTable *first_inline_site_line_table;
-};
+}
 
 struct P2R_SymbolStreamConvertOut
 {
@@ -246,7 +246,7 @@ struct P2R_SymbolStreamConvertOut
   RDIM_SymbolChunkList thread_variables;
   RDIM_ScopeChunkList scopes;
   RDIM_InlineSiteChunkList inline_sites;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Baking Task Types
@@ -256,7 +256,7 @@ struct P2R_SymbolStreamConvertOut
 struct P2R_BakeLineTablesIn
 {
   RDIM_LineTableChunkList *line_tables;
-};
+}
 
 //- rjf: string map baking task types
 
@@ -265,21 +265,21 @@ struct P2R_BakeSrcFilesStringsIn
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose **maps;
   RDIM_SrcFileChunkList *list;
-};
+}
 
 struct P2R_BakeUnitsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose **maps;
   RDIM_UnitChunkList *list;
-};
+}
 
 struct P2R_BakeTypesStringsInNode
 {
   P2R_BakeTypesStringsInNode *next;
   RDIM_Type *v;
   RDI_U64 count;
-};
+}
 
 struct P2R_BakeTypesStringsIn
 {
@@ -287,14 +287,14 @@ struct P2R_BakeTypesStringsIn
   RDIM_BakeStringMapLoose **maps;
   P2R_BakeTypesStringsInNode *first;
   P2R_BakeTypesStringsInNode *last;
-};
+}
 
 struct P2R_BakeUDTsStringsInNode
 {
   P2R_BakeUDTsStringsInNode *next;
   RDIM_UDT *v;
   RDI_U64 count;
-};
+}
 
 struct P2R_BakeUDTsStringsIn
 {
@@ -302,14 +302,14 @@ struct P2R_BakeUDTsStringsIn
   RDIM_BakeStringMapLoose **maps;
   P2R_BakeUDTsStringsInNode *first;
   P2R_BakeUDTsStringsInNode *last;
-};
+}
 
 struct P2R_BakeSymbolsStringsInNode
 {
   P2R_BakeSymbolsStringsInNode *next;
   RDIM_Symbol *v;
   RDI_U64 count;
-};
+}
 
 struct P2R_BakeSymbolsStringsIn
 {
@@ -317,14 +317,14 @@ struct P2R_BakeSymbolsStringsIn
   RDIM_BakeStringMapLoose **maps;
   P2R_BakeSymbolsStringsInNode *first;
   P2R_BakeSymbolsStringsInNode *last;
-};
+}
 
 struct P2R_BakeInlineSiteStringsInNode
 {
   P2R_BakeInlineSiteStringsInNode *next;
   RDIM_InlineSite *v;
   RDI_U64 count;
-};
+}
 
 struct P2R_BakeInlineSiteStringsIn
 {
@@ -332,14 +332,14 @@ struct P2R_BakeInlineSiteStringsIn
   RDIM_BakeStringMapLoose **maps;
   P2R_BakeInlineSiteStringsInNode *first;
   P2R_BakeInlineSiteStringsInNode *last;
-};
+}
 
 struct P2R_BakeScopesStringsInNode
 {
   P2R_BakeScopesStringsInNode *next;
   RDIM_Scope *v;
   RDI_U64 count;
-};
+}
 
 struct P2R_BakeScopesStringsIn
 {
@@ -347,7 +347,7 @@ struct P2R_BakeScopesStringsIn
   RDIM_BakeStringMapLoose **maps;
   P2R_BakeScopesStringsInNode *first;
   P2R_BakeScopesStringsInNode *last;
-};
+}
 
 //- rjf: string map joining task types
 
@@ -358,7 +358,7 @@ struct P2R_JoinBakeStringMapSlotsIn
   U64 src_maps_count;
   RDIM_BakeStringMapLoose *dst_map;
   Rng1U64 slot_idx_range;
-};
+}
 
 //- rjf: string map sorting task types
 
@@ -369,7 +369,7 @@ struct P2R_SortBakeStringMapSlotsIn
   RDIM_BakeStringMapLoose *dst_map;
   U64 slot_idx;
   U64 slot_count;
-};
+}
 
 //- rjf: OLD string map baking types
 
@@ -377,13 +377,13 @@ struct P2R_BuildBakeStringMapIn
 {
   RDIM_BakePathTree *path_tree;
   RDIM_BakeParams *params;
-};
+}
 
 struct P2R_BuildBakeNameMapIn
 {
   RDI_NameMapKind k;
   RDIM_BakeParams *params;
-};
+}
 
 //- rjf: debug info baking task types
 
@@ -392,83 +392,83 @@ struct P2R_BakeUnitsIn
   RDIM_BakeStringMapTight *strings;
   RDIM_BakePathTree *path_tree;
   RDIM_UnitChunkList *units;
-};
+}
 
 struct P2R_BakeUnitVMapIn
 {
   RDIM_UnitChunkList *units;
-};
+}
 
 struct P2R_BakeSrcFilesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_BakePathTree *path_tree;
   RDIM_SrcFileChunkList *src_files;
-};
+}
 
 struct P2R_BakeUDTsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_UDTChunkList *udts;
-};
+}
 
 struct P2R_BakeGlobalVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *global_variables;
-};
+}
 
 struct P2R_BakeGlobalVMapIn
 {
   RDIM_SymbolChunkList *global_variables;
-};
+}
 
 struct P2R_BakeThreadVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *thread_variables;
-};
+}
 
 struct P2R_BakeProceduresIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *procedures;
-};
+}
 
 struct P2R_BakeScopesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_ScopeChunkList *scopes;
-};
+}
 
 struct P2R_BakeScopeVMapIn
 {
   RDIM_ScopeChunkList *scopes;
-};
+}
 
 struct P2R_BakeInlineSitesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_InlineSiteChunkList *inline_sites;
-};
+}
 
 struct P2R_BakeFilePathsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_BakePathTree *path_tree;
-};
+}
 
 struct P2R_BakeStringsIn
 {
   RDIM_BakeStringMapTight *strings;
-};
+}
 
 struct P2R_BakeTypeNodesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_BakeIdxRunMap *idx_runs;
   RDIM_TypeChunkList *types;
-};
+}
 
 struct P2R_BakeNameMapIn
 {
@@ -476,12 +476,12 @@ struct P2R_BakeNameMapIn
   RDIM_BakeIdxRunMap *idx_runs;
   RDIM_BakeNameMap *map;
   RDI_NameMapKind kind;
-};
+}
 
 struct P2R_BakeIdxRunsIn
 {
   RDIM_BakeIdxRunMap *idx_runs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Top-Level State
@@ -491,7 +491,7 @@ struct P2R_State
   Arena *arena;
   U64 work_thread_arenas_count;
   Arena **work_thread_arenas;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

@@ -15,7 +15,7 @@ str8_lit_comp("Module"),
 str8_lit_comp("EntryPoint"),
 str8_lit_comp("DebugInfoPath"),
 str8_lit_comp("PendingThreadName"),
-};
+}
 
 U32 ctrl_exception_code_kind_code_table[38] =
 {
@@ -57,7 +57,7 @@ U32 ctrl_exception_code_kind_code_table[38] =
 0xe073616e,
 0xe0736171,
 0x0000087a,
-};
+}
 
 String8 ctrl_exception_code_kind_display_string_table[38] =
 {
@@ -99,7 +99,7 @@ str8_lit_comp("(Win32) Procedure Not Found"),
 str8_lit_comp("(Win32) Sanitizer Error Detected"),
 str8_lit_comp("(Win32) Sanitizer Raw Access Violation"),
 str8_lit_comp("(Win32) DirectX Debug Layer"),
-};
+}
 
 String8 ctrl_exception_code_kind_lowercase_code_string_table[38] =
 {
@@ -141,7 +141,7 @@ str8_lit_comp("win32_procedure_not_found"),
 str8_lit_comp("win32_sanitizer_error_detected"),
 str8_lit_comp("win32_sanitizer_raw_access_violation"),
 str8_lit_comp("win32_directx_debug_layer"),
-};
+}
 
 B8 ctrl_exception_code_kind_default_enable_table[38] =
 {
@@ -183,7 +183,7 @@ B8 ctrl_exception_code_kind_default_enable_table[38] =
 1,
 0,
 1,
-};
+}
 
 C_LINKAGE_END
 

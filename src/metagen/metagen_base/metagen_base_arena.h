@@ -16,7 +16,7 @@ enum ArenaFlags : U32
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
-};
+}
 
 struct ArenaParams
 {
@@ -24,7 +24,7 @@ struct ArenaParams
   U64 reserve_size;
   U64 commit_size;
   void *optional_backing_buffer;
-};
+}
 
 struct Arena
 {
@@ -37,14 +37,14 @@ struct Arena
   U64 pos;
   U64 cmt;
   U64 res;
-};
+}
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 struct Temp
 {
   Arena *arena;
   U64 pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Arena Functions

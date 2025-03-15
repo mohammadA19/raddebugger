@@ -33,7 +33,7 @@ enum DWARF_UnitType{
 #define X(N,C) DWARF_UnitType_##N = C,
   DWARF_UnitTypeXList(X)
 #undef X
-};
+}
 
 
 // tag  X(name, code)
@@ -114,7 +114,7 @@ enum DWARF_Tag{
 #define X(N,C) DWARF_Tag_##N = C,
   DWARF_TagXList(X)
 #undef X
-};
+}
 
 
 // attribute classes:  X(name,code)
@@ -153,7 +153,7 @@ enum DWARF_AttributeClassFlags : U32{
    DWARF_AttributeClassFlag_stroffsetsptr |
    0),
   
-};
+}
 
 
 // attribute name:  X(name, code, classflag1, classflag2, classflag3, classflag4)
@@ -285,7 +285,7 @@ enum DWARF_AttributeName{
 #define X(N,C,f1,f2,f3,f4) DWARF_AttributeName_##N = C,
   DWARF_AttributeNameXList(X)
 #undef X
-};
+}
 
 
 // attribute forms:  X(name, code, classflag)
@@ -339,7 +339,7 @@ enum DWARF_AttributeForm{
 #define X(N,C,f) DWARF_AttributeForm_##N = C,
   DWARF_AttributeFormXList(X)
 #undef X
-};
+}
 
 
 // ops:  X(name, code, opnum)
@@ -428,7 +428,7 @@ enum DWARF_Op{
 #define X(N,C,k) DWARF_Op_##N = C,
   DWARF_OpXList(X)
 #undef X
-};
+}
 
 
 // location list entry:  X(name, code)
@@ -447,7 +447,7 @@ enum DWARF_LocationListEntry{
 #define X(N,C) DWARF_LocationListEntry_##N = C,
   DWARF_LocationListEntryXList(X)
 #undef X
-};
+}
 
 
 // base type:  X(name, code)
@@ -477,7 +477,7 @@ enum DWARF_BaseType{
 #define X(N,C) DWARF_BaseType_##N = C,
   DWARF_BaseTypeXList(X)
 #undef X
-};
+}
 
 
 // decimal sign:  X(name, code)
@@ -492,7 +492,7 @@ enum DWARF_DecimalSign{
 #define X(N,C) DWARF_DecimalSign_##N = C,
   DWARF_DecimalSignXList(X)
 #undef X
-};
+}
 
 
 // endianity:  X(name, code)
@@ -507,7 +507,7 @@ enum DWARF_Endianity{
 #define X(N,C) DWARF_Endianity_##N = C,
   DWARF_EndianityXList(X)
 #undef X
-};
+}
 
 
 // access:  X(name, code)
@@ -520,7 +520,7 @@ enum DWARF_Access{
 #define X(N,C) DWARF_Access_##N = C,
   DWARF_AccessXList(X)
 #undef X
-};
+}
 
 
 // visibility:  X(name, code)
@@ -533,7 +533,7 @@ enum DWARF_Visibility{
 #define X(N,C) DWARF_Visibility_##N = C,
   DWARF_VisibilityXList(X)
 #undef X
-};
+}
 
 
 // virtuality:  X(name, code)
@@ -546,7 +546,7 @@ enum DWARF_Virtuality{
 #define X(N,C) DWARF_Virtuality_##N = C,
   DWARF_VirtualityXList(X)
 #undef X
-};
+}
 
 
 // language:  X(name, code, deflowerbound)
@@ -595,7 +595,7 @@ enum DWARF_Language{
 #define X(N,C,k) DWARF_Language_##N = C,
   DWARF_LanguageXList(X)
 #undef X
-};
+}
 
 
 // identifier case:  X(name, code)
@@ -609,7 +609,7 @@ enum DWARF_IdentifierCase{
 #define X(N,C) DWARF_IdentifierCase_##N = C,
   DWARF_IdentifierCaseXList(X)
 #undef X
-};
+}
 
 
 // calling convention:  X(name, code)
@@ -626,7 +626,7 @@ enum DWARF_CallingConvention{
 #define X(N,C) DWARF_CallingConvention_##N = C,
   DWARF_CallingConventionXList(X)
 #undef X
-};
+}
 
 
 // inline:  X(name, code)
@@ -640,7 +640,7 @@ enum DWARF_Inline{
 #define X(N,C) DWARF_Inline_##N = C,
   DWARF_InlineXList(X)
 #undef X
-};
+}
 
 
 // array ordering:  X(name, code)
@@ -652,7 +652,7 @@ enum DWARF_ArrayOrdering{
 #define X(N,C) DWARF_ArrayOrdering_##N = C,
   DWARF_ArrayOrderingXList(X)
 #undef X
-};
+}
 
 
 // discriminant:  X(name, code)
@@ -664,7 +664,7 @@ enum DWARF_Discriminant{
 #define X(N,C) DWARF_Discriminant_##N = C,
   DWARF_DiscriminantXList(X)
 #undef X
-};
+}
 
 
 // name index:  X(name, code)
@@ -681,7 +681,7 @@ enum DWARF_NameIndex{
 #define X(N,C) DWARF_NameIndex_##N = C,
   DWARF_NameIndexXList(X)
 #undef X
-};
+}
 
 
 // defaulted:  X(name, code)
@@ -694,7 +694,7 @@ enum DWARF_Defaulted{
 #define X(N,C) DWARF_Defaulted_##N = C,
   DWARF_DefaultedXList(X)
 #undef X
-};
+}
 
 // call frame instruction:  X(N, hi2bits, matchlow, low6bits, operand1, operand2)
 //  "CFA"
@@ -750,7 +750,7 @@ enum DWARF_LineStdOp{
 #define X(N,C) DWARF_LineStdOp_##N = C,
   DWARF_LineStdOpXList(X)
 #undef X
-};
+}
 
 //  X(name, code) (V4 & V5)
 #define DWARF_LineExtOpXList(X) \
@@ -765,7 +765,7 @@ enum DWARF_LineExtOp{
 #define X(N,C) DWARF_LineExtOp_##N = C,
   DWARF_LineExtOpXList(X)
 #undef X
-};
+}
 
 //  X(name, code) (V5)
 #define DWARF_LineEntryFormatXList(X) \
@@ -781,7 +781,7 @@ enum DWARF_LineEntryFormat{
 #define X(N,C) DWARF_LineEntryFormat_##N = C,
   DWARF_LineEntryFormatXList(X)
 #undef X
-};
+}
 
 ////////////////////////////////
 //~ Dwarf Parser Codes and Data Tables
@@ -819,18 +819,18 @@ enum DWARF_SectionCode{
   DWARF_SectionNameXList(X,0,0)
 #undef X
   DWARF_SectionCode_COUNT
-};
+}
 
 srtuct DWARF_SectionNameRow{
   String8 name[DWARF_SECTION_NAME_VARIANT_COUNT];
-};
+}
 
 read_only static DWARF_SectionNameRow dwarf_section_name_table[] = {
 #define X(c,vf,n0,n1,n2) \
 { { str8_lit_comp(n0), str8_lit_comp(n1), str8_lit_comp(n2) } },
   DWARF_SectionNameXList(X,0,0)
 #undef X
-};
+}
 
 
 #pragma pack(pop)
@@ -844,7 +844,7 @@ srtuct DWARF_Parsed{
   U32 debug_section_idx[DWARF_SectionCode_COUNT];
   String8 debug_section_name[DWARF_SectionCode_COUNT];
   String8 debug_data[DWARF_SectionCode_COUNT];
-};
+}
 
 
 // form decoding
@@ -865,13 +865,13 @@ srtuct DWARF_FormDecodeRules{
     // for alignment and padding to 8
     U64 x;
   };
-};
+}
 
 srtuct DWARF_FormDecoded{
   U64 val;
   U8 *dataptr;
   B32 error;
-};
+}
 
 
 // index section: .debug_cu_index .debug_tu_index
@@ -881,7 +881,7 @@ srtuct DWARF_FormDecoded{
 
 srtuct DWARF_IndexParsed{
   U32 dummy;
-};
+}
 
 
 // supplementary section: .debug_sup
@@ -891,7 +891,7 @@ srtuct DWARF_IndexParsed{
 
 srtuct DWARF_SupParsed{
   U32 dummy;
-};
+}
 
 
 // info section: .debug_info
@@ -900,7 +900,7 @@ srtuct DWARF_SupParsed{
 srtuct DWARF_InfoAttribVal{
   U64 val;
   U8 *dataptr;
-};
+}
 
 srtuct DWARF_InfoEntry{
   struct DWARF_InfoEntry *next_sibling;
@@ -912,7 +912,7 @@ srtuct DWARF_InfoEntry{
   U64 info_offset;
   struct DWARF_AbbrevDecl *abbrev_decl;
   DWARF_InfoAttribVal *attrib_vals;
-};
+}
 
 #if 0
 srtuct DWARF_InfoUnit{
@@ -935,14 +935,14 @@ srtuct DWARF_InfoUnit{
   // info entries
   DWARF_InfoEntry *entry_root;
   U64 entry_count;
-};
+}
 #endif
 
 #if 0
 srtuct DWARF_InfoParams{
   U64 unit_idx_min;
   U64 unit_idx_max;
-};
+}
 #endif
 
 srtuct DWARF_InfoUnit{
@@ -967,13 +967,13 @@ srtuct DWARF_InfoUnit{
       U64 type_offset;
     };
   };
-};
+}
 
 srtuct DWARF_InfoParsed{
   DWARF_InfoUnit *unit_first;
   DWARF_InfoUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // abbreviations section: .debug_abbrev
@@ -982,7 +982,7 @@ srtuct DWARF_InfoParsed{
 srtuct DWARF_AbbrevAttribSpec{
   DWARF_AttributeName name;
   DWARF_AttributeForm form;
-};
+}
 
 srtuct DWARF_AbbrevDecl{
   struct DWARF_AbbrevDecl *next;
@@ -993,7 +993,7 @@ srtuct DWARF_AbbrevDecl{
   U16 attrib_count;
   DWARF_AbbrevAttribSpec *attrib_specs;
   S64 *implicit_const;
-};
+}
 
 srtuct DWARF_AbbrevUnit{
   struct DWARF_AbbrevUnit *next;
@@ -1001,13 +1001,13 @@ srtuct DWARF_AbbrevUnit{
   DWARF_AbbrevDecl *first;
   DWARF_AbbrevDecl *last;
   U64 count;
-};
+}
 
 #if 0
 srtuct DWARF_AbbrevParams{
   U64 unit_idx_min;
   U64 unit_idx_max;
-};
+}
 #endif
 
 srtuct DWARF_AbbrevParsed{
@@ -1015,7 +1015,7 @@ srtuct DWARF_AbbrevParsed{
   DWARF_AbbrevUnit *unit_last;
   U64 unit_count;
   B32 decoding_error;
-};
+}
 
 
 // name lookup tables (V4): .debug_pubnames .debug_pubtypes
@@ -1032,13 +1032,13 @@ srtuct DWARF_PubNamesUnit{
   U8  version;
   U64 info_off;
   U64 info_length;
-};
+}
 
 srtuct DWARF_PubNamesParsed{
   DWARF_PubNamesUnit *unit_first;
   DWARF_PubNamesUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // name lookup tables (V5): .debug_names
@@ -1060,13 +1060,13 @@ srtuct DWARF_NamesUnit{
   U32 abbrev_table_size;
   String8 augmentation_string;
   
-};
+}
 
 srtuct DWARF_NamesParsed{
   DWARF_NamesUnit *unit_first;
   DWARF_NamesUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // address range table: .debug_aranges
@@ -1084,13 +1084,13 @@ srtuct DWARF_ArangesUnit{
   U8 segment_selector_size;
   U8 offset_size;
   U64 info_off;
-};
+}
 
 srtuct DWARF_ArangesParsed{
   DWARF_ArangesUnit *unit_first;
   DWARF_ArangesUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // line number information: .debug_line
@@ -1102,18 +1102,18 @@ srtuct DWARF_V4LineFileNamesEntry{
   U64 include_directory_idx;
   U64 last_modified_time;
   U64 file_size;
-};
+}
 
 srtuct DWARF_V4LineFileNamesList{
   DWARF_V4LineFileNamesEntry *first;
   DWARF_V4LineFileNamesEntry *last;
   U64 count;
-};
+}
 
 srtuct DWARF_V5LinePathEntryFormat{
   U32 content_type; /* DWARF_LineEntryFormat */
   U32 form;         /* DWARF_AttributeForm */
-};
+}
 
 srtuct DWARF_V5Directory{
   String8 path_str;
@@ -1123,7 +1123,7 @@ srtuct DWARF_V5Directory{
   U64 timestamp;
   U64 size;
   U8 md5_checksum[16];
-};
+}
 
 srtuct DWARF_LineUnit{
   struct DWARF_LineUnit *next;
@@ -1134,13 +1134,13 @@ srtuct DWARF_LineUnit{
   
   U8 version;
   
-};
+}
 
 srtuct DWARF_LineParsed{
   DWARF_LineUnit *unit_first;
   DWARF_LineUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // macro information (V4): .debug_macinfo
@@ -1150,7 +1150,7 @@ srtuct DWARF_LineParsed{
 
 srtuct DWARF_MacInfoParsed{
   U32 dummy;
-};
+}
 
 
 // macro information (V5): .debug_macro
@@ -1160,7 +1160,7 @@ srtuct DWARF_MacInfoParsed{
 
 srtuct DWARF_MacroParsed{
   U32 dummy;
-};
+}
 
 
 // call frame information: .debug_frame
@@ -1170,7 +1170,7 @@ srtuct DWARF_MacroParsed{
 
 srtuct DWARF_FrameParsed{
   U32 dummy;
-};
+}
 
 
 // range lists (V4): .debug_ranges
@@ -1180,7 +1180,7 @@ srtuct DWARF_FrameParsed{
 
 srtuct DWARF_RangesParsed{
   U32 dummy;
-};
+}
 
 
 // string offsets table: .debug_str_offsets
@@ -1190,7 +1190,7 @@ srtuct DWARF_RangesParsed{
 
 srtuct DWARF_StrOffsetsParsed{
   U32 dummy;
-};
+}
 
 
 // address table: .debug_addr
@@ -1207,13 +1207,13 @@ srtuct DWARF_AddrUnit{
   U8 dwarf_version;
   U8 address_size;
   U8 segment_selector_size;
-};
+}
 
 srtuct DWARF_AddrParsed{
   DWARF_AddrUnit *unit_first;
   DWARF_AddrUnit *unit_last;
   U64 unit_count;
-};
+}
 
 
 // range lists (V5): .debug_rnglists
@@ -1223,7 +1223,7 @@ srtuct DWARF_AddrParsed{
 
 srtuct DWARF_RngListsParsed{
   U32 dummy;
-};
+}
 
 
 // location lists: .debug_loclists
@@ -1233,7 +1233,7 @@ srtuct DWARF_RngListsParsed{
 
 srtuct DWARF_LocListsParsed{
   U32 dummy;
-};
+}
 
 
 ////////////////////////////////
@@ -1283,7 +1283,7 @@ enum UNW_DW_EhPtrEnc : U8{
   UNW_DW_EhPtrEnc_SDATA2  = 0x0A, // Signed 16-bit value
   UNW_DW_EhPtrEnc_SDATA4  = 0x0B, // Signed 32-bit value
   UNW_DW_EhPtrEnc_SDATA8  = 0x0C, // Signed 64-bit value
-};
+}
 enum{
   UNW_DW_EhPtrEnc_MODIF_MASK = 0x70,
   UNW_DW_EhPtrEnc_PCREL   = 0x10, // Value is relative to the current program counter.
@@ -1291,18 +1291,18 @@ enum{
   UNW_DW_EhPtrEnc_DATAREL = 0x30, // Value is relative to the .got or .eh_frame_hdr section.
   UNW_DW_EhPtrEnc_FUNCREL = 0x40, // Value is relative to the function.
   UNW_DW_EhPtrEnc_ALIGNED = 0x50, // Value is aligned to an address unit sized boundary.
-};
+}
 enum{
   UNW_DW_EhPtrEnc_INDIRECT = 0x80, // This flag indicates that value is stored in virtual memory.
   UNW_DW_EhPtrEnc_OMIT     = 0xFF,
-};
+}
 
 srtuct UNW_DW_EhPtrCtx{
   U64 raw_base_vaddr; // address where pointer is being read
   U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
   U64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
   U64 func_vaddr;     // base address of function where IP is located
-};
+}
 
 // CIE: Common Information Entry
 srtuct UNW_DW_CIEUnpacked{
@@ -1322,13 +1322,13 @@ srtuct UNW_DW_CIEUnpacked{
   
   U64 cfi_range_min;
   U64 cfi_range_max;
-};
+}
 
 srtuct UNW_DW_CIEUnpackedNode{
   struct UNW_DW_CIEUnpackedNode *next;
   UNW_DW_CIEUnpacked cie;
   U64 offset;
-};
+}
 
 // FDE: Frame Description Entry
 srtuct UNW_DW_FDEUnpacked{
@@ -1338,19 +1338,19 @@ srtuct UNW_DW_FDEUnpacked{
   
   U64 cfi_range_min;
   U64 cfi_range_max;
-};
+}
 
 // CFI: Call Frame Information
 srtuct UNW_DW_CFIRecords{
   B32 valid;
   UNW_DW_CIEUnpacked cie;
   UNW_DW_FDEUnpacked fde;
-};
+}
 
 enum UNW_DW_CFICFARule{
   UNW_DW_CFICFARule_REGOFF,
   UNW_DW_CFICFARule_EXPR,
-};
+}
 
 srtuct UNW_DW_CFICFACell{
   UNW_DW_CFICFARule rule;
@@ -1362,7 +1362,7 @@ srtuct UNW_DW_CFICFACell{
     U64 expr_min;
     U64 expr_max;
   };
-};
+}
 
 enum UNW_DW_CFIRegisterRule{
   UNW_DW_CFIRegisterRule_SAME_VALUE,
@@ -1372,7 +1372,7 @@ enum UNW_DW_CFIRegisterRule{
   UNW_DW_CFIRegisterRule_REGISTER,
   UNW_DW_CFIRegisterRule_EXPRESSION,
   UNW_DW_CFIRegisterRule_VAL_EXPRESSION,
-};
+}
 
 srtuct UNW_DW_CFICell{
   UNW_DW_CFIRegisterRule rule;
@@ -1383,13 +1383,13 @@ srtuct UNW_DW_CFICell{
       U64 expr_max;
     };
   };
-};
+}
 
 srtuct UNW_DW_CFIRow{
   struct UNW_DW_CFIRow *next;
   UNW_DW_CFICell *cells;
   UNW_DW_CFICFACell cfa_cell;
-};
+}
 
 srtuct UNW_DW_CFIMachine{
   U64 cells_per_row;
@@ -1397,7 +1397,7 @@ srtuct UNW_DW_CFIMachine{
   UNW_DW_EhPtrCtx *ptr_ctx;
   UNW_DW_CFIRow *initial_row;
   U64 fde_ip;
-};
+}
 
 enum UNW_DW_CFADecode : U8{
   UNW_DW_CFADecode_NOP     = 0x0,
@@ -1405,7 +1405,7 @@ enum UNW_DW_CFADecode : U8{
   UNW_DW_CFADecode_ADDRESS = 0x9,
   UNW_DW_CFADecode_ULEB128 = 0xA,
   UNW_DW_CFADecode_SLEB128 = 0xB,
-};
+}
 
 enum UNW_DW_CFAControlBits : U16{
   UNW_DW_CFAControlBits_DEC1_MASK = 0x00F,
@@ -1414,7 +1414,7 @@ enum UNW_DW_CFAControlBits : U16{
   UNW_DW_CFAControlBits_IS_REG_1  = 0x200,
   UNW_DW_CFAControlBits_IS_REG_2  = 0x400,
   UNW_DW_CFAControlBits_NEW_ROW   = 0x800,
-};
+}
 #endif
 
 ////////////////////////////////

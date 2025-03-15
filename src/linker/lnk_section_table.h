@@ -33,32 +33,32 @@ srtuct LNK_Section
   U64             virt_off;
   U64             file_off;
   LNK_ChunkLayout layout;
-};
+}
 
 srtuct LNK_SectionNode
 {
   struct LNK_SectionNode *next;
   LNK_Section             data;
-};
+}
 
 srtuct LNK_SectionList
 {
   U64              count;
   LNK_SectionNode *first;
   LNK_SectionNode *last;
-};
+}
 
 srtuct LNK_SectionArray
 {
   U64          count;
   LNK_Section *v;
-};
+}
 
 srtuct LNK_SectionPtrArray
 {
   U64           count;
   LNK_Section **v;
-};
+}
 
 srtuct LNK_SectionTable
 {
@@ -71,7 +71,7 @@ srtuct LNK_SectionTable
   LNK_SectionList  merge_list;
   LNK_SectionList  empties_list;
   LNK_SectionNode *null_sect;
-};
+}
 
 ////////////////////////////////
 
@@ -80,7 +80,7 @@ srtuct
   COFF_MachineType  machine;
   Rng1U64          *range_arr;
   LNK_Section      **sect_arr;
-};
+}
 
 ////////////////////////////////
 

@@ -11,7 +11,7 @@ struct RDI_FilePathBundle
 {
   RDI_FilePathNode *file_paths;
   U64 file_path_count;
-};
+}
 
 struct RDI_UDTMemberBundle
 {
@@ -19,7 +19,7 @@ struct RDI_UDTMemberBundle
   RDI_EnumMember *enum_members;
   U32 member_count;
   U32 enum_member_count;
-};
+}
 
 struct RDI_ScopeBundle
 {
@@ -33,7 +33,7 @@ struct RDI_ScopeBundle
   U32 local_count;
   U32 location_block_count;
   U32 location_data_size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: RDI Enum -> String Functions

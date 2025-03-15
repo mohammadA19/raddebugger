@@ -42,7 +42,7 @@ srtuct Basics{
   char j;
   
   int z;
-};
+}
 
 srtuct Basics_Stdint{
   double   x1;
@@ -55,12 +55,12 @@ srtuct Basics_Stdint{
   int16_t  x8;
   uint8_t  x9;
   int8_t   x0;
-};
+}
 
 srtuct Pair{
   int i;
   float f;
-};
+}
 
 void
 c_versions_of_same_types(){
@@ -88,13 +88,13 @@ struct TypeWithBitfield
   int x : 32;
   int y : 4;
   int z : 10;
-};
+}
 
 struct BitfieldType64
 {
   uint64_t size    : 63;
   uint64_t is_free : 1;
-};
+}
 
 void
 c_type_with_bitfield_usage()

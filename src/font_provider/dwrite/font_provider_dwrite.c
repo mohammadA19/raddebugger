@@ -11,7 +11,7 @@ static FP_DWrite_FontFileLoaderVTable fp_dwrite_static_data_font_file_loader__vt
   fp_dwrite_iunknown_noop__add_ref,
   fp_dwrite_iunknown_noop__release,
   fp_dwrite_static_font_file_loader__stream_from_key,
-};
+}
 static FP_DWrite_FontFileLoader fp_dwrite_static_data_font_file_loader = {&fp_dwrite_static_data_font_file_loader__vtable};
 static FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vtable =
 {
@@ -22,7 +22,7 @@ static FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vt
   fp_dwrite_static_font_file_stream__release_file_fragment,
   fp_dwrite_static_font_file_stream__get_file_size,
   fp_dwrite_static_font_file_stream__get_last_write_time,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Helpers

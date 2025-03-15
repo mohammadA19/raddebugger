@@ -206,7 +206,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
-};
+}
 
 REGS_UsageKind regs_g_alias_code_x64_usage_kind_table[96] =
 {
@@ -306,7 +306,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
-};
+}
 
 String8 regs_g_reg_code_x64_string_table[101] =
 {
@@ -411,7 +411,7 @@ str8_lit_comp("k4"),
 str8_lit_comp("k5"),
 str8_lit_comp("k6"),
 str8_lit_comp("k7"),
-};
+}
 
 String8 regs_g_alias_code_x64_string_table[96] =
 {
@@ -511,7 +511,7 @@ str8_lit_comp("mm4"),
 str8_lit_comp("mm5"),
 str8_lit_comp("mm6"),
 str8_lit_comp("mm7"),
-};
+}
 
 REGS_Rng regs_g_reg_code_x64_rng_table[101] =
 {
@@ -616,7 +616,7 @@ REGS_Rng regs_g_reg_code_x64_rng_table[101] =
 {(U16)OffsetOf(REGS_RegBlockX64, k5), 8},
 {(U16)OffsetOf(REGS_RegBlockX64, k6), 8},
 {(U16)OffsetOf(REGS_RegBlockX64, k7), 8},
-};
+}
 
 REGS_Slice regs_g_alias_code_x64_slice_table[96] =
 {
@@ -716,7 +716,7 @@ REGS_Slice regs_g_alias_code_x64_slice_table[96] =
 {REGS_RegCodeX64_fpr5, 0, 8},
 {REGS_RegCodeX64_fpr6, 0, 8},
 {REGS_RegCodeX64_fpr7, 0, 8},
-};
+}
 
 REGS_UsageKind regs_g_reg_code_x86_usage_kind_table[61] =
 {
@@ -781,7 +781,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
-};
+}
 
 REGS_UsageKind regs_g_alias_code_x86_usage_kind_table[36] =
 {
@@ -821,7 +821,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
-};
+}
 
 String8 regs_g_reg_code_x86_string_table[61] =
 {
@@ -886,7 +886,7 @@ str8_lit_comp("ymm4"),
 str8_lit_comp("ymm5"),
 str8_lit_comp("ymm6"),
 str8_lit_comp("ymm7"),
-};
+}
 
 String8 regs_g_alias_code_x86_string_table[36] =
 {
@@ -926,7 +926,7 @@ str8_lit_comp("mm4"),
 str8_lit_comp("mm5"),
 str8_lit_comp("mm6"),
 str8_lit_comp("mm7"),
-};
+}
 
 REGS_Rng regs_g_reg_code_x86_rng_table[61] =
 {
@@ -991,7 +991,7 @@ REGS_Rng regs_g_reg_code_x86_rng_table[61] =
 {(U16)OffsetOf(REGS_RegBlockX86, ymm5), 32},
 {(U16)OffsetOf(REGS_RegBlockX86, ymm6), 32},
 {(U16)OffsetOf(REGS_RegBlockX86, ymm7), 32},
-};
+}
 
 REGS_Slice regs_g_alias_code_x86_slice_table[36] =
 {
@@ -1031,7 +1031,7 @@ REGS_Slice regs_g_alias_code_x86_slice_table[36] =
 {REGS_RegCodeX86_fpr5, 0, 8},
 {REGS_RegCodeX86_fpr6, 0, 8},
 {REGS_RegCodeX86_fpr7, 0, 8},
-};
+}
 
 C_LINKAGE_END
 

@@ -17,19 +17,19 @@ struct String8
 {
   U8 *str;
   U64 size;
-};
+}
 
 struct String16
 {
   U16 *str;
   U64 size;
-};
+}
 
 struct String32
 {
   U32 *str;
   U64 size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String List & Array Types
@@ -38,13 +38,13 @@ struct String8Node
 {
   String8Node *next;
   String8 string;
-};
+}
 
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
-};
+}
 
 struct String8List
 {
@@ -52,13 +52,13 @@ struct String8List
   String8Node *last;
   U64 node_count;
   U64 total_size;
-};
+}
 
 struct String8Array
 {
   String8 *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
@@ -68,12 +68,12 @@ enum StringMatchFlags : U32
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
-};
+}
 
 enum StringSplitFlags : U32
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
-};
+}
 
 enum PathStyle
 {
@@ -89,14 +89,14 @@ enum PathStyle
 #else
 # error "absolute path style is undefined for this OS"
 #endif
-};
+}
 
 struct StringJoin
 {
   String8 pre;
   String8 sep;
   String8 post;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Pair Types
@@ -105,7 +105,7 @@ struct String8TxtPtPair
 {
   String8 string;
   TxtPt pt;
-};
+}
 
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
@@ -114,7 +114,7 @@ struct UnicodeDecode
 {
   U32 inc;
   U32 codepoint;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
@@ -123,7 +123,7 @@ struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
-};
+}
 
 struct FuzzyMatchRangeList
 {
@@ -132,7 +132,7 @@ struct FuzzyMatchRangeList
   U64 count;
   U64 needle_part_count;
   U64 total_dim;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Character Classification & Conversion Functions

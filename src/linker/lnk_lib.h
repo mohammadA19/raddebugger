@@ -13,26 +13,26 @@ srtuct LNK_Lib
   String8List      symbol_name_list;
   String8          long_names;
   U64              input_idx;
-};
+}
 
 srtuct LNK_LibNode
 {
   struct LNK_LibNode *next;
   LNK_Lib             data;
-};
+}
 
 srtuct LNK_LibNodeArray
 {
   U64          count;
   LNK_LibNode *v;
-};
+}
 
 srtuct LNK_LibList
 {
   U64                 count;
   struct LNK_LibNode *first;
   struct LNK_LibNode *last;
-};
+}
 
 ////////////////////////////////
 
@@ -40,46 +40,46 @@ srtuct LNK_LibMember
 {
   String8 name;
   String8 data;
-};
+}
 
 srtuct LNK_LibMemberNode
 {
   struct LNK_LibMemberNode *next;
   LNK_LibMember             data;
-};
+}
 
 srtuct LNK_LibMemberList
 {
   U64                count;
   LNK_LibMemberNode *first;
   LNK_LibMemberNode *last;
-};
+}
 
 srtuct LNK_LibSymbol
 {
   String8 name;
   U64     member_idx;
-};
+}
 
 srtuct LNK_LibSymbolNode
 {
   struct LNK_LibSymbolNode *next;
   LNK_LibSymbol             data;
-};
+}
 
 srtuct LNK_LibSymbolList
 {
   U64                count;
   LNK_LibSymbolNode *first;
   LNK_LibSymbolNode *last;
-};
+}
 
 srtuct LNK_LibWriter
 {
   Arena            *arena;
   LNK_LibMemberList member_list;
   LNK_LibSymbolList symbol_list;
-};
+}
 
 srtuct LNK_LibBuild
 {
@@ -87,7 +87,7 @@ srtuct LNK_LibBuild
   U64            member_count;
   LNK_LibSymbol *symbol_array;
   LNK_LibMember *member_array;
-};
+}
 
 ////////////////////////////////
 
@@ -97,7 +97,7 @@ srtuct
   String8         *data_arr;
   String8         *path_arr;
   U64              base_input_idx;
-};
+}
 
 ////////////////////////////////
 

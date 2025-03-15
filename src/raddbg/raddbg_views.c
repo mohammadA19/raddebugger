@@ -3597,26 +3597,26 @@ struct RD_CmdListerItem
   FuzzyMatchRangeList name_match_ranges;
   FuzzyMatchRangeList desc_match_ranges;
   FuzzyMatchRangeList tags_match_ranges;
-};
+}
 
 struct RD_CmdListerItemNode
 {
   RD_CmdListerItemNode *next;
   RD_CmdListerItem item;
-};
+}
 
 struct RD_CmdListerItemList
 {
   RD_CmdListerItemNode *first;
   RD_CmdListerItemNode *last;
   U64 count;
-};
+}
 
 struct RD_CmdListerItemArray
 {
   RD_CmdListerItem *v;
   U64 count;
-};
+}
 
 RD_CmdListerItemList
 rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
@@ -3887,27 +3887,27 @@ enum RD_FileSortKind
   RD_FileSortKind_LastModified,
   RD_FileSortKind_Size,
   RD_FileSortKind_COUNT
-};
+}
 
 struct RD_FileInfo
 {
   String8 filename;
   FileProperties props;
   FuzzyMatchRangeList match_ranges;
-};
+}
 
 struct RD_FileInfoNode
 {
   RD_FileInfoNode *next;
   RD_FileInfo file_info;
-};
+}
 
 struct RD_FileSystemViewPathState
 {
   RD_FileSystemViewPathState *hash_next;
   String8 normalized_path;
   Vec2S64 cursor;
-};
+}
 
 struct RD_FileSystemViewState
 {
@@ -3923,14 +3923,14 @@ struct RD_FileSystemViewState
   U64 cached_file_count;
   RD_FileInfo *cached_files;
   F32 col_pcts[3];
-};
+}
 
 struct RD_PathQuery
 {
   String8 prefix;
   String8 path;
   String8 search;
-};
+}
 
 RD_PathQuery
 rd_path_query_from_string(String8 string)
@@ -4467,26 +4467,26 @@ struct RD_ProcessInfo
   FuzzyMatchRangeList attached_match_ranges;
   FuzzyMatchRangeList name_match_ranges;
   FuzzyMatchRangeList pid_match_ranges;
-};
+}
 
 struct RD_ProcessInfoNode
 {
   RD_ProcessInfoNode *next;
   RD_ProcessInfo info;
-};
+}
 
 struct RD_ProcessInfoList
 {
   RD_ProcessInfoNode *first;
   RD_ProcessInfoNode *last;
   U64 count;
-};
+}
 
 struct RD_ProcessInfoArray
 {
   RD_ProcessInfo *v;
   U64 count;
-};
+}
 
 RD_ProcessInfoList
 rd_process_info_list_from_query(Arena *arena, String8 query)
@@ -4779,26 +4779,26 @@ struct RD_EntityListerItem
 {
   RD_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
-};
+}
 
 struct RD_EntityListerItemNode
 {
   RD_EntityListerItemNode *next;
   RD_EntityListerItem item;
-};
+}
 
 struct RD_EntityListerItemList
 {
   RD_EntityListerItemNode *first;
   RD_EntityListerItemNode *last;
   U64 count;
-};
+}
 
 struct RD_EntityListerItemArray
 {
   RD_EntityListerItem *v;
   U64 count;
-};
+}
 
 RD_EntityListerItemList
 rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
@@ -4981,26 +4981,26 @@ struct RD_CtrlEntityListerItem
 {
   CTRL_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
-};
+}
 
 struct RD_CtrlEntityListerItemNode
 {
   RD_CtrlEntityListerItemNode *next;
   RD_CtrlEntityListerItem item;
-};
+}
 
 struct RD_CtrlEntityListerItemList
 {
   RD_CtrlEntityListerItemNode *first;
   RD_CtrlEntityListerItemNode *last;
   U64 count;
-};
+}
 
 struct RD_CtrlEntityListerItemArray
 {
   RD_CtrlEntityListerItem *v;
   U64 count;
-};
+}
 
 RD_CtrlEntityListerItemList
 rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, String8 needle)
@@ -5642,7 +5642,7 @@ struct RD_PendingFileViewState
 {
   Arena *deferred_cmd_arena;
   RD_CmdList deferred_cmds;
-};
+}
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
 {
@@ -6011,7 +6011,7 @@ struct RD_DisasmViewState
   U64 temp_look_run_gen;
   U64 goto_vaddr;
   RD_CodeViewState cv;
-};
+}
 
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(disasm)
 {
@@ -6235,7 +6235,7 @@ struct RD_OutputViewState
 {
   U128 last_hash;
   RD_CodeViewState cv;
-};
+}
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(output)
 {
@@ -6335,7 +6335,7 @@ struct RD_MemoryViewState
 {
   B32 center_cursor;
   B32 contain_cursor;
-};
+}
 
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(memory)
 {
@@ -7189,13 +7189,13 @@ struct RD_BitmapBoxDrawData
   B32 hovered;
   Vec2S32 mouse_px;
   F32 ui_per_bmp_px;
-};
+}
 
 struct RD_BitmapCanvasBoxDrawData
 {
   Vec2F32 view_center_pos;
   F32 zoom;
-};
+}
 
 Vec2F32
 rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 cvs)
@@ -7627,7 +7627,7 @@ struct RD_Geo3DViewState
   F32 yaw;
   F32 pitch;
   F32 zoom;
-};
+}
 
 struct RD_Geo3DBoxDrawData
 {
@@ -7636,7 +7636,7 @@ struct RD_Geo3DBoxDrawData
   F32 zoom;
   R_Handle vertex_buffer;
   R_Handle index_buffer;
-};
+}
 
 UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
 {
@@ -7932,7 +7932,7 @@ enum RD_SettingsItemKind
   RD_SettingsItemKind_ThemeColor,
   RD_SettingsItemKind_ThemePreset,
   RD_SettingsItemKind_COUNT
-};
+}
 
 struct RD_SettingsItem
 {
@@ -7946,26 +7946,26 @@ struct RD_SettingsItem
   RD_ThemeColor color;
   RD_ThemePreset preset;
   RD_SettingsItemKind category;
-};
+}
 
 struct RD_SettingsItemNode
 {
   RD_SettingsItemNode *next;
   RD_SettingsItem v;
-};
+}
 
 struct RD_SettingsItemList
 {
   RD_SettingsItemNode *first;
   RD_SettingsItemNode *last;
   U64 count;
-};
+}
 
 struct RD_SettingsItemArray
 {
   RD_SettingsItem *v;
   U64 count;
-};
+}
 
 int
 rd_qsort_compare_settings_item(RD_SettingsItem *a, RD_SettingsItem *b)

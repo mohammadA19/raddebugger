@@ -8603,12 +8603,12 @@ rd_window_frame(RD_Window *ws)
 struct RD_EntityExpandAccel
 {
   RD_EntityArray entities;
-};
+}
 
 struct RD_CtrlEntityExpandAccel
 {
   CTRL_EntityArray entities;
-};
+}
 
 //- rjf: meta entities
 
@@ -9162,7 +9162,7 @@ struct RD_DebugInfoTableExpandAccel
   U64 rdis_count;
   RDI_Parsed **rdis;
   DI_SearchItemArray items;
-};
+}
 
 EV_ExpandInfo
 rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, RDI_SectionKind section)

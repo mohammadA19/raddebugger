@@ -24,7 +24,7 @@ struct DW_ExtDebugRef
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
   String8 dwo_path;
   U64     dwo_id;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Abbrev Table
@@ -33,13 +33,13 @@ struct DW_AbbrevTableEntry
 {
   U64 id;
   U64 off;
-};
+}
 
 struct DW_AbbrevTable
 {
   U64                  count;
   DW_AbbrevTableEntry *entries;
-};
+}
 
 ////////////////////////////////
 //~ Sections
@@ -50,12 +50,12 @@ struct DW_Section
   String8 data;
   DW_Mode mode;
   B32     is_dwo;
-};
+}
 
 struct DW_SectionArray
 {
   DW_Section v[DW_Section_Count];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Line Info
@@ -67,26 +67,26 @@ struct DW_LineFile
   U64     modify_time;
   U64     md5_digest[2];
   U64     file_size;
-};
+}
 
 struct DW_LineVMFileNode
 {
   DW_LineVMFileNode *next;
   DW_LineFile        file;
-};
+}
 
 struct DW_LineVMFileList
 {
   U64                node_count;
   DW_LineVMFileNode *first;
   DW_LineVMFileNode *last;
-};
+}
 
 struct DW_LineVMFileArray
 {
   U64          count;
   DW_LineFile *v;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Abbrevs
@@ -99,12 +99,12 @@ enum DW_AbbrevKind
   DW_Abbrev_AttribSequenceEnd,
   DW_Abbrev_DIEBegin,
   DW_Abbrev_DIEEnd,
-};
+}
 
 enum DW_AbbrevFlags : U32{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),
   DW_AbbrevFlag_HasChildren      = (1<<1),
-};
+}
 
 struct DW_Abbrev
 {
@@ -114,7 +114,7 @@ struct DW_Abbrev
   U64            id;
   U64            const_value;
   DW_AbbrevFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Attribs
@@ -129,13 +129,13 @@ struct DW_AttribValueResolveParams
   U64         debug_rnglists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_rnglists section    (DWARF V5 ONLY)
   U64         debug_str_offs_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_str_offsets section (DWARF V5 ONLY)
   U64         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
-};
+}
 
 struct DW_AttribValue
 {
   DW_SectionKind section;
   U64            v[2];
-};
+}
 
 struct DW_Attrib
 {
@@ -145,33 +145,33 @@ struct DW_Attrib
   DW_FormKind    form_kind;
   DW_AttribClass value_class;
   DW_AttribValue form_value;
-};
+}
 
 struct DW_AttribArray
 {
   DW_Attrib *v;
   U64        count;
-};
+}
 
 struct DW_AttribNode
 {
   DW_AttribNode *next;
   DW_Attrib      attrib;
-};
+}
 
 struct DW_AttribList
 {
   DW_AttribNode *first;
   DW_AttribNode *last;
   U64            count;
-};
+}
 
 struct DW_AttribListParseResult
 {
   DW_AttribList attribs;
   U64           max_info_off;
   U64           max_abbrev_off;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Compilation Units + Accelerators
@@ -208,7 +208,7 @@ struct DW_CompRoot
   U64            high_pc;
   DW_AttribValue ranges_attrib_value;
   U64            base_addr;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Tags
@@ -227,7 +227,7 @@ struct DW_Tag
   U64            attribs_info_off;
   U64            attribs_abbrev_off;
   DW_AttribList  attribs;
-};
+}
 
 enum DW_TagStubFlags : U32
 {
@@ -235,7 +235,7 @@ enum DW_TagStubFlags : U32
   DW_TagStubFlag_HasLocation          = (1<<1),
   DW_TagStubFlag_HasExternal          = (1<<2),
   DW_TagStubFlag_HasSpecification     = (1<<3),
-};
+}
 
 struct DW_TagStub
 {
@@ -264,20 +264,20 @@ struct DW_TagStub
   //SYMS_SymbolID abstract_origin;
   
   U64 _unused_;
-};
+}
 
 struct DW_TagStubNode
 {
   DW_TagStubNode *next;
   DW_TagStub      stub;
-};
+}
 
 struct DW_TagStubList
 {
   DW_TagStubNode *first;
   DW_TagStubNode *last;
   U64             count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Line Info VM Types
@@ -301,7 +301,7 @@ struct DW_LineVMHeader
   U8                 *opcode_lens;
   String8Array        dir_table;
   DW_LineVMFileArray  file_table;
-};
+}
 
 struct DW_LineVMState
 {
@@ -333,7 +333,7 @@ struct DW_LineVMState
   // swath of line info to map to a range starting at 0. This causes overlapping ranges
   // which we do not want to report. So this B32 will turn on emission.
   B32 busted_seq;
-};
+}
 
 struct DW_Line
 {
@@ -341,13 +341,13 @@ struct DW_Line
   U32 line;
   U32 column;
   U64 voff;
-};
+}
 
 struct DW_LineNode
 {
   DW_LineNode *next;
   DW_Line      v;
-};
+}
 
 struct DW_LineSeqNode
 {
@@ -355,14 +355,14 @@ struct DW_LineSeqNode
   U64             count;
   DW_LineNode    *first;
   DW_LineNode    *last;
-};
+}
 
 struct DW_LineTableParseResult
 {
   U64             seq_count;
   DW_LineSeqNode *first_seq;
   DW_LineSeqNode *last_seq;
-};
+}
 
 ////////////////////////////////
 //~ rjf: .debug_pubnames and .debug_pubtypes
@@ -373,13 +373,13 @@ struct DW_PubStringsBucket
   String8              string;
   U64                  info_off;
   U64                  cu_info_off;
-};
+}
 
 struct DW_PubStringsTable
 {
   U64 size;
   DW_PubStringsBucket **buckets;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

@@ -16,7 +16,7 @@ struct TCTX
   
   char *file_name;
   U64 line_number;
-};
+}
 
 ////////////////////////////////
 // NOTE(allen): Thread Context Functions

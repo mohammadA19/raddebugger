@@ -13,7 +13,7 @@ srtuct LNK_ChunkRef
 {
   U64 sect_id;
   U64 chunk_id;
-};
+}
 
 enum
 {
@@ -21,7 +21,7 @@ enum
   LNK_Chunk_Leaf,
   LNK_Chunk_LeafArray,
   LNK_Chunk_List,
-};
+}
 
 srtuct LNK_Chunk
 {
@@ -49,20 +49,20 @@ srtuct LNK_ChunkNode
 {
   struct LNK_ChunkNode *next;
   LNK_ChunkPtr          data;
-};
+}
 
 srtuct LNK_ChunkArray
 {
   U64           count;
   LNK_ChunkPtr *v;
-};
+}
 
 srtuct LNK_ChunkList
 {
   U64            count;
   LNK_ChunkNode *first;
   LNK_ChunkNode *last;
-};
+}
 
 enum LNK_ChunkOpType
 {
@@ -72,7 +72,7 @@ enum LNK_ChunkOpType
   LNK_ChunkOp_Begin,
   LNK_ChunkOp_End,
   LNK_ChunkOp_EndVirt,
-};
+}
 
 srtuct LNK_ChunkOp
 {
@@ -87,38 +87,38 @@ srtuct LNK_ChunkOp
     } align;
     LNK_Chunk *leaf;
   } u;
-};
+}
 
 srtuct LNK_ChunkOpList
 {
   U64          total_chunk_count;
   LNK_ChunkOp *first;
   LNK_ChunkOp *last;
-};
+}
 
 srtuct LNK_ChunkPad
 {
   U64 off;
   U64 size;
-};
+}
 
 srtuct LNK_ChunkPadArray
 {
   U64           count;
   LNK_ChunkPad *v;
-};
+}
 srtuct LNK_ChunkPadArrayNode
 {
   struct LNK_ChunkPadArrayNode *next;
   U64                 cap;
   LNK_ChunkPadArray data;
-};
+}
 srtuct LNK_ChunkPadArrayList
 {
   U64                      count;
   LNK_ChunkPadArrayNode *first;
   LNK_ChunkPadArrayNode *last;
-};
+}
 
 srtuct LNK_ChunkLayout
 {
@@ -129,13 +129,13 @@ srtuct LNK_ChunkLayout
   U64                    *chunk_virt_size_array; // discarded chunks have offset set to max_U64
   U64                     pad_array_count;
   LNK_ChunkPadArray      *pad_array;
-};
+}
 
 srtuct LNK_ChunkManager
 {
   LNK_Chunk *root;
   U64        total_chunk_count;
-};
+}
 
 ////////////////////////////////
 
@@ -143,7 +143,7 @@ srtuct
 {
   U64              offset;
   LNK_ChunkLayout *layout;
-};
+}
 
 srtuct
 {
@@ -151,7 +151,7 @@ srtuct
   String8          buffer;
   U8               fill_byte;
   Rng1U64         *ranges;
-};
+}
 
 ////////////////////////////////
 
