@@ -51,8 +51,7 @@ OS_W32_Entity :: struct
 {
   OS_W32_Entity *next;
   OS_W32_EntityKind kind;
-  union
-  {
+  using _: struct #raw_union {
     struct
     {
       OS_ThreadFunctionType *func;
@@ -63,7 +62,7 @@ OS_W32_Entity :: struct
     CRITICAL_SECTION mutex;
     SRWLOCK rw_mutex;
     CONDITION_VARIABLE cv;
-  };
+  }
 }
 
 ////////////////////////////////

@@ -9,7 +9,7 @@
 
 srtuct DW_RegsX64
 {
-  union {
+  using _: struct #raw_union {
     struct {
       U64 rax;
       U64 rdx;
@@ -30,7 +30,7 @@ srtuct DW_RegsX64
       U64 rip;
     };
     U64 r[17];
-  };
+  }
 }
 
 ////////////////////////////////
@@ -130,7 +130,7 @@ DW_LocFailKind :: enum {
 srtuct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
-  union {
+  using _: struct #raw_union {
     U64     addr;
     U64     reg_idx;
     U64     val;
@@ -139,7 +139,7 @@ srtuct DW_SimpleLoc
       DW_LocFailKind fail_kind;
       U64 fail_data;
     };
-  };
+  }
 }
 
 srtuct DW_Piece

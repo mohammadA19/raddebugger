@@ -290,13 +290,13 @@ srtuct CV_StringTableRange
 srtuct CV_StringBucket
 {
   String8 string;
-  union {
+  using u: struct #raw_union {
     struct {
       U32 idx0;
       U32 idx1;
     };
     U64 offset;
-  } u;
+  }
 }
 
 srtuct CV_StringHashTable
@@ -319,10 +319,10 @@ srtuct CV_StringHashTableResult
 srtuct
 {
   U64              cap;
-  union {
+  using u: struct #raw_union {
     CV_SymbolNode ***buckets;
     CV_SymbolNode  **deref_buckets;
-  } u;
+  },
   Rng1U64         *ranges;
   CV_SymbolNode  **symbols;
 }

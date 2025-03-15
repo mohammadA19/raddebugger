@@ -114,7 +114,7 @@ typedef union
   struct {
     U128Array **internal_hashes;
     U128Array **external_hashes;
-  };
+  }
   U128Array **v[CV_TypeIndexSource_COUNT];
 }
 

@@ -59,13 +59,13 @@ srtuct RDIB_Location
 {
   RDI_LocationKind kind;
   Rng1U64List      ranges;
-  union {
+  using _: struct #raw_union {
     struct {
       RDI_RegCode reg_code;
       U64         offset;
     };
     RDIB_EvalBytecode bytecode;
-  };
+  }
 
   // used by RDI builder
   U64 data_offset;
@@ -260,14 +260,14 @@ srtuct RDIB_InlineSite
   struct RDIB_Type            *type;
   struct RDIB_Type            *owner;
   struct RDIB_InlineSiteChunk *chunk;
-  union {
+  using _: struct #raw_union {
     struct RDIB_LineTable *line_table;
-    struct {
+    using convert_ref: struct {
       void *ud0;
       U64   ud1;
       U64   ud2;
-    } convert_ref;
-  };
+    }
+  }
 }
 
 RDI_MemberKindExt :: enum RDI_MemberKind {
@@ -278,12 +278,12 @@ RDI_MemberKindExt :: enum RDI_MemberKind {
 srtuct RDIB_UDTMember
 {
   RDI_MemberKindExt kind;
-  union {
-    struct {
+  using _: struct #raw_union {
+    using data_field: struct {
       String8      name;
       U64          offset;
       RDIB_TypeRef type_ref;
-    } data_field;
+    },
     struct {
       String8      name;
       RDIB_TypeRef type_ref;
@@ -312,7 +312,7 @@ srtuct RDIB_UDTMember
       String8 name;
       U64     value;
     } enumerate;
-  };
+  },
   struct RDIB_UDTMember      *next;
   struct RDIB_UDTMemberChunk *chunk;
 }
@@ -349,7 +349,7 @@ srtuct RDIB_Type
   RDI_TypeKindExt kind;
   U64 final_idx;
   U64 itype;
-  union {
+  using _: struct #raw_union {
     struct {
       String8 name;
       U64     size;
@@ -424,7 +424,7 @@ srtuct RDIB_Type
       B32 is_head;
       U64 first_member_idx;
     } members, enum_members;
-  };
+  }
   struct RDIB_TypeChunk *chunk;
 }
 
@@ -606,7 +606,7 @@ srtuct RDIB_StringMapBucket
 {
   String8 string;
 
-  union {
+  using _: struct #raw_union {
     // to get deterministic output we assign each bucket a unique index
     union {
       struct {
@@ -618,9 +618,9 @@ srtuct RDIB_StringMapBucket
 
     // after buckets are sorted we replace 'sorter' with indices into output array
     U64 idx;
-  };
+  }
 
-  union {
+  using _: struct #raw_union {
     // depending on the usage context sotres: pointers to variables, procedures, and etc.
     VoidNode *raw_values;
 
@@ -633,7 +633,7 @@ srtuct RDIB_StringMapBucket
         U32 match_idx;
       };
     };
-  };
+  }
 }
 
 srtuct RDIB_StringMap
@@ -678,7 +678,7 @@ srtuct
 
 srtuct RDIB_IndexRunBucket
 {
-  union {
+  using _: struct #raw_union {
     struct {
       U32 lo;
       U32 hi;
@@ -819,10 +819,10 @@ srtuct
   U64             *offsets;
   RDIB_TypeChunk **type_chunks;
   RDIB_StringMap  *string_map;
-  union {
+  using _: struct #raw_union {
     RDI_Member     *udt_members_rdi;
     RDI_EnumMember *enum_members_rdi;
-  };
+  }
 }
 
 srtuct
@@ -851,8 +851,7 @@ srtuct
   RDIB_StringMapBucket     **free_buckets;
   U64                       *insert_counts;
   U64                       *element_indices;
-  union
-  {
+  using _: struct #raw_union {
     RDIB_UnitChunk        **units;
     RDIB_BinarySection     *sects;
     RDIB_SourceFileChunk  **src_file_chunks;
@@ -863,7 +862,7 @@ srtuct
     RDIB_UDTMemberChunk   **enum_members;
     RDIB_TypeChunk        **types;
     RDIB_PathTreeNodeList  *path_node_lists;
-  };
+  }
 }
 
 srtuct
@@ -878,7 +877,7 @@ srtuct
 {
   RDIB_StringMap *string_map;
   Rng1U64        *ranges;
-  union {
+  using _: struct #raw_union {
     struct {
       RDIB_VariableChunk **gvars_rdib;
       String8List         *gvars_out;
@@ -907,7 +906,7 @@ srtuct
       RDI_LocationBlock *loc_blocks_rdi;
       U8                *loc_data_rdi;
     };
-  };
+  }
 }
 
 typedef union
@@ -922,13 +921,13 @@ typedef union
       RDIB_VariableChunk **gvar_chunks;
       RDIB_ScopeChunk    **scope_chunks;
     };
-  };
+  }
 
   struct {
     U64             vmap_counts[3];
     RDIB_VMapRange *vmaps[3];
     String8List     raw_vmaps[3];
-  };
+  }
 }
 
 srtuct
@@ -938,10 +937,10 @@ srtuct
   RDIB_IndexRunMap     *idx_run_map;
   RDIB_IndexRunBucket **free_buckets;
   Rng1U64              *ranges;
-  union {
+  using _: struct #raw_union {
     RDIB_TypeChunk       **type_chunks;
     RDIB_StringMapBucket **name_map_buckets;
-  };
+  }
 }
 
 srtuct

@@ -103,13 +103,13 @@ DW_CFICFARule :: enum{
 srtuct DW_CFICFACell
 {
   DW_CFICFARule rule;
-  union {
+  using _: struct #raw_union {
     struct {
       U64 reg_idx;
       S64 offset;
     };
     Rng1U64 expr;
-  };
+  }
 }
 
 DW_CFIRegisterRule :: enum {
@@ -125,10 +125,10 @@ DW_CFIRegisterRule :: enum {
 srtuct DW_CFICell
 {
   DW_CFIRegisterRule rule;
-  union {
+  using _: struct #raw_union {
     S64 n;
     Rng1U64 expr;
-  };
+  }
 }
 
 srtuct DW_CFIRow

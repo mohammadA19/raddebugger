@@ -1279,48 +1279,38 @@ RDI_TypeKind kind;
 RDI_U16 flags;
 RDI_U32 byte_size;
 
-    union
-  {
+  using _: struct #raw_union {
     // kind is 'built-in'
-    struct
-    {
+    using built_in: struct {
       RDI_U32 name_string_idx;
-    } built_in;
+    }
     
     // kind is 'constructed'
-    struct
-    {
+    using constructed : struct {
       RDI_U32 direct_type_idx;
       RDI_U32 count;
-      union
-      {
+      using _ : struct #raw_union {
         // when kind is 'Function' or 'Method'
         RDI_U32 param_idx_run_first;
         // when kind is 'MemberPtr'
         RDI_U32 owner_type_idx;
-      };
+      }
     }
-    constructed;
     
     // kind is 'user defined'
-    struct
-    {
+    using user_defined: struct {
       RDI_U32 name_string_idx;
       RDI_U32 direct_type_idx;
       RDI_U32 udt_idx;
     }
-    user_defined;
     
     // (kind = Bitfield)
-    struct
-    {
+    using bitfield: struct {
       RDI_U32 direct_type_idx;
       RDI_U32 off;
       RDI_U32 size;
     }
-    bitfield;
   }
-  ;
 }
 
 RDI_UDT :: struct

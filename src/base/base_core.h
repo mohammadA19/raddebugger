@@ -485,13 +485,12 @@ TxtRng :: struct
 
 Guid :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     U32 data1;
     U16 data2;
     U16 data3;
     U8  data4[8];
-  };
+  }
   U8 v[16];
 }
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
@@ -721,16 +720,14 @@ DateTime :: struct
   U16 min;  // [0,59]
   U16 hour; // [0,24]
   U16 day;  // [0,30]
-  union
-  {
+  using _: struct #raw_union {
     WeekDay week_day;
     U32 wday;
-  };
-  union
-  {
+  }
+  using _: struct #raw_union {
     Month month;
     U32 mon;
-  };
+  }
   U32 year; // 1 = 1 CE, 0 = 1 BC
 }
 

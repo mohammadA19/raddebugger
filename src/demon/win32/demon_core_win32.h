@@ -105,8 +105,7 @@ DMN_W32_Entity :: struct
   U64 id;
   HANDLE handle;
   Arch arch;
-  union
-  {
+  using _: struct #raw_union {
     struct
     {
       U64 injection_address;
@@ -128,7 +127,7 @@ DMN_W32_Entity :: struct
       B32 name_is_unicode;
     }
     module;
-  };
+  }
 }
 
 DMN_W32_EntityNode :: struct

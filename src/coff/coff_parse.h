@@ -106,19 +106,19 @@ COFF_ResourceIDType :: enum U32  COFF_ResourceIDTypeEnum
 srtuct COFF_ResourceID16
 {
   COFF_ResourceIDType type;
-  union {
+  using u: struct #raw_union {
     U16      number;
     String16 string;
-  } u;
+  }
 }
 
 srtuct COFF_ResourceID
 {
   COFF_ResourceIDType type;
-  union {
+  using u: struct #raw_union {
     U16     number;
     String8 string;
-  } u;
+  }
 }
 
 srtuct COFF_ParsedResource

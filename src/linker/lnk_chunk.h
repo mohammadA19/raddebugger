@@ -35,11 +35,11 @@ srtuct LNK_Chunk
   U64               input_idx;
   COFF_SectionFlags flags;
   struct LNK_Chunk *associate;
-  union {
+  using u: struct #raw_union {
     String8                leaf;
     struct LNK_ChunkList  *list;
     struct LNK_ChunkArray *arr;
-  } u;
+  }
 #if LNK_DEBUG_CHUNKS
   String8 debug;
 #endif
@@ -77,15 +77,15 @@ srtuct LNK_ChunkOp
 {
   struct LNK_ChunkOp *next;
   LNK_ChunkOpType     type;
-  union {
+  using u: struct #raw_union {
     String8    string;
     LNK_Chunk *chunk;
-    struct {
+    using align : struct {
       U64 val;
       U64 x;
-    } align;
+    },
     LNK_Chunk *leaf;
-  } u;
+  }
 }
 
 srtuct LNK_ChunkOpList

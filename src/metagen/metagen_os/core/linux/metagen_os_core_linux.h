@@ -66,8 +66,7 @@ OS_LNX_Entity :: struct
 {
   OS_LNX_Entity *next;
   OS_LNX_EntityKind kind;
-  union
-  {
+  using _: struct #raw_union {
     struct
     {
       pthread_t handle;
@@ -81,7 +80,7 @@ OS_LNX_Entity :: struct
       pthread_cond_t cond_handle;
       pthread_mutex_t rwlock_mutex_handle;
     } cv;
-  };
+  }
 }
 
 ////////////////////////////////

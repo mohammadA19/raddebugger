@@ -715,11 +715,10 @@ PE_UnwindInfoFlags :: enum U8
 
 PE_UnwindCode :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     U8 off_in_prolog;
     U8 flags;
-  };
+  }
   U16 u16;
 }
 
@@ -783,8 +782,7 @@ PE_Resource :: struct
 {
   COFF_ResourceID id;
   PE_ResDataKind  kind;
-  union
-  {
+  using _: struct #raw_union {
     COFF_ResourceDataEntry leaf;
     struct PE_ResourceDir *dir;
     struct
@@ -858,8 +856,7 @@ PE_ParsedImportType :: enum U32 PE_ParsedImportTypeEnum
 PE_ParsedImport :: struct
 {
   PE_ParsedImportType type;
-  union
-  {
+  using _: struct #raw_union {
     U16 ordinal;
     struct
     {
@@ -951,8 +948,7 @@ PE_BinInfo :: struct
 srtuct PE_DebugInfo
 {
   PE_DebugDirectory header;
-  union
-  {
+  using _: struct #raw_union {
     union
     {
       U32 magic;

@@ -11,41 +11,37 @@
 
 Vec2F32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     F32 x;
     F32 y;
-  };
+  }
   F32 v[2];
 }
 
 Vec2S64 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S64 x;
     S64 y;
-  };
+  }
   S64 v[2];
 }
 
 Vec2S32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S32 x;
     S32 y;
-  };
+  }
   S32 v[2];
 }
 
 Vec2S16 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S16 x;
     S16 y;
-  };
+  }
   S16 v[2];
 }
 
@@ -53,43 +49,37 @@ Vec2S16 :: struct #raw_union
 
 Vec3F32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     F32 x;
     F32 y;
     F32 z;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2F32 xy;
     F32 _z0;
-  };
-  struct
-  {
+  }
+  using _: struct {
     F32 _x0;
     Vec2F32 yz;
-  };
+  }
   F32 v[3];
 }
 
 Vec3S32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S32 x;
     S32 y;
     S32 z;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2S32 xy;
     S32 _z0;
-  };
-  struct
-  {
+  }
+  using _: struct {
     S32 _x0;
     Vec2S32 yz;
-  };
+  }
   S32 v[3];
 }
 
@@ -97,55 +87,47 @@ Vec3S32 :: struct #raw_union
 
 Vec4F32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     F32 x;
     F32 y;
     F32 z;
     F32 w;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2F32 xy;
     Vec2F32 zw;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec3F32 xyz;
     F32 _z0;
-  };
-  struct
-  {
+  }
+  using _: struct {
     F32 _x0;
     Vec3F32 yzw;
-  };
+  }
   F32 v[4];
 }
 
 Vec4S32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S32 x;
     S32 y;
     S32 z;
     S32 w;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2S32 xy;
     Vec2S32 zw;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec3S32 xyz;
     S32 _z0;
-  };
-  struct
-  {
+  }
+  using _: struct {
     S32 _x0;
     Vec3S32 yzw;
-  };
+  }
   S32 v[4];
 }
 
@@ -169,51 +151,46 @@ Mat4x4F32 :: struct
 
 Rng1U32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     U32 min;
     U32 max;
-  };
+  }
   U32 v[2];
 }
 
 Rng1S32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S32 min;
     S32 max;
-  };
+  }
   S32 v[2];
 }
 
 Rng1U64 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     U64 min;
     U64 max;
-  };
+  }
   U64 v[2];
 }
 
 Rng1S64 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     S64 min;
     S64 max;
-  };
+  }
   S64 v[2];
 }
 
 Rng1F32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     F32 min;
     F32 max;
-  };
+  }
   F32 v[2];
 }
 
@@ -221,89 +198,77 @@ Rng1F32 :: struct #raw_union
 
 Rng2S16 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     Vec2S16 min;
     Vec2S16 max;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2S16 p0;
     Vec2S16 p1;
-  };
-  struct
-  {
+  }
+  using _: struct {
     S16 x0;
     S16 y0;
     S16 x1;
     S16 y1;
-  };
+  }
   Vec2S16 v[2];
 }
 
 Rng2S32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     Vec2S32 min;
     Vec2S32 max;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2S32 p0;
     Vec2S32 p1;
-  };
-  struct
-  {
+  }
+  using _: struct {
     S32 x0;
     S32 y0;
     S32 x1;
     S32 y1;
-  };
+  }
   Vec2S32 v[2];
 }
 
 Rng2F32 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     Vec2F32 min;
     Vec2F32 max;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2F32 p0;
     Vec2F32 p1;
-  };
-  struct
-  {
+  }
+  using _: struct {
     F32 x0;
     F32 y0;
     F32 x1;
     F32 y1;
-  };
+  }
   Vec2F32 v[2];
 }
 
 Rng2S64 :: struct #raw_union
 {
-  struct
-  {
+  using _: struct {
     Vec2S64 min;
     Vec2S64 max;
-  };
-  struct
-  {
+  }
+  using _: struct {
     Vec2S64 p0;
     Vec2S64 p1;
-  };
-  struct
-  {
+  }
+  using _: struct {
     S64 x0;
     S64 y0;
     S64 x1;
     S64 y1;
-  };
+  }
   Vec2S64 v[2];
 }
 

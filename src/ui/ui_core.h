@@ -217,8 +217,7 @@ UI_ColorCode :: enum
 
 UI_Palette :: struct
 {
-  union
-  {
+  using _: struct #raw_union {
     Vec4F32 colors[UI_ColorCode_COUNT];
     struct
     {
@@ -231,7 +230,7 @@ UI_Palette :: struct
       Vec4F32 cursor;
       Vec4F32 selection;
     };
-  };
+  }
 }
 
 UI_WidgetPaletteInfo :: struct
@@ -272,11 +271,10 @@ UI_ScrollPt :: struct
 UI_ScrollPt2 :: struct #raw_union
 {
   UI_ScrollPt v[2];
-  struct
-  {
+  using _: struct {
     UI_ScrollPt x;
     UI_ScrollPt y;
-  };
+  }
 }
 
 ////////////////////////////////

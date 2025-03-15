@@ -194,10 +194,10 @@ srtuct
 srtuct
 {
   LNK_SymbolTable  *symtab;
-  union {
+  using u: struct #raw_union {
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
-  } u;
+  }
 }
 
 srtuct

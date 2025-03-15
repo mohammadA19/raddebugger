@@ -658,16 +658,14 @@ DateTime :: struct
   U16 min;  // [0,59]
   U16 hour; // [0,24]
   U16 day;  // [0,30]
-  union
-  {
+  using _: struct #raw_union {
     WeekDay week_day;
     U32 wday;
-  };
-  union
-  {
+  }
+  using _: struct #raw_union {
     Month month;
     U32 mon;
-  };
+  }
   U32 year; // 1 = 1 CE, 0 = 1 BC
 }
 

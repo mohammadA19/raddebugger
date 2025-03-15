@@ -49,15 +49,15 @@ srtuct LNK_DefinedSymbol
 {
   LNK_DefinedSymbolFlags     flags;
   LNK_DefinedSymbolValueType value_type;
-  union {
-    struct {
+  using u: struct #raw_union {
+    using _ : struct {
       LNK_Chunk            *chunk;
       U64                   chunk_offset;
       U32                   check_sum;
       COFF_ComdatSelectType selection;
-    };
+    },
     U64 va;
-  } u;
+  }
 }
 
 srtuct LNK_WeakSymbol
@@ -95,12 +95,12 @@ srtuct LNK_Symbol
   String8         name;
   LNK_SymbolType  type;
   struct LNK_Obj *obj;
-  union {
+  using u: struct #raw_union {
     LNK_DefinedSymbol   defined;
     LNK_WeakSymbol      weak;
     LNK_UndefinedSymbol undefined;
     LNK_LazySymbol      lazy;
-  } u;
+  }
 }
 
 srtuct LNK_SymbolNode

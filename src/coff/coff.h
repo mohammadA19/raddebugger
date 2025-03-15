@@ -221,23 +221,23 @@ COFF_SymDType :: enum U8 {
 typedef union COFF_SymbolName
 {
   U8 short_name[8];
-  struct {
+  using long_name: struct {
     // if this field is filled with zeroes we have a long name,
     // which means name is stored in the string table
     // and we need to use the offset to look it up...
     U32 zeroes;
     U32 string_table_offset;
-  } long_name;
+  }
 }
 
 #define COFF_SymbolType_IsFunc(x) ((x).u.lsb == COFF_SymType_Null && (x).u.msb == COFF_SymDType_Func)
 
 typedef union COFF_SymbolType
 {
-  struct {
+  using u: struct {
     COFF_SymDType msb;
     COFF_SymType lsb;
-  } u;
+  }
   U16 v;
 }
 
@@ -462,14 +462,14 @@ srtuct COFF_ResourceDirTable
 #define COFF_Resource_SubDirFlag (1u << 31u)
 srtuct COFF_ResourceDirEntry
 {
-  union {
+  using name: struct #raw_union {
     U32 offset;
     U32 id;
-  } name;
-  union {
+  }
+  using id: struct #raw_union {
     U32 data_entry_offset;
     U32 sub_dir_offset;
-  } id;
+  }
 }
 
 ////////////////////////////////

@@ -153,13 +153,12 @@ R_PassParams_Geo3D :: struct
 R_Pass :: struct
 {
   R_PassKind kind;
-  union
-  {
+  using _: struct #raw_union {
     void *params;
     R_PassParams_UI *params_ui;
     R_PassParams_Blur *params_blur;
     R_PassParams_Geo3D *params_geo3d;
-  };
+  }
 }
 
 R_PassNode :: struct

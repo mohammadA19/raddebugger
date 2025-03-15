@@ -10,7 +10,7 @@
 MSF_RawStream :: struct {
   U64 size;
   U64 page_count;
-  union {
+  using _: struct #raw_union {
     U32 *page_indices_u32;
     U16 *page_indices_u16;
   } u;

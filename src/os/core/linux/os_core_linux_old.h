@@ -46,7 +46,7 @@ LNX_Entity :: struct{
   LNX_Entity *next;
   LNX_EntityKind kind;
   volatile U32 reference_mask;
-  union{
+  using _: struct #raw_union{
     struct{
       OS_ThreadFunctionType *func;
       void *ptr;
@@ -54,7 +54,7 @@ LNX_Entity :: struct{
     } thread;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-  };
+  }
 }
 
 ////////////////////////////////

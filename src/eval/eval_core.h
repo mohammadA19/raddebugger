@@ -93,15 +93,14 @@ E_SpaceKind :: enum U64
 E_Space :: struct
 {
   E_SpaceKind kind;
-  union
-  {
+  using _: struct #raw_union {
     U64 u64s[3];
     struct
     {
       U64 u64_0;
       U128 u128;
     };
-  };
+  }
 }
 
 ////////////////////////////////

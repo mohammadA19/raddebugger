@@ -850,7 +850,7 @@ srtuct DWARF_Parsed{
 // form decoding
 
 srtuct DWARF_FormDecodeRules{
-  union{
+  using _: struct #raw_union{
     // form decode fields
     struct{
       U8 size;
@@ -864,7 +864,7 @@ srtuct DWARF_FormDecodeRules{
     
     // for alignment and padding to 8
     U64 x;
-  };
+  }
 }
 
 srtuct DWARF_FormDecoded{
@@ -958,7 +958,7 @@ srtuct DWARF_InfoUnit{
   U8  address_size;
   U64 abbrev_off;
   
-  union{
+  using _: struct #raw_union{
     // unit_type: skeleton, split_compile
     U64 dwo_id;
     // unit_type: type, split_type
@@ -966,7 +966,7 @@ srtuct DWARF_InfoUnit{
       U64 type_signature;
       U64 type_offset;
     };
-  };
+  }
 }
 
 srtuct DWARF_InfoParsed{
@@ -1354,14 +1354,14 @@ UNW_DW_CFICFARule :: enum{
 
 srtuct UNW_DW_CFICFACell{
   UNW_DW_CFICFARule rule;
-  union{
+  using _: struct #raw_union{
     struct{
       U64 reg_idx;
       S64 offset;
     };
     U64 expr_min;
     U64 expr_max;
-  };
+  }
 }
 
 UNW_DW_CFIRegisterRule :: enum{
@@ -1376,13 +1376,13 @@ UNW_DW_CFIRegisterRule :: enum{
 
 srtuct UNW_DW_CFICell{
   UNW_DW_CFIRegisterRule rule;
-  union{
+  using _: struct #raw_union{
     S64 n;
     struct{
       U64 expr_min;
       U64 expr_max;
     };
-  };
+  }
 }
 
 srtuct UNW_DW_CFIRow{
