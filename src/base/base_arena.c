@@ -12,7 +12,7 @@ arena_alloc_(ArenaParams* params)
   // rjf: round up reserve/commit sizes
   uint64 reserve_size = params.reserve_size;
   uint64 commit_size = params.commit_size;
-  if(params.flags & ArenaFlag_LargePages)
+  if(params.flags & .LargePages)
   {
     reserve_size = AlignPow2(reserve_size, os_get_system_info().large_page_size);
     commit_size  = AlignPow2(commit_size,  os_get_system_info().large_page_size);
@@ -27,7 +27,7 @@ arena_alloc_(ArenaParams* params)
   void* base = params.optional_backing_buffer;
   if(base == 0)
   {
-    if(params.flags & ArenaFlag_LargePages)
+    if(params.flags & .LargePages)
     {
       base = os_reserve_large(reserve_size);
       os_commit_large(base, commit_size);
@@ -87,7 +87,7 @@ arena_push(Arena* arena, uint64 size, uint64 align)
   uint64 pos_pst = pos_pre + size;
   
   // rjf: chain, if needed
-  if(current.res < pos_pst && !(arena.flags & ArenaFlag_NoChain))
+  if(current.res < pos_pst && !(arena.flags & .NoChain))
   {
     Arena* new_block = 0;
     
@@ -142,7 +142,7 @@ arena_push(Arena* arena, uint64 size, uint64 align)
     uint64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current.res);
     uint64 cmt_size = cmt_pst_clamped - current.cmt;
     uint8* cmt_ptr = (uint8 *)current + current.cmt;
-    if(current.flags & ArenaFlag_LargePages)
+    if(current.flags & .LargePages)
     {
       os_commit_large(cmt_ptr, cmt_size);
     }

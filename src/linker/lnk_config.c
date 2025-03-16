@@ -1573,7 +1573,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
     if (value_strings.node_count == 0) {
       OS_ProcessInfo* process_info = os_get_process_info();
       if (process_info.large_pages_allowed) {
-        arena_default_flags |= ArenaFlag_LargePages;
+        arena_default_flags |= .LargePages;
       } else {
         lnk_error_cmd_switch(LNK_Warning_LargePages, obj_path, lib_path, cmd_switch, "Large pages aren't enabled on this system.");
 #if OS_WINDOWS
@@ -1590,10 +1590,10 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
       if (str8_match_lit("quiet", value_strings.first.string, StringMatchFlag_CaseInsensitive)) {
         OS_ProcessInfo* process_info = os_get_process_info();
         if (process_info.large_pages_allowed) {
-          arena_default_flags |= ArenaFlag_LargePages;
+          arena_default_flags |= .LargePages;
         }
       } else if (str8_match_lit("no", value_strings.first.string, StringMatchFlag_CaseInsensitive)) {
-        arena_default_flags &= ~ArenaFlag_LargePages;
+        arena_default_flags &= ~ArenaFlag.LargePages;
       } else {
         lnk_error_cmd_switch(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, "invalid parameter: \"%S\", expected NO or QUIET", value_strings.first.string);
       }

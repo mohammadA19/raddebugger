@@ -14,8 +14,8 @@
 
 enum ArenaFlags : uint64
 {
-  ArenaFlag_NoChain    = (1<<0),
-  ArenaFlag_LargePages = (1<<1),
+  NoChain    = (1<<0),
+  LargePages = (1<<1),
 }
 
 struct ArenaParams
