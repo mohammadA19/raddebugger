@@ -302,7 +302,7 @@ void lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList* lib_index, LNK_Sectio
 void lnk_log_timers();
 
 ////////////////////////////////
-// Enum <-> String
+// Enum <. String
 
 String8 lnk_string_from_input_source(LNK_InputSourceType input_source);
 

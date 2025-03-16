@@ -65,10 +65,10 @@ struct P2B_BakeUnitVMapIn
 ASYNC_WORK_DEF(p2b_bake_unit_vmap_work)
 {
   ProfBeginFunction();
-  Arena* arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2B_BakeUnitVMapIn* in = (P2B_BakeUnitVMapIn *)input;
   RDIM_UnitVMapBakeResult* out = push_array(arena, RDIM_UnitVMapBakeResult, 1);
-  *out = rdim_bake_unit_vmap(arena, in->units);
+  *out = rdim_bake_unit_vmap(arena, in.units);
   ProfEnd();
   return out;
 }
@@ -83,10 +83,10 @@ struct P2B_BakeLineTablesIn
 ASYNC_WORK_DEF(p2b_bake_line_table_work)
 {
   ProfBeginFunction();
-  Arena* arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2B_BakeLineTablesIn* in = (P2B_BakeLineTablesIn *)input;
   RDIM_LineTableBakeResult* out = push_array(arena, RDIM_LineTableBakeResult, 1);
-  *out = rdim_bake_line_tables(arena, in->line_tables);
+  *out = rdim_bake_line_tables(arena, in.line_tables);
   ProfEnd();
   return out;
 }
@@ -106,41 +106,41 @@ struct P2B_DumpProcChunkIn
 ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
 {
   ProfBeginFunction();
-  Arena* arena = p2r_state->work_thread_arenas[thread_idx];
+  Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2B_DumpProcChunkIn* in = (P2B_DumpProcChunkIn *)input;
   String8List* out = push_array(arena, String8List, 1);
-  RDI_LineTable* line_tables = in->line_tables_bake->line_tables;
-  RDI_U64 line_tables_count = in->line_tables_bake->line_tables_count;
-  RDI_U64* line_table_voffs = in->line_tables_bake->line_table_voffs;
-  RDI_U64 line_table_voffs_count = in->line_tables_bake->line_table_voffs_count;
-  RDI_Line* line_table_lines = in->line_tables_bake->line_table_lines;
-  RDI_U64 line_table_lines_count = in->line_tables_bake->line_table_lines_count;
-  for(uint64 idx = 0; idx < in->chunk->count; idx += 1)
+  RDI_LineTable* line_tables = in.line_tables_bake.line_tables;
+  RDI_U64 line_tables_count = in.line_tables_bake.line_tables_count;
+  RDI_U64* line_table_voffs = in.line_tables_bake.line_table_voffs;
+  RDI_U64 line_table_voffs_count = in.line_tables_bake.line_table_voffs_count;
+  RDI_Line* line_table_lines = in.line_tables_bake.line_table_lines;
+  RDI_U64 line_table_lines_count = in.line_tables_bake.line_table_lines_count;
+  for(uint64 idx = 0; idx < in.chunk.count; idx += 1)
   {
     // NOTE(rjf): breakpad does not support multiple voff ranges per procedure.
-    RDIM_Symbol* proc = &in->chunk->v[idx];
-    RDIM_Scope* root_scope = proc->root_scope;
-    if(root_scope != 0 && root_scope->voff_ranges.first != 0)
+    RDIM_Symbol* proc = &in.chunk.v[idx];
+    RDIM_Scope* root_scope = proc.root_scope;
+    if(root_scope != 0 && root_scope.voff_ranges.first != 0)
     {
       // rjf: dump function record
-      RDIM_Rng1U64 voff_range = root_scope->voff_ranges.first->v;
-      str8_list_pushf(arena, out, "FUNC %I64x %I64x %I64x %S\n", voff_range.min, voff_range.max-voff_range.min, 0ull, proc->name);
+      RDIM_Rng1U64 voff_range = root_scope.voff_ranges.first.v;
+      str8_list_pushf(arena, out, "FUNC %I64x %I64x %I64x %S\n", voff_range.min, voff_range.max-voff_range.min, 0ull, proc.name);
       
       // rjf: dump function lines
-      uint64 unit_idx = rdi_vmap_idx_from_voff(in->unit_vmap, in->unit_vmap_count, voff_range.min);
-      if(0 < unit_idx && unit_idx <= in->unit_count)
+      uint64 unit_idx = rdi_vmap_idx_from_voff(in.unit_vmap, in.unit_vmap_count, voff_range.min);
+      if(0 < unit_idx && unit_idx <= in.unit_count)
       {
-        uint32 line_table_idx = in->unit_line_table_idxs[unit_idx];
+        uint32 line_table_idx = in.unit_line_table_idxs[unit_idx];
         if(0 < line_table_idx && line_table_idx <= line_tables_count)
         {
           // rjf: unpack unit line info
           RDI_LineTable* line_table = &line_tables[line_table_idx];
           RDI_ParsedLineTable line_info =
           {
-            line_table_voffs + line_table->voffs_base_idx,
-            line_table_lines + line_table->lines_base_idx,
+            line_table_voffs + line_table.voffs_base_idx,
+            line_table_lines + line_table.lines_base_idx,
             0,
-            line_table->lines_count,
+            line_table.lines_count,
             0
           };
           for(uint64 voff = voff_range.min, last_voff = 0;
@@ -152,13 +152,13 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
               RDI_Line* line = &line_info.lines[line_info_idx];
               uint64 line_voff_min = line_info.voffs[line_info_idx];
               uint64 line_voff_opl = line_info.voffs[line_info_idx+1];
-              if(line->file_idx != 0)
+              if(line.file_idx != 0)
               {
                 str8_list_pushf(arena, out, "%I64x %I64x %I64u %I64u\n",
                                 line_voff_min,
                                 line_voff_opl-line_voff_min,
-                                (uint64)line->line_num,
-                                (uint64)line->file_idx);
+                                (uint64)line.line_num,
+                                (uint64)line.file_idx);
               }
               last_voff = voff;
               voff = line_voff_opl;
@@ -188,10 +188,10 @@ entry_point(CmdLine* cmdline)
                  cmd_line_has_flag(cmdline, str8_lit("h")) ||
                  cmd_line_has_flag(cmdline, str8_lit("?")));
   P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
-  user2convert->flags &= ~(P2R_ConvertFlag_Types|P2R_ConvertFlag_UDTs);
+  user2convert.flags &= ~(P2R_ConvertFlag_Types|P2R_ConvertFlag_UDTs);
   
   //- rjf: display help
-  if(do_help || user2convert->errors.node_count != 0)
+  if(do_help || user2convert.errors.node_count != 0)
   {
     fprintf(stderr, "--- rdi_breakpad_from_pdb -----------------------------------------------------\n\n");
     
@@ -208,9 +208,9 @@ entry_point(CmdLine* cmdline)
     
     if(!do_help)
     {
-      for(String8Node* n = user2convert->errors.first; n != 0; n = n->next)
+      for(String8Node* n = user2convert.errors.first; n != 0; n = n.next)
       {
-        fprintf(stderr, "error(input): %.*s\n", str8_varg(n->string));
+        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.string));
       }
     }
     os_abort(0);
@@ -227,42 +227,42 @@ entry_point(CmdLine* cmdline)
   String8List dump = {0};
   ProfScope("dump breakpad text")
   {
-    RDIM_BakeParams* params = &convert2bake->bake_params;
+    RDIM_BakeParams* params = &convert2bake.bake_params;
     
     //- rjf: kick off unit vmap baking
-    P2B_BakeUnitVMapIn bake_unit_vmap_in = {&params->units};
+    P2B_BakeUnitVMapIn bake_unit_vmap_in = {&params.units};
     ASYNC_Task* bake_unit_vmap_task = async_task_launch(arena, p2b_bake_unit_vmap_work, .input = &bake_unit_vmap_in);
     
     //- rjf: kick off line-table baking
-    P2B_BakeLineTablesIn bake_line_tables_in = {&params->line_tables};
+    P2B_BakeLineTablesIn bake_line_tables_in = {&params.line_tables};
     ASYNC_Task* bake_line_tables_task = async_task_launch(arena, p2b_bake_line_table_work, .input = &bake_line_tables_in);
     
-    //- rjf: build unit -> line table idx array
-    uint64 unit_count = params->units.total_count;
+    //- rjf: build unit . line table idx array
+    uint64 unit_count = params.units.total_count;
     uint32* unit_line_table_idxs = push_array(arena, uint32, unit_count+1);
     {
       uint64 dst_idx = 1;
-      for(RDIM_UnitChunkNode* n = params->units.first; n != 0; n = n->next)
+      for(RDIM_UnitChunkNode* n = params.units.first; n != 0; n = n.next)
       {
-        for(uint64 n_idx = 0; n_idx < n->count; n_idx += 1, dst_idx += 1)
+        for(uint64 n_idx = 0; n_idx < n.count; n_idx += 1, dst_idx += 1)
         {
-          unit_line_table_idxs[dst_idx] = rdim_idx_from_line_table(n->v[n_idx].line_table);
+          unit_line_table_idxs[dst_idx] = rdim_idx_from_line_table(n.v[n_idx].line_table);
         }
       }
     }
     
     //- rjf: dump MODULE record
-    str8_list_pushf(arena, &dump, "MODULE windows x86_64 %I64x %S\n", params->top_level_info.exe_hash, params->top_level_info.exe_name);
+    str8_list_pushf(arena, &dump, "MODULE windows x86_64 %I64x %S\n", params.top_level_info.exe_hash, params.top_level_info.exe_name);
     
     //- rjf: dump FILE records
     ProfScope("dump FILE records")
     {
-      for(RDIM_SrcFileChunkNode* n = params->src_files.first; n != 0; n = n->next)
+      for(RDIM_SrcFileChunkNode* n = params.src_files.first; n != 0; n = n.next)
       {
-        for(uint64 idx = 0; idx < n->count; idx += 1)
+        for(uint64 idx = 0; idx < n.count; idx += 1)
         {
-          uint64 file_idx = rdim_idx_from_src_file(&n->v[idx]);
-          String8 src_path = n->v[idx].normal_full_path;
+          uint64 file_idx = rdim_idx_from_src_file(&n.v[idx]);
+          String8 src_path = n.v[idx].normal_full_path;
           str8_list_pushf(arena, &dump, "FILE %I64u %S\n", file_idx, src_path);
         }
       }
@@ -271,8 +271,8 @@ entry_point(CmdLine* cmdline)
     //- rjf: join unit vmap
     ProfBegin("join unit vmap");
     RDIM_UnitVMapBakeResult* bake_unit_vmap_out = async_task_join_struct(bake_unit_vmap_task, RDIM_UnitVMapBakeResult);
-    RDI_VMapEntry* unit_vmap = bake_unit_vmap_out->vmap.vmap;
-    uint32 unit_vmap_count = bake_unit_vmap_out->vmap.count;
+    RDI_VMapEntry* unit_vmap = bake_unit_vmap_out.vmap.vmap;
+    uint32 unit_vmap_count = bake_unit_vmap_out.vmap.count;
     ProfEnd();
     
     //- rjf: join line tables
@@ -281,12 +281,12 @@ entry_point(CmdLine* cmdline)
     ProfEnd();
     
     //- rjf: kick off FUNC & line record dump tasks
-    P2B_DumpProcChunkIn* dump_proc_chunk_in = push_array(arena, P2B_DumpProcChunkIn, params->procedures.chunk_count);
-    ASYNC_Task** dump_proc_chunk_tasks = push_array(arena, ASYNC_Task *, params->procedures.chunk_count);
+    P2B_DumpProcChunkIn* dump_proc_chunk_in = push_array(arena, P2B_DumpProcChunkIn, params.procedures.chunk_count);
+    ASYNC_Task** dump_proc_chunk_tasks = push_array(arena, ASYNC_Task *, params.procedures.chunk_count);
     ProfScope("kick off FUNC & line record dump tasks")
     {
       uint64 task_idx = 0;
-      for(RDIM_SymbolChunkNode* n = params->procedures.first; n != 0; n = n->next, task_idx += 1)
+      for(RDIM_SymbolChunkNode* n = params.procedures.first; n != 0; n = n.next, task_idx += 1)
       {
         dump_proc_chunk_in[task_idx].unit_vmap            = unit_vmap;
         dump_proc_chunk_in[task_idx].unit_vmap_count      = unit_vmap_count;
@@ -301,7 +301,7 @@ entry_point(CmdLine* cmdline)
     //- rjf: join FUNC & line record dump tasks
     ProfScope("join FUNC & line record dump tasks")
     {
-      for(uint64 idx = 0; idx < params->procedures.chunk_count; idx += 1)
+      for(uint64 idx = 0; idx < params.procedures.chunk_count; idx += 1)
       {
         String8List* out = async_task_join_struct(dump_proc_chunk_tasks[idx], String8List);
         str8_list_concat_in_place(&dump, out);
@@ -319,7 +319,7 @@ entry_point(CmdLine* cmdline)
   //- rjf: write
   ProfScope("write")
   {
-    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
+    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert.output_name);
     os_file_write(output_file, r1u64(0, baked.size), baked.str);
     os_file_close(output_file);
   }

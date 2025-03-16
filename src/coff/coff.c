@@ -54,7 +54,7 @@ coff_section_flag_from_align_size(uint64 align)
 String8
 coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, uint64 string_table_off)
 {
-  String8 name = str8_cstring_capped(header->name, header->name + sizeof(header->name));
+  String8 name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
   if (name.str[0] == '/') {
     String8 ascii_off    = str8_skip(name, 1);
     uint64     name_rel_off = u64_from_str8(ascii_off, 10);
@@ -84,7 +84,7 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
       
       // TLS sections don't have a postfix but we still have to sort them based
       // on dollar sign so they are sloted between CRT's _tls_start and _tls_end sections.
-      if (str8_match_lit(".tls", *name_out, 0) && postfix_out->size == 0) {
+      if (str8_match_lit(".tls", *name_out, 0) && postfix_out.size == 0) {
         *postfix_out = str8_lit("$");
       }
       
@@ -97,17 +97,17 @@ String8
 coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName* name)
 {
   String8 name_str = str8_lit("");
-  if (name->long_name.zeroes == 0) {
-    uint64 name_string_off = string_table_off + name->long_name.string_table_offset;
+  if (name.long_name.zeroes == 0) {
+    uint64 name_string_off = string_table_off + name.long_name.string_table_offset;
     str8_deserial_read_cstr(raw_coff, name_string_off, &name_str);
   } else {
     uint32 i;
-    for (i = 0; i < sizeof(name->short_name); ++i) {
-      if (name->short_name[i] == '\0') {
+    for (i = 0; i < sizeof(name.short_name); ++i) {
+      if (name.short_name[i] == '\0') {
         break;
       }
     }
-    name_str = str8(name->short_name, i);
+    name_str = str8(name.short_name, i);
   }
   return name_str;
 }
@@ -348,11 +348,11 @@ coff_foff_from_voff(COFF_SectionHeader* sections, uint64 section_count, uint64 v
   for(uint64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
     COFF_SectionHeader* sect = &sections[sect_idx];
-    if(sect->voff <= voff && voff < sect->voff+sect->vsize)
+    if(sect.voff <= voff && voff < sect.voff+sect.vsize)
     {
-      if(!(sect->flags & COFF_SectionFlag_CntUninitializedData))
+      if(!(sect.flags & COFF_SectionFlag_CntUninitializedData))
       {
-        foff = sect->foff + (voff - sect->voff);
+        foff = sect.foff + (voff - sect.voff);
       }
       break;
     }

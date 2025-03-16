@@ -63,7 +63,7 @@ struct E_Expr
 ////////////////////////////////
 //~ rjf: Map Types
 
-//- rjf: string -> num
+//- rjf: string . num
 
 struct E_String2NumMapNode
 {
@@ -94,7 +94,7 @@ struct E_String2NumMap
   E_String2NumMapNode* last;
 }
 
-//- rjf: string -> expr
+//- rjf: string . expr
 
 struct E_String2ExprMapNode
 {
@@ -159,7 +159,7 @@ thread_static E_ParseCtx* e_parse_ctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Map Functions
 
-//- rjf: string -> num
+//- rjf: string . num
 E_String2NumMap e_string2num_map_make(Arena* arena, uint64 slot_count);
 void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, String8 string, uint64 num);
 uint64 e_num_from_string(E_String2NumMap* map, String8 string);
@@ -167,7 +167,7 @@ E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena* arena, E_St
 int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b);
 void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array);
 
-//- rjf: string -> expr
+//- rjf: string . expr
 E_String2ExprMap e_string2expr_map_make(Arena* arena, uint64 slot_count);
 void e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, String8 string, E_Expr* expr);
 void e_string2expr_map_inc_poison(E_String2ExprMap* map, String8 string);
@@ -183,7 +183,7 @@ E_String2NumMap* e_push_member_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
-#define e_token_at_it(it, arr) (((it) < (arr)->v+(arr)->count) ? (*(it)) : e_token_zero())
+#define e_token_at_it(it, arr) (((it) < (arr).v+(arr).count) ? (*(it)) : e_token_zero())
 E_Token e_token_zero();
 void e_token_chunk_list_push(Arena* arena, E_TokenChunkList* list, uint64 chunk_size, E_Token* token);
 E_TokenArray e_token_array_from_chunk_list(Arena* arena, E_TokenChunkList* list);
@@ -213,7 +213,7 @@ E_Expr* e_expr_ref_cast(Arena* arena, E_TypeKey type_key, E_Expr* rhs);
 E_Expr* e_expr_ref_bswap(Arena* arena, E_Expr* rhs);
 
 ////////////////////////////////
-//~ rjf: Expression Tree -> String Conversions
+//~ rjf: Expression Tree . String Conversions
 
 void e_append_strings_from_expr(Arena* arena, E_Expr* expr, String8List* out);
 String8 e_string_from_expr(Arena* arena, E_Expr* expr);

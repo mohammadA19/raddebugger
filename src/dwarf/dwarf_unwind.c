@@ -29,7 +29,7 @@ dw_unwind_x64(String8           raw_text,
   uint64 rebase_voff_to_vaddr = (image_base - default_image_base);
   
   // get ip register values
-  uint64 ip_value = regs->rip;
+  uint64 ip_value = regs.rip;
   uint64 ip_voff  = ip_value - rebase_voff_to_vaddr;
   
   // check sections
@@ -141,15 +141,15 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
   
   //- compute cfa
   uint64 cfa = 0;
-  switch (row->cfa_cell.rule) {
+  switch (row.cfa_cell.rule) {
     case DW_CFI_CFA_Rule_RegOff: {
       // TODO: have we done anything to gaurantee reg_idx here?
-      uint64 reg_idx = row->cfa_cell.reg_idx;
+      uint64 reg_idx = row.cfa_cell.reg_idx;
       
       // is this a roll-over CFA?
       B32 is_roll_over_cfa = 0;
       if (reg_idx == DW_Reg_x64_Rsp) {
-        DW_CFIRegisterRule rule = row->cells[reg_idx].rule;
+        DW_CFIRegisterRule rule = row.cells[reg_idx].rule;
         if (rule == DW_CFIRegisterRule_Undefined || rule == DW_CFIRegisterRule_SameValue) {
           is_roll_over_cfa = 1;
         }
@@ -157,14 +157,14 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
       
       // compute cfa
       if (is_roll_over_cfa) {
-        cfa = stack_pointer + row->cfa_cell.offset;
+        cfa = stack_pointer + row.cfa_cell.offset;
       } else {
-        cfa = regs->r[reg_idx] + row->cfa_cell.offset;
+        cfa = regs.r[reg_idx] + row.cfa_cell.offset;
       }
     } break;
     
     case DW_CFI_CFA_Rule_Expr: {
-      Rng1U64     expr_range = row->cfa_cell.expr;
+      Rng1U64     expr_range = row.cfa_cell.expr;
       DW_Location location   = dw_expr__eval(0, raw_eh_frame.str, expr_range, &dwexpr_config);
       if (location.non_piece_loc.kind == DW_SimpleLocKind_Fail && location.non_piece_loc.fail_kind == DW_LocFailKind_MissingMemory) {
         missed_read_addr = location.non_piece_loc.fail_data;
@@ -178,12 +178,12 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
   
   // compute registers
   {
-    DW_CFICell* cell     = row->cells;
+    DW_CFICell* cell     = row.cells;
     DW_RegsX64  new_regs = {0};
     for (uint64 i = 0; i < DW_UNWIND_X64__REG_SLOT_COUNT; ++i, ++cell) {
       // compute value
       uint64 v = 0;
-      switch (cell->rule) {
+      switch (cell.rule) {
         default:
         {
           Assert(!"UNEXPECTED-RULE");
@@ -196,12 +196,12 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
         
         case DW_CFIRegisterRule_SameValue:
         {
-          v = regs->r[i];
+          v = regs.r[i];
         } break;
         
         case DW_CFIRegisterRule_Offset:
         {
-          uint64 addr = cfa + cell->n;
+          uint64 addr = cfa + cell.n;
           uint64 read_size = read_memory(addr, sizeof(v), &v, read_memory_ud);
           if (read_size != sizeof(v)) {
             missed_read_addr = addr;
@@ -211,17 +211,17 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
         
         case DW_CFIRegisterRule_ValOffset:
         {
-          v = cfa + cell->n;
+          v = cfa + cell.n;
         } break;
         
         case DW_CFIRegisterRule_Register:
         {
-          v = regs->r[i];
+          v = regs.r[i];
         } break;
         
         case DW_CFIRegisterRule_Expression:
         {
-          Rng1U64     expr_range = cell->expr;
+          Rng1U64     expr_range = cell.expr;
           uint64         addr       = 0;
           DW_Location location   = dw_expr__eval(0, raw_eh_frame.str, expr_range, &dwexpr_config);
           if (location.non_piece_loc.kind == DW_SimpleLocKind_Fail && location.non_piece_loc.fail_kind == DW_LocFailKind_MissingMemory) {
@@ -240,7 +240,7 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
         
         case DW_CFIRegisterRule_ValExpression:
         {
-          Rng1U64     expr_range = cell->expr;
+          Rng1U64     expr_range = cell.expr;
           DW_Location location   = dw_expr__eval(0, raw_eh_frame.str, expr_range, &dwexpr_config);
           if (location.non_piece_loc.kind == DW_SimpleLocKind_Fail && location.non_piece_loc.fail_kind == DW_LocFailKind_MissingMemory) {
             missed_read_addr = location.non_piece_loc.fail_data;
@@ -381,20 +381,20 @@ dw_unwind_parse_pointer_x64(void* frame_base, Rng1U64 frame_range, DW_EhPtrCtx* 
     switch (encoding & DW_EhPtrEnc_ModifyMask) {
       case DW_EhPtrEnc_PcRel:
       {
-        pointer = ptr_ctx->raw_base_vaddr + frame_range.min + off + raw_pointer;
+        pointer = ptr_ctx.raw_base_vaddr + frame_range.min + off + raw_pointer;
       } break;
       case DW_EhPtrEnc_TextRel:
       {
-        pointer = ptr_ctx->text_vaddr + raw_pointer;
+        pointer = ptr_ctx.text_vaddr + raw_pointer;
       } break;
       case DW_EhPtrEnc_DataRel:
       {
-        pointer = ptr_ctx->data_vaddr + raw_pointer;
+        pointer = ptr_ctx.data_vaddr + raw_pointer;
       } break;
       case DW_EhPtrEnc_FuncRel:
       {
         Assert(!"TODO: need a sample to verify implementation");
-        pointer = ptr_ctx->func_vaddr + raw_pointer;
+        pointer = ptr_ctx.func_vaddr + raw_pointer;
       } break;
     }
   }
@@ -508,18 +508,18 @@ dw_unwind_parse_cie_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, uint64 
     }
     
     // commit values to out
-    cie_out->version               = version;
-    cie_out->lsda_encoding         = lsda_encoding;
-    cie_out->addr_encoding         = addr_encoding;
-    cie_out->has_augmentation_size = has_augmentation_size;
-    cie_out->augmentation_size     = augmentation_size;
-    cie_out->augmentation          = augmentation;
-    cie_out->code_align_factor     = code_align_factor;
-    cie_out->data_align_factor     = data_align_factor;
-    cie_out->ret_addr_reg          = ret_addr_reg;
-    cie_out->handler_ip            = handler_ip;
-    cie_out->cfi_range.min         = cfi_off;
-    cie_out->cfi_range.max         = cfi_off + cfi_size;
+    cie_out.version               = version;
+    cie_out.lsda_encoding         = lsda_encoding;
+    cie_out.addr_encoding         = addr_encoding;
+    cie_out.has_augmentation_size = has_augmentation_size;
+    cie_out.augmentation_size     = augmentation_size;
+    cie_out.augmentation          = augmentation;
+    cie_out.code_align_factor     = code_align_factor;
+    cie_out.data_align_factor     = data_align_factor;
+    cie_out.ret_addr_reg          = ret_addr_reg;
+    cie_out.handler_ip            = handler_ip;
+    cie_out.cfi_range.min         = cfi_off;
+    cie_out.cfi_range.max         = cfi_off + cfi_size;
   }
 }
 
@@ -527,7 +527,7 @@ void
 dw_unwind_parse_fde_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, DW_CIEUnpacked* cie, uint64 off, DW_FDEUnpacked* fde_out)
 {
   // pull out pointer encoding field
-  DW_EhPtrEnc ptr_enc = cie->addr_encoding;
+  DW_EhPtrEnc ptr_enc = cie.addr_encoding;
   
   // ip first
   uint64 ip_first_off  = off;
@@ -544,14 +544,14 @@ dw_unwind_parse_fde_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, DW_CIEU
   uint64 after_aug_data_off = aug_data_off;
   uint64 lsda_ip            = 0;
   
-  if (cie->has_augmentation_size) {
+  if (cie.has_augmentation_size) {
     // augmentation size
     uint64 augmentation_size  = 0;
     uint64 aug_size_size      = dw_based_range_read_uleb128(base, range, aug_data_off, &augmentation_size);
     uint64 after_aug_size_off = aug_data_off + aug_size_size;
     
     // extract lsda (only thing that can actually be in FDE's augmentation data as far as we know)
-    DW_EhPtrEnc lsda_encoding = cie->lsda_encoding;
+    DW_EhPtrEnc lsda_encoding = cie.lsda_encoding;
     if (lsda_encoding != DW_EhPtrEnc_Omit) {
       uint64 lsda_off = after_aug_size_off;
       dw_unwind_parse_pointer_x64(base, range, ptr_ctx, lsda_encoding, lsda_off, &lsda_ip);
@@ -569,11 +569,11 @@ dw_unwind_parse_fde_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, DW_CIEU
   }
   
   // commit values to out
-  fde_out->ip_voff_range.min = ip_first;
-  fde_out->ip_voff_range.max = ip_first + ip_range_size;
-  fde_out->lsda_ip           = lsda_ip;
-  fde_out->cfi_range.min     = cfi_off;
-  fde_out->cfi_range.max     = cfi_off + cfi_size;
+  fde_out.ip_voff_range.min = ip_first;
+  fde_out.ip_voff_range.max = ip_first + ip_range_size;
+  fde_out.lsda_ip           = lsda_ip;
+  fde_out.cfi_range.min     = cfi_off;
+  fde_out.cfi_range.max     = cfi_off + cfi_size;
 }
 
 DW_CFIRecords
@@ -628,8 +628,8 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_c
       dw_unwind_parse_cie_x64(raw_rec.str, rng_1u64(0, raw_rec.size), ptr_ctx, after_discrim_off, &cie);
       if (cie.version != 0) {
         DW_CIEUnpackedNode* node = push_array(scratch.arena, DW_CIEUnpackedNode, 1);
-        node->cie                = cie;
-        node->offset             = rec_off;
+        node.cie                = cie;
+        node.offset             = rec_off;
         SLLQueuePush(cie_first, cie_last, node);
       }
     }
@@ -640,8 +640,8 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_c
       
       // get cie node
       DW_CIEUnpackedNode* cie_node = 0;
-      for (DW_CIEUnpackedNode* node = cie_first; node != 0; node = node->next) {
-        if (node->offset == cie_offset) {
+      for (DW_CIEUnpackedNode* node = cie_first; node != 0; node = node.next) {
+        if (node.offset == cie_offset) {
           cie_node = node;
           break;
         }
@@ -650,12 +650,12 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_c
       // parse fde
       DW_FDEUnpacked fde = {0};
       if (cie_node != 0) {
-        dw_unwind_parse_fde_x64(raw_rec.str, rng_1u64(0,raw_rec.size), ptr_ctx, &cie_node->cie, after_discrim_off, &fde);
+        dw_unwind_parse_fde_x64(raw_rec.str, rng_1u64(0,raw_rec.size), ptr_ctx, &cie_node.cie, after_discrim_off, &fde);
       }
       
       if (contains_1u64(fde.ip_voff_range, ip_voff)) {
         result.valid = 1;
-        result.cie   = cie_node->cie;
+        result.cie   = cie_node.cie;
         result.fde   = fde;
         break;
       }
@@ -735,7 +735,7 @@ dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_fra
   
   B32 is_fde_offset_valid = (fde_offset != max_U64);
   if (is_fde_offset_valid) {
-    uint64 fde_read_offset = (fde_offset - ptr_ctx->raw_base_vaddr);
+    uint64 fde_read_offset = (fde_offset - ptr_ctx.raw_base_vaddr);
     
     // read FDE size
     uint64 fde_size = 0;
@@ -797,34 +797,34 @@ dw_unwind_make_machine_x64(uint64 cells_per_row, DW_CIEUnpacked* cie, DW_EhPtrCt
 void
 dw_unwind_machine_equip_initial_row_x64(DW_CFIMachine* machine, DW_CFIRow* initial_row)
 {
-  machine->initial_row = initial_row;
+  machine.initial_row = initial_row;
 }
 
 void
 dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine* machine, uint64 fde_ip)
 {
-  machine->fde_ip = fde_ip;
+  machine.fde_ip = fde_ip;
 }
 
 DW_CFIRow*
 dw_unwind_row_alloc_x64(Arena* arena, uint64 cells_per_row)
 {
   DW_CFIRow* result = push_array(arena, DW_CFIRow, 1);
-  result->cells     = push_array(arena, DW_CFICell, cells_per_row);
+  result.cells     = push_array(arena, DW_CFICell, cells_per_row);
   return result;
 }
 
 void
 dw_unwind_row_zero_x64(DW_CFIRow* row, uint64 cells_per_row) {
-  MemorySet(row->cells, 0, sizeof(*row->cells)*cells_per_row);
-  MemoryZeroStruct(&row->cfa_cell);
+  MemorySet(row.cells, 0, sizeof(*row.cells)*cells_per_row);
+  MemoryZeroStruct(&row.cfa_cell);
 }
 
 void
 dw_unwind_row_copy_x64(DW_CFIRow* dst, DW_CFIRow* src, uint64 cells_per_row)
 {
-  MemoryCopy(dst->cells, src->cells, sizeof(*src->cells)*cells_per_row);
-  dst->cfa_cell = src->cfa_cell;
+  MemoryCopy(dst.cells, src.cells, sizeof(*src.cells)*cells_per_row);
+  dst.cfa_cell = src.cfa_cell;
 }
 
 B32
@@ -835,10 +835,10 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
   B32 result = 0;
   
   // pull out machine's equipment
-  DW_CIEUnpacked* cie           = machine->cie;
-  DW_EhPtrCtx*    ptr_ctx       = machine->ptr_ctx;
-  uint64             cells_per_row = machine->cells_per_row;
-  DW_CFIRow*      initial_row   = machine->initial_row;
+  DW_CIEUnpacked* cie           = machine.cie;
+  DW_EhPtrCtx*    ptr_ctx       = machine.ptr_ctx;
+  uint64             cells_per_row = machine.cells_per_row;
+  DW_CFIRow*      initial_row   = machine.initial_row;
   
   // start with an empty stack
   DW_CFIRow* stack     = 0;
@@ -850,7 +850,7 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
   } else {
     dw_unwind_row_zero_x64(row, cells_per_row);
   }
-  uint64 table_ip = machine->fde_ip;
+  uint64 table_ip = machine.fde_ip;
   
   // loop
   uint64 cfi_off = 0;
@@ -902,7 +902,7 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
             }
           } break;
           case DW_CFADecode_Address: {
-            o_size = dw_unwind_parse_pointer_x64(base, range, ptr_ctx, cie->addr_encoding, decode_cursor, out);
+            o_size = dw_unwind_parse_pointer_x64(base, range, ptr_ctx, cie.addr_encoding, decode_cursor, out);
           } break;
           case DW_CFADecode_ULEB128: {
             o_size = dw_based_range_read_uleb128(base, range, decode_cursor, out);
@@ -952,54 +952,54 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
         new_table_ip = operand1;
       } break;
       case DW_CFA_AdvanceLoc: {
-        new_table_ip = table_ip + operand0*cie->code_align_factor;
+        new_table_ip = table_ip + operand0*cie.code_align_factor;
       } break;
       case DW_CFA_AdvanceLoc1:
       case DW_CFA_AdvanceLoc2:
       case DW_CFA_AdvanceLoc4: {
-        uint64 advance = operand1*cie->code_align_factor;
+        uint64 advance = operand1*cie.code_align_factor;
         new_table_ip = table_ip + advance;
       } break;
       
       //// change CFA (canonical frame address) opcodes ////
       
       case DW_CFA_DefCfa: {
-        row->cfa_cell.rule = DW_CFI_CFA_Rule_RegOff;
-        row->cfa_cell.reg_idx = operand1;
-        row->cfa_cell.offset = operand2;
+        row.cfa_cell.rule = DW_CFI_CFA_Rule_RegOff;
+        row.cfa_cell.reg_idx = operand1;
+        row.cfa_cell.offset = operand2;
       } break;
       
       case DW_CFA_DefCfaSf: {
-        row->cfa_cell.rule = DW_CFI_CFA_Rule_RegOff;
-        row->cfa_cell.reg_idx = operand1;
-        row->cfa_cell.offset = ((int64)operand2)*cie->data_align_factor;
+        row.cfa_cell.rule = DW_CFI_CFA_Rule_RegOff;
+        row.cfa_cell.reg_idx = operand1;
+        row.cfa_cell.offset = ((int64)operand2)*cie.data_align_factor;
       } break;
       
       case DW_CFA_DefCfaRegister: {
         // check rule
-        if (row->cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
+        if (row.cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
           goto done;
         }
         // commit new cfa
-        row->cfa_cell.reg_idx = operand1;
+        row.cfa_cell.reg_idx = operand1;
       } break;
       
       case DW_CFA_DefCfaOffset: {
         // check rule
-        if (row->cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
+        if (row.cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
           goto done;
         }
         // commit new cfa
-        row->cfa_cell.offset = operand1;
+        row.cfa_cell.offset = operand1;
       } break;
       
       case DW_CFA_DefCfaOffsetSf: {
         // check rule
-        if (row->cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
+        if (row.cfa_cell.rule != DW_CFI_CFA_Rule_RegOff) {
           goto done;
         }
         // commit new cfa
-        row->cfa_cell.offset = ((int64)operand1)*cie->data_align_factor;
+        row.cfa_cell.offset = ((int64)operand1)*cie.data_align_factor;
       } break;
       
       case DW_CFA_DefCfaExpr: {
@@ -1009,56 +1009,56 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
         step_cursor += expr_size;
         
         // commit new cfa
-        row->cfa_cell.rule     = DW_CFI_CFA_Rule_Expr;
-        row->cfa_cell.expr.min = expr_first;
-        row->cfa_cell.expr.max = expr_first + expr_size;
+        row.cfa_cell.rule     = DW_CFI_CFA_Rule_Expr;
+        row.cfa_cell.expr.min = expr_first;
+        row.cfa_cell.expr.max = expr_first + expr_size;
       } break;
       
       
       //// change register rules ////
       
       case DW_CFA_Undefined: {
-        row->cells[operand1].rule = DW_CFIRegisterRule_Undefined;
+        row.cells[operand1].rule = DW_CFIRegisterRule_Undefined;
       } break;
       
       case DW_CFA_SameValue: {
-        row->cells[operand1].rule = DW_CFIRegisterRule_SameValue;
+        row.cells[operand1].rule = DW_CFIRegisterRule_SameValue;
       } break;
       
       case DW_CFA_Offset: {
-        DW_CFICell* cell = &row->cells[operand0];
-        cell->rule       = DW_CFIRegisterRule_Offset;
-        cell->n          = operand1*cie->data_align_factor;
+        DW_CFICell* cell = &row.cells[operand0];
+        cell.rule       = DW_CFIRegisterRule_Offset;
+        cell.n          = operand1*cie.data_align_factor;
       } break;
       
       case DW_CFA_OffsetExt: {
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule       = DW_CFIRegisterRule_Offset;
-        cell->n          = operand2*cie->data_align_factor;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule       = DW_CFIRegisterRule_Offset;
+        cell.n          = operand2*cie.data_align_factor;
       } break;
       
       case DW_CFA_OffsetExtSf: {
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule       = DW_CFIRegisterRule_Offset;
-        cell->n          = ((int64)operand2)*cie->data_align_factor;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule       = DW_CFIRegisterRule_Offset;
+        cell.n          = ((int64)operand2)*cie.data_align_factor;
       } break;
       
       case DW_CFA_ValOffset: {
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule       = DW_CFIRegisterRule_ValOffset;
-        cell->n          = operand2*cie->data_align_factor;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule       = DW_CFIRegisterRule_ValOffset;
+        cell.n          = operand2*cie.data_align_factor;
       } break;
       
       case DW_CFA_ValOffsetSf: {
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule       = DW_CFIRegisterRule_ValOffset;
-        cell->n          = ((int64)operand2)*cie->data_align_factor;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule       = DW_CFIRegisterRule_ValOffset;
+        cell.n          = ((int64)operand2)*cie.data_align_factor;
       } break;
       
       case DW_CFA_Register: {
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule = DW_CFIRegisterRule_Register;
-        cell->n = operand2;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule = DW_CFIRegisterRule_Register;
+        cell.n = operand2;
       } break;
       
       case DW_CFA_Expr: {
@@ -1068,10 +1068,10 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
         step_cursor += expr_size;
         
         // commit new rule
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule = DW_CFIRegisterRule_Expression;
-        cell->expr.min = expr_first;
-        cell->expr.max = expr_first + expr_size;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule = DW_CFIRegisterRule_Expression;
+        cell.expr.min = expr_first;
+        cell.expr.max = expr_first + expr_size;
       } break;
       
       case DW_CFA_ValExpr: {
@@ -1081,10 +1081,10 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
         step_cursor += expr_size;
         
         // commit new rule
-        DW_CFICell* cell = &row->cells[operand1];
-        cell->rule = DW_CFIRegisterRule_ValExpression;
-        cell->expr.min = expr_first;
-        cell->expr.max = expr_first + expr_size;
+        DW_CFICell* cell = &row.cells[operand1];
+        cell.rule = DW_CFIRegisterRule_ValExpression;
+        cell.expr.min = expr_first;
+        cell.expr.max = expr_first + expr_size;
       } break;
       
       case DW_CFA_Restore: {
@@ -1093,7 +1093,7 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
           goto done;
         }
         // commit new rule
-        row->cells[operand0] = initial_row->cells[operand0];
+        row.cells[operand0] = initial_row.cells[operand0];
       } break;
       
       case DW_CFA_RestoreExt: {
@@ -1102,7 +1102,7 @@ dw_unwind_machine_run_to_ip_x64(void* base, Rng1U64 range, DW_CFIMachine* machin
           goto done;
         }
         // commit new rule
-        row->cells[operand1] = initial_row->cells[operand1];
+        row.cells[operand1] = initial_row.cells[operand1];
       } break;
       
       

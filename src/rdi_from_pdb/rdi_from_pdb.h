@@ -122,7 +122,7 @@ struct P2R_CompUnitContributionsParseIn
 ////////////////////////////////
 //~ rjf: Conversion Data Structure & Task Types
 
-//- rjf: link name map (voff -> string)
+//- rjf: link name map (voff . string)
 
 struct P2R_LinkNameNode
 {
@@ -139,7 +139,7 @@ struct P2R_LinkNameMap
   uint64 link_name_count;
 }
 
-//- rjf: normalized file path -> source file map
+//- rjf: normalized file path . source file map
 
 struct P2R_SrcFileNode
 {
@@ -505,7 +505,7 @@ uint64 p2r_end_of_cplusplus_container_name(String8 str);
 uint64 p2r_hash_from_voff(uint64 voff);
 
 ////////////////////////////////
-//~ rjf: Command Line -> Conversion Inputs
+//~ rjf: Command Line . Conversion Inputs
 
 P2R_User2Convert* p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline);
 

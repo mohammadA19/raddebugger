@@ -119,7 +119,7 @@ struct Type
   uint64 size;
   Type* direct;
   String8 name;
-  String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
+  String8 count_delimiter_name; // gathered from surrounding members, turns *.[1] into *.[N]
   uint64 count;
   Member* members;
 }
@@ -143,7 +143,7 @@ struct TypeSerializeParams
 }
 
 ////////////////////////////////
-//~ rjf: Type Name -> Type Info
+//~ rjf: Type Name . Type Info
 
 #define type(T) (&T##__type)
 
@@ -267,7 +267,7 @@ Type String8List__type =
 //~ rjf: Type Info Lookups
 
 Member* member_from_name(Type* type, String8 name);
-#define EachMember(T, it) (Member* it = (type(T))->members; it != 0 && it < (type(T))->members + (type(T))->count; it += 1)
+#define EachMember(T, it) (Member* it = (type(T)).members; it != 0 && it < (type(T)).members + (type(T)).count; it += 1)
 
 ////////////////////////////////
 //~ rjf: Type Info * Instance Operations

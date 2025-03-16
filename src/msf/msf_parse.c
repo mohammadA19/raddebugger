@@ -30,15 +30,15 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
 
     if (index_size == 2) {
       MSF_Header20* header      = (MSF_Header20 *) msf_data.str;
-      page_size_raw             = header->page_size;
-      whole_file_page_count_raw = header->page_count;
-      directory_size_raw        = header->stream_table_size;
+      page_size_raw             = header.page_size;
+      whole_file_page_count_raw = header.page_count;
+      directory_size_raw        = header.stream_table_size;
     } else if (index_size == 4) {
       MSF_Header70* header      = (MSF_Header70 *) msf_data.str;
-      page_size_raw             = header->page_size;
-      whole_file_page_count_raw = header->page_count;
-      directory_size_raw        = header->stream_table_size;
-      directory_super_map_raw   = header->root_pn;
+      page_size_raw             = header.page_size;
+      whole_file_page_count_raw = header.page_count;
+      directory_size_raw        = header.stream_table_size;
+      directory_super_map_raw   = header.root_pn;
     }
     
     //- setup important sizes & counts
@@ -61,8 +61,8 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
     // Layout of the "directory":
     //
     // super map: [s1, s2, s3, ...]
-    //       map: s1 -> [i1, i2, i3, ...]; s2 -> [...]; s3 -> [...]; ...
-    // directory: i1 -> [data]; i2 -> [data]; i3 -> [data]; ... i1 -> [data]; ...
+    //       map: s1 . [i1, i2, i3, ...]; s2 . [...]; s3 . [...]; ...
+    // directory: i1 . [data]; i2 . [data]; i3 . [data]; ... i1 . [data]; ...
     // 
     // The "data" in the directory describes streams:
     // PDB20:
@@ -200,12 +200,12 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
         uint32 stream_size           = ClampTop(stream_size_raw, stream_page_count*page_size);
         
         // copy stream data
-        stream_ptr->size       = stream_size;
-        stream_ptr->page_count = stream_page_count;
+        stream_ptr.size       = stream_size;
+        stream_ptr.page_count = stream_page_count;
         if (index_size == 4) {
-          stream_ptr->u.page_indices_u32 = (uint32 *)(directory_buf + index_cursor);
+          stream_ptr.u.page_indices_u32 = (uint32 *)(directory_buf + index_cursor);
         } else {
-          stream_ptr->u.page_indices_u16 = (uint16 *)(directory_buf + index_cursor);
+          stream_ptr.u.page_indices_u16 = (uint16 *)(directory_buf + index_cursor);
         }
         
         // advance cursors
@@ -217,11 +217,11 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
     
     if (got_streams) {
       result                   = push_array(arena, MSF_RawStreamTable, 1);
-      result->total_page_count = whole_file_page_count;
-      result->index_size       = index_size;
-      result->page_size        = page_size;
-      result->stream_count     = stream_count;
-      result->streams          = streams;
+      result.total_page_count = whole_file_page_count;
+      result.index_size       = index_size;
+      result.page_size        = page_size;
+      result.stream_count     = stream_count;
+      result.streams          = streams;
     }
   }
   
@@ -232,20 +232,20 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
 String8
 msf_data_from_stream_number(Arena* arena, String8 msf_data, MSF_RawStreamTable* st, MSF_StreamNumber sn)
 {
-  MSF_RawStream stream = st->streams[sn];
+  MSF_RawStream stream = st.streams[sn];
 
   uint8* stream_buf     = push_array_no_zero(arena, uint8, stream.size);
   uint8* stream_out_ptr = stream_buf;
   for (uint32 i = 0; i < stream.page_count; ++i) {
     uint64 page_idx;
-    if (st->index_size == 4) {
+    if (st.index_size == 4) {
       page_idx = stream.u.page_indices_u32[i];
     } else {
       page_idx = stream.u.page_indices_u16[i];
     }
 
-    uint64 stream_page_off = (uint64)page_idx * st->page_size;
-    if (stream_page_off + st->page_size > msf_data.size) {
+    uint64 stream_page_off = (uint64)page_idx * st.page_size;
+    if (stream_page_off + st.page_size > msf_data.size) {
       break;
     }
 
@@ -254,7 +254,7 @@ msf_data_from_stream_number(Arena* arena, String8 msf_data, MSF_RawStreamTable* 
     // clamp copy size by end of stream
     uint32 stream_pos     = (uint32) (stream_out_ptr - stream_buf);
     uint32 remaining_size = stream.size - stream_pos;
-    uint32 copy_size      = ClampTop(st->page_size, remaining_size);
+    uint32 copy_size      = ClampTop(st.page_size, remaining_size);
     
     // copy page data
     MemoryCopy(stream_out_ptr, stream_page_base, copy_size);
@@ -279,16 +279,16 @@ msf_parsed_from_data(Arena* arena, String8 msf_data)
 
   MSF_RawStreamTable* st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
   if (st) {
-    String8* streams = push_array_no_zero(arena, String8, st->stream_count);
-    for (MSF_StreamNumber sn = 0; sn < st->stream_count; ++sn) {
+    String8* streams = push_array_no_zero(arena, String8, st.stream_count);
+    for (MSF_StreamNumber sn = 0; sn < st.stream_count; ++sn) {
       streams[sn] = msf_data_from_stream_number(arena, msf_data, st, sn);
     }
 
     result               = push_array_no_zero(arena, MSF_Parsed, 1);
-    result->streams      = streams;
-    result->stream_count = st->stream_count;
-    result->page_size   = st->page_size;
-    result->page_count  = st->total_page_count;
+    result.streams      = streams;
+    result.stream_count = st.stream_count;
+    result.page_size   = st.page_size;
+    result.page_count  = st.total_page_count;
   }
   
   scratch_end(scratch);
@@ -299,9 +299,9 @@ String8
 msf_data_from_stream(MSF_Parsed* msf, MSF_StreamNumber sn)
 {
   String8 result = {0};
-  if(sn < msf->stream_count)
+  if(sn < msf.stream_count)
   {
-    result = msf->streams[sn];
+    result = msf.streams[sn];
   }
   return(result);
 }

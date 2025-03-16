@@ -81,7 +81,7 @@ struct E_OpInfo
 // key-value stores, e.g. for information in the debugger.
 //
 // Effectively, when considering the result of an evaluation, you use the
-// value for understanding a key* into* a space, e.g. 1+2 -> 3, in a null
+// value for understanding a key* into* a space, e.g. 1+2 . 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
 enum E_SpaceKind : uint64

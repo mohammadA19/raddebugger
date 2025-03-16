@@ -51,23 +51,23 @@ frame()
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   OS_EventList events = os_get_events(scratch.arena, 0);
-  for(OS_Event* ev = events.first; ev != 0; ev = ev->next)
+  for(OS_Event* ev = events.first; ev != 0; ev = ev.next)
   {
-    if(ev->kind != OS_EventKind_MouseMove)
+    if(ev.kind != OS_EventKind_MouseMove)
     {
-      String8 string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev->kind), os_g_key_display_string_table[ev->key]);
+      String8 string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev.kind), os_g_key_display_string_table[ev.key]);
       printf("%.*s", str8_varg(string));
       OutputDebugStringA((char *)string.str);
       fflush(stdout);
     }
-    if(ev->kind == OS_EventKind_Press && ev->key == OS_Key_X)
+    if(ev.kind == OS_EventKind_Press && ev.key == OS_Key_X)
     {
       *(int *)0 = 0;
     }
   }
-  for(OS_Event* ev = events.first; ev != 0; ev = ev->next)
+  for(OS_Event* ev = events.first; ev != 0; ev = ev.next)
   {
-    if(ev->kind == OS_EventKind_WindowClose)
+    if(ev.kind == OS_EventKind_WindowClose)
     {
       quit = 1;
       break;

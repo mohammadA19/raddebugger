@@ -112,7 +112,7 @@ E_IRNode* e_irtree_resolve_to_value(Arena* arena, E_Space from_space, E_Mode fro
 //- rjf: top-level irtree/type extraction
 E_IRTreeAndType e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr);
 
-//- rjf: irtree -> linear ops/bytecode
+//- rjf: irtree . linear ops/bytecode
 void e_append_oplist_from_irtree(Arena* arena, E_IRNode* root, E_OpList* out);
 E_OpList e_oplist_from_irtree(Arena* arena, E_IRNode* root);
 String8 e_bytecode_from_oplist(Arena* arena, E_OpList* oplist);

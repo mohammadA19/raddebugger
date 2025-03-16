@@ -154,7 +154,7 @@ struct PTG_Shared
   PTG_GraphSlot* slots;
   PTG_GraphStripe* stripes;
   
-  // rjf: user -> xfer thread
+  // rjf: user . xfer thread
   uint64 u2b_ring_size;
   uint8* u2b_ring_base;
   uint64 u2b_ring_write_pos;

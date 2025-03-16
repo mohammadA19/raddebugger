@@ -64,7 +64,7 @@ struct FNT_Run
 }
 
 ////////////////////////////////
-//~ rjf: Font Path -> Handle * Metrics * Path Cache Types
+//~ rjf: Font Path . Handle * Metrics * Path Cache Types
 
 struct FNT_FontHashNode
 {
@@ -175,7 +175,7 @@ struct FNT_State
   uint64 font_hash_table_size;
   FNT_FontHashSlot* font_hash_table;
   
-  // rjf: hash -> raster cache table
+  // rjf: hash . raster cache table
   uint64 hash2style_slots_count;
   FNT_Hash2StyleRasterCacheSlot* hash2style_slots;
   

@@ -36,13 +36,13 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
   String8List src_folders = str8_split_path(scratch.arena, src_folder);
   String8List dst_folders = str8_split_path(scratch.arena, dst_folder);
   
-  // rjf: count # of backtracks to get from src -> dest
+  // rjf: count # of backtracks to get from src . dest
   uint64 num_backtracks = src_folders.node_count;
   for(String8Node* src_n = src_folders.first, *bp_n = dst_folders.first;
       src_n != 0 && bp_n != 0;
-      src_n = src_n->next, bp_n = bp_n->next)
+      src_n = src_n.next, bp_n = bp_n.next)
   {
-    if(str8_match(src_n->string, bp_n->string, path_match_flags_from_os(operating_system_from_context())))
+    if(str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context())))
     {
       num_backtracks -= 1;
     }
@@ -74,19 +74,19 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
       B32 unique_from_src = 0;
       for(String8Node* src_n = src_folders.first, *bp_n = dst_folders.first;
           bp_n != 0;
-          bp_n = bp_n->next)
+          bp_n = bp_n.next)
       {
-        if(!unique_from_src && (src_n == 0 || !str8_match(src_n->string, bp_n->string, path_match_flags_from_os(operating_system_from_context()))))
+        if(!unique_from_src && (src_n == 0 || !str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context()))))
         {
           unique_from_src = 1;
         }
         if(unique_from_src)
         {
-          str8_list_push(scratch.arena, &dst_path_strs, bp_n->string);
+          str8_list_push(scratch.arena, &dst_path_strs, bp_n.string);
         }
         if(src_n != 0)
         {
-          src_n = src_n->next;
+          src_n = src_n.next;
         }
       }
     }
@@ -127,7 +127,7 @@ path_normalized_list_from_string(Arena* arena, String8 path_string, PathStyle* s
   PathStyle path_style = path_style_from_str8(path_string);
   String8List path = str8_split_path(arena, path_string);
   
-  // prepend current path to convert relative -> absolute
+  // prepend current path to convert relative . absolute
   PathStyle path_style_full = path_style;
   if (path.node_count != 0 && path_style == PathStyle_Relative){
     String8 current_path_string = os_get_current_path(arena);

@@ -830,7 +830,7 @@ struct RD_State
   uint64 entities_count;
   uint64 entities_id_gen;
   RD_Entity* entities_root;
-  RD_Entity* entities_free[2]; // [0] -> normal lifetime, not user defined; [1] -> user defined lifetime (& thus undoable)
+  RD_Entity* entities_free[2]; // [0] . normal lifetime, not user defined; [1] . user defined lifetime (& thus undoable)
   uint64 entities_free_count;
   uint64 entities_active_count;
   
@@ -986,7 +986,7 @@ void rd_cmd_list_push_new(Arena* arena, RD_CmdList* cmds, String8 name, RD_Regs*
 B32 rd_entity_is_nil(RD_Entity* entity);
 #define rd_require_entity_nonnil(entity, if_nil_stmts) do{if(rd_entity_is_nil(entity)){if_nil_stmts;}}while(0)
 
-//- rjf: handle <-> entity conversions
+//- rjf: handle <. entity conversions
 uint64 rd_index_from_entity(RD_Entity* entity);
 RD_Handle rd_handle_from_entity(RD_Entity* entity);
 RD_Entity* rd_entity_from_handle(RD_Handle handle);
@@ -1002,13 +1002,13 @@ RD_Entity* rd_entity_child_from_kind(RD_Entity* entity, RD_EntityKind kind);
 //- rjf: entity list building
 void rd_entity_list_push(Arena* arena, RD_EntityList* list, RD_Entity* entity);
 RD_EntityArray rd_entity_array_from_list(Arena* arena, RD_EntityList* list);
-#define rd_first_entity_from_list(list) ((list)->first != 0 ? (list)->first->entity : &rd_nil_entity)
+#define rd_first_entity_from_list(list) ((list).first != 0 ? (list).first.entity : &rd_nil_entity)
 
-//- rjf: entity -> color operations
+//- rjf: entity . color operations
 Vec4F32 rd_hsva_from_entity(RD_Entity* entity);
 Vec4F32 rd_rgba_from_entity(RD_Entity* entity);
 
-//- rjf: entity -> expansion tree keys
+//- rjf: entity . expansion tree keys
 EV_Key rd_ev_key_from_entity(RD_Entity* entity);
 EV_Key rd_parent_ev_key_from_entity(RD_Entity* entity);
 
@@ -1045,7 +1045,7 @@ RD_PanelRec rd_panel_rec_depth_first(RD_Panel* panel, uint64 sib_off, uint64 chi
 #define rd_panel_rec_depth_first_pre(panel) rd_panel_rec_depth_first(panel, OffsetOf(RD_Panel, next), OffsetOf(RD_Panel, first))
 #define rd_panel_rec_depth_first_pre_rev(panel) rd_panel_rec_depth_first(panel, OffsetOf(RD_Panel, prev), OffsetOf(RD_Panel, last))
 
-//- rjf: panel -> rect calculations
+//- rjf: panel . rect calculations
 Rng2F32 rd_target_rect_from_panel_child(Rng2F32 parent_rect, RD_Panel* parent, RD_Panel* panel);
 Rng2F32 rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel* root, RD_Panel* panel);
 
@@ -1158,15 +1158,15 @@ DR_FancyStringList rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* en
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-//- rjf: entity <-> eval space
+//- rjf: entity <. eval space
 RD_Entity* rd_entity_from_eval_space(E_Space space);
 E_Space rd_eval_space_from_entity(RD_Entity* entity);
 
-//- rjf: ctrl entity <-> eval space
+//- rjf: ctrl entity <. eval space
 CTRL_Entity* rd_ctrl_entity_from_eval_space(E_Space space);
 E_Space rd_eval_space_from_ctrl_entity(CTRL_Entity* entity, E_SpaceKind kind);
 
-//- rjf: entity -> meta eval
+//- rjf: entity . meta eval
 CTRL_MetaEval* rd_ctrl_meta_eval_from_entity(Arena* arena, RD_Entity* entity);
 CTRL_MetaEval* rd_ctrl_meta_eval_from_ctrl_entity(Arena* arena, CTRL_Entity* entity);
 
@@ -1174,10 +1174,10 @@ CTRL_MetaEval* rd_ctrl_meta_eval_from_ctrl_entity(Arena* arena, CTRL_Entity* ent
 B32 rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range);
 B32 rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range);
 
-//- rjf: asynchronous streamed reads -> hashes from spaces
+//- rjf: asynchronous streamed reads . hashes from spaces
 U128 rd_key_from_eval_space_range(E_Space space, Rng1U64 range, B32 zero_terminated);
 
-//- rjf: space -> entire range
+//- rjf: space . entire range
 Rng1U64 rd_whole_range_from_eval_space(E_Space space);
 
 ////////////////////////////////
@@ -1195,7 +1195,7 @@ Arch rd_arch_from_eval_params(E_Eval eval, MD_Node* params);
 Vec2S32 rd_dim2s32_from_eval_params(E_Eval eval, MD_Node* params);
 R_Tex2DFormat rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node* params);
 
-//- rjf: eval <-> file path
+//- rjf: eval <. file path
 String8 rd_file_path_from_eval_string(Arena* arena, String8 string);
 String8 rd_eval_string_from_file_path(Arena* arena, String8 string);
 
@@ -1331,7 +1331,7 @@ Vec4F32 rd_rgba_from_theme_color(RD_ThemeColor color);
 RD_ThemeColor rd_theme_color_from_txt_token_kind(TXT_TokenKind kind);
 RD_ThemeColor rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 string);
 
-//- rjf: code -> palette
+//- rjf: code . palette
 UI_Palette* rd_palette_from_code(RD_PaletteCode code);
 
 //- rjf: fonts/sizes
@@ -1388,7 +1388,7 @@ void rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string);
 ////////////////////////////////
 //~ rjf: Commands
 
-//- rjf: name -> info
+//- rjf: name . info
 RD_CmdKind rd_cmd_kind_from_string(String8 string);
 RD_CmdKindInfo* rd_cmd_kind_info_from_string(String8 string);
 

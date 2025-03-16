@@ -11,28 +11,28 @@
 //~ Usage Samples
 //
 #if 0
-// Procedure Name -> Line
+// Procedure Name . Line
 {
   RDI_Parsed* rdi = ...;
   char* name = "mule_main";
-  RDI_Procedure* procedure = rdi_procedure_from_name_cstr(rdi, name);                  // 1. name -> procedure
-  RDI_U64 procedure_first_voff = rdi_first_voff_from_procedure(rdi, procedure);        // 2. procedure -> virtual offset
-  RDI_Line line = rdi_line_from_voff(rdi, procedure_first_voff);                       // 3. virtual offset -> line
-  RDI_SourceFile* file = rdi_source_file_from_line(rdi, &line);                        // 4. line -> source file
-  RDI_U64 file_path_size = 0;                                                          // 5. source file -> path
+  RDI_Procedure* procedure = rdi_procedure_from_name_cstr(rdi, name);                  // 1. name . procedure
+  RDI_U64 procedure_first_voff = rdi_first_voff_from_procedure(rdi, procedure);        // 2. procedure . virtual offset
+  RDI_Line line = rdi_line_from_voff(rdi, procedure_first_voff);                       // 3. virtual offset . line
+  RDI_SourceFile* file = rdi_source_file_from_line(rdi, &line);                        // 4. line . source file
+  RDI_U64 file_path_size = 0;                                                          // 5. source file . path
   RDI_U8* file_path = rdi_normal_path_from_source_file(rdi, file, &file_path_size);
   printf("%s is at %.*s:%u\n", name, (int)file_path_size, file_path, line.line_num);
 }
 
-// Line -> Procedure Name
+// Line . Procedure Name
 {
   RDI_Parsed* rdi = ...;
   char* path = "c:/devel/raddebugger/src/mule/mule_main.cpp";
   RDI_U32 line_num = 2557;
-  RDI_SourceFile* file = rdi_source_file_from_normal_path_cstr(rdi, path);      // 1. path -> source file
-  RDI_U64 voff = rdi_first_voff_from_source_file_line_num(rdi, file, line_num); // 2. (source file, line) -> virtual offset
-  RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, voff);                // 3. virtual offset -> procedure
-  RDI_U64 name_size = 0;                                                        // 4. procedure -> name
+  RDI_SourceFile* file = rdi_source_file_from_normal_path_cstr(rdi, path);      // 1. path . source file
+  RDI_U64 voff = rdi_first_voff_from_source_file_line_num(rdi, file, line_num); // 2. (source file, line) . virtual offset
+  RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, voff);                // 3. virtual offset . procedure
+  RDI_U64 name_size = 0;                                                        // 4. procedure . name
   RDI_U8* name = rdi_name_from_procedure(rdi, procedure, &name_size);
   printf("%s:%u is inside %.*s\n", path, line_num, (int)name_size, name);
 }
@@ -63,7 +63,7 @@ struct RDI_Parsed
 
 struct RDI_ParsedLineTable
 {
-  // NOTE: Mapping VOFF -> LINE_INFO
+  // NOTE: Mapping VOFF . LINE_INFO
   //
   // * [ voff[i], voff[i + 1] ) forms the voff range
   // * for the line info at lines[i] (and cols[i] if i < col_count)
@@ -76,7 +76,7 @@ struct RDI_ParsedLineTable
 
 struct RDI_ParsedSourceLineMap
 {
-  // NOTE: Mapping LINE_NUMBER -> VOFFs
+  // NOTE: Mapping LINE_NUMBER . VOFFs
   //
   // * nums[i] gives a line number
   // * that line number has one or more associated voffs

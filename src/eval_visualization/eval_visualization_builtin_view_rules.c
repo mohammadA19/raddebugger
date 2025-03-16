@@ -88,7 +88,7 @@ ev_arch_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Arch arch = Arch_Null;
   MD_Node* arch_node = md_child_from_string(params, str8_lit("arch"), 0);
-  String8 arch_kind_string = arch_node->first->string;
+  String8 arch_kind_string = arch_node.first.string;
   if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlag_CaseInsensitive))
   {
     arch = Arch_x64;
@@ -124,7 +124,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(default)
   E_TypeKind direct_type_kind = e_type_kind_from_key(direct_type_key);
   
   ////////////////////////////
-  //- rjf: structs/unions/classes -> expansions generate rows for all members
+  //- rjf: structs/unions/classes . expansions generate rows for all members
   //
   if((type_kind == E_TypeKind_Struct ||
       type_kind == E_TypeKind_Union ||
@@ -134,24 +134,24 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(default)
                                                    direct_type_kind == E_TypeKind_Class)))
   {
     E_TypeKey struct_type_key = e_type_kind_is_pointer_or_ref(type_kind) ? direct_type_key : type_key;
-    accel->members = e_type_data_members_from_key__cached(struct_type_key);
-    total_row_count = accel->members.count;
+    accel.members = e_type_data_members_from_key__cached(struct_type_key);
+    total_row_count = accel.members.count;
   }
   
   ////////////////////////////
-  //- rjf: enums -> expansions generate rows for all members
+  //- rjf: enums . expansions generate rows for all members
   //
   else if(type_kind == E_TypeKind_Enum ||
           (e_type_kind_is_pointer_or_ref(type_kind) && direct_type_kind == E_TypeKind_Enum))
   {
     E_Type* type = e_type_from_key(arena, e_type_kind_is_pointer_or_ref(type_kind) ? direct_type_key : type_key);
-    accel->enum_vals.v = type->enum_vals;
-    accel->enum_vals.count = type->count;
-    total_row_count = accel->enum_vals.count;
+    accel.enum_vals.v = type.enum_vals;
+    accel.enum_vals.count = type.count;
+    total_row_count = accel.enum_vals.count;
   }
   
   ////////////////////////////
-  //- rjf: arrays -> expansions generate rows for all elements
+  //- rjf: arrays . expansions generate rows for all elements
   //
   else if(type_kind == E_TypeKind_Array ||
           (e_type_kind_is_pointer_or_ref(type_kind) && direct_type_kind == E_TypeKind_Array))
@@ -159,18 +159,18 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(default)
     B32 need_extra_deref = e_type_kind_is_pointer_or_ref(type_kind);
     E_Expr* array_expr = need_extra_deref ? e_expr_ref_deref(arena, expr) : expr;
     E_Type* type = e_type_from_key(arena, need_extra_deref ? direct_type_key : type_key);
-    total_row_count = type->count;
-    accel->array_count = type->count;
-    accel->array_need_extra_deref = need_extra_deref;
+    total_row_count = type.count;
+    accel.array_count = type.count;
+    accel.array_need_extra_deref = need_extra_deref;
   }
   
   ////////////////////////////
-  //- rjf: pointer-to-pointer -> expansions generate dereference
+  //- rjf: pointer-to-pointer . expansions generate dereference
   //
   else if(e_type_kind_is_pointer_or_ref(type_kind) && e_type_kind_is_pointer_or_ref(direct_type_kind))
   {
     total_row_count = 1;
-    accel->is_ptr2ptr = 1;
+    accel.is_ptr2ptr = 1;
   }
   
   ////////////////////////////
@@ -195,18 +195,18 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   ////////////////////////////
   //- rjf: fill with members
   //
-  if(accel->members.count != 0)
+  if(accel.members.count != 0)
   {
-    E_MemberArray* members = &accel->members;
-    result.row_exprs_count = Min(needed_row_count, members->count);
+    E_MemberArray* members = &accel.members;
+    result.row_exprs_count = Min(needed_row_count, members.count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
     result.row_members = push_array(arena, E_Member *, result.row_exprs_count);
     for EachIndex(row_expr_idx, result.row_exprs_count)
     {
-      E_Member* member = &members->v[idx_range.min + row_expr_idx];
-      result.row_exprs[row_expr_idx] = e_expr_ref_member_access(arena, expr, member->name);
+      E_Member* member = &members.v[idx_range.min + row_expr_idx];
+      result.row_exprs[row_expr_idx] = e_expr_ref_member_access(arena, expr, member.name);
       result.row_members[row_expr_idx] = member;
     }
   }
@@ -214,18 +214,18 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   ////////////////////////////
   //- rjf: fill with enum vals
   //
-  else if(accel->enum_vals.count != 0)
+  else if(accel.enum_vals.count != 0)
   {
-    E_EnumValArray* enumvals = &accel->enum_vals;
-    result.row_exprs_count = Min(needed_row_count, enumvals->count);
+    E_EnumValArray* enumvals = &accel.enum_vals;
+    result.row_exprs_count = Min(needed_row_count, enumvals.count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
     result.row_members = push_array(arena, E_Member *, result.row_exprs_count);
     for EachIndex(row_expr_idx, result.row_exprs_count)
     {
-      E_EnumVal* enumval = &enumvals->v[idx_range.min + row_expr_idx];
-      result.row_exprs[row_expr_idx] = e_expr_ref_member_access(arena, expr, enumval->name);
+      E_EnumVal* enumval = &enumvals.v[idx_range.min + row_expr_idx];
+      result.row_exprs[row_expr_idx] = e_expr_ref_member_access(arena, expr, enumval.name);
       result.row_members[row_expr_idx] = &e_member_nil;
     }
   }
@@ -233,10 +233,10 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   ////////////////////////////
   //- rjf: fill with array indices
   //
-  else if(accel->array_count != 0)
+  else if(accel.array_count != 0)
   {
-    E_Expr* array_expr = accel->array_need_extra_deref ? e_expr_ref_deref(arena, expr) : expr;
-    result.row_exprs_count = Min(needed_row_count, accel->array_count);
+    E_Expr* array_expr = accel.array_need_extra_deref ? e_expr_ref_deref(arena, expr) : expr;
+    result.row_exprs_count = Min(needed_row_count, accel.array_count);
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings = push_array(arena, String8, result.row_exprs_count);
     result.row_view_rules  = push_array(arena, String8, result.row_exprs_count);
@@ -251,7 +251,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
   ////////////////////////////
   //- rjf: fill with ptr-to-ptr deref
   //
-  else if(accel->is_ptr2ptr)
+  else if(accel.is_ptr2ptr)
   {
     result.row_exprs_count = 1;
     result.row_exprs = push_array(arena, E_Expr *, result.row_exprs_count);
@@ -279,7 +279,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(array)
     E_Value count = ev_value_from_params(params);
     E_TypeKey element_type_key = e_type_ptee_from_key(type_key);
     E_TypeKey array_type_key = e_type_key_cons_array(element_type_key, count.u64);
-    E_TypeKey ptr_type_key = e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, array_type_key, 0);
+    E_TypeKey ptr_type_key = e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, array_type_key, 0);
     expr = e_expr_ref_cast(arena, ptr_type_key, expr);
   }
   scratch_end(scratch);
@@ -320,7 +320,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     for(uint64 idx = 0; idx < members.count; idx += 1)
     {
       E_Member* member = &members.v[idx];
-      E_TypeKey member_type = e_type_unwrap(member->type_key);
+      E_TypeKey member_type = e_type_unwrap(member.type_key);
       E_TypeKind member_type_kind = e_type_kind_from_key(member_type);
       if(count_member == 0 && e_type_kind_is_integer(member_type_kind))
       {
@@ -340,7 +340,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     uint64 count = 0;
     if(count_member != 0)
     {
-      E_Expr* count_member_expr = e_expr_ref_member_access(scratch.arena, expr, count_member->name);
+      E_Expr* count_member_expr = e_expr_ref_member_access(scratch.arena, expr, count_member.name);
       E_Eval count_member_eval = e_eval_from_expr(scratch.arena, count_member_expr);
       E_Eval count_member_value_eval = e_value_eval_from_eval(count_member_eval);
       count = count_member_value_eval.value.u64;
@@ -351,14 +351,14 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     if(base_ptr_member != 0 && count_member != 0)
     {
       String8 struct_name = e_type_string_from_key(scratch.arena, irtree.type_key);
-      E_TypeKey element_type_key = e_type_ptee_from_key(base_ptr_member->type_key);
+      E_TypeKey element_type_key = e_type_ptee_from_key(base_ptr_member.type_key);
       E_TypeKey array_type_key = e_type_key_cons_array(element_type_key, count);
-      E_TypeKey sized_base_ptr_type_key = e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, array_type_key, 0);
+      E_TypeKey sized_base_ptr_type_key = e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, array_type_key, 0);
       E_MemberList slice_type_members = {0};
       e_member_list_push(scratch.arena, &slice_type_members, count_member);
-      e_member_list_push(scratch.arena, &slice_type_members, &(E_Member){.kind = E_MemberKind_DataField, .type_key = sized_base_ptr_type_key, .name = base_ptr_member->name, .pretty_name = base_ptr_member->pretty_name, .off = base_ptr_member->off});
+      e_member_list_push(scratch.arena, &slice_type_members, &(E_Member){.kind = E_MemberKind_DataField, .type_key = sized_base_ptr_type_key, .name = base_ptr_member.name, .pretty_name = base_ptr_member.pretty_name, .off = base_ptr_member.off});
       E_MemberArray slice_type_members_array = e_member_array_from_list(scratch.arena, &slice_type_members);
-      slice_type_key = e_type_key_cons(.arch = e_type_state->ctx->primary_module->arch,
+      slice_type_key = e_type_key_cons(.arch = e_type_state.ctx.primary_module.arch,
                                        .kind = E_TypeKind_Struct,
                                        .name = struct_name,
                                        .members = slice_type_members_array.v,
@@ -369,7 +369,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     if(base_ptr_member != 0 && count_member != 0)
     {
       expr = e_expr_ref_addr(arena, expr);
-      expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, slice_type_key, 0), expr);
+      expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, slice_type_key, 0), expr);
       expr = e_expr_ref_deref(arena, expr);
     }
   }
@@ -416,27 +416,27 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(wrap)
     Task start_task = {0, &e_expr_nil, wrap_expr};
     Task* first_task = &start_task;
     Task* last_task = first_task;
-    for(Task* t = first_task; t != 0; t = t->next)
+    for(Task* t = first_task; t != 0; t = t.next)
     {
-      if(t->expr->kind == E_ExprKind_LeafIdent && str8_match(t->expr->string, str8_lit("$expr"), 0))
+      if(t.expr.kind == E_ExprKind_LeafIdent && str8_match(t.expr.string, str8_lit("$expr"), 0))
       {
         E_Expr* original_expr_ref = e_expr_ref(arena, expr);
-        if(t->parent != &e_expr_nil)
+        if(t.parent != &e_expr_nil)
         {
-          e_expr_insert_child(t->parent, t->expr, original_expr_ref);
-          e_expr_remove_child(t->parent, t->expr);
+          e_expr_insert_child(t.parent, t.expr, original_expr_ref);
+          e_expr_remove_child(t.parent, t.expr);
         }
         else
         {
           new_root_expr = original_expr_ref;
         }
       }
-      else for(E_Expr* child = t->expr->first; child != &e_expr_nil; child = child->next)
+      else for(E_Expr* child = t.expr.first; child != &e_expr_nil; child = child.next)
       {
         Task* task = push_array(scratch.arena, Task, 1);
         SLLQueuePush(first_task, last_task, task);
-        task->parent = t->expr;
-        task->expr = child;
+        task.parent = t.expr;
+        task.expr = child;
       }
     }
     scratch_end(scratch);
@@ -464,11 +464,11 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(only)
   {
     E_MemberArray current_members = e_type_data_members_from_key__cached(struct_type_key);
     E_MemberList new_members = {0};
-    for MD_EachNode(node, params->first)
+    for MD_EachNode(node, params.first)
     {
       for EachIndex(idx, current_members.count)
       {
-        if(str8_match(node->string, current_members.v[idx].name, 0))
+        if(str8_match(node.string, current_members.v[idx].name, 0))
         {
           e_member_list_push(scratch.arena, &new_members, &current_members.v[idx]);
           break;
@@ -490,7 +490,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(only)
     {
       expr = e_expr_ref_addr(arena, expr);
     }
-    expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, new_type, 0), expr);
+    expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, new_type, 0), expr);
     if(!is_ptr)
     {
       expr = e_expr_ref_deref(arena, expr);
@@ -523,9 +523,9 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(omit)
     for EachIndex(idx, current_members.count)
     {
       B32 include = 1;
-      for MD_EachNode(node, params->first)
+      for MD_EachNode(node, params.first)
       {
-        if(str8_match(node->string, current_members.v[idx].name, 0))
+        if(str8_match(node.string, current_members.v[idx].name, 0))
         {
           include = 0;
           break;
@@ -544,7 +544,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(omit)
     {
       expr = e_expr_ref_addr(arena, expr);
     }
-    expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, new_type, 0), expr);
+    expr = e_expr_ref_cast(arena, e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, new_type, 0), expr);
     if(!is_ptr)
     {
       expr = e_expr_ref_deref(arena, expr);

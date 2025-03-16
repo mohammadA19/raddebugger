@@ -80,14 +80,14 @@ uint64
 cv_read_numeric(String8 data, uint64 offset, CV_NumericParsed* out)
 {
   *out = cv_numeric_from_data_range(data.str + offset, data.str + data.size);
-  return out->encoded_size;
+  return out.encoded_size;
 }
 
 B32
 cv_numeric_fits_in_u64(CV_NumericParsed* num)
 {
   B32 result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
     case CV_NumericKind_USHORT:
     case CV_NumericKind_ULONG:
@@ -103,7 +103,7 @@ B32
 cv_numeric_fits_in_s64(CV_NumericParsed* num)
 {
   B32 result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
     case CV_NumericKind_CHAR:
     case CV_NumericKind_SHORT:
@@ -120,7 +120,7 @@ B32
 cv_numeric_fits_in_f64(CV_NumericParsed* num)
 {
   B32 result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
     case CV_NumericKind_FLOAT32:
     case CV_NumericKind_FLOAT64:
@@ -135,11 +135,11 @@ uint64
 cv_u64_from_numeric(CV_NumericParsed* num)
 {
   uint64 result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
-    case CV_NumericKind_USHORT:   {result = *(uint16*)num->val;}break;
-    case CV_NumericKind_ULONG:    {result = *(uint32*)num->val;}break;
-    case CV_NumericKind_UQUADWORD:{result = *(uint64*)num->val;}break;
+    case CV_NumericKind_USHORT:   {result = *(uint16*)num.val;}break;
+    case CV_NumericKind_ULONG:    {result = *(uint32*)num.val;}break;
+    case CV_NumericKind_UQUADWORD:{result = *(uint64*)num.val;}break;
   }
   return result;
 }
@@ -148,12 +148,12 @@ int64
 cv_s64_from_numeric(CV_NumericParsed* num)
 {
   int64 result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
-    case CV_NumericKind_CHAR:     {result = *(int8*)num->val;}break;
-    case CV_NumericKind_SHORT:    {result = *(int16*)num->val;}break;
-    case CV_NumericKind_LONG:     {result = *(int32*)num->val;}break;
-    case CV_NumericKind_QUADWORD: {result = *(int64*)num->val;}break;
+    case CV_NumericKind_CHAR:     {result = *(int8*)num.val;}break;
+    case CV_NumericKind_SHORT:    {result = *(int16*)num.val;}break;
+    case CV_NumericKind_LONG:     {result = *(int32*)num.val;}break;
+    case CV_NumericKind_QUADWORD: {result = *(int64*)num.val;}break;
   }
   return(result);
 }
@@ -162,10 +162,10 @@ double
 cv_f64_from_numeric(CV_NumericParsed* num)
 {
   double result = 0;
-  switch(num->kind)
+  switch(num.kind)
   {
-    case CV_NumericKind_FLOAT32:{result = *(float*)num->val;}break;
-    case CV_NumericKind_FLOAT64:{result = *(double*)num->val;}break;
+    case CV_NumericKind_FLOAT32:{result = *(float*)num.val;}break;
+    case CV_NumericKind_FLOAT64:{result = *(double*)num.val;}break;
   }
   return(result);
 }
@@ -274,178 +274,178 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
 {
   CV_C13InlineSiteDecoderStep result = {0};
 
-  for (; decoder->cursor < binary_annots.size && result.flags == 0; ) {
+  for (; decoder.cursor < binary_annots.size && result.flags == 0; ) {
     uint32 op = CV_InlineBinaryAnnotation_Null;
-    decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &op);
+    decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &op);
 
     switch (op) {
     case CV_InlineBinaryAnnotation_Null: {
-      decoder->cursor              = binary_annots.size;
+      decoder.cursor              = binary_annots.size;
       // this is last run, append range with left over code bytes
-      decoder->code_length         = decoder->code_offset - decoder->code_offset_lo;
-      decoder->code_length_changed = 1;
+      decoder.code_length         = decoder.code_offset - decoder.code_offset_lo;
+      decoder.code_length_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_CodeOffset: {
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->code_offset);
-      decoder->code_offset_changed = 1;
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &decoder.code_offset);
+      decoder.code_offset_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffsetBase: {
       AssertAlways(!"TODO: test case");
       // uint32 delta = 0;
-      // decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &delta);
-      // decoder->code_offset_base = decoder->code_offset;
-      // decoder->code_offset_end  = decoder->code_offset + delta;
-      // decoder->code_offset     += delta;
+      // decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &delta);
+      // decoder.code_offset_base = decoder.code_offset;
+      // decoder.code_offset_end  = decoder.code_offset + delta;
+      // decoder.code_offset     += delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffset: {
       uint32 delta = 0;
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &delta);
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &delta);
 
-      decoder->code_offset += delta;
+      decoder.code_offset += delta;
 
-      if (!decoder->code_offset_lo_changed) {
-        decoder->code_offset_lo         = decoder->code_offset;
-        decoder->code_offset_lo_changed = 1;
+      if (!decoder.code_offset_lo_changed) {
+        decoder.code_offset_lo         = decoder.code_offset;
+        decoder.code_offset_lo_changed = 1;
       }
-      decoder->code_offset_changed = 1;
+      decoder.code_offset_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeLength: {
-      decoder->code_length = 0;
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->code_length);
-      decoder->code_length_changed = 1;
+      decoder.code_length = 0;
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &decoder.code_length);
+      decoder.code_length_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeFile: {
-      uint32 old_file_off = decoder->file_off;
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->file_off);
-      decoder->file_off_changed = old_file_off != decoder->file_off;
+      uint32 old_file_off = decoder.file_off;
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &decoder.file_off);
+      decoder.file_off_changed = old_file_off != decoder.file_off;
       // Compiler isn't obligated to terminate code sequence before chaning files,
       // so we have to always force emit code range on file change.
-      decoder->code_length_changed = decoder->file_off_changed;
+      decoder.code_length_changed = decoder.file_off_changed;
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineOffset: {
       int32 delta = 0;
-      decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
+      decoder.cursor += cv_decode_inline_annot_s32(binary_annots, decoder.cursor, &delta);
 
-      decoder->ln         += delta;
-      decoder->ln_changed  = 1;
+      decoder.ln         += delta;
+      decoder.ln_changed  = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineEndDelta: {
       AssertAlways(!"TODO: test case");
       // int32 end_delta = 1;
-      // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
-      // decoder->ln += end_delta;
+      // decoder.cursor += cv_decode_inline_annot_s32(binary_annots, decoder.cursor, &end_delta);
+      // decoder.ln += end_delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeRangeKind: {
       AssertAlways(!"TODO: test case");
-      // decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &range_kind);
+      // decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &range_kind);
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnStart: {
       AssertAlways(!"TODO: test case");
       // int32 delta;
-      // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
-      // decoder->cn += delta;
+      // decoder.cursor += cv_decode_inline_annot_s32(binary_annots, decoder.cursor, &delta);
+      // decoder.cn += delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnEndDelta: {
       AssertAlways(!"TODO: test case");
       // int32 end_delta;
-      // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
-      // decoder->cn += end_delta;
+      // decoder.cursor += cv_decode_inline_annot_s32(binary_annots, decoder.cursor, &end_delta);
+      // decoder.cn += end_delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: {
       uint32 code_offset_and_line_offset = 0;
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &code_offset_and_line_offset);
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &code_offset_and_line_offset);
 
       int32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
       uint32 code_delta = (code_offset_and_line_offset & 0xf);
 
-      decoder->code_offset += code_delta;
-      decoder->ln          += line_delta;
+      decoder.code_offset += code_delta;
+      decoder.ln          += line_delta;
 
-      if (!decoder->code_offset_lo_changed) {
-        decoder->code_offset_lo         = decoder->code_offset;
-        decoder->code_offset_lo_changed = 1;
+      if (!decoder.code_offset_lo_changed) {
+        decoder.code_offset_lo         = decoder.code_offset;
+        decoder.code_offset_lo_changed = 1;
       }
 
-      decoder->code_offset_changed = 1;
-      decoder->ln_changed          = 1;
+      decoder.code_offset_changed = 1;
+      decoder.ln_changed          = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset: {
       uint32 offset_delta = 0;
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->code_length);
-      decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &offset_delta); 
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &decoder.code_length);
+      decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &offset_delta); 
 
-      decoder->code_offset += offset_delta;
+      decoder.code_offset += offset_delta;
 
-      if (!decoder->code_offset_lo_changed) {
-        decoder->code_offset_lo         = decoder->code_offset;
-        decoder->code_offset_lo_changed = 1;
+      if (!decoder.code_offset_lo_changed) {
+        decoder.code_offset_lo         = decoder.code_offset;
+        decoder.code_offset_lo_changed = 1;
       }
 
-      decoder->code_offset_changed = 1;
-      decoder->code_length_changed = 1;
+      decoder.code_offset_changed = 1;
+      decoder.code_length_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnEnd: {
       AssertAlways(!"TODO: test case");
       // uint32 column_end = 0;
-      // decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &column_end);
+      // decoder.cursor += cv_decode_inline_annot_u32(binary_annots, decoder.cursor, &column_end);
     } break;
     }
 
-    uint64 line_code_offset = decoder->code_offset;
+    uint64 line_code_offset = decoder.code_offset;
 
-    if (decoder->code_length_changed) {
+    if (decoder.code_length_changed) {
       // compute upper bound of the range
-      uint64 code_offset_hi = decoder->code_offset + decoder->code_length;
+      uint64 code_offset_hi = decoder.code_offset + decoder.code_length;
 
       // can last code range be extended to cover current sequence too?
-      if (decoder->last_range.max == decoder->parent_voff + decoder->code_offset_lo) {
-        decoder->last_range.max = decoder->parent_voff + code_offset_hi;
+      if (decoder.last_range.max == decoder.parent_voff + decoder.code_offset_lo) {
+        decoder.last_range.max = decoder.parent_voff + code_offset_hi;
 
         result.flags |= CV_C13InlineSiteDecoderStepFlag_ExtendLastRange;
-        result.range  = decoder->last_range;
+        result.range  = decoder.last_range;
       } else {
-        decoder->last_range      = rng_1u64(decoder->parent_voff + decoder->code_offset_lo, decoder->parent_voff + code_offset_hi);
-        decoder->file_last_range = decoder->last_range;
+        decoder.last_range      = rng_1u64(decoder.parent_voff + decoder.code_offset_lo, decoder.parent_voff + code_offset_hi);
+        decoder.file_last_range = decoder.last_range;
 
         result.flags |= CV_C13InlineSiteDecoderStepFlag_EmitRange;
-        result.range  = decoder->last_range;
+        result.range  = decoder.last_range;
       }
 
       // update state
-      decoder->code_offset_lo         = code_offset_hi;
-      decoder->code_offset           += decoder->code_length;
-      decoder->code_offset_lo_changed = 0;
-      decoder->code_length_changed    = 0;
-      decoder->code_length            = 0;
+      decoder.code_offset_lo         = code_offset_hi;
+      decoder.code_offset           += decoder.code_length;
+      decoder.code_offset_lo_changed = 0;
+      decoder.code_length_changed    = 0;
+      decoder.code_length            = 0;
     }
 
-    if (decoder->file_off_changed || (decoder->file_count == 0)) {
+    if (decoder.file_off_changed || (decoder.file_count == 0)) {
       result.flags    |= CV_C13InlineSiteDecoderStepFlag_EmitFile;
-      result.file_off  = decoder->file_off;
+      result.file_off  = decoder.file_off;
 
       // update state
-      decoder->file_last_range   = decoder->last_range;
-      decoder->file_off_changed  = 0;
-      decoder->file_count       += 1;
-      decoder->file_line_count   = 0;
+      decoder.file_last_range   = decoder.last_range;
+      decoder.file_off_changed  = 0;
+      decoder.file_count       += 1;
+      decoder.file_line_count   = 0;
     }
 
-    if (decoder->code_offset_changed && decoder->ln_changed) {
-      if (decoder->file_line_count == 0 || decoder->file_last_ln != decoder->ln) {
+    if (decoder.code_offset_changed && decoder.ln_changed) {
+      if (decoder.file_line_count == 0 || decoder.file_last_ln != decoder.ln) {
         result.flags         |= CV_C13InlineSiteDecoderStepFlag_EmitLine;
-        result.ln             = decoder->ln;
-        result.cn             = decoder->cn;
-        result.line_voff      = decoder->parent_voff + line_code_offset;
-        result.line_voff_end  = decoder->last_range.max;
+        result.ln             = decoder.ln;
+        result.cn             = decoder.cn;
+        result.line_voff      = decoder.parent_voff + line_code_offset;
+        result.line_voff_end  = decoder.last_range.max;
 
         // update state
-        decoder->file_line_count += 1;
-        decoder->file_last_ln     = decoder->ln;
+        decoder.file_line_count += 1;
+        decoder.file_last_ln     = decoder.ln;
       }
 
       // update state
-      decoder->code_offset_changed = 0;
-      decoder->ln_changed          = 0;
+      decoder.code_offset_changed = 0;
+      decoder.ln_changed          = 0;
     }
   }
 
@@ -576,12 +576,12 @@ CV_TypeIndexInfo *
 cv_symbol_type_index_info_push(Arena* arena, CV_TypeIndexInfoList* list, CV_TypeIndexSource source, uint64 offset)
 {
   CV_TypeIndexInfo* info = push_array_no_zero(arena, CV_TypeIndexInfo, 1);
-  info->next   = 0;
-  info->offset = offset;
-  info->source = source;
+  info.next   = 0;
+  info.offset = offset;
+  info.source = source;
 
-  SLLQueuePush(list->first, list->last, info);
-  list->count += 1;
+  SLLQueuePush(list.first, list.last, info);
+  list.count += 1;
 
   return info;
 }
@@ -638,7 +638,7 @@ cv_get_symbol_type_index_offsets(Arena* arena, CV_SymKind kind, String8 data)
   case CV_SymKind_INLINEES: {
     Assert(data.size >= sizeof(CV_SymFunctionList));
     CV_SymFunctionList* func_list = (CV_SymFunctionList*)data.str;
-    for (uint64 i = 0; i < func_list->count; ++i) {
+    for (uint64 i = 0; i < func_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_SymFunctionList) + i * sizeof(CV_TypeIndex));
     }
   } break;
@@ -670,12 +670,12 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_POINTER: {
     cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, OffsetOf(CV_LeafPointer, itype));
     CV_LeafPointer* ptr = (CV_LeafPointer *)data.str;
-    CV_PointerKind ptr_kind = CV_PointerAttribs_Extract_Kind(ptr->attribs);
+    CV_PointerKind ptr_kind = CV_PointerAttribs_Extract_Kind(ptr.attribs);
     if (ptr_kind == CV_PointerKind_BaseType) {
       // TODO: add CV_LeafPointerBaseType
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafPointer) + 0);
     } else {
-      CV_PointerMode ptr_mode = CV_PointerAttribs_Extract_Mode(ptr->attribs);
+      CV_PointerMode ptr_mode = CV_PointerAttribs_Extract_Mode(ptr.attribs);
       if (ptr_mode == CV_PointerMode_PtrMem || ptr_mode == CV_PointerMode_PtrMethod) {
         // TODO: add type for the CvLeafPointerMember to syms_cv.mc
         cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafPointer) + 0);
@@ -727,7 +727,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_BUILDINFO: {
     Assert(data.size >= sizeof(CV_LeafBuildInfo));
     CV_LeafBuildInfo* build_info = (CV_LeafBuildInfo *)data.str;
-    for (uint16 i = 0; i < build_info->count; ++i) {
+    for (uint16 i = 0; i < build_info.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafBuildInfo) + i * sizeof(CV_ItemId));
     }
   } break;
@@ -752,7 +752,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_VFTPATH: {
     Assert(sizeof(CV_LeafVFPath) <= data.size);
     CV_LeafVFPath* vfpath = (CV_LeafVFPath *)data.str;
-    for (uint32 i = 0; i < vfpath->count; ++i) {
+    for (uint32 i = 0; i < vfpath.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafVFPath) + i * sizeof(CV_TypeId));
     }
   } break;
@@ -767,14 +767,14 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_SUBSTR_LIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
     CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
-    for (uint32 i = 0; i < arg_list->count; ++i) {
+    for (uint32 i = 0; i < arg_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
   } break;
   case CV_LeafKind_ARGLIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
     CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
-    for (uint32 i = 0; i < arg_list->count; ++i) {
+    for (uint32 i = 0; i < arg_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
   } break;
@@ -997,11 +997,11 @@ cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, Stri
     uint64 cursor = 0;
     uint64 ti_idx = 0;
 
-    for(CV_TypeIndexInfo* ti_info = ti_list.first; ti_info != 0; ti_info = ti_info->next, ++ti_idx)
+    for(CV_TypeIndexInfo* ti_info = ti_list.first; ti_info != 0; ti_info = ti_info.next, ++ti_idx)
 	{
-      result.v[ti_idx].size = ti_info->offset - cursor;
+      result.v[ti_idx].size = ti_info.offset - cursor;
       result.v[ti_idx].str  = data.str + cursor;
-      cursor = ti_info->offset + sizeof(CV_TypeIndex);
+      cursor = ti_info.offset + sizeof(CV_TypeIndex);
     }
 
     result.v[result.count-1].size = data.size - cursor;
@@ -1174,11 +1174,11 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
   // dbi/tpi.cpp:1332
   case CV_LeafKind_UDT_SRC_LINE: {
     CV_LeafUDTSrcLine* src_line = str8_deserial_get_raw_ptr(data, 0, sizeof(CV_LeafUDTSrcLine));
-    name = str8_struct(&src_line->udt_itype);
+    name = str8_struct(&src_line.udt_itype);
   } break;
   case CV_LeafKind_UDT_MOD_SRC_LINE: {
     CV_LeafUDTModSrcLine* mod_src_line = str8_deserial_get_raw_ptr(data, 0, sizeof(CV_LeafUDTModSrcLine));
-    name = str8_struct(&mod_src_line->udt_itype);
+    name = str8_struct(&mod_src_line.udt_itype);
   } break;
   
   case CV_LeafKind_ALIAS: {
@@ -1220,24 +1220,24 @@ cv_rec_range_stream_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
   {
     // setup a new chunk
     CV_RecRangeChunk* cur_chunk = push_array_aligned(arena, CV_RecRangeChunk, 1, 64);
-    SLLQueuePush(result->first_chunk, result->last_chunk, cur_chunk);
+    SLLQueuePush(result.first_chunk, result.last_chunk, cur_chunk);
     uint64 partial_count = 0;
     for(;partial_count < CV_REC_RANGE_CHUNK_SIZE && cursor + sizeof(CV_RecHeader) <= cap; partial_count += 1)
     {
       // compute cap
       CV_RecHeader* hdr = (CV_RecHeader*)(data + cursor);
-      uint64 symbol_cap_unclamped = cursor + 2 + hdr->size;
+      uint64 symbol_cap_unclamped = cursor + 2 + hdr.size;
       uint64 symbol_cap = ClampTop(symbol_cap_unclamped, cap);
       
       // push on range
-      cur_chunk->ranges[partial_count].off = cursor + 2;
-      cur_chunk->ranges[partial_count].hdr = *hdr;
+      cur_chunk.ranges[partial_count].off = cursor + 2;
+      cur_chunk.ranges[partial_count].hdr = *hdr;
       
       // update cursor
       uint32 next_pos = AlignPow2(symbol_cap, sym_align);
       cursor = next_pos;
     }
-    result->total_count += partial_count;
+    result.total_count += partial_count;
   }
   return result;
 }
@@ -1245,14 +1245,14 @@ cv_rec_range_stream_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
 CV_RecRangeArray
 cv_rec_range_array_from_stream(Arena* arena, CV_RecRangeStream* stream)
 {
-  uint64 total_count = stream->total_count;
+  uint64 total_count = stream.total_count;
   CV_RecRange* ranges = push_array_no_zero_aligned(arena, CV_RecRange, total_count, 8);
   uint64 idx = 0;
-  for(CV_RecRangeChunk* chunk = stream->first_chunk; chunk != 0; chunk = chunk->next)
+  for(CV_RecRangeChunk* chunk = stream.first_chunk; chunk != 0; chunk = chunk.next)
   {
     uint64 copy_count_raw = total_count - idx;
     uint64 copy_count = ClampTop(copy_count_raw, CV_REC_RANGE_CHUNK_SIZE);
-    MemoryCopy(ranges + idx, chunk->ranges, copy_count*sizeof(CV_RecRange));
+    MemoryCopy(ranges + idx, chunk.ranges, copy_count*sizeof(CV_RecRange));
     idx += copy_count;
   }
   CV_RecRangeArray result = {0};
@@ -1275,28 +1275,28 @@ cv_sym_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
   
   //- rjf: convert to result, fill basics
   CV_SymParsed* result = push_array(arena, CV_SymParsed, 1);
-  result->data = sym_data;
-  result->sym_align = sym_align;
-  result->sym_ranges = cv_rec_range_array_from_stream(arena, stream);
+  result.data = sym_data;
+  result.sym_align = sym_align;
+  result.sym_ranges = cv_rec_range_array_from_stream(arena, stream);
   
   //- rjf: extract top-level-info
   {
-    CV_RecRange* range = result->sym_ranges.ranges;
-    CV_RecRange* opl = range + result->sym_ranges.count;
+    CV_RecRange* range = result.sym_ranges.ranges;
+    CV_RecRange* opl = range + result.sym_ranges.count;
     for(;range < opl; range += 1)
     {
-      uint8* first = sym_data.str + range->off + 2;
-      uint64 cap = range->hdr.size - 2;
-      switch(range->hdr.kind)
+      uint8* first = sym_data.str + range.off + 2;
+      uint64 cap = range.hdr.size - 2;
+      switch(range.hdr.kind)
       {
         case CV_SymKind_COMPILE:
         if(sizeof(CV_SymCompile) <= cap)
         {
           CV_SymCompile* compile = (CV_SymCompile*)first;
           String8 ver_str = str8_cstring_capped((char*)(compile + 1), (char *)(first + cap));
-          result->info.arch = compile->machine;
-          result->info.language = CV_CompileFlags_Extract_Language(compile->flags);;
-          result->info.compiler_name = ver_str;
+          result.info.arch = compile.machine;
+          result.info.language = CV_CompileFlags_Extract_Language(compile.flags);;
+          result.info.compiler_name = ver_str;
         }break;
         case CV_SymKind_COMPILE2:
         if(sizeof(CV_SymCompile2) <= cap)
@@ -1305,12 +1305,12 @@ cv_sym_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
           String8 ver_str = str8_cstring_capped((char*)(compile2 + 1), (char*)(first + cap));
           String8 compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
                                              str8_varg(ver_str),
-                                             compile2->ver_major,
-                                             compile2->ver_minor,
-                                             compile2->ver_build);
-          result->info.arch = compile2->machine;
-          result->info.language = CV_Compile2Flags_Extract_Language(compile2->flags);;
-          result->info.compiler_name = compiler_name;
+                                             compile2.ver_major,
+                                             compile2.ver_minor,
+                                             compile2.ver_build);
+          result.info.arch = compile2.machine;
+          result.info.language = CV_Compile2Flags_Extract_Language(compile2.flags);;
+          result.info.compiler_name = compiler_name;
         }break;
         case CV_SymKind_COMPILE3:
         if(sizeof(CV_SymCompile3) <= cap)
@@ -1319,12 +1319,12 @@ cv_sym_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
           String8 ver_str = str8_cstring_capped((char*)(compile3 + 1), (char *)(first + cap));
           String8 compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
                                              str8_varg(ver_str),
-                                             compile3->ver_major,
-                                             compile3->ver_minor,
-                                             compile3->ver_build);
-          result->info.arch = compile3->machine;
-          result->info.language = CV_Compile3Flags_Extract_Language(compile3->flags);;
-          result->info.compiler_name = compiler_name;
+                                             compile3.ver_major,
+                                             compile3.ver_minor,
+                                             compile3.ver_build);
+          result.info.arch = compile3.machine;
+          result.info.language = CV_Compile3Flags_Extract_Language(compile3.flags);;
+          result.info.compiler_name = compiler_name;
         }break;
       }
     }
@@ -1348,10 +1348,10 @@ cv_leaf_from_data(Arena* arena, String8 leaf_data, CV_TypeId itype_first)
   
   // convert to result
   CV_LeafParsed* result = push_array(arena, CV_LeafParsed, 1);
-  result->data = leaf_data;
-  result->itype_first = itype_first;
-  result->itype_opl = itype_first + stream->total_count;
-  result->leaf_ranges = cv_rec_range_array_from_stream(arena, stream);
+  result.data = leaf_data;
+  result.itype_first = itype_first;
+  result.itype_opl = itype_first + stream.total_count;
+  result.leaf_ranges = cv_rec_range_array_from_stream(arena, stream);
   
   scratch_end(scratch);
   ProfEnd();
@@ -1379,21 +1379,21 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
       
       // get sub section info
       uint32 sub_section_off = cursor + sizeof(*hdr);
-      uint32 sub_section_size_raw = hdr->size;
+      uint32 sub_section_size_raw = hdr.size;
       uint32 after_sub_section_off_unclamped = sub_section_off + sub_section_size_raw;
       uint32 after_sub_section_off = ClampTop(after_sub_section_off_unclamped, c13_data.size);
       uint32 sub_section_size = after_sub_section_off - sub_section_off;
       
       // emit sub section
-      if(!(hdr->kind & CV_C13SubSectionKind_IgnoreFlag))
+      if(!(hdr.kind & CV_C13SubSectionKind_IgnoreFlag))
       {
         CV_C13SubSectionNode* node = push_array(arena, CV_C13SubSectionNode, 1);
         SLLQueuePush(first, last, node);
         count += 1;
-        node->kind = hdr->kind;
-        node->off = sub_section_off;
-        node->size = sub_section_size;
-        if(hdr->kind == CV_C13SubSectionKind_FileChksms)
+        node.kind = hdr.kind;
+        node.off = sub_section_off;
+        node.size = sub_section_size;
+        if(hdr.kind == CV_C13SubSectionKind_FileChksms)
         {
           file_chksms = node;
         }
@@ -1411,11 +1411,11 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
   CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots = push_array(arena, CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
   for(CV_C13SubSectionNode* node = first;
       node != 0;
-      node = node->next)
+      node = node.next)
   {
-    uint8* first = c13_data.str + node->off;
-    uint32 cap = node->size;
-    switch(node->kind)
+    uint8* first = c13_data.str + node.off;
+    uint32 cap = node.size;
+    switch(node.kind)
     {
       default:{}break;
       
@@ -1427,23 +1427,23 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
       {
         // read header
         uint32 read_off = 0;
-        uint64 read_off_opl = node->size;
+        uint64 read_off_opl = node.size;
         CV_C13SubSecLinesHeader* hdr = (CV_C13SubSecLinesHeader*)(first + read_off);
         read_off += sizeof(*hdr);
         
         // rjf: extract section index
-        uint32 sec_idx = hdr->sec;
+        uint32 sec_idx = hdr.sec;
         
-        // rjf: bad section index -> skip
+        // rjf: bad section index . skip
         if(sec_idx < 1 || sections.count < sec_idx)
         {
           continue;
         }
         
         // extract top level info
-        B32 has_cols = !!(hdr->flags & CV_C13SubSecLinesFlag_HasColumns);
-        uint64 secrel_off = hdr->sec_off;
-        uint64 secrel_opl = secrel_off + hdr->len;
+        B32 has_cols = !!(hdr.flags & CV_C13SubSecLinesFlag_HasColumns);
+        uint64 secrel_off = hdr.sec_off;
+        uint64 secrel_opl = secrel_off + hdr.len;
         uint64 sec_base_off = sections.v[sec_idx - 1].voff;
         
         // read files
@@ -1451,16 +1451,16 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
         {
           // rjf: grab next file header
           CV_C13File* file = (CV_C13File*)(first + read_off);
-          uint32 file_off = file->file_off;
-          uint32 line_count_unclamped = file->num_lines;
-          uint32 block_size = file->block_size;
+          uint32 file_off = file.file_off;
+          uint32 line_count_unclamped = file.num_lines;
+          uint32 block_size = file.block_size;
           
           // file_name from file_off
           String8 file_name = {0};
-          if(file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
+          if(file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
           {
-            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + file_off);
-            uint32 name_off = checksum->name_off;
+            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms.off + file_off);
+            uint32 name_off = checksum.name_off;
             file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
                                              (char*)(strtbl.str + strtbl.size));
           }
@@ -1489,23 +1489,23 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
             
             uint32 i = 0;
             for (; line_ptr < line_opl; line_ptr += 1, i += 1){
-              voffs[i] = line_ptr->off + secrel_off + sec_base_off;
-              line_nums[i] = CV_C13LineFlags_Extract_LineNumber(line_ptr->flags);
+              voffs[i] = line_ptr.off + secrel_off + sec_base_off;
+              line_nums[i] = CV_C13LineFlags_Extract_LineNumber(line_ptr.flags);
             }
             voffs[i] = secrel_opl + sec_base_off;
           }
           
           // emit parsed lines
           CV_C13LinesParsedNode* lines_parsed_node = push_array(arena, CV_C13LinesParsedNode, 1);
-          CV_C13LinesParsed* lines_parsed = &lines_parsed_node->v;
-          lines_parsed->sec_idx = sec_idx;
-          lines_parsed->file_off = file_off;
-          lines_parsed->secrel_base_off = secrel_off;
-          lines_parsed->file_name = file_name;
-          lines_parsed->voffs  = voffs;
-          lines_parsed->line_nums = line_nums;
-          lines_parsed->line_count = line_count;
-          SLLQueuePush(node->lines_first, node->lines_last, lines_parsed_node);
+          CV_C13LinesParsed* lines_parsed = &lines_parsed_node.v;
+          lines_parsed.sec_idx = sec_idx;
+          lines_parsed.file_off = file_off;
+          lines_parsed.secrel_base_off = secrel_off;
+          lines_parsed.file_name = file_name;
+          lines_parsed.voffs  = voffs;
+          lines_parsed.line_nums = line_nums;
+          lines_parsed.line_count = line_count;
+          SLLQueuePush(node.lines_first, node.lines_last, lines_parsed_node);
           
           // rjf: advance
           read_off += sizeof(*file);
@@ -1521,7 +1521,7 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
       {
         // rjf: read sig
         uint32 read_off = 0;
-        uint64 read_off_opl = node->size;
+        uint64 read_off_opl = node.size;
         CV_C13InlineeLinesSig* sig = (CV_C13InlineeLinesSig *)(first + read_off);
         read_off += sizeof(*sig);
         
@@ -1532,12 +1532,12 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
           CV_C13InlineeSourceLineHeader* hdr = (CV_C13InlineeSourceLineHeader *)(first + read_off);
           read_off += sizeof(*hdr);
           
-          // rjf: file_off -> file_name
+          // rjf: file_off . file_name
           String8 file_name = {0};
-          if(hdr->file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
+          if(hdr.file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
           {
-            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + hdr->file_off);
-            uint32 name_off = checksum->name_off;
+            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms.off + hdr.file_off);
+            uint32 name_off = checksum.name_off;
             file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
                                              (char*)(strtbl.str + strtbl.size));
           }
@@ -1557,16 +1557,16 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
           
           // rjf: push node for this inlinee lines parsed into this subsection's list
           CV_C13InlineeLinesParsedNode* n = push_array(arena, CV_C13InlineeLinesParsedNode, 1);
-          SLLQueuePush(node->inlinee_lines_first, node->inlinee_lines_last, n);
-          n->v.inlinee          = hdr->inlinee;
-          n->v.file_name        = file_name;
-          n->v.file_off         = hdr->file_off;
-          n->v.first_source_ln  = hdr->first_source_ln;
-          n->v.extra_file_count = extra_file_count;
-          n->v.extra_files      = extra_files;
+          SLLQueuePush(node.inlinee_lines_first, node.inlinee_lines_last, n);
+          n.v.inlinee          = hdr.inlinee;
+          n.v.file_name        = file_name;
+          n.v.file_off         = hdr.file_off;
+          n.v.first_source_ln  = hdr.first_source_ln;
+          n.v.extra_file_count = extra_file_count;
+          n.v.extra_files      = extra_files;
           
           // rjf: push node into inlinee parse hash table
-          uint64 hash = cv_hash_from_item_id(hdr->inlinee);
+          uint64 hash = cv_hash_from_item_id(hdr.inlinee);
           uint64 slot_idx = hash%inlinee_lines_parsed_slots_count;
           SLLStackPush_N(inlinee_lines_parsed_slots[slot_idx], n, hash_next);
         }
@@ -1578,13 +1578,13 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
   //- rjf: fill output
   //
   CV_C13Parsed* result = push_array(arena, CV_C13Parsed, 1);
-  result->data = c13_data;
-  result->first_sub_section = first;
-  result->last_sub_section = last;
-  result->sub_section_count = count;
-  result->file_chksms_sub_section = file_chksms;
-  result->inlinee_lines_parsed_slots = inlinee_lines_parsed_slots;
-  result->inlinee_lines_parsed_slots_count = inlinee_lines_parsed_slots_count;
+  result.data = c13_data;
+  result.first_sub_section = first;
+  result.last_sub_section = last;
+  result.sub_section_count = count;
+  result.file_chksms_sub_section = file_chksms;
+  result.inlinee_lines_parsed_slots = inlinee_lines_parsed_slots;
+  result.inlinee_lines_parsed_slots_count = inlinee_lines_parsed_slots_count;
   ProfEnd();
   return result;
 }

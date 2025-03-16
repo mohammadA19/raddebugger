@@ -22,15 +22,15 @@
 // debugger frontend is still usable for a variety of purposes. So, in short,
 // the asynchronously-running "control thread", implemented by this layer, is
 // tasked with communicating with a separately executing "user thread". This
-// communication happens in two directions - `user -> ctrl`, and the reverse,
-// `ctrl -> user`.
+// communication happens in two directions - `user . ctrl`, and the reverse,
+// `ctrl . user`.
 //
-// In the case of `user -> ctrl` communication, this is done with a ring buffer
+// In the case of `user . ctrl` communication, this is done with a ring buffer
 // of "messages" (`CTRL_Msg`), pushed via `ctrl_u2c_push_msgs`. These messages
 // include commands like: launching targets, attaching to targets, killing
 // targets, detaching from targets, stepping/running, or single stepping.
 //
-// In the case of `ctrl -> user` communication, this is done with a ring buffer
+// In the case of `ctrl . user` communication, this is done with a ring buffer
 // of "events" (`CTRL_Event`), popped via `ctrl_c2u_pop_events`. These events
 // include information about what happened during the execution of targets -
 // including: process/module/thread creation, process/module/thread deletion,

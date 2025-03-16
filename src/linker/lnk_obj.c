@@ -7,7 +7,7 @@ void
 lnk_error_obj(LNK_ErrorCode code, LNK_Obj* obj, char* fmt, ...)
 {
   va_list args; va_start(args, fmt);
-  lnk_error_with_loc_fv(code, obj->path, obj->lib_path, fmt, args);
+  lnk_error_with_loc_fv(code, obj.path, obj.lib_path, fmt, args);
   va_end(args);
 }
 
@@ -16,8 +16,8 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj* obj, char* fmt, ...)
 void
 lnk_input_obj_list_push_node(LNK_InputObjList* list, LNK_InputObj* node)
 {
-  SLLQueuePush(list->first, list->last, node);
-  ++list->count;
+  SLLQueuePush(list.first, list.last, node);
+  ++list.count;
 }
 
 LNK_InputObj *
@@ -33,7 +33,7 @@ lnk_array_from_input_obj_list(Arena* arena, LNK_InputObjList list)
 {
   LNK_InputObj** result = push_array_no_zero(arena, LNK_InputObj *, list.count);
   uint64 i = 0;
-  for (LNK_InputObj* n = list.first; n != 0; n = n->next, ++i) {
+  for (LNK_InputObj* n = list.first; n != 0; n = n.next, ++i) {
     Assert(i < list.count);
     result[i] = n;
   }
@@ -51,7 +51,7 @@ lnk_input_obj_compar(const void* raw_a, const void* raw_b)
 {
   const LNK_InputObj** a = (const LNK_InputObj **) raw_a;
   const LNK_InputObj** b = (const LNK_InputObj **) raw_b;
-  int cmp = str8_compar_case_sensitive(&(*a)->path, &(*b)->path);
+  int cmp = str8_compar_case_sensitive(&(*a).path, &(*b).path);
   return cmp;
 }
 
@@ -60,7 +60,7 @@ lnk_input_obj_compar_is_before(void* raw_a, void* raw_b)
 {
   LNK_InputObj** a = raw_a;
   LNK_InputObj** b = raw_b;
-  int cmp = str8_compar_case_sensitive(&(*a)->path, &(*b)->path);
+  int cmp = str8_compar_case_sensitive(&(*a).path, &(*b).path);
   int is_before = cmp < 0;
   return is_before;
 }
@@ -80,11 +80,11 @@ LNK_InputObjList
 lnk_input_obj_list_from_string_list(Arena* arena, String8List list)
 {
   LNK_InputObjList input_list = {0};
-  for (String8Node* path = list.first; path != 0; path = path->next) {
+  for (String8Node* path = list.first; path != 0; path = path.next) {
     LNK_InputObj* input = lnk_input_obj_list_push(arena, &input_list);
-    input->is_thin  = 1;
-    input->dedup_id = path->string;
-    input->path     = path->string;
+    input.is_thin  = 1;
+    input.dedup_id = path.string;
+    input.path     = path.string;
   }
   return input_list;
 }
@@ -96,8 +96,8 @@ lnk_obj_arr_from_list(Arena* arena, LNK_ObjList list)
 {
   LNK_Obj** arr = push_array_no_zero(arena, LNK_Obj *, list.count);
   uint64 idx = 0;
-  for (LNK_ObjNode* node = list.first; node != 0; node = node->next, ++idx) {
-    arr[idx] = &node->data;
+  for (LNK_ObjNode* node = list.first; node != 0; node = node.next, ++idx) {
+    arr[idx] = &node.data;
   }
   return arr;
 }
@@ -110,9 +110,9 @@ lnk_obj_list_reserve(Arena* arena, LNK_ObjList* list, uint64 count)
     arr.count = count;
     arr.v = push_array(arena, LNK_ObjNode, count);
     for (LNK_ObjNode* ptr = arr.v, *opl = arr.v + arr.count; ptr < opl; ++ptr) {
-      SLLQueuePush(list->first, list->last, ptr);
+      SLLQueuePush(list.first, list.last, ptr);
     }
-    list->count += count;
+    list.count += count;
   } else {
     MemoryZeroStruct(&arr);
   }
@@ -124,23 +124,23 @@ LNK_ChunkList
 lnk_obj_search_chunks(Arena* arena, LNK_Obj* obj, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_ChunkList list = {0};
-  for (uint64 sect_idx = 0; sect_idx < obj->chunk_count; ++sect_idx) {
-    String8 obj_sect_name = obj->sect_name_arr[sect_idx];
-    String8 obj_sect_sort = obj->sect_sort_arr[sect_idx];
+  for (uint64 sect_idx = 0; sect_idx < obj.chunk_count; ++sect_idx) {
+    String8 obj_sect_name = obj.sect_name_arr[sect_idx];
+    String8 obj_sect_sort = obj.sect_sort_arr[sect_idx];
 
     B32 is_match = str8_match(obj_sect_name, name, 0) &&
                    str8_match(obj_sect_sort, postfix, 0);
 
     if (is_match) {
-      LNK_ChunkPtr chunk = obj->chunk_arr[sect_idx];
+      LNK_ChunkPtr chunk = obj.chunk_arr[sect_idx];
 
       if (!collect_discarded && lnk_chunk_is_discarded(chunk)) {
         continue;
       }
 
       LNK_ChunkNode* node = push_array_no_zero(arena, LNK_ChunkNode, 1);
-      node->next          = 0;
-      node->data          = chunk;
+      node.next          = 0;
+      node.data          = chunk;
 
       SLLQueuePush(list.first, list.last, node);
       ++list.count;
@@ -154,9 +154,9 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 {
   uint64                           obj_idx  = task_id;
   LNK_CollectObjChunksTaskData* task     = raw_task;
-  LNK_Obj*                      obj      = task->obj_arr[obj_idx];
-  LNK_ChunkList*                list_ptr = &task->list_arr[obj_idx];
-  *list_ptr = lnk_obj_search_chunks(arena, obj, task->name, task->postfix, task->collect_discarded);
+  LNK_Obj*                      obj      = task.obj_arr[obj_idx];
+  LNK_ChunkList*                list_ptr = &task.list_arr[obj_idx];
+  *list_ptr = lnk_obj_search_chunks(arena, obj, task.name, task.postfix, task.collect_discarded);
 }
 
 LNK_ChunkList *
@@ -166,7 +166,7 @@ lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LNK_Ob
   task_data.obj_arr                      = obj_arr;
   task_data.name                         = name;
   task_data.postfix                      = postfix;
-  task_data.list_arr                     = push_array_no_zero(arena->v[0], LNK_ChunkList, obj_count);
+  task_data.list_arr                     = push_array_no_zero(arena.v[0], LNK_ChunkList, obj_count);
   task_data.collect_discarded            = collect_discarded;
   tp_for_parallel(tp, arena, obj_count, lnk_collect_obj_chunks_task, &task_data);
   return task_data.list_arr;
@@ -176,13 +176,13 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_symbol_collector)
 {
   LNK_SymbolCollector* task  = raw_task;
-  Rng1U64              range = task->range_arr[task_id];
-  LNK_SymbolList*      list  = &task->out_arr[task_id];
+  Rng1U64              range = task.range_arr[task_id];
+  LNK_SymbolList*      list  = &task.out_arr[task_id];
   for (uint64 obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
-    LNK_Obj* obj = &task->in_arr.v[obj_idx].data;
-    for (LNK_SymbolNode* node = obj->symbol_list.first; node != 0; node = node->next) {
-      if (node->data->type == task->type) {
-        lnk_symbol_list_push(arena, list, node->data);
+    LNK_Obj* obj = &task.in_arr.v[obj_idx].data;
+    for (LNK_SymbolNode* node = obj.symbol_list.first; node != 0; node = node.next) {
+      if (node.data.type == task.type) {
+        lnk_symbol_list_push(arena, list, node.data);
       }
     }
   }
@@ -196,14 +196,14 @@ lnk_run_symbol_collector(TP_Context* tp, TP_Arena* arena, LNK_ObjNodeArray arr, 
 
   LNK_SymbolCollector task_data;
   task_data.type      = symbol_type;
-  task_data.range_arr = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
+  task_data.range_arr = tp_divide_work(scratch.arena, arr.count, tp.worker_count);
   task_data.in_arr    = arr;
-  task_data.out_arr   = push_array(scratch.arena, LNK_SymbolList, tp->worker_count);
+  task_data.out_arr   = push_array(scratch.arena, LNK_SymbolList, tp.worker_count);
 
-  tp_for_parallel(tp, arena, tp->worker_count, lnk_symbol_collector, &task_data);
+  tp_for_parallel(tp, arena, tp.worker_count, lnk_symbol_collector, &task_data);
 
   LNK_SymbolList list = {0};
-  for (uint64 ithread = 0; ithread < tp->worker_count; ++ithread) {
+  for (uint64 ithread = 0; ithread < tp.worker_count; ++ithread) {
     lnk_symbol_list_concat_in_place(&list, &task_data.out_arr[ithread]);
   }
 
@@ -216,12 +216,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_default_lib_collector)
 {
   LNK_DefaultLibCollector* task   = raw_task;
-  Rng1U64                  range  = task->range_arr[task_id];
-  String8List*             result = &task->out_arr[task_id];
+  Rng1U64                  range  = task.range_arr[task_id];
+  String8List*             result = &task.out_arr[task_id];
   for (uint64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
-    LNK_Obj* obj = &task->in_arr.v[obj_idx].data;
-    for (LNK_Directive* dir = obj->directive_info.v[LNK_CmdSwitch_DefaultLib].first; dir != 0; dir = dir->next) {
-      str8_list_concat_in_place(result, &dir->value_list);
+    LNK_Obj* obj = &task.in_arr.v[obj_idx].data;
+    for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_DefaultLib].first; dir != 0; dir = dir.next) {
+      str8_list_concat_in_place(result, &dir.value_list);
     }
   }
 }
@@ -232,12 +232,12 @@ lnk_collect_default_lib_obj_arr(TP_Context* tp, TP_Arena* arena, LNK_ObjNodeArra
   Temp scratch = scratch_begin(0,0);
 
   LNK_DefaultLibCollector task_data;
-  task_data.range_arr = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
+  task_data.range_arr = tp_divide_work(scratch.arena, arr.count, tp.worker_count);
   task_data.in_arr    = arr;
-  task_data.out_arr   = push_array(scratch.arena, LNK_InputLibList, tp->worker_count);
-  tp_for_parallel(tp, arena, tp->worker_count, lnk_default_lib_collector, &task_data);
+  task_data.out_arr   = push_array(scratch.arena, LNK_InputLibList, tp.worker_count);
+  tp_for_parallel(tp, arena, tp.worker_count, lnk_default_lib_collector, &task_data);
 
-  String8List result = str8_list_arr_concat(task_data.out_arr, tp->worker_count);
+  String8List result = str8_list_arr_concat(task_data.out_arr, tp.worker_count);
 
   scratch_end(scratch);
   return result;
@@ -247,17 +247,17 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_manifest_dependency_collector)
 {
   LNK_ManifestDependencyCollector* task  = raw_task;
-  Rng1U64                          range = task->range_arr[task_id];
-  String8List*                     list  = &task->out_arr[task_id];
+  Rng1U64                          range = task.range_arr[task_id];
+  String8List*                     list  = &task.out_arr[task_id];
 
-  LNK_ObjNode* obj_ptr = &task->in_arr[range.min];
-  LNK_ObjNode* obj_opl = &task->in_arr[range.max];
+  LNK_ObjNode* obj_ptr = &task.in_arr[range.min];
+  LNK_ObjNode* obj_opl = &task.in_arr[range.max];
 
   for (; obj_ptr < obj_opl; obj_ptr += 1) {
-    LNK_Obj*           obj  = &obj_ptr->data;
-    LNK_DirectiveList* dirs = &obj->directive_info.v[LNK_CmdSwitch_ManifestDependency];
-    for (LNK_Directive* dir = dirs->first; dir != 0; dir = dir->next) {
-      String8List dep = str8_list_copy(arena, &dir->value_list);
+    LNK_Obj*           obj  = &obj_ptr.data;
+    LNK_DirectiveList* dirs = &obj.directive_info.v[LNK_CmdSwitch_ManifestDependency];
+    for (LNK_Directive* dir = dirs.first; dir != 0; dir = dir.next) {
+      String8List dep = str8_list_copy(arena, &dir.value_list);
       str8_list_concat_in_place(list, &dep);
     }
   }
@@ -266,15 +266,15 @@ THREAD_POOL_TASK_FUNC(lnk_manifest_dependency_collector)
 String8List
 lnk_collect_manifest_dependency_list(TP_Context* tp, TP_Arena* arena, LNK_ObjNodeArray obj_node_arr)
 {
-  Temp scratch = scratch_begin(arena->v, arena->count);
+  Temp scratch = scratch_begin(arena.v, arena.count);
 
   LNK_ManifestDependencyCollector task_data = {0};
   task_data.in_arr                          = obj_node_arr.v;
-  task_data.out_arr                         = push_array(scratch.arena, String8List, tp->worker_count);
-  task_data.range_arr                       = tp_divide_work(scratch.arena, obj_node_arr.count, tp->worker_count);
-  tp_for_parallel(tp, arena, tp->worker_count, lnk_manifest_dependency_collector, &task_data);
+  task_data.out_arr                         = push_array(scratch.arena, String8List, tp.worker_count);
+  task_data.range_arr                       = tp_divide_work(scratch.arena, obj_node_arr.count, tp.worker_count);
+  tp_for_parallel(tp, arena, tp.worker_count, lnk_manifest_dependency_collector, &task_data);
 
-  String8List result = str8_list_arr_concat(task_data.out_arr, tp->worker_count);
+  String8List result = str8_list_arr_concat(task_data.out_arr, tp.worker_count);
 
   scratch_end(scratch);
   return result;
@@ -283,19 +283,19 @@ lnk_collect_manifest_dependency_list(TP_Context* tp, TP_Arena* arena, LNK_ObjNod
 void
 lnk_sect_defn_list_push_node(LNK_SectDefnList* list, LNK_SectDefn* node)
 {
-  SLLQueuePush(list->first, list->last, node);
-  ++list->count;
+  SLLQueuePush(list.first, list.last, node);
+  ++list.count;
 }
 
 LNK_SectDefn *
 lnk_sect_defn_list_push(Arena* arena, LNK_SectDefnList* list, LNK_Obj* obj, String8 name, uint64 idx, COFF_SectionFlags flags)
 {
   LNK_SectDefn* node = push_array_no_zero(arena, LNK_SectDefn, 1);
-  node->next         = 0;
-  node->obj          = obj;
-  node->name         = name;
-  node->idx          = idx;
-  node->flags        = flags;
+  node.next         = 0;
+  node.obj          = obj;
+  node.name         = name;
+  node.idx          = idx;
+  node.flags        = flags;
   lnk_sect_defn_list_push_node(list, node);
   return node;
 }
@@ -318,21 +318,21 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_ObjIniter* task     = raw_task;
-  LNK_InputObj*  input    = task->inputs[task_id];
-  uint64            obj_idx  = task->obj_id_base + task_id;
-  LNK_ObjNode*   obj_node = task->obj_node_arr + task_id;
-  LNK_Obj*       obj      = &obj_node->data;
+  LNK_InputObj*  input    = task.inputs[task_id];
+  uint64            obj_idx  = task.obj_id_base + task_id;
+  LNK_ObjNode*   obj_node = task.obj_node_arr + task_id;
+  LNK_Obj*       obj      = &obj_node.data;
   
-  String8 cached_path     = push_str8_copy(arena, input->path);
-  String8 cached_lib_path = push_str8_copy(arena, input->lib_path);
+  String8 cached_path     = push_str8_copy(arena, input.path);
+  String8 cached_lib_path = push_str8_copy(arena, input.lib_path);
 
   // parse coff obj
-  COFF_FileHeaderInfo coff_info              = coff_file_header_info_from_data(input->data);
+  COFF_FileHeaderInfo coff_info              = coff_file_header_info_from_data(input.data);
   Rng1U64             coff_file_header_range = rng_1u64(0, coff_info.header_size);
   Rng1U64             coff_sect_arr_range    = rng_1u64(coff_info.section_array_off, coff_info.section_array_off + coff_info.section_count_no_null * sizeof(COFF_SectionHeader));
   Rng1U64             coff_symbols_range     = rng_1u64(coff_info.symbol_off, coff_info.symbol_off + coff_info.symbol_count * coff_info.symbol_size);
-  String8             raw_coff_sect_arr      = str8_substr(input->data, coff_sect_arr_range);
-  String8             raw_coff_symbols       = str8_substr(input->data, coff_symbols_range);
+  String8             raw_coff_sect_arr      = str8_substr(input.data, coff_sect_arr_range);
+  String8             raw_coff_symbols       = str8_substr(input.data, coff_symbols_range);
 
   if (raw_coff_sect_arr.size != dim_1u64(coff_sect_arr_range)) {
     lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "corrupted file, unable to read section header table");
@@ -346,8 +346,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
 
   // :function_pad_min
   uint64 function_pad_min;
-  if (task->function_pad_min) {
-    function_pad_min = *task->function_pad_min;
+  if (task.function_pad_min) {
+    function_pad_min = *task.function_pad_min;
   } else {
     function_pad_min = lnk_get_default_function_pad_min(coff_info.machine);
   }
@@ -368,32 +368,32 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     COFF_SectionHeader* coff_sect = &coff_sect_arr[sect_idx];
 
     // read name
-    String8 sect_name = coff_name_from_section_header(input->data, coff_sect, coff_info.string_table_off);
+    String8 sect_name = coff_name_from_section_header(input.data, coff_sect, coff_info.string_table_off);
     
     // parse section name
     coff_parse_section_name(sect_name, &sect_name_arr[sect_idx], &sect_sort_arr[sect_idx]);
 
     String8 data;
-    if (coff_sect->flags & COFF_SectionFlag_CntUninitializedData) {
-      data = str8(0, coff_sect->fsize);
+    if (coff_sect.flags & COFF_SectionFlag_CntUninitializedData) {
+      data = str8(0, coff_sect.fsize);
     } else {
-      if (coff_sect->fsize > 0) {
-        Rng1U64 range = rng_1u64(coff_sect->foff, coff_sect->foff + coff_sect->fsize);
-        data = str8_substr(input->data, range);
+      if (coff_sect.fsize > 0) {
+        Rng1U64 range = rng_1u64(coff_sect.foff, coff_sect.foff + coff_sect.fsize);
+        data = str8_substr(input.data, range);
 
-        if (contains_1u64(coff_file_header_range, coff_sect->foff) ||
-            (coff_sect->fsize > 0 && contains_1u64(coff_file_header_range, coff_sect->foff + coff_sect->fsize-1))) {
+        if (contains_1u64(coff_file_header_range, coff_sect.foff) ||
+            (coff_sect.fsize > 0 && contains_1u64(coff_file_header_range, coff_sect.foff + coff_sect.fsize-1))) {
           lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "header (%S No. %#llx) defines out of bounds section data (file offsets point into file header)", sect_name, sect_idx+1);
         }
-        if (contains_1u64(coff_sect_arr_range, coff_sect->foff) ||
-            (coff_sect->fsize > 0 && contains_1u64(coff_sect_arr_range, coff_sect->foff + coff_sect->fsize-1))) {
+        if (contains_1u64(coff_sect_arr_range, coff_sect.foff) ||
+            (coff_sect.fsize > 0 && contains_1u64(coff_sect_arr_range, coff_sect.foff + coff_sect.fsize-1))) {
           lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "header (%S No. %#llx) defines out of bounds section data (file offsets point into section header table)", sect_name, sect_idx+1);
         }
-        if (contains_1u64(coff_symbols_range, coff_sect->foff) ||
-            (coff_sect->fsize > 0 && contains_1u64(coff_symbols_range, coff_sect->foff + coff_sect->fsize-1))) {
+        if (contains_1u64(coff_symbols_range, coff_sect.foff) ||
+            (coff_sect.fsize > 0 && contains_1u64(coff_symbols_range, coff_sect.foff + coff_sect.fsize-1))) {
           lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "header (%S No. %#llx) defines out of bounds section data (file offsets point into symbol table)", sect_name, sect_idx+1);
         }
-        if (dim_1u64(range) != coff_sect->fsize) {
+        if (dim_1u64(range) != coff_sect.fsize) {
           lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "header (%S No. %#llx) defines out of bounds section data", sect_name, sect_idx+1);
         }
       } else {
@@ -402,29 +402,29 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     }
 
     LNK_Chunk* chunk    = &chunk_arr[sect_idx];
-    chunk->align        = coff_align_size_from_section_flags(coff_sect->flags);
-    chunk->is_discarded = !!(coff_sect->flags & COFF_SectionFlag_LnkRemove);
-    chunk->sort_chunk   = 1;
-    chunk->type         = LNK_Chunk_Leaf;
-    chunk->sort_idx     = sect_sort_arr[sect_idx];
-    chunk->input_idx    = LNK_MakeChunkInputIdx(obj_idx, sect_idx);
-    chunk->flags        = coff_sect->flags;
-    chunk->u.leaf       = data;
+    chunk.align        = coff_align_size_from_section_flags(coff_sect.flags);
+    chunk.is_discarded = !!(coff_sect.flags & COFF_SectionFlag_LnkRemove);
+    chunk.sort_chunk   = 1;
+    chunk.type         = LNK_Chunk_Leaf;
+    chunk.sort_idx     = sect_sort_arr[sect_idx];
+    chunk.input_idx    = LNK_MakeChunkInputIdx(obj_idx, sect_idx);
+    chunk.flags        = coff_sect.flags;
+    chunk.u.leaf       = data;
     lnk_chunk_set_debugf(arena, chunk, "%S: name: %S, obj_idx: 0x%llX isect: 0x%llX", cached_path, sect_name_arr[sect_idx], obj_idx, sect_idx);
   }
 
   // :common_block
   LNK_Chunk* master_common_block    = &chunk_arr[common_block_idx];
-  master_common_block->ref          = lnk_chunk_ref(0,0); // :chunk_ref_assign
-  master_common_block->align        = 1;
-  master_common_block->is_discarded = 0;
-  master_common_block->sort_chunk   = 0;
-  master_common_block->type         = LNK_Chunk_List;
-  master_common_block->sort_idx     = sect_sort_arr[common_block_idx];
-  master_common_block->input_idx    = LNK_MakeChunkInputIdx(obj_idx, common_block_idx);
-  master_common_block->flags        = LNK_BSS_SECTION_FLAGS;
-  master_common_block->associate    = 0;
-  master_common_block->u.list       = push_array(arena, LNK_ChunkList, 1);
+  master_common_block.ref          = lnk_chunk_ref(0,0); // :chunk_ref_assign
+  master_common_block.align        = 1;
+  master_common_block.is_discarded = 0;
+  master_common_block.sort_chunk   = 0;
+  master_common_block.type         = LNK_Chunk_List;
+  master_common_block.sort_idx     = sect_sort_arr[common_block_idx];
+  master_common_block.input_idx    = LNK_MakeChunkInputIdx(obj_idx, common_block_idx);
+  master_common_block.flags        = LNK_BSS_SECTION_FLAGS;
+  master_common_block.associate    = 0;
+  master_common_block.u.list       = push_array(arena, LNK_ChunkList, 1);
   lnk_chunk_set_debugf(arena, master_common_block, "%S: master common block", cached_path);
 
   LNK_ChunkPtr* chunk_ptr_arr = push_array_no_zero(arena, LNK_ChunkPtr, chunk_count);
@@ -433,46 +433,46 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   }
 
   // convert from coff
-  LNK_SymbolArray    symbol_arr     = lnk_symbol_array_from_coff(arena, input->data, obj, cached_path, cached_lib_path, coff_info.is_big_obj, function_pad_min, coff_info.string_table_off, coff_info.section_count_no_null, coff_sect_arr, coff_info.symbol_count, coff_symbols, chunk_ptr_arr, master_common_block);
+  LNK_SymbolArray    symbol_arr     = lnk_symbol_array_from_coff(arena, input.data, obj, cached_path, cached_lib_path, coff_info.is_big_obj, function_pad_min, coff_info.string_table_off, coff_info.section_count_no_null, coff_sect_arr, coff_info.symbol_count, coff_symbols, chunk_ptr_arr, master_common_block);
   LNK_SymbolList     symbol_list    = lnk_symbol_list_from_array(arena, symbol_arr);
-  LNK_RelocList*     reloc_list_arr = lnk_reloc_list_array_from_coff(arena, coff_info.machine, input->data, coff_info.section_count_no_null, coff_sect_arr, chunk_ptr_arr, symbol_arr);
+  LNK_RelocList*     reloc_list_arr = lnk_reloc_list_array_from_coff(arena, coff_info.machine, input.data, coff_info.section_count_no_null, coff_sect_arr, chunk_ptr_arr, symbol_arr);
   LNK_DirectiveInfo  directive_info = lnk_directive_info_from_sections(arena, cached_path, cached_lib_path, coff_info.section_count_no_null, reloc_list_arr, sect_name_arr, chunk_arr);
 
   // fill out obj
-  obj->data                = input->data;
-  obj->path                = cached_path;
-  obj->lib_path            = cached_lib_path;
-  obj->input_idx           = obj_idx;
-  obj->machine             = coff_info.machine;
-  obj->chunk_count         = chunk_count;
-  obj->sect_count          = coff_info.section_count_no_null;
-  obj->sect_name_arr       = sect_name_arr;
-  obj->sect_sort_arr       = sect_sort_arr;
-  obj->chunk_arr           = chunk_ptr_arr;
-  obj->symbol_list         = symbol_list;
-  obj->sect_reloc_list_arr = reloc_list_arr;
-  obj->directive_info      = directive_info;
+  obj.data                = input.data;
+  obj.path                = cached_path;
+  obj.lib_path            = cached_lib_path;
+  obj.input_idx           = obj_idx;
+  obj.machine             = coff_info.machine;
+  obj.chunk_count         = chunk_count;
+  obj.sect_count          = coff_info.section_count_no_null;
+  obj.sect_name_arr       = sect_name_arr;
+  obj.sect_sort_arr       = sect_sort_arr;
+  obj.chunk_arr           = chunk_ptr_arr;
+  obj.symbol_list         = symbol_list;
+  obj.sect_reloc_list_arr = reloc_list_arr;
+  obj.directive_info      = directive_info;
 
   // parse exports
   LNK_ExportParseList export_parse = {0};
-  for (LNK_Directive* dir = obj->directive_info.v[LNK_CmdSwitch_Export].first; dir != 0; dir = dir->next) {
-    lnk_parse_export_directive(arena, &obj->export_parse, dir->value_list, obj->path, obj->lib_path);
+  for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_Export].first; dir != 0; dir = dir.next) {
+    lnk_parse_export_directive(arena, &obj.export_parse, dir.value_list, obj.path, obj.lib_path);
   }
 
   // push /export symbols
-  for (LNK_ExportParse* exp = export_parse.first; exp != 0; exp = exp->next) {
-    LNK_Symbol* symbol = lnk_make_undefined_symbol(arena, exp->name, LNK_SymbolScopeFlag_Main);
-    lnk_symbol_list_push(arena, &obj->symbol_list, symbol);
+  for (LNK_ExportParse* exp = export_parse.first; exp != 0; exp = exp.next) {
+    LNK_Symbol* symbol = lnk_make_undefined_symbol(arena, exp.name, LNK_SymbolScopeFlag_Main);
+    lnk_symbol_list_push(arena, &obj.symbol_list, symbol);
   }
 
   // push /include symbols 
-  for (LNK_Directive* dir = obj->directive_info.v[LNK_CmdSwitch_Include].first; dir != 0; dir = dir->next) {
-    str8_list_concat_in_place(&obj->include_symbol_list, &dir->value_list);
+  for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_Include].first; dir != 0; dir = dir.next) {
+    str8_list_concat_in_place(&obj.include_symbol_list, &dir.value_list);
   }
 
   // parse /alternatename
-  for (LNK_Directive* dir = obj->directive_info.v[LNK_CmdSwitch_AlternateName].first; dir != 0; dir = dir->next) {
-    String8* invalid_string = lnk_parse_alt_name_directive_list(arena, dir->value_list, &obj->alt_name_list);
+  for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_AlternateName].first; dir != 0; dir = dir.next) {
+    String8* invalid_string = lnk_parse_alt_name_directive_list(arena, dir.value_list, &obj.alt_name_list);
     if (invalid_string != 0) {
       lnk_error_obj(LNK_Error_Cmdl, obj, "invalid syntax \"%S\", expected format \"FROM=TO\"", *invalid_string);
     }
@@ -486,26 +486,26 @@ THREAD_POOL_TASK_FUNC(lnk_obj_new_sect_scanner)
 {
   LNK_ObjNewSectScanner* task = raw_task;
 
-  Rng1U64    range = task->range_arr[task_id];
+  Rng1U64    range = task.range_arr[task_id];
   HashTable* ht    = hash_table_init(arena, 128);
 
   for (uint64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
-    LNK_Obj* obj = &task->obj_node_arr[obj_idx].data;
+    LNK_Obj* obj = &task.obj_node_arr[obj_idx].data;
 
-    for (uint64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
-      String8           sect_name  = obj->sect_name_arr[chunk_idx];
-      COFF_SectionFlags sect_flags = obj->chunk_arr[chunk_idx]->flags & ~COFF_SectionFlags_LnkFlags;
+    for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
+      String8           sect_name  = obj.sect_name_arr[chunk_idx];
+      COFF_SectionFlags sect_flags = obj.chunk_arr[chunk_idx].flags & ~COFF_SectionFlags_LnkFlags;
 
       KeyValuePair* is_present = hash_table_search_string(ht, sect_name);
       if (is_present) {
         if (lnk_is_error_code_active(LNK_Warning_SectionFlagsConflict)) {
-          LNK_SectDefn* defn = is_present->value_raw;
-          if (defn->flags != sect_flags) {
-            lnk_sect_defn_list_push(arena, &task->defn_arr[task_id], obj, sect_name, chunk_idx, sect_flags);
+          LNK_SectDefn* defn = is_present.value_raw;
+          if (defn.flags != sect_flags) {
+            lnk_sect_defn_list_push(arena, &task.defn_arr[task_id], obj, sect_name, chunk_idx, sect_flags);
           }
         }
       } else {
-        LNK_SectDefn* defn = lnk_sect_defn_list_push(arena, &task->defn_arr[task_id], obj, sect_name, chunk_idx, sect_flags);
+        LNK_SectDefn* defn = lnk_sect_defn_list_push(arena, &task.defn_arr[task_id], obj, sect_name, chunk_idx, sect_flags);
         hash_table_push_string_raw(arena, ht, sect_name, defn);
       }
     }
@@ -524,16 +524,16 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_counter)
 {
   uint64               obj_idx = task_id;
   LNK_ChunkCounter* task    = raw_task;
-  LNK_Obj*          obj     = &task->obj_arr[obj_idx].data;
-  for (uint64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
-    String8 name = obj->sect_name_arr[chunk_idx];
-    LNK_Chunk*   chunk = obj->chunk_arr[chunk_idx];
-    LNK_Section* sect  = lnk_section_table_search(task->st, name);
+  LNK_Obj*          obj     = &task.obj_arr[obj_idx].data;
+  for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
+    String8 name = obj.sect_name_arr[chunk_idx];
+    LNK_Chunk*   chunk = obj.chunk_arr[chunk_idx];
+    LNK_Section* sect  = lnk_section_table_search(task.st, name);
 
     uint64 count = 0;
     lnk_visit_chunks(0, chunk, lnk_chunk_get_count_cb, &count);
 
-    task->chunk_count_arr_arr[sect->id][obj_idx] += count;
+    task.chunk_count_arr_arr[sect.id][obj_idx] += count;
   }
 }
 
@@ -543,11 +543,11 @@ LNK_CHUNK_VISITOR_SIG(lnk_chunk_ref_assign)
   LNK_ChunkRefAssign* ctx = ud;
 
   // alloc chunk id
-  uint64 chunk_id = ctx->chunk_id_arr_arr[sect_id][ctx->obj_idx];
-  ctx->chunk_id_arr_arr[sect_id][ctx->obj_idx] += 1;
+  uint64 chunk_id = ctx.chunk_id_arr_arr[sect_id][ctx.obj_idx];
+  ctx.chunk_id_arr_arr[sect_id][ctx.obj_idx] += 1;
   
   // set chunk ref
-  chunk->ref = lnk_chunk_ref(sect_id, chunk_id);
+  chunk.ref = lnk_chunk_ref(sect_id, chunk_id);
 
   // keep visiting chunks
   return 0;
@@ -557,30 +557,30 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_chunk_ref_assigner)
 {
   LNK_ChunkRefAssigner* task  = raw_task;
-  Rng1U64               range = task->range_arr[task_id];
+  Rng1U64               range = task.range_arr[task_id];
 
   for (uint64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
-    LNK_Obj* obj = &task->obj_arr[obj_idx].data;
+    LNK_Obj* obj = &task.obj_arr[obj_idx].data;
 
-    for (uint64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
-      String8    name  = obj->sect_name_arr[chunk_idx];
-      String8    sort  = obj->sect_sort_arr[chunk_idx];
-      LNK_Chunk* chunk = obj->chunk_arr[chunk_idx];
+    for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
+      String8    name  = obj.sect_name_arr[chunk_idx];
+      String8    sort  = obj.sect_sort_arr[chunk_idx];
+      LNK_Chunk* chunk = obj.chunk_arr[chunk_idx];
 
       // :find_chunk_section
-      LNK_Section* sect = lnk_section_table_search(task->st, name);
+      LNK_Section* sect = lnk_section_table_search(task.st, name);
       Assert(sect);
 
       // :chunk_ref_assign
       LNK_ChunkRefAssign ctx;
-      ctx.cman             = sect->cman;
-      ctx.chunk_id_arr_arr = task->chunk_id_arr_arr;
+      ctx.cman             = sect.cman;
+      ctx.chunk_id_arr_arr = task.chunk_id_arr_arr;
       ctx.obj_idx          = obj_idx;
-      lnk_visit_chunks(sect->id, chunk, lnk_chunk_ref_assign, &ctx);
+      lnk_visit_chunks(sect.id, chunk, lnk_chunk_ref_assign, &ctx);
 
       // push to section chunk list
-      LNK_ChunkList** chunk_list_arr_arr = sort.size ? task->chunk_list_arr_arr : task->nosort_chunk_list_arr_arr;
-      lnk_chunk_list_push(arena, &chunk_list_arr_arr[sect->id][task_id], chunk);
+      LNK_ChunkList** chunk_list_arr_arr = sort.size ? task.chunk_list_arr_arr : task.nosort_chunk_list_arr_arr;
+      lnk_chunk_list_push(arena, &chunk_list_arr_arr[sect.id][task_id], chunk);
     }
   }
 }
@@ -595,10 +595,10 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
                            LNK_InputObj**     inputs)
 {
   ProfBeginFunction();
-  Temp scratch = scratch_begin(arena->v, arena->count);
+  Temp scratch = scratch_begin(arena.v, arena.count);
   
-  uint64              obj_id_base = obj_list->count;
-  LNK_ObjNodeArray obj_arr     = lnk_obj_list_reserve(arena->v[0], obj_list, input_count);
+  uint64              obj_id_base = obj_list.count;
+  LNK_ObjNodeArray obj_arr     = lnk_obj_list_reserve(arena.v[0], obj_list, input_count);
   
   ProfBegin("Obj Initer");
   {
@@ -617,36 +617,36 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
       TP_Temp temp = tp_temp_begin(arena);
 
       LNK_ObjNewSectScanner task;
-      task.range_arr    = tp_divide_work(arena->v[0], obj_arr.count, tp->worker_count);
+      task.range_arr    = tp_divide_work(arena.v[0], obj_arr.count, tp.worker_count);
       task.obj_node_arr = obj_arr.v;
-      task.defn_arr     = push_array(arena->v[0], LNK_SectDefnList, tp->worker_count);
-      task.conf_arr     = push_array(arena->v[0], LNK_SectDefnList, tp->worker_count);
-      tp_for_parallel(tp, arena, tp->worker_count, lnk_obj_new_sect_scanner, &task);
+      task.defn_arr     = push_array(arena.v[0], LNK_SectDefnList, tp.worker_count);
+      task.conf_arr     = push_array(arena.v[0], LNK_SectDefnList, tp.worker_count);
+      tp_for_parallel(tp, arena, tp.worker_count, lnk_obj_new_sect_scanner, &task);
 
 
       LNK_SectDefnList defn_list = {0};
       LNK_SectDefnList conf_list = {0};
-      lnk_sect_defn_list_concat_in_place_arr(&defn_list, task.defn_arr, tp->worker_count);
-      lnk_sect_defn_list_concat_in_place_arr(&conf_list, task.conf_arr, tp->worker_count);
+      lnk_sect_defn_list_concat_in_place_arr(&defn_list, task.defn_arr, tp.worker_count);
+      lnk_sect_defn_list_concat_in_place_arr(&conf_list, task.conf_arr, tp.worker_count);
 
 
-      HashTable* ht = hash_table_init(arena->v[0], 128);
-      for (LNK_SectionNode* sect_node = st->list.first; sect_node != 0; sect_node = sect_node->next) {
-        LNK_Section* sect = &sect_node->data;
-        hash_table_push_string_u64(arena->v[0], ht, sect->name, sect->flags);
+      HashTable* ht = hash_table_init(arena.v[0], 128);
+      for (LNK_SectionNode* sect_node = st.list.first; sect_node != 0; sect_node = sect_node.next) {
+        LNK_Section* sect = &sect_node.data;
+        hash_table_push_string_u64(arena.v[0], ht, sect.name, sect.flags);
       }
 
 
       LNK_SectDefnList new_list = {0};
       for (LNK_SectDefn* curr = defn_list.first, *next; curr != 0; curr = next) {
-        next = curr->next;
-        curr->next = 0;
+        next = curr.next;
+        curr.next = 0;
 
-        KeyValuePair* is_present = hash_table_search_string(ht, curr->name);
+        KeyValuePair* is_present = hash_table_search_string(ht, curr.name);
         if (is_present) {
           if (lnk_is_error_code_active(LNK_Warning_SectionFlagsConflict)) {
-            COFF_SectionFlags flags = is_present->value_u64;
-            if (flags != curr->flags) {
+            COFF_SectionFlags flags = is_present.value_u64;
+            if (flags != curr.flags) {
               lnk_sect_defn_list_push_node(&conf_list, curr);
             } else {
               // section is present or is in new_list
@@ -654,27 +654,27 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
           }
         } else {
           lnk_sect_defn_list_push_node(&new_list, curr);
-          hash_table_push_string_u64(arena->v[0], ht, curr->name, curr->flags);
+          hash_table_push_string_u64(arena.v[0], ht, curr.name, curr.flags);
         }
       }
 
 
-      for (LNK_SectDefn* defn = conf_list.first; defn != 0; defn = defn->next) {
-        KeyValuePair* is_present = hash_table_search_string(ht, defn->name);
+      for (LNK_SectDefn* defn = conf_list.first; defn != 0; defn = defn.next) {
+        KeyValuePair* is_present = hash_table_search_string(ht, defn.name);
         if (!is_present) {
           InvalidPath;
         }
-        uint64               sect_number        = (defn->idx + 1);
-        COFF_SectionFlags expected_flags     = is_present->value_u64;
+        uint64               sect_number        = (defn.idx + 1);
+        COFF_SectionFlags expected_flags     = is_present.value_u64;
         String8           expected_flags_str = coff_string_from_section_flags(scratch.arena, expected_flags);
-        String8           current_flags_str  = coff_string_from_section_flags(scratch.arena, defn->flags);
-        lnk_error_obj(LNK_Warning_SectionFlagsConflict, defn->obj, "detected section flags conflict in %S(No. %X); expected {%S} but got {%S}", defn->name, sect_number, expected_flags_str, current_flags_str);
+        String8           current_flags_str  = coff_string_from_section_flags(scratch.arena, defn.flags);
+        lnk_error_obj(LNK_Warning_SectionFlagsConflict, defn.obj, "detected section flags conflict in %S(No. %X); expected {%S} but got {%S}", defn.name, sect_number, expected_flags_str, current_flags_str);
       }
 
 
       // push new sections for :find_chunk_section
-      for (LNK_SectDefn* curr = new_list.first; curr != 0; curr = curr->next) {
-        lnk_section_table_push(st, curr->name, curr->flags & ~COFF_SectionFlags_LnkFlags);
+      for (LNK_SectDefn* curr = new_list.first; curr != 0; curr = curr.next) {
+        lnk_section_table_push(st, curr.name, curr.flags & ~COFF_SectionFlags_LnkFlags);
       }
 
       tp_temp_end(temp);
@@ -684,8 +684,8 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
     ProfBegin("Count Chunks Per Section");
     uint64** chunk_id_arr_arr;
     {
-      uint64** chunk_count_arr_arr = push_array_no_zero(scratch.arena, uint64 *, st->id_max);
-      for (uint64 sect_idx = 0; sect_idx < st->id_max; sect_idx += 1) {
+      uint64** chunk_count_arr_arr = push_array_no_zero(scratch.arena, uint64 *, st.id_max);
+      for (uint64 sect_idx = 0; sect_idx < st.id_max; sect_idx += 1) {
         chunk_count_arr_arr[sect_idx] = push_array(scratch.arena, uint64, obj_arr.count);
       }
 
@@ -696,12 +696,12 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
       tp_for_parallel(tp, 0, obj_arr.count, lnk_chunk_counter, &task);
 
       chunk_id_arr_arr = chunk_count_arr_arr;
-      for (uint64 sect_idx = 1; sect_idx < st->id_max; sect_idx += 1) {
+      for (uint64 sect_idx = 1; sect_idx < st.id_max; sect_idx += 1) {
         LNK_Section* sect = lnk_section_table_search_id(st, sect_idx);
         if (!sect) continue;
         for (uint64 obj_idx = 0; obj_idx < obj_arr.count; obj_idx += 1) {
-          uint64 chunk_id_base = sect->cman->total_chunk_count;
-          sect->cman->total_chunk_count += chunk_count_arr_arr[sect_idx][obj_idx];
+          uint64 chunk_id_base = sect.cman.total_chunk_count;
+          sect.cman.total_chunk_count += chunk_count_arr_arr[sect_idx][obj_idx];
           chunk_id_arr_arr[sect_idx][obj_idx] = chunk_id_base;
         }
       }
@@ -712,18 +712,18 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
     {
       LNK_ChunkRefAssigner task;
       task.st                        = st;
-      task.range_arr                 = tp_divide_work(scratch.arena, obj_arr.count, tp->worker_count);
+      task.range_arr                 = tp_divide_work(scratch.arena, obj_arr.count, tp.worker_count);
       task.chunk_id_arr_arr          = chunk_id_arr_arr;
       task.obj_arr                   = obj_arr.v;
-      task.nosort_chunk_list_arr_arr = lnk_make_chunk_list_arr_arr(scratch.arena, st->id_max, tp->worker_count);
-      task.chunk_list_arr_arr        = lnk_make_chunk_list_arr_arr(scratch.arena, st->id_max, tp->worker_count);
-      tp_for_parallel(tp, arena, tp->worker_count, lnk_chunk_ref_assigner, &task);
+      task.nosort_chunk_list_arr_arr = lnk_make_chunk_list_arr_arr(scratch.arena, st.id_max, tp.worker_count);
+      task.chunk_list_arr_arr        = lnk_make_chunk_list_arr_arr(scratch.arena, st.id_max, tp.worker_count);
+      tp_for_parallel(tp, arena, tp.worker_count, lnk_chunk_ref_assigner, &task);
 
       // merge chunks
-      for (LNK_SectionNode* sect_node = st->list.first; sect_node != 0; sect_node = sect_node->next) {
-        LNK_Section* sect = &sect_node->data;
-        lnk_chunk_list_concat_in_place_arr(sect->nosort_chunk->u.list, task.nosort_chunk_list_arr_arr[sect->id], tp->worker_count);
-        lnk_chunk_list_concat_in_place_arr(sect->root->u.list, task.chunk_list_arr_arr[sect->id], tp->worker_count);
+      for (LNK_SectionNode* sect_node = st.list.first; sect_node != 0; sect_node = sect_node.next) {
+        LNK_Section* sect = &sect_node.data;
+        lnk_chunk_list_concat_in_place_arr(sect.nosort_chunk.u.list, task.nosort_chunk_list_arr_arr[sect.id], tp.worker_count);
+        lnk_chunk_list_concat_in_place_arr(sect.root.u.list, task.chunk_list_arr_arr[sect.id], tp.worker_count);
       }
     }
     ProfEnd();
@@ -777,26 +777,26 @@ lnk_symbol_array_from_coff(Arena*              arena,
           // there is no way to know up front how many splits we have,
           // so lazily convert chunks when see two or more functions
           // in a section
-          if (chunk->type == LNK_Chunk_Leaf) {
+          if (chunk.type == LNK_Chunk_Leaf) {
             // make a list chunk
             LNK_Chunk* chunk_list    = push_array(arena, LNK_Chunk, 1);
-            chunk_list->type         = LNK_Chunk_List;
-            chunk_list->align        = chunk->align;
-            chunk_list->is_discarded = chunk->is_discarded;
-            chunk_list->sort_idx     = chunk->sort_idx;
-            chunk_list->input_idx    = chunk->input_idx;
-            chunk_list->flags        = chunk->flags;
-            chunk_list->u.list       = push_array(arena, LNK_ChunkList, 1);
+            chunk_list.type         = LNK_Chunk_List;
+            chunk_list.align        = chunk.align;
+            chunk_list.is_discarded = chunk.is_discarded;
+            chunk_list.sort_idx     = chunk.sort_idx;
+            chunk_list.input_idx    = chunk.input_idx;
+            chunk_list.flags        = chunk.flags;
+            chunk_list.u.list       = push_array(arena, LNK_ChunkList, 1);
             lnk_chunk_set_debugf(arena, chunk_list, "%S: function chunk list for %S", obj_path, symbol.name);
 
             // update properties on first chunk
-            chunk->min_size   = function_pad_min;
-            chunk->sort_chunk = 0;
-            chunk->sort_idx   = str8_zero();
-            chunk->input_idx  = 0;
+            chunk.min_size   = function_pad_min;
+            chunk.sort_chunk = 0;
+            chunk.sort_idx   = str8_zero();
+            chunk.input_idx  = 0;
 
             // push leaf to list
-            lnk_chunk_list_push(arena, chunk_list->u.list, chunk);
+            lnk_chunk_list_push(arena, chunk_list.u.list, chunk);
 
             // set list as target chunk
             chunk = chunk_list;
@@ -807,48 +807,48 @@ lnk_symbol_array_from_coff(Arena*              arena,
 
           // find chunk that is near symbol
           uint64            offset_cursor = 0;
-          LNK_ChunkNode* current       = chunk->u.list->last;
-          for (LNK_ChunkNode* c = chunk->u.list->first; c != 0; c = c->next) {
-            Assert(c->data->type == LNK_Chunk_Leaf);
-            if (offset_cursor + c->data->u.leaf.size >= symbol.value) {
+          LNK_ChunkNode* current       = chunk.u.list.last;
+          for (LNK_ChunkNode* c = chunk.u.list.first; c != 0; c = c.next) {
+            Assert(c.data.type == LNK_Chunk_Leaf);
+            if (offset_cursor + c.data.u.leaf.size >= symbol.value) {
               current = c;
               break;
             }
-            offset_cursor += c->data->u.leaf.size;
+            offset_cursor += c.data.u.leaf.size;
           }
-          Assert(current->data->type == LNK_Chunk_Leaf);
+          Assert(current.data.type == LNK_Chunk_Leaf);
 
           if (offset_cursor < symbol.value) {
             // bifurcate chunk at symbol offset
             uint64     split_pos        = symbol.value - offset_cursor;
             Rng1U64 left_data_range  = rng_1u64(0, split_pos);
-            Rng1U64 right_data_range = rng_1u64(left_data_range.max, current->data->u.leaf.size);
-            String8 left_data        = str8_substr(current->data->u.leaf, left_data_range);
-            String8 right_data       = str8_substr(current->data->u.leaf, right_data_range);
+            Rng1U64 right_data_range = rng_1u64(left_data_range.max, current.data.u.leaf.size);
+            String8 left_data        = str8_substr(current.data.u.leaf, left_data_range);
+            String8 right_data       = str8_substr(current.data.u.leaf, right_data_range);
 
             // create new chunk
             LNK_Chunk* split_chunk    = push_array(arena, LNK_Chunk, 1);
-            split_chunk->type         = LNK_Chunk_Leaf;
-            split_chunk->align        = current->data->align;
-            split_chunk->min_size     = function_pad_min;
-            split_chunk->is_discarded = current->data->is_discarded;
-            split_chunk->flags        = current->data->flags;
-            split_chunk->u.leaf       = right_data;
+            split_chunk.type         = LNK_Chunk_Leaf;
+            split_chunk.align        = current.data.align;
+            split_chunk.min_size     = function_pad_min;
+            split_chunk.is_discarded = current.data.is_discarded;
+            split_chunk.flags        = current.data.flags;
+            split_chunk.u.leaf       = right_data;
             lnk_chunk_set_debugf(arena, split_chunk, "%S: chunk split on function %S SECT%x SPLIT_POS %#llx", obj_path, symbol.name, symbol.section_number, split_pos);
 
             LNK_ChunkNode* split_node = push_array(arena, LNK_ChunkNode, 1);
-            split_node->data = split_chunk;
+            split_node.data = split_chunk;
 
             // update split chunk data
-            current->data->u.leaf = left_data;
+            current.data.u.leaf = left_data;
 
             // insert split chunk after current chunk 
-            if (split_node->next == 0) {
-              chunk->u.list->last = split_node;
+            if (split_node.next == 0) {
+              chunk.u.list.last = split_node;
             }
-            split_node->next = current->next;
-            current->next = split_node;
-            chunk->u.list->count += 1;
+            split_node.next = current.next;
+            current.next = split_node;
+            chunk.u.list.count += 1;
           }
         }
       }
@@ -911,16 +911,16 @@ lnk_symbol_array_from_coff(Arena*              arena,
         if (is_comdat) {
           COFF_SymbolSecDef* secdef = aux_symbols;
 
-          selection = secdef->selection;
-          check_sum = secdef->check_sum;
+          selection = secdef.selection;
+          check_sum = secdef.check_sum;
 
           // create association link between chunks
-          if (secdef->selection == COFF_ComdatSelect_Associative) {
-            uint32 secdef_number = secdef->number_lo;
+          if (secdef.selection == COFF_ComdatSelect_Associative) {
+            uint32 secdef_number = secdef.number_lo;
 
             // promote secdef number to 32 bits
             if (is_big_obj) {
-              secdef_number |= (uint32)secdef->number_hi << 16;
+              secdef_number |= (uint32)secdef.number_hi << 16;
             }
 
             // associate chunks
@@ -935,21 +935,21 @@ lnk_symbol_array_from_coff(Arena*              arena,
         }
 
 
-        if (chunk->type == LNK_Chunk_List) {
-          LNK_Chunk* closest_chunk = chunk->u.list->last->data;
+        if (chunk.type == LNK_Chunk_List) {
+          LNK_Chunk* closest_chunk = chunk.u.list.last.data;
           uint64        offset_cursor = 0;
-          for (LNK_ChunkNode* c = chunk->u.list->first; c != 0; c = c->next) {
-            if (offset_cursor + c->data->u.leaf.size > offset) {
-              closest_chunk = c->data;
+          for (LNK_ChunkNode* c = chunk.u.list.first; c != 0; c = c.next) {
+            if (offset_cursor + c.data.u.leaf.size > offset) {
+              closest_chunk = c.data;
               break;
             }
-            offset_cursor += c->data->u.leaf.size;
+            offset_cursor += c.data.u.leaf.size;
           }
           Assert(offset >= offset_cursor);
           offset -= offset_cursor;
           chunk   = closest_chunk;
         }
-        Assert(chunk->type == LNK_Chunk_Leaf);
+        Assert(chunk.type == LNK_Chunk_Leaf);
 
         lnk_init_defined_symbol_chunk(&symbol_array.v[symbol_idx], parsed_symbol.name, visibility, flags, chunk, offset, selection, check_sum);
         symbol_array.v[symbol_idx].obj = obj;
@@ -960,33 +960,33 @@ lnk_symbol_array_from_coff(Arena*              arena,
         }
         
         COFF_SymbolWeakExt* weak_ext = aux_symbols;
-        if (weak_ext->tag_index >= coff_symbol_count) {
+        if (weak_ext.tag_index >= coff_symbol_count) {
           lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "weak symbol \"%S (%u)\" points to out of bounds symbol", parsed_symbol.name, symbol_idx);
         }
 
         LNK_Symbol* symbol          = &symbol_array.v[symbol_idx];
-        LNK_Symbol* fallback_symbol = &symbol_array.v[weak_ext->tag_index];
-        lnk_init_weak_symbol(symbol, parsed_symbol.name, weak_ext->characteristics, fallback_symbol);
+        LNK_Symbol* fallback_symbol = &symbol_array.v[weak_ext.tag_index];
+        lnk_init_weak_symbol(symbol, parsed_symbol.name, weak_ext.characteristics, fallback_symbol);
 
-        symbol->obj          = obj;
-        fallback_symbol->obj = obj;
+        symbol.obj          = obj;
+        fallback_symbol.obj = obj;
       } break;
       case COFF_SymbolValueInterp_Undefined: {
         LNK_Symbol* symbol = &symbol_array.v[symbol_idx];
         lnk_init_undefined_symbol(symbol, parsed_symbol.name, LNK_SymbolScopeFlag_Main);
-        symbol->obj = obj;
+        symbol.obj = obj;
       } break;
       case COFF_SymbolValueInterp_Common: {
         // :common_block
         //
         // TODO: sort chunks on size to reduce bss usage
         LNK_Chunk* chunk = push_array(arena, LNK_Chunk, 1);
-        chunk->align     = Min(32, u64_up_to_pow2(parsed_symbol.value)); // link.exe caps align at 32 bytes
-        chunk->type      = LNK_Chunk_Leaf;
-        chunk->flags     = master_common_block->flags;
-        chunk->u.leaf    = str8(0, parsed_symbol.value);
+        chunk.align     = Min(32, u64_up_to_pow2(parsed_symbol.value)); // link.exe caps align at 32 bytes
+        chunk.type      = LNK_Chunk_Leaf;
+        chunk.flags     = master_common_block.flags;
+        chunk.u.leaf    = str8(0, parsed_symbol.value);
         lnk_chunk_set_debugf(arena, chunk, "%S: common block %S", obj_path, parsed_symbol.name);
-        lnk_chunk_list_push(arena, master_common_block->u.list, chunk);
+        lnk_chunk_list_push(arena, master_common_block.u.list, chunk);
 
         LNK_DefinedSymbolFlags flags = 0;
         if (COFF_SymbolType_IsFunc(parsed_symbol.type)) {
@@ -995,7 +995,7 @@ lnk_symbol_array_from_coff(Arena*              arena,
 
         LNK_Symbol* symbol = &symbol_array.v[symbol_idx];
         lnk_init_defined_symbol_chunk(symbol, parsed_symbol.name, LNK_DefinedSymbolVisibility_Extern, flags, chunk, 0, COFF_ComdatSelect_Largest, 0);
-        symbol->obj = obj;
+        symbol.obj = obj;
       } break;
       case COFF_SymbolValueInterp_Abs: {
         // Never code or data, synthetic symbol. COFF spec says bits in value are used
@@ -1009,7 +1009,7 @@ lnk_symbol_array_from_coff(Arena*              arena,
 
         LNK_Symbol* symbol = &symbol_array.v[symbol_idx];
         lnk_init_defined_symbol_va(symbol, parsed_symbol.name, visibility, 0, parsed_symbol.value);
-        symbol->obj = obj;
+        symbol.obj = obj;
       } break;
       case COFF_SymbolValueInterp_Debug: {
       } break;
@@ -1080,26 +1080,26 @@ lnk_parse_msvc_linker_directive(Arena* arena, String8 obj_path, String8 lib_path
   String8List arg_list = lnk_arg_list_parse_windows_rules(scratch.arena, to_parse);
   LNK_CmdLine cmd_line = lnk_cmd_line_parse_windows_rules(scratch.arena, arg_list);
 
-  for (LNK_CmdOption* opt = cmd_line.first_option; opt != 0; opt = opt->next) {
-    LNK_CmdSwitchType type = lnk_cmd_switch_type_from_string(opt->string);
+  for (LNK_CmdOption* opt = cmd_line.first_option; opt != 0; opt = opt.next) {
+    LNK_CmdSwitchType type = lnk_cmd_switch_type_from_string(opt.string);
 
     if (type == LNK_CmdSwitch_Null) {
-      lnk_error_with_loc(LNK_Warning_UnknownDirective, obj_path, lib_path, "unknown directive \"%S\"", opt->string);
+      lnk_error_with_loc(LNK_Warning_UnknownDirective, obj_path, lib_path, "unknown directive \"%S\"", opt.string);
       continue;
     }
     if (!is_legal[type]) {
-      lnk_error_with_loc(LNK_Warning_IllegalDirective, obj_path, lib_path, "illegal directive \"%S\"", opt->string);
+      lnk_error_with_loc(LNK_Warning_IllegalDirective, obj_path, lib_path, "illegal directive \"%S\"", opt.string);
       continue;
     }
 
     LNK_Directive* directive = push_array_no_zero(arena, LNK_Directive, 1);
-    directive->next          = 0;
-    directive->id            = push_str8_copy(arena, opt->string);
-    directive->value_list    = str8_list_copy(arena, &opt->value_strings);
+    directive.next          = 0;
+    directive.id            = push_str8_copy(arena, opt.string);
+    directive.value_list    = str8_list_copy(arena, &opt.value_strings);
 
-    LNK_DirectiveList* directive_list = &directive_info->v[type];
-    SLLQueuePush(directive_list->first, directive_list->last, directive);
-    ++directive_list->count;
+    LNK_DirectiveList* directive_list = &directive_info.v[type];
+    SLLQueuePush(directive_list.first, directive_list.last, directive);
+    ++directive_list.count;
   }
   
   scratch_end(scratch);
@@ -1119,15 +1119,15 @@ lnk_directive_info_from_sections(Arena*         arena,
     String8    sect_name  = sect_name_arr[chunk_idx];
     LNK_Chunk* sect_chunk = chunk_arr + chunk_idx;
     if (str8_match_lit(".drectve", sect_name, 0)) {
-      if (sect_chunk->type == LNK_Chunk_Leaf) {
-        if (sect_chunk->u.leaf.size >= 3) {
-          if (~sect_chunk->flags & COFF_SectionFlag_LnkInfo) {
+      if (sect_chunk.type == LNK_Chunk_Leaf) {
+        if (sect_chunk.u.leaf.size >= 3) {
+          if (~sect_chunk.flags & COFF_SectionFlag_LnkInfo) {
             lnk_error_with_loc(LNK_Warning_IllData, obj_path, lib_path, "%S missing COFF_SectionFlag_LnkInfo", sect_name);
           }
           if (reloc_list_arr[chunk_idx].count > 0) {
             lnk_error_with_loc(LNK_Warning_DirectiveSectionWithRelocs, obj_path, lib_path, "directive section %S(%#x) has relocations", sect_name, (chunk_idx+1));
           }
-          lnk_parse_msvc_linker_directive(arena, obj_path, lib_path, &directive_info, sect_chunk->u.leaf);
+          lnk_parse_msvc_linker_directive(arena, obj_path, lib_path, &directive_info, sect_chunk.u.leaf);
         } else {
           lnk_error_with_loc(LNK_Warning_IllData, obj_path, lib_path, "unable to parse %S", sect_name);
         }
@@ -1143,11 +1143,11 @@ MSCRT_FeatFlags
 lnk_obj_get_features(LNK_Obj* obj)
 {
   MSCRT_FeatFlags result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj->symbol_list, str8_lit("@feat.00"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@feat.00"), 0);
   if (sym) {
-    Assert(LNK_Symbol_IsDefined(sym->type));
-    Assert(sym->u.defined.value_type == LNK_DefinedSymbolValue_VA);
-    result = sym->u.defined.u.va;
+    Assert(LNK_Symbol_IsDefined(sym.type));
+    Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);
+    result = sym.u.defined.u.va;
   }
   return result;
 }
@@ -1156,11 +1156,11 @@ uint32
 lnk_obj_get_comp_id(LNK_Obj* obj)
 {
   uint32 result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj->symbol_list, str8_lit("@comp.id"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@comp.id"), 0);
   if (sym) {
-    Assert(LNK_Symbol_IsDefined(sym->type));
-    Assert(sym->u.defined.value_type == LNK_DefinedSymbolValue_VA);
-    result = sym->u.defined.u.va;
+    Assert(LNK_Symbol_IsDefined(sym.type));
+    Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);
+    result = sym.u.defined.u.va;
   }
   return result;
 }
@@ -1169,11 +1169,11 @@ uint32
 lnk_obj_get_vol_md(LNK_Obj* obj)
 {
   uint32 result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj->symbol_list, str8_lit("@vol.md"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@vol.md"), 0);
   if (sym) {
-    Assert(LNK_Symbol_IsDefined(sym->type));
-    Assert(sym->u.defined.value_type == LNK_DefinedSymbolValue_VA);
-    result = sym->u.defined.u.va;
+    Assert(LNK_Symbol_IsDefined(sym.type));
+    Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);
+    result = sym.u.defined.u.va;
   }
   return result;
 }

@@ -213,7 +213,7 @@ String8 push_str8f(Arena* arena, char* fmt, ...);
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
 
-//- rjf: string -> integer
+//- rjf: string . integer
 int64 sign_from_str8(String8 string, String8* string_tail);
 B32 str8_is_integer(String8 string, uint32 radix);
 uint64 u64_from_str8(String8 string, uint32 radix);
@@ -221,7 +221,7 @@ int64 s64_from_str8(String8 string, uint32 radix);
 B32 try_u64_from_str8_c_rules(String8 string, uint64* x);
 B32 try_s64_from_str8_c_rules(String8 string, int64* x);
 
-//- rjf: integer -> string
+//- rjf: integer . string
 String8 str8_from_memory_size(Arena* arena, uint64 z);
 String8 str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
 String8 str8_from_s64(Arena* arena, int64 s64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
@@ -245,7 +245,7 @@ String8Node* str8_list_push_aligner(Arena* arena, String8List* list, uint64 min,
 String8Node* str8_list_pushf(Arena* arena, String8List* list, char* fmt, ...);
 String8Node* str8_list_push_frontf(Arena* arena, String8List* list, char* fmt, ...);
 String8List  str8_list_copy(Arena* arena, String8List* list);
-#define str8_list_first(list) ((list)->first ? (list)->first->string : str8_zero())
+#define str8_list_first(list) ((list).first ? (list).first.string : str8_zero())
 
 ////////////////////////////////
 //~ rjf: String Splitting & Joining
@@ -295,7 +295,7 @@ String8 str8_from_32(Arena* arena, String32 in);
 String32 str32_from_8(Arena* arena, String8 in);
 
 ////////////////////////////////
-//~ rjf: Basic Types & Space Enum -> String Conversions
+//~ rjf: Basic Types & Space Enum . String Conversions
 
 String8 string_from_dimension(Dimension dimension);
 String8 string_from_side(Side side);
@@ -303,7 +303,7 @@ String8 string_from_operating_system(OperatingSystem os);
 String8 string_from_architecture(Architecture arch);
 
 ////////////////////////////////
-//~ rjf: Time Types -> String
+//~ rjf: Time Types . String
 
 String8 string_from_week_day(WeekDay week_day);
 String8 string_from_month(Month month);
@@ -322,7 +322,7 @@ String8 indented_from_string(Arena* arena, String8 string);
 String8List wrapped_lines_from_string(Arena* arena, String8 string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
 
 ////////////////////////////////
-//~ rjf: String <-> Color
+//~ rjf: String <. Color
 
 String8 hex_string_from_rgba_4f32(Arena* arena, Vec4F32 rgba);
 Vec4F32 rgba_from_hex_string_4f32(String8 hex_string);

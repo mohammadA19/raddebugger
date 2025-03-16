@@ -192,7 +192,7 @@ struct CV_C13Parsed
   // rjf: fastpath to file checksums section
   CV_C13SubSectionNode* file_chksms_sub_section;
   
-  // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
+  // rjf: fastpath to map inlinee CV_ItemId . CV_InlineeLinesParsed quickly
   CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots;
   uint64                            inlinee_lines_parsed_slots_count;
 }

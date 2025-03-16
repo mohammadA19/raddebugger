@@ -482,7 +482,7 @@ void                    pdb_type_server_push_bucket(PDB_TypeServer* ts, CV_Leaf*
 PDB_TypeHashStreamInfo  pdb_type_hash_stream_build(TP_Context* tp, PDB_TypeServer* ts, PDB_StringTable* strtab, MSF_Context* msf, PDB_TpiOffHint* hint_arr, uint64 hint_count);
 
 ////////////////////////////////
-// Enum -> String
+// Enum . String
 
 String8 pdb_string_from_src_error(PDB_SrcError error);
 String8 pdb_string_from_open_type_server_error(PDB_OpenTypeServerError error);

@@ -66,12 +66,12 @@ FP_Handle
 fnt_handle_from_tag(FNT_Tag tag)
 {
   ProfBeginFunction();
-  uint64 slot_idx = tag.u64[1] % f_state->font_hash_table_size;
+  uint64 slot_idx = tag.u64[1] % f_state.font_hash_table_size;
   FNT_FontHashNode* existing_node = 0;
   {
-    for(FNT_FontHashNode* n = f_state->font_hash_table[slot_idx].first; n != 0 ; n = n->hash_next)
+    for(FNT_FontHashNode* n = f_state.font_hash_table[slot_idx].first; n != 0 ; n = n.hash_next)
     {
-      if(MemoryMatchStruct(&tag, &n->tag))
+      if(MemoryMatchStruct(&tag, &n.tag))
       {
         existing_node = n;
         break;
@@ -81,7 +81,7 @@ fnt_handle_from_tag(FNT_Tag tag)
   FP_Handle result = {0};
   if(existing_node != 0)
   {
-    result = existing_node->handle;
+    result = existing_node.handle;
   }
   ProfEnd();
   return result;
@@ -91,12 +91,12 @@ FP_Metrics
 fnt_fp_metrics_from_tag(FNT_Tag tag)
 {
   ProfBeginFunction();
-  uint64 slot_idx = tag.u64[1] % f_state->font_hash_table_size;
+  uint64 slot_idx = tag.u64[1] % f_state.font_hash_table_size;
   FNT_FontHashNode* existing_node = 0;
   {
-    for(FNT_FontHashNode* n = f_state->font_hash_table[slot_idx].first; n != 0 ; n = n->hash_next)
+    for(FNT_FontHashNode* n = f_state.font_hash_table[slot_idx].first; n != 0 ; n = n.hash_next)
     {
-      if(MemoryMatchStruct(&tag, &n->tag))
+      if(MemoryMatchStruct(&tag, &n.tag))
       {
         existing_node = n;
         break;
@@ -106,7 +106,7 @@ fnt_fp_metrics_from_tag(FNT_Tag tag)
   FP_Metrics result = {0};
   if(existing_node != 0)
   {
-    result = existing_node->metrics;
+    result = existing_node.metrics;
   }
   ProfEnd();
   return result;
@@ -125,15 +125,15 @@ fnt_tag_from_path(String8 path)
     result.u64[1] |= bit64;
   }
   
-  //- rjf: tag -> slot index
-  uint64 slot_idx = result.u64[1] % f_state->font_hash_table_size;
+  //- rjf: tag . slot index
+  uint64 slot_idx = result.u64[1] % f_state.font_hash_table_size;
   
-  //- rjf: slot * tag -> existing node
+  //- rjf: slot * tag . existing node
   FNT_FontHashNode* existing_node = 0;
   {
-    for(FNT_FontHashNode* n = f_state->font_hash_table[slot_idx].first; n != 0 ; n = n->hash_next)
+    for(FNT_FontHashNode* n = f_state.font_hash_table[slot_idx].first; n != 0 ; n = n.hash_next)
     {
-      if(MemoryMatchStruct(&result, &n->tag))
+      if(MemoryMatchStruct(&result, &n.tag))
       {
         existing_node = n;
         break;
@@ -145,13 +145,13 @@ fnt_tag_from_path(String8 path)
   FNT_FontHashNode* new_node = 0;
   if(existing_node == 0)
   {
-    FNT_FontHashSlot* slot = &f_state->font_hash_table[slot_idx];
-    new_node = push_array(f_state->permanent_arena, FNT_FontHashNode, 1);
-    new_node->tag = result;
-    new_node->handle = fp_font_open(path);
-    new_node->metrics = fp_metrics_from_font(new_node->handle);
-    new_node->path = push_str8_copy(f_state->permanent_arena, path);
-    SLLQueuePush_N(slot->first, slot->last, new_node, hash_next);
+    FNT_FontHashSlot* slot = &f_state.font_hash_table[slot_idx];
+    new_node = push_array(f_state.permanent_arena, FNT_FontHashNode, 1);
+    new_node.tag = result;
+    new_node.handle = fp_font_open(path);
+    new_node.metrics = fp_metrics_from_font(new_node.handle);
+    new_node.path = push_str8_copy(f_state.permanent_arena, path);
+    SLLQueuePush_N(slot.first, slot.last, new_node, hash_next);
   }
   
   //- rjf: return
@@ -172,15 +172,15 @@ fnt_tag_from_static_data_string(String8* data_ptr)
     result.u64[1] &= ~bit64;
   }
   
-  //- rjf: tag -> slot index
-  uint64 slot_idx = result.u64[1] % f_state->font_hash_table_size;
+  //- rjf: tag . slot index
+  uint64 slot_idx = result.u64[1] % f_state.font_hash_table_size;
   
-  //- rjf: slot * tag -> existing node
+  //- rjf: slot * tag . existing node
   FNT_FontHashNode* existing_node = 0;
   {
-    for(FNT_FontHashNode* n = f_state->font_hash_table[slot_idx].first; n != 0 ; n = n->hash_next)
+    for(FNT_FontHashNode* n = f_state.font_hash_table[slot_idx].first; n != 0 ; n = n.hash_next)
     {
-      if(MemoryMatchStruct(&result, &n->tag))
+      if(MemoryMatchStruct(&result, &n.tag))
       {
         existing_node = n;
         break;
@@ -192,13 +192,13 @@ fnt_tag_from_static_data_string(String8* data_ptr)
   FNT_FontHashNode* new_node = 0;
   if(existing_node == 0)
   {
-    FNT_FontHashSlot* slot = &f_state->font_hash_table[slot_idx];
-    new_node = push_array(f_state->permanent_arena, FNT_FontHashNode, 1);
-    new_node->tag = result;
-    new_node->handle = fp_font_open_from_static_data_string(data_ptr);
-    new_node->metrics = fp_metrics_from_font(new_node->handle);
-    new_node->path = str8_lit("");
-    SLLQueuePush_N(slot->first, slot->last, new_node, hash_next);
+    FNT_FontHashSlot* slot = &f_state.font_hash_table[slot_idx];
+    new_node = push_array(f_state.permanent_arena, FNT_FontHashNode, 1);
+    new_node.tag = result;
+    new_node.handle = fp_font_open_from_static_data_string(data_ptr);
+    new_node.metrics = fp_metrics_from_font(new_node.handle);
+    new_node.path = str8_lit("");
+    SLLQueuePush_N(slot.first, slot.last, new_node, hash_next);
   }
   
   //- rjf: return
@@ -209,15 +209,15 @@ fnt_tag_from_static_data_string(String8* data_ptr)
 String8
 fnt_path_from_tag(FNT_Tag tag)
 {
-  //- rjf: tag -> slot index
-  uint64 slot_idx = tag.u64[1] % f_state->font_hash_table_size;
+  //- rjf: tag . slot index
+  uint64 slot_idx = tag.u64[1] % f_state.font_hash_table_size;
   
-  //- rjf: slot * tag -> existing node
+  //- rjf: slot * tag . existing node
   FNT_FontHashNode* existing_node = 0;
   {
-    for(FNT_FontHashNode* n = f_state->font_hash_table[slot_idx].first; n != 0 ; n = n->hash_next)
+    for(FNT_FontHashNode* n = f_state.font_hash_table[slot_idx].first; n != 0 ; n = n.hash_next)
     {
-      if(MemoryMatchStruct(&tag, &n->tag))
+      if(MemoryMatchStruct(&tag, &n.tag))
       {
         existing_node = n;
         break;
@@ -225,11 +225,11 @@ fnt_path_from_tag(FNT_Tag tag)
     }
   }
   
-  //- rjf: existing node -> path
+  //- rjf: existing node . path
   String8 result = {0};
   if(existing_node != 0)
   {
-    result = existing_node->path;
+    result = existing_node.path;
   }
   
   return result;
@@ -249,17 +249,17 @@ fnt_atlas_region_alloc(Arena* arena, FNT_Atlas* atlas, Vec2S16 needed_size)
   Corner node_corner = Corner_Invalid;
   FNT_AtlasRegionNode* node = 0;
   {
-    Vec2S16 n_supported_size = atlas->root_dim;
-    for(FNT_AtlasRegionNode* n = atlas->root, *next = 0; n != 0; n = next, next = 0)
+    Vec2S16 n_supported_size = atlas.root_dim;
+    for(FNT_AtlasRegionNode* n = atlas.root, *next = 0; n != 0; n = next, next = 0)
     {
       // rjf: we've traversed to a taken node.
-      if(n->flags & FNT_AtlasRegionNodeFlag_Taken)
+      if(n.flags & FNT_AtlasRegionNodeFlag_Taken)
       {
         break;
       }
       
       // rjf: calculate if this node can be allocated (all children are non-allocated)
-      B32 n_can_be_allocated = (n->num_allocated_descendants == 0);
+      B32 n_can_be_allocated = (n.num_allocated_descendants == 0);
       
       // rjf: fill size
       if(n_can_be_allocated)
@@ -276,19 +276,19 @@ fnt_atlas_region_alloc(Arena* arena, FNT_Atlas* atlas, Vec2S16 needed_size)
       {
         for(Corner corner = (Corner)0; corner < Corner_COUNT; corner = (Corner)(corner+1))
         {
-          if(n->children[corner] == 0)
+          if(n.children[corner] == 0)
           {
-            n->children[corner] = push_array(arena, FNT_AtlasRegionNode, 1);
-            n->children[corner]->parent = n;
-            n->children[corner]->max_free_size[Corner_00] = 
-              n->children[corner]->max_free_size[Corner_01] = 
-              n->children[corner]->max_free_size[Corner_10] = 
-              n->children[corner]->max_free_size[Corner_11] = v2s16(child_size.x/2, child_size.y/2);
+            n.children[corner] = push_array(arena, FNT_AtlasRegionNode, 1);
+            n.children[corner].parent = n;
+            n.children[corner].max_free_size[Corner_00] = 
+              n.children[corner].max_free_size[Corner_01] = 
+              n.children[corner].max_free_size[Corner_10] = 
+              n.children[corner].max_free_size[Corner_11] = v2s16(child_size.x/2, child_size.y/2);
           }
-          if(n->max_free_size[corner].x >= needed_size.x && 
-             n->max_free_size[corner].y >= needed_size.y)
+          if(n.max_free_size[corner].x >= needed_size.x && 
+             n.max_free_size[corner].y >= needed_size.y)
           {
-            best_child = n->children[corner];
+            best_child = n.children[corner];
             node_corner = corner;
             Vec2S32 side_vertex = fnt_vertex_from_corner(corner);
             region_p0.x += side_vertex.x*child_size.x;
@@ -315,34 +315,34 @@ fnt_atlas_region_alloc(Arena* arena, FNT_Atlas* atlas, Vec2S16 needed_size)
   //- rjf: we're taking the subtree rooted by `node`. mark up all parents
   if(node != 0 && node_corner != Corner_Invalid)
   {
-    node->flags |= FNT_AtlasRegionNodeFlag_Taken;
-    if(node->parent != 0)
+    node.flags |= FNT_AtlasRegionNodeFlag_Taken;
+    if(node.parent != 0)
     {
-      MemoryZeroStruct(&node->parent->max_free_size[node_corner]);
+      MemoryZeroStruct(&node.parent.max_free_size[node_corner]);
     }
-    for(FNT_AtlasRegionNode* p = node->parent; p != 0; p = p->parent)
+    for(FNT_AtlasRegionNode* p = node.parent; p != 0; p = p.parent)
     {
-      p->num_allocated_descendants += 1;
-      FNT_AtlasRegionNode* parent = p->parent;
+      p.num_allocated_descendants += 1;
+      FNT_AtlasRegionNode* parent = p.parent;
       if(parent != 0)
       {
-        Corner p_corner = (p == parent->children[Corner_00] ? Corner_00 :
-                           p == parent->children[Corner_01] ? Corner_01 :
-                           p == parent->children[Corner_10] ? Corner_10 :
-                           p == parent->children[Corner_11] ? Corner_11 :
+        Corner p_corner = (p == parent.children[Corner_00] ? Corner_00 :
+                           p == parent.children[Corner_01] ? Corner_01 :
+                           p == parent.children[Corner_10] ? Corner_10 :
+                           p == parent.children[Corner_11] ? Corner_11 :
                            Corner_Invalid);
         if(p_corner == Corner_Invalid)
         {
           InvalidPath;
         }
-        parent->max_free_size[p_corner].x = Max(Max(p->max_free_size[Corner_00].x,
-                                                    p->max_free_size[Corner_01].x),
-                                                Max(p->max_free_size[Corner_10].x,
-                                                    p->max_free_size[Corner_11].x));
-        parent->max_free_size[p_corner].y = Max(Max(p->max_free_size[Corner_00].y,
-                                                    p->max_free_size[Corner_01].y),
-                                                Max(p->max_free_size[Corner_10].y,
-                                                    p->max_free_size[Corner_11].y));
+        parent.max_free_size[p_corner].x = Max(Max(p.max_free_size[Corner_00].x,
+                                                    p.max_free_size[Corner_01].x),
+                                                Max(p.max_free_size[Corner_10].x,
+                                                    p.max_free_size[Corner_11].x));
+        parent.max_free_size[p_corner].y = Max(Max(p.max_free_size[Corner_00].y,
+                                                    p.max_free_size[Corner_01].y),
+                                                Max(p.max_free_size[Corner_10].y,
+                                                    p.max_free_size[Corner_11].y));
       }
     }
   }
@@ -369,8 +369,8 @@ fnt_atlas_region_release(FNT_Atlas* atlas, Rng2S16 region)
   Corner node_corner = Corner_Invalid;
   {
     Vec2S16 n_p0 = v2s16(0, 0);
-    Vec2S16 n_sz = atlas->root_dim;
-    for(FNT_AtlasRegionNode* n = atlas->root, *next = 0; n != 0; n = next)
+    Vec2S16 n_sz = atlas.root_dim;
+    for(FNT_AtlasRegionNode* n = atlas.root, *next = 0; n != 0; n = next)
     {
       // rjf: is the region within this node's boundaries? (either this node, or a descendant)
       if(n_p0.x <= region.p0.x && region.p0.x < n_p0.x+n_sz.x &&
@@ -408,7 +408,7 @@ fnt_atlas_region_release(FNT_Atlas* atlas, Rng2S16 region)
           {
             next_corner = Corner_11;
           }
-          next = n->children[next_corner];
+          next = n.children[next_corner];
           node_corner = next_corner;
           n_sz.x /= 2;
           n_sz.y /= 2;
@@ -427,34 +427,34 @@ fnt_atlas_region_release(FNT_Atlas* atlas, Rng2S16 region)
   //- rjf: free node
   if(node != 0 && node_corner != Corner_Invalid)
   {
-    node->flags &= ~FNT_AtlasRegionNodeFlag_Taken;
-    if(node->parent != 0)
+    node.flags &= ~FNT_AtlasRegionNodeFlag_Taken;
+    if(node.parent != 0)
     {
-      node->parent->max_free_size[node_corner] = calc_region_size;
+      node.parent.max_free_size[node_corner] = calc_region_size;
     }
-    for(FNT_AtlasRegionNode* p = node->parent; p != 0; p = p->parent)
+    for(FNT_AtlasRegionNode* p = node.parent; p != 0; p = p.parent)
     {
-      p->num_allocated_descendants -= 1;
-      FNT_AtlasRegionNode* parent = p->parent;
+      p.num_allocated_descendants -= 1;
+      FNT_AtlasRegionNode* parent = p.parent;
       if(parent != 0)
       {
-        Corner p_corner = (p == parent->children[Corner_00] ? Corner_00 :
-                           p == parent->children[Corner_01] ? Corner_01 :
-                           p == parent->children[Corner_10] ? Corner_10 :
-                           p == parent->children[Corner_11] ? Corner_11 :
+        Corner p_corner = (p == parent.children[Corner_00] ? Corner_00 :
+                           p == parent.children[Corner_01] ? Corner_01 :
+                           p == parent.children[Corner_10] ? Corner_10 :
+                           p == parent.children[Corner_11] ? Corner_11 :
                            Corner_Invalid);
         if(p_corner == Corner_Invalid)
         {
           InvalidPath;
         }
-        parent->max_free_size[p_corner].x = Max(Max(p->max_free_size[Corner_00].x,
-                                                    p->max_free_size[Corner_01].x),
-                                                Max(p->max_free_size[Corner_10].x,
-                                                    p->max_free_size[Corner_11].x));
-        parent->max_free_size[p_corner].y = Max(Max(p->max_free_size[Corner_00].y,
-                                                    p->max_free_size[Corner_01].y),
-                                                Max(p->max_free_size[Corner_10].y,
-                                                    p->max_free_size[Corner_11].y));
+        parent.max_free_size[p_corner].x = Max(Max(p.max_free_size[Corner_00].x,
+                                                    p.max_free_size[Corner_01].x),
+                                                Max(p.max_free_size[Corner_10].x,
+                                                    p.max_free_size[Corner_11].x));
+        parent.max_free_size[p_corner].y = Max(Max(p.max_free_size[Corner_00].y,
+                                                    p.max_free_size[Corner_01].y),
+                                                Max(p.max_free_size[Corner_10].y,
+                                                    p.max_free_size[Corner_11].y));
       }
     }
   }
@@ -467,18 +467,18 @@ fnt_atlas_region_release(FNT_Atlas* atlas, Rng2S16 region)
 FNT_Piece *
 fnt_piece_chunk_list_push_new(Arena* arena, FNT_PieceChunkList* list, uint64 cap)
 {
-  FNT_PieceChunkNode* node = list->last;
-  if(node == 0 || node->count >= node->cap)
+  FNT_PieceChunkNode* node = list.last;
+  if(node == 0 || node.count >= node.cap)
   {
     node = push_array(arena, FNT_PieceChunkNode, 1);
-    node->v = push_array_no_zero(arena, FNT_Piece, cap);
-    node->cap = cap;
-    SLLQueuePush(list->first, list->last, node);
-    list->node_count += 1;
+    node.v = push_array_no_zero(arena, FNT_Piece, cap);
+    node.cap = cap;
+    SLLQueuePush(list.first, list.last, node);
+    list.node_count += 1;
   }
-  FNT_Piece* result = node->v + node->count;
-  node->count += 1;
-  list->total_piece_count += 1;
+  FNT_Piece* result = node.v + node.count;
+  node.count += 1;
+  list.total_piece_count += 1;
   return result;
 }
 
@@ -493,13 +493,13 @@ FNT_PieceArray
 fnt_piece_array_from_chunk_list(Arena* arena, FNT_PieceChunkList* list)
 {
   FNT_PieceArray array = {0};
-  array.count = list->total_piece_count;
+  array.count = list.total_piece_count;
   array.v = push_array_no_zero(arena, FNT_Piece, array.count);
   uint64 write_idx = 0;
-  for(FNT_PieceChunkNode* node = list->first; node != 0; node = node->next)
+  for(FNT_PieceChunkNode* node = list.first; node != 0; node = node.next)
   {
-    MemoryCopy(array.v + write_idx, node->v, node->count * sizeof(FNT_Piece));
-    write_idx += node->count;
+    MemoryCopy(array.v + write_idx, node.v, node.count * sizeof(FNT_Piece));
+    write_idx += node.count;
   }
   return array;
 }
@@ -508,9 +508,9 @@ FNT_PieceArray
 fnt_piece_array_copy(Arena* arena, FNT_PieceArray* src)
 {
   FNT_PieceArray dst = {0};
-  dst.count = src->count;
+  dst.count = src.count;
   dst.v = push_array_no_zero(arena, FNT_Piece, dst.count);
-  MemoryCopy(dst.v, src->v, sizeof(FNT_Piece)*dst.count);
+  MemoryCopy(dst.v, src.v, sizeof(FNT_Piece)*dst.count);
   return dst;
 }
 
@@ -520,7 +520,7 @@ fnt_piece_array_copy(Arena* arena, FNT_PieceArray* src)
 FNT_Hash2StyleRasterCacheNode *
 fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flags)
 {
-  //- rjf: tag * size -> style hash
+  //- rjf: tag * size . style hash
   uint64 style_hash = {0};
   {
     double size_f64 = size;
@@ -534,17 +534,17 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flag
     style_hash = fnt_little_hash_from_string(str8((uint8 *)buffer, sizeof(buffer)));
   }
   
-  //- rjf: style hash -> style node
+  //- rjf: style hash . style node
   FNT_Hash2StyleRasterCacheNode* hash2style_node = 0;
   {
-    ProfBegin("style hash -> style node");
-    uint64 slot_idx = style_hash%f_state->hash2style_slots_count;
-    FNT_Hash2StyleRasterCacheSlot* slot = &f_state->hash2style_slots[slot_idx];
-    for(FNT_Hash2StyleRasterCacheNode* n = slot->first;
+    ProfBegin("style hash . style node");
+    uint64 slot_idx = style_hash%f_state.hash2style_slots_count;
+    FNT_Hash2StyleRasterCacheSlot* slot = &f_state.hash2style_slots[slot_idx];
+    for(FNT_Hash2StyleRasterCacheNode* n = slot.first;
         n != 0;
-        n = n->hash_next)
+        n = n.hash_next)
     {
-      if(n->style_hash == style_hash)
+      if(n.style_hash == style_hash)
       {
         hash2style_node = n;
         break;
@@ -553,14 +553,14 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flag
     if(Unlikely(hash2style_node == 0))
     {
       FNT_Metrics metrics = fnt_metrics_from_tag_size(tag, size);
-      hash2style_node = push_array(f_state->raster_arena, FNT_Hash2StyleRasterCacheNode, 1);
-      DLLPushBack_NP(slot->first, slot->last, hash2style_node, hash_next, hash_prev);
-      hash2style_node->style_hash = style_hash;
-      hash2style_node->ascent = metrics.ascent;
-      hash2style_node->descent= metrics.descent;
-      hash2style_node->utf8_class1_direct_map = push_array_no_zero(f_state->raster_arena, F_RasterCacheInfo, 256);
-      hash2style_node->hash2info_slots_count = 1024;
-      hash2style_node->hash2info_slots = push_array(f_state->raster_arena, FNT_Hash2InfoRasterCacheSlot, hash2style_node->hash2info_slots_count);
+      hash2style_node = push_array(f_state.raster_arena, FNT_Hash2StyleRasterCacheNode, 1);
+      DLLPushBack_NP(slot.first, slot.last, hash2style_node, hash_next, hash_prev);
+      hash2style_node.style_hash = style_hash;
+      hash2style_node.ascent = metrics.ascent;
+      hash2style_node.descent= metrics.descent;
+      hash2style_node.utf8_class1_direct_map = push_array_no_zero(f_state.raster_arena, F_RasterCacheInfo, 256);
+      hash2style_node.hash2info_slots_count = 1024;
+      hash2style_node.hash2info_slots = push_array(f_state.raster_arena, FNT_Hash2InfoRasterCacheSlot, hash2style_node.hash2info_slots_count);
     }
     ProfEnd();
   }
@@ -609,13 +609,13 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       }break;
     }
     
-    //- rjf: need another codepoint, or have no substring? -> continue
+    //- rjf: need another codepoint, or have no substring? . continue
     if(need_another_codepoint || piece_substring_end_idx == piece_substring_start_idx)
     {
       continue;
     }
     
-    //- rjf: do not need another codepoint? -> grab substring, bump piece start idx
+    //- rjf: do not need another codepoint? . grab substring, bump piece start idx
     String8 piece_substring = str8_substr(string, r1u64(piece_substring_start_idx, piece_substring_end_idx));
     piece_substring_start_idx = idx;
     piece_substring_end_idx = idx;
@@ -627,37 +627,37 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       piece_substring = str8_lit(" ");
     }
     
-    //- rjf: piece substring -> raster cache info
+    //- rjf: piece substring . raster cache info
     F_RasterCacheInfo* info = 0;
     uint64 piece_hash = 0;
     {
-      // rjf: fast path for utf8 class 1 -> direct map
-      if(piece_substring.size == 1 && hash2style_node->utf8_class1_direct_map_mask[piece_substring.str[0]/64] & (1ull<<(piece_substring.str[0]%64)))
+      // rjf: fast path for utf8 class 1 . direct map
+      if(piece_substring.size == 1 && hash2style_node.utf8_class1_direct_map_mask[piece_substring.str[0]/64] & (1ull<<(piece_substring.str[0]%64)))
       {
-        info = &hash2style_node->utf8_class1_direct_map[piece_substring.str[0]];
+        info = &hash2style_node.utf8_class1_direct_map[piece_substring.str[0]];
       }
       
       // rjf: more general, slower path for other glyphs
       if(piece_substring.size > 1)
       {
         piece_hash = fnt_little_hash_from_string(piece_substring);
-        uint64 slot_idx = piece_hash%hash2style_node->hash2info_slots_count;
-        FNT_Hash2InfoRasterCacheSlot* slot = &hash2style_node->hash2info_slots[slot_idx];
-        for(F_Hash2InfoRasterCacheNode* node = slot->first; node != 0; node = node->hash_next)
+        uint64 slot_idx = piece_hash%hash2style_node.hash2info_slots_count;
+        FNT_Hash2InfoRasterCacheSlot* slot = &hash2style_node.hash2info_slots[slot_idx];
+        for(F_Hash2InfoRasterCacheNode* node = slot.first; node != 0; node = node.hash_next)
         {
-          if(node->hash == piece_hash)
+          if(node.hash == piece_hash)
           {
-            info = &node->info;
+            info = &node.info;
             break;
           }
         }
       }
     }
     
-    //- rjf: no info found -> miss... fill this hash in the cache
+    //- rjf: no info found . miss... fill this hash in the cache
     if(info == 0)
     {
-      ProfBegin("no info found -> miss... fill this hash in the cache");
+      ProfBegin("no info found . miss... fill this hash in the cache");
       Temp scratch = scratch_begin(&arena, 1);
       
       // rjf: grab font handle for this tag if we don't have one already
@@ -665,15 +665,15 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       {
         font_handle_mapped_on_miss = 1;
         
-        // rjf: tag -> font slot index
-        uint64 font_slot_idx = tag.u64[1] % f_state->font_hash_table_size;
+        // rjf: tag . font slot index
+        uint64 font_slot_idx = tag.u64[1] % f_state.font_hash_table_size;
         
-        // rjf: tag * slot -> existing node
+        // rjf: tag * slot . existing node
         FNT_FontHashNode* existing_node = 0;
         {
-          for(FNT_FontHashNode* n = f_state->font_hash_table[font_slot_idx].first; n != 0 ; n = n->hash_next)
+          for(FNT_FontHashNode* n = f_state.font_hash_table[font_slot_idx].first; n != 0 ; n = n.hash_next)
           {
-            if(MemoryMatchStruct(&n->tag, &tag))
+            if(MemoryMatchStruct(&n.tag, &tag))
             {
               existing_node = n;
               break;
@@ -681,10 +681,10 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
           }
         }
         
-        // rjf: existing node -> font handle
+        // rjf: existing node . font handle
         if(existing_node != 0)
         {
-          font_handle = existing_node->handle;
+          font_handle = existing_node.handle;
         }
       }
       
@@ -705,27 +705,27 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       if(raster.atlas_dim.x != 0 && raster.atlas_dim.y != 0)
       {
         uint64 num_atlases = 0;
-        for(FNT_Atlas* atlas = f_state->first_atlas;; atlas = atlas->next, num_atlases += 1)
+        for(FNT_Atlas* atlas = f_state.first_atlas;; atlas = atlas.next, num_atlases += 1)
         {
           // rjf: create atlas if needed
           if(atlas == 0 && num_atlases < 64)
           {
-            atlas = push_array(f_state->raster_arena, FNT_Atlas, 1);
-            DLLPushBack(f_state->first_atlas, f_state->last_atlas, atlas);
-            atlas->root_dim = v2s16(1024, 1024);
-            atlas->root = push_array(f_state->raster_arena, FNT_AtlasRegionNode, 1);
-            atlas->root->max_free_size[Corner_00] =
-              atlas->root->max_free_size[Corner_01] =
-              atlas->root->max_free_size[Corner_10] =
-              atlas->root->max_free_size[Corner_11] = v2s16(atlas->root_dim.x/2, atlas->root_dim.y/2);
-            atlas->texture = r_tex2d_alloc(R_ResourceKind_Dynamic, v2s32((int32)atlas->root_dim.x, (int32)atlas->root_dim.y), R_Tex2DFormat_RGBA8, 0);
+            atlas = push_array(f_state.raster_arena, FNT_Atlas, 1);
+            DLLPushBack(f_state.first_atlas, f_state.last_atlas, atlas);
+            atlas.root_dim = v2s16(1024, 1024);
+            atlas.root = push_array(f_state.raster_arena, FNT_AtlasRegionNode, 1);
+            atlas.root.max_free_size[Corner_00] =
+              atlas.root.max_free_size[Corner_01] =
+              atlas.root.max_free_size[Corner_10] =
+              atlas.root.max_free_size[Corner_11] = v2s16(atlas.root_dim.x/2, atlas.root_dim.y/2);
+            atlas.texture = r_tex2d_alloc(R_ResourceKind_Dynamic, v2s32((int32)atlas.root_dim.x, (int32)atlas.root_dim.y), R_Tex2DFormat_RGBA8, 0);
           }
           
           // rjf: allocate from atlas
           if(atlas != 0)
           {
             Vec2S16 needed_dimensions = v2s16(raster.atlas_dim.x + 2, raster.atlas_dim.y + 2);
-            chosen_atlas_region = fnt_atlas_region_alloc(f_state->raster_arena, atlas, needed_dimensions);
+            chosen_atlas_region = fnt_atlas_region_alloc(f_state.raster_arena, atlas, needed_dimensions);
             if(chosen_atlas_region.x1 != chosen_atlas_region.x0)
             {
               chosen_atlas = atlas;
@@ -750,31 +750,31 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
           chosen_atlas_region.x0 + raster.atlas_dim.x,
           chosen_atlas_region.y0 + raster.atlas_dim.y
         };
-        r_fill_tex2d_region(chosen_atlas->texture, subregion, raster.atlas);
+        r_fill_tex2d_region(chosen_atlas.texture, subregion, raster.atlas);
       }
       
       // rjf: allocate & fill & push node
       {
         if(piece_substring.size == 1)
         {
-          info = &hash2style_node->utf8_class1_direct_map[piece_substring.str[0]];
-          hash2style_node->utf8_class1_direct_map_mask[piece_substring.str[0]/64] |= (1ull<<(piece_substring.str[0]%64));
+          info = &hash2style_node.utf8_class1_direct_map[piece_substring.str[0]];
+          hash2style_node.utf8_class1_direct_map_mask[piece_substring.str[0]/64] |= (1ull<<(piece_substring.str[0]%64));
         }
         else
         {
-          uint64 slot_idx = piece_hash%hash2style_node->hash2info_slots_count;
-          FNT_Hash2InfoRasterCacheSlot* slot = &hash2style_node->hash2info_slots[slot_idx];
-          F_Hash2InfoRasterCacheNode* node = push_array_no_zero(f_state->raster_arena, F_Hash2InfoRasterCacheNode, 1);
-          DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
-          node->hash = piece_hash;
-          info = &node->info;
+          uint64 slot_idx = piece_hash%hash2style_node.hash2info_slots_count;
+          FNT_Hash2InfoRasterCacheSlot* slot = &hash2style_node.hash2info_slots[slot_idx];
+          F_Hash2InfoRasterCacheNode* node = push_array_no_zero(f_state.raster_arena, F_Hash2InfoRasterCacheNode, 1);
+          DLLPushBack_NP(slot.first, slot.last, node, hash_next, hash_prev);
+          node.hash = piece_hash;
+          info = &node.info;
         }
         if(info != 0)
         {
-          info->subrect    = chosen_atlas_region;
-          info->atlas_num  = chosen_atlas_num;
-          info->raster_dim = raster.atlas_dim;
-          info->advance    = raster.advance;
+          info.subrect    = chosen_atlas_region;
+          info.atlas_num  = chosen_atlas_num;
+          info.raster_dim = raster.atlas_dim;
+          info.advance    = raster.advance;
         }
       }
       
@@ -788,12 +788,12 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       // rjf: find atlas
       FNT_Atlas* atlas = 0;
       {
-        if(info->subrect.x1 != 0 && info->subrect.y1 != 0)
+        if(info.subrect.x1 != 0 && info.subrect.y1 != 0)
         {
           int32 num = 0;
-          for(FNT_Atlas* a = f_state->first_atlas; a != 0; a = a->next, num += 1)
+          for(FNT_Atlas* a = f_state.first_atlas; a != 0; a = a.next, num += 1)
           {
-            if(info->atlas_num == num)
+            if(info.atlas_num == num)
             {
               atlas = a;
               break;
@@ -802,8 +802,8 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
         }
       }
       
-      // rjf: on tabs -> expand advance
-      float advance = info->advance;
+      // rjf: on tabs . expand advance
+      float advance = info.advance;
       if(is_tab)
       {
         advance = floor_f32(tab_size_px) - mod_f32(floor_f32(base_align_px), floor_f32(tab_size_px));
@@ -813,18 +813,18 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       {
         FNT_Piece* piece = fnt_piece_chunk_list_push_new(arena, &piece_chunks, string.size);
         {
-          piece->texture = atlas ? atlas->texture : r_handle_zero();
-          piece->subrect = r2s16p(info->subrect.x0,
-                                  info->subrect.y0,
-                                  info->subrect.x0 + info->raster_dim.x,
-                                  info->subrect.y0 + info->raster_dim.y);
-          piece->advance = advance;
-          piece->decode_size = piece_substring.size;
-          piece->offset = v2s16(0, -(hash2style_node->ascent + hash2style_node->descent));
+          piece.texture = atlas ? atlas.texture : r_handle_zero();
+          piece.subrect = r2s16p(info.subrect.x0,
+                                  info.subrect.y0,
+                                  info.subrect.x0 + info.raster_dim.x,
+                                  info.subrect.y0 + info.raster_dim.y);
+          piece.advance = advance;
+          piece.decode_size = piece_substring.size;
+          piece.offset = v2s16(0, -(hash2style_node.ascent + hash2style_node.descent));
         }
         base_align_px += advance;
-        dim.x += piece->advance;
-        dim.y = Max(dim.y, info->raster_dim.y);
+        dim.x += piece.advance;
+        dim.y = Max(dim.y, info.raster_dim.y);
       }
     }
   }
@@ -834,16 +834,16 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
   {
     if(piece_chunks.node_count == 1)
     {
-      run.pieces.v = piece_chunks.first->v;
-      run.pieces.count = piece_chunks.first->count;
+      run.pieces.v = piece_chunks.first.v;
+      run.pieces.count = piece_chunks.first.count;
     }
     else
     {
       run.pieces = fnt_piece_array_from_chunk_list(arena, &piece_chunks);
     }
     run.dim = dim;
-    run.ascent  = hash2style_node->ascent;
-    run.descent = hash2style_node->descent;
+    run.ascent  = hash2style_node.ascent;
+    run.descent = hash2style_node.descent;
   }
   
   ProfEnd();
@@ -873,8 +873,8 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
       
       // rjf: gather info
       uint8 byte         = off_bytes < string.size ? string.str[off_bytes] : 0;
-      float advance     = (piece != 0) ? piece->advance : 0;
-      uint64 decode_size = (piece != 0) ? piece->decode_size : 0;
+      float advance     = (piece != 0) ? piece.advance : 0;
+      uint64 decode_size = (piece != 0) ? piece.decode_size : 0;
       
       // rjf: find start/end of words
       B32 is_first_byte_of_word = 0;
@@ -902,13 +902,13 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
       B32 is_next_illegal = (off_px + advance >= max);
       B32 is_end = (byte == 0);
       
-      // rjf: legal word end -> extend line
+      // rjf: legal word end . extend line
       if(is_first_space_after_word && !is_illegal)
       {
         line_end_off_bytes = off_bytes;
       }
       
-      // rjf: illegal mid-word split -> wrap mid-word
+      // rjf: illegal mid-word split . wrap mid-word
       if(is_next_illegal && word_start_off_px == 0)
       {
         String8 line = str8(string.str + line_start_off_bytes, off_bytes - line_start_off_bytes);
@@ -926,7 +926,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
         off_bytes += decode_size;
       }
       
-      // rjf: illegal word end -> wrap line
+      // rjf: illegal word end . wrap line
       else if(is_first_space_after_word && (is_illegal || is_end))
       {
         String8 line = str8(string.str + line_start_off_bytes, line_end_off_bytes - line_start_off_bytes);
@@ -952,7 +952,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
         off_bytes += decode_size;
       }
       
-      // rjf: 0 piece and 0 next -> done
+      // rjf: 0 piece and 0 next . done
       if(piece == 0 && next == 0)
       {
         break;
@@ -981,9 +981,9 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, float size, float base_align_px, 
 {
   ProfBeginFunction();
   Vec2F32 sum = {0};
-  for(String8Node* n = list.first; n != 0; n = n->next)
+  for(String8Node* n = list.first; n != 0; n = n.next)
   {
-    Vec2F32 str_dim = fnt_dim_from_tag_size_string(tag, size, base_align_px, tab_size_px, n->string);
+    Vec2F32 str_dim = fnt_dim_from_tag_size_string(tag, size, base_align_px, tab_size_px, n.string);
     sum.x += str_dim.x;
     sum.y = Max(sum.y, str_dim.y);
   }
@@ -1018,8 +1018,8 @@ fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px
     if(idx < run.pieces.count)
     {
       FNT_Piece* piece = &run.pieces.v[idx];
-      offset_px += piece->advance;
-      offset_bytes += piece->decode_size;
+      offset_px += piece.advance;
+      offset_bytes += piece.decode_size;
     }
   }
   scratch_end(scratch);
@@ -1048,7 +1048,7 @@ fnt_metrics_from_tag_size(FNT_Tag tag, float size)
 float
 fnt_line_height_from_metrics(FNT_Metrics* metrics)
 {
-  return metrics->ascent + metrics->descent + metrics->line_gap;
+  return metrics.ascent + metrics.descent + metrics.line_gap;
 }
 
 ////////////////////////////////
@@ -1059,22 +1059,22 @@ fnt_init()
 {
   Arena* arena = arena_alloc();
   f_state = push_array(arena, FNT_State, 1);
-  f_state->permanent_arena = arena;
-  f_state->raster_arena = arena_alloc();
-  f_state->font_hash_table_size = 64;
-  f_state->font_hash_table = push_array(f_state->permanent_arena, FNT_FontHashSlot, f_state->font_hash_table_size);
+  f_state.permanent_arena = arena;
+  f_state.raster_arena = arena_alloc();
+  f_state.font_hash_table_size = 64;
+  f_state.font_hash_table = push_array(f_state.permanent_arena, FNT_FontHashSlot, f_state.font_hash_table_size);
   fnt_reset();
 }
 
 void
 fnt_reset()
 {
-  for(FNT_Atlas* a = f_state->first_atlas; a != 0; a = a->next)
+  for(FNT_Atlas* a = f_state.first_atlas; a != 0; a = a.next)
   {
-    r_tex2d_release(a->texture);
+    r_tex2d_release(a.texture);
   }
-  f_state->first_atlas = f_state->last_atlas = 0;
-  arena_clear(f_state->raster_arena);
-  f_state->hash2style_slots_count = 1024;
-  f_state->hash2style_slots = push_array(f_state->raster_arena, FNT_Hash2StyleRasterCacheSlot, f_state->hash2style_slots_count);
+  f_state.first_atlas = f_state.last_atlas = 0;
+  arena_clear(f_state.raster_arena);
+  f_state.hash2style_slots_count = 1024;
+  f_state.hash2style_slots = push_array(f_state.raster_arena, FNT_Hash2StyleRasterCacheSlot, f_state.hash2style_slots_count);
 }

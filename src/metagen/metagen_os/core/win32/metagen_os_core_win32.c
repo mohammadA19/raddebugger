@@ -26,10 +26,10 @@ os_w32_file_property_flags_from_dwFileAttributes(DWORD dwFileAttributes)
 void
 os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN32_FILE_ATTRIBUTE_DATA* attributes)
 {
-  properties->size = Compose64Bit(attributes->nFileSizeHigh, attributes->nFileSizeLow);
-  os_w32_dense_time_from_file_time(&properties->created, &attributes->ftCreationTime);
-  os_w32_dense_time_from_file_time(&properties->modified, &attributes->ftLastWriteTime);
-  properties->flags = os_w32_file_property_flags_from_dwFileAttributes(attributes->dwFileAttributes);
+  properties.size = Compose64Bit(attributes.nFileSizeHigh, attributes.nFileSizeLow);
+  os_w32_dense_time_from_file_time(&properties.created, &attributes.ftCreationTime);
+  os_w32_dense_time_from_file_time(&properties.modified, &attributes.ftLastWriteTime);
+  properties.flags = os_w32_file_property_flags_from_dwFileAttributes(attributes.dwFileAttributes);
 }
 
 ////////////////////////////////
@@ -38,26 +38,26 @@ os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN32_FIL
 void
 os_w32_date_time_from_system_time(DateTime* out, SYSTEMTIME* in)
 {
-  out->year    = in->wYear;
-  out->mon     = in->wMonth - 1;
-  out->wday    = in->wDayOfWeek;
-	out->day     = in->wDay;
-	out->hour    = in->wHour;
-	out->min     = in->wMinute;
-	out->sec     = in->wSecond;
-  out->msec    = in->wMilliseconds;
+  out.year    = in.wYear;
+  out.mon     = in.wMonth - 1;
+  out.wday    = in.wDayOfWeek;
+	out.day     = in.wDay;
+	out.hour    = in.wHour;
+	out.min     = in.wMinute;
+	out.sec     = in.wSecond;
+  out.msec    = in.wMilliseconds;
 }
 
 void
 os_w32_system_time_from_date_time(SYSTEMTIME* out, DateTime* in)
 {
-  out->wYear         = (WORD)(in->year);
-  out->wMonth        = in->mon + 1;
-  out->wDay          = in->day;
-  out->wHour         = in->hour;
-  out->wMinute       = in->min;
-  out->wSecond       = in->sec;
-  out->wMilliseconds = in->msec;
+  out.wYear         = (WORD)(in.year);
+  out.wMonth        = in.mon + 1;
+  out.wDay          = in.day;
+  out.wHour         = in.hour;
+  out.wMinute       = in.min;
+  out.wSecond       = in.sec;
+  out.wMilliseconds = in.msec;
 }
 
 void
@@ -111,14 +111,14 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
     MemoryZeroStruct(result);
   }
   LeaveCriticalSection(&os_w32_state.entity_mutex);
-  result->kind = kind;
+  result.kind = kind;
   return result;
 }
 
 void
 os_w32_entity_release(OS_W32_Entity* entity)
 {
-  entity->kind = OS_W32_EntityKind_Null;
+  entity.kind = OS_W32_EntityKind_Null;
   EnterCriticalSection(&os_w32_state.entity_mutex);
   SLLStackPush(os_w32_state.entity_free, entity);
   LeaveCriticalSection(&os_w32_state.entity_mutex);
@@ -131,8 +131,8 @@ DWORD
 os_w32_thread_entry_point(void* ptr)
 {
   OS_W32_Entity* entity = (OS_W32_Entity *)ptr;
-  OS_ThreadFunctionType* func = entity->thread.func;
-  void* thread_ptr = entity->thread.ptr;
+  OS_ThreadFunctionType* func = entity.thread.func;
+  void* thread_ptr = entity.thread.ptr;
   TCTX tctx_;
   tctx_init_and_equip(&tctx_);
   func(thread_ptr);
@@ -592,11 +592,11 @@ os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
   String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
   String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
   OS_FileIter* iter = push_array(arena, OS_FileIter, 1);
-  iter->flags = flags;
-  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
+  iter.flags = flags;
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter.memory;
   if(path.size == 0)
   {
-    w32_iter->is_volume_iter = 1;
+    w32_iter.is_volume_iter = 1;
     WCHAR buffer[512] = {0};
     DWORD length = GetLogicalDriveStringsW(sizeof(buffer), buffer);
     String8List drive_strings = {0};
@@ -608,12 +608,12 @@ os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
       next_drive_string = str8_chop_last_slash(next_drive_string);
       str8_list_push(scratch.arena, &drive_strings, next_drive_string);
     }
-    w32_iter->drive_strings = str8_array_from_list(arena, &drive_strings);
-    w32_iter->drive_strings_iter_idx = 0;
+    w32_iter.drive_strings = str8_array_from_list(arena, &drive_strings);
+    w32_iter.drive_strings_iter_idx = 0;
   }
   else
   {
-    w32_iter->handle = FindFirstFileW((WCHAR*)path16.str, &w32_iter->find_data);
+    w32_iter.handle = FindFirstFileW((WCHAR*)path16.str, &w32_iter.find_data);
   }
   scratch_end(scratch);
   return iter;
@@ -623,23 +623,23 @@ B32
 os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 {
   B32 result = 0;
-  OS_FileIterFlags flags = iter->flags;
-  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
-  switch(w32_iter->is_volume_iter)
+  OS_FileIterFlags flags = iter.flags;
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter.memory;
+  switch(w32_iter.is_volume_iter)
   {
     //- rjf: file iteration
     default:
     case 0:
     {
-      if (!(flags & OS_FileIterFlag_Done) && w32_iter->handle != INVALID_HANDLE_VALUE)
+      if (!(flags & OS_FileIterFlag_Done) && w32_iter.handle != INVALID_HANDLE_VALUE)
       {
         do
         {
           // check is usable
           B32 usable_file = 1;
           
-          WCHAR* file_name = w32_iter->find_data.cFileName;
-          DWORD attributes = w32_iter->find_data.dwFileAttributes;
+          WCHAR* file_name = w32_iter.find_data.cFileName;
+          DWORD attributes = w32_iter.find_data.dwFileAttributes;
           if (file_name[0] == '.'){
             if (flags & OS_FileIterFlag_SkipHiddenFiles){
               usable_file = 0;
@@ -664,37 +664,37 @@ os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
           
           // emit if usable
           if (usable_file){
-            info_out->name = str8_from_16(arena, str16_cstring((uint16*)file_name));
-            info_out->props.size = (uint64)w32_iter->find_data.nFileSizeLow | (((uint64)w32_iter->find_data.nFileSizeHigh)<<32);
-            os_w32_dense_time_from_file_time(&info_out->props.created,  &w32_iter->find_data.ftCreationTime);
-            os_w32_dense_time_from_file_time(&info_out->props.modified, &w32_iter->find_data.ftLastWriteTime);
-            info_out->props.flags = os_w32_file_property_flags_from_dwFileAttributes(attributes);
+            info_out.name = str8_from_16(arena, str16_cstring((uint16*)file_name));
+            info_out.props.size = (uint64)w32_iter.find_data.nFileSizeLow | (((uint64)w32_iter.find_data.nFileSizeHigh)<<32);
+            os_w32_dense_time_from_file_time(&info_out.props.created,  &w32_iter.find_data.ftCreationTime);
+            os_w32_dense_time_from_file_time(&info_out.props.modified, &w32_iter.find_data.ftLastWriteTime);
+            info_out.props.flags = os_w32_file_property_flags_from_dwFileAttributes(attributes);
             result = 1;
-            if (!FindNextFileW(w32_iter->handle, &w32_iter->find_data)){
-              iter->flags |= OS_FileIterFlag_Done;
+            if (!FindNextFileW(w32_iter.handle, &w32_iter.find_data)){
+              iter.flags |= OS_FileIterFlag_Done;
             }
             break;
           }
-        }while(FindNextFileW(w32_iter->handle, &w32_iter->find_data));
+        }while(FindNextFileW(w32_iter.handle, &w32_iter.find_data));
       }
     }break;
     
     //- rjf: volume iteration
     case 1:
     {
-      result = w32_iter->drive_strings_iter_idx < w32_iter->drive_strings.count;
+      result = w32_iter.drive_strings_iter_idx < w32_iter.drive_strings.count;
       if(result != 0)
       {
         MemoryZeroStruct(info_out);
-        info_out->name = w32_iter->drive_strings.v[w32_iter->drive_strings_iter_idx];
-        info_out->props.flags |= FilePropertyFlag_IsFolder;
-        w32_iter->drive_strings_iter_idx += 1;
+        info_out.name = w32_iter.drive_strings.v[w32_iter.drive_strings_iter_idx];
+        info_out.props.flags |= FilePropertyFlag_IsFolder;
+        w32_iter.drive_strings_iter_idx += 1;
       }
     }break;
   }
   if(!result)
   {
-    iter->flags |= OS_FileIterFlag_Done;
+    iter.flags |= OS_FileIterFlag_Done;
   }
   return result;
 }
@@ -702,8 +702,8 @@ os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 void
 os_file_iter_end(OS_FileIter* iter)
 {
-  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
-  FindClose(w32_iter->handle);
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter.memory;
+  FindClose(w32_iter.handle);
 }
 
 //- rjf: directory creation
@@ -872,7 +872,7 @@ os_process_launch(OS_ProcessLaunchParams* params)
     join_params.pre = str8_lit("\"");
     join_params.sep = str8_lit("\" \"");
     join_params.post = str8_lit("\"");
-    cmd = str8_list_join(scratch.arena, &params->cmd_line, &join_params);
+    cmd = str8_list_join(scratch.arena, &params.cmd_line, &join_params);
   }
   
   //- rjf: form environment
@@ -882,19 +882,19 @@ os_process_launch(OS_ProcessLaunchParams* params)
     StringJoin join_params2 = {0};
     join_params2.sep = str8_lit("\0");
     join_params2.post = str8_lit("\0");
-    String8List all_opts = params->env;
-    if(params->inherit_env != 0)
+    String8List all_opts = params.env;
+    if(params.inherit_env != 0)
     {
       if(all_opts.node_count != 0)
       {
         MemoryZeroStruct(&all_opts);
-        for(String8Node* n = params->env.first; n != 0; n = n->next)
+        for(String8Node* n = params.env.first; n != 0; n = n.next)
         {
-          str8_list_push(scratch.arena, &all_opts, n->string);
+          str8_list_push(scratch.arena, &all_opts, n.string);
         }
-        for(String8Node* n = os_w32_state.process_info.environment.first; n != 0; n = n->next)
+        for(String8Node* n = os_w32_state.process_info.environment.first; n != 0; n = n.next)
         {
-          str8_list_push(scratch.arena, &all_opts, n->string);
+          str8_list_push(scratch.arena, &all_opts, n.string);
         }
       }
       else
@@ -908,9 +908,9 @@ os_process_launch(OS_ProcessLaunchParams* params)
     }
   }
   
-  //- rjf: utf-8 -> utf-16
+  //- rjf: utf-8 . utf-16
   String16 cmd16 = str16_from_8(scratch.arena, cmd);
-  String16 dir16 = str16_from_8(scratch.arena, params->path);
+  String16 dir16 = str16_from_8(scratch.arena, params.path);
   String16 env16 = {0};
   if(use_null_env_arg == 0)
   {
@@ -919,7 +919,7 @@ os_process_launch(OS_ProcessLaunchParams* params)
   
   //- rjf: determine creation flags
   DWORD creation_flags = CREATE_UNICODE_ENVIRONMENT;
-  if(params->consoleless)
+  if(params.consoleless)
   {
     creation_flags |= CREATE_NO_WINDOW;
   }
@@ -960,9 +960,9 @@ OS_Handle
 os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params)
 {
   OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_Thread);
-  entity->thread.func = func;
-  entity->thread.ptr = ptr;
-  entity->thread.handle = CreateThread(0, 0, os_w32_thread_entry_point, entity, 0, &entity->thread.tid);
+  entity.thread.func = func;
+  entity.thread.ptr = ptr;
+  entity.thread.handle = CreateThread(0, 0, os_w32_thread_entry_point, entity, 0, &entity.thread.tid);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
 }
@@ -975,7 +975,7 @@ os_thread_join(OS_Handle handle, uint64 endt_us)
   DWORD wait_result = WAIT_OBJECT_0;
   if(entity != 0)
   {
-    wait_result = WaitForSingleObject(entity->thread.handle, sleep_ms);
+    wait_result = WaitForSingleObject(entity.thread.handle, sleep_ms);
   }
   os_w32_entity_release(entity);
   return (wait_result == WAIT_OBJECT_0);
@@ -997,7 +997,7 @@ OS_Handle
 os_mutex_alloc()
 {
   OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_Mutex);
-  InitializeCriticalSection(&entity->mutex);
+  InitializeCriticalSection(&entity.mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
 }
@@ -1013,14 +1013,14 @@ void
 os_mutex_take(OS_Handle mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
-  EnterCriticalSection(&entity->mutex);
+  EnterCriticalSection(&entity.mutex);
 }
 
 void
 os_mutex_drop(OS_Handle mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
-  LeaveCriticalSection(&entity->mutex);
+  LeaveCriticalSection(&entity.mutex);
 }
 
 //- rjf: reader/writer mutexes
@@ -1029,7 +1029,7 @@ OS_Handle
 os_rw_mutex_alloc()
 {
   OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_RWMutex);
-  InitializeSRWLock(&entity->rw_mutex);
+  InitializeSRWLock(&entity.rw_mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
 }
@@ -1045,28 +1045,28 @@ void
 os_rw_mutex_take_r(OS_Handle rw_mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
-  AcquireSRWLockShared(&entity->rw_mutex);
+  AcquireSRWLockShared(&entity.rw_mutex);
 }
 
 void
 os_rw_mutex_drop_r(OS_Handle rw_mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
-  ReleaseSRWLockShared(&entity->rw_mutex);
+  ReleaseSRWLockShared(&entity.rw_mutex);
 }
 
 void
 os_rw_mutex_take_w(OS_Handle rw_mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
-  AcquireSRWLockExclusive(&entity->rw_mutex);
+  AcquireSRWLockExclusive(&entity.rw_mutex);
 }
 
 void
 os_rw_mutex_drop_w(OS_Handle rw_mutex)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
-  ReleaseSRWLockExclusive(&entity->rw_mutex);
+  ReleaseSRWLockExclusive(&entity.rw_mutex);
 }
 
 //- rjf: condition variables
@@ -1075,7 +1075,7 @@ OS_Handle
 os_condition_variable_alloc()
 {
   OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_ConditionVariable);
-  InitializeConditionVariable(&entity->cv);
+  InitializeConditionVariable(&entity.cv);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
 }
@@ -1096,7 +1096,7 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, uint64 endt_us)
   {
     OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
-    result = SleepConditionVariableCS(&entity->cv, &mutex_entity->mutex, sleep_ms);
+    result = SleepConditionVariableCS(&entity.cv, &mutex_entity.mutex, sleep_ms);
   }
   return result;
 }
@@ -1110,7 +1110,7 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us
   {
     OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
-    result = SleepConditionVariableSRW(&entity->cv, &mutex_entity->rw_mutex, sleep_ms,
+    result = SleepConditionVariableSRW(&entity.cv, &mutex_entity.rw_mutex, sleep_ms,
                                        CONDITION_VARIABLE_LOCKMODE_SHARED);
   }
   return result;
@@ -1125,7 +1125,7 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us
   {
     OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
-    result = SleepConditionVariableSRW(&entity->cv, &mutex_entity->rw_mutex, sleep_ms, 0);
+    result = SleepConditionVariableSRW(&entity.cv, &mutex_entity.rw_mutex, sleep_ms, 0);
   }
   return result;
 }
@@ -1134,14 +1134,14 @@ void
 os_condition_variable_signal(OS_Handle cv)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
-  WakeConditionVariable(&entity->cv);
+  WakeConditionVariable(&entity.cv);
 }
 
 void
 os_condition_variable_broadcast(OS_Handle cv)
 {
   OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
-  WakeAllConditionVariable(&entity->cv);
+  WakeAllConditionVariable(&entity.cv);
 }
 
 //- rjf: cross-process semaphores
@@ -1309,7 +1309,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   WCHAR buffer[4096] = {0};
   int buflen = 0;
   
-  DWORD exception_code = exception_ptrs->ExceptionRecord->ExceptionCode;
+  DWORD exception_code = exception_ptrs.ExceptionRecord.ExceptionCode;
   buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"A fatal exception (code 0x%x) occurred. The process is terminating.\n", exception_code);
   
   // load dbghelp dynamically just in case if it is missing
@@ -1341,7 +1341,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
     {
       HANDLE process = GetCurrentProcess();
       HANDLE thread = GetCurrentThread();
-      CONTEXT* context = exception_ptrs->ContextRecord;
+      CONTEXT* context = exception_ptrs.ContextRecord;
       
       dbg_SymSetOptions(SYMOPT_EXACT_SYMBOLS | SYMOPT_FAIL_CRITICAL_ERRORS | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
       if(dbg_SymInitializeW(process, L"", TRUE))
@@ -1368,19 +1368,19 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
           DWORD image_type;
 #if defined(_M_AMD64)
           image_type = IMAGE_FILE_MACHINE_AMD64;
-          frame.AddrPC.Offset = context->Rip;
+          frame.AddrPC.Offset = context.Rip;
           frame.AddrPC.Mode = AddrModeFlat;
-          frame.AddrFrame.Offset = context->Rbp;
+          frame.AddrFrame.Offset = context.Rbp;
           frame.AddrFrame.Mode = AddrModeFlat;
-          frame.AddrStack.Offset = context->Rsp;
+          frame.AddrStack.Offset = context.Rsp;
           frame.AddrStack.Mode = AddrModeFlat;
 #elif defined(_M_ARM64)
           image_type = IMAGE_FILE_MACHINE_ARM64;
-          frame.AddrPC.Offset = context->Pc;
+          frame.AddrPC.Offset = context.Pc;
           frame.AddrPC.Mode = AddrModeFlat;
-          frame.AddrFrame.Offset = context->Fp;
+          frame.AddrFrame.Offset = context.Fp;
           frame.AddrFrame.Mode = AddrModeFlat;
-          frame.AddrStack.Offset = context->Sp;
+          frame.AddrStack.Offset = context.Sp;
           frame.AddrStack.Mode = AddrModeFlat;
 #else
 #  error Architecture not supported!
@@ -1533,14 +1533,14 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
     }
     {
       OS_SystemInfo* info = &os_w32_state.system_info;
-      info->logical_processor_count = (uint64)sysinfo.dwNumberOfProcessors;
-      info->page_size               = sysinfo.dwPageSize;
-      info->large_page_size         = GetLargePageMinimum();
-      info->allocation_granularity  = sysinfo.dwAllocationGranularity;
+      info.logical_processor_count = (uint64)sysinfo.dwNumberOfProcessors;
+      info.page_size               = sysinfo.dwPageSize;
+      info.large_page_size         = GetLargePageMinimum();
+      info.allocation_granularity  = sysinfo.dwAllocationGranularity;
     }
     {
       OS_ProcessInfo* info = &os_w32_state.process_info;
-      info->pid = GetCurrentProcessId();
+      info.pid = GetCurrentProcessId();
     }
     
     // rjf: set up thread context
@@ -1557,7 +1557,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
         DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
         if(GetComputerNameA((char*)buffer, &size))
         {
-          info->machine_name = push_str8_copy(arena, str8(buffer, size));
+          info.machine_name = push_str8_copy(arena, str8(buffer, size));
         }
       }
     }
@@ -1570,17 +1570,17 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
         DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
         String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
         String8 name_chopped = str8_chop_last_slash(name8);
-        info->binary_path = push_str8_copy(arena, name_chopped);
+        info.binary_path = push_str8_copy(arena, name_chopped);
         scratch_end(scratch);
       }
-      info->initial_path = os_get_current_path(arena);
+      info.initial_path = os_get_current_path(arena);
       {
         Temp scratch = scratch_begin(0, 0);
         uint64 size = KB(32);
         uint16* buffer = push_array_no_zero(scratch.arena, uint16, size);
         if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
         {
-          info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
+          info.user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
         }
         scratch_end(scratch);
       }
@@ -1599,7 +1599,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
             {
               String16 string16 = str16((uint16 *)this_proc_env + start_idx, idx - start_idx);
               String8 string = str8_from_16(arena, string16);
-              str8_list_push(arena, &info->environment, string);
+              str8_list_push(arena, &info.environment, string);
               start_idx = idx+1;
             }
           }

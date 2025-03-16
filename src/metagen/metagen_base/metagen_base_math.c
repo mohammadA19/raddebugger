@@ -595,21 +595,21 @@ void
 rng1s64_list_push(Arena* arena, Rng1S64List* list, Rng1S64 rng)
 {
   Rng1S64Node* n = push_array(arena, Rng1S64Node, 1);
-  MemoryCopyStruct(&n->v, &rng);
-  SLLQueuePush(list->first, list->last, n);
-  list->count += 1;
+  MemoryCopyStruct(&n.v, &rng);
+  SLLQueuePush(list.first, list.last, n);
+  list.count += 1;
 }
 
 Rng1S64Array
 rng1s64_array_from_list(Arena* arena, Rng1S64List* list)
 {
   Rng1S64Array arr = {0};
-  arr.count = list->count;
+  arr.count = list.count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
   uint64 idx = 0;
-  for(Rng1S64Node* n = list->first; n != 0; n = n->next)
+  for(Rng1S64Node* n = list.first; n != 0; n = n.next)
   {
-    arr.v[idx] = n->v;
+    arr.v[idx] = n.v;
     idx += 1;
   }
   return arr;

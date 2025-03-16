@@ -808,7 +808,7 @@ struct CTRL_State
   Arena* arena;
   CTRL_WakeupFunctionType* wakeup_hook;
   
-  // rjf: name -> register/alias hash tables for eval
+  // rjf: name . register/alias hash tables for eval
   E_String2NumMap arch_string2reg_tables[Arch_COUNT];
   E_String2NumMap arch_string2alias_tables[Arch_COUNT];
   
@@ -817,7 +817,7 @@ struct CTRL_State
   CTRL_ThreadRegCache thread_reg_cache;
   CTRL_ModuleImageInfoCache module_image_info_cache;
   
-  // rjf: user -> ctrl msg ring buffer
+  // rjf: user . ctrl msg ring buffer
   uint64 u2c_ring_size;
   uint8* u2c_ring_base;
   uint64 u2c_ring_write_pos;
@@ -825,7 +825,7 @@ struct CTRL_State
   OS_Handle u2c_ring_mutex;
   OS_Handle u2c_ring_cv;
   
-  // rjf: ctrl -> user event ring buffer
+  // rjf: ctrl . user event ring buffer
   uint64 c2u_ring_size;
   uint64 c2u_ring_max_string_size;
   uint8* c2u_ring_base;
@@ -852,7 +852,7 @@ struct CTRL_State
   Arena* dbg_dir_arena;
   CTRL_DbgDirNode* dbg_dir_root;
   
-  // rjf: user -> memstream ring buffer
+  // rjf: user . memstream ring buffer
   uint64 u2ms_ring_size;
   uint8* u2ms_ring_base;
   uint64 u2ms_ring_write_pos;
@@ -941,7 +941,7 @@ CTRL_Event ctrl_event_from_serialized_string(Arena* arena, String8 string);
 //- rjf: entity list data structures
 void ctrl_entity_list_push(Arena* arena, CTRL_EntityList* list, CTRL_Entity* entity);
 CTRL_EntityList ctrl_entity_list_from_handle_list(Arena* arena, CTRL_EntityStore* store, CTRL_HandleList* list);
-#define ctrl_entity_list_first(list) ((list)->first ? (list)->first->v : &ctrl_entity_nil)
+#define ctrl_entity_list_first(list) ((list).first ? (list).first.v : &ctrl_entity_nil)
 
 //- rjf: entity array data structure
 CTRL_EntityArray ctrl_entity_array_from_list(Arena* arena, CTRL_EntityList* list);
@@ -1070,18 +1070,18 @@ uint64 ctrl_run_gen();
 uint64 ctrl_mem_gen();
 uint64 ctrl_reg_gen();
 
-//- rjf: name -> register/alias hash tables, for eval
+//- rjf: name . register/alias hash tables, for eval
 E_String2NumMap* ctrl_string2reg_from_arch(Arch arch);
 E_String2NumMap* ctrl_string2alias_from_arch(Arch arch);
 
 ////////////////////////////////
 //~ rjf: Control-Thread Functions
 
-//- rjf: user -> control thread communication
+//- rjf: user . control thread communication
 B32 ctrl_u2c_push_msgs(CTRL_MsgList* msgs, uint64 endt_us);
 CTRL_MsgList ctrl_u2c_pop_msgs(Arena* arena);
 
-//- rjf: control -> user thread communication
+//- rjf: control . user thread communication
 void ctrl_c2u_push_events(CTRL_EventList* events);
 CTRL_EventList ctrl_c2u_pop_events(Arena* arena);
 
@@ -1118,7 +1118,7 @@ void ctrl_thread__single_step(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg);
 ////////////////////////////////
 //~ rjf: Memory-Stream Thread Functions
 
-//- rjf: user -> memory stream communication
+//- rjf: user . memory stream communication
 B32 ctrl_u2ms_enqueue_req(CTRL_Handle process, Rng1U64 vaddr_range, B32 zero_terminated, uint64 endt_us);
 void ctrl_u2ms_dequeue_req(CTRL_Handle* out_process, Rng1U64* out_vaddr_range, B32* out_zero_terminated);
 

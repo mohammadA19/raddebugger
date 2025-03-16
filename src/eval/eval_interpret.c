@@ -24,9 +24,9 @@ e_space_read(E_Space space, void* out, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
-  if(e_interpret_ctx->space_read != 0)
+  if(e_interpret_ctx.space_read != 0)
   {
-    result = e_interpret_ctx->space_read(e_interpret_ctx->space_rw_user_data, space, out, range);
+    result = e_interpret_ctx.space_read(e_interpret_ctx.space_rw_user_data, space, out, range);
   }
   ProfEnd();
   return result;
@@ -37,9 +37,9 @@ e_space_write(E_Space space, void* in, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
-  if(e_interpret_ctx->space_write != 0)
+  if(e_interpret_ctx.space_write != 0)
   {
-    result = e_interpret_ctx->space_write(e_interpret_ctx->space_rw_user_data, space, in, range);
+    result = e_interpret_ctx.space_write(e_interpret_ctx.space_rw_user_data, space, in, range);
   }
   ProfEnd();
   return result;
@@ -58,7 +58,7 @@ e_interpret(String8 bytecode)
   uint64 stack_cap = 128; // TODO(rjf): scan bytecode; determine maximum stack depth
   E_Value* stack = push_array_no_zero(scratch.arena, E_Value, stack_cap);
   uint64 stack_count = 0;
-  E_Space selected_space = e_interpret_ctx->primary_space;
+  E_Space selected_space = e_interpret_ctx.primary_space;
   
   //- rjf: iterate bytecode & perform ops
   uint8* ptr = bytecode.str;
@@ -162,11 +162,11 @@ e_interpret(String8 bytecode)
         uint8 rdi_reg_code     = (imm.u64&0x0000FF)>>0;
         uint8 byte_size        = (imm.u64&0x00FF00)>>8;
         uint8 byte_off         = (imm.u64&0xFF0000)>>16;
-        REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx->reg_arch, rdi_reg_code);
-        REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx->reg_arch)[base_reg_code];
+        REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx.reg_arch, rdi_reg_code);
+        REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx.reg_arch)[base_reg_code];
         uint64 off = (uint64)rng.byte_off + byte_off;
         uint64 size = (uint64)byte_size;
-        B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
+        B32 good_read = e_space_read(e_interpret_ctx.reg_space, &nval, r1u64(off, off+size));
         if(!good_read)
         {
           result.code = E_InterpretationCode_BadRegRead;
@@ -177,8 +177,8 @@ e_interpret(String8 bytecode)
       case RDI_EvalOp_RegReadDyn:
       {
         uint64 off  = svals[0].u64;
-        uint64 size = bit_size_from_arch(e_interpret_ctx->reg_arch)/8;
-        B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
+        uint64 size = bit_size_from_arch(e_interpret_ctx.reg_arch)/8;
+        B32 good_read = e_space_read(e_interpret_ctx.reg_space, &nval, r1u64(off, off+size));
         if(!good_read)
         {
           result.code = E_InterpretationCode_BadRegRead;
@@ -188,9 +188,9 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_FrameOff:
       {
-        if(e_interpret_ctx->frame_base != 0)
+        if(e_interpret_ctx.frame_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->frame_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.frame_base + imm.u64;
         }
         else
         {
@@ -201,9 +201,9 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_ModuleOff:
       {
-        if(e_interpret_ctx->module_base != 0)
+        if(e_interpret_ctx.module_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->module_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.module_base + imm.u64;
         }
         else
         {
@@ -214,9 +214,9 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_TLSOff:
       {
-        if(e_interpret_ctx->tls_base != 0)
+        if(e_interpret_ctx.tls_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->tls_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.tls_base + imm.u64;
         }
         else
         {

@@ -500,7 +500,7 @@ enum
 }
 
 ////////////////////////////////
-// Enum <-> String
+// Enum <. String
 
 String8              lnk_string_cmd_switch_type(LNK_CmdSwitchType type);
 LNK_CmdSwitchType    lnk_cmd_switch_from_string(String8 string);

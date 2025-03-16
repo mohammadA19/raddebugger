@@ -83,7 +83,7 @@ struct TEX_Shared
   TEX_Stripe* stripes;
   TEX_Node** stripes_free_nodes;
   
-  // rjf: user -> xfer thread
+  // rjf: user . xfer thread
   uint64 u2x_ring_size;
   uint8* u2x_ring_base;
   uint64 u2x_ring_write_pos;

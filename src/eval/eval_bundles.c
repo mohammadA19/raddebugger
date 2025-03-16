@@ -12,7 +12,7 @@ e_eval_from_expr(Arena* arena, E_Expr* expr)
   String8          bytecode = e_bytecode_from_oplist(arena, &oplist);
   E_Interpretation interp   = e_interpret(bytecode);
   E_Space zero_space = {0};
-  E_Space space = (MemoryMatchStruct(&zero_space, &irtree.space) ? e_interpret_ctx->primary_space : irtree.space);
+  E_Space space = (MemoryMatchStruct(&zero_space, &irtree.space) ? e_interpret_ctx.primary_space : irtree.space);
   E_Eval eval =
   {
     .value    = interp.value,
@@ -45,25 +45,25 @@ e_autoresolved_eval_from_eval(E_Eval eval)
 {
   if(e_parse_ctx &&
      e_interpret_ctx &&
-     e_parse_ctx->modules_count > 0 &&
-     e_interpret_ctx->module_base != 0 &&
+     e_parse_ctx.modules_count > 0 &&
+     e_interpret_ctx.module_base != 0 &&
      (e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_S64)) ||
       e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_U64)) ||
       e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_S32)) ||
       e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_U32))))
   {
     uint64 vaddr = eval.value.u64;
-    uint64 voff = vaddr - e_interpret_ctx->module_base[0];
-    RDI_Parsed* rdi = e_parse_ctx->primary_module->rdi;
+    uint64 voff = vaddr - e_interpret_ctx.module_base[0];
+    RDI_Parsed* rdi = e_parse_ctx.primary_module.rdi;
     RDI_Scope* scope = rdi_scope_from_voff(rdi, voff);
     RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, voff);
     RDI_GlobalVariable* gvar = rdi_global_variable_from_voff(rdi, voff);
     uint32 string_idx = 0;
-    if(string_idx == 0) { string_idx = procedure->name_string_idx; }
-    if(string_idx == 0) { string_idx = gvar->name_string_idx; }
+    if(string_idx == 0) { string_idx = procedure.name_string_idx; }
+    if(string_idx == 0) { string_idx = gvar.name_string_idx; }
     if(string_idx != 0)
     {
-      eval.type_key = e_type_key_cons_ptr(e_type_state->ctx->primary_module->arch, e_type_key_basic(E_TypeKind_Void), 0);
+      eval.type_key = e_type_key_cons_ptr(e_type_state.ctx.primary_module.arch, e_type_key_basic(E_TypeKind_Void), 0);
     }
   }
   return eval;
@@ -76,8 +76,8 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   if(e_type_state != 0 &&
      e_interpret_ctx != 0 &&
-     e_interpret_ctx->space_read != 0 &&
-     e_interpret_ctx->module_base != 0 &&
+     e_interpret_ctx.space_read != 0 &&
+     e_interpret_ctx.module_base != 0 &&
      type_kind == E_TypeKind_Ptr)
   {
     Temp scratch = scratch_begin(0, 0);
@@ -87,9 +87,9 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
     {
       E_Type* ptee_type = e_type_from_key(scratch.arena, ptee_type_key);
       B32 has_vtable = 0;
-      for(uint64 idx = 0; idx < ptee_type->count; idx += 1)
+      for(uint64 idx = 0; idx < ptee_type.count; idx += 1)
       {
-        if(ptee_type->members[idx].kind == E_MemberKind_VirtualMethod)
+        if(ptee_type.members[idx].kind == E_MemberKind_VirtualMethod)
         {
           has_vtable = 1;
           break;
@@ -104,18 +104,18 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
         if(e_space_read(eval.space, &class_base_vaddr, r1u64(ptr_vaddr, ptr_vaddr+addr_size)) &&
            e_space_read(eval.space, &vtable_vaddr, r1u64(class_base_vaddr, class_base_vaddr+addr_size)))
         {
-          Arch arch = e_type_state->ctx->primary_module->arch;
+          Arch arch = e_type_state.ctx.primary_module.arch;
           uint32 rdi_idx = 0;
           RDI_Parsed* rdi = 0;
           uint64 module_base = 0;
-          for(uint64 idx = 0; idx < e_type_state->ctx->modules_count; idx += 1)
+          for(uint64 idx = 0; idx < e_type_state.ctx.modules_count; idx += 1)
           {
-            if(contains_1u64(e_type_state->ctx->modules[idx].vaddr_range, vtable_vaddr))
+            if(contains_1u64(e_type_state.ctx.modules[idx].vaddr_range, vtable_vaddr))
             {
-              arch = e_type_state->ctx->modules[idx].arch;
+              arch = e_type_state.ctx.modules[idx].arch;
               rdi_idx = (uint32)idx;
-              rdi = e_type_state->ctx->modules[idx].rdi;
-              module_base = e_type_state->ctx->modules[idx].vaddr_range.min;
+              rdi = e_type_state.ctx.modules[idx].rdi;
+              module_base = e_type_state.ctx.modules[idx].vaddr_range.min;
               break;
             }
           }
@@ -124,11 +124,11 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
             uint64 vtable_voff = vtable_vaddr - module_base;
             uint64 global_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, vtable_voff);
             RDI_GlobalVariable* global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
-            if(global_var->link_flags & RDI_LinkFlag_TypeScoped)
+            if(global_var.link_flags & RDI_LinkFlag_TypeScoped)
             {
-              RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, global_var->container_idx);
-              RDI_TypeNode* type = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
-              E_TypeKey derived_type_key = e_type_key_ext(e_type_kind_from_rdi(type->kind), udt->self_type_idx, rdi_idx);
+              RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, global_var.container_idx);
+              RDI_TypeNode* type = rdi_element_from_name_idx(rdi, TypeNodes, udt.self_type_idx);
+              E_TypeKey derived_type_key = e_type_key_ext(e_type_kind_from_rdi(type.kind), udt.self_type_idx, rdi_idx);
               E_TypeKey ptr_to_derived_type_key = e_type_key_cons_ptr(arch, derived_type_key, 0);
               eval.type_key = ptr_to_derived_type_key;
             }
@@ -170,13 +170,13 @@ e_value_eval_from_eval(E_Eval eval)
           Temp scratch = scratch_begin(0, 0);
           E_Type* type = e_type_from_key(scratch.arena, type_key);
           uint64 valid_bits_mask = 0;
-          for(uint64 idx = 0; idx < type->count; idx += 1)
+          for(uint64 idx = 0; idx < type.count; idx += 1)
           {
             valid_bits_mask |= (1ull<<idx);
           }
-          eval.value.u64 = eval.value.u64 >> type->off;
+          eval.value.u64 = eval.value.u64 >> type.off;
           eval.value.u64 = eval.value.u64 & valid_bits_mask;
-          eval.type_key = type->direct_type_key;
+          eval.type_key = type.direct_type_key;
           scratch_end(scratch);
         }
         

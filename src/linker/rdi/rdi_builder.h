@@ -1124,7 +1124,7 @@ uint64 rdib_udt_member_chunk_list_total_count (RDIB_UDTMemberChunkList  list);
 uint64 rdib_type_chunk_list_total_count       (RDIB_TypeChunkList       list);
 uint64 rdib_source_file_chunk_list_total_count(RDIB_SourceFileChunkList list);
 
-// pointer -> array index
+// pointer . array index
 uint32 rdib_idx_from_unit       (RDIB_Unit* n);
 uint32 rdib_idx_from_scope      (RDIB_Scope*      n);
 uint32 rdib_idx_from_variable   (RDIB_Variable*   n);

@@ -21,9 +21,9 @@ struct E_TypeKey
 {
   E_TypeKeyKind kind;
   uint32 u32[3];
-  // [0] -> E_TypeKind (Basic, Cons, Ext); Arch (Reg, RegAlias)
-  // [1] -> Type Index In RDI (Ext); Code (Reg, RegAlias); Type Index In Constructed (Cons)
-  // [2] -> RDI Index (Ext)
+  // [0] . E_TypeKind (Basic, Cons, Ext); Arch (Reg, RegAlias)
+  // [1] . Type Index In RDI (Ext); Code (Reg, RegAlias); Type Index In Constructed (Cons)
+  // [2] . RDI Index (Ext)
 }
 
 struct E_TypeKeyNode
@@ -278,7 +278,7 @@ E_TypeKey e_type_key_cons_base(Type* type);
 //- rjf: basic type key functions
 B32 e_type_key_match(E_TypeKey l, E_TypeKey r);
 
-//- rjf: key -> info extraction
+//- rjf: key . info extraction
 uint64 e_hash_from_type_key(E_TypeKey key);
 E_TypeKind e_type_kind_from_key(E_TypeKey key);
 uint64 e_type_byte_size_from_key(E_TypeKey key);

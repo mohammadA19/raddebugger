@@ -190,7 +190,7 @@ struct MD_NodeRec
 }
 
 ////////////////////////////////
-//~ rjf: Text -> Tokens Types
+//~ rjf: Text . Tokens Types
 
 struct MD_TokenizeResult
 {
@@ -199,7 +199,7 @@ struct MD_TokenizeResult
 }
 
 ////////////////////////////////
-//~ rjf: Tokens -> Tree Types
+//~ rjf: Tokens . Tree Types
 
 struct MD_ParseResult
 {
@@ -248,7 +248,7 @@ MD_NodeFlags md_node_flags_from_token_flags(MD_TokenFlags flags);
 B32 md_node_is_nil(MD_Node* node);
 
 //- rjf: iteration
-#define MD_EachNode(it, first) (MD_Node* it = first; !md_node_is_nil(it); it = it->next)
+#define MD_EachNode(it, first) (MD_Node* it = first; !md_node_is_nil(it); it = it.next)
 MD_NodeRec md_node_rec_depth_first(MD_Node* node, MD_Node* subtree_root, uint64 child_off, uint64 sib_off);
 #define md_node_rec_depth_first_pre(node, subtree_root) md_node_rec_depth_first((node), (subtree_root), OffsetOf(MD_Node, first), OffsetOf(MD_Node, next))
 #define md_node_rec_depth_first_pre_rev(node, subtree_root) md_node_rec_depth_first((node), (subtree_root), OffsetOf(MD_Node, last), OffsetOf(MD_Node, prev))
@@ -287,23 +287,23 @@ B32 md_node_match(MD_Node* a, MD_Node* b, StringMatchFlags flags);
 MD_Node* md_tree_copy(Arena* arena, MD_Node* src_root);
 
 ////////////////////////////////
-//~ rjf: Text -> Tokens Functions
+//~ rjf: Text . Tokens Functions
 
 MD_TokenizeResult md_tokenize_from_text(Arena* arena, String8 text);
 
 ////////////////////////////////
-//~ rjf: Tokens -> Tree Functions
+//~ rjf: Tokens . Tree Functions
 
 MD_ParseResult md_parse_from_text_tokens(Arena* arena, String8 filename, String8 text, MD_TokenArray tokens);
 
 ////////////////////////////////
-//~ rjf: Bundled Text -> Tree Functions
+//~ rjf: Bundled Text . Tree Functions
 
 MD_ParseResult md_parse_from_text(Arena* arena, String8 filename, String8 text);
 #define md_tree_from_string(arena, string) (md_parse_from_text((arena), str8_zero(), (string)).root)
 
 ////////////////////////////////
-//~ rjf: Tree -> Text Functions
+//~ rjf: Tree . Text Functions
 
 String8List md_debug_string_list_from_tree(Arena* arena, MD_Node* root);
 

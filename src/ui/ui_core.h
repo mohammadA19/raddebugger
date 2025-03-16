@@ -456,47 +456,47 @@ struct UI_BoxList
 
 enum UI_SignalFlags : uint32
 {
-  // rjf: mouse press -> box was pressed while hovering
+  // rjf: mouse press . box was pressed while hovering
   UI_SignalFlag_LeftPressed         = (1<<0),
   UI_SignalFlag_MiddlePressed       = (1<<1),
   UI_SignalFlag_RightPressed        = (1<<2),
   
-  // rjf: dragging -> box was previously pressed, user is still holding button
+  // rjf: dragging . box was previously pressed, user is still holding button
   UI_SignalFlag_LeftDragging        = (1<<3),
   UI_SignalFlag_MiddleDragging      = (1<<4),
   UI_SignalFlag_RightDragging       = (1<<5),
   
-  // rjf: double-dragging -> box was previously double-clicked, user is still holding button
+  // rjf: double-dragging . box was previously double-clicked, user is still holding button
   UI_SignalFlag_LeftDoubleDragging  = (1<<6),
   UI_SignalFlag_MiddleDoubleDragging= (1<<7),
   UI_SignalFlag_RightDoubleDragging = (1<<8),
   
-  // rjf: triple-dragging -> box was previously triple-clicked, user is still holding button
+  // rjf: triple-dragging . box was previously triple-clicked, user is still holding button
   UI_SignalFlag_LeftTripleDragging  = (1<<9),
   UI_SignalFlag_MiddleTripleDragging= (1<<10),
   UI_SignalFlag_RightTripleDragging = (1<<11),
   
-  // rjf: released -> box was previously pressed & user released, in or out of bounds
+  // rjf: released . box was previously pressed & user released, in or out of bounds
   UI_SignalFlag_LeftReleased        = (1<<12),
   UI_SignalFlag_MiddleReleased      = (1<<13),
   UI_SignalFlag_RightReleased       = (1<<14),
   
-  // rjf: clicked -> box was previously pressed & user released, in bounds
+  // rjf: clicked . box was previously pressed & user released, in bounds
   UI_SignalFlag_LeftClicked         = (1<<15),
   UI_SignalFlag_MiddleClicked       = (1<<16),
   UI_SignalFlag_RightClicked        = (1<<17),
   
-  // rjf: double clicked -> box was previously clicked, pressed again
+  // rjf: double clicked . box was previously clicked, pressed again
   UI_SignalFlag_LeftDoubleClicked   = (1<<18),
   UI_SignalFlag_MiddleDoubleClicked = (1<<19),
   UI_SignalFlag_RightDoubleClicked  = (1<<20),
   
-  // rjf: triple clicked -> box was previously clicked twice, pressed again
+  // rjf: triple clicked . box was previously clicked twice, pressed again
   UI_SignalFlag_LeftTripleClicked   = (1<<21),
   UI_SignalFlag_MiddleTripleClicked = (1<<22),
   UI_SignalFlag_RightTripleClicked  = (1<<23),
   
-  // rjf: keyboard pressed -> box had focus, user activated via their keyboard
+  // rjf: keyboard pressed . box had focus, user activated via their keyboard
   UI_SignalFlag_KeyboardPressed     = (1<<24),
   
   // rjf: passive mouse info
@@ -871,7 +871,7 @@ read_only static UI_AnimNode ui_nil_anim_node =
 }
 
 float ui_anim_(UI_Key key, UI_AnimParams* params);
-#define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})
+#define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state.default_animation_rate), __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Stacks

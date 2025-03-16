@@ -36,7 +36,7 @@ struct RDI_ScopeBundle
 }
 
 ////////////////////////////////
-//~ rjf: RDI Enum -> String Functions
+//~ rjf: RDI Enum . String Functions
 
 String8 rdi_string_from_reg_code_x86(uint64 reg_code);
 String8 rdi_string_from_reg_code_x64(uint64 reg_code);
@@ -49,7 +49,7 @@ String8 rdi_string_from_member_kind(RDI_MemberKind v);
 String8 rdi_string_from_local_kind(RDI_LocalKind v);
 
 ////////////////////////////////
-//~ rjf: RDI Flags -> String Functions
+//~ rjf: RDI Flags . String Functions
 
 void rdi_stringize_binary_section_flags(Arena* arena, String8List* out, RDI_BinarySectionFlags flags);
 void rdi_stringize_type_modifier_flags(Arena* arena, String8List* out, RDI_TypeModifierFlags flags);

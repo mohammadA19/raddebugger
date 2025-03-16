@@ -6,16 +6,16 @@
 
 void
 pdb_stringize_tpi_hash(Arena* arena, String8List* out, PDB_TpiHashParsed* hash){
-  uint32 bucket_count = hash->bucket_count;
+  uint32 bucket_count = hash.bucket_count;
   str8_list_pushf(arena, out, "bucket_count=%u\n\n", bucket_count);
   for (uint32 i = 0; i < bucket_count; i += 1){
-    if (hash->buckets[i] != 0){
+    if (hash.buckets[i] != 0){
       str8_list_pushf(arena, out, "bucket[%u]:\n", i);
-      for (PDB_TpiHashBlock* block = hash->buckets[i];
+      for (PDB_TpiHashBlock* block = hash.buckets[i];
            block != 0;
-           block = block->next){
-        uint32 local_count = block->local_count;
-        CV_TypeId* itype_ptr = block->itypes;
+           block = block.next){
+        uint32 local_count = block.local_count;
+        CV_TypeId* itype_ptr = block.itypes;
         for (uint32 j = 0; j < local_count; j += 1, itype_ptr += 1){
           str8_list_pushf(arena, out, " %u\n", *itype_ptr);
         }

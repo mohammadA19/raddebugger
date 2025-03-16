@@ -84,8 +84,8 @@ lnk_arg_list_parse_windows_rules(Arena* arena, String8 string)
 void
 lnk_cmd_line_push_option_node(LNK_CmdLine* cmd_line, LNK_CmdOption* opt)
 {
-  SLLQueuePush(cmd_line->first_option, cmd_line->last_option, opt);
-  cmd_line->option_count += 1;
+  SLLQueuePush(cmd_line.first_option, cmd_line.last_option, opt);
+  cmd_line.option_count += 1;
 }
 
 LNK_CmdOption *
@@ -93,9 +93,9 @@ lnk_cmd_line_push_option_list(Arena* arena, LNK_CmdLine* cmd_line, String8 strin
 {
   // fill out node
   LNK_CmdOption* opt = push_array_no_zero(arena, LNK_CmdOption, 1);
-  opt->next          = 0;
-  opt->string        = string;
-  opt->value_strings = value_strings;
+  opt.next          = 0;
+  opt.string        = string;
+  opt.value_strings = value_strings;
 
   // push node
   lnk_cmd_line_push_option_node(cmd_line, opt);
@@ -133,8 +133,8 @@ lnk_cmd_line_parse_windows_rules(Arena* arena, String8List arg_list)
 
   LNK_CmdLine cmd_line = {0};
 
-  for (String8Node* arg_node = arg_list.first; arg_node != 0; arg_node = arg_node->next) {
-    String8 arg = arg_node->string;
+  for (String8Node* arg_node = arg_list.first; arg_node != 0; arg_node = arg_node.next) {
+    String8 arg = arg_node.string;
     B32 is_option = str8_match_lit("/", arg, StringMatchFlag_RightSideSloppy) ||
                     str8_match_lit("-", arg, StringMatchFlag_RightSideSloppy);
     if (is_option) {
@@ -165,8 +165,8 @@ LNK_CmdOption *
 lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
 {
   LNK_CmdOption* opt;
-  for (opt = cmd_line.first_option; opt != NULL; opt = opt->next) {
-    if (str8_match(string, opt->string, StringMatchFlag_CaseInsensitive)) {
+  for (opt = cmd_line.first_option; opt != NULL; opt = opt.next) {
+    if (str8_match(string, opt.string, StringMatchFlag_CaseInsensitive)) {
       break;
     }
   }
@@ -194,11 +194,11 @@ lnk_unwrap_rsp(Arena* arena, String8List arg_list)
 
   String8List result = {0};
 
-  for (String8Node* curr = arg_list.first; curr != 0; curr = curr->next) {
-    B32 is_rsp = str8_match_lit("@", curr->string, StringMatchFlag_RightSideSloppy);
+  for (String8Node* curr = arg_list.first; curr != 0; curr = curr.next) {
+    B32 is_rsp = str8_match_lit("@", curr.string, StringMatchFlag_RightSideSloppy);
     if (is_rsp) {
       // remove "@"
-      String8 name = str8_skip(curr->string, 1);
+      String8 name = str8_skip(curr.string, 1);
 
       if (os_file_path_exists(name)) {
         // read rsp from disk
@@ -218,7 +218,7 @@ lnk_unwrap_rsp(Arena* arena, String8List arg_list)
       }
     } else {
       // push regular argument
-      String8 str = push_str8_copy(arena, curr->string);
+      String8 str = push_str8_copy(arena, curr.string);
       str8_list_push(arena, &result, str);
     }
   }
@@ -232,42 +232,42 @@ lnk_data_from_cmd_line(Arena* arena, LNK_CmdLine cmd_line)
 {
   String8List result = {0};
 
-  for (LNK_CmdOption* opt = cmd_line.first_option; opt != 0; opt = opt->next) {
+  for (LNK_CmdOption* opt = cmd_line.first_option; opt != 0; opt = opt.next) {
     // separate directives
     if (opt != cmd_line.first_option) {
       str8_list_pushf(arena, &result, " ");
     }
 
     // push new directive
-    str8_list_pushf(arena, &result, "/%.*s", str8_varg(opt->string));
+    str8_list_pushf(arena, &result, "/%.*s", str8_varg(opt.string));
 
     // do we have arguments?
-    if (opt->value_strings.node_count > 0) {
+    if (opt.value_strings.node_count > 0) {
       str8_list_pushf(arena, &result, ":");
 
-      for (String8Node* value_node = opt->value_strings.first; value_node != 0; value_node = value_node->next) {
+      for (String8Node* value_node = opt.value_strings.first; value_node != 0; value_node = value_node.next) {
         // separate arguments
-        if (value_node != opt->value_strings.first) {
+        if (value_node != opt.value_strings.first) {
           str8_list_pushf(arena, &result, ",");
         }
 
         // push argument
-        B32 has_spaces = str8_find_needle(value_node->string, 0, str8_lit(" "), StringMatchFlag_CaseInsensitive) < value_node->string.size;
+        B32 has_spaces = str8_find_needle(value_node.string, 0, str8_lit(" "), StringMatchFlag_CaseInsensitive) < value_node.string.size;
         if (has_spaces) {
-          str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(value_node->string));
+          str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(value_node.string));
         } else {
-          str8_list_pushf(arena, &result, "%.*s", str8_varg(value_node->string));
+          str8_list_pushf(arena, &result, "%.*s", str8_varg(value_node.string));
         }
       }
     }
   }
 
   // append inputs
-  for (String8Node* input_node = cmd_line.input_list.first; input_node != 0; input_node = input_node->next) {
+  for (String8Node* input_node = cmd_line.input_list.first; input_node != 0; input_node = input_node.next) {
     if (input_node != cmd_line.input_list.first) {
       str8_list_pushf(arena, &result, " ");
     }
-    str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(input_node->string));
+    str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(input_node.string));
   }
 
   return result;

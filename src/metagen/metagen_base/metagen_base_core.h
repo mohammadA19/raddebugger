@@ -92,7 +92,7 @@
 #define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
 
 ////////////////////////////////
-//~ rjf: Type -> Alignment
+//~ rjf: Type . Alignment
 
 #if COMPILER_MSVC
 # define AlignOf(T) __alignof(T)
@@ -107,7 +107,7 @@
 ////////////////////////////////
 //~ rjf: Member Offsets
 
-#define Member(T,m)                 (((T*)0)->m)
+#define Member(T,m)                 (((T*)0).m)
 #define OffsetOf(T,m)               IntFromPtr(&Member(T,m))
 #define MemberFromOffset(T,ptr,off) (T)((((uint8 *)ptr)+(off)))
 #define CastFromMember(T,m,ptr)     (T*)(((uint8*)ptr) - OffsetOf(T,m))
@@ -208,35 +208,35 @@
 
 //- rjf: doubly-linked-lists
 #define DLLInsert_NPZ(nil,f,l,p,n,next,prev) (CheckNil(nil,f) ? \
-((f) = (l) = (n), SetNil(nil,(n)->next), SetNil(nil,(n)->prev)) :\
+((f) = (l) = (n), SetNil(nil,(n).next), SetNil(nil,(n).prev)) :\
 CheckNil(nil,p) ? \
-((n)->next = (f), (f)->prev = (n), (f) = (n), SetNil(nil,(n)->prev)) :\
+((n).next = (f), (f).prev = (n), (f) = (n), SetNil(nil,(n).prev)) :\
 ((p)==(l)) ? \
-((l)->next = (n), (n)->prev = (l), (l) = (n), SetNil(nil, (n)->next)) :\
-(((!CheckNil(nil,p) && CheckNil(nil,(p)->next)) ? (0) : ((p)->next->prev = (n))), ((n)->next = (p)->next), ((p)->next = (n)), ((n)->prev = (p))))
+((l).next = (n), (n).prev = (l), (l) = (n), SetNil(nil, (n).next)) :\
+(((!CheckNil(nil,p) && CheckNil(nil,(p).next)) ? (0) : ((p).next.prev = (n))), ((n).next = (p).next), ((p).next = (n)), ((n).prev = (p))))
 #define DLLPushBack_NPZ(nil,f,l,n,next,prev) DLLInsert_NPZ(nil,f,l,l,n,next,prev)
 #define DLLPushFront_NPZ(nil,f,l,n,next,prev) DLLInsert_NPZ(nil,l,f,f,n,prev,next)
-#define DLLRemove_NPZ(nil,f,l,n,next,prev) (((n) == (f) ? (f) = (n)->next : (0)),\
-((n) == (l) ? (l) = (l)->prev : (0)),\
-(CheckNil(nil,(n)->prev) ? (0) :\
-((n)->prev->next = (n)->next)),\
-(CheckNil(nil,(n)->next) ? (0) :\
-((n)->next->prev = (n)->prev)))
+#define DLLRemove_NPZ(nil,f,l,n,next,prev) (((n) == (f) ? (f) = (n).next : (0)),\
+((n) == (l) ? (l) = (l).prev : (0)),\
+(CheckNil(nil,(n).prev) ? (0) :\
+((n).prev.next = (n).next)),\
+(CheckNil(nil,(n).next) ? (0) :\
+((n).next.prev = (n).prev)))
 
 //- rjf: singly-linked, doubly-headed lists (queues)
 #define SLLQueuePush_NZ(nil,f,l,n,next) (CheckNil(nil,f)?\
-((f)=(l)=(n),SetNil(nil,(n)->next)):\
-((l)->next=(n),(l)=(n),SetNil(nil,(n)->next)))
+((f)=(l)=(n),SetNil(nil,(n).next)):\
+((l).next=(n),(l)=(n),SetNil(nil,(n).next)))
 #define SLLQueuePushFront_NZ(nil,f,l,n,next) (CheckNil(nil,f)?\
-((f)=(l)=(n),SetNil(nil,(n)->next)):\
-((n)->next=(f),(f)=(n)))
+((f)=(l)=(n),SetNil(nil,(n).next)):\
+((n).next=(f),(f)=(n)))
 #define SLLQueuePop_NZ(nil,f,l,next) ((f)==(l)?\
 (SetNil(nil,f),SetNil(nil,l)):\
-((f)=(f)->next))
+((f)=(f).next))
 
 //- rjf: singly-linked, singly-headed lists (stacks)
-#define SLLStackPush_N(f,n,next) ((n)->next=(f), (f)=(n))
-#define SLLStackPop_N(f,next) ((f)=(f)->next)
+#define SLLStackPush_N(f,n,next) ((n).next=(f), (f)=(n))
+#define SLLStackPop_N(f,next) ((f)=(f).next)
 
 //- rjf: doubly-linked-list helpers
 #define DLLInsert_NP(f,l,p,n,next,prev) DLLInsert_NPZ(0,f,l,p,n,next,prev)
@@ -730,7 +730,7 @@ uint64 clz32(uint32 val);
 uint64 clz64(uint64 val);
 
 ////////////////////////////////
-//~ rjf: Enum -> Sign
+//~ rjf: Enum . Sign
 
 int32 sign_from_side_S32(Side side);
 float sign_from_side_F32(Side side);

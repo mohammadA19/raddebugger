@@ -25,7 +25,7 @@ di_hash_from_string(String8 string, StringMatchFlags match_flags)
 uint64
 di_hash_from_key(DI_Key* k)
 {
-  uint64 hash = di_hash_from_string(k->path, StringMatchFlag_CaseInsensitive);
+  uint64 hash = di_hash_from_string(k.path, StringMatchFlag_CaseInsensitive);
   return hash;
 }
 
@@ -39,7 +39,7 @@ di_key_zero()
 B32
 di_key_match(DI_Key* a, DI_Key* b)
 {
-  return (str8_match(a->path, b->path, StringMatchFlag_CaseInsensitive) && a->min_timestamp == b->min_timestamp);
+  return (str8_match(a.path, b.path, StringMatchFlag_CaseInsensitive) && a.min_timestamp == b.min_timestamp);
 }
 
 DI_Key
@@ -47,7 +47,7 @@ di_key_copy(Arena* arena, DI_Key* src)
 {
   DI_Key dst = {0};
   MemoryCopyStruct(&dst, src);
-  dst.path = push_str8_copy(arena, src->path);
+  dst.path = push_str8_copy(arena, src.path);
   return dst;
 }
 
@@ -55,7 +55,7 @@ DI_Key
 di_normalized_key_from_key(Arena* arena, DI_Key* src)
 {
   ProfBeginFunction();
-  DI_Key dst = {path_normalized_from_string(arena, src->path), src->min_timestamp};
+  DI_Key dst = {path_normalized_from_string(arena, src.path), src.min_timestamp};
   ProfEnd();
   return dst;
 }
@@ -64,21 +64,21 @@ void
 di_key_list_push(Arena* arena, DI_KeyList* list, DI_Key* key)
 {
   DI_KeyNode* n = push_array(arena, DI_KeyNode, 1);
-  MemoryCopyStruct(&n->v, key);
-  SLLQueuePush(list->first, list->last, n);
-  list->count += 1;
+  MemoryCopyStruct(&n.v, key);
+  SLLQueuePush(list.first, list.last, n);
+  list.count += 1;
 }
 
 DI_KeyArray
 di_key_array_from_list(Arena* arena, DI_KeyList* list)
 {
   DI_KeyArray array = {0};
-  array.count = list->count;
+  array.count = list.count;
   array.v = push_array_no_zero(arena, DI_Key, array.count);
   uint64 idx = 0;
-  for(DI_KeyNode* n = list->first; n != 0; n = n->next, idx += 1)
+  for(DI_KeyNode* n = list.first; n != 0; n = n.next, idx += 1)
   {
-    MemoryCopyStruct(&array.v[idx], &n->v);
+    MemoryCopyStruct(&array.v[idx], &n.v);
   }
   return array;
 }
@@ -87,11 +87,11 @@ DI_KeyArray
 di_key_array_copy(Arena* arena, DI_KeyArray* src)
 {
   DI_KeyArray dst = {0};
-  dst.count = src->count;
+  dst.count = src.count;
   dst.v = push_array(arena, DI_Key, dst.count);
   for EachIndex(idx, dst.count)
   {
-    dst.v[idx] = di_key_copy(arena, &src->v[idx]);
+    dst.v[idx] = di_key_copy(arena, &src.v[idx]);
   }
   return dst;
 }
@@ -109,11 +109,11 @@ uint64
 di_hash_from_search_params(DI_SearchParams* params)
 {
   uint64 hash = 5381;
-  hash = di_hash_from_seed_string(hash, str8_struct(&params->target), 0);
-  for(uint64 idx = 0; idx < params->dbgi_keys.count; idx += 1)
+  hash = di_hash_from_seed_string(hash, str8_struct(&params.target), 0);
+  for(uint64 idx = 0; idx < params.dbgi_keys.count; idx += 1)
   {
-    hash = di_hash_from_seed_string(hash, str8_struct(&params->dbgi_keys.v[idx].min_timestamp), 0);
-    hash = di_hash_from_seed_string(hash, params->dbgi_keys.v[idx].path, StringMatchFlag_CaseInsensitive);
+    hash = di_hash_from_seed_string(hash, str8_struct(&params.dbgi_keys.v[idx].min_timestamp), 0);
+    hash = di_hash_from_seed_string(hash, params.dbgi_keys.v[idx].path, StringMatchFlag_CaseInsensitive);
   }
   return hash;
 }
@@ -121,14 +121,14 @@ di_hash_from_search_params(DI_SearchParams* params)
 void
 di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList* dst, DI_SearchItemChunkList* to_push)
 {
-  if(dst->first && to_push->first)
+  if(dst.first && to_push.first)
   {
-    dst->last->next = to_push->first;
-    dst->last = to_push->last;
-    dst->chunk_count += to_push->chunk_count;
-    dst->total_count += to_push->total_count;
+    dst.last.next = to_push.first;
+    dst.last = to_push.last;
+    dst.chunk_count += to_push.chunk_count;
+    dst.total_count += to_push.total_count;
   }
-  else if(dst->first == 0)
+  else if(dst.first == 0)
   {
     MemoryCopyStruct(dst, to_push);
   }
@@ -139,9 +139,9 @@ uint64
 di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* array, uint64 element_idx)
 {
   uint64 fuzzy_item_num = 0;
-  for(uint64 idx = 0; idx < array->count; idx += 1)
+  for(uint64 idx = 0; idx < array.count; idx += 1)
   {
-    if(array->v[idx].idx == element_idx)
+    if(array.v[idx].idx == element_idx)
     {
       fuzzy_item_num = idx+1;
       break;
@@ -161,29 +161,29 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKi
     {
       RDI_Procedure* proc = rdi_element_from_name_idx(rdi, Procedures, element_idx);
       uint64 name_size = 0;
-      uint8* name_base = rdi_string_from_idx(rdi, proc->name_string_idx, &name_size);
+      uint8* name_base = rdi_string_from_idx(rdi, proc.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_GlobalVariables:
     {
       RDI_GlobalVariable* gvar = rdi_element_from_name_idx(rdi, GlobalVariables, element_idx);
       uint64 name_size = 0;
-      uint8* name_base = rdi_string_from_idx(rdi, gvar->name_string_idx, &name_size);
+      uint8* name_base = rdi_string_from_idx(rdi, gvar.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_ThreadVariables:
     {
       RDI_ThreadVariable* tvar = rdi_element_from_name_idx(rdi, ThreadVariables, element_idx);
       uint64 name_size = 0;
-      uint8* name_base = rdi_string_from_idx(rdi, tvar->name_string_idx, &name_size);
+      uint8* name_base = rdi_string_from_idx(rdi, tvar.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_UDTs:
     {
       RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, element_idx);
-      RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
+      RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, udt.self_type_idx);
       uint64 name_size = 0;
-      uint8* name_base = rdi_string_from_idx(rdi, type_node->user_defined.name_string_idx, &name_size);
+      uint8* name_base = rdi_string_from_idx(rdi, type_node.user_defined.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
   }
@@ -198,46 +198,46 @@ di_init()
 {
   Arena* arena = arena_alloc();
   di_shared = push_array(arena, DI_Shared, 1);
-  di_shared->arena = arena;
-  di_shared->slots_count = 4096;
-  di_shared->slots = push_array(arena, DI_Slot, di_shared->slots_count);
-  di_shared->stripes_count = Min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
-  di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
-  for(uint64 idx = 0; idx < di_shared->stripes_count; idx += 1)
+  di_shared.arena = arena;
+  di_shared.slots_count = 4096;
+  di_shared.slots = push_array(arena, DI_Slot, di_shared.slots_count);
+  di_shared.stripes_count = Min(di_shared.slots_count, os_get_system_info().logical_processor_count);
+  di_shared.stripes = push_array(arena, DI_Stripe, di_shared.stripes_count);
+  for(uint64 idx = 0; idx < di_shared.stripes_count; idx += 1)
   {
-    di_shared->stripes[idx].arena = arena_alloc();
-    di_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
-    di_shared->stripes[idx].cv = os_condition_variable_alloc();
+    di_shared.stripes[idx].arena = arena_alloc();
+    di_shared.stripes[idx].rw_mutex = os_rw_mutex_alloc();
+    di_shared.stripes[idx].cv = os_condition_variable_alloc();
   }
-  di_shared->search_slots_count = 512;
-  di_shared->search_slots = push_array(arena, DI_SearchSlot, di_shared->search_slots_count);
-  di_shared->search_stripes_count = Min(di_shared->search_slots_count, os_get_system_info()->logical_processor_count);
-  di_shared->search_stripes = push_array(arena, DI_SearchStripe, di_shared->search_stripes_count);
-  for(uint64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
+  di_shared.search_slots_count = 512;
+  di_shared.search_slots = push_array(arena, DI_SearchSlot, di_shared.search_slots_count);
+  di_shared.search_stripes_count = Min(di_shared.search_slots_count, os_get_system_info().logical_processor_count);
+  di_shared.search_stripes = push_array(arena, DI_SearchStripe, di_shared.search_stripes_count);
+  for(uint64 idx = 0; idx < di_shared.search_stripes_count; idx += 1)
   {
-    di_shared->search_stripes[idx].arena = arena_alloc();
-    di_shared->search_stripes[idx].rw_mutex = os_rw_mutex_alloc();
-    di_shared->search_stripes[idx].cv = os_condition_variable_alloc();
+    di_shared.search_stripes[idx].arena = arena_alloc();
+    di_shared.search_stripes[idx].rw_mutex = os_rw_mutex_alloc();
+    di_shared.search_stripes[idx].cv = os_condition_variable_alloc();
   }
-  di_shared->u2p_ring_mutex = os_mutex_alloc();
-  di_shared->u2p_ring_cv = os_condition_variable_alloc();
-  di_shared->u2p_ring_size = KB(64);
-  di_shared->u2p_ring_base = push_array_no_zero(arena, uint8, di_shared->u2p_ring_size);
-  di_shared->p2u_ring_mutex = os_mutex_alloc();
-  di_shared->p2u_ring_cv = os_condition_variable_alloc();
-  di_shared->p2u_ring_size = KB(64);
-  di_shared->p2u_ring_base = push_array_no_zero(arena, uint8, di_shared->p2u_ring_size);
-  di_shared->search_threads_count = 1;
-  di_shared->search_threads = push_array(arena, DI_SearchThread, di_shared->search_threads_count);
-  for EachIndex(idx, di_shared->search_threads_count)
+  di_shared.u2p_ring_mutex = os_mutex_alloc();
+  di_shared.u2p_ring_cv = os_condition_variable_alloc();
+  di_shared.u2p_ring_size = KB(64);
+  di_shared.u2p_ring_base = push_array_no_zero(arena, uint8, di_shared.u2p_ring_size);
+  di_shared.p2u_ring_mutex = os_mutex_alloc();
+  di_shared.p2u_ring_cv = os_condition_variable_alloc();
+  di_shared.p2u_ring_size = KB(64);
+  di_shared.p2u_ring_base = push_array_no_zero(arena, uint8, di_shared.p2u_ring_size);
+  di_shared.search_threads_count = 1;
+  di_shared.search_threads = push_array(arena, DI_SearchThread, di_shared.search_threads_count);
+  for EachIndex(idx, di_shared.search_threads_count)
   {
-    di_shared->search_threads[idx].ring_mutex = os_mutex_alloc();
-    di_shared->search_threads[idx].ring_cv    = os_condition_variable_alloc();
-    di_shared->search_threads[idx].ring_size  = KB(64);
-    di_shared->search_threads[idx].ring_base  = push_array_no_zero(arena, uint8, di_shared->search_threads[idx].ring_size);
-    di_shared->search_threads[idx].thread = os_thread_launch(di_search_thread__entry_point, (void *)idx, 0);
+    di_shared.search_threads[idx].ring_mutex = os_mutex_alloc();
+    di_shared.search_threads[idx].ring_cv    = os_condition_variable_alloc();
+    di_shared.search_threads[idx].ring_size  = KB(64);
+    di_shared.search_threads[idx].ring_base  = push_array_no_zero(arena, uint8, di_shared.search_threads[idx].ring_size);
+    di_shared.search_threads[idx].thread = os_thread_launch(di_search_thread__entry_point, (void *)idx, 0);
   }
-  di_shared->search_evictor_thread = os_thread_launch(di_search_evictor_thread__entry_point, 0, 0);
+  di_shared.search_evictor_thread = os_thread_launch(di_search_evictor_thread__entry_point, 0, 0);
 }
 
 ////////////////////////////////
@@ -250,16 +250,16 @@ di_scope_open()
   {
     Arena* arena = arena_alloc();
     di_tctx = push_array(arena, DI_TCTX, 1);
-    di_tctx->arena = arena;
+    di_tctx.arena = arena;
   }
-  DI_Scope* scope = di_tctx->free_scope;
+  DI_Scope* scope = di_tctx.free_scope;
   if(scope != 0)
   {
-    SLLStackPop(di_tctx->free_scope);
+    SLLStackPop(di_tctx.free_scope);
   }
   else
   {
-    scope = push_array_no_zero(di_tctx->arena, DI_Scope, 1);
+    scope = push_array_no_zero(di_tctx.arena, DI_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -268,20 +268,20 @@ di_scope_open()
 void
 di_scope_close(DI_Scope* scope)
 {
-  for(DI_Touch* t = scope->first_touch, *next = 0; t != 0; t = next)
+  for(DI_Touch* t = scope.first_touch, *next = 0; t != 0; t = next)
   {
-    next = t->next;
-    if(t->node != 0)
+    next = t.next;
+    if(t.node != 0)
     {
-      ins_atomic_u64_dec_eval(&t->node->touch_count);
+      ins_atomic_u64_dec_eval(&t.node.touch_count);
     }
-    if(t->search_node != 0)
+    if(t.search_node != 0)
     {
-      ins_atomic_u64_dec_eval(&t->search_node->scope_refcount);
+      ins_atomic_u64_dec_eval(&t.search_node.scope_refcount);
     }
-    SLLStackPush(di_tctx->free_touch, t);
+    SLLStackPush(di_tctx.free_touch, t);
   }
-  SLLStackPush(di_tctx->free_scope, scope);
+  SLLStackPush(di_tctx.free_scope, scope);
 }
 
 void
@@ -289,20 +289,20 @@ di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope* scope, DI_Node* node)
 {
   if(node != 0)
   {
-    ins_atomic_u64_inc_eval(&node->touch_count);
+    ins_atomic_u64_inc_eval(&node.touch_count);
   }
-  DI_Touch* touch = di_tctx->free_touch;
+  DI_Touch* touch = di_tctx.free_touch;
   if(touch != 0)
   {
-    SLLStackPop(di_tctx->free_touch);
+    SLLStackPop(di_tctx.free_touch);
   }
   else
   {
-    touch = push_array_no_zero(di_tctx->arena, DI_Touch, 1);
+    touch = push_array_no_zero(di_tctx.arena, DI_Touch, 1);
   }
   MemoryZeroStruct(touch);
-  SLLQueuePush(scope->first_touch, scope->last_touch, touch);
-  touch->node = node;
+  SLLQueuePush(scope.first_touch, scope.last_touch, touch);
+  touch.node = node;
 }
 
 void
@@ -310,20 +310,20 @@ di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope* scope, DI_SearchNod
 {
   if(node != 0)
   {
-    ins_atomic_u64_inc_eval(&node->scope_refcount);
+    ins_atomic_u64_inc_eval(&node.scope_refcount);
   }
-  DI_Touch* touch = di_tctx->free_touch;
+  DI_Touch* touch = di_tctx.free_touch;
   if(touch != 0)
   {
-    SLLStackPop(di_tctx->free_touch);
+    SLLStackPop(di_tctx.free_touch);
   }
   else
   {
-    touch = push_array_no_zero(di_tctx->arena, DI_Touch, 1);
+    touch = push_array_no_zero(di_tctx.arena, DI_Touch, 1);
   }
   MemoryZeroStruct(touch);
-  SLLQueuePush(scope->first_touch, scope->last_touch, touch);
-  touch->search_node = node;
+  SLLQueuePush(scope.first_touch, scope.last_touch, touch);
+  touch.search_node = node;
 }
 
 ////////////////////////////////
@@ -336,14 +336,14 @@ di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot* slot, DI_Key* key)
   DI_Node* node = 0;
   StringMatchFlags match_flags = path_match_flags_from_os(operating_system_from_context());
   uint64 most_recent_timestamp = max_U64;
-  for(DI_Node* n = slot->first; n != 0; n = n->next)
+  for(DI_Node* n = slot.first; n != 0; n = n.next)
   {
-    if(str8_match(n->key.path, key->path, match_flags) &&
-       key->min_timestamp <= n->key.min_timestamp &&
-       (n->key.min_timestamp - key->min_timestamp) <= most_recent_timestamp)
+    if(str8_match(n.key.path, key.path, match_flags) &&
+       key.min_timestamp <= n.key.min_timestamp &&
+       (n.key.min_timestamp - key.min_timestamp) <= most_recent_timestamp)
     {
       node = n;
-      most_recent_timestamp = (n->key.min_timestamp - key->min_timestamp);
+      most_recent_timestamp = (n.key.min_timestamp - key.min_timestamp);
     }
   }
   ProfEnd();
@@ -368,7 +368,7 @@ di_string_bucket_idx_from_string_size(uint64 size)
     case 1<<8: {bucket_idx = 4;}break;
     case 1<<9: {bucket_idx = 5;}break;
     case 1<<10:{bucket_idx = 6;}break;
-    default:{bucket_idx = ArrayCount(((DI_Stripe *)0)->free_string_chunks)-1;}break;
+    default:{bucket_idx = ArrayCount(((DI_Stripe *)0).free_string_chunks)-1;}break;
   }
   return bucket_idx;
 }
@@ -378,28 +378,28 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
 {
   if(string.size == 0) {return str8_zero();}
   uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
-  DI_StringChunkNode* node = stripe->free_string_chunks[bucket_idx];
+  DI_StringChunkNode* node = stripe.free_string_chunks[bucket_idx];
   
   // rjf: pull from bucket free list
   if(node != 0)
   {
-    if(bucket_idx == ArrayCount(stripe->free_string_chunks)-1)
+    if(bucket_idx == ArrayCount(stripe.free_string_chunks)-1)
     {
       node = 0;
       DI_StringChunkNode* prev = 0;
-      for(DI_StringChunkNode* n = stripe->free_string_chunks[bucket_idx];
+      for(DI_StringChunkNode* n = stripe.free_string_chunks[bucket_idx];
           n != 0;
-          prev = n, n = n->next)
+          prev = n, n = n.next)
       {
-        if(n->size >= string.size+1)
+        if(n.size >= string.size+1)
         {
           if(prev == 0)
           {
-            stripe->free_string_chunks[bucket_idx] = n->next;
+            stripe.free_string_chunks[bucket_idx] = n.next;
           }
           else
           {
-            prev->next = n->next;
+            prev.next = n.next;
           }
           node = n;
           break;
@@ -408,15 +408,15 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
     }
     else
     {
-      SLLStackPop(stripe->free_string_chunks[bucket_idx]);
+      SLLStackPop(stripe.free_string_chunks[bucket_idx]);
     }
   }
   
-  // rjf: no found node -> allocate new
+  // rjf: no found node . allocate new
   if(node == 0)
   {
     uint64 chunk_size = 0;
-    if(bucket_idx < ArrayCount(stripe->free_string_chunks)-1)
+    if(bucket_idx < ArrayCount(stripe.free_string_chunks)-1)
     {
       chunk_size = 1<<(bucket_idx+4);
     }
@@ -424,7 +424,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
     {
       chunk_size = u64_up_to_pow2(string.size);
     }
-    uint8* chunk_memory = push_array(stripe->arena, uint8, chunk_size);
+    uint8* chunk_memory = push_array(stripe.arena, uint8, chunk_size);
     node = (DI_StringChunkNode *)chunk_memory;
   }
   
@@ -440,8 +440,8 @@ di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
   if(string.size == 0) {return;}
   uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
   DI_StringChunkNode* node = (DI_StringChunkNode *)string.str;
-  node->size = u64_up_to_pow2(string.size);
-  SLLStackPush(stripe->free_string_chunks[bucket_idx], node);
+  node.size = u64_up_to_pow2(string.size);
+  SLLStackPush(stripe.free_string_chunks[bucket_idx], node);
 }
 
 ////////////////////////////////
@@ -451,16 +451,16 @@ void
 di_open(DI_Key* key)
 {
   Temp scratch = scratch_begin(0, 0);
-  if(key->path.size != 0)
+  if(key.path.size != 0)
   {
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
     uint64 hash = di_hash_from_key(&key_normalized);
-    uint64 slot_idx = hash%di_shared->slots_count;
-    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
-    DI_Slot* slot = &di_shared->slots[slot_idx];
-    DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
+    uint64 slot_idx = hash%di_shared.slots_count;
+    uint64 stripe_idx = slot_idx%di_shared.stripes_count;
+    DI_Slot* slot = &di_shared.slots[slot_idx];
+    DI_Stripe* stripe = &di_shared.stripes[stripe_idx];
     log_infof("open_debug_info: {\"%S\", 0x%I64x}\n", key_normalized.path, key_normalized.min_timestamp);
-    OS_MutexScopeW(stripe->rw_mutex)
+    OS_MutexScopeW(stripe.rw_mutex)
     {
       //- rjf: find existing node
       DI_Node* node = di_node_from_key_slot__stripe_mutex_r_guarded(slot, &key_normalized);
@@ -473,31 +473,31 @@ di_open(DI_Key* key)
         {
           current_timestamp = key_normalized.min_timestamp;
         }
-        node = stripe->free_node;
+        node = stripe.free_node;
         if(node != 0)
         {
-          SLLStackPop(stripe->free_node);
+          SLLStackPop(stripe.free_node);
         }
         else
         {
-          node = push_array_no_zero(stripe->arena, DI_Node, 1);
+          node = push_array_no_zero(stripe.arena, DI_Node, 1);
         }
         MemoryZeroStruct(node);
-        DLLPushBack(slot->first, slot->last, node);
+        DLLPushBack(slot.first, slot.last, node);
         String8 path_stored = di_string_alloc__stripe_mutex_w_guarded(stripe, key_normalized.path);
-        node->key.path = path_stored;
-        node->key.min_timestamp = current_timestamp;
+        node.key.path = path_stored;
+        node.key.min_timestamp = current_timestamp;
       }
       
       //- rjf: increment node reference count
       if(node != 0)
       {
-        node->ref_count += 1;
-        if(node->ref_count == 1)
+        node.ref_count += 1;
+        if(node.ref_count == 1)
         {
           di_u2p_enqueue_key(&key_normalized, max_U64);
-          ins_atomic_u64_eval_assign(&node->is_working, 1);
-          DeferLoop(os_rw_mutex_drop_w(stripe->rw_mutex), os_rw_mutex_take_w(stripe->rw_mutex))
+          ins_atomic_u64_eval_assign(&node.is_working, 1);
+          DeferLoop(os_rw_mutex_drop_w(stripe.rw_mutex), os_rw_mutex_take_w(stripe.rw_mutex))
           {
             async_push_work(di_parse_work);
           }
@@ -513,56 +513,56 @@ di_close(DI_Key* key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  if(key->path.size != 0)
+  if(key.path.size != 0)
   {
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
     uint64 hash = di_hash_from_key(&key_normalized);
-    uint64 slot_idx = hash%di_shared->slots_count;
-    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
-    DI_Slot* slot = &di_shared->slots[slot_idx];
-    DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
+    uint64 slot_idx = hash%di_shared.slots_count;
+    uint64 stripe_idx = slot_idx%di_shared.stripes_count;
+    DI_Slot* slot = &di_shared.slots[slot_idx];
+    DI_Stripe* stripe = &di_shared.stripes[stripe_idx];
     log_infof("close_debug_info: {\"%S\", 0x%I64x}\n", key_normalized.path, key_normalized.min_timestamp);
-    OS_MutexScopeW(stripe->rw_mutex)
+    OS_MutexScopeW(stripe.rw_mutex)
     {
       //- rjf: find existing node
       DI_Node* node = di_node_from_key_slot__stripe_mutex_r_guarded(slot, &key_normalized);
       
-      //- rjf: node exists -> decrement reference count; release
+      //- rjf: node exists . decrement reference count; release
       if(node != 0)
       {
-        node->ref_count -= 1;
-        if(node->ref_count == 0) for(;;)
+        node.ref_count -= 1;
+        if(node.ref_count == 0) for(;;)
         {
           //- rjf: wait for touch count to go to 0
-          if(ins_atomic_u64_eval(&node->touch_count) != 0)
+          if(ins_atomic_u64_eval(&node.touch_count) != 0)
           {
-            os_rw_mutex_drop_w(stripe->rw_mutex);
+            os_rw_mutex_drop_w(stripe.rw_mutex);
             for(uint64 start_t = os_now_microseconds(); os_now_microseconds() <= start_t + 250;);
-            os_rw_mutex_take_w(stripe->rw_mutex);
+            os_rw_mutex_take_w(stripe.rw_mutex);
           }
           
           //- rjf: release
-          if(node->ref_count == 0 && ins_atomic_u64_eval(&node->touch_count) == 0)
+          if(node.ref_count == 0 && ins_atomic_u64_eval(&node.touch_count) == 0)
           {
-            di_string_release__stripe_mutex_w_guarded(stripe, node->key.path);
-            if(node->file_base != 0)
+            di_string_release__stripe_mutex_w_guarded(stripe, node.key.path);
+            if(node.file_base != 0)
             {
-              os_file_map_view_close(node->file_map, node->file_base, r1u64(0, node->file_props.size));
+              os_file_map_view_close(node.file_map, node.file_base, r1u64(0, node.file_props.size));
             }
-            if(!os_handle_match(node->file_map, os_handle_zero()))
+            if(!os_handle_match(node.file_map, os_handle_zero()))
             {
-              os_file_map_close(node->file_map);
+              os_file_map_close(node.file_map);
             }
-            if(!os_handle_match(node->file, os_handle_zero()))
+            if(!os_handle_match(node.file, os_handle_zero()))
             {
-              os_file_close(node->file);
+              os_file_close(node.file);
             }
-            if(node->arena != 0)
+            if(node.arena != 0)
             {
-              arena_release(node->arena);
+              arena_release(node.arena);
             }
-            DLLRemove(slot->first, slot->last, node);
-            SLLStackPush(stripe->free_node, node);
+            DLLRemove(slot.first, slot.last, node);
+            SLLStackPush(stripe.free_node, node);
             break;
           }
         }
@@ -581,16 +581,16 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us)
 {
   ProfBeginFunction();
   RDI_Parsed* result = &di_rdi_parsed_nil;
-  if(key->path.size != 0)
+  if(key.path.size != 0)
   {
     Temp scratch = scratch_begin(0, 0);
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
     uint64 hash = di_hash_from_key(&key_normalized);
-    uint64 slot_idx = hash%di_shared->slots_count;
-    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
-    DI_Slot* slot = &di_shared->slots[slot_idx];
-    DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
-    ProfScope("grab node") OS_MutexScopeR(stripe->rw_mutex) for(;;)
+    uint64 slot_idx = hash%di_shared.slots_count;
+    uint64 stripe_idx = slot_idx%di_shared.stripes_count;
+    DI_Slot* slot = &di_shared.slots[slot_idx];
+    DI_Stripe* stripe = &di_shared.stripes[stripe_idx];
+    ProfScope("grab node") OS_MutexScopeR(stripe.rw_mutex) for(;;)
     {
       //- rjf: find existing node
       DI_Node* node = di_node_from_key_slot__stripe_mutex_r_guarded(slot, &key_normalized);
@@ -602,36 +602,36 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us)
       }
       
       //- rjf: node refcount == 0? this node is being destroyed
-      if(node->ref_count == 0)
+      if(node.ref_count == 0)
       {
         break;
       }
       
-      //- rjf: parse done -> touch, grab result
-      if(node != 0 && node->parse_done)
+      //- rjf: parse done . touch, grab result
+      if(node != 0 && node.parse_done)
       {
         di_scope_touch_node__stripe_mutex_r_guarded(scope, node);
-        result = &node->rdi;
+        result = &node.rdi;
         break;
       }
       
-      //- rjf: parse not done, not working -> ask for parse
+      //- rjf: parse not done, not working . ask for parse
       if(node != 0 &&
-         !node->parse_done &&
-         !ins_atomic_u64_eval(&node->is_working) &&
+         !node.parse_done &&
+         !ins_atomic_u64_eval(&node.is_working) &&
          di_u2p_enqueue_key(&key_normalized, endt_us))
       {
         ProfScope("ask for parse")
         {
-          ins_atomic_u64_eval_assign(&node->is_working, 1);
-          DeferLoop(os_rw_mutex_drop_r(stripe->rw_mutex), os_rw_mutex_take_r(stripe->rw_mutex))
+          ins_atomic_u64_eval_assign(&node.is_working, 1);
+          DeferLoop(os_rw_mutex_drop_r(stripe.rw_mutex), os_rw_mutex_take_r(stripe.rw_mutex))
           {
             async_push_work(di_parse_work);
           }
         }
       }
       
-      //- rjf: time expired -> break
+      //- rjf: time expired . break
       if(os_now_microseconds() >= endt_us)
       {
         break;
@@ -639,7 +639,7 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us)
       
       //- rjf: wait on this stripe
       {
-        os_condition_variable_wait_rw_r(stripe->cv, stripe->rw_mutex, endt_us);
+        os_condition_variable_wait_rw_r(stripe.cv, stripe.rw_mutex, endt_us);
       }
     }
     scratch_end(scratch);
@@ -657,90 +657,90 @@ di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams
   DI_SearchItemArray items = {0};
   {
     uint64 params_hash = di_hash_from_search_params(params);
-    uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-    uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
-    DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
-    DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
-    OS_MutexScopeW(stripe->rw_mutex) for(;;)
+    uint64               slot_idx   = key.u64[0]%di_shared.search_slots_count;
+    uint64               stripe_idx = slot_idx%di_shared.search_stripes_count;
+    DI_SearchSlot *   slot       = &di_shared.search_slots[slot_idx];
+    DI_SearchStripe * stripe     = &di_shared.search_stripes[stripe_idx];
+    OS_MutexScopeW(stripe.rw_mutex) for(;;)
     {
-      // rjf: map key -> node
+      // rjf: map key . node
       DI_SearchNode* node = 0;
-      for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
+      for(DI_SearchNode* n = slot.first; n != 0; n = n.next)
       {
-        if(u128_match(n->key, key))
+        if(u128_match(n.key, key))
         {
           node = n;
           break;
         }
       }
       
-      // rjf: no node? -> allocate
+      // rjf: no node? . allocate
       if(node == 0)
       {
-        node = stripe->free_node;
+        node = stripe.free_node;
         if(node)
         {
-          SLLStackPop(stripe->free_node);
+          SLLStackPop(stripe.free_node);
           MemoryZeroStruct(node);
         }
         else
         {
-          node = push_array(stripe->arena, DI_SearchNode, 1);
+          node = push_array(stripe.arena, DI_SearchNode, 1);
         }
-        DLLPushBack(slot->first, slot->last, node);
-        node->key = key;
-        for(uint64 idx = 0; idx < ArrayCount(node->buckets); idx += 1)
+        DLLPushBack(slot.first, slot.last, node);
+        node.key = key;
+        for(uint64 idx = 0; idx < ArrayCount(node.buckets); idx += 1)
         {
-          node->buckets[idx].arena = arena_alloc();
+          node.buckets[idx].arena = arena_alloc();
         }
       }
       
       // rjf: record update idx info
-      node->last_update_tick_idx = update_tick_idx();
+      node.last_update_tick_idx = update_tick_idx();
       
       // rjf: try to grab last valid results for this key/query; determine if stale
       B32 params_stale = 1;
       B32 query_stale = 1;
       B32 results_stale = 1;
-      if(params_hash == node->buckets[node->bucket_read_gen%ArrayCount(node->buckets)].params_hash &&
-         node->bucket_read_gen != 0)
+      if(params_hash == node.buckets[node.bucket_read_gen%ArrayCount(node.buckets)].params_hash &&
+         node.bucket_read_gen != 0)
       {
         di_scope_touch_search_node__stripe_mutex_r_guarded(scope, node);
-        items = node->items;
+        items = node.items;
         params_stale = 0;
-        query_stale = !str8_match(query, node->buckets[node->bucket_read_gen%ArrayCount(node->buckets)].query, 0);
-        results_stale = (node->bucket_read_gen < node->bucket_write_gen);
+        query_stale = !str8_match(query, node.buckets[node.bucket_read_gen%ArrayCount(node.buckets)].query, 0);
+        results_stale = (node.bucket_read_gen < node.bucket_write_gen);
       }
       if(stale_out != 0)
       {
         *stale_out = (params_stale || query_stale || results_stale);
       }
       
-      // rjf: if query stale -> request again
-      if(query_stale && node->bucket_read_gen <= node->bucket_write_gen && node->bucket_write_gen < node->bucket_read_gen + ArrayCount(node->buckets)-1)
+      // rjf: if query stale . request again
+      if(query_stale && node.bucket_read_gen <= node.bucket_write_gen && node.bucket_write_gen < node.bucket_read_gen + ArrayCount(node.buckets)-1)
       {
-        node->bucket_write_gen += 1;
-        if(node->bucket_write_gen >= node->bucket_items_gen + ArrayCount(node->buckets))
+        node.bucket_write_gen += 1;
+        if(node.bucket_write_gen >= node.bucket_items_gen + ArrayCount(node.buckets))
         {
-          MemoryZeroStruct(&node->items);
+          MemoryZeroStruct(&node.items);
           MemoryZeroStruct(&items);
         }
-        uint64 new_bucket_idx = node->bucket_write_gen%ArrayCount(node->buckets);
-        arena_clear(node->buckets[new_bucket_idx].arena);
-        node->buckets[new_bucket_idx].query = push_str8_copy(node->buckets[new_bucket_idx].arena, query);
-        node->buckets[new_bucket_idx].params = di_search_params_copy(node->buckets[new_bucket_idx].arena, params);
-        node->buckets[new_bucket_idx].params_hash = params_hash;
+        uint64 new_bucket_idx = node.bucket_write_gen%ArrayCount(node.buckets);
+        arena_clear(node.buckets[new_bucket_idx].arena);
+        node.buckets[new_bucket_idx].query = push_str8_copy(node.buckets[new_bucket_idx].arena, query);
+        node.buckets[new_bucket_idx].params = di_search_params_copy(node.buckets[new_bucket_idx].arena, params);
+        node.buckets[new_bucket_idx].params_hash = params_hash;
         di_u2s_enqueue_req(key, endt_us);
       }
       
-      // rjf: not stale, or timeout -> break
+      // rjf: not stale, or timeout . break
       if((!query_stale && !params_stale && !results_stale) || os_now_microseconds() >= endt_us)
       {
         break;
       }
       
-      // rjf: no results, but have time to wait -> wait
-      os_condition_variable_wait_rw_w(stripe->cv, stripe->rw_mutex, endt_us);
+      // rjf: no results, but have time to wait . wait
+      os_condition_variable_wait_rw_w(stripe.cv, stripe.rw_mutex, endt_us);
     }
   }
   return items;
@@ -753,16 +753,16 @@ B32
 di_u2p_enqueue_key(DI_Key* key, uint64 endt_us)
 {
   B32 sent = 0;
-  OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
+  OS_MutexScope(di_shared.u2p_ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
-    uint64 available_size = di_shared->u2p_ring_size - unconsumed_size;
-    uint64 needed_size = sizeof(key->min_timestamp) + sizeof(key->path.size) + key->path.size;
+    uint64 unconsumed_size = di_shared.u2p_ring_write_pos - di_shared.u2p_ring_read_pos;
+    uint64 available_size = di_shared.u2p_ring_size - unconsumed_size;
+    uint64 needed_size = sizeof(key.min_timestamp) + sizeof(key.path.size) + key.path.size;
     if(available_size >= needed_size)
     {
-      di_shared->u2p_ring_write_pos += ring_write_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_write_pos, &key->min_timestamp);
-      di_shared->u2p_ring_write_pos += ring_write_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_write_pos, &key->path.size);
-      di_shared->u2p_ring_write_pos += ring_write(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_write_pos, key->path.str, key->path.size);
+      di_shared.u2p_ring_write_pos += ring_write_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, &key.min_timestamp);
+      di_shared.u2p_ring_write_pos += ring_write_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, &key.path.size);
+      di_shared.u2p_ring_write_pos += ring_write(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, key.path.str, key.path.size);
       sent = 1;
       break;
     }
@@ -770,11 +770,11 @@ di_u2p_enqueue_key(DI_Key* key, uint64 endt_us)
     {
       break;
     }
-    os_condition_variable_wait(di_shared->u2p_ring_cv, di_shared->u2p_ring_mutex, endt_us);
+    os_condition_variable_wait(di_shared.u2p_ring_cv, di_shared.u2p_ring_mutex, endt_us);
   }
   if(sent)
   {
-    os_condition_variable_broadcast(di_shared->u2p_ring_cv);
+    os_condition_variable_broadcast(di_shared.u2p_ring_cv);
   }
   return sent;
 }
@@ -782,66 +782,66 @@ di_u2p_enqueue_key(DI_Key* key, uint64 endt_us)
 void
 di_u2p_dequeue_key(Arena* arena, DI_Key* out_key)
 {
-  OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
+  OS_MutexScope(di_shared.u2p_ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
-    if(unconsumed_size >= sizeof(out_key->path.size) + sizeof(out_key->min_timestamp))
+    uint64 unconsumed_size = di_shared.u2p_ring_write_pos - di_shared.u2p_ring_read_pos;
+    if(unconsumed_size >= sizeof(out_key.path.size) + sizeof(out_key.min_timestamp))
     {
-      di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->min_timestamp);
-      di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->path.size);
-      out_key->path.str = push_array(arena, uint8, out_key->path.size);
-      di_shared->u2p_ring_read_pos += ring_read(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, out_key->path.str, out_key->path.size);
+      di_shared.u2p_ring_read_pos += ring_read_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, &out_key.min_timestamp);
+      di_shared.u2p_ring_read_pos += ring_read_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, &out_key.path.size);
+      out_key.path.str = push_array(arena, uint8, out_key.path.size);
+      di_shared.u2p_ring_read_pos += ring_read(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, out_key.path.str, out_key.path.size);
       break;
     }
-    os_condition_variable_wait(di_shared->u2p_ring_cv, di_shared->u2p_ring_mutex, max_U64);
+    os_condition_variable_wait(di_shared.u2p_ring_cv, di_shared.u2p_ring_mutex, max_U64);
   }
-  os_condition_variable_broadcast(di_shared->u2p_ring_cv);
+  os_condition_variable_broadcast(di_shared.u2p_ring_cv);
 }
 
 void
 di_p2u_push_event(DI_Event* event)
 {
-  OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
+  OS_MutexScope(di_shared.p2u_ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
-    uint64 available_size = di_shared->p2u_ring_size-unconsumed_size;
-    uint64 needed_size = sizeof(event->kind) + sizeof(event->string.size) + event->string.size;
+    uint64 unconsumed_size = (di_shared.p2u_ring_write_pos-di_shared.p2u_ring_read_pos);
+    uint64 available_size = di_shared.p2u_ring_size-unconsumed_size;
+    uint64 needed_size = sizeof(event.kind) + sizeof(event.string.size) + event.string.size;
     if(available_size >= needed_size)
     {
-      di_shared->p2u_ring_write_pos += ring_write_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_write_pos, &event->kind);
-      di_shared->p2u_ring_write_pos += ring_write_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_write_pos, &event->string.size);
-      di_shared->p2u_ring_write_pos += ring_write(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_write_pos, event->string.str, event->string.size);
+      di_shared.p2u_ring_write_pos += ring_write_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, &event.kind);
+      di_shared.p2u_ring_write_pos += ring_write_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, &event.string.size);
+      di_shared.p2u_ring_write_pos += ring_write(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, event.string.str, event.string.size);
       break;
     }
-    os_condition_variable_wait(di_shared->p2u_ring_cv, di_shared->p2u_ring_mutex, max_U64);
+    os_condition_variable_wait(di_shared.p2u_ring_cv, di_shared.p2u_ring_mutex, max_U64);
   }
-  os_condition_variable_broadcast(di_shared->p2u_ring_cv);
+  os_condition_variable_broadcast(di_shared.p2u_ring_cv);
 }
 
 DI_EventList
 di_p2u_pop_events(Arena* arena, uint64 endt_us)
 {
   DI_EventList events = {0};
-  OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
+  OS_MutexScope(di_shared.p2u_ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
+    uint64 unconsumed_size = (di_shared.p2u_ring_write_pos-di_shared.p2u_ring_read_pos);
     if(unconsumed_size >= sizeof(DI_EventKind) + sizeof(uint64))
     {
       DI_EventNode* n = push_array(arena, DI_EventNode, 1);
       SLLQueuePush(events.first, events.last, n);
       events.count += 1;
-      di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.kind);
-      di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.string.size);
-      n->v.string.str = push_array_no_zero(arena, uint8, n->v.string.size);
-      di_shared->p2u_ring_read_pos += ring_read(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, n->v.string.str, n->v.string.size);
+      di_shared.p2u_ring_read_pos += ring_read_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, &n.v.kind);
+      di_shared.p2u_ring_read_pos += ring_read_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, &n.v.string.size);
+      n.v.string.str = push_array_no_zero(arena, uint8, n.v.string.size);
+      di_shared.p2u_ring_read_pos += ring_read(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, n.v.string.str, n.v.string.size);
     }
     else if(os_now_microseconds() >= endt_us)
     {
       break;
     }
-    os_condition_variable_wait(di_shared->p2u_ring_cv, di_shared->p2u_ring_mutex, endt_us);
+    os_condition_variable_wait(di_shared.p2u_ring_cv, di_shared.p2u_ring_mutex, endt_us);
   }
-  os_condition_variable_broadcast(di_shared->p2u_ring_cv);
+  os_condition_variable_broadcast(di_shared.p2u_ring_cv);
   return events;
 }
 
@@ -863,10 +863,10 @@ ASYNC_WORK_DEF(di_parse_work)
   //- rjf: unpack key
   //
   uint64 hash = di_hash_from_string(og_path, StringMatchFlag_CaseInsensitive);
-  uint64 slot_idx = hash%di_shared->slots_count;
-  uint64 stripe_idx = slot_idx%di_shared->stripes_count;
-  DI_Slot* slot = &di_shared->slots[slot_idx];
-  DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
+  uint64 slot_idx = hash%di_shared.slots_count;
+  uint64 stripe_idx = slot_idx%di_shared.stripes_count;
+  DI_Slot* slot = &di_shared.slots[slot_idx];
+  DI_Stripe* stripe = &di_shared.stripes[stripe_idx];
   
   ////////////////////////////
   //- rjf: open O.G. file (may or may not be RDI)
@@ -975,7 +975,7 @@ ASYNC_WORK_DEF(di_parse_work)
     if(sizeof(RDI_Header) <= file_props.size)
     {
       RDI_Header* header = (RDI_Header*)file_base;
-      if(header->encoding_version != RDI_ENCODING_VERSION)
+      if(header.encoding_version != RDI_ENCODING_VERSION)
       {
         rdi_file_is_up_to_date = 0;
       }
@@ -1018,7 +1018,7 @@ ASYNC_WORK_DEF(di_parse_work)
       OS_Handle process = {0};
       {
         OS_ProcessLaunchParams params = {0};
-        params.path = os_get_process_info()->binary_path;
+        params.path = os_get_process_info().binary_path;
         params.inherit_env = 1;
         params.consoleless = 1;
         str8_list_pushf(scratch.arena, &params.cmd_line, "raddbg");
@@ -1068,7 +1068,7 @@ ASYNC_WORK_DEF(di_parse_work)
   }
   
   ////////////////////////////
-  //- rjf: got task -> open file
+  //- rjf: got task . open file
   //
   OS_Handle file = {0};
   OS_Handle file_map = {0};
@@ -1110,22 +1110,22 @@ ASYNC_WORK_DEF(di_parse_work)
   ////////////////////////////
   //- rjf: commit parsed info to cache
   //
-  OS_MutexScopeW(stripe->rw_mutex)
+  OS_MutexScopeW(stripe.rw_mutex)
   {
     DI_Node* node = di_node_from_key_slot__stripe_mutex_r_guarded(slot, &key);
     if(node != 0)
     {
-      node->is_working = 0;
-      node->file = file;
-      node->file_map = file_map;
-      node->file_base = file_base;
-      node->file_props = file_props;
-      node->arena = rdi_parsed_arena;
-      node->rdi = rdi_parsed;
-      node->parse_done = 1;
+      node.is_working = 0;
+      node.file = file;
+      node.file_map = file_map;
+      node.file_base = file_base;
+      node.file_props = file_props;
+      node.arena = rdi_parsed_arena;
+      node.rdi = rdi_parsed;
+      node.parse_done = 1;
     }
   }
-  os_condition_variable_broadcast(stripe->cv);
+  os_condition_variable_broadcast(stripe.cv);
   
   scratch_end(scratch);
   ProfEnd();
@@ -1140,27 +1140,27 @@ B32
 di_u2s_enqueue_req(U128 key, uint64 endt_us)
 {
   B32 result = 0;
-  uint64 thread_idx = key.u64[0]%di_shared->search_threads_count;
-  DI_SearchThread* thread = &di_shared->search_threads[thread_idx];
-  OS_MutexScope(thread->ring_mutex) for(;;)
+  uint64 thread_idx = key.u64[0]%di_shared.search_threads_count;
+  DI_SearchThread* thread = &di_shared.search_threads[thread_idx];
+  OS_MutexScope(thread.ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
-    uint64 available_size = thread->ring_size - unconsumed_size;
+    uint64 unconsumed_size = thread.ring_write_pos - thread.ring_read_pos;
+    uint64 available_size = thread.ring_size - unconsumed_size;
     if(available_size >= sizeof(key))
     {
       result = 1;
-      thread->ring_write_pos += ring_write_struct(thread->ring_base, thread->ring_size, thread->ring_write_pos, &key);
+      thread.ring_write_pos += ring_write_struct(thread.ring_base, thread.ring_size, thread.ring_write_pos, &key);
       break;
     }
     if(os_now_microseconds() >= endt_us)
     {
       break;
     }
-    os_condition_variable_wait(thread->ring_cv, thread->ring_mutex, endt_us);
+    os_condition_variable_wait(thread.ring_cv, thread.ring_mutex, endt_us);
   }
   if(result)
   {
-    os_condition_variable_broadcast(thread->ring_cv);
+    os_condition_variable_broadcast(thread.ring_cv);
   }
   return result;
 }
@@ -1169,18 +1169,18 @@ U128
 di_u2s_dequeue_req(uint64 thread_idx)
 {
   U128 key = {0};
-  DI_SearchThread* thread = &di_shared->search_threads[thread_idx];
-  OS_MutexScope(thread->ring_mutex) for(;;)
+  DI_SearchThread* thread = &di_shared.search_threads[thread_idx];
+  OS_MutexScope(thread.ring_mutex) for(;;)
   {
-    uint64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
+    uint64 unconsumed_size = thread.ring_write_pos - thread.ring_read_pos;
     if(unconsumed_size >= sizeof(key))
     {
-      thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, &key);
+      thread.ring_read_pos += ring_read_struct(thread.ring_base, thread.ring_size, thread.ring_read_pos, &key);
       break;
     }
-    os_condition_variable_wait(thread->ring_cv, thread->ring_mutex, max_U64);
+    os_condition_variable_wait(thread.ring_cv, thread.ring_mutex, max_U64);
   }
-  os_condition_variable_broadcast(thread->ring_cv);
+  os_condition_variable_broadcast(thread.ring_cv);
   return key;
 }
 
@@ -1206,28 +1206,28 @@ ASYNC_WORK_DEF(di_search_work)
   
   //- rjf: unpack parameters
   DI_SearchWorkIn* in = (DI_SearchWorkIn *)input;
-  if(in->work_thread_arenas[thread_idx] == 0)
+  if(in.work_thread_arenas[thread_idx] == 0)
   {
-    in->work_thread_arenas[thread_idx] = arena_alloc();
+    in.work_thread_arenas[thread_idx] = arena_alloc();
   }
-  Arena* arena = in->work_thread_arenas[thread_idx];
-  U128 key = in->key;
-  uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-  uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
-  DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
-  DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
+  Arena* arena = in.work_thread_arenas[thread_idx];
+  U128 key = in.key;
+  uint64               slot_idx   = key.u64[0]%di_shared.search_slots_count;
+  uint64               stripe_idx = slot_idx%di_shared.search_stripes_count;
+  DI_SearchSlot *   slot       = &di_shared.search_slots[slot_idx];
+  DI_SearchStripe * stripe     = &di_shared.search_stripes[stripe_idx];
   
   //- rjf: setup output
   DI_SearchWorkOut* out = push_array(arena, DI_SearchWorkOut, 1);
   
   //- rjf: unpack table info
   uint64 element_count = 0;
-  void* table_base = rdi_section_raw_table_from_kind(in->rdi, in->section_kind, &element_count);
-  uint64 element_size = rdi_section_element_size_table[in->section_kind];
+  void* table_base = rdi_section_raw_table_from_kind(in.rdi, in.section_kind, &element_count);
+  uint64 element_size = rdi_section_element_size_table[in.section_kind];
   
   //- rjf: determine name string index offset, depending on table kind
   uint64 element_name_idx_off = 0;
-  switch(in->section_kind)
+  switch(in.section_kind)
   {
     default:{}break;
     case RDI_SectionKind_Procedures:
@@ -1250,16 +1250,16 @@ ASYNC_WORK_DEF(di_search_work)
   
   //- rjf: loop through table, gather matches
   B32 cancelled = 0;
-  for(uint64 idx = in->element_range.min; (idx < in->element_range.max && idx < element_count); idx += 1)
+  for(uint64 idx = in.element_range.min; (idx < in.element_range.max && idx < element_count); idx += 1)
   {
     //- rjf: every so often, check the key's write gen - if it has been bumped, then cancel
     if(idx%100 == 0)
     {
-      OS_MutexScopeR(stripe->rw_mutex)
+      OS_MutexScopeR(stripe.rw_mutex)
       {
-        for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
+        for(DI_SearchNode* n = slot.first; n != 0; n = n.next)
         {
-          if(u128_match(n->key, key) && n->bucket_write_gen != in->initial_bucket_write_gen)
+          if(u128_match(n.key, key) && n.bucket_write_gen != in.initial_bucket_write_gen)
           {
             cancelled = 1;
             break;
@@ -1275,43 +1275,43 @@ ASYNC_WORK_DEF(di_search_work)
     //- rjf: get element, map to string; if empty, continue to next element
     void* element = (uint8 *)table_base + element_size*idx;
     uint32* name_idx_ptr = (uint32 *)((uint8 *)element + element_name_idx_off);
-    if(in->section_kind == RDI_SectionKind_UDTs)
+    if(in.section_kind == RDI_SectionKind_UDTs)
     {
       RDI_UDT* udt = (RDI_UDT *)element;
-      RDI_TypeNode* type_node = rdi_element_from_name_idx(in->rdi, TypeNodes, udt->self_type_idx);
-      name_idx_ptr = &type_node->user_defined.name_string_idx;
+      RDI_TypeNode* type_node = rdi_element_from_name_idx(in.rdi, TypeNodes, udt.self_type_idx);
+      name_idx_ptr = &type_node.user_defined.name_string_idx;
     }
     uint32 name_idx = *name_idx_ptr;
     uint64 name_size = 0;
-    uint8* name_base = rdi_string_from_idx(in->rdi, name_idx, &name_size);
+    uint8* name_base = rdi_string_from_idx(in.rdi, name_idx, &name_size);
     String8 name = str8(name_base, name_size);
     if(name.size == 0) { continue; }
     
     //- rjf: fuzzy match against query
-    FuzzyMatchRangeList matches = fuzzy_match_find(arena, in->query, name);
+    FuzzyMatchRangeList matches = fuzzy_match_find(arena, in.query, name);
     
     //- rjf: collect
     if(matches.count == matches.needle_part_count)
     {
-      DI_SearchItemChunk* chunk = out->items.last;
-      if(chunk == 0 || chunk->count >= chunk->cap)
+      DI_SearchItemChunk* chunk = out.items.last;
+      if(chunk == 0 || chunk.count >= chunk.cap)
       {
         chunk = push_array(arena, DI_SearchItemChunk, 1);
-        chunk->cap = 1024;
-        chunk->count = 0;
-        chunk->v = push_array_no_zero(arena, DI_SearchItem, chunk->cap);
-        SLLQueuePush(out->items.first, out->items.last, chunk);
-        out->items.chunk_count += 1;
+        chunk.cap = 1024;
+        chunk.count = 0;
+        chunk.v = push_array_no_zero(arena, DI_SearchItem, chunk.cap);
+        SLLQueuePush(out.items.first, out.items.last, chunk);
+        out.items.chunk_count += 1;
       }
-      chunk->v[chunk->count].idx          = idx;
-      chunk->v[chunk->count].dbgi_idx     = in->dbgi_idx;
-      chunk->v[chunk->count].match_ranges = matches;
-      chunk->v[chunk->count].missed_size  = (name_size > matches.total_dim) ? (name_size-matches.total_dim) : 0;
-      chunk->count += 1;
-      out->items.total_count += 1;
+      chunk.v[chunk.count].idx          = idx;
+      chunk.v[chunk.count].dbgi_idx     = in.dbgi_idx;
+      chunk.v[chunk.count].match_ranges = matches;
+      chunk.v[chunk.count].missed_size  = (name_size > matches.total_dim) ? (name_size-matches.total_dim) : 0;
+      chunk.count += 1;
+      out.items.total_count += 1;
     }
   }
-  out->cancelled = cancelled;
+  out.cancelled = cancelled;
   ProfEnd();
   return out;
 }
@@ -1320,19 +1320,19 @@ int
 di_qsort_compare_search_items(DI_SearchItem* a, DI_SearchItem* b)
 {
   int result = 0;
-  if(a->match_ranges.count > b->match_ranges.count)
+  if(a.match_ranges.count > b.match_ranges.count)
   {
     result = -1;
   }
-  else if(a->match_ranges.count < b->match_ranges.count)
+  else if(a.match_ranges.count < b.match_ranges.count)
   {
     result = +1;
   }
-  else if(a->missed_size < b->missed_size)
+  else if(a.missed_size < b.missed_size)
   {
     result = -1;
   }
-  else if(a->missed_size > b->missed_size)
+  else if(a.missed_size > b.missed_size)
   {
     result = +1;
   }
@@ -1351,28 +1351,28 @@ di_search_thread__entry_point(void* p)
     
     //- rjf: get next key, unpack
     U128 key = di_u2s_dequeue_req(thread_idx);
-    uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-    uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
-    DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
-    DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
+    uint64               slot_idx   = key.u64[0]%di_shared.search_slots_count;
+    uint64               stripe_idx = slot_idx%di_shared.search_stripes_count;
+    DI_SearchSlot *   slot       = &di_shared.search_slots[slot_idx];
+    DI_SearchStripe * stripe     = &di_shared.search_stripes[stripe_idx];
     
-    //- rjf: map key -> output arena & search parameters
+    //- rjf: map key . output arena & search parameters
     Arena* arena = 0;
     String8 query = {0};
     DI_SearchParams params = {0};
     uint64 initial_bucket_write_gen = 0;
-    OS_MutexScopeW(stripe->rw_mutex)
+    OS_MutexScopeW(stripe.rw_mutex)
     {
-      for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
+      for(DI_SearchNode* n = slot.first; n != 0; n = n.next)
       {
-        if(u128_match(n->key, key))
+        if(u128_match(n.key, key))
         {
-          uint64 bucket_idx = n->bucket_write_gen%ArrayCount(n->buckets);
-          n->work_refcount += 1;
-          arena  = n->buckets[bucket_idx].arena;
-          query  = push_str8_copy(scratch.arena, n->buckets[bucket_idx].query);
-          params = di_search_params_copy(scratch.arena, &n->buckets[bucket_idx].params);
-          initial_bucket_write_gen = n->bucket_write_gen;
+          uint64 bucket_idx = n.bucket_write_gen%ArrayCount(n.buckets);
+          n.work_refcount += 1;
+          arena  = n.buckets[bucket_idx].arena;
+          query  = push_str8_copy(scratch.arena, n.buckets[bucket_idx].query);
+          params = di_search_params_copy(scratch.arena, &n.buckets[bucket_idx].params);
+          initial_bucket_write_gen = n.bucket_write_gen;
           break;
         }
       }
@@ -1402,15 +1402,15 @@ di_search_thread__entry_point(void* p)
         for(uint64 task_in_this_rdi_idx = 0; task_in_this_rdi_idx < tasks_per_this_rdi; task_in_this_rdi_idx += 1)
         {
           DI_SearchWorkIn* in = push_array(scratch.arena, DI_SearchWorkIn, 1);
-          in->key                      = key;
-          in->initial_bucket_write_gen = initial_bucket_write_gen;
-          in->work_thread_arenas       = work_thread_arenas;
-          in->rdi                      = rdi;
-          in->section_kind             = params.target;
-          in->element_range            = r1u64(task_in_this_rdi_idx*elements_per_task, (task_in_this_rdi_idx+1)*elements_per_task);
-          in->element_range.max        = ClampTop(in->element_range.max, element_count_in_this_rdi);
-          in->query                    = query;
-          in->dbgi_idx                 = idx;
+          in.key                      = key;
+          in.initial_bucket_write_gen = initial_bucket_write_gen;
+          in.work_thread_arenas       = work_thread_arenas;
+          in.rdi                      = rdi;
+          in.section_kind             = params.target;
+          in.element_range            = r1u64(task_in_this_rdi_idx*elements_per_task, (task_in_this_rdi_idx+1)*elements_per_task);
+          in.element_range.max        = ClampTop(in.element_range.max, element_count_in_this_rdi);
+          in.query                    = query;
+          in.dbgi_idx                 = idx;
           async_task_list_push(scratch.arena, &tasks, async_task_launch(scratch.arena, di_search_work, .input = in));
         }
       }
@@ -1419,28 +1419,28 @@ di_search_thread__entry_point(void* p)
     //- rjf: join tasks, form final list
     B32 cancelled = 0;
     DI_SearchItemChunkList items_list = {0};
-    for(ASYNC_TaskNode* n = tasks.first; n != 0; n = n->next)
+    for(ASYNC_TaskNode* n = tasks.first; n != 0; n = n.next)
     {
-      DI_SearchWorkOut* out = async_task_join_struct(n->v, DI_SearchWorkOut);
-      di_search_item_chunk_list_concat_in_place(&items_list, &out->items);
-      cancelled = (cancelled || out->cancelled);
+      DI_SearchWorkOut* out = async_task_join_struct(n.v, DI_SearchWorkOut);
+      di_search_item_chunk_list_concat_in_place(&items_list, &out.items);
+      cancelled = (cancelled || out.cancelled);
     }
     
-    //- rjf: list -> array
+    //- rjf: list . array
     DI_SearchItemArray items = {0};
     if(arena != 0 && !cancelled)
     {
       items.count = items_list.total_count;
       items.v = push_array(arena, DI_SearchItem, items.count);
       uint64 off = 0;
-      for(DI_SearchItemChunk* chunk = items_list.first; chunk != 0; chunk = chunk->next)
+      for(DI_SearchItemChunk* chunk = items_list.first; chunk != 0; chunk = chunk.next)
       {
-        MemoryCopy(items.v + off, chunk->v, sizeof(chunk->v[0])*chunk->count);
-        for EachIndex(idx, chunk->count)
+        MemoryCopy(items.v + off, chunk.v, sizeof(chunk.v[0])*chunk.count);
+        for EachIndex(idx, chunk.count)
         {
           items.v[off + idx].match_ranges = fuzzy_match_range_list_copy(arena, &items.v[off + idx].match_ranges);
         }
-        off += chunk->count;
+        off += chunk.count;
       }
     }
     
@@ -1456,7 +1456,7 @@ di_search_thread__entry_point(void* p)
       }
     }
     
-    //- rjf: array -> sorted array
+    //- rjf: array . sorted array
     if(items.count != 0 && query.size != 0)
     {
       quick_sort(items.v, items.count, sizeof(DI_SearchItem), di_qsort_compare_search_items);
@@ -1468,18 +1468,18 @@ di_search_thread__entry_point(void* p)
       for(B32 done = 0; !done;)
       {
         B32 found = 0;
-        OS_MutexScopeW(stripe->rw_mutex) for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
+        OS_MutexScopeW(stripe.rw_mutex) for(DI_SearchNode* n = slot.first; n != 0; n = n.next)
         {
-          if(u128_match(n->key, key))
+          if(u128_match(n.key, key))
           {
-            if(n->scope_refcount == 0)
+            if(n.scope_refcount == 0)
             {
-              n->bucket_read_gen += 1;
-              n->work_refcount -= 1;
+              n.bucket_read_gen += 1;
+              n.work_refcount -= 1;
               if(!cancelled)
               {
-                n->items = items;
-                n->bucket_items_gen = initial_bucket_write_gen;
+                n.items = items;
+                n.bucket_items_gen = initial_bucket_write_gen;
               }
               done = 1;
             }
@@ -1505,38 +1505,38 @@ di_search_evictor_thread__entry_point(void* p)
   ThreadNameF("[di] search evictor thread");
   for(;;)
   {
-    for(uint64 slot_idx = 0; slot_idx < di_shared->search_slots_count; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < di_shared.search_slots_count; slot_idx += 1)
     {
-      uint64 stripe_idx = slot_idx%di_shared->search_stripes_count;
-      DI_SearchSlot* slot = &di_shared->search_slots[slot_idx];
-      DI_SearchStripe* stripe = &di_shared->search_stripes[stripe_idx];
+      uint64 stripe_idx = slot_idx%di_shared.search_stripes_count;
+      DI_SearchSlot* slot = &di_shared.search_slots[slot_idx];
+      DI_SearchStripe* stripe = &di_shared.search_stripes[stripe_idx];
       B32 slot_has_work = 0;
-      OS_MutexScopeR(stripe->rw_mutex)
+      OS_MutexScopeR(stripe.rw_mutex)
       {
-        for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
+        for(DI_SearchNode* n = slot.first; n != 0; n = n.next)
         {
-          if(n->last_update_tick_idx+10 < update_tick_idx() && n->scope_refcount == 0 && n->work_refcount == 0)
+          if(n.last_update_tick_idx+10 < update_tick_idx() && n.scope_refcount == 0 && n.work_refcount == 0)
           {
             slot_has_work = 1;
             break;
           }
         }
       }
-      if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
+      if(slot_has_work) OS_MutexScopeW(stripe.rw_mutex)
       {
-        for(DI_SearchNode* n = slot->first, *next = 0; n != 0; n = next)
+        for(DI_SearchNode* n = slot.first, *next = 0; n != 0; n = next)
         {
-          next = n->next;
-          if(n->last_update_tick_idx+10 < update_tick_idx() && n->scope_refcount == 0 && n->work_refcount == 0)
+          next = n.next;
+          if(n.last_update_tick_idx+10 < update_tick_idx() && n.scope_refcount == 0 && n.work_refcount == 0)
           {
-            DLLRemove(slot->first, slot->last, n);
-            SLLStackPush(stripe->free_node, n);
-            for EachElement(idx, n->buckets)
+            DLLRemove(slot.first, slot.last, n);
+            SLLStackPush(stripe.free_node, n);
+            for EachElement(idx, n.buckets)
             {
-              arena_release(n->buckets[idx].arena);
-              MemoryZeroStruct(&n->buckets[idx]);
+              arena_release(n.buckets[idx].arena);
+              MemoryZeroStruct(&n.buckets[idx]);
             }
-            MemoryZeroStruct(&n->items);
+            MemoryZeroStruct(&n.items);
           }
         }
       }
@@ -1553,21 +1553,21 @@ di_match_store_alloc()
 {
   Arena* arena = arena_alloc();
   DI_MatchStore* store = push_array(arena, DI_MatchStore, 1);
-  store->arena                  = arena;
-  for EachElement(idx, store->gen_arenas)
+  store.arena                  = arena;
+  for EachElement(idx, store.gen_arenas)
   {
-    store->gen_arenas[idx] = arena_alloc();
+    store.gen_arenas[idx] = arena_alloc();
   }
-  store->params_arena           = arena_alloc();
-  store->params_rw_mutex        = os_rw_mutex_alloc();
-  store->match_name_slots_count = 4096;
-  store->match_name_slots       = push_array(arena, DI_MatchNameSlot, store->match_name_slots_count);
-  store->match_rw_mutex         = os_rw_mutex_alloc();
-  store->match_cv               = os_condition_variable_alloc();
-  store->u2m_ring_cv            = os_condition_variable_alloc();
-  store->u2m_ring_mutex         = os_mutex_alloc();
-  store->u2m_ring_size          = KB(2);
-  store->u2m_ring_base          = push_array_no_zero(arena, uint8, store->u2m_ring_size);
+  store.params_arena           = arena_alloc();
+  store.params_rw_mutex        = os_rw_mutex_alloc();
+  store.match_name_slots_count = 4096;
+  store.match_name_slots       = push_array(arena, DI_MatchNameSlot, store.match_name_slots_count);
+  store.match_rw_mutex         = os_rw_mutex_alloc();
+  store.match_cv               = os_condition_variable_alloc();
+  store.u2m_ring_cv            = os_condition_variable_alloc();
+  store.u2m_ring_mutex         = os_mutex_alloc();
+  store.u2m_ring_size          = KB(2);
+  store.u2m_ring_base          = push_array_no_zero(arena, uint8, store.u2m_ring_size);
   return store;
 }
 
@@ -1575,8 +1575,8 @@ void
 di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
 {
   ProfBeginFunction();
-  store->gen += 1;
-  arena_clear(store->gen_arenas[store->gen%ArrayCount(store->gen_arenas)]);
+  store.gen += 1;
+  arena_clear(store.gen_arenas[store.gen%ArrayCount(store.gen_arenas)]);
   
   // rjf: hash parameters
   uint64 params_hash = 5381;
@@ -1587,27 +1587,27 @@ di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
   }
   
   // rjf: store parameters if needed
-  if(store->params_hash != params_hash) OS_MutexScopeW(store->params_rw_mutex)
+  if(store.params_hash != params_hash) OS_MutexScopeW(store.params_rw_mutex)
   {
-    arena_clear(store->params_arena);
-    store->params_hash = params_hash;
-    store->params_keys = di_key_array_copy(store->params_arena, &keys);
+    arena_clear(store.params_arena);
+    store.params_hash = params_hash;
+    store.params_keys = di_key_array_copy(store.params_arena, &keys);
   }
   
   // rjf: prune least recently used matches
   {
-    for(DI_MatchNameNode* node = store->last_lru_match_name, *prev = 0; node != 0; node = prev)
+    for(DI_MatchNameNode* node = store.last_lru_match_name, *prev = 0; node != 0; node = prev)
     {
-      prev = node->lru_prev;
-      if(node->last_gen_touched+8 < store->gen)
+      prev = node.lru_prev;
+      if(node.last_gen_touched+8 < store.gen)
       {
-        node->alloc_gen += 1;
-        uint64 slot_idx = node->hash%store->match_name_slots_count;
-        DI_MatchNameSlot* slot = &store->match_name_slots[slot_idx];
-        DLLRemove_NP(store->first_lru_match_name, store->last_lru_match_name, node, lru_next, lru_prev);
-        DLLRemove(slot->first, slot->last, node);
-        SLLStackPush(store->first_free_match_name, node);
-        store->active_match_name_nodes_count -= 1;
+        node.alloc_gen += 1;
+        uint64 slot_idx = node.hash%store.match_name_slots_count;
+        DI_MatchNameSlot* slot = &store.match_name_slots[slot_idx];
+        DLLRemove_NP(store.first_lru_match_name, store.last_lru_match_name, node, lru_next, lru_prev);
+        DLLRemove(slot.first, slot.last, node);
+        SLLStackPush(store.first_free_match_name, node);
+        store.active_match_name_nodes_count -= 1;
       }
       else
       {
@@ -1626,14 +1626,14 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64
   {
     // rjf: unpack name
     uint64 hash = di_hash_from_string(name, 0);
-    uint64 slot_idx = hash%store->match_name_slots_count;
-    DI_MatchNameSlot* slot = &store->match_name_slots[slot_idx];
+    uint64 slot_idx = hash%store.match_name_slots_count;
+    DI_MatchNameSlot* slot = &store.match_name_slots[slot_idx];
     
     // rjf: get name's node, if it exists
     DI_MatchNameNode* node = 0;
-    for(DI_MatchNameNode* n = slot->first; n != 0; n = n->next)
+    for(DI_MatchNameNode* n = slot.first; n != 0; n = n.next)
     {
-      if(n->hash == hash && str8_match(n->name, name, 0))
+      if(n.hash == hash && str8_match(n.name, name, 0))
       {
         node = n;
         break;
@@ -1643,48 +1643,48 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64
     // rjf: if node does not exist, create
     if(node == 0)
     {
-      node = store->first_free_match_name;
+      node = store.first_free_match_name;
       uint64 alloc_gen = 0;
       if(node)
       {
-        SLLStackPop(store->first_free_match_name);
-        alloc_gen = node->alloc_gen;
+        SLLStackPop(store.first_free_match_name);
+        alloc_gen = node.alloc_gen;
       }
       else
       {
-        node = push_array_no_zero(store->arena, DI_MatchNameNode, 1);
+        node = push_array_no_zero(store.arena, DI_MatchNameNode, 1);
       }
       MemoryZeroStruct(node);
-      node->hash = hash;
-      node->alloc_gen = alloc_gen + 1;
-      DLLPushBack(slot->first, slot->last, node);
-      node->first_gen_touched = store->gen;
-      DLLInsert_NP(store->first_lru_match_name, store->last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
-      store->active_match_name_nodes_count += 1;
+      node.hash = hash;
+      node.alloc_gen = alloc_gen + 1;
+      DLLPushBack(slot.first, slot.last, node);
+      node.first_gen_touched = store.gen;
+      DLLInsert_NP(store.first_lru_match_name, store.last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
+      store.active_match_name_nodes_count += 1;
     }
     
     // rjf: touch node for this gen
-    node->last_gen_touched = store->gen;
-    node->name = push_str8_copy(store->gen_arenas[store->gen%ArrayCount(store->gen_arenas)], name);
-    DLLRemove_NP(store->first_lru_match_name, store->last_lru_match_name, node, lru_next, lru_prev);
-    DLLInsert_NP(store->first_lru_match_name, store->last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
+    node.last_gen_touched = store.gen;
+    node.name = push_str8_copy(store.gen_arenas[store.gen%ArrayCount(store.gen_arenas)], name);
+    DLLRemove_NP(store.first_lru_match_name, store.last_lru_match_name, node, lru_next, lru_prev);
+    DLLInsert_NP(store.first_lru_match_name, store.last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
     
     // rjf: if this node is new w.r.t. the store's current parameters, request it
-    uint64 completed_params_hash = ins_atomic_u64_eval(&node->cmp_params_hash);
-    if(completed_params_hash != store->params_hash && node->req_count == ins_atomic_u64_eval(&node->cmp_count))
+    uint64 completed_params_hash = ins_atomic_u64_eval(&node.cmp_params_hash);
+    if(completed_params_hash != store.params_hash && node.req_count == ins_atomic_u64_eval(&node.cmp_count))
     {
       B32 sent = 0;
-      OS_MutexScope(store->u2m_ring_mutex) for(;;)
+      OS_MutexScope(store.u2m_ring_mutex) for(;;)
       {
-        uint64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
-        uint64 available_size = store->u2m_ring_size - unconsumed_size;
-        uint64 needed_size = sizeof(&node) + sizeof(node->alloc_gen) + sizeof(name.size) + name.size;
+        uint64 unconsumed_size = store.u2m_ring_write_pos - store.u2m_ring_read_pos;
+        uint64 available_size = store.u2m_ring_size - unconsumed_size;
+        uint64 needed_size = sizeof(&node) + sizeof(node.alloc_gen) + sizeof(name.size) + name.size;
         if(available_size >= needed_size)
         {
-          store->u2m_ring_write_pos += ring_write_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_write_pos, &node);
-          store->u2m_ring_write_pos += ring_write_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_write_pos, &node->alloc_gen);
-          store->u2m_ring_write_pos += ring_write_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_write_pos, &name.size);
-          store->u2m_ring_write_pos +=        ring_write(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_write_pos, name.str, name.size);
+          store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &node);
+          store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &node.alloc_gen);
+          store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &name.size);
+          store.u2m_ring_write_pos +=        ring_write(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, name.str, name.size);
           sent = 1;
           break;
         }
@@ -1692,23 +1692,23 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64
         {
           break;
         }
-        os_condition_variable_wait(store->u2m_ring_cv, store->u2m_ring_mutex, endt_us);
+        os_condition_variable_wait(store.u2m_ring_cv, store.u2m_ring_mutex, endt_us);
       }
       if(sent)
       {
-        os_condition_variable_broadcast(store->u2m_ring_cv);
-        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority_Low, .completion_counter = &node->cmp_count);
-        node->req_params_hash = store->params_hash;
-        node->req_count += 1;
+        os_condition_variable_broadcast(store.u2m_ring_cv);
+        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority_Low, .completion_counter = &node.cmp_count);
+        node.req_params_hash = store.params_hash;
+        node.req_count += 1;
       }
     }
     
     // rjf: if this node's state is stale, wait for it if we need to
-    if(os_now_microseconds() < endt_us && node->req_params_hash != completed_params_hash)
+    if(os_now_microseconds() < endt_us && node.req_params_hash != completed_params_hash)
     {
-      OS_MutexScopeR(store->match_rw_mutex) for(;;)
+      OS_MutexScopeR(store.match_rw_mutex) for(;;)
       {
-        if(node->req_params_hash == ins_atomic_u64_eval(&node->cmp_params_hash))
+        if(node.req_params_hash == ins_atomic_u64_eval(&node.cmp_params_hash))
         {
           break;
         }
@@ -1716,12 +1716,12 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64
         {
           break;
         }
-        os_condition_variable_wait_rw_r(store->match_cv, store->match_rw_mutex, endt_us);
+        os_condition_variable_wait_rw_r(store.match_cv, store.match_rw_mutex, endt_us);
       }
     }
     
     // rjf: return node present info
-    result = node->section_kind;
+    result = node.section_kind;
   }
   return result;
 }
@@ -1736,29 +1736,29 @@ ASYNC_WORK_DEF(di_match_work)
     DI_MatchNameNode* node = 0;
     uint64 alloc_gen = 0;
     String8 name = {0};
-    ProfScope("get next name") OS_MutexScope(store->u2m_ring_mutex) for(;;)
+    ProfScope("get next name") OS_MutexScope(store.u2m_ring_mutex) for(;;)
     {
-      uint64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
+      uint64 unconsumed_size = store.u2m_ring_write_pos - store.u2m_ring_read_pos;
       if(unconsumed_size >= sizeof(uint64))
       {
-        store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &node);
-        store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &alloc_gen);
-        store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &name.size);
+        store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &node);
+        store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &alloc_gen);
+        store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &name.size);
         name.str = push_array(scratch.arena, uint8, name.size);
-        store->u2m_ring_read_pos += ring_read(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, name.str, name.size);
+        store.u2m_ring_read_pos += ring_read(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, name.str, name.size);
         break;
       }
-      os_condition_variable_wait(store->u2m_ring_cv, store->u2m_ring_mutex, max_U64);
+      os_condition_variable_wait(store.u2m_ring_cv, store.u2m_ring_mutex, max_U64);
     }
-    os_condition_variable_broadcast(store->u2m_ring_cv);
+    os_condition_variable_broadcast(store.u2m_ring_cv);
     
     //- rjf: read parameters
     uint64 params_hash = 0;
     DI_KeyArray params_keys = {0};
-    ProfScope("read parameters") OS_MutexScopeR(store->params_rw_mutex)
+    ProfScope("read parameters") OS_MutexScopeR(store.params_rw_mutex)
     {
-      params_keys = di_key_array_copy(scratch.arena, &store->params_keys);
-      params_hash = store->params_hash;
+      params_keys = di_key_array_copy(scratch.arena, &store.params_keys);
+      params_hash = store.params_hash;
     }
     
     //- rjf: do match
@@ -1793,12 +1793,12 @@ ASYNC_WORK_DEF(di_match_work)
           uint32* run = rdi_matches_from_map_node(rdi, map_node, &num);
           if(num != 0)
           {
-            ins_atomic_u32_eval_assign(&node->section_kind, name_map_section_kinds[name_map_kind_idx]);
+            ins_atomic_u32_eval_assign(&node.section_kind, name_map_section_kinds[name_map_kind_idx]);
           }
         }
         di_scope_close(di_scope);
       }
-      ins_atomic_u64_eval_assign(&node->cmp_params_hash, params_hash);
+      ins_atomic_u64_eval_assign(&node.cmp_params_hash, params_hash);
     }
   }
   scratch_end(scratch);

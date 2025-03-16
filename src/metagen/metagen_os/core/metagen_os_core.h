@@ -271,7 +271,7 @@ void      os_rw_mutex_drop_w(OS_Handle mutex);
 //- rjf: condition variables
 OS_Handle os_condition_variable_alloc();
 void      os_condition_variable_release(OS_Handle cv);
-// returns false on timeout, true on signal, (max_wait_ms = max_U64) -> no timeout
+// returns false on timeout, true on signal, (max_wait_ms = max_U64) . no timeout
 B32       os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, uint64 endt_us);
 B32       os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us);
 B32       os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us);

@@ -62,7 +62,7 @@ entry_point(CmdLine* cmdline)
   P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
   
   //- rjf: display help
-  if(do_help || user2convert->errors.node_count != 0)
+  if(do_help || user2convert.errors.node_count != 0)
   {
     fprintf(stderr, "--- rdi_from_pdb --------------------------------------------------------------\n\n");
     
@@ -78,9 +78,9 @@ entry_point(CmdLine* cmdline)
     
     if(!do_help)
     {
-      for(String8Node* n = user2convert->errors.first; n != 0; n = n->next)
+      for(String8Node* n = user2convert.errors.first; n != 0; n = n.next)
       {
-        fprintf(stderr, "error(input): %.*s\n", str8_varg(n->string));
+        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.string));
       }
     }
     os_abort(0);
@@ -105,7 +105,7 @@ entry_point(CmdLine* cmdline)
   ProfScope("serialize")
   {
     srlz2file = push_array(arena, P2R_Serialize2File, 1);
-    srlz2file->bundle = rdim_serialized_section_bundle_from_bake_results(&bake2srlz->bake_results);
+    srlz2file.bundle = rdim_serialized_section_bundle_from_bake_results(&bake2srlz.bake_results);
   }
   
   //- rjf: compress
@@ -117,17 +117,17 @@ entry_point(CmdLine* cmdline)
   }
   
   //- rjf: serialize
-  String8List blobs = rdim_file_blobs_from_section_bundle(arena, &srlz2file_compressed->bundle);
+  String8List blobs = rdim_file_blobs_from_section_bundle(arena, &srlz2file_compressed.bundle);
   
   //- rjf: write
   ProfScope("write")
   {
-    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
+    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert.output_name);
     uint64 off = 0;
-    for(String8Node* n = blobs.first; n != 0; n = n->next)
+    for(String8Node* n = blobs.first; n != 0; n = n.next)
     {
-      os_file_write(output_file, r1u64(off, off+n->string.size), n->string.str);
-      off += n->string.size;
+      os_file_write(output_file, r1u64(off, off+n.string.size), n.string.str);
+      off += n.string.size;
     }
     os_file_close(output_file);
   }

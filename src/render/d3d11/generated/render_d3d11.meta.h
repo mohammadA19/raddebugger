@@ -131,7 +131,7 @@ str8_lit_comp(
 "  float2 dst_verts_pct = float2((cpu2vertex.vertex_id >> 1) ? 1.f : 0.f,\n"
 "                                (cpu2vertex.vertex_id & 1)  ? 0.f : 1.f);\n"
 "  \n"
-"  // rjf: fill vertex -> pixel data\n"
+"  // rjf: fill vertex . pixel data\n"
 "  Vertex2Pixel vertex2pixel;\n"
 "  {\n"
 "    float2 xformed_pos = mul(xform, float3(dst_p_verts_px[cpu2vertex.vertex_id], 1.f)).xy;\n"

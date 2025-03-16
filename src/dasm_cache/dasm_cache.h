@@ -229,7 +229,7 @@ struct DASM_Shared
   DASM_Slot* slots;
   DASM_Stripe* stripes;
   
-  // rjf: user -> parse thread
+  // rjf: user . parse thread
   uint64 u2p_ring_size;
   uint8* u2p_ring_base;
   uint64 u2p_ring_write_pos;

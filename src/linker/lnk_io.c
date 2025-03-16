@@ -91,7 +91,7 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
   LNK_DiskReader* task = raw_task;
-  String8         path = task->path_arr.v[task_id];
+  String8         path = task.path_arr.v[task_id];
 
   OS_Handle handle = {0};
   uint64       size   = 0;
@@ -101,8 +101,8 @@ THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
     size = lnk_size_from_file(&handle);
   }
 
-  task->handle_arr[task_id] = handle;
-  task->size_arr[task_id]   = size;
+  task.handle_arr[task_id] = handle;
+  task.size_arr[task_id]   = size;
 }
 
 internal
@@ -110,14 +110,14 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 {
   LNK_DiskReader* task = raw_task;
 
-  OS_Handle handle      = task->handle_arr[task_id];
-  uint64       buffer_size = task->size_arr[task_id];
-  uint8*       buffer      = task->buffer + task->off_arr[task_id];
+  OS_Handle handle      = task.handle_arr[task_id];
+  uint64       buffer_size = task.size_arr[task_id];
+  uint8*       buffer      = task.buffer + task.off_arr[task_id];
 
   uint64 read_size = lnk_read_file(&handle, buffer, buffer_size);
   Assert(read_size == buffer_size);
 
-  task->data_arr.v[task_id] = str8(buffer, read_size);
+  task.data_arr.v[task_id] = str8(buffer, read_size);
 }
 
 String8Array
@@ -172,12 +172,12 @@ lnk_write_data_list_to_file_path(String8 path, String8List data)
   OS_Handle handle;
   if (lnk_open_file_write((char*)path.str, path.size, &handle, sizeof(handle))) {
     uint64 offset = 0;
-    for (String8Node* data_n = data.first; data_n != 0; data_n = data_n->next) {
-      uint64 write_size = lnk_write_file(&handle, offset, data_n->string.str, data_n->string.size);
-      if (write_size != data_n->string.size) {
+    for (String8Node* data_n = data.first; data_n != 0; data_n = data_n.next) {
+      uint64 write_size = lnk_write_file(&handle, offset, data_n.string.str, data_n.string.size);
+      if (write_size != data_n.string.size) {
         break;
       }
-      offset += data_n->string.size;
+      offset += data_n.string.size;
     }
 
     lnk_close_file(&handle);
@@ -225,17 +225,17 @@ lnk_file_search(Arena* arena, String8List dir_list, String8 file_path)
                     file_path_style != PathStyle_UnixAbsolute;
 
   if (is_relative) {
-    for (String8Node* i = dir_list.first; i != 0; i = i->next) {
+    for (String8Node* i = dir_list.first; i != 0; i = i.next) {
       String8List path_list = {0};
-      str8_list_push(scratch.arena, &path_list, i->string);
+      str8_list_push(scratch.arena, &path_list, i.string);
       str8_list_push(scratch.arena, &path_list, file_path);
       String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
       B32 file_exists = os_file_path_exists(path);
       if (file_exists) {
         B32 is_unique = 1;
         OS_FileID file_id = os_id_from_file_path(path);
-        for (String8Node* k = match_list.first; k != 0; k = k->next) {
-          OS_FileID test_id = os_id_from_file_path(k->string);
+        for (String8Node* k = match_list.first; k != 0; k = k.next) {
+          OS_FileID test_id = os_id_from_file_path(k.string);
           int cmp = os_file_id_compare(test_id, file_id) != 0;
           if (cmp == 0) {
             is_unique = 0;

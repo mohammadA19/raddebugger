@@ -76,7 +76,7 @@ dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf){
       DWARF_SectionNameRow* row = dwarf_section_name_table + i;
       uint32 idx = 0;
       for (uint32 j = 0; idx == 0 && j < DWARF_SECTION_NAME_VARIANT_COUNT; j += 1){
-        idx = elf_section_idx_from_name(elf, row->name[j]);
+        idx = elf_section_idx_from_name(elf, row.name[j]);
       }
       debug_section_idx[i] = idx;
       debug_section_name[i] = elf_section_name_from_idx(elf, idx);
@@ -86,10 +86,10 @@ dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf){
     //- fill result
     {
       result = push_array(arena, DWARF_Parsed, 1);
-      result->elf = elf;
-      MemoryCopyArray(result->debug_section_idx, debug_section_idx);
-      MemoryCopyArray(result->debug_section_name, debug_section_name);
-      MemoryCopyArray(result->debug_data, debug_data);
+      result.elf = elf;
+      MemoryCopyArray(result.debug_section_idx, debug_section_idx);
+      MemoryCopyArray(result.debug_section_name, debug_section_name);
+      MemoryCopyArray(result.debug_data, debug_data);
     }
   }
   
@@ -207,25 +207,25 @@ dwarf_info_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off      = hdr_off;
-    unit->base_off     = base_off;
-    unit->opl_off      = opl_off;
+    unit.hdr_off      = hdr_off;
+    unit.base_off     = base_off;
+    unit.opl_off      = opl_off;
     
-    unit->offset_size  = offset_size;
-    unit->version      = version;
-    unit->unit_type    = unit_type;
-    unit->address_size = address_size;
-    unit->abbrev_off   = abbrev_off;
+    unit.offset_size  = offset_size;
+    unit.version      = version;
+    unit.unit_type    = unit_type;
+    unit.address_size = address_size;
+    unit.abbrev_off   = abbrev_off;
     
     switch (unit_type){
       case DWARF_UnitType_skeleton: case DWARF_UnitType_split_compile:
       {
-        unit->dwo_id = unit_dwo_id;
+        unit.dwo_id = unit_dwo_id;
       }break;
       case DWARF_UnitType_type: case DWARF_UnitType_split_type:
       {
-        unit->type_signature = unit_type_signature;
-        unit->type_offset = unit_type_offset;
+        unit.type_signature = unit_type_signature;
+        unit.type_offset = unit_type_offset;
       }break;
     }
     
@@ -235,9 +235,9 @@ dwarf_info_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_InfoParsed* result = push_array(arena, DWARF_InfoParsed, 1);
-  result->unit_first = first;
-  result->unit_last = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -298,14 +298,14 @@ dwarf_pubnames_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off  = hdr_off;
-    unit->base_off = base_off;
-    unit->opl_off  = opl_off;
+    unit.hdr_off  = hdr_off;
+    unit.base_off = base_off;
+    unit.opl_off  = opl_off;
     
-    unit->offset_size = offset_size;
-    unit->version = version;
-    unit->info_off = info_off;
-    unit->info_length = info_length;
+    unit.offset_size = offset_size;
+    unit.version = version;
+    unit.info_off = info_off;
+    unit.info_length = info_length;
     
     // advance to end of unit
     ptr = unit_opl;
@@ -313,9 +313,9 @@ dwarf_pubnames_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_PubNamesParsed* result = push_array(arena, DWARF_PubNamesParsed, 1);
-  result->unit_first = first;
-  result->unit_last  = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last  = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -389,18 +389,18 @@ dwarf_names_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off  = hdr_off;
-    unit->base_off = base_off;
-    unit->opl_off  = opl_off;
+    unit.hdr_off  = hdr_off;
+    unit.base_off = base_off;
+    unit.opl_off  = opl_off;
     
-    unit->version = version;
-    unit->comp_unit_count = comp_unit_count;
-    unit->local_type_unit_count = local_type_unit_count;
-    unit->foreign_type_unit_count = foreign_type_unit_count;
-    unit->bucket_count = bucket_count;
-    unit->name_count = name_count;
-    unit->abbrev_table_size = abbrev_table_size;
-    unit->augmentation_string = str8_cstring_capped(augmentation_string, unit_opl);
+    unit.version = version;
+    unit.comp_unit_count = comp_unit_count;
+    unit.local_type_unit_count = local_type_unit_count;
+    unit.foreign_type_unit_count = foreign_type_unit_count;
+    unit.bucket_count = bucket_count;
+    unit.name_count = name_count;
+    unit.abbrev_table_size = abbrev_table_size;
+    unit.augmentation_string = str8_cstring_capped(augmentation_string, unit_opl);
     
     // advance to end of unit
     ptr = unit_opl;
@@ -408,9 +408,9 @@ dwarf_names_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_NamesParsed* result = push_array(arena, DWARF_NamesParsed, 1);
-  result->unit_first = first;
-  result->unit_last  = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last  = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -468,15 +468,15 @@ dwarf_aranges_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off  = hdr_off;
-    unit->base_off = base_off;
-    unit->opl_off  = opl_off;
+    unit.hdr_off  = hdr_off;
+    unit.base_off = base_off;
+    unit.opl_off  = opl_off;
     
-    unit->version = version;
-    unit->address_size = address_size;
-    unit->segment_selector_size = segment_selector_size;
-    unit->offset_size = offset_size;
-    unit->info_off = info_off;
+    unit.version = version;
+    unit.address_size = address_size;
+    unit.segment_selector_size = segment_selector_size;
+    unit.offset_size = offset_size;
+    unit.info_off = info_off;
     
     // advance to end of unit
     ptr = unit_opl;
@@ -484,9 +484,9 @@ dwarf_aranges_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_ArangesParsed* result = push_array(arena, DWARF_ArangesParsed, 1);
-  result->unit_first = first;
-  result->unit_last  = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last  = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -634,10 +634,10 @@ dwarf_line_from_data(Arena* arena, String8 data){
           DWARF_V4LineFileNamesEntry* entry = push_array(arena, DWARF_V4LineFileNamesEntry, 1);
           SLLQueuePush(file_names.first, file_names.last, entry);
           file_names.count += 1;
-          entry->file_name = str8_range(file_name_first, file_name_opl);
-          entry->include_directory_idx = include_directory_idx;
-          entry->last_modified_time = last_modified_time;
-          entry->file_size = file_size;
+          entry.file_name = str8_range(file_name_first, file_name_opl);
+          entry.include_directory_idx = include_directory_idx;
+          entry.last_modified_time = last_modified_time;
+          entry.file_size = file_size;
         }
         
         ptr = header_opl;
@@ -699,8 +699,8 @@ dwarf_line_from_data(Arena* arena, String8 data){
           DWARF_V5LinePathEntryFormat* entry_opl =
             directory_entry_format + directory_entry_format_count;
           for (;entry < entry_opl && ptr < header_opl; entry += 1){
-            DWARF_LEB128_DECODE_ADV(uint64, entry->content_type, ptr, header_opl);
-            DWARF_LEB128_DECODE_ADV(uint64, entry->form, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(uint64, entry.content_type, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(uint64, entry.form, ptr, header_opl);
           }
         }
         
@@ -723,8 +723,8 @@ dwarf_line_from_data(Arena* arena, String8 data){
                                               file_name_entry_format_count);
           DWARF_V5LinePathEntryFormat* entry = file_name_entry_format;
           for (;ptr < header_opl; entry += 1){
-            DWARF_LEB128_DECODE_ADV(uint64, entry->content_type, ptr, header_opl);
-            DWARF_LEB128_DECODE_ADV(uint64, entry->form, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(uint64, entry.content_type, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(uint64, entry.form, ptr, header_opl);
           }
         }
         
@@ -749,11 +749,11 @@ dwarf_line_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off  = hdr_off;
-    unit->base_off = base_off;
-    unit->opl_off  = opl_off;
+    unit.hdr_off  = hdr_off;
+    unit.base_off = base_off;
+    unit.opl_off  = opl_off;
     
-    unit->version = version;
+    unit.version = version;
     
     // advance to end of unit
     ptr = unit_opl;
@@ -761,9 +761,9 @@ dwarf_line_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_LineParsed* result = push_array(arena, DWARF_LineParsed, 1);
-  result->unit_first = first;
-  result->unit_last  = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last  = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -846,14 +846,14 @@ dwarf_addr_from_data(Arena* arena, String8 data){
     SLLQueuePush(first, last, unit);
     count += 1;
     
-    unit->hdr_off  = hdr_off;
-    unit->base_off = base_off;
-    unit->opl_off  = opl_off;
+    unit.hdr_off  = hdr_off;
+    unit.base_off = base_off;
+    unit.opl_off  = opl_off;
     
-    unit->offset_size = offset_size;
-    unit->dwarf_version = version;
-    unit->address_size = address_size;
-    unit->segment_selector_size = segment_selector_size;
+    unit.offset_size = offset_size;
+    unit.dwarf_version = version;
+    unit.address_size = address_size;
+    unit.segment_selector_size = segment_selector_size;
     
     // advance to next unit
     ptr = unit_opl;
@@ -861,9 +861,9 @@ dwarf_addr_from_data(Arena* arena, String8 data){
   
   // fill result
   DWARF_AddrParsed* result = push_array(arena, DWARF_AddrParsed, 1);
-  result->unit_first = first;
-  result->unit_last = last;
-  result->unit_count = count;
+  result.unit_first = first;
+  result.unit_last = last;
+  result.unit_count = count;
   return(result);
 }
 
@@ -931,38 +931,38 @@ dwarf__line_v5_directories(uint64 address_size, uint64 offset_size,
       
       // form decode
       DWARF_FormDecodeRules rules =
-        dwarf_form_decode_rule(fmt->form, address_size, offset_size);
+        dwarf_form_decode_rule(fmt.form, address_size, offset_size);
       
       // execute decoding
       DWARF_FormDecoded decoded = dwarf_form_decode(&rules, &ptr, opl, 0, 0);
       
       // store to correct field
       uint64* target = 0;
-      switch (fmt->content_type){
+      switch (fmt.content_type){
         case DWARF_LineEntryFormat_path:
         {
           if (decoded.dataptr != 0){
-            directory_ptr->path_str = str8(decoded.dataptr, decoded.val);
+            directory_ptr.path_str = str8(decoded.dataptr, decoded.val);
           }
           else{
-            directory_ptr->path_off = decoded.val;
-            directory_ptr->path_sec_form = fmt->form;
+            directory_ptr.path_off = decoded.val;
+            directory_ptr.path_sec_form = fmt.form;
           }
         }break;
         
         case DWARF_LineEntryFormat_directory_index:
         {
-          target = &directory_ptr->directory_index;
+          target = &directory_ptr.directory_index;
         }goto v5_directory_u64;
         
         case DWARF_LineEntryFormat_timestamp:
         {
-          target = &directory_ptr->timestamp;
+          target = &directory_ptr.timestamp;
         }goto v5_directory_u64;
         
         case DWARF_LineEntryFormat_size:
         {
-          target = &directory_ptr->size;
+          target = &directory_ptr.size;
         }goto v5_directory_u64;
         
         v5_directory_u64:
@@ -980,7 +980,7 @@ dwarf__line_v5_directories(uint64 address_size, uint64 offset_size,
         {
           if (decoded.dataptr != 0){
             uint64 size = ClampTop(decoded.val, 16);
-            MemoryCopy(directory_ptr->md5_checksum, decoded.dataptr, size);
+            MemoryCopy(directory_ptr.md5_checksum, decoded.dataptr, size);
           }
         }break;
       }
@@ -997,8 +997,8 @@ static String8
 dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code){
   String8 result = str8_lit("invalid_debug_section");
   if (sec_code < DWARF_SectionCode_COUNT){
-    if (dwarf->debug_section_idx[sec_code] != 0){
-      result = dwarf->debug_section_name[sec_code];
+    if (dwarf.debug_section_idx[sec_code] != 0){
+      result = dwarf.debug_section_name[sec_code];
     }
   }
   return(result);
@@ -1010,10 +1010,10 @@ dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code){
 static DWARF_AbbrevUnit*
 dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed* abbrev, uint64 offset){
   DWARF_AbbrevUnit* result = 0;
-  for (DWARF_AbbrevUnit* unit = abbrev->unit_first;
+  for (DWARF_AbbrevUnit* unit = abbrev.unit_first;
        unit != 0;
-       unit = unit->next){
-    if (unit->offset == offset){
+       unit = unit.next){
+    if (unit.offset == offset){
       result = unit;
       break;
     }
@@ -1024,10 +1024,10 @@ dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed* abbrev, uint64 offset){
 static DWARF_AbbrevDecl*
 dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit* unit, uint32 abbrev_code){
   DWARF_AbbrevDecl* result = 0;
-  for (DWARF_AbbrevDecl* decl = unit->first;
+  for (DWARF_AbbrevDecl* decl = unit.first;
        decl != 0;
-       decl = decl->next){
-    if (decl->abbrev_code == abbrev_code){
+       decl = decl.next){
+    if (decl.abbrev_code == abbrev_code){
       result = decl;
       break;
     }
@@ -1147,20 +1147,20 @@ dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
   uint8* dataptr = 0;
   
   B32 success = 1;
-  if (rules->size > 0){
-    if (ptr + rules->size <= opl){
-      MemoryCopy(&val, ptr, rules->size);
-      ptr += rules->size;
+  if (rules.size > 0){
+    if (ptr + rules.size <= opl){
+      MemoryCopy(&val, ptr, rules.size);
+      ptr += rules.size;
     }
     else{
       success = 0;
     }
   }
-  else if (rules->uleb128 || rules->sleb128){
+  else if (rules.uleb128 || rules.sleb128){
     uint8* val_ptr = ptr;
     DWARF_LEB128_ADV(ptr, opl, success);
     if (success){
-      if (rules->uleb128){
+      if (rules.uleb128){
         val = dwarf_leb128_decode_U64(val_ptr, ptr);
       }
       else{
@@ -1168,24 +1168,24 @@ dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
       }
     }
   }
-  else if (rules->in_abbrev){
+  else if (rules.in_abbrev){
     if (abbrev_decl != 0){
-      if (abbrev_decl->implicit_const != 0){
-        val = (uint64)abbrev_decl->implicit_const[attrib_i];
+      if (abbrev_decl.implicit_const != 0){
+        val = (uint64)abbrev_decl.implicit_const[attrib_i];
       }
     }
     else{
       success = 0;
     }
   }
-  else if (rules->auto_1){
+  else if (rules.auto_1){
     val = 1;
   }
-  if (rules->block){
+  if (rules.block){
     dataptr = ptr;
     ptr += val;
   }
-  else if (rules->null_terminated){
+  else if (rules.null_terminated){
     dataptr = ptr;
     for (;ptr < opl && *ptr != 0;) ptr += 1;
     val = (uint64)(ptr - dataptr);
@@ -1307,8 +1307,8 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
                      DWARF_AbbrevParsed* abbrev){
   
   // unit index range to extract
-  uint64 unit_idx_min = params->unit_idx_min;
-  uint64 unit_idx_max = params->unit_idx_max;
+  uint64 unit_idx_min = params.unit_idx_min;
+  uint64 unit_idx_max = params.unit_idx_max;
   
   // empty unit list
   DWARF_InfoUnit* unit_first = 0;
@@ -1444,7 +1444,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
               goto exit_unit_loop;
             }
             else{
-              entry_consptr = entry_consptr->parent;
+              entry_consptr = entry_consptr.parent;
               goto skip_entry;
             }
           }
@@ -1458,13 +1458,13 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
           }
           
           // allocate entry
-          uint32 attrib_count = abbrev_decl->attrib_count;
+          uint32 attrib_count = abbrev_decl.attrib_count;
           DWARF_InfoEntry* entry = push_array(arena, DWARF_InfoEntry, 1);
           DWARF_InfoAttribVal* attrib_vals =
             push_array_no_zero(arena, DWARF_InfoAttribVal, attrib_count);
           
           // save entry offset
-          entry->info_offset = (uint64)(entry_start_ptr - data.str);
+          entry.info_offset = (uint64)(entry_start_ptr - data.str);
           
           // set root at beginning
           if (entry_root == 0){
@@ -1472,7 +1472,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
           }
           
           // attribute loop
-          DWARF_AbbrevAttribSpec* attrib_spec = abbrev_decl->attrib_specs;
+          DWARF_AbbrevAttribSpec* attrib_spec = abbrev_decl.attrib_specs;
           DWARF_InfoAttribVal* attrib_val = attrib_vals;
           for (uint32 i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
             
@@ -1485,7 +1485,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
             B8 block = 0;
             B8 null_terminated = 0;
             {
-              DWARF_AttributeForm form = attrib_spec->form;
+              DWARF_AttributeForm form = attrib_spec.form;
               switch (form){
                 case DWARF_AttributeForm_addr: size = address_size; break;
                 case DWARF_AttributeForm_addrx: uleb128 = 1; break;
@@ -1580,8 +1580,8 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
                 }
               }
               else if (in_abbrev){
-                if (abbrev_decl->implicit_const != 0){
-                  val = (uint64)abbrev_decl->implicit_const[i];
+                if (abbrev_decl.implicit_const != 0){
+                  val = (uint64)abbrev_decl.implicit_const[i];
                 }
               }
               else if (auto_1){
@@ -1599,23 +1599,23 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
             }
             
             // save attribute
-            attrib_val->val = val;
-            attrib_val->dataptr = dataptr;
+            attrib_val.val = val;
+            attrib_val.dataptr = dataptr;
           }
           
           // emit entry
           if (entry_consptr != 0){
-            SLLQueuePush_N(entry_consptr->first_child, entry_consptr->last_child,
+            SLLQueuePush_N(entry_consptr.first_child, entry_consptr.last_child,
                            entry, next_sibling);
-            entry_consptr->child_count += 1;
-            entry->parent = entry_consptr;
+            entry_consptr.child_count += 1;
+            entry.parent = entry_consptr;
           }
           entry_count += 1;
-          entry->abbrev_decl = abbrev_decl;
-          entry->attrib_vals = attrib_vals;
+          entry.abbrev_decl = abbrev_decl;
+          entry.attrib_vals = attrib_vals;
           
           // move consptr down if has children
-          if (abbrev_decl->has_children){
+          if (abbrev_decl.has_children){
             entry_consptr = entry;
           }
           
@@ -1640,10 +1640,10 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
       if (entry_root != 0){
         
         // pull out attributes
-        DWARF_AbbrevDecl* root_abbrev_decl = entry_root->abbrev_decl;
-        DWARF_AbbrevAttribSpec* attrib_specs = root_abbrev_decl->attrib_specs;
-        DWARF_InfoAttribVal* attrib_vals = entry_root->attrib_vals;
-        uint32 attrib_count = root_abbrev_decl->attrib_count;
+        DWARF_AbbrevDecl* root_abbrev_decl = entry_root.abbrev_decl;
+        DWARF_AbbrevAttribSpec* attrib_specs = root_abbrev_decl.attrib_specs;
+        DWARF_InfoAttribVal* attrib_vals = entry_root.attrib_vals;
+        uint32 attrib_count = root_abbrev_decl.attrib_count;
         
         // examine each attribute
         DWARF_AbbrevAttribSpec* attrib_spec = attrib_specs;
@@ -1652,7 +1652,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
           
           // determine if there is a root attribute to extract here
           uint64* target_u64 = 0;
-          switch (attrib_spec->name){
+          switch (attrib_spec.name){
             case DWARF_AttributeName_language:         target_u64 = &language;         break;
             case DWARF_AttributeName_str_offsets_base: target_u64 = &str_offsets_base; break;
             case DWARF_AttributeName_stmt_list:        target_u64 = &line_info_offset; break;
@@ -1664,7 +1664,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
           
           // set target from attrib value
           if (target_u64 != 0){
-            *target_u64 = attrib_val->val;
+            *target_u64 = attrib_val.val;
           }
         }
       }
@@ -1676,20 +1676,20 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
       SLLQueuePush(unit_first, unit_last, unit);
       unit_count += 1;
       // [header]
-      unit->dwarf_version = version;
-      unit->offset_size   = offset_size;
-      unit->address_size  = address_size;
+      unit.dwarf_version = version;
+      unit.offset_size   = offset_size;
+      unit.address_size  = address_size;
       // [root attributes]
-      unit->language = (DWARF_Language)language;
-      unit->str_offsets_base = str_offsets_base;
-      unit->line_info_offset = line_info_offset;
-      unit->vbase = vbase;
-      unit->addr_base = addr_base;
-      unit->rnglists_base = rnglists_base;
-      unit->loclists_base = loclists_base;
+      unit.language = (DWARF_Language)language;
+      unit.str_offsets_base = str_offsets_base;
+      unit.line_info_offset = line_info_offset;
+      unit.vbase = vbase;
+      unit.addr_base = addr_base;
+      unit.rnglists_base = rnglists_base;
+      unit.loclists_base = loclists_base;
       // [entries]
-      unit->entry_root = entry_root;
-      unit->entry_count = entry_count;
+      unit.entry_root = entry_root;
+      unit.entry_count = entry_count;
       
     }
     
@@ -1699,10 +1699,10 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
   
   // fill result
   DWARF_InfoParsed* result = push_array(arena, DWARF_InfoParsed, 1);
-  result->unit_first = unit_first;
-  result->unit_last = unit_last;
-  result->unit_count = unit_count;
-  result->decoding_error = decoding_error;
+  result.unit_first = unit_first;
+  result.unit_last = unit_last;
+  result.unit_count = unit_count;
+  result.decoding_error = decoding_error;
   return(result);
 }
 
@@ -1716,8 +1716,8 @@ dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
   */
   
   // unit index range to extract
-  uint64 unit_idx_min = params->unit_idx_min;
-  uint64 unit_idx_max = params->unit_idx_max;
+  uint64 unit_idx_min = params.unit_idx_min;
+  uint64 unit_idx_max = params.unit_idx_max;
   
   // empty unit list
   DWARF_AbbrevUnit* unit_first = 0;
@@ -1837,8 +1837,8 @@ dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
           uint32 form = dwarf_leb128_decode_U32(attrib_form, attrib_ptr);
           
           // fill attribute spec
-          attrib->name = (DWARF_AttributeName)name;
-          attrib->form = (DWARF_AttributeForm)form;
+          attrib.name = (DWARF_AttributeName)name;
+          attrib.form = (DWARF_AttributeForm)form;
           
           // handle special case implicit_const
           if (form == DWARF_AttributeForm_implicit_const){
@@ -1852,12 +1852,12 @@ dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
         // fill abbreviation
         SLLQueuePush(abbrev_first, abbrev_last, abbrev);
         abbrev_count += 1;
-        abbrev->abbrev_code = abbrev_code;
-        abbrev->tag = (DWARF_Tag)tag;
-        abbrev->has_children = has_children;
-        abbrev->attrib_count = attrib_count;
-        abbrev->attrib_specs = attribs;
-        abbrev->implicit_const = implicit_const;
+        abbrev.abbrev_code = abbrev_code;
+        abbrev.tag = (DWARF_Tag)tag;
+        abbrev.has_children = has_children;
+        abbrev.attrib_count = attrib_count;
+        abbrev.attrib_specs = attribs;
+        abbrev.implicit_const = implicit_const;
       }
       
       // handle failure
@@ -1872,10 +1872,10 @@ dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
     if (full_parse){
       SLLQueuePush(unit_first, unit_last, unit);
       unit_count += 1;
-      unit->offset = abbrev_unit_offset;
-      unit->first  = abbrev_first;
-      unit->last   = abbrev_last;
-      unit->count  = abbrev_count;
+      unit.offset = abbrev_unit_offset;
+      unit.first  = abbrev_first;
+      unit.last   = abbrev_last;
+      unit.count  = abbrev_count;
     }
   }
   
@@ -1883,10 +1883,10 @@ dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
   
   // fill result
   DWARF_AbbrevParsed* result = push_array(arena, DWARF_AbbrevParsed, 1);
-  result->unit_first = unit_first;
-  result->unit_last  = unit_last;
-  result->unit_count = unit_count;
-  result->decoding_error = decoding_error;
+  result.unit_first = unit_first;
+  result.unit_last  = unit_last;
+  result.unit_count = unit_count;
+  result.decoding_error = decoding_error;
   return(result);
 }
 #endif

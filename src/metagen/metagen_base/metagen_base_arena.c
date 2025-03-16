@@ -10,24 +10,24 @@ Arena *
 arena_alloc_(ArenaParams* params)
 {
   // rjf: round up reserve/commit sizes
-  uint64 reserve_size = params->reserve_size;
-  uint64 commit_size = params->commit_size;
-  if(params->flags & ArenaFlag_LargePages)
+  uint64 reserve_size = params.reserve_size;
+  uint64 commit_size = params.commit_size;
+  if(params.flags & ArenaFlag_LargePages)
   {
-    reserve_size = AlignPow2(reserve_size, os_get_system_info()->large_page_size);
-    commit_size  = AlignPow2(commit_size,  os_get_system_info()->large_page_size);
+    reserve_size = AlignPow2(reserve_size, os_get_system_info().large_page_size);
+    commit_size  = AlignPow2(commit_size,  os_get_system_info().large_page_size);
   }
   else
   {
-    reserve_size = AlignPow2(reserve_size, os_get_system_info()->page_size);
-    commit_size  = AlignPow2(commit_size,  os_get_system_info()->page_size);
+    reserve_size = AlignPow2(reserve_size, os_get_system_info().page_size);
+    commit_size  = AlignPow2(commit_size,  os_get_system_info().page_size);
   }
   
   // rjf: reserve/commit initial block
-  void* base = params->optional_backing_buffer;
+  void* base = params.optional_backing_buffer;
   if(base == 0)
   {
-    if(params->flags & ArenaFlag_LargePages)
+    if(params.flags & ArenaFlag_LargePages)
     {
       base = os_reserve_large(reserve_size);
       os_commit_large(base, commit_size);
@@ -50,14 +50,14 @@ arena_alloc_(ArenaParams* params)
   
   // rjf: extract arena header & fill
   Arena* arena = (Arena *)base;
-  arena->current = arena;
-  arena->flags = params->flags;
-  arena->cmt_size = (uint32)params->commit_size;
-  arena->res_size = params->reserve_size;
-  arena->base_pos = 0;
-  arena->pos = ARENA_HEADER_SIZE;
-  arena->cmt = commit_size;
-  arena->res = reserve_size;
+  arena.current = arena;
+  arena.flags = params.flags;
+  arena.cmt_size = (uint32)params.commit_size;
+  arena.res_size = params.reserve_size;
+  arena.base_pos = 0;
+  arena.pos = ARENA_HEADER_SIZE;
+  arena.cmt = commit_size;
+  arena.res = reserve_size;
   AsanPoisonMemoryRegion(base, commit_size);
   AsanUnpoisonMemoryRegion(base, ARENA_HEADER_SIZE);
   return arena;
@@ -66,10 +66,10 @@ arena_alloc_(ArenaParams* params)
 void
 arena_release(Arena* arena)
 {
-  for(Arena* n = arena->current, *prev = 0; n != 0; n = prev)
+  for(Arena* n = arena.current, *prev = 0; n != 0; n = prev)
   {
-    prev = n->prev;
-    os_release(n, n->res);
+    prev = n.prev;
+    os_release(n, n.res);
   }
 }
 
@@ -78,15 +78,15 @@ arena_release(Arena* arena)
 void *
 arena_push(Arena* arena, uint64 size, uint64 align)
 {
-  Arena* current = arena->current;
-  uint64 pos_pre = AlignPow2(current->pos, align);
+  Arena* current = arena.current;
+  uint64 pos_pre = AlignPow2(current.pos, align);
   uint64 pos_pst = pos_pre + size;
   
   // rjf: chain, if needed
-  if(current->res < pos_pst && !(arena->flags & ArenaFlag_NoChain))
+  if(current.res < pos_pst && !(arena.flags & ArenaFlag_NoChain))
   {
-    uint64 res_size = current->res_size;
-    uint64 cmt_size = current->cmt_size;
+    uint64 res_size = current.res_size;
+    uint64 cmt_size = current.cmt_size;
     if(size + ARENA_HEADER_SIZE > res_size)
     {
       res_size = size + ARENA_HEADER_SIZE;
@@ -94,30 +94,30 @@ arena_push(Arena* arena, uint64 size, uint64 align)
     }
     Arena* new_block = arena_alloc(.reserve_size = res_size,
                                    .commit_size = cmt_size,
-                                   .flags = current->flags);
-    new_block->base_pos = current->base_pos + current->res;
-    SLLStackPush_N(arena->current, new_block, prev);
+                                   .flags = current.flags);
+    new_block.base_pos = current.base_pos + current.res;
+    SLLStackPush_N(arena.current, new_block, prev);
     current = new_block;
-    pos_pre = AlignPow2(current->pos, align);
+    pos_pre = AlignPow2(current.pos, align);
     pos_pst = pos_pre + size;
   }
   
   // rjf: commit new pages, if needed
-  if(current->cmt < pos_pst && !(current->flags & ArenaFlag_LargePages))
+  if(current.cmt < pos_pst && !(current.flags & ArenaFlag_LargePages))
   {
-    uint64 cmt_pst_aligned = AlignPow2(pos_pst, current->cmt_size);
-    uint64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
-    uint64 cmt_size = cmt_pst_clamped - current->cmt;
-    os_commit((uint8 *)current + current->cmt, cmt_size);
-    current->cmt = cmt_pst_clamped;
+    uint64 cmt_pst_aligned = AlignPow2(pos_pst, current.cmt_size);
+    uint64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current.res);
+    uint64 cmt_size = cmt_pst_clamped - current.cmt;
+    os_commit((uint8 *)current + current.cmt, cmt_size);
+    current.cmt = cmt_pst_clamped;
   }
   
   // rjf: push onto current block
   void* result = 0;
-  if(current->cmt >= pos_pst)
+  if(current.cmt >= pos_pst)
   {
     result = (uint8 *)current+pos_pre;
-    current->pos = pos_pst;
+    current.pos = pos_pst;
     AsanUnpoisonMemoryRegion(result, size);
   }
   
@@ -136,8 +136,8 @@ arena_push(Arena* arena, uint64 size, uint64 align)
 uint64
 arena_pos(Arena* arena)
 {
-  Arena* current = arena->current;
-  uint64 pos = current->base_pos + current->pos;
+  Arena* current = arena.current;
+  uint64 pos = current.base_pos + current.pos;
   return pos;
 }
 
@@ -145,17 +145,17 @@ void
 arena_pop_to(Arena* arena, uint64 pos)
 {
   uint64 big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
-  Arena* current = arena->current;
-  for(Arena* prev = 0; current->base_pos >= big_pos; current = prev)
+  Arena* current = arena.current;
+  for(Arena* prev = 0; current.base_pos >= big_pos; current = prev)
   {
-    prev = current->prev;
-    os_release(current, current->res);
+    prev = current.prev;
+    os_release(current, current.res);
   }
-  arena->current = current;
-  uint64 new_pos = big_pos - current->base_pos;
-  AssertAlways(new_pos <= current->pos);
-  AsanPoisonMemoryRegion((uint8*)current + new_pos, (current->pos - new_pos));
-  current->pos = new_pos;
+  arena.current = current;
+  uint64 new_pos = big_pos - current.base_pos;
+  AssertAlways(new_pos <= current.pos);
+  AsanPoisonMemoryRegion((uint8*)current + new_pos, (current.pos - new_pos));
+  current.pos = new_pos;
 }
 
 //- rjf: arena push/pop helpers

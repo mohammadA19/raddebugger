@@ -323,7 +323,7 @@ struct D_State
   uint64 view_rule_spec_table_size;
   D_ViewRuleSpec** view_rule_spec_table;
   
-  // rjf: user -> ctrl driving state
+  // rjf: user . ctrl driving state
   Arena* ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
   uint64 ctrl_last_run_frame_idx;
@@ -338,7 +338,7 @@ struct D_State
   Arena* ctrl_msg_arena;
   CTRL_MsgList ctrl_msgs;
   
-  // rjf: ctrl -> user reading state
+  // rjf: ctrl . user reading state
   CTRL_EntityStore* ctrl_entity_store;
   Arena* ctrl_stop_arena;
   CTRL_Event ctrl_last_stop_event;
@@ -398,18 +398,18 @@ CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena* arena, CTRL_Entity* 
 ////////////////////////////////
 //~ rjf: Debug Info Lookups
 
-//- rjf: voff|vaddr -> symbol lookups
+//- rjf: voff|vaddr . symbol lookups
 String8 d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B32 decorated);
 String8 d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vaddr, B32 decorated);
 
-//- rjf: symbol -> voff lookups
+//- rjf: symbol . voff lookups
 uint64 d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name);
 uint64 d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, String8 name);
 
-//- rjf: voff -> line info
+//- rjf: voff . line info
 D_LineList d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff);
 
-//- rjf: file:line -> line info
+//- rjf: file:line . line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
 D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);

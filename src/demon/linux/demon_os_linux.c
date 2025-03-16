@@ -31,7 +31,7 @@ static uint32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
 
 DEMON_LNX_ThreadExt*
 demon_lnx_thread_ext(DEMON_Entity* entity){
-  DEMON_LNX_ThreadExt* result = (DEMON_LNX_ThreadExt*)&entity->ext;
+  DEMON_LNX_ThreadExt* result = (DEMON_LNX_ThreadExt*)&entity.ext;
   return(result);
 }
 
@@ -48,8 +48,8 @@ demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode** new_node){
     // for cleanup on failure* and* for initializing on success. either way we need
     // to see all new attachments whether or not they fully initialized correctly.
     DEMON_LNX_AttachNode* proc_attachment = push_array_no_zero(arena, DEMON_LNX_AttachNode, 1);
-    proc_attachment->next = 0;
-    proc_attachment->pid = pid;
+    proc_attachment.next = 0;
+    proc_attachment.pid = pid;
     *new_node = proc_attachment;
     
     int status = 0;
@@ -300,12 +300,12 @@ demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, uint64 phvaddr, uin
 
 DEMON_LNX_ModuleNode*
 demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process){
-  Arch arch = (Arch)process->arch;
+  Arch arch = (Arch)process.arch;
   B32 is_32bit = (arch == Arch_x86 || arch == Arch_arm32);
-  int memory_fd = (int)process->ext_u64;
+  int memory_fd = (int)process.ext_u64;
   
   // aux from pid
-  DEMON_LNX_ProcessAux aux = demon_lnx_aux_from_pid((pid_t)process->id, arch);
+  DEMON_LNX_ProcessAux aux = demon_lnx_aux_from_pid((pid_t)process.id, arch);
   
   // extract info from program headers
   DEMON_LNX_PhdrInfo phdr_info = demon_lnx_phdr_info_from_memory(memory_fd, is_32bit,
@@ -338,7 +338,7 @@ demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process){
         //  vas[0] virtual address of .dynamic
         //  vas[2] callback for resolving function address of relocation and if successful jumps to it.
         // 
-        // Code that sets up PLTGOT is in glibc/sysdeps/x86_64/dl_machine.h -> elf_machine_runtime_setup
+        // Code that sets up PLTGOT is in glibc/sysdeps/x86_64/dl_machine.h . elf_machine_runtime_setup
         uint64 vas_off = dyn.val;
         uint64 vas[3] = {0};
         demon_lnx_read_memory(memory_fd, vas, vas_off, sizeof(vas));
@@ -356,9 +356,9 @@ demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process){
   {
     DEMON_LNX_ModuleNode* node = push_array(arena, DEMON_LNX_ModuleNode, 1);
     SLLQueuePush(first, last, node);
-    node->vaddr = phdr_info.range.min;
-    node->size = phdr_info.range.max - phdr_info.range.min;
-    node->name = aux.execfn;
+    node.vaddr = phdr_info.range.min;
+    node.size = phdr_info.range.max - phdr_info.range.min;
+    node.name = aux.execfn;
   }
   
   // iterate link maps
@@ -408,9 +408,9 @@ demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process){
         // save module node
         DEMON_LNX_ModuleNode* node = push_array(arena, DEMON_LNX_ModuleNode, 1);
         SLLQueuePush(first, last, node);
-        node->vaddr = linkmap.base;
-        node->size = module_phdr_info.range.max - module_phdr_info.range.min;
-        node->name = linkmap.name;
+        node.vaddr = linkmap.base;
+        node.size = module_phdr_info.range.max - module_phdr_info.range.min;
+        node.name = linkmap.name;
       }
       
       linkmap_va = linkmap.next;
@@ -507,62 +507,62 @@ demon_lnx_read_memory_str(Arena* arena, int memory_fd, uint64 address){
 
 void
 demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64* dst, DEMON_LNX_UserRegsX64* src){
-  dst->rax.u64 = src->rax;
-  dst->rcx.u64 = src->rcx;
-  dst->rdx.u64 = src->rdx;
-  dst->rbx.u64 = src->rbx;
-  dst->rsp.u64 = src->rsp;
-  dst->rbp.u64 = src->rbp;
-  dst->rsi.u64 = src->rsi;
-  dst->rdi.u64 = src->rdi;
-  dst->r8.u64  = src->r8;
-  dst->r9.u64  = src->r9;
-  dst->r10.u64 = src->r10;
-  dst->r11.u64 = src->r11;
-  dst->r12.u64 = src->r12;
-  dst->r13.u64 = src->r13;
-  dst->r14.u64 = src->r14;
-  dst->r15.u64 = src->r15;
-  dst->cs.u16  = src->cs;
-  dst->ds.u16  = src->ds;
-  dst->es.u16  = src->es;
-  dst->fs.u16  = src->fs;
-  dst->gs.u16  = src->gs;
-  dst->ss.u16  = src->ss;
-  dst->fsbase.u64 = src->fsbase;
-  dst->gsbase.u64 = src->gsbase;
-  dst->rip.u64    = src->rip;
-  dst->rflags.u64 = src->rflags;
+  dst.rax.u64 = src.rax;
+  dst.rcx.u64 = src.rcx;
+  dst.rdx.u64 = src.rdx;
+  dst.rbx.u64 = src.rbx;
+  dst.rsp.u64 = src.rsp;
+  dst.rbp.u64 = src.rbp;
+  dst.rsi.u64 = src.rsi;
+  dst.rdi.u64 = src.rdi;
+  dst.r8.u64  = src.r8;
+  dst.r9.u64  = src.r9;
+  dst.r10.u64 = src.r10;
+  dst.r11.u64 = src.r11;
+  dst.r12.u64 = src.r12;
+  dst.r13.u64 = src.r13;
+  dst.r14.u64 = src.r14;
+  dst.r15.u64 = src.r15;
+  dst.cs.u16  = src.cs;
+  dst.ds.u16  = src.ds;
+  dst.es.u16  = src.es;
+  dst.fs.u16  = src.fs;
+  dst.gs.u16  = src.gs;
+  dst.ss.u16  = src.ss;
+  dst.fsbase.u64 = src.fsbase;
+  dst.gsbase.u64 = src.gsbase;
+  dst.rip.u64    = src.rip;
+  dst.rflags.u64 = src.rflags;
 }
 
 void
 demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64* dst, SYMS_RegX64* src){
-  dst->rax = src->rax.u64;
-  dst->rcx = src->rcx.u64;
-  dst->rdx = src->rdx.u64;
-  dst->rbx = src->rbx.u64;
-  dst->rsp = src->rsp.u64;
-  dst->rbp = src->rbp.u64;
-  dst->rsi = src->rsi.u64;
-  dst->rdi = src->rdi.u64;
-  dst->r8  = src->r8.u64;
-  dst->r9  = src->r9.u64;
-  dst->r10 = src->r10.u64;
-  dst->r11 = src->r11.u64;
-  dst->r12 = src->r12.u64;
-  dst->r13 = src->r13.u64;
-  dst->r14 = src->r14.u64;
-  dst->r15 = src->r15.u64;
-  dst->cs  = src->cs.u16;
-  dst->ds  = src->ds.u16;
-  dst->es  = src->es.u16;
-  dst->fs  = src->fs.u16;
-  dst->gs  = src->gs.u16;
-  dst->ss  = src->ss.u16;
-  dst->fsbase = src->fsbase.u64;
-  dst->gsbase = src->gsbase.u64;
-  dst->rip    = src->rip.u64;
-  dst->rflags = src->rflags.u64;
+  dst.rax = src.rax.u64;
+  dst.rcx = src.rcx.u64;
+  dst.rdx = src.rdx.u64;
+  dst.rbx = src.rbx.u64;
+  dst.rsp = src.rsp.u64;
+  dst.rbp = src.rbp.u64;
+  dst.rsi = src.rsi.u64;
+  dst.rdi = src.rdi.u64;
+  dst.r8  = src.r8.u64;
+  dst.r9  = src.r9.u64;
+  dst.r10 = src.r10.u64;
+  dst.r11 = src.r11.u64;
+  dst.r12 = src.r12.u64;
+  dst.r13 = src.r13.u64;
+  dst.r14 = src.r14.u64;
+  dst.r15 = src.r15.u64;
+  dst.cs  = src.cs.u16;
+  dst.ds  = src.ds.u16;
+  dst.es  = src.es.u16;
+  dst.fs  = src.fs.u16;
+  dst.gs  = src.gs.u16;
+  dst.ss  = src.ss.u16;
+  dst.fsbase = src.fsbase.u64;
+  dst.gsbase = src.gsbase.u64;
+  dst.rip    = src.rip.u64;
+  dst.rflags = src.rflags.u64;
 }
 
 ////////////////////////////////
@@ -762,27 +762,27 @@ demon_lnx_next_map(Arena* arena, int maps, DEMON_LNX_MapsEntry* entry_out){
     }
     
     // fill result
-    entry_out->address_lo = address_lo;
-    entry_out->address_hi = address_hi;
-    entry_out->perms      = perms;
-    entry_out->offset     = offset;
-    entry_out->dev_major  = (uint32)dev_major;
-    entry_out->dev_minor  = (uint32)dev_minor;
-    entry_out->inode      = inode;
-    entry_out->pathname   = pathname;
-    entry_out->type       = DEMON_LNX_MapsEntryType_Null;
-    entry_out->stack_tid  = 0;
+    entry_out.address_lo = address_lo;
+    entry_out.address_hi = address_hi;
+    entry_out.perms      = perms;
+    entry_out.offset     = offset;
+    entry_out.dev_major  = (uint32)dev_major;
+    entry_out.dev_minor  = (uint32)dev_minor;
+    entry_out.inode      = inode;
+    entry_out.pathname   = pathname;
+    entry_out.type       = DEMON_LNX_MapsEntryType_Null;
+    entry_out.stack_tid  = 0;
     
     if (str8_match(pathname, str8_lit("/"), StringMatchFlag_RightSideSloppy)){
-      entry_out->type = DEMON_LNX_MapsEntryType_Path;
+      entry_out.type = DEMON_LNX_MapsEntryType_Path;
     } else if (str8_match(pathname, str8_lit("[heap]"), 0)){
-      entry_out->type = DEMON_LNX_MapsEntryType_Heap;
+      entry_out.type = DEMON_LNX_MapsEntryType_Heap;
     } else if (str8_match(pathname, str8_lit("[stack]"), 0)){
-      entry_out->type = DEMON_LNX_MapsEntryType_Stack;
+      entry_out.type = DEMON_LNX_MapsEntryType_Stack;
     } else if (str8_match(pathname, str8_lit("[stack:"), StringMatchFlag_RightSideSloppy)){
-      entry_out->type = DEMON_LNX_MapsEntryType_Stack;
+      entry_out.type = DEMON_LNX_MapsEntryType_Stack;
       String8 tid = str8_substr(pathname, r1u64(7, pathname.size - 8));
-      entry_out->stack_tid = (pid_t)u64_from_str8(tid, 10);
+      entry_out.stack_tid = (pid_t)u64_from_str8(tid, 10);
     }
     
     is_parsed = true;
@@ -808,7 +808,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
   if (demon_ent_root == 0){
     demon_push_event(arena, &result, DEMON_EventKind_NotInitialized);
   }
-  else if (demon_ent_root->first == 0 && !demon_lnx_new_process_pending){
+  else if (demon_ent_root.first == 0 && !demon_lnx_new_process_pending){
     demon_push_event(arena, &result, DEMON_EventKind_NotAttached);
   }
   else{
@@ -819,7 +819,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       // copy event queue
       for (DEMON_Event* node = demon_lnx_queued_events.first;
            node != 0;
-           node = node->next){
+           node = node.next){
         DEMON_Event* copy = push_array_no_zero(arena, DEMON_Event, 1);
         MemoryCopyStruct(copy, node);
         SLLQueuePush(result.first, result.last, copy);
@@ -832,7 +832,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
     }
     
     // get the single step thread (if any)
-    DEMON_Entity* single_step_thread = controls->single_step_thread;
+    DEMON_Entity* single_step_thread = controls.single_step_thread;
     
     // do setup
     B32 did_setup = false;
@@ -842,7 +842,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       // TODO(allen): per-Arch implementation of single steps
       // set single step bit
       if (single_step_thread != 0){
-        switch (single_step_thread->arch){
+        switch (single_step_thread.arch){
           case Arch_x86:
           {
             // TODO(allen): possibly buggy
@@ -864,14 +864,14 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       }
       
       // TODO(allen): per-Arch implementation of traps
-      trap_swap_bytes = push_array_no_zero(scratch.arena, uint8, controls->trap_count);
+      trap_swap_bytes = push_array_no_zero(scratch.arena, uint8, controls.trap_count);
       
       {
-        DEMON_OS_Trap* trap = controls->traps;
-        for (uint64 i = 0; i < controls->trap_count; i += 1, trap += 1){
-          if (demon_os_read_memory(trap->process, trap_swap_bytes + i, trap->address, 1)){
+        DEMON_OS_Trap* trap = controls.traps;
+        for (uint64 i = 0; i < controls.trap_count; i += 1, trap += 1){
+          if (demon_os_read_memory(trap.process, trap_swap_bytes + i, trap.address, 1)){
             uint8 int3 = 0xCC;
-            demon_os_write_memory(trap->process, trap->address, &int3, 1);
+            demon_os_write_memory(trap.process, trap.address, &int3, 1);
           }
           else{
             trap_swap_bytes[i] = 0xCC;
@@ -887,48 +887,48 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
     if (did_setup){
       // continue non-frozen threads
       DEMON_LNX_EntityNode* resume_threads = 0;
-      for (DEMON_Entity* process = demon_ent_root->first;
+      for (DEMON_Entity* process = demon_ent_root.first;
            process != 0;
-           process = process->next){
-        if (process->kind == DEMON_EntityKind_Process){
+           process = process.next){
+        if (process.kind == DEMON_EntityKind_Process){
           
           // determine if this process is frozen
           B32 process_is_frozen = false;
-          if (controls->run_entities_are_processes){
-            for (uint64 i = 0; i < controls->run_entity_count; i += 1){
-              if (controls->run_entities[i] == process){
+          if (controls.run_entities_are_processes){
+            for (uint64 i = 0; i < controls.run_entity_count; i += 1){
+              if (controls.run_entities[i] == process){
                 process_is_frozen = true;
                 break;
               }
             }
           }
           
-          for (DEMON_Entity* thread = process->first;
+          for (DEMON_Entity* thread = process.first;
                thread != 0;
-               thread = thread->next){
-            if (thread->kind == DEMON_EntityKind_Thread){
+               thread = thread.next){
+            if (thread.kind == DEMON_EntityKind_Thread){
               // determine if this thread is frozen
               B32 is_frozen = false;
               
-              if (controls->single_step_thread != 0 &&
-                  controls->single_step_thread != thread){
+              if (controls.single_step_thread != 0 &&
+                  controls.single_step_thread != thread){
                 is_frozen = true;
               }
               else{
                 
-                if (controls->run_entities_are_processes){
+                if (controls.run_entities_are_processes){
                   is_frozen = process_is_frozen;
                 }
                 else{
-                  for (uint64 i = 0; i < controls->run_entity_count; i += 1){
-                    if (controls->run_entities[i] == thread){
+                  for (uint64 i = 0; i < controls.run_entity_count; i += 1){
+                    if (controls.run_entities[i] == thread){
                       is_frozen = true;
                       break;
                     }
                   }
                 }
                 
-                if (controls->run_entities_are_unfrozen){
+                if (controls.run_entities_are_unfrozen){
                   is_frozen = !is_frozen;
                 }
               }
@@ -936,10 +936,10 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
               // continue if not frozen
               if (!is_frozen){
                 errno = 0;
-                ptrace(PTRACE_CONT, (pid_t)thread->id, 0, 0);
+                ptrace(PTRACE_CONT, (pid_t)thread.id, 0, 0);
                 DEMON_LNX_EntityNode* thread_node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLStackPush(resume_threads, thread_node);
-                thread_node->entity = thread;
+                thread_node.entity = thread;
               }
             }
           }
@@ -960,7 +960,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       if (thread == 0){
         if (wait_id >= 0){
           // TODO(allen): this isn't a great situation! From what I can tell there's no
-          // options that I am super happy with for going from unknown tid -> pid.
+          // options that I am super happy with for going from unknown tid . pid.
           // We can parse it out of /proc/<tid>/status; but I don't want to do that until
           // I'm forced to, because it seems like this shouldn't happen if the ptrace
           // API works correctly and we don't have any bugs in our demon entity system.
@@ -970,7 +970,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         B32 thread_exit = false;
         uint64 exit_code = 0;
         
-        DEMON_Entity* process = thread->parent;
+        DEMON_Entity* process = thread.parent;
         // NOTE(allen): hitting this assert should never ever be possible, if our entities
         // are wired up correctly. it doesn't matter what ptrace or waitpid are doing.
         Assert(process != 0);
@@ -980,7 +980,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         [Union]
         struct{ SYMS_RegX86 x86; SYMS_RegX64 x64; } regs = {0};
         
-        switch (thread->arch){
+        switch (thread.arch){
           case Arch_x86:
           {
             demon_os_read_regs_x86(thread, &regs.x86);
@@ -1032,12 +1032,12 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                     DEMON_Entity* new_thread = demon_ent_new(process, DEMON_EntityKind_Thread, new_tid);
                     demon_thread_count += 1;
                     DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(new_thread);
-                    thread_ext->expecting_dummy_sigstop = true;
+                    thread_ext.expecting_dummy_sigstop = true;
                     
                     // thread event
                     DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
-                    e->process = demon_ent_handle_from_ptr(process);
-                    e->thread = demon_ent_handle_from_ptr(new_thread);
+                    e.process = demon_ent_handle_from_ptr(process);
+                    e.thread = demon_ent_handle_from_ptr(new_thread);
                   }
                 }break;
                 
@@ -1057,8 +1057,8 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                     
                     // process entity
                     DEMON_Entity* new_process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, new_pid);
-                    new_process->arch = arch;
-                    new_process->ext_u64 = demon_lnx_open_memory_fd_for_pid(new_pid);
+                    new_process.arch = arch;
+                    new_process.ext_u64 = demon_lnx_open_memory_fd_for_pid(new_pid);
                     
                     demon_lnx_new_process_pending = false;
                     
@@ -1066,19 +1066,19 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                     DEMON_Entity* new_thread = demon_ent_new(new_process, DEMON_EntityKind_Thread, new_pid);
                     demon_thread_count += 1;
                     DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(new_thread);
-                    thread_ext->expecting_dummy_sigstop = true;
+                    thread_ext.expecting_dummy_sigstop = true;
                     
                     // process event
                     {
                       DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateProcess);
-                      e->process = demon_ent_handle_from_ptr(new_process);
+                      e.process = demon_ent_handle_from_ptr(new_process);
                     }
                     
                     // thread event
                     {
                       DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
-                      e->process = demon_ent_handle_from_ptr(new_process);
-                      e->thread = demon_ent_handle_from_ptr(new_thread);
+                      e.process = demon_ent_handle_from_ptr(new_process);
+                      e.thread = demon_ent_handle_from_ptr(new_thread);
                     }
                   }
                 }break;
@@ -1093,9 +1093,9 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                   
                   // check bp
                   if (e_kind == DEMON_EventKind_Trap){
-                    DEMON_OS_Trap* trap = controls->traps;
-                    for (uint64 i = 0; i < controls->trap_count; i += 1, trap += 1){
-                      if (trap->process == process && trap->address == instruction_pointer - 1){
+                    DEMON_OS_Trap* trap = controls.traps;
+                    for (uint64 i = 0; i < controls.trap_count; i += 1, trap += 1){
+                      if (trap.process == process && trap.address == instruction_pointer - 1){
                         e_kind = DEMON_EventKind_Breakpoint;
                         break;
                       }
@@ -1105,7 +1105,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                   // adjust ip after breakpoint
                   if (e_kind == DEMON_EventKind_Breakpoint){
                     // TODO(allen): possibly buggy
-                    switch (thread->arch){
+                    switch (thread.arch){
                       case Arch_x86:
                       {
                         instruction_pointer -= 1;
@@ -1124,9 +1124,9 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
                   
                   // event
                   DEMON_Event* e = demon_push_event(arena, &stop_events, e_kind);
-                  e->process = demon_ent_handle_from_ptr(process);
-                  e->thread = demon_ent_handle_from_ptr(thread);
-                  e->instruction_pointer = instruction_pointer;
+                  e.process = demon_ent_handle_from_ptr(process);
+                  e.thread = demon_ent_handle_from_ptr(thread);
+                  e.instruction_pointer = instruction_pointer;
                 }break;
               }
             }break;
@@ -1139,15 +1139,15 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
               
               DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(thread);
               
-              if (thread_ext->expecting_dummy_sigstop){
-                thread_ext->expecting_dummy_sigstop = false;
+              if (thread_ext.expecting_dummy_sigstop){
+                thread_ext.expecting_dummy_sigstop = false;
                 did_dummy_stop = true;
               }
               else if (demon_lnx_already_has_halt_injection){
                 DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_Halt);
-                e->process = demon_ent_handle_from_ptr(process);
-                e->thread = demon_ent_handle_from_ptr(thread);
-                e->instruction_pointer = instruction_pointer;
+                e.process = demon_ent_handle_from_ptr(process);
+                e.thread = demon_ent_handle_from_ptr(thread);
+                e.instruction_pointer = instruction_pointer;
               }
               else{
                 // TODO(allen): a signal we don't want to mess with (except to record that it happened maybe)
@@ -1165,37 +1165,37 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
               
               // event
               DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_Exception);
-              e->process = demon_ent_handle_from_ptr(process);
-              e->thread = demon_ent_handle_from_ptr(thread);
-              e->instruction_pointer = instruction_pointer;
-              e->signo = WSTOPSIG(status);
+              e.process = demon_ent_handle_from_ptr(process);
+              e.thread = demon_ent_handle_from_ptr(thread);
+              e.instruction_pointer = instruction_pointer;
+              e.signo = WSTOPSIG(status);
             }break;
           }
         }
         
         // entity cleanup
         if (thread_exit){
-          if (thread->id == process->id){
+          if (thread.id == process.id){
             // generate events for threads & modules
-            for (DEMON_Entity* entity = process->first;
+            for (DEMON_Entity* entity = process.first;
                  entity != 0;
-                 entity = entity->next){
-              if (entity->kind == DEMON_EntityKind_Thread){
+                 entity = entity.next){
+              if (entity.kind == DEMON_EntityKind_Thread){
                 DEMON_Event* e = demon_push_event(arena, &result, DEMON_EventKind_ExitThread);
-                e->process = demon_ent_handle_from_ptr(process);
-                e->thread = demon_ent_handle_from_ptr(entity);
+                e.process = demon_ent_handle_from_ptr(process);
+                e.thread = demon_ent_handle_from_ptr(entity);
               }
               else{
                 DEMON_Event* e = demon_push_event(arena, &result, DEMON_EventKind_UnloadModule);
-                e->process = demon_ent_handle_from_ptr(process);
-                e->module = demon_ent_handle_from_ptr(entity);
+                e.process = demon_ent_handle_from_ptr(process);
+                e.module = demon_ent_handle_from_ptr(entity);
               }
             }
             
             // exit event
             DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitProcess);
-            e->process = demon_ent_handle_from_ptr(process);
-            e->code = exit_code;
+            e.process = demon_ent_handle_from_ptr(process);
+            e.code = exit_code;
             
             // free entity
             demon_ent_release_root_and_children(process);
@@ -1203,9 +1203,9 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
           else{
             // exit event
             DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitThread);
-            e->process = demon_ent_handle_from_ptr(process);
-            e->thread = demon_ent_handle_from_ptr(thread);
-            e->code = exit_code;
+            e.process = demon_ent_handle_from_ptr(process);
+            e.thread = demon_ent_handle_from_ptr(thread);
+            e.code = exit_code;
             
             // free entity
             demon_ent_release_root_and_children(thread);
@@ -1215,27 +1215,27 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         // update all module lists (for each process ...)
         DEMON_EventList module_change_events = {0};
         
-        for (DEMON_Entity* proc_node = demon_ent_root->first;
+        for (DEMON_Entity* proc_node = demon_ent_root.first;
              proc_node != 0;
-             proc_node = proc_node->next){
+             proc_node = proc_node.next){
           DEMON_LNX_ModuleNode* first_module = demon_lnx_module_list_from_process(scratch.arena, proc_node);
           
           DEMON_LNX_EntityNode* first_unloaded = 0;
           DEMON_LNX_EntityNode* last_unloaded = 0;
           
           // compute the delta (mark known modules, save list of unloaded modules)
-          for (DEMON_Entity* entity = proc_node->first;
+          for (DEMON_Entity* entity = proc_node.first;
                entity != 0;
-               entity = entity->next){
-            if (entity->kind == DEMON_EntityKind_Module){
-              uint64 base = entity->id;
-              uint64 name = entity->ext_u64;
+               entity = entity.next){
+            if (entity.kind == DEMON_EntityKind_Module){
+              uint64 base = entity.id;
+              uint64 name = entity.ext_u64;
               B32 still_exists = false;
               for (DEMON_LNX_ModuleNode* module_node = first_module;
                    module_node != 0;
-                   module_node = module_node->next){
-                if (module_node->vaddr == base && module_node->name == name){
-                  module_node->already_known = true;
+                   module_node = module_node.next){
+                if (module_node.vaddr == base && module_node.name == name){
+                  module_node.already_known = true;
                   still_exists = true;
                   break;
                 }
@@ -1243,7 +1243,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
               if (!still_exists){
                 DEMON_LNX_EntityNode* node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLQueuePush(first_unloaded, last_unloaded, node);
-                node->entity = entity;
+                node.entity = entity;
               }
             }
           }
@@ -1251,14 +1251,14 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
           // handle unloads
           for (DEMON_LNX_EntityNode* unloaded_node = first_unloaded;
                unloaded_node != 0;
-               unloaded_node = unloaded_node->next){
-            DEMON_Entity* module = unloaded_node->entity;
+               unloaded_node = unloaded_node.next){
+            DEMON_Entity* module = unloaded_node.entity;
             
             // event
             {
               DEMON_Event* e = demon_push_event(arena, &module_change_events, DEMON_EventKind_UnloadModule);
-              e->process = demon_ent_handle_from_ptr(proc_node);
-              e->module = demon_ent_handle_from_ptr(module);
+              e.process = demon_ent_handle_from_ptr(proc_node);
+              e.module = demon_ent_handle_from_ptr(module);
             }
             
             // free entity
@@ -1268,20 +1268,20 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
           // handle loads
           for (DEMON_LNX_ModuleNode* module_node = first_module;
                module_node != 0;
-               module_node = module_node->next){
-            if (!module_node->already_known){
+               module_node = module_node.next){
+            if (!module_node.already_known){
               // entity
-              DEMON_Entity* module = demon_ent_new(proc_node, DEMON_EntityKind_Module, module_node->vaddr);
+              DEMON_Entity* module = demon_ent_new(proc_node, DEMON_EntityKind_Module, module_node.vaddr);
               demon_module_count += 1;
-              module->ext_u64 = module_node->name;
+              module.ext_u64 = module_node.name;
               
               // event
               {
                 DEMON_Event* e = demon_push_event(arena, &module_change_events, DEMON_EventKind_LoadModule);
-                e->process = demon_ent_handle_from_ptr(proc_node);
-                e->module = demon_ent_handle_from_ptr(module);
-                e->address = module_node->vaddr;
-                e->size = module_node->size;
+                e.process = demon_ent_handle_from_ptr(proc_node);
+                e.module = demon_ent_handle_from_ptr(module);
+                e.address = module_node.vaddr;
+                e.size = module_node.size;
               }
             }
           }
@@ -1293,7 +1293,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         result.last = module_change_events.last;
         if (stop_events.first != 0){
           if (result.first != 0){
-            result.last->next = stop_events.first;
+            result.last.next = stop_events.first;
             result.last = stop_events.last;
           }
           else{
@@ -1320,16 +1320,16 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       // stop all running threads
       for (DEMON_LNX_EntityNode* node = resume_threads;
            node != 0;
-           node = node->next){
-        DEMON_Entity* thread = node->entity;
-        pid_t thread_id = (pid_t)thread->id;
+           node = node.next){
+        DEMON_Entity* thread = node.entity;
+        pid_t thread_id = (pid_t)thread.id;
         if (thread_id != wait_id){
           [Union]
           struct sigval sv = {0};
           sigqueue(thread_id, SIGSTOP, sv);
           
           DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(thread);
-          thread_ext->expecting_dummy_sigstop = true;
+          thread_ext.expecting_dummy_sigstop = true;
         }
       }
       
@@ -1341,11 +1341,11 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       // TODO(allen): per-Arch
       // unset traps
       {
-        DEMON_OS_Trap* trap = controls->traps;
-        for (uint64 i = 0; i < controls->trap_count; i += 1, trap += 1){
+        DEMON_OS_Trap* trap = controls.traps;
+        for (uint64 i = 0; i < controls.trap_count; i += 1, trap += 1){
           uint8 og_byte = trap_swap_bytes[i];
           if (og_byte != 0xCC){
-            demon_os_write_memory(trap->process, trap->address, &og_byte, 1);
+            demon_os_write_memory(trap.process, trap.address, &og_byte, 1);
           }
         }
       }
@@ -1357,7 +1357,7 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
       //  confound us later; so here we're just being sure it's taken out.
       if (single_step_thread != 0){
         // TODO(allen): possibly buggy
-        switch (single_step_thread->arch){
+        switch (single_step_thread.arch){
           case Arch_x86:
           {
             SYMS_RegX86 regs = {0};
@@ -1386,14 +1386,14 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
 void
 demon_os_halt(uint64 code, uint64 user_data){
   if (demon_ent_root != 0 && !demon_lnx_already_has_halt_injection){
-    DEMON_Entity* process = demon_ent_root->first;
+    DEMON_Entity* process = demon_ent_root.first;
     if (process != 0){
       demon_lnx_already_has_halt_injection = true;
       demon_lnx_halt_code = code;
       demon_lnx_halt_user_data = user_data;
       [Union]
       struct sigval sv = {0};
-      if (sigqueue(process->id, SIGSTOP, sv) == -1){
+      if (sigqueue(process.id, SIGSTOP, sv) == -1){
         demon_lnx_already_has_halt_injection = false;
       }
     }
@@ -1435,13 +1435,13 @@ demon_os_launch_process(OS_LaunchOptions* options){
   // arrange options
   char* binary = 0;
   char** args = 0;
-  if (options->cmd_line.node_count > 0){
-    args = push_array_no_zero(scratch.arena, char*, options->cmd_line.node_count + 1);
+  if (options.cmd_line.node_count > 0){
+    args = push_array_no_zero(scratch.arena, char*, options.cmd_line.node_count + 1);
     char** arg_ptr = args;
-    for (String8Node* node = options->cmd_line.first;
+    for (String8Node* node = options.cmd_line.first;
          node != 0;
-         node = node->next, arg_ptr += 1){
-      String8 string = push_str8_copy(scratch.arena, node->string);
+         node = node.next, arg_ptr += 1){
+      String8 string = push_str8_copy(scratch.arena, node.string);
       *arg_ptr = (char*)string.str;
     }
     *arg_ptr = 0;
@@ -1450,18 +1450,18 @@ demon_os_launch_process(OS_LaunchOptions* options){
   
   char* path = 0;
   {
-    String8 string = push_str8_copy(scratch.arena, options->path);
+    String8 string = push_str8_copy(scratch.arena, options.path);
     path = (char*)string.str;
   }
   
   char** env = 0;
-  if (options->env.node_count > 0){
-    env = push_array_no_zero(scratch.arena, char*, options->env.node_count + 1);
+  if (options.env.node_count > 0){
+    env = push_array_no_zero(scratch.arena, char*, options.env.node_count + 1);
     char** env_ptr = env;
-    for (String8Node* node = options->env.first;
+    for (String8Node* node = options.env.first;
          node != 0;
-         node = node->next, env_ptr += 1){
-      String8 string = push_str8_copy(scratch.arena, node->string);
+         node = node.next, env_ptr += 1){
+      String8 string = push_str8_copy(scratch.arena, node.string);
       *env_ptr = (char*)string.str;
     }
     *env_ptr = 0;
@@ -1563,8 +1563,8 @@ demon_os_launch_process(OS_LaunchOptions* options){
             // process entity
             DEMON_Entity* process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, pid);
             demon_proc_count += 1;
-            process->arch = arch;
-            process->ext_u64 = demon_lnx_open_memory_fd_for_pid(pid);
+            process.arch = arch;
+            process.ext_u64 = demon_lnx_open_memory_fd_for_pid(pid);
             
             // thread entity
             DEMON_Entity* thread = demon_ent_new(process, DEMON_EntityKind_Thread, pid);
@@ -1574,15 +1574,15 @@ demon_os_launch_process(OS_LaunchOptions* options){
             {
               DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_CreateProcess);
-              e->process = demon_ent_handle_from_ptr(process);
+              e.process = demon_ent_handle_from_ptr(process);
             }
             
             // thread event
             {
               DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_CreateThread);
-              e->process = demon_ent_handle_from_ptr(process);
-              e->thread = demon_ent_handle_from_ptr(thread);
+              e.process = demon_ent_handle_from_ptr(process);
+              e.thread = demon_ent_handle_from_ptr(thread);
             }
             
             // get module list
@@ -1591,20 +1591,20 @@ demon_os_launch_process(OS_LaunchOptions* options){
             // for each module ...
             for (DEMON_LNX_ModuleNode* node = module_list;
                  node != 0;
-                 node = node->next){
+                 node = node.next){
               // module entity
-              DEMON_Entity* module = demon_ent_new(process, DEMON_EntityKind_Module, node->vaddr);
+              DEMON_Entity* module = demon_ent_new(process, DEMON_EntityKind_Module, node.vaddr);
               demon_module_count += 1;
-              module->ext_u64 = node->name;
+              module.ext_u64 = node.name;
               
               // event
               {
                 DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                   DEMON_EventKind_LoadModule);
-                e->process = demon_ent_handle_from_ptr(process);
-                e->module = demon_ent_handle_from_ptr(module);
-                e->address = node->vaddr;
-                e->size = node->size;
+                e.process = demon_ent_handle_from_ptr(process);
+                e.module = demon_ent_handle_from_ptr(module);
+                e.address = node.vaddr;
+                e.size = node.size;
               }
             }
             
@@ -1612,8 +1612,8 @@ demon_os_launch_process(OS_LaunchOptions* options){
             {
               DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_HandshakeComplete);
-              e->process = demon_ent_handle_from_ptr(process);
-              e->thread = demon_ent_handle_from_ptr(thread);
+              e.process = demon_ent_handle_from_ptr(process);
+              e.thread = demon_ent_handle_from_ptr(thread);
             }
           }
         }break;
@@ -1665,7 +1665,7 @@ demon_os_attach_process(uint32 pid){
           break;
         }
         
-        String8 name = str8_cstring(entry->d_name);
+        String8 name = str8_cstring(entry.d_name);
         if (str8_is_integer(name, 10)){
           pid_t tid = u64_from_str8(name, 10);
           if (tid != pid){
@@ -1691,35 +1691,35 @@ demon_os_attach_process(uint32 pid){
   
   // initialize new entities on success
   if (result){
-    Arch arch = demon_lnx_arch_from_pid(the_process->pid);
+    Arch arch = demon_lnx_arch_from_pid(the_process.pid);
     
     // process entity
-    DEMON_Entity* process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, the_process->pid);
+    DEMON_Entity* process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, the_process.pid);
     demon_proc_count += 1;
-    process->arch = arch;
-    process->ext_u64 = demon_lnx_open_memory_fd_for_pid(the_process->pid);
+    process.arch = arch;
+    process.ext_u64 = demon_lnx_open_memory_fd_for_pid(the_process.pid);
     
     // process event
     {
       DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                         DEMON_EventKind_CreateProcess);
-      e->process = demon_ent_handle_from_ptr(process);
+      e.process = demon_ent_handle_from_ptr(process);
     }
     
     // TODO(allen): happens on windows here?
     
     for (DEMON_LNX_AttachNode* node = attachments;
          node != 0;
-         node = node->next){
-      DEMON_Entity* thread = demon_ent_new(process, DEMON_EntityKind_Thread, node->pid);
+         node = node.next){
+      DEMON_Entity* thread = demon_ent_new(process, DEMON_EntityKind_Thread, node.pid);
       demon_thread_count += 1;
       
       // thread event
       {
         DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                           DEMON_EventKind_CreateThread);
-        e->process = demon_ent_handle_from_ptr(process);
-        e->thread = demon_ent_handle_from_ptr(thread);
+        e.process = demon_ent_handle_from_ptr(process);
+        e.thread = demon_ent_handle_from_ptr(thread);
       }
     }
     
@@ -1730,8 +1730,8 @@ demon_os_attach_process(uint32 pid){
   else{
     for (DEMON_LNX_AttachNode* node = attachments;
          node != 0;
-         node = node->next){
-      ptrace(PTRACE_DETACH, node->pid, 0, (void*)SIGCONT);
+         node = node.next){
+      ptrace(PTRACE_DETACH, node.pid, 0, (void*)SIGCONT);
     }
   }
   
@@ -1743,7 +1743,7 @@ B32
 demon_os_kill_process(DEMON_Entity* process, uint32 exit_code){
   B32 result = false;
   if (process != 0){
-    if (kill(process->id, SIGKILL) != -1){
+    if (kill(process.id, SIGKILL) != -1){
       result = true;
     }
   }
@@ -1754,7 +1754,7 @@ B32
 demon_os_detach_process(DEMON_Entity* process){
   B32 result = false;
   if (process != 0){
-    int detach_result = ptrace(PTRACE_DETACH, process->id, 0, 0);
+    int detach_result = ptrace(PTRACE_DETACH, process.id, 0, 0);
     result = (detach_result != -1);
   }
   return(0);
@@ -1775,9 +1775,9 @@ demon_os_entity_cleanup(DEMON_Entity* entity)
 
 String8
 demon_os_full_path_from_module(Arena* arena, DEMON_Entity* module){
-  DEMON_Entity* process = module->parent;
-  int memory_fd = (int)process->ext_u64;
-  uint64 name_va = module->ext_u64;
+  DEMON_Entity* process = module.parent;
+  int memory_fd = (int)process.ext_u64;
+  uint64 name_va = module.ext_u64;
   String8 result = demon_lnx_read_memory_str(arena, memory_fd, name_va);
   return(result);
 }
@@ -1788,14 +1788,14 @@ demon_os_stack_base_vaddr_from_thread(DEMON_Entity* thread){
   
   uint64 stack_base = 0;
   
-  DEMON_Entity* process = thread->parent;
+  DEMON_Entity* process = thread.parent;
   
   // id for main thread is zero
-  B32 is_main_thread = (thread->id == process->id);
-  pid_t match_tid = is_main_thread ? 0 : thread->id;
+  B32 is_main_thread = (thread.id == process.id);
+  pid_t match_tid = is_main_thread ? 0 : thread.id;
   
   // open /proc/$pid/maps
-  int maps = demon_lnx_open_maps(process->id);
+  int maps = demon_lnx_open_maps(process.id);
   
   // look for entry with stack markings and matching thread id
   for (;;){
@@ -1818,16 +1818,16 @@ demon_os_stack_base_vaddr_from_thread(DEMON_Entity* thread){
 uint64
 demon_os_tls_root_vaddr_from_thread(DEMON_Entity* thread){
   uint64 result = 0;
-  switch (thread->arch){
+  switch (thread.arch){
     case Arch_x64:
     case Arch_x86:
     {
       uint32 fsbase = 0;
-      pid_t tid = (pid_t)thread->id;
+      pid_t tid = (pid_t)thread.id;
       if (ptrace(PT_GETFSBASE, tid, (void*)&fsbase, 0) != -1){
         result = (uint64)fsbase;
       }
-      if (thread->arch == Arch_x64){
+      if (thread.arch == Arch_x64){
         result += 8;
       }
       else{
@@ -1861,14 +1861,14 @@ demon_os_release_memory(DEMON_Entity* process, uint64 vaddr, uint64 size){
 
 uint64
 demon_os_read_memory(DEMON_Entity* process, void* dst, uint64 src_address, uint64 size){
-  int memory_fd = (int)process->ext_u64;
+  int memory_fd = (int)process.ext_u64;
   uint64 result = demon_lnx_read_memory(memory_fd, dst, src_address, size);
   return(result);
 }
 
 B32
 demon_os_write_memory(DEMON_Entity* process, uint64 dst_address, void* src, uint64 size){
-  int memory_fd = (int)process->ext_u64;
+  int memory_fd = (int)process.ext_u64;
   B32 result = demon_lnx_write_memory(memory_fd, dst_address, src, size);
   return(result);
 }
@@ -1891,7 +1891,7 @@ demon_os_write_regs_x86(DEMON_Entity* thread, SYMS_RegX86* src){
 
 B32
 demon_os_read_regs_x64(DEMON_Entity* thread, SYMS_RegX64* dst){
-  pid_t tid = (pid_t)thread->id;
+  pid_t tid = (pid_t)thread.id;
   
   // gpr
   B32 got_gpr = false;
@@ -1915,13 +1915,13 @@ demon_os_read_regs_x64(DEMON_Entity* thread, SYMS_RegX64* dst){
       iov_xsave.iov_base = xsave_buffer;
       if (ptrace(PTRACE_GETREGSET, tid, (void*)NT_X86_XSTATE, &iov_xsave) != -1){
         SYMS_XSave* xsave = (SYMS_XSave*)xsave_buffer;
-        syms_x64_regs__set_full_regs_from_xsave_legacy(dst, &xsave->legacy);
+        syms_x64_regs__set_full_regs_from_xsave_legacy(dst, &xsave.legacy);
         
         // TODO(allen): this is a lie; ymm can technically move around
         // we need some more low-level-assembly-fu to do this hardcore.
-        B32 has_ymm_registers = ((xsave->header.xstate_bv & 4) != 0);
+        B32 has_ymm_registers = ((xsave.header.xstate_bv & 4) != 0);
         if (has_ymm_registers){
-          syms_x64_regs__set_full_regs_from_xsave_avx_extension(dst, xsave->ymmh);
+          syms_x64_regs__set_full_regs_from_xsave_avx_extension(dst, xsave.ymmh);
         }
         
         got_xsave = true;
@@ -1949,14 +1949,14 @@ demon_os_read_regs_x64(DEMON_Entity* thread, SYMS_RegX64* dst){
   B32 got_debug = false;
   if (got_fpr){
     got_debug = true;
-    SYMS_Reg32* dr_d = &dst->dr0;
+    SYMS_Reg32* dr_d = &dst.dr0;
     for (uint32 i = 0; i < 8; i += 1, dr_d += 1){
       if (i != 4 && i != 5){
         uint64 offset = OffsetOf(DEMON_LNX_UserX64, u_debugreg[i]);
         errno = 0;
         int peek_result = ptrace(PTRACE_PEEKUSER, tid, PtrFromInt(offset), 0);
         if (errno == 0){
-          dr_d->u32 = (uint32)peek_result;
+          dr_d.u32 = (uint32)peek_result;
         }
         else{
           got_debug = false;
@@ -1972,7 +1972,7 @@ demon_os_read_regs_x64(DEMON_Entity* thread, SYMS_RegX64* dst){
 
 B32
 demon_os_write_regs_x64(DEMON_Entity* thread, SYMS_RegX64* src){
-  pid_t tid = (pid_t)thread->id;
+  pid_t tid = (pid_t)thread.id;
   
   // gpr
   DEMON_LNX_UserX64 ctx = {0};
@@ -1991,13 +1991,13 @@ demon_os_write_regs_x64(DEMON_Entity* thread, SYMS_RegX64* src){
   {
     uint8 xsave_buffer[KB(4)] = {0};
     SYMS_XSave* xsave = (SYMS_XSave*)xsave_buffer;
-    syms_x64_regs__set_xsave_legacy_from_full_regs(&xsave->legacy, src);
+    syms_x64_regs__set_xsave_legacy_from_full_regs(&xsave.legacy, src);
     
-    xsave->header.xstate_bv = 7;
+    xsave.header.xstate_bv = 7;
     
     // TODO(allen): this is a lie; ymm can technically move around
     // we need some more low-level-assembly-fu to do this hardcore.
-    syms_x64_regs__set_xsave_avx_extension_from_full_regs(xsave->ymmh, src);
+    syms_x64_regs__set_xsave_avx_extension_from_full_regs(xsave.ymmh, src);
     
     {
       struct iovec iov_xsave = {0};
@@ -2008,8 +2008,8 @@ demon_os_write_regs_x64(DEMON_Entity* thread, SYMS_RegX64* src){
     
     if (xsave_result == -1){
       struct iovec iov_fxsave = {0};
-      iov_fxsave.iov_base = &xsave->legacy;
-      iov_fxsave.iov_len = sizeof(xsave->legacy);
+      iov_fxsave.iov_base = &xsave.legacy;
+      iov_fxsave.iov_len = sizeof(xsave.legacy);
       fxsave_result = ptrace(PTRACE_SETREGSET, tid, (void*)NT_FPREGSET, &iov_fxsave);
     }
   }
@@ -2019,12 +2019,12 @@ demon_os_write_regs_x64(DEMON_Entity* thread, SYMS_RegX64* src){
   // debug
   B32 dr_success = true;
   {
-    SYMS_Reg32* dr_s = &src->dr0;
+    SYMS_Reg32* dr_s = &src.dr0;
     for (uint32 i = 0; i < 8; i += 1, dr_s += 1){
       if (i != 4 && i != 5){
         uint64 offset = OffsetOf(DEMON_LNX_UserX64, u_debugreg[i]);
         errno = 0;
-        int poke_result = ptrace(PTRACE_POKEUSER, tid, PtrFromInt(offset), dr_s->u32);
+        int poke_result = ptrace(PTRACE_POKEUSER, tid, PtrFromInt(offset), dr_s.u32);
         if (poke_result == -1){
           dr_success = false;
         }
@@ -2045,7 +2045,7 @@ void
 demon_os_proc_iter_begin(DEMON_ProcessIter* iter){
   DIR* dir = opendir("/proc");
   MemoryZeroStruct(iter);
-  iter->v[0] = IntFromPtr(dir);
+  iter.v[0] = IntFromPtr(dir);
 }
 
 B32
@@ -2054,8 +2054,8 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
   B32 got_pid = false;
   String8 pid_string = {0};
   
-  DIR* dir = (DIR*)PtrFromInt(iter->v[0]);
-  if (dir != 0 && iter->v[1] == 0){
+  DIR* dir = (DIR*)PtrFromInt(iter.v[0]);
+  if (dir != 0 && iter.v[1] == 0){
     for (;;){
       struct dirent* d = readdir(dir);
       if (d == 0){
@@ -2063,7 +2063,7 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
       }
       
       // check file name is integer
-      String8 file_name = str8_cstring((char*)d->d_name);
+      String8 file_name = str8_cstring((char*)d.d_name);
       B32 is_integer = str8_is_integer(file_name, 10);
       
       // break on integers (which represent processes)
@@ -2077,10 +2077,10 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
   
   // mark iterator dead if nothing found
   if (!got_pid){
-    iter->v[1] = 1;
+    iter.v[1] = 1;
   }
   
-  // if got process id convert pid -> process info
+  // if got process id convert pid . process info
   B32 result = false;
   if (got_pid){
     // determine the name we will report
@@ -2091,8 +2091,8 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
     }
     
     // finish conversion
-    info_out->name = name;
-    info_out->pid = pid;
+    info_out.name = name;
+    info_out.pid = pid;
     result = true;
   }
   
@@ -2101,7 +2101,7 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
 
 void
 demon_os_proc_iter_end(DEMON_ProcessIter* iter){
-  DIR* dir = (DIR*)PtrFromInt(iter->v[0]);
+  DIR* dir = (DIR*)PtrFromInt(iter.v[0]);
   if (dir != 0){
     closedir(dir);
   }

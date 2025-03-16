@@ -232,7 +232,7 @@ clz64(uint64 val)
 #endif
 
 ////////////////////////////////
-//~ rjf: Enum -> Sign
+//~ rjf: Enum . Sign
 
 int32
 sign_from_side_S32(Side side){

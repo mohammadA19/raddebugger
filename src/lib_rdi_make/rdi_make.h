@@ -120,11 +120,11 @@ enum RDIM_StringMatchFlags : RDI_U32
 //
 // #define RDIM_ARENA_OVERRIDE
 // #define RDIM_Arena <name of your arena type here>
-// #define rdim_arena_alloc   <name of your creation function - must be () -> Arena*>
-// #define rdim_arena_release <name of your release function  - must be (Arena*) -> void>
-// #define rdim_arena_pos     <name of your position function - must be (Arena*) -> uint64>
-// #define rdim_arena_push    <name of your pushing function  - must be (Arena*, uint64 size) -> void*>
-// #define rdim_arena_pop_to  <name of your popping function  - must be (Arena*, uint64 pos) -> void>
+// #define rdim_arena_alloc   <name of your creation function - must be () . Arena*>
+// #define rdim_arena_release <name of your release function  - must be (Arena*) . void>
+// #define rdim_arena_pos     <name of your position function - must be (Arena*) . uint64>
+// #define rdim_arena_push    <name of your pushing function  - must be (Arena*, uint64 size) . void*>
+// #define rdim_arena_pop_to  <name of your popping function  - must be (Arena*, uint64 pos) . void>
 
 #if !defined(RDIM_Arena)
 # define RDIM_Arena RDIM_Arena 
@@ -162,9 +162,9 @@ struct RDIM_Arena
 //
 // #define RDIM_SCRATCH_OVERRIDE
 // #define RDIM_Temp <name of arena temp block type - generally struct: (Arena*, uint64)
-// #define rdim_temp_arena <name of temp -> arena implementation - must be (Temp) -> (Arena*)>
-// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena** conflicts, uint64 conflict_count) -> Temp>
-// #define rdim_scratch_end <name of scratch end function - must be (Temp) -> void
+// #define rdim_temp_arena <name of temp . arena implementation - must be (Temp) . (Arena*)>
+// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena** conflicts, uint64 conflict_count) . Temp>
+// #define rdim_scratch_end <name of scratch end function - must be (Temp) . void
 
 #if !defined(RDIM_Temp)
 # define RDIM_Temp RDIM_Temp
@@ -221,35 +221,35 @@ struct RDIM_Temp
 
 //- rjf: Base Doubly-Linked-List Macros
 #define RDIM_DLLInsert_NPZ(nil,f,l,p,n,next,prev) (RDIM_CheckNil(nil,f) ? \
-((f) = (l) = (n), RDIM_SetNil(nil,(n)->next), RDIM_SetNil(nil,(n)->prev)) :\
+((f) = (l) = (n), RDIM_SetNil(nil,(n).next), RDIM_SetNil(nil,(n).prev)) :\
 RDIM_CheckNil(nil,p) ? \
-((n)->next = (f), (f)->prev = (n), (f) = (n), RDIM_SetNil(nil,(n)->prev)) :\
+((n).next = (f), (f).prev = (n), (f) = (n), RDIM_SetNil(nil,(n).prev)) :\
 ((p)==(l)) ? \
-((l)->next = (n), (n)->prev = (l), (l) = (n), RDIM_SetNil(nil, (n)->next)) :\
-(((!RDIM_CheckNil(nil,p) && RDIM_CheckNil(nil,(p)->next)) ? (0) : ((p)->next->prev = (n))), ((n)->next = (p)->next), ((p)->next = (n)), ((n)->prev = (p))))
+((l).next = (n), (n).prev = (l), (l) = (n), RDIM_SetNil(nil, (n).next)) :\
+(((!RDIM_CheckNil(nil,p) && RDIM_CheckNil(nil,(p).next)) ? (0) : ((p).next.prev = (n))), ((n).next = (p).next), ((p).next = (n)), ((n).prev = (p))))
 #define RDIM_DLLPushBack_NPZ(nil,f,l,n,next,prev) RDIM_DLLInsert_NPZ(nil,f,l,l,n,next,prev)
 #define RDIM_DLLPushFront_NPZ(nil,f,l,n,next,prev) RDIM_DLLInsert_NPZ(nil,l,f,f,n,prev,next)
-#define RDIM_DLLRemove_NPZ(nil,f,l,n,next,prev) (((n) == (f) ? (f) = (n)->next : (0)),\
-((n) == (l) ? (l) = (l)->prev : (0)),\
-(RDIM_CheckNil(nil,(n)->prev) ? (0) :\
-((n)->prev->next = (n)->next)),\
-(RDIM_CheckNil(nil,(n)->next) ? (0) :\
-((n)->next->prev = (n)->prev)))
+#define RDIM_DLLRemove_NPZ(nil,f,l,n,next,prev) (((n) == (f) ? (f) = (n).next : (0)),\
+((n) == (l) ? (l) = (l).prev : (0)),\
+(RDIM_CheckNil(nil,(n).prev) ? (0) :\
+((n).prev.next = (n).next)),\
+(RDIM_CheckNil(nil,(n).next) ? (0) :\
+((n).next.prev = (n).prev)))
 
 //- rjf: Base Singly-Linked-List Queue Macros
 #define RDIM_SLLQueuePush_NZ(nil,f,l,n,next) (RDIM_CheckNil(nil,f)?\
-((f)=(l)=(n),RDIM_SetNil(nil,(n)->next)):\
-((l)->next=(n),(l)=(n),RDIM_SetNil(nil,(n)->next)))
+((f)=(l)=(n),RDIM_SetNil(nil,(n).next)):\
+((l).next=(n),(l)=(n),RDIM_SetNil(nil,(n).next)))
 #define RDIM_SLLQueuePushFront_NZ(nil,f,l,n,next) (RDIM_CheckNil(nil,f)?\
-((f)=(l)=(n),RDIM_SetNil(nil,(n)->next)):\
-((n)->next=(f),(f)=(n)))
+((f)=(l)=(n),RDIM_SetNil(nil,(n).next)):\
+((n).next=(f),(f)=(n)))
 #define RDIM_SLLQueuePop_NZ(nil,f,l,next) ((f)==(l)?\
 (RDIM_SetNil(nil,f), RDIM_SetNil(nil,l)):\
-((f)=(f)->next))
+((f)=(f).next))
 
 //- rjf: Base Singly-Linked-List Stack Macros
-#define RDIM_SLLStackPush_N(f,n,next) ((n)->next=(f), (f)=(n))
-#define RDIM_SLLStackPop_N(f,next) ((f)=(f)->next)
+#define RDIM_SLLStackPush_N(f,n,next) ((n).next=(f), (f)=(n))
+#define RDIM_SLLStackPop_N(f,next) ((f)=(f).next)
 
 ////////////////////////////////
 //~ rjf: Convenience Wrappers
@@ -328,7 +328,7 @@ struct RDIM_Rng1U64List
   RDI_U64 min;
 }
 
-//- rjf: u64 -> pointer map
+//- rjf: u64 . pointer map
 
 struct RDIM_U64ToPtrNode
 {
@@ -353,7 +353,7 @@ struct RDIM_U64ToPtrLookup
   RDI_U32 fill_k;
 }
 
-//- rjf: string8 -> pointer map
+//- rjf: string8 . pointer map
 
 struct RDIM_Str8ToPtrNode
 {
@@ -1357,7 +1357,7 @@ RDI_PROC RDIM_BakeSection* rdim_bake_section_list_push_new_unpacked(RDIM_Arena* 
 RDI_PROC void rdim_bake_section_list_concat_in_place(RDIM_BakeSectionList* dst, RDIM_BakeSectionList* to_push);
 
 ////////////////////////////////
-//~ rjf: [Baking] Build Artifacts -> Interned/Deduplicated Data Structures
+//~ rjf: [Baking] Build Artifacts . Interned/Deduplicated Data Structures
 
 //- rjf: basic bake string gathering passes
 RDI_PROC void rdim_bake_string_map_loose_push_top_level_info(RDIM_Arena* arena, RDIM_BakeStringMapTopology* top, RDIM_BakeStringMapLoose* map, RDIM_TopLevelInfo* tli);
@@ -1392,12 +1392,12 @@ RDI_PROC RDIM_BakeIdxRunMap* rdim_bake_idx_run_map_from_params(RDIM_Arena* arena
 RDI_PROC RDIM_BakePathTree* rdim_bake_path_tree_from_params(RDIM_Arena* arena, RDIM_BakeParams* params);
 
 ////////////////////////////////
-//~ rjf: [Baking] Build Artifacts -> Baked Versions
+//~ rjf: [Baking] Build Artifacts . Baked Versions
 
 //- rjf: partial/joinable baking functions
 RDI_PROC RDIM_NameMapBakeResult         rdim_bake_name_map(RDIM_Arena* arena, RDIM_BakeStringMapTight* strings, RDIM_BakeIdxRunMap* idx_runs, RDIM_BakeNameMap* src);
 
-//- rjf: partial bakes -> final bake functions
+//- rjf: partial bakes . final bake functions
 RDI_PROC RDIM_NameMapBakeResult         rdim_name_map_bake_results_combine(RDIM_Arena* arena, RDIM_NameMapBakeResult* results, RDI_U64 results_count);
 
 //- rjf: independent (top-level, static) baking functions
@@ -1422,7 +1422,7 @@ RDI_PROC RDIM_StringBakeResult          rdim_bake_strings(RDIM_Arena* arena, RDI
 RDI_PROC RDIM_IndexRunBakeResult        rdim_bake_index_runs(RDIM_Arena* arena, RDIM_BakeIdxRunMap* idx_runs);
 
 ////////////////////////////////
-//~ rjf: [Serializing] Bake Results -> String Blobs
+//~ rjf: [Serializing] Bake Results . String Blobs
 
 RDI_PROC RDIM_SerializedSection rdim_serialized_section_make_unpacked(void* data, RDI_U64 size);
 #define rdim_serialized_section_make_unpacked_struct(ptr) rdim_serialized_section_make_unpacked((ptr), sizeof(*(ptr)))

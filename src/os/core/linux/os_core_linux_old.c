@@ -23,8 +23,8 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
   
   String8Node* node = list.first;
   if (node != 0){
-    uint8* ptr = node->string.str;;
-    uint8* opl = ptr + node->string.size;
+    uint8* ptr = node.string.str;;
+    uint8* opl = ptr + node.string.size;
     
     uint64 p = 0;
     for (;p < list.total_size;){
@@ -39,15 +39,15 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
       
       Assert(ptr <= opl);
       if (ptr == opl){
-        node = node->next;
+        node = node.next;
         if (node == 0){
           if (p < list.total_size){
             success = false;
           }
           break;
         }
-        ptr = node->string.str;
-        opl = ptr + node->string.size;
+        ptr = node.string.str;
+        opl = ptr + node.string.size;
       }
     }
   }
@@ -57,43 +57,43 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
 
 void
 lnx_date_time_from_tm(DateTime* out, struct tm* in, uint32 msec){
-  out->msec = msec;
-  out->sec  = in->tm_sec;
-  out->min  = in->tm_min;
-  out->hour = in->tm_hour;
-  out->day  = in->tm_mday - 1;
-  out->wday = in->tm_wday;
-  out->mon  = in->tm_mon;
-  out->year = in->tm_year + 1900;
+  out.msec = msec;
+  out.sec  = in.tm_sec;
+  out.min  = in.tm_min;
+  out.hour = in.tm_hour;
+  out.day  = in.tm_mday - 1;
+  out.wday = in.tm_wday;
+  out.mon  = in.tm_mon;
+  out.year = in.tm_year + 1900;
 }
 
 void
 lnx_tm_from_date_time(struct tm* out, DateTime* in){
-  out->tm_sec  = in->sec;
-  out->tm_min  = in->min;
-  out->tm_hour = in->hour;
-  out->tm_mday = in->day + 1;
-  out->tm_mon  = in->mon;
-  out->tm_year = in->year - 1900;
+  out.tm_sec  = in.sec;
+  out.tm_min  = in.min;
+  out.tm_hour = in.hour;
+  out.tm_mday = in.day + 1;
+  out.tm_mon  = in.mon;
+  out.tm_year = in.year - 1900;
 }
 
 void
 lnx_dense_time_from_timespec(DenseTime* out, struct timespec* in){
   struct tm tm_time = {0};
-  gmtime_r(&in->tv_sec, &tm_time);
+  gmtime_r(&in.tv_sec, &tm_time);
   DateTime date_time = {0};
-  lnx_date_time_from_tm(&date_time, &tm_time, in->tv_nsec/Million(1));
+  lnx_date_time_from_tm(&date_time, &tm_time, in.tv_nsec/Million(1));
   *out = dense_time_from_date_time(date_time);
 }
 
 void
 lnx_file_properties_from_stat(FileProperties* out, struct stat* in){
   MemoryZeroStruct(out);
-  out->size = in->st_size;
-  lnx_dense_time_from_timespec(&out->created, &in->st_ctim);
-  lnx_dense_time_from_timespec(&out->modified, &in->st_mtim);
-  if ((in->st_mode & S_IFDIR) != 0){
-    out->flags |= FilePropertyFlag_IsFolder;
+  out.size = in.st_size;
+  lnx_dense_time_from_timespec(&out.created, &in.st_ctim);
+  lnx_dense_time_from_timespec(&out.modified, &in.st_mtim);
+  if ((in.st_mode & S_IFDIR) != 0){
+    out.flags |= FilePropertyFlag_IsFolder;
   }
 }
 
@@ -768,13 +768,13 @@ lnx_alloc_entity(LNX_EntityKind kind){
   Assert(result != 0);
   SLLStackPop(lnx_entity_free);
   pthread_mutex_unlock(&lnx_mutex);
-  result->kind = kind;
+  result.kind = kind;
   return(result);
 }
 
 void
 lnx_free_entity(LNX_Entity* entity){
-  entity->kind = LNX_EntityKind_Null;
+  entity.kind = LNX_EntityKind_Null;
   pthread_mutex_lock(&lnx_mutex);
   SLLStackPush(lnx_entity_free, entity);
   pthread_mutex_unlock(&lnx_mutex);
@@ -783,8 +783,8 @@ lnx_free_entity(LNX_Entity* entity){
 void*
 lnx_thread_base(void* ptr){
   LNX_Entity* entity = (LNX_Entity*)ptr;
-  OS_ThreadFunctionType* func = entity->thread.func;
-  void* thread_ptr = entity->thread.ptr;
+  OS_ThreadFunctionType* func = entity.thread.func;
+  void* thread_ptr = entity.thread.ptr;
   
   TCTX tctx_;
   tctx_init_and_equip(&tctx_);
@@ -792,7 +792,7 @@ lnx_thread_base(void* ptr){
   tctx_release();
   
   // remove my bit
-  uint32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x2);
+  uint32 result = __sync_fetch_and_and(&entity.reference_mask, ~0x2);
   // if the other bit is also gone, free entity
   if ((result & 0x1) == 0){
     lnx_free_entity(entity);
@@ -803,8 +803,8 @@ lnx_thread_base(void* ptr){
 void
 lnx_safe_call_sig_handler(int){
   LNX_SafeCallChain* chain = lnx_safe_call_chain;
-  if (chain != 0 && chain->fail_handler != 0){
-    chain->fail_handler(chain->ptr);
+  if (chain != 0 && chain.fail_handler != 0){
+    chain.fail_handler(chain.ptr);
   }
   abort();
 }
@@ -830,9 +830,9 @@ os_init()
   {
     LNX_Entity* ptr = lnx_entity_free = lnx_entity_buffer;
     for (uint64 i = 1; i < ArrayCount(lnx_entity_buffer); i += 1, ptr += 1){
-      ptr->next = ptr + 1;
+      ptr.next = ptr + 1;
     }
-    ptr->next = 0;
+    ptr.next = 0;
   }
   
   // NOTE(allen): Permanent memory allocator for this layer
@@ -1320,13 +1320,13 @@ os_now_universal_time(){
 
 DateTime
 os_universal_time_from_local(DateTime* local_time){
-  // local time -> universal time (using whatever types it takes)
+  // local time . universal time (using whatever types it takes)
   struct tm local_tm = {0};
   lnx_tm_from_date_time(&local_tm, local_time);
   local_tm.tm_isdst = -1;
   time_t universal_t = mktime(&local_tm);
   
-  // whatever type we ended up with -> DateTime (don't alter the space along the way)
+  // whatever type we ended up with . DateTime (don't alter the space along the way)
   struct tm universal_tm = {0};
   gmtime_r(&universal_t, &universal_tm);
   DateTime result = {0};
@@ -1336,7 +1336,7 @@ os_universal_time_from_local(DateTime* local_time){
 
 DateTime
 os_local_time_from_universal(DateTime* universal_time){
-  // universal time -> local time (using whatever types it takes)
+  // universal time . local time (using whatever types it takes)
   struct tm universal_tm = {0};
   lnx_tm_from_date_time(&universal_tm, universal_time);
   universal_tm.tm_isdst = -1;
@@ -1344,7 +1344,7 @@ os_local_time_from_universal(DateTime* universal_time){
   struct tm local_tm = {0};
   localtime_r(&universal_t, &local_tm);
   
-  // whatever type we ended up with -> DateTime (don't alter the space along the way)
+  // whatever type we ended up with . DateTime (don't alter the space along the way)
   DateTime result = {0};
   lnx_date_time_from_tm(&result, &local_tm, 0);
   return(result);
@@ -1380,14 +1380,14 @@ OS_Handle
 os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params){
   // entity
   LNX_Entity* entity = lnx_alloc_entity(LNX_EntityKind_Thread);
-  entity->reference_mask = 0x3;
-  entity->thread.func = func;
-  entity->thread.ptr = ptr;
+  entity.reference_mask = 0x3;
+  entity.thread.func = func;
+  entity.thread.ptr = ptr;
   
   // pthread
   pthread_attr_t attr;
   pthread_attr_init(&attr);
-  int pthread_result = pthread_create(&entity->thread.handle, &attr, lnx_thread_base, entity);
+  int pthread_result = pthread_create(&entity.thread.handle, &attr, lnx_thread_base, entity);
   pthread_attr_destroy(&attr);
   if (pthread_result == -1){
     lnx_free_entity(entity);
@@ -1403,7 +1403,7 @@ void
 os_release_thread_handle(OS_Handle thread){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(thread.id);
   // remove my bit
-  uint32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x1);
+  uint32 result = __sync_fetch_and_and(&entity.reference_mask, ~0x1);
   // if the other bit is also gone, free entity
   if ((result & 0x2) == 0){
     lnx_free_entity(entity);
@@ -1427,7 +1427,7 @@ os_mutex_alloc(){
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
   pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-  int pthread_result = pthread_mutex_init(&entity->mutex, &attr);
+  int pthread_result = pthread_mutex_init(&entity.mutex, &attr);
   pthread_mutexattr_destroy(&attr);
   if (pthread_result == -1){
     lnx_free_entity(entity);
@@ -1442,20 +1442,20 @@ os_mutex_alloc(){
 void
 os_mutex_release(OS_Handle mutex){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(mutex.id);
-  pthread_mutex_destroy(&entity->mutex);
+  pthread_mutex_destroy(&entity.mutex);
   lnx_free_entity(entity);
 }
 
 void
 os_mutex_take_(OS_Handle mutex){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(mutex.id);
-  pthread_mutex_lock(&entity->mutex);
+  pthread_mutex_lock(&entity.mutex);
 }
 
 void
 os_mutex_drop_(OS_Handle mutex){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(mutex.id);
-  pthread_mutex_unlock(&entity->mutex);
+  pthread_mutex_unlock(&entity.mutex);
 }
 
 //- rjf: reader/writer mutexes
@@ -1508,7 +1508,7 @@ os_condition_variable_alloc(){
   // pthread
   pthread_condattr_t attr;
   pthread_condattr_init(&attr);
-  int pthread_result = pthread_cond_init(&entity->cond, &attr);
+  int pthread_result = pthread_cond_init(&entity.cond, &attr);
   pthread_condattr_destroy(&attr);
   if (pthread_result == -1){
     lnx_free_entity(entity);
@@ -1523,7 +1523,7 @@ os_condition_variable_alloc(){
 void
 os_condition_variable_release(OS_Handle cv){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(cv.id);
-  pthread_cond_destroy(&entity->cond);
+  pthread_cond_destroy(&entity.cond);
   lnx_free_entity(entity);
 }
 
@@ -1533,7 +1533,7 @@ os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, uint64 endt_us){
   LNX_Entity* entity_cond = (LNX_Entity*)PtrFromInt(cv.id);
   LNX_Entity* entity_mutex = (LNX_Entity*)PtrFromInt(mutex.id);
   // TODO(allen): implement the time control
-  pthread_cond_timedwait(&entity_cond->cond, &entity_mutex->mutex);
+  pthread_cond_timedwait(&entity_cond.cond, &entity_mutex.mutex);
   return(result);
 }
 
@@ -1554,7 +1554,7 @@ os_condition_variable_wait_rw_w_(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_u
 void
 os_condition_variable_signal_(OS_Handle cv){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(cv.id);
-  pthread_cond_signal(&entity->cond);
+  pthread_cond_signal(&entity.cond);
 }
 
 void

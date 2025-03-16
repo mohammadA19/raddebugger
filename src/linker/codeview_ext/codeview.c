@@ -8,9 +8,9 @@ hash_from_cv_symbol(CV_Symbol* symbol)
 {
   XXH3_state_t hasher;
   XXH3_64bits_reset(&hasher);
-  XXH3_64bits_update(&hasher, &symbol->kind, sizeof(symbol->kind));
-  XXH3_64bits_update(&hasher, &symbol->data.size, sizeof(symbol->data.size));
-  XXH3_64bits_update(&hasher, symbol->data.str, symbol->data.size);
+  XXH3_64bits_update(&hasher, &symbol.kind, sizeof(symbol.kind));
+  XXH3_64bits_update(&hasher, &symbol.data.size, sizeof(symbol.data.size));
+  XXH3_64bits_update(&hasher, symbol.data.str, symbol.data.size);
   XXH64_hash_t hash = XXH3_64bits_digest(&hasher);
   return hash;
 }
@@ -24,7 +24,7 @@ cv_obj_info_from_symbol(CV_Symbol symbol)
   switch (symbol.kind) {
   case CV_SymKind_OBJNAME: {
     CV_SymObjName* obj_name = (CV_SymObjName *) symbol.data.str;
-    result.sig = obj_name->sig;
+    result.sig = obj_name.sig;
     str8_deserial_read_cstr(symbol.data, sizeof(CV_SymObjName), &result.name);
   } break;
   case CV_SymKind_OBJNAME_ST: {
@@ -46,16 +46,16 @@ cv_type_server_info_from_leaf(CV_Leaf leaf)
     CV_LeafTypeServer* ts   = (CV_LeafTypeServer *) leaf.data.str;
 
     result.name      = str8_cstring_capped_reverse(ts + 1, leaf.data.str + leaf.data.size);
-    result.sig.data1 = ts->sig;
-    result.age       = ts->age;
+    result.sig.data1 = ts.sig;
+    result.age       = ts.age;
   } break;
   case CV_LeafKind_TYPESERVER2: {
     CV_LeafTypeServer2* ts = (CV_LeafTypeServer2 *) leaf.data.str;
     
-    Assert(sizeof(result.sig) == sizeof(ts->sig70));
-    MemoryCopy(&result.sig, &ts->sig70, sizeof(ts->sig70));
+    Assert(sizeof(result.sig) == sizeof(ts.sig70));
+    MemoryCopy(&result.sig, &ts.sig70, sizeof(ts.sig70));
     result.name = str8_cstring_capped_reverse(ts + 1, leaf.data.str + leaf.data.size);
-    result.age  = ts->age;
+    result.age  = ts.age;
   } break;
   case CV_LeafKind_TYPESERVER_ST: {
     Assert("TODO: LF_TYPESERVER_ST");
@@ -72,9 +72,9 @@ cv_precomp_info_from_leaf(CV_Leaf leaf)
   switch (leaf.kind) {
   case CV_LeafKind_PRECOMP: {
     CV_LeafPreComp* precomp = (CV_LeafPreComp*)leaf.data.str;
-    result.start_index = precomp->start_index;
-    result.sig         = precomp->sig;
-    result.leaf_count  = precomp->count;
+    result.start_index = precomp.start_index;
+    result.sig         = precomp.sig;
+    result.leaf_count  = precomp.count;
     str8_deserial_read_cstr(leaf.data, sizeof(CV_LeafPreComp), &result.obj_name);
   } break;
   case CV_LeafKind_PRECOMP_16t: {
@@ -121,8 +121,8 @@ cv_serialize_leaf_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer_s
 
   // write header
   CV_LeafHeader* header_ptr = (CV_LeafHeader *)(buffer + buffer_cursor);
-  header_ptr->size = record_size16;
-  header_ptr->kind = kind;
+  header_ptr.size = record_size16;
+  header_ptr.kind = kind;
   buffer_cursor += sizeof(*header_ptr);
 
   // write body
@@ -152,7 +152,7 @@ cv_serialize_raw_leaf(Arena* arena, CV_LeafKind kind, String8 data, uint64 align
 String8
 cv_serialize_leaf(Arena* arena, CV_Leaf* leaf, uint64 align)
 {
-  return cv_serialize_raw_leaf(arena, leaf->kind, leaf->data, align);
+  return cv_serialize_raw_leaf(arena, leaf.kind, leaf.data, align);
 }
 
 CV_Leaf
@@ -173,16 +173,16 @@ cv_deserial_leaf(String8 raw_data, uint64 off, uint64 align, CV_Leaf* leaf_out)
   CV_LeafHeader* header = (CV_LeafHeader*)(raw_data.str + off);
 
   // leaf size must have enough bytes for the kind enum
-  Assert(header->size >= sizeof(CV_LeafKind));
+  Assert(header.size >= sizeof(CV_LeafKind));
 
   // do we have enough bytes to read leaf data?
-  Assert(sizeof(CV_LeafSize) + header->size <= raw_data.size);
+  Assert(sizeof(CV_LeafSize) + header.size <= raw_data.size);
 
   // fill out leaf
-  leaf_out->kind = header->kind;
-  leaf_out->data = str8(raw_data.str + sizeof(CV_LeafHeader), header->size - sizeof(CV_LeafKind));
+  leaf_out.kind = header.kind;
+  leaf_out.data = str8(raw_data.str + sizeof(CV_LeafHeader), header.size - sizeof(CV_LeafKind));
 
-  uint64 leaf_size = AlignPow2(sizeof(CV_LeafHeader) + leaf_out->data.size, align);
+  uint64 leaf_size = AlignPow2(sizeof(CV_LeafHeader) + leaf_out.data.size, align);
   Assert(leaf_size <= raw_data.size);
   return leaf_size;
 }
@@ -204,7 +204,7 @@ cv_compute_symbol_record_size(CV_Symbol* symbol, uint64 align)
   uint64 size = 0;
   size += sizeof(CV_SymSize);
   size += sizeof(CV_SymKind);
-  size += AlignPow2(symbol->data.size, align);
+  size += AlignPow2(symbol.data.size, align);
   return size;
 }
 
@@ -215,24 +215,24 @@ cv_serialize_symbol_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer
   Assert(buffer_cursor + write_size <= buffer_size);
 
   uint64 record_size = 0;
-  record_size += sizeof(symbol->kind);
-  record_size += AlignPow2(symbol->data.size, align);
+  record_size += sizeof(symbol.kind);
+  record_size += AlignPow2(symbol.data.size, align);
   
   Assert(record_size <= CV_SymSize_Max);
   CV_SymSize record_size16 = (CV_SymSize)record_size;
 
   // init header
   CV_SymbolHeader* header = (CV_SymbolHeader *)(buffer + buffer_cursor);
-  header->size = record_size16;
-  header->kind = symbol->kind;
+  header.size = record_size16;
+  header.kind = symbol.kind;
 
   // copy symbol data
   uint8* data_dst = (uint8 *)(header + 1);
-  MemoryCopy(data_dst, symbol->data.str, symbol->data.size);
+  MemoryCopy(data_dst, symbol.data.str, symbol.data.size);
 
   // set pad bytes
-  uint64 pad_size = AlignPadPow2(symbol->data.size, align);
-  uint8* pad_dst = data_dst + symbol->data.size;
+  uint64 pad_size = AlignPadPow2(symbol.data.size, align);
+  uint8* pad_dst = data_dst + symbol.data.size;
   MemorySet(&pad_dst[0], 0, pad_size);
 
   return write_size;
@@ -328,8 +328,8 @@ cv_make_envblock(Arena* arena, String8List string_list)
   str8_serial_begin(scratch.arena, &serial);
   CV_SymEnvBlock envblock = {0};
   str8_serial_push_struct(scratch.arena, &serial, &envblock);
-  for (String8Node* n = string_list.first; n != NULL; n = n->next) {
-    str8_serial_push_cstr(scratch.arena, &serial, n->string);
+  for (String8Node* n = string_list.first; n != NULL; n = n.next) {
+    str8_serial_push_cstr(scratch.arena, &serial, n.string);
   }
   String8 result = str8_serial_end(arena, &serial);
   scratch_end(scratch);
@@ -344,9 +344,9 @@ cv_make_proc_ref(Arena* arena, CV_ModIndex imod, uint32 stream_offset, String8 n
   uint8* buffer      = push_array_no_zero(arena, uint8, buffer_size);
   
   CV_SymRef2* ref = (CV_SymRef2*)buffer;
-  ref->suc_name = 0;
-  ref->sym_off  = stream_offset;
-  ref->imod     = imod + 1; // MSVC adds one
+  ref.suc_name = 0;
+  ref.sym_off  = stream_offset;
+  ref.imod     = imod + 1; // MSVC adds one
   
   uint8* name_ptr = (uint8*)(ref + 1);
   MemoryCopy(name_ptr, name.str, name.size);
@@ -367,9 +367,9 @@ cv_make_pub32(Arena* arena, CV_Pub32Flags flags, uint32 off, uint16 isect, Strin
   uint8* buffer      = push_array_no_zero(arena, uint8, buffer_size);
 
   CV_SymPub32* pub = (CV_SymPub32 *)buffer;
-  pub->flags = flags;
-  pub->off   = off;
-  pub->sec   = isect;
+  pub.flags = flags;
+  pub.off   = off;
+  pub.sec   = isect;
   
   uint8* name_ptr = (uint8*)(pub + 1);
   MemoryCopy(name_ptr, name.str, name.size);
@@ -386,18 +386,18 @@ CV_SymbolList
 cv_make_proc_refs(Arena* arena, CV_ModIndex imod, CV_SymbolList symbol_list)
 {
   CV_SymbolList proc_ref_list = {0};
-  for (CV_SymbolNode* symbol_node = symbol_list.first; symbol_node != 0; symbol_node = symbol_node->next) {
-    CV_Symbol* symbol = &symbol_node->data;
-    if (symbol->kind == CV_SymKind_GPROC32) {
-      String8        name          = cv_name_from_symbol(symbol->kind, symbol->data);
-      CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol->offset), name, /* is_local: */ 0);
+  for (CV_SymbolNode* symbol_node = symbol_list.first; symbol_node != 0; symbol_node = symbol_node.next) {
+    CV_Symbol* symbol = &symbol_node.data;
+    if (symbol.kind == CV_SymKind_GPROC32) {
+      String8        name          = cv_name_from_symbol(symbol.kind, symbol.data);
+      CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol.offset), name, /* is_local: */ 0);
       CV_SymbolNode* proc_ref_node = cv_symbol_list_push(arena, &proc_ref_list);
-      proc_ref_node->data = ref;
-    } else if (symbol->kind == CV_SymKind_LPROC32) {
-      String8        name          = cv_name_from_symbol(symbol->kind, symbol->data);
-      CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol->offset), name, /* is_local */ 1);
+      proc_ref_node.data = ref;
+    } else if (symbol.kind == CV_SymKind_LPROC32) {
+      String8        name          = cv_name_from_symbol(symbol.kind, symbol.data);
+      CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol.offset), name, /* is_local */ 1);
       CV_SymbolNode* proc_ref_node = cv_symbol_list_push(arena, &proc_ref_list);
-      proc_ref_node->data = ref;
+      proc_ref_node.data = ref;
     }
   }
   return proc_ref_list;
@@ -417,7 +417,7 @@ cv_parse_debug_s_c13_(Arena* arena, CV_DebugS* debug_s, String8 raw_debug_s)
     if (~header.kind & CV_C13SubSectionKind_IgnoreFlag) {
       // pick sub-section list
       uint64          sub_sect_idx  = cv_c13_sub_section_idx_from_kind(header.kind);
-      String8List* sub_sect_list = debug_s->data_list + sub_sect_idx;
+      String8List* sub_sect_list = debug_s.data_list + sub_sect_idx;
 
       // push data to sub-section
       Rng1U64 sub_sect_range = r1u64(cursor, cursor + header.size);
@@ -443,8 +443,8 @@ CV_DebugS
 cv_parse_debug_s_c13_list(Arena* arena, String8List raw_debug_s)
 {
   CV_DebugS debug_s = {0};
-  for (String8Node* node = raw_debug_s.first; node != 0; node = node->next) {
-    cv_parse_debug_s_c13_(arena, &debug_s, node->string);
+  for (String8Node* node = raw_debug_s.first; node != 0; node = node.next) {
+    cv_parse_debug_s_c13_(arena, &debug_s, node.string);
   }
   return debug_s;
 }
@@ -478,8 +478,8 @@ cv_parse_debug_s(Arena* arena, String8 raw_debug_s)
 void
 cv_debug_s_concat_in_place(CV_DebugS* dst, CV_DebugS* src)
 {
-  for (uint64 sub_sect_idx = 0; sub_sect_idx < ArrayCount(dst->data_list); sub_sect_idx += 1) {
-    str8_list_concat_in_place(&dst->data_list[sub_sect_idx], &src->data_list[sub_sect_idx]);
+  for (uint64 sub_sect_idx = 0; sub_sect_idx < ArrayCount(dst.data_list); sub_sect_idx += 1) {
+    str8_list_concat_in_place(&dst.data_list[sub_sect_idx], &src.data_list[sub_sect_idx]);
   }
 }
 
@@ -514,20 +514,20 @@ cv_data_c13_from_debug_s(Arena* arena, CV_DebugS* debug_s, B32 write_sig)
   for (uint64 layout_idx = 0; layout_idx < ArrayCount(layout_arr); layout_idx += 1) {
     CV_C13SubSectionKind kind = layout_arr[layout_idx];
     String8List* data = cv_sub_section_ptr_from_debug_s(debug_s, kind);
-    if (data->total_size > 0) {
-      uint32 size32 = safe_cast_u32(data->total_size);
+    if (data.total_size > 0) {
+      uint32 size32 = safe_cast_u32(data.total_size);
       str8_serial_push_u32(arena, &srl, kind);
       str8_serial_push_u32(arena, &srl, size32);
-      str8_serial_push_data_list(arena, &srl, data->first);
+      str8_serial_push_data_list(arena, &srl, data.first);
       str8_serial_push_align(arena, &srl, 4);
     }
   }
   
   String8List* line_data = cv_sub_section_ptr_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
-  for (String8Node* line_node = line_data->first; line_node != 0; line_node = line_node->next) {
+  for (String8Node* line_node = line_data.first; line_node != 0; line_node = line_node.next) {
     str8_serial_push_u32(arena, &srl, CV_C13SubSectionKind_Lines);
-    str8_serial_push_u32(arena, &srl, safe_cast_u32(line_node->string.size));
-    str8_serial_push_string(arena, &srl, line_node->string);
+    str8_serial_push_u32(arena, &srl, safe_cast_u32(line_node.string.size));
+    str8_serial_push_string(arena, &srl, line_node.string);
     str8_serial_push_align(arena, &srl, 4);
   }
   
@@ -549,7 +549,7 @@ String8List *
 cv_sub_section_ptr_from_debug_s(CV_DebugS* debug_s, CV_C13SubSectionKind kind)
 {
   CV_C13SubSectionIdxKind idx = cv_c13_sub_section_idx_from_kind(kind);
-  return &debug_s->data_list[idx];
+  return &debug_s.data_list[idx];
 }
 
 String8List
@@ -565,7 +565,7 @@ cv_string_table_from_debug_s(CV_DebugS debug_s)
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_StringTable);
   String8 string_data = str8_zero();
   if (data_list.node_count > 0) {
-    string_data = data_list.first->string;
+    string_data = data_list.first.string;
   }
   return string_data;
 }
@@ -576,7 +576,7 @@ cv_file_chksms_from_debug_s(CV_DebugS debug_s)
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_FileChksms);
   String8 file_chksms = str8_zero();
   if (data_list.node_count > 0) {
-    file_chksms = data_list.first->string;
+    file_chksms = data_list.first.string;
   }
   return file_chksms;
 }
@@ -598,10 +598,10 @@ cv_string_bucket_is_before(void* raw_a, void* raw_b)
 
   int is_before;
 
-  if ((*a)->u.idx0 == (*b)->u.idx0) {
-    is_before = (*a)->u.idx1 < (*b)->u.idx1;
+  if ((*a).u.idx0 == (*b).u.idx0) {
+    is_before = (*a).u.idx1 < (*b).u.idx1;
   } else {
-    is_before = (*a)->u.idx0 < (*b)->u.idx0;
+    is_before = (*a).u.idx0 < (*b).u.idx0;
   }
 
   return is_before;
@@ -631,7 +631,7 @@ cv_string_hash_table_insert_or_update(CV_StringBucket** buckets, uint64 cap, uin
 
       // another thread took the bucket...
       goto retry;
-    } else if (str8_match(curr_bucket->string, new_bucket->string, 0)) {
+    } else if (str8_match(curr_bucket.string, new_bucket.string, 0)) {
       if (cv_string_bucket_is_before(&curr_bucket, &new_bucket)) {
         // recycle bucket
         result = new_bucket;
@@ -673,25 +673,25 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
 {
   ProfBeginFunction();
   CV_DedupStringTablesTask* task          = raw_task;
-  CV_StringTableRange*      range_list    = task->range_lists[task_id];
+  CV_StringTableRange*      range_list    = task.range_lists[task_id];
 
-  for (CV_StringTableRange* range_n = range_list; range_n != 0; range_n = range_n->next) {
-    CV_DebugS debug_s       = task->arr[range_n->debug_s_idx];
+  for (CV_StringTableRange* range_n = range_list; range_n != 0; range_n = range_n.next) {
+    CV_DebugS debug_s       = task.arr[range_n.debug_s_idx];
     String8   string_buffer = cv_string_table_from_debug_s(debug_s);
 
-    Assert(range_n->range.min <= range_n->range.max);
-    Assert(range_n->range.min <= string_buffer.size);
-    Assert(range_n->range.max <= string_buffer.size);
+    Assert(range_n.range.min <= range_n.range.max);
+    Assert(range_n.range.min <= string_buffer.size);
+    Assert(range_n.range.max <= string_buffer.size);
 
     uint64 count = 0;
-    for (uint64 i = range_n->range.min; i < range_n->range.max; ++i) {
+    for (uint64 i = range_n.range.min; i < range_n.range.max; ++i) {
       uint8 b = string_buffer.str[i];
       if (b == '\0') {
         count += 1;
       }
     }
 
-    ins_atomic_u64_add_eval(&task->string_counts[range_n->debug_s_idx], count);
+    ins_atomic_u64_add_eval(&task.string_counts[range_n.debug_s_idx], count);
   }
 
   ProfEnd();
@@ -705,7 +705,7 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
 
   uint64                       debug_s_idx = task_id;
   CV_DedupStringTablesTask* task        = raw_task;
-  CV_DebugS                 debug_s     = task->arr[debug_s_idx];
+  CV_DebugS                 debug_s     = task.arr[debug_s_idx];
 
   String8     string_table = cv_string_table_from_debug_s(debug_s);
   String8List strings_list = str8_split_by_string_chars(scratch.arena, string_table, str8_lit("\0"), 0);
@@ -718,20 +718,20 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
   uint64 string_idx = 0;
 
 
-  for (String8Node* string_n = strings_list.first; string_n != 0; string_n = string_n->next, ++string_idx) {
+  for (String8Node* string_n = strings_list.first; string_n != 0; string_n = string_n.next, ++string_idx) {
     if (bucket == 0) {
       bucket = push_array_no_zero(arena, CV_StringBucket, 1);
     }
 
-    bucket->u.idx0 = debug_s_idx;
-    bucket->u.idx1 = string_idx;
-    bucket->string = string_n->string;
+    bucket.u.idx0 = debug_s_idx;
+    bucket.u.idx1 = string_idx;
+    bucket.string = string_n.string;
 
-    uint64              hash             = cv_string_hash_table_hash(string_n->string);
-    CV_StringBucket* insert_or_update = cv_string_hash_table_insert_or_update(task->buckets, task->bucket_cap, hash, bucket);
+    uint64              hash             = cv_string_hash_table_hash(string_n.string);
+    CV_StringBucket* insert_or_update = cv_string_hash_table_insert_or_update(task.buckets, task.bucket_cap, hash, bucket);
 
     if (insert_or_update == 0) {
-      total_string_size  += string_n->string.size;
+      total_string_size  += string_n.string.size;
       total_insert_count += 1;
     }
 
@@ -740,8 +740,8 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
     }
   }
 
-  ins_atomic_u64_add_eval(&task->total_string_size, total_string_size);
-  ins_atomic_u64_add_eval(&task->total_insert_count, total_insert_count);
+  ins_atomic_u64_add_eval(&task.total_string_size, total_string_size);
+  ins_atomic_u64_add_eval(&task.total_insert_count, total_insert_count);
 
   scratch_end(scratch);
   ProfEnd();
@@ -751,7 +751,7 @@ CV_StringHashTable
 cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS* arr)
 {
   ProfBeginFunction();
-  Temp scratch = scratch_begin(arena->v, arena->count);
+  Temp scratch = scratch_begin(arena.v, arena.count);
 
   ProfBegin("Compute Total Weight");
   uint64 total_weight = 0;
@@ -761,10 +761,10 @@ cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS*
   }
   ProfEnd();
 
-  uint64                   per_task_weight = CeilIntegerDiv(total_weight, tp->worker_count);
+  uint64                   per_task_weight = CeilIntegerDiv(total_weight, tp.worker_count);
   uint64                   task_weight     = 0;
   uint64                   task_id         = 0;
-  CV_StringTableRange** range_lists     = push_array(scratch.arena, CV_StringTableRange *, tp->worker_count);
+  CV_StringTableRange** range_lists     = push_array(scratch.arena, CV_StringTableRange *, tp.worker_count);
 
   ProfBegin("Divide Work");
   for (uint64 debug_s_idx = 0; debug_s_idx < count; ++debug_s_idx) {
@@ -772,15 +772,15 @@ cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS*
 
     for (uint64 cursor = 0; cursor < string_table.size; cursor += per_task_weight) {
       if (task_weight >= per_task_weight) {
-        task_id     = (task_id + 1) % tp->worker_count;
+        task_id     = (task_id + 1) % tp.worker_count;
         task_weight = 0;
       }
 
       uint64 max_range_weight = Min(per_task_weight, string_table.size - cursor);
 
       CV_StringTableRange* node = push_array(scratch.arena, CV_StringTableRange, 1);
-      node->range               = rng_1u64(cursor, cursor + max_range_weight);
-      node->debug_s_idx         = debug_s_idx;
+      node.range               = rng_1u64(cursor, cursor + max_range_weight);
+      node.debug_s_idx         = debug_s_idx;
 
       SLLStackPush(range_lists[task_id], node);
       task_weight += max_range_weight;
@@ -793,13 +793,13 @@ cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS*
   task.arr                      = arr;
   task.range_lists              = range_lists;
   task.string_counts            = push_array(scratch.arena, uint64, count);
-  tp_for_parallel(tp, 0, tp->worker_count, cv_count_strings_in_debug_s_arr_task, &task);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_count_strings_in_debug_s_arr_task, &task);
   ProfEnd();
 
   ProfBegin("Dedup");
   uint64 total_string_count = sum_array_u64(count, task.string_counts);
   task.bucket_cap = (uint64)((double)total_string_count * 1.3);
-  task.buckets    = push_array(arena->v[0], CV_StringBucket *, task.bucket_cap);
+  task.buckets    = push_array(arena.v[0], CV_StringBucket *, task.bucket_cap);
   tp_for_parallel(tp, arena, count, cv_dedup_strings_in_debug_s_arr_task, &task);
   ProfEnd();
 
@@ -848,8 +848,8 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context* tp, CV_StringHashTable st
   ProfBegin("Assign Offsets");
   for (uint64 i = 0, offset_cursor = 0; i < string_count; ++i) {
     CV_StringBucket* s = strings[i];
-    s->u.offset = offset_cursor;
-    offset_cursor += s->string.size + 1;
+    s.u.offset = offset_cursor;
+    offset_cursor += s.string.size + 1;
   }
   ProfEnd();
 
@@ -869,7 +869,7 @@ cv_string_hash_table_lookup(CV_StringHashTable ht, String8 string)
       break;
     }
 
-    if (str8_match(ht.buckets[idx]->string, string, 0)) {
+    if (str8_match(ht.buckets[idx].string, string, 0)) {
       return ht.buckets[idx];
     }
 
@@ -884,12 +884,12 @@ THREAD_POOL_TASK_FUNC(cv_pack_string_hash_table_task)
 {
   ProfBeginFunction();
   CV_PackStringHashTableTask* task  = raw_task;
-  Rng1U64                     range = task->ranges[task_id];
+  Rng1U64                     range = task.ranges[task_id];
   for (uint64 bucket_idx = range.min; bucket_idx < range.max; ++bucket_idx) {
-    CV_StringBucket* bucket = task->buckets[bucket_idx];
+    CV_StringBucket* bucket = task.buckets[bucket_idx];
     if (bucket) {
-      MemoryCopy(task->buffer + bucket->u.offset, bucket->string.str, bucket->string.size);
-      task->buffer[bucket->u.offset + bucket->string.size] = '\0';
+      MemoryCopy(task.buffer + bucket.u.offset, bucket.string.str, bucket.string.size);
+      task.buffer[bucket.u.offset + bucket.string.size] = '\0';
     }
   }
   ProfEnd();
@@ -907,8 +907,8 @@ cv_pack_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable strin
   CV_PackStringHashTableTask task = {0};
   task.buckets                    = string_ht.buckets;
   task.buffer                     = buffer;
-  task.ranges                     = tp_divide_work(scratch.arena, string_ht.bucket_cap, tp->worker_count);
-  tp_for_parallel(tp, 0, tp->worker_count, cv_pack_string_hash_table_task, &task);
+  task.ranges                     = tp_divide_work(scratch.arena, string_ht.bucket_cap, tp.worker_count);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_pack_string_hash_table_task, &task);
 
   String8 result = str8(buffer, buffer_size);
   scratch_end(scratch);
@@ -951,9 +951,9 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode*** buckets, uint64 cap, uint64 
 
       // another thread took the bucket...
       goto retry;
-    } else if ((*curr_bucket)->data.kind == (*new_bucket)->data.kind &&
-               (*curr_bucket)->data.data.size == (*new_bucket)->data.data.size &&
-               MemoryMatch((*curr_bucket)->data.data.str, (*new_bucket)->data.data.str, (*new_bucket)->data.data.size)) {
+    } else if ((*curr_bucket).data.kind == (*new_bucket).data.kind &&
+               (*curr_bucket).data.data.size == (*new_bucket).data.data.size &&
+               MemoryMatch((*curr_bucket).data.data.str, (*new_bucket).data.data.str, (*new_bucket).data.data.size)) {
       if (cv_symbol_deduper_is_before(curr_bucket, new_bucket)) {
         result = new_bucket;
 
@@ -989,11 +989,11 @@ THREAD_POOL_TASK_FUNC(cv_symbol_deduper_insert_task)
 {
   ProfBeginFunction();
   CV_SymbolDeduperTask* task  = raw_task;
-  Rng1U64               range = task->ranges[task_id];
+  Rng1U64               range = task.ranges[task_id];
   for (uint64 symbol_idx = range.min; symbol_idx < range.max; ++symbol_idx) {
-    CV_SymbolNode** symbol_node = &task->symbols[symbol_idx];
-    uint64             hash        = hash_from_cv_symbol(&(*symbol_node)->data);
-    cv_symbol_deduper_insert_or_update(task->u.buckets, task->cap, hash, symbol_node);
+    CV_SymbolNode** symbol_node = &task.symbols[symbol_idx];
+    uint64             hash        = hash_from_cv_symbol(&(*symbol_node).data);
+    cv_symbol_deduper_insert_or_update(task.u.buckets, task.cap, hash, symbol_node);
   }
   ProfEnd();
 }
@@ -1003,11 +1003,11 @@ THREAD_POOL_TASK_FUNC(cv_symbol_deduper_deref_buckets_task)
 {
   ProfBeginFunction();
   CV_SymbolDeduperTask* task  = raw_task;
-  Rng1U64               range = task->ranges[task_id];
+  Rng1U64               range = task.ranges[task_id];
   for (uint64 bucket_idx = range.min; bucket_idx < range.max; ++bucket_idx) {
-    CV_SymbolNode** bucket = task->u.buckets[bucket_idx];
+    CV_SymbolNode** bucket = task.u.buckets[bucket_idx];
     if (bucket) {
-      task->u.deref_buckets[bucket_idx] = *bucket;
+      task.u.deref_buckets[bucket_idx] = *bucket;
     }
   }
   ProfEnd();
@@ -1016,24 +1016,24 @@ THREAD_POOL_TASK_FUNC(cv_symbol_deduper_deref_buckets_task)
 void
 cv_dedup_symbol_ptr_array(TP_Context* tp, CV_SymbolPtrArray* symbols)
 {
-  ProfBeginDynamic("Dedup Symbols [Count %llu]", symbols->count);
+  ProfBeginDynamic("Dedup Symbols [Count %llu]", symbols.count);
   Temp scratch = scratch_begin(0, 0);
 
   ProfBegin("Setup Task");
   CV_SymbolDeduperTask task = {0};
-  task.symbols              = symbols->v;
-  task.cap                  = (uint64)((double)symbols->count * 1.3);
+  task.symbols              = symbols.v;
+  task.cap                  = (uint64)((double)symbols.count * 1.3);
   task.u.buckets            = push_array(scratch.arena, CV_SymbolNode **, task.cap);
   ProfEnd();
 
   ProfBegin("Dedup");
-  task.ranges = tp_divide_work(scratch.arena, symbols->count, tp->worker_count);
-  tp_for_parallel(tp, 0, tp->worker_count, cv_symbol_deduper_insert_task, &task);
+  task.ranges = tp_divide_work(scratch.arena, symbols.count, tp.worker_count);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_symbol_deduper_insert_task, &task);
   ProfEnd();
 
   ProfBegin("Deref Buckets");
-  task.ranges = tp_divide_work(scratch.arena, task.cap, tp->worker_count);
-  tp_for_parallel(tp, 0, tp->worker_count, cv_symbol_deduper_deref_buckets_task, &task);
+  task.ranges = tp_divide_work(scratch.arena, task.cap, tp.worker_count);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_symbol_deduper_deref_buckets_task, &task);
   ProfEnd();
 
   ProfBegin("Copy Extant Buckets");
@@ -1041,16 +1041,16 @@ cv_dedup_symbol_ptr_array(TP_Context* tp, CV_SymbolPtrArray* symbols)
   for (uint64 bucket_idx = 0; bucket_idx < task.cap; ++bucket_idx) {
     CV_SymbolNode* bucket = task.u.deref_buckets[bucket_idx];
     if (bucket) {
-      symbols->v[unique_symbol_count++] = bucket;
+      symbols.v[unique_symbol_count++] = bucket;
     }
   }
   ProfEnd();
 
-  Assert(unique_symbol_count <= symbols->count);
-  symbols->count = unique_symbol_count;
+  Assert(unique_symbol_count <= symbols.count);
+  symbols.count = unique_symbol_count;
 
-  ProfBeginDynamic("Sort [Count %llu]", symbols->count);
-  radsort(symbols->v, symbols->count, cv_symbol_deduper_is_before);
+  ProfBeginDynamic("Sort [Count %llu]", symbols.count);
+  radsort(symbols.v, symbols.count, cv_symbol_deduper_is_before);
   ProfEnd();
 
   scratch_end(scratch);
@@ -1178,10 +1178,10 @@ cv_debug_t_array_count_leaves(uint64 count, CV_DebugT* arr)
 THREAD_POOL_TASK_FUNC(cv_str8_list_from_debug_t_task)
 {
   CV_Str8ListFromDebugT* task = raw_task;
-  for (uint64 leaf_idx = task->ranges[task_id].min; leaf_idx < task->ranges[task_id].max; ++leaf_idx) {
-    String8Node* node = &task->nodes[leaf_idx];
-    node->string = cv_debug_t_get_raw_leaf(task->debug_t, leaf_idx);
-    str8_list_push_node(&task->lists[task_id], node);
+  for (uint64 leaf_idx = task.ranges[task_id].min; leaf_idx < task.ranges[task_id].max; ++leaf_idx) {
+    String8Node* node = &task.nodes[leaf_idx];
+    node.string = cv_debug_t_get_raw_leaf(task.debug_t, leaf_idx);
+    str8_list_push_node(&task.lists[task_id], node);
   }
 }
 
@@ -1194,14 +1194,14 @@ cv_str8_list_from_debug_t_parallel(TP_Context* tp, Arena* arena, CV_DebugT debug
   // build lists in parallel
   CV_Str8ListFromDebugT task = {0};
   task.debug_t = debug_t;
-  task.ranges  = tp_divide_work(scratch.arena, debug_t.count, tp->worker_count);
-  task.lists   = push_array(scratch.arena, String8List, tp->worker_count);
+  task.ranges  = tp_divide_work(scratch.arena, debug_t.count, tp.worker_count);
+  task.lists   = push_array(scratch.arena, String8List, tp.worker_count);
   task.nodes   = push_array_no_zero(arena, String8Node, debug_t.count);
-  tp_for_parallel(tp, 0, tp->worker_count, cv_str8_list_from_debug_t_task, &task);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_str8_list_from_debug_t_task, &task);
 
   // concat output lists
   String8List list = {0};
-  for (uint64 task_id = 0; task_id < tp->worker_count; ++task_id) {
+  for (uint64 task_id = 0; task_id < tp.worker_count; ++task_id) {
     str8_list_concat_in_place(&list, &task.lists[task_id]);
   }
 
@@ -1239,9 +1239,9 @@ cv_parse_symbol_sub_section(Arena* arena, CV_SymbolList* list, uint64 offset_bas
     
     // init symbol
     CV_SymbolNode* node = cv_symbol_list_push(arena, list);
-    node->data.offset   = offset_base + cursor;
-    node->data.kind     = header.kind;
-    node->data.data     = symbol_data;
+    node.data.offset   = offset_base + cursor;
+    node.data.kind     = header.kind;
+    node.data.data     = symbol_data;
     
     // advance cursor
     cursor = symbol_opl;
@@ -1254,8 +1254,8 @@ cv_symbol_list_from_data_list(Arena* arena, String8List data_list, uint64 align)
 {
   CV_SymbolList symbol_list = {0};
   uint64 cursor = 0;
-  for (String8Node* sect = data_list.first; sect != 0; cursor += sect->string.size, sect = sect->next) {
-    cv_parse_symbol_sub_section(arena, &symbol_list, cursor, sect->string, align);
+  for (String8Node* sect = data_list.first; sect != 0; cursor += sect.string.size, sect = sect.next) {
+    cv_parse_symbol_sub_section(arena, &symbol_list, cursor, sect.string, align);
   }
   return symbol_list;
 }
@@ -1263,10 +1263,10 @@ cv_symbol_list_from_data_list(Arena* arena, String8List data_list, uint64 align)
 void
 cv_symbol_list_push_node(CV_SymbolList* list, CV_SymbolNode* node)
 {
-  node->prev = 0;
-  node->next = 0;
-  DLLPushBack(list->first, list->last, node);
-  list->count += 1;
+  node.prev = 0;
+  node.next = 0;
+  DLLPushBack(list.first, list.last, node);
+  list.count += 1;
 }
 
 CV_SymbolNode *
@@ -1281,8 +1281,8 @@ CV_SymbolNode *
 cv_symbol_list_push_data(Arena* arena, CV_SymbolList* list, CV_SymKind kind, String8 data)
 {
   CV_SymbolNode* node = cv_symbol_list_push(arena, list);
-  node->data.kind = kind;
-  node->data.data = data;
+  node.data.kind = kind;
+  node.data.data = data;
   return node;
 }
 
@@ -1299,9 +1299,9 @@ cv_symbol_list_push_many(Arena* arena, CV_SymbolList* list, uint64 count)
 void
 cv_symbol_list_remove_node(CV_SymbolList* list, CV_SymbolNode* node)
 {
-  Assert(list->count > 0);
-  list->count -= 1;
-  DLLRemove(list->first, list->last, node);
+  Assert(list.count > 0);
+  list.count -= 1;
+  DLLRemove(list.first, list.last, node);
 }
 
 void
@@ -1330,8 +1330,8 @@ String8List
 cv_data_from_symbol_list(Arena* arena, CV_SymbolList symbol_list, uint64 align)
 {
   String8List data_list = {0};
-  for (CV_SymbolNode* node = symbol_list.first; node != 0; node = node->next) {
-    String8 data = cv_serialize_symbol(arena, &node->data, align);
+  for (CV_SymbolNode* node = symbol_list.first; node != 0; node = node.next) {
+    String8 data = cv_serialize_symbol(arena, &node.data, align);
     str8_list_push(arena, &data_list, data);
   }
   return data_list;
@@ -1345,16 +1345,16 @@ THREAD_POOL_TASK_FUNC(cv_symbol_list_syncer)
   CV_SymbolListSyncer* task = raw_task;
 
   // context shortcuts
-  Rng1U64 list_range  = task->list_range_arr[task_id];
-  uint64     symbol_base = task->symbol_base_arr[task_id];
+  Rng1U64 list_range  = task.list_range_arr[task_id];
+  uint64     symbol_base = task.symbol_base_arr[task_id];
 
   for (uint64 list_idx = list_range.min, symbol_idx = symbol_base; list_idx < list_range.max; list_idx += 1) {
     // pick up assigned list
-    CV_SymbolList list = task->list_arr[list_idx];
+    CV_SymbolList list = task.list_arr[list_idx];
 
     // fill out assigned range in the symbol array
-    for (CV_SymbolNode* node = list.first; node != 0; node = node->next, symbol_idx += 1) {
-      task->symbol_arr[symbol_idx] = node;
+    for (CV_SymbolNode* node = list.first; node != 0; node = node.next, symbol_idx += 1) {
+      task.symbol_arr[symbol_idx] = node;
     }
   }
 
@@ -1372,10 +1372,10 @@ cv_symbol_ptr_array_from_list(Arena* arena, TP_Context* tp, uint64 count, CV_Sym
   CV_SymbolListSyncer task = {0};
   task.list_arr            = list_arr;
   task.symbol_arr          = push_array_no_zero(arena, CV_SymbolNode *, total_count);
-  task.symbol_base_arr     = push_array_no_zero(scratch.arena, uint64, tp->worker_count);
-  task.list_range_arr      = tp_divide_work(scratch.arena, count, tp->worker_count);
+  task.symbol_base_arr     = push_array_no_zero(scratch.arena, uint64, tp.worker_count);
+  task.list_range_arr      = tp_divide_work(scratch.arena, count, tp.worker_count);
 
-  for (uint64 thread_idx = 0, symbol_base = 0; thread_idx < tp->worker_count; thread_idx += 1) {
+  for (uint64 thread_idx = 0, symbol_base = 0; thread_idx < tp.worker_count; thread_idx += 1) {
     task.symbol_base_arr[thread_idx] = symbol_base;
     Rng1U64 range = task.list_range_arr[thread_idx];
     for (uint64 list_idx = range.min; list_idx < range.max; list_idx += 1) {
@@ -1383,7 +1383,7 @@ cv_symbol_ptr_array_from_list(Arena* arena, TP_Context* tp, uint64 count, CV_Sym
     }
   }
 
-  tp_for_parallel(tp, 0, tp->worker_count, cv_symbol_list_syncer, &task);
+  tp_for_parallel(tp, 0, tp.worker_count, cv_symbol_list_syncer, &task);
 
   CV_SymbolPtrArray result = {0};
   result.count             = total_count;
@@ -1398,7 +1398,7 @@ CV_Scope *
 cv_scope_list_push(Arena* arena, CV_ScopeList* list)
 {
   CV_Scope* node = push_array(arena, CV_Scope, 1);
-  SLLQueuePush(list->first, list->last, node);
+  SLLQueuePush(list.first, list.last, node);
   return node;
 }
 
@@ -1407,8 +1407,8 @@ cv_global_scope_symbols_from_list(Arena* arena, CV_SymbolList list)
 {
   CV_SymbolList gsym_list = {0};
   int64 scope_depth = 0;
-  for (CV_SymbolNode* symbol_n = list.first; symbol_n != 0; symbol_n = symbol_n->next) {
-    CV_Symbol symbol = symbol_n->data;
+  for (CV_SymbolNode* symbol_n = list.first; symbol_n != 0; symbol_n = symbol_n.next) {
+    CV_Symbol symbol = symbol_n.data;
     if (cv_is_global_symbol(symbol.kind) && scope_depth == 0) {
       cv_symbol_list_push_data(arena, &gsym_list, symbol.kind, symbol.data);
     } else if (cv_is_scope_symbol(symbol.kind)) {
@@ -1432,26 +1432,26 @@ cv_symbol_tree_from_symbol_list(Arena* arena, CV_SymbolList list)
   
   // setup root frame
   CV_ScopeFrame* stack = push_array(scratch.arena, CV_ScopeFrame, 1);
-  stack->list = &root;
+  stack.list = &root;
   
-  for (CV_SymbolNode* symbol_node = list.first; symbol_node != 0; symbol_node = symbol_node->next) {
+  for (CV_SymbolNode* symbol_node = list.first; symbol_node != 0; symbol_node = symbol_node.next) {
     // store symbol in current scope
-    CV_Scope* scope = cv_scope_list_push(arena, stack->list);
-    scope->symbol = symbol_node->data;
+    CV_Scope* scope = cv_scope_list_push(arena, stack.list);
+    scope.symbol = symbol_node.data;
     
     // does this symbol define a new scope?
-    if (cv_is_scope_symbol(symbol_node->data.kind)) {
+    if (cv_is_scope_symbol(symbol_node.data.kind)) {
       CV_ScopeFrame* frame = push_array(scratch.arena, CV_ScopeFrame, 1);
-      frame->list = push_array(arena, CV_ScopeList, 1);
+      frame.list = push_array(arena, CV_ScopeList, 1);
       SLLStackPush(stack, frame);
     }
     // does this symbol end current scope?
-    else if (cv_is_end_symbol(symbol_node->data.kind)) {
-      CV_ScopeFrame* prev_stack_frame = stack->next;
+    else if (cv_is_end_symbol(symbol_node.data.kind)) {
+      CV_ScopeFrame* prev_stack_frame = stack.next;
       if (prev_stack_frame) {
         // set children in parent scope
-        CV_Scope* parent_scope = prev_stack_frame->list->last;
-        parent_scope->children = stack->list;
+        CV_Scope* parent_scope = prev_stack_frame.list.last;
+        parent_scope.children = stack.list;
       }
       
       // pop frame
@@ -1478,8 +1478,8 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, uint64 base_offset, uint64 alig
 
   uint64 cursor = base_offset;
 
-  for (CV_SymbolNode* symbol_n = list.first; symbol_n != 0; symbol_n = symbol_n->next) {
-    CV_Symbol symbol = symbol_n->data;
+  for (CV_SymbolNode* symbol_n = list.first; symbol_n != 0; symbol_n = symbol_n.next) {
+    CV_Symbol symbol = symbol_n.data;
     if (cv_is_scope_symbol(symbol.kind)) {
       // NOTE: We don't patch 'next' offset in PROC symbols because
       // it's not used by visual studio and MSVC leaves the offsets
@@ -1489,7 +1489,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, uint64 base_offset, uint64 alig
       // patch symbol parent
       if (stack) {
         uint32* parent_off_ptr = (uint32 *)symbol.data.str;
-        *parent_off_ptr = stack->offset;
+        *parent_off_ptr = stack.offset;
       }
 
       // reuse/alloc frame
@@ -1502,12 +1502,12 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, uint64 base_offset, uint64 alig
       }
 
       // push frame to the stack
-      frame->symbol = &symbol_n->data;
-      frame->offset = cursor;
+      frame.symbol = &symbol_n.data;
+      frame.offset = cursor;
       SLLStackPush(stack, frame);
     } else if (cv_is_end_symbol(symbol.kind)) {
       // patch symbol end
-      uint32* end_off_ptr = (uint32 *)stack->symbol->data.str + /* skip parent off */ 1;
+      uint32* end_off_ptr = (uint32 *)stack.symbol.data.str + /* skip parent off */ 1;
       *end_off_ptr = cursor;
 
       // recycle frame
@@ -1538,23 +1538,23 @@ cv_parse_checksum_data(Arena* arena, CV_ChecksumList* list, String8 checksum_dat
     CV_C13Checksum* header = (CV_C13Checksum *)str8_deserial_get_raw_ptr(checksum_data, cursor, sizeof(CV_C13Checksum));
     cursor += sizeof(CV_C13Checksum);
     
-    uint64 expected_cursor_after_value = cursor + header->len;
+    uint64 expected_cursor_after_value = cursor + header.len;
     if (expected_cursor_after_value > cursor_opl) {
       break;
     }
     String8 value = str8(0,0);
-    cursor += str8_deserial_read_block(checksum_data, cursor, header->len, &value);
+    cursor += str8_deserial_read_block(checksum_data, cursor, header.len, &value);
     cursor = AlignPow2(cursor, 4);
     
     CV_ChecksumNode* node = push_array(arena, CV_ChecksumNode, 1);
-    node->next = 0;
+    node.next = 0;
     
-    CV_Checksum* data = &node->data;
-    data->header = header;
-    data->value = value;
+    CV_Checksum* data = &node.data;
+    data.header = header;
+    data.value = value;
     
-    SLLQueuePush(list->first, list->last, node);
-    list->count += 1;
+    SLLQueuePush(list.first, list.last, node);
+    list.count += 1;
   }
 }
 
@@ -1562,8 +1562,8 @@ CV_ChecksumList
 cv_c13_parse_checksum_data_list(Arena* arena, String8List checksum_data_list)
 {
   CV_ChecksumList result = {0};
-  for (String8Node* node = checksum_data_list.first; node != 0; node = node->next) {
-    cv_parse_checksum_data(arena, &result, node->string);
+  for (String8Node* node = checksum_data_list.first; node != 0; node = node.next) {
+    cv_parse_checksum_data(arena, &result, node.string);
   }
   return result;
 }
@@ -1571,14 +1571,14 @@ cv_c13_parse_checksum_data_list(Arena* arena, String8List checksum_data_list)
 void
 cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, String8 string_data, uint64 string_data_base_offset, CV_StringHashTable string_ht)
 {
-  for (CV_ChecksumNode* node = checksum_list.first; node != 0; node = node->next) {
-    CV_Checksum*     checksum = &node->data;
-    CV_C13Checksum*  header   = checksum->header;
-    String8          name     = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
+  for (CV_ChecksumNode* node = checksum_list.first; node != 0; node = node.next) {
+    CV_Checksum*     checksum = &node.data;
+    CV_C13Checksum*  header   = checksum.header;
+    String8          name     = str8_cstring_capped(string_data.str + header.name_off, string_data.str + string_data.size);
     CV_StringBucket* bucket   = cv_string_hash_table_lookup(string_ht, name);
 
-    uint64 name_off64 = string_data_base_offset + bucket->u.offset;
-    header->name_off = safe_cast_u32(name_off64);
+    uint64 name_off64 = string_data_base_offset + bucket.u.offset;
+    header.name_off = safe_cast_u32(name_off64);
   }
 }
 
@@ -1586,11 +1586,11 @@ String8List
 cv_c13_collect_source_file_names(Arena* arena, CV_ChecksumList checksum_list, String8 string_data)
 {
   String8List source_file_name_list = {0};
-  for (CV_ChecksumNode* node = checksum_list.first; node != 0; node = node->next) {
-    CV_Checksum* checksum = &node->data;
-    CV_C13Checksum* header = checksum->header;
-    Assert(header->name_off < string_data.size);
-    String8 name = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
+  for (CV_ChecksumNode* node = checksum_list.first; node != 0; node = node.next) {
+    CV_Checksum* checksum = &node.data;
+    CV_C13Checksum* header = checksum.header;
+    Assert(header.name_off < string_data.size);
+    String8 name = str8_cstring_capped(string_data.str + header.name_off, string_data.str + string_data.size);
     str8_list_push(arena, &source_file_name_list, name);
   }
   return source_file_name_list;
@@ -1621,7 +1621,7 @@ cv_c13_lines_from_sub_sections(Arena* arena, String8 c13_data, Rng1U64 ss_range)
       //
       // TODO: export columns
       uint64  max_line_count = (sub_sect_data.size - cursor) / sizeof(CV_C13Line);
-      uint32  line_count     = Min(file->num_lines, max_line_count);
+      uint32  line_count     = Min(file.num_lines, max_line_count);
 
       // TODO(allen): check order correctness here
 
@@ -1630,7 +1630,7 @@ cv_c13_lines_from_sub_sections(Arena* arena, String8 c13_data, Rng1U64 ss_range)
 
       // compute line entry size
       uint64 line_entry_size = sizeof(CV_C13Line);
-      if (hdr->flags & CV_C13SubSecLinesFlag_HasColumns) {
+      if (hdr.flags & CV_C13SubSecLinesFlag_HasColumns) {
         line_entry_size += sizeof(CV_C13Column);
       }
 
@@ -1639,17 +1639,17 @@ cv_c13_lines_from_sub_sections(Arena* arena, String8 c13_data, Rng1U64 ss_range)
 
       // emit parsed lines
       CV_C13LinesHeaderNode* lines_parsed_node = push_array_no_zero(arena, CV_C13LinesHeaderNode, 1);
-      lines_parsed_node->next = 0;
+      lines_parsed_node.next = 0;
 
-      CV_C13LinesHeader* lines_parsed = &lines_parsed_node->v;
-      lines_parsed->sec_idx        = hdr->sec;
-      lines_parsed->sec_off_lo     = hdr->sec_off;
-      lines_parsed->sec_off_hi     = hdr->sec_off + hdr->len;
-      lines_parsed->file_off       = file->file_off;
-      lines_parsed->line_count     = line_count;
-      lines_parsed->col_count      = 0; // TODO: columns
-      lines_parsed->line_array_off = ss_range.min + line_array_off;
-      lines_parsed->col_array_off  = 0; // TODO: columns
+      CV_C13LinesHeader* lines_parsed = &lines_parsed_node.v;
+      lines_parsed.sec_idx        = hdr.sec;
+      lines_parsed.sec_off_lo     = hdr.sec_off;
+      lines_parsed.sec_off_hi     = hdr.sec_off + hdr.len;
+      lines_parsed.file_off       = file.file_off;
+      lines_parsed.line_count     = line_count;
+      lines_parsed.col_count      = 0; // TODO: columns
+      lines_parsed.line_array_off = ss_range.min + line_array_off;
+      lines_parsed.col_array_off  = 0; // TODO: columns
 
       SLLQueuePush(parsed_line_list.first, parsed_line_list.last, lines_parsed_node);
       parsed_line_list.count += 1;
@@ -1689,17 +1689,17 @@ cv_c13_line_array_from_data(Arena* arena, String8 c13_data, uint64 sec_base, CV_
 void
 cv_c13_patch_checksum_offsets_in_line_data_list(String8List line_data, uint64 checksum_rebase)
 {
-  for(String8Node* node = line_data.first; node != 0; node = node->next)
+  for(String8Node* node = line_data.first; node != 0; node = node.next)
   {
-    String8 raw_data = node->string;
+    String8 raw_data = node.string;
     if(raw_data.size < sizeof(CV_C13SubSecLinesHeader))
     {
       Assert(!"unable to patch checksum in line sub seciton header");
       continue;
     }
     CV_C13File* file_header = (CV_C13File *)(raw_data.str + sizeof(CV_C13SubSecLinesHeader));
-    uint64 rebased_file_off = file_header->file_off + checksum_rebase;
-    file_header->file_off = safe_cast_u32(rebased_file_off);
+    uint64 rebased_file_off = file_header.file_off + checksum_rebase;
+    file_header.file_off = safe_cast_u32(rebased_file_off);
   }
 }
 
@@ -1712,40 +1712,40 @@ cv_c13_inlinee_lines_from_sub_sections(Arena* arena, String8List raw_inlinee_lin
 
   CV_C13InlineeLinesParsedList inlinee_lines_list = {0};
 
-  for (String8Node* raw_data_node = raw_inlinee_lines.first; raw_data_node != 0; raw_data_node = raw_data_node->next) {
+  for (String8Node* raw_data_node = raw_inlinee_lines.first; raw_data_node != 0; raw_data_node = raw_data_node.next) {
     uint64 cursor = 0;
 
     CV_C13InlineeLinesSig sig = 0;
-    cursor += str8_deserial_read_struct(raw_data_node->string, cursor, &sig);
+    cursor += str8_deserial_read_struct(raw_data_node.string, cursor, &sig);
 
-    for (; cursor + sizeof(CV_C13InlineeSourceLineHeader) <= raw_data_node->string.size; ) {
-      CV_C13InlineeSourceLineHeader* hdr = (CV_C13InlineeSourceLineHeader *)(raw_data_node->string.str + cursor);
+    for (; cursor + sizeof(CV_C13InlineeSourceLineHeader) <= raw_data_node.string.size; ) {
+      CV_C13InlineeSourceLineHeader* hdr = (CV_C13InlineeSourceLineHeader *)(raw_data_node.string.str + cursor);
       cursor += sizeof(*hdr);
 
       CV_C13InlineeLinesParsedNode* inlinee_parsed_node = push_array_no_zero(arena, CV_C13InlineeLinesParsedNode, 1);
-      inlinee_parsed_node->next = 0;
+      inlinee_parsed_node.next = 0;
       SLLQueuePush(inlinee_lines_list.first, inlinee_lines_list.last, inlinee_parsed_node);
       inlinee_lines_list.count += 1;
 
-      CV_C13InlineeLinesParsed* inlinee_parsed = &inlinee_parsed_node->v;
-      inlinee_parsed->inlinee          = hdr->inlinee;
-      inlinee_parsed->file_off         = hdr->file_off;
-      inlinee_parsed->first_source_ln  = hdr->first_source_ln;
-      inlinee_parsed->extra_file_count = 0;
-      inlinee_parsed->extra_files      = 0;
+      CV_C13InlineeLinesParsed* inlinee_parsed = &inlinee_parsed_node.v;
+      inlinee_parsed.inlinee          = hdr.inlinee;
+      inlinee_parsed.file_off         = hdr.file_off;
+      inlinee_parsed.first_source_ln  = hdr.first_source_ln;
+      inlinee_parsed.extra_file_count = 0;
+      inlinee_parsed.extra_files      = 0;
 
       if (sig == CV_C13InlineeLinesSig_EXTRA_FILES) {
-        if (cursor + sizeof(uint32) <= raw_data_node->string.size) {
-          uint32* extra_file_count_ptr = (uint32 *)(raw_data_node->string.str + cursor);
+        if (cursor + sizeof(uint32) <= raw_data_node.string.size) {
+          uint32* extra_file_count_ptr = (uint32 *)(raw_data_node.string.str + cursor);
           cursor += sizeof(*extra_file_count_ptr);
 
-          uint32 max_extra_file_count = (raw_data_node->string.size - cursor) / sizeof(uint32);
+          uint32 max_extra_file_count = (raw_data_node.string.size - cursor) / sizeof(uint32);
           uint32 extra_file_count     = Min(*extra_file_count_ptr, max_extra_file_count);
-          uint32* extra_files         = (uint32 *)(raw_data_node->string.str + cursor);
+          uint32* extra_files         = (uint32 *)(raw_data_node.string.str + cursor);
           cursor += sizeof(*extra_files) * extra_file_count;
 
-          inlinee_parsed->extra_file_count = extra_file_count;
-          inlinee_parsed->extra_files      = extra_files;
+          inlinee_parsed.extra_file_count = extra_file_count;
+          inlinee_parsed.extra_files      = extra_files;
         }
       }
     }
@@ -1760,17 +1760,17 @@ cv_c13_inlinee_lines_from_sub_sections(Arena* arena, String8List raw_inlinee_lin
 void
 cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, uint32 checksum_rebase)
 {
-  for(String8Node* node = frame_data.first; node != 0; node = node->next)
+  for(String8Node* node = frame_data.first; node != 0; node = node.next)
   {
-    String8 raw_data = node->string;
+    String8 raw_data = node.string;
     uint64 count = raw_data.size / sizeof(CV_C13FrameData);
     CV_C13FrameData* arr = (CV_C13FrameData *)raw_data.str;
     CV_C13FrameData* ptr = arr;
     CV_C13FrameData* opl = arr + count;
     for(; ptr < opl; ptr += 1)
     {
-      uint64 rebased_frame_func = ptr->frame_func + checksum_rebase;
-      ptr->frame_func = safe_cast_u32(rebased_frame_func);
+      uint64 rebased_frame_func = ptr.frame_func + checksum_rebase;
+      ptr.frame_func = safe_cast_u32(rebased_frame_func);
     }
   }
 }
@@ -1783,8 +1783,8 @@ cv_c13_voff_map_compar(const void* raw_a, const void* raw_b)
 {
   CV_Line* a = (CV_Line*)raw_a;
   CV_Line* b = (CV_Line*)raw_b;
-  int cmp = a->voff < b->voff ? -1 :
-            a->voff > b->voff ? +1 :
+  int cmp = a.voff < b.voff ? -1 :
+            a.voff > b.voff ? +1 :
             0;
   return cmp;
 }
@@ -1804,17 +1804,17 @@ cv_c13_make_lines_accel(Arena* arena, uint64 lines_count, CV_LineArray* lines)
 
   for(uint64 line_idx = 0; line_idx < lines_count; line_idx += 1) {
     CV_LineArray* l = lines + line_idx;
-    if (l->line_count > 0) {
-      for(uint64 voff_idx = 0; voff_idx < l->line_count; voff_idx += 1) {
-        map[map_idx].voff     = l->voffs[voff_idx];
-        map[map_idx].file_off = l->file_off;
-        map[map_idx].line_num = l->line_nums[voff_idx];
+    if (l.line_count > 0) {
+      for(uint64 voff_idx = 0; voff_idx < l.line_count; voff_idx += 1) {
+        map[map_idx].voff     = l.voffs[voff_idx];
+        map[map_idx].file_off = l.file_off;
+        map[map_idx].line_num = l.line_nums[voff_idx];
         map[map_idx].col_num  = 0; // TODO: columns
         map_idx += 1;
       }
 
-      map[map_idx].voff     = l->voffs[l->line_count];
-      map[map_idx].file_off = l->file_off;
+      map[map_idx].voff     = l.voffs[l.line_count];
+      map[map_idx].file_off = l.file_off;
       map[map_idx].line_num = 0;
       map[map_idx].col_num  = 0;
       map_idx += 1;
@@ -1825,8 +1825,8 @@ cv_c13_make_lines_accel(Arena* arena, uint64 lines_count, CV_LineArray* lines)
   qsort(map, total_voff_count, sizeof(map[0]), cv_c13_voff_map_compar);
 
   CV_LinesAccel* accel = push_array(arena, CV_LinesAccel, 1);
-  accel->map_count = total_voff_count;
-  accel->map       = map;
+  accel.map_count = total_voff_count;
+  accel.map       = map;
 
   ProfEnd();
   return accel;
@@ -1841,20 +1841,20 @@ cv_line_from_voff(CV_LinesAccel* accel, uint64 voff, uint64* out_line_count)
   uint64      voff_line_count = 0;
   CV_Line* lines           = 0;
 
-  uint64 map_idx = bsearch_nearest_u64(accel->map, accel->map_count, voff, sizeof(accel->map[0]), OffsetOf(CV_Line, voff));
-  if(map_idx < accel->map_count) {
-    uint64 near_voff = accel->map[map_idx].voff;
+  uint64 map_idx = bsearch_nearest_u64(accel.map, accel.map_count, voff, sizeof(accel.map[0]), OffsetOf(CV_Line, voff));
+  if(map_idx < accel.map_count) {
+    uint64 near_voff = accel.map[map_idx].voff;
 
     for (; map_idx > 0; map_idx -= 1) {
-      if(accel->map[map_idx - 1].voff != near_voff) {
+      if(accel.map[map_idx - 1].voff != near_voff) {
         break;
       }
     }
 
-    lines = accel->map + map_idx;
+    lines = accel.map + map_idx;
 
-    for(; map_idx < (accel->map_count-1); map_idx += 1) {
-      if(accel->map[map_idx].voff != near_voff) {
+    for(; map_idx < (accel.map_count-1); map_idx += 1) {
+      if(accel.map[map_idx].voff != near_voff) {
         break;
       }
       voff_line_count += 1;
@@ -1881,26 +1881,26 @@ cv_c13_inlinee_lines_accel_hash(void* buffer, uint64 size)
 B32
 cv_c13_inlinee_lines_accel_push(CV_InlineeLinesAccel* accel, CV_C13InlineeLinesParsed* parsed)
 {
-  uint64 load_factor = accel->bucket_max * 2/3 + 1;  
-  if(accel->bucket_count > load_factor) {
+  uint64 load_factor = accel.bucket_max * 2/3 + 1;  
+  if(accel.bucket_count > load_factor) {
     Assert("TODO: increase max count and rehash buckets");
   }
 
   B32 is_pushed = 0;
 
-  uint64 hash     = cv_c13_inlinee_lines_accel_hash(&parsed->inlinee, sizeof(parsed->inlinee));
-  uint64 best_idx = hash % accel->bucket_max;
+  uint64 hash     = cv_c13_inlinee_lines_accel_hash(&parsed.inlinee, sizeof(parsed.inlinee));
+  uint64 best_idx = hash % accel.bucket_max;
   uint64 idx      = best_idx;
 
   do {
-    if(accel->buckets[idx] == 0) {
-      accel->buckets[idx] = parsed;
-      accel->bucket_count += 1;
+    if(accel.buckets[idx] == 0) {
+      accel.buckets[idx] = parsed;
+      accel.bucket_count += 1;
       is_pushed = 1;
       break;
     }
 
-    idx = (idx + 1) % accel->bucket_max;
+    idx = (idx + 1) % accel.bucket_max;
   } while(idx != best_idx);
 
   return is_pushed;
@@ -1912,18 +1912,18 @@ cv_c13_inlinee_lines_accel_find(CV_InlineeLinesAccel* accel, CV_ItemId inlinee)
   CV_C13InlineeLinesParsed* match = 0;
 
   uint64 hash     = cv_c13_inlinee_lines_accel_hash(&inlinee, sizeof(inlinee));
-  uint64 best_idx = hash % accel->bucket_max;
+  uint64 best_idx = hash % accel.bucket_max;
   uint64 idx      = best_idx;
 
   do {
-    if(accel->buckets[idx] != 0) {
-      if(accel->buckets[idx]->inlinee == inlinee) {
-        match = accel->buckets[idx]; 
+    if(accel.buckets[idx] != 0) {
+      if(accel.buckets[idx].inlinee == inlinee) {
+        match = accel.buckets[idx]; 
         break;
       }
     }
 
-    idx = (idx + 1) % accel->bucket_max;
+    idx = (idx + 1) % accel.bucket_max;
   } while(idx != best_idx);
 
   return match;
@@ -1936,13 +1936,13 @@ cv_c13_make_inlinee_lines_accel(Arena* arena, CV_C13InlineeLinesParsedList inlin
 
   // alloc hash table
   CV_InlineeLinesAccel* accel = push_array(arena, CV_InlineeLinesAccel, 1);
-  accel->bucket_count = 0;
-  accel->bucket_max   = (uint64)((double)inlinee_lines.count * 2.5);
-  accel->buckets      = push_array(arena, CV_C13InlineeLinesParsed *, accel->bucket_max);
+  accel.bucket_count = 0;
+  accel.bucket_max   = (uint64)((double)inlinee_lines.count * 2.5);
+  accel.buckets      = push_array(arena, CV_C13InlineeLinesParsed *, accel.bucket_max);
 
   // push parsed inlinees
-  for(CV_C13InlineeLinesParsedNode* inlinee = inlinee_lines.first; inlinee != 0; inlinee = inlinee->next) {
-    cv_c13_inlinee_lines_accel_push(accel, &inlinee->v);
+  for(CV_C13InlineeLinesParsedNode* inlinee = inlinee_lines.first; inlinee != 0; inlinee = inlinee.next) {
+    cv_c13_inlinee_lines_accel_push(accel, &inlinee.v);
   }
 
   ProfEnd();
@@ -1985,7 +1985,7 @@ cv_c13_parse_inline_binary_annots(Arena*                    arena,
   struct SourceFile* file_last   = 0;
   uint64                file_count  = 0;
 
-  CV_C13InlineSiteDecoder decoder = cv_c13_inline_site_decoder_init(inlinee_parsed->file_off, inlinee_parsed->first_source_ln, parent_voff);
+  CV_C13InlineSiteDecoder decoder = cv_c13_inline_site_decoder_init(inlinee_parsed.file_off, inlinee_parsed.first_source_ln, parent_voff);
   for (;;) {
     CV_C13InlineSiteDecoderStep step = cv_c13_inline_site_decoder_step(&decoder, binary_annots);
     if (step.flags == 0) {
@@ -1996,48 +1996,48 @@ cv_c13_parse_inline_binary_annots(Arena*                    arena,
     }
     if (step.flags & CV_C13InlineSiteDecoderStepFlag_ExtendLastRange) {
       if (code_ranges.last) {
-        code_ranges.last->v = step.range;
+        code_ranges.last.v = step.range;
       }
     }
     if (step.flags & CV_C13InlineSiteDecoderStepFlag_EmitFile) {
       struct SourceFile* file = push_array(scratch.arena, struct SourceFile, 1);
-      file->checksum_off      = step.file_off;
+      file.checksum_off      = step.file_off;
       SLLQueuePush(file_first, file_last, file);
       ++file_count;
     }
     if (step.flags & CV_C13InlineSiteDecoderStepFlag_EmitLine) {
       struct SourceLine* line = push_array(scratch.arena, struct SourceLine, 1);
-      line->voff              = step.line_voff;
-      line->ln                = step.ln;
-      line->cn                = step.cn;
-      SLLQueuePush(file_last->line_first, file_last->line_last, line);
-      ++file_last->line_count;
+      line.voff              = step.line_voff;
+      line.ln                = step.ln;
+      line.cn                = step.cn;
+      SLLQueuePush(file_last.line_first, file_last.line_last, line);
+      ++file_last.line_count;
     }
   }
 
   CV_LineArray* lines = push_array(arena, CV_LineArray, file_count);
   {
     uint64 lines_idx = 0;
-    for (struct SourceFile* file = file_first; file != 0; file = file->next, lines_idx += 1) {
+    for (struct SourceFile* file = file_first; file != 0; file = file.next, lines_idx += 1) {
       CV_LineArray* l = lines + lines_idx;
 
-      l->file_off   = file->checksum_off;
-      l->line_count = file->line_count;
-      l->col_count  = 0;
+      l.file_off   = file.checksum_off;
+      l.line_count = file.line_count;
+      l.col_count  = 0;
 
-      if (file->line_count > 0) {
-        l->voffs     = push_array_no_zero(arena, uint64, file->line_count + 1);
-        l->line_nums = push_array_no_zero(arena, uint32, file->line_count);
-        l->col_nums  = 0; // TODO: column info 
+      if (file.line_count > 0) {
+        l.voffs     = push_array_no_zero(arena, uint64, file.line_count + 1);
+        l.line_nums = push_array_no_zero(arena, uint32, file.line_count);
+        l.col_nums  = 0; // TODO: column info 
 
         uint64 line_idx = 0;
-        for (struct SourceLine* line = file->line_first; line != NULL; line = line->next, ++line_idx) {
+        for (struct SourceLine* line = file.line_first; line != NULL; line = line.next, ++line_idx) {
           // emit line voff and line number
-          l->voffs[line_idx]     = line->voff;
-          l->line_nums[line_idx] = (uint32)line->ln;
+          l.voffs[line_idx]     = line.voff;
+          l.line_nums[line_idx] = (uint32)line.ln;
         }
-        Assert(line_idx == file->line_count);
-        l->voffs[line_idx] = file->last_code_range.max;
+        Assert(line_idx == file.line_count);
+        l.voffs[line_idx] = file.last_code_range.max;
       }
     }
   }

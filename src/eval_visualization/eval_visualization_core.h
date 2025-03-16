@@ -262,7 +262,7 @@ struct EV_WindowedRowList
 }
 
 ////////////////////////////////
-//~ rjf: Automatic Type -> View Rule Map Types
+//~ rjf: Automatic Type . View Rule Map Types
 
 struct EV_AutoViewRuleNode
 {
@@ -339,7 +339,7 @@ uint64 ev_hash_from_key(EV_Key key);
 ////////////////////////////////
 //~ rjf: Type Info Helpers
 
-//- rjf: type info -> expandability/editablity
+//- rjf: type info . expandability/editablity
 B32 ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode);
 B32 ev_type_key_is_editable(E_TypeKey type_key);
 
@@ -366,7 +366,7 @@ void ev_select_view_rule_info_table(EV_ViewRuleInfoTable* table);
 EV_ViewRuleInfo* ev_view_rule_info_from_string(String8 string);
 
 ////////////////////////////////
-//~ rjf: Automatic Type -> View Rule Table Building / Selection / Lookups
+//~ rjf: Automatic Type . View Rule Table Building / Selection / Lookups
 
 void ev_auto_view_rule_table_push_new(Arena* arena, EV_AutoViewRuleTable* table, E_TypeKey type_key, String8 view_rule, B32 is_required);
 void ev_select_auto_view_rule_table(EV_AutoViewRuleTable* table);

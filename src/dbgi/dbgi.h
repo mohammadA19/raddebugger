@@ -291,7 +291,7 @@ struct DI_MatchStore
   OS_Handle match_rw_mutex;
   OS_Handle match_cv;
   
-  // rjf: user -> match work ring buffer
+  // rjf: user . match work ring buffer
   OS_Handle u2m_ring_cv;
   OS_Handle u2m_ring_mutex;
   uint64 u2m_ring_size;
@@ -319,7 +319,7 @@ struct DI_Shared
   uint64 search_stripes_count;
   DI_SearchStripe* search_stripes;
   
-  // rjf: user -> parse ring
+  // rjf: user . parse ring
   OS_Handle u2p_ring_mutex;
   OS_Handle u2p_ring_cv;
   uint64 u2p_ring_size;
@@ -327,7 +327,7 @@ struct DI_Shared
   uint64 u2p_ring_write_pos;
   uint64 u2p_ring_read_pos;
   
-  // rjf: parse -> user event ring
+  // rjf: parse . user event ring
   OS_Handle p2u_ring_mutex;
   OS_Handle p2u_ring_cv;
   uint64 p2u_ring_size;

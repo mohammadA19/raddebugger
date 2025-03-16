@@ -182,21 +182,21 @@ entry_point(CmdLine* cmdline)
   // parse options
   RD_Option opts = 0;
   {
-    for (CmdLineOpt* cmd = cmdline->options.first; cmd != 0; cmd = cmd->next) {
+    for (CmdLineOpt* cmd = cmdline.options.first; cmd != 0; cmd = cmd.next) {
       RD_Option opt = 0;
       for (uint64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
         String8 opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
-        if (str8_match(cmd->string, opt_name, StringMatchFlag_CaseInsensitive)) {
+        if (str8_match(cmd.string, opt_name, StringMatchFlag_CaseInsensitive)) {
           opt = g_rd_dump_option_map[opt_idx].opt;
           break;
-        } else if (str8_match_lit("all", cmd->string, StringMatchFlag_CaseInsensitive)) {
+        } else if (str8_match_lit("all", cmd.string, StringMatchFlag_CaseInsensitive)) {
           opt = ~0ull & ~(RD_Option_Help|RD_Option_Version);
           break;
         }
       }
 
       if (opt == 0) {
-        rd_errorf("Unknown argument: \"%S\"", cmd->string);
+        rd_errorf("Unknown argument: \"%S\"", cmd.string);
         goto exit;
       }
 
@@ -232,16 +232,16 @@ entry_point(CmdLine* cmdline)
   }
 
   // input check
-  if (cmdline->inputs.node_count == 0) {
+  if (cmdline.inputs.node_count == 0) {
     rd_errorf("No input file specified");
     goto exit;
-  } else if (cmdline->inputs.node_count > 1) {
+  } else if (cmdline.inputs.node_count > 1) {
     rd_errorf("Too many inputs specified, expected one");
     goto exit;
   }
 
   // read input
-  String8 file_path = str8_list_first(&cmdline->inputs);
+  String8 file_path = str8_list_first(&cmdline.inputs);
   String8 raw_data  = os_data_from_file_path(arena, file_path);
 
   // is read ok?

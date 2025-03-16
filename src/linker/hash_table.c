@@ -10,8 +10,8 @@ bucket_list_concat_in_place(BucketList* list, BucketList* to_concat)
 BucketNode *
 bucket_list_pop(BucketList* list)
 {
-  BucketNode* result = list->first;
-  SLLQueuePop(list->first, list->last);
+  BucketNode* result = list.first;
+  SLLQueuePop(list.first, list.last);
   return result;
 }
 
@@ -28,8 +28,8 @@ HashTable *
 hash_table_init(Arena* arena, uint64 cap)
 {
   HashTable* ht = push_array(arena, HashTable, 1);
-  ht->cap       = cap;
-  ht->buckets   = push_array(arena, BucketList, cap);
+  ht.cap       = cap;
+  ht.buckets   = push_array(arena, BucketList, cap);
   return ht;
 }
 
@@ -37,11 +37,11 @@ void
 hash_table_purge(HashTable* ht)
 {
   // reset key count
-  ht->count = 0;
+  ht.count = 0;
 
   // concat buckets
-  for (uint64 ibucket = 0; ibucket < ht->cap; ++ibucket) {
-    bucket_list_concat_in_place(&ht->free_buckets, &ht->buckets[ibucket]);
+  for (uint64 ibucket = 0; ibucket < ht.cap; ++ibucket) {
+    bucket_list_concat_in_place(&ht.free_buckets, &ht.buckets[ibucket]);
   }
 }
 
@@ -49,17 +49,17 @@ BucketNode *
 hash_table_push(Arena* arena, HashTable* ht, uint64 hash, KeyValuePair v)
 {
   BucketNode* node;
-  if (ht->free_buckets.first != 0) {
-    node = bucket_list_pop(&ht->free_buckets);
+  if (ht.free_buckets.first != 0) {
+    node = bucket_list_pop(&ht.free_buckets);
   } else {
     node = push_array(arena, BucketNode, 1);
   }
-  node->next = 0;
-  node->v    = v;
+  node.next = 0;
+  node.v    = v;
   
-  uint64 ibucket = hash % ht->cap;
-  SLLQueuePush(ht->buckets[ibucket].first, ht->buckets[ibucket].last, node);
-  ++ht->count;
+  uint64 ibucket = hash % ht.cap;
+  SLLQueuePush(ht.buckets[ibucket].first, ht.buckets[ibucket].last, node);
+  ++ht.count;
   
   return node;
 }
@@ -149,11 +149,11 @@ KeyValuePair *
 hash_table_search_string(HashTable* ht, String8 key_string)
 {
   uint64         hash    = hash_table_hasher(key_string);
-  uint64         ibucket = hash % ht->cap;
-  BucketList* bucket  = ht->buckets + ibucket;
-  for (BucketNode* n = bucket->first; n != 0; n = n->next) {
-    if (str8_match(n->v.key_string, key_string, 0)) {
-      return &n->v;
+  uint64         ibucket = hash % ht.cap;
+  BucketList* bucket  = ht.buckets + ibucket;
+  for (BucketNode* n = bucket.first; n != 0; n = n.next) {
+    if (str8_match(n.v.key_string, key_string, 0)) {
+      return &n.v;
     }
   }
   return 0;
@@ -163,11 +163,11 @@ KeyValuePair *
 hash_table_search_u32(HashTable* ht, uint32 key_u32)
 {
   uint64         hash    = hash_table_hasher(str8_struct(&key_u32));
-  uint64         ibucket = hash % ht->cap;
-  BucketList* bucket  = ht->buckets + ibucket;
-  for (BucketNode* n = bucket->first; n != 0; n = n->next) {
-    if (n->v.key_u32 == key_u32) {
-      return &n->v;
+  uint64         ibucket = hash % ht.cap;
+  BucketList* bucket  = ht.buckets + ibucket;
+  for (BucketNode* n = bucket.first; n != 0; n = n.next) {
+    if (n.v.key_u32 == key_u32) {
+      return &n.v;
     }
   }
   return 0;
@@ -177,11 +177,11 @@ KeyValuePair *
 hash_table_search_u64(HashTable* ht, uint64 key_u64)
 {
   uint64         hash    = hash_table_hasher(str8_struct(&key_u64));
-  uint64         ibucket = hash % ht->cap;
-  BucketList* bucket  = ht->buckets + ibucket;
-  for (BucketNode* n = bucket->first; n != 0; n = n->next) {
-    if (n->v.key_u64 == key_u64) {
-      return &n->v;
+  uint64         ibucket = hash % ht.cap;
+  BucketList* bucket  = ht.buckets + ibucket;
+  for (BucketNode* n = bucket.first; n != 0; n = n.next) {
+    if (n.v.key_u64 == key_u64) {
+      return &n.v;
     }
   }
   return 0;
@@ -205,7 +205,7 @@ hash_table_search_path_u64(HashTable* ht, String8 key, uint64* value_out)
   KeyValuePair* result = hash_table_search_path(ht, key);
   if (result != 0) {
     if (value_out != 0) {
-      *value_out = result->value_u64;
+      *value_out = result.value_u64;
     }
     return 1;
   }
@@ -218,7 +218,7 @@ hash_table_search_string_u64(HashTable* ht, String8 key, uint64* value_out)
   KeyValuePair* result = hash_table_search_string(ht, key);
   if (result != 0) {
     if (value_out != 0) {
-      *value_out = result->value_u64;
+      *value_out = result.value_u64;
     }
     return 1;
   }
@@ -232,7 +232,7 @@ key_value_pair_is_before_u32(void* raw_a, void* raw_b)
 {
   KeyValuePair* a = raw_a;
   KeyValuePair* b = raw_b;
-  return a->key_u32 < b->key_u32;
+  return a.key_u32 < b.key_u32;
 }
 
 int
@@ -240,17 +240,17 @@ key_value_pair_is_before_u64(void* raw_a, void* raw_b)
 {
   KeyValuePair* a = raw_a;
   KeyValuePair* b = raw_b;
-  return a->key_u64 < b->key_u64;
+  return a.key_u64 < b.key_u64;
 }
 
 uint32 *
 keys_from_hash_table_u32(Arena* arena, HashTable* ht)
 {
-  uint32* result = push_array_no_zero(arena, uint32, ht->count);
-  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
-    for (BucketNode* n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
-      result[cursor++] = n->v.key_u32;
+  uint32* result = push_array_no_zero(arena, uint32, ht.count);
+  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht.cap; ++bucket_idx) {
+    for (BucketNode* n = ht.buckets[bucket_idx].first; n != 0; n = n.next) {
+      Assert(cursor < ht.count);
+      result[cursor++] = n.v.key_u32;
     }
   }
   return result;
@@ -259,11 +259,11 @@ keys_from_hash_table_u32(Arena* arena, HashTable* ht)
 uint64 *
 keys_from_hash_table_u64(Arena* arena, HashTable* ht)
 {
-  uint64* result = push_array_no_zero(arena, uint64, ht->count);
-  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
-    for (BucketNode* n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
-      result[cursor++] = n->v.key_u64;
+  uint64* result = push_array_no_zero(arena, uint64, ht.count);
+  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht.cap; ++bucket_idx) {
+    for (BucketNode* n = ht.buckets[bucket_idx].first; n != 0; n = n.next) {
+      Assert(cursor < ht.count);
+      result[cursor++] = n.v.key_u64;
     }
   }
   return result;
@@ -272,11 +272,11 @@ keys_from_hash_table_u64(Arena* arena, HashTable* ht)
 KeyValuePair *
 key_value_pairs_from_hash_table(Arena* arena, HashTable* ht)
 {
-  KeyValuePair* pairs = push_array_no_zero(arena, KeyValuePair, ht->count);
-  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
-    for (BucketNode* n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
-      pairs[cursor++] = n->v;
+  KeyValuePair* pairs = push_array_no_zero(arena, KeyValuePair, ht.count);
+  for (uint64 bucket_idx = 0, cursor = 0; bucket_idx < ht.cap; ++bucket_idx) {
+    for (BucketNode* n = ht.buckets[bucket_idx].first; n != 0; n = n.next) {
+      Assert(cursor < ht.count);
+      pairs[cursor++] = n.v;
     }
   }
   return pairs;
@@ -309,7 +309,7 @@ remove_duplicates_u64_array(Arena* arena, U64Array arr)
   }
 
   U64Array result = {0};
-  result.count    = ht->count;
+  result.count    = ht.count;
   result.v        = keys_from_hash_table_u64(arena, ht);
 
   scratch_end(scratch);

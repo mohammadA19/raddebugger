@@ -8,7 +8,7 @@
 //     etc. - the entity structure should be dramatically simplified & made
 //     to reflect a more flexible string-tree data structure which can be
 //     more trivially derived from config, and more flexibly rearranged.
-//     drag/drop watch rows -> tabs, tabs -> watch rows, etc.
+//     drag/drop watch rows . tabs, tabs . watch rows, etc.
 // [ ] frontend entities need to be the "upstream state" for windows, panels,
 //     tabs, etc. - entities can be mapped to caches of window/panel/view state
 //     in purely immediate-mode fashion, so the only* state* part of the
@@ -16,7 +16,7 @@
 // [ ] config hot-reloading using the wins from the previous points
 // [ ] undo/redo, using the wins from the previous points
 // [ ] watch table UI - hidden table boundaries, special-cased control hacks
-// [ ] hash store -> need to somehow hold on to hash blobs which are still
+// [ ] hash store . need to somehow hold on to hash blobs which are still
 //     depended upon by usage layers, e.g. extra dependency refcount, e.g.
 //     text cache can explicitly correllate nodes in its cache to hashes,
 //     bump their refcount - this would keep the hash correllated to its key
@@ -56,21 +56,21 @@
 //  [ ] investigate false exceptions, being reported while stepping through init code
 //  [ ] output: add option for scroll-to-bottom - ensure this shows up in universal ctx menu
 //
-//  [ ] EVAL LOOKUP RULES -> currently going 0 -> rdis_count, but we need
+//  [ ] EVAL LOOKUP RULES . currently going 0 . rdis_count, but we need
 //  to prioritize the primary rdi
 //
-//  [ ] (reported by forrest) 'set-next-statement' -> prioritize current
+//  [ ] (reported by forrest) 'set-next-statement' . prioritize current
 //      module/symbol, in cases where one line maps to many voffs
 //
 //  [ ] collapse upstream state for theme/bindings/settings into entities; use cache accelerators if needed to make up difference
 //  [ ] collapse upstream state for windows/panels/tabs into entities; use downstream window/view resource cache to make up the difference
-//  [ ] entity <-> mdesk paths
+//  [ ] entity <. mdesk paths
 //
-//  [ ] universal ctx menu address/watch options; e.g. watch -> memory; watch -> add watch
-//  [ ] rich hover coverage; bitmap <-> geo <-> memory <-> disassembly <-> text; etc.
+//  [ ] universal ctx menu address/watch options; e.g. watch . memory; watch . add watch
+//  [ ] rich hover coverage; bitmap <. geo <. memory <. disassembly <. text; etc.
 //
 //  [ ] save view column pcts; generalize to being a first-class thing in
-//      RD_View, e.g. by just having a string -> f32 store
+//      RD_View, e.g. by just having a string . f32 store
 //
 //  [ ] visualize all breakpoints everywhere - source view should show up in
 //      disasm, disasm should show up in source view, function should show up in
@@ -84,7 +84,7 @@
 //~ rjf: Frontend/UI Pass Tasks
 //
 // [ ] transient view timeout releasing
-// [ ] theme lister -> fonts & font sizes
+// [ ] theme lister . fonts & font sizes
 // [ ] "Browse..." buttons should adopt a more relevant starting search path,
 //     if possible
 //
@@ -265,7 +265,7 @@
 //  [ ] smart scopes - expression operators for "grab me the first type X"
 //  [ ] "pinning" watch expressions, to attach it to a particular ctrl_ctx
 //
-// [ ] @feature header file for target -> debugger communication; printf, log,
+// [ ] @feature header file for target . debugger communication; printf, log,
 //     etc.
 // [ ] @feature just-in-time debugging
 // [ ] @feature step-out-of-loop
@@ -285,9 +285,9 @@
 // [ ] font cache eviction (both for font tags, closing fp handles, and
 //     rasterizations)
 // [ ] frontend speedup opportunities
-//  [ ] tables in UI -> currently building per-row, could probably cut down on
+//  [ ] tables in UI . currently building per-row, could probably cut down on
 //      # of boxes and # of draws by doing per-column in some cases?
-//  [ ] font cache layer -> can probably cache (string*font*size) -> (run) too
+//  [ ] font cache layer . can probably cache (string*font*size) . (run) too
 //      (not just rasterization)... would save a* lot*, there is a ton of work
 //      just in looking up & stitching stuff repeatedly
 //  [ ] convert UI layout pass to not be naive recursive version
@@ -456,7 +456,7 @@ ipc_signaler_thread__entry_point(void* p)
       if(os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
         IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
-        String8 msg = str8((uint8 *)(ipc_info+1), ipc_info->msg_size);
+        String8 msg = str8((uint8 *)(ipc_info+1), ipc_info.msg_size);
         msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
         OS_MutexScope(ipc_s2m_ring_mutex) for(;;)
         {
@@ -472,7 +472,7 @@ ipc_signaler_thread__entry_point(void* p)
         }
         os_condition_variable_broadcast(ipc_s2m_ring_cv);
         os_send_wakeup_event();
-        ipc_info->msg_size = 0;
+        ipc_info.msg_size = 0;
         os_semaphore_drop(ipc_lock_semaphore);
       }
     }
@@ -480,7 +480,7 @@ ipc_signaler_thread__entry_point(void* p)
 }
 
 ////////////////////////////////
-//~ rjf: Ctrl -> Main Thread Wakeup Hook
+//~ rjf: Ctrl . Main Thread Wakeup Hook
 
 CTRL_WAKEUP_FUNCTION_DEF(wakeup_hook_ctrl)
 {
@@ -494,7 +494,7 @@ B32
 frame()
 {
   rd_frame();
-  return rd_state->quit;
+  return rd_state.quit;
 }
 
 ////////////////////////////////
@@ -505,7 +505,7 @@ entry_point(CmdLine* cmd_line)
 {
   Temp scratch = scratch_begin(0, 0);
   
-  //- rjf: windows -> turn off output handles, as we need to control those for target processes
+  //- rjf: windows . turn off output handles, as we need to control those for target processes
 #if OS_WINDOWS
   HANDLE output_handles[3] =
   {
@@ -596,8 +596,8 @@ entry_point(CmdLine* cmd_line)
       
       //- rjf: setup initial target from command line args
       {
-        String8List args = cmd_line->inputs;
-        if(args.node_count > 0 && args.first->string.size != 0)
+        String8List args = cmd_line.inputs;
+        if(args.node_count > 0 && args.first.string.size != 0)
         {
           //- TODO(rjf): @cfg setup initial target from command line arguments
           {
@@ -609,10 +609,10 @@ entry_point(CmdLine* cmd_line)
             String8 working_directory_string = {0};
             {
               // rjf: unpack full executable path
-              if(args.first->string.size != 0)
+              if(args.first.string.size != 0)
               {
                 String8 current_path = os_get_current_path(scratch.arena);
-                String8 exe_name = args.first->string;
+                String8 exe_name = args.first.string;
                 PathStyle style = path_style_from_str8(exe_name);
                 if(style == PathStyle_Relative)
                 {
@@ -623,9 +623,9 @@ entry_point(CmdLine* cmd_line)
               }
               
               // rjf: unpack working directory
-              if(args.first->string.size != 0)
+              if(args.first.string.size != 0)
               {
-                String8 path_part_of_arg = str8_chop_last_slash(args.first->string);
+                String8 path_part_of_arg = str8_chop_last_slash(args.first.string);
                 if(path_part_of_arg.size != 0)
                 {
                   String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
@@ -635,16 +635,16 @@ entry_point(CmdLine* cmd_line)
               
               // rjf: unpack arguments
               String8List passthrough_args_list = {0};
-              for(String8Node* n = args.first->next; n != 0; n = n->next)
+              for(String8Node* n = args.first.next; n != 0; n = n.next)
               {
-                str8_list_push(scratch.arena, &passthrough_args_list, n->string);
+                str8_list_push(scratch.arena, &passthrough_args_list, n.string);
               }
               StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
               arguments_string = str8_list_join(scratch.arena, &passthrough_args_list, &join);
             }
             
             //- rjf: build config tree
-            RD_Cfg* command_line_root = rd_cfg_child_from_string(rd_state->root_cfg, str8_lit("command_line"));
+            RD_Cfg* command_line_root = rd_cfg_child_from_string(rd_state.root_cfg, str8_lit("command_line"));
             RD_Cfg* target = rd_cfg_new(command_line_root, str8_lit("target"));
             RD_Cfg* exe    = rd_cfg_new(target, str8_lit("executable"));
             RD_Cfg* args   = rd_cfg_new(target, str8_lit("arguments"));
@@ -660,18 +660,18 @@ entry_point(CmdLine* cmd_line)
           RD_Entity* target = rd_entity_alloc(rd_entity_root(), RD_EntityKind_Target);
           rd_entity_equip_cfg_src(target, RD_CfgSrc_CommandLine);
           String8List passthrough_args_list = {0};
-          for(String8Node* n = args.first->next; n != 0; n = n->next)
+          for(String8Node* n = args.first.next; n != 0; n = n.next)
           {
-            str8_list_push(scratch.arena, &passthrough_args_list, n->string);
+            str8_list_push(scratch.arena, &passthrough_args_list, n.string);
           }
           
           // rjf: get current path
           String8 current_path = os_get_current_path(scratch.arena);
           
           // rjf: equip exe
-          if(args.first->string.size != 0)
+          if(args.first.string.size != 0)
           {
-            String8 exe_name = args.first->string;
+            String8 exe_name = args.first.string;
             RD_Entity* exe = rd_entity_alloc(target, RD_EntityKind_Executable);
             PathStyle style = path_style_from_str8(exe_name);
             if(style == PathStyle_Relative)
@@ -683,7 +683,7 @@ entry_point(CmdLine* cmd_line)
           }
           
           // rjf: equip working directory
-          String8 path_part_of_arg = str8_chop_last_slash(args.first->string);
+          String8 path_part_of_arg = str8_chop_last_slash(args.first.string);
           if(path_part_of_arg.size != 0)
           {
             String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
@@ -706,7 +706,7 @@ entry_point(CmdLine* cmd_line)
       //- rjf: set up shared resources for ipc to this instance; launch IPC signaler thread
       {
         Temp scratch = scratch_begin(0, 0);
-        uint32 instance_pid = os_get_process_info()->pid;
+        uint32 instance_pid = os_get_process_info().pid;
         String8 ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", instance_pid);
         String8 ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", instance_pid);
         String8 ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", instance_pid);
@@ -750,10 +750,10 @@ entry_point(CmdLine* cmd_line)
             if(msg.size != 0)
             {
               log_infof("ipc_msg: \"%S\"", msg);
-              RD_Window* dst_window = rd_state->first_window;
-              for(RD_Window* window = dst_window; window != 0; window = window->next)
+              RD_Window* dst_window = rd_state.first_window;
+              for(RD_Window* window = dst_window; window != 0; window = window.next)
               {
-                if(os_window_is_focused(window->os))
+                if(os_window_is_focused(window.os))
                 {
                   dst_window = window;
                   break;
@@ -761,20 +761,20 @@ entry_point(CmdLine* cmd_line)
               }
               if(dst_window != 0)
               {
-                dst_window->window_temporarily_focused_ipc = 1;
+                dst_window.window_temporarily_focused_ipc = 1;
                 uint64 first_space_pos = str8_find_needle(msg, 0, str8_lit(" "), 0);
                 String8 cmd_kind_name_string = str8_prefix(msg, first_space_pos);
                 String8 cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
                 RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
                 if(cmd_kind_info != &rd_nil_cmd_kind_info) RD_RegsScope()
                 {
-                  if(dst_window != rd_window_from_handle(rd_regs()->window))
+                  if(dst_window != rd_window_from_handle(rd_regs().window))
                   {
-                    rd_regs()->window = rd_handle_from_window(dst_window);
-                    rd_regs()->panel  = rd_handle_from_panel(dst_window->focused_panel);
-                    rd_regs()->view   = dst_window->focused_panel->selected_tab_view;
+                    rd_regs().window = rd_handle_from_window(dst_window);
+                    rd_regs().panel  = rd_handle_from_panel(dst_window.focused_panel);
+                    rd_regs().view   = dst_window.focused_panel.selected_tab_view;
                   }
-                  rd_regs_fill_slot_from_string(cmd_kind_info->query.slot, cmd_args_string);
+                  rd_regs_fill_slot_from_string(cmd_kind_info.query.slot, cmd_args_string);
                   rd_push_cmd(cmd_kind_name_string, rd_regs());
                   rd_request_frame();
                 }
@@ -834,15 +834,15 @@ entry_point(CmdLine* cmd_line)
         }
       }
       
-      //- rjf: no explicit PID? -> find PID to send message to, by looking for other raddbg instances
+      //- rjf: no explicit PID? . find PID to send message to, by looking for other raddbg instances
       if(dst_pid == 0)
       {
-        uint32 this_pid = os_get_process_info()->pid;
+        uint32 this_pid = os_get_process_info().pid;
         DMN_ProcessIter it = {0};
         dmn_process_iter_begin(&it);
         for(DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &it, &info);)
         {
-          if(str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line->exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlag_CaseInsensitive) &&
+          if(str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line.exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlag_CaseInsensitive) &&
              this_pid != info.pid)
           {
             dst_pid = info.pid;
@@ -861,7 +861,7 @@ entry_point(CmdLine* cmd_line)
       ipc_signal_semaphore = os_semaphore_alloc(0, 1, ipc_signal_semaphore_name);
       ipc_lock_semaphore = os_semaphore_alloc(1, 1, ipc_lock_semaphore_name);
       
-      //- rjf: got resources -> write message
+      //- rjf: got resources . write message
       if(ipc_shared_memory_base != 0 &&
          os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
@@ -869,9 +869,9 @@ entry_point(CmdLine* cmd_line)
         uint8* buffer = (uint8 *)(ipc_info+1);
         uint64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
         StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
-        String8 msg = str8_list_join(scratch.arena, &cmd_line->inputs, &join);
-        ipc_info->msg_size = Min(buffer_max, msg.size);
-        MemoryCopy(buffer, msg.str, ipc_info->msg_size);
+        String8 msg = str8_list_join(scratch.arena, &cmd_line.inputs, &join);
+        ipc_info.msg_size = Min(buffer_max, msg.size);
+        MemoryCopy(buffer, msg.str, ipc_info.msg_size);
         os_semaphore_drop(ipc_signal_semaphore);
         os_semaphore_drop(ipc_lock_semaphore);
       }
@@ -879,19 +879,19 @@ entry_point(CmdLine* cmd_line)
       scratch_end(scratch);
     }break;
     
-    //- rjf: built-in pdb/dwarf -> rdi converter mode
+    //- rjf: built-in pdb/dwarf . rdi converter mode
     case ExecMode_Converter:
     {
       Temp scratch = scratch_begin(0, 0);
       
-      //- rjf: initializer pdb -> rdi conversion layer
+      //- rjf: initializer pdb . rdi conversion layer
       p2r_init();
       
       //- rjf: parse arguments
       P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(scratch.arena, cmd_line);
       
       //- rjf: open output file
-      String8 output_name = push_str8_copy(scratch.arena, user2convert->output_name);
+      String8 output_name = push_str8_copy(scratch.arena, user2convert.output_name);
       OS_Handle out_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, output_name);
       B32 out_file_is_good = !os_handle_match(out_file, os_handle_zero());
       
@@ -914,7 +914,7 @@ entry_point(CmdLine* cmd_line)
       if(out_file_is_good) ProfScope("serialize")
       {
         srlz2file = push_array(scratch.arena, P2R_Serialize2File, 1);
-        srlz2file->bundle = rdim_serialized_section_bundle_from_bake_results(&bake2srlz->bake_results);
+        srlz2file.bundle = rdim_serialized_section_bundle_from_bake_results(&bake2srlz.bake_results);
       }
       
       //- rjf: compress
@@ -929,17 +929,17 @@ entry_point(CmdLine* cmd_line)
       String8List blobs = {0};
       if(out_file_is_good)
       {
-        blobs = rdim_file_blobs_from_section_bundle(scratch.arena, &srlz2file_compressed->bundle);
+        blobs = rdim_file_blobs_from_section_bundle(scratch.arena, &srlz2file_compressed.bundle);
       }
       
       //- rjf: write
       if(out_file_is_good)
       {
         uint64 off = 0;
-        for(String8Node* n = blobs.first; n != 0; n = n->next)
+        for(String8Node* n = blobs.first; n != 0; n = n.next)
         {
-          os_file_write(out_file, r1u64(off, off+n->string.size), n->string.str);
-          off += n->string.size;
+          os_file_write(out_file, r1u64(off, off+n.string.size), n.string.str);
+          off += n.string.size;
         }
       }
       

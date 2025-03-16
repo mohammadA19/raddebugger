@@ -79,7 +79,7 @@ struct ASYNC_Shared
 {
   Arena* arena;
   
-  // rjf: user -> work thread ring buffers
+  // rjf: user . work thread ring buffers
   ASYNC_Ring rings[ASYNC_Priority_COUNT];
   OS_Handle ring_mutex;
   OS_Handle ring_cv;

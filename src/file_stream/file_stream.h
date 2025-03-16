@@ -63,7 +63,7 @@ struct FS_Shared
   FS_Slot* slots;
   FS_Stripe* stripes;
   
-  // rjf: user -> streamer ring buffer
+  // rjf: user . streamer ring buffer
   uint64 u2s_ring_size;
   uint8* u2s_ring_base;
   uint64 u2s_ring_write_pos;

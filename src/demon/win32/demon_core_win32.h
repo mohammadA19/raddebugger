@@ -239,7 +239,7 @@ uint64 dmn_w32_hash_from_id(uint64 id);
 ////////////////////////////////
 //~ rjf: Entity Helpers
 
-//- rjf: entity <-> handle
+//- rjf: entity <. handle
 DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity* entity);
 DMN_W32_Entity* dmn_w32_entity_from_handle(DMN_Handle handle);
 
@@ -247,7 +247,7 @@ DMN_W32_Entity* dmn_w32_entity_from_handle(DMN_Handle handle);
 DMN_W32_Entity* dmn_w32_entity_alloc(DMN_W32_Entity* parent, DMN_W32_EntityKind kind, uint64 id);
 void dmn_w32_entity_release(DMN_W32_Entity* entity);
 
-//- rjf: kind*id -> entity
+//- rjf: kind*id . entity
 DMN_W32_Entity* dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, uint64 id);
 
 ////////////////////////////////

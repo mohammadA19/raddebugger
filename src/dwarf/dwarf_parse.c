@@ -447,7 +447,7 @@ dw_based_range_read_attrib_form_value(void* base, Rng1U64 range, uint64 offset, 
 DW_Mode
 dw_mode_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 {
-  if(sections->v[kind].data.size > 0xffffffff)
+  if(sections.v[kind].data.size > 0xffffffff)
   {
     return DW_Mode_64Bit;
   }
@@ -460,14 +460,14 @@ dw_mode_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 Rng1U64
 dw_range_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 {
-  Rng1U64 result = rng_1u64(0, sections->v[kind].data.size);
+  Rng1U64 result = rng_1u64(0, sections.v[kind].data.size);
   return result;
 }
 
 void *
 dw_base_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 {
-  return sections->v[kind].data.str;
+  return sections.v[kind].data.str;
 }
 
 ////////////////////////////////
@@ -637,7 +637,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena* arena, DW_SectionArray* section
   
   void*    base     = dw_base_from_sec(sections, section_kind);
   Rng1U64  rng      = dw_range_from_sec(sections, section_kind);
-  DW_Mode  mode     = sections->v[section_kind].mode;
+  DW_Mode  mode     = sections.v[section_kind].mode;
   uint64      off_size = dw_offset_size_from_mode(mode);
   uint64      cursor   = 0;
   
@@ -672,10 +672,10 @@ dw_v4_pub_strings_table_from_section_kind(Arena* arena, DW_SectionArray* section
       uint64 bucket_idx = hash % names_table.size;
       
       DW_PubStringsBucket* bucket = push_array(arena, DW_PubStringsBucket, 1);
-      bucket->next                = names_table.buckets[bucket_idx];
-      bucket->string              = string;
-      bucket->info_off            = info_off;
-      bucket->cu_info_off         = cu_info_off;
+      bucket.next                = names_table.buckets[bucket_idx];
+      bucket.string              = string;
+      bucket.info_off            = info_off;
+      bucket.cu_info_off         = cu_info_off;
       names_table.buckets[bucket_idx] = bucket;
     }
     
@@ -710,7 +710,7 @@ dw_v5_offset_from_offs_section_base_index(DW_SectionArray* sections, DW_SectionK
 {
   uint64 result = 0;
   
-  DW_Mode  mode     = sections->v[section].mode;
+  DW_Mode  mode     = sections.v[section].mode;
   void*    sec_base = dw_base_from_sec(sections, section);
   Rng1U64  rng      = dw_range_from_sec(sections, section);
   uint64      cursor   = base;
@@ -812,7 +812,7 @@ dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray* sec
   
   uint64 result = 0;
 
-  DW_Mode  mode     = sections->v[section_kind].mode;
+  DW_Mode  mode     = sections.v[section_kind].mode;
   void*    sec_base = dw_base_from_sec(sections, section_kind);
   Rng1U64  rng      = dw_range_from_sec(sections, section_kind);
   uint64      cursor   = base;
@@ -962,14 +962,14 @@ DW_AttribValueResolveParams
 dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot* root)
 {
   DW_AttribValueResolveParams params = {0};
-  params.version                     = root->version;
-  params.language                    = root->language;
-  params.addr_size                   = root->address_size;
-  params.containing_unit_info_off    = root->info_off;
-  params.debug_addrs_base            = root->addrs_base;
-  params.debug_rnglists_base         = root->rnglist_base;
-  params.debug_str_offs_base         = root->stroffs_base;
-  params.debug_loclists_base         = root->loclist_base;
+  params.version                     = root.version;
+  params.language                    = root.language;
+  params.addr_size                   = root.address_size;
+  params.containing_unit_info_off    = root.info_off;
+  params.debug_addrs_base            = root.addrs_base;
+  params.debug_rnglists_base         = root.rnglist_base;
+  params.debug_str_offs_base         = root.stroffs_base;
+  params.debug_loclists_base         = root.loclist_base;
   return params;
 }
 
@@ -1205,8 +1205,8 @@ dw_parse_attrib_list_from_info_abbrev_offsets(Arena*           arena,
                                               B32              relaxed)
 {
   //- rjf: set up prereqs
-  DW_Mode  info_mode    = sections->v[DW_Section_Info].mode;
-  DW_Mode  abbrev_mode  = sections->v[DW_Section_Abbrev].mode;
+  DW_Mode  info_mode    = sections.v[DW_Section_Info].mode;
+  DW_Mode  abbrev_mode  = sections.v[DW_Section_Abbrev].mode;
   void*    info_base    = dw_base_from_sec(sections, DW_Section_Info);
   void*    abbrev_base  = dw_base_from_sec(sections, DW_Section_Abbrev);
   Rng1U64  info_range   = dw_range_from_sec(sections, DW_Section_Info);
@@ -1255,12 +1255,12 @@ dw_parse_attrib_list_from_info_abbrev_offsets(Arena*           arena,
     if(good_abbrev)
     {
       DW_AttribNode* node      = push_array(arena, DW_AttribNode, 1);
-      node->attrib.info_off    = attrib_info_offset;
-      node->attrib.abbrev_id   = abbrev.id;
-      node->attrib.attrib_kind = attrib_kind;
-      node->attrib.form_kind   = form_kind;
-      node->attrib.value_class = attrib_class;
-      node->attrib.form_value  = form_value;
+      node.attrib.info_off    = attrib_info_offset;
+      node.attrib.abbrev_id   = abbrev.id;
+      node.attrib.attrib_kind = attrib_kind;
+      node.attrib.form_kind   = form_kind;
+      node.attrib.value_class = attrib_class;
+      node.attrib.form_value  = form_value;
       result.attribs.count += 1;
       SLLQueuePush(result.attribs.first, result.attribs.last, node);
     }
@@ -1332,14 +1332,14 @@ dw_tag_from_info_offset(Arena*           arena,
   
   //- rjf: fill tag
   {
-    tag->abbrev_id          = abbrev_id;
-    tag->info_range         = rng_1u64(info_offset, info_range.min + info_read_off);
-    tag->abbrev_range       = rng_1u64(abbrev_offset, abbrev_range.min + abbrev_read_off);
-    tag->has_children       = !!(abbrev_tag_info.flags & DW_AbbrevFlag_HasChildren);
-    tag->kind               = (DW_TagKind)abbrev_tag_info.sub_kind;
-    tag->attribs_info_off   = attribs_info_off;
-    tag->attribs_abbrev_off = attribs_abbrev_off;
-    tag->attribs            = attribs;
+    tag.abbrev_id          = abbrev_id;
+    tag.info_range         = rng_1u64(info_offset, info_range.min + info_read_off);
+    tag.abbrev_range       = rng_1u64(abbrev_offset, abbrev_range.min + abbrev_read_off);
+    tag.has_children       = !!(abbrev_tag_info.flags & DW_AbbrevFlag_HasChildren);
+    tag.kind               = (DW_TagKind)abbrev_tag_info.sub_kind;
+    tag.attribs_info_off   = attribs_info_off;
+    tag.attribs_abbrev_off = attribs_abbrev_off;
+    tag.attribs            = attribs;
   }
   
   return tag;
@@ -1505,7 +1505,7 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
   Temp scratch = scratch_begin(&arena, 1);
 
   void* info_base   = dw_base_from_sec(sections, DW_Section_Info);
-  B32   is_info_dwo = sections->v[DW_Section_Info].is_dwo;
+  B32   is_info_dwo = sections.v[DW_Section_Info].is_dwo;
   
   //- rjf: up-front known parsing offsets (yep, that's right, it's only 1!)
   uint64 size_off = 0;
@@ -1590,9 +1590,9 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
   DW_AttribValueResolveParams resolve_params = { .version = version };
   if(got_comp_unit_tag)
   {
-    for(DW_AttribNode* attrib_n = comp_unit_tag->attribs.first; attrib_n; attrib_n = attrib_n->next)
+    for(DW_AttribNode* attrib_n = comp_unit_tag.attribs.first; attrib_n; attrib_n = attrib_n.next)
     {
-      DW_Attrib* attrib = &attrib_n->attrib;
+      DW_Attrib* attrib = &attrib_n.attrib;
       
       // NOTE(rjf): We'll have to rely on just the form value at this point,
       // since we can't use the unit yet (since we're currently in the process
@@ -1600,13 +1600,13 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
       // be a cyclic dependency in the requirements of each part of the
       // compilation unit's parse. DWARF is pretty crazy, but not* that* crazy,
       // so this should be good.
-      switch(attrib->attrib_kind)
+      switch(attrib.attrib_kind)
       {
         default: break;
-        case DW_Attrib_AddrBase:       resolve_params.debug_addrs_base     = attrib->form_value.v[0]; break;
-        case DW_Attrib_StrOffsetsBase: resolve_params.debug_str_offs_base  = attrib->form_value.v[0]; break;
-        case DW_Attrib_RngListsBase:   resolve_params.debug_rnglists_base  = attrib->form_value.v[0]; break;
-        case DW_Attrib_LocListsBase:   resolve_params.debug_loclists_base  = attrib->form_value.v[0]; break;
+        case DW_Attrib_AddrBase:       resolve_params.debug_addrs_base     = attrib.form_value.v[0]; break;
+        case DW_Attrib_StrOffsetsBase: resolve_params.debug_str_offs_base  = attrib.form_value.v[0]; break;
+        case DW_Attrib_RngListsBase:   resolve_params.debug_rnglists_base  = attrib.form_value.v[0]; break;
+        case DW_Attrib_LocListsBase:   resolve_params.debug_loclists_base  = attrib.form_value.v[0]; break;
       }
     }
   }
@@ -1638,17 +1638,17 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
   uint64            line_base             = 0;
   if(got_comp_unit_tag)
   {
-    for(DW_AttribNode* attrib_n = comp_unit_tag->attribs.first; attrib_n; attrib_n = attrib_n->next)
+    for(DW_AttribNode* attrib_n = comp_unit_tag.attribs.first; attrib_n; attrib_n = attrib_n.next)
     {
-      DW_Attrib* attrib = &attrib_n->attrib;
+      DW_Attrib* attrib = &attrib_n.attrib;
       
       //- rjf: form value => value
       DW_AttribValue value      = {0};
       B32            good_value = 0;
       {
-        if(dw_are_attrib_class_and_form_kind_compatible(version, attrib->value_class, attrib->form_kind))
+        if(dw_are_attrib_class_and_form_kind_compatible(version, attrib.value_class, attrib.form_kind))
         {
-          value = dw_attrib_value_from_form_value(sections, resolve_params, attrib->form_kind, attrib->value_class, attrib->form_value);
+          value = dw_attrib_value_from_form_value(sections, resolve_params, attrib.form_kind, attrib.value_class, attrib.form_value);
           good_value = 1;
         }
       }
@@ -1656,7 +1656,7 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
       //- rjf: map value to extracted info
       if(good_value)
       {
-        switch(attrib->attrib_kind)
+        switch(attrib.attrib_kind)
         {
           case DW_Attrib_Name:           name                   = dw_string_from_attrib_value(sections, value); break;
           case DW_Attrib_Producer:       producer               = dw_string_from_attrib_value(sections, value); break;
@@ -1668,7 +1668,7 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
           case DW_Attrib_IdentifierCase: name_case              = value.v[0];                break;
           case DW_Attrib_UseUtf8:        use_utf8               = (B32)value.v[0];           break;
           case DW_Attrib_LowPc:          low_pc                 = value.v[0];                break;
-          case DW_Attrib_HighPc:         high_pc                = value.v[0]; high_pc_is_relative = attrib->value_class != DW_AttribClass_Address; break;
+          case DW_Attrib_HighPc:         high_pc                = value.v[0]; high_pc_is_relative = attrib.value_class != DW_AttribClass_Address; break;
           case DW_Attrib_Ranges:         ranges_attrib_value    = value;      break;
           case DW_Attrib_StmtList:       line_base              = value.v[0]; break;
           default: break;
@@ -1732,8 +1732,8 @@ DW_ExtDebugRef
 dw_ext_debug_ref_from_comp_root(DW_CompRoot* root)
 {
   DW_ExtDebugRef ref = {0};
-  ref.dwo_path       = root->external_dwo_name;
-  ref.dwo_id         = root->dwo_id;
+  ref.dwo_path       = root.external_dwo_name;
+  ref.dwo_id         = root.dwo_id;
   return ref;
 }
 
@@ -1742,33 +1742,33 @@ dw_ext_debug_ref_from_comp_root(DW_CompRoot* root)
 void
 dw_line_vm_reset(DW_LineVMState* state, B32 default_is_stmt)
 {
-  state->address         = 0;
-  state->op_index        = 0;
-  state->file_index      = 1;
-  state->line            = 1;
-  state->column          = 0;
-  state->is_stmt         = default_is_stmt;
-  state->basic_block     = 0;
-  state->prologue_end    = 0;
-  state->epilogue_begin  = 0;
-  state->isa             = 0;
-  state->discriminator   = 0;
+  state.address         = 0;
+  state.op_index        = 0;
+  state.file_index      = 1;
+  state.line            = 1;
+  state.column          = 0;
+  state.is_stmt         = default_is_stmt;
+  state.basic_block     = 0;
+  state.prologue_end    = 0;
+  state.epilogue_begin  = 0;
+  state.isa             = 0;
+  state.discriminator   = 0;
 }
 
 void
 dw_line_vm_advance(DW_LineVMState* state, uint64 advance, uint64 min_inst_len, uint64 max_ops_for_inst)
 {
-  uint64 op_index = state->op_index + advance;
-  state->address += min_inst_len*(op_index/max_ops_for_inst);
-  state->op_index = op_index % max_ops_for_inst;
+  uint64 op_index = state.op_index + advance;
+  state.address += min_inst_len*(op_index/max_ops_for_inst);
+  state.op_index = op_index % max_ops_for_inst;
 }
 
 DW_LineSeqNode *
 dw_push_line_seq(Arena* arena, DW_LineTableParseResult* parsed_tbl)
 {
   DW_LineSeqNode* new_seq = push_array(arena, DW_LineSeqNode, 1);
-  SLLQueuePush(parsed_tbl->first_seq, parsed_tbl->last_seq, new_seq);
-  parsed_tbl->seq_count += 1;
+  SLLQueuePush(parsed_tbl.first_seq, parsed_tbl.last_seq, new_seq);
+  parsed_tbl.seq_count += 1;
   return new_seq;
 }
 
@@ -1776,24 +1776,24 @@ DW_LineNode *
 dw_push_line(Arena* arena, DW_LineTableParseResult* tbl, DW_LineVMState* vm_state, B32 start_of_sequence)
 {
   DW_LineNode* n = 0;
-  if(vm_state->busted_seq == 0)
+  if(vm_state.busted_seq == 0)
   {
-    DW_LineSeqNode* seq = tbl->last_seq;
+    DW_LineSeqNode* seq = tbl.last_seq;
     if(seq == 0 || start_of_sequence)
     {
       // ERROR! do not emit sequences with only one line...
-      Assert(seq && seq->count > 1);
+      Assert(seq && seq.count > 1);
       seq = dw_push_line_seq(arena, tbl);
     }
     
     n               = push_array(arena, DW_LineNode, 1);
-    n->v.file_index = vm_state->file_index;
-    n->v.line       = vm_state->line;
-    n->v.column     = vm_state->column;
-    n->v.voff       = vm_state->address;
+    n.v.file_index = vm_state.file_index;
+    n.v.line       = vm_state.line;
+    n.v.column     = vm_state.column;
+    n.v.voff       = vm_state.address;
 
-    SLLQueuePush(seq->first, seq->last, n);
-    seq->count += 1;
+    SLLQueuePush(seq.first, seq.last, n);
+    seq.count += 1;
   }
   return n;
 }
@@ -1801,16 +1801,16 @@ dw_push_line(Arena* arena, DW_LineTableParseResult* tbl, DW_LineVMState* vm_stat
 DW_LineTableParseResult
 dw_parsed_line_table_from_comp_root(Arena* arena, DW_SectionArray* sections, DW_CompRoot* root)
 {
-  DW_Mode  mode            = sections->v[DW_Section_Line].mode;
+  DW_Mode  mode            = sections.v[DW_Section_Line].mode;
   void*    base            = dw_base_from_sec(sections, DW_Section_Line);
   Rng1U64  line_info_range = dw_range_from_sec(sections, DW_Section_Line);
-  uint64      read_off_start  = root->line_off - line_info_range.min;
+  uint64      read_off_start  = root.line_off - line_info_range.min;
   uint64      cursor          = read_off_start;
 
   DW_AttribValueResolveParams resolve_params = dw_attrib_value_resolve_params_from_comp_root(root);
   
   DW_LineVMHeader vm_header = {0};
-  cursor += dw_read_line_vm_header(arena, base, line_info_range, cursor, mode, sections, resolve_params, root->compile_dir, root->name, &vm_header);
+  cursor += dw_read_line_vm_header(arena, base, line_info_range, cursor, mode, sections, resolve_params, root.compile_dir, root.name, &vm_header);
   
   //- rjf: prep state for VM
   DW_LineVMState vm_state = {0};
@@ -1981,10 +1981,10 @@ dw_parsed_line_table_from_comp_root(Arena* arena, DW_SectionArray* sections, DW_
           case DW_ExtOpcode_SetAddress:
           {
             uint64 address = 0;
-            cursor += dw_based_range_read(base, line_info_range, cursor, root->address_size, &address);
+            cursor += dw_based_range_read(base, line_info_range, cursor, root.address_size, &address);
             vm_state.address    = address;
             vm_state.op_index   = 0;
-            vm_state.busted_seq = address != 0; // !(dbg->acceptable_vrange.min <= address && address < dbg->acceptable_vrange.max);
+            vm_state.busted_seq = address != 0; // !(dbg.acceptable_vrange.min <= address && address < dbg.acceptable_vrange.max);
           } break;
           
           case DW_ExtOpcode_DefineFile:
@@ -2037,24 +2037,24 @@ dw_path_from_file_idx(Arena* arena, DW_LineVMHeader* vm, uint64 file_idx)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  DW_LineFile* lf    = &vm->file_table.v[file_idx];
-  String8      dir   = vm->dir_table.v[lf->dir_idx];
+  DW_LineFile* lf    = &vm.file_table.v[file_idx];
+  String8      dir   = vm.dir_table.v[lf.dir_idx];
   PathStyle    style = path_style_from_str8(dir);
   if (style == PathStyle_Null || style == PathStyle_Relative) {
-    style = path_style_from_str8(lf->file_name);
+    style = path_style_from_str8(lf.file_name);
   }
 
   String8List path_list = {0};
 
   if (str8_match_lit("..", dir, StringMatchFlag_RightSideSloppy)) {
-    String8List comp_dir_list = str8_split_path(scratch.arena, vm->dir_table.v[0]);
+    String8List comp_dir_list = str8_split_path(scratch.arena, vm.dir_table.v[0]);
     str8_list_concat_in_place(&path_list, &comp_dir_list);
   }
 
   String8List dir_list = str8_split_path(scratch.arena, dir);
   str8_list_concat_in_place(&path_list, &dir_list);
 
-  str8_list_push(scratch.arena, &path_list, lf->file_name);
+  str8_list_push(scratch.arena, &path_list, lf.file_name);
 
   str8_path_list_resolve_dots_in_place(&path_list, style);
 
@@ -2095,7 +2095,7 @@ dw_read_line_file(void*                        line_base,
                              form_kind == DW_Form_Strx2 || form_kind == DW_Form_Strx3 ||
                              form_kind == DW_Form_Strx4);
         DW_AttribValue attrib_value = dw_attrib_value_from_form_value(sections, resolve_params, form_kind, DW_AttribClass_String, form_value);
-        line_file_out->file_name = dw_string_from_attrib_value(sections, attrib_value);
+        line_file_out.file_name = dw_string_from_attrib_value(sections, attrib_value);
       } break;
       
       case DW_LNCT_DirectoryIndex: 
@@ -2103,7 +2103,7 @@ dw_read_line_file(void*                        line_base,
         Assert(form_kind == DW_Form_Data1 || form_kind == DW_Form_Data2 ||
                              form_kind == DW_Form_UData);
         DW_AttribValue attrib_value = dw_attrib_value_from_form_value(sections, resolve_params, form_kind, DW_AttribClass_Block, form_value);
-        line_file_out->dir_idx = attrib_value.v[0];
+        line_file_out.dir_idx = attrib_value.v[0];
       } break;
       
       case DW_LNCT_TimeStamp: 
@@ -2111,7 +2111,7 @@ dw_read_line_file(void*                        line_base,
         Assert(form_kind == DW_Form_UData || form_kind == DW_Form_Data4 ||
                              form_kind == DW_Form_Data8 || form_kind == DW_Form_Block);
         DW_AttribValue attrib_value = dw_attrib_value_from_form_value(sections, resolve_params, form_kind, DW_AttribClass_Const, form_value);
-        line_file_out->modify_time = attrib_value.v[0];
+        line_file_out.modify_time = attrib_value.v[0];
       } break;
       
       case DW_LNCT_Size: 
@@ -2120,15 +2120,15 @@ dw_read_line_file(void*                        line_base,
                              form_kind == DW_Form_Data2 || form_kind == DW_Form_Data4 ||
                              form_kind == DW_Form_Data8);
         DW_AttribValue attrib_value = dw_attrib_value_from_form_value(sections, resolve_params, form_kind, DW_AttribClass_Block, form_value);
-        line_file_out->file_size = attrib_value.v[0];
+        line_file_out.file_size = attrib_value.v[0];
       } break;
       
       case DW_LNCT_MD5: 
       {
         Assert(form_kind == DW_Form_Data16);
         DW_AttribValue attrib_value = dw_attrib_value_from_form_value(sections, resolve_params, form_kind, DW_AttribClass_Block, form_value);
-        line_file_out->md5_digest[0] = attrib_value.v[0];
-        line_file_out->md5_digest[1] = attrib_value.v[1];
+        line_file_out.md5_digest[0] = attrib_value.v[0];
+        line_file_out.md5_digest[1] = attrib_value.v[1];
       } break;
       
       default: 
@@ -2161,59 +2161,59 @@ dw_read_line_vm_header(Arena*                       arena,
   uint64 unit_length      = 0;
   uint64 unit_length_size = dw_based_range_read_length(line_base, line_rng, line_off, &unit_length);
   
-  header_out->unit_length = unit_length;
-  header_out->unit_opl    = line_off + unit_length + unit_length_size;
+  header_out.unit_length = unit_length;
+  header_out.unit_opl    = line_off + unit_length + unit_length_size;
 
   uint64     cursor    = unit_length_size;
-  Rng1U64 parse_rng = rng_1u64(line_off, header_out->unit_opl);
+  Rng1U64 parse_rng = rng_1u64(line_off, header_out.unit_opl);
 
   //- rjf: parse version and header length
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->version);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.version);
   
-  if(header_out->version == DW_Version_5)
+  if(header_out.version == DW_Version_5)
   {
-    cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->address_size);
-    cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->segment_selector_size);
+    cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.address_size);
+    cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.segment_selector_size);
   }
   
-  cursor += dw_based_range_read(line_base, parse_rng, cursor, dw_offset_size_from_mode(mode), &header_out->header_length);
+  cursor += dw_based_range_read(line_base, parse_rng, cursor, dw_offset_size_from_mode(mode), &header_out.header_length);
   
   //- rjf: calculate program offset
-  header_out->program_off = parse_rng.min + cursor + header_out->header_length;
+  header_out.program_off = parse_rng.min + cursor + header_out.header_length;
   
   //- rjf: parse minimum instruction length
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->min_inst_len);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.min_inst_len);
   
   //- rjf: parse max ops for instruction
-  switch(header_out->version) 
+  switch(header_out.version) 
   {
     case DW_Version_5:
     case DW_Version_4: 
     {
-      cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->max_ops_for_inst);
-      Assert(header_out->max_ops_for_inst > 0);
+      cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.max_ops_for_inst);
+      Assert(header_out.max_ops_for_inst > 0);
     } break;
     case DW_Version_3:
     case DW_Version_2:
     case DW_Version_1: 
     {
-      header_out->max_ops_for_inst = 1;
+      header_out.max_ops_for_inst = 1;
     } break;
     default: break;
   }
   
   //- rjf: parse rest of program info
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->default_is_stmt);
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->line_base);
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->line_range);
-  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out->opcode_base);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.default_is_stmt);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.line_base);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.line_range);
+  cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &header_out.opcode_base);
   
   //- rjf: calculate opcode length array
-  header_out->num_opcode_lens = header_out->opcode_base > 0 ? header_out->opcode_base - 1u : 0;
-  header_out->opcode_lens     = dw_based_range_ptr_size(line_base, parse_rng, cursor, header_out->num_opcode_lens * sizeof(header_out->opcode_lens[0]));
-  cursor += header_out->num_opcode_lens * sizeof(header_out->opcode_lens[0]);
+  header_out.num_opcode_lens = header_out.opcode_base > 0 ? header_out.opcode_base - 1u : 0;
+  header_out.opcode_lens     = dw_based_range_ptr_size(line_base, parse_rng, cursor, header_out.num_opcode_lens * sizeof(header_out.opcode_lens[0]));
+  cursor += header_out.num_opcode_lens * sizeof(header_out.opcode_lens[0]);
   
-  if(header_out->version == DW_Version_5)
+  if(header_out.version == DW_Version_5)
   {
     //- parse directory names
     uint8 directory_entry_format_count = 0;
@@ -2230,8 +2230,8 @@ dw_read_line_vm_header(Arena*                       arena,
 
     uint64 directories_count = 0;
     cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &directories_count);
-    header_out->dir_table.count = directories_count;
-    header_out->dir_table.v     = push_array(arena, String8, header_out->dir_table.count);
+    header_out.dir_table.count = directories_count;
+    header_out.dir_table.v     = push_array(arena, String8, header_out.dir_table.count);
     for(uint64 dir_idx = 0; dir_idx < directories_count; ++dir_idx) 
     {
       DW_LineFile line_file;
@@ -2241,11 +2241,11 @@ dw_read_line_vm_header(Arena*                       arena,
                                   mode,
                                   sections,
                                   resolve_params,
-                                  header_out->address_size,
+                                  header_out.address_size,
                                   directory_entry_format_count,
                                   directory_entry_formats,
                                   &line_file);
-      header_out->dir_table.v[dir_idx] = push_str8_copy(arena, line_file.file_name);
+      header_out.dir_table.v[dir_idx] = push_str8_copy(arena, line_file.file_name);
     }
 
     //- parse file table
@@ -2262,8 +2262,8 @@ dw_read_line_vm_header(Arena*                       arena,
 
     uint64 file_names_count = 0;
     cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &file_names_count);
-    header_out->file_table.count = file_names_count;
-    header_out->file_table.v     = push_array(arena, DW_LineFile, header_out->file_table.count);
+    header_out.file_table.count = file_names_count;
+    header_out.file_table.v     = push_array(arena, DW_LineFile, header_out.file_table.count);
     for(uint64 file_idx = 0; file_idx < file_names_count; ++file_idx) 
     {
       cursor += dw_read_line_file(line_base,
@@ -2272,10 +2272,10 @@ dw_read_line_vm_header(Arena*                       arena,
                                   mode,
                                   sections,
                                   resolve_params,
-                                  header_out->address_size,
+                                  header_out.address_size,
                                   file_name_entry_format_count,
                                   file_name_entry_formats,
-                                  &header_out->file_table.v[file_idx]);
+                                  &header_out.file_table.v[file_idx]);
     }
   }
   else
@@ -2298,7 +2298,7 @@ dw_read_line_vm_header(Arena*                       arena,
     //- rjf: push 0-index file (compile file)
     {
       DW_LineVMFileNode* node = push_array(scratch.arena, DW_LineVMFileNode, 1);
-      node->file.file_name    = unit_name;
+      node.file.file_name    = unit_name;
       SLLQueuePush(file_list.first, file_list.last, node);
       file_list.node_count += 1;
     }
@@ -2319,39 +2319,39 @@ dw_read_line_vm_header(Arena*                       arena,
       cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &file_size);
       
       DW_LineVMFileNode* node = push_array(scratch.arena, DW_LineVMFileNode, 1);
-      node->file.file_name    = file_name;
-      node->file.dir_idx      = dir_index;
-      node->file.modify_time  = modify_time;
-      node->file.file_size    = file_size;
+      node.file.file_name    = file_name;
+      node.file.dir_idx      = dir_index;
+      node.file.modify_time  = modify_time;
+      node.file.file_size    = file_size;
       SLLQueuePush(file_list.first, file_list.last, node);
       file_list.node_count += 1;
     }
     
     //- rjf: build dir table
     {
-      header_out->dir_table.count = dir_list.node_count;
-      header_out->dir_table.v     = push_array(arena, String8, header_out->dir_table.count);
+      header_out.dir_table.count = dir_list.node_count;
+      header_out.dir_table.v     = push_array(arena, String8, header_out.dir_table.count);
 
       String8Node* n = dir_list.first;
-      for(uint64 idx = 0; n != 0 && idx < header_out->dir_table.count; idx += 1, n = n->next) 
+      for(uint64 idx = 0; n != 0 && idx < header_out.dir_table.count; idx += 1, n = n.next) 
       {
-        header_out->dir_table.v[idx] = push_str8_copy(arena, n->string);
+        header_out.dir_table.v[idx] = push_str8_copy(arena, n.string);
       }
     }
     
     //- rjf: build file table
     {
-      header_out->file_table.count = file_list.node_count;
-      header_out->file_table.v     = push_array(arena, DW_LineFile, header_out->file_table.count);
+      header_out.file_table.count = file_list.node_count;
+      header_out.file_table.v     = push_array(arena, DW_LineFile, header_out.file_table.count);
 
       uint64                file_idx  = 0;
       DW_LineVMFileNode* file_node = file_list.first;
-      for(; file_node != 0; file_idx += 1, file_node = file_node->next) 
+      for(; file_node != 0; file_idx += 1, file_node = file_node.next) 
       {
-        header_out->file_table.v[file_idx].file_name   = push_str8_copy(arena, file_node->file.file_name);
-        header_out->file_table.v[file_idx].dir_idx     = file_node->file.dir_idx;
-        header_out->file_table.v[file_idx].modify_time = file_node->file.modify_time;
-        header_out->file_table.v[file_idx].file_size   = file_node->file.file_size;
+        header_out.file_table.v[file_idx].file_name   = push_str8_copy(arena, file_node.file.file_name);
+        header_out.file_table.v[file_idx].dir_idx     = file_node.file.dir_idx;
+        header_out.file_table.v[file_idx].modify_time = file_node.file.modify_time;
+        header_out.file_table.v[file_idx].file_size   = file_node.file.file_size;
       }
     }
   }

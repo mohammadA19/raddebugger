@@ -39,7 +39,7 @@ entry_point(CmdLine* cmdline)
   String8 test_data_folder_path = cmd_line_string(cmdline, str8_lit("test_data"));
   if(test_data_folder_path.size == 0)
   {
-    fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline->exe_name));
+    fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline.exe_name));
     os_abort(1);
   }
   
@@ -50,7 +50,7 @@ entry_point(CmdLine* cmdline)
   os_make_directory(artifacts_path);
   
   //////////////////////////////
-  //- rjf: PDB -> RDI determinism
+  //- rjf: PDB . RDI determinism
   //
   String8 name = {0};
   B32 good = 1;
@@ -81,25 +81,25 @@ entry_point(CmdLine* cmdline)
           str8_list_push(arena, &rdi_paths, rdi_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
         }
-        for(OS_HandleNode* n = processes.first; n != 0; n = n->next)
+        for(OS_HandleNode* n = processes.first; n != 0; n = n.next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n.v, max_U64);
         }
       }
       
       // rjf: generate all dumps
       {
         OS_HandleList processes = {0};
-        for(String8Node* n = rdi_paths.first; n != 0; n = n->next)
+        for(String8Node* n = rdi_paths.first; n != 0; n = n.next)
         {
-          String8 rdi_path = n->string;
+          String8 rdi_path = n.string;
           String8 dump_path = push_str8f(arena, "%S.dump", rdi_path);
           str8_list_push(arena, &dump_paths, dump_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
         }
-        for(OS_HandleNode* n = processes.first; n != 0; n = n->next)
+        for(OS_HandleNode* n = processes.first; n != 0; n = n.next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n.v, max_U64);
         }
       }
       
@@ -112,10 +112,10 @@ entry_point(CmdLine* cmdline)
       String8* dump_paths_array = push_array(arena, String8, dump_hashes_count);
       {
         uint64 idx = 0;
-        for(String8Node* n = rdi_paths.first; n != 0; n = n->next, idx += 1)
+        for(String8Node* n = rdi_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          String8 path = n->string;
+          String8 path = n.string;
           String8 data = os_data_from_file_path(scratch.arena, path);
           rdi_hashes[idx] = hs_hash_from_data(data);
           rdi_paths_array[idx] = path;
@@ -124,10 +124,10 @@ entry_point(CmdLine* cmdline)
       }
       {
         uint64 idx = 0;
-        for(String8Node* n = dump_paths.first; n != 0; n = n->next, idx += 1)
+        for(String8Node* n = dump_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          String8 path = n->string;
+          String8 path = n.string;
           String8 data = os_data_from_file_path(scratch.arena, path);
           dump_hashes[idx] = hs_hash_from_data(data);
           dump_paths_array[idx] = path;
@@ -177,9 +177,9 @@ entry_point(CmdLine* cmdline)
   fprintf(stderr, "[%s] \"%.*s\"\n", good ? "." : "X", str8_varg(name));
   if(!good)
   {
-    for(String8Node* n = out.first; n != 0; n = n->next)
+    for(String8Node* n = out.first; n != 0; n = n.next)
     {
-      fprintf(stderr, "%.*s", str8_varg(n->string));
+      fprintf(stderr, "%.*s", str8_varg(n.string));
     }
   }
   

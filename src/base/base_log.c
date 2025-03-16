@@ -17,14 +17,14 @@ log_alloc()
 {
   Arena* arena = arena_alloc();
   Log* log = push_array(arena, Log, 1);
-  log->arena = arena;
+  log.arena = arena;
   return log;
 }
 
 void
 log_release(Log* log)
 {
-  arena_release(log->arena);
+  arena_release(log.arena);
 }
 
 void
@@ -39,10 +39,10 @@ log_select(Log* log)
 void
 log_msg(LogMsgKind kind, String8 string)
 {
-  if(log_active != 0 && log_active->top_scope != 0)
+  if(log_active != 0 && log_active.top_scope != 0)
   {
-    String8 string_copy = push_str8_copy(log_active->arena, string);
-    str8_list_push(log_active->arena, &log_active->top_scope->strings[kind], string_copy);
+    String8 string_copy = push_str8_copy(log_active.arena, string);
+    str8_list_push(log_active.arena, &log_active.top_scope.strings[kind], string_copy);
   }
 }
 
@@ -69,10 +69,10 @@ log_scope_begin()
 {
   if(log_active != 0)
   {
-    uint64 pos = arena_pos(log_active->arena);
-    LogScope* scope = push_array(log_active->arena, LogScope, 1);
-    scope->pos = pos;
-    SLLStackPush(log_active->top_scope, scope);
+    uint64 pos = arena_pos(log_active.arena);
+    LogScope* scope = push_array(log_active.arena, LogScope, 1);
+    scope.pos = pos;
+    SLLStackPush(log_active.top_scope, scope);
   }
 }
 
@@ -82,21 +82,21 @@ log_scope_end(Arena* arena)
   LogScopeResult result = {0};
   if(log_active != 0)
   {
-    LogScope* scope = log_active->top_scope;
+    LogScope* scope = log_active.top_scope;
     if(scope != 0)
     {
-      SLLStackPop(log_active->top_scope);
+      SLLStackPop(log_active.top_scope);
       if(arena != 0)
       {
         for EachEnumVal(LogMsgKind, kind)
         {
           Temp scratch = scratch_begin(&arena, 1);
-          String8 result_unindented = str8_list_join(scratch.arena, &scope->strings[kind], 0);
+          String8 result_unindented = str8_list_join(scratch.arena, &scope.strings[kind], 0);
           result.strings[kind] = indented_from_string(arena, result_unindented);
           scratch_end(scratch);
         }
       }
-      arena_pop_to(log_active->arena, scope->pos);
+      arena_pop_to(log_active.arena, scope.pos);
     }
   }
   return result;

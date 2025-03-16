@@ -191,7 +191,7 @@ struct TXT_Shared
   TXT_Stripe* stripes;
   TXT_Node** stripes_free_nodes;
   
-  // rjf: user -> parse thread
+  // rjf: user . parse thread
   uint64 u2p_ring_size;
   uint8* u2p_ring_base;
   uint64 u2p_ring_write_pos;

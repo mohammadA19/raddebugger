@@ -46,16 +46,16 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
         ELF_Ehdr32* hdr = (ELF_Ehdr32*)elf_data.str;
         
         decoded_header = 1;
-        e_data_encoding = hdr->e_ident[ELF_Identification_DATA];
-        e_machine = hdr->e_machine;
-        e_entry = hdr->e_entry;
-        e_phoff = hdr->e_phoff;
-        e_shoff = hdr->e_shoff;
-        e_phentsize = hdr->e_phentsize;
-        e_phnum = hdr->e_phnum;
-        e_shentsize = hdr->e_shentsize;
-        e_shnum = hdr->e_shnum;
-        e_shstrndx = hdr->e_shstrndx;
+        e_data_encoding = hdr.e_ident[ELF_Identification_DATA];
+        e_machine = hdr.e_machine;
+        e_entry = hdr.e_entry;
+        e_phoff = hdr.e_phoff;
+        e_shoff = hdr.e_shoff;
+        e_phentsize = hdr.e_phentsize;
+        e_phnum = hdr.e_phnum;
+        e_shentsize = hdr.e_shentsize;
+        e_shnum = hdr.e_shnum;
+        e_shstrndx = hdr.e_shstrndx;
       }
     }break;
     
@@ -65,16 +65,16 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
         ELF_Ehdr64* hdr = (ELF_Ehdr64*)elf_data.str;
         
         decoded_header = 1;
-        e_data_encoding = hdr->e_ident[ELF_Identification_DATA];
-        e_machine = hdr->e_machine;
-        e_entry = hdr->e_entry;
-        e_phoff = hdr->e_phoff;
-        e_shoff = hdr->e_shoff;
-        e_phentsize = hdr->e_phentsize;
-        e_phnum = hdr->e_phnum;
-        e_shentsize = hdr->e_shentsize;
-        e_shnum = hdr->e_shnum;
-        e_shstrndx = hdr->e_shstrndx;
+        e_data_encoding = hdr.e_ident[ELF_Identification_DATA];
+        e_machine = hdr.e_machine;
+        e_entry = hdr.e_entry;
+        e_phoff = hdr.e_phoff;
+        e_shoff = hdr.e_shoff;
+        e_phentsize = hdr.e_phentsize;
+        e_phnum = hdr.e_phnum;
+        e_shentsize = hdr.e_shentsize;
+        e_shnum = hdr.e_shnum;
+        e_shstrndx = hdr.e_shstrndx;
       }
     }break;
   }
@@ -134,14 +134,14 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
         case ELF_Class_32:
         {
           ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.str + e_shoff);
-          size = shdr->sh_size;
-          link = shdr->sh_link;
+          size = shdr.sh_size;
+          link = shdr.sh_link;
         }break;
         case ELF_Class_64:
         {
           ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.str + e_shoff);
-          size = shdr->sh_size;
-          link = shdr->sh_link;
+          size = shdr.sh_size;
+          link = shdr.sh_link;
         }break;
       }
       
@@ -211,12 +211,12 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
         case ELF_Class_32:
         {
           ELF_Phdr32* phdr = (ELF_Phdr32*)(elf_data.str + load_segment_off);
-          vbase = phdr->p_vaddr;
+          vbase = phdr.p_vaddr;
         }break;
         case ELF_Class_64:
         {
           ELF_Phdr64* phdr = (ELF_Phdr64*)(elf_data.str + load_segment_off);
-          vbase = phdr->p_vaddr;
+          vbase = phdr.p_vaddr;
         }break;
       }
     }
@@ -232,14 +232,14 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
         case ELF_Class_32:
         {
           ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.str + sec_foff);
-          section_name_table_foff = shdr->sh_offset;
-          section_name_table_opl  = shdr->sh_offset + shdr->sh_size;
+          section_name_table_foff = shdr.sh_offset;
+          section_name_table_opl  = shdr.sh_offset + shdr.sh_size;
         }break;
         case ELF_Class_64:
         {
           ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.str + sec_foff);
-          section_name_table_foff = shdr->sh_offset;
-          section_name_table_opl  = shdr->sh_offset + shdr->sh_size;
+          section_name_table_foff = shdr.sh_offset;
+          section_name_table_opl  = shdr.sh_offset + shdr.sh_size;
         }break;
       }
     }
@@ -256,16 +256,16 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
           ELF_Shdr32* shdr32 = (ELF_Shdr32*)(elf_data.str + section_foff);
           ELF_Shdr64* shdr64 = sections;
           for (uint64 i = 0; i < section_count; i += 1, shdr32 += 1, shdr64 += 1){
-            shdr64->sh_name = shdr32->sh_name;
-            shdr64->sh_type = shdr32->sh_type;
-            shdr64->sh_flags = shdr32->sh_flags;
-            shdr64->sh_addr = shdr32->sh_addr;
-            shdr64->sh_offset = shdr32->sh_offset;
-            shdr64->sh_size = shdr32->sh_size;
-            shdr64->sh_link = shdr32->sh_link;
-            shdr64->sh_info = shdr32->sh_info;
-            shdr64->sh_addralign = shdr32->sh_addralign;
-            shdr64->sh_entsize = shdr32->sh_entsize;
+            shdr64.sh_name = shdr32.sh_name;
+            shdr64.sh_type = shdr32.sh_type;
+            shdr64.sh_flags = shdr32.sh_flags;
+            shdr64.sh_addr = shdr32.sh_addr;
+            shdr64.sh_offset = shdr32.sh_offset;
+            shdr64.sh_size = shdr32.sh_size;
+            shdr64.sh_link = shdr32.sh_link;
+            shdr64.sh_info = shdr32.sh_info;
+            shdr64.sh_addralign = shdr32.sh_addralign;
+            shdr64.sh_entsize = shdr32.sh_entsize;
           }
         }
       }break;
@@ -287,13 +287,13 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
     for (uint64 i = 0;
          i < section_count;
          i += 1, sec += 1, sec_name += 1){
-      uint64 name_foff = section_name_table_foff + sec->sh_name;
+      uint64 name_foff = section_name_table_foff + sec.sh_name;
       if (section_name_table_foff <= name_foff && name_foff < section_name_table_opl){
         uint8* base = elf_data.str + name_foff;
         uint8* opl = base;
         for (;opl < string_table_opl && *opl != 0; opl += 1);
-        sec_name->str = base;
-        sec_name->size = (uint64)(opl - base);
+        sec_name.str = base;
+        sec_name.size = (uint64)(opl - base);
       }
     }
   }
@@ -309,14 +309,14 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
           ELF_Phdr32* phdr32 = (ELF_Phdr32*)(elf_data.str + segment_foff);
           ELF_Phdr64* phdr64 = segments;
           for (uint64 i = 0; i < segment_count; i += 1, phdr32 += 1, phdr64 += 1){
-            phdr64->p_type = phdr32->p_type;
-            phdr64->p_flags = phdr32->p_flags;
-            phdr64->p_offset = phdr32->p_offset;
-            phdr64->p_vaddr = phdr32->p_vaddr;
-            phdr64->p_paddr = phdr32->p_paddr;
-            phdr64->p_filesz = phdr32->p_filesz;
-            phdr64->p_memsz = phdr32->p_memsz;
-            phdr64->p_align = phdr32->p_align;
+            phdr64.p_type = phdr32.p_type;
+            phdr64.p_flags = phdr32.p_flags;
+            phdr64.p_offset = phdr32.p_offset;
+            phdr64.p_vaddr = phdr32.p_vaddr;
+            phdr64.p_paddr = phdr32.p_paddr;
+            phdr64.p_filesz = phdr32.p_filesz;
+            phdr64.p_memsz = phdr32.p_memsz;
+            phdr64.p_align = phdr32.p_align;
           }
         }
       }break;
@@ -351,23 +351,23 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
   ELF_Parsed* result = 0;
   if (header_is_good){
     result = push_array(arena, ELF_Parsed, 1);
-    result->data = elf_data;
-    result->elf_class = elf_class;
-    result->arch = arch;
-    result->sections = sections;
-    result->section_names = section_names;
-    result->section_foff = section_foff;
-    result->section_count = section_count;
-    result->segments = segments;
-    result->segment_foff = segment_foff;
-    result->segment_count = segment_count;
-    result->vbase = vbase;
-    result->entry_vaddr = e_entry;
-    result->section_name_table_foff = section_name_table_foff;
-    result->section_name_table_opl  = section_name_table_opl;
-    result->strtab_idx = strtab_idx;
-    result->symtab_idx = symtab_idx;
-    result->dynsym_idx = dynsym_idx;
+    result.data = elf_data;
+    result.elf_class = elf_class;
+    result.arch = arch;
+    result.sections = sections;
+    result.section_names = section_names;
+    result.section_foff = section_foff;
+    result.section_count = section_count;
+    result.segments = segments;
+    result.segment_foff = segment_foff;
+    result.segment_count = segment_count;
+    result.vbase = vbase;
+    result.entry_vaddr = e_entry;
+    result.section_name_table_foff = section_name_table_foff;
+    result.section_name_table_opl  = section_name_table_opl;
+    result.strtab_idx = strtab_idx;
+    result.symtab_idx = symtab_idx;
+    result.dynsym_idx = dynsym_idx;
   }
   
   return(result);
@@ -377,8 +377,8 @@ static ELF_SectionArray
 elf_section_array_from_elf(ELF_Parsed* elf){
   ELF_SectionArray result = {0};
   if (elf != 0){
-    result.sections = elf->sections;
-    result.count = elf->section_count;
+    result.sections = elf.sections;
+    result.count = elf.section_count;
   }
   return(result);
 }
@@ -387,8 +387,8 @@ static String8Array
 elf_section_name_array_from_elf(ELF_Parsed* elf){
   String8Array result = {0};
   if (elf != 0){
-    result.v = elf->section_names;
-    result.count = elf->section_count;
+    result.v = elf.section_names;
+    result.count = elf.section_count;
   }
   return(result);
 }
@@ -397,8 +397,8 @@ static ELF_SegmentArray
 elf_segment_array_from_elf(ELF_Parsed* elf){
   ELF_SegmentArray result = {0};
   if (elf != 0){
-    result.segments = elf->segments;
-    result.count = elf->segment_count;
+    result.segments = elf.segments;
+    result.count = elf.segment_count;
   }
   return(result);
 }
@@ -408,10 +408,10 @@ elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset){
   String8 result = {0};
   if (elf != 0){
     if (offset > 0){
-      uint64 foff = elf->section_name_table_foff + offset;
-      if (elf->section_name_table_foff <= foff && foff < elf->section_name_table_opl){
-        uint8* base = elf->data.str + foff;
-        uint8* section_opl = elf->data.str + elf->section_name_table_opl;
+      uint64 foff = elf.section_name_table_foff + offset;
+      if (elf.section_name_table_foff <= foff && foff < elf.section_name_table_opl){
+        uint8* base = elf.data.str + foff;
+        uint8* section_opl = elf.data.str + elf.section_name_table_opl;
         uint8* opl = base;
         for (;opl < section_opl && *opl != 0; opl += 1);
         result.str = base;
@@ -426,8 +426,8 @@ static String8
 elf_section_name_from_idx(ELF_Parsed* elf, uint32 idx){
   String8 result = {0};
   if (elf != 0){
-    if (idx < elf->section_count){
-      result = elf->section_names[idx];
+    if (idx < elf.section_count){
+      result = elf.section_names[idx];
     }
   }
   return(result);
@@ -437,8 +437,8 @@ static uint32
 elf_section_idx_from_name(ELF_Parsed* elf, String8 name){
   uint32 result = 0;
   if (elf != 0){
-    String8* sec_name = elf->section_names;
-    uint64 count = elf->section_count;
+    String8* sec_name = elf.section_names;
+    uint64 count = elf.section_count;
     for (uint64 i = 0; i < count; i += 1, sec_name += 1){
       if (str8_match(*sec_name, name, 0)){
         result = i;
@@ -453,17 +453,17 @@ static String8
 elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx){
   String8 result = {0};
   if (elf != 0){
-    if (idx < elf->section_count){
-      ELF_Shdr64* shdr = elf->sections + idx;
-      uint64 off_raw = shdr->sh_offset;
-      uint64 size = shdr->sh_size;
-      if (shdr->sh_flags & ELF_SectionType_NOBITS){
+    if (idx < elf.section_count){
+      ELF_Shdr64* shdr = elf.sections + idx;
+      uint64 off_raw = shdr.sh_offset;
+      uint64 size = shdr.sh_size;
+      if (shdr.sh_flags & ELF_SectionType_NOBITS){
         size = 0;
       }
       uint64 opl_raw = off_raw + size;
-      uint64 opl = ClampTop(opl_raw, elf->data.size);
+      uint64 opl = ClampTop(opl_raw, elf.data.size);
       uint64 off = ClampTop(off_raw, opl);
-      result.str = elf->data.str + off;
+      result.str = elf.data.str + off;
       result.size = opl - off;
     }
   }
@@ -486,12 +486,12 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, String8 data){
         ELF_Sym32* sym32 = (ELF_Sym32*)(data.str);
         ELF_Sym64* sym64 = symbols;
         for (uint64 i = 0; i < count; i += 1, sym32 += 1, sym64 += 1){
-          sym64->st_name  = sym32->st_name;
-          sym64->st_value = sym32->st_value;
-          sym64->st_size  = sym32->st_size;
-          sym64->st_info  = sym32->st_info;
-          sym64->st_other = sym32->st_other;
-          sym64->st_shndx = sym32->st_shndx;
+          sym64.st_name  = sym32.st_name;
+          sym64.st_value = sym32.st_value;
+          sym64.st_size  = sym32.st_size;
+          sym64.st_info  = sym32.st_info;
+          sym64.st_other = sym32.st_other;
+          sym64.st_shndx = sym32.st_shndx;
         }
       }
     }break;

@@ -8,10 +8,10 @@ void
 ui_divider(UI_Size size)
 {
   UI_Box* parent = ui_top_parent();
-  ui_set_next_pref_size(parent->child_layout_axis, size);
-  ui_set_next_child_layout_axis(parent->child_layout_axis);
+  ui_set_next_pref_size(parent.child_layout_axis, size);
+  ui_set_next_child_layout_axis(parent.child_layout_axis);
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
-  UI_Parent(box) UI_PrefSize(parent->child_layout_axis, ui_pct(1, 0))
+  UI_Parent(box) UI_PrefSize(parent.child_layout_axis, ui_pct(1, 0))
   {
     ui_build_box_from_key(UI_BoxFlag_DrawSideBottom, ui_key_zero());
     ui_build_box_from_key(0, ui_key_zero());
@@ -48,9 +48,9 @@ ui_label_multiline(float max, String8 string)
   ui_set_next_pref_height(ui_children_sum(1));
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
   String8List lines = fnt_wrapped_string_lines_from_font_size_string_max(scratch.arena, ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), string, max);
-  for(String8Node* n = lines.first; n != 0; n = n->next)
+  for(String8Node* n = lines.first; n != 0; n = n.next)
   {
-    ui_label(n->string);
+    ui_label(n.string);
   }
   scratch_end(scratch);
 }
@@ -102,7 +102,7 @@ ui_hover_label(String8 string)
   UI_Signal interact = ui_signal_from_box(box);
   if(ui_hovering(interact))
   {
-    box->flags |= UI_BoxFlag_DrawBorder;
+    box.flags |= UI_BoxFlag_DrawBorder;
   }
   return interact;
 }
@@ -130,33 +130,33 @@ struct UI_LineEditDrawData
 UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 {
   UI_LineEditDrawData* draw_data = (UI_LineEditDrawData *)user_data;
-  FNT_Tag font = box->font;
-  float font_size = box->font_size;
-  float tab_size = box->tab_size;
-  Vec4F32 cursor_color = box->palette->colors[UI_ColorCode_Cursor];
-  cursor_color.w *= box->parent->parent->focus_active_t;
-  Vec4F32 select_color = box->palette->colors[UI_ColorCode_Selection];
-  select_color.w *= (box->parent->parent->focus_active_t*0.2f + 0.8f);
+  FNT_Tag font = box.font;
+  float font_size = box.font_size;
+  float tab_size = box.tab_size;
+  Vec4F32 cursor_color = box.palette.colors[UI_ColorCode_Cursor];
+  cursor_color.w *= box.parent.parent.focus_active_t;
+  Vec4F32 select_color = box.palette.colors[UI_ColorCode_Selection];
+  select_color.w *= (box.parent.parent.focus_active_t*0.2f + 0.8f);
   Vec2F32 text_position = ui_box_text_position(box);
-  String8 edited_string = draw_data->edited_string;
-  TxtPt cursor = draw_data->cursor;
-  TxtPt mark = draw_data->mark;
+  String8 edited_string = draw_data.edited_string;
+  TxtPt cursor = draw_data.cursor;
+  TxtPt mark = draw_data.mark;
   float cursor_pixel_off = fnt_dim_from_tag_size_string(font, font_size, 0, tab_size, str8_prefix(edited_string, cursor.column-1)).x;
   float mark_pixel_off   = fnt_dim_from_tag_size_string(font, font_size, 0, tab_size, str8_prefix(edited_string, mark.column-1)).x;
   float cursor_thickness = ClampBot(4.f, font_size/6.f);
   Rng2F32 cursor_rect =
   {
     text_position.x + cursor_pixel_off - cursor_thickness*0.50f,
-    box->rect.y0+4.f,
+    box.rect.y0+4.f,
     text_position.x + cursor_pixel_off + cursor_thickness*0.50f,
-    box->rect.y1-4.f,
+    box.rect.y1-4.f,
   };
   Rng2F32 mark_rect =
   {
     text_position.x + mark_pixel_off - cursor_thickness*0.50f,
-    box->rect.y0+2.f,
+    box.rect.y0+2.f,
     text_position.x + mark_pixel_off + cursor_thickness*0.50f,
-    box->rect.y1-2.f,
+    box.rect.y1-2.f,
   };
   Rng2F32 select_rect = union_2f32(cursor_rect, mark_rect);
   dr_rect(select_rect, select_color, font_size/2.f, 0, 1.f);
@@ -200,7 +200,7 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
       String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
-      if((evt->kind != UI_EventKind_Edit && evt->kind != UI_EventKind_Navigate && evt->kind != UI_EventKind_Text) || evt->delta_2s32.y != 0)
+      if((evt.kind != UI_EventKind_Edit && evt.kind != UI_EventKind_Navigate && evt.kind != UI_EventKind_Text) || evt.delta_2s32.y != 0)
       {
         continue;
       }
@@ -257,13 +257,13 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
       ui_set_next_pref_width(ui_px(total_text_width+ui_top_font_size()*5, 1.f));
       UI_Box* editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
       UI_LineEditDrawData* draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
-      draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
-      draw_data->cursor = *cursor;
-      draw_data->mark = *mark;
+      draw_data.edited_string = push_str8_copy(ui_build_arena(), edit_string);
+      draw_data.cursor = *cursor;
+      draw_data.mark = *mark;
       ui_box_equip_display_string(editstr_box, edit_string);
       ui_box_equip_custom_draw(editstr_box, ui_line_edit_draw, draw_data);
       mouse_pt = txt_pt(1, 1+ui_box_char_pos_from_xy(editstr_box, ui_mouse()));
-      cursor_off = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), str8_prefix(edit_string, cursor->column-1)).x;
+      cursor_off = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), str8_prefix(edit_string, cursor.column-1)).x;
     }
   }
   
@@ -297,15 +297,15 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
   //- rjf: focus cursor
   {
     Rng1F32 cursor_range_px  = r1f32(cursor_off-ui_top_font_size()*2.f, cursor_off+ui_top_font_size()*2.f);
-    Rng1F32 visible_range_px = r1f32(box->view_off_target.x, box->view_off_target.x + dim_2f32(box->rect).x);
+    Rng1F32 visible_range_px = r1f32(box.view_off_target.x, box.view_off_target.x + dim_2f32(box.rect).x);
     cursor_range_px.min = ClampBot(0, cursor_range_px.min);
     cursor_range_px.max = ClampBot(0, cursor_range_px.max);
     float min_delta = cursor_range_px.min-visible_range_px.min;
     float max_delta = cursor_range_px.max-visible_range_px.max;
     min_delta = Min(min_delta, 0);
     max_delta = Max(max_delta, 0);
-    box->view_off_target.x += min_delta;
-    box->view_off_target.x += max_delta;
+    box.view_off_target.x += min_delta;
+    box.view_off_target.x += max_delta;
   }
   
   //- rjf: pop focus
@@ -343,28 +343,28 @@ struct UI_ImageDrawData
 UI_BOX_CUSTOM_DRAW(ui_image_draw)
 {
   UI_ImageDrawData* draw_data = (UI_ImageDrawData *)user_data;
-  if(r_handle_match(draw_data->texture, r_handle_zero()))
+  if(r_handle_match(draw_data.texture, r_handle_zero()))
   {
-    R_Rect2DInst* inst = dr_rect(box->rect, v4f32(0, 0, 0, 0), 0, 0, 1.f);
-    MemoryCopyArray(inst->corner_radii, box->corner_radii);
+    R_Rect2DInst* inst = dr_rect(box.rect, v4f32(0, 0, 0, 0), 0, 0, 1.f);
+    MemoryCopyArray(inst.corner_radii, box.corner_radii);
   }
-  else DR_Tex2DSampleKindScope(draw_data->sample_kind)
+  else DR_Tex2DSampleKindScope(draw_data.sample_kind)
   {
-    R_Rect2DInst* inst = dr_img(box->rect, draw_data->region, draw_data->texture, draw_data->tint, 0, 0, 0);
-    MemoryCopyArray(inst->corner_radii, box->corner_radii);
+    R_Rect2DInst* inst = dr_img(box.rect, draw_data.region, draw_data.texture, draw_data.tint, 0, 0, 0);
+    MemoryCopyArray(inst.corner_radii, box.corner_radii);
   }
-  if(draw_data->blur > 0.01f)
+  if(draw_data.blur > 0.01f)
   {
-    Rng2F32 clip = box->rect;
-    for(UI_Box* b = box->parent; !ui_box_is_nil(b); b = b->parent)
+    Rng2F32 clip = box.rect;
+    for(UI_Box* b = box.parent; !ui_box_is_nil(b); b = b.parent)
     {
-      if(b->flags & UI_BoxFlag_Clip)
+      if(b.flags & UI_BoxFlag_Clip)
       {
-        clip = intersect_2f32(b->rect, clip);
+        clip = intersect_2f32(b.rect, clip);
       }
     }
-    R_PassParams_Blur* blur = dr_blur(intersect_2f32(clip, box->rect), draw_data->blur, 0);
-    MemoryCopyArray(blur->corner_radii, box->corner_radii);
+    R_PassParams_Blur* blur = dr_blur(intersect_2f32(clip, box.rect), draw_data.blur, 0);
+    MemoryCopyArray(blur.corner_radii, box.corner_radii);
   }
 }
 
@@ -373,11 +373,11 @@ ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F3
 {
   UI_Box* box = ui_build_box_from_string(0, string);
   UI_ImageDrawData* draw_data = push_array(ui_build_arena(), UI_ImageDrawData, 1);
-  draw_data->texture = texture;
-  draw_data->sample_kind = sample_kind;
-  draw_data->region = region;
-  draw_data->tint = tint;
-  draw_data->blur = blur;
+  draw_data.texture = texture;
+  draw_data.sample_kind = sample_kind;
+  draw_data.region = region;
+  draw_data.tint = tint;
+  draw_data.blur = blur;
   ui_box_equip_custom_draw(box, ui_image_draw, draw_data);
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
@@ -562,26 +562,26 @@ UI_BOX_CUSTOM_DRAW(ui_sat_val_picker_draw)
   UI_SatValDrawData* data = (UI_SatValDrawData *)user_data;
   
   // rjf: hue => rgb
-  Vec3F32 hue_rgb = rgb_from_hsv(v3f32(data->hue, 1, 1));
+  Vec3F32 hue_rgb = rgb_from_hsv(v3f32(data.hue, 1, 1));
   
-  // rjf: white -> rgb background
+  // rjf: white . rgb background
   {
-    R_Rect2DInst* inst = dr_rect(pad_2f32(box->rect, -1.f), v4f32(hue_rgb.x, hue_rgb.y, hue_rgb.z, 1), 4.f, 0, 1.f);
-    inst->colors[Corner_00] = inst->colors[Corner_01] = v4f32(1, 1, 1, 1);
+    R_Rect2DInst* inst = dr_rect(pad_2f32(box.rect, -1.f), v4f32(hue_rgb.x, hue_rgb.y, hue_rgb.z, 1), 4.f, 0, 1.f);
+    inst.colors[Corner_00] = inst.colors[Corner_01] = v4f32(1, 1, 1, 1);
   }
   
   // rjf: black gradient overlay
   {
-    R_Rect2DInst* inst = dr_rect(pad_2f32(box->rect, -1.f), v4f32(0, 0, 0, 0), 4.f, 0, 1.f);
-    inst->colors[Corner_01] = v4f32(0, 0, 0, 1);
-    inst->colors[Corner_11] = v4f32(0, 0, 0, 1);
+    R_Rect2DInst* inst = dr_rect(pad_2f32(box.rect, -1.f), v4f32(0, 0, 0, 0), 4.f, 0, 1.f);
+    inst.colors[Corner_01] = v4f32(0, 0, 0, 1);
+    inst.colors[Corner_11] = v4f32(0, 0, 0, 1);
   }
   
   // rjf: indicator
   {
-    Vec2F32 box_rect_dim = dim_2f32(box->rect);
-    Vec2F32 center = v2f32(box->rect.x0 + data->sat*box_rect_dim.x, box->rect.y0 + (1-data->val)*box_rect_dim.y);
-    float half_size = box->font_size * (0.5f + box->active_t*0.2f);
+    Vec2F32 box_rect_dim = dim_2f32(box.rect);
+    Vec2F32 center = v2f32(box.rect.x0 + data.sat*box_rect_dim.x, box.rect.y0 + (1-data.val)*box_rect_dim.y);
+    float half_size = box.font_size * (0.5f + box.active_t*0.2f);
     Rng2F32 rect = r2f32p(center.x - half_size,
                           center.y - half_size,
                           center.x + half_size,
@@ -603,9 +603,9 @@ ui_sat_val_picker(float hue, float* out_sat, float* out_val, String8 string)
   // rjf: click+draw behavior
   if(ui_dragging(sig))
   {
-    Vec2F32 dim = dim_2f32(box->rect);
-    *out_sat = (ui_mouse().x - box->rect.x0) / dim.x;
-    *out_val = 1 - (ui_mouse().y - box->rect.y0) / dim.y;
+    Vec2F32 dim = dim_2f32(box.rect);
+    *out_sat = (ui_mouse().x - box.rect.x0) / dim.x;
+    *out_val = 1 - (ui_mouse().y - box.rect.y0) / dim.y;
     *out_sat = Clamp(0, *out_sat, 1);
     *out_val = Clamp(0, *out_val, 1);
     ui_do_color_tooltip_hsv(v3f32(hue, *out_sat, *out_val));
@@ -625,9 +625,9 @@ ui_sat_val_picker(float hue, float* out_sat, float* out_val, String8 string)
   
   // rjf: fill draw data
   {
-    user->hue = hue;
-    user->sat = *out_sat;
-    user->val = *out_val;
+    user.hue = hue;
+    user.sat = *out_sat;
+    user.val = *out_val;
   }
   
   return sig;
@@ -658,9 +658,9 @@ struct UI_HueDrawData
 UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
 {
   UI_HueDrawData* data = (UI_HueDrawData *)user_data;
-  Vec2F32 dim = dim_2f32(box->rect);
+  Vec2F32 dim = dim_2f32(box.rect);
   float segment_dim = floor_f32(dim.y/6.f);
-  Rng2F32 hue_cycle_rect = box->rect;
+  Rng2F32 hue_cycle_rect = box.rect;
   Vec2F32 hue_cycle_center = center_2f32(hue_cycle_rect);
   hue_cycle_rect.x0 += (hue_cycle_center.x - hue_cycle_rect.x0) * 0.3f;
   hue_cycle_rect.x1 += (hue_cycle_center.x - hue_cycle_rect.x1) * 0.3f;
@@ -677,19 +677,19 @@ UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
     Vec4F32 rgba0 = v4f32(rgb0.x, rgb0.y, rgb0.z, 1);
     Vec4F32 rgba1 = v4f32(rgb1.x, rgb1.y, rgb1.z, 1);
     R_Rect2DInst* inst = dr_rect(rect, v4f32(0, 0, 0, 0), 0, 0, 0.f);
-    inst->colors[Corner_00] = rgba0;
-    inst->colors[Corner_01] = rgba1;
-    inst->colors[Corner_10] = rgba0;
-    inst->colors[Corner_11] = rgba1;
+    inst.colors[Corner_00] = rgba0;
+    inst.colors[Corner_01] = rgba1;
+    inst.colors[Corner_10] = rgba0;
+    inst.colors[Corner_11] = rgba1;
     rect.y0 += segment_dim;
     rect.y1 += segment_dim;
   }
   
   // rjf: indicator
   {
-    Vec2F32 box_rect_dim = dim_2f32(box->rect);
-    Vec2F32 center = v2f32((box->rect.x0+box->rect.x1)/2, box->rect.y0 + data->hue*box_rect_dim.y);
-    float half_size = box->font_size * (0.5f + box->active_t*0.2f);
+    Vec2F32 box_rect_dim = dim_2f32(box.rect);
+    Vec2F32 center = v2f32((box.rect.x0+box.rect.x1)/2, box.rect.y0 + data.hue*box_rect_dim.y);
+    float half_size = box.font_size * (0.5f + box.active_t*0.2f);
     Rng2F32 rect = r2f32p(center.x - half_size,
                           center.y - 2.f,
                           center.x + half_size,
@@ -711,8 +711,8 @@ ui_hue_picker(float* out_hue, float sat, float val, String8 string)
   // rjf: click+draw behavior
   if(ui_dragging(sig))
   {
-    Vec2F32 dim = dim_2f32(box->rect);
-    *out_hue = (ui_mouse().y - box->rect.y0) / dim.y;
+    Vec2F32 dim = dim_2f32(box.rect);
+    *out_hue = (ui_mouse().y - box.rect.y0) / dim.y;
     *out_hue = Clamp(0, *out_hue, 1);
     ui_do_color_tooltip_hsv(v3f32(*out_hue, sat, val));
     if(ui_pressed(sig))
@@ -728,9 +728,9 @@ ui_hue_picker(float* out_hue, float sat, float val, String8 string)
   
   // rjf: fill draw data
   {
-    user->hue = *out_hue;
-    user->sat = sat;
-    user->val = val;
+    user.hue = *out_hue;
+    user.sat = sat;
+    user.val = val;
   }
   
   return sig;
@@ -759,23 +759,23 @@ struct UI_AlphaDrawData
 UI_BOX_CUSTOM_DRAW(ui_alpha_picker_draw)
 {
   UI_AlphaDrawData* data = (UI_AlphaDrawData *)user_data;
-  Vec2F32 dim = dim_2f32(box->rect);
+  Vec2F32 dim = dim_2f32(box.rect);
   
   // rjf: build gradient
   {
-    Rng2F32 rect = box->rect;
+    Rng2F32 rect = box.rect;
     Vec2F32 center = center_2f32(rect);
     rect.x0 += (center.x - rect.x0) * 0.3f;
     rect.x1 += (center.x - rect.x1) * 0.3f;
     R_Rect2DInst* inst = dr_rect(rect, v4f32(0, 0, 0, 0), 0, 0, 0);
-    inst->colors[Corner_00] = inst->colors[Corner_10] = v4f32(1, 1, 1, 1);
+    inst.colors[Corner_00] = inst.colors[Corner_10] = v4f32(1, 1, 1, 1);
   }
   
   // rjf: indicator
   {
-    Vec2F32 box_rect_dim = dim_2f32(box->rect);
-    Vec2F32 center = v2f32((box->rect.x0+box->rect.x1)/2, box->rect.y0 + (1-data->alpha)*box_rect_dim.y);
-    float half_size = box->font_size * (0.5f + box->active_t*0.2f);
+    Vec2F32 box_rect_dim = dim_2f32(box.rect);
+    Vec2F32 center = v2f32((box.rect.x0+box.rect.x1)/2, box.rect.y0 + (1-data.alpha)*box_rect_dim.y);
+    float half_size = box.font_size * (0.5f + box.active_t*0.2f);
     Rng2F32 rect = r2f32p(center.x - half_size,
                           center.y - 2.f,
                           center.x + half_size,
@@ -797,8 +797,8 @@ ui_alpha_picker(float* out_alpha, String8 string)
   // rjf: click+draw behavior
   if(ui_dragging(sig))
   {
-    Vec2F32 dim = dim_2f32(box->rect);
-    float drag_pct = (ui_mouse().y - box->rect.y0) / dim.y; 
+    Vec2F32 dim = dim_2f32(box.rect);
+    float drag_pct = (ui_mouse().y - box.rect.y0) / dim.y; 
     drag_pct = Clamp(0, drag_pct, 1);
     *out_alpha = 1-drag_pct;
     if(ui_pressed(sig))
@@ -814,7 +814,7 @@ ui_alpha_picker(float* out_alpha, String8 string)
   
   // rjf: fill draw data
   {
-    user->alpha = *out_alpha;
+    user.alpha = *out_alpha;
   }
   
   return sig;
@@ -933,7 +933,7 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string)
   ui_push_parent(table);
   
   //- rjf: build column boundaries
-  float x_off = (ui_ts_col_pct_count > 0 ? *column_pcts[0] : 0) * dim_2f32(table->rect).x;
+  float x_off = (ui_ts_col_pct_count > 0 ? *column_pcts[0] : 0) * dim_2f32(table.rect).x;
   for(uint64 column_idx = 1; column_idx < ui_ts_col_pct_count; column_idx += 1)
   {
     // rjf: build base rectangle
@@ -942,15 +942,15 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string)
       rect.x0 = x_off-3.f;
       rect.y0 = 0;
       rect.x1 = x_off+3.f;
-      rect.y1 = dim_2f32(table->rect).y;
-      x_off += *column_pcts[column_idx] * dim_2f32(table->rect).x;
+      rect.y1 = dim_2f32(table.rect).y;
+      x_off += *column_pcts[column_idx] * dim_2f32(table.rect).x;
     }
     
     // rjf: make column boundary widget
     UI_Rect(rect)
     {
       ui_set_next_hover_cursor(OS_Cursor_LeftRight);
-      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table->string, column_idx);
+      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table.string, column_idx);
       
       float* left_pct_ptr  = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx-1] : 0;
       float* right_pct_ptr = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx] : 0;
@@ -968,19 +968,19 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string)
         // rjf: calculate how much space we're dividing amongst the columns that
         // the user can resize
         float adjustable_table_dim = 0;
-        if(table->child_layout_axis == Axis2_Y)
+        if(table.child_layout_axis == Axis2_Y)
         {
-          adjustable_table_dim = dim_2f32(table->rect).x;
+          adjustable_table_dim = dim_2f32(table.rect).x;
         }
         else
         {
           uint64 child_idx = 0;
-          for(UI_Box* v = table->first; !ui_box_is_nil(v); v = v->next, child_idx += 1)
+          for(UI_Box* v = table.first; !ui_box_is_nil(v); v = v.next, child_idx += 1)
           {
             uint64 column_idx = (child_idx+1);
             if(column_idx < ui_ts_col_pct_count)
             {
-              adjustable_table_dim += dim_2f32(v->rect).x;
+              adjustable_table_dim += dim_2f32(v.rect).x;
             }
             else
             {
@@ -991,7 +991,7 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string)
         
         // rjf: calculate diff
         float min_size = 30.f;
-        float left_pct__before     = ui_get_drag_struct(Vec2F32)->x;
+        float left_pct__before     = ui_get_drag_struct(Vec2F32).x;
         float left_pixels__before  = left_pct__before * adjustable_table_dim;
         float left_pixels__after   = left_pixels__before + ui_drag_delta().x;
         
@@ -1004,7 +1004,7 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string)
         // rjf: calculate right side
         float left_pct__after      = left_pixels__after / adjustable_table_dim;
         float pct_delta            = left_pct__after - left_pct__before;
-        float right_pct__before    = ui_get_drag_struct(Vec2F32)->y;
+        float right_pct__before    = ui_get_drag_struct(Vec2F32).y;
         float right_pct__after     = right_pct__before - pct_delta;
         float right_pixels__after  = right_pct__after * adjustable_table_dim;
         
@@ -1126,31 +1126,31 @@ ui_table_cell_sized_begin(UI_Size size)
 void
 ui_scroll_list_row_block_chunk_list_push(Arena* arena, UI_ScrollListRowBlockChunkList* list, uint64 cap, UI_ScrollListRowBlock* block)
 {
-  UI_ScrollListRowBlockChunkNode* n = list->last;
-  if(n == 0 || n->count >= n->cap)
+  UI_ScrollListRowBlockChunkNode* n = list.last;
+  if(n == 0 || n.count >= n.cap)
   {
     n = push_array(arena, UI_ScrollListRowBlockChunkNode, 1);
-    n->cap = cap;
-    n->v = push_array_no_zero(arena, UI_ScrollListRowBlock, n->cap);
-    SLLQueuePush(list->first, list->last, n);
-    list->chunk_count += 1;
+    n.cap = cap;
+    n.v = push_array_no_zero(arena, UI_ScrollListRowBlock, n.cap);
+    SLLQueuePush(list.first, list.last, n);
+    list.chunk_count += 1;
   }
-  MemoryCopyStruct(&n->v[n->count], block);
-  n->count += 1;
-  list->total_count += 1;
+  MemoryCopyStruct(&n.v[n.count], block);
+  n.count += 1;
+  list.total_count += 1;
 }
 
 UI_ScrollListRowBlockArray
 ui_scroll_list_row_block_array_from_chunk_list(Arena* arena, UI_ScrollListRowBlockChunkList* list)
 {
   UI_ScrollListRowBlockArray array = {0};
-  array.count = list->total_count;
+  array.count = list.total_count;
   array.v = push_array_no_zero(arena, UI_ScrollListRowBlock, array.count);
   uint64 idx = 0;
-  for(UI_ScrollListRowBlockChunkNode* n = list->first; n != 0; n = n->next)
+  for(UI_ScrollListRowBlockChunkNode* n = list.first; n != 0; n = n.next)
   {
-    MemoryCopy(array.v+idx, n->v, sizeof(n->v[0])*n->count);
-    idx += n->count;
+    MemoryCopy(array.v+idx, n.v, sizeof(n.v[0])*n.count);
+    idx += n.count;
   }
   return array;
 }
@@ -1162,14 +1162,14 @@ ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray* blocks, uint64 item)
   {
     uint64 row_idx = 0;
     uint64 item_idx = 0;
-    for(uint64 block_idx = 0; block_idx < blocks->count; block_idx += 1)
+    for(uint64 block_idx = 0; block_idx < blocks.count; block_idx += 1)
     {
-      UI_ScrollListRowBlock* block = &blocks->v[block_idx];
-      uint64 next_row_idx = row_idx + block->row_count;
-      uint64 next_item_idx= item_idx+ block->item_count;
+      UI_ScrollListRowBlock* block = &blocks.v[block_idx];
+      uint64 next_row_idx = row_idx + block.row_count;
+      uint64 next_item_idx= item_idx+ block.item_count;
       if(item_idx <= item && item < next_item_idx)
       {
-        uint64 item_off_rows = (item-item_idx) * (block->row_count/block->item_count);
+        uint64 item_off_rows = (item-item_idx) * (block.row_count/block.item_count);
         result = row_idx + item_off_rows;
         break;
       }
@@ -1187,11 +1187,11 @@ ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray* blocks, uint64 row)
   {
     uint64 row_idx = 0;
     uint64 item_idx = 0;
-    for(uint64 block_idx = 0; block_idx < blocks->count; block_idx += 1)
+    for(uint64 block_idx = 0; block_idx < blocks.count; block_idx += 1)
     {
-      UI_ScrollListRowBlock* block = &blocks->v[block_idx];
-      uint64 next_row_idx = row_idx + block->row_count;
-      uint64 next_item_idx= item_idx+ block->item_count;
+      UI_ScrollListRowBlock* block = &blocks.v[block_idx];
+      uint64 next_row_idx = row_idx + block.row_count;
+      uint64 next_item_idx= item_idx+ block.item_count;
       if(row_idx <= row && row < next_row_idx)
       {
         result = item_idx;
@@ -1207,7 +1207,7 @@ ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray* blocks, uint64 row)
 UI_ScrollPt
 ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, int64 view_num_indices)
 {
-  ui_push_palette(ui_state->widget_palette_info.scrollbar_palette);
+  ui_push_palette(ui_state.widget_palette_info.scrollbar_palette);
   
   //- rjf: unpack
   int64 idx_range_dim = Max(dim_1s64(idx_range), 1);
@@ -1288,7 +1288,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
     max_scroll_sig = ui_buttonf("%S##_max_scroll_%i", arrow_string, axis);
   }
   
-  //- rjf: pt * signals -> new pt
+  //- rjf: pt * signals . new pt
   UI_ScrollPt new_pt = pt;
   {
     struct UI_ScrollBarDragData
@@ -1300,13 +1300,13 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
     {
       if(ui_pressed(scroller_sig))
       {
-        UI_ScrollBarDragData drag_data = {pt, (floor_f32(dim_2f32(scroll_area_box->rect).v[axis])-floor_f32(dim_2f32(scroller_box->rect).v[axis]))};
+        UI_ScrollBarDragData drag_data = {pt, (floor_f32(dim_2f32(scroll_area_box.rect).v[axis])-floor_f32(dim_2f32(scroller_box.rect).v[axis]))};
         ui_store_drag_struct(&drag_data);
       }
       UI_ScrollBarDragData* drag_data = ui_get_drag_struct(UI_ScrollBarDragData);
-      UI_ScrollPt original_pt = drag_data->start_pt;
+      UI_ScrollPt original_pt = drag_data.start_pt;
       float drag_delta = ui_drag_delta().v[axis];
-      float drag_pct = drag_delta / drag_data->scroll_space_px;
+      float drag_pct = drag_delta / drag_data.scroll_space_px;
       int64 new_idx = original_pt.idx + drag_pct*idx_range_dim;
       new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
@@ -1339,60 +1339,60 @@ void
 ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt, Vec2S64* cursor_out, Vec2S64* mark_out, Rng1S64* visible_row_range_out, UI_ScrollListSignal* signal_out)
 {
   //- rjf: unpack arguments
-  Rng1S64 scroll_row_idx_range = r1s64(params->item_range.min, ClampBot(params->item_range.min, params->item_range.max-1));
-  int64 num_possible_visible_rows = (int64)(params->dim_px.y/params->row_height_px);
+  Rng1S64 scroll_row_idx_range = r1s64(params.item_range.min, ClampBot(params.item_range.min, params.item_range.max-1));
+  int64 num_possible_visible_rows = (int64)(params.dim_px.y/params.row_height_px);
   
   //- rjf: do keyboard navigation
   B32 moved = 0;
-  if(params->flags & UI_ScrollListFlag_Nav && cursor_out != 0 && ui_is_focus_active())
+  if(params.flags & UI_ScrollListFlag_Nav && cursor_out != 0 && ui_is_focus_active())
   {
     Vec2S64 cursor = *cursor_out;
     Vec2S64 mark = mark_out ? *mark_out : cursor;
     for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
-      if((evt->delta_2s32.x == 0 && evt->delta_2s32.y == 0) ||
-         evt->flags & UI_EventFlag_Delete)
+      if((evt.delta_2s32.x == 0 && evt.delta_2s32.y == 0) ||
+         evt.flags & UI_EventFlag_Delete)
       {
         continue;
       }
       ui_eat_event(evt);
       moved = 1;
-      switch(evt->delta_unit)
+      switch(evt.delta_unit)
       {
         default:{moved = 0;}break;
         case UI_EventDeltaUnit_Char:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
-            cursor.v[axis] += evt->delta_2s32.v[axis];
-            if(cursor.v[axis] < params->cursor_range.min.v[axis])
+            cursor.v[axis] += evt.delta_2s32.v[axis];
+            if(cursor.v[axis] < params.cursor_range.min.v[axis])
             {
-              cursor.v[axis] = params->cursor_range.max.v[axis];
+              cursor.v[axis] = params.cursor_range.max.v[axis];
             }
-            if(cursor.v[axis] > params->cursor_range.max.v[axis])
+            if(cursor.v[axis] > params.cursor_range.max.v[axis])
             {
-              cursor.v[axis] = params->cursor_range.min.v[axis];
+              cursor.v[axis] = params.cursor_range.min.v[axis];
             }
-            cursor.v[axis] = clamp_1s64(r1s64(params->cursor_range.min.v[axis], params->cursor_range.max.v[axis]), cursor.v[axis]);
+            cursor.v[axis] = clamp_1s64(r1s64(params.cursor_range.min.v[axis], params.cursor_range.max.v[axis]), cursor.v[axis]);
           }
         }break;
         case UI_EventDeltaUnit_Word:
         case UI_EventDeltaUnit_Line:
         case UI_EventDeltaUnit_Page:
         {
-          cursor.x  = (evt->delta_2s32.x>0 ? params->cursor_range.max.x : evt->delta_2s32.x<0 ? params->cursor_range.min.x + !!params->cursor_min_is_empty_selection[Axis2_X] : cursor.x);
-          cursor.y += ((evt->delta_2s32.y>0 ? +(num_possible_visible_rows-3) : evt->delta_2s32.y<0 ? -(num_possible_visible_rows-3) : 0));
-          cursor.y = clamp_1s64(r1s64(params->cursor_range.min.y + !!params->cursor_min_is_empty_selection[Axis2_Y], params->cursor_range.max.y), cursor.y);
+          cursor.x  = (evt.delta_2s32.x>0 ? params.cursor_range.max.x : evt.delta_2s32.x<0 ? params.cursor_range.min.x + !!params.cursor_min_is_empty_selection[Axis2_X] : cursor.x);
+          cursor.y += ((evt.delta_2s32.y>0 ? +(num_possible_visible_rows-3) : evt.delta_2s32.y<0 ? -(num_possible_visible_rows-3) : 0));
+          cursor.y = clamp_1s64(r1s64(params.cursor_range.min.y + !!params.cursor_min_is_empty_selection[Axis2_Y], params.cursor_range.max.y), cursor.y);
         }break;
         case UI_EventDeltaUnit_Whole:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
-            cursor.v[axis] = (evt->delta_2s32.v[axis]>0 ? params->cursor_range.max.v[axis] : evt->delta_2s32.v[axis]<0 ? params->cursor_range.min.v[axis] + !!params->cursor_min_is_empty_selection[axis] : cursor.v[axis]);
+            cursor.v[axis] = (evt.delta_2s32.v[axis]>0 ? params.cursor_range.max.v[axis] : evt.delta_2s32.v[axis]<0 ? params.cursor_range.min.v[axis] + !!params.cursor_min_is_empty_selection[axis] : cursor.v[axis]);
           }
         }break;
       }
-      if(!(evt->flags & UI_EventFlag_KeepMark))
+      if(!(evt.flags & UI_EventFlag_KeepMark))
       {
         mark = cursor;
       }
@@ -1407,32 +1407,32 @@ ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt, Vec2S6
     }
   }
   
-  //- rjf: moved -> snap
-  if(params->flags & UI_ScrollListFlag_Snap && moved)
+  //- rjf: moved . snap
+  if(params.flags & UI_ScrollListFlag_Snap && moved)
   {
-    int64 cursor_item_idx = cursor_out->y-1;
-    if(params->item_range.min <= cursor_item_idx && cursor_item_idx <= params->item_range.max)
+    int64 cursor_item_idx = cursor_out.y-1;
+    if(params.item_range.min <= cursor_item_idx && cursor_item_idx <= params.item_range.max)
     {
       //- rjf: compute visible row range
-      Rng1S64 visible_row_range = r1s64(scroll_pt->idx + 0 - !!(scroll_pt->off < 0),
-                                        scroll_pt->idx + 0 + num_possible_visible_rows + 1);
+      Rng1S64 visible_row_range = r1s64(scroll_pt.idx + 0 - !!(scroll_pt.off < 0),
+                                        scroll_pt.idx + 0 + num_possible_visible_rows + 1);
       
       //- rjf: compute cursor row range from cursor item
       Rng1S64 cursor_visibility_row_range = {0};
-      if(params->row_blocks.count == 0)
+      if(params.row_blocks.count == 0)
       {
         cursor_visibility_row_range = r1s64(cursor_item_idx-1, cursor_item_idx+3);
       }
       else
       {
-        cursor_visibility_row_range.min = (int64)ui_scroll_list_row_from_item(&params->row_blocks, (uint64)cursor_item_idx);
+        cursor_visibility_row_range.min = (int64)ui_scroll_list_row_from_item(&params.row_blocks, (uint64)cursor_item_idx);
         cursor_visibility_row_range.max = cursor_visibility_row_range.min + 4;
       }
       
       //- rjf: compute deltas & apply
       int64 min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
       int64 max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
-      int64 new_idx = scroll_pt->idx+min_delta+max_delta;
+      int64 new_idx = scroll_pt.idx+min_delta+max_delta;
       new_idx = clamp_1s64(scroll_row_idx_range, new_idx);
       ui_scroll_pt_target_idx(scroll_pt, new_idx);
     }
@@ -1441,35 +1441,35 @@ ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt, Vec2S6
   //- rjf: output signal
   if(signal_out != 0)
   {
-    signal_out->cursor_moved = moved;
+    signal_out.cursor_moved = moved;
   }
   
   //- rjf: determine ranges & limits
-  Rng1S64 visible_row_range = r1s64(scroll_pt->idx + (int64)(scroll_pt->off) + 0 - !!(scroll_pt->off < 0),
-                                    scroll_pt->idx + (int64)(scroll_pt->off) + 0 + num_possible_visible_rows + 1);
-  visible_row_range.min = clamp_1s64(params->item_range, visible_row_range.min);
-  visible_row_range.max = clamp_1s64(params->item_range, visible_row_range.max);
+  Rng1S64 visible_row_range = r1s64(scroll_pt.idx + (int64)(scroll_pt.off) + 0 - !!(scroll_pt.off < 0),
+                                    scroll_pt.idx + (int64)(scroll_pt.off) + 0 + num_possible_visible_rows + 1);
+  visible_row_range.min = clamp_1s64(params.item_range, visible_row_range.min);
+  visible_row_range.max = clamp_1s64(params.item_range, visible_row_range.max);
   *visible_row_range_out = visible_row_range;
   
   //- rjf: store thread-locals
   ui_scroll_list_scroll_bar_dim_px = ui_top_font_size()*1.5f;
   ui_scroll_list_scroll_pt_ptr = scroll_pt;
-  ui_scroll_list_dim_px = params->dim_px;
+  ui_scroll_list_dim_px = params.dim_px;
   ui_scroll_list_scroll_idx_rng = scroll_row_idx_range;
   
   //- rjf: build top-level container
   UI_Box* container_box = &ui_nil_box;
-  UI_FixedWidth(params->dim_px.x) UI_FixedHeight(params->dim_px.y) UI_ChildLayoutAxis(Axis2_X)
+  UI_FixedWidth(params.dim_px.x) UI_FixedHeight(params.dim_px.y) UI_ChildLayoutAxis(Axis2_X)
   {
     container_box = ui_build_box_from_key(0, ui_key_zero());
   }
   
   //- rjf: build scrollable container
   UI_Box* scrollable_container_box = &ui_nil_box;
-  UI_Parent(container_box) UI_ChildLayoutAxis(Axis2_Y) UI_FixedWidth(params->dim_px.x-ui_scroll_list_scroll_bar_dim_px) UI_FixedHeight(params->dim_px.y)
+  UI_Parent(container_box) UI_ChildLayoutAxis(Axis2_Y) UI_FixedWidth(params.dim_px.x-ui_scroll_list_scroll_bar_dim_px) UI_FixedHeight(params.dim_px.y)
   {
     scrollable_container_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_Scroll, "###sp");
-    scrollable_container_box->view_off.y = scrollable_container_box->view_off_target.y = params->row_height_px*mod_f32(scroll_pt->off, 1.f) + params->row_height_px*(scroll_pt->off < 0) - params->row_height_px*(scroll_pt->off == -1.f && scroll_pt->idx == 1);
+    scrollable_container_box.view_off.y = scrollable_container_box.view_off_target.y = params.row_height_px*mod_f32(scroll_pt.off, 1.f) + params.row_height_px*(scroll_pt.off < 0) - params.row_height_px*(scroll_pt.off == -1.f && scroll_pt.idx == 1);
   }
   
   //- rjf: build vertical scroll bar
@@ -1487,7 +1487,7 @@ ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt, Vec2S6
   //- rjf: begin scrollable region
   ui_push_parent(container_box);
   ui_push_parent(scrollable_container_box);
-  ui_push_pref_height(ui_px(params->row_height_px, 1.f));
+  ui_push_pref_height(ui_px(params.row_height_px, 1.f));
 }
 
 void
@@ -1502,7 +1502,7 @@ ui_scroll_list_end()
     UI_Signal sig = ui_signal_from_box(scrollable_container_box);
     if(sig.scroll.y != 0)
     {
-      int64 new_idx = ui_scroll_list_scroll_pt_ptr->idx + sig.scroll.y;
+      int64 new_idx = ui_scroll_list_scroll_pt_ptr.idx + sig.scroll.y;
       new_idx = clamp_1s64(ui_scroll_list_scroll_idx_rng, new_idx);
       ui_scroll_pt_target_idx(ui_scroll_list_scroll_pt_ptr, new_idx);
     }

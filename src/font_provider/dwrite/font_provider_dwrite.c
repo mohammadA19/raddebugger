@@ -53,9 +53,9 @@ FP_DWrite_FontFileStreamNode *
 fp_dwrite_font_file_stream_node_alloc(String8* data_ptr)
 {
   FP_DWrite_FontFileStreamNode* node = 0;
-  for(FP_DWrite_FontFileStreamNode* n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
+  for(FP_DWrite_FontFileStreamNode* n = fp_dwrite_state.first_stream_node; n != 0; n = n.next)
   {
-    if(n->stream.data == data_ptr)
+    if(n.stream.data == data_ptr)
     {
       node = n;
       break;
@@ -63,19 +63,19 @@ fp_dwrite_font_file_stream_node_alloc(String8* data_ptr)
   }
   if(node == 0)
   {
-    node = fp_dwrite_state->free_stream_node;
+    node = fp_dwrite_state.free_stream_node;
     if(node != 0)
     {
-      SLLStackPop(fp_dwrite_state->free_stream_node);
+      SLLStackPop(fp_dwrite_state.free_stream_node);
     }
     else
     {
-      node = push_array_no_zero(fp_dwrite_state->arena, FP_DWrite_FontFileStreamNode, 1);
+      node = push_array_no_zero(fp_dwrite_state.arena, FP_DWrite_FontFileStreamNode, 1);
     }
     MemoryZeroStruct(node);
-    node->stream.lpVtbl = &fp_dwrite_static_data_font_file_stream__vtable;
-    node->stream.data = data_ptr;
-    DLLPushBack(fp_dwrite_state->first_stream_node, fp_dwrite_state->last_stream_node, node);
+    node.stream.lpVtbl = &fp_dwrite_static_data_font_file_stream__vtable;
+    node.stream.data = data_ptr;
+    DLLPushBack(fp_dwrite_state.first_stream_node, fp_dwrite_state.last_stream_node, node);
   }
   return node;
 }
@@ -83,8 +83,8 @@ fp_dwrite_font_file_stream_node_alloc(String8* data_ptr)
 void
 fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode* node)
 {
-  DLLPushBack(fp_dwrite_state->first_stream_node, fp_dwrite_state->last_stream_node, node);
-  SLLStackPush(fp_dwrite_state->free_stream_node, node);
+  DLLPushBack(fp_dwrite_state.first_stream_node, fp_dwrite_state.last_stream_node, node);
+  SLLStackPush(fp_dwrite_state.free_stream_node, node);
 }
 
 //- rjf: iunknown no-op helpers
@@ -117,7 +117,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj
   HRESULT result = S_OK;
   String8* key = *(String8 **)font_file_ref_key;
   FP_DWrite_FontFileStreamNode* node = fp_dwrite_font_file_stream_node_alloc(key);
-  *stream_out = (IDWriteFontFileStream *)&node->stream;
+  *stream_out = (IDWriteFontFileStream *)&node.stream;
   return result;
 }
 
@@ -127,7 +127,7 @@ HRESULT
 fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context)
 {
   HRESULT result = S_OK;
-  *fragment_start = obj->data->str + file_offset;
+  *fragment_start = obj.data.str + file_offset;
   *fragment_context = 0;
   return result;
 }
@@ -143,7 +143,7 @@ HRESULT
 fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream* obj, UINT64* size_out)
 {
   HRESULT result = S_OK;
-  *size_out = obj->data->size;
+  *size_out = obj.data.size;
   return result;
 }
 
@@ -168,33 +168,33 @@ fp_init()
   {
     Arena* arena = arena_alloc();
     fp_dwrite_state = push_array(arena, FP_DWrite_State, 1);
-    fp_dwrite_state->arena = arena;
+    fp_dwrite_state.arena = arena;
   }
   
   //- rjf: make dwrite factory
-  error = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, &IID_IDWriteFactory2, (void **)&fp_dwrite_state->factory);
+  error = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, &IID_IDWriteFactory2, (void **)&fp_dwrite_state.factory);
   if(error == S_OK)
   {
-    fp_dwrite_state->dwrite2_is_supported = 1;
+    fp_dwrite_state.dwrite2_is_supported = 1;
   }
   else
   {
-    error = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, &IID_IDWriteFactory, (void **)&fp_dwrite_state->factory);
+    error = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, &IID_IDWriteFactory, (void **)&fp_dwrite_state.factory);
   }
   
   //- rjf: register static data font "loader" interface
-  error = IDWriteFactory_RegisterFontFileLoader(fp_dwrite_state->factory, (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader);
+  error = IDWriteFactory_RegisterFontFileLoader(fp_dwrite_state.factory, (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader);
   
   //- rjf: make base rendering params
-  error = IDWriteFactory_CreateRenderingParams(fp_dwrite_state->factory, &fp_dwrite_state->base_rendering_params);
+  error = IDWriteFactory_CreateRenderingParams(fp_dwrite_state.factory, &fp_dwrite_state.base_rendering_params);
   
   //- rjf: make sharp-hinted rendering params
   {
-    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
-    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state.base_rendering_params);
+    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state.base_rendering_params);
+    if(fp_dwrite_state.dwrite2_is_supported)
     {
-      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
+      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state.factory,
                                                            gamma,
                                                            enhanced_contrast,
                                                            enhanced_contrast,
@@ -202,27 +202,27 @@ fp_init()
                                                            DWRITE_PIXEL_GEOMETRY_FLAT,
                                                            DWRITE_RENDERING_MODE_GDI_NATURAL,
                                                            DWRITE_GRID_FIT_MODE_ENABLED,
-                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state->rendering_params_sharp_hinted);
+                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state.rendering_params_sharp_hinted);
     }
     else
     {
-      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state->factory,
+      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state.factory,
                                                          gamma,
                                                          enhanced_contrast,
                                                          0.f,
                                                          DWRITE_PIXEL_GEOMETRY_FLAT,
                                                          DWRITE_RENDERING_MODE_GDI_NATURAL,
-                                                         &fp_dwrite_state->rendering_params_sharp_hinted);
+                                                         &fp_dwrite_state.rendering_params_sharp_hinted);
     }
   }
   
   //- rjf: make sharp-unhinted rendering params
   {
-    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
-    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state.base_rendering_params);
+    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state.base_rendering_params);
+    if(fp_dwrite_state.dwrite2_is_supported)
     {
-      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
+      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state.factory,
                                                            gamma,
                                                            enhanced_contrast,
                                                            enhanced_contrast,
@@ -230,27 +230,27 @@ fp_init()
                                                            DWRITE_PIXEL_GEOMETRY_FLAT,
                                                            DWRITE_RENDERING_MODE_GDI_NATURAL,
                                                            DWRITE_GRID_FIT_MODE_DISABLED,
-                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state->rendering_params_sharp_unhinted);
+                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state.rendering_params_sharp_unhinted);
     }
     else
     {
-      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state->factory,
+      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state.factory,
                                                          gamma,
                                                          enhanced_contrast,
                                                          0.f,
                                                          DWRITE_PIXEL_GEOMETRY_FLAT,
                                                          DWRITE_RENDERING_MODE_GDI_NATURAL,
-                                                         &fp_dwrite_state->rendering_params_sharp_unhinted);
+                                                         &fp_dwrite_state.rendering_params_sharp_unhinted);
     }
   }
   
   //- rjf: make smooth-hinted rendering params
   {
-    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
-    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state.base_rendering_params);
+    FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state.base_rendering_params);
+    if(fp_dwrite_state.dwrite2_is_supported)
     {
-      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
+      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state.factory,
                                                            gamma,
                                                            enhanced_contrast,
                                                            enhanced_contrast,
@@ -258,17 +258,17 @@ fp_init()
                                                            DWRITE_PIXEL_GEOMETRY_FLAT,
                                                            DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC,
                                                            DWRITE_GRID_FIT_MODE_ENABLED,
-                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state->rendering_params_smooth_hinted);
+                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state.rendering_params_smooth_hinted);
     }
     else
     {
-      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state->factory,
+      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state.factory,
                                                          gamma,
                                                          enhanced_contrast,
                                                          0.f,
                                                          DWRITE_PIXEL_GEOMETRY_FLAT,
                                                          DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC,
-                                                         &fp_dwrite_state->rendering_params_smooth_hinted);
+                                                         &fp_dwrite_state.rendering_params_smooth_hinted);
     }
   }
   
@@ -276,9 +276,9 @@ fp_init()
   {
     FLOAT gamma = 1.f;
     FLOAT enhanced_contrast = 0.f;
-    if(fp_dwrite_state->dwrite2_is_supported)
+    if(fp_dwrite_state.dwrite2_is_supported)
     {
-      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
+      error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state.factory,
                                                            gamma,
                                                            enhanced_contrast,
                                                            enhanced_contrast,
@@ -286,27 +286,27 @@ fp_init()
                                                            DWRITE_PIXEL_GEOMETRY_FLAT,
                                                            DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC,
                                                            DWRITE_GRID_FIT_MODE_DISABLED,
-                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state->rendering_params_smooth_unhinted);
+                                                           (IDWriteRenderingParams2 **)&fp_dwrite_state.rendering_params_smooth_unhinted);
     }
     else
     {
-      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state->factory,
+      error = IDWriteFactory_CreateCustomRenderingParams(fp_dwrite_state.factory,
                                                          gamma,
                                                          enhanced_contrast,
                                                          0.f,
                                                          DWRITE_PIXEL_GEOMETRY_FLAT,
                                                          DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC,
-                                                         &fp_dwrite_state->rendering_params_smooth_unhinted);
+                                                         &fp_dwrite_state.rendering_params_smooth_unhinted);
     }
   }
   
   //- rjf: make dwrite gdi interop
-  error = IDWriteFactory_GetGdiInterop(fp_dwrite_state->factory, &fp_dwrite_state->gdi_interop);
+  error = IDWriteFactory_GetGdiInterop(fp_dwrite_state.factory, &fp_dwrite_state.gdi_interop);
   
   //- rjf: build render target for rasterization
-  fp_dwrite_state->bitmap_render_target_dim = v2s32(2048, 256);
-  error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state->gdi_interop, 0, fp_dwrite_state->bitmap_render_target_dim.x, fp_dwrite_state->bitmap_render_target_dim.y, &fp_dwrite_state->bitmap_render_target);
-  IDWriteBitmapRenderTarget_SetPixelsPerDip(fp_dwrite_state->bitmap_render_target, 1.0);
+  fp_dwrite_state.bitmap_render_target_dim = v2s32(2048, 256);
+  error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state.gdi_interop, 0, fp_dwrite_state.bitmap_render_target_dim.x, fp_dwrite_state.bitmap_render_target_dim.y, &fp_dwrite_state.bitmap_render_target);
+  IDWriteBitmapRenderTarget_SetPixelsPerDip(fp_dwrite_state.bitmap_render_target, 1.0);
   ProfEnd();
 }
 
@@ -320,10 +320,10 @@ fp_font_open(String8 path)
   HRESULT error = 0;
   
   //- rjf: open font file reference
-  error = IDWriteFactory_CreateFontFileReference(fp_dwrite_state->factory, (WCHAR *)path16.str, 0, &font.file);
+  error = IDWriteFactory_CreateFontFileReference(fp_dwrite_state.factory, (WCHAR *)path16.str, 0, &font.file);
   
   //- rjf: open font face
-  error = IDWriteFactory_CreateFontFace(fp_dwrite_state->factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
+  error = IDWriteFactory_CreateFontFace(fp_dwrite_state.factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
   
   //- rjf: handlify & return
   FP_Handle handle = fp_dwrite_handle_from_font(font);
@@ -341,10 +341,10 @@ fp_font_open_from_static_data_string(String8* data_ptr)
   HRESULT error = 0;
   
   //- rjf: open font file reference
-  error = IDWriteFactory_CreateCustomFontFileReference(fp_dwrite_state->factory, &data_ptr, sizeof(String8 *), (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader, &font.file);
+  error = IDWriteFactory_CreateCustomFontFileReference(fp_dwrite_state.factory, &data_ptr, sizeof(String8 *), (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader, &font.file);
   
   //- rjf: open font face
-  error = IDWriteFactory_CreateFontFace(fp_dwrite_state->factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
+  error = IDWriteFactory_CreateFontFace(fp_dwrite_state.factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
   
   //- rjf: handlify & return
   FP_Handle handle = fp_dwrite_handle_from_font(font);
@@ -436,16 +436,16 @@ fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags,
     for(uint64 idx = 0; idx < glyphs_count; idx += 1)
     {
       DWRITE_GLYPH_METRICS* glyph_metrics = glyphs_metrics + idx;
-      float glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
+      float glyph_advance_width         = (96.f/72.f) * size * glyph_metrics.advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
       atlas_dim.x = Max(atlas_dim.x, (int16)(advance+1));
       if(idx == 0)
       {
-        left_side_bearing = (96.f/72.f) * size * glyph_metrics->leftSideBearing    / design_units_per_em;
+        left_side_bearing = (96.f/72.f) * size * glyph_metrics.leftSideBearing    / design_units_per_em;
       }
       if(idx+1 == glyphs_count)
       {
-        right_side_bearing = (96.f/72.f) * size * glyph_metrics->rightSideBearing   / design_units_per_em;
+        right_side_bearing = (96.f/72.f) * size * glyph_metrics.rightSideBearing   / design_units_per_em;
       }
     }
     atlas_dim.x -= right_side_bearing;
@@ -458,7 +458,7 @@ fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags,
   IDWriteBitmapRenderTarget* render_target = 0;
   if(font.face != 0)
   {
-    error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state->gdi_interop, 0, atlas_dim.x, atlas_dim.y, &render_target);
+    error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state.gdi_interop, 0, atlas_dim.x, atlas_dim.y, &render_target);
     IDWriteBitmapRenderTarget_SetPixelsPerDip(render_target, 1.f);
   }
   
@@ -493,14 +493,14 @@ fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags,
   RECT bounding_box = {0};
   if(font.face != 0)
   {
-    IDWriteRenderingParams* rendering_params = fp_dwrite_state->rendering_params_sharp_hinted;
+    IDWriteRenderingParams* rendering_params = fp_dwrite_state.rendering_params_sharp_hinted;
     switch(flags)
     {
       default:{}break;
-      case 0:{rendering_params = fp_dwrite_state->rendering_params_sharp_unhinted;}break;
-      case FP_RasterFlag_Hinted:{rendering_params = fp_dwrite_state->rendering_params_sharp_hinted;}break;
-      case FP_RasterFlag_Smooth:{rendering_params = fp_dwrite_state->rendering_params_smooth_unhinted;}break;
-      case FP_RasterFlag_Smooth|FP_RasterFlag_Hinted:{rendering_params = fp_dwrite_state->rendering_params_smooth_hinted;}break;
+      case 0:{rendering_params = fp_dwrite_state.rendering_params_sharp_unhinted;}break;
+      case FP_RasterFlag_Hinted:{rendering_params = fp_dwrite_state.rendering_params_sharp_hinted;}break;
+      case FP_RasterFlag_Smooth:{rendering_params = fp_dwrite_state.rendering_params_smooth_unhinted;}break;
+      case FP_RasterFlag_Smooth|FP_RasterFlag_Hinted:{rendering_params = fp_dwrite_state.rendering_params_smooth_hinted;}break;
     }
     error = IDWriteBitmapRenderTarget_DrawGlyphRun(render_target, draw_p.x, draw_p.y,
                                                    DWRITE_MEASURING_MODE_NATURAL,

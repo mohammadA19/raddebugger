@@ -21,21 +21,21 @@ void
 os_handle_list_push(Arena* arena, OS_HandleList* handles, OS_Handle handle)
 {
   OS_HandleNode* n = push_array(arena, OS_HandleNode, 1);
-  n->v = handle;
-  SLLQueuePush(handles->first, handles->last, n);
-  handles->count += 1;
+  n.v = handle;
+  SLLQueuePush(handles.first, handles.last, n);
+  handles.count += 1;
 }
 
 OS_HandleArray
 os_handle_array_from_list(Arena* arena, OS_HandleList* list)
 {
   OS_HandleArray result = {0};
-  result.count = list->count;
+  result.count = list.count;
   result.v = push_array_no_zero(arena, OS_Handle, result.count);
   uint64 idx = 0;
-  for(OS_HandleNode* n = list->first; n != 0; n = n->next, idx += 1)
+  for(OS_HandleNode* n = list.first; n != 0; n = n.next, idx += 1)
   {
-    result.v[idx] = n->v;
+    result.v[idx] = n.v;
   }
   return result;
 }
@@ -91,10 +91,10 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   {
     good = 1;
     uint64 off = 0;
-    for(String8Node* n = list.first; n != 0; n = n->next)
+    for(String8Node* n = list.first; n != 0; n = n.next)
     {
-      os_file_write(file, r1u64(off, off+n->string.size), n->string.str);
-      off += n->string.size;
+      os_file_write(file, r1u64(off, off+n.string.size), n.string.str);
+      off += n.string.size;
     }
     os_file_close(file);
   }
