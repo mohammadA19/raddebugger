@@ -101,29 +101,29 @@ struct DMN_W32_Entity
   DMN_W32_Entity* prev;
   DMN_W32_Entity* parent;
   DMN_W32_EntityKind kind;
-  U32 gen;
-  U64 id;
+  uint32 gen;
+  uint64 id;
   HANDLE handle;
   Arch arch;
   union
   {
     struct
     {
-      U64 injection_address;
+      uint64 injection_address;
       B32 did_first_bp;
     }
     proc;
     struct
     {
-      U64 thread_local_base;
-      U64 last_name_hash;
-      U64 name_gather_time_us;
+      uint64 thread_local_base;
+      uint64 last_name_hash;
+      uint64 name_gather_time_us;
     }
     thread;
     struct
     {
       Rng1U64 vaddr_range;
-      U64 address_of_name_pointer;
+      uint64 address_of_name_pointer;
       B32 is_main;
       B32 name_is_unicode;
     }
@@ -141,7 +141,7 @@ struct DMN_W32_EntityIDHashNode
 {
   DMN_W32_EntityIDHashNode* next;
   DMN_W32_EntityIDHashNode* prev;
-  U64 id;
+  uint64 id;
   DMN_W32_Entity* entity;
 }
 
@@ -156,8 +156,8 @@ struct DMN_W32_EntityIDHashSlot
 
 struct DMN_W32_InjectedBreak
 {
-  U64 code;
-  U64 user_data;
+  uint64 code;
+  uint64 user_data;
 }
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
@@ -168,7 +168,7 @@ struct DMN_W32_InjectedBreak
 struct DMN_W32_ImageInfo
 {
   Arch arch;
-  U32 size;
+  uint32 size;
 }
 
 ////////////////////////////////
@@ -190,9 +190,9 @@ struct DMN_W32_Shared
   B32 access_run_state;
   
   // rjf: run/mem/reg gens
-  U64 run_gen;
-  U64 mem_gen;
-  U64 reg_gen;
+  uint64 run_gen;
+  uint64 mem_gen;
+  uint64 reg_gen;
   
   // rjf: detaching info
   Arena* detach_arena;
@@ -202,9 +202,9 @@ struct DMN_W32_Shared
   Arena* entities_arena;
   DMN_W32_Entity* entities_base;
   DMN_W32_Entity* entities_first_free;
-  U64 entities_count;
+  uint64 entities_count;
   DMN_W32_EntityIDHashSlot* entities_id_hash_slots;
-  U64 entities_id_hash_slots_count;
+  uint64 entities_id_hash_slots_count;
   DMN_W32_EntityIDHashNode* entities_id_hash_node_free;
   
   // rjf: launch state
@@ -212,13 +212,13 @@ struct DMN_W32_Shared
   
   // rjf: run results
   B32 resume_needed;
-  U32 resume_pid;
-  U32 resume_tid;
+  uint32 resume_pid;
+  uint32 resume_tid;
   B32 exception_not_handled;
   
   // rjf: halting info
   DMN_Handle halter_process;
-  U32 halter_tid;
+  uint32 halter_tid;
 }
 
 ////////////////////////////////
@@ -232,8 +232,8 @@ thread_static B32 dmn_w32_ctrl_thread = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64 dmn_w32_hash_from_string(String8 string);
-U64 dmn_w32_hash_from_id(U64 id);
+uint64 dmn_w32_hash_from_string(String8 string);
+uint64 dmn_w32_hash_from_id(uint64 id);
 
 ////////////////////////////////
 //~ rjf: Entity Helpers
@@ -243,11 +243,11 @@ DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity* entity);
 DMN_W32_Entity* dmn_w32_entity_from_handle(DMN_Handle handle);
 
 //- rjf: entity allocation/deallocation
-DMN_W32_Entity* dmn_w32_entity_alloc(DMN_W32_Entity* parent, DMN_W32_EntityKind kind, U64 id);
+DMN_W32_Entity* dmn_w32_entity_alloc(DMN_W32_Entity* parent, DMN_W32_EntityKind kind, uint64 id);
 void dmn_w32_entity_release(DMN_W32_Entity* entity);
 
 //- rjf: kind*id -> entity
-DMN_W32_Entity* dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id);
+DMN_W32_Entity* dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, uint64 id);
 
 ////////////////////////////////
 //~ rjf: Module Info Extraction
@@ -258,21 +258,21 @@ String8 dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module);
 //~ rjf: Win32-Level Process/Thread Reads/Writes
 
 //- rjf: processes
-U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void* dst);
+uint64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void* dst);
 B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void* src);
-String8 dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, U64 address);
-String16 dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, U64 address);
+String8 dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address);
+String16 dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
-DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr);
+DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, uint64 base_vaddr);
 
 //- rjf: threads
-U16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT* fxsave);
-U16 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw);
+uint16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT* fxsave);
+uint16 dmn_w32_xsave_tag_word_from_real_tag_word(uint16 ftw);
 B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void* reg_block);
 B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void* reg_block);
 
 //- rjf: remote thread injection
-DWORD dmn_w32_inject_thread(HANDLE process, U64 start_address);
+DWORD dmn_w32_inject_thread(HANDLE process, uint64 start_address);
 
 #endif // DEMON_CORE_WIN32_H

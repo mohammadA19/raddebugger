@@ -68,8 +68,8 @@ rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, String8 stri
   {
     // rjf: map string -> hash*slot
     String8 string = str8(tln->string.str, tln->string.size);
-    U64 hash = d_hash_from_string__case_insensitive(string);
-    U64 slot_idx = hash % table->slot_count;
+    uint64 hash = d_hash_from_string__case_insensitive(string);
+    uint64 slot_idx = hash % table->slot_count;
     RD_CfgSlot* slot = &table->slots[slot_idx];
     
     // rjf: find existing value for this string
@@ -108,8 +108,8 @@ rd_cfg_val_from_string(RD_CfgTable* table, String8 string)
   RD_CfgVal* result = &d_nil_cfg_val;
   if(table->slot_count != 0)
   {
-    U64 hash = d_hash_from_string__case_insensitive(string);
-    U64 slot_idx = hash % table->slot_count;
+    uint64 hash = d_hash_from_string__case_insensitive(string);
+    uint64 slot_idx = hash % table->slot_count;
     RD_CfgSlot* slot = &table->slots[slot_idx];
     for(RD_CfgVal* val = slot->first; val != 0; val = val->hash_next)
     {
@@ -177,10 +177,10 @@ rd_entity_is_nil(RD_Entity* entity)
 
 //- rjf: handle <-> entity conversions
 
-U64
+uint64
 rd_index_from_entity(RD_Entity* entity)
 {
-  return (U64)(entity - rd_state->entities_base);
+  return (uint64)(entity - rd_state->entities_base);
 }
 
 RD_Handle
@@ -209,7 +209,7 @@ rd_entity_from_handle(RD_Handle handle)
 //- rjf: entity recursion iterators
 
 RD_EntityRec
-rd_entity_rec_depth_first(RD_Entity* entity, RD_Entity* subtree_root, U64 sib_off, U64 child_off)
+rd_entity_rec_depth_first(RD_Entity* entity, RD_Entity* subtree_root, uint64 sib_off, uint64 child_off)
 {
   RD_EntityRec result = {0};
   if(!rd_entity_is_nil(*MemberFromOffset(RD_Entity **, entity, child_off)))
@@ -263,7 +263,7 @@ rd_entity_array_from_list(Arena* arena, RD_EntityList* list)
   RD_EntityArray result = {0};
   result.count = list->count;
   result.v = push_array(arena, RD_Entity *, result.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(RD_EntityNode* n = list->first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->entity;
@@ -311,14 +311,14 @@ EV_Key
 rd_ev_key_from_entity(RD_Entity* entity)
 {
   EV_Key parent_key = rd_parent_ev_key_from_entity(entity);
-  EV_Key key = ev_key_make(ev_hash_from_key(parent_key), (U64)entity);
+  EV_Key key = ev_key_make(ev_hash_from_key(parent_key), (uint64)entity);
   return key;
 }
 
 EV_Key
 rd_parent_ev_key_from_entity(RD_Entity* entity)
 {
-  EV_Key parent_key = ev_key_make(5381, (U64)entity);
+  EV_Key parent_key = ev_key_make(5381, (uint64)entity);
   return parent_key;
 }
 
@@ -363,7 +363,7 @@ rd_handle_from_view(RD_View* view)
   RD_Handle handle = rd_handle_zero();
   if(!rd_view_is_nil(view))
   {
-    handle.u64[0] = (U64)view;
+    handle.u64[0] = (uint64)view;
     handle.u64[1] = view->generation;
   }
   return handle;
@@ -433,7 +433,7 @@ RD_Handle
 rd_handle_from_panel(RD_Panel* panel)
 {
   RD_Handle h = {0};
-  h.u64[0] = (U64)panel;
+  h.u64[0] = (uint64)panel;
   h.u64[1] = panel->generation;
   return h;
 }
@@ -477,7 +477,7 @@ rd_panel_remove(RD_Panel* parent, RD_Panel* child)
 //- rjf: tree walk
 
 RD_PanelRec
-rd_panel_rec_depth_first(RD_Panel* panel, U64 sib_off, U64 child_off)
+rd_panel_rec_depth_first(RD_Panel* panel, uint64 sib_off, uint64 child_off)
 {
   RD_PanelRec rec = {0};
   if(!rd_panel_is_nil(*MemberFromOffset(RD_Panel **, panel, child_off)))
@@ -542,7 +542,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel* root, RD_Panel* panel)
   Temp scratch = scratch_begin(0, 0);
   
   // rjf: count ancestors
-  U64 ancestor_count = 0;
+  uint64 ancestor_count = 0;
   for(RD_Panel* p = panel->parent; !rd_panel_is_nil(p); p = p->parent)
   {
     ancestor_count += 1;
@@ -551,7 +551,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel* root, RD_Panel* panel)
   // rjf: gather ancestors
   RD_Panel** ancestors = push_array(scratch.arena, RD_Panel *, ancestor_count);
   {
-    U64 ancestor_idx = 0;
+    uint64 ancestor_idx = 0;
     for(RD_Panel* p = panel->parent; !rd_panel_is_nil(p); p = p->parent)
     {
       ancestors[ancestor_idx] = p;
@@ -561,7 +561,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel* root, RD_Panel* panel)
   
   // rjf: go from highest ancestor => panel and calculate rect
   Rng2F32 parent_rect = root_rect;
-  for(S64 ancestor_idx = (S64)ancestor_count-1;
+  for(int64 ancestor_idx = (int64)ancestor_count-1;
       0 <= ancestor_idx && ancestor_idx < ancestor_count;
       ancestor_idx -= 1)
   {
@@ -647,7 +647,7 @@ rd_icon_kind_from_view(RD_View* view)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec4F32 secondary_color, F32 size)
+rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec4F32 secondary_color, float size)
 {
   DR_FancyStringList result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -662,8 +662,8 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
     String8 file_name = str8_skip_last_slash(file_path);
     if(rd_state->ambiguous_path_slots_count != 0)
     {
-      U64 hash = d_hash_from_string__case_insensitive(file_name);
-      U64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
+      uint64 hash = d_hash_from_string__case_insensitive(file_name);
+      uint64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
       RD_AmbiguousPathNode* node = 0;
       {
         for(RD_AmbiguousPathNode* n = rd_state->ambiguous_path_slots[slot_idx];
@@ -705,7 +705,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
         // search path; disqualify until we only have one path remaining; gather
         // qualifiers
         {
-          U64 num_collisions_left = collisions.count;
+          uint64 num_collisions_left = collisions.count;
           String8Node** collision_nodes = push_array(scratch.arena, String8Node *, collisions.count);
           for EachIndex(idx, collisions.count)
           {
@@ -798,7 +798,7 @@ rd_handle_from_window(RD_Window* window)
   RD_Handle handle = {0};
   if(window != 0)
   {
-    handle.u64[0] = (U64)window;
+    handle.u64[0] = (uint64)window;
     handle.u64[1] = window->gen;
   }
   return handle;
@@ -925,12 +925,12 @@ rd_open_ctx_menu(UI_Key anchor_box_key, Vec2F32 anchor_box_off, RD_RegSlot slot)
 ////////////////////////////////
 //~ rjf: Name Allocation
 
-U64
-rd_name_bucket_idx_from_string_size(U64 size)
+uint64
+rd_name_bucket_idx_from_string_size(uint64 size)
 {
-  U64 size_rounded = u64_up_to_pow2(size+1);
+  uint64 size_rounded = u64_up_to_pow2(size+1);
   size_rounded = ClampBot((1<<4), size_rounded);
-  U64 bucket_idx = 0;
+  uint64 bucket_idx = 0;
   switch(size_rounded)
   {
     case 1<<4: {bucket_idx = 0;}break;
@@ -949,7 +949,7 @@ String8
 rd_name_alloc(String8 string)
 {
   if(string.size == 0) {return str8_zero();}
-  U64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
+  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
   
   // rjf: loop -> find node, allocate if not there
   //
@@ -999,7 +999,7 @@ rd_name_alloc(String8 string)
     // rjf: no found node -> allocate new, push onto associated free list
     if(node == 0)
     {
-      U64 chunk_size = 0;
+      uint64 chunk_size = 0;
       if(bucket_idx < ArrayCount(rd_state->free_name_chunks)-1)
       {
         chunk_size = 1<<(bucket_idx+4);
@@ -1008,7 +1008,7 @@ rd_name_alloc(String8 string)
       {
         chunk_size = u64_up_to_pow2(string.size);
       }
-      U8* chunk_memory = push_array(rd_state->arena, U8, chunk_size);
+      uint8* chunk_memory = push_array(rd_state->arena, uint8, chunk_size);
       RD_NameChunkNode* chunk = (RD_NameChunkNode *)chunk_memory;
       chunk->size = chunk_size;
       SLLStackPush(rd_state->free_name_chunks[bucket_idx], chunk);
@@ -1016,8 +1016,8 @@ rd_name_alloc(String8 string)
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((U8 *)node, string.size);
-  MemoryCopy((U8 *)node, string.str, string.size);
+  String8 allocated_string = str8((uint8 *)node, string.size);
+  MemoryCopy((uint8 *)node, string.str, string.size);
   return allocated_string;
 }
 
@@ -1025,7 +1025,7 @@ void
 rd_name_release(String8 string)
 {
   if(string.size == 0) {return;}
-  U64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
+  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
   RD_NameChunkNode* node = (RD_NameChunkNode *)string.str;
   node->size = u64_up_to_pow2(string.size);
   SLLStackPush(rd_state->free_name_chunks[bucket_idx], node);
@@ -1046,7 +1046,7 @@ rd_cfg_alloc()
   {
     result = push_array_no_zero(rd_state->arena, RD_Cfg, 1);
   }
-  U64 old_gen = result->gen;
+  uint64 old_gen = result->gen;
   MemoryZeroStruct(result);
   result->first = result->last = result->next = result->prev = result->parent = &rd_nil_cfg;
   result->gen = old_gen + 1;
@@ -1196,7 +1196,7 @@ rd_cfg_tree_list_from_string(Arena* arena, String8 string)
         }
         dst_active_parent_n = dst_n;
       }
-      else for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+      else for(int32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
       {
         dst_active_parent_n = dst_active_parent_n->parent;
       }
@@ -1295,7 +1295,7 @@ rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg)
       }
       else
       {
-        for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1, SLLStackPop(top_nest_task))
+        for(int32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1, SLLStackPop(top_nest_task))
         {
           if(top_nest_task->is_simple)
           {
@@ -1360,7 +1360,7 @@ RD_Entity *
 rd_entity_alloc(RD_Entity* parent, RD_EntityKind kind)
 {
   B32 user_defined_lifetime = !!(rd_entity_kind_flags_table[kind] & RD_EntityKindFlag_UserDefinedLifetime);
-  U64 free_list_idx = !!user_defined_lifetime;
+  uint64 free_list_idx = !!user_defined_lifetime;
   if(rd_entity_is_nil(parent)) { parent = rd_state->entities_root; }
   
   // rjf: empty free list -> push new
@@ -1380,7 +1380,7 @@ rd_entity_alloc(RD_Entity* parent, RD_EntityKind kind)
   
   // rjf: zero entity
   {
-    U64 gen = entity->gen;
+    uint64 gen = entity->gen;
     MemoryZeroStruct(entity);
     entity->gen = gen;
   }
@@ -1441,7 +1441,7 @@ rd_entity_release(RD_Entity* entity)
   Temp scratch = scratch_begin(0, 0);
   
   // rjf: unpack
-  U64 free_list_idx = !!(rd_entity_kind_flags_table[entity->kind] & RD_EntityKindFlag_UserDefinedLifetime);
+  uint64 free_list_idx = !!(rd_entity_kind_flags_table[entity->kind] & RD_EntityKindFlag_UserDefinedLifetime);
   
   // rjf: release whole tree
   struct Task
@@ -1531,7 +1531,7 @@ rd_entity_equip_disabled(RD_Entity* entity, B32 value)
 }
 
 void
-rd_entity_equip_u64(RD_Entity* entity, U64 u64)
+rd_entity_equip_u64(RD_Entity* entity, uint64 u64)
 {
   rd_require_entity_nonnil(entity, return);
   entity->u64 = u64;
@@ -1564,7 +1564,7 @@ rd_entity_equip_cfg_src(RD_Entity* entity, RD_CfgSrc cfg_src)
 }
 
 void
-rd_entity_equip_timestamp(RD_Entity* entity, U64 timestamp)
+rd_entity_equip_timestamp(RD_Entity* entity, uint64 timestamp)
 {
   rd_require_entity_nonnil(entity, return);
   entity->timestamp = timestamp;
@@ -1573,7 +1573,7 @@ rd_entity_equip_timestamp(RD_Entity* entity, U64 timestamp)
 //- rjf: control layer correllation equipment
 
 void
-rd_entity_equip_vaddr(RD_Entity* entity, U64 vaddr)
+rd_entity_equip_vaddr(RD_Entity* entity, uint64 vaddr)
 {
   rd_require_entity_nonnil(entity, return);
   entity->vaddr = vaddr;
@@ -1613,7 +1613,7 @@ rd_mapped_from_file_path(Arena* arena, String8 file_path)
     String8List file_path_parts = str8_split_path(scratch.arena, file_path__normalized);
     RD_EntityList maps = rd_query_cached_entity_list_with_kind(RD_EntityKind_FilePathMap);
     String8 best_map_dst = {0};
-    U64 best_map_match_length = max_U64;
+    uint64 best_map_match_length = max_U64;
     String8Node* best_map_remaining_suffix_first = 0;
     for(RD_EntityNode* n = maps.first; n != 0; n = n->next)
     {
@@ -1621,7 +1621,7 @@ rd_mapped_from_file_path(Arena* arena, String8 file_path)
       String8 map_src__normalized = path_normalized_from_string(scratch.arena, map_src);
       String8List map_src_parts = str8_split_path(scratch.arena, map_src__normalized);
       B32 matches = 1;
-      U64 match_length = 0;
+      uint64 match_length = 0;
       String8Node* file_path_part_n = file_path_parts.first;
       for(String8Node* map_src_n = map_src_parts.first;
           map_src_n != 0 && file_path_part_n != 0;
@@ -1819,7 +1819,7 @@ rd_d_target_from_entity(RD_Entity* entity)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_color, F32 size)
+rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_color, float size)
 {
   DR_FancyStringList result = {0};
   RD_Entity* exe  = rd_entity_child_from_kind(entity, RD_EntityKind_Executable);
@@ -1870,7 +1870,7 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
     }
   }
   B32 extra = 0;
-  F32 size_extrafied = size;
+  float size_extrafied = size;
   Vec4F32 color_extrafied = color;
   if(name.size != 0)
   {
@@ -2048,12 +2048,12 @@ rd_name_from_ctrl_entity(Arena* arena, CTRL_Entity* entity)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* entity, Vec4F32 secondary_color, F32 size, B32 include_extras)
+rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* entity, Vec4F32 secondary_color, float size, B32 include_extras)
 {
   DR_FancyStringList result = {0};
   
   //- rjf: unpack entity info
-  F32 extras_size = size*0.95f;
+  float extras_size = size*0.95f;
   Vec4F32 color = rd_rgba_from_ctrl_entity(entity);
   String8 name = rd_name_from_ctrl_entity(arena, entity);
   RD_IconKind icon_kind = RD_IconKind_Null;
@@ -2103,12 +2103,12 @@ rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* entity, Vec4F32 secon
     CTRL_Entity* process = ctrl_entity_ancestor_from_kind(entity, CTRL_EntityKind_Process);
     Arch arch = entity->arch;
     CTRL_Unwind unwind = d_query_cached_unwind_from_thread(entity);
-    for(U64 idx = 0, limit = 6; idx < unwind.frames.count && idx < limit; idx += 1)
+    for(uint64 idx = 0, limit = 6; idx < unwind.frames.count && idx < limit; idx += 1)
     {
       CTRL_UnwindFrame* f = &unwind.frames.v[unwind.frames.count - 1 - idx];
-      U64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
+      uint64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
       CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
-      U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
+      uint64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       RDI_Parsed* rdi = di_rdi_from_key(di_scope, &dbgi_key, 0);
       if(rdi != &di_rdi_parsed_nil)
@@ -2291,10 +2291,10 @@ rd_ctrl_meta_eval_from_ctrl_entity(Arena* arena, CTRL_Entity* entity)
     CTRL_CallStack rich_unwind = ctrl_call_stack_from_unwind(arena, di_scope, process, &base_unwind);
     meval->callstack.count = rich_unwind.total_frame_count;
     meval->callstack.v = push_array(arena, CTRL_MetaEvalFrame, meval->callstack.count);
-    U64 idx = 0;
-    for(U64 base_idx = 0; base_idx < rich_unwind.concrete_frame_count; base_idx += 1)
+    uint64 idx = 0;
+    for(uint64 base_idx = 0; base_idx < rich_unwind.concrete_frame_count; base_idx += 1)
     {
-      U64 inline_idx = 0;
+      uint64 inline_idx = 0;
       for(CTRL_CallStackInlineFrame* f = rich_unwind.frames[base_idx].first_inline_frame; f != 0; f = f->next, inline_idx += 1)
       {
         meval->callstack.v[idx].vaddr = regs_rip_from_arch_block(entity->arch, rich_unwind.frames[base_idx].regs);
@@ -2370,15 +2370,15 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
         {
           Temp scratch = scratch_begin(0, 0);
           CTRL_Unwind unwind = d_query_cached_unwind_from_thread(entity);
-          U64 frame_idx = e_interpret_ctx->reg_unwind_count;
+          uint64 frame_idx = e_interpret_ctx->reg_unwind_count;
           if(frame_idx < unwind.frames.count)
           {
             CTRL_UnwindFrame* f = &unwind.frames.v[frame_idx];
-            U64 regs_size = regs_block_size_from_arch(e_interpret_ctx->reg_arch);
+            uint64 regs_size = regs_block_size_from_arch(e_interpret_ctx->reg_arch);
             Rng1U64 legal_range = r1u64(0, regs_size);
             Rng1U64 read_range = intersect_1u64(legal_range, range);
-            U64 read_size = dim_1u64(read_range);
-            MemoryCopy(out, (U8 *)f->regs + read_range.min, read_size);
+            uint64 read_size = dim_1u64(read_range);
+            MemoryCopy(out, (uint8 *)f->regs + read_range.min, read_size);
             result = (read_size == dim_1u64(range));
           }
           scratch_end(scratch);
@@ -2390,8 +2390,8 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
     case RD_EvalSpaceKind_MetaCtrlEntity:
     {
       CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(space);
-      U64 hash = ctrl_hash_from_handle(entity->handle);
-      U64 slot_idx = hash%rd_state->ctrl_entity_meval_cache_slots_count;
+      uint64 hash = ctrl_hash_from_handle(entity->handle);
+      uint64 slot_idx = hash%rd_state->ctrl_entity_meval_cache_slots_count;
       RD_CtrlEntityMetaEvalCacheSlot* slot = &rd_state->ctrl_entity_meval_cache_slots[slot_idx];
       RD_CtrlEntityMetaEvalCacheNode* node = 0;
       for(RD_CtrlEntityMetaEvalCacheNode* n = slot->first; n != 0; n = n->next)
@@ -2406,11 +2406,11 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
       {
         CTRL_MetaEval* meval = rd_ctrl_meta_eval_from_ctrl_entity(scratch.arena, entity);
         String8 meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
-        U64 pos_min = arena_pos(rd_frame_arena());
+        uint64 pos_min = arena_pos(rd_frame_arena());
         arena_push(rd_frame_arena(), 0, 64);
         CTRL_MetaEval* meval_read = struct_from_serialized(rd_frame_arena(), CTRL_MetaEval, meval_srlzed);
         struct_rebase_ptrs(CTRL_MetaEval, meval_read, meval_read);
-        U64 pos_opl = arena_pos(scratch.arena);
+        uint64 pos_opl = arena_pos(scratch.arena);
         node = push_array(rd_frame_arena(), RD_CtrlEntityMetaEvalCacheNode, 1);
         SLLQueuePush(slot->first, slot->last, node);
         node->handle = entity->handle;
@@ -2428,9 +2428,9 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
       // rjf: copy meta evaluation to scratch arena, to form range of legal reads
       arena_push(scratch.arena, 0, 64);
       String8 meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
-      U64 pos_min = arena_pos(scratch.arena);
+      uint64 pos_min = arena_pos(scratch.arena);
       meval_read = struct_from_serialized(scratch.arena, CTRL_MetaEval, meval_srlzed);
-      U64 pos_opl = arena_pos(scratch.arena);
+      uint64 pos_opl = arena_pos(scratch.arena);
       
       // rjf: rebase all pointer values in meta evaluation to be relative to base pointer
       struct_rebase_ptrs(CTRL_MetaEval, meval_read, meval_read);
@@ -2443,12 +2443,12 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
       if(contains_1u64(meval_legal_range, range.min))
       {
         result = 1;
-        U64 range_dim = dim_1u64(range);
-        U64 bytes_to_read = Min(range_dim, (meval_legal_range.max - range.min));
-        MemoryCopy(out, ((U8 *)meval_read) + range.min, bytes_to_read);
+        uint64 range_dim = dim_1u64(range);
+        uint64 bytes_to_read = Min(range_dim, (meval_legal_range.max - range.min));
+        MemoryCopy(out, ((uint8 *)meval_read) + range.min, bytes_to_read);
         if(bytes_to_read < range_dim)
         {
-          MemoryZero((U8 *)out + bytes_to_read, range_dim - bytes_to_read);
+          MemoryZero((uint8 *)out + bytes_to_read, range_dim - bytes_to_read);
         }
       }
     }break;
@@ -2480,12 +2480,12 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
         case CTRL_EntityKind_Thread:
         {
           Temp scratch = scratch_begin(0, 0);
-          U64 regs_size = regs_block_size_from_arch(entity->arch);
+          uint64 regs_size = regs_block_size_from_arch(entity->arch);
           Rng1U64 legal_range = r1u64(0, regs_size);
           Rng1U64 write_range = intersect_1u64(legal_range, range);
-          U64 write_size = dim_1u64(write_range);
+          uint64 write_size = dim_1u64(write_range);
           void* new_regs = ctrl_query_cached_reg_block_from_thread(scratch.arena, d_state->ctrl_entity_store, entity->handle);
-          MemoryCopy((U8 *)new_regs + write_range.min, in, write_size);
+          MemoryCopy((uint8 *)new_regs + write_range.min, in, write_size);
           result = ctrl_thread_write_reg_block(entity->handle, new_regs);
           scratch_end(scratch);
         }break;
@@ -2504,9 +2504,9 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: copy meta evaluation to scratch arena, to form range of legal reads
       arena_push(scratch.arena, 0, 64);
       String8 meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
-      U64 pos_min = arena_pos(scratch.arena);
+      uint64 pos_min = arena_pos(scratch.arena);
       CTRL_MetaEval* meval_read = struct_from_serialized(scratch.arena, CTRL_MetaEval, meval_srlzed);
-      U64 pos_opl = arena_pos(scratch.arena);
+      uint64 pos_opl = arena_pos(scratch.arena);
       
       // rjf: rebase all pointer values in meta evaluation to be relative to base pointer
       struct_rebase_ptrs(CTRL_MetaEval, meval_read, meval_read);
@@ -2514,34 +2514,34 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: perform write to entity
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read->name))
-#define StringMemberCase(name) else if(range.min == (U64)meval_read->name.str)
-      FlatMemberCase(enabled)             {result = 1; rd_entity_equip_disabled(entity, !!((U8 *)in)[0]);}
-      FlatMemberCase(debug_subprocesses)  {result = 1; entity->debug_subprocesses = !!((U8 *)in)[0]; }
-      StringMemberCase(label)             {result = 1; rd_entity_equip_name(entity, str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(exe)               {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Executable), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(args)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Arguments), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(working_directory) {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_WorkingDirectory), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(entry_point)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_EntryPoint), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stdout_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdoutPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stderr_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StderrPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stdin_path)        {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdinPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(source_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(destination_path)  {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(type)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(view_rule)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(condition)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Condition), str8_cstring_capped(in, (U8 *)in + 4096));}
+#define StringMemberCase(name) else if(range.min == (uint64)meval_read->name.str)
+      FlatMemberCase(enabled)             {result = 1; rd_entity_equip_disabled(entity, !!((uint8 *)in)[0]);}
+      FlatMemberCase(debug_subprocesses)  {result = 1; entity->debug_subprocesses = !!((uint8 *)in)[0]; }
+      StringMemberCase(label)             {result = 1; rd_entity_equip_name(entity, str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(exe)               {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Executable), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(args)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Arguments), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(working_directory) {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_WorkingDirectory), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(entry_point)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_EntryPoint), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(stdout_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdoutPath), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(stderr_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StderrPath), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(stdin_path)        {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdinPath), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(source_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(destination_path)  {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(type)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(view_rule)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (uint8 *)in + 4096));}
+      StringMemberCase(condition)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Condition), str8_cstring_capped(in, (uint8 *)in + 4096));}
       StringMemberCase(source_location)
       {
         result = 1;
-        String8TxtPtPair src_loc = str8_txt_pt_pair_from_string(str8_cstring_capped(in, (U8 *)in + 4096));
+        String8TxtPtPair src_loc = str8_txt_pt_pair_from_string(str8_cstring_capped(in, (uint8 *)in + 4096));
         RD_Entity* loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
         rd_entity_equip_name(loc, src_loc.string);
         rd_entity_equip_txt_pt(loc, src_loc.pt);
       }
       StringMemberCase(address_location)
       {
-        U64 vaddr = 0;
-        if(try_u64_from_str8_c_rules(str8_cstring_capped(in, (U8 *)in + 4096), &vaddr))
+        uint64 vaddr = 0;
+        if(try_u64_from_str8_c_rules(str8_cstring_capped(in, (uint8 *)in + 4096), &vaddr))
         {
           RD_Entity* loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
           rd_entity_equip_vaddr(loc, vaddr);
@@ -2555,7 +2555,7 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
         result = 1;
         RD_Entity* loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
         loc->flags &= ~RD_EntityFlag_HasTextPoint;
-        rd_entity_equip_name(loc, str8_cstring_capped(in, (U8 *)in + 4096));
+        rd_entity_equip_name(loc, str8_cstring_capped(in, (uint8 *)in + 4096));
       }
 #undef FlatMemberCase
 #undef StringMemberCase
@@ -2572,9 +2572,9 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: copy meta evaluation to scratch arena, to form range of legal reads
       arena_push(scratch.arena, 0, 64);
       String8 meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
-      U64 pos_min = arena_pos(scratch.arena);
+      uint64 pos_min = arena_pos(scratch.arena);
       CTRL_MetaEval* meval_read = struct_from_serialized(scratch.arena, CTRL_MetaEval, meval_srlzed);
-      U64 pos_opl = arena_pos(scratch.arena);
+      uint64 pos_opl = arena_pos(scratch.arena);
       
       // rjf: rebase all pointer values in meta evaluation to be relative to base pointer
       struct_rebase_ptrs(CTRL_MetaEval, meval_read, meval_read);
@@ -2582,8 +2582,8 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: perform write to entity
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read->name))
-#define StringMemberCase(name) else if(range.min == (U64)meval_read->name.str)
-      StringMemberCase(label) {result = 1; ctrl_entity_equip_string(d_state->ctrl_entity_store, entity, str8_cstring_capped(in, (U8 *)in + 4096));}
+#define StringMemberCase(name) else if(range.min == (uint64)meval_read->name.str)
+      StringMemberCase(label) {result = 1; ctrl_entity_equip_string(d_state->ctrl_entity_store, entity, str8_cstring_capped(in, (uint8 *)in + 4096));}
 #undef FlatMemberCase
 #undef StringMemberCase
       scratch_end(scratch);
@@ -2628,7 +2628,7 @@ rd_whole_range_from_eval_space(E_Space space)
     {
       HS_Scope* scope = hs_scope_open();
       U128 hash = {0};
-      for(U64 idx = 0; idx < 2; idx += 1)
+      for(uint64 idx = 0; idx < 2; idx += 1)
       {
         hash = hs_hash_from_key(space.u128, idx);
         if(!u128_match(hash, u128_zero()))
@@ -2725,7 +2725,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string, B32 string_needs_un
     }
     if(commit_data.size != 0 && e_type_byte_size_from_key(type_key) != 0)
     {
-      U64 dst_offset = dst_eval.value.u64;
+      uint64 dst_offset = dst_eval.value.u64;
       if(dst_eval.mode == E_Mode_Offset && commit_at_ptr_dest)
       {
         E_Eval dst_value_eval = e_value_eval_from_eval(dst_eval);
@@ -2740,7 +2740,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string, B32 string_needs_un
 
 //- rjf: view rule config tree info extraction
 
-U64
+uint64
 rd_base_offset_from_eval(E_Eval eval)
 {
   if(e_type_kind_is_pointer_or_ref(e_type_kind_from_key(eval.type_key)))
@@ -2766,7 +2766,7 @@ Rng1U64
 rd_range_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Temp scratch = scratch_begin(0, 0);
-  U64 size = rd_value_from_params_key(params, str8_lit("size")).u64;
+  uint64 size = rd_value_from_params_key(params, str8_lit("size")).u64;
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   E_TypeKey direct_type_key = e_type_unwrap(e_type_direct_from_key(eval.type_key));
@@ -2898,7 +2898,7 @@ rd_view_alloc()
     {
       rd_state->free_view_count -= 1;
       SLLStackPop_N(rd_state->free_view, alloc_next);
-      U64 generation = view->generation;
+      uint64 generation = view->generation;
       MemoryZeroStruct(view);
       view->generation = generation;
     }
@@ -2914,7 +2914,7 @@ rd_view_alloc()
   view->spec = &rd_nil_view_rule_info;
   view->project_path_arena = arena_alloc();
   view->project_path = str8_zero();
-  for(U64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
   {
     view->params_arenas[idx] = arena_alloc();
     view->params_roots[idx] = &md_nil_node;
@@ -2945,7 +2945,7 @@ rd_view_release(RD_View* view)
   }
   view->first_arena_ext = view->last_arena_ext = 0;
   arena_release(view->project_path_arena);
-  for(U64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
   {
     arena_release(view->params_arenas[idx]);
   }
@@ -2961,7 +2961,7 @@ void
 rd_view_equip_spec(RD_View* view, RD_ViewRuleInfo* spec, String8 query, MD_Node* params)
 {
   // rjf: fill params tree
-  for(U64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(view->params_arenas); idx += 1)
   {
     arena_clear(view->params_arenas[idx]);
   }
@@ -3006,9 +3006,9 @@ rd_view_equip_query(RD_View* view, String8 query)
 }
 
 void
-rd_view_equip_loading_info(RD_View* view, B32 is_loading, U64 progress_v, U64 progress_target)
+rd_view_equip_loading_info(RD_View* view, B32 is_loading, uint64 progress_v, uint64 progress_target)
 {
-  view->loading_t_target = (F32)!!is_loading;
+  view->loading_t_target = (float)!!is_loading;
   view->loading_progress_v = progress_v;
   view->loading_progress_v_target = progress_target;
   if(is_loading)
@@ -3020,12 +3020,12 @@ rd_view_equip_loading_info(RD_View* view, B32 is_loading, U64 progress_v, U64 pr
 //- rjf: user state extensions
 
 void *
-rd_view_get_or_push_user_state(RD_View* view, U64 size)
+rd_view_get_or_push_user_state(RD_View* view, uint64 size)
 {
   void* result = view->user_data;
   if(result == 0)
   {
-    view->user_data = result = push_array(view->arena, U8, size);
+    view->user_data = result = push_array(view->arena, uint8, size);
   }
   return result;
 }
@@ -3132,7 +3132,7 @@ rd_view_filter()
 //- rjf: pushing/attaching view resources
 
 void *
-rd_view_state_by_size(U64 size)
+rd_view_state_by_size(uint64 size)
 {
   RD_View* view = rd_view_from_handle(rd_regs()->view);
   void* result = rd_view_get_or_push_user_state(view, size);
@@ -3166,7 +3166,7 @@ rd_store_view_filter(String8 string)
 }
 
 void
-rd_store_view_loading_info(B32 is_loading, U64 progress_u64, U64 progress_u64_target)
+rd_store_view_loading_info(B32 is_loading, uint64 progress_u64, uint64 progress_u64_target)
 {
   RD_View* view = rd_view_from_handle(rd_regs()->view);
   rd_view_equip_loading_info(view, is_loading, progress_u64, progress_u64_target);
@@ -3209,8 +3209,8 @@ rd_transient_view_node_from_ev_key(RD_View* owner_view, EV_Key key)
     owner_view->transient_view_slots_count = 256;
     owner_view->transient_view_slots = push_array(owner_view->arena, RD_TransientViewSlot, owner_view->transient_view_slots_count);
   }
-  U64 hash = ev_hash_from_key(key);
-  U64 slot_idx = hash%owner_view->transient_view_slots_count;
+  uint64 hash = ev_hash_from_key(key);
+  uint64 slot_idx = hash%owner_view->transient_view_slots_count;
   RD_TransientViewSlot* slot = &owner_view->transient_view_slots[slot_idx];
   RD_TransientViewNode* node = 0;
   for(RD_TransientViewNode* n = slot->first; n != 0; n = n->next)
@@ -3250,7 +3250,7 @@ rd_panel_alloc(RD_Window* ws)
   if(!rd_panel_is_nil(panel))
   {
     SLLStackPop(ws->free_panel);
-    U64 generation = panel->generation;
+    uint64 generation = panel->generation;
     MemoryZeroStruct(panel);
     panel->generation = generation;
   }
@@ -3296,7 +3296,7 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   if(window != 0)
   {
     SLLStackPop(rd_state->free_window);
-    U64 gen = window->gen;
+    uint64 gen = window->gen;
     MemoryZeroStruct(window);
     window->gen = gen;
   }
@@ -3317,7 +3317,7 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   window->ctx_menu_arena = arena_alloc();
   window->ctx_menu_regs = push_array(window->ctx_menu_arena, RD_Regs, 1);
   window->ctx_menu_input_buffer_size = KB(4);
-  window->ctx_menu_input_buffer = push_array(window->arena, U8, window->ctx_menu_input_buffer_size);
+  window->ctx_menu_input_buffer = push_array(window->arena, uint8, window->ctx_menu_input_buffer_size);
   window->drop_completion_arena = arena_alloc();
   window->hover_eval_arena = arena_alloc();
   window->autocomp_lister_params_arena = arena_alloc();
@@ -3347,7 +3347,7 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   {
     RD_FontSlot english_font_slots[] = {RD_FontSlot_Main, RD_FontSlot_Code};
     RD_FontSlot icon_font_slot = RD_FontSlot_Icons;
-    for(U64 idx = 0; idx < ArrayCount(english_font_slots); idx += 1)
+    for(uint64 idx = 0; idx < ArrayCount(english_font_slots); idx += 1)
     {
       Temp scratch = scratch_begin(0, 0);
       RD_FontSlot slot = english_font_slots[idx];
@@ -3564,7 +3564,7 @@ rd_window_frame(RD_Window* ws)
     {
       // rjf: gather font info
       FNT_Tag main_font = rd_font_from_slot(RD_FontSlot_Main);
-      F32 main_font_size = rd_font_size_from_slot(RD_FontSlot_Main);
+      float main_font_size = rd_font_size_from_slot(RD_FontSlot_Main);
       FNT_Tag icon_font = rd_font_from_slot(RD_FontSlot_Icons);
       
       // rjf: build icon info
@@ -3625,7 +3625,7 @@ rd_window_frame(RD_Window* ws)
     Rng2F32 top_bar_rect = r2f32p(window_rect.x0, window_rect.y0, window_rect.x0+window_rect_dim.x+1, window_rect.y0+ui_top_pref_height().value);
     Rng2F32 bottom_bar_rect = r2f32p(window_rect.x0, window_rect_dim.y - ui_top_pref_height().value, window_rect.x0+window_rect_dim.x, window_rect.y0+window_rect_dim.y);
     Rng2F32 content_rect = r2f32p(window_rect.x0, top_bar_rect.y1, window_rect.x0+window_rect_dim.x, bottom_bar_rect.y0);
-    F32 window_edge_px = os_dpi_from_window(ws->os)*0.035f;
+    float window_edge_px = os_dpi_from_window(ws->os)*0.035f;
     content_rect = pad_2f32(content_rect, -window_edge_px);
     
     ////////////////////////////
@@ -3713,7 +3713,7 @@ rd_window_frame(RD_Window* ws)
               if(ctrl_entity->kind == CTRL_EntityKind_Thread ||
                  ctrl_entity->kind == CTRL_EntityKind_Process)
               {
-                UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("ID: %i", (U32)ctrl_entity->id);
+                UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("ID: %i", (uint32)ctrl_entity->id);
               }
             }
           }
@@ -3749,12 +3749,12 @@ rd_window_frame(RD_Window* ws)
             {
               ui_spacer(ui_em(1.5f, 1.f));
             }
-            for(U64 idx = 0; idx < rich_unwind.concrete_frame_count; idx += 1)
+            for(uint64 idx = 0; idx < rich_unwind.concrete_frame_count; idx += 1)
             {
               CTRL_CallStackFrame* f = &rich_unwind.frames[idx];
               RDI_Parsed* rdi = f->rdi;
               RDI_Procedure* procedure = f->procedure;
-              U64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
+              uint64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
               CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
               String8 module_name = module == &ctrl_entity_nil ? str8_lit("???") : str8_skip_last_slash(module->string);
               
@@ -3889,7 +3889,7 @@ rd_window_frame(RD_Window* ws)
         }
         
         //- rjf: toggles
-        for(U64 idx = 0; idx < ArrayCount(DEV_toggle_table); idx += 1)
+        for(uint64 idx = 0; idx < ArrayCount(DEV_toggle_table); idx += 1)
         {
           if(ui_clicked(rd_icon_button(*DEV_toggle_table[idx].value_ptr ? RD_IconKind_CheckFilled : RD_IconKind_CheckHollow, 0, DEV_toggle_table[idx].name)))
           {
@@ -3949,13 +3949,13 @@ rd_window_frame(RD_Window* ws)
         for(RD_Window* window = rd_state->first_window; window != 0; window = window->next)
         {
           // rjf: calc ui hash chain length
-          F64 avg_ui_hash_chain_length = 0;
+          double avg_ui_hash_chain_length = 0;
           {
-            F64 chain_count = 0;
-            F64 chain_length_sum = 0;
-            for(U64 idx = 0; idx < ws->ui->box_table_size; idx += 1)
+            double chain_count = 0;
+            double chain_length_sum = 0;
+            for(uint64 idx = 0; idx < ws->ui->box_table_size; idx += 1)
             {
-              F64 chain_length = 0;
+              double chain_length = 0;
               for(UI_Box* b = ws->ui->box_table[idx].hash_first; !ui_box_is_nil(b); b = b->hash_next)
               {
                 chain_length += 1;
@@ -3993,7 +3993,7 @@ rd_window_frame(RD_Window* ws)
         //- rjf: draw entity tree
 #if 0
         RD_EntityRec rec = {0};
-        S32 indent = 0;
+        int32 indent = 0;
         UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("Entity Tree:");
         for(RD_Entity* e = rd_entity_root(); !rd_entity_is_nil(e); e = rec.next)
         {
@@ -4061,7 +4061,7 @@ rd_window_frame(RD_Window* ws)
             if(range.min.line == range.max.line && ui_clicked(rd_icon_buttonf(RD_IconKind_RightArrow, 0, "Set Next Statement")))
             {
               CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-              U64 new_rip_vaddr = regs->vaddr;
+              uint64 new_rip_vaddr = regs->vaddr;
               if(regs->file_path.size != 0)
               {
                 for(D_LineNode* n = lines.first; n != 0; n = n->next)
@@ -4300,7 +4300,7 @@ rd_window_frame(RD_Window* ws)
                 {
                   UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_label(string_from_arch(ctrl_entity->arch));
                   ui_spacer(ui_em(0.5f, 1.f));
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (U32)ctrl_entity->id);
+                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (uint32)ctrl_entity->id);
                 }
               }
             }
@@ -4344,10 +4344,10 @@ rd_window_frame(RD_Window* ws)
                 CTRL_Unwind base_unwind = d_query_cached_unwind_from_thread(ctrl_entity);
                 CTRL_CallStack rich_unwind = ctrl_call_stack_from_unwind(scratch.arena, di_scope, process, &base_unwind);
                 String8List lines = {0};
-                for(U64 frame_idx = 0; frame_idx < rich_unwind.concrete_frame_count; frame_idx += 1)
+                for(uint64 frame_idx = 0; frame_idx < rich_unwind.concrete_frame_count; frame_idx += 1)
                 {
                   CTRL_CallStackFrame* concrete_frame = &rich_unwind.frames[frame_idx];
-                  U64 rip_vaddr = regs_rip_from_arch_block(ctrl_entity->arch, concrete_frame->regs);
+                  uint64 rip_vaddr = regs_rip_from_arch_block(ctrl_entity->arch, concrete_frame->regs);
                   CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
                   RDI_Parsed* rdi = concrete_frame->rdi;
                   RDI_Procedure* procedure = concrete_frame->procedure;
@@ -4436,12 +4436,12 @@ rd_window_frame(RD_Window* ws)
               CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
               CTRL_Unwind base_unwind = d_query_cached_unwind_from_thread(thread);
               CTRL_CallStack rich_unwind = ctrl_call_stack_from_unwind(scratch.arena, di_scope, process, &base_unwind);
-              for(U64 idx = 0; idx < rich_unwind.concrete_frame_count; idx += 1)
+              for(uint64 idx = 0; idx < rich_unwind.concrete_frame_count; idx += 1)
               {
                 CTRL_CallStackFrame* f = &rich_unwind.frames[idx];
                 RDI_Parsed* rdi = f->rdi;
                 RDI_Procedure* procedure = f->procedure;
-                U64 rip_vaddr = regs_rip_from_arch_block(thread->arch, f->regs);
+                uint64 rip_vaddr = regs_rip_from_arch_block(thread->arch, f->regs);
                 CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
                 String8 module_name = module == &ctrl_entity_nil ? str8_lit("???") : str8_skip_last_slash(module->string);
                 
@@ -4517,7 +4517,7 @@ rd_window_frame(RD_Window* ws)
                       v4f32(0.8f, 0.3f, 0.5f, 1.0f),
                     };
                     UI_CornerRadius(ui_em(0.3f, 1.f).value)
-                      for(U64 preset_idx = 0; preset_idx < ArrayCount(presets); preset_idx += 1)
+                      for(uint64 preset_idx = 0; preset_idx < ArrayCount(presets); preset_idx += 1)
                     {
                       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
                       ui_set_next_palette(ui_build_palette(ui_top_palette(), .background = presets[preset_idx]));
@@ -4593,7 +4593,7 @@ rd_window_frame(RD_Window* ws)
                 {
                   UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_label(string_from_arch(ctrl_entity->arch));
                   ui_spacer(ui_em(0.5f, 1.f));
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (U32)ctrl_entity->id);
+                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (uint32)ctrl_entity->id);
                 }
               }
             }
@@ -4786,10 +4786,10 @@ rd_window_frame(RD_Window* ws)
         DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
         
         //- rjf: grab rdis
-        U64 rdis_count = dbgi_keys.count;
+        uint64 rdis_count = dbgi_keys.count;
         RDI_Parsed** rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
         {
-          for(U64 idx = 0; idx < rdis_count; idx += 1)
+          for(uint64 idx = 0; idx < rdis_count; idx += 1)
           {
             RDI_Parsed* rdi = di_rdi_from_key(di_scope, &dbgi_keys.v[idx], 0);
             RDI_TopLevelInfo* tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
@@ -4799,10 +4799,10 @@ rd_window_frame(RD_Window* ws)
         
         //- rjf: unpack lister params
         CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_base_regs()->thread);
-        U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_base_regs()->unwind_count);
+        uint64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_base_regs()->unwind_count);
         CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
         CTRL_Entity* module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
-        U64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
+        uint64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
         
         //- rjf: gather lister items
@@ -4845,11 +4845,11 @@ rd_window_frame(RD_Window* ws)
           if(ws->autocomp_lister_params.flags & RD_AutoCompListerFlag_Registers)
           {
             Arch arch = thread->arch;
-            U64 reg_names_count = regs_reg_code_count_from_arch(arch);
-            U64 alias_names_count = regs_alias_code_count_from_arch(arch);
+            uint64 reg_names_count = regs_reg_code_count_from_arch(arch);
+            uint64 alias_names_count = regs_alias_code_count_from_arch(arch);
             String8* reg_names = regs_reg_code_string_table_from_arch(arch);
             String8* alias_names = regs_alias_code_string_table_from_arch(arch);
-            for(U64 idx = 0; idx < reg_names_count; idx += 1)
+            for(uint64 idx = 0; idx < reg_names_count; idx += 1)
             {
               if(reg_names[idx].size != 0)
               {
@@ -4865,7 +4865,7 @@ rd_window_frame(RD_Window* ws)
                 }
               }
             }
-            for(U64 idx = 0; idx < alias_names_count; idx += 1)
+            for(uint64 idx = 0; idx < alias_names_count; idx += 1)
             {
               if(alias_names[idx].size != 0)
               {
@@ -4886,7 +4886,7 @@ rd_window_frame(RD_Window* ws)
           //- rjf: gather view rules
           if(ws->autocomp_lister_params.flags & RD_AutoCompListerFlag_ViewRules)
           {
-            for(U64 slot_idx = 0; slot_idx < d_state->view_rule_spec_table_size; slot_idx += 1)
+            for(uint64 slot_idx = 0; slot_idx < d_state->view_rule_spec_table_size; slot_idx += 1)
             {
               for(D_ViewRuleSpec* spec = d_state->view_rule_spec_table[slot_idx]; spec != 0 && spec != &d_nil_core_view_rule_spec; spec = spec->hash_next)
               {
@@ -4921,7 +4921,7 @@ rd_window_frame(RD_Window* ws)
             };
             B32 is_stale = 0;
             DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, query_word, 0, &is_stale);
-            for(U64 idx = 0; idx < 20 && idx < items.count; idx += 1)
+            for(uint64 idx = 0; idx < 20 && idx < items.count; idx += 1)
             {
               // rjf: skip bad elements
               if(items.v[idx].dbgi_idx >= rdis_count)
@@ -4956,7 +4956,7 @@ rd_window_frame(RD_Window* ws)
             };
             B32 is_stale = 0;
             DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, query_word, 0, &is_stale);
-            for(U64 idx = 0; idx < 20 && idx < items.count; idx += 1)
+            for(uint64 idx = 0; idx < 20 && idx < items.count; idx += 1)
             {
               // rjf: skip bad elements
               if(items.v[idx].dbgi_idx >= rdis_count)
@@ -4991,7 +4991,7 @@ rd_window_frame(RD_Window* ws)
             };
             B32 is_stale = 0;
             DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, query_word, 0, &is_stale);
-            for(U64 idx = 0; idx < 20 && idx < items.count; idx += 1)
+            for(uint64 idx = 0; idx < 20 && idx < items.count; idx += 1)
             {
               // rjf: skip bad elements
               if(items.v[idx].dbgi_idx >= rdis_count)
@@ -5026,7 +5026,7 @@ rd_window_frame(RD_Window* ws)
             };
             B32 is_stale = 0;
             DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, query_word, 0, &is_stale);
-            for(U64 idx = 0; idx < 20 && idx < items.count; idx += 1)
+            for(uint64 idx = 0; idx < 20 && idx < items.count; idx += 1)
             {
               // rjf: skip bad elements
               if(items.v[idx].dbgi_idx >= rdis_count)
@@ -5128,7 +5128,7 @@ rd_window_frame(RD_Window* ws)
           {
             // rjf: find containing directory in query_path
             String8 dir_str_in_input = {0};
-            for(U64 i = 0; i < query_path.size; i += 1)
+            for(uint64 i = 0; i < query_path.size; i += 1)
             {
               String8 substr1 = str8_substr(query_path, r1u64(i, i+1));
               String8 substr2 = str8_substr(query_path, r1u64(i, i+2));
@@ -5162,8 +5162,8 @@ rd_window_frame(RD_Window* ws)
             if(dir_str_in_input.size != 0)
             {
               String8 dir = dir_str_in_input;
-              U64 one_past_last_slash = dir.size;
-              for(U64 i = 0; i < dir_str_in_input.size; i += 1)
+              uint64 one_past_last_slash = dir.size;
+              for(uint64 i = 0; i < dir_str_in_input.size; i += 1)
               {
                 if(dir_str_in_input.str[i] == '/' || dir_str_in_input.str[i] == '\\')
                 {
@@ -5208,8 +5208,8 @@ rd_window_frame(RD_Window* ws)
         {
           // rjf: animate target # of rows
           {
-            F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? (1 - pow_f32(2, (-60.f * rd_state->frame_dt))) : 1.f;
-            F32 target = Min((F32)item_array.count, 16.f);
+            float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? (1 - pow_f32(2, (-60.f * rd_state->frame_dt))) : 1.f;
+            float target = Min((float)item_array.count, 16.f);
             if(abs_f32(target - ws->autocomp_num_visible_rows_t) > 0.01f)
             {
               rd_request_frame();
@@ -5223,8 +5223,8 @@ rd_window_frame(RD_Window* ws)
           
           // rjf: animate open
           {
-            F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-            F32 diff = 1.f-ws->autocomp_open_t;
+            float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+            float diff = 1.f-ws->autocomp_open_t;
             ws->autocomp_open_t += diff*rate;
             if(abs_f32(diff) < 0.05f)
             {
@@ -5240,7 +5240,7 @@ rd_window_frame(RD_Window* ws)
         //- rjf: build
         if(item_array.count != 0)
         {
-          F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+          float row_height_px = floor_f32(ui_top_font_size()*2.5f);
           ui_set_next_fixed_x(autocomp_root_box->rect.x0);
           ui_set_next_fixed_y(autocomp_root_box->rect.y1);
           ui_set_next_pref_width(ui_em(30.f, 1.f));
@@ -5279,7 +5279,7 @@ rd_window_frame(RD_Window* ws)
             RD_Palette(RD_PaletteCode_ImplicitButton)
             UI_Padding(ui_em(1.f, 1.f))
           {
-            for(U64 idx = 0; idx < item_array.count; idx += 1)
+            for(uint64 idx = 0; idx < item_array.count; idx += 1)
             {
               RD_AutoCompListerItem* item = &item_array.v[idx];
               UI_Box* item_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawActiveEffects|UI_BoxFlag_MouseClickable, "autocomp_%I64x", idx);
@@ -5301,7 +5301,7 @@ rd_window_frame(RD_Window* ws)
                 UI_Event move_back_evt = {};
                 move_back_evt.kind = UI_EventKind_Navigate;
                 move_back_evt.flags = UI_EventFlag_KeepMark;
-                move_back_evt.delta_2s32.x = -(S32)query_word.size;
+                move_back_evt.delta_2s32.x = -(int32)query_word.size;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &move_back_evt);
                 UI_Event paste_evt = {};
                 paste_evt.kind = UI_EventKind_Text;
@@ -5380,7 +5380,7 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd_kind_info_table[RD_CmdKind_OpenRecentProject].string,
                 rd_cmd_kind_info_table[RD_CmdKind_Exit].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 'o',
                 'u',
@@ -5405,7 +5405,7 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd_kind_info_table[RD_CmdKind_CloseWindow].string,
                 rd_cmd_kind_info_table[RD_CmdKind_ToggleFullscreen].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 'w',
                 'c',
@@ -5440,7 +5440,7 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd_kind_info_table[RD_CmdKind_ResetToDefaultPanels].string,
                 rd_cmd_kind_info_table[RD_CmdKind_ResetToCompactPanels].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 'u',
                 'd',
@@ -5493,7 +5493,7 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd_kind_info_table[RD_CmdKind_ExceptionFilters].string,
                 rd_cmd_kind_info_table[RD_CmdKind_GettingStarted].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 't',
                 's',
@@ -5533,7 +5533,7 @@ rd_window_frame(RD_Window* ws)
               {
                 rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 'a',
               };
@@ -5561,7 +5561,7 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd_kind_info_table[D_CmdKind_StepOut].string,
                 rd_cmd_kind_info_table[D_CmdKind_Attach].string,
               };
-              U32 codepoints[] =
+              uint32 codepoints[] =
               {
                 'r',
                 'k',
@@ -5628,7 +5628,7 @@ rd_window_frame(RD_Window* ws)
               struct
               {
                 String8 name;
-                U32 codepoint;
+                uint32 codepoint;
                 OS_Key key;
                 UI_Key menu_key;
               }
@@ -5645,8 +5645,8 @@ rd_window_frame(RD_Window* ws)
               
               // rjf: determine if one of the menus is already open
               B32 menu_open = 0;
-              U64 open_menu_idx = 0;
-              for(U64 idx = 0; idx < ArrayCount(items); idx += 1)
+              uint64 open_menu_idx = 0;
+              for(uint64 idx = 0; idx < ArrayCount(items); idx += 1)
               {
                 if(ui_ctx_menu_is_open(items[idx].menu_key))
                 {
@@ -5657,7 +5657,7 @@ rd_window_frame(RD_Window* ws)
               }
               
               // rjf: navigate between menus
-              U64 open_menu_idx_prime = open_menu_idx;
+              uint64 open_menu_idx_prime = open_menu_idx;
               if(menu_open && ws->menu_bar_focused && window_is_focused)
               {
                 for(UI_Event* evt = 0; ui_next_event(&evt);)
@@ -5682,7 +5682,7 @@ rd_window_frame(RD_Window* ws)
               }
               
               // rjf: make ui
-              for(U64 idx = 0; idx < ArrayCount(items); idx += 1)
+              for(uint64 idx = 0; idx < ArrayCount(items); idx += 1)
               {
                 ui_set_next_fastpath_codepoint(items[idx].codepoint);
                 B32 alt_fastpath_key = 0;
@@ -6055,7 +6055,7 @@ rd_window_frame(RD_Window* ws)
             UI_Signal max_sig = {0};
             UI_Signal cls_sig = {0};
             Vec2F32 bar_dim = dim_2f32(top_bar_rect);
-            F32 button_dim = floor_f32(bar_dim.y);
+            float button_dim = floor_f32(bar_dim.y);
             UI_PrefWidth(ui_px(button_dim, 1.f))
             {
               min_sig = rd_icon_buttonf(RD_IconKind_Minus,  0, "##minimize");
@@ -6121,7 +6121,7 @@ rd_window_frame(RD_Window* ws)
         MemoryCopyStruct(blended_scheme, palette);
         for EachEnumVal(UI_ColorCode, code)
         {
-          for(U64 idx = 0; idx < 4; idx += 1)
+          for(uint64 idx = 0; idx < 4; idx += 1)
           {
             blended_scheme->colors[code].v[idx] += (negative_scheme->colors[code].v[idx] - blended_scheme->colors[code].v[idx]) * ws->error_t;
           }
@@ -6136,7 +6136,7 @@ rd_window_frame(RD_Window* ws)
         // rjf: developer frame-time indicator
         if(DEV_updating_indicator)
         {
-          F32 animation_t = pow_f32(sin_f32(rd_state->time_in_seconds/2.f), 2.f);
+          float animation_t = pow_f32(sin_f32(rd_state->time_in_seconds/2.f), 2.f);
           ui_spacer(ui_em(0.3f, 1.f));
           ui_spacer(ui_em(1.5f*animation_t, 1.f));
           UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("*");
@@ -6272,12 +6272,12 @@ rd_window_frame(RD_Window* ws)
     //- rjf: animate query info
     //
     {
-      F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+      float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
       
       // rjf: animate query view selection transition
       {
-        F32 target = (F32)!!ws->query_view_selected;
-        F32 diff = abs_f32(target - ws->query_view_selected_t);
+        float target = (float)!!ws->query_view_selected;
+        float diff = abs_f32(target - ws->query_view_selected_t);
         if(diff > 0.005f)
         {
           rd_request_frame();
@@ -6291,8 +6291,8 @@ rd_window_frame(RD_Window* ws)
       
       // rjf: animate query view open/close transition
       {
-        F32 query_view_t_target = !rd_view_is_nil(ws->query_view_stack_top);
-        F32 diff = abs_f32(query_view_t_target - ws->query_view_t);
+        float query_view_t_target = !rd_view_is_nil(ws->query_view_stack_top);
+        float diff = abs_f32(query_view_t_target - ws->query_view_t);
         if(diff > 0.005f)
         {
           rd_request_frame();
@@ -6319,9 +6319,9 @@ rd_window_frame(RD_Window* ws)
       
       //- rjf: calculate rectangles
       Vec2F32 window_center = center_2f32(window_rect);
-      F32 query_container_width = dim_2f32(window_rect).x*0.5f;
-      F32 query_container_margin = ui_top_font_size()*8.f;
-      F32 query_line_edit_height = ui_top_font_size()*3.f;
+      float query_container_width = dim_2f32(window_rect).x*0.5f;
+      float query_container_margin = ui_top_font_size()*8.f;
+      float query_line_edit_height = ui_top_font_size()*3.f;
       Rng2F32 query_container_rect = r2f32p(window_center.x - query_container_width/2 + (1-ws->query_view_t)*query_container_width/4,
                                             window_rect.y0 + query_container_margin,
                                             window_center.x + query_container_width/2 - (1-ws->query_view_t)*query_container_width/4,
@@ -6525,9 +6525,9 @@ rd_window_frame(RD_Window* ws)
           UI_Focus((hover_eval_is_open && !ui_any_ctx_menu_is_open() && ws->hover_eval_focused && (!query_is_open || !ws->query_view_selected)) ? UI_FocusKind_Null : UI_FocusKind_Off)
         {
           //- rjf: eval -> viz artifacts
-          F32 row_height = floor_f32(ui_top_font_size()*2.8f);
+          float row_height = floor_f32(ui_top_font_size()*2.8f);
           RD_CfgTable cfg_table = {0};
-          U64 expr_hash = d_hash_from_string(expr);
+          uint64 expr_hash = d_hash_from_string(expr);
           String8 ev_view_key_string = push_str8f(scratch.arena, "eval_hover_%I64x", expr_hash);
           EV_View* ev_view = rd_ev_view_from_key(d_hash_from_string(ev_view_key_string));
           EV_Key parent_key = ev_key_make(5381, 1);
@@ -6536,7 +6536,7 @@ rd_window_frame(RD_Window* ws)
           EV_BlockRangeList block_ranges = ev_block_range_list_from_tree(scratch.arena, &block_tree);
           // EV_BlockList viz_blocks = ev_block_list_from_view_expr_keys(scratch.arena, ev_view, str8_zero(), &top_level_view_rules, expr, parent_key, key, 0);
           CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(eval.space);
-          U32 default_radix = (entity->kind == CTRL_EntityKind_Thread ? 16 : 10);
+          uint32 default_radix = (entity->kind == CTRL_EntityKind_Thread ? 16 : 10);
           EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, ev_view, str8_zero(), &block_ranges, r1u64(0, 50));
           // EV_WindowedRowList viz_rows = ev_windowed_row_list_from_block_list(scratch.arena, ev_view, r1s64(0, 50), &viz_blocks);
           
@@ -6544,8 +6544,8 @@ rd_window_frame(RD_Window* ws)
           {
             // rjf: animate height
             {
-              F32 fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-              F32 hover_eval_container_height_target = row_height * Min(30, block_tree.total_row_count);
+              float fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+              float hover_eval_container_height_target = row_height * Min(30, block_tree.total_row_count);
               ws->hover_eval_num_visible_rows_t += (hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) * fish_rate;
               if(abs_f32(hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) > 0.5f)
               {
@@ -6559,8 +6559,8 @@ rd_window_frame(RD_Window* ws)
             
             // rjf: animate open
             {
-              F32 fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-              F32 diff = 1.f - ws->hover_eval_open_t;
+              float fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+              float diff = 1.f - ws->hover_eval_open_t;
               ws->hover_eval_open_t += diff*fish_rate;
               if(abs_f32(diff) < 0.01f)
               {
@@ -6574,9 +6574,9 @@ rd_window_frame(RD_Window* ws)
           }
           
           //- rjf: calculate width
-          F32 width_px = 40.f*ui_top_font_size();
-          F32 expr_column_width_px = 15.f*ui_top_font_size();
-          F32 value_column_width_px = 25.f*ui_top_font_size();
+          float width_px = 40.f*ui_top_font_size();
+          float expr_column_width_px = 15.f*ui_top_font_size();
+          float value_column_width_px = 25.f*ui_top_font_size();
           if(rows.first != 0)
           {
             EV_Row* row = rows.first;
@@ -6585,13 +6585,13 @@ rd_window_frame(RD_Window* ws)
             String8 row_display_value = rd_value_string_from_eval(scratch.arena, EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), 500.f, row_eval, row->member, row->view_rules);
             expr_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_expr_string).x + ui_top_font_size()*10.f;
             value_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_display_value).x + ui_top_font_size()*5.f;
-            F32 total_dim_px = (expr_column_width_px + value_column_width_px);
+            float total_dim_px = (expr_column_width_px + value_column_width_px);
             width_px = Min(80.f*ui_top_font_size(), total_dim_px*1.5f);
           }
           
           //- rjf: build hover eval box
-          F32 hover_eval_container_height = ws->hover_eval_num_visible_rows_t;
-          F32 corner_radius = ui_top_font_size()*0.25f;
+          float hover_eval_container_height = ws->hover_eval_num_visible_rows_t;
+          float corner_radius = ui_top_font_size()*0.25f;
           ui_set_next_fixed_x(ws->hover_eval_spawn_pos.x);
           ui_set_next_fixed_y(ws->hover_eval_spawn_pos.y);
           ui_set_next_pref_width(ui_px(width_px, 1.f));
@@ -6628,7 +6628,7 @@ rd_window_frame(RD_Window* ws)
             for(EV_Row* row = rows.first; row != 0; row = row->next)
             {
               //- rjf: unpack row
-              U64 row_depth = ev_depth_from_block(row->block);
+              uint64 row_depth = ev_depth_from_block(row->block);
               E_Eval row_eval = e_eval_from_expr(scratch.arena, row->expr);
               String8 row_expr_string = ev_expr_string_from_row(scratch.arena, row, 0);
               String8 row_edit_value = rd_value_string_from_eval(scratch.arena, 0, default_radix, ui_top_font(), ui_top_font_size(), 500.f, row_eval, row->member, row->view_rules);
@@ -6647,11 +6647,11 @@ rd_window_frame(RD_Window* ws)
                   CTRL_Entity* space_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
                   if(space_entity->kind == CTRL_EntityKind_Process)
                   {
-                    U64 size = e_type_byte_size_from_key(row_eval.type_key);
+                    uint64 size = e_type_byte_size_from_key(row_eval.type_key);
                     size = Min(size, 64);
                     Rng1U64 vaddr_rng = r1u64(row_eval.value.u64, row_eval.value.u64+size);
                     CTRL_ProcessMemorySlice slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, space_entity->handle, vaddr_rng, 0);
-                    for(U64 idx = 0; idx < (slice.data.size+63)/64; idx += 1)
+                    for(uint64 idx = 0; idx < (slice.data.size+63)/64; idx += 1)
                     {
                       if(slice.byte_changed_flags[idx] != 0)
                       {
@@ -6672,13 +6672,13 @@ rd_window_frame(RD_Window* ws)
                 ui_spacer(ui_em(0.5f, 1.f));
                 if(row_depth > 0)
                 {
-                  for(U64 indent = 0; indent < row_depth; indent += 1)
+                  for(uint64 indent = 0; indent < row_depth; indent += 1)
                   {
                     ui_spacer(ui_em(0.5f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawSideLeft) ui_spacer(ui_em(1.f, 1.f));
                   }
                 }
-                U64 row_hash = ev_hash_from_key(row->key);
+                uint64 row_hash = ev_hash_from_key(row->key);
                 B32 row_is_expanded = ev_expansion_from_key(ev_view, row->key);
                 if(row_is_expandable)
                   UI_PrefWidth(ui_em(1.f, 1)) 
@@ -6835,10 +6835,10 @@ rd_window_frame(RD_Window* ws)
         if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && !rd_view_is_nil(drag_view))
         {
           //- rjf: params
-          F32 drop_site_major_dim_px = ceil_f32(ui_top_font_size()*7.f);
-          F32 drop_site_minor_dim_px = ceil_f32(ui_top_font_size()*5.f);
-          F32 corner_radius = ui_top_font_size()*0.5f;
-          F32 padding = ceil_f32(ui_top_font_size()*0.5f);
+          float drop_site_major_dim_px = ceil_f32(ui_top_font_size()*7.f);
+          float drop_site_minor_dim_px = ceil_f32(ui_top_font_size()*5.f);
+          float corner_radius = ui_top_font_size()*0.5f;
+          float padding = ceil_f32(ui_top_font_size()*0.5f);
           
           //- rjf: special case - build Y boundary drop sites on root panel
           //
@@ -7041,7 +7041,7 @@ rd_window_frame(RD_Window* ws)
           if(ui_double_clicked(sig))
           {
             ui_kill_action();
-            F32 sum_pct = min_child->pct_of_parent + max_child->pct_of_parent;
+            float sum_pct = min_child->pct_of_parent + max_child->pct_of_parent;
             min_child->pct_of_parent = 0.5f * sum_pct;
             max_child->pct_of_parent = 0.5f * sum_pct;
           }
@@ -7054,19 +7054,19 @@ rd_window_frame(RD_Window* ws)
           {
             Vec2F32 v = *ui_get_drag_struct(Vec2F32);
             Vec2F32 mouse_delta      = ui_drag_delta();
-            F32 total_size           = dim_2f32(panel_rect).v[split_axis];
-            F32 min_pct__before      = v.v[0];
-            F32 min_pixels__before   = min_pct__before * total_size;
-            F32 min_pixels__after    = min_pixels__before + mouse_delta.v[split_axis];
+            float total_size           = dim_2f32(panel_rect).v[split_axis];
+            float min_pct__before      = v.v[0];
+            float min_pixels__before   = min_pct__before * total_size;
+            float min_pixels__after    = min_pixels__before + mouse_delta.v[split_axis];
             if(min_pixels__after < 50.f)
             {
               min_pixels__after = 50.f;
             }
-            F32 min_pct__after       = min_pixels__after / total_size;
-            F32 pct_delta            = min_pct__after - min_pct__before;
-            F32 max_pct__before      = v.v[1];
-            F32 max_pct__after       = max_pct__before - pct_delta;
-            F32 max_pixels__after    = max_pct__after * total_size;
+            float min_pct__after       = min_pixels__after / total_size;
+            float pct_delta            = min_pct__after - min_pct__before;
+            float max_pct__before      = v.v[1];
+            float max_pct__after       = max_pct__before - pct_delta;
+            float max_pixels__after    = max_pct__after * total_size;
             if(max_pixels__after < 50.f)
             {
               max_pixels__after = 50.f;
@@ -7086,7 +7086,7 @@ rd_window_frame(RD_Window* ws)
     //- rjf: animate panels
     //
     {
-      F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-50.f * rd_state->frame_dt)) : 1.f;
+      float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-50.f * rd_state->frame_dt)) : 1.f;
       Vec2F32 content_rect_dim = dim_2f32(content_rect);
       if(content_rect_dim.x > 0 && content_rect_dim.y > 0)
       {
@@ -7143,11 +7143,11 @@ rd_window_frame(RD_Window* ws)
                                     panel_rect_pct.x1*content_rect_dim.x,
                                     panel_rect_pct.y1*content_rect_dim.y);
         panel_rect = pad_2f32(panel_rect, -1.f);
-        F32 tab_bar_rheight = ui_top_font_size()*3.f;
-        F32 tab_bar_vheight = ui_top_font_size()*2.6f;
-        F32 tab_bar_rv_diff = tab_bar_rheight - tab_bar_vheight;
-        F32 tab_spacing = ui_top_font_size()*0.4f;
-        F32 filter_bar_height = ui_top_font_size()*3.f;
+        float tab_bar_rheight = ui_top_font_size()*3.f;
+        float tab_bar_vheight = ui_top_font_size()*2.6f;
+        float tab_bar_rv_diff = tab_bar_rheight - tab_bar_vheight;
+        float tab_spacing = ui_top_font_size()*0.4f;
+        float filter_bar_height = ui_top_font_size()*3.f;
         Rng2F32 tab_bar_rect = r2f32p(panel_rect.x0, panel_rect.y0, panel_rect.x1, panel_rect.y0 + tab_bar_vheight);
         Rng2F32 content_rect = r2f32p(panel_rect.x0, panel_rect.y0+tab_bar_vheight, panel_rect.x1, panel_rect.y1);
         Rng2F32 filter_rect = {0};
@@ -7177,11 +7177,11 @@ rd_window_frame(RD_Window* ws)
           RD_View* view = rd_view_from_handle(rd_state->drag_drop_regs->view);
           if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && !rd_view_is_nil(view) && contains_2f32(panel_rect, ui_mouse()))
           {
-            F32 drop_site_dim_px = ceil_f32(ui_top_font_size()*7.f);
+            float drop_site_dim_px = ceil_f32(ui_top_font_size()*7.f);
             Vec2F32 drop_site_half_dim = v2f32(drop_site_dim_px/2, drop_site_dim_px/2);
             Vec2F32 panel_center = center_2f32(panel_rect);
-            F32 corner_radius = ui_top_font_size()*0.5f;
-            F32 padding = ceil_f32(ui_top_font_size()*0.5f);
+            float corner_radius = ui_top_font_size()*0.5f;
+            float padding = ceil_f32(ui_top_font_size()*0.5f);
             struct
             {
               UI_Key key;
@@ -7230,7 +7230,7 @@ rd_window_frame(RD_Window* ws)
               },
             };
             UI_CornerRadius(corner_radius)
-              for(U64 idx = 0; idx < ArrayCount(sites); idx += 1)
+              for(uint64 idx = 0; idx < ArrayCount(sites); idx += 1)
             {
               UI_Key key = sites[idx].key;
               Dir2 dir = sites[idx].split_dir;
@@ -7312,7 +7312,7 @@ rd_window_frame(RD_Window* ws)
                 }
               }
             }
-            for(U64 idx = 0; idx < ArrayCount(sites); idx += 1)
+            for(uint64 idx = 0; idx < ArrayCount(sites); idx += 1)
             {
               B32 is_drop_hot = ui_key_match(ui_drop_hot_key(), sites[idx].key);
               if(is_drop_hot)
@@ -7552,17 +7552,17 @@ rd_window_frame(RD_Window* ws)
           // rjf: types
           struct DropSite
           {
-            F32 p;
+            float p;
             RD_View* prev_view;
           };
           
           // rjf: prep output data
           RD_View* next_selected_tab_view = rd_selected_tab_from_panel(panel);
           UI_Box* tab_bar_box = &ui_nil_box;
-          U64 drop_site_count = panel->tab_view_count+1;
+          uint64 drop_site_count = panel->tab_view_count+1;
           DropSite* drop_sites = push_array(scratch.arena, DropSite, drop_site_count);
-          F32 drop_site_max_p = 0;
-          U64 view_idx = 0;
+          float drop_site_max_p = 0;
+          uint64 view_idx = 0;
           
           // rjf: build
           UI_CornerRadius(0)
@@ -7580,7 +7580,7 @@ rd_window_frame(RD_Window* ws)
           UI_Parent(tab_bar_box) UI_PrefHeight(ui_pct(1, 0))
           {
             Temp scratch = scratch_begin(0, 0);
-            F32 corner_radius = ui_em(0.6f, 1.f).value;
+            float corner_radius = ui_em(0.6f, 1.f).value;
             ui_spacer(ui_px(1.f, 1.f));
             
             // rjf: build tabs
@@ -7795,13 +7795,13 @@ rd_window_frame(RD_Window* ws)
             if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && window_is_focused && contains_2f32(panel_rect, mouse) && !rd_view_is_nil(view))
             {
               // rjf: mouse => hovered drop site
-              F32 min_distance = 0;
+              float min_distance = 0;
               DropSite* active_drop_site = 0;
               if(catchall_drop_site_hovered)
               {
-                for(U64 drop_site_idx = 0; drop_site_idx < drop_site_count; drop_site_idx += 1)
+                for(uint64 drop_site_idx = 0; drop_site_idx < drop_site_count; drop_site_idx += 1)
                 {
-                  F32 distance = abs_f32(drop_sites[drop_site_idx].p - mouse.x);
+                  float distance = abs_f32(drop_sites[drop_site_idx].p - mouse.x);
                   if(drop_site_idx == 0 || distance < min_distance)
                   {
                     active_drop_site = &drop_sites[drop_site_idx];
@@ -7951,8 +7951,8 @@ rd_window_frame(RD_Window* ws)
       Task start_task = {0, &rd_nil_panel, ws->query_view_stack_top};
       Task* first_task = &start_task;
       Task* last_task = first_task;
-      F32 rate = 1 - pow_f32(2, (-10.f * rd_state->frame_dt));
-      F32 fast_rate = 1 - pow_f32(2, (-40.f * rd_state->frame_dt));
+      float rate = 1 - pow_f32(2, (-10.f * rd_state->frame_dt));
+      float fast_rate = 1 - pow_f32(2, (-40.f * rd_state->frame_dt));
       for(RD_Panel* panel = ws->root_panel;
           !rd_panel_is_nil(panel);
           panel = rd_panel_rec_depth_first_pre(panel).next)
@@ -7980,7 +7980,7 @@ rd_window_frame(RD_Window* ws)
             if(abs_f32(view->loading_t_target - view->loading_t) > 0.01f ||
                abs_f32(view->scroll_pos.x.off) > 0.01f ||
                abs_f32(view->scroll_pos.y.off) > 0.01f ||
-               abs_f32(view->is_filtering_t - (F32)!!view->is_filtering))
+               abs_f32(view->is_filtering_t - (float)!!view->is_filtering))
             {
               rd_request_frame();
             }
@@ -7991,7 +7991,7 @@ rd_window_frame(RD_Window* ws)
             }
           }
           view->loading_t += (view->loading_t_target - view->loading_t) * rate;
-          view->is_filtering_t += ((F32)!!view->is_filtering - view->is_filtering_t) * fast_rate;
+          view->is_filtering_t += ((float)!!view->is_filtering - view->is_filtering_t) * fast_rate;
           view->scroll_pos.x.off -= view->scroll_pos.x.off * (rd_setting_val_from_code(RD_SettingCode_ScrollingAnimations).s32 ? fast_rate : 1.f);
           view->scroll_pos.y.off -= view->scroll_pos.y.off * (rd_setting_val_from_code(RD_SettingCode_ScrollingAnimations).s32 ? fast_rate : 1.f);
           if(abs_f32(view->scroll_pos.x.off) < 0.01f)
@@ -8002,9 +8002,9 @@ rd_window_frame(RD_Window* ws)
           {
             view->scroll_pos.y.off = 0;
           }
-          if(abs_f32(view->is_filtering_t - (F32)!!view->is_filtering) < 0.01f)
+          if(abs_f32(view->is_filtering_t - (float)!!view->is_filtering) < 0.01f)
           {
-            view->is_filtering_t = (F32)!!view->is_filtering;
+            view->is_filtering_t = (float)!!view->is_filtering;
           }
           if(view == rd_selected_tab_from_panel(t->panel) ||
              t->transient_owner == rd_selected_tab_from_panel(t->panel))
@@ -8135,18 +8135,18 @@ rd_window_frame(RD_Window* ws)
     Temp scratch = scratch_begin(0, 0);
     
     //- rjf: set up heatmap buckets
-    F32 heatmap_bucket_size = 32.f;
-    U64* heatmap_buckets = 0;
-    U64 heatmap_bucket_pitch = 0;
-    U64 heatmap_bucket_count = 0;
+    float heatmap_bucket_size = 32.f;
+    uint64* heatmap_buckets = 0;
+    uint64 heatmap_bucket_pitch = 0;
+    uint64 heatmap_bucket_count = 0;
     if(DEV_draw_ui_box_heatmap)
     {
       Rng2F32 rect = os_client_rect_from_window(ws->os);
       Vec2F32 size = dim_2f32(rect);
-      Vec2S32 buckets_dim = {(S32)(size.x/heatmap_bucket_size), (S32)(size.y/heatmap_bucket_size)};
+      Vec2S32 buckets_dim = {(int32)(size.x/heatmap_bucket_size), (int32)(size.y/heatmap_bucket_size)};
       heatmap_bucket_pitch = buckets_dim.x;
       heatmap_bucket_count = buckets_dim.x*buckets_dim.y;
-      heatmap_buckets = push_array(scratch.arena, U64, heatmap_bucket_count);
+      heatmap_buckets = push_array(scratch.arena, uint64, heatmap_bucket_count);
     }
     
     //- rjf: draw background color
@@ -8162,7 +8162,7 @@ rd_window_frame(RD_Window* ws)
     }
     
     //- rjf: recurse & draw
-    U64 total_heatmap_sum_count = 0;
+    uint64 total_heatmap_sum_count = 0;
     for(UI_Box* box = ui_root_from_state(ws->ui); !ui_box_is_nil(box);)
     {
       // rjf: get recursion
@@ -8173,7 +8173,7 @@ rd_window_frame(RD_Window* ws)
       {
         Vec2F32 center = center_2f32(box->rect);
         Vec2S32 p = v2s32(center.x / heatmap_bucket_size, center.y / heatmap_bucket_size);
-        U64 bucket_idx = p.y * heatmap_bucket_pitch + p.x;
+        uint64 bucket_idx = p.y * heatmap_bucket_pitch + p.x;
         if(bucket_idx < heatmap_bucket_count)
         {
           heatmap_buckets[bucket_idx] += 1;
@@ -8226,12 +8226,12 @@ rd_window_frame(RD_Window* ws)
         // rjf: hot effect extension
         if(box->flags & UI_BoxFlag_DrawHotEffects)
         {
-          F32 effective_active_t = box->active_t;
+          float effective_active_t = box->active_t;
           if(!(box->flags & UI_BoxFlag_DrawActiveEffects))
           {
             effective_active_t = 0;
           }
-          F32 t = box->hot_t*(1-effective_active_t);
+          float t = box->hot_t*(1-effective_active_t);
           
           // rjf: brighten
           {
@@ -8324,7 +8324,7 @@ rd_window_frame(RD_Window* ws)
           dr_rect(r2f32p(text_position.x-4, text_position.y-4, text_position.x+4, text_position.y+4),
                   v4f32(1, 0, 1, 1), 1, 0, 1);
         }
-        F32 max_x = 100000.f;
+        float max_x = 100000.f;
         FNT_Run ellipses_run = {0};
         if(!(box->flags & UI_BoxFlag_DisableTextTrunc))
         {
@@ -8406,7 +8406,7 @@ rd_window_frame(RD_Window* ws)
       
       // rjf: pop
       {
-        S32 pop_idx = 0;
+        int32 pop_idx = 0;
         for(UI_Box* b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent)
         {
           pop_idx += 1;
@@ -8454,8 +8454,8 @@ rd_window_frame(RD_Window* ws)
           // rjf: draw sides
           {
             Rng2F32 r = b->rect;
-            F32 half_thickness = 1.f;
-            F32 softness = 0.5f;
+            float half_thickness = 1.f;
+            float softness = 0.5f;
             if(b->flags & UI_BoxFlag_DrawSideTop)
             {
               dr_rect(r2f32p(r.x0, r.y0-half_thickness, r.x1, r.y0+half_thickness), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
@@ -8523,14 +8523,14 @@ rd_window_frame(RD_Window* ws)
     //- rjf: draw heatmap
     if(DEV_draw_ui_box_heatmap)
     {
-      U64 uniform_dist_count = total_heatmap_sum_count / heatmap_bucket_count;
+      uint64 uniform_dist_count = total_heatmap_sum_count / heatmap_bucket_count;
       uniform_dist_count = ClampBot(uniform_dist_count, 10);
-      for(U64 bucket_idx = 0; bucket_idx < heatmap_bucket_count; bucket_idx += 1)
+      for(uint64 bucket_idx = 0; bucket_idx < heatmap_bucket_count; bucket_idx += 1)
       {
-        U64 x = bucket_idx % heatmap_bucket_pitch;
-        U64 y = bucket_idx / heatmap_bucket_pitch;
-        U64 bucket = heatmap_buckets[bucket_idx];
-        F32 pct = (F32)bucket / uniform_dist_count;
+        uint64 x = bucket_idx % heatmap_bucket_pitch;
+        uint64 y = bucket_idx / heatmap_bucket_pitch;
+        uint64 bucket = heatmap_buckets[bucket_idx];
+        float pct = (float)bucket / uniform_dist_count;
         pct = Clamp(0, pct, 1);
         Vec3F32 hsv = v3f32((1-pct) * 0.9411f, 1, 0.5f);
         Vec3F32 rgb = rgb_from_hsv(hsv);
@@ -8575,7 +8575,7 @@ rd_window_frame(RD_Window* ws)
       dr_fancy_string_list_push(scratch.arena, &strs, &str3);
       DR_FancyRunList runs = dr_fancy_run_list_from_fancy_string_list(scratch.arena, 0, 0, &strs);
       FNT_Run trailer_run = fnt_push_run_from_string(scratch.arena, rd_font_from_slot(RD_FontSlot_Main), 16.f, 0, 0, 0, str8_lit("..."));
-      F32 limit = 500.f + sin_f32(rd_state->time_in_seconds/10.f)*200.f;
+      float limit = 500.f + sin_f32(rd_state->time_in_seconds/10.f)*200.f;
       dr_truncated_fancy_run_list(p, &runs, limit, trailer_run);
       dr_rect(r2f32p(p.x+limit, 0, p.x+limit+2.f, 1000), v4f32(1, 0, 0, 1), 0, 0, 0);
       rd_request_frame();
@@ -8696,8 +8696,8 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(scheduler_machine)
       info.row_view_rules  = push_array(arena, String8,    info.row_exprs_count);
       info.row_exprs       = push_array(arena, E_Expr *,   info.row_exprs_count);
       info.row_members     = push_array(arena, E_Member *, info.row_exprs_count);
-      U64 row_expr_idx = 0;
-      for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, row_expr_idx += 1)
+      uint64 row_expr_idx = 0;
+      for(uint64 idx = idx_range.min; idx < idx_range.max; idx += 1, row_expr_idx += 1)
       {
         CTRL_Entity* process = processes->v[idx];
         E_Expr* expr = e_push_expr(arena, E_ExprKind_LeafOffset, 0);
@@ -8749,7 +8749,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(scheduler_process)
             DI_Scope* di_scope = di_scope_open();
             CTRL_Unwind unwind = d_query_cached_unwind_from_thread(child);
             CTRL_CallStack call_stack = ctrl_call_stack_from_unwind(scratch.arena, di_scope, process, &unwind);
-            for(U64 idx = 0; idx < call_stack.concrete_frame_count && idx < 5; idx += 1)
+            for(uint64 idx = 0; idx < call_stack.concrete_frame_count && idx < 5; idx += 1)
             {
               CTRL_CallStackFrame* f = &call_stack.frames[idx];
               String8 name = {0};
@@ -8791,8 +8791,8 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(scheduler_process)
       info.row_view_rules  = push_array(arena, String8,    info.row_exprs_count);
       info.row_exprs       = push_array(arena, E_Expr *,   info.row_exprs_count);
       info.row_members     = push_array(arena, E_Member *, info.row_exprs_count);
-      U64 row_expr_idx = 0;
-      for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, row_expr_idx += 1)
+      uint64 row_expr_idx = 0;
+      for(uint64 idx = idx_range.min; idx < idx_range.max; idx += 1, row_expr_idx += 1)
       {
         CTRL_Entity* thread = threads->v[idx];
         E_Expr* expr = e_push_expr(arena, E_ExprKind_LeafOffset, 0);
@@ -8846,7 +8846,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(locals)
   String8Array* accel = (String8Array *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
-    U64 needed_row_count = dim_1u64(idx_range);
+    uint64 needed_row_count = dim_1u64(idx_range);
     result.row_exprs_count = Min(needed_row_count, accel->count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
@@ -8868,12 +8868,12 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(registers)
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
   Arch arch = thread->arch;
-  U64 reg_count     = regs_reg_code_count_from_arch(arch);
-  U64 alias_count   = regs_alias_code_count_from_arch(arch);
+  uint64 reg_count     = regs_reg_code_count_from_arch(arch);
+  uint64 alias_count   = regs_alias_code_count_from_arch(arch);
   String8* reg_strings   = regs_reg_code_string_table_from_arch(arch);
   String8* alias_strings = regs_alias_code_string_table_from_arch(arch);
   String8List exprs_list = {0};
-  for(U64 idx = 1; idx < reg_count; idx += 1)
+  for(uint64 idx = 1; idx < reg_count; idx += 1)
   {
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, reg_strings[idx]);
     if(matches.count == matches.needle_part_count)
@@ -8881,7 +8881,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(registers)
       str8_list_push(scratch.arena, &exprs_list, reg_strings[idx]);
     }
   }
-  for(U64 idx = 1; idx < alias_count; idx += 1)
+  for(uint64 idx = 1; idx < alias_count; idx += 1)
   {
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, alias_strings[idx]);
     if(matches.count == matches.needle_part_count)
@@ -8901,7 +8901,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(registers)
   String8Array* accel = (String8Array *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
-    U64 needed_row_count = dim_1u64(idx_range);
+    uint64 needed_row_count = dim_1u64(idx_range);
     result.row_exprs_count = Min(needed_row_count, accel->count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
@@ -8991,8 +8991,8 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena* arena, EV_View* vie
   RD_EntityExpandAccel* accel = (RD_EntityExpandAccel *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
-    U64 entities_base_idx = (U64)!!add_new_at_top;
-    U64 needed_row_count = dim_1u64(idx_range);
+    uint64 entities_base_idx = (uint64)!!add_new_at_top;
+    uint64 needed_row_count = dim_1u64(idx_range);
     result.row_exprs_count = Min(needed_row_count, accel->entities.count+1);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
@@ -9000,7 +9000,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena* arena, EV_View* vie
     result.row_members     = push_array(arena, E_Member *, result.row_exprs_count);
     for EachIndex(row_expr_idx, result.row_exprs_count)
     {
-      U64 child_idx = idx_range.min + row_expr_idx;
+      uint64 child_idx = idx_range.min + row_expr_idx;
       RD_Entity* entity = &rd_nil_entity;
       if(entities_base_idx <= child_idx && child_idx < entities_base_idx+accel->entities.count)
       {
@@ -9026,12 +9026,12 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena* arena, EV_View* vie
   return result;
 }
 
-U64
-rd_ev_view_rule_expr_id_from_num__meta_entities(U64 num, void* user_data, RD_EntityKind kind, B32 add_new_at_top)
+uint64
+rd_ev_view_rule_expr_id_from_num__meta_entities(uint64 num, void* user_data, RD_EntityKind kind, B32 add_new_at_top)
 {
-  U64 id = 0;
+  uint64 id = 0;
   RD_EntityExpandAccel* accel = (RD_EntityExpandAccel *)user_data;
-  U64 entities_base_idx = (U64)!!add_new_at_top;
+  uint64 entities_base_idx = (uint64)!!add_new_at_top;
   if(entities_base_idx+1 <= num && num < entities_base_idx+accel->entities.count+1)
   {
     id = accel->entities.v[num-(entities_base_idx+1)]->id;
@@ -9043,17 +9043,17 @@ rd_ev_view_rule_expr_id_from_num__meta_entities(U64 num, void* user_data, RD_Ent
   return id;
 }
 
-U64
-rd_ev_view_rule_expr_num_from_id__meta_entities(U64 id, void* user_data, RD_EntityKind kind, B32 add_new_at_top)
+uint64
+rd_ev_view_rule_expr_num_from_id__meta_entities(uint64 id, void* user_data, RD_EntityKind kind, B32 add_new_at_top)
 {
   RD_EntityExpandAccel* accel = (RD_EntityExpandAccel *)user_data;
-  U64 num = 0;
-  U64 entities_base_idx = (U64)!!add_new_at_top;
+  uint64 num = 0;
+  uint64 entities_base_idx = (uint64)!!add_new_at_top;
   if(id == max_U64)
   {
     num = add_new_at_top ? 1 : (entities_base_idx + accel->entities.count + 1);
   }
-  else for(U64 idx = 0; idx < accel->entities.count; idx += 1)
+  else for(uint64 idx = 0; idx < accel->entities.count; idx += 1)
   {
     if(accel->entities.v[idx]->id == id)
     {
@@ -9108,7 +9108,7 @@ rd_ev_view_rule_expr_expand_range_info__meta_ctrl_entities(Arena* arena, EV_View
   RD_CtrlEntityExpandAccel* accel = (RD_CtrlEntityExpandAccel *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
-    U64 needed_row_count = dim_1u64(idx_range);
+    uint64 needed_row_count = dim_1u64(idx_range);
     result.row_exprs_count = Min(needed_row_count, accel->entities.count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
@@ -9125,11 +9125,11 @@ rd_ev_view_rule_expr_expand_range_info__meta_ctrl_entities(Arena* arena, EV_View
   return result;
 }
 
-U64
-rd_ev_view_rule_expr_id_from_num__meta_ctrl_entities(U64 num, void* user_data, CTRL_EntityKind kind)
+uint64
+rd_ev_view_rule_expr_id_from_num__meta_ctrl_entities(uint64 num, void* user_data, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel* accel = (RD_CtrlEntityExpandAccel *)user_data;
-  U64 id = 0;
+  uint64 id = 0;
   if(1 <= num && num <= accel->entities.count)
   {
     id = d_hash_from_string(str8_struct(&accel->entities.v[num-1]->handle));
@@ -9137,16 +9137,16 @@ rd_ev_view_rule_expr_id_from_num__meta_ctrl_entities(U64 num, void* user_data, C
   return id;
 }
 
-U64
-rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(U64 id, void* user_data, CTRL_EntityKind kind)
+uint64
+rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(uint64 id, void* user_data, CTRL_EntityKind kind)
 {
   RD_CtrlEntityExpandAccel* accel = (RD_CtrlEntityExpandAccel *)user_data;
-  U64 num = 0;
+  uint64 num = 0;
   if(id != 0)
   {
     for EachIndex(idx, accel->entities.count)
     {
-      U64 idx_id = d_hash_from_string(str8_struct(&accel->entities.v[idx]->handle));
+      uint64 idx_id = d_hash_from_string(str8_struct(&accel->entities.v[idx]->handle));
       if(idx_id == id)
       {
         num = idx+1;
@@ -9159,7 +9159,7 @@ rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(U64 id, void* user_data, CT
 
 struct RD_DebugInfoTableExpandAccel
 {
-  U64 rdis_count;
+  uint64 rdis_count;
   RDI_Parsed** rdis;
   DI_SearchItemArray items;
 };
@@ -9171,20 +9171,20 @@ rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena* arena, EV_View* view,
   if(section != RDI_SectionKind_NULL)
   {
     Temp scratch = scratch_begin(&arena, 1);
-    U64 endt_us = os_now_microseconds()+200;
+    uint64 endt_us = os_now_microseconds()+200;
     
     //- rjf: unpack context
     DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
     DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
-    U64 rdis_count = dbgi_keys.count;
+    uint64 rdis_count = dbgi_keys.count;
     RDI_Parsed** rdis = push_array(arena, RDI_Parsed *, rdis_count);
-    for(U64 idx = 0; idx < rdis_count; idx += 1)
+    for(uint64 idx = 0; idx < rdis_count; idx += 1)
     {
       rdis[idx] = di_rdi_from_key(rd_state->frame_di_scope, &dbgi_keys.v[idx], endt_us);
     }
     
     //- rjf: query all filtered items from dbgi searching system
-    U128 fuzzy_search_key = {(U64)view, (U64)section};
+    U128 fuzzy_search_key = {(uint64)view, (uint64)section};
     B32 items_stale = 0;
     DI_SearchParams params = {section, dbgi_keys};
     accel->rdis_count = rdis_count;
@@ -9207,7 +9207,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
   RD_DebugInfoTableExpandAccel* accel = (RD_DebugInfoTableExpandAccel *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
-    U64 needed_row_count = dim_1u64(idx_range);
+    uint64 needed_row_count = dim_1u64(idx_range);
     result.row_exprs_count = Min(needed_row_count, accel->items.count);
     result.row_exprs       = push_array(arena, E_Expr *, result.row_exprs_count);
     result.row_strings     = push_array(arena, String8, result.row_exprs_count);
@@ -9231,7 +9231,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
       // rjf: build expr
       E_Expr* item_expr = &e_expr_nil;
       {
-        U64 element_idx = item->idx;
+        uint64 element_idx = item->idx;
         switch(section)
         {
           default:{}break;
@@ -9239,13 +9239,13 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
           {
             RDI_Procedure* procedure = rdi_element_from_name_idx(module->rdi, Procedures, element_idx);
             RDI_Scope* scope = rdi_element_from_name_idx(module->rdi, Scopes, procedure->root_scope_idx);
-            U64 voff = *rdi_element_from_name_idx(module->rdi, ScopeVOffData, scope->voff_range_first);
+            uint64 voff = *rdi_element_from_name_idx(module->rdi, ScopeVOffData, scope->voff_range_first);
             E_OpList oplist = {0};
             e_oplist_push_op(arena, &oplist, RDI_EvalOp_ConstU64, e_value_u64(module->vaddr_range.min + voff));
             String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
-            U32 type_idx = procedure->type_idx;
+            uint32 type_idx = procedure->type_idx;
             RDI_TypeNode* type_node = rdi_element_from_name_idx(module->rdi, TypeNodes, type_idx);
-            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)(module - e_parse_ctx->modules));
+            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (uint32)(module - e_parse_ctx->modules));
             item_expr = e_push_expr(arena, E_ExprKind_LeafBytecode, 0);
             item_expr->mode     = E_Mode_Value;
             item_expr->space    = module->space;
@@ -9256,13 +9256,13 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
           case RDI_SectionKind_GlobalVariables:
           {
             RDI_GlobalVariable* gvar = rdi_element_from_name_idx(module->rdi, GlobalVariables, element_idx);
-            U64 voff = gvar->voff;
+            uint64 voff = gvar->voff;
             E_OpList oplist = {0};
             e_oplist_push_op(arena, &oplist, RDI_EvalOp_ConstU64, e_value_u64(module->vaddr_range.min + voff));
             String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
-            U32 type_idx = gvar->type_idx;
+            uint32 type_idx = gvar->type_idx;
             RDI_TypeNode* type_node = rdi_element_from_name_idx(module->rdi, TypeNodes, type_idx);
-            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)(module - e_parse_ctx->modules));
+            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (uint32)(module - e_parse_ctx->modules));
             item_expr = e_push_expr(arena, E_ExprKind_LeafBytecode, 0);
             item_expr->mode     = E_Mode_Offset;
             item_expr->space    = module->space;
@@ -9276,9 +9276,9 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
             E_OpList oplist = {0};
             e_oplist_push_op(arena, &oplist, RDI_EvalOp_TLSOff, e_value_u64(tvar->tls_off));
             String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
-            U32 type_idx = tvar->type_idx;
+            uint32 type_idx = tvar->type_idx;
             RDI_TypeNode* type_node = rdi_element_from_name_idx(module->rdi, TypeNodes, type_idx);
-            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)(module - e_parse_ctx->modules));
+            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (uint32)(module - e_parse_ctx->modules));
             item_expr = e_push_expr(arena, E_ExprKind_LeafBytecode, 0);
             item_expr->mode     = E_Mode_Offset;
             item_expr->space    = module->space;
@@ -9290,7 +9290,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
           {
             RDI_UDT* udt = rdi_element_from_name_idx(module->rdi, UDTs, element_idx);
             RDI_TypeNode* type_node = rdi_element_from_name_idx(module->rdi, TypeNodes, udt->self_type_idx);
-            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), udt->self_type_idx, (U32)(module - e_parse_ctx->modules));
+            E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), udt->self_type_idx, (uint32)(module - e_parse_ctx->modules));
             item_expr = e_push_expr(arena, E_ExprKind_TypeIdent, 0);
             item_expr->type_key = type_key;
           }break;
@@ -9305,11 +9305,11 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
   return result;
 }
 
-U64
-rd_ev_view_rule_expr_id_from_num__debug_info_tables(U64 num, void* user_data, RDI_SectionKind section)
+uint64
+rd_ev_view_rule_expr_id_from_num__debug_info_tables(uint64 num, void* user_data, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel* accel = (RD_DebugInfoTableExpandAccel *)user_data;
-  U64 id = 0;
+  uint64 id = 0;
   if(0 < num && num <= accel->items.count)
   {
     id = accel->items.v[num-1].idx+1;
@@ -9317,18 +9317,18 @@ rd_ev_view_rule_expr_id_from_num__debug_info_tables(U64 num, void* user_data, RD
   return id;
 }
 
-U64
-rd_ev_view_rule_expr_num_from_id__debug_info_tables(U64 id, void* user_data, RDI_SectionKind section)
+uint64
+rd_ev_view_rule_expr_num_from_id__debug_info_tables(uint64 id, void* user_data, RDI_SectionKind section)
 {
   RD_DebugInfoTableExpandAccel* accel = (RD_DebugInfoTableExpandAccel *)user_data;
-  U64 num = di_search_item_num_from_array_element_idx__linear_search(&accel->items, id-1);
+  uint64 num = di_search_item_num_from_array_element_idx__linear_search(&accel->items, id-1);
   return num;
 }
 
 EV_View *
-rd_ev_view_from_key(U64 key)
+rd_ev_view_from_key(uint64 key)
 {
-  U64 slot_idx = key % rd_state->eval_viz_view_cache_slots_count;
+  uint64 slot_idx = key % rd_state->eval_viz_view_cache_slots_count;
   RD_EvalVizViewCacheNode* node = 0;
   RD_EvalVizViewCacheSlot* slot = &rd_state->eval_viz_view_cache_slots[slot_idx];
   for(RD_EvalVizViewCacheNode* n = slot->first; n != 0; n = n->next)
@@ -9357,16 +9357,16 @@ rd_ev_view_from_key(U64 key)
   return node->v;
 }
 
-F32
-rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, S32 depth, E_Eval eval, E_Member* member, EV_ViewRuleList* view_rules, String8List* out)
+float
+rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 default_radix, FNT_Tag font, float font_size, float max_size, int32 depth, E_Eval eval, E_Member* member, EV_ViewRuleList* view_rules, String8List* out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
-  F32 space_taken = 0;
+  float space_taken = 0;
   
   //- rjf: unpack view rules
-  U32 radix = default_radix;
-  U32 min_digits = 0;
+  uint32 radix = default_radix;
+  uint32 min_digits = 0;
   B32 no_addr = 0;
   B32 no_string = 0;
   B32 has_array = 0;
@@ -9385,7 +9385,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
       String8 expr = md_string_from_children(scratch.arena, n->v.root);
       E_Eval eval = e_eval_from_string(scratch.arena, expr);
       E_Eval value_eval = e_value_eval_from_eval(eval);
-      min_digits = (U32)value_eval.value.u64;
+      min_digits = (uint32)value_eval.value.u64;
     }
   }
   if(eval.space.kind == RD_EvalSpaceKind_MetaEntity ||
@@ -9409,7 +9409,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
   //- rjf: member evaluations -> display member info
   if(eval.mode == E_Mode_Null && !e_type_key_match(e_type_key_zero(), eval.type_key) && member != &e_member_nil)
   {
-    U64 member_byte_size = e_type_byte_size_from_key(eval.type_key);
+    uint64 member_byte_size = e_type_byte_size_from_key(eval.type_key);
     String8 offset_string = str8_from_u64(arena, member->off, radix, 0, 0);
     String8 size_string = str8_from_u64(arena, member_byte_size, radix, 0, 0);
     str8_list_pushf(arena, out, "member (%S offset, %S byte%s)", offset_string, size_string, member_byte_size == 1 ? "" : "s");
@@ -9419,7 +9419,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
   else if(eval.mode == E_Mode_Null && !e_type_key_match(e_type_key_zero(), eval.type_key) && eval.expr->kind != E_ExprKind_MemberAccess)
   {
     String8 basic_type_kind_string = e_kind_basic_string_table[e_type_kind_from_key(eval.type_key)];
-    U64 byte_size = e_type_byte_size_from_key(eval.type_key);
+    uint64 byte_size = e_type_byte_size_from_key(eval.type_key);
     String8 size_string = str8_from_u64(arena, byte_size, radix, 0, 0);
     str8_list_pushf(arena, out, "%S (%S byte%s)", basic_type_kind_string, size_string, byte_size == 1 ? "" : "s");
   }
@@ -9464,11 +9464,11 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
       {
         did_content = 1;
         did_string = 1;
-        U64 string_memory_addr = value_eval.value.u64;
-        U64 element_size = e_type_byte_size_from_key(direct_type_key);
-        U64 string_buffer_size = 256;
-        U8* string_buffer = push_array(arena, U8, string_buffer_size);
-        for(U64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
+        uint64 string_memory_addr = value_eval.value.u64;
+        uint64 element_size = e_type_byte_size_from_key(direct_type_key);
+        uint64 string_buffer_size = 256;
+        uint8* string_buffer = push_array(arena, uint8, string_buffer_size);
+        for(uint64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
         {
           B32 read_good = e_space_read(eval.space, string_buffer, r1u64(string_memory_addr, string_memory_addr+try_size));
           if(read_good)
@@ -9481,8 +9481,8 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
         switch(element_size)
         {
           default:{string = str8_cstring((char *)string_buffer);}break;
-          case 2: {string = str8_from_16(arena, str16_cstring((U16 *)string_buffer));}break;
-          case 4: {string = str8_from_32(arena, str32_cstring((U32 *)string_buffer));}break;
+          case 2: {string = str8_from_16(arena, str16_cstring((uint16 *)string_buffer));}break;
+          case 4: {string = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
         }
         String8 string_escaped = ev_escaped_from_raw_string(arena, string);
         space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string_escaped).x;
@@ -9575,7 +9575,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
       E_Type* eval_type = e_type_from_key(scratch.arena, e_type_unwrap(eval.type_key));
       E_TypeKey direct_type_key = e_type_unwrap(eval_type->direct_type_key);
       E_TypeKind direct_type_kind = e_type_kind_from_key(direct_type_key);
-      U64 array_count = eval_type->count;
+      uint64 array_count = eval_type->count;
       
       // rjf: get pointed-at type
       B32 array_is_string = ((E_TypeKind_Char8 <= direct_type_kind && direct_type_kind <= E_TypeKind_UChar32) ||
@@ -9586,16 +9586,16 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
       B32 did_content = 0;
       if(!did_content && array_is_string && !no_string && (member == 0 || member->kind != E_MemberKind_Padding))
       {
-        U64 element_size = e_type_byte_size_from_key(direct_type_key);
+        uint64 element_size = e_type_byte_size_from_key(direct_type_key);
         did_content = 1;
-        U64 string_buffer_size = Clamp(1, array_count, 1024);
-        U8* string_buffer = push_array(arena, U8, string_buffer_size);
+        uint64 string_buffer_size = Clamp(1, array_count, 1024);
+        uint8* string_buffer = push_array(arena, uint8, string_buffer_size);
         switch(eval.mode)
         {
           default:{}break;
           case E_Mode_Offset:
           {
-            U64 string_memory_addr = eval.value.u64;
+            uint64 string_memory_addr = eval.value.u64;
             B32 read_good = e_space_read(eval.space, string_buffer, r1u64(string_memory_addr, string_memory_addr+string_buffer_size));
           }break;
           case E_Mode_Value:
@@ -9608,7 +9608,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
         {
           default:{string = str8_cstring_capped(string_buffer, string_buffer + string_buffer_size);}break;
           case 2: {string = str8_from_16(arena, str16_cstring_capped(string_buffer, string_buffer + string_buffer_size));}break;
-          case 4: {string = str8_from_32(arena, str32_cstring((U32 *)string_buffer));}break;
+          case 4: {string = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
         }
         String8 string_escaped = ev_escaped_from_raw_string(arena, string);
         space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string_escaped).x;
@@ -9633,7 +9633,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
         // rjf: build contents
         if(depth < 4)
         {
-          for(U64 idx = 0; idx < array_count && max_size > space_taken; idx += 1)
+          for(uint64 idx = 0; idx < array_count && max_size > space_taken; idx += 1)
           {
             E_Expr* element_expr = e_expr_ref_array_index(scratch.arena, eval.expr, idx);
             E_Eval element_eval = e_eval_from_expr(scratch.arena, element_expr);
@@ -9687,7 +9687,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
       if(depth < 4)
       {
         E_MemberArray data_members = e_type_data_members_from_key__cached(e_type_unwrap(eval.type_key));
-        for(U64 member_idx = 0; member_idx < data_members.count && max_size > space_taken; member_idx += 1)
+        for(uint64 member_idx = 0; member_idx < data_members.count && max_size > space_taken; member_idx += 1)
         {
           E_Member* mem = &data_members.v[member_idx];
           E_Expr* dot_expr = e_expr_ref_member_access(scratch.arena, eval.expr, mem->name);
@@ -9738,7 +9738,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, U32 defaul
 }
 
 String8
-rd_value_string_from_eval(Arena* arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval, E_Member* member, EV_ViewRuleList* view_rules)
+rd_value_string_from_eval(Arena* arena, EV_StringFlags flags, uint32 default_radix, FNT_Tag font, float font_size, float max_size, E_Eval eval, E_Member* member, EV_ViewRuleList* view_rules)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
@@ -9752,7 +9752,7 @@ rd_value_string_from_eval(Arena* arena, EV_StringFlags flags, U32 default_radix,
 //~ rjf: Hover Eval
 
 void
-rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, U64 vaddr, String8 string)
+rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, uint64 vaddr, String8 string)
 {
   RD_Window* window = rd_window_from_handle(rd_regs()->window);
   if(window->hover_eval_last_frame_idx+1 < rd_state->frame_index &&
@@ -9780,7 +9780,7 @@ rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, U64 vaddr, String8 s
 //~ rjf: Auto-Complete Lister
 
 void
-rd_autocomp_lister_item_chunk_list_push(Arena* arena, RD_AutoCompListerItemChunkList* list, U64 cap, RD_AutoCompListerItem* item)
+rd_autocomp_lister_item_chunk_list_push(Arena* arena, RD_AutoCompListerItemChunkList* list, uint64 cap, RD_AutoCompListerItem* item)
 {
   RD_AutoCompListerItemChunkNode* n = list->last;
   if(n == 0 || n->count >= n->cap)
@@ -9802,7 +9802,7 @@ rd_autocomp_lister_item_array_from_chunk_list(Arena* arena, RD_AutoCompListerIte
   RD_AutoCompListerItemArray array = {0};
   array.count = list->total_count;
   array.v = push_array_no_zero(arena, RD_AutoCompListerItem, array.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(RD_AutoCompListerItemChunkNode* n = list->first; n != 0; n = n->next)
   {
     MemoryCopy(array.v+idx, n->v, sizeof(RD_AutoCompListerItem)*n->count);
@@ -9853,10 +9853,10 @@ rd_autocomp_lister_item_array_sort__in_place(RD_AutoCompListerItemArray* array)
 }
 
 String8
-rd_autocomp_query_word_from_input_string_off(String8 input, U64 cursor_off)
+rd_autocomp_query_word_from_input_string_off(String8 input, uint64 cursor_off)
 {
-  U64 word_start_off = 0;
-  for(U64 off = 0; off < input.size && off < cursor_off; off += 1)
+  uint64 word_start_off = 0;
+  for(uint64 off = 0; off < input.size && off < cursor_off; off += 1)
   {
     if(!char_is_alpha(input.str[off]) && !char_is_digit(input.str[off], 10) && input.str[off] != '_')
     {
@@ -9868,14 +9868,14 @@ rd_autocomp_query_word_from_input_string_off(String8 input, U64 cursor_off)
 }
 
 String8
-rd_autocomp_query_path_from_input_string_off(String8 input, U64 cursor_off)
+rd_autocomp_query_path_from_input_string_off(String8 input, uint64 cursor_off)
 {
   // rjf: find start of path
-  U64 path_start_off = 0;
+  uint64 path_start_off = 0;
   {
     B32 single_quoted = 0;
     B32 double_quoted = 0;
-    for(U64 off = 0; off < input.size && off < cursor_off; off += 1)
+    for(uint64 off = 0; off < input.size && off < cursor_off; off += 1)
     {
       if(input.str[off] == '\'')
       {
@@ -9902,7 +9902,7 @@ rd_autocomp_query_path_from_input_string_off(String8 input, U64 cursor_off)
 }
 
 RD_AutoCompListerParams
-rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, String8 string, U64 cursor_off)
+rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, String8 string, uint64 cursor_off)
 {
   RD_AutoCompListerParams params = {0};
   {
@@ -9921,10 +9921,10 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, String8 stri
     DescendStep* first_step = 0;
     DescendStep* last_step = 0;
     DescendStep* free_step = 0;
-    S32 paren_nest = 0;
-    S32 colon_nest = 0;
+    int32 paren_nest = 0;
+    int32 colon_nest = 0;
     String8 last_step_string = {0};
-    for(U64 idx = 0; idx < input_tokenize.tokens.count; idx += 1)
+    for(uint64 idx = 0; idx < input_tokenize.tokens.count; idx += 1)
     {
       MD_Token* token = &input_tokenize.tokens.v[idx];
       if(token->range.min >= cursor_off)
@@ -10043,7 +10043,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, String8 stri
 }
 
 void
-rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams* params, String8 input, U64 cursor_off)
+rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams* params, String8 input, uint64 cursor_off)
 {
   RD_Window* window = rd_window_from_handle(rd_regs()->window);
   if(cursor_off != window->autocomp_cursor_off)
@@ -10122,8 +10122,8 @@ RD_BindingList
 rd_bindings_from_name(Arena* arena, String8 name)
 {
   RD_BindingList result = {0};
-  U64 hash = d_hash_from_string(name);
-  U64 slot = hash%rd_state->key_map_table_size;
+  uint64 hash = d_hash_from_string(name);
+  uint64 slot = hash%rd_state->key_map_table_size;
   for(RD_KeyMapNode* n = rd_state->key_map_table[slot].first; n != 0; n = n->hash_next)
   {
     if(str8_match(n->name, name, 0))
@@ -10142,8 +10142,8 @@ rd_bind_name(String8 name, RD_Binding binding)
 {
   if(binding.key != OS_Key_Null)
   {
-    U64 hash = d_hash_from_string(name);
-    U64 slot = hash%rd_state->key_map_table_size;
+    uint64 hash = d_hash_from_string(name);
+    uint64 slot = hash%rd_state->key_map_table_size;
     RD_KeyMapNode* existing_node = 0;
     for(RD_KeyMapNode* n = rd_state->key_map_table[slot].first; n != 0; n = n->hash_next)
     {
@@ -10175,8 +10175,8 @@ rd_bind_name(String8 name, RD_Binding binding)
 void
 rd_unbind_name(String8 name, RD_Binding binding)
 {
-  U64 hash = d_hash_from_string(name);
-  U64 slot = hash%rd_state->key_map_table_size;
+  uint64 hash = d_hash_from_string(name);
+  uint64 slot = hash%rd_state->key_map_table_size;
   for(RD_KeyMapNode* n = rd_state->key_map_table[slot].first, *next = 0; n != 0; n = next)
   {
     next = n->hash_next;
@@ -10194,7 +10194,7 @@ String8List
 rd_cmd_name_list_from_binding(Arena* arena, RD_Binding binding)
 {
   String8List result = {0};
-  for(U64 idx = 0; idx < rd_state->key_map_table_size; idx += 1)
+  for(uint64 idx = 0; idx < rd_state->key_map_table_size; idx += 1)
   {
     for(RD_KeyMapNode* n = rd_state->key_map_table[idx].first; n != 0; n = n->hash_next)
     {
@@ -10245,7 +10245,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as local
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      U64 local_num = e_num_from_string(e_parse_ctx->locals_map, string);
+      uint64 local_num = e_num_from_string(e_parse_ctx->locals_map, string);
       if(local_num != 0)
       {
         mapped = 1;
@@ -10256,7 +10256,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as member
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      U64 member_num = e_num_from_string(e_parse_ctx->member_map, string);
+      uint64 member_num = e_num_from_string(e_parse_ctx->member_map, string);
       if(member_num != 0)
       {
         mapped = 1;
@@ -10267,7 +10267,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as register
     if(!mapped)
     {
-      U64 reg_num = e_num_from_string(e_parse_ctx->regs_map, string);
+      uint64 reg_num = e_num_from_string(e_parse_ctx->regs_map, string);
       if(reg_num != 0)
       {
         mapped = 1;
@@ -10278,7 +10278,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as register alias
     if(!mapped)
     {
-      U64 alias_num = e_num_from_string(e_parse_ctx->reg_alias_map, string);
+      uint64 alias_num = e_num_from_string(e_parse_ctx->reg_alias_map, string);
       if(alias_num != 0)
       {
         mapped = 1;
@@ -10311,7 +10311,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as symbol
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      U64 voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, string);
+      uint64 voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, string);
       if(voff != 0)
       {
         mapped = 1;
@@ -10322,7 +10322,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     // rjf: try to map as type
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      U64 type_num = d_type_num_from_dbgi_key_name(&dbgi_key, string);
+      uint64 type_num = d_type_num_from_dbgi_key_name(&dbgi_key, string);
       if(type_num != 0)
       {
         mapped = 1;
@@ -10353,40 +10353,40 @@ rd_font_from_slot(RD_FontSlot slot)
   return result;
 }
 
-F32
+float
 rd_font_size_from_slot(RD_FontSlot slot)
 {
-  F32 result = 0;
+  float result = 0;
   RD_Window* ws = rd_window_from_handle(rd_regs()->window);
-  F32 dpi = os_dpi_from_window(ws->os);
+  float dpi = os_dpi_from_window(ws->os);
   if(dpi != ws->last_dpi)
   {
-    F32 old_dpi = ws->last_dpi;
-    F32 new_dpi = dpi;
+    float old_dpi = ws->last_dpi;
+    float new_dpi = dpi;
     ws->last_dpi = dpi;
-    S32* pt_sizes[] =
+    int32* pt_sizes[] =
     {
       &ws->setting_vals[RD_SettingCode_MainFontSize].s32,
       &ws->setting_vals[RD_SettingCode_CodeFontSize].s32,
     };
-    for(U64 idx = 0; idx < ArrayCount(pt_sizes); idx += 1)
+    for(uint64 idx = 0; idx < ArrayCount(pt_sizes); idx += 1)
     {
-      F32 ratio = pt_sizes[idx][0] / old_dpi;
-      F32 new_pt_size = ratio*new_dpi;
-      pt_sizes[idx][0] = (S32)new_pt_size;
+      float ratio = pt_sizes[idx][0] / old_dpi;
+      float new_pt_size = ratio*new_dpi;
+      pt_sizes[idx][0] = (int32)new_pt_size;
     }
   }
   switch(slot)
   {
     case RD_FontSlot_Code:
     {
-      result = (F32)ws->setting_vals[RD_SettingCode_CodeFontSize].s32;
+      result = (float)ws->setting_vals[RD_SettingCode_CodeFontSize].s32;
     }break;
     default:
     case RD_FontSlot_Main:
     case RD_FontSlot_Icons:
     {
-      result = (F32)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
+      result = (float)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
     }break;
   }
   return result;
@@ -10475,14 +10475,14 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
                           slashes);
         }
         RD_EntityRec rec = {0};
-        S64 depth = 0;
+        int64 depth = 0;
         for(RD_Entity* e = entity; !rd_entity_is_nil(e); e = rec.next)
         {
           //- rjf: get next iteration
           rec = rd_entity_rec_depth_first_pre(e, entity);
           
           //- rjf: unpack entity info
-          typedef U32 EntityInfoFlags;
+          typedef uint32 EntityInfoFlags;
           enum
           {
             EntityInfoFlag_HasName     = (1<<0),
@@ -10547,7 +10547,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
               {
                 Vec4F32 hsva = rd_hsva_from_entity(e);
                 Vec4F32 rgba = rgba_from_hsva(hsva);
-                U32 rgba_hex = u32_from_rgba(rgba);
+                uint32 rgba_hex = u32_from_rgba(rgba);
                 str8_list_pushf(arena, &strs, "color: 0x%x\n", rgba_hex);
               }
               if(e->flags & RD_EntityFlag_HasTextPoint)
@@ -10579,7 +10579,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
           // rjf: pop
           if(rec.push_count == 0)
           {
-            for(S64 pop_idx = 0; pop_idx < rec.pop_count + opened_brace; pop_idx += 1)
+            for(int64 pop_idx = 0; pop_idx < rec.pop_count + opened_brace; pop_idx += 1)
             {
               if(depth > 0)
               {
@@ -10656,7 +10656,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
       }
       {
         RD_PanelRec rec = {0};
-        S32 indentation = 2;
+        int32 indentation = 2;
         String8 indent_str = str8_lit("                                                                                                   ");
         str8_list_pushf(arena, &strs, "  panels:\n");
         str8_list_pushf(arena, &strs, "  {\n");
@@ -10679,7 +10679,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
             {str8_lit_comp("tabs_on_bottom"),   p->tab_side == Side_Max},
           };
           B32 has_options = 0;
-          for(U64 op_idx = 0; op_idx < ArrayCount(options); op_idx += 1)
+          for(uint64 op_idx = 0; op_idx < ArrayCount(options); op_idx += 1)
           {
             if(options[op_idx].value)
             {
@@ -10759,7 +10759,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
                 {
                   rec = md_node_rec_depth_first_pre(n, params_root);
                   B32 is_reserved_key = 0;
-                  for(U64 idx = 0; idx < ArrayCount(reserved_keys); idx += 1)
+                  for(uint64 idx = 0; idx < ArrayCount(reserved_keys); idx += 1)
                   {
                     if(str8_match(n->string, reserved_keys[idx], 0))
                     {
@@ -10778,7 +10778,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
                     {
                       str8_list_pushf(arena, &strs, ":{");
                     }
-                    for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+                    for(int32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
                     {
                       if(pop_idx == rec.pop_count-1 && rec.next == &md_nil_node)
                       {
@@ -10805,7 +10805,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
           }
           
           // rjf: pop
-          for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+          for(int32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
           {
             indentation -= 1;
             if(pop_idx == rec.pop_count-1 && rec.next == &rd_nil_panel)
@@ -10827,9 +10827,9 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8 indent_str = str8_lit("                                                                                                             ");
-    U64 string_binding_pair_count = 0;
+    uint64 string_binding_pair_count = 0;
     RD_StringBindingPair* string_binding_pairs = push_array(scratch.arena, RD_StringBindingPair, rd_state->key_map_total_count);
-    for(U64 idx = 0;
+    for(uint64 idx = 0;
         idx < rd_state->key_map_table_size && string_binding_pair_count < rd_state->key_map_total_count;
         idx += 1)
     {
@@ -10850,14 +10850,14 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
       str8_list_push(arena, &strs, str8_lit("\n"));
       str8_list_push(arena, &strs, str8_lit("keybindings:\n"));
       str8_list_push(arena, &strs, str8_lit("{\n"));
-      for(U64 idx = 0; idx < string_binding_pair_count; idx += 1)
+      for(uint64 idx = 0; idx < string_binding_pair_count; idx += 1)
       {
         RD_StringBindingPair* pair = string_binding_pairs + idx;
         String8List modifiers_strings = os_string_list_from_modifiers(scratch.arena, pair->binding.modifiers);
         StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
         String8 event_flags_string = str8_list_join(scratch.arena, &modifiers_strings, &join);
         String8 key_string = push_str8_copy(scratch.arena, os_g_key_cfg_string_table[pair->binding.key]);
-        for(U64 i = 0; i < event_flags_string.size; i += 1)
+        for(uint64 i = 0; i < event_flags_string.size; i += 1)
         {
           event_flags_string.str[i] = char_to_lower(event_flags_string.str[i]);
         }
@@ -10982,7 +10982,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
 //~ rjf: Process Control Info Stringification
 
 String8
-rd_string_from_exception_code(U32 code)
+rd_string_from_exception_code(uint32 code)
 {
   String8 string = {0};
   for EachNonZeroEnumVal(CTRL_ExceptionCodeKind, k)
@@ -11294,7 +11294,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string)
     }break;
     case RD_RegSlot_Cursor:
     {
-      U64 v = 0;
+      uint64 v = 0;
       if(try_u64_from_str8_c_rules(string, &v))
       {
         rd_regs()->cursor.column = 1;
@@ -11323,7 +11323,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 string)
         {
           eval = e_value_eval_from_eval(eval);
         }
-        U64 u64 = eval.value.u64;
+        uint64 u64 = eval.value.u64;
         switch(slot)
         {
           default:{}break;
@@ -11367,7 +11367,7 @@ RD_CmdKind
 rd_cmd_kind_from_string(String8 string)
 {
   RD_CmdKind result = RD_CmdKind_Null;
-  for(U64 idx = 0; idx < ArrayCount(rd_cmd_kind_info_table); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(rd_cmd_kind_info_table); idx += 1)
   {
     if(str8_match(string, rd_cmd_kind_info_table[idx].string, 0))
     {
@@ -11406,7 +11406,7 @@ rd_push_cmd(String8 name, RD_Regs* regs)
 B32
 rd_next_cmd(RD_Cmd** cmd)
 {
-  U64 slot = rd_state->cmds_gen%ArrayCount(rd_state->cmds);
+  uint64 slot = rd_state->cmds_gen%ArrayCount(rd_state->cmds);
   RD_CmdNode* start_node = rd_state->cmds[slot].first;
   if(cmd[0] != 0)
   {
@@ -11440,7 +11440,7 @@ rd_init(CmdLine* cmdln)
   rd_state->arena = arena;
   rd_state->quit_after_success = (cmd_line_has_flag(cmdln, str8_lit("quit_after_success")) ||
                                   cmd_line_has_flag(cmdln, str8_lit("q")));
-  for(U64 idx = 0; idx < ArrayCount(rd_state->frame_arenas); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(rd_state->frame_arenas); idx += 1)
   {
     rd_state->frame_arenas[idx] = arena_alloc();
   }
@@ -11458,7 +11458,7 @@ rd_init(CmdLine* cmdln)
   rd_state->num_frames_requested = 2;
   rd_state->seconds_until_autosave = 0.5f;
   rd_state->match_store = di_match_store_alloc();
-  for(U64 idx = 0; idx < ArrayCount(rd_state->cmds_arenas); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(rd_state->cmds_arenas); idx += 1)
   {
     rd_state->cmds_arenas[idx] = arena_alloc();
   }
@@ -11542,35 +11542,35 @@ rd_init(CmdLine* cmdln)
   {
     Temp scratch = scratch_begin(0, 0);
     String8 data = rd_icon_file_bytes;
-    U8* ptr = data.str;
-    U8* opl = ptr+data.size;
+    uint8* ptr = data.str;
+    uint8* opl = ptr+data.size;
     
     // rjf: read header
 #pragma pack(push, 1)
     struct ICO_Header
     {
-      U16 reserved_padding; // must be 0
-      U16 image_type; // if 1 -> ICO, if 2 -> CUR
-      U16 num_images;
+      uint16 reserved_padding; // must be 0
+      uint16 image_type; // if 1 -> ICO, if 2 -> CUR
+      uint16 num_images;
     };
     struct ICO_Entry
     {
-      U8 image_width_px;
-      U8 image_height_px;
-      U8 num_colors;
-      U8 reserved_padding; // should be 0
+      uint8 image_width_px;
+      uint8 image_height_px;
+      uint8 num_colors;
+      uint8 reserved_padding; // should be 0
       union
       {
-        U16 ico_color_planes; // in ICO
-        U16 cur_hotspot_x_px; // in CUR
+        uint16 ico_color_planes; // in ICO
+        uint16 cur_hotspot_x_px; // in CUR
       };
       union
       {
-        U16 ico_bits_per_pixel; // in ICO
-        U16 cur_hotspot_y_px;   // in CUR
+        uint16 ico_bits_per_pixel; // in ICO
+        uint16 cur_hotspot_y_px;   // in CUR
       };
-      U32 image_data_size;
-      U32 image_data_off;
+      uint32 image_data_size;
+      uint32 image_data_off;
     };
 #pragma pack(pop)
     ICO_Header hdr = {0};
@@ -11581,10 +11581,10 @@ rd_init(CmdLine* cmdln)
     }
     
     // rjf: read image entries
-    U64 entries_count = hdr.num_images;
+    uint64 entries_count = hdr.num_images;
     ICO_Entry* entries = push_array(scratch.arena, ICO_Entry, hdr.num_images);
     {
-      U64 bytes_to_read = sizeof(ICO_Entry)*entries_count;
+      uint64 bytes_to_read = sizeof(ICO_Entry)*entries_count;
       bytes_to_read = Min(bytes_to_read, opl-ptr);
       MemoryCopy(entries, ptr, bytes_to_read);
       ptr += bytes_to_read;
@@ -11592,15 +11592,15 @@ rd_init(CmdLine* cmdln)
     
     // rjf: find largest image
     ICO_Entry* best_entry = 0;
-    U64 best_entry_area = 0;
-    for(U64 idx = 0; idx < entries_count; idx += 1)
+    uint64 best_entry_area = 0;
+    for(uint64 idx = 0; idx < entries_count; idx += 1)
     {
       ICO_Entry* entry = &entries[idx];
-      U64 width = entry->image_width_px;
+      uint64 width = entry->image_width_px;
       if(width == 0) { width = 256; }
-      U64 height = entry->image_height_px;
+      uint64 height = entry->image_height_px;
       if(height == 0) { height = 256; }
-      U64 entry_area = width*height;
+      uint64 entry_area = width*height;
       if(entry_area > best_entry_area)
       {
         best_entry = entry;
@@ -11609,12 +11609,12 @@ rd_init(CmdLine* cmdln)
     }
     
     // rjf: deserialize raw image data from best entry's offset
-    U8* image_data = 0;
+    uint8* image_data = 0;
     Vec2S32 image_dim = {0};
     if(best_entry != 0)
     {
-      U8* file_data_ptr = data.str + best_entry->image_data_off;
-      U64 file_data_size = best_entry->image_data_size;
+      uint8* file_data_ptr = data.str + best_entry->image_data_off;
+      uint64 file_data_size = best_entry->image_data_size;
       int width = 0;
       int height = 0;
       int components = 0;
@@ -11649,7 +11649,7 @@ rd_frame()
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  static S32 depth = 0;
+  static int32 depth = 0;
   log_scope_begin();
   
   //- TODO(rjf): @cfg debugging: stringify the current cfg tree
@@ -11697,30 +11697,30 @@ rd_frame()
   //- rjf: pick target hz
   //
   // TODO(rjf): maximize target, given all windows and their monitors
-  F32 target_hz = os_get_gfx_info()->default_refresh_rate;
+  float target_hz = os_get_gfx_info()->default_refresh_rate;
   if(rd_state->frame_index > 32)
   {
     // rjf: calculate average frame time out of the last N
-    U64 num_frames_in_history = Min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
-    U64 frame_time_history_sum_us = 0;
-    for(U64 idx = 0; idx < num_frames_in_history; idx += 1)
+    uint64 num_frames_in_history = Min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
+    uint64 frame_time_history_sum_us = 0;
+    for(uint64 idx = 0; idx < num_frames_in_history; idx += 1)
     {
       frame_time_history_sum_us += rd_state->frame_time_us_history[idx];
     }
-    U64 frame_time_history_avg_us = frame_time_history_sum_us/num_frames_in_history;
+    uint64 frame_time_history_avg_us = frame_time_history_sum_us/num_frames_in_history;
     
     // rjf: pick among a number of sensible targets to snap to, given how well
     // we've been performing
-    F32 possible_alternate_hz_targets[] = {target_hz, 60.f, 120.f, 144.f, 240.f};
-    F32 best_target_hz = target_hz;
-    S64 best_target_hz_frame_time_us_diff = max_S64;
-    for(U64 idx = 0; idx < ArrayCount(possible_alternate_hz_targets); idx += 1)
+    float possible_alternate_hz_targets[] = {target_hz, 60.f, 120.f, 144.f, 240.f};
+    float best_target_hz = target_hz;
+    int64 best_target_hz_frame_time_us_diff = max_S64;
+    for(uint64 idx = 0; idx < ArrayCount(possible_alternate_hz_targets); idx += 1)
     {
-      F32 candidate = possible_alternate_hz_targets[idx];
+      float candidate = possible_alternate_hz_targets[idx];
       if(candidate <= target_hz)
       {
-        U64 candidate_frame_time_us = 1000000/(U64)candidate;
-        S64 frame_time_us_diff = (S64)frame_time_history_avg_us - (S64)candidate_frame_time_us;
+        uint64 candidate_frame_time_us = 1000000/(uint64)candidate;
+        int64 frame_time_us_diff = (int64)frame_time_history_avg_us - (int64)candidate_frame_time_us;
         if(abs_s64(frame_time_us_diff) < best_target_hz_frame_time_us_diff)
         {
           best_target_hz = candidate;
@@ -11739,7 +11739,7 @@ rd_frame()
   //////////////////////////////
   //- rjf: begin measuring actual per-frame work
   //
-  U64 begin_time_us = os_now_microseconds();
+  uint64 begin_time_us = os_now_microseconds();
   
   //////////////////////////////
   //- rjf: bind change
@@ -11780,7 +11780,7 @@ rd_frame()
         }
         rd_unbind_name(rd_state->bind_change_cmd_name, rd_state->bind_change_binding);
         rd_bind_name(rd_state->bind_change_cmd_name, binding);
-        U32 codepoint = os_codepoint_from_modifiers_and_key(event->modifiers, event->key);
+        uint32 codepoint = os_codepoint_from_modifiers_and_key(event->modifiers, event->key);
         os_text(&events, event->window, codepoint);
         os_eat_event(&events, event);
         rd_cmd(rd_cfg_src_write_cmd_kind_table[RD_CfgSrc_User]);
@@ -11867,7 +11867,7 @@ rd_frame()
         String8List spec_candidates = rd_cmd_name_list_from_binding(scratch.arena, binding);
         if(spec_candidates.first != 0)
         {
-          U32 hit_char = os_codepoint_from_modifiers_and_key(event->modifiers, event->key);
+          uint32 hit_char = os_codepoint_from_modifiers_and_key(event->modifiers, event->key);
           if(hit_char == 0 || allow_text_hotkeys)
           {
             rd_cmd(RD_CmdKind_RunCommand, .cmd_name = spec_candidates.first->string);
@@ -11924,7 +11924,7 @@ rd_frame()
   //
   CTRL_Handle find_thread_retry = {0};
   RD_Cmd* cmd = 0;
-  ProfScope("loop - consume events in core, tick engine, and repeat") for(U64 cmd_process_loop_idx = 0; cmd_process_loop_idx < 3; cmd_process_loop_idx += 1)
+  ProfScope("loop - consume events in core, tick engine, and repeat") for(uint64 cmd_process_loop_idx = 0; cmd_process_loop_idx < 3; cmd_process_loop_idx += 1)
   {
     ////////////////////////////
     //- rjf: unpack eval-dependent info
@@ -11933,14 +11933,14 @@ rd_frame()
     CTRL_Entity* process = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->process);
     CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
     Arch arch = thread->arch;
-    U64 unwind_count = rd_regs()->unwind_count;
-    U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
+    uint64 unwind_count = rd_regs()->unwind_count;
+    uint64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
     CTRL_Unwind unwind = d_query_cached_unwind_from_thread(thread);
     CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
-    U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
-    U64 tls_root_vaddr = ctrl_query_cached_tls_root_vaddr_from_thread(d_state->ctrl_entity_store, thread->handle);
+    uint64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
+    uint64 tls_root_vaddr = ctrl_query_cached_tls_root_vaddr_from_thread(d_state->ctrl_entity_store, thread->handle);
     CTRL_EntityList all_modules = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Module);
-    U64 eval_modules_count = Max(1, all_modules.count);
+    uint64 eval_modules_count = Max(1, all_modules.count);
     E_Module* eval_modules = push_array(scratch.arena, E_Module, eval_modules_count);
     E_Module* eval_modules_primary = &eval_modules[0];
     eval_modules_primary->rdi = &di_rdi_parsed_nil;
@@ -11948,7 +11948,7 @@ rd_frame()
     DI_Key primary_dbgi_key = {0};
     ProfScope("produce all eval modules")
     {
-      U64 eval_module_idx = 0;
+      uint64 eval_module_idx = 0;
       for(CTRL_EntityNode* n = all_modules.first; n != 0; n = n->next, eval_module_idx += 1)
       {
         CTRL_Entity* m = n->v;
@@ -12147,9 +12147,9 @@ rd_frame()
       ctx->reg_arch          = eval_modules_primary->arch;
       ctx->reg_space         = rd_eval_space_from_ctrl_entity(thread, RD_EvalSpaceKind_CtrlEntity);
       ctx->reg_unwind_count  = unwind_count;
-      ctx->module_base       = push_array(scratch.arena, U64, 1);
+      ctx->module_base       = push_array(scratch.arena, uint64, 1);
       ctx->module_base[0]    = module->vaddr_range.min;
-      ctx->tls_base          = push_array(scratch.arena, U64, 1);
+      ctx->tls_base          = push_array(scratch.arena, uint64, 1);
       ctx->tls_base[0]       = d_query_cached_tls_base_vaddr_from_process_root_rip(process, tls_root_vaddr, rip_vaddr);
     }
     e_select_interpret_ctx(interpret_ctx);
@@ -12258,8 +12258,8 @@ rd_frame()
         // rjf: process command
         Dir2 split_dir = Dir2_Invalid;
         RD_Panel* split_panel = &rd_nil_panel;
-        U64 panel_sib_off = 0;
-        U64 panel_child_off = 0;
+        uint64 panel_sib_off = 0;
+        uint64 panel_child_off = 0;
         Vec2S32 panel_change_dir = {0};
         switch(kind)
         {
@@ -12563,7 +12563,7 @@ rd_frame()
             
             //- rjf: load files
             String8 cfg_data[RD_CfgSrc_COUNT] = {0};
-            U64 cfg_timestamps[RD_CfgSrc_COUNT] = {0};
+            uint64 cfg_timestamps[RD_CfgSrc_COUNT] = {0};
             if(file_is_okay)
             {
               for(RD_CfgSrc src = (RD_CfgSrc)0; src < RD_CfgSrc_COUNT; src = (RD_CfgSrc)(src+1))
@@ -12798,7 +12798,7 @@ rd_frame()
                             string = path_absolute_dst_from_relative_dst_src(scratch.arena, string, cfg_folder);
                           }
                           rd_entity_equip_name(t->entity, string);
-                          S64 line = 0;
+                          int64 line = 0;
                           try_s64_from_str8_c_rules(child->first->string, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t->entity, pt);
@@ -12807,7 +12807,7 @@ rd_frame()
                         // rjf: standalone hex literals under an entity -> vaddr
                         if(child->flags & MD_NodeFlag_Numeric && child->first == &md_nil_node && str8_match(str8_substr(child->string, r1u64(0, 2)), str8_lit("0x"), 0))
                         {
-                          U64 vaddr = 0;
+                          uint64 vaddr = 0;
                           try_u64_from_str8_c_rules(child->string, &vaddr);
                           rd_entity_equip_vaddr(t->entity, vaddr);
                         }
@@ -12845,10 +12845,10 @@ rd_frame()
                         if(str8_match(child->string, str8_lit("hsva"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
                         {
                           Vec4F32 hsva = {0};
-                          hsva.x = (F32)f64_from_str8(child->first->string);
-                          hsva.y = (F32)f64_from_str8(child->first->next->string);
-                          hsva.z = (F32)f64_from_str8(child->first->next->next->string);
-                          hsva.w = (F32)f64_from_str8(child->first->next->next->next->string);
+                          hsva.x = (float)f64_from_str8(child->first->string);
+                          hsva.y = (float)f64_from_str8(child->first->next->string);
+                          hsva.z = (float)f64_from_str8(child->first->next->next->string);
+                          hsva.w = (float)f64_from_str8(child->first->next->next->next->string);
                           rd_entity_equip_color_hsva(t->entity, hsva);
                         }
                         if(str8_match(child->string, str8_lit("color"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
@@ -12859,7 +12859,7 @@ rd_frame()
                         }
                         if(str8_match(child->string, str8_lit("line"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
                         {
-                          S64 line = 0;
+                          int64 line = 0;
                           try_s64_from_str8_c_rules(child->first->string, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t->entity, pt);
@@ -12868,7 +12868,7 @@ rd_frame()
                             str8_match(child->string, str8_lit("addr"), StringMatchFlag_CaseInsensitive)) &&
                            child->first != &md_nil_node)
                         {
-                          U64 vaddr = 0;
+                          uint64 vaddr = 0;
                           try_u64_from_str8_c_rules(child->first->string, &vaddr);
                           rd_entity_equip_vaddr(t->entity, vaddr);
                         }
@@ -12906,7 +12906,7 @@ rd_frame()
               {
                 String8 name = rule->string;
                 String8 val_string = rule->first->string;
-                U64 val = 0;
+                uint64 val = 0;
                 if(try_u64_from_str8_c_rules(val_string, &val))
                 {
                   CTRL_ExceptionCodeKind kind = CTRL_ExceptionCodeKind_Null;
@@ -13009,7 +13009,7 @@ rd_frame()
               Axis2 top_level_split_axis = Axis2_X;
               OS_Handle preferred_monitor = os_primary_monitor();
               Vec2F32 size = {0};
-              F32 dpi = 0.f;
+              float dpi = 0.f;
               RD_SettingVal setting_vals[RD_SettingCode_COUNT] = {0};
               {
                 for MD_EachNode(n, window_tree->root->first)
@@ -13041,7 +13041,7 @@ rd_frame()
                 }
                 MD_Node* monitor_node = md_child_from_string(window_tree->root, str8_lit("monitor"), 0);
                 String8 preferred_monitor_name = monitor_node->first->string;
-                for(U64 idx = 0; idx < monitors.count; idx += 1)
+                for(uint64 idx = 0; idx < monitors.count; idx += 1)
                 {
                   String8 monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
                   if(str8_match(monitor_name, preferred_monitor_name, StringMatchFlag_CaseInsensitive))
@@ -13055,18 +13055,18 @@ rd_frame()
                 {
                   String8 x_string = size_node->first->string;
                   String8 y_string = size_node->first->next->string;
-                  U64 x_u64 = 0;
-                  U64 y_u64 = 0;
+                  uint64 x_u64 = 0;
+                  uint64 y_u64 = 0;
                   if(!try_u64_from_str8_c_rules(x_string, &x_u64))
                   {
-                    x_u64 = (U64)(preferred_monitor_size.x*2/3);
+                    x_u64 = (uint64)(preferred_monitor_size.x*2/3);
                   }
                   if(!try_u64_from_str8_c_rules(y_string, &y_u64))
                   {
-                    y_u64 = (U64)(preferred_monitor_size.y*2/3);
+                    y_u64 = (uint64)(preferred_monitor_size.y*2/3);
                   }
-                  size.x = (F32)x_u64;
-                  size.y = (F32)y_u64;
+                  size.x = (float)x_u64;
+                  size.y = (float)y_u64;
                 }
                 MD_Node* dpi_node = md_child_from_string(window_tree->root, str8_lit("dpi"), 0);
                 String8 dpi_string = md_string_from_children(scratch.arena, dpi_node);
@@ -13076,10 +13076,10 @@ rd_frame()
                   MD_Node* code_node = md_child_from_string(window_tree->root, rd_setting_code_lower_string_table[code], 0);
                   if(!md_node_is_nil(code_node))
                   {
-                    S64 val_s64 = 0;
+                    int64 val_s64 = 0;
                     try_s64_from_str8_c_rules(code_node->first->string, &val_s64);
                     setting_vals[code].set = 1;
-                    setting_vals[code].s32 = (S32)val_s64;
+                    setting_vals[code].s32 = (int32)val_s64;
                     setting_vals[code].s32 = clamp_1s32(rd_setting_code_s32_range_table[code], setting_vals[code].s32);
                   }
                 }
@@ -13124,7 +13124,7 @@ rd_frame()
                   panel = rd_panel_alloc(ws);
                   rd_panel_insert(panel_parent, panel_parent->last, panel);
                   panel->split_axis = axis2_flip(panel_parent->split_axis);
-                  panel->pct_of_parent = (F32)f64_from_str8(n->string);
+                  panel->pct_of_parent = (float)f64_from_str8(n->string);
                 }
                 
                 // rjf: do general per-panel work
@@ -13258,7 +13258,7 @@ rd_frame()
               // rjf: focus the biggest panel
               {
                 RD_Panel* best_leaf_panel = &rd_nil_panel;
-                F32 best_leaf_panel_area = 0;
+                float best_leaf_panel_area = 0;
                 Rng2F32 root_rect = r2f32p(0, 0, 1000, 1000); // NOTE(rjf): we can assume any size - just need proportions.
                 for(RD_Panel* panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
                 {
@@ -13266,7 +13266,7 @@ rd_frame()
                   {
                     Rng2F32 rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                     Vec2F32 dim = dim_2f32(rect);
-                    F32 area = dim.x*dim.y;
+                    float area = dim.x*dim.y;
                     if(best_leaf_panel_area == 0 || area > best_leaf_panel_area)
                     {
                       best_leaf_panel_area = area;
@@ -13319,7 +13319,7 @@ rd_frame()
                     else
                     {
                       cmd_name = child->string;
-                      for(U64 idx = 0; idx < ArrayCount(rd_binding_version_remap_old_name_table); idx += 1)
+                      for(uint64 idx = 0; idx < ArrayCount(rd_binding_version_remap_old_name_table); idx += 1)
                       {
                         if(str8_match(rd_binding_version_remap_old_name_table[idx], child->string, StringMatchFlag_CaseInsensitive))
                         {
@@ -13383,7 +13383,7 @@ rd_frame()
                 String8 saved_color_name = color->string;
                 String8List candidate_color_names = {0};
                 str8_list_push(scratch.arena, &candidate_color_names, saved_color_name);
-                for(U64 idx = 0; idx < ArrayCount(rd_theme_color_version_remap_old_name_table); idx += 1)
+                for(uint64 idx = 0; idx < ArrayCount(rd_theme_color_version_remap_old_name_table); idx += 1)
                 {
                   if(str8_match(rd_theme_color_version_remap_old_name_table[idx], saved_color_name, StringMatchFlag_CaseInsensitive))
                   {
@@ -13407,9 +13407,9 @@ rd_frame()
                     theme_color_hit[color_code] = 1;
                     MD_Node* hex_cfg = color->first;
                     String8 hex_string = hex_cfg->string;
-                    U64 hex_val = 0;
+                    uint64 hex_val = 0;
                     try_u64_from_str8_c_rules(hex_string, &hex_val);
-                    Vec4F32 color_rgba = rgba_from_u32((U32)hex_val);
+                    Vec4F32 color_rgba = rgba_from_u32((uint32)hex_val);
                     rd_state->cfg_theme_target.colors[color_code] = color_rgba;
                     if(rd_state->frame_index <= 2)
                     {
@@ -13424,14 +13424,14 @@ rd_frame()
             if(!preset_applied)
             {
               RD_ThemePreset closest_preset = RD_ThemePreset_DefaultDark;
-              F32 closest_preset_bg_distance = 100000000;
+              float closest_preset_bg_distance = 100000000;
               for(RD_ThemePreset p = (RD_ThemePreset)0; p < RD_ThemePreset_COUNT; p = (RD_ThemePreset)(p+1))
               {
                 Vec4F32 cfg_bg = rd_state->cfg_theme_target.colors[RD_ThemeColor_BaseBackground];
                 Vec4F32 pre_bg = rd_theme_preset_colors_table[p][RD_ThemeColor_BaseBackground];
                 Vec4F32 diff = sub_4f32(cfg_bg, pre_bg);
                 Vec3F32 diff3 = diff.xyz;
-                F32 distance = length_3f32(diff3);
+                float distance = length_3f32(diff3);
                 if(distance < closest_preset_bg_distance)
                 {
                   closest_preset = p;
@@ -13479,11 +13479,11 @@ rd_frame()
               if(code_tree->source == src)
               {
                 MD_Node* val_node = code_tree->root->first;
-                S64 val = 0;
+                int64 val = 0;
                 if(try_s64_from_str8_c_rules(val_node->string, &val))
                 {
                   rd_state->cfg_setting_vals[src][code].set = 1;
-                  rd_state->cfg_setting_vals[src][code].s32 = (S32)val;
+                  rd_state->cfg_setting_vals[src][code].s32 = (int32)val;
                 }
                 setting_codes_hit[code] = !md_node_is_nil(val_node);
               }
@@ -13508,8 +13508,8 @@ rd_frame()
               Vec2F32 monitor_dim = os_dim_from_monitor(preferred_monitor);
               Vec2F32 window_dim = v2f32(monitor_dim.x*4/5, monitor_dim.y*4/5);
               RD_Window* ws = rd_window_open(window_dim, preferred_monitor, RD_CfgSrc_User);
-              F32 font_size = (F32)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
-              F32 num_lines_in_monitor_height = monitor_dim.y / font_size;
+              float font_size = (float)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
+              float num_lines_in_monitor_height = monitor_dim.y / font_size;
               if(num_lines_in_monitor_height < 100)
               {
                 rd_cmd(RD_CmdKind_ResetToCompactPanels, .window = rd_handle_from_window(ws));
@@ -13523,7 +13523,7 @@ rd_frame()
             //- rjf: if config bound 0 keys, we need to do some sensible default
             if(src == RD_CfgSrc_User && rd_state->key_map_total_count == 0)
             {
-              for(U64 idx = 0; idx < ArrayCount(rd_default_binding_table); idx += 1)
+              for(uint64 idx = 0; idx < ArrayCount(rd_default_binding_table); idx += 1)
               {
                 RD_StringBindingPair* pair = &rd_default_binding_table[idx];
                 rd_bind_name(pair->string, pair->binding);
@@ -13544,7 +13544,7 @@ rd_frame()
                 { rd_cmd_kind_info_table[RD_CmdKind_Accept].string, OS_Key_Return },
                 { rd_cmd_kind_info_table[RD_CmdKind_Cancel].string, OS_Key_Esc },
               };
-              for(U64 idx = 0; idx < ArrayCount(meta_ctrls); idx += 1)
+              for(uint64 idx = 0; idx < ArrayCount(meta_ctrls); idx += 1)
               {
                 RD_BindingList bindings = rd_bindings_from_name(scratch.arena, meta_ctrls[idx].name);
                 if(bindings.count == 0)
@@ -13675,7 +13675,7 @@ rd_frame()
               {
                 if(child != next)
                 {
-                  child->pct_of_parent *= (F32)(parent->child_count-1) / (parent->child_count);
+                  child->pct_of_parent *= (float)(parent->child_count-1) / (parent->child_count);
                 }
               }
               ws->focused_panel = next;
@@ -13820,7 +13820,7 @@ rd_frame()
             Vec2F32 src_panel_center = center_2f32(src_panel_rect);
             Vec2F32 src_panel_half_dim = scale_2f32(dim_2f32(src_panel_rect), 0.5f);
             Vec2F32 travel_dim = add_2f32(src_panel_half_dim, v2f32(10.f, 10.f));
-            Vec2F32 travel_dst = add_2f32(src_panel_center, mul_2f32(travel_dim, v2f32((F32)panel_change_dir.x, (F32)panel_change_dir.y)));
+            Vec2F32 travel_dst = add_2f32(src_panel_center, mul_2f32(travel_dim, v2f32((float)panel_change_dir.x, (float)panel_change_dir.y)));
             RD_Panel* dst_root = &rd_nil_panel;
             for(RD_Panel* p = ws->root_panel; !rd_panel_is_nil(p); p = rd_panel_rec_depth_first_pre(p).next)
             {
@@ -13964,7 +13964,7 @@ rd_frame()
                 RD_Panel* keep_child = panel == parent->first ? parent->last : parent->first;
                 RD_Panel* grandparent = parent->parent;
                 RD_Panel* parent_prev = parent->prev;
-                F32 pct_of_parent = parent->pct_of_parent;
+                float pct_of_parent = parent->pct_of_parent;
                 
                 // rjf: unhook kept child
                 rd_panel_remove(parent, keep_child);
@@ -14022,7 +14022,7 @@ rd_frame()
               else
               {
                 RD_Panel* next = &rd_nil_panel;
-                F32 removed_size_pct = panel->pct_of_parent;
+                float removed_size_pct = panel->pct_of_parent;
                 if(rd_panel_is_nil(next)) { next = panel->prev; }
                 if(rd_panel_is_nil(next)) { next = panel->next; }
                 rd_panel_remove(parent, panel);
@@ -14049,7 +14049,7 @@ rd_frame()
             RD_Panel* panel = rd_panel_from_handle(rd_regs()->panel);
             RD_View* start_view = rd_selected_tab_from_panel(panel);
             RD_View* next_view = start_view;
-            U64 idx = 0;
+            uint64 idx = 0;
             for(RD_View* v = start_view; !rd_view_is_nil(v); v = (rd_view_is_nil(v->order_next) ? panel->first_tab_view : v->order_next), idx += 1)
             {
               if(v == start_view && idx != 0)
@@ -14069,7 +14069,7 @@ rd_frame()
             RD_Panel* panel = rd_panel_from_handle(rd_regs()->panel);
             RD_View* start_view = rd_selected_tab_from_panel(panel);
             RD_View* next_view = start_view;
-            U64 idx = 0;
+            uint64 idx = 0;
             for(RD_View* v = start_view; !rd_view_is_nil(v); v = (rd_view_is_nil(v->order_prev) ? panel->last_tab_view : v->order_prev), idx += 1)
             {
               if(v == start_view && idx != 0)
@@ -14242,7 +14242,7 @@ rd_frame()
                 str8_lit_comp("cxx"),
                 str8_lit_comp("cpp"),
               };
-              for(U64 idx = 0; idx < ArrayCount(partner_ext_candidates); idx += 1)
+              for(uint64 idx = 0; idx < ArrayCount(partner_ext_candidates); idx += 1)
               {
                 if(!str8_match(partner_ext_candidates[idx], file_ext, StringMatchFlag_CaseInsensitive))
                 {
@@ -14329,7 +14329,7 @@ rd_frame()
           case RD_CmdKind_GoToDisassembly:
           {
             CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-            U64 vaddr = 0;
+            uint64 vaddr = 0;
             for(D_LineNode* n = rd_regs()->lines.first; n != 0; n = n->next)
             {
               CTRL_EntityList modules = ctrl_modules_from_dbgi_key(scratch.arena, d_state->ctrl_entity_store, &n->v.dbgi_key);
@@ -14727,23 +14727,23 @@ rd_frame()
           {
             DI_Scope* scope = di_scope_open();
             CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-            U64 unwind_index = rd_regs()->unwind_count;
-            U64 inline_depth = rd_regs()->inline_depth;
+            uint64 unwind_index = rd_regs()->unwind_count;
+            uint64 inline_depth = rd_regs()->inline_depth;
             if(thread->kind == CTRL_EntityKind_Thread)
             {
               // rjf: grab rip
-              U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_index);
+              uint64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_index);
               
               // rjf: extract thread/rip info
               CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
               CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
               DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
               RDI_Parsed* rdi = di_rdi_from_key(scope, &dbgi_key, 0);
-              U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
+              uint64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
               D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff);
               D_Line line = {0};
               {
-                U64 idx = 0;
+                uint64 idx = 0;
                 for(D_LineNode* n = lines.first; n != 0; n = n->next, idx += 1)
                 {
                   line = n->v;
@@ -14813,14 +14813,14 @@ rd_frame()
               B32 name_resolved = 0;
               
               // rjf: try to resolve name as a symbol
-              U64 voff = 0;
+              uint64 voff = 0;
               DI_Key voff_dbgi_key = {0};
               if(!name_resolved)
               {
                 DI_KeyList keys = d_push_active_dbgi_key_list(scratch.arena);
                 for(DI_KeyNode* n = keys.first; n != 0; n = n->next)
                 {
-                  U64 binary_voff = d_voff_from_dbgi_key_symbol_name(&n->v, name);
+                  uint64 binary_voff = d_voff_from_dbgi_key_symbol_name(&n->v, name);
                   if(binary_voff != 0)
                   {
                     voff = binary_voff;
@@ -14837,11 +14837,11 @@ rd_frame()
               {
                 // rjf: unpack quoted portion of string
                 String8 file_part_of_name = name;
-                U64 quote_pos = str8_find_needle(name, 0, str8_lit("\""), 0);
+                uint64 quote_pos = str8_find_needle(name, 0, str8_lit("\""), 0);
                 if(quote_pos < name.size)
                 {
                   file_part_of_name = str8_skip(name, quote_pos+1);
-                  U64 ender_quote_pos = str8_find_needle(file_part_of_name, 0, str8_lit("\""), 0);
+                  uint64 ender_quote_pos = str8_find_needle(file_part_of_name, 0, str8_lit("\""), 0);
                   file_part_of_name = str8_prefix(file_part_of_name, ender_quote_pos);
                 }
                 String8List search_parts = str8_split_path(scratch.arena, file_part_of_name);
@@ -14889,7 +14889,7 @@ rd_frame()
                 if(lines.first != 0)
                 {
                   CTRL_Entity* process = &ctrl_entity_nil;
-                  U64 vaddr = 0;
+                  uint64 vaddr = 0;
                   if(voff_dbgi_key.path.size != 0)
                   {
                     CTRL_EntityList modules = ctrl_modules_from_dbgi_key(scratch.arena, d_state->ctrl_entity_store, &voff_dbgi_key);
@@ -14968,7 +14968,7 @@ rd_frame()
             TxtPt point = {0};
             CTRL_Entity* thread = &ctrl_entity_nil;
             CTRL_Entity* process = &ctrl_entity_nil;
-            U64 vaddr = 0;
+            uint64 vaddr = 0;
             B32 require_disasm_snap = 0;
             {
               file_path = rd_mapped_from_file_path(scratch.arena, rd_regs()->file_path);
@@ -15027,7 +15027,7 @@ rd_frame()
             RD_Panel* panel_w_any_src_code = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel* panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15036,7 +15036,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 panel_area = panel_rect_dim.x*panel_rect_dim.y;
+                float panel_area = panel_rect_dim.x*panel_rect_dim.y;
                 for(RD_View* view = panel->first_tab_view; !rd_view_is_nil(view); view = view->order_next)
                 {
                   if(rd_view_is_project_filtered(view)) { continue; }
@@ -15056,7 +15056,7 @@ rd_frame()
             RD_View* view_w_disasm = &rd_nil_view;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel* panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15065,7 +15065,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 panel_area = panel_rect_dim.x*panel_rect_dim.y;
+                float panel_area = panel_rect_dim.x*panel_rect_dim.y;
                 RD_View* panel_selected_tab = rd_selected_tab_from_panel(panel);
                 for(RD_View* view = panel->first_tab_view; !rd_view_is_nil(view); view = view->order_next)
                 {
@@ -15090,7 +15090,7 @@ rd_frame()
             RD_Panel* biggest_panel = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel* panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15099,7 +15099,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 area = panel_rect_dim.x * panel_rect_dim.y;
+                float area = panel_rect_dim.x * panel_rect_dim.y;
                 if((best_panel_area == 0 || area > best_panel_area))
                 {
                   best_panel_area = area;
@@ -15112,7 +15112,7 @@ rd_frame()
             RD_Panel* biggest_empty_panel = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel* panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15121,7 +15121,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 area = panel_rect_dim.x * panel_rect_dim.y;
+                float area = panel_rect_dim.x * panel_rect_dim.y;
                 B32 panel_is_empty = 1;
                 for(RD_View* v = panel->first_tab_view; !rd_view_is_nil(v); v = v->order_next)
                 {
@@ -15272,7 +15272,7 @@ rd_frame()
             if(view_is_tab && view->spec->flags & RD_ViewRuleInfoFlag_CanFilter)
             {
               view->is_filtering ^= 1;
-              view->query_cursor = txt_pt(1, 1+(S64)view->query_string_size);
+              view->query_cursor = txt_pt(1, 1+(int64)view->query_string_size);
               view->query_mark = txt_pt(1, 1);
             }
           }break;
@@ -15308,8 +15308,8 @@ rd_frame()
             {
               RD_Regs* regs_copy = rd_regs_copy(ws->query_cmd_arena, rd_regs());
               Rng1U64 offset_range_in_regs = rd_reg_slot_range_table[slot];
-              MemoryCopy((U8 *)(ws->query_cmd_regs) + offset_range_in_regs.min,
-                         (U8 *)(regs_copy) + offset_range_in_regs.min,
+              MemoryCopy((uint8 *)(ws->query_cmd_regs) + offset_range_in_regs.min,
+                         (uint8 *)(regs_copy) + offset_range_in_regs.min,
                          dim_1u64(offset_range_in_regs));
               ws->query_cmd_regs_mask[slot/64] |= (1ull<<(slot%64));
             }
@@ -15490,7 +15490,7 @@ rd_frame()
             String8 file_path = rd_regs()->file_path;
             TxtPt pt = rd_regs()->cursor;
             String8 string = rd_regs()->string;
-            U64 vaddr = rd_regs()->vaddr;
+            uint64 vaddr = rd_regs()->vaddr;
             if(file_path.size != 0 || string.size != 0 || vaddr != 0)
             {
               //- TODO(rjf): @cfg add/toggle breakpoint
@@ -15503,8 +15503,8 @@ rd_frame()
                   {
                     RD_Cfg* bp = n->v;
                     RD_Cfg* loc = rd_cfg_child_from_string(bp, str8_lit("location"));
-                    S64 loc_line = 0;
-                    U64 loc_vaddr = 0;
+                    int64 loc_line = 0;
+                    uint64 loc_vaddr = 0;
                     B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc->first->string, file_path) && try_s64_from_str8_c_rules(loc->first->first->string, &loc_line) && loc_line == pt.line);
                     B32 loc_matches_string  = (string.size != 0 && str8_match(loc->first->string, string, 0));
                     B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc->first->string, &loc_vaddr) && loc_vaddr == vaddr);
@@ -15591,7 +15591,7 @@ rd_frame()
             String8 file_path = rd_regs()->file_path;
             TxtPt pt = rd_regs()->cursor;
             String8 string = rd_regs()->string;
-            U64 vaddr = rd_regs()->vaddr;
+            uint64 vaddr = rd_regs()->vaddr;
             //- TODO(rjf): @cfg add/toggle watch pin
             {
               B32 removed_already_existing = 0;
@@ -15603,8 +15603,8 @@ rd_frame()
                   RD_Cfg* wp = n->v;
                   RD_Cfg* name = rd_cfg_child_from_string(wp, str8_lit("name"));
                   RD_Cfg* loc = rd_cfg_child_from_string(wp, str8_lit("location"));
-                  S64 loc_line = 0;
-                  U64 loc_vaddr = 0;
+                  int64 loc_line = 0;
+                  uint64 loc_vaddr = 0;
                   B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc->first->string, file_path) && try_s64_from_str8_c_rules(loc->first->first->string, &loc_line) && loc_line == pt.line);
                   B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc->first->string, &loc_vaddr) && loc_vaddr == vaddr);
                   B32 loc_matches_expr    = (string.size != 0 && str8_match(name->first->string, string, 0));
@@ -15733,7 +15733,7 @@ rd_frame()
           {
             CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
             String8 file_path = rd_regs()->file_path;
-            U64 new_rip_vaddr = rd_regs()->vaddr_range.min;
+            uint64 new_rip_vaddr = rd_regs()->vaddr_range.min;
             if(file_path.size != 0)
             {
               D_LineList* lines = &rd_regs()->lines;
@@ -15804,7 +15804,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(U16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(uint16)+2);
               RegCloseKey(reg_key);
             }
             {
@@ -15812,7 +15812,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(U16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(uint16)+2);
               RegCloseKey(reg_key);
             }
             if(likely_not_in_admin_mode)
@@ -15888,7 +15888,7 @@ rd_frame()
             if(rd_regs()->unwind_count < rich_unwind.concrete_frame_count)
             {
               CTRL_CallStackFrame* frame = &rich_unwind.frames[rd_regs()->unwind_count];
-              U64 rip_vaddr = regs_rip_from_arch_block(thread->arch, frame->regs);
+              uint64 rip_vaddr = regs_rip_from_arch_block(thread->arch, frame->regs);
               CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
               rd_state->base_regs.v.module = module->handle;
               rd_state->base_regs.v.unwind_count = rd_regs()->unwind_count;
@@ -15909,10 +15909,10 @@ rd_frame()
             CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
             CTRL_Unwind base_unwind = d_query_cached_unwind_from_thread(thread);
             CTRL_CallStack rich_unwind = ctrl_call_stack_from_unwind(scratch.arena, di_scope, process, &base_unwind);
-            U64 crnt_unwind_idx = rd_state->base_regs.v.unwind_count;
-            U64 crnt_inline_dpt = rd_state->base_regs.v.inline_depth;
-            U64 next_unwind_idx = crnt_unwind_idx;
-            U64 next_inline_dpt = crnt_inline_dpt;
+            uint64 crnt_unwind_idx = rd_state->base_regs.v.unwind_count;
+            uint64 crnt_inline_dpt = rd_state->base_regs.v.inline_depth;
+            uint64 next_unwind_idx = crnt_unwind_idx;
+            uint64 next_inline_dpt = crnt_inline_dpt;
             if(crnt_unwind_idx < rich_unwind.concrete_frame_count)
             {
               CTRL_CallStackFrame* f = &rich_unwind.frames[crnt_unwind_idx];
@@ -16377,7 +16377,7 @@ rd_frame()
       RD_EntityList target_entities = rd_query_cached_entity_list_with_kind(RD_EntityKind_Target);
       targets.count = target_entities.count;
       targets.v = push_array(scratch.arena, D_Target, targets.count);
-      U64 idx = 0;
+      uint64 idx = 0;
       for(RD_EntityNode* n = target_entities.first; n != 0; n = n->next)
       {
         RD_Entity* src_target = n->entity;
@@ -16403,13 +16403,13 @@ rd_frame()
         MetaEvalNode* next;
         CTRL_MetaEval* meval;
       };
-      U64 meval_count = 0;
+      uint64 meval_count = 0;
       MetaEvalNode* first_meval = 0;
       MetaEvalNode* last_meval = 0;
       RD_EntityList bp_entities = rd_query_cached_entity_list_with_kind(RD_EntityKind_Breakpoint);
       breakpoints.count = bp_entities.count;
       breakpoints.v = push_array(scratch.arena, D_Breakpoint, breakpoints.count);
-      U64 idx = 0;
+      uint64 idx = 0;
       for(RD_EntityNode* n = bp_entities.first; n != 0; n = n->next)
       {
         RD_Entity* src_bp = n->entity;
@@ -16514,7 +16514,7 @@ rd_frame()
       meta_evals.count = meval_count;
       meta_evals.v = push_array(scratch.arena, CTRL_MetaEval, meta_evals.count);
       {
-        U64 idx = 0;
+        uint64 idx = 0;
         for(MetaEvalNode* n = first_meval; n != 0; n = n->next)
         {
           MemoryCopyStruct(&meta_evals.v[idx], n->meval);
@@ -16531,7 +16531,7 @@ rd_frame()
       RD_EntityList maps = rd_query_cached_entity_list_with_kind(RD_EntityKind_FilePathMap);
       path_maps.count = maps.count;
       path_maps.v = push_array(scratch.arena, D_PathMap, path_maps.count);
-      U64 idx = 0;
+      uint64 idx = 0;
       for(RD_EntityNode* n = maps.first; n != 0; n = n->next, idx += 1)
       {
         RD_Entity* map = n->entity;
@@ -16543,7 +16543,7 @@ rd_frame()
     ////////////////////////////
     //- rjf: gather exception code filters
     //
-    U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64] = {0};
+    uint64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64] = {0};
     {
       MemoryCopyArray(exception_code_filters, rd_state->ctrl_exception_code_filters);
     }
@@ -16551,7 +16551,7 @@ rd_frame()
     ////////////////////////////
     //- rjf: tick debug engine
     //
-    U64 cmd_count_pre_tick = rd_state->cmds[0].count;
+    uint64 cmd_count_pre_tick = rd_state->cmds[0].count;
     D_EventList engine_events = d_tick(scratch.arena, &targets, &breakpoints, &path_maps, exception_code_filters, &meta_evals);
     
     ////////////////////////////
@@ -16580,12 +16580,12 @@ rd_frame()
         {
           B32 need_refocus = (evt->cause != D_EventCause_SoftHalt);
           CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, evt->thread);
-          U64 vaddr = evt->vaddr;
+          uint64 vaddr = evt->vaddr;
           CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
           CTRL_Entity* module = ctrl_module_from_process_vaddr(process, vaddr);
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-          U64 voff = ctrl_voff_from_vaddr(module, vaddr);
-          U64 test_cached_vaddr = ctrl_query_cached_rip_from_thread(d_state->ctrl_entity_store, thread->handle);
+          uint64 voff = ctrl_voff_from_vaddr(module, vaddr);
+          uint64 test_cached_vaddr = ctrl_query_cached_rip_from_thread(d_state->ctrl_entity_store, thread->handle);
           
           // rjf: valid stop thread? -> select & snap
           if(need_refocus && thread != &ctrl_entity_nil && evt->cause != D_EventCause_Halt)
@@ -16634,7 +16634,7 @@ rd_frame()
               }
               else if(loc->string.size != 0)
               {
-                U64 symb_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, loc->string);
+                uint64 symb_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, loc->string);
                 if(symb_voff == voff)
                 {
                   bp->u64 += 1;
@@ -16695,10 +16695,10 @@ rd_frame()
   //- rjf: animate confirmation
   //
   {
-    F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-10.f * rd_state->frame_dt)) : 1.f;
+    float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-10.f * rd_state->frame_dt)) : 1.f;
     B32 popup_open = rd_state->popup_active;
-    rd_state->popup_t += rate * ((F32)!!popup_open-rd_state->popup_t);
-    if(abs_f32(rd_state->popup_t - (F32)!!popup_open) > 0.005f)
+    rd_state->popup_t += rate * ((float)!!popup_open-rd_state->popup_t);
+    if(abs_f32(rd_state->popup_t - (float)!!popup_open) > 0.005f)
     {
       rd_request_frame();
     }
@@ -16710,7 +16710,7 @@ rd_frame()
   {
     RD_Theme* current = &rd_state->cfg_theme;
     RD_Theme* target = &rd_state->cfg_theme_target;
-    F32 rate = 1 - pow_f32(2, (-50.f * rd_state->frame_dt));
+    float rate = 1 - pow_f32(2, (-50.f * rd_state->frame_dt));
     for(RD_ThemeColor color = RD_ThemeColor_Null;
         color < RD_ThemeColor_COUNT;
         color = (RD_ThemeColor)(color+1))
@@ -16821,8 +16821,8 @@ rd_frame()
           if(file_path.size != 0)
           {
             String8 name = str8_skip_last_slash(file_path);
-            U64 hash = d_hash_from_string__case_insensitive(name);
-            U64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
+            uint64 hash = d_hash_from_string__case_insensitive(name);
+            uint64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
             RD_AmbiguousPathNode* node = 0;
             for(RD_AmbiguousPathNode* n = rd_state->ambiguous_path_slots[slot_idx];
                 n != 0;
@@ -16979,8 +16979,8 @@ rd_frame()
   //////////////////////////////
   //- rjf: determine frame time, record into history
   //
-  U64 end_time_us = os_now_microseconds();
-  U64 frame_time_us = end_time_us-begin_time_us;
+  uint64 end_time_us = os_now_microseconds();
+  uint64 frame_time_us = end_time_us-begin_time_us;
   rd_state->frame_time_us_history[rd_state->frame_index%ArrayCount(rd_state->frame_time_us_history)] = frame_time_us;
   
   //////////////////////////////

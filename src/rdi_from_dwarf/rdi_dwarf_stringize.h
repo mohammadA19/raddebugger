@@ -8,20 +8,20 @@
 //~ DWARF Stringize Functions
 
 static void
-dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, U32 indent);
+dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, uint32 indent);
 
 static void
 dwarf_stringize_pubnames(Arena* arena, String8List* out, DWARF_PubNamesUnit* unit,
-                         U32 indent);
+                         uint32 indent);
 
 static void
-dwarf_stringize_names(Arena* arena, String8List* out, DWARF_NamesUnit* unit, U32 indent);
+dwarf_stringize_names(Arena* arena, String8List* out, DWARF_NamesUnit* unit, uint32 indent);
 
 static void
-dwarf_stringize_aranges(Arena* arena, String8List* out, DWARF_ArangesUnit* unit, U32 indent);
+dwarf_stringize_aranges(Arena* arena, String8List* out, DWARF_ArangesUnit* unit, uint32 indent);
 
 static void
-dwarf_stringize_addr(Arena* arena, String8List* out, DWARF_AddrUnit* unit, U32 indent);
+dwarf_stringize_addr(Arena* arena, String8List* out, DWARF_AddrUnit* unit, uint32 indent);
 
 
 

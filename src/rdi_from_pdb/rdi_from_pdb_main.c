@@ -123,7 +123,7 @@ entry_point(CmdLine* cmdline)
   ProfScope("write")
   {
     OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
-    U64 off = 0;
+    uint64 off = 0;
     for(String8Node* n = blobs.first; n != 0; n = n->next)
     {
       os_file_write(output_file, r1u64(off, off+n->string.size), n->string.str);

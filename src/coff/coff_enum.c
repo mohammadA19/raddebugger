@@ -76,7 +76,7 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 String8
 coff_string_from_machine_type(COFF_MachineType machine)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (g_coff_machine_map[i].machine == machine) {
       return g_coff_machine_map[i].string;
     }
@@ -197,7 +197,7 @@ coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags)
     str8_list_pushf(scratch.arena, &list, "MemWrite");
   }
   
-  U64 align = coff_align_size_from_section_flags(flags);
+  uint64 align = coff_align_size_from_section_flags(flags);
   if (align) {
     str8_list_pushf(scratch.arena, &list, "Align=%u", align);
   }
@@ -246,7 +246,7 @@ coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags fl
 String8
 coff_string_from_import_header_type(COFF_ImportType type)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (g_coff_import_header_type_map[i].type == type) {
       return str8_cstring(g_coff_import_header_type_map[i].name);
     }
@@ -457,7 +457,7 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 COFF_MachineType
 coff_machine_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
       return g_coff_machine_map[i].machine;
     }
@@ -468,7 +468,7 @@ coff_machine_from_string(String8 string)
 COFF_ImportType
 coff_import_header_type_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlag_CaseInsensitive)) {
       return g_coff_import_header_type_map[i].type;
     }

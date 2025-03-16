@@ -52,13 +52,13 @@ e_autoresolved_eval_from_eval(E_Eval eval)
       e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_S32)) ||
       e_type_key_match(eval.type_key, e_type_key_basic(E_TypeKind_U32))))
   {
-    U64 vaddr = eval.value.u64;
-    U64 voff = vaddr - e_interpret_ctx->module_base[0];
+    uint64 vaddr = eval.value.u64;
+    uint64 voff = vaddr - e_interpret_ctx->module_base[0];
     RDI_Parsed* rdi = e_parse_ctx->primary_module->rdi;
     RDI_Scope* scope = rdi_scope_from_voff(rdi, voff);
     RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, voff);
     RDI_GlobalVariable* gvar = rdi_global_variable_from_voff(rdi, voff);
-    U32 string_idx = 0;
+    uint32 string_idx = 0;
     if(string_idx == 0) { string_idx = procedure->name_string_idx; }
     if(string_idx == 0) { string_idx = gvar->name_string_idx; }
     if(string_idx != 0)
@@ -87,7 +87,7 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
     {
       E_Type* ptee_type = e_type_from_key(scratch.arena, ptee_type_key);
       B32 has_vtable = 0;
-      for(U64 idx = 0; idx < ptee_type->count; idx += 1)
+      for(uint64 idx = 0; idx < ptee_type->count; idx += 1)
       {
         if(ptee_type->members[idx].kind == E_MemberKind_VirtualMethod)
         {
@@ -97,23 +97,23 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
       }
       if(has_vtable)
       {
-        U64 ptr_vaddr = eval.value.u64;
-        U64 addr_size = e_type_byte_size_from_key(e_type_unwrap(type_key));
-        U64 class_base_vaddr = 0;
-        U64 vtable_vaddr = 0;
+        uint64 ptr_vaddr = eval.value.u64;
+        uint64 addr_size = e_type_byte_size_from_key(e_type_unwrap(type_key));
+        uint64 class_base_vaddr = 0;
+        uint64 vtable_vaddr = 0;
         if(e_space_read(eval.space, &class_base_vaddr, r1u64(ptr_vaddr, ptr_vaddr+addr_size)) &&
            e_space_read(eval.space, &vtable_vaddr, r1u64(class_base_vaddr, class_base_vaddr+addr_size)))
         {
           Arch arch = e_type_state->ctx->primary_module->arch;
-          U32 rdi_idx = 0;
+          uint32 rdi_idx = 0;
           RDI_Parsed* rdi = 0;
-          U64 module_base = 0;
-          for(U64 idx = 0; idx < e_type_state->ctx->modules_count; idx += 1)
+          uint64 module_base = 0;
+          for(uint64 idx = 0; idx < e_type_state->ctx->modules_count; idx += 1)
           {
             if(contains_1u64(e_type_state->ctx->modules[idx].vaddr_range, vtable_vaddr))
             {
               arch = e_type_state->ctx->modules[idx].arch;
-              rdi_idx = (U32)idx;
+              rdi_idx = (uint32)idx;
               rdi = e_type_state->ctx->modules[idx].rdi;
               module_base = e_type_state->ctx->modules[idx].vaddr_range.min;
               break;
@@ -121,8 +121,8 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
           }
           if(rdi != 0)
           {
-            U64 vtable_voff = vtable_vaddr - module_base;
-            U64 global_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, vtable_voff);
+            uint64 vtable_voff = vtable_vaddr - module_base;
+            uint64 global_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, vtable_voff);
             RDI_GlobalVariable* global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
             if(global_var->link_flags & RDI_LinkFlag_TypeScoped)
             {
@@ -155,7 +155,7 @@ e_value_eval_from_eval(E_Eval eval)
     }
     else
     {
-      U64 type_byte_size = e_type_byte_size_from_key(type_key);
+      uint64 type_byte_size = e_type_byte_size_from_key(type_key);
       Rng1U64 value_vaddr_range = r1u64(eval.value.u64, eval.value.u64 + type_byte_size);
       MemoryZeroStruct(&eval.value);
       if(!e_type_key_match(type_key, e_type_key_zero()) &&
@@ -165,12 +165,12 @@ e_value_eval_from_eval(E_Eval eval)
         eval.mode = E_Mode_Value;
         
         // rjf: mask&shift, for bitfields
-        if(type_kind == E_TypeKind_Bitfield && type_byte_size <= sizeof(U64))
+        if(type_kind == E_TypeKind_Bitfield && type_byte_size <= sizeof(uint64))
         {
           Temp scratch = scratch_begin(0, 0);
           E_Type* type = e_type_from_key(scratch.arena, type_key);
-          U64 valid_bits_mask = 0;
-          for(U64 idx = 0; idx < type->count; idx += 1)
+          uint64 valid_bits_mask = 0;
+          for(uint64 idx = 0; idx < type->count; idx += 1)
           {
             valid_bits_mask |= (1ull<<idx);
           }
@@ -185,11 +185,11 @@ e_value_eval_from_eval(E_Eval eval)
         {
           default: break;
           case E_TypeKind_Char8:
-          case E_TypeKind_S8:  {eval.value.s64 = (S64)*((S8 *)&eval.value.u64);}break;
+          case E_TypeKind_S8:  {eval.value.s64 = (int64)*((int8 *)&eval.value.u64);}break;
           case E_TypeKind_Char16:
-          case E_TypeKind_S16: {eval.value.s64 = (S64)*((S16 *)&eval.value.u64);}break;
+          case E_TypeKind_S16: {eval.value.s64 = (int64)*((int16 *)&eval.value.u64);}break;
           case E_TypeKind_Char32:
-          case E_TypeKind_S32: {eval.value.s64 = (S64)*((S32 *)&eval.value.u64);}break;
+          case E_TypeKind_S32: {eval.value.s64 = (int64)*((int32 *)&eval.value.u64);}break;
         }
       }
     }
@@ -199,7 +199,7 @@ e_value_eval_from_eval(E_Eval eval)
 }
 
 E_Eval
-e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
+e_element_eval_from_array_eval_index(E_Eval eval, uint64 index)
 {
   E_Eval result = {0};
   result.mode     = eval.mode;
@@ -207,7 +207,7 @@ e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
   result.type_key = e_type_direct_from_key(eval.type_key);
   result.code     = eval.code;
   result.msgs     = eval.msgs;
-  U64 element_size = e_type_byte_size_from_key(result.type_key);
+  uint64 element_size = e_type_byte_size_from_key(result.type_key);
   switch(eval.mode)
   {
     default:{}break;
@@ -215,8 +215,8 @@ e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
     if(element_size <= sizeof(E_Value) &&
        index < sizeof(E_Value)/element_size)
     {
-      MemoryCopy((U8 *)(&result.value.u512[0]),
-                 (U8 *)(&eval.value.u512[0]) + index*element_size,
+      MemoryCopy((uint8 *)(&result.value.u512[0]),
+                 (uint8 *)(&eval.value.u512[0]) + index*element_size,
                  element_size);
     }break;
     case E_Mode_Offset:
@@ -246,9 +246,9 @@ e_member_eval_from_eval_member_name(E_Eval eval, String8 member_name)
         case E_Mode_Value:
         if(member.off < sizeof(eval.value))
         {
-          U64 member_size = e_type_byte_size_from_key(member.type_key);
-          MemoryCopy((U8 *)(&result.value.u512[0]),
-                     (U8 *)(&eval.value.u512[0]) + member.off,
+          uint64 member_size = e_type_byte_size_from_key(member.type_key);
+          MemoryCopy((uint8 *)(&result.value.u512[0]),
+                     (uint8 *)(&eval.value.u512[0]) + member.off,
                      Min(member_size, sizeof(eval.value) - member.off));
         }break;
         case E_Mode_Offset:

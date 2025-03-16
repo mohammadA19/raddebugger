@@ -16,62 +16,62 @@ enum REGS_UsageKind
 ////////////////////////////////
 //~ rjf: Register Types
 
-typedef U8 REGS_RegCode;
-typedef U8 REGS_AliasCode;
+typedef uint8 REGS_RegCode;
+typedef uint8 REGS_AliasCode;
 
 union REGS_Reg16
 {
-  U8 v[2];
-  U16 u16;
+  uint8 v[2];
+  uint16 u16;
 }
 
 union REGS_Reg32
 {
-  U8 v[4];
-  U32 u32;
-  F32 f32;
+  uint8 v[4];
+  uint32 u32;
+  float f32;
 }
 
 union REGS_Reg64
 {
-  U8 v[8];
-  U64 u64;
-  F64 f64;
+  uint8 v[8];
+  uint64 u64;
+  double f64;
 }
 
 #pragma pack(push, 1)
 struct REGS_Reg80
 {
-  U64 int1_frac63;
-  U16 sign1_exp15;
+  uint64 int1_frac63;
+  uint16 sign1_exp15;
 }
 #pragma pack(pop)
 
 union REGS_Reg128
 {
-  U8 v[16];
-  U32 u32[4];
-  F32 f32[4];
-  U64 u64[2];
-  F64 f64[2];
+  uint8 v[16];
+  uint32 u32[4];
+  float f32[4];
+  uint64 u64[2];
+  double f64[2];
 }
 
 union REGS_Reg256
 {
-  U8 v[32];
-  U32 u32[8];
-  F32 f32[8];
-  U64 u64[4];
-  F64 f64[4];
+  uint8 v[32];
+  uint32 u32[8];
+  float f32[8];
+  uint64 u64[4];
+  double f64[4];
 }
 
 union REGS_Reg512
 {
-  U8 v[64];
-  U32 u32[16];
-  F32 f32[16];
-  U64 u64[8];
-  F64 f64[8];
+  uint8 v[64];
+  uint32 u32[16];
+  float f32[16];
+  uint64 u64[8];
+  double f64[8];
 }
 
 ////////////////////////////////
@@ -79,15 +79,15 @@ union REGS_Reg512
 
 struct REGS_Rng
 {
-  U16 byte_off;
-  U16 byte_size;
+  uint16 byte_off;
+  uint16 byte_size;
 }
 
 struct REGS_Slice
 {
-  U16 code;
-  U8 byte_off;
-  U8 byte_size;
+  uint16 code;
+  uint8 byte_off;
+  uint8 byte_size;
 }
 
 ////////////////////////////////
@@ -98,18 +98,18 @@ struct REGS_Slice
 ////////////////////////////////
 //~ rjf: Helpers
 
-U64 regs_block_size_from_arch(Arch arch);
-U64 regs_reg_code_count_from_arch(Arch arch);
-U64 regs_alias_code_count_from_arch(Arch arch);
+uint64 regs_block_size_from_arch(Arch arch);
+uint64 regs_reg_code_count_from_arch(Arch arch);
+uint64 regs_alias_code_count_from_arch(Arch arch);
 String8* regs_reg_code_string_table_from_arch(Arch arch);
 String8* regs_alias_code_string_table_from_arch(Arch arch);
 REGS_Rng* regs_reg_code_rng_table_from_arch(Arch arch);
 REGS_Slice* regs_alias_code_slice_table_from_arch(Arch arch);
 REGS_UsageKind* regs_reg_code_usage_kind_table_from_arch(Arch arch);
 REGS_UsageKind* regs_alias_code_usage_kind_table_from_arch(Arch arch);
-U64 regs_rip_from_arch_block(Arch arch, void* block);
-U64 regs_rsp_from_arch_block(Arch arch, void* block);
-void regs_arch_block_write_rip(Arch arch, void* block, U64 rip);
-void regs_arch_block_write_rsp(Arch arch, void* block, U64 rsp);
+uint64 regs_rip_from_arch_block(Arch arch, void* block);
+uint64 regs_rsp_from_arch_block(Arch arch, void* block);
+void regs_arch_block_write_rip(Arch arch, void* block, uint64 rip);
+void regs_arch_block_write_rsp(Arch arch, void* block, uint64 rsp);
 
 #endif // REGS_H

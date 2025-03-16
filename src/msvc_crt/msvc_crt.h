@@ -18,15 +18,15 @@ enum
   MSCRT_FeatFlag_NO_RTTI       = (1 << 17), // /GR-
   MSCRT_FeatFlag_KERNEL        = (1 << 30), // /kernel
 }
-typedef U32 MSCRT_FeatFlags;
+typedef uint32 MSCRT_FeatFlags;
 
 struct MSCRT_VCFeatures
 {
-  U32 pre_vcpp;
-  U32 c_cpp;
-  U32 gs;
-  U32 sdl;
-  U32 guard_n;
+  uint32 pre_vcpp;
+  uint32 c_cpp;
+  uint32 gs;
+  uint32 sdl;
+  uint32 guard_n;
 }
 
 ////////////////////////////////
@@ -35,7 +35,7 @@ struct MSCRT_VCFeatures
 #define MSCRT_GSHandler_GetFlags(x)        (((x) & 0x00000007) >> 0)
 #define MSCRT_GSHandler_GetCookieOffset(x) (((x) & 0xFFFFFFF8) >> 3)
 
-enum MSCRT_GSHandlerFlags : U8
+enum MSCRT_GSHandlerFlags : uint8
 {
   MSCRT_GSHandlerFlag_EHandler     = (1 << 0),
   MSCRT_GSHandlerFlag_UHandler     = (1 << 1),
@@ -66,7 +66,7 @@ enum
   MSCRT_MagicFlag_EHNOEXCEPT  = (1 << 2)
 }
 
-enum MSCRT_Flags : U32
+enum MSCRT_Flags : uint32
 {
   MSCRT_Flag_SynchronousExceptionOnly = (1 << 0),
   MSCRT_Flag_UNKNOWN                  = (1 << 1),
@@ -91,7 +91,7 @@ enum
   MSCRT_ThrowInfo_IsWinRT     = (1 << 4)  // thrown object is a WinRT exception
 }
 
-enum MSCRT_EhHandlerTypeFlags : U32
+enum MSCRT_EhHandlerTypeFlags : uint32
 {
   MSCRT_EhHandlerTypeFlag_IsConst     = (1 << 0), // referenced type is 'const'
   MSCRT_EhHandlerTypeFlag_IsVolatile  = (1 << 1), // referenced type is 'volatile'
@@ -104,79 +104,79 @@ enum MSCRT_EhHandlerTypeFlags : U32
 
 struct MSCRT_FuncInfo32
 {
-  U32         magic;
-  U32         max_state;
-  U32         unwind_map_voff;
-  U32         try_block_map_count;
-  U32         try_block_map_voff;
-  U32         ip_map_count;
-  U32         ip_map_voff;
-  U32         frame_offset_unwind_helper;
-  U32         es_type_list_voff;           // llvm emits zero, not sure what this supposed to be
+  uint32         magic;
+  uint32         max_state;
+  uint32         unwind_map_voff;
+  uint32         try_block_map_count;
+  uint32         try_block_map_voff;
+  uint32         ip_map_count;
+  uint32         ip_map_voff;
+  uint32         frame_offset_unwind_helper;
+  uint32         es_type_list_voff;           // llvm emits zero, not sure what this supposed to be
   MSCRT_Flags eh_flags;
 }
 
 struct MSCRT_IPState32
 {
-  U32 ip;
-  S32 state;
+  uint32 ip;
+  int32 state;
 }
 
 struct MSCRT_UnwindMap32
 {
-  S32 next_state;
-  U32 action_virt_off;
+  int32 next_state;
+  uint32 action_virt_off;
 }
 
 struct MSCRT_EhHandlerType32
 {
   MSCRT_EhHandlerTypeFlags adjectives;
-  U32                      descriptor_voff;
-  U32                      catch_obj_frame_offset;
-  U32                      catch_handler_voff;
-  U32                      fp_distance;
+  uint32                      descriptor_voff;
+  uint32                      catch_obj_frame_offset;
+  uint32                      catch_handler_voff;
+  uint32                      fp_distance;
 }
 
 struct MSCRT_TryMapBlock32
 {
-  S32 try_low;
-  S32 try_high;
-  S32 catch_high;
-  S32 catch_handlers_count;
-  U32 catch_handlers_voff;
+  int32 try_low;
+  int32 try_high;
+  int32 catch_high;
+  int32 catch_handlers_count;
+  uint32 catch_handlers_voff;
 }
 
 struct MSCRT_ExceptionSpecTypeList32
 {
-  S32 count;
-  U32 handlers_voff;
+  int32 count;
+  uint32 handlers_voff;
 }
 
 struct MSCRT_TryMapBlock
 {
-  S32                    try_low;
-  S32                    try_high;
-  S32                    catch_high;
-  S32                    catch_handlers_count;
+  int32                    try_low;
+  int32                    try_high;
+  int32                    catch_high;
+  int32                    catch_handlers_count;
   MSCRT_EhHandlerType32* catch_handlers;
 }
 
 struct MSCRT_ExceptionSpecTypeList
 {
-  S32                    count;
+  int32                    count;
   MSCRT_EhHandlerType32* handlers;
 }
 
 struct MSCRT_FuncInfo
 {
-  U32                          magic;
-  U32                          max_state;
+  uint32                          magic;
+  uint32                          max_state;
   MSCRT_UnwindMap32*           unwind_map;
-  U32                          try_block_map_count;
+  uint32                          try_block_map_count;
   MSCRT_TryMapBlock*           try_block_map;
-  U32                          ip_map_count;
+  uint32                          ip_map_count;
   MSCRT_IPState32*             ip_map;
-  U32                          frame_offset_unwind_helper;
+  uint32                          frame_offset_unwind_helper;
   MSCRT_ExceptionSpecTypeList  es_type_list;
   MSCRT_Flags                  eh_flags;
 }
@@ -184,7 +184,7 @@ struct MSCRT_FuncInfo
 ////////////////////////////////
 // C++ Exceptions V4
 
-enum MSCRT_FuncInfoV4Flags : U8
+enum MSCRT_FuncInfoV4Flags : uint8
 {
   MSCRT_FuncInfoV4Flag_IsCatch     = (1 << 0), // catch funclet
   MSCRT_FuncInfoV4Flag_IsSeparated = (1 << 1), // func has separate code segment
@@ -196,7 +196,7 @@ enum MSCRT_FuncInfoV4Flags : U8
   MSCRT_FuncInfoV4Flag_Reserved    = (1 << 7)
 }
 
-enum MSCRT_UnwindMapV4Type : U32
+enum MSCRT_UnwindMapV4Type : uint32
 {
   MSCRT_UnwindMapV4Type_NoUW             = 0, // no unwind action associated with this state
   MSCRT_UnwindMapV4Type_DtorWithObj      = 1, // dtor with an object offset
@@ -212,7 +212,7 @@ enum
 }
 
 #define MSCRT__EH_HANDLER_V4_FLAGS_EXTRACT_CONT_TYPE(x) (((x) & MSCRT_EhHandlerV4Flag_ContVOffMask) >> MSVC_CRTHandlerV4Flag_ContVOffShift)
-enum MSCRT_EhHandlerV4Flags : U8
+enum MSCRT_EhHandlerV4Flags : uint8
 {
   MSCRT_EhHandlerV4Flag_Adjectives   = (1 << 0), // set if adjectives are present
   MSCRT_EhHandlerV4Flag_DispType     = (1 << 1), // set if type descriptors are present
@@ -227,82 +227,82 @@ struct MSCRT_EhHandlerTypeV4
 {
   MSCRT_EhHandlerV4Flags   flags;
   MSCRT_EhHandlerTypeFlags adjectives;
-  S32                      type_voff;
-  U32                      catch_obj_voff;
-  S32                      catch_code_voff;
-  U64                      catch_funclet_cont_addr[2];
-  U32                      catch_funclet_cont_addr_count;
+  int32                      type_voff;
+  uint32                      catch_obj_voff;
+  int32                      catch_code_voff;
+  uint64                      catch_funclet_cont_addr[2];
+  uint32                      catch_funclet_cont_addr_count;
 }
 
 struct MSCRT_EhHandlerTypeV4Array
 {
-  U64                    count;
+  uint64                    count;
   MSCRT_EhHandlerTypeV4* v;
 }
 
 struct MSCRT_TryBlockMap32V4
 {
-  U32 try_low;
-  U32 try_high;
-  U32 catch_high;
-  S32 handler_array_voff;
+  uint32 try_low;
+  uint32 try_high;
+  uint32 catch_high;
+  int32 handler_array_voff;
 }
 
 struct MSCRT_IP2State32V4
 {
-  U32  count;
-  U32* voffs;
-  S32* states;
+  uint32  count;
+  uint32* voffs;
+  int32* states;
 }
 
 struct MSCRT_SepIPState32V4
 {
-  S32 func_start_voff;
-  S32 ip_map_voff;
+  int32 func_start_voff;
+  int32 ip_map_voff;
 }
 
 struct MSCRT_FuncInfo32V4
 {
   MSCRT_FuncInfoV4Flags header;
-  U32                   bbt_flags;
-  S32                   unwind_map_voff;
-  S32                   try_block_map_voff;
-  S32                   ip_to_state_map_voff;
-  S32                   wrt_frame_establisher_voff; // used only in catch funclets
+  uint32                   bbt_flags;
+  int32                   unwind_map_voff;
+  int32                   try_block_map_voff;
+  int32                   ip_to_state_map_voff;
+  int32                   wrt_frame_establisher_voff; // used only in catch funclets
 }
 
 struct MSCRT_UnwindEntryV4
 {
   MSCRT_UnwindMapV4Type type;
-  S32                   action;
-  U32                   object;
-  U32                   next_off;
+  int32                   action;
+  uint32                   object;
+  uint32                   next_off;
 }
 
 struct MSCRT_UnwindMapV4
 {
-  U32                  count;
+  uint32                  count;
   MSCRT_UnwindEntryV4* v;
 }
 
 struct MSCRT_TryBlockMapV4
 {
-  U32                        try_low;
-  U32                        try_high;
-  U32                        catch_high;
+  uint32                        try_low;
+  uint32                        try_high;
+  uint32                        catch_high;
   MSCRT_EhHandlerTypeV4Array handlers;
 }
 
 struct MSCRT_TryBlockMapV4Array
 {
-  U64                  count;
+  uint64                  count;
   MSCRT_TryBlockMapV4* v;
 }
 
 struct MSCRT_ParsedFuncInfoV4
 {
   MSCRT_FuncInfoV4Flags    header;
-  U32                      bbt_flags;
+  uint32                      bbt_flags;
   MSCRT_UnwindMapV4        unwind_map;
   MSCRT_TryBlockMapV4Array try_block_map;
   MSCRT_IP2State32V4       ip2state_map;
@@ -310,17 +310,17 @@ struct MSCRT_ParsedFuncInfoV4
 
 //- Exception info < v4
 
-U64 mscrt_parse_func_info(Arena* arena, String8 raw_data, U64 section_count, COFF_SectionHeader* sections, U64 off, MSCRT_FuncInfo* func_info);
+uint64 mscrt_parse_func_info(Arena* arena, String8 raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, MSCRT_FuncInfo* func_info);
 
 //- Exception info v4
 
-U64 mscrt_parse_handler_type_v4       (String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4* handler);
-U64 mscrt_parse_unwind_v4_entry       (String8 raw_data, U64 offset, MSCRT_UnwindEntryV4* entry_out);
-U64 mscrt_parse_handler_type_v4_array (Arena* arena, String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4Array* array_out);
-U64 mscrt_parse_unwind_map_v4         (Arena* arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4* map_out);
-U64 mscrt_parse_try_block_map_array_v4(Arena* arena, String8 raw_data, U64 off, U64 section_count, COFF_SectionHeader* sections, U64 func_voff, MSCRT_TryBlockMapV4Array* map_out);
-U64 mscrt_parse_ip2state_map_v4       (Arena* arena, String8 raw_data, U64 off, U64 func_voff, MSCRT_IP2State32V4* ip2state_map_out);
-U64 mscrt_parse_func_info_v4          (Arena* arena, String8 raw_data, U64 section_count, COFF_SectionHeader* sections, U64 off, U64 func_voff, MSCRT_ParsedFuncInfoV4* func_info_out);
+uint64 mscrt_parse_handler_type_v4       (String8 raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4* handler);
+uint64 mscrt_parse_unwind_v4_entry       (String8 raw_data, uint64 offset, MSCRT_UnwindEntryV4* entry_out);
+uint64 mscrt_parse_handler_type_v4_array (Arena* arena, String8 raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4Array* array_out);
+uint64 mscrt_parse_unwind_map_v4         (Arena* arena, String8 raw_data, uint64 off, MSCRT_UnwindMapV4* map_out);
+uint64 mscrt_parse_try_block_map_array_v4(Arena* arena, String8 raw_data, uint64 off, uint64 section_count, COFF_SectionHeader* sections, uint64 func_voff, MSCRT_TryBlockMapV4Array* map_out);
+uint64 mscrt_parse_ip2state_map_v4       (Arena* arena, String8 raw_data, uint64 off, uint64 func_voff, MSCRT_IP2State32V4* ip2state_map_out);
+uint64 mscrt_parse_func_info_v4          (Arena* arena, String8 raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, uint64 func_voff, MSCRT_ParsedFuncInfoV4* func_info_out);
 
 #endif // MSVC_CRT
 

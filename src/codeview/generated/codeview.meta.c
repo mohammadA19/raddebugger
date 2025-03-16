@@ -393,21 +393,21 @@ case CV_BasicType_FBASICSTR:{result = str8_lit("");}break;
 case CV_BasicType_NOTTRANS:{result = str8_lit("");}break;
 case CV_BasicType_HRESULT:{result = str8_lit("HRESULT");}break;
 case CV_BasicType_CHAR:{result = str8_lit("char");}break;
-case CV_BasicType_SHORT:{result = str8_lit("S16");}break;
-case CV_BasicType_LONG:{result = str8_lit("S32");}break;
-case CV_BasicType_QUAD:{result = str8_lit("S64");}break;
+case CV_BasicType_SHORT:{result = str8_lit("int16");}break;
+case CV_BasicType_LONG:{result = str8_lit("int32");}break;
+case CV_BasicType_QUAD:{result = str8_lit("int64");}break;
 case CV_BasicType_OCT:{result = str8_lit("S128");}break;
 case CV_BasicType_UCHAR:{result = str8_lit("UCHAR");}break;
-case CV_BasicType_USHORT:{result = str8_lit("U16");}break;
-case CV_BasicType_ULONG:{result = str8_lit("U32");}break;
-case CV_BasicType_UQUAD:{result = str8_lit("U64");}break;
+case CV_BasicType_USHORT:{result = str8_lit("uint16");}break;
+case CV_BasicType_ULONG:{result = str8_lit("uint32");}break;
+case CV_BasicType_UQUAD:{result = str8_lit("uint64");}break;
 case CV_BasicType_UOCT:{result = str8_lit("U128");}break;
 case CV_BasicType_BOOL8:{result = str8_lit("B8");}break;
 case CV_BasicType_BOOL16:{result = str8_lit("B16");}break;
 case CV_BasicType_BOOL32:{result = str8_lit("B32");}break;
 case CV_BasicType_BOOL64:{result = str8_lit("B64");}break;
-case CV_BasicType_FLOAT32:{result = str8_lit("F32");}break;
-case CV_BasicType_FLOAT64:{result = str8_lit("F64");}break;
+case CV_BasicType_FLOAT32:{result = str8_lit("float");}break;
+case CV_BasicType_FLOAT64:{result = str8_lit("double");}break;
 case CV_BasicType_FLOAT80:{result = str8_lit("F80");}break;
 case CV_BasicType_FLOAT128:{result = str8_lit("F128");}break;
 case CV_BasicType_FLOAT48:{result = str8_lit("F48");}break;
@@ -420,16 +420,16 @@ case CV_BasicType_COMPLEX128:{result = str8_lit("ComplexF128");}break;
 case CV_BasicType_BIT:{result = str8_lit("");}break;
 case CV_BasicType_PASCHAR:{result = str8_lit("");}break;
 case CV_BasicType_BOOL32FF:{result = str8_lit("B32FF");}break;
-case CV_BasicType_INT8:{result = str8_lit("S8");}break;
-case CV_BasicType_UINT8:{result = str8_lit("U8");}break;
+case CV_BasicType_INT8:{result = str8_lit("int8");}break;
+case CV_BasicType_UINT8:{result = str8_lit("uint8");}break;
 case CV_BasicType_RCHAR:{result = str8_lit("char");}break;
 case CV_BasicType_WCHAR:{result = str8_lit("WCHAR");}break;
-case CV_BasicType_INT16:{result = str8_lit("S16");}break;
-case CV_BasicType_UINT16:{result = str8_lit("U16");}break;
-case CV_BasicType_INT32:{result = str8_lit("S32");}break;
-case CV_BasicType_UINT32:{result = str8_lit("U32");}break;
-case CV_BasicType_INT64:{result = str8_lit("S64");}break;
-case CV_BasicType_UINT64:{result = str8_lit("U64");}break;
+case CV_BasicType_INT16:{result = str8_lit("int16");}break;
+case CV_BasicType_UINT16:{result = str8_lit("uint16");}break;
+case CV_BasicType_INT32:{result = str8_lit("int32");}break;
+case CV_BasicType_UINT32:{result = str8_lit("uint32");}break;
+case CV_BasicType_INT64:{result = str8_lit("int64");}break;
+case CV_BasicType_UINT64:{result = str8_lit("uint64");}break;
 case CV_BasicType_INT128:{result = str8_lit("S128");}break;
 case CV_BasicType_UINT128:{result = str8_lit("U128");}break;
 case CV_BasicType_CHAR16:{result = str8_lit("CHAR16");}break;
@@ -585,10 +585,10 @@ case CV_LeafKind_STRUCT2:{result = str8_lit("STRUCT2");}break;
 return result;
 }
 
-U64
+uint64
 cv_header_struct_size_from_sym_kind(CV_SymKind v)
 {
-U64 result = 0;
+uint64 result = 0;
 switch(v)
 {
 default:{}break;
@@ -664,10 +664,10 @@ case CV_SymKind_INLINEES:{result = sizeof(CV_SymInlinees);}break;
 }
 return result;
 }
-U64
+uint64
 cv_header_struct_size_from_leaf_kind(CV_LeafKind v)
 {
-U64 result = 0;
+uint64 result = 0;
 switch(v)
 {
 default:{}break;

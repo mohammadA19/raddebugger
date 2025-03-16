@@ -4,27 +4,27 @@
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-U16
-safe_cast_u16(U32 x)
+uint16
+safe_cast_u16(uint32 x)
 {
   AssertAlways(x <= max_U16);
-  U16 result = (U16)x;
+  uint16 result = (uint16)x;
   return result;
 }
 
-U32
-safe_cast_u32(U64 x)
+uint32
+safe_cast_u32(uint64 x)
 {
   AssertAlways(x <= max_U32);
-  U32 result = (U32)x;
+  uint32 result = (uint32)x;
   return result;
 }
 
-S32
-safe_cast_s32(S64 x)
+int32
+safe_cast_s32(int64 x)
 {
   AssertAlways(x <= max_S32);
-  S32 result = (S32)x;
+  int32 result = (int32)x;
   return result;
 }
 
@@ -39,7 +39,7 @@ u128_zero()
 }
 
 U128
-u128_make(U64 v0, U64 v1)
+u128_make(uint64 v0, uint64 v1)
 {
   U128 v = {v0, v1};
   return v;
@@ -54,14 +54,14 @@ u128_match(U128 a, U128 b)
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-U32
-u32_from_u64_saturate(U64 x){
-  U32 x32 = (x > max_U32)?max_U32:(U32)x;
+uint32
+u32_from_u64_saturate(uint64 x){
+  uint32 x32 = (x > max_U32)?max_U32:(uint32)x;
   return(x32);
 }
 
-U64
-u64_up_to_pow2(U64 x){
+uint64
+u64_up_to_pow2(uint64 x){
   if (x == 0){
     x = 1;
   }
@@ -78,59 +78,59 @@ u64_up_to_pow2(U64 x){
   return(x);
 }
 
-S32
-extend_sign32(U32 x, U32 size){
-  U32 high_bit = size * 8;
-  U32 shift = 32 - high_bit;
-  S32 result = ((S32)x << shift) >> shift;
+int32
+extend_sign32(uint32 x, uint32 size){
+  uint32 high_bit = size * 8;
+  uint32 shift = 32 - high_bit;
+  int32 result = ((int32)x << shift) >> shift;
   return result;
 }
 
-S64
-extend_sign64(U64 x, U64 size){
-  U64 high_bit = size * 8;
-  U64 shift = 64 - high_bit;
-  S64 result = ((S64)x << shift) >> shift;
+int64
+extend_sign64(uint64 x, uint64 size){
+  uint64 high_bit = size * 8;
+  uint64 shift = 64 - high_bit;
+  int64 result = ((int64)x << shift) >> shift;
   return result;
 }
 
-F32
+float
 inf32(){
-  union { U32 u; F32 f; } x;
+  union { uint32 u; float f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
-F32
+float
 neg_inf32(){
-  union { U32 u; F32 f; } x;
+  union { uint32 u; float f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
 }
 
-U16
-bswap_u16(U16 x)
+uint16
+bswap_u16(uint16 x)
 {
-  U16 result = (((x & 0xFF00) >> 8) |
+  uint16 result = (((x & 0xFF00) >> 8) |
                 ((x & 0x00FF) << 8));
   return result;
 }
 
-U32
-bswap_u32(U32 x)
+uint32
+bswap_u32(uint32 x)
 {
-  U32 result = (((x & 0xFF000000) >> 24) |
+  uint32 result = (((x & 0xFF000000) >> 24) |
                 ((x & 0x00FF0000) >> 8)  |
                 ((x & 0x0000FF00) << 8)  |
                 ((x & 0x000000FF) << 24));
   return result;
 }
 
-U64
-bswap_u64(U64 x)
+uint64
+bswap_u64(uint64 x)
 {
   // TODO(nick): naive bswap, replace with something that is faster like an intrinsic
-  U64 result = (((x & 0xFF00000000000000ULL) >> 56) |
+  uint64 result = (((x & 0xFF00000000000000ULL) >> 56) |
                 ((x & 0x00FF000000000000ULL) >> 40) |
                 ((x & 0x0000FF0000000000ULL) >> 24) |
                 ((x & 0x000000FF00000000ULL) >> 8)  |
@@ -143,50 +143,50 @@ bswap_u64(U64 x)
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 
-U64
-count_bits_set16(U16 val)
+uint64
+count_bits_set16(uint16 val)
 {
   return __popcnt16(val);
 }
 
-U64
-count_bits_set32(U32 val)
+uint64
+count_bits_set32(uint32 val)
 {
   return __popcnt(val);
 }
 
-U64
-count_bits_set64(U64 val)
+uint64
+count_bits_set64(uint64 val)
 {
   return __popcnt64(val);
 }
 
-U64
-ctz32(U32 mask)
+uint64
+ctz32(uint32 mask)
 {
   unsigned long idx;
   _BitScanForward(&idx, mask);
   return idx;
 }
 
-U64
-ctz64(U64 mask)
+uint64
+ctz64(uint64 mask)
 {
   unsigned long idx;
   _BitScanForward64(&idx, mask);
   return idx;
 }
 
-U64
-clz32(U32 mask)
+uint64
+clz32(uint32 mask)
 {
   unsigned long idx;
   _BitScanReverse(&idx, mask);
   return 31 - idx;
 }
 
-U64
-clz64(U64 mask)
+uint64
+clz64(uint64 mask)
 {
   unsigned long idx;
   _BitScanReverse64(&idx, mask);
@@ -195,43 +195,43 @@ clz64(U64 mask)
 
 #elif COMPILER_CLANG || COMPILER_GCC
 
-U64
-count_bits_set16(U16 val)
+uint64
+count_bits_set16(uint16 val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-count_bits_set32(U32 val)
+uint64
+count_bits_set32(uint32 val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-count_bits_set64(U64 val)
+uint64
+count_bits_set64(uint64 val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-ctz32(U32 val)
+uint64
+ctz32(uint32 val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-clz32(U32 val)
+uint64
+clz32(uint32 val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-clz64(U64 val)
+uint64
+clz64(uint64 val)
 {
   NotImplemented;
   return 0;
@@ -244,12 +244,12 @@ clz64(U64 val)
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-S32
+int32
 sign_from_side_S32(Side side){
   return((side == Side_Min)?-1:1);
 }
 
-F32
+float
 sign_from_side_F32(Side side){
   return((side == Side_Min)?-1.f:1.f);
 }
@@ -258,18 +258,18 @@ sign_from_side_F32(Side side){
 //~ rjf: Memory Functions
 
 B32
-memory_is_zero(void* ptr, U64 size){
+memory_is_zero(void* ptr, uint64 size){
   B32 result = 1;
   
   // break down size
-  U64 extra = (size&0x7);
-  U64 count8 = (size >> 3);
+  uint64 extra = (size&0x7);
+  uint64 count8 = (size >> 3);
   
   // check with 8-byte stride
-  U64* p64 = (U64*)ptr;
+  uint64* p64 = (uint64*)ptr;
   if(result)
   {
-    for (U64 i = 0; i < count8; i += 1, p64 += 1){
+    for (uint64 i = 0; i < count8; i += 1, p64 += 1){
       if (*p64 != 0){
         result = 0;
         goto done;
@@ -280,8 +280,8 @@ memory_is_zero(void* ptr, U64 size){
   // check extra
   if(result)
   {
-    U8* p8 = (U8*)p64;
-    for (U64 i = 0; i < extra; i += 1, p8 += 1){
+    uint8* p8 = (uint8*)p64;
+    for (uint64 i = 0; i < extra; i += 1, p8 += 1){
       if (*p8 != 0){
         result = 0;
         goto done;
@@ -297,7 +297,7 @@ memory_is_zero(void* ptr, U64 size){
 //~ rjf: Text 2D Coordinate/Range Functions
 
 TxtPt
-txt_pt(S64 line, S64 column)
+txt_pt(int64 line, int64 column)
 {
   TxtPt p = {0};
   p.line = line;
@@ -398,11 +398,11 @@ txt_rng_contains(TxtRng r, TxtPt pt)
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-U64
+uint64
 bit_size_from_arch(Architecture arch)
 {
   // TODO(rjf): metacode
-  U64 arch_bitsize = 0;
+  uint64 arch_bitsize = 0;
   switch(arch)
   {
     case Architecture_x64:   arch_bitsize = 64; break;
@@ -414,7 +414,7 @@ bit_size_from_arch(Architecture arch)
   return arch_bitsize;
 }
 
-U64
+uint64
 max_instruction_size_from_arch(Architecture arch)
 {
   // TODO(rjf): make this real
@@ -500,12 +500,12 @@ date_time_from_dense_time(DenseTime time){
   result.mon  = time%12;
   time /= 12;
   Assert(time <= max_U32);
-  result.year = (U32)time;
+  result.year = (uint32)time;
   return(result);
 }
 
 DateTime
-date_time_from_micro_seconds(U64 time){
+date_time_from_micro_seconds(uint64 time){
   DateTime result = {0};
   result.micro_sec = time%1000;
   time /= 1000;
@@ -522,41 +522,41 @@ date_time_from_micro_seconds(U64 time){
   result.mon = time%12;
   time /= 12;
   Assert(time <= max_U32);
-  result.year = (U32)time;
+  result.year = (uint32)time;
   return(result);
 }
 
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-U64
-ring_write(U8* ring_base, U64 ring_size, U64 ring_pos, void* src_data, U64 src_data_size)
+uint64
+ring_write(uint8* ring_base, uint64 ring_size, uint64 ring_pos, void* src_data, uint64 src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
-    U64 ring_off = ring_pos%ring_size;
-    U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
-    U64 pst_split_bytes = src_data_size-pre_split_bytes;
+    uint64 ring_off = ring_pos%ring_size;
+    uint64 bytes_before_split = ring_size-ring_off;
+    uint64 pre_split_bytes = Min(bytes_before_split, src_data_size);
+    uint64 pst_split_bytes = src_data_size-pre_split_bytes;
     void* pre_split_data = src_data;
-    void* pst_split_data = ((U8 *)src_data + pre_split_bytes);
+    void* pst_split_data = ((uint8 *)src_data + pre_split_bytes);
     MemoryCopy(ring_base+ring_off, pre_split_data, pre_split_bytes);
     MemoryCopy(ring_base+0, pst_split_data, pst_split_bytes);
   }
   return src_data_size;
 }
 
-U64
-ring_read(U8* ring_base, U64 ring_size, U64 ring_pos, void* dst_data, U64 read_size)
+uint64
+ring_read(uint8* ring_base, uint64 ring_size, uint64 ring_pos, void* dst_data, uint64 read_size)
 {
   Assert(read_size <= ring_size);
   {
-    U64 ring_off = ring_pos%ring_size;
-    U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, read_size);
-    U64 pst_split_bytes = read_size-pre_split_bytes;
+    uint64 ring_off = ring_pos%ring_size;
+    uint64 bytes_before_split = ring_size-ring_off;
+    uint64 pre_split_bytes = Min(bytes_before_split, read_size);
+    uint64 pst_split_bytes = read_size-pre_split_bytes;
     MemoryCopy(dst_data, ring_base+ring_off, pre_split_bytes);
-    MemoryCopy((U8 *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);
+    MemoryCopy((uint8 *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);
   }
   return read_size;
 }

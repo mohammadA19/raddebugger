@@ -27,18 +27,18 @@ dmn_ctrl_exclusive_access_end()
 {
 }
 
-U32
+uint32
 dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
 {
 }
 
 B32
-dmn_ctrl_attach(DMN_CtrlCtx* ctx, U32 pid)
+dmn_ctrl_attach(DMN_CtrlCtx* ctx, uint32 pid)
 {
 }
 
 B32
-dmn_ctrl_kill(DMN_CtrlCtx* ctx, DMN_Handle process, U32 exit_code)
+dmn_ctrl_kill(DMN_CtrlCtx* ctx, DMN_Handle process, uint32 exit_code)
 {
 }
 
@@ -56,7 +56,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
 //~ rjf: @dmn_os_hooks Halting (Implemented Per-OS)
 
 void
-dmn_halt(U64 code, U64 user_data)
+dmn_halt(uint64 code, uint64 user_data)
 {
 }
 
@@ -65,17 +65,17 @@ dmn_halt(U64 code, U64 user_data)
 
 //- rjf: run/memory/register counters
 
-U64
+uint64
 dmn_run_gen()
 {
 }
 
-U64
+uint64
 dmn_mem_gen()
 {
 }
 
-U64
+uint64
 dmn_reg_gen()
 {
 }
@@ -94,32 +94,32 @@ dmn_access_close()
 
 //- rjf: processes
 
-U64
-dmn_process_memory_reserve(DMN_Handle process, U64 vaddr, U64 size)
+uint64
+dmn_process_memory_reserve(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 void
-dmn_process_memory_commit(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_commit(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 void
-dmn_process_memory_decommit(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_decommit(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 void
-dmn_process_memory_release(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_release(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 void
-dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFlags flags)
+dmn_process_memory_protect(DMN_Handle process, uint64 vaddr, uint64 size, OS_AccessFlags flags)
 {
 }
 
-U64
+uint64
 dmn_process_read(DMN_Handle process, Rng1U64 range, void* dst)
 {
 }
@@ -136,12 +136,12 @@ dmn_arch_from_thread(DMN_Handle handle)
 {
 }
 
-U64
+uint64
 dmn_stack_base_vaddr_from_thread(DMN_Handle handle)
 {
 }
 
-U64
+uint64
 dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
 {
 }

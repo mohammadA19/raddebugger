@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum FP_RasterFlags : U32
+enum FP_RasterFlags : uint32
 {
   FP_RasterFlag_Smooth = (1<<0),
   FP_RasterFlag_Hinted = (1<<1),
@@ -17,23 +17,23 @@ enum FP_RasterFlags : U32
 
 struct FP_Handle
 {
-  U64 u64[2];
+  uint64 u64[2];
 }
 
 struct FP_Metrics
 {
-  F32 design_units_per_em;
-  F32 ascent;
-  F32 descent;
-  F32 line_gap;
-  F32 capital_height;
+  float design_units_per_em;
+  float ascent;
+  float descent;
+  float line_gap;
+  float capital_height;
 }
 
 struct FP_RasterResult
 {
   Vec2S16 atlas_dim;
   void* atlas;
-  F32 advance;
+  float advance;
 }
 
 ////////////////////////////////
@@ -50,6 +50,6 @@ fp_hook FP_Handle fp_font_open(String8 path);
 fp_hook FP_Handle fp_font_open_from_static_data_string(String8* data_ptr);
 fp_hook void fp_font_close(FP_Handle handle);
 fp_hook FP_Metrics fp_metrics_from_font(FP_Handle font);
-fp_hook NO_ASAN FP_RasterResult fp_raster(Arena* arena, FP_Handle font, F32 size, FP_RasterFlags flags, String8 string);
+fp_hook NO_ASAN FP_RasterResult fp_raster(Arena* arena, FP_Handle font, float size, FP_RasterFlags flags, String8 string);
 
 #endif // FONT_PROVIDER_H

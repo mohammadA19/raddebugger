@@ -33,24 +33,24 @@ struct LNK_Reloc
   struct LNK_Reloc*  next;
   LNK_Chunk*         chunk;
   LNK_RelocType      type;
-  U64                apply_off;
+  uint64                apply_off;
   struct LNK_Symbol* symbol;
 }
 
 struct LNK_RelocList
 {
-  U64        count;
+  uint64        count;
   LNK_Reloc* first;
   LNK_Reloc* last;
 }
 
-LNK_Reloc *      lnk_reloc_list_reserve(Arena* arena, LNK_RelocList* list, U64 count);
+LNK_Reloc *      lnk_reloc_list_reserve(Arena* arena, LNK_RelocList* list, uint64 count);
 LNK_Reloc *      lnk_reloc_list_push(Arena* arena, LNK_RelocList* list);
 LNK_RelocList    lnk_reloc_list_copy(Arena* arena, LNK_RelocList* list);
 void             lnk_reloc_list_concat_in_place(LNK_RelocList* list, LNK_RelocList* to_concat);
-void             lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, U64 count);
-LNK_RelocList ** lnk_make_reloc_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count);
+void             lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, uint64 count);
+LNK_RelocList ** lnk_make_reloc_list_arr_arr(Arena* arena, uint64 slot_count, uint64 per_count);
 LNK_Reloc **     lnk_reloc_array_from_list(Arena* arena, LNK_RelocList list);
-LNK_RelocType    lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type);
-U32              lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type);
+LNK_RelocType    lnk_ext_reloc_type_from_coff(COFF_MachineType machine, uint32 type);
+uint32              lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type);
 

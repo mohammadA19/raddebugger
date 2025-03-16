@@ -23,7 +23,7 @@ struct D_Target
 struct D_TargetArray
 {
   D_Target* v;
-  U64 count;
+  uint64 count;
 }
 
 struct D_Breakpoint
@@ -31,14 +31,14 @@ struct D_Breakpoint
   String8 file_path;
   TxtPt pt;
   String8 symbol_name;
-  U64 vaddr;
+  uint64 vaddr;
   String8 condition;
 }
 
 struct D_BreakpointArray
 {
   D_Breakpoint* v;
-  U64 count;
+  uint64 count;
 }
 
 struct D_PathMap
@@ -50,7 +50,7 @@ struct D_PathMap
 struct D_PathMapArray
 {
   D_PathMap* v;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -78,8 +78,8 @@ struct D_Event
   D_EventKind kind;
   D_EventCause cause;
   CTRL_Handle thread;
-  U64 vaddr;
-  U64 code;
+  uint64 vaddr;
+  uint64 code;
 }
 
 struct D_EventNode
@@ -92,7 +92,7 @@ struct D_EventList
 {
   D_EventNode* first;
   D_EventNode* last;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -116,13 +116,13 @@ struct D_LineList
 {
   D_LineNode* first;
   D_LineNode* last;
-  U64 count;
+  uint64 count;
 }
 
 struct D_LineListArray
 {
   D_LineList* v;
-  U64 count;
+  uint64 count;
   DI_KeyList dbgi_keys;
 }
 
@@ -145,7 +145,7 @@ enum D_RunKind
 ////////////////////////////////
 //~ rjf: View Rules
 
-enum D_ViewRuleSpecInfoFlags : U32 // NOTE(rjf): see @view_rule_info
+enum D_ViewRuleSpecInfoFlags : uint32 // NOTE(rjf): see @view_rule_info
 {
   D_ViewRuleSpecInfoFlag_Inherited      = (1<<0),
   D_ViewRuleSpecInfoFlag_Expandable     = (1<<1),
@@ -165,7 +165,7 @@ struct D_ViewRuleSpecInfo
 struct D_ViewRuleSpecInfoArray
 {
   D_ViewRuleSpecInfo* v;
-  U64 count;
+  uint64 count;
 }
 
 struct D_ViewRuleSpec
@@ -186,10 +186,10 @@ struct D_CmdParams
   String8 string;
   String8 file_path;
   TxtPt cursor;
-  U64 vaddr;
+  uint64 vaddr;
   B32 prefer_disasm;
-  U32 pid;
-  U32 rgba;
+  uint32 pid;
+  uint32 rgba;
   D_TargetArray targets;
 }
 
@@ -210,7 +210,7 @@ struct D_CmdList
 {
   D_CmdNode* first;
   D_CmdNode* last;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -222,8 +222,8 @@ struct D_UnwindCacheNode
 {
   D_UnwindCacheNode* next;
   D_UnwindCacheNode* prev;
-  U64 reggen;
-  U64 memgen;
+  uint64 reggen;
+  uint64 memgen;
   Arena* arena;
   CTRL_Handle thread;
   CTRL_Unwind unwind;
@@ -237,7 +237,7 @@ struct D_UnwindCacheSlot
 
 struct D_UnwindCache
 {
-  U64 slots_count;
+  uint64 slots_count;
   D_UnwindCacheSlot* slots;
   D_UnwindCacheNode* free_node;
 }
@@ -248,9 +248,9 @@ struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode* hash_next;
   CTRL_Handle process;
-  U64 root_vaddr;
-  U64 rip_vaddr;
-  U64 tls_base_vaddr;
+  uint64 root_vaddr;
+  uint64 rip_vaddr;
+  uint64 tls_base_vaddr;
 }
 
 struct D_RunTLSBaseCacheSlot
@@ -262,7 +262,7 @@ struct D_RunTLSBaseCacheSlot
 struct D_RunTLSBaseCache
 {
   Arena* arena;
-  U64 slots_count;
+  uint64 slots_count;
   D_RunTLSBaseCacheSlot* slots;
 }
 
@@ -272,7 +272,7 @@ struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode* hash_next;
   DI_Key dbgi_key;
-  U64 voff;
+  uint64 voff;
   E_String2NumMap* locals_map;
 }
 
@@ -285,7 +285,7 @@ struct D_RunLocalsCacheSlot
 struct D_RunLocalsCache
 {
   Arena* arena;
-  U64 table_size;
+  uint64 table_size;
   D_RunLocalsCacheSlot* table;
 }
 
@@ -296,8 +296,8 @@ struct D_State
 {
   // rjf: top-level state
   Arena* arena;
-  U64 frame_index;
-  U64 frame_eval_memread_endt_us;
+  uint64 frame_index;
+  uint64 frame_eval_memread_endt_us;
   
   // rjf: commands
   Arena* cmds_arena;
@@ -308,25 +308,25 @@ struct D_State
   
   // rjf: per-run caches
   D_UnwindCache unwind_cache;
-  U64 tls_base_cache_reggen_idx;
-  U64 tls_base_cache_memgen_idx;
+  uint64 tls_base_cache_reggen_idx;
+  uint64 tls_base_cache_memgen_idx;
   D_RunTLSBaseCache tls_base_caches[2];
-  U64 tls_base_cache_gen;
-  U64 locals_cache_reggen_idx;
+  uint64 tls_base_cache_gen;
+  uint64 locals_cache_reggen_idx;
   D_RunLocalsCache locals_caches[2];
-  U64 locals_cache_gen;
-  U64 member_cache_reggen_idx;
+  uint64 locals_cache_gen;
+  uint64 member_cache_reggen_idx;
   D_RunLocalsCache member_caches[2];
-  U64 member_cache_gen;
+  uint64 member_cache_gen;
   
   // rjf: view rule specification table
-  U64 view_rule_spec_table_size;
+  uint64 view_rule_spec_table_size;
   D_ViewRuleSpec** view_rule_spec_table;
   
   // rjf: user -> ctrl driving state
   Arena* ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
-  U64 ctrl_last_run_frame_idx;
+  uint64 ctrl_last_run_frame_idx;
   CTRL_Handle ctrl_last_run_thread_handle;
   CTRL_RunFlags ctrl_last_run_flags;
   CTRL_TrapList ctrl_last_run_traps;
@@ -353,10 +353,10 @@ static D_State* d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64 d_hash_from_seed_string(U64 seed, String8 string);
-U64 d_hash_from_string(String8 string);
-U64 d_hash_from_seed_string__case_insensitive(U64 seed, String8 string);
-U64 d_hash_from_string__case_insensitive(String8 string);
+uint64 d_hash_from_seed_string(uint64 seed, String8 string);
+uint64 d_hash_from_string(String8 string);
+uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string);
+uint64 d_hash_from_string__case_insensitive(String8 string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
@@ -399,28 +399,28 @@ CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena* arena, CTRL_Entity* 
 //~ rjf: Debug Info Lookups
 
 //- rjf: voff|vaddr -> symbol lookups
-String8 d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, U64 voff, B32 decorated);
-String8 d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, U64 vaddr, B32 decorated);
+String8 d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B32 decorated);
+String8 d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vaddr, B32 decorated);
 
 //- rjf: symbol -> voff lookups
-U64 d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name);
-U64 d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, String8 name);
+uint64 d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name);
+uint64 d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, String8 name);
 
 //- rjf: voff -> line info
-D_LineList d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, U64 voff);
+D_LineList d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff);
 
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
 D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
 D_LineListArray d_lines_array_from_file_path_line_range(Arena* arena, String8 file_path, Rng1S64 line_num_range);
-D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, String8 file_path, S64 line_num);
-D_LineList d_lines_from_file_path_line_num(Arena* arena, String8 file_path, S64 line_num);
+D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, String8 file_path, int64 line_num);
+D_LineList d_lines_from_file_path_line_num(Arena* arena, String8 file_path, int64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
 
-U64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, U64 root_vaddr, U64 rip_vaddr);
+uint64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, uint64 rip_vaddr);
 
 ////////////////////////////////
 //~ rjf: Target Controls
@@ -432,11 +432,11 @@ CTRL_Event d_ctrl_last_stop_event();
 //~ rjf: Main State Accessors/Mutators
 
 //- rjf: frame data
-U64 d_frame_index();
+uint64 d_frame_index();
 
 //- rjf: control state
 D_RunKind d_ctrl_last_run_kind();
-U64 d_ctrl_last_run_frame_idx();
+uint64 d_ctrl_last_run_frame_idx();
 B32 d_ctrl_targets_running();
 
 //- rjf: active entity based queries
@@ -444,11 +444,11 @@ DI_KeyList d_push_active_dbgi_key_list(Arena* arena);
 
 //- rjf: per-run caches
 CTRL_Unwind d_query_cached_unwind_from_thread(CTRL_Entity* thread);
-U64 d_query_cached_rip_from_thread(CTRL_Entity* thread);
-U64 d_query_cached_rip_from_thread_unwind(CTRL_Entity* thread, U64 unwind_count);
-U64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, U64 root_vaddr, U64 rip_vaddr);
-E_String2NumMap* d_query_cached_locals_map_from_dbgi_key_voff(DI_Key* dbgi_key, U64 voff);
-E_String2NumMap* d_query_cached_member_map_from_dbgi_key_voff(DI_Key* dbgi_key, U64 voff);
+uint64 d_query_cached_rip_from_thread(CTRL_Entity* thread);
+uint64 d_query_cached_rip_from_thread_unwind(CTRL_Entity* thread, uint64 unwind_count);
+uint64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, uint64 rip_vaddr);
+E_String2NumMap* d_query_cached_locals_map_from_dbgi_key_voff(DI_Key* dbgi_key, uint64 voff);
+E_String2NumMap* d_query_cached_member_map_from_dbgi_key_voff(DI_Key* dbgi_key, uint64 voff);
 
 //- rjf: top-level command dispatch
 void d_push_cmd(D_CmdKind kind, D_CmdParams* params);
@@ -461,6 +461,6 @@ B32 d_next_cmd(D_Cmd** cmd);
 //~ rjf: Main Layer Top-Level Calls
 
 void d_init();
-D_EventList d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_PathMapArray* path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray* meta_evals);
+D_EventList d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_PathMapArray* path_maps, uint64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64], CTRL_MetaEvalArray* meta_evals);
 
 #endif // DBG_ENGINE_CORE_H

@@ -17,7 +17,7 @@ enum LogMsgKind
 struct LogScope
 {
   LogScope* next;
-  U64 pos;
+  uint64 pos;
   String8List strings[LogMsgKind_COUNT];
 }
 

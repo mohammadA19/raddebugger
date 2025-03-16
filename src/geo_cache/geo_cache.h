@@ -14,10 +14,10 @@ struct GEO_Node
   U128 hash;
   R_Handle buffer;
   B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  uint64 scope_ref_count;
+  uint64 last_time_touched_us;
+  uint64 last_user_clock_idx_touched;
+  uint64 load_count;
 }
 
 struct GEO_Slot
@@ -66,17 +66,17 @@ struct GEO_Shared
   Arena* arena;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  uint64 slots_count;
+  uint64 stripes_count;
   GEO_Slot* slots;
   GEO_Stripe* stripes;
   GEO_Node** stripes_free_nodes;
   
   // rjf: user -> xfer thread
-  U64 u2x_ring_size;
-  U8* u2x_ring_base;
-  U64 u2x_ring_write_pos;
-  U64 u2x_ring_read_pos;
+  uint64 u2x_ring_size;
+  uint8* u2x_ring_base;
+  uint64 u2x_ring_write_pos;
+  uint64 u2x_ring_read_pos;
   OS_Handle u2x_ring_cv;
   OS_Handle u2x_ring_mutex;
   
@@ -116,7 +116,7 @@ R_Handle geo_buffer_from_key(GEO_Scope* scope, U128 key);
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-B32 geo_u2x_enqueue_req(U128 hash, U64 endt_us);
+B32 geo_u2x_enqueue_req(U128 hash, uint64 endt_us);
 void geo_u2x_dequeue_req(U128* hash_out);
 ASYNC_WORK_DEF(geo_xfer_work);
 

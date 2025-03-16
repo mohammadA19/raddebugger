@@ -22,22 +22,22 @@ struct E_TokenChunkNode
 {
   E_TokenChunkNode* next;
   E_Token* v;
-  U64 count;
-  U64 cap;
+  uint64 count;
+  uint64 cap;
 }
 
 struct E_TokenChunkList
 {
   E_TokenChunkNode* first;
   E_TokenChunkNode* last;
-  U64 node_count;
-  U64 total_count;
+  uint64 node_count;
+  uint64 total_count;
 }
 
 struct E_TokenArray
 {
   E_Token* v;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -70,13 +70,13 @@ struct E_String2NumMapNode
   E_String2NumMapNode* order_next;
   E_String2NumMapNode* hash_next;
   String8 string;
-  U64 num;
+  uint64 num;
 }
 
 struct E_String2NumMapNodeArray
 {
   E_String2NumMapNode** v;
-  U64 count;
+  uint64 count;
 }
 
 struct E_String2NumMapSlot
@@ -87,8 +87,8 @@ struct E_String2NumMapSlot
 
 struct E_String2NumMap
 {
-  U64 slots_count;
-  U64 node_count;
+  uint64 slots_count;
+  uint64 node_count;
   E_String2NumMapSlot* slots;
   E_String2NumMapNode* first;
   E_String2NumMapNode* last;
@@ -101,7 +101,7 @@ struct E_String2ExprMapNode
   E_String2ExprMapNode* hash_next;
   String8 string;
   E_Expr* expr;
-  U64 poison_count;
+  uint64 poison_count;
 }
 
 struct E_String2ExprMapSlot
@@ -112,7 +112,7 @@ struct E_String2ExprMapSlot
 
 struct E_String2ExprMap
 {
-  U64 slots_count;
+  uint64 slots_count;
   E_String2ExprMapSlot* slots;
 }
 
@@ -122,13 +122,13 @@ struct E_String2ExprMap
 struct E_ParseCtx
 {
   // rjf: instruction pointer info
-  U64 ip_vaddr;
-  U64 ip_voff;
+  uint64 ip_vaddr;
+  uint64 ip_voff;
   E_Space ip_thread_space;
   
   // rjf: modules
   E_Module* modules;
-  U64 modules_count;
+  uint64 modules_count;
   E_Module* primary_module;
   
   // rjf: local identifier resolution maps
@@ -160,15 +160,15 @@ thread_static E_ParseCtx* e_parse_ctx = 0;
 //~ rjf: Basic Map Functions
 
 //- rjf: string -> num
-E_String2NumMap e_string2num_map_make(Arena* arena, U64 slot_count);
-void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, String8 string, U64 num);
-U64 e_num_from_string(E_String2NumMap* map, String8 string);
+E_String2NumMap e_string2num_map_make(Arena* arena, uint64 slot_count);
+void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, String8 string, uint64 num);
+uint64 e_num_from_string(E_String2NumMap* map, String8 string);
 E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena* arena, E_String2NumMap* map);
 int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b);
 void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array);
 
 //- rjf: string -> expr
-E_String2ExprMap e_string2expr_map_make(Arena* arena, U64 slot_count);
+E_String2ExprMap e_string2expr_map_make(Arena* arena, uint64 slot_count);
 void e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, String8 string, E_Expr* expr);
 void e_string2expr_map_inc_poison(E_String2ExprMap* map, String8 string);
 void e_string2expr_map_dec_poison(E_String2ExprMap* map, String8 string);
@@ -177,15 +177,15 @@ E_Expr* e_string2expr_lookup(E_String2ExprMap* map, String8 string);
 ////////////////////////////////
 //~ rjf: Debug-Info-Driven Map Building Functions
 
-E_String2NumMap* e_push_locals_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, U64 voff);
-E_String2NumMap* e_push_member_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, U64 voff);
+E_String2NumMap* e_push_locals_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, uint64 voff);
+E_String2NumMap* e_push_member_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, uint64 voff);
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
 #define e_token_at_it(it, arr) (((it) < (arr)->v+(arr)->count) ? (*(it)) : e_token_zero())
 E_Token e_token_zero();
-void e_token_chunk_list_push(Arena* arena, E_TokenChunkList* list, U64 chunk_size, E_Token* token);
+void e_token_chunk_list_push(Arena* arena, E_TokenChunkList* list, uint64 chunk_size, E_Token* token);
 E_TokenArray e_token_array_from_chunk_list(Arena* arena, E_TokenChunkList* list);
 E_TokenArray e_token_array_from_text(Arena* arena, String8 text);
 E_TokenArray e_token_array_make_first_opl(E_Token* first, E_Token* opl);
@@ -195,7 +195,7 @@ E_TokenArray e_token_array_make_first_opl(E_Token* first, E_Token* opl);
 
 E_ParseCtx* e_selected_parse_ctx();
 void e_select_parse_ctx(E_ParseCtx* ctx);
-U32 e_parse_ctx_module_idx_from_rdi(RDI_Parsed* rdi);
+uint32 e_parse_ctx_module_idx_from_rdi(RDI_Parsed* rdi);
 
 ////////////////////////////////
 //~ rjf: Expression Tree Building Functions
@@ -207,7 +207,7 @@ void e_expr_remove_child(E_Expr* parent, E_Expr* child);
 E_Expr* e_expr_ref(Arena* arena, E_Expr* ref);
 E_Expr* e_expr_ref_addr(Arena* arena, E_Expr* rhs);
 E_Expr* e_expr_ref_member_access(Arena* arena, E_Expr* lhs, String8 member_name);
-E_Expr* e_expr_ref_array_index(Arena* arena, E_Expr* lhs, U64 index);
+E_Expr* e_expr_ref_array_index(Arena* arena, E_Expr* lhs, uint64 index);
 E_Expr* e_expr_ref_deref(Arena* arena, E_Expr* rhs);
 E_Expr* e_expr_ref_cast(Arena* arena, E_TypeKey type_key, E_Expr* rhs);
 E_Expr* e_expr_ref_bswap(Arena* arena, E_Expr* rhs);
@@ -225,7 +225,7 @@ E_TypeKey e_leaf_type_from_name(String8 name);
 E_TypeKey e_type_from_expr(E_Expr* expr);
 void e_push_leaf_ident_exprs_from_expr__in_place(Arena* arena, E_String2ExprMap* map, E_Expr* expr);
 E_Parse e_parse_type_from_text_tokens(Arena* arena, String8 text, E_TokenArray* tokens);
-E_Parse e_parse_expr_from_text_tokens__prec(Arena* arena, String8 text, E_TokenArray* tokens, S64 max_precedence);
+E_Parse e_parse_expr_from_text_tokens__prec(Arena* arena, String8 text, E_TokenArray* tokens, int64 max_precedence);
 E_Parse e_parse_expr_from_text_tokens(Arena* arena, String8 text, E_TokenArray* tokens);
 E_Expr* e_parse_expr_from_text(Arena* arena, String8 text);
 

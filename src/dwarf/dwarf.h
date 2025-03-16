@@ -4,7 +4,7 @@
 #ifndef DWARF_H
 #define DWARF_H
 
-typedef U16 DW_Version;
+typedef uint16 DW_Version;
 enum DW_VersionEnum
 {
   DW_Version_Null,
@@ -16,7 +16,7 @@ enum DW_VersionEnum
   DW_Version_Last = DW_Version_5
 }
 
-typedef U64 DW_Ext;
+typedef uint64 DW_Ext;
 enum DW_ExtEnum
 {
   DW_Ext_Null,
@@ -56,7 +56,7 @@ enum DW_Mode
   X(LineStr,    ".debug_linestr",    "__debug_linestr",    ".debug_linestr.dwo"    ) \
   X(Names,      ".debug_names",      "__debug_names",      ".debug_names.dwo"      )
 
-typedef U64 DW_SectionKind;
+typedef uint64 DW_SectionKind;
 enum DW_SectionKindEnum
 {
 #define X(_N,...) DW_Section_##_N,
@@ -109,7 +109,7 @@ enum DW_SectionKindEnum
   X(SunAssembler,        0x9001) \
   X(BorlandDelphi,       0xB000)
 
-typedef U32 DW_Language;
+typedef uint32 DW_Language;
 enum DW_LanguageEnum
 {
 #define X(_N, _ID) DW_Language_##_N = _ID,
@@ -247,7 +247,7 @@ enum DW_NameCase
   X(GNU_CallSite,          0x4109) \
   X(GNU_CallSiteParameter, 0x410a)
 
-typedef U64 DW_TagKind;
+typedef uint64 DW_TagKind;
 enum DW_TagKindEnum
 {
 #define X(_N,_ID) DW_Tag_##_N = _ID,
@@ -284,7 +284,7 @@ enum DW_TagKindEnum
   X(StrOffsetsPtr, 15)             \
   X(AddrPtr,       16)
 
-typedef U32 DW_AttribClass;
+typedef uint32 DW_AttribClass;
 enum DW_AttribClassEnum
 {
 #define X(_N,_ID) DW_AttribClass_##_N = (1 << _ID),
@@ -447,7 +447,7 @@ enum DW_AttribClassEnum
   X(Addrx3,        DW_AttribClass_Address)       \
   X(Addrx4,        DW_AttribClass_Address)
 
-typedef U64 DW_FormKind;
+typedef uint64 DW_FormKind;
 enum DW_FormEnum
 {
   DW_Form_Null,
@@ -1125,7 +1125,7 @@ enum DW_FormEnum
   X(MIPS_AssumedShapeDopeType,  DW_AttribClass_Reference) \
   X(MIPS_AssumedSize,           DW_AttribClass_Reference)
 
-typedef U32 DW_AttribKind;
+typedef uint32 DW_AttribKind;
 enum DW_AttribKindEnum
 {
   DW_Attrib_Null,
@@ -1164,7 +1164,7 @@ enum DW_AttribKindEnum
   X(Ucs,            0x11)                  \
   X(Ascii,          0x12)
 
-typedef U64 DW_AttribTypeEncodingKind;
+typedef uint64 DW_AttribTypeEncodingKind;
 enum DW_AttribTypeEncodingKindEnum
 {
 #define X(_N,_ID) DW_AttribTypeEncodingKind_##_N = _ID,
@@ -1179,7 +1179,7 @@ enum DW_AttribTypeEncodingKindEnum
   X(DW_CallingConvention_PassByValue,     0x1) \
   X(DW_CallingConvention_PassByReference, 0x2)
 
-typedef U64 DW_CallingConventionKind;
+typedef uint64 DW_CallingConventionKind;
 enum DW_CallingConventionKindEnum
 {
 #define X(_N,_ID) DW_CallingConventionKind_##_N = _ID,
@@ -1192,7 +1192,7 @@ enum DW_CallingConventionKindEnum
   X(DW_Access_Private,   0x01) \
   X(DW_Access_Protected, 0x02)
   
-typedef U64 DW_AccessKind;
+typedef uint64 DW_AccessKind;
 enum DW_AccessKindEnum
 {
 #define X(_N,_ID) DW_AccessKind_##_N = _ID,
@@ -1205,7 +1205,7 @@ enum DW_AccessKindEnum
   X(Virtual,     0x01)             \
   X(PureVirtual, 0x02)
 
-typedef U64 DW_VirtualityKind;
+typedef uint64 DW_VirtualityKind;
 enum DW_VirtualityEnum
 {
 #define X(_N,_ID) DW_VirtualityKind_##_N = _ID,
@@ -1223,7 +1223,7 @@ enum DW_VirtualityEnum
   X(StartEnd,     0x06)        \
   X(StartLength,  0x07)
 
-typedef U64 DW_RngListEntryKind;
+typedef uint64 DW_RngListEntryKind;
 enum DW_RngListEntryKindEnum
 {
 #define X(_N,_ID) DW_RngListEntryKind_##_N = _ID,
@@ -1242,7 +1242,7 @@ enum DW_RngListEntryKindEnum
   X(StartEnd,        0x07)       \
   X(StartLength,     0x08)
 
-typedef U64 DW_LocListEntryKind;
+typedef uint64 DW_LocListEntryKind;
 enum DW_LocListEntryEnum
 {
 #define X(_N,_ID) DW_LocListEntryKind_##_N = _ID,
@@ -1259,7 +1259,7 @@ enum DW_LocListEntryEnum
   X(SplitCompile, 5)             \
   X(SplitType,    6)
 
-typedef U8 DW_CompUnitKind;
+typedef uint8 DW_CompUnitKind;
 enum DW_CompUnitKindEnum
 {
 #define X(_N, _ID) DW_CompUnitKind_##_N = _ID,
@@ -1310,7 +1310,7 @@ enum DW_LNCT
   X(Offset,            0x80)  \
   X(Restore,           0xC0)
 
-typedef U8 DW_CFA;
+typedef uint8 DW_CFA;
 enum DW_CFAEnum
 {
 #define X(_N, _ID) DW_CFA_##_N = _ID,
@@ -1322,7 +1322,7 @@ enum DW_CFAEnum
   DW_CFA_OplKind2 = DW_CFA_Restore,
 }
 
-enum DW_CFAMask : U8
+enum DW_CFAMask : uint8
 {
   //  kind1:  opcode: [0,5] zeroes:[6,7]; kind2:  operand:[0,5] opcode:[6,7] 
   DW_CFAMask_OpcodeHi = 0xC0,
@@ -1507,7 +1507,7 @@ enum DW_CFAMask : U8
 #define DW_Expr_GNU_XList(X)  \
   X(GNU_PushTlsAddress, 0xe0) \
   X(GNU_UnInit,         0xf0)
-typedef U64 DW_ExprOp;
+typedef uint64 DW_ExprOp;
 enum DW_ExprOpEnum
 {
 #define X(_N, _ID) DW_ExprOp_##_N = _ID,
@@ -1630,7 +1630,7 @@ enum DW_ExprOpEnum
   X(Tr,      62, nil,    0, 0)  \
   X(Ldtr,    63, nil,    0, 0)
 
-typedef U32 DW_RegX86;
+typedef uint32 DW_RegX86;
 enum DW_RegX86Enum
 {
 #define X(_N,_ID,...) DW_Reg_x86_##_N = _ID,
@@ -1638,7 +1638,7 @@ enum DW_RegX86Enum
 #undef X
 }
 
-typedef U32 DW_RegX64;
+typedef uint32 DW_RegX64;
 enum DW_RegX64Enum
 {
 #define X(_N,_ID,...) DW_Reg_x64_##_N = _ID,
@@ -1678,7 +1678,7 @@ String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
 
 ////////////////////////////////
 
-U64 dw_offset_size_from_mode(DW_Mode mode);
+uint64 dw_offset_size_from_mode(DW_Mode mode);
 
 ////////////////////////////////
 

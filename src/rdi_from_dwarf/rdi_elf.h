@@ -14,37 +14,37 @@
 #define ELF_NIDENT 16
 
 struct ELF_Ehdr32{
-  U8  e_ident[ELF_NIDENT];
-  U16 e_type;
-  U16 e_machine;
-  U32 e_version;
-  U32 e_entry;
-  U32 e_phoff;
-  U32 e_shoff;
-  U32 e_flags;
-  U16 e_ehsize;
-  U16 e_phentsize;
-  U16 e_phnum;
-  U16 e_shentsize;
-  U16 e_shnum;
-  U16 e_shstrndx;
+  uint8  e_ident[ELF_NIDENT];
+  uint16 e_type;
+  uint16 e_machine;
+  uint32 e_version;
+  uint32 e_entry;
+  uint32 e_phoff;
+  uint32 e_shoff;
+  uint32 e_flags;
+  uint16 e_ehsize;
+  uint16 e_phentsize;
+  uint16 e_phnum;
+  uint16 e_shentsize;
+  uint16 e_shnum;
+  uint16 e_shstrndx;
 }
 
 struct ELF_Ehdr64{
-  U8  e_ident[ELF_NIDENT];
-  U16 e_type;
-  U16 e_machine;
-  U32 e_version;
-  U64 e_entry;
-  U64 e_phoff;
-  U64 e_shoff;
-  U32 e_flags;
-  U16 e_ehsize;
-  U16 e_phentsize;
-  U16 e_phnum;
-  U16 e_shentsize;
-  U16 e_shnum;
-  U16 e_shstrndx;
+  uint8  e_ident[ELF_NIDENT];
+  uint16 e_type;
+  uint16 e_machine;
+  uint32 e_version;
+  uint64 e_entry;
+  uint64 e_phoff;
+  uint64 e_shoff;
+  uint32 e_flags;
+  uint16 e_ehsize;
+  uint16 e_phentsize;
+  uint16 e_phnum;
+  uint16 e_shentsize;
+  uint16 e_shnum;
+  uint16 e_shstrndx;
 }
 
 enum ELF_Type{
@@ -162,7 +162,7 @@ enum ELF_Identification{
   ELF_Identification_PAD = 9,
 }
 
-read_only static U8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
+read_only static uint8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
 
 enum ELF_Class{
   ELF_Class_NONE = 0,
@@ -208,29 +208,29 @@ enum ELF_ReservedSectionIndex{
 }
 
 struct ELF_Shdr32{
-  U32 sh_name;
-  U32 sh_type;
-  U32 sh_flags;
-  U32 sh_addr;
-  U32 sh_offset;
-  U32 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U32 sh_addralign;
-  U32 sh_entsize;
+  uint32 sh_name;
+  uint32 sh_type;
+  uint32 sh_flags;
+  uint32 sh_addr;
+  uint32 sh_offset;
+  uint32 sh_size;
+  uint32 sh_link;
+  uint32 sh_info;
+  uint32 sh_addralign;
+  uint32 sh_entsize;
 }
 
 struct ELF_Shdr64{
-  U32 sh_name;
-  U32 sh_type;
-  U64 sh_flags;
-  U64 sh_addr;
-  U64 sh_offset;
-  U64 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U64 sh_addralign;
-  U64 sh_entsize;
+  uint32 sh_name;
+  uint32 sh_type;
+  uint64 sh_flags;
+  uint64 sh_addr;
+  uint64 sh_offset;
+  uint64 sh_size;
+  uint32 sh_link;
+  uint32 sh_info;
+  uint64 sh_addralign;
+  uint64 sh_entsize;
 }
 
 //  X(name, code)
@@ -293,21 +293,21 @@ enum ELF_ReservedSymbolTableIndex{
 // symbol table
 
 struct ELF_Sym32{
-  U32 st_name;
-  U32 st_value;
-  U32 st_size;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
+  uint32 st_name;
+  uint32 st_value;
+  uint32 st_size;
+  uint8  st_info;
+  uint8  st_other;
+  uint16 st_shndx;
 }
 
 struct ELF_Sym64{
-  U32 st_name;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
-  U64 st_value;
-  U64 st_size;
+  uint32 st_name;
+  uint8  st_info;
+  uint8  st_other;
+  uint16 st_shndx;
+  uint64 st_value;
+  uint64 st_size;
 }
 
 #define ELF_SymBindingFromInfo(x) (ELF_SymbolBinding)((x)>>4)
@@ -366,25 +366,25 @@ enum ELF_SymbolVisibility{
 // relocation
 
 struct ELF_Rel32{
-  U32 r_offset;
-  U32 r_info;
+  uint32 r_offset;
+  uint32 r_info;
 }
 
 struct ELF_Rela32{
-  U32 r_offset;
-  U32 r_info;
-  S32 r_addend;
+  uint32 r_offset;
+  uint32 r_info;
+  int32 r_addend;
 }
 
 struct ELF_Rel64{
-  U64 r_offset;
-  U64 r_info;
+  uint64 r_offset;
+  uint64 r_info;
 }
 
 struct ELF_Rela64{
-  U64 r_offset;
-  U64 r_info;
-  S64 r_addend;
+  uint64 r_offset;
+  uint64 r_info;
+  int64 r_addend;
 }
 
 #define ELF_RelSymIndexFromInfo32(x) ((x)>>8)
@@ -400,25 +400,25 @@ struct ELF_Rela64{
 // program header
 
 struct ELF_Phdr32{
-  U32 p_type;
-  U32 p_offset;
-  U32 p_vaddr;
-  U32 p_paddr;
-  U32 p_filesz;
-  U32 p_memsz;
-  U32 p_flags;
-  U32 p_align;
+  uint32 p_type;
+  uint32 p_offset;
+  uint32 p_vaddr;
+  uint32 p_paddr;
+  uint32 p_filesz;
+  uint32 p_memsz;
+  uint32 p_flags;
+  uint32 p_align;
 }
 
 struct ELF_Phdr64{
-  U32 p_type;
-  U32 p_flags;
-  U64 p_offset;
-  U64 p_vaddr;
-  U64 p_paddr;
-  U64 p_filesz;
-  U64 p_memsz;
-  U64 p_align;
+  uint32 p_type;
+  uint32 p_flags;
+  uint64 p_offset;
+  uint64 p_vaddr;
+  uint64 p_paddr;
+  uint64 p_filesz;
+  uint64 p_memsz;
+  uint64 p_align;
 }
 
 enum ELF_SegmentType{
@@ -451,12 +451,12 @@ enum ELF_SegmentFlags{
 
 struct ELF_SectionArray{
   ELF_Shdr64* sections;
-  U64 count;
+  uint64 count;
 }
 
 struct ELF_SegmentArray{
   ELF_Phdr64* segments;
-  U64 count;
+  uint64 count;
 }
 
 struct ELF_Parsed{
@@ -466,28 +466,28 @@ struct ELF_Parsed{
   
   ELF_Shdr64* sections;
   String8* section_names;
-  U64 section_foff;
-  U64 section_count;
+  uint64 section_foff;
+  uint64 section_count;
   
   ELF_Phdr64* segments;
-  U64 segment_foff;
-  U64 segment_count;
+  uint64 segment_foff;
+  uint64 segment_count;
   
-  U64 vbase;
-  U64 entry_vaddr;
-  U64 section_name_table_foff;
-  U64 section_name_table_opl;
+  uint64 vbase;
+  uint64 entry_vaddr;
+  uint64 section_name_table_foff;
+  uint64 section_name_table_opl;
   
-  U64 strtab_idx;
-  U64 symtab_idx;
-  U64 dynsym_idx;
+  uint64 strtab_idx;
+  uint64 symtab_idx;
+  uint64 dynsym_idx;
 }
 
 // elf symtab
 
 struct ELF_SymArray{
   ELF_Sym64* symbols;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -499,11 +499,11 @@ static ELF_SectionArray elf_section_array_from_elf(ELF_Parsed* elf);
 static String8Array     elf_section_name_array_from_elf(ELF_Parsed* elf);
 static ELF_SegmentArray elf_segment_array_from_elf(ELF_Parsed* elf);
 
-static String8 elf_section_name_from_name_offset(ELF_Parsed* elf, U64 offset);
-static String8 elf_section_name_from_idx(ELF_Parsed* elf, U32 idx);
-static U32     elf_section_idx_from_name(ELF_Parsed* elf, String8 name);
+static String8 elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset);
+static String8 elf_section_name_from_idx(ELF_Parsed* elf, uint32 idx);
+static uint32     elf_section_idx_from_name(ELF_Parsed* elf, String8 name);
 
-static String8 elf_section_data_from_idx(ELF_Parsed* elf, U32 idx);
+static String8 elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx);
 
 static ELF_SymArray elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, String8 data);
 

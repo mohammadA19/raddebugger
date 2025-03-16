@@ -10,7 +10,7 @@ member_from_name(Type* type, String8 name)
   Member* member = &member_nil;
   if(type->members != 0 && name.size != 0)
   {
-    for(U64 idx = 0; idx < type->count; idx += 1)
+    for(uint64 idx = 0; idx < type->count; idx += 1)
     {
       if(str8_match(type->members[idx].name, name, 0))
       {
@@ -33,7 +33,7 @@ typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr)
   {
     RebaseTypeTask* next;
     Type* type;
-    U8* ptr;
+    uint8* ptr;
   };
   RebaseTypeTask start_task = {0, type, data.str};
   RebaseTypeTask* first_task = &start_task;
@@ -46,11 +46,11 @@ typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr)
       case TypeKind_Ptr:
       if(!(t->type->flags & TypeFlag_IsExternal))
       {
-        *(U64 *)t->ptr = ((U64)(*(U8 **)t->ptr - (U8 *)base_ptr));
+        *(uint64 *)t->ptr = ((uint64)(*(uint8 **)t->ptr - (uint8 *)base_ptr));
       }break;
       case TypeKind_Array:
       {
-        for(U64 idx = 0; idx < t->type->count; idx += 1)
+        for(uint64 idx = 0; idx < t->type->count; idx += 1)
         {
           RebaseTypeTask* task = push_array(scratch.arena, RebaseTypeTask, 1);
           task->type = t->type->direct;
@@ -60,7 +60,7 @@ typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr)
       }break;
       case TypeKind_Struct:
       {
-        for(U64 idx = 0; idx < t->type->count; idx += 1)
+        for(uint64 idx = 0; idx < t->type->count; idx += 1)
         {
           Member* member = &t->type->members[idx];
           RebaseTypeTask* task = push_array(scratch.arena, RebaseTypeTask, 1);
@@ -85,10 +85,10 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
     {
       SerializeTypeTask* next;
       Type* type;
-      U64 count;
-      U8* src;
+      uint64 count;
+      uint8* src;
       Type* containing_type;
-      U8* containing_ptr;
+      uint8* containing_ptr;
       B32 is_post_header;
     };
     SerializeTypeTask start_task = {0, type, 1, data.str};
@@ -110,7 +110,7 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
         {
           // rjf: unpack info about this pointer
           TypeSerializePtrRefInfo* ptr_ref_info = 0;
-          for(U64 idx = 0; idx < params->ptr_ref_infos_count; idx += 1)
+          for(uint64 idx = 0; idx < params->ptr_ref_infos_count; idx += 1)
           {
             if(params->ptr_ref_infos[idx].type == t->type->direct)
             {
@@ -122,18 +122,18 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
           // rjf: indexification -> subtract base, divide direct size, write index
           if(ptr_ref_info != 0 && ptr_ref_info->indexify_base != 0)
           {
-            U64 ptr_value = 0;
+            uint64 ptr_value = 0;
             MemoryCopy(&ptr_value, t->src, sizeof(ptr_value));
-            U64 ptr_write_value = ((U64)((U8 *)ptr_value - (U8 *)ptr_ref_info->indexify_base)/t->type->direct->size);
+            uint64 ptr_write_value = ((uint64)((uint8 *)ptr_value - (uint8 *)ptr_ref_info->indexify_base)/t->type->direct->size);
             str8_serial_push_struct(scratch.arena, &strings, &ptr_write_value);
           }
           
           // rjf: offsetification -> subtract base, write offsets
           else if(ptr_ref_info != 0 && ptr_ref_info->offsetify_base != 0)
           {
-            U64 ptr_value = 0;
+            uint64 ptr_value = 0;
             MemoryCopy(&ptr_value, t->src, sizeof(ptr_value));
-            U64 ptr_write_value = (U64)((U8 *)ptr_value - (U8 *)ptr_ref_info->offsetify_base);
+            uint64 ptr_write_value = (uint64)((uint8 *)ptr_value - (uint8 *)ptr_ref_info->offsetify_base);
             str8_serial_push_struct(scratch.arena, &strings, &ptr_write_value);
           }
           
@@ -157,7 +157,7 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
           else if(t->type->count_delimiter_name.size != 0 && t->is_post_header)
           {
             // rjf: determine count of this pointer
-            U64 count = 0;
+            uint64 count = 0;
             {
               Member* count_member = member_from_name(t->containing_type, t->type->count_delimiter_name);
               MemoryCopy(&count, t->containing_ptr + count_member->value, count_member->type->size);
@@ -195,10 +195,10 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
         //- rjf: struct -> descend to members
         case TypeKind_Struct:
         {
-          U64 off = 0;
-          for(U64 idx = 0; idx < t->count; idx += 1)
+          uint64 off = 0;
+          for(uint64 idx = 0; idx < t->count; idx += 1)
           {
-            for(U64 member_idx = 0; member_idx < t->type->count; member_idx += 1)
+            for(uint64 member_idx = 0; member_idx < t->type->count; member_idx += 1)
             {
               if(t->type->members[member_idx].flags & MemberFlag_DoNotSerialize)
               {
@@ -239,26 +239,26 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
 {
   String8 result = {0};
   result.size = type->size;
-  result.str  = push_array(arena, U8, result.size);
+  result.str  = push_array(arena, uint8, result.size);
   {
     Temp scratch = scratch_begin(&arena, 1);
     struct DeserializeTypeTask
     {
       DeserializeTypeTask* next;
       Type* type;
-      U64 count;
-      U8* dst;
+      uint64 count;
+      uint8* dst;
       Type* containing_type;
-      U8* containing_ptr;
+      uint8* containing_ptr;
       B32 is_post_header;
     };
-    U64 read_off = 0;
+    uint64 read_off = 0;
     DeserializeTypeTask start_task = {0, type, 1, result.str};
     DeserializeTypeTask* first_task = &start_task;
     DeserializeTypeTask* last_task = first_task;
     for(DeserializeTypeTask* t = first_task; t != 0; t = t->next)
     {
-      U8* t_src = data.str + read_off;
+      uint8* t_src = data.str + read_off;
       switch(t->type->kind)
       {
         //- rjf: leaf -> copy the data directly
@@ -274,7 +274,7 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
         {
           // rjf: unpack info about this pointer
           TypeSerializePtrRefInfo* ptr_ref_info = 0;
-          for(U64 idx = 0; idx < params->ptr_ref_infos_count; idx += 1)
+          for(uint64 idx = 0; idx < params->ptr_ref_infos_count; idx += 1)
           {
             if(params->ptr_ref_infos[idx].type == t->type->direct)
             {
@@ -286,9 +286,9 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
           // rjf: indexification -> add base, multiply direct size
           if(ptr_ref_info != 0 && ptr_ref_info->indexify_base != 0)
           {
-            U64 ptr_value = 0;
+            uint64 ptr_value = 0;
             MemoryCopy(&ptr_value, t_src, sizeof(ptr_value));
-            U64 ptr_write_value = (ptr_value + (U64)ptr_ref_info->indexify_base) * t->type->direct->size;
+            uint64 ptr_write_value = (ptr_value + (uint64)ptr_ref_info->indexify_base) * t->type->direct->size;
             MemoryCopy(t->dst, &ptr_write_value, sizeof(ptr_write_value));
             read_off += sizeof(ptr_value);
           }
@@ -296,9 +296,9 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
           // rjf: offsetification -> subtract base, write offsets
           else if(ptr_ref_info != 0 && ptr_ref_info->offsetify_base != 0)
           {
-            U64 ptr_value = 0;
+            uint64 ptr_value = 0;
             MemoryCopy(&ptr_value, t_src, sizeof(ptr_value));
-            U64 ptr_write_value = ptr_value + (U64)ptr_ref_info->offsetify_base;
+            uint64 ptr_write_value = ptr_value + (uint64)ptr_ref_info->offsetify_base;
             MemoryCopy(t->dst, &ptr_write_value, sizeof(ptr_write_value));
             read_off += sizeof(ptr_value);
           }
@@ -323,15 +323,15 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
           else if(t->type->count_delimiter_name.size != 0 && t->is_post_header)
           {
             // rjf: determine count of this pointer
-            U64 count = 0;
+            uint64 count = 0;
             {
               Member* count_member = member_from_name(t->containing_type, t->type->count_delimiter_name);
               MemoryCopy(&count, t->containing_ptr + count_member->value, count_member->type->size);
             }
             
             // rjf: allocate buffer for pointer destination; write address into pointer value slot
-            U64 ptr_dest_buffer_size = (count+1)*t->type->direct->size;
-            U8* ptr_dest_buffer = push_array(arena, U8, ptr_dest_buffer_size);
+            uint64 ptr_dest_buffer_size = (count+1)*t->type->direct->size;
+            uint8* ptr_dest_buffer = push_array(arena, uint8, ptr_dest_buffer_size);
             MemoryCopy(t->dst, &ptr_dest_buffer, sizeof(ptr_dest_buffer));
             
             // rjf: push task
@@ -367,9 +367,9 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
         //- rjf: struct -> descend to members
         case TypeKind_Struct:
         {
-          for(U64 idx = 0; idx < t->count; idx += 1)
+          for(uint64 idx = 0; idx < t->count; idx += 1)
           {
-            for(U64 member_idx = 0; member_idx < t->type->count; member_idx += 1)
+            for(uint64 member_idx = 0; member_idx < t->type->count; member_idx += 1)
             {
               if(t->type->members[member_idx].flags & MemberFlag_DoNotSerialize)
               {

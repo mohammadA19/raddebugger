@@ -14,19 +14,19 @@ ptg_init()
   ptg_shared->stripes_count = Min(ptg_shared->slots_count, os_get_system_info()->logical_processor_count);
   ptg_shared->slots = push_array(arena, PTG_GraphSlot, ptg_shared->slots_count);
   ptg_shared->stripes = push_array(arena, PTG_GraphStripe, ptg_shared->stripes_count);
-  for(U64 idx = 0; idx < ptg_shared->stripes_count; idx += 1)
+  for(uint64 idx = 0; idx < ptg_shared->stripes_count; idx += 1)
   {
     ptg_shared->stripes[idx].arena = arena_alloc();
     ptg_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     ptg_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   ptg_shared->u2b_ring_size = KB(64);
-  ptg_shared->u2b_ring_base = push_array_no_zero(arena, U8, ptg_shared->u2b_ring_size);
+  ptg_shared->u2b_ring_base = push_array_no_zero(arena, uint8, ptg_shared->u2b_ring_size);
   ptg_shared->u2b_ring_cv = os_condition_variable_alloc();
   ptg_shared->u2b_ring_mutex = os_mutex_alloc();
   ptg_shared->builder_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
   ptg_shared->builder_threads = push_array(arena, OS_Handle, ptg_shared->builder_thread_count);
-  for(U64 idx = 0; idx < ptg_shared->builder_thread_count; idx += 1)
+  for(uint64 idx = 0; idx < ptg_shared->builder_thread_count; idx += 1)
   {
     ptg_shared->builder_threads[idx] = os_thread_launch(ptg_builder_thread__entry_point, (void *)idx, 0);
   }
@@ -42,7 +42,7 @@ ptg_user_clock_tick()
   ins_atomic_u64_inc_eval(&ptg_shared->user_clock_idx);
 }
 
-U64
+uint64
 ptg_user_clock_idx()
 {
   return ins_atomic_u64_eval(&ptg_shared->user_clock_idx);
@@ -119,13 +119,13 @@ ptg_graph_from_key(PTG_Scope* scope, PTG_Key* key)
 //~ rjf: Transfer Threads
 
 B32
-ptg_u2b_enqueue_req(PTG_Key* key, U64 endt_us)
+ptg_u2b_enqueue_req(PTG_Key* key, uint64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = ptg_shared->u2b_ring_write_pos-ptg_shared->u2b_ring_read_pos;
-    U64 available_size = ptg_shared->u2b_ring_size-unconsumed_size;
+    uint64 unconsumed_size = ptg_shared->u2b_ring_write_pos-ptg_shared->u2b_ring_read_pos;
+    uint64 available_size = ptg_shared->u2b_ring_size-unconsumed_size;
     if(available_size >= sizeof(key))
     {
       good = 1;
@@ -150,7 +150,7 @@ ptg_u2b_dequeue_req(PTG_Key* key_out)
 {
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = ptg_shared->u2b_ring_write_pos-ptg_shared->u2b_ring_read_pos;
+    uint64 unconsumed_size = ptg_shared->u2b_ring_write_pos-ptg_shared->u2b_ring_read_pos;
     if(unconsumed_size >= sizeof(*key_out))
     {
       ptg_shared->u2b_ring_read_pos += ring_read_struct(ptg_shared->u2b_ring_base, ptg_shared->u2b_ring_size, ptg_shared->u2b_ring_read_pos, key_out);
@@ -173,8 +173,8 @@ ptg_builder_thread__entry_point(void* p)
     ptg_u2b_dequeue_req(&key);
     
     //- rjf: unpack hash
-    U64 slot_idx = key.root_hash.u64[1]%ptg_shared->slots_count;
-    U64 stripe_idx = slot_idx%ptg_shared->stripes_count;
+    uint64 slot_idx = key.root_hash.u64[1]%ptg_shared->slots_count;
+    uint64 stripe_idx = slot_idx%ptg_shared->stripes_count;
     PTG_GraphSlot* slot = &ptg_shared->slots[slot_idx];
     PTG_GraphStripe* stripe = &ptg_shared->stripes[stripe_idx];
     
@@ -226,13 +226,13 @@ ptg_evictor_thread__entry_point(void* p)
 {
   for(;;)
   {
-    U64 check_time_us = os_now_microseconds();
-    U64 check_time_user_clocks = ptg_user_clock_idx();
-    U64 evict_threshold_us = 10*1000000;
-    U64 evict_threshold_user_clocks = 10;
-    for(U64 slot_idx = 0; slot_idx < ptg_shared->slots_count; slot_idx += 1)
+    uint64 check_time_us = os_now_microseconds();
+    uint64 check_time_user_clocks = ptg_user_clock_idx();
+    uint64 evict_threshold_us = 10*1000000;
+    uint64 evict_threshold_user_clocks = 10;
+    for(uint64 slot_idx = 0; slot_idx < ptg_shared->slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%ptg_shared->stripes_count;
+      uint64 stripe_idx = slot_idx%ptg_shared->stripes_count;
       PTG_GraphSlot* slot = &ptg_shared->slots[slot_idx];
       PTG_GraphStripe* stripe = &ptg_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;

@@ -5,7 +5,7 @@
 
 struct MD5Hash
 {
-  U8 value[16];
+  uint8 value[16];
 }
 
 MD5Hash md5_hash_from_string(String8 data);

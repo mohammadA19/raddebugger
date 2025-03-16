@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Export Artifact Flags
 
-enum P2R_ConvertFlags : U32
+enum P2R_ConvertFlags : uint32
 {
   P2R_ConvertFlag_Strings                 = (1<<0),
   P2R_ConvertFlag_IndexRuns               = (1<<1),
@@ -127,16 +127,16 @@ struct P2R_CompUnitContributionsParseIn
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode* next;
-  U64 voff;
+  uint64 voff;
   String8 name;
 }
 
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode** buckets;
-  U64 buckets_count;
-  U64 bucket_collision_count;
-  U64 link_name_count;
+  uint64 buckets_count;
+  uint64 bucket_collision_count;
+  uint64 link_name_count;
 }
 
 //- rjf: normalized file path -> source file map
@@ -150,7 +150,7 @@ struct P2R_SrcFileNode
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode** slots;
-  U64 slots_count;
+  uint64 slots_count;
 }
 
 //- rjf: unit conversion tasks
@@ -231,8 +231,8 @@ struct P2R_SymbolStreamConvertIn
   CV_LeafParsed* tpi_leaf;
   CV_LeafParsed* ipi_leaf;
   CV_SymParsed* sym;
-  U64 sym_ranges_first;
-  U64 sym_ranges_opl;
+  uint64 sym_ranges_first;
+  uint64 sym_ranges_opl;
   CV_TypeId* itype_fwd_map;
   RDIM_Type** itype_type_ptrs;
   P2R_LinkNameMap* link_name_map;
@@ -355,7 +355,7 @@ struct P2R_JoinBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology* top;
   RDIM_BakeStringMapLoose** src_maps;
-  U64 src_maps_count;
+  uint64 src_maps_count;
   RDIM_BakeStringMapLoose* dst_map;
   Rng1U64 slot_idx_range;
 }
@@ -367,8 +367,8 @@ struct P2R_SortBakeStringMapSlotsIn
   RDIM_BakeStringMapTopology* top;
   RDIM_BakeStringMapLoose* src_map;
   RDIM_BakeStringMapLoose* dst_map;
-  U64 slot_idx;
-  U64 slot_count;
+  uint64 slot_idx;
+  uint64 slot_count;
 }
 
 //- rjf: OLD string map baking types
@@ -489,7 +489,7 @@ struct P2R_BakeIdxRunsIn
 struct P2R_State
 {
   Arena* arena;
-  U64 work_thread_arenas_count;
+  uint64 work_thread_arenas_count;
   Arena** work_thread_arenas;
 }
 
@@ -501,8 +501,8 @@ static P2R_State* p2r_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64 p2r_end_of_cplusplus_container_name(String8 str);
-U64 p2r_hash_from_voff(U64 voff);
+uint64 p2r_end_of_cplusplus_container_name(String8 str);
+uint64 p2r_hash_from_voff(uint64 voff);
 
 ////////////////////////////////
 //~ rjf: Command Line -> Conversion Inputs
@@ -525,9 +525,9 @@ RDI_TypeKind p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type);
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-RDIM_Location* p2r_location_from_addr_reg_off(Arena* arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
+RDIM_Location* p2r_location_from_addr_reg_off(Arena* arena, RDI_Arch arch, RDI_RegCode reg_code, uint32 reg_byte_size, uint32 reg_byte_pos, int64 offset, B32 extra_indirection);
 RDI_RegCode p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-void p2r_location_over_lvar_addr_range(Arena* arena, RDIM_ScopeChunkList* scopes, RDIM_LocationSet* locset, RDIM_Location* location, CV_LvarAddrRange* range, COFF_SectionHeader* section, CV_LvarAddrGap* gaps, U64 gap_count);
+void p2r_location_over_lvar_addr_range(Arena* arena, RDIM_ScopeChunkList* scopes, RDIM_LocationSet* locset, RDIM_Location* location, CV_LvarAddrRange* range, COFF_SectionHeader* section, CV_LvarAddrGap* gaps, uint64 gap_count);
 
 ////////////////////////////////
 //~ rjf: Initial Parsing & Preparation Pass Tasks

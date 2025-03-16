@@ -1,11 +1,11 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-U64
+uint64
 coff_align_size_from_section_flags(COFF_SectionFlags flags)
 {
-  U32 align = 0;
-  U32 align_index = COFF_SectionFlags_ExtractAlign(flags);
+  uint32 align = 0;
+  uint32 align_index = COFF_SectionFlags_ExtractAlign(flags);
   switch (align_index) {
     default: break;
     case 0:                           align = 1;    break; // alignment isn't specified, default to 1
@@ -28,7 +28,7 @@ coff_align_size_from_section_flags(COFF_SectionFlags flags)
 }
 
 COFF_SectionFlags
-coff_section_flag_from_align_size(U64 align)
+coff_section_flag_from_align_size(uint64 align)
 {
   COFF_SectionFlags flags = 0;
   switch (align) {
@@ -52,13 +52,13 @@ coff_section_flag_from_align_size(U64 align)
 }
 
 String8
-coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, U64 string_table_off)
+coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, uint64 string_table_off)
 {
   String8 name = str8_cstring_capped(header->name, header->name + sizeof(header->name));
   if (name.str[0] == '/') {
     String8 ascii_off    = str8_skip(name, 1);
-    U64     name_rel_off = u64_from_str8(ascii_off, 10);
-    U64     name_off     = name_rel_off + string_table_off;
+    uint64     name_rel_off = u64_from_str8(ascii_off, 10);
+    uint64     name_off     = name_rel_off + string_table_off;
     name = str8_cstring_capped(raw_coff.str + name_off, raw_coff.str + raw_coff.size);
   }
   return name;
@@ -77,7 +77,7 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
   //    H: Clang extension produced with /debug:ghash, array of type hashes
   *name_out    = full_name;
   *postfix_out = str8_lit("");
-  for (U64 i = 0; i < full_name.size; ++i) {
+  for (uint64 i = 0; i < full_name.size; ++i) {
     if (full_name.str[i] == '$') {
       *name_out    = str8(full_name.str, i);
       *postfix_out = str8(full_name.str + i + 1, full_name.size - i - 1);
@@ -94,14 +94,14 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
 }
 
 String8
-coff_read_symbol_name(String8 raw_coff, U64 string_table_off, COFF_SymbolName* name)
+coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName* name)
 {
   String8 name_str = str8_lit("");
   if (name->long_name.zeroes == 0) {
-    U64 name_string_off = string_table_off + name->long_name.string_table_offset;
+    uint64 name_string_off = string_table_off + name->long_name.string_table_offset;
     str8_deserial_read_cstr(raw_coff, name_string_off, &name_str);
   } else {
-    U32 i;
+    uint32 i;
     for (i = 0; i < sizeof(name->short_name); ++i) {
       if (name->short_name[i] == '\0') {
         break;
@@ -112,7 +112,7 @@ coff_read_symbol_name(String8 raw_coff, U64 string_table_off, COFF_SymbolName* n
   return name_str;
 }
 
-U64
+uint64
 coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x)
 {
   switch (x) {
@@ -140,7 +140,7 @@ coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x)
   return 0;
 }
 
-U64
+uint64
 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x)
 {
   switch (x) {
@@ -170,7 +170,7 @@ coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x)
   return 0;
 }
 
-U64
+uint64
 coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 {
   switch (machine) {
@@ -182,28 +182,28 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 }
 
 String8
-coff_make_import_lookup(Arena* arena, U16 hint, String8 name)
+coff_make_import_lookup(Arena* arena, uint16 hint, String8 name)
 {
-  U64 buffer_size = sizeof(hint) + (name.size + 1);
-  U8* buffer = push_array(arena, U8, buffer_size);
-  *(U16*)buffer = hint;
+  uint64 buffer_size = sizeof(hint) + (name.size + 1);
+  uint8* buffer = push_array(arena, uint8, buffer_size);
+  *(uint16*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
   String8 result = str8(buffer, buffer_size);
   return result;
 }
 
-U32
-coff_make_ordinal32(U16 hint)
+uint32
+coff_make_ordinal32(uint16 hint)
 {
-  U32 ordinal = (1 << 31) | hint;
+  uint32 ordinal = (1 << 31) | hint;
   return ordinal;
 }
 
-U64
-coff_make_ordinal64(U16 hint)
+uint64
+coff_make_ordinal64(uint16 hint)
 {
-  U64 ordinal = (1ULL << 63) | hint;
+  uint64 ordinal = (1ULL << 63) | hint;
   return ordinal;
 }
 
@@ -213,7 +213,7 @@ coff_make_import_header_by_name(Arena*            arena,
                                 COFF_MachineType  machine,
                                 COFF_TimeStamp    time_stamp,
                                 String8           name,
-                                U16               hint,
+                                uint16               hint,
                                 COFF_ImportType   type)
 {
   COFF_ImportHeaderFlags flags = 0;
@@ -231,19 +231,19 @@ coff_make_import_header_by_name(Arena*            arena,
   header.flags             = flags;
   
   // alloc memory
-  U64  buffer_size = sizeof(header) + header.data_size;
-  U8*  buffer      = push_array_no_zero(arena, U8, buffer_size);
+  uint64  buffer_size = sizeof(header) + header.data_size;
+  uint8*  buffer      = push_array_no_zero(arena, uint8, buffer_size);
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));
   
   // copy function name
-  U8* func_name = buffer + sizeof(header);
+  uint8* func_name = buffer + sizeof(header);
   MemoryCopy(func_name, name.str, name.size);
   func_name[name.size] = 0;
   
   // copy dll name
-  U8* dll_name_buffer = buffer + sizeof(header) + name.size + 1;
+  uint8* dll_name_buffer = buffer + sizeof(header) + name.size + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -256,7 +256,7 @@ coff_make_import_header_by_ordinal(Arena*             arena,
                                    String8            dll_name,
                                    COFF_MachineType   machine,
                                    COFF_TimeStamp     time_stamp,
-                                   U16                ordinal,
+                                   uint16                ordinal,
                                    COFF_ImportType    type)
 {
   COFF_ImportHeaderFlags flags = 0;
@@ -274,18 +274,18 @@ coff_make_import_header_by_ordinal(Arena*             arena,
   header.flags             = flags;
   
   // alloc memory
-  U64 buffer_size = sizeof(header) + header.data_size;
-  U8* buffer      = push_array_no_zero(arena, U8, buffer_size);
+  uint64 buffer_size = sizeof(header) + header.data_size;
+  uint8* buffer      = push_array_no_zero(arena, uint8, buffer_size);
   
   // copy header
   MemoryCopyStruct(buffer, &header);
   
   // no function name write zero
-  U8* func_name = buffer + sizeof(header);
+  uint8* func_name = buffer + sizeof(header);
   func_name[0]  = 0;
   
   // copy dll name
-  U8* dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
+  uint8* dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -293,10 +293,10 @@ coff_make_import_header_by_ordinal(Arena*             arena,
   return import_data;
 }
 
-U64
+uint64
 coff_word_size_from_machine(COFF_MachineType machine)
 {
-  U64 result = 0;
+  uint64 result = 0;
   switch (machine) {
   case COFF_Machine_X64: result = 8; break;
   case COFF_Machine_X86: result = 4; break;
@@ -304,10 +304,10 @@ coff_word_size_from_machine(COFF_MachineType machine)
   return result;
 }
 
-U64
+uint64
 coff_default_exe_base_from_machine(COFF_MachineType machine)
 {
-  U64 exe_base = 0;
+  uint64 exe_base = 0;
   switch (coff_word_size_from_machine(machine)) {
   case 4: exe_base = 0x400000;    break;
   case 8: exe_base = 0x140000000; break;
@@ -315,10 +315,10 @@ coff_default_exe_base_from_machine(COFF_MachineType machine)
   return exe_base;
 }
 
-U64
+uint64
 coff_default_dll_base_from_machine(COFF_MachineType machine)
 {
-  U64 dll_base = 0;
+  uint64 dll_base = 0;
   switch (coff_word_size_from_machine(machine)) {
   case 4: dll_base = 0x10000000;  break;
   case 8: dll_base = 0x180000000; break;
@@ -341,11 +341,11 @@ arch_from_coff_machine(COFF_MachineType machine)
   return result;
 }
 
-U64
-coff_foff_from_voff(COFF_SectionHeader* sections, U64 section_count, U64 voff)
+uint64
+coff_foff_from_voff(COFF_SectionHeader* sections, uint64 section_count, uint64 voff)
 {
-  U64 foff = 0;
-  for(U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
+  uint64 foff = 0;
+  for(uint64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
     COFF_SectionHeader* sect = &sections[sect_idx];
     if(sect->voff <= voff && voff < sect->voff+sect->vsize)

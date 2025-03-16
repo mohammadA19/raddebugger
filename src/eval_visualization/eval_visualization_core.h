@@ -9,8 +9,8 @@
 
 struct EV_Key
 {
-  U64 parent_hash;
-  U64 child_id;
+  uint64 parent_hash;
+  uint64 child_id;
 }
 
 ////////////////////////////////
@@ -44,9 +44,9 @@ struct EV_KeyViewRuleNode
   EV_KeyViewRuleNode* hash_next;
   EV_KeyViewRuleNode* hash_prev;
   EV_Key key;
-  U8* buffer;
-  U64 buffer_cap;
-  U64 buffer_string_size;
+  uint8* buffer;
+  uint64 buffer_cap;
+  uint64 buffer_string_size;
 }
 
 struct EV_KeyViewRuleSlot
@@ -61,10 +61,10 @@ struct EV_View
 {
   Arena* arena;
   EV_ExpandSlot* expand_slots;
-  U64 expand_slots_count;
+  uint64 expand_slots_count;
   EV_ExpandNode* free_expand_node;
   EV_KeyViewRuleSlot* key_view_rule_slots;
-  U64 key_view_rule_slots_count;
+  uint64 key_view_rule_slots_count;
   EV_KeyViewRuleNode* free_key_view_rule_node;
 }
 
@@ -86,7 +86,7 @@ struct EV_ViewRuleList
 {
   EV_ViewRuleNode* first;
   EV_ViewRuleNode* last;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -95,7 +95,7 @@ struct EV_ViewRuleList
 struct EV_ExpandInfo
 {
   void* user_data;
-  U64 row_count;
+  uint64 row_count;
   B32 single_item; // all rows form a single "item" - a singular, but large, row
   B32 add_new_row; // also supports an 'add new row', as the final row, within `row_count`
   B32 rows_default_expanded;
@@ -103,7 +103,7 @@ struct EV_ExpandInfo
 
 struct EV_ExpandRangeInfo
 {
-  U64 row_exprs_count;
+  uint64 row_exprs_count;
   String8* row_strings;
   String8* row_view_rules;
   E_Expr** row_exprs;
@@ -122,11 +122,11 @@ struct EV_ExpandRangeInfo
 #define EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(name) ev_view_rule_expr_expand_range_info__##name
 #define EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(name))
 
-#define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(name) U64 name(U64 num, void* user_data)
+#define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(name) uint64 name(uint64 num, void* user_data)
 #define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(name) ev_view_rule_expr_expand_id_from_num_##name
 #define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(name))
 
-#define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(name) U64 name(U64 id, void* user_data)
+#define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(name) uint64 name(uint64 id, void* user_data)
 #define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(name) ev_view_rule_expr_expand_num_from_id_##name
 #define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(name))
 
@@ -136,7 +136,7 @@ typedef EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_SIG(EV_ViewRuleExprExpandRa
 typedef EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(EV_ViewRuleExprExpandIDFromNumHookFunctionType);
 typedef EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(EV_ViewRuleExprExpandNumFromIDHookFunctionType);
 
-enum EV_ViewRuleInfoFlags : U32 // NOTE(rjf): see @view_rule_info
+enum EV_ViewRuleInfoFlags : uint32 // NOTE(rjf): see @view_rule_info
 {
   EV_ViewRuleInfoFlag_Inherited           = (1<<0),
   EV_ViewRuleInfoFlag_Expandable          = (1<<1),
@@ -168,7 +168,7 @@ struct EV_ViewRuleInfoSlot
 struct EV_ViewRuleInfoTable
 {
   EV_ViewRuleInfoSlot* slots;
-  U64 slots_count;
+  uint64 slots_count;
 }
 
 ////////////////////////////////
@@ -187,7 +187,7 @@ struct EV_Block
   EV_Key key;
   
   // rjf: split index, relative to parent's space
-  U64 split_relative_idx;
+  uint64 split_relative_idx;
   
   // rjf: expression / visualization info
   String8 string;
@@ -198,7 +198,7 @@ struct EV_Block
   void* expand_view_rule_info_user_data;
   
   // rjf: expansion info
-  U64 row_count;
+  uint64 row_count;
   B32 single_item;
   B32 rows_default_expanded;
 }
@@ -206,8 +206,8 @@ struct EV_Block
 struct EV_BlockTree
 {
   EV_Block* root;
-  U64 total_row_count;
-  U64 total_item_count;
+  uint64 total_row_count;
+  uint64 total_item_count;
 }
 
 struct EV_BlockRange
@@ -226,7 +226,7 @@ struct EV_BlockRangeList
 {
   EV_BlockRangeNode* first;
   EV_BlockRangeNode* last;
-  U64 count;
+  uint64 count;
 }
 
 ////////////////////////////////
@@ -241,9 +241,9 @@ struct EV_Row
   EV_Key key;
   
   // rjf: row size/scroll info
-  U64 visual_size;
-  U64 visual_size_skipped;
-  U64 visual_size_chopped;
+  uint64 visual_size;
+  uint64 visual_size_skipped;
+  uint64 visual_size_chopped;
   
   // rjf: expression / visualization info
   String8 string;
@@ -256,9 +256,9 @@ struct EV_WindowedRowList
 {
   EV_Row* first;
   EV_Row* last;
-  U64 count;
-  U64 count_before_visual;
-  U64 count_before_semantic;
+  uint64 count;
+  uint64 count_before_visual;
+  uint64 count_before_semantic;
 }
 
 ////////////////////////////////
@@ -276,13 +276,13 @@ struct EV_AutoViewRuleSlot
 {
   EV_AutoViewRuleNode* first;
   EV_AutoViewRuleNode* last;
-  U64 count;
+  uint64 count;
 }
 
 struct EV_AutoViewRuleTable
 {
   EV_AutoViewRuleSlot* slots;
-  U64 slots_count;
+  uint64 slots_count;
 }
 
 ////////////////////////////////
@@ -293,7 +293,7 @@ struct EV_AutoViewRuleTable
 ////////////////////////////////
 //~ rjf: String Generation Types
 
-enum EV_StringFlags : U32
+enum EV_StringFlags : uint32
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
   EV_StringFlag_PrettyNames          = (1<<1),
@@ -329,12 +329,12 @@ static read_only EV_Block ev_nil_block = {&ev_nil_block, &ev_nil_block, &ev_nil_
 ////////////////////////////////
 //~ rjf: Key Functions
 
-EV_Key ev_key_make(U64 parent_hash, U64 child_id);
+EV_Key ev_key_make(uint64 parent_hash, uint64 child_id);
 EV_Key ev_key_zero();
 EV_Key ev_key_root();
 B32 ev_key_match(EV_Key a, EV_Key b);
-U64 ev_hash_from_seed_string(U64 seed, String8 string);
-U64 ev_hash_from_key(EV_Key key);
+uint64 ev_hash_from_seed_string(uint64 seed, String8 string);
+uint64 ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Type Info Helpers
@@ -393,15 +393,15 @@ E_Expr* ev_resolved_from_expr(Arena* arena, E_Expr* expr, EV_ViewRuleList* view_
 
 EV_BlockTree ev_block_tree_from_expr(Arena* arena, EV_View* view, String8 filter, String8 string, E_Expr* expr, EV_ViewRuleList* view_rules);
 EV_BlockTree ev_block_tree_from_string(Arena* arena, EV_View* view, String8 filter, String8 string, EV_ViewRuleList* view_rules);
-U64 ev_depth_from_block(EV_Block* block);
+uint64 ev_depth_from_block(EV_Block* block);
 
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
 EV_BlockRangeList ev_block_range_list_from_tree(Arena* arena, EV_BlockTree* block_tree);
-EV_BlockRange ev_block_range_from_num(EV_BlockRangeList* block_ranges, U64 num);
-EV_Key ev_key_from_num(EV_BlockRangeList* block_ranges, U64 num);
-U64    ev_num_from_key(EV_BlockRangeList* block_ranges, EV_Key key);
+EV_BlockRange ev_block_range_from_num(EV_BlockRangeList* block_ranges, uint64 num);
+EV_Key ev_key_from_num(EV_BlockRangeList* block_ranges, uint64 num);
+uint64    ev_num_from_key(EV_BlockRangeList* block_ranges, EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Row Building
@@ -415,10 +415,10 @@ B32 ev_row_is_editable(EV_Row* row);
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-String8 ev_string_from_ascii_value(Arena* arena, U8 val);
-String8 ev_string_from_hresult_facility_code(U32 code);
-String8 ev_string_from_hresult_code(U32 code);
-String8 ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval);
+String8 ev_string_from_ascii_value(Arena* arena, uint8 val);
+String8 ev_string_from_hresult_facility_code(uint32 code);
+String8 ev_string_from_hresult_code(uint32 code);
+String8 ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radix, uint32 min_digits, E_Eval eval);
 String8 ev_escaped_from_raw_string(Arena* arena, String8 raw);
 
 #endif // EVAL_VISUALIZATION_CORE_H

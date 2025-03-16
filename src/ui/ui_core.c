@@ -18,10 +18,10 @@ thread_static UI_State* ui_state = 0;
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-U64
-ui_hash_from_string(U64 seed, String8 string)
+uint64
+ui_hash_from_string(uint64 seed, String8 string)
 {
-  U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
@@ -32,7 +32,7 @@ ui_hash_part_from_key_string(String8 string)
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  uint64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
   if(hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -44,7 +44,7 @@ ui_hash_part_from_key_string(String8 string)
 String8
 ui_display_part_from_key_string(String8 string)
 {
-  U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  uint64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -57,7 +57,7 @@ ui_key_zero()
 }
 
 UI_Key
-ui_key_make(U64 v)
+ui_key_make(uint64 v)
 {
   UI_Key result = {v};
   return result;
@@ -121,22 +121,22 @@ ui_eat_event_node(UI_EventList* list, UI_EventNode* node)
 //~ rjf: Text Operation Functions
 
 B32
-ui_char_is_scan_boundary(U8 c)
+ui_char_is_scan_boundary(uint8 c)
 {
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
 
-S64
-ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
+int64
+ui_scanned_column_from_column(String8 string, int64 start_column, Side side)
 {
-  S64 new_column = start_column;
-  S64 delta = (!!side)*2 - 1;
+  int64 new_column = start_column;
+  int64 delta = (!!side)*2 - 1;
   B32 found_text = 0;
   B32 found_non_space = 0;
-  S64 start_off = delta < 0 ? delta : 0;
-  for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
+  int64 start_off = delta < 0 ? delta : 0;
+  for(int64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
-    U8 byte = (col <= string.size) ? string.str[col-1] : 0;
+    uint8 byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
     if(((side == Side_Min) && (col == 1)) || 
@@ -182,23 +182,23 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, 
     }break;
     case UI_EventDeltaUnit_Word:
     {
-      delta.x = (S32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
+      delta.x = (int32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
     case UI_EventDeltaUnit_Line:
     case UI_EventDeltaUnit_Whole:
     case UI_EventDeltaUnit_Page:
     {
-      S64 first_nonwhitespace_column = 1;
-      for(U64 idx = 0; idx < string.size; idx += 1)
+      int64 first_nonwhitespace_column = 1;
+      for(uint64 idx = 0; idx < string.size; idx += 1)
       {
         if(!char_is_space(string.str[idx]))
         {
-          first_nonwhitespace_column = (S64)idx + 1;
+          first_nonwhitespace_column = (int64)idx + 1;
           break;
         }
       }
-      S64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
-      delta.x = (delta.x > 0) ? ((S64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
+      int64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
+      delta.x = (delta.x > 0) ? ((int64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
     }break;
   }
   
@@ -217,7 +217,7 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, 
   //- rjf: cap at line
   if(event->flags & UI_EventFlag_CapAtLine)
   {
-    next_cursor.column = Clamp(1, next_cursor.column, (S64)(string.size+1));
+    next_cursor.column = Clamp(1, next_cursor.column, (int64)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
@@ -307,8 +307,8 @@ ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, St
   //- rjf: convert to offset range
   Rng1U64 range =
   {
-    (U64)(col_range.min-1),
-    (U64)(col_range.max-1),
+    (uint64)(col_range.min-1),
+    (uint64)(col_range.max-1),
   };
   
   //- rjf: clamp range
@@ -322,11 +322,11 @@ ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, St
   }
   
   //- rjf: calculate new size
-  U64 old_size = string.size;
-  U64 new_size = old_size - (range.max - range.min) + replace.size;
+  uint64 old_size = string.size;
+  uint64 new_size = old_size - (range.max - range.min) + replace.size;
   
   //- rjf: push+fill new string storage
-  U8* push_base = push_array(arena, U8, new_size);
+  uint8* push_base = push_array(arena, uint8, new_size);
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
@@ -344,7 +344,7 @@ ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, St
 //~ rjf: Sizes
 
 UI_Size
-ui_size(UI_SizeKind kind, F32 value, F32 strictness)
+ui_size(UI_SizeKind kind, float value, float strictness)
 {
   UI_Size size = {kind, value, strictness};
   return size;
@@ -354,16 +354,16 @@ ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 //~ rjf: Scroll Point Type Functions
 
 UI_ScrollPt
-ui_scroll_pt(S64 idx, F32 off)
+ui_scroll_pt(int64 idx, float off)
 {
   UI_ScrollPt pt = {idx, off};
   return pt;
 }
 
 void
-ui_scroll_pt_target_idx(UI_ScrollPt* v, S64 idx)
+ui_scroll_pt_target_idx(UI_ScrollPt* v, int64 idx)
 {
-  v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(S64)v->off - idx);
+  v->off = mod_f32(v->off, 1.f) + (float)(v->idx+(int64)v->off - idx);
   v->idx = idx;
 }
 
@@ -372,7 +372,7 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt* v, Rng1S64 range)
 {
   if(v->idx < range.min || range.max < v->idx)
   {
-    S64 clamped = range.min;
+    int64 clamped = range.min;
     ui_scroll_pt_target_idx(v, clamped);
   }
 }
@@ -387,7 +387,7 @@ ui_box_is_nil(UI_Box* box)
 }
 
 UI_BoxRec
-ui_box_rec_df(UI_Box* box, UI_Box* root, U64 sib_member_off, U64 child_member_off)
+ui_box_rec_df(UI_Box* box, UI_Box* root, uint64 sib_member_off, uint64 child_member_off)
 {
   UI_BoxRec result = {0};
   result.next = &ui_nil_box;
@@ -511,7 +511,7 @@ ui_icon_string_from_kind(UI_IconKind icon_kind)
   return ui_state->icon_info.icon_kind_text_map[icon_kind];
 }
 
-F32
+float
 ui_dt()
 {
   return ui_state->animation_dt;
@@ -634,7 +634,7 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
 }
 
 B32
-ui_text(U32 character)
+ui_text(uint32 character)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -690,12 +690,12 @@ ui_store_drag_data(String8 string)
 }
 
 String8
-ui_get_drag_data(U64 min_required_size)
+ui_get_drag_data(uint64 min_required_size)
 {
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
+    String8 str = {push_array(scratch.arena, uint8, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -711,7 +711,7 @@ ui_string_hover_active()
           os_now_microseconds() >= ui_state->string_hover_begin_us + 500000);
 }
 
-U64
+uint64
 ui_string_hover_begin_time_us()
 {
   return ui_state->string_hover_begin_us;
@@ -771,7 +771,7 @@ ui_box_from_key(UI_Key key)
   UI_Box* result = &ui_nil_box;
   if(!ui_key_match(key, ui_key_zero()))
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    uint64 slot = key.u64[0] % ui_state->box_table_size;
     for(UI_Box* b = ui_state->box_table[slot].hash_first; !ui_box_is_nil(b); b = b->hash_next)
     {
       if(ui_key_match(b->key, key))
@@ -789,7 +789,7 @@ ui_box_from_key(UI_Key key)
 //~ rjf: Top-Level Building API
 
 void
-ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, UI_WidgetPaletteInfo* widget_palette_info, UI_AnimationInfo* animation_info, F32 real_dt, F32 animation_dt)
+ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, UI_WidgetPaletteInfo* widget_palette_info, UI_AnimationInfo* animation_info, float real_dt, float animation_dt)
 {
   //- rjf: reset per-build ui state
   {
@@ -813,7 +813,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
       next = n->lru_next;
       if(n->last_touched_build_index+1 < ui_state->build_index)
       {
-        U64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
+        uint64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
         UI_AnimSlot* slot = &ui_state->anim_slots[slot_idx];
         DLLRemove_NPZ(&ui_nil_anim_node, slot->first, slot->last, n, slot_next, slot_prev);;
         DLLRemove_NPZ(&ui_nil_anim_node, ui_state->lru_anim_node, ui_state->mru_anim_node, n, lru_next, lru_prev);
@@ -929,7 +929,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             if(nav_next)
             {
               UI_Box* search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              uint64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box* box = search_start;;)
               {
@@ -968,7 +968,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             if(nav_prev)
             {
               UI_Box* search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              uint64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box* box = search_start;;)
               {
@@ -1019,11 +1019,11 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             
             // rjf: scan candidates and grab next focus box
             UI_Box* next_focus_box = focus_box;
-            F32 best_distance_from_start = 1000000;
+            float best_distance_from_start = 1000000;
             for(UI_BoxNode* n = next_focus_box_candidates.first; n != 0; n = n->next)
             {
               UI_Box* box = n->box;
-              F32 distance_from_start = 0;
+              float distance_from_start = 0;
               if(axis_lock != Axis2_Invalid)
               {
                 distance_from_start = abs_f32(center_2f32(box->rect).v[axis2_flip(axis_lock)] - center_2f32(focus_box->rect).v[axis2_flip(axis_lock)]);
@@ -1076,7 +1076,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   }
   
   //- rjf: next-default-nav-focus keys -> current-default-nav-focus-keys
-  for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+  for(uint64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
   {
     for(UI_Box* box = ui_state->box_table[slot_idx].hash_first;
         !ui_box_is_nil(box);
@@ -1185,7 +1185,7 @@ ui_end_build()
   //- rjf: prune untouched or transient boxes in the cache
   ProfScope("ui prune unused boxes")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box* box = ui_state->box_table[slot_idx].hash_first, *next = 0;
           !ui_box_is_nil(box);
@@ -1246,7 +1246,7 @@ ui_end_build()
      ui_key_match(ui_active_key(UI_MouseButtonKind_Middle), ui_key_zero())),
     1,
   };
-  for(U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
   {
     UI_Box* root = floating_roots[idx];
     if(!ui_box_is_nil(root))
@@ -1282,7 +1282,7 @@ ui_end_build()
   
   //- rjf: enforce child-rounding
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box* box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
@@ -1303,7 +1303,7 @@ ui_end_build()
   //- rjf: animate
   ProfScope("animate")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
     {
       for(UI_AnimNode* n = ui_state->anim_slots[slot_idx].first;
           n != &ui_nil_anim_node && n != 0;
@@ -1313,25 +1313,25 @@ ui_end_build()
         ui_state->is_animating = (ui_state->is_animating || abs_f32(n->params.target - n->current) > n->params.epsilon);
       }
     }
-    F32 vast_rate = 1 - pow_f32(2, (-60.f * ui_state->animation_dt));
-    F32 fast_rate = 1 - pow_f32(2, (-50.f * ui_state->animation_dt));
-    F32 fish_rate = 1 - pow_f32(2, (-40.f * ui_state->animation_dt));
-    F32 slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
-    F32 slug_rate = 1 - pow_f32(2, (-15.f * ui_state->animation_dt));
-    F32 slaf_rate = 1 - pow_f32(2, (-8.f * ui_state->animation_dt));
-    ui_state->ctx_menu_open_t += ((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_ContextMenuAnimations ? vast_rate : 1);
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
+    float vast_rate = 1 - pow_f32(2, (-60.f * ui_state->animation_dt));
+    float fast_rate = 1 - pow_f32(2, (-50.f * ui_state->animation_dt));
+    float fish_rate = 1 - pow_f32(2, (-40.f * ui_state->animation_dt));
+    float slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
+    float slug_rate = 1 - pow_f32(2, (-15.f * ui_state->animation_dt));
+    float slaf_rate = 1 - pow_f32(2, (-8.f * ui_state->animation_dt));
+    ui_state->ctx_menu_open_t += ((float)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_ContextMenuAnimations ? vast_rate : 1);
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((float)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
     if(ui_state->ctx_menu_open_t >= 0.99f && ui_state->ctx_menu_open)
     {
       ui_state->ctx_menu_open_t = 1.f;
     }
-    ui_state->tooltip_open_t += ((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_TooltipAnimations ? vast_rate : 1);
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
+    ui_state->tooltip_open_t += ((float)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_TooltipAnimations ? vast_rate : 1);
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((float)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
     if(ui_state->tooltip_open_t >= 0.99f && ui_state->tooltip_open)
     {
       ui_state->tooltip_open_t = 1.f;
     }
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box* box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
@@ -1347,19 +1347,19 @@ ui_end_build()
         B32 is_focus_active_disabled = !!(box->flags & UI_BoxFlag_FocusActiveDisabled);
         
         // rjf: determine rates
-        F32 hot_rate      = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? fast_rate : 1);
-        F32 active_rate   = (ui_state->animation_info.flags & UI_AnimationInfoFlag_ActiveAnimations ? fast_rate : 1);
-        F32 disabled_rate = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? slow_rate : 1);
-        F32 focus_rate    = (ui_state->animation_info.flags & UI_AnimationInfoFlag_FocusAnimations ? fast_rate : 1);
+        float hot_rate      = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? fast_rate : 1);
+        float active_rate   = (ui_state->animation_info.flags & UI_AnimationInfoFlag_ActiveAnimations ? fast_rate : 1);
+        float disabled_rate = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? slow_rate : 1);
+        float focus_rate    = (ui_state->animation_info.flags & UI_AnimationInfoFlag_FocusAnimations ? fast_rate : 1);
         
         // rjf: determine animating status
         B32 box_is_animating = 0;
-        box_is_animating = (box_is_animating || abs_f32((F32)is_hot          - box->hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_active       - box->active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_disabled     - box->disabled_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_hot    - box->focus_hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active - box->focus_active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_hot          - box->hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_active       - box->active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_disabled     - box->disabled_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_hot    - box->focus_hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_active - box->focus_active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.x - box->view_off.x) > 0.5f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.y - box->view_off.y) > 0.5f);
         if(box->flags & UI_BoxFlag_AnimatePosX)
@@ -1380,12 +1380,12 @@ ui_end_build()
 #endif
         
         // rjf: animate interaction transition states
-        box->hot_t                   += hot_rate      * ((F32)is_hot - box->hot_t);
-        box->active_t                += active_rate   * ((F32)is_active - box->active_t);
-        box->disabled_t              += disabled_rate * ((F32)is_disabled - box->disabled_t);
-        box->focus_hot_t             += focus_rate    * ((F32)is_focus_hot - box->focus_hot_t);
-        box->focus_active_t          += focus_rate    * ((F32)is_focus_active - box->focus_active_t);
-        box->focus_active_disabled_t += focus_rate    * ((F32)is_focus_active_disabled - box->focus_active_disabled_t);
+        box->hot_t                   += hot_rate      * ((float)is_hot - box->hot_t);
+        box->active_t                += active_rate   * ((float)is_active - box->active_t);
+        box->disabled_t              += disabled_rate * ((float)is_disabled - box->disabled_t);
+        box->focus_hot_t             += focus_rate    * ((float)is_focus_hot - box->focus_hot_t);
+        box->focus_active_t          += focus_rate    * ((float)is_focus_active - box->focus_active_t);
+        box->focus_active_disabled_t += focus_rate    * ((float)is_focus_active_disabled - box->focus_active_disabled_t);
         
         // rjf: animate positions
         {
@@ -1518,7 +1518,7 @@ ui_end_build()
       {
         UI_BoxRec rec = ui_box_rec_df_pre(box, ui_state->root);
         next = rec.next;
-        S32 pop_idx = 0;
+        int32 pop_idx = 0;
         for(UI_Box* b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
         {
           if(b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
@@ -1598,8 +1598,8 @@ ui_calc_sizes_standalone__in_place_rec(UI_Box* root, Axis2 axis)
     
     case UI_SizeKind_TextContent:
     {
-      F32 padding = root->pref_size[axis].value;
-      F32 text_size = root->display_string_runs.dim.x;
+      float padding = root->pref_size[axis].value;
+      float text_size = root->display_string_runs.dim.x;
       root->fixed_size.v[axis] = padding + text_size + root->text_padding*2;
     }break;
   }
@@ -1641,7 +1641,7 @@ ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box* root, Axis2 axis)
       }
       
       // rjf: figure out root's size on this axis
-      F32 size = fixed_parent->fixed_size.v[axis] * root->pref_size[axis].value;
+      float size = fixed_parent->fixed_size.v[axis] * root->pref_size[axis].value;
       
       // rjf: mutate root to have this size
       root->fixed_size.v[axis] = size;
@@ -1677,7 +1677,7 @@ ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box* root, Axis2 axis)
     // rjf: sum children
     case UI_SizeKind_ChildrenSum:
     {
-      F32 sum = 0;
+      float sum = 0;
       for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next)
       {
         if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1713,15 +1713,15 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box* root, Axis2 axis)
   //- rjf: fixup children sizes (if we're solving along the* non-layout* axis)
   if(axis != root->child_layout_axis && !(root->flags & (UI_BoxFlag_AllowOverflowX << axis)))
   {
-    F32 allowed_size = root->fixed_size.v[axis];
+    float allowed_size = root->fixed_size.v[axis];
     for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next)
     {
       if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
       {
-        F32 child_size = child->fixed_size.v[axis];
-        F32 violation = child_size - allowed_size;
-        F32 max_fixup = child_size;
-        F32 fixup = Clamp(0, violation, max_fixup);
+        float child_size = child->fixed_size.v[axis];
+        float violation = child_size - allowed_size;
+        float max_fixup = child_size;
+        float fixup = Clamp(0, violation, max_fixup);
         if(fixup > 0)
         {
           child->fixed_size.v[axis] -= fixup;
@@ -1735,9 +1735,9 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box* root, Axis2 axis)
   if(axis == root->child_layout_axis && !(root->flags & (UI_BoxFlag_AllowOverflowX << axis)))
   {
     // rjf: figure out total allowed size & total size
-    F32 total_allowed_size = root->fixed_size.v[axis];
-    F32 total_size = 0;
-    F32 total_weighted_size = 0;
+    float total_allowed_size = root->fixed_size.v[axis];
+    float total_size = 0;
+    float total_weighted_size = 0;
     for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next)
     {
       if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1748,19 +1748,19 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box* root, Axis2 axis)
     }
     
     // rjf: if we have a violation, we need to subtract some amount from all children
-    F32 violation = total_size - total_allowed_size;
+    float violation = total_size - total_allowed_size;
     if(violation > 0)
     {
       // rjf: figure out how much we can take in totality
-      F32 child_fixup_sum = 0;
-      F32* child_fixups = push_array(scratch.arena, F32, root->child_count);
+      float child_fixup_sum = 0;
+      float* child_fixups = push_array(scratch.arena, float, root->child_count);
       {
-        U64 child_idx = 0;
+        uint64 child_idx = 0;
         for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
-            F32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
+            float fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
             fixup_size_this_child = ClampBot(0, fixup_size_this_child);
             child_fixups[child_idx] = fixup_size_this_child;
             child_fixup_sum += fixup_size_this_child;
@@ -1770,12 +1770,12 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box* root, Axis2 axis)
       
       // rjf: fixup child sizes
       {
-        U64 child_idx = 0;
+        uint64 child_idx = 0;
         for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
-            F32 fixup_pct = (violation / total_weighted_size);
+            float fixup_pct = (violation / total_weighted_size);
             fixup_pct = Clamp(0, fixup_pct, 1);
             child->fixed_size.v[axis] -= child_fixups[child_idx] * fixup_pct;
           }
@@ -1810,14 +1810,14 @@ void
 ui_layout_position__in_place_rec(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
-  F32 layout_position = 0;
+  float layout_position = 0;
   
   //- rjf: lay out children
-  F32 bounds = 0;
+  float bounds = 0;
   for(UI_Box* child = root->first; !ui_box_is_nil(child); child = child->next)
   {
     // rjf: grab original position
-    F32 original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    float original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: calculate fixed position & size
     if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1854,7 +1854,7 @@ ui_layout_position__in_place_rec(UI_Box* root, Axis2 axis)
     child->rect.p1.y = floor_f32(child->rect.p1.y);
     
     // rjf: grab new position
-    F32 new_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    float new_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: store position delta
     child->position_delta.v[axis] = new_position - original_position;
@@ -1969,8 +1969,8 @@ ui_tooltip_end()
 void
 ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
 {
-  anchor_off.x = (F32)(int)anchor_off.x;
-  anchor_off.y = (F32)(int)anchor_off.y;
+  anchor_off.x = (float)(int)anchor_off.x;
+  anchor_off.y = (float)(int)anchor_off.y;
   ui_state->next_ctx_menu_open = 1;
   ui_state->ctx_menu_changed = 1;
   ui_state->ctx_menu_open_t = 0;
@@ -2241,7 +2241,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   //- rjf: hook into persistent state table
   if(box_first_frame && !box_is_transient)
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    uint64 slot = key.u64[0] % ui_state->box_table_size;
     DLLInsert_NPZ(&ui_nil_box, ui_state->box_table[slot].hash_first, ui_state->box_table[slot].hash_last, ui_state->box_table[slot].hash_last, box, hash_next, hash_prev);
   }
   
@@ -2268,7 +2268,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     if(box_first_frame)
     {
       box->first_touched_build_index = ui_state->build_index;
-      box->disabled_t = (F32)!!(box->flags & UI_BoxFlag_Disabled);
+      box->disabled_t = (float)!!(box->flags & UI_BoxFlag_Disabled);
     }
     box->last_touched_build_index = ui_state->build_index;
     
@@ -2431,7 +2431,7 @@ ui_box_equip_display_string(UI_Box* box, String8 string)
     String8 display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box->fastpath_codepoint, 1);
     String8 fpcp = str8_from_32(scratch.arena, fpcp32);
-    U64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
+    uint64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
       DR_FancyStringNode pst_fancy_string_n = {0,                   {box->font, str8_skip(display_string, fpcp_pos+fpcp.size), box->palette->colors[text_color_code], box->font_size, 0, 0}};
@@ -2513,7 +2513,7 @@ ui_box_text_position(UI_Box* box)
 {
   Vec2F32 result = {0};
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  float font_size = box->font_size;
   FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
   result.y = floor_f32((box->rect.p0.y + box->rect.p1.y)/2.f) + font_metrics.capital_height/2.f - 1.f;
   if(!fnt_tag_match(font, ui_icon_font()))
@@ -2544,13 +2544,13 @@ ui_box_text_position(UI_Box* box)
   return result;
 }
 
-U64
+uint64
 ui_box_char_pos_from_xy(UI_Box* box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  float font_size = box->font_size;
   String8 line = ui_box_display_string(box);
-  U64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
+  uint64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
 }
 
@@ -2740,9 +2740,9 @@ ui_signal_from_box(UI_Box* box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(float, delta.x, delta.y);
       }
-      Vec2S16 delta16 = v2s16((S16)(delta.x/30.f), (S16)(delta.y/30.f));
+      Vec2S16 delta16 = v2s16((int16)(delta.x/30.f), (int16)(delta.y/30.f));
       if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
       if(delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
       if(delta.y > 0 && delta16.y == 0) { delta16.y = +1; }
@@ -2761,7 +2761,7 @@ ui_signal_from_box(UI_Box* box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(float, delta.x, delta.y);
       }
       if(!(box->flags & UI_BoxFlag_ViewScrollX))
       {
@@ -2974,13 +2974,13 @@ ui_signal_from_box(UI_Box* box)
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-F32
+float
 ui_anim_(UI_Key key, UI_AnimParams* params)
 {
   // rjf: get animation cache node
   UI_AnimNode* node = &ui_nil_anim_node;
   {
-    U64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
+    uint64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
     UI_AnimSlot* slot = &ui_state->anim_slots[slot_idx];
     for(UI_AnimNode* n = slot->first; n != &ui_nil_anim_node && n != 0; n = n->slot_next)
     {
@@ -3099,7 +3099,7 @@ ui_set_next_pref_size(Axis2 axis, UI_Size v)
 }
 
 void
-ui_push_corner_radius(F32 v)
+ui_push_corner_radius(float v)
 {
   ui_push_corner_radius_00(v);
   ui_push_corner_radius_01(v);

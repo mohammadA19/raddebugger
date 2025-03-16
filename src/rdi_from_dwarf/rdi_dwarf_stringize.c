@@ -7,7 +7,7 @@
 static char dwarf_spaces[] = "                ";
 
 static void
-dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, U32 indent){
+dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, uint32 indent){
   String8 unit_type_string = dwarf_string_from_unit_type((DWARF_UnitType)unit->unit_type);
   
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit->hdr_off);
@@ -41,7 +41,7 @@ dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, U32 i
 
 static void
 dwarf_stringize_pubnames(Arena* arena, String8List* out, DWARF_PubNamesUnit* unit,
-                         U32 indent){
+                         uint32 indent){
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit->hdr_off);
   str8_list_pushf(arena, out, "%.*sbase_off=0x%llx\n", indent, dwarf_spaces, unit->base_off);
   str8_list_pushf(arena, out, "%.*sopl_off=0x%llx\n", indent, dwarf_spaces, unit->opl_off);
@@ -53,7 +53,7 @@ dwarf_stringize_pubnames(Arena* arena, String8List* out, DWARF_PubNamesUnit* uni
 }
 
 static void
-dwarf_stringize_names(Arena* arena, String8List* out, DWARF_NamesUnit* unit, U32 indent){
+dwarf_stringize_names(Arena* arena, String8List* out, DWARF_NamesUnit* unit, uint32 indent){
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit->hdr_off);
   str8_list_pushf(arena, out, "%.*sbase_off=0x%llx\n", indent, dwarf_spaces, unit->base_off);
   str8_list_pushf(arena, out, "%.*sopl_off=0x%llx\n", indent, dwarf_spaces, unit->opl_off);
@@ -74,7 +74,7 @@ dwarf_stringize_names(Arena* arena, String8List* out, DWARF_NamesUnit* unit, U32
 }
 
 static void
-dwarf_stringize_aranges(Arena* arena, String8List* out, DWARF_ArangesUnit* unit, U32 indent){
+dwarf_stringize_aranges(Arena* arena, String8List* out, DWARF_ArangesUnit* unit, uint32 indent){
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit->hdr_off);
   str8_list_pushf(arena, out, "%.*sbase_off=0x%llx\n", indent, dwarf_spaces, unit->base_off);
   str8_list_pushf(arena, out, "%.*sopl_off=0x%llx\n", indent, dwarf_spaces, unit->opl_off);
@@ -88,7 +88,7 @@ dwarf_stringize_aranges(Arena* arena, String8List* out, DWARF_ArangesUnit* unit,
 }
 
 static void
-dwarf_stringize_addr(Arena* arena, String8List* out, DWARF_AddrUnit* unit, U32 indent){
+dwarf_stringize_addr(Arena* arena, String8List* out, DWARF_AddrUnit* unit, uint32 indent){
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit->hdr_off);
   str8_list_pushf(arena, out, "%.*sbase_off=0x%llx\n", indent, dwarf_spaces, unit->base_off);
   str8_list_pushf(arena, out, "%.*sopl_off=0x%llx\n", indent, dwarf_spaces, unit->opl_off);

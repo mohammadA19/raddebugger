@@ -40,7 +40,7 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (uint64 i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLQueuePushCount(list, node) do { \
   SLLQueuePush((list)->first, (list)->last, node); \
@@ -73,11 +73,11 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (uint64 i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLConcatInPlaceChunkList(list, to_concat, chunk_type) do {   \
     if ((list)->last != 0) {                                          \
-      U64 base_cursor = (list)->last->base + (list)->last->count;     \
+      uint64 base_cursor = (list)->last->base + (list)->last->count;     \
       for (chunk_type* c = (to_concat)->first; c != 0; c = c->next) { \
         c->base = base_cursor;                                        \
         base_cursor += c->count;                                      \
@@ -86,7 +86,7 @@
     SLLConcatInPlace(list, to_concat);                                \
   } while (0)
 
-#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
+#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (uint64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
   if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
@@ -116,48 +116,48 @@
 
 struct
 {
-  U64 major;
-  U64 minor;
+  uint64 major;
+  uint64 minor;
 }
 
 ////////////////////////////////
 
 struct ISectOff
 {
-  U32 isect;
-  U32 off;
+  uint32 isect;
+  uint32 off;
 }
 
 ////////////////////////////////
 
 struct PairU32
 {
-  U32 v0;
-  U32 v1;
+  uint32 v0;
+  uint32 v1;
 }
 
 struct PairU64
 {
-  U64 v0;
-  U64 v1;
+  uint64 v0;
+  uint64 v1;
 }
 
 ////////////////////////////////
 
-U16 safe_cast_u16x(U64 x);
+uint16 safe_cast_u16x(uint64 x);
 
 ////////////////////////////////
 
-U64 u128_mod64(U128 a, U64 b);
+uint64 u128_mod64(U128 a, uint64 b);
 
 ////////////////////////////////
 
-Version make_version(U64 major, U64 minor);
+Version make_version(uint64 major, uint64 minor);
 int     version_compar(Version a, Version b);
 
 ////////////////////////////////
 
-ISectOff isect_off(U32 isect, U32 off);
+ISectOff isect_off(uint32 isect, uint32 off);
 
 ////////////////////////////////
 
@@ -177,5 +177,5 @@ int pair_u64_is_before_v1(void* raw_a, void* raw_b);
 
 ////////////////////////////////
 
-void str8_list_concat_in_place_array(String8List* list, String8List* arr, U64 count);
+void str8_list_concat_in_place_array(String8List* list, String8List* arr, uint64 count);
 

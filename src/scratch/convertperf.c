@@ -38,12 +38,12 @@ entry_point(CmdLine* cmdline)
   Arena* arena = arena_alloc();
   String8 list_path = str8_list_first(&cmdline->inputs);
   String8 list_data = os_data_from_file_path(arena, list_path);
-  U8 splits[] = {'\n'};
+  uint8 splits[] = {'\n'};
   String8List lines = str8_split(arena, list_data, splits, ArrayCount(splits), 0);
   OS_HandleList processes = {0};
   String8Node* processes_first_path_n = 0;
-  U64 limit = 64;
-  U64 idx = 0;
+  uint64 limit = 64;
+  uint64 idx = 0;
   for(String8Node* n = lines.first; n != 0; n = n->next)
   {
     String8 dll_path = n->string;

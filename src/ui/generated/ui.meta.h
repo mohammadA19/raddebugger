@@ -8,32 +8,32 @@
 
 struct UI_ParentNode{UI_ParentNode* next; UI_Box * v;};
 struct UI_ChildLayoutAxisNode{UI_ChildLayoutAxisNode* next; Axis2 v;};
-struct UI_FixedXNode{UI_FixedXNode* next; F32 v;};
-struct UI_FixedYNode{UI_FixedYNode* next; F32 v;};
-struct UI_FixedWidthNode{UI_FixedWidthNode* next; F32 v;};
-struct UI_FixedHeightNode{UI_FixedHeightNode* next; F32 v;};
+struct UI_FixedXNode{UI_FixedXNode* next; float v;};
+struct UI_FixedYNode{UI_FixedYNode* next; float v;};
+struct UI_FixedWidthNode{UI_FixedWidthNode* next; float v;};
+struct UI_FixedHeightNode{UI_FixedHeightNode* next; float v;};
 struct UI_PrefWidthNode{UI_PrefWidthNode* next; UI_Size v;};
 struct UI_PrefHeightNode{UI_PrefHeightNode* next; UI_Size v;};
 struct UI_PermissionFlagsNode{UI_PermissionFlagsNode* next; UI_PermissionFlags v;};
 struct UI_FlagsNode{UI_FlagsNode* next; UI_BoxFlags v;};
 struct UI_FocusHotNode{UI_FocusHotNode* next; UI_FocusKind v;};
 struct UI_FocusActiveNode{UI_FocusActiveNode* next; UI_FocusKind v;};
-struct UI_FastpathCodepointNode{UI_FastpathCodepointNode* next; U32 v;};
+struct UI_FastpathCodepointNode{UI_FastpathCodepointNode* next; uint32 v;};
 struct UI_GroupKeyNode{UI_GroupKeyNode* next; UI_Key v;};
-struct UI_TransparencyNode{UI_TransparencyNode* next; F32 v;};
+struct UI_TransparencyNode{UI_TransparencyNode* next; float v;};
 struct UI_PaletteNode{UI_PaletteNode* next; UI_Palette*     v;};
-struct UI_SquishNode{UI_SquishNode* next; F32 v;};
+struct UI_SquishNode{UI_SquishNode* next; float v;};
 struct UI_HoverCursorNode{UI_HoverCursorNode* next; OS_Cursor v;};
 struct UI_FontNode{UI_FontNode* next; FNT_Tag v;};
-struct UI_FontSizeNode{UI_FontSizeNode* next; F32 v;};
+struct UI_FontSizeNode{UI_FontSizeNode* next; float v;};
 struct UI_TextRasterFlagsNode{UI_TextRasterFlagsNode* next; FNT_RasterFlags v;};
-struct UI_TabSizeNode{UI_TabSizeNode* next; F32 v;};
-struct UI_CornerRadius00Node{UI_CornerRadius00Node* next; F32 v;};
-struct UI_CornerRadius01Node{UI_CornerRadius01Node* next; F32 v;};
-struct UI_CornerRadius10Node{UI_CornerRadius10Node* next; F32 v;};
-struct UI_CornerRadius11Node{UI_CornerRadius11Node* next; F32 v;};
-struct UI_BlurSizeNode{UI_BlurSizeNode* next; F32 v;};
-struct UI_TextPaddingNode{UI_TextPaddingNode* next; F32 v;};
+struct UI_TabSizeNode{UI_TabSizeNode* next; float v;};
+struct UI_CornerRadius00Node{UI_CornerRadius00Node* next; float v;};
+struct UI_CornerRadius01Node{UI_CornerRadius01Node* next; float v;};
+struct UI_CornerRadius10Node{UI_CornerRadius10Node* next; float v;};
+struct UI_CornerRadius11Node{UI_CornerRadius11Node* next; float v;};
+struct UI_BlurSizeNode{UI_BlurSizeNode* next; float v;};
+struct UI_TextPaddingNode{UI_TextPaddingNode* next; float v;};
 struct UI_TextAlignmentNode{UI_TextAlignmentNode* next; UI_TextAlign v;};
 #define UI_DeclStackNils \
 struct\
@@ -104,32 +104,32 @@ struct\
 {\
 struct { UI_ParentNode* top; UI_Box * bottom_val; UI_ParentNode* free; B32 auto_pop; } parent_stack;\
 struct { UI_ChildLayoutAxisNode* top; Axis2 bottom_val; UI_ChildLayoutAxisNode* free; B32 auto_pop; } child_layout_axis_stack;\
-struct { UI_FixedXNode* top; F32 bottom_val; UI_FixedXNode* free; B32 auto_pop; } fixed_x_stack;\
-struct { UI_FixedYNode* top; F32 bottom_val; UI_FixedYNode* free; B32 auto_pop; } fixed_y_stack;\
-struct { UI_FixedWidthNode* top; F32 bottom_val; UI_FixedWidthNode* free; B32 auto_pop; } fixed_width_stack;\
-struct { UI_FixedHeightNode* top; F32 bottom_val; UI_FixedHeightNode* free; B32 auto_pop; } fixed_height_stack;\
+struct { UI_FixedXNode* top; float bottom_val; UI_FixedXNode* free; B32 auto_pop; } fixed_x_stack;\
+struct { UI_FixedYNode* top; float bottom_val; UI_FixedYNode* free; B32 auto_pop; } fixed_y_stack;\
+struct { UI_FixedWidthNode* top; float bottom_val; UI_FixedWidthNode* free; B32 auto_pop; } fixed_width_stack;\
+struct { UI_FixedHeightNode* top; float bottom_val; UI_FixedHeightNode* free; B32 auto_pop; } fixed_height_stack;\
 struct { UI_PrefWidthNode* top; UI_Size bottom_val; UI_PrefWidthNode* free; B32 auto_pop; } pref_width_stack;\
 struct { UI_PrefHeightNode* top; UI_Size bottom_val; UI_PrefHeightNode* free; B32 auto_pop; } pref_height_stack;\
 struct { UI_PermissionFlagsNode* top; UI_PermissionFlags bottom_val; UI_PermissionFlagsNode* free; B32 auto_pop; } permission_flags_stack;\
 struct { UI_FlagsNode* top; UI_BoxFlags bottom_val; UI_FlagsNode* free; B32 auto_pop; } flags_stack;\
 struct { UI_FocusHotNode* top; UI_FocusKind bottom_val; UI_FocusHotNode* free; B32 auto_pop; } focus_hot_stack;\
 struct { UI_FocusActiveNode* top; UI_FocusKind bottom_val; UI_FocusActiveNode* free; B32 auto_pop; } focus_active_stack;\
-struct { UI_FastpathCodepointNode* top; U32 bottom_val; UI_FastpathCodepointNode* free; B32 auto_pop; } fastpath_codepoint_stack;\
+struct { UI_FastpathCodepointNode* top; uint32 bottom_val; UI_FastpathCodepointNode* free; B32 auto_pop; } fastpath_codepoint_stack;\
 struct { UI_GroupKeyNode* top; UI_Key bottom_val; UI_GroupKeyNode* free; B32 auto_pop; } group_key_stack;\
-struct { UI_TransparencyNode* top; F32 bottom_val; UI_TransparencyNode* free; B32 auto_pop; } transparency_stack;\
+struct { UI_TransparencyNode* top; float bottom_val; UI_TransparencyNode* free; B32 auto_pop; } transparency_stack;\
 struct { UI_PaletteNode* top; UI_Palette*     bottom_val; UI_PaletteNode* free; B32 auto_pop; } palette_stack;\
-struct { UI_SquishNode* top; F32 bottom_val; UI_SquishNode* free; B32 auto_pop; } squish_stack;\
+struct { UI_SquishNode* top; float bottom_val; UI_SquishNode* free; B32 auto_pop; } squish_stack;\
 struct { UI_HoverCursorNode* top; OS_Cursor bottom_val; UI_HoverCursorNode* free; B32 auto_pop; } hover_cursor_stack;\
 struct { UI_FontNode* top; FNT_Tag bottom_val; UI_FontNode* free; B32 auto_pop; } font_stack;\
-struct { UI_FontSizeNode* top; F32 bottom_val; UI_FontSizeNode* free; B32 auto_pop; } font_size_stack;\
+struct { UI_FontSizeNode* top; float bottom_val; UI_FontSizeNode* free; B32 auto_pop; } font_size_stack;\
 struct { UI_TextRasterFlagsNode* top; FNT_RasterFlags bottom_val; UI_TextRasterFlagsNode* free; B32 auto_pop; } text_raster_flags_stack;\
-struct { UI_TabSizeNode* top; F32 bottom_val; UI_TabSizeNode* free; B32 auto_pop; } tab_size_stack;\
-struct { UI_CornerRadius00Node* top; F32 bottom_val; UI_CornerRadius00Node* free; B32 auto_pop; } corner_radius_00_stack;\
-struct { UI_CornerRadius01Node* top; F32 bottom_val; UI_CornerRadius01Node* free; B32 auto_pop; } corner_radius_01_stack;\
-struct { UI_CornerRadius10Node* top; F32 bottom_val; UI_CornerRadius10Node* free; B32 auto_pop; } corner_radius_10_stack;\
-struct { UI_CornerRadius11Node* top; F32 bottom_val; UI_CornerRadius11Node* free; B32 auto_pop; } corner_radius_11_stack;\
-struct { UI_BlurSizeNode* top; F32 bottom_val; UI_BlurSizeNode* free; B32 auto_pop; } blur_size_stack;\
-struct { UI_TextPaddingNode* top; F32 bottom_val; UI_TextPaddingNode* free; B32 auto_pop; } text_padding_stack;\
+struct { UI_TabSizeNode* top; float bottom_val; UI_TabSizeNode* free; B32 auto_pop; } tab_size_stack;\
+struct { UI_CornerRadius00Node* top; float bottom_val; UI_CornerRadius00Node* free; B32 auto_pop; } corner_radius_00_stack;\
+struct { UI_CornerRadius01Node* top; float bottom_val; UI_CornerRadius01Node* free; B32 auto_pop; } corner_radius_01_stack;\
+struct { UI_CornerRadius10Node* top; float bottom_val; UI_CornerRadius10Node* free; B32 auto_pop; } corner_radius_10_stack;\
+struct { UI_CornerRadius11Node* top; float bottom_val; UI_CornerRadius11Node* free; B32 auto_pop; } corner_radius_11_stack;\
+struct { UI_BlurSizeNode* top; float bottom_val; UI_BlurSizeNode* free; B32 auto_pop; } blur_size_stack;\
+struct { UI_TextPaddingNode* top; float bottom_val; UI_TextPaddingNode* free; B32 auto_pop; } text_padding_stack;\
 struct { UI_TextAlignmentNode* top; UI_TextAlign bottom_val; UI_TextAlignmentNode* free; B32 auto_pop; } text_alignment_stack;\
 }
 #define UI_InitStacks(state) \
@@ -196,147 +196,147 @@ if(state->text_alignment_stack.auto_pop) { ui_pop_text_alignment(); state->text_
 
 UI_Box *                   ui_top_parent();
 Axis2                      ui_top_child_layout_axis();
-F32                        ui_top_fixed_x();
-F32                        ui_top_fixed_y();
-F32                        ui_top_fixed_width();
-F32                        ui_top_fixed_height();
+float                        ui_top_fixed_x();
+float                        ui_top_fixed_y();
+float                        ui_top_fixed_width();
+float                        ui_top_fixed_height();
 UI_Size                    ui_top_pref_width();
 UI_Size                    ui_top_pref_height();
 UI_PermissionFlags         ui_top_permission_flags();
 UI_BoxFlags                ui_top_flags();
 UI_FocusKind               ui_top_focus_hot();
 UI_FocusKind               ui_top_focus_active();
-U32                        ui_top_fastpath_codepoint();
+uint32                        ui_top_fastpath_codepoint();
 UI_Key                     ui_top_group_key();
-F32                        ui_top_transparency();
+float                        ui_top_transparency();
 UI_Palette*                ui_top_palette();
-F32                        ui_top_squish();
+float                        ui_top_squish();
 OS_Cursor                  ui_top_hover_cursor();
 FNT_Tag                    ui_top_font();
-F32                        ui_top_font_size();
+float                        ui_top_font_size();
 FNT_RasterFlags            ui_top_text_raster_flags();
-F32                        ui_top_tab_size();
-F32                        ui_top_corner_radius_00();
-F32                        ui_top_corner_radius_01();
-F32                        ui_top_corner_radius_10();
-F32                        ui_top_corner_radius_11();
-F32                        ui_top_blur_size();
-F32                        ui_top_text_padding();
+float                        ui_top_tab_size();
+float                        ui_top_corner_radius_00();
+float                        ui_top_corner_radius_01();
+float                        ui_top_corner_radius_10();
+float                        ui_top_corner_radius_11();
+float                        ui_top_blur_size();
+float                        ui_top_text_padding();
 UI_TextAlign               ui_top_text_alignment();
 UI_Box *                   ui_bottom_parent();
 Axis2                      ui_bottom_child_layout_axis();
-F32                        ui_bottom_fixed_x();
-F32                        ui_bottom_fixed_y();
-F32                        ui_bottom_fixed_width();
-F32                        ui_bottom_fixed_height();
+float                        ui_bottom_fixed_x();
+float                        ui_bottom_fixed_y();
+float                        ui_bottom_fixed_width();
+float                        ui_bottom_fixed_height();
 UI_Size                    ui_bottom_pref_width();
 UI_Size                    ui_bottom_pref_height();
 UI_PermissionFlags         ui_bottom_permission_flags();
 UI_BoxFlags                ui_bottom_flags();
 UI_FocusKind               ui_bottom_focus_hot();
 UI_FocusKind               ui_bottom_focus_active();
-U32                        ui_bottom_fastpath_codepoint();
+uint32                        ui_bottom_fastpath_codepoint();
 UI_Key                     ui_bottom_group_key();
-F32                        ui_bottom_transparency();
+float                        ui_bottom_transparency();
 UI_Palette*                ui_bottom_palette();
-F32                        ui_bottom_squish();
+float                        ui_bottom_squish();
 OS_Cursor                  ui_bottom_hover_cursor();
 FNT_Tag                    ui_bottom_font();
-F32                        ui_bottom_font_size();
+float                        ui_bottom_font_size();
 FNT_RasterFlags            ui_bottom_text_raster_flags();
-F32                        ui_bottom_tab_size();
-F32                        ui_bottom_corner_radius_00();
-F32                        ui_bottom_corner_radius_01();
-F32                        ui_bottom_corner_radius_10();
-F32                        ui_bottom_corner_radius_11();
-F32                        ui_bottom_blur_size();
-F32                        ui_bottom_text_padding();
+float                        ui_bottom_tab_size();
+float                        ui_bottom_corner_radius_00();
+float                        ui_bottom_corner_radius_01();
+float                        ui_bottom_corner_radius_10();
+float                        ui_bottom_corner_radius_11();
+float                        ui_bottom_blur_size();
+float                        ui_bottom_text_padding();
 UI_TextAlign               ui_bottom_text_alignment();
 UI_Box *                   ui_push_parent(UI_Box * v);
 Axis2                      ui_push_child_layout_axis(Axis2 v);
-F32                        ui_push_fixed_x(F32 v);
-F32                        ui_push_fixed_y(F32 v);
-F32                        ui_push_fixed_width(F32 v);
-F32                        ui_push_fixed_height(F32 v);
+float                        ui_push_fixed_x(float v);
+float                        ui_push_fixed_y(float v);
+float                        ui_push_fixed_width(float v);
+float                        ui_push_fixed_height(float v);
 UI_Size                    ui_push_pref_width(UI_Size v);
 UI_Size                    ui_push_pref_height(UI_Size v);
 UI_PermissionFlags         ui_push_permission_flags(UI_PermissionFlags v);
 UI_BoxFlags                ui_push_flags(UI_BoxFlags v);
 UI_FocusKind               ui_push_focus_hot(UI_FocusKind v);
 UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
-U32                        ui_push_fastpath_codepoint(U32 v);
+uint32                        ui_push_fastpath_codepoint(uint32 v);
 UI_Key                     ui_push_group_key(UI_Key v);
-F32                        ui_push_transparency(F32 v);
+float                        ui_push_transparency(float v);
 UI_Palette*                ui_push_palette(UI_Palette*     v);
-F32                        ui_push_squish(F32 v);
+float                        ui_push_squish(float v);
 OS_Cursor                  ui_push_hover_cursor(OS_Cursor v);
 FNT_Tag                    ui_push_font(FNT_Tag v);
-F32                        ui_push_font_size(F32 v);
+float                        ui_push_font_size(float v);
 FNT_RasterFlags            ui_push_text_raster_flags(FNT_RasterFlags v);
-F32                        ui_push_tab_size(F32 v);
-F32                        ui_push_corner_radius_00(F32 v);
-F32                        ui_push_corner_radius_01(F32 v);
-F32                        ui_push_corner_radius_10(F32 v);
-F32                        ui_push_corner_radius_11(F32 v);
-F32                        ui_push_blur_size(F32 v);
-F32                        ui_push_text_padding(F32 v);
+float                        ui_push_tab_size(float v);
+float                        ui_push_corner_radius_00(float v);
+float                        ui_push_corner_radius_01(float v);
+float                        ui_push_corner_radius_10(float v);
+float                        ui_push_corner_radius_11(float v);
+float                        ui_push_blur_size(float v);
+float                        ui_push_text_padding(float v);
 UI_TextAlign               ui_push_text_alignment(UI_TextAlign v);
 UI_Box *                   ui_pop_parent();
 Axis2                      ui_pop_child_layout_axis();
-F32                        ui_pop_fixed_x();
-F32                        ui_pop_fixed_y();
-F32                        ui_pop_fixed_width();
-F32                        ui_pop_fixed_height();
+float                        ui_pop_fixed_x();
+float                        ui_pop_fixed_y();
+float                        ui_pop_fixed_width();
+float                        ui_pop_fixed_height();
 UI_Size                    ui_pop_pref_width();
 UI_Size                    ui_pop_pref_height();
 UI_PermissionFlags         ui_pop_permission_flags();
 UI_BoxFlags                ui_pop_flags();
 UI_FocusKind               ui_pop_focus_hot();
 UI_FocusKind               ui_pop_focus_active();
-U32                        ui_pop_fastpath_codepoint();
+uint32                        ui_pop_fastpath_codepoint();
 UI_Key                     ui_pop_group_key();
-F32                        ui_pop_transparency();
+float                        ui_pop_transparency();
 UI_Palette*                ui_pop_palette();
-F32                        ui_pop_squish();
+float                        ui_pop_squish();
 OS_Cursor                  ui_pop_hover_cursor();
 FNT_Tag                    ui_pop_font();
-F32                        ui_pop_font_size();
+float                        ui_pop_font_size();
 FNT_RasterFlags            ui_pop_text_raster_flags();
-F32                        ui_pop_tab_size();
-F32                        ui_pop_corner_radius_00();
-F32                        ui_pop_corner_radius_01();
-F32                        ui_pop_corner_radius_10();
-F32                        ui_pop_corner_radius_11();
-F32                        ui_pop_blur_size();
-F32                        ui_pop_text_padding();
+float                        ui_pop_tab_size();
+float                        ui_pop_corner_radius_00();
+float                        ui_pop_corner_radius_01();
+float                        ui_pop_corner_radius_10();
+float                        ui_pop_corner_radius_11();
+float                        ui_pop_blur_size();
+float                        ui_pop_text_padding();
 UI_TextAlign               ui_pop_text_alignment();
 UI_Box *                   ui_set_next_parent(UI_Box * v);
 Axis2                      ui_set_next_child_layout_axis(Axis2 v);
-F32                        ui_set_next_fixed_x(F32 v);
-F32                        ui_set_next_fixed_y(F32 v);
-F32                        ui_set_next_fixed_width(F32 v);
-F32                        ui_set_next_fixed_height(F32 v);
+float                        ui_set_next_fixed_x(float v);
+float                        ui_set_next_fixed_y(float v);
+float                        ui_set_next_fixed_width(float v);
+float                        ui_set_next_fixed_height(float v);
 UI_Size                    ui_set_next_pref_width(UI_Size v);
 UI_Size                    ui_set_next_pref_height(UI_Size v);
 UI_PermissionFlags         ui_set_next_permission_flags(UI_PermissionFlags v);
 UI_BoxFlags                ui_set_next_flags(UI_BoxFlags v);
 UI_FocusKind               ui_set_next_focus_hot(UI_FocusKind v);
 UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
-U32                        ui_set_next_fastpath_codepoint(U32 v);
+uint32                        ui_set_next_fastpath_codepoint(uint32 v);
 UI_Key                     ui_set_next_group_key(UI_Key v);
-F32                        ui_set_next_transparency(F32 v);
+float                        ui_set_next_transparency(float v);
 UI_Palette*                ui_set_next_palette(UI_Palette*     v);
-F32                        ui_set_next_squish(F32 v);
+float                        ui_set_next_squish(float v);
 OS_Cursor                  ui_set_next_hover_cursor(OS_Cursor v);
 FNT_Tag                    ui_set_next_font(FNT_Tag v);
-F32                        ui_set_next_font_size(F32 v);
+float                        ui_set_next_font_size(float v);
 FNT_RasterFlags            ui_set_next_text_raster_flags(FNT_RasterFlags v);
-F32                        ui_set_next_tab_size(F32 v);
-F32                        ui_set_next_corner_radius_00(F32 v);
-F32                        ui_set_next_corner_radius_01(F32 v);
-F32                        ui_set_next_corner_radius_10(F32 v);
-F32                        ui_set_next_corner_radius_11(F32 v);
-F32                        ui_set_next_blur_size(F32 v);
-F32                        ui_set_next_text_padding(F32 v);
+float                        ui_set_next_tab_size(float v);
+float                        ui_set_next_corner_radius_00(float v);
+float                        ui_set_next_corner_radius_01(float v);
+float                        ui_set_next_corner_radius_10(float v);
+float                        ui_set_next_corner_radius_11(float v);
+float                        ui_set_next_blur_size(float v);
+float                        ui_set_next_text_padding(float v);
 UI_TextAlign               ui_set_next_text_alignment(UI_TextAlign v);
 #endif // UI_META_H

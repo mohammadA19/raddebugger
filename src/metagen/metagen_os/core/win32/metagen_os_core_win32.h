@@ -32,7 +32,7 @@ struct OS_W32_FileIter
   WIN32_FIND_DATAW find_data;
   B32 is_volume_iter;
   String8Array drive_strings;
-  U64 drive_strings_iter_idx;
+  uint64 drive_strings_iter_idx;
 }
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), file_iter_memory_size);
 
@@ -77,7 +77,7 @@ struct OS_W32_State
   // rjf: info
   OS_SystemInfo system_info;
   OS_ProcessInfo process_info;
-  U64 microsecond_resolution;
+  uint64 microsecond_resolution;
   
   // rjf: entity storage
   CRITICAL_SECTION entity_mutex;
@@ -102,7 +102,7 @@ void os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN3
 void os_w32_date_time_from_system_time(DateTime* out, SYSTEMTIME* in);
 void os_w32_system_time_from_date_time(SYSTEMTIME* out, DateTime* in);
 void os_w32_dense_time_from_file_time(DenseTime* out, FILETIME* in);
-U32 os_w32_sleep_ms_from_endt_us(U64 endt_us);
+uint32 os_w32_sleep_ms_from_endt_us(uint64 endt_us);
 
 ////////////////////////////////
 //~ rjf: Entity Functions

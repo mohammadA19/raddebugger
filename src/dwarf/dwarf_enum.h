@@ -9,7 +9,7 @@ String8 dw_string_from_tag_kind(Arena* arena, DW_TagKind kind);
 String8 dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind);
 String8 dw_string_from_form_kind(Arena* arena, DW_Version ver, DW_FormKind kind);
 
-//internal String8 dw_string_from_register(Arena* arena, Arch arch, U64 reg_id);
+//internal String8 dw_string_from_register(Arena* arena, Arch arch, uint64 reg_id);
 
 #endif // DWARF_ENUM_H
 

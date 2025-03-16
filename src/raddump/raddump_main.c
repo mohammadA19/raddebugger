@@ -173,8 +173,8 @@ entry_point(CmdLine* cmdline)
   String8List* out = push_array(arena, String8List, 1);
   String8      indent;
   {
-    U64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
-    U8* indent_buffer      = push_array(arena, U8, indent_buffer_size);
+    uint64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
+    uint8* indent_buffer      = push_array(arena, uint8, indent_buffer_size);
     MemorySet(indent_buffer, ' ', indent_buffer_size);
     indent = str8(indent_buffer, 0);
   }
@@ -184,7 +184,7 @@ entry_point(CmdLine* cmdline)
   {
     for (CmdLineOpt* cmd = cmdline->options.first; cmd != 0; cmd = cmd->next) {
       RD_Option opt = 0;
-      for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
+      for (uint64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
         String8 opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
         if (str8_match(cmd->string, opt_name, StringMatchFlag_CaseInsensitive)) {
           opt = g_rd_dump_option_map[opt_idx].opt;
@@ -207,14 +207,14 @@ entry_point(CmdLine* cmdline)
   // print help
   if (opts & RD_Option_Help) {
     int longest_cmd_switch = 0;
-    for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
+    for (uint64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
       longest_cmd_switch = Max(longest_cmd_switch, strlen(g_rd_dump_option_map[opt_idx].name));
     }
     rd_printf(BUILD_TITLE_STRING_LITERAL);
     rd_newline();
     rd_printf("# Help");
     rd_indent();
-    for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
+    for (uint64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
       char* name = g_rd_dump_option_map[opt_idx].name;
       char* help = g_rd_dump_option_map[opt_idx].help;
       int indent_size = longest_cmd_switch - strlen(name) + 1;

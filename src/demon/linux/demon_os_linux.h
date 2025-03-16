@@ -31,7 +31,7 @@
 // Demon Linux Entity Extensions
 //  Process: ext_u64 set to memory file descriptor
 //  Thread : ext_u64 cast to DEMON_LNX_ThreadExt
-//  Module : ext_u64 set to U64 (address of name)
+//  Module : ext_u64 set to uint64 (address of name)
 
 struct DEMON_LNX_ThreadExt{
   B32 expecting_dummy_sigstop;
@@ -47,23 +47,23 @@ struct DEMON_LNX_AttachNode{
 
 struct DEMON_LNX_ProcessAux{
   B32 filled;
-  U64 phnum;
-  U64 phent;
-  U64 phdr;
-  U64 execfn;
+  uint64 phnum;
+  uint64 phent;
+  uint64 phdr;
+  uint64 execfn;
 }
 
 struct DEMON_LNX_PhdrInfo{
   Rng1U64 range;
-  U64 dynamic;
+  uint64 dynamic;
 }
 
 struct DEMON_LNX_ModuleNode{
   DEMON_LNX_ModuleNode* next;
-  U64 vaddr;
-  U64 size;
-  U64 name;
-  U64 already_known;
+  uint64 vaddr;
+  uint64 size;
+  uint64 name;
+  uint64 already_known;
 }
 
 struct DEMON_LNX_EntityNode{
@@ -79,78 +79,78 @@ struct DEMON_LNX_EntityNode{
 // we define them here so that we have them all "at once"
 
 struct DEMON_LNX_UserRegsX64{
-  U64 r15;
-	U64 r14;
-	U64 r13;
-	U64 r12;
-	U64 rbp;
-	U64 rbx;
-	U64 r11;
-	U64 r10;
-	U64 r9;
-	U64 r8;
-	U64 rax;
-	U64 rcx;
-	U64 rdx;
-	U64 rsi;
-	U64 rdi;
-	U64 orig_rax;
-	U64 rip;
-	U64 cs;
-	U64 rflags;
-	U64 rsp;
-	U64 ss;
-	U64 fsbase;
-	U64 gsbase;
-	U64 ds;
-	U64 es;
-	U64 fs;
-	U64 gs;
+  uint64 r15;
+	uint64 r14;
+	uint64 r13;
+	uint64 r12;
+	uint64 rbp;
+	uint64 rbx;
+	uint64 r11;
+	uint64 r10;
+	uint64 r9;
+	uint64 r8;
+	uint64 rax;
+	uint64 rcx;
+	uint64 rdx;
+	uint64 rsi;
+	uint64 rdi;
+	uint64 orig_rax;
+	uint64 rip;
+	uint64 cs;
+	uint64 rflags;
+	uint64 rsp;
+	uint64 ss;
+	uint64 fsbase;
+	uint64 gsbase;
+	uint64 ds;
+	uint64 es;
+	uint64 fs;
+	uint64 gs;
 }
 
 struct DEMON_LNX_UserX64{
   DEMON_LNX_UserRegsX64 regs;
-  S32 u_fpvalid, _pad0;
+  int32 u_fpvalid, _pad0;
   SYMS_XSaveLegacy i387;
-  U64 u_tsize, u_dsize, u_ssize, start_code, start_stack;
-  U64 signal;
-  S32 reserved, _pad1;
-  U64 u_ar0, u_fpstate;
-  U64 magic;
-  U8  u_comm[32];
-  U64 u_debugreg[8];
+  uint64 u_tsize, u_dsize, u_ssize, start_code, start_stack;
+  uint64 signal;
+  int32 reserved, _pad1;
+  uint64 u_ar0, u_fpstate;
+  uint64 magic;
+  uint8  u_comm[32];
+  uint64 u_debugreg[8];
 }
 
 struct DEMON_LNX_UserRegsX86{
-  U32 ebx;
-	U32 ecx;
-	U32 edx;
-	U32 esi;
-	U32 edi;
-	U32 ebp;
-	U32 eax;
-	U32 ds;
-	U32 es;
-	U32 fs;
-	U32 gs;
-	U32 orig_eax;
-	U32 eip;
-	U32 cs;
-	U32 eflags;
-	U32 sp;
-	U32 ss;
+  uint32 ebx;
+	uint32 ecx;
+	uint32 edx;
+	uint32 esi;
+	uint32 edi;
+	uint32 ebp;
+	uint32 eax;
+	uint32 ds;
+	uint32 es;
+	uint32 fs;
+	uint32 gs;
+	uint32 orig_eax;
+	uint32 eip;
+	uint32 cs;
+	uint32 eflags;
+	uint32 sp;
+	uint32 ss;
 }
 
 struct DEMON_LNX_UserX86{
   DEMON_LNX_UserRegsX86 regs;
-  S32 u_fpvalid;
+  int32 u_fpvalid;
   SYMS_FSave i387;
-  U32 u_tsize, u_dsize, u_ssize, start_code, start_stack;
-  S32 signal, reserved;
-  U32 u_ar0, u_fpstate;
-  U32 magic;
-  U8  u_comm[32];
-  U32 u_debugreg[8];
+  uint32 u_tsize, u_dsize, u_ssize, start_code, start_stack;
+  int32 signal, reserved;
+  uint32 u_ar0, u_fpstate;
+  uint32 magic;
+  uint8  u_comm[32];
+  uint32 u_debugreg[8];
 }
 
 ////////////////////////////////
@@ -176,13 +176,13 @@ typedef int DEMON_LNX_MapsEntryType;
 
 struct DEMON_LNX_MapsEntry
 {
-  U64 address_lo;
-  U64 address_hi;
+  uint64 address_lo;
+  uint64 address_hi;
   DEMON_LNX_PermFlags perms;
-  U64 offset;
-  U32 dev_major;
-  U32 dev_minor;
-  U64 inode;
+  uint64 offset;
+  uint32 dev_major;
+  uint32 dev_minor;
+  uint64 inode;
   String8 pathname;
   DEMON_LNX_MapsEntryType type;
   pid_t stack_tid;
@@ -201,12 +201,12 @@ int                   demon_lnx_open_memory_fd_for_pid(pid_t pid);
 Arch          demon_lnx_arch_from_pid(pid_t pid);
 DEMON_LNX_ProcessAux  demon_lnx_aux_from_pid(pid_t pid, Arch arch);
 DEMON_LNX_PhdrInfo    demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit,
-                                                               U64 phvaddr, U64 phstride, U64 phcount);
+                                                               uint64 phvaddr, uint64 phstride, uint64 phcount);
 DEMON_LNX_ModuleNode* demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process);
 
-U64     demon_lnx_read_memory(int memory_fd, void* dst, U64 src, U64 size);
-B32     demon_lnx_write_memory(int memory_fd, U64 dst, void* src, U64 size);
-String8 demon_lnx_read_memory_str(Arena* arena, int memory_fd, U64 address);
+uint64     demon_lnx_read_memory(int memory_fd, void* dst, uint64 src, uint64 size);
+B32     demon_lnx_write_memory(int memory_fd, uint64 dst, void* src, uint64 size);
+String8 demon_lnx_read_memory_str(Arena* arena, int memory_fd, uint64 address);
 
 void demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64* dst, DEMON_LNX_UserRegsX64* src);
 void demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64* dst, SYMS_RegX64* src);

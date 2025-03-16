@@ -6,7 +6,7 @@
 #ifndef CODEVIEW_META_H
 #define CODEVIEW_META_H
 
-typedef U16 CV_NumericKind;
+typedef uint16 CV_NumericKind;
 enum CV_NumericKindEnum
 {
 CV_NumericKind_CHAR = 0x8000,
@@ -34,7 +34,7 @@ CV_NumericKind_UTF8STRING = 0x801b,
 CV_NumericKind_FLOAT16 = 0x801c,
 }
 
-typedef U16 CV_Arch;
+typedef uint16 CV_Arch;
 enum CV_ArchEnum
 {
 CV_Arch_8080 = 0x00,
@@ -104,7 +104,7 @@ CV_Arch_ALPHA_21064 = CV_Arch_ALPHA,
 CV_Arch_AMD64       = CV_Arch_X64,
 }
 
-typedef U16 CV_AllReg;
+typedef uint16 CV_AllReg;
 enum CV_AllRegEnum
 {
 CV_AllReg_ERR = 30000,
@@ -122,7 +122,7 @@ CV_AllReg_ENV = 30011,
 CV_AllReg_CMDLN = 30012,
 }
 
-typedef U16 CV_SymKind;
+typedef uint16 CV_SymKind;
 enum CV_SymKindEnum
 {
 CV_SymKind_COMPILE = 0x0001,
@@ -320,7 +320,7 @@ CV_SymKind_FASTLINK = 0x1167,
 CV_SymKind_INLINEES = 0x1168,
 }
 
-typedef U8 CV_BasicType;
+typedef uint8 CV_BasicType;
 enum CV_BasicTypeEnum
 {
 CV_BasicType_NOTYPE = 0x00,
@@ -378,7 +378,7 @@ CV_BasicType_CHAR8 = 0x7c,
 CV_BasicType_PTR = 0xf0,
 }
 
-typedef U16 CV_LeafKind;
+typedef uint16 CV_LeafKind;
 enum CV_LeafKindEnum
 {
 CV_LeafKind_NOTYPE = 0x0000,
@@ -523,6 +523,6 @@ String8 cv_string_from_sym_kind(CV_SymKind v);
 String8 cv_string_from_basic_type(CV_BasicType v);
 String8 cv_type_name_from_basic_type(CV_BasicType v);
 String8 cv_string_from_leaf_kind(CV_LeafKind v);
-U64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
-U64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
+uint64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
+uint64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
 #endif // CODEVIEW_META_H

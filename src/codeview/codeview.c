@@ -42,7 +42,7 @@ cv_arch_from_coff_machine(COFF_MachineType machine)
   return arch;
 }
 
-U64
+uint64
 cv_size_from_reg(CV_Arch arch, CV_Reg reg)
 {
   switch(arch)
@@ -66,7 +66,7 @@ cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
   return 0;
 }
 
-U64
+uint64
 cv_size_from_reg_x86(CV_Reg reg)
 {
   switch(reg)
@@ -78,7 +78,7 @@ cv_size_from_reg_x86(CV_Reg reg)
   return 0;
 }
 
-U64
+uint64
 cv_size_from_reg_x64(CV_Reg reg)
 {
   switch(reg)
@@ -139,10 +139,10 @@ cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
   return fp_reg;
 }
 
-U32
-cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
+uint32
+cv_map_encoded_base_pointer(CV_Arch arch, uint32 encoded_frame_reg)
 {
-  U32 r = 0;
+  uint32 r = 0;
   switch (arch) {
   case CV_Arch_8086: {
     switch (encoded_frame_reg) {

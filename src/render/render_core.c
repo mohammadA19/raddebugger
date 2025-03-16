@@ -26,7 +26,7 @@ r_handle_match(R_Handle a, R_Handle b)
 //~ rjf: Batch Type Functions
 
 R_BatchList
-r_batch_list_make(U64 instance_size)
+r_batch_list_make(uint64 instance_size)
 {
   R_BatchList list = {0};
   list.bytes_per_inst = instance_size;
@@ -34,7 +34,7 @@ r_batch_list_make(U64 instance_size)
 }
 
 void *
-r_batch_list_push_inst(Arena* arena, R_BatchList* list, U64 batch_inst_cap)
+r_batch_list_push_inst(Arena* arena, R_BatchList* list, uint64 batch_inst_cap)
 {
   void* inst = 0;
   {
@@ -43,7 +43,7 @@ r_batch_list_push_inst(Arena* arena, R_BatchList* list, U64 batch_inst_cap)
     {
       n = push_array(arena, R_BatchNode, 1);
       n->v.byte_cap = batch_inst_cap*list->bytes_per_inst;
-      n->v.v = push_array_no_zero(arena, U8, n->v.byte_cap); 
+      n->v.v = push_array_no_zero(arena, uint8, n->v.byte_cap); 
       SLLQueuePush(list->first, list->last, n);
       list->batch_count += 1;
     }
@@ -71,7 +71,7 @@ r_pass_from_kind(Arena* arena, R_PassList* list, R_PassKind kind)
     SLLQueuePush(list->first, list->last, n);
     list->count += 1;
     n->v.kind = kind;
-    n->v.params = push_array(arena, U8, r_pass_kind_params_size_table[kind]);
+    n->v.params = push_array(arena, uint8, r_pass_kind_params_size_table[kind]);
   }
   return &n->v;
 }

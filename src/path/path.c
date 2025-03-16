@@ -37,7 +37,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
   String8List dst_folders = str8_split_path(scratch.arena, dst_folder);
   
   // rjf: count # of backtracks to get from src -> dest
-  U64 num_backtracks = src_folders.node_count;
+  uint64 num_backtracks = src_folders.node_count;
   for(String8Node* src_n = src_folders.first, *bp_n = dst_folders.first;
       src_n != 0 && bp_n != 0;
       src_n = src_n->next, bp_n = bp_n->next)
@@ -64,7 +64,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
   {
     // rjf: build backtrack parts
     String8List dst_path_strs = {0};
-    for(U64 idx = 0; idx < num_backtracks; idx += 1)
+    for(uint64 idx = 0; idx < num_backtracks; idx += 1)
     {
       str8_list_push(scratch.arena, &dst_path_strs, str8_lit(".."));
     }

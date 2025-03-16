@@ -11,36 +11,36 @@ struct DW_RegsX64
 {
   union {
     struct {
-      U64 rax;
-      U64 rdx;
-      U64 rcx;
-      U64 rbx;
-      U64 rsi;
-      U64 rdi;
-      U64 rbp;
-      U64 rsp;
-      U64 r8;
-      U64 r9;
-      U64 r10;
-      U64 r11;
-      U64 r12;
-      U64 r13;
-      U64 r14;
-      U64 r15;
-      U64 rip;
+      uint64 rax;
+      uint64 rdx;
+      uint64 rcx;
+      uint64 rbx;
+      uint64 rsi;
+      uint64 rdi;
+      uint64 rbp;
+      uint64 rsp;
+      uint64 r8;
+      uint64 r9;
+      uint64 r10;
+      uint64 r11;
+      uint64 r12;
+      uint64 r13;
+      uint64 r14;
+      uint64 r15;
+      uint64 rip;
     };
-    U64 r[17];
+    uint64 r[17];
   };
 }
 
 ////////////////////////////////
 //~ Dwarf Expression Eval Types
 
-#define DW_READ_MEMORY_SIG(name) U64 name(U64 addr, U64 size, void* out, void* ud)
+#define DW_READ_MEMORY_SIG(name) uint64 name(uint64 addr, uint64 size, void* out, void* ud)
 typedef DW_READ_MEMORY_SIG(DW_ReadMemorySig);
 
 //- machine configuration types
-typedef String8 DW_ExprResolveCallFunc(void* call_user_ptr, U64 p);
+typedef String8 DW_ExprResolveCallFunc(void* call_user_ptr, uint64 p);
 
 struct DW_ExprMachineCallConfig
 {
@@ -50,21 +50,21 @@ struct DW_ExprMachineCallConfig
 
 struct DW_ExprMachineConfig
 {
-  U64                       max_step_count; // (read only in the eval functions)
+  uint64                       max_step_count; // (read only in the eval functions)
   DW_ReadMemorySig*         read_memory;
   void*                     read_memory_ud;
   DW_RegsX64*               regs;
-  U64*                      text_section_base;
-  U64*                      frame_base;
-  U64*                      object_address;
-  U64*                      tls_address;
-  U64*                      cfa;
+  uint64*                      text_section_base;
+  uint64*                      frame_base;
+  uint64*                      object_address;
+  uint64*                      tls_address;
+  uint64*                      cfa;
   DW_ExprMachineCallConfig  call;
 }
 
 
 //- detail analysis types
-enum DW_ExprFlags : U32
+enum DW_ExprFlags : uint32
 {
   DW_ExprFlag_UsesTextBase       = (1 << 0),
   DW_ExprFlag_UsesMemory         = (1 << 1),
@@ -89,7 +89,7 @@ struct DW_ExprAnalysis
 struct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask* next;
-  U64                         p;
+  uint64                         p;
   String8                     data;
 }
 
@@ -134,13 +134,13 @@ struct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
   union {
-    U64     addr;
-    U64     reg_idx;
-    U64     val;
+    uint64     addr;
+    uint64     reg_idx;
+    uint64     val;
     String8 val_long;
     struct {
       DW_LocFailKind fail_kind;
-      U64 fail_data;
+      uint64 fail_data;
     };
   };
 }
@@ -155,8 +155,8 @@ struct DW_Piece
   
   struct DW_Piece* next;
   DW_SimpleLoc     loc;
-  U64              bit_size;
-  U64              bit_off;
+  uint64              bit_size;
+  uint64              bit_off;
   B32              is_bit_loc;
 }
 
@@ -187,7 +187,7 @@ struct DW_Location
   
   DW_Piece* first_piece;
   DW_Piece* last_piece;
-  U64       count;
+  uint64       count;
   
   DW_SimpleLoc non_piece_loc;
 }
@@ -197,29 +197,29 @@ struct DW_Location
 struct DW_ExprStackNode
 {
   struct DW_ExprStackNode* next;
-  U64                      val;
+  uint64                      val;
 }
 
 struct DW_ExprStack
 {
   DW_ExprStackNode* stack;
   DW_ExprStackNode* free_nodes;
-  U64               count;
+  uint64               count;
 }
 
 struct DW_ExprCall
 {
   struct DW_ExprCall* next;
   void*               ptr;
-  U64                 size;
-  U64                 cursor;
+  uint64                 size;
+  uint64                 cursor;
 }
 
 struct DW_ExprCallStack
 {
   DW_ExprCall* stack;
   DW_ExprCall* free_calls;
-  U64          depth;
+  uint64          depth;
 }
 
 ////////////////////////////////
@@ -243,7 +243,7 @@ struct DW_ExprCallStack
 // If the expression contains more than one op than the analyzer fails with
 // "too complicated".
 
-DW_SimpleLoc dw_expr__analyze_fast(void* base, Rng1U64 range, U64 text_section_base);
+DW_SimpleLoc dw_expr__analyze_fast(void* base, Rng1U64 range, uint64 text_section_base);
 
 // This analyzer does a one-pass scan through the expression to
 // help a caller determine what to expect before doing a full evaluation which
@@ -282,19 +282,19 @@ DW_Location dw_expr__eval(Arena* arena_optional, void* base, Rng1U64 range, DW_E
 
 //- dw expr val stack
 DW_ExprStack dw_expr__stack_make(Arena* arena);
-void         dw_expr__stack_push(Arena* arena, DW_ExprStack* stack, U64 x);
-U64          dw_expr__stack_pop(DW_ExprStack* stack);
-U64          dw_expr__stack_pick(DW_ExprStack* stack, U64 idx);
+void         dw_expr__stack_push(Arena* arena, DW_ExprStack* stack, uint64 x);
+uint64          dw_expr__stack_pop(DW_ExprStack* stack);
+uint64          dw_expr__stack_pick(DW_ExprStack* stack, uint64 idx);
 B32          dw_expr__stack_is_empty(DW_ExprStack* stack);
 
 //- dw expr call stack
 DW_ExprCall* dw_expr__call_top(DW_ExprCallStack* stack);
-void         dw_expr__call_push(Arena* arena, DW_ExprCallStack* stack, void* ptr, U64 size);
+void         dw_expr__call_push(Arena* arena, DW_ExprCallStack* stack, void* ptr, uint64 size);
 void         dw_expr__call_pop(DW_ExprCallStack* stack);
 
 
 //- analysis tasks
-DW_ExprAnalysisTask* dw_expr__analysis_task_from_p(DW_ExprAnalysisTask* first, U64 p);
+DW_ExprAnalysisTask* dw_expr__analysis_task_from_p(DW_ExprAnalysisTask* first, uint64 p);
 
 #endif //DWARF_EXPR_H
 

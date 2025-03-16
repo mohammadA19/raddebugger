@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 LNK_Reloc *
-lnk_reloc_list_reserve(Arena* arena, LNK_RelocList* list, U64 count)
+lnk_reloc_list_reserve(Arena* arena, LNK_RelocList* list, uint64 count)
 {
   LNK_Reloc* arr = NULL;
   if (count) {
@@ -45,23 +45,23 @@ lnk_reloc_list_concat_in_place(LNK_RelocList* list, LNK_RelocList* to_concat)
 }
 
 void
-lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, U64 count)
+lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, uint64 count)
 {
   SLLConcatInPlaceArray(list, arr, count);
 }
 
 LNK_RelocList **
-lnk_make_reloc_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count)
+lnk_make_reloc_list_arr_arr(Arena* arena, uint64 slot_count, uint64 per_count)
 {
   LNK_RelocList** arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
-  for (U64 i = 0; i < slot_count; i += 1) {
+  for (uint64 i = 0; i < slot_count; i += 1) {
     arr_arr[i] = push_array(arena, LNK_RelocList, per_count);
   }
   return arr_arr;
 }
 
 LNK_RelocList
-lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK_Chunk* chunk, LNK_SymbolArray symbol_array, COFF_Reloc* reloc_v, U64 reloc_count)
+lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK_Chunk* chunk, LNK_SymbolArray symbol_array, COFF_Reloc* reloc_v, uint64 reloc_count)
 {
   LNK_RelocList reloc_list = {0};
 
@@ -73,12 +73,12 @@ lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK
   for (; reloc_ptr < reloc_opl; ++reloc_ptr, ++coff_reloc_ptr) {
     LNK_RelocType  type        = lnk_ext_reloc_type_from_coff(machine, coff_reloc_ptr->type);
     LNK_Chunk*     reloc_chunk = chunk;
-    U64            apply_off   = coff_reloc_ptr->apply_off;
+    uint64            apply_off   = coff_reloc_ptr->apply_off;
     LNK_Symbol*    symbol      = symbol_array.v + coff_reloc_ptr->isymbol;
 
     if (chunk->type == LNK_Chunk_List) {
       reloc_chunk = chunk->u.list->last->data;
-      U64 cursor = 0;
+      uint64 cursor = 0;
       for (LNK_ChunkNode* c = chunk->u.list->first; c != 0; c = c->next) {
         Assert(c->data->type == LNK_Chunk_Leaf);
         if (coff_reloc_ptr->apply_off < cursor + c->data->u.leaf.size) {
@@ -104,7 +104,7 @@ LNK_Reloc **
 lnk_reloc_array_from_list(Arena* arena, LNK_RelocList list)
 {
   LNK_Reloc** arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
-  U64 count = 0;
+  uint64 count = 0;
   for (LNK_Reloc* node = list.first; node != 0; node = node->next) {
     Assert(count < list.count);
     arr[count++] = node;
@@ -113,7 +113,7 @@ lnk_reloc_array_from_list(Arena* arena, LNK_RelocList list)
 }
 
 LNK_RelocType
-lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type)
+lnk_ext_reloc_type_from_coff(COFF_MachineType machine, uint32 type)
 {
   LNK_RelocType result = LNK_Reloc_NULL;
   switch (machine) {
@@ -145,10 +145,10 @@ lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type)
   return result;
 }
 
-U32
+uint32
 lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type)
 {
-  U32 result = 0;
+  uint32 result = 0;
   switch (machine) {
   case COFF_Machine_X64: {
     switch (type) {

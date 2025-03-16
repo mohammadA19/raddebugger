@@ -3,33 +3,33 @@
 
 //- Hasher
 
-U64
+uint64
 cv_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  uint64 result = 5381;
+  for(uint64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
   return result;
 }
 
-U64
+uint64
 cv_hash_from_item_id(CV_ItemId item_id)
 {
-  U64 result = cv_hash_from_string(str8_struct(&item_id));
+  uint64 result = cv_hash_from_string(str8_struct(&item_id));
   return result;
 }
 
 //- Numeric Decoder
 
 CV_NumericParsed
-cv_numeric_from_data_range(U8* first, U8* opl)
+cv_numeric_from_data_range(uint8* first, uint8* opl)
 {
   CV_NumericParsed result = {0};
   if(first + 2 <= opl)
   {
-    U16 x = *(U16*)first;
+    uint16 x = *(uint16*)first;
     if(x < 0x8000)
     {
       result.kind = CV_NumericKind_USHORT;
@@ -38,7 +38,7 @@ cv_numeric_from_data_range(U8* first, U8* opl)
     }
     else
     {
-      U64 val_size = 0;
+      uint64 val_size = 0;
       switch(x)
       {
         case CV_NumericKind_CHAR:      val_size = 1; break;
@@ -76,8 +76,8 @@ cv_numeric_from_data_range(U8* first, U8* opl)
   return result;
 }
 
-U64
-cv_read_numeric(String8 data, U64 offset, CV_NumericParsed* out)
+uint64
+cv_read_numeric(String8 data, uint64 offset, CV_NumericParsed* out)
 {
   *out = cv_numeric_from_data_range(data.str + offset, data.str + data.size);
   return out->encoded_size;
@@ -131,58 +131,58 @@ cv_numeric_fits_in_f64(CV_NumericParsed* num)
   return result;
 }
 
-U64
+uint64
 cv_u64_from_numeric(CV_NumericParsed* num)
 {
-  U64 result = 0;
+  uint64 result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_USHORT:   {result = *(U16*)num->val;}break;
-    case CV_NumericKind_ULONG:    {result = *(U32*)num->val;}break;
-    case CV_NumericKind_UQUADWORD:{result = *(U64*)num->val;}break;
+    case CV_NumericKind_USHORT:   {result = *(uint16*)num->val;}break;
+    case CV_NumericKind_ULONG:    {result = *(uint32*)num->val;}break;
+    case CV_NumericKind_UQUADWORD:{result = *(uint64*)num->val;}break;
   }
   return result;
 }
 
-S64
+int64
 cv_s64_from_numeric(CV_NumericParsed* num)
 {
-  S64 result = 0;
+  int64 result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_CHAR:     {result = *(S8*)num->val;}break;
-    case CV_NumericKind_SHORT:    {result = *(S16*)num->val;}break;
-    case CV_NumericKind_LONG:     {result = *(S32*)num->val;}break;
-    case CV_NumericKind_QUADWORD: {result = *(S64*)num->val;}break;
+    case CV_NumericKind_CHAR:     {result = *(int8*)num->val;}break;
+    case CV_NumericKind_SHORT:    {result = *(int16*)num->val;}break;
+    case CV_NumericKind_LONG:     {result = *(int32*)num->val;}break;
+    case CV_NumericKind_QUADWORD: {result = *(int64*)num->val;}break;
   }
   return(result);
 }
 
-F64
+double
 cv_f64_from_numeric(CV_NumericParsed* num)
 {
-  F64 result = 0;
+  double result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_FLOAT32:{result = *(F32*)num->val;}break;
-    case CV_NumericKind_FLOAT64:{result = *(F64*)num->val;}break;
+    case CV_NumericKind_FLOAT32:{result = *(float*)num->val;}break;
+    case CV_NumericKind_FLOAT64:{result = *(double*)num->val;}break;
   }
   return(result);
 }
 
 //- Inline Site Binary Annot Decoder
 
-U64
-cv_decode_inline_annot_u32(String8 data, U64 offset, U32* out_value)
+uint64
+cv_decode_inline_annot_u32(String8 data, uint64 offset, uint32* out_value)
 {
-  U64 cursor = offset;
+  uint64 cursor = offset;
   
   // rjf: read header
-  U8 header = 0;
+  uint8 header = 0;
   cursor += str8_deserial_read_struct(data, cursor, &header);
   
   // rjf: decode value
-  U32 value = 0;
+  uint32 value = 0;
   {
     // 1 byte
     if((header & 0x80) == 0)
@@ -193,7 +193,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32* out_value)
     // 2 bytes
     else if((header & 0xC0) == 0x80 && cursor+1 <= data.size)
     {
-      U8 second_byte;
+      uint8 second_byte;
       cursor += str8_deserial_read_struct(data, cursor, &second_byte);
       value = ((header & 0x3F) << 8) | second_byte;
     }
@@ -201,11 +201,11 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32* out_value)
     // 4 bytes
     else if((header & 0xE0) == 0xC0 && cursor+3 <= data.size)
     {
-      U8 second_byte, third_byte, fourth_byte;
+      uint8 second_byte, third_byte, fourth_byte;
       cursor += str8_deserial_read_struct(data, cursor, &second_byte);
       cursor += str8_deserial_read_struct(data, cursor, &third_byte);
       cursor += str8_deserial_read_struct(data, cursor, &fourth_byte);
-      value = (((U32)header & 0x1F) << 24) | ((U32)second_byte << 16) | ((U32)third_byte << 8) | (U32)fourth_byte;
+      value = (((uint32)header & 0x1F) << 24) | ((uint32)second_byte << 16) | ((uint32)third_byte << 8) | (uint32)fourth_byte;
     }
     
     // bad encode
@@ -221,15 +221,15 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32* out_value)
     *out_value = value;
   }
   
-  U64 read_size = cursor - offset;
+  uint64 read_size = cursor - offset;
   return read_size;
 }
 
-U64
-cv_decode_inline_annot_s32(String8 data, U64 offset, S32* out_value)
+uint64
+cv_decode_inline_annot_s32(String8 data, uint64 offset, int32* out_value)
 {
-  U32 value;
-  U64 read_size = cv_decode_inline_annot_u32(data, offset, &value);
+  uint32 value;
+  uint64 read_size = cv_decode_inline_annot_u32(data, offset, &value);
   if(value & 1)
   {
     value = -(value >> 1);
@@ -238,12 +238,12 @@ cv_decode_inline_annot_s32(String8 data, U64 offset, S32* out_value)
   {
     value = value >> 1;
   }
-  *out_value = (S32)value;
+  *out_value = (int32)value;
   return read_size;
 }
 
-S32
-cv_inline_annot_signed_from_unsigned_operand(U32 value)
+int32
+cv_inline_annot_signed_from_unsigned_operand(uint32 value)
 {
   if(value & 1)
   {
@@ -253,17 +253,17 @@ cv_inline_annot_signed_from_unsigned_operand(U32 value)
   {
     value = value >> 1;
   }
-  S32 result = (S32)value;
+  int32 result = (int32)value;
   return result;
 }
 
 CV_C13InlineSiteDecoder
-cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_voff)
+cv_c13_inline_site_decoder_init(uint32 file_off, uint32 first_source_ln, uint32 parent_voff)
 {
   CV_C13InlineSiteDecoder decoder = {0};
   decoder.parent_voff             = parent_voff;
   decoder.file_off                = file_off;
-  decoder.ln                      = (S32)first_source_ln;
+  decoder.ln                      = (int32)first_source_ln;
   decoder.cn                      = 1;
   decoder.ln_changed              = 1;
   return decoder;
@@ -275,7 +275,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
   CV_C13InlineSiteDecoderStep result = {0};
 
   for (; decoder->cursor < binary_annots.size && result.flags == 0; ) {
-    U32 op = CV_InlineBinaryAnnotation_Null;
+    uint32 op = CV_InlineBinaryAnnotation_Null;
     decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &op);
 
     switch (op) {
@@ -291,14 +291,14 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffsetBase: {
       AssertAlways(!"TODO: test case");
-      // U32 delta = 0;
+      // uint32 delta = 0;
       // decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &delta);
       // decoder->code_offset_base = decoder->code_offset;
       // decoder->code_offset_end  = decoder->code_offset + delta;
       // decoder->code_offset     += delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffset: {
-      U32 delta = 0;
+      uint32 delta = 0;
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &delta);
 
       decoder->code_offset += delta;
@@ -315,7 +315,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
       decoder->code_length_changed = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeFile: {
-      U32 old_file_off = decoder->file_off;
+      uint32 old_file_off = decoder->file_off;
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->file_off);
       decoder->file_off_changed = old_file_off != decoder->file_off;
       // Compiler isn't obligated to terminate code sequence before chaning files,
@@ -323,7 +323,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
       decoder->code_length_changed = decoder->file_off_changed;
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineOffset: {
-      S32 delta = 0;
+      int32 delta = 0;
       decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
 
       decoder->ln         += delta;
@@ -331,7 +331,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineEndDelta: {
       AssertAlways(!"TODO: test case");
-      // S32 end_delta = 1;
+      // int32 end_delta = 1;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
       // decoder->ln += end_delta;
     } break;
@@ -341,22 +341,22 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnStart: {
       AssertAlways(!"TODO: test case");
-      // S32 delta;
+      // int32 delta;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
       // decoder->cn += delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnEndDelta: {
       AssertAlways(!"TODO: test case");
-      // S32 end_delta;
+      // int32 end_delta;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
       // decoder->cn += end_delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: {
-      U32 code_offset_and_line_offset = 0;
+      uint32 code_offset_and_line_offset = 0;
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &code_offset_and_line_offset);
 
-      S32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
-      U32 code_delta = (code_offset_and_line_offset & 0xf);
+      int32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
+      uint32 code_delta = (code_offset_and_line_offset & 0xf);
 
       decoder->code_offset += code_delta;
       decoder->ln          += line_delta;
@@ -370,7 +370,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
       decoder->ln_changed          = 1;
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset: {
-      U32 offset_delta = 0;
+      uint32 offset_delta = 0;
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &decoder->code_length);
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &offset_delta); 
 
@@ -386,16 +386,16 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnEnd: {
       AssertAlways(!"TODO: test case");
-      // U32 column_end = 0;
+      // uint32 column_end = 0;
       // decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &column_end);
     } break;
     }
 
-    U64 line_code_offset = decoder->code_offset;
+    uint64 line_code_offset = decoder->code_offset;
 
     if (decoder->code_length_changed) {
       // compute upper bound of the range
-      U64 code_offset_hi = decoder->code_offset + decoder->code_length;
+      uint64 code_offset_hi = decoder->code_offset + decoder->code_length;
 
       // can last code range be extended to cover current sequence too?
       if (decoder->last_range.max == decoder->parent_voff + decoder->code_offset_lo) {
@@ -573,7 +573,7 @@ cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind)
 }
 
 CV_TypeIndexInfo *
-cv_symbol_type_index_info_push(Arena* arena, CV_TypeIndexInfoList* list, CV_TypeIndexSource source, U64 offset)
+cv_symbol_type_index_info_push(Arena* arena, CV_TypeIndexInfoList* list, CV_TypeIndexSource source, uint64 offset)
 {
   CV_TypeIndexInfo* info = push_array_no_zero(arena, CV_TypeIndexInfo, 1);
   info->next   = 0;
@@ -638,7 +638,7 @@ cv_get_symbol_type_index_offsets(Arena* arena, CV_SymKind kind, String8 data)
   case CV_SymKind_INLINEES: {
     Assert(data.size >= sizeof(CV_SymFunctionList));
     CV_SymFunctionList* func_list = (CV_SymFunctionList*)data.str;
-    for (U64 i = 0; i < func_list->count; ++i) {
+    for (uint64 i = 0; i < func_list->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_SymFunctionList) + i * sizeof(CV_TypeIndex));
     }
   } break;
@@ -727,7 +727,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_BUILDINFO: {
     Assert(data.size >= sizeof(CV_LeafBuildInfo));
     CV_LeafBuildInfo* build_info = (CV_LeafBuildInfo *)data.str;
-    for (U16 i = 0; i < build_info->count; ++i) {
+    for (uint16 i = 0; i < build_info->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafBuildInfo) + i * sizeof(CV_ItemId));
     }
   } break;
@@ -752,7 +752,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_VFTPATH: {
     Assert(sizeof(CV_LeafVFPath) <= data.size);
     CV_LeafVFPath* vfpath = (CV_LeafVFPath *)data.str;
-    for (U32 i = 0; i < vfpath->count; ++i) {
+    for (uint32 i = 0; i < vfpath->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafVFPath) + i * sizeof(CV_TypeId));
     }
   } break;
@@ -767,22 +767,22 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_SUBSTR_LIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
     CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
-    for (U32 i = 0; i < arg_list->count; ++i) {
+    for (uint32 i = 0; i < arg_list->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
   } break;
   case CV_LeafKind_ARGLIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
     CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
-    for (U32 i = 0; i < arg_list->count; ++i) {
+    for (uint32 i = 0; i < arg_list->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
   } break;
   case CV_LeafKind_LIST: 
   case CV_LeafKind_FIELDLIST: {
-    for (U64 cursor = 0; cursor < data.size; ) {
+    for (uint64 cursor = 0; cursor < data.size; ) {
       CV_LeafKind list_member_kind = 0;
-      U64 read_size = str8_deserial_read_struct(data, cursor, &list_member_kind);
+      uint64 read_size = str8_deserial_read_struct(data, cursor, &list_member_kind);
 
       if(read_size != sizeof(list_member_kind)) {
         Assert(!"malformed LF_FIELDLIST");
@@ -829,7 +829,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
         CV_MethodProp prop = CV_FieldAttribs_Extract_MethodProp(onemethod.attribs);
         if(prop == CV_MethodProp_PureIntro || prop == CV_MethodProp_Intro)
         {
-          cursor += sizeof(U32); // virtoff
+          cursor += sizeof(uint32); // virtoff
         }
 
         String8 name;
@@ -891,10 +891,10 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
     cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, OffsetOf(CV_LeafMethod, list_itype));
   } break;
   case CV_LeafKind_METHODLIST: {
-    for (U64 cursor = 0; cursor < data.size; ) {
+    for (uint64 cursor = 0; cursor < data.size; ) {
       // read method
       CV_LeafMethodListMember method;
-      U64 read_size = str8_deserial_read_struct(data, cursor, &method);
+      uint64 read_size = str8_deserial_read_struct(data, cursor, &method);
 
       // error check read
       if (read_size != sizeof(method)) {
@@ -908,7 +908,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, String8 data
       // take into account intro virtual offset
       CV_MethodProp mprop = CV_FieldAttribs_Extract_MethodProp(method.attribs);
       if (mprop == CV_MethodProp_Intro || mprop == CV_MethodProp_PureIntro) {
-        read_size += sizeof(U32);
+        read_size += sizeof(uint32);
       }
 
       // advance
@@ -955,7 +955,7 @@ cv_get_inlinee_type_index_offsets(Arena* arena, String8 raw_data)
 {
   CV_TypeIndexInfoList list = {0};
 
-  U64 cursor = 0;
+  uint64 cursor = 0;
 
   // first four bytes are always signature
   CV_C13InlineeLinesSig sig = max_U32;
@@ -976,9 +976,9 @@ cv_get_inlinee_type_index_offsets(Arena* arena, String8 raw_data)
     B32 has_extra_files = (sig == CV_C13InlineeLinesSig_EXTRA_FILES);
     if (has_extra_files)
 	{
-      U32 file_count = 0;
+      uint32 file_count = 0;
       cursor += str8_deserial_read_struct(raw_data, cursor, &file_count);
-      cursor += /* file id: */ sizeof(U32) * file_count;
+      cursor += /* file id: */ sizeof(uint32) * file_count;
     }
   }
 
@@ -994,8 +994,8 @@ cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, Stri
     result.count = ti_list.count + 1;
     result.v = push_array_no_zero(arena, String8, result.count);
 
-    U64 cursor = 0;
-    U64 ti_idx = 0;
+    uint64 cursor = 0;
+    uint64 ti_idx = 0;
 
     for(CV_TypeIndexInfo* ti_info = ti_list.first; ti_info != 0; ti_info = ti_info->next, ++ti_idx)
 	{
@@ -1016,10 +1016,10 @@ cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, Stri
   return result;
 }
 
-U64
+uint64
 cv_name_offset_from_symbol(CV_SymKind kind, String8 data)
 {
-  U64 offset = data.size;
+  uint64 offset = data.size;
   switch (kind) {
   case CV_SymKind_COMPILE: break;
   case CV_SymKind_OBJNAME: break;
@@ -1084,9 +1084,9 @@ cv_name_offset_from_symbol(CV_SymKind kind, String8 data)
 String8
 cv_name_from_symbol(CV_SymKind kind, String8 data)
 {
-  U64 buf_off = cv_name_offset_from_symbol(kind, data);
-  U8* buf_ptr = data.str + buf_off;
-  U8* buf_opl = data.str + data.size;
+  uint64 buf_off = cv_name_offset_from_symbol(kind, data);
+  uint8* buf_ptr = data.str + buf_off;
+  uint8* buf_opl = data.str + data.size;
   String8 name = str8_cstring_capped(buf_ptr, buf_opl);
   return name;
 }
@@ -1102,7 +1102,7 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
   case CV_LeafKind_CLASS:
   case CV_LeafKind_STRUCTURE:
   case CV_LeafKind_INTERFACE: {
-    U64 cursor = 0;
+    uint64 cursor = 0;
     
     CV_LeafStruct udt;
     cursor += str8_deserial_read_struct(data, cursor, &udt);
@@ -1121,7 +1121,7 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
 
   case CV_LeafKind_CLASS2:
   case CV_LeafKind_STRUCT2: {
-    U64 cursor = 0;
+    uint64 cursor = 0;
 
     CV_LeafStruct2 udt;
     cursor += str8_deserial_read_struct(data, cursor, &udt);
@@ -1139,7 +1139,7 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
   } break;
   
   case CV_LeafKind_UNION: {
-    U64 cursor = 0;
+    uint64 cursor = 0;
     
     CV_LeafUnion udt;
     cursor += str8_deserial_read_struct(data, cursor, &udt);
@@ -1157,7 +1157,7 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
   } break;
   
   case CV_LeafKind_ENUM: {
-    U64 cursor = 0;
+    uint64 cursor = 0;
     
     CV_LeafEnum udt;
     cursor += str8_deserial_read_struct(data, cursor, &udt);
@@ -1209,32 +1209,32 @@ cv_name_from_udt_info(CV_UDTInfo udt_info)
 //- rjf: record range stream parsing
 
 CV_RecRangeStream*
-cv_rec_range_stream_from_data(Arena* arena, String8 sym_data, U64 sym_align)
+cv_rec_range_stream_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   CV_RecRangeStream* result = push_array(arena, CV_RecRangeStream, 1);
-  U8* data = sym_data.str;
-  U64 cursor = 0;
-  U64 cap = sym_data.size;
+  uint8* data = sym_data.str;
+  uint64 cursor = 0;
+  uint64 cap = sym_data.size;
   for(;cursor + sizeof(CV_RecHeader) <= cap;)
   {
     // setup a new chunk
     CV_RecRangeChunk* cur_chunk = push_array_aligned(arena, CV_RecRangeChunk, 1, 64);
     SLLQueuePush(result->first_chunk, result->last_chunk, cur_chunk);
-    U64 partial_count = 0;
+    uint64 partial_count = 0;
     for(;partial_count < CV_REC_RANGE_CHUNK_SIZE && cursor + sizeof(CV_RecHeader) <= cap; partial_count += 1)
     {
       // compute cap
       CV_RecHeader* hdr = (CV_RecHeader*)(data + cursor);
-      U64 symbol_cap_unclamped = cursor + 2 + hdr->size;
-      U64 symbol_cap = ClampTop(symbol_cap_unclamped, cap);
+      uint64 symbol_cap_unclamped = cursor + 2 + hdr->size;
+      uint64 symbol_cap = ClampTop(symbol_cap_unclamped, cap);
       
       // push on range
       cur_chunk->ranges[partial_count].off = cursor + 2;
       cur_chunk->ranges[partial_count].hdr = *hdr;
       
       // update cursor
-      U32 next_pos = AlignPow2(symbol_cap, sym_align);
+      uint32 next_pos = AlignPow2(symbol_cap, sym_align);
       cursor = next_pos;
     }
     result->total_count += partial_count;
@@ -1245,13 +1245,13 @@ cv_rec_range_stream_from_data(Arena* arena, String8 sym_data, U64 sym_align)
 CV_RecRangeArray
 cv_rec_range_array_from_stream(Arena* arena, CV_RecRangeStream* stream)
 {
-  U64 total_count = stream->total_count;
+  uint64 total_count = stream->total_count;
   CV_RecRange* ranges = push_array_no_zero_aligned(arena, CV_RecRange, total_count, 8);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(CV_RecRangeChunk* chunk = stream->first_chunk; chunk != 0; chunk = chunk->next)
   {
-    U64 copy_count_raw = total_count - idx;
-    U64 copy_count = ClampTop(copy_count_raw, CV_REC_RANGE_CHUNK_SIZE);
+    uint64 copy_count_raw = total_count - idx;
+    uint64 copy_count = ClampTop(copy_count_raw, CV_REC_RANGE_CHUNK_SIZE);
     MemoryCopy(ranges + idx, chunk->ranges, copy_count*sizeof(CV_RecRange));
     idx += copy_count;
   }
@@ -1264,7 +1264,7 @@ cv_rec_range_array_from_stream(Arena* arena, CV_RecRangeStream* stream)
 //- rjf: sym stream parsing
 
 CV_SymParsed *
-cv_sym_from_data(Arena* arena, String8 sym_data, U64 sym_align)
+cv_sym_from_data(Arena* arena, String8 sym_data, uint64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   ProfBeginFunction();
@@ -1285,8 +1285,8 @@ cv_sym_from_data(Arena* arena, String8 sym_data, U64 sym_align)
     CV_RecRange* opl = range + result->sym_ranges.count;
     for(;range < opl; range += 1)
     {
-      U8* first = sym_data.str + range->off + 2;
-      U64 cap = range->hdr.size - 2;
+      uint8* first = sym_data.str + range->off + 2;
+      uint64 cap = range->hdr.size - 2;
       switch(range->hdr.kind)
       {
         case CV_SymKind_COMPILE:
@@ -1369,20 +1369,20 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
   CV_C13SubSectionNode* file_chksms = 0;
   CV_C13SubSectionNode* first = 0;
   CV_C13SubSectionNode* last = 0;
-  U64 count = 0;
+  uint64 count = 0;
   {
-    U32 cursor = 0;
+    uint32 cursor = 0;
     for(; cursor + sizeof(CV_C13SubSectionHeader) <= c13_data.size;)
     {
       // read header
       CV_C13SubSectionHeader* hdr = (CV_C13SubSectionHeader*)(c13_data.str + cursor);
       
       // get sub section info
-      U32 sub_section_off = cursor + sizeof(*hdr);
-      U32 sub_section_size_raw = hdr->size;
-      U32 after_sub_section_off_unclamped = sub_section_off + sub_section_size_raw;
-      U32 after_sub_section_off = ClampTop(after_sub_section_off_unclamped, c13_data.size);
-      U32 sub_section_size = after_sub_section_off - sub_section_off;
+      uint32 sub_section_off = cursor + sizeof(*hdr);
+      uint32 sub_section_size_raw = hdr->size;
+      uint32 after_sub_section_off_unclamped = sub_section_off + sub_section_size_raw;
+      uint32 after_sub_section_off = ClampTop(after_sub_section_off_unclamped, c13_data.size);
+      uint32 sub_section_size = after_sub_section_off - sub_section_off;
       
       // emit sub section
       if(!(hdr->kind & CV_C13SubSectionKind_IgnoreFlag))
@@ -1407,14 +1407,14 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
   //////////////////////////////
   //- rjf: parse each sub-section
   //
-  U64 inlinee_lines_parsed_slots_count = 4096;
+  uint64 inlinee_lines_parsed_slots_count = 4096;
   CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots = push_array(arena, CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
   for(CV_C13SubSectionNode* node = first;
       node != 0;
       node = node->next)
   {
-    U8* first = c13_data.str + node->off;
-    U32 cap = node->size;
+    uint8* first = c13_data.str + node->off;
+    uint32 cap = node->size;
     switch(node->kind)
     {
       default:{}break;
@@ -1426,13 +1426,13 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
       if(sizeof(CV_C13SubSecLinesHeader) <= cap)
       {
         // read header
-        U32 read_off = 0;
-        U64 read_off_opl = node->size;
+        uint32 read_off = 0;
+        uint64 read_off_opl = node->size;
         CV_C13SubSecLinesHeader* hdr = (CV_C13SubSecLinesHeader*)(first + read_off);
         read_off += sizeof(*hdr);
         
         // rjf: extract section index
-        U32 sec_idx = hdr->sec;
+        uint32 sec_idx = hdr->sec;
         
         // rjf: bad section index -> skip
         if(sec_idx < 1 || sections.count < sec_idx)
@@ -1442,44 +1442,44 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
         
         // extract top level info
         B32 has_cols = !!(hdr->flags & CV_C13SubSecLinesFlag_HasColumns);
-        U64 secrel_off = hdr->sec_off;
-        U64 secrel_opl = secrel_off + hdr->len;
-        U64 sec_base_off = sections.v[sec_idx - 1].voff;
+        uint64 secrel_off = hdr->sec_off;
+        uint64 secrel_opl = secrel_off + hdr->len;
+        uint64 sec_base_off = sections.v[sec_idx - 1].voff;
         
         // read files
         for(;read_off+sizeof(CV_C13File) <= read_off_opl;)
         {
           // rjf: grab next file header
           CV_C13File* file = (CV_C13File*)(first + read_off);
-          U32 file_off = file->file_off;
-          U32 line_count_unclamped = file->num_lines;
-          U32 block_size = file->block_size;
+          uint32 file_off = file->file_off;
+          uint32 line_count_unclamped = file->num_lines;
+          uint32 block_size = file->block_size;
           
           // file_name from file_off
           String8 file_name = {0};
           if(file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
           {
             CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + file_off);
-            U32 name_off = checksum->name_off;
+            uint32 name_off = checksum->name_off;
             file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
                                              (char*)(strtbl.str + strtbl.size));
           }
           
           // array layouts
-          U32 line_item_size = sizeof(CV_C13Line);
+          uint32 line_item_size = sizeof(CV_C13Line);
           if (has_cols){
             line_item_size += sizeof(CV_C13Column);
           }
           
-          U32 line_array_off = read_off + sizeof(*file);
-          U32 line_count_max = (read_off_opl - line_array_off) / line_item_size;
-          U32 line_count = ClampTop(line_count_unclamped, line_count_max);
+          uint32 line_array_off = read_off + sizeof(*file);
+          uint32 line_count_max = (read_off_opl - line_array_off) / line_item_size;
+          uint32 line_count = ClampTop(line_count_unclamped, line_count_max);
           
-          U32 col_array_off = line_array_off + line_count*sizeof(CV_C13Line);
+          uint32 col_array_off = line_array_off + line_count*sizeof(CV_C13Line);
           
           // parse lines
-          U64* voffs = push_array_no_zero(arena, U64, line_count + 1);
-          U32* line_nums = push_array_no_zero(arena, U32, line_count);
+          uint64* voffs = push_array_no_zero(arena, uint64, line_count + 1);
+          uint32* line_nums = push_array_no_zero(arena, uint32, line_count);
           
           {
             CV_C13Line* line_ptr = (CV_C13Line*)(first + line_array_off);
@@ -1487,7 +1487,7 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
             
             // TODO(allen): check order correctness here
             
-            U32 i = 0;
+            uint32 i = 0;
             for (; line_ptr < line_opl; line_ptr += 1, i += 1){
               voffs[i] = line_ptr->off + secrel_off + sec_base_off;
               line_nums[i] = CV_C13LineFlags_Extract_LineNumber(line_ptr->flags);
@@ -1520,8 +1520,8 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
       if(sizeof(CV_C13InlineeLinesSig) <= cap)
       {
         // rjf: read sig
-        U32 read_off = 0;
-        U64 read_off_opl = node->size;
+        uint32 read_off = 0;
+        uint64 read_off_opl = node->size;
         CV_C13InlineeLinesSig* sig = (CV_C13InlineeLinesSig *)(first + read_off);
         read_off += sizeof(*sig);
         
@@ -1537,21 +1537,21 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
           if(hdr->file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
           {
             CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + hdr->file_off);
-            U32 name_off = checksum->name_off;
+            uint32 name_off = checksum->name_off;
             file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
                                              (char*)(strtbl.str + strtbl.size));
           }
           
           // rjf: parse extra files
-          U32 extra_file_count = 0;
-          U32* extra_files = 0;
-          if(*sig == CV_C13InlineeLinesSig_EXTRA_FILES && read_off+sizeof(U32) <= read_off_opl)
+          uint32 extra_file_count = 0;
+          uint32* extra_files = 0;
+          if(*sig == CV_C13InlineeLinesSig_EXTRA_FILES && read_off+sizeof(uint32) <= read_off_opl)
           {
-            U32* extra_file_count_ptr = (U32 *)(first + read_off);
+            uint32* extra_file_count_ptr = (uint32 *)(first + read_off);
             read_off += sizeof(*extra_file_count_ptr);
-            U32 max_extra_file_count = (read_off_opl-read_off)/sizeof(U32);
+            uint32 max_extra_file_count = (read_off_opl-read_off)/sizeof(uint32);
             extra_file_count = Min(*extra_file_count_ptr, max_extra_file_count);
-            extra_files      = (U32 *)(first + read_off);
+            extra_files      = (uint32 *)(first + read_off);
             read_off += sizeof(*extra_files)*extra_file_count;
           }
           
@@ -1566,8 +1566,8 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
           n->v.extra_files      = extra_files;
           
           // rjf: push node into inlinee parse hash table
-          U64 hash = cv_hash_from_item_id(hdr->inlinee);
-          U64 slot_idx = hash%inlinee_lines_parsed_slots_count;
+          uint64 hash = cv_hash_from_item_id(hdr->inlinee);
+          uint64 slot_idx = hash%inlinee_lines_parsed_slots_count;
           SLLStackPush_N(inlinee_lines_parsed_slots[slot_idx], n, hash_next);
         }
       }break;

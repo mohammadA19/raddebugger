@@ -837,26 +837,26 @@ X(Char32)\
 X(UChar8)\
 X(UChar16)\
 X(UChar32)\
-X(U8)\
-X(U16)\
-X(U32)\
-X(U64)\
+X(uint8)\
+X(uint16)\
+X(uint32)\
+X(uint64)\
 X(U128)\
 X(U256)\
 X(U512)\
-X(S8)\
-X(S16)\
-X(S32)\
-X(S64)\
+X(int8)\
+X(int16)\
+X(int32)\
+X(int64)\
 X(S128)\
 X(S256)\
 X(S512)\
 X(Bool)\
 X(F16)\
-X(F32)\
+X(float)\
 X(F32PP)\
 X(F48)\
-X(F64)\
+X(double)\
 X(F80)\
 X(F128)\
 X(ComplexF32)\
@@ -1067,8 +1067,8 @@ X(ByteSwap)\
 X(Other)\
 X(U)\
 X(S)\
-X(F32)\
-X(F64)\
+X(float)\
+X(double)\
 
 #define RDI_EvalConversionKind_XList \
 X(Noop)\

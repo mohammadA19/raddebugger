@@ -4,28 +4,28 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64
-di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags)
+uint64
+di_hash_from_seed_string(uint64 seed, String8 string, StringMatchFlags match_flags)
 {
-  U64 result = seed;
-  for(U64 i = 0; i < string.size; i += 1)
+  uint64 result = seed;
+  for(uint64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? char_to_lower(string.str[i]) : string.str[i]);
   }
   return result;
 }
 
-U64
+uint64
 di_hash_from_string(String8 string, StringMatchFlags match_flags)
 {
-  U64 hash = di_hash_from_seed_string(5381, string, match_flags);
+  uint64 hash = di_hash_from_seed_string(5381, string, match_flags);
   return hash;
 }
 
-U64
+uint64
 di_hash_from_key(DI_Key* k)
 {
-  U64 hash = di_hash_from_string(k->path, StringMatchFlag_CaseInsensitive);
+  uint64 hash = di_hash_from_string(k->path, StringMatchFlag_CaseInsensitive);
   return hash;
 }
 
@@ -75,7 +75,7 @@ di_key_array_from_list(Arena* arena, DI_KeyList* list)
   DI_KeyArray array = {0};
   array.count = list->count;
   array.v = push_array_no_zero(arena, DI_Key, array.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(DI_KeyNode* n = list->first; n != 0; n = n->next, idx += 1)
   {
     MemoryCopyStruct(&array.v[idx], &n->v);
@@ -105,12 +105,12 @@ di_search_params_copy(Arena* arena, DI_SearchParams* src)
   return dst;
 }
 
-U64
+uint64
 di_hash_from_search_params(DI_SearchParams* params)
 {
-  U64 hash = 5381;
+  uint64 hash = 5381;
   hash = di_hash_from_seed_string(hash, str8_struct(&params->target), 0);
-  for(U64 idx = 0; idx < params->dbgi_keys.count; idx += 1)
+  for(uint64 idx = 0; idx < params->dbgi_keys.count; idx += 1)
   {
     hash = di_hash_from_seed_string(hash, str8_struct(&params->dbgi_keys.v[idx].min_timestamp), 0);
     hash = di_hash_from_seed_string(hash, params->dbgi_keys.v[idx].path, StringMatchFlag_CaseInsensitive);
@@ -135,11 +135,11 @@ di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList* dst, DI_Search
   MemoryZeroStruct(to_push);
 }
 
-U64
-di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* array, U64 element_idx)
+uint64
+di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* array, uint64 element_idx)
 {
-  U64 fuzzy_item_num = 0;
-  for(U64 idx = 0; idx < array->count; idx += 1)
+  uint64 fuzzy_item_num = 0;
+  for(uint64 idx = 0; idx < array->count; idx += 1)
   {
     if(array->v[idx].idx == element_idx)
     {
@@ -151,7 +151,7 @@ di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* arr
 }
 
 String8
-di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKind target, U64 element_idx)
+di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKind target, uint64 element_idx)
 {
   String8 result = {0};
   switch(target)
@@ -160,30 +160,30 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKi
     case RDI_SectionKind_Procedures:
     {
       RDI_Procedure* proc = rdi_element_from_name_idx(rdi, Procedures, element_idx);
-      U64 name_size = 0;
-      U8* name_base = rdi_string_from_idx(rdi, proc->name_string_idx, &name_size);
+      uint64 name_size = 0;
+      uint8* name_base = rdi_string_from_idx(rdi, proc->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_GlobalVariables:
     {
       RDI_GlobalVariable* gvar = rdi_element_from_name_idx(rdi, GlobalVariables, element_idx);
-      U64 name_size = 0;
-      U8* name_base = rdi_string_from_idx(rdi, gvar->name_string_idx, &name_size);
+      uint64 name_size = 0;
+      uint8* name_base = rdi_string_from_idx(rdi, gvar->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_ThreadVariables:
     {
       RDI_ThreadVariable* tvar = rdi_element_from_name_idx(rdi, ThreadVariables, element_idx);
-      U64 name_size = 0;
-      U8* name_base = rdi_string_from_idx(rdi, tvar->name_string_idx, &name_size);
+      uint64 name_size = 0;
+      uint8* name_base = rdi_string_from_idx(rdi, tvar->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_UDTs:
     {
       RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, element_idx);
       RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
-      U64 name_size = 0;
-      U8* name_base = rdi_string_from_idx(rdi, type_node->user_defined.name_string_idx, &name_size);
+      uint64 name_size = 0;
+      uint8* name_base = rdi_string_from_idx(rdi, type_node->user_defined.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
   }
@@ -203,7 +203,7 @@ di_init()
   di_shared->slots = push_array(arena, DI_Slot, di_shared->slots_count);
   di_shared->stripes_count = Min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
   di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
-  for(U64 idx = 0; idx < di_shared->stripes_count; idx += 1)
+  for(uint64 idx = 0; idx < di_shared->stripes_count; idx += 1)
   {
     di_shared->stripes[idx].arena = arena_alloc();
     di_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
@@ -213,7 +213,7 @@ di_init()
   di_shared->search_slots = push_array(arena, DI_SearchSlot, di_shared->search_slots_count);
   di_shared->search_stripes_count = Min(di_shared->search_slots_count, os_get_system_info()->logical_processor_count);
   di_shared->search_stripes = push_array(arena, DI_SearchStripe, di_shared->search_stripes_count);
-  for(U64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
+  for(uint64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
   {
     di_shared->search_stripes[idx].arena = arena_alloc();
     di_shared->search_stripes[idx].rw_mutex = os_rw_mutex_alloc();
@@ -222,11 +222,11 @@ di_init()
   di_shared->u2p_ring_mutex = os_mutex_alloc();
   di_shared->u2p_ring_cv = os_condition_variable_alloc();
   di_shared->u2p_ring_size = KB(64);
-  di_shared->u2p_ring_base = push_array_no_zero(arena, U8, di_shared->u2p_ring_size);
+  di_shared->u2p_ring_base = push_array_no_zero(arena, uint8, di_shared->u2p_ring_size);
   di_shared->p2u_ring_mutex = os_mutex_alloc();
   di_shared->p2u_ring_cv = os_condition_variable_alloc();
   di_shared->p2u_ring_size = KB(64);
-  di_shared->p2u_ring_base = push_array_no_zero(arena, U8, di_shared->p2u_ring_size);
+  di_shared->p2u_ring_base = push_array_no_zero(arena, uint8, di_shared->p2u_ring_size);
   di_shared->search_threads_count = 1;
   di_shared->search_threads = push_array(arena, DI_SearchThread, di_shared->search_threads_count);
   for EachIndex(idx, di_shared->search_threads_count)
@@ -234,7 +234,7 @@ di_init()
     di_shared->search_threads[idx].ring_mutex = os_mutex_alloc();
     di_shared->search_threads[idx].ring_cv    = os_condition_variable_alloc();
     di_shared->search_threads[idx].ring_size  = KB(64);
-    di_shared->search_threads[idx].ring_base  = push_array_no_zero(arena, U8, di_shared->search_threads[idx].ring_size);
+    di_shared->search_threads[idx].ring_base  = push_array_no_zero(arena, uint8, di_shared->search_threads[idx].ring_size);
     di_shared->search_threads[idx].thread = os_thread_launch(di_search_thread__entry_point, (void *)idx, 0);
   }
   di_shared->search_evictor_thread = os_thread_launch(di_search_evictor_thread__entry_point, 0, 0);
@@ -335,7 +335,7 @@ di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot* slot, DI_Key* key)
   ProfBeginFunction();
   DI_Node* node = 0;
   StringMatchFlags match_flags = path_match_flags_from_os(operating_system_from_context());
-  U64 most_recent_timestamp = max_U64;
+  uint64 most_recent_timestamp = max_U64;
   for(DI_Node* n = slot->first; n != 0; n = n->next)
   {
     if(str8_match(n->key.path, key->path, match_flags) &&
@@ -353,12 +353,12 @@ di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot* slot, DI_Key* key)
 ////////////////////////////////
 //~ rjf: Per-Stripe Functions
 
-U64
-di_string_bucket_idx_from_string_size(U64 size)
+uint64
+di_string_bucket_idx_from_string_size(uint64 size)
 {
-  U64 size_rounded = u64_up_to_pow2(size+1);
+  uint64 size_rounded = u64_up_to_pow2(size+1);
   size_rounded = ClampBot((1<<4), size_rounded);
-  U64 bucket_idx = 0;
+  uint64 bucket_idx = 0;
   switch(size_rounded)
   {
     case 1<<4: {bucket_idx = 0;}break;
@@ -377,7 +377,7 @@ String8
 di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
 {
   if(string.size == 0) {return str8_zero();}
-  U64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
+  uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
   DI_StringChunkNode* node = stripe->free_string_chunks[bucket_idx];
   
   // rjf: pull from bucket free list
@@ -415,7 +415,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
   // rjf: no found node -> allocate new
   if(node == 0)
   {
-    U64 chunk_size = 0;
+    uint64 chunk_size = 0;
     if(bucket_idx < ArrayCount(stripe->free_string_chunks)-1)
     {
       chunk_size = 1<<(bucket_idx+4);
@@ -424,13 +424,13 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
     {
       chunk_size = u64_up_to_pow2(string.size);
     }
-    U8* chunk_memory = push_array(stripe->arena, U8, chunk_size);
+    uint8* chunk_memory = push_array(stripe->arena, uint8, chunk_size);
     node = (DI_StringChunkNode *)chunk_memory;
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((U8 *)node, string.size);
-  MemoryCopy((U8 *)node, string.str, string.size);
+  String8 allocated_string = str8((uint8 *)node, string.size);
+  MemoryCopy((uint8 *)node, string.str, string.size);
   return allocated_string;
 }
 
@@ -438,7 +438,7 @@ void
 di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
 {
   if(string.size == 0) {return;}
-  U64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
+  uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
   DI_StringChunkNode* node = (DI_StringChunkNode *)string.str;
   node->size = u64_up_to_pow2(string.size);
   SLLStackPush(stripe->free_string_chunks[bucket_idx], node);
@@ -454,9 +454,9 @@ di_open(DI_Key* key)
   if(key->path.size != 0)
   {
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
-    U64 hash = di_hash_from_key(&key_normalized);
-    U64 slot_idx = hash%di_shared->slots_count;
-    U64 stripe_idx = slot_idx%di_shared->stripes_count;
+    uint64 hash = di_hash_from_key(&key_normalized);
+    uint64 slot_idx = hash%di_shared->slots_count;
+    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
     DI_Slot* slot = &di_shared->slots[slot_idx];
     DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
     log_infof("open_debug_info: {\"%S\", 0x%I64x}\n", key_normalized.path, key_normalized.min_timestamp);
@@ -468,7 +468,7 @@ di_open(DI_Key* key)
       //- rjf: allocate node if none exists; insert into slot
       if(node == 0)
       {
-        U64 current_timestamp = os_properties_from_file_path(key_normalized.path).modified;
+        uint64 current_timestamp = os_properties_from_file_path(key_normalized.path).modified;
         if(current_timestamp == 0)
         {
           current_timestamp = key_normalized.min_timestamp;
@@ -516,9 +516,9 @@ di_close(DI_Key* key)
   if(key->path.size != 0)
   {
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
-    U64 hash = di_hash_from_key(&key_normalized);
-    U64 slot_idx = hash%di_shared->slots_count;
-    U64 stripe_idx = slot_idx%di_shared->stripes_count;
+    uint64 hash = di_hash_from_key(&key_normalized);
+    uint64 slot_idx = hash%di_shared->slots_count;
+    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
     DI_Slot* slot = &di_shared->slots[slot_idx];
     DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
     log_infof("close_debug_info: {\"%S\", 0x%I64x}\n", key_normalized.path, key_normalized.min_timestamp);
@@ -537,7 +537,7 @@ di_close(DI_Key* key)
           if(ins_atomic_u64_eval(&node->touch_count) != 0)
           {
             os_rw_mutex_drop_w(stripe->rw_mutex);
-            for(U64 start_t = os_now_microseconds(); os_now_microseconds() <= start_t + 250;);
+            for(uint64 start_t = os_now_microseconds(); os_now_microseconds() <= start_t + 250;);
             os_rw_mutex_take_w(stripe->rw_mutex);
           }
           
@@ -577,7 +577,7 @@ di_close(DI_Key* key)
 //~ rjf: Debug Info Cache Lookups
 
 RDI_Parsed *
-di_rdi_from_key(DI_Scope* scope, DI_Key* key, U64 endt_us)
+di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us)
 {
   ProfBeginFunction();
   RDI_Parsed* result = &di_rdi_parsed_nil;
@@ -585,9 +585,9 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, U64 endt_us)
   {
     Temp scratch = scratch_begin(0, 0);
     DI_Key key_normalized = di_normalized_key_from_key(scratch.arena, key);
-    U64 hash = di_hash_from_key(&key_normalized);
-    U64 slot_idx = hash%di_shared->slots_count;
-    U64 stripe_idx = slot_idx%di_shared->stripes_count;
+    uint64 hash = di_hash_from_key(&key_normalized);
+    uint64 slot_idx = hash%di_shared->slots_count;
+    uint64 stripe_idx = slot_idx%di_shared->stripes_count;
     DI_Slot* slot = &di_shared->slots[slot_idx];
     DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
     ProfScope("grab node") OS_MutexScopeR(stripe->rw_mutex) for(;;)
@@ -652,13 +652,13 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, U64 endt_us)
 //~ rjf: Search Cache Lookups
 
 DI_SearchItemArray
-di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, String8 query, U64 endt_us, B32* stale_out)
+di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, String8 query, uint64 endt_us, B32* stale_out)
 {
   DI_SearchItemArray items = {0};
   {
-    U64 params_hash = di_hash_from_search_params(params);
-    U64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-    U64               stripe_idx = slot_idx%di_shared->search_stripes_count;
+    uint64 params_hash = di_hash_from_search_params(params);
+    uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
+    uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
     DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
     DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
     OS_MutexScopeW(stripe->rw_mutex) for(;;)
@@ -689,7 +689,7 @@ di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams
         }
         DLLPushBack(slot->first, slot->last, node);
         node->key = key;
-        for(U64 idx = 0; idx < ArrayCount(node->buckets); idx += 1)
+        for(uint64 idx = 0; idx < ArrayCount(node->buckets); idx += 1)
         {
           node->buckets[idx].arena = arena_alloc();
         }
@@ -725,7 +725,7 @@ di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams
           MemoryZeroStruct(&node->items);
           MemoryZeroStruct(&items);
         }
-        U64 new_bucket_idx = node->bucket_write_gen%ArrayCount(node->buckets);
+        uint64 new_bucket_idx = node->bucket_write_gen%ArrayCount(node->buckets);
         arena_clear(node->buckets[new_bucket_idx].arena);
         node->buckets[new_bucket_idx].query = push_str8_copy(node->buckets[new_bucket_idx].arena, query);
         node->buckets[new_bucket_idx].params = di_search_params_copy(node->buckets[new_bucket_idx].arena, params);
@@ -750,14 +750,14 @@ di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams
 //~ rjf: Parse Threads
 
 B32
-di_u2p_enqueue_key(DI_Key* key, U64 endt_us)
+di_u2p_enqueue_key(DI_Key* key, uint64 endt_us)
 {
   B32 sent = 0;
   OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
-    U64 available_size = di_shared->u2p_ring_size - unconsumed_size;
-    U64 needed_size = sizeof(key->min_timestamp) + sizeof(key->path.size) + key->path.size;
+    uint64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
+    uint64 available_size = di_shared->u2p_ring_size - unconsumed_size;
+    uint64 needed_size = sizeof(key->min_timestamp) + sizeof(key->path.size) + key->path.size;
     if(available_size >= needed_size)
     {
       di_shared->u2p_ring_write_pos += ring_write_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_write_pos, &key->min_timestamp);
@@ -784,12 +784,12 @@ di_u2p_dequeue_key(Arena* arena, DI_Key* out_key)
 {
   OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
+    uint64 unconsumed_size = di_shared->u2p_ring_write_pos - di_shared->u2p_ring_read_pos;
     if(unconsumed_size >= sizeof(out_key->path.size) + sizeof(out_key->min_timestamp))
     {
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->min_timestamp);
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->path.size);
-      out_key->path.str = push_array(arena, U8, out_key->path.size);
+      out_key->path.str = push_array(arena, uint8, out_key->path.size);
       di_shared->u2p_ring_read_pos += ring_read(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, out_key->path.str, out_key->path.size);
       break;
     }
@@ -803,9 +803,9 @@ di_p2u_push_event(DI_Event* event)
 {
   OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
-    U64 available_size = di_shared->p2u_ring_size-unconsumed_size;
-    U64 needed_size = sizeof(event->kind) + sizeof(event->string.size) + event->string.size;
+    uint64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
+    uint64 available_size = di_shared->p2u_ring_size-unconsumed_size;
+    uint64 needed_size = sizeof(event->kind) + sizeof(event->string.size) + event->string.size;
     if(available_size >= needed_size)
     {
       di_shared->p2u_ring_write_pos += ring_write_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_write_pos, &event->kind);
@@ -819,20 +819,20 @@ di_p2u_push_event(DI_Event* event)
 }
 
 DI_EventList
-di_p2u_pop_events(Arena* arena, U64 endt_us)
+di_p2u_pop_events(Arena* arena, uint64 endt_us)
 {
   DI_EventList events = {0};
   OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
-    if(unconsumed_size >= sizeof(DI_EventKind) + sizeof(U64))
+    uint64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
+    if(unconsumed_size >= sizeof(DI_EventKind) + sizeof(uint64))
     {
       DI_EventNode* n = push_array(arena, DI_EventNode, 1);
       SLLQueuePush(events.first, events.last, n);
       events.count += 1;
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.kind);
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.string.size);
-      n->v.string.str = push_array_no_zero(arena, U8, n->v.string.size);
+      n->v.string.str = push_array_no_zero(arena, uint8, n->v.string.size);
       di_shared->p2u_ring_read_pos += ring_read(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, n->v.string.str, n->v.string.size);
     }
     else if(os_now_microseconds() >= endt_us)
@@ -857,14 +857,14 @@ ASYNC_WORK_DEF(di_parse_work)
   di_u2p_dequeue_key(scratch.arena, &key);
   ProfBegin("di_parse_work: %.*s", str8_varg(key.path));
   String8 og_path = key.path;
-  U64 min_timestamp = key.min_timestamp;
+  uint64 min_timestamp = key.min_timestamp;
   
   ////////////////////////////
   //- rjf: unpack key
   //
-  U64 hash = di_hash_from_string(og_path, StringMatchFlag_CaseInsensitive);
-  U64 slot_idx = hash%di_shared->slots_count;
-  U64 stripe_idx = slot_idx%di_shared->stripes_count;
+  uint64 hash = di_hash_from_string(og_path, StringMatchFlag_CaseInsensitive);
+  uint64 slot_idx = hash%di_shared->slots_count;
+  uint64 stripe_idx = slot_idx%di_shared->stripes_count;
   DI_Slot* slot = &di_shared->slots[slot_idx];
   DI_Stripe* stripe = &di_shared->stripes[stripe_idx];
   
@@ -883,7 +883,7 @@ ASYNC_WORK_DEF(di_parse_work)
     OS_Handle file_map = os_file_map_open(OS_AccessFlag_Read, file);
     FileProperties props = og_props = os_properties_from_file(file);
     void* base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, props.size));
-    String8 data = str8((U8 *)base, props.size);
+    String8 data = str8((uint8 *)base, props.size);
     if(!og_format_is_known)
     {
       String8 msf20_magic = str8_lit("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
@@ -899,7 +899,7 @@ ASYNC_WORK_DEF(di_parse_work)
     }
     if(!og_format_is_known)
     {
-      if(data.size >= 8 && *(U64 *)data.str == RDI_MAGIC_CONSTANT)
+      if(data.size >= 8 && *(uint64 *)data.str == RDI_MAGIC_CONSTANT)
       {
         og_format_is_known = 1;
         og_is_rdi = 1;
@@ -919,7 +919,7 @@ ASYNC_WORK_DEF(di_parse_work)
     }
     if(!og_format_is_known)
     {
-      if(data.size >= 2 && *(U16 *)data.str == 0x5a4d)
+      if(data.size >= 2 && *(uint16 *)data.str == 0x5a4d)
       {
         og_format_is_known = 1;
         og_is_pe = 1;
@@ -1036,7 +1036,7 @@ ASYNC_WORK_DEF(di_parse_work)
       
       //- rjf: wait for process to complete
       {
-        U64 start_wait_t = os_now_microseconds();
+        uint64 start_wait_t = os_now_microseconds();
         for(;;)
         {
           B32 wait_done = os_process_join(process, os_now_microseconds()+1000);
@@ -1086,7 +1086,7 @@ ASYNC_WORK_DEF(di_parse_work)
   //
   RDI_Parsed rdi_parsed_maybe_compressed = di_rdi_parsed_nil;
   {
-    RDI_ParseStatus parse_status = rdi_parse((U8 *)file_base, file_props.size, &rdi_parsed_maybe_compressed);
+    RDI_ParseStatus parse_status = rdi_parse((uint8 *)file_base, file_props.size, &rdi_parsed_maybe_compressed);
     ()parse_status;
   }
   
@@ -1096,11 +1096,11 @@ ASYNC_WORK_DEF(di_parse_work)
   Arena* rdi_parsed_arena = 0;
   RDI_Parsed rdi_parsed = rdi_parsed_maybe_compressed;
   {
-    U64 decompressed_size = rdi_decompressed_size_from_parsed(&rdi_parsed_maybe_compressed);
+    uint64 decompressed_size = rdi_decompressed_size_from_parsed(&rdi_parsed_maybe_compressed);
     if(decompressed_size > file_props.size)
     {
       rdi_parsed_arena = arena_alloc();
-      U8* decompressed_data = push_array_no_zero(rdi_parsed_arena, U8, decompressed_size);
+      uint8* decompressed_data = push_array_no_zero(rdi_parsed_arena, uint8, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, &rdi_parsed_maybe_compressed);
       RDI_ParseStatus parse_status = rdi_parse(decompressed_data, decompressed_size, &rdi_parsed);
       ()parse_status;
@@ -1137,15 +1137,15 @@ ASYNC_WORK_DEF(di_parse_work)
 //~ rjf: Search Threads
 
 B32
-di_u2s_enqueue_req(U128 key, U64 endt_us)
+di_u2s_enqueue_req(U128 key, uint64 endt_us)
 {
   B32 result = 0;
-  U64 thread_idx = key.u64[0]%di_shared->search_threads_count;
+  uint64 thread_idx = key.u64[0]%di_shared->search_threads_count;
   DI_SearchThread* thread = &di_shared->search_threads[thread_idx];
   OS_MutexScope(thread->ring_mutex) for(;;)
   {
-    U64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
-    U64 available_size = thread->ring_size - unconsumed_size;
+    uint64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
+    uint64 available_size = thread->ring_size - unconsumed_size;
     if(available_size >= sizeof(key))
     {
       result = 1;
@@ -1166,13 +1166,13 @@ di_u2s_enqueue_req(U128 key, U64 endt_us)
 }
 
 U128
-di_u2s_dequeue_req(U64 thread_idx)
+di_u2s_dequeue_req(uint64 thread_idx)
 {
   U128 key = {0};
   DI_SearchThread* thread = &di_shared->search_threads[thread_idx];
   OS_MutexScope(thread->ring_mutex) for(;;)
   {
-    U64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
+    uint64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
     if(unconsumed_size >= sizeof(key))
     {
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, &key);
@@ -1187,13 +1187,13 @@ di_u2s_dequeue_req(U64 thread_idx)
 struct DI_SearchWorkIn
 {
   U128 key;
-  U64 initial_bucket_write_gen;
+  uint64 initial_bucket_write_gen;
   Arena** work_thread_arenas;
   RDI_Parsed* rdi;
   RDI_SectionKind section_kind;
   Rng1U64 element_range;
   String8 query;
-  U64 dbgi_idx;
+  uint64 dbgi_idx;
 };
 struct DI_SearchWorkOut
 {
@@ -1212,8 +1212,8 @@ ASYNC_WORK_DEF(di_search_work)
   }
   Arena* arena = in->work_thread_arenas[thread_idx];
   U128 key = in->key;
-  U64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-  U64               stripe_idx = slot_idx%di_shared->search_stripes_count;
+  uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
+  uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
   DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
   DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
   
@@ -1221,12 +1221,12 @@ ASYNC_WORK_DEF(di_search_work)
   DI_SearchWorkOut* out = push_array(arena, DI_SearchWorkOut, 1);
   
   //- rjf: unpack table info
-  U64 element_count = 0;
+  uint64 element_count = 0;
   void* table_base = rdi_section_raw_table_from_kind(in->rdi, in->section_kind, &element_count);
-  U64 element_size = rdi_section_element_size_table[in->section_kind];
+  uint64 element_size = rdi_section_element_size_table[in->section_kind];
   
   //- rjf: determine name string index offset, depending on table kind
-  U64 element_name_idx_off = 0;
+  uint64 element_name_idx_off = 0;
   switch(in->section_kind)
   {
     default:{}break;
@@ -1250,7 +1250,7 @@ ASYNC_WORK_DEF(di_search_work)
   
   //- rjf: loop through table, gather matches
   B32 cancelled = 0;
-  for(U64 idx = in->element_range.min; (idx < in->element_range.max && idx < element_count); idx += 1)
+  for(uint64 idx = in->element_range.min; (idx < in->element_range.max && idx < element_count); idx += 1)
   {
     //- rjf: every so often, check the key's write gen - if it has been bumped, then cancel
     if(idx%100 == 0)
@@ -1273,17 +1273,17 @@ ASYNC_WORK_DEF(di_search_work)
     }
     
     //- rjf: get element, map to string; if empty, continue to next element
-    void* element = (U8 *)table_base + element_size*idx;
-    U32* name_idx_ptr = (U32 *)((U8 *)element + element_name_idx_off);
+    void* element = (uint8 *)table_base + element_size*idx;
+    uint32* name_idx_ptr = (uint32 *)((uint8 *)element + element_name_idx_off);
     if(in->section_kind == RDI_SectionKind_UDTs)
     {
       RDI_UDT* udt = (RDI_UDT *)element;
       RDI_TypeNode* type_node = rdi_element_from_name_idx(in->rdi, TypeNodes, udt->self_type_idx);
       name_idx_ptr = &type_node->user_defined.name_string_idx;
     }
-    U32 name_idx = *name_idx_ptr;
-    U64 name_size = 0;
-    U8* name_base = rdi_string_from_idx(in->rdi, name_idx, &name_size);
+    uint32 name_idx = *name_idx_ptr;
+    uint64 name_size = 0;
+    uint8* name_base = rdi_string_from_idx(in->rdi, name_idx, &name_size);
     String8 name = str8(name_base, name_size);
     if(name.size == 0) { continue; }
     
@@ -1342,7 +1342,7 @@ di_qsort_compare_search_items(DI_SearchItem* a, DI_SearchItem* b)
 void
 di_search_thread__entry_point(void* p)
 {
-  U64 thread_idx = (U64)p;
+  uint64 thread_idx = (uint64)p;
   ThreadNameF("[di] search thread #%I64u", thread_idx);
   for(;;)
   {
@@ -1351,8 +1351,8 @@ di_search_thread__entry_point(void* p)
     
     //- rjf: get next key, unpack
     U128 key = di_u2s_dequeue_req(thread_idx);
-    U64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
-    U64               stripe_idx = slot_idx%di_shared->search_stripes_count;
+    uint64               slot_idx   = key.u64[0]%di_shared->search_slots_count;
+    uint64               stripe_idx = slot_idx%di_shared->search_stripes_count;
     DI_SearchSlot *   slot       = &di_shared->search_slots[slot_idx];
     DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
     
@@ -1360,14 +1360,14 @@ di_search_thread__entry_point(void* p)
     Arena* arena = 0;
     String8 query = {0};
     DI_SearchParams params = {0};
-    U64 initial_bucket_write_gen = 0;
+    uint64 initial_bucket_write_gen = 0;
     OS_MutexScopeW(stripe->rw_mutex)
     {
       for(DI_SearchNode* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(n->key, key))
         {
-          U64 bucket_idx = n->bucket_write_gen%ArrayCount(n->buckets);
+          uint64 bucket_idx = n->bucket_write_gen%ArrayCount(n->buckets);
           n->work_refcount += 1;
           arena  = n->buckets[bucket_idx].arena;
           query  = push_str8_copy(scratch.arena, n->buckets[bucket_idx].query);
@@ -1379,7 +1379,7 @@ di_search_thread__entry_point(void* p)
     }
     
     //- rjf: get all rdis
-    U64 rdis_count = params.dbgi_keys.count;
+    uint64 rdis_count = params.dbgi_keys.count;
     RDI_Parsed** rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
     for EachIndex(idx, rdis_count)
     {
@@ -1391,15 +1391,15 @@ di_search_thread__entry_point(void* p)
     Arena** work_thread_arenas = 0;
     if(arena != 0)
     {
-      U64 elements_per_task = 16384;
+      uint64 elements_per_task = 16384;
       work_thread_arenas = push_array(arena, Arena *, async_thread_count());
       for EachIndex(idx, rdis_count)
       {
         RDI_Parsed* rdi = rdis[idx];
-        U64 element_count_in_this_rdi = 0;
+        uint64 element_count_in_this_rdi = 0;
         rdi_section_raw_table_from_kind(rdi, params.target, &element_count_in_this_rdi);
-        U64 tasks_per_this_rdi = (element_count_in_this_rdi+elements_per_task-1)/elements_per_task;
-        for(U64 task_in_this_rdi_idx = 0; task_in_this_rdi_idx < tasks_per_this_rdi; task_in_this_rdi_idx += 1)
+        uint64 tasks_per_this_rdi = (element_count_in_this_rdi+elements_per_task-1)/elements_per_task;
+        for(uint64 task_in_this_rdi_idx = 0; task_in_this_rdi_idx < tasks_per_this_rdi; task_in_this_rdi_idx += 1)
         {
           DI_SearchWorkIn* in = push_array(scratch.arena, DI_SearchWorkIn, 1);
           in->key                      = key;
@@ -1432,7 +1432,7 @@ di_search_thread__entry_point(void* p)
     {
       items.count = items_list.total_count;
       items.v = push_array(arena, DI_SearchItem, items.count);
-      U64 off = 0;
+      uint64 off = 0;
       for(DI_SearchItemChunk* chunk = items_list.first; chunk != 0; chunk = chunk->next)
       {
         MemoryCopy(items.v + off, chunk->v, sizeof(chunk->v[0])*chunk->count);
@@ -1505,9 +1505,9 @@ di_search_evictor_thread__entry_point(void* p)
   ThreadNameF("[di] search evictor thread");
   for(;;)
   {
-    for(U64 slot_idx = 0; slot_idx < di_shared->search_slots_count; slot_idx += 1)
+    for(uint64 slot_idx = 0; slot_idx < di_shared->search_slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%di_shared->search_stripes_count;
+      uint64 stripe_idx = slot_idx%di_shared->search_stripes_count;
       DI_SearchSlot* slot = &di_shared->search_slots[slot_idx];
       DI_SearchStripe* stripe = &di_shared->search_stripes[stripe_idx];
       B32 slot_has_work = 0;
@@ -1567,7 +1567,7 @@ di_match_store_alloc()
   store->u2m_ring_cv            = os_condition_variable_alloc();
   store->u2m_ring_mutex         = os_mutex_alloc();
   store->u2m_ring_size          = KB(2);
-  store->u2m_ring_base          = push_array_no_zero(arena, U8, store->u2m_ring_size);
+  store->u2m_ring_base          = push_array_no_zero(arena, uint8, store->u2m_ring_size);
   return store;
 }
 
@@ -1579,7 +1579,7 @@ di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
   arena_clear(store->gen_arenas[store->gen%ArrayCount(store->gen_arenas)]);
   
   // rjf: hash parameters
-  U64 params_hash = 5381;
+  uint64 params_hash = 5381;
   for EachIndex(idx, keys.count)
   {
     params_hash = di_hash_from_seed_string(params_hash, str8_struct(&keys.v[idx].min_timestamp), 0);
@@ -1602,7 +1602,7 @@ di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
       if(node->last_gen_touched+8 < store->gen)
       {
         node->alloc_gen += 1;
-        U64 slot_idx = node->hash%store->match_name_slots_count;
+        uint64 slot_idx = node->hash%store->match_name_slots_count;
         DI_MatchNameSlot* slot = &store->match_name_slots[slot_idx];
         DLLRemove_NP(store->first_lru_match_name, store->last_lru_match_name, node, lru_next, lru_prev);
         DLLRemove(slot->first, slot->last, node);
@@ -1620,13 +1620,13 @@ di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
 }
 
 RDI_SectionKind
-di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, U64 endt_us)
+di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64 endt_us)
 {
   RDI_SectionKind result = 0;
   {
     // rjf: unpack name
-    U64 hash = di_hash_from_string(name, 0);
-    U64 slot_idx = hash%store->match_name_slots_count;
+    uint64 hash = di_hash_from_string(name, 0);
+    uint64 slot_idx = hash%store->match_name_slots_count;
     DI_MatchNameSlot* slot = &store->match_name_slots[slot_idx];
     
     // rjf: get name's node, if it exists
@@ -1644,7 +1644,7 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, U64 en
     if(node == 0)
     {
       node = store->first_free_match_name;
-      U64 alloc_gen = 0;
+      uint64 alloc_gen = 0;
       if(node)
       {
         SLLStackPop(store->first_free_match_name);
@@ -1670,15 +1670,15 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, U64 en
     DLLInsert_NP(store->first_lru_match_name, store->last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
     
     // rjf: if this node is new w.r.t. the store's current parameters, request it
-    U64 completed_params_hash = ins_atomic_u64_eval(&node->cmp_params_hash);
+    uint64 completed_params_hash = ins_atomic_u64_eval(&node->cmp_params_hash);
     if(completed_params_hash != store->params_hash && node->req_count == ins_atomic_u64_eval(&node->cmp_count))
     {
       B32 sent = 0;
       OS_MutexScope(store->u2m_ring_mutex) for(;;)
       {
-        U64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
-        U64 available_size = store->u2m_ring_size - unconsumed_size;
-        U64 needed_size = sizeof(&node) + sizeof(node->alloc_gen) + sizeof(name.size) + name.size;
+        uint64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
+        uint64 available_size = store->u2m_ring_size - unconsumed_size;
+        uint64 needed_size = sizeof(&node) + sizeof(node->alloc_gen) + sizeof(name.size) + name.size;
         if(available_size >= needed_size)
         {
           store->u2m_ring_write_pos += ring_write_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_write_pos, &node);
@@ -1734,17 +1734,17 @@ ASYNC_WORK_DEF(di_match_work)
   {
     //- rjf: get next request
     DI_MatchNameNode* node = 0;
-    U64 alloc_gen = 0;
+    uint64 alloc_gen = 0;
     String8 name = {0};
     ProfScope("get next name") OS_MutexScope(store->u2m_ring_mutex) for(;;)
     {
-      U64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
-      if(unconsumed_size >= sizeof(U64))
+      uint64 unconsumed_size = store->u2m_ring_write_pos - store->u2m_ring_read_pos;
+      if(unconsumed_size >= sizeof(uint64))
       {
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &node);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &alloc_gen);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &name.size);
-        name.str = push_array(scratch.arena, U8, name.size);
+        name.str = push_array(scratch.arena, uint8, name.size);
         store->u2m_ring_read_pos += ring_read(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, name.str, name.size);
         break;
       }
@@ -1753,7 +1753,7 @@ ASYNC_WORK_DEF(di_match_work)
     os_condition_variable_broadcast(store->u2m_ring_cv);
     
     //- rjf: read parameters
-    U64 params_hash = 0;
+    uint64 params_hash = 0;
     DI_KeyArray params_keys = {0};
     ProfScope("read parameters") OS_MutexScopeR(store->params_rw_mutex)
     {
@@ -1789,8 +1789,8 @@ ASYNC_WORK_DEF(di_match_work)
           RDI_ParsedNameMap parsed_name_map = {0};
           rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
           RDI_NameMapNode* map_node = rdi_name_map_lookup(rdi, &parsed_name_map, name.str, name.size);
-          U32 num = 0;
-          U32* run = rdi_matches_from_map_node(rdi, map_node, &num);
+          uint32 num = 0;
+          uint32* run = rdi_matches_from_map_node(rdi, map_node, &num);
           if(num != 0)
           {
             ins_atomic_u32_eval_assign(&node->section_kind, name_map_section_kinds[name_map_kind_idx]);

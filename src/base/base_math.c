@@ -4,126 +4,126 @@
 ////////////////////////////////
 //~ rjf: Scalar Ops
 
-F32
-mix_1f32(F32 a, F32 b, F32 t)
+float
+mix_1f32(float a, float b, float t)
 {
-  F32 c = (a + (b-a) * Clamp(0.f, t, 1.f));
+  float c = (a + (b-a) * Clamp(0.f, t, 1.f));
   return c;
 }
 
-F64
-mix_1f64(F64 a, F64 b, F64 t)
+double
+mix_1f64(double a, double b, double t)
 {
-  F64 c = (a + (b-a) * Clamp(0.0, t, 1.0));
+  double c = (a + (b-a) * Clamp(0.0, t, 1.0));
   return c;
 }
 
 ////////////////////////////////
 //~ rjf: Vector Ops
 
-Vec2F32 vec_2f32(F32 x, F32 y)                         {Vec2F32 v = {x, y}; return v;}
+Vec2F32 vec_2f32(float x, float y)                         {Vec2F32 v = {x, y}; return v;}
 Vec2F32 add_2f32(Vec2F32 a, Vec2F32 b)                 {Vec2F32 c = {a.x+b.x, a.y+b.y}; return c;}
 Vec2F32 sub_2f32(Vec2F32 a, Vec2F32 b)                 {Vec2F32 c = {a.x-b.x, a.y-b.y}; return c;}
 Vec2F32 mul_2f32(Vec2F32 a, Vec2F32 b)                 {Vec2F32 c = {a.x*b.x, a.y*b.y}; return c;}
 Vec2F32 div_2f32(Vec2F32 a, Vec2F32 b)                 {Vec2F32 c = {a.x/b.x, a.y/b.y}; return c;}
-Vec2F32 scale_2f32(Vec2F32 v, F32 s)                   {Vec2F32 c = {v.x*s, v.y*s}; return c;}
-F32 dot_2f32(Vec2F32 a, Vec2F32 b)                     {F32 c = a.x*b.x + a.y*b.y; return c;}
-F32 length_squared_2f32(Vec2F32 v)                     {F32 c = v.x*v.x + v.y*v.y; return c;}
-F32 length_2f32(Vec2F32 v)                             {F32 c = sqrt_f32(v.x*v.x + v.y*v.y); return c;}
+Vec2F32 scale_2f32(Vec2F32 v, float s)                   {Vec2F32 c = {v.x*s, v.y*s}; return c;}
+float dot_2f32(Vec2F32 a, Vec2F32 b)                     {float c = a.x*b.x + a.y*b.y; return c;}
+float length_squared_2f32(Vec2F32 v)                     {float c = v.x*v.x + v.y*v.y; return c;}
+float length_2f32(Vec2F32 v)                             {float c = sqrt_f32(v.x*v.x + v.y*v.y); return c;}
 Vec2F32 normalize_2f32(Vec2F32 v)                      {v = scale_2f32(v, 1.f/length_2f32(v)); return v;}
-Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, F32 t)          {Vec2F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t)}; return c;}
+Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, float t)          {Vec2F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t)}; return c;}
 
-Vec2S64 vec_2s64(S64 x, S64 y)                         {Vec2S64 v = {x, y}; return v;}
+Vec2S64 vec_2s64(int64 x, int64 y)                         {Vec2S64 v = {x, y}; return v;}
 Vec2S64 add_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x+b.x, a.y+b.y}; return c;}
 Vec2S64 sub_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x-b.x, a.y-b.y}; return c;}
 Vec2S64 mul_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x*b.x, a.y*b.y}; return c;}
 Vec2S64 div_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x/b.x, a.y/b.y}; return c;}
-Vec2S64 scale_2s64(Vec2S64 v, S64 s)                   {Vec2S64 c = {v.x*s, v.y*s}; return c;}
-S64 dot_2s64(Vec2S64 a, Vec2S64 b)                     {S64 c = a.x*b.x + a.y*b.y; return c;}
-S64 length_squared_2s64(Vec2S64 v)                     {S64 c = v.x*v.x + v.y*v.y; return c;}
-S64 length_2s64(Vec2S64 v)                             {S64 c = (S64)sqrt_f64((F64)(v.x*v.x + v.y*v.y)); return c;}
-Vec2S64 normalize_2s64(Vec2S64 v)                      {v = scale_2s64(v, (S64)(1.f/length_2s64(v))); return v;}
-Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t)          {Vec2S64 c = {(S64)mix_1f32((F32)a.x, (F32)b.x, t), (S64)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S64 scale_2s64(Vec2S64 v, int64 s)                   {Vec2S64 c = {v.x*s, v.y*s}; return c;}
+int64 dot_2s64(Vec2S64 a, Vec2S64 b)                     {int64 c = a.x*b.x + a.y*b.y; return c;}
+int64 length_squared_2s64(Vec2S64 v)                     {int64 c = v.x*v.x + v.y*v.y; return c;}
+int64 length_2s64(Vec2S64 v)                             {int64 c = (int64)sqrt_f64((double)(v.x*v.x + v.y*v.y)); return c;}
+Vec2S64 normalize_2s64(Vec2S64 v)                      {v = scale_2s64(v, (int64)(1.f/length_2s64(v))); return v;}
+Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, float t)          {Vec2S64 c = {(int64)mix_1f32((float)a.x, (float)b.x, t), (int64)mix_1f32((float)a.y, (float)b.y, t)}; return c;}
 
-Vec2S32 vec_2s32(S32 x, S32 y)                         {Vec2S32 v = {x, y}; return v;}
+Vec2S32 vec_2s32(int32 x, int32 y)                         {Vec2S32 v = {x, y}; return v;}
 Vec2S32 add_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x+b.x, a.y+b.y}; return c;}
 Vec2S32 sub_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x-b.x, a.y-b.y}; return c;}
 Vec2S32 mul_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x*b.x, a.y*b.y}; return c;}
 Vec2S32 div_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x/b.x, a.y/b.y}; return c;}
-Vec2S32 scale_2s32(Vec2S32 v, S32 s)                   {Vec2S32 c = {v.x*s, v.y*s}; return c;}
-S32 dot_2s32(Vec2S32 a, Vec2S32 b)                     {S32 c = a.x*b.x + a.y*b.y; return c;}
-S32 length_squared_2s32(Vec2S32 v)                     {S32 c = v.x*v.x + v.y*v.y; return c;}
-S32 length_2s32(Vec2S32 v)                             {S32 c = (S32)sqrt_f32((F32)v.x*(F32)v.x + (F32)v.y*(F32)v.y); return c;}
-Vec2S32 normalize_2s32(Vec2S32 v)                      {v = scale_2s32(v, (S32)(1.f/length_2s32(v))); return v;}
-Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t)          {Vec2S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S32 scale_2s32(Vec2S32 v, int32 s)                   {Vec2S32 c = {v.x*s, v.y*s}; return c;}
+int32 dot_2s32(Vec2S32 a, Vec2S32 b)                     {int32 c = a.x*b.x + a.y*b.y; return c;}
+int32 length_squared_2s32(Vec2S32 v)                     {int32 c = v.x*v.x + v.y*v.y; return c;}
+int32 length_2s32(Vec2S32 v)                             {int32 c = (int32)sqrt_f32((float)v.x*(float)v.x + (float)v.y*(float)v.y); return c;}
+Vec2S32 normalize_2s32(Vec2S32 v)                      {v = scale_2s32(v, (int32)(1.f/length_2s32(v))); return v;}
+Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, float t)          {Vec2S32 c = {(int32)mix_1f32((float)a.x, (float)b.x, t), (int32)mix_1f32((float)a.y, (float)b.y, t)}; return c;}
 
-Vec2S16 vec_2s16(S16 x, S16 y)                         {Vec2S16 v = {x, y}; return v;}
-Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x+b.x), (S16)(a.y+b.y)}; return c;}
-Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x-b.x), (S16)(a.y-b.y)}; return c;}
-Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x*b.x), (S16)(a.y*b.y)}; return c;}
-Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x/b.x), (S16)(a.y/b.y)}; return c;}
-Vec2S16 scale_2s16(Vec2S16 v, S16 s)                   {Vec2S16 c = {(S16)(v.x*s), (S16)(v.y*s)}; return c;}
-S16 dot_2s16(Vec2S16 a, Vec2S16 b)                     {S16 c = a.x*b.x + a.y*b.y; return c;}
-S16 length_squared_2s16(Vec2S16 v)                     {S16 c = v.x*v.x + v.y*v.y; return c;}
-S16 length_2s16(Vec2S16 v)                             {S16 c = (S16)sqrt_f32((F32)(v.x*v.x + v.y*v.y)); return c;}
-Vec2S16 normalize_2s16(Vec2S16 v)                      {v = scale_2s16(v, (S16)(1.f/length_2s16(v))); return v;}
-Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t)          {Vec2S16 c = {(S16)mix_1f32((F32)a.x, (F32)b.x, t), (S16)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S16 vec_2s16(int16 x, int16 y)                         {Vec2S16 v = {x, y}; return v;}
+Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(int16)(a.x+b.x), (int16)(a.y+b.y)}; return c;}
+Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(int16)(a.x-b.x), (int16)(a.y-b.y)}; return c;}
+Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(int16)(a.x*b.x), (int16)(a.y*b.y)}; return c;}
+Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(int16)(a.x/b.x), (int16)(a.y/b.y)}; return c;}
+Vec2S16 scale_2s16(Vec2S16 v, int16 s)                   {Vec2S16 c = {(int16)(v.x*s), (int16)(v.y*s)}; return c;}
+int16 dot_2s16(Vec2S16 a, Vec2S16 b)                     {int16 c = a.x*b.x + a.y*b.y; return c;}
+int16 length_squared_2s16(Vec2S16 v)                     {int16 c = v.x*v.x + v.y*v.y; return c;}
+int16 length_2s16(Vec2S16 v)                             {int16 c = (int16)sqrt_f32((float)(v.x*v.x + v.y*v.y)); return c;}
+Vec2S16 normalize_2s16(Vec2S16 v)                      {v = scale_2s16(v, (int16)(1.f/length_2s16(v))); return v;}
+Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, float t)          {Vec2S16 c = {(int16)mix_1f32((float)a.x, (float)b.x, t), (int16)mix_1f32((float)a.y, (float)b.y, t)}; return c;}
 
-Vec3F32 vec_3f32(F32 x, F32 y, F32 z)                  {Vec3F32 v = {x, y, z}; return v;}
+Vec3F32 vec_3f32(float x, float y, float z)                  {Vec3F32 v = {x, y, z}; return v;}
 Vec3F32 add_3f32(Vec3F32 a, Vec3F32 b)                 {Vec3F32 c = {a.x+b.x, a.y+b.y, a.z+b.z}; return c;}
 Vec3F32 sub_3f32(Vec3F32 a, Vec3F32 b)                 {Vec3F32 c = {a.x-b.x, a.y-b.y, a.z-b.z}; return c;}
 Vec3F32 mul_3f32(Vec3F32 a, Vec3F32 b)                 {Vec3F32 c = {a.x*b.x, a.y*b.y, a.z*b.z}; return c;}
 Vec3F32 div_3f32(Vec3F32 a, Vec3F32 b)                 {Vec3F32 c = {a.x/b.x, a.y/b.y, a.z/b.z}; return c;}
-Vec3F32 scale_3f32(Vec3F32 v, F32 s)                   {Vec3F32 c = {v.x*s, v.y*s, v.z*s}; return c;}
-F32 dot_3f32(Vec3F32 a, Vec3F32 b)                     {F32 c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
-F32 length_squared_3f32(Vec3F32 v)                     {F32 c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
-F32 length_3f32(Vec3F32 v)                             {F32 c = sqrt_f32(v.x*v.x + v.y*v.y + v.z*v.z); return c;}
+Vec3F32 scale_3f32(Vec3F32 v, float s)                   {Vec3F32 c = {v.x*s, v.y*s, v.z*s}; return c;}
+float dot_3f32(Vec3F32 a, Vec3F32 b)                     {float c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
+float length_squared_3f32(Vec3F32 v)                     {float c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
+float length_3f32(Vec3F32 v)                             {float c = sqrt_f32(v.x*v.x + v.y*v.y + v.z*v.z); return c;}
 Vec3F32 normalize_3f32(Vec3F32 v)                      {v = scale_3f32(v, 1.f/length_3f32(v)); return v;}
-Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, F32 t)          {Vec3F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t)}; return c;}
+Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, float t)          {Vec3F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t)}; return c;}
 Vec3F32 cross_3f32(Vec3F32 a, Vec3F32 b)               {Vec3F32 c = {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x}; return c;}
 
-Vec3S32 vec_3s32(S32 x, S32 y, S32 z)                  {Vec3S32 v = {x, y, z}; return v;}
+Vec3S32 vec_3s32(int32 x, int32 y, int32 z)                  {Vec3S32 v = {x, y, z}; return v;}
 Vec3S32 add_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x+b.x, a.y+b.y, a.z+b.z}; return c;}
 Vec3S32 sub_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x-b.x, a.y-b.y, a.z-b.z}; return c;}
 Vec3S32 mul_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x*b.x, a.y*b.y, a.z*b.z}; return c;}
 Vec3S32 div_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x/b.x, a.y/b.y, a.z/b.z}; return c;}
-Vec3S32 scale_3s32(Vec3S32 v, S32 s)                   {Vec3S32 c = {v.x*s, v.y*s, v.z*s}; return c;}
-S32 dot_3s32(Vec3S32 a, Vec3S32 b)                     {S32 c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
-S32 length_squared_3s32(Vec3S32 v)                     {S32 c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
-S32 length_3s32(Vec3S32 v)                             {S32 c = (S32)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z)); return c;}
-Vec3S32 normalize_3s32(Vec3S32 v)                      {v = scale_3s32(v, (S32)(1.f/length_3s32(v))); return v;}
-Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t)          {Vec3S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t), (S32)mix_1f32((F32)a.z, (F32)b.z, t)}; return c;}
+Vec3S32 scale_3s32(Vec3S32 v, int32 s)                   {Vec3S32 c = {v.x*s, v.y*s, v.z*s}; return c;}
+int32 dot_3s32(Vec3S32 a, Vec3S32 b)                     {int32 c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
+int32 length_squared_3s32(Vec3S32 v)                     {int32 c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
+int32 length_3s32(Vec3S32 v)                             {int32 c = (int32)sqrt_f32((float)(v.x*v.x + v.y*v.y + v.z*v.z)); return c;}
+Vec3S32 normalize_3s32(Vec3S32 v)                      {v = scale_3s32(v, (int32)(1.f/length_3s32(v))); return v;}
+Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, float t)          {Vec3S32 c = {(int32)mix_1f32((float)a.x, (float)b.x, t), (int32)mix_1f32((float)a.y, (float)b.y, t), (int32)mix_1f32((float)a.z, (float)b.z, t)}; return c;}
 Vec3S32 cross_3s32(Vec3S32 a, Vec3S32 b)               {Vec3S32 c = {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x}; return c;}
 
-Vec4F32 vec_4f32(F32 x, F32 y, F32 z, F32 w)           {Vec4F32 v = {x, y, z, w}; return v;}
+Vec4F32 vec_4f32(float x, float y, float z, float w)           {Vec4F32 v = {x, y, z, w}; return v;}
 Vec4F32 add_4f32(Vec4F32 a, Vec4F32 b)                 {Vec4F32 c = {a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w}; return c;}
 Vec4F32 sub_4f32(Vec4F32 a, Vec4F32 b)                 {Vec4F32 c = {a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w}; return c;}
 Vec4F32 mul_4f32(Vec4F32 a, Vec4F32 b)                 {Vec4F32 c = {a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w}; return c;}
 Vec4F32 div_4f32(Vec4F32 a, Vec4F32 b)                 {Vec4F32 c = {a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w}; return c;}
-Vec4F32 scale_4f32(Vec4F32 v, F32 s)                   {Vec4F32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
-F32 dot_4f32(Vec4F32 a, Vec4F32 b)                     {F32 c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
-F32 length_squared_4f32(Vec4F32 v)                     {F32 c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
-F32 length_4f32(Vec4F32 v)                             {F32 c = sqrt_f32(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w); return c;}
+Vec4F32 scale_4f32(Vec4F32 v, float s)                   {Vec4F32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
+float dot_4f32(Vec4F32 a, Vec4F32 b)                     {float c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
+float length_squared_4f32(Vec4F32 v)                     {float c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
+float length_4f32(Vec4F32 v)                             {float c = sqrt_f32(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w); return c;}
 Vec4F32 normalize_4f32(Vec4F32 v)                      {v = scale_4f32(v, 1.f/length_4f32(v)); return v;}
-Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, F32 t)          {Vec4F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t), mix_1f32(a.w, b.w, t)}; return c;}
+Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, float t)          {Vec4F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t), mix_1f32(a.w, b.w, t)}; return c;}
 
-Vec4S32 vec_4s32(S32 x, S32 y, S32 z, S32 w)           {Vec4S32 v = {x, y, z, w}; return v;}
+Vec4S32 vec_4s32(int32 x, int32 y, int32 z, int32 w)           {Vec4S32 v = {x, y, z, w}; return v;}
 Vec4S32 add_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w}; return c;}
 Vec4S32 sub_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w}; return c;}
 Vec4S32 mul_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w}; return c;}
 Vec4S32 div_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w}; return c;}
-Vec4S32 scale_4s32(Vec4S32 v, S32 s)                   {Vec4S32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
-S32 dot_4s32(Vec4S32 a, Vec4S32 b)                     {S32 c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
-S32 length_squared_4s32(Vec4S32 v)                     {S32 c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
-S32 length_4s32(Vec4S32 v)                             {S32 c = (S32)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w)); return c;}
-Vec4S32 normalize_4s32(Vec4S32 v)                      {v = scale_4s32(v, (S32)(1.f/length_4s32(v))); return v;}
-Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)          {Vec4S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t), (S32)mix_1f32((F32)a.z, (F32)b.z, t), (S32)mix_1f32((F32)a.w, (F32)b.w, t)}; return c;}
+Vec4S32 scale_4s32(Vec4S32 v, int32 s)                   {Vec4S32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
+int32 dot_4s32(Vec4S32 a, Vec4S32 b)                     {int32 c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
+int32 length_squared_4s32(Vec4S32 v)                     {int32 c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
+int32 length_4s32(Vec4S32 v)                             {int32 c = (int32)sqrt_f32((float)(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w)); return c;}
+Vec4S32 normalize_4s32(Vec4S32 v)                      {v = scale_4s32(v, (int32)(1.f/length_4s32(v))); return v;}
+Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, float t)          {Vec4S32 c = {(int32)mix_1f32((float)a.x, (float)b.x, t), (int32)mix_1f32((float)a.y, (float)b.y, t), (int32)mix_1f32((float)a.z, (float)b.z, t), (int32)mix_1f32((float)a.w, (float)b.w, t)}; return c;}
 
 ////////////////////////////////
 //~ rjf: Matrix Ops
 
 Mat3x3F32
-mat_3x3f32(F32 diagonal)
+mat_3x3f32(float diagonal)
 {
   Mat3x3F32 result = {0};
   result.v[0][0] = diagonal;
@@ -167,7 +167,7 @@ mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b)
 }
 
 Mat4x4F32
-mat_4x4f32(F32 diagonal)
+mat_4x4f32(float diagonal)
 {
   Mat4x4F32 result = {0};
   result.v[0][0] = diagonal;
@@ -198,10 +198,10 @@ make_scale_4x4f32(Vec3F32 scale)
 }
 
 Mat4x4F32
-make_perspective_4x4f32(F32 fov, F32 aspect_ratio, F32 near_z, F32 far_z)
+make_perspective_4x4f32(float fov, float aspect_ratio, float near_z, float far_z)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
-  F32 tan_theta_over_2 = tan_f32(fov / 2);
+  float tan_theta_over_2 = tan_f32(fov / 2);
   result.v[0][0] = 1.f / tan_theta_over_2;
   result.v[1][1] = aspect_ratio / tan_theta_over_2;
   result.v[2][3] = 1.f;
@@ -212,7 +212,7 @@ make_perspective_4x4f32(F32 fov, F32 aspect_ratio, F32 near_z, F32 far_z)
 }
 
 Mat4x4F32
-make_orthographic_4x4f32(F32 left, F32 right, F32 bottom, F32 top, F32 near_z, F32 far_z)
+make_orthographic_4x4f32(float left, float right, float bottom, float top, float near_z, float far_z)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
   
@@ -255,13 +255,13 @@ make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center, Vec3F32 up)
 }
 
 Mat4x4F32
-make_rotate_4x4f32(Vec3F32 axis, F32 turns)
+make_rotate_4x4f32(Vec3F32 axis, float turns)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
   axis = normalize_3f32(axis);
-  F32 sin_theta = sin_f32(turns);
-  F32 cos_theta = cos_f32(turns);
-  F32 cos_value = 1.f - cos_theta;
+  float sin_theta = sin_f32(turns);
+  float cos_theta = cos_f32(turns);
+  float cos_value = 1.f - cos_theta;
   result.v[0][0] = (axis.x * axis.x * cos_value) + cos_theta;
   result.v[0][1] = (axis.x * axis.y * cos_value) + (axis.z * sin_theta);
   result.v[0][2] = (axis.x * axis.z * cos_value) - (axis.y * sin_theta);
@@ -292,7 +292,7 @@ mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b)
 }
 
 Mat4x4F32
-scale_4x4f32(Mat4x4F32 m, F32 scale)
+scale_4x4f32(Mat4x4F32 m, float scale)
 {
   for(int j = 0; j < 4; j += 1)
   {
@@ -307,24 +307,24 @@ scale_4x4f32(Mat4x4F32 m, F32 scale)
 Mat4x4F32
 inverse_4x4f32(Mat4x4F32 m)
 {
-  F32 coef00 = m.v[2][2] * m.v[3][3] - m.v[3][2] * m.v[2][3];
-  F32 coef02 = m.v[1][2] * m.v[3][3] - m.v[3][2] * m.v[1][3];
-  F32 coef03 = m.v[1][2] * m.v[2][3] - m.v[2][2] * m.v[1][3];
-  F32 coef04 = m.v[2][1] * m.v[3][3] - m.v[3][1] * m.v[2][3];
-  F32 coef06 = m.v[1][1] * m.v[3][3] - m.v[3][1] * m.v[1][3];
-  F32 coef07 = m.v[1][1] * m.v[2][3] - m.v[2][1] * m.v[1][3];
-  F32 coef08 = m.v[2][1] * m.v[3][2] - m.v[3][1] * m.v[2][2];
-  F32 coef10 = m.v[1][1] * m.v[3][2] - m.v[3][1] * m.v[1][2];
-  F32 coef11 = m.v[1][1] * m.v[2][2] - m.v[2][1] * m.v[1][2];
-  F32 coef12 = m.v[2][0] * m.v[3][3] - m.v[3][0] * m.v[2][3];
-  F32 coef14 = m.v[1][0] * m.v[3][3] - m.v[3][0] * m.v[1][3];
-  F32 coef15 = m.v[1][0] * m.v[2][3] - m.v[2][0] * m.v[1][3];
-  F32 coef16 = m.v[2][0] * m.v[3][2] - m.v[3][0] * m.v[2][2];
-  F32 coef18 = m.v[1][0] * m.v[3][2] - m.v[3][0] * m.v[1][2];
-  F32 coef19 = m.v[1][0] * m.v[2][2] - m.v[2][0] * m.v[1][2];
-  F32 coef20 = m.v[2][0] * m.v[3][1] - m.v[3][0] * m.v[2][1];
-  F32 coef22 = m.v[1][0] * m.v[3][1] - m.v[3][0] * m.v[1][1];
-  F32 coef23 = m.v[1][0] * m.v[2][1] - m.v[2][0] * m.v[1][1];
+  float coef00 = m.v[2][2] * m.v[3][3] - m.v[3][2] * m.v[2][3];
+  float coef02 = m.v[1][2] * m.v[3][3] - m.v[3][2] * m.v[1][3];
+  float coef03 = m.v[1][2] * m.v[2][3] - m.v[2][2] * m.v[1][3];
+  float coef04 = m.v[2][1] * m.v[3][3] - m.v[3][1] * m.v[2][3];
+  float coef06 = m.v[1][1] * m.v[3][3] - m.v[3][1] * m.v[1][3];
+  float coef07 = m.v[1][1] * m.v[2][3] - m.v[2][1] * m.v[1][3];
+  float coef08 = m.v[2][1] * m.v[3][2] - m.v[3][1] * m.v[2][2];
+  float coef10 = m.v[1][1] * m.v[3][2] - m.v[3][1] * m.v[1][2];
+  float coef11 = m.v[1][1] * m.v[2][2] - m.v[2][1] * m.v[1][2];
+  float coef12 = m.v[2][0] * m.v[3][3] - m.v[3][0] * m.v[2][3];
+  float coef14 = m.v[1][0] * m.v[3][3] - m.v[3][0] * m.v[1][3];
+  float coef15 = m.v[1][0] * m.v[2][3] - m.v[2][0] * m.v[1][3];
+  float coef16 = m.v[2][0] * m.v[3][2] - m.v[3][0] * m.v[2][2];
+  float coef18 = m.v[1][0] * m.v[3][2] - m.v[3][0] * m.v[1][2];
+  float coef19 = m.v[1][0] * m.v[2][2] - m.v[2][0] * m.v[1][2];
+  float coef20 = m.v[2][0] * m.v[3][1] - m.v[3][0] * m.v[2][1];
+  float coef22 = m.v[1][0] * m.v[3][1] - m.v[3][0] * m.v[1][1];
+  float coef23 = m.v[1][0] * m.v[2][1] - m.v[2][0] * m.v[1][1];
   
   Vec4F32 fac0 = { coef00, coef00, coef02, coef03 };
   Vec4F32 fac1 = { coef04, coef04, coef06, coef07 };
@@ -347,7 +347,7 @@ inverse_4x4f32(Mat4x4F32 m)
   Vec4F32 sign_b = { -1, +1, -1, +1 };
   
   Mat4x4F32 inverse;
-  for(U32 i = 0; i < 4; i += 1)
+  for(uint32 i = 0; i < 4; i += 1)
   {
     inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
     inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
@@ -358,9 +358,9 @@ inverse_4x4f32(Mat4x4F32 m)
   Vec4F32 row0 = { inverse.v[0][0], inverse.v[1][0], inverse.v[2][0], inverse.v[3][0] };
   Vec4F32 m0 = { m.v[0][0], m.v[0][1], m.v[0][2], m.v[0][3] };
   Vec4F32 dot0 = mul_4f32(m0, row0);
-  F32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+  float dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
   
-  F32 one_over_det = 1 / dot1;
+  float one_over_det = 1 / dot1;
   
   return scale_4x4f32(inverse, one_over_det);
 }
@@ -389,69 +389,69 @@ derotate_4x4f32(Mat4x4F32 mat)
 ////////////////////////////////
 //~ rjf: Range Ops
 
-Rng1U32 rng_1u32(U32 min, U32 max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(U32, r.min, r.max); } return r;}
-Rng1U32 shift_1u32(Rng1U32 r, U32 x)                   {r.min += x; r.max += x; return r;}
-Rng1U32 pad_1u32(Rng1U32 r, U32 x)                     {r.min -= x; r.max += x; return r;}
-U32 center_1u32(Rng1U32 r)                             {U32 c = (r.min+r.max)/2; return c;}
-B32 contains_1u32(Rng1U32 r, U32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-U32 dim_1u32(Rng1U32 r)                                {U32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1U32 rng_1u32(uint32 min, uint32 max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(uint32, r.min, r.max); } return r;}
+Rng1U32 shift_1u32(Rng1U32 r, uint32 x)                   {r.min += x; r.max += x; return r;}
+Rng1U32 pad_1u32(Rng1U32 r, uint32 x)                     {r.min -= x; r.max += x; return r;}
+uint32 center_1u32(Rng1U32 r)                             {uint32 c = (r.min+r.max)/2; return c;}
+B32 contains_1u32(Rng1U32 r, uint32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+uint32 dim_1u32(Rng1U32 r)                                {uint32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b)               {Rng1U32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b)           {Rng1U32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-U32 clamp_1u32(Rng1U32 r, U32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+uint32 clamp_1u32(Rng1U32 r, uint32 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1S32 rng_1s32(S32 min, S32 max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(S32, r.min, r.max); } return r;}
-Rng1S32 shift_1s32(Rng1S32 r, S32 x)                   {r.min += x; r.max += x; return r;}
-Rng1S32 pad_1s32(Rng1S32 r, S32 x)                     {r.min -= x; r.max += x; return r;}
-S32 center_1s32(Rng1S32 r)                             {S32 c = (r.min+r.max)/2; return c;}
-B32 contains_1s32(Rng1S32 r, S32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-S32 dim_1s32(Rng1S32 r)                                {S32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1S32 rng_1s32(int32 min, int32 max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(int32, r.min, r.max); } return r;}
+Rng1S32 shift_1s32(Rng1S32 r, int32 x)                   {r.min += x; r.max += x; return r;}
+Rng1S32 pad_1s32(Rng1S32 r, int32 x)                     {r.min -= x; r.max += x; return r;}
+int32 center_1s32(Rng1S32 r)                             {int32 c = (r.min+r.max)/2; return c;}
+B32 contains_1s32(Rng1S32 r, int32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+int32 dim_1s32(Rng1S32 r)                                {int32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b)               {Rng1S32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b)           {Rng1S32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-S32 clamp_1s32(Rng1S32 r, S32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+int32 clamp_1s32(Rng1S32 r, int32 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1U64 rng_1u64(U64 min, U64 max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(U64, r.min, r.max); } return r;}
-Rng1U64 shift_1u64(Rng1U64 r, U64 x)                   {r.min += x; r.max += x; return r;}
-Rng1U64 pad_1u64(Rng1U64 r, U64 x)                     {r.min -= x; r.max += x; return r;}
-U64 center_1u64(Rng1U64 r)                             {U64 c = (r.min+r.max)/2; return c;}
-B32 contains_1u64(Rng1U64 r, U64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-U64 dim_1u64(Rng1U64 r)                                {U64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1U64 rng_1u64(uint64 min, uint64 max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(uint64, r.min, r.max); } return r;}
+Rng1U64 shift_1u64(Rng1U64 r, uint64 x)                   {r.min += x; r.max += x; return r;}
+Rng1U64 pad_1u64(Rng1U64 r, uint64 x)                     {r.min -= x; r.max += x; return r;}
+uint64 center_1u64(Rng1U64 r)                             {uint64 c = (r.min+r.max)/2; return c;}
+B32 contains_1u64(Rng1U64 r, uint64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+uint64 dim_1u64(Rng1U64 r)                                {uint64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b)               {Rng1U64 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b)           {Rng1U64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-U64 clamp_1u64(Rng1U64 r, U64 v)                       {v = Clamp(r.min, v, r.max); return v;}
+uint64 clamp_1u64(Rng1U64 r, uint64 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1S64 rng_1s64(S64 min, S64 max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(S64, r.min, r.max); } return r;}
-Rng1S64 shift_1s64(Rng1S64 r, S64 x)                   {r.min += x; r.max += x; return r;}
-Rng1S64 pad_1s64(Rng1S64 r, S64 x)                     {r.min -= x; r.max += x; return r;}
-S64 center_1s64(Rng1S64 r)                             {S64 c = (r.min+r.max)/2; return c;}
-B32 contains_1s64(Rng1S64 r, S64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-S64 dim_1s64(Rng1S64 r)                                {S64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1S64 rng_1s64(int64 min, int64 max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(int64, r.min, r.max); } return r;}
+Rng1S64 shift_1s64(Rng1S64 r, int64 x)                   {r.min += x; r.max += x; return r;}
+Rng1S64 pad_1s64(Rng1S64 r, int64 x)                     {r.min -= x; r.max += x; return r;}
+int64 center_1s64(Rng1S64 r)                             {int64 c = (r.min+r.max)/2; return c;}
+B32 contains_1s64(Rng1S64 r, int64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+int64 dim_1s64(Rng1S64 r)                                {int64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b)               {Rng1S64 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b)           {Rng1S64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-S64 clamp_1s64(Rng1S64 r, S64 v)                       {v = Clamp(r.min, v, r.max); return v;}
+int64 clamp_1s64(Rng1S64 r, int64 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1F32 rng_1f32(F32 min, F32 max)                     {Rng1F32 r = {min, max}; if(r.min > r.max) { Swap(F32, r.min, r.max); } return r;}
-Rng1F32 shift_1f32(Rng1F32 r, F32 x)                   {r.min += x; r.max += x; return r;}
-Rng1F32 pad_1f32(Rng1F32 r, F32 x)                     {r.min -= x; r.max += x; return r;}
-F32 center_1f32(Rng1F32 r)                             {F32 c = (r.min+r.max)/2; return c;}
-B32 contains_1f32(Rng1F32 r, F32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-F32 dim_1f32(Rng1F32 r)                                {F32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1F32 rng_1f32(float min, float max)                     {Rng1F32 r = {min, max}; if(r.min > r.max) { Swap(float, r.min, r.max); } return r;}
+Rng1F32 shift_1f32(Rng1F32 r, float x)                   {r.min += x; r.max += x; return r;}
+Rng1F32 pad_1f32(Rng1F32 r, float x)                     {r.min -= x; r.max += x; return r;}
+float center_1f32(Rng1F32 r)                             {float c = (r.min+r.max)/2; return c;}
+B32 contains_1f32(Rng1F32 r, float x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+float dim_1f32(Rng1F32 r)                                {float c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1F32 union_1f32(Rng1F32 a, Rng1F32 b)               {Rng1F32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1F32 intersect_1f32(Rng1F32 a, Rng1F32 b)           {Rng1F32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-F32 clamp_1f32(Rng1F32 r, F32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+float clamp_1f32(Rng1F32 r, float v)                       {v = Clamp(r.min, v, r.max); return v;}
 
 Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max)             {Rng2S16 r = {min, max}; return r;}
 Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x)               {r.min = add_2s16(r.min, x); r.max = add_2s16(r.max, x); return r;}
-Rng2S16 pad_2s16(Rng2S16 r, S16 x)                     {Vec2S16 xv = {x, x}; r.min = sub_2s16(r.min, xv); r.max = add_2s16(r.max, xv); return r;}
-Vec2S16 center_2s16(Rng2S16 r)                         {Vec2S16 c = {(S16)((r.min.x+r.max.x)/2), (S16)((r.min.y+r.max.y)/2)}; return c;}
+Rng2S16 pad_2s16(Rng2S16 r, int16 x)                     {Vec2S16 xv = {x, x}; r.min = sub_2s16(r.min, xv); r.max = add_2s16(r.max, xv); return r;}
+Vec2S16 center_2s16(Rng2S16 r)                         {Vec2S16 c = {(int16)((r.min.x+r.max.x)/2), (int16)((r.min.y+r.max.y)/2)}; return c;}
 B32 contains_2s16(Rng2S16 r, Vec2S16 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
-Vec2S16 dim_2s16(Rng2S16 r)                            {Vec2S16 dim = {(S16)(((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0)), (S16)(((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0))}; return dim;}
+Vec2S16 dim_2s16(Rng2S16 r)                            {Vec2S16 dim = {(int16)(((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0)), (int16)(((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0))}; return dim;}
 Rng2S16 union_2s16(Rng2S16 a, Rng2S16 b)               {Rng2S16 c; c.p0.x = Min(a.min.x, b.min.x); c.p0.y = Min(a.min.y, b.min.y); c.p1.x = Max(a.max.x, b.max.x); c.p1.y = Max(a.max.y, b.max.y); return c;}
 Rng2S16 intersect_2s16(Rng2S16 a, Rng2S16 b)           {Rng2S16 c; c.p0.x = Max(a.min.x, b.min.x); c.p0.y = Max(a.min.y, b.min.y); c.p1.x = Min(a.max.x, b.max.x); c.p1.y = Min(a.max.y, b.max.y); return c;}
 Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v)               {v.x = Clamp(r.min.x, v.x, r.max.x); v.y = Clamp(r.min.y, v.y, r.max.y); return v;}
 
 Rng2S32 rng_2s32(Vec2S32 min, Vec2S32 max)             {Rng2S32 r = {min, max}; return r;}
 Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x)               {r.min = add_2s32(r.min, x); r.max = add_2s32(r.max, x); return r;}
-Rng2S32 pad_2s32(Rng2S32 r, S32 x)                     {Vec2S32 xv = {x, x}; r.min = sub_2s32(r.min, xv); r.max = add_2s32(r.max, xv); return r;}
+Rng2S32 pad_2s32(Rng2S32 r, int32 x)                     {Vec2S32 xv = {x, x}; r.min = sub_2s32(r.min, xv); r.max = add_2s32(r.max, xv); return r;}
 Vec2S32 center_2s32(Rng2S32 r)                         {Vec2S32 c = {(r.min.x+r.max.x)/2, (r.min.y+r.max.y)/2}; return c;}
 B32 contains_2s32(Rng2S32 r, Vec2S32 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
 Vec2S32 dim_2s32(Rng2S32 r)                            {Vec2S32 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0), ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)}; return dim;}
@@ -461,7 +461,7 @@ Vec2S32 clamp_2s32(Rng2S32 r, Vec2S32 v)               {v.x = Clamp(r.min.x, v.x
 
 Rng2S64 rng_2s64(Vec2S64 min, Vec2S64 max)             {Rng2S64 r = {min, max}; return r;}
 Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x)               {r.min = add_2s64(r.min, x); r.max = add_2s64(r.max, x); return r;}
-Rng2S64 pad_2s64(Rng2S64 r, S64 x)                     {Vec2S64 xv = {x, x}; r.min = sub_2s64(r.min, xv); r.max = add_2s64(r.max, xv); return r;}
+Rng2S64 pad_2s64(Rng2S64 r, int64 x)                     {Vec2S64 xv = {x, x}; r.min = sub_2s64(r.min, xv); r.max = add_2s64(r.max, xv); return r;}
 Vec2S64 center_2s64(Rng2S64 r)                         {Vec2S64 c = {(r.min.x+r.max.x)/2, (r.min.y+r.max.y)/2}; return c;}
 B32 contains_2s64(Rng2S64 r, Vec2S64 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
 Vec2S64 dim_2s64(Rng2S64 r)                            {Vec2S64 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0), ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)}; return dim;}
@@ -471,7 +471,7 @@ Vec2S64 clamp_2s64(Rng2S64 r, Vec2S64 v)               {v.x = Clamp(r.min.x, v.x
 
 Rng2F32 rng_2f32(Vec2F32 min, Vec2F32 max)             {Rng2F32 r = {min, max}; return r;}
 Rng2F32 shift_2f32(Rng2F32 r, Vec2F32 x)               {r.min = add_2f32(r.min, x); r.max = add_2f32(r.max, x); return r;}
-Rng2F32 pad_2f32(Rng2F32 r, F32 x)                     {Vec2F32 xv = {x, x}; r.min = sub_2f32(r.min, xv); r.max = add_2f32(r.max, xv); return r;}
+Rng2F32 pad_2f32(Rng2F32 r, float x)                     {Vec2F32 xv = {x, x}; r.min = sub_2f32(r.min, xv); r.max = add_2f32(r.max, xv); return r;}
 Vec2F32 center_2f32(Rng2F32 r)                         {Vec2F32 c = {(r.min.x+r.max.x)/2, (r.min.y+r.max.y)/2}; return c;}
 B32 contains_2f32(Rng2F32 r, Vec2F32 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
 Vec2F32 dim_2f32(Rng2F32 r)                            {Vec2F32 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0), ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)}; return dim;}
@@ -485,16 +485,16 @@ Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v)               {v.x = Clamp(r.min.x, v.x
 Vec3F32
 hsv_from_rgb(Vec3F32 rgb)
 {
-  F32 c_max = Max(rgb.x, Max(rgb.y, rgb.z));
-  F32 c_min = Min(rgb.x, Min(rgb.y, rgb.z));
-  F32 delta = c_max - c_min;
-  F32 h = ((delta == 0.f) ? 0.f :
+  float c_max = Max(rgb.x, Max(rgb.y, rgb.z));
+  float c_min = Min(rgb.x, Min(rgb.y, rgb.z));
+  float delta = c_max - c_min;
+  float h = ((delta == 0.f) ? 0.f :
            (c_max == rgb.x) ? mod_f32((rgb.y - rgb.z)/delta + 6.f, 6.f) :
            (c_max == rgb.y) ? (rgb.z - rgb.x)/delta + 2.f :
            (c_max == rgb.z) ? (rgb.x - rgb.y)/delta + 4.f :
            0.f);
-  F32 s = (c_max == 0.f) ? 0.f : (delta/c_max);
-  F32 v = c_max;
+  float s = (c_max == 0.f) ? 0.f : (delta/c_max);
+  float v = c_max;
   Vec3F32 hsv = {h/6.f, s, v};
   return hsv;
 }
@@ -502,17 +502,17 @@ hsv_from_rgb(Vec3F32 rgb)
 Vec3F32
 rgb_from_hsv(Vec3F32 hsv)
 {
-  F32 h = mod_f32(hsv.x * 360.f, 360.f);
-  F32 s = hsv.y;
-  F32 v = hsv.z;
+  float h = mod_f32(hsv.x * 360.f, 360.f);
+  float s = hsv.y;
+  float v = hsv.z;
   
-  F32 c = v*s;
-  F32 x = c*(1.f - abs_f32(mod_f32(h/60.f, 2.f) - 1.f));
-  F32 m = v - c;
+  float c = v*s;
+  float x = c*(1.f - abs_f32(mod_f32(h/60.f, 2.f) - 1.f));
+  float m = v - c;
   
-  F32 r = 0;
-  F32 g = 0;
-  F32 b = 0;
+  float r = 0;
+  float g = 0;
+  float b = 0;
   
   if ((h >= 0.f && h < 60.f) || (h >= 360.f && h < 420.f)){
     r = c;
@@ -568,7 +568,7 @@ rgba_from_hsva(Vec4F32 hsva)
 }
 
 Vec4F32
-rgba_from_u32(U32 hex)
+rgba_from_u32(uint32 hex)
 {
   Vec4F32 result = v4f32(((hex&0xff000000)>>24)/255.f,
                          ((hex&0x00ff0000)>>16)/255.f,
@@ -577,14 +577,14 @@ rgba_from_u32(U32 hex)
   return result;
 }
 
-U32
+uint32
 u32_from_rgba(Vec4F32 rgba)
 {
-  U32 result = 0;
-  result |= ((U32)((U8)(rgba.x*255.f))) << 24;
-  result |= ((U32)((U8)(rgba.y*255.f))) << 16;
-  result |= ((U32)((U8)(rgba.z*255.f))) <<  8;
-  result |= ((U32)((U8)(rgba.w*255.f))) <<  0;
+  uint32 result = 0;
+  result |= ((uint32)((uint8)(rgba.x*255.f))) << 24;
+  result |= ((uint32)((uint8)(rgba.y*255.f))) << 16;
+  result |= ((uint32)((uint8)(rgba.z*255.f))) <<  8;
+  result |= ((uint32)((uint8)(rgba.w*255.f))) <<  0;
   return result;
 }
 
@@ -625,7 +625,7 @@ rng1u64_array_from_list(Arena* arena, Rng1U64List* list)
   Rng1U64Array arr = {0};
   arr.count        = list->count;
   arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(Rng1U64Node* n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
@@ -649,7 +649,7 @@ rng1s64_array_from_list(Arena* arena, Rng1S64List* list)
   Rng1S64Array arr = {0};
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(Rng1S64Node* n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;

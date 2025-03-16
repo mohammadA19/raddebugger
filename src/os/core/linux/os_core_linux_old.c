@@ -23,14 +23,14 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
   
   String8Node* node = list.first;
   if (node != 0){
-    U8* ptr = node->string.str;;
-    U8* opl = ptr + node->string.size;
+    uint8* ptr = node->string.str;;
+    uint8* opl = ptr + node->string.size;
     
-    U64 p = 0;
+    uint64 p = 0;
     for (;p < list.total_size;){
-      U64 amt64 = (U64)(opl - ptr);
-      U32 amt = u32_from_u64_saturate(amt64);
-      S64 written_amt = write(fd, ptr, amt);
+      uint64 amt64 = (uint64)(opl - ptr);
+      uint32 amt = u32_from_u64_saturate(amt64);
+      int64 written_amt = write(fd, ptr, amt);
       if (written_amt < 0){
         break;
       }
@@ -56,7 +56,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
 }
 
 void
-lnx_date_time_from_tm(DateTime* out, struct tm* in, U32 msec){
+lnx_date_time_from_tm(DateTime* out, struct tm* in, uint32 msec){
   out->msec = msec;
   out->sec  = in->tm_sec;
   out->min  = in->tm_min;
@@ -792,7 +792,7 @@ lnx_thread_base(void* ptr){
   tctx_release();
   
   // remove my bit
-  U32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x2);
+  uint32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x2);
   // if the other bit is also gone, free entity
   if ((result & 0x1) == 0){
     lnx_free_entity(entity);
@@ -829,7 +829,7 @@ os_init()
   MemoryZeroArray(lnx_entity_buffer);
   {
     LNX_Entity* ptr = lnx_entity_free = lnx_entity_buffer;
-    for (U64 i = 1; i < ArrayCount(lnx_entity_buffer); i += 1, ptr += 1){
+    for (uint64 i = 1; i < ArrayCount(lnx_entity_buffer); i += 1, ptr += 1){
       ptr->next = ptr + 1;
     }
     ptr->next = 0;
@@ -850,38 +850,38 @@ os_init()
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
 
 void*
-os_reserve(U64 size){
+os_reserve(uint64 size){
   void* result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
   return(result);
 }
 
 B32
-os_commit(void* ptr, U64 size){
+os_commit(void* ptr, uint64 size){
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   // TODO(allen): can we test this?
   return(true);
 }
 
 void*
-os_reserve_large(U64 size){
+os_reserve_large(uint64 size){
   NotImplemented;
   return 0;
 }
 
 B32
-os_commit_large(void* ptr, U64 size){
+os_commit_large(void* ptr, uint64 size){
   NotImplemented;
   return 0;
 }
 
 void
-os_decommit(void* ptr, U64 size){
+os_decommit(void* ptr, uint64 size){
   madvise(ptr, size, MADV_DONTNEED);
   mprotect(ptr, size, PROT_NONE);
 }
 
 void
-os_release(void* ptr, U64 size){
+os_release(void* ptr, uint64 size){
   munmap(ptr, size);
 }
 
@@ -898,7 +898,7 @@ os_large_pages_enabled()
   return 0;
 }
 
-U64
+uint64
 os_large_page_size()
 {
   NotImplemented;
@@ -921,13 +921,13 @@ os_machine_name(){
     
     // get name
     B32 got_final_result = false;
-    U8* buffer = 0;
+    uint8* buffer = 0;
     int size = 0;
-    for (S64 cap = 4096, r = 0;
+    for (int64 cap = 4096, r = 0;
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
-      buffer = push_array_no_zero(scratch.arena, U8, cap);
+      buffer = push_array_no_zero(scratch.arena, uint8, cap);
       size = gethostname((char*)buffer, cap);
       if (size < cap){
         got_final_result = true;
@@ -938,7 +938,7 @@ os_machine_name(){
     // save string
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, U8, name.size + 1);
+      name.str = push_array_no_zero(lnx_perm_arena, uint8, name.size + 1);
       MemoryCopy(name.str, buffer, name.size);
       name.str[name.size] = 0;
     }
@@ -950,20 +950,20 @@ os_machine_name(){
   return(name);
 }
 
-U64
+uint64
 os_page_size(){
   int size = getpagesize();
-  return((U64)size);
+  return((uint64)size);
 }
 
-U64
+uint64
 os_allocation_granularity()
 {
   // On linux there is no equivalent of "dwAllocationGranularity"
   os_page_size();
 }
 
-U64
+uint64
 os_logical_core_count()
 {
   // TODO(rjf): check this
@@ -979,15 +979,15 @@ os_get_command_line_arguments()
   return lnx_cmd_line_args;
 }
 
-S32
+int32
 os_pid(){
-  S32 result = getpid();
+  int32 result = getpid();
   return(result);
 }
 
-S32
+int32
 os_tid(){
-  S32 result = 0;
+  int32 result = 0;
 #ifdef SYS_gettid
   result = syscall(SYS_gettid);
 #else
@@ -1004,9 +1004,9 @@ os_environment()
   return result;
 }
 
-U64
+uint64
 os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* out){
-  U64 result = 0;
+  uint64 result = 0;
   
   switch (path){
     case OS_SystemPath_Binary:
@@ -1022,13 +1022,13 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
         
         // get self string
         B32 got_final_result = false;
-        U8* buffer = 0;
+        uint8* buffer = 0;
         int size = 0;
-        for (S64 cap = PATH_MAX, r = 0;
+        for (int64 cap = PATH_MAX, r = 0;
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = push_array_no_zero(scratch.arena, uint8, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if (size < cap){
             got_final_result = true;
@@ -1090,7 +1090,7 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
 //~ rjf: @os_hooks Process Control (Implemented Per-OS)
 
 void
-os_abort(S32 exit_code){
+os_abort(int32 exit_code){
   exit(exit_code);
 }
 
@@ -1113,14 +1113,14 @@ os_file_close(OS_Handle file)
   NotImplemented;
 }
 
-U64
+uint64
 os_file_read(OS_Handle file, Rng1U64 rng, void* out_data)
 {
   NotImplemented;
   return 0;
 }
 
-U64
+uint64
 os_file_write(OS_Handle file, Rng1U64 rng, void* data)
 {
   NotImplemented;
@@ -1263,7 +1263,7 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 OS_Handle
-os_shared_memory_alloc(U64 size, String8 name)
+os_shared_memory_alloc(uint64 size, String8 name)
 {
   OS_Handle result = {0};
   NotImplemented;
@@ -1300,11 +1300,11 @@ os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-U32
+uint32
 os_now_unix()
 {
   time_t t = time(0);
-  return (U32)t;
+  return (uint32)t;
 }
 
 DateTime
@@ -1350,16 +1350,16 @@ os_local_time_from_universal(DateTime* universal_time){
   return(result);
 }
 
-U64
+uint64
 os_now_microseconds(){
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
-  U64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
+  uint64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
   return(result);
 }
 
 void
-os_sleep_milliseconds(U32 msec){
+os_sleep_milliseconds(uint32 msec){
   usleep(msec*Thousand(1));
 }
 
@@ -1403,7 +1403,7 @@ void
 os_release_thread_handle(OS_Handle thread){
   LNX_Entity* entity = (LNX_Entity*)PtrFromInt(thread.id);
   // remove my bit
-  U32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x1);
+  uint32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x1);
   // if the other bit is also gone, free entity
   if ((result & 0x2) == 0){
     lnx_free_entity(entity);
@@ -1528,7 +1528,7 @@ os_condition_variable_release(OS_Handle cv){
 }
 
 B32
-os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, U64 endt_us){
+os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, uint64 endt_us){
   B32 result = false;
   LNX_Entity* entity_cond = (LNX_Entity*)PtrFromInt(cv.id);
   LNX_Entity* entity_mutex = (LNX_Entity*)PtrFromInt(mutex.id);
@@ -1538,14 +1538,14 @@ os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, U64 endt_us){
 }
 
 B32
-os_condition_variable_wait_rw_r_(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+os_condition_variable_wait_rw_r_(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us)
 {
   NotImplemented;
   return 0;
 }
 
 B32
-os_condition_variable_wait_rw_w_(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+os_condition_variable_wait_rw_w_(OS_Handle cv, OS_Handle mutex_rw, uint64 endt_us)
 {
   NotImplemented;
   return 0;
@@ -1566,7 +1566,7 @@ os_condition_variable_broadcast_(OS_Handle cv){
 //- rjf: cross-process semaphores
 
 OS_Handle
-os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
+os_semaphore_alloc(uint32 initial_count, uint32 max_count, String8 name)
 {
   OS_Handle result = {0};
   NotImplemented;
@@ -1594,7 +1594,7 @@ os_semaphore_close(OS_Handle semaphore)
 }
 
 B32
-os_semaphore_take(OS_Handle semaphore, U64 endt_us)
+os_semaphore_take(OS_Handle semaphore, uint64 endt_us)
 {
   NotImplemented;
   return 0;
@@ -1615,7 +1615,7 @@ os_library_open(String8 path)
   Temp scratch = scratch_begin(0, 0);
   char* path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
   void* so = dlopen(path_cstr, RTLD_LAZY);
-  OS_Handle lib = { (U64)so };
+  OS_Handle lib = { (uint64)so };
   scratch_end(scratch);
   return lib;
 }
@@ -1656,13 +1656,13 @@ os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, v
   };
   struct sigaction og_act[ArrayCount(signals_to_handle)] = {0};
   
-  for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
+  for (uint32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &new_act, &og_act[i]);
   }
   
   func(ptr);
   
-  for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
+  for (uint32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &og_act[i], 0);
   }
 }

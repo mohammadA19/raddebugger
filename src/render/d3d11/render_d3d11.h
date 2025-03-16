@@ -26,8 +26,8 @@
 struct R_D3D11_Uniforms_Rect
 {
   Vec2F32 viewport_size;
-  F32 opacity;
-  F32 _padding0_;
+  float opacity;
+  float _padding0_;
   Vec4F32 texture_sample_channel_map[4];
   Vec2F32 texture_t2d_size;
   Vec2F32 translate;
@@ -41,8 +41,8 @@ struct R_D3D11_Uniforms_BlurPass
   Vec4F32 corner_radii;
   Vec2F32 direction;
   Vec2F32 viewport_size;
-  U32 blur_count;
-  U8 _padding0_[204];
+  uint32 blur_count;
+  uint8 _padding0_[204];
 }
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 
@@ -63,7 +63,7 @@ struct R_D3D11_Uniforms_Mesh
 struct R_D3D11_Tex2D
 {
   R_D3D11_Tex2D* next;
-  U64 generation;
+  uint64 generation;
   ID3D11Texture2D* texture;
   ID3D11ShaderResourceView* view;
   R_ResourceKind kind;
@@ -74,16 +74,16 @@ struct R_D3D11_Tex2D
 struct R_D3D11_Buffer
 {
   R_D3D11_Buffer* next;
-  U64 generation;
+  uint64 generation;
   ID3D11Buffer* buffer;
   R_ResourceKind kind;
-  U64 size;
+  uint64 size;
 }
 
 struct R_D3D11_Window
 {
   R_D3D11_Window* next;
-  U64 generation;
+  uint64 generation;
   
   // rjf: swapchain/framebuffer
   IDXGISwapChain1*        swapchain;
@@ -175,7 +175,7 @@ R_D3D11_Tex2D* r_d3d11_tex2d_from_handle(R_Handle handle);
 R_Handle r_d3d11_handle_from_tex2d(R_D3D11_Tex2D* texture);
 R_D3D11_Buffer* r_d3d11_buffer_from_handle(R_Handle handle);
 R_Handle r_d3d11_handle_from_buffer(R_D3D11_Buffer* buffer);
-ID3D11Buffer* r_d3d11_instance_buffer_from_size(U64 size);
+ID3D11Buffer* r_d3d11_instance_buffer_from_size(uint64 size);
 void r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE* out_d3d11_usage, UINT* out_cpu_access_flags);
 
 #endif // RENDER_D3D11_H

@@ -1,17 +1,17 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-U16
-safe_cast_u16x(U64 x)
+uint16
+safe_cast_u16x(uint64 x)
 {
   AssertAlways(x <= max_U16);
-  return (U16)x;
+  return (uint16)x;
 }
 
 ////////////////////////////////
 
-U64
-u128_mod64(U128 a, U64 b)
+uint64
+u128_mod64(U128 a, uint64 b)
 {
   return a.u64[1] % b;
 }
@@ -19,7 +19,7 @@ u128_mod64(U128 a, U64 b)
 ////////////////////////////////
 
 Version
-make_version(U64 major, U64 minor)
+make_version(uint64 major, uint64 minor)
 {
   Version version;
   version.major = major;
@@ -48,7 +48,7 @@ version_compar(Version a, Version b)
 ////////////////////////////////
 
 ISectOff
-isect_off(U32 isect, U32 off)
+isect_off(uint32 isect, uint32 off)
 {
   ISectOff result = { isect, off };
   return result;
@@ -59,8 +59,8 @@ isect_off(U32 isect, U32 off)
 int
 u16_compar(const void* raw_a, const void* raw_b)
 {
-  U16 a = *(U16*)raw_a;
-  U16 b = *(U16*)raw_b;
+  uint16 a = *(uint16*)raw_a;
+  uint16 b = *(uint16*)raw_b;
   int result = a < b  ? -1 :
                a > b  ? +1 :
                0;
@@ -70,8 +70,8 @@ u16_compar(const void* raw_a, const void* raw_b)
 int
 u32_compar(const void* raw_a, const void* raw_b)
 {
-  U32 a = *(U32*)raw_a;
-  U32 b = *(U32*)raw_b;
+  uint32 a = *(uint32*)raw_a;
+  uint32 b = *(uint32*)raw_b;
   int result = a < b  ? -1 :
   a > b  ? +1 :
   0;
@@ -81,8 +81,8 @@ u32_compar(const void* raw_a, const void* raw_b)
 int
 u64_compar(const void* raw_a, const void* raw_b)
 {
-  U64 a = *(const U64*)raw_a;
-  U64 b = *(const U64*)raw_b;
+  uint64 a = *(const uint64*)raw_a;
+  uint64 b = *(const uint64*)raw_b;
   int result = a < b  ? -1 : a > b  ? +1 : 0;
   return result;
 }
@@ -90,8 +90,8 @@ u64_compar(const void* raw_a, const void* raw_b)
 int
 u64_compar_inv(const void* raw_a, const void* raw_b)
 {
-  U64 a = *(const U64*)raw_a;
-  U64 b = *(const U64*)raw_b;
+  uint64 a = *(const uint64*)raw_a;
+  uint64 b = *(const uint64*)raw_b;
   int result = a < b  ? +1 : a > b  ? -1 : 0;
   return result;
 }
@@ -99,8 +99,8 @@ u64_compar_inv(const void* raw_a, const void* raw_b)
 int
 u16_compar_is_before(void* raw_a, void* raw_b)
 {
-  U16* a = (U16 *)raw_a;
-  U16* b = (U16 *)raw_b;
+  uint16* a = (uint16 *)raw_a;
+  uint16* b = (uint16 *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -108,8 +108,8 @@ u16_compar_is_before(void* raw_a, void* raw_b)
 int
 u32_compar_is_before(void* raw_a, void* raw_b)
 {
-  U32* a = (U32 *)raw_a;
-  U32* b = (U32 *)raw_b;
+  uint32* a = (uint32 *)raw_a;
+  uint32* b = (uint32 *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -117,8 +117,8 @@ u32_compar_is_before(void* raw_a, void* raw_b)
 int
 u64_compar_is_before(void* raw_a, void* raw_b)
 {
-  U64* a = (U64 *)raw_a;
-  U64* b = (U64 *)raw_b;
+  uint64* a = (uint64 *)raw_a;
+  uint64* b = (uint64 *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -127,32 +127,32 @@ u64_compar_is_before(void* raw_a, void* raw_b)
 int
 u8_is_before(void* raw_a, void* raw_b)
 {
-  U8* a = (U8 *) raw_a;
-  U8* b = (U8 *) raw_b;
+  uint8* a = (uint8 *) raw_a;
+  uint8* b = (uint8 *) raw_b;
   return* a < *b;
 }
 
 int
 u16_is_before(void* raw_a, void* raw_b)
 {
-  U16* a = (U16 *) raw_a;
-  U16* b = (U16 *) raw_b;
+  uint16* a = (uint16 *) raw_a;
+  uint16* b = (uint16 *) raw_b;
   return* a < *b;
 }
 
 int
 u32_is_before(void* raw_a, void* raw_b)
 {
-  U32* a = (U32 *) raw_a;
-  U32* b = (U32 *) raw_b;
+  uint32* a = (uint32 *) raw_a;
+  uint32* b = (uint32 *) raw_b;
   return* a < *b;
 }
 
 int
 u64_is_before(void* raw_a, void* raw_b)
 {
-  U64* a = (U64 *) raw_a;
-  U64* b = (U64 *) raw_b;
+  uint64* a = (uint64 *) raw_a;
+  uint64* b = (uint64 *) raw_b;
   return* a < *b;
 }
 
@@ -216,9 +216,9 @@ pair_u64_compar_v1(const void* raw_a, const void* raw_b)
 ////////////////////////////////
 
 void
-str8_list_concat_in_place_array(String8List* list, String8List* arr, U64 count)
+str8_list_concat_in_place_array(String8List* list, String8List* arr, uint64 count)
 {
-  for (U64 i = 0; i < count; ++i) {
+  for (uint64 i = 0; i < count; ++i) {
     str8_list_concat_in_place(list, &arr[i]);
   }
 }

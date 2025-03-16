@@ -64,7 +64,7 @@ r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void* data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void* data)
+r_buffer_alloc(R_ResourceKind kind, uint64 size, void* data)
 {
   R_Handle handle = {0};
   handle.u64[0] = 1;

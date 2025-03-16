@@ -10,11 +10,11 @@
 struct PDB_Strtbl
 {
   String8 data;
-  U32 bucket_count;
-  U32 strblock_min;
-  U32 strblock_max;
-  U32 buckets_min;
-  U32 buckets_max;
+  uint32 bucket_count;
+  uint32 strblock_min;
+  uint32 strblock_max;
+  uint32 buckets_min;
+  uint32 buckets_max;
 }
 
 ////////////////////////////////
@@ -50,8 +50,8 @@ struct PDB_Info
 struct PDB_InfoHeader
 {
   PDB_InfoVersion version;
-  U32 time;
-  U32 age;
+  uint32 time;
+  uint32 age;
 }
 
 ////////////////////////////////
@@ -86,14 +86,14 @@ struct PDB_DbiParsed
   MSF_StreamNumber gsi_sn;
   MSF_StreamNumber psi_sn;
   MSF_StreamNumber sym_sn;
-  U64 range_off[(U64)(PDB_DbiRange_COUNT) + 1];
+  uint64 range_off[(uint64)(PDB_DbiRange_COUNT) + 1];
   MSF_StreamNumber dbg_streams[PDB_DbiStream_COUNT];
 }
 
 struct PDB_CompUnit
 {
   MSF_StreamNumber sn;
-  U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
+  uint32 range_off[(uint32)(PDB_DbiCompUnitRange_COUNT) + 1];
   
   String8 obj_name;
   String8 group_name;
@@ -108,20 +108,20 @@ struct PDB_CompUnitNode
 struct PDB_CompUnitArray
 {
   PDB_CompUnit** units;
-  U64 count;
+  uint64 count;
 }
 
 struct PDB_CompUnitContribution
 {
-  U32 mod;
-  U64 voff_first;
-  U64 voff_opl;
+  uint32 mod;
+  uint64 voff_first;
+  uint64 voff_opl;
 }
 
 struct PDB_CompUnitContributionArray
 {
   PDB_CompUnitContribution* contributions;
-  U64 count;
+  uint64 count;
 }
 
 
@@ -133,29 +133,29 @@ struct PDB_TpiParsed
   String8 data;
   
   // leaf info
-  U64 leaf_first;
-  U64 leaf_opl;
-  U32 itype_first;
-  U32 itype_opl;
+  uint64 leaf_first;
+  uint64 leaf_opl;
+  uint32 itype_first;
+  uint32 itype_opl;
   
   // hash info
   MSF_StreamNumber hash_sn;
   MSF_StreamNumber hash_sn_aux;
-  U32 hash_key_size;
-  U32 hash_bucket_count;
-  U32 hash_vals_off;
-  U32 hash_vals_size;
-  U32 itype_off;
-  U32 itype_size;
-  U32 hash_adj_off;
-  U32 hash_adj_size;
+  uint32 hash_key_size;
+  uint32 hash_bucket_count;
+  uint32 hash_vals_off;
+  uint32 hash_vals_size;
+  uint32 itype_off;
+  uint32 itype_size;
+  uint32 hash_adj_off;
+  uint32 hash_adj_size;
   
 }
 
 struct PDB_TpiHashBlock
 {
   struct PDB_TpiHashBlock* next;
-  U32 local_count;
+  uint32 local_count;
   CV_TypeId itypes[13]; // 13 = (64 - 12)/4
 }
 
@@ -165,8 +165,8 @@ struct PDB_TpiHashParsed
   String8 aux_data;
   
   PDB_TpiHashBlock** buckets;
-  U32 bucket_count;
-  U32 bucket_mask;
+  uint32 bucket_count;
+  uint32 bucket_mask;
 }
 
 ////////////////////////////////
@@ -174,8 +174,8 @@ struct PDB_TpiHashParsed
 
 struct PDB_GsiBucket
 {
-  U32* offs;
-  U64 count;
+  uint32* offs;
+  uint64 count;
 }
 
 struct PDB_GsiParsed
@@ -198,7 +198,7 @@ PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena* arena,
                                                      String8 tpi_hash_data,
                                                      String8 tpi_hash_aux_data);
 PDB_GsiParsed*       pdb_gsi_from_data(Arena* arena, String8 gsi_data);
-U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, String8 symbol_data, String8 string);
+uint64                  pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, String8 symbol_data, String8 string);
 
 COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena* arena, String8 section_data);
 
@@ -226,7 +226,7 @@ CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena* arena,
                                                        CV_LeafParsed* tpi_leaf,
                                                        String8 name,
                                                        B32 compare_unique_name,
-                                                       U32 output_cap);
+                                                       uint32 output_cap);
 
 CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash,
                                                             CV_LeafParsed* tpi_leaf,
@@ -236,10 +236,10 @@ CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash,
 ////////////////////////////////
 //~ PDB Strtbl Functions
 
-String8              pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, U32 off);
+String8              pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, uint32 off);
 String8              pdb_strtbl_string_from_index(PDB_Strtbl* strtbl,
                                                            PDB_StringIndex idx);
-U32                  pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, String8 string);
+uint32                  pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, String8 string);
 
 
 #endif // PDB_PARSE_H

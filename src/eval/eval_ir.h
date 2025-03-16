@@ -26,8 +26,8 @@ struct E_OpList
 {
   E_Op* first;
   E_Op* last;
-  U64 op_count;
-  U64 encoded_size;
+  uint64 op_count;
+  uint64 encoded_size;
 }
 
 ////////////////////////////////
@@ -83,8 +83,8 @@ void e_select_ir_ctx(E_IRCtx* ctx);
 
 //- rjf: op list functions
 void e_oplist_push_op(Arena* arena, E_OpList* list, RDI_EvalOp opcode, E_Value value);
-void e_oplist_push_uconst(Arena* arena, E_OpList* list, U64 x);
-void e_oplist_push_sconst(Arena* arena, E_OpList* list, S64 x);
+void e_oplist_push_uconst(Arena* arena, E_OpList* list, uint64 x);
+void e_oplist_push_sconst(Arena* arena, E_OpList* list, int64 x);
 void e_oplist_push_bytecode(Arena* arena, E_OpList* list, String8 bytecode);
 void e_oplist_push_set_space(Arena* arena, E_OpList* list, E_Space space);
 void e_oplist_push_string_literal(Arena* arena, E_OpList* list, String8 string);
@@ -95,7 +95,7 @@ E_IRNode* e_push_irnode(Arena* arena, RDI_EvalOp op);
 void e_irnode_push_child(E_IRNode* parent, E_IRNode* child);
 
 //- rjf: ir subtree building helpers
-E_IRNode* e_irtree_const_u(Arena* arena, U64 v);
+E_IRNode* e_irtree_const_u(Arena* arena, uint64 v);
 E_IRNode* e_irtree_unary_op(Arena* arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode* c);
 E_IRNode* e_irtree_binary_op(Arena* arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode* l, E_IRNode* r);
 E_IRNode* e_irtree_binary_op_u(Arena* arena, RDI_EvalOp op, E_IRNode* l, E_IRNode* r);

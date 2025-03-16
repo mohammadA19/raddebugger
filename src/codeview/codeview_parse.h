@@ -8,21 +8,21 @@
 //~ CodeView Common Parser Types
 
 // CV_Numeric layout
-// x: U16
-// buf: U8[]
-// case (x < 0x8000):  kind=U16 val=x
+// x: uint16
+// buf: uint8[]
+// case (x < 0x8000):  kind=uint16 val=x
 // case (x >= 0x8000): kind=x   val=buf
 
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
-  U8*             val;
-  U64             encoded_size;
+  uint8*             val;
+  uint64             encoded_size;
 }
 
 struct CV_RecRange
 {
-  U32          off;
+  uint32          off;
   CV_RecHeader hdr;
 }
 
@@ -38,13 +38,13 @@ struct CV_RecRangeStream
 {
   CV_RecRangeChunk* first_chunk;
   CV_RecRangeChunk* last_chunk;
-  U64               total_count;
+  uint64               total_count;
 }
 
 struct CV_RecRangeArray
 {
   CV_RecRange* ranges;
-  U64          count;
+  uint64          count;
 }
 
 ////////////////////////////////
@@ -61,7 +61,7 @@ struct CV_SymParsed
 {
   // source information
   String8 data;
-  U64     sym_align;
+  uint64     sym_align;
   
   // sym index derived from source
   CV_RecRangeArray sym_ranges;
@@ -89,28 +89,28 @@ struct CV_LeafParsed
 
 struct CV_C13InlineSiteDecoder
 {
-  U64                cursor;
-  U64                parent_voff;
+  uint64                cursor;
+  uint64                parent_voff;
   CV_InlineRangeKind range_kind;
-  U32                code_length;
-  U32                code_offset;
-  U32                file_off;
-  S32                ln;
-  S32                cn;
-  U64                code_offset_lo;
+  uint32                code_length;
+  uint32                code_offset;
+  uint32                file_off;
+  int32                ln;
+  int32                cn;
+  uint64                code_offset_lo;
   B32                code_offset_changed;
   B32                code_offset_lo_changed;
   B32                code_length_changed;
   B32                ln_changed;
   B32                file_off_changed;
   Rng1U64            last_range;
-  U32                file_count;
+  uint32                file_count;
   Rng1U64            file_last_range;
-  U64                file_line_count;
-  U64                file_last_ln;
+  uint64                file_line_count;
+  uint64                file_last_ln;
 }
 
-enum CV_C13InlineSiteDecoderStepFlags : U32
+enum CV_C13InlineSiteDecoderStepFlags : uint32
 {
   CV_C13InlineSiteDecoderStepFlag_EmitRange       = (1 << 0),
   CV_C13InlineSiteDecoderStepFlag_ExtendLastRange = (1 << 1),
@@ -122,26 +122,26 @@ struct CV_C13InlineSiteDecoderStep
 {
   CV_C13InlineSiteDecoderStepFlags flags;
   Rng1U64                     range;
-  U64                         line_voff;
-  U64                         line_voff_end;
-  U64                         ln;
-  U64                         cn;
-  U32                         file_off;
+  uint64                         line_voff;
+  uint64                         line_voff_end;
+  uint64                         ln;
+  uint64                         cn;
+  uint32                         file_off;
 }
 
 struct CV_C13LinesParsed
 {
   // raw info
-  U32 sec_idx;
-  U32 file_off;
-  U64 secrel_base_off;
+  uint32 sec_idx;
+  uint32 file_off;
+  uint64 secrel_base_off;
   
   // parsed info
   String8  file_name;
-  U64*     voffs;     // [line_count + 1]
-  U32*     line_nums; // [line_count]
-  U16*     col_nums;  // [2*line_count]
-  U32      line_count;
+  uint64*     voffs;     // [line_count + 1]
+  uint32*     line_nums; // [line_count]
+  uint16*     col_nums;  // [2*line_count]
+  uint32      line_count;
 }
 
 struct CV_C13LinesParsedNode
@@ -153,11 +153,11 @@ struct CV_C13LinesParsedNode
 struct CV_C13InlineeLinesParsed
 {
   CV_ItemId  inlinee;
-  U32        file_off;
+  uint32        file_off;
   String8    file_name;
-  U32        first_source_ln;
-  U32        extra_file_count;
-  U32*       extra_files;
+  uint32        first_source_ln;
+  uint32        extra_file_count;
+  uint32*       extra_files;
 }
 
 struct CV_C13InlineeLinesParsedNode
@@ -171,8 +171,8 @@ struct CV_C13SubSectionNode
 {
   struct CV_C13SubSectionNode*  next;
   CV_C13SubSectionKind          kind;
-  U32                           off;
-  U32                           size;
+  uint32                           off;
+  uint32                           size;
   CV_C13LinesParsedNode*        lines_first;
   CV_C13LinesParsedNode*        lines_last;
   CV_C13InlineeLinesParsedNode* inlinee_lines_first;
@@ -187,14 +187,14 @@ struct CV_C13Parsed
   // rjf: full sub-section list
   CV_C13SubSectionNode* first_sub_section;
   CV_C13SubSectionNode* last_sub_section;
-  U64                   sub_section_count;
+  uint64                   sub_section_count;
   
   // rjf: fastpath to file checksums section
   CV_C13SubSectionNode* file_chksms_sub_section;
   
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
   CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots;
-  U64                            inlinee_lines_parsed_slots_count;
+  uint64                            inlinee_lines_parsed_slots_count;
 }
 
 struct CV_UDTInfo
@@ -210,36 +210,36 @@ struct CV_UDTInfo
 struct CV_TypeIdArray
 {
   CV_TypeId* itypes;
-  U64        count;
+  uint64        count;
 }
 
 ////////////////////////////////
 
 //- Hasher
 
-U64 cv_hash_from_string(String8 string);
-U64 cv_hash_from_item_id(CV_ItemId item_id);
+uint64 cv_hash_from_string(String8 string);
+uint64 cv_hash_from_item_id(CV_ItemId item_id);
 
 //- Numeric Decoder
 
-CV_NumericParsed cv_numeric_from_data_range(U8* first, U8* opl);
-U64              cv_read_numeric(String8 data, U64 offset, CV_NumericParsed* out);
+CV_NumericParsed cv_numeric_from_data_range(uint8* first, uint8* opl);
+uint64              cv_read_numeric(String8 data, uint64 offset, CV_NumericParsed* out);
 
 B32 cv_numeric_fits_in_u64(CV_NumericParsed* num);
 B32 cv_numeric_fits_in_s64(CV_NumericParsed* num);
 B32 cv_numeric_fits_in_f64(CV_NumericParsed* num);
 
-U64 cv_u64_from_numeric(CV_NumericParsed* num);
-S64 cv_s64_from_numeric(CV_NumericParsed* num);
-F64 cv_f64_from_numeric(CV_NumericParsed* num);
+uint64 cv_u64_from_numeric(CV_NumericParsed* num);
+int64 cv_s64_from_numeric(CV_NumericParsed* num);
+double cv_f64_from_numeric(CV_NumericParsed* num);
 
 //- Inlinee Lines Binary Annot Decoder
 
-U64 cv_decode_inline_annot_u32(String8 data, U64 offset, U32* out_value);
-U64 cv_decode_inline_annot_s32(String8 data, U64 offset, S32* out_value);
-S32 cv_inline_annot_signed_from_unsigned_operand(U32 value);
+uint64 cv_decode_inline_annot_u32(String8 data, uint64 offset, uint32* out_value);
+uint64 cv_decode_inline_annot_s32(String8 data, uint64 offset, int32* out_value);
+int32 cv_inline_annot_signed_from_unsigned_operand(uint32 value);
 
-CV_C13InlineSiteDecoder      cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_voff);
+CV_C13InlineSiteDecoder      cv_c13_inline_site_decoder_init(uint32 file_off, uint32 first_source_ln, uint32 parent_voff);
 CV_C13InlineSiteDecoderStep cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder* decoder, String8 binary_annots);
 
 //- Symbol/Leaf Helpers
@@ -261,18 +261,18 @@ CV_TypeIndexInfoList cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind le
 CV_TypeIndexInfoList cv_get_inlinee_type_index_offsets(Arena* arena, String8 raw_data);
 String8Array         cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, String8 data);
 
-U64     cv_name_offset_from_symbol(CV_SymKind kind, String8 data);
+uint64     cv_name_offset_from_symbol(CV_SymKind kind, String8 data);
 String8 cv_name_from_symbol(CV_SymKind kind, String8 data);
 
 CV_UDTInfo cv_get_udt_info(CV_LeafKind kind, String8 data);
 String8    cv_name_from_udt_info(CV_UDTInfo udt_info);
 
 //- rjf: record range stream parsing
-CV_RecRangeStream * cv_rec_range_stream_from_data(Arena* arena, String8 data, U64 align);
+CV_RecRangeStream * cv_rec_range_stream_from_data(Arena* arena, String8 data, uint64 align);
 CV_RecRangeArray    cv_rec_range_array_from_stream(Arena* arena, CV_RecRangeStream* stream);
 
 //- rjf: sym stream parsing
-CV_SymParsed * cv_sym_from_data(Arena* arena, String8 sym_data, U64 sym_align);
+CV_SymParsed * cv_sym_from_data(Arena* arena, String8 sym_data, uint64 sym_align);
 
 //- rjf: leaf stream parsing
 CV_LeafParsed * cv_leaf_from_data(Arena* arena, String8 leaf_data, CV_TypeId first);

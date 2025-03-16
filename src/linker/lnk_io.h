@@ -7,9 +7,9 @@ struct
   String8Array path_arr;
   String8Array data_arr;
   OS_Handle*   handle_arr;
-  U64*         size_arr;
-  U64*         off_arr;
-  U8*          buffer;
+  uint64*         size_arr;
+  uint64*         off_arr;
+  uint8*          buffer;
 }
 
 ////////////////////////////////

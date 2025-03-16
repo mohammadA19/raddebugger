@@ -194,7 +194,7 @@ enum
   LNK_ConfigFlag_WriteImageChecksum      = (1 << 8),
   LNK_ConfigFlag_ManifestEmbed           = (1 << 9),
 }
-typedef U64 LNK_ConfigFlags;
+typedef uint64 LNK_ConfigFlags;
 
 enum
 {
@@ -213,7 +213,7 @@ enum
   LNK_Guard_EhCont  = (1 << 2),
   LNK_Guard_All     = LNK_Guard_Cf | LNK_Guard_LongJmp | LNK_Guard_EhCont
 }
-typedef U32 LNK_GuardFlags;
+typedef uint32 LNK_GuardFlags;
 
 enum
 {
@@ -239,7 +239,7 @@ struct LNK_ExportParse
 
 struct LNK_ExportParseList
 {
-  U64              count;
+  uint64              count;
   LNK_ExportParse* first;
   LNK_ExportParse* last;
 }
@@ -258,7 +258,7 @@ struct LNK_MergeDirectiveNode
 
 struct LNK_MergeDirectiveList
 {
-  U64                     count;
+  uint64                     count;
   LNK_MergeDirectiveNode* first;
   LNK_MergeDirectiveNode* last;
 }
@@ -296,28 +296,28 @@ struct LNK_Config
   LNK_SwitchState             opt_ref;
   LNK_SwitchState             opt_icf;
   LNK_SwitchState             opt_lbr;
-  U64                         opt_iter_count;
+  uint64                         opt_iter_count;
   LNK_GuardFlags              guard_flags;
   LNK_DebugInfoGuidType       guid_type;
   Guid                        guid;
   COFF_TimeStamp              time_stamp;
-  U32                         age;
-  U64                         section_virt_off;
-  U64                         file_align;
-  U64                         sect_align;
-  U64                         stack_reserve;
-  U64                         stack_commit;
-  U64                         heap_reserve;
-  U64                         heap_commit;
-  U64                         user_base_addr;
-  U64                         max_image_size;
-  U64                         page_size;
-  U64                         pdb_page_size;
-  U64                         worker_count;
-  U64                         max_worker_count;
+  uint32                         age;
+  uint64                         section_virt_off;
+  uint64                         file_align;
+  uint64                         sect_align;
+  uint64                         stack_reserve;
+  uint64                         stack_commit;
+  uint64                         heap_reserve;
+  uint64                         heap_commit;
+  uint64                         user_base_addr;
+  uint64                         max_image_size;
+  uint64                         page_size;
+  uint64                         pdb_page_size;
+  uint64                         worker_count;
+  uint64                         max_worker_count;
   String8                     shared_thread_pool_name;
-  U64*                        function_pad_min;
-  U64*                        manifest_resource_id;
+  uint64*                        function_pad_min;
+  uint64*                        manifest_resource_id;
   B32                         no_default_libs;
   Version                     link_ver;
   Version                     os_ver;
@@ -341,7 +341,7 @@ struct LNK_Config
   String8                     mt_path;
   LNK_TypeNameHashMode        pdb_hash_type_names;
   String8                     pdb_hash_type_name_map;
-  U64                         pdb_hash_type_name_length;
+  uint64                         pdb_hash_type_name_length;
   LNK_ExportParseList         export_symbol_list;
   String8List                 input_list[LNK_Input_Count];
   String8List                 input_default_lib_list;
@@ -358,10 +358,10 @@ struct LNK_Config
   String8                     rad_debug_alt_path;
   String8List                 include_symbol_list;
   LNK_AltNameList             alt_name_list;
-  U64                         symbol_table_cap_defined;
-  U64                         symbol_table_cap_internal;
-  U64                         symbol_table_cap_weak;
-  U64                         symbol_table_cap_lib;
+  uint64                         symbol_table_cap_defined;
+  uint64                         symbol_table_cap_internal;
+  uint64                         symbol_table_cap_weak;
+  uint64                         symbol_table_cap_lib;
   B32                         build_imp_lib;
   B32                         build_exp;
 }
@@ -525,8 +525,8 @@ void lnk_error_cmd_switch_invalid_param      (LNK_ErrorCode code, String8 obj_pa
 ////////////////////////////////
 // Getters
 
-U64     lnk_get_default_function_pad_min(COFF_MachineType machine);
-U64     lnk_get_base_addr(LNK_Config* config);
+uint64     lnk_get_default_function_pad_min(COFF_MachineType machine);
+uint64     lnk_get_base_addr(LNK_Config* config);
 Version lnk_get_default_subsystem_version(PE_WindowsSubsystem subsystem, COFF_MachineType machine);
 Version lnk_get_min_subsystem_version(PE_WindowsSubsystem subsystem, COFF_MachineType machine);
 
@@ -538,14 +538,14 @@ B32 lnk_is_thread_pool_shared(LNK_Config* config);
 
 B32  lnk_cmd_switch_parse_version  (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Version* ver_out);
 B32  lnk_cmd_switch_parse_tuple    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Rng1U64* tuple_out);
-B32  lnk_cmd_switch_parse_u64      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64* value_out, LNK_ParseU64Flags flags);
-B32  lnk_cmd_switch_parse_u32      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32* value_out, LNK_ParseU64Flags flags);
+B32  lnk_cmd_switch_parse_u64      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* value_out, LNK_ParseU64Flags flags);
+B32  lnk_cmd_switch_parse_u32      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* value_out, LNK_ParseU64Flags flags);
 B32  lnk_cmd_switch_parse_flag     (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, LNK_SwitchState* value_out);
-void lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16* flags, U16 bits);
-void lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64* flags, U64 bits);
-void lnk_cmd_switch_set_flag_16    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16* flags, U16 bits);
-void lnk_cmd_switch_set_flag_32    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32* flags, U32 bits);
-void lnk_cmd_switch_set_flag_64    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64* flags, U64 bits);
+void lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits);
+void lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits);
+void lnk_cmd_switch_set_flag_16    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits);
+void lnk_cmd_switch_set_flag_32    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* flags, uint32 bits);
+void lnk_cmd_switch_set_flag_64    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits);
 B32  lnk_cmd_switch_parse_string   (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8* string_out);
 void lnk_cmd_switch_parse_string_copy(Arena* arena, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8* string_out);
 

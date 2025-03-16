@@ -424,7 +424,7 @@ enum ExecMode
 
 struct IPCInfo
 {
-  U64 msg_size;
+  uint64 msg_size;
 };
 
 ////////////////////////////////
@@ -435,10 +435,10 @@ struct IPCInfo
 StaticAssert(IPC_SHARED_MEMORY_BUFFER_SIZE > sizeof(IPCInfo), ipc_buffer_size_requirement);
 static OS_Handle ipc_signal_semaphore = {0};
 static OS_Handle ipc_lock_semaphore = {0};
-static U8* ipc_shared_memory_base = 0;
-static U8  ipc_s2m_ring_buffer[MB(4)] = {0};
-static U64 ipc_s2m_ring_write_pos = 0;
-static U64 ipc_s2m_ring_read_pos = 0;
+static uint8* ipc_shared_memory_base = 0;
+static uint8  ipc_s2m_ring_buffer[MB(4)] = {0};
+static uint64 ipc_s2m_ring_write_pos = 0;
+static uint64 ipc_s2m_ring_read_pos = 0;
 static OS_Handle ipc_s2m_ring_mutex = {0};
 static OS_Handle ipc_s2m_ring_cv = {0};
 
@@ -456,13 +456,13 @@ ipc_signaler_thread__entry_point(void* p)
       if(os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
         IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
-        String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
+        String8 msg = str8((uint8 *)(ipc_info+1), ipc_info->msg_size);
         msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
         OS_MutexScope(ipc_s2m_ring_mutex) for(;;)
         {
-          U64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
-          U64 available_size = (sizeof(ipc_s2m_ring_buffer) - unconsumed_size);
-          if(available_size >= sizeof(U64)+sizeof(msg.size))
+          uint64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
+          uint64 available_size = (sizeof(ipc_s2m_ring_buffer) - unconsumed_size);
+          if(available_size >= sizeof(uint64)+sizeof(msg.size))
           {
             ipc_s2m_ring_write_pos += ring_write_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_write_pos, &msg.size);
             ipc_s2m_ring_write_pos += ring_write(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_write_pos, msg.str, msg.size);
@@ -513,10 +513,10 @@ entry_point(CmdLine* cmd_line)
     GetStdHandle(STD_OUTPUT_HANDLE),
     GetStdHandle(STD_ERROR_HANDLE),
   };
-  for(U64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
   {
     B32 duplicate = 0;
-    for(U64 idx2 = 0; idx2 < idx; idx2 += 1)
+    for(uint64 idx2 = 0; idx2 < idx; idx2 += 1)
     {
       if(output_handles[idx2] == output_handles[idx])
       {
@@ -529,7 +529,7 @@ entry_point(CmdLine* cmd_line)
       output_handles[idx] = 0;
     }
   }
-  for(U64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
   {
     if(output_handles[idx] != 0)
     {
@@ -546,9 +546,9 @@ entry_point(CmdLine* cmd_line)
   B32 auto_run = 0;
   B32 auto_step = 0;
   B32 jit_attach = 0;
-  U64 jit_pid = 0;
-  U64 jit_code = 0;
-  U64 jit_addr = 0;
+  uint64 jit_pid = 0;
+  uint64 jit_code = 0;
+  uint64 jit_addr = 0;
   {
     if(cmd_line_has_flag(cmd_line, str8_lit("ipc")))
     {
@@ -706,12 +706,12 @@ entry_point(CmdLine* cmd_line)
       //- rjf: set up shared resources for ipc to this instance; launch IPC signaler thread
       {
         Temp scratch = scratch_begin(0, 0);
-        U32 instance_pid = os_get_process_info()->pid;
+        uint32 instance_pid = os_get_process_info()->pid;
         String8 ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", instance_pid);
         String8 ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", instance_pid);
         String8 ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", instance_pid);
         OS_Handle ipc_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_shared_memory_name);
-        ipc_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
+        ipc_shared_memory_base = (uint8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
         ipc_signal_semaphore = os_semaphore_alloc(0, 1, ipc_signal_semaphore_name);
         ipc_lock_semaphore = os_semaphore_alloc(1, 1, ipc_lock_semaphore_name);
         ipc_s2m_ring_mutex = os_mutex_alloc();
@@ -733,13 +733,13 @@ entry_point(CmdLine* cmd_line)
             String8 msg = {0};
             OS_MutexScope(ipc_s2m_ring_mutex)
             {
-              U64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
-              if(unconsumed_size >= sizeof(U64))
+              uint64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
+              if(unconsumed_size >= sizeof(uint64))
               {
                 consumed = 1;
                 ipc_s2m_ring_read_pos += ring_read_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, &msg.size);
                 msg.size = Min(msg.size, unconsumed_size);
-                msg.str = push_array(scratch.arena, U8, msg.size);
+                msg.str = push_array(scratch.arena, uint8, msg.size);
                 ipc_s2m_ring_read_pos += ring_read(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, msg.str, msg.size);
               }
             }
@@ -762,7 +762,7 @@ entry_point(CmdLine* cmd_line)
               if(dst_window != 0)
               {
                 dst_window->window_temporarily_focused_ipc = 1;
-                U64 first_space_pos = str8_find_needle(msg, 0, str8_lit(" "), 0);
+                uint64 first_space_pos = str8_find_needle(msg, 0, str8_lit(" "), 0);
                 String8 cmd_kind_name_string = str8_prefix(msg, first_space_pos);
                 String8 cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
                 RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
@@ -822,22 +822,22 @@ entry_point(CmdLine* cmd_line)
       Temp scratch = scratch_begin(0, 0);
       
       //- rjf: grab explicit PID argument
-      U32 dst_pid = 0;
+      uint32 dst_pid = 0;
       if(cmd_line_has_argument(cmd_line, str8_lit("pid")))
       {
         String8 dst_pid_string = cmd_line_string(cmd_line, str8_lit("pid"));
-        U64 dst_pid_u64 = 0;
+        uint64 dst_pid_u64 = 0;
         if(dst_pid_string.size != 0 &&
            try_u64_from_str8_c_rules(dst_pid_string, &dst_pid_u64))
         {
-          dst_pid = (U32)dst_pid_u64;
+          dst_pid = (uint32)dst_pid_u64;
         }
       }
       
       //- rjf: no explicit PID? -> find PID to send message to, by looking for other raddbg instances
       if(dst_pid == 0)
       {
-        U32 this_pid = os_get_process_info()->pid;
+        uint32 this_pid = os_get_process_info()->pid;
         DMN_ProcessIter it = {0};
         dmn_process_iter_begin(&it);
         for(DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &it, &info);)
@@ -857,7 +857,7 @@ entry_point(CmdLine* cmd_line)
       String8 ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", dst_pid);
       String8 ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", dst_pid);
       OS_Handle ipc_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_shared_memory_name);
-      ipc_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
+      ipc_shared_memory_base = (uint8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
       ipc_signal_semaphore = os_semaphore_alloc(0, 1, ipc_signal_semaphore_name);
       ipc_lock_semaphore = os_semaphore_alloc(1, 1, ipc_lock_semaphore_name);
       
@@ -866,8 +866,8 @@ entry_point(CmdLine* cmd_line)
          os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
         IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
-        U8* buffer = (U8 *)(ipc_info+1);
-        U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
+        uint8* buffer = (uint8 *)(ipc_info+1);
+        uint64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
         StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
         String8 msg = str8_list_join(scratch.arena, &cmd_line->inputs, &join);
         ipc_info->msg_size = Min(buffer_max, msg.size);
@@ -935,7 +935,7 @@ entry_point(CmdLine* cmd_line)
       //- rjf: write
       if(out_file_is_good)
       {
-        U64 off = 0;
+        uint64 off = 0;
         for(String8Node* n = blobs.first; n != 0; n = n->next)
         {
           os_file_write(out_file, r1u64(off, off+n->string.size), n->string.str);

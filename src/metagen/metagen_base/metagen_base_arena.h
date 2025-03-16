@@ -12,7 +12,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum ArenaFlags : U32
+enum ArenaFlags : uint32
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
@@ -21,8 +21,8 @@ enum ArenaFlags : U32
 struct ArenaParams
 {
   ArenaFlags flags;
-  U64 reserve_size;
-  U64 commit_size;
+  uint64 reserve_size;
+  uint64 commit_size;
   void* optional_backing_buffer;
 }
 
@@ -31,19 +31,19 @@ struct Arena
   Arena* prev;    // previous arena in chain
   Arena* current; // current arena in chain
   ArenaFlags flags;
-  U32 cmt_size;
-  U64 res_size;
-  U64 base_pos;
-  U64 pos;
-  U64 cmt;
-  U64 res;
+  uint32 cmt_size;
+  uint64 res_size;
+  uint64 base_pos;
+  uint64 pos;
+  uint64 cmt;
+  uint64 res;
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 struct Temp
 {
   Arena* arena;
-  U64 pos;
+  uint64 pos;
 }
 
 ////////////////////////////////
@@ -55,13 +55,13 @@ Arena* arena_alloc_(ArenaParams* params);
 void arena_release(Arena* arena);
 
 //- rjf: arena push/pop/pos core functions
-void* arena_push(Arena* arena, U64 size, U64 align);
-U64   arena_pos(Arena* arena);
-void  arena_pop_to(Arena* arena, U64 pos);
+void* arena_push(Arena* arena, uint64 size, uint64 align);
+uint64   arena_pos(Arena* arena);
+void  arena_pop_to(Arena* arena, uint64 pos);
 
 //- rjf: arena push/pop helpers
 void arena_clear(Arena* arena);
-void arena_pop(Arena* arena, U64 amt);
+void arena_pop(Arena* arena, uint64 amt);
 
 //- rjf: temporary arena scopes
 Temp temp_begin(Arena* arena);

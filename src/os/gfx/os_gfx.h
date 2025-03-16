@@ -9,15 +9,15 @@
 
 struct OS_GfxInfo
 {
-  F32 double_click_time;
-  F32 caret_blink_time;
-  F32 default_refresh_rate;
+  float double_click_time;
+  float caret_blink_time;
+  float default_refresh_rate;
 }
 
 ////////////////////////////////
 //~ rjf: Window Types
 
-enum OS_WindowFlags : U32
+enum OS_WindowFlags : uint32
 {
   OS_WindowFlag_CustomBorder = (1<<0),
 }
@@ -62,7 +62,7 @@ enum OS_EventKind
   OS_EventKind_COUNT
 }
 
-enum OS_Modifiers : U32
+enum OS_Modifiers : uint32
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),
@@ -73,15 +73,15 @@ struct OS_Event
 {
   OS_Event* next;
   OS_Event* prev;
-  U64 timestamp_us;
+  uint64 timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
   OS_Modifiers modifiers;
   OS_Key key;
   B32 is_repeat;
   B32 right_sided;
-  U32 character;
-  U32 repeat_count;
+  uint32 character;
+  uint32 repeat_count;
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
@@ -89,7 +89,7 @@ struct OS_Event
 
 struct OS_EventList
 {
-  U64 count;
+  uint64 count;
   OS_Event* first;
   OS_Event* last;
 }
@@ -104,11 +104,11 @@ B32 frame();
 
 String8 os_string_from_event_kind(OS_EventKind kind);
 String8List os_string_list_from_modifiers(Arena* arena, OS_Modifiers flags);
-U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
+uint32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 void os_eat_event(OS_EventList* events, OS_Event* event);
 B32  os_key_press(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
 B32  os_key_release(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-B32  os_text(OS_EventList* events, OS_Handle window, U32 character);
+B32  os_text(OS_EventList* events, OS_Handle window, uint32 character);
 OS_EventList os_event_list_copy(Arena* arena, OS_EventList* src);
 void os_event_list_concat_in_place(OS_EventList* dst, OS_EventList* to_push);
 OS_Event* os_event_list_push_new(Arena* arena, OS_EventList* evts, OS_EventKind kind);
@@ -146,12 +146,12 @@ void           os_window_set_minimized(OS_Handle window, B32 minimized);
 void           os_window_bring_to_front(OS_Handle window);
 void           os_window_set_monitor(OS_Handle window, OS_Handle monitor);
 void           os_window_clear_custom_border_data(OS_Handle handle);
-void           os_window_push_custom_title_bar(OS_Handle handle, F32 thickness);
-void           os_window_push_custom_edges(OS_Handle handle, F32 thickness);
+void           os_window_push_custom_title_bar(OS_Handle handle, float thickness);
+void           os_window_push_custom_edges(OS_Handle handle, float thickness);
 void           os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect);
 Rng2F32        os_rect_from_window(OS_Handle window);
 Rng2F32        os_client_rect_from_window(OS_Handle window);
-F32            os_dpi_from_window(OS_Handle window);
+float            os_dpi_from_window(OS_Handle window);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
