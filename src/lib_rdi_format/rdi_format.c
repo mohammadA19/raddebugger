@@ -155,7 +155,7 @@ struct {RDI_EvalConversionKind dst_typegroups[RDI_EvalTypeGroup_COUNT];} rdi_eva
 {{RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop, RDI_EvalConversionKind_Noop}},
 };
 
-struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_table[6] =
+struct {RDI_U8* str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_table[6] =
 {
 {(RDI_U8 *)"Other", sizeof("Other")},
 {(RDI_U8 *)"U", sizeof("U")},
@@ -166,10 +166,10 @@ struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_tabl
 };
 
 RDI_PROC RDI_U64
-rdi_hash(RDI_U8 *ptr, RDI_U64 size)
+rdi_hash(RDI_U8* ptr, RDI_U64 size)
 {
   RDI_U64 result = 5381;
-  RDI_U8 *opl = ptr + size;
+  RDI_U8* opl = ptr + size;
   for(;ptr < opl; ptr += 1)
   {
     result = ((result << 5) + result) + *ptr;
@@ -274,7 +274,7 @@ rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group)
 }
 
 RDI_PROC RDI_U8 *
-rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64 *size_out)
+rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64* size_out)
 {
   *size_out = rdi_eval_conversion_kind_message_string_table[kind].size;
   return rdi_eval_conversion_kind_message_string_table[kind].str;

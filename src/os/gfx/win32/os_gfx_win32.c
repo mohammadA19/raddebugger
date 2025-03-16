@@ -10,8 +10,8 @@ typedef BOOL w32_SetProcessDpiAwarenessContext_Type(void* value);
 typedef UINT w32_GetDpiForWindow_Type(HWND hwnd);
 typedef int w32_GetSystemMetricsForDpi_Type(int nIndex, UINT dpi);
 #define w32_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((void*)-4)
-static w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
-static w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
+static w32_GetDpiForWindow_Type* w32_GetDpiForWindow_func = 0;
+static w32_GetSystemMetricsForDpi_Type* w32_GetSystemMetricsForDpi_func = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
@@ -31,7 +31,7 @@ os_w32_rng2f32_from_rect(RECT rect)
 //~ rjf: Windows
 
 OS_Handle
-os_w32_handle_from_window(OS_W32_Window *window)
+os_w32_handle_from_window(OS_W32_Window* window)
 {
   OS_Handle handle = {(U64)window};
   return handle;
@@ -40,15 +40,15 @@ os_w32_handle_from_window(OS_W32_Window *window)
 OS_W32_Window *
 os_w32_window_from_handle(OS_Handle handle)
 {
-  OS_W32_Window *window = (OS_W32_Window *)handle.u64[0];
+  OS_W32_Window* window = (OS_W32_Window *)handle.u64[0];
   return window;
 }
 
 OS_W32_Window *
 os_w32_window_from_hwnd(HWND hwnd)
 {
-  OS_W32_Window *result = 0;
-  for(OS_W32_Window *w = os_w32_gfx_state->first_window; w; w = w->next)
+  OS_W32_Window* result = 0;
+  for(OS_W32_Window* w = os_w32_gfx_state->first_window; w; w = w->next)
   {
     if(w->hwnd == hwnd)
     {
@@ -60,7 +60,7 @@ os_w32_window_from_hwnd(HWND hwnd)
 }
 
 HWND
-os_w32_hwnd_from_window(OS_W32_Window *window)
+os_w32_hwnd_from_window(OS_W32_Window* window)
 {
   return window->hwnd;
 }
@@ -68,7 +68,7 @@ os_w32_hwnd_from_window(OS_W32_Window *window)
 OS_W32_Window *
 os_w32_window_alloc()
 {
-  OS_W32_Window *result = os_w32_gfx_state->free_window;
+  OS_W32_Window* result = os_w32_gfx_state->free_window;
   if(result)
   {
     SLLStackPop(os_w32_gfx_state->free_window);
@@ -87,7 +87,7 @@ os_w32_window_alloc()
 }
 
 void
-os_w32_window_release(OS_W32_Window *window)
+os_w32_window_release(OS_W32_Window* window)
 {
   if(window->paint_arena != 0)
   {
@@ -99,9 +99,9 @@ os_w32_window_release(OS_W32_Window *window)
 }
 
 OS_Event *
-os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
+os_w32_push_event(OS_EventKind kind, OS_W32_Window* window)
 {
-  OS_Event *result = os_event_list_push_new(os_w32_event_arena, &os_w32_event_list, kind);
+  OS_Event* result = os_event_list_push_new(os_w32_event_arena, &os_w32_event_list, kind);
   result->window = os_w32_handle_from_window(window);
   result->modifiers = os_get_modifiers();
   return result;
@@ -338,7 +338,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   }
   if(good)
   {
-    OS_W32_Window *window = os_w32_window_from_hwnd(hwnd);
+    OS_W32_Window* window = os_w32_window_from_hwnd(hwnd);
     OS_Handle window_handle = os_w32_handle_from_window(window);
     B32 release = 0;
     
@@ -383,7 +383,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MBUTTONDOWN:
       case WM_RBUTTONDOWN:
       {
-        OS_Event *event = os_w32_push_event(release ? OS_EventKind_Release : OS_EventKind_Press, window);
+        OS_Event* event = os_w32_push_event(release ? OS_EventKind_Release : OS_EventKind_Press, window);
         switch (uMsg)
         {
           case WM_LBUTTONUP: case WM_LBUTTONDOWN:
@@ -413,7 +413,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       
       case WM_MOUSEMOVE:
       {
-        OS_Event *event = os_w32_push_event(OS_EventKind_MouseMove, window);
+        OS_Event* event = os_w32_push_event(OS_EventKind_MouseMove, window);
         event->pos.x = (F32)(S16)LOWORD(lParam);
         event->pos.y = (F32)(S16)HIWORD(lParam);
       }break;
@@ -421,7 +421,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MOUSEWHEEL:
       {
         S16 wheel_delta = HIWORD(wParam);
-        OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
+        OS_Event* event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
         p.x = (S32)(S16)LOWORD(lParam);
         p.y = (S32)(S16)HIWORD(lParam);
@@ -434,7 +434,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MOUSEHWHEEL:
       {
         S16 wheel_delta = HIWORD(wParam);
-        OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
+        OS_Event* event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
         p.x = (S32)(S16)LOWORD(lParam);
         p.y = (S32)(S16)HIWORD(lParam);
@@ -475,7 +475,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           right_sided = 1;
         }
         
-        OS_Event *event = os_w32_push_event(release ? OS_EventKind_Release : OS_EventKind_Press, window);
+        OS_Event* event = os_w32_push_event(release ? OS_EventKind_Release : OS_EventKind_Press, window);
         event->key = os_w32_os_key_from_vkey(wParam);
         event->repeat_count = lParam & bitmask16;
         event->is_repeat = is_repeat;
@@ -495,7 +495,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         U32 character = wParam;
         if(character >= 32 && character != 127)
         {
-          OS_Event *event = os_w32_push_event(OS_EventKind_Text, window);
+          OS_Event* event = os_w32_push_event(OS_EventKind_Text, window);
           if(lParam & bit29)
           {
             event->modifiers |= OS_Modifier_Alt;
@@ -546,12 +546,12 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         POINT drop_pt = {0};
         DragQueryPoint(drop, &drop_pt);
         U64 num_files_dropped = DragQueryFile(drop, 0xffffffff, 0, 0);
-        OS_Event *event = os_w32_push_event(OS_EventKind_FileDrop, window);
+        OS_Event* event = os_w32_push_event(OS_EventKind_FileDrop, window);
         event->pos = v2f32((F32)drop_pt.x, (F32)drop_pt.y);
         for(U64 idx = 0; idx < num_files_dropped; idx += 1)
         {
           U64 name_size = DragQueryFile(drop, idx, 0, 0) + 1;
-          U8 *name_ptr = push_array(os_w32_event_arena, U8, name_size);
+          U8* name_ptr = push_array(os_w32_event_arena, U8, name_size);
           DragQueryFile(drop, idx, (char *)name_ptr, name_size);
           str8_list_push(os_w32_event_arena, &event->strings, str8(name_ptr, name_size - 1));
         }
@@ -720,7 +720,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             
             //- rjf: check against title bar client areas
             B32 is_over_title_bar_client_area = 0;
-            for(OS_W32_TitleBarClientArea *area = window->first_title_bar_client_area;
+            for(OS_W32_TitleBarClientArea* area = window->first_title_bar_client_area;
                 area != 0;
                 area = area->next)
             {
@@ -783,7 +783,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 BOOL
 os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr)
 {
-  OS_W32_MonitorGatherBundle *bundle = (OS_W32_MonitorGatherBundle *)bundle_ptr;
+  OS_W32_MonitorGatherBundle* bundle = (OS_W32_MonitorGatherBundle *)bundle_ptr;
   OS_Handle handle = {(U64)monitor};
   os_handle_list_push(bundle->arena, bundle->list, handle);
   return 1;
@@ -796,14 +796,14 @@ void
 os_gfx_init()
 {
   //- rjf: set up base shared state
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   os_w32_gfx_state = push_array(arena, OS_W32_GfxState, 1);
   os_w32_gfx_state->arena = arena;
   os_w32_gfx_state->gfx_thread_tid = (U32)GetCurrentThreadId();
   os_w32_gfx_state->hInstance = GetModuleHandle(0);
   
   //- rjf: set dpi awareness
-  w32_SetProcessDpiAwarenessContext_Type *SetProcessDpiAwarenessContext_func = 0;
+  w32_SetProcessDpiAwarenessContext_Type* SetProcessDpiAwarenessContext_func = 0;
   HMODULE module = LoadLibraryA("user32.dll");
   if(module != 0)
   {
@@ -974,7 +974,7 @@ os_set_clipboard_text(String8 string)
     HANDLE string_copy_handle = GlobalAlloc(GMEM_MOVEABLE, string.size+1);
     if(string_copy_handle)
     {
-      U8 *copy_buffer = (U8 *)GlobalLock(string_copy_handle);
+      U8* copy_buffer = (U8 *)GlobalLock(string_copy_handle);
       MemoryCopy(copy_buffer, string.str, string.size);
       copy_buffer[string.size] = 0;
       GlobalUnlock(string_copy_handle);
@@ -985,7 +985,7 @@ os_set_clipboard_text(String8 string)
 }
 
 String8
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena* arena)
 {
   String8 result = {0};
   if(IsClipboardFormatAvailable(CF_TEXT) &&
@@ -994,7 +994,7 @@ os_get_clipboard_text(Arena *arena)
     HANDLE data_handle = GetClipboardData(CF_TEXT);
     if(data_handle)
     {
-      U8 *buffer = (U8 *)GlobalLock(data_handle);
+      U8* buffer = (U8 *)GlobalLock(data_handle);
       if(buffer)
       {
         U64 size = cstring8_length(buffer);
@@ -1037,7 +1037,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
   }
   
   //- rjf- make/fill window
-  OS_W32_Window *window = os_w32_window_alloc();
+  OS_W32_Window* window = os_w32_window_alloc();
   {
     window->hwnd = hwnd;
     if(w32_GetDpiForWindow_func != 0)
@@ -1072,14 +1072,14 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
 void
 os_window_close(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   os_w32_window_release(window);
 }
 
 void
 os_window_first_paint(OS_Handle window_handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(window_handle);
+  OS_W32_Window* window = os_w32_window_from_handle(window_handle);
   window->first_paint_done = 1;
   ShowWindow(window->hwnd, SW_SHOW);
   if(window->maximized)
@@ -1091,7 +1091,7 @@ os_window_first_paint(OS_Handle window_handle)
 void
 os_window_focus(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   SetForegroundWindow(window->hwnd);
   SetFocus(window->hwnd);
 }
@@ -1099,7 +1099,7 @@ os_window_focus(OS_Handle handle)
 B32
 os_window_is_focused(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   HWND active_hwnd = GetActiveWindow();
   return active_hwnd == window->hwnd;
 }
@@ -1107,7 +1107,7 @@ os_window_is_focused(OS_Handle handle)
 B32
 os_window_is_fullscreen(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   DWORD window_style = GetWindowLong(window->hwnd, GWL_STYLE);
   return !(window_style & WS_OVERLAPPEDWINDOW);
 }
@@ -1115,7 +1115,7 @@ os_window_is_fullscreen(OS_Handle handle)
 void
 os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   DWORD window_style = GetWindowLong(window->hwnd, GWL_STYLE);
   B32 is_fullscreen_already = os_window_is_fullscreen(handle);
   if(fullscreen)
@@ -1150,7 +1150,7 @@ B32
 os_window_is_maximized(OS_Handle handle)
 {
   B32 result = 0;
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window)
   {
     result = !!(IsZoomed(window->hwnd));
@@ -1161,7 +1161,7 @@ os_window_is_maximized(OS_Handle handle)
 void
 os_window_set_maximized(OS_Handle handle, B32 maximized)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window != 0)
   {
     if(window->first_paint_done)
@@ -1184,7 +1184,7 @@ B32
 os_window_is_minimized(OS_Handle handle)
 {
   B32 result = 0;
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window)
   {
     result = !!(IsIconic(window->hwnd));
@@ -1195,7 +1195,7 @@ os_window_is_minimized(OS_Handle handle)
 void
 os_window_set_minimized(OS_Handle handle, B32 minimized)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window != 0 && minimized != os_window_is_minimized(handle))
   {
     switch(minimized)
@@ -1210,7 +1210,7 @@ os_window_set_minimized(OS_Handle handle, B32 minimized)
 void
 os_window_bring_to_front(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window != 0)
   {
     BringWindowToTop(window->hwnd);
@@ -1220,7 +1220,7 @@ os_window_bring_to_front(OS_Handle handle)
 void
 os_window_set_monitor(OS_Handle window_handle, OS_Handle monitor)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(window_handle);
+  OS_W32_Window* window = os_w32_window_from_handle(window_handle);
   HMONITOR hmonitor = (HMONITOR)monitor.u64[0];
   {
     MONITORINFOEXW info;
@@ -1241,7 +1241,7 @@ os_window_set_monitor(OS_Handle window_handle, OS_Handle monitor)
 void
 os_window_clear_custom_border_data(OS_Handle handle)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window->custom_border)
   {
     arena_clear(window->paint_arena);
@@ -1254,24 +1254,24 @@ os_window_clear_custom_border_data(OS_Handle handle)
 void
 os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   window->custom_border_title_thickness = thickness;
 }
 
 void
 os_window_push_custom_edges(OS_Handle handle, F32 thickness)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   window->custom_border_edge_thickness = thickness;
 }
 
 void
 os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
 {
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window->custom_border)
   {
-    OS_W32_TitleBarClientArea *area = push_array(window->paint_arena, OS_W32_TitleBarClientArea, 1);
+    OS_W32_TitleBarClientArea* area = push_array(window->paint_arena, OS_W32_TitleBarClientArea, 1);
     if(area != 0)
     {
       area->rect = rect;
@@ -1284,7 +1284,7 @@ Rng2F32
 os_rect_from_window(OS_Handle handle)
 {
   Rng2F32 r = {0};
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window)
   {
     RECT rect = {0};
@@ -1298,7 +1298,7 @@ Rng2F32
 os_client_rect_from_window(OS_Handle handle)
 {
   Rng2F32 r = {0};
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window)
   {
     RECT rect = {0};
@@ -1312,7 +1312,7 @@ F32
 os_dpi_from_window(OS_Handle handle)
 {
   F32 result = 96.f;
-  OS_W32_Window *window = os_w32_window_from_handle(handle);
+  OS_W32_Window* window = os_w32_window_from_handle(handle);
   if(window != 0)
   {
     result = window->dpi;
@@ -1324,7 +1324,7 @@ os_dpi_from_window(OS_Handle handle)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   OS_HandleList list = {0};
@@ -1349,14 +1349,14 @@ os_primary_monitor()
 OS_Handle
 os_monitor_from_window(OS_Handle window)
 {
-  OS_W32_Window *w = os_w32_window_from_handle(window);
+  OS_W32_Window* w = os_w32_window_from_handle(window);
   HMONITOR handle = MonitorFromWindow(w->hwnd, MONITOR_DEFAULTTOPRIMARY);
   OS_Handle result = {(U64)handle};
   return result;
 }
 
 String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena* arena, OS_Handle monitor)
 {
   String8 result = {0};
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1395,7 +1395,7 @@ os_send_wakeup_event()
 }
 
 OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena* arena, B32 wait)
 {
   os_w32_event_arena = arena;
   MemoryZeroStruct(&os_w32_event_list);
@@ -1455,7 +1455,7 @@ os_mouse_from_window(OS_Handle handle)
   POINT p;
   if(GetCursorPos(&p))
   {
-    OS_W32_Window *window = os_w32_window_from_handle(handle);
+    OS_W32_Window* window = os_w32_window_from_handle(handle);
     ScreenToClient(window->hwnd, &p);
     v.x = (F32)p.x;
     v.y = (F32)p.y;

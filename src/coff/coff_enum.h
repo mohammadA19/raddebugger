@@ -4,12 +4,12 @@
 #ifndef COFF_ENUM_H
 #define COFF_ENUM_H
 
-String8 coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp);
+String8 coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp);
 String8 coff_string_from_comdat_select_type(COFF_ComdatSelectType type);
 String8 coff_string_from_machine_type(COFF_MachineType machine);
-String8 coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags);
-String8 coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags);
-String8 coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags);
+String8 coff_string_from_flags(Arena* arena, COFF_FileHeaderFlags flags);
+String8 coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags);
+String8 coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags flags);
 String8 coff_string_from_import_header_type(COFF_ImportType type);
 String8 coff_string_from_sym_dtype(COFF_SymDType x);
 String8 coff_string_from_sym_type(COFF_SymType x);

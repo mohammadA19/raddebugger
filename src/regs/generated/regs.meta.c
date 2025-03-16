@@ -36,9 +36,9 @@ case Arch_x86:{result = REGS_AliasCodeX86_COUNT;}break;
 }
 return result;
 }
-String8 *regs_reg_code_string_table_from_arch(Arch arch)
+String8* regs_reg_code_string_table_from_arch(Arch arch)
 {
-String8 *result = 0;
+String8* result = 0;
 switch(arch)
 {
 default:{}break;
@@ -47,9 +47,9 @@ case Arch_x86:{result = regs_g_reg_code_x86_string_table;}break;
 }
 return result;
 }
-String8 *regs_alias_code_string_table_from_arch(Arch arch)
+String8* regs_alias_code_string_table_from_arch(Arch arch)
 {
-String8 *result = 0;
+String8* result = 0;
 switch(arch)
 {
 default:{}break;
@@ -58,9 +58,9 @@ case Arch_x86:{result = regs_g_alias_code_x86_string_table;}break;
 }
 return result;
 }
-REGS_Rng *regs_reg_code_rng_table_from_arch(Arch arch)
+REGS_Rng* regs_reg_code_rng_table_from_arch(Arch arch)
 {
-REGS_Rng *result = 0;
+REGS_Rng* result = 0;
 switch(arch)
 {
 default:{}break;
@@ -69,9 +69,9 @@ case Arch_x86:{result = regs_g_reg_code_x86_rng_table;}break;
 }
 return result;
 }
-REGS_Slice *regs_alias_code_slice_table_from_arch(Arch arch)
+REGS_Slice* regs_alias_code_slice_table_from_arch(Arch arch)
 {
-REGS_Slice *result = 0;
+REGS_Slice* result = 0;
 switch(arch)
 {
 default:{}break;
@@ -80,9 +80,9 @@ case Arch_x86:{result = regs_g_alias_code_x86_slice_table;}break;
 }
 return result;
 }
-REGS_UsageKind *regs_reg_code_usage_kind_table_from_arch(Arch arch)
+REGS_UsageKind* regs_reg_code_usage_kind_table_from_arch(Arch arch)
 {
-REGS_UsageKind *result = 0;
+REGS_UsageKind* result = 0;
 switch(arch)
 {
 default:{}break;
@@ -91,9 +91,9 @@ case Arch_x86:{result = regs_g_reg_code_x86_usage_kind_table;}break;
 }
 return result;
 }
-REGS_UsageKind *regs_alias_code_usage_kind_table_from_arch(Arch arch)
+REGS_UsageKind* regs_alias_code_usage_kind_table_from_arch(Arch arch)
 {
-REGS_UsageKind *result = 0;
+REGS_UsageKind* result = 0;
 switch(arch)
 {
 default:{}break;

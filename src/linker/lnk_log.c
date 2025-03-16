@@ -15,7 +15,7 @@ lnk_get_log_status(LNK_LogType type)
 }
 
 void
-lnk_log(LNK_LogType type, char *fmt, ...)
+lnk_log(LNK_LogType type, char* fmt, ...)
 {
   B32 is_log_enabled = g_log_status[type];
   if (is_log_enabled) {
@@ -33,7 +33,7 @@ LNK_LogType
 lnk_log_type_from_string(String8 string)
 {
   static struct {
-    char       *name;
+    char*       name;
     LNK_LogType type;
   } map[] = {
     "Null",          LNK_Log_Null,

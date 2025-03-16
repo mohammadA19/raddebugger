@@ -93,20 +93,20 @@ struct OS_Handle
 
 struct OS_HandleNode
 {
-  OS_HandleNode *next;
+  OS_HandleNode* next;
   OS_Handle v;
 }
 
 struct OS_HandleList
 {
-  OS_HandleNode *first;
-  OS_HandleNode *last;
+  OS_HandleNode* first;
+  OS_HandleNode* last;
   U64 count;
 }
 
 struct OS_HandleArray
 {
-  OS_Handle *v;
+  OS_Handle* v;
   U64 count;
 }
 
@@ -125,56 +125,56 @@ StaticAssert(sizeof(OS_Guid) == 16, os_guid_check);
 ////////////////////////////////
 //~ rjf: Thread Types
 
-typedef void OS_ThreadFunctionType(void *ptr);
+typedef void OS_ThreadFunctionType(void* ptr);
 
 ////////////////////////////////
 //~ rjf: Handle Type Functions (Helpers, Implemented Once)
 
 OS_Handle os_handle_zero();
 B32 os_handle_match(OS_Handle a, OS_Handle b);
-void os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle);
-OS_HandleArray os_handle_array_from_list(Arena *arena, OS_HandleList *list);
+void os_handle_list_push(Arena* arena, OS_HandleList* handles, OS_Handle handle);
+OS_HandleArray os_handle_array_from_list(Arena* arena, OS_HandleList* list);
 
 ////////////////////////////////
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
-String8List os_string_list_from_argcv(Arena *arena, int argc, char **argv);
+String8List os_string_list_from_argcv(Arena* arena, int argc, char **argv);
 
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-String8        os_data_from_file_path(Arena *arena, String8 path);
+String8        os_data_from_file_path(Arena* arena, String8 path);
 B32            os_write_data_to_file_path(String8 path, String8 data);
 B32            os_write_data_list_to_file_path(String8 path, String8List list);
 B32            os_append_data_to_file_path(String8 path, String8 data);
 OS_FileID      os_id_from_file_path(String8 path);
 S64            os_file_id_compare(OS_FileID a, OS_FileID b);
-String8        os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range);
+String8        os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: GUID Helpers (Helpers, Implemented Once)
 
-String8 os_string_from_guid(Arena *arena, OS_Guid guid);
+String8 os_string_from_guid(Arena* arena, OS_Guid guid);
 
 ////////////////////////////////
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
-OS_SystemInfo *os_get_system_info();
-OS_ProcessInfo *os_get_process_info();
-String8 os_get_current_path(Arena *arena);
+OS_SystemInfo* os_get_system_info();
+OS_ProcessInfo* os_get_process_info();
+String8 os_get_current_path(Arena* arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
 
 //- rjf: basic
-void *os_reserve(U64 size);
-B32   os_commit(void *ptr, U64 size);
-void  os_decommit(void *ptr, U64 size);
-void  os_release(void *ptr, U64 size);
+void* os_reserve(U64 size);
+B32   os_commit(void* ptr, U64 size);
+void  os_decommit(void* ptr, U64 size);
+void  os_release(void* ptr, U64 size);
 
 //- rjf: large pages
-void *os_reserve_large(U64 size);
-B32 os_commit_large(void *ptr, U64 size);
+void* os_reserve_large(U64 size);
+B32 os_commit_large(void* ptr, U64 size);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
@@ -193,14 +193,14 @@ void os_abort(S32 exit_code);
 //- rjf: files
 OS_Handle      os_file_open(OS_AccessFlags flags, String8 path);
 void           os_file_close(OS_Handle file);
-U64            os_file_read(OS_Handle file, Rng1U64 rng, void *out_data);
-U64            os_file_write(OS_Handle file, Rng1U64 rng, void *data);
+U64            os_file_read(OS_Handle file, Rng1U64 rng, void* out_data);
+U64            os_file_write(OS_Handle file, Rng1U64 rng, void* data);
 B32            os_file_set_times(OS_Handle file, DateTime time);
 FileProperties os_properties_from_file(OS_Handle file);
 OS_FileID      os_id_from_file(OS_Handle file);
 B32            os_delete_file_at_path(String8 path);
 B32            os_copy_file_path(String8 dst, String8 src);
-String8        os_full_path_from_path(Arena *arena, String8 path);
+String8        os_full_path_from_path(Arena* arena, String8 path);
 B32            os_file_path_exists(String8 path);
 FileProperties os_properties_from_file_path(String8 path);
 
@@ -208,12 +208,12 @@ FileProperties os_properties_from_file_path(String8 path);
 OS_Handle os_file_map_open(OS_AccessFlags flags, OS_Handle file);
 void      os_file_map_close(OS_Handle map);
 void *    os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range);
-void      os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range);
+void      os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range);
 
 //- rjf: directory iteration
-OS_FileIter *os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags);
-B32          os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out);
-void         os_file_iter_end(OS_FileIter *iter);
+OS_FileIter* os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags);
+B32          os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out);
+void         os_file_iter_end(OS_FileIter* iter);
 
 //- rjf: directory creation
 B32 os_make_directory(String8 path);
@@ -225,7 +225,7 @@ OS_Handle os_shared_memory_alloc(U64 size, String8 name);
 OS_Handle os_shared_memory_open(String8 name);
 void      os_shared_memory_close(OS_Handle handle);
 void *    os_shared_memory_view_open(OS_Handle handle, Rng1U64 range);
-void      os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range);
+void      os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
@@ -233,21 +233,21 @@ void      os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range
 U64         os_now_microseconds();
 U32         os_now_unix();
 DateTime    os_now_universal_time();
-DateTime    os_universal_time_from_local(DateTime *local_time);
-DateTime    os_local_time_from_universal(DateTime *universal_time);
+DateTime    os_universal_time_from_local(DateTime* local_time);
+DateTime    os_local_time_from_universal(DateTime* universal_time);
 void        os_sleep_milliseconds(U32 msec);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
-OS_Handle os_process_launch(OS_ProcessLaunchParams *params);
+OS_Handle os_process_launch(OS_ProcessLaunchParams* params);
 B32       os_process_join(OS_Handle handle, U64 endt_us);
 void      os_process_detach(OS_Handle handle);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
-OS_Handle os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params);
+OS_Handle os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params);
 B32       os_thread_join(OS_Handle handle, U64 endt_us);
 void      os_thread_detach(OS_Handle handle);
 
@@ -297,12 +297,12 @@ void      os_semaphore_drop(OS_Handle semaphore);
 
 OS_Handle os_library_open(String8 path);
 void      os_library_close(OS_Handle lib);
-VoidProc *os_library_load_proc(OS_Handle lib, String8 name);
+VoidProc* os_library_load_proc(OS_Handle lib, String8 name);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)
 
-void os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr);
+void os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, void* ptr);
 
 ////////////////////////////////
 //~ rjf: @os_hooks GUIDs (Implemented Per-OS)
@@ -317,7 +317,7 @@ OS_Guid os_make_guid();
 // into the standard codebase program entry points, named "entry_point".
 
 #if BUILD_ENTRY_DEFINING_UNIT
-void entry_point(CmdLine *cmdline);
+void entry_point(CmdLine* cmdline);
 #endif
 
 #endif // OS_CORE_H

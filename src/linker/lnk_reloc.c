@@ -2,12 +2,12 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 LNK_Reloc *
-lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
+lnk_reloc_list_reserve(Arena* arena, LNK_RelocList* list, U64 count)
 {
-  LNK_Reloc *arr = NULL;
+  LNK_Reloc* arr = NULL;
   if (count) {
     arr = push_array(arena, LNK_Reloc, count);
-    for (LNK_Reloc *ptr = arr, *opl = arr + count; ptr < opl; ++ptr) {
+    for (LNK_Reloc* ptr = arr, *opl = arr + count; ptr < opl; ++ptr) {
       SLLQueuePush(list->first, list->last, ptr);
     }
     list->count += count;
@@ -16,20 +16,20 @@ lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count)
 }
 
 LNK_Reloc *
-lnk_reloc_list_push(Arena *arena, LNK_RelocList *list)
+lnk_reloc_list_push(Arena* arena, LNK_RelocList* list)
 {
-  LNK_Reloc *node = push_array(arena, LNK_Reloc, 1);
+  LNK_Reloc* node = push_array(arena, LNK_Reloc, 1);
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
   return node;
 }
 
 LNK_RelocList
-lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list)
+lnk_reloc_list_copy(Arena* arena, LNK_RelocList* list)
 {
   LNK_RelocList result = {0};
-  for (LNK_Reloc *n = list->first; n != NULL; n = n->next) {
-    LNK_Reloc *r = lnk_reloc_list_push(arena, &result);
+  for (LNK_Reloc* n = list->first; n != NULL; n = n->next) {
+    LNK_Reloc* r = lnk_reloc_list_push(arena, &result);
     r->chunk = n->chunk;
     r->type = n->type;
     r->apply_off = n->apply_off;
@@ -39,19 +39,19 @@ lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list)
 }
 
 void
-lnk_reloc_list_concat_in_place(LNK_RelocList *list, LNK_RelocList *to_concat)
+lnk_reloc_list_concat_in_place(LNK_RelocList* list, LNK_RelocList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 void
-lnk_reloc_list_concat_in_place_arr(LNK_RelocList *list, LNK_RelocList *arr, U64 count)
+lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, U64 count)
 {
   SLLConcatInPlaceArray(list, arr, count);
 }
 
 LNK_RelocList **
-lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
+lnk_make_reloc_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count)
 {
   LNK_RelocList **arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
   for (U64 i = 0; i < slot_count; i += 1) {
@@ -61,25 +61,25 @@ lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
 }
 
 LNK_RelocList
-lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK_Chunk *chunk, LNK_SymbolArray symbol_array, COFF_Reloc *reloc_v, U64 reloc_count)
+lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK_Chunk* chunk, LNK_SymbolArray symbol_array, COFF_Reloc* reloc_v, U64 reloc_count)
 {
   LNK_RelocList reloc_list = {0};
 
-  LNK_Reloc  *reloc_arr      = lnk_reloc_list_reserve(arena, &reloc_list, reloc_count);
-  LNK_Reloc  *reloc_ptr      = reloc_arr;
-  LNK_Reloc  *reloc_opl      = reloc_arr + reloc_count;
-  COFF_Reloc *coff_reloc_ptr = reloc_v;
+  LNK_Reloc*  reloc_arr      = lnk_reloc_list_reserve(arena, &reloc_list, reloc_count);
+  LNK_Reloc*  reloc_ptr      = reloc_arr;
+  LNK_Reloc*  reloc_opl      = reloc_arr + reloc_count;
+  COFF_Reloc* coff_reloc_ptr = reloc_v;
 
   for (; reloc_ptr < reloc_opl; ++reloc_ptr, ++coff_reloc_ptr) {
     LNK_RelocType  type        = lnk_ext_reloc_type_from_coff(machine, coff_reloc_ptr->type);
-    LNK_Chunk     *reloc_chunk = chunk;
+    LNK_Chunk*     reloc_chunk = chunk;
     U64            apply_off   = coff_reloc_ptr->apply_off;
-    LNK_Symbol    *symbol      = symbol_array.v + coff_reloc_ptr->isymbol;
+    LNK_Symbol*    symbol      = symbol_array.v + coff_reloc_ptr->isymbol;
 
     if (chunk->type == LNK_Chunk_List) {
       reloc_chunk = chunk->u.list->last->data;
       U64 cursor = 0;
-      for (LNK_ChunkNode *c = chunk->u.list->first; c != 0; c = c->next) {
+      for (LNK_ChunkNode* c = chunk->u.list->first; c != 0; c = c->next) {
         Assert(c->data->type == LNK_Chunk_Leaf);
         if (coff_reloc_ptr->apply_off < cursor + c->data->u.leaf.size) {
           reloc_chunk = c->data;
@@ -101,11 +101,11 @@ lnk_reloc_list_from_coff_reloc_array(Arena *arena, COFF_MachineType machine, LNK
 }
 
 LNK_Reloc **
-lnk_reloc_array_from_list(Arena *arena, LNK_RelocList list)
+lnk_reloc_array_from_list(Arena* arena, LNK_RelocList list)
 {
   LNK_Reloc **arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
   U64 count = 0;
-  for (LNK_Reloc *node = list.first; node != 0; node = node->next) {
+  for (LNK_Reloc* node = list.first; node != 0; node = node->next) {
     Assert(count < list.count);
     arr[count++] = node;
   }

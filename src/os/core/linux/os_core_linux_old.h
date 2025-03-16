@@ -28,7 +28,7 @@
 
 struct LNX_FileIter{
   int fd;
-  DIR *dir;
+  DIR* dir;
 }
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(LNX_FileIter), file_iter_memory_size);
 
@@ -43,13 +43,13 @@ enum LNX_EntityKind{
 }
 
 struct LNX_Entity{
-  LNX_Entity *next;
+  LNX_Entity* next;
   LNX_EntityKind kind;
   volatile U32 reference_mask;
   union{
     struct{
-      OS_ThreadFunctionType *func;
-      void *ptr;
+      OS_ThreadFunctionType* func;
+      void* ptr;
       pthread_t handle;
     } thread;
     pthread_mutex_t mutex;
@@ -61,9 +61,9 @@ struct LNX_Entity{
 //~ NOTE(allen): Safe Call Chain
 
 struct LNX_SafeCallChain{
-  LNX_SafeCallChain *next;
-  OS_ThreadFunctionType *fail_handler;
-  void *ptr;
+  LNX_SafeCallChain* next;
+  OS_ThreadFunctionType* fail_handler;
+  void* ptr;
 }
 
 ////////////////////////////////
@@ -71,17 +71,17 @@ struct LNX_SafeCallChain{
 
 B32 lnx_write_list_to_file_descriptor(int fd, String8List list);
 
-void lnx_date_time_from_tm(DateTime *out, struct tm *in, U32 msec);
-void lnx_tm_from_date_time(struct tm *out, DateTime *in);
-void lnx_dense_time_from_timespec(DenseTime *out, struct timespec *in);
-void lnx_file_properties_from_stat(FileProperties *out, struct stat *in);
+void lnx_date_time_from_tm(DateTime* out, struct tm* in, U32 msec);
+void lnx_tm_from_date_time(struct tm* out, DateTime* in);
+void lnx_dense_time_from_timespec(DenseTime* out, struct timespec* in);
+void lnx_file_properties_from_stat(FileProperties* out, struct stat* in);
 
 String8 lnx_string_from_signal(int signum);
 String8 lnx_string_from_errno(int error_number);
 
 LNX_Entity* lnx_alloc_entity(LNX_EntityKind kind);
-void lnx_free_entity(LNX_Entity *entity);
-void* lnx_thread_base(void *ptr);
+void lnx_free_entity(LNX_Entity* entity);
+void* lnx_thread_base(void* ptr);
 
 void lnx_safe_call_sig_handler(int);
 

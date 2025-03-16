@@ -101,7 +101,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
 }
 
 void
-supplement_thread_base_entry_point(void (*entry_point)(void *params), void *params)
+supplement_thread_base_entry_point(void (*entry_point)(void* params), void* params)
 {
   TCTX tctx;
   tctx_init_and_equip(&tctx);

@@ -4,9 +4,9 @@
 ////////////////////////////////
 //~ rjf: Globals/Thread-Locals
 
-C_LINKAGE thread_static Log *log_active;
+C_LINKAGE thread_static Log* log_active;
 #if !BUILD_SUPPLEMENTARY_UNIT
-C_LINKAGE thread_static Log *log_active = 0;
+C_LINKAGE thread_static Log* log_active = 0;
 #endif
 
 ////////////////////////////////
@@ -15,20 +15,20 @@ C_LINKAGE thread_static Log *log_active = 0;
 Log *
 log_alloc()
 {
-  Arena *arena = arena_alloc();
-  Log *log = push_array(arena, Log, 1);
+  Arena* arena = arena_alloc();
+  Log* log = push_array(arena, Log, 1);
   log->arena = arena;
   return log;
 }
 
 void
-log_release(Log *log)
+log_release(Log* log)
 {
   arena_release(log->arena);
 }
 
 void
-log_select(Log *log)
+log_select(Log* log)
 {
   log_active = log;
 }
@@ -47,7 +47,7 @@ log_msg(LogMsgKind kind, String8 string)
 }
 
 void
-log_msgf(LogMsgKind kind, char *fmt, ...)
+log_msgf(LogMsgKind kind, char* fmt, ...)
 {
   if(log_active != 0)
   {
@@ -70,19 +70,19 @@ log_scope_begin()
   if(log_active != 0)
   {
     U64 pos = arena_pos(log_active->arena);
-    LogScope *scope = push_array(log_active->arena, LogScope, 1);
+    LogScope* scope = push_array(log_active->arena, LogScope, 1);
     scope->pos = pos;
     SLLStackPush(log_active->top_scope, scope);
   }
 }
 
 LogScopeResult
-log_scope_end(Arena *arena)
+log_scope_end(Arena* arena)
 {
   LogScopeResult result = {0};
   if(log_active != 0)
   {
-    LogScope *scope = log_active->top_scope;
+    LogScope* scope = log_active->top_scope;
     if(scope != 0)
     {
       SLLStackPop(log_active->top_scope);

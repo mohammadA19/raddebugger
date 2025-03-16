@@ -761,19 +761,19 @@ struct PE_BaseRelocBlock
 {
   U64  page_virt_off;
   U64  entry_count;
-  U16 *entries;
+  U16* entries;
 }
 
 struct PE_BaseRelocBlockNode
 {
-  PE_BaseRelocBlockNode *next;
+  PE_BaseRelocBlockNode* next;
   PE_BaseRelocBlock      v;
 }
 
 struct PE_BaseRelocBlockList
 {
-  PE_BaseRelocBlockNode *first;
-  PE_BaseRelocBlockNode *last;
+  PE_BaseRelocBlockNode* first;
+  PE_BaseRelocBlockNode* last;
   U64                    count;
 }
 
@@ -786,7 +786,7 @@ struct PE_Resource
   union
   {
     COFF_ResourceDataEntry leaf;
-    struct PE_ResourceDir *dir;
+    struct PE_ResourceDir* dir;
     struct
     {
       COFF_ResourceID          type;
@@ -800,20 +800,20 @@ struct PE_Resource
 
 struct PE_ResourceNode
 {
-  PE_ResourceNode *next;
+  PE_ResourceNode* next;
   PE_Resource      data;
 }
 
 struct PE_ResourceList
 {
-  PE_ResourceNode *first;
-  PE_ResourceNode *last;
+  PE_ResourceNode* first;
+  PE_ResourceNode* last;
   U64              count;
 }
 
 struct PE_ResourceArray
 {
-  PE_Resource *v;
+  PE_Resource* v;
   U64          count;
 }
 
@@ -845,7 +845,7 @@ struct PE_ParsedExportTable
   U16              minor_ver;
   U64              ordinal_base;
   U64              export_count;
-  PE_ParsedExport *exports;
+  PE_ParsedExport* exports;
 }
 
 enum PE_ParsedImportType : U32 PE_ParsedImportTypeEnum
@@ -877,13 +877,13 @@ struct PE_ParsedStaticDLLImport
   COFF_TimeStamp   time_stamp;
   U64              forwarder_chain;
   U64              import_count;
-  PE_ParsedImport *imports;
+  PE_ParsedImport* imports;
 }
 
 struct PE_ParsedStaticImportTable
 {
   U64                       count;
-  PE_ParsedStaticDLLImport *v;
+  PE_ParsedStaticDLLImport* v;
 }
 
 struct PE_ParsedDelayDLLImport
@@ -897,24 +897,24 @@ struct PE_ParsedDelayDLLImport
   U64              unload_table_voff;
   COFF_TimeStamp   time_stamp;
   U64              bound_table_count;
-  U64             *bound_table;
+  U64*             bound_table;
   U64              unload_table_count;
-  U64             *unload_table;
+  U64*             unload_table;
   U64              import_count;
-  PE_ParsedImport *imports;
+  PE_ParsedImport* imports;
 }
 
 struct PE_ParsedDelayImportTable
 {
   U64                      count;
-  PE_ParsedDelayDLLImport *v;
+  PE_ParsedDelayDLLImport* v;
 }
 
 struct PE_ParsedTLS
 {
   PE_TLSHeader64 header;
   U64            callback_count;
-  U64           *callback_addrs;
+  U64*           callback_addrs;
 }
 
 ////////////////////////////////
@@ -943,7 +943,7 @@ struct PE_BinInfo
   U64             symbol_count;
   U64             string_table_off;
   Arch            arch;
-  Rng1U64        *data_dir_franges;
+  Rng1U64*        data_dir_franges;
   U32             data_dir_count;
   PE_TLSHeader64  tls_header;
 }
@@ -978,14 +978,14 @@ struct PE_DebugInfo
 
 struct PE_DebugInfoNode
 {
-  struct PE_DebugInfoNode *next;
+  struct PE_DebugInfoNode* next;
   PE_DebugInfo             v;
 }
 
 struct PE_DebugInfoList
 {
-  PE_DebugInfoNode *first;
-  PE_DebugInfoNode *last;
+  PE_DebugInfoNode* first;
+  PE_DebugInfoNode* last;
   U64               count;
 }
 
@@ -1003,59 +1003,59 @@ String8 pe_string_from_fpo_type(PE_FPOType x);
 String8 pe_string_from_misc_type(PE_DebugMiscType x);
 String8 pe_resource_kind_to_string(PE_ResourceKind x);
 
-String8 pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags);
-String8 pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags);
-String8 pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags);
-String8 pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars);
+String8 pe_string_from_fpo_flags(Arena* arena, PE_FPOFlags flags);
+String8 pe_string_from_global_flags(Arena* arena, PE_GlobalFlags flags);
+String8 pe_string_from_load_config_guard_flags(Arena* arena, PE_LoadConfigGuardFlags flags);
+String8 pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars);
 
 ////////////////////////////////
 //~ rjf: Parser Functions
 
-PE_BinInfo pe_bin_info_from_data(Arena *arena, String8 data);
+PE_BinInfo pe_bin_info_from_data(Arena* arena, String8 data);
 
-PE_DebugInfoList           pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir);
-PE_ParsedStaticImportTable pe_static_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range);
-PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range);
-PE_ParsedExportTable       pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
-PE_ParsedTLS               pe_tls_from_data(Arena *arena, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 tls_frange);
+PE_DebugInfoList           pe_parse_debug_directory(Arena* arena, String8 raw_image, String8 raw_debug_dir);
+PE_ParsedStaticImportTable pe_static_imports_from_data(Arena* arena, B32 is_pe32, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range);
+PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena* arena, B32 is_pe32, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range);
+PE_ParsedExportTable       pe_exports_from_data(Arena* arena, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
+PE_ParsedTLS               pe_tls_from_data(Arena* arena, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 tls_frange);
 
 ////////////////////////////////
 //~ rjf: Helpers
 
 U64                   pe_pdata_off_from_voff__binary_search_x8664(String8 raw_data, U64 voff);
-void *                pe_ptr_from_voff(String8 data, PE_BinInfo *bin, U64 voff);
-U64                   pe_section_num_from_voff(String8 data, PE_BinInfo *bin, U64 voff);
-void *                pe_ptr_from_section_num(String8 data, PE_BinInfo *bin, U64 n);
-U64                   pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff);
-PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_relocs);
-Rng1U64               pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr);
+void *                pe_ptr_from_voff(String8 data, PE_BinInfo* bin, U64 voff);
+U64                   pe_section_num_from_voff(String8 data, PE_BinInfo* bin, U64 voff);
+void *                pe_ptr_from_section_num(String8 data, PE_BinInfo* bin, U64 n);
+U64                   pe_foff_from_voff(String8 data, PE_BinInfo* bin, U64 voff);
+PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena* arena, String8 raw_relocs);
+Rng1U64               pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo* bin, U64 base_vaddr);
 String8Array          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
 
 ////////////////////////////////
 //~ Resource Helpers
 
 B32               pe_is_res(String8 data);
-void              pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 res_file);
-PE_ResourceNode * pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-PE_ResourceNode * pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
-PE_Resource *     pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
-PE_Resource *     pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-PE_ResourceNode * pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id);
-PE_Resource *     pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id);
-PE_ResourceArray  pe_resource_list_to_array(Arena *arena, PE_ResourceList *list);
-PE_ResourceDir *  pe_resource_table_from_directory_data(Arena *arena, String8 data);
+void              pe_resource_dir_push_res_file(Arena* arena, PE_ResourceDir* root_dir, String8 res_file);
+PE_ResourceNode * pe_resource_dir_push_dir_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
+PE_ResourceNode * pe_resource_dir_push_entry_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
+PE_Resource *     pe_resource_dir_push_entry(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
+PE_Resource *     pe_resource_dir_push_dir(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
+PE_ResourceNode * pe_resource_dir_search_node(PE_ResourceDir* dir, COFF_ResourceID id);
+PE_Resource *     pe_resource_dir_search(PE_ResourceDir* dir, COFF_ResourceID id);
+PE_ResourceArray  pe_resource_list_to_array(Arena* arena, PE_ResourceList* list);
+PE_ResourceDir *  pe_resource_table_from_directory_data(Arena* arena, String8 data);
 
-String8 pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data);
+String8 pe_make_manifest_resource(Arena* arena, U32 resource_id, String8 manifest_data);
 
 ////////////////////////////////
 //~ Debug Directory
 
-String8 pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path);
-String8 pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path);
+String8 pe_make_debug_header_pdb70(Arena* arena, Guid guid, U32 age, String8 pdb_path);
+String8 pe_make_debug_header_rdi(Arena* arena, Guid guid, String8 rdi_path);
 
 ////////////////////////////////
 //~ Image Checksum
 
-U32 pe_compute_checksum(U8 *buffer, U64 buffer_size);
+U32 pe_compute_checksum(U8* buffer, U64 buffer_size);
 
 #endif // PE_H

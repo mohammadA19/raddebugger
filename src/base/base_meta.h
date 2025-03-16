@@ -18,7 +18,7 @@ struct TweakB32Info
 {
   String8 name;
   B32 default_value;
-  B32 *value_ptr;
+  B32* value_ptr;
 }
 
 struct TweakF32Info
@@ -26,31 +26,31 @@ struct TweakF32Info
   String8 name;
   F32 default_value;
   Rng1F32 value_range;
-  F32 *value_ptr;
+  F32* value_ptr;
 }
 
 struct TweakB32InfoTable
 {
-  TweakB32Info *v;
+  TweakB32Info* v;
   U64 count;
 }
 
 struct TweakF32InfoTable
 {
-  TweakF32Info *v;
+  TweakF32Info* v;
   U64 count;
 }
 
 struct EmbedInfo
 {
   String8 name;
-  String8 *data;
-  U128 *hash;
+  String8* data;
+  U128* hash;
 }
 
 struct EmbedInfoTable
 {
-  EmbedInfo *v;
+  EmbedInfo* v;
   U64 count;
 }
 
@@ -107,7 +107,7 @@ struct Member
 {
   String8 name;
   String8 pretty_name;
-  Type *type;
+  Type* type;
   U64 value;
   MemberFlags flags;
 }
@@ -117,11 +117,11 @@ struct Type
   TypeKind kind;
   TypeFlags flags;
   U64 size;
-  Type *direct;
+  Type* direct;
   String8 name;
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
   U64 count;
-  Member *members;
+  Member* members;
 }
 
 ////////////////////////////////
@@ -129,16 +129,16 @@ struct Type
 
 struct TypeSerializePtrRefInfo
 {
-  Type *type;           // pointers to this
-  void *indexify_base;  // can be indexified using this
-  void *offsetify_base; // can be offsetified using this
-  void *nil_ptr;        // is terminal if matching 0 or this
+  Type* type;           // pointers to this
+  void* indexify_base;  // can be indexified using this
+  void* offsetify_base; // can be offsetified using this
+  void* nil_ptr;        // is terminal if matching 0 or this
 }
 
 struct TypeSerializeParams
 {
-  U64 *advance_out;
-  TypeSerializePtrRefInfo *ptr_ref_infos;
+  U64* advance_out;
+  TypeSerializePtrRefInfo* ptr_ref_infos;
   U64 ptr_ref_infos_count;
 }
 
@@ -181,7 +181,7 @@ read_only static Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, st
 read_only static Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
 read_only static Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
 read_only static Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
-read_only static Type *type_kind_type_table[] =
+read_only static Type* type_kind_type_table[] =
 {
   &type_nil,
   type(),
@@ -266,16 +266,16 @@ Type String8List__type =
 ////////////////////////////////
 //~ rjf: Type Info Lookups
 
-Member *member_from_name(Type *type, String8 name);
-#define EachMember(T, it) (Member *it = (type(T))->members; it != 0 && it < (type(T))->members + (type(T))->count; it += 1)
+Member* member_from_name(Type* type, String8 name);
+#define EachMember(T, it) (Member* it = (type(T))->members; it != 0 && it < (type(T))->members + (type(T))->count; it += 1)
 
 ////////////////////////////////
 //~ rjf: Type Info * Instance Operations
 
-void typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr);
-String8 serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
-String8 deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
-String8 deep_copy_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
+void typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr);
+String8 serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
+String8 deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
+String8 deep_copy_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
 #define struct_rebase_ptrs(T, ptr, base)                   typed_data_rebase_ptrs(type(T), str8_struct(ptr), (base))
 #define serialized_from_struct(arena, T, ptr, ...)         serialized_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__})
 #define struct_from_serialized(arena, T, string, ...) (T *)deserialized_from_typed_data((arena), type(T), (string), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str

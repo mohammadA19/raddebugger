@@ -27,14 +27,14 @@
 
 struct OS_W32_TitleBarClientArea
 {
-  OS_W32_TitleBarClientArea *next;
+  OS_W32_TitleBarClientArea* next;
   Rng2F32 rect;
 }
 
 struct OS_W32_Window
 {
-  OS_W32_Window *next;
-  OS_W32_Window *prev;
+  OS_W32_Window* next;
+  OS_W32_Window* prev;
   HWND hwnd;
   WINDOWPLACEMENT last_window_placement;
   F32 dpi;
@@ -44,9 +44,9 @@ struct OS_W32_Window
   F32 custom_border_title_thickness;
   F32 custom_border_edge_thickness;
   B32 custom_border_composition_enabled;
-  Arena *paint_arena;
-  OS_W32_TitleBarClientArea *first_title_bar_client_area;
-  OS_W32_TitleBarClientArea *last_title_bar_client_area;
+  Arena* paint_arena;
+  OS_W32_TitleBarClientArea* first_title_bar_client_area;
+  OS_W32_TitleBarClientArea* last_title_bar_client_area;
 }
 
 ////////////////////////////////
@@ -54,8 +54,8 @@ struct OS_W32_Window
 
 struct OS_W32_MonitorGatherBundle
 {
-  Arena *arena;
-  OS_HandleList *list;
+  Arena* arena;
+  OS_HandleList* list;
 }
 
 ////////////////////////////////
@@ -63,23 +63,23 @@ struct OS_W32_MonitorGatherBundle
 
 struct OS_W32_GfxState
 {
-  Arena *arena;
+  Arena* arena;
   U32 gfx_thread_tid;
   HINSTANCE hInstance;
   HCURSOR hCursor;
   OS_GfxInfo gfx_info;
-  OS_W32_Window *first_window;
-  OS_W32_Window *last_window;
-  OS_W32_Window *free_window;
+  OS_W32_Window* first_window;
+  OS_W32_Window* last_window;
+  OS_W32_Window* free_window;
   OS_Key key_from_vkey_table[256];
 }
 
 ////////////////////////////////
 //~ rjf: Globals
 
-static OS_W32_GfxState *os_w32_gfx_state = 0;
+static OS_W32_GfxState* os_w32_gfx_state = 0;
 static OS_EventList os_w32_event_list = {0};
-static Arena *os_w32_event_arena = 0;
+static Arena* os_w32_event_arena = 0;
 static B32 os_w32_resizing = 0;
 static B32 os_w32_new_window_custom_border = 0;
 
@@ -91,13 +91,13 @@ Rng2F32 os_w32_rng2f32_from_rect(RECT rect);
 ////////////////////////////////
 //~ rjf: Windows
 
-OS_Handle       os_w32_handle_from_window(OS_W32_Window *window);
+OS_Handle       os_w32_handle_from_window(OS_W32_Window* window);
 OS_W32_Window * os_w32_window_from_handle(OS_Handle window);
 OS_W32_Window * os_w32_window_from_hwnd(HWND hwnd);
-HWND            os_w32_hwnd_from_window(OS_W32_Window *window);
+HWND            os_w32_hwnd_from_window(OS_W32_Window* window);
 OS_W32_Window * os_w32_window_alloc();
-void            os_w32_window_release(OS_W32_Window *window);
-OS_Event *      os_w32_push_event(OS_EventKind kind, OS_W32_Window *window);
+void            os_w32_window_release(OS_W32_Window* window);
+OS_Event *      os_w32_push_event(OS_EventKind kind, OS_W32_Window* window);
 OS_Key          os_w32_os_key_from_vkey(WPARAM vkey);
 WPARAM          os_w32_vkey_from_os_key(OS_Key key);
 LRESULT         os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

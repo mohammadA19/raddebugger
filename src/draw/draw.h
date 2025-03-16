@@ -19,14 +19,14 @@ struct DR_FancyString
 
 struct DR_FancyStringNode
 {
-  DR_FancyStringNode *next;
+  DR_FancyStringNode* next;
   DR_FancyString v;
 }
 
 struct DR_FancyStringList
 {
-  DR_FancyStringNode *first;
-  DR_FancyStringNode *last;
+  DR_FancyStringNode* first;
+  DR_FancyStringNode* last;
   U64 node_count;
   U64 total_size;
 }
@@ -41,14 +41,14 @@ struct DR_FancyRun
 
 struct DR_FancyRunNode
 {
-  DR_FancyRunNode *next;
+  DR_FancyRunNode* next;
   DR_FancyRun v;
 }
 
 struct DR_FancyRunList
 {
-  DR_FancyRunNode *first;
-  DR_FancyRunNode *last;
+  DR_FancyRunNode* first;
+  DR_FancyRunNode* last;
   U64 node_count;
   Vec2F32 dim;
 }
@@ -74,22 +74,22 @@ struct DR_Bucket
 
 struct DR_BucketSelectionNode
 {
-  DR_BucketSelectionNode *next;
-  DR_Bucket *bucket;
+  DR_BucketSelectionNode* next;
+  DR_Bucket* bucket;
 }
 
 struct DR_ThreadCtx
 {
-  Arena *arena;
+  Arena* arena;
   U64 arena_frame_start_pos;
-  DR_BucketSelectionNode *top_bucket;
-  DR_BucketSelectionNode *free_bucket_selection;
+  DR_BucketSelectionNode* top_bucket;
+  DR_BucketSelectionNode* free_bucket_selection;
 }
 
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static DR_ThreadCtx *dr_thread_ctx = 0;
+thread_static DR_ThreadCtx* dr_thread_ctx = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
@@ -99,12 +99,12 @@ U64 dr_hash_from_string(String8 string);
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions
 
-void dr_fancy_string_list_push(Arena *arena, DR_FancyStringList *list, DR_FancyString *str);
+void dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString* str);
 #define dr_fancy_string_list_push_new(arena, list, font_, size_, color_, string_, ...) dr_fancy_string_list_push((arena), (list), &(DR_FancyString){.font = (font_), .string = (string_), .color = (color_), .size = (size_), __VA_ARGS__})
-void dr_fancy_string_list_concat_in_place(DR_FancyStringList *dst, DR_FancyStringList *to_push);
-String8 dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list);
-DR_FancyRunList dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList *strs);
-DR_FancyRunList dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src);
+void dr_fancy_string_list_concat_in_place(DR_FancyStringList* dst, DR_FancyStringList* to_push);
+String8 dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list);
+DR_FancyRunList dr_fancy_run_list_from_fancy_string_list(Arena* arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList* strs);
+DR_FancyRunList dr_fancy_run_list_copy(Arena* arena, DR_FancyRunList* src);
 
 ////////////////////////////////
 //~ rjf: Top-Level API
@@ -112,17 +112,17 @@ DR_FancyRunList dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src);
 // (Frame boundaries & bucket submission)
 
 void dr_begin_frame();
-void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket);
+void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket* bucket);
 
 ////////////////////////////////
 //~ rjf: Bucket Construction & Selection API
 //
 // (Bucket: Handle to sequence of many render passes, constructed by this layer)
 
-DR_Bucket *dr_bucket_make();
-void dr_push_bucket(DR_Bucket *bucket);
+DR_Bucket* dr_bucket_make();
+void dr_push_bucket(DR_Bucket* bucket);
 void dr_pop_bucket();
-DR_Bucket *dr_top_bucket();
+DR_Bucket* dr_top_bucket();
 #define DR_BucketScope(b) DeferLoop(dr_push_bucket(b), dr_pop_bucket())
 
 ////////////////////////////////
@@ -154,29 +154,29 @@ F32                        dr_top_transparency();
 // (Apply to the calling thread's currently selected bucket)
 
 //- rjf: rectangles
-inline R_Rect2DInst *dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness);
+inline R_Rect2DInst* dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness);
 
 //- rjf: images
-inline R_Rect2DInst *dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness);
+inline R_Rect2DInst* dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness);
 
 //- rjf: blurs
-R_PassParams_Blur *dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius);
+R_PassParams_Blur* dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius);
 
 //- rjf: 3d rendering pass params
-R_PassParams_Geo3D *dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection);
+R_PassParams_Geo3D* dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection);
 
 //- rjf: meshes
-R_Mesh3DInst *dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform);
+R_Mesh3DInst* dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform);
 
 //- rjf: collating one pre-prepped bucket into parent bucket
-void dr_sub_bucket(DR_Bucket *bucket);
+void dr_sub_bucket(DR_Bucket* bucket);
 
 ////////////////////////////////
 //~ rjf: Draw Call Helpers
 
 //- rjf: text
-void dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run trailer_run);
-void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color);
+void dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList* list, F32 max_x, FNT_Run trailer_run);
+void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList* list, F32 max_x, FuzzyMatchRangeList* ranges, Vec4F32 color);
 void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run);
 void dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string);
 

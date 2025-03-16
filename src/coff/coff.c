@@ -52,7 +52,7 @@ coff_section_flag_from_align_size(U64 align)
 }
 
 String8
-coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader *header, U64 string_table_off)
+coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, U64 string_table_off)
 {
   String8 name = str8_cstring_capped(header->name, header->name + sizeof(header->name));
   if (name.str[0] == '/') {
@@ -65,7 +65,7 @@ coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader *header, U64 
 }
 
 void
-coff_parse_section_name(String8 full_name, String8 *name_out, String8 *postfix_out)
+coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_out)
 {
   // dollar sign has multiple interpretations that depend on the type of the section.
   // 1. when section contains code/data it indicates section precedence
@@ -94,7 +94,7 @@ coff_parse_section_name(String8 full_name, String8 *name_out, String8 *postfix_o
 }
 
 String8
-coff_read_symbol_name(String8 raw_coff, U64 string_table_off, COFF_SymbolName *name)
+coff_read_symbol_name(String8 raw_coff, U64 string_table_off, COFF_SymbolName* name)
 {
   String8 name_str = str8_lit("");
   if (name->long_name.zeroes == 0) {
@@ -182,10 +182,10 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 }
 
 String8
-coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
+coff_make_import_lookup(Arena* arena, U16 hint, String8 name)
 {
   U64 buffer_size = sizeof(hint) + (name.size + 1);
-  U8 *buffer = push_array(arena, U8, buffer_size);
+  U8* buffer = push_array(arena, U8, buffer_size);
   *(U16*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
@@ -208,7 +208,7 @@ coff_make_ordinal64(U16 hint)
 }
 
 String8
-coff_make_import_header_by_name(Arena            *arena,
+coff_make_import_header_by_name(Arena*            arena,
                                 String8           dll_name,
                                 COFF_MachineType  machine,
                                 COFF_TimeStamp    time_stamp,
@@ -232,18 +232,18 @@ coff_make_import_header_by_name(Arena            *arena,
   
   // alloc memory
   U64  buffer_size = sizeof(header) + header.data_size;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  U8*  buffer      = push_array_no_zero(arena, U8, buffer_size);
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));
   
   // copy function name
-  U8 *func_name = buffer + sizeof(header);
+  U8* func_name = buffer + sizeof(header);
   MemoryCopy(func_name, name.str, name.size);
   func_name[name.size] = 0;
   
   // copy dll name
-  U8 *dll_name_buffer = buffer + sizeof(header) + name.size + 1;
+  U8* dll_name_buffer = buffer + sizeof(header) + name.size + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -252,7 +252,7 @@ coff_make_import_header_by_name(Arena            *arena,
 }
 
 String8
-coff_make_import_header_by_ordinal(Arena             *arena,
+coff_make_import_header_by_ordinal(Arena*             arena,
                                    String8            dll_name,
                                    COFF_MachineType   machine,
                                    COFF_TimeStamp     time_stamp,
@@ -275,17 +275,17 @@ coff_make_import_header_by_ordinal(Arena             *arena,
   
   // alloc memory
   U64 buffer_size = sizeof(header) + header.data_size;
-  U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  U8* buffer      = push_array_no_zero(arena, U8, buffer_size);
   
   // copy header
   MemoryCopyStruct(buffer, &header);
   
   // no function name write zero
-  U8 *func_name = buffer + sizeof(header);
+  U8* func_name = buffer + sizeof(header);
   func_name[0]  = 0;
   
   // copy dll name
-  U8 *dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
+  U8* dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -342,12 +342,12 @@ arch_from_coff_machine(COFF_MachineType machine)
 }
 
 U64
-coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
+coff_foff_from_voff(COFF_SectionHeader* sections, U64 section_count, U64 voff)
 {
   U64 foff = 0;
   for(U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
-    COFF_SectionHeader *sect = &sections[sect_idx];
+    COFF_SectionHeader* sect = &sections[sect_idx];
     if(sect->voff <= voff && voff < sect->voff+sect->vsize)
     {
       if(!(sect->flags & COFF_SectionFlag_CntUninitializedData))

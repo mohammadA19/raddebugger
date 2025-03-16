@@ -5,7 +5,7 @@
 //~ rjf: Bundled Evaluation Functions
 
 E_Eval
-e_eval_from_expr(Arena *arena, E_Expr *expr)
+e_eval_from_expr(Arena* arena, E_Expr* expr)
 {
   E_IRTreeAndType  irtree   = e_irtree_and_type_from_expr(arena, expr);
   E_OpList         oplist   = e_oplist_from_irtree(arena, irtree.root);
@@ -31,7 +31,7 @@ e_eval_from_expr(Arena *arena, E_Expr *expr)
 }
 
 E_Eval
-e_eval_from_string(Arena *arena, String8 string)
+e_eval_from_string(Arena* arena, String8 string)
 {
   E_TokenArray     tokens   = e_token_array_from_text(arena, string);
   E_Parse          parse    = e_parse_expr_from_text_tokens(arena, string, &tokens);
@@ -54,10 +54,10 @@ e_autoresolved_eval_from_eval(E_Eval eval)
   {
     U64 vaddr = eval.value.u64;
     U64 voff = vaddr - e_interpret_ctx->module_base[0];
-    RDI_Parsed *rdi = e_parse_ctx->primary_module->rdi;
-    RDI_Scope *scope = rdi_scope_from_voff(rdi, voff);
-    RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, voff);
-    RDI_GlobalVariable *gvar = rdi_global_variable_from_voff(rdi, voff);
+    RDI_Parsed* rdi = e_parse_ctx->primary_module->rdi;
+    RDI_Scope* scope = rdi_scope_from_voff(rdi, voff);
+    RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, voff);
+    RDI_GlobalVariable* gvar = rdi_global_variable_from_voff(rdi, voff);
     U32 string_idx = 0;
     if(string_idx == 0) { string_idx = procedure->name_string_idx; }
     if(string_idx == 0) { string_idx = gvar->name_string_idx; }
@@ -85,7 +85,7 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
     E_TypeKind ptee_type_kind = e_type_kind_from_key(ptee_type_key);
     if(ptee_type_kind == E_TypeKind_Struct || ptee_type_kind == E_TypeKind_Class)
     {
-      E_Type *ptee_type = e_type_from_key(scratch.arena, ptee_type_key);
+      E_Type* ptee_type = e_type_from_key(scratch.arena, ptee_type_key);
       B32 has_vtable = 0;
       for(U64 idx = 0; idx < ptee_type->count; idx += 1)
       {
@@ -106,7 +106,7 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
         {
           Arch arch = e_type_state->ctx->primary_module->arch;
           U32 rdi_idx = 0;
-          RDI_Parsed *rdi = 0;
+          RDI_Parsed* rdi = 0;
           U64 module_base = 0;
           for(U64 idx = 0; idx < e_type_state->ctx->modules_count; idx += 1)
           {
@@ -123,11 +123,11 @@ e_dynamically_typed_eval_from_eval(E_Eval eval)
           {
             U64 vtable_voff = vtable_vaddr - module_base;
             U64 global_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, vtable_voff);
-            RDI_GlobalVariable *global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
+            RDI_GlobalVariable* global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
             if(global_var->link_flags & RDI_LinkFlag_TypeScoped)
             {
-              RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, global_var->container_idx);
-              RDI_TypeNode *type = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
+              RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, global_var->container_idx);
+              RDI_TypeNode* type = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
               E_TypeKey derived_type_key = e_type_key_ext(e_type_kind_from_rdi(type->kind), udt->self_type_idx, rdi_idx);
               E_TypeKey ptr_to_derived_type_key = e_type_key_cons_ptr(arch, derived_type_key, 0);
               eval.type_key = ptr_to_derived_type_key;
@@ -168,7 +168,7 @@ e_value_eval_from_eval(E_Eval eval)
         if(type_kind == E_TypeKind_Bitfield && type_byte_size <= sizeof(U64))
         {
           Temp scratch = scratch_begin(0, 0);
-          E_Type *type = e_type_from_key(scratch.arena, type_key);
+          E_Type* type = e_type_from_key(scratch.arena, type_key);
           U64 valid_bits_mask = 0;
           for(U64 idx = 0; idx < type->count; idx += 1)
           {

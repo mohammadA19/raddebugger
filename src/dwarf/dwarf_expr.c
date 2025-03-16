@@ -4,7 +4,7 @@
 //- analyzers
 
 DW_SimpleLoc
-dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
+dw_expr__analyze_fast(void* base, Rng1U64 range, U64 text_section_base)
 {
   DW_SimpleLoc result = {DW_SimpleLocKind_Empty};
   
@@ -174,7 +174,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
 }
 
 DW_ExprAnalysis
-dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConfig *call_config)
+dw_expr__analyze_details(void* in_base, Rng1U64 in_range, DW_ExprMachineCallConfig* call_config)
 {
   Temp scratch = scratch_begin(0, 0);
 
@@ -184,15 +184,15 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   B32 has_call_func = (call_config != 0 && call_config->func != 0);
   
   // tasks
-  DW_ExprAnalysisTask *unfinished_tasks = 0;
-  DW_ExprAnalysisTask *finished_tasks   = 0;
+  DW_ExprAnalysisTask* unfinished_tasks = 0;
+  DW_ExprAnalysisTask* finished_tasks   = 0;
   
   // convert range input to string
   String8 in_data = str8((U8*)in_base + in_range.min, in_range.max - in_range.min);
   
   // put input task onto the list
   {
-    DW_ExprAnalysisTask *new_task = push_array(scratch.arena, DW_ExprAnalysisTask, 1);
+    DW_ExprAnalysisTask* new_task = push_array(scratch.arena, DW_ExprAnalysisTask, 1);
     new_task->p                   = max_U64;
     new_task->data                = in_data;
     SLLStackPush(unfinished_tasks, new_task);
@@ -204,13 +204,13 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   // task loop
   for (;;) {
     // get next task to handle
-    DW_ExprAnalysisTask *task = unfinished_tasks;
+    DW_ExprAnalysisTask* task = unfinished_tasks;
     if (task == 0) {
       break;
     }
     
     String8  task_data  = task->data;
-    U8      *task_base  = task_data.str;
+    U8*      task_base  = task_data.str;
     Rng1U64  task_range = rng_1u64(0, task_data.size);
     
     // move the task to finished now
@@ -432,12 +432,12 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
             
             // add to task list
             if (has_call_func) {
-              DW_ExprAnalysisTask *existing = dw_expr__analysis_task_from_p(unfinished_tasks, p);
+              DW_ExprAnalysisTask* existing = dw_expr__analysis_task_from_p(unfinished_tasks, p);
               if (existing == 0) {
                 existing = dw_expr__analysis_task_from_p(finished_tasks, p);;
               }
               if (existing == 0) {
-                DW_ExprAnalysisTask *new_task = push_array(scratch.arena, DW_ExprAnalysisTask, 1);
+                DW_ExprAnalysisTask* new_task = push_array(scratch.arena, DW_ExprAnalysisTask, 1);
                 new_task->p                   = p;
                 new_task->data                = call_config->func(call_config->user_ptr, p);
                 SLLStackPush(unfinished_tasks, new_task);
@@ -552,7 +552,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
 //- full eval
 
 DW_Location
-dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_ExprMachineConfig *config)
+dw_expr__eval(Arena* arena_optional, void* expr_base, Rng1U64 expr_range, DW_ExprMachineConfig* config)
 {
   Temp scratch = scratch_begin(&arena_optional, 1);
 
@@ -562,7 +562,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
   DW_ExprStack stack = dw_expr__stack_make(scratch.arena);
   
   // adjust expr range
-  void *expr_ptr  = (U8*)expr_base + expr_range.min;
+  void* expr_ptr  = (U8*)expr_base + expr_range.min;
   U64   expr_size = expr_range.max - expr_range.min;
   
   // setup call stack
@@ -577,13 +577,13 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
   U64 step_counter   = 0;
   for (;;) {
     // check top of stack
-    DW_ExprCall *call = dw_expr__call_top(&call_stack);
+    DW_ExprCall* call = dw_expr__call_top(&call_stack);
     if (call == 0) {
       goto finish;
     }
     
     // grab top of stack details
-    void    *base   = call->ptr;
+    void*    base   = call->ptr;
     Rng1U64  range  = rng_1u64(0, call->size);
     U64      cursor = call->cursor;
     
@@ -720,7 +720,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           S64 offset = 0;
           step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, &offset);
           U64         reg_idx = op - DW_ExprOp_BReg0;
-          DW_RegsX64 *regs    = config->regs;
+          DW_RegsX64* regs    = config->regs;
           if (regs != 0) {
             if (reg_idx < ArrayCount(regs->r)) {
               U64 x = regs->r[reg_idx] + offset;
@@ -744,7 +744,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           step_cursor += dw_based_range_read_uleb128(base, range, step_cursor, &reg_idx);
           step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, &offset);
 
-          DW_RegsX64 *regs = config->regs;
+          DW_RegsX64* regs = config->regs;
           if (regs != 0) {
             if (reg_idx < ArrayCount(regs->r)) {
               U64 x = regs->r[reg_idx] + offset;
@@ -1178,7 +1178,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           U64 size = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, size_param, &size);
           if (step_cursor + size <= range.max) {
-            void *data = (U8*)base + range.min + step_cursor;
+            void* data = (U8*)base + range.min + step_cursor;
             stashed_loc.kind = DW_SimpleLocKind_ValueLong;
             stashed_loc.val_long.str  = (U8*)data;
             stashed_loc.val_long.size = size;
@@ -1239,7 +1239,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
             }
             
             // push the piece
-            DW_Piece *piece = push_array(arena_optional, DW_Piece, 1);
+            DW_Piece* piece = push_array(arena_optional, DW_Piece, 1);
             SLLQueuePush(result.first_piece, result.last_piece, piece);
             piece->loc = piece_loc;
             piece->bit_size = bit_size;
@@ -1327,16 +1327,16 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
 //- dw expr val stack
 
 DW_ExprStack
-dw_expr__stack_make(Arena *arena)
+dw_expr__stack_make(Arena* arena)
 {
   DW_ExprStack result = {0};
   return result;
 }
 
 void
-dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
+dw_expr__stack_push(Arena* arena, DW_ExprStack* stack, U64 x)
 {
-  DW_ExprStackNode *node = stack->free_nodes;
+  DW_ExprStackNode* node = stack->free_nodes;
   if (node == 0) {
     SLLStackPop(stack->free_nodes);
   } else {
@@ -1348,10 +1348,10 @@ dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
 }
 
 U64
-dw_expr__stack_pop(DW_ExprStack *stack)
+dw_expr__stack_pop(DW_ExprStack* stack)
 {
   U64               result = 0;
-  DW_ExprStackNode *node   = stack->stack;
+  DW_ExprStackNode* node   = stack->stack;
   if (node != 0) {
     SLLStackPop(stack->stack);
     stack->count -= 1;
@@ -1361,12 +1361,12 @@ dw_expr__stack_pop(DW_ExprStack *stack)
 }
 
 U64
-dw_expr__stack_pick(DW_ExprStack *stack, U64 idx)
+dw_expr__stack_pick(DW_ExprStack* stack, U64 idx)
 {
   U64 result = 0;
   if (idx < stack->count) {
     U64               counter = idx;
-    DW_ExprStackNode *node    = stack->stack;
+    DW_ExprStackNode* node    = stack->stack;
     for (;node != 0 && counter > 0; node = node->next, counter -= 1);
     if (counter == 0 && node != 0) {
       result = node->val;
@@ -1376,7 +1376,7 @@ dw_expr__stack_pick(DW_ExprStack *stack, U64 idx)
 }
 
 B32
-dw_expr__stack_is_empty(DW_ExprStack *stack)
+dw_expr__stack_is_empty(DW_ExprStack* stack)
 {
   B32 result = (stack->count == 0);
   return result;
@@ -1385,16 +1385,16 @@ dw_expr__stack_is_empty(DW_ExprStack *stack)
 //- dw expr call stack
 
 DW_ExprCall*
-dw_expr__call_top(DW_ExprCallStack *stack)
+dw_expr__call_top(DW_ExprCallStack* stack)
 {
-  DW_ExprCall *call = stack->stack;
+  DW_ExprCall* call = stack->stack;
   return call;
 }
 
 void
-dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
+dw_expr__call_push(Arena* arena, DW_ExprCallStack* stack, void* ptr, U64 size)
 {
-  DW_ExprCall *call = 0;
+  DW_ExprCall* call = 0;
   if (call != 0) {
     SLLStackPop(stack->free_calls);
   } else {
@@ -1406,9 +1406,9 @@ dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
 }
 
 void
-dw_expr__call_pop(DW_ExprCallStack *stack)
+dw_expr__call_pop(DW_ExprCallStack* stack)
 {
-  DW_ExprCall *top = stack->stack;
+  DW_ExprCall* top = stack->stack;
   if (top != 0)
   {
     SLLStackPop(stack->stack);
@@ -1419,10 +1419,10 @@ dw_expr__call_pop(DW_ExprCallStack *stack)
 //- analysis tasks
 
 DW_ExprAnalysisTask*
-dw_expr__analysis_task_from_p(DW_ExprAnalysisTask *first, U64 p)
+dw_expr__analysis_task_from_p(DW_ExprAnalysisTask* first, U64 p)
 {
-  DW_ExprAnalysisTask *result = 0;
-  for (DW_ExprAnalysisTask *task = first; task != 0; task = task->next) {
+  DW_ExprAnalysisTask* result = 0;
+  for (DW_ExprAnalysisTask* task = first; task != 0; task = task->next) {
     if (task->p == p) {
       result = task;
       break;

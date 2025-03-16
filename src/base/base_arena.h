@@ -23,13 +23,13 @@ struct ArenaParams
   ArenaFlags flags;
   U64 reserve_size;
   U64 commit_size;
-  void *optional_backing_buffer;
+  void* optional_backing_buffer;
 }
 
 struct Arena
 {
-  Arena *prev;    // previous arena in chain
-  Arena *current; // current arena in chain
+  Arena* prev;    // previous arena in chain
+  Arena* current; // current arena in chain
   ArenaFlags flags;
   U64 cmt_size;
   U64 res_size;
@@ -39,14 +39,14 @@ struct Arena
   U64 res;
 #if ARENA_FREE_LIST
   U64 free_size;
-  Arena *free_last;
+  Arena* free_last;
 #endif
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 struct Temp
 {
-  Arena *arena;
+  Arena* arena;
   U64 pos;
 }
 
@@ -61,21 +61,21 @@ static ArenaFlags arena_default_flags = 0;
 //~ rjf: Arena Functions
 
 //- rjf: arena creation/destruction
-Arena *arena_alloc_(ArenaParams *params);
+Arena* arena_alloc_(ArenaParams* params);
 #define arena_alloc(...) arena_alloc_(&(ArenaParams){.reserve_size = arena_default_reserve_size, .commit_size = arena_default_commit_size, .flags = arena_default_flags, __VA_ARGS__})
-void arena_release(Arena *arena);
+void arena_release(Arena* arena);
 
 //- rjf: arena push/pop/pos core functions
-void *arena_push(Arena *arena, U64 size, U64 align);
-U64   arena_pos(Arena *arena);
-void  arena_pop_to(Arena *arena, U64 pos);
+void* arena_push(Arena* arena, U64 size, U64 align);
+U64   arena_pos(Arena* arena);
+void  arena_pop_to(Arena* arena, U64 pos);
 
 //- rjf: arena push/pop helpers
-void arena_clear(Arena *arena);
-void arena_pop(Arena *arena, U64 amt);
+void arena_clear(Arena* arena);
+void arena_pop(Arena* arena, U64 amt);
 
 //- rjf: temporary arena scopes
-Temp temp_begin(Arena *arena);
+Temp temp_begin(Arena* arena);
 void temp_end(Temp temp);
 
 //- rjf: push helper macros

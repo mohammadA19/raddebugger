@@ -7,8 +7,8 @@
 OS_LNX_Window *
 os_lnx_window_from_x11window(Window window)
 {
-  OS_LNX_Window *result = 0;
-  for(OS_LNX_Window *w = os_lnx_gfx_state->first_window; w != 0; w = w->next)
+  OS_LNX_Window* result = 0;
+  for(OS_LNX_Window* w = os_lnx_gfx_state->first_window; w != 0; w = w->next)
   {
     if(w->window == window)
     {
@@ -26,7 +26,7 @@ void
 os_gfx_init()
 {
   //- rjf: initialize basics
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   os_lnx_gfx_state = push_array(arena, OS_LNX_GfxState, 1);
   os_lnx_gfx_state->arena = arena;
   os_lnx_gfx_state->display = XOpenDisplay(0);
@@ -61,7 +61,7 @@ os_set_clipboard_text(String8 string)
 }
 
 String8
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena* arena)
 {
   String8 result = {0};
   return result;
@@ -74,7 +74,7 @@ OS_Handle
 os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
 {
   //- rjf: allocate window
-  OS_LNX_Window *w = os_lnx_gfx_state->free_window;
+  OS_LNX_Window* w = os_lnx_gfx_state->free_window;
   if(w)
   {
     SLLStackPop(os_lnx_gfx_state->free_window);
@@ -138,7 +138,7 @@ void
 os_window_first_paint(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
-  OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
+  OS_LNX_Window* w = (OS_LNX_Window *)handle.u64[0];
   XMapWindow(os_lnx_gfx_state->display, w->window);
 }
 
@@ -251,7 +251,7 @@ os_dpi_from_window(OS_Handle handle)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena* arena)
 {
   OS_HandleArray result = {0};
   return result;
@@ -272,7 +272,7 @@ os_monitor_from_window(OS_Handle window)
 }
 
 String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena* arena, OS_Handle monitor)
 {
   return str8_zero();
 }
@@ -293,7 +293,7 @@ os_send_wakeup_event()
 }
 
 OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena* arena, B32 wait)
 {
   OS_EventList evts = {0};
   for(;XPending(os_lnx_gfx_state->display) > 0 || (wait && evts.count == 0);)
@@ -368,8 +368,8 @@ os_get_events(Arena *arena, B32 wait)
         }
         
         // rjf: push event
-        OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
-        OS_Event *e = os_event_list_push_new(arena, &evts, evt.type == KeyPress ? OS_EventKind_Press : OS_EventKind_Release);
+        OS_LNX_Window* window = os_lnx_window_from_x11window(evt.xclient.window);
+        OS_Event* e = os_event_list_push_new(arena, &evts, evt.type == KeyPress ? OS_EventKind_Press : OS_EventKind_Release);
         e->window.u64[0] = (U64)window;
         e->flags = flags;
         e->key = key;
@@ -396,8 +396,8 @@ os_get_events(Arena *arena, B32 wait)
         }
         
         // rjf: push event
-        OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
-        OS_Event *e = os_event_list_push_new(arena, &evts, evt.type == ButtonPress ? OS_EventKind_Press : OS_EventKind_Release);
+        OS_LNX_Window* window = os_lnx_window_from_x11window(evt.xclient.window);
+        OS_Event* e = os_event_list_push_new(arena, &evts, evt.type == ButtonPress ? OS_EventKind_Press : OS_EventKind_Release);
         e->window.u64[0] = (U64)window;
         e->flags = flags;
         e->key = key;
@@ -406,8 +406,8 @@ os_get_events(Arena *arena, B32 wait)
       //- rjf: mouse motion
       case MotionNotify:
       {
-        OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
-        OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_MouseMove);
+        OS_LNX_Window* window = os_lnx_window_from_x11window(evt.xclient.window);
+        OS_Event* e = os_event_list_push_new(arena, &evts, OS_EventKind_MouseMove);
         e->window.u64[0] = (U64)window;
         e->pos.x = (F32)evt.xmotion.x;
         e->pos.y = (F32)evt.xmotion.y;
@@ -425,13 +425,13 @@ os_get_events(Arena *arena, B32 wait)
       {
         if((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_delete_window_atom)
         {
-          OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
-          OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_WindowClose);
+          OS_LNX_Window* window = os_lnx_window_from_x11window(evt.xclient.window);
+          OS_Event* e = os_event_list_push_new(arena, &evts, OS_EventKind_WindowClose);
           e->window.u64[0] = (U64)window;
         }
         else if((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_sync_request_atom)
         {
-          OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
+          OS_LNX_Window* window = os_lnx_window_from_x11window(evt.xclient.window);
           if(window != 0)
           {
             window->counter_value = 0;

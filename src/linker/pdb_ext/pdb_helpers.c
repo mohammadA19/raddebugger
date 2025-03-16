@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 U64
-pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
+pdb_read_bit_vector_string(String8 data, U64 offset, U32Array* bits_out)
 {
   U64 cursor = offset;
   
@@ -26,7 +26,7 @@ pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
 }
 
 U64
-pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32Array *bits_out)
+pdb_read_bit_vector_msf(Arena* arena, MSF_Context* msf, MSF_StreamNumber sn, U32Array* bits_out)
 {
   // peek word count
   MSF_UInt pos = msf_stream_get_pos(msf, sn);
@@ -35,7 +35,7 @@ pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32
   
   // read out header + packed words
   U64 buffer_size = sizeof(word_count) + word_count * sizeof(U32);
-  U8 *buffer = push_array(arena, U8, buffer_size);
+  U8* buffer = push_array(arena, U8, buffer_size);
   MSF_UInt read_size = msf_stream_read(msf, sn, buffer, buffer_size);
   Assert(read_size == buffer_size);
   
@@ -45,7 +45,7 @@ pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32
 }
 
 B32
-pdb_write_bit_vector(MSF_Context *msf, MSF_StreamNumber sn, B32 *flag_array, U64 flag_count)
+pdb_write_bit_vector(MSF_Context* msf, MSF_StreamNumber sn, B32* flag_array, U64 flag_count)
 {
   B32 is_write_ok = 0;
 

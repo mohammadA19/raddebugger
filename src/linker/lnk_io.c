@@ -2,7 +2,7 @@
 // Shared File API
 
 shared_function int
-lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
+lnk_open_file_read(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
@@ -11,7 +11,7 @@ lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t
 }
 
 shared_function int
-lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
+lnk_open_file_write(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Write, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
@@ -20,14 +20,14 @@ lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_
 }
 
 shared_function void
-lnk_close_file(void *raw_handle)
+lnk_close_file(void* raw_handle)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   os_file_close(handle);
 }
 
 shared_function uint64_t
-lnk_size_from_file(void *raw_handle)
+lnk_size_from_file(void* raw_handle)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   FileProperties props  = os_properties_from_file(handle);
@@ -35,7 +35,7 @@ lnk_size_from_file(void *raw_handle)
 }
 
 shared_function uint64_t
-lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
+lnk_read_file(void* raw_handle, void* buffer, uint64_t buffer_max)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   U64 read_size = os_file_read(handle, rng_1u64(0, buffer_max), buffer);
@@ -44,7 +44,7 @@ lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
 }
 
 shared_function uint64_t
-lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_size)
+lnk_write_file(void* raw_handle, uint64_t offset, void* buffer, uint64_t buffer_size)
 {
   OS_Handle handle = *(OS_Handle*)raw_handle;
   U64 write_size = os_file_write(handle, r1u64(offset, offset + buffer_size), buffer);
@@ -60,14 +60,14 @@ lnk_log_read(String8 path, U64 size)
 }
 
 String8
-lnk_read_data_from_file_path(Arena *arena, String8 path)
+lnk_read_data_from_file_path(Arena* arena, String8 path)
 {
   String8 data = str8_zero();
   OS_Handle handle = {0};
   int is_open = lnk_open_file_read((char*)path.str, path.size, &handle, sizeof(handle));
   if (is_open) {
     U64  buffer_size = lnk_size_from_file(&handle);
-    U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+    U8*  buffer      = push_array_no_zero(arena, U8, buffer_size);
     U64  read_size   = lnk_read_file(&handle, buffer, buffer_size);
 
     data = str8(buffer, read_size);
@@ -90,7 +90,7 @@ lnk_read_data_from_file_path(Arena *arena, String8 path)
 internal
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
-  LNK_DiskReader *task = raw_task;
+  LNK_DiskReader* task = raw_task;
   String8         path = task->path_arr.v[task_id];
 
   OS_Handle handle = {0};
@@ -108,11 +108,11 @@ THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 internal
 THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 {
-  LNK_DiskReader *task = raw_task;
+  LNK_DiskReader* task = raw_task;
 
   OS_Handle handle      = task->handle_arr[task_id];
   U64       buffer_size = task->size_arr[task_id];
-  U8       *buffer      = task->buffer + task->off_arr[task_id];
+  U8*       buffer      = task->buffer + task->off_arr[task_id];
 
   U64 read_size = lnk_read_file(&handle, buffer, buffer_size);
   Assert(read_size == buffer_size);
@@ -121,7 +121,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 }
 
 String8Array
-lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array path_arr)
+lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array path_arr)
 {
   Temp scratch = scratch_begin(&arena,1);
 
@@ -137,7 +137,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
   U64 total_data_size = sum_array_u64(path_arr.count, reader.size_arr);
 
   // assign offsets into file buffer
-  U64 *off_arr = push_array_no_zero(scratch.arena, U64, path_arr.count);
+  U64* off_arr = push_array_no_zero(scratch.arena, U64, path_arr.count);
   MemoryCopyTyped(off_arr, reader.size_arr, path_arr.count);
   counts_to_offsets_array_u64(path_arr.count, off_arr);
 
@@ -172,7 +172,7 @@ lnk_write_data_list_to_file_path(String8 path, String8List data)
   OS_Handle handle;
   if (lnk_open_file_write((char*)path.str, path.size, &handle, sizeof(handle))) {
     U64 offset = 0;
-    for (String8Node *data_n = data.first; data_n != 0; data_n = data_n->next) {
+    for (String8Node* data_n = data.first; data_n != 0; data_n = data_n->next) {
       U64 write_size = lnk_write_file(&handle, offset, data_n->string.str, data_n->string.size);
       if (write_size != data_n->string.size) {
         break;
@@ -209,7 +209,7 @@ lnk_write_data_to_file_path(String8 path, String8 data)
 }
 
 String8List
-lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
+lnk_file_search(Arena* arena, String8List dir_list, String8 file_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -225,7 +225,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
                     file_path_style != PathStyle_UnixAbsolute;
 
   if (is_relative) {
-    for (String8Node *i = dir_list.first; i != 0; i = i->next) {
+    for (String8Node* i = dir_list.first; i != 0; i = i->next) {
       String8List path_list = {0};
       str8_list_push(scratch.arena, &path_list, i->string);
       str8_list_push(scratch.arena, &path_list, file_path);
@@ -234,7 +234,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
       if (file_exists) {
         B32 is_unique = 1;
         OS_FileID file_id = os_id_from_file_path(path);
-        for (String8Node *k = match_list.first; k != 0; k = k->next) {
+        for (String8Node* k = match_list.first; k != 0; k = k->next) {
           OS_FileID test_id = os_id_from_file_path(k->string);
           int cmp = os_file_id_compare(test_id, file_id) != 0;
           if (cmp == 0) {

@@ -7,7 +7,7 @@
 void
 ptg_init()
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   ptg_shared = push_array(arena, PTG_Shared, 1);
   ptg_shared->arena = arena;
   ptg_shared->slots_count = 1024;
@@ -56,11 +56,11 @@ ptg_scope_open()
 {
   if(ptg_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena* arena = arena_alloc();
     ptg_tctx = push_array(arena, PTG_TCTX, 1);
     ptg_tctx->arena = arena;
   }
-  PTG_Scope *scope = ptg_tctx->free_scope;
+  PTG_Scope* scope = ptg_tctx->free_scope;
   if(scope)
   {
     SLLStackPop(ptg_tctx->free_scope);
@@ -74,9 +74,9 @@ ptg_scope_open()
 }
 
 void
-ptg_scope_close(PTG_Scope *scope)
+ptg_scope_close(PTG_Scope* scope)
 {
-  for(PTG_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
+  for(PTG_Touch* touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     next = touch->next;
     ins_atomic_u64_dec_eval(&touch->node->scope_ref_count);
@@ -86,9 +86,9 @@ ptg_scope_close(PTG_Scope *scope)
 }
 
 void
-ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
+ptg_scope_touch_node__stripe_r_guarded(PTG_Scope* scope, PTG_GraphNode* node)
 {
-  PTG_Touch *touch = ptg_tctx->free_touch;
+  PTG_Touch* touch = ptg_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, ptg_user_clock_idx());
@@ -109,9 +109,9 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 //~ rjf: Cache Lookups
 
 PTG_Graph *
-ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
+ptg_graph_from_key(PTG_Scope* scope, PTG_Key* key)
 {
-  PTG_Graph *g = 0;
+  PTG_Graph* g = 0;
   return g;
 }
 
@@ -119,7 +119,7 @@ ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
 //~ rjf: Transfer Threads
 
 B32
-ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
+ptg_u2b_enqueue_req(PTG_Key* key, U64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
@@ -146,7 +146,7 @@ ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
 }
 
 void
-ptg_u2b_dequeue_req(PTG_Key *key_out)
+ptg_u2b_dequeue_req(PTG_Key* key_out)
 {
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
   {
@@ -162,11 +162,11 @@ ptg_u2b_dequeue_req(PTG_Key *key_out)
 }
 
 void
-ptg_builder_thread__entry_point(void *p)
+ptg_builder_thread__entry_point(void* p)
 {
   for(;;)
   {
-    HS_Scope *scope = hs_scope_open();
+    HS_Scope* scope = hs_scope_open();
     
     //- rjf: get next key
     PTG_Key key = {0};
@@ -175,14 +175,14 @@ ptg_builder_thread__entry_point(void *p)
     //- rjf: unpack hash
     U64 slot_idx = key.root_hash.u64[1]%ptg_shared->slots_count;
     U64 stripe_idx = slot_idx%ptg_shared->stripes_count;
-    PTG_GraphSlot *slot = &ptg_shared->slots[slot_idx];
-    PTG_GraphStripe *stripe = &ptg_shared->stripes[stripe_idx];
+    PTG_GraphSlot* slot = &ptg_shared->slots[slot_idx];
+    PTG_GraphStripe* stripe = &ptg_shared->stripes[stripe_idx];
     
     //- rjf: take task
     B32 got_task = 0;
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(PTG_GraphNode *n = slot->first; n != 0; n = n->next)
+      for(PTG_GraphNode* n = slot->first; n != 0; n = n->next)
       {
         if(MemoryMatchStruct(&n->key, &key))
         {
@@ -202,7 +202,7 @@ ptg_builder_thread__entry_point(void *p)
     //- rjf: commit results to cache
     if(got_task) OS_MutexScopeW(stripe->rw_mutex)
     {
-      for(PTG_GraphNode *n = slot->first; n != 0; n = n->next)
+      for(PTG_GraphNode* n = slot->first; n != 0; n = n->next)
       {
         if(MemoryMatchStruct(&n->key, &key))
         {
@@ -222,7 +222,7 @@ ptg_builder_thread__entry_point(void *p)
 //~ rjf: Evictor Threads
 
 void
-ptg_evictor_thread__entry_point(void *p)
+ptg_evictor_thread__entry_point(void* p)
 {
   for(;;)
   {
@@ -233,12 +233,12 @@ ptg_evictor_thread__entry_point(void *p)
     for(U64 slot_idx = 0; slot_idx < ptg_shared->slots_count; slot_idx += 1)
     {
       U64 stripe_idx = slot_idx%ptg_shared->stripes_count;
-      PTG_GraphSlot *slot = &ptg_shared->slots[slot_idx];
-      PTG_GraphStripe *stripe = &ptg_shared->stripes[stripe_idx];
+      PTG_GraphSlot* slot = &ptg_shared->slots[slot_idx];
+      PTG_GraphStripe* stripe = &ptg_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;
       OS_MutexScopeR(stripe->rw_mutex)
       {
-        for(PTG_GraphNode *n = slot->first; n != 0; n = n->next)
+        for(PTG_GraphNode* n = slot->first; n != 0; n = n->next)
         {
           if(n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
@@ -253,7 +253,7 @@ ptg_evictor_thread__entry_point(void *p)
       }
       if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
       {
-        for(PTG_GraphNode *n = slot->first, *next = 0; n != 0; n = next)
+        for(PTG_GraphNode* n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
           if(n->scope_ref_count == 0 &&

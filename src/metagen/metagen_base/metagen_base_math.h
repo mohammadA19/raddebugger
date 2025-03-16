@@ -312,20 +312,20 @@ union Rng2S64
 
 struct Rng1S64Node
 {
-  Rng1S64Node *next;
+  Rng1S64Node* next;
   Rng1S64 v;
 }
 
 struct Rng1S64List
 {
-  Rng1S64Node *first;
-  Rng1S64Node *last;
+  Rng1S64Node* first;
+  Rng1S64Node* last;
   U64 count;
 }
 
 struct Rng1S64Array
 {
-  Rng1S64 *v;
+  Rng1S64* v;
   U64 count;
 }
 
@@ -621,7 +621,7 @@ U32 u32_from_rgba(Vec4F32 rgba);
 ////////////////////////////////
 //~ rjf: List Type Functions
 
-void rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng);
-Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list);
+void rng1s64_list_push(Arena* arena, Rng1S64List* list, Rng1S64 rng);
+Rng1S64Array rng1s64_array_from_list(Arena* arena, Rng1S64List* list);
 
 #endif // BASE_MATH_H

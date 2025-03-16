@@ -34,11 +34,11 @@ r_batch_list_make(U64 instance_size)
 }
 
 void *
-r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
+r_batch_list_push_inst(Arena* arena, R_BatchList* list, U64 batch_inst_cap)
 {
-  void *inst = 0;
+  void* inst = 0;
   {
-    R_BatchNode *n = list->last;
+    R_BatchNode* n = list->last;
     if(n == 0 || n->v.byte_count+list->bytes_per_inst > n->v.byte_cap)
     {
       n = push_array(arena, R_BatchNode, 1);
@@ -58,9 +58,9 @@ r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
 //~ rjf: Pass Type Functions
 
 R_Pass *
-r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind)
+r_pass_from_kind(Arena* arena, R_PassList* list, R_PassKind kind)
 {
-  R_PassNode *n = list->last;
+  R_PassNode* n = list->last;
   if(!r_pass_kind_batch_table[kind])
   {
     n = 0;

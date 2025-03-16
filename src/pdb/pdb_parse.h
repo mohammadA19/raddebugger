@@ -35,15 +35,15 @@ struct PDB_NamedStreamTable
 
 struct PDB_InfoNode
 {
-  struct PDB_InfoNode *next;
+  struct PDB_InfoNode* next;
   String8 string;
   MSF_StreamNumber sn;
 }
 
 struct PDB_Info
 {
-  PDB_InfoNode *first;
-  PDB_InfoNode *last;
+  PDB_InfoNode* first;
+  PDB_InfoNode* last;
   Guid auth_guid;
 }
 
@@ -101,7 +101,7 @@ struct PDB_CompUnit
 
 struct PDB_CompUnitNode
 {
-  struct PDB_CompUnitNode *next;
+  struct PDB_CompUnitNode* next;
   PDB_CompUnit unit;
 }
 
@@ -120,7 +120,7 @@ struct PDB_CompUnitContribution
 
 struct PDB_CompUnitContributionArray
 {
-  PDB_CompUnitContribution *contributions;
+  PDB_CompUnitContribution* contributions;
   U64 count;
 }
 
@@ -154,7 +154,7 @@ struct PDB_TpiParsed
 
 struct PDB_TpiHashBlock
 {
-  struct PDB_TpiHashBlock *next;
+  struct PDB_TpiHashBlock* next;
   U32 local_count;
   CV_TypeId itypes[13]; // 13 = (64 - 12)/4
 }
@@ -174,7 +174,7 @@ struct PDB_TpiHashParsed
 
 struct PDB_GsiBucket
 {
-  U32 *offs;
+  U32* offs;
   U64 count;
 }
 
@@ -186,60 +186,60 @@ struct PDB_GsiParsed
 ////////////////////////////////
 //~ PDB Parser Functions
 
-PDB_Info*            pdb_info_from_data(Arena *arena, String8 pdb_info_data);
-PDB_NamedStreamTable*pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info);
-PDB_Strtbl*          pdb_strtbl_from_data(Arena *arena, String8 strtbl_data);
+PDB_Info*            pdb_info_from_data(Arena* arena, String8 pdb_info_data);
+PDB_NamedStreamTable*pdb_named_stream_table_from_info(Arena* arena, PDB_Info* info);
+PDB_Strtbl*          pdb_strtbl_from_data(Arena* arena, String8 strtbl_data);
 
-PDB_DbiParsed*       pdb_dbi_from_data(Arena *arena, String8 dbi_data);
-PDB_TpiParsed*       pdb_tpi_from_data(Arena *arena, String8 tpi_data);
-PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena *arena,
-                                                     PDB_Strtbl *strtbl,
-                                                     PDB_TpiParsed *tpi,
+PDB_DbiParsed*       pdb_dbi_from_data(Arena* arena, String8 dbi_data);
+PDB_TpiParsed*       pdb_tpi_from_data(Arena* arena, String8 tpi_data);
+PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena* arena,
+                                                     PDB_Strtbl* strtbl,
+                                                     PDB_TpiParsed* tpi,
                                                      String8 tpi_hash_data,
                                                      String8 tpi_hash_aux_data);
-PDB_GsiParsed*       pdb_gsi_from_data(Arena *arena, String8 gsi_data);
-U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 string);
+PDB_GsiParsed*       pdb_gsi_from_data(Arena* arena, String8 gsi_data);
+U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, String8 symbol_data, String8 string);
 
-COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena *arena, String8 section_data);
+COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena* arena, String8 section_data);
 
-PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena *arena,
+PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena* arena,
                                                             String8 module_info_data);
 
 PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 seccontrib_data,
+pdb_comp_unit_contribution_array_from_data(Arena* arena, String8 seccontrib_data,
                                            COFF_SectionHeaderArray sections);
 
 ////////////////////////////////
 //~ PDB Dbi Functions
 
-String8              pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range);
-String8              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit,
+String8              pdb_data_from_dbi_range(PDB_DbiParsed* dbi, PDB_DbiRange range);
+String8              pdb_data_from_unit_range(MSF_Parsed* msf, PDB_CompUnit* unit,
                                                        PDB_DbiCompUnitRange range);
 
 ////////////////////////////////
 //~ PDB Tpi Functions
 
-String8              pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi);
+String8              pdb_leaf_data_from_tpi(PDB_TpiParsed* tpi);
 
-CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena *arena,
-                                                       PDB_TpiHashParsed *tpi_hash,
-                                                       CV_LeafParsed *tpi_leaf,
+CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena* arena,
+                                                       PDB_TpiHashParsed* tpi_hash,
+                                                       CV_LeafParsed* tpi_leaf,
                                                        String8 name,
                                                        B32 compare_unique_name,
                                                        U32 output_cap);
 
-CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash,
-                                                            CV_LeafParsed *tpi_leaf,
+CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash,
+                                                            CV_LeafParsed* tpi_leaf,
                                                             String8 name,
                                                             B32 compare_unique_name);
 
 ////////////////////////////////
 //~ PDB Strtbl Functions
 
-String8              pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off);
-String8              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
+String8              pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, U32 off);
+String8              pdb_strtbl_string_from_index(PDB_Strtbl* strtbl,
                                                            PDB_StringIndex idx);
-U32                  pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string);
+U32                  pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, String8 string);
 
 
 #endif // PDB_PARSE_H

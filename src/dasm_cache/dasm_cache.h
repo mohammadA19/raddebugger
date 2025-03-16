@@ -49,14 +49,14 @@ struct DASM_CtrlFlowPoint
 
 struct DASM_CtrlFlowPointNode
 {
-  DASM_CtrlFlowPointNode *next;
+  DASM_CtrlFlowPointNode* next;
   DASM_CtrlFlowPoint v;
 }
 
 struct DASM_CtrlFlowPointList
 {
-  DASM_CtrlFlowPointNode *first;
-  DASM_CtrlFlowPointNode *last;
+  DASM_CtrlFlowPointNode* first;
+  DASM_CtrlFlowPointNode* last;
   U64 count;
 }
 
@@ -109,23 +109,23 @@ struct DASM_Line
 
 struct DASM_LineChunkNode
 {
-  DASM_LineChunkNode *next;
-  DASM_Line *v;
+  DASM_LineChunkNode* next;
+  DASM_Line* v;
   U64 cap;
   U64 count;
 }
 
 struct DASM_LineChunkList
 {
-  DASM_LineChunkNode *first;
-  DASM_LineChunkNode *last;
+  DASM_LineChunkNode* first;
+  DASM_LineChunkNode* last;
   U64 node_count;
   U64 line_count;
 }
 
 struct DASM_LineArray
 {
-  DASM_Line *v;
+  DASM_Line* v;
   U64 count;
 }
 
@@ -153,8 +153,8 @@ struct DASM_Info
 struct DASM_Node
 {
   // rjf: links
-  DASM_Node *next;
-  DASM_Node *prev;
+  DASM_Node* next;
+  DASM_Node* prev;
   
   // rjf: key
   U128 hash;
@@ -164,7 +164,7 @@ struct DASM_Node
   U64 change_gen;
   
   // rjf: value
-  Arena *info_arena;
+  Arena* info_arena;
   DASM_Info info;
   
   // rjf: metadata
@@ -179,16 +179,16 @@ struct DASM_Node
 
 struct DASM_Slot
 {
-  DASM_Node *first;
-  DASM_Node *last;
+  DASM_Node* first;
+  DASM_Node* last;
 }
 
 struct DASM_Stripe
 {
-  Arena *arena;
+  Arena* arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-  DASM_Node *free_node;
+  DASM_Node* free_node;
 }
 
 ////////////////////////////////
@@ -196,15 +196,15 @@ struct DASM_Stripe
 
 struct DASM_Touch
 {
-  DASM_Touch *next;
+  DASM_Touch* next;
   U128 hash;
   DASM_Params params;
 }
 
 struct DASM_Scope
 {
-  DASM_Scope *next;
-  DASM_Touch *top_touch;
+  DASM_Scope* next;
+  DASM_Touch* top_touch;
   U64 base_pos;
 }
 
@@ -213,7 +213,7 @@ struct DASM_Scope
 
 struct DASM_TCTX
 {
-  Arena *arena;
+  Arena* arena;
 }
 
 ////////////////////////////////
@@ -221,17 +221,17 @@ struct DASM_TCTX
 
 struct DASM_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: cache
   U64 slots_count;
   U64 stripes_count;
-  DASM_Slot *slots;
-  DASM_Stripe *stripes;
+  DASM_Slot* slots;
+  DASM_Stripe* stripes;
   
   // rjf: user -> parse thread
   U64 u2p_ring_size;
-  U8 *u2p_ring_base;
+  U8* u2p_ring_base;
   U64 u2p_ring_write_pos;
   U64 u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;
@@ -244,31 +244,31 @@ struct DASM_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static DASM_TCTX *dasm_tctx = 0;
-static DASM_Shared *dasm_shared = 0;
+thread_static DASM_TCTX* dasm_tctx = 0;
+static DASM_Shared* dasm_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Instruction Decoding/Disassembling Type Functions
 
-DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
+DASM_Inst dasm_inst_from_code(Arena* arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
 
 ////////////////////////////////
 //~ rjf: Control Flow Analysis
 
-DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
+DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena* arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
 
 ////////////////////////////////
 //~ rjf: Parameter Type Functions
 
-B32 dasm_params_match(DASM_Params *a, DASM_Params *b);
+B32 dasm_params_match(DASM_Params* a, DASM_Params* b);
 
 ////////////////////////////////
 //~ rjf: Line Type Functions
 
-void dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *line);
-DASM_LineArray dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list);
-U64 dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off);
-U64 dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx);
+void dasm_line_chunk_list_push(Arena* arena, DASM_LineChunkList* list, U64 cap, DASM_Line* line);
+DASM_LineArray dasm_line_array_from_chunk_list(Arena* arena, DASM_LineChunkList* list);
+U64 dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray* array, U64 off);
+U64 dasm_line_array_code_off_from_idx(DASM_LineArray* array, U64 idx);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -278,26 +278,26 @@ void dasm_init();
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-DASM_Scope *dasm_scope_open();
-void dasm_scope_close(DASM_Scope *scope);
-void dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node);
+DASM_Scope* dasm_scope_open();
+void dasm_scope_close(DASM_Scope* scope);
+void dasm_scope_touch_node__stripe_r_guarded(DASM_Scope* scope, DASM_Node* node);
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-DASM_Info dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params);
-DASM_Info dasm_info_from_key_params(DASM_Scope *scope, U128 key, DASM_Params *params, U128 *hash_out);
+DASM_Info dasm_info_from_hash_params(DASM_Scope* scope, U128 hash, DASM_Params* params);
+DASM_Info dasm_info_from_key_params(DASM_Scope* scope, U128 key, DASM_Params* params, U128* hash_out);
 
 ////////////////////////////////
 //~ rjf: Parse Threads
 
-B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, U64 endt_us);
-void dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out);
+B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params* params, U64 endt_us);
+void dasm_u2p_dequeue_req(Arena* arena, U128* hash_out, DASM_Params* params_out);
 ASYNC_WORK_DEF(dasm_parse_work);
 
 ////////////////////////////////
 //~ rjf: Evictor/Detector Thread
 
-void dasm_evictor_detector_thread__entry_point(void *p);
+void dasm_evictor_detector_thread__entry_point(void* p);
 
 #endif // DASM_CACHE_H

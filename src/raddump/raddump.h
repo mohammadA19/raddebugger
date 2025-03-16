@@ -96,20 +96,20 @@ struct RD_Marker
 struct RD_MarkerArray
 {
   U64        count;
-  RD_Marker *v;
+  RD_Marker* v;
 }
 
 struct MarkerNode
 {
-  struct MarkerNode *next;
+  struct MarkerNode* next;
   RD_Marker          v;
 }
 
 struct RD_MarkerList
 {
   U64            count;
-  RD_MarkerNode *first;
-  RD_MarkerNode *last;
+  RD_MarkerNode* first;
+  RD_MarkerNode* last;
 }
 
 struct RD_DisasmResult
@@ -127,7 +127,7 @@ struct RD_Section
 struct RD_SectionArray
 {
   U64         count;
-  RD_Section *v;
+  RD_Section* v;
 }
 
 struct RD_Line
@@ -143,134 +143,134 @@ struct RD_Line
 B32 rd_is_pe (String8 raw_data);
 B32 rd_is_rdi(String8 raw_data);
 
-String8 rd_string_from_flags(Arena *arena, String8List list, U64 remaining_flags);
+String8 rd_string_from_flags(Arena* arena, String8List list, U64 remaining_flags);
 
-void rd_format_preamble(Arena *arena, String8List *out, String8 indent, String8 input_path, String8 raw_data);
+void rd_format_preamble(Arena* arena, String8List* out, String8 indent, String8 input_path, String8 raw_data);
 
 // Markers
 
-RD_MarkerArray * rd_section_markers_from_coff_symbol_table(Arena *arena, String8 raw_data, U64 string_table_off, U64 section_count, COFF_Symbol32Array symbols);
+RD_MarkerArray * rd_section_markers_from_coff_symbol_table(Arena* arena, String8 raw_data, U64 string_table_off, U64 section_count, COFF_Symbol32Array symbols);
 
 // Sections
 
-RD_SectionArray rd_sections_from_coff_section_table(Arena *arnea, String8 raw_image, U64 string_table_off, U64 section_count, COFF_SectionHeader *sections);
+RD_SectionArray rd_sections_from_coff_section_table(Arena* arnea, String8 raw_image, U64 string_table_off, U64 section_count, COFF_SectionHeader* sections);
 
 // Disasm
 
-RD_DisasmResult rd_disasm_next_instruction(Arena *arena, Arch arch, U64 addr, String8 raw_code);
-void            rd_print_disasm           (Arena *arena, String8List *out, String8 indent, Arch arch, U64 image_base, U64 sect_off, U64 marker_count, RD_Marker *markers, String8 raw_code);
+RD_DisasmResult rd_disasm_next_instruction(Arena* arena, Arch arch, U64 addr, String8 raw_code);
+void            rd_print_disasm           (Arena* arena, String8List* out, String8 indent, Arch arch, U64 image_base, U64 sect_off, U64 marker_count, RD_Marker* markers, String8 raw_code);
 
 // Raw Data
 
-String8 rd_format_hex_array(Arena *arena, U8 *ptr, U64 size);
-void    rd_print_raw_data  (Arena *arena, String8List *out, String8 indent, U64 bytes_per_row, U64 marker_count, RD_Marker *markers, String8 raw_data);
+String8 rd_format_hex_array(Arena* arena, U8* ptr, U64 size);
+void    rd_print_raw_data  (Arena* arena, String8List* out, String8 indent, U64 bytes_per_row, U64 marker_count, RD_Marker* markers, String8 raw_data);
 
 // RDI
 
-String8 rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v);
-String8 rdi_string_from_arch             (Arena *arena, RDI_Arch        v);
-String8 rdi_string_from_language         (Arena *arena, RDI_Language    v);
-String8 rdi_string_from_local_kind       (Arena *arena, RDI_LocalKind   v);
-String8 rdi_string_from_type_kind        (Arena *arena, RDI_TypeKind    v);
-String8 rdi_string_from_member_kind      (Arena *arena, RDI_MemberKind  v);
+String8 rdi_string_from_data_section_kind(Arena* arena, RDI_SectionKind v);
+String8 rdi_string_from_arch             (Arena* arena, RDI_Arch        v);
+String8 rdi_string_from_language         (Arena* arena, RDI_Language    v);
+String8 rdi_string_from_local_kind       (Arena* arena, RDI_LocalKind   v);
+String8 rdi_string_from_type_kind        (Arena* arena, RDI_TypeKind    v);
+String8 rdi_string_from_member_kind      (Arena* arena, RDI_MemberKind  v);
 
-String8 rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags);
-String8 rdi_string_from_type_modifier       (Arena *arena, RDI_TypeModifierFlags  flags);
-String8 rdi_string_from_udt_flags           (Arena *arena, RDI_UDTFlags           flags);
-String8 rdi_string_from_link_flags          (Arena *arena, RDI_LinkFlags          flags);
+String8 rdi_string_from_binary_section_flags(Arena* arena, RDI_BinarySectionFlags flags);
+String8 rdi_string_from_type_modifier       (Arena* arena, RDI_TypeModifierFlags  flags);
+String8 rdi_string_from_udt_flags           (Arena* arena, RDI_UDTFlags           flags);
+String8 rdi_string_from_link_flags          (Arena* arena, RDI_LinkFlags          flags);
 
-void rdi_print_data_sections  (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi);
-void rdi_print_top_level_info (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TopLevelInfo   *tli);
-void rdi_print_binary_section (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_BinarySection  *bin_section);
-void rdi_print_file_path      (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_FilePathNode   *file_path);
-void rdi_print_source_file    (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceFile     *source_file);
-void rdi_print_line_table     (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_LineTable      *line_table);
-void rdi_print_source_line_map(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_SourceLineMap  *map);
-void rdi_print_unit           (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Unit           *unit);
-void rdi_print_type_node      (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_TypeNode       *type);
-void rdi_print_udt            (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_UDT            *udt);
-void rdi_print_global_variable(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_GlobalVariable *gvar);
-void rdi_print_thread_variable(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_ThreadVariable *tvar);
-void rdi_print_procedure      (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Procedure      *proc);
-void rdi_print_scope          (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_Scope          *scope, RDI_Arch arch);
-void rdi_print_inline_site    (Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, RDI_InlineSite     *inline_site);
-void rdi_print_vmap_entry     (Arena *arena, String8List *out, String8 indent, RDI_VMapEntry *v);
+void rdi_print_data_sections  (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi);
+void rdi_print_top_level_info (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_TopLevelInfo*   tli);
+void rdi_print_binary_section (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_BinarySection*  bin_section);
+void rdi_print_file_path      (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_FilePathNode*   file_path);
+void rdi_print_source_file    (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_SourceFile*     source_file);
+void rdi_print_line_table     (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_LineTable*      line_table);
+void rdi_print_source_line_map(Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_SourceLineMap*  map);
+void rdi_print_unit           (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_Unit*           unit);
+void rdi_print_type_node      (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_TypeNode*       type);
+void rdi_print_udt            (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_UDT*            udt);
+void rdi_print_global_variable(Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_GlobalVariable* gvar);
+void rdi_print_thread_variable(Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_ThreadVariable* tvar);
+void rdi_print_procedure      (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_Procedure*      proc);
+void rdi_print_scope          (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_Scope*          scope, RDI_Arch arch);
+void rdi_print_inline_site    (Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, RDI_InlineSite*     inline_site);
+void rdi_print_vmap_entry     (Arena* arena, String8List* out, String8 indent, RDI_VMapEntry* v);
 
 // DWARF
 
-String8List dw_string_list_from_expression  (Arena *arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
-String8     dw_format_expression_single_line(Arena *arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
-String8     dw_format_eh_ptr_enc            (Arena *arena, DW_EhPtrEnc enc);
-void        dw_print_cfi_program            (Arena *arena, String8List *out, String8 indent, String8 raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
+String8List dw_string_list_from_expression  (Arena* arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
+String8     dw_format_expression_single_line(Arena* arena, String8 raw_data, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
+String8     dw_format_eh_ptr_enc            (Arena* arena, DW_EhPtrEnc enc);
+void        dw_print_cfi_program            (Arena* arena, String8List* out, String8 indent, String8 raw_data, DW_CIEUnpacked* cie, DW_EhPtrCtx* ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, B32 is_dwarf64);
 
-void dw_print_eh_frame         (Arena *arena, String8List *out, String8 indent, String8 raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx);
-void dw_print_debug_info       (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed);
-void dw_print_debug_abbrev     (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_line       (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, B32 relaxed);
-void dw_print_debug_str        (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_loc        (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed);
-void dw_print_debug_ranges     (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Arch arch, ImageType image_type, B32 relaxed);
-void dw_print_debug_aranges    (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_addr       (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_loclists   (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_vranges, Arch arch);
-void dw_print_debug_rnglists   (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections, Rng1U64Array segment_vranges);
-void dw_print_debug_pubnames   (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_pubtypes   (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_line_str   (Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
-void dw_print_debug_str_offsets(Arena *arena, String8List *out, String8 indent, DW_SectionArray *sections);
+void dw_print_eh_frame         (Arena* arena, String8List* out, String8 indent, String8 raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx* ptr_ctx);
+void dw_print_debug_info       (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, Arch arch, ImageType image_type, B32 relaxed);
+void dw_print_debug_abbrev     (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_line       (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, B32 relaxed);
+void dw_print_debug_str        (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_loc        (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, Arch arch, ImageType image_type, B32 relaxed);
+void dw_print_debug_ranges     (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, Arch arch, ImageType image_type, B32 relaxed);
+void dw_print_debug_aranges    (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_addr       (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_loclists   (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, Rng1U64Array segment_vranges, Arch arch);
+void dw_print_debug_rnglists   (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections, Rng1U64Array segment_vranges);
+void dw_print_debug_pubnames   (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_pubtypes   (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_line_str   (Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
+void dw_print_debug_str_offsets(Arena* arena, String8List* out, String8 indent, DW_SectionArray* sections);
 
 // CodeView
 
-void cv_print_binary_annots  (Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data);
-void cv_print_lvar_addr_range(Arena *arena, String8List *out, String8 indent, CV_LvarAddrRange range);
-void cv_print_lvar_addr_gap  (Arena *arena, String8List *out, String8 indent, String8 raw_data);
-void cv_print_lvar_attr      (Arena *arena, String8List *out, String8 indent, CV_LocalVarAttr attr);
-void cv_print_symbol         (Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV_TypeIndex min_itype, CV_SymKind type, String8 raw_symbol);
-U64  cv_print_leaf           (Arena *arena, String8List *out, String8 indent, CV_TypeIndex min_itype, CV_LeafKind kind, String8 raw_leaf);
-void cv_print_debug_t        (Arena *arena, String8List *out, String8 indent, CV_DebugT debug_t);
-void cv_print_symbols_c13    (Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data);
-void cv_print_lines_c13      (Arena *arena, String8List *out, String8 indent, String8 raw_lines);
-void cv_print_file_checksums (Arena *arena, String8List *out, String8 indent, String8 raw_chksums);
-void cv_print_string_table   (Arena *arena, String8List *out, String8 indent, String8 raw_strtab);
-void cv_print_inlinee_lines  (Arena *arena, String8List *out, String8 indent, String8 raw_data);
-void cv_print_symbols_section(Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_ss);
+void cv_print_binary_annots  (Arena* arena, String8List* out, String8 indent, CV_Arch arch, String8 raw_data);
+void cv_print_lvar_addr_range(Arena* arena, String8List* out, String8 indent, CV_LvarAddrRange range);
+void cv_print_lvar_addr_gap  (Arena* arena, String8List* out, String8 indent, String8 raw_data);
+void cv_print_lvar_attr      (Arena* arena, String8List* out, String8 indent, CV_LocalVarAttr attr);
+void cv_print_symbol         (Arena* arena, String8List* out, String8 indent, CV_Arch arch, CV_TypeIndex min_itype, CV_SymKind type, String8 raw_symbol);
+U64  cv_print_leaf           (Arena* arena, String8List* out, String8 indent, CV_TypeIndex min_itype, CV_LeafKind kind, String8 raw_leaf);
+void cv_print_debug_t        (Arena* arena, String8List* out, String8 indent, CV_DebugT debug_t);
+void cv_print_symbols_c13    (Arena* arena, String8List* out, String8 indent, CV_Arch arch, String8 raw_data);
+void cv_print_lines_c13      (Arena* arena, String8List* out, String8 indent, String8 raw_lines);
+void cv_print_file_checksums (Arena* arena, String8List* out, String8 indent, String8 raw_chksums);
+void cv_print_string_table   (Arena* arena, String8List* out, String8 indent, String8 raw_strtab);
+void cv_print_inlinee_lines  (Arena* arena, String8List* out, String8 indent, String8 raw_data);
+void cv_print_symbols_section(Arena* arena, String8List* out, String8 indent, CV_Arch arch, String8 raw_ss);
 
 // COFF
 
-void coff_print_archive_member_header(Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveMemberHeader header, String8 long_names);
-void coff_print_seciton_table        (Arena *arena, String8List *out, String8 indent, String8 raw_data, U64 string_table_off, COFF_Symbol32Array symbols, U64 sect_count, COFF_SectionHeader *sect_headers);
-void coff_disasm_sections            (Arena *arena, String8List *out, String8 indent, String8 raw_data, COFF_MachineType machine, U64 image_base, B32 is_obj, RD_MarkerArray *section_markers, U64 section_count, COFF_SectionHeader *sections);
-void coff_raw_data_sections          (Arena *arena, String8List *out, String8 indent, String8 raw_data, B32 is_obj, RD_MarkerArray *section_markers, U64 section_count, COFF_SectionHeader *sections);
-void coff_print_relocs               (Arena *arena, String8List *out, String8 indent, String8 raw_data, U64 string_table_off, COFF_MachineType machine, U64 sect_count, COFF_SectionHeader *sect_headers, COFF_Symbol32Array symbols);
-void coff_print_symbol_table         (Arena *arena, String8List *out, String8 indent, String8 raw_data, B32 is_big_obj, U64 string_table_off, COFF_Symbol32Array symbols);
-void coff_print_big_obj_header       (Arena *arena, String8List *out, String8 indent, COFF_BigObjHeader *header);
-void coff_print_file_header          (Arena *arena, String8List *out, String8 indent, COFF_FileHeader *header);
-void coff_print_import               (Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveImportHeader *header);
-void coff_print_big_obj              (Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts);
-void coff_print_obj                  (Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts);
-void coff_print_archive              (Arena *arena, String8List *out, String8 indent, String8 raw_archive, RD_Option opts);
+void coff_print_archive_member_header(Arena* arena, String8List* out, String8 indent, COFF_ParsedArchiveMemberHeader header, String8 long_names);
+void coff_print_seciton_table        (Arena* arena, String8List* out, String8 indent, String8 raw_data, U64 string_table_off, COFF_Symbol32Array symbols, U64 sect_count, COFF_SectionHeader* sect_headers);
+void coff_disasm_sections            (Arena* arena, String8List* out, String8 indent, String8 raw_data, COFF_MachineType machine, U64 image_base, B32 is_obj, RD_MarkerArray* section_markers, U64 section_count, COFF_SectionHeader* sections);
+void coff_raw_data_sections          (Arena* arena, String8List* out, String8 indent, String8 raw_data, B32 is_obj, RD_MarkerArray* section_markers, U64 section_count, COFF_SectionHeader* sections);
+void coff_print_relocs               (Arena* arena, String8List* out, String8 indent, String8 raw_data, U64 string_table_off, COFF_MachineType machine, U64 sect_count, COFF_SectionHeader* sect_headers, COFF_Symbol32Array symbols);
+void coff_print_symbol_table         (Arena* arena, String8List* out, String8 indent, String8 raw_data, B32 is_big_obj, U64 string_table_off, COFF_Symbol32Array symbols);
+void coff_print_big_obj_header       (Arena* arena, String8List* out, String8 indent, COFF_BigObjHeader* header);
+void coff_print_file_header          (Arena* arena, String8List* out, String8 indent, COFF_FileHeader* header);
+void coff_print_import               (Arena* arena, String8List* out, String8 indent, COFF_ParsedArchiveImportHeader* header);
+void coff_print_big_obj              (Arena* arena, String8List* out, String8 indent, String8 raw_data, RD_Option opts);
+void coff_print_obj                  (Arena* arena, String8List* out, String8 indent, String8 raw_data, RD_Option opts);
+void coff_print_archive              (Arena* arena, String8List* out, String8 indent, String8 raw_archive, RD_Option opts);
 
 // MSVC CRT
 
-void mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler);
+void mscrt_print_eh_handler_type32(Arena* arena, String8List* out, String8 indent, RDI_Parsed* rdi, MSCRT_EhHandlerType32* handler);
 
 // PE
 
-void pe_print_data_directory_ranges(Arena *arena, String8List *out, String8 indent, U64 count, PE_DataDirectory *dirs);
-void pe_print_optional_header32    (Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32 *opt_header, PE_DataDirectory *dirs);
-void pe_print_optional_header32plus(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32Plus *opt_header, PE_DataDirectory *dirs);
-void pe_print_load_config32        (Arena *arena, String8List *out, String8 indent, PE_LoadConfig32 *lc);
-void pe_print_load_config64        (Arena *arena, String8List *out, String8 indent, PE_LoadConfig64 *lc);
-void pe_print_tls                  (Arena *arena, String8List *out, String8 indent, PE_ParsedTLS tls);
-void pe_print_debug_diretory       (Arena *arena, String8List *out, String8 indent, String8 raw_data, String8 raw_dir);
-void pe_print_export_table         (Arena *arena, String8List *out, String8 indent, PE_ParsedExportTable exptab);
-void pe_print_static_import_table  (Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedStaticImportTable imptab);
-void pe_print_delay_import_table   (Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedDelayImportTable imptab);
-void pe_print_resources            (Arena *arena, String8List *out, String8 indent, PE_ResourceDir *root);
-void pe_print_exceptions_x8664     (Arena *arena, String8List *out, String8 indent, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed *rdi);
-void pe_print_exceptions           (Arena *arena, String8List *out, String8 indent, COFF_MachineType machine, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed *rdi);
-void pe_print_base_relocs          (Arena *arena, String8List *out, String8 indent, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 base_reloc_franges, RDI_Parsed *rdi);
-void pe_print                      (Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed *rdi);
+void pe_print_data_directory_ranges(Arena* arena, String8List* out, String8 indent, U64 count, PE_DataDirectory* dirs);
+void pe_print_optional_header32    (Arena* arena, String8List* out, String8 indent, PE_OptionalHeader32* opt_header, PE_DataDirectory* dirs);
+void pe_print_optional_header32plus(Arena* arena, String8List* out, String8 indent, PE_OptionalHeader32Plus* opt_header, PE_DataDirectory* dirs);
+void pe_print_load_config32        (Arena* arena, String8List* out, String8 indent, PE_LoadConfig32* lc);
+void pe_print_load_config64        (Arena* arena, String8List* out, String8 indent, PE_LoadConfig64* lc);
+void pe_print_tls                  (Arena* arena, String8List* out, String8 indent, PE_ParsedTLS tls);
+void pe_print_debug_diretory       (Arena* arena, String8List* out, String8 indent, String8 raw_data, String8 raw_dir);
+void pe_print_export_table         (Arena* arena, String8List* out, String8 indent, PE_ParsedExportTable exptab);
+void pe_print_static_import_table  (Arena* arena, String8List* out, String8 indent, U64 image_base, PE_ParsedStaticImportTable imptab);
+void pe_print_delay_import_table   (Arena* arena, String8List* out, String8 indent, U64 image_base, PE_ParsedDelayImportTable imptab);
+void pe_print_resources            (Arena* arena, String8List* out, String8 indent, PE_ResourceDir* root);
+void pe_print_exceptions_x8664     (Arena* arena, String8List* out, String8 indent, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed* rdi);
+void pe_print_exceptions           (Arena* arena, String8List* out, String8 indent, COFF_MachineType machine, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed* rdi);
+void pe_print_base_relocs          (Arena* arena, String8List* out, String8 indent, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 base_reloc_franges, RDI_Parsed* rdi);
+void pe_print                      (Arena* arena, String8List* out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed* rdi);
 
 #endif // RADDUMP_H
 

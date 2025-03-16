@@ -81,7 +81,7 @@ txt_lang_kind_from_arch(Arch arch)
 TXT_LangLexFunctionType *
 txt_lex_function_from_lang_kind(TXT_LangKind kind)
 {
-  TXT_LangLexFunctionType *fn = 0;
+  TXT_LangLexFunctionType* fn = 0;
   switch(kind)
   {
     default:{}break;
@@ -99,9 +99,9 @@ txt_lex_function_from_lang_kind(TXT_LangKind kind)
 //~ rjf: Token Type Functions
 
 void
-txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token)
+txt_token_chunk_list_push(Arena* arena, TXT_TokenChunkList* list, U64 cap, TXT_Token* token)
 {
-  TXT_TokenChunkNode *node = list->last;
+  TXT_TokenChunkNode* node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
     node = push_array(arena, TXT_TokenChunkNode, 1);
@@ -116,22 +116,22 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
 }
 
 void
-txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
+txt_token_list_push(Arena* arena, TXT_TokenList* list, TXT_Token* token)
 {
-  TXT_TokenNode *node = push_array(arena, TXT_TokenNode, 1);
+  TXT_TokenNode* node = push_array(arena, TXT_TokenNode, 1);
   MemoryCopyStruct(&node->v, token);
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
 }
 
 TXT_TokenArray
-txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
+txt_token_array_from_chunk_list(Arena* arena, TXT_TokenChunkList* list)
 {
   TXT_TokenArray array = {0};
   array.count = list->token_count;
   array.v = push_array_no_zero(arena, TXT_Token, array.count);
   U64 idx = 0;
-  for(TXT_TokenChunkNode *n = list->first; n != 0; n = n->next)
+  for(TXT_TokenChunkNode* n = list->first; n != 0; n = n->next)
   {
     MemoryCopy(array.v+idx, n->v, n->count*sizeof(TXT_Token));
     idx += n->count;
@@ -140,13 +140,13 @@ txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
 }
 
 TXT_TokenArray
-txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
+txt_token_array_from_list(Arena* arena, TXT_TokenList* list)
 {
   TXT_TokenArray array = {0};
   array.count = list->count;
   array.v = push_array_no_zero(arena, TXT_Token, array.count);
   U64 idx = 0;
-  for(TXT_TokenNode *n = list->first; n != 0; n = n->next)
+  for(TXT_TokenNode* n = list->first; n != 0; n = n->next)
   {
     MemoryCopyStruct(array.v+idx, &n->v);
     idx += 1;
@@ -158,7 +158,7 @@ txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 //~ rjf: Lexing Functions
 
 TXT_TokenArray
-txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__c_cpp(Arena* arena, U64* bytes_processed_counter, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -504,7 +504,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
 }
 
 TXT_TokenArray
-txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__odin(Arena* arena, U64* bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -790,7 +790,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
 }
 
 TXT_TokenArray
-txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__jai(Arena* arena, U64* bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1075,7 +1075,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 TXT_TokenArray
-txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__zig(Arena* arena, U64* bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1366,7 +1366,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 TXT_TokenArray
-txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__disasm_x64_intel(Arena* arena, U64* bytes_processed_counter, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1593,7 +1593,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
 void
 txt_init()
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   txt_shared = push_array(arena, TXT_Shared, 1);
   txt_shared->arena = arena;
   txt_shared->slots_count = 1024;
@@ -1622,7 +1622,7 @@ txt_tctx_ensure_inited()
 {
   if(txt_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena* arena = arena_alloc();
     txt_tctx = push_array(arena, TXT_TCTX, 1);
     txt_tctx->arena = arena;
   }
@@ -1635,7 +1635,7 @@ TXT_Scope *
 txt_scope_open()
 {
   txt_tctx_ensure_inited();
-  TXT_Scope *scope = txt_tctx->free_scope;
+  TXT_Scope* scope = txt_tctx->free_scope;
   if(scope)
   {
     SLLStackPop(txt_tctx->free_scope);
@@ -1649,19 +1649,19 @@ txt_scope_open()
 }
 
 void
-txt_scope_close(TXT_Scope *scope)
+txt_scope_close(TXT_Scope* scope)
 {
-  for(TXT_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
+  for(TXT_Touch* touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     U128 hash = touch->hash;
     next = touch->next;
     U64 slot_idx = hash.u64[1]%txt_shared->slots_count;
     U64 stripe_idx = slot_idx%txt_shared->stripes_count;
-    TXT_Slot *slot = &txt_shared->slots[slot_idx];
-    TXT_Stripe *stripe = &txt_shared->stripes[stripe_idx];
+    TXT_Slot* slot = &txt_shared->slots[slot_idx];
+    TXT_Stripe* stripe = &txt_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(TXT_Node *n = slot->first; n != 0; n = n->next)
+      for(TXT_Node* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(hash, n->hash) && touch->lang == n->lang)
         {
@@ -1676,9 +1676,9 @@ txt_scope_close(TXT_Scope *scope)
 }
 
 void
-txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
+txt_scope_touch_node__stripe_r_guarded(TXT_Scope* scope, TXT_Node* node)
 {
-  TXT_Touch *touch = txt_tctx->free_touch;
+  TXT_Touch* touch = txt_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
@@ -1700,19 +1700,19 @@ txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
 //~ rjf: Cache Lookups
 
 TXT_TextInfo
-txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
+txt_text_info_from_hash_lang(TXT_Scope* scope, U128 hash, TXT_LangKind lang)
 {
   TXT_TextInfo info = {0};
   if(!u128_match(hash, u128_zero()))
   {
     U64 slot_idx = hash.u64[1]%txt_shared->slots_count;
     U64 stripe_idx = slot_idx%txt_shared->stripes_count;
-    TXT_Slot *slot = &txt_shared->slots[slot_idx];
-    TXT_Stripe *stripe = &txt_shared->stripes[stripe_idx];
+    TXT_Slot* slot = &txt_shared->slots[slot_idx];
+    TXT_Stripe* stripe = &txt_shared->stripes[stripe_idx];
     B32 found = 0;
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(TXT_Node *n = slot->first; n != 0; n = n->next)
+      for(TXT_Node* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(hash, n->hash) && n->lang == lang)
         {
@@ -1730,8 +1730,8 @@ txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
     {
       OS_MutexScopeW(stripe->rw_mutex)
       {
-        TXT_Node *node = 0;
-        for(TXT_Node *n = slot->first; n != 0; n = n->next)
+        TXT_Node* node = 0;
+        for(TXT_Node* n = slot->first; n != 0; n = n->next)
         {
           if(u128_match(hash, n->hash) && n->lang == lang)
           {
@@ -1768,7 +1768,7 @@ txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
 }
 
 TXT_TextInfo
-txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 *hash_out)
+txt_text_info_from_key_lang(TXT_Scope* scope, U128 key, TXT_LangKind lang, U128* hash_out)
 {
   TXT_TextInfo result = {0};
   for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -1791,7 +1791,7 @@ txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TXT_LangKind lang, U128 
 //~ rjf: Text Info Extractor Helpers
 
 U64
-txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt)
+txt_off_from_info_pt(TXT_TextInfo* info, TxtPt pt)
 {
   U64 off = 0;
   if(1 <= pt.line && pt.line <= info->lines_count)
@@ -1803,7 +1803,7 @@ txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt)
 }
 
 TxtPt
-txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
+txt_pt_from_info_off__linear_scan(TXT_TextInfo* info, U64 off)
 {
   TxtPt pt = {0};
   {
@@ -1820,7 +1820,7 @@ txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
 }
 
 TXT_TokenArray
-txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num)
+txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo* info, S64 line_num)
 {
   TXT_TokenArray line_tokens = {0};
   if(1 <= line_num && line_num <= info->lines_count)
@@ -1848,18 +1848,18 @@ txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num
 }
 
 Rng1U64
-txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens)
+txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray* line_tokens)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
   {
     // rjf: unpack line info
-    TXT_Token *line_tokens_first = line_tokens->v;
-    TXT_Token *line_tokens_opl = line_tokens->v+line_tokens->count;
+    TXT_Token* line_tokens_first = line_tokens->v;
+    TXT_Token* line_tokens_opl = line_tokens->v+line_tokens->count;
     
     // rjf: find token containing `off`
-    TXT_Token *pt_token = 0;
-    for(TXT_Token *token = line_tokens_first;
+    TXT_Token* pt_token = 0;
+    for(TXT_Token* token = line_tokens_first;
         token < line_tokens_opl;
         token += 1)
     {
@@ -1901,7 +1901,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
     {
       B32 walkback_done = 0;
       S32 nest = 0;
-      for(TXT_Token *wb_token = pt_token;
+      for(TXT_Token* wb_token = pt_token;
           wb_token >= line_tokens_first && walkback_done == 0;
           wb_token -= 1)
       {
@@ -1950,7 +1950,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
 }
 
 Rng1U64
-txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
+txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, String8 data, TxtPt pt)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1961,8 +1961,8 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
     String8 line_text = str8_substr(data, line_range);
     TXT_LineTokensSlice line_tokens_slice = txt_line_tokens_slice_from_info_data_line_range(scratch.arena, info, data, r1s64(pt.line, pt.line));
     TXT_TokenArray line_tokens = line_tokens_slice.line_tokens[0];
-    TXT_Token *line_tokens_first = line_tokens.v;
-    TXT_Token *line_tokens_opl = line_tokens.v+line_tokens.count;
+    TXT_Token* line_tokens_first = line_tokens.v;
+    TXT_Token* line_tokens_opl = line_tokens.v+line_tokens.count;
     U64 pt_off = line_range.min + (pt.column-1);
     
     // rjf: grab offset range of expression
@@ -1973,7 +1973,7 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
 }
 
 String8
-txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
+txt_string_from_info_data_txt_rng(TXT_TextInfo* info, String8 data, TxtRng rng)
 {
   Rng1U64 rng_off = r1u64(txt_off_from_info_pt(info, rng.min), txt_off_from_info_pt(info, rng.max));
   String8 result = str8_substr(data, rng_off);
@@ -1981,7 +1981,7 @@ txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
 }
 
 String8
-txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num)
+txt_string_from_info_data_line_num(TXT_TextInfo* info, String8 data, S64 line_num)
 {
   String8 result = {0};
   if(1 <= line_num && line_num <= info->lines_count)
@@ -1992,7 +1992,7 @@ txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_nu
 }
 
 TXT_LineTokensSlice
-txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range)
+txt_line_tokens_slice_from_info_data_line_range(Arena* arena, TXT_TextInfo* info, String8 data, Rng1S64 line_range)
 {
   TXT_LineTokensSlice result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -2005,7 +2005,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
     result.line_tokens = push_array(arena, TXT_TokenArray, line_count);
     
     // rjf: binary search to find first token
-    TXT_Token *tokens_first = 0;
+    TXT_Token* tokens_first = 0;
     ProfScope("binary search to find first token")
     {
       Rng1U64 slice_range = r1u64(info->lines_ranges[line_range_clamped.min-1].min, info->lines_ranges[line_range_clamped.max-1].max);
@@ -2018,7 +2018,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
         {
           break;
         }
-        TXT_Token *mid_token = &info->tokens.v[mid_idx];
+        TXT_Token* mid_token = &info->tokens.v[mid_idx];
         if(mid_token->range.min > slice_range.max)
         {
           opl_idx = mid_idx;
@@ -2040,12 +2040,12 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
     }
     
     // rjf: grab per-line tokens
-    TXT_TokenList *line_tokens_lists = push_array(scratch.arena, TXT_TokenList, line_count);
+    TXT_TokenList* line_tokens_lists = push_array(scratch.arena, TXT_TokenList, line_count);
     if(tokens_first != 0) ProfScope("grab per-line tokens")
     {
-      TXT_Token *tokens_opl = info->tokens.v+info->tokens.count;
+      TXT_Token* tokens_opl = info->tokens.v+info->tokens.count;
       U64 line_slice_idx = 0;
-      for(TXT_Token *token = tokens_first; token < tokens_opl && line_slice_idx < line_count;)
+      for(TXT_Token* token = tokens_first; token < tokens_opl && line_slice_idx < line_count;)
       {
         if(token->range.min < info->lines_ranges[line_slice_idx+line_range.min-1].max)
         {
@@ -2115,7 +2115,7 @@ txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us)
 }
 
 void
-txt_u2p_dequeue_req(U128 *hash_out, TXT_LangKind *lang_out)
+txt_u2p_dequeue_req(U128* hash_out, TXT_LangKind* lang_out)
 {
   OS_MutexScope(txt_shared->u2p_ring_mutex) for(;;)
   {
@@ -2139,19 +2139,19 @@ ASYNC_WORK_DEF(txt_parse_work)
   U128 hash = {0};
   TXT_LangKind lang = TXT_LangKind_Null;
   txt_u2p_dequeue_req(&hash, &lang);
-  HS_Scope *scope = hs_scope_open();
+  HS_Scope* scope = hs_scope_open();
   
   //- rjf: unpack hash
   U64 slot_idx = hash.u64[1]%txt_shared->slots_count;
   U64 stripe_idx = slot_idx%txt_shared->stripes_count;
-  TXT_Slot *slot = &txt_shared->slots[slot_idx];
-  TXT_Stripe *stripe = &txt_shared->stripes[stripe_idx];
+  TXT_Slot* slot = &txt_shared->slots[slot_idx];
+  TXT_Stripe* stripe = &txt_shared->stripes[stripe_idx];
   
   //- rjf: take task
   B32 got_task = 0;
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(TXT_Node *n = slot->first; n != 0; n = n->next)
+    for(TXT_Node* n = slot->first; n != 0; n = n->next)
     {
       if(u128_match(n->hash, hash) && n->lang == lang)
       {
@@ -2169,18 +2169,18 @@ ASYNC_WORK_DEF(txt_parse_work)
   }
   
   //- rjf: data -> text info
-  Arena *info_arena = 0;
+  Arena* info_arena = 0;
   TXT_TextInfo info = {0};
   if(got_task && !u128_match(hash, u128_zero()))
   {
     info_arena = arena_alloc();
     
     //- rjf: grab pointers to working counters
-    U64 *bytes_processed_ptr = 0;
-    U64 *bytes_to_process_ptr = 0;
+    U64* bytes_processed_ptr = 0;
+    U64* bytes_to_process_ptr = 0;
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(TXT_Node *n = slot->first; n != 0; n = n->next)
+      for(TXT_Node* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(n->hash, hash) && n->lang == lang)
         {
@@ -2289,7 +2289,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     }
     
     //- rjf: lang -> lex function
-    TXT_LangLexFunctionType *lex_function = txt_lex_function_from_lang_kind(lang);
+    TXT_LangLexFunctionType* lex_function = txt_lex_function_from_lang_kind(lang);
     
     //- rjf: lex function * data -> tokens
     TXT_TokenArray tokens = {0};
@@ -2309,7 +2309,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   //- rjf: commit results to cache
   if(got_task) OS_MutexScopeW(stripe->rw_mutex)
   {
-    for(TXT_Node *n = slot->first; n != 0; n = n->next)
+    for(TXT_Node* n = slot->first; n != 0; n = n->next)
     {
       if(u128_match(n->hash, hash) && n->lang == lang)
       {
@@ -2333,7 +2333,7 @@ ASYNC_WORK_DEF(txt_parse_work)
 //~ rjf: Evictor Threads
 
 void
-txt_evictor_thread__entry_point(void *p)
+txt_evictor_thread__entry_point(void* p)
 {
   ThreadNameF("[txt] evictor thread");
   for(;;)
@@ -2345,12 +2345,12 @@ txt_evictor_thread__entry_point(void *p)
     for(U64 slot_idx = 0; slot_idx < txt_shared->slots_count; slot_idx += 1)
     {
       U64 stripe_idx = slot_idx%txt_shared->stripes_count;
-      TXT_Slot *slot = &txt_shared->slots[slot_idx];
-      TXT_Stripe *stripe = &txt_shared->stripes[stripe_idx];
+      TXT_Slot* slot = &txt_shared->slots[slot_idx];
+      TXT_Stripe* stripe = &txt_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;
       OS_MutexScopeR(stripe->rw_mutex)
       {
-        for(TXT_Node *n = slot->first; n != 0; n = n->next)
+        for(TXT_Node* n = slot->first; n != 0; n = n->next)
         {
           if(n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
@@ -2365,7 +2365,7 @@ txt_evictor_thread__entry_point(void *p)
       }
       if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
       {
-        for(TXT_Node *n = slot->first, *next = 0; n != 0; n = next)
+        for(TXT_Node* n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
           if(n->scope_ref_count == 0 &&

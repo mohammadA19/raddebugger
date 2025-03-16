@@ -840,7 +840,7 @@ read_only static DWARF_SectionNameRow dwarf_section_name_table[] = {
 //~ Dwarf Parser Types
 
 struct DWARF_Parsed{
-  ELF_Parsed *elf;
+  ELF_Parsed* elf;
   U32 debug_section_idx[DWARF_SectionCode_COUNT];
   String8 debug_section_name[DWARF_SectionCode_COUNT];
   String8 debug_data[DWARF_SectionCode_COUNT];
@@ -869,7 +869,7 @@ struct DWARF_FormDecodeRules{
 
 struct DWARF_FormDecoded{
   U64 val;
-  U8 *dataptr;
+  U8* dataptr;
   B32 error;
 }
 
@@ -899,24 +899,24 @@ struct DWARF_SupParsed{
 
 struct DWARF_InfoAttribVal{
   U64 val;
-  U8 *dataptr;
+  U8* dataptr;
 }
 
 struct DWARF_InfoEntry{
-  struct DWARF_InfoEntry *next_sibling;
-  struct DWARF_InfoEntry *first_child;
-  struct DWARF_InfoEntry *last_child;
+  struct DWARF_InfoEntry* next_sibling;
+  struct DWARF_InfoEntry* first_child;
+  struct DWARF_InfoEntry* last_child;
   U64 child_count;
-  struct DWARF_InfoEntry *parent;
+  struct DWARF_InfoEntry* parent;
   
   U64 info_offset;
-  struct DWARF_AbbrevDecl *abbrev_decl;
-  DWARF_InfoAttribVal *attrib_vals;
+  struct DWARF_AbbrevDecl* abbrev_decl;
+  DWARF_InfoAttribVal* attrib_vals;
 }
 
 #if 0
 struct DWARF_InfoUnit{
-  struct DWARF_InfoUnit *next;
+  struct DWARF_InfoUnit* next;
   
   // header
   U32 version;
@@ -933,7 +933,7 @@ struct DWARF_InfoUnit{
   U64 loclists_base;
   
   // info entries
-  DWARF_InfoEntry *entry_root;
+  DWARF_InfoEntry* entry_root;
   U64 entry_count;
 }
 #endif
@@ -946,7 +946,7 @@ struct DWARF_InfoParams{
 #endif
 
 struct DWARF_InfoUnit{
-  struct DWARF_InfoUnit *next;
+  struct DWARF_InfoUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -970,8 +970,8 @@ struct DWARF_InfoUnit{
 }
 
 struct DWARF_InfoParsed{
-  DWARF_InfoUnit *unit_first;
-  DWARF_InfoUnit *unit_last;
+  DWARF_InfoUnit* unit_first;
+  DWARF_InfoUnit* unit_last;
   U64 unit_count;
 }
 
@@ -985,21 +985,21 @@ struct DWARF_AbbrevAttribSpec{
 }
 
 struct DWARF_AbbrevDecl{
-  struct DWARF_AbbrevDecl *next;
+  struct DWARF_AbbrevDecl* next;
   U32 abbrev_code;
   DWARF_Tag tag;
   B8 has_children;
   U8 __filler__;
   U16 attrib_count;
-  DWARF_AbbrevAttribSpec *attrib_specs;
-  S64 *implicit_const;
+  DWARF_AbbrevAttribSpec* attrib_specs;
+  S64* implicit_const;
 }
 
 struct DWARF_AbbrevUnit{
-  struct DWARF_AbbrevUnit *next;
+  struct DWARF_AbbrevUnit* next;
   U64 offset;
-  DWARF_AbbrevDecl *first;
-  DWARF_AbbrevDecl *last;
+  DWARF_AbbrevDecl* first;
+  DWARF_AbbrevDecl* last;
   U64 count;
 }
 
@@ -1011,8 +1011,8 @@ struct DWARF_AbbrevParams{
 #endif
 
 struct DWARF_AbbrevParsed{
-  DWARF_AbbrevUnit *unit_first;
-  DWARF_AbbrevUnit *unit_last;
+  DWARF_AbbrevUnit* unit_first;
+  DWARF_AbbrevUnit* unit_last;
   U64 unit_count;
   B32 decoding_error;
 }
@@ -1022,7 +1022,7 @@ struct DWARF_AbbrevParsed{
 //  (DWARF4.pdf + 7.19)
 
 struct DWARF_PubNamesUnit{
-  struct DWARF_PubNamesUnit *next;
+  struct DWARF_PubNamesUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -1035,8 +1035,8 @@ struct DWARF_PubNamesUnit{
 }
 
 struct DWARF_PubNamesParsed{
-  DWARF_PubNamesUnit *unit_first;
-  DWARF_PubNamesUnit *unit_last;
+  DWARF_PubNamesUnit* unit_first;
+  DWARF_PubNamesUnit* unit_last;
   U64 unit_count;
 }
 
@@ -1045,7 +1045,7 @@ struct DWARF_PubNamesParsed{
 //  (DWARF5.pdf + 6.1.1.4.1 & 7.19)
 
 struct DWARF_NamesUnit{
-  struct DWARF_NamesUnit *next;
+  struct DWARF_NamesUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -1063,8 +1063,8 @@ struct DWARF_NamesUnit{
 }
 
 struct DWARF_NamesParsed{
-  DWARF_NamesUnit *unit_first;
-  DWARF_NamesUnit *unit_last;
+  DWARF_NamesUnit* unit_first;
+  DWARF_NamesUnit* unit_last;
   U64 unit_count;
 }
 
@@ -1073,7 +1073,7 @@ struct DWARF_NamesParsed{
 //  (DWARF4.pdf + 7.20) (DWARF5.pdf + 7.21)
 
 struct DWARF_ArangesUnit{
-  struct DWARF_ArangesUnit *next;
+  struct DWARF_ArangesUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -1087,8 +1087,8 @@ struct DWARF_ArangesUnit{
 }
 
 struct DWARF_ArangesParsed{
-  DWARF_ArangesUnit *unit_first;
-  DWARF_ArangesUnit *unit_last;
+  DWARF_ArangesUnit* unit_first;
+  DWARF_ArangesUnit* unit_last;
   U64 unit_count;
 }
 
@@ -1097,7 +1097,7 @@ struct DWARF_ArangesParsed{
 //  (DWARF4.pdf + 6.2.4 & 7.21) (DWARF5.pdf + 6.2.4 & 7.22)
 
 struct DWARF_V4LineFileNamesEntry{
-  struct DWARF_V4LineFileNamesEntry *next;
+  struct DWARF_V4LineFileNamesEntry* next;
   String8 file_name;
   U64 include_directory_idx;
   U64 last_modified_time;
@@ -1105,8 +1105,8 @@ struct DWARF_V4LineFileNamesEntry{
 }
 
 struct DWARF_V4LineFileNamesList{
-  DWARF_V4LineFileNamesEntry *first;
-  DWARF_V4LineFileNamesEntry *last;
+  DWARF_V4LineFileNamesEntry* first;
+  DWARF_V4LineFileNamesEntry* last;
   U64 count;
 }
 
@@ -1126,7 +1126,7 @@ struct DWARF_V5Directory{
 }
 
 struct DWARF_LineUnit{
-  struct DWARF_LineUnit *next;
+  struct DWARF_LineUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -1137,8 +1137,8 @@ struct DWARF_LineUnit{
 }
 
 struct DWARF_LineParsed{
-  DWARF_LineUnit *unit_first;
-  DWARF_LineUnit *unit_last;
+  DWARF_LineUnit* unit_first;
+  DWARF_LineUnit* unit_last;
   U64 unit_count;
 }
 
@@ -1197,7 +1197,7 @@ struct DWARF_StrOffsetsParsed{
 //  (DWARF5.pdf + 7.27)
 
 struct DWARF_AddrUnit{
-  struct DWARF_AddrUnit *next;
+  struct DWARF_AddrUnit* next;
   
   U64 hdr_off;
   U64 base_off;
@@ -1210,8 +1210,8 @@ struct DWARF_AddrUnit{
 }
 
 struct DWARF_AddrParsed{
-  DWARF_AddrUnit *unit_first;
-  DWARF_AddrUnit *unit_last;
+  DWARF_AddrUnit* unit_first;
+  DWARF_AddrUnit* unit_last;
   U64 unit_count;
 }
 
@@ -1246,14 +1246,14 @@ if (((*(p))&0x80) == 0) { (p)+=1; break; }   \
 
 #define DWARF_LEB128_ADV_NOCAP(p) for((p)+=1; ((*(p-1))&0x80) != 0; (p)+=1)
 
-static U64 dwarf_leb128_decode_U64(U8 *ptr, U8 *opl);
-static S64 dwarf_leb128_decode_S64(U8 *ptr, U8 *opl);
-static U32 dwarf_leb128_decode_U32(U8 *ptr, U8 *opl);
+static U64 dwarf_leb128_decode_U64(U8* ptr, U8* opl);
+static S64 dwarf_leb128_decode_S64(U8* ptr, U8* opl);
+static U32 dwarf_leb128_decode_U32(U8* ptr, U8* opl);
 
 #define dwarf_leb128_decode(T,ptr,opl) dwarf_leb128_decode_##T(ptr,opl)
 
 #define DWARF_LEB128_DECODE_ADV(T,x,p,o) do{ \
-U8 *first__ = (p); B32 success__;          \
+U8* first__ = (p); B32 success__;          \
 DWARF_LEB128_ADV(p,o,success__);           \
 if (success__)                             \
 (x) = dwarf_leb128_decode(T,first__, (p)); \
@@ -1325,7 +1325,7 @@ struct UNW_DW_CIEUnpacked{
 }
 
 struct UNW_DW_CIEUnpackedNode{
-  struct UNW_DW_CIEUnpackedNode *next;
+  struct UNW_DW_CIEUnpackedNode* next;
   UNW_DW_CIEUnpacked cie;
   U64 offset;
 }
@@ -1386,16 +1386,16 @@ struct UNW_DW_CFICell{
 }
 
 struct UNW_DW_CFIRow{
-  struct UNW_DW_CFIRow *next;
-  UNW_DW_CFICell *cells;
+  struct UNW_DW_CFIRow* next;
+  UNW_DW_CFICell* cells;
   UNW_DW_CFICFACell cfa_cell;
 }
 
 struct UNW_DW_CFIMachine{
   U64 cells_per_row;
-  UNW_DW_CIEUnpacked *cie;
-  UNW_DW_EhPtrCtx *ptr_ctx;
-  UNW_DW_CFIRow *initial_row;
+  UNW_DW_CIEUnpacked* cie;
+  UNW_DW_EhPtrCtx* ptr_ctx;
+  UNW_DW_CFIRow* initial_row;
   U64 fde_ip;
 }
 
@@ -1420,45 +1420,45 @@ enum UNW_DW_CFAControlBits : U16{
 ////////////////////////////////
 //~ Dwarf Parser Functions
 
-static DWARF_Parsed*         dwarf_parsed_from_elf(Arena *arena, ELF_Parsed *elf);
+static DWARF_Parsed*         dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf);
 
-static DWARF_IndexParsed*    dwarf_index_from_data(Arena *arena, String8 data);
-static DWARF_SupParsed*      dwarf_sup_from_data(Arena *arena, String8 data);
-static DWARF_InfoParsed*     dwarf_info_from_data(Arena *arena, String8 data);
-static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena *arena, String8 data);
-static DWARF_NamesParsed*    dwarf_names_from_data(Arena *arena, String8 data);
-static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena *arena, String8 data);
-static DWARF_LineParsed*     dwarf_line_from_data(Arena *arena, String8 data);
-static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena *arena, String8 data);
-static DWARF_MacroParsed*    dwarf_macro_from_data(Arena *arena, String8 data);
-static DWARF_FrameParsed*    dwarf_frame_from_data(Arena *arena, String8 data);
-static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena *arena, String8 data);
-static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena *arena, String8 data);
-static DWARF_AddrParsed*     dwarf_addr_from_data(Arena *arena, String8 data);
-static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena *arena, String8 data);
-static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena *arena, String8 data);
+static DWARF_IndexParsed*    dwarf_index_from_data(Arena* arena, String8 data);
+static DWARF_SupParsed*      dwarf_sup_from_data(Arena* arena, String8 data);
+static DWARF_InfoParsed*     dwarf_info_from_data(Arena* arena, String8 data);
+static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena* arena, String8 data);
+static DWARF_NamesParsed*    dwarf_names_from_data(Arena* arena, String8 data);
+static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena* arena, String8 data);
+static DWARF_LineParsed*     dwarf_line_from_data(Arena* arena, String8 data);
+static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena* arena, String8 data);
+static DWARF_MacroParsed*    dwarf_macro_from_data(Arena* arena, String8 data);
+static DWARF_FrameParsed*    dwarf_frame_from_data(Arena* arena, String8 data);
+static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena* arena, String8 data);
+static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena* arena, String8 data);
+static DWARF_AddrParsed*     dwarf_addr_from_data(Arena* arena, String8 data);
+static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena* arena, String8 data);
+static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena* arena, String8 data);
 
 
 // parse helpers
 
 // (DWARF4.pdf + 7.2.2) (DWARF5.pdf + 7.2.2)
 static void dwarf__initial_length(String8 data,
-                                  U8 **ptr_inout, U8 **unit_opl_out, B32 *is_64bit_out);
+                                  U8 **ptr_inout, U8 **unit_opl_out, B32* is_64bit_out);
 
 static void
 dwarf__line_v5_directories(U64 address_size, U64 offset_size,
-                           DWARF_V5LinePathEntryFormat *format, U64 format_count,
-                           DWARF_V5Directory *directories_out, U64 dir_count,
-                           U8 **ptr_io, U8 *opl);
+                           DWARF_V5LinePathEntryFormat* format, U64 format_count,
+                           DWARF_V5Directory* directories_out, U64 dir_count,
+                           U8 **ptr_io, U8* opl);
 
 // debug sections
 
-static String8 dwarf_name_from_debug_section(DWARF_Parsed *dwarf, DWARF_SectionCode sec_code);
+static String8 dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code);
 
 // abbrev functions
 
-static DWARF_AbbrevUnit* dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, U64 off);
-static DWARF_AbbrevDecl* dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit *unit, U32 code);
+static DWARF_AbbrevUnit* dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed* abbrev, U64 off);
+static DWARF_AbbrevDecl* dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit* unit, U32 code);
 
 // attribute decoding functions
 
@@ -1471,8 +1471,8 @@ static DWARF_FormDecodeRules
 dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_size);
 
 static DWARF_FormDecoded
-dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
-                  DWARF_AbbrevDecl *abbrev_decl, U32 attrib_i);
+dwarf_form_decode(DWARF_FormDecodeRules* rules, U8 **ptr_io, U8* opl,
+                  DWARF_AbbrevDecl* abbrev_decl, U32 attrib_i);
 
 // string functions
 

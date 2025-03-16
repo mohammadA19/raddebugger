@@ -43,7 +43,7 @@ struct DWARFCONV_Params{
 ////////////////////////////////
 //~ Program Parameters Parser
 
-static DWARFCONV_Params *dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline);
+static DWARFCONV_Params* dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline);
 
 
 

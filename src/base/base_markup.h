@@ -5,7 +5,7 @@
 #define BASE_MARKUP_H
 
 void set_thread_name(String8 string);
-void set_thread_namef(char *fmt, ...);
+void set_thread_namef(char* fmt, ...);
 #define ThreadNameF(...) (set_thread_namef(__VA_ARGS__))
 #define ThreadName(str) (set_thread_name(str))
 

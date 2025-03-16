@@ -29,9 +29,9 @@
 B32 frame() { return 0; }
 
 void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   
   //////////////////////////////
   //- rjf: unpack command line
@@ -81,7 +81,7 @@ entry_point(CmdLine *cmdline)
           str8_list_push(arena, &rdi_paths, rdi_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
         }
-        for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
+        for(OS_HandleNode* n = processes.first; n != 0; n = n->next)
         {
           os_process_join(n->v, max_U64);
         }
@@ -90,14 +90,14 @@ entry_point(CmdLine *cmdline)
       // rjf: generate all dumps
       {
         OS_HandleList processes = {0};
-        for(String8Node *n = rdi_paths.first; n != 0; n = n->next)
+        for(String8Node* n = rdi_paths.first; n != 0; n = n->next)
         {
           String8 rdi_path = n->string;
           String8 dump_path = push_str8f(arena, "%S.dump", rdi_path);
           str8_list_push(arena, &dump_paths, dump_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
         }
-        for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
+        for(OS_HandleNode* n = processes.first; n != 0; n = n->next)
         {
           os_process_join(n->v, max_U64);
         }
@@ -105,14 +105,14 @@ entry_point(CmdLine *cmdline)
       
       // rjf: gather all hashes/paths
       U64 rdi_hashes_count = rdi_paths.node_count;
-      U128 *rdi_hashes = push_array(arena, U128, rdi_hashes_count);
-      String8 *rdi_paths_array = push_array(arena, String8, rdi_hashes_count);
+      U128* rdi_hashes = push_array(arena, U128, rdi_hashes_count);
+      String8* rdi_paths_array = push_array(arena, String8, rdi_hashes_count);
       U64 dump_hashes_count = dump_paths.node_count;
-      U128 *dump_hashes = push_array(arena, U128, dump_hashes_count);
-      String8 *dump_paths_array = push_array(arena, String8, dump_hashes_count);
+      U128* dump_hashes = push_array(arena, U128, dump_hashes_count);
+      String8* dump_paths_array = push_array(arena, String8, dump_hashes_count);
       {
         U64 idx = 0;
-        for(String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
+        for(String8Node* n = rdi_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
           String8 path = n->string;
@@ -124,7 +124,7 @@ entry_point(CmdLine *cmdline)
       }
       {
         U64 idx = 0;
-        for(String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
+        for(String8Node* n = dump_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
           String8 path = n->string;
@@ -177,7 +177,7 @@ entry_point(CmdLine *cmdline)
   fprintf(stderr, "[%s] \"%.*s\"\n", good ? "." : "X", str8_varg(name));
   if(!good)
   {
-    for(String8Node *n = out.first; n != 0; n = n->next)
+    for(String8Node* n = out.first; n != 0; n = n->next)
     {
       fprintf(stderr, "%.*s", str8_varg(n->string));
     }

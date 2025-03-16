@@ -38,7 +38,7 @@ static D3D11_INPUT_ELEMENT_DESC r_d3d11_g_mesh_ilay_elements[] =
 R_D3D11_Window *
 r_d3d11_window_from_handle(R_Handle handle)
 {
-  R_D3D11_Window *window = (R_D3D11_Window *)handle.u64[0];
+  R_D3D11_Window* window = (R_D3D11_Window *)handle.u64[0];
   if(window == 0)
   {
     window = &r_d3d11_window_nil;
@@ -47,7 +47,7 @@ r_d3d11_window_from_handle(R_Handle handle)
 }
 
 R_Handle
-r_d3d11_handle_from_window(R_D3D11_Window *window)
+r_d3d11_handle_from_window(R_D3D11_Window* window)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)window;
@@ -57,7 +57,7 @@ r_d3d11_handle_from_window(R_D3D11_Window *window)
 R_D3D11_Tex2D *
 r_d3d11_tex2d_from_handle(R_Handle handle)
 {
-  R_D3D11_Tex2D *texture = (R_D3D11_Tex2D *)handle.u64[0];
+  R_D3D11_Tex2D* texture = (R_D3D11_Tex2D *)handle.u64[0];
   if(texture == 0)
   {
     texture = &r_d3d11_tex2d_nil;
@@ -66,7 +66,7 @@ r_d3d11_tex2d_from_handle(R_Handle handle)
 }
 
 R_Handle
-r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture)
+r_d3d11_handle_from_tex2d(R_D3D11_Tex2D* texture)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)texture;
@@ -76,7 +76,7 @@ r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture)
 R_D3D11_Buffer *
 r_d3d11_buffer_from_handle(R_Handle handle)
 {
-  R_D3D11_Buffer *buffer = (R_D3D11_Buffer *)handle.u64[0];
+  R_D3D11_Buffer* buffer = (R_D3D11_Buffer *)handle.u64[0];
   if(buffer == 0)
   {
     buffer = &r_d3d11_buffer_nil;
@@ -85,7 +85,7 @@ r_d3d11_buffer_from_handle(R_Handle handle)
 }
 
 R_Handle
-r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer)
+r_d3d11_handle_from_buffer(R_D3D11_Buffer* buffer)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)buffer;
@@ -95,7 +95,7 @@ r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer)
 ID3D11Buffer *
 r_d3d11_instance_buffer_from_size(U64 size)
 {
-  ID3D11Buffer *buffer = r_d3d11_state->instance_scratch_buffer_64kb;
+  ID3D11Buffer* buffer = r_d3d11_state->instance_scratch_buffer_64kb;
   if(size > KB(64))
   {
     U64 flushed_buffer_size = size;
@@ -115,7 +115,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
     }
     
     // rjf: push buffer to flush list
-    R_D3D11_FlushBuffer *n = push_array(r_d3d11_state->buffer_flush_arena, R_D3D11_FlushBuffer, 1);
+    R_D3D11_FlushBuffer* n = push_array(r_d3d11_state->buffer_flush_arena, R_D3D11_FlushBuffer, 1);
     n->buffer = buffer;
     SLLQueuePush(r_d3d11_state->first_buffer_to_flush, r_d3d11_state->last_buffer_to_flush, n);
   }
@@ -123,7 +123,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
 }
 
 void
-r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags)
+r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE* out_d3d11_usage, UINT* out_cpu_access_flags)
 {
   switch(kind)
   {
@@ -155,11 +155,11 @@ r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3
 //- rjf: top-level layer initialization
 
 r_hook void
-r_init(CmdLine *cmdln)
+r_init(CmdLine* cmdln)
 {
   ProfBeginFunction();
   HRESULT error = 0;
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   r_d3d11_state = push_array(arena, R_D3D11_State, 1);
   r_d3d11_state->arena = arena;
   r_d3d11_state->device_rw_mutex = os_rw_mutex_alloc();
@@ -210,7 +210,7 @@ r_init(CmdLine *cmdln)
 #if BUILD_DEBUG
   if(cmd_line_has_flag(cmdln, str8_lit("d3d11_debug"))) ProfScope("enable break-on-error")
   {
-    ID3D11InfoQueue *info = 0;
+    ID3D11InfoQueue* info = 0;
     error = r_d3d11_state->base_device->lpVtbl->QueryInterface(r_d3d11_state->base_device, &IID_ID3D11InfoQueue, (void **)(&info));
     if(SUCCEEDED(error))
     {
@@ -347,13 +347,13 @@ r_init(CmdLine *cmdln)
   {
     String8 source = *r_d3d11_g_vshad_kind_source_table[kind];
     String8 source_name = r_d3d11_g_vshad_kind_source_name_table[kind];
-    D3D11_INPUT_ELEMENT_DESC *ilay_elements = r_d3d11_g_vshad_kind_elements_ptr_table[kind];
+    D3D11_INPUT_ELEMENT_DESC* ilay_elements = r_d3d11_g_vshad_kind_elements_ptr_table[kind];
     U64 ilay_elements_count = r_d3d11_g_vshad_kind_elements_count_table[kind];
     
     // rjf: compile vertex shader
-    ID3DBlob *vshad_source_blob = 0;
-    ID3DBlob *vshad_source_errors = 0;
-    ID3D11VertexShader *vshad = 0;
+    ID3DBlob* vshad_source_blob = 0;
+    ID3DBlob* vshad_source_errors = 0;
+    ID3D11VertexShader* vshad = 0;
     ProfScope("compile vertex shader")
     {
       error = D3DCompile(source.str,
@@ -381,7 +381,7 @@ r_init(CmdLine *cmdln)
     }
     
     // rjf: make input layout
-    ID3D11InputLayout *ilay = 0;
+    ID3D11InputLayout* ilay = 0;
     if(ilay_elements != 0)
     {
       error = r_d3d11_state->device->lpVtbl->CreateInputLayout(r_d3d11_state->device, ilay_elements, ilay_elements_count,
@@ -406,9 +406,9 @@ r_init(CmdLine *cmdln)
     String8 source_name = r_d3d11_g_pshad_kind_source_name_table[kind];
     
     // rjf: compile pixel shader
-    ID3DBlob *pshad_source_blob = 0;
-    ID3DBlob *pshad_source_errors = 0;
-    ID3D11PixelShader *pshad = 0;
+    ID3DBlob* pshad_source_blob = 0;
+    ID3DBlob* pshad_source_errors = 0;
+    ID3D11PixelShader* pshad = 0;
     ProfScope("compile pixel shader")
     {
       error = D3DCompile(source.str,
@@ -447,7 +447,7 @@ r_init(CmdLine *cmdln)
         kind < R_D3D11_UniformTypeKind_COUNT;
         kind = (R_D3D11_UniformTypeKind)(kind+1))
   {
-    ID3D11Buffer *buffer = 0;
+    ID3D11Buffer* buffer = 0;
     {
       D3D11_BUFFER_DESC desc = {0};
       {
@@ -492,7 +492,7 @@ r_window_equip(OS_Handle handle)
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
     //- rjf: allocate per-window-state
-    R_D3D11_Window *window = r_d3d11_state->first_free_window;
+    R_D3D11_Window* window = r_d3d11_state->first_free_window;
     {
       if(window == 0)
       {
@@ -511,7 +511,7 @@ r_window_equip(OS_Handle handle)
     //- rjf: map os window handle -> hwnd
     HWND hwnd = {0};
     {
-      OS_W32_Window *w32_layer_window = os_w32_window_from_handle(handle);
+      OS_W32_Window* w32_layer_window = os_w32_window_from_handle(handle);
       hwnd = os_w32_hwnd_from_window(w32_layer_window);
     }
     
@@ -558,7 +558,7 @@ r_window_unequip(OS_Handle handle, R_Handle equip_handle)
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Window *window = r_d3d11_window_from_handle(equip_handle);
+    R_D3D11_Window* window = r_d3d11_window_from_handle(equip_handle);
     window->stage_color_srv->lpVtbl->Release(window->stage_color_srv);
     window->stage_color_rtv->lpVtbl->Release(window->stage_color_rtv);
     window->stage_color->lpVtbl->Release(window->stage_color);
@@ -577,12 +577,12 @@ r_window_unequip(OS_Handle handle, R_Handle equip_handle)
 //- rjf: textures
 
 r_hook R_Handle
-r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
+r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void* data)
 {
   ProfBeginFunction();
   
   //- rjf: allocate
-  R_D3D11_Tex2D *texture = 0;
+  R_D3D11_Tex2D* texture = 0;
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
     texture = r_d3d11_state->first_free_tex2d;
@@ -628,7 +628,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
   
   //- rjf: prep initial data, if passed
   D3D11_SUBRESOURCE_DATA initial_data_ = {0};
-  D3D11_SUBRESOURCE_DATA *initial_data = 0;
+  D3D11_SUBRESOURCE_DATA* initial_data = 0;
   if(data != 0)
   {
     initial_data = &initial_data_;
@@ -672,7 +672,7 @@ r_tex2d_release(R_Handle handle)
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
+    R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(handle);
     SLLStackPush(r_d3d11_state->first_to_free_tex2d, texture);
   }
   ProfEnd();
@@ -681,31 +681,31 @@ r_tex2d_release(R_Handle handle)
 r_hook R_ResourceKind
 r_kind_from_tex2d(R_Handle handle)
 {
-  R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
+  R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(handle);
   return texture->kind;
 }
 
 r_hook Vec2S32
 r_size_from_tex2d(R_Handle handle)
 {
-  R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
+  R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(handle);
   return texture->size;
 }
 
 r_hook R_Tex2DFormat
 r_format_from_tex2d(R_Handle handle)
 {
-  R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
+  R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(handle);
   return texture->format;
 }
 
 r_hook void
-r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void *data)
+r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void* data)
 {
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
+    R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(handle);
     Assert(texture->kind == R_ResourceKind_Dynamic && "only dynamic texture can update region");
     U64 bytes_per_pixel = r_tex2d_format_bytes_per_pixel_table[texture->format];
     Vec2S32 dim = v2s32(subrect.x1 - subrect.x0, subrect.y1 - subrect.y0);
@@ -722,12 +722,12 @@ r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void *data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, U64 size, void* data)
 {
   ProfBeginFunction();
   
   //- rjf: allocate
-  R_D3D11_Buffer *buffer = 0;
+  R_D3D11_Buffer* buffer = 0;
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
     buffer = r_d3d11_state->first_free_buffer;
@@ -755,7 +755,7 @@ r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
   
   //- rjf: prep initial data, if passed
   D3D11_SUBRESOURCE_DATA initial_data_ = {0};
-  D3D11_SUBRESOURCE_DATA *initial_data = 0;
+  D3D11_SUBRESOURCE_DATA* initial_data = 0;
   if(data != 0)
   {
     initial_data = &initial_data_;
@@ -789,7 +789,7 @@ r_buffer_release(R_Handle handle)
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Buffer *buffer = r_d3d11_buffer_from_handle(handle);
+    R_D3D11_Buffer* buffer = r_d3d11_buffer_from_handle(handle);
     SLLStackPush(r_d3d11_state->first_to_free_buffer, buffer);
   }
   ProfEnd();
@@ -811,11 +811,11 @@ r_end_frame()
 {
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    for(R_D3D11_FlushBuffer *buffer = r_d3d11_state->first_buffer_to_flush; buffer != 0; buffer = buffer->next)
+    for(R_D3D11_FlushBuffer* buffer = r_d3d11_state->first_buffer_to_flush; buffer != 0; buffer = buffer->next)
     {
       buffer->buffer->lpVtbl->Release(buffer->buffer);
     }
-    for(R_D3D11_Tex2D *tex = r_d3d11_state->first_to_free_tex2d, *next = 0;
+    for(R_D3D11_Tex2D* tex = r_d3d11_state->first_to_free_tex2d, *next = 0;
         tex != 0;
         tex = next)
     {
@@ -825,7 +825,7 @@ r_end_frame()
       tex->generation += 1;
       SLLStackPush(r_d3d11_state->first_free_tex2d, tex);
     }
-    for(R_D3D11_Buffer *buf = r_d3d11_state->first_to_free_buffer, *next = 0;
+    for(R_D3D11_Buffer* buf = r_d3d11_state->first_to_free_buffer, *next = 0;
         buf != 0;
         buf = next)
     {
@@ -847,8 +847,8 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Window *wnd = r_d3d11_window_from_handle(window_equip);
-    ID3D11DeviceContext1 *d_ctx = r_d3d11_state->device_ctx;
+    R_D3D11_Window* wnd = r_d3d11_window_from_handle(window_equip);
+    ID3D11DeviceContext1* d_ctx = r_d3d11_state->device_ctx;
     
     //- rjf: get resolution
     Rng2F32 client_rect = os_client_rect_from_window(window);
@@ -976,16 +976,16 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
   {
-    R_D3D11_Window *wnd = r_d3d11_window_from_handle(window_equip);
-    ID3D11DeviceContext1 *d_ctx = r_d3d11_state->device_ctx;
+    R_D3D11_Window* wnd = r_d3d11_window_from_handle(window_equip);
+    ID3D11DeviceContext1* d_ctx = r_d3d11_state->device_ctx;
     
     ////////////////////////////
     //- rjf: finalize, by writing staging buffer out to window framebuffer
     //
     {
-      ID3D11SamplerState *sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Nearest];
-      ID3D11VertexShader *vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Finalize];
-      ID3D11PixelShader *pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Finalize];
+      ID3D11SamplerState* sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Nearest];
+      ID3D11VertexShader* vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Finalize];
+      ID3D11PixelShader* pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Finalize];
       
       // rjf: setup output merger
       d_ctx->lpVtbl->OMSetRenderTargets(d_ctx, 1, &wnd->framebuffer_rtv, 0);
@@ -1041,7 +1041,7 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
 //- rjf: render pass submission
 
 r_hook void
-r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
+r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList* passes)
 {
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
@@ -1049,15 +1049,15 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
     ////////////////////////////
     //- rjf: unpack arguments
     //
-    R_D3D11_Window *wnd = r_d3d11_window_from_handle(window_equip);
-    ID3D11DeviceContext1 *d_ctx = r_d3d11_state->device_ctx;
+    R_D3D11_Window* wnd = r_d3d11_window_from_handle(window_equip);
+    ID3D11DeviceContext1* d_ctx = r_d3d11_state->device_ctx;
     
     ////////////////////////////
     //- rjf: do passes
     //
-    for(R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
+    for(R_PassNode* pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
     {
-      R_Pass *pass = &pass_n->v;
+      R_Pass* pass = &pass_n->v;
       switch(pass->kind)
       {
         default:{}break;
@@ -1068,8 +1068,8 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
         case R_PassKind_UI:
         {
           //- rjf: unpack params
-          R_PassParams_UI *params = pass->params_ui;
-          R_BatchGroup2DList *rect_batch_groups = &params->rects;
+          R_PassParams_UI* params = pass->params_ui;
+          R_BatchGroup2DList* rect_batch_groups = &params->rects;
           
           //- rjf: set up rasterizer
           Vec2S32 resolution = wnd->last_resolution;
@@ -1078,26 +1078,26 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
           
           //- rjf: draw each batch group
-          for(R_BatchGroup2DNode *group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
+          for(R_BatchGroup2DNode* group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
           {
-            R_BatchList *batches = &group_n->batches;
-            R_BatchGroup2DParams *group_params = &group_n->params;
+            R_BatchList* batches = &group_n->batches;
+            R_BatchGroup2DParams* group_params = &group_n->params;
             
             // rjf: unpack pipeline info
-            ID3D11SamplerState *sampler   = r_d3d11_state->samplers[group_params->tex_sample_kind];
-            ID3D11VertexShader *vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Rect];
-            ID3D11InputLayout *ilay       = r_d3d11_state->ilays[R_D3D11_VShadKind_Rect];
-            ID3D11PixelShader *pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Rect];
-            ID3D11Buffer *uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_UniformTypeKind_Rect];
+            ID3D11SamplerState* sampler   = r_d3d11_state->samplers[group_params->tex_sample_kind];
+            ID3D11VertexShader* vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Rect];
+            ID3D11InputLayout* ilay       = r_d3d11_state->ilays[R_D3D11_VShadKind_Rect];
+            ID3D11PixelShader* pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Rect];
+            ID3D11Buffer* uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_UniformTypeKind_Rect];
             
             // rjf: get & fill buffer
-            ID3D11Buffer *buffer = r_d3d11_instance_buffer_from_size(batches->byte_count);
+            ID3D11Buffer* buffer = r_d3d11_instance_buffer_from_size(batches->byte_count);
             {
               D3D11_MAPPED_SUBRESOURCE sub_rsrc = {0};
               d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
-              U8 *dst_ptr = (U8 *)sub_rsrc.pData;
+              U8* dst_ptr = (U8 *)sub_rsrc.pData;
               U64 off = 0;
-              for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
+              for(R_BatchNode* batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
               {
                 MemoryCopy(dst_ptr+off, batch_n->v.v, batch_n->v.byte_count);
                 off += batch_n->v.byte_count;
@@ -1111,7 +1111,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             {
               texture_handle = r_d3d11_state->backup_texture;
             }
-            R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(texture_handle);
+            R_D3D11_Tex2D* texture = r_d3d11_tex2d_from_handle(texture_handle);
             
             // rjf: get texture sample map matrix, based on format
             Vec4F32 texture_sample_channel_map[] =
@@ -1213,11 +1213,11 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
         //
         case R_PassKind_Blur:
         {
-          R_PassParams_Blur *params = pass->params_blur;
-          ID3D11SamplerState *sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Linear];
-          ID3D11VertexShader *vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Blur];
-          ID3D11PixelShader *pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Blur];
-          ID3D11Buffer *uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_VShadKind_Blur];
+          R_PassParams_Blur* params = pass->params_blur;
+          ID3D11SamplerState* sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Linear];
+          ID3D11VertexShader* vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Blur];
+          ID3D11PixelShader* pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Blur];
+          ID3D11Buffer* uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_VShadKind_Blur];
           
           // rjf: setup output merger
           d_ctx->lpVtbl->OMSetDepthStencilState(d_ctx, r_d3d11_state->noop_depth_stencil, 0);
@@ -1318,7 +1318,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             d_ctx->lpVtbl->Unmap(d_ctx, (ID3D11Resource *)uniforms_buffer, 0);
           }
           
-          ID3D11Buffer *uniforms_buffers[] = { uniforms_buffer, uniforms_buffer };
+          ID3D11Buffer* uniforms_buffers[] = { uniforms_buffer, uniforms_buffer };
           
           U32 uniform_offset[Axis2_COUNT][2] =
           {
@@ -1387,8 +1387,8 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
         case R_PassKind_Geo3D:
         {
           //- rjf: unpack params
-          R_PassParams_Geo3D *params = pass->params_geo3d;
-          R_BatchGroup3DMap *mesh_group_map = &params->mesh_batches;
+          R_PassParams_Geo3D* params = pass->params_geo3d;
+          R_BatchGroup3DMap* mesh_group_map = &params->mesh_batches;
           
           //- rjf: set up rasterizer
           Vec2F32 viewport_dim = dim_2f32(params->viewport);
@@ -1406,10 +1406,10 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           //- rjf: draw mesh batches
           {
             // rjf: grab pipeline info
-            ID3D11VertexShader *vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Mesh];
-            ID3D11InputLayout *ilay       = r_d3d11_state->ilays[R_D3D11_VShadKind_Mesh];
-            ID3D11PixelShader *pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Mesh];
-            ID3D11Buffer *uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_VShadKind_Mesh];
+            ID3D11VertexShader* vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Mesh];
+            ID3D11InputLayout* ilay       = r_d3d11_state->ilays[R_D3D11_VShadKind_Mesh];
+            ID3D11PixelShader* pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Mesh];
+            ID3D11Buffer* uniforms_buffer = r_d3d11_state->uniform_type_kind_buffers[R_D3D11_VShadKind_Mesh];
             
             // rjf: setup output merger
             d_ctx->lpVtbl->OMSetRenderTargets(d_ctx, 1, &wnd->geo3d_color_rtv, wnd->geo3d_depth_dsv);
@@ -1419,13 +1419,13 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             // rjf: draw all batches
             for(U64 slot_idx = 0; slot_idx < mesh_group_map->slots_count; slot_idx += 1)
             {
-              for(R_BatchGroup3DMapNode *n = mesh_group_map->slots[slot_idx]; n != 0; n = n->next)
+              for(R_BatchGroup3DMapNode* n = mesh_group_map->slots[slot_idx]; n != 0; n = n->next)
               {
                 // rjf: unpack group params
-                R_BatchList *batches = &n->batches;
-                R_BatchGroup3DParams *group_params = &n->params;
-                R_D3D11_Buffer *mesh_vertices = r_d3d11_buffer_from_handle(group_params->mesh_vertices);
-                R_D3D11_Buffer *mesh_indices = r_d3d11_buffer_from_handle(group_params->mesh_indices);
+                R_BatchList* batches = &n->batches;
+                R_BatchGroup3DParams* group_params = &n->params;
+                R_D3D11_Buffer* mesh_vertices = r_d3d11_buffer_from_handle(group_params->mesh_vertices);
+                R_D3D11_Buffer* mesh_indices = r_d3d11_buffer_from_handle(group_params->mesh_indices);
                 
                 // rjf: setup input assembly
                 U32 stride = 11 * sizeof(F32);
@@ -1474,9 +1474,9 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           
           //- rjf: composite to main staging buffer
           {
-            ID3D11SamplerState *sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Nearest];
-            ID3D11VertexShader *vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Geo3DComposite];
-            ID3D11PixelShader *pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Geo3DComposite];
+            ID3D11SamplerState* sampler   = r_d3d11_state->samplers[R_Tex2DSampleKind_Nearest];
+            ID3D11VertexShader* vshad     = r_d3d11_state->vshads[R_D3D11_VShadKind_Geo3DComposite];
+            ID3D11PixelShader* pshad      = r_d3d11_state->pshads[R_D3D11_PShadKind_Geo3DComposite];
             
             // rjf: setup output merger
             d_ctx->lpVtbl->OMSetRenderTargets(d_ctx, 1, &wnd->stage_color_rtv, 0);

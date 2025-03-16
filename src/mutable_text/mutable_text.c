@@ -7,7 +7,7 @@
 void
 mtx_init()
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   mtx_shared = push_array(arena, MTX_Shared, 1);
   mtx_shared->arena = arena;
   mtx_shared->slots_count = 256;
@@ -37,7 +37,7 @@ mtx_init()
 void
 mtx_push_op(U128 buffer_key, MTX_Op op)
 {
-  MTX_MutThread *thread = &mtx_shared->mut_threads[buffer_key.u64[1]%mtx_shared->mut_threads_count];
+  MTX_MutThread* thread = &mtx_shared->mut_threads[buffer_key.u64[1]%mtx_shared->mut_threads_count];
   mtx_enqueue_op(thread, buffer_key, op);
 }
 
@@ -45,7 +45,7 @@ mtx_push_op(U128 buffer_key, MTX_Op op)
 //~ rjf: Mutation Threads
 
 void
-mtx_enqueue_op(MTX_MutThread *thread, U128 buffer_key, MTX_Op op)
+mtx_enqueue_op(MTX_MutThread* thread, U128 buffer_key, MTX_Op op)
 {
   // TODO(rjf): if op.replace is too big, need to split into multiple edits
   OS_MutexScope(thread->mutex) for(;;)
@@ -67,7 +67,7 @@ mtx_enqueue_op(MTX_MutThread *thread, U128 buffer_key, MTX_Op op)
 }
 
 void
-mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op *op_out)
+mtx_dequeue_op(Arena* arena, MTX_MutThread* thread, U128* buffer_key_out, MTX_Op* op_out)
 {
   OS_MutexScope(thread->mutex) for(;;)
   {
@@ -87,14 +87,14 @@ mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op
 }
 
 void
-mtx_mut_thread__entry_point(void *p)
+mtx_mut_thread__entry_point(void* p)
 {
-  MTX_MutThread *mut_thread = (MTX_MutThread *)p;
+  MTX_MutThread* mut_thread = (MTX_MutThread *)p;
   ThreadNameF("[mtx] mut thread #%I64u", (U64)(mut_thread - mtx_shared->mut_threads));
   for(;;)
   {
     Temp scratch = scratch_begin(0, 0);
-    HS_Scope *hs_scope = hs_scope_open();
+    HS_Scope* hs_scope = hs_scope_open();
     
     //- rjf: get next op
     U128 buffer_key = {0};
@@ -113,8 +113,8 @@ mtx_mut_thread__entry_point(void *p)
     if(op.range.max != op.range.min || op.replace.size != 0)
     {
       U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
-      Arena *arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
-      U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
+      Arena* arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
+      U8* new_data_base = push_array_no_zero(arena, U8, new_data_size);
       String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
       String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
       if(pre_replace_data.size != 0)

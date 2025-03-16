@@ -91,7 +91,7 @@ cv_size_from_reg_x64(CV_Reg reg)
 }
 
 CV_EncodedFramePtrReg
-cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
+cv_pick_fp_encoding(CV_SymFrameproc* frameproc, B32 is_local_param)
 {
   CV_EncodedFramePtrReg fp_reg = 0;
   if(is_local_param)

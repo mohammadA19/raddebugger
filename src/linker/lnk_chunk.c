@@ -18,9 +18,9 @@ lnk_chunk_ref_is_equal(LNK_ChunkRef a, LNK_ChunkRef b)
 }
 
 LNK_ChunkNode *
-lnk_chunk_list_push(Arena *arena, LNK_ChunkList *list, LNK_Chunk *chunk)
+lnk_chunk_list_push(Arena* arena, LNK_ChunkList* list, LNK_Chunk* chunk)
 {
-  LNK_ChunkNode *node = push_array_no_zero(arena, LNK_ChunkNode, 1);
+  LNK_ChunkNode* node = push_array_no_zero(arena, LNK_ChunkNode, 1);
   node->next = 0;
   node->data = chunk;
 
@@ -31,19 +31,19 @@ lnk_chunk_list_push(Arena *arena, LNK_ChunkList *list, LNK_Chunk *chunk)
 }
 
 void
-lnk_chunk_list_concat_in_place(LNK_ChunkList *list, LNK_ChunkList *to_concat)
+lnk_chunk_list_concat_in_place(LNK_ChunkList* list, LNK_ChunkList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 void
-lnk_chunk_list_concat_in_place_arr(LNK_ChunkList *list, LNK_ChunkList *arr, U64 count)
+lnk_chunk_list_concat_in_place_arr(LNK_ChunkList* list, LNK_ChunkList* arr, U64 count)
 {
   SLLConcatInPlaceArray(list, arr, count);
 }
 
 LNK_ChunkList **
-lnk_make_chunk_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
+lnk_make_chunk_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count)
 {
   LNK_ChunkList **arr_arr = push_array_no_zero(arena, LNK_ChunkList *, slot_count);
   for (U64 i = 0; i < slot_count; i += 1) {
@@ -53,13 +53,13 @@ lnk_make_chunk_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count)
 }
 
 int
-lnk_chunk_sort_index_is_before(void *raw_a, void *raw_b)
+lnk_chunk_sort_index_is_before(void* raw_a, void* raw_b)
 {
   // Grouped Sections (PE Format)
   //  "All contributions with the same object-section name are allocated contiguously in the image,
   //  and the blocks of contributions are sorted in lexical order by object-section name." 
-  LNK_ChunkPtr *a = raw_a;
-  LNK_ChunkPtr *b = raw_b;
+  LNK_ChunkPtr* a = raw_a;
+  LNK_ChunkPtr* b = raw_b;
           
   // sort on section postfix
   int cmp = str8_compar_case_sensitive(&(*a)->sort_idx, &(*b)->sort_idx);
@@ -80,7 +80,7 @@ lnk_chunk_array_sort(LNK_ChunkArray arr)
 }
 
 LNK_ChunkManager *
-lnk_chunk_manager_alloc(Arena *arena, U64 id, U64 align)
+lnk_chunk_manager_alloc(Arena* arena, U64 id, U64 align)
 {
   ProfBeginFunction();
 
@@ -92,7 +92,7 @@ lnk_chunk_manager_alloc(Arena *arena, U64 id, U64 align)
   temp_chunk.type      = LNK_Chunk_List;
   temp_chunk.u.list    = &temp_list;
 
-  LNK_ChunkManager *cman  = push_array_no_zero(arena, LNK_ChunkManager, 1);
+  LNK_ChunkManager* cman  = push_array_no_zero(arena, LNK_ChunkManager, 1);
   cman->total_chunk_count = 1; // null chunk
   cman->root              = 0;
   cman->root              = lnk_chunk_push_list(arena, cman, &temp_chunk, str8(0,0));
@@ -103,14 +103,14 @@ lnk_chunk_manager_alloc(Arena *arena, U64 id, U64 align)
 }
 
 LNK_Chunk *
-lnk_chunk_push_(Arena *arena, LNK_Chunk *parent, U64 chunk_id, String8 sort_index)
+lnk_chunk_push_(Arena* arena, LNK_Chunk* parent, U64 chunk_id, String8 sort_index)
 {
   ProfBeginFunction();
 
   Assert(parent->type == LNK_Chunk_List);
-  LNK_ChunkList *list = parent->u.list;
+  LNK_ChunkList* list = parent->u.list;
 
-  LNK_Chunk *chunk    = push_array_no_zero(arena, LNK_Chunk, 1);
+  LNK_Chunk* chunk    = push_array_no_zero(arena, LNK_Chunk, 1);
   chunk->ref          = lnk_chunk_ref(parent->ref.sect_id, chunk_id);
   chunk->align        = 1;
   chunk->is_discarded = 0;
@@ -128,57 +128,57 @@ lnk_chunk_push_(Arena *arena, LNK_Chunk *parent, U64 chunk_id, String8 sort_inde
 }
 
 LNK_Chunk *
-lnk_chunk_push(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index)
+lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index)
 {
   U64 chunk_id = cman->total_chunk_count;
   ++cman->total_chunk_count;
-  LNK_Chunk *chunk = lnk_chunk_push_(arena, parent, chunk_id, sort_index);
+  LNK_Chunk* chunk = lnk_chunk_push_(arena, parent, chunk_id, sort_index);
   return chunk;
 }
 
 LNK_Chunk *
-lnk_chunk_push_leaf(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index, void *raw_ptr, U64 raw_size)
+lnk_chunk_push_leaf(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index, void* raw_ptr, U64 raw_size)
 {
-  LNK_Chunk *chunk = lnk_chunk_push(arena, cman, parent, sort_index);
+  LNK_Chunk* chunk = lnk_chunk_push(arena, cman, parent, sort_index);
   chunk->type      = LNK_Chunk_Leaf;
   chunk->u.leaf    = str8((U8 *)raw_ptr, raw_size);
   return chunk;
 }
 
 LNK_Chunk *
-lnk_chunk_push_list(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, String8 sort_index)
+lnk_chunk_push_list(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index)
 {
-  LNK_Chunk *chunk = lnk_chunk_push(arena, cman, parent, sort_index);
+  LNK_Chunk* chunk = lnk_chunk_push(arena, cman, parent, sort_index);
   chunk->type      = LNK_Chunk_List;
   chunk->u.list    = push_array(arena, LNK_ChunkList, 1);
   return chunk;
 }
 
 LNK_ChunkNode *
-lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
+lnk_chunk_deep_copy(Arena* arena, LNK_Chunk* chunk)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   
-  LNK_ChunkNode *dst_root_node = push_array_no_zero(arena, LNK_ChunkNode, 1);
-  LNK_ChunkNode *src_root_node = push_array_no_zero(scratch.arena, LNK_ChunkNode, 1);
+  LNK_ChunkNode* dst_root_node = push_array_no_zero(arena, LNK_ChunkNode, 1);
+  LNK_ChunkNode* src_root_node = push_array_no_zero(scratch.arena, LNK_ChunkNode, 1);
   src_root_node->next = 0;
   src_root_node->data = chunk;
   
   struct Stack {
-    struct Stack  *next;
-    LNK_ChunkNode *src_node;
-    LNK_ChunkNode *dst_node;
+    struct Stack*  next;
+    LNK_ChunkNode* src_node;
+    LNK_ChunkNode* dst_node;
   };
-  struct Stack *stack = push_array_no_zero(scratch.arena, struct Stack, 1);
+  struct Stack* stack = push_array_no_zero(scratch.arena, struct Stack, 1);
   stack->next         = 0;
   stack->src_node     = src_root_node;
   stack->dst_node     = dst_root_node;
   
   while (stack) {
     while (stack->src_node) {
-      LNK_Chunk *src = stack->src_node->data;
-      LNK_Chunk *dst = stack->dst_node->data;
+      LNK_Chunk* src = stack->src_node->data;
+      LNK_Chunk* dst = stack->dst_node->data;
 
       stack->src_node = stack->src_node->next;
       stack->dst_node = stack->dst_node->next;
@@ -206,8 +206,8 @@ lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
         }
       } break;
       case LNK_Chunk_List: {
-        LNK_ChunkNode *chain = 0;
-        LNK_ChunkNode *curr  = 0;
+        LNK_ChunkNode* chain = 0;
+        LNK_ChunkNode* curr  = 0;
         if (src->u.list->count > 0) {
           chain = push_array(arena, LNK_ChunkNode, src->u.list->count);
           curr = chain;
@@ -223,7 +223,7 @@ lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
         dst->u.list->first = chain;
         dst->u.list->last  = curr;
 
-        struct Stack *frame = push_array_no_zero(scratch.arena, struct Stack, 1);
+        struct Stack* frame = push_array_no_zero(scratch.arena, struct Stack, 1);
         frame->next         = 0;
         frame->src_node     = src->u.list->first;
         frame->dst_node     = dst->u.list->first;
@@ -242,7 +242,7 @@ lnk_chunk_deep_copy(Arena *arena, LNK_Chunk *chunk)
 }
 
 LNK_ChunkNode *
-lnk_merge_chunks(Arena *arena, LNK_ChunkManager *dst_cman, LNK_Chunk *dst, LNK_Chunk *src, U64 *id_map_out, U64 id_map_max)
+lnk_merge_chunks(Arena* arena, LNK_ChunkManager* dst_cman, LNK_Chunk* dst, LNK_Chunk* src, U64* id_map_out, U64 id_map_max)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 0);
@@ -251,20 +251,20 @@ lnk_merge_chunks(Arena *arena, LNK_ChunkManager *dst_cman, LNK_Chunk *dst, LNK_C
   Assert(dst->type == LNK_Chunk_List);
   Assert(src->type != LNK_Chunk_Null);
   
-  LNK_ChunkNode *src_node = push_array(arena, LNK_ChunkNode, 1);
+  LNK_ChunkNode* src_node = push_array(arena, LNK_ChunkNode, 1);
   src_node->data = src;
   
   struct Stack {
-    struct Stack *next;
-    LNK_ChunkNode *node;
+    struct Stack* next;
+    LNK_ChunkNode* node;
   };
-  struct Stack *stack = push_array_no_zero(scratch.arena, struct Stack, 1);
+  struct Stack* stack = push_array_no_zero(scratch.arena, struct Stack, 1);
   stack->next         = 0;
   stack->node         = src_node;
   
   while (stack) {
     while (stack->node) {
-      LNK_Chunk *chunk = stack->node->data;
+      LNK_Chunk* chunk = stack->node->data;
       
       // advance node
       stack->node = stack->node->next;
@@ -281,7 +281,7 @@ lnk_merge_chunks(Arena *arena, LNK_ChunkManager *dst_cman, LNK_Chunk *dst, LNK_C
       
       // recurse down on lists
       if (chunk->type == LNK_Chunk_List) {
-        struct Stack *frame = push_array_no_zero(scratch.arena, struct Stack, 1);
+        struct Stack* frame = push_array_no_zero(scratch.arena, struct Stack, 1);
         frame->next         = 0;
         frame->node         = chunk->u.list->first;
         SLLStackPush(stack, frame);
@@ -293,7 +293,7 @@ lnk_merge_chunks(Arena *arena, LNK_ChunkManager *dst_cman, LNK_Chunk *dst, LNK_C
   }
   
   // move source root copy to destination section
-  LNK_ChunkList *list = dst->u.list;
+  LNK_ChunkList* list = dst->u.list;
   ++list->count;
   SLLQueuePush(list->first, list->last, src_node);
   
@@ -310,7 +310,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_set_associate_on_chunks)
 }
 
 void
-lnk_chunk_associate(LNK_Chunk *head, LNK_Chunk *chunk)
+lnk_chunk_associate(LNK_Chunk* head, LNK_Chunk* chunk)
 {
   // for simplicity we don't support multiple associations,
   // but it's possible to craft symbol table with multiple associations
@@ -319,10 +319,10 @@ lnk_chunk_associate(LNK_Chunk *head, LNK_Chunk *chunk)
 }
 
 B32
-lnk_chunk_is_discarded(LNK_Chunk *chunk)
+lnk_chunk_is_discarded(LNK_Chunk* chunk)
 {
   B32        is_discarded = chunk->is_discarded;
-  LNK_Chunk *curr         = chunk->associate;
+  LNK_Chunk* curr         = chunk->associate;
   while (!is_discarded && curr) {
     is_discarded = curr->is_discarded;
     curr = curr->associate;
@@ -331,7 +331,7 @@ lnk_chunk_is_discarded(LNK_Chunk *chunk)
 }
 
 U64
-lnk_chunk_get_size(LNK_Chunk *chunk)
+lnk_chunk_get_size(LNK_Chunk* chunk)
 {
   U64 result = 0;
   switch (chunk->type) {
@@ -348,18 +348,18 @@ lnk_chunk_get_size(LNK_Chunk *chunk)
 }
 
 U64
-lnk_chunk_list_get_node_count(LNK_Chunk *chunk)
+lnk_chunk_list_get_node_count(LNK_Chunk* chunk)
 {
   Assert(chunk->type == LNK_Chunk_List);
   return chunk->u.list->count;
 }
 
 void
-lnk_chunk_pad_array_list_push(Arena *arena, Arena *scratch, LNK_ChunkPadArrayList *list, U64 cap, U64 align_off, U64 align_size)
+lnk_chunk_pad_array_list_push(Arena* arena, Arena* scratch, LNK_ChunkPadArrayList* list, U64 cap, U64 align_off, U64 align_size)
 {
   if (align_size > 0) {
     if (list->last == 0 || list->last->data.count >= list->last->cap) {
-      LNK_ChunkPadArrayNode *node = push_array(scratch, LNK_ChunkPadArrayNode, 1);
+      LNK_ChunkPadArrayNode* node = push_array(scratch, LNK_ChunkPadArrayNode, 1);
       node->cap                     = cap;
       node->data.v                  = push_array_no_zero(arena, LNK_ChunkPad, cap);
 
@@ -367,8 +367,8 @@ lnk_chunk_pad_array_list_push(Arena *arena, Arena *scratch, LNK_ChunkPadArrayLis
       ++list->count;
     }
 
-    LNK_ChunkPadArray *last_array = &list->last->data;
-    LNK_ChunkPad *align = &last_array->v[last_array->count++];
+    LNK_ChunkPadArray* last_array = &list->last->data;
+    LNK_ChunkPad* align = &last_array->v[last_array->count++];
     align->off            = align_off;
     align->size           = align_size;
   }
@@ -377,9 +377,9 @@ lnk_chunk_pad_array_list_push(Arena *arena, Arena *scratch, LNK_ChunkPadArrayLis
 internal
 LNK_CHUNK_VISITOR_SIG(lnk_offset_chunks)
 {
-  LNK_OffsetChunks *offset_chunks = ud;
+  LNK_OffsetChunks* offset_chunks = ud;
   U64               offset        = offset_chunks->offset;
-  LNK_ChunkLayout  *layout        = offset_chunks->layout;
+  LNK_ChunkLayout*  layout        = offset_chunks->layout;
 
   layout->chunk_off_array[chunk->ref.chunk_id] += offset;
 
@@ -387,7 +387,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_offset_chunks)
 }
 
 LNK_ChunkLayout
-lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
+lnk_layout_from_chunk(Arena* arena, LNK_Chunk* root, U64 total_chunk_count)
 {
   ProfBeginV("lnk_layout_from_chunk [total_chunk_count = %llu]", total_chunk_count);
   Temp scratch = scratch_begin(&arena, 1);
@@ -417,11 +417,11 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
 
   // setup stack
   struct Stack {
-    struct Stack  *next;
+    struct Stack*  next;
     LNK_ChunkArray chunk_array;
     U64            ichunk;
   };
-  struct Stack *stack      = push_array(scratch.arena, struct Stack, 1);
+  struct Stack* stack      = push_array(scratch.arena, struct Stack, 1);
   stack->chunk_array.count = 1;
   stack->chunk_array.v     = &root;
 
@@ -433,7 +433,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
   ProfBegin("Traverse chunks from root");
   for (; stack != 0; ) {
     for (; stack->ichunk < stack->chunk_array.count; ) {
-      LNK_Chunk *chunk = stack->chunk_array.v[stack->ichunk++];
+      LNK_Chunk* chunk = stack->chunk_array.v[stack->ichunk++];
       
       // skip discarded chunk
       if (lnk_chunk_is_discarded(chunk)) {
@@ -496,7 +496,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
         }
 
         // recurse into sub chunks
-        struct Stack *frame = push_array(scratch.arena, struct Stack, 1);
+        struct Stack* frame = push_array(scratch.arena, struct Stack, 1);
         frame->chunk_array  = *chunk->u.arr;
         SLLStackPush(stack, frame);
       } goto _continue;
@@ -519,7 +519,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
         // list -> array
         LNK_ChunkArray chunk_array = {0};
         chunk_array.v              = push_array_no_zero(scratch.arena, LNK_ChunkPtr, chunk->u.list->count);
-        for (LNK_ChunkNode *cptr = chunk->u.list->first; cptr != 0; cptr = cptr->next) {
+        for (LNK_ChunkNode* cptr = chunk->u.list->first; cptr != 0; cptr = cptr->next) {
           chunk_array.v[chunk_array.count++] = cptr->data;
         }
         
@@ -529,7 +529,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
         }
         
         // recurse into sub chunks
-        struct Stack *frame = push_array(scratch.arena, struct Stack, 1);
+        struct Stack* frame = push_array(scratch.arena, struct Stack, 1);
         frame->chunk_array  = chunk_array;
         SLLStackPush(stack, frame);
       } goto _continue;
@@ -541,10 +541,10 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
     // terminate series
     if (stack->next) {
       // pop node chunk from stack
-      struct Stack *prev = stack->next;
+      struct Stack* prev = stack->next;
 
       Assert(prev->ichunk > 0);
-      LNK_Chunk *chunk = prev->chunk_array.v[prev->ichunk-1];
+      LNK_Chunk* chunk = prev->chunk_array.v[prev->ichunk-1];
 
       U64 chunk_data_off = layout.chunk_off_array[chunk->ref.chunk_id];
       Assert(chunk_data_off != max_U64);
@@ -589,7 +589,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
   ProfBegin("Build Pad Array");
   layout.pad_array_count = 0;
   layout.pad_array       = push_array(arena, LNK_ChunkPadArray, pad_list.count);
-  for (LNK_ChunkPadArrayNode *node = pad_list.first; node != 0; node = node->next) {
+  for (LNK_ChunkPadArrayNode* node = pad_list.first; node != 0; node = node->next) {
     layout.pad_array[layout.pad_array_count++] = node->data;
   }
   ProfEnd();
@@ -600,7 +600,7 @@ lnk_layout_from_chunk(Arena *arena, LNK_Chunk *root, U64 total_chunk_count)
 }
 
 LNK_ChunkLayout
-lnk_build_chunk_layout(Arena *arena, LNK_ChunkManager *cman)
+lnk_build_chunk_layout(Arena* arena, LNK_ChunkManager* cman)
 {
   ProfBeginFunction();
   LNK_ChunkLayout layout = lnk_layout_from_chunk(arena, cman->root, cman->total_chunk_count);
@@ -613,13 +613,13 @@ THREAD_POOL_TASK_FUNC(lnk_fill_chunks_task)
 {
   ProfBeginFunction();
 
-  LNK_ChunkLayoutSerializer *task   = raw_task;
+  LNK_ChunkLayoutSerializer* task   = raw_task;
   Rng1U64                    range  = task->ranges[task_id];
   LNK_ChunkLayout            layout = task->layout;
   String8                    buffer = task->buffer;
 
   for (U64 chunk_idx = range.min; chunk_idx < range.max; ++chunk_idx) {
-    LNK_Chunk *chunk = layout.chunk_ptr_array[chunk_idx];
+    LNK_Chunk* chunk = layout.chunk_ptr_array[chunk_idx];
 
     if (lnk_chunk_is_discarded(chunk)) {
       continue;
@@ -628,7 +628,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_chunks_task)
     if (chunk->type == LNK_Chunk_Leaf) {
       U64 off = layout.chunk_off_array[chunk->ref.chunk_id];
       Assert(off + chunk->u.leaf.size <= buffer.size);
-      U8 *buffer_ptr = buffer.str + off;
+      U8* buffer_ptr = buffer.str + off;
 
       if (chunk->u.leaf.str == 0) {
         // zero out chunk bytes
@@ -648,7 +648,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
 {
   ProfBeginFunction();
 
-  LNK_ChunkLayoutSerializer *task      = raw_task;
+  LNK_ChunkLayoutSerializer* task      = raw_task;
   Rng1U64                    range     = task->ranges[task_id];
   LNK_ChunkLayout            layout    = task->layout;
   String8                    buffer    = task->buffer;
@@ -667,7 +667,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
 }
 
 void
-lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffer, U8 fill_byte)
+lnk_serialize_chunk_layout(TP_Context* tp, LNK_ChunkLayout layout, String8 buffer, U8 fill_byte)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -692,7 +692,7 @@ lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffe
 }
 
 B32
-lnk_visit_chunks_(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *ud)
+lnk_visit_chunks_(U64 sect_id, LNK_Chunk* chunk, LNK_ChunkVisitorSig* cb, void* ud)
 {
   // visit chunk
   B32 is_done = cb(sect_id, chunk, ud);
@@ -714,7 +714,7 @@ lnk_visit_chunks_(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *
     }
   } break;
   case LNK_Chunk_List: {
-    for (LNK_ChunkNode *i = chunk->u.list->first; i != 0; i = i->next) {
+    for (LNK_ChunkNode* i = chunk->u.list->first; i != 0; i = i->next) {
       is_done = lnk_visit_chunks_(sect_id, i->data, cb, ud);
       if (is_done) {
         break;
@@ -727,7 +727,7 @@ lnk_visit_chunks_(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *
 }
 
 void
-lnk_visit_chunks(U64 sect_id, LNK_Chunk *chunk, LNK_ChunkVisitorSig *cb, void *ud)
+lnk_visit_chunks(U64 sect_id, LNK_Chunk* chunk, LNK_ChunkVisitorSig* cb, void* ud)
 {
   lnk_visit_chunks_(sect_id, chunk, cb, ud);
 }
@@ -742,21 +742,21 @@ LNK_CHUNK_VISITOR_SIG(lnk_save_chunk_ptr)
 }
 
 LNK_ChunkPtr *
-lnk_make_chunk_id_map(Arena *arena, LNK_ChunkManager *cman)
+lnk_make_chunk_id_map(Arena* arena, LNK_ChunkManager* cman)
 {
-  LNK_ChunkPtr *map = push_array_no_zero(arena, LNK_ChunkPtr, cman->total_chunk_count);
+  LNK_ChunkPtr* map = push_array_no_zero(arena, LNK_ChunkPtr, cman->total_chunk_count);
   lnk_visit_chunks(0, cman->root, lnk_save_chunk_ptr, map);
   map[0] = &g_null_chunk;
   return map;
 }
 
 LNK_ChunkNode *
-lnk_chunk_ptr_list_reserve(Arena *arena, LNK_ChunkList *list, U64 count)
+lnk_chunk_ptr_list_reserve(Arena* arena, LNK_ChunkList* list, U64 count)
 {
-  LNK_ChunkNode *arr = 0;
+  LNK_ChunkNode* arr = 0;
   if (count) {
     arr = push_array(arena, LNK_ChunkNode, count);
-    LNK_Chunk *chunk_arr = push_array(arena, LNK_Chunk, count);
+    LNK_Chunk* chunk_arr = push_array(arena, LNK_Chunk, count);
     for (U64 i = 0; i < count; i += 1) {
       arr[i].data = &chunk_arr[i];
       SLLQueuePush(list->first, list->last, &arr[i]);
@@ -767,11 +767,11 @@ lnk_chunk_ptr_list_reserve(Arena *arena, LNK_ChunkList *list, U64 count)
 }
 
 String8Array
-lnk_data_arr_from_chunk_ptr_list(Arena *arena, LNK_ChunkList list)
+lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list)
 {
   String8Array arr = {0};
   arr.v            = push_array(arena, String8, list.count);
-  for (LNK_ChunkNode *n = list.first; n != 0; n = n->next) {
+  for (LNK_ChunkNode* n = list.first; n != 0; n = n->next) {
     LNK_ChunkPtr c = n->data;
     Assert(c->type == LNK_Chunk_Leaf);
     arr.v[arr.count] = c->u.leaf;
@@ -781,9 +781,9 @@ lnk_data_arr_from_chunk_ptr_list(Arena *arena, LNK_ChunkList list)
 }
 
 String8Array *
-lnk_data_arr_from_chunk_ptr_list_arr(Arena *arena, LNK_ChunkList *list_arr, U64 count)
+lnk_data_arr_from_chunk_ptr_list_arr(Arena* arena, LNK_ChunkList* list_arr, U64 count)
 {
-  String8Array *result = push_array(arena, String8Array, count);
+  String8Array* result = push_array(arena, String8Array, count);
   for (U64 i = 0; i < count; i += 1) {
     result[i] = lnk_data_arr_from_chunk_ptr_list(arena, list_arr[i]);
   }

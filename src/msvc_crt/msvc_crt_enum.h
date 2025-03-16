@@ -4,6 +4,6 @@
 #ifndef MSVC_CRT_ENUM_H
 #define MSVC_CRT_ENUM_H
 
-String8 mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjectives);
+String8 mscrt_string_from_eh_adjectives(Arena* arena, MSCRT_EhHandlerTypeFlags adjectives);
 
 #endif // MSVC_CRT_ENUM_H

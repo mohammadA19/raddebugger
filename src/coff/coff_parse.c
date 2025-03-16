@@ -6,7 +6,7 @@ coff_is_big_obj(String8 raw_coff)
 {
   B32 is_big_obj = 0;
   if (raw_coff.size >= sizeof(COFF_BigObjHeader)) {
-    COFF_BigObjHeader *file_header32 = (COFF_BigObjHeader*)(raw_coff.str);
+    COFF_BigObjHeader* file_header32 = (COFF_BigObjHeader*)(raw_coff.str);
     is_big_obj = file_header32->sig1 == COFF_Machine_Unknown && 
       file_header32->sig2 == max_U16 &&
       file_header32->version >= 2 &&
@@ -21,7 +21,7 @@ coff_is_obj(String8 raw_coff)
   B32 is_obj = 0;
   
   if (raw_coff.size >= sizeof(COFF_FileHeader)) {
-    COFF_FileHeader *header = (COFF_FileHeader*)(raw_coff.str);
+    COFF_FileHeader* header = (COFF_FileHeader*)(raw_coff.str);
     
     // validate machine
     B32 is_machine_type_valid = 0;
@@ -50,12 +50,12 @@ coff_is_obj(String8 raw_coff)
       U64 section_hdr_opl_off = sizeof(*header) + section_count*sizeof(COFF_SectionHeader);
       if (raw_coff.size >= section_hdr_opl_off) {
         
-        COFF_SectionHeader *section_hdrs = (COFF_SectionHeader*)(raw_coff.str + sizeof(*header));
-        COFF_SectionHeader *section_hdr_opl = section_hdrs + section_count;
+        COFF_SectionHeader* section_hdrs = (COFF_SectionHeader*)(raw_coff.str + sizeof(*header));
+        COFF_SectionHeader* section_hdr_opl = section_hdrs + section_count;
         
         // validate section ranges
         B32 is_sect_range_valid = 1;
-        for (COFF_SectionHeader *sec_hdr = section_hdrs;
+        for (COFF_SectionHeader* sec_hdr = section_hdrs;
              sec_hdr < section_hdr_opl;
              sec_hdr += 1) {
           if (!(sec_hdr->flags & COFF_SectionFlag_CntUninitializedData)) {
@@ -96,7 +96,7 @@ coff_file_header_info_from_data(String8 raw_coff)
 {
   COFF_FileHeaderInfo info = {0};
   if (coff_is_big_obj(raw_coff)) {
-    COFF_BigObjHeader *header32 = (COFF_BigObjHeader*)raw_coff.str;
+    COFF_BigObjHeader* header32 = (COFF_BigObjHeader*)raw_coff.str;
     info.is_big_obj             = 1;
     info.machine                = header32->machine;
     info.header_size            = sizeof(COFF_BigObjHeader);
@@ -107,7 +107,7 @@ coff_file_header_info_from_data(String8 raw_coff)
     info.symbol_off             = header32->symbol_table_foff;
     info.symbol_count           = header32->symbol_count;
   } else if (coff_is_obj(raw_coff)) {
-    COFF_FileHeader *header16  = (COFF_FileHeader*)raw_coff.str;
+    COFF_FileHeader* header16  = (COFF_FileHeader*)raw_coff.str;
     info.is_big_obj            = 0;
     info.machine               = header16->machine;
     info.header_size           = sizeof(COFF_FileHeader);
@@ -122,7 +122,7 @@ coff_file_header_info_from_data(String8 raw_coff)
 }
 
 COFF_ParsedSymbol
-coff_parse_symbol32(String8 raw_coff, U64 string_table_off, COFF_Symbol32 *sym32)
+coff_parse_symbol32(String8 raw_coff, U64 string_table_off, COFF_Symbol32* sym32)
 {
   COFF_ParsedSymbol result = {0};
   result.name              = coff_read_symbol_name(raw_coff, string_table_off, &sym32->name);
@@ -135,7 +135,7 @@ coff_parse_symbol32(String8 raw_coff, U64 string_table_off, COFF_Symbol32 *sym32
 }
 
 COFF_ParsedSymbol
-coff_parse_symbol16(String8 raw_coff, U64 string_table_off, COFF_Symbol16 *sym16)
+coff_parse_symbol16(String8 raw_coff, U64 string_table_off, COFF_Symbol16* sym16)
 {
   COFF_ParsedSymbol result = {0};
   result.name              = coff_read_symbol_name(raw_coff, string_table_off, &sym16->name);
@@ -154,7 +154,7 @@ coff_parse_symbol16(String8 raw_coff, U64 string_table_off, COFF_Symbol16 *sym16
 }
 
 COFF_Symbol32Array
-coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_off, U64 symbol_count)
+coff_symbol_array_from_data_16(Arena* arena, String8 raw_coff, U64 symbol_array_off, U64 symbol_count)
 {
   COFF_Symbol32Array result = {0};
   result.count              = symbol_count;
@@ -162,11 +162,11 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
   
   Rng1U64        sym16_arr_range = rng_1u64(symbol_array_off, symbol_array_off + sizeof(COFF_Symbol16) * symbol_count);
   String8        raw_sym16_arr   = str8_substr(raw_coff, sym16_arr_range);
-  COFF_Symbol16 *sym16_arr       = (COFF_Symbol16 *)raw_sym16_arr.str;
+  COFF_Symbol16* sym16_arr       = (COFF_Symbol16 *)raw_sym16_arr.str;
   
   for (U64 isymbol = 0, count = raw_sym16_arr.size / sizeof(COFF_Symbol16); isymbol < count; isymbol += 1) {
-    COFF_Symbol16 *sym16 = &sym16_arr[isymbol];
-    COFF_Symbol32 *sym32 = &result.v[isymbol];
+    COFF_Symbol16* sym16 = &sym16_arr[isymbol];
+    COFF_Symbol32* sym32 = &result.v[isymbol];
     
     sym32->name             = sym16->name;
     sym32->value            = sym16->value;
@@ -183,8 +183,8 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
     
     // copy aux symbols
     for (U64 iaux = isymbol+1, iaux_hi = Min(count, iaux+sym16->aux_symbol_count); iaux < iaux_hi; iaux += 1) {
-      COFF_Symbol16 *aux16 = sym16_arr + iaux;
-      COFF_Symbol32 *aux32 = result.v  + iaux;
+      COFF_Symbol16* aux16 = sym16_arr + iaux;
+      COFF_Symbol32* aux32 = result.v  + iaux;
       
       // 32bit COFF uses 16bit aux symbols
       MemoryCopy(aux32, aux16, sizeof(COFF_Symbol16));
@@ -199,7 +199,7 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
 }
 
 COFF_Symbol32Array
-coff_symbol_array_from_data_32(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count)
+coff_symbol_array_from_data_32(Arena* arena, String8 data, U64 symbol_array_off, U64 symbol_count)
 {
   COFF_Symbol32Array result;
   result.count = symbol_count;
@@ -208,7 +208,7 @@ coff_symbol_array_from_data_32(Arena *arena, String8 data, U64 symbol_array_off,
 }
 
 COFF_Symbol32Array
-coff_symbol_array_from_data(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size)
+coff_symbol_array_from_data(Arena* arena, String8 data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size)
 {
   COFF_Symbol32Array result = {0};
   switch (symbol_size) {
@@ -219,9 +219,9 @@ coff_symbol_array_from_data(Arena *arena, String8 data, U64 symbol_array_off, U6
 }
 
 COFF_Symbol16Node *
-coff_symbol16_list_push(Arena *arena, COFF_Symbol16List *list, COFF_Symbol16 symbol)
+coff_symbol16_list_push(Arena* arena, COFF_Symbol16List* list, COFF_Symbol16 symbol)
 {
-  COFF_Symbol16Node *node = push_array(arena, COFF_Symbol16Node, 1);
+  COFF_Symbol16Node* node = push_array(arena, COFF_Symbol16Node, 1);
   node->next = 0;
   node->data = symbol;
   SLLQueuePush(list->first, list->last, node);
@@ -254,9 +254,9 @@ coff_interp_symbol(U32 section_number, U32 value, COFF_SymStorageClass storage_c
 }
 
 COFF_RelocNode *
-coff_reloc_list_push(Arena *arena, COFF_RelocList *list, COFF_Reloc reloc)
+coff_reloc_list_push(Arena* arena, COFF_RelocList* list, COFF_Reloc reloc)
 {
-  COFF_RelocNode *node = push_array(arena, COFF_RelocNode, 1);
+  COFF_RelocNode* node = push_array(arena, COFF_RelocNode, 1);
   node->data = reloc;
   SLLQueuePush(list->first, list->last, node);
   ++list->count;
@@ -264,7 +264,7 @@ coff_reloc_list_push(Arena *arena, COFF_RelocList *list, COFF_Reloc reloc)
 }
 
 COFF_RelocInfo
-coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader *header)
+coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader* header)
 {
   COFF_RelocInfo result = {0};
   if (header->flags & COFF_SectionFlag_LnkNRelocOvfl && header->reloc_count == max_U16) {
@@ -282,12 +282,12 @@ coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader *header)
 }
 
 String8
-coff_resource_string_from_str16(Arena *arena, String16 string)
+coff_resource_string_from_str16(Arena* arena, String16 string)
 {
   AssertAlways(string.size <= max_U16);
   U16 size16 = (U16)string.size;
   
-  U16 *buffer = push_array_no_zero(arena, U16, size16 + 1);
+  U16* buffer = push_array_no_zero(arena, U16, size16 + 1);
   MemoryCopy(buffer + 0, &size16,    sizeof(size16));
   MemoryCopy(buffer + 1, string.str, size16 * sizeof(string.str[0]));
   
@@ -295,7 +295,7 @@ coff_resource_string_from_str16(Arena *arena, String16 string)
 }
 
 String8
-coff_resource_string_from_str8(Arena *arena, String8 string)
+coff_resource_string_from_str8(Arena* arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String16 string16 = str16_from_8(scratch.arena, string);
@@ -305,16 +305,16 @@ coff_resource_string_from_str8(Arena *arena, String8 string)
 }
 
 String8
-coff_resource_number_from_u16(Arena *arena, U16 number)
+coff_resource_number_from_u16(Arena* arena, U16 number)
 {
-  U16 *buffer = push_array_no_zero(arena, U16, 2);
+  U16* buffer = push_array_no_zero(arena, U16, 2);
   buffer[0] = max_U16;
   buffer[1] = number;
   return str8_array(buffer, 2);
 }
 
 COFF_ResourceID
-coff_utf8_resource_id_from_utf16(Arena *arena, COFF_ResourceID16 *id_16)
+coff_utf8_resource_id_from_utf16(Arena* arena, COFF_ResourceID16* id_16)
 {
   COFF_ResourceID id = {0};
   id.type = id_16->type;
@@ -332,7 +332,7 @@ coff_utf8_resource_id_from_utf16(Arena *arena, COFF_ResourceID16 *id_16)
 }
 
 U64
-coff_read_resource_id_utf16(String8 raw_res, U64 off, COFF_ResourceID16 *id_out)
+coff_read_resource_id_utf16(String8 raw_res, U64 off, COFF_ResourceID16* id_out)
 {
   U64 cursor = off;
   
@@ -354,7 +354,7 @@ coff_read_resource_id_utf16(String8 raw_res, U64 off, COFF_ResourceID16 *id_out)
 }
 
 U64
-coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *res_out)
+coff_read_resource(Arena* arena, String8 raw_res, U64 off, COFF_ParsedResource* res_out)
 {
   String8 raw_header    = str8_skip(raw_res, off);
   U64     header_cursor = 0;
@@ -392,12 +392,12 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
 }
 
 COFF_ParsedResourceList
-coff_resource_list_from_data(Arena *arena, String8 data)
+coff_resource_list_from_data(Arena* arena, String8 data)
 {
   COFF_ParsedResourceList list = {0};
   U64 cursor;
   for (cursor = 0 ; cursor < data.size; ) {
-    COFF_ParsedResourceNode *node = push_array(arena, COFF_ParsedResourceNode, 1);
+    COFF_ParsedResourceNode* node = push_array(arena, COFF_ParsedResourceNode, 1);
     cursor += coff_read_resource(arena, data, cursor, &node->data);
     SLLQueuePush(list.first, list.last, node);
     ++list.count;
@@ -407,7 +407,7 @@ coff_resource_list_from_data(Arena *arena, String8 data)
 }
 
 String8
-coff_write_resource_id(Arena *arena, COFF_ResourceID id)
+coff_write_resource_id(Arena* arena, COFF_ResourceID id)
 {
   String8 result = str8_zero();
   switch (id.type) {
@@ -424,7 +424,7 @@ coff_write_resource_id(Arena *arena, COFF_ResourceID id)
 }
 
 String8
-coff_write_resource(Arena          *arena,
+coff_write_resource(Arena*          arena,
                     COFF_ResourceID type,
                     COFF_ResourceID name,
                     U32             data_version,
@@ -438,7 +438,7 @@ coff_write_resource(Arena          *arena,
   
   String8List list = {0};
   
-  COFF_ResourceHeaderPrefix *prefix      = push_array(scratch.arena, COFF_ResourceHeaderPrefix, 1);
+  COFF_ResourceHeaderPrefix* prefix      = push_array(scratch.arena, COFF_ResourceHeaderPrefix, 1);
   String8                    packed_type = coff_write_resource_id(scratch.arena, type);
   String8                    packed_name = coff_write_resource_id(scratch.arena, name);
   
@@ -463,7 +463,7 @@ coff_write_resource(Arena          *arena,
   
   // align
   U64 align_size = AlignPow2(list.total_size, COFF_ResourceAlign) - list.total_size;
-  U8 *align      = push_array(scratch.arena, U8, align_size);
+  U8* align      = push_array(scratch.arena, U8, align_size);
   str8_list_push(scratch.arena, &list, str8(align, align_size));
   
   // join
@@ -474,11 +474,11 @@ coff_write_resource(Arena          *arena,
 }
 
 int
-coff_resource_id_compar(void *raw_a, void *raw_b)
+coff_resource_id_compar(void* raw_a, void* raw_b)
 {
   int cmp = 0;
-  COFF_ResourceID *a = raw_a;
-  COFF_ResourceID *b = raw_b;
+  COFF_ResourceID* a = raw_a;
+  COFF_ResourceID* b = raw_b;
   if (a->type == b->type) {
     switch (a->type) {
       case COFF_ResourceIDType_Null:   cmp = 0; break;
@@ -497,8 +497,8 @@ coff_is_import(String8 raw_archive_member)
 {
   B32 is_import = 0;
   if (raw_archive_member.size >= sizeof(U16)*2) {
-    U16 *sig1 = (U16*)raw_archive_member.str;
-    U16 *sig2 = sig1 + 1;
+    U16* sig1 = (U16*)raw_archive_member.str;
+    U16* sig2 = sig1 + 1;
     is_import = *sig1 == COFF_Machine_Unknown && *sig2 == 0xffff;
   }
   return is_import;
@@ -552,9 +552,9 @@ coff_archive_type_from_data(String8 raw_archive)
 }
 
 U64
-coff_parse_archive_member_header(String8 raw_archive, U64 offset, COFF_ParsedArchiveMemberHeader *header_out)
+coff_parse_archive_member_header(String8 raw_archive, U64 offset, COFF_ParsedArchiveMemberHeader* header_out)
 {
-  COFF_ArchiveMemberHeader *header = str8_deserial_get_raw_ptr(raw_archive, offset, sizeof(*header));
+  COFF_ArchiveMemberHeader* header = str8_deserial_get_raw_ptr(raw_archive, offset, sizeof(*header));
   if (header) {
     String8 name     = str8_skip_chop_whitespace(str8_cstring_capped(header->name,     header->name     + sizeof(header->name)    ));
     String8 date     = str8_skip_chop_whitespace(str8_cstring_capped(header->date,     header->date     + sizeof(header->date)    ));
@@ -581,7 +581,7 @@ coff_parse_archive_member_header(String8 raw_archive, U64 offset, COFF_ParsedArc
 }
 
 COFF_ArchiveFirstMember
-coff_parse_first_archive_member(COFF_ArchiveMember *member)
+coff_parse_first_archive_member(COFF_ArchiveMember* member)
 {
   Assert(str8_match_lit("/", member->header.name, 0));
   
@@ -599,7 +599,7 @@ coff_parse_first_archive_member(COFF_ArchiveMember *member)
   cursor += dim_1u64(string_table_range);
   
   String8  raw_member_offsets  = str8_substr(member->data, member_offsets_range);
-  U32     *member_offsets      = (U32 *)raw_member_offsets.str;
+  U32*     member_offsets      = (U32 *)raw_member_offsets.str;
   U64      member_offset_count = raw_member_offsets.size / sizeof(member_offsets[0]);
   
   COFF_ArchiveFirstMember result = {0};
@@ -612,7 +612,7 @@ coff_parse_first_archive_member(COFF_ArchiveMember *member)
 }
 
 COFF_ArchiveSecondMember
-coff_parse_second_archive_member(COFF_ArchiveMember *member)
+coff_parse_second_archive_member(COFF_ArchiveMember* member)
 {
   COFF_ArchiveSecondMember result = {0};
   
@@ -636,10 +636,10 @@ coff_parse_second_archive_member(COFF_ArchiveMember *member)
     String8 raw_member_offsets = str8_substr(member->data, member_offsets_range);
     String8 raw_indices        = str8_substr(member->data, symbol_indices_range);
     
-    U32 *member_offsets      = (U32 *)raw_member_offsets.str;
+    U32* member_offsets      = (U32 *)raw_member_offsets.str;
     U64  member_offset_count = raw_member_offsets.size / sizeof(member_offsets[0]);
     
-    U16 *symbol_indices     = (U16 *)raw_indices.str;
+    U16* symbol_indices     = (U16 *)raw_indices.str;
     U64  symbol_index_count = raw_indices.size / sizeof(symbol_indices[0]);
     
     result.member_count        = member_count;
@@ -662,8 +662,8 @@ coff_parse_long_name(String8 long_names, String8 name)
     String8 offset_str = str8(name.str + 1, name.size - 1);
     U64 offset = u64_from_str8(offset_str, 10);
     if (offset < long_names.size) {
-      U8 *ptr = long_names.str + offset;
-      U8 *opl = long_names.str + long_names.size;
+      U8* ptr = long_names.str + offset;
+      U8* opl = long_names.str + long_names.size;
       for (; ptr < opl; ++ptr) {
         if (*ptr == '\0' || *ptr == '\n') {
           break;
@@ -676,9 +676,9 @@ coff_parse_long_name(String8 long_names, String8 name)
 }
 
 U64
-coff_parse_import(String8 raw_archive_member, U64 offset, COFF_ParsedArchiveImportHeader *header_out)
+coff_parse_import(String8 raw_archive_member, U64 offset, COFF_ParsedArchiveImportHeader* header_out)
 {
-  COFF_ImportHeader *header = str8_deserial_get_raw_ptr(raw_archive_member, offset, sizeof(*header));
+  COFF_ImportHeader* header = str8_deserial_get_raw_ptr(raw_archive_member, offset, sizeof(*header));
   if (header) {
     Rng1U64 data_range  = rng_1u64(offset + sizeof(*header), offset + sizeof(*header) + header->data_size);
     String8 raw_data    = str8_substr(raw_archive_member, data_range);
@@ -734,7 +734,7 @@ coff_regular_archive_member_iter_init(String8 raw_archive)
 }
 
 B32
-coff_regular_archive_member_iter_next(String8 raw_archive, U64 *offset, COFF_ArchiveMember *member_out)
+coff_regular_archive_member_iter_next(String8 raw_archive, U64* offset, COFF_ArchiveMember* member_out)
 {
   B32 is_parsed = 0;
   
@@ -765,7 +765,7 @@ coff_thin_archive_member_iter_init(String8 raw_archive)
 }
 
 B32
-coff_thin_archive_member_iter_next(String8 raw_archive, U64 *offset, COFF_ArchiveMember *member_out)
+coff_thin_archive_member_iter_next(String8 raw_archive, U64* offset, COFF_ArchiveMember* member_out)
 {
   B32 is_parsed = 0;
   
@@ -791,7 +791,7 @@ coff_thin_archive_member_iter_next(String8 raw_archive, U64 *offset, COFF_Archiv
 }
 
 void
-coff_archive_member_list_push_node(COFF_ArchiveMemberList *list, COFF_ArchiveMemberNode *node)
+coff_archive_member_list_push_node(COFF_ArchiveMemberList* list, COFF_ArchiveMemberNode* node)
 {
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
@@ -807,7 +807,7 @@ coff_archive_parse_from_member_list(COFF_ArchiveMemberList member_list)
   COFF_ArchiveMember second_header     = {0};
   COFF_ArchiveMember long_names_member = {0};
   
-  COFF_ArchiveMemberNode *ptr = member_list.first;
+  COFF_ArchiveMemberNode* ptr = member_list.first;
   
   if (ptr) {
     if (str8_match_lit("/", ptr->data.header.name, 0)) {
@@ -864,7 +864,7 @@ coff_regular_archive_parse_from_data(String8 raw_archive)
   COFF_ArchiveMemberNode node_arr[3] = {0};
   U64 cursor = coff_regular_archive_member_iter_init(raw_archive);
   for (U64 i = 0; i < ArrayCount(node_arr); ++i) {
-    COFF_ArchiveMemberNode *node = &node_arr[i];
+    COFF_ArchiveMemberNode* node = &node_arr[i];
     if (!coff_regular_archive_member_iter_next(raw_archive, &cursor, &node->data)) {
       break;
     }
@@ -880,7 +880,7 @@ coff_thin_archive_parse_from_data(String8 raw_archive)
   COFF_ArchiveMemberNode node_arr[3] = {0};
   U64 cursor = coff_thin_archive_member_iter_init(raw_archive);
   for (U64 i = 0; i < ArrayCount(node_arr); i += 1) {
-    COFF_ArchiveMemberNode *node = &node_arr[i];
+    COFF_ArchiveMemberNode* node = &node_arr[i];
     if (!coff_thin_archive_member_iter_next(raw_archive, &cursor, &node->data)) {
       break;
     }

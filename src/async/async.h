@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Work Function Type
 
-#define ASYNC_WORK_SIG(name) void *name(U64 thread_idx, void *input)
+#define ASYNC_WORK_SIG(name) void* name(U64 thread_idx, void* input)
 #define ASYNC_WORK_DEF(name) internal ASYNC_WORK_SIG(name)
 typedef ASYNC_WORK_SIG(ASYNC_WorkFunctionType);
 
@@ -23,21 +23,21 @@ enum ASYNC_Priority
 
 struct ASYNC_WorkParams
 {
-  void *input;
+  void* input;
   void **output;
   OS_Handle semaphore;
-  U64 *completion_counter;
+  U64* completion_counter;
   U64 endt_us;
   ASYNC_Priority priority;
 }
 
 struct ASYNC_Work
 {
-  ASYNC_WorkFunctionType *work_function;
-  void *input;
+  ASYNC_WorkFunctionType* work_function;
+  void* input;
   void **output;
   OS_Handle semaphore;
-  U64 *completion_counter;
+  U64* completion_counter;
 }
 
 ////////////////////////////////
@@ -46,19 +46,19 @@ struct ASYNC_Work
 struct ASYNC_Task
 {
   OS_Handle semaphore;
-  void *output;
+  void* output;
 }
 
 struct ASYNC_TaskNode
 {
-  ASYNC_TaskNode *next;
-  ASYNC_Task *v;
+  ASYNC_TaskNode* next;
+  ASYNC_Task* v;
 }
 
 struct ASYNC_TaskList
 {
-  ASYNC_TaskNode *first;
-  ASYNC_TaskNode *last;
+  ASYNC_TaskNode* first;
+  ASYNC_TaskNode* last;
   U64 count;
 }
 
@@ -68,7 +68,7 @@ struct ASYNC_TaskList
 struct ASYNC_Ring
 {
   U64 ring_size;
-  U8 *ring_base;
+  U8* ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
   OS_Handle ring_mutex;
@@ -77,7 +77,7 @@ struct ASYNC_Ring
 
 struct ASYNC_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: user -> work thread ring buffers
   ASYNC_Ring rings[ASYNC_Priority_COUNT];
@@ -85,7 +85,7 @@ struct ASYNC_Shared
   OS_Handle ring_cv;
   
   // rjf: work threads
-  OS_Handle *work_threads;
+  OS_Handle* work_threads;
   U64 work_threads_count;
   U64 work_threads_live_count;
 }
@@ -95,12 +95,12 @@ struct ASYNC_Shared
 
 thread_static B32 async_work_thread_depth = 0;
 thread_static U64 async_work_thread_idx = 0;
-static ASYNC_Shared *async_shared = 0;
+static ASYNC_Shared* async_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Top-Level Layer Initialization
 
-void async_init(CmdLine *cmdline);
+void async_init(CmdLine* cmdline);
 
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
@@ -110,16 +110,16 @@ U64 async_thread_count();
 ////////////////////////////////
 //~ rjf: Work Kickoffs
 
-B32 async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
+B32 async_push_work_(ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params);
 #define async_push_work(function, ...) async_push_work_((function), &(ASYNC_WorkParams){.endt_us = max_U64, .priority = ASYNC_Priority_High, __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper
 
-void async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t);
-ASYNC_Task *async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
+void async_task_list_push(Arena* arena, ASYNC_TaskList* list, ASYNC_Task* t);
+ASYNC_Task* async_task_launch_(Arena* arena, ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params);
 #define async_task_launch(arena, work_function, ...) async_task_launch_((arena), (work_function), &(ASYNC_WorkParams){.endt_us = max_U64, __VA_ARGS__})
-void *async_task_join(ASYNC_Task *task);
+void* async_task_join(ASYNC_Task* task);
 #define async_task_join_struct(task, T) (T *)async_task_join(task)
 
 ////////////////////////////////
@@ -131,6 +131,6 @@ void async_execute_work(ASYNC_Work work);
 ////////////////////////////////
 //~ rjf: Work Thread Entry Point
 
-void async_work_thread__entry_point(void *p);
+void async_work_thread__entry_point(void* p);
 
 #endif // ASYNC_H

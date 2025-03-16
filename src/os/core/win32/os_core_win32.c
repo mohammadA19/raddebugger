@@ -7,7 +7,7 @@
 // (We must dynamically link to them, since they can be missing in older SDKs)
 
 typedef HRESULT W32_SetThreadDescription_Type(HANDLE hThread, PCWSTR lpThreadDescription);
-static W32_SetThreadDescription_Type *w32_SetThreadDescription_func = 0;
+static W32_SetThreadDescription_Type* w32_SetThreadDescription_func = 0;
 
 ////////////////////////////////
 //~ rjf: File Info Conversion Helpers
@@ -24,7 +24,7 @@ os_w32_file_property_flags_from_dwFileAttributes(DWORD dwFileAttributes)
 }
 
 void
-os_w32_file_properties_from_attribute_data(FileProperties *properties, WIN32_FILE_ATTRIBUTE_DATA *attributes)
+os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN32_FILE_ATTRIBUTE_DATA* attributes)
 {
   properties->size = Compose64Bit(attributes->nFileSizeHigh, attributes->nFileSizeLow);
   os_w32_dense_time_from_file_time(&properties->created, &attributes->ftCreationTime);
@@ -36,7 +36,7 @@ os_w32_file_properties_from_attribute_data(FileProperties *properties, WIN32_FIL
 //~ rjf: Time Conversion Helpers
 
 void
-os_w32_date_time_from_system_time(DateTime *out, SYSTEMTIME *in)
+os_w32_date_time_from_system_time(DateTime* out, SYSTEMTIME* in)
 {
   out->year    = in->wYear;
   out->mon     = in->wMonth - 1;
@@ -49,7 +49,7 @@ os_w32_date_time_from_system_time(DateTime *out, SYSTEMTIME *in)
 }
 
 void
-os_w32_system_time_from_date_time(SYSTEMTIME *out, DateTime *in)
+os_w32_system_time_from_date_time(SYSTEMTIME* out, DateTime* in)
 {
   out->wYear         = (WORD)(in->year);
   out->wMonth        = in->mon + 1;
@@ -61,7 +61,7 @@ os_w32_system_time_from_date_time(SYSTEMTIME *out, DateTime *in)
 }
 
 void
-os_w32_dense_time_from_file_time(DenseTime *out, FILETIME *in)
+os_w32_dense_time_from_file_time(DenseTime* out, FILETIME* in)
 {
   SYSTEMTIME systime = {0};
   FileTimeToSystemTime(in, &systime);
@@ -108,7 +108,7 @@ os_w32_unix_time_from_file_time(FILETIME file_time)
 OS_W32_Entity *
 os_w32_entity_alloc(OS_W32_EntityKind kind)
 {
-  OS_W32_Entity *result = 0;
+  OS_W32_Entity* result = 0;
   EnterCriticalSection(&os_w32_state.entity_mutex);
   {
     result = os_w32_state.entity_free;
@@ -128,7 +128,7 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
 }
 
 void
-os_w32_entity_release(OS_W32_Entity *entity)
+os_w32_entity_release(OS_W32_Entity* entity)
 {
   entity->kind = OS_W32_EntityKind_Null;
   EnterCriticalSection(&os_w32_state.entity_mutex);
@@ -140,11 +140,11 @@ os_w32_entity_release(OS_W32_Entity *entity)
 //~ rjf: Thread Entry Point
 
 DWORD
-os_w32_thread_entry_point(void *ptr)
+os_w32_thread_entry_point(void* ptr)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity *)ptr;
-  OS_ThreadFunctionType *func = entity->thread.func;
-  void *thread_ptr = entity->thread.ptr;
+  OS_W32_Entity* entity = (OS_W32_Entity *)ptr;
+  OS_ThreadFunctionType* func = entity->thread.func;
+  void* thread_ptr = entity->thread.ptr;
   TCTX tctx_;
   tctx_init_and_equip(&tctx_);
   func(thread_ptr);
@@ -168,11 +168,11 @@ os_get_process_info()
 }
 
 String8
-os_get_current_path(Arena *arena)
+os_get_current_path(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
-  U16 *memory = push_array_no_zero(scratch.arena, U16, length + 1);
+  U16* memory = push_array_no_zero(scratch.arena, U16, length + 1);
   length = GetCurrentDirectoryW(length + 1, (WCHAR*)memory);
   String8 name = str8_from_16(arena, str16(memory, length));
   scratch_end(scratch);
@@ -202,25 +202,25 @@ os_get_process_start_time_unix()
 void *
 os_reserve(U64 size)
 {
-  void *result = VirtualAlloc(0, size, MEM_RESERVE, PAGE_READWRITE);
+  void* result = VirtualAlloc(0, size, MEM_RESERVE, PAGE_READWRITE);
   return result;
 }
 
 B32
-os_commit(void *ptr, U64 size)
+os_commit(void* ptr, U64 size)
 {
   B32 result = (VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE) != 0);
   return result;
 }
 
 void
-os_decommit(void *ptr, U64 size)
+os_decommit(void* ptr, U64 size)
 {
   VirtualFree(ptr, size, MEM_DECOMMIT);
 }
 
 void
-os_release(void *ptr, U64 size)
+os_release(void* ptr, U64 size)
 {
   // NOTE(rjf): size not used - not necessary on Windows, but necessary for other OSes.
   VirtualFree(ptr, 0, MEM_RELEASE);
@@ -232,12 +232,12 @@ void *
 os_reserve_large(U64 size)
 {
   // we commit on reserve because windows
-  void *result = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_LARGE_PAGES, PAGE_READWRITE);
+  void* result = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_LARGE_PAGES, PAGE_READWRITE);
   return result;
 }
 
 B32
-os_commit_large(void *ptr, U64 size)
+os_commit_large(void* ptr, U64 size)
 {
   return 1;
 }
@@ -271,7 +271,7 @@ os_set_thread_name(String8 name)
     struct THREADNAME_INFO
     {
       U32 dwType;     // Must be 0x1000.
-      char *szName;   // Pointer to name (in user addr space).
+      char* szName;   // Pointer to name (in user addr space).
       U32 dwThreadID; // Thread ID (-1=caller thread).
       U32 dwFlags;    // Reserved for future use, must be zero.
     };
@@ -350,7 +350,7 @@ os_file_close(OS_Handle file)
 }
 
 U64
-os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
+os_file_read(OS_Handle file, Rng1U64 rng, void* out_data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE handle = (HANDLE)file.u64[0];
@@ -386,7 +386,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 }
 
 U64
-os_file_write(OS_Handle file, Rng1U64 rng, void *data)
+os_file_write(OS_Handle file, Rng1U64 rng, void* data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE win_handle = (HANDLE)file.u64[0];
@@ -395,7 +395,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
   U64 total_write_size = dim_1u64(rng);
   for(;;)
   {
-    void *bytes_src = (U8 *)data + src_off;
+    void* bytes_src = (U8 *)data + src_off;
     U64 bytes_left = total_write_size - src_off;
     DWORD write_size = Min(MB(1), bytes_left);
     DWORD bytes_written = 0;
@@ -490,12 +490,12 @@ os_copy_file_path(String8 dst, String8 src)
 }
 
 String8
-os_full_path_from_path(Arena *arena, String8 path)
+os_full_path_from_path(Arena* arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
   String16  path16      = str16_from_8(scratch.arena, path);
-  WCHAR    *buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
+  WCHAR*    buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
   DWORD     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
   if(path16_size > buffer_size)
   {
@@ -624,12 +624,12 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
       }break;
     }
   }
-  void *result = MapViewOfFile(handle, access_flags, off_hi, off_lo, size);
+  void* result = MapViewOfFile(handle, access_flags, off_hi, off_lo, size);
   return result;
 }
 
 void
-os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
+os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 {
   BOOL result = UnmapViewOfFile(ptr);
   ()result;
@@ -638,14 +638,14 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 OS_FileIter *
-os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
   String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
-  OS_FileIter *iter = push_array(arena, OS_FileIter, 1);
+  OS_FileIter* iter = push_array(arena, OS_FileIter, 1);
   iter->flags = flags;
-  OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter->memory;
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
   if(path.size == 0)
   {
     w32_iter->is_volume_iter = 1;
@@ -672,11 +672,11 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 }
 
 B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 {
   B32 result = 0;
   OS_FileIterFlags flags = iter->flags;
-  OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter->memory;
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
   switch(w32_iter->is_volume_iter)
   {
     //- rjf: file iteration
@@ -690,7 +690,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
           // check is usable
           B32 usable_file = 1;
           
-          WCHAR *file_name = w32_iter->find_data.cFileName;
+          WCHAR* file_name = w32_iter->find_data.cFileName;
           DWORD attributes = w32_iter->find_data.dwFileAttributes;
           if (file_name[0] == '.'){
             if (flags & OS_FileIterFlag_SkipHiddenFiles){
@@ -752,9 +752,9 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 }
 
 void
-os_file_iter_end(OS_FileIter *iter)
+os_file_iter_end(OS_FileIter* iter)
 {
-  OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter->memory;
+  OS_W32_FileIter* w32_iter = (OS_W32_FileIter*)iter->memory;
   HANDLE zero_handle;
   MemoryZeroStruct(&zero_handle);
   if(!MemoryMatchStruct(&zero_handle, &w32_iter->handle))
@@ -828,7 +828,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
   HANDLE file = (HANDLE)(handle.u64[0]);
   U64 offset = range.min;
   U64 size = range.max-range.min;
-  void *ptr = MapViewOfFile(file, FILE_MAP_ALL_ACCESS,
+  void* ptr = MapViewOfFile(file, FILE_MAP_ALL_ACCESS,
                             (U32)((offset & 0xffffffff00000000) >> 32),
                             (U32)((offset & 0x00000000ffffffff)),
                             size);
@@ -836,7 +836,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 }
 
 void
-os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
+os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range)
 {
   UnmapViewOfFile(ptr);
 }
@@ -876,7 +876,7 @@ os_now_universal_time()
 }
 
 DateTime
-os_universal_time_from_local(DateTime *date_time)
+os_universal_time_from_local(DateTime* date_time)
 {
   SYSTEMTIME systime = {0};
   os_w32_system_time_from_date_time(&systime, date_time);
@@ -891,7 +891,7 @@ os_universal_time_from_local(DateTime *date_time)
 }
 
 DateTime
-os_local_time_from_universal(DateTime *date_time)
+os_local_time_from_universal(DateTime* date_time)
 {
   SYSTEMTIME systime = {0};
   os_w32_system_time_from_date_time(&systime, date_time);
@@ -915,7 +915,7 @@ os_sleep_milliseconds(U32 msec)
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
 OS_Handle
-os_process_launch(OS_ProcessLaunchParams *params)
+os_process_launch(OS_ProcessLaunchParams* params)
 {
   OS_Handle result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -943,11 +943,11 @@ os_process_launch(OS_ProcessLaunchParams *params)
       if(all_opts.node_count != 0)
       {
         MemoryZeroStruct(&all_opts);
-        for(String8Node *n = params->env.first; n != 0; n = n->next)
+        for(String8Node* n = params->env.first; n != 0; n = n->next)
         {
           str8_list_push(scratch.arena, &all_opts, n->string);
         }
-        for(String8Node *n = os_w32_state.process_info.environment.first; n != 0; n = n->next)
+        for(String8Node* n = os_w32_state.process_info.environment.first; n != 0; n = n->next)
         {
           str8_list_push(scratch.arena, &all_opts, n->string);
         }
@@ -1034,9 +1034,9 @@ os_process_detach(OS_Handle handle)
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
 OS_Handle
-os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
+os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params)
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Thread);
+  OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_Thread);
   entity->thread.func = func;
   entity->thread.ptr = ptr;
   entity->thread.handle = CreateThread(0, 0, os_w32_thread_entry_point, entity, 0, &entity->thread.tid);
@@ -1048,7 +1048,7 @@ B32
 os_thread_join(OS_Handle handle, U64 endt_us)
 {
   DWORD sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
-  OS_W32_Entity *entity = (OS_W32_Entity *)PtrFromInt(handle.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity *)PtrFromInt(handle.u64[0]);
   DWORD wait_result = WAIT_OBJECT_0;
   if(entity != 0)
   {
@@ -1062,7 +1062,7 @@ os_thread_join(OS_Handle handle, U64 endt_us)
 void
 os_thread_detach(OS_Handle thread)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(thread.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(thread.u64[0]);
   if(entity != 0)
   {
     CloseHandle(entity->thread.handle);
@@ -1078,7 +1078,7 @@ os_thread_detach(OS_Handle thread)
 OS_Handle
 os_mutex_alloc()
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Mutex);
+  OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_Mutex);
   InitializeCriticalSection(&entity->mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
@@ -1087,21 +1087,21 @@ os_mutex_alloc()
 void
 os_mutex_release(OS_Handle mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
   os_w32_entity_release(entity);
 }
 
 void
 os_mutex_take(OS_Handle mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
   EnterCriticalSection(&entity->mutex);
 }
 
 void
 os_mutex_drop(OS_Handle mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
   LeaveCriticalSection(&entity->mutex);
 }
 
@@ -1110,7 +1110,7 @@ os_mutex_drop(OS_Handle mutex)
 OS_Handle
 os_rw_mutex_alloc()
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_RWMutex);
+  OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_RWMutex);
   InitializeSRWLock(&entity->rw_mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
@@ -1119,35 +1119,35 @@ os_rw_mutex_alloc()
 void
 os_rw_mutex_release(OS_Handle rw_mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
   os_w32_entity_release(entity);
 }
 
 void
 os_rw_mutex_take_r(OS_Handle rw_mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
   AcquireSRWLockShared(&entity->rw_mutex);
 }
 
 void
 os_rw_mutex_drop_r(OS_Handle rw_mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
   ReleaseSRWLockShared(&entity->rw_mutex);
 }
 
 void
 os_rw_mutex_take_w(OS_Handle rw_mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
   AcquireSRWLockExclusive(&entity->rw_mutex);
 }
 
 void
 os_rw_mutex_drop_w(OS_Handle rw_mutex)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(rw_mutex.u64[0]);
   ReleaseSRWLockExclusive(&entity->rw_mutex);
 }
 
@@ -1156,7 +1156,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 OS_Handle
 os_condition_variable_alloc()
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_ConditionVariable);
+  OS_W32_Entity* entity = os_w32_entity_alloc(OS_W32_EntityKind_ConditionVariable);
   InitializeConditionVariable(&entity->cv);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
@@ -1165,7 +1165,7 @@ os_condition_variable_alloc()
 void
 os_condition_variable_release(OS_Handle cv)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
   os_w32_entity_release(entity);
 }
 
@@ -1176,8 +1176,8 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
   BOOL result = 0;
   if(sleep_ms > 0)
   {
-    OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
-    OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
+    OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+    OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
     result = SleepConditionVariableCS(&entity->cv, &mutex_entity->mutex, sleep_ms);
   }
   return result;
@@ -1190,8 +1190,8 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
   BOOL result = 0;
   if(sleep_ms > 0)
   {
-    OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
-    OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
+    OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+    OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
     result = SleepConditionVariableSRW(&entity->cv, &mutex_entity->rw_mutex, sleep_ms,
                                        CONDITION_VARIABLE_LOCKMODE_SHARED);
   }
@@ -1205,8 +1205,8 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
   BOOL result = 0;
   if(sleep_ms > 0)
   {
-    OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
-    OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
+    OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+    OS_W32_Entity* mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
     result = SleepConditionVariableSRW(&entity->cv, &mutex_entity->rw_mutex, sleep_ms, 0);
   }
   return result;
@@ -1215,14 +1215,14 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 void
 os_condition_variable_signal(OS_Handle cv)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
   WakeConditionVariable(&entity->cv);
 }
 
 void
 os_condition_variable_broadcast(OS_Handle cv)
 {
-  OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
+  OS_W32_Entity* entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
   WakeAllConditionVariable(&entity->cv);
 }
 
@@ -1301,7 +1301,7 @@ os_library_load_proc(OS_Handle lib, String8 name)
   Temp scratch = scratch_begin(0, 0);
   HMODULE mod = (HMODULE)lib.u64[0];
   name = push_str8_copy(scratch.arena, name);
-  VoidProc *result = (VoidProc*)GetProcAddress(mod, (LPCSTR)name.str);
+  VoidProc* result = (VoidProc*)GetProcAddress(mod, (LPCSTR)name.str);
   scratch_end(scratch);
   return result;
 }
@@ -1317,7 +1317,7 @@ os_library_close(OS_Handle lib)
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)
 
 void
-os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr)
+os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, void* ptr)
 {
   __try
   {
@@ -1398,17 +1398,17 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   HMODULE dbghelp = LoadLibraryA("dbghelp.dll");
   if(dbghelp)
   {
-    DWORD (WINAPI *dbg_SymSetOptions)(DWORD SymOptions);
-    BOOL (WINAPI *dbg_SymInitializeW)(HANDLE hProcess, PCWSTR UserSearchPath, BOOL fInvadeProcess);
-    BOOL (WINAPI *dbg_StackWalk64)(DWORD MachineType, HANDLE hProcess, HANDLE hThread,
+    DWORD (WINAPI* dbg_SymSetOptions)(DWORD SymOptions);
+    BOOL (WINAPI* dbg_SymInitializeW)(HANDLE hProcess, PCWSTR UserSearchPath, BOOL fInvadeProcess);
+    BOOL (WINAPI* dbg_StackWalk64)(DWORD MachineType, HANDLE hProcess, HANDLE hThread,
                                    LPSTACKFRAME64 StackFrame, PVOID ContextRecord, PREAD_PROCESS_MEMORY_ROUTINE64 ReadMemoryRoutine,
                                    PFUNCTION_TABLE_ACCESS_ROUTINE64 FunctionTableAccessRoutine, PGET_MODULE_BASE_ROUTINE64 GetModuleBaseRoutine,
                                    PTRANSLATE_ADDRESS_ROUTINE64 TranslateAddress);
-    PVOID (WINAPI *dbg_SymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
-    DWORD64 (WINAPI *dbg_SymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
-    BOOL (WINAPI *dbg_SymFromAddrW)(HANDLE hProcess, DWORD64 Address, PDWORD64 Displacement, PSYMBOL_INFOW Symbol);
-    BOOL (WINAPI *dbg_SymGetLineFromAddrW64)(HANDLE hProcess, DWORD64 dwAddr, PDWORD pdwDisplacement, PIMAGEHLP_LINEW64 Line);
-    BOOL (WINAPI *dbg_SymGetModuleInfoW64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULEW64 ModuleInfo);
+    PVOID (WINAPI* dbg_SymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
+    DWORD64 (WINAPI* dbg_SymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
+    BOOL (WINAPI* dbg_SymFromAddrW)(HANDLE hProcess, DWORD64 Address, PDWORD64 Displacement, PSYMBOL_INFOW Symbol);
+    BOOL (WINAPI* dbg_SymGetLineFromAddrW64)(HANDLE hProcess, DWORD64 dwAddr, PDWORD pdwDisplacement, PIMAGEHLP_LINEW64 Line);
+    BOOL (WINAPI* dbg_SymGetModuleInfoW64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULEW64 ModuleInfo);
     
     *(FARPROC*)&dbg_SymSetOptions            = GetProcAddress(dbghelp, "SymSetOptions");
     *(FARPROC*)&dbg_SymInitializeW           = GetProcAddress(dbghelp, "SymInitializeW");
@@ -1617,20 +1617,20 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     }
   }
   {
-    OS_SystemInfo *info = &os_w32_state.system_info;
+    OS_SystemInfo* info = &os_w32_state.system_info;
     info->logical_processor_count = (U64)sysinfo.dwNumberOfProcessors;
     info->page_size               = sysinfo.dwPageSize;
     info->large_page_size         = GetLargePageMinimum();
     info->allocation_granularity  = sysinfo.dwAllocationGranularity;
   }
   {
-    OS_ProcessInfo *info = &os_w32_state.process_info;
+    OS_ProcessInfo* info = &os_w32_state.process_info;
     info->large_pages_allowed = large_pages_allowed;
     info->pid = GetCurrentProcessId();
   }
   
   //- rjf: extract arguments
-  Arena *args_arena = arena_alloc(.reserve_size = MB(1), .commit_size = KB(32));
+  Arena* args_arena = arena_alloc(.reserve_size = MB(1), .commit_size = KB(32));
   char **argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {
@@ -1656,11 +1656,11 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   tctx_init_and_equip(&tctx);
   
   //- rjf: set up dynamically-alloc'd state
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   {
     os_w32_state.arena = arena;
     {
-      OS_SystemInfo *info = &os_w32_state.system_info;
+      OS_SystemInfo* info = &os_w32_state.system_info;
       U8 buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
       DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
       if(GetComputerNameA((char*)buffer, &size))
@@ -1670,11 +1670,11 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     }
   }
   {
-    OS_ProcessInfo *info = &os_w32_state.process_info;
+    OS_ProcessInfo* info = &os_w32_state.process_info;
     {
       Temp scratch = scratch_begin(0, 0);
       DWORD size = KB(32);
-      U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+      U16* buffer = push_array_no_zero(scratch.arena, U16, size);
       DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
       String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
       String8 name_chopped = str8_chop_last_slash(name8);
@@ -1685,7 +1685,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     {
       Temp scratch = scratch_begin(0, 0);
       U64 size = KB(32);
-      U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+      U16* buffer = push_array_no_zero(scratch.arena, U16, size);
       if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
       {
         info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
@@ -1693,7 +1693,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       scratch_end(scratch);
     }
     {
-      WCHAR *this_proc_env = GetEnvironmentStringsW();
+      WCHAR* this_proc_env = GetEnvironmentStringsW();
       U64 start_idx = 0;
       for(U64 idx = 0;; idx += 1)
       {

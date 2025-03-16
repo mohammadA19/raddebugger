@@ -13,7 +13,7 @@
 // abstraction layer for process control, across multiple OSes), but including
 // higher-level concepts, like stepping, breakpoint resolution, conditional
 // breakpoint evaluation, and so on. Right now, this just includes process
-// control *local to the debugger client machine*. But in the future, this can
+// control* local to the debugger client machine*. But in the future, this can
 // also include communication to multiple target machines, all running their
 // own process controller, using the Demon layer.
 //
@@ -63,7 +63,7 @@
 // returns from a particular sub-callstack. This is useful when implementing
 // "step over" in functions that may be recursive. In short, unlike a trap,
 // which writes a trap instruction (like `int3`) into an instruction stream,
-// a spoof overwrites a *return address* on some thread's *stack*. This return
+// a spoof overwrites a* return address* on some thread's* stack*. This return
 // address is not a valid address for executing code -- it is simply a value
 // that the debugger can recognize, such that it is notified when the thread
 // returns from some level in a callstack. When the thread exits some function,

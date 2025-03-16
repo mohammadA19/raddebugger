@@ -116,9 +116,9 @@ mg_txt_pt_from_string_off(String8 string, U64 off)
 //~ rjf: Message Lists
 
 void
-mg_msg_list_push(Arena *arena, MG_MsgList *msgs, MG_Msg *msg)
+mg_msg_list_push(Arena* arena, MG_MsgList* msgs, MG_Msg* msg)
 {
-  MG_MsgNode *n = push_array(arena, MG_MsgNode, 1);
+  MG_MsgNode* n = push_array(arena, MG_MsgNode, 1);
   MemoryCopyStruct(&n->v, msg);
   SLLQueuePush(msgs->first, msgs->last, n);
   msgs->count += 1;
@@ -128,7 +128,7 @@ mg_msg_list_push(Arena *arena, MG_MsgList *msgs, MG_Msg *msg)
 //~ rjf: String Escaping
 
 String8
-mg_escaped_from_str8(Arena *arena, String8 string)
+mg_escaped_from_str8(Arena* arena, String8 string)
 {
   // NOTE(rjf): This doesn't handle hex/octal/unicode escape sequences right
   // now, just the simple stuff.
@@ -184,12 +184,12 @@ mg_escaped_from_str8(Arena *arena, String8 string)
 //~ rjf: String Wrapping
 
 String8List
-mg_wrapped_lines_from_string(Arena *arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent)
+mg_wrapped_lines_from_string(Arena* arena, String8 string, U64 first_line_max_width, U64 max_width, U64 wrap_indent)
 {
   String8List list = {0};
   Rng1U64 line_range = r1u64(0, 0);
   U64 wrapped_indent_level = 0;
-  static char *spaces = "                                                                ";
+  static char* spaces = "                                                                ";
   for (U64 idx = 0; idx <= string.size; idx += 1){
     U8 chr = idx < string.size ? string.str[idx] : 0;
     if (chr == '\n'){
@@ -287,7 +287,7 @@ mg_c_array_literal_contents_from_data(String8 data)
     for(U64 off = 0; off < data.size;)
     {
       U64 chunk_size = Min(data.size-off, 64);
-      U8 *chunk_bytes = data.str+off;
+      U8* chunk_bytes = data.str+off;
       String8 chunk_text_string = {0};
       chunk_text_string.size = chunk_size*5;
       chunk_text_string.str = push_array(mg_arena, U8, chunk_text_string.size);
@@ -310,7 +310,7 @@ mg_c_array_literal_contents_from_data(String8 data)
 //~ rjf: Map Functions
 
 MG_Map
-mg_push_map(Arena *arena, U64 slot_count)
+mg_push_map(Arena* arena, U64 slot_count)
 {
   MG_Map map = {0};
   map.slots_count = slot_count;
@@ -319,14 +319,14 @@ mg_push_map(Arena *arena, U64 slot_count)
 }
 
 void *
-mg_map_ptr_from_string(MG_Map *map, String8 string)
+mg_map_ptr_from_string(MG_Map* map, String8 string)
 {
-  void *result = 0;
+  void* result = 0;
   {
     U64 hash = mg_hash_from_string(string);
     U64 slot_idx = hash%map->slots_count;
-    MG_MapSlot *slot = &map->slots[slot_idx];
-    for(MG_MapNode *n = slot->first; n != 0; n = n->next)
+    MG_MapSlot* slot = &map->slots[slot_idx];
+    for(MG_MapNode* n = slot->first; n != 0; n = n->next)
     {
       if(str8_match(n->key, string, 0))
       {
@@ -339,12 +339,12 @@ mg_map_ptr_from_string(MG_Map *map, String8 string)
 }
 
 void
-mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
+mg_map_insert_ptr(Arena* arena, MG_Map* map, String8 string, void* val)
 {
   U64 hash = mg_hash_from_string(string);
   U64 slot_idx = hash%map->slots_count;
-  MG_MapSlot *slot = &map->slots[slot_idx];
-  MG_MapNode *n = push_array(arena, MG_MapNode, 1);
+  MG_MapSlot* slot = &map->slots[slot_idx];
+  MG_MapNode* n = push_array(arena, MG_MapNode, 1);
   n->key = push_str8_copy(arena, string);
   n->val = val;
   SLLQueuePush(slot->first, slot->last, n);
@@ -354,9 +354,9 @@ mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
 //~ rjf: String Expression Parsing
 
 MG_StrExpr *
-mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
+mg_push_str_expr(Arena* arena, MG_StrExprOp op, MD_Node* node)
 {
-  MG_StrExpr *expr = push_array(arena, MG_StrExpr, 1);
+  MG_StrExpr* expr = push_array(arena, MG_StrExpr, 1);
   MemoryCopyStruct(expr, &mg_str_expr_nil);
   expr->op = op;
   expr->node = node;
@@ -364,14 +364,14 @@ mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
 }
 
 MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec)
+mg_str_expr_parse_from_first_opl__min_prec(Arena* arena, MD_Node* first, MD_Node* opl, S8 min_prec)
 {
   MG_StrExprParseResult parse = {&mg_str_expr_nil};
   {
-    MD_Node *it = first;
+    MD_Node* it = first;
     
     //- rjf: consume prefix operators
-    MG_StrExpr *leafmost_op = &mg_str_expr_nil;
+    MG_StrExpr* leafmost_op = &mg_str_expr_nil;
     for(;it != opl && !md_node_is_nil(it);)
     {
       MG_StrExprOp found_op = MG_StrExprOp_Null;
@@ -389,7 +389,7 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
       }
       if(found_op != MG_StrExprOp_Null)
       {
-        MG_StrExpr *op_expr = mg_push_str_expr(arena, found_op, it);
+        MG_StrExpr* op_expr = mg_push_str_expr(arena, found_op, it);
         if(leafmost_op == &mg_str_expr_nil)
         {
           leafmost_op = op_expr;
@@ -406,7 +406,7 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
     
     //- rjf: parse atom
     {
-      MG_StrExpr *atom = &mg_str_expr_nil;
+      MG_StrExpr* atom = &mg_str_expr_nil;
       if(it->flags & (MD_NodeFlag_Identifier|MD_NodeFlag_Numeric|MD_NodeFlag_StringLiteral) &&
          md_node_is_nil(it->first))
       {
@@ -451,7 +451,7 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
       // rjf: good found_op -> build binary expr
       if(found_op != MG_StrExprOp_Null)
       {
-        MG_StrExpr *op_expr = mg_push_str_expr(arena, found_op, it);
+        MG_StrExpr* op_expr = mg_push_str_expr(arena, found_op, it);
         if(leafmost_op == &mg_str_expr_nil)
         {
           leafmost_op = op_expr;
@@ -483,14 +483,14 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
 }
 
 MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl(Arena *arena, MD_Node *first, MD_Node *opl)
+mg_str_expr_parse_from_first_opl(Arena* arena, MD_Node* first, MD_Node* opl)
 {
   MG_StrExprParseResult parse = mg_str_expr_parse_from_first_opl__min_prec(arena, first, opl, 0);
   return parse;
 }
 
 MG_StrExprParseResult
-mg_str_expr_parse_from_root(Arena *arena, MD_Node *root)
+mg_str_expr_parse_from_root(Arena* arena, MD_Node* root)
 {
   MG_StrExprParseResult parse = mg_str_expr_parse_from_first_opl__min_prec(arena, root->first, &md_nil_node, 0);
   return parse;
@@ -500,7 +500,7 @@ mg_str_expr_parse_from_root(Arena *arena, MD_Node *root)
 //~ rjf: Table Generation Functions
 
 MG_NodeArray
-mg_node_array_make(Arena *arena, U64 count)
+mg_node_array_make(Arena* arena, U64 count)
 {
   MG_NodeArray result = {0};
   result.count = count;
@@ -513,7 +513,7 @@ mg_node_array_make(Arena *arena, U64 count)
 }
 
 MG_NodeArray
-mg_child_array_from_node(Arena *arena, MD_Node *node)
+mg_child_array_from_node(Arena* arena, MD_Node* node)
 {
   MG_NodeArray children = mg_node_array_make(arena, md_child_count_from_node(node));
   U64 idx = 0;
@@ -526,7 +526,7 @@ mg_child_array_from_node(Arena *arena, MD_Node *node)
 }
 
 MG_NodeGrid
-mg_node_grid_make_from_node(Arena *arena, MD_Node *root)
+mg_node_grid_make_from_node(Arena* arena, MD_Node* root)
 {
   MG_NodeGrid grid = {0};
   
@@ -577,7 +577,7 @@ mg_row_from_index(MG_NodeGrid grid, U64 index)
 }
 
 MG_NodeArray
-mg_column_from_index(Arena *arena, MG_NodeGrid grid, U64 index)
+mg_column_from_index(Arena* arena, MG_NodeGrid grid, U64 index)
 {
   MG_NodeArray result = {0};
   if(0 <= index && index < grid.y_stride)
@@ -596,7 +596,7 @@ mg_column_from_index(Arena *arena, MG_NodeGrid grid, U64 index)
 MD_Node *
 mg_node_from_grid_xy(MG_NodeGrid grid, U64 x, U64 y)
 {
-  MD_Node *result = &md_nil_node;
+  MD_Node* result = &md_nil_node;
   U64 idx = x*grid.x_stride + y*grid.y_stride;
   if(0 <= idx && idx < grid.cells.count)
   {
@@ -606,7 +606,7 @@ mg_node_from_grid_xy(MG_NodeGrid grid, U64 x, U64 y)
 }
 
 MG_ColumnDescArray
-mg_column_desc_array_make(Arena *arena, U64 count, MG_ColumnDesc *descs)
+mg_column_desc_array_make(Arena* arena, U64 count, MG_ColumnDesc* descs)
 {
   MG_ColumnDescArray result = {0};
   result.count = count;
@@ -616,7 +616,7 @@ mg_column_desc_array_make(Arena *arena, U64 count, MG_ColumnDesc *descs)
 }
 
 MG_ColumnDescArray
-mg_column_desc_array_from_tag(Arena *arena, MD_Node *tag)
+mg_column_desc_array_from_tag(Arena* arena, MD_Node* tag)
 {
   MG_ColumnDescArray result = {0};
   result.count = md_child_count_from_node(tag);
@@ -657,12 +657,12 @@ mg_column_index_from_name(MG_ColumnDescArray descs, String8 name)
 }
 
 String8
-mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 idx)
+mg_string_from_row_desc_idx(MD_Node* row_parent, MG_ColumnDescArray descs, U64 idx)
 {
   String8 result = {0};
   
   // rjf: grab relevant column description
-  MG_ColumnDesc *desc = 0;
+  MG_ColumnDesc* desc = 0;
   if(0 <= idx && idx < descs.count)
   {
     desc = descs.v + idx;
@@ -686,21 +686,21 @@ mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 i
             cell_idx -= 1;
           }
         }
-        MD_Node *node = md_child_from_index(row_parent, cell_idx);
+        MD_Node* node = md_child_from_index(row_parent, cell_idx);
         result = node->string;
       }break;
       
       case MG_ColumnKind_CheckForTag:
       {
         String8 tag_name = desc->name;
-        MD_Node *tag = md_tag_from_string(row_parent, tag_name, 0);
+        MD_Node* tag = md_tag_from_string(row_parent, tag_name, 0);
         result = md_node_is_nil(tag) ? str8_lit("0") : str8_lit("1");
       }break;
       
       case MG_ColumnKind_TagChild:
       {
         String8 tag_name = desc->tag_name;
-        MD_Node *tag = md_tag_from_string(row_parent, tag_name, 0);
+        MD_Node* tag = md_tag_from_string(row_parent, tag_name, 0);
         result = tag->first->string;
       }break;
     }
@@ -710,7 +710,7 @@ mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 i
 }
 
 S64
-mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
+mg_eval_table_expand_expr__numeric(MG_StrExpr* expr, MG_TableExpandInfo* info)
 {
   S64 result = 0;
   MG_StrExprOp op = expr->op;
@@ -803,7 +803,7 @@ mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
 }
 
 void
-mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpandInfo *info, String8List *out)
+mg_eval_table_expand_expr__string(Arena* arena, MG_StrExpr* expr, MG_TableExpandInfo* info, String8List* out)
 {
   MG_StrExprOp op = expr->op;
   
@@ -835,10 +835,10 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
     case MG_StrExprOp_Dot:
     {
       // rjf: grab left/right
-      MG_StrExpr *left_expr = expr->left;
-      MD_Node *left_node = left_expr->node;
-      MG_StrExpr *right_expr = expr->right;
-      MD_Node *right_node = right_expr->node;
+      MG_StrExpr* left_expr = expr->left;
+      MD_Node* left_node = left_expr->node;
+      MG_StrExpr* right_expr = expr->right;
+      MD_Node* right_node = right_expr->node;
       
       // rjf: grab table name (LHS of .) and column lookup string (RHS of .)
       String8 expand_label = left_node->string;
@@ -846,10 +846,10 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       
       // rjf: find which task corresponds to this table
       U64 row_idx = 0;
-      MG_NodeGrid *grid = 0;
+      MG_NodeGrid* grid = 0;
       MG_ColumnDescArray column_descs = {0};
       {
-        for(MG_TableExpandTask *task = info->first_expand_task; task != 0; task = task->next)
+        for(MG_TableExpandTask* task = info->first_expand_task; task != 0; task = task->next)
         {
           if(str8_match(expand_label, task->expansion_label, 0))
           {
@@ -862,7 +862,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       }
       
       // rjf: grab row parent
-      MD_Node *row_parent = &md_nil_node;
+      MD_Node* row_parent = &md_nil_node;
       if(grid && (0 <= row_idx && row_idx < grid->row_parents.count))
       {
         row_parent = grid->row_parents.v[row_idx];
@@ -941,7 +941,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
 }
 
 void
-mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo *info, MG_TableExpandTask *task, String8List *out)
+mg_loop_table_column_expansion(Arena* arena, String8 strexpr, MG_TableExpandInfo* info, MG_TableExpandTask* task, String8List* out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   for(U64 it_idx = 0; it_idx < task->count; it_idx += 1)
@@ -1022,7 +1022,7 @@ mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo
 }
 
 String8List
-mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node *gen)
+mg_string_list_from_table_gen(Arena* arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node* gen)
 {
   String8List result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -1034,21 +1034,21 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
   else for MD_EachNode(strexpr_node, gen->first)
   {
     // rjf: build task list
-    MG_TableExpandTask *first_task = 0;
-    MG_TableExpandTask *last_task = 0;
+    MG_TableExpandTask* first_task = 0;
+    MG_TableExpandTask* last_task = 0;
     for MD_EachNode(tag, strexpr_node->first_tag)
     {
       if(str8_match(tag->string, str8_lit("expand"), 0))
       {
         // rjf: grab args for this expansion
-        MD_Node *table_name_node = md_child_from_index(tag, 0);
-        MD_Node *expand_label_node = md_child_from_index(tag, 1);
+        MD_Node* table_name_node = md_child_from_index(tag, 0);
+        MD_Node* expand_label_node = md_child_from_index(tag, 1);
         String8 table_name = table_name_node->string;
         String8 expand_label = expand_label_node->string;
         
         // rjf: lookup table / column descriptions
-        MG_NodeGrid *grid = mg_map_ptr_from_string(&grid_name_map, table_name);
-        MG_ColumnDescArray *column_descs = mg_map_ptr_from_string(&grid_column_desc_map, table_name);
+        MG_NodeGrid* grid = mg_map_ptr_from_string(&grid_name_map, table_name);
+        MG_ColumnDescArray* column_descs = mg_map_ptr_from_string(&grid_column_desc_map, table_name);
         
         // rjf: figure out row count
         U64 grid_row_count = 0;
@@ -1060,7 +1060,7 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
         // rjf: push task for this expansion
         if(grid != 0)
         {
-          MG_TableExpandTask *task = push_array(scratch.arena, MG_TableExpandTask, 1);
+          MG_TableExpandTask* task = push_array(scratch.arena, MG_TableExpandTask, 1);
           task->expansion_label = expand_label;
           task->grid = grid;
           task->column_descs = *column_descs;
@@ -1115,9 +1115,9 @@ mg_layer_from_key(String8 key)
 {
   U64 hash = mg_hash_from_string(key);
   U64 slot_idx = hash%mg_state->slots_count;
-  MG_LayerSlot *slot = &mg_state->slots[slot_idx];
-  MG_Layer *layer = 0;
-  for(MG_LayerNode *n = slot->first; n != 0; n = n->next)
+  MG_LayerSlot* slot = &mg_state->slots[slot_idx];
+  MG_Layer* layer = 0;
+  for(MG_LayerNode* n = slot->first; n != 0; n = n->next)
   {
     if(str8_match(n->v.key, key, 0))
     {
@@ -1127,7 +1127,7 @@ mg_layer_from_key(String8 key)
   }
   if(layer == 0)
   {
-    MG_LayerNode *n = push_array(mg_arena, MG_LayerNode, 1);
+    MG_LayerNode* n = push_array(mg_arena, MG_LayerNode, 1);
     SLLQueuePush(slot->first, slot->last, n);
     n->v.key = push_str8_copy(mg_arena, key);
     layer = &n->v;

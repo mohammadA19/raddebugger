@@ -6,15 +6,15 @@
 #ifndef DRAW_META_H
 #define DRAW_META_H
 
-struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
-struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
-struct DR_ClipNode {DR_ClipNode *next; Rng2F32 v;};
-struct DR_TransparencyNode {DR_TransparencyNode *next; F32 v;};
+struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode* next; R_Tex2DSampleKind v;};
+struct DR_XForm2DNode {DR_XForm2DNode* next; Mat3x3F32 v;};
+struct DR_ClipNode {DR_ClipNode* next; Rng2F32 v;};
+struct DR_TransparencyNode {DR_TransparencyNode* next; F32 v;};
 #define DR_BucketStackDecls struct{\
-DR_Tex2DSampleKindNode *top_tex2d_sample_kind;\
-DR_XForm2DNode *top_xform2d;\
-DR_ClipNode *top_clip;\
-DR_TransparencyNode *top_transparency;\
+DR_Tex2DSampleKindNode* top_tex2d_sample_kind;\
+DR_XForm2DNode* top_xform2d;\
+DR_ClipNode* top_clip;\
+DR_TransparencyNode* top_transparency;\
 }
 read_only static DR_Tex2DSampleKindNode dr_nil_tex2d_sample_kind = {0, R_Tex2DSampleKind_Nearest};
 read_only static DR_XForm2DNode dr_nil_xform2d = {0, {1, 0, 0, 0, 1, 0, 0, 0, 1}};

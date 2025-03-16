@@ -5,23 +5,23 @@
 //~ rjf: Generated Code
 
 #define DR_StackPushImpl(name_upper, name_lower, type, val) \
-DR_Bucket *bucket = dr_top_bucket();\
+DR_Bucket* bucket = dr_top_bucket();\
 type old_val = bucket->top_##name_lower->v;\
-DR_##name_upper##Node *node = push_array(dr_thread_ctx->arena, DR_##name_upper##Node, 1);\
+DR_##name_upper##Node* node = push_array(dr_thread_ctx->arena, DR_##name_upper##Node, 1);\
 node->v = (val);\
 SLLStackPush(bucket->top_##name_lower, node);\
 bucket->stack_gen += 1;\
 return old_val
 
 #define DR_StackPopImpl(name_upper, name_lower, type) \
-DR_Bucket *bucket = dr_top_bucket();\
+DR_Bucket* bucket = dr_top_bucket();\
 type popped_val = bucket->top_##name_lower->v;\
 SLLStackPop(bucket->top_##name_lower);\
 bucket->stack_gen += 1;\
 return popped_val
 
 #define DR_StackTopImpl(name_upper, name_lower, type) \
-DR_Bucket *bucket = dr_top_bucket();\
+DR_Bucket* bucket = dr_top_bucket();\
 type top_val = bucket->top_##name_lower->v;\
 return top_val
 
@@ -45,9 +45,9 @@ dr_hash_from_string(String8 string)
 //~ rjf: Fancy String Type Functions
 
 void
-dr_fancy_string_list_push(Arena *arena, DR_FancyStringList *list, DR_FancyString *str)
+dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString* str)
 {
-  DR_FancyStringNode *n = push_array_no_zero(arena, DR_FancyStringNode, 1);
+  DR_FancyStringNode* n = push_array_no_zero(arena, DR_FancyStringNode, 1);
   MemoryCopyStruct(&n->v, str);
   SLLQueuePush(list->first, list->last, n);
   list->node_count += 1;
@@ -55,7 +55,7 @@ dr_fancy_string_list_push(Arena *arena, DR_FancyStringList *list, DR_FancyString
 }
 
 void
-dr_fancy_string_list_concat_in_place(DR_FancyStringList *dst, DR_FancyStringList *to_push)
+dr_fancy_string_list_concat_in_place(DR_FancyStringList* dst, DR_FancyStringList* to_push)
 {
   if(dst->last != 0 && to_push->first != 0)
   {
@@ -72,13 +72,13 @@ dr_fancy_string_list_concat_in_place(DR_FancyStringList *dst, DR_FancyStringList
 }
 
 String8
-dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
+dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list)
 {
   String8 result = {0};
   result.size = list->total_size;
   result.str = push_array_no_zero(arena, U8, result.size);
   U64 idx = 0;
-  for(DR_FancyStringNode *n = list->first; n != 0; n = n->next)
+  for(DR_FancyStringNode* n = list->first; n != 0; n = n->next)
   {
     MemoryCopy(result.str+idx, n->v.string.str, n->v.string.size);
     idx += n->v.string.size;
@@ -87,14 +87,14 @@ dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
 }
 
 DR_FancyRunList
-dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList *strs)
+dr_fancy_run_list_from_fancy_string_list(Arena* arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList* strs)
 {
   ProfBeginFunction();
   DR_FancyRunList run_list = {0};
   F32 base_align_px = 0;
-  for(DR_FancyStringNode *n = strs->first; n != 0; n = n->next)
+  for(DR_FancyStringNode* n = strs->first; n != 0; n = n->next)
   {
-    DR_FancyRunNode *dst_n = push_array(arena, DR_FancyRunNode, 1);
+    DR_FancyRunNode* dst_n = push_array(arena, DR_FancyRunNode, 1);
     dst_n->v.run = fnt_push_run_from_string(arena, n->v.font, n->v.size, base_align_px, tab_size_px, flags, n->v.string);
     dst_n->v.color = n->v.color;
     dst_n->v.underline_thickness = n->v.underline_thickness;
@@ -110,12 +110,12 @@ dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_Rast
 }
 
 DR_FancyRunList
-dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src)
+dr_fancy_run_list_copy(Arena* arena, DR_FancyRunList* src)
 {
   DR_FancyRunList dst = {0};
-  for(DR_FancyRunNode *src_n = src->first; src_n != 0; src_n = src_n->next)
+  for(DR_FancyRunNode* src_n = src->first; src_n != 0; src_n = src_n->next)
   {
-    DR_FancyRunNode *dst_n = push_array(arena, DR_FancyRunNode, 1);
+    DR_FancyRunNode* dst_n = push_array(arena, DR_FancyRunNode, 1);
     SLLQueuePush(dst.first, dst.last, dst_n);
     MemoryCopyStruct(&dst_n->v, &src_n->v);
     dst_n->v.run.pieces = fnt_piece_array_copy(arena, &src_n->v.run.pieces);
@@ -135,7 +135,7 @@ dr_begin_frame()
 {
   if(dr_thread_ctx == 0)
   {
-    Arena *arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(8));
+    Arena* arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(8));
     dr_thread_ctx = push_array(arena, DR_ThreadCtx, 1);
     dr_thread_ctx->arena = arena;
     dr_thread_ctx->arena_frame_start_pos = arena_pos(arena);
@@ -146,7 +146,7 @@ dr_begin_frame()
 }
 
 void
-dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
+dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket* bucket)
 {
   r_window_submit(os_window, r_window, &bucket->passes);
 }
@@ -159,15 +159,15 @@ dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 DR_Bucket *
 dr_bucket_make()
 {
-  DR_Bucket *bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
+  DR_Bucket* bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
   DR_BucketStackInits(bucket);
   return bucket;
 }
 
 void
-dr_push_bucket(DR_Bucket *bucket)
+dr_push_bucket(DR_Bucket* bucket)
 {
-  DR_BucketSelectionNode *node = dr_thread_ctx->free_bucket_selection;
+  DR_BucketSelectionNode* node = dr_thread_ctx->free_bucket_selection;
   if(node)
   {
     SLLStackPop(dr_thread_ctx->free_bucket_selection);
@@ -183,7 +183,7 @@ dr_push_bucket(DR_Bucket *bucket)
 void
 dr_pop_bucket()
 {
-  DR_BucketSelectionNode *node = dr_thread_ctx->top_bucket;
+  DR_BucketSelectionNode* node = dr_thread_ctx->top_bucket;
   SLLStackPop(dr_thread_ctx->top_bucket);
   SLLStackPush(dr_thread_ctx->free_bucket_selection, node);
 }
@@ -191,7 +191,7 @@ dr_pop_bucket()
 DR_Bucket *
 dr_top_bucket()
 {
-  DR_Bucket *bucket = 0;
+  DR_Bucket* bucket = 0;
   if(dr_thread_ctx->top_bucket != 0)
   {
     bucket = dr_thread_ctx->top_bucket->bucket;
@@ -216,12 +216,12 @@ dr_top_bucket()
 inline R_Rect2DInst *
 dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
-  R_PassParams_UI *params = pass->params_ui;
-  R_BatchGroup2DList *rects = &params->rects;
-  R_BatchGroup2DNode *node = rects->last;
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
+  R_PassParams_UI* params = pass->params_ui;
+  R_BatchGroup2DList* rects = &params->rects;
+  R_BatchGroup2DNode* node = rects->last;
   if(node == 0 || bucket->stack_gen != bucket->last_cmd_stack_gen)
   {
     node = push_array(arena, R_BatchGroup2DNode, 1);
@@ -234,7 +234,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
     node->params.clip            = bucket->top_clip->v;
     node->params.transparency    = bucket->top_transparency->v;
   }
-  R_Rect2DInst *inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
+  R_Rect2DInst* inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
   inst->dst = dst;
   inst->src = r2f32p(0, 0, 0, 0);
   inst->colors[Corner_00] = color;
@@ -257,12 +257,12 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
 inline R_Rect2DInst *
 dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
-  R_PassParams_UI *params = pass->params_ui;
-  R_BatchGroup2DList *rects = &params->rects;
-  R_BatchGroup2DNode *node = rects->last;
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
+  R_PassParams_UI* params = pass->params_ui;
+  R_BatchGroup2DList* rects = &params->rects;
+  R_BatchGroup2DNode* node = rects->last;
   if(node != 0 && bucket->stack_gen == bucket->last_cmd_stack_gen && r_handle_match(node->params.tex, r_handle_zero()))
   {
     node->params.tex = texture;
@@ -279,7 +279,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
     node->params.clip            = bucket->top_clip->v;
     node->params.transparency    = bucket->top_transparency->v;
   }
-  R_Rect2DInst *inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
+  R_Rect2DInst* inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
   inst->dst = dst;
   inst->src = src;
   inst->colors[Corner_00] = color;
@@ -302,10 +302,10 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
 R_PassParams_Blur *
 dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Blur);
-  R_PassParams_Blur *params = pass->params_blur;
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Blur);
+  R_PassParams_Blur* params = pass->params_blur;
   params->rect = rect;
   params->clip = dr_top_clip();
   params->blur_size = blur_size;
@@ -321,10 +321,10 @@ dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 R_PassParams_Geo3D *
 dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
-  R_PassParams_Geo3D *params = pass->params_geo3d;
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
+  R_PassParams_Geo3D* params = pass->params_geo3d;
   params->viewport = viewport;
   params->view = view;
   params->projection = projection;
@@ -336,10 +336,10 @@ dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 R_Mesh3DInst *
 dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
-  R_PassParams_Geo3D *params = pass->params_geo3d;
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
+  R_PassParams_Geo3D* params = pass->params_geo3d;
   
   // rjf: mesh batch map not made yet -> make
   if(params->mesh_batches.slots_count == 0)
@@ -369,9 +369,9 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   }
   
   // rjf: map hash -> existing batch group node
-  R_BatchGroup3DMapNode *node = 0;
+  R_BatchGroup3DMapNode* node = 0;
   {
-    for(R_BatchGroup3DMapNode *n = params->mesh_batches.slots[slot_idx]; n != 0; n = n->next)
+    for(R_BatchGroup3DMapNode* n = params->mesh_batches.slots[slot_idx]; n != 0; n = n->next)
     {
       if(n->hash == hash)
       {
@@ -398,7 +398,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   }
   
   // rjf: push new instance to batch group
-  R_Mesh3DInst *inst = (R_Mesh3DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
+  R_Mesh3DInst* inst = (R_Mesh3DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
   inst->xform = inst_xform;
   return inst;
 }
@@ -406,30 +406,30 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
 //- rjf: collating one pre-prepped bucket into parent bucket
 
 void
-dr_sub_bucket(DR_Bucket *bucket)
+dr_sub_bucket(DR_Bucket* bucket)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *src = bucket;
-  DR_Bucket *dst = dr_top_bucket();
+  Arena* arena = dr_thread_ctx->arena;
+  DR_Bucket* src = bucket;
+  DR_Bucket* dst = dr_top_bucket();
   Rng2F32 dst_clip = dr_top_clip();
   B32 dst_clip_is_set = !(dst_clip.x0 == 0 && dst_clip.x1 == 0 &&
                           dst_clip.y0 == 0 && dst_clip.y1 == 0);
-  for(R_PassNode *n = src->passes.first; n != 0; n = n->next)
+  for(R_PassNode* n = src->passes.first; n != 0; n = n->next)
   {
-    R_Pass *src_pass = &n->v;
-    R_Pass *dst_pass = r_pass_from_kind(arena, &dst->passes, src_pass->kind);
+    R_Pass* src_pass = &n->v;
+    R_Pass* dst_pass = r_pass_from_kind(arena, &dst->passes, src_pass->kind);
     switch(dst_pass->kind)
     {
       default:{dst_pass->params = src_pass->params;}break;
       case R_PassKind_UI:
       {
-        R_PassParams_UI *src_ui = src_pass->params_ui;
-        R_PassParams_UI *dst_ui = dst_pass->params_ui;
-        for(R_BatchGroup2DNode *src_group_n = src_ui->rects.first;
+        R_PassParams_UI* src_ui = src_pass->params_ui;
+        R_PassParams_UI* dst_ui = dst_pass->params_ui;
+        for(R_BatchGroup2DNode* src_group_n = src_ui->rects.first;
             src_group_n != 0;
             src_group_n = src_group_n->next)
         {
-          R_BatchGroup2DNode *dst_group_n = push_array(arena, R_BatchGroup2DNode, 1);
+          R_BatchGroup2DNode* dst_group_n = push_array(arena, R_BatchGroup2DNode, 1);
           SLLQueuePush(dst_ui->rects.first, dst_ui->rects.last, dst_group_n);
           dst_ui->rects.count += 1;
           MemoryCopyStruct(&dst_group_n->params, &src_group_n->params);
@@ -455,7 +455,7 @@ dr_sub_bucket(DR_Bucket *bucket)
 //- rjf: text
 
 void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run trailer_run)
+dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList* list, F32 max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
@@ -467,19 +467,19 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run
   B32 trailer_found = 0;
   Vec4F32 last_color = {0};
   U64 byte_off = 0;
-  for(DR_FancyRunNode *n = list->first; n != 0; n = n->next)
+  for(DR_FancyRunNode* n = list->first; n != 0; n = n->next)
   {
-    DR_FancyRun *fr = &n->v;
+    DR_FancyRun* fr = &n->v;
     Rng1F32 pixel_range = {0};
     {
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
-    FNT_Piece *piece_first = fr->run.pieces.v;
-    FNT_Piece *piece_opl = piece_first + fr->run.pieces.count;
+    FNT_Piece* piece_first = fr->run.pieces.v;
+    FNT_Piece* piece_opl = piece_first + fr->run.pieces.count;
     F32 pre_advance = advance;
     last_color = fr->color;
-    for(FNT_Piece *piece = piece_first;
+    for(FNT_Piece* piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
@@ -530,11 +530,11 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run
   //- rjf: draw trailer
   if(trailer_found)
   {
-    FNT_Piece *piece_first = trailer_run.pieces.v;
-    FNT_Piece *piece_opl = piece_first + trailer_run.pieces.count;
+    FNT_Piece* piece_first = trailer_run.pieces.v;
+    FNT_Piece* piece_opl = piece_first + trailer_run.pieces.count;
     F32 pre_advance = advance;
     Vec4F32 trailer_piece_color = last_color;
-    for(FNT_Piece *piece = piece_first;
+    for(FNT_Piece* piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
@@ -558,9 +558,9 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run
 }
 
 void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList* list, F32 max_x, FuzzyMatchRangeList* ranges, Vec4F32 color)
 {
-  for(FuzzyMatchRangeNode *match_n = ranges->first; match_n != 0; match_n = match_n->next)
+  for(FuzzyMatchRangeNode* match_n = ranges->first; match_n != 0; match_n = match_n->next)
   {
     Rng1U64 byte_range = match_n->range;
     Rng1F32 pixel_range = {0};
@@ -573,15 +573,15 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x
     F32 advance = 0;
     F32 ascent = 0;
     F32 descent = 0;
-    for(DR_FancyRunNode *fr_n = list->first; fr_n != 0; fr_n = fr_n->next)
+    for(DR_FancyRunNode* fr_n = list->first; fr_n != 0; fr_n = fr_n->next)
     {
-      DR_FancyRun *fr = &fr_n->v;
-      FNT_Run *run = &fr->run;
+      DR_FancyRun* fr = &fr_n->v;
+      FNT_Run* run = &fr->run;
       ascent = run->ascent;
       descent = run->descent;
       for(U64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
       {
-        FNT_Piece *piece = &run->pieces.v[piece_idx];
+        FNT_Piece* piece = &run->pieces.v[piece_idx];
         if(contains_1u64(byte_range, byte_off))
         {
           F32 pre_advance  = advance + piece->offset.x;
@@ -611,9 +611,9 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 {
   ProfBeginFunction();
   F32 advance = 0;
-  FNT_Piece *piece_first = run.pieces.v;
-  FNT_Piece *piece_opl = piece_first + run.pieces.count;
-  for(FNT_Piece *piece = piece_first;
+  FNT_Piece* piece_first = run.pieces.v;
+  FNT_Piece* piece_opl = piece_first + run.pieces.count;
+  for(FNT_Piece* piece = piece_first;
       piece < piece_opl;
       piece += 1)
   {

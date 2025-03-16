@@ -5,14 +5,14 @@
 //~ rjf: Top-Level Layer Initialization
 
 void
-async_init(CmdLine *cmdline)
+async_init(CmdLine* cmdline)
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   async_shared = push_array(arena, ASYNC_Shared, 1);
   async_shared->arena = arena;
   for EachEnumVal(ASYNC_Priority, p)
   {
-    ASYNC_Ring *ring = &async_shared->rings[p];
+    ASYNC_Ring* ring = &async_shared->rings[p];
     ring->ring_size  = MB(8);
     ring->ring_base  = push_array_no_zero(arena, U8, ring->ring_size);
     ring->ring_mutex = os_mutex_alloc();
@@ -45,10 +45,10 @@ async_thread_count()
 //~ rjf: Work Kickoffs
 
 B32
-async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
+async_push_work_(ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params)
 {
   // rjf: choose ring
-  ASYNC_Ring *ring = &async_shared->rings[params->priority];
+  ASYNC_Ring* ring = &async_shared->rings[params->priority];
   
   // rjf: build work package 
   ASYNC_Work work = {0};
@@ -114,18 +114,18 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
 //~ rjf: Task-Based Work Helper
 
 void
-async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
+async_task_list_push(Arena* arena, ASYNC_TaskList* list, ASYNC_Task* t)
 {
-  ASYNC_TaskNode *n = push_array(arena, ASYNC_TaskNode, 1);
+  ASYNC_TaskNode* n = push_array(arena, ASYNC_TaskNode, 1);
   SLLQueuePush(list->first, list->last, n);
   n->v = t;
   list->count += 1;
 }
 
 ASYNC_Task *
-async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
+async_task_launch_(Arena* arena, ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params)
 {
-  ASYNC_Task *task = push_array(arena, ASYNC_Task, 1);
+  ASYNC_Task* task = push_array(arena, ASYNC_Task, 1);
   task->semaphore = os_semaphore_alloc(1, 1, str8_zero());
   ASYNC_WorkParams params_refined = {0};
   MemoryCopyStruct(&params_refined, params);
@@ -140,9 +140,9 @@ async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_Wo
 }
 
 void *
-async_task_join(ASYNC_Task *task)
+async_task_join(ASYNC_Task* task)
 {
-  void *result = 0;
+  void* result = 0;
   if(task != 0 && !os_handle_match(task->semaphore, os_handle_zero()))
   {
     os_semaphore_take(task->semaphore, max_U64);
@@ -167,7 +167,7 @@ async_pop_work()
   {
     for(ASYNC_Priority priority = ASYNC_Priority_High;; priority = (ASYNC_Priority)(priority - 1))
     {
-      ASYNC_Ring *ring = &async_shared->rings[priority];
+      ASYNC_Ring* ring = &async_shared->rings[priority];
       OS_MutexScope(ring->ring_mutex)
       {
         U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
@@ -203,7 +203,7 @@ async_execute_work(ASYNC_Work work)
 {
   //- rjf: run work
   async_work_thread_depth += 1;
-  void *work_out = work.work_function(async_work_thread_idx, work.input);
+  void* work_out = work.work_function(async_work_thread_idx, work.input);
   async_work_thread_depth -= 1;
   
   //- rjf: store output
@@ -229,7 +229,7 @@ async_execute_work(ASYNC_Work work)
 //~ rjf: Work Thread Entry Point
 
 void
-async_work_thread__entry_point(void *p)
+async_work_thread__entry_point(void* p)
 {
   U64 thread_idx = (U64)p;
   ThreadNameF("[async] work thread #%I64u", thread_idx);

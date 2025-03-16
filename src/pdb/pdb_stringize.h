@@ -7,6 +7,6 @@
 ////////////////////////////////
 //~ PDB Stringize Functions
 
-void pdb_stringize_tpi_hash(Arena *arena, String8List *out, PDB_TpiHashParsed *hash);
+void pdb_stringize_tpi_hash(Arena* arena, String8List* out, PDB_TpiHashParsed* hash);
 
 #endif // PDB_STRINGIZE_H

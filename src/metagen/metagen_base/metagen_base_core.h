@@ -283,8 +283,8 @@ CheckNil(nil,p) ? \
 
 #if ASAN_ENABLED
 #pragma comment(lib, "clang_rt.asan-x86_64.lib")
-C_LINKAGE void __asan_poison_memory_region(void const volatile *addr, size_t size);
-C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t size);
+C_LINKAGE void __asan_poison_memory_region(void const volatile* addr, size_t size);
+C_LINKAGE void __asan_unpoison_memory_region(void const volatile* addr, size_t size);
 # define AsanPoisonMemoryRegion(addr, size)   __asan_poison_memory_region((addr), (size))
 # define AsanUnpoisonMemoryRegion(addr, size) __asan_unpoison_memory_region((addr), (size))
 #else
@@ -736,7 +736,7 @@ F32 sign_from_side_F32(Side side);
 ////////////////////////////////
 //~ rjf: Memory Functions
 
-B32 memory_is_zero(void *ptr, U64 size);
+B32 memory_is_zero(void* ptr, U64 size);
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
@@ -771,8 +771,8 @@ DateTime date_time_from_micro_seconds(U64 time);
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-U64 ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size);
-U64 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size);
+U64 ring_write(U8* ring_base, U64 ring_size, U64 ring_pos, void* src_data, U64 src_data_size);
+U64 ring_read(U8* ring_base, U64 ring_size, U64 ring_pos, void* dst_data, U64 read_size);
 #define ring_write_struct(ring_base, ring_size, ring_pos, ptr) ring_write((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 #define ring_read_struct(ring_base, ring_size, ring_pos, ptr) ring_read((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 

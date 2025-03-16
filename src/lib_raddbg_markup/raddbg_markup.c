@@ -14,12 +14,12 @@ typedef unsigned long ULONG;
 typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
 typedef unsigned long DWORD;
 typedef wchar_t WCHAR;
-typedef char const *LPCSTR;
-typedef const WCHAR *LPCWSTR, *PCWSTR;
+typedef char const* LPCSTR;
+typedef const WCHAR* LPCWSTR, *PCWSTR;
 typedef LONG HRESULT;
-typedef void *HANDLE;
+typedef void* HANDLE;
 struct HINSTANCE__;
-struct HINSTANCE__ *HMODULE;
+struct HINSTANCE__* HMODULE;
 typedef __int64 INT_PTR;
 typedef INT_PTR (*FARPROC)();
 
@@ -36,7 +36,7 @@ extern "C"
   __declspec(dllimport) BOOL FreeLibrary(HMODULE mod);
   __declspec(dllimport) HANDLE GetCurrentThread();
   __declspec(dllimport) DWORD GetCurrentThreadId();
-  __declspec(dllimport) void RaiseException(DWORD dwExceptionCode, DWORD dwExceptionFlags, DWORD nNumberOfArguments, const ULONG_PTR *lpArguments);
+  __declspec(dllimport) void RaiseException(DWORD dwExceptionCode, DWORD dwExceptionFlags, DWORD nNumberOfArguments, const ULONG_PTR* lpArguments);
   long long _InterlockedCompareExchange64(long long volatile*, long long, long long);
   long long _InterlockedExchangeAdd64(long long volatile*, long long);
 #pragma intrinsic(_InterlockedCompareExchange64)
@@ -56,7 +56,7 @@ struct RADDBG_MARKUP_UnicodeDecode
 static __int8 raddbg_utf8_class[32] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,2,2,2,2,3,3,4,5};
 
 static inline RADDBG_MARKUP_UnicodeDecode
-raddbg_decode_utf8(char *str, unsigned __int64 max)
+raddbg_decode_utf8(char* str, unsigned __int64 max)
 {
   RADDBG_MARKUP_UnicodeDecode result = {1, 0xffffffff};
   unsigned __int8 byte = str[0];
@@ -111,7 +111,7 @@ raddbg_decode_utf8(char *str, unsigned __int64 max)
 }
 
 static inline unsigned __int32
-raddbg_encode_utf16(wchar_t *str, unsigned __int32 codepoint)
+raddbg_encode_utf16(wchar_t* str, unsigned __int32 codepoint)
 {
   unsigned __int32 inc = 1;
   if(codepoint == 0xffffffff)
@@ -142,11 +142,11 @@ raddbg_is_attached__impl()
 }
 
 static inline void
-raddbg_thread_name__impl(char *fmt, ...)
+raddbg_thread_name__impl(char* fmt, ...)
 {
   // rjf: resolve variadic arguments
   char buffer[512] = {0};
-  char *name = buffer;
+  char* name = buffer;
   {
     va_list args;
     va_start(args, fmt);
@@ -229,13 +229,13 @@ raddbg_thread_color__impl(unsigned int hexcode)
 #define raddbg_break__impl() (__debugbreak())
 
 static inline void
-raddbg_watch__impl(char *fmt, ...)
+raddbg_watch__impl(char* fmt, ...)
 {
   // TODO(rjf)
 }
 
 static inline void
-raddbg_log__impl(char *fmt, ...)
+raddbg_log__impl(char* fmt, ...)
 {
   // TODO(rjf)
 }

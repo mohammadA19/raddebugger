@@ -51,7 +51,7 @@ frame()
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   OS_EventList events = os_get_events(scratch.arena, 0);
-  for(OS_Event *ev = events.first; ev != 0; ev = ev->next)
+  for(OS_Event* ev = events.first; ev != 0; ev = ev->next)
   {
     if(ev->kind != OS_EventKind_MouseMove)
     {
@@ -65,7 +65,7 @@ frame()
       *(int *)0 = 0;
     }
   }
-  for(OS_Event *ev = events.first; ev != 0; ev = ev->next)
+  for(OS_Event* ev = events.first; ev != 0; ev = ev->next)
   {
     if(ev->kind == OS_EventKind_WindowClose)
     {
@@ -78,7 +78,7 @@ frame()
 }
 
 void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   OS_Handle window = os_window_open(v2f32(1280, 720), 0, str8_lit("Window"));
   os_window_first_paint(window);

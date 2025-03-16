@@ -16,7 +16,7 @@ enum
 
 struct E_Op
 {
-  E_Op *next;
+  E_Op* next;
   RDI_EvalOp opcode;
   E_Value value;
   String8 string;
@@ -24,8 +24,8 @@ struct E_Op
 
 struct E_OpList
 {
-  E_Op *first;
-  E_Op *last;
+  E_Op* first;
+  E_Op* last;
   U64 op_count;
   U64 encoded_size;
 }
@@ -35,9 +35,9 @@ struct E_OpList
 
 struct E_IRNode
 {
-  E_IRNode *first;
-  E_IRNode *last;
-  E_IRNode *next;
+  E_IRNode* first;
+  E_IRNode* last;
+  E_IRNode* next;
   RDI_EvalOp op;
   String8 string;
   E_Value value;
@@ -45,7 +45,7 @@ struct E_IRNode
 
 struct E_IRTreeAndType
 {
-  E_IRNode *root;
+  E_IRNode* root;
   E_TypeKey type_key;
   E_Mode mode;
   E_Space space;
@@ -57,14 +57,14 @@ struct E_IRTreeAndType
 
 struct E_IRCtx
 {
-  E_String2ExprMap *macro_map;
+  E_String2ExprMap* macro_map;
 }
 
 ////////////////////////////////
 //~ rjf: Globals
 
 static read_only E_IRNode e_irnode_nil = {&e_irnode_nil, &e_irnode_nil, &e_irnode_nil};
-thread_static E_IRCtx *e_ir_ctx = 0;
+thread_static E_IRCtx* e_ir_ctx = 0;
 
 ////////////////////////////////
 //~ rjf: Expr Kind Enum Functions
@@ -75,46 +75,46 @@ B32        e_expr_kind_is_comparison(E_ExprKind kind);
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-E_IRCtx *e_selected_ir_ctx();
-void e_select_ir_ctx(E_IRCtx *ctx);
+E_IRCtx* e_selected_ir_ctx();
+void e_select_ir_ctx(E_IRCtx* ctx);
 
 ////////////////////////////////
 //~ rjf: IR-ization Functions
 
 //- rjf: op list functions
-void e_oplist_push_op(Arena *arena, E_OpList *list, RDI_EvalOp opcode, E_Value value);
-void e_oplist_push_uconst(Arena *arena, E_OpList *list, U64 x);
-void e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x);
-void e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode);
-void e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space);
-void e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string);
-void e_oplist_concat_in_place(E_OpList *dst, E_OpList *to_push);
+void e_oplist_push_op(Arena* arena, E_OpList* list, RDI_EvalOp opcode, E_Value value);
+void e_oplist_push_uconst(Arena* arena, E_OpList* list, U64 x);
+void e_oplist_push_sconst(Arena* arena, E_OpList* list, S64 x);
+void e_oplist_push_bytecode(Arena* arena, E_OpList* list, String8 bytecode);
+void e_oplist_push_set_space(Arena* arena, E_OpList* list, E_Space space);
+void e_oplist_push_string_literal(Arena* arena, E_OpList* list, String8 string);
+void e_oplist_concat_in_place(E_OpList* dst, E_OpList* to_push);
 
 //- rjf: ir tree core building helpers
-E_IRNode *e_push_irnode(Arena *arena, RDI_EvalOp op);
-void e_irnode_push_child(E_IRNode *parent, E_IRNode *child);
+E_IRNode* e_push_irnode(Arena* arena, RDI_EvalOp op);
+void e_irnode_push_child(E_IRNode* parent, E_IRNode* child);
 
 //- rjf: ir subtree building helpers
-E_IRNode *e_irtree_const_u(Arena *arena, U64 v);
-E_IRNode *e_irtree_unary_op(Arena *arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode *c);
-E_IRNode *e_irtree_binary_op(Arena *arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode *l, E_IRNode *r);
-E_IRNode *e_irtree_binary_op_u(Arena *arena, RDI_EvalOp op, E_IRNode *l, E_IRNode *r);
-E_IRNode *e_irtree_conditional(Arena *arena, E_IRNode *c, E_IRNode *l, E_IRNode *r);
-E_IRNode *e_irtree_bytecode_no_copy(Arena *arena, String8 bytecode);
-E_IRNode *e_irtree_string_literal(Arena *arena, String8 string);
-E_IRNode *e_irtree_set_space(Arena *arena, E_Space space, E_IRNode *c);
-E_IRNode *e_irtree_mem_read_type(Arena *arena, E_Space space, E_IRNode *c, E_TypeKey type_key);
-E_IRNode *e_irtree_convert_lo(Arena *arena, E_IRNode *c, RDI_EvalTypeGroup out, RDI_EvalTypeGroup in);
-E_IRNode *e_irtree_trunc(Arena *arena, E_IRNode *c, E_TypeKey type_key);
-E_IRNode *e_irtree_convert_hi(Arena *arena, E_IRNode *c, E_TypeKey out, E_TypeKey in);
-E_IRNode *e_irtree_resolve_to_value(Arena *arena, E_Space from_space, E_Mode from_mode, E_IRNode *tree, E_TypeKey type_key);
+E_IRNode* e_irtree_const_u(Arena* arena, U64 v);
+E_IRNode* e_irtree_unary_op(Arena* arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode* c);
+E_IRNode* e_irtree_binary_op(Arena* arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode* l, E_IRNode* r);
+E_IRNode* e_irtree_binary_op_u(Arena* arena, RDI_EvalOp op, E_IRNode* l, E_IRNode* r);
+E_IRNode* e_irtree_conditional(Arena* arena, E_IRNode* c, E_IRNode* l, E_IRNode* r);
+E_IRNode* e_irtree_bytecode_no_copy(Arena* arena, String8 bytecode);
+E_IRNode* e_irtree_string_literal(Arena* arena, String8 string);
+E_IRNode* e_irtree_set_space(Arena* arena, E_Space space, E_IRNode* c);
+E_IRNode* e_irtree_mem_read_type(Arena* arena, E_Space space, E_IRNode* c, E_TypeKey type_key);
+E_IRNode* e_irtree_convert_lo(Arena* arena, E_IRNode* c, RDI_EvalTypeGroup out, RDI_EvalTypeGroup in);
+E_IRNode* e_irtree_trunc(Arena* arena, E_IRNode* c, E_TypeKey type_key);
+E_IRNode* e_irtree_convert_hi(Arena* arena, E_IRNode* c, E_TypeKey out, E_TypeKey in);
+E_IRNode* e_irtree_resolve_to_value(Arena* arena, E_Space from_space, E_Mode from_mode, E_IRNode* tree, E_TypeKey type_key);
 
 //- rjf: top-level irtree/type extraction
-E_IRTreeAndType e_irtree_and_type_from_expr(Arena *arena, E_Expr *expr);
+E_IRTreeAndType e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr);
 
 //- rjf: irtree -> linear ops/bytecode
-void e_append_oplist_from_irtree(Arena *arena, E_IRNode *root, E_OpList *out);
-E_OpList e_oplist_from_irtree(Arena *arena, E_IRNode *root);
-String8 e_bytecode_from_oplist(Arena *arena, E_OpList *oplist);
+void e_append_oplist_from_irtree(Arena* arena, E_IRNode* root, E_OpList* out);
+E_OpList e_oplist_from_irtree(Arena* arena, E_IRNode* root);
+String8 e_bytecode_from_oplist(Arena* arena, E_OpList* oplist);
 
 #endif // EVAL_IR_H

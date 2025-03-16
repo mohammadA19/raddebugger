@@ -5,7 +5,7 @@
 //~ rjf: Code Views
 
 void
-rd_code_view_init(RD_CodeViewState *cv)
+rd_code_view_init(RD_CodeViewState* cv)
 {
   if(cv->initialized == 0)
   {
@@ -18,7 +18,7 @@ rd_code_view_init(RD_CodeViewState *cv)
 }
 
 RD_CodeViewBuildResult
-rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
+rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo* text_info, DASM_LineArray* dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -41,8 +41,8 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   Vec2F32 code_area_dim = v2f32(panel_box_dim.x - scroll_bar_dim, panel_box_dim.y - scroll_bar_dim);
   S64 num_possible_visible_lines = (S64)(code_area_dim.y/code_line_height)+1;
-  CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-  CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
+  CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
+  CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
   
   //////////////////////////////
   //- rjf: unpack information about the viewed source file, if any
@@ -53,7 +53,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: process commands
   //
-  for(RD_Cmd *cmd = 0; rd_next_cmd(&cmd);)
+  for(RD_Cmd* cmd = 0; rd_next_cmd(&cmd);)
   {
     // rjf: mismatched window/panel => skip
     if(!rd_handle_match(rd_regs()->view, cmd->regs->view))
@@ -148,7 +148,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   Side search_query_side = Side_Invalid;
   B32 search_query_is_active = 0;
   {
-    RD_Window *window = rd_window_from_handle(rd_regs()->window);
+    RD_Window* window = rd_window_from_handle(rd_regs()->window);
     RD_CmdKind query_cmd_kind = rd_cmd_kind_from_string(window->query_cmd_name);
     if(query_cmd_kind == RD_CmdKind_FindTextForward ||
        query_cmd_kind == RD_CmdKind_FindTextBackward)
@@ -208,13 +208,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(!dasm_lines) ProfScope("find visible breakpoints for source code")
     {
       RD_EntityList bps = rd_query_cached_entity_list_with_kind(RD_EntityKind_Breakpoint);
-      for(RD_EntityNode *n = bps.first; n != 0; n = n->next)
+      for(RD_EntityNode* n = bps.first; n != 0; n = n->next)
       {
-        RD_Entity *bp = n->entity;
-        RD_Entity *loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
+        RD_Entity* bp = n->entity;
+        RD_Entity* loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
         if(visible_line_num_range.min <= loc->text_point.line && loc->text_point.line <= visible_line_num_range.max)
         {
-          for(String8Node *override_n = file_path_possible_overrides.first;
+          for(String8Node* override_n = file_path_possible_overrides.first;
               override_n != 0;
               override_n = override_n->next)
           {
@@ -232,25 +232,25 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: find live threads mapping to source code
     if(!dasm_lines) ProfScope("find live threads mapping to this file")
     {
-      CTRL_Entity *selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
+      CTRL_Entity* selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
       CTRL_EntityList threads = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Thread);
-      for(CTRL_EntityNode *thread_n = threads.first; thread_n != 0; thread_n = thread_n->next)
+      for(CTRL_EntityNode* thread_n = threads.first; thread_n != 0; thread_n = thread_n->next)
       {
-        CTRL_Entity *thread = thread_n->v;
-        CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
+        CTRL_Entity* thread = thread_n->v;
+        CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
         U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
         U64 inline_depth = (thread == selected_thread) ? rd_regs()->inline_depth : 0;
         U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
         U64 last_inst_on_unwound_rip_vaddr = rip_vaddr - !!unwind_count;
-        CTRL_Entity *module = ctrl_module_from_process_vaddr(process, last_inst_on_unwound_rip_vaddr);
+        CTRL_Entity* module = ctrl_module_from_process_vaddr(process, last_inst_on_unwound_rip_vaddr);
         U64 rip_voff = ctrl_voff_from_vaddr(module, last_inst_on_unwound_rip_vaddr);
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
         D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff);
-        for(D_LineNode *n = lines.first; n != 0; n = n->next)
+        for(D_LineNode* n = lines.first; n != 0; n = n->next)
         {
           if(visible_line_num_range.min <= n->v.pt.line && n->v.pt.line <= visible_line_num_range.max)
           {
-            for(String8Node *override_n = file_path_possible_overrides.first;
+            for(String8Node* override_n = file_path_possible_overrides.first;
                 override_n != 0;
                 override_n = override_n->next)
             {
@@ -270,13 +270,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(!dasm_lines) ProfScope("find visible watch pins for source code")
     {
       RD_EntityList wps = rd_query_cached_entity_list_with_kind(RD_EntityKind_WatchPin);
-      for(RD_EntityNode *n = wps.first; n != 0; n = n->next)
+      for(RD_EntityNode* n = wps.first; n != 0; n = n->next)
       {
-        RD_Entity *wp = n->entity;
-        RD_Entity *loc = rd_entity_child_from_kind(wp, RD_EntityKind_Location);
+        RD_Entity* wp = n->entity;
+        RD_Entity* loc = rd_entity_child_from_kind(wp, RD_EntityKind_Location);
         if(visible_line_num_range.min <= loc->text_point.line && loc->text_point.line <= visible_line_num_range.max)
         {
-          for(String8Node *override_n = file_path_possible_overrides.first;
+          for(String8Node* override_n = file_path_possible_overrides.first;
               override_n != 0;
               override_n = override_n->next)
           {
@@ -295,7 +295,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(!dasm_lines) ProfScope("find all src -> dasm info for source code")
     {
       String8 file_path = rd_regs()->file_path;
-      CTRL_Entity *module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
+      CTRL_Entity* module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       D_LineListArray lines_array = d_lines_array_from_dbgi_key_file_path_line_range(scratch.arena, dbgi_key, file_path, visible_line_num_range);
       if(lines_array.count != 0)
@@ -308,11 +308,11 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: find live threads mapping to disasm
     if(dasm_lines) ProfScope("find live threads mapping to this disassembly")
     {
-      CTRL_Entity *selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
+      CTRL_Entity* selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
       CTRL_EntityList threads = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Thread);
-      for(CTRL_EntityNode *thread_n = threads.first; thread_n != 0; thread_n = thread_n->next)
+      for(CTRL_EntityNode* thread_n = threads.first; thread_n != 0; thread_n = thread_n->next)
       {
-        CTRL_Entity *thread = thread_n->v;
+        CTRL_Entity* thread = thread_n->v;
         U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
         U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
         if(ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process) == process && contains_1u64(dasm_vaddr_range, rip_vaddr))
@@ -332,10 +332,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(dasm_lines) ProfScope("find breakpoints mapping to this disassembly")
     {
       RD_EntityList bps = rd_query_cached_entity_list_with_kind(RD_EntityKind_Breakpoint);
-      for(RD_EntityNode *n = bps.first; n != 0; n = n->next)
+      for(RD_EntityNode* n = bps.first; n != 0; n = n->next)
       {
-        RD_Entity *bp = n->entity;
-        RD_Entity *loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
+        RD_Entity* bp = n->entity;
+        RD_Entity* loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
         if(loc->flags & RD_EntityFlag_HasVAddr && contains_1u64(dasm_vaddr_range, loc->vaddr))
         {
           U64 off = loc->vaddr-dasm_vaddr_range.min;
@@ -354,10 +354,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(dasm_lines) ProfScope("find watch pins mapping to this disassembly")
     {
       RD_EntityList pins = rd_query_cached_entity_list_with_kind(RD_EntityKind_WatchPin);
-      for(RD_EntityNode *n = pins.first; n != 0; n = n->next)
+      for(RD_EntityNode* n = pins.first; n != 0; n = n->next)
       {
-        RD_Entity *pin = n->entity;
-        RD_Entity *loc = rd_entity_child_from_kind(pin, RD_EntityKind_Location);
+        RD_Entity* pin = n->entity;
+        RD_Entity* loc = rd_entity_child_from_kind(pin, RD_EntityKind_Location);
         if(loc->flags & RD_EntityFlag_HasVAddr && contains_1u64(dasm_vaddr_range, loc->vaddr))
         {
           U64 off = loc->vaddr-dasm_vaddr_range.min;
@@ -375,7 +375,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: fill dasm -> src info
     if(dasm_lines)
     {
-      CTRL_Entity *module = ctrl_module_from_process_vaddr(process, dasm_vaddr_range.min);
+      CTRL_Entity* module = ctrl_module_from_process_vaddr(process, dasm_vaddr_range.min);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       for(S64 line_num = visible_line_num_range.min; line_num < visible_line_num_range.max; line_num += 1)
       {
@@ -397,7 +397,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: build container
   //
-  UI_Box *container_box = &ui_nil_box;
+  UI_Box* container_box = &ui_nil_box;
   {
     ui_set_next_pref_width(ui_px(code_area_dim.x, 1));
     ui_set_next_pref_height(ui_px(code_area_dim.y, 1));
@@ -747,7 +747,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     ui_scroll_pt_clamp_idx(&scroll_pos.y, scroll_idx_rng[Axis2_Y]);
     if(ui_mouse_over(sig))
     {
-      for(UI_Event *evt = 0; ui_next_event(&evt);)
+      for(UI_Event* evt = 0; ui_next_event(&evt);)
       {
         if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
         {
@@ -770,7 +770,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //
   RD_CodeViewBuildResult result = {0};
   {
-    for(DI_KeyNode *n = code_slice_params.relevant_dbgi_keys.first; n != 0; n = n->next)
+    for(DI_KeyNode* n = code_slice_params.relevant_dbgi_keys.first; n != 0; n = n->next)
     {
       DI_Key copy = di_key_copy(arena, &n->v);
       di_key_list_push(arena, &result.dbgi_keys, &copy);
@@ -793,11 +793,11 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
 //- rjf: index -> column
 
 RD_WatchViewColumn *
-rd_watch_view_column_from_x(RD_WatchViewState *wv, S64 index)
+rd_watch_view_column_from_x(RD_WatchViewState* wv, S64 index)
 {
-  RD_WatchViewColumn *result = wv->first_column;
+  RD_WatchViewColumn* result = wv->first_column;
   S64 idx = 0;
-  for(RD_WatchViewColumn *c = wv->first_column; c != 0; c = c->next, idx += 1)
+  for(RD_WatchViewColumn* c = wv->first_column; c != 0; c = c->next, idx += 1)
   {
     result = c;
     if(idx == index)
@@ -819,7 +819,7 @@ rd_watch_view_point_match(RD_WatchViewPoint a, RD_WatchViewPoint b)
 }
 
 RD_WatchViewPoint
-rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
+rd_watch_view_point_from_tbl(EV_BlockRangeList* block_ranges, Vec2S64 tbl)
 {
   RD_WatchViewPoint pt = {};
   pt.x           = tbl.x;
@@ -829,7 +829,7 @@ rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 }
 
 Vec2S64
-rd_tbl_from_watch_view_point(EV_BlockRangeList *block_ranges, RD_WatchViewPoint pt)
+rd_tbl_from_watch_view_point(EV_BlockRangeList* block_ranges, RD_WatchViewPoint pt)
 {
   Vec2S64 tbl = {0};
   tbl.x = pt.x;
@@ -840,20 +840,20 @@ rd_tbl_from_watch_view_point(EV_BlockRangeList *block_ranges, RD_WatchViewPoint 
 //- rjf: row -> context info
 
 RD_WatchViewRowInfo
-rd_watch_view_row_info_from_row(EV_Row *row)
+rd_watch_view_row_info_from_row(EV_Row* row)
 {
   RD_WatchViewRowInfo info = {0};
   {
     Temp scratch = scratch_begin(0, 0);
-    DI_Scope *di_scope = di_scope_open();
+    DI_Scope* di_scope = di_scope_open();
     
     // rjf: unpack block/key coordinates
-    EV_Block *block = row->block;
+    EV_Block* block = row->block;
     EV_Key key = row->key;
     
     // rjf: unpack parent block's expression
     E_IRTreeAndType irtree = e_irtree_and_type_from_expr(scratch.arena, block->expr);
-    E_Type *type = e_type_from_key(scratch.arena, irtree.type_key);
+    E_Type* type = e_type_from_key(scratch.arena, irtree.type_key);
     
     // rjf: evaluate row
     E_Eval row_eval = e_eval_from_expr(scratch.arena, row->expr);
@@ -872,18 +872,18 @@ rd_watch_view_row_info_from_row(EV_Row *row)
     }
     
     // rjf: extract frontend entity, if any
-    RD_Entity *entity = &rd_nil_entity;
+    RD_Entity* entity = &rd_nil_entity;
     if(collection_entity_kind != RD_EntityKind_Nil)
     {
       entity = rd_entity_from_id(key.child_id);
     }
     
     // rjf: extract control entity, if any
-    CTRL_Entity *ctrl_entity = &ctrl_entity_nil;
+    CTRL_Entity* ctrl_entity = &ctrl_entity_nil;
     if(collection_ctrl_entity_kind != CTRL_EntityKind_Null && block->expand_view_rule_info_user_data != 0)
     {
       U64 block_relative_num = block->expand_view_rule_info->expr_expand_num_from_id(key.child_id, block->expand_view_rule_info_user_data);
-      RD_CtrlEntityExpandAccel *accel = block->expand_view_rule_info_user_data;
+      RD_CtrlEntityExpandAccel* accel = block->expand_view_rule_info_user_data;
       if(1 <= block_relative_num && block_relative_num <= accel->entities.count)
       {
         ctrl_entity = accel->entities.v[block_relative_num-1];
@@ -895,8 +895,8 @@ rd_watch_view_row_info_from_row(EV_Row *row)
     }
     
     // rjf: extract callstack thread, if any
-    CTRL_Entity *thread = &ctrl_entity_nil;
-    for(E_Expr *expr = block->expr, *next = &e_expr_nil; expr != &e_expr_nil; expr = next)
+    CTRL_Entity* thread = &ctrl_entity_nil;
+    for(E_Expr* expr = block->expr, *next = &e_expr_nil; expr != &e_expr_nil; expr = next)
     {
       next = &e_expr_nil;
       switch(expr->kind)
@@ -909,7 +909,7 @@ rd_watch_view_row_info_from_row(EV_Row *row)
         case E_ExprKind_LeafIdent:
         {
           E_Eval eval = e_eval_from_expr(scratch.arena, expr);
-          CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(eval.space);
+          CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(eval.space);
           if(entity->kind == CTRL_EntityKind_Thread)
           {
             thread = entity;
@@ -959,11 +959,11 @@ rd_watch_view_row_info_from_row(EV_Row *row)
 //- rjf: watch view flags & row info -> row kind
 
 RD_WatchViewRowKind
-rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row, RD_WatchViewRowInfo *info)
+rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row* row, RD_WatchViewRowInfo* info)
 {
   Temp scratch = scratch_begin(0, 0);
-  RD_ViewRuleInfo *ui_view_rule_info = rd_view_rule_info_from_string(row->block->expand_view_rule_info->string);
-  MD_Node *ui_view_rule_params_root = row->block->expand_view_rule_params;
+  RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row->block->expand_view_rule_info->string);
+  MD_Node* ui_view_rule_params_root = row->block->expand_view_rule_params;
   if(ui_view_rule_info->ui == 0 || !(ui_view_rule_info->flags & RD_ViewRuleInfoFlag_CanUseInWatchTable))
   {
     ui_view_rule_info = &rd_nil_view_rule_info;
@@ -995,9 +995,9 @@ rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row *row,
 //- rjf: row/column -> strings
 
 E_Expr *
-rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col)
+rd_expr_from_watch_view_row_column(Arena* arena, EV_View* ev_view, EV_Row* row, RD_WatchViewColumn* col)
 {
-  E_Expr *expr = row->expr;
+  E_Expr* expr = row->expr;
   switch(col->kind)
   {
     default:{}break;
@@ -1006,7 +1006,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
       Temp scratch = scratch_begin(&arena, 1);
       String8 access_string = str8(col->string_buffer, col->string_size);
       String8List accesses = str8_split(scratch.arena, access_string, (U8 *)".", 1, 0);
-      for(String8Node *n = accesses.first; n != 0; n = n->next)
+      for(String8Node* n = accesses.first; n != 0; n = n->next)
       {
         expr = e_expr_ref_member_access(arena, expr, n->string);
       }
@@ -1015,18 +1015,18 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
   }
   if(col->view_rule_size != 0)
   {
-    EV_ViewRuleList *view_rules = ev_view_rule_list_from_string(arena, str8(col->view_rule_buffer, col->view_rule_size));
+    EV_ViewRuleList* view_rules = ev_view_rule_list_from_string(arena, str8(col->view_rule_buffer, col->view_rule_size));
     expr = ev_resolved_from_expr(arena, expr, view_rules);
   }
   return expr;
 }
 
 String8
-rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
+rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_WatchViewColumn* col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   ProfBeginFunction();
   String8 result = {0};
-  E_Expr *row_col_expr = rd_expr_from_watch_view_row_column(arena, ev, row, col);
+  E_Expr* row_col_expr = rd_expr_from_watch_view_row_column(arena, ev, row, col);
   switch(col->kind)
   {
     default:{}break;
@@ -1039,7 +1039,7 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
     case RD_WatchViewColumnKind_Member:
     ProfScope("value/member cell string")
     {
-      EV_ViewRuleList *view_rules = row->view_rules;
+      EV_ViewRuleList* view_rules = row->view_rules;
       if(col->view_rule_size != 0)
       {
         view_rules = ev_view_rule_list_copy(arena, row->view_rules);
@@ -1066,52 +1066,52 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
     {
       E_Eval eval = e_eval_from_expr(arena, row_col_expr);
       E_Eval value_eval = e_value_eval_from_eval(eval);
-      CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(eval.space);
-      CTRL_Entity *process = ctrl_process_from_entity(entity);
-      CTRL_Entity *module = ctrl_module_from_process_vaddr(process, value_eval.value.u64);
+      CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(eval.space);
+      CTRL_Entity* process = ctrl_process_from_entity(entity);
+      CTRL_Entity* module = ctrl_module_from_process_vaddr(process, value_eval.value.u64);
       result = push_str8_copy(arena, str8_skip_last_slash(module->string));
     }break;
     case RD_WatchViewColumnKind_CallStackFrame:
     ProfScope("call stack frame cell string")
     {
       Temp scratch = scratch_begin(&arena, 1);
-      DI_Scope *di_scope = di_scope_open();
+      DI_Scope* di_scope = di_scope_open();
       E_Eval eval = e_eval_from_expr(arena, row_col_expr);
-      E_Expr *vaddr_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("vaddr"));
-      E_Expr *depth_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("inline_depth"));
+      E_Expr* vaddr_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("vaddr"));
+      E_Expr* depth_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("inline_depth"));
       E_Eval vaddr_eval = e_eval_from_expr(scratch.arena, vaddr_expr);
       E_Eval depth_eval = e_eval_from_expr(scratch.arena, depth_expr);
       E_Eval vaddr_value_eval = e_value_eval_from_eval(vaddr_eval);
       E_Eval depth_value_eval = e_value_eval_from_eval(depth_eval);
       U64 vaddr = vaddr_value_eval.value.u64;
       U64 depth = depth_value_eval.value.u64;
-      CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(eval.space);
-      CTRL_Entity *process = ctrl_process_from_entity(entity);
-      CTRL_Entity *module = ctrl_module_from_process_vaddr(process, vaddr);
+      CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(eval.space);
+      CTRL_Entity* process = ctrl_process_from_entity(entity);
+      CTRL_Entity* module = ctrl_module_from_process_vaddr(process, vaddr);
       DI_Key dbgi = ctrl_dbgi_key_from_module(module);
-      RDI_Parsed *rdi = di_rdi_from_key(di_scope, &dbgi, 0);
+      RDI_Parsed* rdi = di_rdi_from_key(di_scope, &dbgi, 0);
       if(rdi != &di_rdi_parsed_nil)
       {
         struct ScopeTask
         {
-          ScopeTask *next;
-          RDI_Scope *scope;
+          ScopeTask* next;
+          RDI_Scope* scope;
         };
         U64 voff = ctrl_voff_from_vaddr(module, vaddr);
-        RDI_Scope *root_scope = rdi_scope_from_voff(rdi, voff);
+        RDI_Scope* root_scope = rdi_scope_from_voff(rdi, voff);
         ScopeTask start_task = {0, root_scope};
-        ScopeTask *first_task = &start_task;
-        ScopeTask *last_task = &start_task;
+        ScopeTask* first_task = &start_task;
+        ScopeTask* last_task = &start_task;
         for(;root_scope->parent_scope_idx != 0;)
         {
           root_scope = rdi_parent_from_scope(rdi, root_scope);
-          ScopeTask *t = push_array(scratch.arena, ScopeTask, 1);
+          ScopeTask* t = push_array(scratch.arena, ScopeTask, 1);
           SLLQueuePushFront(first_task, last_task, t);
           t->scope = root_scope;
         }
-        RDI_Scope *scope = root_scope;
+        RDI_Scope* scope = root_scope;
         U64 idx = 0;
-        for(ScopeTask *t = first_task; t != 0; t = t->next, idx += 1)
+        for(ScopeTask* t = first_task; t != 0; t = t->next, idx += 1)
         {
           if(idx == depth)
           {
@@ -1119,8 +1119,8 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
             break;
           }
         }
-        RDI_Procedure *procedure = rdi_procedure_from_scope(rdi, scope);
-        RDI_InlineSite *inline_site = rdi_inline_site_from_scope(rdi, scope);
+        RDI_Procedure* procedure = rdi_procedure_from_scope(rdi, scope);
+        RDI_InlineSite* inline_site = rdi_inline_site_from_scope(rdi, scope);
         if(inline_site->name_string_idx != 0 || inline_site->type_idx != 0)
         {
           String8List parts = {0};
@@ -1188,14 +1188,14 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
 //- rjf: table coordinates -> text edit state
 
 RD_WatchViewTextEditState *
-rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint pt)
+rd_watch_view_text_edit_state_from_pt(RD_WatchViewState* wv, RD_WatchViewPoint pt)
 {
-  RD_WatchViewTextEditState *result = &wv->dummy_text_edit_state;
+  RD_WatchViewTextEditState* result = &wv->dummy_text_edit_state;
   if(wv->text_edit_state_slots_count != 0 && wv->text_editing != 0)
   {
     U64 hash = ev_hash_from_key(pt.key);
     U64 slot_idx = hash%wv->text_edit_state_slots_count;
-    for(RD_WatchViewTextEditState *s = wv->text_edit_state_slots[slot_idx]; s != 0; s = s->pt_hash_next)
+    for(RD_WatchViewTextEditState* s = wv->text_edit_state_slots[slot_idx]; s != 0; s = s->pt_hash_next)
     {
       if(rd_watch_view_point_match(pt, s->pt))
       {
@@ -1210,14 +1210,14 @@ rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint p
 //- rjf: watch view column state mutation
 
 RD_WatchViewColumn *
-rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, F32 pct, RD_WatchViewColumnParams *params)
+rd_watch_view_column_alloc_(RD_WatchViewState* wv, RD_WatchViewColumnKind kind, F32 pct, RD_WatchViewColumnParams* params)
 {
   if(!wv->free_column)
   {
-    RD_WatchViewColumn *col = push_array(wv->column_arena, RD_WatchViewColumn, 1);
+    RD_WatchViewColumn* col = push_array(wv->column_arena, RD_WatchViewColumn, 1);
     SLLStackPush(wv->free_column, col);
   }
-  RD_WatchViewColumn *col = wv->free_column;
+  RD_WatchViewColumn* col = wv->free_column;
   SLLStackPop(wv->free_column);
   DLLPushBack(wv->first_column, wv->last_column, col);
   wv->column_count += 1;
@@ -1236,7 +1236,7 @@ rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, 
 }
 
 void
-rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewColumn *col)
+rd_watch_view_column_release(RD_WatchViewState* wv, RD_WatchViewColumn* col)
 {
   DLLRemove(wv->first_column, wv->last_column, col);
   SLLStackPush(wv->free_column, col);
@@ -1246,7 +1246,7 @@ rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewColumn *col)
 //- rjf: watch view main hooks
 
 void
-rd_watch_view_init(RD_WatchViewState *ewv)
+rd_watch_view_init(RD_WatchViewState* ewv)
 {
   if(ewv->initialized == 0)
   {
@@ -1257,10 +1257,10 @@ rd_watch_view_init(RD_WatchViewState *ewv)
 }
 
 void
-rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, U32 default_radix, Rng2F32 rect)
+rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, U32 default_radix, Rng2F32 rect)
 {
   ProfBeginFunction();
-  DI_Scope *di_scope = di_scope_open();
+  DI_Scope* di_scope = di_scope_open();
   Temp scratch = scratch_begin(0, 0);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   F32 entity_hover_t_rate = rd_setting_val_from_code(RD_SettingCode_HoverAnimations).s32 ? (1 - pow_f32(2, (-20.f * rd_state->frame_dt))) : 1.f;
@@ -1268,9 +1268,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   //////////////////////////////
   //- rjf: unpack arguments
   //
-  EV_ViewRuleList *top_level_view_rules = ev_view_rule_list_from_string(scratch.arena, root_view_rule);
+  EV_ViewRuleList* top_level_view_rules = ev_view_rule_list_from_string(scratch.arena, root_view_rule);
   String8 eval_view_key_string = push_str8f(scratch.arena, "eval_view_watch_%p", ewv);
-  EV_View *eval_view = rd_ev_view_from_key(d_hash_from_string(eval_view_key_string));
+  EV_View* eval_view = rd_ev_view_from_key(d_hash_from_string(eval_view_key_string));
   String8 filter = rd_view_filter();
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   S64 num_possible_visible_rows = (S64)(dim_2f32(rect).y/row_height_px);
@@ -1296,7 +1296,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     {RD_EntityKind_Nil, CTRL_EntityKind_Thread,  RD_CmdKind_SelectThread  },
     {RD_EntityKind_Nil, CTRL_EntityKind_Thread,  RD_CmdKind_FreezeEntity  },
   };
-  RD_WatchViewRowCtrl *row_ctrls = row_ctrls_;
+  RD_WatchViewRowCtrl* row_ctrls = row_ctrls_;
   U64 row_ctrls_count = ArrayCount(row_ctrls_);
   
   //////////////////////////////
@@ -1304,11 +1304,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   //
   B32 is_top_level_hook = 0;
   {
-    RD_ViewRuleInfo *hook_rule_info = 0;
-    MD_Node *hook_rule_root = &md_nil_node;
-    for(EV_ViewRuleNode *n = top_level_view_rules->first; n != 0; n = n->next)
+    RD_ViewRuleInfo* hook_rule_info = 0;
+    MD_Node* hook_rule_root = &md_nil_node;
+    for(EV_ViewRuleNode* n = top_level_view_rules->first; n != 0; n = n->next)
     {
-      RD_ViewRuleInfo *rule_info = rd_view_rule_info_from_string(n->v.root->string);
+      RD_ViewRuleInfo* rule_info = rd_view_rule_info_from_string(n->v.root->string);
       if(rule_info != &rd_nil_view_rule_info && rule_info->ui != 0)
       {
         hook_rule_info = rule_info;
@@ -1329,7 +1329,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   String8 autocomplete_hint_string = {0};
   if(!is_top_level_hook)
   {
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       if(evt->kind == UI_EventKind_AutocompleteHint)
       {
@@ -1354,7 +1354,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     B32 snap_to_cursor = 0;
     B32 cursor_dirty__tbl = 0;
     B32 take_autocomplete = 0;
-    for(UI_Event *event = 0;;)
+    for(UI_Event* event = 0;;)
     {
       //////////////////////////
       //- rjf: state -> viz blocks
@@ -1374,7 +1374,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       ProfScope("block ranges -> ui row blocks")
       {
         UI_ScrollListRowBlockChunkList row_block_chunks = {0};
-        for(EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n->next)
+        for(EV_BlockRangeNode* n = block_ranges.first; n != 0; n = n->next)
         {
           UI_ScrollListRowBlock block = {0};
           block.row_count  = dim_1u64(n->v.range);
@@ -1400,7 +1400,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         cursor_dirty__tbl = 0;
         struct
         {
-          RD_WatchViewPoint *pt_state;
+          RD_WatchViewPoint* pt_state;
           Vec2S64 pt_tbl;
         }
         points[] =
@@ -1416,8 +1416,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           if(ev_key_match(ev_key_zero(), points[point_idx].pt_state->key))
           {
             points[point_idx].pt_state->key = last_parent_key;
-            EV_ExpandNode *node = ev_expand_node_from_key(eval_view, last_parent_key);
-            for(EV_ExpandNode *n = node; n != 0; n = n->parent)
+            EV_ExpandNode* node = ev_expand_node_from_key(eval_view, last_parent_key);
+            for(EV_ExpandNode* n = node; n != 0; n = n->parent)
             {
               points[point_idx].pt_state->key = n->key;
               if(n->expanded == 0)
@@ -1496,7 +1496,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         S64 cursor_item_idx = cursor_tbl.y;
         if(item_range.min <= cursor_item_idx && cursor_item_idx <= item_range.max)
         {
-          UI_ScrollPt *scroll_pt = &scroll_pos.y;
+          UI_ScrollPt* scroll_pt = &scroll_pos.y;
           
           //- rjf: compute visible row range
           Rng1S64 visible_row_range = r1s64(scroll_pt->idx + 0 - !!(scroll_pt->off < 0),
@@ -1544,7 +1544,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         break;
       }
       UI_Event dummy_evt = {};
-      UI_Event *evt = &dummy_evt;
+      UI_Event* evt = &dummy_evt;
       if(next_event_good)
       {
         evt = event;
@@ -1568,7 +1568,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         ewv->text_edit_state_slots = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState*, ewv->text_edit_state_slots_count);
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
-        EV_Row *row = rows.first;
+        EV_Row* row = rows.first;
         for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
         {
           RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
@@ -1578,13 +1578,13 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             ewv->text_editing = 1;
             for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
-              RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
+              RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
               String8 string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
               string.size = Min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
               RD_WatchViewPoint pt = {x, row->block->key, row->key};
               U64 hash = ev_hash_from_key(pt.key);
               U64 slot_idx = hash%ewv->text_edit_state_slots_count;
-              RD_WatchViewTextEditState *edit_state = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState, 1);
+              RD_WatchViewTextEditState* edit_state = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState, 1);
               SLLStackPush_N(ewv->text_edit_state_slots[slot_idx], edit_state, pt_hash_next);
               edit_state->pt = pt;
               edit_state->cursor = txt_pt(1, string.size+1);
@@ -1607,7 +1607,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         taken = 1;
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
-        EV_Row *row = rows.first;
+        EV_Row* row = rows.first;
         for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
         {
           // rjf: unpack row info
@@ -1630,7 +1630,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               default:{}break;
               case RD_WatchViewRowKind_Normal:
               {
-                RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
+                RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
                 switch(col->kind)
                 {
                   default:{}break;
@@ -1677,7 +1677,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           taken = 1;
           EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                       ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
-          EV_Row *row = rows.first;
+          EV_Row* row = rows.first;
           for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
           {
             RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
@@ -1685,7 +1685,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
               RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, v2s64(x, y));
-              RD_WatchViewTextEditState *edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
+              RD_WatchViewTextEditState* edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
               String8 string = str8(edit_state->input_buffer, edit_state->input_size);
               UI_TxtOp op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state->cursor, edit_state->mark);
               
@@ -1732,7 +1732,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               
               // rjf: commit edited cell string
               Vec2S64 tbl = v2s64(x, y);
-              RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
+              RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
               {
                 switch(col->kind)
                 {
@@ -1742,7 +1742,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   {
                     if(row_info.collection_entity_kind != RD_EntityKind_Nil)
                     {
-                      RD_Entity *entity = row_info.collection_entity;
+                      RD_Entity* entity = row_info.collection_entity;
                       if(!rd_entity_is_nil(entity) || editing_complete)
                       {
                         if(rd_entity_is_nil(entity) && new_string.size != 0)
@@ -1767,7 +1767,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     if(rows.first != 0)
                     {
                       B32 should_commit_asap = editing_complete;
-                      E_Expr *expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
+                      E_Expr* expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
                       E_Eval dst_eval = e_eval_from_expr(scratch.arena, expr);
                       if(dst_eval.space.kind == RD_EvalSpaceKind_MetaEntity)
                       {
@@ -1796,8 +1796,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ev_key_set_view_rule(eval_view, pt.key, new_string);
                     if(row_info.collection_entity_kind != RD_EntityKind_Nil)
                     {
-                      RD_Entity *entity = row_info.collection_entity;
-                      RD_Entity *view_rule = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule);
+                      RD_Entity* entity = row_info.collection_entity;
+                      RD_Entity* view_rule = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule);
                       if(rd_entity_is_nil(view_rule) && new_string.size != 0)
                       {
                         view_rule = rd_entity_alloc(entity, RD_EntityKind_ViewRule);
@@ -1834,12 +1834,12 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         String8List strs = {0};
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
-        EV_Row *row = rows.first;
+        EV_Row* row = rows.first;
         for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
         {
           for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
-            RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
+            RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
             String8 cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
             cell_string = str8_skip_chop_whitespace(cell_string);
             U64 comma_pos = str8_find_needle(cell_string, 0, str8_lit(","), 0);
@@ -1878,7 +1878,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         B32 next_cursor_set = 0;
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
-        EV_Row *row = rows.first;
+        EV_Row* row = rows.first;
         for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
         {
           RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
@@ -1887,11 +1887,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           {
             Vec2S64 tbl = v2s64(x, y);
             RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, tbl);
-            RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
+            RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
             if(tbl.y != 0 && (col->kind == RD_WatchViewColumnKind_Expr || row_kind == RD_WatchViewRowKind_PrettyEntityControls) &&
                row_info.collection_entity_kind != RD_EntityKind_Nil)
             {
-              RD_Entity *entity = row_info.collection_entity;
+              RD_Entity* entity = row_info.collection_entity;
               if(!rd_entity_is_nil(entity))
               {
                 rd_entity_list_push(scratch.arena, &entities_to_remove, entity);
@@ -1918,21 +1918,21 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             {
               if(row_info.collection_entity_kind != RD_EntityKind_Nil)
               {
-                RD_Entity *entity = row_info.collection_entity;
-                RD_Entity *view_rule = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule);
+                RD_Entity* entity = row_info.collection_entity;
+                RD_Entity* view_rule = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule);
                 rd_entity_mark_for_deletion(view_rule);
               }
               ev_key_set_view_rule(eval_view, row->key, str8_zero());
             }
             else if(tbl.y != 0 && (col->kind == RD_WatchViewColumnKind_Value || col->kind == RD_WatchViewColumnKind_Member) && row_kind == RD_WatchViewRowKind_Normal)
             {
-              E_Expr *expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
+              E_Expr* expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
               E_Eval dst_eval = e_eval_from_expr(scratch.arena, expr);
               rd_commit_eval_value_string(dst_eval, str8_zero(), 0);
             }
           }
         }
-        for(RD_EntityNode *n = entities_to_remove.first; n != 0; n = n->next)
+        for(RD_EntityNode* n = entities_to_remove.first; n != 0; n = n->next)
         {
           rd_entity_mark_for_deletion(n->entity);
         }
@@ -2036,7 +2036,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         if(filter.size == 0)
         {
           // rjf: determine blocks of each endpoint of the table selection
-          EV_Block *selection_endpoint_blocks[2] =
+          EV_Block* selection_endpoint_blocks[2] =
           {
             ev_block_range_from_num(&block_ranges, selection_tbl.min.y).block,
             ev_block_range_from_num(&block_ranges, selection_tbl.max.y).block,
@@ -2048,7 +2048,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             ev_depth_from_block(selection_endpoint_blocks[0]),
             ev_depth_from_block(selection_endpoint_blocks[1]),
           };
-          EV_Block *selection_block = (selection_depths[1] < selection_depths[0]
+          EV_Block* selection_block = (selection_depths[1] < selection_depths[0]
                                        ? selection_endpoint_blocks[1]
                                        : selection_endpoint_blocks[0]);
           
@@ -2057,7 +2057,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           {
             for EachElement(idx, selection_endpoint_blocks)
             {
-              EV_Block *endpoint_block = selection_endpoint_blocks[idx];
+              EV_Block* endpoint_block = selection_endpoint_blocks[idx];
               if(endpoint_block == selection_block)
               {
                 selection_keys_in_block[idx] = ev_key_from_num(&block_ranges, selection_tbl.v[idx].y);
@@ -2094,7 +2094,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           // rjf: determine collection info for the block
           RD_EntityKind collection_entity_kind = RD_EntityKind_Nil;
           E_IRTreeAndType irtree = e_irtree_and_type_from_expr(scratch.arena, selection_block->expr);
-          E_Type *type = e_type_from_key(scratch.arena, irtree.type_key);
+          E_Type* type = e_type_from_key(scratch.arena, irtree.type_key);
           for EachElement(idx, rd_collection_name_table)
           {
             if(str8_match(type->name, rd_collection_name_table[idx], 0))
@@ -2105,8 +2105,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           }
           
           // rjf: map selection endpoints to entities
-          RD_Entity *first_entity = &rd_nil_entity;
-          RD_Entity *last_entity = &rd_nil_entity;
+          RD_Entity* first_entity = &rd_nil_entity;
+          RD_Entity* last_entity = &rd_nil_entity;
           if(collection_entity_kind != RD_EntityKind_Nil)
           {
             first_entity = rd_entity_from_id(selection_keys_in_block[0].child_id);
@@ -2116,9 +2116,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           // rjf: reorder
           if(!rd_entity_is_nil(first_entity) && !rd_entity_is_nil(last_entity))
           {
-            RD_Entity *first_entity_prev = &rd_nil_entity;
-            RD_Entity *last_entity_next  = &rd_nil_entity;
-            for(RD_Entity *prev = first_entity->prev; !rd_entity_is_nil(prev); prev = prev->prev)
+            RD_Entity* first_entity_prev = &rd_nil_entity;
+            RD_Entity* last_entity_next  = &rd_nil_entity;
+            for(RD_Entity* prev = first_entity->prev; !rd_entity_is_nil(prev); prev = prev->prev)
             {
               if(prev->kind == collection_entity_kind)
               {
@@ -2126,7 +2126,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 break;
               }
             }
-            for(RD_Entity *next = last_entity->next; !rd_entity_is_nil(next); next = next->next)
+            for(RD_Entity* next = last_entity->next; !rd_entity_is_nil(next); next = next->next)
             {
               if(next->kind == collection_entity_kind)
               {
@@ -2160,7 +2160,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     }
     if(take_autocomplete)
     {
-      for(UI_Event *evt = 0; ui_next_event(&evt);)
+      for(UI_Event* evt = 0; ui_next_event(&evt);)
       {
         if(evt->kind == UI_EventKind_AutocompleteHint)
         {
@@ -2180,7 +2180,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     F32 **col_pcts = push_array(scratch.arena, F32*, ewv->column_count);
     {
       S64 x = 0;
-      for(RD_WatchViewColumn *c = ewv->first_column; c != 0; c = c->next, x += 1)
+      for(RD_WatchViewColumn* c = ewv->first_column; c != 0; c = c->next, x += 1)
       {
         col_pcts[x] = &c->pct;
       }
@@ -2227,7 +2227,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       ProfScope("build table")
       {
         U64 global_row_idx = rows.count_before_semantic;
-        for(EV_Row *row = rows.first; row != 0; row = row->next, global_row_idx += 1)
+        for(EV_Row* row = rows.first; row != 0; row = row->next, global_row_idx += 1)
         {
           ////////////////////////
           //- rjf: skip header
@@ -2250,8 +2250,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           B32 row_selected = (selection_tbl.min.y <= global_row_idx && global_row_idx <= selection_tbl.max.y);
           B32 row_expanded = ev_expansion_from_key(eval_view, row->key);
           E_Eval row_eval = e_eval_from_expr(scratch.arena, row->expr);
-          CTRL_Entity *row_ctrl_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
-          CTRL_Entity *row_module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
+          CTRL_Entity* row_ctrl_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
+          CTRL_Entity* row_module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
           if(row_eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
           {
             switch(row_ctrl_entity->kind)
@@ -2265,16 +2265,16 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               case CTRL_EntityKind_Thread:
               if(row_eval.mode == E_Mode_Value)
               {
-                CTRL_Entity *process = ctrl_process_from_entity(row_ctrl_entity);
+                CTRL_Entity* process = ctrl_process_from_entity(row_ctrl_entity);
                 row_module = ctrl_module_from_process_vaddr(process, d_query_cached_rip_from_thread(row_ctrl_entity));
               }break;
             }
           }
-          E_Type *row_type = e_type_from_key(scratch.arena, row_eval.type_key);
+          E_Type* row_type = e_type_from_key(scratch.arena, row_eval.type_key);
           B32 row_is_expandable = ev_row_is_expandable(row);
           B32 next_row_expanded = row_expanded;
-          RD_ViewRuleInfo *ui_view_rule_info = rd_view_rule_info_from_string(row->block->expand_view_rule_info->string);
-          MD_Node *ui_view_rule_params_root = row->block->expand_view_rule_params;
+          RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row->block->expand_view_rule_info->string);
+          MD_Node* ui_view_rule_params_root = row->block->expand_view_rule_params;
           if(ui_view_rule_info->ui == 0 || !(ui_view_rule_info->flags & RD_ViewRuleInfoFlag_CanUseInWatchTable))
           {
             ui_view_rule_info = &rd_nil_view_rule_info;
@@ -2295,7 +2295,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             default:{}break;
             case E_Mode_Offset:
             {
-              CTRL_Entity *space_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
+              CTRL_Entity* space_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
               if(row_eval.space.kind == RD_EvalSpaceKind_CtrlEntity && space_entity->kind == CTRL_EntityKind_Process)
               {
                 U64 size = e_type_byte_size_from_key(row_eval.type_key);
@@ -2322,7 +2322,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           //
           ProfBegin("determine row's flags & color palette");
           UI_BoxFlags row_flags = 0;
-          UI_Palette *palette = ui_top_palette();
+          UI_Palette* palette = ui_top_palette();
           {
             if(row_is_fresh)
             {
@@ -2353,7 +2353,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           ui_set_next_pref_width(ui_pct(1, 0));
           ui_set_next_pref_height(ui_px(scroll_list_params.row_height_px*row->visual_size, 1.f));
           ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
-          UI_Box *row_box = ui_build_box_from_stringf(row_flags|(!row->next)*UI_BoxFlag_DrawSideBottom|UI_BoxFlag_Clickable, "row_%I64x", row_hash);
+          UI_Box* row_box = ui_build_box_from_stringf(row_flags|(!row->next)*UI_BoxFlag_DrawSideBottom|UI_BoxFlag_Clickable, "row_%I64x", row_hash);
           ui_ts_vector_idx += 1;
           ui_ts_cell_idx = 0;
           
@@ -2370,7 +2370,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             {
               UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
               {
-                for(RD_WatchViewColumn *col = ewv->first_column; col != 0; col = col->next)
+                for(RD_WatchViewColumn* col = ewv->first_column; col != 0; col = col->next)
                   UI_TableCell
                 {
                   String8 name = str8(col->display_string_buffer, col->display_string_size);
@@ -2446,9 +2446,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             {
               //- rjf: unpack
               RD_WatchViewPoint pt = {0, row->block->key, row->key};
-              RD_View *view = rd_view_from_handle(rd_regs()->view);
-              RD_TransientViewNode *canvas_view_node = rd_transient_view_node_from_ev_key(view, row->key);
-              RD_View *canvas_view = canvas_view_node->view;
+              RD_View* view = rd_view_from_handle(rd_regs()->view);
+              RD_TransientViewNode* canvas_view_node = rd_transient_view_node_from_ev_key(view, row->key);
+              RD_View* canvas_view = canvas_view_node->view;
               String8 canvas_view_expr = e_string_from_expr(scratch.arena, row->expr);
               B32 need_new_spec = (!str8_match(str8(canvas_view->query_buffer, canvas_view->query_string_size), canvas_view_expr, 0) ||
                                    !md_tree_match(canvas_view_node->initial_params, ui_view_rule_params_root, 0));
@@ -2466,7 +2466,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                                            rect.y0 + ui_top_fixed_y() + canvas_dim.y);
               
               //- rjf: peek clicks in canvas region, mark clicked
-              for(UI_Event *evt = 0; ui_next_event(&evt);)
+              for(UI_Event* evt = 0; ui_next_event(&evt);)
               {
                 if(evt->kind == UI_EventKind_Press && evt->key == OS_Key_LeftMouseButton && contains_2f32(canvas_rect, evt->pos) &&
                    contains_2f32(rect, evt->pos))
@@ -2504,11 +2504,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               ui_set_next_fixed_y(-1.f * (row->visual_size_skipped) * scroll_list_params.row_height_px);
               ui_set_next_fixed_height((row->visual_size_skipped + row->visual_size + row->visual_size_chopped) * scroll_list_params.row_height_px);
               ui_set_next_child_layout_axis(Axis2_X);
-              UI_Box *canvas_box = ui_build_box_from_stringf(UI_BoxFlag_FloatingY, "###canvas_%I64x", row_hash);
+              UI_Box* canvas_box = ui_build_box_from_stringf(UI_BoxFlag_FloatingY, "###canvas_%I64x", row_hash);
               UI_Parent(canvas_box) UI_WidthFill UI_HeightFill
               {
                 //- rjf: loading animation container
-                UI_Box *loading_overlay_container = &ui_nil_box;
+                UI_Box* loading_overlay_container = &ui_nil_box;
                 UI_Parent(canvas_box) UI_WidthFill UI_HeightFill
                 {
                   loading_overlay_container = ui_build_box_from_key(UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY, ui_key_zero());
@@ -2547,8 +2547,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               //- rjf: unpack
               RD_EntityKind collection_entity_kind = row_info.collection_entity_kind;
               CTRL_EntityKind collection_ctrl_entity_kind = row_info.collection_ctrl_entity_kind;
-              RD_Entity *entity = row_info.collection_entity;
-              CTRL_Entity *ctrl_entity = row_info.collection_ctrl_entity;
+              RD_Entity* entity = row_info.collection_entity;
+              CTRL_Entity* ctrl_entity = row_info.collection_ctrl_entity;
               B32 entity_box_selected = (row_selected && selection_tbl.min.x <= 1 && 1 <= selection_tbl.max.x);
               B32 is_hovering = ((rd_handle_match(rd_state->hover_regs->entity, rd_handle_from_entity(entity)) &&
                                   rd_state->hover_regs_slot == RD_RegSlot_Entity) ||
@@ -2557,7 +2557,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                                  (ctrl_handle_match(rd_state->hover_regs->process, ctrl_entity->handle) && rd_state->hover_regs_slot == RD_RegSlot_Process));
               
               //- rjf: pick palette
-              UI_Palette *palette = ui_build_palette(ui_top_palette());
+              UI_Palette* palette = ui_build_palette(ui_top_palette());
               if(entity->kind == RD_EntityKind_Target && !entity->disabled)
               {
                 palette = ui_build_palette(rd_palette_from_code(RD_PaletteCode_NeutralPopButton));
@@ -2665,7 +2665,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 
                 //- rjf: build
                 ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-                UI_Box *entity_box = &ui_nil_box;
+                UI_Box* entity_box = &ui_nil_box;
                 UI_FocusHot(entity_box_selected ? UI_FocusKind_On : UI_FocusKind_Off) UI_Palette(palette)
                 {
                   entity_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
@@ -2692,7 +2692,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     {
                       next_row_expanded = !row_expanded;
                     }
-                    UI_Box *title_box = ui_build_box_from_key(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTruncatedHover, ui_key_zero());
+                    UI_Box* title_box = ui_build_box_from_key(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTruncatedHover, ui_key_zero());
                     ui_box_equip_display_fancy_strings(title_box, &fstrs);
                     ui_box_equip_fuzzy_match_ranges(title_box, &fstrs_matches);
                     UI_Signal sig = ui_signal_from_box(entity_box);
@@ -2729,7 +2729,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       if(entity->kind == RD_EntityKind_Breakpoint ||
                          entity->kind == RD_EntityKind_WatchPin)
                       {
-                        RD_Entity *loc = rd_entity_child_from_kind(entity, RD_EntityKind_Location);
+                        RD_Entity* loc = rd_entity_child_from_kind(entity, RD_EntityKind_Location);
                         rd_cmd(RD_CmdKind_FindCodeLocation,
                                .file_path = (loc->flags & RD_EntityFlag_HasTextPoint) ? loc->string : str8_zero(),
                                .cursor = loc->text_point,
@@ -2745,7 +2745,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   U64 ctrl_idx = 1;
                   for EachIndex(idx, row_ctrls_count)
                   {
-                    RD_WatchViewRowCtrl *ctrl = &row_ctrls[idx];
+                    RD_WatchViewRowCtrl* ctrl = &row_ctrls[idx];
                     if(ctrl->entity_kind == entity->kind &&
                        ctrl->ctrl_entity_kind == ctrl_entity->kind)
                     {
@@ -2753,7 +2753,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       {
                         B32 is_frozen = ctrl_entity_tree_is_frozen(ctrl_entity);
                         RD_IconKind icon_kind = rd_cmd_kind_info_table[ctrl->kind].icon_kind;
-                        UI_Palette *palette = ui_top_palette();
+                        UI_Palette* palette = ui_top_palette();
                         if(ctrl->kind == RD_CmdKind_SelectEntity)
                         {
                           icon_kind = entity->disabled ? RD_IconKind_RadioHollow : RD_IconKind_RadioFilled;
@@ -2868,26 +2868,26 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               {
                 S64 x = 0;
                 F32 x_px = 0;
-                for(RD_WatchViewColumn *col = ewv->first_column; col != 0; col = col->next, x += 1)
+                for(RD_WatchViewColumn* col = ewv->first_column; col != 0; col = col->next, x += 1)
                 {
                   //- rjf: unpack cell info
                   RD_WatchViewPoint cell_pt = {x, row->block->key, row->key};
-                  RD_WatchViewTextEditState *cell_edit_state = rd_watch_view_text_edit_state_from_pt(ewv, cell_pt);
+                  RD_WatchViewTextEditState* cell_edit_state = rd_watch_view_text_edit_state_from_pt(ewv, cell_pt);
                   B32 cell_selected = (row_selected && selection_tbl.min.x <= cell_pt.x && cell_pt.x <= selection_tbl.max.x);
                   String8 cell_pre_edit_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
                   
                   //- rjf: unpack column-kind-specific info
                   ProfBegin("unpack column-kind-specific info");
                   E_Eval cell_eval = row_eval;
-                  E_Type *cell_type = row_type;
+                  E_Type* cell_type = row_type;
                   B32 cell_can_edit = 0;
                   FuzzyMatchRangeList cell_matches = {0};
                   String8 cell_inheritance_string = {0};
                   String8 cell_error_string = {0};
                   String8 cell_error_tooltip_string = {0};
                   RD_AutoCompListerFlags cell_autocomp_flags = 0;
-                  RD_ViewRuleUIFunctionType *cell_ui_hook = 0;
-                  MD_Node *cell_ui_params = &md_nil_node;
+                  RD_ViewRuleUIFunctionType* cell_ui_hook = 0;
+                  MD_Node* cell_ui_params = &md_nil_node;
                   Vec4F32 cell_base_color = ui_top_palette()->text;
                   RD_IconKind cell_icon = RD_IconKind_Null;
                   String8 cell_ghost_text = {0};
@@ -2909,7 +2909,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       if(row->member != 0 && row->member->inheritance_key_chain.first != 0)
                       {
                         String8List inheritance_chain_type_names = {0};
-                        for(E_TypeKeyNode *n = row->member->inheritance_key_chain.first; n != 0; n = n->next)
+                        for(E_TypeKeyNode* n = row->member->inheritance_key_chain.first; n != 0; n = n->next)
                         {
                           String8 inherited_type_name = e_type_string_from_key(scratch.arena, n->v);
                           inherited_type_name = str8_skip_chop_whitespace(inherited_type_name);
@@ -2929,7 +2929,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     }goto value_cell;
                     case RD_WatchViewColumnKind_Member:
                     {
-                      E_Expr *expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
+                      E_Expr* expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
                       cell_eval = e_eval_from_expr(scratch.arena, expr);
                       cell_type = e_type_from_key(scratch.arena, cell_eval.type_key);
                     }goto value_cell;
@@ -2946,7 +2946,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       if(msgs.max_kind > E_MsgKind_Null)
                       {
                         String8List strings = {0};
-                        for(E_Msg *msg = msgs.first; msg != 0; msg = msg->next)
+                        for(E_Msg* msg = msgs.first; msg != 0; msg = msg->next)
                         {
                           str8_list_push(scratch.arena, &strings, msg->text);
                         }
@@ -2971,10 +2971,10 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         cell_ui_hook = ui_view_rule_info->ui;
                         cell_ui_params = ui_view_rule_params_root;
                       }
-                      for(EV_ViewRuleNode *n = row->view_rules->first; n != 0; n = n->next)
+                      for(EV_ViewRuleNode* n = row->view_rules->first; n != 0; n = n->next)
                       {
-                        EV_ViewRule *vr = &n->v;
-                        RD_ViewRuleInfo *info = rd_view_rule_info_from_string(vr->root->string);
+                        EV_ViewRule* vr = &n->v;
+                        RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr->root->string);
                         if(info->flags & RD_ViewRuleInfoFlag_CanFillValueCell && info->ui != 0)
                         {
                           cell_ui_hook = info->ui;
@@ -2993,9 +2993,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       cell_autocomp_flags = RD_AutoCompListerFlag_ViewRules;
                       if(cell_pre_edit_string.size == 0)
                       {
-                        EV_ViewRuleList *auto_view_rules = ev_auto_view_rules_from_type_key(scratch.arena, row_eval.type_key, 0, 1);
+                        EV_ViewRuleList* auto_view_rules = ev_auto_view_rules_from_type_key(scratch.arena, row_eval.type_key, 0, 1);
                         String8List strings = {0};
-                        for(EV_ViewRuleNode *n = auto_view_rules->first; n != 0; n = n->next)
+                        for(EV_ViewRuleNode* n = auto_view_rules->first; n != 0; n = n->next)
                         {
                           str8_list_push(scratch.arena, &strings, n->v.root->string);
                         }
@@ -3020,11 +3020,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   if(col->view_rule_size != 0)
                   {
                     String8 col_view_rule = str8(col->view_rule_buffer, col->view_rule_size);
-                    EV_ViewRuleList *view_rules = ev_view_rule_list_from_string(scratch.arena, col_view_rule);
-                    for(EV_ViewRuleNode *n = view_rules->first; n != 0; n = n->next)
+                    EV_ViewRuleList* view_rules = ev_view_rule_list_from_string(scratch.arena, col_view_rule);
+                    for(EV_ViewRuleNode* n = view_rules->first; n != 0; n = n->next)
                     {
-                      EV_ViewRule *vr = &n->v;
-                      RD_ViewRuleInfo *info = rd_view_rule_info_from_string(vr->root->string);
+                      EV_ViewRule* vr = &n->v;
+                      RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr->root->string);
                       if(info->flags & RD_ViewRuleInfoFlag_CanFillValueCell && info->ui != 0)
                       {
                         cell_ui_hook = info->ui;
@@ -3037,7 +3037,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   //- rjf: determine cell's palette
                   ProfBegin("determine cell's palette");
                   UI_BoxFlags cell_flags = 0;
-                  UI_Palette *palette = ui_top_palette();
+                  UI_Palette* palette = ui_top_palette();
                   {
                     if(cell_error_tooltip_string.size != 0 ||
                        cell_error_string.size != 0)
@@ -3100,7 +3100,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     // rjf: cell has errors? -> build error box
                     if(cell_error_string.size != 0) RD_Font(RD_FontSlot_Main)
                     {
-                      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable, "###%I64x_row_%I64x", x, row_hash);
+                      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable, "###%I64x_row_%I64x", x, row_hash);
                       sig = ui_signal_from_box(box);
                       UI_Parent(box) UI_Flags(0)
                       {
@@ -3111,7 +3111,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     // rjf: cell has hook? -> build ui by calling hook
                     else if(cell_ui_hook != 0)
                     {
-                      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable, "###val_%I64x", row_hash);
+                      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable, "###val_%I64x", row_hash);
                       UI_Parent(box)
                       {
                         String8 row_expr = e_string_from_expr(scratch.arena, row->expr);
@@ -3123,7 +3123,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     // rjf: cell has icon? build icon
                     else if(cell_icon != RD_IconKind_Null)
                     {
-                      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###cell_%I64x", row_hash);
+                      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###cell_%I64x", row_hash);
                       UI_Parent(box) RD_Font(RD_FontSlot_Icons) UI_WidthFill UI_TextAlignment(UI_TextAlign_Center)
                       {
                         ui_label(rd_icon_kind_text_table[cell_icon]);
@@ -3200,12 +3200,12 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                                col->kind == RD_WatchViewColumnKind_Member) &&
                               cell_eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
                       {
-                        CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(cell_eval.space);
-                        CTRL_Entity *process = ctrl_process_from_entity(entity);
+                        CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(cell_eval.space);
+                        CTRL_Entity* process = ctrl_process_from_entity(entity);
                         if(process != &ctrl_entity_nil)
                         {
                           U64 vaddr = cell_eval.value.u64;
-                          CTRL_Entity *module = ctrl_module_from_process_vaddr(process, vaddr);
+                          CTRL_Entity* module = ctrl_module_from_process_vaddr(process, vaddr);
                           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
                           U64 voff = ctrl_voff_from_vaddr(module, vaddr);
                           D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, voff);
@@ -3258,7 +3258,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   //- rjf: [DEV] hovering -> eval system tooltips
                   if(DEV_eval_compiler_tooltips && x == 0 && ui_hovering(sig)) UI_Tooltip RD_Font(RD_FontSlot_Code)
                   {
-                    static char *spaces = "                                                                        ";
+                    static char* spaces = "                                                                        ";
                     String8         string      = ev_expr_string_from_row(scratch.arena, row, 0);
                     E_TokenArray    tokens      = e_token_array_from_text(scratch.arena, string);
                     E_Parse         parse       = e_parse_expr_from_text_tokens(scratch.arena, string, &tokens);
@@ -3278,15 +3278,15 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     {
                       struct Task
                       {
-                        Task *next;
-                        Task *prev;
-                        E_Expr *expr;
+                        Task* next;
+                        Task* prev;
+                        E_Expr* expr;
                         S64 depth;
                       };
                       Task start_task = {0, 0, parse.expr};
-                      Task *first_task = &start_task;
-                      Task *last_task = first_task;
-                      for(Task *t = first_task; t != 0; t = t->next)
+                      Task* first_task = &start_task;
+                      Task* last_task = first_task;
+                      for(Task* t = first_task; t != 0; t = t->next)
                       {
                         String8 ext = {0};
                         switch(t->expr->kind)
@@ -3316,9 +3316,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                           }break;
                         }
                         ui_labelf("%.*s%S%s%S", (int)t->depth*2, spaces, e_expr_kind_strings[t->expr->kind], ext.size ? " " : "", ext);
-                        for(E_Expr *child = t->expr->first; child != &e_expr_nil; child = child->next)
+                        for(E_Expr* child = t->expr->first; child != &e_expr_nil; child = child->next)
                         {
-                          Task *task = push_array(scratch.arena, Task, 1);
+                          Task* task = push_array(scratch.arena, Task, 1);
                           task->expr = child;
                           task->depth = t->depth+1;
                           DLLInsert(first_task, last_task, t, task);
@@ -3330,15 +3330,15 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     {
                       struct Task
                       {
-                        Task *next;
-                        Task *prev;
-                        E_IRNode *node;
+                        Task* next;
+                        Task* prev;
+                        E_IRNode* node;
                         S64 depth;
                       };
                       Task start_task = {0, 0, irtree.root};
-                      Task *first_task = &start_task;
-                      Task *last_task = first_task;
-                      for(Task *t = first_task; t != 0; t = t->next)
+                      Task* first_task = &start_task;
+                      Task* last_task = first_task;
+                      for(Task* t = first_task; t != 0; t = t->next)
                       {
                         String8 op_string = {0};
                         switch(t->node->op)
@@ -3352,9 +3352,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         }
                         String8 ext = {0};
                         ui_labelf("%.*s%S", (int)t->depth*2, spaces, op_string);
-                        for(E_IRNode *child = t->node->first; child != &e_irnode_nil; child = child->next)
+                        for(E_IRNode* child = t->node->first; child != &e_irnode_nil; child = child->next)
                         {
-                          Task *task = push_array(scratch.arena, Task, 1);
+                          Task* task = push_array(scratch.arena, Task, 1);
                           task->node = child;
                           task->depth = t->depth+1;
                           DLLInsert(first_task, last_task, t, task);
@@ -3364,7 +3364,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Op List:");
                     {
-                      for(E_Op *op = oplist.first; op != 0; op = op->next)
+                      for(E_Op* op = oplist.first; op != 0; op = op->next)
                       {
                         String8 op_string = {0};
                         switch(op->opcode)
@@ -3528,7 +3528,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         //- rjf: user has 1 target. build helper for launching it
         case 1:
         {
-          RD_Entity *target = rd_first_entity_from_list(&targets);
+          RD_Entity* target = rd_first_entity_from_list(&targets);
           String8 target_full_path = target->string;
           String8 target_name = str8_skip_last_slash(target_full_path);
           UI_PrefHeight(ui_em(3.75f, 1.f))
@@ -3601,32 +3601,32 @@ struct RD_CmdListerItem
 
 struct RD_CmdListerItemNode
 {
-  RD_CmdListerItemNode *next;
+  RD_CmdListerItemNode* next;
   RD_CmdListerItem item;
 };
 
 struct RD_CmdListerItemList
 {
-  RD_CmdListerItemNode *first;
-  RD_CmdListerItemNode *last;
+  RD_CmdListerItemNode* first;
+  RD_CmdListerItemNode* last;
   U64 count;
 };
 
 struct RD_CmdListerItemArray
 {
-  RD_CmdListerItem *v;
+  RD_CmdListerItem* v;
   U64 count;
 };
 
 RD_CmdListerItemList
-rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
+rd_cmd_lister_item_list_from_needle(Arena* arena, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CmdListerItemList result = {0};
   // TODO(rjf): extend this with dynamically-registered command info
   for EachNonZeroEnumVal(RD_CmdKind, k)
   {
-    RD_CmdKindInfo *info = &rd_cmd_kind_info_table[k];
+    RD_CmdKindInfo* info = &rd_cmd_kind_info_table[k];
     if(info->flags & RD_CmdKindFlag_ListInUI)
     {
       String8 cmd_display_name = info->display_name;
@@ -3640,7 +3640,7 @@ rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
          tags_matches.count > 0 ||
          name_matches.needle_part_count == 0)
       {
-        RD_CmdListerItemNode *node = push_array(arena, RD_CmdListerItemNode, 1);
+        RD_CmdListerItemNode* node = push_array(arena, RD_CmdListerItemNode, 1);
         node->item.cmd_name = info->string;
         node->item.registrar_idx = (U64)k;
         node->item.ordering_idx = (U64)k;
@@ -3657,13 +3657,13 @@ rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
 }
 
 RD_CmdListerItemArray
-rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
+rd_cmd_lister_item_array_from_list(Arena* arena, RD_CmdListerItemList list)
 {
   RD_CmdListerItemArray result = {0};
   result.count = list.count;
   result.v = push_array(arena, RD_CmdListerItem, result.count);
   U64 idx = 0;
-  for(RD_CmdListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
+  for(RD_CmdListerItemNode* n = list.first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->item;
   }
@@ -3671,7 +3671,7 @@ rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
 }
 
 int
-rd_qsort_compare_cmd_lister__strength(RD_CmdListerItem *a, RD_CmdListerItem *b)
+rd_qsort_compare_cmd_lister__strength(RD_CmdListerItem* a, RD_CmdListerItem* b)
 {
   int result = 0;
   if(a->name_match_ranges.count > b->name_match_ranges.count)
@@ -3734,7 +3734,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
     U64 selected_cmd_hash;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_CmdsViewState *cv = rd_view_state(RD_CmdsViewState);
+  RD_CmdsViewState* cv = rd_view_state(RD_CmdsViewState);
   
   //- rjf: build filtered array of commands
   RD_CmdListerItemList cmd_list = rd_cmd_lister_item_list_from_needle(scratch.arena, string);
@@ -3786,13 +3786,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
         row_idx <= visible_row_range.max && row_idx < cmd_array.count;
         row_idx += 1)
     {
-      RD_CmdListerItem *item = &cmd_array.v[row_idx];
-      RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(item->cmd_name);
+      RD_CmdListerItem* item = &cmd_array.v[row_idx];
+      RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(item->cmd_name);
       
       //- rjf: build row contents
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
-      UI_Box *box = &ui_nil_box;
+      UI_Box* box = &ui_nil_box;
       UI_Focus(cursor.y == row_idx+1 ? UI_FocusKind_On : UI_FocusKind_Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
@@ -3831,8 +3831,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
           F32 font_line_height = fnt_line_height_from_metrics(&font_metrics);
           String8 cmd_display_name = info->display_name;
           String8 cmd_desc = info->description;
-          UI_Box *name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info->string);
-          UI_Box *desc_box = &ui_nil_box;
+          UI_Box* name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info->string);
+          UI_Box* desc_box = &ui_nil_box;
           UI_PrefHeight(ui_em(1.8f, 1.f)) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
           {
             desc_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##desc_%S", cmd_desc, info->string);
@@ -3898,13 +3898,13 @@ struct RD_FileInfo
 
 struct RD_FileInfoNode
 {
-  RD_FileInfoNode *next;
+  RD_FileInfoNode* next;
   RD_FileInfo file_info;
 };
 
 struct RD_FileSystemViewPathState
 {
-  RD_FileSystemViewPathState *hash_next;
+  RD_FileSystemViewPathState* hash_next;
   String8 normalized_path;
   Vec2S64 cursor;
 };
@@ -3916,12 +3916,12 @@ struct RD_FileSystemViewState
   RD_FileSystemViewPathState **path_state_table;
   RD_FileSortKind sort_kind;
   Side sort_side;
-  Arena *cached_files_arena;
+  Arena* cached_files_arena;
   String8 cached_files_path;
   RD_FileSortKind cached_files_sort_kind;
   Side cached_files_sort_side;
   U64 cached_file_count;
-  RD_FileInfo *cached_files;
+  RD_FileInfo* cached_files;
   F32 col_pcts[3];
 };
 
@@ -3986,13 +3986,13 @@ rd_path_query_from_string(String8 string)
 }
 
 int
-rd_qsort_compare_file_info__filename(RD_FileInfo *a, RD_FileInfo *b)
+rd_qsort_compare_file_info__filename(RD_FileInfo* a, RD_FileInfo* b)
 {
   return strncmp((char *)a->filename.str, (char *)b->filename.str, Min(a->filename.size, b->filename.size));
 }
 
 int
-rd_qsort_compare_file_info__default(RD_FileInfo *a, RD_FileInfo *b)
+rd_qsort_compare_file_info__default(RD_FileInfo* a, RD_FileInfo* b)
 {
   int result = 0;
   if(a->props.flags & FilePropertyFlag_IsFolder && !(b->props.flags & FilePropertyFlag_IsFolder))
@@ -4011,7 +4011,7 @@ rd_qsort_compare_file_info__default(RD_FileInfo *a, RD_FileInfo *b)
 }
 
 int
-rd_qsort_compare_file_info__default_filtered(RD_FileInfo *a, RD_FileInfo *b)
+rd_qsort_compare_file_info__default_filtered(RD_FileInfo* a, RD_FileInfo* b)
 {
   int result = 0;
   if(a->filename.size < b->filename.size)
@@ -4026,7 +4026,7 @@ rd_qsort_compare_file_info__default_filtered(RD_FileInfo *a, RD_FileInfo *b)
 }
 
 int
-rd_qsort_compare_file_info__last_modified(RD_FileInfo *a, RD_FileInfo *b)
+rd_qsort_compare_file_info__last_modified(RD_FileInfo* a, RD_FileInfo* b)
 {
   return ((a->props.modified < b->props.modified) ? -1 :
           (a->props.modified > b->props.modified) ? +1 :
@@ -4034,7 +4034,7 @@ rd_qsort_compare_file_info__last_modified(RD_FileInfo *a, RD_FileInfo *b)
 }
 
 int
-rd_qsort_compare_file_info__size(RD_FileInfo *a, RD_FileInfo *b)
+rd_qsort_compare_file_info__size(RD_FileInfo* a, RD_FileInfo* b)
 {
   return ((a->props.size < b->props.size) ? -1 :
           (a->props.size > b->props.size) ? +1 :
@@ -4052,14 +4052,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   RD_PathQuery path_query = rd_path_query_from_string(query_normalized_with_opt_slash);
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
-  RD_Window *window = rd_window_from_handle(rd_regs()->window);
-  RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
+  RD_Window* window = rd_window_from_handle(rd_regs()->window);
+  RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   B32 file_selection = !!(cmd_kind_info->query.flags & RD_QueryFlag_AllowFiles);
   B32 dir_selection = !!(cmd_kind_info->query.flags & RD_QueryFlag_AllowFolders);
   
   //- rjf: get extra state for this view
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_FileSystemViewState *fs = rd_view_state(RD_FileSystemViewState);
+  RD_FileSystemViewState* fs = rd_view_state(RD_FileSystemViewState);
   if(fs->initialized == 0)
   {
     fs->initialized = 1;
@@ -4072,12 +4072,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   }
   
   //- rjf: grab state for the current path
-  RD_FileSystemViewPathState *ps = 0;
+  RD_FileSystemViewPathState* ps = 0;
   {
     String8 key = query_normalized;
     U64 hash = d_hash_from_string(key);
     U64 slot = hash % fs->path_state_table_size;
-    for(RD_FileSystemViewPathState *p = fs->path_state_table[slot]; p != 0; p = p->hash_next)
+    for(RD_FileSystemViewPathState* p = fs->path_state_table[slot]; p != 0; p = p->hash_next)
     {
       if(str8_match(p->normalized_path, key, 0))
       {
@@ -4096,7 +4096,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   
   //- rjf: get file array from the current path
   U64 file_count = fs->cached_file_count;
-  RD_FileInfo *files = fs->cached_files;
+  RD_FileInfo* files = fs->cached_files;
   if(!str8_match(fs->cached_files_path, query_normalized_with_opt_slash, 0) ||
      fs->cached_files_sort_kind != fs->sort_kind ||
      fs->cached_files_sort_side != fs->sort_side)
@@ -4118,10 +4118,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     
     //- rjf: get files, filtered
     U64 new_file_count = 0;
-    RD_FileInfoNode *first_file = 0;
-    RD_FileInfoNode *last_file = 0;
+    RD_FileInfoNode* first_file = 0;
+    RD_FileInfoNode* last_file = 0;
     {
-      OS_FileIter *it = os_file_iter_begin(scratch.arena, path_query.path, 0);
+      OS_FileIter* it = os_file_iter_begin(scratch.arena, path_query.path, 0);
       for(OS_FileInfo info = {0}; os_file_iter_next(scratch.arena, it, &info);)
       {
         FuzzyMatchRangeList match_ranges = fuzzy_match_find(fs->cached_files_arena, path_query.search, info.name);
@@ -4129,7 +4129,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         B32 fits_dir_only = !!(info.props.flags & FilePropertyFlag_IsFolder) || !dir_selection;
         if(fits_search && fits_dir_only)
         {
-          RD_FileInfoNode *node = push_array(scratch.arena, RD_FileInfoNode, 1);
+          RD_FileInfoNode* node = push_array(scratch.arena, RD_FileInfoNode, 1);
           node->file_info.filename = push_str8_copy(fs->cached_files_arena, info.name);
           node->file_info.props = info.props;
           node->file_info.match_ranges = match_ranges;
@@ -4141,10 +4141,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     }
     
     //- rjf: convert list to array
-    RD_FileInfo *new_files = push_array(fs->cached_files_arena, RD_FileInfo, new_file_count);
+    RD_FileInfo* new_files = push_array(fs->cached_files_arena, RD_FileInfo, new_file_count);
     {
       U64 idx = 0;
-      for(RD_FileInfoNode *n = first_file; n != 0; n = n->next, idx += 1)
+      for(RD_FileInfoNode* n = first_file; n != 0; n = n->next, idx += 1)
       {
         new_files[idx] = n->file_info;
       }
@@ -4370,7 +4370,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         row_idx += 1, row_num += 1)
     {
       U64 file_idx = row_idx-1;
-      RD_FileInfo *file = &files[file_idx];
+      RD_FileInfo* file = &files[file_idx];
       B32 file_kb_focus = (ps->cursor.y == (row_idx+1));
       
       // rjf: make button
@@ -4406,7 +4406,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
           // rjf: filename
           UI_PrefWidth(ui_pct(1, 0))
           {
-            UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DisableIDString, file->filename);
+            UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DisableIDString, file->filename);
             ui_box_equip_fuzzy_match_ranges(box, &file->match_ranges);
           }
         }
@@ -4471,39 +4471,39 @@ struct RD_ProcessInfo
 
 struct RD_ProcessInfoNode
 {
-  RD_ProcessInfoNode *next;
+  RD_ProcessInfoNode* next;
   RD_ProcessInfo info;
 };
 
 struct RD_ProcessInfoList
 {
-  RD_ProcessInfoNode *first;
-  RD_ProcessInfoNode *last;
+  RD_ProcessInfoNode* first;
+  RD_ProcessInfoNode* last;
   U64 count;
 };
 
 struct RD_ProcessInfoArray
 {
-  RD_ProcessInfo *v;
+  RD_ProcessInfo* v;
   U64 count;
 };
 
 RD_ProcessInfoList
-rd_process_info_list_from_query(Arena *arena, String8 query)
+rd_process_info_list_from_query(Arena* arena, String8 query)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: gather PIDs that we're currently attached to
   U64 attached_process_count = 0;
-  U32 *attached_process_pids = 0;
+  U32* attached_process_pids = 0;
   {
     CTRL_EntityList processes = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Process);
     attached_process_count = processes.count;
     attached_process_pids = push_array(scratch.arena, U32, attached_process_count);
     U64 idx = 0;
-    for(CTRL_EntityNode *n = processes.first; n != 0; n = n->next, idx += 1)
+    for(CTRL_EntityNode* n = processes.first; n != 0; n = n->next, idx += 1)
     {
-      CTRL_Entity *process = n->v;
+      CTRL_Entity* process = n->v;
       attached_process_pids[idx] = process->id;
     }
   }
@@ -4550,7 +4550,7 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
       // rjf: push if unfiltered
       if(matches_query)
       {
-        RD_ProcessInfoNode *n = push_array(arena, RD_ProcessInfoNode, 1);
+        RD_ProcessInfoNode* n = push_array(arena, RD_ProcessInfoNode, 1);
         n->info.info = info;
         n->info.info.name = push_str8_copy(arena, info.name);
         n->info.is_attached = is_attached;
@@ -4569,13 +4569,13 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
 }
 
 RD_ProcessInfoArray
-rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
+rd_process_info_array_from_list(Arena* arena, RD_ProcessInfoList list)
 {
   RD_ProcessInfoArray array = {0};
   array.count = list.count;
   array.v = push_array(arena, RD_ProcessInfo, array.count);
   U64 idx = 0;
-  for(RD_ProcessInfoNode *n = list.first; n != 0; n = n->next, idx += 1)
+  for(RD_ProcessInfoNode* n = list.first; n != 0; n = n->next, idx += 1)
   {
     array.v[idx] = n->info;
   }
@@ -4583,7 +4583,7 @@ rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
 }
 
 int
-rd_qsort_compare_process_info(RD_ProcessInfo *a, RD_ProcessInfo *b)
+rd_qsort_compare_process_info(RD_ProcessInfo* a, RD_ProcessInfo* b)
 {
   int result = 0;
   if(a->pid_match_ranges.count > b->pid_match_ranges.count)
@@ -4631,12 +4631,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
     B32 initialized;
     B32 need_initial_gather;
     U32 selected_pid;
-    Arena *cached_process_arena;
+    Arena* cached_process_arena;
     String8 cached_process_arg;
     RD_ProcessInfoArray cached_process_array;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_SystemProcessesViewState *sp = rd_view_state(RD_SystemProcessesViewState);
+  RD_SystemProcessesViewState* sp = rd_view_state(RD_SystemProcessesViewState);
   if(sp->initialized == 0)
   {
     sp->initialized = 1;
@@ -4661,7 +4661,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   //- rjf: submit best match when hitting enter w/ no selection
   if(sp->selected_pid == 0 && process_info_array.count > 0 && ui_slot_press(UI_EventActionSlot_Accept))
   {
-    RD_ProcessInfo *info = &process_info_array.v[0];
+    RD_ProcessInfo* info = &process_info_array.v[0];
     rd_cmd(RD_CmdKind_CompleteQuery, .pid = info->info.pid);
   }
   
@@ -4705,7 +4705,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
         idx <= visible_row_range.max && idx < process_info_array.count;
         idx += 1)
     {
-      RD_ProcessInfo *info = &process_info_array.v[idx];
+      RD_ProcessInfo* info = &process_info_array.v[idx];
       B32 is_attached = info->is_attached;
       UI_Signal sig = {0};
       UI_FocusHot(cursor.y == idx+1 ? UI_FocusKind_On : UI_FocusKind_Off)
@@ -4726,14 +4726,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
         // rjf: attached indicator
         if(is_attached) UI_PrefWidth(ui_text_dim(10, 1)) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
         {
-          UI_Box *attached_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "[attached]##attached_label_%i", (int)info->info.pid);
+          UI_Box* attached_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "[attached]##attached_label_%i", (int)info->info.pid);
           ui_box_equip_fuzzy_match_ranges(attached_label, &info->attached_match_ranges);
         }
         
         // rjf: process name
         UI_PrefWidth(ui_text_dim(10, 1))
         {
-          UI_Box *name_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_label_%i", info->info.name, (int)info->info.pid);
+          UI_Box* name_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_label_%i", info->info.name, (int)info->info.pid);
           ui_box_equip_fuzzy_match_ranges(name_label, &info->name_match_ranges);
         }
         
@@ -4741,7 +4741,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
         UI_PrefWidth(ui_text_dim(1, 1)) UI_TextAlignment(UI_TextAlign_Center) UI_TextPadding(0)
         {
           ui_labelf("[PID: ");
-          UI_Box *pid_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%i##pid_label", info->info.pid);
+          UI_Box* pid_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%i##pid_label", info->info.pid);
           ui_box_equip_fuzzy_match_ranges(pid_label, &info->pid_match_ranges);
           ui_labelf("]");
         }
@@ -4777,38 +4777,38 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
 
 struct RD_EntityListerItem
 {
-  RD_Entity *entity;
+  RD_Entity* entity;
   FuzzyMatchRangeList name_match_ranges;
 };
 
 struct RD_EntityListerItemNode
 {
-  RD_EntityListerItemNode *next;
+  RD_EntityListerItemNode* next;
   RD_EntityListerItem item;
 };
 
 struct RD_EntityListerItemList
 {
-  RD_EntityListerItemNode *first;
-  RD_EntityListerItemNode *last;
+  RD_EntityListerItemNode* first;
+  RD_EntityListerItemNode* last;
   U64 count;
 };
 
 struct RD_EntityListerItemArray
 {
-  RD_EntityListerItem *v;
+  RD_EntityListerItem* v;
   U64 count;
 };
 
 RD_EntityListerItemList
-rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
+rd_entity_lister_item_list_from_needle(Arena* arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_EntityListerItemList result = {0};
   RD_EntityList ent_list = rd_query_cached_entity_list_with_kind(kind);
-  for(RD_EntityNode *n = ent_list.first; n != 0; n = n->next)
+  for(RD_EntityNode* n = ent_list.first; n != 0; n = n->next)
   {
-    RD_Entity *entity = n->entity;
+    RD_Entity* entity = n->entity;
     if(!(entity->flags & omit_flags))
     {
       DR_FancyStringList title_fstrs = rd_title_fstrs_from_entity(scratch.arena, entity, v4f32(0, 0, 0, 0), 0);
@@ -4816,7 +4816,7 @@ rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_Enti
       FuzzyMatchRangeList match_rngs = fuzzy_match_find(arena, needle, title_string);
       if(match_rngs.count != 0 || needle.size == 0)
       {
-        RD_EntityListerItemNode *item_n = push_array(arena, RD_EntityListerItemNode, 1);
+        RD_EntityListerItemNode* item_n = push_array(arena, RD_EntityListerItemNode, 1);
         item_n->item.entity = entity;
         item_n->item.name_match_ranges = match_rngs;
         SLLQueuePush(result.first, result.last, item_n);
@@ -4829,14 +4829,14 @@ rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_Enti
 }
 
 RD_EntityListerItemArray
-rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list)
+rd_entity_lister_item_array_from_list(Arena* arena, RD_EntityListerItemList list)
 {
   RD_EntityListerItemArray result = {0};
   result.count = list.count;
   result.v = push_array(arena, RD_EntityListerItem, result.count);
   {
     U64 idx = 0;
-    for(RD_EntityListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
+    for(RD_EntityListerItemNode* n = list.first; n != 0; n = n->next, idx += 1)
     {
       result.v[idx] = n->item;
     }
@@ -4845,7 +4845,7 @@ rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list
 }
 
 int
-rd_qsort_compare_entity_lister__strength(RD_EntityListerItem *a, RD_EntityListerItem *b)
+rd_qsort_compare_entity_lister__strength(RD_EntityListerItem* a, RD_EntityListerItem* b)
 {
   int result = 0;
   if(a->name_match_ranges.count > b->name_match_ranges.count)
@@ -4869,8 +4869,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  RD_Window *window = rd_window_from_handle(rd_regs()->window);
-  RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
+  RD_Window* window = rd_window_from_handle(rd_regs()->window);
+  RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   RD_EntityKind entity_kind = cmd_kind_info->query.entity_kind;
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
@@ -4881,9 +4881,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
     RD_Handle selected_entity_handle;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_EntityListerViewState *fev = rd_view_state(RD_EntityListerViewState);
+  RD_EntityListerViewState* fev = rd_view_state(RD_EntityListerViewState);
   RD_Handle selected_entity_handle = fev->selected_entity_handle;
-  RD_Entity *selected_entity = rd_entity_from_handle(selected_entity_handle);
+  RD_Entity* selected_entity = rd_entity_from_handle(selected_entity_handle);
   
   //- rjf: build filtered array of entities
   RD_EntityListerItemList ent_list = rd_entity_lister_item_list_from_needle(scratch.arena, entity_kind, 0, string);
@@ -4893,7 +4893,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   //- rjf: submit best match when hitting enter w/ no selection
   if(rd_entity_is_nil(rd_entity_from_handle(fev->selected_entity_handle)) && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
   {
-    RD_Entity *ent = ent_arr.v[0].entity;
+    RD_Entity* ent = ent_arr.v[0].entity;
     rd_cmd(RD_CmdKind_CompleteQuery, .entity = rd_handle_from_entity(ent));
   }
   
@@ -4937,10 +4937,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
         idx += 1)
     {
       RD_EntityListerItem item = ent_arr.v[idx];
-      RD_Entity *ent = item.entity;
+      RD_Entity* ent = item.entity;
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
-      UI_Box *box = &ui_nil_box;
+      UI_Box* box = &ui_nil_box;
       UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind_On : UI_FocusKind_Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
@@ -4953,7 +4953,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
       UI_Parent(box) UI_WidthFill UI_Padding(ui_em(1.f, 1.f))
       {
         DR_FancyStringList title_fstrs = rd_title_fstrs_from_entity(scratch.arena, ent, ui_top_palette()->text_weak, ui_top_font_size());
-        UI_Box *title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+        UI_Box* title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
         ui_box_equip_display_fancy_strings(title_box, &title_fstrs);
         ui_box_equip_fuzzy_match_ranges(title_box, &item.name_match_ranges);
       }
@@ -4979,44 +4979,44 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
 
 struct RD_CtrlEntityListerItem
 {
-  CTRL_Entity *entity;
+  CTRL_Entity* entity;
   FuzzyMatchRangeList name_match_ranges;
 };
 
 struct RD_CtrlEntityListerItemNode
 {
-  RD_CtrlEntityListerItemNode *next;
+  RD_CtrlEntityListerItemNode* next;
   RD_CtrlEntityListerItem item;
 };
 
 struct RD_CtrlEntityListerItemList
 {
-  RD_CtrlEntityListerItemNode *first;
-  RD_CtrlEntityListerItemNode *last;
+  RD_CtrlEntityListerItemNode* first;
+  RD_CtrlEntityListerItemNode* last;
   U64 count;
 };
 
 struct RD_CtrlEntityListerItemArray
 {
-  RD_CtrlEntityListerItem *v;
+  RD_CtrlEntityListerItem* v;
   U64 count;
 };
 
 RD_CtrlEntityListerItemList
-rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, String8 needle)
+rd_ctrl_entity_lister_item_list_from_needle(Arena* arena, CTRL_EntityKind kind, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CtrlEntityListerItemList result = {0};
   CTRL_EntityList ent_list = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, kind);
-  for(CTRL_EntityNode *n = ent_list.first; n != 0; n = n->next)
+  for(CTRL_EntityNode* n = ent_list.first; n != 0; n = n->next)
   {
-    CTRL_Entity *entity = n->v;
+    CTRL_Entity* entity = n->v;
     DR_FancyStringList title_fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, entity, v4f32(0, 0, 0, 0), 0, 0);
     String8 title_fstrs_text = dr_string_from_fancy_string_list(scratch.arena, &title_fstrs);
     FuzzyMatchRangeList match_rngs = fuzzy_match_find(arena, needle, title_fstrs_text);
     if(match_rngs.count == match_rngs.needle_part_count || needle.size == 0)
     {
-      RD_CtrlEntityListerItemNode *item_n = push_array(arena, RD_CtrlEntityListerItemNode, 1);
+      RD_CtrlEntityListerItemNode* item_n = push_array(arena, RD_CtrlEntityListerItemNode, 1);
       item_n->item.entity = entity;
       item_n->item.name_match_ranges = match_rngs;
       SLLQueuePush(result.first, result.last, item_n);
@@ -5028,14 +5028,14 @@ rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, 
 }
 
 RD_CtrlEntityListerItemArray
-rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItemList list)
+rd_ctrl_entity_lister_item_array_from_list(Arena* arena, RD_CtrlEntityListerItemList list)
 {
   RD_CtrlEntityListerItemArray result = {0};
   result.count = list.count;
   result.v = push_array(arena, RD_CtrlEntityListerItem, result.count);
   {
     U64 idx = 0;
-    for(RD_CtrlEntityListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
+    for(RD_CtrlEntityListerItemNode* n = list.first; n != 0; n = n->next, idx += 1)
     {
       result.v[idx] = n->item;
     }
@@ -5044,7 +5044,7 @@ rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItem
 }
 
 int
-rd_qsort_compare_ctrl_entity_lister__strength(RD_CtrlEntityListerItem *a, RD_CtrlEntityListerItem *b)
+rd_qsort_compare_ctrl_entity_lister__strength(RD_CtrlEntityListerItem* a, RD_CtrlEntityListerItem* b)
 {
   int result = 0;
   if(a->name_match_ranges.count > b->name_match_ranges.count)
@@ -5068,8 +5068,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  RD_Window *window = rd_window_from_handle(rd_regs()->window);
-  RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
+  RD_Window* window = rd_window_from_handle(rd_regs()->window);
+  RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   CTRL_EntityKind entity_kind = cmd_kind_info->query.ctrl_entity_kind;
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
@@ -5080,9 +5080,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
     CTRL_Handle selected_entity_handle;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_CtrlEntityListerViewState *fev = rd_view_state(RD_CtrlEntityListerViewState);
+  RD_CtrlEntityListerViewState* fev = rd_view_state(RD_CtrlEntityListerViewState);
   CTRL_Handle selected_entity_handle = fev->selected_entity_handle;
-  CTRL_Entity *selected_entity = ctrl_entity_from_handle(d_state->ctrl_entity_store, selected_entity_handle);
+  CTRL_Entity* selected_entity = ctrl_entity_from_handle(d_state->ctrl_entity_store, selected_entity_handle);
   
   //- rjf: build filtered array of entities
   RD_CtrlEntityListerItemList ent_list = rd_ctrl_entity_lister_item_list_from_needle(scratch.arena, entity_kind, string);
@@ -5092,7 +5092,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   //- rjf: submit best match when hitting enter w/ no selection
   if(ctrl_entity_from_handle(d_state->ctrl_entity_store, fev->selected_entity_handle) == &ctrl_entity_nil && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
   {
-    CTRL_Entity *ent = ent_arr.v[0].entity;
+    CTRL_Entity* ent = ent_arr.v[0].entity;
     RD_RegsScope()
     {
       switch(ent->kind)
@@ -5147,10 +5147,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
         idx += 1)
     {
       RD_CtrlEntityListerItem item = ent_arr.v[idx];
-      CTRL_Entity *ent = item.entity;
+      CTRL_Entity* ent = item.entity;
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
-      UI_Box *box = &ui_nil_box;
+      UI_Box* box = &ui_nil_box;
       UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind_On : UI_FocusKind_Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
@@ -5163,7 +5163,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
       UI_Parent(box) UI_WidthFill UI_Padding(ui_em(1.f, 1.f))
       {
         DR_FancyStringList title_fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, ent, ui_top_palette()->text_weak, ui_top_font_size(), 1);
-        UI_Box *title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+        UI_Box* title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
         ui_box_equip_display_fancy_strings(title_box, &title_fstrs);
         ui_box_equip_fuzzy_match_ranges(title_box, &item.name_match_ranges);
       }
@@ -5202,7 +5202,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  DI_Scope *di_scope = di_scope_open();
+  DI_Scope* di_scope = di_scope_open();
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
   DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
@@ -5215,8 +5215,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   {
     for(U64 idx = 0; idx < rdis_count; idx += 1)
     {
-      RDI_Parsed *rdi = di_rdi_from_key(di_scope, &dbgi_keys.v[idx], endt_us);
-      RDI_TopLevelInfo *tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
+      RDI_Parsed* rdi = di_rdi_from_key(di_scope, &dbgi_keys.v[idx], endt_us);
+      RDI_TopLevelInfo* tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
       rdis[idx] = rdi;
     }
   }
@@ -5227,7 +5227,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
     Vec2S64 cursor;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  RD_SymbolListerViewState *slv = rd_view_state(RD_SymbolListerViewState);
+  RD_SymbolListerViewState* slv = rd_view_state(RD_SymbolListerViewState);
   
   //- rjf: query -> raddbg, filtered items
   U128 search_key = {rd_regs()->view.u64[0], rd_regs()->view.u64[1]};
@@ -5241,17 +5241,17 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   //- rjf: submit best match when hitting enter w/ no selection
   if(slv->cursor.y == 0 && items.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
   {
-    DI_SearchItem *item = &items.v[0];
+    DI_SearchItem* item = &items.v[0];
     if(item->dbgi_idx < rdis_count)
     {
-      RDI_Parsed *rdi = rdis[item->dbgi_idx];
+      RDI_Parsed* rdi = rdis[item->dbgi_idx];
       U64 rdi_procedures_count = 0;
       rdi_section_raw_table_from_kind(rdi, RDI_SectionKind_Procedures, &rdi_procedures_count);
       if(item->idx < rdi_procedures_count)
       {
-        RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
+        RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
         U64 name_size = 0;
-        U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+        U8* name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
         String8 name = str8(name_base, name_size);
         if(name.size != 0)
         {
@@ -5290,22 +5290,22 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         idx += 1)
       UI_Focus((slv->cursor.y == idx+1) ? UI_FocusKind_On : UI_FocusKind_Off)
     {
-      DI_SearchItem *item = &items.v[idx];
+      DI_SearchItem* item = &items.v[idx];
       if(item->dbgi_idx >= rdis_count) {continue;}
       DI_Key dbgi_key = dbgi_keys.v[item->dbgi_idx];
-      RDI_Parsed *rdi = rdis[item->dbgi_idx];
+      RDI_Parsed* rdi = rdis[item->dbgi_idx];
       
       //- rjf: unpack this item's info
-      RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
+      RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+      U8* name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
       String8 name = str8(name_base, name_size);
-      RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
+      RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
       E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), procedure->type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
       
       //- rjf: build item button
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
+      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
                                               UI_BoxFlag_DrawBackground|
                                               UI_BoxFlag_DrawBorder|
                                               UI_BoxFlag_DrawText|
@@ -5314,7 +5314,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
                                               "###procedure_%I64x", item->idx);
       UI_Parent(box) UI_PrefWidth(ui_text_dim(10, 1)) RD_Font(RD_FontSlot_Code)
       {
-        UI_Box *box = rd_code_label(1.f, 0, rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol), name);
+        UI_Box* box = rd_code_label(1.f, 0, rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol), name);
         ui_box_equip_fuzzy_match_ranges(box, &item->match_ranges);
         if(!e_type_key_match(e_type_key_zero(), type_key))
         {
@@ -5364,7 +5364,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
 RD_VIEW_RULE_UI_FUNCTION_DEF(targets)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5382,7 +5382,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(targets)
 RD_VIEW_RULE_UI_FUNCTION_DEF(file_path_map)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5400,7 +5400,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_path_map)
 RD_VIEW_RULE_UI_FUNCTION_DEF(auto_view_rules)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5418,7 +5418,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(auto_view_rules)
 RD_VIEW_RULE_UI_FUNCTION_DEF(breakpoints)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5436,7 +5436,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(breakpoints)
 RD_VIEW_RULE_UI_FUNCTION_DEF(watch_pins)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5454,7 +5454,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(watch_pins)
 RD_VIEW_RULE_UI_FUNCTION_DEF(scheduler)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5472,7 +5472,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(scheduler)
 RD_VIEW_RULE_UI_FUNCTION_DEF(call_stack)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5491,7 +5491,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(call_stack)
 RD_VIEW_RULE_UI_FUNCTION_DEF(modules)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5509,7 +5509,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(modules)
 RD_VIEW_RULE_UI_FUNCTION_DEF(watch)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5528,7 +5528,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(watch)
 RD_VIEW_RULE_UI_FUNCTION_DEF(locals)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5547,7 +5547,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(locals)
 RD_VIEW_RULE_UI_FUNCTION_DEF(registers)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5566,7 +5566,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(registers)
 RD_VIEW_RULE_UI_FUNCTION_DEF(globals)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5585,7 +5585,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(globals)
 RD_VIEW_RULE_UI_FUNCTION_DEF(thread_locals)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5604,7 +5604,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(thread_locals)
 RD_VIEW_RULE_UI_FUNCTION_DEF(types)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5623,7 +5623,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(types)
 RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
 {
   ProfBeginFunction();
-  RD_WatchViewState *wv = rd_view_state(RD_WatchViewState);
+  RD_WatchViewState* wv = rd_view_state(RD_WatchViewState);
   if(!wv->initialized)
   {
     rd_watch_view_init(wv);
@@ -5640,14 +5640,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
 
 struct RD_PendingFileViewState
 {
-  Arena *deferred_cmd_arena;
+  Arena* deferred_cmd_arena;
   RD_CmdList deferred_cmds;
 };
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
 {
   Temp scratch = scratch_begin(0, 0);
-  RD_PendingFileViewState *pves = rd_view_state(RD_PendingFileViewState);
+  RD_PendingFileViewState* pves = rd_view_state(RD_PendingFileViewState);
   if(pves->deferred_cmd_arena == 0)
   {
     pves->deferred_cmd_arena = rd_push_view_arena();
@@ -5657,7 +5657,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   //////////////////////////////
   //- rjf: process commands
   //
-  for(RD_Cmd *cmd = 0; rd_next_cmd(&cmd);)
+  for(RD_Cmd* cmd = 0; rd_next_cmd(&cmd);)
   {
     // rjf: mismatched window/panel => skip
     if(!rd_handle_match(rd_regs()->view, cmd->regs->view))
@@ -5690,7 +5690,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   B32 file_is_ready = 0;
   RD_ViewRuleKind viewer_kind = RD_ViewRuleKind_Text;
   {
-    HS_Scope *hs_scope = hs_scope_open();
+    HS_Scope* hs_scope = hs_scope_open();
     String8 data = hs_data_from_hash(hs_scope, file_hash);
     if(!u128_match(file_hash, u128_zero()))
     {
@@ -5728,9 +5728,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   //- rjf: if file is ready, dispatch all deferred commands
   if(file_is_ready)
   {
-    for(RD_CmdNode *cmd_node = pves->deferred_cmds.first; cmd_node != 0; cmd_node = cmd_node->next)
+    for(RD_CmdNode* cmd_node = pves->deferred_cmds.first; cmd_node != 0; cmd_node = cmd_node->next)
     {
-      RD_Cmd *cmd = &cmd_node->cmd;
+      RD_Cmd* cmd = &cmd_node->cmd;
       rd_push_cmd(cmd->name, cmd->regs);
     }
     arena_clear(pves->deferred_cmd_arena);
@@ -5738,7 +5738,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   }
   
   //- rjf: if file is ready, move params tree to scratch for new command
-  MD_Node *params_copy = &md_nil_node;
+  MD_Node* params_copy = &md_nil_node;
   if(file_is_ready)
   {
     params_copy = md_tree_copy(scratch.arena, params);
@@ -5747,9 +5747,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   //- rjf: if file is ready, replace this view with the correct one, if any viewer is specified
   if(file_is_ready && viewer_kind != RD_ViewRuleKind_Null)
   {
-    RD_ViewRuleInfo *view_rule_info = rd_view_rule_info_from_kind(viewer_kind);
+    RD_ViewRuleInfo* view_rule_info = rd_view_rule_info_from_kind(viewer_kind);
     String8 query = rd_eval_string_from_file_path(scratch.arena, file_path);
-    RD_View *view = rd_view_from_handle(rd_regs()->view);
+    RD_View* view = rd_view_from_handle(rd_regs()->view);
     rd_view_equip_spec(view, view_rule_info, query, params_copy);
   }
   
@@ -5775,11 +5775,11 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(text)
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(text)
 {
-  RD_CodeViewState *cv = rd_view_state(RD_CodeViewState);
+  RD_CodeViewState* cv = rd_view_state(RD_CodeViewState);
   rd_code_view_init(cv);
   Temp scratch = scratch_begin(0, 0);
-  HS_Scope *hs_scope = hs_scope_open();
-  TXT_Scope *txt_scope = txt_scope_open();
+  HS_Scope* hs_scope = hs_scope_open();
+  TXT_Scope* txt_scope = txt_scope_open();
   
   //////////////////////////////
   //- rjf: set up invariants
@@ -5791,7 +5791,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: process code-file commands
   //
-  for(RD_Cmd *cmd = 0; rd_next_cmd(&cmd);)
+  for(RD_Cmd* cmd = 0; rd_next_cmd(&cmd);)
   {
     // rjf: mismatched window/panel => skip
     if(!rd_handle_match(rd_regs()->view, cmd->regs->view))
@@ -5902,7 +5902,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //
   if(path.size != 0)
   {
-    CTRL_Entity *module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
+    CTRL_Entity* module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
     DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
     rd_regs()->lines = d_lines_from_dbgi_key_file_path_line_num(rd_frame_arena(), dbgi_key, path, rd_regs()->cursor.line);
   }
@@ -5916,7 +5916,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
     U64 file_timestamp = fs_timestamp_from_path(path);
     if(file_timestamp != 0)
     {
-      for(DI_KeyNode *n = dbgi_keys.first; n != 0; n = n->next)
+      for(DI_KeyNode* n = dbgi_keys.first; n != 0; n = n->next)
       {
         DI_Key key = n->v;
         if(key.min_timestamp < file_timestamp && key.min_timestamp != 0 && key.path.size != 0)
@@ -5936,7 +5936,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   {
     ui_set_next_rect(shift_2f32(bottom_bar_rect, scale_2f32(rect.p0, -1.f)));
     ui_set_next_flags(UI_BoxFlag_DrawBackground);
-    UI_Palette *palette = ui_top_palette();
+    UI_Palette* palette = ui_top_palette();
     if(file_is_out_of_date)
     {
       palette = rd_palette_from_code(RD_PaletteCode_NegativePopButton);
@@ -5949,7 +5949,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
     {
       if(file_is_out_of_date)
       {
-        UI_Box *box = &ui_nil_box;
+        UI_Box* box = &ui_nil_box;
         UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative)))
           RD_Font(RD_FontSlot_Icons)
         {
@@ -6023,7 +6023,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(disasm)
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
 {
-  RD_DisasmViewState *dv = rd_view_state(RD_DisasmViewState);
+  RD_DisasmViewState* dv = rd_view_state(RD_DisasmViewState);
   if(dv->initialized == 0)
   {
     dv->initialized = 1;
@@ -6032,11 +6032,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
     dv->style_flags = DASM_StyleFlag_Addresses|DASM_StyleFlag_SourceFilesNames|DASM_StyleFlag_SourceLines|DASM_StyleFlag_SymbolNames;
     rd_code_view_init(&dv->cv);
   }
-  RD_CodeViewState *cv = &dv->cv;
+  RD_CodeViewState* cv = &dv->cv;
   Temp scratch = scratch_begin(0, 0);
-  HS_Scope *hs_scope = hs_scope_open();
-  DASM_Scope *dasm_scope = dasm_scope_open();
-  TXT_Scope *txt_scope = txt_scope_open();
+  HS_Scope* hs_scope = hs_scope_open();
+  DASM_Scope* dasm_scope = dasm_scope_open();
+  TXT_Scope* txt_scope = txt_scope_open();
   
   //////////////////////////////
   //- rjf: if disassembly views are not parameterized by anything, they
@@ -6075,7 +6075,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //////////////////////////////
   //- rjf: process disassembly-specific commands
   //
-  for(RD_Cmd *cmd = 0; rd_next_cmd(&cmd);)
+  for(RD_Cmd* cmd = 0; rd_next_cmd(&cmd);)
   {
     // rjf: mismatched window/panel => skip
     if(!rd_handle_match(rd_regs()->view, cmd->regs->view))
@@ -6111,8 +6111,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   }
   Rng1U64 range = rd_range_from_eval_params(eval, params);
   Arch arch = rd_arch_from_eval_params(eval, params);
-  CTRL_Entity *space_entity = rd_ctrl_entity_from_eval_space(space);
-  CTRL_Entity *dasm_module = &ctrl_entity_nil;
+  CTRL_Entity* space_entity = rd_ctrl_entity_from_eval_space(space);
+  CTRL_Entity* dasm_module = &ctrl_entity_nil;
   DI_Key dbgi_key = {0};
   U64 base_vaddr = 0;
   switch(space_entity->kind)
@@ -6239,12 +6239,12 @@ struct RD_OutputViewState
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(output)
 {
-  RD_OutputViewState *ov = rd_view_state(RD_OutputViewState);
-  RD_CodeViewState *cv = &ov->cv;
+  RD_OutputViewState* ov = rd_view_state(RD_OutputViewState);
+  RD_CodeViewState* cv = &ov->cv;
   rd_code_view_init(cv);
   Temp scratch = scratch_begin(0, 0);
-  HS_Scope *hs_scope = hs_scope_open();
-  TXT_Scope *txt_scope = txt_scope_open();
+  HS_Scope* hs_scope = hs_scope_open();
+  TXT_Scope* txt_scope = txt_scope_open();
   
   //////////////////////////////
   //- rjf: set up invariants
@@ -6349,8 +6349,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  HS_Scope *hs_scope = hs_scope_open();
-  RD_MemoryViewState *mv = rd_view_state(RD_MemoryViewState);
+  HS_Scope* hs_scope = hs_scope_open();
+  RD_MemoryViewState* mv = rd_view_state(RD_MemoryViewState);
   
   //////////////////////////////
   //- rjf: unpack parameterization info
@@ -6381,7 +6381,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: process commands
   //
-  for(RD_Cmd *cmd = 0; rd_next_cmd(&cmd);)
+  for(RD_Cmd* cmd = 0; rd_next_cmd(&cmd);)
   {
     // rjf: mismatched window/panel => skip
     if(!rd_handle_match(rd_regs()->view, cmd->regs->view))
@@ -6462,7 +6462,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   {
     U64 next_cursor = cursor;
     U64 next_mark = mark;
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       Vec2S64 cell_delta = {0};
       switch(evt->delta_unit)
@@ -6600,7 +6600,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //- rjf: grab windowed memory
   //
   U64 visible_memory_size = dim_1u64(viz_range_bytes);
-  U8 *visible_memory = push_array(scratch.arena, U8, visible_memory_size);
+  U8* visible_memory = push_array(scratch.arena, U8, visible_memory_size);
   {
     e_space_read(eval.space, visible_memory, viz_range_bytes);
   }
@@ -6610,7 +6610,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //
   struct Annotation
   {
-    Annotation *next;
+    Annotation* next;
     String8 name_string;
     String8 kind_string;
     String8 type_string;
@@ -6619,13 +6619,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   };
   struct AnnotationList
   {
-    Annotation *first;
-    Annotation *last;
+    Annotation* first;
+    Annotation* last;
   };
-  AnnotationList *visible_memory_annotations = push_array(scratch.arena, AnnotationList, visible_memory_size);
+  AnnotationList* visible_memory_annotations = push_array(scratch.arena, AnnotationList, visible_memory_size);
   {
-    CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-    CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
+    CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
+    CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
     CTRL_Unwind unwind = d_query_cached_unwind_from_thread(thread);
     
     //- rjf: fill unwind frame annotations
@@ -6634,7 +6634,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       U64 last_stack_top = regs_rsp_from_arch_block(thread->arch, unwind.frames.v[0].regs);
       for(U64 idx = 1; idx < unwind.frames.count; idx += 1)
       {
-        CTRL_UnwindFrame *f = &unwind.frames.v[idx];
+        CTRL_UnwindFrame* f = &unwind.frames.v[idx];
         U64 f_stack_top = regs_rsp_from_arch_block(thread->arch, f->regs);
         Rng1U64 frame_vaddr_range = r1u64(last_stack_top, f_stack_top);
         Rng1U64 frame_vaddr_range_in_viz = intersect_1u64(frame_vaddr_range, viz_range_bytes);
@@ -6642,11 +6642,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         if(dim_1u64(frame_vaddr_range_in_viz) != 0)
         {
           U64 f_rip = regs_rip_from_arch_block(thread->arch, f->regs);
-          CTRL_Entity *module = ctrl_module_from_process_vaddr(process, f_rip);
+          CTRL_Entity* module = ctrl_module_from_process_vaddr(process, f_rip);
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
           U64 rip_voff = ctrl_voff_from_vaddr(module, f_rip);
           String8 symbol_name = d_symbol_name_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff, 1);
-          Annotation *annotation = push_array(scratch.arena, Annotation, 1);
+          Annotation* annotation = push_array(scratch.arena, Annotation, 1);
           annotation->name_string = symbol_name.size != 0 ? symbol_name : str8_lit("[external code]");
           annotation->kind_string = str8_lit("Call Stack Frame");
           annotation->color = symbol_name.size != 0 ? rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol) : rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
@@ -6669,7 +6669,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       Rng1U64 stack_vaddr_range_in_viz = intersect_1u64(stack_vaddr_range, viz_range_bytes);
       if(dim_1u64(stack_vaddr_range_in_viz) != 0)
       {
-        Annotation *annotation = push_array(scratch.arena, Annotation, 1);
+        Annotation* annotation = push_array(scratch.arena, Annotation, 1);
         annotation->name_string = thread->string.size ? thread->string : push_str8f(scratch.arena, "TID: %I64u", thread->id);
         annotation->kind_string = str8_lit("Stack");
         annotation->color = rd_rgba_from_ctrl_entity(thread);
@@ -6684,7 +6684,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     
     //- rjf: fill local variable annotations
     {
-      DI_Scope *scope = di_scope_open();
+      DI_Scope* scope = di_scope_open();
       Vec4F32 color_gen_table[] =
       {
         rd_rgba_from_theme_color(RD_ThemeColor_Thread0),
@@ -6697,7 +6697,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         rd_rgba_from_theme_color(RD_ThemeColor_Thread7),
       };
       U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_regs()->unwind_count);
-      for(E_String2NumMapNode *n = e_parse_ctx->locals_map->first; n != 0; n = n->order_next)
+      for(E_String2NumMapNode* n = e_parse_ctx->locals_map->first; n != 0; n = n->order_next)
       {
         String8 local_name = n->string;
         E_Eval local_eval = e_eval_from_string(scratch.arena, local_name);
@@ -6709,7 +6709,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           Rng1U64 vaddr_rng_in_visible = intersect_1u64(viz_range_bytes, vaddr_rng);
           if(vaddr_rng_in_visible.max != vaddr_rng_in_visible.min)
           {
-            Annotation *annotation = push_array(scratch.arena, Annotation, 1);
+            Annotation* annotation = push_array(scratch.arena, Annotation, 1);
             {
               annotation->name_string = push_str8_copy(scratch.arena, local_name);
               annotation->kind_string = str8_lit("Local");
@@ -6731,7 +6731,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: build main container
   //
-  UI_Box *container_box = &ui_nil_box;
+  UI_Box* container_box = &ui_nil_box;
   {
     Vec2F32 dim = dim_2f32(rect);
     ui_set_next_fixed_width(dim.x);
@@ -6743,7 +6743,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: build header
   //
-  UI_Box *header_box = &ui_nil_box;
+  UI_Box* header_box = &ui_nil_box;
   UI_Parent(container_box)
   {
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f)) UI_Row
@@ -6793,7 +6793,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: build scrollable box
   //
-  UI_Box *scrollable_box = &ui_nil_box;
+  UI_Box* scrollable_box = &ui_nil_box;
   UI_Parent(container_box)
   {
     ui_set_next_fixed_x(content_rect.x0);
@@ -6813,8 +6813,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: build row container/overlay
   //
-  UI_Box *row_container_box = &ui_nil_box;
-  UI_Box *row_overlay_box = &ui_nil_box;
+  UI_Box* row_container_box = &ui_nil_box;
+  UI_Box* row_overlay_box = &ui_nil_box;
   UI_Parent(scrollable_box) UI_WidthFill UI_HeightFill
   {
     ui_set_next_child_layout_axis(Axis2_Y);
@@ -6884,7 +6884,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     // rjf: ctrl+scroll -> change font size
     if(ui_hovering(sig))
     {
-      for(UI_Event *evt = 0; ui_next_event(&evt);)
+      for(UI_Event* evt = 0; ui_next_event(&evt);)
       {
         if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
         {
@@ -6908,7 +6908,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   UI_Parent(row_container_box) RD_Font(RD_FontSlot_Code) UI_FontSize(font_size)
   {
     Rng1U64 selection = r1u64(cursor, mark);
-    U8 *row_ascii_buffer = push_array(scratch.arena, U8, num_columns);
+    U8* row_ascii_buffer = push_array(scratch.arena, U8, num_columns);
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f))
       for(S64 row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
     {
@@ -6925,7 +6925,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         Vec4F32 row_boundary_color = rd_rgba_from_theme_color(RD_ThemeColor_CacheLineBoundary);
         ui_set_next_palette(ui_build_palette(ui_top_palette(), .border = row_boundary_color));
       }
-      UI_Box *row = ui_build_box_from_stringf(UI_BoxFlag_DrawSideTop*!!row_is_boundary, "row_%I64x", row_range_bytes.min);
+      UI_Box* row = ui_build_box_from_stringf(UI_BoxFlag_DrawSideTop*!!row_is_boundary, "row_%I64x", row_range_bytes.min);
       UI_Parent(row)
       {
         UI_PrefWidth(ui_px(big_glyph_advance*20.f, 1.f))
@@ -6958,7 +6958,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             {
               // rjf: unpack byte info
               U8 byte_value = visible_memory[visible_byte_idx];
-              Annotation *annotation = visible_memory_annotations[visible_byte_idx].first;
+              Annotation* annotation = visible_memory_annotations[visible_byte_idx].first;
               
               // rjf: unpack visual cell info
               UI_BoxFlags cell_flags = 0;
@@ -6990,11 +6990,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
               
               // rjf: build
               ui_set_next_palette(ui_build_palette(ui_top_palette(), .background = cell_bg_rgba));
-              UI_Box *cell_box = ui_build_box_from_key(UI_BoxFlag_DrawText|cell_flags, ui_key_zero());
+              UI_Box* cell_box = ui_build_box_from_key(UI_BoxFlag_DrawText|cell_flags, ui_key_zero());
               ui_box_equip_display_fancy_strings(cell_box, &byte_fancy_strings[byte_value]);
               {
                 F32 off = 0;
-                for(Annotation *a = annotation; a != 0; a = a->next)
+                for(Annotation* a = annotation; a != 0; a = a->next)
                 {
                   if(global_byte_idx == a->vaddr_range.min) UI_Parent(row_overlay_box)
                   {
@@ -7014,7 +7014,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
               }
               if(annotation != 0 && mouse_hover_byte_num == global_byte_num) UI_Tooltip UI_FontSize(ui_top_font_size()) UI_PrefHeight(ui_px(ui_top_font_size()*1.75f, 1.f))
               {
-                for(Annotation *a = annotation; a != 0; a = a->next)
+                for(Annotation* a = annotation; a != 0; a = a->next)
                 {
                   UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(10, 1))
                   {
@@ -7055,11 +7055,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             }
           }
           String8 ascii_text = str8(row_ascii_buffer, num_bytes_this_row);
-          UI_Box *ascii_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
+          UI_Box* ascii_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
           if(selection.max >= row_range_bytes.min && selection.min < row_range_bytes.max)
           {
             Rng1U64 selection_in_row = intersect_1u64(row_range_bytes, selection);
-            DR_Bucket *bucket = dr_bucket_make();
+            DR_Bucket* bucket = dr_bucket_make();
             DR_BucketScope(bucket)
             {
               Vec2F32 text_pos = ui_box_text_position(ascii_box);
@@ -7074,7 +7074,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           }
           if(mouse_hover_byte_num != 0 && contains_1u64(row_range_bytes, mouse_hover_byte_num-1))
           {
-            DR_Bucket *bucket = dr_bucket_make();
+            DR_Bucket* bucket = dr_bucket_make();
             DR_BucketScope(bucket)
             {
               Vec2F32 text_pos = ui_box_text_position(ascii_box);
@@ -7096,7 +7096,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: build footer
   //
-  UI_Box *footer_box = &ui_nil_box;
+  UI_Box* footer_box = &ui_nil_box;
   UI_Parent(container_box)
   {
     ui_set_next_fixed_x(footer_rect.x0);
@@ -7235,7 +7235,7 @@ rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rec
 
 UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
 {
-  RD_BitmapCanvasBoxDrawData *draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
+  RD_BitmapCanvasBoxDrawData* draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
   Rng2F32 rect_scrn = box->rect;
   Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data->view_center_pos, draw_data->zoom, rect_scrn, rect_scrn);
   F32 grid_cell_size_cvs = box->font_size*10.f;
@@ -7271,8 +7271,8 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(bitmap)
 RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
 {
   Temp scratch = scratch_begin(0, 0);
-  HS_Scope *hs_scope = hs_scope_open();
-  TEX_Scope *tex_scope = tex_scope_open();
+  HS_Scope* hs_scope = hs_scope_open();
+  TEX_Scope* tex_scope = tex_scope_open();
   
   //////////////////////////////
   //- rjf: evaluate expression
@@ -7331,7 +7331,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   //////////////////////////////
   //- rjf: build canvas box
   //
-  UI_Box *canvas_box = &ui_nil_box;
+  UI_Box* canvas_box = &ui_nil_box;
   Vec2F32 canvas_dim = dim_2f32(rect);
   Rng2F32 canvas_rect = r2f32p(0, 0, canvas_dim.x, canvas_dim.y);
   UI_Rect(canvas_rect)
@@ -7380,7 +7380,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   //- rjf: equip canvas draw info
   //
   {
-    RD_BitmapCanvasBoxDrawData *draw_data = push_array(ui_build_arena(), RD_BitmapCanvasBoxDrawData, 1);
+    RD_BitmapCanvasBoxDrawData* draw_data = push_array(ui_build_arena(), RD_BitmapCanvasBoxDrawData, 1);
     draw_data->view_center_pos = view_center_pos;
     draw_data->zoom = zoom;
     ui_box_equip_custom_draw(canvas_box, rd_bitmap_view_canvas_box_draw, draw_data);
@@ -7487,7 +7487,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox)
 //~ rjf: color_rgba @view_hook_impl
 
 Vec4F32
-rd_rgba_from_eval_params(E_Eval eval, MD_Node *params)
+rd_rgba_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Vec4F32 rgba = {0};
   {
@@ -7529,7 +7529,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
   if(dim.y <= ui_top_font_size()*8.f)
   {
     //- rjf: build text box
-    UI_Box *text_box = &ui_nil_box;
+    UI_Box* text_box = &ui_nil_box;
     UI_WidthFill RD_Font(RD_FontSlot_Code)
     {
       text_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
@@ -7556,7 +7556,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
     }
     
     //- rjf: build color box
-    UI_Box *color_box = &ui_nil_box;
+    UI_Box* color_box = &ui_nil_box;
     UI_PrefWidth(ui_em(1.875f, 1.f)) UI_ChildLayoutAxis(Axis2_Y)
     {
       color_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "color_box");
@@ -7640,11 +7640,11 @@ struct RD_Geo3DBoxDrawData
 
 UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
 {
-  RD_Geo3DBoxDrawData *draw_data = (RD_Geo3DBoxDrawData *)user_data;
+  RD_Geo3DBoxDrawData* draw_data = (RD_Geo3DBoxDrawData *)user_data;
   
   // rjf: get clip
   Rng2F32 clip = box->rect;
-  for(UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
+  for(UI_Box* b = box->parent; !ui_box_is_nil(b); b = b->parent)
   {
     if(b->flags & UI_BoxFlag_Clip)
     {
@@ -7660,7 +7660,7 @@ UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
   
   // rjf: mesh
   Vec2F32 box_dim = dim_2f32(box->rect);
-  R_PassParams_Geo3D *pass = dr_geo3d_begin(box->rect,
+  R_PassParams_Geo3D* pass = dr_geo3d_begin(box->rect,
                                             make_look_at_4x4f32(eye, target, v3f32(0, 0, 1)),
                                             make_perspective_4x4f32(0.25f, box_dim.x/box_dim.y, 0.1f, 500.f));
   pass->clip = clip;
@@ -7678,8 +7678,8 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(geo3d)
 RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
 {
   Temp scratch = scratch_begin(0, 0);
-  GEO_Scope *geo_scope = geo_scope_open();
-  RD_Geo3DViewState *state = rd_view_state(RD_Geo3DViewState);
+  GEO_Scope* geo_scope = geo_scope_open();
+  RD_Geo3DViewState* state = rd_view_state(RD_Geo3DViewState);
   
   //////////////////////////////
   //- rjf: unpack parameters
@@ -7746,7 +7746,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   if(count != 0 && !r_handle_match(idxs_buffer, r_handle_zero()) && !r_handle_match(vtxs_buffer, r_handle_zero()))
   {
     Vec2F32 dim = dim_2f32(rect);
-    UI_Box *box = &ui_nil_box;
+    UI_Box* box = &ui_nil_box;
     UI_FixedSize(dim)
     {
       box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_Scroll, "geo_box");
@@ -7768,7 +7768,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
     zoom_target += sig.scroll.y;
     zoom_target = Clamp(0.1f, zoom_target, 100.f);
     pitch_target = Clamp(-0.49f, pitch_target, -0.01f);
-    RD_Geo3DBoxDrawData *draw_data = push_array(ui_build_arena(), RD_Geo3DBoxDrawData, 1);
+    RD_Geo3DBoxDrawData* draw_data = push_array(ui_build_arena(), RD_Geo3DBoxDrawData, 1);
     draw_data->yaw   = state->yaw;
     draw_data->pitch = state->pitch;
     draw_data->zoom  = state->zoom;
@@ -7804,7 +7804,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   {
     Vec2S64 cursor;
   };
-  RD_ExceptionFiltersViewState *sv = rd_view_state(RD_ExceptionFiltersViewState);
+  RD_ExceptionFiltersViewState* sv = rd_view_state(RD_ExceptionFiltersViewState);
   
   //- rjf: get list of options
   struct RD_ExceptionFiltersOption
@@ -7816,21 +7816,21 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   };
   struct RD_ExceptionFiltersOptionChunkNode
   {
-    RD_ExceptionFiltersOptionChunkNode *next;
-    RD_ExceptionFiltersOption *v;
+    RD_ExceptionFiltersOptionChunkNode* next;
+    RD_ExceptionFiltersOption* v;
     U64 cap;
     U64 count;
   };
   struct RD_ExceptionFiltersOptionChunkList
   {
-    RD_ExceptionFiltersOptionChunkNode *first;
-    RD_ExceptionFiltersOptionChunkNode *last;
+    RD_ExceptionFiltersOptionChunkNode* first;
+    RD_ExceptionFiltersOptionChunkNode* last;
     U64 option_count;
     U64 node_count;
   };
   struct RD_ExceptionFiltersOptionArray
   {
-    RD_ExceptionFiltersOption *v;
+    RD_ExceptionFiltersOption* v;
     U64 count;
   };
   RD_ExceptionFiltersOptionChunkList opts_list = {0};
@@ -7838,7 +7838,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
       k < CTRL_ExceptionCodeKind_COUNT;
       k = (CTRL_ExceptionCodeKind)(k+1))
   {
-    RD_ExceptionFiltersOptionChunkNode *node = opts_list.last;
+    RD_ExceptionFiltersOptionChunkNode* node = opts_list.last;
     String8 name = push_str8f(scratch.arena, "0x%x %S", ctrl_exception_code_kind_code_table[k], ctrl_exception_code_kind_display_string_table[k]);
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, query, name);
     if(matches.count >= matches.needle_part_count)
@@ -7864,7 +7864,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     opts.count = opts_list.option_count;
     opts.v = push_array_no_zero(scratch.arena, RD_ExceptionFiltersOption, opts.count);
     U64 idx = 0;
-    for(RD_ExceptionFiltersOptionChunkNode *n = opts_list.first; n != 0; n = n->next)
+    for(RD_ExceptionFiltersOptionChunkNode* n = opts_list.first; n != 0; n = n->next)
     {
       MemoryCopy(opts.v+idx, n->v, n->count*sizeof(RD_ExceptionFiltersOption));
       idx += n->count;
@@ -7896,7 +7896,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     for(S64 row = visible_row_range.min; row <= visible_row_range.max && row < opts.count; row += 1)
       UI_FocusHot(sv->cursor.y == row+1 ? UI_FocusKind_On : UI_FocusKind_Off)
     {
-      RD_ExceptionFiltersOption *opt = &opts.v[row];
+      RD_ExceptionFiltersOption* opt = &opts.v[row];
       UI_Signal sig = rd_icon_buttonf(opt->is_enabled ? RD_IconKind_CheckFilled : RD_IconKind_CheckHollow, &opt->matches, "%S", opt->name);
       if(ui_clicked(sig))
       {
@@ -7950,25 +7950,25 @@ struct RD_SettingsItem
 
 struct RD_SettingsItemNode
 {
-  RD_SettingsItemNode *next;
+  RD_SettingsItemNode* next;
   RD_SettingsItem v;
 };
 
 struct RD_SettingsItemList
 {
-  RD_SettingsItemNode *first;
-  RD_SettingsItemNode *last;
+  RD_SettingsItemNode* first;
+  RD_SettingsItemNode* last;
   U64 count;
 };
 
 struct RD_SettingsItemArray
 {
-  RD_SettingsItem *v;
+  RD_SettingsItem* v;
   U64 count;
 };
 
 int
-rd_qsort_compare_settings_item(RD_SettingsItem *a, RD_SettingsItem *b)
+rd_qsort_compare_settings_item(RD_SettingsItem* a, RD_SettingsItem* b)
 {
   int result = 0;
   if(a->string_matches.count > b->string_matches.count)
@@ -7996,7 +7996,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   Temp scratch = scratch_begin(0, 0);
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
   String8 query = string;
-  RD_Window *window = rd_window_from_handle(rd_regs()->window);
+  RD_Window* window = rd_window_from_handle(rd_regs()->window);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   
   //////////////////////////////
@@ -8015,7 +8015,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     RD_ThemePreset preset_apply_confirm;
     B32 category_opened[RD_SettingsItemKind_COUNT];
   };
-  RD_SettingsViewState *sv = rd_view_state(RD_SettingsViewState);
+  RD_SettingsViewState* sv = rd_view_state(RD_SettingsViewState);
   if(!sv->initialized)
   {
     sv->initialized = 1;
@@ -8032,7 +8032,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     //- rjf: static settings header
     if(query.size == 0)
     {
-      RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+      RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
@@ -8057,7 +8057,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
-          RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+          RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
           SLLQueuePush(items_list.first, items_list.last, n);
           items_list.count += 1;
           n->v.kind = RD_SettingsItemKind_GlobalSetting;
@@ -8074,7 +8074,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     //- rjf: window settings header
     if(query.size == 0)
     {
-      RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+      RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
@@ -8099,7 +8099,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
-          RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+          RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
           SLLQueuePush(items_list.first, items_list.last, n);
           items_list.count += 1;
           n->v.kind = RD_SettingsItemKind_WindowSetting;
@@ -8116,7 +8116,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     //- rjf: theme presets header
     if(query.size == 0)
     {
-      RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+      RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
@@ -8137,7 +8137,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
-          RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+          RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
           SLLQueuePush(items_list.first, items_list.last, n);
           items_list.count += 1;
           n->v.kind = RD_SettingsItemKind_ThemePreset;
@@ -8154,7 +8154,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     //- rjf: theme colors header
     if(query.size == 0)
     {
-      RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+      RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
@@ -8175,7 +8175,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
-          RD_SettingsItemNode *n = push_array(scratch.arena, RD_SettingsItemNode, 1);
+          RD_SettingsItemNode* n = push_array(scratch.arena, RD_SettingsItemNode, 1);
           SLLQueuePush(items_list.first, items_list.last, n);
           items_list.count += 1;
           n->v.kind = RD_SettingsItemKind_ThemeColor;
@@ -8194,7 +8194,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     items.v = push_array(scratch.arena, RD_SettingsItem, items.count);
     {
       U64 idx = 0;
-      for(RD_SettingsItemNode *n = items_list.first; n != 0; n = n->next, idx += 1)
+      for(RD_SettingsItemNode* n = items_list.first; n != 0; n = n->next, idx += 1)
       {
         items.v[idx] = n->v;
       }
@@ -8212,7 +8212,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   //////////////////////////////
   //- rjf: produce per-color context menu keys
   //
-  UI_Key *color_ctx_menu_keys = push_array(scratch.arena, UI_Key, RD_ThemeColor_COUNT);
+  UI_Key* color_ctx_menu_keys = push_array(scratch.arena, UI_Key, RD_ThemeColor_COUNT);
   {
     for(RD_ThemeColor color = (RD_ThemeColor)(RD_ThemeColor_Null+1);
         color < RD_ThemeColor_COUNT;
@@ -8422,8 +8422,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     for(S64 row_num = visible_row_range.min; row_num <= visible_row_range.max && row_num < items.count; row_num += 1)
     {
       //- rjf: unpack item
-      RD_SettingsItem *item = &items.v[row_num];
-      UI_Palette *palette = ui_top_palette();
+      RD_SettingsItem* item = &items.v[row_num];
+      UI_Palette* palette = ui_top_palette();
       Vec4F32 rgba = ui_top_palette()->text_weak;
       OS_Cursor cursor = OS_Cursor_HandPoint;
       Rng1S32 s32_range = {0};
@@ -8433,7 +8433,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       S32 slider_s32_val = 0;
       F32 slider_pct = 0.f;
       UI_BoxFlags flags = UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawActiveEffects;
-      RD_SettingVal *val_table = &rd_state->cfg_setting_vals[RD_CfgSrc_User][0];
+      RD_SettingVal* val_table = &rd_state->cfg_setting_vals[RD_CfgSrc_User][0];
       switch(item->kind)
       {
         case RD_SettingsItemKind_COUNT:{}break;
@@ -8444,7 +8444,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         }break;
         case RD_SettingsItemKind_ThemePreset:
         {
-          Vec4F32 *colors = rd_theme_preset_colors_table[item->preset];
+          Vec4F32* colors = rd_theme_preset_colors_table[item->preset];
           Vec4F32 bg_color = colors[RD_ThemeColor_BaseBackground];
           Vec4F32 tx_color = colors[RD_ThemeColor_Text];
           Vec4F32 tw_color = colors[RD_ThemeColor_TextWeak];
@@ -8480,7 +8480,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       }
       
       //- rjf: build item widget
-      UI_Box *item_box = &ui_nil_box;
+      UI_Box* item_box = &ui_nil_box;
       UI_Row
       {
         if(query.size == 0 && item->kind != RD_SettingsItemKind_CategoryHeader)
@@ -8504,12 +8504,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
             }
             if(query.size != 0 && item->kind_string.size != 0) UI_PrefWidth(ui_text_dim(10, 1))
             {
-              UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawTextWeak, "%S", item->kind_string);
+              UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawTextWeak, "%S", item->kind_string);
               ui_box_equip_fuzzy_match_ranges(box, &item->kind_string_matches);
             }
             UI_PrefWidth(ui_text_dim(10, 1))
             {
-              UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S", item->string);
+              UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S", item->string);
               ui_box_equip_fuzzy_match_ranges(box, &item->string_matches);
             }
             if(is_slider) UI_PrefWidth(ui_text_dim(10, 1))
@@ -8585,7 +8585,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       {
         if(sv->preset_apply_confirm == item->preset)
         {
-          Vec4F32 *colors = rd_theme_preset_colors_table[item->preset];
+          Vec4F32* colors = rd_theme_preset_colors_table[item->preset];
           MemoryCopy(rd_state->cfg_theme_target.colors, colors, sizeof(rd_state->cfg_theme_target.colors));
           sv->preset_apply_confirm = RD_ThemePreset_COUNT;
         }

@@ -9,7 +9,7 @@
 
 struct FS_RangeNode
 {
-  FS_RangeNode *next;
+  FS_RangeNode* next;
   Rng1U64 range;
   U64 request_count;
   U64 completion_count;
@@ -18,13 +18,13 @@ struct FS_RangeNode
 
 struct FS_RangeSlot
 {
-  FS_RangeNode *first;
-  FS_RangeNode *last;
+  FS_RangeNode* first;
+  FS_RangeNode* last;
 }
 
 struct FS_Node
 {
-  FS_Node *next;
+  FS_Node* next;
   
   // rjf: file metadata
   String8 path;
@@ -33,18 +33,18 @@ struct FS_Node
   
   // rjf: sub-table of per-requested-file-range info
   U64 slots_count;
-  FS_RangeSlot *slots;
+  FS_RangeSlot* slots;
 }
 
 struct FS_Slot
 {
-  FS_Node *first;
-  FS_Node *last;
+  FS_Node* first;
+  FS_Node* last;
 }
 
 struct FS_Stripe
 {
-  Arena *arena;
+  Arena* arena;
   OS_Handle cv;
   OS_Handle rw_mutex;
 }
@@ -54,18 +54,18 @@ struct FS_Stripe
 
 struct FS_Shared
 {
-  Arena *arena;
+  Arena* arena;
   U64 change_gen;
   
   // rjf: path info cache
   U64 slots_count;
   U64 stripes_count;
-  FS_Slot *slots;
-  FS_Stripe *stripes;
+  FS_Slot* slots;
+  FS_Stripe* stripes;
   
   // rjf: user -> streamer ring buffer
   U64 u2s_ring_size;
-  U8 *u2s_ring_base;
+  U8* u2s_ring_base;
   U64 u2s_ring_write_pos;
   U64 u2s_ring_read_pos;
   OS_Handle u2s_ring_cv;
@@ -78,7 +78,7 @@ struct FS_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-static FS_Shared *fs_shared = 0;
+static FS_Shared* fs_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
@@ -109,12 +109,12 @@ U64 fs_size_from_path(String8 path);
 //~ rjf: Streaming Work
 
 B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us);
-void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out);
+void fs_u2s_dequeue_req(Arena* arena, Rng1U64* range_out, String8* path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////
 //~ rjf: Change Detector Thread
 
-void fs_detector_thread__entry_point(void *p);
+void fs_detector_thread__entry_point(void* p);
 
 #endif // FILE_STREAM_H

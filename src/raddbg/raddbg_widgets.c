@@ -47,7 +47,7 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
       indicator_rect.x1 = Clamp(indicator_region_rect.x0, indicator_rect.x1, indicator_region_rect.x1);
       indicator_rect = pad_2f32(indicator_rect, -1.f);
       
-      // rjf: does the view have loading *progress* info? -> draw extra progress layer
+      // rjf: does the view have loading* progress* info? -> draw extra progress layer
       if(progress_v != progress_v_target)
       {
         F64 pct_done_f64 = ((F64)progress_v/(F64)progress_v_target);
@@ -74,7 +74,7 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
       ui_set_next_fixed_y(indicator_region_rect.y0);
       ui_set_next_fixed_width(dim_2f32(indicator_region_rect).x);
       ui_set_next_fixed_height(dim_2f32(indicator_region_rect).y);
-      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder|UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY|UI_BoxFlag_Clickable, "bg_system_status");
+      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder|UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY|UI_BoxFlag_Clickable, "bg_system_status");
       UI_Signal sig = ui_signal_from_box(box);
     }
     
@@ -98,7 +98,7 @@ rd_cmd_binding_buttons(String8 name)
   RD_BindingList bindings = rd_bindings_from_name(scratch.arena, name);
   
   //- rjf: build buttons for each binding
-  for(RD_BindingNode *n = bindings.first; n != 0; n = n->next)
+  for(RD_BindingNode* n = bindings.first; n != 0; n = n->next)
   {
     RD_Binding binding = n->binding;
     B32 rebinding_active_for_this_binding = (rd_state->bind_change_active &&
@@ -109,7 +109,7 @@ rd_cmd_binding_buttons(String8 name)
     //- rjf: grab all conflicts
     String8List specs_with_binding = rd_cmd_name_list_from_binding(scratch.arena, binding);
     B32 has_conflicts = 0;
-    for(String8Node *n = specs_with_binding.first; n != 0; n = n->next)
+    for(String8Node* n = specs_with_binding.first; n != 0; n = n->next)
     {
       if(!str8_match(n->string, name, 0))
       {
@@ -137,7 +137,7 @@ rd_cmd_binding_buttons(String8 name)
     }
     
     //- rjf: form color palette
-    UI_Palette *palette = ui_top_palette();
+    UI_Palette* palette = ui_top_palette();
     if(has_conflicts || rebinding_active_for_this_binding)
     {
       palette = push_array(ui_build_arena(), UI_Palette, 1);
@@ -161,7 +161,7 @@ rd_cmd_binding_buttons(String8 name)
     ui_set_next_palette(palette);
     ui_set_next_group_key(ui_key_zero());
     ui_set_next_pref_width(ui_text_dim(ui_top_font_size()*1.f, 1));
-    UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
+    UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                             UI_BoxFlag_Clickable|
                                             UI_BoxFlag_DrawActiveEffects|
                                             UI_BoxFlag_DrawHotEffects|
@@ -196,11 +196,11 @@ rd_cmd_binding_buttons(String8 name)
       if(ui_hovering(sig) && has_conflicts) UI_Tooltip
       {
         UI_PrefWidth(ui_children_sum(1)) rd_error_label(str8_lit("This binding conflicts with those for:"));
-        for(String8Node *n = specs_with_binding.first; n != 0; n = n->next)
+        for(String8Node* n = specs_with_binding.first; n != 0; n = n->next)
         {
           if(!str8_match(n->string, name, 0))
           {
-            RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(n->string);
+            RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(n->string);
             ui_labelf("%S", info->display_name);
           }
         }
@@ -231,7 +231,7 @@ rd_cmd_binding_buttons(String8 name)
   //- rjf: build "add new binding" button
   RD_Font(RD_FontSlot_Icons)
   {
-    UI_Palette *palette = ui_top_palette();
+    UI_Palette* palette = ui_top_palette();
     B32 adding_new_binding = (rd_state->bind_change_active &&
                               str8_match(rd_state->bind_change_cmd_name, name, 0) &&
                               rd_state->bind_change_binding.key == OS_Key_Null &&
@@ -248,7 +248,7 @@ rd_cmd_binding_buttons(String8 name)
     ui_set_next_group_key(ui_key_zero());
     ui_set_next_pref_width(ui_text_dim(ui_top_font_size()*1.f, 1));
     ui_set_next_palette(palette);
-    UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
+    UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                             UI_BoxFlag_Clickable|
                                             UI_BoxFlag_DrawActiveEffects|
                                             UI_BoxFlag_DrawHotEffects|
@@ -279,7 +279,7 @@ UI_Signal
 rd_menu_bar_button(String8 string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
 }
@@ -287,10 +287,10 @@ rd_menu_bar_button(String8 string)
 UI_Signal
 rd_cmd_spec_button(String8 name)
 {
-  RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(name);
+  RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(name);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|
+  UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|
                                           UI_BoxFlag_DrawBackground|
                                           UI_BoxFlag_DrawHotEffects|
                                           UI_BoxFlag_DrawActiveEffects|
@@ -332,7 +332,7 @@ rd_cmd_spec_button(String8 name)
 }
 
 void
-rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints)
+rd_cmd_list_menu_buttons(U64 count, String8* cmd_names, U32* fastpath_codepoints)
 {
   Temp scratch = scratch_begin(0, 0);
   for(U64 idx = 0; idx < count; idx += 1)
@@ -343,7 +343,7 @@ rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints
     {
       rd_cmd(RD_CmdKind_RunCommand, .cmd_name = cmd_names[idx]);
       ui_ctx_menu_close();
-      RD_Window *window = rd_window_from_handle(rd_regs()->window);
+      RD_Window* window = rd_window_from_handle(rd_regs()->window);
       window->menu_bar_focused = 0;
     }
   }
@@ -351,12 +351,12 @@ rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints
 }
 
 UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
+rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, String8 string)
 {
   String8 display_string = ui_display_part_from_key_string(string);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|
                                          UI_BoxFlag_DrawBorder|
                                          UI_BoxFlag_DrawBackground|
                                          UI_BoxFlag_DrawHotEffects|
@@ -382,7 +382,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
     {
       UI_PrefWidth(ui_pct(1.f, 0.f))
       {
-        UI_Box *box = ui_label(display_string).box;
+        UI_Box* box = ui_label(display_string).box;
         if(matches != 0)
         {
           ui_box_equip_fuzzy_match_ranges(box, matches);
@@ -403,7 +403,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
 }
 
 UI_Signal
-rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
+rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -432,12 +432,12 @@ struct RD_ThreadBoxDrawExtData
 
 UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
 {
-  RD_ThreadBoxDrawExtData *u = (RD_ThreadBoxDrawExtData *)box->custom_draw_user_data;
+  RD_ThreadBoxDrawExtData* u = (RD_ThreadBoxDrawExtData *)box->custom_draw_user_data;
   
   // rjf: draw line before next-to-execute line
   if(u->do_lines)
   {
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->parent->parent->parent->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->parent->parent->parent->rect.x0,
                                         box->parent->rect.y0 - box->font_size*0.125f,
                                         box->parent->parent->parent->rect.x0 + box->font_size*260*u->alive_t,
                                         box->parent->rect.y0 + box->font_size*0.125f),
@@ -464,7 +464,7 @@ UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   {
     Vec4F32 weak_thread_color = u->thread_color;
     weak_thread_color.w *= 0.5f*u->hover_t;
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
                                         box->rect.x0 + ui_top_font_size()*22.f*u->hover_t,
                                         box->parent->rect.y1),
@@ -478,7 +478,7 @@ UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   {
     Vec4F32 weak_thread_color = u->thread_color;
     weak_thread_color.w *= 0.3f;
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
                                         box->rect.x0 + ui_top_font_size()*22.f*u->alive_t,
                                         box->parent->rect.y1),
@@ -513,12 +513,12 @@ struct RD_BreakpointBoxDrawExtData
 
 UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 {
-  RD_BreakpointBoxDrawExtData *u = (RD_BreakpointBoxDrawExtData *)box->custom_draw_user_data;
+  RD_BreakpointBoxDrawExtData* u = (RD_BreakpointBoxDrawExtData *)box->custom_draw_user_data;
   
   // rjf: draw line before next-to-execute line
   if(u->do_lines)
   {
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->parent->parent->parent->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->parent->parent->parent->rect.x0,
                                         box->parent->rect.y0 - box->font_size*0.125f,
                                         box->parent->parent->parent->rect.x0 + ui_top_font_size()*250.f*u->alive_t,
                                         box->parent->rect.y0 + box->font_size*0.125f),
@@ -532,7 +532,7 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   {
     Vec4F32 weak_color = u->color;
     weak_color.w *= 0.5f*u->hover_t;
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
                                         box->rect.x0 + ui_top_font_size()*22.f*u->hover_t,
                                         box->parent->rect.y1),
@@ -546,7 +546,7 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   {
     Vec4F32 weak_thread_color = u->color;
     weak_thread_color.w *= 0.3f;
-    R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
+    R_Rect2DInst* inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
                                         box->rect.x0 + ui_top_font_size()*22.f*u->alive_t,
                                         box->parent->rect.y1),
@@ -567,7 +567,7 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
     F32 remap_bar_thickness = 0.3f*ui_top_font_size();
     Vec4F32 remap_color = u->color;
     remap_color.w *= 0.3f;
-    R_Rect2DInst *inst = dr_rect(r2f32p(bp_center.x - remap_bar_thickness,
+    R_Rect2DInst* inst = dr_rect(r2f32p(bp_center.x - remap_bar_thickness,
                                         bp_center.y + ClampTop(remap_px_delta, 0) + remap_bar_thickness,
                                         bp_center.x + remap_bar_thickness,
                                         bp_center.y + ClampBot(remap_px_delta, 0) - remap_bar_thickness),
@@ -581,20 +581,20 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
+rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, S64* preferred_column, String8 string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  CTRL_Entity *selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
-  CTRL_Entity *selected_thread_process = ctrl_entity_ancestor_from_kind(selected_thread, CTRL_EntityKind_Process);
+  CTRL_Entity* selected_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
+  CTRL_Entity* selected_thread_process = ctrl_entity_ancestor_from_kind(selected_thread, CTRL_EntityKind_Process);
   U64 selected_thread_rip_unwind_vaddr = d_query_cached_rip_from_thread_unwind(selected_thread, rd_regs()->unwind_count);
-  CTRL_Entity *selected_thread_module = ctrl_module_from_process_vaddr(selected_thread_process, selected_thread_rip_unwind_vaddr);
+  CTRL_Entity* selected_thread_module = ctrl_module_from_process_vaddr(selected_thread_process, selected_thread_rip_unwind_vaddr);
   F32 selected_thread_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_alive_t_%p", selected_thread), 1.f);
   F32 selected_thread_module_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_module_alive_t_%p", selected_thread_module), 1.f);
   F32 selected_thread_arch_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_arch_alive_t_%i", selected_thread->arch), 1.f);
   CTRL_Event stop_event = d_ctrl_last_stop_event();
-  CTRL_Entity *stopper_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, stop_event.entity);
+  CTRL_Entity* stopper_thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, stop_event.entity);
   B32 is_focused = ui_is_focus_active();
   B32 ctrlified = (os_get_modifiers() & OS_Modifier_Ctrl);
   Vec4F32 code_line_bgs[] =
@@ -604,8 +604,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     rd_rgba_from_theme_color(RD_ThemeColor_LineInfoBackground2),
     rd_rgba_from_theme_color(RD_ThemeColor_LineInfoBackground3),
   };
-  UI_Palette *margin_palette = rd_palette_from_code(RD_PaletteCode_Floating);
-  UI_Palette *margin_contents_palette = ui_build_palette(rd_palette_from_code(RD_PaletteCode_Floating));
+  UI_Palette* margin_palette = rd_palette_from_code(RD_PaletteCode_Floating);
+  UI_Palette* margin_contents_palette = ui_build_palette(rd_palette_from_code(RD_PaletteCode_Floating));
   margin_contents_palette->background = v4f32(0, 0, 0, 0);
   F32 line_num_padding_px = ui_top_font_size()*1.f;
   F32 entity_alive_t_rate = (1 - pow_f32(2, (-30.f * rd_state->frame_dt)));
@@ -614,7 +614,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build top-level container
   //
-  UI_Box *top_container_box = &ui_nil_box;
+  UI_Box* top_container_box = &ui_nil_box;
   Rng2F32 clipped_top_container_rect = {0};
   {
     ui_set_next_child_layout_axis(Axis2_X);
@@ -622,7 +622,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     ui_set_next_pref_height(ui_children_sum(1));
     top_container_box = ui_build_box_from_string(UI_BoxFlag_DisableFocusEffects|UI_BoxFlag_DrawBorder, string);
     clipped_top_container_rect = top_container_box->rect;
-    for(UI_Box *b = top_container_box; !ui_box_is_nil(b); b = b->parent)
+    for(UI_Box* b = top_container_box; !ui_box_is_nil(b); b = b->parent)
     {
       if(b->flags & UI_BoxFlag_Clip)
       {
@@ -634,7 +634,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build per-line background colors
   //
-  Vec4F32 *line_bg_colors = push_array(scratch.arena, Vec4F32, dim_1s64(params->line_num_range)+1);
+  Vec4F32* line_bg_colors = push_array(scratch.arena, Vec4F32, dim_1s64(params->line_num_range)+1);
   {
     //- rjf: color line with stopper-thread red
     U64 line_idx = 0;
@@ -643,7 +643,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         line_num += 1, line_idx += 1)
     {
       CTRL_EntityList threads = params->line_ips[line_idx];
-      for(CTRL_EntityNode *n = threads.first; n != 0; n = n->next)
+      for(CTRL_EntityNode* n = threads.first; n != 0; n = n->next)
       {
         if(n->v == stopper_thread && (stop_event.cause == CTRL_EventCause_InterruptedByTrap || stop_event.cause == CTRL_EventCause_InterruptedByException))
         {
@@ -656,7 +656,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build priority margin
   //
-  UI_Box *priority_margin_container_box = &ui_nil_box;
+  UI_Box* priority_margin_container_box = &ui_nil_box;
   if(params->flags & RD_CodeSliceFlag_PriorityMargin) UI_Focus(UI_FocusKind_Off) UI_Parent(top_container_box) UI_Palette(margin_palette) ProfScope("build priority margins")
   {
     if(params->margin_float_off_px != 0)
@@ -679,22 +679,22 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       {
         CTRL_EntityList line_ips  = params->line_ips[line_idx];
         ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-        UI_Box *line_margin_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, "line_margin_%I64x", line_num);
+        UI_Box* line_margin_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, "line_margin_%I64x", line_num);
         UI_Parent(line_margin_box)
         {
           //- rjf: build margin thread ip ui
-          for(CTRL_EntityNode *n = line_ips.first; n != 0; n = n->next)
+          for(CTRL_EntityNode* n = line_ips.first; n != 0; n = n->next)
           {
             // rjf: unpack thread
-            CTRL_Entity *thread = n->v;
+            CTRL_Entity* thread = n->v;
             if(thread != selected_thread)
             {
               continue;
             }
             U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
             U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
-            CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
-            CTRL_Entity *module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
+            CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
+            CTRL_Entity* module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
             U64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
             
@@ -732,7 +732,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
             ui_set_next_text_alignment(UI_TextAlign_Center);
             UI_Key thread_box_key = ui_key_from_stringf(top_container_box->key, "###ip_%I64x_%p", line_num, thread);
-            UI_Box *thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
+            UI_Box* thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                        UI_BoxFlag_DrawText,
                                                        thread_box_key);
@@ -741,10 +741,10 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             
             // rjf: custom draw
             {
-              RD_Regs *hover_regs = rd_get_hover_regs();
+              RD_Regs* hover_regs = rd_get_hover_regs();
               B32 is_hovering = (ctrl_handle_match(hover_regs->thread, thread->handle) &&
                                  rd_state->hover_regs_slot == RD_RegSlot_Thread);
-              RD_ThreadBoxDrawExtData *u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
+              RD_ThreadBoxDrawExtData* u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###thread_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
               u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###thread_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
@@ -758,9 +758,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               // voff range)
               if(params->line_infos[line_idx].first != 0)
               {
-                D_LineList *lines = &params->line_infos[line_idx];
-                D_Line *line = 0;
-                for(D_LineNode *n = lines->first; n != 0; n = n->next)
+                D_LineList* lines = &params->line_infos[line_idx];
+                D_Line* line = 0;
+                for(D_LineNode* n = lines->first; n != 0; n = n->next)
                 {
                   if(di_key_match(&n->v.dbgi_key, &dbgi_key))
                   {
@@ -802,7 +802,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build catchall margin
   //
-  UI_Box *catchall_margin_container_box = &ui_nil_box;
+  UI_Box* catchall_margin_container_box = &ui_nil_box;
   if(params->flags & RD_CodeSliceFlag_CatchallMargin) UI_Focus(UI_FocusKind_Off) UI_Palette(margin_palette) UI_Parent(top_container_box) ProfScope("build catchall margins")
   {
     if(params->margin_float_off_px != 0)
@@ -827,22 +827,22 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         RD_EntityList line_bps  = params->line_bps[line_idx];
         RD_EntityList line_pins = params->line_pins[line_idx];
         ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-        UI_Box *line_margin_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, "line_margin_%I64x", line_num);
+        UI_Box* line_margin_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, "line_margin_%I64x", line_num);
         UI_Parent(line_margin_box)
         {
           //- rjf: build margin thread ip ui
-          for(CTRL_EntityNode *n = line_ips.first; n != 0; n = n->next)
+          for(CTRL_EntityNode* n = line_ips.first; n != 0; n = n->next)
           {
             // rjf: unpack thread
-            CTRL_Entity *thread = n->v;
+            CTRL_Entity* thread = n->v;
             if(thread == selected_thread)
             {
               continue;
             }
             U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
             U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
-            CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
-            CTRL_Entity *module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
+            CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
+            CTRL_Entity* module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
             U64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
             
@@ -880,7 +880,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
             ui_set_next_text_alignment(UI_TextAlign_Center);
             UI_Key thread_box_key = ui_key_from_stringf(top_container_box->key, "###ip_%I64x_catchall_%p", line_num, thread);
-            UI_Box *thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
+            UI_Box* thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                        UI_BoxFlag_DrawText,
                                                        thread_box_key);
@@ -889,10 +889,10 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             
             // rjf: custom draw
             {
-              RD_Regs *hover_regs = rd_get_hover_regs();
+              RD_Regs* hover_regs = rd_get_hover_regs();
               B32 is_hovering = (ctrl_handle_match(hover_regs->thread, thread->handle) &&
                                  rd_state->hover_regs_slot == RD_RegSlot_Thread);
-              RD_ThreadBoxDrawExtData *u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
+              RD_ThreadBoxDrawExtData* u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###thread_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
               u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###thread_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
@@ -904,9 +904,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               // voff range)
               if(params->line_vaddrs[line_idx] == 0 && params->line_infos[line_idx].first != 0)
               {
-                D_LineList *lines = &params->line_infos[line_idx];
-                D_Line *line = 0;
-                for(D_LineNode *n = lines->first; n != 0; n = n->next)
+                D_LineList* lines = &params->line_infos[line_idx];
+                D_Line* line = 0;
+                for(D_LineNode* n = lines->first; n != 0; n = n->next)
                 {
                   if(di_key_match(&n->v.dbgi_key, &dbgi_key))
                   {
@@ -947,9 +947,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           }
           
           //- rjf: build margin breakpoint ui
-          for(RD_EntityNode *n = line_bps.first; n != 0; n = n->next)
+          for(RD_EntityNode* n = line_bps.first; n != 0; n = n->next)
           {
-            RD_Entity *bp = n->entity;
+            RD_Entity* bp = n->entity;
             Vec4F32 bp_color = rd_rgba_from_theme_color(RD_ThemeColor_Breakpoint);
             if(bp->flags & RD_EntityFlag_HasColor)
             {
@@ -961,9 +961,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             }
             
             // rjf: prep custom rendering data
-            RD_BreakpointBoxDrawExtData *bp_draw = push_array(ui_build_arena(), RD_BreakpointBoxDrawExtData, 1);
+            RD_BreakpointBoxDrawExtData* bp_draw = push_array(ui_build_arena(), RD_BreakpointBoxDrawExtData, 1);
             {
-              RD_Regs *hover_regs = rd_get_hover_regs();
+              RD_Regs* hover_regs = rd_get_hover_regs();
               B32 is_hovering = (rd_entity_from_handle(hover_regs->entity) == bp && rd_state->hover_regs_slot == RD_RegSlot_Entity);
               bp_draw->color    = bp_color;
               bp_draw->alive_t  = ui_anim(ui_key_from_stringf(ui_key_zero(), "bp_alive_t_%p", bp), 1.f, .rate = entity_alive_t_rate);
@@ -972,8 +972,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               bp_draw->do_glow  = rd_setting_val_from_code(RD_SettingCode_BreakpointGlow).s32;
               if(params->line_vaddrs[line_idx] == 0)
               {
-                D_LineList *lines = &params->line_infos[line_idx];
-                for(D_LineNode *n = lines->first; n != 0; n = n->next)
+                D_LineList* lines = &params->line_infos[line_idx];
+                for(D_LineNode* n = lines->first; n != 0; n = n->next)
                 {
                   S64 remap_line = n->v.pt.line;
                   if(remap_line != line_num)
@@ -992,7 +992,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = bp_color));
             ui_set_next_text_alignment(UI_TextAlign_Center);
-            UI_Box *bp_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
+            UI_Box* bp_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                        UI_BoxFlag_DisableTextTrunc,
                                                        "%S##bp_%p",
@@ -1033,9 +1033,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           }
           
           //- rjf: build margin watch pin ui
-          for(RD_EntityNode *n = line_pins.first; n != 0; n = n->next)
+          for(RD_EntityNode* n = line_pins.first; n != 0; n = n->next)
           {
-            RD_Entity *pin = n->entity;
+            RD_Entity* pin = n->entity;
             Vec4F32 color = rd_rgba_from_theme_color(RD_ThemeColor_Text);
             if(pin->flags & RD_EntityFlag_HasColor)
             {
@@ -1049,7 +1049,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
             ui_set_next_text_alignment(UI_TextAlign_Center);
-            UI_Box *pin_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
+            UI_Box* pin_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                                         UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                         UI_BoxFlag_DisableTextTrunc,
                                                         "%S##watch_%p",
@@ -1128,8 +1128,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           U64 best_stamp = 0;
           S64 line_info_line_num = 0;
           F32 line_info_t = 0;
-          D_LineList *lines = &params->line_infos[line_idx];
-          for(D_LineNode *n = lines->first; n != 0; n = n->next)
+          D_LineList* lines = &params->line_infos[line_idx];
+          for(D_LineNode* n = lines->first; n != 0; n = n->next)
           {
             if(n->v.dbgi_key.min_timestamp >= best_stamp)
             {
@@ -1170,7 +1170,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build main text container box, for mouse interaction on both lines & line numbers
   //
-  UI_Box *text_container_box = &ui_nil_box;
+  UI_Box* text_container_box = &ui_nil_box;
   UI_Parent(top_container_box) UI_Focus(UI_FocusKind_Off)
   {
     ui_set_next_hover_cursor(ctrlified ? OS_Cursor_HandPoint : OS_Cursor_IBar);
@@ -1181,7 +1181,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: determine starting offset for each at line, at which we can begin placing extra info to the right
   //
-  F32 *line_extras_off = push_array(scratch.arena, F32, dim_1s64(params->line_num_range)+1);
+  F32* line_extras_off = push_array(scratch.arena, F32, dim_1s64(params->line_num_range)+1);
   {
     U64 line_idx = 0;
     for(S64 line_num = params->line_num_range.min;
@@ -1222,9 +1222,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         line_num += 1, line_idx += 1)
     {
       CTRL_EntityList threads = params->line_ips[line_idx];
-      for(CTRL_EntityNode *n = threads.first; n != 0; n = n->next)
+      for(CTRL_EntityNode* n = threads.first; n != 0; n = n->next)
       {
-        CTRL_Entity *thread = n->v;
+        CTRL_Entity* thread = n->v;
         if(thread == stopper_thread &&
            (stop_event.cause == CTRL_EventCause_InterruptedByException ||
             stop_event.cause == CTRL_EventCause_InterruptedByTrap))
@@ -1233,7 +1233,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           UI_Parent(line_extras_boxes[line_idx]) UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f))
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative)))
           {
-            UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "###exception_info");
+            UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "###exception_info");
             ui_box_equip_display_fancy_strings(box, &explanation_fstrs);
           }
         }
@@ -1246,7 +1246,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   UI_Focus(UI_FocusKind_Off)
   {
-    DI_Scope *scope = di_scope_open();
+    DI_Scope* scope = di_scope_open();
     U64 line_idx = 0;
     for(S64 line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
@@ -1258,9 +1258,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         UI_FontSize(params->font_size)
         UI_PrefHeight(ui_px(params->line_height_px, 1.f))
       {
-        for(RD_EntityNode *n = pins.first; n != 0; n = n->next)
+        for(RD_EntityNode* n = pins.first; n != 0; n = n->next)
         {
-          RD_Entity *pin = n->entity;
+          RD_Entity* pin = n->entity;
           String8 pin_expr = pin->string;
           E_Eval eval = e_eval_from_string(scratch.arena, pin_expr);
           String8 eval_string = {0};
@@ -1272,7 +1272,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           ui_spacer(ui_em(1.5f, 1.f));
           ui_set_next_pref_width(ui_children_sum(1));
           UI_Key pin_box_key = ui_key_from_stringf(ui_key_zero(), "###pin_%p", pin);
-          UI_Box *pin_box = ui_build_box_from_key(UI_BoxFlag_AnimatePos|
+          UI_Box* pin_box = ui_build_box_from_key(UI_BoxFlag_AnimatePos|
                                                   UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                   UI_BoxFlag_DrawHotEffects|
                                                   UI_BoxFlag_DrawBorder, pin_box_key);
@@ -1359,12 +1359,12 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   TxtRng mouse_line_rng = txt_rng(mouse_pt, mouse_pt);
   if(contains_1s64(params->line_num_range, mouse_pt.line))
   {
-    TXT_TokenArray *line_tokens = &params->line_tokens[mouse_pt.line-params->line_num_range.min];
+    TXT_TokenArray* line_tokens = &params->line_tokens[mouse_pt.line-params->line_num_range.min];
     Rng1U64 line_range = params->line_ranges[mouse_pt.line-params->line_num_range.min];
     U64 mouse_pt_off = (mouse_pt.column-1) + line_range.min;
     for(U64 line_token_idx = 0; line_token_idx < line_tokens->count; line_token_idx += 1)
     {
-      TXT_Token *line_token = &line_tokens->v[line_token_idx];
+      TXT_Token* line_token = &line_tokens->v[line_token_idx];
       if(contains_1u64(line_token->range, mouse_pt_off))
       {
         Rng1U64 line_token_range_clamped = intersect_1u64(line_token->range, line_range);
@@ -1382,8 +1382,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_Signal catchall_margin_container_sig = ui_signal_from_box(catchall_margin_container_box);
   UI_Signal text_container_sig = ui_signal_from_box(text_container_box);
   B32 line_drag_drop = 0;
-  RD_Entity *line_drag_entity = &rd_nil_entity;
-  CTRL_Entity *line_drag_ctrl_entity = &ctrl_entity_nil;
+  RD_Entity* line_drag_entity = &rd_nil_entity;
+  CTRL_Entity* line_drag_ctrl_entity = &ctrl_entity_nil;
   Vec4F32 line_drag_drop_color = rd_rgba_from_theme_color(RD_ThemeColor_DropSiteOverlay);
   {
     //- rjf: determine mouse drag range
@@ -1455,8 +1455,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     // drop target
     if(rd_drag_is_active() && contains_2f32(clipped_top_container_rect, ui_mouse()))
     {
-      CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_state->drag_drop_regs->thread);
-      RD_Entity *entity = rd_entity_from_handle(rd_state->drag_drop_regs->entity);
+      CTRL_Entity* thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_state->drag_drop_regs->thread);
+      RD_Entity* entity = rd_entity_from_handle(rd_state->drag_drop_regs->entity);
       if(rd_state->drag_drop_regs_slot == RD_RegSlot_Entity &&
          (entity->kind == RD_EntityKind_WatchPin ||
           entity->kind == RD_EntityKind_Breakpoint))
@@ -1482,7 +1482,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     {
       if(!rd_entity_is_nil(line_drag_entity) && rd_drag_drop() && contains_1s64(params->line_num_range, mouse_pt.line))
       {
-        RD_Entity *dropped_entity = line_drag_entity;
+        RD_Entity* dropped_entity = line_drag_entity;
         S64 line_num = mouse_pt.line;
         U64 line_idx = line_num - params->line_num_range.min;
         U64 line_vaddr = params->line_vaddrs[line_idx];
@@ -1497,15 +1497,15 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         S64 line_num = mouse_pt.line;
         U64 line_idx = line_num - params->line_num_range.min;
         U64 line_vaddr = params->line_vaddrs[line_idx];
-        CTRL_Entity *thread = line_drag_ctrl_entity;
+        CTRL_Entity* thread = line_drag_ctrl_entity;
         U64 new_rip_vaddr = line_vaddr;
         if(params->line_vaddrs[line_idx] == 0)
         {
-          D_LineList *lines = &params->line_infos[line_idx];
-          for(D_LineNode *n = lines->first; n != 0; n = n->next)
+          D_LineList* lines = &params->line_infos[line_idx];
+          for(D_LineNode* n = lines->first; n != 0; n = n->next)
           {
             CTRL_EntityList modules = ctrl_modules_from_dbgi_key(scratch.arena, d_state->ctrl_entity_store, &n->v.dbgi_key);
-            CTRL_Entity *module = ctrl_module_from_thread_candidates(d_state->ctrl_entity_store, thread, &modules);
+            CTRL_Entity* module = ctrl_module_from_thread_candidates(d_state->ctrl_entity_store, thread, &modules);
             if(module != &ctrl_entity_nil)
             {
               new_rip_vaddr = ctrl_vaddr_from_voff(module, n->v.voff_range.min);
@@ -1569,7 +1569,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   if(ui_hovering(text_container_sig) && contains_1s64(params->line_num_range, mouse_pt.line) && (ui_mouse().x - text_container_box->rect.x0 < params->line_num_width_px + line_num_padding_px))
   {
     U64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
-    D_LineList *lines = &params->line_infos[line_slice_idx];
+    D_LineList* lines = &params->line_infos[line_slice_idx];
     if(lines->first != 0 && (params->line_vaddrs[line_slice_idx] != 0 || lines->first->v.pt.line == mouse_pt.line))
     {
       RD_RegsScope(.process     = selected_thread_process->handle,
@@ -1606,7 +1606,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   if(line_drag_drop && contains_2f32(clipped_top_container_rect, ui_mouse()))
   {
-    DR_Bucket *bucket = dr_bucket_make();
+    DR_Bucket* bucket = dr_bucket_make();
     DR_BucketScope(bucket)
     {
       Vec4F32 color = line_drag_drop_color;
@@ -1614,7 +1614,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                                       top_container_box->rect.y0 + (mouse_pt.line - params->line_num_range.min) * params->line_height_px,
                                       top_container_box->rect.x1,
                                       top_container_box->rect.y0 + (mouse_pt.line - params->line_num_range.min + 1) * params->line_height_px);
-      R_Rect2DInst *inst = dr_rect(pad_2f32(drop_line_rect, 8.f), color, 0, 0, 4.f);
+      R_Rect2DInst* inst = dr_rect(pad_2f32(drop_line_rect, 8.f), color, 0, 0, 4.f);
       inst->colors[Corner_10] = inst->colors[Corner_11] = v4f32(color.x, color.y, color.z, 0);
     }
     ui_box_equip_draw_bucket(text_container_box, bucket);
@@ -1625,16 +1625,16 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   struct TxtRngColorPairNode
   {
-    TxtRngColorPairNode *next;
+    TxtRngColorPairNode* next;
     TxtRng rng;
     Vec4F32 color;
   };
-  TxtRngColorPairNode *first_txt_rng_color_pair = 0;
-  TxtRngColorPairNode *last_txt_rng_color_pair = 0;
+  TxtRngColorPairNode* first_txt_rng_color_pair = 0;
+  TxtRngColorPairNode* last_txt_rng_color_pair = 0;
   {
     // rjf: push initial for cursor/mark
     {
-      TxtRngColorPairNode *n = push_array(scratch.arena, TxtRngColorPairNode, 1);
+      TxtRngColorPairNode* n = push_array(scratch.arena, TxtRngColorPairNode, 1);
       n->rng = txt_rng(*cursor, *mark);
       n->color = ui_top_palette()->colors[UI_ColorCode_Selection];
       SLLQueuePush(first_txt_rng_color_pair, last_txt_rng_color_pair, n);
@@ -1643,7 +1643,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     // rjf: push for ctrlified mouse expr
     if(ctrlified && !txt_pt_match(result.mouse_expr_rng.max, result.mouse_expr_rng.min))
     {
-      TxtRngColorPairNode *n = push_array(scratch.arena, TxtRngColorPairNode, 1);
+      TxtRngColorPairNode* n = push_array(scratch.arena, TxtRngColorPairNode, 1);
       n->rng = result.mouse_expr_rng;
       n->color = rd_rgba_from_theme_color(RD_ThemeColor_HighlightOverlay);
       SLLQueuePush(first_txt_rng_color_pair, last_txt_rng_color_pair, n);
@@ -1665,11 +1665,11 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   UI_Parent(text_container_box) ProfScope("build line text") UI_Focus(UI_FocusKind_Off)
   {
-    RD_Regs *hover_regs = rd_get_hover_regs();
+    RD_Regs* hover_regs = rd_get_hover_regs();
     Rng1U64 hover_voff_range = hover_regs->voff_range;
     if(hover_voff_range.min == 0 && hover_voff_range.max == 0)
     {
-      CTRL_Entity *module = ctrl_entity_from_handle(d_state->ctrl_entity_store, hover_regs->module);
+      CTRL_Entity* module = ctrl_entity_from_handle(d_state->ctrl_entity_store, hover_regs->module);
       hover_voff_range = ctrl_voff_range_from_vaddr_range(module, hover_regs->vaddr_range);
     }
     ui_set_next_pref_height(ui_px(params->line_height_px*(dim_1s64(params->line_num_range)+1), 1.f));
@@ -1686,7 +1686,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       {
         String8 line_string = params->line_text[line_idx];
         Rng1U64 line_range = params->line_ranges[line_idx];
-        TXT_TokenArray *line_tokens = &params->line_tokens[line_idx];
+        TXT_TokenArray* line_tokens = &params->line_tokens[line_idx];
         ui_set_next_text_padding(line_num_padding_px);
         UI_Key line_key = ui_key_from_stringf(top_container_box->key, "ln_%I64x", line_num);
         Vec4F32 line_bg_color = line_bg_colors[line_idx];
@@ -1696,8 +1696,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           ui_set_next_palette(ui_build_palette(ui_top_palette(), .background = line_bg_color));
         }
         ui_set_next_tab_size(params->tab_size);
-        UI_Box *line_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|UI_BoxFlag_DrawText|UI_BoxFlag_DisableIDString, line_key);
-        DR_Bucket *line_bucket = dr_bucket_make();
+        UI_Box* line_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|UI_BoxFlag_DrawText|UI_BoxFlag_DisableIDString, line_key);
+        DR_Bucket* line_bucket = dr_bucket_make();
         dr_push_bucket(line_bucket);
         
         // rjf: string * tokens -> fancy string list
@@ -1718,9 +1718,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           }
           else
           {
-            TXT_Token *line_tokens_first = line_tokens->v;
-            TXT_Token *line_tokens_opl = line_tokens->v + line_tokens->count;
-            for(TXT_Token *token = line_tokens_first; token < line_tokens_opl; token += 1)
+            TXT_Token* line_tokens_first = line_tokens->v;
+            TXT_Token* line_tokens_opl = line_tokens->v + line_tokens->count;
+            for(TXT_Token* token = line_tokens_first; token < line_tokens_opl; token += 1)
             {
               // rjf: token -> token string
               String8 token_string = {0};
@@ -1809,7 +1809,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         {
           U64 prev_line_size = (line_idx > 0) ? params->line_text[line_idx-1].size : 0;
           U64 next_line_size = (line_idx+1 < dim_1s64(params->line_num_range)) ? params->line_text[line_idx+1].size : 0;
-          for(TxtRngColorPairNode *n = first_txt_rng_color_pair; n != 0; n = n->next)
+          for(TxtRngColorPairNode* n = first_txt_rng_color_pair; n != 0; n = n->next)
           {
             TxtRng select_range = n->rng;
             TxtRng line_range = txt_rng(txt_pt(line_num, 1), txt_pt(line_num, line_string.size+1));
@@ -1848,7 +1848,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 color.w *= 0.5f;
               }
               F32 rounded_radius = params->font_size*0.4f;
-              R_Rect2DInst *inst = dr_rect(select_rect, color, rounded_radius, 0, 1);
+              R_Rect2DInst* inst = dr_rect(select_rect, color, rounded_radius, 0, 1);
               inst->corner_radii[Corner_00] = !prev_line_good || select_range_in_prev_line.min.column > select_range_in_line.min.column ? rounded_radius : 0.f;
               inst->corner_radii[Corner_10] = (!prev_line_good || select_range_in_line.max.column > select_range_in_prev_line.max.column || select_range_in_line.max.column < select_range_in_prev_line.min.column) ? rounded_radius : 0.f;
               inst->corner_radii[Corner_01] = (!next_line_good || select_range_in_next_line.min.column > select_range_in_line.min.column || select_range_in_next_line.max.column < select_range_in_line.min.column) ? rounded_radius : 0.f;
@@ -1878,8 +1878,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         {
           B32 matches = 0;
           S64 line_info_line_num = 0;
-          D_LineList *lines = &params->line_infos[line_idx];
-          for(D_LineNode *n = lines->first; n != 0; n = n->next)
+          D_LineList* lines = &params->line_infos[line_idx];
+          for(D_LineNode* n = lines->first; n != 0; n = n->next)
           {
             if((n->v.pt.line == line_num || params->line_vaddrs[line_idx] != 0) &&
                ((di_key_match(&n->v.dbgi_key, &hover_regs->dbgi_key) &&
@@ -1918,7 +1918,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
 }
 
 RD_CodeSliceSignal
-rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
+rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, S64* preferred_column, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1931,11 +1931,11 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
 }
 
 B32
-rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+rd_do_txt_controls(TXT_TextInfo* info, String8 data, U64 line_count_per_page, TxtPt* cursor, TxtPt* mark, S64* preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for(UI_Event* evt = 0; ui_next_event(&evt);)
   {
     if(evt->kind != UI_EventKind_Navigate && evt->kind != UI_EventKind_Edit)
     {
@@ -2124,26 +2124,26 @@ rd_label(String8 string)
   };
   struct StringPart
   {
-    StringPart *next;
+    StringPart* next;
     StringPartFlags flags;
     String8 string;
   };
-  StringPart *first_part = 0;
-  StringPart *last_part = 0;
+  StringPart* first_part = 0;
+  StringPart* last_part = 0;
   U64 active_part_start_idx = 0;
   StringPartFlags active_part_flags = 0;
   for(U64 idx = 0; idx <= string.size; idx += 1)
   {
     if(idx == string.size)
     {
-      StringPart *p = push_array(scratch.arena, StringPart, 1);
+      StringPart* p = push_array(scratch.arena, StringPart, 1);
       p->flags = active_part_flags;
       p->string = str8_substr(string, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
     }
     else if(string.str[idx] == '`')
     {
-      StringPart *p = push_array(scratch.arena, StringPart, 1);
+      StringPart* p = push_array(scratch.arena, StringPart, 1);
       p->flags = active_part_flags;
       p->string = str8_substr(string, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
@@ -2152,7 +2152,7 @@ rd_label(String8 string)
     }
   }
   DR_FancyStringList fstrs = {0};
-  for(StringPart *p = first_part; p != 0; p = p->next)
+  for(StringPart* p = first_part; p != 0; p = p->next)
   {
     DR_FancyString fstr = {0};
     {
@@ -2168,7 +2168,7 @@ rd_label(String8 string)
     }
     dr_fancy_string_list_push(scratch.arena, &fstrs, &fstr);
   }
-  UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+  UI_Box* box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
   ui_box_equip_display_fancy_strings(box, &fstrs);
   UI_Signal sig = ui_signal_from_box(box);
   scratch_end(scratch);
@@ -2178,7 +2178,7 @@ rd_label(String8 string)
 UI_Signal
 rd_error_label(String8 string)
 {
-  UI_Box *box = ui_build_box_from_key(0, ui_key_zero());
+  UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
   UI_Signal sig = ui_signal_from_box(box);
   UI_Parent(box) UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative), .text_weak = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative)))
   {
@@ -2196,7 +2196,7 @@ B32
 rd_help_label(String8 string)
 {
   B32 result = 0;
-  UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
+  UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
   UI_Signal sig = ui_signal_from_box(box);
   UI_Parent(box)
   {
@@ -2207,7 +2207,7 @@ rd_help_label(String8 string)
       ui_set_next_font(rd_font_from_slot(RD_FontSlot_Icons));
       ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
       ui_set_next_text_alignment(UI_TextAlign_Center);
-      UI_Box *help_hoverer = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects, "###help_hoverer_%S", string);
+      UI_Box* help_hoverer = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects, "###help_hoverer_%S", string);
       ui_box_equip_display_string(help_hoverer, rd_icon_kind_text_table[RD_IconKind_QuestionMark]);
       if(!contains_2f32(help_hoverer->rect, ui_mouse()))
       {
@@ -2219,16 +2219,16 @@ rd_help_label(String8 string)
 }
 
 DR_FancyStringList
-rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_fancy_string_list_from_code_string(Arena* arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   DR_FancyStringList fancy_strings = {0};
   TXT_TokenArray tokens = txt_token_array_from_string__c_cpp(scratch.arena, 0, string);
-  TXT_Token *tokens_opl = tokens.v+tokens.count;
+  TXT_Token* tokens_opl = tokens.v+tokens.count;
   S32 indirection_counter = 0;
   indirection_size_change = 0;
-  for(TXT_Token *token = tokens.v; token < tokens_opl; token += 1)
+  for(TXT_Token* token = tokens.v; token < tokens_opl; token += 1)
   {
     RD_ThemeColor token_color = rd_theme_color_from_txt_token_kind(token->kind);
     Vec4F32 token_color_rgba = rd_rgba_from_theme_color(token_color);
@@ -2383,7 +2383,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FancyStringList fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
-  UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+  UI_Box* box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
   ui_box_equip_display_fancy_strings(box, &fancy_strings);
   scratch_end(scratch);
   return box;
@@ -2393,7 +2393,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 //~ rjf: UI Widgets: Line Edit
 
 UI_Signal
-rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string)
+rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, B32* expanded_out, String8 pre_edit_value, String8 string)
 {
   ProfBeginFunction();
   
@@ -2418,7 +2418,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   {
     ui_set_next_hover_cursor(OS_Cursor_IBar);
   }
-  UI_Box *box = ui_build_box_from_key(UI_BoxFlag_MouseClickable|
+  UI_Box* box = ui_build_box_from_key(UI_BoxFlag_MouseClickable|
                                       (!!(flags & RD_LineEditFlag_KeyboardClickable)*UI_BoxFlag_KeyboardClickable)|
                                       UI_BoxFlag_ClickToFocus|
                                       UI_BoxFlag_DrawHotEffects|
@@ -2464,7 +2464,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   }
   
   //- rjf: build scrollable container box
-  UI_Box *scrollable_box = &ui_nil_box;
+  UI_Box* scrollable_box = &ui_nil_box;
   UI_Parent(box) UI_PrefWidth(ui_children_sum(0))
   {
     scrollable_box = ui_build_box_from_stringf(is_focus_active*(UI_BoxFlag_AllowOverflowX), "scroll_box_%p", edit_buffer);
@@ -2474,7 +2474,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   B32 commit = 0;
   if(!is_focus_active && is_focus_hot)
   {
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       if(evt->flags & UI_EventFlag_Copy)
       {
@@ -2503,7 +2503,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
     B32 start_editing_via_typing = 0;
     if(is_focus_hot)
     {
-      for(UI_Event *evt = 0; ui_next_event(&evt);)
+      for(UI_Event* evt = 0; ui_next_event(&evt);)
       {
         if(evt->string.size != 0 || evt->flags & UI_EventFlag_Paste)
         {
@@ -2538,7 +2538,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   //- rjf: determine autocompletion string
   String8 autocomplete_hint_string = {0};
   {
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       if(evt->kind == UI_EventKind_AutocompleteHint)
       {
@@ -2553,7 +2553,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   {
     Temp scratch = scratch_begin(0, 0);
     rd_state->text_edit_mode = 1;
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
@@ -2620,7 +2620,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       if(!(flags & RD_LineEditFlag_PreferDisplayString) && pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
-        UI_Box *box = rd_code_label(1.f, 1, ui_top_palette()->text, display_string);
+        UI_Box* box = rd_code_label(1.f, 1, ui_top_palette()->text, display_string);
         if(matches != 0)
         {
           ui_box_equip_fuzzy_match_ranges(box, matches);
@@ -2628,7 +2628,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       }
       else if(flags & RD_LineEditFlag_DisplayStringIsCode)
       {
-        UI_Box *box = rd_code_label(1.f, 1, ui_top_palette()->text, display_string);
+        UI_Box* box = rd_code_label(1.f, 1, ui_top_palette()->text, display_string);
         if(matches != 0)
         {
           ui_box_equip_fuzzy_match_ranges(box, matches);
@@ -2637,7 +2637,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       else
       {
         ui_set_next_flags(UI_BoxFlag_DrawTextWeak);
-        UI_Box *box = ui_label(display_string).box;
+        UI_Box* box = ui_label(display_string).box;
         if(matches != 0)
         {
           ui_box_equip_fuzzy_match_ranges(box, matches);
@@ -2655,7 +2655,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       {
         ui_set_next_flags(UI_BoxFlag_DrawTextWeak);
       }
-      UI_Box *box = ui_label(display_string).box;
+      UI_Box* box = ui_label(display_string).box;
       if(matches != 0)
       {
         ui_box_equip_fuzzy_match_ranges(box, matches);
@@ -2668,7 +2668,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       F32 total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       F32 total_editstr_width = total_text_width - !!(flags & (RD_LineEditFlag_Expander|RD_LineEditFlag_ExpanderSpace|RD_LineEditFlag_ExpanderPlaceholder)) * expander_size_px;
       ui_set_next_pref_width(ui_px(total_editstr_width+ui_top_font_size()*2, 0.f));
-      UI_Box *editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
+      UI_Box* editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
       DR_FancyStringList code_fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, 1.f, 0, ui_top_palette()->text, edit_string);
       if(autocomplete_hint_string.size != 0)
       {
@@ -2676,8 +2676,8 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
         String8 autocomplete_append_string = str8_skip(autocomplete_hint_string, query_word.size);
         U64 off = 0;
         U64 cursor_off = cursor->column-1;
-        DR_FancyStringNode *prev_n = 0;
-        for(DR_FancyStringNode *n = code_fancy_strings.first; n != 0; n = n->next)
+        DR_FancyStringNode* prev_n = 0;
+        for(DR_FancyStringNode* n = code_fancy_strings.first; n != 0; n = n->next)
         {
           if(off <= cursor_off && cursor_off <= off+n->v.string.size)
           {
@@ -2687,8 +2687,8 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
           off += n->v.string.size;
         }
         {
-          DR_FancyStringNode *autocomp_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
-          DR_FancyString *fstr = &autocomp_fstr_n->v;
+          DR_FancyStringNode* autocomp_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
+          DR_FancyString* fstr = &autocomp_fstr_n->v;
           fstr->font = ui_top_font();
           fstr->string = autocomplete_append_string;
           fstr->color = ui_top_palette()->text;
@@ -2718,8 +2718,8 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
             if(chop_amt != 0)
             {
               String8 post_cursor = str8_skip(full_string, cursor_off - off);
-              DR_FancyStringNode *post_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
-              DR_FancyString *post_fstr = &post_fstr_n->v;
+              DR_FancyStringNode* post_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
+              DR_FancyString* post_fstr = &post_fstr_n->v;
               MemoryCopyStruct(post_fstr, &prev_n->v);
               post_fstr->string   = post_cursor;
               if(autocomp_fstr_n->next == 0)
@@ -2735,7 +2735,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
         }
       }
       ui_box_equip_display_fancy_strings(editstr_box, &code_fancy_strings);
-      UI_LineEditDrawData *draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
+      UI_LineEditDrawData* draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
       draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data->cursor = *cursor;
       draw_data->mark = *mark;
@@ -2750,8 +2750,8 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       F32 total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       F32 total_editstr_width = total_text_width - !!(flags & (RD_LineEditFlag_Expander|RD_LineEditFlag_ExpanderSpace|RD_LineEditFlag_ExpanderPlaceholder)) * expander_size_px;
       ui_set_next_pref_width(ui_px(total_editstr_width+ui_top_font_size()*2, 0.f));
-      UI_Box *editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
-      UI_LineEditDrawData *draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
+      UI_Box* editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
+      UI_LineEditDrawData* draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
       draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data->cursor = *cursor;
       draw_data->mark = *mark;
@@ -2807,7 +2807,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
 }
 
 UI_Signal
-rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...)
+rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, B32* expanded_out, String8 pre_edit_value, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

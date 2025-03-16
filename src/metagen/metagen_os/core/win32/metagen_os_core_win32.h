@@ -50,14 +50,14 @@ enum OS_W32_EntityKind
 
 struct OS_W32_Entity
 {
-  OS_W32_Entity *next;
+  OS_W32_Entity* next;
   OS_W32_EntityKind kind;
   union
   {
     struct
     {
-      OS_ThreadFunctionType *func;
-      void *ptr;
+      OS_ThreadFunctionType* func;
+      void* ptr;
       HANDLE handle;
       DWORD tid;
     } thread;
@@ -72,7 +72,7 @@ struct OS_W32_Entity
 
 struct OS_W32_State
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: info
   OS_SystemInfo system_info;
@@ -81,8 +81,8 @@ struct OS_W32_State
   
   // rjf: entity storage
   CRITICAL_SECTION entity_mutex;
-  Arena *entity_arena;
-  OS_W32_Entity *entity_free;
+  Arena* entity_arena;
+  OS_W32_Entity* entity_free;
 }
 
 ////////////////////////////////
@@ -94,25 +94,25 @@ static OS_W32_State os_w32_state = {0};
 //~ rjf: File Info Conversion Helpers
 
 FilePropertyFlags os_w32_file_property_flags_from_dwFileAttributes(DWORD dwFileAttributes);
-void os_w32_file_properties_from_attribute_data(FileProperties *properties, WIN32_FILE_ATTRIBUTE_DATA *attributes);
+void os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN32_FILE_ATTRIBUTE_DATA* attributes);
 
 ////////////////////////////////
 //~ rjf: Time Conversion Helpers
 
-void os_w32_date_time_from_system_time(DateTime *out, SYSTEMTIME *in);
-void os_w32_system_time_from_date_time(SYSTEMTIME *out, DateTime *in);
-void os_w32_dense_time_from_file_time(DenseTime *out, FILETIME *in);
+void os_w32_date_time_from_system_time(DateTime* out, SYSTEMTIME* in);
+void os_w32_system_time_from_date_time(SYSTEMTIME* out, DateTime* in);
+void os_w32_dense_time_from_file_time(DenseTime* out, FILETIME* in);
 U32 os_w32_sleep_ms_from_endt_us(U64 endt_us);
 
 ////////////////////////////////
 //~ rjf: Entity Functions
 
-OS_W32_Entity *os_w32_entity_alloc(OS_W32_EntityKind kind);
-void os_w32_entity_release(OS_W32_Entity *entity);
+OS_W32_Entity* os_w32_entity_alloc(OS_W32_EntityKind kind);
+void os_w32_entity_release(OS_W32_Entity* entity);
 
 ////////////////////////////////
 //~ rjf: Thread Entry Point
 
-DWORD os_w32_thread_entry_point(void *ptr);
+DWORD os_w32_thread_entry_point(void* ptr);
 
 #endif // OS_CORE_WIN32_H

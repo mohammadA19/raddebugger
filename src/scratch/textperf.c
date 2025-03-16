@@ -42,7 +42,7 @@ frame()
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   OS_EventList events = os_get_events(scratch.arena, 0);
-  for(OS_Event *evt = events.first; evt != 0; evt = evt->next)
+  for(OS_Event* evt = events.first; evt != 0; evt = evt->next)
   {
     if(evt->kind == OS_EventKind_WindowClose)
     {
@@ -53,7 +53,7 @@ frame()
   r_begin_frame();
   dr_begin_frame();
   r_window_begin_frame(os_window, r_window);
-  DR_Bucket *bucket = dr_bucket_make();
+  DR_Bucket* bucket = dr_bucket_make();
   DR_BucketScope(bucket) ProfScope("draw")
   {
     Vec2F32 mouse = os_mouse_from_window(os_window);
@@ -75,7 +75,7 @@ frame()
 }
 
 void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   os_window = os_window_open(v2f32(1600, 900), 0, str8_lit("textperf"));
   r_window = r_window_equip(os_window);

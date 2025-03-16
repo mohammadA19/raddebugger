@@ -2,12 +2,12 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 U64
-mscrt_parse_func_info(Arena              *arena,
+mscrt_parse_func_info(Arena*              arena,
                       String8             raw_data,
                       U64                 section_count,
-                      COFF_SectionHeader *sections,
+                      COFF_SectionHeader* sections,
                       U64                 off,
-                      MSCRT_FuncInfo     *func_info)
+                      MSCRT_FuncInfo*     func_info)
 {
   U64 cursor = off;
 
@@ -25,24 +25,24 @@ mscrt_parse_func_info(Arena              *arena,
   str8_deserial_read_struct(raw_data, handler_data_foff, &func_info32);
 
   // unwind map
-  MSCRT_UnwindMap32 *unwind_map      = push_array(arena, MSCRT_UnwindMap32, func_info32.max_state);
+  MSCRT_UnwindMap32* unwind_map      = push_array(arena, MSCRT_UnwindMap32, func_info32.max_state);
   U64                unwind_map_foff = coff_foff_from_voff(sections, section_count, func_info32.unwind_map_voff);
   cursor += str8_deserial_read_array(raw_data, unwind_map_foff, &unwind_map[0], func_info32.max_state);
 
   // read ip states
-  MSCRT_IPState32 *ip_map      = push_array(arena, MSCRT_IPState32, func_info32.ip_map_count);
+  MSCRT_IPState32* ip_map      = push_array(arena, MSCRT_IPState32, func_info32.ip_map_count);
   U64              ip_map_foff = coff_foff_from_voff(sections, section_count, func_info32.ip_map_voff);
   str8_deserial_read_array(raw_data, ip_map_foff, &ip_map[0], func_info32.ip_map_count);
 
   // read try map
-  MSCRT_TryMapBlock *try_block_map = push_array(arena, MSCRT_TryMapBlock, func_info32.try_block_map_count);
+  MSCRT_TryMapBlock* try_block_map = push_array(arena, MSCRT_TryMapBlock, func_info32.try_block_map_count);
   U64                try_map_foff  = coff_foff_from_voff(sections, section_count, func_info32.try_block_map_voff);
   for (U32 imap = 0; imap < func_info32.try_block_map_count; ++imap) {
     MSCRT_TryMapBlock32 map32 = {0};
     str8_deserial_read_struct(raw_data, try_map_foff + imap*sizeof(map32), &map32);
 
     // convert try map to in-memory version
-    MSCRT_TryMapBlock *map    = &try_block_map[imap];
+    MSCRT_TryMapBlock* map    = &try_block_map[imap];
     map->try_low              = map32.try_low;
     map->try_high             = map32.try_high;
     map->catch_high           = map32.catch_high;
@@ -87,7 +87,7 @@ mscrt_parse_func_info(Arena              *arena,
 ////////////////////////////////
 
 U64
-mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
+mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32* uint_out)
 {
   U64 cursor = offset;
 
@@ -125,13 +125,13 @@ mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
 }
 
 U64
-mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32 *int_out)
+mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32* int_out)
 {
   return str8_deserial_read_struct(raw_data, offset, int_out);
 }
 
 U64
-mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
+mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4* handler)
 {
   U64 cursor = offset;
 
@@ -192,17 +192,17 @@ mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_E
 }
 
 U64
-mscrt_parse_handler_type_v4_array(Arena                      *arena,
+mscrt_parse_handler_type_v4_array(Arena*                      arena,
                                   String8                     raw_data,
                                   U64                         offset,
                                   U64                         func_voff,
-                                  MSCRT_EhHandlerTypeV4Array *array_out)
+                                  MSCRT_EhHandlerTypeV4Array* array_out)
 {
   U64 cursor = offset;
   U32 count  = 0;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &count);
 
-  MSCRT_EhHandlerTypeV4 *handlers = 0;
+  MSCRT_EhHandlerTypeV4* handlers = 0;
   if (count) {
     handlers = push_array(arena, MSCRT_EhHandlerTypeV4, count);
     for (U32 i = 0; i < count; ++i) {
@@ -218,7 +218,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
 }
 
 U64
-mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
+mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4* entry_out)
 {
   U64 cursor = offset;
 
@@ -250,7 +250,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *e
 }
 
 U64
-mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
+mscrt_parse_unwind_map_v4(Arena* arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4* map_out)
 {
   U64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out->count);
@@ -263,22 +263,22 @@ mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindM
 }
 
 U64
-mscrt_parse_try_block_map_array_v4(Arena                   *arena,
+mscrt_parse_try_block_map_array_v4(Arena*                   arena,
                                    String8                  raw_data,
                                    U64                      off,
                                    U64                      section_count,
-                                   COFF_SectionHeader      *sections,
+                                   COFF_SectionHeader*      sections,
                                    U64                      func_voff,
-                                   MSCRT_TryBlockMapV4Array *map_out)
+                                   MSCRT_TryBlockMapV4Array* map_out)
 {
   U64 cursor = off;
 
   U32 try_block_map_count = 0;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block_map_count);
 
-  MSCRT_TryBlockMapV4 *try_block_map = push_array(arena, MSCRT_TryBlockMapV4, try_block_map_count);
+  MSCRT_TryBlockMapV4* try_block_map = push_array(arena, MSCRT_TryBlockMapV4, try_block_map_count);
   for (U32 itry = 0; itry < try_block_map_count; ++itry) {
-    MSCRT_TryBlockMapV4 *try_block = &try_block_map[itry];
+    MSCRT_TryBlockMapV4* try_block = &try_block_map[itry];
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->try_low);
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->try_high);
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->catch_high);
@@ -298,19 +298,19 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
 }
 
 U64
-mscrt_parse_ip2state_map_v4(Arena              *arena,
+mscrt_parse_ip2state_map_v4(Arena*              arena,
                             String8             raw_data,
                             U64                 off,
                             U64                 func_voff,
-                            MSCRT_IP2State32V4 *ip2state_map_out)
+                            MSCRT_IP2State32V4* ip2state_map_out)
 {
   U64 cursor = off;
 
   U32 count = 0;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &count);
 
-  U32 *voffs  = push_array(arena, U32, count);
-  S32 *states = push_array(arena, S32, count);
+  U32* voffs  = push_array(arena, U32, count);
+  S32* states = push_array(arena, S32, count);
 
   U32 prev_voff = func_voff;
   for (U32 i = 0; i < count; ++i) {
@@ -334,13 +334,13 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
 }
 
 U64
-mscrt_parse_func_info_v4(Arena                     *arena,
+mscrt_parse_func_info_v4(Arena*                     arena,
                             String8                 raw_data,
                             U64                     section_count,
-                            COFF_SectionHeader     *sections,
+                            COFF_SectionHeader*     sections,
                             U64                     off,
                             U64                     func_voff,
-                            MSCRT_ParsedFuncInfoV4 *func_info_out)
+                            MSCRT_ParsedFuncInfoV4* func_info_out)
 {
   U64 cursor = off;
 
@@ -398,10 +398,10 @@ mscrt_parse_func_info_v4(Arena                     *arena,
 ////////////////////////////////
 
 Rng1U64List
-mscrt_catch_blocks_from_data_x8664(Arena              *arena,
+mscrt_catch_blocks_from_data_x8664(Arena*              arena,
                                    String8             raw_data,
                                    U64                 section_count,
-                                   COFF_SectionHeader *sections,
+                                   COFF_SectionHeader* sections,
                                    Rng1U64             except_frange)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -410,12 +410,12 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
 
   String8        raw_pdata   = str8_substr(raw_data, except_frange);
   U64            pdata_count = raw_pdata.size / sizeof(PE_IntelPdata);
-  PE_IntelPdata *src_pdata   = (PE_IntelPdata *)raw_pdata.str;
-  PE_IntelPdata *opl_pdata   = src_pdata + pdata_count;
+  PE_IntelPdata* src_pdata   = (PE_IntelPdata *)raw_pdata.str;
+  PE_IntelPdata* opl_pdata   = src_pdata + pdata_count;
 
-  for (PE_IntelPdata *pdata = src_pdata; pdata < opl_pdata; ++pdata) {
+  for (PE_IntelPdata* pdata = src_pdata; pdata < opl_pdata; ++pdata) {
     U64            uwinfo_foff = coff_foff_from_voff(sections, section_count, pdata->voff_unwind_info);
-    PE_UnwindInfo *uwinfo      = str8_deserial_get_raw_ptr(raw_data, uwinfo_foff, sizeof(*uwinfo));
+    PE_UnwindInfo* uwinfo      = str8_deserial_get_raw_ptr(raw_data, uwinfo_foff, sizeof(*uwinfo));
 
     U8  flags            = PE_UNWIND_INFO_FLAGS_FROM_HDR(uwinfo->header);
     B32 is_chained       = !!(flags & PE_UnwindInfoFlag_CHAINED);
@@ -432,7 +432,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
       /* TODO:
       {
         UnitID     uid  = syms_group_uid_from_voff__accelerated(group, handler_voff);
-        UnitAccel *unit = syms_group_unit_from_uid(group, uid);
+        UnitAccel* unit = syms_group_unit_from_uid(group, uid);
         SYMS_SymbolID   sid  = syms_group_proc_sid_from_uid_voff__accelerated(group, uid, handler_voff);
         handler_name = syms_group_symbol_name_from_sid(temp.arena, group, unit, sid);
       }
@@ -446,11 +446,11 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
         mscrt_parse_func_info(temp.arena, raw_data, section_count, sections, func_info_foff, &func_info);
 
         for (U32 itry = 0; itry < func_info.try_block_map_count; ++itry) {
-          MSCRT_TryMapBlock *try_block = &func_info.try_block_map[itry];
+          MSCRT_TryMapBlock* try_block = &func_info.try_block_map[itry];
           for (U32 icatch = 0; icatch < try_block->catch_handlers_count; ++icatch) {
-            MSCRT_EhHandlerType32 *catch_block     = &try_block->catch_handlers[icatch];
+            MSCRT_EhHandlerType32* catch_block     = &try_block->catch_handlers[icatch];
             U64                    catch_pdata_off = pe_pdata_off_from_voff__binary_search_x8664(raw_pdata, catch_block->catch_handler_voff);
-            PE_IntelPdata         *catch_pdata     = str8_deserial_get_raw_ptr(raw_pdata, catch_pdata_off, sizeof(*catch_pdata));
+            PE_IntelPdata*         catch_pdata     = str8_deserial_get_raw_ptr(raw_pdata, catch_pdata_off, sizeof(*catch_pdata));
             rng1u64_list_push(arena, &result, rng_1u64(catch_pdata->voff_first, catch_pdata->voff_one_past_last));
           }
         }
@@ -466,11 +466,11 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
         mscrt_parse_func_info_v4(temp.arena, raw_data, section_count, sections, func_info_foff, pdata->voff_first, &func_info);
 
         for (U32 itry = 0; itry < func_info.try_block_map.count; ++itry) {
-          MSCRT_TryBlockMapV4 *try_block = &func_info.try_block_map.v[itry];
+          MSCRT_TryBlockMapV4* try_block = &func_info.try_block_map.v[itry];
           for (U32 icatch = 0; icatch < try_block->handlers.count; ++icatch) {
-            MSCRT_EhHandlerTypeV4 *catch_block     = &try_block->handlers.v[icatch];
+            MSCRT_EhHandlerTypeV4* catch_block     = &try_block->handlers.v[icatch];
             U64                    catch_pdata_off = pe_pdata_off_from_voff__binary_search_x8664(raw_pdata, catch_block->catch_code_voff);
-            PE_IntelPdata         *catch_pdata     = str8_deserial_get_raw_ptr(raw_pdata, catch_pdata_off, sizeof(*catch_pdata));
+            PE_IntelPdata*         catch_pdata     = str8_deserial_get_raw_ptr(raw_pdata, catch_pdata_off, sizeof(*catch_pdata));
             rng1u64_list_push(arena, &result, rng_1u64(catch_pdata->voff_first, catch_pdata->voff_one_past_last));
           }
         }

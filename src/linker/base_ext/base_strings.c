@@ -43,54 +43,54 @@ str8_compar(String8 a, String8 b, B32 ignore_case)
 }
 
 int
-str8_compar_ignore_case(const void *a, const void *b)
+str8_compar_ignore_case(const void* a, const void* b)
 {
   return str8_compar(*(String8*)a, *(String8*)b, 1);
 }
 
 int
-str8_compar_case_sensitive(const void *a, const void *b)
+str8_compar_case_sensitive(const void* a, const void* b)
 {
   return str8_compar(*(String8*)a, *(String8*)b, 0);
 }
 
 int
-str8_is_before_case_sensitive(const void *a, const void *b)
+str8_is_before_case_sensitive(const void* a, const void* b)
 {
   int cmp = str8_compar_case_sensitive(a, b);
   return cmp < 0;
 }
 
 String8Node *
-str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_size)
+str8_list_push_raw(Arena* arena, String8List* list, void* data_ptr, U64 data_size)
 {
   String8 data = str8((U8 *)data_ptr, data_size);
-  String8Node *node = str8_list_push(arena, list, data);
+  String8Node* node = str8_list_push(arena, list, data);
   return node;
 }
 
 U64
-str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
+str8_list_push_pad(Arena* arena, String8List* list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(arena, U8, pad_size);
+  U8* pad = push_array(arena, U8, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push(arena, list, str8(pad, pad_size));
   return pad_size;
 }
 
 U64
-str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
+str8_list_push_pad_front(Arena* arena, String8List* list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(arena, U8, pad_size);
+  U8* pad = push_array(arena, U8, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push_front(arena, list, str8(pad, pad_size));
   return pad_size;
 }
 
 String8List
-str8_list_arr_concat(String8List *v, U64 count)
+str8_list_arr_concat(String8List* v, U64 count)
 {
   String8List result = {0};
   for (U64 i = 0; i < count; i += 1) {
@@ -100,9 +100,9 @@ str8_list_arr_concat(String8List *v, U64 count)
 }
 
 String8Node *
-str8_list_push_many(Arena *arena, String8List *list, U64 count)
+str8_list_push_many(Arena* arena, String8List* list, U64 count)
 {
-  String8Node *arr = push_array(arena, String8Node, count);
+  String8Node* arr = push_array(arena, String8Node, count);
   for (U64 i = 0; i < count; ++i) {
     str8_list_push_node(list, arr + i);
   }
@@ -110,9 +110,9 @@ str8_list_push_many(Arena *arena, String8List *list, U64 count)
 }
 
 String8Node *
-str8_list_pop_front(String8List *list)
+str8_list_pop_front(String8List* list)
 {
-  String8Node *node = 0;
+  String8Node* node = 0;
   if (list->node_count) {
 	node = list->first;
     Assert(list->total_size >= list->first->string.size);

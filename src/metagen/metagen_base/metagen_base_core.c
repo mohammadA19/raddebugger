@@ -258,7 +258,7 @@ sign_from_side_F32(Side side){
 //~ rjf: Memory Functions
 
 B32
-memory_is_zero(void *ptr, U64 size){
+memory_is_zero(void* ptr, U64 size){
   B32 result = 1;
   
   // break down size
@@ -266,7 +266,7 @@ memory_is_zero(void *ptr, U64 size){
   U64 count8 = (size >> 3);
   
   // check with 8-byte stride
-  U64 *p64 = (U64*)ptr;
+  U64* p64 = (U64*)ptr;
   if(result)
   {
     for (U64 i = 0; i < count8; i += 1, p64 += 1){
@@ -280,7 +280,7 @@ memory_is_zero(void *ptr, U64 size){
   // check extra
   if(result)
   {
-    U8 *p8 = (U8*)p64;
+    U8* p8 = (U8*)p64;
     for (U64 i = 0; i < extra; i += 1, p8 += 1){
       if (*p8 != 0){
         result = 0;
@@ -530,7 +530,7 @@ date_time_from_micro_seconds(U64 time){
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
 U64
-ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
+ring_write(U8* ring_base, U64 ring_size, U64 ring_pos, void* src_data, U64 src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
@@ -538,8 +538,8 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
     U64 bytes_before_split = ring_size-ring_off;
     U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
     U64 pst_split_bytes = src_data_size-pre_split_bytes;
-    void *pre_split_data = src_data;
-    void *pst_split_data = ((U8 *)src_data + pre_split_bytes);
+    void* pre_split_data = src_data;
+    void* pst_split_data = ((U8 *)src_data + pre_split_bytes);
     MemoryCopy(ring_base+ring_off, pre_split_data, pre_split_bytes);
     MemoryCopy(ring_base+0, pst_split_data, pst_split_bytes);
   }
@@ -547,7 +547,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
 }
 
 U64
-ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
+ring_read(U8* ring_base, U64 ring_size, U64 ring_pos, void* dst_data, U64 read_size)
 {
   Assert(read_size <= ring_size);
   {

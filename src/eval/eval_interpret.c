@@ -11,7 +11,7 @@ e_selected_interpret_ctx()
 }
 
 void
-e_select_interpret_ctx(E_InterpretCtx *ctx)
+e_select_interpret_ctx(E_InterpretCtx* ctx)
 {
   e_interpret_ctx = ctx;
 }
@@ -20,7 +20,7 @@ e_select_interpret_ctx(E_InterpretCtx *ctx)
 //~ rjf: Space Reading Helpers
 
 B32
-e_space_read(E_Space space, void *out, Rng1U64 range)
+e_space_read(E_Space space, void* out, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
@@ -33,7 +33,7 @@ e_space_read(E_Space space, void *out, Rng1U64 range)
 }
 
 B32
-e_space_write(E_Space space, void *in, Rng1U64 range)
+e_space_write(E_Space space, void* in, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
@@ -56,13 +56,13 @@ e_interpret(String8 bytecode)
   
   //- rjf: allocate stack & "registers"
   U64 stack_cap = 128; // TODO(rjf): scan bytecode; determine maximum stack depth
-  E_Value *stack = push_array_no_zero(scratch.arena, E_Value, stack_cap);
+  E_Value* stack = push_array_no_zero(scratch.arena, E_Value, stack_cap);
   U64 stack_count = 0;
   E_Space selected_space = e_interpret_ctx->primary_space;
   
   //- rjf: iterate bytecode & perform ops
-  U8 *ptr = bytecode.str;
-  U8 *opl = bytecode.str + bytecode.size;
+  U8* ptr = bytecode.str;
+  U8* opl = bytecode.str + bytecode.size;
   for(;ptr < opl;)
   {
     // rjf: consume next opcode
@@ -87,7 +87,7 @@ e_interpret(String8 bytecode)
     E_Value imm = {0};
     {
       U32 decode_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
-      U8 *next_ptr = ptr + decode_size;
+      U8* next_ptr = ptr + decode_size;
       if(next_ptr > opl)
       {
         result.code = E_InterpretationCode_BadOp;
@@ -100,7 +100,7 @@ e_interpret(String8 bytecode)
     }
     
     // rjf: pop
-    E_Value *svals = 0;
+    E_Value* svals = 0;
     {
       U32 pop_count = RDI_POPN_FROM_CTRLBITS(ctrlbits);
       if(pop_count > stack_count)
@@ -747,8 +747,8 @@ e_interpret(String8 bytecode)
           if(imm.u64 > 0)
           {
             E_Value tval = stack[stack_count - 1];
-            E_Value *dst = stack + stack_count - 1 - imm.u64;
-            E_Value *shift = dst + 1;
+            E_Value* dst = stack + stack_count - 1 - imm.u64;
+            E_Value* shift = dst + 1;
             MemoryCopy(shift, dst, imm.u64*sizeof(E_Value));
             *dst = tval;
           }

@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 void
-main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **arguments, U64 arguments_count)
+main_thread_base_entry_point(void (*entry_point)(CmdLine* cmdline), char **arguments, U64 arguments_count)
 {
 #if PROFILE_TELEMETRY
   static U8 tm_data[MB(64)];
@@ -68,7 +68,7 @@ main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **argum
   f_init();
 #endif
 #if defined(DF_CORE_H) && !defined(DF_INIT_MANUAL)
-  DF_StateDeltaHistory *hist = df_state_delta_history_alloc();
+  DF_StateDeltaHistory* hist = df_state_delta_history_alloc();
   df_core_init(&cmdline, hist);
 #endif
 #if defined(DF_GFX_H) && !defined(DF_GFX_INIT_MANUAL)
@@ -83,7 +83,7 @@ main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **argum
 }
 
 void
-supplement_thread_base_entry_point(void (*entry_point)(void *params), void *params)
+supplement_thread_base_entry_point(void (*entry_point)(void* params), void* params)
 {
   TCTX tctx;
   tctx_init_and_equip(&tctx);

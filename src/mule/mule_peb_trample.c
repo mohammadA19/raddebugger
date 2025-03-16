@@ -17,13 +17,13 @@ HideModuleFromWindowsReload(HMODULE ModuleToFlush)
      have a different filename!
   */
   
-  PEB *Peb = (PEB *)__readgsqword(offsetof(TEB, ProcessEnvironmentBlock));
-  LIST_ENTRY *Head = &Peb->Ldr->InMemoryOrderModuleList;
-  for(LIST_ENTRY *Entry = Head->Flink;
+  PEB* Peb = (PEB *)__readgsqword(offsetof(TEB, ProcessEnvironmentBlock));
+  LIST_ENTRY* Head = &Peb->Ldr->InMemoryOrderModuleList;
+  for(LIST_ENTRY* Entry = Head->Flink;
       Entry != Head;
       Entry = Entry->Flink)
   {
-    LDR_DATA_TABLE_ENTRY *Mod = CONTAINING_RECORD(Entry, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
+    LDR_DATA_TABLE_ENTRY* Mod = CONTAINING_RECORD(Entry, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
     if(Mod->DllBase == ModuleToFlush)
     {
       ZeroMemory(Mod->FullDllName.Buffer, Mod->FullDllName.Length);
@@ -35,7 +35,7 @@ HideModuleFromWindowsReload(HMODULE ModuleToFlush)
 
 int main(int argument_count, char **arguments)
 {
-  char *exe_name = arguments[0];
+  char* exe_name = arguments[0];
   HANDLE last_module = GetModuleHandle(0);
   int (*loop_iteration_function)(int it) = (int (*)(int))GetProcAddress(last_module, "loop_iteration");
   FILETIME last_filetime = {0};

@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 String8
-coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
+coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp)
 {
   String8 result;
   if (time_stamp == 0) {
@@ -85,7 +85,7 @@ coff_string_from_machine_type(COFF_MachineType machine)
 }
 
 String8
-coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
+coff_string_from_flags(Arena* arena, COFF_FileHeaderFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -134,7 +134,7 @@ coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
 }
 
 String8
-coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
+coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -215,7 +215,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
 }
 
 String8
-coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags)
+coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

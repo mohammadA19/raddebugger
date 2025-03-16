@@ -7,7 +7,7 @@
 void
 geo_init()
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   geo_shared = push_array(arena, GEO_Shared, 1);
   geo_shared->arena = arena;
   geo_shared->slots_count = 1024;
@@ -36,7 +36,7 @@ geo_tctx_ensure_inited()
 {
   if(geo_tctx == 0)
   {
-    Arena *arena = arena_alloc();
+    Arena* arena = arena_alloc();
     geo_tctx = push_array(arena, GEO_TCTX, 1);
     geo_tctx->arena = arena;
   }
@@ -49,7 +49,7 @@ GEO_Scope *
 geo_scope_open()
 {
   geo_tctx_ensure_inited();
-  GEO_Scope *scope = geo_tctx->free_scope;
+  GEO_Scope* scope = geo_tctx->free_scope;
   if(scope)
   {
     SLLStackPop(geo_tctx->free_scope);
@@ -63,19 +63,19 @@ geo_scope_open()
 }
 
 void
-geo_scope_close(GEO_Scope *scope)
+geo_scope_close(GEO_Scope* scope)
 {
-  for(GEO_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
+  for(GEO_Touch* touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     U128 hash = touch->hash;
     next = touch->next;
     U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
     U64 stripe_idx = slot_idx%geo_shared->stripes_count;
-    GEO_Slot *slot = &geo_shared->slots[slot_idx];
-    GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
+    GEO_Slot* slot = &geo_shared->slots[slot_idx];
+    GEO_Stripe* stripe = &geo_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(GEO_Node *n = slot->first; n != 0; n = n->next)
+      for(GEO_Node* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(hash, n->hash))
         {
@@ -90,9 +90,9 @@ geo_scope_close(GEO_Scope *scope)
 }
 
 void
-geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
+geo_scope_touch_node__stripe_r_guarded(GEO_Scope* scope, GEO_Node* node)
 {
-  GEO_Touch *touch = geo_tctx->free_touch;
+  GEO_Touch* touch = geo_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
@@ -113,19 +113,19 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 //~ rjf: Cache Lookups
 
 R_Handle
-geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
+geo_buffer_from_hash(GEO_Scope* scope, U128 hash)
 {
   R_Handle handle = {0};
   if(!u128_match(hash, u128_zero()))
   {
     U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
     U64 stripe_idx = slot_idx%geo_shared->stripes_count;
-    GEO_Slot *slot = &geo_shared->slots[slot_idx];
-    GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
+    GEO_Slot* slot = &geo_shared->slots[slot_idx];
+    GEO_Stripe* stripe = &geo_shared->stripes[stripe_idx];
     B32 found = 0;
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(GEO_Node *n = slot->first; n != 0; n = n->next)
+      for(GEO_Node* n = slot->first; n != 0; n = n->next)
       {
         if(u128_match(hash, n->hash))
         {
@@ -141,8 +141,8 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
     {
       OS_MutexScopeW(stripe->rw_mutex)
       {
-        GEO_Node *node = 0;
-        for(GEO_Node *n = slot->first; n != 0; n = n->next)
+        GEO_Node* node = 0;
+        for(GEO_Node* n = slot->first; n != 0; n = n->next)
         {
           if(u128_match(hash, n->hash))
           {
@@ -178,7 +178,7 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
 }
 
 R_Handle
-geo_buffer_from_key(GEO_Scope *scope, U128 key)
+geo_buffer_from_key(GEO_Scope* scope, U128 key)
 {
   R_Handle handle = {0};
   for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -224,7 +224,7 @@ geo_u2x_enqueue_req(U128 hash, U64 endt_us)
 }
 
 void
-geo_u2x_dequeue_req(U128 *hash_out)
+geo_u2x_dequeue_req(U128* hash_out)
 {
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
   {
@@ -242,7 +242,7 @@ geo_u2x_dequeue_req(U128 *hash_out)
 ASYNC_WORK_DEF(geo_xfer_work)
 {
   ProfBeginFunction();
-  HS_Scope *scope = hs_scope_open();
+  HS_Scope* scope = hs_scope_open();
   
   //- rjf: decode
   U128 hash = {0};
@@ -251,14 +251,14 @@ ASYNC_WORK_DEF(geo_xfer_work)
   //- rjf: unpack hash
   U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
   U64 stripe_idx = slot_idx%geo_shared->stripes_count;
-  GEO_Slot *slot = &geo_shared->slots[slot_idx];
-  GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
+  GEO_Slot* slot = &geo_shared->slots[slot_idx];
+  GEO_Stripe* stripe = &geo_shared->stripes[stripe_idx];
   
   //- rjf: take task
   B32 got_task = 0;
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(GEO_Node *n = slot->first; n != 0; n = n->next)
+    for(GEO_Node* n = slot->first; n != 0; n = n->next)
     {
       if(u128_match(n->hash, hash))
       {
@@ -285,7 +285,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
   //- rjf: commit results to cache
   if(got_task) OS_MutexScopeW(stripe->rw_mutex)
   {
-    for(GEO_Node *n = slot->first; n != 0; n = n->next)
+    for(GEO_Node* n = slot->first; n != 0; n = n->next)
     {
       if(u128_match(n->hash, hash))
       {
@@ -306,7 +306,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
 //~ rjf: Evictor Threads
 
 void
-geo_evictor_thread__entry_point(void *p)
+geo_evictor_thread__entry_point(void* p)
 {
   ThreadNameF("[geo] evictor thread");
   for(;;)
@@ -318,12 +318,12 @@ geo_evictor_thread__entry_point(void *p)
     for(U64 slot_idx = 0; slot_idx < geo_shared->slots_count; slot_idx += 1)
     {
       U64 stripe_idx = slot_idx%geo_shared->stripes_count;
-      GEO_Slot *slot = &geo_shared->slots[slot_idx];
-      GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
+      GEO_Slot* slot = &geo_shared->slots[slot_idx];
+      GEO_Stripe* stripe = &geo_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;
       OS_MutexScopeR(stripe->rw_mutex)
       {
-        for(GEO_Node *n = slot->first; n != 0; n = n->next)
+        for(GEO_Node* n = slot->first; n != 0; n = n->next)
         {
           if(n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
@@ -338,7 +338,7 @@ geo_evictor_thread__entry_point(void *p)
       }
       if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
       {
-        for(GEO_Node *n = slot->first, *next = 0; n != 0; n = next)
+        for(GEO_Node* n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
           if(n->scope_ref_count == 0 &&

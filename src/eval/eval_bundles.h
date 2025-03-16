@@ -12,7 +12,7 @@ struct E_Eval
   E_Value value;
   E_Mode mode;
   E_Space space;
-  E_Expr *expr;
+  E_Expr* expr;
   E_TypeKey type_key;
   E_InterpretationCode code;
   E_MsgList msgs;
@@ -21,8 +21,8 @@ struct E_Eval
 ////////////////////////////////
 //~ rjf: Bundled Evaluation Functions
 
-E_Eval e_eval_from_expr(Arena *arena, E_Expr *expr);
-E_Eval e_eval_from_string(Arena *arena, String8 string);
+E_Eval e_eval_from_expr(Arena* arena, E_Expr* expr);
+E_Eval e_eval_from_string(Arena* arena, String8 string);
 E_Eval e_autoresolved_eval_from_eval(E_Eval eval);
 E_Eval e_dynamically_typed_eval_from_eval(E_Eval eval);
 E_Eval e_value_eval_from_eval(E_Eval eval);

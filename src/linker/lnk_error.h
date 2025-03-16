@@ -110,10 +110,10 @@ enum
 }
 
 void lnk_init_error_handler();
-void lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args);
-void lnk_error(LNK_ErrorCode code, char *fmt, ...);
-void lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, ...);
-void lnk_supplement_error(char *fmt, ...);
+void lnk_errorfv(LNK_ErrorCode code, char* fmt, va_list args);
+void lnk_error(LNK_ErrorCode code, char* fmt, ...);
+void lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char* fmt, ...);
+void lnk_supplement_error(char* fmt, ...);
 void lnk_supplement_error_list(String8List list);
 void lnk_suppress_error(LNK_ErrorCode code);
 
@@ -121,7 +121,7 @@ void lnk_suppress_error(LNK_ErrorCode code);
 #define lnk_is_error_code_ignored(code) (lnk_get_error_code_status(code) == LNK_ErrorCodeStatus_Ignore)
 LNK_ErrorCodeStatus lnk_get_error_code_status(LNK_ErrorCode code);
 
-void lnk_internal_error(LNK_InternalError code, char *file, int line, char *fmt, ...);
+void lnk_internal_error(LNK_InternalError code, char* file, int line, char* fmt, ...);
 #define lnk_invalid_path(...)      lnk_internal_error(LNK_InternalError_InvalidPath, __FILE__, __LINE__, __VA_ARGS__)
 #define lnk_not_implemented(...)   lnk_internal_error(LNK_InternalError_NotImplemented, __FILE__, __LINE__, __VA_ARGS__)
 #define lnk_incomplete_switch(...) lnk_internal_error(LNK_InternalError_IncompleteSwitch, __FILE__, __LINE__, __VA_ARGS__)

@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-static FP_DWrite_State *fp_dwrite_state = 0;
+static FP_DWrite_State* fp_dwrite_state = 0;
 static FP_DWrite_FontFileLoaderVTable fp_dwrite_static_data_font_file_loader__vtable =
 {
   fp_dwrite_iunknown_noop__query_interface,
@@ -50,10 +50,10 @@ fp_dwrite_handle_from_font(FP_DWrite_Font font)
 //- rjf: file stream allocator
 
 FP_DWrite_FontFileStreamNode *
-fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
+fp_dwrite_font_file_stream_node_alloc(String8* data_ptr)
 {
-  FP_DWrite_FontFileStreamNode *node = 0;
-  for(FP_DWrite_FontFileStreamNode *n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
+  FP_DWrite_FontFileStreamNode* node = 0;
+  for(FP_DWrite_FontFileStreamNode* n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
   {
     if(n->stream.data == data_ptr)
     {
@@ -81,7 +81,7 @@ fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
 }
 
 void
-fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
+fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode* node)
 {
   DLLPushBack(fp_dwrite_state->first_stream_node, fp_dwrite_state->last_stream_node, node);
   SLLStackPush(fp_dwrite_state->free_stream_node, node);
@@ -90,20 +90,20 @@ fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 //- rjf: iunknown no-op helpers
 
 HRESULT
-fp_dwrite_iunknown_noop__query_interface(void *obj, REFIID riid, void *ptr_to_object)
+fp_dwrite_iunknown_noop__query_interface(void* obj, REFIID riid, void* ptr_to_object)
 {
   return E_NOINTERFACE;
 }
 
 ULONG
-fp_dwrite_iunknown_noop__add_ref(void *obj)
+fp_dwrite_iunknown_noop__add_ref(void* obj)
 {
   ULONG result = 1;
   return result;
 }
 
 ULONG
-fp_dwrite_iunknown_noop__release(void *obj)
+fp_dwrite_iunknown_noop__release(void* obj)
 {
   ULONG result = 1;
   return result;
@@ -112,11 +112,11 @@ fp_dwrite_iunknown_noop__release(void *obj)
 //- rjf: font file loader interface function implementations
 
 HRESULT
-fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
+fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
 {
   HRESULT result = S_OK;
-  String8 *key = *(String8 **)font_file_ref_key;
-  FP_DWrite_FontFileStreamNode *node = fp_dwrite_font_file_stream_node_alloc(key);
+  String8* key = *(String8 **)font_file_ref_key;
+  FP_DWrite_FontFileStreamNode* node = fp_dwrite_font_file_stream_node_alloc(key);
   *stream_out = (IDWriteFontFileStream *)&node->stream;
   return result;
 }
@@ -124,7 +124,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj
 //- rjf: font file stream  interface function implementations
 
 HRESULT
-fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
+fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
 {
   HRESULT result = S_OK;
   *fragment_start = obj->data->str + file_offset;
@@ -133,14 +133,14 @@ fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *
 }
 
 HRESULT
-fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream *obj, void *fragment_context)
+fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream* obj, void* fragment_context)
 {
   HRESULT result = S_OK;
   return result;
 }
 
 HRESULT
-fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out)
+fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream* obj, UINT64* size_out)
 {
   HRESULT result = S_OK;
   *size_out = obj->data->size;
@@ -148,7 +148,7 @@ fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, 
 }
 
 HRESULT
-fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out)
+fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream* obj, UINT64* time_out)
 {
   HRESULT result = S_OK;
   *time_out = 0;
@@ -166,7 +166,7 @@ fp_init()
   
   //- rjf: initialize main state
   {
-    Arena *arena = arena_alloc();
+    Arena* arena = arena_alloc();
     fp_dwrite_state = push_array(arena, FP_DWrite_State, 1);
     fp_dwrite_state->arena = arena;
   }
@@ -333,7 +333,7 @@ fp_font_open(String8 path)
 }
 
 fp_hook FP_Handle
-fp_font_open_from_static_data_string(String8 *data_ptr)
+fp_font_open_from_static_data_string(String8* data_ptr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -392,7 +392,7 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena* arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -411,7 +411,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   F32 design_units_per_em = (F32)font_metrics.designUnitsPerEm;
   
   //- rjf: get glyph indices
-  U16 *glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
+  U16* glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
@@ -419,7 +419,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   
   //- rjf: get metrics info
   U64 glyphs_count = string32.size;
-  DWRITE_GLYPH_METRICS *glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
+  DWRITE_GLYPH_METRICS* glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGdiCompatibleGlyphMetrics(font.face, (96.f/72.f)*size, 1.f, 0, 1, glyph_indices, glyphs_count, glyphs_metrics, 0);
@@ -435,7 +435,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
     atlas_dim.y = (S16)ceil_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent) / design_units_per_em) + 1;
     for(U64 idx = 0; idx < glyphs_count; idx += 1)
     {
-      DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
+      DWRITE_GLYPH_METRICS* glyph_metrics = glyphs_metrics + idx;
       F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
       atlas_dim.x = Max(atlas_dim.x, (S16)(advance+1));
@@ -455,7 +455,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   }
   
   //- rjf: make dwrite bitmap for rendering
-  IDWriteBitmapRenderTarget *render_target = 0;
+  IDWriteBitmapRenderTarget* render_target = 0;
   if(font.face != 0)
   {
     error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state->gdi_interop, 0, atlas_dim.x, atlas_dim.y, &render_target);
@@ -493,7 +493,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   RECT bounding_box = {0};
   if(font.face != 0)
   {
-    IDWriteRenderingParams *rendering_params = fp_dwrite_state->rendering_params_sharp_hinted;
+    IDWriteRenderingParams* rendering_params = fp_dwrite_state->rendering_params_sharp_hinted;
     switch(flags)
     {
       default:{}break;
@@ -529,17 +529,17 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
     
     // rjf: fill atlas
     {
-      U8 *in_data   = (U8 *)dib.dsBm.bmBits;
+      U8* in_data   = (U8 *)dib.dsBm.bmBits;
       U64 in_pitch  = (U64)dib.dsBm.bmWidthBytes;
-      U8 *out_data  = (U8 *)result.atlas;
+      U8* out_data  = (U8 *)result.atlas;
       U64 out_pitch = atlas_dim.x * 4;
       U64 color_sum = 0;
-      U8 *in_line = (U8 *)in_data;
-      U8 *out_line = out_data;
+      U8* in_line = (U8 *)in_data;
+      U8* out_line = out_data;
       for(U64 y = 0; y < atlas_dim.y; y += 1)
       {
-        U8 *in_pixel = in_line;
-        U8 *out_pixel = out_line;
+        U8* in_pixel = in_line;
+        U8* out_pixel = out_line;
         for(U64 x = 0; x < atlas_dim.x; x += 1)
         {
           U8 in_pixel_byte = in_pixel[0];

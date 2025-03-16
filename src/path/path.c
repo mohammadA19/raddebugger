@@ -25,7 +25,7 @@ path_match_flags_from_os(OperatingSystem os)
 }
 
 String8
-path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
+path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -38,7 +38,7 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
   
   // rjf: count # of backtracks to get from src -> dest
   U64 num_backtracks = src_folders.node_count;
-  for(String8Node *src_n = src_folders.first, *bp_n = dst_folders.first;
+  for(String8Node* src_n = src_folders.first, *bp_n = dst_folders.first;
       src_n != 0 && bp_n != 0;
       src_n = src_n->next, bp_n = bp_n->next)
   {
@@ -72,7 +72,7 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
     // rjf: build parts of dst which are unique from src
     {
       B32 unique_from_src = 0;
-      for(String8Node *src_n = src_folders.first, *bp_n = dst_folders.first;
+      for(String8Node* src_n = src_folders.first, *bp_n = dst_folders.first;
           bp_n != 0;
           bp_n = bp_n->next)
       {
@@ -106,7 +106,7 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
 }
 
 String8
-path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
+path_absolute_dst_from_relative_dst_src(Arena* arena, String8 dst, String8 src)
 {
   String8 result = dst;
   PathStyle dst_style = path_style_from_str8(dst);
@@ -122,7 +122,7 @@ path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
 }
 
 String8List
-path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *style_out){
+path_normalized_list_from_string(Arena* arena, String8 path_string, PathStyle* style_out){
   // analyze path
   PathStyle path_style = path_style_from_str8(path_string);
   String8List path = str8_split_path(arena, path_string);
@@ -152,7 +152,7 @@ path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *s
 }
 
 String8
-path_normalized_from_string(Arena *arena, String8 path_string){
+path_normalized_from_string(Arena* arena, String8 path_string){
   Temp scratch = scratch_begin(&arena, 1);
   
   PathStyle style = PathStyle_Relative;

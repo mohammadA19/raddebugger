@@ -5,19 +5,19 @@
 //~ PDB Parser Functions
 
 PDB_Info*
-pdb_info_from_data(Arena *arena, String8 data){
+pdb_info_from_data(Arena* arena, String8 data){
   ProfBegin("pdb_info_from_data");
   
   // get header
-  PDB_InfoHeader *header = 0;
+  PDB_InfoHeader* header = 0;
   if (data.size >= sizeof(*header)){
     header = (PDB_InfoHeader *)data.str;
   }
   
-  PDB_Info *result = 0;
+  PDB_Info* result = 0;
   if (header != 0){
     // read guid
-    Guid *auth_guid = 0;
+    Guid* auth_guid = 0;
     U32 after_auth_guid_off = sizeof(*header);
     switch (header->version){
       case PDB_InfoVersion_VC70_DEP:
@@ -76,12 +76,12 @@ pdb_info_from_data(Arena *arena, String8 data){
       
       // read table
       if (hash_table_count > 0 && epilogue_base_off <= data.size){
-        PDB_InfoNode *first = 0;
-        PDB_InfoNode *last = 0;
+        PDB_InfoNode* first = 0;
+        PDB_InfoNode* last = 0;
         
         U32 record_off = epilogue_base_off;
         for (U32 i = 0; i < hash_table_count; i += 1, record_off += 8){
-          U32 *record = (U32*)(data.str + record_off);
+          U32* record = (U32*)(data.str + record_off);
           U32 relative_name_off = record[0];
           MSF_StreamNumber sn = (MSF_StreamNumber)record[1];
           
@@ -90,7 +90,7 @@ pdb_info_from_data(Arena *arena, String8 data){
                                              (char*)(data.str + names_base_opl));
           
           // push info node
-          PDB_InfoNode *node = push_array(arena, PDB_InfoNode, 1);
+          PDB_InfoNode* node = push_array(arena, PDB_InfoNode, 1);
           SLLQueuePush(first, last, node);
           node->string = name;
           node->sn = sn;
@@ -111,7 +111,7 @@ pdb_info_from_data(Arena *arena, String8 data){
 }
 
 PDB_NamedStreamTable*
-pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
+pdb_named_stream_table_from_info(Arena* arena, PDB_Info* info){
   ProfBegin("pdb_named_stream_table_from_info");
   
   // mapping "NamedStream" indexes to strings
@@ -126,14 +126,14 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
   };
   
   // build baked table
-  PDB_NamedStreamTable *result = push_array(arena, PDB_NamedStreamTable, 1);
-  struct StreamNameIndexPair *p = pairs;
+  PDB_NamedStreamTable* result = push_array(arena, PDB_NamedStreamTable, 1);
+  struct StreamNameIndexPair* p = pairs;
   for (U64 i = 0; i < ArrayCount(pairs); i += 1, p += 1){
     String8 name = p->name;
     
     // get info node with this name
-    PDB_InfoNode *match = 0;
-    for (PDB_InfoNode *node = info->first;
+    PDB_InfoNode* match = 0;
+    for (PDB_InfoNode* node = info->first;
          node != 0;
          node = node->next){
       if (str8_match(name, node->string, 0)){
@@ -157,16 +157,16 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
 }
 
 PDB_Strtbl*
-pdb_strtbl_from_data(Arena *arena, String8 data){
+pdb_strtbl_from_data(Arena* arena, String8 data){
   ProfBegin("pdb_strtbl_from_data");
   
   // get header
-  PDB_StringTableHeader *header = 0;
+  PDB_StringTableHeader* header = 0;
   if (sizeof(*header) <= data.size){
     header = (PDB_StringTableHeader *)data.str;
   }
   
-  PDB_Strtbl *result = push_array(arena, PDB_Strtbl, 1);
+  PDB_Strtbl* result = push_array(arena, PDB_Strtbl, 1);
   if (header != 0 && header->magic == PDB_StringTableHeader_MAGIC && header->version == 1){
     U32 strblock_size_off = sizeof(*header);
     U32 strblock_size = 0;
@@ -200,16 +200,16 @@ pdb_strtbl_from_data(Arena *arena, String8 data){
 }
 
 PDB_DbiParsed*
-pdb_dbi_from_data(Arena *arena, String8 data){
+pdb_dbi_from_data(Arena* arena, String8 data){
   ProfBegin("pdb_dbi_from_data");
   
   // get header
-  PDB_DbiHeader *header = 0;
+  PDB_DbiHeader* header = 0;
   if (sizeof(*header) <= data.size){
     header = (PDB_DbiHeader*)data.str;
   }
   
-  PDB_DbiParsed *result = 0;
+  PDB_DbiParsed* result = 0;
   if (header != 0 && header->sig == PDB_DbiHeaderSignature_V1){
     // extract range sizes
     U64 range_size[PDB_DbiRange_COUNT];
@@ -260,16 +260,16 @@ pdb_dbi_from_data(Arena *arena, String8 data){
 }
 
 PDB_TpiParsed*
-pdb_tpi_from_data(Arena *arena, String8 data){
+pdb_tpi_from_data(Arena* arena, String8 data){
   ProfBegin("pdb_tpi_from_data");
   
   // get header
-  PDB_TpiHeader *header = 0;
+  PDB_TpiHeader* header = 0;
   if (sizeof(*header) <= data.size){
     header = (PDB_TpiHeader*)data.str;
   }
   
-  PDB_TpiParsed *result = 0;
+  PDB_TpiParsed* result = 0;
   if (header != 0 && header->version == PDB_TpiVersion_IMPV80){
     U64 leaf_first_raw = header->header_size;
     U64 leaf_first     = ClampTop(leaf_first_raw, data.size);
@@ -302,10 +302,10 @@ pdb_tpi_from_data(Arena *arena, String8 data){
 }
 
 PDB_TpiHashParsed*
-pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, String8 data, String8 aux_data){
+pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, String8 data, String8 aux_data){
   ProfBegin("pdb_tpi_hash_from_data");
   
-  PDB_TpiHashParsed *result = 0;
+  PDB_TpiHashParsed* result = 0;
   
   U32 stride = tpi->hash_key_size;
   U32 bucket_count = tpi->hash_bucket_count;
@@ -315,12 +315,12 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
     PDB_TpiHashBlock **buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
     
     // extract "hash" array
-    U8 *hashes = data.str + tpi->hash_vals_off;
-    U8 *hash_opl = hashes + tpi->hash_vals_size;
+    U8* hashes = data.str + tpi->hash_vals_off;
+    U8* hash_opl = hashes + tpi->hash_vals_size;
     
     // for each index in the array...
     CV_TypeId itype = tpi->itype_first;
-    U8 *hash_cursor = hashes;
+    U8* hash_cursor = hashes;
     for (;hash_cursor + stride <= hash_opl;){
       
       // read index
@@ -329,7 +329,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
       
       // save to map
       if (bucket_idx < bucket_count){
-        PDB_TpiHashBlock *block = buckets[bucket_idx];
+        PDB_TpiHashBlock* block = buckets[bucket_idx];
         if (block == 0 || block->local_count == ArrayCount(block->itypes)){
           block = push_array(arena, PDB_TpiHashBlock, 1);
           SLLStackPush(buckets[bucket_idx], block);
@@ -368,9 +368,9 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
       // deleted_bit_array: U32[deleted_bit_array_count] -> 1 bit per slot, "is deleted"
       // (U32, U32)[pair_count] -> array of name_index/type_index pairs
       //
-      U8 *adjs = data.str + tpi->hash_adj_off;
-      U8 *adjs_opl = adjs + tpi->hash_adj_size;
-      U8 *adjs_cursor = adjs;
+      U8* adjs = data.str + tpi->hash_adj_off;
+      U8* adjs_opl = adjs + tpi->hash_adj_size;
+      U8* adjs_cursor = adjs;
       U32 pair_count = *(U32 *)adjs_cursor;
       adjs_cursor += sizeof(U32);
       U32 slot_count = *(U32 *)adjs_cursor;
@@ -391,8 +391,8 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
         String8 string = pdb_strtbl_string_from_off(strtbl, name_off);
         U32 hash = pdb_hash_v1(string);
         U32 bucket_idx = ((bucket_mask != 0) ? hash&bucket_mask : hash%bucket_count);
-        PDB_TpiHashBlock *prev_block = 0;
-        for(PDB_TpiHashBlock *block = buckets[bucket_idx];
+        PDB_TpiHashBlock* prev_block = 0;
+        for(PDB_TpiHashBlock* block = buckets[bucket_idx];
             block != 0;
             prev_block = block, block = block->next)
         {
@@ -434,16 +434,16 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
 }
 
 PDB_GsiParsed*
-pdb_gsi_from_data(Arena *arena, String8 data){
+pdb_gsi_from_data(Arena* arena, String8 data){
   ProfBegin("pdb_gsi_from_data");
   
   // get header
-  PDB_GsiHeader *header = 0;
+  PDB_GsiHeader* header = 0;
   if (sizeof(*header) <= data.size){
     header = (PDB_GsiHeader*)data.str;
   }
   
-  PDB_GsiParsed *result = 0;
+  PDB_GsiParsed* result = 0;
   if (header != 0 && header->signature == PDB_GsiSignature_Basic &&
       header->version == PDB_GsiVersion_V70 && header->bucket_data_size != 0){
     Temp scratch = scratch_begin(&arena, 1);
@@ -461,8 +461,8 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     U32 offsets_off = bitmask_off + bitmask_byte_size;
     
     // get bitmask & packed offset arrays
-    U8 *bitmasks = 0;
-    U8 *packed_offsets = 0;
+    U8* bitmasks = 0;
+    U8* packed_offsets = 0;
     if (bitmask_off + bitmask_byte_size <= data.size){
       bitmasks = (data.str + bitmask_off);
       packed_offsets = (data.str + offsets_off);
@@ -470,16 +470,16 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     U32 packed_offset_count = (data.size - offsets_off)/4;
     
     // unpack
-    U32 *unpacked_offsets = 0;
+    U32* unpacked_offsets = 0;
     if (packed_offsets != 0){
       unpacked_offsets = push_array(scratch.arena, U32, slot_count);
       
-      U32 *bitmask_ptr = (U32*)bitmasks;
-      U32 *bitmask_opl = bitmask_ptr + bitmask_u32_count;
-      U32 *src_ptr = (U32*)packed_offsets;
-      U32 *src_opl = src_ptr + packed_offset_count;
-      U32 *dst_ptr = unpacked_offsets;
-      U32 *dst_opl = dst_ptr + slot_count;
+      U32* bitmask_ptr = (U32*)bitmasks;
+      U32* bitmask_opl = bitmask_ptr + bitmask_u32_count;
+      U32* src_ptr = (U32*)packed_offsets;
+      U32* src_opl = src_ptr + packed_offset_count;
+      U32* dst_ptr = unpacked_offsets;
+      U32* dst_opl = dst_ptr + slot_count;
       for (; bitmask_ptr < bitmask_opl && src_ptr < src_opl; bitmask_ptr += 1){
         U32 bits = *bitmask_ptr;
         U32 src_max = (U32)(src_opl - src_ptr);
@@ -509,11 +509,11 @@ pdb_gsi_from_data(Arena *arena, String8 data){
       result = push_array(arena, PDB_GsiParsed, 1);
       
       // hash records
-      PDB_GsiHashRecord *hash_records = (PDB_GsiHashRecord*)(data.str + hash_record_array_off);
+      PDB_GsiHashRecord* hash_records = (PDB_GsiHashRecord*)(data.str + hash_record_array_off);
       U32 hash_record_count = header->hash_record_arr_size/sizeof(PDB_GsiHashRecord);
       
       // * We unpack hash records into the the table by scanning backwards through the
-      // * hash records. Neighboring values in unpacked_offsets *sort of* form counts, but we 
+      // * hash records. Neighboring values in unpacked_offsets* sort of* form counts, but we 
       // * have to skip the max-U32s (sloppy PDB nonsense).
       
       // * PDBs put one extra slot at the beginning of the encoded buckets that is mean
@@ -521,7 +521,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
       // * in the encoded buckets there are 4097. We are meant to drop the first one.
       
       // build table
-      PDB_GsiHashRecord *hash_record_ptr = hash_records + hash_record_count - 1;
+      PDB_GsiHashRecord* hash_record_ptr = hash_records + hash_record_count - 1;
       U32 prev_n = hash_record_count;
       for (U32 i = slot_count; i > 1;){
         i -= 1;
@@ -536,14 +536,14 @@ pdb_gsi_from_data(Arena *arena, String8 data){
           U32 num_steps = prev_n - n;
           
           // fill this bucket
-          U32 *bucket_offs = push_array_aligned(arena, U32, num_steps, 4);
+          U32* bucket_offs = push_array_aligned(arena, U32, num_steps, 4);
           for (U32 j = num_steps; j > 0;){
             j -= 1;
             // * The "- 1" is more sloppy PDB magic.
             bucket_offs[j] = hash_record_ptr->symbol_off - 1;
             hash_record_ptr -= 1;
           }
-          PDB_GsiBucket *bucket = &result->buckets[i];
+          PDB_GsiBucket* bucket = &result->buckets[i];
           bucket->count = num_steps;
           bucket->offs = bucket_offs;
           
@@ -562,7 +562,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
 }
 
 U64
-pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 string)
+pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, String8 symbol_data, String8 string)
 {
   U64 result = max_U64;
 
@@ -575,12 +575,12 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
     U32 off = bucket.offs[i];
     if(off + sizeof(CV_RecHeader) <= symbol_data.size)
     {
-      CV_RecHeader *sym_header = (CV_RecHeader *)(symbol_data.str + off);
+      CV_RecHeader* sym_header = (CV_RecHeader *)(symbol_data.str + off);
 
       if(sym_header->size >= sizeof(sym_header->kind))
       {
         U64  opl_off = off + sizeof(sym_header->size) + sym_header->size;
-        U8  *sym_opl = (U8*)sym_header;
+        U8*  sym_opl = (U8*)sym_header;
         if(opl_off <= symbol_data.size)
         {
           sym_opl = symbol_data.str + opl_off;
@@ -604,7 +604,7 @@ exit:;
 }
 
 COFF_SectionHeaderArray
-pdb_coff_section_array_from_data(Arena *arena, String8 data){
+pdb_coff_section_array_from_data(Arena* arena, String8 data){
   COFF_SectionHeaderArray result = {0};
   result.count = data.size/sizeof(COFF_SectionHeader);
   result.v = (COFF_SectionHeader*)data.str;
@@ -612,15 +612,15 @@ pdb_coff_section_array_from_data(Arena *arena, String8 data){
 }
 
 PDB_CompUnitArray*
-pdb_comp_unit_array_from_data(Arena *arena, String8 data){
-  PDB_CompUnitNode *first = 0;
-  PDB_CompUnitNode *last = 0;
+pdb_comp_unit_array_from_data(Arena* arena, String8 data){
+  PDB_CompUnitNode* first = 0;
+  PDB_CompUnitNode* last = 0;
   U64 count = 0;
   
   U64 cursor = 0;
   for (;cursor + sizeof(PDB_DbiCompUnitHeader) <= data.size;){
     // get header
-    PDB_DbiCompUnitHeader *header = (PDB_DbiCompUnitHeader*)(data.str + cursor);
+    PDB_DbiCompUnitHeader* header = (PDB_DbiCompUnitHeader*)(data.str + cursor);
     
     // get names
     U64 name_off = cursor + sizeof(*header);
@@ -632,7 +632,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     U64 after_name2_off = name2_off + name2.size + 1;
     
     // save mod info
-    PDB_CompUnitNode *node = push_array_no_zero(arena, PDB_CompUnitNode, 1);
+    PDB_CompUnitNode* node = push_array_no_zero(arena, PDB_CompUnitNode, 1);
     SLLQueuePush(first, last, node);
     count += 1;
     node->unit.sn = header->sn;
@@ -640,7 +640,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     node->unit.group_name = name2;
     
     // fill range offsets
-    U32 *range_buf = node->unit.range_off;
+    U32* range_buf = node->unit.range_off;
     {
       // fill the buffer with size of each range
       range_buf[PDB_DbiCompUnitRange_Symbols] = header->symbols_size;
@@ -673,14 +673,14 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
   PDB_CompUnit **units = push_array_no_zero(arena, PDB_CompUnit*, count);
   {
     U64 idx = 0;
-    for (PDB_CompUnitNode *node = first;
+    for (PDB_CompUnitNode* node = first;
          node != 0;
          node = node->next, idx += 1){
       units[idx] = &node->unit;
     }
   }
   
-  PDB_CompUnitArray *result = push_array(arena, PDB_CompUnitArray, 1);
+  PDB_CompUnitArray* result = push_array(arena, PDB_CompUnitArray, 1);
   result->units = units;
   result->count = count;
   
@@ -688,12 +688,12 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
 }
 
 PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data,
+pdb_comp_unit_contribution_array_from_data(Arena* arena, String8 data,
                                            COFF_SectionHeaderArray sections){
-  PDB_CompUnitContribution *contributions = 0;
+  PDB_CompUnitContribution* contributions = 0;
   U64 count = 0;
   if (data.size >= sizeof(PDB_DbiSectionContribVersion)){
-    PDB_DbiSectionContribVersion *version = (PDB_DbiSectionContribVersion*)data.str;
+    PDB_DbiSectionContribVersion* version = (PDB_DbiSectionContribVersion*)data.str;
     
     // determine array layout from version
     U32 item_size = 0;
@@ -725,10 +725,10 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data,
     COFF_SectionHeader* section_headers = sections.v;
     
     // fill array
-    PDB_CompUnitContribution *contribution_ptr = contributions;
+    PDB_CompUnitContribution* contribution_ptr = contributions;
     U64 cursor = array_off;
     for (; cursor + item_size <= data.size; cursor += item_size){
-      PDB_DbiSectionContrib40 *sc = (PDB_DbiSectionContrib40*)(data.str + cursor);
+      PDB_DbiSectionContrib40* sc = (PDB_DbiSectionContrib40*)(data.str + cursor);
       if (sc->size > 0 && 1 <= sc->sec && sc->sec <= section_count){
         U64 voff = section_headers[sc->sec - 1].voff + sc->sec_off;
         
@@ -742,7 +742,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data,
   }
   
   // fill result
-  PDB_CompUnitContributionArray *result = push_array(arena, PDB_CompUnitContributionArray, 1);
+  PDB_CompUnitContributionArray* result = push_array(arena, PDB_CompUnitContributionArray, 1);
   result->contributions = contributions;
   result->count = count;
   
@@ -753,7 +753,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data,
 //~ PDB Dbi Functions
 
 String8
-pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
+pdb_data_from_dbi_range(PDB_DbiParsed* dbi, PDB_DbiRange range){
   String8 result = {0};
   if (range < PDB_DbiRange_COUNT){
     U64 first = dbi->range_off[range];
@@ -765,7 +765,7 @@ pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
 }
 
 String8
-pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRange range){
+pdb_data_from_unit_range(MSF_Parsed* msf, PDB_CompUnit* unit, PDB_DbiCompUnitRange range){
   String8 result = {0};
   if (range < PDB_DbiCompUnitRange_COUNT){
     String8 full_stream_data = msf_data_from_stream(msf, unit->sn);
@@ -785,16 +785,16 @@ pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRan
 //~ PDB Tpi Functions
 
 String8
-pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
+pdb_leaf_data_from_tpi(PDB_TpiParsed* tpi){
   String8 data = tpi->data;
-  U8 *first = data.str + tpi->leaf_first;
-  U8 *opl   = data.str + tpi->leaf_opl;
+  U8* first = data.str + tpi->leaf_first;
+  U8* opl   = data.str + tpi->leaf_opl;
   String8 result = str8_range(first, opl);
   return(result);
 }
 
 CV_TypeIdArray
-pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *leaf,
+pdb_tpi_itypes_from_name(Arena* arena, PDB_TpiHashParsed* tpi_hash, CV_LeafParsed* leaf,
                          String8 name, B32 compare_unique_name, U32 output_cap){
   U32 hash = pdb_hash_v1(name);
   U32 bucket_idx = ((tpi_hash->bucket_mask != 0) ?
@@ -807,27 +807,27 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
   
   Temp scratch = scratch_begin(&arena, 1);
   struct Chain{
-    struct Chain *next;
+    struct Chain* next;
     CV_TypeId itype;
   };
-  struct Chain *first = 0;
-  struct Chain *last = 0;
+  struct Chain* first = 0;
+  struct Chain* last = 0;
   U32 count = 0;
   
-  for (PDB_TpiHashBlock *block = tpi_hash->buckets[bucket_idx];
+  for (PDB_TpiHashBlock* block = tpi_hash->buckets[bucket_idx];
        block != 0;
        block = block->next){
     U32 local_count = block->local_count;
-    CV_TypeId *itype_ptr = block->itypes;
+    CV_TypeId* itype_ptr = block->itypes;
     for (U32 i = 0; i < local_count; i += 1, itype_ptr += 1){
       
       String8 extracted_name = {0};
       
       CV_TypeId itype = *itype_ptr;
       if (itype_first <= itype && itype < itype_opl){
-        CV_RecRange *range = &leaf->leaf_ranges.ranges[itype - leaf->itype_first];
+        CV_RecRange* range = &leaf->leaf_ranges.ranges[itype - leaf->itype_first];
         if (range->off + range->hdr.size <= data.size){
-          U8 *first = data.str + range->off + 2;
+          U8* first = data.str + range->off + 2;
           U64 cap = range->hdr.size - 2;
           
           switch (range->hdr.kind){
@@ -837,21 +837,21 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
             case CV_LeafKind_STRUCTURE:
             {
               if (sizeof(CV_LeafStruct) <= cap){
-                CV_LeafStruct *lf_struct = (CV_LeafStruct*)first;
+                CV_LeafStruct* lf_struct = (CV_LeafStruct*)first;
                 
                 if (!(lf_struct->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_struct + 1);
+                  U8* numeric_ptr = (U8*)(lf_struct + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  U8* name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_struct->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      U8* unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -867,21 +867,21 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
             case CV_LeafKind_STRUCT2:
             {
               if (sizeof(CV_LeafStruct2) <= cap){
-                CV_LeafStruct2 *lf_struct = (CV_LeafStruct2*)first;
+                CV_LeafStruct2* lf_struct = (CV_LeafStruct2*)first;
                 
                 if (!(lf_struct->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_struct + 1);
+                  U8* numeric_ptr = (U8*)(lf_struct + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  U8* name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_struct->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      U8* unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -896,21 +896,21 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
             case CV_LeafKind_UNION:
             {
               if (sizeof(CV_LeafUnion) <= cap){
-                CV_LeafUnion *lf_union = (CV_LeafUnion*)first;
+                CV_LeafUnion* lf_union = (CV_LeafUnion*)first;
                 
                 if (!(lf_union->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_union + 1);
+                  U8* numeric_ptr = (U8*)(lf_union + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  U8* name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_union->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      U8* unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -925,17 +925,17 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
             case CV_LeafKind_ENUM:
             {
               if (sizeof(CV_LeafEnum) <= cap){
-                CV_LeafEnum *lf_enum = (CV_LeafEnum*)first;
+                CV_LeafEnum* lf_enum = (CV_LeafEnum*)first;
                 
                 if (!(lf_enum->props & CV_TypeProp_FwdRef)){
                   // name
-                  U8 *name_ptr = (U8*)(lf_enum + 1);
+                  U8* name_ptr = (U8*)(lf_enum + 1);
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_enum->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      U8* unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -951,7 +951,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
       }
       
       if (str8_match(extracted_name, name, 0)){
-        struct Chain *chain = push_array(scratch.arena, struct Chain, 1);
+        struct Chain* chain = push_array(scratch.arena, struct Chain, 1);
         SLLQueuePush(first, last, chain);
         count += 1;
         chain->itype = itype;
@@ -966,10 +966,10 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
   
   
   // assemble result
-  CV_TypeId *itypes = push_array_aligned(arena, CV_TypeId, count, 8);
+  CV_TypeId* itypes = push_array_aligned(arena, CV_TypeId, count, 8);
   {
-    CV_TypeId *itype_ptr = itypes;
-    for (struct Chain *node = first;
+    CV_TypeId* itype_ptr = itypes;
+    for (struct Chain* node = first;
          node != 0;
          node = node->next, itype_ptr += 1){
       *itype_ptr = node->itype;
@@ -985,7 +985,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
 }
 
 CV_TypeId
-pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_leaf,
+pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash, CV_LeafParsed* tpi_leaf,
                               String8 name, B32 compare_unique_name){
   Temp scratch = scratch_begin(0, 0);
   CV_TypeIdArray array = pdb_tpi_itypes_from_name(scratch.arena, tpi_hash, tpi_leaf,
@@ -1003,7 +1003,7 @@ pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_le
 //~ PDB Strtbl Functions
 
 String8
-pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
+pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, U32 off){
   U32 strblock_max = strtbl->strblock_max;
   U32 full_off_raw = strtbl->strblock_min + off;
   U32 full_off = ClampTop(full_off_raw, strblock_max);
@@ -1013,7 +1013,7 @@ pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
 }
 
 String8
-pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
+pdb_strtbl_string_from_index(PDB_Strtbl* strtbl, PDB_StringIndex idx){
   String8 result = {0};
   if (idx < strtbl->bucket_count){
     U32 off = *(U32*)(strtbl->data.str + strtbl->buckets_min + idx*4);
@@ -1023,7 +1023,7 @@ pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
 }
 
 U32
-pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string)
+pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, String8 string)
 {
   U32 result = max_U32;
 

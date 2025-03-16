@@ -602,8 +602,8 @@ String8 display_name;
 String8 params_schema;
 RD_IconKind icon_kind;
 RD_ViewRuleInfoFlags flags;
-EV_ViewRuleExprExpandInfoHookFunctionType *expr_expand_info;
-RD_ViewRuleUIFunctionType *ui;
+EV_ViewRuleExprExpandInfoHookFunctionType* expr_expand_info;
+RD_ViewRuleUIFunctionType* ui;
 }
 
 #define rd_regs_lit_init_top \

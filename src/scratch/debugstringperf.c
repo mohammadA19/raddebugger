@@ -1,6 +1,6 @@
 #include <windows.h>
 
-DWORD thread_entry_point(void *p)
+DWORD thread_entry_point(void* p)
 {
   for(int i = 0; i < 100000; i += 1)
   {

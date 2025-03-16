@@ -52,14 +52,14 @@
 //~ rjf: Entry Point
 
 void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   //- rjf: initialize state, unpack command line
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   B32 do_help = (cmd_line_has_flag(cmdline, str8_lit("help")) ||
                  cmd_line_has_flag(cmdline, str8_lit("h")) ||
                  cmd_line_has_flag(cmdline, str8_lit("?")));
-  P2R_User2Convert *user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
+  P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
   
   //- rjf: display help
   if(do_help || user2convert->errors.node_count != 0)
@@ -78,7 +78,7 @@ entry_point(CmdLine *cmdline)
     
     if(!do_help)
     {
-      for(String8Node *n = user2convert->errors.first; n != 0; n = n->next)
+      for(String8Node* n = user2convert->errors.first; n != 0; n = n->next)
       {
         fprintf(stderr, "error(input): %.*s\n", str8_varg(n->string));
       }
@@ -87,21 +87,21 @@ entry_point(CmdLine *cmdline)
   }
   
   //- rjf: convert
-  P2R_Convert2Bake *convert2bake = 0;
+  P2R_Convert2Bake* convert2bake = 0;
   ProfScope("convert")
   {
     convert2bake = p2r_convert(arena, user2convert);
   }
   
   //- rjf: bake
-  P2R_Bake2Serialize *bake2srlz = 0;
+  P2R_Bake2Serialize* bake2srlz = 0;
   ProfScope("bake")
   {
     bake2srlz = p2r_bake(arena, convert2bake);
   }
   
   //- rjf: serialize
-  P2R_Serialize2File *srlz2file = 0;
+  P2R_Serialize2File* srlz2file = 0;
   ProfScope("serialize")
   {
     srlz2file = push_array(arena, P2R_Serialize2File, 1);
@@ -109,7 +109,7 @@ entry_point(CmdLine *cmdline)
   }
   
   //- rjf: compress
-  P2R_Serialize2File *srlz2file_compressed = srlz2file;
+  P2R_Serialize2File* srlz2file_compressed = srlz2file;
   if(cmd_line_has_flag(cmdline, str8_lit("compress"))) ProfScope("compress")
   {
     srlz2file_compressed = push_array(arena, P2R_Serialize2File, 1);
@@ -124,7 +124,7 @@ entry_point(CmdLine *cmdline)
   {
     OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
     U64 off = 0;
-    for(String8Node *n = blobs.first; n != 0; n = n->next)
+    for(String8Node* n = blobs.first; n != 0; n = n->next)
     {
       os_file_write(output_file, r1u64(off, off+n->string.size), n->string.str);
       off += n->string.size;

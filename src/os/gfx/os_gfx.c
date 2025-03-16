@@ -32,7 +32,7 @@ os_string_from_event_kind(OS_EventKind kind)
 }
 
 String8List
-os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
+os_string_list_from_modifiers(Arena* arena, OS_Modifiers modifiers)
 {
   String8List result = {0};
   String8 modifier_strs[] = 
@@ -160,17 +160,17 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
 }
 
 void
-os_eat_event(OS_EventList *events, OS_Event *event)
+os_eat_event(OS_EventList* events, OS_Event* event)
 {
   DLLRemove(events->first, events->last, event);
   events->count -= 1;
 }
 
 B32
-os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
+os_key_press(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for(OS_Event* event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Press && event->key == key && event->modifiers == modifiers)
@@ -184,10 +184,10 @@ os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_
 }
 
 B32
-os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
+os_key_release(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for(OS_Event* event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Release && event->key == key && event->modifiers == modifiers)
@@ -201,10 +201,10 @@ os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, O
 }
 
 B32
-os_text(OS_EventList *events, OS_Handle window, U32 character)
+os_text(OS_EventList* events, OS_Handle window, U32 character)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for(OS_Event* event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Text && event->character == character)
@@ -218,12 +218,12 @@ os_text(OS_EventList *events, OS_Handle window, U32 character)
 }
 
 OS_EventList
-os_event_list_copy(Arena *arena, OS_EventList *src)
+os_event_list_copy(Arena* arena, OS_EventList* src)
 {
   OS_EventList dst = {0};
-  for(OS_Event *s = src->first; s != 0; s = s->next)
+  for(OS_Event* s = src->first; s != 0; s = s->next)
   {
-    OS_Event *d = push_array(arena, OS_Event, 1);
+    OS_Event* d = push_array(arena, OS_Event, 1);
     MemoryCopyStruct(d, s);
     d->strings = str8_list_copy(arena, &s->strings);
     DLLPushBack(dst.first, dst.last, d);
@@ -233,7 +233,7 @@ os_event_list_copy(Arena *arena, OS_EventList *src)
 }
 
 void
-os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
+os_event_list_concat_in_place(OS_EventList* dst, OS_EventList* to_push)
 {
   if(dst->last && to_push->first)
   {
@@ -250,9 +250,9 @@ os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
 }
 
 OS_Event *
-os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind)
+os_event_list_push_new(Arena* arena, OS_EventList* evts, OS_EventKind kind)
 {
-  OS_Event *evt = push_array(arena, OS_Event, 1);
+  OS_Event* evt = push_array(arena, OS_Event, 1);
   DLLPushBack(evts->first, evts->last, evt);
   evts->count += 1;
   evt->timestamp_us = os_now_microseconds();

@@ -5,8 +5,8 @@ U32
 pdb_hash_v1(String8 string)
 {
   U32 result = 0;
-  U8 *ptr = string.str;
-  U8 *opl = ptr + (string.size&(~3));
+  U8* ptr = string.str;
+  U8* opl = ptr + (string.size&(~3));
   for(; ptr < opl; ptr += 4)
   {
     result ^= *(U32*)ptr;

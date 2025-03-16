@@ -95,11 +95,11 @@ enum DMN_W32_EntityKind
 
 struct DMN_W32_Entity
 {
-  DMN_W32_Entity *first;
-  DMN_W32_Entity *last;
-  DMN_W32_Entity *next;
-  DMN_W32_Entity *prev;
-  DMN_W32_Entity *parent;
+  DMN_W32_Entity* first;
+  DMN_W32_Entity* last;
+  DMN_W32_Entity* next;
+  DMN_W32_Entity* prev;
+  DMN_W32_Entity* parent;
   DMN_W32_EntityKind kind;
   U32 gen;
   U64 id;
@@ -133,22 +133,22 @@ struct DMN_W32_Entity
 
 struct DMN_W32_EntityNode
 {
-  DMN_W32_EntityNode *next;
-  DMN_W32_Entity *v;
+  DMN_W32_EntityNode* next;
+  DMN_W32_Entity* v;
 }
 
 struct DMN_W32_EntityIDHashNode
 {
-  DMN_W32_EntityIDHashNode *next;
-  DMN_W32_EntityIDHashNode *prev;
+  DMN_W32_EntityIDHashNode* next;
+  DMN_W32_EntityIDHashNode* prev;
   U64 id;
-  DMN_W32_Entity *entity;
+  DMN_W32_Entity* entity;
 }
 
 struct DMN_W32_EntityIDHashSlot
 {
-  DMN_W32_EntityIDHashNode *first;
-  DMN_W32_EntityIDHashNode *last;
+  DMN_W32_EntityIDHashNode* first;
+  DMN_W32_EntityIDHashNode* last;
 }
 
 ////////////////////////////////
@@ -182,7 +182,7 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 struct DMN_W32_Shared
 {
   // rjf: top-level info
-  Arena *arena;
+  Arena* arena;
   String8List env_strings;
   
   // rjf: access locking mechanism
@@ -195,17 +195,17 @@ struct DMN_W32_Shared
   U64 reg_gen;
   
   // rjf: detaching info
-  Arena *detach_arena;
+  Arena* detach_arena;
   DMN_HandleList detach_processes;
   
   // rjf: entity state
-  Arena *entities_arena;
-  DMN_W32_Entity *entities_base;
-  DMN_W32_Entity *entities_first_free;
+  Arena* entities_arena;
+  DMN_W32_Entity* entities_base;
+  DMN_W32_Entity* entities_first_free;
   U64 entities_count;
-  DMN_W32_EntityIDHashSlot *entities_id_hash_slots;
+  DMN_W32_EntityIDHashSlot* entities_id_hash_slots;
   U64 entities_id_hash_slots_count;
-  DMN_W32_EntityIDHashNode *entities_id_hash_node_free;
+  DMN_W32_EntityIDHashNode* entities_id_hash_node_free;
   
   // rjf: launch state
   B32 new_process_pending;
@@ -224,9 +224,9 @@ struct DMN_W32_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-static DMN_W32_Shared *dmn_w32_shared = 0;
+static DMN_W32_Shared* dmn_w32_shared = 0;
 static DMN_W32_Entity dmn_w32_entity_nil = {&dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil};
-static DMN_W32_GetThreadDescriptionFunctionType *dmn_w32_GetThreadDescription = 0;
+static DMN_W32_GetThreadDescriptionFunctionType* dmn_w32_GetThreadDescription = 0;
 thread_static B32 dmn_w32_ctrl_thread = 0;
 
 ////////////////////////////////
@@ -239,38 +239,38 @@ U64 dmn_w32_hash_from_id(U64 id);
 //~ rjf: Entity Helpers
 
 //- rjf: entity <-> handle
-DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity *entity);
-DMN_W32_Entity *dmn_w32_entity_from_handle(DMN_Handle handle);
+DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity* entity);
+DMN_W32_Entity* dmn_w32_entity_from_handle(DMN_Handle handle);
 
 //- rjf: entity allocation/deallocation
-DMN_W32_Entity *dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id);
-void dmn_w32_entity_release(DMN_W32_Entity *entity);
+DMN_W32_Entity* dmn_w32_entity_alloc(DMN_W32_Entity* parent, DMN_W32_EntityKind kind, U64 id);
+void dmn_w32_entity_release(DMN_W32_Entity* entity);
 
 //- rjf: kind*id -> entity
-DMN_W32_Entity *dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id);
+DMN_W32_Entity* dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id);
 
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
+String8 dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module);
 
 ////////////////////////////////
 //~ rjf: Win32-Level Process/Thread Reads/Writes
 
 //- rjf: processes
-U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst);
-B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src);
-String8 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address);
-String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address);
+U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void* dst);
+B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void* src);
+String8 dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, U64 address);
+String16 dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, U64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr);
 
 //- rjf: threads
-U16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave);
+U16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT* fxsave);
 U16 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw);
-B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block);
-B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block);
+B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void* reg_block);
+B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void* reg_block);
 
 //- rjf: remote thread injection
 DWORD dmn_w32_inject_thread(HANDLE process, U64 start_address);

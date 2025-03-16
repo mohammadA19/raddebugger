@@ -78,7 +78,7 @@
 #define SLLConcatInPlaceChunkList(list, to_concat, chunk_type) do {   \
     if ((list)->last != 0) {                                          \
       U64 base_cursor = (list)->last->base + (list)->last->count;     \
-      for (chunk_type *c = (to_concat)->first; c != 0; c = c->next) { \
+      for (chunk_type* c = (to_concat)->first; c != 0; c = c->next) { \
         c->base = base_cursor;                                        \
         base_cursor += c->count;                                      \
       }                                                               \
@@ -90,13 +90,13 @@
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
   if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
-    _value_type##Chunk *new_chunk = push_array(_arena, _value_type##Chunk, 1);       \
+    _value_type##Chunk* new_chunk = push_array(_arena, _value_type##Chunk, 1);       \
     new_chunk->v     = push_array(_arena, _value_type, _cap);                \
     new_chunk->cap   = _cap;                                                         \
     new_chunk->base  = (_list)->last ? (_list)->last->base + (_list)->last->cap : 0; \
     SLLQueuePushCount(_list, new_chunk);                                             \
   }                                                                                  \
-  _value_type *v = &(_list)->last->v[(_list)->last->count++];                        \
+  _value_type* v = &(_list)->last->v[(_list)->last->count++];                        \
   v->chunk = (_list)->last;                                                          \
 } while (0)
 
@@ -161,21 +161,21 @@ ISectOff isect_off(U32 isect, U32 off);
 
 ////////////////////////////////
 
-int u16_compar(const void *raw_a, const void *raw_b);
-int u32_compar(const void *raw_a, const void *raw_b);
-int u64_compar(const void *raw_a, const void *raw_b);
+int u16_compar(const void* raw_a, const void* raw_b);
+int u32_compar(const void* raw_a, const void* raw_b);
+int u64_compar(const void* raw_a, const void* raw_b);
 
-int u8_is_before(void *raw_a, void *raw_b);
-int u16_is_before(void *raw_a, void *raw_b);
-int u32_is_before(void *raw_a, void *raw_b);
-int u64_is_before(void *raw_a, void *raw_b);
+int u8_is_before(void* raw_a, void* raw_b);
+int u16_is_before(void* raw_a, void* raw_b);
+int u32_is_before(void* raw_a, void* raw_b);
+int u64_is_before(void* raw_a, void* raw_b);
 
-int pair_u32_is_before_v0(void *raw_a, void *raw_b);
-int pair_u32_is_before_v1(void *raw_a, void *raw_b);
-int pair_u64_is_before_v0(void *raw_a, void *raw_b);
-int pair_u64_is_before_v1(void *raw_a, void *raw_b);
+int pair_u32_is_before_v0(void* raw_a, void* raw_b);
+int pair_u32_is_before_v1(void* raw_a, void* raw_b);
+int pair_u64_is_before_v0(void* raw_a, void* raw_b);
+int pair_u64_is_before_v1(void* raw_a, void* raw_b);
 
 ////////////////////////////////
 
-void str8_list_concat_in_place_array(String8List *list, String8List *arr, U64 count);
+void str8_list_concat_in_place_array(String8List* list, String8List* arr, U64 count);
 

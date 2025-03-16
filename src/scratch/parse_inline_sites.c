@@ -144,9 +144,9 @@ print_inline_binary_annotations(String8 binary_annots)
 }
 
 void
-entry_point(CmdLine *cmdl)
+entry_point(CmdLine* cmdl)
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
 
   B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
                 cmd_line_has_flag(cmdl, str8_lit("h")) ||
@@ -205,7 +205,7 @@ entry_point(CmdLine *cmdl)
   }
 
   // parse msf
-  MSF_Parsed *msf = msf_parsed_from_data(arena, pdb_data);
+  MSF_Parsed* msf = msf_parsed_from_data(arena, pdb_data);
   if (!msf) {
     fprintf(stderr, "ERROR: unable to parse MSF\n");
     return;
@@ -213,7 +213,7 @@ entry_point(CmdLine *cmdl)
 
   // find dbi
   String8        dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
-  PDB_DbiParsed *dbi      = pdb_dbi_from_data(arena, dbi_data);
+  PDB_DbiParsed* dbi      = pdb_dbi_from_data(arena, dbi_data);
   if (!dbi) {
     fprintf(stderr, "ERROR: unable to parse DBI\n");
     return;
@@ -221,13 +221,13 @@ entry_point(CmdLine *cmdl)
 
   // find info stream
   String8   info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
-  PDB_Info *info      = pdb_info_from_data(arena, info_data);
+  PDB_Info* info      = pdb_info_from_data(arena, info_data);
   if (!info) {
     fprintf(stderr, "ERROR: unable to parse INFO\n");
   }
 
   // parse named streams
-  PDB_NamedStreamTable *named_streams = pdb_named_stream_table_from_info(arena, info);
+  PDB_NamedStreamTable* named_streams = pdb_named_stream_table_from_info(arena, info);
   if (!named_streams) {
     fprintf(stderr, "ERROR: unable to parse named streams\n");
     return;
@@ -236,7 +236,7 @@ entry_point(CmdLine *cmdl)
   // find string table
   MSF_StreamNumber strtbl_sn   = named_streams->sn[PDB_NamedStream_StringTable];
   String8          strtbl_data = msf_data_from_stream(msf, strtbl_sn);
-  PDB_Strtbl      *strtbl      = pdb_strtbl_from_data(arena, strtbl_data);
+  PDB_Strtbl*      strtbl      = pdb_strtbl_from_data(arena, strtbl_data);
   if (!strtbl) {
     fprintf(stderr, "ERROR: unable to parse string table\n");
     return;
@@ -244,9 +244,9 @@ entry_point(CmdLine *cmdl)
 
   // find IPI
   String8        ipi_data        = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
-  PDB_TpiParsed *ipi             = pdb_tpi_from_data(arena, ipi_data);
+  PDB_TpiParsed* ipi             = pdb_tpi_from_data(arena, ipi_data);
   String8        ipi_leaf_data   = pdb_leaf_data_from_tpi(ipi);
-  CV_LeafParsed *ipi_leaf_parsed = cv_leaf_from_data(arena, ipi_leaf_data, ipi->itype_first);
+  CV_LeafParsed* ipi_leaf_parsed = cv_leaf_from_data(arena, ipi_leaf_data, ipi->itype_first);
 
   // find sections
   MSF_StreamNumber        section_stream = dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER];
@@ -255,7 +255,7 @@ entry_point(CmdLine *cmdl)
 
   // find comp units
   String8            comp_units_data = pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo);
-  PDB_CompUnitArray *comp_units      = pdb_comp_unit_array_from_data(arena, comp_units_data);
+  PDB_CompUnitArray* comp_units      = pdb_comp_unit_array_from_data(arena, comp_units_data);
 
   if (single_comp_unit_mode) {
     if (single_comp_unit_idx >= comp_units->count) {
@@ -287,7 +287,7 @@ entry_point(CmdLine *cmdl)
   }
 
   for (; comp_unit_idx < comp_unit_count; ++comp_unit_idx) {
-    PDB_CompUnit *comp_unit     = comp_units->units[comp_unit_idx];
+    PDB_CompUnit* comp_unit     = comp_units->units[comp_unit_idx];
     String8       symbol_data   = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_Symbols);
     String8       c13_data      = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_C13);
 
@@ -303,11 +303,11 @@ entry_point(CmdLine *cmdl)
 
     // parse $$LINES
     U64           c13_lines_count = 0;
-    CV_LineArray *c13_lines       = 0;
+    CV_LineArray* c13_lines       = 0;
     {
       String8List raw_lines_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
 
-      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
+      for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
         Temp temp = temp_begin(arena);
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(temp.arena, raw_lines_node->string, rng_1u64(0, raw_lines_node->string.size));
         c13_lines_count += parsed_list.count;
@@ -317,11 +317,11 @@ entry_point(CmdLine *cmdl)
       c13_lines = push_array_no_zero(arena, CV_LineArray, c13_lines_count);
 
       U64 c13_lines_idx = 0;
-      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
+      for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
         String8               raw_lines   = raw_lines_node->string;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
 
-        for(CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
+        for(CV_C13LinesHeaderNode* header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
           if (0 < header_node->v.sec_idx && header_node->v.sec_idx <= sections.count) {
             Assert(c13_lines_idx < c13_lines_count);
             U64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
@@ -336,8 +336,8 @@ entry_point(CmdLine *cmdl)
     String8List                  raw_inlinee_lines = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_InlineeLines);
     CV_C13InlineeLinesParsedList inlinee_lines     = cv_c13_inlinee_lines_from_sub_sections(arena, raw_inlinee_lines);
 
-    CV_InlineeLinesAccel *inlinee_lines_accel = cv_c13_make_inlinee_lines_accel(arena, inlinee_lines);
-    CV_LinesAccel        *lines_accel         = cv_c13_make_lines_accel(arena, c13_lines_count, c13_lines);
+    CV_InlineeLinesAccel* inlinee_lines_accel = cv_c13_make_inlinee_lines_accel(arena, inlinee_lines);
+    CV_LinesAccel*        lines_accel         = cv_c13_make_lines_accel(arena, c13_lines_count, c13_lines);
 
     fprintf(stdout, "[%llu] %.*s\n", comp_unit_idx, str8_varg(comp_unit->obj_name));
 
@@ -348,13 +348,13 @@ entry_point(CmdLine *cmdl)
     CV_SymbolList symbol_list = {0};
     cv_parse_symbol_sub_section(arena, &symbol_list, 0, symbol_data, CV_SymbolAlign);
 
-    for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next) {
+    for (CV_SymbolNode* symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next) {
       CV_Symbol  symbol  = symbol_n->data;
-      void      *rec_raw = symbol.data.str;
-      void      *rec_opl = symbol.data.str + symbol.data.size;
+      void*      rec_raw = symbol.data.str;
+      void*      rec_opl = symbol.data.str + symbol.data.size;
 
       if (symbol.kind == CV_SymKind_LPROC32 || symbol.kind == CV_SymKind_GPROC32) {
-        CV_SymProc32 *proc32 = rec_raw;
+        CV_SymProc32* proc32 = rec_raw;
         parent_voff = sections.v[proc32->sec-1].voff + proc32->off;
         parent_name = str8_cstring_capped(proc32+1, rec_opl);
 
@@ -371,22 +371,22 @@ entry_point(CmdLine *cmdl)
           }
         }
       } else if (symbol.kind == CV_SymKind_INLINESITE) {
-        CV_SymInlineSite            *inline_site         = rec_raw;
+        CV_SymInlineSite*            inline_site         = rec_raw;
         String8                      binary_annots       = str8_skip(symbol.data, sizeof(*inline_site));
-        CV_C13InlineeLinesParsed    *inlinee_parsed      = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, inline_site->inlinee);
+        CV_C13InlineeLinesParsed*    inlinee_parsed      = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, inline_site->inlinee);
         CV_InlineBinaryAnnotsParsed  binary_annots_parse = cv_c13_parse_inline_binary_annots(arena, parent_voff, inlinee_parsed, binary_annots);
 
         
         String8 inlinee_name = str8_lit("???");
         if (ipi->itype_first <= inline_site->inlinee && inline_site->inlinee < ipi->itype_opl) {
           CV_RecRange inlinee_rec = ipi_leaf_parsed->leaf_ranges.ranges[inline_site->inlinee - ipi->itype_first];
-          void *leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
-          void *leaf_opl = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind) + inlinee_rec.hdr.size;
+          void* leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
+          void* leaf_opl = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind) + inlinee_rec.hdr.size;
           if (inlinee_rec.hdr.kind == CV_LeafKind_MFUNC_ID) {
-            CV_LeafMFuncId *mfunc_id = leaf_raw;
+            CV_LeafMFuncId* mfunc_id = leaf_raw;
             inlinee_name = str8_cstring_capped(mfunc_id + 1, leaf_opl);
           } else if (inlinee_rec.hdr.kind == CV_LeafKind_FUNC_ID) {
-            CV_LeafFuncId *func_id = leaf_raw;
+            CV_LeafFuncId* func_id = leaf_raw;
             inlinee_name = str8_cstring_capped(func_id + 1, leaf_opl);
           }
         }
@@ -423,8 +423,8 @@ entry_point(CmdLine *cmdl)
 
           fprintf(stdout, "\t\t%.*s\n", str8_varg(file_name));
           for (U64 line_idx = 0; line_idx < lines.line_count; ++line_idx) {
-            char *pre  = (line_idx % 4) == 0 ? "\t\t\t" : "\t";
-            char *post = (line_idx % 4) == 3 || ((line_idx + 1) == lines.line_count) ? "\n" : "";
+            char* pre  = (line_idx % 4) == 0 ? "\t\t\t" : "\t";
+            char* post = (line_idx % 4) == 3 || ((line_idx + 1) == lines.line_count) ? "\n" : "";
             fprintf(stdout, "%s%08llX %04u%s", pre, base_addr + lines.voffs[line_idx], lines.line_nums[line_idx], post);
           }
         }
@@ -432,9 +432,9 @@ entry_point(CmdLine *cmdl)
 
         fprintf(stdout, "\t\tCode Ranges:\n");
         U64 range_idx = 0;
-        for (Rng1U64Node *range_n = binary_annots_parse.code_ranges.first; range_n != 0; range_n = range_n->next, ++range_idx) {
-          char *pre  = (range_idx % 4) == 0 ? "\t\t\t" : "\t";
-          char *post = (range_idx % 4) == 3 || ((range_idx + 1) == binary_annots_parse.code_ranges.count) ? "\n" : "";
+        for (Rng1U64Node* range_n = binary_annots_parse.code_ranges.first; range_n != 0; range_n = range_n->next, ++range_idx) {
+          char* pre  = (range_idx % 4) == 0 ? "\t\t\t" : "\t";
+          char* post = (range_idx % 4) == 3 || ((range_idx + 1) == binary_annots_parse.code_ranges.count) ? "\n" : "";
           fprintf(stdout, "%s%08llX-%08llX%s", pre, base_addr + range_n->v.min, base_addr + range_n->v.max, post);
         }
         fprintf(stdout, "\n");

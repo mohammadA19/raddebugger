@@ -40,8 +40,8 @@
 //~ Program Parameters Parser
 
 static DWARFCONV_Params*
-dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
-  DWARFCONV_Params *result = push_array(arena, DWARFCONV_Params, 1);
+dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
+  DWARFCONV_Params* result = push_array(arena, DWARFCONV_Params, 1);
   result->unit_idx_max = ~0ull;
   
   // get input pdb
@@ -78,15 +78,15 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
     
     // if no values - set all to hidden
     if (vals.node_count == 0){
-      B8 *ptr  = (B8*)&result->hide_errors;
-      B8 *opl = ptr + sizeof(result->hide_errors);
+      B8* ptr  = (B8*)&result->hide_errors;
+      B8* opl = ptr + sizeof(result->hide_errors);
       for (;ptr < opl; ptr += 1){
         *ptr = 1;
       }
     }
     
     // for each explicit value set the corresponding flag to hidden
-    for (String8Node *node = vals.first;
+    for (String8Node* node = vals.first;
          node != 0;
          node = node->next){
       if (str8_match(node->string, str8_lit("input"), 0)){
@@ -122,13 +122,13 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
     
     String8List vals = cmd_line_strings(cmdline, str8_lit("dump"));
     if (vals.first == 0){
-      B8 *ptr = &result->dump__first;
+      B8* ptr = &result->dump__first;
       for (; ptr < &result->dump__last; ptr += 1){
         *ptr = 1;
       }
     }
     else{
-      for (String8Node *node = vals.first;
+      for (String8Node* node = vals.first;
            node != 0;
            node = node->next){
         if (str8_match(node->string, str8_lit("header"), 0)){
@@ -181,18 +181,18 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
 //~ Entry Point
 
 static void
-dump_symtab(Arena *arena, String8List *out, ELF_SymArray *symbols, String8 strtab,
+dump_symtab(Arena* arena, String8List* out, ELF_SymArray* symbols, String8 strtab,
             U32 indent){
   static char spaces[] = "                                ";
   
-  U8 *str_first = strtab.str;
-  U8 *str_opl   = strtab.str + strtab.size;
+  U8* str_first = strtab.str;
+  U8* str_opl   = strtab.str + strtab.size;
   
-  ELF_Sym64 *symbol = symbols->symbols;
+  ELF_Sym64* symbol = symbols->symbols;
   U64 count = symbols->count;
   for (U64 i = 0; i < count; i += 1, symbol += 1){
-    U8 *name_first = str_first + symbol->st_name;
-    U8 *name_opl = name_first;
+    U8* name_first = str_first + symbol->st_name;
+    U8* name_opl = name_first;
     for (;name_opl < str_opl && *name_opl != 0;) name_opl += 1;
     String8 name = str8_range(name_first, name_opl);
     
@@ -218,12 +218,12 @@ dump_symtab(Arena *arena, String8List *out, ELF_SymArray *symbols, String8 strta
 
 #if 0
 static void
-dump_entry_tree(Arena *arena, String8List *out,
-                DWARF_Parsed *dwarf, DWARF_InfoUnit *unit,
-                DWARF_InfoEntry *entry, U32 indent){
+dump_entry_tree(Arena* arena, String8List* out,
+                DWARF_Parsed* dwarf, DWARF_InfoUnit* unit,
+                DWARF_InfoEntry* entry, U32 indent){
   static char spaces[] = "                                ";
   
-  DWARF_AbbrevDecl *abbrev_decl = entry->abbrev_decl;
+  DWARF_AbbrevDecl* abbrev_decl = entry->abbrev_decl;
   
   // tag
   DWARF_Tag tag = abbrev_decl->tag;
@@ -233,8 +233,8 @@ dump_entry_tree(Arena *arena, String8List *out,
   
   // attributes
   U32                     attrib_count = abbrev_decl->attrib_count;
-  DWARF_AbbrevAttribSpec *attrib_spec  = abbrev_decl->attrib_specs;
-  DWARF_InfoAttribVal    *attrib_val   = entry->attrib_vals;
+  DWARF_AbbrevAttribSpec* attrib_spec  = abbrev_decl->attrib_specs;
+  DWARF_InfoAttribVal*    attrib_val   = entry->attrib_vals;
   for (U32 i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
     // attribute name
     DWARF_AttributeName name = attrib_spec->name;
@@ -257,9 +257,9 @@ dump_entry_tree(Arena *arena, String8List *out,
         String8 data = dwarf->debug_data[DWARF_SectionCode_Str];
         U64 off = attrib_val->val;
         if (off < data.size){
-          U8 *start = data.str + off;
-          U8 *opl = data.str + data.size;
-          U8 *ptr = start;
+          U8* start = data.str + off;
+          U8* opl = data.str + data.size;
+          U8* ptr = start;
           for (;ptr < opl && *ptr != 0;) ptr += 1;
           str = str8_range(start, ptr);
         }
@@ -336,9 +336,9 @@ dump_entry_tree(Arena *arena, String8List *out,
           
           String8 data = dwarf->debug_data[DWARF_SectionCode_Str];
           if (off < data.size){
-            U8 *start = data.str + off;
-            U8 *opl = data.str + data.size;
-            U8 *ptr = start;
+            U8* start = data.str + off;
+            U8* opl = data.str + data.size;
+            U8* ptr = start;
             for (;ptr < opl && *ptr != 0;) ptr += 1;
             str = str8_range(start, ptr);
           }
@@ -398,7 +398,7 @@ dump_entry_tree(Arena *arena, String8List *out,
   }
   
   // dump children
-  for (DWARF_InfoEntry *child = entry->first_child;
+  for (DWARF_InfoEntry* child = entry->first_child;
        child != 0;
        child = child->next_sibling){
     dump_entry_tree(arena, out, dwarf, unit, child, indent + 1);
@@ -407,17 +407,17 @@ dump_entry_tree(Arena *arena, String8List *out,
 #endif
 
 void
-entry_point(CmdLine *cmd_line)
+entry_point(CmdLine* cmd_line)
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   
   // parse arguments
-  DWARFCONV_Params *params = dwarf_convert_params_from_cmd_line(arena, cmd_line);
+  DWARFCONV_Params* params = dwarf_convert_params_from_cmd_line(arena, cmd_line);
   
   // show input errors
   if (params->errors.node_count > 0 &&
       !params->hide_errors.input){
-    for (String8Node *node = params->errors.first;
+    for (String8Node* node = params->errors.first;
          node != 0;
          node = node->next){
       fprintf(stdout, "error(input): %.*s\n", str8_varg(node->string));
@@ -436,7 +436,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
 } }while(0)
   
   // parse elf
-  ELF_Parsed *elf = 0;
+  ELF_Parsed* elf = 0;
   if (try_parse_input) ProfScope("parse elf"){
     elf = elf_parsed_from_data(arena, params->input_elf_data);
     PARSE_CHECK_ERROR(elf, "ELF");
@@ -463,14 +463,14 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse dwarf
-  DWARF_Parsed *dwarf = 0;
+  DWARF_Parsed* dwarf = 0;
   if (elf != 0) ProfScope("parse dwarf"){
     dwarf = dwarf_parsed_from_elf(arena, elf);
     PARSE_CHECK_ERROR(dwarf, "DWARF");
   }
   
   // parse info
-  DWARF_InfoParsed *info = 0;
+  DWARF_InfoParsed* info = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Info];
     if (data.size > 0) ProfScope("parse .debug_info"){
@@ -480,7 +480,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse pubnames
-  DWARF_PubNamesParsed *pubnames = 0;
+  DWARF_PubNamesParsed* pubnames = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_PubNames];
     if (data.size) ProfScope("parse .debug_pubnames"){
@@ -490,7 +490,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse pubtypes
-  DWARF_PubNamesParsed *pubtypes = 0;
+  DWARF_PubNamesParsed* pubtypes = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_PubTypes];
     if (data.size) ProfScope("parse .debug_pubtypes"){
@@ -500,7 +500,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse names
-  DWARF_NamesParsed *names = 0;
+  DWARF_NamesParsed* names = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Names];
     if (data.size) ProfScope("parse .debug_names"){
@@ -510,7 +510,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse aranges
-  DWARF_ArangesParsed *aranges = 0;
+  DWARF_ArangesParsed* aranges = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Aranges];
     if (data.size) ProfScope("parse .debug_aranges"){
@@ -520,7 +520,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse addr
-  DWARF_AddrParsed *addr = 0;
+  DWARF_AddrParsed* addr = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Addr];
     if (data.size) ProfScope("parse .debug_addr"){
@@ -531,7 +531,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   
 #if 0
   // parse abbrev
-  DWARF_AbbrevParsed *abbrev = 0;
+  DWARF_AbbrevParsed* abbrev = 0;
   if (dwarf != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Abbrev];
     if (data.size > 0) ProfScope("parse .debug_abbrev"){
@@ -544,7 +544,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse info
-  DWARF_InfoParsed *info = 0;
+  DWARF_InfoParsed* info = 0;
   if (abbrev != 0){
     String8 data = dwarf->debug_data[DWARF_SectionCode_Info];
     if (data.size > 0) ProfScope("parse .debug_info"){
@@ -592,8 +592,8 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "################################\n"
                                 "SECTIONS:\n"));
         
-        ELF_Shdr64 *sec = section_array.sections;
-        String8 *sec_name = section_name_array.v;
+        ELF_Shdr64* sec = section_array.sections;
+        String8* sec_name = section_name_array.v;
         U64 count = section_array.count;
         for (U64 i = 0 ; i < count; i += 1, sec += 1, sec_name += 1){
           String8 type_string = elf_string_from_section_type(sec->sh_type);
@@ -647,10 +647,10 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "################################\n"
                                 "SEGMENTS:\n"));
         
-        ELF_Phdr64 *segments = segment_array.segments;
+        ELF_Phdr64* segments = segment_array.segments;
         U64 count = segment_array.count;
         for (U64 i = 0 ; i < count; i += 1){
-          ELF_Phdr64 *seg = segments + i;
+          ELF_Phdr64* seg = segments + i;
           
           // TODO: better stringizers for fields here
           str8_list_pushf(arena, &dump, " segment[%llu]:\n", i);
@@ -675,8 +675,8 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "################################\n"
                                 "DEBUG SECTIONS:\n"));
         
-        U32 *debug_section_idx = dwarf->debug_section_idx;
-        String8 *debug_data = dwarf->debug_data;
+        U32* debug_section_idx = dwarf->debug_section_idx;
+        String8* debug_data = dwarf->debug_data;
         for (U32 i = 1; i < DWARF_SectionCode_COUNT; i += 1, debug_data += 1){
           U32 idx = debug_section_idx[i];
           String8 name = dwarf_string_from_section_code(i);
@@ -695,7 +695,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG INFO:\n"));
         
         U32 i = 0;
-        for (DWARF_InfoUnit *unit = info->unit_first;
+        for (DWARF_InfoUnit* unit = info->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -715,7 +715,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG PUBNAMES:\n"));
         
         U32 i = 0;
-        for (DWARF_PubNamesUnit *unit = pubnames->unit_first;
+        for (DWARF_PubNamesUnit* unit = pubnames->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -735,7 +735,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG PUBTYPES:\n"));
         
         U32 i = 0;
-        for (DWARF_PubNamesUnit *unit = pubtypes->unit_first;
+        for (DWARF_PubNamesUnit* unit = pubtypes->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -755,7 +755,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG NAMES:\n"));
         
         U32 i = 0;
-        for (DWARF_NamesUnit *unit = names->unit_first;
+        for (DWARF_NamesUnit* unit = names->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -775,7 +775,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG ARANGES:\n"));
         
         U32 i = 0;
-        for (DWARF_ArangesUnit *unit = aranges->unit_first;
+        for (DWARF_ArangesUnit* unit = aranges->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -795,7 +795,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG ADDR:\n"));
         
         U32 i = 0;
-        for (DWARF_AddrUnit *unit = addr->unit_first;
+        for (DWARF_AddrUnit* unit = addr->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -816,11 +816,11 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG ABBREV:\n"));
         
         U32 i = 0;
-        for (DWARF_AbbrevUnit *unit = abbrev->unit_first;
+        for (DWARF_AbbrevUnit* unit = abbrev->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           U32 j = 0;
-          for (DWARF_AbbrevDecl *abbrev_decl = unit->first;
+          for (DWARF_AbbrevDecl* abbrev_decl = unit->first;
                abbrev_decl != 0;
                abbrev_decl = abbrev_decl->next, j += 1){
             String8 tag_string = dwarf_string_from_tag(abbrev_decl->tag);
@@ -833,7 +833,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
             str8_list_pushf(arena, &dump, "  attribs:\n", abbrev_decl->attrib_count);
             
             U32 attrib_count = abbrev_decl->attrib_count;
-            DWARF_AbbrevAttribSpec *attrib_spec = abbrev_decl->attrib_specs;
+            DWARF_AbbrevAttribSpec* attrib_spec = abbrev_decl->attrib_specs;
             for (U32 k = 0; k < attrib_count; k += 1, attrib_spec += 1){
               String8 name_string = dwarf_string_from_attribute_name(attrib_spec->name);
               String8 form_string = dwarf_string_from_attribute_form(attrib_spec->form);
@@ -860,7 +860,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG INFO:\n"));
         
         U32 i = 0;
-        for (DWARF_InfoUnit *unit = info->unit_first;
+        for (DWARF_InfoUnit* unit = info->unit_first;
              unit != 0;
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
@@ -885,7 +885,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
 #endif
     
     // print dump
-    for (String8Node *node = dump.first;
+    for (String8Node* node = dump.first;
          node != 0;
          node = node->next){
       fwrite(node->string.str, 1, node->string.size, stdout);

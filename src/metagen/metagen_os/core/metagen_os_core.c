@@ -18,22 +18,22 @@ os_handle_match(OS_Handle a, OS_Handle b)
 }
 
 void
-os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
+os_handle_list_push(Arena* arena, OS_HandleList* handles, OS_Handle handle)
 {
-  OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
+  OS_HandleNode* n = push_array(arena, OS_HandleNode, 1);
   n->v = handle;
   SLLQueuePush(handles->first, handles->last, n);
   handles->count += 1;
 }
 
 OS_HandleArray
-os_handle_array_from_list(Arena *arena, OS_HandleList *list)
+os_handle_array_from_list(Arena* arena, OS_HandleList* list)
 {
   OS_HandleArray result = {0};
   result.count = list->count;
   result.v = push_array_no_zero(arena, OS_Handle, result.count);
   U64 idx = 0;
-  for(OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
+  for(OS_HandleNode* n = list->first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->v;
   }
@@ -44,7 +44,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
 String8List
-os_string_list_from_argcv(Arena *arena, int argc, char **argv)
+os_string_list_from_argcv(Arena* arena, int argc, char **argv)
 {
   String8List result = {0};
   for(int i = 0; i < argc; i += 1)
@@ -59,7 +59,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
 String8
-os_data_from_file_path(Arena *arena, String8 path)
+os_data_from_file_path(Arena* arena, String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   FileProperties props = os_properties_from_file(file);
@@ -91,7 +91,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   {
     good = 1;
     U64 off = 0;
-    for(String8Node *n = list.first; n != 0; n = n->next)
+    for(String8Node* n = list.first; n != 0; n = n->next)
     {
       os_file_write(file, r1u64(off, off+n->string.size), n->string.str);
       off += n->string.size;
@@ -136,7 +136,7 @@ os_file_id_compare(OS_FileID a, OS_FileID b)
 }
 
 String8
-os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
+os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
 {
   U64 pre_pos = arena_pos(arena);
   String8 result;
@@ -155,7 +155,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 //~ rjf: GUID Helpers (Helpers, Implemented Once)
 
 String8
-os_string_from_guid(Arena *arena, OS_Guid guid)
+os_string_from_guid(Arena* arena, OS_Guid guid)
 {
   String8 result = push_str8f(arena, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
                               guid.data1,

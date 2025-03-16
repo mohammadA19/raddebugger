@@ -141,15 +141,15 @@ struct UI_Event
 
 struct UI_EventNode
 {
-  UI_EventNode *next;
-  UI_EventNode *prev;
+  UI_EventNode* next;
+  UI_EventNode* prev;
   UI_Event v;
 }
 
 struct UI_EventList
 {
-  UI_EventNode *first;
-  UI_EventNode *last;
+  UI_EventNode* first;
+  UI_EventNode* last;
   U64 count;
 }
 
@@ -236,9 +236,9 @@ struct UI_Palette
 
 struct UI_WidgetPaletteInfo
 {
-  UI_Palette *tooltip_palette;
-  UI_Palette *ctx_menu_palette;
-  UI_Palette *scrollbar_palette;
+  UI_Palette* tooltip_palette;
+  UI_Palette* ctx_menu_palette;
+  UI_Palette* scrollbar_palette;
 }
 
 ////////////////////////////////
@@ -291,7 +291,7 @@ enum UI_TextAlign
 }
 
 struct UI_Box;
-#define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
+#define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box* box, void* user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
 typedef U64 UI_BoxFlags;
@@ -369,15 +369,15 @@ typedef U64 UI_BoxFlags;
 struct UI_Box
 {
   //- rjf: persistent links
-  UI_Box *hash_next;
-  UI_Box *hash_prev;
+  UI_Box* hash_next;
+  UI_Box* hash_prev;
   
   //- rjf: per-build links/data
-  UI_Box *first;
-  UI_Box *last;
-  UI_Box *next;
-  UI_Box *prev;
-  UI_Box *parent;
+  UI_Box* first;
+  UI_Box* last;
+  UI_Box* next;
+  UI_Box* prev;
+  UI_Box* parent;
   U64 child_count;
   
   //- rjf: per-build equipment
@@ -392,10 +392,10 @@ struct UI_Box
   OS_Cursor hover_cursor;
   U32 fastpath_codepoint;
   UI_Key group_key;
-  DR_Bucket *draw_bucket;
-  UI_BoxCustomDrawFunctionType *custom_draw;
-  void *custom_draw_user_data;
-  UI_Palette *palette;
+  DR_Bucket* draw_bucket;
+  UI_BoxCustomDrawFunctionType* custom_draw;
+  void* custom_draw_user_data;
+  UI_Palette* palette;
   FNT_Tag font;
   F32 font_size;
   F32 tab_size;
@@ -434,21 +434,21 @@ struct UI_Box
 
 struct UI_BoxRec
 {
-  UI_Box *next;
+  UI_Box* next;
   S32 push_count;
   S32 pop_count;
 }
 
 struct UI_BoxNode
 {
-  UI_BoxNode *next;
-  UI_Box *box;
+  UI_BoxNode* next;
+  UI_Box* box;
 }
 
 struct UI_BoxList
 {
-  UI_BoxNode *first;
-  UI_BoxNode *last;
+  UI_BoxNode* first;
+  UI_BoxNode* last;
   U64 count;
 }
 
@@ -515,7 +515,7 @@ enum UI_SignalFlags : U32
 
 struct UI_Signal
 {
-  UI_Box *box;
+  UI_Box* box;
   OS_Modifiers event_flags;
   Vec2S16 scroll;
   UI_SignalFlags f;
@@ -552,10 +552,10 @@ struct UI_AnimParams
 
 struct UI_AnimNode
 {
-  UI_AnimNode *slot_next;
-  UI_AnimNode *slot_prev;
-  UI_AnimNode *lru_next;
-  UI_AnimNode *lru_prev;
+  UI_AnimNode* slot_next;
+  UI_AnimNode* slot_prev;
+  UI_AnimNode* lru_next;
+  UI_AnimNode* lru_prev;
   U64 first_touched_build_index;
   U64 last_touched_build_index;
   UI_Key key;
@@ -565,8 +565,8 @@ struct UI_AnimNode
 
 struct UI_AnimSlot
 {
-  UI_AnimNode *first;
-  UI_AnimNode *last;
+  UI_AnimNode* first;
+  UI_AnimNode* last;
 }
 
 ////////////////////////////////
@@ -579,41 +579,41 @@ struct UI_AnimSlot
 
 struct UI_BoxHashSlot
 {
-  UI_Box *hash_first;
-  UI_Box *hash_last;
+  UI_Box* hash_first;
+  UI_Box* hash_last;
 }
 
 struct UI_State
 {
   //- rjf: main arena
-  Arena *arena;
+  Arena* arena;
   
   //- rjf: fixed keys
   UI_Key external_key;
   
   //- rjf: build arenas
-  Arena *build_arenas[2];
+  Arena* build_arenas[2];
   U64 build_index;
   
   //- rjf: box cache
-  UI_Box *first_free_box;
+  UI_Box* first_free_box;
   U64 box_table_size;
-  UI_BoxHashSlot *box_table;
+  UI_BoxHashSlot* box_table;
   
   //- rjf: anim cache
-  UI_AnimNode *free_anim_node;
-  UI_AnimNode *lru_anim_node;
-  UI_AnimNode *mru_anim_node;
+  UI_AnimNode* free_anim_node;
+  UI_AnimNode* lru_anim_node;
+  UI_AnimNode* mru_anim_node;
   U64 anim_slots_count;
-  UI_AnimSlot *anim_slots;
+  UI_AnimSlot* anim_slots;
   
   //- rjf: build state machine state
   B32 is_in_open_ctx_menu;
   
   //- rjf: build phase output
-  UI_Box *root;
-  UI_Box *tooltip_root;
-  UI_Box *ctx_menu_root;
+  UI_Box* root;
+  UI_Box* tooltip_root;
+  UI_Box* ctx_menu_root;
   UI_Key default_nav_root_key;
   U64 build_box_count;
   U64 last_build_box_count;
@@ -625,7 +625,7 @@ struct UI_State
   UI_WidgetPaletteInfo widget_palette_info;
   UI_AnimationInfo animation_info;
   OS_Handle window;
-  UI_EventList *events;
+  UI_EventList* events;
   Vec2F32 mouse;
   F32 animation_dt;
   F32 default_animation_rate;
@@ -639,9 +639,9 @@ struct UI_State
   UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 drag_start_mouse;
-  Arena *drag_state_arena;
+  Arena* drag_state_arena;
   String8 drag_state_data;
-  Arena *string_hover_arena;
+  Arena* string_hover_arena;
   String8 string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
   U64 string_hover_begin_us;
@@ -677,22 +677,22 @@ String8 ui_display_part_from_key_string(String8 string);
 UI_Key  ui_key_zero();
 UI_Key  ui_key_make(U64 v);
 UI_Key  ui_key_from_string(UI_Key seed_key, String8 string);
-UI_Key  ui_key_from_stringf(UI_Key seed_key, char *fmt, ...);
+UI_Key  ui_key_from_stringf(UI_Key seed_key, char* fmt, ...);
 B32     ui_key_match(UI_Key a, UI_Key b);
 
 ////////////////////////////////
 //~ rjf: Event Type Functions
 
-UI_EventNode *ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v);
-void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
+UI_EventNode* ui_event_list_push(Arena* arena, UI_EventList* list, UI_Event* v);
+void ui_eat_event_node(UI_EventList* list, UI_EventNode* node);
 
 ////////////////////////////////
 //~ rjf: Text Operation Functions
 
 B32 ui_char_is_scan_boundary(U8 c);
 S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
-UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
-String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);
+UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, TxtPt cursor, TxtPt mark);
+String8 ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 range, String8 replace);
 
 ////////////////////////////////
 //~ rjf: Size Type Functions
@@ -713,8 +713,8 @@ read_only static UI_Palette ui_g_nil_palette = {0};
 //~ rjf: Scroll Point Type Functions
 
 UI_ScrollPt ui_scroll_pt(S64 idx, F32 off);
-void ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx);
-void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range);
+void ui_scroll_pt_target_idx(UI_ScrollPt* v, S64 idx);
+void ui_scroll_pt_clamp_idx(UI_ScrollPt* v, Rng1S64 range);
 
 ////////////////////////////////
 //~ rjf: Box Type Functions
@@ -729,21 +729,21 @@ read_only static UI_Box ui_nil_box =
   &ui_nil_box,
   &ui_nil_box,
 }
-B32 ui_box_is_nil(UI_Box *box);
-UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off);
+B32 ui_box_is_nil(UI_Box* box);
+UI_BoxRec ui_box_rec_df(UI_Box* box, UI_Box* root, U64 sib_member_off, U64 child_member_off);
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
 #define ui_box_rec_df_post(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, prev), OffsetOf(UI_Box, last))
-void ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box);
+void ui_box_list_push(Arena* arena, UI_BoxList* list, UI_Box* box);
 
 ////////////////////////////////
 //~ rjf: State Allocating / Selection
 
-UI_State *ui_state_alloc();
-void      ui_state_release(UI_State *state);
-UI_Box *  ui_root_from_state(UI_State *state);
-B32       ui_animating_from_state(UI_State *state);
-void      ui_select_state(UI_State *state);
-UI_State *ui_get_selected_state();
+UI_State* ui_state_alloc();
+void      ui_state_release(UI_State* state);
+UI_Box *  ui_root_from_state(UI_State* state);
+B32       ui_animating_from_state(UI_State* state);
+void      ui_select_state(UI_State* state);
+UI_State* ui_get_selected_state();
 
 ////////////////////////////////
 //~ rjf: Implicit State Accessors/Mutators
@@ -758,7 +758,7 @@ F32               ui_dt();
 
 //- rjf: event pumping
 B32 ui_next_event(UI_Event **ev);
-void ui_eat_event(UI_Event *ev);
+void ui_eat_event(UI_Event* ev);
 
 //- rjf: event consumption helpers
 B32 ui_key_press(OS_Modifiers mods, OS_Key key);
@@ -776,7 +776,7 @@ String8           ui_get_drag_data(U64 min_required_size);
 
 //- rjf: hovered string info
 B32               ui_string_hover_active();
-DR_FancyRunList    ui_string_hover_runs(Arena *arena);
+DR_FancyRunList    ui_string_hover_runs(Arena* arena);
 
 //- rjf: interaction keys
 UI_Key            ui_hot_key();
@@ -792,14 +792,14 @@ UI_Box *          ui_box_from_key(UI_Key key);
 ////////////////////////////////
 //~ rjf: Top-Level Building API
 
-void ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_WidgetPaletteInfo *widget_palette_info, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt);
+void ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, UI_WidgetPaletteInfo* widget_palette_info, UI_AnimationInfo* animation_info, F32 real_dt, F32 animation_dt);
 void ui_end_build();
-void ui_calc_sizes_standalone__in_place_rec(UI_Box *root, Axis2 axis);
-void ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box *root, Axis2 axis);
-void ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis);
-void ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis);
-void ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis);
-void ui_layout_root(UI_Box *root, Axis2 axis);
+void ui_calc_sizes_standalone__in_place_rec(UI_Box* root, Axis2 axis);
+void ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box* root, Axis2 axis);
+void ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box* root, Axis2 axis);
+void ui_layout_enforce_constraints__in_place_rec(UI_Box* root, Axis2 axis);
+void ui_layout_position__in_place_rec(UI_Box* root, Axis2 axis);
+void ui_layout_root(UI_Box* root, Axis2 axis);
 
 ////////////////////////////////
 //~ rjf: Box Tree Building API
@@ -832,32 +832,32 @@ void              ui_set_auto_focus_active_key(UI_Key key);
 void              ui_set_auto_focus_hot_key(UI_Key key);
 
 //- rjf: palette forming
-UI_Palette *      ui_build_palette_(UI_Palette *base, UI_Palette *overrides);
+UI_Palette *      ui_build_palette_(UI_Palette* base, UI_Palette* overrides);
 #define ui_build_palette(base, ...) ui_build_palette_((base), &(UI_Palette){.text = v4f32(0, 0, 0, 0), __VA_ARGS__})
 
 //- rjf: box node construction
 UI_Box *          ui_build_box_from_key(UI_BoxFlags flags, UI_Key key);
 UI_Key            ui_active_seed_key();
 UI_Box *          ui_build_box_from_string(UI_BoxFlags flags, String8 string);
-UI_Box *          ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...);
+UI_Box *          ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...);
 
 //- rjf: box node equipment
-inline void       ui_box_equip_display_string(UI_Box *box, String8 string);
-inline void       ui_box_equip_display_fancy_strings(UI_Box *box, DR_FancyStringList *strings);
-inline void       ui_box_equip_display_string_fancy_runs(UI_Box *box, String8 string, DR_FancyRunList *runs);
-inline void       ui_box_equip_fuzzy_match_ranges(UI_Box *box, FuzzyMatchRangeList *matches);
-inline void       ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket);
-inline void       ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw, void *user_data);
+inline void       ui_box_equip_display_string(UI_Box* box, String8 string);
+inline void       ui_box_equip_display_fancy_strings(UI_Box* box, DR_FancyStringList* strings);
+inline void       ui_box_equip_display_string_fancy_runs(UI_Box* box, String8 string, DR_FancyRunList* runs);
+inline void       ui_box_equip_fuzzy_match_ranges(UI_Box* box, FuzzyMatchRangeList* matches);
+inline void       ui_box_equip_draw_bucket(UI_Box* box, DR_Bucket* bucket);
+inline void       ui_box_equip_custom_draw(UI_Box* box, UI_BoxCustomDrawFunctionType* custom_draw, void* user_data);
 
 //- rjf: box accessors / queries
-String8           ui_box_display_string(UI_Box *box);
-Vec2F32           ui_box_text_position(UI_Box *box);
-U64               ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy);
+String8           ui_box_display_string(UI_Box* box);
+Vec2F32           ui_box_text_position(UI_Box* box);
+U64               ui_box_char_pos_from_xy(UI_Box* box, Vec2F32 xy);
 
 ////////////////////////////////
 //~ rjf: User Interaction
 
-UI_Signal ui_signal_from_box(UI_Box *box);
+UI_Signal ui_signal_from_box(UI_Box* box);
 
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
@@ -868,7 +868,7 @@ read_only static UI_AnimNode ui_nil_anim_node =
   &ui_nil_anim_node,
 }
 
-F32 ui_anim_(UI_Key key, UI_AnimParams *params);
+F32 ui_anim_(UI_Key key, UI_AnimParams* params);
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})
 
 ////////////////////////////////

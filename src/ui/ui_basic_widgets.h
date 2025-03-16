@@ -22,23 +22,23 @@ struct UI_ScrollListRowBlock
 
 struct UI_ScrollListRowBlockChunkNode
 {
-  UI_ScrollListRowBlockChunkNode *next;
-  UI_ScrollListRowBlock *v;
+  UI_ScrollListRowBlockChunkNode* next;
+  UI_ScrollListRowBlock* v;
   U64 count;
   U64 cap;
 }
 
 struct UI_ScrollListRowBlockChunkList
 {
-  UI_ScrollListRowBlockChunkNode *first;
-  UI_ScrollListRowBlockChunkNode *last;
+  UI_ScrollListRowBlockChunkNode* first;
+  UI_ScrollListRowBlockChunkNode* last;
   U64 chunk_count;
   U64 total_count;
 }
 
 struct UI_ScrollListRowBlockArray
 {
-  UI_ScrollListRowBlock *v;
+  UI_ScrollListRowBlock* v;
   U64 count;
 }
 
@@ -63,29 +63,29 @@ struct UI_ScrollListSignal
 
 void ui_divider(UI_Size size);
 UI_Signal ui_label(String8 string);
-UI_Signal ui_labelf(char *fmt, ...);
+UI_Signal ui_labelf(char* fmt, ...);
 void ui_label_multiline(F32 max, String8 string);
-void ui_label_multilinef(F32 max, char *fmt, ...);
+void ui_label_multilinef(F32 max, char* fmt, ...);
 UI_Signal ui_button(String8 string);
-UI_Signal ui_buttonf(char *fmt, ...);
+UI_Signal ui_buttonf(char* fmt, ...);
 UI_Signal ui_hover_label(String8 string);
-UI_Signal ui_hover_labelf(char *fmt, ...);
-UI_Signal ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, String8 string);
-UI_Signal ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...);
+UI_Signal ui_hover_labelf(char* fmt, ...);
+UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, String8 pre_edit_value, String8 string);
+UI_Signal ui_line_editf(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, String8 pre_edit_value, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Images
 
 UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, String8 string);
-UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, char *fmt, ...);
+UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Special Buttons
 
 UI_Signal ui_expander(B32 is_expanded, String8 string);
-UI_Signal ui_expanderf(B32 is_expanded, char *fmt, ...);
+UI_Signal ui_expanderf(B32 is_expanded, char* fmt, ...);
 UI_Signal ui_sort_header(B32 sorting, B32 ascending, String8 string);
-UI_Signal ui_sort_headerf(B32 sorting, B32 ascending, char *fmt, ...);
+UI_Signal ui_sort_headerf(B32 sorting, B32 ascending, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Color Pickers
@@ -95,44 +95,44 @@ void ui_do_color_tooltip_hsv(Vec3F32 hsv);
 void ui_do_color_tooltip_hsva(Vec4F32 hsva);
 
 //- rjf: saturation/value picker
-UI_Signal ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string);
-UI_Signal ui_sat_val_pickerf(F32 hue, F32 *out_sat, F32 *out_val, char *fmt, ...);
+UI_Signal ui_sat_val_picker(F32 hue, F32* out_sat, F32* out_val, String8 string);
+UI_Signal ui_sat_val_pickerf(F32 hue, F32* out_sat, F32* out_val, char* fmt, ...);
 
 //- rjf: hue picker
-UI_Signal ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string);
-UI_Signal ui_hue_pickerf(F32 *out_hue, F32 sat, F32 val, char *fmt, ...);
+UI_Signal ui_hue_picker(F32* out_hue, F32 sat, F32 val, String8 string);
+UI_Signal ui_hue_pickerf(F32* out_hue, F32 sat, F32 val, char* fmt, ...);
 
 //- rjf: alpha picker
-UI_Signal ui_alpha_picker(F32 *out_alpha, String8 string);
-UI_Signal ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...);
+UI_Signal ui_alpha_picker(F32* out_alpha, String8 string);
+UI_Signal ui_alpha_pickerf(F32* out_alpha, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
 
-UI_Box *ui_row_begin();
+UI_Box* ui_row_begin();
 UI_Signal ui_row_end();
-UI_Box *ui_column_begin();
+UI_Box* ui_column_begin();
 UI_Signal ui_column_end();
-UI_Box *ui_named_row_begin(String8 string);
+UI_Box* ui_named_row_begin(String8 string);
 UI_Signal ui_named_row_end();
-UI_Box *ui_named_column_begin(String8 string);
+UI_Box* ui_named_column_begin(String8 string);
 UI_Signal ui_named_column_end();
 
 ////////////////////////////////
 //~ rjf: Floating Panes
 
-UI_Box *ui_pane_begin(Rng2F32 rect, String8 string);
-UI_Box *ui_pane_beginf(Rng2F32 rect, char *fmt, ...);
+UI_Box* ui_pane_begin(Rng2F32 rect, String8 string);
+UI_Box* ui_pane_beginf(Rng2F32 rect, char* fmt, ...);
 UI_Signal ui_pane_end();
 
 ////////////////////////////////
 //~ rjf: Tables
 
 void ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string);
-void ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...);
+void ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char* fmt, ...);
 void ui_table_end();
 UI_Box *  ui_named_table_vector_begin(String8 string);
-UI_Box *  ui_named_table_vector_beginf(char *fmt, ...);
+UI_Box *  ui_named_table_vector_beginf(char* fmt, ...);
 UI_Box *  ui_table_vector_begin();
 UI_Signal ui_table_vector_end();
 UI_Box *  ui_table_cell_begin();
@@ -142,13 +142,13 @@ UI_Box *  ui_table_cell_sized_begin(UI_Size size);
 ////////////////////////////////
 //~ rjf: Scroll Regions
 
-void ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block);
-UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list);
-U64 ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, U64 item);
-U64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row);
+void ui_scroll_list_row_block_chunk_list_push(Arena* arena, UI_ScrollListRowBlockChunkList* list, U64 cap, UI_ScrollListRowBlock* block);
+UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena* arena, UI_ScrollListRowBlockChunkList* list);
+U64 ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray* blocks, U64 item);
+U64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray* blocks, U64 row);
 
 UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, S64 view_num_indices);
-void ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt_out, Vec2S64 *cursor_out, Vec2S64 *mark_out, Rng1S64 *visible_row_range_out, UI_ScrollListSignal *signal_out);
+void ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt_out, Vec2S64* cursor_out, Vec2S64* mark_out, Rng1S64* visible_row_range_out, UI_ScrollListSignal* signal_out);
 void ui_scroll_list_end();
 
 ////////////////////////////////

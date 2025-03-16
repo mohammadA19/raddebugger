@@ -158,24 +158,24 @@ struct MSCRT_TryMapBlock
   S32                    try_high;
   S32                    catch_high;
   S32                    catch_handlers_count;
-  MSCRT_EhHandlerType32 *catch_handlers;
+  MSCRT_EhHandlerType32* catch_handlers;
 }
 
 struct MSCRT_ExceptionSpecTypeList
 {
   S32                    count;
-  MSCRT_EhHandlerType32 *handlers;
+  MSCRT_EhHandlerType32* handlers;
 }
 
 struct MSCRT_FuncInfo
 {
   U32                          magic;
   U32                          max_state;
-  MSCRT_UnwindMap32           *unwind_map;
+  MSCRT_UnwindMap32*           unwind_map;
   U32                          try_block_map_count;
-  MSCRT_TryMapBlock           *try_block_map;
+  MSCRT_TryMapBlock*           try_block_map;
   U32                          ip_map_count;
-  MSCRT_IPState32             *ip_map;
+  MSCRT_IPState32*             ip_map;
   U32                          frame_offset_unwind_helper;
   MSCRT_ExceptionSpecTypeList  es_type_list;
   MSCRT_Flags                  eh_flags;
@@ -237,7 +237,7 @@ struct MSCRT_EhHandlerTypeV4
 struct MSCRT_EhHandlerTypeV4Array
 {
   U64                    count;
-  MSCRT_EhHandlerTypeV4 *v;
+  MSCRT_EhHandlerTypeV4* v;
 }
 
 struct MSCRT_TryBlockMap32V4
@@ -251,8 +251,8 @@ struct MSCRT_TryBlockMap32V4
 struct MSCRT_IP2State32V4
 {
   U32  count;
-  U32 *voffs;
-  S32 *states;
+  U32* voffs;
+  S32* states;
 }
 
 struct MSCRT_SepIPState32V4
@@ -282,7 +282,7 @@ struct MSCRT_UnwindEntryV4
 struct MSCRT_UnwindMapV4
 {
   U32                  count;
-  MSCRT_UnwindEntryV4 *v;
+  MSCRT_UnwindEntryV4* v;
 }
 
 struct MSCRT_TryBlockMapV4
@@ -296,7 +296,7 @@ struct MSCRT_TryBlockMapV4
 struct MSCRT_TryBlockMapV4Array
 {
   U64                  count;
-  MSCRT_TryBlockMapV4 *v;
+  MSCRT_TryBlockMapV4* v;
 }
 
 struct MSCRT_ParsedFuncInfoV4
@@ -310,17 +310,17 @@ struct MSCRT_ParsedFuncInfoV4
 
 //- Exception info < v4
 
-U64 mscrt_parse_func_info(Arena *arena, String8 raw_data, U64 section_count, COFF_SectionHeader *sections, U64 off, MSCRT_FuncInfo *func_info);
+U64 mscrt_parse_func_info(Arena* arena, String8 raw_data, U64 section_count, COFF_SectionHeader* sections, U64 off, MSCRT_FuncInfo* func_info);
 
 //- Exception info v4
 
-U64 mscrt_parse_handler_type_v4       (String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler);
-U64 mscrt_parse_unwind_v4_entry       (String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out);
-U64 mscrt_parse_handler_type_v4_array (Arena *arena, String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4Array *array_out);
-U64 mscrt_parse_unwind_map_v4         (Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out);
-U64 mscrt_parse_try_block_map_array_v4(Arena *arena, String8 raw_data, U64 off, U64 section_count, COFF_SectionHeader *sections, U64 func_voff, MSCRT_TryBlockMapV4Array *map_out);
-U64 mscrt_parse_ip2state_map_v4       (Arena *arena, String8 raw_data, U64 off, U64 func_voff, MSCRT_IP2State32V4 *ip2state_map_out);
-U64 mscrt_parse_func_info_v4          (Arena *arena, String8 raw_data, U64 section_count, COFF_SectionHeader *sections, U64 off, U64 func_voff, MSCRT_ParsedFuncInfoV4 *func_info_out);
+U64 mscrt_parse_handler_type_v4       (String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4* handler);
+U64 mscrt_parse_unwind_v4_entry       (String8 raw_data, U64 offset, MSCRT_UnwindEntryV4* entry_out);
+U64 mscrt_parse_handler_type_v4_array (Arena* arena, String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4Array* array_out);
+U64 mscrt_parse_unwind_map_v4         (Arena* arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4* map_out);
+U64 mscrt_parse_try_block_map_array_v4(Arena* arena, String8 raw_data, U64 off, U64 section_count, COFF_SectionHeader* sections, U64 func_voff, MSCRT_TryBlockMapV4Array* map_out);
+U64 mscrt_parse_ip2state_map_v4       (Arena* arena, String8 raw_data, U64 off, U64 func_voff, MSCRT_IP2State32V4* ip2state_map_out);
+U64 mscrt_parse_func_info_v4          (Arena* arena, String8 raw_data, U64 section_count, COFF_SectionHeader* sections, U64 off, U64 func_voff, MSCRT_ParsedFuncInfoV4* func_info_out);
 
 #endif // MSVC_CRT
 

@@ -1493,12 +1493,12 @@ typedef RDI_NameMap                      RDI_SectionElementType_NameMaps;
 typedef RDI_NameMapBucket                RDI_SectionElementType_NameMapBuckets;
 typedef RDI_NameMapNode                  RDI_SectionElementType_NameMapNodes;
 
-RDI_PROC RDI_U64 rdi_hash(RDI_U8 *ptr, RDI_U64 size);
+RDI_PROC RDI_U64 rdi_hash(RDI_U8* ptr, RDI_U64 size);
 RDI_PROC RDI_U32 rdi_size_from_basic_type_kind(RDI_TypeKind kind);
 RDI_PROC RDI_U32 rdi_addr_size_from_arch(RDI_Arch arch);
 RDI_PROC RDI_EvalConversionKind rdi_eval_conversion_kind_from_typegroups(RDI_EvalTypeGroup in, RDI_EvalTypeGroup out);
 RDI_PROC RDI_S32 rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group);
-RDI_PROC RDI_U8 *rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64 *size_out);
+RDI_PROC RDI_U8* rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64* size_out);
 
 extern RDI_U16 rdi_section_element_size_table[37];
 extern RDI_U8 rdi_section_is_required_table[37];

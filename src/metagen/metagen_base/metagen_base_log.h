@@ -16,7 +16,7 @@ enum LogMsgKind
 
 struct LogScope
 {
-  LogScope *next;
+  LogScope* next;
   U64 pos;
   String8List strings[LogMsgKind_COUNT];
 }
@@ -28,22 +28,22 @@ struct LogScopeResult
 
 struct Log
 {
-  Arena *arena;
-  LogScope *top_scope;
+  Arena* arena;
+  LogScope* top_scope;
 }
 
 ////////////////////////////////
 //~ rjf: Log Creation/Selection
 
-Log *log_alloc();
-void log_release(Log *log);
-void log_select(Log *log);
+Log* log_alloc();
+void log_release(Log* log);
+void log_select(Log* log);
 
 ////////////////////////////////
 //~ rjf: Log Building
 
 void log_msg(LogMsgKind kind, String8 string);
-void log_msgf(LogMsgKind kind, char *fmt, ...);
+void log_msgf(LogMsgKind kind, char* fmt, ...);
 #define log_info(s)               log_msg(LogMsgKind_Info, (s))
 #define log_infof(fmt, ...)       log_msgf(LogMsgKind_Info, (fmt), __VA_ARGS__)
 #define log_user_error(s)         log_msg(LogMsgKind_UserError, (s))
@@ -56,6 +56,6 @@ void log_msgf(LogMsgKind kind, char *fmt, ...);
 //~ rjf: Log Scopes
 
 void log_scope_begin();
-LogScopeResult log_scope_end(Arena *arena);
+LogScopeResult log_scope_end(Arena* arena);
 
 #endif // BASE_LOG_H

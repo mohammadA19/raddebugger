@@ -2782,7 +2782,7 @@ enum CV_TypeIndexSource CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
 {
-  struct CV_TypeIndexInfo *next;
+  struct CV_TypeIndexInfo* next;
   U64                      offset;
   CV_TypeIndexSource       source;
 }
@@ -2790,14 +2790,14 @@ struct CV_TypeIndexInfo
 struct CV_TypeIndexInfoList
 {
   U64               count;
-  CV_TypeIndexInfo *first;
-  CV_TypeIndexInfo *last;
+  CV_TypeIndexInfo* first;
+  CV_TypeIndexInfo* last;
 }
 
 struct CV_TypeIndexArray
 {
   U32           count;
-  CV_TypeIndex *v;
+  CV_TypeIndex* v;
 }
 
 ////////////////////////////////
@@ -2807,7 +2807,7 @@ U64                   cv_size_from_reg_x86(CV_Reg reg);
 U64                   cv_size_from_reg_x64(CV_Reg reg);
 U64                   cv_size_from_reg(CV_Arch arch, CV_Reg reg);
 B32                   cv_is_reg_sp(CV_Arch arch, CV_Reg reg);
-CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param);
+CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc* frameproc, B32 is_local_param);
 CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
 U32                   cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg);
 

@@ -20,7 +20,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 buffer_size = string.size + sizeof(U64)*2;
-  U8 *buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
+  U8* buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
   MemoryCopy(buffer, string.str, string.size);
   MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
   MemoryCopy(buffer + string.size + sizeof(range.min), &range.max, sizeof(range.max));
@@ -35,7 +35,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 void
 fs_init()
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
   fs_shared = push_array(arena, FS_Shared, 1);
   fs_shared->arena = arena;
   fs_shared->change_gen = 1;
@@ -96,15 +96,15 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
       U64 path_little_hash = fs_little_hash_from_string(path);
       U64 path_slot_idx = path_little_hash%fs_shared->slots_count;
       U64 path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
-      FS_Slot *path_slot = &fs_shared->slots[path_slot_idx];
-      FS_Stripe *path_stripe = &fs_shared->stripes[path_stripe_idx];
+      FS_Slot* path_slot = &fs_shared->slots[path_slot_idx];
+      FS_Stripe* path_stripe = &fs_shared->stripes[path_stripe_idx];
       
       // rjf: loop: request, check for results, return until we can't
       OS_MutexScopeW(path_stripe->rw_mutex) for(;;)
       {
         // rjf: path -> node
-        FS_Node *node = 0;
-        for(FS_Node *n = path_slot->first; n != 0; n = n->next)
+        FS_Node* node = 0;
+        for(FS_Node* n = path_slot->first; n != 0; n = n->next)
         {
           if(str8_match(path, n->path, 0))
           {
@@ -126,9 +126,9 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
         // rjf: range -> node
         U64 range_hash = fs_little_hash_from_string(str8_struct(&range));
         U64 range_slot_idx = range_hash%node->slots_count;
-        FS_RangeSlot *range_slot = &node->slots[range_slot_idx];
-        FS_RangeNode *range_node = 0;
-        for(FS_RangeNode *n = range_slot->first; n != 0; n = n->next)
+        FS_RangeSlot* range_slot = &node->slots[range_slot_idx];
+        FS_RangeNode* range_node = 0;
+        for(FS_RangeNode* n = range_slot->first; n != 0; n = n->next)
         {
           if(MemoryMatchStruct(&n->range, &range))
           {
@@ -198,11 +198,11 @@ fs_timestamp_from_path(String8 path)
   U64 path_hash = fs_little_hash_from_string(path);
   U64 slot_idx = path_hash%fs_shared->slots_count;
   U64 stripe_idx = slot_idx%fs_shared->stripes_count;
-  FS_Slot *slot = &fs_shared->slots[slot_idx];
-  FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
+  FS_Slot* slot = &fs_shared->slots[slot_idx];
+  FS_Stripe* stripe = &fs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(FS_Node *n = slot->first; n != 0; n = n->next)
+    for(FS_Node* n = slot->first; n != 0; n = n->next)
     {
       if(str8_match(path, n->path, 0))
       {
@@ -224,11 +224,11 @@ fs_size_from_path(String8 path)
   U64 path_hash = fs_little_hash_from_string(path);
   U64 slot_idx = path_hash%fs_shared->slots_count;
   U64 stripe_idx = slot_idx%fs_shared->stripes_count;
-  FS_Slot *slot = &fs_shared->slots[slot_idx];
-  FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
+  FS_Slot* slot = &fs_shared->slots[slot_idx];
+  FS_Stripe* stripe = &fs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(FS_Node *n = slot->first; n != 0; n = n->next)
+    for(FS_Node* n = slot->first; n != 0; n = n->next)
     {
       if(str8_match(path, n->path, 0))
       {
@@ -273,7 +273,7 @@ fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
 }
 
 void
-fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out)
+fs_u2s_dequeue_req(Arena* arena, Rng1U64* range_out, String8* path_out)
 {
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
@@ -307,8 +307,8 @@ ASYNC_WORK_DEF(fs_stream_work)
   U64 path_hash = fs_little_hash_from_string(path);
   U64 path_slot_idx = path_hash%fs_shared->slots_count;
   U64 path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
-  FS_Slot *path_slot = &fs_shared->slots[path_slot_idx];
-  FS_Stripe *path_stripe = &fs_shared->stripes[path_stripe_idx];
+  FS_Slot* path_slot = &fs_shared->slots[path_slot_idx];
+  FS_Stripe* path_stripe = &fs_shared->stripes[path_stripe_idx];
   
   //- rjf: load
   ProfBegin("load \"%.*s\"", str8_varg(path));
@@ -320,7 +320,7 @@ ASYNC_WORK_DEF(fs_stream_work)
   data_arena_size += KB(4)-1;
   data_arena_size -= data_arena_size%KB(4);
   ProfBegin("allocate");
-  Arena *data_arena = arena_alloc(.reserve_size = data_arena_size, .commit_size = data_arena_size);
+  Arena* data_arena = arena_alloc(.reserve_size = data_arena_size, .commit_size = data_arena_size);
   ProfEnd();
   ProfBegin("read");
   String8 data = os_string_from_file_range(data_arena, file, r1u64(range.min, range.min+read_size));
@@ -351,8 +351,8 @@ ASYNC_WORK_DEF(fs_stream_work)
   //- rjf: commit info to cache
   ProfScope("commit to cache") OS_MutexScopeW(path_stripe->rw_mutex)
   {
-    FS_Node *node = 0;
-    for(FS_Node *n = path_slot->first; n != 0; n = n->next)
+    FS_Node* node = 0;
+    for(FS_Node* n = path_slot->first; n != 0; n = n->next)
     {
       if(str8_match(n->path, path, 0))
       {
@@ -373,9 +373,9 @@ ASYNC_WORK_DEF(fs_stream_work)
       }
       U64 range_hash = fs_little_hash_from_string(str8_struct(&range));
       U64 range_slot_idx = range_hash%node->slots_count;
-      FS_RangeSlot *range_slot = &node->slots[range_slot_idx];
-      FS_RangeNode *range_node = 0;
-      for(FS_RangeNode *n = range_slot->first; n != 0; n = n->next)
+      FS_RangeSlot* range_slot = &node->slots[range_slot_idx];
+      FS_RangeNode* range_node = 0;
+      for(FS_RangeNode* n = range_slot->first; n != 0; n = n->next)
       {
         if(MemoryMatchStruct(&n->range, &range))
         {
@@ -397,7 +397,7 @@ ASYNC_WORK_DEF(fs_stream_work)
 //~ rjf: Change Detector Thread
 
 void
-fs_detector_thread__entry_point(void *p)
+fs_detector_thread__entry_point(void* p)
 {
   ThreadNameF("[fs] detector thread");
   for(;;)
@@ -405,19 +405,19 @@ fs_detector_thread__entry_point(void *p)
     U64 slots_per_stripe = fs_shared->slots_count/fs_shared->stripes_count;
     for(U64 stripe_idx = 0; stripe_idx < fs_shared->stripes_count; stripe_idx += 1)
     {
-      FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
+      FS_Stripe* stripe = &fs_shared->stripes[stripe_idx];
       OS_MutexScopeR(stripe->rw_mutex) for(U64 slot_in_stripe_idx = 0; slot_in_stripe_idx < slots_per_stripe; slot_in_stripe_idx += 1)
       {
         U64 slot_idx = stripe_idx*slots_per_stripe + slot_in_stripe_idx;
-        FS_Slot *slot = &fs_shared->slots[slot_idx];
-        for(FS_Node *n = slot->first; n != 0; n = n->next)
+        FS_Slot* slot = &fs_shared->slots[slot_idx];
+        for(FS_Node* n = slot->first; n != 0; n = n->next)
         {
           FileProperties props = os_properties_from_file_path(n->path);
           if(props.modified != n->timestamp)
           {
             for(U64 range_slot_idx = 0; range_slot_idx < n->slots_count; range_slot_idx += 1)
             {
-              for(FS_RangeNode *range_n = n->slots[range_slot_idx].first;
+              for(FS_RangeNode* range_n = n->slots[range_slot_idx].first;
                   range_n != 0;
                   range_n = range_n->next)
               {

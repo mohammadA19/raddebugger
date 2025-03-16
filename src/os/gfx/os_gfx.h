@@ -71,8 +71,8 @@ enum OS_Modifiers : U32
 
 struct OS_Event
 {
-  OS_Event *next;
-  OS_Event *prev;
+  OS_Event* next;
+  OS_Event* prev;
   U64 timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
@@ -90,8 +90,8 @@ struct OS_Event
 struct OS_EventList
 {
   U64 count;
-  OS_Event *first;
-  OS_Event *last;
+  OS_Event* first;
+  OS_Event* last;
 }
 
 ////////////////////////////////
@@ -103,15 +103,15 @@ B32 frame();
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
 String8 os_string_from_event_kind(OS_EventKind kind);
-String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
+String8List os_string_list_from_modifiers(Arena* arena, OS_Modifiers flags);
 U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
-void os_eat_event(OS_EventList *events, OS_Event *event);
-B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
-OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
-void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
-OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);
+void os_eat_event(OS_EventList* events, OS_Event* event);
+B32  os_key_press(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
+B32  os_key_release(OS_EventList* events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
+B32  os_text(OS_EventList* events, OS_Handle window, U32 character);
+OS_EventList os_event_list_copy(Arena* arena, OS_EventList* src);
+void os_event_list_concat_in_place(OS_EventList* dst, OS_EventList* to_push);
+OS_Event* os_event_list_push_new(Arena* arena, OS_EventList* evts, OS_EventKind kind);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
@@ -121,13 +121,13 @@ void os_gfx_init();
 ////////////////////////////////
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
-OS_GfxInfo *os_get_gfx_info();
+OS_GfxInfo* os_get_gfx_info();
 
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void    os_set_clipboard_text(String8 string);
-String8 os_get_clipboard_text(Arena *arena);
+String8 os_get_clipboard_text(Arena* arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
@@ -156,17 +156,17 @@ F32            os_dpi_from_window(OS_Handle window);
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
-OS_HandleArray os_push_monitors_array(Arena *arena);
+OS_HandleArray os_push_monitors_array(Arena* arena);
 OS_Handle      os_primary_monitor();
 OS_Handle      os_monitor_from_window(OS_Handle window);
-String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
+String8        os_name_from_monitor(Arena* arena, OS_Handle monitor);
 Vec2F32        os_dim_from_monitor(OS_Handle monitor);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
 void           os_send_wakeup_event();
-OS_EventList   os_get_events(Arena *arena, B32 wait);
+OS_EventList   os_get_events(Arena* arena, B32 wait);
 OS_Modifiers   os_get_modifiers();
 B32            os_key_is_down(OS_Key key);
 Vec2F32        os_mouse_from_window(OS_Handle window);

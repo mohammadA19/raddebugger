@@ -93,8 +93,8 @@
 static read_only struct
 {
   RD_Option opt;
-  char     *name;
-  char     *help;
+  char*     name;
+  char*     help;
 } g_rd_dump_option_map[] = {
   { RD_Option_Help,             "help",                "Print help and exit"    },
   { RD_Option_Version,          "version",             "Print version and exit" },
@@ -165,16 +165,16 @@ static read_only struct
 };
 
 void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
-  Arena *arena = arena_alloc();
+  Arena* arena = arena_alloc();
 
   // make indent
-  String8List *out = push_array(arena, String8List, 1);
+  String8List* out = push_array(arena, String8List, 1);
   String8      indent;
   {
     U64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
-    U8 *indent_buffer      = push_array(arena, U8, indent_buffer_size);
+    U8* indent_buffer      = push_array(arena, U8, indent_buffer_size);
     MemorySet(indent_buffer, ' ', indent_buffer_size);
     indent = str8(indent_buffer, 0);
   }
@@ -182,7 +182,7 @@ entry_point(CmdLine *cmdline)
   // parse options
   RD_Option opts = 0;
   {
-    for (CmdLineOpt *cmd = cmdline->options.first; cmd != 0; cmd = cmd->next) {
+    for (CmdLineOpt* cmd = cmdline->options.first; cmd != 0; cmd = cmd->next) {
       RD_Option opt = 0;
       for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
         String8 opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
@@ -215,8 +215,8 @@ entry_point(CmdLine *cmdline)
     rd_printf("# Help");
     rd_indent();
     for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
-      char *name = g_rd_dump_option_map[opt_idx].name;
-      char *help = g_rd_dump_option_map[opt_idx].help;
+      char* name = g_rd_dump_option_map[opt_idx].name;
+      char* help = g_rd_dump_option_map[opt_idx].help;
       int indent_size = longest_cmd_switch - strlen(name) + 1;
       rd_printf("-%s%.*s%s", g_rd_dump_option_map[opt_idx].name, indent_size, indent.str, g_rd_dump_option_map[opt_idx].help);
     }
@@ -270,7 +270,7 @@ entry_point(CmdLine *cmdline)
   } else if (coff_is_obj(raw_data)) {
     coff_print_obj(arena, out, indent, raw_data, opts);
   } else if (rd_is_pe(raw_data)) {
-    RDI_Parsed *rdi = 0;
+    RDI_Parsed* rdi = 0;
     if (!(opts & RD_Option_NoRdi)) {
       rdi = rd_rdi_from_pe(arena, file_path, raw_data);
     }

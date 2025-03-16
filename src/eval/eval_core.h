@@ -19,16 +19,16 @@ enum E_MsgKind
 
 struct E_Msg
 {
-  E_Msg *next;
+  E_Msg* next;
   E_MsgKind kind;
-  void *location;
+  void* location;
   String8 text;
 }
 
 struct E_MsgList
 {
-  E_Msg *first;
-  E_Msg *last;
+  E_Msg* first;
+  E_Msg* last;
   E_MsgKind max_kind;
   U64 count;
 }
@@ -80,7 +80,7 @@ struct E_OpInfo
 // key-value stores, e.g. for information in the debugger.
 //
 // Effectively, when considering the result of an evaluation, you use the
-// value for understanding a key *into* a space, e.g. 1+2 -> 3, in a null
+// value for understanding a key* into* a space, e.g. 1+2 -> 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
 enum E_SpaceKind : U64
@@ -119,7 +119,7 @@ enum E_Mode
 
 struct E_Module
 {
-  RDI_Parsed *rdi;
+  RDI_Parsed* rdi;
   Rng1U64 vaddr_range;
   Arch arch;
   E_Space space;
@@ -139,9 +139,9 @@ U64 e_hash_from_string(U64 seed, String8 string);
 ////////////////////////////////
 //~ rjf: Message Functions
 
-void e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, String8 text);
-void e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, void *location, char *fmt, ...);
-void e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push);
+void e_msg(Arena* arena, E_MsgList* msgs, E_MsgKind kind, void* location, String8 text);
+void e_msgf(Arena* arena, E_MsgList* msgs, E_MsgKind kind, void* location, char* fmt, ...);
+void e_msg_list_concat_in_place(E_MsgList* dst, E_MsgList* to_push);
 
 ////////////////////////////////
 //~ rjf: Space Functions

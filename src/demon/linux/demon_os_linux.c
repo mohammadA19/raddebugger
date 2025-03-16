@@ -17,7 +17,7 @@ static U64 demon_lnx_halt_user_data = 0;
 
 static B32 demon_lnx_new_process_pending = false;
 
-static Arena *demon_lnx_event_arena = 0;
+static Arena* demon_lnx_event_arena = 0;
 static DEMON_EventList demon_lnx_queued_events = {0};
 
 static U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
@@ -30,13 +30,13 @@ static U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
 //~ rjf: Helpers
 
 DEMON_LNX_ThreadExt*
-demon_lnx_thread_ext(DEMON_Entity *entity){
-  DEMON_LNX_ThreadExt *result = (DEMON_LNX_ThreadExt*)&entity->ext;
+demon_lnx_thread_ext(DEMON_Entity* entity){
+  DEMON_LNX_ThreadExt* result = (DEMON_LNX_ThreadExt*)&entity->ext;
   return(result);
 }
 
 B32
-demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
+demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
   B32 result = false;
   
   int attach_result = ptrace(PTRACE_ATTACH, pid, 0, 0);
@@ -45,9 +45,9 @@ demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
   }
   else{
     // return a new attachment node as soon as the ptrace exists. we use these nodes
-    // for cleanup on failure *and* for initializing on success. either way we need
+    // for cleanup on failure* and* for initializing on success. either way we need
     // to see all new attachments whether or not they fully initialized correctly.
-    DEMON_LNX_AttachNode *proc_attachment = push_array_no_zero(arena, DEMON_LNX_AttachNode, 1);
+    DEMON_LNX_AttachNode* proc_attachment = push_array_no_zero(arena, DEMON_LNX_AttachNode, 1);
     proc_attachment->next = 0;
     proc_attachment->pid = pid;
     *new_node = proc_attachment;
@@ -71,7 +71,7 @@ demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
 }
 
 String8
-demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
+demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid){
   // get symbolic path
   Temp scratch = scratch_begin(&arena, 1);
   String8 exe_symbol_path = push_str8f(scratch.arena, "/proc/%d/exe", pid);
@@ -79,7 +79,7 @@ demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
   // try to read the link for a bit
   Temp restore_point = temp_begin(arena);
   B32 got_final_result = false;
-  U8 *buffer = 0;
+  U8* buffer = 0;
   int size = 0;
   S64 cap = PATH_MAX;
   for (S64 r = 0; r < 4; cap *= 2, r += 1){
@@ -299,7 +299,7 @@ demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 ph
 }
 
 DEMON_LNX_ModuleNode*
-demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
+demon_lnx_module_list_from_process(Arena* arena, DEMON_Entity* process){
   Arch arch = (Arch)process->arch;
   B32 is_32bit = (arch == Arch_x86 || arch == Arch_arm32);
   int memory_fd = (int)process->ext_u64;
@@ -349,12 +349,12 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
   }
   
   // setup output list
-  DEMON_LNX_ModuleNode *first = 0;
-  DEMON_LNX_ModuleNode *last = 0;
+  DEMON_LNX_ModuleNode* first = 0;
+  DEMON_LNX_ModuleNode* last = 0;
   
   // main module
   {
-    DEMON_LNX_ModuleNode *node = push_array(arena, DEMON_LNX_ModuleNode, 1);
+    DEMON_LNX_ModuleNode* node = push_array(arena, DEMON_LNX_ModuleNode, 1);
     SLLQueuePush(first, last, node);
     node->vaddr = phdr_info.range.min;
     node->size = phdr_info.range.max - phdr_info.range.min;
@@ -406,7 +406,7 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
                                                                               phvaddr, phentsize, phcount);
         
         // save module node
-        DEMON_LNX_ModuleNode *node = push_array(arena, DEMON_LNX_ModuleNode, 1);
+        DEMON_LNX_ModuleNode* node = push_array(arena, DEMON_LNX_ModuleNode, 1);
         SLLQueuePush(first, last, node);
         node->vaddr = linkmap.base;
         node->size = module_phdr_info.range.max - module_phdr_info.range.min;
@@ -424,10 +424,10 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
 }
 
 U64
-demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size){
+demon_lnx_read_memory(int memory_fd, void* dst, U64 src, U64 size){
   U64 bytes_read = 0;
-  U8 *ptr = (U8*)dst;
-  U8 *opl = ptr + size;
+  U8* ptr = (U8*)dst;
+  U8* opl = ptr + size;
   U64 cursor = src;
   for (;ptr < opl;){
     size_t to_read = (size_t)(opl - ptr);
@@ -443,10 +443,10 @@ demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size){
 }
 
 B32
-demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size){
+demon_lnx_write_memory(int memory_fd, U64 dst, void* src, U64 size){
   B32 result = true;
-  U8 *ptr = (U8*)src;
-  U8 *opl = ptr + size;
+  U8* ptr = (U8*)src;
+  U8* opl = ptr + size;
   U64 cursor = dst;
   for (;ptr < opl;){
     size_t to_write = (size_t)(opl - ptr);
@@ -462,7 +462,7 @@ demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size){
 }
 
 String8
-demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
+demon_lnx_read_memory_str(Arena* arena, int memory_fd, U64 address){
   // TODO(allen): this could be done better with a demon_lnx_read_memory
   // that returns a read amount instead of a success/fail.
   
@@ -474,7 +474,7 @@ demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    U8* block = push_array(scratch.arena, U8, cap);
     for (;cap > 0;){
       if (demon_lnx_read_memory(memory_fd, block, read_p, cap)){
         break;
@@ -506,7 +506,7 @@ demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
 }
 
 void
-demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64 *dst, DEMON_LNX_UserRegsX64 *src){
+demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64* dst, DEMON_LNX_UserRegsX64* src){
   dst->rax.u64 = src->rax;
   dst->rcx.u64 = src->rcx;
   dst->rdx.u64 = src->rdx;
@@ -536,7 +536,7 @@ demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64 *dst, DEMON_LNX_UserRegsX64 *sr
 }
 
 void
-demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64 *dst, SYMS_RegX64 *src){
+demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64* dst, SYMS_RegX64* src){
   dst->rax = src->rax.u64;
   dst->rcx = src->rcx.u64;
   dst->rdx = src->rdx.u64;
@@ -568,7 +568,7 @@ demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64 *dst, SYMS_RegX64 *sr
 ////////////////////////////////
 
 String8
-demon_lnx_read_int_string(Arena *arena, int fd, int radix){
+demon_lnx_read_int_string(Arena* arena, int fd, int radix){
   String8 integer = str8(0,0);
   
   int to_read = 0;
@@ -586,7 +586,7 @@ demon_lnx_read_int_string(Arena *arena, int fd, int radix){
   }
   
   if (lseek(fd, -to_seek, SEEK_CUR) != -1) {
-    char *buf = push_array_no_zero(arena, char, to_read + 1);
+    char* buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
     integer = str8((U8*)buf, (U64)to_read);
@@ -639,7 +639,7 @@ demon_lnx_read_whitespace(int fd){
 }
 
 String8
-demon_lnx_read_string(Arena *arena, int fd){
+demon_lnx_read_string(Arena* arena, int fd){
   String8 result = str8(0,0);
   
   int to_read = 0;
@@ -657,7 +657,7 @@ demon_lnx_read_string(Arena *arena, int fd){
   }
   
   if (to_seek > 0 && lseek(fd, -to_seek, SEEK_CUR) != -1){
-    char *buf = push_array_no_zero(arena, char, to_read + 1);
+    char* buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
     result = str8((U8*)buf, to_read);
@@ -676,7 +676,7 @@ demon_lnx_open_maps(pid_t pid){
 }
 
 B32
-demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
+demon_lnx_next_map(Arena* arena, int maps, DEMON_LNX_MapsEntry* entry_out){
   B32 is_parsed = false;
   MemoryZeroStruct(entry_out);
   do{
@@ -802,7 +802,7 @@ demon_os_init(){
 //~ rjf: @demon_os_hooks Running/Halting
 
 DEMON_EventList
-demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
+demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
   DEMON_EventList result = {0};
   
   if (demon_ent_root == 0){
@@ -817,10 +817,10 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
     // use queued events if there are any
     if (demon_lnx_queued_events.first != 0){
       // copy event queue
-      for (DEMON_Event *node = demon_lnx_queued_events.first;
+      for (DEMON_Event* node = demon_lnx_queued_events.first;
            node != 0;
            node = node->next){
-        DEMON_Event *copy = push_array_no_zero(arena, DEMON_Event, 1);
+        DEMON_Event* copy = push_array_no_zero(arena, DEMON_Event, 1);
         MemoryCopyStruct(copy, node);
         SLLQueuePush(result.first, result.last, copy);
       }
@@ -832,11 +832,11 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
     }
     
     // get the single step thread (if any)
-    DEMON_Entity *single_step_thread = controls->single_step_thread;
+    DEMON_Entity* single_step_thread = controls->single_step_thread;
     
     // do setup
     B32 did_setup = false;
-    U8 *trap_swap_bytes = 0;
+    U8* trap_swap_bytes = 0;
     
     if (result.first == 0){
       // TODO(allen): per-Arch implementation of single steps
@@ -867,7 +867,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       trap_swap_bytes = push_array_no_zero(scratch.arena, U8, controls->trap_count);
       
       {
-        DEMON_OS_Trap *trap = controls->traps;
+        DEMON_OS_Trap* trap = controls->traps;
         for (U64 i = 0; i < controls->trap_count; i += 1, trap += 1){
           if (demon_os_read_memory(trap->process, trap_swap_bytes + i, trap->address, 1)){
             U8 int3 = 0xCC;
@@ -886,8 +886,8 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
     B32 did_run = false;
     if (did_setup){
       // continue non-frozen threads
-      DEMON_LNX_EntityNode *resume_threads = 0;
-      for (DEMON_Entity *process = demon_ent_root->first;
+      DEMON_LNX_EntityNode* resume_threads = 0;
+      for (DEMON_Entity* process = demon_ent_root->first;
            process != 0;
            process = process->next){
         if (process->kind == DEMON_EntityKind_Process){
@@ -903,7 +903,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
             }
           }
           
-          for (DEMON_Entity *thread = process->first;
+          for (DEMON_Entity* thread = process->first;
                thread != 0;
                thread = thread->next){
             if (thread->kind == DEMON_EntityKind_Thread){
@@ -937,7 +937,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
               if (!is_frozen){
                 errno = 0;
                 ptrace(PTRACE_CONT, (pid_t)thread->id, 0, 0);
-                DEMON_LNX_EntityNode *thread_node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode* thread_node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLStackPush(resume_threads, thread_node);
                 thread_node->entity = thread;
               }
@@ -956,7 +956,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       demon_time += 1;
       
       // handle devent
-      DEMON_Entity *thread = demon_ent_map_entity_from_id(DEMON_EntityKind_Thread, wait_id);
+      DEMON_Entity* thread = demon_ent_map_entity_from_id(DEMON_EntityKind_Thread, wait_id);
       if (thread == 0){
         if (wait_id >= 0){
           // TODO(allen): this isn't a great situation! From what I can tell there's no
@@ -970,7 +970,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
         B32 thread_exit = false;
         U64 exit_code = 0;
         
-        DEMON_Entity *process = thread->parent;
+        DEMON_Entity* process = thread->parent;
         // NOTE(allen): hitting this assert should never ever be possible, if our entities
         // are wired up correctly. it doesn't matter what ptrace or waitpid are doing.
         Assert(process != 0);
@@ -1028,13 +1028,13 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                   }
                   else{
                     // thread entity
-                    DEMON_Entity *new_thread = demon_ent_new(process, DEMON_EntityKind_Thread, new_tid);
+                    DEMON_Entity* new_thread = demon_ent_new(process, DEMON_EntityKind_Thread, new_tid);
                     demon_thread_count += 1;
-                    DEMON_LNX_ThreadExt *thread_ext = demon_lnx_thread_ext(new_thread);
+                    DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(new_thread);
                     thread_ext->expecting_dummy_sigstop = true;
                     
                     // thread event
-                    DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
+                    DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
                     e->process = demon_ent_handle_from_ptr(process);
                     e->thread = demon_ent_handle_from_ptr(new_thread);
                   }
@@ -1055,27 +1055,27 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                     Arch arch = demon_lnx_arch_from_pid(new_pid);
                     
                     // process entity
-                    DEMON_Entity *new_process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, new_pid);
+                    DEMON_Entity* new_process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, new_pid);
                     new_process->arch = arch;
                     new_process->ext_u64 = demon_lnx_open_memory_fd_for_pid(new_pid);
                     
                     demon_lnx_new_process_pending = false;
                     
                     // thread entity
-                    DEMON_Entity *new_thread = demon_ent_new(new_process, DEMON_EntityKind_Thread, new_pid);
+                    DEMON_Entity* new_thread = demon_ent_new(new_process, DEMON_EntityKind_Thread, new_pid);
                     demon_thread_count += 1;
-                    DEMON_LNX_ThreadExt *thread_ext = demon_lnx_thread_ext(new_thread);
+                    DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(new_thread);
                     thread_ext->expecting_dummy_sigstop = true;
                     
                     // process event
                     {
-                      DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateProcess);
+                      DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateProcess);
                       e->process = demon_ent_handle_from_ptr(new_process);
                     }
                     
                     // thread event
                     {
-                      DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
+                      DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_CreateThread);
                       e->process = demon_ent_handle_from_ptr(new_process);
                       e->thread = demon_ent_handle_from_ptr(new_thread);
                     }
@@ -1092,7 +1092,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                   
                   // check bp
                   if (e_kind == DEMON_EventKind_Trap){
-                    DEMON_OS_Trap *trap = controls->traps;
+                    DEMON_OS_Trap* trap = controls->traps;
                     for (U64 i = 0; i < controls->trap_count; i += 1, trap += 1){
                       if (trap->process == process && trap->address == instruction_pointer - 1){
                         e_kind = DEMON_EventKind_Breakpoint;
@@ -1122,7 +1122,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                   }
                   
                   // event
-                  DEMON_Event *e = demon_push_event(arena, &stop_events, e_kind);
+                  DEMON_Event* e = demon_push_event(arena, &stop_events, e_kind);
                   e->process = demon_ent_handle_from_ptr(process);
                   e->thread = demon_ent_handle_from_ptr(thread);
                   e->instruction_pointer = instruction_pointer;
@@ -1136,14 +1136,14 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
               //  SIGSTOP All-Stop, SIGSTOP Halt, SIGSTOP "User"
               // what we're doing right now == big-time race conditions
               
-              DEMON_LNX_ThreadExt *thread_ext = demon_lnx_thread_ext(thread);
+              DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(thread);
               
               if (thread_ext->expecting_dummy_sigstop){
                 thread_ext->expecting_dummy_sigstop = false;
                 did_dummy_stop = true;
               }
               else if (demon_lnx_already_has_halt_injection){
-                DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_Halt);
+                DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_Halt);
                 e->process = demon_ent_handle_from_ptr(process);
                 e->thread = demon_ent_handle_from_ptr(thread);
                 e->instruction_pointer = instruction_pointer;
@@ -1163,7 +1163,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
 #endif
               
               // event
-              DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_Exception);
+              DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_Exception);
               e->process = demon_ent_handle_from_ptr(process);
               e->thread = demon_ent_handle_from_ptr(thread);
               e->instruction_pointer = instruction_pointer;
@@ -1176,23 +1176,23 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
         if (thread_exit){
           if (thread->id == process->id){
             // generate events for threads & modules
-            for (DEMON_Entity *entity = process->first;
+            for (DEMON_Entity* entity = process->first;
                  entity != 0;
                  entity = entity->next){
               if (entity->kind == DEMON_EntityKind_Thread){
-                DEMON_Event *e = demon_push_event(arena, &result, DEMON_EventKind_ExitThread);
+                DEMON_Event* e = demon_push_event(arena, &result, DEMON_EventKind_ExitThread);
                 e->process = demon_ent_handle_from_ptr(process);
                 e->thread = demon_ent_handle_from_ptr(entity);
               }
               else{
-                DEMON_Event *e = demon_push_event(arena, &result, DEMON_EventKind_UnloadModule);
+                DEMON_Event* e = demon_push_event(arena, &result, DEMON_EventKind_UnloadModule);
                 e->process = demon_ent_handle_from_ptr(process);
                 e->module = demon_ent_handle_from_ptr(entity);
               }
             }
             
             // exit event
-            DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitProcess);
+            DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitProcess);
             e->process = demon_ent_handle_from_ptr(process);
             e->code = exit_code;
             
@@ -1201,7 +1201,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
           }
           else{
             // exit event
-            DEMON_Event *e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitThread);
+            DEMON_Event* e = demon_push_event(arena, &stop_events, DEMON_EventKind_ExitThread);
             e->process = demon_ent_handle_from_ptr(process);
             e->thread = demon_ent_handle_from_ptr(thread);
             e->code = exit_code;
@@ -1214,23 +1214,23 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
         // update all module lists (for each process ...)
         DEMON_EventList module_change_events = {0};
         
-        for (DEMON_Entity *proc_node = demon_ent_root->first;
+        for (DEMON_Entity* proc_node = demon_ent_root->first;
              proc_node != 0;
              proc_node = proc_node->next){
-          DEMON_LNX_ModuleNode *first_module = demon_lnx_module_list_from_process(scratch.arena, proc_node);
+          DEMON_LNX_ModuleNode* first_module = demon_lnx_module_list_from_process(scratch.arena, proc_node);
           
-          DEMON_LNX_EntityNode *first_unloaded = 0;
-          DEMON_LNX_EntityNode *last_unloaded = 0;
+          DEMON_LNX_EntityNode* first_unloaded = 0;
+          DEMON_LNX_EntityNode* last_unloaded = 0;
           
           // compute the delta (mark known modules, save list of unloaded modules)
-          for (DEMON_Entity *entity = proc_node->first;
+          for (DEMON_Entity* entity = proc_node->first;
                entity != 0;
                entity = entity->next){
             if (entity->kind == DEMON_EntityKind_Module){
               U64 base = entity->id;
               U64 name = entity->ext_u64;
               B32 still_exists = false;
-              for (DEMON_LNX_ModuleNode *module_node = first_module;
+              for (DEMON_LNX_ModuleNode* module_node = first_module;
                    module_node != 0;
                    module_node = module_node->next){
                 if (module_node->vaddr == base && module_node->name == name){
@@ -1240,7 +1240,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                 }
               }
               if (!still_exists){
-                DEMON_LNX_EntityNode *node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode* node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLQueuePush(first_unloaded, last_unloaded, node);
                 node->entity = entity;
               }
@@ -1248,14 +1248,14 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
           }
           
           // handle unloads
-          for (DEMON_LNX_EntityNode *unloaded_node = first_unloaded;
+          for (DEMON_LNX_EntityNode* unloaded_node = first_unloaded;
                unloaded_node != 0;
                unloaded_node = unloaded_node->next){
-            DEMON_Entity *module = unloaded_node->entity;
+            DEMON_Entity* module = unloaded_node->entity;
             
             // event
             {
-              DEMON_Event *e = demon_push_event(arena, &module_change_events, DEMON_EventKind_UnloadModule);
+              DEMON_Event* e = demon_push_event(arena, &module_change_events, DEMON_EventKind_UnloadModule);
               e->process = demon_ent_handle_from_ptr(proc_node);
               e->module = demon_ent_handle_from_ptr(module);
             }
@@ -1265,18 +1265,18 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
           }
           
           // handle loads
-          for (DEMON_LNX_ModuleNode *module_node = first_module;
+          for (DEMON_LNX_ModuleNode* module_node = first_module;
                module_node != 0;
                module_node = module_node->next){
             if (!module_node->already_known){
               // entity
-              DEMON_Entity *module = demon_ent_new(proc_node, DEMON_EntityKind_Module, module_node->vaddr);
+              DEMON_Entity* module = demon_ent_new(proc_node, DEMON_EntityKind_Module, module_node->vaddr);
               demon_module_count += 1;
               module->ext_u64 = module_node->name;
               
               // event
               {
-                DEMON_Event *e = demon_push_event(arena, &module_change_events, DEMON_EventKind_LoadModule);
+                DEMON_Event* e = demon_push_event(arena, &module_change_events, DEMON_EventKind_LoadModule);
                 e->process = demon_ent_handle_from_ptr(proc_node);
                 e->module = demon_ent_handle_from_ptr(module);
                 e->address = module_node->vaddr;
@@ -1317,16 +1317,16 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       }
       
       // stop all running threads
-      for (DEMON_LNX_EntityNode *node = resume_threads;
+      for (DEMON_LNX_EntityNode* node = resume_threads;
            node != 0;
            node = node->next){
-        DEMON_Entity *thread = node->entity;
+        DEMON_Entity* thread = node->entity;
         pid_t thread_id = (pid_t)thread->id;
         if (thread_id != wait_id){
           union sigval sv = {0};
           sigqueue(thread_id, SIGSTOP, sv);
           
-          DEMON_LNX_ThreadExt *thread_ext = demon_lnx_thread_ext(thread);
+          DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(thread);
           thread_ext->expecting_dummy_sigstop = true;
         }
       }
@@ -1339,7 +1339,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       // TODO(allen): per-Arch
       // unset traps
       {
-        DEMON_OS_Trap *trap = controls->traps;
+        DEMON_OS_Trap* trap = controls->traps;
         for (U64 i = 0; i < controls->trap_count; i += 1, trap += 1){
           U8 og_byte = trap_swap_bytes[i];
           if (og_byte != 0xCC){
@@ -1351,7 +1351,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       // TODO(allen): per-Arch
       // unset single step bit
       //  the single step bit is automatically unset whenever we single step
-      //  but if *something else* happened, it will still be there ready to
+      //  but if* something else* happened, it will still be there ready to
       //  confound us later; so here we're just being sure it's taken out.
       if (single_step_thread != 0){
         // TODO(allen): possibly buggy
@@ -1384,7 +1384,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
 void
 demon_os_halt(U64 code, U64 user_data){
   if (demon_ent_root != 0 && !demon_lnx_already_has_halt_injection){
-    DEMON_Entity *process = demon_ent_root->first;
+    DEMON_Entity* process = demon_ent_root->first;
     if (process != 0){
       demon_lnx_already_has_halt_injection = true;
       demon_lnx_halt_code = code;
@@ -1425,17 +1425,17 @@ demon_os_halt(U64 code, U64 user_data){
 //~ rjf: @demon_os_hooks Target Process Launching/Attaching/Killing/Detaching/Halting
 
 U32
-demon_os_launch_process(OS_LaunchOptions *options){
+demon_os_launch_process(OS_LaunchOptions* options){
   U32 result = 0;
   Temp scratch = scratch_begin(0, 0);
   
   // arrange options
-  char *binary = 0;
+  char* binary = 0;
   char **args = 0;
   if (options->cmd_line.node_count > 0){
     args = push_array_no_zero(scratch.arena, char*, options->cmd_line.node_count + 1);
     char **arg_ptr = args;
-    for (String8Node *node = options->cmd_line.first;
+    for (String8Node* node = options->cmd_line.first;
          node != 0;
          node = node->next, arg_ptr += 1){
       String8 string = push_str8_copy(scratch.arena, node->string);
@@ -1445,7 +1445,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
     binary = args[0];
   }
   
-  char *path = 0;
+  char* path = 0;
   {
     String8 string = push_str8_copy(scratch.arena, options->path);
     path = (char*)string.str;
@@ -1455,7 +1455,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
   if (options->env.node_count > 0){
     env = push_array_no_zero(scratch.arena, char*, options->env.node_count + 1);
     char **env_ptr = env;
-    for (String8Node *node = options->env.first;
+    for (String8Node* node = options->env.first;
          node != 0;
          node = node->next, env_ptr += 1){
       String8 string = push_str8_copy(scratch.arena, node->string);
@@ -1558,45 +1558,45 @@ demon_os_launch_process(OS_LaunchOptions *options){
             Arch arch = demon_lnx_arch_from_pid(pid);
             
             // process entity
-            DEMON_Entity *process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, pid);
+            DEMON_Entity* process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, pid);
             demon_proc_count += 1;
             process->arch = arch;
             process->ext_u64 = demon_lnx_open_memory_fd_for_pid(pid);
             
             // thread entity
-            DEMON_Entity *thread = demon_ent_new(process, DEMON_EntityKind_Thread, pid);
+            DEMON_Entity* thread = demon_ent_new(process, DEMON_EntityKind_Thread, pid);
             demon_thread_count += 1;
             
             // process event
             {
-              DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+              DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_CreateProcess);
               e->process = demon_ent_handle_from_ptr(process);
             }
             
             // thread event
             {
-              DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+              DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_CreateThread);
               e->process = demon_ent_handle_from_ptr(process);
               e->thread = demon_ent_handle_from_ptr(thread);
             }
             
             // get module list
-            DEMON_LNX_ModuleNode *module_list = demon_lnx_module_list_from_process(scratch.arena, process);
+            DEMON_LNX_ModuleNode* module_list = demon_lnx_module_list_from_process(scratch.arena, process);
             
             // for each module ...
-            for (DEMON_LNX_ModuleNode *node = module_list;
+            for (DEMON_LNX_ModuleNode* node = module_list;
                  node != 0;
                  node = node->next){
               // module entity
-              DEMON_Entity *module = demon_ent_new(process, DEMON_EntityKind_Module, node->vaddr);
+              DEMON_Entity* module = demon_ent_new(process, DEMON_EntityKind_Module, node->vaddr);
               demon_module_count += 1;
               module->ext_u64 = node->name;
               
               // event
               {
-                DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+                DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                   DEMON_EventKind_LoadModule);
                 e->process = demon_ent_handle_from_ptr(process);
                 e->module = demon_ent_handle_from_ptr(module);
@@ -1607,7 +1607,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
             
             // handshake event
             {
-              DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+              DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                                 DEMON_EventKind_HandshakeComplete);
               e->process = demon_ent_handle_from_ptr(process);
               e->thread = demon_ent_handle_from_ptr(thread);
@@ -1627,8 +1627,8 @@ demon_os_attach_process(U32 pid){
   B32 result = false;
   
   Temp scratch = scratch_begin(0, 0);
-  DEMON_LNX_AttachNode *attachments = 0;
-  DEMON_LNX_AttachNode *the_process = 0;
+  DEMON_LNX_AttachNode* attachments = 0;
+  DEMON_LNX_AttachNode* the_process = 0;
   
   // TODO(allen): double check that this logic only lets us
   // "attach" when pid is the id of the main thread of a process.
@@ -1648,7 +1648,7 @@ demon_os_attach_process(U32 pid){
   // open thread list
   if (attached_proc){
     String8 threads_path = push_str8f(scratch.arena, "/proc/%d/task", pid);
-    DIR *proc_dir = opendir((char*)threads_path.str);
+    DIR* proc_dir = opendir((char*)threads_path.str);
     if (proc_dir == 0){
       // TODO(allen): could not read proc threads somehow; no good!
     }
@@ -1657,7 +1657,7 @@ demon_os_attach_process(U32 pid){
       // attach all threads
       B32 attached_all_threads = true;
       for (;;){
-        struct dirent *entry = readdir(proc_dir);
+        struct dirent* entry = readdir(proc_dir);
         if (entry == 0){
           break;
         }
@@ -1666,7 +1666,7 @@ demon_os_attach_process(U32 pid){
         if (str8_is_integer(name, 10)){
           pid_t tid = u64_from_str8(name, 10);
           if (tid != pid){
-            DEMON_LNX_AttachNode *new_attachment = 0;
+            DEMON_LNX_AttachNode* new_attachment = 0;
             B32 attached_this_thread = demon_lnx_attach_pid(scratch.arena, tid, &new_attachment);
             if (new_attachment != 0){
               SLLStackPush(attachments, new_attachment);
@@ -1691,29 +1691,29 @@ demon_os_attach_process(U32 pid){
     Arch arch = demon_lnx_arch_from_pid(the_process->pid);
     
     // process entity
-    DEMON_Entity *process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, the_process->pid);
+    DEMON_Entity* process = demon_ent_new(demon_ent_root, DEMON_EntityKind_Process, the_process->pid);
     demon_proc_count += 1;
     process->arch = arch;
     process->ext_u64 = demon_lnx_open_memory_fd_for_pid(the_process->pid);
     
     // process event
     {
-      DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+      DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                         DEMON_EventKind_CreateProcess);
       e->process = demon_ent_handle_from_ptr(process);
     }
     
     // TODO(allen): happens on windows here?
     
-    for (DEMON_LNX_AttachNode *node = attachments;
+    for (DEMON_LNX_AttachNode* node = attachments;
          node != 0;
          node = node->next){
-      DEMON_Entity *thread = demon_ent_new(process, DEMON_EntityKind_Thread, node->pid);
+      DEMON_Entity* thread = demon_ent_new(process, DEMON_EntityKind_Thread, node->pid);
       demon_thread_count += 1;
       
       // thread event
       {
-        DEMON_Event *e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
+        DEMON_Event* e = demon_push_event(demon_lnx_event_arena, &demon_lnx_queued_events,
                                           DEMON_EventKind_CreateThread);
         e->process = demon_ent_handle_from_ptr(process);
         e->thread = demon_ent_handle_from_ptr(thread);
@@ -1725,7 +1725,7 @@ demon_os_attach_process(U32 pid){
   
   // cleanup on failure
   else{
-    for (DEMON_LNX_AttachNode *node = attachments;
+    for (DEMON_LNX_AttachNode* node = attachments;
          node != 0;
          node = node->next){
       ptrace(PTRACE_DETACH, node->pid, 0, (void*)SIGCONT);
@@ -1737,7 +1737,7 @@ demon_os_attach_process(U32 pid){
 }
 
 B32
-demon_os_kill_process(DEMON_Entity *process, U32 exit_code){
+demon_os_kill_process(DEMON_Entity* process, U32 exit_code){
   B32 result = false;
   if (process != 0){
     if (kill(process->id, SIGKILL) != -1){
@@ -1748,7 +1748,7 @@ demon_os_kill_process(DEMON_Entity *process, U32 exit_code){
 }
 
 B32
-demon_os_detach_process(DEMON_Entity *process){
+demon_os_detach_process(DEMON_Entity* process){
   B32 result = false;
   if (process != 0){
     int detach_result = ptrace(PTRACE_DETACH, process->id, 0, 0);
@@ -1763,7 +1763,7 @@ demon_os_detach_process(DEMON_Entity *process){
 //- rjf: cleanup
 
 void
-demon_os_entity_cleanup(DEMON_Entity *entity)
+demon_os_entity_cleanup(DEMON_Entity* entity)
 {
   // NOTE(rjf): no-op
 }
@@ -1771,8 +1771,8 @@ demon_os_entity_cleanup(DEMON_Entity *entity)
 //- rjf: introspection
 
 String8
-demon_os_full_path_from_module(Arena *arena, DEMON_Entity *module){
-  DEMON_Entity *process = module->parent;
+demon_os_full_path_from_module(Arena* arena, DEMON_Entity* module){
+  DEMON_Entity* process = module->parent;
   int memory_fd = (int)process->ext_u64;
   U64 name_va = module->ext_u64;
   String8 result = demon_lnx_read_memory_str(arena, memory_fd, name_va);
@@ -1780,12 +1780,12 @@ demon_os_full_path_from_module(Arena *arena, DEMON_Entity *module){
 }
 
 U64
-demon_os_stack_base_vaddr_from_thread(DEMON_Entity *thread){
+demon_os_stack_base_vaddr_from_thread(DEMON_Entity* thread){
   Temp scratch = scratch_begin(0, 0);
   
   U64 stack_base = 0;
   
-  DEMON_Entity *process = thread->parent;
+  DEMON_Entity* process = thread->parent;
   
   // id for main thread is zero
   B32 is_main_thread = (thread->id == process->id);
@@ -1813,7 +1813,7 @@ demon_os_stack_base_vaddr_from_thread(DEMON_Entity *thread){
 }
 
 U64
-demon_os_tls_root_vaddr_from_thread(DEMON_Entity *thread){
+demon_os_tls_root_vaddr_from_thread(DEMON_Entity* thread){
   U64 result = 0;
   switch (thread->arch){
     case Arch_x64:
@@ -1838,33 +1838,33 @@ demon_os_tls_root_vaddr_from_thread(DEMON_Entity *thread){
 //- rjf: target process memory allocation/protection
 
 U64
-demon_os_reserve_memory(DEMON_Entity *process, U64 size){
+demon_os_reserve_memory(DEMON_Entity* process, U64 size){
   U64 result = 0;
   NotImplemented;
   return(result);
 }
 
 void
-demon_os_set_memory_protect_flags(DEMON_Entity *process, U64 page_vaddr, U64 size, DEMON_MemoryProtectFlags flags){
+demon_os_set_memory_protect_flags(DEMON_Entity* process, U64 page_vaddr, U64 size, DEMON_MemoryProtectFlags flags){
   NotImplemented;
 }
 
 void
-demon_os_release_memory(DEMON_Entity *process, U64 vaddr, U64 size){
+demon_os_release_memory(DEMON_Entity* process, U64 vaddr, U64 size){
   NotImplemented;
 }
 
 //- rjf: target process memory reading/writing
 
 U64
-demon_os_read_memory(DEMON_Entity *process, void *dst, U64 src_address, U64 size){
+demon_os_read_memory(DEMON_Entity* process, void* dst, U64 src_address, U64 size){
   int memory_fd = (int)process->ext_u64;
   U64 result = demon_lnx_read_memory(memory_fd, dst, src_address, size);
   return(result);
 }
 
 B32
-demon_os_write_memory(DEMON_Entity *process, U64 dst_address, void *src, U64 size){
+demon_os_write_memory(DEMON_Entity* process, U64 dst_address, void* src, U64 size){
   int memory_fd = (int)process->ext_u64;
   B32 result = demon_lnx_write_memory(memory_fd, dst_address, src, size);
   return(result);
@@ -1873,21 +1873,21 @@ demon_os_write_memory(DEMON_Entity *process, U64 dst_address, void *src, U64 siz
 //- rjf: thread registers reading/writing
 
 B32
-demon_os_read_regs_x86(DEMON_Entity *thread, SYMS_RegX86 *dst){
+demon_os_read_regs_x86(DEMON_Entity* thread, SYMS_RegX86* dst){
   B32 result = false;
   NotImplemented;
   return(result);
 }
 
 B32
-demon_os_write_regs_x86(DEMON_Entity *thread, SYMS_RegX86 *src){
+demon_os_write_regs_x86(DEMON_Entity* thread, SYMS_RegX86* src){
   B32 result = false;
   NotImplemented;
   return(result);
 }
 
 B32
-demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
+demon_os_read_regs_x64(DEMON_Entity* thread, SYMS_RegX64* dst){
   pid_t tid = (pid_t)thread->id;
   
   // gpr
@@ -1911,7 +1911,7 @@ demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
       iov_xsave.iov_len = sizeof(xsave_buffer);
       iov_xsave.iov_base = xsave_buffer;
       if (ptrace(PTRACE_GETREGSET, tid, (void*)NT_X86_XSTATE, &iov_xsave) != -1){
-        SYMS_XSave *xsave = (SYMS_XSave*)xsave_buffer;
+        SYMS_XSave* xsave = (SYMS_XSave*)xsave_buffer;
         syms_x64_regs__set_full_regs_from_xsave_legacy(dst, &xsave->legacy);
         
         // TODO(allen): this is a lie; ymm can technically move around
@@ -1946,7 +1946,7 @@ demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
   B32 got_debug = false;
   if (got_fpr){
     got_debug = true;
-    SYMS_Reg32 *dr_d = &dst->dr0;
+    SYMS_Reg32* dr_d = &dst->dr0;
     for (U32 i = 0; i < 8; i += 1, dr_d += 1){
       if (i != 4 && i != 5){
         U64 offset = OffsetOf(DEMON_LNX_UserX64, u_debugreg[i]);
@@ -1968,7 +1968,7 @@ demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
 }
 
 B32
-demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
+demon_os_write_regs_x64(DEMON_Entity* thread, SYMS_RegX64* src){
   pid_t tid = (pid_t)thread->id;
   
   // gpr
@@ -1987,7 +1987,7 @@ demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
   
   {
     U8 xsave_buffer[KB(4)] = {0};
-    SYMS_XSave *xsave = (SYMS_XSave*)xsave_buffer;
+    SYMS_XSave* xsave = (SYMS_XSave*)xsave_buffer;
     syms_x64_regs__set_xsave_legacy_from_full_regs(&xsave->legacy, src);
     
     xsave->header.xstate_bv = 7;
@@ -2016,7 +2016,7 @@ demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
   // debug
   B32 dr_success = true;
   {
-    SYMS_Reg32 *dr_s = &src->dr0;
+    SYMS_Reg32* dr_s = &src->dr0;
     for (U32 i = 0; i < 8; i += 1, dr_s += 1){
       if (i != 4 && i != 5){
         U64 offset = OffsetOf(DEMON_LNX_UserX64, u_debugreg[i]);
@@ -2039,22 +2039,22 @@ demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
 //~ rjf: @demon_os_hooks Process Listing
 
 void
-demon_os_proc_iter_begin(DEMON_ProcessIter *iter){
-  DIR *dir = opendir("/proc");
+demon_os_proc_iter_begin(DEMON_ProcessIter* iter){
+  DIR* dir = opendir("/proc");
   MemoryZeroStruct(iter);
   iter->v[0] = IntFromPtr(dir);
 }
 
 B32
-demon_os_proc_iter_next(Arena *arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo *info_out){
+demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo* info_out){
   // scan for a process id
   B32 got_pid = false;
   String8 pid_string = {0};
   
-  DIR *dir = (DIR*)PtrFromInt(iter->v[0]);
+  DIR* dir = (DIR*)PtrFromInt(iter->v[0]);
   if (dir != 0 && iter->v[1] == 0){
     for (;;){
-      struct dirent *d = readdir(dir);
+      struct dirent* d = readdir(dir);
       if (d == 0){
         break;
       }
@@ -2097,8 +2097,8 @@ demon_os_proc_iter_next(Arena *arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo
 }
 
 void
-demon_os_proc_iter_end(DEMON_ProcessIter *iter){
-  DIR *dir = (DIR*)PtrFromInt(iter->v[0]);
+demon_os_proc_iter_end(DEMON_ProcessIter* iter){
+  DIR* dir = (DIR*)PtrFromInt(iter->v[0]);
   if (dir != 0){
     closedir(dir);
   }

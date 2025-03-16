@@ -11,7 +11,7 @@
 //     drag/drop watch rows -> tabs, tabs -> watch rows, etc.
 // [ ] frontend entities need to be the "upstream state" for windows, panels,
 //     tabs, etc. - entities can be mapped to caches of window/panel/view state
-//     in purely immediate-mode fashion, so the only *state* part of the
+//     in purely immediate-mode fashion, so the only* state* part of the
 //     equation only has to do with the string tree.
 // [ ] config hot-reloading using the wins from the previous points
 // [ ] undo/redo, using the wins from the previous points
@@ -209,7 +209,7 @@
 //      infos, wide/async transforms (e.g. diff(blob1, blob2))
 //
 // [ ] Fancy View Rules
-//  [ ] table column boundaries should be checked against *AFTER* table
+//  [ ] table column boundaries should be checked against* AFTER* table
 //      contents, not before
 //  [ ] `array:(x, y)` - multidimensional array
 //
@@ -288,7 +288,7 @@
 //  [ ] tables in UI -> currently building per-row, could probably cut down on
 //      # of boxes and # of draws by doing per-column in some cases?
 //  [ ] font cache layer -> can probably cache (string*font*size) -> (run) too
-//      (not just rasterization)... would save a *lot*, there is a ton of work
+//      (not just rasterization)... would save a* lot*, there is a ton of work
 //      just in looking up & stitching stuff repeatedly
 //  [ ] convert UI layout pass to not be naive recursive version
 //  [ ] (big change) parallelize window ui build codepaths per-panel
@@ -435,7 +435,7 @@ struct IPCInfo
 StaticAssert(IPC_SHARED_MEMORY_BUFFER_SIZE > sizeof(IPCInfo), ipc_buffer_size_requirement);
 static OS_Handle ipc_signal_semaphore = {0};
 static OS_Handle ipc_lock_semaphore = {0};
-static U8 *ipc_shared_memory_base = 0;
+static U8* ipc_shared_memory_base = 0;
 static U8  ipc_s2m_ring_buffer[MB(4)] = {0};
 static U64 ipc_s2m_ring_write_pos = 0;
 static U64 ipc_s2m_ring_read_pos = 0;
@@ -446,7 +446,7 @@ static OS_Handle ipc_s2m_ring_cv = {0};
 //~ rjf: IPC Signaler Thread
 
 void
-ipc_signaler_thread__entry_point(void *p)
+ipc_signaler_thread__entry_point(void* p)
 {
   ThreadNameF("[rd] ipc signaler thread");
   for(;;)
@@ -455,7 +455,7 @@ ipc_signaler_thread__entry_point(void *p)
     {
       if(os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
-        IPCInfo *ipc_info = (IPCInfo *)ipc_shared_memory_base;
+        IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
         String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
         msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
         OS_MutexScope(ipc_s2m_ring_mutex) for(;;)
@@ -501,7 +501,7 @@ frame()
 //~ rjf: Entry Point
 
 void
-entry_point(CmdLine *cmd_line)
+entry_point(CmdLine* cmd_line)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -635,7 +635,7 @@ entry_point(CmdLine *cmd_line)
               
               // rjf: unpack arguments
               String8List passthrough_args_list = {0};
-              for(String8Node *n = args.first->next; n != 0; n = n->next)
+              for(String8Node* n = args.first->next; n != 0; n = n->next)
               {
                 str8_list_push(scratch.arena, &passthrough_args_list, n->string);
               }
@@ -644,11 +644,11 @@ entry_point(CmdLine *cmd_line)
             }
             
             //- rjf: build config tree
-            RD_Cfg *command_line_root = rd_cfg_child_from_string(rd_state->root_cfg, str8_lit("command_line"));
-            RD_Cfg *target = rd_cfg_new(command_line_root, str8_lit("target"));
-            RD_Cfg *exe    = rd_cfg_new(target, str8_lit("executable"));
-            RD_Cfg *args   = rd_cfg_new(target, str8_lit("arguments"));
-            RD_Cfg *wdir   = rd_cfg_new(target, str8_lit("working_directory"));
+            RD_Cfg* command_line_root = rd_cfg_child_from_string(rd_state->root_cfg, str8_lit("command_line"));
+            RD_Cfg* target = rd_cfg_new(command_line_root, str8_lit("target"));
+            RD_Cfg* exe    = rd_cfg_new(target, str8_lit("executable"));
+            RD_Cfg* args   = rd_cfg_new(target, str8_lit("arguments"));
+            RD_Cfg* wdir   = rd_cfg_new(target, str8_lit("working_directory"));
             rd_cfg_new(exe, executable_name_string);
             rd_cfg_new(args, arguments_string);
             rd_cfg_new(wdir, working_directory_string);
@@ -657,10 +657,10 @@ entry_point(CmdLine *cmd_line)
           }
           
           Temp scratch = scratch_begin(0, 0);
-          RD_Entity *target = rd_entity_alloc(rd_entity_root(), RD_EntityKind_Target);
+          RD_Entity* target = rd_entity_alloc(rd_entity_root(), RD_EntityKind_Target);
           rd_entity_equip_cfg_src(target, RD_CfgSrc_CommandLine);
           String8List passthrough_args_list = {0};
-          for(String8Node *n = args.first->next; n != 0; n = n->next)
+          for(String8Node* n = args.first->next; n != 0; n = n->next)
           {
             str8_list_push(scratch.arena, &passthrough_args_list, n->string);
           }
@@ -672,7 +672,7 @@ entry_point(CmdLine *cmd_line)
           if(args.first->string.size != 0)
           {
             String8 exe_name = args.first->string;
-            RD_Entity *exe = rd_entity_alloc(target, RD_EntityKind_Executable);
+            RD_Entity* exe = rd_entity_alloc(target, RD_EntityKind_Executable);
             PathStyle style = path_style_from_str8(exe_name);
             if(style == PathStyle_Relative)
             {
@@ -687,7 +687,7 @@ entry_point(CmdLine *cmd_line)
           if(path_part_of_arg.size != 0)
           {
             String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
-            RD_Entity *wdir = rd_entity_alloc(target, RD_EntityKind_WorkingDirectory);
+            RD_Entity* wdir = rd_entity_alloc(target, RD_EntityKind_WorkingDirectory);
             rd_entity_equip_name(wdir, path);
           }
           
@@ -696,7 +696,7 @@ entry_point(CmdLine *cmd_line)
           String8 args_str = str8_list_join(scratch.arena, &passthrough_args_list, &join);
           if(args_str.size != 0)
           {
-            RD_Entity *args_entity = rd_entity_alloc(target, RD_EntityKind_Arguments);
+            RD_Entity* args_entity = rd_entity_alloc(target, RD_EntityKind_Arguments);
             rd_entity_equip_name(args_entity, args_str);
           }
           scratch_end(scratch);
@@ -716,7 +716,7 @@ entry_point(CmdLine *cmd_line)
         ipc_lock_semaphore = os_semaphore_alloc(1, 1, ipc_lock_semaphore_name);
         ipc_s2m_ring_mutex = os_mutex_alloc();
         ipc_s2m_ring_cv = os_condition_variable_alloc();
-        IPCInfo *ipc_info = (IPCInfo *)ipc_shared_memory_base;
+        IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
         MemoryZeroStruct(ipc_info);
         os_thread_launch(ipc_signaler_thread__entry_point, 0, 0);
         scratch_end(scratch);
@@ -750,8 +750,8 @@ entry_point(CmdLine *cmd_line)
             if(msg.size != 0)
             {
               log_infof("ipc_msg: \"%S\"", msg);
-              RD_Window *dst_window = rd_state->first_window;
-              for(RD_Window *window = dst_window; window != 0; window = window->next)
+              RD_Window* dst_window = rd_state->first_window;
+              for(RD_Window* window = dst_window; window != 0; window = window->next)
               {
                 if(os_window_is_focused(window->os))
                 {
@@ -765,7 +765,7 @@ entry_point(CmdLine *cmd_line)
                 U64 first_space_pos = str8_find_needle(msg, 0, str8_lit(" "), 0);
                 String8 cmd_kind_name_string = str8_prefix(msg, first_space_pos);
                 String8 cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
-                RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
+                RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
                 if(cmd_kind_info != &rd_nil_cmd_kind_info) RD_RegsScope()
                 {
                   if(dst_window != rd_window_from_handle(rd_regs()->window))
@@ -865,8 +865,8 @@ entry_point(CmdLine *cmd_line)
       if(ipc_shared_memory_base != 0 &&
          os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
-        IPCInfo *ipc_info = (IPCInfo *)ipc_shared_memory_base;
-        U8 *buffer = (U8 *)(ipc_info+1);
+        IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
+        U8* buffer = (U8 *)(ipc_info+1);
         U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
         StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
         String8 msg = str8_list_join(scratch.arena, &cmd_line->inputs, &join);
@@ -888,7 +888,7 @@ entry_point(CmdLine *cmd_line)
       p2r_init();
       
       //- rjf: parse arguments
-      P2R_User2Convert *user2convert = p2r_user2convert_from_cmdln(scratch.arena, cmd_line);
+      P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(scratch.arena, cmd_line);
       
       //- rjf: open output file
       String8 output_name = push_str8_copy(scratch.arena, user2convert->output_name);
@@ -896,21 +896,21 @@ entry_point(CmdLine *cmd_line)
       B32 out_file_is_good = !os_handle_match(out_file, os_handle_zero());
       
       //- rjf: convert
-      P2R_Convert2Bake *convert2bake = 0;
+      P2R_Convert2Bake* convert2bake = 0;
       if(out_file_is_good) ProfScope("convert")
       {
         convert2bake = p2r_convert(scratch.arena, user2convert);
       }
       
       //- rjf: bake
-      P2R_Bake2Serialize *bake2srlz = 0;
+      P2R_Bake2Serialize* bake2srlz = 0;
       if(out_file_is_good) ProfScope("bake")
       {
         bake2srlz = p2r_bake(scratch.arena, convert2bake);
       }
       
       //- rjf: serialize
-      P2R_Serialize2File *srlz2file = 0;
+      P2R_Serialize2File* srlz2file = 0;
       if(out_file_is_good) ProfScope("serialize")
       {
         srlz2file = push_array(scratch.arena, P2R_Serialize2File, 1);
@@ -918,7 +918,7 @@ entry_point(CmdLine *cmd_line)
       }
       
       //- rjf: compress
-      P2R_Serialize2File *srlz2file_compressed = srlz2file;
+      P2R_Serialize2File* srlz2file_compressed = srlz2file;
       if(out_file_is_good) if(cmd_line_has_flag(cmd_line, str8_lit("compress"))) ProfScope("compress")
       {
         srlz2file_compressed = push_array(scratch.arena, P2R_Serialize2File, 1);
@@ -936,7 +936,7 @@ entry_point(CmdLine *cmd_line)
       if(out_file_is_good)
       {
         U64 off = 0;
-        for(String8Node *n = blobs.first; n != 0; n = n->next)
+        for(String8Node* n = blobs.first; n != 0; n = n->next)
         {
           os_file_write(out_file, r1u64(off, off+n->string.size), n->string.str);
           off += n->string.size;
