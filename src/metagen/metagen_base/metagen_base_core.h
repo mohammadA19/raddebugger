@@ -363,12 +363,12 @@ struct U128
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-enum Dimension
+public enum Dimension
 {
-  Dimension_X,
-  Dimension_Y,
-  Dimension_Z,
-  Dimension_W,
+  X,
+  Y,
+  Z,
+  W,
 }
 
 enum Side
