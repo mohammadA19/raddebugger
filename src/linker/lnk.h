@@ -112,13 +112,13 @@ enum
 typedef String8Node LNK_InputLib;
 typedef String8List LNK_InputLibList;
 
-srtuct LNK_InputImport
+struct LNK_InputImport
 {
   COFF_ParsedArchiveImportHeader       import_header;
   struct LNK_InputImport *next;
 }
 
-srtuct LNK_InputImportList
+struct LNK_InputImportList
 {
   U64              count;
   LNK_InputImport *first;
@@ -127,33 +127,33 @@ srtuct LNK_InputImportList
 
 ////////////////////////////////
 
-srtuct LNK_BaseRelocPage
+struct LNK_BaseRelocPage
 {
   U64     voff;
   U64List entries_addr32;
   U64List entries_addr64;
 }
 
-srtuct LNK_BaseRelocPageNode
+struct LNK_BaseRelocPageNode
 {
   struct LNK_BaseRelocPageNode *next;
   LNK_BaseRelocPage             v;
 }
 
-srtuct LNK_BaseRelocPageList
+struct LNK_BaseRelocPageList
 {
   U64                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
 }
 
-srtuct LNK_BaseRelocPageArray
+struct LNK_BaseRelocPageArray
 {
   U64                count;
   LNK_BaseRelocPage *v;
 }
 
-srtuct
+struct
 {
   U64                     page_size;
   LNK_Section           **sect_id_map;
@@ -164,7 +164,7 @@ srtuct
   B32                     is_large_addr_aware;
 }
 
-srtuct
+struct
 {
   Rng1U64                *ranges;
   U64                     page_size;
@@ -175,14 +175,14 @@ srtuct
   B32                     is_large_addr_aware;
 }
 
-srtuct
+struct
 {
   LNK_InputObjList    input_obj_list;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
 }
 
-srtuct
+struct
 {
   PathStyle               path_style;
   LNK_SymbolTable        *symtab;
@@ -191,7 +191,7 @@ srtuct
   Rng1U64                *range_arr;
 }
 
-srtuct
+struct
 {
   LNK_SymbolTable  *symtab;
   union {
@@ -200,7 +200,7 @@ srtuct
   } u;
 }
 
-srtuct
+struct
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -211,7 +211,7 @@ srtuct
   Rng1U64           *range_arr;
 }
 
-srtuct
+struct
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -221,13 +221,13 @@ srtuct
   LNK_Obj          **obj_arr;
 }
 
-srtuct
+struct
 {
   String8 path;
   String8 data;
 }
 
-srtuct
+struct
 {
   String8  data;
   Rng1U64 *ranges;

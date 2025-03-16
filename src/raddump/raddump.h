@@ -87,50 +87,50 @@ typedef U64 RD_Option;
 #define RD_Option_RdiNameMaps         (1ull << 52ull)
 #define RD_Option_RdiStrings          (1ull << 53ull)
 
-srtuct RD_Marker
+struct RD_Marker
 {
   U64     off;
   String8 string;
 }
 
-srtuct RD_MarkerArray
+struct RD_MarkerArray
 {
   U64        count;
   RD_Marker *v;
 }
 
-srtuct MarkerNode
+struct MarkerNode
 {
   struct MarkerNode *next;
   RD_Marker          v;
 }
 
-srtuct RD_MarkerList
+struct RD_MarkerList
 {
   U64            count;
   RD_MarkerNode *first;
   RD_MarkerNode *last;
 }
 
-srtuct RD_DisasmResult
+struct RD_DisasmResult
 {
   String8 text;
   U64     size;
 }
 
-srtuct RD_Section
+struct RD_Section
 {
   String8 name;
   String8 raw_data;
 }
 
-srtuct RD_SectionArray
+struct RD_SectionArray
 {
   U64         count;
   RD_Section *v;
 }
 
-srtuct RD_Line
+struct RD_Line
 {
   String8 file_path;
   U32     line_num;

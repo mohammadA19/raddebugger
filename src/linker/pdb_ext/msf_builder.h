@@ -12,27 +12,27 @@
 #define MSF_DEFAULT_PAGE_SIZE 4096
 #define MSF_DEFAULT_FPM MSF_FPM0
 
-srtuct MSF_PageNumberArray
+struct MSF_PageNumberArray
 {
   U64             count;
   MSF_PageNumber *v;
 }
 
-srtuct MSF_PageNode
+struct MSF_PageNode
 {
   struct MSF_PageNode *next;
   struct MSF_PageNode *prev;
   MSF_PageNumber       pn;
 }
 
-srtuct MSF_PageList
+struct MSF_PageList
 {
   MSF_PageNode *first;
   MSF_PageNode *last;
   MSF_UInt      count;
 }
 
-srtuct MSF_Stream
+struct MSF_Stream
 {
   MSF_StreamNumber sn;
   MSF_UInt         size;
@@ -41,35 +41,35 @@ srtuct MSF_Stream
   MSF_PageList     page_list;
 }
 
-srtuct MSF_StreamNode
+struct MSF_StreamNode
 {
   struct MSF_StreamNode *next;
   struct MSF_StreamNode *prev;
   MSF_Stream             data;
 }
 
-srtuct MSF_StreamList
+struct MSF_StreamList
 {
   MSF_UInt        count;
   MSF_StreamNode *first;
   MSF_StreamNode *last;
 }
 
-srtuct MSF_PageDataNode
+struct MSF_PageDataNode
 {
   struct MSF_PageDataNode *next;
   struct MSF_PageDataNode *prev;
   U8                      *data;
 }
 
-srtuct MSF_PageDataList
+struct MSF_PageDataList
 {
   MSF_PageDataNode *first;
   MSF_PageDataNode *last;
   MSF_UInt          count;
 }
 
-srtuct MSF_Context
+struct MSF_Context
 {
   Arena           *arena;
   MSF_UInt         page_size;
@@ -114,7 +114,7 @@ enum MSF_Error
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   MSF_UInt         page_size;
   MSF_PageDataList page_data_list;

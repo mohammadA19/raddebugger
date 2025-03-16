@@ -17,13 +17,13 @@ typedef PDB_HASH_TABLE_PACK_FUNC(PDB_HashTablePackFunc);
 #define PDB_HASH_TABLE_UNPACK_FUNC(name) B32 name(void *ud, String8 local_data, String8 key_value_data, U64 *key_value_cursor, String8 *key_out, String8 *value_out)
 typedef PDB_HASH_TABLE_UNPACK_FUNC(PDB_HashTableUnpackFunc);
 
-srtuct PDB_HashTableBucket
+struct PDB_HashTableBucket
 {
   String8 key;
   String8 value;
 }
 
-srtuct PDB_HashTable
+struct PDB_HashTable
 {
   Arena               *arena;
   PDB_HashTableBucket *bucket_arr;
@@ -43,14 +43,14 @@ enum
 ////////////////////////////////
 // String Table
 
-srtuct PDB_StringTableBucket
+struct PDB_StringTableBucket
 {
   String8          data;
   PDB_StringOffset offset;
   PDB_StringIndex  istr;
 }
 
-srtuct PDB_StringTable
+struct PDB_StringTable
 {
   Arena *arena;
   U32    version;
@@ -86,14 +86,14 @@ enum
   PDB_OpenTypeServerError_UNSUPPORTED_VERSION,
 }
 
-srtuct PDB_TypeBucket
+struct PDB_TypeBucket
 {
   struct PDB_TypeBucket *next;
   String8                raw_leaf;
   CV_TypeIndex           type_index;
 }
 
-srtuct PDB_TypeServer
+struct PDB_TypeServer
 {
   Arena             *arena;
   CV_TypeIndex       ti_lo;
@@ -104,20 +104,20 @@ srtuct PDB_TypeServer
   PDB_HashTable      hash_adj;
 }
 
-srtuct PDB_TypeHashStreamInfo
+struct PDB_TypeHashStreamInfo
 {
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize ti_offs;
   PDB_OffsetSize hash_adj;
 }
 
-srtuct PDB_TypeServerParse
+struct PDB_TypeServerParse
 {
   Rng1U64 ti_range;
   String8 leaf_data;
 }
 
-srtuct
+struct
 {
   CV_DebugT       debug_t;
   U64            *udt_counts;
@@ -127,13 +127,13 @@ srtuct
   PDB_TypeBucket *udt_buckets;
 }
 
-srtuct
+struct
 {
   PDB_TypeServer *ts;
   U32            *map;
 }
 
-srtuct
+struct
 {
   CV_TypeIndex    ti_lo;
   CV_TypeIndex    ti_hi;
@@ -149,7 +149,7 @@ srtuct
 ////////////////////////////////
 // Info
 
-srtuct PDB_InfoParse
+struct PDB_InfoParse
 {
   PDB_TpiVersion   version;
   COFF_TimeStamp   time_stamp;
@@ -158,7 +158,7 @@ srtuct PDB_InfoParse
   String8          extra_info;
 }
 
-srtuct PDB_InfoContext
+struct PDB_InfoContext
 {
   Arena            *arena;
   COFF_TimeStamp    time_stamp;
@@ -192,7 +192,7 @@ enum
 #define PDB_GSI_V70_BITMAP_COUNT ((PDB_GSI_V70_BUCKET_COUNT / PDB_GSI_V70_WORD_SIZE) + 1)
 #define PDB_GSI_V70_BITMAP_SIZE  (PDB_GSI_V70_BITMAP_COUNT * sizeof(U32))
 
-srtuct PDB_GsiContext
+struct PDB_GsiContext
 {
   Arena         *arena;
   U64            word_size;
@@ -202,14 +202,14 @@ srtuct PDB_GsiContext
   CV_SymbolList *bucket_arr;
 }
 
-srtuct PDB_GsiSortRecord
+struct PDB_GsiSortRecord
 {
   ISectOff isect_off;
   String8 name;
   U64 offset;
 }
 
-srtuct PDB_GsiBuildResult
+struct PDB_GsiBuildResult
 {
   PDB_GsiHeader      header;
   U64                hash_record_count;
@@ -223,7 +223,7 @@ srtuct PDB_GsiBuildResult
   String8            symbol_data;
 }
 
-srtuct PDB_GsiSerializeSymbolsTask
+struct PDB_GsiSerializeSymbolsTask
 {
   U64                  symbol_align;
   CV_SymbolList       *bucket_arr;
@@ -237,7 +237,7 @@ srtuct PDB_GsiSerializeSymbolsTask
 ////////////////////////////////
 // PSI
 
-srtuct PDB_PsiContext
+struct PDB_PsiContext
 {
   Arena *arena;
   PDB_GsiContext *gsi;
@@ -248,7 +248,7 @@ srtuct PDB_PsiContext
 
 #define PDB_MODULE_ALIGN PDB_NATURAL_ALIGN
 
-srtuct PDB_DbiModule
+struct PDB_DbiModule
 {
   struct PDB_DbiModule *next;
   MSF_StreamNumber      sn;
@@ -263,40 +263,40 @@ srtuct PDB_DbiModule
   String8List           source_file_list;
 }
 
-srtuct PDB_DbiModuleList
+struct PDB_DbiModuleList
 {
   PDB_DbiModule *first;
   PDB_DbiModule *last;
   U64            count;
 }
 
-srtuct PDB_DbiSectionContribNode
+struct PDB_DbiSectionContribNode
 {
   struct PDB_DbiSectionContribNode *next;
   PDB_DbiSectionContrib             data;
 }
 
-srtuct PDB_DbiSectionContribList
+struct PDB_DbiSectionContribList
 {
   PDB_DbiSectionContribNode *first;
   PDB_DbiSectionContribNode *last;
   U64                        count;
 }
 
-srtuct PDB_DbiSectionNode
+struct PDB_DbiSectionNode
 {
   struct PDB_DbiSectionNode *next;
   COFF_SectionHeader         data;
 }
 
-srtuct PDB_DbiSectionList
+struct PDB_DbiSectionList
 {
   U64                 count;
   PDB_DbiSectionNode *first;
   PDB_DbiSectionNode *last;
 }
 
-srtuct PDB_DbiContext
+struct PDB_DbiContext
 {
   Arena                *arena;
   U32                   age;
@@ -314,7 +314,7 @@ srtuct PDB_DbiContext
 ////////////////////////////////
 // PDB
 
-srtuct PDB_Context
+struct PDB_Context
 {
   Arena           *arena;
   MSF_Context     *msf;
@@ -327,7 +327,7 @@ srtuct PDB_Context
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   PDB_GsiContext *gsi;
   Rng1U64        *ranges;
@@ -335,7 +335,7 @@ srtuct
   U32            *hashes;
 }
 
-srtuct
+struct
 {
   CV_StringHashTable   string_ht;
   PDB_DbiModule      **mod_arr;

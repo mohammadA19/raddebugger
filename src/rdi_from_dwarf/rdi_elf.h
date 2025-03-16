@@ -13,7 +13,7 @@
 
 #define ELF_NIDENT 16
 
-srtuct ELF_Ehdr32{
+struct ELF_Ehdr32{
   U8  e_ident[ELF_NIDENT];
   U16 e_type;
   U16 e_machine;
@@ -30,7 +30,7 @@ srtuct ELF_Ehdr32{
   U16 e_shstrndx;
 }
 
-srtuct ELF_Ehdr64{
+struct ELF_Ehdr64{
   U8  e_ident[ELF_NIDENT];
   U16 e_type;
   U16 e_machine;
@@ -207,7 +207,7 @@ enum ELF_ReservedSectionIndex{
   ELF_ReservedSectionIndex_HIRESERVE = 0xFFFF,
 }
 
-srtuct ELF_Shdr32{
+struct ELF_Shdr32{
   U32 sh_name;
   U32 sh_type;
   U32 sh_flags;
@@ -220,7 +220,7 @@ srtuct ELF_Shdr32{
   U32 sh_entsize;
 }
 
-srtuct ELF_Shdr64{
+struct ELF_Shdr64{
   U32 sh_name;
   U32 sh_type;
   U64 sh_flags;
@@ -292,7 +292,7 @@ enum ELF_ReservedSymbolTableIndex{
 
 // symbol table
 
-srtuct ELF_Sym32{
+struct ELF_Sym32{
   U32 st_name;
   U32 st_value;
   U32 st_size;
@@ -301,7 +301,7 @@ srtuct ELF_Sym32{
   U16 st_shndx;
 }
 
-srtuct ELF_Sym64{
+struct ELF_Sym64{
   U32 st_name;
   U8  st_info;
   U8  st_other;
@@ -365,23 +365,23 @@ enum ELF_SymbolVisibility{
 
 // relocation
 
-srtuct ELF_Rel32{
+struct ELF_Rel32{
   U32 r_offset;
   U32 r_info;
 }
 
-srtuct ELF_Rela32{
+struct ELF_Rela32{
   U32 r_offset;
   U32 r_info;
   S32 r_addend;
 }
 
-srtuct ELF_Rel64{
+struct ELF_Rel64{
   U64 r_offset;
   U64 r_info;
 }
 
-srtuct ELF_Rela64{
+struct ELF_Rela64{
   U64 r_offset;
   U64 r_info;
   S64 r_addend;
@@ -399,7 +399,7 @@ srtuct ELF_Rela64{
 
 // program header
 
-srtuct ELF_Phdr32{
+struct ELF_Phdr32{
   U32 p_type;
   U32 p_offset;
   U32 p_vaddr;
@@ -410,7 +410,7 @@ srtuct ELF_Phdr32{
   U32 p_align;
 }
 
-srtuct ELF_Phdr64{
+struct ELF_Phdr64{
   U32 p_type;
   U32 p_flags;
   U64 p_offset;
@@ -449,17 +449,17 @@ enum ELF_SegmentFlags{
 
 // elf top level
 
-srtuct ELF_SectionArray{
+struct ELF_SectionArray{
   ELF_Shdr64 *sections;
   U64 count;
 }
 
-srtuct ELF_SegmentArray{
+struct ELF_SegmentArray{
   ELF_Phdr64 *segments;
   U64 count;
 }
 
-srtuct ELF_Parsed{
+struct ELF_Parsed{
   String8 data;
   ELF_Class elf_class;
   Arch arch;
@@ -485,7 +485,7 @@ srtuct ELF_Parsed{
 
 // elf symtab
 
-srtuct ELF_SymArray{
+struct ELF_SymArray{
   ELF_Sym64 *symbols;
   U64 count;
 }

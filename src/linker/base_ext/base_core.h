@@ -114,7 +114,7 @@
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   U64 major;
   U64 minor;
@@ -122,7 +122,7 @@ srtuct
 
 ////////////////////////////////
 
-srtuct ISectOff
+struct ISectOff
 {
   U32 isect;
   U32 off;
@@ -130,13 +130,13 @@ srtuct ISectOff
 
 ////////////////////////////////
 
-srtuct PairU32
+struct PairU32
 {
   U32 v0;
   U32 v1;
 }
 
-srtuct PairU64
+struct PairU64
 {
   U64 v0;
   U64 v1;

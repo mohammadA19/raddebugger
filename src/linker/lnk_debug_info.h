@@ -5,21 +5,21 @@
 
 ////////////////////////////////
 
-srtuct LNK_PchInfo
+struct LNK_PchInfo
 {
   CV_TypeIndex ti_lo;
   CV_TypeIndex ti_hi;
   U64          debug_p_obj_idx;
 }
 
-srtuct LNK_CodeViewSymbolsInput
+struct LNK_CodeViewSymbolsInput
 {
   U64            obj_idx;
   CV_SymbolList *symbol_list;
   String8        raw_symbols;
 }
 
-srtuct LNK_CodeViewInput
+struct LNK_CodeViewInput
 {
   U64             count;
   U64             internal_count;
@@ -71,39 +71,39 @@ enum
 
 #define LNK_LeafRefFlag_LocIdxExternal (1 << 31)
 #define LNK_LeafRefFlag_LeafIdxIPI     (1 << 31)
-srtuct
+struct
 {
   U32 enc_loc_idx;
   U32 enc_leaf_idx;
 }
 
-srtuct LNK_LeafRange
+struct LNK_LeafRange
 {
   struct LNK_LeafRange *next;
   Rng1U64               range;
   CV_DebugT            *debug_t;
 }
 
-srtuct LNK_LeafRangeList
+struct LNK_LeafRangeList
 {
   U64            count;
   LNK_LeafRange *first;
   LNK_LeafRange *last;
 }
 
-srtuct
+struct
 {
   LNK_LeafRef  leaf_ref;
   CV_TypeIndex type_index;
 }
 
-srtuct
+struct
 {
   U64              count;
   LNK_LeafBucket **v;
 }
 
-srtuct
+struct
 {
   U64              cap;
   LNK_LeafBucket **bucket_arr;
@@ -120,33 +120,33 @@ typedef union
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   LNK_Obj      **obj_arr;
   LNK_ChunkList *sect_list_arr;
   CV_DebugS     *debug_s_arr;
 }
 
-srtuct
+struct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
 }
 
-srtuct
+struct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
   CV_DebugT    *debug_t_arr;
 }
 
-srtuct
+struct
 {
   String8Array   data_arr;
   MSF_Parsed   **msf_parse_arr;
 }
 
-srtuct
+struct
 {
   CV_TypeServerInfo  *ts_info_arr;
   MSF_Parsed        **msf_parse_arr;
@@ -157,13 +157,13 @@ srtuct
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   LNK_LeafRangeList  *leaf_ranges_per_task;
   U64               **count_arr_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
@@ -171,7 +171,7 @@ srtuct
   CV_DebugT         *debug_t_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -179,7 +179,7 @@ srtuct
   CV_DebugT          *debug_t_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -187,7 +187,7 @@ srtuct
   CV_TypeIndexSource  dedup_ti_source;
 }
 
-srtuct
+struct
 {
   LNK_LeafHashTable   *ht;
   U64                 *count_arr;
@@ -196,7 +196,7 @@ srtuct
   LNK_LeafBucketArray  result;
 }
 
-srtuct
+struct
 {
   U64             loc_idx_bit_count_0;
   U64             loc_idx_bit_count_1;
@@ -210,7 +210,7 @@ srtuct
   U64             pass_idx;
 }
 
-srtuct
+struct
 {
   U32             *counts;
   U32             *offsets;
@@ -219,14 +219,14 @@ srtuct
   Rng1U64         *ranges;
 }
 
-srtuct
+struct
 {
   Rng1U64            *range_arr;
   CV_TypeIndex        min_type_index;
   LNK_LeafBucketArray bucket_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafBucket    **bucket_arr;
@@ -234,7 +234,7 @@ srtuct
   Rng1U64            *range_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -243,7 +243,7 @@ srtuct
   Arena             **arena_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
@@ -251,7 +251,7 @@ srtuct
   CV_DebugS         *debug_s_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -263,23 +263,23 @@ srtuct
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   String8List *data_list_arr;
 }
 
-srtuct
+struct
 {
   String8List *data_list_arr;
   String8List *source_file_names_list_arr;
 }
 
-srtuct
+struct
 {
   LNK_CodeViewSymbolsInput *inputs;
 }
 
-srtuct
+struct
 {
   U64                        total_symbol_input_count;
   LNK_CodeViewSymbolsInput  *symbol_inputs;
@@ -289,7 +289,7 @@ srtuct
   CV_SymbolList             *gsi_list_arr;
 }
 
-srtuct
+struct
 {
   CV_DebugS          *debug_s_arr;
   MSF_Context        *msf;
@@ -300,7 +300,7 @@ srtuct
   CV_StringHashTable  string_ht;
 }
 
-srtuct
+struct
 {
   MSF_Context    *msf;
   PDB_DbiModule **mod_arr;
@@ -310,7 +310,7 @@ srtuct
   String8List    *globrefs_arr;
 }
 
-srtuct
+struct
 {
   LNK_Obj                    *obj_arr;
   LNK_Section               **sect_id_map;
@@ -319,20 +319,20 @@ srtuct
   String8                     image_data;
 }
 
-srtuct
+struct
 {
   U32Array      *hash_arr_arr;
   CV_SymbolList *list_arr;
 }
 
-srtuct
+struct
 {
   U64            *hash_arr;
   CV_SymbolNode **arr;
   Rng1U64        *range_arr;
 }
 
-srtuct
+struct
 {
   LNK_Section                 **sect_id_map;
   LNK_SymbolHashTrieChunkList  *chunk_lists;
@@ -344,7 +344,7 @@ srtuct
   U32               *hashes;
 }
 
-srtuct
+struct
 {
   CV_TypeIndex              ipi_min_type_index;
   CV_DebugT                 ipi_types;
@@ -352,7 +352,7 @@ srtuct
   CV_SymbolListArray       *parsed_symbols;
 }
 
-srtuct
+struct
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
@@ -360,7 +360,7 @@ srtuct
   U64               *out_count_arr;
 }
 
-srtuct
+struct
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
@@ -368,7 +368,7 @@ srtuct
   CV_SymbolNode    **symbol_arr;
 }
 
-srtuct
+struct
 {
   CV_DebugT    debug_t;
   Rng1U64     *ranges;
@@ -381,13 +381,13 @@ srtuct
 ////////////////////////////////
 // RAD Debug Info
 
-srtuct
+struct
 {
   String8 name;
   U64     leaf_idx;
 }
 
-srtuct
+struct
 {
   CV_DebugT           debug_t;
   Rng1U64            *ranges;
@@ -395,7 +395,7 @@ srtuct
   LNK_UDTNameBucket **buckets;
 }
 
-srtuct
+struct
 {
   CV_DebugT           debug_t;
   CV_TypeIndex        ti_lo;
@@ -407,7 +407,7 @@ srtuct
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   CV_DebugT               *types;
   U64                      type_cap;
@@ -429,13 +429,13 @@ srtuct
   Rng1U64                 *ranges;
 }
 
-srtuct
+struct
 {
   U64              obj_idx;
   RDIB_SourceFile *src_file;
 }
 
-srtuct
+struct
 {
   LNK_Obj               *obj_arr;
   CV_DebugS             *debug_s_arr;
@@ -444,14 +444,14 @@ srtuct
   U64                    src_file_buckets_cap;
 }
 
-srtuct
+struct
 {
   CV_Arch     arch;
   CV_Language language;
   String8     compiler_name;
 }
 
-srtuct
+struct
 {
   LNK_SectionArray          image_sects;
   LNK_Section             **sect_id_map;

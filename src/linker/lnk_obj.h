@@ -5,7 +5,7 @@
 
 ////////////////////////////////
 
-srtuct LNK_InputObj
+struct LNK_InputObj
 {
   struct LNK_InputObj *next;
   B32                  is_thin;
@@ -16,7 +16,7 @@ srtuct LNK_InputObj
   String8              lib_path;
 }
 
-srtuct LNK_InputObjList
+struct LNK_InputObjList
 {
   U64           count;
   LNK_InputObj *first;
@@ -25,21 +25,21 @@ srtuct LNK_InputObjList
 
 ////////////////////////////////
 
-srtuct LNK_Directive
+struct LNK_Directive
 {
   struct LNK_Directive *next;
   String8               id;
   String8List           value_list;
 }
 
-srtuct LNK_DirectiveList
+struct LNK_DirectiveList
 {
   U64            count;
   LNK_Directive *first;
   LNK_Directive *last;
 }
 
-srtuct LNK_DirectiveInfo
+struct LNK_DirectiveInfo
 {
   LNK_DirectiveList v[LNK_CmdSwitch_Count];
 }
@@ -48,7 +48,7 @@ srtuct LNK_DirectiveInfo
 
 #define LNK_MakeChunkInputIdx(obj_idx, sect_idx) (((U64)(obj_idx) << 32) | (U64)((sect_idx) & max_U32))
 
-srtuct LNK_Obj
+struct LNK_Obj
 {
   String8             data;
   String8             path;
@@ -69,20 +69,20 @@ srtuct LNK_Obj
   LNK_AltNameList     alt_name_list;
 }
 
-srtuct LNK_ObjNode
+struct LNK_ObjNode
 {
   struct LNK_ObjNode *next;
   LNK_Obj             data;
 }
 
-srtuct LNK_ObjList
+struct LNK_ObjList
 {
   U64          count;
   LNK_ObjNode *first;
   LNK_ObjNode *last;
 }
 
-srtuct LNK_ObjNodeArray
+struct LNK_ObjNodeArray
 {
   U64          count;
   LNK_ObjNode *v;
@@ -90,7 +90,7 @@ srtuct LNK_ObjNodeArray
 
 ////////////////////////////////
 
-srtuct LNK_SectDefn
+struct LNK_SectDefn
 {
   struct LNK_SectDefn *next;
   LNK_Obj             *obj;
@@ -99,14 +99,14 @@ srtuct LNK_SectDefn
   U64                  idx;
 }
 
-srtuct
+struct
 {
   U64           count;
   LNK_SectDefn *first;
   LNK_SectDefn *last;
 }
 
-srtuct
+struct
 {
   LNK_InputObj    **inputs;
   LNK_ObjNode      *obj_node_arr;
@@ -116,7 +116,7 @@ srtuct
   U64              *function_pad_min;
 }
 
-srtuct
+struct
 {
   Rng1U64          *range_arr;
   LNK_ObjNode      *obj_node_arr;
@@ -124,21 +124,21 @@ srtuct
   LNK_SectDefnList *conf_arr;
 }
 
-srtuct
+struct
 {
   LNK_SectionTable *st;
   LNK_ObjNode      *obj_arr;
   U64             **chunk_count_arr_arr;
 }
 
-srtuct
+struct
 {
   LNK_ChunkManager *cman;
   U64             **chunk_id_arr_arr;
   U64               obj_idx;
 }
 
-srtuct
+struct
 {
   LNK_SectionTable *st;
   Rng1U64          *range_arr;
@@ -148,7 +148,7 @@ srtuct
   LNK_ChunkList   **chunk_list_arr_arr;
 }
 
-srtuct
+struct
 {
   LNK_SymbolType   type;
   LNK_ObjNodeArray in_arr;
@@ -156,7 +156,7 @@ srtuct
   Rng1U64         *range_arr;
 }
 
-srtuct
+struct
 {
   LNK_Obj      **obj_arr;
   String8        name;
@@ -165,14 +165,14 @@ srtuct
   LNK_ChunkList *list_arr;
 }
 
-srtuct
+struct
 {
   Rng1U64          *range_arr;
   LNK_ObjNodeArray  in_arr;
   String8List      *out_arr;
 }
 
-srtuct
+struct
 {
   LNK_ObjNode  *in_arr;
   String8List  *out_arr;

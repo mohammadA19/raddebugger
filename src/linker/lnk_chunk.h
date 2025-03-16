@@ -9,7 +9,7 @@
 
 ////////////////////////////////
 
-srtuct LNK_ChunkRef
+struct LNK_ChunkRef
 {
   U64 sect_id;
   U64 chunk_id;
@@ -23,7 +23,7 @@ enum
   LNK_Chunk_List,
 }
 
-srtuct LNK_Chunk
+struct LNK_Chunk
 {
   LNK_ChunkRef      ref;
   LNK_ChunkType     type;
@@ -45,19 +45,19 @@ srtuct LNK_Chunk
 #endif
 } LNK_Chunk, * LNK_ChunkPtr;
 
-srtuct LNK_ChunkNode
+struct LNK_ChunkNode
 {
   struct LNK_ChunkNode *next;
   LNK_ChunkPtr          data;
 }
 
-srtuct LNK_ChunkArray
+struct LNK_ChunkArray
 {
   U64           count;
   LNK_ChunkPtr *v;
 }
 
-srtuct LNK_ChunkList
+struct LNK_ChunkList
 {
   U64            count;
   LNK_ChunkNode *first;
@@ -74,7 +74,7 @@ enum LNK_ChunkOpType
   LNK_ChunkOp_EndVirt,
 }
 
-srtuct LNK_ChunkOp
+struct LNK_ChunkOp
 {
   struct LNK_ChunkOp *next;
   LNK_ChunkOpType     type;
@@ -89,38 +89,38 @@ srtuct LNK_ChunkOp
   } u;
 }
 
-srtuct LNK_ChunkOpList
+struct LNK_ChunkOpList
 {
   U64          total_chunk_count;
   LNK_ChunkOp *first;
   LNK_ChunkOp *last;
 }
 
-srtuct LNK_ChunkPad
+struct LNK_ChunkPad
 {
   U64 off;
   U64 size;
 }
 
-srtuct LNK_ChunkPadArray
+struct LNK_ChunkPadArray
 {
   U64           count;
   LNK_ChunkPad *v;
 }
-srtuct LNK_ChunkPadArrayNode
+struct LNK_ChunkPadArrayNode
 {
   struct LNK_ChunkPadArrayNode *next;
   U64                 cap;
   LNK_ChunkPadArray data;
 }
-srtuct LNK_ChunkPadArrayList
+struct LNK_ChunkPadArrayList
 {
   U64                      count;
   LNK_ChunkPadArrayNode *first;
   LNK_ChunkPadArrayNode *last;
 }
 
-srtuct LNK_ChunkLayout
+struct LNK_ChunkLayout
 {
   U64                     total_count;
   LNK_Chunk             **chunk_ptr_array;       // discarded chunks point to g_null_chunk
@@ -131,7 +131,7 @@ srtuct LNK_ChunkLayout
   LNK_ChunkPadArray      *pad_array;
 }
 
-srtuct LNK_ChunkManager
+struct LNK_ChunkManager
 {
   LNK_Chunk *root;
   U64        total_chunk_count;
@@ -139,13 +139,13 @@ srtuct LNK_ChunkManager
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   U64              offset;
   LNK_ChunkLayout *layout;
 }
 
-srtuct
+struct
 {
   LNK_ChunkLayout  layout;
   String8          buffer;

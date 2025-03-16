@@ -45,7 +45,7 @@ enum
   LNK_DefinedSymbolValue_VA
 }
 
-srtuct LNK_DefinedSymbol
+struct LNK_DefinedSymbol
 {
   LNK_DefinedSymbolFlags     flags;
   LNK_DefinedSymbolValueType value_type;
@@ -60,19 +60,19 @@ srtuct LNK_DefinedSymbol
   } u;
 }
 
-srtuct LNK_WeakSymbol
+struct LNK_WeakSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
   COFF_WeakExtType     lookup_type;
   struct LNK_Symbol   *fallback_symbol;
 }
 
-srtuct LNK_UndefinedSymbol
+struct LNK_UndefinedSymbol
 {
   LNK_SymbolScopeFlags scope_flags;
 }
 
-srtuct LNK_LazySymbol
+struct LNK_LazySymbol
 {
   struct LNK_Lib *lib;
   U64             member_offset;
@@ -90,7 +90,7 @@ enum
   LNK_Symbol_Undefined,
 }
 
-srtuct LNK_Symbol
+struct LNK_Symbol
 {
   String8         name;
   LNK_SymbolType  type;
@@ -103,39 +103,39 @@ srtuct LNK_Symbol
   } u;
 }
 
-srtuct LNK_SymbolNode
+struct LNK_SymbolNode
 {
   struct LNK_SymbolNode *next;
   LNK_Symbol            *data;
 }
 
-srtuct LNK_SymbolList
+struct LNK_SymbolList
 {
   U64             count;
   LNK_SymbolNode *first;
   LNK_SymbolNode *last;
 }
 
-srtuct LNK_SymbolNodeArray
+struct LNK_SymbolNodeArray
 {
   U64              count;
   LNK_SymbolNode **v;
 }
 
-srtuct LNK_SymbolArray
+struct LNK_SymbolArray
 {
   U64         count;
   LNK_Symbol *v;
 }
 
-srtuct LNK_SymbolHashTrie
+struct LNK_SymbolHashTrie
 {
   String8                   *name;
   LNK_Symbol                *symbol;
   struct LNK_SymbolHashTrie *child[4];
 }
 
-srtuct LNK_SymbolHashTrieChunk
+struct LNK_SymbolHashTrieChunk
 {
   struct LNK_SymbolHashTrieChunk *next;
   U64                             count;
@@ -143,14 +143,14 @@ srtuct LNK_SymbolHashTrieChunk
   LNK_SymbolHashTrie             *v;
 }
 
-srtuct LNK_SymbolHashTrieChunkList
+struct LNK_SymbolHashTrieChunkList
 {
   U64                      count;
   LNK_SymbolHashTrieChunk *first;
   LNK_SymbolHashTrieChunk *last;
 }
 
-srtuct LNK_SymbolTable
+struct LNK_SymbolTable
 {
   TP_Arena                    *arena;
   LNK_SymbolHashTrie          *scopes[LNK_SymbolScopeIndex_Count];
@@ -160,7 +160,7 @@ srtuct LNK_SymbolTable
 ////////////////////////////////
 // parallel for wrappers
 
-srtuct
+struct
 {
   LNK_SymbolTable *symtab;
   Rng1U64         *ranges;

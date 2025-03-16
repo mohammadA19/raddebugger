@@ -13,7 +13,7 @@ enum LNK_TimerType
   LNK_Timer_Count
 }
 
-srtuct LNK_Timer
+struct LNK_Timer
 {
   U64 begin;
   U64 end;

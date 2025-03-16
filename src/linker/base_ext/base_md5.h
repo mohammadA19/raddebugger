@@ -3,7 +3,7 @@
 
 #pragma once
 
-srtuct MD5Hash
+struct MD5Hash
 {
   U8 value[16];
 }

@@ -6,26 +6,26 @@
 #define THREAD_POOL_TASK_FUNC(name) void name(Arena *arena, U64 worker_id, U64 task_id, void *raw_task)
 typedef THREAD_POOL_TASK_FUNC(TP_TaskFunc);
 
-srtuct TP_Arena
+struct TP_Arena
 {
   U64     count;
   Arena **v;
 }
 
-srtuct TP_Temp
+struct TP_Temp
 {
   U64   count;
   Temp *v;
 }
 
-srtuct TP_Worker
+struct TP_Worker
 {
   U64                id;
   struct TP_Context *pool;
   OS_Handle          handle;
 }
 
-srtuct TP_Context
+struct TP_Context
 {
   B32          is_live;
   OS_Handle    exec_semaphore;

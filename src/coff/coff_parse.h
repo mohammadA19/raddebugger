@@ -4,7 +4,7 @@
 #ifndef COFF_PARSE_H
 #define COFF_PARSE_H
 
-srtuct COFF_FileHeaderInfo
+struct COFF_FileHeaderInfo
 {
   B32              is_big_obj;
   COFF_MachineType machine;
@@ -19,7 +19,7 @@ srtuct COFF_FileHeaderInfo
 
 ////////////////////////////////
 
-srtuct COFF_SectionHeaderArray
+struct COFF_SectionHeaderArray
 {
   U64                 count;
   COFF_SectionHeader *v;
@@ -27,26 +27,26 @@ srtuct COFF_SectionHeaderArray
 
 ////////////////////////////////
 
-srtuct COFF_Symbol16Node
+struct COFF_Symbol16Node
 {
   struct COFF_Symbol16Node *next;
   COFF_Symbol16             data;
 }
 
-srtuct COFF_Symbol16List
+struct COFF_Symbol16List
 {
   U64                count;
   COFF_Symbol16Node *first;
   COFF_Symbol16Node *last;
 }
 
-srtuct COFF_Symbol32Array
+struct COFF_Symbol32Array
 {
   U64            count;
   COFF_Symbol32 *v;
 }
 
-srtuct COFF_ParsedSymbol
+struct COFF_ParsedSymbol
 {
   String8              name;
   U32                  value;
@@ -68,26 +68,26 @@ enum COFF_SymbolValueInterpType : U32
 
 ////////////////////////////////
 
-srtuct COFF_RelocNode
+struct COFF_RelocNode
 {
   struct COFF_RelocNode *next;
   COFF_Reloc             data;
 }
 
-srtuct COFF_RelocList
+struct COFF_RelocList
 {
   U64             count;
   COFF_RelocNode *first;
   COFF_RelocNode *last;
 }
 
-srtuct COFF_RelocArray
+struct COFF_RelocArray
 {
   U64         count;
   COFF_Reloc *v;
 }
 
-srtuct COFF_RelocInfo
+struct COFF_RelocInfo
 {
   U64 array_off;
   U64 count;
@@ -103,7 +103,7 @@ enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
   COFF_ResourceIDType_Count
 }
 
-srtuct COFF_ResourceID16
+struct COFF_ResourceID16
 {
   COFF_ResourceIDType type;
   union {
@@ -112,7 +112,7 @@ srtuct COFF_ResourceID16
   } u;
 }
 
-srtuct COFF_ResourceID
+struct COFF_ResourceID
 {
   COFF_ResourceIDType type;
   union {
@@ -121,7 +121,7 @@ srtuct COFF_ResourceID
   } u;
 }
 
-srtuct COFF_ParsedResource
+struct COFF_ParsedResource
 {
   COFF_ResourceID          type;
   COFF_ResourceID          name;
@@ -133,13 +133,13 @@ srtuct COFF_ParsedResource
   String8                  data;
 }
 
-srtuct COFF_ParsedResourceNode
+struct COFF_ParsedResourceNode
 {
   struct COFF_ParsedResourceNode *next;
   COFF_ParsedResource             data;
 }
 
-srtuct COFF_ParsedResourceList
+struct COFF_ParsedResourceList
 {
   U64                      count;
   COFF_ParsedResourceNode *first;
@@ -163,7 +163,7 @@ enum
   COFF_Archive_Thin
 }
 
-srtuct COFF_ParsedArchiveMemberHeader
+struct COFF_ParsedArchiveMemberHeader
 {
   String8        name;           // padded to 16 bytes with spaces
   COFF_TimeStamp time_stamp;
@@ -174,7 +174,7 @@ srtuct COFF_ParsedArchiveMemberHeader
   Rng1U64        data_range;
 }
 
-srtuct COFF_ParsedArchiveImportHeader
+struct COFF_ParsedArchiveImportHeader
 {
   B32               is_sig_correct;
   U16               version;
@@ -188,14 +188,14 @@ srtuct COFF_ParsedArchiveImportHeader
   String8           dll_name;
 }
 
-srtuct COFF_ArchiveMember
+struct COFF_ArchiveMember
 {
   COFF_ParsedArchiveMemberHeader header;
   U64                      offset;
   String8                  data;
 }
 
-srtuct COFF_ArchiveFirstMember
+struct COFF_ArchiveFirstMember
 {
   U32      symbol_count;
   U64      member_offset_count;
@@ -203,7 +203,7 @@ srtuct COFF_ArchiveFirstMember
   String8  string_table;
 }
 
-srtuct COFF_ArchiveSecondMember
+struct COFF_ArchiveSecondMember
 {
   U32      member_count;
   U32      symbol_count;
@@ -214,20 +214,20 @@ srtuct COFF_ArchiveSecondMember
   String8  string_table;
 }
 
-srtuct COFF_ArchiveMemberNode
+struct COFF_ArchiveMemberNode
 {
   struct COFF_ArchiveMemberNode *next;
   COFF_ArchiveMember             data;
 }
 
-srtuct COFF_ArchiveMemberList
+struct COFF_ArchiveMemberList
 {
   U64                     count;
   COFF_ArchiveMemberNode *first;
   COFF_ArchiveMemberNode *last;
 }
 
-srtuct COFF_ArchiveParse
+struct COFF_ArchiveParse
 {
   B32                      has_second_header;
   B32                      has_long_names;

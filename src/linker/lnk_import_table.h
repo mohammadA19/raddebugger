@@ -6,7 +6,7 @@
 #define LNK_IMPORT_DLL_HASH_TABLE_BUCKET_COUNT  512
 #define LNK_IMPORT_FUNC_HASH_TABLE_BUCKET_COUNT 2048
 
-srtuct LNK_ImportFunc
+struct LNK_ImportFunc
 {
   struct LNK_ImportFunc *next;
   String8                name;
@@ -14,7 +14,7 @@ srtuct LNK_ImportFunc
   String8                iat_symbol_name;
 }
 
-srtuct LNK_ImportDLL
+struct LNK_ImportDLL
 {
   struct LNK_ImportDLL  *next;
   struct LNK_ImportFunc *first_func;
@@ -39,7 +39,7 @@ enum
 }
 typedef U32 LNK_ImportTableFlags;
 
-srtuct LNK_ImportTable
+struct LNK_ImportTable
 {
   Arena                *arena;
   COFF_MachineType      machine;

@@ -20,7 +20,7 @@ enum
 }
 typedef U32 MSCRT_FeatFlags;
 
-srtuct MSCRT_VCFeatures
+struct MSCRT_VCFeatures
 {
   U32 pre_vcpp;
   U32 c_cpp;
@@ -102,7 +102,7 @@ enum MSCRT_EhHandlerTypeFlags : U32
   MSCRT_EhHandlerTypeFlag_IsComplusEH = (1 << 31) // is handling EH in complus
 }
 
-srtuct MSCRT_FuncInfo32
+struct MSCRT_FuncInfo32
 {
   U32         magic;
   U32         max_state;
@@ -116,19 +116,19 @@ srtuct MSCRT_FuncInfo32
   MSCRT_Flags eh_flags;
 }
 
-srtuct MSCRT_IPState32
+struct MSCRT_IPState32
 {
   U32 ip;
   S32 state;
 }
 
-srtuct MSCRT_UnwindMap32
+struct MSCRT_UnwindMap32
 {
   S32 next_state;
   U32 action_virt_off;
 }
 
-srtuct MSCRT_EhHandlerType32
+struct MSCRT_EhHandlerType32
 {
   MSCRT_EhHandlerTypeFlags adjectives;
   U32                      descriptor_voff;
@@ -137,7 +137,7 @@ srtuct MSCRT_EhHandlerType32
   U32                      fp_distance;
 }
 
-srtuct MSCRT_TryMapBlock32
+struct MSCRT_TryMapBlock32
 {
   S32 try_low;
   S32 try_high;
@@ -146,13 +146,13 @@ srtuct MSCRT_TryMapBlock32
   U32 catch_handlers_voff;
 }
 
-srtuct MSCRT_ExceptionSpecTypeList32
+struct MSCRT_ExceptionSpecTypeList32
 {
   S32 count;
   U32 handlers_voff;
 }
 
-srtuct MSCRT_TryMapBlock
+struct MSCRT_TryMapBlock
 {
   S32                    try_low;
   S32                    try_high;
@@ -161,13 +161,13 @@ srtuct MSCRT_TryMapBlock
   MSCRT_EhHandlerType32 *catch_handlers;
 }
 
-srtuct MSCRT_ExceptionSpecTypeList
+struct MSCRT_ExceptionSpecTypeList
 {
   S32                    count;
   MSCRT_EhHandlerType32 *handlers;
 }
 
-srtuct MSCRT_FuncInfo
+struct MSCRT_FuncInfo
 {
   U32                          magic;
   U32                          max_state;
@@ -223,7 +223,7 @@ enum MSCRT_EhHandlerV4Flags : U8
   MSCRT_EhHandlerV4Flag_ContVOffShift = 4,
 }
 
-srtuct MSCRT_EhHandlerTypeV4
+struct MSCRT_EhHandlerTypeV4
 {
   MSCRT_EhHandlerV4Flags   flags;
   MSCRT_EhHandlerTypeFlags adjectives;
@@ -234,13 +234,13 @@ srtuct MSCRT_EhHandlerTypeV4
   U32                      catch_funclet_cont_addr_count;
 }
 
-srtuct MSCRT_EhHandlerTypeV4Array
+struct MSCRT_EhHandlerTypeV4Array
 {
   U64                    count;
   MSCRT_EhHandlerTypeV4 *v;
 }
 
-srtuct MSCRT_TryBlockMap32V4
+struct MSCRT_TryBlockMap32V4
 {
   U32 try_low;
   U32 try_high;
@@ -248,20 +248,20 @@ srtuct MSCRT_TryBlockMap32V4
   S32 handler_array_voff;
 }
 
-srtuct MSCRT_IP2State32V4
+struct MSCRT_IP2State32V4
 {
   U32  count;
   U32 *voffs;
   S32 *states;
 }
 
-srtuct MSCRT_SepIPState32V4
+struct MSCRT_SepIPState32V4
 {
   S32 func_start_voff;
   S32 ip_map_voff;
 }
 
-srtuct MSCRT_FuncInfo32V4
+struct MSCRT_FuncInfo32V4
 {
   MSCRT_FuncInfoV4Flags header;
   U32                   bbt_flags;
@@ -271,7 +271,7 @@ srtuct MSCRT_FuncInfo32V4
   S32                   wrt_frame_establisher_voff; // used only in catch funclets
 }
 
-srtuct MSCRT_UnwindEntryV4
+struct MSCRT_UnwindEntryV4
 {
   MSCRT_UnwindMapV4Type type;
   S32                   action;
@@ -279,13 +279,13 @@ srtuct MSCRT_UnwindEntryV4
   U32                   next_off;
 }
 
-srtuct MSCRT_UnwindMapV4
+struct MSCRT_UnwindMapV4
 {
   U32                  count;
   MSCRT_UnwindEntryV4 *v;
 }
 
-srtuct MSCRT_TryBlockMapV4
+struct MSCRT_TryBlockMapV4
 {
   U32                        try_low;
   U32                        try_high;
@@ -293,13 +293,13 @@ srtuct MSCRT_TryBlockMapV4
   MSCRT_EhHandlerTypeV4Array handlers;
 }
 
-srtuct MSCRT_TryBlockMapV4Array
+struct MSCRT_TryBlockMapV4Array
 {
   U64                  count;
   MSCRT_TryBlockMapV4 *v;
 }
 
-srtuct MSCRT_ParsedFuncInfoV4
+struct MSCRT_ParsedFuncInfoV4
 {
   MSCRT_FuncInfoV4Flags    header;
   U32                      bbt_flags;

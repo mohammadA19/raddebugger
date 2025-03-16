@@ -96,25 +96,25 @@ enum DWRITE_GRID_FIT_MODE {
 
 //- rjf: interfaces
 
-srtuct IDWriteFactory                  { struct { void* tbl[]; }* v; } IDWriteFactory;
-srtuct IDWriteFactory1                 { struct { void* tbl[]; }* v; } IDWriteFactory1;
-srtuct IDWriteFactory2                 { struct { void* tbl[]; }* v; } IDWriteFactory2;
-srtuct IDWriteRenderingParams          { struct { void* tbl[]; }* v; } IDWriteRenderingParams;
-srtuct IDWriteRenderingParams1         { struct { void* tbl[]; }* v; } IDWriteRenderingParams1;
-srtuct IDWriteRenderingParams2         { struct { void* tbl[]; }* v; } IDWriteRenderingParams2;
-srtuct IDWriteFontFileLoader           { struct { void* tbl[]; }* v; } IDWriteFontFileLoader;
-srtuct IDWriteFontFileStream           { struct { void* tbl[]; }* v; } IDWriteFontFileStream;
-srtuct IDWriteFontFile                 { struct { void* tbl[]; }* v; } IDWriteFontFile;
-srtuct IDWriteFontFace                 { struct { void* tbl[]; }* v; } IDWriteFontFace;
-srtuct IDWriteFontFace1                { struct { void* tbl[]; }* v; } IDWriteFontFace1;
-srtuct IDWriteFontFace2                { struct { void* tbl[]; }* v; } IDWriteFontFace2;
-srtuct IDWriteGdiInterop               { struct { void* tbl[]; }* v; } IDWriteGdiInterop;
-srtuct IDWriteBitmapRenderTarget       { struct { void* tbl[]; }* v; } IDWriteBitmapRenderTarget;
-srtuct IDWriteBitmapRenderTarget1      { struct { void* tbl[]; }* v; } IDWriteBitmapRenderTarget1;
+struct IDWriteFactory                  { struct { void* tbl[]; }* v; } IDWriteFactory;
+struct IDWriteFactory1                 { struct { void* tbl[]; }* v; } IDWriteFactory1;
+struct IDWriteFactory2                 { struct { void* tbl[]; }* v; } IDWriteFactory2;
+struct IDWriteRenderingParams          { struct { void* tbl[]; }* v; } IDWriteRenderingParams;
+struct IDWriteRenderingParams1         { struct { void* tbl[]; }* v; } IDWriteRenderingParams1;
+struct IDWriteRenderingParams2         { struct { void* tbl[]; }* v; } IDWriteRenderingParams2;
+struct IDWriteFontFileLoader           { struct { void* tbl[]; }* v; } IDWriteFontFileLoader;
+struct IDWriteFontFileStream           { struct { void* tbl[]; }* v; } IDWriteFontFileStream;
+struct IDWriteFontFile                 { struct { void* tbl[]; }* v; } IDWriteFontFile;
+struct IDWriteFontFace                 { struct { void* tbl[]; }* v; } IDWriteFontFace;
+struct IDWriteFontFace1                { struct { void* tbl[]; }* v; } IDWriteFontFace1;
+struct IDWriteFontFace2                { struct { void* tbl[]; }* v; } IDWriteFontFace2;
+struct IDWriteGdiInterop               { struct { void* tbl[]; }* v; } IDWriteGdiInterop;
+struct IDWriteBitmapRenderTarget       { struct { void* tbl[]; }* v; } IDWriteBitmapRenderTarget;
+struct IDWriteBitmapRenderTarget1      { struct { void* tbl[]; }* v; } IDWriteBitmapRenderTarget1;
 
 //- rjf: structs
 
-srtuct DWRITE_GLYPH_METRICS {
+struct DWRITE_GLYPH_METRICS {
   INT32  leftSideBearing;
   UINT32 advanceWidth;
   INT32  rightSideBearing;
@@ -124,12 +124,12 @@ srtuct DWRITE_GLYPH_METRICS {
   INT32  verticalOriginY;
 }
 
-srtuct DWRITE_GLYPH_OFFSET {
+struct DWRITE_GLYPH_OFFSET {
   FLOAT advanceOffset;
   FLOAT ascenderOffset;
 }
 
-srtuct DWRITE_GLYPH_RUN {
+struct DWRITE_GLYPH_RUN {
   IDWriteFontFace*     fontFace;
   FLOAT                fontEmSize;
   UINT32               glyphCount;
@@ -140,7 +140,7 @@ srtuct DWRITE_GLYPH_RUN {
   UINT32               bidiLevel;
 }
 
-srtuct DWRITE_FONT_METRICS {
+struct DWRITE_FONT_METRICS {
   UINT16 designUnitsPerEm;
   UINT16 ascent;
   UINT16 descent;
@@ -153,7 +153,7 @@ srtuct DWRITE_FONT_METRICS {
   UINT16 strikethroughThickness;
 }
 
-srtuct DWRITE_MATRIX {
+struct DWRITE_MATRIX {
   FLOAT m11;
   FLOAT m12;
   FLOAT m21;

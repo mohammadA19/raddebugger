@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ Dwarf Register Layout
 
-srtuct DW_RegsX64
+struct DW_RegsX64
 {
   union {
     struct {
@@ -42,13 +42,13 @@ typedef DW_READ_MEMORY_SIG(DW_ReadMemorySig);
 //- machine configuration types
 typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
 
-srtuct DW_ExprMachineCallConfig
+struct DW_ExprMachineCallConfig
 {
   void                   *user_ptr;
   DW_ExprResolveCallFunc *func;
 }
 
-srtuct DW_ExprMachineConfig
+struct DW_ExprMachineConfig
 {
   U64                       max_step_count; // (read only in the eval functions)
   DW_ReadMemorySig         *read_memory;
@@ -81,12 +81,12 @@ enum DW_ExprFlags : U32
   DW_ExprFlag_NonLinearFlow = (1 << 18)
 }
 
-srtuct DW_ExprAnalysis
+struct DW_ExprAnalysis
 {
   DW_ExprFlags flags;
 }
 
-srtuct DW_ExprAnalysisTask
+struct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask *next;
   U64                         p;
@@ -130,7 +130,7 @@ enum DW_LocFailKind
   DW_LocFailKind_MissingArenaForComposite,
 }
 
-srtuct DW_SimpleLoc
+struct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
   union {
@@ -145,7 +145,7 @@ srtuct DW_SimpleLoc
   };
 }
 
-srtuct DW_Piece
+struct DW_Piece
 {
   // Hint for Interpreting Pieces
   //
@@ -160,7 +160,7 @@ srtuct DW_Piece
   B32              is_bit_loc;
 }
 
-srtuct DW_Location
+struct DW_Location
 {
   // Interpreting a Dwarf Location
   //
@@ -194,20 +194,20 @@ srtuct DW_Location
 
 
 //- full evaluator state types
-srtuct DW_ExprStackNode
+struct DW_ExprStackNode
 {
   struct DW_ExprStackNode *next;
   U64                      val;
 }
 
-srtuct DW_ExprStack
+struct DW_ExprStack
 {
   DW_ExprStackNode *stack;
   DW_ExprStackNode *free_nodes;
   U64               count;
 }
 
-srtuct DW_ExprCall
+struct DW_ExprCall
 {
   struct DW_ExprCall *next;
   void               *ptr;
@@ -215,7 +215,7 @@ srtuct DW_ExprCall
   U64                 cursor;
 }
 
-srtuct DW_ExprCallStack
+struct DW_ExprCallStack
 {
   DW_ExprCall *stack;
   DW_ExprCall *free_calls;

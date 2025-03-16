@@ -24,7 +24,7 @@ enum
   PDB_StringTableHeader_CurrentVersion = PDB_StringTableHeader_Version1
 }
 
-srtuct PDB_StringTableHeader
+struct PDB_StringTableHeader
 {
   U32 magic;
   U32 version;
@@ -76,7 +76,7 @@ enum
 typedef U32 PDB_FeatureFlags;
 
 #pragma pack(push,1)
-srtuct PDB_InfoHeaderV70
+struct PDB_InfoHeaderV70
 {
   PDB_InfoVersion    version;
   COFF_TimeStamp     time_stamp;
@@ -98,7 +98,7 @@ StaticAssert(sizeof(PDB_InfoHeaderV70) == 28, pdb_info_header_v70_size_check);
 
 #define PDB_SRC_HEADER_BLOCK_MAGIC_V1 19980827
 
-srtuct PDB_SrcHeaderBlockHeader
+struct PDB_SrcHeaderBlockHeader
 {
   U32 version;
   U32 stream_size;
@@ -124,7 +124,7 @@ enum
 typedef U8 PDB_SrcHeaderFlags;
 
 // (PDB/include/pdb.h: SrcHeaderOut)
-srtuct PDB_SrcHeaderBlockEntry
+struct PDB_SrcHeaderBlockEntry
 {
   U32                size;
   U32                version;
@@ -186,7 +186,7 @@ enum PDB_DbiHeaderFlags : U16
   PDB_DbiHeaderFlag_CTypes      = 0x4
 }
 
-srtuct PDB_DbiHeader
+struct PDB_DbiHeader
 {
   PDB_DbiHeaderSignature sig;
   PDB_DbiVersion version;
@@ -222,7 +222,7 @@ typedef U32 PDB_DbiSectionContribVersion;
 #define PDB_DbiSectionContribVersion_1 (0xeffe0000u + 19970605u)
 #define PDB_DbiSectionContribVersion_2 (0xeffe0000u + 20140516u)
 
-srtuct PDB_DbiSectionContrib40
+struct PDB_DbiSectionContrib40
 {
   CV_SectionIndex sec;
   U16 pad0;
@@ -233,14 +233,14 @@ srtuct PDB_DbiSectionContrib40
   U16 pad1;
 }
 
-srtuct PDB_DbiSectionContrib
+struct PDB_DbiSectionContrib
 {
   PDB_DbiSectionContrib40 base;
   U32 data_crc;
   U32 reloc_crc;
 }
 
-srtuct PDB_DbiSectionContrib2
+struct PDB_DbiSectionContrib2
 {
   PDB_DbiSectionContrib40 base;
   U32 data_crc;
@@ -248,7 +248,7 @@ srtuct PDB_DbiSectionContrib2
   U32 sec_coff;
 }
 
-srtuct PDB_DbiCompUnitHeader
+struct PDB_DbiCompUnitHeader
 {
   U32 unused;
   PDB_DbiSectionContrib contribution;
@@ -285,7 +285,7 @@ enum
 }
 typedef U16 PDB_DbiOMF;
 
-srtuct PDB_DbiSecMapEntry
+struct PDB_DbiSecMapEntry
 {
   PDB_DbiOMF flags;
   U16        ovl;
@@ -297,7 +297,7 @@ srtuct PDB_DbiSecMapEntry
   U32        sec_size;
 }
 
-srtuct PDB_DbiSecMapHeader
+struct PDB_DbiSecMapHeader
 {
   U16 section_count;
   U16 segment_count;
@@ -330,19 +330,19 @@ enum
 #define PDB_TYPE_OFFSET_MAX  max_U32
 typedef U32 PDB_TypeOffset;
 
-srtuct PDB_TpiOffHint
+struct PDB_TpiOffHint
 {
   CV_TypeId itype;
   PDB_TypeOffset off;
 }
 
-srtuct PDB_OffsetSize
+struct PDB_OffsetSize
 {
   U32 off;
   U32 size;
 }
 
-srtuct PDB_TpiHeader
+struct PDB_TpiHeader
 {
   //   (HDR)
   PDB_TpiVersion version;
@@ -375,7 +375,7 @@ enum PDB_GsiVersion : U32
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
 }
 
-srtuct PDB_GsiHeader
+struct PDB_GsiHeader
 {
   PDB_GsiSignature signature;
   PDB_GsiVersion version;
@@ -383,20 +383,20 @@ srtuct PDB_GsiHeader
   U32 bucket_data_size;
 }
 
-srtuct PDB_GsiHashRecord
+struct PDB_GsiHashRecord
 {
   U32 symbol_off;
   U32 cref;
 }
 
-srtuct PDB_GsiHashRecordOffsetCalc
+struct PDB_GsiHashRecordOffsetCalc
 {
   U32 next;
   U32 off;
   U32 cref;
 }
 
-srtuct PDB_PsiHeader
+struct PDB_PsiHeader
 {
   U32 sym_hash_size;
   U32 addr_map_size;

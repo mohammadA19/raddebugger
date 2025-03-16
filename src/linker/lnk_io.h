@@ -2,7 +2,7 @@
 
 ////////////////////////////////
 
-srtuct
+struct
 {
   String8Array path_arr;
   String8Array data_arr;

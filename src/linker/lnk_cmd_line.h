@@ -3,14 +3,14 @@
 
 #pragma once
 
-srtuct LNK_CmdOption
+struct LNK_CmdOption
 {
   struct LNK_CmdOption *next;
   String8               string;
   String8List           value_strings;
 }
 
-srtuct LNK_CmdLine
+struct LNK_CmdLine
 {
   U64            option_count;
   LNK_CmdOption *first_option;

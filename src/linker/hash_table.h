@@ -3,7 +3,7 @@
 
 #pragma once
 
-srtuct KeyValuePair
+struct KeyValuePair
 {
   union {
     String8 key_string;
@@ -18,19 +18,19 @@ srtuct KeyValuePair
   };
 }
 
-srtuct BucketNode
+struct BucketNode
 {
   struct BucketNode *next;
   KeyValuePair       v;
 }
 
-srtuct BucketList
+struct BucketList
 {
   BucketNode *first;
   BucketNode *last;
 }
 
-srtuct HashTable
+struct HashTable
 {
   U64         count;
   U64         cap;

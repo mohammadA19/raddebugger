@@ -948,7 +948,7 @@ struct PE_BinInfo
   PE_TLSHeader64  tls_header;
 }
 
-srtuct PE_DebugInfo
+struct PE_DebugInfo
 {
   PE_DebugDirectory header;
   union
@@ -976,13 +976,13 @@ srtuct PE_DebugInfo
   } u;
 }
 
-srtuct PE_DebugInfoNode
+struct PE_DebugInfoNode
 {
   struct PE_DebugInfoNode *next;
   PE_DebugInfo             v;
 }
 
-srtuct PE_DebugInfoList
+struct PE_DebugInfoList
 {
   PE_DebugInfoNode *first;
   PE_DebugInfoNode *last;

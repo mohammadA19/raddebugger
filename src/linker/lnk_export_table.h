@@ -3,7 +3,7 @@
 
 #pragma once
 
-srtuct LNK_Export
+struct LNK_Export
 {
   struct LNK_Export  *next;
   String8             name;
@@ -14,20 +14,20 @@ srtuct LNK_Export
   B32                 is_private;
 }
 
-srtuct LNK_ExportList
+struct LNK_ExportList
 {
   U64         count;
   LNK_Export *first;
   LNK_Export *last;
 }
 
-srtuct LNK_ExportArray
+struct LNK_ExportArray
 {
   U64         count;
   LNK_Export *v;
 }
 
-srtuct LNK_ExportTable
+struct LNK_ExportTable
 {
   Arena         *arena;
   HashTable     *name_export_ht;

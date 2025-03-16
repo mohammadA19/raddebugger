@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ PDB Parser String Table Types
 
-srtuct PDB_Strtbl
+struct PDB_Strtbl
 {
   String8 data;
   U32 bucket_count;
@@ -28,26 +28,26 @@ enum PDB_NamedStream
   PDB_NamedStream_Count
 }
 
-srtuct PDB_NamedStreamTable
+struct PDB_NamedStreamTable
 {
   MSF_StreamNumber sn[PDB_NamedStream_Count];
 }
 
-srtuct PDB_InfoNode
+struct PDB_InfoNode
 {
   struct PDB_InfoNode *next;
   String8 string;
   MSF_StreamNumber sn;
 }
 
-srtuct PDB_Info
+struct PDB_Info
 {
   PDB_InfoNode *first;
   PDB_InfoNode *last;
   Guid auth_guid;
 }
 
-srtuct PDB_InfoHeader
+struct PDB_InfoHeader
 {
   PDB_InfoVersion version;
   U32 time;
@@ -79,7 +79,7 @@ enum
   PDB_DbiCompUnitRange_COUNT
 }
 
-srtuct PDB_DbiParsed
+struct PDB_DbiParsed
 {
   String8 data;
   COFF_MachineType machine_type;
@@ -90,7 +90,7 @@ srtuct PDB_DbiParsed
   MSF_StreamNumber dbg_streams[PDB_DbiStream_COUNT];
 }
 
-srtuct PDB_CompUnit
+struct PDB_CompUnit
 {
   MSF_StreamNumber sn;
   U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
@@ -99,26 +99,26 @@ srtuct PDB_CompUnit
   String8 group_name;
 }
 
-srtuct PDB_CompUnitNode
+struct PDB_CompUnitNode
 {
   struct PDB_CompUnitNode *next;
   PDB_CompUnit unit;
 }
 
-srtuct PDB_CompUnitArray
+struct PDB_CompUnitArray
 {
   PDB_CompUnit **units;
   U64 count;
 }
 
-srtuct PDB_CompUnitContribution
+struct PDB_CompUnitContribution
 {
   U32 mod;
   U64 voff_first;
   U64 voff_opl;
 }
 
-srtuct PDB_CompUnitContributionArray
+struct PDB_CompUnitContributionArray
 {
   PDB_CompUnitContribution *contributions;
   U64 count;
@@ -128,7 +128,7 @@ srtuct PDB_CompUnitContributionArray
 ////////////////////////////////
 //~ PDB Parser TPI/IPI Types
 
-srtuct PDB_TpiParsed
+struct PDB_TpiParsed
 {
   String8 data;
   
@@ -152,14 +152,14 @@ srtuct PDB_TpiParsed
   
 }
 
-srtuct PDB_TpiHashBlock
+struct PDB_TpiHashBlock
 {
   struct PDB_TpiHashBlock *next;
   U32 local_count;
   CV_TypeId itypes[13]; // 13 = (64 - 12)/4
 }
 
-srtuct PDB_TpiHashParsed
+struct PDB_TpiHashParsed
 {
   String8 data;
   String8 aux_data;
@@ -172,13 +172,13 @@ srtuct PDB_TpiHashParsed
 ////////////////////////////////
 //~ PDB Parser GSI Types
 
-srtuct PDB_GsiBucket
+struct PDB_GsiBucket
 {
   U32 *offs;
   U64 count;
 }
 
-srtuct PDB_GsiParsed
+struct PDB_GsiParsed
 {
   PDB_GsiBucket buckets[4096];
 }
