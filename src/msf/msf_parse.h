@@ -11,7 +11,8 @@ struct MSF_RawStream
 {
   uint64 size;
   uint64 page_count;
-  union {
+  [Union]
+  struct {
     uint32* page_indices_u32;
     uint16* page_indices_u16;
   } u;

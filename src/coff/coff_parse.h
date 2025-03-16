@@ -106,7 +106,8 @@ enum COFF_ResourceIDType : uint32  COFF_ResourceIDTypeEnum
 struct COFF_ResourceID16
 {
   COFF_ResourceIDType type;
-  union {
+  [Union]
+  struct {
     uint16      number;
     String16 string;
   } u;
@@ -115,7 +116,8 @@ struct COFF_ResourceID16
 struct COFF_ResourceID
 {
   COFF_ResourceIDType type;
-  union {
+  [Union]
+  struct {
     uint16     number;
     String8 string;
   } u;

@@ -9,7 +9,8 @@
 
 //- rjf: 2-vectors
 
-union Vec2F32
+[Union]
+struct Vec2F32
 {
   struct
   {
@@ -19,7 +20,8 @@ union Vec2F32
   float v[2];
 }
 
-union Vec2S64
+[Union]
+struct Vec2S64
 {
   struct
   {
@@ -29,7 +31,8 @@ union Vec2S64
   int64 v[2];
 }
 
-union Vec2S32
+[Union]
+struct Vec2S32
 {
   struct
   {
@@ -39,7 +42,8 @@ union Vec2S32
   int32 v[2];
 }
 
-union Vec2S16
+[Union]
+struct Vec2S16
 {
   struct
   {
@@ -51,7 +55,8 @@ union Vec2S16
 
 //- rjf: 3-vectors
 
-union Vec3F32
+[Union]
+struct Vec3F32
 {
   struct
   {
@@ -72,7 +77,8 @@ union Vec3F32
   float v[3];
 }
 
-union Vec3S32
+[Union]
+struct Vec3S32
 {
   struct
   {
@@ -95,7 +101,8 @@ union Vec3S32
 
 //- rjf: 4-vectors
 
-union Vec4F32
+[Union]
+struct Vec4F32
 {
   struct
   {
@@ -122,7 +129,8 @@ union Vec4F32
   float v[4];
 }
 
-union Vec4S32
+[Union]
+struct Vec4S32
 {
   struct
   {
@@ -167,7 +175,8 @@ struct Mat4x4F32
 
 //- rjf: 1-range
 
-union Rng1U32
+[Union]
+struct Rng1U32
 {
   struct
   {
@@ -177,7 +186,8 @@ union Rng1U32
   uint32 v[2];
 }
 
-union Rng1S32
+[Union]
+struct Rng1S32
 {
   struct
   {
@@ -187,7 +197,8 @@ union Rng1S32
   int32 v[2];
 }
 
-union Rng1U64
+[Union]
+struct Rng1U64
 {
   struct
   {
@@ -197,7 +208,8 @@ union Rng1U64
   uint64 v[2];
 }
 
-union Rng1S64
+[Union]
+struct Rng1S64
 {
   struct
   {
@@ -207,7 +219,8 @@ union Rng1S64
   int64 v[2];
 }
 
-union Rng1F32
+[Union]
+struct Rng1F32
 {
   struct
   {
@@ -219,7 +232,8 @@ union Rng1F32
 
 //- rjf: 2-range (rectangles)
 
-union Rng2S16
+[Union]
+struct Rng2S16
 {
   struct
   {
@@ -241,7 +255,8 @@ union Rng2S16
   Vec2S16 v[2];
 }
 
-union Rng2S32
+[Union]
+struct Rng2S32
 {
   struct
   {
@@ -263,7 +278,8 @@ union Rng2S32
   Vec2S32 v[2];
 }
 
-union Rng2F32
+[Union]
+struct Rng2F32
 {
   struct
   {
@@ -285,7 +301,8 @@ union Rng2F32
   Vec2F32 v[2];
 }
 
-union Rng2S64
+[Union]
+struct Rng2S64
 {
   struct
   {

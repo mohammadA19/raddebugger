@@ -1279,7 +1279,8 @@ RDI_TypeKind kind;
 RDI_U16 flags;
 RDI_U32 byte_size;
 
-    union
+    [Union]
+    struct
   {
     // kind is 'built-in'
     struct
@@ -1292,7 +1293,8 @@ RDI_U32 byte_size;
     {
       RDI_U32 direct_type_idx;
       RDI_U32 count;
-      union
+      [Union]
+      struct
       {
         // when kind is 'Function' or 'Method'
         RDI_U32 param_idx_run_first;

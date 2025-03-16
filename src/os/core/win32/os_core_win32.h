@@ -51,7 +51,8 @@ struct OS_W32_Entity
 {
   OS_W32_Entity* next;
   OS_W32_EntityKind kind;
-  union
+  [Union]
+  struct
   {
     struct
     {

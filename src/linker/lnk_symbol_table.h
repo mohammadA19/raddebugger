@@ -49,7 +49,8 @@ struct LNK_DefinedSymbol
 {
   LNK_DefinedSymbolFlags     flags;
   LNK_DefinedSymbolValueType value_type;
-  union {
+  [Union]
+  struct {
     struct {
       LNK_Chunk*            chunk;
       uint64                   chunk_offset;
@@ -95,7 +96,8 @@ struct LNK_Symbol
   String8         name;
   LNK_SymbolType  type;
   struct LNK_Obj* obj;
-  union {
+  [Union]
+  struct {
     LNK_DefinedSymbol   defined;
     LNK_WeakSymbol      weak;
     LNK_UndefinedSymbol undefined;

@@ -5,12 +5,14 @@
 
 struct KeyValuePair
 {
-  union {
+  [Union]
+  struct {
     String8 key_string;
     uint32     key_u32;
     uint64     key_u64;
   };
-  union {
+  [Union]
+  struct {
     String8  value_string;
     void*    value_raw;
     uint32      value_u32;

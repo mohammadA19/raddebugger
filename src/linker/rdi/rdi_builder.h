@@ -59,7 +59,8 @@ struct RDIB_Location
 {
   RDI_LocationKind kind;
   Rng1U64List      ranges;
-  union {
+  [Union]
+  struct {
     struct {
       RDI_RegCode reg_code;
       uint64         offset;
@@ -260,7 +261,8 @@ struct RDIB_InlineSite
   struct RDIB_Type*            type;
   struct RDIB_Type*            owner;
   struct RDIB_InlineSiteChunk* chunk;
-  union {
+  [Union]
+  struct {
     struct RDIB_LineTable* line_table;
     struct {
       void* ud0;
@@ -279,7 +281,8 @@ enum RDI_MemberKindExt : RDI_MemberKind
 struct RDIB_UDTMember
 {
   RDI_MemberKindExt kind;
-  union {
+  [Union]
+  struct {
     struct {
       String8      name;
       uint64          offset;
@@ -350,7 +353,8 @@ struct RDIB_Type
   RDI_TypeKindExt kind;
   uint64 final_idx;
   uint64 itype;
-  union {
+  [Union]
+  struct {
     struct {
       String8 name;
       uint64     size;
@@ -399,7 +403,8 @@ struct RDIB_Type
       RDIB_TypeRef members;
       // assigned in UDT build step
       uint64 udt_idx;
-      union {
+      [Union]
+      struct {
         struct {
           uint64          size;
           RDIB_TypeRef derived;
@@ -607,9 +612,11 @@ struct RDIB_StringMapBucket
 {
   String8 string;
 
-  union {
+  [Union]
+  struct {
     // to get deterministic output we assign each bucket a unique index
-    union {
+    [Union]
+    struct {
       struct {
         uint32 lo;
         uint32 hi;
@@ -621,7 +628,8 @@ struct RDIB_StringMapBucket
     uint64 idx;
   };
 
-  union {
+  [Union]
+  struct {
     // depending on the usage context sotres: pointers to variables, procedures, and etc.
     VoidNode* raw_values;
 
@@ -629,7 +637,8 @@ struct RDIB_StringMapBucket
     struct {
       uint32 count;
       // if we have single index - store it in the bucket
-      union {
+      [Union]
+      struct {
         uint64 idx_run_bucket_idx;
         uint32 match_idx;
       };
@@ -679,7 +688,8 @@ struct RDIB_StringMapRadixSort
 
 struct RDIB_IndexRunBucket
 {
-  union {
+  [Union]
+  struct {
     struct {
       uint32 lo;
       uint32 hi;
@@ -820,7 +830,8 @@ struct RDIB_MembersTask
   uint64*             offsets;
   RDIB_TypeChunk** type_chunks;
   RDIB_StringMap*  string_map;
-  union {
+  [Union]
+  struct {
     RDI_Member*     udt_members_rdi;
     RDI_EnumMember* enum_members_rdi;
   };
@@ -852,7 +863,8 @@ struct RDIB_CollectStringsTask
   RDIB_StringMapBucket**     free_buckets;
   uint64*                       insert_counts;
   uint64*                       element_indices;
-  union
+  [Union]
+  struct
   {
     RDIB_UnitChunk**        units;
     RDIB_BinarySection*     sects;
@@ -879,7 +891,8 @@ struct RDIB_BuildSymbolSectionTask
 {
   RDIB_StringMap* string_map;
   Rng1U64*        ranges;
-  union {
+  [Union]
+  struct {
     struct {
       RDIB_VariableChunk** gvars_rdib;
       String8List*         gvars_out;
@@ -911,14 +924,16 @@ struct RDIB_BuildSymbolSectionTask
   };
 }
 
-union RDIB_VMapBuilderTask
+[Union]
+struct RDIB_VMapBuilderTask
 {
   struct {
     uint64*            counts;
     uint64*            offsets;
     Rng1U64*        ranges;
     RDIB_VMapRange* vmap;
-    union {
+    [Union]
+    struct {
       RDIB_UnitChunk**     unit_chunks;
       RDIB_VariableChunk** gvar_chunks;
       RDIB_ScopeChunk**    scope_chunks;
@@ -939,7 +954,8 @@ struct RDIB_BuildIndexRunsTask
   RDIB_IndexRunMap*     idx_run_map;
   RDIB_IndexRunBucket** free_buckets;
   Rng1U64*              ranges;
-  union {
+  [Union]
+  struct {
     RDIB_TypeChunk**       type_chunks;
     RDIB_StringMapBucket** name_map_buckets;
   };

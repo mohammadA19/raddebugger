@@ -96,14 +96,16 @@ extend_sign64(uint64 x, uint64 size){
 
 float
 inf32(){
-  union { uint32 u; float f; } x;
+  [Union]
+  struct { uint32 u; float f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
 float
 neg_inf32(){
-  union { uint32 u; float f; } x;
+  [Union]
+  struct { uint32 u; float f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
 }

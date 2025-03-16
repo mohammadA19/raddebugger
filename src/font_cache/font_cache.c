@@ -13,7 +13,8 @@
 U128
 fnt_hash_from_string(String8 string)
 {
-  union
+  [Union]
+  struct
   {
     XXH128_hash_t xxhash;
     U128 u128;

@@ -46,7 +46,8 @@ struct LNX_Entity{
   LNX_Entity* next;
   LNX_EntityKind kind;
   volatile uint32 reference_mask;
-  union{
+  [Union]
+  struct{
     struct{
       OS_ThreadFunctionType* func;
       void* ptr;

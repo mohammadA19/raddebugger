@@ -1223,7 +1223,8 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, 
       demon_read_memory(process->demon_handle, &dtv_addr, thread_info_addr, addr_size);
       
       /*
-        union delta_thread_vector
+        [Union]
+        struct delta_thread_vector
         {
           size_t counter;
           struct

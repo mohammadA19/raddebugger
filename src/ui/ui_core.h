@@ -217,7 +217,8 @@ enum UI_ColorCode
 
 struct UI_Palette
 {
-  union
+  [Union]
+  struct
   {
     Vec4F32 colors[UI_ColorCode_COUNT];
     struct
@@ -269,7 +270,8 @@ struct UI_ScrollPt
   float off;
 }
 
-union UI_ScrollPt2
+[Union]
+struct UI_ScrollPt2
 {
   UI_ScrollPt v[2];
   struct

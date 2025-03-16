@@ -850,7 +850,8 @@ struct DWARF_Parsed{
 // form decoding
 
 struct DWARF_FormDecodeRules{
-  union{
+  [Union]
+  struct{
     // form decode fields
     struct{
       uint8 size;
@@ -958,7 +959,8 @@ struct DWARF_InfoUnit{
   uint8  address_size;
   uint64 abbrev_off;
   
-  union{
+  [Union]
+  struct{
     // unit_type: skeleton, split_compile
     uint64 dwo_id;
     // unit_type: type, split_type
@@ -1354,7 +1356,8 @@ enum UNW_DW_CFICFARule{
 
 struct UNW_DW_CFICFACell{
   UNW_DW_CFICFARule rule;
-  union{
+  [Union]
+  struct{
     struct{
       uint64 reg_idx;
       int64 offset;
@@ -1376,7 +1379,8 @@ enum UNW_DW_CFIRegisterRule{
 
 struct UNW_DW_CFICell{
   UNW_DW_CFIRegisterRule rule;
-  union{
+  [Union]
+  struct{
     int64 n;
     struct{
       uint64 expr_min;

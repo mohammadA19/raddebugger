@@ -20,7 +20,8 @@ struct DMN_CtrlCtx
 ////////////////////////////////
 //~ rjf: Handle Types
 
-union DMN_Handle
+[Union]
+struct DMN_Handle
 {
   uint32 u32[2];
   uint64 u64[1];

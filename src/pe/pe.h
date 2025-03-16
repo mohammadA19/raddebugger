@@ -713,7 +713,8 @@ enum PE_UnwindInfoFlags : uint8
 #define PE_UNWIND_OPCODE_FROM_FLAGS(f) ((f)&0xF)
 #define PE_UNWIND_INFO_FROM_FLAGS(f) (((f) >> 4)&0xF)
 
-union PE_UnwindCode
+[Union]
+struct PE_UnwindCode
 {
   struct
   {
@@ -783,7 +784,8 @@ struct PE_Resource
 {
   COFF_ResourceID id;
   PE_ResDataKind  kind;
-  union
+  [Union]
+  struct
   {
     COFF_ResourceDataEntry leaf;
     struct PE_ResourceDir* dir;
@@ -858,7 +860,8 @@ enum PE_ParsedImportType : uint32 PE_ParsedImportTypeEnum
 struct PE_ParsedImport
 {
   PE_ParsedImportType type;
-  union
+  [Union]
+  struct
   {
     uint16 ordinal;
     struct
@@ -951,9 +954,11 @@ struct PE_BinInfo
 struct PE_DebugInfo
 {
   PE_DebugDirectory header;
-  union
+  [Union]
+  struct
   {
-    union
+    [Union]
+    struct
     {
       uint32 magic;
       struct

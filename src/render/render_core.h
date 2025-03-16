@@ -25,7 +25,8 @@ enum R_GeoVertexFlags : uint32
 ////////////////////////////////
 //~ rjf: Handle Type
 
-union R_Handle
+[Union]
+struct R_Handle
 {
   uint64 u64[1];
   uint32 u32[2];
@@ -153,7 +154,8 @@ struct R_PassParams_Geo3D
 struct R_Pass
 {
   R_PassKind kind;
-  union
+  [Union]
+  struct
   {
     void* params;
     R_PassParams_UI* params_ui;

@@ -291,7 +291,8 @@ struct CV_StringTableRange
 struct CV_StringBucket
 {
   String8 string;
-  union {
+  [Union]
+  struct {
     struct {
       uint32 idx0;
       uint32 idx1;
@@ -320,7 +321,8 @@ struct CV_StringHashTableResult
 struct
 {
   uint64              cap;
-  union {
+  [Union]
+  struct {
     CV_SymbolNode*** buckets;
     CV_SymbolNode**  deref_buckets;
   } u;

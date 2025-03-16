@@ -11559,12 +11559,14 @@ rd_init(CmdLine* cmdln)
       uint8 image_height_px;
       uint8 num_colors;
       uint8 reserved_padding; // should be 0
-      union
+      [Union]
+      struct
       {
         uint16 ico_color_planes; // in ICO
         uint16 cur_hotspot_x_px; // in CUR
       };
-      union
+      [Union]
+      struct
       {
         uint16 ico_bits_per_pixel; // in ICO
         uint16 cur_hotspot_y_px;   // in CUR

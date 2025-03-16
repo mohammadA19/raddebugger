@@ -104,7 +104,8 @@ enum DW_CFICFARule{
 struct DW_CFICFACell
 {
   DW_CFICFARule rule;
-  union {
+  [Union]
+  struct {
     struct {
       uint64 reg_idx;
       int64 offset;
@@ -127,7 +128,8 @@ enum DW_CFIRegisterRule
 struct DW_CFICell
 {
   DW_CFIRegisterRule rule;
-  union {
+  [Union]
+  struct {
     int64 n;
     Rng1U64 expr;
   };

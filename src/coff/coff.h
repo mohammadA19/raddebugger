@@ -225,7 +225,8 @@ enum COFF_SymDType : uint8
 #define COFF_Symbol_AbsSection16     ((uint16)-1)
 #define COFF_Symbol_DebugSection16   ((uint16)-2)
 
-typedef union COFF_SymbolName
+[Union]
+struct COFF_SymbolName
 {
   uint8 short_name[8];
   struct {
@@ -239,7 +240,8 @@ typedef union COFF_SymbolName
 
 #define COFF_SymbolType_IsFunc(x) ((x).u.lsb == COFF_SymType_Null && (x).u.msb == COFF_SymDType_Func)
 
-typedef union COFF_SymbolType
+[Union]
+struct COFF_SymbolType
 {
   struct {
     COFF_SymDType msb;
@@ -476,11 +478,13 @@ struct COFF_ResourceDirTable
 #define COFF_Resource_SubDirFlag (1u << 31u)
 struct COFF_ResourceDirEntry
 {
-  union {
+  [Union]
+  struct {
     uint32 offset;
     uint32 id;
   } name;
-  union {
+  [Union]
+  struct {
     uint32 data_entry_offset;
     uint32 sub_dir_offset;
   } id;

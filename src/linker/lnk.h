@@ -194,7 +194,8 @@ struct
 struct
 {
   LNK_SymbolTable*  symtab;
-  union {
+  [Union]
+  struct {
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
   } u;

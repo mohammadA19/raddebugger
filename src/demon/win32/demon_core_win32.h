@@ -105,7 +105,8 @@ struct DMN_W32_Entity
   uint64 id;
   HANDLE handle;
   Arch arch;
-  union
+  [Union]
+  struct
   {
     struct
     {

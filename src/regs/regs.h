@@ -19,20 +19,23 @@ enum REGS_UsageKind
 typedef uint8 REGS_RegCode;
 typedef uint8 REGS_AliasCode;
 
-union REGS_Reg16
+[Union]
+struct REGS_Reg16
 {
   uint8 v[2];
   uint16 u16;
 }
 
-union REGS_Reg32
+[Union]
+struct REGS_Reg32
 {
   uint8 v[4];
   uint32 u32;
   float f32;
 }
 
-union REGS_Reg64
+[Union]
+struct REGS_Reg64
 {
   uint8 v[8];
   uint64 u64;
@@ -47,7 +50,8 @@ struct REGS_Reg80
 }
 #pragma pack(pop)
 
-union REGS_Reg128
+[Union]
+struct REGS_Reg128
 {
   uint8 v[16];
   uint32 u32[4];
@@ -56,7 +60,8 @@ union REGS_Reg128
   double f64[2];
 }
 
-union REGS_Reg256
+[Union]
+struct REGS_Reg256
 {
   uint8 v[32];
   uint32 u32[8];
@@ -65,7 +70,8 @@ union REGS_Reg256
   double f64[4];
 }
 
-union REGS_Reg512
+[Union]
+struct REGS_Reg512
 {
   uint8 v[64];
   uint32 u32[16];

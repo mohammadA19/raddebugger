@@ -35,7 +35,8 @@ struct LNK_Chunk
   uint64               input_idx;
   COFF_SectionFlags flags;
   struct LNK_Chunk* associate;
-  union {
+  [Union]
+  struct {
     String8                leaf;
     struct LNK_ChunkList*  list;
     struct LNK_ChunkArray* arr;
@@ -78,7 +79,8 @@ struct LNK_ChunkOp
 {
   struct LNK_ChunkOp* next;
   LNK_ChunkOpType     type;
-  union {
+  [Union]
+  struct {
     String8    string;
     LNK_Chunk* chunk;
     struct {

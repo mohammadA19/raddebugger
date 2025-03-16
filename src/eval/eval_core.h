@@ -36,7 +36,8 @@ struct E_MsgList
 ////////////////////////////////
 //~ rjf: Register-Sized Value Type
 
-union E_Value
+[Union]
+struct E_Value
 {
   uint64 u512[8];
   uint64 u256[4];
@@ -93,7 +94,8 @@ enum E_SpaceKind : uint64
 struct E_Space
 {
   E_SpaceKind kind;
-  union
+  [Union]
+  struct
   {
     uint64 u64s[3];
     struct

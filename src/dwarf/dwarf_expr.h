@@ -9,7 +9,8 @@
 
 struct DW_RegsX64
 {
-  union {
+  [Union]
+  struct {
     struct {
       uint64 rax;
       uint64 rdx;
@@ -133,7 +134,8 @@ enum DW_LocFailKind
 struct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
-  union {
+  [Union]
+  struct {
     uint64     addr;
     uint64     reg_idx;
     uint64     val;

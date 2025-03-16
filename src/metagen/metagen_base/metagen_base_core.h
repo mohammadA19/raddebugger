@@ -658,12 +658,14 @@ struct DateTime
   uint16 min;  // [0,59]
   uint16 hour; // [0,24]
   uint16 day;  // [0,30]
-  union
+  [Union]
+  struct
   {
     WeekDay week_day;
     uint32 wday;
   };
-  union
+  [Union]
+  struct
   {
     Month month;
     uint32 mon;

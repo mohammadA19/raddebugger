@@ -66,7 +66,8 @@ struct OS_LNX_Entity
 {
   OS_LNX_Entity* next;
   OS_LNX_EntityKind kind;
-  union
+  [Union]
+  struct
   {
     struct
     {

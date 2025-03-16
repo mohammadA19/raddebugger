@@ -109,7 +109,8 @@ struct
   LNK_LeafBucket** bucket_arr;
 }
 
-typedef union
+[Union]
+struct
 {
   struct {
     U128Array** internal_hashes;

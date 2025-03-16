@@ -977,7 +977,8 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         
         // read register info
         uint64 instruction_pointer = 0;
-        union{ SYMS_RegX86 x86; SYMS_RegX64 x64; } regs = {0};
+        [Union]
+        struct{ SYMS_RegX86 x86; SYMS_RegX64 x64; } regs = {0};
         
         switch (thread->arch){
           case Arch_x86:
@@ -1323,7 +1324,8 @@ demon_os_run(Arena* arena, DEMON_OS_RunCtrls* controls){
         DEMON_Entity* thread = node->entity;
         pid_t thread_id = (pid_t)thread->id;
         if (thread_id != wait_id){
-          union sigval sv = {0};
+          [Union]
+          struct sigval sv = {0};
           sigqueue(thread_id, SIGSTOP, sv);
           
           DEMON_LNX_ThreadExt* thread_ext = demon_lnx_thread_ext(thread);
@@ -1389,7 +1391,8 @@ demon_os_halt(uint64 code, uint64 user_data){
       demon_lnx_already_has_halt_injection = true;
       demon_lnx_halt_code = code;
       demon_lnx_halt_user_data = user_data;
-      union sigval sv = {0};
+      [Union]
+      struct sigval sv = {0};
       if (sigqueue(process->id, SIGSTOP, sv) == -1){
         demon_lnx_already_has_halt_injection = false;
       }
