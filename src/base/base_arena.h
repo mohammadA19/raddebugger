@@ -12,7 +12,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum ArenaFlags : uint64
+public enum ArenaFlags : uint64
 {
   NoChain    = (1<<0),
   LargePages = (1<<1),

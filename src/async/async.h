@@ -14,7 +14,7 @@ typedef ASYNC_WORK_SIG(ASYNC_WorkFunctionType);
 ////////////////////////////////
 //~ rjf: Work Types
 
-enum ASYNC_Priority
+public enum ASYNC_Priority
 {
   Low,
   High,
