@@ -16,9 +16,9 @@ typedef ASYNC_WORK_SIG(ASYNC_WorkFunctionType);
 
 enum ASYNC_Priority
 {
-  ASYNC_Priority_Low,
-  ASYNC_Priority_High,
-  ASYNC_Priority_COUNT
+  Low,
+  High,
+  COUNT
 }
 
 struct ASYNC_WorkParams
@@ -80,7 +80,7 @@ struct ASYNC_Shared
   Arena* arena;
   
   // rjf: user . work thread ring buffers
-  ASYNC_Ring rings[ASYNC_Priority_COUNT];
+  ASYNC_Ring[ASYNC_Priority.COUNT] rings;
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
   
@@ -111,7 +111,7 @@ uint64 async_thread_count();
 //~ rjf: Work Kickoffs
 
 B32 async_push_work_(ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params);
-#define async_push_work(function, ...) async_push_work_((function), &(ASYNC_WorkParams){.endt_us = max_U64, .priority = ASYNC_Priority_High, __VA_ARGS__})
+#define async_push_work(function, ...) async_push_work_((function), &(ASYNC_WorkParams){.endt_us = max_U64, .priority = .High, __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper

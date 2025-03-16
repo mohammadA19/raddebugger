@@ -162,10 +162,10 @@ async_pop_work()
   ProfBeginFunction();
   ASYNC_Work work = {0};
   B32 done = 0;
-  ASYNC_Priority taken_priority = ASYNC_Priority_Low;
+  ASYNC_Priority taken_priority = .Low;
   OS_MutexScope(async_shared.ring_mutex) for(;!done;)
   {
-    for(ASYNC_Priority priority = ASYNC_Priority_High;; priority = (ASYNC_Priority)(priority - 1))
+    for(ASYNC_Priority priority = .High;; priority = (ASYNC_Priority)(priority - 1))
     {
       ASYNC_Ring* ring = &async_shared.rings[priority];
       OS_MutexScope(ring.ring_mutex)
@@ -182,7 +182,7 @@ async_pop_work()
       {
         break;
       }
-      if(priority == ASYNC_Priority_Low)
+      if(priority == .Low)
       {
         break;
       }
