@@ -321,7 +321,7 @@ struct
 {
   U64              cap;
   union {
-    CV_SymbolNode ***buckets;
+    CV_SymbolNode*** buckets;
     CV_SymbolNode**  deref_buckets;
   } u;
   Rng1U64*         ranges;

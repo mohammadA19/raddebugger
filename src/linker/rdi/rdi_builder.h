@@ -976,7 +976,7 @@ struct
   RDIB_StringMap*         string_map;
   RDIB_IndexRunMap*       idx_run_map;
   U64*                    in_bucket_counts;
-  RDIB_StringMapBucket ***in_buckets;
+  RDIB_StringMapBucket*** in_buckets;
 
   RDI_NameMapBucket** out_buckets;
   RDI_NameMapNode**   out_nodes;

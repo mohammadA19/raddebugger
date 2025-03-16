@@ -926,7 +926,7 @@ cv_symbol_deduper_is_before(void* raw_a, void* raw_b)
 }
 
 CV_SymbolNode **
-cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, CV_SymbolNode** new_bucket)
+cv_symbol_deduper_insert_or_update(CV_SymbolNode*** buckets, U64 cap, U64 hash, CV_SymbolNode** new_bucket)
 {
   CV_SymbolNode** result                 = 0;
   B32             is_inserted_or_updated = 0;
