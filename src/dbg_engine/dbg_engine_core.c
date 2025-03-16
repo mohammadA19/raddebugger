@@ -1561,7 +1561,7 @@ d_push_cmd(D_CmdKind kind, D_CmdParams* params)
 //- rjf: command iteration
 
 B32
-d_next_cmd(D_Cmd **cmd)
+d_next_cmd(D_Cmd** cmd)
 {
   D_CmdNode* start_node = d_state->cmds.first;
   if(cmd[0] != 0)

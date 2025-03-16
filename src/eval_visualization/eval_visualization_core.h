@@ -106,8 +106,8 @@ struct EV_ExpandRangeInfo
   U64 row_exprs_count;
   String8* row_strings;
   String8* row_view_rules;
-  E_Expr **row_exprs;
-  E_Member **row_members;
+  E_Expr** row_exprs;
+  E_Member** row_members;
 }
 
 #define EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_SIG(name) E_Expr* name(Arena* arena, E_Expr* expr, MD_Node* params)
@@ -381,7 +381,7 @@ EV_ViewRuleList* ev_view_rule_list_from_string(Arena* arena, String8 string);
 EV_ViewRuleList* ev_view_rule_list_from_expr_fastpaths(Arena* arena, String8 string);
 EV_ViewRuleList* ev_view_rule_list_from_inheritance(Arena* arena, EV_ViewRuleList* src);
 EV_ViewRuleList* ev_view_rule_list_copy(Arena* arena, EV_ViewRuleList* src);
-void ev_view_rule_list_concat_in_place(EV_ViewRuleList* dst, EV_ViewRuleList **src);
+void ev_view_rule_list_concat_in_place(EV_ViewRuleList* dst, EV_ViewRuleList** src);
 
 ////////////////////////////////
 //~ rjf: Expression Resolution (Dynamic Overrides, View Rule Application)

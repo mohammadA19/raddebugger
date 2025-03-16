@@ -921,7 +921,7 @@ thread_static U64 ui_ts_vector_idx = 0;
 thread_static U64 ui_ts_cell_idx = 0;
 
 void
-ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
+ui_table_begin(U64 column_pct_count, F32** column_pcts, String8 string)
 {
   //- rjf: store off persistent, user-provided column info
   ui_ts_col_pct_count = column_pct_count;
@@ -1035,7 +1035,7 @@ ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
 }
 
 void
-ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char* fmt, ...)
+ui_table_beginf(U64 column_pct_count, F32** column_pcts, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

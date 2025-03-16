@@ -61,7 +61,7 @@ struct LNK_ImportTable
 
 LNK_ImportTable * lnk_import_table_alloc_static(LNK_SectionTable* st, LNK_SymbolTable* symtab, COFF_MachineType machine);
 LNK_ImportTable * lnk_import_table_alloc_delayed(LNK_SectionTable* st, LNK_SymbolTable* symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable);
-void              lnk_import_table_release(LNK_ImportTable **imptab);
+void              lnk_import_table_release(LNK_ImportTable** imptab);
 LNK_ImportDLL *   lnk_import_table_push_dll_static(LNK_ImportTable* imptab, LNK_SymbolTable* symtab, String8 dll_name, COFF_MachineType machine);
 LNK_ImportDLL *   lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symtab, String8 dll_name, COFF_MachineType machine);
 LNK_ImportFunc *  lnk_import_table_push_func_static(LNK_ImportTable* imptab, LNK_SymbolTable* symtab, LNK_ImportDLL* dll, COFF_ParsedArchiveImportHeader* header);

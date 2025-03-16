@@ -282,7 +282,7 @@ entry_point(CmdLine* cmdline)
     
     //- rjf: kick off FUNC & line record dump tasks
     P2B_DumpProcChunkIn* dump_proc_chunk_in = push_array(arena, P2B_DumpProcChunkIn, params->procedures.chunk_count);
-    ASYNC_Task **dump_proc_chunk_tasks = push_array(arena, ASYNC_Task *, params->procedures.chunk_count);
+    ASYNC_Task** dump_proc_chunk_tasks = push_array(arena, ASYNC_Task *, params->procedures.chunk_count);
     ProfScope("kick off FUNC & line record dump tasks")
     {
       U64 task_idx = 0;

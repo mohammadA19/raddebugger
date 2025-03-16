@@ -37,7 +37,7 @@ lnk_export_table_alloc()
 }
 
 void
-lnk_export_table_release(LNK_ExportTable **exptab_ptr)
+lnk_export_table_release(LNK_ExportTable** exptab_ptr)
 {
   ProfBeginFunction();
   arena_release((*exptab_ptr)->arena);
@@ -232,7 +232,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   lnk_section_push_reloc(edata, header_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_ExportTableHeader, ordinal_table_voff),        ordinal_table_symbol);
   
   // reserve virtual offset chunks
-  LNK_Chunk **ordinal_voff_map = push_array(scratch.arena, LNK_Chunk *, exptab->max_ordinal);
+  LNK_Chunk** ordinal_voff_map = push_array(scratch.arena, LNK_Chunk *, exptab->max_ordinal);
   for (U32 i = ordinal_low; i <= ordinal_high; i += 1) {
     String8 sort_index = str8_from_bits_u32(edata->arena, i);
     LNK_Chunk* voff_chunk = lnk_section_push_chunk_bss(edata, voff_table_chunk, exptab->voff_size, sort_index);
@@ -241,7 +241,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   
   B8* is_ordinal_bound = push_array(scratch.arena, B8, exptab->max_ordinal);
   HashTable* exp_ht_arr[] = { exptab->name_export_ht, exptab->noname_export_ht };
-  for (HashTable **ht_ptr = &exp_ht_arr[0], **ht_opl = ht_ptr + ArrayCount(exp_ht_arr);
+  for (HashTable** ht_ptr = &exp_ht_arr[0], **ht_opl = ht_ptr + ArrayCount(exp_ht_arr);
        ht_ptr < ht_opl;
        ht_ptr += 1) {
     KeyValuePair* kv_arr = key_value_pairs_from_hash_table(scratch.arena, *ht_ptr);

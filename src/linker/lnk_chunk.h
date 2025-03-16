@@ -123,7 +123,7 @@ struct LNK_ChunkPadArrayList
 struct LNK_ChunkLayout
 {
   U64                     total_count;
-  LNK_Chunk             **chunk_ptr_array;       // discarded chunks point to g_null_chunk
+  LNK_Chunk**             chunk_ptr_array;       // discarded chunks point to g_null_chunk
   U64*                    chunk_off_array;       // discarded chunks have offset set to max_U64
   U64*                    chunk_file_size_array; // discarded chunks have offset set to max_U64
   U64*                    chunk_virt_size_array; // discarded chunks have offset set to max_U64

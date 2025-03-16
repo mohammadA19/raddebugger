@@ -565,5 +565,5 @@ B32                      lnk_parse_merge_directive(String8 string, LNK_MergeDire
 void lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 name, String8List value_list, String8 obj_path, String8 lib_path);
 
 LNK_Config * lnk_config_from_raw_cmd_line(Arena* arena, String8List raw_cmd_line);
-LNK_Config * lnk_build_config            (Arena* arena, int argc, char **argv);
+LNK_Config * lnk_build_config            (Arena* arena, int argc, char** argv);
 

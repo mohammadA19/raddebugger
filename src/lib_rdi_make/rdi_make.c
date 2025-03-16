@@ -82,7 +82,7 @@ rdim_arena_pop_to_fallback(RDIM_Arena* arena, RDI_U64 pos)
 static RDIM_THREAD_LOCAL RDIM_Arena* rdim_thread_scratches[2];
 
 RDI_PROC RDIM_Temp
-rdim_scratch_begin_fallback(RDIM_Arena **conflicts, RDI_U64 conflicts_count)
+rdim_scratch_begin_fallback(RDIM_Arena** conflicts, RDI_U64 conflicts_count)
 {
   if(rdim_thread_scratches[0] == 0)
   {
@@ -1187,7 +1187,7 @@ rdim_bake_vmap_from_markers(RDIM_Arena* arena, RDIM_VMapMarker* markers, RDIM_So
         // rjf: range ending -> pop matching node from stack (not always the top)
         else
         {
-          RDIM_VMapRangeTracker **ptr_in = &tracker_stack;
+          RDIM_VMapRangeTracker** ptr_in = &tracker_stack;
           RDIM_VMapRangeTracker* match = 0;
           for(RDIM_VMapRangeTracker* node = tracker_stack; node != 0;)
           {
@@ -2596,7 +2596,7 @@ rdim_bake_src_files(RDIM_Arena* arena, RDIM_BakeStringMapTight* strings, RDIM_Ba
         RDIM_SrcLineMapBucket* first_bucket = 0;
         RDIM_SrcLineMapBucket* last_bucket = 0;
         RDI_U64 line_hash_slots_count = 2048;
-        RDIM_SrcLineMapBucket **line_hash_slots = rdim_push_array(scratch.arena, RDIM_SrcLineMapBucket *, line_hash_slots_count);
+        RDIM_SrcLineMapBucket** line_hash_slots = rdim_push_array(scratch.arena, RDIM_SrcLineMapBucket *, line_hash_slots_count);
         RDI_U64 line_count = 0;
         RDI_U64 voff_count = 0;
         RDI_U64 max_line_num = 0;

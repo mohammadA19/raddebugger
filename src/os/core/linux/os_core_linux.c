@@ -1219,7 +1219,7 @@ os_make_guid()
 //~ rjf: @os_hooks Entry Points (Implemented Per-OS)
 
 int
-main(int argc, char **argv)
+main(int argc, char** argv)
 {
   //- rjf: set up OS layer
   {

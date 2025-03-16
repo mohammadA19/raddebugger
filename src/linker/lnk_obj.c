@@ -31,7 +31,7 @@ lnk_input_obj_list_push(Arena* arena, LNK_InputObjList* list)
 LNK_InputObj **
 lnk_array_from_input_obj_list(Arena* arena, LNK_InputObjList list)
 {
-  LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
+  LNK_InputObj** result = push_array_no_zero(arena, LNK_InputObj *, list.count);
   U64 i = 0;
   for (LNK_InputObj* n = list.first; n != 0; n = n->next, ++i) {
     Assert(i < list.count);
@@ -49,8 +49,8 @@ lnk_input_obj_list_concat_in_place(LNK_InputObjList* list, LNK_InputObjList* to_
 int
 lnk_input_obj_compar(const void* raw_a, const void* raw_b)
 {
-  const LNK_InputObj **a = (const LNK_InputObj **) raw_a;
-  const LNK_InputObj **b = (const LNK_InputObj **) raw_b;
+  const LNK_InputObj** a = (const LNK_InputObj **) raw_a;
+  const LNK_InputObj** b = (const LNK_InputObj **) raw_b;
   int cmp = str8_compar_case_sensitive(&(*a)->path, &(*b)->path);
   return cmp;
 }
@@ -58,15 +58,15 @@ lnk_input_obj_compar(const void* raw_a, const void* raw_b)
 int
 lnk_input_obj_compar_is_before(void* raw_a, void* raw_b)
 {
-  LNK_InputObj **a = raw_a;
-  LNK_InputObj **b = raw_b;
+  LNK_InputObj** a = raw_a;
+  LNK_InputObj** b = raw_b;
   int cmp = str8_compar_case_sensitive(&(*a)->path, &(*b)->path);
   int is_before = cmp < 0;
   return is_before;
 }
 
 LNK_InputObjList
-lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
+lnk_list_from_input_obj_arr(LNK_InputObj** arr, U64 count)
 {
   LNK_InputObjList list = {0};
   for (U64 i = 0; i < count; ++i) {
@@ -94,7 +94,7 @@ lnk_input_obj_list_from_string_list(Arena* arena, String8List list)
 LNK_Obj **
 lnk_obj_arr_from_list(Arena* arena, LNK_ObjList list)
 {
-  LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
+  LNK_Obj** arr = push_array_no_zero(arena, LNK_Obj *, list.count);
   U64 idx = 0;
   for (LNK_ObjNode* node = list.first; node != 0; node = node->next, ++idx) {
     arr[idx] = &node->data;
@@ -160,7 +160,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 }
 
 LNK_ChunkList *
-lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
+lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, U64 obj_count, LNK_Obj** obj_arr, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_CollectObjChunksTaskData task_data = {0};
   task_data.obj_arr                      = obj_arr;
@@ -579,7 +579,7 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_ref_assigner)
       lnk_visit_chunks(sect->id, chunk, lnk_chunk_ref_assign, &ctx);
 
       // push to section chunk list
-      LNK_ChunkList **chunk_list_arr_arr = sort.size ? task->chunk_list_arr_arr : task->nosort_chunk_list_arr_arr;
+      LNK_ChunkList** chunk_list_arr_arr = sort.size ? task->chunk_list_arr_arr : task->nosort_chunk_list_arr_arr;
       lnk_chunk_list_push(arena, &chunk_list_arr_arr[sect->id][task_id], chunk);
     }
   }
@@ -592,7 +592,7 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
                            LNK_SectionTable*  st,
                            U64*               function_pad_min,
                            U64                input_count,
-                           LNK_InputObj     **inputs)
+                           LNK_InputObj**     inputs)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);
@@ -682,9 +682,9 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
     ProfEnd();
 
     ProfBegin("Count Chunks Per Section");
-    U64 **chunk_id_arr_arr;
+    U64** chunk_id_arr_arr;
     {
-      U64 **chunk_count_arr_arr = push_array_no_zero(scratch.arena, U64 *, st->id_max);
+      U64** chunk_count_arr_arr = push_array_no_zero(scratch.arena, U64 *, st->id_max);
       for (U64 sect_idx = 0; sect_idx < st->id_max; sect_idx += 1) {
         chunk_count_arr_arr[sect_idx] = push_array(scratch.arena, U64, obj_arr.count);
       }

@@ -70,7 +70,7 @@ struct GEO_Shared
   U64 stripes_count;
   GEO_Slot* slots;
   GEO_Stripe* stripes;
-  GEO_Node **stripes_free_nodes;
+  GEO_Node** stripes_free_nodes;
   
   // rjf: user -> xfer thread
   U64 u2x_ring_size;

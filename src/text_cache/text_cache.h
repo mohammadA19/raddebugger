@@ -189,7 +189,7 @@ struct TXT_Shared
   U64 stripes_count;
   TXT_Slot* slots;
   TXT_Stripe* stripes;
-  TXT_Node **stripes_free_nodes;
+  TXT_Node** stripes_free_nodes;
   
   // rjf: user -> parse thread
   U64 u2p_ring_size;

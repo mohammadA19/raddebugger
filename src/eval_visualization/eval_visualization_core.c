@@ -571,7 +571,7 @@ ev_view_rule_list_copy(Arena* arena, EV_ViewRuleList* src)
 }
 
 void
-ev_view_rule_list_concat_in_place(EV_ViewRuleList* dst, EV_ViewRuleList **src)
+ev_view_rule_list_concat_in_place(EV_ViewRuleList* dst, EV_ViewRuleList** src)
 {
   if(dst->first && src[0] != &ev_nil_view_rule_list && src[0]->first)
   {

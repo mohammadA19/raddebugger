@@ -72,7 +72,7 @@ hs_tctx_ensure_inited()
 //~ rjf: Cache Submission
 
 U128
-hs_submit_data(U128 key, Arena **data_arena, String8 data)
+hs_submit_data(U128 key, Arena** data_arena, String8 data)
 {
   U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
   U64 key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;

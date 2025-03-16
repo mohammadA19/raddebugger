@@ -4,7 +4,7 @@
 static U64 global_update_tick_idx = 0;
 
 void
-main_thread_base_entry_point(int arguments_count, char **arguments)
+main_thread_base_entry_point(int arguments_count, char** arguments)
 {
   Temp scratch = scratch_begin(0, 0);
   ThreadNameF("[main thread]");

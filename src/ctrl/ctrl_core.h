@@ -294,7 +294,7 @@ struct CTRL_EntityList
 
 struct CTRL_EntityArray
 {
-  CTRL_Entity **v;
+  CTRL_Entity** v;
   U64 count;
 }
 

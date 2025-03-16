@@ -98,7 +98,7 @@ e_string2num_map_node_array_from_map(Arena* arena, E_String2NumMap* map)
 }
 
 int
-e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_String2NumMapNode **b)
+e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b)
 {
   int result = 0;
   if(a[0]->num < b[0]->num)

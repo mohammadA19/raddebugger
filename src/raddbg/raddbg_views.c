@@ -2177,7 +2177,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
   B32 pressed = 0;
   if(!is_top_level_hook) ProfScope("build ui")
   {
-    F32 **col_pcts = push_array(scratch.arena, F32*, ewv->column_count);
+    F32** col_pcts = push_array(scratch.arena, F32*, ewv->column_count);
     {
       S64 x = 0;
       for(RD_WatchViewColumn* c = ewv->first_column; c != 0; c = c->next, x += 1)
@@ -3913,7 +3913,7 @@ struct RD_FileSystemViewState
 {
   B32 initialized;
   U64 path_state_table_size;
-  RD_FileSystemViewPathState **path_state_table;
+  RD_FileSystemViewPathState** path_state_table;
   RD_FileSortKind sort_kind;
   Side sort_side;
   Arena* cached_files_arena;
@@ -4253,7 +4253,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   
   //- rjf: build non-scrolled table header
   U64 row_num = 1;
-  F32 **col_pcts = push_array(scratch.arena, F32 *, ArrayCount(fs->col_pcts));
+  F32** col_pcts = push_array(scratch.arena, F32 *, ArrayCount(fs->col_pcts));
   for(U64 idx = 0; idx < ArrayCount(fs->col_pcts); idx += 1)
   {
     col_pcts[idx] = &fs->col_pcts[idx];
@@ -5211,7 +5211,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   
   //- rjf: grab rdis
   U64 rdis_count = dbgi_keys.count;
-  RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
+  RDI_Parsed** rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
   {
     for(U64 idx = 0; idx < rdis_count; idx += 1)
     {

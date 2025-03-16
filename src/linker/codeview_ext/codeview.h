@@ -59,7 +59,7 @@ struct CV_SymbolListArray
 struct CV_SymbolPtrArray
 {
   U64             count;
-  CV_SymbolNode **v;
+  CV_SymbolNode** v;
 }
 
 struct CV_Scope
@@ -207,7 +207,7 @@ struct CV_InlineeLinesAccel
 {
   U64                        bucket_count;
   U64                        bucket_max;
-  CV_C13InlineeLinesParsed **buckets;
+  CV_C13InlineeLinesParsed** buckets;
 }
 
 struct CV_InlineBinaryAnnotsParsed
@@ -253,7 +253,7 @@ struct CV_DebugT
 {
   U64  size;
   U64  count;
-  U8 **v;
+  U8** v;
 }
 
 ////////////////////////////////
@@ -305,13 +305,13 @@ struct CV_StringHashTable
   U64               total_string_size;
   U64               total_insert_count;
   U64               bucket_cap;
-  CV_StringBucket **buckets;
+  CV_StringBucket** buckets;
 }
 
 struct CV_StringHashTableResult
 {
   U64               string_count;
-  CV_StringBucket **buckets;
+  CV_StringBucket** buckets;
 }
 
 ////////////////////////////////
@@ -322,10 +322,10 @@ struct
   U64              cap;
   union {
     CV_SymbolNode ***buckets;
-    CV_SymbolNode  **deref_buckets;
+    CV_SymbolNode**  deref_buckets;
   } u;
   Rng1U64*         ranges;
-  CV_SymbolNode  **symbols;
+  CV_SymbolNode**  symbols;
 }
 
 struct
@@ -333,16 +333,16 @@ struct
   CV_SymbolList*  list_arr;
   Rng1U64*        list_range_arr;
   U64*            symbol_base_arr;
-  CV_SymbolNode **symbol_arr;
+  CV_SymbolNode** symbol_arr;
 }
 
 struct
 {
   CV_DebugS*            arr;
-  CV_StringTableRange **range_lists;
+  CV_StringTableRange** range_lists;
   U64*                  string_counts;
   U64                   bucket_cap;
-  CV_StringBucket     **buckets;
+  CV_StringBucket**     buckets;
   U64                   total_string_size;
   U64                   total_insert_count;
 }
@@ -351,7 +351,7 @@ struct
 {
   U8*               buffer;
   Rng1U64*          ranges;
-  CV_StringBucket **buckets;
+  CV_StringBucket** buckets;
 }
 
 struct
@@ -465,7 +465,7 @@ void cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, U3
 ////////////////////////////////
 // $$Lines Accel
 
-void            cv_make_c13_files(Arena* arena, String8 c13_data, CV_C13SubSectionList lines, U64* file_count_out, CV_C13File **files_out);
+void            cv_make_c13_files(Arena* arena, String8 c13_data, CV_C13SubSectionList lines, U64* file_count_out, CV_C13File** files_out);
 CV_LinesAccel * cv_make_lines_accel(Arena* arena, U64 lines_count, CV_LineArray* lines);
 CV_Line *       cv_line_from_voff(CV_LinesAccel* accel, U64 voff, U64* out_line_count);
 

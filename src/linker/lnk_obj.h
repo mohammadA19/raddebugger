@@ -108,7 +108,7 @@ struct
 
 struct
 {
-  LNK_InputObj    **inputs;
+  LNK_InputObj**    inputs;
   LNK_ObjNode*      obj_node_arr;
   U64               obj_id_base;
   LNK_SectDefnList* defn_arr;
@@ -128,13 +128,13 @@ struct
 {
   LNK_SectionTable* st;
   LNK_ObjNode*      obj_arr;
-  U64             **chunk_count_arr_arr;
+  U64**             chunk_count_arr_arr;
 }
 
 struct
 {
   LNK_ChunkManager* cman;
-  U64             **chunk_id_arr_arr;
+  U64**             chunk_id_arr_arr;
   U64               obj_idx;
 }
 
@@ -142,10 +142,10 @@ struct
 {
   LNK_SectionTable* st;
   Rng1U64*          range_arr;
-  U64             **chunk_id_arr_arr;
+  U64**             chunk_id_arr_arr;
   LNK_ObjNode*      obj_arr;
-  LNK_ChunkList   **nosort_chunk_list_arr_arr;
-  LNK_ChunkList   **chunk_list_arr_arr;
+  LNK_ChunkList**   nosort_chunk_list_arr_arr;
+  LNK_ChunkList**   chunk_list_arr_arr;
 }
 
 struct
@@ -158,7 +158,7 @@ struct
 
 struct
 {
-  LNK_Obj      **obj_arr;
+  LNK_Obj**      obj_arr;
   String8        name;
   String8        postfix;
   B32            collect_discarded;
@@ -190,7 +190,7 @@ void             lnk_input_obj_list_concat_in_place(LNK_InputObjList* list, LNK_
 LNK_InputObj *   lnk_input_obj_list_push(Arena* arena, LNK_InputObjList* list);
 LNK_InputObj **  lnk_array_from_input_obj_list(Arena* arena, LNK_InputObjList list);
 LNK_InputObjList lnk_input_obj_list_from_string_list(Arena* arena, String8List list);
-LNK_InputObjList lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count);
+LNK_InputObjList lnk_list_from_input_obj_arr(LNK_InputObj** arr, U64 count);
 
 ////////////////////////////////
 
@@ -198,8 +198,8 @@ LNK_InputObjList lnk_input_obj_list_from_string_list(Arena* arena, String8List l
 
 LNK_Obj **       lnk_obj_arr_from_list(Arena* arena, LNK_ObjList list);
 LNK_ObjNodeArray lnk_obj_list_reserve(Arena* arena, LNK_ObjList* list, U64 count);
-LNK_ChunkList *  lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded);
-LNK_ObjNodeArray lnk_obj_list_push_parallel(TP_Context* tp, TP_Arena* tp_arena, LNK_ObjList* obj_list, LNK_SectionTable* st, U64* function_pad_min, U64 input_count, LNK_InputObj **inputs);
+LNK_ChunkList *  lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, U64 obj_count, LNK_Obj** obj_arr, String8 name, String8 postfix, B32 collect_discarded);
+LNK_ObjNodeArray lnk_obj_list_push_parallel(TP_Context* tp, TP_Arena* tp_arena, LNK_ObjList* obj_list, LNK_SectionTable* st, U64* function_pad_min, U64 input_count, LNK_InputObj** inputs);
 
 LNK_Chunk *       lnk_sect_chunk_array_from_coff(Arena* arena, U64 obj_id, String8 obj_path, String8 coff_data, U64 sect_count, COFF_SectionHeader* coff_sect_arr, String8* sect_name_arr, String8* sect_postfix_arr);
 LNK_SymbolArray   lnk_symbol_array_from_coff(Arena* arena, String8 coff_data, LNK_Obj* obj, String8 obj_path, String8 lib_path, B32 is_big_obj, U64 function_pad_min, U64 string_table_off, U64 sect_count, COFF_SectionHeader* coff_sect_arr, U64 coff_symbol_count, void* coff_symbols, LNK_ChunkPtr* chunk_ptr_arr, LNK_Chunk* master_common_block);

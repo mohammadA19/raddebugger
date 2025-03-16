@@ -107,7 +107,7 @@ struct PDB_CompUnitNode
 
 struct PDB_CompUnitArray
 {
-  PDB_CompUnit **units;
+  PDB_CompUnit** units;
   U64 count;
 }
 
@@ -164,7 +164,7 @@ struct PDB_TpiHashParsed
   String8 data;
   String8 aux_data;
   
-  PDB_TpiHashBlock **buckets;
+  PDB_TpiHashBlock** buckets;
   U32 bucket_count;
   U32 bucket_mask;
 }

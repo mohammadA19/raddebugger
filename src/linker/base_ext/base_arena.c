@@ -47,7 +47,7 @@ push_array_copy_u64(Arena* arena, U64* v, U64 count)
 U64 **
 push_matrix_u64(Arena* arena, U64 rows, U64 columns)
 {
-  U64 **result = push_array_no_zero(arena, U64 *, rows);
+  U64** result = push_array_no_zero(arena, U64 *, rows);
   for (U64 row_idx = 0; row_idx < rows; row_idx += 1) {
     result[row_idx] = push_array(arena, U64, columns);
   }
@@ -60,7 +60,7 @@ alloc_fixed_size_arena_array(Arena* arena, U64 count, U64 res, U64 cmt)
   U64 data_size = sizeof(count) + sizeof(Arena *) * count;
   U8* data = push_array_no_zero(arena, U8, data_size);
   U64* count_ptr = (U64 *)data;
-  Arena **arr = (Arena **)(count_ptr + 1);
+  Arena** arr = (Arena **)(count_ptr + 1);
   *count_ptr = count;
 
   ArenaParams params  = {0};
@@ -76,7 +76,7 @@ alloc_fixed_size_arena_array(Arena* arena, U64 count, U64 res, U64 cmt)
 }
 
 void
-release_arena_array(Arena **arr)
+release_arena_array(Arena** arr)
 {
   U64* count_ptr = (U64 *)arr - 1;
   U64 count = *count_ptr;

@@ -128,8 +128,8 @@ UI_Signal ui_pane_end();
 ////////////////////////////////
 //~ rjf: Tables
 
-void ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string);
-void ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char* fmt, ...);
+void ui_table_begin(U64 column_pct_count, F32** column_pcts, String8 string);
+void ui_table_beginf(U64 column_pct_count, F32** column_pcts, char* fmt, ...);
 void ui_table_end();
 UI_Box *  ui_named_table_vector_begin(String8 string);
 UI_Box *  ui_named_table_vector_beginf(char* fmt, ...);

@@ -58,7 +58,7 @@ struct PDB_StringTable
   U32    bucket_count;
   U32    bucket_max;
   U32*   ibucket_array;
-  PDB_StringTableBucket **bucket_array;
+  PDB_StringTableBucket** bucket_array;
 }
 
 enum
@@ -99,7 +99,7 @@ struct PDB_TypeServer
   CV_TypeIndex       ti_lo;
   String8List        leaf_list;
   U64                bucket_cap;
-  PDB_TypeBucket   **buckets;
+  PDB_TypeBucket**   buckets;
   MSF_StreamNumber   hash_sn;
   PDB_HashTable      hash_adj;
 }
@@ -139,7 +139,7 @@ struct
   CV_TypeIndex    ti_hi;
   U64             hint_count;
   PDB_TpiOffHint* hint_arr;
-  String8Node   **lf_arr;
+  String8Node**   lf_arr;
   Rng1U64*        lf_range_arr;
   U64*            lf_cursor_arr;
   U8*             lf_buf;
@@ -230,7 +230,7 @@ struct PDB_GsiSerializeSymbolsTask
   U64*                 bucket_size_arr;
   U64*                 bucket_off_arr;
   U8*                  buffer;
-  PDB_GsiSortRecord  **sort_record_arr_arr;
+  PDB_GsiSortRecord**  sort_record_arr_arr;
   PDB_GsiSortRecord*   sort_record_arr;
 }
 
@@ -331,17 +331,17 @@ struct
 {
   PDB_GsiContext* gsi;
   Rng1U64*        ranges;
-  CV_SymbolNode **symbols;
+  CV_SymbolNode** symbols;
   U32*            hashes;
 }
 
 struct
 {
   CV_StringHashTable   string_ht;
-  PDB_DbiModule      **mod_arr;
+  PDB_DbiModule**      mod_arr;
   U16*                 imod_arr;
   U16*                 source_file_name_count_arr;
-  U32                **source_file_name_offset_arr;
+  U32**                source_file_name_offset_arr;
 }
 
 ////////////////////////////////
@@ -349,7 +349,7 @@ struct
 
 PDB_Context *    pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid);
 PDB_Context *    pdb_open(String8 data);
-void             pdb_release(PDB_Context **pdb_ptr);
+void             pdb_release(PDB_Context** pdb_ptr);
 void             pdb_build(TP_Context* tp, TP_Arena* pool_temp, PDB_Context* pdb, CV_StringHashTable string_ht);
 void             pdb_set_machine(PDB_Context* pdb, COFF_MachineType machine);
 void             pdb_set_guid(PDB_Context* pdb, Guid guid);
@@ -367,7 +367,7 @@ PDB_InfoContext * pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid);
 void              pdb_info_parse_from_data(String8 data, PDB_InfoParse* parse_out);
 PDB_InfoContext * pdb_info_open(MSF_Context* msf, MSF_StreamNumber sn);
 void              pdb_info_build(PDB_InfoContext* info, MSF_Context* msf, MSF_StreamNumber sn);
-void              pdb_info_release(PDB_InfoContext **info_ptr);
+void              pdb_info_release(PDB_InfoContext** info_ptr);
 MSF_StreamNumber  pdb_push_named_stream(PDB_HashTable* named_stream_ht, MSF_Context* msf, String8 name);
 MSF_StreamNumber  pdb_find_named_stream(PDB_HashTable* named_stream_ht, String8 name);
 PDB_SrcError      pdb_add_src(PDB_InfoContext* info, MSF_Context* msf, String8 file_path, String8 file_data, PDB_SrcCompType comp);
@@ -378,12 +378,12 @@ PDB_SrcError      pdb_add_src(PDB_InfoContext* info, MSF_Context* msf, String8 f
 PDB_GsiContext *   gsi_alloc();
 PDB_GsiContext *   gsi_open(MSF_Context* msf, MSF_StreamNumber sn, String8 symbol_data);
 void               gsi_build(TP_Context* tp, PDB_GsiContext* gsi, MSF_Context* msf, MSF_StreamNumber gsi_sn, MSF_StreamNumber symbols_sn);
-void               gsi_release(PDB_GsiContext **gsi_ptr);
+void               gsi_release(PDB_GsiContext** gsi_ptr);
 void               gsi_write_build_result(TP_Context* tp, PDB_GsiBuildResult build, MSF_Context* msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn);
 PDB_GsiBuildResult gsi_build_ex(TP_Context* tp, Arena* arena, PDB_GsiContext* gsi, U64 symbol_data_base, B32 export_symbol_ptr_arr, U64 msf_page_size);
 U32                gsi_hash(PDB_GsiContext* gsi, String8 input);
 CV_SymbolNode *    gsi_push(PDB_GsiContext* gsi, CV_Symbol* symbol);
-void               gsi_push_many_arr(TP_Context* tp, PDB_GsiContext* gsi, U64 count, CV_SymbolNode **symbol_arr);
+void               gsi_push_many_arr(TP_Context* tp, PDB_GsiContext* gsi, U64 count, CV_SymbolNode** symbol_arr);
 void               gsi_push_many_list(PDB_GsiContext* gsi, U64 count, U32* hash_arr, CV_SymbolList* list);
 CV_SymbolNode *    gsi_search(PDB_GsiContext* gsi, CV_Symbol* symbol);
 
@@ -393,7 +393,7 @@ CV_SymbolNode *    gsi_search(PDB_GsiContext* gsi, CV_Symbol* symbol);
 PDB_PsiContext * psi_alloc();
 PDB_PsiContext * psi_open(MSF_Context* msf, MSF_StreamNumber sn, String8 symbol_data);
 void             psi_build(TP_Context* tp, PDB_PsiContext* psi, MSF_Context* msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn);
-void             psi_release(PDB_PsiContext **psi_ptr);
+void             psi_release(PDB_PsiContext** psi_ptr);
 CV_SymbolNode *  psi_push(PDB_PsiContext* psi, CV_Pub32Flags flags, U32 offset, U16 isect, String8 name);
 
 // TODO:
@@ -406,7 +406,7 @@ CV_SymbolNode *  psi_push(PDB_PsiContext* psi, CV_Pub32Flags flags, U32 offset, 
 PDB_DbiContext *          dbi_alloc(COFF_MachineType machine, U32 age);
 PDB_DbiContext *          dbi_open(MSF_Context* msf, MSF_StreamNumber sn);
 void                      dbi_build(TP_Context* tp, PDB_DbiContext* dbi, MSF_Context* msf, MSF_StreamNumber dbi_sn, CV_StringHashTable string_ht);
-void                      dbi_release(PDB_DbiContext **dbi_ptr);
+void                      dbi_release(PDB_DbiContext** dbi_ptr);
 PDB_DbiModule *           dbi_push_module(PDB_DbiContext* dbi, String8 obj_path, String8 lib_path);
 String8                   dbi_module_read_symbol_data(Arena* arena, MSF_Context* msf, PDB_DbiModule* mod);
 String8                   dbi_module_read_c11_data(Arena* arena, MSF_Context* msf, PDB_DbiModule* mod);
@@ -472,7 +472,7 @@ PDB_TypeServer *        pdb_type_server_alloc(U64 bucket_count);
 PDB_TypeServer *        pdb_type_server_open_v80(MSF_Context* msf, MSF_StreamNumber sn, PDB_StringTable* strtab);
 PDB_TypeServer *        pdb_type_server_open(MSF_Context* msf, MSF_StreamNumber sn, PDB_StringTable* strtab);
 void                    pdb_type_server_build(TP_Context* tp, PDB_TypeServer* ts, PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn);
-void                    pdb_type_server_release(PDB_TypeServer **serv_ptr);
+void                    pdb_type_server_release(PDB_TypeServer** serv_ptr);
 void                    pdb_type_server_push(PDB_TypeServer* ts, String8 raw_leaf);
 void                    pdb_type_server_push_parallel(TP_Context* tp, PDB_TypeServer* ts, CV_DebugT types);
 //internal CV_LeafNode *     pdb_type_server_leaf_from_string(PDB_TypeServer* ts, String8 string);

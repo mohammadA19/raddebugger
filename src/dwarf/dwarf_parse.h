@@ -378,7 +378,7 @@ struct DW_PubStringsBucket
 struct DW_PubStringsTable
 {
   U64 size;
-  DW_PubStringsBucket **buckets;
+  DW_PubStringsBucket** buckets;
 }
 
 ////////////////////////////////

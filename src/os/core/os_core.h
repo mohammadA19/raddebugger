@@ -132,7 +132,7 @@ OS_HandleArray os_handle_array_from_list(Arena* arena, OS_HandleList* list);
 ////////////////////////////////
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
-String8List os_string_list_from_argcv(Arena* arena, int argc, char **argv);
+String8List os_string_list_from_argcv(Arena* arena, int argc, char** argv);
 
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)

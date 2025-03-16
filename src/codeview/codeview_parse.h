@@ -193,7 +193,7 @@ struct CV_C13Parsed
   CV_C13SubSectionNode* file_chksms_sub_section;
   
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
-  CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots;
+  CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots;
   U64                            inlinee_lines_parsed_slots_count;
 }
 

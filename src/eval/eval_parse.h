@@ -75,7 +75,7 @@ struct E_String2NumMapNode
 
 struct E_String2NumMapNodeArray
 {
-  E_String2NumMapNode **v;
+  E_String2NumMapNode** v;
   U64 count;
 }
 
@@ -164,7 +164,7 @@ E_String2NumMap e_string2num_map_make(Arena* arena, U64 slot_count);
 void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, String8 string, U64 num);
 U64 e_num_from_string(E_String2NumMap* map, String8 string);
 E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena* arena, E_String2NumMap* map);
-int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_String2NumMapNode **b);
+int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b);
 void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array);
 
 //- rjf: string -> expr

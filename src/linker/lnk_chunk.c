@@ -45,7 +45,7 @@ lnk_chunk_list_concat_in_place_arr(LNK_ChunkList* list, LNK_ChunkList* arr, U64 
 LNK_ChunkList **
 lnk_make_chunk_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count)
 {
-  LNK_ChunkList **arr_arr = push_array_no_zero(arena, LNK_ChunkList *, slot_count);
+  LNK_ChunkList** arr_arr = push_array_no_zero(arena, LNK_ChunkList *, slot_count);
   for (U64 i = 0; i < slot_count; i += 1) {
     arr_arr[i] = push_array(arena, LNK_ChunkList, per_count);
   }
@@ -734,7 +734,7 @@ lnk_visit_chunks(U64 sect_id, LNK_Chunk* chunk, LNK_ChunkVisitorSig* cb, void* u
 
 LNK_CHUNK_VISITOR_SIG(lnk_save_chunk_ptr)
 {
-  LNK_Chunk **id_map = (LNK_Chunk **)ud;
+  LNK_Chunk** id_map = (LNK_Chunk **)ud;
   if (!chunk->is_discarded) {
     id_map[chunk->ref.chunk_id] = chunk;
   }

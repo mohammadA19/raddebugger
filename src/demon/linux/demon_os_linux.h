@@ -193,7 +193,7 @@ struct DEMON_LNX_MapsEntry
 
 DEMON_LNX_ThreadExt*  demon_lnx_thread_ext(DEMON_Entity* entity);
 
-B32                   demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode **new_node);
+B32                   demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode** new_node);
 
 String8               demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid);
 int                   demon_lnx_open_memory_fd_for_pid(pid_t pid);

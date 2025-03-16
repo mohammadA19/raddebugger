@@ -388,9 +388,9 @@ lnk_on_symbol_replace(LNK_Symbol* dst, LNK_Symbol* src)
 }
 
 void
-lnk_symbol_hash_trie_insert_or_replace(Arena* arena, LNK_SymbolHashTrieChunkList* chunk_list, LNK_SymbolHashTrie **trie, U64 hash, LNK_Symbol* new_symbol)
+lnk_symbol_hash_trie_insert_or_replace(Arena* arena, LNK_SymbolHashTrieChunkList* chunk_list, LNK_SymbolHashTrie** trie, U64 hash, LNK_Symbol* new_symbol)
 {
-  LNK_SymbolHashTrie **curr_trie_ptr = trie;
+  LNK_SymbolHashTrie** curr_trie_ptr = trie;
 
   for (U64 h = hash; ; h <<= 2) {
     // load current pointer
@@ -460,7 +460,7 @@ LNK_SymbolHashTrie *
 lnk_symbol_hash_trie_search(LNK_SymbolHashTrie* trie, U64 hash, String8 name)
 {
   LNK_SymbolHashTrie*  result   = 0;
-  LNK_SymbolHashTrie **curr_ptr = &trie;
+  LNK_SymbolHashTrie** curr_ptr = &trie;
   for (U64 h = hash; ; h <<= 2) {
     LNK_SymbolHashTrie* curr = ins_atomic_ptr_eval(curr_ptr);
     if (curr == 0) {

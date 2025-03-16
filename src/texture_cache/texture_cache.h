@@ -81,7 +81,7 @@ struct TEX_Shared
   U64 stripes_count;
   TEX_Slot* slots;
   TEX_Stripe* stripes;
-  TEX_Node **stripes_free_nodes;
+  TEX_Node** stripes_free_nodes;
   
   // rjf: user -> xfer thread
   U64 u2x_ring_size;

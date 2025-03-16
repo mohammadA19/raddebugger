@@ -432,7 +432,7 @@ struct RD_EntityList
 
 struct RD_EntityArray
 {
-  RD_Entity **v;
+  RD_Entity** v;
   U64 count;
 }
 
@@ -753,7 +753,7 @@ struct RD_State
   
   // rjf: ambiguous path table
   U64 ambiguous_path_slots_count;
-  RD_AmbiguousPathNode **ambiguous_path_slots;
+  RD_AmbiguousPathNode** ambiguous_path_slots;
   
   // rjf: registers stack
   RD_RegsNode base_regs;
@@ -1397,7 +1397,7 @@ void rd_push_cmd(String8 name, RD_Regs* regs);
 #define rd_cmd(kind, ...) rd_push_cmd(rd_cmd_kind_info_table[kind].string, &(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 
 //- rjf: iterating
-B32 rd_next_cmd(RD_Cmd **cmd);
+B32 rd_next_cmd(RD_Cmd** cmd);
 
 ////////////////////////////////
 //~ rjf: Main Layer Top-Level Calls

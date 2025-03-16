@@ -1408,7 +1408,7 @@ cv_c13_parsed_from_data(Arena* arena, String8 c13_data, String8 strtbl, COFF_Sec
   //- rjf: parse each sub-section
   //
   U64 inlinee_lines_parsed_slots_count = 4096;
-  CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots = push_array(arena, CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
+  CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots = push_array(arena, CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
   for(CV_C13SubSectionNode* node = first;
       node != 0;
       node = node->next)

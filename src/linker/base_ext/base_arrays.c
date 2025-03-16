@@ -12,7 +12,7 @@ void_list_count_nodes(VoidNode* head)
 }
 
 void
-void_node_concat(VoidNode **head, VoidNode* node)
+void_node_concat(VoidNode** head, VoidNode* node)
 {
   Assert(*head != node);
   node->next = *head;
@@ -20,7 +20,7 @@ void_node_concat(VoidNode **head, VoidNode* node)
 }
 
 void
-void_node_concat_atomic(VoidNode **head, VoidNode* node)
+void_node_concat_atomic(VoidNode** head, VoidNode* node)
 {
   Assert(*head != node);
   node->next = ins_atomic_ptr_eval_assign(head, node);
@@ -167,7 +167,7 @@ sum_array_u64(U64 count, U64* v)
 }
 
 U64
-sum_matrix_u64(U64 rows, U64 cols, U64 **v)
+sum_matrix_u64(U64 rows, U64 cols, U64** v)
 {
   U64 result = 0;
   for (U64 i = 0; i < rows; ++i) {

@@ -11,5 +11,5 @@ U64 **  push_matrix_u64(Arena* arena, U64 rows, U64 columns);
 String8 push_cstr(Arena* arena, String8 str);
 
 Arena ** alloc_fixed_size_arena_array(Arena* arena, U64 count, U64 res, U64 cmt);
-void     release_arena_array(Arena **arr);
+void     release_arena_array(Arena** arr);
 

@@ -156,11 +156,11 @@ struct LNK_BaseRelocPageArray
 struct
 {
   U64                     page_size;
-  LNK_Section           **sect_id_map;
-  LNK_Reloc             **reloc_arr;
+  LNK_Section**           sect_id_map;
+  LNK_Reloc**             reloc_arr;
   Rng1U64*                range_arr;
   LNK_BaseRelocPageList*  list_arr;
-  HashTable             **page_ht_arr;
+  HashTable**             page_ht_arr;
   B32                     is_large_addr_aware;
 }
 
@@ -168,10 +168,10 @@ struct
 {
   Rng1U64*                ranges;
   U64                     page_size;
-  LNK_Section           **sect_id_map;
+  LNK_Section**           sect_id_map;
   LNK_BaseRelocPageList*  list_arr;
-  LNK_Obj               **obj_arr;
-  HashTable             **page_ht_arr;
+  LNK_Obj**               obj_arr;
+  HashTable**             page_ht_arr;
   B32                     is_large_addr_aware;
 }
 
@@ -205,9 +205,9 @@ struct
   String8            image_data;
   LNK_SymbolTable*   symtab;
   LNK_SectionTable*  st;
-  LNK_Section      **sect_id_map;
+  LNK_Section**      sect_id_map;
   U64                base_addr;
-  LNK_Section      **sect_arr;
+  LNK_Section**      sect_arr;
   Rng1U64*           range_arr;
 }
 
@@ -216,9 +216,9 @@ struct
   String8            image_data;
   LNK_SymbolTable*   symtab;
   LNK_SectionTable*  st;
-  LNK_Section      **sect_id_map;
+  LNK_Section**      sect_id_map;
   U64                base_addr;
-  LNK_Obj          **obj_arr;
+  LNK_Obj**          obj_arr;
 }
 
 struct
@@ -239,7 +239,7 @@ struct
 LNK_InputImport *   lnk_input_import_list_push(Arena* arena, LNK_InputImportList* list);
 void                lnk_input_import_list_concat_in_place(LNK_InputImportList* list, LNK_InputImportList* to_concat);
 LNK_InputImport **  lnk_input_import_arr_from_list(Arena* arena, LNK_InputImportList list);
-LNK_InputImportList lnk_list_from_input_import_arr(LNK_InputImport **arr, U64 count);
+LNK_InputImportList lnk_list_from_input_import_arr(LNK_InputImport** arr, U64 count);
 
 ////////////////////////////////
 // Helpers
@@ -289,10 +289,10 @@ LNK_Chunk * lnk_build_win32_image_header(LNK_SymbolTable* symtab, LNK_Section* h
 ////////////////////////////////
 // Relocs
 
-void lnk_patch_relocs_linker(TP_Context* tp, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr);
-void lnk_patch_relocs_obj(TP_Context* tp, LNK_ObjList obj_list, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr);
+void lnk_patch_relocs_linker(TP_Context* tp, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, String8 image_data, U64 base_addr);
+void lnk_patch_relocs_obj(TP_Context* tp, LNK_ObjList obj_list, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, String8 image_data, U64 base_addr);
 
-void lnk_apply_reloc(U64 base_addr, U64 virt_align, U64 file_align, LNK_Section **sect_id_map, LNK_SymbolTable* symtab, String8 chunk_data, LNK_Reloc* reloc);
+void lnk_apply_reloc(U64 base_addr, U64 virt_align, U64 file_align, LNK_Section** sect_id_map, LNK_SymbolTable* symtab, String8 chunk_data, LNK_Reloc* reloc);
 
 ////////////////////////////////
 

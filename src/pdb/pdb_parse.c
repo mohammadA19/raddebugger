@@ -312,7 +312,7 @@ pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, Str
   if (1 <= stride && stride <= 8 && bucket_count > 0 && data.str != 0){
     
     // allocate buckets
-    PDB_TpiHashBlock **buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
+    PDB_TpiHashBlock** buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
     
     // extract "hash" array
     U8* hashes = data.str + tpi->hash_vals_off;
@@ -670,7 +670,7 @@ pdb_comp_unit_array_from_data(Arena* arena, String8 data){
   
   
   // fill result
-  PDB_CompUnit **units = push_array_no_zero(arena, PDB_CompUnit*, count);
+  PDB_CompUnit** units = push_array_no_zero(arena, PDB_CompUnit*, count);
   {
     U64 idx = 0;
     for (PDB_CompUnitNode* node = first;

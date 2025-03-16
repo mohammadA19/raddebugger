@@ -9,7 +9,7 @@ DWORD thread_entry_point(void* p)
   return 0;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   HANDLE threads[] =
   {

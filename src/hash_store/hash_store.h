@@ -84,7 +84,7 @@ struct HS_Shared
   U64 stripes_count;
   HS_Slot* slots;
   HS_Stripe* stripes;
-  HS_Node **stripes_free_nodes;
+  HS_Node** stripes_free_nodes;
   
   // rjf: key cache
   U64 key_slots_count;
@@ -120,7 +120,7 @@ void hs_tctx_ensure_inited();
 ////////////////////////////////
 //~ rjf: Cache Submission/Derefs
 
-U128 hs_submit_data(U128 key, Arena **data_arena, String8 data);
+U128 hs_submit_data(U128 key, Arena** data_arena, String8 data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access

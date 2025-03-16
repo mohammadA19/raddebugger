@@ -549,7 +549,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel* root, RD_Panel* panel)
   }
   
   // rjf: gather ancestors
-  RD_Panel **ancestors = push_array(scratch.arena, RD_Panel *, ancestor_count);
+  RD_Panel** ancestors = push_array(scratch.arena, RD_Panel *, ancestor_count);
   {
     U64 ancestor_idx = 0;
     for(RD_Panel* p = panel->parent; !rd_panel_is_nil(p); p = p->parent)
@@ -706,7 +706,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
         // qualifiers
         {
           U64 num_collisions_left = collisions.count;
-          String8Node **collision_nodes = push_array(scratch.arena, String8Node *, collisions.count);
+          String8Node** collision_nodes = push_array(scratch.arena, String8Node *, collisions.count);
           for EachIndex(idx, collisions.count)
           {
             collision_nodes[idx] = collision_parts_reversed[idx].first;
@@ -4787,7 +4787,7 @@ rd_window_frame(RD_Window* ws)
         
         //- rjf: grab rdis
         U64 rdis_count = dbgi_keys.count;
-        RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
+        RDI_Parsed** rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
         {
           for(U64 idx = 0; idx < rdis_count; idx += 1)
           {
@@ -9160,7 +9160,7 @@ rd_ev_view_rule_expr_num_from_id__meta_ctrl_entities(U64 id, void* user_data, CT
 struct RD_DebugInfoTableExpandAccel
 {
   U64 rdis_count;
-  RDI_Parsed **rdis;
+  RDI_Parsed** rdis;
   DI_SearchItemArray items;
 };
 
@@ -9177,7 +9177,7 @@ rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena* arena, EV_View* view,
     DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
     DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
     U64 rdis_count = dbgi_keys.count;
-    RDI_Parsed **rdis = push_array(arena, RDI_Parsed *, rdis_count);
+    RDI_Parsed** rdis = push_array(arena, RDI_Parsed *, rdis_count);
     for(U64 idx = 0; idx < rdis_count; idx += 1)
     {
       rdis[idx] = di_rdi_from_key(rd_state->frame_di_scope, &dbgi_keys.v[idx], endt_us);
@@ -11404,7 +11404,7 @@ rd_push_cmd(String8 name, RD_Regs* regs)
 //- rjf: iterating
 
 B32
-rd_next_cmd(RD_Cmd **cmd)
+rd_next_cmd(RD_Cmd** cmd)
 {
   U64 slot = rd_state->cmds_gen%ArrayCount(rd_state->cmds);
   RD_CmdNode* start_node = rd_state->cmds[slot].first;

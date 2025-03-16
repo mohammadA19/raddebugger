@@ -36,7 +36,7 @@ demon_lnx_thread_ext(DEMON_Entity* entity){
 }
 
 B32
-demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
+demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode** new_node){
   B32 result = false;
   
   int attach_result = ptrace(PTRACE_ATTACH, pid, 0, 0);
@@ -1431,10 +1431,10 @@ demon_os_launch_process(OS_LaunchOptions* options){
   
   // arrange options
   char* binary = 0;
-  char **args = 0;
+  char** args = 0;
   if (options->cmd_line.node_count > 0){
     args = push_array_no_zero(scratch.arena, char*, options->cmd_line.node_count + 1);
-    char **arg_ptr = args;
+    char** arg_ptr = args;
     for (String8Node* node = options->cmd_line.first;
          node != 0;
          node = node->next, arg_ptr += 1){
@@ -1451,10 +1451,10 @@ demon_os_launch_process(OS_LaunchOptions* options){
     path = (char*)string.str;
   }
   
-  char **env = 0;
+  char** env = 0;
   if (options->env.node_count > 0){
     env = push_array_no_zero(scratch.arena, char*, options->env.node_count + 1);
-    char **env_ptr = env;
+    char** env_ptr = env;
     for (String8Node* node = options->env.first;
          node != 0;
          node = node->next, env_ptr += 1){

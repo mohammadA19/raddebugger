@@ -174,7 +174,7 @@ struct DMN_W32_ImageInfo
 ////////////////////////////////
 //~ rjf: Dynamically-Loaded Win32 Function Types
 
-typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR **ppszThreadDescription);
+typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR** ppszThreadDescription);
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle

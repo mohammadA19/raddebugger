@@ -53,7 +53,7 @@ lnk_reloc_list_concat_in_place_arr(LNK_RelocList* list, LNK_RelocList* arr, U64 
 LNK_RelocList **
 lnk_make_reloc_list_arr_arr(Arena* arena, U64 slot_count, U64 per_count)
 {
-  LNK_RelocList **arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
+  LNK_RelocList** arr_arr = push_array_no_zero(arena, LNK_RelocList *, slot_count);
   for (U64 i = 0; i < slot_count; i += 1) {
     arr_arr[i] = push_array(arena, LNK_RelocList, per_count);
   }
@@ -103,7 +103,7 @@ lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK
 LNK_Reloc **
 lnk_reloc_array_from_list(Arena* arena, LNK_RelocList list)
 {
-  LNK_Reloc **arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
+  LNK_Reloc** arr = push_array_no_zero(arena, LNK_Reloc *, list.count);
   U64 count = 0;
   for (LNK_Reloc* node = list.first; node != 0; node = node->next) {
     Assert(count < list.count);

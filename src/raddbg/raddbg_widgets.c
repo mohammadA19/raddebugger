@@ -1197,7 +1197,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, S64* prefe
   //////////////////////////////
   //- rjf: produce per-line extra annotation containers
   //
-  UI_Box **line_extras_boxes = push_array(scratch.arena, UI_Box *, dim_1s64(params->line_num_range)+1);
+  UI_Box** line_extras_boxes = push_array(scratch.arena, UI_Box *, dim_1s64(params->line_num_range)+1);
   UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind_Off)
   {
     U64 line_idx = 0;

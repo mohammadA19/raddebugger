@@ -321,7 +321,7 @@ struct D_State
   
   // rjf: view rule specification table
   U64 view_rule_spec_table_size;
-  D_ViewRuleSpec **view_rule_spec_table;
+  D_ViewRuleSpec** view_rule_spec_table;
   
   // rjf: user -> ctrl driving state
   Arena* ctrl_last_run_arena;
@@ -455,7 +455,7 @@ void d_push_cmd(D_CmdKind kind, D_CmdParams* params);
 #define d_cmd(kind, ...) d_push_cmd((kind), &(D_CmdParams){.thread = {0}, __VA_ARGS__})
 
 //- rjf: command iteration
-B32 d_next_cmd(D_Cmd **cmd);
+B32 d_next_cmd(D_Cmd** cmd);
 
 ////////////////////////////////
 //~ rjf: Main Layer Top-Level Calls

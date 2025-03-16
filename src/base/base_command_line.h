@@ -30,9 +30,9 @@ struct CmdLine
   CmdLineOptList options;
   String8List inputs;
   U64 option_table_size;
-  CmdLineOpt **option_table;
+  CmdLineOpt** option_table;
   U64 argc;
-  char **argv;
+  char** argv;
 }
 
 ////////////////////////////////
@@ -40,7 +40,7 @@ struct CmdLine
 
 U64              cmd_line_hash_from_string(String8 string);
 CmdLineOpt**     cmd_line_slot_from_string(CmdLine* cmd_line, String8 string);
-CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string);
+CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt** slot, String8 string);
 void             cmd_line_push_opt(CmdLineOptList* list, CmdLineOpt* var);
 CmdLineOpt*      cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, String8 string, String8List values);
 CmdLine          cmd_line_from_string_list(Arena* arena, String8List arguments);

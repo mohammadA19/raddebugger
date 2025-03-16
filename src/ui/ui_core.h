@@ -757,7 +757,7 @@ String8           ui_icon_string_from_kind(UI_IconKind icon_kind);
 F32               ui_dt();
 
 //- rjf: event pumping
-B32 ui_next_event(UI_Event **ev);
+B32 ui_next_event(UI_Event** ev);
 void ui_eat_event(UI_Event* ev);
 
 //- rjf: event consumption helpers

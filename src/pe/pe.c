@@ -1627,7 +1627,7 @@ pe_resource_table_from_directory_data(Arena* arena, String8 data)
     U64 name_base_offset;
     U64 id_base_offset;
     PE_ResourceDir* table;
-    PE_ResourceDir **directory_ptr;
+    PE_ResourceDir** directory_ptr;
     U64 name_ientry;
     U64 id_ientry;
     U64 name_entry_count;

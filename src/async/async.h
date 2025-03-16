@@ -24,7 +24,7 @@ enum ASYNC_Priority
 struct ASYNC_WorkParams
 {
   void* input;
-  void **output;
+  void** output;
   OS_Handle semaphore;
   U64* completion_counter;
   U64 endt_us;
@@ -35,7 +35,7 @@ struct ASYNC_Work
 {
   ASYNC_WorkFunctionType* work_function;
   void* input;
-  void **output;
+  void** output;
   OS_Handle semaphore;
   U64* completion_counter;
 }

@@ -119,7 +119,7 @@ struct LNK_SymbolList
 struct LNK_SymbolNodeArray
 {
   U64              count;
-  LNK_SymbolNode **v;
+  LNK_SymbolNode** v;
 }
 
 struct LNK_SymbolArray
@@ -201,7 +201,7 @@ LNK_SymbolArray     lnk_symbol_array_from_list(Arena* arena, LNK_SymbolList list
 
 ////////////////////////////////
 
-void                 lnk_symbol_hash_trie_insert_or_replace(Arena* arena, LNK_SymbolHashTrieChunkList* chunk_list, LNK_SymbolHashTrie **trie, U64 hash, LNK_Symbol* new_symbol);
+void                 lnk_symbol_hash_trie_insert_or_replace(Arena* arena, LNK_SymbolHashTrieChunkList* chunk_list, LNK_SymbolHashTrie** trie, U64 hash, LNK_Symbol* new_symbol);
 LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie* trie, U64 hash, String8 name);
 void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie* trie);
 

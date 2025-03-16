@@ -127,8 +127,8 @@ struct
 ////////////////////////////////
 
 MSF_Context *    msf_alloc(MSF_UInt page_size, MSF_UInt active_fpm);
-MSF_Error        msf_open(String8 data, MSF_Context **msf_out);
-void             msf_release(MSF_Context **msf_ptr);
+MSF_Error        msf_open(String8 data, MSF_Context** msf_out);
+void             msf_release(MSF_Context** msf_ptr);
 MSF_Error        msf_build(MSF_Context* msf);
 U64              msf_get_save_size(MSF_Context* msf);
 String8List      msf_get_page_data_nodes(Arena* arena, MSF_Context* msf);

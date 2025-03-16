@@ -136,7 +136,7 @@ struct MG_StrExprParseResult
 
 struct MG_NodeArray
 {
-  MD_Node **v;
+  MD_Node** v;
   U64 count;
 }
 

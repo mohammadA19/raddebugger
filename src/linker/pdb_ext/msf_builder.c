@@ -673,7 +673,7 @@ msf_find_max_pn(MSF_PageDataList page_data_list, MSF_UInt page_size)
 ////////////////////////////////
 
 B32
-msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
+msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
 {
   MSF_PageNode* start_page = *page_ptr;
   MSF_UInt start_pos = *pos_ptr;
@@ -723,7 +723,7 @@ msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **
 }
 
 MSF_UInt
-msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
+msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
 {
   MSF_UInt buffer_pos = 0;
   while (*page_ptr) {
@@ -1535,7 +1535,7 @@ exit:;
 }
 
 MSF_Error
-msf_open(String8 data, MSF_Context **msf_out)
+msf_open(String8 data, MSF_Context** msf_out)
 {
   ProfBeginFunction();
 
@@ -1671,7 +1671,7 @@ exit:;
 }
 
 void
-msf_release(MSF_Context **msf_ptr)
+msf_release(MSF_Context** msf_ptr)
 {
   arena_release((*msf_ptr)->arena);
   *msf_ptr = 0;

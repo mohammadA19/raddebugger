@@ -112,7 +112,7 @@ lnk_import_table_alloc_delayed(LNK_SectionTable* st, LNK_SymbolTable* symtab, CO
 }
 
 void
-lnk_import_table_release(LNK_ImportTable **imptab_ptr)
+lnk_import_table_release(LNK_ImportTable** imptab_ptr)
 {
   ProfBeginFunction();
   arena_release((*imptab_ptr)->arena);

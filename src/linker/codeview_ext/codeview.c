@@ -593,8 +593,8 @@ cv_string_hash_table_hash(String8 string)
 int
 cv_string_bucket_is_before(void* raw_a, void* raw_b)
 {
-  CV_StringBucket **a = raw_a;
-  CV_StringBucket **b = raw_b;
+  CV_StringBucket** a = raw_a;
+  CV_StringBucket** b = raw_b;
 
   int is_before;
 
@@ -608,7 +608,7 @@ cv_string_bucket_is_before(void* raw_a, void* raw_b)
 }
 
 CV_StringBucket *
-cv_string_hash_table_insert_or_update(CV_StringBucket **buckets, U64 cap, U64 hash, CV_StringBucket* new_bucket)
+cv_string_hash_table_insert_or_update(CV_StringBucket** buckets, U64 cap, U64 hash, CV_StringBucket* new_bucket)
 {
   CV_StringBucket* result                         = 0;
   B32              was_bucket_inserted_or_updated = 0;
@@ -764,7 +764,7 @@ cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, U64 count, CV_DebugS* ar
   U64                   per_task_weight = CeilIntegerDiv(total_weight, tp->worker_count);
   U64                   task_weight     = 0;
   U64                   task_id         = 0;
-  CV_StringTableRange **range_lists     = push_array(scratch.arena, CV_StringTableRange *, tp->worker_count);
+  CV_StringTableRange** range_lists     = push_array(scratch.arena, CV_StringTableRange *, tp->worker_count);
 
   ProfBegin("Divide Work");
   for (U64 debug_s_idx = 0; debug_s_idx < count; ++debug_s_idx) {
@@ -830,7 +830,7 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context* tp, CV_StringHashTable st
   ProfEnd();
 
   ProfBegin("Push");
-  CV_StringBucket **strings = push_array_no_zero(scratch.arena, CV_StringBucket *, string_count);
+  CV_StringBucket** strings = push_array_no_zero(scratch.arena, CV_StringBucket *, string_count);
   ProfEnd();
 
   ProfBegin("Copy Present Buckets");
@@ -926,9 +926,9 @@ cv_symbol_deduper_is_before(void* raw_a, void* raw_b)
 }
 
 CV_SymbolNode **
-cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, CV_SymbolNode **new_bucket)
+cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, CV_SymbolNode** new_bucket)
 {
-  CV_SymbolNode **result                 = 0;
+  CV_SymbolNode** result                 = 0;
   B32             is_inserted_or_updated = 0;
 
   U64 best_idx = hash % cap;
@@ -936,12 +936,12 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
 
   do {
     retry:;
-    CV_SymbolNode **curr_bucket = buckets[idx];
+    CV_SymbolNode** curr_bucket = buckets[idx];
 
     Assert(curr_bucket != new_bucket);
 
     if (curr_bucket == 0) {
-      CV_SymbolNode **compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_SymbolNode** compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -963,7 +963,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
         break;
       }
 
-      CV_SymbolNode **compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_SymbolNode** compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
       if (compare_bucket == curr_bucket) {
         result = compare_bucket;
 
@@ -991,7 +991,7 @@ THREAD_POOL_TASK_FUNC(cv_symbol_deduper_insert_task)
   CV_SymbolDeduperTask* task  = raw_task;
   Rng1U64               range = task->ranges[task_id];
   for (U64 symbol_idx = range.min; symbol_idx < range.max; ++symbol_idx) {
-    CV_SymbolNode **symbol_node = &task->symbols[symbol_idx];
+    CV_SymbolNode** symbol_node = &task->symbols[symbol_idx];
     U64             hash        = hash_from_cv_symbol(&(*symbol_node)->data);
     cv_symbol_deduper_insert_or_update(task->u.buckets, task->cap, hash, symbol_node);
   }
@@ -1005,7 +1005,7 @@ THREAD_POOL_TASK_FUNC(cv_symbol_deduper_deref_buckets_task)
   CV_SymbolDeduperTask* task  = raw_task;
   Rng1U64               range = task->ranges[task_id];
   for (U64 bucket_idx = range.min; bucket_idx < range.max; ++bucket_idx) {
-    CV_SymbolNode **bucket = task->u.buckets[bucket_idx];
+    CV_SymbolNode** bucket = task->u.buckets[bucket_idx];
     if (bucket) {
       task->u.deref_buckets[bucket_idx] = *bucket;
     }
@@ -1075,7 +1075,7 @@ cv_debug_t_from_data_arr(Arena* arena, String8Array data_arr, U64 align)
   }
   ProfEnd();
 
-  U8 **leaf_arr   = push_array_no_zero(arena, U8 *, max_leaf_count);
+  U8** leaf_arr   = push_array_no_zero(arena, U8 *, max_leaf_count);
   U64  leaf_count = 0;
   for (U64 data_idx = 0; data_idx < data_arr.count; data_idx += 1) {
     String8 data = data_arr.v[data_idx];

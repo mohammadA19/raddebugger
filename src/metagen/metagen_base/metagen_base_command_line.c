@@ -18,7 +18,7 @@ cmd_line_hash_from_string(String8 string)
 CmdLineOpt **
 cmd_line_slot_from_string(CmdLine* cmd_line, String8 string)
 {
-  CmdLineOpt **slot = 0;
+  CmdLineOpt** slot = 0;
   if(cmd_line->option_table_size != 0)
   {
     U64 hash = cmd_line_hash_from_string(string);
@@ -29,7 +29,7 @@ cmd_line_slot_from_string(CmdLine* cmd_line, String8 string)
 }
 
 CmdLineOpt *
-cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
+cmd_line_opt_from_slot(CmdLineOpt** slot, String8 string)
 {
   CmdLineOpt* result = 0;
   for(CmdLineOpt* var = *slot; var; var = var->hash_next)
@@ -54,7 +54,7 @@ CmdLineOpt *
 cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, String8 string, String8List values)
 {
   CmdLineOpt* var = 0;
-  CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
+  CmdLineOpt** slot = cmd_line_slot_from_string(cmd_line, string);
   CmdLineOpt* existing_var = cmd_line_opt_from_slot(slot, string);
   if(existing_var != 0)
   {

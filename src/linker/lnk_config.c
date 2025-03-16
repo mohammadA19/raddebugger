@@ -2068,7 +2068,7 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
 }
 
 LNK_Config *
-lnk_build_config(Arena* arena, int argc, char **argv)
+lnk_build_config(Arena* arena, int argc, char** argv)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

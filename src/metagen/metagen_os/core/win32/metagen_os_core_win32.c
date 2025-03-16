@@ -1483,7 +1483,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
 #define OS_WINDOWS 1
 
 void
-w32_entry_point_caller(int argc, WCHAR **wargv)
+w32_entry_point_caller(int argc, WCHAR** wargv)
 {
   SetUnhandledExceptionFilter(&win32_exception_filter);
   
@@ -1614,7 +1614,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   
   //- rjf: extract arguments
   Arena* args_arena = arena_alloc(.reserve_size = MB(1), .commit_size = KB(32));
-  char **argv = push_array(args_arena, char *, argc);
+  char** argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {
     String16 arg16 = str16_cstring((U16 *)wargv[i]);
@@ -1631,7 +1631,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
 }
 
 #if BUILD_CONSOLE_INTERFACE
-int wmain(int argc, WCHAR **argv)
+int wmain(int argc, WCHAR** argv)
 {
   w32_entry_point_caller(argc, argv);
   return 0;

@@ -121,7 +121,7 @@ struct R_BatchGroup3DMapNode
 
 struct R_BatchGroup3DMap
 {
-  R_BatchGroup3DMapNode **slots;
+  R_BatchGroup3DMapNode** slots;
   U64 slots_count;
 }
 

@@ -9,7 +9,7 @@ typedef THREAD_POOL_TASK_FUNC(TP_TaskFunc);
 struct TP_Arena
 {
   U64     count;
-  Arena **v;
+  Arena** v;
 }
 
 struct TP_Temp
@@ -46,7 +46,7 @@ struct TP_Context
 TP_Context * tp_alloc(Arena* arena, U32 worker_count, U32 max_worker_count, String8 name);
 void         tp_release(TP_Context* pool);
 TP_Arena *   tp_arena_alloc(TP_Context* pool);
-void         tp_arena_release(TP_Arena **arena_ptr);
+void         tp_arena_release(TP_Arena** arena_ptr);
 TP_Temp      tp_temp_begin(TP_Arena* arena);
 void         tp_temp_end(TP_Temp temp);
 void         tp_for_parallel(TP_Context* pool, TP_Arena* arena, U64 task_count, TP_TaskFunc* task_func, void* task_data);

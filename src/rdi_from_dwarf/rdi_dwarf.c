@@ -885,7 +885,7 @@ dwarf_loc_lists_from_data(Arena* arena, String8 data){
 // parse helpers
 
 static void
-dwarf__initial_length(String8 data, U8 **ptr_inout, U8 **unit_opl_out, B32* is_64bit_out){
+dwarf__initial_length(String8 data, U8** ptr_inout, U8** unit_opl_out, B32* is_64bit_out){
   U8* unit_opl = 0;
   B32 is_64bit = 0;
   
@@ -920,7 +920,7 @@ static void
 dwarf__line_v5_directories(U64 address_size, U64 offset_size,
                            DWARF_V5LinePathEntryFormat* format, U64 format_count,
                            DWARF_V5Directory* directories_out, U64 dir_count,
-                           U8 **ptr_io, U8* opl){
+                           U8** ptr_io, U8* opl){
   
   U8* ptr = *ptr_io;
   
@@ -1136,7 +1136,7 @@ dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_si
 }
 
 static DWARF_FormDecoded
-dwarf_form_decode(DWARF_FormDecodeRules* rules, U8 **ptr_io, U8* opl,
+dwarf_form_decode(DWARF_FormDecodeRules* rules, U8** ptr_io, U8* opl,
                   DWARF_AbbrevDecl* abbrev_decl, U32 attrib_i){
   
   // local copy of ptr

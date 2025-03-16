@@ -112,7 +112,7 @@ fp_dwrite_iunknown_noop__release(void* obj)
 //- rjf: font file loader interface function implementations
 
 HRESULT
-fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
+fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream** stream_out)
 {
   HRESULT result = S_OK;
   String8* key = *(String8 **)font_file_ref_key;
@@ -124,7 +124,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj
 //- rjf: font file stream  interface function implementations
 
 HRESULT
-fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
+fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context)
 {
   HRESULT result = S_OK;
   *fragment_start = obj->data->str + file_offset;

@@ -245,7 +245,7 @@ lnk_lib_writer_alloc()
 }
 
 void
-lnk_lib_writer_release(LNK_LibWriter **writer_ptr)
+lnk_lib_writer_release(LNK_LibWriter** writer_ptr)
 {
   arena_release((*writer_ptr)->arena);
   *writer_ptr = 0;
@@ -938,7 +938,7 @@ lnk_build_import_lib(TP_Context* tp, TP_Arena* arena, COFF_MachineType machine, 
     input->lib_path     = lib_name;
   }
 
-  LNK_InputObj     **inputs   = lnk_array_from_input_obj_list(scratch.arena, input_obj_list);
+  LNK_InputObj**     inputs   = lnk_array_from_input_obj_list(scratch.arena, input_obj_list);
   LNK_SectionTable*  st       = lnk_section_table_alloc(0,0,0);
   LNK_ObjList        obj_list = {0};
   lnk_obj_list_push_parallel(tp, arena, &obj_list, st, 0, input_obj_list.count, inputs);

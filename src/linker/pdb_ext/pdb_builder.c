@@ -537,7 +537,7 @@ pdb_strtab_open(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
   U32                     bucket_max;
   U32                     bucket_count;
   U32*                    ibucket_array;
-  PDB_StringTableBucket **bucket_array;
+  PDB_StringTableBucket** bucket_array;
 
   PDB_StringTableHeader header = {0};
   msf_stream_read_struct(msf, sn, &header);
@@ -1252,7 +1252,7 @@ pdb_type_server_build(TP_Context* tp, PDB_TypeServer* ts, PDB_StringTable* strta
 
   U64             hint_count    = CeilIntegerDiv(ts->leaf_list.node_count, PDB_TYPE_HINT_STEP);
   PDB_TpiOffHint* hint_arr      = push_array_no_zero(scratch.arena, PDB_TpiOffHint, hint_count);
-  String8Node   **lf_arr        = push_array_no_zero(scratch.arena, String8Node *, tp->worker_count);
+  String8Node**   lf_arr        = push_array_no_zero(scratch.arena, String8Node *, tp->worker_count);
   U64*            lf_cursor_arr = push_array_no_zero(scratch.arena, U64, tp->worker_count);
   Rng1U64*        lf_range_arr  = tp_divide_work(scratch.arena, ts->leaf_list.node_count, tp->worker_count);
 
@@ -1317,7 +1317,7 @@ pdb_type_server_build(TP_Context* tp, PDB_TypeServer* ts, PDB_StringTable* strta
 }
 
 void
-pdb_type_server_release(PDB_TypeServer **ts_ptr)
+pdb_type_server_release(PDB_TypeServer** ts_ptr)
 {
   ProfBeginFunction();
   arena_release((*ts_ptr)->arena);
@@ -1462,7 +1462,7 @@ THREAD_POOL_TASK_FUNC(pdb_push_udt_leaf_task)
   PDB_TypeBucket*   new_buckets   = task->udt_buckets;
 
   U64              type_ht_cap     = type_server->bucket_cap;
-  PDB_TypeBucket **type_ht_buckets = type_server->buckets;
+  PDB_TypeBucket** type_ht_buckets = type_server->buckets;
   U64              base_type_index = type_server->ti_lo + type_server->leaf_list.node_count;
 
   for (U64 leaf_idx = range.min; leaf_idx < range.max; ++leaf_idx) {
@@ -1542,7 +1542,7 @@ pdb_type_server_leaf_from_string(PDB_TypeServer* ts, String8 string)
 
 #if 0
 PDB_TypeIndexMap *
-pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf_list)
+pdb_load_types_from_leaf_list(PDB_TypeServer** type_server_arr, CV_LeafList leaf_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1884,7 +1884,7 @@ pdb_info_build(PDB_InfoContext* info, MSF_Context* msf, MSF_StreamNumber sn)
 }
 
 void
-pdb_info_release(PDB_InfoContext **info_ptr)
+pdb_info_release(PDB_InfoContext** info_ptr)
 {
   ProfBeginFunction();
   arena_release((*info_ptr)->arena);
@@ -2122,7 +2122,7 @@ gsi_open(MSF_Context* msf, MSF_StreamNumber sn, String8 symbol_data)
 }
 
 void
-gsi_release(PDB_GsiContext **gsi_ptr)
+gsi_release(PDB_GsiContext** gsi_ptr)
 {
   ProfBeginFunction();
   arena_release((*gsi_ptr)->arena);
@@ -2482,7 +2482,7 @@ THREAD_POOL_TASK_FUNC(gsi_symbol_hasher_task)
 }
 
 void
-gsi_push_many_arr(TP_Context* tp, PDB_GsiContext* gsi, U64 count, CV_SymbolNode **symbols)
+gsi_push_many_arr(TP_Context* tp, PDB_GsiContext* gsi, U64 count, CV_SymbolNode** symbols)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -2621,7 +2621,7 @@ psi_build(TP_Context* tp, PDB_PsiContext* psi, MSF_Context* msf, MSF_StreamNumbe
 }
 
 void
-psi_release(PDB_PsiContext **psi_ptr)
+psi_release(PDB_PsiContext** psi_ptr)
 {
   ProfBeginFunction();
   gsi_release(&(*psi_ptr)->gsi);
@@ -2979,7 +2979,7 @@ dbi_build_file_info(Arena* arena, TP_Context* tp, PDB_DbiModuleList mod_list, CV
   
   U64             total_source_file_count = 0;
   U64             mod_arr_count           = 0;
-  PDB_DbiModule **mod_arr                 = push_array_no_zero(scratch.arena, PDB_DbiModule *, mod_list.count);
+  PDB_DbiModule** mod_arr                 = push_array_no_zero(scratch.arena, PDB_DbiModule *, mod_list.count);
 
   for (PDB_DbiModule* mod = mod_list.first; mod != 0; mod = mod->next) {
     mod_arr[mod_arr_count++] = mod;
@@ -2988,7 +2988,7 @@ dbi_build_file_info(Arena* arena, TP_Context* tp, PDB_DbiModuleList mod_list, CV
     }
   }
 
-  U32 **source_file_name_offsets_arr = push_array_no_zero(scratch.arena, U32 *, mod_list.count);
+  U32** source_file_name_offsets_arr = push_array_no_zero(scratch.arena, U32 *, mod_list.count);
   U32*  source_file_name_offsets     = push_array_no_zero(arena, U32, total_source_file_count);
   for (U64 mod_idx = 0, cursor = 0; mod_idx < mod_list.count; ++mod_idx) {
     if (mod_arr[mod_idx]->imod != CV_ModIndex_Invalid) {
@@ -3393,7 +3393,7 @@ dbi_build(TP_Context* tp, PDB_DbiContext* dbi, MSF_Context* msf, MSF_StreamNumbe
 }
 
 void
-dbi_release(PDB_DbiContext **dbi_ptr)
+dbi_release(PDB_DbiContext** dbi_ptr)
 {
   ProfBeginFunction();
   arena_release((*dbi_ptr)->arena);
@@ -3585,7 +3585,7 @@ pdb_open(String8 data)
 }
 
 void
-pdb_release(PDB_Context **pdb_ptr)
+pdb_release(PDB_Context** pdb_ptr)
 {
   ProfBeginFunction();
   PDB_Context* pdb = *pdb_ptr;

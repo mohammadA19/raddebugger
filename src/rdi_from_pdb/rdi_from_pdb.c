@@ -2091,7 +2091,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //
   U64 procedure_frameprocs_count = 0;
   U64 procedure_frameprocs_cap   = (in->sym_ranges_opl - in->sym_ranges_first);
-  CV_SymFrameproc **procedure_frameprocs = push_array_no_zero(scratch.arena, CV_SymFrameproc *, procedure_frameprocs_cap);
+  CV_SymFrameproc** procedure_frameprocs = push_array_no_zero(scratch.arena, CV_SymFrameproc *, procedure_frameprocs_cap);
   ProfScope("symbols pass 1: produce procedure frame info map (procedure -> frame info)")
   {
     U64 procedure_num = 0;
@@ -3119,15 +3119,15 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   //////////////////////////////////////////////////////////////
   //- rjf: parse syms & line info for each compilation unit
   //
-  CV_SymParsed **sym_for_unit = push_array(arena, CV_SymParsed *, comp_unit_count);
-  CV_C13Parsed **c13_for_unit = push_array(arena, CV_C13Parsed *, comp_unit_count);
+  CV_SymParsed** sym_for_unit = push_array(arena, CV_SymParsed *, comp_unit_count);
+  CV_C13Parsed** c13_for_unit = push_array(arena, CV_C13Parsed *, comp_unit_count);
   if(comp_units != 0) ProfScope("parse syms & line info for each compilation unit")
   {
     //- rjf: kick off tasks
     P2R_SymbolStreamParseIn* sym_tasks_inputs = push_array(scratch.arena, P2R_SymbolStreamParseIn, comp_unit_count);
-    ASYNC_Task **sym_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
+    ASYNC_Task** sym_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
     P2R_C13StreamParseIn* c13_tasks_inputs = push_array(scratch.arena, P2R_C13StreamParseIn, comp_unit_count);
-    ASYNC_Task **c13_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
+    ASYNC_Task** c13_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
     for(U64 idx = 0; idx < comp_unit_count; idx += 1)
     {
       PDB_CompUnit* unit = comp_units->units[idx];
@@ -3322,7 +3322,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
     U64 task_size_itypes = 1024;
     U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
     P2R_ITypeFwdMapFillIn* tasks_inputs = push_array(scratch.arena, P2R_ITypeFwdMapFillIn, tasks_count);
-    ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
+    ASYNC_Task** tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
     for(U64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_hash      = tpi_hash;
@@ -3351,7 +3351,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   // this chain is walked, so that deeper dependencies are built first, and
   // as such, always show up* earlier* in the actually built types.
   //
-  P2R_TypeIdChain **itype_chains = 0;
+  P2R_TypeIdChain** itype_chains = 0;
   if(tpi_leaf != 0 && in->flags & P2R_ConvertFlag_Types) ProfScope("types pass 2: produce per-itype itype chain (for producing dependent types first)")
   {
     //- rjf: allocate itype chain table
@@ -3361,7 +3361,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
     U64 task_size_itypes = 1024;
     U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
     P2R_ITypeChainBuildIn* tasks_inputs = push_array(scratch.arena, P2R_ITypeChainBuildIn, tasks_count);
-    ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
+    ASYNC_Task** tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
     for(U64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_leaf      = tpi_leaf;
@@ -3387,7 +3387,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   // subsequent passes, to build RDI "UDT" information, which is distinct
   // from regular type info.
   //
-  RDIM_Type **itype_type_ptrs = 0;
+  RDIM_Type** itype_type_ptrs = 0;
   RDIM_TypeChunkList all_types = {0};
 #define p2r_type_ptr_from_itype(itype) ((itype_type_ptrs && (itype) < itype_opl) ? (itype_type_ptrs[(itype_fwd_map[(itype)] ? itype_fwd_map[(itype)] : (itype))]) : 0)
   if(in->flags & P2R_ConvertFlag_Types) ProfScope("types pass 3: construct all root/stub types from TPI")
@@ -3599,7 +3599,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 U32 arglist_itypes_count = arglist->count;
                 
                 // rjf: build param type array
-                RDIM_Type **params = push_array(arena, RDIM_Type *, arglist_itypes_count);
+                RDIM_Type** params = push_array(arena, RDIM_Type *, arglist_itypes_count);
                 for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
@@ -3652,7 +3652,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 {
                   num_this_extras = 0;
                 }
-                RDIM_Type **params = push_array(arena, RDIM_Type *, arglist_itypes_count+num_this_extras);
+                RDIM_Type** params = push_array(arena, RDIM_Type *, arglist_itypes_count+num_this_extras);
                 for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx+num_this_extras] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
@@ -3829,7 +3829,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   U64 udt_task_size_itypes = 4096;
   U64 udt_tasks_count = ((U64)itype_opl+(udt_task_size_itypes-1))/udt_task_size_itypes;
   P2R_UDTConvertIn* udt_tasks_inputs = push_array(scratch.arena, P2R_UDTConvertIn, udt_tasks_count);
-  ASYNC_Task **udt_tasks = push_array(scratch.arena, ASYNC_Task *, udt_tasks_count);
+  ASYNC_Task** udt_tasks = push_array(scratch.arena, ASYNC_Task *, udt_tasks_count);
   if(in->flags & P2R_ConvertFlag_UDTs) ProfScope("types pass 4: kick off UDT build")
   {
     for(U64 idx = 0; idx < udt_tasks_count; idx += 1)
@@ -3860,7 +3860,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   RDIM_UnitChunkList all_units = {0};
   RDIM_SrcFileChunkList all_src_files = {0};
   RDIM_LineTableChunkList all_line_tables = {0};
-  RDIM_LineTable **units_first_inline_site_line_tables = 0;
+  RDIM_LineTable** units_first_inline_site_line_tables = 0;
   ProfScope("join unit conversion & src file tasks")
   {
     P2R_UnitConvertOut* out = async_task_join_struct(unit_convert_task, P2R_UnitConvertOut);
@@ -3887,7 +3887,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
     U64 global_stream_syms_per_task = sym ? sym->sym_ranges.count/global_stream_subdivision_tasks_count : 0;
     U64 tasks_count = comp_unit_count + global_stream_subdivision_tasks_count;
     P2R_SymbolStreamConvertIn* tasks_inputs = push_array(scratch.arena, P2R_SymbolStreamConvertIn, tasks_count);
-    ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
+    ASYNC_Task** tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
     ProfScope("kick off all symbol conversion tasks")
     {
       for(U64 idx = 0; idx < tasks_count; idx += 1)
@@ -4404,7 +4404,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
                                                           in_params->global_variables.total_count*1 +
                                                           in_params->thread_variables.total_count*1 +
                                                           in_params->types.total_count/2)};
-  RDIM_BakeStringMapLoose **bake_string_maps__in_progress = push_array(scratch.arena, RDIM_BakeStringMapLoose *, async_thread_count());
+  RDIM_BakeStringMapLoose** bake_string_maps__in_progress = push_array(scratch.arena, RDIM_BakeStringMapLoose *, async_thread_count());
   ASYNC_TaskList bake_string_map_build_tasks = {0};
   {
     // rjf: src files
@@ -4629,7 +4629,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   {
     U64 slots_per_task = 16384;
     U64 num_tasks = (bake_string_map_topology.slots_count+slots_per_task-1)/slots_per_task;
-    ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, num_tasks);
+    ASYNC_Task** tasks = push_array(scratch.arena, ASYNC_Task *, num_tasks);
     
     // rjf: kickoff tasks
     for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)

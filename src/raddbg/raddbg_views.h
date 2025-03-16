@@ -152,7 +152,7 @@ struct RD_WatchViewState
   Arena* text_edit_arena;
   U64 text_edit_state_slots_count;
   RD_WatchViewTextEditState dummy_text_edit_state;
-  RD_WatchViewTextEditState **text_edit_state_slots;
+  RD_WatchViewTextEditState** text_edit_state_slots;
   B32 text_editing;
 }
 

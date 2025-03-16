@@ -44,7 +44,7 @@ os_handle_array_from_list(Arena* arena, OS_HandleList* list)
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
 String8List
-os_string_list_from_argcv(Arena* arena, int argc, char **argv)
+os_string_list_from_argcv(Arena* arena, int argc, char** argv)
 {
   String8List result = {0};
   for(int i = 0; i < argc; i += 1)

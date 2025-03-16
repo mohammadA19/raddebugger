@@ -206,7 +206,7 @@ struct FP_DWrite_FontFileLoaderVTable
   HRESULT (*QueryInterface)(void* obj, REFIID riid, void* ptr_to_object);
   ULONG (*AddRef)(void* obj);
   ULONG (*Release)(void* obj);
-  HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader* loader, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
+  HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader* loader, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream** stream_out);
 }
 
 struct FP_DWrite_FontFileLoader
@@ -222,7 +222,7 @@ struct FP_DWrite_FontFileStreamVTable
   HRESULT (*QueryInterface)(void* obj, REFIID riid, void* ptr_to_object);
   ULONG (*AddRef)(void* obj);
   ULONG (*Release)(void* obj);
-  HRESULT (*ReadFileFragment)(FP_DWrite_FontFileStream* obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context);
+  HRESULT (*ReadFileFragment)(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context);
   HRESULT (*ReleaseFileFragment)(FP_DWrite_FontFileStream* obj, void* fragment_context);
   HRESULT (*GetFileSize)(FP_DWrite_FontFileStream* obj, UINT64* size_out);
   HRESULT (*GetLastWriteTime)(FP_DWrite_FontFileStream* obj, UINT64* time_out);
@@ -284,10 +284,10 @@ ULONG fp_dwrite_iunknown_noop__add_ref(void* obj);
 ULONG fp_dwrite_iunknown_noop__release(void* obj);
 
 //- rjf: font file loader interface function implementations
-HRESULT fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
+HRESULT fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream** stream_out);
 
 //- rjf: font file stream  interface function implementations
-HRESULT fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context);
+HRESULT fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context);
 HRESULT fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream* obj, void* fragment_context);
 HRESULT fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream* obj, UINT64* size_out);
 HRESULT fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream* obj, UINT64* time_out);

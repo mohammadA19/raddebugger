@@ -520,7 +520,7 @@ ui_dt()
 //- rjf: event pumping
 
 B32
-ui_next_event(UI_Event **ev)
+ui_next_event(UI_Event** ev)
 {
   UI_EventList* events = ui_state->events;
   UI_EventNode* start_node = events->first;
