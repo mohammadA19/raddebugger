@@ -293,8 +293,8 @@ enum CV_Regx86Enum
 #define X(CVN,C,RDN,BP,BZ) CV_Regx86_##CVN = C,
   CV_Reg_X86_XList(X)
 #undef X
-};
-};
+}
+}
 
 // X(NAME, CODE, (RDI_RegisterCode_X64) NAME, BYTE_POS, BYTE_SIZE)
 #define CV_Reg_X64_XList(X)       \
@@ -1010,7 +1010,7 @@ enum CV_Regx64Enum
 #define X(CVN,C,RDN,BP,BZ) CV_Regx64_##CVN = C,
   CV_Reg_X64_XList(X)
 #undef X
-};
+}
 
 
 #define CV_SignatureXList(X) \
@@ -1026,7 +1026,7 @@ enum CV_SignatureEnum
 #define X(N,c) CV_Signature_##N = c,
   CV_SignatureXList(X)
 #undef X
-};
+}
 
 
 #define CV_LanguageXList(X) \
@@ -1054,7 +1054,7 @@ enum CV_LanguageEnum
 #define X(N,c) CV_Language_##N = c,
   CV_LanguageXList(X)
 #undef X
-};
+}
 
 #pragma pack(push, 1)
 
@@ -1071,7 +1071,7 @@ struct CV_RecHeader
 {
   U16 size;
   U16 kind;
-};
+}
 
 ////////////////////////////////
 //~ rjf: CodeView Format "Sym" Types
@@ -1089,7 +1089,7 @@ enum CV_ProcFlags : U8
   CV_ProcFlag_CustomCall  = (1 << 5),
   CV_ProcFlag_NoInline    = (1 << 6),
   CV_ProcFlag_OptDbgInfo  = (1 << 7),
-};
+}
 
 enum CV_LocalFlags : U16
 {
@@ -1104,14 +1104,14 @@ enum CV_LocalFlags : U16
   CV_LocalFlag_OptOut          = (1 << 8),
   CV_LocalFlag_Global          = (1 << 9),
   CV_LocalFlag_Static          = (1 << 10),
-};
+}
 
 struct CV_LocalVarAttr
 {
   U32           off;
   U16           seg;
   CV_LocalFlags flags;
-};
+}
 
 //- (SymKind: COMPILE)
 
@@ -1128,7 +1128,7 @@ struct CV_SymCompile
   U8              machine;
   CV_CompileFlags flags;
   // U8[] ver_str (null terminated)
-};
+}
 
 //- (SymKind: SSEARCH)
 
@@ -1136,7 +1136,7 @@ struct CV_SymStartSearch
 {
   U32 start_symbol;
   U16 segment;
-};
+}
 
 //- (SymKind: END) (empty)
 
@@ -1152,19 +1152,19 @@ enum CV_GenericStyleEnum
   CV_GenericStyle_IRAN,   //  "indirect returnee allocated near"
   CV_GenericStyle_IRAF,   //  "indirect returnee allocated far"
   CV_GenericStyle_UNUSED,
-};
+}
 
 enum CV_GenericFlags : U16
 {
   CV_GenericFlags_CSTYLE  = (1 << 0),
   CV_GenericFlags_RSCLEAN = (1 << 1), //  "returnee stack cleanup"
-};
+}
 
 struct CV_SymReturn
 {
   CV_GenericFlags flags;
   CV_GenericStyle style;
-};
+}
 
 //- (SymKind: SLINK32)
 
@@ -1173,7 +1173,7 @@ struct CV_SymSLink32
   U32 frame_size;
   U32 offset;
   U16 reg;
-};
+}
 
 //- (SymKind: OEM)
 
@@ -1182,7 +1182,7 @@ struct CV_SymOEM
   Guid      id;
   CV_TypeId itype;
   //  padding align(4)
-};
+}
 
 //- (SymKind: VFTABLE32)
 
@@ -1192,7 +1192,7 @@ struct CV_SymVPath32
   CV_TypeId path;
   U32       off;
   U16       seg;
-};
+}
 
 //- (SymKind: FRAMEPROC)
 
@@ -1203,7 +1203,7 @@ enum CV_EncodedFramePtrRegEnum
   CV_EncodedFramePtrReg_StackPtr,
   CV_EncodedFramePtrReg_FramePtr,
   CV_EncodedFramePtrReg_BasePtr,
-};
+}
 
 enum CV_FrameprocFlags : U32
 {
@@ -1228,7 +1228,7 @@ enum CV_FrameprocFlags : U32
   CV_FrameprocFlag_OptSpeed          = (1 << 20),
   CV_FrameprocFlag_HasCFG            = (1 << 21),
   CV_FrameprocFlag_HasCFW            = (1 << 22),
-};
+}
 #define CV_FrameprocFlags_Extract_LocalBasePointer(f) (((f) >> 14)&3)
 #define CV_FrameprocFlags_Extract_ParamBasePointer(f) (((f) >> 16)&3)
 
@@ -1241,7 +1241,7 @@ struct CV_SymFrameproc
   U32               eh_off;
   CV_SectionIndex   eh_sec;
   CV_FrameprocFlags flags;
-};
+}
 
 //- (SymKind: ANNOTATION)
 
@@ -1251,7 +1251,7 @@ struct CV_SymAnnotation
   U16 seg;
   U16 count;
   // U8[] annotation (null terminated)
-};
+}
 
 //- (SymKind: OBJNAME)
 
@@ -1259,7 +1259,7 @@ struct CV_SymObjName
 {
   U32 sig;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: THUNK32)
 
@@ -1273,7 +1273,7 @@ enum CV_ThunkOrdinalEnum
   CV_ThunkOrdinal_Load,
   CV_ThunkOrdinal_TrampIncremental,
   CV_ThunkOrdinal_TrampBranchIsland,
-};
+}
 
 struct CV_SymThunk32
 {
@@ -1286,7 +1286,7 @@ struct CV_SymThunk32
   CV_ThunkOrdinal ord;
   // U8[] name (null terminated)
   // U8[] variant (null terminated)
-};
+}
 
 //- (SymKind: BLOCK32)
 
@@ -1298,7 +1298,7 @@ struct CV_SymBlock32
   U32 off;
   U16 sec;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: LABEL32)
 
@@ -1308,7 +1308,7 @@ struct CV_SymLabel32
   U16          sec;
   CV_ProcFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: REGISTER)
 
@@ -1317,7 +1317,7 @@ struct CV_SymRegister
   CV_TypeId itype;
   U16       reg;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: CONSTANT)
 
@@ -1326,7 +1326,7 @@ struct CV_SymConstant
   CV_TypeId itype;
   // CV_Numeric num
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: UDT)
 
@@ -1334,7 +1334,7 @@ struct CV_SymUDT
 {
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: MANYREG)
 
@@ -1343,7 +1343,7 @@ struct CV_SymManyreg
   CV_TypeId itype;
   U8        count;
   // U8[count] regs;
-};
+}
 
 //- (SymKind: BPREL32)
 
@@ -1352,7 +1352,7 @@ struct CV_SymBPRel32
   U32       off;
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: LDATA32, GDATA32)
 
@@ -1362,7 +1362,7 @@ struct CV_SymData32
   U32             off;
   CV_SectionIndex sec;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: PUB32)
 
@@ -1372,7 +1372,7 @@ enum CV_Pub32Flags : U32
   CV_Pub32Flag_Function    = (1 << 1),
   CV_Pub32Flag_ManagedCode = (1 << 2),
   CV_Pub32Flag_MSIL        = (1 << 3),
-};
+}
 
 struct CV_SymPub32
 {
@@ -1380,7 +1380,7 @@ struct CV_SymPub32
   U32             off;
   CV_SectionIndex sec;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: LPROC32, GPROC32)
 
@@ -1397,7 +1397,7 @@ struct CV_SymProc32
   U16          sec;
   CV_ProcFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: REGREL32)
 
@@ -1407,7 +1407,7 @@ struct CV_SymRegrel32
   CV_TypeId itype;
   CV_Reg    reg;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: LTHREAD32, GTHREAD32)
 
@@ -1417,7 +1417,7 @@ struct CV_SymThread32
   U32       tls_off;
   U16       tls_seg;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: COMPILE2)
 
@@ -1444,7 +1444,7 @@ struct CV_SymCompile2
   U16              ver_minor;
   U16              ver_build;
   // U8[] ver_str (null terminated)
-};
+}
 
 //- (SymKind: MANYREG2)
 
@@ -1453,7 +1453,7 @@ struct CV_SymManyreg2
   CV_TypeId itype;
   U16       count;
   // U16[count] regs;
-};
+}
 
 //- (SymKind: LOCALSLOT)
 
@@ -1462,7 +1462,7 @@ struct CV_SymSlot
   U32       slot_index;
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: MANFRAMEREL, ATTR_FRAMEREL)
 
@@ -1472,7 +1472,7 @@ struct CV_SymAttrFrameRel
   CV_TypeId       itype;
   CV_LocalVarAttr attr;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: MANREGISTER, ATTR_REGISTER)
 
@@ -1482,7 +1482,7 @@ struct CV_SymAttrReg
   CV_LocalVarAttr attr;
   U16             reg;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: MANMANYREG, ATTR_MANYREG)
 
@@ -1494,7 +1494,7 @@ struct CV_SymAttrManyReg
   U8              count;
   // U8[count] regs
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: MANREGREL, ATTR_REGREL)
 
@@ -1505,7 +1505,7 @@ struct CV_SymAttrRegRel
   U16             reg;
   CV_LocalVarAttr attr;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: UNAMESPACE)
 
@@ -1518,7 +1518,7 @@ struct CV_SymUNamespace
   U8 dummy;
   
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: PROCREF, DATAREF, LPROCREF)
 
@@ -1528,7 +1528,7 @@ struct CV_SymRef2
   U32         sym_off;
   CV_ModIndex imod;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: TRAMPOLINE)
 
@@ -1537,7 +1537,7 @@ enum CV_TrampolineKindEnum
 {
   CV_TrampolineKind_Incremental,
   CV_TrampolineKind_BranchIsland,
-};
+}
 
 struct CV_SymTrampoline
 {
@@ -1547,7 +1547,7 @@ struct CV_SymTrampoline
   U32               target_sec_off;
   CV_SectionIndex   thunk_sec;
   CV_SectionIndex   target_sec;
-};
+}
 
 //- (SymKind: SEPCODE)
 
@@ -1555,7 +1555,7 @@ enum CV_SepcodeFlags : U32
 {
   CV_SepcodeFlag_IsLexicalScope  = (1 << 0),
   CV_SepcodeFlag_ReturnsToParent = (1 << 1),
-};
+}
 
 struct CV_SymSepcode
 {
@@ -1567,7 +1567,7 @@ struct CV_SymSepcode
   U32             sec_parent_off;
   U16             sec;
   U16             sec_parent;
-};
+}
 
 //- (SymKind: SECTION)
 
@@ -1580,7 +1580,7 @@ struct CV_SymSection
   U32 size;
   U32 characteristics;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: COFFGROUP)
 
@@ -1591,7 +1591,7 @@ struct CV_SymCoffGroup
   U32 off;
   U16 sec;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: EXPORT)
 
@@ -1603,14 +1603,14 @@ enum CV_ExportFlags : U16
   CV_ExportFlag_NoName    = (1 << 3),
   CV_ExportFlag_Ordinal   = (1 << 4),
   CV_ExportFlag_Forwarder = (1 << 5),
-};
+}
 
 struct CV_SymExport
 {
   U16            ordinal;
   CV_ExportFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: CALLSITEINFO)
 
@@ -1620,7 +1620,7 @@ struct CV_SymCallSiteInfo
   U16       sec;
   U16       pad;
   CV_TypeId itype;
-};
+}
 
 //- (SymKind: FRAMECOOKIE)
 
@@ -1631,7 +1631,7 @@ enum CV_FrameCookieKindEnum
   CV_FrameCookieKind_XorSP,
   CV_FrameCookieKind_XorBP,
   CV_FrameCookieKind_XorR13,
-};
+}
 
 struct CV_SymFrameCookie
 {
@@ -1639,7 +1639,7 @@ struct CV_SymFrameCookie
   CV_Reg             reg;
   CV_FrameCookieKind kind;
   U8                 flags;
-};
+}
 
 //- (SymKind: DISCARDED)
 
@@ -1649,7 +1649,7 @@ enum CV_DiscardedKindEnum
   CV_DiscardedKind_Unknown,
   CV_DiscardedKind_NotSelected,
   CV_DiscardedKind_NotReferenced,
-};
+}
 
 struct CV_SymDiscarded
 {
@@ -1657,7 +1657,7 @@ struct CV_SymDiscarded
   U32              file_id;
   U32              file_ln;
   // U8[] data (rest of data)
-};
+}
 
 //- (SymKind: COMPILE3)
 enum CV_Compile3Flags : U32
@@ -1676,7 +1676,7 @@ enum CV_Compile3Flags : U32
   CV_Compile3Flag_EXP            = (1 << 19),
 
   CV_Compile3Flag_Language_Shift = 0, CV_Compile3Flag_Language_Mask = 0xff,
-};
+}
 
 typedef U32 CV_Compile3Flags;
 #define CV_Compile3Flags_Extract_Language(f)        (((f)    )&0xFF)
@@ -1706,7 +1706,7 @@ struct CV_SymCompile3
   U16              ver_build;
   U16              ver_qfe;
   // U8[] ver_str (null terminated)
-};
+}
 
 //- (SymKind: ENVBLOCK)
 
@@ -1714,7 +1714,7 @@ struct CV_SymEnvBlock
 {
   U8 flags;
   // U8[][] rgsz (sequence null terminated strings)
-};
+}
 
 //- (SymKind: LOCAL)
 
@@ -1723,7 +1723,7 @@ struct CV_SymLocal
   CV_TypeId     itype;
   CV_LocalFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- DEFRANGE
 
@@ -1732,18 +1732,18 @@ struct CV_LvarAddrRange
   U32 off;
   U16 sec;
   U16 len;
-};
+}
 
 struct CV_LvarAddrGap
 {
   U16 off;
   U16 len;
-};
+}
 
 enum CV_RangeAttribs : U16
 {
   CV_RangeAttrib_Maybe = (1 << 0),
-};
+}
 
 //- (SymKind: DEFRANGE)
 
@@ -1752,7 +1752,7 @@ struct CV_SymDefrange
   U32              program;
   CV_LvarAddrRange range;
   // variable-width: CV_LvarAddrGap gaps;
-};
+}
 
 //- (SymKind: DEFRANGE_SUBFIELD)
 
@@ -1762,7 +1762,7 @@ struct CV_SymDefrangeSubfield
   U32              off_in_parent;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
-};
+}
 
 //- (SymKind: DEFRANGE_REGISTER)
 
@@ -1772,7 +1772,7 @@ struct CV_SymDefrangeRegister
   CV_RangeAttribs  attribs;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
-};
+}
 
 //- (SymKind: DEFRANGE_FRAMEPOINTER_REL)
 
@@ -1781,7 +1781,7 @@ struct CV_SymDefrangeFramepointerRel
   S32              off;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
-};
+}
 
 //- (SymKind: DEFRANGE_SUBFIELD_REGISTER)
 
@@ -1794,21 +1794,21 @@ struct CV_SymDefrangeSubfieldRegister
   U32              field_offset;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
-};
+}
 
 //- (SymKind: DEFRANGE_FRAMEPOINTER_REL_FULL_SCOPE)
 
 struct CV_SymDefrangeFramepointerRelFullScope
 {
   S32 off;
-};
+}
 
 //- (SymKind: DEFRANGE_REGISTER_REL)
 
 enum CV_DefrangeRegisterRelFlags : U16
 {
   CV_DefrangeRegisterRelFlag_SpilledOutUDTMember = (1 << 0),
-};
+}
 #define CV_DefrangeRegisterRelFlag_Extract_OffsetParent(f) (((f)>>4)&0xFFF)
 
 struct CV_SymDefrangeRegisterRel
@@ -1818,14 +1818,14 @@ struct CV_SymDefrangeRegisterRel
   S32                         reg_off;
   CV_LvarAddrRange            range;
   // CV_LvarAddGap[] gaps (rest of data)
-};
+}
 
 //- (SymKind: BUILDINFO)
 
 struct CV_SymBuildInfo
 {
   CV_ItemId id;
-};
+}
 
 //- (SymKind: INLINESITE)
 
@@ -1846,14 +1846,14 @@ enum CV_InlineBinaryAnnotationEnum
   CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset,
   CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset,
   CV_InlineBinaryAnnotation_ChangeColumnEnd
-};
+}
 
 typedef U32 CV_InlineRangeKind;
 enum CV_InlineRangeKindEnum
 {
   CV_InlineRangeKind_Expr,
   CV_InlineRangeKind_Stmt
-};
+}
 
 struct CV_SymInlineSite
 {
@@ -1861,7 +1861,7 @@ struct CV_SymInlineSite
   U32       end;
   CV_ItemId inlinee;
   // U8 annotations[] (rest of data)
-};
+}
 
 //- (SymKind: INLINESITE2)
 
@@ -1872,7 +1872,7 @@ struct CV_SymInlineSite2
   CV_ItemId inlinee;
   U32       invocations;
   // U8 annotations[] (rest of data)
-};
+}
 
 //- (SymKind: INLINESITE_END) (empty)
 
@@ -1884,7 +1884,7 @@ struct CV_SymFileStatic
   U32           mod_offset;
   CV_LocalFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: ARMSWITCHTABLE)
 
@@ -1902,7 +1902,7 @@ enum CV_ArmSwitchKindEnum
   CV_ArmSwitchKind_UINT2SHL1,
   CV_ArmSwitchKind_INT1SSHL1,
   CV_ArmSwitchKind_INT2SSHL1,
-};
+}
 
 struct CV_SymArmSwitchTable
 {
@@ -1914,7 +1914,7 @@ struct CV_SymArmSwitchTable
   U16              sec_branch;
   U16              sec_table;
   U32              entry_count;
-};
+}
 
 //- (SymKind: CALLEES, CALLERS)
 
@@ -1923,7 +1923,7 @@ struct CV_SymFunctionList
   U32 count;
   // CV_TypeId[count] funcs
   // U32[clamp(count, rest_of_data/4)] invocations
-};
+}
 
 //- (SymKind: POGODATA)
 
@@ -1933,7 +1933,7 @@ struct CV_SymPogoInfo
   U64 dynamic_inst_count;
   U32 static_inst_count;
   U32 post_inline_static_inst_count;
-};
+}
 
 //- (SymKind: HEAPALLOCSITE)
 
@@ -1943,7 +1943,7 @@ struct CV_SymHeapAllocSite
   U16       sec;
   U16       call_inst_len;
   CV_TypeId itype;
-};
+}
 
 //- (SymKind: MOD_TYPEREF)
 
@@ -1955,7 +1955,7 @@ enum CV_ModTypeRefFlags : U32
   CV_ModTypeRefFlag_OwnTMR   = (1 << 3),
   CV_ModTypeRefFlag_OwnTM    = (1 << 4),
   CV_ModTypeRefFlag_RefTM    = (1 << 5),
-};
+}
 
 struct CV_SymModTypeRef
 {
@@ -1963,7 +1963,7 @@ struct CV_SymModTypeRef
   // contain stream number or module index depending on flags     (undocumented)
   U32                word0;
   U32                word1;
-};
+}
 
 //- (SymKind: REF_MINIPDB)
 
@@ -1974,7 +1974,7 @@ enum CV_RefMiniPdbFlags : U16
   CV_RefMiniPdbFlag_UDT   = (1 << 2),
   CV_RefMiniPdbFlag_Label = (1 << 3),
   CV_RefMiniPdbFlag_Const = (1 << 4),
-};
+}
 
 struct CV_SymRefMiniPdb
 {
@@ -1982,7 +1982,7 @@ struct CV_SymRefMiniPdb
   CV_ModIndex        imod;
   CV_RefMiniPdbFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: FASTLINK)
 
@@ -1995,14 +1995,14 @@ enum CV_FastLinkFlags : U16
   CV_FastLinkFlag_IsConst      = (1 << 4),
   // 5 ~ unknown/unused
   CV_FastLinkFlag_IsNamespace  = (1 << 6),
-};
+}
 
 struct CV_SymFastLink
 {
   CV_TypeId        itype;
   CV_FastLinkFlags flags;
   // U8[] name (null terminated)
-};
+}
 
 //- (SymKind: INLINEES)
 
@@ -2010,7 +2010,7 @@ struct CV_SymInlinees
 {
   U32 count;
   // U32[count] desc;
-};
+}
 
 ////////////////////////////////
 //~ rjf: CodeView Format "Leaf" Types
@@ -2035,7 +2035,7 @@ enum
 #define X(N,c) CV_BasicPointerKind_##N = c,
   CV_BasicPointerKindXList(X)
 #undef X
-};
+}
 
 #define CV_BasicTypeFromTypeId(x)        ((x)&0xFF)
 #define CV_BasicPointerKindFromTypeId(x) (((x)>>8)&0xFF)
@@ -2047,7 +2047,7 @@ enum CV_HFAKindEnum
   CV_HFAKind_Float,
   CV_HFAKind_Double,
   CV_HFAKind_Other
-};
+}
 
 typedef U8 CV_MoComUDTKind;
 enum CV_MoComUDTKindEnum
@@ -2056,7 +2056,7 @@ enum CV_MoComUDTKindEnum
   CV_MoComUDTKind_Ref,
   CV_MoComUDTKind_Value,
   CV_MoComUDTKind_Interface
-};
+}
 
 typedef U16 CV_TypeProps;
 enum CV_TypeProps32 : U32
@@ -2075,7 +2075,7 @@ enum CV_TypeProps32 : U32
   // HFA: 11,12
   CV_TypeProp_Intrinsic                  = (1 << 13),
   // MOCOM: 14,15
-};
+}
 #define CV_TypeProps_Extract_HFA(f)   (((f)>>11)&0x3)
 #define CV_TypeProps_Extract_MOCOM(f) (((f)>>14)&0x3)
 
@@ -2095,7 +2095,7 @@ enum CV_PointerKindEnum
   CV_PointerKind_Near32,    // 32 bit
   CV_PointerKind_Far32,     // 16:32 bit
   CV_PointerKind_64,        // 64 bit
-};
+}
 
 typedef U8 CV_PointerMode;
 enum CV_PointerModeEnum
@@ -2105,7 +2105,7 @@ enum CV_PointerModeEnum
   CV_PointerMode_PtrMem,
   CV_PointerMode_PtrMethod,
   CV_PointerMode_RRef,
-};
+}
 
 typedef U16 CV_MemberPointerKind;
 enum CV_MemberPointerKindEnum
@@ -2119,7 +2119,7 @@ enum CV_MemberPointerKindEnum
   CV_MemberPointerKind_FuncMultiple,
   CV_MemberPointerKind_FuncVirtual,
   CV_MemberPointerKind_FuncGeneral,
-};
+}
 
 typedef U32 CV_VirtualTableShape;
 enum CV_VirtualTableShapeEnum
@@ -2131,7 +2131,7 @@ enum CV_VirtualTableShapeEnum
   CV_VirtualTableShape_Meta,    // far pointer to metaclass descriptor entry[-2]
   CV_VirtualTableShape_Near32,  // 32 bit ptr
   CV_VirtualTableShape_Far32,   // ???
-};
+}
 
 enum CV_MethodProp : U8
 {
@@ -2142,7 +2142,7 @@ enum CV_MethodProp : U8
   CV_MethodProp_Intro,
   CV_MethodProp_PureVirtual,
   CV_MethodProp_PureIntro,
-};
+}
 
 typedef U8 CV_MemberAccess;
 enum CV_MemberAccessEnum
@@ -2151,7 +2151,7 @@ enum CV_MemberAccessEnum
   CV_MemberAccess_Private,
   CV_MemberAccess_Protected,
   CV_MemberAccess_Public
-};
+}
 
 enum CV_FieldAttribs : U16
 {
@@ -2162,7 +2162,7 @@ enum CV_FieldAttribs : U16
   CV_FieldAttrib_NoConstruct     = (1<<7),
   CV_FieldAttrib_CompilerGenated = (1<<8),
   CV_FieldAttrib_Sealed          = (1<<9),
-};
+}
 #define CV_FieldAttribs_Extract_Access(f)     ((f)&0x3)
 #define CV_FieldAttribs_Extract_MethodProp(f) (((f)>>2)&0x7)
 
@@ -2171,14 +2171,14 @@ enum CV_LabelKindEnum
 {
   CV_LabelKind_Near = 0,
   CV_LabelKind_Far  = 4,
-};
+}
 
 enum CV_FunctionAttribs : U8
 {
   CV_FunctionAttrib_CxxReturnUDT     = (1<<0),
   CV_FunctionAttrib_Constructor      = (1<<1),
   CV_FunctionAttrib_ConstructorVBase = (1<<2),
-};
+}
 
 typedef U8 CV_CallKind;
 enum CV_CallKindEnum
@@ -2208,7 +2208,7 @@ enum CV_CallKindEnum
   CV_CallKind_Clr,
   CV_CallKind_Inline,
   CV_CallKind_NearVector,
-};
+}
 
 //- (LeafKind: PRECOMP)
 
@@ -2218,14 +2218,14 @@ struct CV_LeafPreComp
   U32 count;
   U32 sig;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind; END_PRECOMP)
 
 struct CV_LeafEndPreComp
 {
   U32 sig;
-};
+}
 
 //- (LeafKind: TYPESERVER)
 
@@ -2234,7 +2234,7 @@ struct CV_LeafTypeServer
   U32 sig;
   U32 age;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: TYPESERVER2)
 
@@ -2243,14 +2243,14 @@ struct CV_LeafTypeServer2
   Guid sig70;
   U32  age;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: SKIP)
 
 struct CV_LeafSkip
 {
   CV_TypeId itype;
-};
+}
 
 //- (LeafKind: VTSHAPE)
 
@@ -2258,14 +2258,14 @@ struct CV_LeafVTShape
 {
   U16 count;
   // U4[count] shapes (CV_VirtualTableShape)
-};
+}
 
 //- (LeafKind: LABEL)
 
 struct CV_LeafLabel
 {
   CV_LabelKind kind;
-};
+}
 
 //- (LeafKind: MODIFIER)
 
@@ -2274,13 +2274,13 @@ enum CV_ModifierFlags : U16
   CV_ModifierFlag_Const     = (1 << 0),
   CV_ModifierFlag_Volatile  = (1 << 1),
   CV_ModifierFlag_Unaligned = (1 << 2),
-};
+}
 
 struct CV_LeafModifier
 {
   CV_TypeId        itype;
   CV_ModifierFlags flags;
-};
+}
 
 //- (LeafKind: POINTER)
 
@@ -2297,7 +2297,7 @@ enum CV_PointerAttribs : U32
   CV_PointerAttrib_MOCOM      = (1 << 19),
   CV_PointerAttrib_LRef       = (1 << 21),
   CV_PointerAttrib_RRef       = (1 << 22)
-};
+}
 
 #define CV_PointerAttribs_Extract_Kind(a) ((a)&0x1F)
 #define CV_PointerAttribs_Extract_Mode(a) (((a)>>5)&0x7)
@@ -2307,7 +2307,7 @@ struct CV_LeafPointer
 {
   CV_TypeId         itype;
   CV_PointerAttribs attribs;
-};
+}
 
 //- (LeafKind: PROCEDURE)
 
@@ -2318,7 +2318,7 @@ struct CV_LeafProcedure
   CV_FunctionAttribs attribs;
   U16                arg_count;
   CV_TypeId          arg_itype;
-};
+}
 
 //- (LeafKind: MFUNCTION)
 
@@ -2332,7 +2332,7 @@ struct CV_LeafMFunction
   U16                arg_count;
   CV_TypeId          arg_itype;
   S32                this_adjust;
-};
+}
 
 //- (LeafKind: ARGLIST)
 
@@ -2340,7 +2340,7 @@ struct CV_LeafArgList
 {
   U32 count;
   // CV_TypeId[count] itypes;
-};
+}
 
 //- (LeafKind: BITFIELD)
 
@@ -2349,7 +2349,7 @@ struct CV_LeafBitField
   CV_TypeId itype;
   U8        len;
   U8        pos;
-};
+}
 
 //- (LeafKind: METHODLIST)
 
@@ -2360,7 +2360,7 @@ struct CV_LeafMethodListMember
   U16             pad;
   CV_TypeId       itype;
   // U32 vbaseoff (when Intro or PureIntro)
-};
+}
 
 //- (LeafKind: INDEX)
 
@@ -2368,7 +2368,7 @@ struct CV_LeafIndex
 {
   U16       pad;
   CV_TypeId itype;
-};
+}
 
 //- (LeafKind: ARRAY)
 
@@ -2377,7 +2377,7 @@ struct CV_LeafArray
   CV_TypeId entry_itype;
   CV_TypeId index_itype;
   // CV_Numeric count
-};
+}
 
 //- (LeafKind: CLASS, STRUCTURE, INTERFACE)
 
@@ -2391,7 +2391,7 @@ struct CV_LeafStruct
   // CV_Numeric size
   // U8[] name (null terminated)
   // U8[] unique_name (null terminated)
-};
+}
 
 //- (LeafKind: UNION)
 
@@ -2403,7 +2403,7 @@ struct CV_LeafUnion
   // CV_Numeric size
   // U8[] name (null terminated)
   // U8[] unique_name (null terminated)
-};
+}
 
 //- (LeafKind: ENUM)
 
@@ -2415,7 +2415,7 @@ struct CV_LeafEnum
   CV_TypeId    field_itype;
   // U8[] name (null terminated)
   // U8[] unique_name (null terminated)
-};
+}
 
 //- (LeafKind: ALIAS)
 
@@ -2423,7 +2423,7 @@ struct CV_LeafAlias
 {
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: MEMBER)
 
@@ -2433,7 +2433,7 @@ struct CV_LeafMember
   CV_TypeId       itype;
   // CV_Numeric offset
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: STMEMBER)
 
@@ -2442,7 +2442,7 @@ struct CV_LeafStMember
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: METHOD)
 
@@ -2451,7 +2451,7 @@ struct CV_LeafMethod
   U16       count;
   CV_TypeId list_itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: ONEMETHOD)
 
@@ -2461,7 +2461,7 @@ struct CV_LeafOneMethod
   CV_TypeId       itype;
   // U32 vbaseoff (when Intro or PureIntro)
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: ENUMERATE)
 
@@ -2470,7 +2470,7 @@ struct CV_LeafEnumerate
   CV_FieldAttribs attribs;
   // CV_Numeric val
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: NESTTYPE)
 
@@ -2479,7 +2479,7 @@ struct CV_LeafNestType
   U16       pad;
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: NESTTYPEEX)
 
@@ -2488,7 +2488,7 @@ struct CV_LeafNestTypeEx
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafKind: BCLASS)
 
@@ -2497,7 +2497,7 @@ struct CV_LeafBClass
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
   // CV_Numeric offset
-};
+}
 
 //- (LeafKind: VBCLASS, IVBCLASS)
 
@@ -2508,7 +2508,7 @@ struct CV_LeafVBClass
   CV_TypeId       vbptr_itype;
   // CV_Numeric vbptr_off
   // CV_Numeric vtable_off
-};
+}
 
 //- (LeafKind: VFUNCTAB)
 
@@ -2516,7 +2516,7 @@ struct CV_LeafVFuncTab
 {
   U16       pad;
   CV_TypeId itype;
-};
+}
 
 //- (LeafKind: VFUNCOFF)
 
@@ -2525,7 +2525,7 @@ struct CV_LeafVFuncOff
   U16       pad;
   CV_TypeId itype;
   U32       off;
-};
+}
 
 //- (LeafKind: VFTABLE)
 
@@ -2536,7 +2536,7 @@ struct CV_LeafVFTable
   U32       offset_in_object_layout;
   U32       names_len;
   // U8[] names (multiple null terminated strings)
-};
+}
 
 //- (LeafKind: VFTPATH)
 
@@ -2544,7 +2544,7 @@ struct CV_LeafVFPath
 {
   U32 count;
   // CV_TypeId[count] base;
-};
+}
 
 //- (LeafKind: CLASS2, STRUCT2)
 
@@ -2559,7 +2559,7 @@ struct CV_LeafStruct2
   // CV_Numeric size
   // U8[] name (null terminated)
   // U8[] unique_name (null terminated)
-};
+}
 
 //- (LeafIDKind: FUNC_ID)
 
@@ -2568,7 +2568,7 @@ struct CV_LeafFuncId
   CV_ItemId scope_string_id;
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafIDKind: MFUNC_ID)
 
@@ -2577,7 +2577,7 @@ struct CV_LeafMFuncId
   CV_TypeId owner_itype;
   CV_TypeId itype;
   // U8[] name (null terminated)
-};
+}
 
 //- (LeafIDKind: STRING_ID)
 
@@ -2585,7 +2585,7 @@ struct CV_LeafStringId
 {
   CV_ItemId substr_list_id;
   // U8[] string (null terminated)
-};
+}
 
 //- (LeafIDKind: BUILDINFO)
 
@@ -2596,13 +2596,13 @@ enum CV_BuildInfoIndexEnum
   CV_BuildInfoIndex_TargetSourceFile   = 2,
   CV_BuildInfoIndex_CombinedPdb        = 3,
   CV_BuildInfoIndex_CompileArguments   = 4,
-};
+}
 
 struct CV_LeafBuildInfo
 {
   U16 count;
   // CV_ItemId[count] items
-};
+}
 
 //- (LeafIDKind: SUBSTR_LIST)
 
@@ -2610,7 +2610,7 @@ struct CV_LeafSubstrList
 {
   U32 count;
   // CV_ItemId[count] items
-};
+}
 
 //- (LeafIDKind: UDT_SRC_LINE)
 
@@ -2619,7 +2619,7 @@ struct CV_LeafUDTSrcLine
   CV_TypeId udt_itype;
   CV_ItemId src_string_id;
   U32       line;
-};
+}
 
 //- (LeafIDKind: UDT_MOD_SRC_LINE)
 
@@ -2629,7 +2629,7 @@ struct CV_LeafUDTModSrcLine
   CV_ItemId   src_string_id;
   U32         line;
   CV_ModIndex imod;
-};
+}
 
 ////////////////////////////////
 //~ CodeView Format C13 Line Info Types
@@ -2659,13 +2659,13 @@ enum CV_C13SubSectionKindEnum
 #define X(N,c) CV_C13SubSectionKind_##N = c,
   CV_C13SubSectionKindXList(X)
 #undef X
-};
+}
 
 struct CV_C13SubSectionHeader
 {
   CV_C13SubSectionKind kind;
   U32                  size;
-};
+}
 
 //- FileChksms sub-section
 
@@ -2676,21 +2676,21 @@ enum CV_C13ChecksumKindEnum
   CV_C13ChecksumKind_MD5,
   CV_C13ChecksumKind_SHA1,
   CV_C13ChecksumKind_SHA256,
-};
+}
 
 struct CV_C13Checksum
 {
   U32                name_off;
   U8                 len;
   CV_C13ChecksumKind kind;
-};
+}
 
 //- Lines sub-section
 
 enum CV_C13SubSecLinesFlags : U16
 {
   CV_C13SubSecLinesFlag_HasColumns = (1 << 0)
-};
+}
 
 struct CV_C13SubSecLinesHeader
 {
@@ -2698,7 +2698,7 @@ struct CV_C13SubSecLinesHeader
   CV_SectionIndex        sec;
   CV_C13SubSecLinesFlags flags;
   U32                    len;
-};
+}
 
 struct CV_C13File
 {
@@ -2707,7 +2707,7 @@ struct CV_C13File
   U32 block_size;
   // CV_C13Line[num_lines] lines;
   // CV_C13Column[num_lines] columns; (if HasColumns)
-};
+}
 
 typedef U32 CV_C13LineFlags;
 #define CV_C13LineFlags_Extract_LineNumber(f) ((f)&0xFFFFFF)
@@ -2718,13 +2718,13 @@ struct CV_C13Line
 {
   U32             off;
   CV_C13LineFlags flags;
-};
+}
 
 struct CV_C13Column
 {
   U16 start;
   U16 end;
-};
+}
 
 //- FrameData sub-section
 
@@ -2733,7 +2733,7 @@ enum CV_C13FrameDataFlags : U32
   CV_C13FrameDataFlag_HasStructuredExceptionHandling = (1 << 0),
   CV_C13FrameDataFlag_HasExceptionHandling           = (1 << 1),
   CV_C13FrameDataFlag_HasIsFuncStart                 = (1 << 2),
-};
+}
 
 struct CV_C13FrameData
 {
@@ -2746,7 +2746,7 @@ struct CV_C13FrameData
   U16                  prolog_size;
   U16                  saved_reg_size;
   CV_C13FrameDataFlags flags;
-};
+}
 
 //- InlineLines sub-section 
 
@@ -2754,7 +2754,7 @@ enum CV_C13InlineeLinesSig : U32
 {
   CV_C13InlineeLinesSig_NORMAL,
   CV_C13InlineeLinesSig_EXTRA_FILES,
-};
+}
 
 struct CV_C13InlineeSourceLineHeader
 {
@@ -2764,7 +2764,7 @@ struct CV_C13InlineeSourceLineHeader
   // if sig set to CV_C13InlineeLinesSig_EXTRA_FILES
   //  U32 extra_file_count;
   //  U32 files[];
-};
+}
 
 #pragma pack(pop)
 
@@ -2777,7 +2777,7 @@ enum CV_TypeIndexSource
   CV_TypeIndexSource_TPI,
   CV_TypeIndexSource_IPI,
   CV_TypeIndexSource_COUNT
-};
+}
 enum CV_TypeIndexSource CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
@@ -2785,20 +2785,20 @@ struct CV_TypeIndexInfo
   struct CV_TypeIndexInfo *next;
   U64                      offset;
   CV_TypeIndexSource       source;
-};
+}
 
 struct CV_TypeIndexInfoList
 {
   U64               count;
   CV_TypeIndexInfo *first;
   CV_TypeIndexInfo *last;
-};
+}
 
 struct CV_TypeIndexArray
 {
   U32           count;
   CV_TypeIndex *v;
-};
+}
 
 ////////////////////////////////
 

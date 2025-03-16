@@ -14,7 +14,7 @@ struct OS_SystemInfo
   U64 large_page_size;
   U64 allocation_granularity;
   String8 machine_name;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Info
@@ -27,7 +27,7 @@ struct OS_ProcessInfo
   String8 user_program_data_path;
   String8List module_load_paths;
   String8List environment;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Access Flags
@@ -40,7 +40,7 @@ enum OS_AccessFlags : U32
   OS_AccessFlag_Append     = (1<<3),
   OS_AccessFlag_ShareRead  = (1<<4),
   OS_AccessFlag_ShareWrite = (1<<5),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Files
@@ -51,25 +51,25 @@ enum OS_FileIterFlags : U32
   OS_FileIterFlag_SkipFiles       = (1 << 1),
   OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
   OS_FileIterFlag_Done            = (1 << 31),
-};
+}
 
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
   U8 memory[800];
-};
+}
 
 struct OS_FileInfo
 {
   String8 name;
   FileProperties props;
-};
+}
 
 // nick: on-disk file identifier
 struct OS_FileID
 {
   U64 v[3];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Launch Parameters
@@ -81,7 +81,7 @@ struct OS_ProcessLaunchParams
   String8List env;
   B32 inherit_env;
   B32 consoleless;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Type
@@ -89,26 +89,26 @@ struct OS_ProcessLaunchParams
 struct OS_Handle
 {
   U64 u64[1];
-};
+}
 
 struct OS_HandleNode
 {
   OS_HandleNode *next;
   OS_Handle v;
-};
+}
 
 struct OS_HandleList
 {
   OS_HandleNode *first;
   OS_HandleNode *last;
   U64 count;
-};
+}
 
 struct OS_HandleArray
 {
   OS_Handle *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globally Unique IDs
@@ -119,7 +119,7 @@ struct OS_Guid
   U16 data2;
   U16 data3;
   U8  data4[8];
-};
+}
 StaticAssert(sizeof(OS_Guid) == 16, os_guid_check);
 
 ////////////////////////////////

@@ -10,7 +10,7 @@ srtuct
   U64         *size_arr;
   U64         *off_arr;
   U8          *buffer;
-};
+}
 
 ////////////////////////////////
 // Shared File API

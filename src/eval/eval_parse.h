@@ -16,7 +16,7 @@ struct E_Token
 {
   E_TokenKind kind;
   Rng1U64 range;
-};
+}
 
 struct E_TokenChunkNode
 {
@@ -24,7 +24,7 @@ struct E_TokenChunkNode
   E_Token *v;
   U64 count;
   U64 cap;
-};
+}
 
 struct E_TokenChunkList
 {
@@ -32,13 +32,13 @@ struct E_TokenChunkList
   E_TokenChunkNode *last;
   U64 node_count;
   U64 total_count;
-};
+}
 
 struct E_TokenArray
 {
   E_Token *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Expression Tree Types
@@ -58,7 +58,7 @@ struct E_Expr
   E_Value value;
   String8 string;
   String8 bytecode;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Map Types
@@ -71,19 +71,19 @@ struct E_String2NumMapNode
   E_String2NumMapNode *hash_next;
   String8 string;
   U64 num;
-};
+}
 
 struct E_String2NumMapNodeArray
 {
   E_String2NumMapNode **v;
   U64 count;
-};
+}
 
 struct E_String2NumMapSlot
 {
   E_String2NumMapNode *first;
   E_String2NumMapNode *last;
-};
+}
 
 struct E_String2NumMap
 {
@@ -92,7 +92,7 @@ struct E_String2NumMap
   E_String2NumMapSlot *slots;
   E_String2NumMapNode *first;
   E_String2NumMapNode *last;
-};
+}
 
 //- rjf: string -> expr
 
@@ -102,19 +102,19 @@ struct E_String2ExprMapNode
   String8 string;
   E_Expr *expr;
   U64 poison_count;
-};
+}
 
 struct E_String2ExprMapSlot
 {
   E_String2ExprMapNode *first;
   E_String2ExprMapNode *last;
-};
+}
 
 struct E_String2ExprMap
 {
   U64 slots_count;
   E_String2ExprMapSlot *slots;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Parse Context
@@ -136,7 +136,7 @@ struct E_ParseCtx
   E_String2NumMap *reg_alias_map;
   E_String2NumMap *locals_map; // (within `rdis[rdis_primary_idx]`)
   E_String2NumMap *member_map; // (within `rdis[rdis_primary_idx]`)
-};
+}
 
 ////////////////////////////////
 //~ rjf: Parse Results
@@ -146,7 +146,7 @@ struct E_Parse
   E_Token *last_token;
   E_Expr *expr;
   E_MsgList msgs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

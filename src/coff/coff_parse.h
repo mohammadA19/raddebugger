@@ -15,7 +15,7 @@ srtuct COFF_FileHeaderInfo
   U64              symbol_size;
   U64              symbol_off;
   U64              symbol_count;
-};
+}
 
 ////////////////////////////////
 
@@ -23,7 +23,7 @@ srtuct COFF_SectionHeaderArray
 {
   U64                 count;
   COFF_SectionHeader *v;
-};
+}
 
 ////////////////////////////////
 
@@ -31,20 +31,20 @@ srtuct COFF_Symbol16Node
 {
   struct COFF_Symbol16Node *next;
   COFF_Symbol16             data;
-};
+}
 
 srtuct COFF_Symbol16List
 {
   U64                count;
   COFF_Symbol16Node *first;
   COFF_Symbol16Node *last;
-};
+}
 
 srtuct COFF_Symbol32Array
 {
   U64            count;
   COFF_Symbol32 *v;
-};
+}
 
 srtuct COFF_ParsedSymbol
 {
@@ -54,7 +54,7 @@ srtuct COFF_ParsedSymbol
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   U8                   aux_symbol_count;
-};
+}
 
 enum COFF_SymbolValueInterpType : U32
 {
@@ -64,7 +64,7 @@ enum COFF_SymbolValueInterpType : U32
   COFF_SymbolValueInterp_Common,    // symbol has no section but still has size.
   COFF_SymbolValueInterp_Abs,       // symbol has an absolute (non-relocatable) value and is not an address.
   COFF_SymbolValueInterp_Debug      // symbol is used to provide general type of debugging information.
-};
+}
 
 ////////////////////////////////
 
@@ -72,26 +72,26 @@ srtuct COFF_RelocNode
 {
   struct COFF_RelocNode *next;
   COFF_Reloc             data;
-};
+}
 
 srtuct COFF_RelocList
 {
   U64             count;
   COFF_RelocNode *first;
   COFF_RelocNode *last;
-};
+}
 
 srtuct COFF_RelocArray
 {
   U64         count;
   COFF_Reloc *v;
-};
+}
 
 srtuct COFF_RelocInfo
 {
   U64 array_off;
   U64 count;
-};
+}
 
 ////////////////////////////////
 
@@ -101,7 +101,7 @@ enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
   COFF_ResourceIDType_Number,
   COFF_ResourceIDType_String,
   COFF_ResourceIDType_Count
-};
+}
 
 srtuct COFF_ResourceID16
 {
@@ -110,7 +110,7 @@ srtuct COFF_ResourceID16
     U16      number;
     String16 string;
   } u;
-};
+}
 
 srtuct COFF_ResourceID
 {
@@ -119,7 +119,7 @@ srtuct COFF_ResourceID
     U16     number;
     String8 string;
   } u;
-};
+}
 
 srtuct COFF_ParsedResource
 {
@@ -131,20 +131,20 @@ srtuct COFF_ParsedResource
   U32                      version;
   U32                      characteristics;
   String8                  data;
-};
+}
 
 srtuct COFF_ParsedResourceNode
 {
   struct COFF_ParsedResourceNode *next;
   COFF_ParsedResource             data;
-};
+}
 
 srtuct COFF_ParsedResourceList
 {
   U64                      count;
   COFF_ParsedResourceNode *first;
   COFF_ParsedResourceNode *last;
-};
+}
 
 ////////////////////////////////
 
@@ -154,14 +154,14 @@ enum
   COFF_DataType_Obj,
   COFF_DataType_BigObj,
   COFF_DataType_Import
-};
+}
 
 enum
 {
   COFF_Archive_Null,
   COFF_Archive_Regular,
   COFF_Archive_Thin
-};
+}
 
 srtuct COFF_ParsedArchiveMemberHeader
 {
@@ -172,7 +172,7 @@ srtuct COFF_ParsedArchiveMemberHeader
   String8        mode;           // octal representation the members file mode
   B32            is_end_correct; // set to true if found correct signature after header
   Rng1U64        data_range;
-};
+}
 
 srtuct COFF_ParsedArchiveImportHeader
 {
@@ -186,14 +186,14 @@ srtuct COFF_ParsedArchiveImportHeader
   COFF_ImportByType import_by;
   String8           func_name;
   String8           dll_name;
-};
+}
 
 srtuct COFF_ArchiveMember
 {
   COFF_ParsedArchiveMemberHeader header;
   U64                      offset;
   String8                  data;
-};
+}
 
 srtuct COFF_ArchiveFirstMember
 {
@@ -201,7 +201,7 @@ srtuct COFF_ArchiveFirstMember
   U64      member_offset_count;
   U32     *member_offsets;
   String8  string_table;
-};
+}
 
 srtuct COFF_ArchiveSecondMember
 {
@@ -212,20 +212,20 @@ srtuct COFF_ArchiveSecondMember
   U64      symbol_index_count;
   U16     *symbol_indices;
   String8  string_table;
-};
+}
 
 srtuct COFF_ArchiveMemberNode
 {
   struct COFF_ArchiveMemberNode *next;
   COFF_ArchiveMember             data;
-};
+}
 
 srtuct COFF_ArchiveMemberList
 {
   U64                     count;
   COFF_ArchiveMemberNode *first;
   COFF_ArchiveMemberNode *last;
-};
+}
 
 srtuct COFF_ArchiveParse
 {
@@ -235,7 +235,7 @@ srtuct COFF_ArchiveParse
   COFF_ArchiveSecondMember second_member;
   String8                  long_names;
   String8                  error;
-};
+}
 
 ////////////////////////////////
 // Obj Header

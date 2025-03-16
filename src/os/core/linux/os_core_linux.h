@@ -41,7 +41,7 @@ struct OS_LNX_FileIter
   DIR *dir;
   struct dirent *dp;
   String8 path;
-};
+}
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_lnx_file_iter_size_check);
 
 ////////////////////////////////
@@ -52,7 +52,7 @@ struct OS_LNX_SafeCallChain
   OS_LNX_SafeCallChain *next;
   OS_ThreadFunctionType *fail_handler;
   void *ptr;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entities
@@ -63,7 +63,7 @@ enum OS_LNX_EntityKind
   OS_LNX_EntityKind_Mutex,
   OS_LNX_EntityKind_RWMutex,
   OS_LNX_EntityKind_ConditionVariable,
-};
+}
 
 struct OS_LNX_Entity
 {
@@ -85,7 +85,7 @@ struct OS_LNX_Entity
       pthread_mutex_t rwlock_mutex_handle;
     } cv;
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: State
@@ -98,7 +98,7 @@ struct OS_LNX_State
   pthread_mutex_t entity_mutex;
   Arena *entity_arena;
   OS_LNX_Entity *entity_free;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

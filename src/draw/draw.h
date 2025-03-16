@@ -15,13 +15,13 @@ struct DR_FancyString
   F32 size;
   F32 underline_thickness;
   F32 strikethrough_thickness;
-};
+}
 
 struct DR_FancyStringNode
 {
   DR_FancyStringNode *next;
   DR_FancyString v;
-};
+}
 
 struct DR_FancyStringList
 {
@@ -29,7 +29,7 @@ struct DR_FancyStringList
   DR_FancyStringNode *last;
   U64 node_count;
   U64 total_size;
-};
+}
 
 struct DR_FancyRun
 {
@@ -37,13 +37,13 @@ struct DR_FancyRun
   Vec4F32 color;
   F32 underline_thickness;
   F32 strikethrough_thickness;
-};
+}
 
 struct DR_FancyRunNode
 {
   DR_FancyRunNode *next;
   DR_FancyRun v;
-};
+}
 
 struct DR_FancyRunList
 {
@@ -51,7 +51,7 @@ struct DR_FancyRunList
   DR_FancyRunNode *last;
   U64 node_count;
   Vec2F32 dim;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -67,7 +67,7 @@ struct DR_Bucket
   U64 stack_gen;
   U64 last_cmd_stack_gen;
   DR_BucketStackDecls;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -76,7 +76,7 @@ struct DR_BucketSelectionNode
 {
   DR_BucketSelectionNode *next;
   DR_Bucket *bucket;
-};
+}
 
 struct DR_ThreadCtx
 {
@@ -84,7 +84,7 @@ struct DR_ThreadCtx
   U64 arena_frame_start_pos;
   DR_BucketSelectionNode *top_bucket;
   DR_BucketSelectionNode *free_bucket_selection;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

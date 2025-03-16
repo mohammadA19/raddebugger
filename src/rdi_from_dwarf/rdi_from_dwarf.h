@@ -38,7 +38,7 @@ srtuct DWARFCONV_Params{
   B8 dump__last;
   
   String8List errors;
-};
+}
 
 ////////////////////////////////
 //~ Program Parameters Parser

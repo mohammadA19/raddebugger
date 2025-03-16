@@ -12,7 +12,7 @@ struct OS_GfxInfo
   F32 double_click_time;
   F32 caret_blink_time;
   F32 default_refresh_rate;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Window Types
@@ -20,7 +20,7 @@ struct OS_GfxInfo
 enum OS_WindowFlags : U32
 {
   OS_WindowFlag_CustomBorder = (1<<0),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Cursor Types
@@ -37,7 +37,7 @@ enum OS_Cursor
   OS_Cursor_HandPoint,
   OS_Cursor_Disabled,
   OS_Cursor_COUNT,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -60,14 +60,14 @@ enum OS_EventKind
   OS_EventKind_FileDrop,
   OS_EventKind_Wakeup,
   OS_EventKind_COUNT
-};
+}
 
 enum OS_Modifiers : U32
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),
   OS_Modifier_Alt   = (1<<2),
-};
+}
 
 struct OS_Event
 {
@@ -85,14 +85,14 @@ struct OS_Event
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
-};
+}
 
 struct OS_EventList
 {
   U64 count;
   OS_Event *first;
   OS_Event *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Application-Defined Frame Hook Forward Declaration

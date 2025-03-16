@@ -14,14 +14,14 @@ srtuct LNK_InputObj
   String8              path;
   String8              data;
   String8              lib_path;
-};
+}
 
 srtuct LNK_InputObjList
 {
   U64           count;
   LNK_InputObj *first;
   LNK_InputObj *last;
-};
+}
 
 ////////////////////////////////
 
@@ -30,19 +30,19 @@ srtuct LNK_Directive
   struct LNK_Directive *next;
   String8               id;
   String8List           value_list;
-};
+}
 
 srtuct LNK_DirectiveList
 {
   U64            count;
   LNK_Directive *first;
   LNK_Directive *last;
-};
+}
 
 srtuct LNK_DirectiveInfo
 {
   LNK_DirectiveList v[LNK_CmdSwitch_Count];
-};
+}
 
 ////////////////////////////////
 
@@ -67,26 +67,26 @@ srtuct LNK_Obj
   LNK_ExportParseList export_parse;
   String8List         include_symbol_list;
   LNK_AltNameList     alt_name_list;
-};
+}
 
 srtuct LNK_ObjNode
 {
   struct LNK_ObjNode *next;
   LNK_Obj             data;
-};
+}
 
 srtuct LNK_ObjList
 {
   U64          count;
   LNK_ObjNode *first;
   LNK_ObjNode *last;
-};
+}
 
 srtuct LNK_ObjNodeArray
 {
   U64          count;
   LNK_ObjNode *v;
-};
+}
 
 ////////////////////////////////
 
@@ -97,14 +97,14 @@ srtuct LNK_SectDefn
   String8              name;
   COFF_SectionFlags    flags;
   U64                  idx;
-};
+}
 
 srtuct
 {
   U64           count;
   LNK_SectDefn *first;
   LNK_SectDefn *last;
-};
+}
 
 srtuct
 {
@@ -114,7 +114,7 @@ srtuct
   LNK_SectDefnList *defn_arr;
   LNK_SectionTable *st;
   U64              *function_pad_min;
-};
+}
 
 srtuct
 {
@@ -122,21 +122,21 @@ srtuct
   LNK_ObjNode      *obj_node_arr;
   LNK_SectDefnList *defn_arr;
   LNK_SectDefnList *conf_arr;
-};
+}
 
 srtuct
 {
   LNK_SectionTable *st;
   LNK_ObjNode      *obj_arr;
   U64             **chunk_count_arr_arr;
-};
+}
 
 srtuct
 {
   LNK_ChunkManager *cman;
   U64             **chunk_id_arr_arr;
   U64               obj_idx;
-};
+}
 
 srtuct
 {
@@ -146,7 +146,7 @@ srtuct
   LNK_ObjNode      *obj_arr;
   LNK_ChunkList   **nosort_chunk_list_arr_arr;
   LNK_ChunkList   **chunk_list_arr_arr;
-};
+}
 
 srtuct
 {
@@ -154,7 +154,7 @@ srtuct
   LNK_ObjNodeArray in_arr;
   LNK_SymbolList  *out_arr;
   Rng1U64         *range_arr;
-};
+}
 
 srtuct
 {
@@ -163,21 +163,21 @@ srtuct
   String8        postfix;
   B32            collect_discarded;
   LNK_ChunkList *list_arr;
-};
+}
 
 srtuct
 {
   Rng1U64          *range_arr;
   LNK_ObjNodeArray  in_arr;
   String8List      *out_arr;
-};
+}
 
 srtuct
 {
   LNK_ObjNode  *in_arr;
   String8List  *out_arr;
   Rng1U64      *range_arr;
-};
+}
 
 ////////////////////////////////
 

@@ -15,7 +15,7 @@ srtuct PDB_Strtbl
   U32 strblock_max;
   U32 buckets_min;
   U32 buckets_max;
-};
+}
 
 ////////////////////////////////
 //~ PDB Parser Info Types
@@ -26,33 +26,33 @@ enum PDB_NamedStream
   PDB_NamedStream_StringTable,
   PDB_NamedStream_LinkInfo,
   PDB_NamedStream_Count
-};
+}
 
 srtuct PDB_NamedStreamTable
 {
   MSF_StreamNumber sn[PDB_NamedStream_Count];
-};
+}
 
 srtuct PDB_InfoNode
 {
   struct PDB_InfoNode *next;
   String8 string;
   MSF_StreamNumber sn;
-};
+}
 
 srtuct PDB_Info
 {
   PDB_InfoNode *first;
   PDB_InfoNode *last;
   Guid auth_guid;
-};
+}
 
 srtuct PDB_InfoHeader
 {
   PDB_InfoVersion version;
   U32 time;
   U32 age;
-};
+}
 
 ////////////////////////////////
 //~ PDB Parser DBI Types
@@ -68,7 +68,7 @@ enum PDB_DbiRange
   PDB_DbiRange_EcInfo,
   PDB_DbiRange_DbgHeader,
   PDB_DbiRange_COUNT
-};
+}
 
 //  (this is not "literally" defined by the format - but helpful to have)
 enum
@@ -77,7 +77,7 @@ enum
   PDB_DbiCompUnitRange_C11,
   PDB_DbiCompUnitRange_C13,
   PDB_DbiCompUnitRange_COUNT
-};
+}
 
 srtuct PDB_DbiParsed
 {
@@ -88,7 +88,7 @@ srtuct PDB_DbiParsed
   MSF_StreamNumber sym_sn;
   U64 range_off[(U64)(PDB_DbiRange_COUNT) + 1];
   MSF_StreamNumber dbg_streams[PDB_DbiStream_COUNT];
-};
+}
 
 srtuct PDB_CompUnit
 {
@@ -97,32 +97,32 @@ srtuct PDB_CompUnit
   
   String8 obj_name;
   String8 group_name;
-};
+}
 
 srtuct PDB_CompUnitNode
 {
   struct PDB_CompUnitNode *next;
   PDB_CompUnit unit;
-};
+}
 
 srtuct PDB_CompUnitArray
 {
   PDB_CompUnit **units;
   U64 count;
-};
+}
 
 srtuct PDB_CompUnitContribution
 {
   U32 mod;
   U64 voff_first;
   U64 voff_opl;
-};
+}
 
 srtuct PDB_CompUnitContributionArray
 {
   PDB_CompUnitContribution *contributions;
   U64 count;
-};
+}
 
 
 ////////////////////////////////
@@ -150,14 +150,14 @@ srtuct PDB_TpiParsed
   U32 hash_adj_off;
   U32 hash_adj_size;
   
-};
+}
 
 srtuct PDB_TpiHashBlock
 {
   struct PDB_TpiHashBlock *next;
   U32 local_count;
   CV_TypeId itypes[13]; // 13 = (64 - 12)/4
-};
+}
 
 srtuct PDB_TpiHashParsed
 {
@@ -167,7 +167,7 @@ srtuct PDB_TpiHashParsed
   PDB_TpiHashBlock **buckets;
   U32 bucket_count;
   U32 bucket_mask;
-};
+}
 
 ////////////////////////////////
 //~ PDB Parser GSI Types
@@ -176,12 +176,12 @@ srtuct PDB_GsiBucket
 {
   U32 *offs;
   U64 count;
-};
+}
 
 srtuct PDB_GsiParsed
 {
   PDB_GsiBucket buckets[4096];
-};
+}
 
 ////////////////////////////////
 //~ PDB Parser Functions

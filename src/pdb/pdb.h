@@ -16,19 +16,19 @@ typedef U32 PDB_StringOffset;
 enum
 {
   PDB_StringTableHeader_MAGIC = 0xEFFEEFFE
-};
+}
 
 enum
 {
   PDB_StringTableHeader_Version1       = 1,
   PDB_StringTableHeader_CurrentVersion = PDB_StringTableHeader_Version1
-};
+}
 
 srtuct PDB_StringTableHeader
 {
   U32 magic;
   U32 version;
-};
+}
 
 ////////////////////////////////
 
@@ -38,7 +38,7 @@ enum PDB_FixedStream
   PDB_FixedStream_Tpi  = 2,
   PDB_FixedStream_Dbi  = 3,
   PDB_FixedStream_Ipi  = 4
-};
+}
 
 ////////////////////////////////
 //~ PDB Info Types
@@ -54,7 +54,7 @@ enum PDB_InfoVersion : U32{
   PDB_InfoVersion_VC80     = 20030901,
   PDB_InfoVersion_VC110    = 20091201,
   PDB_InfoVersion_VC140    = 20140508
-};
+}
 
 // referenced in PDB1::loadPdbStream
 enum
@@ -64,7 +64,7 @@ enum
   PDB_FeatureSig_VC140              = PDB_InfoVersion_VC140,
   PDB_FeatureSig_NO_TYPE_MERGE      = 0x4D544F4E,
   PDB_FeatureSig_MINIMAL_DEBUG_INFO = 0x494E494D,
-};
+}
 typedef U32 PDB_FeatureSig;
 
 enum
@@ -72,7 +72,7 @@ enum
   PDB_FeatureFlag_HAS_ID_STREAM    = (1 << 0),
   PDB_FeatureFlag_NO_TYPE_MERGE    = (1 << 1),
   PDB_FeatureFlag_MINIMAL_DBG_INFO = (1 << 2),
-};
+}
 typedef U32 PDB_FeatureFlags;
 
 #pragma pack(push,1)
@@ -84,7 +84,7 @@ srtuct PDB_InfoHeaderV70
   Guid               guid;
   // PDB_HashTable   named_stream_hash_table
   // PDB_FeatureFlag features[*]
-};
+}
 
 #pragma pack(pop)
 StaticAssert(sizeof(PDB_InfoHeaderV70) == 28, pdb_info_header_v70_size_check);
@@ -105,7 +105,7 @@ srtuct PDB_SrcHeaderBlockHeader
   U64 file_time;
   U32 age;
   U8  pad[44];
-};
+}
 
 enum
 {
@@ -114,13 +114,13 @@ enum
   PDB_SrcComp_HUFFMAN,
   PDB_SrcComp_LZ,
   PDB_SrcComp_DOTNET
-};
+}
 typedef U8 PDB_SrcCompType;
 
 enum
 {
   PDB_SrcHeaderBlockEntryFlag_IS_VIRTUAL = (1 << 0)
-};
+}
 typedef U8 PDB_SrcHeaderFlags;
 
 // (PDB/include/pdb.h: SrcHeaderOut)
@@ -137,7 +137,7 @@ srtuct PDB_SrcHeaderBlockEntry
   PDB_SrcHeaderFlags flags;
   U8                 pad[2];
   U8                 reserved[8];
-};
+}
 
 ////////////////////////////////
 //~ PDB Format DBI Types
@@ -156,12 +156,12 @@ enum PDB_DbiStream : U32
   PDB_DbiStream_NEW_FPO,
   PDB_DbiStream_SECTION_HEADER_ORIG,
   PDB_DbiStream_COUNT
-};
+}
 
 enum PDB_DbiHeaderSignature : U32
 {
   PDB_DbiHeaderSignature_V1 = 0xFFFFFFFF
-};
+}
 
 enum PDB_DbiVersion : U32
 {
@@ -170,7 +170,7 @@ enum PDB_DbiVersion : U32
   PDB_DbiVersion_60  = 19970606,
   PDB_DbiVersion_70  = 19990903,
   PDB_DbiVersion_110 = 20091201,
-};
+}
 
 typedef U16 PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormatFlag 0x8000
@@ -184,7 +184,7 @@ enum PDB_DbiHeaderFlags : U16
   PDB_DbiHeaderFlag_Incremental = 0x1,
   PDB_DbiHeaderFlag_Stripped    = 0x2,
   PDB_DbiHeaderFlag_CTypes      = 0x4
-};
+}
 
 srtuct PDB_DbiHeader
 {
@@ -214,7 +214,7 @@ srtuct PDB_DbiHeader
   COFF_MachineType machine;
   
   U32 reserved;
-};
+}
 
 // "ModuleInfo" DBI range
 
@@ -231,14 +231,14 @@ srtuct PDB_DbiSectionContrib40
   U32 flags;
   CV_ModIndex mod;
   U16 pad1;
-};
+}
 
 srtuct PDB_DbiSectionContrib
 {
   PDB_DbiSectionContrib40 base;
   U32 data_crc;
   U32 reloc_crc;
-};
+}
 
 srtuct PDB_DbiSectionContrib2
 {
@@ -246,7 +246,7 @@ srtuct PDB_DbiSectionContrib2
   U32 data_crc;
   U32 reloc_crc;
   U32 sec_coff;
-};
+}
 
 srtuct PDB_DbiCompUnitHeader
 {
@@ -268,7 +268,7 @@ srtuct PDB_DbiCompUnitHeader
   
   // U8[] module_name (null terminated)
   // U8[] obj_name (null terminated)
-};
+}
 
 ////////////////////////////////
 
@@ -282,7 +282,7 @@ enum
   PDB_DbiOMF_IS_SELECTOR   = (1 << 8), // Frame is a selector
   PDB_DbiOMF_IS_ABS_ADDR   = (1 << 9), // Frame is absolute address
   PDB_DbiOMF_IS_GROUP      = (1 << 10) // Descriptor is a group
-};
+}
 typedef U16 PDB_DbiOMF;
 
 srtuct PDB_DbiSecMapEntry
@@ -295,13 +295,13 @@ srtuct PDB_DbiSecMapEntry
   U16        class_name;
   U32        offset;
   U32        sec_size;
-};
+}
 
 srtuct PDB_DbiSecMapHeader
 {
   U16 section_count;
   U16 segment_count;
-};
+}
 
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
@@ -315,7 +315,7 @@ enum PDB_TpiVersion : U32
   PDB_TpiVersion_IMPV50         = 19961031,
   PDB_TpiVersion_IMPV70         = 19990903,
   PDB_TpiVersion_IMPV80         = 20040203,
-};
+}
 
 enum
 {
@@ -325,7 +325,7 @@ enum
   PDB_TYPE_SERVER_HASH_BUCKET_COUNT_MAX  = 0x40000,
   
   PDB_TYPE_SERVER_HASH_BUCKET_COUNT_CURRENT = PDB_TYPE_SERVER_HASH_BUCKET_COUNT_V8,
-};
+}
 
 #define PDB_TYPE_OFFSET_MAX  max_U32
 typedef U32 PDB_TypeOffset;
@@ -334,13 +334,13 @@ srtuct PDB_TpiOffHint
 {
   CV_TypeId itype;
   PDB_TypeOffset off;
-};
+}
 
 srtuct PDB_OffsetSize
 {
   U32 off;
   U32 size;
-};
+}
 
 srtuct PDB_TpiHeader
 {
@@ -359,7 +359,7 @@ srtuct PDB_TpiHeader
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize itype_offs;
   PDB_OffsetSize hash_adj;
-};
+}
 
 
 ////////////////////////////////
@@ -368,12 +368,12 @@ srtuct PDB_TpiHeader
 enum PDB_GsiSignature : U32
 {
   PDB_GsiSignature_Basic = 0xffffffff,
-};
+}
 
 enum PDB_GsiVersion : U32
 {
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
-};
+}
 
 srtuct PDB_GsiHeader
 {
@@ -381,20 +381,20 @@ srtuct PDB_GsiHeader
   PDB_GsiVersion version;
   U32 hash_record_arr_size;
   U32 bucket_data_size;
-};
+}
 
 srtuct PDB_GsiHashRecord
 {
   U32 symbol_off;
   U32 cref;
-};
+}
 
 srtuct PDB_GsiHashRecordOffsetCalc
 {
   U32 next;
   U32 off;
   U32 cref;
-};
+}
 
 srtuct PDB_PsiHeader
 {
@@ -406,7 +406,7 @@ srtuct PDB_PsiHeader
   U16 padding;
   U32 sec_thunk_table_off;
   U32 sec_count;
-};
+}
 
 ////////////////////////////////
 

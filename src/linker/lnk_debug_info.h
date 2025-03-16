@@ -10,14 +10,14 @@ srtuct LNK_PchInfo
   CV_TypeIndex ti_lo;
   CV_TypeIndex ti_hi;
   U64          debug_p_obj_idx;
-};
+}
 
 srtuct LNK_CodeViewSymbolsInput
 {
   U64            obj_idx;
   CV_SymbolList *symbol_list;
   String8        raw_symbols;
-};
+}
 
 srtuct LNK_CodeViewInput
 {
@@ -58,7 +58,7 @@ srtuct LNK_CodeViewInput
   CV_DebugT                **external_leaves;            // [type_server_count]
   U64                       *external_obj_to_ts_idx_arr; // [external_count]
   Rng1U64                    external_obj_range;
-};
+}
 
 ////////////////////////////////
 
@@ -67,7 +67,7 @@ enum
   LNK_LeafLocType_Internal,
   LNK_LeafLocType_External,
   LNK_LeafLocType_Count
-};
+}
 
 #define LNK_LeafRefFlag_LocIdxExternal (1 << 31)
 #define LNK_LeafRefFlag_LeafIdxIPI     (1 << 31)
@@ -75,39 +75,39 @@ srtuct
 {
   U32 enc_loc_idx;
   U32 enc_leaf_idx;
-};
+}
 
 srtuct LNK_LeafRange
 {
   struct LNK_LeafRange *next;
   Rng1U64               range;
   CV_DebugT            *debug_t;
-};
+}
 
 srtuct LNK_LeafRangeList
 {
   U64            count;
   LNK_LeafRange *first;
   LNK_LeafRange *last;
-};
+}
 
 srtuct
 {
   LNK_LeafRef  leaf_ref;
   CV_TypeIndex type_index;
-};
+}
 
 srtuct
 {
   U64              count;
   LNK_LeafBucket **v;
-};
+}
 
 srtuct
 {
   U64              cap;
   LNK_LeafBucket **bucket_arr;
-};
+}
 
 typedef union
 {
@@ -116,7 +116,7 @@ typedef union
     U128Array **external_hashes;
   };
   U128Array **v[CV_TypeIndexSource_COUNT];
-};
+}
 
 ////////////////////////////////
 
@@ -125,26 +125,26 @@ srtuct
   LNK_Obj      **obj_arr;
   LNK_ChunkList *sect_list_arr;
   CV_DebugS     *debug_s_arr;
-};
+}
 
 srtuct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
-};
+}
 
 srtuct
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
   CV_DebugT    *debug_t_arr;
-};
+}
 
 srtuct
 {
   String8Array   data_arr;
   MSF_Parsed   **msf_parse_arr;
-};
+}
 
 srtuct
 {
@@ -153,7 +153,7 @@ srtuct
   Rng1U64           **external_ti_ranges;
   CV_DebugT         **external_leaves;
   B8                 *is_corrupted;
-};
+}
 
 ////////////////////////////////
 
@@ -161,7 +161,7 @@ srtuct
 {
   LNK_LeafRangeList  *leaf_ranges_per_task;
   U64               **count_arr_arr;
-};
+}
 
 srtuct
 {
@@ -169,7 +169,7 @@ srtuct
   LNK_LeafHashes    *hashes;
   Arena            **fixed_arenas;
   CV_DebugT         *debug_t_arr;
-};
+}
 
 srtuct
 {
@@ -177,7 +177,7 @@ srtuct
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_DebugT          *debug_t_arr;
-};
+}
 
 srtuct
 {
@@ -185,7 +185,7 @@ srtuct
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_TypeIndexSource  dedup_ti_source;
-};
+}
 
 srtuct
 {
@@ -194,7 +194,7 @@ srtuct
   Rng1U64             *range_arr;
   U64                 *offset_arr;
   LNK_LeafBucketArray  result;
-};
+}
 
 srtuct
 {
@@ -208,7 +208,7 @@ srtuct
   LNK_LeafBucket **src;
   U64             loc_idx_max;
   U64             pass_idx;
-};
+}
 
 srtuct
 {
@@ -217,14 +217,14 @@ srtuct
   LNK_LeafBucket **dst;
   LNK_LeafBucket **src;
   Rng1U64         *ranges;
-};
+}
 
 srtuct
 {
   Rng1U64            *range_arr;
   CV_TypeIndex        min_type_index;
   LNK_LeafBucketArray bucket_arr;
-};
+}
 
 srtuct
 {
@@ -232,7 +232,7 @@ srtuct
   LNK_LeafBucket    **bucket_arr;
   U8                **raw_leaf_arr;
   Rng1U64            *range_arr;
-};
+}
 
 srtuct
 {
@@ -241,7 +241,7 @@ srtuct
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_SymbolList      *symbol_list_arr;
   Arena             **arena_arr;
-};
+}
 
 srtuct
 {
@@ -249,7 +249,7 @@ srtuct
   LNK_LeafHashes    *hashes;
   LNK_LeafHashTable *leaf_ht_arr;
   CV_DebugS         *debug_s_arr;
-};
+}
 
 srtuct
 {
@@ -259,25 +259,25 @@ srtuct
   LNK_LeafBucket    **bucket_arr;
   Rng1U64            *range_arr;
   Arena             **fixed_arena_arr;
-};
+}
 
 ////////////////////////////////
 
 srtuct
 {
   String8List *data_list_arr;
-};
+}
 
 srtuct
 {
   String8List *data_list_arr;
   String8List *source_file_names_list_arr;
-};
+}
 
 srtuct
 {
   LNK_CodeViewSymbolsInput *inputs;
-};
+}
 
 srtuct
 {
@@ -287,7 +287,7 @@ srtuct
   PDB_DbiModule            **mod_arr;
   String8List               *symbol_data_arr;
   CV_SymbolList             *gsi_list_arr;
-};
+}
 
 srtuct
 {
@@ -298,7 +298,7 @@ srtuct
   String8List        *source_file_names_list_arr;
   U64                 string_data_base_offset;
   CV_StringHashTable  string_ht;
-};
+}
 
 srtuct
 {
@@ -308,7 +308,7 @@ srtuct
   String8List    *c11_data_list_arr;
   String8List    *c13_data_list_arr;
   String8List    *globrefs_arr;
-};
+}
 
 srtuct
 {
@@ -317,20 +317,20 @@ srtuct
   PDB_DbiModule             **mod_arr;
   PDB_DbiSectionContribList  *sc_list;
   String8                     image_data;
-};
+}
 
 srtuct
 {
   U32Array      *hash_arr_arr;
   CV_SymbolList *list_arr;
-};
+}
 
 srtuct
 {
   U64            *hash_arr;
   CV_SymbolNode **arr;
   Rng1U64        *range_arr;
-};
+}
 
 srtuct
 {
@@ -342,7 +342,7 @@ srtuct
   PDB_GsiContext    *gsi;
   CV_SymbolPtrArray  symbols;
   U32               *hashes;
-};
+}
 
 srtuct
 {
@@ -350,7 +350,7 @@ srtuct
   CV_DebugT                 ipi_types;
   LNK_CodeViewSymbolsInput *symbol_inputs;
   CV_SymbolListArray       *parsed_symbols;
-};
+}
 
 srtuct
 {
@@ -358,7 +358,7 @@ srtuct
   CV_SymbolPtrNode **bucket_arr;
   CV_SymbolPtrNode **out_arr;
   U64               *out_count_arr;
-};
+}
 
 srtuct
 {
@@ -366,7 +366,7 @@ srtuct
   CV_SymbolPtrNode **bucket_arr;
   U64               *symbol_base_arr;
   CV_SymbolNode    **symbol_arr;
-};
+}
 
 srtuct
 {
@@ -376,7 +376,7 @@ srtuct
   B32          make_map;
   TP_Arena    *map_arena;
   String8List *maps;
-};
+}
 
 ////////////////////////////////
 // RAD Debug Info
@@ -385,7 +385,7 @@ srtuct
 {
   String8 name;
   U64     leaf_idx;
-};
+}
 
 srtuct
 {
@@ -393,7 +393,7 @@ srtuct
   Rng1U64            *ranges;
   U64                 buckets_cap;
   LNK_UDTNameBucket **buckets;
-};
+}
 
 srtuct
 {
@@ -403,7 +403,7 @@ srtuct
   U64                 udt_name_buckets_cap;
   LNK_UDTNameBucket **udt_name_buckets;
   CV_TypeIndex       *fwdmap;
-};
+}
 
 ////////////////////////////////
 
@@ -427,13 +427,13 @@ srtuct
   RDIB_UDTMemberChunkList *rdib_udt_members_lists;
   RDIB_UDTMemberChunkList *rdib_enum_members_lists;
   Rng1U64                 *ranges;
-};
+}
 
 srtuct
 {
   U64              obj_idx;
   RDIB_SourceFile *src_file;
-};
+}
 
 srtuct
 {
@@ -442,14 +442,14 @@ srtuct
   U64                    total_src_file_count;
   LNK_SourceFileBucket **src_file_buckets;
   U64                    src_file_buckets_cap;
-};
+}
 
 srtuct
 {
   CV_Arch     arch;
   CV_Language language;
   String8     compiler_name;
-};
+}
 
 srtuct
 {
@@ -491,7 +491,7 @@ srtuct
   RDIB_ProcedureChunkList  *static_procs;
   RDIB_InlineSiteChunkList *inline_sites;
   RDIB_LineTableChunkList  *line_tables;
-};
+}
 
 ////////////////////////////////
 // CodeView

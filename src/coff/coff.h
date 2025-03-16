@@ -10,12 +10,12 @@
 read_only static U8 g_coff_big_header_magic[] =
 {
   0xc7, 0xa1, 0xba, 0xd1, 0xee, 0xba, 0xa9, 0x4b, 0xaf, 0x20, 0xfa, 0xf6, 0x6a, 0xa4, 0xdc, 0xb8
-};
+}
 read_only static U8 g_coff_res_magic[] =
 {
   0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+}
 read_only static U8 g_coff_archive_sig[8]      = "!<arch>\n";
 read_only static U8 g_coff_thin_archive_sig[8] = "!<thin>\n";
 
@@ -41,7 +41,7 @@ enum COFF_FileHeaderFlags : U16
   COFF_FileHeaderFlag_Dll                  = (1 << 13),
   COFF_FileHeaderFlag_UpSystemOnly         = (1 << 14),
   COFF_FileHeaderFlag_BytesReservedHi      = (1 << 15)
-};
+}
 
 enum COFF_MachineType : U16
 {
@@ -70,7 +70,7 @@ enum COFF_MachineType : U16
   COFF_Machine_Sh5        = 0x1a8,
   COFF_Machine_Thumb      = 0x1c2,
   COFF_Machine_WceMipsV2  = 0x169
-};
+}
 
 srtuct COFF_FileHeader
 {
@@ -81,7 +81,7 @@ srtuct COFF_FileHeader
   U32                  symbol_count;
   U16                  optional_header_size;
   COFF_FileHeaderFlags flags;
-};
+}
 
 srtuct COFF_BigObjHeader
 {
@@ -95,7 +95,7 @@ srtuct COFF_BigObjHeader
   U32              section_count;
   U32              symbol_table_foff;
   U32              symbol_count;
-};
+}
 
 enum COFF_SectionAlign : U32
 {
@@ -113,7 +113,7 @@ enum COFF_SectionAlign : U32
   COFF_SectionAlign_2048Bytes = 0xc,
   COFF_SectionAlign_4096Bytes = 0xd,
   COFF_SectionAlign_8192Bytes = 0xe
-};
+}
 
 enum COFF_SectionFlags : U32
 {
@@ -139,7 +139,7 @@ enum COFF_SectionFlags : U32
   COFF_SectionFlag_MemExecute           = (1 << 29),
   COFF_SectionFlag_MemRead              = (1 << 30),
   COFF_SectionFlag_MemWrite             = (1 << 31)
-};
+}
 #define COFF_SectionFlags_ExtractAlign(f) (COFF_SectionAlign)(((f) >> COFF_SectionFlag_AlignShift) & COFF_SectionFlag_AlignMask)
 #define COFF_SectionFlags_LnkFlags        ((COFF_SectionFlag_AlignMask << COFF_SectionFlag_AlignShift) | COFF_SectionFlag_LnkCOMDAT | COFF_SectionFlag_LnkInfo | COFF_SectionFlag_LnkOther | COFF_SectionFlag_LnkRemove | COFF_SectionFlag_LnkNRelocOvfl)
 
@@ -155,7 +155,7 @@ srtuct COFF_SectionHeader
   U16               reloc_count;
   U16               line_count;
   COFF_SectionFlags flags;
-};
+}
 
 ////////////////////////////////
 
@@ -177,7 +177,7 @@ enum COFF_SymType : U8
   COFF_SymType_Word,
   COFF_SymType_UInt,
   COFF_SymType_DWord
-};
+}
 
 enum COFF_SymStorageClass : U8
 {
@@ -208,7 +208,7 @@ enum COFF_SymStorageClass : U8
   COFF_SymStorageClass_WeakExternal    = 0x69,
   COFF_SymStorageClass_CLRToken        = 0x6b,
   COFF_SymStorageClass_EndOfFunction   = 0xff
-};
+}
 
 enum COFF_SymDType : U8
 {
@@ -216,7 +216,7 @@ enum COFF_SymDType : U8
   COFF_SymDType_Ptr   = 0x10,
   COFF_SymDType_Func  = 0x20,
   COFF_SymDType_Array = 0x30
-};
+}
 
 // Special values for section number field in coff symbol
 #define COFF_Symbol_UndefinedSection 0
@@ -235,7 +235,7 @@ typedef union COFF_SymbolName
     U32 zeroes;
     U32 string_table_offset;
   } long_name;
-};
+}
 
 #define COFF_SymbolType_IsFunc(x) ((x).u.lsb == COFF_SymType_Null && (x).u.msb == COFF_SymDType_Func)
 
@@ -246,7 +246,7 @@ typedef union COFF_SymbolType
     COFF_SymType lsb;
   } u;
   U16 v;
-};
+}
 
 srtuct COFF_Symbol16
 {
@@ -256,7 +256,7 @@ srtuct COFF_Symbol16
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   U8                   aux_symbol_count;
-};
+}
 
 srtuct COFF_Symbol32
 {
@@ -266,7 +266,7 @@ srtuct COFF_Symbol32
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   U8                   aux_symbol_count;
-};
+}
 
 // Auxilary symbols are allocated with fixed size so that symbol table could be maintaned as array of regular size.
 #define COFF_AuxSymbolSize 18
@@ -276,7 +276,7 @@ enum COFF_WeakExtType : U32
   COFF_WeakExt_NoLibrary     = 1,
   COFF_WeakExt_SearchLibrary = 2,
   COFF_WeakExt_SearchAlias   = 3
-};
+}
 
 // storage class: External
 srtuct COFF_SymbolFuncDef
@@ -286,7 +286,7 @@ srtuct COFF_SymbolFuncDef
   U32 ptr_to_ln;
   U32 ptr_to_next_func;
   U8  unused[2];
-};
+}
 
 // storage class: Function
 srtuct COFF_SymbolFunc
@@ -296,7 +296,7 @@ srtuct COFF_SymbolFunc
   U8  unused2[2];
   U32 ptr_to_next_func;
   U8  unused3[2];
-};
+}
 
 // storage class: WeakExternal
 srtuct COFF_SymbolWeakExt
@@ -304,12 +304,12 @@ srtuct COFF_SymbolWeakExt
   U32              tag_index;
   COFF_WeakExtType characteristics;
   U8               unused[10];
-};
+}
 
 srtuct COFF_SymbolFile 
 {
   U8 name[18];
-};
+}
 
 enum COFF_ComdatSelectType : U8
 {
@@ -320,7 +320,7 @@ enum COFF_ComdatSelectType : U8
   COFF_ComdatSelect_ExactMatch   = 4, // Sections that symbols reference must have identical checksums, otherwise multiply defintion error is thrown.
   COFF_ComdatSelect_Associative  = 5, // Symbols with associative type form a chain of sections are related to each other. (next link is indicated in COFF_SecDef in 'number')
   COFF_ComdatSelect_Largest      = 6  // Linker selects section with largest size.
-};
+}
 
 // provides information about section to which symbol refers to.
 // storage class: Static
@@ -334,7 +334,7 @@ srtuct COFF_SymbolSecDef
   COFF_ComdatSelectType selection;
   U8                    unused;
   U16                   number_hi;
-};
+}
 
 ////////////////////////////////
 
@@ -359,7 +359,7 @@ enum COFF_Reloc_X64 : COFF_RelocType
   COFF_Reloc_X64_SRel32   = 0xE,  // TODO(nick): MSDN doesn't specify size for PAIR
   COFF_Reloc_X64_Pair     = 0xF,
   COFF_Reloc_X64_SSpan32  = 0x10
-};
+}
 
 enum COFF_Reloc_X86 : COFF_RelocType
 {
@@ -383,7 +383,7 @@ enum COFF_Reloc_X86 : COFF_RelocType
   COFF_Reloc_X86_Unknown8 = 0x12,
   COFF_Reloc_X86_Unknown9 = 0x13,
   COFF_Reloc_X86_Rel32    = 0x14
-};
+}
 
 enum COFF_Reloc_Arm : COFF_RelocType
 {
@@ -407,7 +407,7 @@ enum COFF_Reloc_Arm : COFF_RelocType
   COFF_Reloc_Arm_ThumbBranch24 = 0x14,
   COFF_Reloc_Arm_ThumbBlx23    = 0x15,
   COFF_Reloc_Arm_Pair          = 0x16
-};
+}
 
 enum COFF_Reloc_Arm64 : COFF_RelocType
 {
@@ -428,14 +428,14 @@ enum COFF_Reloc_Arm64 : COFF_RelocType
   COFF_Reloc_Arm64_Branch19      = 0xf,
   COFF_Reloc_Arm64_Branch14      = 0x10,
   COFF_Reloc_Arm64_Rel32         = 0x11
-};
+}
 
 srtuct COFF_Reloc
 {
   U32            apply_off; // section relative offset where relocation is placed
   U32            isymbol;   // zero based index into coff symbol table
   COFF_RelocType type;      // relocation type that depends on the arch
-};
+}
 
 ////////////////////////////////
 
@@ -445,7 +445,7 @@ srtuct COFF_ResourceHeaderPrefix
 {
   U32 data_size;
   U32 header_size;
-};
+}
 
 enum COFF_ResourceMemoryFlags : U16
 {
@@ -453,7 +453,7 @@ enum COFF_ResourceMemoryFlags : U16
   COFF_ResourceMemoryFlag_Pure        = 0x20,
   COFF_ResourceMemoryFlag_PreLoad     = 0x40,
   COFF_ResourceMemoryFlag_Discardable = 0x1000
-};
+}
 
 srtuct COFF_ResourceDataEntry
 {
@@ -461,7 +461,7 @@ srtuct COFF_ResourceDataEntry
   U32 data_size;
   U32 code_page;
   U32 reserved;
-};
+}
 
 srtuct COFF_ResourceDirTable
 {
@@ -471,7 +471,7 @@ srtuct COFF_ResourceDirTable
   U16            minor_version;
   U16            name_entry_count;
   U16            id_entry_count;
-};
+}
 
 #define COFF_Resource_SubDirFlag (1u << 31u)
 srtuct COFF_ResourceDirEntry
@@ -484,7 +484,7 @@ srtuct COFF_ResourceDirEntry
     U32 data_entry_offset;
     U32 sub_dir_offset;
   } id;
-};
+}
 
 ////////////////////////////////
 
@@ -500,7 +500,7 @@ srtuct COFF_ArchiveMemberHeader
   U8 mode[8];
   U8 size[10];
   U8 end[2];
-};
+}
 
 #define COFF_ImportType_Invalid max_U16
 enum COFF_ImportType : U16
@@ -508,7 +508,7 @@ enum COFF_ImportType : U16
   COFF_ImportHeader_Code  = 0,
   COFF_ImportHeader_Data  = 1,
   COFF_ImportHeader_Const = 2
-};
+}
 
 enum COFF_ImportByType : U32
 {
@@ -516,7 +516,7 @@ enum COFF_ImportByType : U32
   COFF_ImportBy_Name         = 1,
   COFF_ImportBy_NameNoPrefix = 2,
   COFF_ImportBy_Undecorate   = 3
-};
+}
 
 enum COFF_ImportHeaderFlags : U16
 {
@@ -524,7 +524,7 @@ enum COFF_ImportHeaderFlags : U16
   COFF_ImportHeader_TypeMask  = 3,
   COFF_ImportHeader_ImportByShift = 2,
   COFF_ImportHeader_ImportByMask  = 3,
-};
+}
 #define COFF_ImportHeader_ExtractType(x)     (((x) >> COFF_ImportHeader_TypeShift    ) & COFF_ImportHeader_TypeMask    )
 #define COFF_ImportHeader_ExtractImportBy(x) (((x) >> COFF_ImportHeader_ImportByShift) & COFF_ImportHeader_ImportByMask)
 
@@ -540,7 +540,7 @@ srtuct COFF_ImportHeader
   COFF_ImportHeaderFlags flags;
   // char *func_name;
   // char *dll_name;
-};
+}
 
 #pragma pack(pop)
 

@@ -32,7 +32,7 @@ CV_NumericKind_DECIMAL = 0x8019,
 CV_NumericKind_DATE = 0x801a,
 CV_NumericKind_UTF8STRING = 0x801b,
 CV_NumericKind_FLOAT16 = 0x801c,
-};
+}
 
 typedef U16 CV_Arch;
 enum CV_ArchEnum
@@ -102,7 +102,7 @@ CV_Arch_PENTIUMPRO  = CV_Arch_PENTIUMII,
 CV_Arch_MIPSR4000   = CV_Arch_MIPS,
 CV_Arch_ALPHA_21064 = CV_Arch_ALPHA,
 CV_Arch_AMD64       = CV_Arch_X64,
-};
+}
 
 typedef U16 CV_AllReg;
 enum CV_AllRegEnum
@@ -120,7 +120,7 @@ CV_AllReg_LOCALS = 30009,
 CV_AllReg_TID = 30010,
 CV_AllReg_ENV = 30011,
 CV_AllReg_CMDLN = 30012,
-};
+}
 
 typedef U16 CV_SymKind;
 enum CV_SymKindEnum
@@ -318,7 +318,7 @@ CV_SymKind_GDATA_HLSL32_EX = 0x1164,
 CV_SymKind_LDATA_HLSL32_EX = 0x1165,
 CV_SymKind_FASTLINK = 0x1167,
 CV_SymKind_INLINEES = 0x1168,
-};
+}
 
 typedef U8 CV_BasicType;
 enum CV_BasicTypeEnum
@@ -376,7 +376,7 @@ CV_BasicType_CHAR16 = 0x7a,
 CV_BasicType_CHAR32 = 0x7b,
 CV_BasicType_CHAR8 = 0x7c,
 CV_BasicType_PTR = 0xf0,
-};
+}
 
 typedef U16 CV_LeafKind;
 enum CV_LeafKindEnum
@@ -515,7 +515,7 @@ CV_LeafKind_UDT_SRC_LINE = 0x1606,
 CV_LeafKind_UDT_MOD_SRC_LINE = 0x1607,
 CV_LeafKind_CLASS2 = 0x1608,
 CV_LeafKind_STRUCT2 = 0x1609,
-};
+}
 
 String8 cv_string_from_numeric_kind(CV_NumericKind v);
 String8 cv_string_from_arch(CV_Arch v);

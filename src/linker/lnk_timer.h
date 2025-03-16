@@ -11,13 +11,13 @@ enum LNK_TimerType
   LNK_Timer_Lib,
   LNK_Timer_Debug,
   LNK_Timer_Count
-};
+}
 
 srtuct LNK_Timer
 {
   U64 begin;
   U64 end;
-};
+}
 
 void lnk_timer_begin(LNK_TimerType timer);
 void lnk_timer_end(LNK_TimerType timer);

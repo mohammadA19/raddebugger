@@ -110,7 +110,7 @@ REGS_RegCodeX64_k5,
 REGS_RegCodeX64_k6,
 REGS_RegCodeX64_k7,
 REGS_RegCodeX64_COUNT,
-};
+}
 
 enum REGS_AliasCodeX64
 {
@@ -211,7 +211,7 @@ REGS_AliasCodeX64_mm5,
 REGS_AliasCodeX64_mm6,
 REGS_AliasCodeX64_mm7,
 REGS_AliasCodeX64_COUNT,
-};
+}
 
 enum REGS_RegCodeX86
 {
@@ -277,7 +277,7 @@ REGS_RegCodeX86_ymm5,
 REGS_RegCodeX86_ymm6,
 REGS_RegCodeX86_ymm7,
 REGS_RegCodeX86_COUNT,
-};
+}
 
 enum REGS_AliasCodeX86
 {
@@ -318,7 +318,7 @@ REGS_AliasCodeX86_mm5,
 REGS_AliasCodeX86_mm6,
 REGS_AliasCodeX86_mm7,
 REGS_AliasCodeX86_COUNT,
-};
+}
 
 struct REGS_RegBlockX64
 {
@@ -422,7 +422,7 @@ REGS_Reg64 k4;
 REGS_Reg64 k5;
 REGS_Reg64 k6;
 REGS_Reg64 k7;
-};
+}
 
 struct REGS_RegBlockX86
 {
@@ -486,7 +486,7 @@ REGS_Reg256 ymm4;
 REGS_Reg256 ymm5;
 REGS_Reg256 ymm6;
 REGS_Reg256 ymm7;
-};
+}
 
 C_LINKAGE_BEGIN
 extern REGS_UsageKind regs_g_reg_code_x64_usage_kind_table[101];

@@ -84,7 +84,7 @@ enum
   LNK_Warning_Last,
   
   LNK_Error_Count
-};
+}
 
 enum
 {
@@ -92,7 +92,7 @@ enum
   LNK_ErrorMode_Stop,
   LNK_ErrorMode_Continue,
   LNK_ErrorMode_Warn,
-};
+}
 
 enum
 {
@@ -101,13 +101,13 @@ enum
   LNK_InternalError_InvalidPath,
   LNK_InternalError_IncompleteSwitch,
   LNK_InternalError_OutOfMemory
-};
+}
 
 enum
 {
   LNK_ErrorCodeStatus_Active,
   LNK_ErrorCodeStatus_Ignore,
-};
+}
 
 void lnk_init_error_handler();
 void lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args);

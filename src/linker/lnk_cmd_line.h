@@ -8,7 +8,7 @@ srtuct LNK_CmdOption
   struct LNK_CmdOption *next;
   String8               string;
   String8List           value_strings;
-};
+}
 
 srtuct LNK_CmdLine
 {
@@ -16,7 +16,7 @@ srtuct LNK_CmdLine
   LNK_CmdOption *first_option;
   LNK_CmdOption *last_option;
   String8List    input_list;
-};
+}
 
 String8List     lnk_arg_list_parse_windows_rules(Arena *arena, String8 string);
 LNK_CmdLine     lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list);

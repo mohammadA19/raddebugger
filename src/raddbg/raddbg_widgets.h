@@ -19,7 +19,7 @@ enum RD_LineEditFlags : U32
   RD_LineEditFlag_NoBackground        = (1<<7),
   RD_LineEditFlag_PreferDisplayString = (1<<8),
   RD_LineEditFlag_DisplayStringIsCode = (1<<9),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Code Slice Types
@@ -30,7 +30,7 @@ enum RD_CodeSliceFlags : U32
   RD_CodeSliceFlag_PriorityMargin    = (1<<1),
   RD_CodeSliceFlag_CatchallMargin    = (1<<2),
   RD_CodeSliceFlag_LineNums          = (1<<3),
-};
+}
 
 struct RD_CodeSliceParams
 {
@@ -58,14 +58,14 @@ struct RD_CodeSliceParams
   F32 line_num_width_px;
   F32 line_text_max_width_px;
   F32 margin_float_off_px;
-};
+}
 
 struct RD_CodeSliceSignal
 {
   UI_Signal base;
   TxtPt mouse_pt;
   TxtRng mouse_expr_rng;
-};
+}
 
 ////////////////////////////////
 //~ rjf: UI Building Helpers

@@ -15,7 +15,7 @@
 struct DMN_CtrlCtx
 {
   U64 u64[1];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Types
@@ -24,26 +24,26 @@ union DMN_Handle
 {
   U32 u32[2];
   U64 u64[1];
-};
+}
 
 struct DMN_HandleNode
 {
   DMN_HandleNode *next;
   DMN_Handle v;
-};
+}
 
 struct DMN_HandleList
 {
   DMN_HandleNode *first;
   DMN_HandleNode *last;
   U64 count;
-};
+}
 
 struct DMN_HandleArray
 {
   DMN_Handle *handles;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -74,20 +74,20 @@ struct DMN_Event
   U64 stack_pointer;
   U64 user_data;
   B32 exception_repeated;
-};
+}
 
 struct DMN_EventNode
 {
   DMN_EventNode *next;
   DMN_Event v;
-};
+}
 
 struct DMN_EventList
 {
   DMN_EventNode *first;
   DMN_EventNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Run Control Types
@@ -97,7 +97,7 @@ struct DMN_Trap
   DMN_Handle process;
   U64 vaddr;
   U64 id;
-};
+}
 
 struct DMN_TrapChunkNode
 {
@@ -105,7 +105,7 @@ struct DMN_TrapChunkNode
   DMN_Trap *v;
   U64 cap;
   U64 count;
-};
+}
 
 struct DMN_TrapChunkList
 {
@@ -113,7 +113,7 @@ struct DMN_TrapChunkList
   DMN_TrapChunkNode *last;
   U64 node_count;
   U64 trap_count;
-};
+}
 
 struct DMN_RunCtrls
 {
@@ -124,7 +124,7 @@ struct DMN_RunCtrls
   DMN_Handle *run_entities;
   U64 run_entity_count;
   DMN_TrapChunkList traps;
-};
+}
 
 ////////////////////////////////
 //~ rjf: System Process Listing Types
@@ -132,13 +132,13 @@ struct DMN_RunCtrls
 struct DMN_ProcessIter
 {
   U64 v[2];
-};
+}
 
 struct DMN_ProcessInfo
 {
   String8 name;
   U32 pid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions (Helpers, Implemented Once)

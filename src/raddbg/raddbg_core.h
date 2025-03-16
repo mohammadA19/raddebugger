@@ -10,21 +10,21 @@
 struct RD_Handle
 {
   U64 u64[2];
-};
+}
 
 struct RD_HandleNode
 {
   RD_HandleNode *next;
   RD_HandleNode *prev;
   RD_Handle handle;
-};
+}
 
 struct RD_HandleList
 {
   RD_HandleNode *first;
   RD_HandleNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -35,7 +35,7 @@ enum RD_EvalSpaceKind : U64
   RD_EvalSpaceKind_MetaEntity,
   RD_EvalSpaceKind_MetaCtrlEntity,
   RD_EvalSpaceKind_MetaCollection,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Kind Flags
@@ -60,7 +60,7 @@ enum RD_EntityKindFlags : U32
   
   //- rjf: serialization
   RD_EntityKindFlag_IsSerializedToConfig     = (1<<10),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Flags
@@ -76,7 +76,7 @@ enum RD_EntityFlags : U32
   
   //- rjf: deletion
   RD_EntityFlag_MarkedForDeletion = (1<<31),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Binding Types
@@ -85,26 +85,26 @@ struct RD_Binding
 {
   OS_Key key;
   OS_Modifiers modifiers;
-};
+}
 
 struct RD_BindingNode
 {
   RD_BindingNode *next;
   RD_Binding binding;
-};
+}
 
 struct RD_BindingList
 {
   RD_BindingNode *first;
   RD_BindingNode *last;
   U64 count;
-};
+}
 
 struct RD_StringBindingPair
 {
   String8 string;
   RD_Binding binding;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Key Map Types
@@ -115,13 +115,13 @@ struct RD_KeyMapNode
   RD_KeyMapNode *hash_prev;
   String8 name;
   RD_Binding binding;
-};
+}
 
 struct RD_KeyMapSlot
 {
   RD_KeyMapNode *first;
   RD_KeyMapNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Setting Types
@@ -130,7 +130,7 @@ struct RD_SettingVal
 {
   B32 set;
   S32 s32;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Info Types
@@ -145,7 +145,7 @@ enum RD_ViewRuleInfoFlags : U32
   RD_ViewRuleInfoFlag_CanFillValueCell           = (1<<5),
   RD_ViewRuleInfoFlag_CanExpand                  = (1<<6),
   RD_ViewRuleInfoFlag_ProjectFiltered            = (1<<7),
-};
+}
 
 #define RD_VIEW_RULE_UI_FUNCTION_SIG(name) void name(String8 string, MD_Node *params, Rng2F32 rect)
 #define RD_VIEW_RULE_UI_FUNCTION_NAME(name) rd_view_rule_ui_##name
@@ -160,7 +160,7 @@ struct RD_ArenaExt
 {
   RD_ArenaExt *next;
   Arena *arena;
-};
+}
 
 struct RD_TransientViewNode
 {
@@ -172,13 +172,13 @@ struct RD_TransientViewNode
   MD_Node *initial_params;
   U64 first_frame_index_touched;
   U64 last_frame_index_touched;
-};
+}
 
 struct RD_TransientViewSlot
 {
   RD_TransientViewNode *first;
   RD_TransientViewNode *last;
-};
+}
 
 struct RD_View
 {
@@ -237,7 +237,7 @@ struct RD_View
   TxtPt query_mark;
   U64 query_string_size;
   U8 query_buffer[KB(4)];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Panel Types
@@ -270,14 +270,14 @@ struct RD_Panel
   RD_View *last_tab_view;
   U64 tab_view_count;
   RD_Handle selected_tab_view;
-};
+}
 
 struct RD_PanelRec
 {
   RD_Panel *next;
   int push_count;
   int pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
@@ -288,7 +288,7 @@ enum RD_DragDropState
   RD_DragDropState_Dragging,
   RD_DragDropState_Dropping,
   RD_DragDropState_COUNT
-};
+}
 
 ////////////////////////////////
 //~ rjf: Command Kind Types
@@ -301,13 +301,13 @@ enum RD_QueryFlags : U32
   RD_QueryFlag_KeepOldInput     = (1<<3),
   RD_QueryFlag_SelectOldInput   = (1<<4),
   RD_QueryFlag_Required         = (1<<5),
-};
+}
 
 enum RD_CmdKindFlags : U32
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -322,7 +322,7 @@ struct RD_CfgTree
   RD_CfgTree *next;
   RD_CfgSrc source;
   MD_Node *root;
-};
+}
 
 struct RD_CfgVal
 {
@@ -332,12 +332,12 @@ struct RD_CfgVal
   RD_CfgTree *last;
   U64 insertion_stamp;
   String8 string;
-};
+}
 
 struct RD_CfgSlot
 {
   RD_CfgVal *first;
-};
+}
 
 struct RD_CfgTable
 {
@@ -346,7 +346,7 @@ struct RD_CfgTable
   U64 insertion_stamp_counter;
   RD_CfgVal *first_val;
   RD_CfgVal *last_val;
-};
+}
 
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure
@@ -360,27 +360,27 @@ struct RD_Cfg
   RD_Cfg *parent;
   U64 gen;
   String8 string;
-};
+}
 
 struct RD_CfgNode
 {
   RD_CfgNode *next;
   RD_Cfg *v;
-};
+}
 
 struct RD_CfgList
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
   U64 count;
-};
+}
 
 struct RD_CfgRec
 {
   RD_Cfg *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Types
@@ -415,33 +415,33 @@ struct RD_Entity
   
   // rjf: string equipment
   String8 string;
-};
+}
 
 struct RD_EntityNode
 {
   RD_EntityNode *next;
   RD_Entity *entity;
-};
+}
 
 struct RD_EntityList
 {
   RD_EntityNode *first;
   RD_EntityNode *last;
   U64 count;
-};
+}
 
 struct RD_EntityArray
 {
   RD_Entity **v;
   U64 count;
-};
+}
 
 struct RD_EntityRec
 {
   RD_Entity *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Command Types
@@ -450,21 +450,21 @@ struct RD_Cmd
 {
   String8 name;
   RD_Regs *regs;
-};
+}
 
 struct RD_CmdNode
 {
   RD_CmdNode *next;
   RD_CmdNode *prev;
   RD_Cmd cmd;
-};
+}
 
 struct RD_CmdList
 {
   RD_CmdNode *first;
   RD_CmdNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Context Register Types
@@ -473,7 +473,7 @@ struct RD_RegsNode
 {
   RD_RegsNode *next;
   RD_Regs v;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Theme Types
@@ -481,7 +481,7 @@ struct RD_RegsNode
 struct RD_Theme
 {
   Vec4F32 colors[RD_ThemeColor_COUNT];
-};
+}
 
 enum RD_FontSlot
 {
@@ -489,7 +489,7 @@ enum RD_FontSlot
   RD_FontSlot_Code,
   RD_FontSlot_Icons,
   RD_FontSlot_COUNT
-};
+}
 
 enum RD_PaletteCode
 {
@@ -506,7 +506,7 @@ enum RD_PaletteCode
   RD_PaletteCode_TabInactive,
   RD_PaletteCode_DropSiteOverlay,
   RD_PaletteCode_COUNT
-};
+}
 
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister Types
@@ -526,7 +526,7 @@ enum RD_AutoCompListerFlags : U32
   RD_AutoCompListerFlag_Architectures = (1<<10),
   RD_AutoCompListerFlag_Tex2DFormats  = (1<<11),
   RD_AutoCompListerFlag_Files         = (1<<12),
-};
+}
 
 struct RD_AutoCompListerItem
 {
@@ -535,7 +535,7 @@ struct RD_AutoCompListerItem
   FuzzyMatchRangeList matches;
   U64 group;
   B32 is_non_code;
-};
+}
 
 struct RD_AutoCompListerItemChunkNode
 {
@@ -543,7 +543,7 @@ struct RD_AutoCompListerItemChunkNode
   RD_AutoCompListerItem *v;
   U64 count;
   U64 cap;
-};
+}
 
 struct RD_AutoCompListerItemChunkList
 {
@@ -551,19 +551,19 @@ struct RD_AutoCompListerItemChunkList
   RD_AutoCompListerItemChunkNode *last;
   U64 chunk_count;
   U64 total_count;
-};
+}
 
 struct RD_AutoCompListerItemArray
 {
   RD_AutoCompListerItem *v;
   U64 count;
-};
+}
 
 struct RD_AutoCompListerParams
 {
   RD_AutoCompListerFlags flags;
   String8List strings;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Per-Window State
@@ -667,7 +667,7 @@ struct RD_Window
   
   // rjf: per-frame drawing state
   DR_Bucket *draw_bucket;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Eval Visualization View Cache Types
@@ -678,13 +678,13 @@ struct RD_EvalVizViewCacheNode
   RD_EvalVizViewCacheNode *prev;
   U64 key;
   EV_View *v;
-};
+}
 
 struct RD_EvalVizViewCacheSlot
 {
   RD_EvalVizViewCacheNode *first;
   RD_EvalVizViewCacheNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Meta Evaluation Cache Types
@@ -695,13 +695,13 @@ struct RD_CtrlEntityMetaEvalCacheNode
   CTRL_Handle handle;
   CTRL_MetaEval *meval;
   Rng1U64 range;
-};
+}
 
 struct RD_CtrlEntityMetaEvalCacheSlot
 {
   RD_CtrlEntityMetaEvalCacheNode *first;
   RD_CtrlEntityMetaEvalCacheNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
@@ -710,21 +710,21 @@ struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
   U64 size;
-};
+}
 
 struct RD_EntityListCache
 {
   Arena *arena;
   U64 alloc_gen;
   RD_EntityList list;
-};
+}
 
 struct RD_AmbiguousPathNode
 {
   RD_AmbiguousPathNode *next;
   String8 name;
   String8List paths;
-};
+}
 
 struct RD_State
 {
@@ -889,7 +889,7 @@ struct RD_State
   //-
   // TODO(rjf): TO BE ELIMINATED OR REPLACED ^^^^^^^^^^^^^^^^^^
   //-
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
@@ -904,7 +904,7 @@ read_only static RD_Cfg rd_nil_cfg =
   &rd_nil_cfg,
   &rd_nil_cfg,
   &rd_nil_cfg,
-};
+}
 
 read_only static RD_Entity rd_nil_entity =
 {
@@ -913,7 +913,7 @@ read_only static RD_Entity rd_nil_entity =
   &rd_nil_entity,
   &rd_nil_entity,
   &rd_nil_entity,
-};
+}
 
 read_only static RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
 
@@ -927,7 +927,7 @@ read_only static RD_ViewRuleInfo rd_nil_view_rule_info =
   0,
   EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil),
   RD_VIEW_RULE_UI_FUNCTION_NAME(null)
-};
+}
 
 read_only static RD_View rd_nil_view =
 {
@@ -938,7 +938,7 @@ read_only static RD_View rd_nil_view =
   &rd_nil_view,
   &rd_nil_view,
   &rd_nil_view_rule_info,
-};
+}
 
 read_only static RD_Panel rd_nil_panel =
 {
@@ -947,7 +947,7 @@ read_only static RD_Panel rd_nil_panel =
   &rd_nil_panel,
   &rd_nil_panel,
   &rd_nil_panel,
-};
+}
 
 static RD_State *rd_state = 0;
 static RD_Handle rd_last_drag_drop_panel = {0};

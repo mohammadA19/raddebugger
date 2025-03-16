@@ -12,25 +12,25 @@ enum LogMsgKind
   LogMsgKind_Info,
   LogMsgKind_UserError,
   LogMsgKind_COUNT
-};
+}
 
 struct LogScope
 {
   LogScope *next;
   U64 pos;
   String8List strings[LogMsgKind_COUNT];
-};
+}
 
 struct LogScopeResult
 {
   String8 strings[LogMsgKind_COUNT];
-};
+}
 
 struct Log
 {
   Arena *arena;
   LogScope *top_scope;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Log Creation/Selection

@@ -12,7 +12,7 @@ srtuct LNK_ImportFunc
   String8                name;
   String8                thunk_symbol_name;
   String8                iat_symbol_name;
-};
+}
 
 srtuct LNK_ImportDLL
 {
@@ -30,13 +30,13 @@ srtuct LNK_ImportDLL
   String8                name;
   COFF_MachineType       machine;
   HashTable             *func_ht;
-};
+}
 
 enum
 {
   LNK_ImportTableFlag_EmitBiat = (1 << 0),
   LNK_ImportTableFlag_EmitUiat = (1 << 1),
-};
+}
 typedef U32 LNK_ImportTableFlags;
 
 srtuct LNK_ImportTable
@@ -57,7 +57,7 @@ srtuct LNK_ImportTable
   LNK_Chunk            *code_chunk;
   LNK_ImportTableFlags  flags;
   HashTable            *dll_ht;
-};
+}
 
 LNK_ImportTable * lnk_import_table_alloc_static(LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType machine);
 LNK_ImportTable * lnk_import_table_alloc_delayed(LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable);

@@ -51,7 +51,7 @@ enum RDI_ParseStatus
   RDI_ParseStatus_UnsupportedVersionNumber = 2,
   RDI_ParseStatus_InvalidDataSecionLayout = 3,
   RDI_ParseStatus_MissingRequiredSection = 4,
-};
+}
 
 struct RDI_Parsed
 {
@@ -59,7 +59,7 @@ struct RDI_Parsed
   RDI_U64 raw_data_size;
   RDI_Section *sections;
   RDI_U64 sections_count;
-};
+}
 
 struct RDI_ParsedLineTable
 {
@@ -72,7 +72,7 @@ struct RDI_ParsedLineTable
   RDI_Column* cols;  // [col_count]
   RDI_U64 count;
   RDI_U64 col_count;
-};
+}
 
 struct RDI_ParsedSourceLineMap
 {
@@ -89,7 +89,7 @@ struct RDI_ParsedSourceLineMap
   RDI_U64* voffs;  // [voff_count]
   RDI_U64 count;
   RDI_U64 voff_count;
-};
+}
 
 struct RDI_ParsedNameMap
 {
@@ -97,7 +97,7 @@ struct RDI_ParsedNameMap
   RDI_NameMapNode *nodes;
   RDI_U64 bucket_count;
   RDI_U64 node_count;
-};
+}
 
 ////////////////////////////////
 //~ Global Nils

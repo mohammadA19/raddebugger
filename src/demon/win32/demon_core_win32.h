@@ -91,7 +91,7 @@ enum DMN_W32_EntityKind
   DMN_W32_EntityKind_Thread,
   DMN_W32_EntityKind_Module,
   DMN_W32_EntityKind_COUNT
-};
+}
 
 struct DMN_W32_Entity
 {
@@ -129,13 +129,13 @@ struct DMN_W32_Entity
     }
     module;
   };
-};
+}
 
 struct DMN_W32_EntityNode
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
-};
+}
 
 struct DMN_W32_EntityIDHashNode
 {
@@ -143,13 +143,13 @@ struct DMN_W32_EntityIDHashNode
   DMN_W32_EntityIDHashNode *prev;
   U64 id;
   DMN_W32_Entity *entity;
-};
+}
 
 struct DMN_W32_EntityIDHashSlot
 {
   DMN_W32_EntityIDHashNode *first;
   DMN_W32_EntityIDHashNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Injection Types
@@ -158,7 +158,7 @@ struct DMN_W32_InjectedBreak
 {
   U64 code;
   U64 user_data;
-};
+}
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
 
@@ -169,7 +169,7 @@ struct DMN_W32_ImageInfo
 {
   Arch arch;
   U32 size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Dynamically-Loaded Win32 Function Types
@@ -219,7 +219,7 @@ struct DMN_W32_Shared
   // rjf: halting info
   DMN_Handle halter_process;
   U32 halter_tid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

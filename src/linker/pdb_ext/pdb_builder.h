@@ -21,7 +21,7 @@ srtuct PDB_HashTableBucket
 {
   String8 key;
   String8 value;
-};
+}
 
 srtuct PDB_HashTable
 {
@@ -31,14 +31,14 @@ srtuct PDB_HashTable
   U32Array             deleted_bits;
   U32   			         max;
   U32                  count;
-};
+}
 
 enum
 {
   PDB_HashTableParseError_OK,
   PDB_HashTableParseError_OUT_OF_BYTES,
   PDB_HashTableParseError_CORRUPTED
-};
+}
 
 ////////////////////////////////
 // String Table
@@ -48,7 +48,7 @@ srtuct PDB_StringTableBucket
   String8          data;
   PDB_StringOffset offset;
   PDB_StringIndex  istr;
-};
+}
 
 srtuct PDB_StringTable
 {
@@ -59,7 +59,7 @@ srtuct PDB_StringTable
   U32    bucket_max;
   U32   *ibucket_array;
   PDB_StringTableBucket **bucket_array;
-};
+}
 
 enum
 {
@@ -69,7 +69,7 @@ enum
   PDB_StringTableOpenError_CORRUPTED,
   PDB_StringTableOpenError_STRING_OFFSET_OUT_OF_BOUNDS,
   PDB_StringTableOpenError_OFFSETS_EXCEED_BUCKET_COUNT
-};
+}
 
 ////////////////////////////////
 // Type Server
@@ -84,14 +84,14 @@ enum
   PDB_OpenTypeServerError_INVALID_BUCKET_COUNT,
   PDB_OpenTypeServerError_INVALID_TI_RANGE,
   PDB_OpenTypeServerError_UNSUPPORTED_VERSION,
-};
+}
 
 srtuct PDB_TypeBucket
 {
   struct PDB_TypeBucket *next;
   String8                raw_leaf;
   CV_TypeIndex           type_index;
-};
+}
 
 srtuct PDB_TypeServer
 {
@@ -102,20 +102,20 @@ srtuct PDB_TypeServer
   PDB_TypeBucket   **buckets;
   MSF_StreamNumber   hash_sn;
   PDB_HashTable      hash_adj;
-};
+}
 
 srtuct PDB_TypeHashStreamInfo
 {
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize ti_offs;
   PDB_OffsetSize hash_adj;
-};
+}
 
 srtuct PDB_TypeServerParse
 {
   Rng1U64 ti_range;
   String8 leaf_data;
-};
+}
 
 srtuct
 {
@@ -125,13 +125,13 @@ srtuct
   Rng1U64        *ranges;
   PDB_TypeServer *type_server;
   PDB_TypeBucket *udt_buckets;
-};
+}
 
 srtuct
 {
   PDB_TypeServer *ts;
   U32            *map;
-};
+}
 
 srtuct
 {
@@ -144,7 +144,7 @@ srtuct
   U64            *lf_cursor_arr;
   U8             *lf_buf;
   U64             lf_buf_size;
-};
+}
 
 ////////////////////////////////
 // Info
@@ -156,7 +156,7 @@ srtuct PDB_InfoParse
   U32              age;
   Guid             guid;
   String8          extra_info;
-};
+}
 
 srtuct PDB_InfoContext
 {
@@ -168,7 +168,7 @@ srtuct PDB_InfoContext
   PDB_HashTable     named_stream_ht;
   PDB_HashTable     src_header_block_ht;
   PDB_StringTable   strtab;
-};
+}
 
 ////////////////////////////////
 // SRC Header Block
@@ -181,7 +181,7 @@ enum
   PDB_SrcError_UNABLE_TO_WRITE_DATA,
   PDB_SrcError_UNSUPPORTED_COMPRESSION,
   PDB_SrcError_UNKNOWN
-};
+}
 
 ////////////////////////////////
 // GSI
@@ -200,14 +200,14 @@ srtuct PDB_GsiContext
   U64            bucket_count;
   U64            symbol_count;
   CV_SymbolList *bucket_arr;
-};
+}
 
 srtuct PDB_GsiSortRecord
 {
   ISectOff isect_off;
   String8 name;
   U64 offset;
-};
+}
 
 srtuct PDB_GsiBuildResult
 {
@@ -221,7 +221,7 @@ srtuct PDB_GsiBuildResult
   U32               *compressed_bucket_arr;
   U64                total_hash_size;
   String8            symbol_data;
-};
+}
 
 srtuct PDB_GsiSerializeSymbolsTask
 {
@@ -232,7 +232,7 @@ srtuct PDB_GsiSerializeSymbolsTask
   U8                  *buffer;
   PDB_GsiSortRecord  **sort_record_arr_arr;
   PDB_GsiSortRecord   *sort_record_arr;
-};
+}
 
 ////////////////////////////////
 // PSI
@@ -241,7 +241,7 @@ srtuct PDB_PsiContext
 {
   Arena *arena;
   PDB_GsiContext *gsi;
-};
+}
 
 ////////////////////////////////
 // DBI
@@ -261,40 +261,40 @@ srtuct PDB_DbiModule
   String8               obj_path;
   String8               lib_path;
   String8List           source_file_list;
-};
+}
 
 srtuct PDB_DbiModuleList
 {
   PDB_DbiModule *first;
   PDB_DbiModule *last;
   U64            count;
-};
+}
 
 srtuct PDB_DbiSectionContribNode
 {
   struct PDB_DbiSectionContribNode *next;
   PDB_DbiSectionContrib             data;
-};
+}
 
 srtuct PDB_DbiSectionContribList
 {
   PDB_DbiSectionContribNode *first;
   PDB_DbiSectionContribNode *last;
   U64                        count;
-};
+}
 
 srtuct PDB_DbiSectionNode
 {
   struct PDB_DbiSectionNode *next;
   COFF_SectionHeader         data;
-};
+}
 
 srtuct PDB_DbiSectionList
 {
   U64                 count;
   PDB_DbiSectionNode *first;
   PDB_DbiSectionNode *last;
-};
+}
 
 srtuct PDB_DbiContext
 {
@@ -309,7 +309,7 @@ srtuct PDB_DbiContext
   PDB_DbiSectionList    section_list;
   PDB_StringTable       ec_names;
   MSF_StreamNumber      dbg_streams[PDB_DbiStream_COUNT];
-};
+}
 
 ////////////////////////////////
 // PDB
@@ -323,7 +323,7 @@ srtuct PDB_Context
   PDB_GsiContext  *gsi;
   PDB_PsiContext  *psi;
   PDB_TypeServer  *type_servers[CV_TypeIndexSource_COUNT];
-};
+}
 
 ////////////////////////////////
 
@@ -333,7 +333,7 @@ srtuct
   Rng1U64        *ranges;
   CV_SymbolNode **symbols;
   U32            *hashes;
-};
+}
 
 srtuct
 {
@@ -342,7 +342,7 @@ srtuct
   U16                 *imod_arr;
   U16                 *source_file_name_count_arr;
   U32                **source_file_name_offset_arr;
-};
+}
 
 ////////////////////////////////
 // PDB

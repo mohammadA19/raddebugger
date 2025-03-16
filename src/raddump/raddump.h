@@ -91,50 +91,50 @@ srtuct RD_Marker
 {
   U64     off;
   String8 string;
-};
+}
 
 srtuct RD_MarkerArray
 {
   U64        count;
   RD_Marker *v;
-};
+}
 
 srtuct MarkerNode
 {
   struct MarkerNode *next;
   RD_Marker          v;
-};
+}
 
 srtuct RD_MarkerList
 {
   U64            count;
   RD_MarkerNode *first;
   RD_MarkerNode *last;
-};
+}
 
 srtuct RD_DisasmResult
 {
   String8 text;
   U64     size;
-};
+}
 
 srtuct RD_Section
 {
   String8 name;
   String8 raw_data;
-};
+}
 
 srtuct RD_SectionArray
 {
   U64         count;
   RD_Section *v;
-};
+}
 
 srtuct RD_Line
 {
   String8 file_path;
   U32     line_num;
-};
+}
 
 ////////////////////////////////
 

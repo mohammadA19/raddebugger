@@ -48,13 +48,13 @@
 enum DWRITE_FACTORY_TYPE {
   DWRITE_FACTORY_TYPE_SHARED   = 0,
   DWRITE_FACTORY_TYPE_ISOLATED = 1,
-};
+}
 
 enum DWRITE_PIXEL_GEOMETRY {
   DWRITE_PIXEL_GEOMETRY_FLAT = 0,
   DWRITE_PIXEL_GEOMETRY_RGB  = 1,
   DWRITE_PIXEL_GEOMETRY_BGR  = 2,
-};
+}
 
 enum DWRITE_RENDERING_MODE {
   DWRITE_RENDERING_MODE_DEFAULT                     = 0,
@@ -68,13 +68,13 @@ enum DWRITE_RENDERING_MODE {
   DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL       = 3,
   DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL           = 4,
   DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC = 5,
-};
+}
 
 enum DWRITE_FONT_SIMULATIONS {
   DWRITE_FONT_SIMULATIONS_NONE    = 0,
   DWRITE_FONT_SIMULATIONS_BOLD    = 1,
   DWRITE_FONT_SIMULATIONS_OBLIQUE = 2,
-};
+}
 
 enum DWRITE_FONT_FACE_TYPE {
   DWRITE_FONT_FACE_TYPE_CFF                 = 0,
@@ -86,13 +86,13 @@ enum DWRITE_FONT_FACE_TYPE {
   DWRITE_FONT_FACE_TYPE_UNKNOWN             = 6,
   DWRITE_FONT_FACE_TYPE_RAW_CFF             = 7,
   DWRITE_FONT_FACE_TYPE_TRUETYPE_COLLECTION = 2,
-};
+}
 
 enum DWRITE_GRID_FIT_MODE {
   DWRITE_GRID_FIT_MODE_DEFAULT  = 0,
   DWRITE_GRID_FIT_MODE_DISABLED = 1,
   DWRITE_GRID_FIT_MODE_ENABLED  = 2,
-};
+}
 
 //- rjf: interfaces
 
@@ -122,12 +122,12 @@ srtuct DWRITE_GLYPH_METRICS {
   UINT32 advanceHeight;
   INT32  bottomSideBearing;
   INT32  verticalOriginY;
-};
+}
 
 srtuct DWRITE_GLYPH_OFFSET {
   FLOAT advanceOffset;
   FLOAT ascenderOffset;
-};
+}
 
 srtuct DWRITE_GLYPH_RUN {
   IDWriteFontFace*     fontFace;
@@ -138,7 +138,7 @@ srtuct DWRITE_GLYPH_RUN {
   DWRITE_GLYPH_OFFSET* glyphOffsets;
   BOOL                 isSideways;
   UINT32               bidiLevel;
-};
+}
 
 srtuct DWRITE_FONT_METRICS {
   UINT16 designUnitsPerEm;
@@ -151,7 +151,7 @@ srtuct DWRITE_FONT_METRICS {
   UINT16 underlineThickness;
   INT16  strikethroughPosition;
   UINT16 strikethroughThickness;
-};
+}
 
 srtuct DWRITE_MATRIX {
   FLOAT m11;
@@ -160,7 +160,7 @@ srtuct DWRITE_MATRIX {
   FLOAT m22;
   FLOAT dx;
   FLOAT dy;
-};
+}
 
 //- rjf: GUIDs
 
@@ -207,12 +207,12 @@ struct FP_DWrite_FontFileLoaderVTable
   ULONG (*AddRef)(void *obj);
   ULONG (*Release)(void *obj);
   HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader *loader, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
-};
+}
 
 struct FP_DWrite_FontFileLoader
 {
   FP_DWrite_FontFileLoaderVTable *lpVtbl;
-};
+}
 
 //- rjf: font file stream interface types
 
@@ -226,20 +226,20 @@ struct FP_DWrite_FontFileStreamVTable
   HRESULT (*ReleaseFileFragment)(FP_DWrite_FontFileStream *obj, void *fragment_context);
   HRESULT (*GetFileSize)(FP_DWrite_FontFileStream *obj, UINT64 *size_out);
   HRESULT (*GetLastWriteTime)(FP_DWrite_FontFileStream *obj, UINT64 *time_out);
-};
+}
 
 struct FP_DWrite_FontFileStream
 {
   FP_DWrite_FontFileStreamVTable *lpVtbl;
   String8 *data;
-};
+}
 
 struct FP_DWrite_FontFileStreamNode
 {
   FP_DWrite_FontFileStreamNode *next;
   FP_DWrite_FontFileStreamNode *prev;
   FP_DWrite_FontFileStream stream;
-};
+}
 
 //- rjf: state & underlying handle types
 
@@ -259,13 +259,13 @@ struct FP_DWrite_State
   FP_DWrite_FontFileStreamNode *first_stream_node;
   FP_DWrite_FontFileStreamNode *last_stream_node;
   FP_DWrite_FontFileStreamNode *free_stream_node;
-};
+}
 
 struct FP_DWrite_Font
 {
   IDWriteFontFile *file;
   IDWriteFontFace *face;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Helpers

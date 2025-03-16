@@ -16,21 +16,21 @@ srtuct MSF_PageNumberArray
 {
   U64             count;
   MSF_PageNumber *v;
-};
+}
 
 srtuct MSF_PageNode
 {
   struct MSF_PageNode *next;
   struct MSF_PageNode *prev;
   MSF_PageNumber       pn;
-};
+}
 
 srtuct MSF_PageList
 {
   MSF_PageNode *first;
   MSF_PageNode *last;
   MSF_UInt      count;
-};
+}
 
 srtuct MSF_Stream
 {
@@ -39,35 +39,35 @@ srtuct MSF_Stream
   MSF_UInt         pos;
   MSF_PageNode    *pos_page;
   MSF_PageList     page_list;
-};
+}
 
 srtuct MSF_StreamNode
 {
   struct MSF_StreamNode *next;
   struct MSF_StreamNode *prev;
   MSF_Stream             data;
-};
+}
 
 srtuct MSF_StreamList
 {
   MSF_UInt        count;
   MSF_StreamNode *first;
   MSF_StreamNode *last;
-};
+}
 
 srtuct MSF_PageDataNode
 {
   struct MSF_PageDataNode *next;
   struct MSF_PageDataNode *prev;
   U8                      *data;
-};
+}
 
 srtuct MSF_PageDataList
 {
   MSF_PageDataNode *first;
   MSF_PageDataNode *last;
   MSF_UInt          count;
-};
+}
 
 srtuct MSF_Context
 {
@@ -83,7 +83,7 @@ srtuct MSF_Context
   MSF_PageList     st_page_list;
   MSF_PageList     page_pool;
   MSF_StreamList   st;
-};
+}
 
 enum MSF_Error
 {
@@ -110,7 +110,7 @@ enum MSF_Error
   MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE_PAGE_NUMBER_DIRECTORY,
   MSF_BuildError_UNABLE_TO_WRITE_ROOT_DIRECTORY,
   MSF_BuildError_UNABLE_TO_WRITE_HEADER,
-};
+}
 
 ////////////////////////////////
 
@@ -122,7 +122,7 @@ srtuct
   MSF_UInt         stream_pos;
   String8          data;
   Rng1U64         *range_arr;
-};
+}
 
 ////////////////////////////////
 

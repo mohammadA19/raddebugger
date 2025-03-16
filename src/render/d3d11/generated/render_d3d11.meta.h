@@ -14,7 +14,7 @@ R_D3D11_VShadKind_Mesh,
 R_D3D11_VShadKind_Geo3DComposite,
 R_D3D11_VShadKind_Finalize,
 R_D3D11_VShadKind_COUNT,
-};
+}
 
 enum R_D3D11_PShadKind
 {
@@ -24,7 +24,7 @@ R_D3D11_PShadKind_Mesh,
 R_D3D11_PShadKind_Geo3DComposite,
 R_D3D11_PShadKind_Finalize,
 R_D3D11_PShadKind_COUNT,
-};
+}
 
 enum R_D3D11_UniformTypeKind
 {
@@ -32,7 +32,7 @@ R_D3D11_UniformTypeKind_Rect,
 R_D3D11_UniformTypeKind_Blur,
 R_D3D11_UniformTypeKind_Mesh,
 R_D3D11_UniformTypeKind_COUNT,
-};
+}
 
 C_LINKAGE_BEGIN
 read_only static String8 r_d3d11_g_rect_shader_src =

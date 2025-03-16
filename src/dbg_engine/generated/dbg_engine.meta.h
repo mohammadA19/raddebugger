@@ -43,7 +43,7 @@ D_CmdKind_SetEntityColor,
 D_CmdKind_SetEntityName,
 D_CmdKind_Attach,
 D_CmdKind_COUNT,
-};
+}
 
 enum D_ViewRuleKind
 {
@@ -69,7 +69,7 @@ D_ViewRuleKind_Graph,
 D_ViewRuleKind_Bitmap,
 D_ViewRuleKind_Geo3D,
 D_ViewRuleKind_COUNT,
-};
+}
 
 static B32 DEV_simulate_lag = 0;
 static B32 DEV_draw_ui_text_pos = 0;
@@ -91,5 +91,5 @@ struct {B32 *value_ptr; String8 name;} DEV_toggle_table[] =
 {&DEV_cmd_context_tooltips, str8_lit_comp("cmd_context_tooltips")},
 {&DEV_scratch_mouse_draw, str8_lit_comp("scratch_mouse_draw")},
 {&DEV_updating_indicator, str8_lit_comp("updating_indicator")},
-};
+}
 #endif // DBG_ENGINE_META_H

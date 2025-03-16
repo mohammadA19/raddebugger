@@ -12,7 +12,7 @@ enum
   E_IRExtKind_Bytecode = RDI_EvalOp_COUNT,
   E_IRExtKind_SetSpace,
   E_IRExtKind_COUNT
-};
+}
 
 struct E_Op
 {
@@ -20,7 +20,7 @@ struct E_Op
   RDI_EvalOp opcode;
   E_Value value;
   String8 string;
-};
+}
 
 struct E_OpList
 {
@@ -28,7 +28,7 @@ struct E_OpList
   E_Op *last;
   U64 op_count;
   U64 encoded_size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: IR Tree Types
@@ -41,7 +41,7 @@ struct E_IRNode
   RDI_EvalOp op;
   String8 string;
   E_Value value;
-};
+}
 
 struct E_IRTreeAndType
 {
@@ -50,7 +50,7 @@ struct E_IRTreeAndType
   E_Mode mode;
   E_Space space;
   E_MsgList msgs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Parse Context
@@ -58,7 +58,7 @@ struct E_IRTreeAndType
 struct E_IRCtx
 {
   E_String2ExprMap *macro_map;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
