@@ -976,7 +976,7 @@ os_set_clipboard_text(StringView str)
     {
       uint8* copy_buffer = (uint8 *)GlobalLock(string_copy_handle);
       MemoryCopy(copy_buffer, str.Ptr, str.Length);
-      copy_buffer[str.Length] = 0;
+      copy_buffer.Ptr[str.Length] = 0;
       GlobalUnlock(string_copy_handle);
       SetClipboardData(CF_TEXT, string_copy_handle);
     }

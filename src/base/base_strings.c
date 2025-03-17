@@ -397,7 +397,7 @@ push_str8_cat(Arena* arena, StringView s1, StringView s2){
   str.Ptr = push_array_no_zero(arena, uint8, str.Length + 1);
   MemoryCopy(str.Ptr, s1.Ptr, s1.size);
   MemoryCopy(str.Ptr + s1.size, s2.Ptr, s2.size);
-  str[str.Length] = 0;
+  str.Ptr[str.Length] = 0;
   return(str);
 }
 
@@ -407,7 +407,7 @@ push_str8_copy(Arena* arena, StringView s){
   str.Length = s.size;
   str.Ptr = push_array_no_zero(arena, uint8, str.Length + 1);
   MemoryCopy(str.Ptr, s.Ptr, s.size);
-  str[str.Length] = 0;
+  str.Ptr[str.Length] = 0;
   return(str);
 }
 

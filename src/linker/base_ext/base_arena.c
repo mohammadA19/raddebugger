@@ -7,7 +7,7 @@ push_cstr(Arena* arena, StringView str)
   uint64 buffer_size = str.Length + 1;
   uint8* buffer = push_array_no_zero(arena, uint8, buffer_size);
   MemoryCopy(buffer, str.Ptr, str.Length);
-  buffer[str.Length] = 0;
+  buffer.Ptr[str.Length] = 0;
   StringView result = StringView(buffer, buffer_size);
   return result;
 }
