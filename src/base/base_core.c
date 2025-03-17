@@ -236,12 +236,12 @@ clz64(uint64 val)
 
 int32
 sign_from_side_S32(Side side){
-  return((side == Side_Min)?-1:1);
+  return((side == .Min)?-1:1);
 }
 
 float
 sign_from_side_F32(Side side){
-  return((side == Side_Min)?-1.f:1.f);
+  return((side == .Min)?-1.f:1.f);
 }
 
 ////////////////////////////////

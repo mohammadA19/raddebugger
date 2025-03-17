@@ -371,12 +371,17 @@ public enum Dimension
   W,
 }
 
-enum Side
+public enum Side
 {
-  Side_Invalid = -1,
-  Side_Min,
-  Side_Max,
-  Side_COUNT,
+  Invalid = -1,
+  Min,
+  Max,
+  COUNT,
+}
+
+extension Side
+{
+  public Self Flip() => (Side)(!(s));
 }
 #define side_flip(s) ((Side)(!(s)))
 
@@ -409,7 +414,7 @@ enum Dir2
   Dir2_COUNT
 }
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
-#define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
+#define side_from_dir2(d) (((d) < Dir2_Right) ? Side.Min : Side.Max)
 
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums

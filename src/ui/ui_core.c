@@ -139,8 +139,8 @@ ui_scanned_column_from_column(String8 string, int64 start_column, Side side)
     uint8 byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
-    if(((side == Side_Min) && (col == 1)) || 
-       ((side == Side_Max) && (col == string.size+1)) ||
+    if(((side == Side.Min) && (col == 1)) || 
+       ((side == Side.Max) && (col == string.size+1)) ||
        (found_non_space && !is_non_space) || 
        (found_text && !is_name))
     {
@@ -182,7 +182,7 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, 
     }break;
     case UI_EventDeltaUnit_Word:
     {
-      delta.x = (int32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
+      delta.x = (int32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side.Max : Side.Min) - cursor.column;
     }break;
     case UI_EventDeltaUnit_Line:
     case UI_EventDeltaUnit_Whole:

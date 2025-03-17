@@ -6910,8 +6910,8 @@ rd_window_frame(RD_Window* ws)
               // rjf: drop
               if(ui_key_match(site_box.key, ui_drop_hot_key()) && rd_drag_drop())
               {
-                Dir2 dir = (axis == Axis2_Y ? (side == Side_Min ? Dir2_Up : Dir2_Down) :
-                            axis == Axis2_X ? (side == Side_Min ? Dir2_Left : Dir2_Right) :
+                Dir2 dir = (axis == Axis2_Y ? (side == Side.Min ? Dir2_Up : Dir2_Down) :
+                            axis == Axis2_X ? (side == Side.Min ? Dir2_Left : Dir2_Right) :
                             Dir2_Invalid);
                 if(dir != Dir2_Invalid)
                 {
@@ -7151,7 +7151,7 @@ rd_window_frame(RD_Window* ws)
         Rng2F32 tab_bar_rect = r2f32p(panel_rect.x0, panel_rect.y0, panel_rect.x1, panel_rect.y0 + tab_bar_vheight);
         Rng2F32 content_rect = r2f32p(panel_rect.x0, panel_rect.y0+tab_bar_vheight, panel_rect.x1, panel_rect.y1);
         Rng2F32 filter_rect = {0};
-        if(panel.tab_side == Side_Max)
+        if(panel.tab_side == Side.Max)
         {
           tab_bar_rect.y0 = panel_rect.y1 - tab_bar_vheight;
           tab_bar_rect.y1 = panel_rect.y1;
@@ -7271,10 +7271,10 @@ rd_window_frame(RD_Window* ws)
                     ui_set_next_child_layout_axis(split_axis);
                     UI_Box* row_or_column = ui_build_box_from_key(0, ui_key_zero()); UI_Parent(row_or_column) UI_Padding(ui_px(padding, 1.f))
                     {
-                      if(split_side == Side_Min) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
+                      if(split_side == Side.Min) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
                       RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
                       ui_spacer(ui_px(padding, 1.f));
-                      if(split_side == Side_Max) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
+                      if(split_side == Side.Max) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
                       RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
                     }
                   }
@@ -7568,7 +7568,7 @@ rd_window_frame(RD_Window* ws)
           UI_CornerRadius(0)
           {
             UI_Rect(tab_bar_rect) tab_bar_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_ViewClampX|UI_BoxFlag_ViewScrollX|UI_BoxFlag_Clickable, "tab_bar_%p", panel);
-            if(panel.tab_side == Side_Max)
+            if(panel.tab_side == Side.Max)
             {
               tab_bar_box.view_off.y = tab_bar_box.view_off_target.y = (tab_bar_rheight - tab_bar_vheight);
             }
@@ -7585,10 +7585,10 @@ rd_window_frame(RD_Window* ws)
             
             // rjf: build tabs
             UI_PrefWidth(ui_em(18.f, 0.5f))
-              UI_CornerRadius00(panel.tab_side == Side_Min ? corner_radius : 0)
-              UI_CornerRadius01(panel.tab_side == Side_Min ? 0 : corner_radius)
-              UI_CornerRadius10(panel.tab_side == Side_Min ? corner_radius : 0)
-              UI_CornerRadius11(panel.tab_side == Side_Min ? 0 : corner_radius)
+              UI_CornerRadius00(panel.tab_side == Side.Min ? corner_radius : 0)
+              UI_CornerRadius01(panel.tab_side == Side.Min ? 0 : corner_radius)
+              UI_CornerRadius10(panel.tab_side == Side.Min ? corner_radius : 0)
+              UI_CornerRadius11(panel.tab_side == Side.Min ? 0 : corner_radius)
               for(RD_View* view = panel.first_tab_view;; view = view.order_next, view_idx += 1)
             {
               temp_end(scratch);
@@ -7636,7 +7636,7 @@ rd_window_frame(RD_Window* ws)
               // rjf: build tab container box
               UI_Parent(tab_column_box) UI_PrefHeight(ui_px(tab_bar_vheight, 1)) RD_Palette(view_is_selected ? RD_PaletteCode_Tab : RD_PaletteCode_TabInactive)
               {
-                if(panel.tab_side == Side_Max)
+                if(panel.tab_side == Side.Max)
                 {
                   ui_spacer(ui_px(tab_bar_rv_diff-1.f, 1.f));
                 }
@@ -7738,7 +7738,7 @@ rd_window_frame(RD_Window* ws)
               UI_PrefHeight(ui_px(tab_bar_vheight, 1.f))
               UI_Column
             {
-              if(panel.tab_side == Side_Max)
+              if(panel.tab_side == Side.Max)
               {
                 ui_spacer(ui_px(tab_bar_rv_diff-1.f, 1.f));
               }
@@ -7746,10 +7746,10 @@ rd_window_frame(RD_Window* ws)
               {
                 ui_spacer(ui_px(1.f, 1.f));
               }
-              UI_CornerRadius00(panel.tab_side == Side_Min ? corner_radius : 0)
-                UI_CornerRadius10(panel.tab_side == Side_Min ? corner_radius : 0)
-                UI_CornerRadius01(panel.tab_side == Side_Max ? corner_radius : 0)
-                UI_CornerRadius11(panel.tab_side == Side_Max ? corner_radius : 0)
+              UI_CornerRadius00(panel.tab_side == Side.Min ? corner_radius : 0)
+                UI_CornerRadius10(panel.tab_side == Side.Min ? corner_radius : 0)
+                UI_CornerRadius01(panel.tab_side == Side.Max ? corner_radius : 0)
+                UI_CornerRadius11(panel.tab_side == Side.Max ? corner_radius : 0)
                 RD_Font(RD_FontSlot_Icons)
                 UI_FontSize(ui_top_font_size())
                 UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
@@ -10676,7 +10676,7 @@ rd_cfg_strings_from_gfx(Arena* arena, String8 root_path, RD_CfgSrc source)
           // rjf: per-panel options
           struct { String8 key; B32 value; } options[] =
           {
-            {str8_lit_comp("tabs_on_bottom"),   p.tab_side == Side_Max},
+            {str8_lit_comp("tabs_on_bottom"),   p.tab_side == Side.Max},
           };
           B32 has_options = 0;
           for(uint64 op_idx = 0; op_idx < ArrayCount(options); op_idx += 1)
@@ -13148,7 +13148,7 @@ rd_frame()
                   {
                     if(md_node_is_nil(op.first) && str8_match(op.string, str8_lit("tabs_on_bottom"), 0))
                     {
-                      panel.tab_side = Side_Max;
+                      panel.tab_side = Side.Max;
                     }
                   }
                   
@@ -13671,7 +13671,7 @@ rd_frame()
             if(!rd_panel_is_nil(parent) && parent.split_axis == split_axis)
             {
               RD_Panel* next = rd_panel_alloc(ws);
-              rd_panel_insert(parent, split_side == Side_Max ? panel : panel.prev, next);
+              rd_panel_insert(parent, split_side == Side.Max ? panel : panel.prev, next);
               next.pct_of_parent = 1.f/parent.child_count;
               for(RD_Panel* child = parent.first; !rd_panel_is_nil(child); child = child.next)
               {
@@ -13701,7 +13701,7 @@ rd_frame()
               RD_Panel* left = panel;
               RD_Panel* right = rd_panel_alloc(ws);
               new_panel = right;
-              if(split_side == Side_Min)
+              if(split_side == Side.Min)
               {
                 Swap(RD_Panel *, left, right);
               }
@@ -14153,12 +14153,12 @@ rd_frame()
           case RD_CmdKind_TabBarTop:
           {
             RD_Panel* panel = rd_panel_from_handle(rd_regs().panel);
-            panel.tab_side = Side_Min;
+            panel.tab_side = Side.Min;
           }break;
           case RD_CmdKind_TabBarBottom:
           {
             RD_Panel* panel = rd_panel_from_handle(rd_regs().panel);
-            panel.tab_side = Side_Max;
+            panel.tab_side = Side.Max;
           }break;
           
           //- rjf: files
@@ -14580,7 +14580,7 @@ rd_frame()
                 rd_panel_insert_tab_view(root_1_1, root_1_1.last_tab_view, scheduler);
                 root_1_0.selected_tab_view = rd_handle_from_view(targets);
                 root_1_1.selected_tab_view = rd_handle_from_view(scheduler);
-                root_1_1.tab_side = Side_Max;
+                root_1_1.tab_side = Side.Max;
                 
                 // rjf: root_0_0 split
                 root_0_0.split_axis = Axis2_X;
@@ -14623,11 +14623,11 @@ rd_frame()
                 rd_panel_insert_tab_view(root_0_1_0, root_0_1_0.last_tab_view, types);
                 rd_panel_insert_tab_view(root_0_1_0, root_0_1_0.last_tab_view, procs);
                 root_0_1_0.selected_tab_view = rd_handle_from_view(watch);
-                root_0_1_0.tab_side = Side_Max;
+                root_0_1_0.tab_side = Side.Max;
                 rd_panel_insert_tab_view(root_0_1_1, root_0_1_1.last_tab_view, callstack);
                 rd_panel_insert_tab_view(root_0_1_1, root_0_1_1.last_tab_view, modules);
                 root_0_1_1.selected_tab_view = rd_handle_from_view(callstack);
-                root_0_1_1.tab_side = Side_Max;
+                root_0_1_1.tab_side = Side.Max;
                 
                 // rjf: fill main panel with getting started, OR all collected code views
                 if(!rd_view_is_nil(getting_started))

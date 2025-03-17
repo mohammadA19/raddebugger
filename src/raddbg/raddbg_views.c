@@ -145,7 +145,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
   //- rjf: get active search query
   //
   String8 search_query = {0};
-  Side search_query_side = Side_Invalid;
+  Side search_query_side = Side.Invalid;
   B32 search_query_is_active = 0;
   {
     RD_Window* window = rd_window_from_handle(rd_regs().window);
@@ -155,7 +155,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     {
       search_query = str8(window.query_view_stack_top.query_buffer, window.query_view_stack_top.query_string_size);
       search_query_is_active = 1;
-      search_query_side = (query_cmd_kind == RD_CmdKind_FindTextForward) ? Side_Max : Side_Min;
+      search_query_side = (query_cmd_kind == RD_CmdKind_FindTextForward) ? Side.Max : Side.Min;
     }
   }
   
@@ -4179,7 +4179,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     }
     
     //- rjf: apply reverse
-    if(fs.sort_kind != RD_FileSortKind_Null && fs.sort_side == Side_Max)
+    if(fs.sort_kind != RD_FileSortKind_Null && fs.sort_side == Side.Max)
     {
       for(uint64 idx = 0; idx < new_file_count/2; idx += 1)
       {
@@ -4279,20 +4279,20 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         UI_TableCell UI_FlagsAdd(sorting ? 0 : UI_BoxFlag_DrawTextWeak)
         {
           UI_Signal sig = ui_sort_header(sorting,
-                                         fs.cached_files_sort_side == Side_Min,
+                                         fs.cached_files_sort_side == Side.Min,
                                          kinds[idx].string);
           if(ui_clicked(sig))
           {
             if(fs.sort_kind != kinds[idx].kind)
             {
               fs.sort_kind = kinds[idx].kind;
-              fs.sort_side = Side_Max;
+              fs.sort_side = Side.Max;
             }
-            else if(fs.sort_kind == kinds[idx].kind && fs.sort_side == Side_Max)
+            else if(fs.sort_kind == kinds[idx].kind && fs.sort_side == Side.Max)
             {
-              fs.sort_side = Side_Min;
+              fs.sort_side = Side.Min;
             }
-            else if(fs.sort_kind == kinds[idx].kind && fs.sort_side == Side_Min)
+            else if(fs.sort_kind == kinds[idx].kind && fs.sort_side == Side.Min)
             {
               fs.sort_kind = RD_FileSortKind_Null;
             }
