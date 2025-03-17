@@ -11,21 +11,6 @@
 #include "third_party/stb/stb_sprintf.h"
 
 ////////////////////////////////
-//~ rjf: String Types
-
-struct Span<char16>
-{
-  uint16* str;
-  uint64 size;
-}
-
-struct Span<char32>
-{
-  uint32* str;
-  uint64 size;
-}
-
-////////////////////////////////
 //~ rjf: String List & Array Types
 
 struct String8Node
