@@ -19,7 +19,7 @@ struct Span<char16>
   uint64 size;
 }
 
-struct String32
+struct Span<char32>
 {
   uint32* str;
   uint64 size;
@@ -152,12 +152,10 @@ uint64 cstring32_length(uint32* c);
 
 StringView  str8_range(uint8* first, uint8* one_past_last);
 Span<char16> str16_range(uint16* first, uint16* one_past_last);
-String32 str32(uint32* str, uint64 size);
-String32 str32_range(uint32* first, uint32* one_past_last);
-String32 str32_zero();
+Span<char32> str32_range(uint32* first, uint32* one_past_last);
 StringView  str8_cstring(char* c);
 Span<char16> str16_cstring(uint16* c);
-String32 str32_cstring(uint32* c);
+Span<char32> str32_cstring(uint32* c);
 StringView  str8_cstring_capped(void* cstr, void* cap);
 
 ////////////////////////////////
@@ -273,8 +271,8 @@ uint32 utf8_from_utf32_single(uint8* buffer, uint32 character);
 
 StringView str8_from_16(Arena* arena, Span<char16> in);
 Span<char16> str16_from_8(Arena* arena, StringView in);
-StringView str8_from_32(Arena* arena, String32 in);
-String32 str32_from_8(Arena* arena, StringView in);
+StringView str8_from_32(Arena* arena, Span<char32> in);
+Span<char32> str32_from_8(Arena* arena, StringView in);
 
 ////////////////////////////////
 //~ rjf: Basic Types & Space Enum . String Conversions

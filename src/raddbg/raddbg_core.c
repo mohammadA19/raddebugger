@@ -11895,7 +11895,7 @@ rd_frame()
       //- rjf: try text events
       if(!take && event.kind == OS_EventKind_Text)
       {
-        String32 insertion32 = str32(&event.character, 1);
+        Span<char32> insertion32 = .(&event.character, 1);
         StringView insertion8 = str8_from_32(scratch.arena, insertion32);
         rd_cmd(RD_CmdKind_InsertText, .string = insertion8);
         rd_request_frame();
@@ -15856,7 +15856,7 @@ rd_frame()
               ui_event.kind         = kind;
               ui_event.key          = os_event.key;
               ui_event.modifiers    = os_event.modifiers;
-              ui_event.string       = os_event.character ? str8_from_32(ui_build_arena(), str32(&os_event.character, 1)) : StringView();
+              ui_event.string       = os_event.character ? str8_from_32(ui_build_arena(), Span<char32>(&os_event.character, 1)) : StringView();
               ui_event.paths        = str8_list_copy(ui_build_arena(), &os_event.strings);
               ui_event.pos          = os_event.pos;
               ui_event.delta_2f32   = os_event.delta;

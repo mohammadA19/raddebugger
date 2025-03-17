@@ -152,21 +152,9 @@ str16_range(uint16* first, uint16* one_past_last){
   return(result);
 }
 
-String32
-str32(uint32* str, uint64 size){
-  String32 result = {str, size};
-  return(result);
-}
-
-String32
+Span<char32>
 str32_range(uint32* first, uint32* one_past_last){
-  String32 result = {first, (uint64)(one_past_last - first)};
-  return(result);
-}
-
-String32
-str32_zero(){
-  String32 result = {0};
+  Span<char32> result = {first, (uint64)(one_past_last - first)};
   return(result);
 }
 
@@ -182,9 +170,9 @@ str16_cstring(uint16* c){
   return(result);
 }
 
-String32
+Span<char32>
 str32_cstring(uint32* c){
-  String32 result = {(uint32*)c, cstring32_length((uint32*)c)};
+  Span<char32> result = {(uint32*)c, cstring32_length((uint32*)c)};
   return(result);
 }
 
@@ -1544,7 +1532,7 @@ str16_from_8(Arena* arena, StringView in)
 }
 
 StringView
-str8_from_32(Arena* arena, String32 in)
+str8_from_32(Arena* arena, Span<char32> in)
 {
   StringView result = StringView();
   if(in.size)
@@ -1565,10 +1553,10 @@ str8_from_32(Arena* arena, String32 in)
   return result;
 }
 
-String32
+Span<char32>
 str32_from_8(Arena* arena, StringView in)
 {
-  String32 result = str32_zero(); 
+  Span<char32> result = default; 
   if(in.size)
   {
     uint64 cap = in.size;
@@ -1585,7 +1573,7 @@ str32_from_8(Arena* arena, StringView in)
     }
     str[size] = 0;
     arena_pop(arena, (cap - size)*4);
-    result = str32(str, size);
+    result = .(str, size);
   }
   return result;
 }

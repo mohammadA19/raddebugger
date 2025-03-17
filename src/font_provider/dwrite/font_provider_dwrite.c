@@ -397,7 +397,7 @@ fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags,
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   HRESULT error = 0;
-  String32 string32 = str32_from_8(scratch.arena, string);
+  Span<char32> string32 = str32_from_8(scratch.arena, string);
   FP_DWrite_Font font = fp_dwrite_font_from_handle(font_handle);
   COLORREF bg_color = RGB(0,   0,   0);
   COLORREF fg_color = RGB(255, 255, 255);

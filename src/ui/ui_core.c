@@ -638,7 +638,7 @@ ui_text(uint32 character)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
-  StringView character_text = str8_from_32(scratch.arena, str32(&character, 1));
+  StringView character_text = str8_from_32(scratch.arena, Span<char32>(&character, 1));
   for(UI_Event* evt = 0; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind_Text && str8_match(character_text, evt.string, 0))
@@ -2429,7 +2429,7 @@ ui_box_equip_display_string(UI_Box* box, StringView string)
   {
     Temp scratch = scratch_begin(0, 0);
     StringView display_string = ui_box_display_string(box);
-    String32 fpcp32 = str32(&box.fastpath_codepoint, 1);
+    Span<char32> fpcp32 = .(&box.fastpath_codepoint, 1);
     StringView fpcp = str8_from_32(scratch.arena, fpcp32);
     uint64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
@@ -2721,7 +2721,7 @@ ui_signal_from_box(UI_Box* box)
       if(ancestor_is_focused)
       {
         Temp scratch = scratch_begin(0, 0);
-        String32 insertion32 = str32_from_8(scratch.arena, evt.string);
+        Span<char32> insertion32 = str32_from_8(scratch.arena, evt.string);
         if(insertion32.size == 1 && insertion32.str[0] == box.fastpath_codepoint)
         {
           taken = 1;
