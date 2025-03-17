@@ -198,8 +198,8 @@ typedef LNK_CHUNK_VISITOR_SIG(LNK_ChunkVisitorSig);
 void lnk_visit_chunks(uint64 sect_id, LNK_Chunk* root, LNK_ChunkVisitorSig* cb, void* ud);
 
 LNK_ChunkNode * lnk_chunk_ptr_list_reserve(Arena* arena, LNK_ChunkList* list, uint64 count);
-String8Array    lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list);
-String8Array *  lnk_data_arr_from_chunk_ptr_list_arr(Arena* arena, LNK_ChunkList* list_arr, uint64 count);
+Span<StringView>    lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list);
+Span<StringView> *  lnk_data_arr_from_chunk_ptr_list_arr(Arena* arena, LNK_ChunkList* list_arr, uint64 count);
 
 #if LNK_DEBUG_CHUNKS
 #define lnk_chunk_set_debugf(a, c, f, ...) do { (c).debug = push_str8f((a), f, __VA_ARGS__); } while(0)

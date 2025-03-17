@@ -48,12 +48,6 @@ struct String8List
   uint64 total_size;
 }
 
-struct String8Array
-{
-  StringView* v;
-  uint64 count;
-}
-
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
 
@@ -262,8 +256,8 @@ void         str8_list_from_flags(Arena* arena, String8List* list, uint32 flags,
 ////////////////////////////////
 //~ rjf; String Arrays
 
-String8Array str8_array_from_list(Arena* arena, String8List* list);
-String8Array str8_array_reserve(Arena* arena, uint64 count);
+Span<StringView> str8_array_from_list(Arena* arena, String8List* list);
+Span<StringView> str8_array_reserve(Arena* arena, uint64 count);
 
 ////////////////////////////////
 //~ rjf: String Path Helpers

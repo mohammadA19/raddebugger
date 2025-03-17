@@ -1226,7 +1226,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, StringView cmd_
   case LNK_CmdSwitch_Manifest: {
     if (value_strings.node_count == 1) {
       String8List  param_list = str8_split_by_string_chars(scratch.arena, value_strings.first.string, (","), 0);
-      String8Array param_arr  = str8_array_from_list(scratch.arena, &param_list);
+      Span<StringView> param_arr  = str8_array_from_list(scratch.arena, &param_list);
       if (param_arr.count > 0) {
         if (str8_match_lit("embed", param_arr.v[0], StringMatchFlag_CaseInsensitive)) {
           config.manifest_opt = LNK_ManifestOpt_Embed;
@@ -1236,7 +1236,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, StringView cmd_
             // parse resource id
             if (str8_match_lit("id=", param_arr.v[1], StringMatchFlag_RightSideSloppy|StringMatchFlag_CaseInsensitive)) {
               String8List  res_id_list = str8_split_by_string_chars(scratch.arena, param_arr.v[1], ("="), 0);
-              String8Array res_id_arr  = str8_array_from_list(scratch.arena, &res_id_list);
+              Span<StringView> res_id_arr  = str8_array_from_list(scratch.arena, &res_id_list);
               if (res_id_arr.count == 2) {
                 uint64 resource_id;
                 if (try_u64_from_str8_c_rules(res_id_arr.v[1], &resource_id)) {
@@ -1289,7 +1289,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, StringView cmd_
     if (value_strings.node_count == 1) {
       StringView uac = lnk_error_check_and_strip_quotes(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, value_strings.first.string);
       String8List  param_list = str8_split_by_string_chars(scratch.arena, uac, (" "), 0);
-      String8Array param_arr  = str8_array_from_list(scratch.arena, &param_list);
+      Span<StringView> param_arr  = str8_array_from_list(scratch.arena, &param_list);
       if (param_arr.count > 0) {
         if (str8_match_lit("level=", param_arr.v[0], StringMatchFlag_RightSideSloppy|StringMatchFlag_CaseInsensitive)) {
           StringView level_param = param_arr.v[0];

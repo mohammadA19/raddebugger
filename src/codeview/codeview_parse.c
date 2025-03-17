@@ -985,10 +985,10 @@ cv_get_inlinee_type_index_offsets(Arena* arena, StringView raw_data)
   return list;
 }
 
-String8Array
+Span<StringView>
 cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, StringView data)
 {
-  String8Array result;
+  Span<StringView> result;
   if(ti_list.count > 0)
   {
     result.count = ti_list.count + 1;

@@ -299,7 +299,7 @@ struct DW_LineVMHeader
   uint8                  opcode_base;
   uint64                 num_opcode_lens;
   uint8*                 opcode_lens;
-  String8Array        dir_table;
+  Span<StringView>        dir_table;
   DW_LineVMFileArray  file_table;
 }
 

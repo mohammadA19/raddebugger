@@ -120,8 +120,8 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   task.data_arr.v[task_id] = StringView(buffer, read_size);
 }
 
-String8Array
-lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array path_arr)
+Span<StringView>
+lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, Span<StringView> path_arr)
 {
   Temp scratch = scratch_begin(&arena,1);
 
@@ -148,7 +148,7 @@ lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array
   // read files and close handles
   tp_for_parallel(tp, 0, path_arr.count, lnk_data_from_file_path_task, &reader);
   
-  String8Array result = {0};
+  Span<StringView> result = {0};
   result.count        = path_arr.count;
   result.v            = reader.data_arr.v;
 

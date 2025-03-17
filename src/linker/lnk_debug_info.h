@@ -131,19 +131,19 @@ struct
 struct
 {
   LNK_Obj**     obj_arr;
-  String8Array* data_arr_arr;
+  Span<StringView>* data_arr_arr;
 }
 
 struct
 {
   LNK_Obj**     obj_arr;
-  String8Array* data_arr_arr;
+  Span<StringView>* data_arr_arr;
   CV_DebugT*    debug_t_arr;
 }
 
 struct
 {
-  String8Array   data_arr;
+  Span<StringView>   data_arr;
   MSF_Parsed**   msf_parse_arr;
 }
 

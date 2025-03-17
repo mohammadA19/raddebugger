@@ -1061,7 +1061,7 @@ cv_dedup_symbol_ptr_array(TP_Context* tp, CV_SymbolPtrArray* symbols)
 //~ .debug$T helpers
 
 CV_DebugT
-cv_debug_t_from_data_arr(Arena* arena, String8Array data_arr, uint64 align)
+cv_debug_t_from_data_arr(Arena* arena, Span<StringView> data_arr, uint64 align)
 {
   ProfBegin("Upfront parse");
   uint64 max_leaf_count = 0;
@@ -1103,7 +1103,7 @@ cv_debug_t_from_data_arr(Arena* arena, String8Array data_arr, uint64 align)
 CV_DebugT
 cv_debug_t_from_data(Arena* arena, StringView data, uint64 align)
 {
-  String8Array arr = {0};
+  Span<StringView> arr = {0};
   arr.count        = 1;
   arr.v            = &data;
   return cv_debug_t_from_data_arr(arena, arr, align);

@@ -190,7 +190,7 @@ THREAD_POOL_TASK_FUNC(lnk_lib_initer)
 }
 
 LNK_LibNodeArray
-lnk_lib_list_push_parallel(TP_Context* tp, TP_Arena* arena, LNK_LibList* list, String8Array data_arr, String8Array path_arr)
+lnk_lib_list_push_parallel(TP_Context* tp, TP_Arena* arena, LNK_LibList* list, Span<StringView> data_arr, Span<StringView> path_arr)
 {
   Assert(data_arr.count == path_arr.count);
   uint64 lib_count = data_arr.count;
@@ -218,11 +218,11 @@ lnk_lib_list_push(Arena* arena, LNK_LibList* list, StringView data, StringView p
   pool_arena.count    = 1;
   pool_arena.v        = &arena;
   
-  String8Array data_arr = {0};
+  Span<StringView> data_arr = {0};
   data_arr.count        = 1;
   data_arr.v            = &data;
   
-  String8Array path_arr = {0};
+  Span<StringView> path_arr = {0};
   path_arr.count        = 1;
   path_arr.v            = &path;
   

@@ -4,8 +4,8 @@
 
 struct
 {
-  String8Array path_arr;
-  String8Array data_arr;
+  Span<StringView> path_arr;
+  Span<StringView> data_arr;
   OS_Handle*   handle_arr;
   uint64*         size_arr;
   uint64*         off_arr;
@@ -25,7 +25,7 @@ shared_function uint64_t lnk_write_file(void* raw_handle, uint64_t offset, void*
 ////////////////////////////////
 
 StringView      lnk_read_data_from_file_path(Arena* arena, StringView path);
-String8Array lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array path_arr);
+Span<StringView> lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, Span<StringView> path_arr);
 
 void lnk_write_data_list_to_file_path(StringView path, String8List list);
 void lnk_write_data_to_file_path(StringView path, StringView data);

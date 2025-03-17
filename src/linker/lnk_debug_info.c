@@ -59,7 +59,7 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
   uint64                         obj_idx = task_id;
   LNK_CheckDebugTSigTaskData* task    = raw_task;
 
-  String8Array data_arr = task.data_arr_arr[obj_idx];
+  Span<StringView> data_arr = task.data_arr_arr[obj_idx];
   LNK_Obj* obj = task.obj_arr[obj_idx];
 
   for (StringView* data_ptr = &data_arr.v[0], *data_opl = data_arr.v + data_arr.count;
@@ -106,7 +106,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_t_task)
   ProfBeginFunction();
   uint64                      obj_idx  = task_id;
   LNK_ParseDebugTTaskData* task     = raw_task;
-  String8Array             data_arr = task.data_arr_arr[obj_idx];
+  Span<StringView>             data_arr = task.data_arr_arr[obj_idx];
   CV_DebugT*               debug_t  = &task.debug_t_arr[obj_idx];
   *debug_t = cv_debug_t_from_data_arr(arena, data_arr, CV_LeafAlign);
   ProfEnd();
@@ -118,7 +118,7 @@ lnk_parse_debug_t_sections(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LN
   ProfBeginFunction();
   
   // list . array
-  String8Array* data_arr_arr = lnk_data_arr_from_chunk_ptr_list_arr(arena.v[0], debug_t_list_arr, obj_count);
+  Span<StringView>* data_arr_arr = lnk_data_arr_from_chunk_ptr_list_arr(arena.v[0], debug_t_list_arr, obj_count);
 
   // validate signatures
   LNK_CheckDebugTSigTaskData check_sig;
@@ -285,7 +285,7 @@ THREAD_POOL_TASK_FUNC(lnk_msf_parsed_from_data_task)
 }
 
 MSF_Parsed **
-lnk_msf_parsed_from_data_parallel(TP_Arena* arena, TP_Context* tp, String8Array data_arr)
+lnk_msf_parsed_from_data_parallel(TP_Arena* arena, TP_Context* tp, Span<StringView> data_arr)
 {
   ProfBeginFunction();
   LNK_MsfParsedFromDataTask task = {0};
@@ -552,7 +552,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
   CV_DebugT* merged_debug_t_p_arr = lnk_merge_debug_t_and_debug_p(tp_arena.v[0], internal_count, internal_debug_t_arr, internal_debug_p_arr);
 
   ProfBegin("Analyze & Read External Type Server Files");
-  String8Array ts_path_arr;
+  Span<StringView> ts_path_arr;
   Rng1U64**    external_ti_ranges;
   CV_DebugT**  external_leaves;
   uint64*         obj_to_ts_idx_arr = push_array_no_zero(tp_arena.v[0], uint64, external_count);
@@ -685,7 +685,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
     // read type servers from disk in parallel
     {
       ProfBegin("Read External Type Servers");
-      String8Array msf_data_arr = lnk_read_data_from_file_path_parallel(tp, scratch.arena, ts_path_arr);
+      Span<StringView> msf_data_arr = lnk_read_data_from_file_path_parallel(tp, scratch.arena, ts_path_arr);
       ProfEnd();
 
       MSF_Parsed** msf_parse_arr = lnk_msf_parsed_from_data_parallel(tp_arena, tp, msf_data_arr);
@@ -1073,8 +1073,8 @@ lnk_match_leaf_ref(LNK_CodeViewInput* input, LNK_LeafHashes* hashes, LNK_LeafRef
     {
       Temp scratch = scratch_begin(0,0);
       CV_TypeIndexInfoList ti_info_list   = cv_get_leaf_type_index_offsets(scratch.arena, a_leaf.kind, a_leaf.data);
-      String8Array         a_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, a_leaf.data);
-      String8Array         b_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, b_leaf.data);
+      Span<StringView>         a_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, a_leaf.data);
+      Span<StringView>         b_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, b_leaf.data);
       for (uint64 i = 0; i < a_raw_data_arr.count; ++i) {
         StringView a_chunk = a_raw_data_arr.v[i];
         StringView b_chunk = b_raw_data_arr.v[i];
@@ -1111,8 +1111,8 @@ lnk_match_leaf_ref_deep(Arena* arena, LNK_CodeViewInput* input, LNK_LeafHashes* 
       Temp temp = temp_begin(arena);
 
       CV_TypeIndexInfoList ti_info_list   = cv_get_leaf_type_index_offsets(temp.arena, a_leaf.kind, a_leaf.data);
-      String8Array         a_raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, a_leaf.data);
-      String8Array         b_raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, b_leaf.data);
+      Span<StringView>         a_raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, a_leaf.data);
+      Span<StringView>         b_raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, b_leaf.data);
 
       are_equal = 1;
 
@@ -1189,7 +1189,7 @@ lnk_hash_cv_leaf(Arena*               arena,
   // hash bytes around indices
   {
     Temp temp = temp_begin(arena);
-    String8Array raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, leaf.data);
+    Span<StringView> raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, leaf.data);
     for (uint64 i = 0; i < raw_data_arr.count; ++i) {
       blake3_hasher_update(&hasher, raw_data_arr.v[i].str, raw_data_arr.v[i].size);
     }
@@ -3313,8 +3313,8 @@ lnk_build_pdb(TP_Context*               tp,
 
   ProfBegin("Build NatVis");
   {
-    String8Array natvis_file_path_arr = str8_array_from_list(scratch.arena, &natvis_list);
-    String8Array natvis_file_data_arr = lnk_read_data_from_file_path_parallel(tp, scratch.arena, natvis_file_path_arr);
+    Span<StringView> natvis_file_path_arr = str8_array_from_list(scratch.arena, &natvis_list);
+    Span<StringView> natvis_file_data_arr = lnk_read_data_from_file_path_parallel(tp, scratch.arena, natvis_file_path_arr);
 
     for (uint64 i = 0; i < natvis_file_data_arr.count; ++i) {
       StringView natvis_file_path = natvis_file_path_arr.v[i];

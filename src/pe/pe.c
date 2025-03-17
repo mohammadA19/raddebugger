@@ -959,12 +959,12 @@ pe_tls_rng_from_bin_base_vaddr(StringView data, PE_BinInfo* bin, uint64 base_vad
   return result;
 }
 
-String8Array
+Span<StringView>
 pe_get_entry_point_names(COFF_MachineType            machine,
                          PE_WindowsSubsystem         subsystem,
                          PE_ImageFileCharacteristics file_characteristics)
 {
-  String8Array entry_point_names = {0};
+  Span<StringView> entry_point_names = {0};
   
   if (file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) {
     if (machine == COFF_Machine_X86) {

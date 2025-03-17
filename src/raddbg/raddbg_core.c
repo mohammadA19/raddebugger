@@ -680,7 +680,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
       if(node != 0 && node.paths.node_count > 1)
       {
         // rjf: get all colliding paths
-        String8Array collisions = str8_array_from_list(scratch.arena, &node.paths);
+        Span<StringView> collisions = str8_array_from_list(scratch.arena, &node.paths);
         
         // rjf: get all reversed path parts for each collision
         String8List* collision_parts_reversed = push_array(scratch.arena, String8List, collisions.count);
@@ -8834,7 +8834,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(locals)
       str8_list_push(scratch.arena, &exprs_filtered, local_expr_string);
     }
   }
-  String8Array* accel = push_array(arena, String8Array, 1);
+  Span<StringView>* accel = push_array(arena, Span<StringView>, 1);
   *accel = str8_array_from_list(arena, &exprs_filtered);
   EV_ExpandInfo info = {accel, accel.count};
   scratch_end(scratch);
@@ -8843,7 +8843,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(locals)
 
 EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(locals)
 {
-  String8Array* accel = (String8Array *)user_data;
+  Span<StringView>* accel = (Span<StringView> *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
     uint64 needed_row_count = dim_1u64(idx_range);
@@ -8889,7 +8889,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(registers)
       str8_list_push(scratch.arena, &exprs_list, alias_strings[idx]);
     }
   }
-  String8Array* accel = push_array(arena, String8Array, 1);
+  Span<StringView>* accel = push_array(arena, Span<StringView>, 1);
   *accel = str8_array_from_list(arena, &exprs_list);
   EV_ExpandInfo info = {accel, accel.count};
   scratch_end(scratch);
@@ -8898,7 +8898,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(registers)
 
 EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(registers)
 {
-  String8Array* accel = (String8Array *)user_data;
+  Span<StringView>* accel = (Span<StringView> *)user_data;
   EV_ExpandRangeInfo result = {0};
   {
     uint64 needed_row_count = dim_1u64(idx_range);

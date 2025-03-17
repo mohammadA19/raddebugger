@@ -766,10 +766,10 @@ lnk_chunk_ptr_list_reserve(Arena* arena, LNK_ChunkList* list, uint64 count)
   return arr;
 }
 
-String8Array
+Span<StringView>
 lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list)
 {
-  String8Array arr = {0};
+  Span<StringView> arr = {0};
   arr.v            = push_array(arena, StringView, list.count);
   for (LNK_ChunkNode* n = list.first; n != 0; n = n.next) {
     LNK_ChunkPtr c = n.data;
@@ -780,10 +780,10 @@ lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list)
   return arr;
 }
 
-String8Array *
+Span<StringView> *
 lnk_data_arr_from_chunk_ptr_list_arr(Arena* arena, LNK_ChunkList* list_arr, uint64 count)
 {
-  String8Array* result = push_array(arena, String8Array, count);
+  Span<StringView>* result = push_array(arena, Span<StringView>, count);
   for (uint64 i = 0; i < count; i += 1) {
     result[i] = lnk_data_arr_from_chunk_ptr_list(arena, list_arr[i]);
   }

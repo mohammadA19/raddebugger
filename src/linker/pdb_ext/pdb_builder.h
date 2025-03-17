@@ -435,7 +435,7 @@ B32                     pdb_hash_table_is_present(PDB_HashTable* ht, uint32 k);
 B32                     pdb_hash_table_is_deleted(PDB_HashTable* ht, uint32 k);
 uint32                     pdb_hash_table_hash(StringView key);
 void                    pdb_hash_table_grow(PDB_HashTable* ht, uint64 new_capacity);
-void                    pdb_hash_table_get_present_keys_and_values(Arena* arena, PDB_HashTable* ht, String8Array* keys_out, String8Array* values_out);
+void                    pdb_hash_table_get_present_keys_and_values(Arena* arena, PDB_HashTable* ht, Span<StringView>* keys_out, Span<StringView>* values_out);
 
 ////////////////////////////////
 

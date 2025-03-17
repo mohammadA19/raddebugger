@@ -496,7 +496,7 @@ struct ELF_SymArray{
 static ELF_Parsed* elf_parsed_from_data(Arena* arena, StringView elf_data);
 
 static ELF_SectionArray elf_section_array_from_elf(ELF_Parsed* elf);
-static String8Array     elf_section_name_array_from_elf(ELF_Parsed* elf);
+static Span<StringView>     elf_section_name_array_from_elf(ELF_Parsed* elf);
 static ELF_SegmentArray elf_segment_array_from_elf(ELF_Parsed* elf);
 
 static StringView elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset);

@@ -383,9 +383,9 @@ elf_section_array_from_elf(ELF_Parsed* elf){
   return(result);
 }
 
-static String8Array
+static Span<StringView>
 elf_section_name_array_from_elf(ELF_Parsed* elf){
-  String8Array result = {0};
+  Span<StringView> result = {0};
   if (elf != 0){
     result.v = elf.section_names;
     result.count = elf.section_count;

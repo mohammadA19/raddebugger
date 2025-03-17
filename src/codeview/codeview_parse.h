@@ -259,7 +259,7 @@ CV_TypeIndexSource cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind);
 CV_TypeIndexInfoList cv_get_symbol_type_index_offsets(Arena* arena, CV_SymKind kind, StringView data);
 CV_TypeIndexInfoList cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, StringView data);
 CV_TypeIndexInfoList cv_get_inlinee_type_index_offsets(Arena* arena, StringView raw_data);
-String8Array         cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, StringView data);
+Span<StringView>         cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, StringView data);
 
 uint64     cv_name_offset_from_symbol(CV_SymKind kind, StringView data);
 StringView cv_name_from_symbol(CV_SymKind kind, StringView data);

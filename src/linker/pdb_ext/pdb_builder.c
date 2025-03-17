@@ -158,8 +158,8 @@ pdb_data_from_hash_table(Arena* arena,
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
 
-  String8Array key_arr   = {0};
-  String8Array value_arr = {0};
+  Span<StringView> key_arr   = {0};
+  Span<StringView> value_arr = {0};
   pdb_hash_table_get_present_keys_and_values(scratch.arena, ht, &key_arr, &value_arr);
 
   String8List local_data_srl = {0};
@@ -329,7 +329,7 @@ pdb_hash_table_is_deleted(PDB_HashTable* ht, uint32 k)
 }
 
 void
-pdb_hash_table_get_present_keys_and_values(Arena* arena, PDB_HashTable* ht, String8Array* keys_out, String8Array* values_out)
+pdb_hash_table_get_present_keys_and_values(Arena* arena, PDB_HashTable* ht, Span<StringView>* keys_out, Span<StringView>* values_out)
 {
   *keys_out   = str8_array_reserve(arena, ht.count);
   *values_out = str8_array_reserve(arena, ht.count);
@@ -1066,8 +1066,8 @@ pdb_type_server_open_v80(MSF_Context* msf, MSF_StreamNumber sn, PDB_StringTable*
   }
 
   // grab keys and values
-  String8Array key_arr   = {0};
-  String8Array value_arr = {0};
+  Span<StringView> key_arr   = {0};
+  Span<StringView> value_arr = {0};
   pdb_hash_table_get_present_keys_and_values(scratch.arena, &ts.hash_adj, &key_arr, &value_arr);
   
   // adjust type buckets

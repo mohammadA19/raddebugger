@@ -113,7 +113,7 @@ void            lnk_lib_symbol_array_sort(LNK_LibSymbol* arr, uint64 count);
 
 LNK_Lib lnk_lib_from_data(Arena* arena, StringView data, StringView path);
 
-LNK_LibNodeArray lnk_lib_list_push_parallel(TP_Context* tp, TP_Arena* arena, LNK_LibList* list, String8Array data_arr, String8Array path_arr);
+LNK_LibNodeArray lnk_lib_list_push_parallel(TP_Context* tp, TP_Arena* arena, LNK_LibList* list, Span<StringView> data_arr, Span<StringView> path_arr);
 LNK_LibNode *    lnk_lib_list_push(Arena* arena, LNK_LibList* list, StringView data, StringView path);
 
 ////////////////////////////////

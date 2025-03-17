@@ -585,7 +585,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params.dump_sections){
       if (elf != 0){
         ELF_SectionArray section_array = elf_section_array_from_elf(elf);
-        String8Array section_name_array = elf_section_name_array_from_elf(elf);
+        Span<StringView> section_name_array = elf_section_name_array_from_elf(elf);
         
         str8_list_push(arena, &dump,
                        ("################################"

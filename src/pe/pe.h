@@ -1034,7 +1034,7 @@ void *                pe_ptr_from_section_num(StringView data, PE_BinInfo* bin, 
 uint64                   pe_foff_from_voff(StringView data, PE_BinInfo* bin, uint64 voff);
 PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena* arena, StringView raw_relocs);
 Rng1U64               pe_tls_rng_from_bin_base_vaddr(StringView data, PE_BinInfo* bin, uint64 base_vaddr);
-String8Array          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
+Span<StringView>          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
 
 ////////////////////////////////
 //~ Resource Helpers

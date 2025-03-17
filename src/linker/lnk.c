@@ -3295,7 +3295,7 @@ lnk_run(int argc, char** argv)
             // so we loop over every subsystem and search potential entry
             // points in the symbol table 
             for (uint64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
-              String8Array name_arr  = pe_get_entry_point_names(config.machine, (PE_WindowsSubsystem)subsys_idx, config.file_characteristics);
+              Span<StringView> name_arr  = pe_get_entry_point_names(config.machine, (PE_WindowsSubsystem)subsys_idx, config.file_characteristics);
               for (uint64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                 entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Defined, name_arr.v[entry_idx]);
                 if (entry_point_symbol) {
@@ -3308,7 +3308,7 @@ lnk_run(int argc, char** argv)
             // search for potential entry points in libs
             if (!entry_point_symbol) {
               for (uint64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
-                String8Array name_arr = pe_get_entry_point_names(config.machine, (PE_WindowsSubsystem)subsys_idx, config.file_characteristics);
+                Span<StringView> name_arr = pe_get_entry_point_names(config.machine, (PE_WindowsSubsystem)subsys_idx, config.file_characteristics);
                 for (uint64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                   entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Lib, name_arr.v[entry_idx]);
                   if (entry_point_symbol) {
@@ -3323,7 +3323,7 @@ lnk_run(int argc, char** argv)
           } else {
             // we have subsystem but no entry point name, get potential entry point names
             // and see which is in the symbol table
-            String8Array name_arr = pe_get_entry_point_names(config.machine, config.subsystem, config.file_characteristics);
+            Span<StringView> name_arr = pe_get_entry_point_names(config.machine, config.subsystem, config.file_characteristics);
             for (uint64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
               LNK_Symbol* symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Defined, name_arr.v[entry_idx]);
               if (symbol) {
@@ -3709,8 +3709,8 @@ lnk_run(int argc, char** argv)
           ProfEnd();
           
           ProfBegin("Disk Read Libs");
-          String8Array path_arr  = str8_array_from_list(temp.arena, &unique_input_lib_list);
-          String8Array data_arr  = lnk_read_data_from_file_path_parallel(tp, tp_arena.v[0], path_arr);
+          Span<StringView> path_arr  = str8_array_from_list(temp.arena, &unique_input_lib_list);
+          Span<StringView> data_arr  = lnk_read_data_from_file_path_parallel(tp, tp_arena.v[0], path_arr);
           ProfEnd();
           
           ProfBegin("Lib Init");

@@ -418,7 +418,7 @@ StringView                 cv_file_chksms_from_debug_s(CV_DebugS debug_s);
 ////////////////////////////////
 //~ .debug$T helpers
 
-CV_DebugT       cv_debug_t_from_data_arr(Arena* arena, String8Array data_arr, uint64 align);
+CV_DebugT       cv_debug_t_from_data_arr(Arena* arena, Span<StringView> data_arr, uint64 align);
 CV_DebugT       cv_debug_t_from_data(Arena* arena, StringView data, uint64 align);
 CV_Leaf         cv_debug_t_get_leaf(CV_DebugT debug_t, uint64 leaf_idx);
 StringView         cv_debug_t_get_raw_leaf(CV_DebugT debug_t, uint64 leaf_idx);

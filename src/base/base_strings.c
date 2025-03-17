@@ -1102,10 +1102,10 @@ str8_list_from_flags(Arena* arena, String8List* list,
 ////////////////////////////////
 //~ rjf; String Arrays
 
-String8Array
+Span<StringView>
 str8_array_from_list(Arena* arena, String8List* list)
 {
-  String8Array array;
+  Span<StringView> array;
   array.count   = list.node_count;
   array.v = push_array_no_zero(arena, StringView, array.count);
   uint64 idx = 0;
@@ -1116,10 +1116,10 @@ str8_array_from_list(Arena* arena, String8List* list)
   return array;
 }
 
-String8Array
+Span<StringView>
 str8_array_reserve(Arena* arena, uint64 count)
 {
-  String8Array arr;
+  Span<StringView> arr;
   arr.count = 0;
   arr.v = push_array(arena, StringView, count);
   return arr;
