@@ -76,7 +76,7 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
   //    F: FPO data
   //    H: Clang extension produced with /debug:ghash, array of type hashes
   *name_out    = full_name;
-  *postfix_out = str8_lit("");
+  *postfix_out = ("");
   for (uint64 i = 0; i < full_name.size; ++i) {
     if (full_name.str[i] == '$') {
       *name_out    = str8(full_name.str, i);
@@ -85,7 +85,7 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
       // TLS sections don't have a postfix but we still have to sort them based
       // on dollar sign so they are sloted between CRT's _tls_start and _tls_end sections.
       if (str8_match_lit(".tls", *name_out, 0) && postfix_out.size == 0) {
-        *postfix_out = str8_lit("$");
+        *postfix_out = ("$");
       }
       
       break;
@@ -96,7 +96,7 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
 String8
 coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName* name)
 {
-  String8 name_str = str8_lit("");
+  String8 name_str = ("");
   if (name.long_name.zeroes == 0) {
     uint64 name_string_off = string_table_off + name.long_name.string_table_offset;
     str8_deserial_read_cstr(raw_coff, name_string_off, &name_str);

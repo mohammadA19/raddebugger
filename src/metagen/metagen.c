@@ -6,27 +6,27 @@
 
 read_only static String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] =
 {
-  str8_lit_comp(""),
-  str8_lit_comp("."),  // MG_StrExprOp_Dot
-  str8_lit_comp("."), // MG_StrExprOp_ExpandIfTrue
-  str8_lit_comp(".."), // MG_StrExprOp_Concat
-  str8_lit_comp("=>"), // MG_StrExprOp_BumpToColumn
-  str8_lit_comp("+"),  // MG_StrExprOp_Add
-  str8_lit_comp("-"),  // MG_StrExprOp_Subtract
-  str8_lit_comp("*"),  // MG_StrExprOp_Multiply
-  str8_lit_comp("/"),  // MG_StrExprOp_Divide
-  str8_lit_comp("%"),  // MG_StrExprOp_Modulo
-  str8_lit_comp("<<"), // MG_StrExprOp_LeftShift
-  str8_lit_comp(">>"), // MG_StrExprOp_RightShift
-  str8_lit_comp("&"),  // MG_StrExprOp_BitwiseAnd
-  str8_lit_comp("|"),  // MG_StrExprOp_BitwiseOr
-  str8_lit_comp("^"),  // MG_StrExprOp_BitwiseXor
-  str8_lit_comp("~"),  // MG_StrExprOp_BitwiseNegate
-  str8_lit_comp("&&"), // MG_StrExprOp_BooleanAnd
-  str8_lit_comp("||"), // MG_StrExprOp_BooleanOr
-  str8_lit_comp("!"),  // MG_StrExprOp_BooleanNot
-  str8_lit_comp("=="), // MG_StrExprOp_Equals
-  str8_lit_comp("!="), // MG_StrExprOp_DoesNotEqual
+  (""),
+  ("."),  // MG_StrExprOp_Dot
+  ("."), // MG_StrExprOp_ExpandIfTrue
+  (".."), // MG_StrExprOp_Concat
+  ("=>"), // MG_StrExprOp_BumpToColumn
+  ("+"),  // MG_StrExprOp_Add
+  ("-"),  // MG_StrExprOp_Subtract
+  ("*"),  // MG_StrExprOp_Multiply
+  ("/"),  // MG_StrExprOp_Divide
+  ("%"),  // MG_StrExprOp_Modulo
+  ("<<"), // MG_StrExprOp_LeftShift
+  (">>"), // MG_StrExprOp_RightShift
+  ("&"),  // MG_StrExprOp_BitwiseAnd
+  ("|"),  // MG_StrExprOp_BitwiseOr
+  ("^"),  // MG_StrExprOp_BitwiseXor
+  ("~"),  // MG_StrExprOp_BitwiseNegate
+  ("&&"), // MG_StrExprOp_BooleanAnd
+  ("||"), // MG_StrExprOp_BooleanOr
+  ("!"),  // MG_StrExprOp_BooleanNot
+  ("=="), // MG_StrExprOp_Equals
+  ("!="), // MG_StrExprOp_DoesNotEqual
 };
 
 read_only static int8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
@@ -246,7 +246,7 @@ mg_c_string_literal_from_multiline_string(String8 string)
 {
   String8List strings = {0};
   {
-    str8_list_push(mg_arena, &strings, str8_lit("\"\"\n"));
+    str8_list_push(mg_arena, &strings, ("\"\"\n"));
     uint64 active_line_start_off = 0;
     for(uint64 off = 0; off <= string.size; off += 1)
     {
@@ -255,15 +255,15 @@ mg_c_string_literal_from_multiline_string(String8 string)
       if(is_ender)
       {
         String8 line = str8_substr(string, r1u64(active_line_start_off, off));
-        str8_list_push(mg_arena, &strings, str8_lit("\""));
+        str8_list_push(mg_arena, &strings, ("\""));
         str8_list_push(mg_arena, &strings, line);
         if(is_newline)
         {
-          str8_list_push(mg_arena, &strings, str8_lit("\\n\"\n"));
+          str8_list_push(mg_arena, &strings, ("\\n\"\n"));
         }
         else
         {
-          str8_list_push(mg_arena, &strings, str8_lit("\"\n"));
+          str8_list_push(mg_arena, &strings, ("\"\n"));
         }
         active_line_start_off = off+1;
       }
@@ -298,7 +298,7 @@ mg_c_array_literal_contents_from_data(String8 data)
       }
       off += chunk_size;
       str8_list_push(mg_arena, &strings, chunk_text_string);
-      str8_list_push(mg_arena, &strings, str8_lit("\n"));
+      str8_list_push(mg_arena, &strings, ("\n"));
     }
   }
   String8 result = str8_list_join(mg_arena, &strings, 0);
@@ -626,13 +626,13 @@ mg_column_desc_array_from_tag(Arena* arena, MD_Node* tag)
   {
     result.v[idx].name = push_str8_copy(arena, hdr.string);
     result.v[idx].kind = MG_ColumnKind_DirectCell;
-    if(md_node_has_tag(hdr, str8_lit("tag_check"), 0))
+    if(md_node_has_tag(hdr, ("tag_check"), 0))
     {
       result.v[idx].kind = MG_ColumnKind_CheckForTag;
     }
-    if(md_node_has_tag(hdr, str8_lit("tag_child"), 0))
+    if(md_node_has_tag(hdr, ("tag_child"), 0))
     {
-      String8 tag_name = md_tag_from_string(hdr, str8_lit("tag_child"), 0).first.string;
+      String8 tag_name = md_tag_from_string(hdr, ("tag_child"), 0).first.string;
       result.v[idx].kind = MG_ColumnKind_TagChild;
       result.v[idx].tag_name = tag_name;
     }
@@ -694,7 +694,7 @@ mg_string_from_row_desc_idx(MD_Node* row_parent, MG_ColumnDescArray descs, uint6
       {
         String8 tag_name = desc.name;
         MD_Node* tag = md_tag_from_string(row_parent, tag_name, 0);
-        result = md_node_is_nil(tag) ? str8_lit("0") : str8_lit("1");
+        result = md_node_is_nil(tag) ? ("0") : ("1");
       }break;
       
       case MG_ColumnKind_TagChild:
@@ -815,7 +815,7 @@ mg_eval_table_expand_expr__string(Arena* arena, MG_StrExpr* expr, MG_TableExpand
       {
         int64 numeric_eval = mg_eval_table_expand_expr__numeric(expr, info);
         String8 numeric_eval_stringized = {0};
-        if(md_node_has_tag(md_root_from_node(expr.node), str8_lit("hex"), 0))
+        if(md_node_has_tag(md_root_from_node(expr.node), ("hex"), 0))
         {
           numeric_eval_stringized = push_str8f(arena, "0x%I64x", numeric_eval);
         }
@@ -873,7 +873,7 @@ mg_eval_table_expand_expr__string(Arena* arena, MG_StrExpr* expr, MG_TableExpand
       {
         uint64 column_idx = 0;
         
-        if(str8_match(column_lookup, str8_lit("_it"), 0))
+        if(str8_match(column_lookup, ("_it"), 0))
         {
           lookup_string = push_str8f(arena, "%I64u", row_idx);
         }
@@ -892,7 +892,7 @@ mg_eval_table_expand_expr__string(Arena* arena, MG_StrExpr* expr, MG_TableExpand
           }
           
           lookup_string = mg_string_from_row_desc_idx(row_parent, column_descs, column_idx);
-          if(str8_match(lookup_string, str8_lit("--"), 0))
+          if(str8_match(lookup_string, ("--"), 0))
           {
             lookup_string = info.missing_value_fallback;
           }
@@ -1000,7 +1000,7 @@ mg_loop_table_column_expansion(Arena* arena, String8 strexpr, MG_TableExpandInfo
           }
           String8 expr_string = str8_substr(string, expr_range);
           MD_TokenizeResult expr_tokenize = md_tokenize_from_text(scratch.arena, expr_string);
-          MD_ParseResult expr_base_parse = md_parse_from_text_tokens(scratch.arena, str8_lit(""), expr_string, expr_tokenize.tokens);
+          MD_ParseResult expr_base_parse = md_parse_from_text_tokens(scratch.arena, (""), expr_string, expr_tokenize.tokens);
           MG_StrExprParseResult expr_parse = mg_str_expr_parse_from_root(scratch.arena, expr_base_parse.root.first);
           mg_eval_table_expand_expr__string(arena, expr_parse.root, info, &expansion_strs);
           char_idx = start = char_idx + 1 + expr_range.max;
@@ -1029,7 +1029,7 @@ mg_string_list_from_table_gen(Arena* arena, MG_Map grid_name_map, MG_Map grid_co
   if(md_node_is_nil(gen.first) && gen.string.size != 0)
   {
     str8_list_push(arena, &result, gen.string);
-    str8_list_push(arena, &result, str8_lit("\n"));
+    str8_list_push(arena, &result, ("\n"));
   }
   else for MD_EachNode(strexpr_node, gen.first)
   {
@@ -1038,7 +1038,7 @@ mg_string_list_from_table_gen(Arena* arena, MG_Map grid_name_map, MG_Map grid_co
     MG_TableExpandTask* last_task = 0;
     for MD_EachNode(tag, strexpr_node.first_tag)
     {
-      if(str8_match(tag.string, str8_lit("expand"), 0))
+      if(str8_match(tag.string, ("expand"), 0))
       {
         // rjf: grab args for this expansion
         MD_Node* table_name_node = md_child_from_index(tag, 0);
@@ -1098,13 +1098,13 @@ mg_layer_key_from_path(String8 path)
   uint64 src_folder_pos = 0;
   for(uint64 next_src_folder_pos = 0;
       next_src_folder_pos < path.size;
-      next_src_folder_pos = str8_find_needle(path, next_src_folder_pos+1, str8_lit("src"), 0))
+      next_src_folder_pos = str8_find_needle(path, next_src_folder_pos+1, ("src"), 0))
   {
     src_folder_pos = next_src_folder_pos;
   }
   String8List path_parts = str8_split_path(scratch.arena, str8_chop_last_slash(str8_skip(path, src_folder_pos+4)));
   StringJoin join = {0};
-  join.sep = str8_lit("/");
+  join.sep = ("/");
   String8 key = str8_list_join(mg_arena, &path_parts, &join);
   scratch_end(scratch);
   return key;

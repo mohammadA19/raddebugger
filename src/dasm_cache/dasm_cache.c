@@ -601,7 +601,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
                   }
                   if(params.style_flags & DASM_StyleFlag_SourceFilesNames && file.normal_full_path_string_idx == 0)
                   {
-                    String8 inst_string = str8_lit(">");
+                    String8 inst_string = (">");
                     DASM_Line inst = {u32_from_u64_saturate(off), DASM_LineFlag_Decorative, 0, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                                      inst_strings.total_size + inst_strings.node_count + inst_string.size)};
                     dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &inst);
@@ -661,7 +661,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
           if(params.style_flags & DASM_StyleFlag_CodeBytes)
           {
             String8List code_bytes_strings = {0};
-            str8_list_push(scratch.arena, &code_bytes_strings, str8_lit("{"));
+            str8_list_push(scratch.arena, &code_bytes_strings, ("{"));
             for(uint64 byte_idx = 0; byte_idx < inst.size || byte_idx < 16; byte_idx += 1)
             {
               if(byte_idx < inst.size)
@@ -670,10 +670,10 @@ ASYNC_WORK_DEF(dasm_parse_work)
               }
               else if(byte_idx < 8)
               {
-                str8_list_push(scratch.arena, &code_bytes_strings, str8_lit("   "));
+                str8_list_push(scratch.arena, &code_bytes_strings, ("   "));
               }
             }
-            str8_list_push(scratch.arena, &code_bytes_strings, str8_lit(" "));
+            str8_list_push(scratch.arena, &code_bytes_strings, (" "));
             code_bytes_part = str8_list_join(scratch.arena, &code_bytes_strings, 0);
           }
           String8 symbol_part = {0};
@@ -714,7 +714,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
     //- rjf: produce joined text
     Arena* text_arena = arena_alloc();
     StringJoin text_join = {0};
-    text_join.sep = str8_lit("\n");
+    text_join.sep = ("\n");
     String8 text = str8_list_join(text_arena, &inst_strings, &text_join);
     
     //- rjf: produce unique key for this disassembly's text

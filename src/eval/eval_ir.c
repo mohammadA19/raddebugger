@@ -725,7 +725,7 @@ e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr)
       else if(conversion_rule != RDI_EvalConversionKind_Noop &&
               conversion_rule != RDI_EvalConversionKind_Legal)
       {
-        String8 text = str8_lit("Unknown cast conversion rule.");
+        String8 text = ("Unknown cast conversion rule.");
         if(conversion_rule < RDI_EvalConversionKind_COUNT)
         {
           text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);

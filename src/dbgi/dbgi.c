@@ -886,9 +886,9 @@ ASYNC_WORK_DEF(di_parse_work)
     String8 data = str8((uint8 *)base, props.size);
     if(!og_format_is_known)
     {
-      String8 msf20_magic = str8_lit("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
-      String8 msf70_magic = str8_lit("Microsoft C/C++ MSF 7.00\r\n\032DS\0\0");
-      String8 msfxx_magic = str8_lit("Microsoft C/C++");
+      String8 msf20_magic = ("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
+      String8 msf70_magic = ("Microsoft C/C++ MSF 7.00\r\n\032DS\0\0");
+      String8 msfxx_magic = ("Microsoft C/C++");
       if((data.size >= msf20_magic.size && str8_match(data, msf20_magic, StringMatchFlag_RightSideSloppy)) ||
          (data.size >= msf70_magic.size && str8_match(data, msf70_magic, StringMatchFlag_RightSideSloppy)) ||
          (data.size >= msfxx_magic.size && str8_match(data, msfxx_magic, StringMatchFlag_RightSideSloppy)))

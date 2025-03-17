@@ -57,12 +57,12 @@ frame()
   DR_BucketScope(bucket) ProfScope("draw")
   {
     Vec2F32 mouse = os_mouse_from_window(os_window);
-    FNT_Tag font = fnt_tag_from_path(str8_lit("C:/devel/raddebugger/data/Inconsolata-Regular.ttf"));
+    FNT_Tag font = fnt_tag_from_path(("C:/devel/raddebugger/data/Inconsolata-Regular.ttf"));
     for(float x = 0; x < 500; x += 5.f)
     {
       for(float y = 0; y < 500; y += 5.f)
       {
-        dr_text(font, 16.f, 0, 0, FNT_RasterFlag_Smooth|FNT_RasterFlag_Hinted, v2f32(30 + x + mouse.x, 30 + y + mouse.y), v4f32(1, 1, 1, 1), str8_lit("This is a test."));
+        dr_text(font, 16.f, 0, 0, FNT_RasterFlag_Smooth|FNT_RasterFlag_Hinted, v2f32(30 + x + mouse.x, 30 + y + mouse.y), v4f32(1, 1, 1, 1), ("This is a test."));
       }
     }
   }
@@ -77,7 +77,7 @@ frame()
 void
 entry_point(CmdLine* cmdline)
 {
-  os_window = os_window_open(v2f32(1600, 900), 0, str8_lit("textperf"));
+  os_window = os_window_open(v2f32(1600, 900), 0, ("textperf"));
   r_window = r_window_equip(os_window);
   os_window_first_paint(os_window);
   for(;!update(););

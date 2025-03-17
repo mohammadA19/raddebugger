@@ -247,7 +247,7 @@ lnk_make_linker_manifest(Arena*      arena,
 
   String8List srl = {0};
   str8_serial_begin(scratch.arena, &srl);
-  str8_serial_push_string(scratch.arena, &srl, str8_lit(
+  str8_serial_push_string(scratch.arena, &srl, (
                                                 "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
                                                 "<assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\"\n"
                                                 "          manifestVersion=\"1.0\">\n"));
@@ -286,7 +286,7 @@ lnk_make_linker_manifest(Arena*      arena,
                              node.string);
     str8_serial_push_string(scratch.arena, &srl, dep);
   }
-  str8_serial_push_string(scratch.arena, &srl, str8_lit("</assembly>\n"));
+  str8_serial_push_string(scratch.arena, &srl, ("</assembly>\n"));
 
   String8 result = str8_list_join(arena, &srl, 0);
 
@@ -416,16 +416,16 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable* st, LNK_SymbolTable* symtab, PE
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   
-  LNK_Section* dir_sect  = lnk_section_table_push(st, str8_lit(".rsrc$01"), LNK_RSRC_SECTION_FLAGS);
-  LNK_Section* data_sect = lnk_section_table_push(st, str8_lit(".rsrc$02"), LNK_RSRC_SECTION_FLAGS);
+  LNK_Section* dir_sect  = lnk_section_table_push(st, (".rsrc$01"), LNK_RSRC_SECTION_FLAGS);
+  LNK_Section* data_sect = lnk_section_table_push(st, (".rsrc$02"), LNK_RSRC_SECTION_FLAGS);
   
   LNK_Chunk* dir_tree_chunk   = lnk_section_push_chunk_list(dir_sect, dir_sect.root, str8_zero());
   LNK_Chunk* dir_data_chunk   = lnk_section_push_chunk_list(dir_sect, dir_sect.root, str8_zero());
   LNK_Chunk* dir_string_chunk = lnk_section_push_chunk_list(dir_sect, dir_sect.root, str8_zero());
 
-  dir_tree_chunk.sort_idx   = str8_lit("a");
-  dir_string_chunk.sort_idx = str8_lit("b");
-  dir_data_chunk.sort_idx   = str8_lit("c");
+  dir_tree_chunk.sort_idx   = ("a");
+  dir_string_chunk.sort_idx = ("b");
+  dir_data_chunk.sort_idx   = ("c");
   
   PE_Resource root_wrapper = {0};
   root_wrapper.id.type     = COFF_ResourceIDType_Number;
@@ -476,7 +476,7 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable* st, LNK_SymbolTable* symtab, PE
             // make chunk and symbol
             String8     res_name    = coff_resource_string_from_str8(dir_sect.arena, res.id.u.string);
             LNK_Chunk*  name_chunk  = lnk_section_push_chunk_data(dir_sect, dir_string_chunk, res_name, str8_zero());
-            LNK_Symbol* name_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], str8_lit("COFF_RESOURCE_ID_STRING"), LNK_DefinedSymbolVisibility_Static, 0, name_chunk, 0, 0, 0);
+            LNK_Symbol* name_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], ("COFF_RESOURCE_ID_STRING"), LNK_DefinedSymbolVisibility_Static, 0, name_chunk, 0, 0, 0);
 
             // patch COFF_ResourceDirEntry.name.offset
             lnk_section_push_reloc(dir_sect, stack.coff_entry_chunk, LNK_Reloc_SECT_REL, OffsetOf(COFF_ResourceDirEntry, name.offset), name_symbol);
@@ -626,12 +626,12 @@ lnk_add_resource_debug_s(LNK_SectionTable* st,
                                     version_string);
   
   String8List env_list; MemoryZeroStruct(&env_list);
-  str8_list_push(scratch.arena, &env_list, str8_lit("cwd"));
+  str8_list_push(scratch.arena, &env_list, ("cwd"));
   str8_list_push(scratch.arena, &env_list, cwd_path);
-  str8_list_push(scratch.arena, &env_list, str8_lit("exe"));
+  str8_list_push(scratch.arena, &env_list, ("exe"));
   str8_list_push(scratch.arena, &env_list, exe_path);
-  str8_list_push(scratch.arena, &env_list, str8_lit(""));
-  str8_list_push(scratch.arena, &env_list, str8_lit(""));
+  str8_list_push(scratch.arena, &env_list, (""));
+  str8_list_push(scratch.arena, &env_list, (""));
   String8 envblock_data = cv_make_envblock(scratch.arena, env_list);
   
   String8 obj_symbol = cv_make_symbol(scratch.arena, CV_SymKind_OBJNAME, obj_data);
@@ -671,7 +671,7 @@ lnk_add_resource_debug_s(LNK_SectionTable* st,
   str8_serial_push_data_list(scratch.arena, &sub_sect_srl, symbol_srl.first);
   str8_serial_push_align(scratch.arena, &sub_sect_srl, CV_C13SubSectionAlign);
   
-  LNK_Section* debug_s = lnk_section_table_push(st, str8_lit(".debug$S"), LNK_DEBUG_SECTION_FLAGS);
+  LNK_Section* debug_s = lnk_section_table_push(st, (".debug$S"), LNK_DEBUG_SECTION_FLAGS);
   String8 sub_sect_data = str8_serial_end(debug_s.arena, &sub_sect_srl);
   lnk_section_push_chunk_data(debug_s, debug_s.root, sub_sect_data, str8_zero());
   
@@ -704,7 +704,7 @@ lnk_make_res_obj(TP_Context*       tp,
   
   LNK_SymbolTable*  symtab      = lnk_symbol_table_init(temp_tp_arena);
   LNK_SectionTable* st          = lnk_section_table_alloc(0, sect_virt_align, sect_file_align);
-  LNK_Section*      header_sect = lnk_section_table_push(st, str8_lit(".null"), 0);
+  LNK_Section*      header_sect = lnk_section_table_push(st, (".null"), 0);
   
   lnk_serialize_pe_resource_tree(st, symtab, root_dir);
   
@@ -716,7 +716,7 @@ lnk_make_res_obj(TP_Context*       tp,
     LNK_Section* sect = &sect_node.data;
     lnk_symbol_table_push_defined_chunk(symtab, sect.name, LNK_DefinedSymbolVisibility_Internal, 0, sect.root, 0, 0, 0);
   }
-  st.null_sect = lnk_section_list_remove(&st.list, str8_lit(".null"));
+  st.null_sect = lnk_section_list_remove(&st.list, (".null"));
   lnk_section_table_build_data(tp, st, machine);
   lnk_section_table_push_null(st);
   lnk_section_table_assign_indices(st);
@@ -725,7 +725,7 @@ lnk_make_res_obj(TP_Context*       tp,
   COFF_Symbol16List coff_symbol_list = {0};
   
   COFF_Symbol16 coff_feat00  = {0};
-  MemoryCopyStr8(&coff_feat00.name, str8_lit("@feat.00"));
+  MemoryCopyStr8(&coff_feat00.name, ("@feat.00"));
   coff_feat00.value          = MSCRT_FeatFlag_HAS_SAFE_SEH|MSCRT_FeatFlag_UNKNOWN_4;
   coff_feat00.section_number = COFF_Symbol_AbsSection16;
   coff_feat00.storage_class  = COFF_SymStorageClass_Static;
@@ -845,7 +845,7 @@ lnk_make_res_obj(TP_Context*       tp,
     }
   }
   
-  LNK_Section* misc_sect = lnk_section_table_push(st, str8_lit(".misc"), COFF_SectionFlag_LnkInfo|COFF_SectionFlag_LnkRemove);
+  LNK_Section* misc_sect = lnk_section_table_push(st, (".misc"), COFF_SectionFlag_LnkInfo|COFF_SectionFlag_LnkRemove);
   misc_sect.emit_header = 0;
   
   // serialize coff symbol list
@@ -856,10 +856,10 @@ lnk_make_res_obj(TP_Context*       tp,
   }
   String8     coff_symbol_table_data   = str8_serial_end(scratch.arena, &srl);
   LNK_Chunk*  coff_symbol_table_chunk  = lnk_section_push_chunk_data(misc_sect, misc_sect.root, coff_symbol_table_data, str8_zero());
-  LNK_Symbol* coff_symbol_table_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], str8_lit("COFF_SYMBOL_TABLE"), LNK_DefinedSymbolVisibility_Internal, 0, coff_symbol_table_chunk, 0, 0, 0);
+  LNK_Symbol* coff_symbol_table_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], ("COFF_SYMBOL_TABLE"), LNK_DefinedSymbolVisibility_Internal, 0, coff_symbol_table_chunk, 0, 0, 0);
   lnk_symbol_table_push(symtab, coff_symbol_table_symbol);
   
-  LNK_Symbol* coff_symbol_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], str8_lit("COFF_SYMBOL_COUNT"), LNK_DefinedSymbolVisibility_Internal, 0, coff_symbol_list.count);
+  LNK_Symbol* coff_symbol_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], ("COFF_SYMBOL_COUNT"), LNK_DefinedSymbolVisibility_Internal, 0, coff_symbol_list.count);
   lnk_symbol_table_push(symtab, coff_symbol_count_symbol);
   
   // build obj header
@@ -879,12 +879,12 @@ lnk_make_res_obj(TP_Context*       tp,
     LNK_Chunk* file_header_chunk = lnk_section_push_chunk_data(header_sect, header_sect.root, file_header_data, str8_zero());
     
     // relocate coff header fields
-    lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(COFF_FileHeader, section_count), str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+    lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(COFF_FileHeader, section_count), (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
     lnk_section_push_reloc(header_sect, file_header_chunk, LNK_Reloc_FILE_OFF_32, OffsetOf(COFF_FileHeader, symbol_table_foff), coff_symbol_table_symbol);
     lnk_section_push_reloc(header_sect, file_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(COFF_FileHeader, symbol_count), coff_symbol_count_symbol);
     
     // push coff header symbol
-    LNK_Symbol* file_header_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], str8_lit(LNK_COFF_FILE_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, file_header_chunk, 0, 0, 0);
+    LNK_Symbol* file_header_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], (LNK_COFF_FILE_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, file_header_chunk, 0, 0, 0);
     lnk_symbol_table_push(symtab, file_header_symbol);
   }
   
@@ -934,7 +934,7 @@ lnk_make_res_obj(TP_Context*       tp,
     
     // push section header count symbol
     uint64         symbol_count                     = coff_section_header_array_chunk.u.list.count;
-    LNK_Symbol* coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
+    LNK_Symbol* coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
     lnk_symbol_table_push(symtab, coff_section_header_count_symbol);
   }
   
@@ -1029,8 +1029,8 @@ lnk_make_linker_coff_obj(TP_Context*       tp,
   LNK_SymbolTable*  symtab = lnk_symbol_table_init(temp_tp_arena);
   LNK_SectionTable* st     = lnk_section_table_alloc(0, 1, 1);
   
-  LNK_Section* header_sect = lnk_section_table_push(st, str8_lit(".coffhdr"), 0);
-  LNK_Section* debug_s_sect = lnk_section_table_push(st, str8_lit(".debug$S"), LNK_DEBUG_SECTION_FLAGS);
+  LNK_Section* header_sect = lnk_section_table_push(st, (".coffhdr"), 0);
+  LNK_Section* debug_s_sect = lnk_section_table_push(st, (".debug$S"), LNK_DEBUG_SECTION_FLAGS);
   
   // TODO: remove! hack!
   header_sect.emit_header = 0;
@@ -1042,7 +1042,7 @@ lnk_make_linker_coff_obj(TP_Context*       tp,
     file_header.time_stamp      = time_stamp;
     
     LNK_Chunk* file_header_chunk = lnk_section_push_chunk_raw(header_sect, header_sect.root, file_header, sizeof(*file_header), str8_zero());
-    lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(COFF_FileHeader, section_count), str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+    lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(COFF_FileHeader, section_count), (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   }
   
   {
@@ -1069,16 +1069,16 @@ lnk_make_linker_coff_obj(TP_Context*       tp,
     
     // S_ENVBLOCK
     String8List env_list = {0};
-    str8_list_push(scratch.arena, &env_list, str8_lit("cwd"));
+    str8_list_push(scratch.arena, &env_list, ("cwd"));
     str8_list_push(scratch.arena, &env_list, cwd_path);
-    str8_list_push(scratch.arena, &env_list, str8_lit("exe"));
+    str8_list_push(scratch.arena, &env_list, ("exe"));
     str8_list_push(scratch.arena, &env_list, exe_path);
-    str8_list_push(scratch.arena, &env_list, str8_lit("pdb"));
+    str8_list_push(scratch.arena, &env_list, ("pdb"));
     str8_list_push(scratch.arena, &env_list, pdb_path);
-    str8_list_push(scratch.arena, &env_list, str8_lit("cmd"));
+    str8_list_push(scratch.arena, &env_list, ("cmd"));
     str8_list_push(scratch.arena, &env_list, cmd_line);
-    str8_list_push(scratch.arena, &env_list, str8_lit(""));
-    str8_list_push(scratch.arena, &env_list, str8_lit(""));
+    str8_list_push(scratch.arena, &env_list, (""));
+    str8_list_push(scratch.arena, &env_list, (""));
     String8 env_data = cv_make_envblock(scratch.arena, env_list);
     cv_symbol_list_push_data(scratch.arena, &symbol_list, CV_SymKind_ENVBLOCK, env_data);
     
@@ -1150,7 +1150,7 @@ lnk_make_linker_coff_obj(TP_Context*       tp,
     
     // push section header count symbol
     uint64 symbol_count = coff_section_header_array_chunk.u.list.count;
-    LNK_Symbol* coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
+    LNK_Symbol* coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab.arena.v[0], (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
     lnk_symbol_table_push(symtab, coff_section_header_count_symbol);
   }
   
@@ -1182,7 +1182,7 @@ THREAD_POOL_TASK_FUNC(lnk_load_thin_objs_task)
 String8
 lnk_get_lib_name(String8 path)
 {
-  static String8 LIB_EXT = str8_lit_comp(".LIB");
+  static String8 LIB_EXT = (".LIB");
   
   // strip path
   String8 name = str8_skip_last_slash(path);
@@ -1246,7 +1246,7 @@ lnk_push_input_from_lazy(Arena* arena, PathStyle path_style, LNK_LazySymbol* laz
       // obj path in thin archive has slash appended which screws up 
       // file lookup on disk; it couble be there to enable paths to symbols
       // but we don't use this feature
-      String8 slash = str8_lit("/");
+      String8 slash = ("/");
       if (str8_ends_with(obj_path, slash, 0)) {
         obj_path = str8_chop(obj_path, slash.size);
       }
@@ -1282,26 +1282,26 @@ lnk_push_linker_symbols(LNK_SymbolTable* symtab, COFF_MachineType machine)
   // passing it around as a function argument.
   //
   //  100h: lea rax, [rip + ffffff00h] ; -100h 
-  LNK_Symbol* image_base = lnk_symbol_table_push_defined_chunk(symtab, str8_lit("__ImageBase"), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_Any, 0);
+  LNK_Symbol* image_base = lnk_symbol_table_push_defined_chunk(symtab, ("__ImageBase"), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_Any, 0);
   
   { // load config symbols
     if (machine == COFF_Machine_X86) {
-      lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_SAFE_SE_HANDLER_TABLE_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_NoDuplicates, 0);
-      lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_SAFE_SE_HANDLER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_NoDuplicates, 0);
+      lnk_symbol_table_push_defined_chunk(symtab, (LNK_SAFE_SE_HANDLER_TABLE_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_NoDuplicates, 0);
+      lnk_symbol_table_push_defined_chunk(symtab, (LNK_SAFE_SE_HANDLER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, g_null_chunk_ptr, 0, COFF_ComdatSelect_NoDuplicates, 0);
     }
     
     // TODO: investigate IMAGE_ENCLAVE_CONFIG 32/64
-    lnk_symbol_table_push_defined_va(symtab, str8_lit(LNK_ENCLAVE_CONFIG_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, 0);
+    lnk_symbol_table_push_defined_va(symtab, (LNK_ENCLAVE_CONFIG_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0, 0);
     
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_FLAGS_SYMBOL_NAME)        , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_FIDS_TABLE_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_FIDS_COUNT_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_IAT_TABLE_SYMBOL_NAME)    , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_IAT_COUNT_SYMBOL_NAME)    , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_LONGJMP_TABLE_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_LONGJMP_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_EHCONT_TABLE_SYMBOL_NAME) , LNK_DefinedSymbolVisibility_Extern, 0);
-    lnk_symbol_table_push_defined(symtab, str8_lit(LNK_GUARD_EHCONT_COUNT_SYMBOL_NAME) , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_FLAGS_SYMBOL_NAME)        , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_FIDS_TABLE_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_FIDS_COUNT_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_IAT_TABLE_SYMBOL_NAME)    , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_IAT_COUNT_SYMBOL_NAME)    , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_LONGJMP_TABLE_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_LONGJMP_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_EHCONT_TABLE_SYMBOL_NAME) , LNK_DefinedSymbolVisibility_Extern, 0);
+    lnk_symbol_table_push_defined(symtab, (LNK_GUARD_EHCONT_COUNT_SYMBOL_NAME) , LNK_DefinedSymbolVisibility_Extern, 0);
   }
 }
 
@@ -1392,8 +1392,8 @@ lnk_build_debug_pdb(LNK_SectionTable* st,
   lnk_chunk_set_debugf(sect.arena, debug_pdb_chunk, LNK_CV_HEADER_PDB70_SYMBOL_NAME);
   
   // push symbols
-  LNK_Symbol* debug_pdb_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_CV_HEADER_PDB70_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_pdb_chunk, 0, 0, 0);
-  LNK_Symbol* guid_symbol      = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_CV_HEADER_GUID_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_pdb_chunk, OffsetOf(PE_CvHeaderPDB70, guid), 0, 0);
+  LNK_Symbol* debug_pdb_symbol = lnk_symbol_table_push_defined_chunk(symtab, (LNK_CV_HEADER_PDB70_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_pdb_chunk, 0, 0, 0);
+  LNK_Symbol* guid_symbol      = lnk_symbol_table_push_defined_chunk(symtab, (LNK_CV_HEADER_GUID_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_pdb_chunk, OffsetOf(PE_CvHeaderPDB70, guid), 0, 0);
   
   // push debug directory
   lnk_push_pe_debug_data_directory(sect, dir_array_chunk, debug_pdb_symbol, PE_DebugDirectoryType_CODEVIEW, time_stamp);
@@ -1412,7 +1412,7 @@ lnk_build_debug_rdi(LNK_SectionTable* st,
 {
   ProfBeginFunction();
   
-  LNK_Section* rdi_sect = lnk_section_table_push(st, str8_lit(".raddbg"), COFF_SectionFlag_CntInitializedData|COFF_SectionFlag_MemRead);
+  LNK_Section* rdi_sect = lnk_section_table_push(st, (".raddbg"), COFF_SectionFlag_CntInitializedData|COFF_SectionFlag_MemRead);
   
   // push chunks
   String8    debug_rdi       = pe_make_debug_header_rdi(rdi_sect.arena, guid, rdi_path);
@@ -1420,8 +1420,8 @@ lnk_build_debug_rdi(LNK_SectionTable* st,
   lnk_chunk_set_debugf(rdi_sect.arena, debug_rdi_chunk, LNK_CV_HEADER_RDI_SYMBOL_NAME);
   
   // push symbols
-  LNK_Symbol* debug_rdi_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_CV_HEADER_RDI_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_rdi_chunk, 0, 0, 0);
-  LNK_Symbol* guid_symbol      = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_CV_HEADER_GUID_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_rdi_chunk, OffsetOf(PE_CvHeaderRDI, guid), 0, 0);
+  LNK_Symbol* debug_rdi_symbol = lnk_symbol_table_push_defined_chunk(symtab, (LNK_CV_HEADER_RDI_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_rdi_chunk, 0, 0, 0);
+  LNK_Symbol* guid_symbol      = lnk_symbol_table_push_defined_chunk(symtab, (LNK_CV_HEADER_GUID_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_rdi_chunk, OffsetOf(PE_CvHeaderRDI, guid), 0, 0);
   
   // push debug directory
   lnk_push_pe_debug_data_directory(debug_sect, debug_dir_array_chunk, debug_rdi_symbol, PE_DebugDirectoryType_CODEVIEW, time_stamp);
@@ -1456,26 +1456,26 @@ lnk_build_guard_tables(TP_Context*       tp,
     if (has_guard_flags) {
       LNK_SymbolArray symbol_arr = lnk_symbol_array_from_list(scratch.arena, obj.symbol_list);
       if (guard_flags & LNK_Guard_Cf) {
-        LNK_ChunkList gfids_list = lnk_obj_search_chunks(scratch.arena, obj, str8_lit(".gfids"), str8_zero(), 1);
+        LNK_ChunkList gfids_list = lnk_obj_search_chunks(scratch.arena, obj, (".gfids"), str8_zero(), 1);
         for (LNK_ChunkNode* node = gfids_list.first; node != 0; node = node.next) {
           Assert(node.data.type == LNK_Chunk_Leaf);
           lnk_push_coff_symbols_from_data(scratch.arena, &guard_symbol_list_table[GUARD_FIDS], node.data.u.leaf, symbol_arr);
         }
-        LNK_ChunkList giats_list = lnk_obj_search_chunks(scratch.arena, obj, str8_lit(".giats"), str8_zero(), 1);
+        LNK_ChunkList giats_list = lnk_obj_search_chunks(scratch.arena, obj, (".giats"), str8_zero(), 1);
         for (LNK_ChunkNode* node = giats_list.first; node != 0; node = node.next) {
           Assert(node.data.type == LNK_Chunk_Leaf);
           lnk_push_coff_symbols_from_data(scratch.arena, &guard_symbol_list_table[GUARD_IATS], node.data.u.leaf, symbol_arr);
         }
       }
       if (guard_flags & LNK_Guard_LongJmp) {
-        LNK_ChunkList gljmp_list = lnk_obj_search_chunks(scratch.arena, obj, str8_lit(".gljmp"), str8_zero(), 1);
+        LNK_ChunkList gljmp_list = lnk_obj_search_chunks(scratch.arena, obj, (".gljmp"), str8_zero(), 1);
         for (LNK_ChunkNode* node = gljmp_list.first; node != 0; node = node.next) {
           Assert(node.data.type == LNK_Chunk_Leaf);
           lnk_push_coff_symbols_from_data(scratch.arena, &guard_symbol_list_table[GUARD_LJMP], node.data.u.leaf, symbol_arr);
         }
       }
       if (guard_flags & LNK_Guard_EhCont) {
-        LNK_ChunkList gehcont_list = lnk_obj_search_chunks(scratch.arena, obj, str8_lit(".gehcont"), str8_zero(), 1);
+        LNK_ChunkList gehcont_list = lnk_obj_search_chunks(scratch.arena, obj, (".gehcont"), str8_zero(), 1);
         for (LNK_ChunkNode* node = gehcont_list.first; node != 0; node = node.next) {
           Assert(node.data.type == LNK_Chunk_Leaf);
           lnk_push_coff_symbols_from_data(scratch.arena, &guard_symbol_list_table[GUARD_EHCONT], node.data.u.leaf, symbol_arr);
@@ -1611,10 +1611,10 @@ lnk_build_guard_tables(TP_Context*       tp,
     lnk_not_implemented("__safe_se_handler_count");
   }
   
-  LNK_Symbol* gfids_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_GFIDS_SYMBOL_NAME));
-  LNK_Symbol* giats_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_GIATS_SYMBOL_NAME));
-  LNK_Symbol* gljmp_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_GLJMP_SYMBOL_NAME));
-  LNK_Symbol* gehcont_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_GEHCONT_SYMBOL_NAME));
+  LNK_Symbol* gfids_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_GFIDS_SYMBOL_NAME));
+  LNK_Symbol* giats_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_GIATS_SYMBOL_NAME));
+  LNK_Symbol* gljmp_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_GLJMP_SYMBOL_NAME));
+  LNK_Symbol* gehcont_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_GEHCONT_SYMBOL_NAME));
   
   LNK_Section* gfids_sect = lnk_section_table_search_id(st, gfids_symbol.u.defined.u.chunk.ref.sect_id);
   LNK_Section* giats_sect = lnk_section_table_search_id(st, giats_symbol.u.defined.u.chunk.ref.sect_id);
@@ -1647,15 +1647,15 @@ lnk_build_guard_tables(TP_Context*       tp,
   lnk_section_push_chunk_data(gljmp_sect, gljmp_array_chunk, gljmp_data, str8_zero());
   lnk_section_push_chunk_data(gehcont_sect, gehcont_array_chunk, gehcont_data, str8_zero());
   
-  LNK_Symbol* gflags_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_FLAGS_SYMBOL_NAME));
-  LNK_Symbol* gfids_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_FIDS_TABLE_SYMBOL_NAME));
-  LNK_Symbol* gfids_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_FIDS_COUNT_SYMBOL_NAME));
-  LNK_Symbol* giats_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_IAT_TABLE_SYMBOL_NAME));
-  LNK_Symbol* giats_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_IAT_COUNT_SYMBOL_NAME));
-  LNK_Symbol* gljmp_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_LONGJMP_TABLE_SYMBOL_NAME));
-  LNK_Symbol* gljmp_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_LONGJMP_COUNT_SYMBOL_NAME));
-  LNK_Symbol* gehcont_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_EHCONT_TABLE_SYMBOL_NAME));
-  LNK_Symbol* gehcont_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, str8_lit(LNK_GUARD_EHCONT_COUNT_SYMBOL_NAME));
+  LNK_Symbol* gflags_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_FLAGS_SYMBOL_NAME));
+  LNK_Symbol* gfids_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_FIDS_TABLE_SYMBOL_NAME));
+  LNK_Symbol* gfids_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_FIDS_COUNT_SYMBOL_NAME));
+  LNK_Symbol* giats_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_IAT_TABLE_SYMBOL_NAME));
+  LNK_Symbol* giats_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_IAT_COUNT_SYMBOL_NAME));
+  LNK_Symbol* gljmp_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_LONGJMP_TABLE_SYMBOL_NAME));
+  LNK_Symbol* gljmp_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_LONGJMP_COUNT_SYMBOL_NAME));
+  LNK_Symbol* gehcont_table_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_EHCONT_TABLE_SYMBOL_NAME));
+  LNK_Symbol* gehcont_count_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Main, (LNK_GUARD_EHCONT_COUNT_SYMBOL_NAME));
   
   LNK_DefinedSymbol* gflags_def = &gflags_symbol.u.defined;
   LNK_DefinedSymbol* gfids_table_def = &gfids_table_symbol.u.defined;
@@ -1680,7 +1680,7 @@ lnk_build_guard_tables(TP_Context*       tp,
     gflags_def.u.va |= PE_LoadConfigGuardFlags_EH_CONTINUATION_TABLE_PRESENT;
   }
   {
-    LNK_Section* didat_sect = lnk_section_table_search(st, str8_lit(".didat"));
+    LNK_Section* didat_sect = lnk_section_table_search(st, (".didat"));
     if (didat_sect) {
       gflags_def.u.va |= PE_LoadConfigGuardFlags_DELAYLOAD_IAT_IN_ITS_OWN_SECTION;
     }
@@ -1935,8 +1935,8 @@ lnk_build_base_relocs(TP_Context*                  tp,
   ProfEnd();
   
   if (main_page_list.count > 0) {
-    LNK_Section* base_reloc_sect = lnk_section_table_push(st, str8_lit(".reloc"), LNK_RELOC_SECTION_FLAGS);
-    lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_BASE_RELOC_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, base_reloc_sect.root, 0, 0, 0);
+    LNK_Section* base_reloc_sect = lnk_section_table_push(st, (".reloc"), LNK_RELOC_SECTION_FLAGS);
+    lnk_symbol_table_push_defined_chunk(symtab, (LNK_BASE_RELOC_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, base_reloc_sect.root, 0, 0, 0);
     
     ProfBegin("Page List . Array");
     LNK_BaseRelocPageArray page_arr = lnk_base_reloc_page_array_from_list(base_reloc_sect.arena, *main_page_list);
@@ -2054,11 +2054,11 @@ lnk_build_dos_header(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chun
   lnk_chunk_set_debugf(header_sect.arena, dos_header_chunk, LNK_DOS_HEADER_SYMBOL_NAME);
   lnk_chunk_set_debugf(header_sect.arena, dos_program_chunk, LNK_DOS_PROGRAM_SYMBOL_NAME);
   
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_DOS_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, dos_header_chunk, 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_DOS_PROGRAM_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, dos_program_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_DOS_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, dos_header_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_DOS_PROGRAM_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, dos_program_chunk, 0, 0, 0);
   
   // :coff_file_offset
-  lnk_section_push_reloc_undefined(header_sect, dos_header_chunk, LNK_Reloc_FILE_OFF_32, OffsetOf(PE_DosHeader, coff_file_offset), str8_lit(LNK_NT_HEADERS_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, dos_header_chunk, LNK_Reloc_FILE_OFF_32, OffsetOf(PE_DosHeader, coff_file_offset), (LNK_NT_HEADERS_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   
   return dos_chunk;
 }
@@ -2072,7 +2072,7 @@ lnk_build_pe_magic(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk*
   LNK_Chunk* pe_magic_chunk = lnk_section_push_chunk_raw(header_sect, parent, pe_magic, sizeof(*pe_magic), str8_zero());
   lnk_chunk_set_debugf(header_sect.arena, pe_magic_chunk, LNK_PE_MAGIC_SYMBOL_NAME);
   
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_MAGIC_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, pe_magic_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_MAGIC_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, pe_magic_chunk, 0, 0, 0);
   
   return pe_magic_chunk;
 }
@@ -2093,14 +2093,14 @@ lnk_build_coff_file_header(LNK_SymbolTable* symtab, LNK_Section* header_sect, LN
   LNK_Chunk* file_header_chunk = lnk_section_push_chunk_raw(header_sect, parent, file_header, sizeof(*file_header), str8_zero());
   lnk_chunk_set_debugf(header_sect.arena, file_header_chunk, LNK_COFF_FILE_HEADER_SYMBOL_NAME);
   
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_COFF_FILE_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, file_header_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_COFF_FILE_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, file_header_chunk, 0, 0, 0);
   
   // :section_count
-  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_16, OffsetOf(COFF_FileHeader, section_count), str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_ADDR_16, OffsetOf(COFF_FileHeader, section_count), (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   
   // :optional_header_size
-  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_16, OffsetOf(COFF_FileHeader, optional_header_size), str8_lit(LNK_PE_OPT_HEADER_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
-  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_16, OffsetOf(COFF_FileHeader, optional_header_size), str8_lit(LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_16, OffsetOf(COFF_FileHeader, optional_header_size), (LNK_PE_OPT_HEADER_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, file_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_16, OffsetOf(COFF_FileHeader, optional_header_size), (LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   
   return file_header_chunk;
 }
@@ -2162,13 +2162,13 @@ lnk_build_pe_optional_header_x64(LNK_SymbolTable*       symtab,
   lnk_chunk_set_debugf(header_sect.arena, opt_header_chunk, LNK_PE_OPT_HEADER_SYMBOL_NAME);
   
   // define optional header symbol
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_OPT_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, opt_header_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_OPT_HEADER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, opt_header_chunk, 0, 0, 0);
   
   // :entry_point_va
   lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_OptionalHeader32Plus, entry_point_va), entry_point_name, LNK_SymbolScopeFlag_Main);
   
   // :code_base
-  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_OptionalHeader32Plus, code_base), str8_lit(LNK_TEXT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_OptionalHeader32Plus, code_base), (LNK_TEXT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   
   LNK_Section* last_sect = 0;
   for (LNK_Section* sect = &sect_arr.v[0], *sect_opl = sect + sect_arr.count; sect < sect_opl; sect += 1) {
@@ -2201,14 +2201,14 @@ lnk_build_pe_optional_header_x64(LNK_SymbolTable*       symtab,
   }
   
   // :sizeof_headers
-  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_32, OffsetOf(PE_OptionalHeader32Plus, sizeof_headers), str8_lit(LNK_WIN32_HEADER_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_CHUNK_SIZE_FILE_32, OffsetOf(PE_OptionalHeader32Plus, sizeof_headers), (LNK_WIN32_HEADER_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   lnk_section_push_reloc(header_sect, opt_header_chunk, LNK_Reloc_FILE_ALIGN_32, OffsetOf(PE_OptionalHeader32Plus, sizeof_headers), &g_null_symbol);
   
   // :check_sum
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_CHECKSUM_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, opt_header_chunk, OffsetOf(PE_OptionalHeader32Plus, check_sum), COFF_ComdatSelect_NoDuplicates, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_CHECKSUM_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, opt_header_chunk, OffsetOf(PE_OptionalHeader32Plus, check_sum), COFF_ComdatSelect_NoDuplicates, 0);
   
   // :data_dir_count
-  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(PE_OptionalHeader32Plus, data_dir_count), str8_lit(LNK_PE_DIRECTORY_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
+  lnk_section_push_reloc_undefined(header_sect, opt_header_chunk, LNK_Reloc_ADDR_32, OffsetOf(PE_OptionalHeader32Plus, data_dir_count), (LNK_PE_DIRECTORY_COUNT_SYMBOL_NAME), LNK_SymbolScopeFlag_Internal);
   
   return opt_header_chunk;
 }
@@ -2241,8 +2241,8 @@ lnk_build_pe_directories(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_
   lnk_chunk_set_debugf(header_sect.arena, directory_array_chunk, LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME);
   
   // define PE directory symbols
-  LNK_Symbol* directory_array_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_array_chunk, 0, 0, 0);
-  LNK_Symbol* directory_count_symbol = lnk_symbol_table_push_defined_va(symtab, str8_lit(LNK_PE_DIRECTORY_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_count);
+  LNK_Symbol* directory_array_symbol = lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_array_chunk, 0, 0, 0);
+  LNK_Symbol* directory_count_symbol = lnk_symbol_table_push_defined_va(symtab, (LNK_PE_DIRECTORY_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_count);
   
   for (uint64 dir_idx = 0; dir_idx < ArrayCount(directory_map); dir_idx += 1) {
     String8 symbol_name = str8_cstring(directory_map[dir_idx].name);
@@ -2279,7 +2279,7 @@ lnk_build_coff_section_table(LNK_SymbolTable* symtab, LNK_Section* header_sect, 
   lnk_chunk_set_debugf(header_sect.arena, COFF_FileHeader_array_chunk, LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME);
   
   // define symbol for COFF header array
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, COFF_FileHeader_array_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, COFF_FileHeader_array_chunk, 0, 0, 0);
   
   // push headers
   for (LNK_Section* sect = &sect_arr.v[0], *sect_opl = sect + sect_arr.count; sect < sect_opl; sect += 1) {
@@ -2329,7 +2329,7 @@ lnk_build_coff_section_table(LNK_SymbolTable* symtab, LNK_Section* header_sect, 
   
   // push symbol for section header count
   uint64 header_count = COFF_FileHeader_array_chunk.u.list.count;
-  lnk_symbol_table_push_defined_va(symtab, str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, header_count);
+  lnk_symbol_table_push_defined_va(symtab, (LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, header_count);
   
   return COFF_FileHeader_array_chunk;
 }
@@ -2347,12 +2347,12 @@ lnk_build_win32_image_header(LNK_SymbolTable*     symtab,
   Assert(header_sect.id == 0); 
   
   LNK_Chunk* win32_header_chunk     = lnk_section_push_chunk_list(header_sect, parent_chunk      , str8_zero()    );
-  LNK_Chunk* dos_chunk              = lnk_section_push_chunk_list(header_sect, win32_header_chunk, str8_lit("a"));
-  LNK_Chunk* nt_chunk               = lnk_section_push_chunk_list(header_sect, win32_header_chunk, str8_lit("b"));
-  LNK_Chunk* pe_magic_chunk         = lnk_section_push_chunk_list(header_sect, nt_chunk          , str8_lit("a"));
-  LNK_Chunk* coff_file_header_chunk = lnk_section_push_chunk_list(header_sect, nt_chunk          , str8_lit("b"));
-  LNK_Chunk* pe_optional_chunk      = lnk_section_push_chunk_list(header_sect, nt_chunk          , str8_lit("c"));
-  LNK_Chunk* coff_sect_header_chunk = lnk_section_push_chunk_list(header_sect, nt_chunk          , str8_lit("d"));
+  LNK_Chunk* dos_chunk              = lnk_section_push_chunk_list(header_sect, win32_header_chunk, ("a"));
+  LNK_Chunk* nt_chunk               = lnk_section_push_chunk_list(header_sect, win32_header_chunk, ("b"));
+  LNK_Chunk* pe_magic_chunk         = lnk_section_push_chunk_list(header_sect, nt_chunk          , ("a"));
+  LNK_Chunk* coff_file_header_chunk = lnk_section_push_chunk_list(header_sect, nt_chunk          , ("b"));
+  LNK_Chunk* pe_optional_chunk      = lnk_section_push_chunk_list(header_sect, nt_chunk          , ("c"));
+  LNK_Chunk* coff_sect_header_chunk = lnk_section_push_chunk_list(header_sect, nt_chunk          , ("d"));
   
   lnk_chunk_set_debugf(header_sect.arena, win32_header_chunk    , "Win32 Headers"                 );
   lnk_chunk_set_debugf(header_sect.arena, dos_chunk             , "DOS Chunk"                     );
@@ -2362,13 +2362,13 @@ lnk_build_win32_image_header(LNK_SymbolTable*     symtab,
   lnk_chunk_set_debugf(header_sect.arena, pe_optional_chunk     , "PE Optional Header Container"  );
   lnk_chunk_set_debugf(header_sect.arena, coff_sect_header_chunk, "COFF Section Headers Container");
   
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_WIN32_HEADER_SYMBOL_NAME)                 , LNK_DefinedSymbolVisibility_Internal, 0, win32_header_chunk    , 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_DOS_SYMBOL_NAME)                          , LNK_DefinedSymbolVisibility_Internal, 0, dos_chunk             , 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_NT_HEADERS_SYMBOL_NAME)                   , LNK_DefinedSymbolVisibility_Internal, 0, nt_chunk              , 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_MAGIC_CONTAINER_SYMBOL_NAME)           , LNK_DefinedSymbolVisibility_Internal, 0, pe_magic_chunk        , 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_COFF_FILE_HEADER_CONTAINER_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Internal, 0, coff_file_header_chunk, 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_OPT_HEADER_CONTAINER_SYMBOL_NAME)      , LNK_DefinedSymbolVisibility_Internal, 0, pe_optional_chunk     , 0, 0, 0);
-  lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_COFF_SECTION_HEADER_CONTAINER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, coff_sect_header_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_WIN32_HEADER_SYMBOL_NAME)                 , LNK_DefinedSymbolVisibility_Internal, 0, win32_header_chunk    , 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_DOS_SYMBOL_NAME)                          , LNK_DefinedSymbolVisibility_Internal, 0, dos_chunk             , 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_NT_HEADERS_SYMBOL_NAME)                   , LNK_DefinedSymbolVisibility_Internal, 0, nt_chunk              , 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_MAGIC_CONTAINER_SYMBOL_NAME)           , LNK_DefinedSymbolVisibility_Internal, 0, pe_magic_chunk        , 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_COFF_FILE_HEADER_CONTAINER_SYMBOL_NAME)   , LNK_DefinedSymbolVisibility_Internal, 0, coff_file_header_chunk, 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_PE_OPT_HEADER_CONTAINER_SYMBOL_NAME)      , LNK_DefinedSymbolVisibility_Internal, 0, pe_optional_chunk     , 0, 0, 0);
+  lnk_symbol_table_push_defined_chunk(symtab, (LNK_COFF_SECTION_HEADER_CONTAINER_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, coff_sect_header_chunk, 0, 0, 0);
   
   lnk_build_dos_header(symtab, header_sect, dos_chunk);
   lnk_build_pe_magic(symtab, header_sect, pe_magic_chunk);
@@ -2883,10 +2883,10 @@ lnk_init_section_table(LNK_SymbolTable* symtab, uint64 section_virt_off, uint64 
     lnk_symbol_table_push_defined_chunk(symtab, sect.symbol_name, LNK_DefinedSymbolVisibility_Internal, 0, sect.root, 0, 0, 0);
   }
   
-  st.null_sect = lnk_section_list_remove(&st.list, str8_lit(".null"));
+  st.null_sect = lnk_section_list_remove(&st.list, (".null"));
   
   // dont build layout because we discard debug from image and move it to pdb
-  LNK_Section* debug_sect = lnk_section_table_search(st, str8_lit(".debug"));
+  LNK_Section* debug_sect = lnk_section_table_search(st, (".debug"));
   debug_sect.emit_header = 0;
   debug_sect.has_layout  = 0;
   
@@ -2901,8 +2901,8 @@ lnk_init_merge_directive_list(Arena* arena, LNK_ObjList obj_list)
   
   LNK_MergeDirectiveList result = {0};
   
-  lnk_merge_directive_list_push(arena, &result, (LNK_MergeDirective){ str8_lit_comp(".xdata") , str8_lit_comp(".rdata") });
-  //lnk_merge_directive_list_push(arena, &result, (LNK_MergeDirective){ str8_lit_comp(".tls"),    str8_lit_comp(".data") });
+  lnk_merge_directive_list_push(arena, &result, (LNK_MergeDirective){ (".xdata") , (".rdata") });
+  //lnk_merge_directive_list_push(arena, &result, (LNK_MergeDirective){ (".tls"),    (".data") });
   
   // collect merge directives from objs
   for (LNK_ObjNode* obj_node = obj_list.first; obj_node != 0; obj_node = obj_node.next) {
@@ -2975,12 +2975,12 @@ lnk_log_size_breakdown(LNK_SectionTable* st, LNK_SymbolTable* symtab)
     }
   }
   
-  LNK_Symbol* dos_header_symbol          = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_DOS_HEADER_SYMBOL_NAME));
-  LNK_Symbol* dos_program_symbol         = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_DOS_PROGRAM_SYMBOL_NAME));
-  LNK_Symbol* COFF_FileHeader_symbol         = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_COFF_FILE_HEADER_SYMBOL_NAME));
-  LNK_Symbol* coff_section_header_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME));
-  LNK_Symbol* pe_opt_header_symbol       = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_PE_OPT_HEADER_SYMBOL_NAME));
-  LNK_Symbol* pe_directories_symbol      = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, str8_lit(LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME));
+  LNK_Symbol* dos_header_symbol          = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_DOS_HEADER_SYMBOL_NAME));
+  LNK_Symbol* dos_program_symbol         = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_DOS_PROGRAM_SYMBOL_NAME));
+  LNK_Symbol* COFF_FileHeader_symbol         = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_COFF_FILE_HEADER_SYMBOL_NAME));
+  LNK_Symbol* coff_section_header_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME));
+  LNK_Symbol* pe_opt_header_symbol       = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_PE_OPT_HEADER_SYMBOL_NAME));
+  LNK_Symbol* pe_directories_symbol      = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Internal, (LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME));
   
   LNK_Chunk* dos_header_chunk          = dos_header_symbol.u.defined.u.chunk;
   LNK_Chunk* dos_program_chunk         = dos_program_symbol.u.defined.u.chunk;
@@ -3007,7 +3007,7 @@ lnk_log_size_breakdown(LNK_SectionTable* st, LNK_SymbolTable* symtab)
   str8_list_pushf(scratch.arena, &output_list, "  Code Size:            %M", code_size);
   str8_list_pushf(scratch.arena, &output_list, "  Data Size:            %M", data_size);
   
-  StringJoin new_line_join = { str8_lit_comp(""), str8_lit_comp("\n"), str8_lit_comp("") };
+  StringJoin new_line_join = { (""), ("\n"), ("") };
   String8 output = str8_list_join(scratch.arena, &output_list, &new_line_join);
   lnk_log(LNK_Log_SizeBreakdown, "%S\n", output);
   
@@ -3034,7 +3034,7 @@ lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList* lib_index, LNK_SectionTabl
   str8_list_pushf(scratch.arena, &output_list, "  Linked Libs:    %u", lib_count);
   str8_list_pushf(scratch.arena, &output_list, "  Relocs Patched: %u", reloc_count);
   
-  StringJoin new_line_join = { str8_lit_comp(""), str8_lit_comp("\n"), str8_lit_comp("") };
+  StringJoin new_line_join = { (""), ("\n"), ("") };
   String8 output = str8_list_join(scratch.arena, &output_list, &new_line_join);
   lnk_log(LNK_Log_LinkStats, "%S\n", output);
   
@@ -3067,7 +3067,7 @@ lnk_log_timers()
   String8 total_time_str = string_from_elapsed_time(scratch.arena, total_time);
   str8_list_pushf(scratch.arena, &output_list, "  Total Time: %S", total_time_str);
   
-  StringJoin new_line_join = { str8_lit_comp(""), str8_lit_comp("\n"), str8_lit_comp("") };
+  StringJoin new_line_join = { (""), ("\n"), ("") };
   String8 output = str8_list_join(scratch.arena, &output_list, &new_line_join);
   lnk_log(LNK_Log_Timers, "%S\n", output);
   
@@ -3195,7 +3195,7 @@ lnk_run(int argc, char** argv)
   
 #if PROFILE_TELEMETRY
   {
-    String8 cmdl = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ .sep = str8_lit_comp(" ") });
+    String8 cmdl = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ .sep = (" ") });
     tmMessage(0, TMMF_ICON_NOTE, "Command Line: %.*s", str8_varg(cmdl));
   }
 #endif
@@ -3353,13 +3353,13 @@ lnk_run(int argc, char** argv)
           if (entry_point_symbol) {
             config.entry_point_name = entry_point_symbol.name;
             if (str8_match_lit("wmain", config.entry_point_name, 0)) {
-              config.entry_point_name = str8_lit("wmainCRTStartup");
+              config.entry_point_name = ("wmainCRTStartup");
             } else if (str8_match_lit("main", config.entry_point_name, 0)) {
-              config.entry_point_name = str8_lit("mainCRTStartup");
+              config.entry_point_name = ("mainCRTStartup");
             } else if (str8_match_lit("WinMain", config.entry_point_name, 0)) {
-              config.entry_point_name = str8_lit("WinMainCRTStartup");
+              config.entry_point_name = ("WinMainCRTStartup");
             } else if (str8_match_lit("wWinMain", config.entry_point_name, 0)) {
-              config.entry_point_name = str8_lit("wWinMainCRTStartup");
+              config.entry_point_name = ("wWinMainCRTStartup");
             }
           }
         }
@@ -3416,7 +3416,7 @@ lnk_run(int argc, char** argv)
       } break;
       case State_PushLoadConfigUndefSymbol: {
         ProfBegin("Push Load Config Undef Symbol");
-        String8 load_config_name = str8_lit(LNK_LOAD_CONFIG_SYMBOL_NAME);
+        String8 load_config_name = (LNK_LOAD_CONFIG_SYMBOL_NAME);
         str8_list_push(scratch.arena, &include_symbol_list, load_config_name);
         ProfEnd();
       } break;
@@ -3659,7 +3659,7 @@ lnk_run(int argc, char** argv)
             String8 path = input.string;
 
             if (input_source == LNK_InputSource_Default || input_source == LNK_InputSource_Obj) {
-              if (!str8_ends_with(path, str8_lit(".lib"), StringMatchFlag_CaseInsensitive)) {
+              if (!str8_ends_with(path, (".lib"), StringMatchFlag_CaseInsensitive)) {
                 path = push_str8f(temp.arena, "%S.lib", path);
               }
               if (lnk_is_lib_disallowed(disallow_lib_ht, path)) {
@@ -3756,7 +3756,7 @@ lnk_run(int argc, char** argv)
           String8 manifest_data = lnk_manifest_from_inputs(scratch.arena, config.mt_path, config.manifest_name, config.manifest_uac, config.manifest_level, config.manifest_ui_access, input_manifest_path_list, manifest_dep_list);
           String8 manifest_res  = pe_make_manifest_resource(scratch.arena, *config.manifest_resource_id, manifest_data);
           str8_list_push(scratch.arena, &res_data_list, manifest_res);
-          str8_list_push(scratch.arena, &res_path_list, str8_lit("* Manifest *"));
+          str8_list_push(scratch.arena, &res_path_list, ("* Manifest *"));
           ProfEnd();
         } break;
         case LNK_ManifestOpt_WriteToFile: {
@@ -3796,7 +3796,7 @@ lnk_run(int argc, char** argv)
         if (res_data_list.node_count > 0) {
           ProfBegin("Build * Resources *");
 
-          String8 obj_name = str8_lit("* Resources *");
+          String8 obj_name = ("* Resources *");
           String8 obj_data = lnk_obj_from_res_file_list(tp,
                                                         tp_arena.v[0],
                                                         st,
@@ -3820,9 +3820,9 @@ lnk_run(int argc, char** argv)
       case State_BuildAndInputLinkerObj: {
         ProfBegin("Build * Linker * Obj");
         
-        String8 obj_name = str8_lit("* Linker *");
+        String8 obj_name = ("* Linker *");
         
-        StringJoin join         = { str8_lit_comp(""),  str8_lit_comp(" "), str8_lit_comp("") };
+        StringJoin join         = { (""),  (" "), ("") };
         String8    raw_cmd_line = str8_list_join(scratch.arena, &config.raw_cmd_line, &join);
         
         String8 obj_data = lnk_make_linker_coff_obj(tp, scratch.arena, config.time_stamp, config.machine, config.work_dir, config.image_name, config.pdb_name, raw_cmd_line, obj_name);
@@ -3895,12 +3895,12 @@ lnk_run(int argc, char** argv)
         ProfBegin("Build Debug Directory");
         
         // push debug directory layout chunks
-        LNK_Section* debug_sect            = lnk_section_table_search(st, str8_lit(".rdata"));
+        LNK_Section* debug_sect            = lnk_section_table_search(st, (".rdata"));
         LNK_Chunk*   debug_chunk           = lnk_section_push_chunk_list(debug_sect, debug_sect.root, str8_zero());
         LNK_Chunk*   debug_dir_array_chunk = lnk_section_push_chunk_list(debug_sect, debug_chunk, str8_zero());
         
         // push symbols for PE directory patch
-        lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_DEBUG_DIR_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_dir_array_chunk, 0, 0, 0);
+        lnk_symbol_table_push_defined_chunk(symtab, (LNK_DEBUG_DIR_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, debug_dir_array_chunk, 0, 0, 0);
         
         // debug entry for PDB
         if (config.debug_mode != LNK_DebugMode_None && config.debug_mode != LNK_DebugMode_Null) {
@@ -4364,9 +4364,9 @@ lnk_string_from_input_source(LNK_InputSourceType input_source)
 {
   String8 result = str8_zero();
   switch (input_source) {
-  case LNK_InputSource_CmdLine: result = str8_lit("CmdLine"); break;
-  case LNK_InputSource_Default: result = str8_lit("Default"); break;
-  case LNK_InputSource_Obj:     result = str8_lit("Obj");     break;
+  case LNK_InputSource_CmdLine: result = ("CmdLine"); break;
+  case LNK_InputSource_Default: result = ("Default"); break;
+  case LNK_InputSource_Obj:     result = ("Obj");     break;
   default:                      InvalidPath;
   }
   return result;

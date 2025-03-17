@@ -157,8 +157,6 @@ uint64 cstring32_length(uint32* c);
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((uint8*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(uint8*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
 
 #define str8_array(S,C) str8((uint8*)(S), sizeof(*(S))*(C))
@@ -191,13 +189,13 @@ String8 backslashed_from_str8(Arena* arena, String8 string);
 ////////////////////////////////
 //~ rjf: String Matching
 
-#define str8_match_lit(a_lit, b, flags)   str8_match(str8_lit(a_lit), (b), (flags))
+#define str8_match_lit(a_lit, b, flags)   str8_match((a_lit), (b), (flags))
 #define str8_match_cstr(a_cstr, b, flags) str8_match(str8_cstring(a_cstr), (b), (flags))
 B32 str8_match(String8 a, String8 b, StringMatchFlags flags);
 uint64 str8_find_needle(String8 string, uint64 start_pos, String8 needle, StringMatchFlags flags);
 uint64 str8_find_needle_reverse(String8 string, uint64 start_pos, String8 needle, StringMatchFlags flags);
 B32 str8_ends_with(String8 string, String8 end, StringMatchFlags flags);
-#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), str8_lit(end_lit), (flags))
+#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), (end_lit), (flags))
 
 ////////////////////////////////
 //~ rjf: String Slicing

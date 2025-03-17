@@ -48,10 +48,10 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
   
   //- rjf: get input pdb
   {
-    String8 input_name = cmd_line_string(cmdline, str8_lit("pdb"));
+    String8 input_name = cmd_line_string(cmdline, ("pdb"));
     if(input_name.size == 0)
     {
-      str8_list_push(arena, &result.errors, str8_lit("Missing required parameter: '--pdb:<pdb_file>'"));
+      str8_list_push(arena, &result.errors, ("Missing required parameter: '--pdb:<pdb_file>'"));
     }
     if(input_name.size > 0)
     {
@@ -70,7 +70,7 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
   
   //- rjf: get input exe
   {
-    String8 input_name = cmd_line_string(cmdline, str8_lit("exe"));
+    String8 input_name = cmd_line_string(cmdline, ("exe"));
     if(input_name.size > 0)
     {
       String8 input_data = os_data_from_file_path(arena, input_name);
@@ -88,7 +88,7 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
   
   //- rjf: get output name
   {
-    result.output_name = cmd_line_string(cmdline, str8_lit("out"));
+    result.output_name = cmd_line_string(cmdline, ("out"));
     if(result.output_name.size == 0)
     {
       str8_list_pushf(arena, &result.errors, "Missing required parameter: '--out:<output_path>'");
@@ -117,15 +117,15 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
   //- rjf: get section flags
   {
     result.flags = P2R_ConvertFlag_All;
-    String8List only_names = cmd_line_strings(cmdline, str8_lit("only"));
-    String8List omit_names = cmd_line_strings(cmdline, str8_lit("only"));
+    String8List only_names = cmd_line_strings(cmdline, ("only"));
+    String8List omit_names = cmd_line_strings(cmdline, ("only"));
     if(only_names.node_count != 0)
     {
       result.flags = 0;
       for(String8Node* n = only_names.first; n != 0; n = n.next)
       {
         String8 string = n.string;
-#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlag_CaseInsensitive)) {result.flags |= P2R_ConvertFlag_##flag;}
+#define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags |= P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -135,7 +135,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
       for(String8Node* n = omit_names.first; n != 0; n = n.next)
       {
         String8 string = n.string;
-#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlag_CaseInsensitive)) {result.flags &= ~P2R_ConvertFlag_##flag;}
+#define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags &= ~P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -144,7 +144,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
   
   //- rjf: get other flags
   {
-    if(cmd_line_has_flag(cmdline, str8_lit("deterministic")))
+    if(cmd_line_has_flag(cmdline, ("deterministic")))
     {
       result.flags |= P2R_ConvertFlag_Deterministic;
     }
@@ -618,8 +618,8 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
       
       //- rjf: produce obj name
       String8 obj_name = pdb_unit.obj_name;
-      if(str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-         str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+      if(str8_match(obj_name, ("* Linker *"), 0) ||
+         str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
       {
         MemoryZeroStruct(&obj_name);
       }
@@ -3209,7 +3209,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
     top_level_info.voff_max      = exe_voff_max;
     if(!(in.flags & P2R_ConvertFlag_Deterministic))
     {
-      top_level_info.producer_name = str8_lit(BUILD_TITLE_STRING_LITERAL);
+      top_level_info.producer_name = (BUILD_TITLE_STRING_LITERAL);
     }
   }
   

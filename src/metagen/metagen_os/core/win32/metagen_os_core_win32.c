@@ -589,7 +589,7 @@ OS_FileIter *
 os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
+  String8 path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
   String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
   OS_FileIter* iter = push_array(arena, OS_FileIter, 1);
   iter.flags = flags;
@@ -869,9 +869,9 @@ os_process_launch(OS_ProcessLaunchParams* params)
   String8 cmd = {0};
   {
     StringJoin join_params = {0};
-    join_params.pre = str8_lit("\"");
-    join_params.sep = str8_lit("\" \"");
-    join_params.post = str8_lit("\"");
+    join_params.pre = ("\"");
+    join_params.sep = ("\" \"");
+    join_params.post = ("\"");
     cmd = str8_list_join(scratch.arena, &params.cmd_line, &join_params);
   }
   
@@ -880,8 +880,8 @@ os_process_launch(OS_ProcessLaunchParams* params)
   String8 env = {0};
   {
     StringJoin join_params2 = {0};
-    join_params2.sep = str8_lit("\0");
-    join_params2.post = str8_lit("\0");
+    join_params2.sep = ("\0");
+    join_params2.post = ("\0");
     String8List all_opts = params.env;
     if(params.inherit_env != 0)
     {
@@ -1619,7 +1619,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
   {
     String16 arg16 = str16_cstring((uint16 *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
-    if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive))
+    if(str8_match(arg8, ("--quiet"), StringMatchFlag_CaseInsensitive))
     {
       win32_g_is_quiet = 1;
     }

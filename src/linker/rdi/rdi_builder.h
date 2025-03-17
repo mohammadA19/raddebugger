@@ -717,7 +717,7 @@ struct RDIB_VMapRange
 
 ////////////////////////////////
 
-#define RDIB_PATH_TREE_NIL_STRING str8_lit("<nil>")
+#define RDIB_PATH_TREE_NIL_STRING ("<nil>")
 
 struct RDIB_PathTreeNode
 {

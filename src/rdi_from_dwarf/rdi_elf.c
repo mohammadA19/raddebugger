@@ -334,13 +334,13 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
   if (section_names != 0){
     for (uint64 i = 0; i < section_count; i += 1){
       String8 name = section_names[i];
-      if (str8_match(name, str8_lit(".strtab"), 0)){
+      if (str8_match(name, (".strtab"), 0)){
         strtab_idx = i;
       }
-      else if (str8_match(name, str8_lit(".symtab"), 0)){
+      else if (str8_match(name, (".symtab"), 0)){
         symtab_idx = i;
       }
-      else if (str8_match(name, str8_lit(".dynsym"), 0)){
+      else if (str8_match(name, (".dynsym"), 0)){
         dynsym_idx = i;
       }
     }
@@ -514,9 +514,9 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, String8 data){
 
 static String8
 elf_string_from_section_type(ELF_SectionType section_type){
-  String8 result = str8_lit("INVALID_SECTION_TYPE");
+  String8 result = ("INVALID_SECTION_TYPE");
   switch (section_type){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     ELF_SectionTypeXList(X)
 #undef X
   }
@@ -525,9 +525,9 @@ elf_string_from_section_type(ELF_SectionType section_type){
 
 static String8
 elf_string_from_symbol_binding(ELF_SymbolBinding binding){
-  String8 result = str8_lit("INVALID_SYMBOL_BINDING");
+  String8 result = ("INVALID_SYMBOL_BINDING");
   switch (binding){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     ELF_SymbolBindingXList(X)
 #undef X
   }
@@ -536,9 +536,9 @@ elf_string_from_symbol_binding(ELF_SymbolBinding binding){
 
 static String8
 elf_string_from_symbol_type(ELF_SymbolType type){
-  String8 result = str8_lit("INVALID_SYMBOL_TYPE");
+  String8 result = ("INVALID_SYMBOL_TYPE");
   switch (type){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     ELF_SymbolTypeXList(X)
 #undef X
   }
@@ -547,9 +547,9 @@ elf_string_from_symbol_type(ELF_SymbolType type){
 
 static String8
 elf_string_from_symbol_visibility(ELF_SymbolVisibility visibility){
-  String8 result = str8_lit("INVALID_SYMBOL_VISIBILITY");
+  String8 result = ("INVALID_SYMBOL_VISIBILITY");
   switch (visibility){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     ELF_SymbolVisibilityXList(X)
 #undef X
   }

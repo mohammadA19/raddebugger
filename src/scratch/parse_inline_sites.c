@@ -148,8 +148,8 @@ entry_point(CmdLine* cmdl)
 {
   Arena* arena = arena_alloc();
 
-  B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
-                cmd_line_has_flag(cmdl, str8_lit("h")) ||
+  B32 do_help = cmd_line_has_flag(cmdl, ("help")) ||
+                cmd_line_has_flag(cmdl, ("h")) ||
                 (cmdl.inputs.node_count == 0 && cmdl.options.count == 0);
   if (do_help) {
     fprintf(stdout, 
@@ -163,9 +163,9 @@ entry_point(CmdLine* cmdl)
 
   // -comp_unit
   uint64 single_comp_unit_idx = max_U64;
-  B32 single_comp_unit_mode = cmd_line_has_argument(cmdl, str8_lit("comp_unit"));
+  B32 single_comp_unit_mode = cmd_line_has_argument(cmdl, ("comp_unit"));
   if (single_comp_unit_mode) {
-    String8 comp_unit_str = cmd_line_string(cmdl, str8_lit("comp_unit"));
+    String8 comp_unit_str = cmd_line_string(cmdl, ("comp_unit"));
     if (!try_u64_from_str8_c_rules(comp_unit_str, &single_comp_unit_idx)) {
       fprintf(stderr, "ERROR: unable to parse -comp_unit=%.*s\n", str8_varg(comp_unit_str));
       return;
@@ -174,13 +174,13 @@ entry_point(CmdLine* cmdl)
 
   // -base_addr
   uint64 base_addr = 0;
-  String8 base_str = cmd_line_string(cmdl, str8_lit("base_addr"));
+  String8 base_str = cmd_line_string(cmdl, ("base_addr"));
   try_u64_from_str8_c_rules(base_str, &base_addr);
 
   // -pdb
   String8 pdb_name;
-  if (cmd_line_has_argument(cmdl, str8_lit("pdb"))) { 
-    pdb_name = cmd_line_string(cmdl, str8_lit("pdb"));
+  if (cmd_line_has_argument(cmdl, ("pdb"))) { 
+    pdb_name = cmd_line_string(cmdl, ("pdb"));
     if (pdb_name.size == 0) {
       fprintf(stderr, "ERROR: missing -pdb:<path>\n");
       return;
@@ -343,7 +343,7 @@ entry_point(CmdLine* cmdl)
 
     uint64     scope_level = 0;
     uint64     parent_voff = 0;
-    String8 parent_name = str8_lit("???");
+    String8 parent_name = ("???");
 
     CV_SymbolList symbol_list = {0};
     cv_parse_symbol_sub_section(arena, &symbol_list, 0, symbol_data, CV_SymbolAlign);
@@ -367,7 +367,7 @@ entry_point(CmdLine* cmdl)
           scope_level -= 1;
           if (scope_level == 0) {
             parent_voff = 0;
-            parent_name = str8_lit("???");
+            parent_name = ("???");
           }
         }
       } else if (symbol.kind == CV_SymKind_INLINESITE) {
@@ -377,7 +377,7 @@ entry_point(CmdLine* cmdl)
         CV_InlineBinaryAnnotsParsed  binary_annots_parse = cv_c13_parse_inline_binary_annots(arena, parent_voff, inlinee_parsed, binary_annots);
 
         
-        String8 inlinee_name = str8_lit("???");
+        String8 inlinee_name = ("???");
         if (ipi.itype_first <= inline_site.inlinee && inline_site.inlinee < ipi.itype_opl) {
           CV_RecRange inlinee_rec = ipi_leaf_parsed.leaf_ranges.ranges[inline_site.inlinee - ipi.itype_first];
           void* leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
@@ -392,8 +392,8 @@ entry_point(CmdLine* cmdl)
         }
 
 
-        String8 first_ln  = str8_lit("???");
-        String8 file_off  = str8_lit("???");
+        String8 first_ln  = ("???");
+        String8 file_off  = ("???");
         if (inlinee_parsed) {
           first_ln  = push_str8f(arena, "%u", inlinee_parsed.first_source_ln);
           file_off  = push_str8f(arena, "0x%X", inlinee_parsed.file_off);

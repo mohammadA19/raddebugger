@@ -171,7 +171,7 @@ struct
 
 ////////////////////////////////
 
-static read_only LNK_Symbol   g_null_symbol     = { str8_lit_comp("NULL"), LNK_Symbol_DefinedStatic };
+static read_only LNK_Symbol   g_null_symbol     = { ("NULL"), LNK_Symbol_DefinedStatic };
 static read_only LNK_Symbol*  g_null_symbol_ptr = &g_null_symbol;
 
 ////////////////////////////////

@@ -195,7 +195,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
     }
   }
   
-  LNK_Section* edata = lnk_section_table_search(st, str8_lit(".edata"));
+  LNK_Section* edata = lnk_section_table_search(st, (".edata"));
   
   // push header
   PE_ExportTableHeader* header       = push_array(edata.arena, PE_ExportTableHeader, 1);
@@ -207,11 +207,11 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   String8 image_name_cstr = push_cstr(edata.arena, str8_skip_last_slash(image_name));
   
   // push edata chunks
-  LNK_Chunk* header_chunk          = lnk_section_push_chunk_data(edata, edata.root, header_data, str8_lit("a"));
-  LNK_Chunk* voff_table_chunk      = lnk_section_push_chunk_list(edata, edata.root, str8_lit("b"));
-  LNK_Chunk* name_voff_table_chunk = lnk_section_push_chunk_list(edata, edata.root, str8_lit("c"));
-  LNK_Chunk* ordinal_table_chunk   = lnk_section_push_chunk_list(edata, edata.root, str8_lit("d"));
-  LNK_Chunk* string_buffer_chunk   = lnk_section_push_chunk_list(edata, edata.root, str8_lit("e"));
+  LNK_Chunk* header_chunk          = lnk_section_push_chunk_data(edata, edata.root, header_data, ("a"));
+  LNK_Chunk* voff_table_chunk      = lnk_section_push_chunk_list(edata, edata.root, ("b"));
+  LNK_Chunk* name_voff_table_chunk = lnk_section_push_chunk_list(edata, edata.root, ("c"));
+  LNK_Chunk* ordinal_table_chunk   = lnk_section_push_chunk_list(edata, edata.root, ("d"));
+  LNK_Chunk* string_buffer_chunk   = lnk_section_push_chunk_list(edata, edata.root, ("e"));
   LNK_Chunk* image_name_chunk      = lnk_section_push_chunk_data(edata, string_buffer_chunk, image_name_cstr, str8(0,0));
   lnk_chunk_set_debugf(edata.arena, header_chunk,          "EXPORT_HEADER");
   lnk_chunk_set_debugf(edata.arena, voff_table_chunk,      "EXPORT_ADDRESS_TABLE");
@@ -220,10 +220,10 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   lnk_chunk_set_debugf(edata.arena, string_buffer_chunk,   "EXPORT_STRING_BUFFER");
   lnk_chunk_set_debugf(edata.arena, image_name_chunk,      "EXPORT_IMAGE_NAME");
   
-  LNK_Symbol* image_name_symbol    = lnk_symbol_table_push_defined_chunk(symtab, str8_lit("export_table.name_voff"),                 LNK_DefinedSymbolVisibility_Internal, 0, image_name_chunk,      0, 0, 0);
-  LNK_Symbol* address_table_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit("export_table.export_address_table_voff"), LNK_DefinedSymbolVisibility_Internal, 0, voff_table_chunk,      0, 0, 0);
-  LNK_Symbol* name_table_symbol    = lnk_symbol_table_push_defined_chunk(symtab, str8_lit("export_table.name_pointer_table_voff"),   LNK_DefinedSymbolVisibility_Internal, 0, name_voff_table_chunk, 0, 0, 0);
-  LNK_Symbol* ordinal_table_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit("export_table.ordinal_table_voff"),        LNK_DefinedSymbolVisibility_Internal, 0, ordinal_table_chunk,   0, 0, 0);
+  LNK_Symbol* image_name_symbol    = lnk_symbol_table_push_defined_chunk(symtab, ("export_table.name_voff"),                 LNK_DefinedSymbolVisibility_Internal, 0, image_name_chunk,      0, 0, 0);
+  LNK_Symbol* address_table_symbol = lnk_symbol_table_push_defined_chunk(symtab, ("export_table.export_address_table_voff"), LNK_DefinedSymbolVisibility_Internal, 0, voff_table_chunk,      0, 0, 0);
+  LNK_Symbol* name_table_symbol    = lnk_symbol_table_push_defined_chunk(symtab, ("export_table.name_pointer_table_voff"),   LNK_DefinedSymbolVisibility_Internal, 0, name_voff_table_chunk, 0, 0, 0);
+  LNK_Symbol* ordinal_table_symbol = lnk_symbol_table_push_defined_chunk(symtab, ("export_table.ordinal_table_voff"),        LNK_DefinedSymbolVisibility_Internal, 0, ordinal_table_chunk,   0, 0, 0);
   
   // patch header fields
   lnk_section_push_reloc(edata, header_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_ExportTableHeader, name_voff),                 image_name_symbol);

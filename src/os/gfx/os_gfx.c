@@ -18,15 +18,15 @@ os_string_from_event_kind(OS_EventKind kind)
     case OS_EventKind_Null:
     case OS_EventKind_COUNT:
     {}break;
-    case OS_EventKind_Press:                {result = str8_lit("Press");}break;
-    case OS_EventKind_Release:              {result = str8_lit("Release");}break;
-    case OS_EventKind_MouseMove:            {result = str8_lit("MouseMove");}break;
-    case OS_EventKind_Text:                 {result = str8_lit("Text");}break;
-    case OS_EventKind_Scroll:               {result = str8_lit("Scroll");}break;
-    case OS_EventKind_WindowLoseFocus:      {result = str8_lit("WindowLoseFocus");}break;
-    case OS_EventKind_WindowClose:          {result = str8_lit("WindowClose");}break;
-    case OS_EventKind_FileDrop:             {result = str8_lit("FileDrop");}break;
-    case OS_EventKind_Wakeup:               {result = str8_lit("Wakeup");}break;
+    case OS_EventKind_Press:                {result = ("Press");}break;
+    case OS_EventKind_Release:              {result = ("Release");}break;
+    case OS_EventKind_MouseMove:            {result = ("MouseMove");}break;
+    case OS_EventKind_Text:                 {result = ("Text");}break;
+    case OS_EventKind_Scroll:               {result = ("Scroll");}break;
+    case OS_EventKind_WindowLoseFocus:      {result = ("WindowLoseFocus");}break;
+    case OS_EventKind_WindowClose:          {result = ("WindowClose");}break;
+    case OS_EventKind_FileDrop:             {result = ("FileDrop");}break;
+    case OS_EventKind_Wakeup:               {result = ("Wakeup");}break;
   }
   return result;
 }
@@ -37,9 +37,9 @@ os_string_list_from_modifiers(Arena* arena, OS_Modifiers modifiers)
   String8List result = {0};
   String8 modifier_strs[] = 
   {
-    str8_lit("Ctrl"),
-    str8_lit("Shift"),
-    str8_lit("Alt"),
+    ("Ctrl"),
+    ("Shift"),
+    ("Alt"),
   };
   str8_list_from_flags(arena, &result, modifiers, modifier_strs, ArrayCount(modifier_strs));
   return result;

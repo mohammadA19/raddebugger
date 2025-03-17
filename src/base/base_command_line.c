@@ -68,9 +68,9 @@ cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, String8 string, String8List
     var.string = push_str8_copy(arena, string);
     var.value_strings = values;
     StringJoin join = {0};
-    join.pre = str8_lit("");
-    join.sep = str8_lit(",");
-    join.post = str8_lit("");
+    join.pre = ("");
+    join.sep = (",");
+    join.post = ("");
     var.value_string = str8_list_join(arena, &var.value_strings, &join);
     *slot = var;
     cmd_line_push_opt(&cmd_line.options, var);
@@ -105,21 +105,21 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
     B32 is_option = 1;
     if(after_passthrough_option == 0)
     {
-      if(str8_match(node.string, str8_lit("--"), 0))
+      if(str8_match(node.string, ("--"), 0))
       {
         after_passthrough_option = 1;
         is_option = 0;
       }
-      else if(str8_match(str8_prefix(node.string, 2), str8_lit("--"), 0))
+      else if(str8_match(str8_prefix(node.string, 2), ("--"), 0))
       {
         option_name = str8_skip(option_name, 2);
       }
-      else if(str8_match(str8_prefix(node.string, 1), str8_lit("-"), 0))
+      else if(str8_match(str8_prefix(node.string, 1), ("-"), 0))
       {
         option_name = str8_skip(option_name, 1);
       }
       else if(operating_system_from_context() == OperatingSystem_Windows &&
-              str8_match(str8_prefix(node.string, 1), str8_lit("/"), 0))
+              str8_match(str8_prefix(node.string, 1), ("/"), 0))
       {
         option_name = str8_skip(option_name, 1);
       }
@@ -137,8 +137,8 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
     if(is_option)
     {
       B32 has_arguments = 0;
-      uint64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
-      uint64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
+      uint64 arg_signifier_position1 = str8_find_needle(option_name, 0, (":"), 0);
+      uint64 arg_signifier_position2 = str8_find_needle(option_name, 0, ("="), 0);
       uint64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
       String8 arg_portion_this_string = str8_skip(option_name, arg_signifier_position+1);
       if(arg_signifier_position < option_name.size)
@@ -168,7 +168,7 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
           {
             str8_list_push(arena, &arguments, sub_arg.string);
           }
-          if(!str8_match(str8_postfix(n.string, 1), str8_lit(","), 0) &&
+          if(!str8_match(str8_postfix(n.string, 1), (","), 0) &&
              (n != node || arg_portion_this_string.size != 0))
           {
             break;
@@ -182,7 +182,7 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
     
     // NOTE(rjf): Default path, treat as a passthrough config option to be
     // handled by tool-specific code.
-    else if(!str8_match(node.string, str8_lit("--"), 0) || !first_passthrough)
+    else if(!str8_match(node.string, ("--"), 0) || !first_passthrough)
     {
       str8_list_push(arena, &parsed.inputs, node.string);
       after_passthrough_option = 1;

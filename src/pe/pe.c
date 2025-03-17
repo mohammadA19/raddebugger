@@ -30,20 +30,20 @@ read_only struct
   String8             string;
   PE_WindowsSubsystem type;
 } g_pe_subsystem_map[] = {
-  { str8_lit_comp(""),                         PE_WindowsSubsystem_UNKNOWN                  },
-  { str8_lit_comp("native"),                   PE_WindowsSubsystem_NATIVE                   },
-  { str8_lit_comp("windows"),                  PE_WindowsSubsystem_WINDOWS_GUI              },
-  { str8_lit_comp("console"),                  PE_WindowsSubsystem_WINDOWS_CUI              },
-  { str8_lit_comp("os2_cui"),                  PE_WindowsSubsystem_OS2_CUI                  },
-  { str8_lit_comp("posix"),                    PE_WindowsSubsystem_POSIX_CUI                },
-  { str8_lit_comp("native_windows"),           PE_WindowsSubsystem_NATIVE_WINDOWS           },
-  { str8_lit_comp("windows_ce_gui"),           PE_WindowsSubsystem_WINDOWS_CE_GUI           },
-  { str8_lit_comp("efi_application"),          PE_WindowsSubsystem_EFI_APPLICATION          },
-  { str8_lit_comp("efi_boot_service_driver"),  PE_WindowsSubsystem_EFI_BOOT_SERVICE_DRIVER  },
-  { str8_lit_comp("efi_runtime_driver"),       PE_WindowsSubsystem_EFI_RUNTIME_DRIVER       },
-  { str8_lit_comp("efi_rom"),                  PE_WindowsSubsystem_EFI_ROM                  },
-  { str8_lit_comp("xbox"),                     PE_WindowsSubsystem_XBOX                     },
-  { str8_lit_comp("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
+  { (""),                         PE_WindowsSubsystem_UNKNOWN                  },
+  { ("native"),                   PE_WindowsSubsystem_NATIVE                   },
+  { ("windows"),                  PE_WindowsSubsystem_WINDOWS_GUI              },
+  { ("console"),                  PE_WindowsSubsystem_WINDOWS_CUI              },
+  { ("os2_cui"),                  PE_WindowsSubsystem_OS2_CUI                  },
+  { ("posix"),                    PE_WindowsSubsystem_POSIX_CUI                },
+  { ("native_windows"),           PE_WindowsSubsystem_NATIVE_WINDOWS           },
+  { ("windows_ce_gui"),           PE_WindowsSubsystem_WINDOWS_CE_GUI           },
+  { ("efi_application"),          PE_WindowsSubsystem_EFI_APPLICATION          },
+  { ("efi_boot_service_driver"),  PE_WindowsSubsystem_EFI_BOOT_SERVICE_DRIVER  },
+  { ("efi_runtime_driver"),       PE_WindowsSubsystem_EFI_RUNTIME_DRIVER       },
+  { ("efi_rom"),                  PE_WindowsSubsystem_EFI_ROM                  },
+  { ("xbox"),                     PE_WindowsSubsystem_XBOX                     },
+  { ("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
 };
 StaticAssert(ArrayCount(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_subsystem_map_count_check);
 
@@ -62,22 +62,22 @@ String8
 pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x)
 {
   switch (x) {
-    case PE_UnwindGprRegX64_RAX: return str8_lit("RCX");
-    case PE_UnwindGprRegX64_RCX: return str8_lit("RCX");
-    case PE_UnwindGprRegX64_RDX: return str8_lit("RDX");
-    case PE_UnwindGprRegX64_RBX: return str8_lit("RBX");
-    case PE_UnwindGprRegX64_RSP: return str8_lit("RSP");
-    case PE_UnwindGprRegX64_RBP: return str8_lit("RBP");
-    case PE_UnwindGprRegX64_RSI: return str8_lit("RSI");
-    case PE_UnwindGprRegX64_RDI: return str8_lit("RDI");
-    case PE_UnwindGprRegX64_R8:  return str8_lit("R8");
-    case PE_UnwindGprRegX64_R9:  return str8_lit("R9");
-    case PE_UnwindGprRegX64_R10: return str8_lit("R10");
-    case PE_UnwindGprRegX64_R11: return str8_lit("R11");
-    case PE_UnwindGprRegX64_R12: return str8_lit("R12");
-    case PE_UnwindGprRegX64_R13: return str8_lit("R13");
-    case PE_UnwindGprRegX64_R14: return str8_lit("R14");
-    case PE_UnwindGprRegX64_R15: return str8_lit("R15");
+    case PE_UnwindGprRegX64_RAX: return ("RCX");
+    case PE_UnwindGprRegX64_RCX: return ("RCX");
+    case PE_UnwindGprRegX64_RDX: return ("RDX");
+    case PE_UnwindGprRegX64_RBX: return ("RBX");
+    case PE_UnwindGprRegX64_RSP: return ("RSP");
+    case PE_UnwindGprRegX64_RBP: return ("RBP");
+    case PE_UnwindGprRegX64_RSI: return ("RSI");
+    case PE_UnwindGprRegX64_RDI: return ("RDI");
+    case PE_UnwindGprRegX64_R8:  return ("R8");
+    case PE_UnwindGprRegX64_R9:  return ("R9");
+    case PE_UnwindGprRegX64_R10: return ("R10");
+    case PE_UnwindGprRegX64_R11: return ("R11");
+    case PE_UnwindGprRegX64_R12: return ("R12");
+    case PE_UnwindGprRegX64_R13: return ("R13");
+    case PE_UnwindGprRegX64_R14: return ("R14");
+    case PE_UnwindGprRegX64_R15: return ("R15");
     default: InvalidPath;
   }
   return str8_zero();
@@ -87,22 +87,22 @@ String8
 pe_string_from_data_directory_index(PE_DataDirectoryIndex x)
 {
   switch (x) {
-    case PE_DataDirectoryIndex_EXPORT:         return str8_lit("Export");
-    case PE_DataDirectoryIndex_IMPORT:         return str8_lit("Import");
-    case PE_DataDirectoryIndex_RESOURCES:      return str8_lit("Resources");
-    case PE_DataDirectoryIndex_EXCEPTIONS:     return str8_lit("Exceptions");
-    case PE_DataDirectoryIndex_CERT:           return str8_lit("Cert");
-    case PE_DataDirectoryIndex_BASE_RELOC:     return str8_lit("BaseReloc");
-    case PE_DataDirectoryIndex_DEBUG:          return str8_lit("Debug");
-    case PE_DataDirectoryIndex_ARCH:           return str8_lit("Arch");
-    case PE_DataDirectoryIndex_GLOBAL_PTR:     return str8_lit("GlobalPtr");
-    case PE_DataDirectoryIndex_TLS:            return str8_lit("TLS");
-    case PE_DataDirectoryIndex_LOAD_CONFIG:    return str8_lit("LoadConfig");
-    case PE_DataDirectoryIndex_BOUND_IMPORT:   return str8_lit("BoundImport");
-    case PE_DataDirectoryIndex_IMPORT_ADDR:    return str8_lit("ImportAddr");
-    case PE_DataDirectoryIndex_DELAY_IMPORT:   return str8_lit("DelayImport");
-    case PE_DataDirectoryIndex_COM_DESCRIPTOR: return str8_lit("COM Descriptor");
-    case PE_DataDirectoryIndex_RESERVED:       return str8_lit("Reserved");
+    case PE_DataDirectoryIndex_EXPORT:         return ("Export");
+    case PE_DataDirectoryIndex_IMPORT:         return ("Import");
+    case PE_DataDirectoryIndex_RESOURCES:      return ("Resources");
+    case PE_DataDirectoryIndex_EXCEPTIONS:     return ("Exceptions");
+    case PE_DataDirectoryIndex_CERT:           return ("Cert");
+    case PE_DataDirectoryIndex_BASE_RELOC:     return ("BaseReloc");
+    case PE_DataDirectoryIndex_DEBUG:          return ("Debug");
+    case PE_DataDirectoryIndex_ARCH:           return ("Arch");
+    case PE_DataDirectoryIndex_GLOBAL_PTR:     return ("GlobalPtr");
+    case PE_DataDirectoryIndex_TLS:            return ("TLS");
+    case PE_DataDirectoryIndex_LOAD_CONFIG:    return ("LoadConfig");
+    case PE_DataDirectoryIndex_BOUND_IMPORT:   return ("BoundImport");
+    case PE_DataDirectoryIndex_IMPORT_ADDR:    return ("ImportAddr");
+    case PE_DataDirectoryIndex_DELAY_IMPORT:   return ("DelayImport");
+    case PE_DataDirectoryIndex_COM_DESCRIPTOR: return ("COM Descriptor");
+    case PE_DataDirectoryIndex_RESERVED:       return ("Reserved");
     default: InvalidPath;
   }
   return str8_zero();
@@ -112,25 +112,25 @@ String8
 pe_string_from_debug_directory_type(PE_DebugDirectoryType x)
 {
   switch (x) {
-    case PE_DebugDirectoryType_UNKNOWN:               return str8_lit("UNKNOWN");
-    case PE_DebugDirectoryType_COFF:                  return str8_lit("COFF");
-    case PE_DebugDirectoryType_CODEVIEW:              return str8_lit("CODEVIEW");
-    case PE_DebugDirectoryType_FPO:                   return str8_lit("FPO");
-    case PE_DebugDirectoryType_MISC:                  return str8_lit("MISC");
-    case PE_DebugDirectoryType_EXCEPTION:             return str8_lit("EXCEPTION");
-    case PE_DebugDirectoryType_FIXUP:                 return str8_lit("FIXUP");
-    case PE_DebugDirectoryType_OMAP_TO_SRC:           return str8_lit("OMAP_TO_SRC");
-    case PE_DebugDirectoryType_OMAP_FROM_SRC:         return str8_lit("OMAP_FROM_SRC");
-    case PE_DebugDirectoryType_BORLAND:               return str8_lit("BORLAND");
-    case PE_DebugDirectoryType_RESERVED10:            return str8_lit("RESERVED10");
-    case PE_DebugDirectoryType_CLSID:                 return str8_lit("CLSID");
-    case PE_DebugDirectoryType_VC_FEATURE:            return str8_lit("VC_FEATURE");
-    case PE_DebugDirectoryType_COFF_GROUP:            return str8_lit("COFF_GROUP");
-    case PE_DebugDirectoryType_ILTCG:                 return str8_lit("ILTCG");
-    case PE_DebugDirectoryType_MPX:                   return str8_lit("MPX");
-    case PE_DebugDirectoryType_REPRO:                 return str8_lit("REPRO");
-    case PE_DebugDirectoryType_EX_DLLCHARACTERISTICS: return str8_lit("EX_DLLCHARACTERISTICS");
-    case PE_DebugDirectoryType_COUNT:                 return str8_lit("COUNT");
+    case PE_DebugDirectoryType_UNKNOWN:               return ("UNKNOWN");
+    case PE_DebugDirectoryType_COFF:                  return ("COFF");
+    case PE_DebugDirectoryType_CODEVIEW:              return ("CODEVIEW");
+    case PE_DebugDirectoryType_FPO:                   return ("FPO");
+    case PE_DebugDirectoryType_MISC:                  return ("MISC");
+    case PE_DebugDirectoryType_EXCEPTION:             return ("EXCEPTION");
+    case PE_DebugDirectoryType_FIXUP:                 return ("FIXUP");
+    case PE_DebugDirectoryType_OMAP_TO_SRC:           return ("OMAP_TO_SRC");
+    case PE_DebugDirectoryType_OMAP_FROM_SRC:         return ("OMAP_FROM_SRC");
+    case PE_DebugDirectoryType_BORLAND:               return ("BORLAND");
+    case PE_DebugDirectoryType_RESERVED10:            return ("RESERVED10");
+    case PE_DebugDirectoryType_CLSID:                 return ("CLSID");
+    case PE_DebugDirectoryType_VC_FEATURE:            return ("VC_FEATURE");
+    case PE_DebugDirectoryType_COFF_GROUP:            return ("COFF_GROUP");
+    case PE_DebugDirectoryType_ILTCG:                 return ("ILTCG");
+    case PE_DebugDirectoryType_MPX:                   return ("MPX");
+    case PE_DebugDirectoryType_REPRO:                 return ("REPRO");
+    case PE_DebugDirectoryType_EX_DLLCHARACTERISTICS: return ("EX_DLLCHARACTERISTICS");
+    case PE_DebugDirectoryType_COUNT:                 return ("COUNT");
   }
   return str8_zero();
 }
@@ -139,10 +139,10 @@ String8
 pe_string_from_fpo_type(PE_FPOType x)
 {
   switch (x) {
-    case PE_FPOType_FPO:   return str8_lit("FPO");
-    case PE_FPOType_TRAP:  return str8_lit("TRAP");
-    case PE_FPOType_TSS:   return str8_lit("TSS");
-    case PE_FPOType_NOFPO: return str8_lit("NOFPO");
+    case PE_FPOType_FPO:   return ("FPO");
+    case PE_FPOType_TRAP:  return ("TRAP");
+    case PE_FPOType_TSS:   return ("TSS");
+    case PE_FPOType_NOFPO: return ("NOFPO");
   }
   return str8_zero();
 }
@@ -152,7 +152,7 @@ pe_string_from_misc_type(PE_DebugMiscType x)
 {
   switch (x) {
     case PE_DebugMiscType_NULL:     break;
-    case PE_DebugMiscType_EXE_NAME: return str8_lit("EXE_NAME");
+    case PE_DebugMiscType_EXE_NAME: return ("EXE_NAME");
   }
   return str8_zero();
 }
@@ -162,26 +162,26 @@ pe_resource_kind_to_string(PE_ResourceKind x)
 {
   String8 result = str8_zero();
   switch (x) {
-    case PE_ResourceKind_ACCELERATOR:  result = str8_lit("Accelerator");     break;
-    case PE_ResourceKind_ANICURSOR:    result = str8_lit("Animated Cursor"); break;
-    case PE_ResourceKind_ANIICON:      result = str8_lit("Animated Icon");   break;
-    case PE_ResourceKind_BITMAP:       result = str8_lit("Bitmap");          break;
-    case PE_ResourceKind_CURSOR:       result = str8_lit("Cursor");          break;
-    case PE_ResourceKind_DIALOG:       result = str8_lit("Dialog");          break;
-    case PE_ResourceKind_FONT:         result = str8_lit("Font");            break;
-    case PE_ResourceKind_FONTDIR:      result = str8_lit("Font Directory");  break;
-    case PE_ResourceKind_GROUP_CURSOR: result = str8_lit("Cursor Group");    break;
-    case PE_ResourceKind_GROUP_ICON:   result = str8_lit("Icon Group");      break;
-    case PE_ResourceKind_HTML:         result = str8_lit("HTML");            break;
-    case PE_ResourceKind_ICON:         result = str8_lit("Icon");            break;
-    case PE_ResourceKind_MANIFEST:     result = str8_lit("Manifest");        break;
-    case PE_ResourceKind_MENU:         result = str8_lit("Menu");            break;
-    case PE_ResourceKind_MESSAGETABLE: result = str8_lit("Message Table");   break;
-    case PE_ResourceKind_PLUGPLAY:     result = str8_lit("Plug Play");       break;
-    case PE_ResourceKind_RCDATA:       result = str8_lit("RC Data");         break;
-    case PE_ResourceKind_STRING:       result = str8_lit("String");          break;
-    case PE_ResourceKind_VERSION:      result = str8_lit("Version Info");    break;
-    case PE_ResourceKind_VXD:          result = str8_lit("VXD");             break;
+    case PE_ResourceKind_ACCELERATOR:  result = ("Accelerator");     break;
+    case PE_ResourceKind_ANICURSOR:    result = ("Animated Cursor"); break;
+    case PE_ResourceKind_ANIICON:      result = ("Animated Icon");   break;
+    case PE_ResourceKind_BITMAP:       result = ("Bitmap");          break;
+    case PE_ResourceKind_CURSOR:       result = ("Cursor");          break;
+    case PE_ResourceKind_DIALOG:       result = ("Dialog");          break;
+    case PE_ResourceKind_FONT:         result = ("Font");            break;
+    case PE_ResourceKind_FONTDIR:      result = ("Font Directory");  break;
+    case PE_ResourceKind_GROUP_CURSOR: result = ("Cursor Group");    break;
+    case PE_ResourceKind_GROUP_ICON:   result = ("Icon Group");      break;
+    case PE_ResourceKind_HTML:         result = ("HTML");            break;
+    case PE_ResourceKind_ICON:         result = ("Icon");            break;
+    case PE_ResourceKind_MANIFEST:     result = ("Manifest");        break;
+    case PE_ResourceKind_MENU:         result = ("Menu");            break;
+    case PE_ResourceKind_MESSAGETABLE: result = ("Message Table");   break;
+    case PE_ResourceKind_PLUGPLAY:     result = ("Plug Play");       break;
+    case PE_ResourceKind_RCDATA:       result = ("RC Data");         break;
+    case PE_ResourceKind_STRING:       result = ("String");          break;
+    case PE_ResourceKind_VERSION:      result = ("Version Info");    break;
+    case PE_ResourceKind_VXD:          result = ("VXD");             break;
   }
   return result;
 }
@@ -200,7 +200,7 @@ pe_string_from_fpo_flags(Arena* arena, PE_FPOFlags flags)
   if (flags & PE_FPOFlags_RESERVED) {
     str8_list_pushf(scratch.arena, &l, "RESERVED");
   }
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(" ")});
+  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=(" ")});
   scratch_end(scratch);
   return result;
 }
@@ -305,7 +305,7 @@ pe_string_from_global_flags(Arena* arena, PE_GlobalFlags flags)
     str8_list_pushf(scratch.arena, &l, "DISABLE_PROTDLLS");
   }
 
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(" ")});
+  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=(" ")});
   return result;
 }
 
@@ -346,7 +346,7 @@ pe_string_from_load_config_guard_flags(Arena* arena, PE_LoadConfigGuardFlags fla
     str8_list_pushf(scratch.arena, &l, "EH_CONTINUATION_TABLE_PRESENT");
   }
 
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep = str8_lit(" ")});
+  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep = (" ")});
   scratch_end(scratch);
   return result;
 }
@@ -389,7 +389,7 @@ pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars
   if (dll_chars & PE_DllCharacteristic_TERMINAL_SERVER_AWARE) {
     str8_list_pushf(scratch.arena, &l, "Terminal Server Aware");
   }
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(", ")});
+  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
@@ -969,14 +969,14 @@ pe_get_entry_point_names(COFF_MachineType            machine,
   if (file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) {
     if (machine == COFF_Machine_X86) {
       read_only static String8 dll_entry_point_arr[] = {
-        str8_lit_comp("__DllMainCRTStartup@12"),
+        ("__DllMainCRTStartup@12"),
       };
 
       entry_point_names.v = &dll_entry_point_arr[0];
       entry_point_names.count = ArrayCount(dll_entry_point_arr);
     } else {
       read_only static String8 dll_entry_point_arr[] = {
-        str8_lit_comp("_DllMainCRTStartup"),
+        ("_DllMainCRTStartup"),
       };
 
       entry_point_names.v = &dll_entry_point_arr[0];
@@ -987,10 +987,10 @@ pe_get_entry_point_names(COFF_MachineType            machine,
     case PE_WindowsSubsystem_UNKNOWN: break;
     case PE_WindowsSubsystem_WINDOWS_GUI: {
       read_only static String8 gui_entry_point_arr[] = {
-        str8_lit_comp("WinMain"),
-        str8_lit_comp("wWinMain"),
-        str8_lit_comp("WinMainCRTStartup"),
-        str8_lit_comp("wWinMainCRTStartup"),
+        ("WinMain"),
+        ("wWinMain"),
+        ("WinMainCRTStartup"),
+        ("wWinMainCRTStartup"),
       };
 
       entry_point_names.v = &gui_entry_point_arr[0];
@@ -998,10 +998,10 @@ pe_get_entry_point_names(COFF_MachineType            machine,
     } break;
     case PE_WindowsSubsystem_WINDOWS_CUI: {
       read_only static String8 cui_entry_point_arr[] = {
-        str8_lit_comp("main"),
-        str8_lit_comp("wmain"),
-        str8_lit_comp("mainCRTStartup"),
-        str8_lit_comp("wmainCRTStartup"),
+        ("main"),
+        ("wmain"),
+        ("mainCRTStartup"),
+        ("wmainCRTStartup"),
       };
 
       entry_point_names.v = &cui_entry_point_arr[0];

@@ -66,7 +66,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
     String8List dst_path_strs = {0};
     for(uint64 idx = 0; idx < num_backtracks; idx += 1)
     {
-      str8_list_push(scratch.arena, &dst_path_strs, str8_lit(".."));
+      str8_list_push(scratch.arena, &dst_path_strs, (".."));
     }
     
     // rjf: build parts of dst which are unique from src
@@ -97,7 +97,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
     // rjf: join
     StringJoin join = {0};
     {
-      join.sep = str8_lit("/");
+      join.sep = ("/");
     }
     dst_path = str8_list_join(arena, &dst_path_strs, &join);
   }

@@ -80,7 +80,7 @@ frame()
 void
 entry_point(CmdLine* cmdline)
 {
-  OS_Handle window = os_window_open(v2f32(1280, 720), 0, str8_lit("Window"));
+  OS_Handle window = os_window_open(v2f32(1280, 720), 0, ("Window"));
   os_window_first_paint(window);
   for(;!update(););
 }

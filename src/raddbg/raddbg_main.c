@@ -550,24 +550,24 @@ entry_point(CmdLine* cmd_line)
   uint64 jit_code = 0;
   uint64 jit_addr = 0;
   {
-    if(cmd_line_has_flag(cmd_line, str8_lit("ipc")))
+    if(cmd_line_has_flag(cmd_line, ("ipc")))
     {
       exec_mode = ExecMode_IPCSender;
     }
-    else if(cmd_line_has_flag(cmd_line, str8_lit("convert")))
+    else if(cmd_line_has_flag(cmd_line, ("convert")))
     {
       exec_mode = ExecMode_Converter;
     }
-    else if(cmd_line_has_flag(cmd_line, str8_lit("?")) ||
-            cmd_line_has_flag(cmd_line, str8_lit("help")))
+    else if(cmd_line_has_flag(cmd_line, ("?")) ||
+            cmd_line_has_flag(cmd_line, ("help")))
     {
       exec_mode = ExecMode_Help;
     }
-    auto_run = cmd_line_has_flag(cmd_line, str8_lit("auto_run"));
-    auto_step = cmd_line_has_flag(cmd_line, str8_lit("auto_step"));
-    String8 jit_pid_string = cmd_line_string(cmd_line, str8_lit("jit_pid"));
-    String8 jit_code_string = cmd_line_string(cmd_line, str8_lit("jit_code"));
-    String8 jit_addr_string = cmd_line_string(cmd_line, str8_lit("jit_addr"));
+    auto_run = cmd_line_has_flag(cmd_line, ("auto_run"));
+    auto_step = cmd_line_has_flag(cmd_line, ("auto_step"));
+    String8 jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
+    String8 jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
+    String8 jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
     try_u64_from_str8_c_rules(jit_pid_string, &jit_pid);
     try_u64_from_str8_c_rules(jit_code_string, &jit_code);
     try_u64_from_str8_c_rules(jit_addr_string, &jit_addr);
@@ -639,16 +639,16 @@ entry_point(CmdLine* cmd_line)
               {
                 str8_list_push(scratch.arena, &passthrough_args_list, n.string);
               }
-              StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
+              StringJoin join = {(""), (" "), ("")};
               arguments_string = str8_list_join(scratch.arena, &passthrough_args_list, &join);
             }
             
             //- rjf: build config tree
-            RD_Cfg* command_line_root = rd_cfg_child_from_string(rd_state.root_cfg, str8_lit("command_line"));
-            RD_Cfg* target = rd_cfg_new(command_line_root, str8_lit("target"));
-            RD_Cfg* exe    = rd_cfg_new(target, str8_lit("executable"));
-            RD_Cfg* args   = rd_cfg_new(target, str8_lit("arguments"));
-            RD_Cfg* wdir   = rd_cfg_new(target, str8_lit("working_directory"));
+            RD_Cfg* command_line_root = rd_cfg_child_from_string(rd_state.root_cfg, ("command_line"));
+            RD_Cfg* target = rd_cfg_new(command_line_root, ("target"));
+            RD_Cfg* exe    = rd_cfg_new(target, ("executable"));
+            RD_Cfg* args   = rd_cfg_new(target, ("arguments"));
+            RD_Cfg* wdir   = rd_cfg_new(target, ("working_directory"));
             rd_cfg_new(exe, executable_name_string);
             rd_cfg_new(args, arguments_string);
             rd_cfg_new(wdir, working_directory_string);
@@ -692,7 +692,7 @@ entry_point(CmdLine* cmd_line)
           }
           
           // rjf: equip args
-          StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
+          StringJoin join = {(""), (" "), ("")};
           String8 args_str = str8_list_join(scratch.arena, &passthrough_args_list, &join);
           if(args_str.size != 0)
           {
@@ -762,7 +762,7 @@ entry_point(CmdLine* cmd_line)
               if(dst_window != 0)
               {
                 dst_window.window_temporarily_focused_ipc = 1;
-                uint64 first_space_pos = str8_find_needle(msg, 0, str8_lit(" "), 0);
+                uint64 first_space_pos = str8_find_needle(msg, 0, (" "), 0);
                 String8 cmd_kind_name_string = str8_prefix(msg, first_space_pos);
                 String8 cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
                 RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
@@ -823,9 +823,9 @@ entry_point(CmdLine* cmd_line)
       
       //- rjf: grab explicit PID argument
       uint32 dst_pid = 0;
-      if(cmd_line_has_argument(cmd_line, str8_lit("pid")))
+      if(cmd_line_has_argument(cmd_line, ("pid")))
       {
-        String8 dst_pid_string = cmd_line_string(cmd_line, str8_lit("pid"));
+        String8 dst_pid_string = cmd_line_string(cmd_line, ("pid"));
         uint64 dst_pid_u64 = 0;
         if(dst_pid_string.size != 0 &&
            try_u64_from_str8_c_rules(dst_pid_string, &dst_pid_u64))
@@ -868,7 +868,7 @@ entry_point(CmdLine* cmd_line)
         IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
         uint8* buffer = (uint8 *)(ipc_info+1);
         uint64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
-        StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
+        StringJoin join = {(""), (" "), ("")};
         String8 msg = str8_list_join(scratch.arena, &cmd_line.inputs, &join);
         ipc_info.msg_size = Min(buffer_max, msg.size);
         MemoryCopy(buffer, msg.str, ipc_info.msg_size);
@@ -919,7 +919,7 @@ entry_point(CmdLine* cmd_line)
       
       //- rjf: compress
       P2R_Serialize2File* srlz2file_compressed = srlz2file;
-      if(out_file_is_good) if(cmd_line_has_flag(cmd_line, str8_lit("compress"))) ProfScope("compress")
+      if(out_file_is_good) if(cmd_line_has_flag(cmd_line, ("compress"))) ProfScope("compress")
       {
         srlz2file_compressed = push_array(scratch.arena, P2R_Serialize2File, 1);
         srlz2file_compressed = p2r_compress(scratch.arena, srlz2file);
@@ -953,8 +953,8 @@ entry_point(CmdLine* cmd_line)
     case ExecMode_Help:
     {
       os_graphical_message(0,
-                           str8_lit("The RAD Debugger - Help"),
-                           str8_lit("The following options may be used when starting the RAD Debugger from the command line:\n\n"
+                           ("The RAD Debugger - Help"),
+                           ("The following options may be used when starting the RAD Debugger from the command line:\n\n"
                                     "--user:<path>\n"
                                     "Use to specify the location of a user file which should be used. User files are used to store settings for users, including window and panel setups, path mapping, and visual settings. If this file does not exist, it will be created as necessary. This file will be autosaved as user-related changes are made.\n\n"
                                     "--project:<path>\n"

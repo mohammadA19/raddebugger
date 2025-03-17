@@ -170,8 +170,8 @@ String8
 cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
 {
   switch (kind) {
-    case CV_InlineRangeKind_Expr: return str8_lit("Expr");
-    case CV_InlineRangeKind_Stmt: return str8_lit("Stmt");
+    case CV_InlineRangeKind_Expr: return ("Expr");
+    case CV_InlineRangeKind_Stmt: return ("Stmt");
   }
   return str8_zero();
 }

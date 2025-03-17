@@ -6,15 +6,15 @@
 C_LINKAGE_BEGIN
 String8 r_tex2d_format_display_string_table[9] =
 {
-str8_lit_comp("R8"),
-str8_lit_comp("RG8"),
-str8_lit_comp("RGBA8"),
-str8_lit_comp("BGRA8"),
-str8_lit_comp("R16"),
-str8_lit_comp("RGBA16"),
-str8_lit_comp("R32"),
-str8_lit_comp("RG32"),
-str8_lit_comp("RGBA32"),
+("R8"),
+("RG8"),
+("RGBA8"),
+("BGRA8"),
+("R16"),
+("RGBA16"),
+("R32"),
+("RG32"),
+("RGBA32"),
 };
 
 uint8 r_tex2d_format_bytes_per_pixel_table[9] =
@@ -32,22 +32,22 @@ uint8 r_tex2d_format_bytes_per_pixel_table[9] =
 
 String8 r_resource_kind_display_string_table[3] =
 {
-str8_lit_comp("Static"),
-str8_lit_comp("Dynamic"),
-str8_lit_comp("Stream "),
+("Static"),
+("Dynamic"),
+("Stream "),
 };
 
 String8 r_tex2d_sample_kind_display_string_table[2] =
 {
-str8_lit_comp("Nearest"),
-str8_lit_comp("Linear"),
+("Nearest"),
+("Linear"),
 };
 
 String8 r_pass_kind_display_string_table[3] =
 {
-str8_lit_comp("UI"),
-str8_lit_comp("Blur"),
-str8_lit_comp("Geo3D"),
+("UI"),
+("Blur"),
+("Geo3D"),
 };
 
 uint8 r_pass_kind_batch_table[3] =

@@ -361,8 +361,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
 
   // :common_block
   uint64 common_block_idx = chunk_count - 1;
-  sect_name_arr[common_block_idx] = str8_lit(".bss");
-  sect_sort_arr[common_block_idx] = str8_lit("~");
+  sect_name_arr[common_block_idx] = (".bss");
+  sect_sort_arr[common_block_idx] = ("~");
 
   for (uint64 sect_idx = 0; sect_idx < coff_info.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader* coff_sect = &coff_sect_arr[sect_idx];
@@ -1143,7 +1143,7 @@ MSCRT_FeatFlags
 lnk_obj_get_features(LNK_Obj* obj)
 {
   MSCRT_FeatFlags result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@feat.00"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, ("@feat.00"), 0);
   if (sym) {
     Assert(LNK_Symbol_IsDefined(sym.type));
     Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);
@@ -1156,7 +1156,7 @@ uint32
 lnk_obj_get_comp_id(LNK_Obj* obj)
 {
   uint32 result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@comp.id"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, ("@comp.id"), 0);
   if (sym) {
     Assert(LNK_Symbol_IsDefined(sym.type));
     Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);
@@ -1169,7 +1169,7 @@ uint32
 lnk_obj_get_vol_md(LNK_Obj* obj)
 {
   uint32 result = 0;
-  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, str8_lit("@vol.md"), 0);
+  LNK_Symbol* sym = lnk_symbol_list_search(obj.symbol_list, ("@vol.md"), 0);
   if (sym) {
     Assert(LNK_Symbol_IsDefined(sym.type));
     Assert(sym.u.defined.value_type == LNK_DefinedSymbolValue_VA);

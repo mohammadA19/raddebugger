@@ -6,7 +6,7 @@ dw_string_from_expr_op(Arena* arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
   String8 result = {0};
 
-  #define X(_N,...) case DW_ExprOp_##_N: result = str8_lit(Stringify(_N)); goto exit;
+  #define X(_N,...) case DW_ExprOp_##_N: result = (Stringify(_N)); goto exit;
   switch (ext) {
     case DW_Ext_Null:  break;
     case DW_Ext_LLVM:  break;
@@ -48,7 +48,7 @@ String8
 dw_string_from_tag_kind(Arena* arena, DW_TagKind kind)
 {
   switch (kind) {
-    #define X(_N,_ID) case DW_Tag_##_N: return str8_lit(Stringify(_N));
+    #define X(_N,_ID) case DW_Tag_##_N: return (Stringify(_N));
     DW_Tag_V3_XList(X)
     DW_Tag_V5_XList(X)
     DW_Tag_GNU_XList(X)
@@ -60,7 +60,7 @@ dw_string_from_tag_kind(Arena* arena, DW_TagKind kind)
 String8
 dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
-  #define X(_N,...) case DW_Attrib_##_N: return str8_lit(Stringify(_N));
+  #define X(_N,...) case DW_Attrib_##_N: return (Stringify(_N));
 
   while (ext) {
     uint64 z = 64-clz64(ext);
@@ -113,7 +113,7 @@ dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKi
 String8
 dw_string_from_form_kind(Arena* arena, DW_Version ver, DW_FormKind kind)
 {
-  #define X(_N,...) case DW_Form_##_N: return str8_lit(Stringify(_N));
+  #define X(_N,...) case DW_Form_##_N: return (Stringify(_N));
   switch (ver) {
     case DW_Version_5: {
       switch (kind) {
@@ -142,7 +142,7 @@ String8
 dw_string_from_language(Arena* arena, DW_Language kind)
 {
   switch (kind) {
-    #define X(_N,_ID) case DW_Language_##_N: return str8_lit(Stringify(_N));
+    #define X(_N,_ID) case DW_Language_##_N: return (Stringify(_N));
     DW_Language_XList(X)
     #undef X
   }
@@ -153,7 +153,7 @@ String8
 dw_string_from_std_opcode(Arena* arena, DW_StdOpcode kind)
 {
   switch (kind) {
-    #define X(_N,_ID) case DW_StdOpcode_##_N: return str8_lit(Stringify(_N));
+    #define X(_N,_ID) case DW_StdOpcode_##_N: return (Stringify(_N));
     DW_StdOpcode_XList(X)
     #undef X
   }
@@ -164,7 +164,7 @@ String8
 dw_string_from_ext_opcode(Arena* arena, DW_ExtOpcode kind)
 {
   switch (kind) {
-    #define X(_N,_ID) case DW_ExtOpcode_##_N: return str8_lit(Stringify(_N));
+    #define X(_N,_ID) case DW_ExtOpcode_##_N: return (Stringify(_N));
     DW_ExtOpcode_XList(X)
     #undef X
     default: InvalidPath; break;
@@ -201,14 +201,14 @@ dw_string_from_register(Arena* arena, Arch arch, uint64 reg_id)
     case Arch_Null: break;
     case Arch_x86: {
       switch (reg_id) {
-        #define X(_N, _ID, ...) case DW_Reg_x86_##_N: reg_str = str8_lit(Stringify(_ID)); break;
+        #define X(_N, _ID, ...) case DW_Reg_x86_##_N: reg_str = (Stringify(_ID)); break;
         DW_Regs_X86_XList(X)
         #undef X
       }
     } break;
     case Arch_x64: {
       switch (reg_id) {
-        #define X(_N, _ID, ...) case DW_Reg_x64_##_N: reg_str = str8_lit(Stringify(_ID)); break;
+        #define X(_N, _ID, ...) case DW_Reg_x64_##_N: reg_str = (Stringify(_ID)); break;
         DW_Regs_X64_XList(X)
         #undef X
       }

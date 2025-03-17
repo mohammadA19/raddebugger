@@ -53,7 +53,7 @@ Rng1U64
 ev_range_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Temp scratch = scratch_begin(0, 0);
-  uint64 size = ev_value_from_params_key(params, str8_lit("size")).u64;
+  uint64 size = ev_value_from_params_key(params, ("size")).u64;
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   E_TypeKey direct_type_key = e_type_unwrap(e_type_direct_from_key(eval.type_key));
@@ -87,9 +87,9 @@ Arch
 ev_arch_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Arch arch = Arch_Null;
-  MD_Node* arch_node = md_child_from_string(params, str8_lit("arch"), 0);
+  MD_Node* arch_node = md_child_from_string(params, ("arch"), 0);
   String8 arch_kind_string = arch_node.first.string;
-  if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlag_CaseInsensitive))
+  if(str8_match(arch_kind_string, ("x64"), StringMatchFlag_CaseInsensitive))
   {
     arch = Arch_x64;
   }
@@ -418,7 +418,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(wrap)
     Task* last_task = first_task;
     for(Task* t = first_task; t != 0; t = t.next)
     {
-      if(t.expr.kind == E_ExprKind_LeafIdent && str8_match(t.expr.string, str8_lit("$expr"), 0))
+      if(t.expr.kind == E_ExprKind_LeafIdent && str8_match(t.expr.string, ("$expr"), 0))
       {
         E_Expr* original_expr_ref = e_expr_ref(arena, expr);
         if(t.parent != &e_expr_nil)

@@ -184,9 +184,9 @@ entry_point(CmdLine* cmdline)
 {
   //- rjf: initialize state, unpack command line
   Arena* arena = arena_alloc();
-  B32 do_help = (cmd_line_has_flag(cmdline, str8_lit("help")) ||
-                 cmd_line_has_flag(cmdline, str8_lit("h")) ||
-                 cmd_line_has_flag(cmdline, str8_lit("?")));
+  B32 do_help = (cmd_line_has_flag(cmdline, ("help")) ||
+                 cmd_line_has_flag(cmdline, ("h")) ||
+                 cmd_line_has_flag(cmdline, ("?")));
   P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
   user2convert.flags &= ~(P2R_ConvertFlag_Types|P2R_ConvertFlag_UDTs);
   

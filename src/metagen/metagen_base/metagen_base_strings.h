@@ -156,8 +156,6 @@ uint64 cstring32_length(uint32* c);
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((uint8*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(uint8*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
 
 #define str8_array(S,C) str8((uint8*)(S), sizeof(*(S))*(C))

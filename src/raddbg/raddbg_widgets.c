@@ -127,12 +127,12 @@ rd_cmd_binding_buttons(String8 name)
         String8 key = os_g_key_display_string_table[binding.key];
         str8_list_push(scratch.arena, &mods, key);
         StringJoin join = {0};
-        join.sep = str8_lit(" + ");
+        join.sep = (" + ");
         keybinding_str = str8_list_join(scratch.arena, &mods, &join);
       }
       else
       {
-        keybinding_str = str8_lit("- no binding -");
+        keybinding_str = ("- no binding -");
       }
     }
     
@@ -177,7 +177,7 @@ rd_cmd_binding_buttons(String8 name)
       {
         if((binding.key == OS_Key_Esc || binding.key == OS_Key_Delete) && binding.modifiers == 0)
         {
-          log_user_error(str8_lit("Cannot rebind; this command uses a reserved keybinding."));
+          log_user_error(("Cannot rebind; this command uses a reserved keybinding."));
         }
         else
         {
@@ -195,7 +195,7 @@ rd_cmd_binding_buttons(String8 name)
       // rjf: hover w/ conflicts => show conflicts
       if(ui_hovering(sig) && has_conflicts) UI_Tooltip
       {
-        UI_PrefWidth(ui_children_sum(1)) rd_error_label(str8_lit("This binding conflicts with those for:"));
+        UI_PrefWidth(ui_children_sum(1)) rd_error_label(("This binding conflicts with those for:"));
         for(String8Node* n = specs_with_binding.first; n != 0; n = n.next)
         {
           if(!str8_match(n.string, name, 0))
@@ -216,7 +216,7 @@ rd_cmd_binding_buttons(String8 name)
                                   .text = rd_rgba_from_theme_color(RD_ThemeColor_Text)))
     {
       ui_set_next_group_key(ui_key_zero());
-      UI_Signal sig = rd_icon_button(RD_IconKind_X, 0, str8_lit("###delete_binding"));
+      UI_Signal sig = rd_icon_button(RD_IconKind_X, 0, ("###delete_binding"));
       if(ui_clicked(sig))
       {
         rd_unbind_name(name, binding);
@@ -319,7 +319,7 @@ rd_cmd_spec_button(String8 name)
       ui_set_next_group_key(ui_key_zero());
       UI_PrefWidth(ui_children_sum(1))
         UI_FontSize(ui_top_font_size()*0.95f) UI_HeightFill
-        UI_NamedRow(str8_lit("###bindings"))
+        UI_NamedRow(("###bindings"))
         UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
         UI_FastpathCodepoint(0)
       {
@@ -669,7 +669,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     ui_set_next_pref_width(ui_px(params.priority_margin_width_px, 1));
     ui_set_next_pref_height(ui_px(params.line_height_px*(dim_1s64(params.line_num_range)+1), 1.f));
     ui_set_next_child_layout_axis(Axis2_Y);
-    priority_margin_container_box = ui_build_box_from_string(UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), str8_lit("priority_margin_container"));
+    priority_margin_container_box = ui_build_box_from_string(UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), ("priority_margin_container"));
     UI_Parent(priority_margin_container_box) UI_PrefHeight(ui_px(params.line_height_px, 1.f)) UI_Palette(margin_contents_palette)
     {
       uint64 line_idx = 0;
@@ -815,7 +815,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     ui_set_next_pref_width(ui_px(params.catchall_margin_width_px, 1));
     ui_set_next_pref_height(ui_px(params.line_height_px*(dim_1s64(params.line_num_range)+1), 1.f));
     ui_set_next_child_layout_axis(Axis2_Y);
-    catchall_margin_container_box = ui_build_box_from_string(UI_BoxFlag_DrawSideLeft|UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), str8_lit("catchall_margin_container"));
+    catchall_margin_container_box = ui_build_box_from_string(UI_BoxFlag_DrawSideLeft|UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), ("catchall_margin_container"));
     UI_Parent(catchall_margin_container_box) UI_PrefHeight(ui_px(params.line_height_px, 1.f)) UI_Palette(margin_contents_palette)
     {
       uint64 line_idx = 0;
@@ -1175,7 +1175,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
   {
     ui_set_next_hover_cursor(ctrlified ? OS_Cursor_HandPoint : OS_Cursor_IBar);
     ui_set_next_pref_height(ui_px(params.line_height_px*(dim_1s64(params.line_num_range)+1), 1.f));
-    text_container_box = ui_build_box_from_string(UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), str8_lit("text_container"));
+    text_container_box = ui_build_box_from_string(UI_BoxFlag_Clickable*!!(params.flags & RD_CodeSliceFlag_Clickable), ("text_container"));
   }
   
   //////////////////////////////
@@ -2234,8 +2234,8 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
     Vec4F32 token_color_rgba = rd_rgba_from_theme_color(token_color);
     token_color_rgba.w *= alpha;
     String8 token_string = str8_substr(string, token.range);
-    if(str8_match(token_string, str8_lit("{"), 0)) { indirection_counter += 1; }
-    if(str8_match(token_string, str8_lit("["), 0)) { indirection_counter += 1; }
+    if(str8_match(token_string, ("{"), 0)) { indirection_counter += 1; }
+    if(str8_match(token_string, ("["), 0)) { indirection_counter += 1; }
     indirection_counter = ClampBot(0, indirection_counter);
     switch(token.kind)
     {
@@ -2279,19 +2279,19 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         uint32 base = 10;
         uint64 prefix_skip = 0;
         uint64 digit_group_size = 3;
-        if(str8_match(str8_prefix(token_string, 2), str8_lit("0x"), StringMatchFlag_CaseInsensitive))
+        if(str8_match(str8_prefix(token_string, 2), ("0x"), StringMatchFlag_CaseInsensitive))
         {
           base = 16;
           prefix_skip = 2;
           digit_group_size = 4;
         }
-        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0b"), StringMatchFlag_CaseInsensitive))
+        else if(str8_match(str8_prefix(token_string, 2), ("0b"), StringMatchFlag_CaseInsensitive))
         {
           base = 2;
           prefix_skip = 2;
           digit_group_size = 8;
         }
-        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0o"), StringMatchFlag_CaseInsensitive))
+        else if(str8_match(str8_prefix(token_string, 2), ("0o"), StringMatchFlag_CaseInsensitive))
         {
           base = 8;
           prefix_skip = 2;
@@ -2299,7 +2299,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         }
         
         // rjf: grab string parts
-        uint64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
+        uint64 dot_pos = str8_find_needle(token_string, 0, ("."), 0);
         String8 prefix = str8_prefix(token_string, prefix_skip);
         String8 whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
         String8 decimal = str8_skip(token_string, dot_pos);
@@ -2369,8 +2369,8 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         
       }break;
     }
-    if(str8_match(token_string, str8_lit("}"), 0)) { indirection_counter -= 1; }
-    if(str8_match(token_string, str8_lit("]"), 0)) { indirection_counter -= 1; }
+    if(str8_match(token_string, ("}"), 0)) { indirection_counter -= 1; }
+    if(str8_match(token_string, ("]"), 0)) { indirection_counter -= 1; }
     indirection_counter = ClampBot(0, indirection_counter);
   }
   scratch_end(scratch);

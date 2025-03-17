@@ -509,19 +509,19 @@ try_u64_from_str8_c_rules(String8 string, uint64* x){
   }
   else{
     String8 hex_string = str8_skip(string, 2);
-    if (str8_match(str8_prefix(string, 2), str8_lit("0x"), 0) &&
+    if (str8_match(str8_prefix(string, 2), ("0x"), 0) &&
         str8_is_integer(hex_string, 0x10)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 0x10);
     }
-    else if (str8_match(str8_prefix(string, 2), str8_lit("0b"), 0) &&
+    else if (str8_match(str8_prefix(string, 2), ("0b"), 0) &&
              str8_is_integer(hex_string, 2)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 2);
     }
     else{
       String8 oct_string = str8_skip(string, 1);
-      if (str8_match(str8_prefix(string, 1), str8_lit("0"), 0) &&
+      if (str8_match(str8_prefix(string, 1), ("0"), 0) &&
           str8_is_integer(hex_string, 010)){
         is_integer = 1;
         *x = u64_from_str8(oct_string, 010);
@@ -570,9 +570,9 @@ str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 di
     String8 prefix = {0};
     switch(radix)
     {
-      case 16:{prefix = str8_lit("0x");}break;
-      case 8: {prefix = str8_lit("0o");}break;
-      case 2: {prefix = str8_lit("0b");}break;
+      case 16:{prefix = ("0x");}break;
+      case 8: {prefix = ("0o");}break;
+      case 2: {prefix = ("0b");}break;
     }
     
     // rjf: determine # of chars between separators
@@ -1142,13 +1142,13 @@ str8_path_list_join_by_style(Arena* arena, String8List* path, PathStyle style){
     case PathStyle_Relative:
     case PathStyle_WindowsAbsolute:
     {
-      params.sep = str8_lit("/");
+      params.sep = ("/");
     }break;
     
     case PathStyle_UnixAbsolute:
     {
-      params.pre = str8_lit("/");
-      params.sep = str8_lit("/");
+      params.pre = ("/");
+      params.sep = ("/");
     }break;
   }
   
@@ -1185,7 +1185,7 @@ str8_txt_pt_pair_from_string(String8 string)
     
     // rjf: grab line/column
     {
-      uint64 colon_pos = str8_find_needle(line_part, 0, str8_lit(":"), 0);
+      uint64 colon_pos = str8_find_needle(line_part, 0, (":"), 0);
       if(colon_pos < line_part.size)
       {
         col_part = str8_skip(line_part, colon_pos+1);
@@ -1418,12 +1418,12 @@ str32_from_8(Arena* arena, String8 in){
 String8
 string_from_dimension(Dimension dimension){
   static String8 strings[] = {
-    str8_lit_comp("X"),
-    str8_lit_comp("Y"),
-    str8_lit_comp("Z"),
-    str8_lit_comp("W"),
+    ("X"),
+    ("Y"),
+    ("Z"),
+    ("W"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if ((uint32)dimension < 4){
     result = strings[dimension];
   }
@@ -1433,10 +1433,10 @@ string_from_dimension(Dimension dimension){
 String8
 string_from_side(Side side){
   static String8 strings[] = {
-    str8_lit_comp("Min"),
-    str8_lit_comp("Max"),
+    ("Min"),
+    ("Max"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if ((uint32)side < 2){
     result = strings[side];
   }
@@ -1446,12 +1446,12 @@ string_from_side(Side side){
 String8
 string_from_operating_system(OperatingSystem os){
   static String8 strings[] = {
-    str8_lit_comp("Null"),
-    str8_lit_comp("Windows"),
-    str8_lit_comp("Linux"),
-    str8_lit_comp("Mac"),
+    ("Null"),
+    ("Windows"),
+    ("Linux"),
+    ("Mac"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if (os < OperatingSystem_COUNT){
     result = strings[os];
   }
@@ -1461,13 +1461,13 @@ string_from_operating_system(OperatingSystem os){
 String8
 string_from_architecture(Architecture arch){
   static String8 strings[] = {
-    str8_lit_comp("Null"),
-    str8_lit_comp("x64"),
-    str8_lit_comp("x86"),
-    str8_lit_comp("arm64"),
-    str8_lit_comp("arm32"),
+    ("Null"),
+    ("x64"),
+    ("x86"),
+    ("arm64"),
+    ("arm32"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if (arch < Architecture_COUNT){
     result = strings[arch];
   }
@@ -1480,15 +1480,15 @@ string_from_architecture(Architecture arch){
 String8
 string_from_week_day(WeekDay week_day){
   static String8 strings[] = {
-    str8_lit_comp("Sun"),
-    str8_lit_comp("Mon"),
-    str8_lit_comp("Tue"),
-    str8_lit_comp("Wed"),
-    str8_lit_comp("Thu"),
-    str8_lit_comp("Fri"),
-    str8_lit_comp("Sat"),
+    ("Sun"),
+    ("Mon"),
+    ("Tue"),
+    ("Wed"),
+    ("Thu"),
+    ("Fri"),
+    ("Sat"),
   };
-  String8 result = str8_lit("Err");
+  String8 result = ("Err");
   if ((uint32)week_day < WeekDay_COUNT){
     result = strings[week_day];
   }
@@ -1498,20 +1498,20 @@ string_from_week_day(WeekDay week_day){
 String8
 string_from_month(Month month){
   static String8 strings[] = {
-    str8_lit_comp("Jan"),
-    str8_lit_comp("Feb"),
-    str8_lit_comp("Mar"),
-    str8_lit_comp("Apr"),
-    str8_lit_comp("May"),
-    str8_lit_comp("Jun"),
-    str8_lit_comp("Jul"),
-    str8_lit_comp("Aug"),
-    str8_lit_comp("Sep"),
-    str8_lit_comp("Oct"),
-    str8_lit_comp("Nov"),
-    str8_lit_comp("Dec"),
+    ("Jan"),
+    ("Feb"),
+    ("Mar"),
+    ("Apr"),
+    ("May"),
+    ("Jun"),
+    ("Jul"),
+    ("Aug"),
+    ("Sep"),
+    ("Oct"),
+    ("Nov"),
+    ("Dec"),
   };
-  String8 result = str8_lit("Err");
+  String8 result = ("Err");
   if ((uint32)month < Month_COUNT){
     result = strings[month];
   }
@@ -1559,7 +1559,7 @@ string_from_elapsed_time(Arena* arena, DateTime dt){
     str8_list_pushf(scratch.arena, &list, "%ud", dt.day);
   }
   str8_list_pushf(scratch.arena, &list, "%u:%u:%u:%u ms", dt.hour, dt.min, dt.sec, dt.msec);
-  StringJoin join = { str8_lit_comp(""), str8_lit_comp(" "), str8_lit_comp("") };
+  StringJoin join = { (""), (" "), ("") };
   String8 result = str8_list_join(arena, &list, &join);
   scratch_end(scratch);
   return(result);

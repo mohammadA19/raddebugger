@@ -6,8 +6,8 @@ lnk_import_table_alloc_static(LNK_SectionTable* st, LNK_SymbolTable* symtab, COF
 {
   ProfBeginFunction();
   
-  LNK_Section* data_sect = lnk_section_table_push(st, str8_lit(".idata"), LNK_IDATA_SECTION_FLAGS);
-  LNK_Section* code_sect = lnk_section_table_search(st, str8_lit(".text"));
+  LNK_Section* data_sect = lnk_section_table_push(st, (".idata"), LNK_IDATA_SECTION_FLAGS);
+  LNK_Section* code_sect = lnk_section_table_search(st, (".text"));
   
   LNK_Chunk* dll_table_chunk = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
   LNK_Chunk* int_chunk       = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
@@ -15,7 +15,7 @@ lnk_import_table_alloc_static(LNK_SectionTable* st, LNK_SymbolTable* symtab, COF
   LNK_Chunk* ilt_chunk       = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
   LNK_Chunk* code_chunk      = lnk_section_push_chunk_list(code_sect, code_sect.root, str8_zero());
   
-  LNK_Chunk* null_dll_import = lnk_section_push_chunk_data(data_sect, dll_table_chunk, str8(0, sizeof(PE_ImportEntry)), str8_lit("zzzzz"));
+  LNK_Chunk* null_dll_import = lnk_section_push_chunk_data(data_sect, dll_table_chunk, str8(0, sizeof(PE_ImportEntry)), ("zzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_dll_import, "DLL_DIRECTORY_TERMINATOR");
   
   lnk_symbol_table_push_defined_chunk(symtab, str8_cstring(LNK_IMPORT_DLL_TABLE_SYMBOL_NAME) , LNK_DefinedSymbolVisibility_Internal, 0, dll_table_chunk, 0, 0, 0);
@@ -46,8 +46,8 @@ lnk_import_table_alloc_delayed(LNK_SectionTable* st, LNK_SymbolTable* symtab, CO
 {
   ProfBeginFunction();
   
-  LNK_Section* data_sect = lnk_section_table_push(st, str8_lit(".didat"), LNK_DEBUG_DIR_SECTION_FLAGS);
-  LNK_Section* code_sect = lnk_section_table_search(st, str8_lit(".text"));
+  LNK_Section* data_sect = lnk_section_table_push(st, (".didat"), LNK_DEBUG_DIR_SECTION_FLAGS);
+  LNK_Section* code_sect = lnk_section_table_search(st, (".text"));
   
   LNK_Chunk* dll_table_chunk    = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
   LNK_Chunk* int_chunk          = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
@@ -58,18 +58,18 @@ lnk_import_table_alloc_delayed(LNK_SectionTable* st, LNK_SymbolTable* symtab, CO
   LNK_Chunk* uiat_chunk         = lnk_section_push_chunk_list(data_sect, data_sect.root, str8_zero());
   LNK_Chunk* code_chunk         = lnk_section_push_chunk_list(code_sect, code_sect.root, str8_zero());
   
-  LNK_Chunk* null_dll_import = lnk_section_push_chunk_data(data_sect, dll_table_chunk, str8(0, sizeof(PE_DelayedImportEntry)), str8_lit("~0"));
+  LNK_Chunk* null_dll_import = lnk_section_push_chunk_data(data_sect, dll_table_chunk, str8(0, sizeof(PE_DelayedImportEntry)), ("~0"));
   lnk_chunk_set_debugf(data_sect.arena, null_dll_import, "DLL_DIRECTORY_TERMINATOR");
 
   if (is_unloadable) {
     uint64 import_size = coff_word_size_from_machine(machine);
-    LNK_Chunk* null_uiat_chunk = lnk_section_push_chunk_bss(data_sect, uiat_chunk, import_size, str8_lit("~1"));
+    LNK_Chunk* null_uiat_chunk = lnk_section_push_chunk_bss(data_sect, uiat_chunk, import_size, ("~1"));
     lnk_chunk_set_debugf(data_sect.arena, null_uiat_chunk, "UIAT_TERMINATOR");
   }
 
   if (is_bindable) {
     uint64 import_size = coff_word_size_from_machine(machine);
-    LNK_Chunk* null_biat_chunk = lnk_section_push_chunk_bss(data_sect, biat_chunk, import_size, str8_lit("~2"));
+    LNK_Chunk* null_biat_chunk = lnk_section_push_chunk_bss(data_sect, biat_chunk, import_size, ("~2"));
     lnk_chunk_set_debugf(data_sect.arena, null_biat_chunk, "BIAT_TERMINATOR");
   }
   
@@ -204,11 +204,11 @@ lnk_import_table_push_dll_static(LNK_ImportTable* imptab, LNK_SymbolTable* symta
   uint64 import_size = coff_word_size_from_machine(machine);
   
   // null entry to terminate import lookup table array
-  LNK_Chunk* null_ilt_chunk = lnk_section_push_chunk_data(data_sect, ilt_table_chunk, str8(0, import_size), str8_lit("zzzzzz"));
+  LNK_Chunk* null_ilt_chunk = lnk_section_push_chunk_data(data_sect, ilt_table_chunk, str8(0, import_size), ("zzzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_ilt_chunk, "%S: ILT terminator", dll_name);
   
   // null entry to terminate import address table array
-  LNK_Chunk* null_iat_chunk = lnk_section_push_chunk_data(data_sect, iat_table_chunk, str8(0, import_size), str8_lit("zzzzzz"));
+  LNK_Chunk* null_iat_chunk = lnk_section_push_chunk_data(data_sect, iat_table_chunk, str8(0, import_size), ("zzzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_iat_chunk, "%S: IAT terminator", dll_name);
   
   // push to list
@@ -268,7 +268,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   String8     int_table_symbol_name = push_str8f(symtab.arena.v[0], "delayed.%S.int", dll_name);
   LNK_Symbol* int_table_symbol      = lnk_symbol_table_push_defined_chunk(symtab, int_table_symbol_name, LNK_DefinedSymbolVisibility_Internal, 0, int_table_chunk, 0, 0, 0);
   
-  LNK_Chunk* null_string_chunk = lnk_section_push_chunk_list(data_sect, int_table_chunk, str8_lit("zzzzz"));
+  LNK_Chunk* null_string_chunk = lnk_section_push_chunk_list(data_sect, int_table_chunk, ("zzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_string_chunk, "string table null");
   
   // emit DLL name chunk
@@ -296,13 +296,13 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   String8     iat_table_name   = push_str8f(symtab.arena.v[0], "delayed.%S.iat", dll_name);
   LNK_Symbol* iat_table_symbol = lnk_symbol_table_push_defined_chunk(symtab, iat_table_name, LNK_DefinedSymbolVisibility_Internal, 0, iat_table_chunk, 0, 0, 0);
   
-  LNK_Chunk* null_iat_chunk = lnk_section_push_chunk_bss(data_sect, iat_table_chunk, import_size, str8_lit("zzzzzz"));
+  LNK_Chunk* null_iat_chunk = lnk_section_push_chunk_bss(data_sect, iat_table_chunk, import_size, ("zzzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_iat_chunk, "%S: IAT terminator", dll_name);
   
   // emit ILT chunk
   LNK_Chunk* ilt_table_chunk = lnk_section_push_chunk_list(data_sect, imptab.ilt_chunk, str8_zero());
   
-  LNK_Chunk* null_ilt_chunk = lnk_section_push_chunk_bss(data_sect, ilt_table_chunk, import_size, str8_lit("zzzzzz"));
+  LNK_Chunk* null_ilt_chunk = lnk_section_push_chunk_bss(data_sect, ilt_table_chunk, import_size, ("zzzzzz"));
   lnk_chunk_set_debugf(data_sect.arena, null_ilt_chunk, "%S: ILT terminator", dll_name);
   
   String8     ilt_table_name   = push_str8f(symtab.arena.v[0], "delayed.%S.ilt", dll_name);
@@ -346,7 +346,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   LNK_Chunk* tail_merge_chunk = 0;
   switch (machine) {
   case COFF_Machine_X64: {
-    LNK_Symbol* delay_load_helper_symbol = lnk_make_undefined_symbol(symtab.arena.v[0], str8_lit(LNK_DELAY_LOAD_HELPER2_SYMBOL_NAME), LNK_SymbolScopeFlag_Main);
+    LNK_Symbol* delay_load_helper_symbol = lnk_make_undefined_symbol(symtab.arena.v[0], (LNK_DELAY_LOAD_HELPER2_SYMBOL_NAME), LNK_SymbolScopeFlag_Main);
     tail_merge_chunk = lnk_emit_tail_merge_thunk_x64(code_sect, code_chunk, imp_desc_symbol, delay_load_helper_symbol);
   } break;
   default: {
