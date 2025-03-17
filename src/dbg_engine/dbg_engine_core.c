@@ -35,7 +35,7 @@ d_hash_from_seed_string__case_insensitive(uint64 seed, StringView string)
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
   {
-    result = ((result << 5) + result) + char_to_lower(string.str[i]);
+    result = ((result << 5) + result) + string[i].ToLower;
   }
   return result;
 }

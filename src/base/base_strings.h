@@ -113,7 +113,6 @@ struct FuzzyMatchRangeList
 B32 char_is_space(uint8 c);
 B32 char_is_slash(uint8 c);
 B32 char_is_digit(uint8 c, uint32 base);
-uint8 char_to_lower(uint8 c);
 uint8 char_to_upper(uint8 c);
 uint8 char_to_correct_slash(uint8 c);
 

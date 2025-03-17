@@ -10859,7 +10859,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
         StringView key_string = push_str8_copy(scratch.arena, os_g_key_cfg_string_table[pair.binding.key]);
         for(uint64 i = 0; i < event_flags_string.size; i += 1)
         {
-          event_flags_string.str[i] = char_to_lower(event_flags_string.str[i]);
+          event_flags_string[i] = event_flags_string[i].ToLower;
         }
         StringView binding_string = push_str8f(scratch.arena, "%S%s%S",
                                             event_flags_string,

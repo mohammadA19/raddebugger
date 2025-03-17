@@ -10,7 +10,7 @@ di_hash_from_seed_string(uint64 seed, StringView string, StringMatchFlags match_
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
   {
-    result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? char_to_lower(string.str[i]) : string.str[i]);
+    result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? string[i].ToLower : string[i]);
   }
   return result;
 }

@@ -3355,8 +3355,8 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena* arena, CTRL_Handle proc
         StringView filename_normalized = push_str8_copy(scratch.arena, filename);
         for(uint64 idx = 0; idx < filename_normalized.size; idx += 1)
         {
-          filename_normalized.str[idx] = char_to_lower(filename_normalized.str[idx]);
-          filename_normalized.str[idx] = char_to_correct_slash(filename_normalized.str[idx]);
+          filename_normalized[idx] = filename_normalized[idx].ToLower;
+          filename_normalized[idx] = char_to_correct_slash(filename_normalized[idx]);
         }
         
         // rjf: filename . src_id
@@ -3367,7 +3367,7 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena* arena, CTRL_Handle proc
           {
             RDI_ParsedNameMap map = {0};
             rdi_parsed_from_name_map(rdi, mapptr, &map);
-            RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, filename_normalized.str, filename_normalized.size);
+            RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, filename_normalized.Ptr, filename_normalized.size);
             if(node != 0)
             {
               uint32 id_count = 0;
@@ -3405,7 +3405,7 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena* arena, CTRL_Handle proc
         RDI_NameMap* mapptr = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Procedures);
         RDI_ParsedNameMap map = {0};
         rdi_parsed_from_name_map(rdi, mapptr, &map);
-        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, symbol_name.str, symbol_name.size);
+        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, symbol_name.Ptr, symbol_name.size);
         if(node != 0)
         {
           uint32 id_count = 0;

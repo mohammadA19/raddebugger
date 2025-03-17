@@ -8,8 +8,8 @@ str8_compar(StringView a, StringView b, B32 ignore_case)
   uint64 size = Min(a.size, b.size);
   if (ignore_case) {
     for (uint64 i = 0; i < size; ++i) {
-      uint8 la = char_to_lower(a.str[i]);
-      uint8 lb = char_to_lower(b.str[i]);
+      char8 la = a[i].ToLower;
+      char8 lb = b[i].ToLower;
       if (la < lb) {
         cmp = -1;
         break;
@@ -20,10 +20,10 @@ str8_compar(StringView a, StringView b, B32 ignore_case)
     } 
   } else {
     for (uint64 i = 0; i < size; ++i) {
-      if (a.str[i] < b.str[i]) {
+      if (a[i] < b[i]) {
         cmp = -1;
         break;
-      } else if (a.str[i] > b.str[i]) {
+      } else if (a[i] > b[i]) {
         cmp = +1;
         break;
       }

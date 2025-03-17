@@ -75,14 +75,6 @@ char_is_digit(uint8 c, uint32 base){
 }
 
 uint8
-char_to_lower(uint8 c){
-  if (char_is_upper(c)){
-    c += ('a' - 'A');
-  }
-  return(c);
-}
-
-uint8
 char_to_upper(uint8 c){
   if (char_is_lower(c)){
     c += ('A' - 'a');
@@ -222,7 +214,7 @@ lower_from_str8(Arena* arena, StringView string)
   string = push_str8_copy(arena, string);
   for(uint64 idx = 0; idx < string.size; idx += 1)
   {
-    string.str[idx] = char_to_lower(string.str[idx]);
+    string[idx] = string[idx].ToLower;
   }
   return string;
 }
@@ -685,10 +677,10 @@ str8_from_bits_u64(Arena* arena, uint64 x)
 StringView
 str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 digit_group_separator)
 {
-  StringView result = {0};
+  StringView result = default;
   {
     // rjf: prefix
-    StringView prefix = {0};
+    StringView prefix = default;
     switch(radix)
     {
       case 16:{prefix = ("0x");}break;
@@ -734,8 +726,8 @@ str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 di
         }
       }
       result.size = prefix.size + needed_leading_0s + needed_separators + needed_digits;
-      result.str = push_array_no_zero(arena, uint8, result.size + 1);
-      result.str[result.size] = 0;
+      result.Ptr = push_array_no_zero(arena, uint8, result.size + 1);
+      result[result.size] = 0;
     }
     
     // rjf: fill contents
@@ -746,12 +738,12 @@ str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 di
       {
         if(digits_until_separator == 0 && digit_group_separator != 0)
         {
-          result.str[result.size - idx - 1] = digit_group_separator;
+          result[result.size - idx - 1] = digit_group_separator;
           digits_until_separator = digit_group_size+1;
         }
         else
         {
-          result.str[result.size - idx - 1] = char_to_lower(integer_symbols[u64_reduce%radix]);
+          result[result.size - idx - 1] = integer_symbols[u64_reduce%radix].ToLower;
           u64_reduce /= radix;
         }
         digits_until_separator -= 1;
@@ -762,14 +754,14 @@ str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 di
       }
       for(uint64 leading_0_idx = 0; leading_0_idx < needed_leading_0s; leading_0_idx += 1)
       {
-        result.str[prefix.size + leading_0_idx] = '0';
+        result[prefix.size + leading_0_idx] = '0';
       }
     }
     
     // rjf: fill prefix
     if(prefix.size != 0)
     {
-      MemoryCopy(result.str, prefix.str, prefix.size);
+      MemoryCopy(result.Ptr, prefix.Ptr, prefix.size);
     }
   }
   return result;
@@ -2024,13 +2016,13 @@ rgba_from_hex_string_4f32(StringView hex_string)
   uint64 byte_text_idx = 0;
   for(uint64 idx = 0; idx < hex_string.size && byte_text_idx < ArrayCount(byte_text); idx += 1)
   {
-    if(char_is_digit(hex_string.str[idx], 16))
+    if(char_is_digit(hex_string[idx], 16))
     {
-      byte_text[byte_text_idx] = char_to_lower(hex_string.str[idx]);
+      byte_text[byte_text_idx] = hex_string[idx].ToLower;
       byte_text_idx += 1;
     }
   }
-  uint8 byte_vals[4] = {0};
+  uint8[4] byte_vals = .();
   for(uint64 idx = 0; idx < 4; idx += 1)
   {
     byte_vals[idx] = (uint8)u64_from_str8(StringView(&byte_text[idx*2], 2), 16);
