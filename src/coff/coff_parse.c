@@ -282,7 +282,7 @@ coff_reloc_info_from_section_header(StringView data, COFF_SectionHeader* header)
 }
 
 StringView
-coff_resource_string_from_str16(Arena* arena, String16 string)
+coff_resource_string_from_str16(Arena* arena, Span<char16> string)
 {
   AssertAlways(string.size <= max_U16);
   uint16 size16 = (uint16)string.size;
@@ -298,7 +298,7 @@ StringView
 coff_resource_string_from_str8(Arena* arena, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String16 string16 = str16_from_8(scratch.arena, string);
+  Span<char16> string16 = str16_from_8(scratch.arena, string);
   StringView  result   = coff_resource_string_from_str16(arena, string16);
   scratch_end(scratch);
   return result;

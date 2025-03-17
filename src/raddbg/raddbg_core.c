@@ -15798,8 +15798,8 @@ rd_frame()
             StringView debugger_binary_path = str8_cstring(filename_cstr);
             StringView name8 = ("Debugger");
             StringView data8 = push_str8f(scratch.arena, "%S --jit_pid:%%ld --jit_code:%%ld --jit_addr:0x%%p", debugger_binary_path);
-            String16 name16 = str16_from_8(scratch.arena, name8);
-            String16 data16 = str16_from_8(scratch.arena, data8);
+            Span<char16> name16 = str16_from_8(scratch.arena, name8);
+            Span<char16> data16 = str16_from_8(scratch.arena, data8);
             B32 likely_not_in_admin_mode = 0;
             {
               HKEY reg_key = 0;

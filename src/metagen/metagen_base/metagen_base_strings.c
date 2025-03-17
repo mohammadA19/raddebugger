@@ -146,21 +146,9 @@ str8_range(uint8* first, uint8* one_past_last){
   return(result);
 }
 
-String16
-str16(uint16* str, uint64 size){
-  String16 result = {str, size};
-  return(result);
-}
-
-String16
+Span<char16>
 str16_range(uint16* first, uint16* one_past_last){
-  String16 result = {first, (uint64)(one_past_last - first)};
-  return(result);
-}
-
-String16
-str16_zero(){
-  String16 result = {0};
+  Span<char16> result = {first, (uint64)(one_past_last - first)};
   return(result);
 }
 
@@ -188,9 +176,9 @@ str8_cstring(char* c){
   return(result);
 }
 
-String16
+Span<char16>
 str16_cstring(uint16* c){
-  String16 result = {(uint16*)c, cstring16_length((uint16*)c)};
+  Span<char16> result = {(uint16*)c, cstring16_length((uint16*)c)};
   return(result);
 }
 
@@ -1334,7 +1322,7 @@ utf8_from_utf32_single(uint8* buffer, uint32 character){
 //~ rjf: Unicode String Conversions
 
 StringView
-str8_from_16(Arena* arena, String16 in){
+str8_from_16(Arena* arena, Span<char16> in){
   uint64 cap = in.size*3;
   uint8* str = push_array_no_zero(arena, uint8, cap + 1);
   uint16* ptr = in.str;
@@ -1350,7 +1338,7 @@ str8_from_16(Arena* arena, String16 in){
   return(StringView(str, size));
 }
 
-String16
+Span<char16>
 str16_from_8(Arena* arena, StringView in){
   uint64 cap = in.size*2;
   uint16* str = push_array_no_zero(arena, uint16, cap + 1);
@@ -1364,7 +1352,7 @@ str16_from_8(Arena* arena, StringView in){
   }
   str[size] = 0;
   arena_pop(arena, (cap - size)*2);
-  return(str16(str, size));
+  return .(str, size);
 }
 
 StringView
@@ -1942,13 +1930,13 @@ str8_deserial_read_cstr(StringView string, uint64 off, StringView* cstr_out)
 }
 
 uint64
-str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, String16* str_out)
+str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, Span<char16>* str_out)
 {
   uint64 null_off = str8_deserial_find_first_match(string, off, 0);
   uint64 size = null_off - off;
   uint16* str = (uint16 *)str8_deserial_get_raw_ptr(string, off, size);
   uint64 count = size / sizeof(*str);
-  *str_out = str16(str, count);
+  *str_out = Span<char16>(str, count);
   
   uint64 read_size_with_null = size + sizeof(*str);
   return read_size_with_null;

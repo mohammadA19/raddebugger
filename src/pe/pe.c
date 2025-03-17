@@ -1679,7 +1679,7 @@ pe_resource_table_from_directory_data(Arena* arena, StringView data)
       
       StringView name_block;
       str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(uint16), &name_block);
-      String16 name16 = str16((uint16*)name_block.str, name_size);
+      Span<char16> name16 = .((uint16*)name_block.str, name_size);
       
       B32 is_dir = !!(coff_entry.id.data_entry_offset & COFF_Resource_SubDirFlag);
       

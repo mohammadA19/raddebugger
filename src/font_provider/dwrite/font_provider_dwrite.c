@@ -315,7 +315,7 @@ fp_font_open(StringView path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  String16 path16 = str16_from_8(scratch.arena, path);
+  Span<char16> path16 = str16_from_8(scratch.arena, path);
   FP_DWrite_Font font = {0};
   HRESULT error = 0;
   

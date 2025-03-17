@@ -262,7 +262,7 @@ StringView dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module);
 uint64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void* dst);
 B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void* src);
 StringView dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address);
-String16 dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address);
+Span<char16> dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, uint64 base_vaddr);

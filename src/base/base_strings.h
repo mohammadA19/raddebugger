@@ -13,7 +13,7 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-struct String16
+struct Span<char16>
 {
   uint16* str;
   uint64 size;
@@ -152,17 +152,15 @@ uint64 cstring32_length(uint32* c);
 #define str8_struct(S) StringView((uint8*)(S), sizeof(*(S)))
 
 StringView  str8_range(uint8* first, uint8* one_past_last);
-String16 str16(uint16* str, uint64 size);
-String16 str16_range(uint16* first, uint16* one_past_last);
-String16 str16_zero();
+Span<char16> str16_range(uint16* first, uint16* one_past_last);
 String32 str32(uint32* str, uint64 size);
 String32 str32_range(uint32* first, uint32* one_past_last);
 String32 str32_zero();
 StringView  str8_cstring(char* c);
-String16 str16_cstring(uint16* c);
+Span<char16> str16_cstring(uint16* c);
 String32 str32_cstring(uint32* c);
 StringView  str8_cstring_capped(void* cstr, void* cap);
-String16 str16_cstring_capped(void* cstr, void* cap);
+Span<char16> str16_cstring_capped(void* cstr, void* cap);
 StringView  str8_cstring_capped_reverse(void* raw_start, void* raw_cap);
 
 ////////////////////////////////
@@ -286,8 +284,8 @@ uint32 utf8_from_utf32_single(uint8* buffer, uint32 character);
 ////////////////////////////////
 //~ rjf: Unicode String Conversions
 
-StringView str8_from_16(Arena* arena, String16 in);
-String16 str16_from_8(Arena* arena, StringView in);
+StringView str8_from_16(Arena* arena, Span<char16> in);
+Span<char16> str16_from_8(Arena* arena, StringView in);
 StringView str8_from_32(Arena* arena, String32 in);
 String32 str32_from_8(Arena* arena, StringView in);
 
@@ -374,7 +372,7 @@ uint64    str8_deserial_read(StringView string, uint64 off, void* read_dst, uint
 uint64    str8_deserial_find_first_match(StringView string, uint64 off, uint16 scan_val);
 void * str8_deserial_get_raw_ptr(StringView string, uint64 off, uint64 size);
 uint64    str8_deserial_read_cstr(StringView string, uint64 off, StringView* cstr_out);
-uint64    str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, String16* str_out);
+uint64    str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, Span<char16>* str_out);
 uint64    str8_deserial_read_block(StringView string, uint64 off, uint64 size, StringView* block_out);
 uint64    str8_deserial_read_uleb128(StringView string, uint64 off, uint64* value_out);
 uint64    str8_deserial_read_sleb128(StringView string, uint64 off, int64* value_out);

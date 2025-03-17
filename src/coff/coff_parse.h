@@ -109,7 +109,7 @@ struct COFF_ResourceID16
   [Union]
   struct {
     uint16      number;
-    String16 string;
+    Span<char16> string;
   } u;
 }
 
@@ -268,7 +268,7 @@ COFF_RelocInfo coff_reloc_info_from_section_header(StringView data, COFF_Section
 ////////////////////////////////
 // Resource
 
-StringView         coff_resource_string_from_str16 (Arena* arena, String16 string);
+StringView         coff_resource_string_from_str16 (Arena* arena, Span<char16> string);
 StringView         coff_resource_string_from_str8  (Arena* arena, StringView string);
 StringView         coff_resource_number_from_u16   (Arena* arena, uint16 number);
 COFF_ResourceID coff_utf8_resource_id_from_utf16(Arena* arena, COFF_ResourceID16* id_16);

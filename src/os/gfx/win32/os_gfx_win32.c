@@ -1019,7 +1019,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title)
   HWND hwnd = 0;
   {
     Temp scratch = scratch_begin(0, 0);
-    String16 title16 = str16_from_8(scratch.arena, title);
+    Span<char16> title16 = str16_from_8(scratch.arena, title);
     os_w32_new_window_custom_border = custom_border;
     hwnd = CreateWindowExW(WS_EX_APPWINDOW,
                            L"graphical-window",
@@ -1364,7 +1364,7 @@ os_name_from_monitor(Arena* arena, OS_Handle monitor)
   info.cbSize = sizeof(MONITORINFOEXW);
   if(GetMonitorInfoW(monitor_handle, (MONITORINFO *)&info))
   {
-    String16 result16 = str16_cstring((uint16 *)info.szDevice);
+    Span<char16> result16 = str16_cstring((uint16 *)info.szDevice);
     result = str8_from_16(arena, result16);
   }
   return result;
@@ -1513,8 +1513,8 @@ void
 os_graphical_message(B32 error, StringView title, StringView message)
 {
   Temp scratch = scratch_begin(0, 0);
-  String16 title16 = str16_from_8(scratch.arena, title);
-  String16 message16 = str16_from_8(scratch.arena, message);
+  Span<char16> title16 = str16_from_8(scratch.arena, title);
+  Span<char16> message16 = str16_from_8(scratch.arena, message);
   MessageBoxW(0, (WCHAR *)message16.str, (WCHAR *)title16.str, MB_OK|(!!error*MB_ICONERROR));
   scratch_end(scratch);
 }
@@ -1534,7 +1534,7 @@ os_show_in_filesystem_ui(StringView path)
       path_copy.str[idx] = '\\';
     }
   }
-  String16 path16 = str16_from_8(scratch.arena, path_copy);
+  Span<char16> path16 = str16_from_8(scratch.arena, path_copy);
   SFGAOF flags = 0;
   PIDLIST_ABSOLUTE list = 0;
   if(path16.size != 0 && SUCCEEDED(SHParseDisplayName(path16.str, 0, &list, 0, &flags)))
@@ -1550,7 +1550,7 @@ void
 os_open_in_browser(StringView url)
 {
   Temp scratch = scratch_begin(0, 0);
-  String16 url16 = str16_from_8(scratch.arena, url);
+  Span<char16> url16 = str16_from_8(scratch.arena, url);
   ShellExecuteW(0, L"open", (WCHAR *)url16.str, 0, 0, SW_SHOWNORMAL);
   scratch_end(scratch);
 }

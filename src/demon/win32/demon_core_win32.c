@@ -211,7 +211,7 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: extract path from module
-  String16 path16 = {0};
+  Span<char16> path16 = {0};
   StringView path8 = {0};
   {
     // rjf: handle . full path
@@ -220,7 +220,7 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
       DWORD cap16 = GetFinalPathNameByHandleW(module.handle, 0, 0, VOLUME_NAME_DOS);
       uint16* buffer16 = push_array_no_zero(scratch.arena, uint16, cap16);
       DWORD size16 = GetFinalPathNameByHandleW(module.handle, (WCHAR*)buffer16, cap16, VOLUME_NAME_DOS);
-      path16 = str16(buffer16, size16);
+      path16 = .(buffer16, size16);
     }
     
     // rjf: fallback (main module only): process . full path
@@ -231,7 +231,7 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
       uint16* buf = push_array_no_zero(scratch.arena, uint16, size);
       if(QueryFullProcessImageNameW(process.handle, 0, (WCHAR*)buf, &size))
       {
-        path16 = str16(buf, size);
+        path16 = .(buf, size);
       }
     }
     
@@ -399,7 +399,7 @@ dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address)
   return(result);
 }
 
-String16
+Span<char16>
 dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address)
 {
   // TODO(rjf): @rewrite
@@ -446,7 +446,7 @@ dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address)
   
   // assemble results
   StringView joined = str8_list_join(arena, &list, 0);
-  String16 result = {(uint16*)joined.str, joined.size/2};
+  Span<char16> result = {(uint16*)joined.str, joined.size/2};
   scratch_end(scratch);
   return(result);
 }
@@ -1164,7 +1164,7 @@ dmn_init()
         }
         else
         {
-          String16 string16 = str16((uint16 *)this_proc_env + start_idx, idx - start_idx);
+          Span<char16> string16 = .((uint16 *)this_proc_env + start_idx, idx - start_idx);
           StringView string = str8_from_16(dmn_w32_shared.arena, string16);
           str8_list_push(dmn_w32_shared.arena, &dmn_w32_shared.env_strings, string);
           start_idx = idx+1;
@@ -1252,9 +1252,9 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
     }
     
     //- rjf: produce utf-16 strings
-    String16 cmd16 = str16_from_8(scratch.arena, cmd);
-    String16 dir16 = str16_from_8(scratch.arena, params.path);
-    String16 env16 = str16_from_8(scratch.arena, env);
+    Span<char16> cmd16 = str16_from_8(scratch.arena, cmd);
+    Span<char16> dir16 = str16_from_8(scratch.arena, params.path);
+    Span<char16> env16 = str16_from_8(scratch.arena, env);
     
     //- rjf: launch
     DWORD creation_flags = CREATE_UNICODE_ENVIRONMENT;
