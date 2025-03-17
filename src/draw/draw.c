@@ -31,7 +31,7 @@ return top_val
 //~ rjf: Basic Helpers
 
 uint64
-dr_hash_from_string(String8 string)
+dr_hash_from_string(StringView string)
 {
   uint64 result = 5381;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -71,10 +71,10 @@ dr_fancy_string_list_concat_in_place(DR_FancyStringList* dst, DR_FancyStringList
   MemoryZeroStruct(to_push);
 }
 
-String8
+StringView
 dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list)
 {
-  String8 result = {0};
+  StringView result = {0};
   result.size = list.total_size;
   result.str = push_array_no_zero(arena, uint8, result.size);
   uint64 idx = 0;
@@ -364,7 +364,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
       albedo_tex.u64[1],
       (uint64)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((uint8 *)buffer, sizeof(buffer)));
+    hash = dr_hash_from_string(StringView((uint8 *)buffer, sizeof(buffer)));
     slot_idx = hash%params.mesh_batches.slots_count;
   }
   
@@ -634,7 +634,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 }
 
 void
-dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, StringView string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, flags, string);

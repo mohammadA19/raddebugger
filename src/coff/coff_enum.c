@@ -1,10 +1,10 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-String8
+StringView
 coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp)
 {
-  String8 result;
+  StringView result;
   if (time_stamp == 0) {
     result = ("0");
   } else if (time_stamp >= max_U32) {
@@ -18,7 +18,7 @@ coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp)
 
 read_only struct
 {
-  String8          string;
+  StringView          string;
   COFF_MachineType machine;
 } g_coff_machine_map[] = {
   { (""),          COFF_Machine_Unknown   },
@@ -57,10 +57,10 @@ read_only static struct {
   { "Const", COFF_ImportHeader_Const },
 };
 
-String8
+StringView
 coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 {
-  String8 result = str8_zero();
+  StringView result = StringView();
   switch (type) {
   case COFF_ComdatSelect_Null:         result = ("Null");         break;
   case COFF_ComdatSelect_NoDuplicates: result = ("NoDuplicates"); break;
@@ -73,7 +73,7 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
   return result;
 }
 
-String8
+StringView
 coff_string_from_machine_type(COFF_MachineType machine)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
@@ -81,10 +81,10 @@ coff_string_from_machine_type(COFF_MachineType machine)
       return g_coff_machine_map[i].string;
     }
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_flags(Arena* arena, COFF_FileHeaderFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -127,13 +127,13 @@ coff_string_from_flags(Arena* arena, COFF_FileHeaderFlags flags)
     str8_list_pushf(scratch.arena, &list, "Up System Only");
   }
 
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+  StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
 
   scratch_end(scratch);
   return result;
 }
 
-String8
+StringView
 coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -208,13 +208,13 @@ coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags)
   
   StringJoin join = {0};
   join.sep = (", ");
-  String8 result = str8_list_join(arena, &list, &join);
+  StringView result = str8_list_join(arena, &list, &join);
   
   scratch_end(scratch);
   return result;
 }
 
-String8
+StringView
 coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -237,13 +237,13 @@ coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags fl
     str8_list_pushf(scratch.arena, &list, "%#x", flags);
   }
 
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+  StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
 
   scratch_end(scratch);
   return result;
 }
 
-String8
+StringView
 coff_string_from_import_header_type(COFF_ImportType type)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
@@ -251,10 +251,10 @@ coff_string_from_import_header_type(COFF_ImportType type)
       return str8_cstring(g_coff_import_header_type_map[i].name);
     }
   }
-  return str8(0,0);
+  return StringView(0,0);
 }
 
-String8
+StringView
 coff_string_from_sym_dtype(COFF_SymDType x)
 {
   switch (x) {
@@ -263,10 +263,10 @@ coff_string_from_sym_dtype(COFF_SymDType x)
     case COFF_SymDType_Func:  return ("Func");
     case COFF_SymDType_Array: return ("Array");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_sym_type(COFF_SymType x)
 {
   switch (x) {
@@ -287,10 +287,10 @@ coff_string_from_sym_type(COFF_SymType x)
     case COFF_SymType_UInt:   return ("UInt");
     case COFF_SymType_DWord:  return ("DWord");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_sym_storage_class(COFF_SymStorageClass x)
 {
   switch (x) {
@@ -322,10 +322,10 @@ coff_string_from_sym_storage_class(COFF_SymStorageClass x)
     case COFF_SymStorageClass_WeakExternal:    return ("External");
     case COFF_SymStorageClass_CLRToken:        return ("Token");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_weak_ext_type(COFF_WeakExtType x)
 {
   switch (x) {
@@ -333,10 +333,10 @@ coff_string_from_weak_ext_type(COFF_WeakExtType x)
     case COFF_WeakExt_SearchLibrary: return ("SearchLibrary");
     case COFF_WeakExt_SearchAlias:   return ("SearchAlias");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_reloc_x86(COFF_Reloc_X86 x)
 {
   switch (x) {
@@ -361,10 +361,10 @@ coff_string_from_reloc_x86(COFF_Reloc_X86 x)
     case COFF_Reloc_X86_Unknown9: return ("Unknown9");
     case COFF_Reloc_X86_Rel32:    return ("Rel32");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_reloc_x64(COFF_Reloc_X64 x)
 {
   switch (x) {
@@ -386,10 +386,10 @@ coff_string_from_reloc_x64(COFF_Reloc_X64 x)
     case COFF_Reloc_X64_Pair:     return ("Pair");
     case COFF_Reloc_X64_SSpan32:  return ("SSpan32");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_reloc_arm(COFF_Reloc_Arm x)
 {
   switch (x) {
@@ -414,10 +414,10 @@ coff_string_from_reloc_arm(COFF_Reloc_Arm x)
     case COFF_Reloc_Arm_ThumbBlx23:    return ("ThumbBlx23");
     case COFF_Reloc_Arm_Pair:          return ("Pair");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
 {
   switch (x) {
@@ -439,10 +439,10 @@ coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
     case COFF_Reloc_Arm64_Branch14:      return ("Branch14");
     case COFF_Reloc_Arm64_Rel32:         return ("Rel32");
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 {
   switch (machine) {
@@ -451,11 +451,11 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
     case COFF_Machine_Arm:   return coff_string_from_reloc_arm(x);
     case COFF_Machine_Arm64: return coff_string_from_reloc_arm64(x);
   }
-  return str8_zero();
+  return StringView();
 }
 
 COFF_MachineType
-coff_machine_from_string(String8 string)
+coff_machine_from_string(StringView string)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
@@ -466,7 +466,7 @@ coff_machine_from_string(String8 string)
 }
 
 COFF_ImportType
-coff_import_header_type_from_string(String8 name)
+coff_import_header_type_from_string(StringView name)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlag_CaseInsensitive)) {

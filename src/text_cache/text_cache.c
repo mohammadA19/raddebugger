@@ -5,7 +5,7 @@
 //~ rjf: Basic Helpers
 
 TXT_LangKind
-txt_lang_kind_from_extension(String8 extension)
+txt_lang_kind_from_extension(StringView extension)
 {
   TXT_LangKind kind = TXT_LangKind_Null;
   if(str8_match(extension, ("c"), 0) ||
@@ -47,10 +47,10 @@ txt_lang_kind_from_extension(String8 extension)
   return kind;
 }
 
-String8
+StringView
 txt_extension_from_lang_kind(TXT_LangKind kind)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(kind)
   {
     case TXT_LangKind_Null:
@@ -158,7 +158,7 @@ txt_token_array_from_list(Arena* arena, TXT_TokenList* list)
 //~ rjf: Lexing Functions
 
 TXT_TokenArray
-txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, String8 string)
+txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -313,7 +313,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
         // rjf: identifier . keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only static String8 cpp_keywords[] =
+          read_only static StringView cpp_keywords[] =
           {
             ("alignas"),
             ("alignof"),
@@ -413,7 +413,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
             ("xor"),
             ("xor_eq"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(cpp_keywords); keyword_idx += 1)
           {
             if(str8_match(cpp_keywords[keyword_idx], token_string, 0))
@@ -428,7 +428,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only static String8 c_cpp_multichar_symbol_strings[] =
+          read_only static StringView c_cpp_multichar_symbol_strings[] =
           {
             ("<<"),
             (">>"),
@@ -451,7 +451,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
             (">>="),
             ("."),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -504,7 +504,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
 }
 
 TXT_TokenArray
-txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, String8 string)
+txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -657,7 +657,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
         // rjf: identifier . keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only static String8 odin_keywords[] =
+          read_only static StringView odin_keywords[] =
           {
             ("align_of"),
             ("asm"),
@@ -700,7 +700,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
             ("where"),
             ("import"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(odin_keywords); keyword_idx += 1)
           {
             if(str8_match(odin_keywords[keyword_idx], token_string, 0))
@@ -715,7 +715,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only static String8 odin_multichar_symbol_strings[] =
+          read_only static StringView odin_multichar_symbol_strings[] =
           {
             ("<<"),
             (">>"),
@@ -738,7 +738,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
             (">>="),
             ("."),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -790,7 +790,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
 }
 
 TXT_TokenArray
-txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, String8 string)
+txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -943,7 +943,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
         // rjf: identifier . keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only static String8 jai_keywords[] =
+          read_only static StringView jai_keywords[] =
           {
             ("bool"),
             ("true"),
@@ -985,7 +985,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
             ("defer"),
             ("xx"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(jai_keywords); keyword_idx += 1)
           {
             if(str8_match(jai_keywords[keyword_idx], token_string, 0))
@@ -1000,7 +1000,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only static String8 jai_multichar_symbol_strings[] =
+          read_only static StringView jai_multichar_symbol_strings[] =
           {
             ("<<"),
             (">>"),
@@ -1023,7 +1023,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
             (">>="),
             ("."),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1075,7 +1075,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
 }
 
 TXT_TokenArray
-txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, String8 string)
+txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1224,7 +1224,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
         // rjf: identifier . keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only static String8 zig_keywords[] =
+          read_only static StringView zig_keywords[] =
           {
             ("addrspace"),
             ("align"),
@@ -1276,7 +1276,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
             ("volatile"),
             ("while"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(zig_keywords); keyword_idx += 1)
           {
             if(str8_match(zig_keywords[keyword_idx], token_string, 0))
@@ -1291,7 +1291,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only static String8 zig_multichar_symbol_strings[] =
+          read_only static StringView zig_multichar_symbol_strings[] =
           {
             ("<<"),
             (">>"),
@@ -1314,7 +1314,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
             (">>="),
             ("."),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1366,7 +1366,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
 }
 
 TXT_TokenArray
-txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, String8 string)
+txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1848,7 +1848,7 @@ txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo* info, int64 line_n
 }
 
 Rng1U64
-txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray* line_tokens)
+txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_range, StringView line_text, TXT_TokenArray* line_tokens)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1866,7 +1866,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_ra
       if(contains_1u64(token.range, off))
       {
         Rng1U64 token_range_clamped = intersect_1u64(line_range, token.range);
-        String8 token_string = str8_substr(line_text, r1u64(token_range_clamped.max - line_range.min, token_range_clamped.max - line_range.min));
+        StringView token_string = str8_substr(line_text, r1u64(token_range_clamped.max - line_range.min, token_range_clamped.max - line_range.min));
         B32 token_ender = 0;
         switch(token.kind)
         {
@@ -1906,7 +1906,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_ra
           wb_token -= 1)
       {
         Rng1U64 wb_token_range_clamped = intersect_1u64(line_range, wb_token.range);
-        String8 wb_token_string = str8_substr(line_text, r1u64(wb_token_range_clamped.min - line_range.min, wb_token_range_clamped.max - line_range.min));
+        StringView wb_token_string = str8_substr(line_text, r1u64(wb_token_range_clamped.min - line_range.min, wb_token_range_clamped.max - line_range.min));
         B32 include_wb_token = 0;
         switch(wb_token.kind)
         {
@@ -1950,7 +1950,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_ra
 }
 
 Rng1U64
-txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, String8 data, TxtPt pt)
+txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, StringView data, TxtPt pt)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1958,7 +1958,7 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, String8 data, TxtPt pt)
   {
     // rjf: unpack line info
     Rng1U64 line_range = info.lines_ranges[pt.line-1];
-    String8 line_text = str8_substr(data, line_range);
+    StringView line_text = str8_substr(data, line_range);
     TXT_LineTokensSlice line_tokens_slice = txt_line_tokens_slice_from_info_data_line_range(scratch.arena, info, data, r1s64(pt.line, pt.line));
     TXT_TokenArray line_tokens = line_tokens_slice.line_tokens[0];
     TXT_Token* line_tokens_first = line_tokens.v;
@@ -1972,18 +1972,18 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, String8 data, TxtPt pt)
   return result;
 }
 
-String8
-txt_string_from_info_data_txt_rng(TXT_TextInfo* info, String8 data, TxtRng rng)
+StringView
+txt_string_from_info_data_txt_rng(TXT_TextInfo* info, StringView data, TxtRng rng)
 {
   Rng1U64 rng_off = r1u64(txt_off_from_info_pt(info, rng.min), txt_off_from_info_pt(info, rng.max));
-  String8 result = str8_substr(data, rng_off);
+  StringView result = str8_substr(data, rng_off);
   return result;
 }
 
-String8
-txt_string_from_info_data_line_num(TXT_TextInfo* info, String8 data, int64 line_num)
+StringView
+txt_string_from_info_data_line_num(TXT_TextInfo* info, StringView data, int64 line_num)
 {
-  String8 result = {0};
+  StringView result = {0};
   if(1 <= line_num && line_num <= info.lines_count)
   {
     result = str8_substr(data, info.lines_ranges[line_num-1]);
@@ -1992,7 +1992,7 @@ txt_string_from_info_data_line_num(TXT_TextInfo* info, String8 data, int64 line_
 }
 
 TXT_LineTokensSlice
-txt_line_tokens_slice_from_info_data_line_range(Arena* arena, TXT_TextInfo* info, String8 data, Rng1S64 line_range)
+txt_line_tokens_slice_from_info_data_line_range(Arena* arena, TXT_TextInfo* info, StringView data, Rng1S64 line_range)
 {
   TXT_LineTokensSlice result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -2162,7 +2162,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   }
   
   //- rjf: hash . data
-  String8 data = {0};
+  StringView data = {0};
   if(got_task)
   {
     data = hs_data_from_hash(scope, hash);

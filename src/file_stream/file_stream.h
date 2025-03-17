@@ -27,7 +27,7 @@ struct FS_Node
   FS_Node* next;
   
   // rjf: file metadata
-  String8 path;
+  StringView path;
   uint64 timestamp;
   uint64 size;
   
@@ -83,8 +83,8 @@ static FS_Shared* fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 fs_little_hash_from_string(String8 string);
-U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
+uint64 fs_little_hash_from_string(StringView string);
+U128 fs_big_hash_from_string_range(StringView string, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Top-Level API
@@ -99,17 +99,17 @@ uint64 fs_change_gen();
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-U128 fs_hash_from_path_range(String8 path, Rng1U64 range, uint64 endt_us);
-U128 fs_key_from_path_range(String8 path, Rng1U64 range);
+U128 fs_hash_from_path_range(StringView path, Rng1U64 range, uint64 endt_us);
+U128 fs_key_from_path_range(StringView path, Rng1U64 range);
 
-uint64 fs_timestamp_from_path(String8 path);
-uint64 fs_size_from_path(String8 path);
+uint64 fs_timestamp_from_path(StringView path);
+uint64 fs_size_from_path(StringView path);
 
 ////////////////////////////////
 //~ rjf: Streaming Work
 
-B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, uint64 endt_us);
-void fs_u2s_dequeue_req(Arena* arena, Rng1U64* range_out, String8* path_out);
+B32 fs_u2s_enqueue_req(Rng1U64 range, StringView path, uint64 endt_us);
+void fs_u2s_dequeue_req(Arena* arena, Rng1U64* range_out, StringView* path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////

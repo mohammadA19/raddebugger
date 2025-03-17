@@ -15,7 +15,7 @@ lnk_timer_end(LNK_TimerType timer)
   g_timers[timer].end = os_now_microseconds();
 }
 
-String8
+StringView
 lnk_string_from_timer_type(LNK_TimerType type)
 {
   switch (type) {
@@ -26,6 +26,6 @@ lnk_string_from_timer_type(LNK_TimerType type)
   case LNK_Timer_Debug: return ("Debug");
   default: InvalidPath;
   }
-  return str8_zero();
+  return StringView();
 }
 

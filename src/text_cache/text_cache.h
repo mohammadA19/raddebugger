@@ -108,7 +108,7 @@ enum TXT_LangKind
   TXT_LangKind_COUNT
 }
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena* arena, uint64* bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena* arena, uint64* bytes_processed_counter, StringView string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -212,8 +212,8 @@ static TXT_Shared* txt_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-TXT_LangKind txt_lang_kind_from_extension(String8 extension);
-String8 txt_extension_from_lang_kind(TXT_LangKind kind);
+TXT_LangKind txt_lang_kind_from_extension(StringView extension);
+StringView txt_extension_from_lang_kind(TXT_LangKind kind);
 TXT_LangKind txt_lang_kind_from_arch(Arch arch);
 TXT_LangLexFunctionType* txt_lex_function_from_lang_kind(TXT_LangKind kind);
 
@@ -228,11 +228,11 @@ TXT_TokenArray txt_token_array_from_list(Arena* arena, TXT_TokenList* list);
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-TXT_TokenArray txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, String8 string);
-TXT_TokenArray txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, String8 string);
-TXT_TokenArray txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, String8 string);
-TXT_TokenArray txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, String8 string);
-TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, String8 string);
+TXT_TokenArray txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView string);
+TXT_TokenArray txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView string);
+TXT_TokenArray txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView string);
+TXT_TokenArray txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView string);
+TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView string);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -263,11 +263,11 @@ TXT_TextInfo txt_text_info_from_key_lang(TXT_Scope* scope, U128 key, TXT_LangKin
 uint64 txt_off_from_info_pt(TXT_TextInfo* info, TxtPt pt);
 TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo* info, uint64 off);
 TXT_TokenArray txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo* info, int64 line_num);
-Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray* line_tokens);
-Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, String8 data, TxtPt pt);
-String8 txt_string_from_info_data_txt_rng(TXT_TextInfo* info, String8 data, TxtRng rng);
-String8 txt_string_from_info_data_line_num(TXT_TextInfo* info, String8 data, int64 line_num);
-TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena* arena, TXT_TextInfo* info, String8 data, Rng1S64 line_range);
+Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(uint64 off, Rng1U64 line_range, StringView line_text, TXT_TokenArray* line_tokens);
+Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo* info, StringView data, TxtPt pt);
+StringView txt_string_from_info_data_txt_rng(TXT_TextInfo* info, StringView data, TxtRng rng);
+StringView txt_string_from_info_data_line_num(TXT_TextInfo* info, StringView data, int64 line_num);
+TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena* arena, TXT_TextInfo* info, StringView data, Rng1S64 line_range);
 
 ////////////////////////////////
 //~ rjf: Parse Threads

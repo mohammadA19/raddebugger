@@ -102,7 +102,7 @@ B32 frame();
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-String8 os_string_from_event_kind(OS_EventKind kind);
+StringView os_string_from_event_kind(OS_EventKind kind);
 String8List os_string_list_from_modifiers(Arena* arena, OS_Modifiers flags);
 uint32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 void os_eat_event(OS_EventList* events, OS_Event* event);
@@ -126,13 +126,13 @@ OS_GfxInfo* os_get_gfx_info();
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
-void    os_set_clipboard_text(String8 string);
-String8 os_get_clipboard_text(Arena* arena);
+void    os_set_clipboard_text(StringView string);
+StringView os_get_clipboard_text(Arena* arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
-OS_Handle      os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title);
+OS_Handle      os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title);
 void           os_window_close(OS_Handle window);
 void           os_window_first_paint(OS_Handle window);
 void           os_window_focus(OS_Handle window);
@@ -159,7 +159,7 @@ float            os_dpi_from_window(OS_Handle window);
 OS_HandleArray os_push_monitors_array(Arena* arena);
 OS_Handle      os_primary_monitor();
 OS_Handle      os_monitor_from_window(OS_Handle window);
-String8        os_name_from_monitor(Arena* arena, OS_Handle monitor);
+StringView        os_name_from_monitor(Arena* arena, OS_Handle monitor);
 Vec2F32        os_dim_from_monitor(OS_Handle monitor);
 
 ////////////////////////////////
@@ -179,12 +179,12 @@ void           os_set_cursor(OS_Cursor cursor);
 ////////////////////////////////
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
-void           os_graphical_message(B32 error, String8 title, String8 message);
+void           os_graphical_message(B32 error, StringView title, StringView message);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Shell Operations
 
-void           os_show_in_filesystem_ui(String8 path);
-void           os_open_in_browser(String8 url);
+void           os_show_in_filesystem_ui(StringView path);
+void           os_open_in_browser(StringView url);
 
 #endif // OS_GFX_H

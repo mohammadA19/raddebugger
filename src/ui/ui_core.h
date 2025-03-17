@@ -26,7 +26,7 @@ enum UI_IconKind
 struct UI_IconInfo
 {
   FNT_Tag icon_font;
-  String8 icon_kind_text_map[UI_IconKind_COUNT];
+  StringView icon_kind_text_map[UI_IconKind_COUNT];
 }
 
 ////////////////////////////////
@@ -131,7 +131,7 @@ struct UI_Event
   UI_EventDeltaUnit delta_unit;
   OS_Key key;
   OS_Modifiers modifiers;
-  String8 string;
+  StringView string;
   String8List paths;
   Vec2F32 pos;
   Vec2F32 delta_2f32;
@@ -165,8 +165,8 @@ enum UI_TxtOpFlags : uint32
 struct UI_TxtOp
 {
   UI_TxtOpFlags flags;
-  String8 replace;
-  String8 copy;
+  StringView replace;
+  StringView copy;
   TxtRng range;
   TxtPt cursor;
   TxtPt mark;
@@ -385,7 +385,7 @@ struct UI_Box
   //- rjf: per-build equipment
   UI_Key key;
   UI_BoxFlags flags;
-  String8 string;
+  StringView string;
   UI_TextAlign text_align;
   Vec2F32 fixed_position;
   Vec2F32 fixed_size;
@@ -642,9 +642,9 @@ struct UI_State
   Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 drag_start_mouse;
   Arena* drag_state_arena;
-  String8 drag_state_data;
+  StringView drag_state_data;
   Arena* string_hover_arena;
-  String8 string_hover_string;
+  StringView string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
   uint64 string_hover_begin_us;
   uint64 string_hover_build_index;
@@ -673,12 +673,12 @@ struct UI_State
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-uint64     ui_hash_from_string(uint64 seed, String8 string);
-String8 ui_hash_part_from_key_string(String8 string);
-String8 ui_display_part_from_key_string(String8 string);
+uint64     ui_hash_from_string(uint64 seed, StringView string);
+StringView ui_hash_part_from_key_string(StringView string);
+StringView ui_display_part_from_key_string(StringView string);
 UI_Key  ui_key_zero();
 UI_Key  ui_key_make(uint64 v);
-UI_Key  ui_key_from_string(UI_Key seed_key, String8 string);
+UI_Key  ui_key_from_string(UI_Key seed_key, StringView string);
 UI_Key  ui_key_from_stringf(UI_Key seed_key, char* fmt, ...);
 B32     ui_key_match(UI_Key a, UI_Key b);
 
@@ -692,9 +692,9 @@ void ui_eat_event_node(UI_EventList* list, UI_EventNode* node);
 //~ rjf: Text Operation Functions
 
 B32 ui_char_is_scan_boundary(uint8 c);
-int64 ui_scanned_column_from_column(String8 string, int64 start_column, Side side);
-UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, TxtPt cursor, TxtPt mark);
-String8 ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 range, String8 replace);
+int64 ui_scanned_column_from_column(StringView string, int64 start_column, Side side);
+UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView string, TxtPt cursor, TxtPt mark);
+StringView ui_push_string_replace_range(Arena* arena, StringView string, Rng1S64 range, StringView replace);
 
 ////////////////////////////////
 //~ rjf: Size Type Functions
@@ -755,7 +755,7 @@ Arena *           ui_build_arena();
 OS_Handle         ui_window();
 Vec2F32           ui_mouse();
 FNT_Tag             ui_icon_font();
-String8           ui_icon_string_from_kind(UI_IconKind icon_kind);
+StringView           ui_icon_string_from_kind(UI_IconKind icon_kind);
 float               ui_dt();
 
 //- rjf: event pumping
@@ -771,8 +771,8 @@ B32 ui_slot_press(UI_EventActionSlot slot);
 //- rjf: drag data
 Vec2F32           ui_drag_start_mouse();
 Vec2F32           ui_drag_delta();
-void              ui_store_drag_data(String8 string);
-String8           ui_get_drag_data(uint64 min_required_size);
+void              ui_store_drag_data(StringView string);
+StringView           ui_get_drag_data(uint64 min_required_size);
 #define ui_store_drag_struct(ptr) ui_store_drag_data(str8_struct(ptr))
 #define ui_get_drag_struct(type) ((type *)ui_get_drag_data(sizeof(type)).str)
 
@@ -840,19 +840,19 @@ UI_Palette *      ui_build_palette_(UI_Palette* base, UI_Palette* overrides);
 //- rjf: box node construction
 UI_Box *          ui_build_box_from_key(UI_BoxFlags flags, UI_Key key);
 UI_Key            ui_active_seed_key();
-UI_Box *          ui_build_box_from_string(UI_BoxFlags flags, String8 string);
+UI_Box *          ui_build_box_from_string(UI_BoxFlags flags, StringView string);
 UI_Box *          ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...);
 
 //- rjf: box node equipment
-inline void       ui_box_equip_display_string(UI_Box* box, String8 string);
+inline void       ui_box_equip_display_string(UI_Box* box, StringView string);
 inline void       ui_box_equip_display_fancy_strings(UI_Box* box, DR_FancyStringList* strings);
-inline void       ui_box_equip_display_string_fancy_runs(UI_Box* box, String8 string, DR_FancyRunList* runs);
+inline void       ui_box_equip_display_string_fancy_runs(UI_Box* box, StringView string, DR_FancyRunList* runs);
 inline void       ui_box_equip_fuzzy_match_ranges(UI_Box* box, FuzzyMatchRangeList* matches);
 inline void       ui_box_equip_draw_bucket(UI_Box* box, DR_Bucket* bucket);
 inline void       ui_box_equip_custom_draw(UI_Box* box, UI_BoxCustomDrawFunctionType* custom_draw, void* user_data);
 
 //- rjf: box accessors / queries
-String8           ui_box_display_string(UI_Box* box);
+StringView           ui_box_display_string(UI_Box* box);
 Vec2F32           ui_box_text_position(UI_Box* box);
 uint64               ui_box_char_pos_from_xy(UI_Box* box, Vec2F32 xy);
 

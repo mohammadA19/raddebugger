@@ -554,13 +554,13 @@ struct COFF_ImportHeader
 uint64               coff_align_size_from_section_flags(COFF_SectionFlags flags);
 COFF_SectionFlags coff_section_flag_from_align_size (uint64 align);
 
-String8 coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, uint64 string_table_off);
-void    coff_parse_section_name      (String8 full_name, String8* name_out, String8* postfix_out);
+StringView coff_name_from_section_header(StringView raw_coff, COFF_SectionHeader* header, uint64 string_table_off);
+void    coff_parse_section_name      (StringView full_name, StringView* name_out, StringView* postfix_out);
 
 ////////////////////////////////
 // Symbol
 
-String8 coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName* name);
+StringView coff_read_symbol_name(StringView raw_coff, uint64 string_table_off, COFF_SymbolName* name);
 
 ////////////////////////////////
 // Reloc
@@ -574,9 +574,9 @@ uint64 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x);
 uint32 coff_make_ordinal32(uint16 hint);
 uint64 coff_make_ordinal64(uint16 hint);
 
-String8 coff_make_import_lookup           (Arena* arena, uint16 hint, String8 name);
-String8 coff_make_import_header_by_name   (Arena* arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 name, uint16 hint, COFF_ImportType type);
-String8 coff_make_import_header_by_ordinal(Arena* arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, uint16 ordinal, COFF_ImportType type);
+StringView coff_make_import_lookup           (Arena* arena, uint16 hint, StringView name);
+StringView coff_make_import_header_by_name   (Arena* arena, StringView dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, StringView name, uint16 hint, COFF_ImportType type);
+StringView coff_make_import_header_by_ordinal(Arena* arena, StringView dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, uint16 ordinal, COFF_ImportType type);
 
 ////////////////////////////////
 // Misc

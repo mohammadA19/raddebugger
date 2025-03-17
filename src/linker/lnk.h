@@ -203,7 +203,7 @@ struct
 
 struct
 {
-  String8            image_data;
+  StringView            image_data;
   LNK_SymbolTable*   symtab;
   LNK_SectionTable*  st;
   LNK_Section**      sect_id_map;
@@ -214,7 +214,7 @@ struct
 
 struct
 {
-  String8            image_data;
+  StringView            image_data;
   LNK_SymbolTable*   symtab;
   LNK_SectionTable*  st;
   LNK_Section**      sect_id_map;
@@ -224,13 +224,13 @@ struct
 
 struct
 {
-  String8 path;
-  String8 data;
+  StringView path;
+  StringView data;
 }
 
 struct
 {
-  String8  data;
+  StringView  data;
   Rng1U64* ranges;
   U128*    hashes;
 }
@@ -245,44 +245,44 @@ LNK_InputImportList lnk_list_from_input_import_arr(LNK_InputImport** arr, uint64
 ////////////////////////////////
 // Helpers
 
-String8 lnk_make_full_path(Arena* arena, String8 work_dir, PathStyle system_path_style, String8 path);
+StringView lnk_make_full_path(Arena* arena, StringView work_dir, PathStyle system_path_style, StringView path);
 
-String8 lnk_get_lib_name(String8 path);
-B32     lnk_is_lib_disallowed(HashTable* disallow_lib_ht, String8 path);
-B32     lnk_is_lib_loaded(HashTable* loaded_lib_ht, String8 lib_path);
-void    lnk_push_disallow_lib(Arena* arena, HashTable* disallow_lib_ht, String8 path);
-void    lnk_push_loaded_lib(Arena* arena, HashTable* loaded_lib_ht, String8 path);
+StringView lnk_get_lib_name(StringView path);
+B32     lnk_is_lib_disallowed(HashTable* disallow_lib_ht, StringView path);
+B32     lnk_is_lib_loaded(HashTable* loaded_lib_ht, StringView lib_path);
+void    lnk_push_disallow_lib(Arena* arena, HashTable* disallow_lib_ht, StringView path);
+void    lnk_push_loaded_lib(Arena* arena, HashTable* loaded_lib_ht, StringView path);
 
 ////////////////////////////////
 // Manifest
 
-String8 lnk_make_linker_manifest(Arena* arena, B32 manifest_uac, String8 manifest_level, String8 manifest_ui_access, String8List manifest_dependency_list);
-void    lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest_path_list);
+StringView lnk_make_linker_manifest(Arena* arena, B32 manifest_uac, StringView manifest_level, StringView manifest_ui_access, String8List manifest_dependency_list);
+void    lnk_merge_manifest_files(StringView mt_path, StringView out_name, String8List manifest_path_list);
 
 ////////////////////////////////
 // Resources
 
 void    lnk_serialize_pe_resource_tree(LNK_SectionTable* st, LNK_SymbolTable* symtab, PE_ResourceDir* root_dir);
-void    lnk_add_resource_debug_s(LNK_SectionTable* st, LNK_SymbolTable* symtab, String8 obj_path, String8 cwd_path, String8 exe_path, CV_Arch arch, String8List res_file_list, MD5Hash* res_hash_array);
-String8 lnk_make_res_obj(TP_Context* tp, Arena* arena, PE_ResourceDir* root_dir, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 path, String8 cwd_path, String8 exe_path, String8List res_file_list, MD5Hash* res_hash_array);
-String8 lnk_obj_from_res_file_list(TP_Context* tp, Arena* arena, LNK_SectionTable* st, LNK_SymbolTable* symtab, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, uint32 time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name); 
+void    lnk_add_resource_debug_s(LNK_SectionTable* st, LNK_SymbolTable* symtab, StringView obj_path, StringView cwd_path, StringView exe_path, CV_Arch arch, String8List res_file_list, MD5Hash* res_hash_array);
+StringView lnk_make_res_obj(TP_Context* tp, Arena* arena, PE_ResourceDir* root_dir, COFF_MachineType machine, COFF_TimeStamp time_stamp, StringView path, StringView cwd_path, StringView exe_path, String8List res_file_list, MD5Hash* res_hash_array);
+StringView lnk_obj_from_res_file_list(TP_Context* tp, Arena* arena, LNK_SectionTable* st, LNK_SymbolTable* symtab, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, uint32 time_stamp, StringView work_dir, PathStyle system_path_style, StringView obj_name); 
 
 ////////////////////////////////
 // Debug
 
-String8 lnk_make_linker_coff_obj(TP_Context* tp, Arena* arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 cwd_path, String8 exe_path, String8 pdb_path, String8 cmd_line, String8 obj_name);
+StringView lnk_make_linker_coff_obj(TP_Context* tp, Arena* arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, StringView cwd_path, StringView exe_path, StringView pdb_path, StringView cmd_line, StringView obj_name);
 
 ////////////////////////////////
 // Win32 Image Helpers
 
-void        lnk_build_debug_pdb(LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_Section* debug_sect, LNK_Chunk* debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, uint32 age, String8 pdb_path);
-void        lnk_build_debug_rdi(LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_Section* debug_sect, LNK_Chunk* debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, String8 rdi_path);
-void        lnk_build_guard_tables(TP_Context* tp, LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_ExportTable* exptab, LNK_ObjList obj_list, COFF_MachineType machine, String8 entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
+void        lnk_build_debug_pdb(LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_Section* debug_sect, LNK_Chunk* debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, uint32 age, StringView pdb_path);
+void        lnk_build_debug_rdi(LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_Section* debug_sect, LNK_Chunk* debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, StringView rdi_path);
+void        lnk_build_guard_tables(TP_Context* tp, LNK_SectionTable* st, LNK_SymbolTable* symtab, LNK_ExportTable* exptab, LNK_ObjList obj_list, COFF_MachineType machine, StringView entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
 void        lnk_build_base_relocs(TP_Context* tp, TP_Arena* tp_arena, LNK_SectionTable* st, LNK_SymbolTable* symtab, COFF_MachineType  machine, uint64 page_size, PE_ImageFileCharacteristics file_chars, LNK_ObjList obj_list);
 LNK_Chunk * lnk_build_dos_header(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent_chunk);
 LNK_Chunk * lnk_build_pe_magic(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent);
 LNK_Chunk * lnk_build_coff_file_header(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent, COFF_MachineType machine, COFF_TimeStamp time_stamp, PE_ImageFileCharacteristics file_characteristics);
-LNK_Chunk * lnk_build_pe_optional_header_x64(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent, COFF_MachineType machine, uint64 base_addr, uint64 sect_align, uint64 file_align, Version linker_ver, Version os_ver, Version image_ver, Version subsystem_ver, PE_WindowsSubsystem subsystem, PE_DllCharacteristics dll_characteristics, uint64 stack_reserve, uint64 stack_commit, uint64 heap_reserve, uint64 heap_commit, String8 entry_point_name, LNK_SectionArray sect_arr);
+LNK_Chunk * lnk_build_pe_optional_header_x64(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent, COFF_MachineType machine, uint64 base_addr, uint64 sect_align, uint64 file_align, Version linker_ver, Version os_ver, Version image_ver, Version subsystem_ver, PE_WindowsSubsystem subsystem, PE_DllCharacteristics dll_characteristics, uint64 stack_reserve, uint64 stack_commit, uint64 heap_reserve, uint64 heap_commit, StringView entry_point_name, LNK_SectionArray sect_arr);
 LNK_Chunk * lnk_build_pe_directories(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent);
 LNK_Chunk * lnk_build_coff_section_table(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent_chunk, LNK_SectionArray sect_arr);
 LNK_Chunk * lnk_build_win32_image_header(LNK_SymbolTable* symtab, LNK_Section* header_sect, LNK_Chunk* parent_chunk, LNK_Config* config, LNK_SectionArray sect_arr);
@@ -290,10 +290,10 @@ LNK_Chunk * lnk_build_win32_image_header(LNK_SymbolTable* symtab, LNK_Section* h
 ////////////////////////////////
 // Relocs
 
-void lnk_patch_relocs_linker(TP_Context* tp, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, String8 image_data, uint64 base_addr);
-void lnk_patch_relocs_obj(TP_Context* tp, LNK_ObjList obj_list, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, String8 image_data, uint64 base_addr);
+void lnk_patch_relocs_linker(TP_Context* tp, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, StringView image_data, uint64 base_addr);
+void lnk_patch_relocs_obj(TP_Context* tp, LNK_ObjList obj_list, LNK_SymbolTable* symtab, LNK_SectionTable* st, LNK_Section** sect_id_map, StringView image_data, uint64 base_addr);
 
-void lnk_apply_reloc(uint64 base_addr, uint64 virt_align, uint64 file_align, LNK_Section** sect_id_map, LNK_SymbolTable* symtab, String8 chunk_data, LNK_Reloc* reloc);
+void lnk_apply_reloc(uint64 base_addr, uint64 virt_align, uint64 file_align, LNK_Section** sect_id_map, LNK_SymbolTable* symtab, StringView chunk_data, LNK_Reloc* reloc);
 
 ////////////////////////////////
 
@@ -304,5 +304,5 @@ void lnk_log_timers();
 ////////////////////////////////
 // Enum <. String
 
-String8 lnk_string_from_input_source(LNK_InputSourceType input_source);
+StringView lnk_string_from_input_source(LNK_InputSourceType input_source);
 

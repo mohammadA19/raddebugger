@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 dmn_event_kind_string_table[17] =
+StringView dmn_event_kind_string_table[17] =
 {
 ("Null"),
 ("Error"),
@@ -25,7 +25,7 @@ String8 dmn_event_kind_string_table[17] =
 ("SetThreadName"),
 };
 
-String8 dmn_exception_kind_string_table[5] =
+StringView dmn_exception_kind_string_table[5] =
 {
 ("Null"),
 ("MemoryRead"),

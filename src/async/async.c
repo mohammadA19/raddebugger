@@ -20,7 +20,7 @@ async_init(CmdLine* cmdline)
   }
   async_shared.ring_mutex = os_mutex_alloc();
   async_shared.ring_cv = os_condition_variable_alloc();
-  String8 work_thread_count_string = cmd_line_string(cmdline, ("work_threads_count"));
+  StringView work_thread_count_string = cmd_line_string(cmdline, ("work_threads_count"));
   if(work_thread_count_string.size == 0 || !try_u64_from_str8_c_rules(work_thread_count_string, &async_shared.work_threads_count))
   {
     async_shared.work_threads_count = Max(1, os_get_system_info().logical_processor_count-1);
@@ -126,7 +126,7 @@ ASYNC_Task *
 async_task_launch_(Arena* arena, ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params)
 {
   ASYNC_Task* task = push_array(arena, ASYNC_Task, 1);
-  task.semaphore = os_semaphore_alloc(1, 1, str8_zero());
+  task.semaphore = os_semaphore_alloc(1, 1, StringView());
   ASYNC_WorkParams params_refined = {0};
   MemoryCopyStruct(&params_refined, params);
   params_refined.endt_us = max_U64;

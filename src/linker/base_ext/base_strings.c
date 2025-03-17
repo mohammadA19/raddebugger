@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 int
-str8_compar(String8 a, String8 b, B32 ignore_case)
+str8_compar(StringView a, StringView b, B32 ignore_case)
 {
   int cmp = 0;
   uint64 size = Min(a.size, b.size);
@@ -45,13 +45,13 @@ str8_compar(String8 a, String8 b, B32 ignore_case)
 int
 str8_compar_ignore_case(const void* a, const void* b)
 {
-  return str8_compar(*(String8*)a, *(String8*)b, 1);
+  return str8_compar(*(StringView*)a, *(StringView*)b, 1);
 }
 
 int
 str8_compar_case_sensitive(const void* a, const void* b)
 {
-  return str8_compar(*(String8*)a, *(String8*)b, 0);
+  return str8_compar(*(StringView*)a, *(StringView*)b, 0);
 }
 
 int
@@ -64,7 +64,7 @@ str8_is_before_case_sensitive(const void* a, const void* b)
 String8Node *
 str8_list_push_raw(Arena* arena, String8List* list, void* data_ptr, uint64 data_size)
 {
-  String8 data = str8((uint8 *)data_ptr, data_size);
+  StringView data = StringView((uint8 *)data_ptr, data_size);
   String8Node* node = str8_list_push(arena, list, data);
   return node;
 }
@@ -75,7 +75,7 @@ str8_list_push_pad(Arena* arena, String8List* list, uint64 offset, uint64 align)
   uint64 pad_size = AlignPow2(offset, align) - offset;
   uint8* pad = push_array(arena, uint8, pad_size);
   MemorySet(pad, 0, pad_size);
-  str8_list_push(arena, list, str8(pad, pad_size));
+  str8_list_push(arena, list, StringView(pad, pad_size));
   return pad_size;
 }
 
@@ -85,7 +85,7 @@ str8_list_push_pad_front(Arena* arena, String8List* list, uint64 offset, uint64 
   uint64 pad_size = AlignPow2(offset, align) - offset;
   uint8* pad = push_array(arena, uint8, pad_size);
   MemorySet(pad, 0, pad_size);
-  str8_list_push_front(arena, list, str8(pad, pad_size));
+  str8_list_push_front(arena, list, StringView(pad, pad_size));
   return pad_size;
 }
 
@@ -124,7 +124,7 @@ str8_list_pop_front(String8List* list)
 }
 
 uint64
-hash_from_str8(String8 string)
+hash_from_str8(StringView string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;

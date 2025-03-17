@@ -5,7 +5,7 @@
 //~ rjf: Basic Helpers
 
 uint64
-dmn_w32_hash_from_string(String8 string)
+dmn_w32_hash_from_string(StringView string)
 {
   uint64 result = 5381;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -205,14 +205,14 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, uint64 id)
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-String8
+StringView
 dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: extract path from module
   String16 path16 = {0};
-  String8 path8 = {0};
+  StringView path8 = {0};
   {
     // rjf: handle . full path
     if(module.handle != 0)
@@ -259,7 +259,7 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
   }
   
   // rjf: produce finalized result
-  String8 result = {0};
+  StringView result = {0};
   {
     if(path16.size > 0)
     {
@@ -350,7 +350,7 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void* src)
   return result;
 }
 
-String8
+StringView
 dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address)
 {
   // TODO(rjf): @rewrite
@@ -385,7 +385,7 @@ dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address)
     }
     
     if (block_opl > 0){
-      str8_list_push(scratch.arena, &list, str8(block, block_opl));
+      str8_list_push(scratch.arena, &list, StringView(block, block_opl));
     }
     
     if (block_opl < cap || cap == 0){
@@ -394,7 +394,7 @@ dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, uint64 address)
   }
   
   // assemble results
-  String8 result = str8_list_join(arena, &list, 0);
+  StringView result = str8_list_join(arena, &list, 0);
   scratch_end(scratch);
   return(result);
 }
@@ -436,7 +436,7 @@ dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address)
     }
     
     if (block_opl > 0){
-      str8_list_push(scratch.arena, &list, str8(block, block_opl));
+      str8_list_push(scratch.arena, &list, StringView(block, block_opl));
     }
     
     if (block_opl < cap || cap == 0){
@@ -445,7 +445,7 @@ dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address)
   }
   
   // assemble results
-  String8 joined = str8_list_join(arena, &list, 0);
+  StringView joined = str8_list_join(arena, &list, 0);
   String16 result = {(uint16*)joined.str, joined.size/2};
   scratch_end(scratch);
   return(result);
@@ -1165,7 +1165,7 @@ dmn_init()
         else
         {
           String16 string16 = str16((uint16 *)this_proc_env + start_idx, idx - start_idx);
-          String8 string = str8_from_16(dmn_w32_shared.arena, string16);
+          StringView string = str8_from_16(dmn_w32_shared.arena, string16);
           str8_list_push(dmn_w32_shared.arena, &dmn_w32_shared.env_strings, string);
           start_idx = idx+1;
         }
@@ -1211,11 +1211,11 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
   DMN_AccessScope
   {
     //- rjf: produce exe / arguments string
-    String8 cmd = {0};
+    StringView cmd = {0};
     if(params.cmd_line.first != 0)
     {
       String8List args = {0};
-      String8 exe_path = params.cmd_line.first.string;
+      StringView exe_path = params.cmd_line.first.string;
       String8List exe_path_parts = str8_split_path(scratch.arena, exe_path);
       exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = ("\\")});
       str8_list_pushf(scratch.arena, &args, "\"%S\"", exe_path);
@@ -1229,7 +1229,7 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
     }
     
     //- rjf: produce environment strings
-    String8 env = {0};
+    StringView env = {0};
     {
       String8List all_opts = params.env;
       if(params.inherit_env != 0)
@@ -1900,7 +1900,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
               ()sus_result;
               
               // rjf: unpack thread name
-              String8 thread_name = {0};
+              StringView thread_name = {0};
               if(dmn_w32_GetThreadDescription != 0)
               {
                 WCHAR* thread_name_w = 0;
@@ -2278,7 +2278,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                               break;
                             }
                           }
-                          String8 string_part = str8(buffer, size);
+                          StringView string_part = StringView(buffer, size);
                           str8_list_push(scratch.arena, &thread_name_strings, string_part);
                           total_string_size += size;
                           read_addr += size;
@@ -2328,7 +2328,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
               buffer[string_size] = 0;
               
               // rjf: extract into string
-              String8 debug_string = str8(buffer, string_size);
+              StringView debug_string = StringView(buffer, string_size);
               if(debug_string.size != 0 && buffer[string_size-1] == 0)
               {
                 debug_string.size -= 1;
@@ -2386,7 +2386,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
       //
       if(debug_strings.total_size != 0 && debug_strings_event != 0)
       {
-        String8 debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
+        StringView debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
         debug_strings_event.string = debug_strings_joined;
       }
       
@@ -2442,7 +2442,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
             if(thread.thread.last_name_hash == 0 ||
                thread.thread.name_gather_time_us+1000000 <= os_now_microseconds())
             {
-              String8 name = {0};
+              StringView name = {0};
               {
                 WCHAR* thread_name_w = 0;
                 HRESULT hr = dmn_w32_GetThreadDescription(thread.handle, &thread_name_w);

@@ -3,10 +3,10 @@
 
 //- GENERATED CODE
 
-String8
+StringView
 cv_string_from_numeric_kind(CV_NumericKind v)
 {
-String8 result = ("<Unknown CV_NumericKind>");
+StringView result = ("<Unknown CV_NumericKind>");
 switch(v)
 {
 default:{}break;
@@ -37,10 +37,10 @@ case CV_NumericKind_FLOAT16:{result = ("FLOAT16");}break;
 return result;
 }
 
-String8
+StringView
 cv_string_from_arch(CV_Arch v)
 {
-String8 result = ("<Unknown CV_Arch>");
+StringView result = ("<Unknown CV_Arch>");
 switch(v)
 {
 default:{}break;
@@ -108,10 +108,10 @@ case CV_Arch_D3D11_SHADER:{result = ("D3D11_SHADER");}break;
 return result;
 }
 
-String8
+StringView
 cv_string_from_sym_kind(CV_SymKind v)
 {
-String8 result = ("<Unknown CV_SymKind>");
+StringView result = ("<Unknown CV_SymKind>");
 switch(v)
 {
 default:{}break;
@@ -312,10 +312,10 @@ case CV_SymKind_INLINEES:{result = ("INLINEES");}break;
 return result;
 }
 
-String8
+StringView
 cv_string_from_basic_type(CV_BasicType v)
 {
-String8 result = ("<Unknown CV_BasicType>");
+StringView result = ("<Unknown CV_BasicType>");
 switch(v)
 {
 default:{}break;
@@ -376,10 +376,10 @@ case CV_BasicType_PTR:{result = ("PTR");}break;
 return result;
 }
 
-String8
+StringView
 cv_type_name_from_basic_type(CV_BasicType v)
 {
-String8 result = ("<Unknown CV_BasicType>");
+StringView result = ("<Unknown CV_BasicType>");
 switch(v)
 {
 default:{}break;
@@ -440,10 +440,10 @@ case CV_BasicType_PTR:{result = ("PTR");}break;
 return result;
 }
 
-String8
+StringView
 cv_string_from_leaf_kind(CV_LeafKind v)
 {
-String8 result = ("<Unknown CV_LeafKind>");
+StringView result = ("<Unknown CV_LeafKind>");
 switch(v)
 {
 default:{}break;

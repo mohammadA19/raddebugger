@@ -22,7 +22,7 @@ lnk_log(LNK_LogType type, char* fmt, ...)
     Temp scratch = scratch_begin(0,0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     fprintf(stdout, "%.*s\n", str8_varg(string));
     va_end(args);
     scratch_end(scratch);
@@ -30,7 +30,7 @@ lnk_log(LNK_LogType type, char* fmt, ...)
 }
 
 LNK_LogType
-lnk_log_type_from_string(String8 string)
+lnk_log_type_from_string(StringView string)
 {
   static struct {
     char*       name;

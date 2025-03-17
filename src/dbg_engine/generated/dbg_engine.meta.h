@@ -80,7 +80,7 @@ static B32 DEV_eval_watch_key_tooltips = 0;
 static B32 DEV_cmd_context_tooltips = 0;
 static B32 DEV_scratch_mouse_draw = 0;
 static B32 DEV_updating_indicator = 0;
-struct {B32* value_ptr; String8 name;} DEV_toggle_table[] =
+struct {B32* value_ptr; StringView name;} DEV_toggle_table[] =
 {
 {&DEV_simulate_lag, ("simulate_lag")},
 {&DEV_draw_ui_text_pos, ("draw_ui_text_pos")},

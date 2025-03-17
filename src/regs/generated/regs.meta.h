@@ -491,14 +491,14 @@ REGS_Reg256 ymm7;
 C_LINKAGE_BEGIN
 extern REGS_UsageKind regs_g_reg_code_x64_usage_kind_table[101];
 extern REGS_UsageKind regs_g_alias_code_x64_usage_kind_table[96];
-extern String8 regs_g_reg_code_x64_string_table[101];
-extern String8 regs_g_alias_code_x64_string_table[96];
+extern StringView regs_g_reg_code_x64_string_table[101];
+extern StringView regs_g_alias_code_x64_string_table[96];
 extern REGS_Rng regs_g_reg_code_x64_rng_table[101];
 extern REGS_Slice regs_g_alias_code_x64_slice_table[96];
 extern REGS_UsageKind regs_g_reg_code_x86_usage_kind_table[61];
 extern REGS_UsageKind regs_g_alias_code_x86_usage_kind_table[36];
-extern String8 regs_g_reg_code_x86_string_table[61];
-extern String8 regs_g_alias_code_x86_string_table[36];
+extern StringView regs_g_reg_code_x86_string_table[61];
+extern StringView regs_g_alias_code_x86_string_table[36];
 extern REGS_Rng regs_g_reg_code_x86_rng_table[61];
 extern REGS_Slice regs_g_alias_code_x86_slice_table[36];
 

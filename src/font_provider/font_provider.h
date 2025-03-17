@@ -46,10 +46,10 @@ B32 fp_handle_match(FP_Handle a, FP_Handle b);
 //~ rjf: Backend Hooks
 
 fp_hook void fp_init();
-fp_hook FP_Handle fp_font_open(String8 path);
-fp_hook FP_Handle fp_font_open_from_static_data_string(String8* data_ptr);
+fp_hook FP_Handle fp_font_open(StringView path);
+fp_hook FP_Handle fp_font_open_from_static_data_string(StringView* data_ptr);
 fp_hook void fp_font_close(FP_Handle handle);
 fp_hook FP_Metrics fp_metrics_from_font(FP_Handle font);
-fp_hook NO_ASAN FP_RasterResult fp_raster(Arena* arena, FP_Handle font, float size, FP_RasterFlags flags, String8 string);
+fp_hook NO_ASAN FP_RasterResult fp_raster(Arena* arena, FP_Handle font, float size, FP_RasterFlags flags, StringView string);
 
 #endif // FONT_PROVIDER_H

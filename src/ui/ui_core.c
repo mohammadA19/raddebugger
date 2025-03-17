@@ -19,16 +19,16 @@ thread_static UI_State* ui_state = 0;
 #endif
 
 uint64
-ui_hash_from_string(uint64 seed, String8 string)
+ui_hash_from_string(uint64 seed, StringView string)
 {
   uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-String8
-ui_hash_part_from_key_string(String8 string)
+StringView
+ui_hash_part_from_key_string(StringView string)
 {
-  String8 result = string;
+  StringView result = string;
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
@@ -41,8 +41,8 @@ ui_hash_part_from_key_string(String8 string)
   return result;
 }
 
-String8
-ui_display_part_from_key_string(String8 string)
+StringView
+ui_display_part_from_key_string(StringView string)
 {
   uint64 hash_pos = str8_find_needle(string, 0, ("##"), 0);
   string.size = hash_pos;
@@ -64,13 +64,13 @@ ui_key_make(uint64 v)
 }
 
 UI_Key
-ui_key_from_string(UI_Key seed_key, String8 string)
+ui_key_from_string(UI_Key seed_key, StringView string)
 {
   ProfBeginFunction();
   UI_Key result = {0};
   if(string.size != 0)
   {
-    String8 hash_part = ui_hash_part_from_key_string(string);
+    StringView hash_part = ui_hash_part_from_key_string(string);
     result.u64[0] = ui_hash_from_string(seed_key.u64[0], hash_part);
   }
   ProfEnd();
@@ -83,7 +83,7 @@ ui_key_from_stringf(UI_Key seed_key, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Key key = ui_key_from_string(seed_key, string);
   scratch_end(scratch);
@@ -127,7 +127,7 @@ ui_char_is_scan_boundary(uint8 c)
 }
 
 int64
-ui_scanned_column_from_column(String8 string, int64 start_column, Side side)
+ui_scanned_column_from_column(StringView string, int64 start_column, Side side)
 {
   int64 new_column = start_column;
   int64 delta = (!!side)*2 - 1;
@@ -160,13 +160,13 @@ ui_scanned_column_from_column(String8 string, int64 start_column, Side side)
 }
 
 UI_TxtOp
-ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, TxtPt cursor, TxtPt mark)
+ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView string, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
   TxtRng range = {0};
-  String8 replace = {0};
-  String8 copy = {0};
+  StringView replace = {0};
+  StringView copy = {0};
   UI_TxtOpFlags flags = 0;
   Vec2S32 delta = event.delta_2s32;
   Vec2S32 original_delta = delta;
@@ -301,8 +301,8 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, String8 string, 
   return op;
 }
 
-String8
-ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, String8 replace)
+StringView
+ui_push_string_replace_range(Arena* arena, StringView string, Rng1S64 col_range, StringView replace)
 {
   //- rjf: convert to offset range
   Rng1U64 range =
@@ -336,7 +336,7 @@ ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, St
     }
   }
   
-  String8 result = str8(push_base, new_size);
+  StringView result = StringView(push_base, new_size);
   return result;
 }
 
@@ -505,7 +505,7 @@ ui_icon_font()
   return ui_state.icon_info.icon_font;
 }
 
-String8
+StringView
 ui_icon_string_from_kind(UI_IconKind icon_kind)
 {
   return ui_state.icon_info.icon_kind_text_map[icon_kind];
@@ -638,7 +638,7 @@ ui_text(uint32 character)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
-  String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
+  StringView character_text = str8_from_32(scratch.arena, str32(&character, 1));
   for(UI_Event* evt = 0; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind_Text && str8_match(character_text, evt.string, 0))
@@ -683,19 +683,19 @@ ui_drag_delta()
 }
 
 void
-ui_store_drag_data(String8 string)
+ui_store_drag_data(StringView string)
 {
   arena_clear(ui_state.drag_state_arena);
   ui_state.drag_state_data = push_str8_copy(ui_state.drag_state_arena, string);
 }
 
-String8
+StringView
 ui_get_drag_data(uint64 min_required_size)
 {
   if(ui_state.drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, uint8, min_required_size), min_required_size};
+    StringView str = {push_array(scratch.arena, uint8, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -717,10 +717,10 @@ ui_string_hover_begin_time_us()
   return ui_state.string_hover_begin_us;
 }
 
-String8
+StringView
 ui_string_hover_string(Arena* arena)
 {
-  String8 result = push_str8_copy(arena, ui_state.string_hover_string);
+  StringView result = push_str8_copy(arena, ui_state.string_hover_string);
   return result;
 }
 
@@ -1485,7 +1485,7 @@ ui_end_build()
       {
         if(b.flags & UI_BoxFlag_DrawText && b.flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b.font, ui_icon_font()))
         {
-          String8 display_string = ui_box_display_string(b);
+          StringView display_string = ui_box_display_string(b);
           str8_list_push(scratch.arena, &strs, display_string);
         }
       }
@@ -1493,7 +1493,7 @@ ui_end_build()
       {
         StringJoin join = {0};
         join.sep = (" ");
-        String8 string = str8_list_join(scratch.arena, &strs, &join);
+        StringView string = str8_list_join(scratch.arena, &strs, &join);
         os_set_clipboard_text(string);
       }
       scratch_end(scratch);
@@ -1531,7 +1531,7 @@ ui_end_build()
                 rect = intersect_2f32(rect, p.rect);
               }
             }
-            String8 box_display_string = ui_box_display_string(b);
+            StringView box_display_string = ui_box_display_string(b);
             Vec2F32 text_pos = ui_box_text_position(b);
             Vec2F32 drawn_text_dim = b.display_string_runs.dim;
             B32 text_is_truncated = (drawn_text_dim.x + text_pos.x > rect.x1);
@@ -2374,7 +2374,7 @@ ui_active_seed_key()
 }
 
 UI_Box *
-ui_build_box_from_string(UI_BoxFlags flags, String8 string)
+ui_build_box_from_string(UI_BoxFlags flags, StringView string)
 {
   ProfBeginFunction();
   
@@ -2402,7 +2402,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Box* box = ui_build_box_from_string(flags, string);
   scratch_end(scratch);
@@ -2412,7 +2412,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...)
 //- rjf: box node equipment
 
 void
-ui_box_equip_display_string(UI_Box* box, String8 string)
+ui_box_equip_display_string(UI_Box* box, StringView string)
 {
   ProfBeginFunction();
   box.string = push_str8_copy(ui_build_arena(), string);
@@ -2420,7 +2420,7 @@ ui_box_equip_display_string(UI_Box* box, String8 string)
   UI_ColorCode text_color_code = (box.flags & UI_BoxFlag_DrawTextWeak ? UI_ColorCode_TextWeak : UI_ColorCode_Text);
   if(box.flags & UI_BoxFlag_DrawText && (box.fastpath_codepoint == 0 || !(box.flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
   {
-    String8 display_string = ui_box_display_string(box);
+    StringView display_string = ui_box_display_string(box);
     DR_FancyStringNode fancy_string_n = {0, {box.font, display_string, box.palette.colors[text_color_code], box.font_size, 0, 0}};
     DR_FancyStringList fancy_strings = {&fancy_string_n, &fancy_string_n, 1};
     box.display_string_runs = dr_fancy_run_list_from_fancy_string_list(ui_build_arena(), box.tab_size, box.text_raster_flags, &fancy_strings);
@@ -2428,9 +2428,9 @@ ui_box_equip_display_string(UI_Box* box, String8 string)
   else if(box.flags & UI_BoxFlag_DrawText && box.flags & UI_BoxFlag_DrawTextFastpathCodepoint && box.fastpath_codepoint != 0)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 display_string = ui_box_display_string(box);
+    StringView display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box.fastpath_codepoint, 1);
-    String8 fpcp = str8_from_32(scratch.arena, fpcp32);
+    StringView fpcp = str8_from_32(scratch.arena, fpcp32);
     uint64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
@@ -2460,7 +2460,7 @@ ui_box_equip_display_fancy_strings(UI_Box* box, DR_FancyStringList* strings)
 }
 
 inline void
-ui_box_equip_display_string_fancy_runs(UI_Box* box, String8 string, DR_FancyRunList* runs)
+ui_box_equip_display_string_fancy_runs(UI_Box* box, StringView string, DR_FancyRunList* runs)
 {
   box.flags |= UI_BoxFlag_HasDisplayString;
   box.string = push_str8_copy(ui_build_arena(), string);
@@ -2497,10 +2497,10 @@ ui_box_equip_custom_draw(UI_Box* box, UI_BoxCustomDrawFunctionType* custom_draw,
 
 //- rjf: box accessors / queries
 
-String8
+StringView
 ui_box_display_string(UI_Box* box)
 {
-  String8 result = box.string;
+  StringView result = box.string;
   if(!(box.flags & UI_BoxFlag_DisableIDString))
   {
     result = ui_display_part_from_key_string(result);
@@ -2549,7 +2549,7 @@ ui_box_char_pos_from_xy(UI_Box* box, Vec2F32 xy)
 {
   FNT_Tag font = box.font;
   float font_size = box.font_size;
-  String8 line = ui_box_display_string(box);
+  StringView line = ui_box_display_string(box);
   uint64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box.tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
 }

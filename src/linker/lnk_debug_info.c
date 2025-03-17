@@ -62,7 +62,7 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
   String8Array data_arr = task.data_arr_arr[obj_idx];
   LNK_Obj* obj = task.obj_arr[obj_idx];
 
-  for (String8* data_ptr = &data_arr.v[0], *data_opl = data_arr.v + data_arr.count;
+  for (StringView* data_ptr = &data_arr.v[0], *data_opl = data_arr.v + data_arr.count;
        data_ptr < data_opl;
        ++data_ptr) {
     if (data_ptr.size == 0) {
@@ -78,19 +78,19 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
     switch (*sig_ptr) {
     default: {
       lnk_error_obj(LNK_Warning_IllData, obj, "unknown CodeView type signature in section (TODO: print section index)");
-      *data_ptr = str8(0,0);
+      *data_ptr = StringView(0,0);
     } break;
     case CV_Signature_C6:  {
       lnk_not_implemented("TODO: C6 types");
-      *data_ptr = str8(0,0);
+      *data_ptr = StringView(0,0);
     } break;
     case CV_Signature_C7: {
       lnk_not_implemented("TODO: C7 types");
-      *data_ptr = str8(0,0);
+      *data_ptr = StringView(0,0);
     } break;
     case CV_Signature_C11: {
       lnk_not_implemented("TODO: C11 types");
-      *data_ptr = str8(0,0);
+      *data_ptr = StringView(0,0);
     } break;
     case CV_Signature_C13: {
       data_ptr.str += sizeof(CV_Signature);
@@ -149,7 +149,7 @@ lnk_setup_pch(Arena* arena, uint64 obj_count, LNK_Obj* obj_arr, CV_DebugT* debug
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  String8 work_dir = os_get_current_path(scratch.arena);
+  StringView work_dir = os_get_current_path(scratch.arena);
 
   HashTable*      debug_p_ht     = hash_table_init(scratch.arena, obj_count);
   CV_LeafHeader** endprecomp_arr = push_array(scratch.arena, CV_LeafHeader *, obj_count);
@@ -166,7 +166,7 @@ lnk_setup_pch(Arena* arena, uint64 obj_count, LNK_Obj* obj_arr, CV_DebugT* debug
     }
 
     if (debug_p.count) {
-      String8 obj_path = obj_arr[obj_idx].path;      
+      StringView obj_path = obj_arr[obj_idx].path;      
       obj_path = path_absolute_dst_from_relative_dst_src(scratch.arena, obj_path, work_dir);
       if (hash_table_search_path(debug_p_ht, obj_path)) {
         lnk_error_obj(LNK_Warning_DuplicateObjPath, &obj_arr[obj_idx], "duplicate obj path %S", obj_path);
@@ -183,7 +183,7 @@ lnk_setup_pch(Arena* arena, uint64 obj_count, LNK_Obj* obj_arr, CV_DebugT* debug
       CV_Leaf        precomp_leaf = cv_debug_t_get_leaf(debug_t, 0);
       CV_PrecompInfo precomp      = cv_precomp_info_from_leaf(precomp_leaf);
 
-      String8 obj_path = path_absolute_dst_from_relative_dst_src(scratch.arena, precomp.obj_name, work_dir);
+      StringView obj_path = path_absolute_dst_from_relative_dst_src(scratch.arena, precomp.obj_name, work_dir);
 
       // map obj name in LF_PRECOMP to obj index
       uint64 debug_p_obj_idx;
@@ -408,13 +408,13 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
 
   // TODO: temp hack, remove when we have null obj with .debug$T
   {
-    String8 raw_null_leaf = cv_serialize_raw_leaf(scratch.arena, CV_LeafKind_NOTYPE, str8(0,0), 1);
+    StringView raw_null_leaf = cv_serialize_raw_leaf(scratch.arena, CV_LeafKind_NOTYPE, StringView(0,0), 1);
 
     String8List srl = {0};
     str8_serial_begin(scratch.arena, &srl);
     str8_serial_push_u32(scratch.arena, &srl, CV_Signature_C13);
     str8_serial_push_string(scratch.arena, &srl, raw_null_leaf);
-    String8 null_debug_data = str8_serial_end(tp_arena.v[0], &srl);
+    StringView null_debug_data = str8_serial_end(tp_arena.v[0], &srl);
     
     LNK_Chunk* null_chunk = push_array(tp_arena.v[0], LNK_Chunk, 1);
     null_chunk.type      = LNK_Chunk_Leaf;
@@ -580,7 +580,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
       //
       // TODO: check if ts.name is a path and in that case do file search
       if (match_list.node_count == 0) {
-        String8 file_name = str8_skip_last_slash(ts.name);
+        StringView file_name = str8_skip_last_slash(ts.name);
         match_list = lnk_file_search(scratch.arena, lib_dir_list, file_name);
       }
 
@@ -610,7 +610,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
         continue;
       }
 
-      String8 path = match_list.first.string;
+      StringView path = match_list.first.string;
       {
         struct HT_Value {
           CV_TypeServerInfo  ts;
@@ -672,7 +672,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
 
     // type server info list . array
     ts_path_arr.count              = ts_info_list.count;
-    ts_path_arr.v                  = push_array(tp_arena.v[0], String8, ts_info_list.count);
+    ts_path_arr.v                  = push_array(tp_arena.v[0], StringView, ts_info_list.count);
     CV_TypeServerInfo* ts_info_arr = push_array(scratch.arena, CV_TypeServerInfo, ts_info_list.count);
     {
       uint64 idx = 0;
@@ -703,8 +703,8 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
           pdb_info_parse_from_data(msf_parse.streams[PDB_FixedStream_Info], &info_parse);
           if (!MemoryMatchStruct(&info_parse.guid, &ts_info_arr[ts_idx].sig)) {
             Temp scratch = scratch_begin(0,0);
-            String8 expected_sig_str = string_from_guid(scratch.arena, ts_info_arr[ts_idx].sig);
-            String8 on_disk_sig_str  = string_from_guid(scratch.arena, info_parse.guid);
+            StringView expected_sig_str = string_from_guid(scratch.arena, ts_info_arr[ts_idx].sig);
+            StringView on_disk_sig_str  = string_from_guid(scratch.arena, info_parse.guid);
             lnk_error(LNK_Warning_MismatchedTypeServerSignature, "%S: signature mismatch in type server read from disk, expected %S, got %S",
                 ts_info_arr[ts_idx].name, expected_sig_str, on_disk_sig_str);
             scratch_end(scratch);
@@ -751,7 +751,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
           str8_list_pushf(scratch.arena, &unopen_type_server_list, "\t%S\n", ts_path_arr.v[ts_idx]);
           str8_list_pushf(scratch.arena, &unopen_type_server_list, "\t\tDependent obj(s):\n");
           for (U64Node* obj_idx_node = obj_idx_list.first; obj_idx_node != 0; obj_idx_node = obj_idx_node.next) {
-            String8 obj_path = external_obj_arr[obj_idx_node.data].path;
+            StringView obj_path = external_obj_arr[obj_idx_node.data].path;
             str8_list_pushf(scratch.arena, &unopen_type_server_list, "\t\t\t%S\n", obj_path);
           }
         }
@@ -760,7 +760,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
         String8List error_msg_list = { 0 };
         str8_list_pushf(scratch.arena, &error_msg_list, "unable to open external type server(s):\n");
         str8_list_concat_in_place(&error_msg_list, &unopen_type_server_list);
-        String8 error_msg = str8_list_join(scratch.arena, &error_msg_list, 0);
+        StringView error_msg = str8_list_join(scratch.arena, &error_msg_list, 0);
         lnk_error(LNK_Error_UnableToOpenTypeServer, "%S", error_msg);
       }
 
@@ -935,10 +935,10 @@ lnk_ti_lo_from_loc(LNK_CodeViewInput* input, LNK_LeafLocType loc_type, uint64 lo
   return ti_lo;
 }
 
-String8
+StringView
 lnk_data_from_leaf_ref(LNK_CodeViewInput* input, LNK_LeafRef leaf_ref)
 {
-  String8 data;
+  StringView data;
 
   LNK_LeafLocType loc_type = lnk_loc_type_from_leaf_ref(leaf_ref);
   switch (loc_type) {
@@ -957,7 +957,7 @@ lnk_data_from_leaf_ref(LNK_CodeViewInput* input, LNK_LeafRef leaf_ref)
     data = cv_debug_t_get_raw_leaf(debug_t, leaf_idx);
   } break;
 
-  default: data = str8(0,0); break;
+  default: data = StringView(0,0); break;
   }
 
   return data;
@@ -985,7 +985,7 @@ lnk_type_index_from_leaf_ref(LNK_CodeViewInput* input, LNK_LeafRef leaf_ref)
 CV_Leaf
 lnk_cv_leaf_from_leaf_ref(LNK_CodeViewInput* input, LNK_LeafRef leaf_ref)
 {
-  String8 raw_leaf = lnk_data_from_leaf_ref(input, leaf_ref);
+  StringView raw_leaf = lnk_data_from_leaf_ref(input, leaf_ref);
   CV_Leaf leaf;
   cv_deserial_leaf(raw_leaf, 0, 1, &leaf);
   return leaf;
@@ -1076,8 +1076,8 @@ lnk_match_leaf_ref(LNK_CodeViewInput* input, LNK_LeafHashes* hashes, LNK_LeafRef
       String8Array         a_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, a_leaf.data);
       String8Array         b_raw_data_arr = cv_get_data_around_type_indices(scratch.arena, ti_info_list, b_leaf.data);
       for (uint64 i = 0; i < a_raw_data_arr.count; ++i) {
-        String8 a_chunk = a_raw_data_arr.v[i];
-        String8 b_chunk = b_raw_data_arr.v[i];
+        StringView a_chunk = a_raw_data_arr.v[i];
+        StringView b_chunk = b_raw_data_arr.v[i];
         Assert(str8_match(a_chunk, b_chunk, 0));
       }
       scratch_end(scratch);
@@ -1098,8 +1098,8 @@ lnk_match_leaf_ref_deep(Arena* arena, LNK_CodeViewInput* input, LNK_LeafHashes* 
   U128 b_hash = lnk_hash_from_leaf_ref(hashes, b);
   
   if (u128_match(a_hash, b_hash)) {
-    String8 a_raw_leaf = lnk_data_from_leaf_ref(input, a);
-    String8 b_raw_leaf = lnk_data_from_leaf_ref(input, b);
+    StringView a_raw_leaf = lnk_data_from_leaf_ref(input, a);
+    StringView b_raw_leaf = lnk_data_from_leaf_ref(input, b);
 
     CV_LeafHeader* a_header = (CV_LeafHeader *) a_raw_leaf.str;
     CV_LeafHeader* b_header = (CV_LeafHeader *) b_raw_leaf.str;
@@ -1117,8 +1117,8 @@ lnk_match_leaf_ref_deep(Arena* arena, LNK_CodeViewInput* input, LNK_LeafHashes* 
       are_equal = 1;
 
       for (uint64 i = 0; i < a_raw_data_arr.count; ++i) {
-        String8 a_chunk = a_raw_data_arr.v[i];
-        String8 b_chunk = b_raw_data_arr.v[i];
+        StringView a_chunk = a_raw_data_arr.v[i];
+        StringView b_chunk = b_raw_data_arr.v[i];
         Assert(a_chunk.size == b_chunk.size);
         are_equal = str8_match(a_chunk, b_chunk, 0);
         if (!are_equal) {
@@ -1235,8 +1235,8 @@ lnk_hash_cv_leaf(Arena*               arena,
         blake3_hasher_update(&hasher, &sub_hash, sizeof sub_hash);
       } else {
         Temp scratch = scratch_begin(0,0);
-        String8 leaf_kind_str = cv_string_from_leaf_kind(leaf.kind);
-        String8 leaf_info     = push_str8f(scratch.arena, "LF_%S(type_index: 0x%x) forward refs member type index 0x%x (leaf struct offset: 0x%llx)", leaf_kind_str, curr_ti, sub_ti, ti_n.offset);
+        StringView leaf_kind_str = cv_string_from_leaf_kind(leaf.kind);
+        StringView leaf_info     = push_str8f(scratch.arena, "LF_%S(type_index: 0x%x) forward refs member type index 0x%x (leaf struct offset: 0x%llx)", leaf_kind_str, curr_ti, sub_ti, ti_n.offset);
         if (loc_type == LNK_LeafLocType_Internal) {
           lnk_error_obj(LNK_Error_InvalidTypeIndex, input.internal_obj_arr+loc_idx, "%S", leaf_info);
         } else if (loc_type == LNK_LeafLocType_External) {
@@ -1268,7 +1268,7 @@ lnk_hash_cv_leaf_deep(Arena*               arena,
                       LNK_LeafLocType      loc_type,
                       uint32                  loc_idx,
                       CV_TypeIndexInfoList ti_info_list,
-                      String8              data)
+                      StringView              data)
 {
   Temp temp = temp_begin(arena);
 
@@ -1277,7 +1277,7 @@ lnk_hash_cv_leaf_deep(Arena*               arena,
     CV_TypeIndexInfoList ti_info_list;
     CV_TypeIndexInfo*    ti_info;
     CV_Leaf              leaf;
-    String8              data;
+    StringView              data;
     CV_TypeIndex         ti;
     CV_TypeIndexSource   ti_source;
   };
@@ -1899,9 +1899,9 @@ lnk_leaf_bucket_array_sort(TP_Context* tp, LNK_LeafBucketArray arr, uint64 obj_c
   Temp scratch = scratch_begin(0,0);
 
 #if PROFILE_TELEMETRY
-  String8 leaf_count_string        = str8_from_count(scratch.arena, arr.count);
-  String8 obj_count_string         = str8_from_count(scratch.arena, obj_count);
-  String8 type_server_count_string = str8_from_count(scratch.arena, type_server_count);
+  StringView leaf_count_string        = str8_from_count(scratch.arena, arr.count);
+  StringView obj_count_string         = str8_from_count(scratch.arena, obj_count);
+  StringView type_server_count_string = str8_from_count(scratch.arena, type_server_count);
   ProfBeginDynamic("Leaf Sort [Leaf Count: %.*s, Obj Count: %.*s, Type Server Count: %.*s]", str8_varg(leaf_count_string), str8_varg(obj_count_string), str8_varg(type_server_count_string));
 #endif
 
@@ -2149,7 +2149,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_leaves_task)
     uint64             loc_idx  = bucket.leaf_ref.enc_loc_idx & ~LNK_LeafRefFlag_LocIdxExternal;
     LNK_LeafLocType loc_type = lnk_loc_type_from_leaf_ref(bucket.leaf_ref);
     CV_TypeIndex    ti_lo    = lnk_ti_lo_from_leaf_ref(task.input, bucket.leaf_ref);
-    String8         raw_leaf = lnk_data_from_leaf_ref(task.input, bucket.leaf_ref);
+    StringView         raw_leaf = lnk_data_from_leaf_ref(task.input, bucket.leaf_ref);
     CV_Leaf         leaf     = cv_leaf_from_string(raw_leaf);
 
     // get type indices offsets
@@ -2197,7 +2197,7 @@ THREAD_POOL_TASK_FUNC(lnk_unbucket_raw_leaves_task)
   LNK_UnbucketRawLeavesTask* task  = raw_task;
   Rng1U64                    range = task.range_arr[task_id];
   for (uint64 i = range.min; i < range.max; ++i) {
-    String8 raw_leaf = lnk_data_from_leaf_ref(task.input, task.bucket_arr[i].leaf_ref);
+    StringView raw_leaf = lnk_data_from_leaf_ref(task.input, task.bucket_arr[i].leaf_ref);
     task.raw_leaf_arr[i] = raw_leaf.str;
   }
 }
@@ -2336,7 +2336,7 @@ lnk_import_types(TP_Context* tp, TP_Arena* tp_temp, LNK_CodeViewInput* input)
     ProfEnd();
 
 #if PROFILE_TELEMETRY
-    String8 count_string = str8_from_count(scratch.arena, input.internal_count);
+    StringView count_string = str8_from_count(scratch.arena, input.internal_count);
     ProfBegin("Hash .debug$T [Count: %.*s]", str8_varg(count_string));
 #endif
     task.debug_t_arr = input.internal_debug_t_arr;
@@ -2385,9 +2385,9 @@ lnk_import_types(TP_Context* tp, TP_Arena* tp_temp, LNK_CodeViewInput* input)
   ProfEnd();
 
 #if PROFILE_TELEMETRY
-  String8 obj_count_string = str8_from_count(tp_temp.v[0], input.internal_count);
-  String8 tpi_count_string = str8_from_count(tp_temp.v[0], internal_per_source_count[CV_TypeIndexSource_TPI]);
-  String8 ipi_count_string = str8_from_count(tp_temp.v[0], internal_per_source_count[CV_TypeIndexSource_IPI]);
+  StringView obj_count_string = str8_from_count(tp_temp.v[0], input.internal_count);
+  StringView tpi_count_string = str8_from_count(tp_temp.v[0], internal_per_source_count[CV_TypeIndexSource_TPI]);
+  StringView ipi_count_string = str8_from_count(tp_temp.v[0], internal_per_source_count[CV_TypeIndexSource_IPI]);
   ProfBeginDynamic("Internal Leaf Dedup [Obj Count: %.*s, TPI: %.*s, IPI: %.*s]",
                            str8_varg(obj_count_string),
                            str8_varg(tpi_count_string),
@@ -2532,7 +2532,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
         CV_NumericParsed dummy;
         uint64 numeric_size = cv_read_numeric(leaf.data, sizeof(CV_LeafStruct), &dummy);
 
-        String8 lambda_prefix = ("<lambda_");
+        StringView lambda_prefix = ("<lambda_");
         uint64     colon_pos     = str8_find_needle_reverse(udt_info.name, 0, lambda_prefix, 0);
         B32     is_lambda     = colon_pos != 0;
 
@@ -2600,7 +2600,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
 
       if (udt_info.name.size > hash_max_chars) {
         // pick name to hash
-        String8 name;
+        StringView name;
         if (udt_info.props & CV_TypeProp_HasUniqueName) {
           name = udt_info.unique_name;
         } else {
@@ -2641,7 +2641,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
 }
 
 void
-lnk_replace_type_names_with_hashes(TP_Context* tp, TP_Arena* arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, uint64 hash_length, String8 map_name)
+lnk_replace_type_names_with_hashes(TP_Context* tp, TP_Arena* arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, uint64 hash_length, StringView map_name)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena.v, arena.count);
@@ -2799,7 +2799,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
 
   // output
   Assert(task.symbol_data_arr[obj_idx].total_size == 0);
-  str8_list_push(arena, &task.symbol_data_arr[obj_idx], str8(buffer, buffer_size));
+  str8_list_push(arena, &task.symbol_data_arr[obj_idx], StringView(buffer, buffer_size));
   
   ProfEnd();
 }
@@ -2829,7 +2829,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_c13_data_task)
   CV_ChecksumList checksum_list = cv_c13_parse_checksum_data_list(scratch.arena, checksum_data);
 
   // get strings sub-section
-  String8 string_data = cv_string_table_from_debug_s(debug_s);
+  StringView string_data = cv_string_table_from_debug_s(debug_s);
 
   // collect source file names from checksum headers
   String8List source_file_names_list = cv_c13_collect_source_file_names(arena, checksum_list, string_data);
@@ -2839,7 +2839,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_c13_data_task)
 
   // get module sub-sections
   PDB_DbiModule* mod          = task.dbi_mod_arr[obj_idx];
-  String8        mod_c13_data = dbi_module_read_c13_data(scratch.arena, task.msf, mod);
+  StringView        mod_c13_data = dbi_module_read_c13_data(scratch.arena, task.msf, mod);
   CV_DebugS      mod_debug_s  = cv_parse_debug_s_c13(scratch.arena, mod_c13_data);
 
   // relocate line and frame data 
@@ -2977,7 +2977,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
   PDB_DbiModule*                  mod        = task.mod_arr[obj_idx];
   LNK_Obj*                        obj        = &task.obj_arr[obj_idx];
   PDB_DbiSectionContribList*      dst_list   = &task.sc_list[obj_idx];
-  String8                         image_data = task.image_data;
+  StringView                         image_data = task.image_data;
 
   // TODO: use chunked lists for SC
 
@@ -2999,7 +2999,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
 
     // query chunk info
     ISectOff     chunk_sc   = lnk_sc_from_chunk_ref       (sect_id_map, chunk.ref);
-    String8      chunk_data = lnk_data_from_chunk_ref     (sect_id_map, image_data, chunk.ref);
+    StringView      chunk_data = lnk_data_from_chunk_ref     (sect_id_map, image_data, chunk.ref);
     LNK_Section* chunk_sect = lnk_sect_from_chunk_ref     (sect_id_map, chunk.ref);
     uint64          chunk_size = lnk_file_size_from_chunk_ref(sect_id_map, chunk.ref);
     
@@ -3087,7 +3087,7 @@ THREAD_POOL_TASK_FUNC(lnk_gsi_hash_cv_list_task)
 
   for (uint64 symbol_idx = range.min; symbol_idx < range.max; ++symbol_idx) {
     CV_Symbol* symbol = &task.symbols.v[symbol_idx].data;
-    String8 name = cv_name_from_symbol(symbol.kind, symbol.data);
+    StringView name = cv_name_from_symbol(symbol.kind, symbol.data);
     task.hashes[symbol_idx] = gsi_hash(task.gsi, name);
   }
 
@@ -3125,13 +3125,13 @@ lnk_build_pdb_public_symbols(TP_Context*            tp,
 String8List
 lnk_build_pdb(TP_Context*               tp,
               TP_Arena*                 tp_arena,
-              String8                   image_data,
+              StringView                   image_data,
               Guid                      guid,
               COFF_MachineType          machine,
               COFF_TimeStamp            time_stamp,
               uint32                       age,
               uint64                       page_size,
-              String8                   pdb_name,
+              StringView                   pdb_name,
               String8List               lib_dir_list,
               String8List               natvis_list,
               LNK_SymbolTable*          symtab,
@@ -3286,7 +3286,7 @@ lnk_build_pdb(TP_Context*               tp,
   {
     LNK_Symbol*         coff_sect_array_symbol = lnk_symbol_table_searchf(symtab, LNK_SymbolScopeFlag_Internal, LNK_COFF_SECT_HEADER_ARRAY_SYMBOL_NAME);
     LNK_Chunk*          coff_sect_chunk        = lnk_chunk_from_symbol(coff_sect_array_symbol);
-    String8             coff_sect_chunk_data   = lnk_data_from_chunk_ref(sect_id_map, image_data, coff_sect_chunk.ref);
+    StringView             coff_sect_chunk_data   = lnk_data_from_chunk_ref(sect_id_map, image_data, coff_sect_chunk.ref);
     uint64                 coff_sect_count        = coff_sect_chunk_data.size / sizeof(COFF_SectionHeader);
     COFF_SectionHeader* coff_sect_ptr          = (COFF_SectionHeader*)coff_sect_chunk_data.str;
     for (COFF_SectionHeader* hdr_ptr = &coff_sect_ptr[0], *opl = hdr_ptr + coff_sect_count;
@@ -3317,8 +3317,8 @@ lnk_build_pdb(TP_Context*               tp,
     String8Array natvis_file_data_arr = lnk_read_data_from_file_path_parallel(tp, scratch.arena, natvis_file_path_arr);
 
     for (uint64 i = 0; i < natvis_file_data_arr.count; ++i) {
-      String8 natvis_file_path = natvis_file_path_arr.v[i];
-      String8 natvis_file_data = natvis_file_data_arr.v[i];
+      StringView natvis_file_path = natvis_file_path_arr.v[i];
+      StringView natvis_file_data = natvis_file_data_arr.v[i];
 
       // did we read the file?
       if (natvis_file_data.size == 0) {
@@ -3327,7 +3327,7 @@ lnk_build_pdb(TP_Context*               tp,
       }
 
       // sanity check file extension or VS wont load NatVis
-      String8 ext = str8_skip_last_dot(natvis_file_path);
+      StringView ext = str8_skip_last_dot(natvis_file_path);
       if (!str8_match(ext, ("natvis"), StringMatchFlag_CaseInsensitive)) {
         lnk_error(LNK_Warning_Natvis, "Visual Studio expects .natvis extension: \"%S\"", natvis_file_path);
       }
@@ -3372,7 +3372,7 @@ lnk_build_pdb(TP_Context*               tp,
 // RAD Debug Info
 
 uint64
-lnk_udt_name_hash_table_hash(String8 string)
+lnk_udt_name_hash_table_hash(StringView string)
 {
   return XXH3_64bits(string.str, string.size);
 }
@@ -3390,7 +3390,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_udt_name_hash_table_task)
       CV_UDTInfo udt_info = cv_get_udt_info(leaf.kind, leaf.data);
       if (~udt_info.props & CV_TypeProp_FwdRef) {
         if (!cv_is_udt_name_anon(udt_info.name)) {
-          String8 name       = cv_name_from_udt_info(udt_info);
+          StringView name       = cv_name_from_udt_info(udt_info);
           uint64     hash       = lnk_udt_name_hash_table_hash(name);
           uint64     best_idx   = hash % task.buckets_cap;
           uint64     bucket_idx = best_idx;
@@ -3468,7 +3468,7 @@ lnk_udt_name_hash_table_from_debug_t(TP_Context* tp,
 }
 
 LNK_UDTNameBucket *
-lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket** buckets, uint64 cap, String8 name)
+lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket** buckets, uint64 cap, StringView name)
 {
   uint64 hash       = lnk_udt_name_hash_table_hash(name);
   uint64 best_idx   = hash % cap;
@@ -3486,7 +3486,7 @@ lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket** buckets, uint64 cap, String8 
 }
 
 CV_TypeIndex
-lnk_udt_name_hash_table_lookup_itype(LNK_UDTNameBucket** buckets, uint64 cap, String8 name)
+lnk_udt_name_hash_table_lookup_itype(LNK_UDTNameBucket** buckets, uint64 cap, StringView name)
 {
   LNK_UDTNameBucket* bucket = lnk_udt_name_hash_table_lookup(buckets, cap, name);
   if (bucket != 0) {
@@ -3652,7 +3652,7 @@ lnk_rdib_type_from_itype(LNK_ConvertTypesToRDI* task, CV_TypeIndex itype)
       if (cv_is_udt(leaf.kind)) {
         CV_UDTInfo udt_info = cv_get_udt_info(leaf.kind, leaf.data);
         if (udt_info.props & CV_TypeProp_FwdRef) {
-          String8      name           = cv_name_from_udt_info(udt_info);
+          StringView      name           = cv_name_from_udt_info(udt_info);
           CV_TypeIndex resolved_itype = lnk_udt_name_hash_table_lookup_itype(task.udt_name_buckets, task.udt_name_bucket_cap, name);
           if (resolved_itype != 0) {
             final_itype = resolved_itype;
@@ -3804,8 +3804,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       CV_LeafStruct*    udt  = (CV_LeafStruct *) src.data.str;
       CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafStruct), src.data.str + src.data.size);
 
-      String8 name;
-      String8 link_name;
+      StringView name;
+      StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
         name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafStruct) + size.encoded_size, src.data.str + src.data.size);
         link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
@@ -3833,8 +3833,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       CV_LeafStruct2*   udt  = (CV_LeafStruct2 *) src.data.str;
       CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafStruct2), src.data.str + src.data.size);
 
-      String8 name;
-      String8 link_name;
+      StringView name;
+      StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
         name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafStruct2) + size.encoded_size, src.data.str + src.data.size);
         link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
@@ -3861,8 +3861,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       CV_LeafUnion*     udt  = (CV_LeafUnion *) src.data.str;
       CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafUnion), src.data.str + src.data.size);
 
-      String8 name;
-      String8 link_name;
+      StringView name;
+      StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
         name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafUnion) + size.encoded_size, src.data.str + src.data.size);
         link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
@@ -3886,8 +3886,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
     case CV_LeafKind_ENUM: {
       CV_LeafEnum* udt  = (CV_LeafEnum *) src.data.str;
 
-      String8 name;
-      String8 link_name;
+      StringView name;
+      StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
         name      = str8_cstring_capped(src.data.str + sizeof(*udt), src.data.str + src.data.size);
         link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
@@ -3973,7 +3973,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
           // prase CodeView struct/class/union data member
           CV_LeafMember*   leaf_member = (CV_LeafMember *) (src.data.str + cursor);
           CV_NumericParsed offset      = cv_numeric_from_data_range((uint8 *)(leaf_member + 1), src.data.str + src.data.size);
-          String8          name        = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafMember) + offset.encoded_size, src.data.str + src.data.size);
+          StringView          name        = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafMember) + offset.encoded_size, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafMember);
           cursor += offset.encoded_size;
           cursor += name.size + 1;
@@ -3991,7 +3991,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_STMEMBER: {
           // parse CodeView static member
           CV_LeafStMember* st_member = (CV_LeafStMember *) (src.data.str + cursor);
-          String8         name      = str8_cstring_capped(st_member + 1, src.data.str + src.data.size);
+          StringView         name      = str8_cstring_capped(st_member + 1, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafStMember);
           cursor += name.size + 1;
 
@@ -4007,7 +4007,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_METHOD: {
           // parse CodeView over-loaded method
           CV_LeafMethod* method = (CV_LeafMethod *) (src.data.str + cursor);
-          String8        name   = str8_cstring_capped(method + 1, src.data.str + src.data.size);
+          StringView        name   = str8_cstring_capped(method + 1, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafMethod);
           cursor += name.size + 1;
 
@@ -4052,7 +4052,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
             str8_deserial_read_struct(src.data, cursor, &vftable_offset);
             cursor += sizeof(vftable_offset);
           }
-          String8 name = str8_cstring_capped(src.data.str + cursor, src.data.str + src.data.size);
+          StringView name = str8_cstring_capped(src.data.str + cursor, src.data.str + src.data.size);
           cursor += name.size + 1;
 
           // push new node
@@ -4069,7 +4069,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_NESTTYPE: {
           // parse CodeView nested type
           CV_LeafNestType* nest_type = (CV_LeafNestType *) (src.data.str + cursor);
-          String8          name      = str8_cstring_capped(nest_type + 1, src.data.str + src.data.size);
+          StringView          name      = str8_cstring_capped(nest_type + 1, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafNestType);
           cursor += name.size + 1;
 
@@ -4085,7 +4085,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_NESTTYPEEX: {
           // parse CodeView nested type extended
           CV_LeafNestTypeEx* nest_type_ex = (CV_LeafNestTypeEx *) (src.data.str + cursor);
-          String8            name         = str8_cstring_capped(nest_type_ex + 1, src.data.str + src.data.size);
+          StringView            name         = str8_cstring_capped(nest_type_ex + 1, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafNestTypeEx);
           cursor += name.size + 1;
 
@@ -4147,7 +4147,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
           // parse CodeView enum member
           CV_LeafEnumerate* enumerate = (CV_LeafEnumerate *) (src.data.str + cursor);
           CV_NumericParsed  value     = cv_numeric_from_data_range((uint8 *) (enumerate + 1), src.data.str + src.data.size);
-          String8           name      = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafEnumerate) + value.encoded_size, src.data.str + src.data.size);
+          StringView           name      = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafEnumerate) + value.encoded_size, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafEnumerate);
           cursor += value.encoded_size;
           cursor += name.size + 1;
@@ -4190,7 +4190,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
 }
 
 uint64
-lnk_src_file_hash_cv(String8 normal_full_path, CV_C13ChecksumKind checksum_kind, String8 checksum)
+lnk_src_file_hash_cv(StringView normal_full_path, CV_C13ChecksumKind checksum_kind, StringView checksum)
 {
   XXH3_state_t state;
   XXH3_INITSTATE(&state);
@@ -4202,11 +4202,11 @@ lnk_src_file_hash_cv(String8 normal_full_path, CV_C13ChecksumKind checksum_kind,
   return result;
 }
 
-String8
-lnk_normalize_src_file_path(Arena* arena, String8 file_path)
+StringView
+lnk_normalize_src_file_path(Arena* arena, StringView file_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 result = file_path;
+  StringView result = file_path;
   result = lower_from_str8(scratch.arena, result);
   result = path_convert_slashes(scratch.arena, result, PathStyle_UnixAbsolute);
   result = push_str8_copy(arena, result);
@@ -4218,9 +4218,9 @@ LNK_SourceFileBucket *
 lnk_src_file_hash_table_lookup_slot(LNK_SourceFileBucket** buckets,
                                     uint64                    cap,
                                     uint64                    hash,
-                                    String8                normal_path,
+                                    StringView                normal_path,
                                     CV_C13ChecksumKind    checksum_kind,
-                                    String8                checksum)
+                                    StringView                checksum)
 {
   uint64 best_idx   = hash % cap;
   uint64 bucket_idx = best_idx;
@@ -4345,7 +4345,7 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
     lnk_error_obj(LNK_Warning_IllData, &task.obj_arr[obj_idx], "Multiple file checksum sub-sections, picking first one.");
   }
 
-  String8               string_table = cv_string_table_from_debug_s(debug_s);
+  StringView               string_table = cv_string_table_from_debug_s(debug_s);
   LNK_SourceFileBucket* curr_bucket  = 0;
 
   for (String8Node* raw_chksms_n = raw_chksms_list.first; raw_chksms_n != 0; raw_chksms_n = raw_chksms_n.next) {
@@ -4354,15 +4354,15 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
       CV_C13Checksum* header = (CV_C13Checksum *) (raw_chksms_n.string.str + cursor);
 
       // grab checksum
-      String8 checksum = str8_substr(raw_chksms_n.string, rng_1u64(cursor + sizeof(CV_C13Checksum), 
+      StringView checksum = str8_substr(raw_chksms_n.string, rng_1u64(cursor + sizeof(CV_C13Checksum), 
                                                                     cursor + sizeof(CV_C13Checksum) + header.len));
 
       // grab file path
       Assert(header.name_off < string_table.size);
-      String8 file_path = str8_cstring_capped(string_table.str + header.name_off, string_table.str + string_table.size);
+      StringView file_path = str8_cstring_capped(string_table.str + header.name_off, string_table.str + string_table.size);
 
       // normalize file path
-      String8 normal_path = lnk_normalize_src_file_path(arena, file_path);
+      StringView normal_path = lnk_normalize_src_file_path(arena, file_path);
 
       // push new bucket
       if (curr_bucket == 0) {
@@ -4404,15 +4404,15 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
 }
 
 RDIB_Type *
-lnk_find_container_type(String8 name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket** udt_name_buckets, uint64 udt_name_buckets_cap, RDIB_Type** tpi_itype_map)
+lnk_find_container_type(StringView name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket** udt_name_buckets, uint64 udt_name_buckets_cap, RDIB_Type** tpi_itype_map)
 {
   CV_TypeIndex container_itype = 0;
 
-  String8 delim     = ("::");
+  StringView delim     = ("::");
   uint64     delim_pos = str8_find_needle_reverse(name, 0, delim, 0);
   if (delim_pos > 0) {
     uint64     container_name_size = delim_pos - delim.size;
-    String8 container_name      = str8_prefix(name, container_name_size);
+    StringView container_name      = str8_prefix(name, container_name_size);
     container_itype = lnk_udt_name_hash_table_lookup_itype(udt_name_buckets, udt_name_buckets_cap, container_name);
   }
 
@@ -4490,7 +4490,7 @@ THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
 
   comp_info.arch          = (CV_Arch)~0u;
   comp_info.language      = (CV_Language)~0u;
-  comp_info.compiler_name = str8_zero();
+  comp_info.compiler_name = StringView();
 
   // infer unit compiler data from S_COMPILE* which always follows S_OBJ
   for (uint64 symbol_list_idx = 0; symbol_list_idx < parsed_symbols.count; ++symbol_list_idx) {
@@ -4533,10 +4533,10 @@ THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
   dst.arch          = rdi_arch_from_cv_arch(comp_info.arch);
   dst.unit_name     = str8_skip_last_slash(obj.path);
   dst.compiler_name = comp_info.compiler_name;
-  dst.source_file   = str8_zero();
+  dst.source_file   = StringView();
   dst.object_file   = push_str8_copy(arena, obj.path);
   dst.archive_file  = push_str8_copy(arena, obj.lib_path);
-  dst.build_path    = str8_zero();
+  dst.build_path    = StringView();
   dst.language      = rdi_language_from_cv_language(comp_info.language);
 
   ProfEnd();
@@ -4558,15 +4558,15 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
   RDIB_Unit* dst            = &task.units[unit_chunk_idx].v[local_unit_idx];
 
   // find sub sections
-  String8     raw_string_table = cv_string_table_from_debug_s(debug_s);
-  String8     raw_file_chksms  = cv_file_chksms_from_debug_s(debug_s);
+  StringView     raw_string_table = cv_string_table_from_debug_s(debug_s);
+  StringView     raw_file_chksms  = cv_file_chksms_from_debug_s(debug_s);
   String8List raw_lines_list   = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
 
   // emit line table fragments for each source file from C13 line info
   dst.line_table = rdib_line_table_chunk_list_push(arena, &task.line_tables[worker_id], task.line_table_cap);
 
   for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
-    String8               raw_lines   = raw_lines_node.string;
+    StringView               raw_lines   = raw_lines_node.string;
     CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(scratch.arena, raw_lines, rng_1u64(0, raw_lines.size));
     for (CV_C13LinesHeaderNode* lines_node = parsed_list.first; lines_node != 0; lines_node = lines_node.next) {
       CV_C13LinesHeader parsed_lines = lines_node.v;
@@ -4581,8 +4581,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
         lnk_error_obj(LNK_Warning_IllData, obj, "Not enough bytes to read file checksum @ 0x%llx.", parsed_lines.file_off);
         continue;
       }
-      String8 file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
-      String8 checksum_bytes = str8((uint8 *) (checksum_header + 1), checksum_header.len);
+      StringView file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
+      StringView checksum_bytes = StringView((uint8 *) (checksum_header + 1), checksum_header.len);
 
       // read out lines
       if (0 == parsed_lines.sec_idx || parsed_lines.sec_idx > task.image_sects.count) {
@@ -4593,7 +4593,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
       CV_LineArray  lines = cv_c13_line_array_from_data(arena, raw_lines, sect.virt_off, parsed_lines);
 
       // find source file for this line table
-      String8               normal_path     = lnk_normalize_src_file_path(scratch.arena, file_path);
+      StringView               normal_path     = lnk_normalize_src_file_path(scratch.arena, file_path);
       uint64                   src_file_hash   = lnk_src_file_hash_cv(normal_path, checksum_header.kind, checksum_bytes);
       LNK_SourceFileBucket* src_file_bucket = lnk_src_file_hash_table_lookup_slot(task.src_file_buckets, task.src_file_buckets_cap, src_file_hash, normal_path, checksum_header.kind, checksum_bytes);
       if (src_file_bucket == 0) {
@@ -4731,7 +4731,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     case CV_SymKind_GDATA32:
     case CV_SymKind_LDATA32: {
       CV_SymData32* data32         = (CV_SymData32 *) symbol.data.str;
-      String8       name           = str8_cstring_capped(data32 + 1, symbol.data.str + symbol.data.size);
+      StringView       name           = str8_cstring_capped(data32 + 1, symbol.data.str + symbol.data.size);
       RDIB_Type*    type           = lnk_type_from_itype(data32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       RDIB_Type*    container_type = lnk_find_container_type(name, task.tpi_itype_range, task.udt_name_buckets, task.udt_name_buckets_cap, task.tpi_itype_map);
       uint64           data_voff      = lnk_virt_off_from_sect_off(data32.sec, data32.off, task.image_sects, obj, symbol.kind, symbol.offset);
@@ -4740,7 +4740,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       if (!is_comp_gen) {
 
       // get link name through virtual offset look up
-      String8 link_name = {0};
+      StringView link_name = {0};
       if (symbol.kind == CV_SymKind_GDATA32) {
         KeyValuePair* pair = hash_table_search_u64(task.extern_symbol_voff_ht, data_voff);
         if (pair != 0) {
@@ -4784,7 +4784,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     case CV_SymKind_LTHREAD32:
     case CV_SymKind_GTHREAD32: {
       CV_SymThread32* thread32       = (CV_SymThread32 *) symbol.data.str;
-      String8         name           = str8_cstring_capped(thread32 + 1, symbol.data.str + symbol.data.size);
+      StringView         name           = str8_cstring_capped(thread32 + 1, symbol.data.str + symbol.data.size);
       RDIB_Type*      type           = lnk_type_from_itype(thread32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       RDIB_Type*      container_type = lnk_find_container_type(name, task.tpi_itype_range, task.udt_name_buckets, task.udt_name_buckets_cap, task.tpi_itype_map);
 
@@ -4808,7 +4808,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       // fill out thread variable
       tvar.link_flags     = symbol.kind == CV_SymKind_GTHREAD32 ? RDI_LinkFlag_External : 0;
       tvar.name           = name;
-      tvar.link_name      = str8(0,0);
+      tvar.link_name      = StringView(0,0);
       tvar.type           = type;
       tvar.container_type = container_type;
       tvar.container_proc = scope_stack.proc;
@@ -4821,7 +4821,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     case CV_SymKind_LPROC32:
     case CV_SymKind_GPROC32: {
       CV_SymProc32* proc32     = (CV_SymProc32 *) symbol.data.str;
-      String8       name       = str8_cstring_capped(proc32 + 1, symbol.data.str + symbol.data.size);
+      StringView       name       = str8_cstring_capped(proc32 + 1, symbol.data.str + symbol.data.size);
       RDIB_Type*    type       = lnk_type_from_itype(proc32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       Rng1U64       virt_range = lnk_virt_range_from_sect_off_size(proc32.sec, proc32.off, proc32.len, task.image_sects, obj, symbol.kind, symbol.offset);
 
@@ -4836,7 +4836,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       }
 
       // get link name through virtual offset look up
-      String8 link_name = str8(0,0);
+      StringView link_name = StringView(0,0);
       if (symbol.kind == CV_SymKind_GPROC32) {
         KeyValuePair* pair = hash_table_search_u64(task.extern_symbol_voff_ht, virt_range.min);
         if (pair != 0) {
@@ -4925,7 +4925,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_THUNK32: {
       CV_SymThunk32* thunk32    = (CV_SymThunk32 *) symbol.data.str;
-      String8        name       = str8_cstring_capped(thunk32 + 1, symbol.data.str + symbol.data.size);
+      StringView        name       = str8_cstring_capped(thunk32 + 1, symbol.data.str + symbol.data.size);
       Rng1U64        virt_range = lnk_virt_range_from_sect_off_size(thunk32.sec, thunk32.off, thunk32.len, task.image_sects, obj, symbol.kind, symbol.offset);
 
       // scan ahead for context S_FRAMEPROC (must be defined in scope of PROC symbol)
@@ -4976,7 +4976,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     case CV_SymKind_REGREL32: {
       if (~scope_stack.proc_flags & CV_ProcFlag_OptDbgInfo) {
         CV_SymRegrel32* regrel32 = (CV_SymRegrel32 *) symbol.data.str;
-        String8         name     = str8_cstring_capped(regrel32 + 1, symbol.data.str + symbol.data.size);
+        StringView         name     = str8_cstring_capped(regrel32 + 1, symbol.data.str + symbol.data.size);
         RDIB_Type*      type     = lnk_type_from_itype(regrel32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
         RDI_LocalKind local_kind = RDI_LocalKind_Variable;
@@ -5016,7 +5016,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_LOCAL: {
       CV_SymLocal* sym_local = (CV_SymLocal *) symbol.data.str;
-      String8      name      = str8_cstring_capped(sym_local + 1, symbol.data.str + symbol.data.size);
+      StringView      name      = str8_cstring_capped(sym_local + 1, symbol.data.str + symbol.data.size);
       RDIB_Type*   type      = lnk_type_from_itype(sym_local.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
       // reset defrange target
@@ -5043,7 +5043,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_FILESTATIC: {
       CV_SymFileStatic* file_static = (CV_SymFileStatic *) symbol.data.str;
-      String8           name        = str8_cstring_capped(file_static + 1, symbol.data.str + symbol.data.size);
+      StringView           name        = str8_cstring_capped(file_static + 1, symbol.data.str + symbol.data.size);
       RDIB_Type*        type        = lnk_type_from_itype(file_static.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
       // push New node
@@ -5159,7 +5159,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_INLINESITE: {
       CV_SymInlineSite* sym_inline_site = (CV_SymInlineSite *) symbol.data.str;
-      String8           binary_annots   = str8_skip(symbol.data, sizeof(*sym_inline_site));
+      StringView           binary_annots   = str8_skip(symbol.data, sizeof(*sym_inline_site));
 
       uint64 parent_voff = 0;
       if (scope_stack != 0) {
@@ -5175,7 +5175,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       CV_C13InlineeLinesParsed*    inlinee_parsed       = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, sym_inline_site.inlinee);
       CV_InlineBinaryAnnotsParsed  binary_annots_parsed = cv_c13_parse_inline_binary_annots(arena, parent_voff, inlinee_parsed, binary_annots);
 
-      String8    name  = str8_zero();
+      StringView    name  = StringView();
       RDIB_Type* type  = 0;
       RDIB_Type* owner = 0;
       if (task.ipi_itype_range.min <= sym_inline_site.inlinee && sym_inline_site.inlinee < task.ipi_itype_range.max) {
@@ -5260,8 +5260,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
     uint64           obj_idx     = inline_site.convert_ref.ud2;
 
     CV_DebugS debug_s          = task.debug_s_arr[obj_idx];
-    String8   raw_string_table = cv_string_table_from_debug_s(debug_s);
-    String8   raw_file_chksms  = cv_file_chksms_from_debug_s(debug_s);
+    StringView   raw_string_table = cv_string_table_from_debug_s(debug_s);
+    StringView   raw_file_chksms  = cv_file_chksms_from_debug_s(debug_s);
 
     if (lines_count > 0) {
       inline_site.line_table = rdib_line_table_chunk_list_push(arena, &task.line_tables[worker_id], task.line_table_cap);
@@ -5280,11 +5280,11 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
         lnk_error_obj(LNK_Warning_IllData, obj, "Not enough bytes to read file checksum @ 0x%llx.", lines.file_off);
         continue;
       }
-      String8 file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
-      String8 checksum_bytes = str8((uint8 *) (checksum_header + 1), checksum_header.len);
+      StringView file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
+      StringView checksum_bytes = StringView((uint8 *) (checksum_header + 1), checksum_header.len);
       
       // find source file for this line table
-      String8               normal_path     = lnk_normalize_src_file_path(scratch.arena, file_path);
+      StringView               normal_path     = lnk_normalize_src_file_path(scratch.arena, file_path);
       uint64                   src_file_hash   = lnk_src_file_hash_cv(normal_path, checksum_header.kind, checksum_bytes);
       LNK_SourceFileBucket* src_file_bucket = lnk_src_file_hash_table_lookup_slot(task.src_file_buckets, task.src_file_buckets_cap, src_file_hash, normal_path, checksum_header.kind, checksum_bytes);
       if (src_file_bucket == 0) {
@@ -5365,8 +5365,8 @@ lnk_build_rad_debug_info(TP_Context*               tp,
                          TP_Arena*                 tp_arena,
                          OperatingSystem           os,
                          RDI_Arch                  arch,
-                         String8                   image_name,
-                         String8                   image_data,
+                         StringView                   image_name,
+                         StringView                   image_data,
                          LNK_SectionArray          image_sects,
                          LNK_Section**             sect_id_map,
                          uint64                       obj_count,

@@ -58,17 +58,17 @@ tctx_get_scratch(Arena** conflicts, uint64 count){
 }
 
 void
-tctx_set_thread_name(String8 string){
+tctx_set_thread_name(StringView string){
   TCTX* tctx = tctx_get_equipped();
   uint64 size = ClampTop(string.size, sizeof(tctx.thread_name));
   MemoryCopy(tctx.thread_name, string.str, size);
   tctx.thread_name_size = size;
 }
 
-String8
+StringView
 tctx_get_thread_name(){
   TCTX* tctx = tctx_get_equipped();
-  String8 result = str8(tctx.thread_name, tctx.thread_name_size);
+  StringView result = StringView(tctx.thread_name, tctx.thread_name_size);
   return(result);
 }
 

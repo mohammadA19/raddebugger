@@ -46,14 +46,14 @@ dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
   
   // get input pdb
   {
-    String8 input_name = cmd_line_string(cmdline, ("elf"));
+    StringView input_name = cmd_line_string(cmdline, ("elf"));
     if (input_name.size == 0){
       str8_list_push(arena, &result.errors,
                      ("missing required parameter '--elf:<elf_file>'"));
     }
     
     if (input_name.size > 0){
-      String8 input_data = os_data_from_file_path(arena, input_name);
+      StringView input_data = os_data_from_file_path(arena, input_name);
       
       if (input_data.size == 0){
         str8_list_pushf(arena, &result.errors,
@@ -181,7 +181,7 @@ dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
 //~ Entry Point
 
 static void
-dump_symtab(Arena* arena, String8List* out, ELF_SymArray* symbols, String8 strtab,
+dump_symtab(Arena* arena, String8List* out, ELF_SymArray* symbols, StringView strtab,
             uint32 indent){
   static char spaces[] = "                                ";
   
@@ -194,16 +194,16 @@ dump_symtab(Arena* arena, String8List* out, ELF_SymArray* symbols, String8 strta
     uint8* name_first = str_first + symbol.st_name;
     uint8* name_opl = name_first;
     for (;name_opl < str_opl && *name_opl != 0;) name_opl += 1;
-    String8 name = str8_range(name_first, name_opl);
+    StringView name = str8_range(name_first, name_opl);
     
     ELF_SymbolBinding binding = ELF_SymBindingFromInfo(symbol.st_info);
-    String8 binding_string = elf_string_from_symbol_binding(binding);
+    StringView binding_string = elf_string_from_symbol_binding(binding);
     
     ELF_SymbolType type = ELF_SymTypeFromInfo(symbol.st_info);
-    String8 type_string = elf_string_from_symbol_type(type);
+    StringView type_string = elf_string_from_symbol_type(type);
     
     ELF_SymbolVisibility vis = ELF_SymVisibilityFromOther(symbol.st_other);
-    String8 vis_string = elf_string_from_symbol_visibility(vis);
+    StringView vis_string = elf_string_from_symbol_visibility(vis);
     
     str8_list_pushf(arena, out,
                     "%.*ssymbol[%5llu] %6.*s %7.*s %9.*s 0x%08llx size=%-5llu sec=%-5u "
@@ -227,7 +227,7 @@ dump_entry_tree(Arena* arena, String8List* out,
   
   // tag
   DWARF_Tag tag = abbrev_decl.tag;
-  String8 tag_string = dwarf_string_from_tag(tag);
+  StringView tag_string = dwarf_string_from_tag(tag);
   str8_list_pushf(arena, out, "%.*sentry(@%llx) TAG %.*s\n",
                   indent, spaces, entry.info_offset, str8_varg(tag_string));
   
@@ -238,23 +238,23 @@ dump_entry_tree(Arena* arena, String8List* out,
   for (uint32 i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
     // attribute name
     DWARF_AttributeName name = attrib_spec.name;
-    String8 name_string = dwarf_string_from_attribute_name(name);
+    StringView name_string = dwarf_string_from_attribute_name(name);
     str8_list_pushf(arena, out, "%.*sATTR %.*s ", indent + 4, spaces, str8_varg(name_string));
     
     // attribute value
     switch (attrib_spec.form){
       default:
       {
-        String8 form_string = dwarf_string_from_attribute_form(attrib_spec.form);
+        StringView form_string = dwarf_string_from_attribute_form(attrib_spec.form);
         str8_list_pushf(arena, out, "<form: %.*s> {%llu, 0x%p}\n",
                         str8_varg(form_string), attrib_val.val, attrib_val.dataptr);
       }break;
       
       case DWARF_AttributeForm_strp:
       {
-        String8 str = {0};
+        StringView str = {0};
         
-        String8 data = dwarf.debug_data[DWARF_SectionCode_Str];
+        StringView data = dwarf.debug_data[DWARF_SectionCode_Str];
         uint64 off = attrib_val.val;
         if (off < data.size){
           uint8* start = data.str + off;
@@ -295,7 +295,7 @@ dump_entry_tree(Arena* arena, String8List* out,
           }
         }
         
-        String8 sec_name = dwarf_name_from_debug_section(dwarf, sec_code);
+        StringView sec_name = dwarf_name_from_debug_section(dwarf, sec_code);
         str8_list_pushf(arena, out, "sec(%.*s) + %llu\n", str8_varg(sec_name), attrib_val.val);
       }break;
       
@@ -324,17 +324,17 @@ dump_entry_tree(Arena* arena, String8List* out,
       case DWARF_AttributeForm_strx3:
       case DWARF_AttributeForm_strx4:
       {
-        String8 str = {0};
+        StringView str = {0};
         
         uint32 idx = attrib_val.val;
         uint64 str_offsets_off = unit.str_offsets_base + idx*unit.offset_size;
         
-        String8 str_offsets = dwarf.debug_data[DWARF_SectionCode_StrOffsets];
+        StringView str_offsets = dwarf.debug_data[DWARF_SectionCode_StrOffsets];
         if (str_offsets_off + unit.offset_size < str_offsets.size){
           uint64 off = 0;
           MemoryCopy(&off, str_offsets.str + str_offsets_off, unit.offset_size);
           
-          String8 data = dwarf.debug_data[DWARF_SectionCode_Str];
+          StringView data = dwarf.debug_data[DWARF_SectionCode_Str];
           if (off < data.size){
             uint8* start = data.str + off;
             uint8* opl = data.str + data.size;
@@ -358,7 +358,7 @@ dump_entry_tree(Arena* arena, String8List* out,
         uint32 idx = attrib_val.val;
         uint64 address_off = unit.addr_base + idx*unit.address_size;
         
-        String8 data = dwarf.debug_data[DWARF_SectionCode_Addr];
+        StringView data = dwarf.debug_data[DWARF_SectionCode_Addr];
         if (address_off + unit.address_size < data.size){
           MemoryCopy(&address, data.str + address_off, unit.address_size);
         }
@@ -443,7 +443,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   }
   
   // parse strtab
-  String8 strtab = {0};
+  StringView strtab = {0};
   if (elf != 0) ProfScope("parse strtab"){
     strtab = elf_section_data_from_idx(elf, elf.strtab_idx);
   }
@@ -451,14 +451,14 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse symtab
   ELF_SymArray symtab = {0};
   if (elf != 0) ProfScope("parse symtab"){
-    String8 data = elf_section_data_from_idx(elf, elf.symtab_idx);
+    StringView data = elf_section_data_from_idx(elf, elf.symtab_idx);
     symtab = elf_sym_array_from_data(arena, elf.elf_class, data);
   }
   
   // parse dynsym
   ELF_SymArray dynsym = {0};
   if (elf != 0) ProfScope("parse dynsym"){
-    String8 data = elf_section_data_from_idx(elf, elf.dynsym_idx);
+    StringView data = elf_section_data_from_idx(elf, elf.dynsym_idx);
     dynsym = elf_sym_array_from_data(arena, elf.elf_class, data);
   }
   
@@ -472,7 +472,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse info
   DWARF_InfoParsed* info = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Info];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Info];
     if (data.size > 0) ProfScope("parse .debug_info"){
       info = dwarf_info_from_data(arena, data);
       PARSE_CHECK_ERROR(info, "DEBUG INFO");
@@ -482,7 +482,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse pubnames
   DWARF_PubNamesParsed* pubnames = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_PubNames];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_PubNames];
     if (data.size) ProfScope("parse .debug_pubnames"){
       pubnames = dwarf_pubnames_from_data(arena, data);
       PARSE_CHECK_ERROR(pubnames, "DEBUG PUBNAMES");
@@ -492,7 +492,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse pubtypes
   DWARF_PubNamesParsed* pubtypes = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_PubTypes];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_PubTypes];
     if (data.size) ProfScope("parse .debug_pubtypes"){
       pubtypes = dwarf_pubnames_from_data(arena, data);
       PARSE_CHECK_ERROR(pubtypes, "DEBUG PUBTYPES");
@@ -502,7 +502,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse names
   DWARF_NamesParsed* names = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Names];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Names];
     if (data.size) ProfScope("parse .debug_names"){
       names = dwarf_names_from_data(arena, data);
       PARSE_CHECK_ERROR(names, "DEBUG NAMES");
@@ -512,7 +512,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse aranges
   DWARF_ArangesParsed* aranges = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Aranges];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Aranges];
     if (data.size) ProfScope("parse .debug_aranges"){
       aranges = dwarf_aranges_from_data(arena, data);
       PARSE_CHECK_ERROR(aranges, "DEBUG ARANGES");
@@ -522,7 +522,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse addr
   DWARF_AddrParsed* addr = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Addr];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Addr];
     if (data.size) ProfScope("parse .debug_addr"){
       addr = dwarf_addr_from_data(arena, data);
       PARSE_CHECK_ERROR(addr, "DEBUG ADDR");
@@ -533,7 +533,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse abbrev
   DWARF_AbbrevParsed* abbrev = 0;
   if (dwarf != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Abbrev];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Abbrev];
     if (data.size > 0) ProfScope("parse .debug_abbrev"){
       DWARF_AbbrevParams abbrev_params = {0};
       abbrev_params.unit_idx_min = params.unit_idx_min;
@@ -546,7 +546,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
   // parse info
   DWARF_InfoParsed* info = 0;
   if (abbrev != 0){
-    String8 data = dwarf.debug_data[DWARF_SectionCode_Info];
+    StringView data = dwarf.debug_data[DWARF_SectionCode_Info];
     if (data.size > 0) ProfScope("parse .debug_info"){
       DWARF_InfoParams info_params = {0};
       info_params.unit_idx_min = params.unit_idx_min;
@@ -593,10 +593,10 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "SECTIONS:\n"));
         
         ELF_Shdr64* sec = section_array.sections;
-        String8* sec_name = section_name_array.v;
+        StringView* sec_name = section_name_array.v;
         uint64 count = section_array.count;
         for (uint64 i = 0 ; i < count; i += 1, sec += 1, sec_name += 1){
-          String8 type_string = elf_string_from_section_type(sec.sh_type);
+          StringView type_string = elf_string_from_section_type(sec.sh_type);
           
           // TODO: better stringizers for fields here
           str8_list_pushf(arena, &dump, " section[%llu]:\n", i);
@@ -676,10 +676,10 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                                 "DEBUG SECTIONS:\n"));
         
         uint32* debug_section_idx = dwarf.debug_section_idx;
-        String8* debug_data = dwarf.debug_data;
+        StringView* debug_data = dwarf.debug_data;
         for (uint32 i = 1; i < DWARF_SectionCode_COUNT; i += 1, debug_data += 1){
           uint32 idx = debug_section_idx[i];
-          String8 name = dwarf_string_from_section_code(i);
+          StringView name = dwarf_string_from_section_code(i);
           str8_list_pushf(arena, &dump, " %-10.*s section_idx=%u\n", str8_varg(name), idx);
         }
         str8_list_push(arena, &dump, ("\n"));
@@ -823,7 +823,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
           for (DWARF_AbbrevDecl* abbrev_decl = unit.first;
                abbrev_decl != 0;
                abbrev_decl = abbrev_decl.next, j += 1){
-            String8 tag_string = dwarf_string_from_tag(abbrev_decl.tag);
+            StringView tag_string = dwarf_string_from_tag(abbrev_decl.tag);
             
             str8_list_pushf(arena, &dump, " unit[%u],abbrev[%u]:\n", i, j);
             str8_list_pushf(arena, &dump, "  code=%llu\n", abbrev_decl.abbrev_code);
@@ -835,8 +835,8 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
             uint32 attrib_count = abbrev_decl.attrib_count;
             DWARF_AbbrevAttribSpec* attrib_spec = abbrev_decl.attrib_specs;
             for (uint32 k = 0; k < attrib_count; k += 1, attrib_spec += 1){
-              String8 name_string = dwarf_string_from_attribute_name(attrib_spec.name);
-              String8 form_string = dwarf_string_from_attribute_form(attrib_spec.form);
+              StringView name_string = dwarf_string_from_attribute_name(attrib_spec.name);
+              StringView form_string = dwarf_string_from_attribute_form(attrib_spec.form);
               
               str8_list_pushf(arena, &dump, "   [%-14.*s %-10.*s]\n", 
                               str8_varg(name_string), str8_varg(form_string));

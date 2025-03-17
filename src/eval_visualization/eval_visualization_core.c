@@ -78,7 +78,7 @@ ev_key_match(EV_Key a, EV_Key b)
 }
 
 uint64
-ev_hash_from_seed_string(uint64 seed, String8 string)
+ev_hash_from_seed_string(uint64 seed, StringView string)
 {
   uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
@@ -91,7 +91,7 @@ ev_hash_from_key(EV_Key key)
   {
     key.child_id,
   };
-  uint64 hash = ev_hash_from_seed_string(key.parent_hash, str8((uint8 *)data, sizeof(data)));
+  uint64 hash = ev_hash_from_seed_string(key.parent_hash, StringView((uint8 *)data, sizeof(data)));
   return hash;
 }
 
@@ -193,10 +193,10 @@ ev_expansion_from_key(EV_View* view, EV_Key key)
   return (node != 0 && node.expanded);
 }
 
-String8
+StringView
 ev_view_rule_from_key(EV_View* view, EV_Key key)
 {
-  String8 result = {0};
+  StringView result = {0};
   
   //- rjf: key . hash * slot idx * slot
   uint64 hash = ev_hash_from_key(key);
@@ -217,7 +217,7 @@ ev_view_rule_from_key(EV_View* view, EV_Key key)
   //- rjf: node . result
   if(existing_node != 0)
   {
-    result = str8(existing_node.buffer, existing_node.buffer_string_size);
+    result = StringView(existing_node.buffer, existing_node.buffer_string_size);
   }
   
   return result;
@@ -296,7 +296,7 @@ ev_key_set_expansion(EV_View* view, EV_Key parent_key, EV_Key key, B32 expanded)
 }
 
 void
-ev_key_set_view_rule(EV_View* view, EV_Key key, String8 view_rule_string)
+ev_key_set_view_rule(EV_View* view, EV_Key key, StringView view_rule_string)
 {
   //- rjf: key . hash * slot idx * slot
   uint64 hash = ev_hash_from_key(key);
@@ -369,7 +369,7 @@ ev_select_view_rule_info_table(EV_ViewRuleInfoTable* table)
 }
 
 EV_ViewRuleInfo *
-ev_view_rule_info_from_string(String8 string)
+ev_view_rule_info_from_string(StringView string)
 {
   EV_ViewRuleInfo* info = &ev_nil_view_rule_info;
   uint64 hash = ev_hash_from_seed_string(5381, string);
@@ -395,7 +395,7 @@ ev_view_rule_info_from_string(String8 string)
 //~ rjf: Automatic Type . View Rule Table Building / Selection / Lookups
 
 void
-ev_auto_view_rule_table_push_new(Arena* arena, EV_AutoViewRuleTable* table, E_TypeKey type_key, String8 view_rule, B32 is_required)
+ev_auto_view_rule_table_push_new(Arena* arena, EV_AutoViewRuleTable* table, E_TypeKey type_key, StringView view_rule, B32 is_required)
 {
   if(table.slots_count == 0)
   {
@@ -468,7 +468,7 @@ ev_view_rule_list_push_tree(Arena* arena, EV_ViewRuleList* list, MD_Node* root)
 }
 
 void
-ev_view_rule_list_push_string(Arena* arena, EV_ViewRuleList* list, String8 string)
+ev_view_rule_list_push_string(Arena* arena, EV_ViewRuleList* list, StringView string)
 {
   if(string.size != 0)
   {
@@ -481,7 +481,7 @@ ev_view_rule_list_push_string(Arena* arena, EV_ViewRuleList* list, String8 strin
 }
 
 EV_ViewRuleList *
-ev_view_rule_list_from_string(Arena* arena, String8 string)
+ev_view_rule_list_from_string(Arena* arena, StringView string)
 {
   EV_ViewRuleList* dst = push_array(arena, EV_ViewRuleList, 1);
   ev_view_rule_list_push_string(arena, dst, string);
@@ -489,7 +489,7 @@ ev_view_rule_list_from_string(Arena* arena, String8 string)
 }
 
 EV_ViewRuleList *
-ev_view_rule_list_from_expr_fastpaths(Arena* arena, String8 string)
+ev_view_rule_list_from_expr_fastpaths(Arena* arena, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -505,7 +505,7 @@ ev_view_rule_list_from_expr_fastpaths(Arena* arena, String8 string)
     uint64 passthrough_pos = str8_find_needle(string, 0, ("--"), 0);
     if(comma_pos < string.size && comma_pos < passthrough_pos)
     {
-      String8 comma_extension = str8_skip_chop_whitespace(str8_substr(string, r1u64(comma_pos+1, passthrough_pos)));
+      StringView comma_extension = str8_skip_chop_whitespace(str8_substr(string, r1u64(comma_pos+1, passthrough_pos)));
       if(str8_match(comma_extension, ("x"), StringMatchFlag_CaseInsensitive))
       {
         str8_list_pushf(scratch.arena, &fastpath_view_rules, "hex");
@@ -525,7 +525,7 @@ ev_view_rule_list_from_expr_fastpaths(Arena* arena, String8 string)
     }
     if(passthrough_pos < string.size)
     {
-      String8 passthrough_view_rule = str8_skip_chop_whitespace(str8_skip(string, passthrough_pos+2));
+      StringView passthrough_view_rule = str8_skip_chop_whitespace(str8_skip(string, passthrough_pos+2));
       if(passthrough_view_rule.size != 0)
       {
         str8_list_push(scratch.arena, &fastpath_view_rules, passthrough_view_rule);
@@ -671,7 +671,7 @@ ev_resolved_from_expr(Arena* arena, E_Expr* expr, EV_ViewRuleList* view_rules)
 //~ rjf: Block Building
 
 EV_BlockTree
-ev_block_tree_from_expr(Arena* arena, EV_View* view, String8 filter, String8 string, E_Expr* expr, EV_ViewRuleList* view_rules)
+ev_block_tree_from_expr(Arena* arena, EV_View* view, StringView filter, StringView string, E_Expr* expr, EV_ViewRuleList* view_rules)
 {
   ProfBeginFunction();
   EV_BlockTree tree = {&ev_nil_block};
@@ -850,7 +850,7 @@ ev_block_tree_from_expr(Arena* arena, EV_View* view, String8 filter, String8 str
             EV_Key child_key = child_keys[idx];
             E_Expr* child_expr = child_expand.row_exprs[0];
             EV_ViewRuleList* child_view_rules = ev_view_rule_list_from_inheritance(arena, t.view_rules);
-            String8 child_view_rule_string = ev_view_rule_from_key(view, child_key);
+            StringView child_view_rule_string = ev_view_rule_from_key(view, child_key);
             ev_view_rule_list_push_string(arena, child_view_rules, child_view_rule_string);
             if(child_expand.row_strings[0].size != 0)
             {
@@ -884,7 +884,7 @@ ev_block_tree_from_expr(Arena* arena, EV_View* view, String8 filter, String8 str
 }
 
 EV_BlockTree
-ev_block_tree_from_string(Arena* arena, EV_View* view, String8 filter, String8 string, EV_ViewRuleList* view_rules)
+ev_block_tree_from_string(Arena* arena, EV_View* view, StringView filter, StringView string, EV_ViewRuleList* view_rules)
 {
   ProfBeginFunction();
   EV_BlockTree tree = {0};
@@ -1051,7 +1051,7 @@ ev_num_from_key(EV_BlockRangeList* block_ranges, EV_Key key)
 //~ rjf: Row Building
 
 EV_WindowedRowList
-ev_windowed_row_list_from_block_range_list(Arena* arena, EV_View* view, String8 filter, EV_BlockRangeList* block_ranges, Rng1U64 visible_range)
+ev_windowed_row_list_from_block_range_list(Arena* arena, EV_View* view, StringView filter, EV_BlockRangeList* block_ranges, Rng1U64 visible_range)
 {
   EV_WindowedRowList rows = {0};
   {
@@ -1148,7 +1148,7 @@ ev_windowed_row_list_from_block_range_list(Arena* arena, EV_View* view, String8 
             EV_Key row_key = ev_key_make(ev_hash_from_key(n.v.block.key), child_id);
             E_Expr* row_expr = expand_range_info.row_exprs[idx];
             EV_ViewRuleList* row_view_rules = ev_view_rule_list_from_inheritance(arena, n.v.block.view_rules);
-            String8 row_view_rule_string = ev_view_rule_from_key(view, row_key);
+            StringView row_view_rule_string = ev_view_rule_from_key(view, row_key);
             ev_view_rule_list_push_string(arena, row_view_rules, row_view_rule_string);
             if(expand_range_info.row_strings[idx].size != 0)
             {
@@ -1203,10 +1203,10 @@ ev_windowed_row_list_from_block_range_list(Arena* arena, EV_View* view, String8 
   return rows;
 }
 
-String8
+StringView
 ev_expr_string_from_row(Arena* arena, EV_Row* row, EV_StringFlags flags)
 {
-  String8 result = row.string;
+  StringView result = row.string;
   E_Expr* notable_expr = row.expr;
   for(B32 good = 0; !good;)
   {
@@ -1297,10 +1297,10 @@ ev_row_is_editable(EV_Row* row)
 
 //- rjf: leaf stringification
 
-String8
+StringView
 ev_string_from_ascii_value(Arena* arena, uint8 val)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(val)
   {
     case 0x00:{result = ("\\0");}break;
@@ -1324,10 +1324,10 @@ ev_string_from_ascii_value(Arena* arena, uint8 val)
   return result;
 }
 
-String8
+StringView
 ev_string_from_hresult_facility_code(uint32 code)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(code)
   {
     default:{}break;
@@ -1453,10 +1453,10 @@ ev_string_from_hresult_facility_code(uint32 code)
   return result;
 }
 
-String8
+StringView
 ev_string_from_hresult_code(uint32 code)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(code)
   {
     default:{}break;
@@ -1476,10 +1476,10 @@ ev_string_from_hresult_code(uint32 code)
   return result;
 }
 
-String8
+StringView
 ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radix, uint32 min_digits, E_Eval eval)
 {
-  String8 result = {0};
+  StringView result = {0};
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   uint64 type_byte_size = e_type_byte_size_from_key(type_key);
@@ -1507,9 +1507,9 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
         uint32 is_error   = !!(hresult_value & (1ull<<31));
         uint32 error_code = (hresult_value);
         uint32 facility   = (hresult_value & 0x7ff0000) >> 16;
-        String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, radix, min_digits, digit_group_separator);
-        String8 facility_string = ev_string_from_hresult_facility_code(facility);
-        String8 error_string = ev_string_from_hresult_code(error_code);
+        StringView value_string = str8_from_s64(scratch.arena, eval.value.u64, radix, min_digits, digit_group_separator);
+        StringView facility_string = ev_string_from_hresult_facility_code(facility);
+        StringView error_string = ev_string_from_hresult_code(error_code);
         result = push_str8f(arena, "%S%s%s%S%s%s%S%s",
                             error_string,
                             error_string.size != 0 ? " " : "",
@@ -1535,12 +1535,12 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
     case E_TypeKind_UChar32:
     {
       B32 type_is_unsigned = (E_TypeKind_UChar8 <= type_kind && type_kind <= E_TypeKind_UChar32);
-      String8 char_str = ev_string_from_ascii_value(arena, eval.value.s64);
+      StringView char_str = ev_string_from_ascii_value(arena, eval.value.s64);
       if(char_str.size != 0)
       {
         if(flags & EV_StringFlag_ReadOnlyDisplayRules)
         {
-          String8 imm_string = (type_is_unsigned
+          StringView imm_string = (type_is_unsigned
                                 ? str8_from_u64(arena, eval.value.u64, radix, min_digits, digit_group_separator)
                                 : str8_from_s64(arena, eval.value.s64, radix, min_digits, digit_group_separator));
           result = push_str8f(arena, "'%S' (%S)", char_str, imm_string);
@@ -1577,8 +1577,8 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
     case E_TypeKind_U128:
     {
       Temp scratch = scratch_begin(&arena, 1);
-      String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], radix, min_digits, digit_group_separator);
-      String8 lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], radix, min_digits, digit_group_separator);
+      StringView upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], radix, min_digits, digit_group_separator);
+      StringView lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], radix, min_digits, digit_group_separator);
       result = push_str8f(arena, "%S:%S", upper64, lower64);
       scratch_end(scratch);
     }break;
@@ -1613,7 +1613,7 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
     {
       Temp scratch = scratch_begin(&arena, 1);
       E_Type* type = e_type_from_key(scratch.arena, type_key);
-      String8 constant_name = {0};
+      StringView constant_name = {0};
       for(uint64 val_idx = 0; val_idx < type.count; val_idx += 1)
       {
         if(eval.value.u64 == type.enum_vals[val_idx].val)
@@ -1622,7 +1622,7 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
           break;
         }
       }
-      String8 numeric_value_string = str8_from_u64(scratch.arena, eval.value.u64, radix, min_digits, digit_group_separator);
+      StringView numeric_value_string = str8_from_u64(scratch.arena, eval.value.u64, radix, min_digits, digit_group_separator);
       if(flags & EV_StringFlag_ReadOnlyDisplayRules)
       {
         if(constant_name.size != 0)
@@ -1648,8 +1648,8 @@ ev_string_from_simple_typed_eval(Arena* arena, EV_StringFlags flags, uint32 radi
   return result;
 }
 
-String8
-ev_escaped_from_raw_string(Arena* arena, String8 raw)
+StringView
+ev_escaped_from_raw_string(Arena* arena, StringView raw)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
@@ -1658,7 +1658,7 @@ ev_escaped_from_raw_string(Arena* arena, String8 raw)
   {
     uint8 byte = (idx < raw.size) ? raw.str[idx] : 0;
     B32 split = 1;
-    String8 separator_replace = {0};
+    StringView separator_replace = {0};
     switch(byte)
     {
       default:{split = 0;}break;
@@ -1676,7 +1676,7 @@ ev_escaped_from_raw_string(Arena* arena, String8 raw)
     }
     if(split)
     {
-      String8 substr = str8_substr(raw, r1u64(start_split_idx, idx));
+      StringView substr = str8_substr(raw, r1u64(start_split_idx, idx));
       start_split_idx = idx+1;
       str8_list_push(scratch.arena, &parts, substr);
       if(separator_replace.size != 0)
@@ -1686,7 +1686,7 @@ ev_escaped_from_raw_string(Arena* arena, String8 raw)
     }
   }
   StringJoin join = {0};
-  String8 result = str8_list_join(arena, &parts, &join);
+  StringView result = str8_list_join(arena, &parts, &join);
   scratch_end(scratch);
   return result;
 }

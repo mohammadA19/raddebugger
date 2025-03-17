@@ -25,7 +25,7 @@ lnk_init_error_handler()
   }
 }
 
-String8
+StringView
 lnk_string_from_error_mode(LNK_ErrorMode mode)
 {
   switch (mode) {
@@ -34,7 +34,7 @@ lnk_string_from_error_mode(LNK_ErrorMode mode)
   case LNK_ErrorMode_Stop:     return ("Error");
   case LNK_ErrorMode_Warn:     return ("Warning");
   }
-  return str8_zero();
+  return StringView();
 }
 
 void
@@ -48,8 +48,8 @@ lnk_errorfv(LNK_ErrorCode code, char* fmt, va_list args)
   }
   
   Temp scratch = scratch_begin(0,0);
-  String8 message = push_str8fv(scratch.arena, fmt, args);
-  String8 string = push_str8f(scratch.arena, "%S(%03d): %S\n", lnk_string_from_error_mode(g_error_mode_arr[code]), code, message);
+  StringView message = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8f(scratch.arena, "%S(%03d): %S\n", lnk_string_from_error_mode(g_error_mode_arr[code]), code, message);
   fprintf(stderr, "%.*s", str8_varg(string));
   scratch_end(scratch);
   
@@ -68,10 +68,10 @@ lnk_error(LNK_ErrorCode code, char* fmt, ...)
 }
 
 void
-lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char* fmt, va_list args)
+lnk_error_with_loc_fv(LNK_ErrorCode code, StringView obj_path, StringView lib_path, char* fmt, va_list args)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 text = push_str8fv(scratch.arena, fmt, args);
+  StringView text = push_str8fv(scratch.arena, fmt, args);
   if (obj_path.size) {
     if (lib_path.size) {
       lnk_error(code, "%S(%S): %S", lib_path, obj_path, text);
@@ -85,7 +85,7 @@ lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, ch
 }
 
 void
-lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char* fmt, ...)
+lnk_error_with_loc(LNK_ErrorCode code, StringView obj_path, StringView lib_path, char* fmt, ...)
 {
   va_list args; va_start(args, fmt);
   lnk_error_with_loc_fv(code, obj_path, lib_path, fmt, args);
@@ -99,7 +99,7 @@ lnk_supplement_error(char* fmt, ...)
   va_start(args, fmt);
 
   Temp scratch = scratch_begin(0,0);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
 
   fprintf(stderr, "\t");
   fprintf(stderr, "%.*s", str8_varg(string));
@@ -136,7 +136,7 @@ lnk_internal_error(LNK_InternalError code, char* file, int line, char* fmt, ...)
   va_list args;
   va_start(args, fmt);
   
-  String8 issue = push_str8fv(scratch.arena, fmt, args);
+  StringView issue = push_str8fv(scratch.arena, fmt, args);
   fprintf(stderr, "internal error #%03d in %s:%u\n", code, file, line);
   fprintf(stderr, "\t%.*s\n", str8_varg(issue));
   

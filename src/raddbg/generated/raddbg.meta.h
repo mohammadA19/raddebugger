@@ -553,7 +553,7 @@ RD_Handle entity;
 RD_HandleList entity_list;
 uint64 unwind_count;
 uint64 inline_depth;
-String8 file_path;
+StringView file_path;
 TxtPt cursor;
 TxtPt mark;
 U128 text_key;
@@ -568,8 +568,8 @@ uint32 pid;
 B32 force_confirm;
 B32 prefer_disasm;
 Dir2 dir2;
-String8 string;
-String8 cmd_name;
+StringView string;
+StringView cmd_name;
 MD_Node * params_tree;
 OS_Event * os_event;
 }
@@ -578,17 +578,17 @@ struct RD_Query
 {
 RD_QueryFlags flags;
 RD_RegSlot slot;
-String8 view_name;
+StringView view_name;
 RD_EntityKind entity_kind;
 CTRL_EntityKind ctrl_entity_kind;
 }
 
 struct RD_CmdKindInfo
 {
-String8 string;
-String8 description;
-String8 search_tags;
-String8 display_name;
+StringView string;
+StringView description;
+StringView search_tags;
+StringView display_name;
 RD_IconKind icon_kind;
 RD_CmdKindFlags flags;
 RD_Query query;
@@ -596,10 +596,10 @@ RD_Query query;
 
 struct RD_ViewRuleInfo
 {
-String8 string;
-String8 description;
-String8 display_name;
-String8 params_schema;
+StringView string;
+StringView description;
+StringView display_name;
+StringView params_schema;
 RD_IconKind icon_kind;
 RD_ViewRuleInfoFlags flags;
 EV_ViewRuleExprExpandInfoHookFunctionType* expr_expand_info;
@@ -751,21 +751,21 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox);
 RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba);
 RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d);
 C_LINKAGE_BEGIN
-extern String8 rd_cfg_src_string_table[4];
+extern StringView rd_cfg_src_string_table[4];
 extern RD_CmdKind rd_cfg_src_load_cmd_kind_table[4];
 extern RD_CmdKind rd_cfg_src_write_cmd_kind_table[4];
 extern RD_CmdKind rd_cfg_src_apply_cmd_kind_table[4];
-extern String8 d_entity_kind_display_string_table[27];
-extern String8 d_entity_kind_name_lower_table[27];
-extern String8 d_entity_kind_name_lower_plural_table[27];
-extern String8 d_entity_kind_name_label_table[27];
+extern StringView d_entity_kind_display_string_table[27];
+extern StringView d_entity_kind_name_lower_table[27];
+extern StringView d_entity_kind_name_lower_plural_table[27];
+extern StringView d_entity_kind_name_label_table[27];
 extern RD_EntityKindFlags rd_entity_kind_flags_table[27];
 extern Rng1U64 rd_reg_slot_range_table[34];
 extern RD_StringBindingPair rd_default_binding_table[110];
-extern String8 rd_binding_version_remap_old_name_table[8];
-extern String8 rd_binding_version_remap_new_name_table[8];
-extern String8 rd_icon_kind_text_table[69];
-extern String8 rd_collection_name_table[18];
+extern StringView rd_binding_version_remap_old_name_table[8];
+extern StringView rd_binding_version_remap_new_name_table[8];
+extern StringView rd_icon_kind_text_table[69];
+extern StringView rd_collection_name_table[18];
 extern RD_EntityKind rd_collection_entity_kind_table[18];
 extern CTRL_EntityKind rd_collection_ctrl_entity_kind_table[18];
 extern EV_ViewRuleExprExpandInfoHookFunctionType * rd_collection_expr_expand_info_hook_function_table[18];
@@ -774,10 +774,10 @@ extern EV_ViewRuleExprExpandIDFromNumHookFunctionType * rd_collection_expr_expan
 extern EV_ViewRuleExprExpandIDFromNumHookFunctionType * rd_collection_expr_expand_num_from_id_hook_function_table[18];
 extern RD_ViewRuleInfo rd_view_rule_kind_info_table[35];
 extern RD_IconKind rd_entity_kind_icon_kind_table[27];
-extern String8 rd_theme_preset_display_string_table[9];
-extern String8 rd_theme_preset_code_string_table[9];
-extern String8 rd_theme_color_version_remap_old_name_table[22];
-extern String8 rd_theme_color_version_remap_new_name_table[22];
+extern StringView rd_theme_preset_display_string_table[9];
+extern StringView rd_theme_preset_code_string_table[9];
+extern StringView rd_theme_color_version_remap_old_name_table[22];
+extern StringView rd_theme_color_version_remap_new_name_table[22];
 extern Vec4F32 rd_theme_preset_colors__default_dark[76];
 extern Vec4F32 rd_theme_preset_colors__default_light[76];
 extern Vec4F32 rd_theme_preset_colors__vs_dark[76];
@@ -788,10 +788,10 @@ extern Vec4F32 rd_theme_preset_colors__handmade_hero[76];
 extern Vec4F32 rd_theme_preset_colors__four_coder[76];
 extern Vec4F32 rd_theme_preset_colors__far_manager[76];
 extern Vec4F32* rd_theme_preset_colors_table[9];
-extern String8 rd_theme_color_display_string_table[76];
-extern String8 rd_theme_color_cfg_string_table[76];
-extern String8 rd_setting_code_display_string_table[19];
-extern String8 rd_setting_code_lower_string_table[19];
+extern StringView rd_theme_color_display_string_table[76];
+extern StringView rd_theme_color_cfg_string_table[76];
+extern StringView rd_setting_code_display_string_table[19];
+extern StringView rd_setting_code_lower_string_table[19];
 extern B8 rd_setting_code_default_is_per_window_table[19];
 extern RD_SettingVal rd_setting_code_default_val_table[19];
 extern Rng1S32 rd_setting_code_s32_range_table[19];
@@ -1194,7 +1194,7 @@ read_only static uint8 rd_icon_font_bytes__data[] =
 0x00,0x01,0x04,0x40,0x88,0x63,0x54,0x58,0xb9,0x00,0x03,0x00,0x00,0x44,0x59,0x59,0x59,0x59,0x59,0xb3,0x10,0x06,0x01,0x0e,0x2a,0xb8,0x01,0xff,0x85,0xb0,0x04,0x8d,0xb1,0x02,0x00,0x44,0xb3,0x05,0x64,0x06,0x00,0x44,0x44,0x00,
 }
 
-read_only static String8 rd_icon_font_bytes = {rd_icon_font_bytes__data, sizeof(rd_icon_font_bytes__data)};
+read_only static StringView rd_icon_font_bytes = {rd_icon_font_bytes__data, sizeof(rd_icon_font_bytes__data)};
 read_only static uint8 rd_default_main_font_bytes__data[] =
 {
 0x00,0x01,0x00,0x00,0x00,0x13,0x01,0x00,0x00,0x04,0x00,0x30,0x44,0x53,0x49,0x47,0x00,0x00,0x00,0x01,0x00,0x02,0x6b,0x84,0x00,0x00,0x00,0x08,0x47,0x44,0x45,0x46,0x18,0x60,0x18,0x61,0x00,0x00,0x01,0x3c,0x00,0x00,0x00,0x48,0x47,0x50,0x4f,0x53,0x15,0x2a,0x60,0x11,0x00,0x00,0x01,0x84,0x00,0x00,0x8b,0xa0,0x47,0x53,0x55,0x42,
@@ -3678,7 +3678,7 @@ read_only static uint8 rd_default_main_font_bytes__data[] =
 0x2b,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,
 }
 
-read_only static String8 rd_default_main_font_bytes = {rd_default_main_font_bytes__data, sizeof(rd_default_main_font_bytes__data)};
+read_only static StringView rd_default_main_font_bytes = {rd_default_main_font_bytes__data, sizeof(rd_default_main_font_bytes__data)};
 read_only static uint8 rd_default_code_font_bytes__data[] =
 {
 0x00,0x01,0x00,0x00,0x00,0x10,0x01,0x00,0x00,0x04,0x00,0x00,0x46,0x46,0x54,0x4d,0x51,0x9f,0x15,0xb9,0x00,0x01,0xa6,0x6c,0x00,0x00,0x00,0x1c,0x47,0x44,0x45,0x46,0x02,0xd0,0x00,0x24,0x00,0x01,0xa6,0x44,0x00,0x00,0x00,0x28,0x4f,0x53,0x2f,0x32,0xf9,0x20,0x77,0x38,0x00,0x00,0x01,0x88,0x00,0x00,0x00,0x60,0x63,0x6d,0x61,0x70,
@@ -5374,7 +5374,7 @@ read_only static uint8 rd_default_code_font_bytes__data[] =
 0x00,0x00,0x00,0x00,0xca,0x9f,0x1d,0x63,
 }
 
-read_only static String8 rd_default_code_font_bytes = {rd_default_code_font_bytes__data, sizeof(rd_default_code_font_bytes__data)};
+read_only static StringView rd_default_code_font_bytes = {rd_default_code_font_bytes__data, sizeof(rd_default_code_font_bytes__data)};
 read_only static uint8 rd_icon_file_bytes__data[] =
 {
 0x00,0x00,0x01,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x20,0x00,0x02,0x1e,0x00,0x00,0x16,0x00,0x00,0x00,0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0x00,0x00,0x00,0x0d,0x49,0x48,0x44,0x52,0x00,0x00,0x01,0x00,0x00,0x00,0x01,0x00,0x08,0x06,0x00,0x00,0x00,0x5c,0x72,0xa8,0x66,0x00,0x00,0x1d,0xc9,0x49,0x44,0x41,0x54,0x78,
@@ -5500,7 +5500,7 @@ read_only static uint8 rd_icon_file_bytes__data[] =
 0xd5,0x1b,0xff,0x0f,0x5c,0x56,0xd9,0x0b,0x64,0x90,0x3b,0x82,0x00,0x00,0x00,0x00,0x49,0x45,0x4e,0x44,0xae,0x42,0x60,0x82,
 }
 
-read_only static String8 rd_icon_file_bytes = {rd_icon_file_bytes__data, sizeof(rd_icon_file_bytes__data)};
+read_only static StringView rd_icon_file_bytes = {rd_icon_file_bytes__data, sizeof(rd_icon_file_bytes__data)};
 
 C_LINKAGE_END
 

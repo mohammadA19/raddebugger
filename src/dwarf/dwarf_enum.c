@@ -1,10 +1,10 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-String8
+StringView
 dw_string_from_expr_op(Arena* arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
-  String8 result = {0};
+  StringView result = {0};
 
   #define X(_N,...) case DW_ExprOp_##_N: result = (Stringify(_N)); goto exit;
   switch (ext) {
@@ -44,7 +44,7 @@ exit:;
   return result;
 }
 
-String8
+StringView
 dw_string_from_tag_kind(Arena* arena, DW_TagKind kind)
 {
   switch (kind) {
@@ -57,7 +57,7 @@ dw_string_from_tag_kind(Arena* arena, DW_TagKind kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-String8
+StringView
 dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
   #define X(_N,...) case DW_Attrib_##_N: return (Stringify(_N));
@@ -107,10 +107,10 @@ dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   }
   #undef X
 
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_string_from_form_kind(Arena* arena, DW_Version ver, DW_FormKind kind)
 {
   #define X(_N,...) case DW_Form_##_N: return (Stringify(_N));
@@ -134,11 +134,11 @@ dw_string_from_form_kind(Arena* arena, DW_Version ver, DW_FormKind kind)
     case DW_Version_Null: break;
   }
   #undef X
-  String8 result = push_str8f(arena, "%x", kind);
+  StringView result = push_str8f(arena, "%x", kind);
   return result;
 }
 
-String8
+StringView
 dw_string_from_language(Arena* arena, DW_Language kind)
 {
   switch (kind) {
@@ -149,7 +149,7 @@ dw_string_from_language(Arena* arena, DW_Language kind)
   return push_str8f(arena, "%x", kind);
 }
 
-String8
+StringView
 dw_string_from_std_opcode(Arena* arena, DW_StdOpcode kind)
 {
   switch (kind) {
@@ -160,7 +160,7 @@ dw_string_from_std_opcode(Arena* arena, DW_StdOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-String8
+StringView
 dw_string_from_ext_opcode(Arena* arena, DW_ExtOpcode kind)
 {
   switch (kind) {
@@ -172,31 +172,31 @@ dw_string_from_ext_opcode(Arena* arena, DW_ExtOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-String8
+StringView
 dw_string_from_loc_list_entry_kind(Arena* arena, DW_LocListEntryKind kind)
 {
   NotImplemented;
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_string_from_section_kind(Arena* arena, DW_SectionKind kind)
 {
   NotImplemented;
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_string_from_rng_list_entry_kind(Arena* arena, DW_RngListEntryKind kind)
 {
   NotImplemented;
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_string_from_register(Arena* arena, Arch arch, uint64 reg_id)
 {
-  String8 reg_str = str8_zero();
+  StringView reg_str = StringView();
   switch (arch) {
     case Arch_Null: break;
     case Arch_x86: {

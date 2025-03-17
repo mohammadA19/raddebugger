@@ -40,7 +40,7 @@ struct OS_LNX_FileIter
 {
   DIR* dir;
   struct dirent* dp;
-  String8 path;
+  StringView path;
 }
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_lnx_file_iter_size_check);
 

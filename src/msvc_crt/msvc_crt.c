@@ -3,7 +3,7 @@
 
 uint64
 mscrt_parse_func_info(Arena*              arena,
-                      String8             raw_data,
+                      StringView             raw_data,
                       uint64                 section_count,
                       COFF_SectionHeader* sections,
                       uint64                 off,
@@ -87,7 +87,7 @@ mscrt_parse_func_info(Arena*              arena,
 ////////////////////////////////
 
 uint64
-mscrt_v4_parse_u32(String8 raw_data, uint64 offset, uint32* uint_out)
+mscrt_v4_parse_u32(StringView raw_data, uint64 offset, uint32* uint_out)
 {
   uint64 cursor = offset;
 
@@ -125,13 +125,13 @@ mscrt_v4_parse_u32(String8 raw_data, uint64 offset, uint32* uint_out)
 }
 
 uint64
-mscrt_v4_parse_s32(String8 raw_data, uint64 offset, int32* int_out)
+mscrt_v4_parse_s32(StringView raw_data, uint64 offset, int32* int_out)
 {
   return str8_deserial_read_struct(raw_data, offset, int_out);
 }
 
 uint64
-mscrt_parse_handler_type_v4(String8 raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4* handler)
+mscrt_parse_handler_type_v4(StringView raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4* handler)
 {
   uint64 cursor = offset;
 
@@ -193,7 +193,7 @@ mscrt_parse_handler_type_v4(String8 raw_data, uint64 offset, uint64 func_voff, M
 
 uint64
 mscrt_parse_handler_type_v4_array(Arena*                      arena,
-                                  String8                     raw_data,
+                                  StringView                     raw_data,
                                   uint64                         offset,
                                   uint64                         func_voff,
                                   MSCRT_EhHandlerTypeV4Array* array_out)
@@ -218,7 +218,7 @@ mscrt_parse_handler_type_v4_array(Arena*                      arena,
 }
 
 uint64
-mscrt_parse_unwind_v4_entry(String8 raw_data, uint64 offset, MSCRT_UnwindEntryV4* entry_out)
+mscrt_parse_unwind_v4_entry(StringView raw_data, uint64 offset, MSCRT_UnwindEntryV4* entry_out)
 {
   uint64 cursor = offset;
 
@@ -250,7 +250,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, uint64 offset, MSCRT_UnwindEntryV4
 }
 
 uint64
-mscrt_parse_unwind_map_v4(Arena* arena, String8 raw_data, uint64 off, MSCRT_UnwindMapV4* map_out)
+mscrt_parse_unwind_map_v4(Arena* arena, StringView raw_data, uint64 off, MSCRT_UnwindMapV4* map_out)
 {
   uint64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out.count);
@@ -264,7 +264,7 @@ mscrt_parse_unwind_map_v4(Arena* arena, String8 raw_data, uint64 off, MSCRT_Unwi
 
 uint64
 mscrt_parse_try_block_map_array_v4(Arena*                   arena,
-                                   String8                  raw_data,
+                                   StringView                  raw_data,
                                    uint64                      off,
                                    uint64                      section_count,
                                    COFF_SectionHeader*      sections,
@@ -299,7 +299,7 @@ mscrt_parse_try_block_map_array_v4(Arena*                   arena,
 
 uint64
 mscrt_parse_ip2state_map_v4(Arena*              arena,
-                            String8             raw_data,
+                            StringView             raw_data,
                             uint64                 off,
                             uint64                 func_voff,
                             MSCRT_IP2State32V4* ip2state_map_out)
@@ -335,7 +335,7 @@ mscrt_parse_ip2state_map_v4(Arena*              arena,
 
 uint64
 mscrt_parse_func_info_v4(Arena*                     arena,
-                            String8                 raw_data,
+                            StringView                 raw_data,
                             uint64                     section_count,
                             COFF_SectionHeader*     sections,
                             uint64                     off,
@@ -399,7 +399,7 @@ mscrt_parse_func_info_v4(Arena*                     arena,
 
 Rng1U64List
 mscrt_catch_blocks_from_data_x8664(Arena*              arena,
-                                   String8             raw_data,
+                                   StringView             raw_data,
                                    uint64                 section_count,
                                    COFF_SectionHeader* sections,
                                    Rng1U64             except_frange)
@@ -408,7 +408,7 @@ mscrt_catch_blocks_from_data_x8664(Arena*              arena,
 
   Rng1U64List result = {0};
 
-  String8        raw_pdata   = str8_substr(raw_data, except_frange);
+  StringView        raw_pdata   = str8_substr(raw_data, except_frange);
   uint64            pdata_count = raw_pdata.size / sizeof(PE_IntelPdata);
   PE_IntelPdata* src_pdata   = (PE_IntelPdata *)raw_pdata.str;
   PE_IntelPdata* opl_pdata   = src_pdata + pdata_count;
@@ -428,7 +428,7 @@ mscrt_catch_blocks_from_data_x8664(Arena*              arena,
       uint64 handler_data_foff = uwinfo_foff + sizeof(PE_UnwindInfo) + actual_code_count * sizeof(PE_UnwindCode);
       uint32 handler_voff      = *(uint32 *)str8_deserial_get_raw_ptr(raw_data, handler_data_foff, sizeof(handler_voff));
 
-      String8 handler_name = str8_zero();
+      StringView handler_name = StringView();
       /* TODO:
       {
         UnitID     uid  = syms_group_uid_from_voff__accelerated(group, handler_voff);

@@ -72,8 +72,8 @@ struct E_Member
 {
   E_MemberKind kind;
   E_TypeKey type_key;
-  String8 name;
-  String8 pretty_name;
+  StringView name;
+  StringView pretty_name;
   uint64 off;
   E_TypeKeyList inheritance_key_chain;
 }
@@ -99,7 +99,7 @@ struct E_MemberArray
 
 struct E_EnumVal
 {
-  String8 name;
+  StringView name;
   uint64 val;
 }
 
@@ -113,7 +113,7 @@ struct E_Type
 {
   E_TypeKind kind;
   E_TypeFlags flags;
-  String8 name;
+  StringView name;
   uint64 byte_size;
   uint64 count;
   uint32 off;
@@ -134,7 +134,7 @@ struct E_ConsTypeParams
   Arch arch;
   E_TypeKind kind;
   E_TypeFlags flags;
-  String8 name;
+  StringView name;
   E_TypeKey direct_key;
   uint64 count;
   E_Member* members;
@@ -293,10 +293,10 @@ B32 e_type_match(E_TypeKey l, E_TypeKey r);
 E_Member* e_type_member_copy(Arena* arena, E_Member* src);
 int e_type_qsort_compare_members_offset(E_Member* a, E_Member* b);
 E_MemberArray e_type_data_members_from_key(Arena* arena, E_TypeKey key);
-E_Member* e_type_member_from_array_name(E_MemberArray* members, String8 name);
+E_Member* e_type_member_from_array_name(E_MemberArray* members, StringView name);
 void e_type_lhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32 prec, B32 skip_return);
 void e_type_rhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32 prec);
-String8 e_type_string_from_key(Arena* arena, E_TypeKey key);
+StringView e_type_string_from_key(Arena* arena, E_TypeKey key);
 
 //- rjf: type key data structures
 void e_type_key_list_push(Arena* arena, E_TypeKeyList* list, E_TypeKey key);
@@ -307,6 +307,6 @@ E_TypeKeyList e_type_key_list_copy(Arena* arena, E_TypeKeyList* src);
 
 E_MemberCacheNode* e_member_cache_node_from_type_key(E_TypeKey key);
 E_MemberArray e_type_data_members_from_key__cached(E_TypeKey key);
-E_Member e_type_member_from_key_name__cached(E_TypeKey key, String8 name);
+E_Member e_type_member_from_key_name__cached(E_TypeKey key, StringView name);
 
 #endif // EVAL_TYPES_H

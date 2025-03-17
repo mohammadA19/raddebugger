@@ -24,15 +24,15 @@ path_match_flags_from_os(OperatingSystem os)
   return flags;
 }
 
-String8
-path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
+StringView
+path_relative_dst_from_absolute_dst_src(Arena* arena, StringView dst, StringView src)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   // rjf: gather path parts
-  String8 dst_name = str8_skip_last_slash(dst);
-  String8 src_folder = str8_chop_last_slash(src);
-  String8 dst_folder = str8_chop_last_slash(dst);
+  StringView dst_name = str8_skip_last_slash(dst);
+  StringView src_folder = str8_chop_last_slash(src);
+  StringView dst_folder = str8_chop_last_slash(dst);
   String8List src_folders = str8_split_path(scratch.arena, src_folder);
   String8List dst_folders = str8_split_path(scratch.arena, dst_folder);
   
@@ -55,7 +55,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
   // rjf: only build relative string if # of backtracks is not the entire `src`.
   // if getting to `dst` from `src` requires erasing the entire `src`, then the
   // only possible way to get to `dst` from `src` is via absolute path.
-  String8 dst_path = {0};
+  StringView dst_path = {0};
   if(num_backtracks >= src_folders.node_count)
   {
     dst_path = path_normalized_from_string(arena, dst);
@@ -105,16 +105,16 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, String8 dst, String8 src)
   return dst_path;
 }
 
-String8
-path_absolute_dst_from_relative_dst_src(Arena* arena, String8 dst, String8 src)
+StringView
+path_absolute_dst_from_relative_dst_src(Arena* arena, StringView dst, StringView src)
 {
-  String8 result = dst;
+  StringView result = dst;
   PathStyle dst_style = path_style_from_str8(dst);
   if(dst_style == PathStyle_Relative)
   {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 dst_from_src_absolute = push_str8f(scratch.arena, "%S/%S", src, dst);
-    String8 dst_from_src_absolute_normalized = path_normalized_from_string(arena, dst_from_src_absolute);
+    StringView dst_from_src_absolute = push_str8f(scratch.arena, "%S/%S", src, dst);
+    StringView dst_from_src_absolute_normalized = path_normalized_from_string(arena, dst_from_src_absolute);
     result = dst_from_src_absolute_normalized;
     scratch_end(scratch);
   }
@@ -122,7 +122,7 @@ path_absolute_dst_from_relative_dst_src(Arena* arena, String8 dst, String8 src)
 }
 
 String8List
-path_normalized_list_from_string(Arena* arena, String8 path_string, PathStyle* style_out){
+path_normalized_list_from_string(Arena* arena, StringView path_string, PathStyle* style_out){
   // analyze path
   PathStyle path_style = path_style_from_str8(path_string);
   String8List path = str8_split_path(arena, path_string);
@@ -130,7 +130,7 @@ path_normalized_list_from_string(Arena* arena, String8 path_string, PathStyle* s
   // prepend current path to convert relative . absolute
   PathStyle path_style_full = path_style;
   if (path.node_count != 0 && path_style == PathStyle_Relative){
-    String8 current_path_string = os_get_current_path(arena);
+    StringView current_path_string = os_get_current_path(arena);
     
     PathStyle current_path_style = path_style_from_str8(current_path_string);
     Assert(current_path_style != PathStyle_Relative);
@@ -151,26 +151,26 @@ path_normalized_list_from_string(Arena* arena, String8 path_string, PathStyle* s
   return(path);
 }
 
-String8
-path_normalized_from_string(Arena* arena, String8 path_string){
+StringView
+path_normalized_from_string(Arena* arena, StringView path_string){
   Temp scratch = scratch_begin(&arena, 1);
   
   PathStyle style = PathStyle_Relative;
   String8List path = path_normalized_list_from_string(scratch.arena, path_string, &style);
   
-  String8 result = str8_path_list_join_by_style(arena, &path, style);
+  StringView result = str8_path_list_join_by_style(arena, &path, style);
   scratch_end(scratch);
   return(result);
 }
 
 B32
-path_match_normalized(String8 left, String8 right)
+path_match_normalized(StringView left, StringView right)
 {
   B32 result = 0;
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 left_normalized = path_normalized_from_string(scratch.arena, left);
-    String8 right_normalized = path_normalized_from_string(scratch.arena, right);
+    StringView left_normalized = path_normalized_from_string(scratch.arena, left);
+    StringView right_normalized = path_normalized_from_string(scratch.arena, right);
     result = str8_match(left_normalized, right_normalized, StringMatchFlag_CaseInsensitive);
     scratch_end(scratch);
   }

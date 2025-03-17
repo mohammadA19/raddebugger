@@ -262,7 +262,7 @@ entry_point(CmdLine* cmdline)
         for(uint64 idx = 0; idx < n.count; idx += 1)
         {
           uint64 file_idx = rdim_idx_from_src_file(&n.v[idx]);
-          String8 src_path = n.v[idx].normal_full_path;
+          StringView src_path = n.v[idx].normal_full_path;
           str8_list_pushf(arena, &dump, "FILE %I64u %S\n", file_idx, src_path);
         }
       }
@@ -310,7 +310,7 @@ entry_point(CmdLine* cmdline)
   }
   
   //- rjf: bake
-  String8 baked = {0};
+  StringView baked = {0};
   ProfScope("bake")
   {
     baked = str8_list_join(arena, &dump, 0);

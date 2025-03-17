@@ -36,11 +36,11 @@ enum P2R_ConvertFlags : uint32
 
 struct P2R_User2Convert
 {
-  String8 input_pdb_name;
-  String8 input_pdb_data;
-  String8 input_exe_name;
-  String8 input_exe_data;
-  String8 output_name;
+  StringView input_pdb_name;
+  StringView input_pdb_data;
+  StringView input_exe_name;
+  StringView input_exe_data;
+  StringView output_name;
   P2R_ConvertFlags flags;
   String8List errors;
 }
@@ -69,15 +69,15 @@ struct P2R_TPIHashParseIn
 {
   PDB_Strtbl* strtbl;
   PDB_TpiParsed* tpi;
-  String8 hash_data;
-  String8 aux_data;
+  StringView hash_data;
+  StringView aux_data;
 }
 
 //- rjf: tpi leaves parsing
 
 struct P2R_TPILeafParseIn
 {
-  String8 leaf_data;
+  StringView leaf_data;
   CV_TypeId itype_first;
 }
 
@@ -85,22 +85,22 @@ struct P2R_TPILeafParseIn
 
 struct P2R_EXEHashIn
 {
-  String8 exe_data;
+  StringView exe_data;
 }
 
 //- rjf: symbol stream parsing
 
 struct P2R_SymbolStreamParseIn
 {
-  String8 data;
+  StringView data;
 }
 
 //- rjf: c13 line info stream parsing
 
 struct P2R_C13StreamParseIn
 {
-  String8 data;
-  String8 strtbl;
+  StringView data;
+  StringView strtbl;
   COFF_SectionHeaderArray coff_sections;
 }
 
@@ -108,14 +108,14 @@ struct P2R_C13StreamParseIn
 
 struct P2R_CompUnitParseIn
 {
-  String8 data;
+  StringView data;
 }
 
 //- rjf: comp unit contribution table parsing
 
 struct P2R_CompUnitContributionsParseIn
 {
-  String8 data;
+  StringView data;
   COFF_SectionHeaderArray coff_sections;
 }
 
@@ -128,7 +128,7 @@ struct P2R_LinkNameNode
 {
   P2R_LinkNameNode* next;
   uint64 voff;
-  String8 name;
+  StringView name;
 }
 
 struct P2R_LinkNameMap
@@ -501,7 +501,7 @@ static P2R_State* p2r_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 p2r_end_of_cplusplus_container_name(String8 str);
+uint64 p2r_end_of_cplusplus_container_name(StringView str);
 uint64 p2r_hash_from_voff(uint64 voff);
 
 ////////////////////////////////
@@ -628,8 +628,8 @@ P2R_Serialize2File* p2r_compress(Arena* arena, P2R_Serialize2File* in);
 
 ////////////////////////////////
 
-B32 p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable* st);
-B32 p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable* st);
-B32 p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list);
+B32 p2r_has_symbol_ref(StringView msf_data, String8List symbol_list, MSF_RawStreamTable* st);
+B32 p2r_has_file_ref(StringView msf_data, String8List file_list, MSF_RawStreamTable* st);
+B32 p2r_has_symbol_or_file_ref(StringView msf_data, String8List symbol_list, String8List file_list);
 
 #endif // RDI_FROM_PDB_H

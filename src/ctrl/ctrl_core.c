@@ -10,7 +10,7 @@
 //~ rjf: Basic Type Functions
 
 uint64
-ctrl_hash_from_string(String8 string)
+ctrl_hash_from_string(StringView string)
 {
   uint64 result = 5381;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -24,7 +24,7 @@ uint64
 ctrl_hash_from_handle(CTRL_Handle handle)
 {
   uint64 buf[] = {handle.machine_id, handle.dmn_handle.u64[0]};
-  uint64 hash = ctrl_hash_from_string(str8((uint8 *)buf, sizeof(buf)));
+  uint64 hash = ctrl_hash_from_string(StringView((uint8 *)buf, sizeof(buf)));
   return hash;
 }
 
@@ -43,10 +43,10 @@ ctrl_event_cause_from_dmn_event_kind(DMN_EventKind event_kind)
   return cause;
 }
 
-String8
+StringView
 ctrl_string_from_event_kind(CTRL_EventKind kind)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(kind)
   {
     default:{}break;
@@ -71,10 +71,10 @@ ctrl_string_from_event_kind(CTRL_EventKind kind)
   return result;
 }
 
-String8
+StringView
 ctrl_string_from_msg_kind(CTRL_MsgKind kind)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(kind)
   {
     default:{}break;
@@ -247,7 +247,7 @@ ctrl_msg_list_concat_in_place(CTRL_MsgList* dst, CTRL_MsgList* src)
 
 //- rjf: serialization
 
-String8
+StringView
 ctrl_serialized_string_from_msg_list(Arena* arena, CTRL_MsgList* msgs)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -334,17 +334,17 @@ ctrl_serialized_string_from_msg_list(Arena* arena, CTRL_MsgList* msgs)
       }
       
       // rjf: write meta-eval-info array
-      String8 meta_evals_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEvalArray, &msg.meta_evals);
+      StringView meta_evals_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEvalArray, &msg.meta_evals);
       str8_serial_push_string(scratch.arena, &msgs_srlzed, meta_evals_srlzed);
     }
   }
-  String8 string = str8_serial_end(arena, &msgs_srlzed);
+  StringView string = str8_serial_end(arena, &msgs_srlzed);
   scratch_end(scratch);
   return string;
 }
 
 CTRL_MsgList
-ctrl_msg_list_from_serialized_string(Arena* arena, String8 string)
+ctrl_msg_list_from_serialized_string(Arena* arena, StringView string)
 {
   CTRL_MsgList msgs = {0};
   {
@@ -385,7 +385,7 @@ ctrl_msg_list_from_serialized_string(Arena* arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &entry_point_list_string_count);
       for(uint64 idx = 0; idx < entry_point_list_string_count; idx += 1)
       {
-        String8 str = {0};
+        StringView str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &str.size);
         str.str = push_array_no_zero(arena, uint8, str.size);
         read_off += str8_deserial_read(string, read_off, str.str, str.size, 1);
@@ -397,7 +397,7 @@ ctrl_msg_list_from_serialized_string(Arena* arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &cmd_line_string_count);
       for(uint64 idx = 0; idx < cmd_line_string_count; idx += 1)
       {
-        String8 cmd_line_str = {0};
+        StringView cmd_line_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &cmd_line_str.size);
         cmd_line_str.str = push_array_no_zero(arena, uint8, cmd_line_str.size);
         read_off += str8_deserial_read(string, read_off, cmd_line_str.str, cmd_line_str.size, 1);
@@ -409,7 +409,7 @@ ctrl_msg_list_from_serialized_string(Arena* arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &env_string_count);
       for(uint64 idx = 0; idx < env_string_count; idx += 1)
       {
-        String8 env_str = {0};
+        StringView env_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &env_str.size);
         env_str.str = push_array_no_zero(arena, uint8, env_str.size);
         read_off += str8_deserial_read(string, read_off, env_str.str, env_str.size, 1);
@@ -461,7 +461,7 @@ ctrl_msg_list_from_serialized_string(Arena* arena, String8 string)
       }
       
       // rjf: read meta-eval-info array
-      String8 meta_evals_data = str8_skip(string, read_off);
+      StringView meta_evals_data = str8_skip(string, read_off);
       uint64 meta_evals_size = 0;
       msg.meta_evals = *struct_from_serialized(arena, CTRL_MetaEvalArray, meta_evals_data, .advance_out = &meta_evals_size);
       read_off += meta_evals_size;
@@ -503,7 +503,7 @@ ctrl_event_list_concat_in_place(CTRL_EventList* dst, CTRL_EventList* to_push)
 
 //- rjf: serialization
 
-String8
+StringView
 ctrl_serialized_string_from_event(Arena* arena, CTRL_Event* event, uint64 max)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -526,18 +526,18 @@ ctrl_serialized_string_from_event(Arena* arena, CTRL_Event* event, uint64 max)
     str8_serial_push_struct(scratch.arena, &srl, &event.timestamp);
     str8_serial_push_struct(scratch.arena, &srl, &event.rgba);
     str8_serial_push_struct(scratch.arena, &srl, &event.exception_code);
-    String8 string = event.string;
+    StringView string = event.string;
     string.size = Min(string.size, max-srl.total_size);
     str8_serial_push_struct(scratch.arena, &srl, &string.size);
     str8_serial_push_data(scratch.arena, &srl, string.str, string.size);
   }
-  String8 string = str8_serial_end(arena, &srl);
+  StringView string = str8_serial_end(arena, &srl);
   scratch_end(scratch);
   return string;
 }
 
 CTRL_Event
-ctrl_event_from_serialized_string(Arena* arena, String8 string)
+ctrl_event_from_serialized_string(Arena* arena, StringView string)
 {
   CTRL_Event event = {};
   {
@@ -624,7 +624,7 @@ ctrl_entity_store_alloc()
   CTRL_Entity* root = store.root = ctrl_entity_alloc(store, &ctrl_entity_nil, CTRL_EntityKind_Root, Arch_Null, ctrl_handle_zero(), 0);
   CTRL_Entity* local_machine = ctrl_entity_alloc(store, root, CTRL_EntityKind_Machine, arch_from_context(), ctrl_handle_make(CTRL_MachineID_Local, dmn_handle_zero()), 0);
   Temp scratch = scratch_begin(0, 0);
-  String8 local_machine_name = push_str8f(scratch.arena, "This PC (%S)", os_get_system_info().machine_name);
+  StringView local_machine_name = push_str8f(scratch.arena, "This PC (%S)", os_get_system_info().machine_name);
   ctrl_entity_equip_string(store, local_machine, local_machine_name);
   scratch_end(scratch);
   return store;
@@ -658,10 +658,10 @@ ctrl_name_bucket_idx_from_string_size(uint64 size)
   return bucket_idx;
 }
 
-String8
-ctrl_entity_string_alloc(CTRL_EntityStore* store, String8 string)
+StringView
+ctrl_entity_string_alloc(CTRL_EntityStore* store, StringView string)
 {
-  if(string.size == 0) {return str8_zero();}
+  if(string.size == 0) {return StringView();}
   uint64 bucket_idx = ctrl_name_bucket_idx_from_string_size(string.size);
   CTRL_EntityStringChunkNode* node = store.free_string_chunks[bucket_idx];
   
@@ -715,13 +715,13 @@ ctrl_entity_string_alloc(CTRL_EntityStore* store, String8 string)
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((uint8 *)node, string.size);
+  StringView allocated_string = StringView((uint8 *)node, string.size);
   MemoryCopy((uint8 *)node, string.str, string.size);
   return allocated_string;
 }
 
 void
-ctrl_entity_string_release(CTRL_EntityStore* store, String8 string)
+ctrl_entity_string_release(CTRL_EntityStore* store, StringView string)
 {
   if(string.size == 0) {return;}
   uint64 bucket_idx = ctrl_name_bucket_idx_from_string_size(string.size);
@@ -864,7 +864,7 @@ ctrl_entity_release(CTRL_EntityStore* store, CTRL_Entity* entity)
 //- rjf: entity equipment
 
 void
-ctrl_entity_equip_string(CTRL_EntityStore* store, CTRL_Entity* entity, String8 string)
+ctrl_entity_equip_string(CTRL_EntityStore* store, CTRL_Entity* entity, StringView string)
 {
   if(entity.string.size != 0)
   {
@@ -1241,9 +1241,9 @@ ctrl_init()
   ctrl_state.arena = arena;
   for(Arch arch = (Arch)0; arch < Arch_COUNT; arch = (Arch)(arch+1))
   {
-    String8* reg_names = regs_reg_code_string_table_from_arch(arch);
+    StringView* reg_names = regs_reg_code_string_table_from_arch(arch);
     uint64 reg_count = regs_reg_code_count_from_arch(arch);
-    String8* alias_names = regs_alias_code_string_table_from_arch(arch);
+    StringView* alias_names = regs_alias_code_string_table_from_arch(arch);
     uint64 alias_count = regs_alias_code_count_from_arch(arch);
     ctrl_state.arch_string2reg_tables[arch] = e_string2num_map_make(ctrl_state.arena, 256);
     ctrl_state.arch_string2alias_tables[arch] = e_string2num_map_make(ctrl_state.arena, 256);
@@ -1294,11 +1294,11 @@ ctrl_init()
   ctrl_state.c2u_ring_cv = os_condition_variable_alloc();
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 user_program_data_path = os_get_process_info().user_program_data_path;
-    String8 user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
+    StringView user_program_data_path = os_get_process_info().user_program_data_path;
+    StringView user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
     os_make_directory(user_data_folder);
     ctrl_state.ctrl_thread_log_path = push_str8f(ctrl_state.arena, "%S/ctrl_thread.raddbg_log", user_data_folder);
-    os_write_data_to_file_path(ctrl_state.ctrl_thread_log_path, str8_zero());
+    os_write_data_to_file_path(ctrl_state.ctrl_thread_log_path, StringView());
     scratch_end(scratch);
   }
   ctrl_state.ctrl_thread_entity_store = ctrl_entity_store_alloc();
@@ -1346,7 +1346,7 @@ ctrl_calc_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 r
     range.max,
     (uint64)zero_terminated,
   };
-  U128 key = hs_hash_from_data(str8((uint8*)key_hash_data, sizeof(key_hash_data)));
+  U128 key = hs_hash_from_data(StringView((uint8*)key_hash_data, sizeof(key_hash_data)));
   return key;
 }
 
@@ -1575,11 +1575,11 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena* arena, CTRL_Handle proces
       for(uint64 page_idx = 0; page_idx < page_count; page_idx += 1)
       {
         // rjf: read data for this page
-        String8 data = hs_data_from_hash(scope, page_hashes[page_idx]);
+        StringView data = hs_data_from_hash(scope, page_hashes[page_idx]);
         Rng1U64 data_vaddr_range = r1u64(page_range.min + page_idx*page_size, page_range.min + page_idx*page_size+data.size);
         
         // rjf: skip/chop bytes which are irrelevant for the actual requested read
-        String8 in_range_data = data;
+        StringView in_range_data = data;
         if(page_idx == page_count-1 && data_vaddr_range.max > range.max)
         {
           in_range_data = str8_chop(in_range_data, data_vaddr_range.max-range.max);
@@ -1611,8 +1611,8 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena* arena, CTRL_Handle proces
         // fill out changed flags
         if(!u128_match(page_hashes[page_idx], page_last_hashes[page_idx])) ProfScope("hashes don't match; diff each byte")
         {
-          String8 last_data = hs_data_from_hash(scope, page_last_hashes[page_idx]);
-          String8 in_range_last_data = last_data;
+          StringView last_data = hs_data_from_hash(scope, page_last_hashes[page_idx]);
+          StringView in_range_last_data = last_data;
           if(page_idx == page_count-1 && data_vaddr_range.max > range.max)
           {
             in_range_last_data = str8_chop(in_range_last_data, data_vaddr_range.max-range.max);
@@ -1999,10 +1999,10 @@ ctrl_tls_vaddr_range_from_module(CTRL_Handle module_handle)
   return result;
 }
 
-String8
+StringView
 ctrl_initial_debug_info_path_from_module(Arena* arena, CTRL_Handle module_handle)
 {
-  String8 result = {0};
+  StringView result = {0};
   uint64 hash = ctrl_hash_from_handle(module_handle);
   uint64 slot_idx = hash%ctrl_state.module_image_info_cache.slots_count;
   uint64 stripe_idx = slot_idx%ctrl_state.module_image_info_cache.stripes_count;
@@ -3088,7 +3088,7 @@ B32
 ctrl_u2c_push_msgs(CTRL_MsgList* msgs, uint64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 msgs_srlzed_baked = ctrl_serialized_string_from_msg_list(scratch.arena, msgs);
+  StringView msgs_srlzed_baked = ctrl_serialized_string_from_msg_list(scratch.arena, msgs);
   B32 good = 0;
   OS_MutexScope(ctrl_state.u2c_ring_mutex) for(;;)
   {
@@ -3120,7 +3120,7 @@ CTRL_MsgList
 ctrl_u2c_pop_msgs(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 msgs_srlzed_baked = {0};
+  StringView msgs_srlzed_baked = {0};
   OS_MutexScope(ctrl_state.u2c_ring_mutex) for(;;)
   {
     uint64 unconsumed_size = (ctrl_state.u2c_ring_write_pos-ctrl_state.u2c_ring_read_pos);
@@ -3152,7 +3152,7 @@ ctrl_c2u_push_events(CTRL_EventList* events)
     for(CTRL_EventNode* n = events.first; n != 0; n = n .next)
     {
       Temp scratch = scratch_begin(0, 0);
-      String8 event_srlzed = ctrl_serialized_string_from_event(scratch.arena, &n.v, ctrl_state.c2u_ring_size-sizeof(uint64));
+      StringView event_srlzed = ctrl_serialized_string_from_event(scratch.arena, &n.v, ctrl_state.c2u_ring_size-sizeof(uint64));
       OS_MutexScope(ctrl_state.c2u_ring_mutex) for(;;)
       {
         uint64 unconsumed_size = (ctrl_state.c2u_ring_write_pos-ctrl_state.c2u_ring_read_pos);
@@ -3189,7 +3189,7 @@ ctrl_c2u_pop_events(Arena* arena)
     {
       uint64 size_to_decode = 0;
       ctrl_state.c2u_ring_read_pos += ring_read_struct(ctrl_state.c2u_ring_base, ctrl_state.c2u_ring_size, ctrl_state.c2u_ring_read_pos, &size_to_decode);
-      String8 event_srlzed = {0};
+      StringView event_srlzed = {0};
       event_srlzed.size = size_to_decode;
       event_srlzed.str = push_array_no_zero(scratch.arena, uint8, event_srlzed.size);
       ctrl_state.c2u_ring_read_pos += ring_read(ctrl_state.c2u_ring_base, ctrl_state.c2u_ring_size, ctrl_state.c2u_ring_read_pos, event_srlzed.str, event_srlzed.size);
@@ -3271,7 +3271,7 @@ ctrl_thread__entry_point(void* p)
           }break;
           case CTRL_MsgKind_SetModuleDebugInfoPath:
           {
-            String8 path = msg.path;
+            StringView path = msg.path;
             CTRL_Entity* module = ctrl_entity_from_handle(ctrl_state.ctrl_thread_entity_store, msg.entity);
             CTRL_Entity* debug_info_path = ctrl_entity_child_from_kind(module, CTRL_EntityKind_DebugInfoPath);
             DI_Key old_dbgi_key = {debug_info_path.string, debug_info_path.timestamp};
@@ -3351,8 +3351,8 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena* arena, CTRL_Handle proc
       {
         // rjf: unpack & normalize
         TxtPt pt = bp.pt;
-        String8 filename = bp.string;
-        String8 filename_normalized = push_str8_copy(scratch.arena, filename);
+        StringView filename = bp.string;
+        StringView filename_normalized = push_str8_copy(scratch.arena, filename);
         for(uint64 idx = 0; idx < filename_normalized.size; idx += 1)
         {
           filename_normalized.str[idx] = char_to_lower(filename_normalized.str[idx]);
@@ -3400,7 +3400,7 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena* arena, CTRL_Handle proc
       //- rjf: symbol:voff-based breakpoints
       case CTRL_UserBreakpointKind_SymbolNameAndOffset:
       {
-        String8 symbol_name = bp.string;
+        StringView symbol_name = bp.string;
         uint64 voff = bp.u64;
         RDI_NameMap* mapptr = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Procedures);
         RDI_ParsedNameMap map = {0};
@@ -3443,7 +3443,7 @@ ctrl_thread__append_resolved_process_user_bp_traps(Arena* arena, CTRL_Handle pro
 //- rjf: module lifetime open/close work
 
 void
-ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, String8 path)
+ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, StringView path)
 {
   //////////////////////////////
   //- rjf: parse module image info
@@ -3456,10 +3456,10 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   uint32 pdb_dbg_time = 0;
   uint32 pdb_dbg_age = 0;
   Guid pdb_dbg_guid = {0};
-  String8 pdb_dbg_path = str8_zero();
+  StringView pdb_dbg_path = StringView();
   uint32 rdi_dbg_time = 0;
   Guid rdi_dbg_guid = {0};
-  String8 rdi_dbg_path = str8_zero();
+  StringView rdi_dbg_path = StringView();
   ProfScope("unpack relevant PE info")
   {
     B32 is_valid = 1;
@@ -3659,10 +3659,10 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   //////////////////////////////
   //- rjf: pick default initial debug info path
   //
-  String8 initial_debug_info_path = str8_zero();
+  StringView initial_debug_info_path = StringView();
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 exe_folder = str8_chop_last_slash(path);
+    StringView exe_folder = str8_chop_last_slash(path);
     String8List dbg_path_candidates = {0};
     //
     //~ TODO(rjf): @linux_port PLEASE READ RYAN vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -3690,7 +3690,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
     str8_list_pushf(scratch.arena, &dbg_path_candidates, "%S.rdi", path);
     for(String8Node* n = dbg_path_candidates.first; n != 0; n = n.next)
     {
-      String8 candidate_path = n.string;
+      StringView candidate_path = n.string;
       FileProperties props = os_properties_from_file_path(candidate_path);
       if(props.modified != 0 && props.size != 0)
       {
@@ -3870,7 +3870,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
                 {
                   RDI_ParsedNameMap map = {0};
                   rdi_parsed_from_name_map(rdi, unparsed_map, &map);
-                  String8 name = ("__asan_shadow_memory_dynamic_address");
+                  StringView name = ("__asan_shadow_memory_dynamic_address");
                   RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
                   if(node != 0)
                   {
@@ -4051,7 +4051,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
       CTRL_Handle process_handle = ctrl_handle_make(CTRL_MachineID_Local, event.process);
       CTRL_Handle module_handle = ctrl_handle_make(CTRL_MachineID_Local, event.module);
       CTRL_Event* out_evt1 = ctrl_event_list_push(scratch.arena, &evts);
-      String8 module_path = path_normalized_from_string(scratch.arena, event.string);
+      StringView module_path = path_normalized_from_string(scratch.arena, event.string);
       uint64 exe_timestamp = os_properties_from_file_path(module_path).modified;
       ctrl_thread__module_open(process_handle, module_handle, r1u64(event.address, event.address+event.size), module_path);
       out_evt1.kind       = CTRL_EventKind_NewModule;
@@ -4065,7 +4065,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
       out_evt1.timestamp  = exe_timestamp;
       out_evt1.string     = module_path;
       CTRL_Event* out_evt2 = ctrl_event_list_push(scratch.arena, &evts);
-      String8 initial_debug_info_path = ctrl_initial_debug_info_path_from_module(scratch.arena, module_handle);
+      StringView initial_debug_info_path = ctrl_initial_debug_info_path_from_module(scratch.arena, module_handle);
       uint64 debug_info_timestamp = os_properties_from_file_path(initial_debug_info_path).modified;
       out_evt2.kind       = CTRL_EventKind_ModuleDebugInfoPathChange;
       out_evt2.msg_id     = msg.msg_id;
@@ -4097,7 +4097,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
     {
       CTRL_Event* out_evt = ctrl_event_list_push(scratch.arena, &evts);
       CTRL_Handle module_handle = ctrl_handle_make(CTRL_MachineID_Local, event.module);
-      String8 module_path = event.string;
+      StringView module_path = event.string;
       ctrl_thread__module_close(module_handle);
       out_evt.kind       = CTRL_EventKind_EndModule;
       out_evt.msg_id     = msg.msg_id;
@@ -4179,12 +4179,12 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
     {
       //- rjf: calculate seed path
       DI_Key loaded_di_key = ctrl_dbgi_key_from_module(loaded_module);
-      String8 loaded_di_name = str8_skip_last_slash(loaded_di_key.path);
-      String8 debug_info_ext = str8_skip_last_dot(loaded_di_key.path);
-      String8 seed_folder_path = str8_chop_last_slash(loaded_di_key.path);
+      StringView loaded_di_name = str8_skip_last_slash(loaded_di_key.path);
+      StringView debug_info_ext = str8_skip_last_dot(loaded_di_key.path);
+      StringView seed_folder_path = str8_chop_last_slash(loaded_di_key.path);
       if(seed_folder_path.size == 0)
       {
-        String8 module_path = loaded_module.string;
+        StringView module_path = loaded_module.string;
         seed_folder_path = str8_chop_last_slash(module_path);
       }
       
@@ -4195,7 +4195,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
       CTRL_DbgDirNode* parent_dir_node = ctrl_state.dbg_dir_root;
       for(String8Node* n = seed_path_parts.first; n != 0; n = n.next)
       {
-        String8 name = n.string;
+        StringView name = n.string;
         CTRL_DbgDirNode* next_child = 0;
         for(CTRL_DbgDirNode* child = parent_dir_node.first; child != 0; child = child.next)
         {
@@ -4240,7 +4240,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
               str8_list_push_front(scratch.arena, &dir_node_path_parts, n.name);
             }
           }
-          String8 dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = ("/")});
+          StringView dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = ("/")});
           
           //- rjf: iterate downwards from this directory recursively, locate
           // debug infos, and pre-emptively convert
@@ -4248,7 +4248,7 @@ ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg, 
           {
             Task* next;
             CTRL_DbgDirNode* node;
-            String8 path;
+            StringView path;
           };
           Task start_task = {0, dir_node, dir_node_path};
           Task* first_task = &start_task;
@@ -4409,7 +4409,7 @@ ctrl_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
         
         // rjf: copy meta evaluation to scratch arena, to form range of legal reads
         arena_push(scratch.arena, 0, 64);
-        String8 meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
+        StringView meval_srlzed = serialized_from_struct(scratch.arena, CTRL_MetaEval, meval);
         uint64 pos_min = arena_pos(scratch.arena);
         CTRL_MetaEval* meval_read = struct_from_serialized(scratch.arena, CTRL_MetaEval, meval_srlzed);
         uint64 pos_opl = arena_pos(scratch.arena);
@@ -4440,7 +4440,7 @@ ctrl_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
 //- rjf: log flusher
 
 void
-ctrl_thread__flush_info_log(String8 string)
+ctrl_thread__flush_info_log(StringView string)
 {
   os_append_data_to_file_path(ctrl_state.ctrl_thread_log_path, string);
 }
@@ -4502,7 +4502,7 @@ ctrl_thread__launch(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
   //- rjf: record (id . entry points), so that we know custom entry points for this PID
   for(String8Node* n = msg.entry_points.first; n != 0; n = n.next)
   {
-    String8 string = n.string;
+    StringView string = n.string;
     CTRL_Entity* entry = ctrl_entity_alloc(ctrl_state.ctrl_thread_entity_store, ctrl_state.ctrl_thread_entity_store.root, CTRL_EntityKind_EntryPoint, Arch_Null, ctrl_handle_zero(), (uint64)id);
     ctrl_entity_equip_string(ctrl_state.ctrl_thread_entity_store, entry, string);
   }
@@ -5120,7 +5120,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
           {
             uint32 procedure_id = 0;
             {
-              String8 name = n.string;
+              StringView name = n.string;
               RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               uint32 id_count = 0;
               uint32* ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -5149,7 +5149,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
             {
               uint32 procedure_id = 0;
               {
-                String8 name = e.string;
+                StringView name = e.string;
                 RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
                 uint32 id_count = 0;
                 uint32* ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -5177,7 +5177,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
           {
             uint32 procedure_id = 0;
             {
-              String8 name = n.string;
+              StringView name = n.string;
               RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               uint32 id_count = 0;
               uint32* ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -5200,7 +5200,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
         //- rjf: add traps for all high-level entry points
         if(!entries_found)
         {
-          String8 hi_entry_points[] =
+          StringView hi_entry_points[] =
           {
             ("WinMain"),
             ("wWinMain"),
@@ -5211,7 +5211,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
           {
             uint32 procedure_id = 0;
             {
-              String8 name = hi_entry_points[idx];
+              StringView name = hi_entry_points[idx];
               RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               uint32 id_count = 0;
               uint32* ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -5245,7 +5245,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
         //- rjf: add traps for all low-level entry points
         if(!entries_found)
         {
-          String8 lo_entry_points[] =
+          StringView lo_entry_points[] =
           {
             ("WinMainCRTStartup"),
             ("wWinMainCRTStartup"),
@@ -5256,7 +5256,7 @@ ctrl_thread__run(DMN_CtrlCtx* ctrl_ctx, CTRL_Msg* msg)
           {
             uint32 procedure_id = 0;
             {
-              String8 name = lo_entry_points[idx];
+              StringView name = lo_entry_points[idx];
               RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               uint32 id_count = 0;
               uint32* ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6100,7 +6100,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
   U128 hash = {0};
   if(got_task && range_base != 0 && pre_read_mem_gen == post_read_mem_gen)
   {
-    hash = hs_submit_data(key, &range_arena, str8((uint8*)range_base, zero_terminated_size));
+    hash = hs_submit_data(key, &range_arena, StringView((uint8*)range_base, zero_terminated_size));
   }
   else if(range_arena != 0)
   {

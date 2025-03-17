@@ -345,8 +345,8 @@ r_init(CmdLine* cmdln)
         kind < R_D3D11_VShadKind_COUNT;
         kind = (R_D3D11_VShadKind)(kind+1))
   {
-    String8 source = *r_d3d11_g_vshad_kind_source_table[kind];
-    String8 source_name = r_d3d11_g_vshad_kind_source_name_table[kind];
+    StringView source = *r_d3d11_g_vshad_kind_source_table[kind];
+    StringView source_name = r_d3d11_g_vshad_kind_source_name_table[kind];
     D3D11_INPUT_ELEMENT_DESC* ilay_elements = r_d3d11_g_vshad_kind_elements_ptr_table[kind];
     uint64 ilay_elements_count = r_d3d11_g_vshad_kind_elements_count_table[kind];
     
@@ -367,10 +367,10 @@ r_init(CmdLine* cmdln)
                          0,
                          &vshad_source_blob,
                          &vshad_source_errors);
-      String8 errors = {0};
+      StringView errors = {0};
       if(FAILED(error))
       {
-        errors = str8((uint8 *)vshad_source_errors.lpVtbl.GetBufferPointer(vshad_source_errors),
+        errors = StringView((uint8 *)vshad_source_errors.lpVtbl.GetBufferPointer(vshad_source_errors),
                       (uint64)vshad_source_errors.lpVtbl.GetBufferSize(vshad_source_errors));
         os_graphical_message(1, ("Vertex Shader Compilation Failure"), errors);
       }
@@ -402,8 +402,8 @@ r_init(CmdLine* cmdln)
       kind < R_D3D11_PShadKind_COUNT;
       kind = (R_D3D11_PShadKind)(kind+1))
   {
-    String8 source = *r_d3d11_g_pshad_kind_source_table[kind];
-    String8 source_name = r_d3d11_g_pshad_kind_source_name_table[kind];
+    StringView source = *r_d3d11_g_pshad_kind_source_table[kind];
+    StringView source_name = r_d3d11_g_pshad_kind_source_name_table[kind];
     
     // rjf: compile pixel shader
     ID3DBlob* pshad_source_blob = 0;
@@ -422,10 +422,10 @@ r_init(CmdLine* cmdln)
                          0,
                          &pshad_source_blob,
                          &pshad_source_errors);
-      String8 errors = {0};
+      StringView errors = {0};
       if(FAILED(error))
       {
-        errors = str8((uint8 *)pshad_source_errors.lpVtbl.GetBufferPointer(pshad_source_errors),
+        errors = StringView((uint8 *)pshad_source_errors.lpVtbl.GetBufferPointer(pshad_source_errors),
                       (uint64)pshad_source_errors.lpVtbl.GetBufferSize(pshad_source_errors));
         os_graphical_message(1, ("Pixel Shader Compilation Failure"), errors);
       }

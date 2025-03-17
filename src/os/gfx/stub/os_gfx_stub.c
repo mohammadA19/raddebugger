@@ -20,21 +20,21 @@ os_get_gfx_info()
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void
-os_set_clipboard_text(String8 string)
+os_set_clipboard_text(StringView string)
 {
 }
 
-String8
+StringView
 os_get_clipboard_text(Arena* arena)
 {
-  return str8_zero();
+  return StringView();
 }
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
 OS_Handle
-os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
+os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title)
 {
   OS_Handle handle = {1};
   return handle;
@@ -168,10 +168,10 @@ os_monitor_from_window(OS_Handle window)
   return handle;
 }
 
-String8
+StringView
 os_name_from_monitor(Arena* arena, OS_Handle monitor)
 {
-  return str8_zero();
+  return StringView();
 }
 
 Vec2F32
@@ -227,7 +227,7 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(B32 error, StringView title, StringView message)
 {
 }
 
@@ -235,11 +235,11 @@ os_graphical_message(B32 error, String8 title, String8 message)
 //~ rjf: @os_hooks Shell Operations
 
 void
-os_show_in_filesystem_ui(String8 path)
+os_show_in_filesystem_ui(StringView path)
 {
 }
 
 void
-os_open_in_browser(String8 url)
+os_open_in_browser(StringView url)
 {
 }

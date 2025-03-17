@@ -310,17 +310,17 @@ struct MSCRT_ParsedFuncInfoV4
 
 //- Exception info < v4
 
-uint64 mscrt_parse_func_info(Arena* arena, String8 raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, MSCRT_FuncInfo* func_info);
+uint64 mscrt_parse_func_info(Arena* arena, StringView raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, MSCRT_FuncInfo* func_info);
 
 //- Exception info v4
 
-uint64 mscrt_parse_handler_type_v4       (String8 raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4* handler);
-uint64 mscrt_parse_unwind_v4_entry       (String8 raw_data, uint64 offset, MSCRT_UnwindEntryV4* entry_out);
-uint64 mscrt_parse_handler_type_v4_array (Arena* arena, String8 raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4Array* array_out);
-uint64 mscrt_parse_unwind_map_v4         (Arena* arena, String8 raw_data, uint64 off, MSCRT_UnwindMapV4* map_out);
-uint64 mscrt_parse_try_block_map_array_v4(Arena* arena, String8 raw_data, uint64 off, uint64 section_count, COFF_SectionHeader* sections, uint64 func_voff, MSCRT_TryBlockMapV4Array* map_out);
-uint64 mscrt_parse_ip2state_map_v4       (Arena* arena, String8 raw_data, uint64 off, uint64 func_voff, MSCRT_IP2State32V4* ip2state_map_out);
-uint64 mscrt_parse_func_info_v4          (Arena* arena, String8 raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, uint64 func_voff, MSCRT_ParsedFuncInfoV4* func_info_out);
+uint64 mscrt_parse_handler_type_v4       (StringView raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4* handler);
+uint64 mscrt_parse_unwind_v4_entry       (StringView raw_data, uint64 offset, MSCRT_UnwindEntryV4* entry_out);
+uint64 mscrt_parse_handler_type_v4_array (Arena* arena, StringView raw_data, uint64 offset, uint64 func_voff, MSCRT_EhHandlerTypeV4Array* array_out);
+uint64 mscrt_parse_unwind_map_v4         (Arena* arena, StringView raw_data, uint64 off, MSCRT_UnwindMapV4* map_out);
+uint64 mscrt_parse_try_block_map_array_v4(Arena* arena, StringView raw_data, uint64 off, uint64 section_count, COFF_SectionHeader* sections, uint64 func_voff, MSCRT_TryBlockMapV4Array* map_out);
+uint64 mscrt_parse_ip2state_map_v4       (Arena* arena, StringView raw_data, uint64 off, uint64 func_voff, MSCRT_IP2State32V4* ip2state_map_out);
+uint64 mscrt_parse_func_info_v4          (Arena* arena, StringView raw_data, uint64 section_count, COFF_SectionHeader* sections, uint64 off, uint64 func_voff, MSCRT_ParsedFuncInfoV4* func_info_out);
 
 #endif // MSVC_CRT
 

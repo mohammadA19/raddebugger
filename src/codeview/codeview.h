@@ -2811,7 +2811,7 @@ CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc* frameproc, B32 is_loc
 CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
 uint32                   cv_map_encoded_base_pointer(CV_Arch arch, uint32 encoded_frame_reg);
 
-String8 cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
+StringView cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
 
 #endif // CODEVIEW_H
  

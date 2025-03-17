@@ -24,11 +24,11 @@ shared_function uint64_t lnk_write_file(void* raw_handle, uint64_t offset, void*
 
 ////////////////////////////////
 
-String8      lnk_read_data_from_file_path(Arena* arena, String8 path);
+StringView      lnk_read_data_from_file_path(Arena* arena, StringView path);
 String8Array lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array path_arr);
 
-void lnk_write_data_list_to_file_path(String8 path, String8List list);
-void lnk_write_data_to_file_path(String8 path, String8 data);
+void lnk_write_data_list_to_file_path(StringView path, String8List list);
+void lnk_write_data_to_file_path(StringView path, StringView data);
 
-String8List lnk_file_search(Arena* arena, String8List dir_list, String8 file_path);
+String8List lnk_file_search(Arena* arena, String8List dir_list, StringView file_path);
 

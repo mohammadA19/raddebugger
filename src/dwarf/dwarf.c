@@ -173,7 +173,7 @@ dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attr
   return are_compat;
 }
 
-String8
+StringView
 dw_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -181,10 +181,10 @@ dw_name_string_from_section_kind(DW_SectionKind k)
     DW_SectionKind_XList(X)
     #undef X
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_mach_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -192,10 +192,10 @@ dw_mach_name_string_from_section_kind(DW_SectionKind k)
     DW_SectionKind_XList(X)
     #undef X
   }
-  return str8_zero();
+  return StringView();
 }
 
-String8
+StringView
 dw_dwo_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
@@ -203,7 +203,7 @@ dw_dwo_name_string_from_section_kind(DW_SectionKind k)
     DW_SectionKind_XList(X)
     #undef X
   }
-  return str8_zero();
+  return StringView();
 }
 
 uint64

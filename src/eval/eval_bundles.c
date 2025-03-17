@@ -9,7 +9,7 @@ e_eval_from_expr(Arena* arena, E_Expr* expr)
 {
   E_IRTreeAndType  irtree   = e_irtree_and_type_from_expr(arena, expr);
   E_OpList         oplist   = e_oplist_from_irtree(arena, irtree.root);
-  String8          bytecode = e_bytecode_from_oplist(arena, &oplist);
+  StringView          bytecode = e_bytecode_from_oplist(arena, &oplist);
   E_Interpretation interp   = e_interpret(bytecode);
   E_Space zero_space = {0};
   E_Space space = (MemoryMatchStruct(&zero_space, &irtree.space) ? e_interpret_ctx.primary_space : irtree.space);
@@ -31,7 +31,7 @@ e_eval_from_expr(Arena* arena, E_Expr* expr)
 }
 
 E_Eval
-e_eval_from_string(Arena* arena, String8 string)
+e_eval_from_string(Arena* arena, StringView string)
 {
   E_TokenArray     tokens   = e_token_array_from_text(arena, string);
   E_Parse          parse    = e_parse_expr_from_text_tokens(arena, string, &tokens);
@@ -228,7 +228,7 @@ e_element_eval_from_array_eval_index(E_Eval eval, uint64 index)
 }
 
 E_Eval
-e_member_eval_from_eval_member_name(E_Eval eval, String8 member_name)
+e_member_eval_from_eval_member_name(E_Eval eval, StringView member_name)
 {
   E_Eval result = {0};
   {

@@ -10,7 +10,7 @@
 #endif
 
 DASM_Inst
-dasm_inst_from_code(Arena* arena, Arch arch, uint64 vaddr, String8 code, DASM_Syntax syntax)
+dasm_inst_from_code(Arena* arena, Arch arch, uint64 vaddr, StringView code, DASM_Syntax syntax)
 {
   DASM_Inst inst = {0};
   switch(arch)
@@ -145,7 +145,7 @@ dasm_inst_from_code(Arena* arena, Arch arch, uint64 vaddr, String8 code, DASM_Sy
 //~ rjf: Control Flow Analysis
 
 DASM_CtrlFlowInfo
-dasm_ctrl_flow_info_from_arch_vaddr_code(Arena* arena, DASM_InstFlags exit_points_mask, Arch arch, uint64 vaddr, String8 code)
+dasm_ctrl_flow_info_from_arch_vaddr_code(Arena* arena, DASM_InstFlags exit_points_mask, Arch arch, uint64 vaddr, StringView code)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DASM_CtrlFlowInfo info = {0};
@@ -539,7 +539,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
   }
   
   //- rjf: hash . data
-  String8 data = {0};
+  StringView data = {0};
   if(got_task)
   {
     data = hs_data_from_hash(hs_scope, hash);
@@ -586,14 +586,14 @@ ASYNC_WORK_DEF(dasm_parse_work)
               {
                 RDI_Line* line = &unit_line_info.lines[line_info_idx];
                 RDI_SourceFile* file = rdi_element_from_name_idx(rdi, SourceFiles, line.file_idx);
-                String8 file_normalized_full_path = {0};
+                StringView file_normalized_full_path = {0};
                 file_normalized_full_path.str = rdi_string_from_idx(rdi, file.normal_full_path_string_idx, &file_normalized_full_path.size);
                 if(file != last_file)
                 {
                   if(params.style_flags & DASM_StyleFlag_SourceFilesNames &&
                      file.normal_full_path_string_idx != 0 && file_normalized_full_path.size != 0)
                   {
-                    String8 inst_string = push_str8f(scratch.arena, "> %S", file_normalized_full_path);
+                    StringView inst_string = push_str8f(scratch.arena, "> %S", file_normalized_full_path);
                     DASM_Line inst = {u32_from_u64_saturate(off), DASM_LineFlag_Decorative, 0, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                                      inst_strings.total_size + inst_strings.node_count + inst_string.size)};
                     dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &inst);
@@ -601,7 +601,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
                   }
                   if(params.style_flags & DASM_StyleFlag_SourceFilesNames && file.normal_full_path_string_idx == 0)
                   {
-                    String8 inst_string = (">");
+                    StringView inst_string = (">");
                     DASM_Line inst = {u32_from_u64_saturate(off), DASM_LineFlag_Decorative, 0, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                                      inst_strings.total_size + inst_strings.node_count + inst_string.size)};
                     dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &inst);
@@ -633,11 +633,11 @@ ASYNC_WORK_DEF(dasm_parse_work)
                     }
                     if(0 < line.line_num && line.line_num < text_info.lines_count)
                     {
-                      String8 data = hs_data_from_hash(hs_scope, hash);
-                      String8 line_text = str8_skip_chop_whitespace(str8_substr(data, text_info.lines_ranges[line.line_num-1]));
+                      StringView data = hs_data_from_hash(hs_scope, hash);
+                      StringView line_text = str8_skip_chop_whitespace(str8_substr(data, text_info.lines_ranges[line.line_num-1]));
                       if(line_text.size != 0)
                       {
-                        String8 inst_string = push_str8f(scratch.arena, "> %S", line_text);
+                        StringView inst_string = push_str8f(scratch.arena, "> %S", line_text);
                         DASM_Line inst = {u32_from_u64_saturate(off), DASM_LineFlag_Decorative, 0, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                                          inst_strings.total_size + inst_strings.node_count + inst_string.size)};
                         dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &inst);
@@ -652,12 +652,12 @@ ASYNC_WORK_DEF(dasm_parse_work)
           }
           
           // rjf: push line
-          String8 addr_part = {0};
+          StringView addr_part = {0};
           if(params.style_flags & DASM_StyleFlag_Addresses)
           {
             addr_part = push_str8f(scratch.arena, "%s0x%016I64x  ", rdi != &di_rdi_parsed_nil ? "  " : "", params.vaddr+off);
           }
-          String8 code_bytes_part = {0};
+          StringView code_bytes_part = {0};
           if(params.style_flags & DASM_StyleFlag_CodeBytes)
           {
             String8List code_bytes_strings = {0};
@@ -676,7 +676,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
             str8_list_push(scratch.arena, &code_bytes_strings, (" "));
             code_bytes_part = str8_list_join(scratch.arena, &code_bytes_strings, 0);
           }
-          String8 symbol_part = {0};
+          StringView symbol_part = {0};
           if(inst.jump_dest_vaddr != 0 && rdi != &di_rdi_parsed_nil && params.style_flags & DASM_StyleFlag_SymbolNames)
           {
             RDI_U32 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, inst.jump_dest_vaddr-params.base_vaddr);
@@ -685,7 +685,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
               RDI_Scope* scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
               RDI_U32 procedure_idx = scope.proc_idx;
               RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, procedure_idx);
-              String8 procedure_name = {0};
+              StringView procedure_name = {0};
               procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
               if(procedure_name.size != 0)
               {
@@ -693,7 +693,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
               }
             }
           }
-          String8 inst_string = push_str8f(scratch.arena, "%S%S%S%S", addr_part, code_bytes_part, inst.string, symbol_part);
+          StringView inst_string = push_str8f(scratch.arena, "%S%S%S%S", addr_part, code_bytes_part, inst.string, symbol_part);
           DASM_Line line = {u32_from_u64_saturate(off), 0, inst.jump_dest_vaddr, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                        inst_strings.total_size + inst_strings.node_count + inst_string.size)};
           dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &line);
@@ -715,7 +715,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
     Arena* text_arena = arena_alloc();
     StringJoin text_join = {0};
     text_join.sep = ("\n");
-    String8 text = str8_list_join(text_arena, &inst_strings, &text_join);
+    StringView text = str8_list_join(text_arena, &inst_strings, &text_join);
     
     //- rjf: produce unique key for this disassembly's text
     U128 text_key = {0};
@@ -731,7 +731,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
         (uint64)rdi,
         0x4d534144,
       };
-      text_key = hs_hash_from_data(str8((uint8 *)hash_data, sizeof(hash_data)));
+      text_key = hs_hash_from_data(StringView((uint8 *)hash_data, sizeof(hash_data)));
     }
     
     //- rjf: submit text data to hash store

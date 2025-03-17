@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 uint32
-pdb_hash_v1(String8 string)
+pdb_hash_v1(StringView string)
 {
   uint32 result = 0;
   uint8* ptr = string.str;

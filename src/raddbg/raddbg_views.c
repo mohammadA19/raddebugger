@@ -18,7 +18,7 @@ rd_code_view_init(RD_CodeViewState* cv)
 }
 
 RD_CodeViewBuildResult
-rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo* text_info, DASM_LineArray* dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
+rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, StringView text_data, TXT_TextInfo* text_info, DASM_LineArray* dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -47,7 +47,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: unpack information about the viewed source file, if any
   //
-  String8 file_path = rd_regs().file_path;
+  StringView file_path = rd_regs().file_path;
   String8List file_path_possible_overrides = rd_possible_overrides_from_file_path(scratch.arena, file_path);
   
   //////////////////////////////
@@ -144,7 +144,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: get active search query
   //
-  String8 search_query = {0};
+  StringView search_query = {0};
   Side search_query_side = Side_Invalid;
   B32 search_query_is_active = 0;
   {
@@ -153,7 +153,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     if(query_cmd_kind == RD_CmdKind_FindTextForward ||
        query_cmd_kind == RD_CmdKind_FindTextBackward)
     {
-      search_query = str8(window.query_view_stack_top.query_buffer, window.query_view_stack_top.query_string_size);
+      search_query = StringView(window.query_view_stack_top.query_buffer, window.query_view_stack_top.query_string_size);
       search_query_is_active = 1;
       search_query_side = (query_cmd_kind == RD_CmdKind_FindTextForward) ? Side_Max : Side_Min;
     }
@@ -171,7 +171,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
       code_slice_params.flags |= RD_CodeSliceFlag_PriorityMargin|RD_CodeSliceFlag_CatchallMargin;
     }
     code_slice_params.line_num_range            = visible_line_num_range;
-    code_slice_params.line_text                 = push_array(scratch.arena, String8, visible_line_count);
+    code_slice_params.line_text                 = push_array(scratch.arena, StringView, visible_line_count);
     code_slice_params.line_ranges               = push_array(scratch.arena, Rng1U64, visible_line_count);
     code_slice_params.line_tokens               = push_array(scratch.arena, TXT_TokenArray, visible_line_count);
     code_slice_params.line_bps                  = push_array(scratch.arena, RD_EntityList, visible_line_count);
@@ -294,7 +294,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     // rjf: find all src . dasm info
     if(!dasm_lines) ProfScope("find all src . dasm info for source code")
     {
-      String8 file_path = rd_regs().file_path;
+      StringView file_path = rd_regs().file_path;
       CTRL_Entity* module = ctrl_entity_from_handle(d_state.ctrl_entity_store, rd_regs().module);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       D_LineListArray lines_array = d_lines_array_from_dbgi_key_file_path_line_range(scratch.arena, dbgi_key, file_path, visible_line_num_range);
@@ -432,7 +432,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
       for(int64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
-        String8 line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
+        StringView line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
         uint64 search_start = 0;
         if(rd_regs().cursor.line == line_num && first)
         {
@@ -480,7 +480,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
       for(int64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
-        String8 line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
+        StringView line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
         if(rd_regs().cursor.line == line_num && first)
         {
           line_string = str8_prefix(line_string, rd_regs().cursor.column-1);
@@ -607,7 +607,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     //- rjf: selected text on single line, no query? . set search text
     if(!txt_pt_match(rd_regs().cursor, rd_regs().mark) && rd_regs().cursor.line == rd_regs().mark.line && search_query.size == 0)
     {
-      String8 text = txt_string_from_info_data_txt_rng(text_info, text_data, txt_rng(rd_regs().cursor, rd_regs().mark));
+      StringView text = txt_string_from_info_data_txt_rng(text_info, text_data, txt_rng(rd_regs().cursor, rd_regs().mark));
       rd_set_search_string(text);
     }
   }
@@ -634,7 +634,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
       cv.center_cursor = 0;
       if(cursor_in_range)
       {
-        String8 cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
+        StringView cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
         float cursor_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x;
         
         // rjf: scroll x
@@ -658,7 +658,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     // rjf: snap in X
     if(snap[Axis2_X] && cursor_in_range)
     {
-      String8 cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
+      StringView cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
       int64 cursor_off = (int64)(fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x + priority_margin_width_px + catchall_margin_width_px + line_num_width_px);
       Rng1S64 visible_pixel_range =
       {
@@ -1004,7 +1004,7 @@ rd_expr_from_watch_view_row_column(Arena* arena, EV_View* ev_view, EV_Row* row, 
     case RD_WatchViewColumnKind_Member:
     {
       Temp scratch = scratch_begin(&arena, 1);
-      String8 access_string = str8(col.string_buffer, col.string_size);
+      StringView access_string = StringView(col.string_buffer, col.string_size);
       String8List accesses = str8_split(scratch.arena, access_string, (uint8 *)".", 1, 0);
       for(String8Node* n = accesses.first; n != 0; n = n.next)
       {
@@ -1015,17 +1015,17 @@ rd_expr_from_watch_view_row_column(Arena* arena, EV_View* ev_view, EV_Row* row, 
   }
   if(col.view_rule_size != 0)
   {
-    EV_ViewRuleList* view_rules = ev_view_rule_list_from_string(arena, str8(col.view_rule_buffer, col.view_rule_size));
+    EV_ViewRuleList* view_rules = ev_view_rule_list_from_string(arena, StringView(col.view_rule_buffer, col.view_rule_size));
     expr = ev_resolved_from_expr(arena, expr, view_rules);
   }
   return expr;
 }
 
-String8
+StringView
 rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_WatchViewColumn* col, EV_StringFlags string_flags, uint32 default_radix, FNT_Tag font, float font_size, float max_size_px)
 {
   ProfBeginFunction();
-  String8 result = {0};
+  StringView result = {0};
   E_Expr* row_col_expr = rd_expr_from_watch_view_row_column(arena, ev, row, col);
   switch(col.kind)
   {
@@ -1043,7 +1043,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
       if(col.view_rule_size != 0)
       {
         view_rules = ev_view_rule_list_copy(arena, row.view_rules);
-        ev_view_rule_list_push_string(arena, view_rules, str8(col.view_rule_buffer, col.view_rule_size));
+        ev_view_rule_list_push_string(arena, view_rules, StringView(col.view_rule_buffer, col.view_rule_size));
       }
       E_Eval eval = e_eval_from_expr(arena, row_col_expr);
       result = rd_value_string_from_eval(arena, string_flags, default_radix, font, font_size, max_size_px, eval, row.member, view_rules);
@@ -1053,7 +1053,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
     {
       E_IRTreeAndType irtree = e_irtree_and_type_from_expr(arena, row_col_expr);
       E_TypeKey type_key = irtree.type_key;
-      result = !e_type_key_match(type_key, e_type_key_zero()) ? e_type_string_from_key(arena, type_key) : str8_zero();
+      result = !e_type_key_match(type_key, e_type_key_zero()) ? e_type_string_from_key(arena, type_key) : StringView();
       result = str8_skip_chop_whitespace(result);
     }break;
     case RD_WatchViewColumnKind_ViewRule:
@@ -1125,7 +1125,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
         {
           String8List parts = {0};
           E_TypeKey type = e_type_key_ext(E_TypeKind_Function, inline_site.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
-          String8 name = {0};
+          StringView name = {0};
           name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
           String8List type_lhs_parts = {0};
           e_type_lhs_string_from_key(scratch.arena, type, &type_lhs_parts, 0, 0);
@@ -1141,7 +1141,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
         {
           String8List parts = {0};
           E_TypeKey type = e_type_key_ext(E_TypeKind_Function, procedure.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
-          String8 name = {0};
+          StringView name = {0};
           name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
           String8List type_lhs_parts = {0};
           e_type_lhs_string_from_key(scratch.arena, type, &type_lhs_parts, 0, 0);
@@ -1257,7 +1257,7 @@ rd_watch_view_init(RD_WatchViewState* ewv)
 }
 
 void
-rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, uint32 default_radix, Rng2F32 rect)
+rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView root_expr, StringView root_view_rule, B32 modifiable, uint32 default_radix, Rng2F32 rect)
 {
   ProfBeginFunction();
   DI_Scope* di_scope = di_scope_open();
@@ -1269,9 +1269,9 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
   //- rjf: unpack arguments
   //
   EV_ViewRuleList* top_level_view_rules = ev_view_rule_list_from_string(scratch.arena, root_view_rule);
-  String8 eval_view_key_string = push_str8f(scratch.arena, "eval_view_watch_%p", ewv);
+  StringView eval_view_key_string = push_str8f(scratch.arena, "eval_view_watch_%p", ewv);
   EV_View* eval_view = rd_ev_view_from_key(d_hash_from_string(eval_view_key_string));
-  String8 filter = rd_view_filter();
+  StringView filter = rd_view_filter();
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   int64 num_possible_visible_rows = (int64)(dim_2f32(rect).y/row_height_px);
   float row_string_max_size_px = dim_2f32(rect).x;
@@ -1326,7 +1326,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
   //////////////////////////////
   //- rjf: determine autocompletion string
   //
-  String8 autocomplete_hint_string = {0};
+  StringView autocomplete_hint_string = {0};
   if(!is_top_level_hook)
   {
     for(UI_Event* evt = 0; ui_next_event(&evt);)
@@ -1579,7 +1579,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
             for(int64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
               RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
-              String8 string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
+              StringView string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
               string.size = Min(string.size, sizeof(ewv.dummy_text_edit_state.input_buffer));
               RD_WatchViewPoint pt = {x, row.block.key, row.key};
               uint64 hash = ev_hash_from_key(pt.key);
@@ -1686,7 +1686,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
             {
               RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, v2s64(x, y));
               RD_WatchViewTextEditState* edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
-              String8 string = str8(edit_state.input_buffer, edit_state.input_size);
+              StringView string = StringView(edit_state.input_buffer, edit_state.input_size);
               UI_TxtOp op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state.cursor, edit_state.mark);
               
               // rjf: copy
@@ -1699,25 +1699,25 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
               if(autocomplete_hint_string.size != 0)
               {
                 take_autocomplete = 1;
-                String8 word_query = rd_autocomp_query_word_from_input_string_off(string, edit_state.cursor.column-1);
+                StringView word_query = rd_autocomp_query_word_from_input_string_off(string, edit_state.cursor.column-1);
                 uint64 word_off = (uint64)(word_query.str - string.str);
-                String8 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
+                StringView new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
                 new_string.size = Min(sizeof(edit_state.input_buffer), new_string.size);
                 MemoryCopy(edit_state.input_buffer, new_string.str, new_string.size);
                 edit_state.input_size = new_string.size;
                 edit_state.cursor = edit_state.mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
-                string = str8(edit_state.input_buffer, edit_state.input_size);
+                string = StringView(edit_state.input_buffer, edit_state.input_size);
                 op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state.cursor, edit_state.mark);
               }
               
               // rjf: cancel? . revert to initial string
               if(editing_complete && evt.slot == UI_EventActionSlot_Cancel)
               {
-                string = str8(edit_state.initial_buffer, edit_state.initial_size);
+                string = StringView(edit_state.initial_buffer, edit_state.initial_size);
               }
               
               // rjf: obtain edited string
-              String8 new_string = string;
+              StringView new_string = string;
               if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
               {
                 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(op.range.min.column, op.range.max.column), op.replace);
@@ -1840,7 +1840,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
           for(int64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
             RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
-            String8 cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
+            StringView cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
             cell_string = str8_skip_chop_whitespace(cell_string);
             uint64 comma_pos = str8_find_needle(cell_string, 0, (","), 0);
             if(selection_tbl.min.x != selection_tbl.max.x || selection_tbl.min.y != selection_tbl.max.y)
@@ -1861,7 +1861,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
             str8_list_push(scratch.arena, &strs, ("\n"));
           }
         }
-        String8 string = str8_list_join(scratch.arena, &strs, 0);
+        StringView string = str8_list_join(scratch.arena, &strs, 0);
         os_set_clipboard_text(string);
       }
       
@@ -1922,13 +1922,13 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                 RD_Entity* view_rule = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule);
                 rd_entity_mark_for_deletion(view_rule);
               }
-              ev_key_set_view_rule(eval_view, row.key, str8_zero());
+              ev_key_set_view_rule(eval_view, row.key, StringView());
             }
             else if(tbl.y != 0 && (col.kind == RD_WatchViewColumnKind_Value || col.kind == RD_WatchViewColumnKind_Member) && row_kind == RD_WatchViewRowKind_Normal)
             {
               E_Expr* expr = rd_expr_from_watch_view_row_column(scratch.arena, eval_view, row, col);
               E_Eval dst_eval = e_eval_from_expr(scratch.arena, expr);
-              rd_commit_eval_value_string(dst_eval, str8_zero(), 0);
+              rd_commit_eval_value_string(dst_eval, StringView(), 0);
             }
           }
         }
@@ -2373,7 +2373,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                 for(RD_WatchViewColumn* col = ewv.first_column; col != 0; col = col.next)
                   UI_TableCell
                 {
-                  String8 name = str8(col.display_string_buffer, col.display_string_size);
+                  StringView name = StringView(col.display_string_buffer, col.display_string_size);
                   if(name.size == 0)
                   {
                     switch(col.kind)
@@ -2385,7 +2385,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                       case RD_WatchViewColumnKind_ViewRule:{name = ("View Rule");}break;
                       case RD_WatchViewColumnKind_Member:
                       {
-                        name = str8(col.string_buffer, col.string_size);
+                        name = StringView(col.string_buffer, col.string_size);
                       }break;
                     }
                   }
@@ -2449,8 +2449,8 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
               RD_View* view = rd_view_from_handle(rd_regs().view);
               RD_TransientViewNode* canvas_view_node = rd_transient_view_node_from_ev_key(view, row.key);
               RD_View* canvas_view = canvas_view_node.view;
-              String8 canvas_view_expr = e_string_from_expr(scratch.arena, row.expr);
-              B32 need_new_spec = (!str8_match(str8(canvas_view.query_buffer, canvas_view.query_string_size), canvas_view_expr, 0) ||
+              StringView canvas_view_expr = e_string_from_expr(scratch.arena, row.expr);
+              B32 need_new_spec = (!str8_match(StringView(canvas_view.query_buffer, canvas_view.query_string_size), canvas_view_expr, 0) ||
                                    !md_tree_match(canvas_view_node.initial_params, ui_view_rule_params_root, 0));
               if(need_new_spec)
               {
@@ -2518,13 +2518,13 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                 rd_push_regs();
                 {
                   rd_regs().view      = rd_handle_from_view(canvas_view);
-                  rd_regs().file_path = rd_file_path_from_eval_string(rd_frame_arena(), str8(canvas_view.query_buffer, canvas_view.query_string_size));
+                  rd_regs().file_path = rd_file_path_from_eval_string(rd_frame_arena(), StringView(canvas_view.query_buffer, canvas_view.query_string_size));
                 }
                 
                 //- rjf: build
                 UI_PermissionFlags(UI_PermissionFlag_Clicks|UI_PermissionFlag_ScrollX)
                 {
-                  ui_view_rule_info.ui(str8(canvas_view.query_buffer, canvas_view.query_string_size), canvas_view.params_roots[canvas_view.params_read_gen%ArrayCount(canvas_view.params_roots)], canvas_rect);
+                  ui_view_rule_info.ui(StringView(canvas_view.query_buffer, canvas_view.query_string_size), canvas_view.params_roots[canvas_view.params_read_gen%ArrayCount(canvas_view.params_roots)], canvas_rect);
                 }
                 
                 //- rjf: loading overlay fill
@@ -2643,7 +2643,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                 {
                   fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, ctrl_entity, ui_top_palette().text_weak, ui_top_font_size(), 1);
                 }
-                String8 fstrs_string = dr_string_from_fancy_string_list(scratch.arena, &fstrs);
+                StringView fstrs_string = dr_string_from_fancy_string_list(scratch.arena, &fstrs);
                 FuzzyMatchRangeList fstrs_matches = fuzzy_match_find(scratch.arena, filter, fstrs_string);
                 UI_Key hover_t_key = ui_key_from_stringf(ui_key_zero(), "entity_hover_t_%p_%p", entity, ctrl_entity);
                 float hover_t = ui_anim(hover_t_key, (float)!!is_hovering, .rate = entity_hover_t_rate);
@@ -2731,7 +2731,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                       {
                         RD_Entity* loc = rd_entity_child_from_kind(entity, RD_EntityKind_Location);
                         rd_cmd(RD_CmdKind_FindCodeLocation,
-                               .file_path = (loc.flags & RD_EntityFlag_HasTextPoint) ? loc.string : str8_zero(),
+                               .file_path = (loc.flags & RD_EntityFlag_HasTextPoint) ? loc.string : StringView(),
                                .cursor = loc.text_point,
                                .vaddr = loc.vaddr);
                       }
@@ -2874,7 +2874,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                   RD_WatchViewPoint cell_pt = {x, row.block.key, row.key};
                   RD_WatchViewTextEditState* cell_edit_state = rd_watch_view_text_edit_state_from_pt(ewv, cell_pt);
                   B32 cell_selected = (row_selected && selection_tbl.min.x <= cell_pt.x && cell_pt.x <= selection_tbl.max.x);
-                  String8 cell_pre_edit_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
+                  StringView cell_pre_edit_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
                   
                   //- rjf: unpack column-kind-specific info
                   ProfBegin("unpack column-kind-specific info");
@@ -2882,15 +2882,15 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                   E_Type* cell_type = row_type;
                   B32 cell_can_edit = 0;
                   FuzzyMatchRangeList cell_matches = {0};
-                  String8 cell_inheritance_string = {0};
-                  String8 cell_error_string = {0};
-                  String8 cell_error_tooltip_string = {0};
+                  StringView cell_inheritance_string = {0};
+                  StringView cell_error_string = {0};
+                  StringView cell_error_tooltip_string = {0};
                   RD_AutoCompListerFlags cell_autocomp_flags = 0;
                   RD_ViewRuleUIFunctionType* cell_ui_hook = 0;
                   MD_Node* cell_ui_params = &md_nil_node;
                   Vec4F32 cell_base_color = ui_top_palette().text;
                   RD_IconKind cell_icon = RD_IconKind_Null;
-                  String8 cell_ghost_text = {0};
+                  StringView cell_ghost_text = {0};
                   switch(col.kind)
                   {
                     default:{}break;
@@ -2911,7 +2911,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                         String8List inheritance_chain_type_names = {0};
                         for(E_TypeKeyNode* n = row.member.inheritance_key_chain.first; n != 0; n = n.next)
                         {
-                          String8 inherited_type_name = e_type_string_from_key(scratch.arena, n.v);
+                          StringView inherited_type_name = e_type_string_from_key(scratch.arena, n.v);
                           inherited_type_name = str8_skip_chop_whitespace(inherited_type_name);
                           str8_list_push(scratch.arena, &inheritance_chain_type_names, inherited_type_name);
                         }
@@ -2919,7 +2919,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                         {
                           StringJoin join = {0};
                           join.sep = ("::");
-                          String8 inheritance_type = str8_list_join(scratch.arena, &inheritance_chain_type_names, &join);
+                          StringView inheritance_type = str8_list_join(scratch.arena, &inheritance_chain_type_names, &join);
                           cell_inheritance_string = inheritance_type;
                         }
                       }
@@ -3019,7 +3019,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                   ProfBegin("apply column-specified view rules");
                   if(col.view_rule_size != 0)
                   {
-                    String8 col_view_rule = str8(col.view_rule_buffer, col.view_rule_size);
+                    StringView col_view_rule = StringView(col.view_rule_buffer, col.view_rule_size);
                     EV_ViewRuleList* view_rules = ev_view_rule_list_from_string(scratch.arena, col_view_rule);
                     for(EV_ViewRuleNode* n = view_rules.first; n != 0; n = n.next)
                     {
@@ -3114,7 +3114,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                       UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable, "###val_%I64x", row_hash);
                       UI_Parent(box)
                       {
-                        String8 row_expr = e_string_from_expr(scratch.arena, row.expr);
+                        StringView row_expr = e_string_from_expr(scratch.arena, row.expr);
                         cell_ui_hook(row_expr, cell_ui_params, r2f32p(x_px, 0, x_px + col.pct*dim_2f32(rect).x, row_height_px));
                       }
                       sig = ui_signal_from_box(box);
@@ -3150,7 +3150,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                          selection_tbl.min.x == selection_tbl.max.x && selection_tbl.min.y == selection_tbl.max.y &&
                          txt_pt_match(cell_edit_state.cursor, cell_edit_state.mark))
                       {
-                        String8 input = str8(cell_edit_state.input_buffer, cell_edit_state.input_size);
+                        StringView input = StringView(cell_edit_state.input_buffer, cell_edit_state.input_size);
                         RD_AutoCompListerParams params = {cell_autocomp_flags};
                         if(col.kind == RD_WatchViewColumnKind_ViewRule)
                         {
@@ -3209,7 +3209,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
                           uint64 voff = ctrl_voff_from_vaddr(module, vaddr);
                           D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, voff);
-                          String8 file_path = {0};
+                          StringView file_path = {0};
                           TxtPt pt = {0};
                           if(lines.first != 0)
                           {
@@ -3259,12 +3259,12 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                   if(DEV_eval_compiler_tooltips && x == 0 && ui_hovering(sig)) UI_Tooltip RD_Font(RD_FontSlot_Code)
                   {
                     static char* spaces = "                                                                        ";
-                    String8         string      = ev_expr_string_from_row(scratch.arena, row, 0);
+                    StringView         string      = ev_expr_string_from_row(scratch.arena, row, 0);
                     E_TokenArray    tokens      = e_token_array_from_text(scratch.arena, string);
                     E_Parse         parse       = e_parse_expr_from_text_tokens(scratch.arena, string, &tokens);
                     E_IRTreeAndType irtree      = e_irtree_and_type_from_expr(scratch.arena, parse.expr);
                     E_OpList        oplist      = e_oplist_from_irtree(scratch.arena, irtree.root);
-                    String8         bytecode    = e_bytecode_from_oplist(scratch.arena, &oplist);
+                    StringView         bytecode    = e_bytecode_from_oplist(scratch.arena, &oplist);
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Text:");
                     ui_label(string);
                     ui_spacer(ui_em(2.f, 1.f));
@@ -3288,7 +3288,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                       Task* last_task = first_task;
                       for(Task* t = first_task; t != 0; t = t.next)
                       {
-                        String8 ext = {0};
+                        StringView ext = {0};
                         switch(t.expr.kind)
                         {
                           default:
@@ -3340,7 +3340,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                       Task* last_task = first_task;
                       for(Task* t = first_task; t != 0; t = t.next)
                       {
-                        String8 op_string = {0};
+                        StringView op_string = {0};
                         switch(t.node.op)
                         {
                           default:{}break;
@@ -3350,7 +3350,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                           RDI_EvalOp_XList
 #undef X
                         }
-                        String8 ext = {0};
+                        StringView ext = {0};
                         ui_labelf("%.*s%S", (int)t.depth*2, spaces, op_string);
                         for(E_IRNode* child = t.node.first; child != &e_irnode_nil; child = child.next)
                         {
@@ -3366,7 +3366,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                     {
                       for(E_Op* op = oplist.first; op != 0; op = op.next)
                       {
-                        String8 op_string = {0};
+                        StringView op_string = {0};
                         switch(op.opcode)
                         {
                           default:{}break;
@@ -3376,7 +3376,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, String8 roo
                           RDI_EvalOp_XList
 #undef X
                         }
-                        String8 ext = {0};
+                        StringView ext = {0};
                         switch(op.opcode)
                         {
                           case E_IRExtKind_Bytecode:{ext = ("[bytecode]");}break;
@@ -3529,8 +3529,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         case 1:
         {
           RD_Entity* target = rd_first_entity_from_list(&targets);
-          String8 target_full_path = target.string;
-          String8 target_name = str8_skip_last_slash(target_full_path);
+          StringView target_full_path = target.string;
+          StringView target_name = str8_skip_last_slash(target_full_path);
           UI_PrefHeight(ui_em(3.75f, 1.f))
             UI_Row
             UI_Padding(ui_pct(1, 0))
@@ -3591,7 +3591,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
 
 struct RD_CmdListerItem
 {
-  String8 cmd_name;
+  StringView cmd_name;
   uint64 registrar_idx;
   uint64 ordering_idx;
   FuzzyMatchRangeList name_match_ranges;
@@ -3619,7 +3619,7 @@ struct RD_CmdListerItemArray
 };
 
 RD_CmdListerItemList
-rd_cmd_lister_item_list_from_needle(Arena* arena, String8 needle)
+rd_cmd_lister_item_list_from_needle(Arena* arena, StringView needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CmdListerItemList result = {0};
@@ -3629,9 +3629,9 @@ rd_cmd_lister_item_list_from_needle(Arena* arena, String8 needle)
     RD_CmdKindInfo* info = &rd_cmd_kind_info_table[k];
     if(info.flags & RD_CmdKindFlag_ListInUI)
     {
-      String8 cmd_display_name = info.display_name;
-      String8 cmd_desc = info.description;
-      String8 cmd_tags = info.search_tags;
+      StringView cmd_display_name = info.display_name;
+      StringView cmd_desc = info.description;
+      StringView cmd_tags = info.search_tags;
       FuzzyMatchRangeList name_matches = fuzzy_match_find(arena, needle, cmd_display_name);
       FuzzyMatchRangeList desc_matches = fuzzy_match_find(arena, needle, cmd_desc);
       FuzzyMatchRangeList tags_matches = fuzzy_match_find(arena, needle, cmd_tags);
@@ -3744,7 +3744,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   //- rjf: submit best match when hitting enter w/ no selection
   if(cv.selected_cmd_hash == 0 && ui_slot_press(UI_EventActionSlot_Accept))
   {
-    rd_cmd(RD_CmdKind_CompleteQuery, .cmd_name = (cmd_array.count > 0 ? cmd_array.v[0].cmd_name : str8_zero()));
+    rd_cmd(RD_CmdKind_CompleteQuery, .cmd_name = (cmd_array.count > 0 ? cmd_array.v[0].cmd_name : StringView()));
   }
   
   //- rjf: selected kind . cursor
@@ -3829,8 +3829,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
           float font_size = ui_top_font_size();
           FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
           float font_line_height = fnt_line_height_from_metrics(&font_metrics);
-          String8 cmd_display_name = info.display_name;
-          String8 cmd_desc = info.description;
+          StringView cmd_display_name = info.display_name;
+          StringView cmd_desc = info.description;
           UI_Box* name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info.string);
           UI_Box* desc_box = &ui_nil_box;
           UI_PrefHeight(ui_em(1.8f, 1.f)) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
@@ -3891,7 +3891,7 @@ enum RD_FileSortKind
 
 struct RD_FileInfo
 {
-  String8 filename;
+  StringView filename;
   FileProperties props;
   FuzzyMatchRangeList match_ranges;
 };
@@ -3905,7 +3905,7 @@ struct RD_FileInfoNode
 struct RD_FileSystemViewPathState
 {
   RD_FileSystemViewPathState* hash_next;
-  String8 normalized_path;
+  StringView normalized_path;
   Vec2S64 cursor;
 };
 
@@ -3917,7 +3917,7 @@ struct RD_FileSystemViewState
   RD_FileSortKind sort_kind;
   Side sort_side;
   Arena* cached_files_arena;
-  String8 cached_files_path;
+  StringView cached_files_path;
   RD_FileSortKind cached_files_sort_kind;
   Side cached_files_sort_side;
   uint64 cached_file_count;
@@ -3927,20 +3927,20 @@ struct RD_FileSystemViewState
 
 struct RD_PathQuery
 {
-  String8 prefix;
-  String8 path;
-  String8 search;
+  StringView prefix;
+  StringView path;
+  StringView search;
 };
 
 RD_PathQuery
-rd_path_query_from_string(String8 string)
+rd_path_query_from_string(StringView string)
 {
-  String8 dir_str_in_input = {0};
+  StringView dir_str_in_input = {0};
   for(uint64 i = 0; i < string.size; i += 1)
   {
-    String8 substr1 = str8_substr(string, r1u64(i, i+1));
-    String8 substr2 = str8_substr(string, r1u64(i, i+2));
-    String8 substr3 = str8_substr(string, r1u64(i, i+3));
+    StringView substr1 = str8_substr(string, r1u64(i, i+1));
+    StringView substr2 = str8_substr(string, r1u64(i, i+2));
+    StringView substr3 = str8_substr(string, r1u64(i, i+3));
     if(str8_match(substr1, ("/"), StringMatchFlag_SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
@@ -3966,8 +3966,8 @@ rd_path_query_from_string(String8 string)
   RD_PathQuery path_query = {0};
   if(dir_str_in_input.size != 0)
   {
-    String8 dir = dir_str_in_input;
-    String8 search = {0};
+    StringView dir = dir_str_in_input;
+    StringView search = {0};
     uint64 one_past_last_slash = dir.size;
     for(uint64 i = 0; i < dir_str_in_input.size; i += 1)
     {
@@ -4045,10 +4045,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  String8 query = string;
-  String8 query_normalized = path_normalized_from_string(scratch.arena, query);
+  StringView query = string;
+  StringView query_normalized = path_normalized_from_string(scratch.arena, query);
   B32 query_has_slash = (query.size != 0 && char_to_correct_slash(query.str[query.size-1]) == '/');
-  String8 query_normalized_with_opt_slash = push_str8f(scratch.arena, "%S%s", query_normalized, query_has_slash ? "/" : "");
+  StringView query_normalized_with_opt_slash = push_str8f(scratch.arena, "%S%s", query_normalized, query_has_slash ? "/" : "");
   RD_PathQuery path_query = rd_path_query_from_string(query_normalized_with_opt_slash);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
@@ -4074,7 +4074,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   //- rjf: grab state for the current path
   RD_FileSystemViewPathState* ps = 0;
   {
-    String8 key = query_normalized;
+    StringView key = query_normalized;
     uint64 hash = d_hash_from_string(key);
     uint64 slot = hash % fs.path_state_table_size;
     for(RD_FileSystemViewPathState* p = fs.path_state_table[slot]; p != 0; p = p.hash_next)
@@ -4210,7 +4210,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       // rjf: is a folder . autocomplete to slash
       if(query_normalized_with_opt_slash_props.flags & FilePropertyFlag_IsFolder)
       {
-        String8 new_path = push_str8f(scratch.arena, "%S%S/", path_query.path, path_query.search);
+        StringView new_path = push_str8f(scratch.arena, "%S%S/", path_query.path, path_query.search);
         rd_store_view_filter(new_path);
       }
       
@@ -4230,16 +4230,16 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     // rjf: command argument does not exactly match any file, but lister results are in:
     else if(file_count != 0)
     {
-      String8 filename = files[0].filename;
+      StringView filename = files[0].filename;
       if(files[0].props.flags & FilePropertyFlag_IsFolder)
       {
-        String8 existing_path = str8_chop_last_slash(path_query.path);
-        String8 new_path = push_str8f(scratch.arena, "%S/%S/", existing_path, files[0].filename);
+        StringView existing_path = str8_chop_last_slash(path_query.path);
+        StringView new_path = push_str8f(scratch.arena, "%S/%S/", existing_path, files[0].filename);
         rd_store_view_filter(new_path);
       }
       else
       {
-        String8 file_path = push_str8f(scratch.arena, "%S%S", path_query.path, filename);
+        StringView file_path = push_str8f(scratch.arena, "%S%S", path_query.path, filename);
         rd_cmd(RD_CmdKind_CompleteQuery, .file_path = file_path);
       }
     }
@@ -4265,7 +4265,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       struct
       {
         RD_FileSortKind kind;
-        String8 string;
+        StringView string;
       }
       kinds[] =
       {
@@ -4357,9 +4357,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       // rjf: click => up one directory
       if(ui_clicked(sig))
       {
-        String8 new_path = str8_chop_last_slash(str8_chop_last_slash(path_query.path));
+        StringView new_path = str8_chop_last_slash(str8_chop_last_slash(path_query.path));
         new_path = path_normalized_from_string(scratch.arena, new_path);
-        String8 new_cmd = push_str8f(scratch.arena, "%S%s", new_path, new_path.size != 0 ? "/" : "");
+        StringView new_cmd = push_str8f(scratch.arena, "%S%s", new_path, new_path.size != 0 ? "/" : "");
         rd_store_view_filter(new_cmd);
       }
     }
@@ -4418,7 +4418,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         {
           DateTime time = date_time_from_dense_time(file.props.modified);
           DateTime time_local = os_local_time_from_universal(&time);
-          String8 string = push_date_time_string(scratch.arena, &time_local);
+          StringView string = push_date_time_string(scratch.arena, &time_local);
           ui_label(string);
         }
         
@@ -4436,12 +4436,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       // rjf: click => activate this file
       if(ui_clicked(file_sig))
       {
-        String8 existing_path = str8_chop_last_slash(path_query.path);
-        String8 new_path = push_str8f(scratch.arena, "%S%s%S/", existing_path, existing_path.size != 0 ? "/" : "", file.filename);
+        StringView existing_path = str8_chop_last_slash(path_query.path);
+        StringView new_path = push_str8f(scratch.arena, "%S%s%S/", existing_path, existing_path.size != 0 ? "/" : "", file.filename);
         new_path = path_normalized_from_string(scratch.arena, new_path);
         if(file.props.flags & FilePropertyFlag_IsFolder)
         {
-          String8 new_cmd = push_str8f(scratch.arena, "%S%s", new_path, new_path.size != 0 ? "/" : "");
+          StringView new_cmd = push_str8f(scratch.arena, "%S%s", new_path, new_path.size != 0 ? "/" : "");
           rd_store_view_filter(new_cmd);
         }
         else
@@ -4489,7 +4489,7 @@ struct RD_ProcessInfoArray
 };
 
 RD_ProcessInfoList
-rd_process_info_list_from_query(Arena* arena, String8 query)
+rd_process_info_list_from_query(Arena* arena, StringView query)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -4632,7 +4632,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
     B32 need_initial_gather;
     uint32 selected_pid;
     Arena* cached_process_arena;
-    String8 cached_process_arg;
+    StringView cached_process_arg;
     RD_ProcessInfoArray cached_process_array;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
@@ -4645,7 +4645,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   }
   
   //- rjf: gather list of filtered process infos
-  String8 query = string;
+  StringView query = string;
   RD_ProcessInfoArray process_info_array = sp.cached_process_array;
   if(sp.need_initial_gather || !str8_match(sp.cached_process_arg, query, 0))
   {
@@ -4801,7 +4801,7 @@ struct RD_EntityListerItemArray
 };
 
 RD_EntityListerItemList
-rd_entity_lister_item_list_from_needle(Arena* arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
+rd_entity_lister_item_list_from_needle(Arena* arena, RD_EntityKind kind, RD_EntityFlags omit_flags, StringView needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_EntityListerItemList result = {0};
@@ -4812,7 +4812,7 @@ rd_entity_lister_item_list_from_needle(Arena* arena, RD_EntityKind kind, RD_Enti
     if(!(entity.flags & omit_flags))
     {
       DR_FancyStringList title_fstrs = rd_title_fstrs_from_entity(scratch.arena, entity, v4f32(0, 0, 0, 0), 0);
-      String8 title_string = dr_string_from_fancy_string_list(scratch.arena, &title_fstrs);
+      StringView title_string = dr_string_from_fancy_string_list(scratch.arena, &title_fstrs);
       FuzzyMatchRangeList match_rngs = fuzzy_match_find(arena, needle, title_string);
       if(match_rngs.count != 0 || needle.size == 0)
       {
@@ -5003,7 +5003,7 @@ struct RD_CtrlEntityListerItemArray
 };
 
 RD_CtrlEntityListerItemList
-rd_ctrl_entity_lister_item_list_from_needle(Arena* arena, CTRL_EntityKind kind, String8 needle)
+rd_ctrl_entity_lister_item_list_from_needle(Arena* arena, CTRL_EntityKind kind, StringView needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_CtrlEntityListerItemList result = {0};
@@ -5012,7 +5012,7 @@ rd_ctrl_entity_lister_item_list_from_needle(Arena* arena, CTRL_EntityKind kind, 
   {
     CTRL_Entity* entity = n.v;
     DR_FancyStringList title_fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, entity, v4f32(0, 0, 0, 0), 0, 0);
-    String8 title_fstrs_text = dr_string_from_fancy_string_list(scratch.arena, &title_fstrs);
+    StringView title_fstrs_text = dr_string_from_fancy_string_list(scratch.arena, &title_fstrs);
     FuzzyMatchRangeList match_rngs = fuzzy_match_find(arena, needle, title_fstrs_text);
     if(match_rngs.count == match_rngs.needle_part_count || needle.size == 0)
     {
@@ -5252,7 +5252,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, item.idx);
         uint64 name_size = 0;
         uint8* name_base = rdi_string_from_idx(rdi, procedure.name_string_idx, &name_size);
-        String8 name = str8(name_base, name_size);
+        StringView name = StringView(name_base, name_size);
         if(name.size != 0)
         {
           rd_cmd(RD_CmdKind_CompleteQuery, .string = name);
@@ -5299,7 +5299,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
       RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, item.idx);
       uint64 name_size = 0;
       uint8* name_base = rdi_string_from_idx(rdi, procedure.name_string_idx, &name_size);
-      String8 name = str8(name_base, name_size);
+      StringView name = StringView(name_base, name_size);
       RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure.type_idx);
       E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), procedure.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
       
@@ -5318,7 +5318,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         ui_box_equip_fuzzy_match_ranges(box, &item.match_ranges);
         if(!e_type_key_match(e_type_key_zero(), type_key))
         {
-          String8 type_string = e_type_string_from_key(scratch.arena, type_key);
+          StringView type_string = e_type_string_from_key(scratch.arena, type_key);
           rd_code_label(0.5f, 0, rd_rgba_from_theme_color(RD_ThemeColor_TextWeak), type_string);
         }
       }
@@ -5338,7 +5338,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, binary_voff);
         if(lines.first != 0 && lines.first.v.file_path.size != 0 && lines.first.v.pt.line != 0)
         {
-          String8 file_path = lines.first.v.file_path;
+          StringView file_path = lines.first.v.file_path;
           int64 line_num = lines.first.v.pt.line;
           RD_Font(RD_FontSlot_Main) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
             ui_labelf("%S:%I64d", file_path, line_num);
@@ -5683,15 +5683,15 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   }
   
   //- rjf: determine if file is ready, and which viewer to use
-  String8 expr_string = rd_view_expr_string();
-  String8 file_path = rd_file_path_from_eval_string(scratch.arena, expr_string);
+  StringView expr_string = rd_view_expr_string();
+  StringView file_path = rd_file_path_from_eval_string(scratch.arena, expr_string);
   Rng1U64 file_range = r1u64(0, 1024);
   U128 file_hash = fs_hash_from_path_range(file_path, file_range, 0);
   B32 file_is_ready = 0;
   RD_ViewRuleKind viewer_kind = RD_ViewRuleKind_Text;
   {
     HS_Scope* hs_scope = hs_scope_open();
-    String8 data = hs_data_from_hash(hs_scope, file_hash);
+    StringView data = hs_data_from_hash(hs_scope, file_hash);
     if(!u128_match(file_hash, u128_zero()))
     {
       uint64 num_utf8_bytes = 0;
@@ -5748,7 +5748,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
   if(file_is_ready && viewer_kind != RD_ViewRuleKind_Null)
   {
     RD_ViewRuleInfo* view_rule_info = rd_view_rule_info_from_kind(viewer_kind);
-    String8 query = rd_eval_string_from_file_path(scratch.arena, file_path);
+    StringView query = rd_eval_string_from_file_path(scratch.arena, file_path);
     RD_View* view = rd_view_from_handle(rd_regs().view);
     rd_view_equip_spec(view, view_rule_info, query, params_copy);
   }
@@ -5808,8 +5808,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
       // rjf: override file picking
       case RD_CmdKind_PickFile:
       {
-        String8 src = rd_file_path_from_eval_string(scratch.arena, rd_view_expr_string());
-        String8 dst = cmd.regs.file_path;
+        StringView src = rd_file_path_from_eval_string(scratch.arena, rd_view_expr_string());
+        StringView dst = cmd.regs.file_path;
         if(src.size != 0 && dst.size != 0)
         {
           // rjf: record src . dst mapping
@@ -5825,7 +5825,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: unpack parameterization info
   //
-  String8 path = rd_file_path_from_eval_string(rd_frame_arena(), string);
+  StringView path = rd_file_path_from_eval_string(rd_frame_arena(), string);
   rd_regs().file_path     = path;
   rd_regs().vaddr         = 0;
   rd_regs().prefer_disasm = 0;
@@ -5843,7 +5843,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   rd_regs().lang_kind = rd_lang_kind_from_eval_params(eval, params);
   U128 hash = {0};
   TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, rd_regs().text_key, rd_regs().lang_kind, &hash);
-  String8 data = hs_data_from_hash(hs_scope, hash);
+  StringView data = hs_data_from_hash(hs_scope, hash);
   B32 file_is_missing = (path.size != 0 && os_properties_from_file_path(path).modified == 0);
   B32 key_has_data = !u128_match(hash, u128_zero()) && info.lines_count;
   
@@ -5911,7 +5911,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //- rjf: determine if file is out-of-date
   //
   B32 file_is_out_of_date = 0;
-  String8 out_of_date_dbgi_name = {0};
+  StringView out_of_date_dbgi_name = {0};
   {
     uint64 file_timestamp = fs_timestamp_from_path(path);
     if(file_timestamp != 0)
@@ -6068,7 +6068,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   float bottom_bar_height = ui_top_font_size()*2.f;
   Rng2F32 code_area_rect = r2f32p(rect.x0, rect.y0, rect.x1, rect.y1 - bottom_bar_height);
   Rng2F32 bottom_bar_rect = r2f32p(rect.x0, rect.y1 - bottom_bar_height, rect.x1, rect.y1);
-  rd_regs().file_path = str8_zero();
+  rd_regs().file_path = StringView();
   rd_regs().cursor = dv.cursor;
   rd_regs().mark = dv.mark;
   
@@ -6142,7 +6142,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   rd_regs().lang_kind = txt_lang_kind_from_arch(arch);
   U128 dasm_text_hash = {0};
   TXT_TextInfo dasm_text_info = txt_text_info_from_key_lang(txt_scope, rd_regs().text_key, rd_regs().lang_kind, &dasm_text_hash);
-  String8 dasm_text_data = hs_data_from_hash(hs_scope, dasm_text_hash);
+  StringView dasm_text_data = hs_data_from_hash(hs_scope, dasm_text_hash);
   B32 has_disasm = (dasm_info.lines.count != 0 && dasm_text_info.lines_count != 0);
   B32 is_loading = (!has_disasm && dim_1u64(range) != 0 && eval.msgs.max_kind == E_MsgKind_Null && (space.kind != RD_EvalSpaceKind_CtrlEntity || space_entity != &ctrl_entity_nil));
   
@@ -6256,7 +6256,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   //////////////////////////////
   //- rjf: unpack parameterization info
   //
-  rd_regs().file_path     = str8_zero();
+  rd_regs().file_path     = StringView();
   rd_regs().vaddr         = 0;
   rd_regs().cursor.line   = rd_value_from_params_key(params, ("cursor_line")).s64;
   rd_regs().cursor.column = rd_value_from_params_key(params, ("cursor_column")).s64;
@@ -6270,7 +6270,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   TXT_LangKind lang_kind = TXT_LangKind_Null;
   U128 hash = {0};
   TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, key, lang_kind, &hash);
-  String8 data = hs_data_from_hash(hs_scope, hash);
+  StringView data = hs_data_from_hash(hs_scope, hash);
   Rng1U64 empty_range = {0};
   if(info.lines_count == 0)
   {
@@ -6611,9 +6611,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   struct Annotation
   {
     Annotation* next;
-    String8 name_string;
-    String8 kind_string;
-    String8 type_string;
+    StringView name_string;
+    StringView kind_string;
+    StringView type_string;
     Vec4F32 color;
     Rng1U64 vaddr_range;
   };
@@ -6645,7 +6645,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           CTRL_Entity* module = ctrl_module_from_process_vaddr(process, f_rip);
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
           uint64 rip_voff = ctrl_voff_from_vaddr(module, f_rip);
-          String8 symbol_name = d_symbol_name_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff, 1);
+          StringView symbol_name = d_symbol_name_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff, 1);
           Annotation* annotation = push_array(scratch.arena, Annotation, 1);
           annotation.name_string = symbol_name.size != 0 ? symbol_name : ("[external code]");
           annotation.kind_string = ("Call Stack Frame");
@@ -6699,7 +6699,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       uint64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_regs().unwind_count);
       for(E_String2NumMapNode* n = e_parse_ctx.locals_map.first; n != 0; n = n.order_next)
       {
-        String8 local_name = n.string;
+        StringView local_name = n.string;
         E_Eval local_eval = e_eval_from_string(scratch.arena, local_name);
         if(local_eval.mode == E_Mode_Offset)
         {
@@ -7054,7 +7054,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
               num_bytes_this_row += 1;
             }
           }
-          String8 ascii_text = str8(row_ascii_buffer, num_bytes_this_row);
+          StringView ascii_text = StringView(row_ascii_buffer, num_bytes_this_row);
           UI_Box* ascii_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
           if(selection.max >= row_range_bytes.min && selection.min < row_range_bytes.max)
           {
@@ -7314,7 +7314,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   TEX_Topology topology = tex_topology_make(dim, fmt);
   U128 data_hash = {0};
   R_Handle texture = tex_texture_from_key_topology(tex_scope, texture_key, topology, &data_hash);
-  String8 data = hs_data_from_hash(hs_scope, data_hash);
+  StringView data = hs_data_from_hash(hs_scope, data_hash);
   
   //////////////////////////////
   //- rjf: equip loading info
@@ -7604,7 +7604,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
       }
       UI_PrefWidth(ui_children_sum(1)) UI_Column UI_PrefWidth(ui_text_dim(10, 1)) UI_PrefHeight(ui_em(2.f, 0.f)) RD_Font(RD_FontSlot_Code)
       {
-        String8 hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
+        StringView hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
         ui_label(hex_string);
         ui_labelf("%.2f", rgba.x);
         ui_labelf("%.2f", rgba.y);
@@ -7797,7 +7797,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   Temp scratch = scratch_begin(0, 0);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  String8 query = string;
+  StringView query = string;
   
   //- rjf: get state
   struct RD_ExceptionFiltersViewState
@@ -7809,7 +7809,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   //- rjf: get list of options
   struct RD_ExceptionFiltersOption
   {
-    String8 name;
+    StringView name;
     FuzzyMatchRangeList matches;
     B32 is_enabled;
     CTRL_ExceptionCodeKind exception_code_kind;
@@ -7839,7 +7839,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
       k = (CTRL_ExceptionCodeKind)(k+1))
   {
     RD_ExceptionFiltersOptionChunkNode* node = opts_list.last;
-    String8 name = push_str8f(scratch.arena, "0x%x %S", ctrl_exception_code_kind_code_table[k], ctrl_exception_code_kind_display_string_table[k]);
+    StringView name = push_str8f(scratch.arena, "0x%x %S", ctrl_exception_code_kind_code_table[k], ctrl_exception_code_kind_display_string_table[k]);
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, query, name);
     if(matches.count >= matches.needle_part_count)
     {
@@ -7937,8 +7937,8 @@ enum RD_SettingsItemKind
 struct RD_SettingsItem
 {
   RD_SettingsItemKind kind;
-  String8 kind_string;
-  String8 string;
+  StringView kind_string;
+  StringView string;
   FuzzyMatchRangeList kind_string_matches;
   FuzzyMatchRangeList string_matches;
   RD_IconKind icon_kind;
@@ -7995,7 +7995,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  String8 query = string;
+  StringView query = string;
   RD_Window* window = rd_window_from_handle(rd_regs().window);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   
@@ -8050,8 +8050,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         {
           continue;
         }
-        String8 kind_string = ("Global Interface Setting");
-        String8 string = rd_setting_code_display_string_table[code];
+        StringView kind_string = ("Global Interface Setting");
+        StringView string = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
         if(string_matches.count == string_matches.needle_part_count ||
@@ -8092,8 +8092,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         {
           continue;
         }
-        String8 kind_string = ("Window Interface Setting");
-        String8 string = rd_setting_code_display_string_table[code];
+        StringView kind_string = ("Window Interface Setting");
+        StringView string = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
         if(string_matches.count == string_matches.needle_part_count ||
@@ -8130,8 +8130,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     {
       for EachEnumVal(RD_ThemePreset, preset)
       {
-        String8 kind_string = ("Theme Preset");
-        String8 string = rd_theme_preset_display_string_table[preset];
+        StringView kind_string = ("Theme Preset");
+        StringView string = rd_theme_preset_display_string_table[preset];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
         if(string_matches.count == string_matches.needle_part_count ||
@@ -8168,8 +8168,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     {
       for EachNonZeroEnumVal(RD_ThemeColor, color)
       {
-        String8 kind_string = ("Theme Color");
-        String8 string = rd_theme_color_display_string_table[color];
+        StringView kind_string = ("Theme Color");
+        StringView string = rd_theme_color_display_string_table[color];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
         if(string_matches.count == string_matches.needle_part_count ||
@@ -8277,22 +8277,22 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         Vec3F32 hsv = v3f32(hsva.x, hsva.y, hsva.z);
         Vec3F32 rgb = rgb_from_hsv(hsv);
         Vec4F32 rgba = v4f32(rgb.x, rgb.y, rgb.z, sv.color_ctx_menu_color_hsva.w);
-        String8 hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
+        StringView hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
         hex_string = push_str8f(scratch.arena, "#%S", hex_string);
-        String8 r_string = push_str8f(scratch.arena, "%.2f", rgba.x);
-        String8 g_string = push_str8f(scratch.arena, "%.2f", rgba.y);
-        String8 b_string = push_str8f(scratch.arena, "%.2f", rgba.z);
-        String8 h_string = push_str8f(scratch.arena, "%.2f", hsva.x);
-        String8 s_string = push_str8f(scratch.arena, "%.2f", hsva.y);
-        String8 v_string = push_str8f(scratch.arena, "%.2f", hsva.z);
-        String8 a_string = push_str8f(scratch.arena, "%.2f", rgba.w);
+        StringView r_string = push_str8f(scratch.arena, "%.2f", rgba.x);
+        StringView g_string = push_str8f(scratch.arena, "%.2f", rgba.y);
+        StringView b_string = push_str8f(scratch.arena, "%.2f", rgba.z);
+        StringView h_string = push_str8f(scratch.arena, "%.2f", hsva.x);
+        StringView s_string = push_str8f(scratch.arena, "%.2f", hsva.y);
+        StringView v_string = push_str8f(scratch.arena, "%.2f", hsva.z);
+        StringView a_string = push_str8f(scratch.arena, "%.2f", rgba.w);
         UI_Row RD_Font(RD_FontSlot_Code)
         {
           UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(4.5f, 1.f)) ui_labelf("Hex");
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, hex_string, "###hex_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_rgba = rgba_from_hex_string_4f32(string);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
@@ -8305,7 +8305,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, r_string, "###r_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_rgba = v4f32((float)f64_from_str8(string), rgba.y, rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
@@ -8317,7 +8317,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, g_string, "###g_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_rgba = v4f32(rgba.x, (float)f64_from_str8(string), rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
@@ -8329,7 +8329,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, b_string, "###b_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_rgba = v4f32(rgba.x, rgba.y, (float)f64_from_str8(string), rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
@@ -8342,7 +8342,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, h_string, "###h_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_hsva = v4f32((float)f64_from_str8(string), hsva.y, hsva.z, hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8353,7 +8353,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, s_string, "###s_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_hsva = v4f32(hsva.x, (float)f64_from_str8(string), hsva.z, hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8364,7 +8364,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, v_string, "###v_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, (float)f64_from_str8(string), hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8376,7 +8376,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, a_string, "###a_edit");
           if(ui_committed(sig))
           {
-            String8 string = str8(sv.txt_buffer, sv.txt_size);
+            StringView string = StringView(sv.txt_buffer, sv.txt_size);
             Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, hsva.z, (float)f64_from_str8(string));
             sv.color_ctx_menu_color_hsva = new_hsva;
           }

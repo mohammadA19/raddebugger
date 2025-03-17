@@ -751,7 +751,7 @@ read_only static uint8 pe_dos_program_data[] =
   0x74, 0x20, 0x62, 0x65, 0x20, 0x72, 0x75, 0x6E, 0x20, 0x69, 0x6E, 0x20, 0x44, 0x4F, 0x53, 0x20,
   0x6D, 0x6F, 0x64, 0x65, 0x2E, 0x24, 0x00, 0x00
 }
-read_only static String8 pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_program_data)};
+read_only static StringView pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_program_data)};
 
 ////////////////////////////////
 //~ rjf: Parsed Info Types
@@ -795,7 +795,7 @@ struct PE_Resource
       uint32                      data_version;
       uint32                      version;
       COFF_ResourceMemoryFlags memory_flags;
-      String8                  data;
+      StringView                  data;
     } coff_res;
   } u;
 }
@@ -833,8 +833,8 @@ struct PE_ResourceDir
 
 struct PE_ParsedExport
 {
-  String8 forwarder;
-  String8 name;
+  StringView forwarder;
+  StringView name;
   uint64     voff;
   uint64     ordinal;
 }
@@ -867,14 +867,14 @@ struct PE_ParsedImport
     struct
     {
       uint64     hint;
-      String8 string;
+      StringView string;
     } name;
   } u;
 }
 
 struct PE_ParsedStaticDLLImport
 {
-  String8          name;
+  StringView          name;
   uint64              import_address_table_voff;
   uint64              import_name_table_voff;
   COFF_TimeStamp   time_stamp;
@@ -892,7 +892,7 @@ struct PE_ParsedStaticImportTable
 struct PE_ParsedDelayDLLImport
 {
   uint32              attributes;
-  String8          name;
+  StringView          name;
   uint64              module_handle_voff;
   uint64              iat_voff;
   uint64              name_table_voff;
@@ -964,20 +964,20 @@ struct PE_DebugInfo
       struct
       {
         PE_CvHeaderPDB20 header;
-        String8          path;
+        StringView          path;
       } pdb20;
       struct
       {
         PE_CvHeaderPDB70 header;
-        String8          path;
+        StringView          path;
       } pdb70;
       struct
       {
         PE_CvHeaderRDI header;
-        String8        path;
+        StringView        path;
       } rdi;
     } codeview;
-    String8 raw_data;
+    StringView raw_data;
   } u;
 }
 
@@ -998,65 +998,65 @@ struct PE_DebugInfoList
 //~ rjf: Basic Enum Functions
 
 uint32                 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode);
-PE_WindowsSubsystem pe_subsystem_from_string(String8 string);
+PE_WindowsSubsystem pe_subsystem_from_string(StringView string);
 
-String8 pe_string_from_subsystem(PE_WindowsSubsystem x);
-String8 pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x);
-String8 pe_string_from_data_directory_index(PE_DataDirectoryIndex x);
-String8 pe_string_from_debug_directory_type(PE_DebugDirectoryType x);
-String8 pe_string_from_fpo_type(PE_FPOType x);
-String8 pe_string_from_misc_type(PE_DebugMiscType x);
-String8 pe_resource_kind_to_string(PE_ResourceKind x);
+StringView pe_string_from_subsystem(PE_WindowsSubsystem x);
+StringView pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x);
+StringView pe_string_from_data_directory_index(PE_DataDirectoryIndex x);
+StringView pe_string_from_debug_directory_type(PE_DebugDirectoryType x);
+StringView pe_string_from_fpo_type(PE_FPOType x);
+StringView pe_string_from_misc_type(PE_DebugMiscType x);
+StringView pe_resource_kind_to_string(PE_ResourceKind x);
 
-String8 pe_string_from_fpo_flags(Arena* arena, PE_FPOFlags flags);
-String8 pe_string_from_global_flags(Arena* arena, PE_GlobalFlags flags);
-String8 pe_string_from_load_config_guard_flags(Arena* arena, PE_LoadConfigGuardFlags flags);
-String8 pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars);
+StringView pe_string_from_fpo_flags(Arena* arena, PE_FPOFlags flags);
+StringView pe_string_from_global_flags(Arena* arena, PE_GlobalFlags flags);
+StringView pe_string_from_load_config_guard_flags(Arena* arena, PE_LoadConfigGuardFlags flags);
+StringView pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars);
 
 ////////////////////////////////
 //~ rjf: Parser Functions
 
-PE_BinInfo pe_bin_info_from_data(Arena* arena, String8 data);
+PE_BinInfo pe_bin_info_from_data(Arena* arena, StringView data);
 
-PE_DebugInfoList           pe_parse_debug_directory(Arena* arena, String8 raw_image, String8 raw_debug_dir);
-PE_ParsedStaticImportTable pe_static_imports_from_data(Arena* arena, B32 is_pe32, uint64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range);
-PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena* arena, B32 is_pe32, uint64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range);
-PE_ParsedExportTable       pe_exports_from_data(Arena* arena, uint64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
-PE_ParsedTLS               pe_tls_from_data(Arena* arena, COFF_MachineType machine, uint64 image_base, uint64 section_count, COFF_SectionHeader* sections, String8 raw_data, Rng1U64 tls_frange);
+PE_DebugInfoList           pe_parse_debug_directory(Arena* arena, StringView raw_image, StringView raw_debug_dir);
+PE_ParsedStaticImportTable pe_static_imports_from_data(Arena* arena, B32 is_pe32, uint64 section_count, COFF_SectionHeader* sections, StringView raw_data, Rng1U64 dir_file_range);
+PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena* arena, B32 is_pe32, uint64 section_count, COFF_SectionHeader* sections, StringView raw_data, Rng1U64 dir_file_range);
+PE_ParsedExportTable       pe_exports_from_data(Arena* arena, uint64 section_count, COFF_SectionHeader* sections, StringView raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
+PE_ParsedTLS               pe_tls_from_data(Arena* arena, COFF_MachineType machine, uint64 image_base, uint64 section_count, COFF_SectionHeader* sections, StringView raw_data, Rng1U64 tls_frange);
 
 ////////////////////////////////
 //~ rjf: Helpers
 
-uint64                   pe_pdata_off_from_voff__binary_search_x8664(String8 raw_data, uint64 voff);
-void *                pe_ptr_from_voff(String8 data, PE_BinInfo* bin, uint64 voff);
-uint64                   pe_section_num_from_voff(String8 data, PE_BinInfo* bin, uint64 voff);
-void *                pe_ptr_from_section_num(String8 data, PE_BinInfo* bin, uint64 n);
-uint64                   pe_foff_from_voff(String8 data, PE_BinInfo* bin, uint64 voff);
-PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena* arena, String8 raw_relocs);
-Rng1U64               pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo* bin, uint64 base_vaddr);
+uint64                   pe_pdata_off_from_voff__binary_search_x8664(StringView raw_data, uint64 voff);
+void *                pe_ptr_from_voff(StringView data, PE_BinInfo* bin, uint64 voff);
+uint64                   pe_section_num_from_voff(StringView data, PE_BinInfo* bin, uint64 voff);
+void *                pe_ptr_from_section_num(StringView data, PE_BinInfo* bin, uint64 n);
+uint64                   pe_foff_from_voff(StringView data, PE_BinInfo* bin, uint64 voff);
+PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena* arena, StringView raw_relocs);
+Rng1U64               pe_tls_rng_from_bin_base_vaddr(StringView data, PE_BinInfo* bin, uint64 base_vaddr);
 String8Array          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
 
 ////////////////////////////////
 //~ Resource Helpers
 
-B32               pe_is_res(String8 data);
-void              pe_resource_dir_push_res_file(Arena* arena, PE_ResourceDir* root_dir, String8 res_file);
+B32               pe_is_res(StringView data);
+void              pe_resource_dir_push_res_file(Arena* arena, PE_ResourceDir* root_dir, StringView res_file);
 PE_ResourceNode * pe_resource_dir_push_dir_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, uint32 characteristics, COFF_TimeStamp time_stamp, uint16 major_version, uint16 minor_version);
-PE_ResourceNode * pe_resource_dir_push_entry_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, uint32 data_version, uint32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
-PE_Resource *     pe_resource_dir_push_entry(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, uint32 data_version, uint32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
+PE_ResourceNode * pe_resource_dir_push_entry_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, uint32 data_version, uint32 version, COFF_ResourceMemoryFlags memory_flags, StringView data);
+PE_Resource *     pe_resource_dir_push_entry(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, uint32 data_version, uint32 version, COFF_ResourceMemoryFlags memory_flags, StringView data);
 PE_Resource *     pe_resource_dir_push_dir(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, uint32 characteristics, COFF_TimeStamp time_stamp, uint16 major_version, uint16 minor_version);
 PE_ResourceNode * pe_resource_dir_search_node(PE_ResourceDir* dir, COFF_ResourceID id);
 PE_Resource *     pe_resource_dir_search(PE_ResourceDir* dir, COFF_ResourceID id);
 PE_ResourceArray  pe_resource_list_to_array(Arena* arena, PE_ResourceList* list);
-PE_ResourceDir *  pe_resource_table_from_directory_data(Arena* arena, String8 data);
+PE_ResourceDir *  pe_resource_table_from_directory_data(Arena* arena, StringView data);
 
-String8 pe_make_manifest_resource(Arena* arena, uint32 resource_id, String8 manifest_data);
+StringView pe_make_manifest_resource(Arena* arena, uint32 resource_id, StringView manifest_data);
 
 ////////////////////////////////
 //~ Debug Directory
 
-String8 pe_make_debug_header_pdb70(Arena* arena, Guid guid, uint32 age, String8 pdb_path);
-String8 pe_make_debug_header_rdi(Arena* arena, Guid guid, String8 rdi_path);
+StringView pe_make_debug_header_pdb70(Arena* arena, Guid guid, uint32 age, StringView pdb_path);
+StringView pe_make_debug_header_rdi(Arena* arena, Guid guid, StringView rdi_path);
 
 ////////////////////////////////
 //~ Image Checksum

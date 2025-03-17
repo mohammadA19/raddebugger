@@ -1710,7 +1710,7 @@ rdib_path_tree_init(Arena* arena, uint64 list_count)
 }
 
 void
-rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, String8 path, RDIB_SourceFile* src_file)
+rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, StringView path, RDIB_SourceFile* src_file)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1757,7 +1757,7 @@ rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, String8 path, RDIB_Sour
 }
 
 uint32
-rdib_idx_from_path_tree(RDIB_PathTree* tree, String8 path)
+rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -1807,7 +1807,7 @@ rdib_idx_from_path_tree(RDIB_PathTree* tree, String8 path)
 ////////////////////////////////
 
 uint64
-rdib_string_map_hash(String8 string)
+rdib_string_map_hash(StringView string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;
@@ -1823,7 +1823,7 @@ rdib_init_string_map(Arena* arena, uint64 cap)
 }
 
 uint32
-rdib_idx_from_string_map(RDIB_StringMap* string_map, String8 string)
+rdib_idx_from_string_map(RDIB_StringMap* string_map, StringView string)
 {
   uint64 hash     = rdib_string_map_hash(string);
   uint64 best_idx = hash % string_map.cap;
@@ -1922,7 +1922,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket** buckets, uint64 cap, uin
 }
 
 void
-rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string, void* value)
+rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, void* value)
 {
   // do we have a free bucket?
   RDIB_StringMapBucket** bucket = &task.free_buckets[task_id];
@@ -2190,13 +2190,13 @@ rdib_string_map_assign_indices(RDIB_StringMapBucket** buckets, uint64 bucket_cou
 // Specialized Inserts
 
 void
-rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string)
+rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, 0);
 }
 
 void
-rdib_string_map_insert_name_map_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string, VoidNode* node)
+rdib_string_map_insert_name_map_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, VoidNode* node)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, node);
 }
@@ -3708,11 +3708,11 @@ rdib_data_sections_from_string_map(TP_Context* tp, Arena* arena, RDIB_DataSectio
   // fill out string table section
   RDIB_DataSection string_table_sect = {0};
   string_table_sect.tag = RDI_SectionKind_StringTable;
-  str8_list_push(arena, &string_table_sect.data, str8((uint8 *)task.string_table, sizeof(task.string_table[0]) * bucket_count));
+  str8_list_push(arena, &string_table_sect.data, StringView((uint8 *)task.string_table, sizeof(task.string_table[0]) * bucket_count));
 
   // fill out string data section
   RDIB_DataSection string_data_sect = { .tag = RDI_SectionKind_StringData };
-  str8_list_push(arena, &string_data_sect.data, str8(task.string_data, task.string_data_size));
+  str8_list_push(arena, &string_data_sect.data, StringView(task.string_data, task.string_data_size));
   
   // push sections to list
   rdib_data_section_list_push(arena, sect_list, string_table_sect);
@@ -4973,12 +4973,12 @@ rdib_init_input(Arena* arena)
 
     // Unit
     null_unit.arch             = RDI_Arch_NULL;
-    null_unit.unit_name        = str8_zero();
-    null_unit.compiler_name    = str8_zero();
-    null_unit.source_file      = str8_zero();
-    null_unit.object_file      = str8_zero();
-    null_unit.archive_file     = str8_zero();
-    null_unit.build_path       = str8_zero();
+    null_unit.unit_name        = StringView();
+    null_unit.compiler_name    = StringView();
+    null_unit.source_file      = StringView();
+    null_unit.object_file      = StringView();
+    null_unit.archive_file     = StringView();
+    null_unit.build_path       = StringView();
     null_unit.virt_range_count = 1;
     null_unit.virt_ranges      = push_array(arena, Rng1U64, 1);
     null_unit.virt_ranges[0]   = rng_1u64(0,0);

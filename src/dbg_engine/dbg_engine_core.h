@@ -9,13 +9,13 @@
 
 struct D_Target
 {
-  String8 exe;
-  String8 args;
-  String8 working_directory;
-  String8 custom_entry_point_name;
-  String8 stdout_path;
-  String8 stderr_path;
-  String8 stdin_path;
+  StringView exe;
+  StringView args;
+  StringView working_directory;
+  StringView custom_entry_point_name;
+  StringView stdout_path;
+  StringView stderr_path;
+  StringView stdin_path;
   B32 debug_subprocesses;
   String8List env;
 }
@@ -28,11 +28,11 @@ struct D_TargetArray
 
 struct D_Breakpoint
 {
-  String8 file_path;
+  StringView file_path;
   TxtPt pt;
-  String8 symbol_name;
+  StringView symbol_name;
   uint64 vaddr;
-  String8 condition;
+  StringView condition;
 }
 
 struct D_BreakpointArray
@@ -43,8 +43,8 @@ struct D_BreakpointArray
 
 struct D_PathMap
 {
-  String8 src;
-  String8 dst;
+  StringView src;
+  StringView dst;
 }
 
 struct D_PathMapArray
@@ -100,7 +100,7 @@ struct D_EventList
 
 struct D_Line
 {
-  String8 file_path;
+  StringView file_path;
   TxtPt pt;
   Rng1U64 voff_range;
   DI_Key dbgi_key;
@@ -155,10 +155,10 @@ enum D_ViewRuleSpecInfoFlags : uint32 // NOTE(rjf): see @view_rule_info
 
 struct D_ViewRuleSpecInfo
 {
-  String8 string;
-  String8 display_string;
-  String8 schema;
-  String8 description;
+  StringView string;
+  StringView display_string;
+  StringView schema;
+  StringView description;
   D_ViewRuleSpecInfoFlags flags;
 }
 
@@ -183,8 +183,8 @@ struct D_CmdParams
   CTRL_Handle process;
   CTRL_Handle thread;
   CTRL_Handle entity;
-  String8 string;
-  String8 file_path;
+  StringView string;
+  StringView file_path;
   TxtPt cursor;
   uint64 vaddr;
   B32 prefer_disasm;
@@ -353,10 +353,10 @@ static D_State* d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 d_hash_from_seed_string(uint64 seed, String8 string);
-uint64 d_hash_from_string(String8 string);
-uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string);
-uint64 d_hash_from_string__case_insensitive(String8 string);
+uint64 d_hash_from_seed_string(uint64 seed, StringView string);
+uint64 d_hash_from_string(StringView string);
+uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, StringView string);
+uint64 d_hash_from_string__case_insensitive(StringView string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
@@ -366,7 +366,7 @@ D_BreakpointArray d_breakpoint_array_copy(Arena* arena, D_BreakpointArray* src);
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-String8List d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps, String8 file_path);
+String8List d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps, StringView file_path);
 
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
@@ -386,7 +386,7 @@ void d_cmd_list_push_new(Arena* arena, D_CmdList* cmds, D_CmdKind kind, D_CmdPar
 //~ rjf: View Rule Spec Stateful Functions
 
 void d_register_view_rule_specs(D_ViewRuleSpecInfoArray specs);
-D_ViewRuleSpec* d_view_rule_spec_from_string(String8 string);
+D_ViewRuleSpec* d_view_rule_spec_from_string(StringView string);
 
 ////////////////////////////////
 //~ rjf: Stepping "Trap Net" Builders
@@ -399,12 +399,12 @@ CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena* arena, CTRL_Entity* 
 //~ rjf: Debug Info Lookups
 
 //- rjf: voff|vaddr . symbol lookups
-String8 d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B32 decorated);
-String8 d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vaddr, B32 decorated);
+StringView d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B32 decorated);
+StringView d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vaddr, B32 decorated);
 
 //- rjf: symbol . voff lookups
-uint64 d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name);
-uint64 d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, String8 name);
+uint64 d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, StringView symbol_name);
+uint64 d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, StringView name);
 
 //- rjf: voff . line info
 D_LineList d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff);
@@ -412,10 +412,10 @@ D_LineList d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 vof
 //- rjf: file:line . line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
-D_LineListArray d_lines_array_from_file_path_line_range(Arena* arena, String8 file_path, Rng1S64 line_num_range);
-D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, String8 file_path, int64 line_num);
-D_LineList d_lines_from_file_path_line_num(Arena* arena, String8 file_path, int64 line_num);
+D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, StringView file_path, Rng1S64 line_num_range);
+D_LineListArray d_lines_array_from_file_path_line_range(Arena* arena, StringView file_path, Rng1S64 line_num_range);
+D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, StringView file_path, int64 line_num);
+D_LineList d_lines_from_file_path_line_num(Arena* arena, StringView file_path, int64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups

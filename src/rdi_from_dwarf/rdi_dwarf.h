@@ -822,7 +822,7 @@ enum DWARF_SectionCode{
 }
 
 struct DWARF_SectionNameRow{
-  String8 name[DWARF_SECTION_NAME_VARIANT_COUNT];
+  StringView name[DWARF_SECTION_NAME_VARIANT_COUNT];
 }
 
 read_only static DWARF_SectionNameRow dwarf_section_name_table[] = {
@@ -842,8 +842,8 @@ read_only static DWARF_SectionNameRow dwarf_section_name_table[] = {
 struct DWARF_Parsed{
   ELF_Parsed* elf;
   uint32 debug_section_idx[DWARF_SectionCode_COUNT];
-  String8 debug_section_name[DWARF_SectionCode_COUNT];
-  String8 debug_data[DWARF_SectionCode_COUNT];
+  StringView debug_section_name[DWARF_SectionCode_COUNT];
+  StringView debug_data[DWARF_SectionCode_COUNT];
 }
 
 
@@ -1060,7 +1060,7 @@ struct DWARF_NamesUnit{
   uint32 bucket_count;
   uint32 name_count;
   uint32 abbrev_table_size;
-  String8 augmentation_string;
+  StringView augmentation_string;
   
 }
 
@@ -1100,7 +1100,7 @@ struct DWARF_ArangesParsed{
 
 struct DWARF_V4LineFileNamesEntry{
   struct DWARF_V4LineFileNamesEntry* next;
-  String8 file_name;
+  StringView file_name;
   uint64 include_directory_idx;
   uint64 last_modified_time;
   uint64 file_size;
@@ -1118,7 +1118,7 @@ struct DWARF_V5LinePathEntryFormat{
 }
 
 struct DWARF_V5Directory{
-  String8 path_str;
+  StringView path_str;
   uint64 path_off;
   uint64 path_sec_form;
   uint64 directory_index;
@@ -1314,7 +1314,7 @@ struct UNW_DW_CIEUnpacked{
   
   B8 has_augmentation_size;
   uint64 augmentation_size;
-  String8 augmentation;
+  StringView augmentation;
   
   uint64 code_align_factor;
   int64 data_align_factor;
@@ -1426,27 +1426,27 @@ enum UNW_DW_CFAControlBits : uint16{
 
 static DWARF_Parsed*         dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf);
 
-static DWARF_IndexParsed*    dwarf_index_from_data(Arena* arena, String8 data);
-static DWARF_SupParsed*      dwarf_sup_from_data(Arena* arena, String8 data);
-static DWARF_InfoParsed*     dwarf_info_from_data(Arena* arena, String8 data);
-static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena* arena, String8 data);
-static DWARF_NamesParsed*    dwarf_names_from_data(Arena* arena, String8 data);
-static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena* arena, String8 data);
-static DWARF_LineParsed*     dwarf_line_from_data(Arena* arena, String8 data);
-static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena* arena, String8 data);
-static DWARF_MacroParsed*    dwarf_macro_from_data(Arena* arena, String8 data);
-static DWARF_FrameParsed*    dwarf_frame_from_data(Arena* arena, String8 data);
-static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena* arena, String8 data);
-static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena* arena, String8 data);
-static DWARF_AddrParsed*     dwarf_addr_from_data(Arena* arena, String8 data);
-static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena* arena, String8 data);
-static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena* arena, String8 data);
+static DWARF_IndexParsed*    dwarf_index_from_data(Arena* arena, StringView data);
+static DWARF_SupParsed*      dwarf_sup_from_data(Arena* arena, StringView data);
+static DWARF_InfoParsed*     dwarf_info_from_data(Arena* arena, StringView data);
+static DWARF_PubNamesParsed* dwarf_pubnames_from_data(Arena* arena, StringView data);
+static DWARF_NamesParsed*    dwarf_names_from_data(Arena* arena, StringView data);
+static DWARF_ArangesParsed*  dwarf_aranges_from_data(Arena* arena, StringView data);
+static DWARF_LineParsed*     dwarf_line_from_data(Arena* arena, StringView data);
+static DWARF_MacInfoParsed*  dwarf_mac_info_from_data(Arena* arena, StringView data);
+static DWARF_MacroParsed*    dwarf_macro_from_data(Arena* arena, StringView data);
+static DWARF_FrameParsed*    dwarf_frame_from_data(Arena* arena, StringView data);
+static DWARF_RangesParsed*   dwarf_ranges_from_data(Arena* arena, StringView data);
+static DWARF_StrOffsetsParsed* dwarf_str_offsets_from_data(Arena* arena, StringView data);
+static DWARF_AddrParsed*     dwarf_addr_from_data(Arena* arena, StringView data);
+static DWARF_RngListsParsed* dwarf_rng_lists_from_data(Arena* arena, StringView data);
+static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena* arena, StringView data);
 
 
 // parse helpers
 
 // (DWARF4.pdf + 7.2.2) (DWARF5.pdf + 7.2.2)
-static void dwarf__initial_length(String8 data,
+static void dwarf__initial_length(StringView data,
                                   uint8** ptr_inout, uint8** unit_opl_out, B32* is_64bit_out);
 
 static void
@@ -1457,7 +1457,7 @@ dwarf__line_v5_directories(uint64 address_size, uint64 offset_size,
 
 // debug sections
 
-static String8 dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code);
+static StringView dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code);
 
 // abbrev functions
 
@@ -1480,14 +1480,14 @@ dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
 
 // string functions
 
-static String8 dwarf_string_from_unit_type(DWARF_UnitType type);
-static String8 dwarf_string_from_tag(DWARF_Tag tag);
-static String8 dwarf_string_from_attribute_name(DWARF_AttributeName name);
-static String8 dwarf_string_from_attribute_form(DWARF_AttributeForm form);
-static String8 dwarf_string_from_line_std_op(DWARF_LineStdOp op);
-static String8 dwarf_string_from_line_ext_op(DWARF_LineExtOp op);
-static String8 dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format);
-static String8 dwarf_string_from_section_code(DWARF_SectionCode sec_code);
+static StringView dwarf_string_from_unit_type(DWARF_UnitType type);
+static StringView dwarf_string_from_tag(DWARF_Tag tag);
+static StringView dwarf_string_from_attribute_name(DWARF_AttributeName name);
+static StringView dwarf_string_from_attribute_form(DWARF_AttributeForm form);
+static StringView dwarf_string_from_line_std_op(DWARF_LineStdOp op);
+static StringView dwarf_string_from_line_ext_op(DWARF_LineExtOp op);
+static StringView dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format);
+static StringView dwarf_string_from_section_code(DWARF_SectionCode sec_code);
 
 #endif //RDI_DWARF_H
 

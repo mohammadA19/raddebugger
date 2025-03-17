@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: RDI Enum . String Functions
 
-String8
+StringView
 rdi_string_from_reg_code_x86(uint64 reg_code)
 {
 #define X(name, value) case RDI_RegCodeX86_##name: return (#name);
@@ -15,7 +15,7 @@ rdi_string_from_reg_code_x86(uint64 reg_code)
   return ("");
 }
 
-String8
+StringView
 rdi_string_from_reg_code_x64(uint64 reg_code)
 {
 #define X(name, value) case RDI_RegCodeX64_##name: return (#name);
@@ -26,7 +26,7 @@ rdi_string_from_reg_code_x64(uint64 reg_code)
   return ("");
 }
 
-String8
+StringView
 rdi_string_from_reg_code(RDI_Arch arch, uint64 reg_code)
 {
   switch (arch) {
@@ -38,10 +38,10 @@ rdi_string_from_reg_code(RDI_Arch arch, uint64 reg_code)
   return ("");
 }
 
-String8
+StringView
 rdi_string_from_data_section_kind(RDI_SectionKind v)
 {
-  String8 result = ("<invalid RDI_SectionKind>");
+  StringView result = ("<invalid RDI_SectionKind>");
   switch(v)
   {
     default:{}break;
@@ -52,10 +52,10 @@ rdi_string_from_data_section_kind(RDI_SectionKind v)
   return result;
 }
 
-String8
+StringView
 rdi_string_from_arch(RDI_Arch v)
 {
-  String8 result = ("<invalid RDI_Arch>");
+  StringView result = ("<invalid RDI_Arch>");
   switch(v)
   {
     default:{}break;
@@ -66,10 +66,10 @@ rdi_string_from_arch(RDI_Arch v)
   return result;
 }
 
-String8
+StringView
 rdi_string_from_language(RDI_Language v)
 {
-  String8 result = ("<invalid RDI_Language>");
+  StringView result = ("<invalid RDI_Language>");
   switch(v)
   {
     default:{}break;
@@ -80,10 +80,10 @@ rdi_string_from_language(RDI_Language v)
   return result;
 }
 
-String8
+StringView
 rdi_string_from_type_kind(RDI_TypeKind v)
 {
-  String8 result = ("<invalid RDI_TypeKind>");
+  StringView result = ("<invalid RDI_TypeKind>");
   switch(v)
   {
     default:{}break;
@@ -94,10 +94,10 @@ rdi_string_from_type_kind(RDI_TypeKind v)
   return result;
 }
 
-String8
+StringView
 rdi_string_from_member_kind(RDI_MemberKind v)
 {
-  String8 result = ("<invalid RDI_MemberKind>");
+  StringView result = ("<invalid RDI_MemberKind>");
   switch(v)
   {
     default:{}break;
@@ -108,10 +108,10 @@ rdi_string_from_member_kind(RDI_MemberKind v)
   return result;
 }
 
-String8
+StringView
 rdi_string_from_local_kind(RDI_LocalKind v)
 {
-  String8 result = ("<invalid RDI_LocalKind>");
+  StringView result = ("<invalid RDI_LocalKind>");
   switch(v)
   {
     default:{}break;
@@ -164,11 +164,11 @@ rdi_stringize_link_flags(Arena* arena, String8List* out, RDI_LinkFlags flags)
 
 ////////////////////////////////
 
-String8
+StringView
 rdi_format_reg_code(Arena* arena, RDI_Arch arch, uint64 reg_code)
 {
-  String8 result = {0};
-  String8 reg_name = rdi_string_from_reg_code(arch, reg_code);
+  StringView result = {0};
+  StringView reg_name = rdi_string_from_reg_code(arch, reg_code);
   if (reg_name.size) {
     result = push_str8f(arena, "%S", reg_name, reg_code);
   } else {
@@ -189,7 +189,7 @@ rdi_stringize_data_sections(Arena* arena, String8List* out, RDI_Parsed* rdi, uin
   {
     RDI_SectionKind kind = (RDI_SectionKind)idx;
     RDI_Section* section = &rdi.sections[idx];
-    String8 kind_str = rdi_string_from_data_section_kind(kind);
+    StringView kind_str = rdi_string_from_data_section_kind(kind);
     str8_list_pushf(arena, out, "%.*sdata_section[%5I64u] = {0x%08llx, %7u, %7u} %S\n",
                     indent_level, rdi_stringize_spaces,
                     idx, section.off, section.encoded_size, section.unpacked_size, kind_str);
@@ -199,10 +199,10 @@ rdi_stringize_data_sections(Arena* arena, String8List* out, RDI_Parsed* rdi, uin
 void
 rdi_stringize_top_level_info(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_TopLevelInfo* tli, uint32 indent_level)
 {
-  String8 arch_str = rdi_string_from_arch(tli.arch);
-  String8 exe_name = {0};
+  StringView arch_str = rdi_string_from_arch(tli.arch);
+  StringView exe_name = {0};
   exe_name.str = rdi_string_from_idx(rdi, tli.exe_name_string_idx, &exe_name.size);
-  String8 producer_name = {0};
+  StringView producer_name = {0};
   producer_name.str = rdi_string_from_idx(rdi, tli.producer_name_string_idx, &producer_name.size);
   str8_list_pushf(arena, out, "%.*sarch=%S\n", indent_level, rdi_stringize_spaces, arch_str);
   str8_list_pushf(arena, out, "%.*sexe_name='%S'\n", indent_level, rdi_stringize_spaces, exe_name);
@@ -213,7 +213,7 @@ rdi_stringize_top_level_info(Arena* arena, String8List* out, RDI_Parsed* rdi, RD
 void
 rdi_stringize_binary_section(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_BinarySection* bin_section, uint32 indent_level)
 {
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, bin_section.name_string_idx, &name.size);
   str8_list_pushf(arena, out, "%.*sname='%.*s'\n", indent_level, rdi_stringize_spaces, str8_varg(name));
   
@@ -230,7 +230,7 @@ rdi_stringize_binary_section(Arena* arena, String8List* out, RDI_Parsed* rdi, RD
 void
 rdi_stringize_file_path(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_FilePathBundle* bundle, RDI_FilePathNode* file_path, uint32 indent_level)
 {
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, file_path.name_string_idx, &name.size);
   uint32 this_idx = (uint32)(file_path - bundle.file_paths);
   if(file_path.source_file_idx == 0)
@@ -272,7 +272,7 @@ rdi_stringize_source_file(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_S
   str8_list_pushf(arena, out, "%.*sfile_path_node_idx: %u\n", indent_level, rdi_stringize_spaces, source_file.file_path_node_idx);
 
   // normal source path
-  String8 path = {0};
+  StringView path = {0};
   path.str = rdi_string_from_idx(rdi, source_file.normal_full_path_string_idx, &path.size);
   str8_list_pushf(arena, out, "%.*spath: \"%S\"\n", indent_level, rdi_stringize_spaces, path);
   
@@ -364,9 +364,9 @@ rdi_stringize_source_line_map(Arena* arena, String8List* out, RDI_Parsed* rdi, R
 void
 rdi_stringize_unit(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_Unit* unit, uint32 indent_level)
 {
-  String8 unit_name = {0};
+  StringView unit_name = {0};
   unit_name.str = rdi_string_from_idx(rdi, unit.unit_name_string_idx, &unit_name.size);
-  String8 compiler_name = {0};
+  StringView compiler_name = {0};
   compiler_name.str = rdi_string_from_idx(rdi, unit.compiler_name_string_idx, &compiler_name.size);
   
   str8_list_pushf(arena, out, "%.*sunit_name='%.*s'\n", indent_level, rdi_stringize_spaces, str8_varg(unit_name));
@@ -377,7 +377,7 @@ rdi_stringize_unit(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_Unit* un
   str8_list_pushf(arena, out, "%.*sarchive_file_path=%u\n", indent_level, rdi_stringize_spaces, unit.archive_file_path_node);
   str8_list_pushf(arena, out, "%.*sbuild_path=%u\n", indent_level, rdi_stringize_spaces, unit.build_path_node);
   
-  String8 language_str = rdi_string_from_language(unit.language);
+  StringView language_str = rdi_string_from_language(unit.language);
   str8_list_pushf(arena, out, "%.*slanguage=%.*s\n", indent_level, rdi_stringize_spaces, str8_varg(language_str));
   
   str8_list_pushf(arena, out, "%.*sline_table_idx=%u\n", indent_level, rdi_stringize_spaces, unit.line_table_idx);
@@ -387,7 +387,7 @@ void
 rdi_stringize_type_node(Arena* arena, String8List* out, RDI_Parsed* rdi,
                         RDI_TypeNode* type, uint32 indent_level){
   RDI_TypeKind kind = type.kind;
-  String8 type_kind_str = rdi_string_from_type_kind(kind);
+  StringView type_kind_str = rdi_string_from_type_kind(kind);
   
   str8_list_pushf(arena, out, "%.*skind=%.*s\n",
                   indent_level, rdi_stringize_spaces, str8_varg(type_kind_str));
@@ -414,7 +414,7 @@ rdi_stringize_type_node(Arena* arena, String8List* out, RDI_Parsed* rdi,
   
   if (RDI_TypeKind_FirstBuiltIn <= kind &&
       kind <= RDI_TypeKind_LastBuiltIn){
-    String8 name = {0};
+    StringView name = {0};
     name.str = rdi_string_from_idx(rdi, type.built_in.name_string_idx, &name.size);
     str8_list_pushf(arena, out, "%.*sbuilt_in.name='%.*s'\n",
                     indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -467,7 +467,7 @@ rdi_stringize_type_node(Arena* arena, String8List* out, RDI_Parsed* rdi,
   
   else if (RDI_TypeKind_FirstUserDefined <= kind &&
            kind <= RDI_TypeKind_LastUserDefined){
-    String8 name = {0};
+    StringView name = {0};
     name.str = rdi_string_from_idx(rdi, type.user_defined.name_string_idx, &name.size);
     str8_list_pushf(arena, out, "%.*suser_defined.name='%.*s'\n",
                     indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -515,7 +515,7 @@ rdi_stringize_udt(Arena* arena, String8List* out, RDI_Parsed* rdi,
       str8_list_pushf(arena, out, "%.*smembers={\n", indent_level, rdi_stringize_spaces);
       RDI_EnumMember* enum_member = member_bundle.enum_members + first;
       for (uint32 i = first; i < opl; i += 1, enum_member += 1){
-        String8 name = {0};
+        StringView name = {0};
         name.str = rdi_string_from_idx(rdi, enum_member.name_string_idx, &name.size);
         str8_list_pushf(arena, out, "%.*s '%.*s' %llu\n",
                         indent_level, rdi_stringize_spaces,
@@ -538,12 +538,12 @@ rdi_stringize_udt(Arena* arena, String8List* out, RDI_Parsed* rdi,
       for (uint32 i = first; i < opl; i += 1, member += 1){
         str8_list_pushf(arena, out, "%.*s {\n", indent_level, rdi_stringize_spaces);
         
-        String8 kind_str = rdi_string_from_member_kind(member.kind);
+        StringView kind_str = rdi_string_from_member_kind(member.kind);
         str8_list_pushf(arena, out, "%.*s  kind=%.*s\n",
                         indent_level, rdi_stringize_spaces, str8_varg(kind_str));
         
         if (member.name_string_idx != 0){
-          String8 name = {0};
+          StringView name = {0};
           name.str = rdi_string_from_idx(rdi, member.name_string_idx, &name.size);
           str8_list_pushf(arena, out, "%.*s  name='%.*s'\n",
                           indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -564,7 +564,7 @@ rdi_stringize_udt(Arena* arena, String8List* out, RDI_Parsed* rdi,
 void
 rdi_stringize_global_variable(Arena* arena, String8List* out, RDI_Parsed* rdi,
                               RDI_GlobalVariable* global_variable, uint32 indent_level){
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, global_variable.name_string_idx, &name.size);
   str8_list_pushf(arena, out, "%.*sname='%.*s'\n",
                   indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -587,7 +587,7 @@ void
 rdi_stringize_thread_variable(Arena* arena, String8List* out, RDI_Parsed* rdi,
                               RDI_ThreadVariable* thread_var,
                               uint32 indent_level){
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, thread_var.name_string_idx, &name.size);
   str8_list_pushf(arena, out, "%.*sname='%.*s'\n",
                   indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -609,12 +609,12 @@ rdi_stringize_thread_variable(Arena* arena, String8List* out, RDI_Parsed* rdi,
 void
 rdi_stringize_procedure(Arena* arena, String8List* out, RDI_Parsed* rdi,
                         RDI_Procedure* proc, uint32 indent_level){
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
   str8_list_pushf(arena, out, "%.*sname='%.*s'\n",
                   indent_level, rdi_stringize_spaces, str8_varg(name));
   
-  String8 link_name = {0};
+  StringView link_name = {0};
   link_name.str = rdi_string_from_idx(rdi, proc.link_name_string_idx, &link_name.size);
   str8_list_pushf(arena, out, "%.*slink_name='%.*s'\n",
                   indent_level, rdi_stringize_spaces, str8_varg(link_name));
@@ -696,11 +696,11 @@ rdi_stringize_scope(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_Arch ar
         str8_list_pushf(arena, out, "%.*s local[%u]\n",
                         indent_level, rdi_stringize_spaces, i);
         
-        String8 local_kind_str = rdi_string_from_local_kind(local_ptr.kind);
+        StringView local_kind_str = rdi_string_from_local_kind(local_ptr.kind);
         str8_list_pushf(arena, out, "%.*s  kind=%.*s\n",
                         indent_level, rdi_stringize_spaces, str8_varg(local_kind_str));
         
-        String8 name = {0};
+        StringView name = {0};
         name.str = rdi_string_from_idx(rdi, local_ptr.name_string_idx, &name.size);
         str8_list_pushf(arena, out, "%.*s  name='%.*s'\n",
                         indent_level, rdi_stringize_spaces, str8_varg(name));
@@ -834,7 +834,7 @@ rdi_stringize_scope(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_Arch ar
 void
 rdi_stringize_inline_site(Arena* arena, String8List* out, RDI_Parsed* rdi, RDI_InlineSite* inline_site, uint32 indent_level)
 {
-  String8 name = {0};
+  StringView name = {0};
   name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
   str8_list_pushf(arena, out, "%.*sname='%S'\n", indent_level, rdi_stringize_spaces, name);
   str8_list_pushf(arena, out, "%.*stype_idx=%u\n", indent_level, rdi_stringize_spaces, inline_site.type_idx);

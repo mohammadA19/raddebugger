@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-String8
+StringView
 mscrt_string_from_eh_adjectives(Arena* arena, MSCRT_EhHandlerTypeFlags adjectives)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -27,7 +27,7 @@ mscrt_string_from_eh_adjectives(Arena* arena, MSCRT_EhHandlerTypeFlags adjective
   if (adjectives & MSCRT_EhHandlerTypeFlag_IsComplusEH) {
     str8_list_pushf(scratch.arena, &adj_list, "ComplusEH");
   }
-  String8 result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=(", ")});
+  StringView result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }

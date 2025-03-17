@@ -43,7 +43,7 @@ struct TP_Context
   int64          task_left;
 }
 
-TP_Context * tp_alloc(Arena* arena, uint32 worker_count, uint32 max_worker_count, String8 name);
+TP_Context * tp_alloc(Arena* arena, uint32 worker_count, uint32 max_worker_count, StringView name);
 void         tp_release(TP_Context* pool);
 TP_Arena *   tp_arena_alloc(TP_Context* pool);
 void         tp_arena_release(TP_Arena** arena_ptr);

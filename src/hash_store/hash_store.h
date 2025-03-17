@@ -29,7 +29,7 @@ struct HS_Node
   HS_Node* prev;
   U128 hash;
   Arena* arena;
-  String8 data;
+  StringView data;
   uint64 scope_ref_count;
   uint64 key_ref_count;
 }
@@ -105,7 +105,7 @@ static HS_Shared* hs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U128 hs_hash_from_data(String8 data);
+U128 hs_hash_from_data(StringView data);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -120,7 +120,7 @@ void hs_tctx_ensure_inited();
 ////////////////////////////////
 //~ rjf: Cache Submission/Derefs
 
-U128 hs_submit_data(U128 key, Arena** data_arena, String8 data);
+U128 hs_submit_data(U128 key, Arena** data_arena, StringView data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -133,7 +133,7 @@ void hs_scope_touch_node__stripe_r_guarded(HS_Scope* scope, HS_Node* node);
 //~ rjf: Cache Lookups
 
 U128 hs_hash_from_key(U128 key, uint64 rewind_count);
-String8 hs_data_from_hash(HS_Scope* scope, U128 hash);
+StringView hs_data_from_hash(HS_Scope* scope, U128 hash);
 
 ////////////////////////////////
 //~ rjf: Evictor Thread

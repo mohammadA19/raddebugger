@@ -5,7 +5,7 @@
 //~ ELF Parser Functions
 
 static ELF_Parsed*
-elf_parsed_from_data(Arena* arena, String8 elf_data){
+elf_parsed_from_data(Arena* arena, StringView elf_data){
   //- test magic number
   B32 has_good_magic_number = 0;
   if (elf_data.size >= sizeof(ELF_NIDENT) &&
@@ -277,12 +277,12 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
   }
   
   //- extract section names
-  String8* section_names = 0;
+  StringView* section_names = 0;
   if (sections != 0 && section_count > 0){
     uint8* string_table_opl = elf_data.str + section_name_table_opl;
     
-    section_names = push_array(arena, String8, section_count);
-    String8* sec_name = section_names;
+    section_names = push_array(arena, StringView, section_count);
+    StringView* sec_name = section_names;
     ELF_Shdr64* sec = sections;
     for (uint64 i = 0;
          i < section_count;
@@ -333,7 +333,7 @@ elf_parsed_from_data(Arena* arena, String8 elf_data){
   uint64 dynsym_idx = 0;
   if (section_names != 0){
     for (uint64 i = 0; i < section_count; i += 1){
-      String8 name = section_names[i];
+      StringView name = section_names[i];
       if (str8_match(name, (".strtab"), 0)){
         strtab_idx = i;
       }
@@ -403,9 +403,9 @@ elf_segment_array_from_elf(ELF_Parsed* elf){
   return(result);
 }
 
-static String8
+static StringView
 elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset){
-  String8 result = {0};
+  StringView result = {0};
   if (elf != 0){
     if (offset > 0){
       uint64 foff = elf.section_name_table_foff + offset;
@@ -422,9 +422,9 @@ elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset){
   return(result);
 }
 
-static String8
+static StringView
 elf_section_name_from_idx(ELF_Parsed* elf, uint32 idx){
-  String8 result = {0};
+  StringView result = {0};
   if (elf != 0){
     if (idx < elf.section_count){
       result = elf.section_names[idx];
@@ -434,10 +434,10 @@ elf_section_name_from_idx(ELF_Parsed* elf, uint32 idx){
 }
 
 static uint32
-elf_section_idx_from_name(ELF_Parsed* elf, String8 name){
+elf_section_idx_from_name(ELF_Parsed* elf, StringView name){
   uint32 result = 0;
   if (elf != 0){
-    String8* sec_name = elf.section_names;
+    StringView* sec_name = elf.section_names;
     uint64 count = elf.section_count;
     for (uint64 i = 0; i < count; i += 1, sec_name += 1){
       if (str8_match(*sec_name, name, 0)){
@@ -449,9 +449,9 @@ elf_section_idx_from_name(ELF_Parsed* elf, String8 name){
   return(result);
 }
 
-static String8
+static StringView
 elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx){
-  String8 result = {0};
+  StringView result = {0};
   if (elf != 0){
     if (idx < elf.section_count){
       ELF_Shdr64* shdr = elf.sections + idx;
@@ -471,7 +471,7 @@ elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx){
 }
 
 static ELF_SymArray
-elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, String8 data){
+elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, StringView data){
   // converge to sym64 layout
   ELF_Sym64* symbols = 0;
   uint64 count = 0;
@@ -512,9 +512,9 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, String8 data){
 
 // string functions
 
-static String8
+static StringView
 elf_string_from_section_type(ELF_SectionType section_type){
-  String8 result = ("INVALID_SECTION_TYPE");
+  StringView result = ("INVALID_SECTION_TYPE");
   switch (section_type){
 #define X(N,C) case C: result = (#N); break;
     ELF_SectionTypeXList(X)
@@ -523,9 +523,9 @@ elf_string_from_section_type(ELF_SectionType section_type){
   return(result);
 }
 
-static String8
+static StringView
 elf_string_from_symbol_binding(ELF_SymbolBinding binding){
-  String8 result = ("INVALID_SYMBOL_BINDING");
+  StringView result = ("INVALID_SYMBOL_BINDING");
   switch (binding){
 #define X(N,C) case C: result = (#N); break;
     ELF_SymbolBindingXList(X)
@@ -534,9 +534,9 @@ elf_string_from_symbol_binding(ELF_SymbolBinding binding){
   return(result);
 }
 
-static String8
+static StringView
 elf_string_from_symbol_type(ELF_SymbolType type){
-  String8 result = ("INVALID_SYMBOL_TYPE");
+  StringView result = ("INVALID_SYMBOL_TYPE");
   switch (type){
 #define X(N,C) case C: result = (#N); break;
     ELF_SymbolTypeXList(X)
@@ -545,9 +545,9 @@ elf_string_from_symbol_type(ELF_SymbolType type){
   return(result);
 }
 
-static String8
+static StringView
 elf_string_from_symbol_visibility(ELF_SymbolVisibility visibility){
-  String8 result = ("INVALID_SYMBOL_VISIBILITY");
+  StringView result = ("INVALID_SYMBOL_VISIBILITY");
   switch (visibility){
 #define X(N,C) case C: result = (#N); break;
     ELF_SymbolVisibilityXList(X)

@@ -9,7 +9,7 @@
 
 struct DI_Key
 {
-  String8 path;
+  StringView path;
   uint64 min_timestamp;
 }
 
@@ -47,7 +47,7 @@ enum DI_EventKind
 struct DI_Event
 {
   DI_EventKind kind;
-  String8 string;
+  StringView string;
 }
 
 struct DI_EventNode
@@ -155,7 +155,7 @@ struct DI_SearchParams
 struct DI_SearchBucket
 {
   Arena* arena;
-  String8 query;
+  StringView query;
   uint64 params_hash;
   DI_SearchParams params;
 }
@@ -251,7 +251,7 @@ struct DI_MatchNameNode
   uint64 last_gen_touched;
   uint64 req_params_hash;
   uint64 req_count;
-  String8 name;
+  StringView name;
   uint64 hash;
   
   // rjf: atomically written by match work
@@ -351,8 +351,8 @@ static RDI_Parsed di_rdi_parsed_nil = {0};
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 di_hash_from_seed_string(uint64 seed, String8 string, StringMatchFlags match_flags);
-uint64 di_hash_from_string(String8 string, StringMatchFlags match_flags);
+uint64 di_hash_from_seed_string(uint64 seed, StringView string, StringMatchFlags match_flags);
+uint64 di_hash_from_string(StringView string, StringMatchFlags match_flags);
 uint64 di_hash_from_key(DI_Key* k);
 DI_Key di_key_zero();
 B32 di_key_match(DI_Key* a, DI_Key* b);
@@ -365,7 +365,7 @@ DI_SearchParams di_search_params_copy(Arena* arena, DI_SearchParams* src);
 uint64 di_hash_from_search_params(DI_SearchParams* params);
 void di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList* dst, DI_SearchItemChunkList* to_push);
 uint64 di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* array, uint64 element_idx);
-String8 di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKind target, uint64 element_idx);
+StringView di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKind target, uint64 element_idx);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -389,8 +389,8 @@ DI_Node* di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot* slot, DI_Key* ke
 //~ rjf: Per-Stripe Functions
 
 uint64 di_string_bucket_idx_from_string_size(uint64 size);
-String8 di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string);
-void di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string);
+StringView di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string);
+void di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string);
 
 ////////////////////////////////
 //~ rjf: Key Opening/Closing
@@ -406,7 +406,7 @@ RDI_Parsed* di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us);
 ////////////////////////////////
 //~ rjf: Search Cache Lookups
 
-DI_SearchItemArray di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, String8 query, uint64 endt_us, B32* stale_out);
+DI_SearchItemArray di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, StringView query, uint64 endt_us, B32* stale_out);
 
 ////////////////////////////////
 //~ rjf: Asynchronous Parse Work
@@ -436,7 +436,7 @@ void di_search_evictor_thread__entry_point(void* p);
 
 DI_MatchStore* di_match_store_alloc();
 void di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys);
-RDI_SectionKind di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64 endt_us);
+RDI_SectionKind di_match_store_section_kind_from_name(DI_MatchStore* store, StringView name, uint64 endt_us);
 ASYNC_WORK_DEF(di_match_work);
 
 #endif // DBGI_H

@@ -123,7 +123,7 @@ e_oplist_push_sconst(Arena* arena, E_OpList* list, int64 x)
 }
 
 void
-e_oplist_push_bytecode(Arena* arena, E_OpList* list, String8 bytecode)
+e_oplist_push_bytecode(Arena* arena, E_OpList* list, StringView bytecode)
 {
   E_Op* node = push_array_no_zero(arena, E_Op, 1);
   node.opcode = E_IRExtKind_Bytecode;
@@ -146,7 +146,7 @@ e_oplist_push_set_space(Arena* arena, E_OpList* list, E_Space space)
 }
 
 void
-e_oplist_push_string_literal(Arena* arena, E_OpList* list, String8 string)
+e_oplist_push_string_literal(Arena* arena, E_OpList* list, StringView string)
 {
   RDI_EvalOp opcode = RDI_EvalOp_ConstString;
   uint16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
@@ -248,7 +248,7 @@ e_irtree_conditional(Arena* arena, E_IRNode* c, E_IRNode* l, E_IRNode* r)
 }
 
 E_IRNode *
-e_irtree_bytecode_no_copy(Arena* arena, String8 bytecode)
+e_irtree_bytecode_no_copy(Arena* arena, StringView bytecode)
 {
   E_IRNode* n = e_push_irnode(arena, E_IRExtKind_Bytecode);
   n.string = bytecode;
@@ -256,7 +256,7 @@ e_irtree_bytecode_no_copy(Arena* arena, String8 bytecode)
 }
 
 E_IRNode *
-e_irtree_string_literal(Arena* arena, String8 string)
+e_irtree_string_literal(Arena* arena, StringView string)
 {
   E_IRNode* root = e_push_irnode(arena, RDI_EvalOp_ConstString);
   root.string = string;
@@ -530,9 +530,9 @@ e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr)
           E_Type* type = e_type_from_key(scratch.arena, check_type_key);
           if(type.enum_vals != 0)
           {
-            String8 lookup_string = exprr.string;
-            String8 lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type.name, lookup_string);
-            String8 lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type.name, lookup_string);
+            StringView lookup_string = exprr.string;
+            StringView lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type.name, lookup_string);
+            StringView lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type.name, lookup_string);
             E_EnumVal* enum_val_match = 0;
             for EachIndex(idx, type.count)
             {
@@ -725,7 +725,7 @@ e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr)
       else if(conversion_rule != RDI_EvalConversionKind_Noop &&
               conversion_rule != RDI_EvalConversionKind_Legal)
       {
-        String8 text = ("Unknown cast conversion rule.");
+        StringView text = ("Unknown cast conversion rule.");
         if(conversion_rule < RDI_EvalConversionKind_COUNT)
         {
           text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);
@@ -1228,7 +1228,7 @@ e_irtree_and_type_from_expr(Arena* arena, E_Expr* expr)
     //- rjf: leaf string literal
     case E_ExprKind_LeafStringLiteral:
     {
-      String8 string = expr.string;
+      StringView string = expr.string;
       E_TypeKey type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_UChar8), string.size);
       E_IRNode* new_tree = e_irtree_string_literal(arena, string);
       result.root     = new_tree;
@@ -1452,7 +1452,7 @@ e_oplist_from_irtree(Arena* arena, E_IRNode* root)
   return ops;
 }
 
-String8
+StringView
 e_bytecode_from_oplist(Arena* arena, E_OpList* oplist)
 {
   // rjf: allocate buffer
@@ -1532,7 +1532,7 @@ e_bytecode_from_oplist(Arena* arena, E_OpList* oplist)
   }
   
   // rjf: fill result
-  String8 result = {0};
+  StringView result = {0};
   result.size = size;
   result.str = str;
   return result;

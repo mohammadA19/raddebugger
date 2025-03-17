@@ -1,14 +1,14 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-String8
-push_cstr(Arena* arena, String8 str)
+StringView
+push_cstr(Arena* arena, StringView str)
 {
   uint64 buffer_size = str.size + 1;
   uint8* buffer = push_array_no_zero(arena, uint8, buffer_size);
   MemoryCopy(buffer, str.str, str.size);
   buffer[str.size] = 0;
-  String8 result = str8(buffer, buffer_size);
+  StringView result = StringView(buffer, buffer_size);
   return result;
 }
 

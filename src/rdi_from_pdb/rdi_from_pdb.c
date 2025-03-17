@@ -10,7 +10,7 @@
 //~ rjf: Basic Helpers
 
 uint64
-p2r_end_of_cplusplus_container_name(String8 str)
+p2r_end_of_cplusplus_container_name(StringView str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
   //       if no "::" is contained in str, then the returned index is 0.
@@ -48,14 +48,14 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
   
   //- rjf: get input pdb
   {
-    String8 input_name = cmd_line_string(cmdline, ("pdb"));
+    StringView input_name = cmd_line_string(cmdline, ("pdb"));
     if(input_name.size == 0)
     {
       str8_list_push(arena, &result.errors, ("Missing required parameter: '--pdb:<pdb_file>'"));
     }
     if(input_name.size > 0)
     {
-      String8 input_data = os_data_from_file_path(arena, input_name);
+      StringView input_data = os_data_from_file_path(arena, input_name);
       if(input_data.size == 0)
       {
         str8_list_pushf(arena, &result.errors, "Could not load input PDB file from '%S'", input_name);
@@ -70,10 +70,10 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
   
   //- rjf: get input exe
   {
-    String8 input_name = cmd_line_string(cmdline, ("exe"));
+    StringView input_name = cmd_line_string(cmdline, ("exe"));
     if(input_name.size > 0)
     {
-      String8 input_data = os_data_from_file_path(arena, input_name);
+      StringView input_data = os_data_from_file_path(arena, input_name);
       if(input_data.size == 0)
       {
         str8_list_pushf(arena, &result.errors, "Could not load input EXE file from '%S'", input_name);
@@ -124,7 +124,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
       result.flags = 0;
       for(String8Node* n = only_names.first; n != 0; n = n.next)
       {
-        String8 string = n.string;
+        StringView string = n.string;
 #define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags |= P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
@@ -134,7 +134,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
     {
       for(String8Node* n = omit_names.first; n != 0; n = n.next)
       {
-        String8 string = n.string;
+        StringView string = n.string;
 #define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags &= ~P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
@@ -606,10 +606,10 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
       CV_C13Parsed* pdb_unit_c13 = in.comp_unit_c13s[comp_unit_idx];
       
       //- rjf: produce unit name
-      String8 unit_name = pdb_unit.obj_name;
+      StringView unit_name = pdb_unit.obj_name;
       if(unit_name.size != 0)
       {
-        String8 unit_name_past_last_slash = str8_skip_last_slash(unit_name);
+        StringView unit_name_past_last_slash = str8_skip_last_slash(unit_name);
         if(unit_name_past_last_slash.size != 0)
         {
           unit_name = unit_name_past_last_slash;
@@ -617,7 +617,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
       }
       
       //- rjf: produce obj name
-      String8 obj_name = pdb_unit.obj_name;
+      StringView obj_name = pdb_unit.obj_name;
       if(str8_match(obj_name, ("* Linker *"), 0) ||
          str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
       {
@@ -639,8 +639,8 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
             CV_C13LinesParsed* lines = &lines_n.v;
             
             // rjf: file name . normalized file path
-            String8 file_path = lines.file_name;
-            String8 file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
+            StringView file_path = lines.file_name;
+            StringView file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
             for(uint64 idx = 0; idx < file_path_normalized.size; idx += 1)
             {
               if(file_path_normalized.str[idx] == '\\')
@@ -769,7 +769,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
           {
             // rjf: unpack sym
             CV_SymInlineSite* sym           = (CV_SymInlineSite *)sym_header_struct_base;
-            String8           binary_annots = str8((uint8 *)(sym+1), rec_range.hdr.size - sizeof(rec_range.hdr.kind) - sizeof(*sym));
+            StringView           binary_annots = StringView((uint8 *)(sym+1), rec_range.hdr.size - sizeof(rec_range.hdr.kind) - sizeof(*sym));
             
             // rjf: map inlinee . parsed cv c13 inlinee line info
             CV_C13InlineeLinesParsed* inlinee_lines_parsed = 0;
@@ -827,7 +827,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
                 }
                 if((last_file_off != max_U32 && last_file_off != curr_file_off))
                 {
-                  String8 seq_file_name = {0};
+                  StringView seq_file_name = {0};
 
                   if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
                   {
@@ -837,8 +837,8 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
                   }
                   
                   // rjf: file name . normalized file path
-                  String8 file_path            = seq_file_name;
-                  String8 file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
+                  StringView file_path            = seq_file_name;
+                  StringView file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
                   for(uint64 idx = 0; idx < file_path_normalized.size; idx += 1)
                   {
                     if(file_path_normalized.str[idx] == '\\')
@@ -969,7 +969,7 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
       {
         // rjf: unpack sym
         CV_SymPub32* pub32 = (CV_SymPub32 *)sym_first;
-        String8 name = str8_cstring_capped(pub32+1, sym_opl);
+        StringView name = str8_cstring_capped(pub32+1, sym_opl);
         COFF_SectionHeader* section = (0 < pub32.sec && pub32.sec <= in.coff_sections.count) ? &in.coff_sections.v[pub32.sec-1] : 0;
         uint64 voff = 0;
         if(section != 0)
@@ -1038,9 +1038,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
             uint8* numeric_ptr = (uint8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
             uint8* name_ptr = numeric_ptr + size.encoded_size;
-            String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+            StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
             uint8* unique_name_ptr = name_ptr + name.size + 1;
-            String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+            StringView unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
             B32 do_unique_name_lookup = (((lf_struct.props & CV_TypeProp_Scoped) != 0) &&
@@ -1063,9 +1063,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
             uint8* numeric_ptr = (uint8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
             uint8* name_ptr = (uint8 *)numeric_ptr + size.encoded_size;
-            String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+            StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
             uint8* unique_name_ptr = name_ptr + name.size + 1;
-            String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+            StringView unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
             B32 do_unique_name_lookup = (((lf_struct.props & CV_TypeProp_Scoped) != 0) &&
@@ -1082,9 +1082,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           uint8* numeric_ptr = (uint8 *)(lf_union + 1);
           CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
           uint8* name_ptr = numeric_ptr + size.encoded_size;
-          String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+          StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
           uint8* unique_name_ptr = name_ptr + name.size + 1;
-          String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+          StringView unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag . lookup itype that this itype resolves tos
           if(lf_union.props & CV_TypeProp_FwdRef)
@@ -1101,9 +1101,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           // rjf: unpack leaf
           CV_LeafEnum* lf_enum = (CV_LeafEnum*)itype_leaf_first;
           uint8* name_ptr = (uint8 *)(lf_enum + 1);
-          String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+          StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
           uint8* unique_name_ptr = name_ptr + name.size + 1;
-          String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+          StringView unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag . lookup itype that this itype resolves to
           if(lf_enum.props & CV_TypeProp_FwdRef)
@@ -1616,7 +1616,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
                     uint64 offset64 = cv_u64_from_numeric(&offset);
                     uint8* name_ptr = offset_ptr + offset.encoded_size;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1637,7 +1637,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafStMember* lf = (CV_LeafStMember *)field_leaf_first;
                     uint8* name_ptr = (uint8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1655,7 +1655,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafMethod* lf = (CV_LeafMethod *)field_leaf_first;
                     uint8* name_ptr = (uint8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1764,7 +1764,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                       vbaseoff_opl_ptr += sizeof(uint32);
                     }
                     uint8* name_ptr = vbaseoff_opl_ptr;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     RDIM_Type* method_type = p2r_type_ptr_from_itype(lf.itype);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1808,7 +1808,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafNestType* lf = (CV_LeafNestType *)field_leaf_first;
                     uint8* name_ptr = (uint8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1828,7 +1828,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafNestTypeEx* lf = (CV_LeafNestTypeEx *)field_leaf_first;
                     uint8* name_ptr = (uint8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -2033,7 +2033,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, field_leaf_opl);
                     uint64 val64 = cv_u64_from_numeric(&val);
                     uint8* name_ptr = val_ptr + val.encoded_size;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -2258,7 +2258,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymData32* data32 = (CV_SymData32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(data32+1, sym_data_opl);
+          StringView name = str8_cstring_capped(data32+1, sym_data_opl);
           COFF_SectionHeader* section = (0 < data32.sec && data32.sec <= in.coff_sections.count) ? &in.coff_sections.v[data32.sec-1] : 0;
           uint64 voff = (section ? section.voff : 0) + data32.off;
           
@@ -2284,7 +2284,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
             if(container_name_opl > 2)
             {
-              String8 container_name = str8(name.str, container_name_opl - 2);
+              StringView container_name = StringView(name.str, container_name_opl - 2);
               CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
               container_type = p2r_type_ptr_from_itype(cv_type_id);
             }
@@ -2313,7 +2313,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymProc32* proc32 = (CV_SymProc32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(proc32+1, sym_data_opl);
+          StringView name = str8_cstring_capped(proc32+1, sym_data_opl);
           RDIM_Type* type = p2r_type_ptr_from_itype(proc32.itype);
           
           // rjf: unpack proc's container type
@@ -2321,7 +2321,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2 && in.tpi_hash != 0 && in.tpi_leaf != 0)
           {
-            String8 container_name = str8(name.str, container_name_opl - 2);
+            StringView container_name = StringView(name.str, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2354,7 +2354,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           }
           
           // rjf: root scope voff minimum range . link name
-          String8 link_name = {0};
+          StringView link_name = {0};
           if(procedure_root_scope.voff_ranges.min != 0)
           {
             uint64 voff = procedure_root_scope.voff_ranges.min;
@@ -2415,7 +2415,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: unpack sym
           CV_SymRegrel32* regrel32 = (CV_SymRegrel32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(regrel32+1, sym_data_opl);
+          StringView name = str8_cstring_capped(regrel32+1, sym_data_opl);
           RDIM_Type* type = p2r_type_ptr_from_itype(regrel32.itype);
           CV_Reg cv_reg = regrel32.reg;
           uint32 var_off = regrel32.reg_off;
@@ -2498,7 +2498,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymThread32* thread32 = (CV_SymThread32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(thread32+1, sym_data_opl);
+          StringView name = str8_cstring_capped(thread32+1, sym_data_opl);
           uint32 tls_off = thread32.tls_off;
           RDIM_Type* type = p2r_type_ptr_from_itype(thread32.itype);
           
@@ -2507,7 +2507,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2)
           {
-            String8 container_name = str8(name.str, container_name_opl - 2);
+            StringView container_name = StringView(name.str, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2541,7 +2541,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: unpack sym
           CV_SymLocal* slocal = (CV_SymLocal *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(slocal+1, sym_data_opl);
+          StringView name = str8_cstring_capped(slocal+1, sym_data_opl);
           RDIM_Type* type = p2r_type_ptr_from_itype(slocal.itype);
           
           // rjf: determine if this symbol encodes the beginning of a static modification
@@ -2763,7 +2763,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         case CV_SymKind_FILESTATIC:
         {
           CV_SymFileStatic* file_static = (CV_SymFileStatic*)sym_header_struct_base;
-          String8 name = str8_cstring_capped(file_static+1, sym_data_opl);
+          StringView name = str8_cstring_capped(file_static+1, sym_data_opl);
           RDIM_Type* type = p2r_type_ptr_from_itype(file_static.itype);
           // TODO(rjf): emit a static modifier symbol
           defrange_target = 0;
@@ -2775,16 +2775,16 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite* sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((uint8 *)(sym+1), rec_range.hdr.size - sizeof(rec_range.hdr.kind) - sizeof(*sym));
+          StringView           binary_annots = StringView((uint8 *)(sym+1), rec_range.hdr.size - sizeof(rec_range.hdr.kind) - sizeof(*sym));
           
           // rjf: extract external info about inline site
-          String8    name      = str8_zero();
+          StringView    name      = StringView();
           RDIM_Type* type      = 0;
           RDIM_Type* owner     = 0;
           if(in.ipi_leaf != 0 && in.ipi_leaf.itype_first <= sym.inlinee && sym.inlinee < in.ipi_leaf.itype_opl)
           {
             CV_RecRange rec_range = in.ipi_leaf.leaf_ranges.ranges[sym.inlinee - in.ipi_leaf.itype_first];
-            String8     rec_data  = str8_substr(in.ipi_leaf.data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
+            StringView     rec_data  = str8_substr(in.ipi_leaf.data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
             void*       raw_leaf  = rec_data.str + sizeof(uint16);
             
             // rjf: extract method inline info
@@ -2948,7 +2948,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   if(msf != 0) ProfScope("parse PDB auth_guid & named streams table")
   {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
+    StringView info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
     PDB_Info* info = pdb_info_from_data(scratch.arena, info_data);
     named_streams = pdb_named_stream_table_from_info(arena, info);
     MemoryCopyStruct(&auth_guid, &info.auth_guid);
@@ -2959,11 +2959,11 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   //- rjf: parse PDB strtbl
   //
   PDB_Strtbl* strtbl = 0;
-  String8 raw_strtbl = str8_zero();
+  StringView raw_strtbl = StringView();
   if(named_streams != 0) ProfScope("parse PDB strtbl")
   {
     MSF_StreamNumber strtbl_sn = named_streams.sn[PDB_NamedStream_StringTable];
-    String8 strtbl_data = msf_data_from_stream(msf, strtbl_sn);
+    StringView strtbl_data = msf_data_from_stream(msf, strtbl_sn);
     strtbl = pdb_strtbl_from_data(arena, strtbl_data);
     raw_strtbl = str8_substr(strtbl_data, rng_1u64(strtbl.strblock_min, strtbl.strblock_max));
   }
@@ -2974,7 +2974,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   PDB_DbiParsed* dbi = 0;
   if(msf != 0) ProfScope("parse dbi")
   {
-    String8 dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
+    StringView dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
     dbi = pdb_dbi_from_data(arena, dbi_data);
   }
   
@@ -2984,7 +2984,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   PDB_TpiParsed* tpi = 0;
   if(msf != 0) ProfScope("parse tpi")
   {
-    String8 tpi_data = msf_data_from_stream(msf, PDB_FixedStream_Tpi);
+    StringView tpi_data = msf_data_from_stream(msf, PDB_FixedStream_Tpi);
     tpi = pdb_tpi_from_data(arena, tpi_data);
   }
   
@@ -2994,7 +2994,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   PDB_TpiParsed* ipi = 0;
   if(msf != 0) ProfScope("parse ipi")
   {
-    String8 ipi_data = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
+    StringView ipi_data = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
     ipi = pdb_tpi_from_data(arena, ipi_data);
   }
   
@@ -3005,7 +3005,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   if(dbi != 0) ProfScope("parse coff sections")
   {
     MSF_StreamNumber section_stream = dbi.dbg_streams[PDB_DbiStream_SECTION_HEADER];
-    String8 section_data = msf_data_from_stream(msf, section_stream);
+    StringView section_data = msf_data_from_stream(msf, section_stream);
     coff_sections = pdb_coff_section_array_from_data(arena, section_data);
   }
   
@@ -3015,7 +3015,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   PDB_GsiParsed* gsi = 0;
   if(dbi != 0) ProfScope("parse gsi")
   {
-    String8 gsi_data = msf_data_from_stream(msf, dbi.gsi_sn);
+    StringView gsi_data = msf_data_from_stream(msf, dbi.gsi_sn);
     gsi = pdb_gsi_from_data(arena, gsi_data);
   }
   
@@ -3025,8 +3025,8 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   PDB_GsiParsed* psi_gsi_part = 0;
   if(dbi != 0) ProfScope("parse psi")
   {
-    String8 psi_data = msf_data_from_stream(msf, dbi.psi_sn);
-    String8 psi_data_gsi_part = str8_range(psi_data.str + sizeof(PDB_PsiHeader), psi_data.str + psi_data.size);
+    StringView psi_data = msf_data_from_stream(msf, dbi.psi_sn);
+    StringView psi_data_gsi_part = str8_range(psi_data.str + sizeof(PDB_PsiHeader), psi_data.str + psi_data.size);
     psi_gsi_part = pdb_gsi_from_data(arena, psi_data_gsi_part);
   }
   
@@ -3091,14 +3091,14 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   //////////////////////////////////////////////////////////////
   //- rjf: kickoff top-level static symbol stream parse
   //
-  P2R_SymbolStreamParseIn sym_parse_in = {dbi ? msf_data_from_stream(msf, dbi.sym_sn) : str8_zero()};
+  P2R_SymbolStreamParseIn sym_parse_in = {dbi ? msf_data_from_stream(msf, dbi.sym_sn) : StringView()};
   ASYNC_Task* sym_parse_task = !dbi ? 0 : async_task_launch(scratch.arena, p2r_symbol_stream_parse_work, .input = &sym_parse_in);
   
   //////////////////////////////////////////////////////////////
   //- rjf: kickoff compilation unit parses
   //
-  P2R_CompUnitParseIn comp_unit_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo) : str8_zero()};
-  P2R_CompUnitContributionsParseIn comp_unit_contributions_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_SecCon) : str8_zero(), coff_sections};
+  P2R_CompUnitParseIn comp_unit_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo) : StringView()};
+  P2R_CompUnitContributionsParseIn comp_unit_contributions_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_SecCon) : StringView(), coff_sections};
   ASYNC_Task* comp_unit_parse_task               = !dbi ? 0 : async_task_launch(scratch.arena, p2r_comp_unit_parse_work, .input = &comp_unit_parse_in);
   ASYNC_Task* comp_unit_contributions_parse_task = !dbi ? 0 : async_task_launch(scratch.arena, p2r_comp_unit_contributions_parse_work, .input = &comp_unit_contributions_parse_in);
   
@@ -3713,7 +3713,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 uint64 size_u64 = cv_u64_from_numeric(&size);
                 uint8* name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
@@ -3742,7 +3742,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 uint64 size_u64 = cv_u64_from_numeric(&size);
                 uint8* name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
@@ -3770,7 +3770,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 uint64 size_u64 = cv_u64_from_numeric(&size);
                 uint8* name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
@@ -3796,7 +3796,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 CV_LeafEnum* lf = (CV_LeafEnum *)itype_leaf_first;
                 RDIM_Type* direct_type = p2r_type_ptr_from_itype(lf.base_itype);
                 uint8* name_ptr = (uint8 *)(lf + 1);
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                StringView name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
@@ -4876,21 +4876,21 @@ p2r_compress(Arena* arena, P2R_Serialize2File* in)
 ////////////////////////////////
 
 B32
-p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable* st)
+p2r_has_symbol_ref(StringView msf_data, String8List symbol_list, MSF_RawStreamTable* st)
 {
   Temp scratch = scratch_begin(0,0);
   
   B32 has_ref = 0;
   
-  String8        dbi_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Dbi);
+  StringView        dbi_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Dbi);
   PDB_DbiParsed* dbi      = pdb_dbi_from_data(scratch.arena, dbi_data);
   if(dbi)
   {
-    String8        gsi_data   = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.gsi_sn);
+    StringView        gsi_data   = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.gsi_sn);
     PDB_GsiParsed* gsi_parsed = pdb_gsi_from_data(scratch.arena, gsi_data);
     if(gsi_parsed)
     {
-      String8 symbol_data = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.sym_sn);
+      StringView symbol_data = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.sym_sn);
       
       for(String8Node* symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n.next)
       {
@@ -4909,13 +4909,13 @@ p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable
 }
 
 B32
-p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable* st)
+p2r_has_file_ref(StringView msf_data, String8List file_list, MSF_RawStreamTable* st)
 {
   Temp scratch = scratch_begin(0,0);
   
   B32 has_ref = 0;
   
-  String8   info_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Info);
+  StringView   info_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Info);
   PDB_Info* info      = pdb_info_from_data(scratch.arena, info_data);
   if(info)
   {
@@ -4923,7 +4923,7 @@ p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable* st
     if(named_streams)
     {
       MSF_StreamNumber  strtbl_sn   = named_streams.sn[PDB_NamedStream_StringTable];
-      String8           strtbl_data = msf_data_from_stream_number(scratch.arena, msf_data, st, strtbl_sn);
+      StringView           strtbl_data = msf_data_from_stream_number(scratch.arena, msf_data, st, strtbl_sn);
       PDB_Strtbl*       strtbl      = pdb_strtbl_from_data(scratch.arena, strtbl_data);
       if(strtbl)
       {
@@ -4945,7 +4945,7 @@ p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable* st
 }
 
 B32
-p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list)
+p2r_has_symbol_or_file_ref(StringView msf_data, String8List symbol_list, String8List file_list)
 {
   Temp scratch = scratch_begin(0,0);
   

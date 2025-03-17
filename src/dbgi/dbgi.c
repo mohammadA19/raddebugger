@@ -5,7 +5,7 @@
 //~ rjf: Basic Helpers
 
 uint64
-di_hash_from_seed_string(uint64 seed, String8 string, StringMatchFlags match_flags)
+di_hash_from_seed_string(uint64 seed, StringView string, StringMatchFlags match_flags)
 {
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -16,7 +16,7 @@ di_hash_from_seed_string(uint64 seed, String8 string, StringMatchFlags match_fla
 }
 
 uint64
-di_hash_from_string(String8 string, StringMatchFlags match_flags)
+di_hash_from_string(StringView string, StringMatchFlags match_flags)
 {
   uint64 hash = di_hash_from_seed_string(5381, string, match_flags);
   return hash;
@@ -150,10 +150,10 @@ di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray* arr
   return fuzzy_item_num;
 }
 
-String8
+StringView
 di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKind target, uint64 element_idx)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(target)
   {
     default:{}break;
@@ -162,21 +162,21 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKi
       RDI_Procedure* proc = rdi_element_from_name_idx(rdi, Procedures, element_idx);
       uint64 name_size = 0;
       uint8* name_base = rdi_string_from_idx(rdi, proc.name_string_idx, &name_size);
-      result = str8(name_base, name_size);
+      result = StringView(name_base, name_size);
     }break;
     case RDI_SectionKind_GlobalVariables:
     {
       RDI_GlobalVariable* gvar = rdi_element_from_name_idx(rdi, GlobalVariables, element_idx);
       uint64 name_size = 0;
       uint8* name_base = rdi_string_from_idx(rdi, gvar.name_string_idx, &name_size);
-      result = str8(name_base, name_size);
+      result = StringView(name_base, name_size);
     }break;
     case RDI_SectionKind_ThreadVariables:
     {
       RDI_ThreadVariable* tvar = rdi_element_from_name_idx(rdi, ThreadVariables, element_idx);
       uint64 name_size = 0;
       uint8* name_base = rdi_string_from_idx(rdi, tvar.name_string_idx, &name_size);
-      result = str8(name_base, name_size);
+      result = StringView(name_base, name_size);
     }break;
     case RDI_SectionKind_UDTs:
     {
@@ -184,7 +184,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed* rdi, RDI_SectionKi
       RDI_TypeNode* type_node = rdi_element_from_name_idx(rdi, TypeNodes, udt.self_type_idx);
       uint64 name_size = 0;
       uint8* name_base = rdi_string_from_idx(rdi, type_node.user_defined.name_string_idx, &name_size);
-      result = str8(name_base, name_size);
+      result = StringView(name_base, name_size);
     }break;
   }
   return result;
@@ -373,10 +373,10 @@ di_string_bucket_idx_from_string_size(uint64 size)
   return bucket_idx;
 }
 
-String8
-di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
+StringView
+di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
 {
-  if(string.size == 0) {return str8_zero();}
+  if(string.size == 0) {return StringView();}
   uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
   DI_StringChunkNode* node = stripe.free_string_chunks[bucket_idx];
   
@@ -429,13 +429,13 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((uint8 *)node, string.size);
+  StringView allocated_string = StringView((uint8 *)node, string.size);
   MemoryCopy((uint8 *)node, string.str, string.size);
   return allocated_string;
 }
 
 void
-di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, String8 string)
+di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
 {
   if(string.size == 0) {return;}
   uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
@@ -484,7 +484,7 @@ di_open(DI_Key* key)
         }
         MemoryZeroStruct(node);
         DLLPushBack(slot.first, slot.last, node);
-        String8 path_stored = di_string_alloc__stripe_mutex_w_guarded(stripe, key_normalized.path);
+        StringView path_stored = di_string_alloc__stripe_mutex_w_guarded(stripe, key_normalized.path);
         node.key.path = path_stored;
         node.key.min_timestamp = current_timestamp;
       }
@@ -652,7 +652,7 @@ di_rdi_from_key(DI_Scope* scope, DI_Key* key, uint64 endt_us)
 //~ rjf: Search Cache Lookups
 
 DI_SearchItemArray
-di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, String8 query, uint64 endt_us, B32* stale_out)
+di_search_items_from_key_params_query(DI_Scope* scope, U128 key, DI_SearchParams* params, StringView query, uint64 endt_us, B32* stale_out)
 {
   DI_SearchItemArray items = {0};
   {
@@ -856,7 +856,7 @@ ASYNC_WORK_DEF(di_parse_work)
   DI_Key key = {0};
   di_u2p_dequeue_key(scratch.arena, &key);
   ProfBegin("di_parse_work: %.*s", str8_varg(key.path));
-  String8 og_path = key.path;
+  StringView og_path = key.path;
   uint64 min_timestamp = key.min_timestamp;
   
   ////////////////////////////
@@ -883,12 +883,12 @@ ASYNC_WORK_DEF(di_parse_work)
     OS_Handle file_map = os_file_map_open(OS_AccessFlag_Read, file);
     FileProperties props = og_props = os_properties_from_file(file);
     void* base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, props.size));
-    String8 data = str8((uint8 *)base, props.size);
+    StringView data = StringView((uint8 *)base, props.size);
     if(!og_format_is_known)
     {
-      String8 msf20_magic = ("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
-      String8 msf70_magic = ("Microsoft C/C++ MSF 7.00\r\n\032DS\0\0");
-      String8 msfxx_magic = ("Microsoft C/C++");
+      StringView msf20_magic = ("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
+      StringView msf70_magic = ("Microsoft C/C++ MSF 7.00\r\n\032DS\0\0");
+      StringView msfxx_magic = ("Microsoft C/C++");
       if((data.size >= msf20_magic.size && str8_match(data, msf20_magic, StringMatchFlag_RightSideSloppy)) ||
          (data.size >= msf70_magic.size && str8_match(data, msf70_magic, StringMatchFlag_RightSideSloppy)) ||
          (data.size >= msfxx_magic.size && str8_match(data, msfxx_magic, StringMatchFlag_RightSideSloppy)))
@@ -933,7 +933,7 @@ ASYNC_WORK_DEF(di_parse_work)
   ////////////////////////////
   //- rjf: given O.G. path & analysis, determine RDI path
   //
-  String8 rdi_path = {0};
+  StringView rdi_path = {0};
   {
     if(og_is_rdi)
     {
@@ -1192,7 +1192,7 @@ struct DI_SearchWorkIn
   RDI_Parsed* rdi;
   RDI_SectionKind section_kind;
   Rng1U64 element_range;
-  String8 query;
+  StringView query;
   uint64 dbgi_idx;
 };
 struct DI_SearchWorkOut
@@ -1284,7 +1284,7 @@ ASYNC_WORK_DEF(di_search_work)
     uint32 name_idx = *name_idx_ptr;
     uint64 name_size = 0;
     uint8* name_base = rdi_string_from_idx(in.rdi, name_idx, &name_size);
-    String8 name = str8(name_base, name_size);
+    StringView name = StringView(name_base, name_size);
     if(name.size == 0) { continue; }
     
     //- rjf: fuzzy match against query
@@ -1358,7 +1358,7 @@ di_search_thread__entry_point(void* p)
     
     //- rjf: map key . output arena & search parameters
     Arena* arena = 0;
-    String8 query = {0};
+    StringView query = {0};
     DI_SearchParams params = {0};
     uint64 initial_bucket_write_gen = 0;
     OS_MutexScopeW(stripe.rw_mutex)
@@ -1620,7 +1620,7 @@ di_match_store_begin(DI_MatchStore* store, DI_KeyArray keys)
 }
 
 RDI_SectionKind
-di_match_store_section_kind_from_name(DI_MatchStore* store, String8 name, uint64 endt_us)
+di_match_store_section_kind_from_name(DI_MatchStore* store, StringView name, uint64 endt_us)
 {
   RDI_SectionKind result = 0;
   {
@@ -1735,7 +1735,7 @@ ASYNC_WORK_DEF(di_match_work)
     //- rjf: get next request
     DI_MatchNameNode* node = 0;
     uint64 alloc_gen = 0;
-    String8 name = {0};
+    StringView name = {0};
     ProfScope("get next name") OS_MutexScope(store.u2m_ring_mutex) for(;;)
     {
       uint64 unconsumed_size = store.u2m_ring_write_pos - store.u2m_ring_read_pos;

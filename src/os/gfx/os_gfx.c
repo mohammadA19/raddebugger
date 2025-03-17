@@ -9,10 +9,10 @@
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-String8
+StringView
 os_string_from_event_kind(OS_EventKind kind)
 {
-  String8 result = {0};
+  StringView result = {0};
   switch(kind)
   {
     case OS_EventKind_Null:
@@ -35,7 +35,7 @@ String8List
 os_string_list_from_modifiers(Arena* arena, OS_Modifiers modifiers)
 {
   String8List result = {0};
-  String8 modifier_strs[] = 
+  StringView modifier_strs[] = 
   {
     ("Ctrl"),
     ("Shift"),

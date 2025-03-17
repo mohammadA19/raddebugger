@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 LNK_SectionNode *
-lnk_section_list_remove(LNK_SectionList* list, String8 name)
+lnk_section_list_remove(LNK_SectionList* list, StringView name)
 {
   LNK_SectionNode* section = lnk_section_list_search_node(list, name);
   
@@ -33,7 +33,7 @@ lnk_section_list_remove(LNK_SectionList* list, String8 name)
 }
 
 LNK_SectionNode *
-lnk_section_list_search_node(LNK_SectionList* list, String8 name)
+lnk_section_list_search_node(LNK_SectionList* list, StringView name)
 {
   LNK_SectionNode* node;
   for (node = list.first; node != 0; node = node.next) {
@@ -45,7 +45,7 @@ lnk_section_list_search_node(LNK_SectionList* list, String8 name)
 }
 
 LNK_Section *
-lnk_section_list_search(LNK_SectionList* list, String8 name)
+lnk_section_list_search(LNK_SectionList* list, StringView name)
 {
   LNK_SectionNode* node = lnk_section_list_search_node(list, name);
   return node != NULL ? &node.data : NULL;
@@ -77,8 +77,8 @@ lnk_section_ptr_array_from_list(Arena* arena, LNK_SectionList list)
   return result;
 }
 
-String8
-lnk_make_section_sort_index(Arena* arena, String8 name, COFF_SectionFlags flags, uint64 section_index)
+StringView
+lnk_make_section_sort_index(Arena* arena, StringView name, COFF_SectionFlags flags, uint64 section_index)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -133,10 +133,10 @@ lnk_make_section_sort_index(Arena* arena, String8 name, COFF_SectionFlags flags,
     str8_list_pushf(scratch.arena, &sort_index_list, "b");
   }
   
-  String8 order_index = str8_from_bits_u32(scratch.arena, safe_cast_u32(section_index));
+  StringView order_index = str8_from_bits_u32(scratch.arena, safe_cast_u32(section_index));
   str8_list_push(scratch.arena, &sort_index_list, order_index);
   
-  String8 result = str8_list_join(arena, &sort_index_list, 0);
+  StringView result = str8_list_join(arena, &sort_index_list, 0);
   scratch_end(scratch);
   ProfEnd();
   return result;
@@ -149,19 +149,19 @@ lnk_section_associate_chunks(LNK_Section* sect, LNK_Chunk* head, LNK_Chunk* asso
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_raw(LNK_Section* sect, LNK_Chunk* parent, void* raw_ptr, uint64 raw_size, String8 sort_index)
+lnk_section_push_chunk_raw(LNK_Section* sect, LNK_Chunk* parent, void* raw_ptr, uint64 raw_size, StringView sort_index)
 {
   return lnk_chunk_push_leaf(sect.arena, sect.cman, parent, sort_index, raw_ptr, raw_size);
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_data(LNK_Section* sect, LNK_Chunk* parent, String8 data, String8 sort_index)
+lnk_section_push_chunk_data(LNK_Section* sect, LNK_Chunk* parent, StringView data, StringView sort_index)
 {
   return lnk_section_push_chunk_raw(sect, parent, data.str, data.size, sort_index);
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_u32(LNK_Section* sect, LNK_Chunk* parent, uint32 value, String8 sort_index)
+lnk_section_push_chunk_u32(LNK_Section* sect, LNK_Chunk* parent, uint32 value, StringView sort_index)
 {
   uint32* ptr = push_array_no_zero(sect.arena, uint32, 1);
   *ptr = value;
@@ -169,7 +169,7 @@ lnk_section_push_chunk_u32(LNK_Section* sect, LNK_Chunk* parent, uint32 value, S
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_u64(LNK_Section* sect, LNK_Chunk* parent, uint32 value, String8 sort_index)
+lnk_section_push_chunk_u64(LNK_Section* sect, LNK_Chunk* parent, uint32 value, StringView sort_index)
 {
   uint64* ptr = push_array_no_zero(sect.arena, uint64, 1);
   *ptr = value;
@@ -177,13 +177,13 @@ lnk_section_push_chunk_u64(LNK_Section* sect, LNK_Chunk* parent, uint32 value, S
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_bss(LNK_Section* sect, LNK_Chunk* parent, uint64 size, String8 sort_index)
+lnk_section_push_chunk_bss(LNK_Section* sect, LNK_Chunk* parent, uint64 size, StringView sort_index)
 {
   return lnk_section_push_chunk_raw(sect, parent, 0, size, sort_index);
 }
 
 LNK_Chunk *
-lnk_section_push_chunk_list(LNK_Section* sect, LNK_Chunk* parent, String8 sort_index)
+lnk_section_push_chunk_list(LNK_Section* sect, LNK_Chunk* parent, StringView sort_index)
 {
   return lnk_chunk_push_list(sect.arena, sect.cman, parent, sort_index);
 }
@@ -201,7 +201,7 @@ lnk_section_push_reloc(LNK_Section* sect, LNK_Chunk* chunk, LNK_RelocType type, 
 }
 
 LNK_Reloc *
-lnk_section_push_reloc_undefined(LNK_Section* sect, LNK_Chunk* chunk, LNK_RelocType type, uint64 apply_off, String8 undefined_symbol_name, LNK_SymbolScopeFlags scope_flags)
+lnk_section_push_reloc_undefined(LNK_Section* sect, LNK_Chunk* chunk, LNK_RelocType type, uint64 apply_off, StringView undefined_symbol_name, LNK_SymbolScopeFlags scope_flags)
 {
   LNK_Symbol* symbol = lnk_make_undefined_symbol(sect.arena, undefined_symbol_name, scope_flags);
   LNK_Reloc* reloc = lnk_section_push_reloc(sect, chunk, type, apply_off, symbol);
@@ -220,7 +220,7 @@ lnk_section_merge(LNK_Section* dst, LNK_Section* src)
   
   // put source root in a wrapper list so it has unique sort index otherwise
   // after we merge sections sort indices might conflict
-  LNK_Chunk* src_root_wrapper = lnk_section_push_chunk_list(dst, dst.cman.root, str8(0,0));
+  LNK_Chunk* src_root_wrapper = lnk_section_push_chunk_list(dst, dst.cman.root, StringView(0,0));
 
   // merge roots
   lnk_merge_chunks(dst.arena, dst.cman, src_root_wrapper, src.cman.root, src.id_map, src.cman.total_chunk_count);
@@ -291,13 +291,13 @@ lnk_section_table_release(LNK_SectionTable** st_ptr)
 }
 
 LNK_Section *
-lnk_section_table_push(LNK_SectionTable* st, String8 name, COFF_SectionFlags flags)
+lnk_section_table_push(LNK_SectionTable* st, StringView name, COFF_SectionFlags flags)
 {
   ProfBeginFunction();
   LNK_SectionList* sect_list = &st.list;
   
   LNK_SectionNode* sect_node  = push_array(st.arena, LNK_SectionNode, 1);
-  String8          sort_index = lnk_make_section_sort_index(st.arena, name, flags, st.id_max);
+  StringView          sort_index = lnk_make_section_sort_index(st.arena, name, flags, st.id_max);
   
   B32 found = 0;
   for (LNK_SectionNode* curr = sect_list.first, *prev = NULL; curr != NULL; prev = curr, curr = curr.next) {
@@ -331,7 +331,7 @@ lnk_section_table_push(LNK_SectionTable* st, String8 name, COFF_SectionFlags fla
   sect.flags        = flags;
   sect.cman         = lnk_chunk_manager_alloc(sect.arena, sect_id, st.file_align);
   sect.root         = sect.cman.root;
-  sect.nosort_chunk = lnk_chunk_push_list(sect.arena, sect.cman, sect.root, str8(0,0));
+  sect.nosort_chunk = lnk_chunk_push_list(sect.arena, sect.cman, sect.root, StringView(0,0));
   sect.nosort_chunk.sort_chunk = 0;
   sect.emit_header  = 1;
   sect.has_layout   = 1;
@@ -374,7 +374,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_chunk_mark_discarded)
 }
 
 void
-lnk_section_table_remove(LNK_SectionTable* st, LNK_SymbolTable* symtab, String8 name)
+lnk_section_table_remove(LNK_SectionTable* st, LNK_SymbolTable* symtab, StringView name)
 {
   ProfBeginFunction();
   
@@ -396,7 +396,7 @@ lnk_section_table_remove(LNK_SectionTable* st, LNK_SymbolTable* symtab, String8 
 }
 
 LNK_Section *
-lnk_section_table_search(LNK_SectionTable* st, String8 name)
+lnk_section_table_search(LNK_SectionTable* st, StringView name)
 {
   return lnk_section_list_search(&st.list, name);
 }
@@ -481,7 +481,7 @@ lnk_section_table_remove_empties(LNK_SectionTable* st, LNK_SymbolTable* symtab)
     lnk_visit_chunks(sect.id, sect.root, lnk_chunk_has_leaf, (void*)&no_data);
     
     if (no_data) {
-      String8 name = push_str8_copy(scratch.arena, sect.name);
+      StringView name = push_str8_copy(scratch.arena, sect.name);
       str8_list_push(scratch.arena, &name_list, name);
     }
   }
@@ -595,7 +595,7 @@ lnk_section_table_assign_indices(LNK_SectionTable* st)
   ProfEnd();
 }
 
-String8
+StringView
 lnk_section_table_serialize(TP_Context* tp, Arena* arena, LNK_SectionTable* st, COFF_MachineType machine)
 {
   ProfBeginFunction();
@@ -611,7 +611,7 @@ lnk_section_table_serialize(TP_Context* tp, Arena* arena, LNK_SectionTable* st, 
   }
 
   uint8*      image_buffer = push_array_no_zero(arena, uint8, image_size);
-  String8  image        = str8(image_buffer, image_size);
+  StringView  image        = StringView(image_buffer, image_size);
   uint64      image_cursor = 0;
 
   for (LNK_SectionNode* sect_n = st.list.first; sect_n != 0; sect_n = sect_n.next) {
@@ -622,7 +622,7 @@ lnk_section_table_serialize(TP_Context* tp, Arena* arena, LNK_SectionTable* st, 
       }
 
       uint64     sect_size = sect.layout.chunk_file_size_array[sect.root.ref.chunk_id];
-      String8 sect_data = str8_substr(image, rng_1u64(image_cursor, image_cursor + sect_size));
+      StringView sect_data = str8_substr(image, rng_1u64(image_cursor, image_cursor + sect_size));
 
       uint8 fill_byte = 0;
       if (sect.flags & COFF_SectionFlag_CntCode) {
@@ -766,12 +766,12 @@ lnk_file_size_from_chunk_ref(LNK_Section** sect_id_map, LNK_ChunkRef chunk_ref)
   return file_size;
 }
 
-String8
-lnk_data_from_chunk_ref(LNK_Section** sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
+StringView
+lnk_data_from_chunk_ref(LNK_Section** sect_id_map, StringView image_data, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef  final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section*  sect            = sect_id_map[final_chunk_ref.sect_id];
-  String8 chunk_data;
+  StringView chunk_data;
   if (sect.has_layout) {
     uint64 chunk_size = lnk_file_size_from_chunk_ref(sect_id_map, chunk_ref);
     uint64 chunk_foff = lnk_file_off_from_chunk_ref(sect_id_map, chunk_ref);
@@ -785,13 +785,13 @@ lnk_data_from_chunk_ref(LNK_Section** sect_id_map, String8 image_data, LNK_Chunk
   return chunk_data;
 }
 
-String8
-lnk_data_from_chunk_ref_no_pad(LNK_Section** sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
+StringView
+lnk_data_from_chunk_ref_no_pad(LNK_Section** sect_id_map, StringView image_data, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section* sect = sect_id_map[final_chunk_ref.sect_id];
 
-  String8 chunk_data;
+  StringView chunk_data;
   if (sect.has_layout) {
     uint64 chunk_size = lnk_virt_size_from_chunk_ref(sect_id_map, chunk_ref);
     uint64 chunk_foff = lnk_file_off_from_chunk_ref(sect_id_map, chunk_ref);

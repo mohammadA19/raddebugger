@@ -62,7 +62,7 @@
 //~ rjf: Basic Helpers
 
 uint64
-dw_hash_from_string(String8 string)
+dw_hash_from_string(StringView string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;
@@ -74,15 +74,15 @@ dw_hash_from_string(String8 string)
 uint64
 dw_based_range_read(void* base, Rng1U64 range, uint64 offset, uint64 size, void* out)
 {
-  String8 data = str8((uint8*)base+range.min, dim_1u64(range));
+  StringView data = StringView((uint8*)base+range.min, dim_1u64(range));
   return str8_deserial_read(data, offset, out, size, 1);
 }
 
-String8
+StringView
 dw_based_range_read_string(void* base, Rng1U64 range, uint64 offset)
 {
-  String8 data = str8((uint8*)base+range.min, dim_1u64(range));
-  String8 result = {0};
+  StringView data = StringView((uint8*)base+range.min, dim_1u64(range));
+  StringView result = {0};
   str8_deserial_read_cstr(data, offset, &result);
   return result;
 }
@@ -395,7 +395,7 @@ dw_based_range_read_attrib_form_value(void* base, Rng1U64 range, uint64 offset, 
     //- rjf: strings
     case DW_Form_String:
     {
-      String8 string = dw_based_range_read_string(base, range, offset);
+      StringView string = dw_based_range_read_string(base, range, offset);
       bytes_read = string.size + 1;
       uint64 string_offset = offset;
       uint64 string_size = (offset + bytes_read) - string_offset;
@@ -665,7 +665,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena* arena, DW_SectionArray* section
     //- rjf: if we got a nonzero .debug_info offset, we've found a valid entry.
     if(info_off != 0)
     {
-      String8 string = dw_based_range_read_string(base, rng, cursor);
+      StringView string = dw_based_range_read_string(base, rng, cursor);
       cursor += string.size + 1;
 
       uint64 hash       = dw_hash_from_string(string);
@@ -1050,7 +1050,7 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     uint64             str_offset = dw_v5_offset_from_offs_section_base_index(sections, DW_Section_StrOffsets, resolve_params.debug_str_offs_base, str_index);
     void*           base       = dw_base_from_sec(sections, section);
     Rng1U64         range      = dw_range_from_sec(sections, section);
-    String8         string     = dw_based_range_read_string(base, range, str_offset);
+    StringView         string     = dw_based_range_read_string(base, range, str_offset);
     value.section = section;
     value.v[0]    = str_offset;
     value.v[1]    = value.v[0] + string.size;
@@ -1101,7 +1101,7 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     DW_SectionKind  section = DW_Section_Str;
     void*           base    = dw_base_from_sec(sections, section);
     Rng1U64         range   = dw_range_from_sec(sections, section);
-    String8         string  = dw_based_range_read_string(base, range, form_value.v[0]);
+    StringView         string  = dw_based_range_read_string(base, range, form_value.v[0]);
     value.section = section;
     value.v[0]    = form_value.v[0];
     value.v[1]    = value.v[0] + string.size;
@@ -1112,7 +1112,7 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     DW_SectionKind  section = DW_Section_LineStr;
     void*           base    = dw_base_from_sec(sections, section);
     Rng1U64         range   = dw_range_from_sec(sections, section);
-    String8         string  = dw_based_range_read_string(base, range, form_value.v[0]);
+    StringView         string  = dw_based_range_read_string(base, range, form_value.v[0]);
     value.section = section;
     value.v[0]    = form_value.v[0];
     value.v[1]    = value.v[0] + string.size;
@@ -1150,14 +1150,14 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
   return value;
 }
 
-String8
+StringView
 dw_string_from_attrib_value(DW_SectionArray* sections, DW_AttribValue value)
 {
   DW_SectionKind  section_kind = value.section;
   void*           base         = dw_base_from_sec(sections, section_kind);
   Rng1U64         range        = dw_range_from_sec(sections, section_kind);
 
-  String8 string = {0};
+  StringView string = {0};
   string.str     = (uint8 *)dw_based_range_ptr(base, range, value.v[0]);
   string.size    = value.v[1] - value.v[0];
   return string;
@@ -1468,7 +1468,7 @@ dw_comp_unit_ranges_from_info(Arena* arena, DW_Section info)
 }
 
 DW_Ext
-dw_ext_from_params(String8 producer, Arch arch, ImageType image_type)
+dw_ext_from_params(StringView producer, Arch arch, ImageType image_type)
 {
   DW_Ext ext = DW_Ext_Null;
   switch (image_type) {
@@ -1622,11 +1622,11 @@ dw_comp_root_from_range(Arena* arena, DW_SectionArray* sections, Rng1U64 range, 
   
   //- rjf: parse the rest of the compilation unit tag's attributes that we'd
   // like to cache
-  String8        name                  = {0};
-  String8        producer              = {0};
-  String8        compile_dir           = {0};
-  String8        external_dwo_name     = {0};
-  String8        external_gnu_dwo_name = {0};
+  StringView        name                  = {0};
+  StringView        producer              = {0};
+  StringView        compile_dir           = {0};
+  StringView        external_dwo_name     = {0};
+  StringView        external_gnu_dwo_name = {0};
   uint64            gnu_dwo_id            = 0;
   DW_Language    language              = 0;
   uint64            name_case             = 0;
@@ -1989,7 +1989,7 @@ dw_parsed_line_table_from_comp_root(Arena* arena, DW_SectionArray* sections, DW_
           
           case DW_ExtOpcode_DefineFile:
           {
-            String8 file_name   = dw_based_range_read_string(base, line_info_range, cursor);
+            StringView file_name   = dw_based_range_read_string(base, line_info_range, cursor);
             uint64     dir_index   = 0;
             uint64     modify_time = 0;
             uint64     file_size   = 0;
@@ -2032,13 +2032,13 @@ dw_parsed_line_table_from_comp_root(Arena* arena, DW_SectionArray* sections, DW_
   return result;
 }
 
-String8
+StringView
 dw_path_from_file_idx(Arena* arena, DW_LineVMHeader* vm, uint64 file_idx)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
   DW_LineFile* lf    = &vm.file_table.v[file_idx];
-  String8      dir   = vm.dir_table.v[lf.dir_idx];
+  StringView      dir   = vm.dir_table.v[lf.dir_idx];
   PathStyle    style = path_style_from_str8(dir);
   if (style == PathStyle_Null || style == PathStyle_Relative) {
     style = path_style_from_str8(lf.file_name);
@@ -2058,7 +2058,7 @@ dw_path_from_file_idx(Arena* arena, DW_LineVMHeader* vm, uint64 file_idx)
 
   str8_path_list_resolve_dots_in_place(&path_list, style);
 
-  String8 path = str8_path_list_join_by_style(arena, &path_list, style);
+  StringView path = str8_path_list_join_by_style(arena, &path_list, style);
 
   scratch_end(scratch);
   return path;
@@ -2149,8 +2149,8 @@ dw_read_line_vm_header(Arena*                       arena,
                        DW_Mode                      mode,
                        DW_SectionArray*             sections,
                        DW_AttribValueResolveParams  resolve_params,
-                       String8                      compile_dir,
-                       String8                      unit_name,
+                       StringView                      compile_dir,
+                       StringView                      unit_name,
                        DW_LineVMHeader*             header_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -2231,7 +2231,7 @@ dw_read_line_vm_header(Arena*                       arena,
     uint64 directories_count = 0;
     cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &directories_count);
     header_out.dir_table.count = directories_count;
-    header_out.dir_table.v     = push_array(arena, String8, header_out.dir_table.count);
+    header_out.dir_table.v     = push_array(arena, StringView, header_out.dir_table.count);
     for(uint64 dir_idx = 0; dir_idx < directories_count; ++dir_idx) 
     {
       DW_LineFile line_file;
@@ -2284,7 +2284,7 @@ dw_read_line_vm_header(Arena*                       arena,
     str8_list_push(scratch.arena, &dir_list, compile_dir);
     for (;;) 
     {
-      String8 dir = dw_based_range_read_string(line_base, parse_rng, cursor);
+      StringView dir = dw_based_range_read_string(line_base, parse_rng, cursor);
       cursor += dir.size + 1;
       if (dir.size == 0) 
       {
@@ -2305,7 +2305,7 @@ dw_read_line_vm_header(Arena*                       arena,
     
     for(;;) 
     {
-      String8 file_name   = dw_based_range_read_string(line_base, parse_rng, cursor);
+      StringView file_name   = dw_based_range_read_string(line_base, parse_rng, cursor);
       uint64     dir_index   = 0;
       uint64     modify_time = 0;
       uint64     file_size   = 0;
@@ -2330,7 +2330,7 @@ dw_read_line_vm_header(Arena*                       arena,
     //- rjf: build dir table
     {
       header_out.dir_table.count = dir_list.node_count;
-      header_out.dir_table.v     = push_array(arena, String8, header_out.dir_table.count);
+      header_out.dir_table.v     = push_array(arena, StringView, header_out.dir_table.count);
 
       String8Node* n = dir_list.first;
       for(uint64 idx = 0; n != 0 && idx < header_out.dir_table.count; idx += 1, n = n.next) 

@@ -1672,9 +1672,9 @@ B32 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass 
 
 //- Section Names
 
-String8 dw_name_string_from_section_kind     (DW_SectionKind k);
-String8 dw_mach_name_string_from_section_kind(DW_SectionKind k);
-String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
+StringView dw_name_string_from_section_kind     (DW_SectionKind k);
+StringView dw_mach_name_string_from_section_kind(DW_SectionKind k);
+StringView dw_dwo_name_string_from_section_kind (DW_SectionKind k);
 
 ////////////////////////////////
 

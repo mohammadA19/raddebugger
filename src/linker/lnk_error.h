@@ -112,7 +112,7 @@ enum
 void lnk_init_error_handler();
 void lnk_errorfv(LNK_ErrorCode code, char* fmt, va_list args);
 void lnk_error(LNK_ErrorCode code, char* fmt, ...);
-void lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char* fmt, ...);
+void lnk_error_with_loc(LNK_ErrorCode code, StringView obj_path, StringView lib_path, char* fmt, ...);
 void lnk_supplement_error(char* fmt, ...);
 void lnk_supplement_error_list(String8List list);
 void lnk_suppress_error(LNK_ErrorCode code);

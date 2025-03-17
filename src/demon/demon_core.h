@@ -66,7 +66,7 @@ struct DMN_Event
   Arch arch;
   uint64 address;
   uint64 size;
-  String8 string;
+  StringView string;
   uint32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
   uint32 flags;
   int32 signo;
@@ -137,7 +137,7 @@ struct DMN_ProcessIter
 
 struct DMN_ProcessInfo
 {
-  String8 name;
+  StringView name;
   uint32 pid;
 }
 
@@ -213,7 +213,7 @@ uint64 dmn_process_read(DMN_Handle process, Rng1U64 range, void* dst);
 B32 dmn_process_write(DMN_Handle process, Rng1U64 range, void* src);
 #define dmn_process_read_struct(process, vaddr, ptr) dmn_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_process_write_struct(process, vaddr, ptr) dmn_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
-String8 dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr);
+StringView dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr);
 
 //- rjf: threads
 Arch dmn_arch_from_thread(DMN_Handle handle);

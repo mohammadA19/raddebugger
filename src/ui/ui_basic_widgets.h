@@ -62,29 +62,29 @@ struct UI_ScrollListSignal
 //~ rjf: Basic Widgets
 
 void ui_divider(UI_Size size);
-UI_Signal ui_label(String8 string);
+UI_Signal ui_label(StringView string);
 UI_Signal ui_labelf(char* fmt, ...);
-void ui_label_multiline(float max, String8 string);
+void ui_label_multiline(float max, StringView string);
 void ui_label_multilinef(float max, char* fmt, ...);
-UI_Signal ui_button(String8 string);
+UI_Signal ui_button(StringView string);
 UI_Signal ui_buttonf(char* fmt, ...);
-UI_Signal ui_hover_label(String8 string);
+UI_Signal ui_hover_label(StringView string);
 UI_Signal ui_hover_labelf(char* fmt, ...);
-UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, String8 pre_edit_value, String8 string);
-UI_Signal ui_line_editf(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, String8 pre_edit_value, char* fmt, ...);
+UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, StringView pre_edit_value, StringView string);
+UI_Signal ui_line_editf(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, StringView pre_edit_value, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Images
 
-UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, String8 string);
+UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, StringView string);
 UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, char* fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Special Buttons
 
-UI_Signal ui_expander(B32 is_expanded, String8 string);
+UI_Signal ui_expander(B32 is_expanded, StringView string);
 UI_Signal ui_expanderf(B32 is_expanded, char* fmt, ...);
-UI_Signal ui_sort_header(B32 sorting, B32 ascending, String8 string);
+UI_Signal ui_sort_header(B32 sorting, B32 ascending, StringView string);
 UI_Signal ui_sort_headerf(B32 sorting, B32 ascending, char* fmt, ...);
 
 ////////////////////////////////
@@ -95,15 +95,15 @@ void ui_do_color_tooltip_hsv(Vec3F32 hsv);
 void ui_do_color_tooltip_hsva(Vec4F32 hsva);
 
 //- rjf: saturation/value picker
-UI_Signal ui_sat_val_picker(float hue, float* out_sat, float* out_val, String8 string);
+UI_Signal ui_sat_val_picker(float hue, float* out_sat, float* out_val, StringView string);
 UI_Signal ui_sat_val_pickerf(float hue, float* out_sat, float* out_val, char* fmt, ...);
 
 //- rjf: hue picker
-UI_Signal ui_hue_picker(float* out_hue, float sat, float val, String8 string);
+UI_Signal ui_hue_picker(float* out_hue, float sat, float val, StringView string);
 UI_Signal ui_hue_pickerf(float* out_hue, float sat, float val, char* fmt, ...);
 
 //- rjf: alpha picker
-UI_Signal ui_alpha_picker(float* out_alpha, String8 string);
+UI_Signal ui_alpha_picker(float* out_alpha, StringView string);
 UI_Signal ui_alpha_pickerf(float* out_alpha, char* fmt, ...);
 
 ////////////////////////////////
@@ -113,25 +113,25 @@ UI_Box* ui_row_begin();
 UI_Signal ui_row_end();
 UI_Box* ui_column_begin();
 UI_Signal ui_column_end();
-UI_Box* ui_named_row_begin(String8 string);
+UI_Box* ui_named_row_begin(StringView string);
 UI_Signal ui_named_row_end();
-UI_Box* ui_named_column_begin(String8 string);
+UI_Box* ui_named_column_begin(StringView string);
 UI_Signal ui_named_column_end();
 
 ////////////////////////////////
 //~ rjf: Floating Panes
 
-UI_Box* ui_pane_begin(Rng2F32 rect, String8 string);
+UI_Box* ui_pane_begin(Rng2F32 rect, StringView string);
 UI_Box* ui_pane_beginf(Rng2F32 rect, char* fmt, ...);
 UI_Signal ui_pane_end();
 
 ////////////////////////////////
 //~ rjf: Tables
 
-void ui_table_begin(uint64 column_pct_count, float** column_pcts, String8 string);
+void ui_table_begin(uint64 column_pct_count, float** column_pcts, StringView string);
 void ui_table_beginf(uint64 column_pct_count, float** column_pcts, char* fmt, ...);
 void ui_table_end();
-UI_Box *  ui_named_table_vector_begin(String8 string);
+UI_Box *  ui_named_table_vector_begin(StringView string);
 UI_Box *  ui_named_table_vector_beginf(char* fmt, ...);
 UI_Box *  ui_table_vector_begin();
 UI_Signal ui_table_vector_end();

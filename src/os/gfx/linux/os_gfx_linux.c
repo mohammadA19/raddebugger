@@ -55,15 +55,15 @@ os_get_gfx_info()
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void
-os_set_clipboard_text(String8 string)
+os_set_clipboard_text(StringView string)
 {
   
 }
 
-String8
+StringView
 os_get_clipboard_text(Arena* arena)
 {
-  String8 result = {0};
+  StringView result = {0};
   return result;
 }
 
@@ -71,7 +71,7 @@ os_get_clipboard_text(Arena* arena)
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
 OS_Handle
-os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
+os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title)
 {
   //- rjf: allocate window
   OS_LNX_Window* w = os_lnx_gfx_state.free_window;
@@ -119,7 +119,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
   
   //- rjf: attach name
   Temp scratch = scratch_begin(0, 0);
-  String8 title_copy = push_str8_copy(scratch.arena, title);
+  StringView title_copy = push_str8_copy(scratch.arena, title);
   XStoreName(os_lnx_gfx_state.display, w.window, (char *)title_copy.str);
   scratch_end(scratch);
   
@@ -271,10 +271,10 @@ os_monitor_from_window(OS_Handle window)
   return result;
 }
 
-String8
+StringView
 os_name_from_monitor(Arena* arena, OS_Handle monitor)
 {
-  return str8_zero();
+  return StringView();
 }
 
 Vec2F32
@@ -479,7 +479,7 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(B32 error, StringView title, StringView message)
 {
   
 }
@@ -488,13 +488,13 @@ os_graphical_message(B32 error, String8 title, String8 message)
 //~ rjf: @os_hooks Shell Operations
 
 void
-os_show_in_filesystem_ui(String8 path)
+os_show_in_filesystem_ui(StringView path)
 {
   
 }
 
 void
-os_open_in_browser(String8 url)
+os_open_in_browser(StringView url)
 {
   
 }

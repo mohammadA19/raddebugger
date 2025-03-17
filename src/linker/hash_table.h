@@ -7,13 +7,13 @@ struct KeyValuePair
 {
   [Union]
   struct {
-    String8 key_string;
+    StringView key_string;
     uint32     key_u32;
     uint64     key_u64;
   };
   [Union]
   struct {
-    String8  value_string;
+    StringView  value_string;
     void*    value_raw;
     uint32      value_u32;
     uint64      value_u64;
@@ -49,31 +49,31 @@ BucketNode * bucket_list_pop(BucketList* list);
 
 //- main
 
-uint64         hash_table_hasher(String8 string);
+uint64         hash_table_hasher(StringView string);
 HashTable * hash_table_init(Arena* arena, uint64 cap);
 void        hash_table_purge(HashTable* ht);
 
 //- push
 
 BucketNode * hash_table_push              (Arena* arena, HashTable* ht, uint64 hash,     KeyValuePair  v);
-BucketNode * hash_table_push_u32_string   (Arena* arena, HashTable* ht, uint32     key,  String8       value);
-BucketNode * hash_table_push_u64_string   (Arena* arena, HashTable* ht, uint64     key,  String8       value);
-BucketNode * hash_table_push_string_string(Arena* arena, HashTable* ht, String8 key,  String8       value);
-BucketNode * hash_table_push_path_string  (Arena* arena, HashTable* ht, String8 key,  String8       value);
+BucketNode * hash_table_push_u32_string   (Arena* arena, HashTable* ht, uint32     key,  StringView       value);
+BucketNode * hash_table_push_u64_string   (Arena* arena, HashTable* ht, uint64     key,  StringView       value);
+BucketNode * hash_table_push_string_string(Arena* arena, HashTable* ht, StringView key,  StringView       value);
+BucketNode * hash_table_push_path_string  (Arena* arena, HashTable* ht, StringView key,  StringView       value);
 BucketNode * hash_table_push_u32_raw      (Arena* arena, HashTable* ht, uint32     key,  void*         value);
 BucketNode * hash_table_push_u64_raw      (Arena* arena, HashTable* ht, uint64     key,  void*         value);
-BucketNode * hash_table_push_path_raw     (Arena* arena, HashTable* ht, String8 path, void*         value);
-BucketNode * hash_table_push_path_u64     (Arena* arena, HashTable* ht, String8 path, uint64           value);
+BucketNode * hash_table_push_path_raw     (Arena* arena, HashTable* ht, StringView path, void*         value);
+BucketNode * hash_table_push_path_u64     (Arena* arena, HashTable* ht, StringView path, uint64           value);
 BucketNode * hash_table_push_u64_u64      (Arena* arena, HashTable* ht, uint64     key,  uint64           value);
 
 //- search
 
-KeyValuePair * hash_table_search_string  (HashTable* ht, String8 string);
+KeyValuePair * hash_table_search_string  (HashTable* ht, StringView string);
 KeyValuePair * hash_table_search_u32     (HashTable* ht, uint32 key);
 KeyValuePair * hash_table_search_u64     (HashTable* ht, uint64 key);
-KeyValuePair * hash_table_search_path    (HashTable* ht, String8 path);
+KeyValuePair * hash_table_search_path    (HashTable* ht, StringView path);
 
-B32 hash_table_search_path_u64(HashTable* ht, String8 key, uint64* value_out);
+B32 hash_table_search_path_u64(HashTable* ht, StringView key, uint64* value_out);
 
 //- key-value helpers
 

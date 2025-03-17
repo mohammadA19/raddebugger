@@ -160,7 +160,7 @@ dmn_rsp_from_thread(DMN_Handle thread)
 ////////////////////////////////
 //~ Memory Helpers
 
-String8
+StringView
 dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -171,7 +171,7 @@ dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr)
   {
     uint8*      raw_block = push_array_no_zero(scratch.arena, uint8, stride);
     uint64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
-    String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
+    StringView  block     = str8_cstring_capped(raw_block, raw_block + read_size);
 
     str8_list_push(scratch.arena, &block_list, block);
 
@@ -181,7 +181,7 @@ dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr)
     }
   }
 
-  String8 result = str8_list_join(arena, &block_list, 0);
+  StringView result = str8_list_join(arena, &block_list, 0);
 
   scratch_end(scratch);
   return result;

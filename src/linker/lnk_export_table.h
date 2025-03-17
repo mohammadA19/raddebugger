@@ -6,7 +6,7 @@
 struct LNK_Export
 {
   struct LNK_Export*  next;
-  String8             name;
+  StringView             name;
   LNK_Symbol*         symbol;
   uint32                 id;
   uint16                 ordinal;
@@ -39,8 +39,8 @@ struct LNK_ExportTable
 
 LNK_ExportTable * lnk_export_table_alloc();
 void              lnk_export_table_release(LNK_ExportTable** exptab_ptr);
-LNK_Export *      lnk_export_table_search(LNK_ExportTable* exptab, String8 name);
+LNK_Export *      lnk_export_table_search(LNK_ExportTable* exptab, StringView name);
 void              lnk_collect_exports_from_def_files(LNK_ExportTable* exptab, String8List path_list);
-void              lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* symtab, String8 image_name, COFF_MachineType machine);
+void              lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* symtab, StringView image_name, COFF_MachineType machine);
 void lnk_collect_exports_from_obj_directives(LNK_ExportTable* exptab, LNK_ObjList obj_list, LNK_SymbolTable* symtab);
 

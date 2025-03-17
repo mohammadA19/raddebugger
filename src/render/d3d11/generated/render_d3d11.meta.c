@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8* r_d3d11_g_vshad_kind_source_table[5] =
+StringView* r_d3d11_g_vshad_kind_source_table[5] =
 {
 &r_d3d11_g_rect_shader_src,
 &r_d3d11_g_blur_shader_src,
@@ -13,7 +13,7 @@ String8* r_d3d11_g_vshad_kind_source_table[5] =
 &r_d3d11_g_finalize_shader_src,
 };
 
-String8 r_d3d11_g_vshad_kind_source_name_table[5] =
+StringView r_d3d11_g_vshad_kind_source_name_table[5] =
 {
 ("r_d3d11_g_rect_shader_src"),
 ("r_d3d11_g_blur_shader_src"),
@@ -40,7 +40,7 @@ ArrayCount(r_d3d11_g_mesh_ilay_elements) ,
  0,
 };
 
-String8* r_d3d11_g_pshad_kind_source_table[5] =
+StringView* r_d3d11_g_pshad_kind_source_table[5] =
 {
 &r_d3d11_g_rect_shader_src,
 &r_d3d11_g_blur_shader_src,
@@ -49,7 +49,7 @@ String8* r_d3d11_g_pshad_kind_source_table[5] =
 &r_d3d11_g_finalize_shader_src,
 };
 
-String8 r_d3d11_g_pshad_kind_source_name_table[5] =
+StringView r_d3d11_g_pshad_kind_source_name_table[5] =
 {
 ("r_d3d11_g_rect_shader_src"),
 ("r_d3d11_g_blur_shader_src"),

@@ -23,7 +23,7 @@ struct LogScope
 
 struct LogScopeResult
 {
-  String8 strings[LogMsgKind_COUNT];
+  StringView strings[LogMsgKind_COUNT];
 }
 
 struct Log
@@ -42,7 +42,7 @@ void log_select(Log* log);
 ////////////////////////////////
 //~ rjf: Log Building
 
-void log_msg(LogMsgKind kind, String8 string);
+void log_msg(LogMsgKind kind, StringView string);
 void log_msgf(LogMsgKind kind, char* fmt, ...);
 #define log_info(s)               log_msg(LogMsgKind_Info, (s))
 #define log_infof(fmt, ...)       log_msgf(LogMsgKind_Info, (fmt), __VA_ARGS__)

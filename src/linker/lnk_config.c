@@ -202,7 +202,7 @@ static read_only struct
 };
 
 LNK_CmdSwitchType
-lnk_cmd_switch_type_from_string(String8 name)
+lnk_cmd_switch_type_from_string(StringView name)
 {
   for (uint64 i = 0; i < ArrayCount(g_cmd_switch_map); i += 1) {
     if (str8_match_cstr(g_cmd_switch_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -212,7 +212,7 @@ lnk_cmd_switch_type_from_string(String8 name)
   return LNK_CmdSwitch_Null;
 }
 
-String8
+StringView
 lnk_string_from_cmd_switch_type(LNK_CmdSwitchType type)
 {
   for (uint64 cmd_idx = 0; cmd_idx < ArrayCount(g_cmd_switch_map); cmd_idx += 1) {
@@ -220,11 +220,11 @@ lnk_string_from_cmd_switch_type(LNK_CmdSwitchType type)
       return str8_cstring(g_cmd_switch_map[cmd_idx].name);
     }
   }
-  return str8_zero();
+  return StringView();
 }
 
 LNK_InputType
-lnk_input_type_from_string(String8 name)
+lnk_input_type_from_string(StringView name)
 {
   for (uint64 i = 0; i < ArrayCount(g_input_type_map); i += 1) {
     if (str8_match_cstr(g_input_type_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -235,7 +235,7 @@ lnk_input_type_from_string(String8 name)
 }
 
 LNK_DebugMode
-lnk_debug_mode_from_string(String8 name)
+lnk_debug_mode_from_string(StringView name)
 {
   for (uint64 i = 0; i < ArrayCount(g_debug_mode_map); i += 1) {
     if (str8_match_cstr(g_debug_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -246,7 +246,7 @@ lnk_debug_mode_from_string(String8 name)
 }
 
 LNK_TypeNameHashMode
-lnk_type_name_hash_mode_from_string(String8 name)
+lnk_type_name_hash_mode_from_string(StringView name)
 {
   for (uint64 i = 0; i < ArrayCount(g_type_name_hash_mode_map); i += 1) {
     if (str8_match_cstr(g_type_name_hash_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -262,11 +262,11 @@ LNK_CmdOption *
 lnk_cmd_line_push_option_if_not_presentf(Arena* arena, LNK_CmdLine* cmd_line, LNK_CmdSwitchType cmd_switch_type, char* param_fmt, ...)
 {
   LNK_CmdOption* opt = 0;
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch_type);
+  StringView cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch_type);
   if (!lnk_cmd_line_has_option_string(*cmd_line, cmd_switch_name)) {
     va_list param_args;
     va_start(param_args, param_fmt);
-    String8 param_str = push_str8fv(arena, param_fmt, param_args);
+    StringView param_str = push_str8fv(arena, param_fmt, param_args);
     va_end(param_args);
 
     opt = lnk_cmd_line_push_option_string(arena, cmd_line, cmd_switch_name, param_str);
@@ -279,9 +279,9 @@ lnk_cmd_line_push_optionf(Arena* arena, LNK_CmdLine* cmd_line, LNK_CmdSwitchType
 {
   va_list param_args;
   va_start(param_args, param_fmt);
-  String8 param_str = push_str8fv(arena, param_fmt, param_args);
+  StringView param_str = push_str8fv(arena, param_fmt, param_args);
   va_end(param_args);
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  StringView cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
   LNK_CmdOption* opt = lnk_cmd_line_push_option_string(arena, cmd_line, cmd_switch_name, param_str);
   return opt;
 }
@@ -289,41 +289,41 @@ lnk_cmd_line_push_optionf(Arena* arena, LNK_CmdLine* cmd_line, LNK_CmdSwitchType
 B32
 lnk_cmd_line_has_switch(LNK_CmdLine cmd_line, LNK_CmdSwitchType cmd_switch)
 {
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  StringView cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
   return lnk_cmd_line_has_option_string(cmd_line, cmd_switch_name);
 }
 
 ////////////////////////////////
 
 void
-lnk_error_cmd_switch(LNK_ErrorCode code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, char* fmt, ...)
+lnk_error_cmd_switch(LNK_ErrorCode code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args; va_start(args, fmt);
-  String8 switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
-  String8 message     = push_str8fv(scratch.arena, fmt, args);
-  String8 output      = push_str8f(scratch.arena, "/%S: %S", switch_name, message);
+  StringView switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  StringView message     = push_str8fv(scratch.arena, fmt, args);
+  StringView output      = push_str8f(scratch.arena, "/%S: %S", switch_name, message);
   lnk_error_with_loc(code, obj_path, lib_path, "%S", output);
   va_end(args);
   scratch_end(scratch);
 }
 
 void
-lnk_error_cmd_switch_invalid_param_count(LNK_ErrorCode code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch)
+lnk_error_cmd_switch_invalid_param_count(LNK_ErrorCode code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch)
 {
   lnk_error_cmd_switch(code, obj_path, lib_path, cmd_switch, "invalid number of parameters");
 }
 
 void
-lnk_error_cmd_switch_invalid_param(LNK_ErrorCode code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8 param)
+lnk_error_cmd_switch_invalid_param(LNK_ErrorCode code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, StringView param)
 {
   lnk_error_cmd_switch(code, obj_path, lib_path, cmd_switch, "invalid parameter \"%S\"", param);
 }
 
-String8
-lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8 string)
+StringView
+lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, StringView string)
 {
-  String8 result = string;
+  StringView result = string;
   B32 starts_with_quote = str8_match_lit("\"", string, StringMatchFlag_RightSideSloppy);
   if (starts_with_quote) {
     if (str8_ends_with_lit(string, "\"", 0)) {
@@ -337,13 +337,13 @@ lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, String8 obj_path, Str
 }
 
 void
-lnk_error_invalid_uac_level_param(LNK_ErrorCode error_code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8 input)
+lnk_error_invalid_uac_level_param(LNK_ErrorCode error_code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, StringView input)
 {
   lnk_error_cmd_switch(error_code, obj_path, lib_path, cmd_switch, "invalid param format, expected \"level={'asInvoker'|'highestAvailable'|'requireAdministrator'}\" but got \"%S\"", input);
 }
 
 void
-lnk_error_invalid_uac_ui_access_param(LNK_ErrorCode error_code, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8 input)
+lnk_error_invalid_uac_ui_access_param(LNK_ErrorCode error_code, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, StringView input)
 {
   lnk_error_cmd_switch(error_code, obj_path, lib_path, cmd_switch, "invalid param format, expected \"uiAccess={'true'|'false'}\" but got \"%S\"", input);
 }
@@ -364,8 +364,8 @@ lnk_get_default_function_pad_min(COFF_MachineType machine)
     } break;
     default: {
       lnk_error_cmd_switch(LNK_Error_Cmdl,
-                           str8_zero(),
-                           str8_zero(),
+                           StringView(),
+                           StringView(),
                            LNK_CmdSwitch_FunctionPadMin,
                            "default paramter is not defined for: %S",
                            coff_string_from_machine_type(machine));
@@ -505,7 +505,7 @@ lnk_is_thread_pool_shared(LNK_Config* config)
 ////////////////////////////////
 
 B32
-lnk_cmd_switch_parse_version(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Version* ver_out)
+lnk_cmd_switch_parse_version(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Version* ver_out)
 {
   Temp scratch = scratch_begin(0,0);
   B32 is_parsed = 0;
@@ -513,8 +513,8 @@ lnk_cmd_switch_parse_version(String8 obj_path, String8 lib_path, LNK_CmdSwitchTy
   if (value_strings.node_count == 1) {
     String8List split_list = str8_split_by_string_chars(scratch.arena, value_strings.first.string, ("."), StringSplitFlag_KeepEmpties);
 
-    String8 maj_str = ("0");
-    String8 min_str = ("0");
+    StringView maj_str = ("0");
+    StringView min_str = ("0");
     if (split_list.node_count == 1) {
       maj_str = split_list.first.string;
     } else if (split_list.node_count == 2) {
@@ -546,7 +546,7 @@ exit:;
 }
 
 B32
-lnk_cmd_switch_parse_tuple(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Rng1U64* tuple_out)
+lnk_cmd_switch_parse_tuple(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, Rng1U64* tuple_out)
 {
   if (value_strings.node_count == 1) {
     uint64 value;
@@ -576,7 +576,7 @@ lnk_cmd_switch_parse_tuple(String8 obj_path, String8 lib_path, LNK_CmdSwitchType
 }
 
 B32
-lnk_try_parse_u64(String8 string, LNK_ParseU64Flags flags, uint64* value_out)
+lnk_try_parse_u64(StringView string, LNK_ParseU64Flags flags, uint64* value_out)
 {
   if (try_u64_from_str8_c_rules(string, value_out)) {
     if (flags & LNK_ParseU64Flag_CheckUnder32bit) {
@@ -595,7 +595,7 @@ lnk_try_parse_u64(String8 string, LNK_ParseU64Flags flags, uint64* value_out)
 }
 
 B32
-lnk_cmd_switch_parse_u64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* value_out, LNK_ParseU64Flags flags)
+lnk_cmd_switch_parse_u64(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* value_out, LNK_ParseU64Flags flags)
 {
   if (value_strings.node_count != 1) {
     lnk_error_cmd_switch(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, "invalid number of parameters, exepcted integer number as input");
@@ -609,7 +609,7 @@ lnk_cmd_switch_parse_u64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType c
 }
 
 B32
-lnk_cmd_switch_parse_u32(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* value_out, LNK_ParseU64Flags flags)
+lnk_cmd_switch_parse_u32(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* value_out, LNK_ParseU64Flags flags)
 {
   uint64 value;
   if (lnk_cmd_switch_parse_u64(obj_path, lib_path, cmd_switch, value_strings, &value, flags | LNK_ParseU64Flag_CheckUnder32bit)) {
@@ -620,7 +620,7 @@ lnk_cmd_switch_parse_u32(String8 obj_path, String8 lib_path, LNK_CmdSwitchType c
 }
 
 B32
-lnk_cmd_switch_parse_u64_list(Arena* arena, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64List* list_out, LNK_ParseU64Flags flags)
+lnk_cmd_switch_parse_u64_list(Arena* arena, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64List* list_out, LNK_ParseU64Flags flags)
 {
   for (String8Node* string_n = value_strings.first; string_n != 0; string_n = string_n.next) {
     uint64 value;
@@ -633,7 +633,7 @@ lnk_cmd_switch_parse_u64_list(Arena* arena, String8 obj_path, String8 lib_path, 
 }
 
 B32
-lnk_cmd_switch_parse_flag(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, LNK_SwitchState* value_out)
+lnk_cmd_switch_parse_flag(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, LNK_SwitchState* value_out)
 {
   B32 is_parsed = 0;
   if (value_strings.node_count > 1) {
@@ -659,7 +659,7 @@ lnk_cmd_switch_parse_flag(String8 obj_path, String8 lib_path, LNK_CmdSwitchType 
 }
 
 void
-lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits)
+lnk_cmd_switch_set_flag_inv_16(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -672,7 +672,7 @@ lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitch
 }
 
 void
-lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits)
+lnk_cmd_switch_set_flag_inv_64(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -685,7 +685,7 @@ lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitch
 }
 
 void
-lnk_cmd_switch_set_flag_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits)
+lnk_cmd_switch_set_flag_16(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint16* flags, uint16 bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -698,7 +698,7 @@ lnk_cmd_switch_set_flag_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType
 }
 
 void
-lnk_cmd_switch_set_flag_32(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* flags, uint32 bits)
+lnk_cmd_switch_set_flag_32(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint32* flags, uint32 bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -711,7 +711,7 @@ lnk_cmd_switch_set_flag_32(String8 obj_path, String8 lib_path, LNK_CmdSwitchType
 }
 
 void
-lnk_cmd_switch_set_flag_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits)
+lnk_cmd_switch_set_flag_64(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, uint64* flags, uint64 bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -724,7 +724,7 @@ lnk_cmd_switch_set_flag_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType
 }
 
 B32
-lnk_cmd_switch_parse_string(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8* string_out)
+lnk_cmd_switch_parse_string(StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, StringView* string_out)
 {
   if (value_strings.node_count == 1) {
     if (value_strings.first.string.size > 0) {
@@ -740,7 +740,7 @@ lnk_cmd_switch_parse_string(String8 obj_path, String8 lib_path, LNK_CmdSwitchTyp
 }
 
 void
-lnk_cmd_switch_parse_string_copy(Arena* arena, String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8* string_out)
+lnk_cmd_switch_parse_string_copy(Arena* arena, StringView obj_path, StringView lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, StringView* string_out)
 {
   if (lnk_cmd_switch_parse_string(obj_path, lib_path, cmd_switch, value_strings, string_out)) {
     *string_out = push_str8_copy(arena, *string_out);
@@ -757,7 +757,7 @@ lnk_alt_name_list_concat_in_place(LNK_AltNameList* list, LNK_AltNameList* to_con
 }
 
 B32
-lnk_parse_alt_name_directive(Arena* arena, String8 input, LNK_AltNameList* list_out)
+lnk_parse_alt_name_directive(Arena* arena, StringView input, LNK_AltNameList* list_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   B32 is_parse_ok = 0;
@@ -771,7 +771,7 @@ lnk_parse_alt_name_directive(Arena* arena, String8 input, LNK_AltNameList* list_
   return is_parse_ok;
 }
 
-String8 *
+StringView *
 lnk_parse_alt_name_directive_list(Arena* arena, String8List list, LNK_AltNameList* list_out)
 {
   for (String8Node* str_n = list.first; str_n != 0; str_n = str_n.next) {
@@ -784,16 +784,16 @@ lnk_parse_alt_name_directive_list(Arena* arena, String8List list, LNK_AltNameLis
 }
 
 LNK_ExportParse *
-lnk_parse_export_directive(Arena* arena, LNK_ExportParseList* list, String8List value_list, String8 obj_path, String8 lib_path)
+lnk_parse_export_directive(Arena* arena, LNK_ExportParseList* list, String8List value_list, StringView obj_path, StringView lib_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   LNK_ExportParse* parse = 0;
 
   // parse directive
-  String8 name  = str8_zero();
-  String8 alias = str8_zero();
-  String8 type  = coff_string_from_import_header_type(COFF_ImportHeader_Code);
+  StringView name  = StringView();
+  StringView alias = StringView();
+  StringView type  = coff_string_from_import_header_type(COFF_ImportHeader_Code);
   if (value_list.node_count > 0) {
     String8List dir_split = str8_split_by_string_chars(scratch.arena, value_list.first.string, ("="), 0);
     B32 is_export_valid = value_list.node_count <= 2 && value_list.node_count > 0;
@@ -812,7 +812,7 @@ lnk_parse_export_directive(Arena* arena, LNK_ExportParseList* list, String8List 
   
   // prase error check
   if (name.size == 0) {
-    String8 dir = str8_list_join(scratch.arena, &value_list, 0);
+    StringView dir = str8_list_join(scratch.arena, &value_list, 0);
     lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "invalid export directive \"%S\"", dir);
     goto exit;
   }
@@ -847,7 +847,7 @@ lnk_merge_directive_list_push(Arena* arena, LNK_MergeDirectiveList* list, LNK_Me
 }
 
 B32
-lnk_parse_merge_directive(String8 string, LNK_MergeDirective* out)
+lnk_parse_merge_directive(StringView string, LNK_MergeDirective* out)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 is_parse_ok = 0;
@@ -900,7 +900,7 @@ lnk_print_help()
       continue;
     }
 
-    String8 name_args = push_str8f(temp.arena, "%s%s", name, args);
+    StringView name_args = push_str8f(temp.arena, "%s%s", name, args);
 
     fprintf(stdout, "   /%-32.*s %s%s\n",
             str8_varg(name_args),
@@ -917,8 +917,8 @@ lnk_print_help()
 
 ////////////////////////////////
 
-String8
-lnk_expand_env_vars_windows(Arena* arena, HashTable* env_vars, String8 string)
+StringView
+lnk_expand_env_vars_windows(Arena* arena, HashTable* env_vars, StringView string)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -927,12 +927,12 @@ lnk_expand_env_vars_windows(Arena* arena, HashTable* env_vars, String8 string)
     uint64 open  = str8_find_needle(string, i,      ("%"), 0);
     uint64 close = str8_find_needle(string, open+1, ("%"), 0);
 
-    String8 text = str8_substr(string, rng_1u64(i, open));
+    StringView text = str8_substr(string, rng_1u64(i, open));
     str8_list_push(scratch.arena, &list, text);
     i += text.size;
 
     if (open < close) {
-      String8       env_var_name = str8_substr(string, rng_1u64(open+1, close));
+      StringView       env_var_name = str8_substr(string, rng_1u64(open+1, close));
       KeyValuePair* match        = hash_table_search_path(env_vars, env_var_name);
       if (match) {
         str8_list_push(scratch.arena, &list, match.value_string);
@@ -944,14 +944,14 @@ lnk_expand_env_vars_windows(Arena* arena, HashTable* env_vars, String8 string)
     }
   }
 
-  String8 result = str8_list_join(arena, &list, 0);
+  StringView result = str8_list_join(arena, &list, 0);
 
   scratch_end(scratch);
   return result;
 }
 
 void
-lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_name, String8List value_strings, String8 obj_path, String8 lib_path)
+lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, StringView cmd_name, String8List value_strings, StringView obj_path, StringView lib_path)
 {
   Assert(cmd_name.size); // switch must have a defined name in the table
 
@@ -961,14 +961,14 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
 
   switch (cmd_switch) {
   case LNK_CmdSwitch_Null: {
-    String8 value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
+    StringView value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
     lnk_error_with_loc(LNK_Warning_UnknownSwitch, obj_path, lib_path, "unknown switch: \"/%S%s%S\"", cmd_name, value.size ? ":" : "", value);
   } break;
 
   default: { InvalidPath; } break;
 
   case LNK_CmdSwitch_NotImplemented: {
-    String8 value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
+    StringView value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
     lnk_not_implemented("switch \"%S\" is not implemented \"%S\"", cmd_name, value);
   } break;
 
@@ -986,7 +986,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
 
   case LNK_CmdSwitch_AlternateName: {
     String8List value_strings_copy = str8_list_copy(arena, &value_strings);
-    String8* error_string = lnk_parse_alt_name_directive_list(arena, value_strings_copy, &config.alt_name_list);
+    StringView* error_string = lnk_parse_alt_name_directive_list(arena, value_strings_copy, &config.alt_name_list);
     if (error_string != 0) {
       lnk_error_cmd_switch(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, "invalid syntax \"%S\", expected format \"FROM=TO\"", *error_string);
     }
@@ -1002,8 +1002,8 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
       //String8Node* second_node = first_node.next;
       B32 is_response_file = str8_match_lit("@", first_node.string, StringMatchFlag_RightSideSloppy);
       if (is_response_file) {
-        //String8 file_path = first_node.string;
-        //String8 tag = second_node.string;
+        //StringView file_path = first_node.string;
+        //StringView tag = second_node.string;
         lnk_not_implemented("Response files are not implemented for /BASE");
       } else {
         Rng1U64 addr_size = {0};
@@ -1054,7 +1054,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
     if (value_strings.node_count == 0 || value_strings.node_count > 1) {
       lnk_error_cmd_switch(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, "invalid number of parameters");
     } else {
-      String8 value = value_strings.first.string;
+      StringView value = value_strings.first.string;
       if (str8_match_lit("unload", value, StringMatchFlag_CaseInsensitive)) {
         config.flags |= LNK_ConfigFlag_DelayUnload;
       } else if (str8_match_lit("nobind", value, StringMatchFlag_CaseInsensitive)) {
@@ -1087,7 +1087,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
   } break;
 
   case LNK_CmdSwitch_Entry: {
-    String8 new_entry_point_name = {0};
+    StringView new_entry_point_name = {0};
     lnk_cmd_switch_parse_string_copy(arena, obj_path, lib_path, cmd_switch, value_strings, &new_entry_point_name);
 
     if (config.entry_point_name.size) {
@@ -1203,7 +1203,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
     String8List lib_dir_list = str8_list_copy(arena, &value_strings);
     for (String8Node* dir_n = lib_dir_list.first; dir_n != 0; dir_n = dir_n.next) {
       if (!os_folder_path_exists(dir_n.string)) {
-        String8 full_path = os_full_path_from_path(scratch.arena, dir_n.string);
+        StringView full_path = os_full_path_from_path(scratch.arena, dir_n.string);
         lnk_error_cmd_switch(LNK_Warning_Cmdl, obj_path, lib_path, cmd_switch, "path doesn't exist %S", full_path);
       }
     }
@@ -1287,16 +1287,16 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
 
   case LNK_CmdSwitch_ManifestUac: {
     if (value_strings.node_count == 1) {
-      String8 uac = lnk_error_check_and_strip_quotes(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, value_strings.first.string);
+      StringView uac = lnk_error_check_and_strip_quotes(LNK_Error_Cmdl, obj_path, lib_path, cmd_switch, value_strings.first.string);
       String8List  param_list = str8_split_by_string_chars(scratch.arena, uac, (" "), 0);
       String8Array param_arr  = str8_array_from_list(scratch.arena, &param_list);
       if (param_arr.count > 0) {
         if (str8_match_lit("level=", param_arr.v[0], StringMatchFlag_RightSideSloppy|StringMatchFlag_CaseInsensitive)) {
-          String8 level_param = param_arr.v[0];
+          StringView level_param = param_arr.v[0];
           String8List level_list = str8_split_by_string_chars(scratch.arena, level_param, ("="), 0);
           if (level_list.node_count == 2) {
             if (str8_match_lit("level", level_list.first.string, StringMatchFlag_CaseInsensitive)) {
-              String8 level = level_list.last.string;
+              StringView level = level_list.last.string;
               if (str8_match_lit("'asInvoker'", level, 0) ||
                   str8_match_lit("'highestAvailable'", level, 0) ||
                   str8_match_lit("'requireAdministrator'", level, 0)) {
@@ -1304,10 +1304,10 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
                 config.manifest_uac = 1;
                 config.manifest_level = push_str8_copy(arena, level);
                 if (param_arr.count > 1) {
-                  String8 ui_access_param = param_arr.v[1];
+                  StringView ui_access_param = param_arr.v[1];
                   String8List ui_access_list = str8_split_by_string_chars(scratch.arena, ui_access_param, ("="), 0);
                   if (ui_access_list.node_count == 2) {
-                    String8 ui_access = ui_access_list.last.string;
+                    StringView ui_access = ui_access_list.last.string;
                     if (str8_match_lit("'true'", ui_access, 0) ||
                         str8_match_lit("'false'", ui_access, 0)) {
                       // ui access was parsed!
@@ -1344,7 +1344,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
   case LNK_CmdSwitch_Natvis: {
     // warn about invalid natvis extension
     for (String8Node* node = value_strings.first; node != 0; node = node.next) {
-      String8 ext = str8_skip_last_dot(node.string);
+      StringView ext = str8_skip_last_dot(node.string);
       if (!str8_match_lit("natvis", ext, StringMatchFlag_CaseInsensitive)) {
         lnk_error_cmd_switch(LNK_Warning_InvalidNatvisFileExt, obj_path, lib_path, cmd_switch, "Visual Studio expects .natvis extension: \"%S\"", node.string);
       }
@@ -1381,7 +1381,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
 
   case LNK_CmdSwitch_Opt: {
     for (String8Node* n = value_strings.first; n != 0; n = n.next) {
-      String8 param = n.string;
+      StringView param = n.string;
       if (str8_match_lit("ref", param, StringMatchFlag_CaseInsensitive)) {
         config.opt_ref = LNK_SwitchState_Yes; 
       } else if (str8_match_lit("noref", param, StringMatchFlag_CaseInsensitive)) {
@@ -1654,7 +1654,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
   } break;
 
   case LNK_CmdSwitch_Rad_PdbHashTypeNames: {
-    String8              mode_string = str8_list_first(&value_strings);
+    StringView              mode_string = str8_list_first(&value_strings);
 
     LNK_TypeNameHashMode mode;
     if (mode_string.size == 0) {
@@ -1742,7 +1742,7 @@ lnk_apply_cmd_option_to_config(Arena* arena, LNK_Config* config, String8 cmd_nam
 
   case LNK_CmdSwitch_Rad_TargetOs: {
     if (value_strings.node_count == 1) {
-      String8 os_string = str8_list_first(&value_strings);
+      StringView os_string = str8_list_first(&value_strings);
       OperatingSystem target_os = operating_system_from_string(os_string);
       if (target_os != OperatingSystem_Null) {
         config.target_os = target_os;
@@ -1854,7 +1854,7 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
 
   // process command line switches
   for (LNK_CmdOption* cmd = cmd_line.first_option; cmd != 0; cmd = cmd.next) {
-    lnk_apply_cmd_option_to_config(arena, config, cmd.string, cmd.value_strings, str8_zero(), str8_zero());
+    lnk_apply_cmd_option_to_config(arena, config, cmd.string, cmd.value_strings, StringView(), StringView());
   }
 
   // :manifest_input
@@ -1868,7 +1868,7 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
         }
       }
     } else {
-      lnk_error_cmd_switch(LNK_Error_Cmdl, str8_zero(), str8_zero(), LNK_CmdSwitch_ManifestInput, "missing /MANIFEST:EMBED");
+      lnk_error_cmd_switch(LNK_Error_Cmdl, StringView(), StringView(), LNK_CmdSwitch_ManifestInput, "missing /MANIFEST:EMBED");
     }
   }
 
@@ -1883,8 +1883,8 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
 
   // input files
   for (String8Node* input_node = cmd_line.input_list.first; input_node != 0; input_node = input_node.next) {
-    String8 path = push_str8_copy(arena, input_node.string);
-    String8 ext = str8_skip_last_dot(path);
+    StringView path = push_str8_copy(arena, input_node.string);
+    StringView ext = str8_skip_last_dot(path);
 
     // map file extension to input type
     LNK_InputType input_type = lnk_input_type_from_string(ext);
@@ -1948,7 +1948,7 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
   if (lnk_is_thread_pool_shared(config)) {
     if (config.worker_count > config.max_worker_count) {
       config.worker_count = config.max_worker_count;
-      lnk_error_cmd_switch(LNK_Warning_Cmdl, str8_zero(), str8_zero(), LNK_CmdSwitch_Rad_Workers, "worker count %llu exceeds thread pool max worker count %llu; claping count to max", config.worker_count, config.max_worker_count);
+      lnk_error_cmd_switch(LNK_Warning_Cmdl, StringView(), StringView(), LNK_CmdSwitch_Rad_Workers, "worker count %llu exceeds thread pool max worker count %llu; claping count to max", config.worker_count, config.max_worker_count);
     }
   }
   
@@ -1970,8 +1970,8 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
 
   // handle empty /OUT
   if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Out)) {
-    String8 name      = str8_list_first(&config.input_list[LNK_Input_Obj]);
-    String8 ext       = (config.file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) ? ("dll") : ("exe");
+    StringView name      = str8_list_first(&config.input_list[LNK_Input_Obj]);
+    StringView ext       = (config.file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) ? ("dll") : ("exe");
     config.image_name = make_file_name_with_ext(scratch.arena, name, ext);
   }
 
@@ -2010,8 +2010,8 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
     for (String8Node* node = process_info.environment.first; node != 0; node = node.next) {
       String8List list = str8_split_by_string_chars(scratch.arena, node.string, ("="), 0);
 
-      String8 key = list.first.string;
-      String8 val = str8_zero();
+      StringView key = list.first.string;
+      StringView val = StringView();
       if (list.node_count == 2) {
         val = list.last.string;
       } else if (list.node_count > 2) {
@@ -2055,7 +2055,7 @@ lnk_config_from_cmd_line(Arena* arena, String8List raw_cmd_line)
   config.rad_debug_alt_path = lnk_expand_env_vars_windows(arena, env_vars, config.rad_debug_alt_path);
 
   if (lnk_get_log_status(LNK_Log_Debug)) {
-    String8 full_cmd_line = str8_list_join(scratch.arena, &raw_cmd_line, &(StringJoin){ .sep = (" ") });
+    StringView full_cmd_line = str8_list_join(scratch.arena, &raw_cmd_line, &(StringJoin){ .sep = (" ") });
     fprintf(stderr, "--------------------------------------------------------------------------------\n");
     fprintf(stderr, "Command Line: %.*s\n", str8_varg(full_cmd_line));
     fprintf(stderr, "Work Dir    : %.*s\n", str8_varg(config.work_dir));

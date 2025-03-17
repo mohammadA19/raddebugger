@@ -8,7 +8,7 @@ static char dwarf_spaces[] = "                ";
 
 static void
 dwarf_stringize_info(Arena* arena, String8List* out, DWARF_InfoUnit* unit, uint32 indent){
-  String8 unit_type_string = dwarf_string_from_unit_type((DWARF_UnitType)unit.unit_type);
+  StringView unit_type_string = dwarf_string_from_unit_type((DWARF_UnitType)unit.unit_type);
   
   str8_list_pushf(arena, out, "%.*shdr_off=0x%llx\n", indent, dwarf_spaces, unit.hdr_off);
   str8_list_pushf(arena, out, "%.*sbase_off=0x%llx\n", indent, dwarf_spaces, unit.base_off);

@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 r_tex2d_format_display_string_table[9] =
+StringView r_tex2d_format_display_string_table[9] =
 {
 ("R8"),
 ("RG8"),
@@ -30,20 +30,20 @@ uint8 r_tex2d_format_bytes_per_pixel_table[9] =
 16,
 };
 
-String8 r_resource_kind_display_string_table[3] =
+StringView r_resource_kind_display_string_table[3] =
 {
 ("Static"),
 ("Dynamic"),
 ("Stream "),
 };
 
-String8 r_tex2d_sample_kind_display_string_table[2] =
+StringView r_tex2d_sample_kind_display_string_table[2] =
 {
 ("Nearest"),
 ("Linear"),
 };
 
-String8 r_pass_kind_display_string_table[3] =
+StringView r_pass_kind_display_string_table[3] =
 {
 ("UI"),
 ("Blur"),

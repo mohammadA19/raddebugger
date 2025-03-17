@@ -70,11 +70,11 @@ demon_lnx_attach_pid(Arena* arena, pid_t pid, DEMON_LNX_AttachNode** new_node){
   return(result);
 }
 
-String8
+StringView
 demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid){
   // get symbolic path
   Temp scratch = scratch_begin(&arena, 1);
-  String8 exe_symbol_path = push_str8f(scratch.arena, "/proc/%d/exe", pid);
+  StringView exe_symbol_path = push_str8f(scratch.arena, "/proc/%d/exe", pid);
   
   // try to read the link for a bit
   Temp restore_point = temp_begin(arena);
@@ -93,13 +93,13 @@ demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid){
   }
   
   // finalize result
-  String8 result = {0};
+  StringView result = {0};
   if (!got_final_result || size == -1){
     temp_end(restore_point);
   }
   else{
     arena_pop(arena, (cap - size - 1));
-    result = str8(buffer, size + 1);
+    result = StringView(buffer, size + 1);
   }
   
   scratch_end(scratch);
@@ -109,7 +109,7 @@ demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid){
 int
 demon_lnx_open_memory_fd_for_pid(pid_t pid){
   Temp scratch = scratch_begin(0, 0);
-  String8 memory_path = push_str8f(scratch.arena, "/proc/%i/mem", pid);
+  StringView memory_path = push_str8f(scratch.arena, "/proc/%i/mem", pid);
   int result = open((char*)memory_path.str, O_RDWR);
   scratch_end(scratch);
   return(result);
@@ -121,7 +121,7 @@ demon_lnx_arch_from_pid(pid_t pid){
   Arch result = Arch_Null;
   
   // exe path
-  String8 exe_path = demon_lnx_executable_path_from_pid(scratch.arena, pid);
+  StringView exe_path = demon_lnx_executable_path_from_pid(scratch.arena, pid);
   
   // handle to exe
   int exe_fd = -1;
@@ -198,7 +198,7 @@ demon_lnx_aux_from_pid(pid_t pid, Arch arch){
   
   // open aux data
   Temp scratch = scratch_begin(0, 0);
-  String8 auxv_symbol_path = push_str8f(scratch.arena, "/proc/%d/auxv", pid);
+  StringView auxv_symbol_path = push_str8f(scratch.arena, "/proc/%d/auxv", pid);
   int aux_fd = open((char*)auxv_symbol_path.str, O_RDONLY);
   
   // scan aux data
@@ -461,7 +461,7 @@ demon_lnx_write_memory(int memory_fd, uint64 dst, void* src, uint64 size){
   return(result);
 }
 
-String8
+StringView
 demon_lnx_read_memory_str(Arena* arena, int memory_fd, uint64 address){
   // TODO(allen): this could be done better with a demon_lnx_read_memory
   // that returns a read amount instead of a success/fail.
@@ -491,7 +491,7 @@ demon_lnx_read_memory_str(Arena* arena, int memory_fd, uint64 address){
     }
     
     if (block_opl > 0){
-      str8_list_push(scratch.arena, &list, str8(block, block_opl));
+      str8_list_push(scratch.arena, &list, StringView(block, block_opl));
     }
     
     if (block_opl < cap || cap == 0){
@@ -500,7 +500,7 @@ demon_lnx_read_memory_str(Arena* arena, int memory_fd, uint64 address){
   }
   
   // assemble results
-  String8 result = str8_list_join(arena, &list, 0);
+  StringView result = str8_list_join(arena, &list, 0);
   scratch_end(scratch);
   return(result);
 }
@@ -567,9 +567,9 @@ demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64* dst, SYMS_RegX64* sr
 
 ////////////////////////////////
 
-String8
+StringView
 demon_lnx_read_int_string(Arena* arena, int fd, int radix){
-  String8 integer = str8(0,0);
+  StringView integer = StringView(0,0);
   
   int to_read = 0;
   int to_seek = 0;
@@ -589,7 +589,7 @@ demon_lnx_read_int_string(Arena* arena, int fd, int radix){
     char* buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
-    integer = str8((uint8*)buf, (uint64)to_read);
+    integer = StringView((uint8*)buf, (uint64)to_read);
   }
   
   return(integer);
@@ -598,7 +598,7 @@ demon_lnx_read_int_string(Arena* arena, int fd, int radix){
 uint64
 demon_lnx_read_u64(int fd, int radix){
   Temp scratch = scratch_begin(0, 0);
-  String8 integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
+  StringView integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
   uint64 result = u64_from_str8(integer, radix);
   scratch_end(scratch);
   return(result);
@@ -607,7 +607,7 @@ demon_lnx_read_u64(int fd, int radix){
 int64
 demon_lnx_read_s64(int fd, int radix){
   Temp scratch = scratch_begin(0, 0);
-  String8 integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
+  StringView integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
   int64 result = s64_from_str8(integer, radix);
   scratch_end(scratch);
   return(result);
@@ -638,9 +638,9 @@ demon_lnx_read_whitespace(int fd){
   return whitespace_size;
 }
 
-String8
+StringView
 demon_lnx_read_string(Arena* arena, int fd){
-  String8 result = str8(0,0);
+  StringView result = StringView(0,0);
   
   int to_read = 0;
   int to_seek = 0;
@@ -660,7 +660,7 @@ demon_lnx_read_string(Arena* arena, int fd){
     char* buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
-    result = str8((uint8*)buf, to_read);
+    result = StringView((uint8*)buf, to_read);
   }
   
   return(result);
@@ -669,7 +669,7 @@ demon_lnx_read_string(Arena* arena, int fd){
 int
 demon_lnx_open_maps(pid_t pid){
   Temp scratch = scratch_begin(0, 0);
-  String8 path = push_str8f(scratch.arena, "/proc/%d/maps", pid);
+  StringView path = push_str8f(scratch.arena, "/proc/%d/maps", pid);
   int maps = open((char*)path.str, O_RDONLY);
   scratch_end(scratch);
   return(maps);
@@ -687,7 +687,7 @@ demon_lnx_next_map(Arena* arena, int maps, DEMON_LNX_MapsEntry* entry_out){
     uint64 dev_major = 0;
     uint64 dev_minor = 0;
     uint64 inode = 0;
-    String8 pathname = str8(0,0);
+    StringView pathname = StringView(0,0);
     
     // address range
     address_lo = demon_lnx_read_u64(maps, 16);
@@ -781,7 +781,7 @@ demon_lnx_next_map(Arena* arena, int maps, DEMON_LNX_MapsEntry* entry_out){
       entry_out.type = DEMON_LNX_MapsEntryType_Stack;
     } else if (str8_match(pathname, ("[stack:"), StringMatchFlag_RightSideSloppy)){
       entry_out.type = DEMON_LNX_MapsEntryType_Stack;
-      String8 tid = str8_substr(pathname, r1u64(7, pathname.size - 8));
+      StringView tid = str8_substr(pathname, r1u64(7, pathname.size - 8));
       entry_out.stack_tid = (pid_t)u64_from_str8(tid, 10);
     }
     
@@ -1441,7 +1441,7 @@ demon_os_launch_process(OS_LaunchOptions* options){
     for (String8Node* node = options.cmd_line.first;
          node != 0;
          node = node.next, arg_ptr += 1){
-      String8 string = push_str8_copy(scratch.arena, node.string);
+      StringView string = push_str8_copy(scratch.arena, node.string);
       *arg_ptr = (char*)string.str;
     }
     *arg_ptr = 0;
@@ -1450,7 +1450,7 @@ demon_os_launch_process(OS_LaunchOptions* options){
   
   char* path = 0;
   {
-    String8 string = push_str8_copy(scratch.arena, options.path);
+    StringView string = push_str8_copy(scratch.arena, options.path);
     path = (char*)string.str;
   }
   
@@ -1461,7 +1461,7 @@ demon_os_launch_process(OS_LaunchOptions* options){
     for (String8Node* node = options.env.first;
          node != 0;
          node = node.next, env_ptr += 1){
-      String8 string = push_str8_copy(scratch.arena, node.string);
+      StringView string = push_str8_copy(scratch.arena, node.string);
       *env_ptr = (char*)string.str;
     }
     *env_ptr = 0;
@@ -1650,7 +1650,7 @@ demon_os_attach_process(uint32 pid){
   
   // open thread list
   if (attached_proc){
-    String8 threads_path = push_str8f(scratch.arena, "/proc/%d/task", pid);
+    StringView threads_path = push_str8f(scratch.arena, "/proc/%d/task", pid);
     DIR* proc_dir = opendir((char*)threads_path.str);
     if (proc_dir == 0){
       // TODO(allen): could not read proc threads somehow; no good!
@@ -1665,7 +1665,7 @@ demon_os_attach_process(uint32 pid){
           break;
         }
         
-        String8 name = str8_cstring(entry.d_name);
+        StringView name = str8_cstring(entry.d_name);
         if (str8_is_integer(name, 10)){
           pid_t tid = u64_from_str8(name, 10);
           if (tid != pid){
@@ -1773,12 +1773,12 @@ demon_os_entity_cleanup(DEMON_Entity* entity)
 
 //- rjf: introspection
 
-String8
+StringView
 demon_os_full_path_from_module(Arena* arena, DEMON_Entity* module){
   DEMON_Entity* process = module.parent;
   int memory_fd = (int)process.ext_u64;
   uint64 name_va = module.ext_u64;
-  String8 result = demon_lnx_read_memory_str(arena, memory_fd, name_va);
+  StringView result = demon_lnx_read_memory_str(arena, memory_fd, name_va);
   return(result);
 }
 
@@ -2052,7 +2052,7 @@ B32
 demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo* info_out){
   // scan for a process id
   B32 got_pid = false;
-  String8 pid_string = {0};
+  StringView pid_string = {0};
   
   DIR* dir = (DIR*)PtrFromInt(iter.v[0]);
   if (dir != 0 && iter.v[1] == 0){
@@ -2063,7 +2063,7 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
       }
       
       // check file name is integer
-      String8 file_name = str8_cstring((char*)d.d_name);
+      StringView file_name = str8_cstring((char*)d.d_name);
       B32 is_integer = str8_is_integer(file_name, 10);
       
       // break on integers (which represent processes)
@@ -2085,7 +2085,7 @@ demon_os_proc_iter_next(Arena* arena, DEMON_ProcessIter* iter, DEMON_ProcessInfo
   if (got_pid){
     // determine the name we will report
     pid_t pid = u64_from_str8(pid_string, 10);
-    String8 name = demon_lnx_executable_path_from_pid(arena, pid);
+    StringView name = demon_lnx_executable_path_from_pid(arena, pid);
     if (name.size == 0){
       name = ("<name-not-resolved>");
     }

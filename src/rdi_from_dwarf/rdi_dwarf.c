@@ -70,8 +70,8 @@ dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf){
   if (elf != 0){
     //- extract debug info
     uint32 debug_section_idx[DWARF_SectionCode_COUNT] = {0};
-    String8 debug_section_name[DWARF_SectionCode_COUNT] = {0};
-    String8 debug_data[DWARF_SectionCode_COUNT] = {0};
+    StringView debug_section_name[DWARF_SectionCode_COUNT] = {0};
+    StringView debug_data[DWARF_SectionCode_COUNT] = {0};
     for (uint64 i = 1; i < DWARF_SectionCode_COUNT; i += 1){
       DWARF_SectionNameRow* row = dwarf_section_name_table + i;
       uint32 idx = 0;
@@ -97,21 +97,21 @@ dwarf_parsed_from_elf(Arena* arena, ELF_Parsed* elf){
 }
 
 static DWARF_IndexParsed*
-dwarf_index_from_data(Arena* arena, String8 data){
+dwarf_index_from_data(Arena* arena, StringView data){
   DWARF_IndexParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_SupParsed*
-dwarf_sup_from_data(Arena* arena, String8 data){
+dwarf_sup_from_data(Arena* arena, StringView data){
   DWARF_SupParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_InfoParsed*
-dwarf_info_from_data(Arena* arena, String8 data){
+dwarf_info_from_data(Arena* arena, StringView data){
   // supported version numbers: 4,5
   
   
@@ -242,7 +242,7 @@ dwarf_info_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_PubNamesParsed*
-dwarf_pubnames_from_data(Arena* arena, String8 data){
+dwarf_pubnames_from_data(Arena* arena, StringView data){
   // supported version numbers: 2
   
   
@@ -320,7 +320,7 @@ dwarf_pubnames_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_NamesParsed*
-dwarf_names_from_data(Arena* arena, String8 data){
+dwarf_names_from_data(Arena* arena, StringView data){
   // supported version numbers: 5
   
   
@@ -415,7 +415,7 @@ dwarf_names_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_ArangesParsed*
-dwarf_aranges_from_data(Arena* arena, String8 data){
+dwarf_aranges_from_data(Arena* arena, StringView data){
   // supported version numbers: 2
   
   
@@ -491,7 +491,7 @@ dwarf_aranges_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_LineParsed*
-dwarf_line_from_data(Arena* arena, String8 data){
+dwarf_line_from_data(Arena* arena, StringView data){
   // supported version numbers: 4, 5
   
   
@@ -598,7 +598,7 @@ dwarf_line_from_data(Arena* arena, String8 data){
           }
           
           // attach dir to list
-          String8 dir = str8_range(dir_first, dir_opl);
+          StringView dir = str8_range(dir_first, dir_opl);
           str8_list_push(arena, &include_directories, dir);
         }
         
@@ -768,42 +768,42 @@ dwarf_line_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_MacInfoParsed*
-dwarf_mac_info_from_data(Arena* arena, String8 data){
+dwarf_mac_info_from_data(Arena* arena, StringView data){
   DWARF_MacInfoParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_MacroParsed*
-dwarf_macro_from_data(Arena* arena, String8 data){
+dwarf_macro_from_data(Arena* arena, StringView data){
   DWARF_MacroParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_FrameParsed*
-dwarf_frame_from_data(Arena* arena, String8 data){
+dwarf_frame_from_data(Arena* arena, StringView data){
   DWARF_FrameParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_RangesParsed*
-dwarf_ranges_from_data(Arena* arena, String8 data){
+dwarf_ranges_from_data(Arena* arena, StringView data){
   DWARF_RangesParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_StrOffsetsParsed*
-dwarf_str_offsets_from_data(Arena* arena, String8 data){
+dwarf_str_offsets_from_data(Arena* arena, StringView data){
   DWARF_StrOffsetsParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_AddrParsed*
-dwarf_addr_from_data(Arena* arena, String8 data){
+dwarf_addr_from_data(Arena* arena, StringView data){
   // supported version numbers: 5
   
   
@@ -868,14 +868,14 @@ dwarf_addr_from_data(Arena* arena, String8 data){
 }
 
 static DWARF_RngListsParsed*
-dwarf_rng_lists_from_data(Arena* arena, String8 data){
+dwarf_rng_lists_from_data(Arena* arena, StringView data){
   DWARF_RngListsParsed* result = 0;
   // TODO(allen): 
   return(result);
 }
 
 static DWARF_LocListsParsed*
-dwarf_loc_lists_from_data(Arena* arena, String8 data){
+dwarf_loc_lists_from_data(Arena* arena, StringView data){
   DWARF_LocListsParsed* result = 0;
   // TODO(allen): 
   return(result);
@@ -885,7 +885,7 @@ dwarf_loc_lists_from_data(Arena* arena, String8 data){
 // parse helpers
 
 static void
-dwarf__initial_length(String8 data, uint8** ptr_inout, uint8** unit_opl_out, B32* is_64bit_out){
+dwarf__initial_length(StringView data, uint8** ptr_inout, uint8** unit_opl_out, B32* is_64bit_out){
   uint8* unit_opl = 0;
   B32 is_64bit = 0;
   
@@ -942,7 +942,7 @@ dwarf__line_v5_directories(uint64 address_size, uint64 offset_size,
         case DWARF_LineEntryFormat_path:
         {
           if (decoded.dataptr != 0){
-            directory_ptr.path_str = str8(decoded.dataptr, decoded.val);
+            directory_ptr.path_str = StringView(decoded.dataptr, decoded.val);
           }
           else{
             directory_ptr.path_off = decoded.val;
@@ -993,9 +993,9 @@ dwarf__line_v5_directories(uint64 address_size, uint64 offset_size,
 
 // debug sections
 
-static String8
+static StringView
 dwarf_name_from_debug_section(DWARF_Parsed* dwarf, DWARF_SectionCode sec_code){
-  String8 result = ("invalid_debug_section");
+  StringView result = ("invalid_debug_section");
   if (sec_code < DWARF_SectionCode_COUNT){
     if (dwarf.debug_section_idx[sec_code] != 0){
       result = dwarf.debug_section_name[sec_code];
@@ -1208,9 +1208,9 @@ dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
 
 // string functions
 
-static String8
+static StringView
 dwarf_string_from_unit_type(DWARF_UnitType type){
-  String8 result = ("unrecognized_type");
+  StringView result = ("unrecognized_type");
   switch (type){
 #define X(N,C) case C: result = (#N); break;
     DWARF_UnitTypeXList(X)
@@ -1219,9 +1219,9 @@ dwarf_string_from_unit_type(DWARF_UnitType type){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_tag(DWARF_Tag tag){
-  String8 result = ("unrecognized_tag");
+  StringView result = ("unrecognized_tag");
   switch (tag){
 #define X(N,C) case C: result = (#N); break;
     DWARF_TagXList(X)
@@ -1230,9 +1230,9 @@ dwarf_string_from_tag(DWARF_Tag tag){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_attribute_name(DWARF_AttributeName name){
-  String8 result = ("unrecognized_attribute_name");
+  StringView result = ("unrecognized_attribute_name");
   switch (name){
 #define X(N,C,f1,f2,f3,f4) case C: result = (#N); break;
     DWARF_AttributeNameXList(X)
@@ -1241,9 +1241,9 @@ dwarf_string_from_attribute_name(DWARF_AttributeName name){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_attribute_form(DWARF_AttributeForm form){
-  String8 result = ("unrecognized_attribute_form");
+  StringView result = ("unrecognized_attribute_form");
   switch (form){
 #define X(N,C,k) case C: result = (#N); break;
     DWARF_AttributeFormXList(X)
@@ -1252,9 +1252,9 @@ dwarf_string_from_attribute_form(DWARF_AttributeForm form){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_line_std_op(DWARF_LineStdOp op){
-  String8 result = ("unrecognized_line_std_op");
+  StringView result = ("unrecognized_line_std_op");
   switch (op){
 #define X(N,C) case C: result = (#N); break;
     DWARF_LineStdOpXList(X)
@@ -1263,9 +1263,9 @@ dwarf_string_from_line_std_op(DWARF_LineStdOp op){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_line_ext_op(DWARF_LineExtOp op){
-  String8 result = ("unrecognized_line_ext_op");
+  StringView result = ("unrecognized_line_ext_op");
   switch (op){
 #define X(N,C) case C: result = (#N); break;
     DWARF_LineExtOpXList(X)
@@ -1274,9 +1274,9 @@ dwarf_string_from_line_ext_op(DWARF_LineExtOp op){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format){
-  String8 result = ("unrecognized_line_entry_format");
+  StringView result = ("unrecognized_line_entry_format");
   switch (format){
 #define X(N,C) case C: result = (#N); break;
     DWARF_LineEntryFormatXList(X)
@@ -1285,9 +1285,9 @@ dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format){
   return(result);
 }
 
-static String8
+static StringView
 dwarf_string_from_section_code(DWARF_SectionCode sec_code){
-  String8 result = ("unrecognized_section_code");
+  StringView result = ("unrecognized_section_code");
   switch (sec_code){
     case DWARF_SectionCode_COUNT:{}break;
 #define X(Nc,Vf,N0,N1,N2) case DWARF_SectionCode_##Nc: result = (#Nc); break;
@@ -1303,7 +1303,7 @@ dwarf_string_from_section_code(DWARF_SectionCode sec_code){
 
 #if 0
 static DWARF_InfoParsed*
-dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
+dwarf_info_from_data(Arena* arena, StringView data, DWARF_InfoParams* params,
                      DWARF_AbbrevParsed* abbrev){
   
   // unit index range to extract
@@ -1707,7 +1707,7 @@ dwarf_info_from_data(Arena* arena, String8 data, DWARF_InfoParams* params,
 }
 
 static DWARF_AbbrevParsed*
-dwarf_abbrev_from_data(Arena* arena, String8 data, DWARF_AbbrevParams* params){
+dwarf_abbrev_from_data(Arena* arena, StringView data, DWARF_AbbrevParams* params){
   /* .debug_abbrev
   ** Layout
   **  List(Tag)

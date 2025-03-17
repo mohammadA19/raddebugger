@@ -72,7 +72,7 @@ struct FNT_FontHashNode
   FNT_Tag tag;
   FP_Handle handle;
   FP_Metrics metrics;
-  String8 path;
+  StringView path;
 }
 
 struct FNT_FontHashSlot
@@ -192,8 +192,8 @@ static FNT_State* f_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Functions
 
-U128 fnt_hash_from_string(String8 string);
-uint64 fnt_little_hash_from_string(String8 string);
+U128 fnt_hash_from_string(StringView string);
+uint64 fnt_little_hash_from_string(StringView string);
 Vec2S32 fnt_vertex_from_corner(Corner corner);
 
 ////////////////////////////////
@@ -203,9 +203,9 @@ FNT_Tag fnt_tag_zero();
 B32 fnt_tag_match(FNT_Tag a, FNT_Tag b);
 FP_Handle fnt_handle_from_tag(FNT_Tag tag);
 FP_Metrics fnt_fp_metrics_from_tag(FNT_Tag tag);
-FNT_Tag fnt_tag_from_path(String8 path);
-FNT_Tag fnt_tag_from_static_data_string(String8* data_ptr);
-String8 fnt_path_from_tag(FNT_Tag tag);
+FNT_Tag fnt_tag_from_path(StringView path);
+FNT_Tag fnt_tag_from_static_data_string(StringView* data_ptr);
+StringView fnt_path_from_tag(FNT_Tag tag);
 
 ////////////////////////////////
 //~ rjf: Atlas
@@ -225,12 +225,12 @@ FNT_PieceArray fnt_piece_array_copy(Arena* arena, FNT_PieceArray* src);
 //~ rjf: Rasterization Cache
 
 FNT_Hash2StyleRasterCacheNode* fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flags);
-FNT_Run fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, String8 string);
-String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, String8 string, float max);
-Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string);
+FNT_Run fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, StringView string);
+String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, StringView string, float max);
+Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView string);
 Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8List list);
 float fnt_column_size_from_tag_size(FNT_Tag tag, float size);
-uint64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string, float p);
+uint64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView string, float p);
 
 ////////////////////////////////
 //~ rjf: Metrics

@@ -89,8 +89,8 @@ struct RDIB_LocationList
 struct RDIB_Variable
 {
   RDI_LinkFlags              link_flags;
-  String8                    name;
-  String8                    link_name;
+  StringView                    name;
+  StringView                    link_name;
   RDI_LocalKind              kind;
   struct RDIB_Type*          type;
   struct RDIB_Type*          container_type;
@@ -120,13 +120,13 @@ struct RDIB_TopLevelInfo
   RDI_Arch arch;
   uint64      exe_hash;
   uint64      voff_max;
-  String8  exe_name;
-  String8  producer_string;
+  StringView  exe_name;
+  StringView  producer_string;
 }
 
 struct RDIB_BinarySection
 {
-  String8                name;
+  StringView                name;
   RDI_BinarySectionFlags flags;
   uint64                    voff_first;
   uint64                    voff_opl;
@@ -191,10 +191,10 @@ struct RDIB_LineTableChunkList
 
 struct RDIB_SourceFile
 {
-  String8                      file_path;
-  String8                      normal_full_path;
+  StringView                      file_path;
+  StringView                      normal_full_path;
   RDI_ChecksumKind             checksum_kind;
-  String8                      checksum;
+  StringView                      checksum;
   RDIB_LineTableFragment*      line_table_frags;
 
   uint64 src_line_map_idx;
@@ -222,8 +222,8 @@ struct RDIB_SourceFileChunkList
 struct RDIB_Procedure
 {
   RDI_LinkFlags          link_flags;
-  String8                name;
-  String8                link_name;
+  StringView                name;
+  StringView                link_name;
   struct RDIB_Type*      type;
   struct RDIB_Type*      container_type;
   struct RDIB_Procedure* container_proc;
@@ -257,7 +257,7 @@ struct RDIB_Scope
 
 struct RDIB_InlineSite
 {
-  String8                      name;
+  StringView                      name;
   struct RDIB_Type*            type;
   struct RDIB_Type*            owner;
   struct RDIB_InlineSiteChunk* chunk;
@@ -284,23 +284,23 @@ struct RDIB_UDTMember
   [Union]
   struct {
     struct {
-      String8      name;
+      StringView      name;
       uint64          offset;
       RDIB_TypeRef type_ref;
     } data_field;
     struct {
-      String8      name;
+      StringView      name;
       RDIB_TypeRef type_ref;
     } static_data;
     RDIB_TypeRef member_list_pointer;
     struct {
       RDI_MemberKind kind;
-      String8         name;
+      StringView         name;
       RDIB_TypeRef    type_ref;
       uint64             vftable_offset;
     } method;
     struct {
-      String8      name;
+      StringView      name;
       RDIB_TypeRef type_ref;
     } nested_type;
     struct {
@@ -313,7 +313,7 @@ struct RDIB_UDTMember
       uint64          vtable_off;
     } virtual_base_class;
     struct {
-      String8 name;
+      StringView name;
       uint64     value;
     } enumerate;
   };
@@ -356,7 +356,7 @@ struct RDIB_Type
   [Union]
   struct {
     struct {
-      String8 name;
+      StringView name;
       uint64     size;
     } builtin;
     struct {
@@ -398,8 +398,8 @@ struct RDIB_Type
       uint64          size;
     } array;
     struct {
-      String8      name;
-      String8      link_name;
+      StringView      name;
+      StringView      link_name;
       RDIB_TypeRef members;
       // assigned in UDT build step
       uint64 udt_idx;
@@ -414,7 +414,7 @@ struct RDIB_Type
           uint64          size;
         } union_type;
         struct {
-          String8      name;
+          StringView      name;
           RDIB_TypeRef base_type;
         } enum_type;
       };
@@ -437,12 +437,12 @@ struct RDIB_Type
 struct RDIB_Unit
 {
   RDI_Arch        arch;
-  String8         unit_name;
-  String8         compiler_name;
-  String8         source_file;
-  String8         object_file;
-  String8         archive_file;
-  String8         build_path;
+  StringView         unit_name;
+  StringView         compiler_name;
+  StringView         source_file;
+  StringView         object_file;
+  StringView         archive_file;
+  StringView         build_path;
   RDI_Language    language;
   RDIB_LineTable* line_table;
   uint64             virt_range_count;
@@ -610,7 +610,7 @@ struct RDIB_UDTFwdrefBucket
 
 struct RDIB_StringMapBucket
 {
-  String8 string;
+  StringView string;
 
   [Union]
   struct {
@@ -727,7 +727,7 @@ struct RDIB_PathTreeNode
   struct RDIB_PathTreeNode* first_child;
   struct RDIB_PathTreeNode* last_child;
   uint64                       node_idx;
-  String8                   sub_path;
+  StringView                   sub_path;
   RDIB_SourceFile*          src_file;
 }
 
@@ -1162,9 +1162,9 @@ RDIB_LocationNode * rdib_push_location_addr_reg_off(Arena* arena, RDIB_LocationL
 
 //- UDT Fwdrefs
 
-uint64                    rdib_udt_fwdref_map_hash(String8 string);
+uint64                    rdib_udt_fwdref_map_hash(StringView string);
 RDIB_UDTFwdrefBucket * rdib_udt_fwdref_map_insert_or_update(RDIB_UDTFwdrefBucket** buckets, uint64 cap, uint64 hash, RDIB_UDTFwdrefBucket* new_bucket);
-RDIB_UDTFwdrefBucket * rdib_udt_fwdrefmap_map_lookup(RDIB_UDTFwdrefBucket** buckets, uint64 cap, uint64 hash, String8 name);
+RDIB_UDTFwdrefBucket * rdib_udt_fwdrefmap_map_lookup(RDIB_UDTFwdrefBucket** buckets, uint64 cap, uint64 hash, StringView name);
 
 //- Types
 
@@ -1181,15 +1181,15 @@ uint64 rdib_count_members_deep(RDIB_Type* type);
 //- Path Tree
 
 RDIB_PathTree * rdib_path_tree_init    (Arena* arena, uint64 list_count);
-void            rdib_path_tree_insert  (Arena* arena, RDIB_PathTree* tree, String8 path, RDIB_SourceFile* src_file);
-uint32             rdib_idx_from_path_tree(RDIB_PathTree* tree, String8 path);
+void            rdib_path_tree_insert  (Arena* arena, RDIB_PathTree* tree, StringView path, RDIB_SourceFile* src_file);
+uint32             rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path);
 
 
 //- String Map
 
-uint64                     rdib_string_map_hash               (String8 string);
+uint64                     rdib_string_map_hash               (StringView string);
 RDIB_StringMap *        rdib_init_string_map               (Arena* arena, uint64 cap);
-uint32                     rdib_idx_from_string_map           (RDIB_StringMap* string_map, String8 string);
+uint32                     rdib_idx_from_string_map           (RDIB_StringMap* string_map, StringView string);
 RDIB_StringMapBucket *  rdib_string_map_insert_or_update   (RDIB_StringMapBucket** buckets, uint64 cap, uint64 hash, RDIB_StringMapBucket* new_bucket, RDIB_StringMapUpdateFunc* update_func);
 void                    rdib_string_map_assign_indices     (RDIB_StringMapBucket** buckets, uint64 bucket_count);
 RDIB_StringMapBucket ** rdib_extant_buckets_from_string_map(TP_Context* tp, Arena* arena, RDIB_StringMap* string_map, uint64* bucket_count_out);
@@ -1197,9 +1197,9 @@ void                    rdib_string_map_sort_buckets       (TP_Context* tp, RDIB
 
 //- String Map Specialized Inserters
 
-void rdib_string_map_insert_item             (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string, void* value);
-void rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string);
-void rdib_string_map_insert_name_map_item    (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, String8 string, VoidNode* node);
+void rdib_string_map_insert_item             (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, void* value);
+void rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string);
+void rdib_string_map_insert_name_map_item    (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, VoidNode* node);
 
 //- Index Run Map
 

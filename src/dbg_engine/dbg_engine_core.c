@@ -13,7 +13,7 @@
 //~ rjf: Basic Helpers
 
 uint64
-d_hash_from_seed_string(uint64 seed, String8 string)
+d_hash_from_seed_string(uint64 seed, StringView string)
 {
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -24,13 +24,13 @@ d_hash_from_seed_string(uint64 seed, String8 string)
 }
 
 uint64
-d_hash_from_string(String8 string)
+d_hash_from_string(StringView string)
 {
   return d_hash_from_seed_string(5381, string);
 }
 
 uint64
-d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string)
+d_hash_from_seed_string__case_insensitive(uint64 seed, StringView string)
 {
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -41,7 +41,7 @@ d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string)
 }
 
 uint64
-d_hash_from_string__case_insensitive(String8 string)
+d_hash_from_string__case_insensitive(StringView string)
 {
   return d_hash_from_seed_string__case_insensitive(5381, string);
 }
@@ -69,7 +69,7 @@ d_breakpoint_array_copy(Arena* arena, D_BreakpointArray* src)
 //~ rjf: Path Map Application
 
 String8List
-d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps, String8 file_path)
+d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps, StringView file_path)
 {
   // NOTE(rjf): This path, given some target file path, scans all file path map
   // overrides, and collects the set of file paths which could've redirected
@@ -129,7 +129,7 @@ d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps
         }
         StringJoin join = {0};
         join.sep = ("/");
-        String8 candidate_path = str8_list_join(arena, &candidate_parts, &join);
+        StringView candidate_path = str8_list_join(arena, &candidate_parts, &join);
         str8_list_push(arena, &result, candidate_path);
       }
     }
@@ -229,7 +229,7 @@ d_register_view_rule_specs(D_ViewRuleSpecInfoArray specs)
 }
 
 D_ViewRuleSpec *
-d_view_rule_spec_from_string(String8 string)
+d_view_rule_spec_from_string(StringView string)
 {
   D_ViewRuleSpec* spec = &d_nil_core_view_rule_spec;
   {
@@ -354,7 +354,7 @@ d_trap_net_from_thread__step_over_inst(Arena* arena, CTRL_Entity* thread)
   uint64 ip_vaddr = ctrl_query_cached_rip_from_thread(d_state.ctrl_entity_store, thread.handle);
   
   // rjf: ip => machine code
-  String8 machine_code = {0};
+  StringView machine_code = {0};
   {
     Rng1U64 rng = r1u64(ip_vaddr, ip_vaddr+max_instruction_size_from_arch(arch));
     CTRL_ProcessMemorySlice machine_code_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, rng, os_now_microseconds()+5000);
@@ -428,7 +428,7 @@ d_trap_net_from_thread__step_over_line(Arena* arena, CTRL_Entity* thread)
   B32 good_line_info = (line_vaddr_rng.max != 0);
   
   // rjf: line vaddr range => line's machine code
-  String8 machine_code = {0};
+  StringView machine_code = {0};
   if(good_line_info)
   {
     CTRL_ProcessMemorySlice machine_code_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, line_vaddr_rng, os_now_microseconds()+50000);
@@ -584,7 +584,7 @@ d_trap_net_from_thread__step_into_line(Arena* arena, CTRL_Entity* thread)
   B32 good_line_info = (line_vaddr_rng.max != 0);
   
   // rjf: line vaddr range => line's machine code
-  String8 machine_code = {0};
+  StringView machine_code = {0};
   if(good_line_info)
   {
     CTRL_ProcessMemorySlice machine_code_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, line_vaddr_rng, os_now_microseconds()+5000);
@@ -666,10 +666,10 @@ d_trap_net_from_thread__step_into_line(Arena* arena, CTRL_Entity* thread)
 
 //- rjf: symbol lookups
 
-String8
+StringView
 d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B32 decorated)
 {
-  String8 result = {0};
+  StringView result = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
     DI_Scope* scope = di_scope_open();
@@ -681,7 +681,7 @@ d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B3
       uint64 proc_idx = scope.proc_idx;
       RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
       E_TypeKey type = e_type_key_ext(E_TypeKind_Function, procedure.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
-      String8 name = {0};
+      StringView name = {0};
       name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
       if(decorated && procedure.type_idx != 0)
       {
@@ -702,7 +702,7 @@ d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B3
       RDI_GlobalVariable* global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
       uint64 name_size = 0;
       uint8* name_ptr = rdi_string_from_idx(rdi, global_var.name_string_idx, &name_size);
-      result = push_str8_copy(arena, str8(name_ptr, name_size));
+      result = push_str8_copy(arena, StringView(name_ptr, name_size));
     }
     di_scope_close(scope);
     scratch_end(scratch);
@@ -710,11 +710,11 @@ d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B3
   return result;
 }
 
-String8
+StringView
 d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vaddr, B32 decorated)
 {
   ProfBeginFunction();
-  String8 result = {0};
+  StringView result = {0};
   {
     CTRL_Entity* module = ctrl_module_from_process_vaddr(process, vaddr);
     DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
@@ -728,7 +728,7 @@ d_symbol_name_from_process_vaddr(Arena* arena, CTRL_Entity* process, uint64 vadd
 //- rjf: symbol . voff lookups
 
 uint64
-d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name)
+d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, StringView symbol_name)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -809,7 +809,7 @@ d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, String8 symbol_name)
 }
 
 uint64
-d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, String8 name)
+d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, StringView name)
 {
   ProfBeginFunction();
   DI_Scope* scope = di_scope_open();
@@ -902,13 +902,13 @@ d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff)
             fpn != rdi_element_from_name_idx(rdi, FilePathNodes, 0);
             fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn.parent_path_node))
         {
-          String8 path_part = {0};
+          StringView path_part = {0};
           path_part.str = rdi_string_from_idx(rdi, fpn.name_string_idx, &path_part.size);
           str8_list_push_front(scratch.arena, &path_parts, path_part);
         }
         StringJoin join = {0};
         join.sep = ("/");
-        String8 file_normalized_full_path = str8_list_join(arena, &path_parts, &join);
+        StringView file_normalized_full_path = str8_list_join(arena, &path_parts, &join);
         D_LineNode* n = push_array(arena, D_LineNode, 1);
         SLLQueuePush(result.first, result.last, n);
         result.count += 1;
@@ -942,7 +942,7 @@ d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff)
 // TODO(rjf): this depends on file path maps, needs to move
 
 D_LineListArray
-d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range)
+d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, StringView file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -958,8 +958,8 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, 
       override_n != 0;
       override_n = override_n.next)
   {
-    String8 file_path = override_n.string;
-    String8 file_path_normalized = lower_from_str8(scratch.arena, file_path);
+    StringView file_path = override_n.string;
+    StringView file_path_normalized = lower_from_str8(scratch.arena, file_path);
     
     // rjf: binary . rdi
     RDI_Parsed* rdi = di_rdi_from_key(scope, &dbgi_key, 0);
@@ -1036,7 +1036,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, 
 }
 
 D_LineListArray
-d_lines_array_from_file_path_line_range(Arena* arena, String8 file_path, Rng1S64 line_num_range)
+d_lines_array_from_file_path_line_range(Arena* arena, StringView file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -1052,8 +1052,8 @@ d_lines_array_from_file_path_line_range(Arena* arena, String8 file_path, Rng1S64
       override_n != 0;
       override_n = override_n.next)
   {
-    String8 file_path = override_n.string;
-    String8 file_path_normalized = lower_from_str8(scratch.arena, file_path);
+    StringView file_path = override_n.string;
+    StringView file_path_normalized = lower_from_str8(scratch.arena, file_path);
     for(DI_KeyNode* dbgi_key_n = dbgi_keys.first;
         dbgi_key_n != 0;
         dbgi_key_n = dbgi_key_n.next)
@@ -1141,7 +1141,7 @@ d_lines_array_from_file_path_line_range(Arena* arena, String8 file_path, Rng1S64
 }
 
 D_LineList
-d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, String8 file_path, int64 line_num)
+d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, StringView file_path, int64 line_num)
 {
   D_LineListArray array = d_lines_array_from_dbgi_key_file_path_line_range(arena, dbgi_key, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1153,7 +1153,7 @@ d_lines_from_dbgi_key_file_path_line_num(Arena* arena, DI_Key dbgi_key, String8 
 }
 
 D_LineList
-d_lines_from_file_path_line_num(Arena* arena, String8 file_path, int64 line_num)
+d_lines_from_file_path_line_num(Arena* arena, StringView file_path, int64 line_num)
 {
   D_LineListArray array = d_lines_array_from_file_path_line_range(arena, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1198,13 +1198,13 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, 
       uint64 tls_addr_off = tls_index*addr_size;
       uint64 tls_addr_array = 0;
       CTRL_ProcessMemorySlice tls_addr_array_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, r1u64(thread_info_addr, thread_info_addr+addr_size), 0);
-      String8 tls_addr_array_data = tls_addr_array_slice.data;
+      StringView tls_addr_array_data = tls_addr_array_slice.data;
       if(tls_addr_array_data.size >= 8)
       {
         MemoryCopy(&tls_addr_array, tls_addr_array_data.str, sizeof(uint64));
       }
       CTRL_ProcessMemorySlice result_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, r1u64(tls_addr_array + tls_addr_off, tls_addr_array + tls_addr_off + addr_size), 0);
-      String8 result_data = result_slice.data;
+      StringView result_data = result_slice.data;
       if(result_data.size >= 8)
       {
         MemoryCopy(&base_vaddr, result_data.str, sizeof(uint64));
@@ -1686,7 +1686,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
           if(event.cause == CTRL_EventCause_InterruptedByException ||
              event.cause == CTRL_EventCause_InterruptedByTrap)
           {
-            log_user_error(str8_zero());
+            log_user_error(StringView());
           }
           
           // rjf: gather stop info
@@ -1838,7 +1838,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
     }
     
     // rjf: join & hash to produce result
-    String8 string = str8_list_join(scratch.arena, &strings, 0);
+    StringView string = str8_list_join(scratch.arena, &strings, 0);
     XXH128_hash_t hash = XXH3_128bits(string.str, string.size);
     MemoryCopy(&ctrl_param_state_hash, &hash, sizeof(ctrl_param_state_hash));
   }
@@ -1945,13 +1945,13 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
             {
               // rjf: unpack target
               D_Target* target = &targets_to_launch.v[idx];
-              String8 exe                     = str8_skip_chop_whitespace(target.exe);
-              String8 args                    = str8_skip_chop_whitespace(target.args);
-              String8 working_directory       = str8_skip_chop_whitespace(target.working_directory);
-              String8 custom_entry_point_name = str8_skip_chop_whitespace(target.custom_entry_point_name);
-              String8 stdout_path             = str8_skip_chop_whitespace(target.stdout_path);
-              String8 stderr_path             = str8_skip_chop_whitespace(target.stderr_path);
-              String8 stdin_path              = str8_skip_chop_whitespace(target.stdin_path);
+              StringView exe                     = str8_skip_chop_whitespace(target.exe);
+              StringView args                    = str8_skip_chop_whitespace(target.args);
+              StringView working_directory       = str8_skip_chop_whitespace(target.working_directory);
+              StringView custom_entry_point_name = str8_skip_chop_whitespace(target.custom_entry_point_name);
+              StringView stdout_path             = str8_skip_chop_whitespace(target.stdout_path);
+              StringView stderr_path             = str8_skip_chop_whitespace(target.stderr_path);
+              StringView stdin_path              = str8_skip_chop_whitespace(target.stdin_path);
               String8List env                 = target.env;
               if(working_directory.size == 0)
               {
@@ -1975,7 +1975,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
                     B32 splitter_found = (!quoted && (byte == 0 || char_is_space(byte)));
                     if(splitter_found)
                     {
-                      String8 string = str8_substr(args, r1u64(start_split_idx, idx));
+                      StringView string = str8_substr(args, r1u64(start_split_idx, idx));
                       if(string.size > 0)
                       {
                         str8_list_push(scratch.arena, &cmdln_strings, string);

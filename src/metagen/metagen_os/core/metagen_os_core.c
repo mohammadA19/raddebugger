@@ -49,7 +49,7 @@ os_string_list_from_argcv(Arena* arena, int argc, char** argv)
   String8List result = {0};
   for(int i = 0; i < argc; i += 1)
   {
-    String8 str = str8_cstring(argv[i]);
+    StringView str = str8_cstring(argv[i]);
     str8_list_push(arena, &result, str);
   }
   return result;
@@ -58,18 +58,18 @@ os_string_list_from_argcv(Arena* arena, int argc, char** argv)
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-String8
-os_data_from_file_path(Arena* arena, String8 path)
+StringView
+os_data_from_file_path(Arena* arena, StringView path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   FileProperties props = os_properties_from_file(file);
-  String8 data = os_string_from_file_range(arena, file, r1u64(0, props.size));
+  StringView data = os_string_from_file_range(arena, file, r1u64(0, props.size));
   os_file_close(file);
   return data;
 }
 
 B32
-os_write_data_to_file_path(String8 path, String8 data)
+os_write_data_to_file_path(StringView path, StringView data)
 {
   B32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
@@ -83,7 +83,7 @@ os_write_data_to_file_path(String8 path, String8 data)
 }
 
 B32
-os_write_data_list_to_file_path(String8 path, String8List list)
+os_write_data_list_to_file_path(StringView path, String8List list)
 {
   B32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
@@ -102,7 +102,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
 }
 
 B32
-os_append_data_to_file_path(String8 path, String8 data)
+os_append_data_to_file_path(StringView path, StringView data)
 {
   B32 good = 0;
   if(data.size != 0)
@@ -120,7 +120,7 @@ os_append_data_to_file_path(String8 path, String8 data)
 }
 
 OS_FileID
-os_id_from_file_path(String8 path)
+os_id_from_file_path(StringView path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   OS_FileID id = os_id_from_file(file);
@@ -135,11 +135,11 @@ os_file_id_compare(OS_FileID a, OS_FileID b)
   return cmp;
 }
 
-String8
+StringView
 os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
 {
   uint64 pre_pos = arena_pos(arena);
-  String8 result;
+  StringView result;
   result.size = dim_1u64(range);
   result.str = push_array_no_zero(arena, uint8, result.size);
   uint64 actual_read_size = os_file_read(file, range, result.str);
@@ -154,10 +154,10 @@ os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: GUID Helpers (Helpers, Implemented Once)
 
-String8
+StringView
 os_string_from_guid(Arena* arena, OS_Guid guid)
 {
-  String8 result = push_str8f(arena, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+  StringView result = push_str8f(arena, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
                               guid.data1,
                               guid.data2,
                               guid.data3,

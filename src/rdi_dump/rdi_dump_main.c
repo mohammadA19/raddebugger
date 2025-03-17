@@ -64,7 +64,7 @@ entry_point(CmdLine* cmd_line)
     DumpFlag_NameMaps           = (1<<18),
     DumpFlag_Strings            = (1<<19),
   };
-  String8 input_name = {0};
+  StringView input_name = {0};
   DumpFlags dump_flags = (uint32)0xffffffff;
   {
     // rjf: extract input file path
@@ -107,7 +107,7 @@ entry_point(CmdLine* cmd_line)
   //////////////////////////////
   //- rjf: load file
   //
-  String8 input_data = os_data_from_file_path(arena, input_name);
+  StringView input_data = os_data_from_file_path(arena, input_name);
   if(input_name.size == 0)
   {
     str8_list_pushf(arena, &errors, "error (input): No input RDI file specified.");
@@ -456,7 +456,7 @@ entry_point(CmdLine* cmd_line)
             RDI_NameMapNode* node_opl = node + bucket.node_count;
             for(;node < node_opl; node += 1)
             {
-              String8 string = {0};
+              StringView string = {0};
               string.str = rdi_string_from_idx(rdi, node.string_idx, &string.size);
               str8_list_pushf(arena, &dump, "   match \"%.*s\": ", str8_varg(string));
               if(node.match_count == 1)
@@ -496,7 +496,7 @@ entry_point(CmdLine* cmd_line)
       uint32* v = rdi_table_from_name(rdi, StringTable, &count);
       for(uint64 idx = 0; idx < count; idx += 1)
       {
-        String8 string = {0};
+        StringView string = {0};
         string.str = rdi_string_from_idx(rdi, (RDI_U32)idx, &string.size);
         str8_list_pushf(arena, &dump, " string[%I64u]: \"%S\"\n", idx, string);
       }

@@ -11,7 +11,7 @@
 #endif
 
 U128
-hs_hash_from_data(String8 data)
+hs_hash_from_data(StringView data)
 {
   U128 u128 = {0};
   XXH128_hash_t hash = XXH3_128bits(data.str, data.size);
@@ -72,7 +72,7 @@ hs_tctx_ensure_inited()
 //~ rjf: Cache Submission
 
 U128
-hs_submit_data(U128 key, Arena** data_arena, String8 data)
+hs_submit_data(U128 key, Arena** data_arena, StringView data)
 {
   uint64 key_slot_idx = key.u64[1]%hs_shared.key_slots_count;
   uint64 key_stripe_idx = key_slot_idx%hs_shared.key_stripes_count;
@@ -266,11 +266,11 @@ hs_hash_from_key(U128 key, uint64 rewind_count)
   return result;
 }
 
-String8
+StringView
 hs_data_from_hash(HS_Scope* scope, U128 hash)
 {
   ProfBeginFunction();
-  String8 result = {0};
+  StringView result = {0};
   uint64 slot_idx = hash.u64[1]%hs_shared.slots_count;
   uint64 stripe_idx = slot_idx%hs_shared.stripes_count;
   HS_Slot* slot = &hs_shared.slots[slot_idx];

@@ -145,11 +145,11 @@ os_get_process_info()
   return &os_lnx_state.process_info;
 }
 
-String8
+StringView
 os_get_current_path(Arena* arena)
 {
   char* cwdir = getcwd(0, 0);
-  String8 string = push_str8_copy(arena, str8_cstring(cwdir));
+  StringView string = push_str8_copy(arena, str8_cstring(cwdir));
   free(cwdir);
   return string;
 }
@@ -160,7 +160,7 @@ os_get_process_start_time_unix()
   Temp scratch = scratch_begin(0,0);
   uint64 start_time = 0;
   pid_t pid = getpid();
-  String8 path = push_str8f(scratch.arena, "/proc/%u", pid);
+  StringView path = push_str8f(scratch.arena, "/proc/%u", pid);
   struct stat st;
   int err = stat((char*)path.str, &st);
   if(err == 0)
@@ -238,10 +238,10 @@ os_tid()
 }
 
 void
-os_set_thread_name(String8 name)
+os_set_thread_name(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 name_copy = push_str8_copy(scratch.arena, name);
+  StringView name_copy = push_str8_copy(scratch.arena, name);
   pthread_t current_thread = pthread_self();
   pthread_setname_np(current_thread, (char *)name_copy.str);
   scratch_end(scratch);
@@ -262,10 +262,10 @@ os_abort(int32 exit_code)
 //- rjf: files
 
 OS_Handle
-os_file_open(OS_AccessFlags flags, String8 path)
+os_file_open(OS_AccessFlags flags, StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   int lnx_flags = 0;
   if(flags & OS_AccessFlag_Read && flags & OS_AccessFlag_Write)
   {
@@ -397,11 +397,11 @@ os_id_from_file(OS_Handle file)
 }
 
 B32
-os_delete_file_at_path(String8 path)
+os_delete_file_at_path(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 result = 0;
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   if(remove((char*)path_copy.str) != -1)
   {
     result = 1;
@@ -411,7 +411,7 @@ os_delete_file_at_path(String8 path)
 }
 
 B32
-os_copy_file_path(String8 dst, String8 src)
+os_copy_file_path(StringView dst, StringView src)
 {
   B32 result = 0;
   OS_Handle src_h = os_file_open(OS_AccessFlag_Read, src);
@@ -443,23 +443,23 @@ os_copy_file_path(String8 dst, String8 src)
   return result;
 }
 
-String8
-os_full_path_from_path(Arena* arena, String8 path)
+StringView
+os_full_path_from_path(Arena* arena, StringView path)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   char buffer[PATH_MAX] = {0};
   realpath((char *)path_copy.str, buffer);
-  String8 result = push_str8_copy(arena, str8_cstring(buffer));
+  StringView result = push_str8_copy(arena, str8_cstring(buffer));
   scratch_end(scratch);
   return result;
 }
 
 B32
-os_file_path_exists(String8 path)
+os_file_path_exists(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   int access_result = access((char *)path_copy.str, F_OK);
   B32 result = 0;
   if(access_result == 0)
@@ -471,11 +471,11 @@ os_file_path_exists(String8 path)
 }
 
 B32
-os_folder_path_exists(String8 path)
+os_folder_path_exists(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   B32      exists    = 0;
-  String8  path_copy = push_str8_copy(scratch.arena, path);
+  StringView  path_copy = push_str8_copy(scratch.arena, path);
   DIR*     handle    = opendir((char*)path_copy.str);
   if(handle)
   {
@@ -487,10 +487,10 @@ os_folder_path_exists(String8 path)
 }
 
 FileProperties
-os_properties_from_file_path(String8 path)
+os_properties_from_file_path(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   struct stat f_stat = {0};
   int stat_result = stat((char *)path_copy.str, &f_stat);
   FileProperties props = {0};
@@ -544,13 +544,13 @@ os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 OS_FileIter *
-os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, StringView path, OS_FileIterFlags flags)
 {
   OS_FileIter* base_iter = push_array(arena, OS_FileIter, 1);
   base_iter.flags = flags;
   OS_LNX_FileIter* iter = (OS_LNX_FileIter *)base_iter.memory;
   {
-    String8 path_copy = push_str8_copy(arena, path);
+    StringView path_copy = push_str8_copy(arena, path);
     iter.dir = opendir((char *)path_copy.str);
     iter.path = path_copy;
   }
@@ -574,7 +574,7 @@ os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
     if(good)
     {
       Temp scratch = scratch_begin(&arena, 1);
-      String8 full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter.path, lnx_iter.dp.d_name);
+      StringView full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter.path, lnx_iter.dp.d_name);
       stat_result = stat((char *)full_path.str, &st);
       scratch_end(scratch);
     }
@@ -619,11 +619,11 @@ os_file_iter_end(OS_FileIter* iter)
 //- rjf: directory creation
 
 B32
-os_make_directory(String8 path)
+os_make_directory(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 result = 0;
-  String8 path_copy = push_str8_copy(scratch.arena, path);
+  StringView path_copy = push_str8_copy(scratch.arena, path);
   if(mkdir((char*)path_copy.str, 0755) != -1)
   {
     result = 1;
@@ -636,10 +636,10 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 OS_Handle
-os_shared_memory_alloc(uint64 size, String8 name)
+os_shared_memory_alloc(uint64 size, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 name_copy = push_str8_copy(scratch.arena, name);
+  StringView name_copy = push_str8_copy(scratch.arena, name);
   int id = shm_open((char *)name_copy.str, O_RDWR, 0);
   ftruncate(id, size);
   OS_Handle result = {(uint64)id};
@@ -648,10 +648,10 @@ os_shared_memory_alloc(uint64 size, String8 name)
 }
 
 OS_Handle
-os_shared_memory_open(String8 name)
+os_shared_memory_open(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 name_copy = push_str8_copy(scratch.arena, name);
+  StringView name_copy = push_str8_copy(scratch.arena, name);
   int id = shm_open((char *)name_copy.str, O_RDWR, 0);
   OS_Handle result = {(uint64)id};
   scratch_end(scratch);
@@ -1059,7 +1059,7 @@ os_condition_variable_broadcast(OS_Handle cv)
 //- rjf: cross-process semaphores
 
 OS_Handle
-os_semaphore_alloc(uint32 initial_count, uint32 max_count, String8 name)
+os_semaphore_alloc(uint32 initial_count, uint32 max_count, StringView name)
 {
   OS_Handle result = {0};
   if (name.size > 0) {
@@ -1084,7 +1084,7 @@ os_semaphore_release(OS_Handle semaphore)
 }
 
 OS_Handle
-os_semaphore_open(String8 name)
+os_semaphore_open(StringView name)
 {
   NotImplemented;
 }
@@ -1135,7 +1135,7 @@ os_semaphore_drop(OS_Handle semaphore)
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
 OS_Handle
-os_library_open(String8 path)
+os_library_open(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   char* path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
@@ -1146,7 +1146,7 @@ os_library_open(String8 path)
 }
 
 VoidProc*
-os_library_load_proc(OS_Handle lib, String8 name)
+os_library_load_proc(OS_Handle lib, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   void* so = (void *)lib.u64;
@@ -1304,8 +1304,8 @@ main(int argc, char** argv)
         // rjf: save
         if(got_final_result && size > 0)
         {
-          String8 full_name = str8(buffer, size);
-          String8 name_chopped = str8_chop_last_slash(full_name);
+          StringView full_name = StringView(buffer, size);
+          StringView name_chopped = str8_chop_last_slash(full_name);
           info.binary_path = push_str8_copy(os_lnx_state.arena, name_chopped);
         }
       }

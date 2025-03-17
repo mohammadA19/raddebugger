@@ -31,18 +31,18 @@ struct LNK_Chunk
   uint64               min_size;
   B32               is_discarded;
   B32               sort_chunk;
-  String8           sort_idx;
+  StringView           sort_idx;
   uint64               input_idx;
   COFF_SectionFlags flags;
   struct LNK_Chunk* associate;
   [Union]
   struct {
-    String8                leaf;
+    StringView                leaf;
     struct LNK_ChunkList*  list;
     struct LNK_ChunkArray* arr;
   } u;
 #if LNK_DEBUG_CHUNKS
-  String8 debug;
+  StringView debug;
 #endif
 } LNK_Chunk, * LNK_ChunkPtr;
 
@@ -81,7 +81,7 @@ struct LNK_ChunkOp
   LNK_ChunkOpType     type;
   [Union]
   struct {
-    String8    string;
+    StringView    string;
     LNK_Chunk* chunk;
     struct {
       uint64 val;
@@ -150,7 +150,7 @@ struct
 struct
 {
   LNK_ChunkLayout  layout;
-  String8          buffer;
+  StringView          buffer;
   uint8               fill_byte;
   Rng1U64*         ranges;
 }
@@ -172,9 +172,9 @@ LNK_ChunkList ** lnk_make_chunk_list_arr_arr(Arena* arena, uint64 slot_count, ui
 void             lnk_chunk_array_sort(LNK_ChunkArray arr);
 
 LNK_ChunkManager * lnk_chunk_manager_alloc(Arena* arena, uint64 id, uint64 align);
-LNK_Chunk *        lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index);
-LNK_Chunk *        lnk_chunk_push_leaf(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index, void* raw_ptr, uint64 raw_size);
-LNK_Chunk *        lnk_chunk_push_list(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index);
+LNK_Chunk *        lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index);
+LNK_Chunk *        lnk_chunk_push_leaf(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index, void* raw_ptr, uint64 raw_size);
+LNK_Chunk *        lnk_chunk_push_list(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index);
 LNK_ChunkNode *    lnk_chunk_deep_copy(Arena* arena, LNK_Chunk* chunk);
 LNK_ChunkNode *    lnk_merge_chunks(Arena* arena, LNK_ChunkManager* dst_cman, LNK_Chunk* dst, LNK_Chunk* src, uint64* id_map_out, uint64 id_map_max);
 void               lnk_chunk_associate(LNK_Chunk* head, LNK_Chunk* associate);
@@ -188,7 +188,7 @@ LNK_ChunkOp * lnk_push_chunk_op_begin(Arena* arena, uint64 chunk_id);
 LNK_ChunkOp * lnk_push_chunk_op_end_virt(Arena* arena);
 LNK_ChunkOp * lnk_push_chunk_op_end_file(Arena* arena);
 LNK_ChunkOp * lnk_push_chunk_op_align(Arena* arena, uint64 align, uint64 val);
-LNK_ChunkOp * lnk_push_chunk_op_write(Arena* arena, String8 string);
+LNK_ChunkOp * lnk_push_chunk_op_write(Arena* arena, StringView string);
 
 LNK_ChunkLayout lnk_layout_from_chunk(Arena* arena, LNK_Chunk* root, uint64 total_chunk_count);
 LNK_ChunkLayout lnk_build_chunk_layout(Arena* arena, LNK_ChunkManager* cman);

@@ -456,7 +456,7 @@ ipc_signaler_thread__entry_point(void* p)
       if(os_semaphore_take(ipc_lock_semaphore, max_U64))
       {
         IPCInfo* ipc_info = (IPCInfo *)ipc_shared_memory_base;
-        String8 msg = str8((uint8 *)(ipc_info+1), ipc_info.msg_size);
+        StringView msg = StringView((uint8 *)(ipc_info+1), ipc_info.msg_size);
         msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
         OS_MutexScope(ipc_s2m_ring_mutex) for(;;)
         {
@@ -565,9 +565,9 @@ entry_point(CmdLine* cmd_line)
     }
     auto_run = cmd_line_has_flag(cmd_line, ("auto_run"));
     auto_step = cmd_line_has_flag(cmd_line, ("auto_step"));
-    String8 jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
-    String8 jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
-    String8 jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
+    StringView jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
+    StringView jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
+    StringView jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
     try_u64_from_str8_c_rules(jit_pid_string, &jit_pid);
     try_u64_from_str8_c_rules(jit_code_string, &jit_code);
     try_u64_from_str8_c_rules(jit_addr_string, &jit_addr);
@@ -604,15 +604,15 @@ entry_point(CmdLine* cmd_line)
             Temp scratch = scratch_begin(0, 0);
             
             //- rjf: unpack command line inputs
-            String8 executable_name_string = {0};
-            String8 arguments_string = {0};
-            String8 working_directory_string = {0};
+            StringView executable_name_string = {0};
+            StringView arguments_string = {0};
+            StringView working_directory_string = {0};
             {
               // rjf: unpack full executable path
               if(args.first.string.size != 0)
               {
-                String8 current_path = os_get_current_path(scratch.arena);
-                String8 exe_name = args.first.string;
+                StringView current_path = os_get_current_path(scratch.arena);
+                StringView exe_name = args.first.string;
                 PathStyle style = path_style_from_str8(exe_name);
                 if(style == PathStyle_Relative)
                 {
@@ -625,10 +625,10 @@ entry_point(CmdLine* cmd_line)
               // rjf: unpack working directory
               if(args.first.string.size != 0)
               {
-                String8 path_part_of_arg = str8_chop_last_slash(args.first.string);
+                StringView path_part_of_arg = str8_chop_last_slash(args.first.string);
                 if(path_part_of_arg.size != 0)
                 {
-                  String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
+                  StringView path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
                   working_directory_string = path;
                 }
               }
@@ -666,12 +666,12 @@ entry_point(CmdLine* cmd_line)
           }
           
           // rjf: get current path
-          String8 current_path = os_get_current_path(scratch.arena);
+          StringView current_path = os_get_current_path(scratch.arena);
           
           // rjf: equip exe
           if(args.first.string.size != 0)
           {
-            String8 exe_name = args.first.string;
+            StringView exe_name = args.first.string;
             RD_Entity* exe = rd_entity_alloc(target, RD_EntityKind_Executable);
             PathStyle style = path_style_from_str8(exe_name);
             if(style == PathStyle_Relative)
@@ -683,17 +683,17 @@ entry_point(CmdLine* cmd_line)
           }
           
           // rjf: equip working directory
-          String8 path_part_of_arg = str8_chop_last_slash(args.first.string);
+          StringView path_part_of_arg = str8_chop_last_slash(args.first.string);
           if(path_part_of_arg.size != 0)
           {
-            String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
+            StringView path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
             RD_Entity* wdir = rd_entity_alloc(target, RD_EntityKind_WorkingDirectory);
             rd_entity_equip_name(wdir, path);
           }
           
           // rjf: equip args
           StringJoin join = {(""), (" "), ("")};
-          String8 args_str = str8_list_join(scratch.arena, &passthrough_args_list, &join);
+          StringView args_str = str8_list_join(scratch.arena, &passthrough_args_list, &join);
           if(args_str.size != 0)
           {
             RD_Entity* args_entity = rd_entity_alloc(target, RD_EntityKind_Arguments);
@@ -707,9 +707,9 @@ entry_point(CmdLine* cmd_line)
       {
         Temp scratch = scratch_begin(0, 0);
         uint32 instance_pid = os_get_process_info().pid;
-        String8 ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", instance_pid);
-        String8 ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", instance_pid);
-        String8 ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", instance_pid);
+        StringView ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", instance_pid);
+        StringView ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", instance_pid);
+        StringView ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", instance_pid);
         OS_Handle ipc_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_shared_memory_name);
         ipc_shared_memory_base = (uint8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
         ipc_signal_semaphore = os_semaphore_alloc(0, 1, ipc_signal_semaphore_name);
@@ -730,7 +730,7 @@ entry_point(CmdLine* cmd_line)
           {
             Temp scratch = scratch_begin(0, 0);
             B32 consumed = 0;
-            String8 msg = {0};
+            StringView msg = {0};
             OS_MutexScope(ipc_s2m_ring_mutex)
             {
               uint64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
@@ -763,8 +763,8 @@ entry_point(CmdLine* cmd_line)
               {
                 dst_window.window_temporarily_focused_ipc = 1;
                 uint64 first_space_pos = str8_find_needle(msg, 0, (" "), 0);
-                String8 cmd_kind_name_string = str8_prefix(msg, first_space_pos);
-                String8 cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
+                StringView cmd_kind_name_string = str8_prefix(msg, first_space_pos);
+                StringView cmd_args_string = str8_skip_chop_whitespace(str8_skip(msg, first_space_pos));
                 RD_CmdKindInfo* cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name_string);
                 if(cmd_kind_info != &rd_nil_cmd_kind_info) RD_RegsScope()
                 {
@@ -825,7 +825,7 @@ entry_point(CmdLine* cmd_line)
       uint32 dst_pid = 0;
       if(cmd_line_has_argument(cmd_line, ("pid")))
       {
-        String8 dst_pid_string = cmd_line_string(cmd_line, ("pid"));
+        StringView dst_pid_string = cmd_line_string(cmd_line, ("pid"));
         uint64 dst_pid_u64 = 0;
         if(dst_pid_string.size != 0 &&
            try_u64_from_str8_c_rules(dst_pid_string, &dst_pid_u64))
@@ -853,9 +853,9 @@ entry_point(CmdLine* cmd_line)
       }
       
       //- rjf: grab destination instance's shared memory resources
-      String8 ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", dst_pid);
-      String8 ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", dst_pid);
-      String8 ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", dst_pid);
+      StringView ipc_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_shared_memory_%i_", dst_pid);
+      StringView ipc_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_signal_semaphore_%i_", dst_pid);
+      StringView ipc_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_lock_semaphore_%i_", dst_pid);
       OS_Handle ipc_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_shared_memory_name);
       ipc_shared_memory_base = (uint8 *)os_shared_memory_view_open(ipc_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
       ipc_signal_semaphore = os_semaphore_alloc(0, 1, ipc_signal_semaphore_name);
@@ -869,7 +869,7 @@ entry_point(CmdLine* cmd_line)
         uint8* buffer = (uint8 *)(ipc_info+1);
         uint64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
         StringJoin join = {(""), (" "), ("")};
-        String8 msg = str8_list_join(scratch.arena, &cmd_line.inputs, &join);
+        StringView msg = str8_list_join(scratch.arena, &cmd_line.inputs, &join);
         ipc_info.msg_size = Min(buffer_max, msg.size);
         MemoryCopy(buffer, msg.str, ipc_info.msg_size);
         os_semaphore_drop(ipc_signal_semaphore);
@@ -891,7 +891,7 @@ entry_point(CmdLine* cmd_line)
       P2R_User2Convert* user2convert = p2r_user2convert_from_cmdln(scratch.arena, cmd_line);
       
       //- rjf: open output file
-      String8 output_name = push_str8_copy(scratch.arena, user2convert.output_name);
+      StringView output_name = push_str8_copy(scratch.arena, user2convert.output_name);
       OS_Handle out_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, output_name);
       B32 out_file_is_good = !os_handle_match(out_file, os_handle_zero());
       

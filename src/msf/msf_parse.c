@@ -5,7 +5,7 @@
 //~ rjf: MSF Parser Functions
 
 MSF_RawStreamTable *
-msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
+msf_raw_stream_table_from_data(Arena* arena, StringView msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -229,8 +229,8 @@ msf_raw_stream_table_from_data(Arena* arena, String8 msf_data)
   return result;
 }
 
-String8
-msf_data_from_stream_number(Arena* arena, String8 msf_data, MSF_RawStreamTable* st, MSF_StreamNumber sn)
+StringView
+msf_data_from_stream_number(Arena* arena, StringView msf_data, MSF_RawStreamTable* st, MSF_StreamNumber sn)
 {
   MSF_RawStream stream = st.streams[sn];
 
@@ -266,12 +266,12 @@ msf_data_from_stream_number(Arena* arena, String8 msf_data, MSF_RawStreamTable* 
   uint64 unused_buf_size = stream.size - copy_size;
   arena_pop(arena, unused_buf_size);
 
-  String8 result = str8(stream_buf, copy_size);
+  StringView result = StringView(stream_buf, copy_size);
   return result;
 }
 
 MSF_Parsed *
-msf_parsed_from_data(Arena* arena, String8 msf_data)
+msf_parsed_from_data(Arena* arena, StringView msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -279,7 +279,7 @@ msf_parsed_from_data(Arena* arena, String8 msf_data)
 
   MSF_RawStreamTable* st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
   if (st) {
-    String8* streams = push_array_no_zero(arena, String8, st.stream_count);
+    StringView* streams = push_array_no_zero(arena, StringView, st.stream_count);
     for (MSF_StreamNumber sn = 0; sn < st.stream_count; ++sn) {
       streams[sn] = msf_data_from_stream_number(arena, msf_data, st, sn);
     }
@@ -295,10 +295,10 @@ msf_parsed_from_data(Arena* arena, String8 msf_data)
   return result;
 }
 
-String8
+StringView
 msf_data_from_stream(MSF_Parsed* msf, MSF_StreamNumber sn)
 {
-  String8 result = {0};
+  StringView result = {0};
   if(sn < msf.stream_count)
   {
     result = msf.streams[sn];

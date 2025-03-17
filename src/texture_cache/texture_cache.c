@@ -291,7 +291,7 @@ ASYNC_WORK_DEF(tex_xfer_work)
   }
   
   //- rjf: hash . data
-  String8 data = {0};
+  StringView data = {0};
   if(got_task)
   {
     data = hs_data_from_hash(scope, hash);

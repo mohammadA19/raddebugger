@@ -9,9 +9,9 @@
 
 struct MG_Msg
 {
-  String8 location;
-  String8 kind;
-  String8 msg;
+  StringView location;
+  StringView kind;
+  StringView msg;
 }
 
 struct MG_MsgNode
@@ -54,7 +54,7 @@ struct MG_FileParseList
 struct MG_MapNode
 {
   MG_MapNode* next;
-  String8 key;
+  StringView key;
   void* val;
 }
 
@@ -158,9 +158,9 @@ enum MG_ColumnKind
 
 struct MG_ColumnDesc
 {
-  String8 name;
+  StringView name;
   MG_ColumnKind kind;
-  String8 tag_name;
+  StringView tag_name;
 }
 
 struct MG_ColumnDescArray
@@ -172,7 +172,7 @@ struct MG_ColumnDescArray
 struct MG_TableExpandTask
 {
   MG_TableExpandTask* next;
-  String8 expansion_label;
+  StringView expansion_label;
   MG_NodeGrid* grid;
   MG_ColumnDescArray column_descs;
   uint64 count;
@@ -182,7 +182,7 @@ struct MG_TableExpandTask
 struct MG_TableExpandInfo
 {
   MG_TableExpandTask* first_expand_task;
-  String8 missing_value_fallback;
+  StringView missing_value_fallback;
 }
 
 ////////////////////////////////
@@ -190,11 +190,11 @@ struct MG_TableExpandInfo
 
 struct MG_Layer
 {
-  String8 key;
+  StringView key;
   B32 is_library;
-  String8 gen_folder_name;
-  String8 h_name_override;
-  String8 c_name_override;
+  StringView gen_folder_name;
+  StringView h_name_override;
+  StringView c_name_override;
   String8List enums;
   String8List structs;
   String8List h_functions;
@@ -237,8 +237,8 @@ read_only static MG_StrExpr mg_str_expr_nil = {&mg_str_expr_nil, &mg_str_expr_ni
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 mg_hash_from_string(String8 string);
-TxtPt mg_txt_pt_from_string_off(String8 string, uint64 off);
+uint64 mg_hash_from_string(StringView string);
+TxtPt mg_txt_pt_from_string_off(StringView string, uint64 off);
 
 ////////////////////////////////
 //~ rjf: Message Lists
@@ -248,25 +248,25 @@ void mg_msg_list_push(Arena* arena, MG_MsgList* msgs, MG_Msg* msg);
 ////////////////////////////////
 //~ rjf: String Escaping
 
-String8 mg_escaped_from_str8(Arena* arena, String8 string);
+StringView mg_escaped_from_str8(Arena* arena, StringView string);
 
 ////////////////////////////////
 //~ rjf: String Wrapping
 
-String8List mg_wrapped_lines_from_string(Arena* arena, String8 string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
+String8List mg_wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
 
 ////////////////////////////////
 //~ rjf: C-String-Izing
 
-String8 mg_c_string_literal_from_multiline_string(String8 string);
-String8 mg_c_array_literal_contents_from_data(String8 data);
+StringView mg_c_string_literal_from_multiline_string(StringView string);
+StringView mg_c_array_literal_contents_from_data(StringView data);
 
 ////////////////////////////////
 //~ rjf: Map Functions
 
 MG_Map mg_push_map(Arena* arena, uint64 slot_count);
-void* mg_map_ptr_from_string(MG_Map* map, String8 string);
-void mg_map_insert_ptr(Arena* arena, MG_Map* map, String8 string, void* val);
+void* mg_map_ptr_from_string(MG_Map* map, StringView string);
+void mg_map_insert_ptr(Arena* arena, MG_Map* map, StringView string, void* val);
 
 ////////////////////////////////
 //~ rjf: String Expression Parsing
@@ -288,18 +288,18 @@ MD_Node* mg_node_from_grid_xy(MG_NodeGrid grid, uint64 x, uint64 y);
 
 MG_ColumnDescArray mg_column_desc_array_make(Arena* arena, uint64 count, MG_ColumnDesc* descs);
 MG_ColumnDescArray mg_column_desc_array_from_tag(Arena* arena, MD_Node* tag);
-uint64 mg_column_index_from_name(MG_ColumnDescArray descs, String8 name);
-String8 mg_string_from_row_desc_idx(MD_Node* row_parent, MG_ColumnDescArray descs, uint64 idx);
+uint64 mg_column_index_from_name(MG_ColumnDescArray descs, StringView name);
+StringView mg_string_from_row_desc_idx(MD_Node* row_parent, MG_ColumnDescArray descs, uint64 idx);
 
 int64 mg_eval_table_expand_expr__numeric(MG_StrExpr* expr, MG_TableExpandInfo* info);
 void mg_eval_table_expand_expr__string(Arena* arena, MG_StrExpr* expr, MG_TableExpandInfo* info, String8List* out);
-void mg_loop_table_column_expansion(Arena* arena, String8 strexpr, MG_TableExpandInfo* info, MG_TableExpandTask* task, String8List* out);
-String8List mg_string_list_from_table_gen(Arena* arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node* gen);
+void mg_loop_table_column_expansion(Arena* arena, StringView strexpr, MG_TableExpandInfo* info, MG_TableExpandTask* task, String8List* out);
+String8List mg_string_list_from_table_gen(Arena* arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, StringView fallback, MD_Node* gen);
 
 ////////////////////////////////
 //~ rjf: Layer Lookup Functions
 
-String8 mg_layer_key_from_path(String8 path);
-MG_Layer* mg_layer_from_key(String8 key);
+StringView mg_layer_key_from_path(StringView path);
+MG_Layer* mg_layer_from_key(StringView key);
 
 #endif //METAGEN_H

@@ -188,7 +188,7 @@ dw_expr__analyze_details(void* in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   DW_ExprAnalysisTask* finished_tasks   = 0;
   
   // convert range input to string
-  String8 in_data = str8((uint8*)in_base + in_range.min, in_range.max - in_range.min);
+  StringView in_data = StringView((uint8*)in_base + in_range.min, in_range.max - in_range.min);
   
   // put input task onto the list
   {
@@ -209,7 +209,7 @@ dw_expr__analyze_details(void* in_base, Rng1U64 in_range, DW_ExprMachineCallConf
       break;
     }
     
-    String8  task_data  = task.data;
+    StringView  task_data  = task.data;
     uint8*      task_base  = task_data.str;
     Rng1U64  task_range = rng_1u64(0, task_data.size);
     
@@ -1107,7 +1107,7 @@ dw_expr__eval(Arena* arena_optional, void* expr_base, Rng1U64 expr_range, DW_Exp
           uint16 p = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &p);
           if (config.call.func != 0) {
-            String8 sub_data = config.call.func(config.call.user_ptr, p);
+            StringView sub_data = config.call.func(config.call.user_ptr, p);
             dw_expr__call_push(scratch.arena, &call_stack, sub_data.str, sub_data.size);
           } else {
             stashed_loc.kind = DW_SimpleLocKind_Fail;
@@ -1121,7 +1121,7 @@ dw_expr__eval(Arena* arena_optional, void* expr_base, Rng1U64 expr_range, DW_Exp
           uint32 p = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 4, &p);
           if (config.call.func != 0) {
-            String8 sub_data = config.call.func(config.call.user_ptr, p);
+            StringView sub_data = config.call.func(config.call.user_ptr, p);
             dw_expr__call_push(scratch.arena, &call_stack, sub_data.str, sub_data.size);
           } else {
             stashed_loc.kind = DW_SimpleLocKind_Fail;

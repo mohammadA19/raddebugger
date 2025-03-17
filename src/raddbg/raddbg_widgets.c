@@ -92,7 +92,7 @@ rd_loading_overlay(Rng2F32 rect, float loading_t, uint64 progress_v, uint64 prog
 //~ rjf: UI Widgets: Fancy Buttons
 
 void
-rd_cmd_binding_buttons(String8 name)
+rd_cmd_binding_buttons(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   RD_BindingList bindings = rd_bindings_from_name(scratch.arena, name);
@@ -119,12 +119,12 @@ rd_cmd_binding_buttons(String8 name)
     }
     
     //- rjf: form binding string
-    String8 keybinding_str = {0};
+    StringView keybinding_str = {0};
     {
       if(binding.key != OS_Key_Null)
       {
         String8List mods = os_string_list_from_modifiers(scratch.arena, binding.modifiers);
-        String8 key = os_g_key_display_string_table[binding.key];
+        StringView key = os_g_key_display_string_table[binding.key];
         str8_list_push(scratch.arena, &mods, key);
         StringJoin join = {0};
         join.sep = (" + ");
@@ -276,7 +276,7 @@ rd_cmd_binding_buttons(String8 name)
 }
 
 UI_Signal
-rd_menu_bar_button(String8 string)
+rd_menu_bar_button(StringView string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
@@ -285,7 +285,7 @@ rd_menu_bar_button(String8 string)
 }
 
 UI_Signal
-rd_cmd_spec_button(String8 name)
+rd_cmd_spec_button(StringView name)
 {
   RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(name);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -332,7 +332,7 @@ rd_cmd_spec_button(String8 name)
 }
 
 void
-rd_cmd_list_menu_buttons(uint64 count, String8* cmd_names, uint32* fastpath_codepoints)
+rd_cmd_list_menu_buttons(uint64 count, StringView* cmd_names, uint32* fastpath_codepoints)
 {
   Temp scratch = scratch_begin(0, 0);
   for(uint64 idx = 0; idx < count; idx += 1)
@@ -351,9 +351,9 @@ rd_cmd_list_menu_buttons(uint64 count, String8* cmd_names, uint32* fastpath_code
 }
 
 UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, String8 string)
+rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView string)
 {
-  String8 display_string = ui_display_part_from_key_string(string);
+  StringView display_string = ui_display_part_from_key_string(string);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_child_layout_axis(Axis2_X);
   UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|
@@ -408,7 +408,7 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = rd_icon_button(kind, matches, string);
   scratch_end(scratch);
@@ -581,7 +581,7 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, String8 string)
+rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, StringView string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
@@ -1088,7 +1088,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         if(ui_clicked(line_margin_sig))
         {
           rd_cmd(RD_CmdKind_AddBreakpoint,
-                 .file_path  = params.line_vaddrs[line_idx] ? str8_zero() : rd_regs().file_path,
+                 .file_path  = params.line_vaddrs[line_idx] ? StringView() : rd_regs().file_path,
                  .cursor     = params.line_vaddrs[line_idx] ? txt_pt(0, 0) : txt_pt(line_num, 1),
                  .vaddr      = params.line_vaddrs[line_idx]);
         }
@@ -1188,7 +1188,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         line_num < params.line_num_range.max;
         line_num += 1, line_idx += 1)
     {
-      String8 line_text = params.line_text[line_idx];
+      StringView line_text = params.line_text[line_idx];
       float line_text_dim = fnt_dim_from_tag_size_string(params.font, params.font_size, 0, params.tab_size, line_text).x + params.line_num_width_px;
       line_extras_off[line_idx] = Max(line_text_dim, params.font_size*50);
     }
@@ -1261,9 +1261,9 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         for(RD_EntityNode* n = pins.first; n != 0; n = n.next)
         {
           RD_Entity* pin = n.entity;
-          String8 pin_expr = pin.string;
+          StringView pin_expr = pin.string;
           E_Eval eval = e_eval_from_string(scratch.arena, pin_expr);
-          String8 eval_string = {0};
+          StringView eval_string = {0};
           if(!e_type_key_match(e_type_key_zero(), eval.type_key))
           {
             EV_ViewRuleList view_rules = {0};
@@ -1305,7 +1305,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
           UI_Signal pin_sig = ui_signal_from_box(pin_box);
           if(ui_key_match(pin_box_key, ui_hot_key()))
           {
-            rd_set_hover_eval(v2f32(pin_box.rect.x0, pin_box.rect.y1-2.f), str8_zero(), txt_pt(1, 1), 0, pin_expr);
+            rd_set_hover_eval(v2f32(pin_box.rect.x0, pin_box.rect.y1-2.f), StringView(), txt_pt(1, 1), 0, pin_expr);
           }
         }
       }
@@ -1326,7 +1326,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     
     // rjf: index => line num
     int64 line_num = (params.line_num_range.min + mouse_y_line_idx);
-    String8 line_string = (params.line_num_range.min <= line_num && line_num <= params.line_num_range.max) ? (params.line_text[mouse_y_line_idx]) : str8_zero();
+    StringView line_string = (params.line_num_range.min <= line_num && line_num <= params.line_num_range.max) ? (params.line_text[mouse_y_line_idx]) : StringView();
     
     // rjf: mouse x * string => column
     int64 column = fnt_char_pos_from_tag_size_string_p(params.font, params.font_size, 0, params.tab_size, line_string, mouse.x-text_container_box.rect.x0-params.line_num_width_px-line_num_padding_px)+1;
@@ -1488,7 +1488,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         uint64 line_vaddr = params.line_vaddrs[line_idx];
         rd_cmd(RD_CmdKind_RelocateEntity,
                .entity     = rd_handle_from_entity(dropped_entity),
-               .file_path  = line_vaddr == 0 ? rd_regs().file_path : str8_zero(),
+               .file_path  = line_vaddr == 0 ? rd_regs().file_path : StringView(),
                .cursor     = line_vaddr == 0 ? txt_pt(line_num, 1) : txt_pt(0, 0),
                .vaddr      = line_vaddr);
       }
@@ -1526,7 +1526,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
   //
   TxtRng mouse_expr_rng = {0};
   Vec2F32 mouse_expr_baseline_pos = {0};
-  String8 mouse_expr = {0};
+  StringView mouse_expr = {0};
   B32 mouse_expr_is_explicit = 0;
   if(ui_hovering(text_container_sig) && contains_1s64(params.line_num_range, mouse_pt.line)) ProfScope("mouse . expression range")
   {
@@ -1536,7 +1536,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         txt_pt_less_than(mouse_pt, selected_rng.max)))
     {
       uint64 line_slice_idx = mouse_pt.line-params.line_num_range.min;
-      String8 line_text = params.line_text[line_slice_idx];
+      StringView line_text = params.line_text[line_slice_idx];
       float expr_hoff_px = params.line_num_width_px + fnt_dim_from_tag_size_string(params.font, params.font_size, 0, params.tab_size, str8_prefix(line_text, selected_rng.min.column-1)).x;
       result.mouse_expr_rng = mouse_expr_rng = selected_rng;
       mouse_expr_baseline_pos = v2f32(text_container_box.rect.x0+expr_hoff_px,
@@ -1547,7 +1547,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     else
     {
       uint64 line_slice_idx = mouse_pt.line-params.line_num_range.min;
-      String8 line_text = params.line_text[line_slice_idx];
+      StringView line_text = params.line_text[line_slice_idx];
       TXT_TokenArray line_tokens = params.line_tokens[line_slice_idx];
       Rng1U64 line_range = params.line_ranges[line_slice_idx];
       uint64 mouse_pt_off = line_range.min + (mouse_pt.column-1);
@@ -1684,7 +1684,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
       for(int64 line_num = params.line_num_range.min;
           line_num <= params.line_num_range.max; line_num += 1, line_idx += 1)
       {
-        String8 line_string = params.line_text[line_idx];
+        StringView line_string = params.line_text[line_idx];
         Rng1U64 line_range = params.line_ranges[line_idx];
         TXT_TokenArray* line_tokens = &params.line_tokens[line_idx];
         ui_set_next_text_padding(line_num_padding_px);
@@ -1723,7 +1723,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
             for(TXT_Token* token = line_tokens_first; token < line_tokens_opl; token += 1)
             {
               // rjf: token . token string
-              String8 token_string = {0};
+              StringView token_string = {0};
               {
                 Rng1U64 token_range = r1u64(0, line_string.size);
                 if(token.range.min > line_range.min)
@@ -1923,7 +1923,7 @@ rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pr
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   RD_CodeSliceSignal sig = rd_code_slice(params, cursor, mark, preferred_column, string);
   va_end(args);
   scratch_end(scratch);
@@ -1931,7 +1931,7 @@ rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pr
 }
 
 B32
-rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page, TxtPt* cursor, TxtPt* mark, int64* preferred_column)
+rd_do_txt_controls(TXT_TextInfo* info, StringView data, uint64 line_count_per_page, TxtPt* cursor, TxtPt* mark, int64* preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
@@ -1942,15 +1942,15 @@ rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page,
       continue;
     }
     B32 taken = 0;
-    String8 line = txt_string_from_info_data_line_num(info, data, cursor.line);
+    StringView line = txt_string_from_info_data_line_num(info, data, cursor.line);
     UI_TxtOp single_line_op = ui_single_line_txt_op_from_event(scratch.arena, evt, line, *cursor, *mark);
     
     //- rjf: invalid single-line op or endpoint units => try multiline
     if(evt.delta_unit == UI_EventDeltaUnit_Whole || single_line_op.flags & UI_TxtOpFlag_Invalid)
     {
       uint64 line_count = info.lines_count;
-      String8 prev_line = txt_string_from_info_data_line_num(info, data, cursor.line-1);
-      String8 next_line = txt_string_from_info_data_line_num(info, data, cursor.line+1);
+      StringView prev_line = txt_string_from_info_data_line_num(info, data, cursor.line-1);
+      StringView next_line = txt_string_from_info_data_line_num(info, data, cursor.line+1);
       Vec2S32 delta = evt.delta_2s32;
       
       //- rjf: wrap lines right
@@ -1996,7 +1996,7 @@ rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page,
       {
         for(int64 line_num = cursor.line+1; line_num <= line_count; line_num += 1)
         {
-          String8 line = txt_string_from_info_data_line_num(info, data, line_num);
+          StringView line = txt_string_from_info_data_line_num(info, data, line_num);
           uint64 line_size = line.size;
           if(line_size == 0)
           {
@@ -2019,7 +2019,7 @@ rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page,
       {
         for(int64 line_num = cursor.line-1; line_num > 0; line_num -= 1)
         {
-          String8 line = txt_string_from_info_data_line_num(info, data, line_num);
+          StringView line = txt_string_from_info_data_line_num(info, data, line_num);
           uint64 line_size = line.size;
           if(line_size == 0)
           {
@@ -2093,7 +2093,7 @@ rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page,
     //- rjf: copy
     if(evt.flags & UI_EventFlag_Copy)
     {
-      String8 text = txt_string_from_info_data_txt_rng(info, data, txt_rng(*cursor, *mark));
+      StringView text = txt_string_from_info_data_txt_rng(info, data, txt_rng(*cursor, *mark));
       os_set_clipboard_text(text);
       taken = 1;
     }
@@ -2113,7 +2113,7 @@ rd_do_txt_controls(TXT_TextInfo* info, String8 data, uint64 line_count_per_page,
 //~ rjf: UI Widgets: Fancy Labels
 
 UI_Signal
-rd_label(String8 string)
+rd_label(StringView string)
 {
   Temp scratch = scratch_begin(0, 0);
   enum StringPartFlags : uint32
@@ -2126,7 +2126,7 @@ rd_label(String8 string)
   {
     StringPart* next;
     StringPartFlags flags;
-    String8 string;
+    StringView string;
   };
   StringPart* first_part = 0;
   StringPart* last_part = 0;
@@ -2176,7 +2176,7 @@ rd_label(String8 string)
 }
 
 UI_Signal
-rd_error_label(String8 string)
+rd_error_label(StringView string)
 {
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
   UI_Signal sig = ui_signal_from_box(box);
@@ -2193,7 +2193,7 @@ rd_error_label(String8 string)
 }
 
 B32
-rd_help_label(String8 string)
+rd_help_label(StringView string)
 {
   B32 result = 0;
   UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
@@ -2219,7 +2219,7 @@ rd_help_label(String8 string)
 }
 
 DR_FancyStringList
-rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2233,7 +2233,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
     RD_ThemeColor token_color = rd_theme_color_from_txt_token_kind(token.kind);
     Vec4F32 token_color_rgba = rd_rgba_from_theme_color(token_color);
     token_color_rgba.w *= alpha;
-    String8 token_string = str8_substr(string, token.range);
+    StringView token_string = str8_substr(string, token.range);
     if(str8_match(token_string, ("{"), 0)) { indirection_counter += 1; }
     if(str8_match(token_string, ("["), 0)) { indirection_counter += 1; }
     indirection_counter = ClampBot(0, indirection_counter);
@@ -2300,9 +2300,9 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         
         // rjf: grab string parts
         uint64 dot_pos = str8_find_needle(token_string, 0, ("."), 0);
-        String8 prefix = str8_prefix(token_string, prefix_skip);
-        String8 whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
-        String8 decimal = str8_skip(token_string, dot_pos);
+        StringView prefix = str8_prefix(token_string, prefix_skip);
+        StringView whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
+        StringView decimal = str8_skip(token_string, dot_pos);
         
         // rjf: determine # of digits
         uint64 num_digits = 0;
@@ -2379,7 +2379,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
 }
 
 UI_Box *
-rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FancyStringList fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
@@ -2393,7 +2393,7 @@ rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, Stri
 //~ rjf: UI Widgets: Line Edit
 
 UI_Signal
-rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, String8 pre_edit_value, String8 string)
+rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, StringView string)
 {
   ProfBeginFunction();
   
@@ -2518,7 +2518,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     }
     if(start_editing_via_sig || start_editing_via_typing)
     {
-      String8 edit_string = pre_edit_value;
+      StringView edit_string = pre_edit_value;
       edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
       MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
       edit_string_size_out[0] = edit_string.size;
@@ -2536,7 +2536,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
   }
   
   //- rjf: determine autocompletion string
-  String8 autocomplete_hint_string = {0};
+  StringView autocomplete_hint_string = {0};
   {
     for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
@@ -2555,7 +2555,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     rd_state.text_edit_mode = 1;
     for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
-      String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
+      StringView edit_string = StringView(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
       if((evt.kind != UI_EventKind_Edit && evt.kind != UI_EventKind_Navigate && evt.kind != UI_EventKind_Text) || evt.delta_2s32.y != 0)
@@ -2569,14 +2569,14 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
       // rjf: any valid op & autocomplete hint? . perform autocomplete first, then re-compute op
       if(autocomplete_hint_string.size != 0)
       {
-        String8 word_query = rd_autocomp_query_word_from_input_string_off(edit_string, cursor.column-1);
+        StringView word_query = rd_autocomp_query_word_from_input_string_off(edit_string, cursor.column-1);
         uint64 word_off = (uint64)(word_query.str - edit_string.str);
-        String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
+        StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
         new_string.size = Min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
         *cursor = *mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
-        edit_string = str8(edit_buffer, edit_string_size_out[0]);
+        edit_string = StringView(edit_buffer, edit_string_size_out[0]);
         op = ui_single_line_txt_op_from_event(scratch.arena, evt, edit_string, *cursor, *mark);
         MemoryZeroStruct(&autocomplete_hint_string);
       }
@@ -2584,7 +2584,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
       // rjf: perform replace range
       if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
       {
-        String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
+        StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
         new_string.size = Min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
@@ -2616,7 +2616,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
   {
     if(!is_focus_active && !is_focus_active_disabled && flags & RD_LineEditFlag_CodeContents)
     {
-      String8 display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(string);
       if(!(flags & RD_LineEditFlag_PreferDisplayString) && pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -2646,7 +2646,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     }
     else if(!is_focus_active && !is_focus_active_disabled && !(flags & RD_LineEditFlag_CodeContents))
     {
-      String8 display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(string);
       if(!(flags & RD_LineEditFlag_PreferDisplayString) && pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -2663,7 +2663,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     }
     else if((is_focus_active || is_focus_active_disabled) && flags & RD_LineEditFlag_CodeContents)
     {
-      String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
+      StringView edit_string = StringView(edit_buffer, edit_string_size_out[0]);
       Temp scratch = scratch_begin(0, 0);
       float total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       float total_editstr_width = total_text_width - !!(flags & (RD_LineEditFlag_Expander|RD_LineEditFlag_ExpanderSpace|RD_LineEditFlag_ExpanderPlaceholder)) * expander_size_px;
@@ -2672,8 +2672,8 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
       DR_FancyStringList code_fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, 1.f, 0, ui_top_palette().text, edit_string);
       if(autocomplete_hint_string.size != 0)
       {
-        String8 query_word = rd_autocomp_query_word_from_input_string_off(edit_string, cursor.column-1);
-        String8 autocomplete_append_string = str8_skip(autocomplete_hint_string, query_word.size);
+        StringView query_word = rd_autocomp_query_word_from_input_string_off(edit_string, cursor.column-1);
+        StringView autocomplete_append_string = str8_skip(autocomplete_hint_string, query_word.size);
         uint64 off = 0;
         uint64 cursor_off = cursor.column-1;
         DR_FancyStringNode* prev_n = 0;
@@ -2711,13 +2711,13 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
           code_fancy_strings.total_size += autocomplete_hint_string.size;
           if(prev_n != 0 && cursor_off - off < prev_n.v.string.size)
           {
-            String8 full_string = prev_n.v.string;
+            StringView full_string = prev_n.v.string;
             uint64 chop_amt = full_string.size - (cursor_off - off);
             prev_n.v.string = str8_chop(full_string, chop_amt);
             code_fancy_strings.total_size -= chop_amt;
             if(chop_amt != 0)
             {
-              String8 post_cursor = str8_skip(full_string, cursor_off - off);
+              StringView post_cursor = str8_skip(full_string, cursor_off - off);
               DR_FancyStringNode* post_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
               DR_FancyString* post_fstr = &post_fstr_n.v;
               MemoryCopyStruct(post_fstr, &prev_n.v);
@@ -2746,7 +2746,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     }
     else if((is_focus_active || is_focus_active_disabled) && !(flags & RD_LineEditFlag_CodeContents))
     {
-      String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
+      StringView edit_string = StringView(edit_buffer, edit_string_size_out[0]);
       float total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       float total_editstr_width = total_text_width - !!(flags & (RD_LineEditFlag_Expander|RD_LineEditFlag_ExpanderSpace|RD_LineEditFlag_ExpanderPlaceholder)) * expander_size_px;
       ui_set_next_pref_width(ui_px(total_editstr_width+ui_top_font_size()*2, 0.f));
@@ -2807,12 +2807,12 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
 }
 
 UI_Signal
-rd_line_editf(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, String8 pre_edit_value, char* fmt, ...)
+rd_line_editf(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = rd_line_edit(flags, depth, matches, cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, expanded_out, pre_edit_value, string);
   scratch_end(scratch);

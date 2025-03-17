@@ -13,7 +13,7 @@ struct OS_SystemInfo
   uint64 page_size;
   uint64 large_page_size;
   uint64 allocation_granularity;
-  String8 machine_name;
+  StringView machine_name;
 }
 
 ////////////////////////////////
@@ -23,9 +23,9 @@ struct OS_ProcessInfo
 {
   uint32 pid;
   B32 large_pages_allowed;
-  String8 binary_path;
-  String8 initial_path;
-  String8 user_program_data_path;
+  StringView binary_path;
+  StringView initial_path;
+  StringView user_program_data_path;
   String8List module_load_paths;
   String8List environment;
 }
@@ -63,7 +63,7 @@ struct OS_FileIter
 
 struct OS_FileInfo
 {
-  String8 name;
+  StringView name;
   FileProperties props;
 }
 
@@ -106,7 +106,7 @@ struct OS_HandleArray
 struct OS_ProcessLaunchParams
 {
   String8List cmd_line;
-  String8 path;
+  StringView path;
   String8List env;
   B32 inherit_env;
   B32 debug_subprocesses;
@@ -137,18 +137,18 @@ String8List os_string_list_from_argcv(Arena* arena, int argc, char** argv);
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-String8        os_data_from_file_path(Arena* arena, String8 path);
-B32            os_write_data_to_file_path(String8 path, String8 data);
-B32            os_write_data_list_to_file_path(String8 path, String8List list);
-B32            os_append_data_to_file_path(String8 path, String8 data);
-OS_FileID      os_id_from_file_path(String8 path);
+StringView        os_data_from_file_path(Arena* arena, StringView path);
+B32            os_write_data_to_file_path(StringView path, StringView data);
+B32            os_write_data_list_to_file_path(StringView path, String8List list);
+B32            os_append_data_to_file_path(StringView path, StringView data);
+OS_FileID      os_id_from_file_path(StringView path);
 int64            os_file_id_compare(OS_FileID a, OS_FileID b);
-String8        os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range);
+StringView        os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Process Launcher Helpers
 
-OS_Handle os_cmd_line_launch(String8 string);
+OS_Handle os_cmd_line_launch(StringView string);
 OS_Handle os_cmd_line_launchf(char* fmt, ...);
 
 ////////////////////////////////
@@ -156,7 +156,7 @@ OS_Handle os_cmd_line_launchf(char* fmt, ...);
 
 OS_SystemInfo*  os_get_system_info();
 OS_ProcessInfo* os_get_process_info();
-String8         os_get_current_path(Arena* arena);
+StringView         os_get_current_path(Arena* arena);
 uint32             os_get_process_start_time_unix();
 
 ////////////////////////////////
@@ -176,7 +176,7 @@ B32 os_commit_large(void* ptr, uint64 size);
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
 uint32 os_tid();
-void os_set_thread_name(String8 string);
+void os_set_thread_name(StringView string);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)
@@ -187,19 +187,19 @@ void os_abort(int32 exit_code);
 //~ rjf: @os_hooks File System (Implemented Per-OS)
 
 //- rjf: files
-OS_Handle      os_file_open(OS_AccessFlags flags, String8 path);
+OS_Handle      os_file_open(OS_AccessFlags flags, StringView path);
 void           os_file_close(OS_Handle file);
 uint64            os_file_read(OS_Handle file, Rng1U64 rng, void* out_data);
 uint64            os_file_write(OS_Handle file, Rng1U64 rng, void* data);
 B32            os_file_set_times(OS_Handle file, DateTime time);
 FileProperties os_properties_from_file(OS_Handle file);
 OS_FileID      os_id_from_file(OS_Handle file);
-B32            os_delete_file_at_path(String8 path);
-B32            os_copy_file_path(String8 dst, String8 src);
-String8        os_full_path_from_path(Arena* arena, String8 path);
-B32            os_file_path_exists(String8 path);
-B32            os_folder_path_exists(String8 path);
-FileProperties os_properties_from_file_path(String8 path);
+B32            os_delete_file_at_path(StringView path);
+B32            os_copy_file_path(StringView dst, StringView src);
+StringView        os_full_path_from_path(Arena* arena, StringView path);
+B32            os_file_path_exists(StringView path);
+B32            os_folder_path_exists(StringView path);
+FileProperties os_properties_from_file_path(StringView path);
 
 //- rjf: file maps
 OS_Handle os_file_map_open(OS_AccessFlags flags, OS_Handle file);
@@ -208,18 +208,18 @@ void *    os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 ran
 void      os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range);
 
 //- rjf: directory iteration
-OS_FileIter* os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags);
+OS_FileIter* os_file_iter_begin(Arena* arena, StringView path, OS_FileIterFlags flags);
 B32          os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out);
 void         os_file_iter_end(OS_FileIter* iter);
 
 //- rjf: directory creation
-B32 os_make_directory(String8 path);
+B32 os_make_directory(StringView path);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
-OS_Handle os_shared_memory_alloc(uint64 size, String8 name);
-OS_Handle os_shared_memory_open(String8 name);
+OS_Handle os_shared_memory_alloc(uint64 size, StringView name);
+OS_Handle os_shared_memory_open(StringView name);
 void      os_shared_memory_close(OS_Handle handle);
 void *    os_shared_memory_view_open(OS_Handle handle, Rng1U64 range);
 void      os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range);
@@ -276,9 +276,9 @@ void      os_condition_variable_signal(OS_Handle cv);
 void      os_condition_variable_broadcast(OS_Handle cv);
 
 //- rjf: cross-process semaphores
-OS_Handle os_semaphore_alloc(uint32 initial_count, uint32 max_count, String8 name);
+OS_Handle os_semaphore_alloc(uint32 initial_count, uint32 max_count, StringView name);
 void      os_semaphore_release(OS_Handle semaphore);
-OS_Handle os_semaphore_open(String8 name);
+OS_Handle os_semaphore_open(StringView name);
 void      os_semaphore_close(OS_Handle semaphore);
 B32       os_semaphore_take(OS_Handle semaphore, uint64 endt_us);
 void      os_semaphore_drop(OS_Handle semaphore);
@@ -292,9 +292,9 @@ void      os_semaphore_drop(OS_Handle semaphore);
 ////////////////////////////////
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
-OS_Handle os_library_open(String8 path);
+OS_Handle os_library_open(StringView path);
 void      os_library_close(OS_Handle lib);
-VoidProc* os_library_load_proc(OS_Handle lib, String8 name);
+VoidProc* os_library_load_proc(OS_Handle lib, StringView name);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)

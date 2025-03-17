@@ -46,7 +46,7 @@ lnk_export_table_release(LNK_ExportTable** exptab_ptr)
 }
 
 LNK_Export *
-lnk_export_table_search(LNK_ExportTable* exptab, String8 name)
+lnk_export_table_search(LNK_ExportTable* exptab, StringView name)
 {
   KeyValuePair* kv = hash_table_search_string(exptab.name_export_ht, name);
   if (kv) {
@@ -171,7 +171,7 @@ lnk_export_array_from_list(Arena* arena, LNK_ExportList list)
 }
 
 void
-lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* symtab, String8 image_name, COFF_MachineType machine)
+lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* symtab, StringView image_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -203,8 +203,8 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   header.export_address_table_count = safe_cast_u32(exptab.name_export_ht.count + exptab.noname_export_ht.count);
   header.name_pointer_table_count   = safe_cast_u32(exptab.name_export_ht.count);
   
-  String8 header_data = str8((uint8*)header, sizeof(*header));
-  String8 image_name_cstr = push_cstr(edata.arena, str8_skip_last_slash(image_name));
+  StringView header_data = StringView((uint8*)header, sizeof(*header));
+  StringView image_name_cstr = push_cstr(edata.arena, str8_skip_last_slash(image_name));
   
   // push edata chunks
   LNK_Chunk* header_chunk          = lnk_section_push_chunk_data(edata, edata.root, header_data, ("a"));
@@ -212,7 +212,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   LNK_Chunk* name_voff_table_chunk = lnk_section_push_chunk_list(edata, edata.root, ("c"));
   LNK_Chunk* ordinal_table_chunk   = lnk_section_push_chunk_list(edata, edata.root, ("d"));
   LNK_Chunk* string_buffer_chunk   = lnk_section_push_chunk_list(edata, edata.root, ("e"));
-  LNK_Chunk* image_name_chunk      = lnk_section_push_chunk_data(edata, string_buffer_chunk, image_name_cstr, str8(0,0));
+  LNK_Chunk* image_name_chunk      = lnk_section_push_chunk_data(edata, string_buffer_chunk, image_name_cstr, StringView(0,0));
   lnk_chunk_set_debugf(edata.arena, header_chunk,          "EXPORT_HEADER");
   lnk_chunk_set_debugf(edata.arena, voff_table_chunk,      "EXPORT_ADDRESS_TABLE");
   lnk_chunk_set_debugf(edata.arena, name_voff_table_chunk, "EXPORT_NAME_VOFF_TABLE");
@@ -234,7 +234,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
   // reserve virtual offset chunks
   LNK_Chunk** ordinal_voff_map = push_array(scratch.arena, LNK_Chunk *, exptab.max_ordinal);
   for (uint32 i = ordinal_low; i <= ordinal_high; i += 1) {
-    String8 sort_index = str8_from_bits_u32(edata.arena, i);
+    StringView sort_index = str8_from_bits_u32(edata.arena, i);
     LNK_Chunk* voff_chunk = lnk_section_push_chunk_bss(edata, voff_table_chunk, exptab.voff_size, sort_index);
     ordinal_voff_map[i] = voff_chunk;
   }
@@ -248,14 +248,14 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
 
     for (uint64 i = 0; i < (*ht_ptr).count; ++i) {
       LNK_Export* exp       = kv_arr[i].value_raw;
-      String8     name_cstr = push_cstr(edata.arena, exp.name);
+      StringView     name_cstr = push_cstr(edata.arena, exp.name);
       
       // push name string
-      LNK_Chunk* name_chunk = lnk_section_push_chunk_data(edata, string_buffer_chunk, name_cstr, str8(0,0));
+      LNK_Chunk* name_chunk = lnk_section_push_chunk_data(edata, string_buffer_chunk, name_cstr, StringView(0,0));
       lnk_chunk_set_debugf(edata.arena, name_chunk, "export: %S", name_cstr);
       
       // push name symbol
-      String8     name_export_name = push_str8f(symtab.arena.v[0], "export.%S", name_cstr);
+      StringView     name_export_name = push_str8f(symtab.arena.v[0], "export.%S", name_cstr);
       LNK_Symbol* name_symbol      = lnk_symbol_table_push_defined_chunk(symtab, name_export_name, LNK_DefinedSymbolVisibility_Internal, 0, name_chunk, 0, 0, 0);
       
       // name voff

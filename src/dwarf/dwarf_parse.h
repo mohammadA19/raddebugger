@@ -22,7 +22,7 @@
 struct DW_ExtDebugRef
 {
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
-  String8 dwo_path;
+  StringView dwo_path;
   uint64     dwo_id;
 }
 
@@ -46,8 +46,8 @@ struct DW_AbbrevTable
 
 struct DW_Section
 {
-  String8 name;
-  String8 data;
+  StringView name;
+  StringView data;
   DW_Mode mode;
   B32     is_dwo;
 }
@@ -62,7 +62,7 @@ struct DW_SectionArray
 
 struct DW_LineFile
 {
-  String8 file_name;
+  StringView file_name;
   uint64     dir_idx;
   uint64     modify_time;
   uint64     md5_digest[2];
@@ -195,10 +195,10 @@ struct DW_CompRoot
   uint64 stroffs_base; // NOTE(rjf): Offset into the .debug_str_offsets section where this comp unit's data is.
   
   // NOTE(rjf): [parsed from DWARF attributes] General Info
-  String8        name;
-  String8        producer;
-  String8        compile_dir;
-  String8        external_dwo_name;
+  StringView        name;
+  StringView        producer;
+  StringView        compile_dir;
+  StringView        external_dwo_name;
   uint64            dwo_id;
   DW_Language    language;
   uint64            name_case;
@@ -370,7 +370,7 @@ struct DW_LineTableParseResult
 struct DW_PubStringsBucket
 {
   DW_PubStringsBucket* next;
-  String8              string;
+  StringView              string;
   uint64                  info_off;
   uint64                  cu_info_off;
 }
@@ -384,7 +384,7 @@ struct DW_PubStringsTable
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 dw_hash_from_string(String8 string);
+uint64 dw_hash_from_string(StringView string);
 
 ////////////////////////////////
 //~ Specific Based Range Helpers
@@ -392,7 +392,7 @@ uint64 dw_hash_from_string(String8 string);
 #define dw_based_range_read_struct(base, range, offset, out) dw_based_range_read(base, range, offset, sizeof(*out), out)
 
 uint64     dw_based_range_read(void* base, Rng1U64 range, uint64 offset, uint64 size, void* out);
-String8 dw_based_range_read_string(void* base, Rng1U64 range, uint64 offset);
+StringView dw_based_range_read_string(void* base, Rng1U64 range, uint64 offset);
 void*   dw_based_range_ptr(void* base, Rng1U64 range, uint64 offset);
 void*   dw_based_range_ptr_size(void* base, Rng1U64 range, uint64 offset, uint64 size);
 uint64     dw_based_range_read_uleb128(void* base, Rng1U64 range, uint64 offset, uint64* out_value);
@@ -437,7 +437,7 @@ Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena* arena, DW_SectionArray* 
 
 DW_AttribValueResolveParams dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot* root);
 DW_AttribValue              dw_attrib_value_from_form_value(DW_SectionArray* sections, DW_AttribValueResolveParams resolve_params, DW_FormKind form_kind, DW_AttribClass value_class, DW_AttribValue form_value);
-String8                     dw_string_from_attrib_value(DW_SectionArray* sections, DW_AttribValue value);
+StringView                     dw_string_from_attrib_value(DW_SectionArray* sections, DW_AttribValue value);
 Rng1U64List                 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena* arena, DW_SectionArray* sections, uint64 address_size, uint64 comp_unit_base_addr, uint64 addr_section_base, uint64 low_pc, uint64 high_pc, DW_AttribValue ranges_value);
 
 ////////////////////////////////
@@ -455,7 +455,7 @@ DW_LineSeqNode*         dw_push_line_seq(Arena* arena, DW_LineTableParseResult* 
 DW_LineNode*            dw_push_line(Arena* arena, DW_LineTableParseResult* tbl, DW_LineVMState* vm_state, B32 start_of_sequence);
 DW_LineTableParseResult dw_parsed_line_table_from_comp_root(Arena* arena, DW_SectionArray* sections, DW_CompRoot* root);
 uint64                     dw_read_line_file(void* line_base, Rng1U64 line_rng, uint64 line_off, DW_Mode mode, DW_SectionArray* sections, DW_AttribValueResolveParams resolve_params, uint8 address_size, uint64 format_count, Rng1U64* formats, DW_LineFile* line_file_out);
-uint64                     dw_read_line_vm_header(Arena* arena, void* line_base, Rng1U64 line_rng, uint64 line_off, DW_Mode mode, DW_SectionArray* sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader* header_out);
+uint64                     dw_read_line_vm_header(Arena* arena, void* line_base, Rng1U64 line_rng, uint64 line_off, DW_Mode mode, DW_SectionArray* sections, DW_AttribValueResolveParams resolve_params, StringView compile_dir, StringView unit_name, DW_LineVMHeader* header_out);
 
 #endif // DWARF_PARSE_H
 

@@ -166,13 +166,13 @@ cv_map_encoded_base_pointer(CV_Arch arch, uint32 encoded_frame_reg)
 }
 
 
-String8
+StringView
 cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
 {
   switch (kind) {
     case CV_InlineRangeKind_Expr: return ("Expr");
     case CV_InlineRangeKind_Stmt: return ("Stmt");
   }
-  return str8_zero();
+  return StringView();
 }
 

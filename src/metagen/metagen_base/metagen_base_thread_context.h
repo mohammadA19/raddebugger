@@ -27,8 +27,8 @@ TCTX*     tctx_get_equipped();
 
 Arena*    tctx_get_scratch(Arena** conflicts, uint64 count);
 
-void      tctx_set_thread_name(String8 name);
-String8   tctx_get_thread_name();
+void      tctx_set_thread_name(StringView name);
+StringView   tctx_get_thread_name();
 
 void      tctx_write_srcloc(char* file_name, uint64 line_number);
 void      tctx_read_srcloc(char** file_name, uint64* line_number);

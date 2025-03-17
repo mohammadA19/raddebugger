@@ -1,5 +1,5 @@
 #pragma once
 
-String8 rdi_string_from_name_map_kind(RDI_NameMapKind kind);
+StringView rdi_string_from_name_map_kind(RDI_NameMapKind kind);
 
 

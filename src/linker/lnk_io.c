@@ -4,7 +4,7 @@
 shared_function int
 lnk_open_file_read(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
-  OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, str8((uint8*)path, path_size));
+  OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, StringView((uint8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());
@@ -13,7 +13,7 @@ lnk_open_file_read(char* path, uint64_t path_size, void* handle_buffer, uint64_t
 shared_function int
 lnk_open_file_write(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
-  OS_Handle handle = os_file_open(OS_AccessFlag_Write, str8((uint8*)path, path_size));
+  OS_Handle handle = os_file_open(OS_AccessFlag_Write, StringView((uint8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());
@@ -54,15 +54,15 @@ lnk_write_file(void* raw_handle, uint64_t offset, void* buffer, uint64_t buffer_
 ////////////////////////////////
 
 void
-lnk_log_read(String8 path, uint64 size)
+lnk_log_read(StringView path, uint64 size)
 {
   lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
 
-String8
-lnk_read_data_from_file_path(Arena* arena, String8 path)
+StringView
+lnk_read_data_from_file_path(Arena* arena, StringView path)
 {
-  String8 data = str8_zero();
+  StringView data = StringView();
   OS_Handle handle = {0};
   int is_open = lnk_open_file_read((char*)path.str, path.size, &handle, sizeof(handle));
   if (is_open) {
@@ -70,7 +70,7 @@ lnk_read_data_from_file_path(Arena* arena, String8 path)
     uint8*  buffer      = push_array_no_zero(arena, uint8, buffer_size);
     uint64  read_size   = lnk_read_file(&handle, buffer, buffer_size);
 
-    data = str8(buffer, read_size);
+    data = StringView(buffer, read_size);
 	
     lnk_close_file(&handle);
 
@@ -91,7 +91,7 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
   LNK_DiskReader* task = raw_task;
-  String8         path = task.path_arr.v[task_id];
+  StringView         path = task.path_arr.v[task_id];
 
   OS_Handle handle = {0};
   uint64       size   = 0;
@@ -117,7 +117,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   uint64 read_size = lnk_read_file(&handle, buffer, buffer_size);
   Assert(read_size == buffer_size);
 
-  task.data_arr.v[task_id] = str8(buffer, read_size);
+  task.data_arr.v[task_id] = StringView(buffer, read_size);
 }
 
 String8Array
@@ -163,7 +163,7 @@ lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, String8Array
 }
 
 void
-lnk_write_data_list_to_file_path(String8 path, String8List data)
+lnk_write_data_list_to_file_path(StringView path, String8List data)
 {
   ProfBeginV("Write %M to %S", data.total_size, path);
 
@@ -199,7 +199,7 @@ lnk_write_data_list_to_file_path(String8 path, String8List data)
 }
 
 void
-lnk_write_data_to_file_path(String8 path, String8 data)
+lnk_write_data_to_file_path(StringView path, StringView data)
 {
   Temp scratch = scratch_begin(0,0);
   String8List data_list = {0};
@@ -209,14 +209,14 @@ lnk_write_data_to_file_path(String8 path, String8 data)
 }
 
 String8List
-lnk_file_search(Arena* arena, String8List dir_list, String8 file_path)
+lnk_file_search(Arena* arena, String8List dir_list, StringView file_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   String8List match_list; MemoryZeroStruct(&match_list);
 
   if (os_file_path_exists(file_path)) {
-    String8 str = push_str8_copy(arena, file_path);
+    StringView str = push_str8_copy(arena, file_path);
     str8_list_push(arena, &match_list, str);
   }
 
@@ -229,7 +229,7 @@ lnk_file_search(Arena* arena, String8List dir_list, String8 file_path)
       String8List path_list = {0};
       str8_list_push(scratch.arena, &path_list, i.string);
       str8_list_push(scratch.arena, &path_list, file_path);
-      String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
+      StringView path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
       B32 file_exists = os_file_path_exists(path);
       if (file_exists) {
         B32 is_unique = 1;
@@ -243,7 +243,7 @@ lnk_file_search(Arena* arena, String8List dir_list, String8 file_path)
           }
         }
         if (is_unique) {
-          String8 str = push_str8_copy(arena, path);
+          StringView str = push_str8_copy(arena, path);
           str8_list_push(arena, &match_list, str);
         }
       }

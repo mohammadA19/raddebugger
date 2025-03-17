@@ -8,10 +8,10 @@
 //~ Program Parameters Type
 
 struct DWARFCONV_Params{
-  String8 input_elf_name;
-  String8 input_elf_data;
+  StringView input_elf_name;
+  StringView input_elf_data;
   
-  String8 output_name;
+  StringView output_name;
   
   uint64 unit_idx_min;
   uint64 unit_idx_max;

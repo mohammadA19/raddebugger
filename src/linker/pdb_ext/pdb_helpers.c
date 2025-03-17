@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 uint64
-pdb_read_bit_vector_string(String8 data, uint64 offset, U32Array* bits_out)
+pdb_read_bit_vector_string(StringView data, uint64 offset, U32Array* bits_out)
 {
   uint64 cursor = offset;
   
@@ -10,7 +10,7 @@ pdb_read_bit_vector_string(String8 data, uint64 offset, U32Array* bits_out)
   cursor += str8_deserial_read_struct(data, cursor, &word_count);
   
   uint64 word_data_read_size = word_count * sizeof(uint32);
-  String8 word_data = str8(0,0);
+  StringView word_data = StringView(0,0);
   cursor += str8_deserial_read_block(data, cursor, word_data_read_size, &word_data);
   
   if (word_data.size == word_data_read_size) {
@@ -40,7 +40,7 @@ pdb_read_bit_vector_msf(Arena* arena, MSF_Context* msf, MSF_StreamNumber sn, U32
   Assert(read_size == buffer_size);
   
   // parse words
-  uint64 parse_size = pdb_read_bit_vector_string(str8(buffer, buffer_size), 0, bits_out);
+  uint64 parse_size = pdb_read_bit_vector_string(StringView(buffer, buffer_size), 0, bits_out);
   return parse_size;
 }
 

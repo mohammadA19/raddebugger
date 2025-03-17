@@ -51,12 +51,12 @@ coff_section_flag_from_align_size(uint64 align)
   return flags;
 }
 
-String8
-coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, uint64 string_table_off)
+StringView
+coff_name_from_section_header(StringView raw_coff, COFF_SectionHeader* header, uint64 string_table_off)
 {
-  String8 name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
+  StringView name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
   if (name.str[0] == '/') {
-    String8 ascii_off    = str8_skip(name, 1);
+    StringView ascii_off    = str8_skip(name, 1);
     uint64     name_rel_off = u64_from_str8(ascii_off, 10);
     uint64     name_off     = name_rel_off + string_table_off;
     name = str8_cstring_capped(raw_coff.str + name_off, raw_coff.str + raw_coff.size);
@@ -65,7 +65,7 @@ coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader* header, uint
 }
 
 void
-coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_out)
+coff_parse_section_name(StringView full_name, StringView* name_out, StringView* postfix_out)
 {
   // dollar sign has multiple interpretations that depend on the type of the section.
   // 1. when section contains code/data it indicates section precedence
@@ -79,8 +79,8 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
   *postfix_out = ("");
   for (uint64 i = 0; i < full_name.size; ++i) {
     if (full_name.str[i] == '$') {
-      *name_out    = str8(full_name.str, i);
-      *postfix_out = str8(full_name.str + i + 1, full_name.size - i - 1);
+      *name_out    = StringView(full_name.str, i);
+      *postfix_out = StringView(full_name.str + i + 1, full_name.size - i - 1);
       
       // TLS sections don't have a postfix but we still have to sort them based
       // on dollar sign so they are sloted between CRT's _tls_start and _tls_end sections.
@@ -93,10 +93,10 @@ coff_parse_section_name(String8 full_name, String8* name_out, String8* postfix_o
   }
 }
 
-String8
-coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName* name)
+StringView
+coff_read_symbol_name(StringView raw_coff, uint64 string_table_off, COFF_SymbolName* name)
 {
-  String8 name_str = ("");
+  StringView name_str = ("");
   if (name.long_name.zeroes == 0) {
     uint64 name_string_off = string_table_off + name.long_name.string_table_offset;
     str8_deserial_read_cstr(raw_coff, name_string_off, &name_str);
@@ -107,7 +107,7 @@ coff_read_symbol_name(String8 raw_coff, uint64 string_table_off, COFF_SymbolName
         break;
       }
     }
-    name_str = str8(name.short_name, i);
+    name_str = StringView(name.short_name, i);
   }
   return name_str;
 }
@@ -181,15 +181,15 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
   return 0;
 }
 
-String8
-coff_make_import_lookup(Arena* arena, uint16 hint, String8 name)
+StringView
+coff_make_import_lookup(Arena* arena, uint16 hint, StringView name)
 {
   uint64 buffer_size = sizeof(hint) + (name.size + 1);
   uint8* buffer = push_array(arena, uint8, buffer_size);
   *(uint16*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
-  String8 result = str8(buffer, buffer_size);
+  StringView result = StringView(buffer, buffer_size);
   return result;
 }
 
@@ -207,12 +207,12 @@ coff_make_ordinal64(uint16 hint)
   return ordinal;
 }
 
-String8
+StringView
 coff_make_import_header_by_name(Arena*            arena,
-                                String8           dll_name,
+                                StringView           dll_name,
                                 COFF_MachineType  machine,
                                 COFF_TimeStamp    time_stamp,
-                                String8           name,
+                                StringView           name,
                                 uint16               hint,
                                 COFF_ImportType   type)
 {
@@ -247,13 +247,13 @@ coff_make_import_header_by_name(Arena*            arena,
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
-  String8 import_data = str8(buffer, buffer_size);
+  StringView import_data = StringView(buffer, buffer_size);
   return import_data;
 }
 
-String8
+StringView
 coff_make_import_header_by_ordinal(Arena*             arena,
-                                   String8            dll_name,
+                                   StringView            dll_name,
                                    COFF_MachineType   machine,
                                    COFF_TimeStamp     time_stamp,
                                    uint16                ordinal,
@@ -289,7 +289,7 @@ coff_make_import_header_by_ordinal(Arena*             arena,
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
-  String8 import_data = str8(buffer, buffer_size);
+  StringView import_data = StringView(buffer, buffer_size);
   return import_data;
 }
 

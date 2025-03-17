@@ -10,7 +10,7 @@
 uint64 ev_base_offset_from_eval(E_Eval eval);
 E_Value ev_value_from_params(MD_Node* params);
 E_TypeKey ev_type_key_from_params(MD_Node* params);
-E_Value ev_value_from_params_key(MD_Node* params, String8 key);
+E_Value ev_value_from_params_key(MD_Node* params, StringView key);
 Rng1U64 ev_range_from_eval_params(E_Eval eval, MD_Node* params);
 Arch ev_arch_from_eval_params(E_Eval eval, MD_Node* params);
 

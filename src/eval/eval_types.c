@@ -322,7 +322,7 @@ e_hash_from_cons_type_params(E_ConsTypeParams* params)
     (uint32)((params.count & 0x00000000ffffffffull)>> 0),
     (uint32)((params.count & 0xffffffff00000000ull)>> 32),
   };
-  uint64 hash = e_hash_from_string(5381, str8((uint8 *)buffer, sizeof(buffer)));
+  uint64 hash = e_hash_from_string(5381, StringView((uint8 *)buffer, sizeof(buffer)));
   hash = e_hash_from_string(hash, params.name);
   return hash;
 }
@@ -533,8 +533,8 @@ e_hash_from_type_key(E_TypeKey key)
     str8_serial_push_struct(scratch.arena, &strings, &type.byte_size);
     str8_serial_push_struct(scratch.arena, &strings, &type.count);
     str8_serial_push_struct(scratch.arena, &strings, &type.off);
-    String8 direct_type_string = e_type_string_from_key(scratch.arena, type.direct_type_key);
-    String8 owner_type_string = e_type_string_from_key(scratch.arena, type.owner_type_key);
+    StringView direct_type_string = e_type_string_from_key(scratch.arena, type.direct_type_key);
+    StringView owner_type_string = e_type_string_from_key(scratch.arena, type.owner_type_key);
     uint64 direct_hash = e_hash_from_string(5381, direct_type_string);
     uint64 owner_hash = e_hash_from_string(5381, owner_type_string);
     str8_serial_push_struct(scratch.arena, &strings, &direct_hash);
@@ -543,7 +543,7 @@ e_hash_from_type_key(E_TypeKey key)
     {
       for EachIndex(idx, type.count)
       {
-        String8 param_type_string = e_type_string_from_key(scratch.arena, type.param_type_keys[idx]);
+        StringView param_type_string = e_type_string_from_key(scratch.arena, type.param_type_keys[idx]);
         uint64 param_type_hash = e_hash_from_string(5381, param_type_string);
         str8_serial_push_struct(scratch.arena, &strings, &param_type_hash);
       }
@@ -552,13 +552,13 @@ e_hash_from_type_key(E_TypeKey key)
     {
       for EachIndex(idx, type.count)
       {
-        String8 member_type_string = e_type_string_from_key(scratch.arena, type.members[idx].type_key);
+        StringView member_type_string = e_type_string_from_key(scratch.arena, type.members[idx].type_key);
         uint64 member_type_hash = e_hash_from_string(5381, member_type_string);
         str8_serial_push_struct(scratch.arena, &strings, &type.members[idx].off);
         str8_serial_push_struct(scratch.arena, &strings, &member_type_hash);
       }
     }
-    String8 string = str8_serial_end(scratch.arena, &strings);
+    StringView string = str8_serial_end(scratch.arena, &strings);
     hash = e_hash_from_string(5381, string);
     scratch_end(scratch);
   }
@@ -663,7 +663,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           if(RDI_TypeKind_FirstRecord <= rdi_type.kind && rdi_type.kind <= RDI_TypeKind_LastRecord)
           {
             // rjf: unpack name
-            String8 name = {0};
+            StringView name = {0};
             name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack UDT info
@@ -707,7 +707,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           else if(rdi_type.kind == RDI_TypeKind_Enum)
           {
             // rjf: unpack name
-            String8 name = {0};
+            StringView name = {0};
             name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
@@ -894,7 +894,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           else if(rdi_type.kind == RDI_TypeKind_Alias)
           {
             // rjf: unpack name
-            String8 name = {0};
+            StringView name = {0};
             name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
@@ -943,7 +943,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           else if(RDI_TypeKind_FirstIncomplete <= rdi_type.kind && rdi_type.kind <= RDI_TypeKind_LastIncomplete)
           {
             // rjf: unpack name
-            String8 name = {0};
+            StringView name = {0};
             name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: produce
@@ -1575,7 +1575,7 @@ e_type_data_members_from_key(Arena* arena, E_TypeKey key)
 }
 
 E_Member *
-e_type_member_from_array_name(E_MemberArray* members, String8 name)
+e_type_member_from_array_name(E_MemberArray* members, StringView name)
 {
   E_Member* member = 0;
   for(uint64 idx = 0; idx < members.count; idx += 1)
@@ -1594,7 +1594,7 @@ e_type_member_from_array_name(E_MemberArray* members, String8 name)
 void
 e_type_lhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32 prec, B32 skip_return)
 {
-  String8 keyword = {0};
+  StringView keyword = {0};
   E_TypeKind kind = e_type_kind_from_key(key);
   switch(kind)
   {
@@ -1763,7 +1763,7 @@ e_type_rhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32
       {
         str8_list_push(arena, out, (")"));
       }
-      String8 count_str = str8_from_u64(arena, type.count, 10, 0, 0);
+      StringView count_str = str8_from_u64(arena, type.count, 10, 0, 0);
       str8_list_push(arena, out, ("["));
       str8_list_push(arena, out, count_str);
       str8_list_push(arena, out, ("]"));
@@ -1792,8 +1792,8 @@ e_type_rhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32
         for(uint64 param_idx = 0; param_idx < param_count; param_idx += 1)
         {
           E_TypeKey param_type_key = param_type_keys[param_idx];
-          String8 param_str = e_type_string_from_key(arena, param_type_key);
-          String8 param_str_trimmed = str8_skip_chop_whitespace(param_str);
+          StringView param_str = e_type_string_from_key(arena, param_type_key);
+          StringView param_str_trimmed = str8_skip_chop_whitespace(param_str);
           str8_list_push(arena, out, param_str_trimmed);
           if(param_idx+1 < param_count)
           {
@@ -1809,14 +1809,14 @@ e_type_rhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, uint32
   }
 }
 
-String8
+StringView
 e_type_string_from_key(Arena* arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
   e_type_lhs_string_from_key(scratch.arena, key, &list, 0, 0);
   e_type_rhs_string_from_key(scratch.arena, key, &list, 0);
-  String8 result = str8_list_join(arena, &list, 0);
+  StringView result = str8_list_join(arena, &list, 0);
   result = str8_skip_chop_whitespace(result);
   scratch_end(scratch);
   return result;
@@ -1895,7 +1895,7 @@ e_type_data_members_from_key__cached(E_TypeKey key)
 }
 
 E_Member
-e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
+e_type_member_from_key_name__cached(E_TypeKey key, StringView name)
 {
   E_Member result = {0};
   E_MemberCacheNode* node = e_member_cache_node_from_type_key(key);

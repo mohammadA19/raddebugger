@@ -10,10 +10,10 @@ struct LNK_InputObj
   struct LNK_InputObj* next;
   B32                  is_thin;
   B32                  has_disk_read_failed;
-  String8              dedup_id;
-  String8              path;
-  String8              data;
-  String8              lib_path;
+  StringView              dedup_id;
+  StringView              path;
+  StringView              data;
+  StringView              lib_path;
 }
 
 struct LNK_InputObjList
@@ -28,7 +28,7 @@ struct LNK_InputObjList
 struct LNK_Directive
 {
   struct LNK_Directive* next;
-  String8               id;
+  StringView               id;
   String8List           value_list;
 }
 
@@ -50,16 +50,16 @@ struct LNK_DirectiveInfo
 
 struct LNK_Obj
 {
-  String8             data;
-  String8             path;
-  String8             lib_path;
+  StringView             data;
+  StringView             path;
+  StringView             lib_path;
   uint64                 input_idx;
   uint64                 common_symbol_size;
   COFF_MachineType    machine;
   uint64                 chunk_count;
   uint64                 sect_count;
-  String8*            sect_name_arr;
-  String8*            sect_sort_arr;
+  StringView*            sect_name_arr;
+  StringView*            sect_sort_arr;
   LNK_RelocList*      sect_reloc_list_arr;
   LNK_ChunkPtr*       chunk_arr;
   LNK_SymbolList      symbol_list;
@@ -94,7 +94,7 @@ struct LNK_SectDefn
 {
   struct LNK_SectDefn* next;
   LNK_Obj*             obj;
-  String8              name;
+  StringView              name;
   COFF_SectionFlags    flags;
   uint64                  idx;
 }
@@ -159,8 +159,8 @@ struct
 struct
 {
   LNK_Obj**      obj_arr;
-  String8        name;
-  String8        postfix;
+  StringView        name;
+  StringView        postfix;
   B32            collect_discarded;
   LNK_ChunkList* list_arr;
 }
@@ -198,14 +198,14 @@ LNK_InputObjList lnk_input_obj_list_from_string_list(Arena* arena, String8List l
 
 LNK_Obj **       lnk_obj_arr_from_list(Arena* arena, LNK_ObjList list);
 LNK_ObjNodeArray lnk_obj_list_reserve(Arena* arena, LNK_ObjList* list, uint64 count);
-LNK_ChunkList *  lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LNK_Obj** obj_arr, String8 name, String8 postfix, B32 collect_discarded);
+LNK_ChunkList *  lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LNK_Obj** obj_arr, StringView name, StringView postfix, B32 collect_discarded);
 LNK_ObjNodeArray lnk_obj_list_push_parallel(TP_Context* tp, TP_Arena* tp_arena, LNK_ObjList* obj_list, LNK_SectionTable* st, uint64* function_pad_min, uint64 input_count, LNK_InputObj** inputs);
 
-LNK_Chunk *       lnk_sect_chunk_array_from_coff(Arena* arena, uint64 obj_id, String8 obj_path, String8 coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, String8* sect_name_arr, String8* sect_postfix_arr);
-LNK_SymbolArray   lnk_symbol_array_from_coff(Arena* arena, String8 coff_data, LNK_Obj* obj, String8 obj_path, String8 lib_path, B32 is_big_obj, uint64 function_pad_min, uint64 string_table_off, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, uint64 coff_symbol_count, void* coff_symbols, LNK_ChunkPtr* chunk_ptr_arr, LNK_Chunk* master_common_block);
+LNK_Chunk *       lnk_sect_chunk_array_from_coff(Arena* arena, uint64 obj_id, StringView obj_path, StringView coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, StringView* sect_name_arr, StringView* sect_postfix_arr);
+LNK_SymbolArray   lnk_symbol_array_from_coff(Arena* arena, StringView coff_data, LNK_Obj* obj, StringView obj_path, StringView lib_path, B32 is_big_obj, uint64 function_pad_min, uint64 string_table_off, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, uint64 coff_symbol_count, void* coff_symbols, LNK_ChunkPtr* chunk_ptr_arr, LNK_Chunk* master_common_block);
 LNK_RelocList     lnk_reloc_list_from_coff_reloc_array(Arena* arena, COFF_MachineType machine, LNK_Chunk* chunk, LNK_SymbolArray symbol_array, COFF_Reloc* reloc_v, uint64 reloc_count);
-LNK_RelocList *   lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, String8 coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, LNK_ChunkPtr* chunk_ptr_arr, LNK_SymbolArray symbol_array);
-LNK_DirectiveInfo lnk_directive_info_from_sections(Arena* arena, String8 obj_path, String8 lib_path, uint64 chunk_count, LNK_RelocList* reloc_list_arr, String8* sect_name_arr, LNK_Chunk* chunk_arr);
+LNK_RelocList *   lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, StringView coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, LNK_ChunkPtr* chunk_ptr_arr, LNK_SymbolArray symbol_array);
+LNK_DirectiveInfo lnk_directive_info_from_sections(Arena* arena, StringView obj_path, StringView lib_path, uint64 chunk_count, LNK_RelocList* reloc_list_arr, StringView* sect_name_arr, LNK_Chunk* chunk_arr);
 
 uint32 lnk_obj_get_features(LNK_Obj* obj);
 uint32 lnk_obj_get_comp_id(LNK_Obj* obj);

@@ -10,7 +10,7 @@
 //~ rjf: Basic Helper Functions
 
 uint64
-e_hash_from_string(uint64 seed, String8 string)
+e_hash_from_string(uint64 seed, StringView string)
 {
   uint64 result = seed;
   for(uint64 i = 0; i < string.size; i += 1)
@@ -24,7 +24,7 @@ e_hash_from_string(uint64 seed, String8 string)
 //~ rjf: Message Functions
 
 void
-e_msg(Arena* arena, E_MsgList* msgs, E_MsgKind kind, void* location, String8 text)
+e_msg(Arena* arena, E_MsgList* msgs, E_MsgKind kind, void* location, StringView text)
 {
   E_Msg* msg = push_array(arena, E_Msg, 1);
   SLLQueuePush(msgs.first, msgs.last, msg);
@@ -40,7 +40,7 @@ e_msgf(Arena* arena, E_MsgList* msgs, E_MsgKind kind, void* location, char* fmt,
 {
   va_list args;
   va_start(args, fmt);
-  String8 text = push_str8fv(arena, fmt, args);
+  StringView text = push_str8fv(arena, fmt, args);
   va_end(args);
   e_msg(arena, msgs, kind, location, text);
 }

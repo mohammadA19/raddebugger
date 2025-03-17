@@ -167,14 +167,14 @@ os_get_process_info()
   return &os_w32_state.process_info;
 }
 
-String8
+StringView
 os_get_current_path(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
   uint16* memory = push_array_no_zero(scratch.arena, uint16, length + 1);
   length = GetCurrentDirectoryW(length + 1, (WCHAR*)memory);
-  String8 name = str8_from_16(arena, str16(memory, length));
+  StringView name = str8_from_16(arena, str16(memory, length));
   scratch_end(scratch);
   return name;
 }
@@ -253,7 +253,7 @@ os_tid()
 }
 
 void
-os_set_thread_name(String8 name)
+os_set_thread_name(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -266,7 +266,7 @@ os_set_thread_name(String8 name)
   
   // rjf: raise-exception style
   {
-    String8 name_copy = push_str8_copy(scratch.arena, name);
+    StringView name_copy = push_str8_copy(scratch.arena, name);
 #pragma pack(push,8)
     struct THREADNAME_INFO
     {
@@ -311,7 +311,7 @@ os_abort(int32 exit_code)
 //- rjf: files
 
 OS_Handle
-os_file_open(OS_AccessFlags flags, String8 path)
+os_file_open(OS_AccessFlags flags, StringView path)
 {
   OS_Handle result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -469,7 +469,7 @@ os_id_from_file(OS_Handle file)
 }
 
 B32
-os_delete_file_at_path(String8 path)
+os_delete_file_at_path(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 path16 = str16_from_8(scratch.arena, path);
@@ -479,7 +479,7 @@ os_delete_file_at_path(String8 path)
 }
 
 B32
-os_copy_file_path(String8 dst, String8 src)
+os_copy_file_path(StringView dst, StringView src)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 dst16 = str16_from_8(scratch.arena, dst);
@@ -489,8 +489,8 @@ os_copy_file_path(String8 dst, String8 src)
   return result;
 }
 
-String8
-os_full_path_from_path(Arena* arena, String8 path)
+StringView
+os_full_path_from_path(Arena* arena, StringView path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
@@ -504,13 +504,13 @@ os_full_path_from_path(Arena* arena, String8 path)
     buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
   }
-  String8 full_path = str8_from_16(arena, str16((uint16*)buffer, path16_size));
+  StringView full_path = str8_from_16(arena, str16((uint16*)buffer, path16_size));
   scratch_end(scratch);
   return full_path;
 }
 
 B32
-os_file_path_exists(String8 path)
+os_file_path_exists(StringView path)
 {
   Temp scratch = scratch_begin(0,0);
   String16 path16 = str16_from_8(scratch.arena, path);
@@ -521,7 +521,7 @@ os_file_path_exists(String8 path)
 }
 
 B32
-os_folder_path_exists(String8 path)
+os_folder_path_exists(StringView path)
 {
   Temp scratch = scratch_begin(0,0);
   String16 path16     = str16_from_8(scratch.arena, path);
@@ -532,7 +532,7 @@ os_folder_path_exists(String8 path)
 }
 
 FileProperties
-os_properties_from_file_path(String8 path)
+os_properties_from_file_path(StringView path)
 {
   WIN32_FIND_DATAW find_data = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -638,10 +638,10 @@ os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 OS_FileIter *
-os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, StringView path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
+  StringView path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
   String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
   OS_FileIter* iter = push_array(arena, OS_FileIter, 1);
   iter.flags = flags;
@@ -656,7 +656,7 @@ os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
     {
       String16 next_drive_string_16 = str16_cstring((uint16 *)buffer+off);
       off += next_drive_string_16.size+1;
-      String8 next_drive_string = str8_from_16(arena, next_drive_string_16);
+      StringView next_drive_string = str8_from_16(arena, next_drive_string_16);
       next_drive_string = str8_chop_last_slash(next_drive_string);
       str8_list_push(scratch.arena, &drive_strings, next_drive_string);
     }
@@ -766,7 +766,7 @@ os_file_iter_end(OS_FileIter* iter)
 //- rjf: directory creation
 
 B32
-os_make_directory(String8 path)
+os_make_directory(StringView path)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -789,7 +789,7 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 OS_Handle
-os_shared_memory_alloc(uint64 size, String8 name)
+os_shared_memory_alloc(uint64 size, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
@@ -805,7 +805,7 @@ os_shared_memory_alloc(uint64 size, String8 name)
 }
 
 OS_Handle
-os_shared_memory_open(String8 name)
+os_shared_memory_open(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
@@ -921,7 +921,7 @@ os_process_launch(OS_ProcessLaunchParams* params)
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: form full command string
-  String8 cmd = {0};
+  StringView cmd = {0};
   {
     StringJoin join_params = {0};
     join_params.pre = ("\"");
@@ -932,7 +932,7 @@ os_process_launch(OS_ProcessLaunchParams* params)
   
   //- rjf: form environment
   B32 use_null_env_arg = 0;
-  String8 env = {0};
+  StringView env = {0};
   {
     StringJoin join_params2 = {0};
     join_params2.sep = ("\0");
@@ -1229,7 +1229,7 @@ os_condition_variable_broadcast(OS_Handle cv)
 //- rjf: cross-process semaphores
 
 OS_Handle
-os_semaphore_alloc(uint32 initial_count, uint32 max_count, String8 name)
+os_semaphore_alloc(uint32 initial_count, uint32 max_count, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
@@ -1247,7 +1247,7 @@ os_semaphore_release(OS_Handle semaphore)
 }
 
 OS_Handle
-os_semaphore_open(String8 name)
+os_semaphore_open(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
@@ -1285,7 +1285,7 @@ os_semaphore_drop(OS_Handle semaphore)
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
 OS_Handle
-os_library_open(String8 path)
+os_library_open(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 path16 = str16_from_8(scratch.arena, path);
@@ -1296,7 +1296,7 @@ os_library_open(String8 path)
 }
 
 VoidProc*
-os_library_load_proc(OS_Handle lib, String8 name)
+os_library_load_proc(OS_Handle lib, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   HMODULE mod = (HMODULE)lib.u64[0];
@@ -1635,7 +1635,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
   for(int i = 0; i < argc; i += 1)
   {
     String16 arg16 = str16_cstring((uint16 *)wargv[i]);
-    String8 arg8 = str8_from_16(args_arena, arg16);
+    StringView arg8 = str8_from_16(args_arena, arg16);
     if(str8_match(arg8, ("--quiet"), StringMatchFlag_CaseInsensitive) ||
        str8_match(arg8, ("-quiet"), StringMatchFlag_CaseInsensitive))
     {
@@ -1665,7 +1665,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
       DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
       if(GetComputerNameA((char*)buffer, &size))
       {
-        info.machine_name = push_str8_copy(arena, str8(buffer, size));
+        info.machine_name = push_str8_copy(arena, StringView(buffer, size));
       }
     }
   }
@@ -1676,8 +1676,8 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
       DWORD size = KB(32);
       uint16* buffer = push_array_no_zero(scratch.arena, uint16, size);
       DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
-      String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
-      String8 name_chopped = str8_chop_last_slash(name8);
+      StringView name8 = str8_from_16(scratch.arena, str16(buffer, length));
+      StringView name_chopped = str8_chop_last_slash(name8);
       info.binary_path = push_str8_copy(arena, name_chopped);
       scratch_end(scratch);
     }
@@ -1706,7 +1706,7 @@ w32_entry_point_caller(int argc, WCHAR** wargv)
           else
           {
             String16 string16 = str16((uint16 *)this_proc_env + start_idx, idx - start_idx);
-            String8 string = str8_from_16(arena, string16);
+            StringView string = str8_from_16(arena, string16);
             str8_list_push(arena, &info.environment, string);
             start_idx = idx+1;
           }

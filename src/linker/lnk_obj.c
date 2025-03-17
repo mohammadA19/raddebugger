@@ -121,12 +121,12 @@ lnk_obj_list_reserve(Arena* arena, LNK_ObjList* list, uint64 count)
 }
 
 LNK_ChunkList
-lnk_obj_search_chunks(Arena* arena, LNK_Obj* obj, String8 name, String8 postfix, B32 collect_discarded)
+lnk_obj_search_chunks(Arena* arena, LNK_Obj* obj, StringView name, StringView postfix, B32 collect_discarded)
 {
   LNK_ChunkList list = {0};
   for (uint64 sect_idx = 0; sect_idx < obj.chunk_count; ++sect_idx) {
-    String8 obj_sect_name = obj.sect_name_arr[sect_idx];
-    String8 obj_sect_sort = obj.sect_sort_arr[sect_idx];
+    StringView obj_sect_name = obj.sect_name_arr[sect_idx];
+    StringView obj_sect_sort = obj.sect_sort_arr[sect_idx];
 
     B32 is_match = str8_match(obj_sect_name, name, 0) &&
                    str8_match(obj_sect_sort, postfix, 0);
@@ -160,7 +160,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 }
 
 LNK_ChunkList *
-lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LNK_Obj** obj_arr, String8 name, String8 postfix, B32 collect_discarded)
+lnk_collect_obj_chunks(TP_Context* tp, TP_Arena* arena, uint64 obj_count, LNK_Obj** obj_arr, StringView name, StringView postfix, B32 collect_discarded)
 {
   LNK_CollectObjChunksTaskData task_data = {0};
   task_data.obj_arr                      = obj_arr;
@@ -288,7 +288,7 @@ lnk_sect_defn_list_push_node(LNK_SectDefnList* list, LNK_SectDefn* node)
 }
 
 LNK_SectDefn *
-lnk_sect_defn_list_push(Arena* arena, LNK_SectDefnList* list, LNK_Obj* obj, String8 name, uint64 idx, COFF_SectionFlags flags)
+lnk_sect_defn_list_push(Arena* arena, LNK_SectDefnList* list, LNK_Obj* obj, StringView name, uint64 idx, COFF_SectionFlags flags)
 {
   LNK_SectDefn* node = push_array_no_zero(arena, LNK_SectDefn, 1);
   node.next         = 0;
@@ -323,16 +323,16 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   LNK_ObjNode*   obj_node = task.obj_node_arr + task_id;
   LNK_Obj*       obj      = &obj_node.data;
   
-  String8 cached_path     = push_str8_copy(arena, input.path);
-  String8 cached_lib_path = push_str8_copy(arena, input.lib_path);
+  StringView cached_path     = push_str8_copy(arena, input.path);
+  StringView cached_lib_path = push_str8_copy(arena, input.lib_path);
 
   // parse coff obj
   COFF_FileHeaderInfo coff_info              = coff_file_header_info_from_data(input.data);
   Rng1U64             coff_file_header_range = rng_1u64(0, coff_info.header_size);
   Rng1U64             coff_sect_arr_range    = rng_1u64(coff_info.section_array_off, coff_info.section_array_off + coff_info.section_count_no_null * sizeof(COFF_SectionHeader));
   Rng1U64             coff_symbols_range     = rng_1u64(coff_info.symbol_off, coff_info.symbol_off + coff_info.symbol_count * coff_info.symbol_size);
-  String8             raw_coff_sect_arr      = str8_substr(input.data, coff_sect_arr_range);
-  String8             raw_coff_symbols       = str8_substr(input.data, coff_symbols_range);
+  StringView             raw_coff_sect_arr      = str8_substr(input.data, coff_sect_arr_range);
+  StringView             raw_coff_symbols       = str8_substr(input.data, coff_symbols_range);
 
   if (raw_coff_sect_arr.size != dim_1u64(coff_sect_arr_range)) {
     lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "corrupted file, unable to read section header table");
@@ -355,8 +355,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   uint64 chunk_count = 1;  // :common_block
   chunk_count    += coff_info.section_count_no_null;
 
-  String8*   sect_name_arr = push_array_no_zero(arena, String8,   chunk_count);
-  String8*   sect_sort_arr = push_array_no_zero(arena, String8,   chunk_count);
+  StringView*   sect_name_arr = push_array_no_zero(arena, StringView,   chunk_count);
+  StringView*   sect_sort_arr = push_array_no_zero(arena, StringView,   chunk_count);
   LNK_Chunk* chunk_arr     = push_array(arena, LNK_Chunk, chunk_count);
 
   // :common_block
@@ -368,14 +368,14 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     COFF_SectionHeader* coff_sect = &coff_sect_arr[sect_idx];
 
     // read name
-    String8 sect_name = coff_name_from_section_header(input.data, coff_sect, coff_info.string_table_off);
+    StringView sect_name = coff_name_from_section_header(input.data, coff_sect, coff_info.string_table_off);
     
     // parse section name
     coff_parse_section_name(sect_name, &sect_name_arr[sect_idx], &sect_sort_arr[sect_idx]);
 
-    String8 data;
+    StringView data;
     if (coff_sect.flags & COFF_SectionFlag_CntUninitializedData) {
-      data = str8(0, coff_sect.fsize);
+      data = StringView(0, coff_sect.fsize);
     } else {
       if (coff_sect.fsize > 0) {
         Rng1U64 range = rng_1u64(coff_sect.foff, coff_sect.foff + coff_sect.fsize);
@@ -397,7 +397,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
           lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "header (%S No. %#llx) defines out of bounds section data", sect_name, sect_idx+1);
         }
       } else {
-        data = str8_zero();
+        data = StringView();
       }
     }
 
@@ -472,7 +472,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
 
   // parse /alternatename
   for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_AlternateName].first; dir != 0; dir = dir.next) {
-    String8* invalid_string = lnk_parse_alt_name_directive_list(arena, dir.value_list, &obj.alt_name_list);
+    StringView* invalid_string = lnk_parse_alt_name_directive_list(arena, dir.value_list, &obj.alt_name_list);
     if (invalid_string != 0) {
       lnk_error_obj(LNK_Error_Cmdl, obj, "invalid syntax \"%S\", expected format \"FROM=TO\"", *invalid_string);
     }
@@ -493,7 +493,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_new_sect_scanner)
     LNK_Obj* obj = &task.obj_node_arr[obj_idx].data;
 
     for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
-      String8           sect_name  = obj.sect_name_arr[chunk_idx];
+      StringView           sect_name  = obj.sect_name_arr[chunk_idx];
       COFF_SectionFlags sect_flags = obj.chunk_arr[chunk_idx].flags & ~COFF_SectionFlags_LnkFlags;
 
       KeyValuePair* is_present = hash_table_search_string(ht, sect_name);
@@ -526,7 +526,7 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_counter)
   LNK_ChunkCounter* task    = raw_task;
   LNK_Obj*          obj     = &task.obj_arr[obj_idx].data;
   for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
-    String8 name = obj.sect_name_arr[chunk_idx];
+    StringView name = obj.sect_name_arr[chunk_idx];
     LNK_Chunk*   chunk = obj.chunk_arr[chunk_idx];
     LNK_Section* sect  = lnk_section_table_search(task.st, name);
 
@@ -563,8 +563,8 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_ref_assigner)
     LNK_Obj* obj = &task.obj_arr[obj_idx].data;
 
     for (uint64 chunk_idx = 0; chunk_idx < obj.chunk_count; chunk_idx += 1) {
-      String8    name  = obj.sect_name_arr[chunk_idx];
-      String8    sort  = obj.sect_sort_arr[chunk_idx];
+      StringView    name  = obj.sect_name_arr[chunk_idx];
+      StringView    sort  = obj.sect_sort_arr[chunk_idx];
       LNK_Chunk* chunk = obj.chunk_arr[chunk_idx];
 
       // :find_chunk_section
@@ -666,8 +666,8 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
         }
         uint64               sect_number        = (defn.idx + 1);
         COFF_SectionFlags expected_flags     = is_present.value_u64;
-        String8           expected_flags_str = coff_string_from_section_flags(scratch.arena, expected_flags);
-        String8           current_flags_str  = coff_string_from_section_flags(scratch.arena, defn.flags);
+        StringView           expected_flags_str = coff_string_from_section_flags(scratch.arena, expected_flags);
+        StringView           current_flags_str  = coff_string_from_section_flags(scratch.arena, defn.flags);
         lnk_error_obj(LNK_Warning_SectionFlagsConflict, defn.obj, "detected section flags conflict in %S(No. %X); expected {%S} but got {%S}", defn.name, sect_number, expected_flags_str, current_flags_str);
       }
 
@@ -736,10 +736,10 @@ lnk_obj_list_push_parallel(TP_Context*        tp,
 
 LNK_SymbolArray
 lnk_symbol_array_from_coff(Arena*              arena,
-                           String8             raw_coff,
+                           StringView             raw_coff,
                            LNK_Obj*            obj,
-                           String8             obj_path,
-                           String8             lib_path,
+                           StringView             obj_path,
+                           StringView             lib_path,
                            B32                 is_big_obj,
                            uint64                 function_pad_min,
                            uint64                 string_table_off,
@@ -792,7 +792,7 @@ lnk_symbol_array_from_coff(Arena*              arena,
             // update properties on first chunk
             chunk.min_size   = function_pad_min;
             chunk.sort_chunk = 0;
-            chunk.sort_idx   = str8_zero();
+            chunk.sort_idx   = StringView();
             chunk.input_idx  = 0;
 
             // push leaf to list
@@ -823,8 +823,8 @@ lnk_symbol_array_from_coff(Arena*              arena,
             uint64     split_pos        = symbol.value - offset_cursor;
             Rng1U64 left_data_range  = rng_1u64(0, split_pos);
             Rng1U64 right_data_range = rng_1u64(left_data_range.max, current.data.u.leaf.size);
-            String8 left_data        = str8_substr(current.data.u.leaf, left_data_range);
-            String8 right_data       = str8_substr(current.data.u.leaf, right_data_range);
+            StringView left_data        = str8_substr(current.data.u.leaf, left_data_range);
+            StringView right_data       = str8_substr(current.data.u.leaf, right_data_range);
 
             // create new chunk
             LNK_Chunk* split_chunk    = push_array(arena, LNK_Chunk, 1);
@@ -984,7 +984,7 @@ lnk_symbol_array_from_coff(Arena*              arena,
         chunk.align     = Min(32, u64_up_to_pow2(parsed_symbol.value)); // link.exe caps align at 32 bytes
         chunk.type      = LNK_Chunk_Leaf;
         chunk.flags     = master_common_block.flags;
-        chunk.u.leaf    = str8(0, parsed_symbol.value);
+        chunk.u.leaf    = StringView(0, parsed_symbol.value);
         lnk_chunk_set_debugf(arena, chunk, "%S: common block %S", obj_path, parsed_symbol.name);
         lnk_chunk_list_push(arena, master_common_block.u.list, chunk);
 
@@ -1020,7 +1020,7 @@ lnk_symbol_array_from_coff(Arena*              arena,
 }
 
 LNK_RelocList *
-lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, String8 coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, LNK_ChunkPtr* chunk_ptr_arr, LNK_SymbolArray symbol_array)
+lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, StringView coff_data, uint64 sect_count, COFF_SectionHeader* coff_sect_arr, LNK_ChunkPtr* chunk_ptr_arr, LNK_SymbolArray symbol_array)
 {
   LNK_RelocList* reloc_list_arr = push_array_no_zero(arena, LNK_RelocList, sect_count);
   for (uint64 sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
@@ -1034,7 +1034,7 @@ lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, String8 c
 }
 
 void
-lnk_parse_msvc_linker_directive(Arena* arena, String8 obj_path, String8 lib_path, LNK_DirectiveInfo* directive_info, String8 buffer)
+lnk_parse_msvc_linker_directive(Arena* arena, StringView obj_path, StringView lib_path, LNK_DirectiveInfo* directive_info, StringView buffer)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1063,12 +1063,12 @@ lnk_parse_msvc_linker_directive(Arena* arena, String8 obj_path, String8 lib_path
     is_legal[LNK_CmdSwitch_ThrowingNew]        = 1;
   }
   
-  String8 to_parse;
+  StringView to_parse;
   {
     static const uint8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
     static const uint8 ascii_sig[] = { 0x20, 0x20, 0x20 };
     if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
-      to_parse = str8_zero();
+      to_parse = StringView();
       lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "TODO: support for BOM encoding");
     } else if (MemoryMatch(buffer.str, &ascii_sig[0], sizeof(ascii_sig))) {
       to_parse = str8_skip(buffer, sizeof(ascii_sig));
@@ -1107,16 +1107,16 @@ lnk_parse_msvc_linker_directive(Arena* arena, String8 obj_path, String8 lib_path
 
 LNK_DirectiveInfo
 lnk_directive_info_from_sections(Arena*         arena,
-                                 String8        obj_path,
-                                 String8        lib_path,
+                                 StringView        obj_path,
+                                 StringView        lib_path,
                                  uint64            chunk_count,
                                  LNK_RelocList* reloc_list_arr,
-                                 String8*       sect_name_arr,
+                                 StringView*       sect_name_arr,
                                  LNK_Chunk*     chunk_arr)
 {
   LNK_DirectiveInfo directive_info = {0};
   for (uint64 chunk_idx = 0; chunk_idx < chunk_count; ++chunk_idx) {
-    String8    sect_name  = sect_name_arr[chunk_idx];
+    StringView    sect_name  = sect_name_arr[chunk_idx];
     LNK_Chunk* sect_chunk = chunk_arr + chunk_idx;
     if (str8_match_lit(".drectve", sect_name, 0)) {
       if (sect_chunk.type == LNK_Chunk_Leaf) {

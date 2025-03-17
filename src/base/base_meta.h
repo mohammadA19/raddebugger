@@ -16,14 +16,14 @@
 
 struct TweakB32Info
 {
-  String8 name;
+  StringView name;
   B32 default_value;
   B32* value_ptr;
 }
 
 struct TweakF32Info
 {
-  String8 name;
+  StringView name;
   float default_value;
   Rng1F32 value_range;
   float* value_ptr;
@@ -43,8 +43,8 @@ struct TweakF32InfoTable
 
 struct EmbedInfo
 {
-  String8 name;
-  String8* data;
+  StringView name;
+  StringView* data;
   U128* hash;
 }
 
@@ -105,8 +105,8 @@ enum MemberFlags : uint32
 
 struct Member
 {
-  String8 name;
-  String8 pretty_name;
+  StringView name;
+  StringView pretty_name;
   Type* type;
   uint64 value;
   MemberFlags flags;
@@ -118,8 +118,8 @@ struct Type
   TypeFlags flags;
   uint64 size;
   Type* direct;
-  String8 name;
-  String8 count_delimiter_name; // gathered from surrounding members, turns *.[1] into *.[N]
+  StringView name;
+  StringView count_delimiter_name; // gathered from surrounding members, turns *.[1] into *.[N]
   uint64 count;
   Member* members;
 }
@@ -214,14 +214,14 @@ struct_members(Rng1U64)
 }
 struct_type(Rng1U64);
 
-//- rjf: String8
+//- rjf: StringView
 ptr_type(String8__str_ptr_type, type(uint8), ("size"));
-struct_members(String8)
+struct_members(StringView)
 {
-  member_lit_comp(String8, &String8__str_ptr_type, str),
-  member_lit_comp(String8, type(uint64),              size),
+  member_lit_comp(StringView, &String8__str_ptr_type, str),
+  member_lit_comp(StringView, type(uint64),              size),
 }
-struct_type(String8);
+struct_type(StringView);
 
 //- rjf: String8Node
 extern Type String8Node__type;
@@ -229,7 +229,7 @@ Type String8Node__ptr_type = {TypeKind_Ptr, 0, sizeof(void *), &String8Node__typ
 Member String8Node__members[] =
 {
   {("next"),   {0}, &String8Node__ptr_type,     OffsetOf(String8Node, next)},
-  {("string"), {0}, type(String8),              OffsetOf(String8Node, string)},
+  {("string"), {0}, type(StringView),              OffsetOf(String8Node, string)},
 }
 Type String8Node__type =
 {
@@ -266,16 +266,16 @@ Type String8List__type =
 ////////////////////////////////
 //~ rjf: Type Info Lookups
 
-Member* member_from_name(Type* type, String8 name);
+Member* member_from_name(Type* type, StringView name);
 #define EachMember(T, it) (Member* it = (type(T)).members; it != 0 && it < (type(T)).members + (type(T)).count; it += 1)
 
 ////////////////////////////////
 //~ rjf: Type Info * Instance Operations
 
-void typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr);
-String8 serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
-String8 deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
-String8 deep_copy_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params);
+void typed_data_rebase_ptrs(Type* type, StringView data, void* base_ptr);
+StringView serialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params);
+StringView deserialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params);
+StringView deep_copy_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params);
 #define struct_rebase_ptrs(T, ptr, base)                   typed_data_rebase_ptrs(type(T), str8_struct(ptr), (base))
 #define serialized_from_struct(arena, T, ptr, ...)         serialized_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__})
 #define struct_from_serialized(arena, T, string, ...) (T *)deserialized_from_typed_data((arena), type(T), (string), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str

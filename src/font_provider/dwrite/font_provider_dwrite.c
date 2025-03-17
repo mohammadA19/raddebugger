@@ -50,7 +50,7 @@ fp_dwrite_handle_from_font(FP_DWrite_Font font)
 //- rjf: file stream allocator
 
 FP_DWrite_FontFileStreamNode *
-fp_dwrite_font_file_stream_node_alloc(String8* data_ptr)
+fp_dwrite_font_file_stream_node_alloc(StringView* data_ptr)
 {
   FP_DWrite_FontFileStreamNode* node = 0;
   for(FP_DWrite_FontFileStreamNode* n = fp_dwrite_state.first_stream_node; n != 0; n = n.next)
@@ -115,7 +115,7 @@ HRESULT
 fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream** stream_out)
 {
   HRESULT result = S_OK;
-  String8* key = *(String8 **)font_file_ref_key;
+  StringView* key = *(StringView **)font_file_ref_key;
   FP_DWrite_FontFileStreamNode* node = fp_dwrite_font_file_stream_node_alloc(key);
   *stream_out = (IDWriteFontFileStream *)&node.stream;
   return result;
@@ -311,7 +311,7 @@ fp_init()
 }
 
 fp_hook FP_Handle
-fp_font_open(String8 path)
+fp_font_open(StringView path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -333,7 +333,7 @@ fp_font_open(String8 path)
 }
 
 fp_hook FP_Handle
-fp_font_open_from_static_data_string(String8* data_ptr)
+fp_font_open_from_static_data_string(StringView* data_ptr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -341,7 +341,7 @@ fp_font_open_from_static_data_string(String8* data_ptr)
   HRESULT error = 0;
   
   //- rjf: open font file reference
-  error = IDWriteFactory_CreateCustomFontFileReference(fp_dwrite_state.factory, &data_ptr, sizeof(String8 *), (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader, &font.file);
+  error = IDWriteFactory_CreateCustomFontFileReference(fp_dwrite_state.factory, &data_ptr, sizeof(StringView *), (IDWriteFontFileLoader *)&fp_dwrite_static_data_font_file_loader, &font.file);
   
   //- rjf: open font face
   error = IDWriteFactory_CreateFontFace(fp_dwrite_state.factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
@@ -392,7 +392,7 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags, StringView string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

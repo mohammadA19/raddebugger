@@ -10,7 +10,7 @@
 struct DR_FancyString
 {
   FNT_Tag font;
-  String8 string;
+  StringView string;
   Vec4F32 color;
   float size;
   float underline_thickness;
@@ -94,7 +94,7 @@ thread_static DR_ThreadCtx* dr_thread_ctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 dr_hash_from_string(String8 string);
+uint64 dr_hash_from_string(StringView string);
 
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions
@@ -102,7 +102,7 @@ uint64 dr_hash_from_string(String8 string);
 void dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString* str);
 #define dr_fancy_string_list_push_new(arena, list, font_, size_, color_, string_, ...) dr_fancy_string_list_push((arena), (list), &(DR_FancyString){.font = (font_), .string = (string_), .color = (color_), .size = (size_), __VA_ARGS__})
 void dr_fancy_string_list_concat_in_place(DR_FancyStringList* dst, DR_FancyStringList* to_push);
-String8 dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list);
+StringView dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list);
 DR_FancyRunList dr_fancy_run_list_from_fancy_string_list(Arena* arena, float tab_size_px, FNT_RasterFlags flags, DR_FancyStringList* strs);
 DR_FancyRunList dr_fancy_run_list_copy(Arena* arena, DR_FancyRunList* src);
 
@@ -178,6 +178,6 @@ void dr_sub_bucket(DR_Bucket* bucket);
 void dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList* list, float max_x, FNT_Run trailer_run);
 void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList* list, float max_x, FuzzyMatchRangeList* ranges, Vec4F32 color);
 void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run);
-void dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string);
+void dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, StringView string);
 
 #endif // DRAW_H

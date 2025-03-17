@@ -3,8 +3,8 @@
 
 #pragma once 
 
-String8 make_file_name_with_ext(Arena* arena, String8 file_name, String8 ext);
-String8 path_convert_slashes(Arena* arena, String8 path, PathStyle path_style);
-String8 path_canon_from_regular_path(Arena* arena, String8 path);
-PathStyle path_style_from_string(String8 string);
+StringView make_file_name_with_ext(Arena* arena, StringView file_name, StringView ext);
+StringView path_convert_slashes(Arena* arena, StringView path, PathStyle path_style);
+StringView path_canon_from_regular_path(Arena* arena, StringView path);
+PathStyle path_style_from_string(StringView string);
 

@@ -517,12 +517,12 @@ CV_LeafKind_CLASS2 = 0x1608,
 CV_LeafKind_STRUCT2 = 0x1609,
 }
 
-String8 cv_string_from_numeric_kind(CV_NumericKind v);
-String8 cv_string_from_arch(CV_Arch v);
-String8 cv_string_from_sym_kind(CV_SymKind v);
-String8 cv_string_from_basic_type(CV_BasicType v);
-String8 cv_type_name_from_basic_type(CV_BasicType v);
-String8 cv_string_from_leaf_kind(CV_LeafKind v);
+StringView cv_string_from_numeric_kind(CV_NumericKind v);
+StringView cv_string_from_arch(CV_Arch v);
+StringView cv_string_from_sym_kind(CV_SymKind v);
+StringView cv_string_from_basic_type(CV_BasicType v);
+StringView cv_type_name_from_basic_type(CV_BasicType v);
+StringView cv_string_from_leaf_kind(CV_LeafKind v);
 uint64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
 uint64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
 #endif // CODEVIEW_META_H

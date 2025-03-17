@@ -38,15 +38,15 @@ struct RDI_ScopeBundle
 ////////////////////////////////
 //~ rjf: RDI Enum . String Functions
 
-String8 rdi_string_from_reg_code_x86(uint64 reg_code);
-String8 rdi_string_from_reg_code_x64(uint64 reg_code);
-String8 rdi_string_from_reg_code(RDI_Arch arch, uint64 reg_code);
-String8 rdi_string_from_data_section_kind(RDI_SectionKind v);
-String8 rdi_string_from_arch(RDI_Arch v);
-String8 rdi_string_from_language(RDI_Language v);
-String8 rdi_string_from_type_kind(RDI_TypeKind v);
-String8 rdi_string_from_member_kind(RDI_MemberKind v);
-String8 rdi_string_from_local_kind(RDI_LocalKind v);
+StringView rdi_string_from_reg_code_x86(uint64 reg_code);
+StringView rdi_string_from_reg_code_x64(uint64 reg_code);
+StringView rdi_string_from_reg_code(RDI_Arch arch, uint64 reg_code);
+StringView rdi_string_from_data_section_kind(RDI_SectionKind v);
+StringView rdi_string_from_arch(RDI_Arch v);
+StringView rdi_string_from_language(RDI_Language v);
+StringView rdi_string_from_type_kind(RDI_TypeKind v);
+StringView rdi_string_from_member_kind(RDI_MemberKind v);
+StringView rdi_string_from_local_kind(RDI_LocalKind v);
 
 ////////////////////////////////
 //~ rjf: RDI Flags . String Functions
@@ -58,7 +58,7 @@ void rdi_stringize_link_flags(Arena* arena, String8List* out, RDI_LinkFlags flag
 
 ////////////////////////////////
 
-String8 rdi_format_reg_code(Arena* arena, RDI_Arch arch, uint64 reg_code);
+StringView rdi_format_reg_code(Arena* arena, RDI_Arch arch, uint64 reg_code);
 
 ////////////////////////////////
 //~ rjf: RDI Compound Stringize Functions

@@ -95,7 +95,7 @@ lnk_chunk_manager_alloc(Arena* arena, uint64 id, uint64 align)
   LNK_ChunkManager* cman  = push_array_no_zero(arena, LNK_ChunkManager, 1);
   cman.total_chunk_count = 1; // null chunk
   cman.root              = 0;
-  cman.root              = lnk_chunk_push_list(arena, cman, &temp_chunk, str8(0,0));
+  cman.root              = lnk_chunk_push_list(arena, cman, &temp_chunk, StringView(0,0));
   cman.root.align       = align;
   
   ProfEnd();
@@ -103,7 +103,7 @@ lnk_chunk_manager_alloc(Arena* arena, uint64 id, uint64 align)
 }
 
 LNK_Chunk *
-lnk_chunk_push_(Arena* arena, LNK_Chunk* parent, uint64 chunk_id, String8 sort_index)
+lnk_chunk_push_(Arena* arena, LNK_Chunk* parent, uint64 chunk_id, StringView sort_index)
 {
   ProfBeginFunction();
 
@@ -128,7 +128,7 @@ lnk_chunk_push_(Arena* arena, LNK_Chunk* parent, uint64 chunk_id, String8 sort_i
 }
 
 LNK_Chunk *
-lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index)
+lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index)
 {
   uint64 chunk_id = cman.total_chunk_count;
   ++cman.total_chunk_count;
@@ -137,16 +137,16 @@ lnk_chunk_push(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 
 }
 
 LNK_Chunk *
-lnk_chunk_push_leaf(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index, void* raw_ptr, uint64 raw_size)
+lnk_chunk_push_leaf(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index, void* raw_ptr, uint64 raw_size)
 {
   LNK_Chunk* chunk = lnk_chunk_push(arena, cman, parent, sort_index);
   chunk.type      = LNK_Chunk_Leaf;
-  chunk.u.leaf    = str8((uint8 *)raw_ptr, raw_size);
+  chunk.u.leaf    = StringView((uint8 *)raw_ptr, raw_size);
   return chunk;
 }
 
 LNK_Chunk *
-lnk_chunk_push_list(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, String8 sort_index)
+lnk_chunk_push_list(Arena* arena, LNK_ChunkManager* cman, LNK_Chunk* parent, StringView sort_index)
 {
   LNK_Chunk* chunk = lnk_chunk_push(arena, cman, parent, sort_index);
   chunk.type      = LNK_Chunk_List;
@@ -616,7 +616,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_chunks_task)
   LNK_ChunkLayoutSerializer* task   = raw_task;
   Rng1U64                    range  = task.ranges[task_id];
   LNK_ChunkLayout            layout = task.layout;
-  String8                    buffer = task.buffer;
+  StringView                    buffer = task.buffer;
 
   for (uint64 chunk_idx = range.min; chunk_idx < range.max; ++chunk_idx) {
     LNK_Chunk* chunk = layout.chunk_ptr_array[chunk_idx];
@@ -651,7 +651,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
   LNK_ChunkLayoutSerializer* task      = raw_task;
   Rng1U64                    range     = task.ranges[task_id];
   LNK_ChunkLayout            layout    = task.layout;
-  String8                    buffer    = task.buffer;
+  StringView                    buffer    = task.buffer;
   uint8                         fill_byte = task.fill_byte;
 
   for (uint64 pad_array_idx = range.min; pad_array_idx < range.max; ++pad_array_idx) {
@@ -667,7 +667,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
 }
 
 void
-lnk_serialize_chunk_layout(TP_Context* tp, LNK_ChunkLayout layout, String8 buffer, uint8 fill_byte)
+lnk_serialize_chunk_layout(TP_Context* tp, LNK_ChunkLayout layout, StringView buffer, uint8 fill_byte)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -770,7 +770,7 @@ String8Array
 lnk_data_arr_from_chunk_ptr_list(Arena* arena, LNK_ChunkList list)
 {
   String8Array arr = {0};
-  arr.v            = push_array(arena, String8, list.count);
+  arr.v            = push_array(arena, StringView, list.count);
   for (LNK_ChunkNode* n = list.first; n != 0; n = n.next) {
     LNK_ChunkPtr c = n.data;
     Assert(c.type == LNK_Chunk_Leaf);

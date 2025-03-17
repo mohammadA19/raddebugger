@@ -36,7 +36,7 @@ entry_point(CmdLine* cmdline)
   //////////////////////////////
   //- rjf: unpack command line
   //
-  String8 test_data_folder_path = cmd_line_string(cmdline, ("test_data"));
+  StringView test_data_folder_path = cmd_line_string(cmdline, ("test_data"));
   if(test_data_folder_path.size == 0)
   {
     fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline.exe_name));
@@ -46,19 +46,19 @@ entry_point(CmdLine* cmdline)
   //////////////////////////////
   //- rjf: make artifacts directory
   //
-  String8 artifacts_path = path_normalized_from_string(arena, ("./tester_artifacts"));
+  StringView artifacts_path = path_normalized_from_string(arena, ("./tester_artifacts"));
   os_make_directory(artifacts_path);
   
   //////////////////////////////
   //- rjf: PDB . RDI determinism
   //
-  String8 name = {0};
+  StringView name = {0};
   B32 good = 1;
   String8List out = {0};
   {
     name = ("pdb2rdi_determinism");
     uint64 num_repeats_per_pdb = 32;
-    String8 pdb_paths[] =
+    StringView pdb_paths[] =
     {
       push_str8f(arena, "%S/mule_main/mule_main.pdb", test_data_folder_path),
       push_str8f(arena, "%S/mule_main/mule_module.pdb", test_data_folder_path),
@@ -66,8 +66,8 @@ entry_point(CmdLine* cmdline)
     for EachElement(pdb_idx, pdb_paths)
     {
       // rjf: unpack paths, make output directory
-      String8 pdb_path = path_normalized_from_string(arena, pdb_paths[pdb_idx]);
-      String8 repeat_folder = push_str8f(arena, "%S/%S", artifacts_path, name);
+      StringView pdb_path = path_normalized_from_string(arena, pdb_paths[pdb_idx]);
+      StringView repeat_folder = push_str8f(arena, "%S/%S", artifacts_path, name);
       os_make_directory(repeat_folder);
       
       // rjf: generate all RDIs
@@ -77,7 +77,7 @@ entry_point(CmdLine* cmdline)
         OS_HandleList processes = {0};
         for EachIndex(repeat_idx, num_repeats_per_pdb)
         {
-          String8 rdi_path = push_str8f(arena, "%S/repeat_%I64u.rdi", repeat_folder, repeat_idx);
+          StringView rdi_path = push_str8f(arena, "%S/repeat_%I64u.rdi", repeat_folder, repeat_idx);
           str8_list_push(arena, &rdi_paths, rdi_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
         }
@@ -92,8 +92,8 @@ entry_point(CmdLine* cmdline)
         OS_HandleList processes = {0};
         for(String8Node* n = rdi_paths.first; n != 0; n = n.next)
         {
-          String8 rdi_path = n.string;
-          String8 dump_path = push_str8f(arena, "%S.dump", rdi_path);
+          StringView rdi_path = n.string;
+          StringView dump_path = push_str8f(arena, "%S.dump", rdi_path);
           str8_list_push(arena, &dump_paths, dump_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
         }
@@ -106,17 +106,17 @@ entry_point(CmdLine* cmdline)
       // rjf: gather all hashes/paths
       uint64 rdi_hashes_count = rdi_paths.node_count;
       U128* rdi_hashes = push_array(arena, U128, rdi_hashes_count);
-      String8* rdi_paths_array = push_array(arena, String8, rdi_hashes_count);
+      StringView* rdi_paths_array = push_array(arena, StringView, rdi_hashes_count);
       uint64 dump_hashes_count = dump_paths.node_count;
       U128* dump_hashes = push_array(arena, U128, dump_hashes_count);
-      String8* dump_paths_array = push_array(arena, String8, dump_hashes_count);
+      StringView* dump_paths_array = push_array(arena, StringView, dump_hashes_count);
       {
         uint64 idx = 0;
         for(String8Node* n = rdi_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          String8 path = n.string;
-          String8 data = os_data_from_file_path(scratch.arena, path);
+          StringView path = n.string;
+          StringView data = os_data_from_file_path(scratch.arena, path);
           rdi_hashes[idx] = hs_hash_from_data(data);
           rdi_paths_array[idx] = path;
           scratch_end(scratch);
@@ -127,8 +127,8 @@ entry_point(CmdLine* cmdline)
         for(String8Node* n = dump_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          String8 path = n.string;
-          String8 data = os_data_from_file_path(scratch.arena, path);
+          StringView path = n.string;
+          StringView data = os_data_from_file_path(scratch.arena, path);
           dump_hashes[idx] = hs_hash_from_data(data);
           dump_paths_array[idx] = path;
           scratch_end(scratch);

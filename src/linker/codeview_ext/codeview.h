@@ -26,7 +26,7 @@ struct CV_Symbol
 {
   CV_SymKind kind;
   uint64        offset;
-  String8    data;
+  StringView    data;
 }
 
 struct CV_SymbolNode
@@ -91,7 +91,7 @@ struct CV_ScopeFrame
 struct CV_Checksum
 {
   CV_C13Checksum* header;
-  String8 value;
+  StringView value;
 }
 
 struct CV_ChecksumNode
@@ -154,7 +154,7 @@ struct CV_C13LinesHeaderList
 
 struct CV_TypeServerInfo
 {
-  String8 name;
+  StringView name;
   Guid    sig;
   uint32     age;
 }
@@ -177,13 +177,13 @@ struct CV_PrecompInfo
   CV_TypeIndex start_index;
   uint32          sig;
   uint32          leaf_count;
-  String8      obj_name;
+  StringView      obj_name;
 }
 
 struct CV_ObjInfo
 {
   uint32     sig;
-  String8 name;
+  StringView name;
 }
 
 ////////////////////////////////
@@ -262,7 +262,7 @@ struct CV_DebugT
 struct CV_Leaf
 {
   CV_LeafKind kind;
-  String8     data;
+  StringView     data;
 }
 
 struct CV_LeafNode
@@ -290,7 +290,7 @@ struct CV_StringTableRange
 
 struct CV_StringBucket
 {
-  String8 string;
+  StringView string;
   [Union]
   struct {
     struct {
@@ -373,55 +373,55 @@ CV_PrecompInfo    cv_precomp_info_from_leaf(CV_Leaf leaf);
 ////////////////////////////////
 //~ Leaf Helpers
 
-uint64     cv_compute_leaf_record_size(String8 data, uint64 align);
-uint64     cv_serialize_leaf_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer_size, CV_LeafKind kind, String8 data, uint64 align);
-String8 cv_serialize_raw_leaf(Arena* arena, CV_LeafKind kind, String8 data, uint64 align);
-String8 cv_serialize_leaf(Arena* arena, CV_Leaf* leaf, uint64 align);
-CV_Leaf cv_make_leaf(Arena* arena, CV_LeafKind kind, String8 data);
-uint64     cv_deserial_leaf(String8 raw_data, uint64 off, uint64 align, CV_Leaf* leaf_out);
-CV_Leaf cv_leaf_from_string(String8 raw_data);
+uint64     cv_compute_leaf_record_size(StringView data, uint64 align);
+uint64     cv_serialize_leaf_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer_size, CV_LeafKind kind, StringView data, uint64 align);
+StringView cv_serialize_raw_leaf(Arena* arena, CV_LeafKind kind, StringView data, uint64 align);
+StringView cv_serialize_leaf(Arena* arena, CV_Leaf* leaf, uint64 align);
+CV_Leaf cv_make_leaf(Arena* arena, CV_LeafKind kind, StringView data);
+uint64     cv_deserial_leaf(StringView raw_data, uint64 off, uint64 align, CV_Leaf* leaf_out);
+CV_Leaf cv_leaf_from_string(StringView raw_data);
 
 ////////////////////////////////
 //~ Symbol Helpers
 
 uint64     cv_compute_symbol_record_size(CV_Symbol* symbol, uint64 align);
 uint64     cv_serialize_symbol_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer_size, CV_Symbol* symbol, uint64 align);
-String8 cv_serialize_symbol(Arena* arena, CV_Symbol* symbol, uint64 align);
+StringView cv_serialize_symbol(Arena* arena, CV_Symbol* symbol, uint64 align);
 
-String8       cv_make_symbol(Arena* arena, CV_SymKind kind, String8 data);
-String8       cv_make_obj_name(Arena* arena, String8 obj_path, uint32 sig);
-String8       cv_make_comp3(Arena* arena,
+StringView       cv_make_symbol(Arena* arena, CV_SymKind kind, StringView data);
+StringView       cv_make_obj_name(Arena* arena, StringView obj_path, uint32 sig);
+StringView       cv_make_comp3(Arena* arena,
                                      CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
                                      uint16 ver_fe_major, uint16 ver_fe_minor, uint16 ver_fe_build, uint16 ver_feqfe,
                                      uint16 ver_major, uint16 ver_minor, uint16 ver_build, uint16 ver_qfe,
-                                     String8 version_string);
-String8       cv_make_envblock(Arena* arena, String8List string_list);
-CV_Symbol     cv_make_proc_ref(Arena* arena, CV_ModIndex imod, uint32 stream_offset, String8 name, B32 is_local);
-CV_Symbol     cv_make_pub32(Arena* arena, CV_Pub32Flags flags, uint32 off, uint16 isect, String8 name);
+                                     StringView version_string);
+StringView       cv_make_envblock(Arena* arena, String8List string_list);
+CV_Symbol     cv_make_proc_ref(Arena* arena, CV_ModIndex imod, uint32 stream_offset, StringView name, B32 is_local);
+CV_Symbol     cv_make_pub32(Arena* arena, CV_Pub32Flags flags, uint32 off, uint16 isect, StringView name);
 CV_SymbolList cv_make_proc_refs(Arena* arena, CV_ModIndex imod, CV_SymbolList symbol_list);
 
 ////////////////////////////////
 // .debug$S Helpers
 
-CV_DebugS    cv_parse_debug_s_c13(Arena* arena, String8 raw_debug_s);
+CV_DebugS    cv_parse_debug_s_c13(Arena* arena, StringView raw_debug_s);
 CV_DebugS    cv_parse_debug_s_c13_list(Arena* arena, String8List raw_debug_s);
-CV_DebugS    cv_parse_debug_s(Arena* arena, String8 raw_debug_s);
+CV_DebugS    cv_parse_debug_s(Arena* arena, StringView raw_debug_s);
 void         cv_debug_s_concat_in_place(CV_DebugS* dst, CV_DebugS* src);
 String8List  cv_data_c13_from_debug_s(Arena* arena, CV_DebugS* debug_s, B32 write_sig);
 
 CV_C13SubSectionIdxKind cv_c13_sub_section_idx_from_kind(CV_C13SubSectionKind kind);
 String8List *           cv_sub_section_ptr_from_debug_s(CV_DebugS* debug_s, CV_C13SubSectionKind kind);
 String8List             cv_sub_section_from_debug_s(CV_DebugS debug_s, CV_C13SubSectionKind kind);
-String8                 cv_string_table_from_debug_s(CV_DebugS debug_s);
-String8                 cv_file_chksms_from_debug_s(CV_DebugS debug_s);
+StringView                 cv_string_table_from_debug_s(CV_DebugS debug_s);
+StringView                 cv_file_chksms_from_debug_s(CV_DebugS debug_s);
 
 ////////////////////////////////
 //~ .debug$T helpers
 
 CV_DebugT       cv_debug_t_from_data_arr(Arena* arena, String8Array data_arr, uint64 align);
-CV_DebugT       cv_debug_t_from_data(Arena* arena, String8 data, uint64 align);
+CV_DebugT       cv_debug_t_from_data(Arena* arena, StringView data, uint64 align);
 CV_Leaf         cv_debug_t_get_leaf(CV_DebugT debug_t, uint64 leaf_idx);
-String8         cv_debug_t_get_raw_leaf(CV_DebugT debug_t, uint64 leaf_idx);
+StringView         cv_debug_t_get_raw_leaf(CV_DebugT debug_t, uint64 leaf_idx);
 CV_LeafHeader * cv_debug_t_get_leaf_header(CV_DebugT debug_t, uint64 leaf_idx);
 B32             cv_debug_t_is_pch(CV_DebugT debug_t);
 B32             cv_debug_t_is_type_server(CV_DebugT debug_t);
@@ -433,10 +433,10 @@ String8List cv_str8_list_from_debug_t_parallel(TP_Context* tp, Arena* arena, CV_
 //~ Sub Section helpers
 
 // $$Symbols
-void              cv_parse_symbol_sub_section(Arena* arena, CV_SymbolList* list, uint64 offset_base, String8 data, uint64 align);
+void              cv_parse_symbol_sub_section(Arena* arena, CV_SymbolList* list, uint64 offset_base, StringView data, uint64 align);
 void              cv_symbol_list_push_node(CV_SymbolList* list, CV_SymbolNode* node);
 CV_SymbolNode *   cv_symbol_list_push(Arena* arena, CV_SymbolList* list);
-CV_SymbolNode *   cv_symbol_list_push_data(Arena* arena, CV_SymbolList* list, CV_SymKind kind, String8 data);
+CV_SymbolNode *   cv_symbol_list_push_data(Arena* arena, CV_SymbolList* list, CV_SymKind kind, StringView data);
 CV_SymbolNode *   cv_symbol_list_push_many(Arena* arena, CV_SymbolList* list, uint64 count);
 void              cv_symbol_list_remove_node(CV_SymbolList* list, CV_SymbolNode* node);
 void              cv_symbol_list_concat_in_place(CV_SymbolList* list, CV_SymbolList* to_concat);
@@ -447,19 +447,19 @@ CV_SymbolList     cv_global_scope_symbols_from_list(Arena* arena, CV_SymbolList 
 CV_SymbolPtrArray cv_symbol_ptr_array_from_list(Arena* arena, TP_Context* tp, uint64 count, CV_SymbolList* symbol_list_arr);
 
 // $$FileChksms
-#define CV_MAP_STRING_TO_OFFSET_FUNC(name) uint64 name(void* ud, String8 string)
+#define CV_MAP_STRING_TO_OFFSET_FUNC(name) uint64 name(void* ud, StringView string)
 typedef CV_MAP_STRING_TO_OFFSET_FUNC(CV_MapStringToOffsetFunc);
 
-void        cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, String8 string_data, uint64 string_data_base_offset, CV_StringHashTable string_ht);
-String8List cv_c13_collect_source_file_names(Arena* arena, CV_ChecksumList checksum_list, String8 string_data);
+void        cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, StringView string_data, uint64 string_data_base_offset, CV_StringHashTable string_ht);
+String8List cv_c13_collect_source_file_names(Arena* arena, CV_ChecksumList checksum_list, StringView string_data);
 
 // $$Lines
-CV_C13LinesHeaderList cv_c13_lines_from_sub_sections(Arena* arena, String8 c13_data, Rng1U64 ss_range);
-CV_LineArray     cv_c13_line_array_from_data(Arena* arena, String8 c13_data, uint64 sec_base, CV_C13LinesHeader parsed_lines);
+CV_C13LinesHeaderList cv_c13_lines_from_sub_sections(Arena* arena, StringView c13_data, Rng1U64 ss_range);
+CV_LineArray     cv_c13_line_array_from_data(Arena* arena, StringView c13_data, uint64 sec_base, CV_C13LinesHeader parsed_lines);
 
 // $$InlineeLines
 CV_C13InlineeLinesParsedList cv_c13_inlinee_lines_from_sub_sections(Arena* arena, String8List raw_inlinee_lines);
-CV_InlineBinaryAnnotsParsed  cv_c13_parse_inline_binary_annots(Arena* arena, uint64 parent_voff, CV_C13InlineeLinesParsed* inlinee_parsed, String8 binary_annots);
+CV_InlineBinaryAnnotsParsed  cv_c13_parse_inline_binary_annots(Arena* arena, uint64 parent_voff, CV_C13InlineeLinesParsed* inlinee_parsed, StringView binary_annots);
 
 // $$FrameData
 void cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, uint32 checksum_rebase);
@@ -467,7 +467,7 @@ void cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, ui
 ////////////////////////////////
 // $$Lines Accel
 
-void            cv_make_c13_files(Arena* arena, String8 c13_data, CV_C13SubSectionList lines, uint64* file_count_out, CV_C13File** files_out);
+void            cv_make_c13_files(Arena* arena, StringView c13_data, CV_C13SubSectionList lines, uint64* file_count_out, CV_C13File** files_out);
 CV_LinesAccel * cv_make_lines_accel(Arena* arena, uint64 lines_count, CV_LineArray* lines);
 CV_Line *       cv_line_from_voff(CV_LinesAccel* accel, uint64 voff, uint64* out_line_count);
 
@@ -482,10 +482,10 @@ CV_InlineeLinesAccel *     cv_c13_make_inlinee_lines_accel(Arena* arena, CV_C13I
 ////////////////////////////////
 // String Hash Table
 
-uint64                      cv_string_hash_table_hash(String8 string);
+uint64                      cv_string_hash_table_hash(StringView string);
 CV_StringHashTable       cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS* arr);
 CV_StringHashTableResult cv_serialize_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable string_ht);
-String8                  cv_pack_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable string_ht);
+StringView                  cv_pack_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable string_ht);
 
 ////////////////////////////////
 

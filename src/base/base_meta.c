@@ -5,7 +5,7 @@
 //~ rjf: Type Info Lookups
 
 Member *
-member_from_name(Type* type, String8 name)
+member_from_name(Type* type, StringView name)
 {
   Member* member = &member_nil;
   if(type.members != 0 && name.size != 0)
@@ -26,7 +26,7 @@ member_from_name(Type* type, String8 name)
 //~ rjf: Type Info * Instance Operations
 
 void
-typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr)
+typed_data_rebase_ptrs(Type* type, StringView data, void* base_ptr)
 {
   Temp scratch = scratch_begin(0, 0);
   struct RebaseTypeTask
@@ -74,8 +74,8 @@ typed_data_rebase_ptrs(Type* type, String8 data, void* base_ptr)
   scratch_end(scratch);
 }
 
-String8
-serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params)
+StringView
+serialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strings = {0};
@@ -102,7 +102,7 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
         default:
         if(TypeKind_FirstLeaf <= t.type.kind && t.type.kind <= TypeKind_LastLeaf)
         {
-          str8_serial_push_string(scratch.arena, &strings, str8(t.src, t.type.size*t.count));
+          str8_serial_push_string(scratch.arena, &strings, StringView(t.src, t.type.size*t.count));
         }break;
         
         //- rjf: pointers . try to interpret/understand pointer & read/write, otherwise just write as plain data
@@ -176,7 +176,7 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
           // rjf: catch-all: write pointer value
           else
           {
-            str8_serial_push_string(scratch.arena, &strings, str8(t.src, t.type.size*t.count));
+            str8_serial_push_string(scratch.arena, &strings, StringView(t.src, t.type.size*t.count));
           }
         }break;
         
@@ -229,15 +229,15 @@ serialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerialize
       }
     }
   }
-  String8 result = str8_serial_end(arena, &strings);
+  StringView result = str8_serial_end(arena, &strings);
   scratch_end(scratch);
   return result;
 }
 
-String8
-deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params)
+StringView
+deserialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params)
 {
-  String8 result = {0};
+  StringView result = {0};
   result.size = type.size;
   result.str  = push_array(arena, uint8, result.size);
   {
@@ -408,12 +408,12 @@ deserialized_from_typed_data(Arena* arena, Type* type, String8 data, TypeSeriali
   return result;
 }
 
-String8
-deep_copy_from_typed_data(Arena* arena, Type* type, String8 data, TypeSerializeParams* params)
+StringView
+deep_copy_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);
-  String8 data_copy = deserialized_from_typed_data(arena, type, data_srlz, params);
+  StringView data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);
+  StringView data_copy = deserialized_from_typed_data(arena, type, data_srlz, params);
   scratch_end(scratch);
   return data_copy;
 }

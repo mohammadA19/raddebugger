@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 rd_cfg_src_string_table[4] =
+StringView rd_cfg_src_string_table[4] =
 {
 ("user"),
 ("project"),
@@ -36,7 +36,7 @@ RD_CmdKind_Null,
 RD_CmdKind_Null,
 };
 
-String8 d_entity_kind_display_string_table[27] =
+StringView d_entity_kind_display_string_table[27] =
 {
 ("Nil"),
 ("Root"),
@@ -67,7 +67,7 @@ String8 d_entity_kind_display_string_table[27] =
 ("Conversion Failure"),
 };
 
-String8 d_entity_kind_name_lower_table[27] =
+StringView d_entity_kind_name_lower_table[27] =
 {
 ("nil"),
 ("root"),
@@ -98,7 +98,7 @@ String8 d_entity_kind_name_lower_table[27] =
 ("conversion_fail"),
 };
 
-String8 d_entity_kind_name_lower_plural_table[27] =
+StringView d_entity_kind_name_lower_plural_table[27] =
 {
 ("nils"),
 ("roots"),
@@ -129,7 +129,7 @@ String8 d_entity_kind_name_lower_plural_table[27] =
 ("conversion_fails"),
 };
 
-String8 d_entity_kind_name_label_table[27] =
+StringView d_entity_kind_name_label_table[27] =
 {
 ("Label"),
 ("Label"),
@@ -208,7 +208,7 @@ Rng1U64 rd_reg_slot_range_table[34] =
 {OffsetOf(RD_Regs, entity_list), OffsetOf(RD_Regs, entity_list) + sizeof(RD_HandleList)},
 {OffsetOf(RD_Regs, unwind_count), OffsetOf(RD_Regs, unwind_count) + sizeof(uint64)},
 {OffsetOf(RD_Regs, inline_depth), OffsetOf(RD_Regs, inline_depth) + sizeof(uint64)},
-{OffsetOf(RD_Regs, file_path), OffsetOf(RD_Regs, file_path) + sizeof(String8)},
+{OffsetOf(RD_Regs, file_path), OffsetOf(RD_Regs, file_path) + sizeof(StringView)},
 {OffsetOf(RD_Regs, cursor), OffsetOf(RD_Regs, cursor) + sizeof(TxtPt)},
 {OffsetOf(RD_Regs, mark), OffsetOf(RD_Regs, mark) + sizeof(TxtPt)},
 {OffsetOf(RD_Regs, text_key), OffsetOf(RD_Regs, text_key) + sizeof(U128)},
@@ -223,8 +223,8 @@ Rng1U64 rd_reg_slot_range_table[34] =
 {OffsetOf(RD_Regs, force_confirm), OffsetOf(RD_Regs, force_confirm) + sizeof(B32)},
 {OffsetOf(RD_Regs, prefer_disasm), OffsetOf(RD_Regs, prefer_disasm) + sizeof(B32)},
 {OffsetOf(RD_Regs, dir2), OffsetOf(RD_Regs, dir2) + sizeof(Dir2)},
-{OffsetOf(RD_Regs, string), OffsetOf(RD_Regs, string) + sizeof(String8)},
-{OffsetOf(RD_Regs, cmd_name), OffsetOf(RD_Regs, cmd_name) + sizeof(String8)},
+{OffsetOf(RD_Regs, string), OffsetOf(RD_Regs, string) + sizeof(StringView)},
+{OffsetOf(RD_Regs, cmd_name), OffsetOf(RD_Regs, cmd_name) + sizeof(StringView)},
 {OffsetOf(RD_Regs, params_tree), OffsetOf(RD_Regs, params_tree) + sizeof(MD_Node *)},
 {OffsetOf(RD_Regs, os_event), OffsetOf(RD_Regs, os_event) + sizeof(OS_Event *)},
 };
@@ -560,7 +560,7 @@ RD_StringBindingPair rd_default_binding_table[110] =
 {("log_marker"), {OS_Key_M, 0 |OS_Modifier_Ctrl |OS_Modifier_Shift |OS_Modifier_Alt}},
 };
 
-String8 rd_binding_version_remap_old_name_table[8] =
+StringView rd_binding_version_remap_old_name_table[8] =
 {
 ("commands"),
 ("load_user"),
@@ -572,7 +572,7 @@ String8 rd_binding_version_remap_old_name_table[8] =
 ("toggle_breakpoint_cursor"),
 };
 
-String8 rd_binding_version_remap_new_name_table[8] =
+StringView rd_binding_version_remap_new_name_table[8] =
 {
 ("run_command"),
 ("open_user"),
@@ -584,7 +584,7 @@ String8 rd_binding_version_remap_new_name_table[8] =
 ("toggle_breakpoint"),
 };
 
-String8 rd_icon_kind_text_table[69] =
+StringView rd_icon_kind_text_table[69] =
 {
 (""),
 ("b"),
@@ -657,7 +657,7 @@ String8 rd_icon_kind_text_table[69] =
 ("c"),
 };
 
-String8 rd_collection_name_table[18] =
+StringView rd_collection_name_table[18] =
 {
 ("watches"),
 ("targets"),
@@ -881,7 +881,7 @@ RD_IconKind_Null,
 RD_IconKind_Null,
 };
 
-String8 rd_theme_preset_display_string_table[9] =
+StringView rd_theme_preset_display_string_table[9] =
 {
 ("Default (Dark)"),
 ("Default (Light)"),
@@ -894,7 +894,7 @@ String8 rd_theme_preset_display_string_table[9] =
 ("Far Manager"),
 };
 
-String8 rd_theme_preset_code_string_table[9] =
+StringView rd_theme_preset_code_string_table[9] =
 {
 ("default_dark"),
 ("default_light"),
@@ -907,7 +907,7 @@ String8 rd_theme_preset_code_string_table[9] =
 ("far_manager"),
 };
 
-String8 rd_theme_color_version_remap_old_name_table[22] =
+StringView rd_theme_color_version_remap_old_name_table[22] =
 {
 ("plain_text"),
 ("plain_background"),
@@ -933,7 +933,7 @@ String8 rd_theme_color_version_remap_old_name_table[22] =
 ("action_background"),
 };
 
-String8 rd_theme_color_version_remap_new_name_table[22] =
+StringView rd_theme_color_version_remap_new_name_table[22] =
 {
 ("text"),
 ("base_background"),
@@ -1692,7 +1692,7 @@ rd_theme_preset_colors__four_coder,
 rd_theme_preset_colors__far_manager,
 };
 
-String8 rd_theme_color_display_string_table[76] =
+StringView rd_theme_color_display_string_table[76] =
 {
 ("Null"),
 ("Text"),
@@ -1772,7 +1772,7 @@ String8 rd_theme_color_display_string_table[76] =
 ("Cache Line Boundary"),
 };
 
-String8 rd_theme_color_cfg_string_table[76] =
+StringView rd_theme_color_cfg_string_table[76] =
 {
 ("null"),
 ("text"),
@@ -1852,7 +1852,7 @@ String8 rd_theme_color_cfg_string_table[76] =
 ("cache_line_boundary"),
 };
 
-String8 rd_setting_code_display_string_table[19] =
+StringView rd_setting_code_display_string_table[19] =
 {
 ("Hover Animations"),
 ("Press Animations"),
@@ -1875,7 +1875,7 @@ String8 rd_setting_code_display_string_table[19] =
 ("Hint Code Text"),
 };
 
-String8 rd_setting_code_lower_string_table[19] =
+StringView rd_setting_code_lower_string_table[19] =
 {
 ("hover_animations"),
 ("press_animations"),

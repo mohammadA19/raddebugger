@@ -33,7 +33,7 @@ struct MTX_Stripe
 struct MTX_Op
 {
   Rng1U64 range;
-  String8 replace;
+  StringView replace;
 }
 
 struct MTX_MutThread

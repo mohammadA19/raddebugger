@@ -36,8 +36,8 @@ void
 entry_point(CmdLine* cmdline)
 {
   Arena* arena = arena_alloc();
-  String8 list_path = str8_list_first(&cmdline.inputs);
-  String8 list_data = os_data_from_file_path(arena, list_path);
+  StringView list_path = str8_list_first(&cmdline.inputs);
+  StringView list_data = os_data_from_file_path(arena, list_path);
   uint8 splits[] = {'\n'};
   String8List lines = str8_split(arena, list_data, splits, ArrayCount(splits), 0);
   OS_HandleList processes = {0};
@@ -46,13 +46,13 @@ entry_point(CmdLine* cmdline)
   uint64 idx = 0;
   for(String8Node* n = lines.first; n != 0; n = n.next)
   {
-    String8 dll_path = n.string;
+    StringView dll_path = n.string;
     ProfScope("kick off %.*s", str8_varg(dll_path))
     {
-      String8 dll_path_no_ext = str8_chop_last_dot(dll_path);
-      String8 dll_name = str8_skip_last_slash(dll_path_no_ext);
-      String8 pdb_path = push_str8f(arena, "%S.pdb", dll_path_no_ext);
-      String8 rdi_path = push_str8f(arena, "dump/%S.rdi", dll_name);
+      StringView dll_path_no_ext = str8_chop_last_dot(dll_path);
+      StringView dll_name = str8_skip_last_slash(dll_path_no_ext);
+      StringView pdb_path = push_str8f(arena, "%S.pdb", dll_path_no_ext);
+      StringView rdi_path = push_str8f(arena, "dump/%S.rdi", dll_name);
       OS_Handle handle = os_cmd_line_launchf("raddbg --convert --pdb:%S --out:%S", pdb_path, rdi_path);
       os_handle_list_push(arena, &processes, handle);
       if(processes_first_path_n == 0)

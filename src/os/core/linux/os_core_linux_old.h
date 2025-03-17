@@ -77,8 +77,8 @@ void lnx_tm_from_date_time(struct tm* out, DateTime* in);
 void lnx_dense_time_from_timespec(DenseTime* out, struct timespec* in);
 void lnx_file_properties_from_stat(FileProperties* out, struct stat* in);
 
-String8 lnx_string_from_signal(int signum);
-String8 lnx_string_from_errno(int error_number);
+StringView lnx_string_from_signal(int signum);
+StringView lnx_string_from_errno(int error_number);
 
 LNX_Entity* lnx_alloc_entity(LNX_EntityKind kind);
 void lnx_free_entity(LNX_Entity* entity);

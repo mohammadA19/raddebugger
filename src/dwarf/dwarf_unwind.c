@@ -5,9 +5,9 @@
 // x64 Unwind Function
 
 DW_UnwindResult
-dw_unwind_x64(String8           raw_text,
-              String8           raw_eh_frame,
-              String8           raw_eh_frame_hdr,
+dw_unwind_x64(StringView           raw_text,
+              StringView           raw_eh_frame,
+              StringView           raw_eh_frame_hdr,
               Rng1U64           text_vrange,
               Rng1U64           eh_frame_vrange,
               Rng1U64           eh_frame_hdr_vrange,
@@ -119,7 +119,7 @@ dw_unwind_x64(String8           raw_text,
 }
 
 DW_UnwindResult
-dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
+dw_unwind_x64__apply_frame_rules(StringView           raw_eh_frame,
                                  DW_CFIRow*        row,
                                  uint64               text_base_vaddr,
                                  DW_ReadMemorySig* read_memory,
@@ -422,7 +422,7 @@ dw_unwind_parse_cie_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, uint64 
     
     // read augmentation
     uint64     augmentation_off = version_off + 1;
-    String8 augmentation     = dw_based_range_read_string(base, range, augmentation_off);
+    StringView augmentation     = dw_based_range_read_string(base, range, augmentation_off);
     
     // read code align
     uint64 code_align_factor_off  = augmentation_off + augmentation.size + 1;
@@ -577,7 +577,7 @@ dw_unwind_parse_fde_x64(void* base, Rng1U64 range, DW_EhPtrCtx* ptr_ctx, DW_CIEU
 }
 
 DW_CFIRecords
-dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_ctx, uint64 ip_voff)
+dw_unwind_eh_frame_cfi_from_ip_slow_x64(StringView raw_eh_frame, DW_EhPtrCtx* ptr_ctx, uint64 ip_voff)
 {
   Temp scratch = scratch_begin(0, 0);
 
@@ -612,7 +612,7 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_c
     
     // sub-range the rest of the reads
     Rng1U64 rec_range = rng_1u64(rec_off, rec_opl);
-    String8 raw_rec   = str8_substr(raw_eh_frame, rec_range);
+    StringView raw_rec   = str8_substr(raw_eh_frame, rec_range);
     
 
     // discriminator
@@ -671,7 +671,7 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx* ptr_c
 }
 
 uint64
-dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx* ptr_ctx, uint64 location)
+dw_search_eh_frame_hdr_linear_x64(StringView raw_eh_frame_hdr, DW_EhPtrCtx* ptr_ctx, uint64 location)
 {
   // Table contains only addresses for first instruction in a function and we cannot
   // guarantee that result is FDE that corresponds to the input location. 
@@ -725,7 +725,7 @@ dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx* ptr_ctx
 }
 
 DW_CFIRecords
-dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx* ptr_ctx, uint64 ip_voff)
+dw_unwind_eh_frame_hdr_from_ip_fast_x64(StringView raw_eh_frame, StringView raw_eh_frame_hdr, DW_EhPtrCtx* ptr_ctx, uint64 ip_voff)
 {
   DW_CFIRecords result = {0};
   
