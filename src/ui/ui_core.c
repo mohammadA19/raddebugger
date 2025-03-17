@@ -123,7 +123,7 @@ ui_eat_event_node(UI_EventList* list, UI_EventNode* node)
 B32
 ui_char_is_scan_boundary(uint8 c)
 {
-  return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
+  return (c.IsLetter || char_is_digit(c, 10) || c == '_');
 }
 
 int64

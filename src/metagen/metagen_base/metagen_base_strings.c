@@ -58,21 +58,6 @@ char_is_space(uint8 c){
 }
 
 B32
-char_is_upper(uint8 c){
-  return('A' <= c && c <= 'Z');
-}
-
-B32
-char_is_lower(uint8 c){
-  return('a' <= c && c <= 'z');
-}
-
-B32
-char_is_alpha(uint8 c){
-  return(char_is_upper(c) || char_is_lower(c));
-}
-
-B32
 char_is_slash(uint8 c){
   return(c == '/' || c == '\\');
 }
@@ -152,9 +137,9 @@ str16_range(uint16* first, uint16* one_past_last){
   return(result);
 }
 
-Span<char32>
+String32
 str32_range(uint32* first, uint32* one_past_last){
-  Span<char32> result = {first, (uint64)(one_past_last - first)};
+  String32 result = {first, (uint64)(one_past_last - first)};
   return(result);
 }
 
@@ -170,9 +155,9 @@ str16_cstring(uint16* c){
   return(result);
 }
 
-Span<char32>
+String32
 str32_cstring(uint32* c){
-  Span<char32> result = {(uint32*)c, cstring32_length((uint32*)c)};
+  String32 result = {(uint32*)c, cstring32_length((uint32*)c)};
   return(result);
 }
 
@@ -1004,7 +989,7 @@ path_style_from_str8(StringView string){
     result = PathStyle_UnixAbsolute;
   }
   else if (string.size >= 2 &&
-           char_is_alpha(string.str[0]) &&
+           string[0].IsLetter &&
            string.str[1] == ':'){
     if (string.size == 2 ||
         char_is_slash(string.str[2])){
@@ -1344,7 +1329,7 @@ str16_from_8(Arena* arena, StringView in){
 }
 
 StringView
-str8_from_32(Arena* arena, Span<char32> in){
+str8_from_32(Arena* arena, String32 in){
   uint64 cap = in.size*4;
   uint8* str = push_array_no_zero(arena, uint8, cap + 1);
   uint32* ptr = in.str;
@@ -1358,7 +1343,7 @@ str8_from_32(Arena* arena, Span<char32> in){
   return(StringView(str, size));
 }
 
-Span<char32>
+String32
 str32_from_8(Arena* arena, StringView in){
   uint64 cap = in.size;
   uint32* str = push_array_no_zero(arena, uint32, cap + 1);

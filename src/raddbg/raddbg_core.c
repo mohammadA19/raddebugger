@@ -9858,7 +9858,7 @@ rd_autocomp_query_word_from_input_string_off(StringView input, uint64 cursor_off
   uint64 word_start_off = 0;
   for(uint64 off = 0; off < input.size && off < cursor_off; off += 1)
   {
-    if(!char_is_alpha(input.str[off]) && !char_is_digit(input.str[off], 10) && input.str[off] != '_')
+    if(!input[off].IsLetter && !char_is_digit(input.str[off], 10) && input.str[off] != '_')
     {
       word_start_off = off+1;
     }

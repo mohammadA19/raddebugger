@@ -402,7 +402,7 @@ e_token_array_from_text(Arena* arena, StringView text)
       //- rjf: no active token . seek token starter
       default:
       {
-        if(char_is_alpha(byte) || byte == '_' || byte == '`' || byte == '$')
+        if(byte.IsLetter || byte == '_' || byte == '`' || byte == '$')
         {
           active_token_kind = E_TokenKind_Identifier;
           active_token_start_idx = idx;
@@ -438,7 +438,7 @@ e_token_array_from_text(Arena* arena, StringView text)
       //- rjf: active tokens . seek enders
       case E_TokenKind_Identifier:
       {
-        if(byte == ':' && byte_next == ':' && (char_is_alpha(byte_next2) || byte_next2 == '_' || byte_next2 == '<'))
+        if(byte == ':' && byte_next == ':' && (byte_next2.IsLetter || byte_next2 == '_' || byte_next2 == '<'))
         {
           // NOTE(rjf): encountering C++-style namespaces - skip over scope resolution symbol
           // & keep going.
@@ -478,7 +478,7 @@ e_token_array_from_text(Arena* arena, StringView text)
             }
           }
         }
-        else if(!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && !active_token_kind_started_with_tick && byte != '@' && byte != '$')
+        else if(!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && !active_token_kind_started_with_tick && byte != '@' && byte != '$')
         {
           advance = 0;
           token_formed = 1;
@@ -487,7 +487,7 @@ e_token_array_from_text(Arena* arena, StringView text)
       case E_TokenKind_Numeric:
       {
         if(exp && (byte == '+' || byte == '-')){}
-        else if(!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '.' && byte != ':')
+        else if(!byte.IsLetter && !char_is_digit(byte, 10) && byte != '.' && byte != ':')
         {
           advance = 0;
           token_formed = 1;

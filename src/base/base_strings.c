@@ -58,21 +58,6 @@ char_is_space(uint8 c){
 }
 
 B32
-char_is_upper(uint8 c){
-  return('A' <= c && c <= 'Z');
-}
-
-B32
-char_is_lower(uint8 c){
-  return('a' <= c && c <= 'z');
-}
-
-B32
-char_is_alpha(uint8 c){
-  return(char_is_upper(c) || char_is_lower(c));
-}
-
-B32
 char_is_slash(uint8 c){
   return(c == '/' || c == '\\');
 }
@@ -1177,7 +1162,7 @@ path_style_from_str8(StringView string){
     result = PathStyle_UnixAbsolute;
   }
   else if (string.size >= 2 &&
-           char_is_alpha(string.str[0]) &&
+           string[0].IsLetter &&
            string.str[1] == ':'){
     if (string.size == 2 ||
         char_is_slash(string.str[2])){

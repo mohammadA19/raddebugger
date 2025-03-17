@@ -204,7 +204,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
         else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                byte.IsLetter)             { active_token_kind = TXT_TokenKind_Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
                  char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
@@ -259,11 +259,11 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
           }break;
           case TXT_TokenKind_Identifier:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
           case TXT_TokenKind_Numeric:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
           case TXT_TokenKind_String:
           {
@@ -548,7 +548,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
         else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                byte.IsLetter)             { active_token_kind = TXT_TokenKind_Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
                  char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
@@ -603,11 +603,11 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
           }break;
           case TXT_TokenKind_Identifier:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
           case TXT_TokenKind_Numeric:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
           case TXT_TokenKind_String:
           {
@@ -643,7 +643,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
           }break;
           case TXT_TokenKind_Meta:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
         }
       }
@@ -834,7 +834,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
         else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                byte.IsLetter)             { active_token_kind = TXT_TokenKind_Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
                  char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
@@ -889,11 +889,11 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
           }break;
           case TXT_TokenKind_Identifier:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
           case TXT_TokenKind_Numeric:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
           case TXT_TokenKind_String:
           {
@@ -929,7 +929,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
           }break;
           case TXT_TokenKind_Meta:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
         }
       }
@@ -1118,7 +1118,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
         if(0){}
         else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
         else if(byte == '_' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                byte.IsLetter)             { active_token_kind = TXT_TokenKind_Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
                  char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
@@ -1174,11 +1174,11 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
           }break;
           case TXT_TokenKind_Identifier:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
           case TXT_TokenKind_Numeric:
           {
-            ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
+            ender_found = (!byte.IsLetter && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
           case TXT_TokenKind_String:
           {
