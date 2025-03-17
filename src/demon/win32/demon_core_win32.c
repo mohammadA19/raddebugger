@@ -5,12 +5,12 @@
 //~ rjf: Basic Helpers
 
 uint64
-dmn_w32_hash_from_string(StringView string)
+dmn_w32_hash_from_string(StringView str)
 {
   uint64 result = 5381;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
@@ -265,13 +265,13 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
     {
       // rjf: skip the extended path thing if necessary
       if(path16.size >= 4 &&
-         path16.str[0] == L'\\' &&
-         path16.str[1] == L'\\' &&
-         path16.str[2] == L'?' &&
-         path16.str[3] == L'\\')
+         path16[0] == L'\\' &&
+         path16[1] == L'\\' &&
+         path16[2] == L'?' &&
+         path16[3] == L'\\')
       {
         path16.size -= 4;
-        path16.str += 4;
+        path16.Ptr += 4;
       }
       
       // rjf: convert to UTF-8
@@ -281,13 +281,13 @@ dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
     {
       // rjf: skip the extended path thing if necessary
       if (path8.size >= 4 &&
-          path8.str[0] == L'\\' &&
-          path8.str[1] == L'\\' &&
-          path8.str[2] == L'?' &&
-          path8.str[3] == L'\\')
+          path8[0] == L'\\' &&
+          path8[1] == L'\\' &&
+          path8[2] == L'?' &&
+          path8[3] == L'\\')
       {
         path8.size -= 4;
-        path8.str += 4;
+        path8.Ptr += 4;
       }
       
       // rjf: copy to output arena
@@ -446,7 +446,7 @@ dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, uint64 address)
   
   // assemble results
   StringView joined = str8_list_join(arena, &list, 0);
-  Span<char16> result = {(uint16*)joined.str, joined.size/2};
+  Span<char16> result = {(uint16*)joined.Ptr, joined.size/2};
   scratch_end(scratch);
   return(result);
 }
@@ -1165,8 +1165,8 @@ dmn_init()
         else
         {
           Span<char16> string16 = .((uint16 *)this_proc_env + start_idx, idx - start_idx);
-          StringView string = str8_from_16(dmn_w32_shared.arena, string16);
-          str8_list_push(dmn_w32_shared.arena, &dmn_w32_shared.env_strings, string);
+          StringView str = str8_from_16(dmn_w32_shared.arena, string16);
+          str8_list_push(dmn_w32_shared.arena, &dmn_w32_shared.env_strings, str);
           start_idx = idx+1;
         }
       }
@@ -1210,18 +1210,18 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
   uint32 result = 0;
   DMN_AccessScope
   {
-    //- rjf: produce exe / arguments string
+    //- rjf: produce exe / arguments str
     StringView cmd = {0};
     if(params.cmd_line.first != 0)
     {
       String8List args = {0};
-      StringView exe_path = params.cmd_line.first.string;
+      StringView exe_path = params.cmd_line.first.str;
       String8List exe_path_parts = str8_split_path(scratch.arena, exe_path);
       exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = ("\\")});
       str8_list_pushf(scratch.arena, &args, "\"%S\"", exe_path);
       for(String8Node* n = params.cmd_line.first.next; n != 0; n = n.next)
       {
-        str8_list_push(scratch.arena, &args, n.string);
+        str8_list_push(scratch.arena, &args, n.str);
       }
       StringJoin join_params = {0};
       join_params.sep = (" ");
@@ -1238,11 +1238,11 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
         str8_list_push(scratch.arena, &all_opts, ("_NO_DEBUG_HEAP=1"));
         for(String8Node* n = params.env.first; n != 0; n = n.next)
         {
-          str8_list_push(scratch.arena, &all_opts, n.string);
+          str8_list_push(scratch.arena, &all_opts, n.str);
         }
         for(String8Node* n = dmn_w32_shared.env_strings.first; n != 0; n = n.next)
         {
-          str8_list_push(scratch.arena, &all_opts, n.string);
+          str8_list_push(scratch.arena, &all_opts, n.str);
         }
       }
       StringJoin join_params2 = {0};
@@ -1291,7 +1291,7 @@ dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
     }
     PROCESS_INFORMATION process_info = {0};
     AllocConsole();
-    if(CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, 1, creation_flags, (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
+    if(CreateProcessW(0, (WCHAR*)cmd16.Ptr, 0, 0, 1, creation_flags, (WCHAR*)env16.Ptr, (WCHAR*)dir16.Ptr, &startup_info, &process_info))
     {
       // check if we are 32-bit app, and just close it immediately
       BOOL is_wow = 0;
@@ -1829,7 +1829,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                   e.arch    = image_info.arch;
                   e.address = module_base;
                   e.size    = image_info.size;
-                  e.string  = dmn_w32_full_path_from_module(arena, module);
+                  e.str  = dmn_w32_full_path_from_module(arena, module);
                 }
               }
             }break;
@@ -1860,7 +1860,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                     e.kind = DMN_EventKind_UnloadModule;
                     e.process = dmn_w32_handle_from_entity(process);
                     e.module = dmn_w32_handle_from_entity(child);
-                    e.string = dmn_w32_full_path_from_module(arena, child);
+                    e.str = dmn_w32_full_path_from_module(arena, child);
                   }break;
                 }
               }
@@ -1924,7 +1924,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                 e.thread  = dmn_w32_handle_from_entity(thread);
                 e.arch    = thread.arch;
                 e.code    = evt.dwThreadId;
-                e.string  = thread_name;
+                e.str  = thread_name;
               }
             }break;
             
@@ -1992,7 +1992,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                 e.arch    = module.arch;
                 e.address = module_base;
                 e.size    = image_info.size;
-                e.string  = dmn_w32_full_path_from_module(arena, module);
+                e.str  = dmn_w32_full_path_from_module(arena, module);
               }
             }break;
             
@@ -2011,7 +2011,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                 e.kind = DMN_EventKind_UnloadModule;
                 e.process = dmn_w32_handle_from_entity(process);
                 e.module  = dmn_w32_handle_from_entity(module);
-                e.string  = dmn_w32_full_path_from_module(arena, module);
+                e.str  = dmn_w32_full_path_from_module(arena, module);
               }
               
               // rjf: release entity storage
@@ -2294,7 +2294,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                       }
                     }
                     e.kind = DMN_EventKind_SetThreadName;
-                    e.string = str8_list_join(arena, &thread_name_strings, 0);
+                    e.str = str8_list_join(arena, &thread_name_strings, 0);
                     if(exception.NumberParameters > 2)
                     {
                       e.code = exception.ExceptionInformation[2];
@@ -2312,7 +2312,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
             }break;
             
             //////////////////////
-            //- rjf: output debug string was gathered
+            //- rjf: output debug str was gathered
             //
             case OUTPUT_DEBUG_STRING_EVENT:
             {
@@ -2327,14 +2327,14 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
               dmn_w32_process_read(process.handle, r1u64(string_address, string_address+string_size), buffer);
               buffer[string_size] = 0;
               
-              // rjf: extract into string
+              // rjf: extract into str
               StringView debug_string = StringView(buffer, string_size);
               if(debug_string.size != 0 && buffer[string_size-1] == 0)
               {
                 debug_string.size -= 1;
               }
               
-              // rjf: make debug string event
+              // rjf: make debug str event
               debug_strings_event = dmn_event_list_push(arena, &events);
               debug_strings_event.kind = DMN_EventKind_DebugString;
               
@@ -2387,7 +2387,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
       if(debug_strings.total_size != 0 && debug_strings_event != 0)
       {
         StringView debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
-        debug_strings_event.string = debug_strings_joined;
+        debug_strings_event.str = debug_strings_joined;
       }
       
       ////////////////////////
@@ -2459,7 +2459,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
                 e.kind    = DMN_EventKind_SetThreadName;
                 e.process = dmn_w32_handle_from_entity(process);
                 e.thread  = dmn_w32_handle_from_entity(thread);
-                e.string  = push_str8_copy(arena, name);
+                e.str  = push_str8_copy(arena, name);
               }
               thread.thread.name_gather_time_us = os_now_microseconds();
               thread.thread.last_name_hash = name_hash;
@@ -2564,7 +2564,7 @@ dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
             e.kind    = DMN_EventKind_UnloadModule;
             e.process = dmn_w32_handle_from_entity(process);
             e.module  = dmn_w32_handle_from_entity(child);
-            e.string  = dmn_w32_full_path_from_module(arena, child);
+            e.str  = dmn_w32_full_path_from_module(arena, child);
           }
         }
         

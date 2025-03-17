@@ -867,7 +867,7 @@ struct PE_ParsedImport
     struct
     {
       uint64     hint;
-      StringView string;
+      StringView str;
     } name;
   } u;
 }
@@ -998,7 +998,7 @@ struct PE_DebugInfoList
 //~ rjf: Basic Enum Functions
 
 uint32                 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode);
-PE_WindowsSubsystem pe_subsystem_from_string(StringView string);
+PE_WindowsSubsystem pe_subsystem_from_string(StringView str);
 
 StringView pe_string_from_subsystem(PE_WindowsSubsystem x);
 StringView pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x);

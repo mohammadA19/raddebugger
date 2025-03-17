@@ -496,11 +496,11 @@ rdi_name_map_lookup(RDI_Parsed* p, RDI_ParsedNameMap* map, RDI_U8* str, RDI_U64 
     RDI_NameMapNode* node_opl = node + bucket.node_count;
     for(;node < node_opl; node += 1)
     {
-      // extract a string from this node
+      // extract a str from this node
       RDI_U64 nlen = 0;
       RDI_U8* nstr = rdi_string_from_idx(p, node.string_idx, &nlen);
       
-      // compare this to the needle string
+      // compare this to the needle str
       RDI_S32 match = 0;
       if(nlen == len)
       {

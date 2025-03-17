@@ -31,10 +31,10 @@ e_eval_from_expr(Arena* arena, E_Expr* expr)
 }
 
 E_Eval
-e_eval_from_string(Arena* arena, StringView string)
+e_eval_from_string(Arena* arena, StringView str)
 {
-  E_TokenArray     tokens   = e_token_array_from_text(arena, string);
-  E_Parse          parse    = e_parse_expr_from_text_tokens(arena, string, &tokens);
+  E_TokenArray     tokens   = e_token_array_from_text(arena, str);
+  E_Parse          parse    = e_parse_expr_from_text_tokens(arena, str, &tokens);
   E_Eval           eval     = e_eval_from_expr(arena, parse.expr);
   e_msg_list_concat_in_place(&eval.msgs, &parse.msgs);
   return eval;

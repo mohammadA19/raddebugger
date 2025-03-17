@@ -19,34 +19,34 @@ thread_static UI_State* ui_state = 0;
 #endif
 
 uint64
-ui_hash_from_string(uint64 seed, StringView string)
+ui_hash_from_string(uint64 seed, StringView str)
 {
-  uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  uint64 result = XXH3_64bits_withSeed(str.Ptr, str.Length, seed);
   return result;
 }
 
 StringView
-ui_hash_part_from_key_string(StringView string)
+ui_hash_part_from_key_string(StringView str)
 {
-  StringView result = string;
+  StringView result = str;
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
-  // the string that is hashed.
-  uint64 hash_replace_signifier_pos = str8_find_needle(string, 0, ("###"), 0);
-  if(hash_replace_signifier_pos < string.size)
+  // the str that is hashed.
+  uint64 hash_replace_signifier_pos = str8_find_needle(str, 0, ("###"), 0);
+  if(hash_replace_signifier_pos < str.Length)
   {
-    result = str8_skip(string, hash_replace_signifier_pos);
+    result = str8_skip(str, hash_replace_signifier_pos);
   }
   
   return result;
 }
 
 StringView
-ui_display_part_from_key_string(StringView string)
+ui_display_part_from_key_string(StringView str)
 {
-  uint64 hash_pos = str8_find_needle(string, 0, ("##"), 0);
-  string.size = hash_pos;
-  return string;
+  uint64 hash_pos = str8_find_needle(str, 0, ("##"), 0);
+  str.Length = hash_pos;
+  return str;
 }
 
 UI_Key
@@ -64,13 +64,13 @@ ui_key_make(uint64 v)
 }
 
 UI_Key
-ui_key_from_string(UI_Key seed_key, StringView string)
+ui_key_from_string(UI_Key seed_key, StringView str)
 {
   ProfBeginFunction();
   UI_Key result = {0};
-  if(string.size != 0)
+  if(str.Length != 0)
   {
-    StringView hash_part = ui_hash_part_from_key_string(string);
+    StringView hash_part = ui_hash_part_from_key_string(str);
     result.u64[0] = ui_hash_from_string(seed_key.u64[0], hash_part);
   }
   ProfEnd();
@@ -83,9 +83,9 @@ ui_key_from_stringf(UI_Key seed_key, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Key key = ui_key_from_string(seed_key, string);
+  UI_Key key = ui_key_from_string(seed_key, str);
   scratch_end(scratch);
   return key;
 }
@@ -104,7 +104,7 @@ ui_event_list_push(Arena* arena, UI_EventList* list, UI_Event* v)
 {
   UI_EventNode* n = push_array(arena, UI_EventNode, 1);
   MemoryCopyStruct(&n.v, v);
-  n.v.string = push_str8_copy(arena, n.v.string);
+  n.v.str = push_str8_copy(arena, n.v.str);
   DLLPushBack(list.first, list.last, n);
   list.count += 1;
   return n;
@@ -127,20 +127,20 @@ ui_char_is_scan_boundary(uint8 c)
 }
 
 int64
-ui_scanned_column_from_column(StringView string, int64 start_column, Side side)
+ui_scanned_column_from_column(StringView str, int64 start_column, Side side)
 {
   int64 new_column = start_column;
   int64 delta = (!!side)*2 - 1;
   B32 found_text = 0;
   B32 found_non_space = 0;
   int64 start_off = delta < 0 ? delta : 0;
-  for(int64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
+  for(int64 col = start_column+start_off; 1 <= col && col <= str.Length+1; col += delta)
   {
-    uint8 byte = (col <= string.size) ? string.str[col-1] : 0;
+    uint8 byte = (col <= str.Length) ? str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
     if(((side == Side_Min) && (col == 1)) || 
-       ((side == Side_Max) && (col == string.size+1)) ||
+       ((side == Side_Max) && (col == str.Length+1)) ||
        (found_non_space && !is_non_space) || 
        (found_text && !is_name))
     {
@@ -160,7 +160,7 @@ ui_scanned_column_from_column(StringView string, int64 start_column, Side side)
 }
 
 UI_TxtOp
-ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView string, TxtPt cursor, TxtPt mark)
+ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView str, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
@@ -182,23 +182,23 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView strin
     }break;
     case UI_EventDeltaUnit_Word:
     {
-      delta.x = (int32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
+      delta.x = (int32)ui_scanned_column_from_column(str, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
     case UI_EventDeltaUnit_Line:
     case UI_EventDeltaUnit_Whole:
     case UI_EventDeltaUnit_Page:
     {
       int64 first_nonwhitespace_column = 1;
-      for(uint64 idx = 0; idx < string.size; idx += 1)
+      for(uint64 idx = 0; idx < str.Length; idx += 1)
       {
-        if(!char_is_space(string.str[idx]))
+        if(!char_is_space(str[idx]))
         {
           first_nonwhitespace_column = (int64)idx + 1;
           break;
         }
       }
       int64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
-      delta.x = (delta.x > 0) ? ((int64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
+      delta.x = (delta.x > 0) ? ((int64)str.Length+1 - cursor.column) : (home_dest_column - cursor.column);
     }break;
   }
   
@@ -217,7 +217,7 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView strin
   //- rjf: cap at line
   if(event.flags & UI_EventFlag_CapAtLine)
   {
-    next_cursor.column = Clamp(1, next_cursor.column, (int64)(string.size+1));
+    next_cursor.column = Clamp(1, next_cursor.column, (int64)(str.Length+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
@@ -238,7 +238,7 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView strin
   {
     if(cursor.line == mark.line)
     {
-      copy = str8_substr(string, r1u64(cursor.column-1, mark.column-1));
+      copy = str8_substr(str, r1u64(cursor.column-1, mark.column-1));
       flags |= UI_TxtOpFlag_Copy;
     }
     else
@@ -271,21 +271,21 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView strin
   }
   
   //- rjf: insertion
-  if(event.string.size != 0)
+  if(event.str.Length != 0)
   {
     range = txt_rng(cursor, mark);
-    replace = push_str8_copy(arena, event.string);
-    next_cursor = next_mark = txt_pt(range.min.line, range.min.column + event.string.size);
+    replace = push_str8_copy(arena, event.str);
+    next_cursor = next_mark = txt_pt(range.min.line, range.min.column + event.str.Length);
   }
   
   //- rjf: determine if this event should be taken, based on bounds of cursor
   {
-    if(next_cursor.column > string.size+1 || 1 > next_cursor.column || event.delta_2s32.y != 0)
+    if(next_cursor.column > str.Length+1 || 1 > next_cursor.column || event.delta_2s32.y != 0)
     {
       flags |= UI_TxtOpFlag_Invalid;
     }
-    next_cursor.column = Clamp(1, next_cursor.column, string.size+replace.size+1);
-    next_mark.column = Clamp(1, next_mark.column, string.size+replace.size+1);
+    next_cursor.column = Clamp(1, next_cursor.column, str.Length+replace.size+1);
+    next_mark.column = Clamp(1, next_mark.column, str.Length+replace.size+1);
   }
   
   //- rjf: build+fill
@@ -302,7 +302,7 @@ ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, StringView strin
 }
 
 StringView
-ui_push_string_replace_range(Arena* arena, StringView string, Rng1S64 col_range, StringView replace)
+ui_push_string_replace_range(Arena* arena, StringView str, Rng1S64 col_range, StringView replace)
 {
   //- rjf: convert to offset range
   Rng1U64 range =
@@ -312,27 +312,27 @@ ui_push_string_replace_range(Arena* arena, StringView string, Rng1S64 col_range,
   };
   
   //- rjf: clamp range
-  if(range.min > string.size)
+  if(range.min > str.Length)
   {
     range.min = 0;
   }
-  if(range.max > string.size)
+  if(range.max > str.Length)
   {
-    range.max = string.size;
+    range.max = str.Length;
   }
   
   //- rjf: calculate new size
-  uint64 old_size = string.size;
+  uint64 old_size = str.Length;
   uint64 new_size = old_size - (range.max - range.min) + replace.size;
   
-  //- rjf: push+fill new string storage
+  //- rjf: push+fill new str storage
   uint8* push_base = push_array(arena, uint8, new_size);
   {
-    MemoryCopy(push_base+0, string.str, range.min);
-    MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
-    if(replace.str != 0)
+    MemoryCopy(push_base+0, str.Ptr, range.min);
+    MemoryCopy(push_base+range.min+replace.size, str.Ptr+range.max, str.Length-range.max);
+    if(replace.Ptr != 0)
     {
-      MemoryCopy(push_base+range.min, replace.str, replace.size);
+      MemoryCopy(push_base+range.min, replace.Ptr, replace.size);
     }
   }
   
@@ -641,7 +641,7 @@ ui_text(uint32 character)
   StringView character_text = str8_from_32(scratch.arena, Span<char32>(&character, 1));
   for(UI_Event* evt = 0; ui_next_event(&evt);)
   {
-    if(evt.kind == UI_EventKind_Text && str8_match(character_text, evt.string, 0))
+    if(evt.kind == UI_EventKind_Text && str8_match(character_text, evt.str, 0))
     {
       result = 1;
       ui_eat_event(evt);
@@ -683,10 +683,10 @@ ui_drag_delta()
 }
 
 void
-ui_store_drag_data(StringView string)
+ui_store_drag_data(StringView str)
 {
   arena_clear(ui_state.drag_state_arena);
-  ui_state.drag_state_data = push_str8_copy(ui_state.drag_state_arena, string);
+  ui_state.drag_state_data = push_str8_copy(ui_state.drag_state_arena, str);
 }
 
 StringView
@@ -702,7 +702,7 @@ ui_get_drag_data(uint64 min_required_size)
   return ui_state.drag_state_data;
 }
 
-//- rjf: hovered string info
+//- rjf: hovered str info
 
 B32
 ui_string_hover_active()
@@ -1493,8 +1493,8 @@ ui_end_build()
       {
         StringJoin join = {0};
         join.sep = (" ");
-        StringView string = str8_list_join(scratch.arena, &strs, &join);
-        os_set_clipboard_text(string);
+        StringView str = str8_list_join(scratch.arena, &strs, &join);
+        os_set_clipboard_text(str);
       }
       scratch_end(scratch);
     }
@@ -2374,7 +2374,7 @@ ui_active_seed_key()
 }
 
 UI_Box *
-ui_build_box_from_string(UI_BoxFlags flags, StringView string)
+ui_build_box_from_string(UI_BoxFlags flags, StringView str)
 {
   ProfBeginFunction();
   
@@ -2382,13 +2382,13 @@ ui_build_box_from_string(UI_BoxFlags flags, StringView string)
   UI_Box* parent = ui_top_parent();
   
   //- rjf: figure out key
-  UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
+  UI_Key key = ui_key_from_string(ui_active_seed_key(), str);
   
-  //- rjf: build box from key, equip passed string
+  //- rjf: build box from key, equip passed str
   UI_Box* box = ui_build_box_from_key(flags, key);
   if(flags & UI_BoxFlag_DrawText)
   {
-    ui_box_equip_display_string(box, string);
+    ui_box_equip_display_string(box, str);
   }
   
   //- rjf: return
@@ -2402,9 +2402,9 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Box* box = ui_build_box_from_string(flags, string);
+  UI_Box* box = ui_build_box_from_string(flags, str);
   scratch_end(scratch);
   return box;
 }
@@ -2412,10 +2412,10 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...)
 //- rjf: box node equipment
 
 void
-ui_box_equip_display_string(UI_Box* box, StringView string)
+ui_box_equip_display_string(UI_Box* box, StringView str)
 {
   ProfBeginFunction();
-  box.string = push_str8_copy(ui_build_arena(), string);
+  box.str = push_str8_copy(ui_build_arena(), str);
   box.flags |= UI_BoxFlag_HasDisplayString;
   UI_ColorCode text_color_code = (box.flags & UI_BoxFlag_DrawTextWeak ? UI_ColorCode_TextWeak : UI_ColorCode_Text);
   if(box.flags & UI_BoxFlag_DrawText && (box.fastpath_codepoint == 0 || !(box.flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
@@ -2455,15 +2455,15 @@ void
 ui_box_equip_display_fancy_strings(UI_Box* box, DR_FancyStringList* strings)
 {
   box.flags |= UI_BoxFlag_HasDisplayString;
-  box.string = dr_string_from_fancy_string_list(ui_build_arena(), strings);
+  box.str = dr_string_from_fancy_string_list(ui_build_arena(), strings);
   box.display_string_runs = dr_fancy_run_list_from_fancy_string_list(ui_build_arena(), box.tab_size, box.text_raster_flags, strings);
 }
 
 inline void
-ui_box_equip_display_string_fancy_runs(UI_Box* box, StringView string, DR_FancyRunList* runs)
+ui_box_equip_display_string_fancy_runs(UI_Box* box, StringView str, DR_FancyRunList* runs)
 {
   box.flags |= UI_BoxFlag_HasDisplayString;
-  box.string = push_str8_copy(ui_build_arena(), string);
+  box.str = push_str8_copy(ui_build_arena(), str);
   box.display_string_runs = dr_fancy_run_list_copy(ui_build_arena(), runs);
 }
 
@@ -2500,7 +2500,7 @@ ui_box_equip_custom_draw(UI_Box* box, UI_BoxCustomDrawFunctionType* custom_draw,
 StringView
 ui_box_display_string(UI_Box* box)
 {
-  StringView result = box.string;
+  StringView result = box.str;
   if(!(box.flags & UI_BoxFlag_DisableIDString))
   {
     result = ui_display_part_from_key_string(result);
@@ -2702,7 +2702,7 @@ ui_signal_from_box(UI_Box* box)
     }
     
     //- rjf: ancestor is focused & fastpath codepoint pressed . press
-    if(box.flags & UI_BoxFlag_Clickable && box.fastpath_codepoint != 0 && evt.string.size != 0)
+    if(box.flags & UI_BoxFlag_Clickable && box.fastpath_codepoint != 0 && evt.str.Length != 0)
     {
       B32 ancestor_is_focused = 0;
       for(UI_Box* parent = box.parent; !ui_box_is_nil(parent); parent = parent.parent)
@@ -2721,8 +2721,8 @@ ui_signal_from_box(UI_Box* box)
       if(ancestor_is_focused)
       {
         Temp scratch = scratch_begin(0, 0);
-        Span<char32> insertion32 = str32_from_8(scratch.arena, evt.string);
-        if(insertion32.size == 1 && insertion32.str[0] == box.fastpath_codepoint)
+        Span<char32> insertion32 = str32_from_8(scratch.arena, evt.str);
+        if(insertion32.size == 1 && insertion32[0] == box.fastpath_codepoint)
         {
           taken = 1;
           sig.f |= UI_SignalFlag_Clicked|UI_SignalFlag_Pressed;

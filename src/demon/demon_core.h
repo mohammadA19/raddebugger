@@ -66,7 +66,7 @@ struct DMN_Event
   Arch arch;
   uint64 address;
   uint64 size;
-  StringView string;
+  StringView str;
   uint32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
   uint32 flags;
   int32 signo;

@@ -65,8 +65,8 @@ update_crc32(uint32 crc, uint8* ptr, uint64 size)
 }
 
 uint32
-crc32_from_string(StringView string)
+crc32_from_string(StringView str)
 {
-  return update_crc32(0, string.str, string.size);
+  return update_crc32(0, str.Ptr, str.Length);
 }
 

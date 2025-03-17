@@ -3,7 +3,7 @@
 
 #pragma once
 
-#define MemoryCopyStr8(dst, s) MemoryCopy(dst, (s).str, (s).size)
+#define MemoryCopyStr8(dst, s) MemoryCopy(dst, (s).Ptr, (s).size)
 
 int str8_compar(StringView a, StringView b, B32 ignore_case);
 int str8_compar_ignore_case(const void* a, const void* b);
@@ -19,5 +19,5 @@ String8Node * str8_list_push_many(Arena* arena, String8List* list, uint64 count)
 // TODO: remove
 String8Node * str8_list_pop_front(String8List* list);
 
-uint64 hash_from_str8(StringView string);
+uint64 hash_from_str8(StringView str);
 

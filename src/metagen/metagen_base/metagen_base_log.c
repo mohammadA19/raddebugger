@@ -37,11 +37,11 @@ log_select(Log* log)
 //~ rjf: Log Building/Clearing
 
 void
-log_msg(LogMsgKind kind, StringView string)
+log_msg(LogMsgKind kind, StringView str)
 {
   if(log_active != 0 && log_active.top_scope != 0)
   {
-    StringView string_copy = push_str8_copy(log_active.arena, string);
+    StringView string_copy = push_str8_copy(log_active.arena, str);
     str8_list_push(log_active.arena, &log_active.top_scope.strings[kind], string_copy);
   }
 }
@@ -54,8 +54,8 @@ log_msgf(LogMsgKind kind, char* fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    StringView string = push_str8fv(scratch.arena, fmt, args);
-    log_msg(kind, string);
+    StringView str = push_str8fv(scratch.arena, fmt, args);
+    log_msg(kind, str);
     va_end(args);
     scratch_end(scratch);
   }

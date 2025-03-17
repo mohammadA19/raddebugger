@@ -4,4 +4,4 @@
 #pragma once
 
 uint32 pdb_hash_udt(CV_UDTInfo udt_info, StringView data);
-uint32 pdb_crc32_from_string(StringView string);
+uint32 pdb_crc32_from_string(StringView str);

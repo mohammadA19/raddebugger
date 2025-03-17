@@ -4,7 +4,7 @@
 #ifndef BASE_MARKUP_H
 #define BASE_MARKUP_H
 
-void set_thread_name(StringView string);
+void set_thread_name(StringView str);
 void set_thread_namef(char* fmt, ...);
 #define ThreadNameF(...) (set_thread_namef(__VA_ARGS__))
 #define ThreadName(str) (set_thread_name(str))

@@ -35,7 +35,7 @@ typed_data_rebase_ptrs(Type* type, StringView data, void* base_ptr)
     Type* type;
     uint8* ptr;
   };
-  RebaseTypeTask start_task = {0, type, data.str};
+  RebaseTypeTask start_task = {0, type, data.Ptr};
   RebaseTypeTask* first_task = &start_task;
   RebaseTypeTask* last_task = first_task;
   for(RebaseTypeTask* t = first_task; t != 0; t = t.next)
@@ -91,7 +91,7 @@ serialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerial
       uint8* containing_ptr;
       B32 is_post_header;
     };
-    SerializeTypeTask start_task = {0, type, 1, data.str};
+    SerializeTypeTask start_task = {0, type, 1, data.Ptr};
     SerializeTypeTask* first_task = &start_task;
     SerializeTypeTask* last_task = first_task;
     for(SerializeTypeTask* t = first_task; t != 0; t = t.next)
@@ -239,7 +239,7 @@ deserialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSeri
 {
   StringView result = {0};
   result.size = type.size;
-  result.str  = push_array(arena, uint8, result.size);
+  result.Ptr  = push_array(arena, uint8, result.size);
   {
     Temp scratch = scratch_begin(&arena, 1);
     struct DeserializeTypeTask
@@ -253,12 +253,12 @@ deserialized_from_typed_data(Arena* arena, Type* type, StringView data, TypeSeri
       B32 is_post_header;
     };
     uint64 read_off = 0;
-    DeserializeTypeTask start_task = {0, type, 1, result.str};
+    DeserializeTypeTask start_task = {0, type, 1, result.Ptr};
     DeserializeTypeTask* first_task = &start_task;
     DeserializeTypeTask* last_task = first_task;
     for(DeserializeTypeTask* t = first_task; t != 0; t = t.next)
     {
-      uint8* t_src = data.str + read_off;
+      uint8* t_src = data.Ptr + read_off;
       switch(t.type.kind)
       {
         //- rjf: leaf . copy the data directly

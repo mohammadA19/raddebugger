@@ -19,7 +19,7 @@ struct E_Op
   E_Op* next;
   RDI_EvalOp opcode;
   E_Value value;
-  StringView string;
+  StringView str;
 }
 
 struct E_OpList
@@ -39,7 +39,7 @@ struct E_IRNode
   E_IRNode* last;
   E_IRNode* next;
   RDI_EvalOp op;
-  StringView string;
+  StringView str;
   E_Value value;
 }
 
@@ -87,7 +87,7 @@ void e_oplist_push_uconst(Arena* arena, E_OpList* list, uint64 x);
 void e_oplist_push_sconst(Arena* arena, E_OpList* list, int64 x);
 void e_oplist_push_bytecode(Arena* arena, E_OpList* list, StringView bytecode);
 void e_oplist_push_set_space(Arena* arena, E_OpList* list, E_Space space);
-void e_oplist_push_string_literal(Arena* arena, E_OpList* list, StringView string);
+void e_oplist_push_string_literal(Arena* arena, E_OpList* list, StringView str);
 void e_oplist_concat_in_place(E_OpList* dst, E_OpList* to_push);
 
 //- rjf: ir tree core building helpers
@@ -101,7 +101,7 @@ E_IRNode* e_irtree_binary_op(Arena* arena, RDI_EvalOp op, RDI_EvalTypeGroup grou
 E_IRNode* e_irtree_binary_op_u(Arena* arena, RDI_EvalOp op, E_IRNode* l, E_IRNode* r);
 E_IRNode* e_irtree_conditional(Arena* arena, E_IRNode* c, E_IRNode* l, E_IRNode* r);
 E_IRNode* e_irtree_bytecode_no_copy(Arena* arena, StringView bytecode);
-E_IRNode* e_irtree_string_literal(Arena* arena, StringView string);
+E_IRNode* e_irtree_string_literal(Arena* arena, StringView str);
 E_IRNode* e_irtree_set_space(Arena* arena, E_Space space, E_IRNode* c);
 E_IRNode* e_irtree_mem_read_type(Arena* arena, E_Space space, E_IRNode* c, E_TypeKey type_key);
 E_IRNode* e_irtree_convert_lo(Arena* arena, E_IRNode* c, RDI_EvalTypeGroup out, RDI_EvalTypeGroup in);

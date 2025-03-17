@@ -187,7 +187,7 @@ entry_point(CmdLine* cmdl)
     }
   } else {
     if (cmdl.inputs.node_count == 1) {
-      pdb_name = cmdl.inputs.first.string;
+      pdb_name = cmdl.inputs.first.str;
     } else if (cmdl.inputs.node_count == 0) {
       fprintf(stderr, "ERROR: no input PDB!\n");
       return;
@@ -233,12 +233,12 @@ entry_point(CmdLine* cmdl)
     return;
   }
 
-  // find string table
+  // find str table
   MSF_StreamNumber strtbl_sn   = named_streams.sn[PDB_NamedStream_StringTable];
   StringView          strtbl_data = msf_data_from_stream(msf, strtbl_sn);
   PDB_Strtbl*      strtbl      = pdb_strtbl_from_data(arena, strtbl_data);
   if (!strtbl) {
-    fprintf(stderr, "ERROR: unable to parse string table\n");
+    fprintf(stderr, "ERROR: unable to parse str table\n");
     return;
   }
 
@@ -309,7 +309,7 @@ entry_point(CmdLine* cmdl)
 
       for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
         Temp temp = temp_begin(arena);
-        CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(temp.arena, raw_lines_node.string, rng_1u64(0, raw_lines_node.string.size));
+        CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(temp.arena, raw_lines_node.str, rng_1u64(0, raw_lines_node.str.Length));
         c13_lines_count += parsed_list.count;
         temp_end(temp);
       }
@@ -318,7 +318,7 @@ entry_point(CmdLine* cmdl)
 
       uint64 c13_lines_idx = 0;
       for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
-        StringView               raw_lines   = raw_lines_node.string;
+        StringView               raw_lines   = raw_lines_node.str;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
 
         for(CV_C13LinesHeaderNode* header_node = parsed_list.first; header_node != 0; header_node = header_node.next) {
@@ -350,8 +350,8 @@ entry_point(CmdLine* cmdl)
 
     for (CV_SymbolNode* symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n.next) {
       CV_Symbol  symbol  = symbol_n.data;
-      void*      rec_raw = symbol.data.str;
-      void*      rec_opl = symbol.data.str + symbol.data.size;
+      void*      rec_raw = symbol.data.Ptr;
+      void*      rec_opl = symbol.data.Ptr + symbol.data.size;
 
       if (symbol.kind == CV_SymKind_LPROC32 || symbol.kind == CV_SymKind_GPROC32) {
         CV_SymProc32* proc32 = rec_raw;
@@ -380,8 +380,8 @@ entry_point(CmdLine* cmdl)
         StringView inlinee_name = ("???");
         if (ipi.itype_first <= inline_site.inlinee && inline_site.inlinee < ipi.itype_opl) {
           CV_RecRange inlinee_rec = ipi_leaf_parsed.leaf_ranges.ranges[inline_site.inlinee - ipi.itype_first];
-          void* leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
-          void* leaf_opl = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind) + inlinee_rec.hdr.size;
+          void* leaf_raw = ipi_leaf_data.Ptr + inlinee_rec.off + sizeof(CV_LeafKind);
+          void* leaf_opl = ipi_leaf_data.Ptr + inlinee_rec.off + sizeof(CV_LeafKind) + inlinee_rec.hdr.size;
           if (inlinee_rec.hdr.kind == CV_LeafKind_MFUNC_ID) {
             CV_LeafMFuncId* mfunc_id = leaf_raw;
             inlinee_name = str8_cstring_capped(mfunc_id + 1, leaf_opl);

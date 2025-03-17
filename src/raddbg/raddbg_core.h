@@ -102,7 +102,7 @@ struct RD_BindingList
 
 struct RD_StringBindingPair
 {
-  StringView string;
+  StringView str;
   RD_Binding binding;
 }
 
@@ -147,7 +147,7 @@ enum RD_ViewRuleInfoFlags : uint32
   RD_ViewRuleInfoFlag_ProjectFiltered            = (1<<7),
 }
 
-#define RD_VIEW_RULE_UI_FUNCTION_SIG(name) void name(StringView string, MD_Node* params, Rng2F32 rect)
+#define RD_VIEW_RULE_UI_FUNCTION_SIG(name) void name(StringView str, MD_Node* params, Rng2F32 rect)
 #define RD_VIEW_RULE_UI_FUNCTION_NAME(name) rd_view_rule_ui_##name
 #define RD_VIEW_RULE_UI_FUNCTION_DEF(name) internal RD_VIEW_RULE_UI_FUNCTION_SIG(RD_VIEW_RULE_UI_FUNCTION_NAME(name))
 typedef RD_VIEW_RULE_UI_FUNCTION_SIG(RD_ViewRuleUIFunctionType);
@@ -331,7 +331,7 @@ struct RD_CfgVal
   RD_CfgTree* first;
   RD_CfgTree* last;
   uint64 insertion_stamp;
-  StringView string;
+  StringView str;
 }
 
 struct RD_CfgSlot
@@ -359,7 +359,7 @@ struct RD_Cfg
   RD_Cfg* prev;
   RD_Cfg* parent;
   uint64 gen;
-  StringView string;
+  StringView str;
 }
 
 struct RD_CfgNode
@@ -413,8 +413,8 @@ struct RD_Entity
   RD_CfgSrc cfg_src;
   uint64 timestamp;
   
-  // rjf: string equipment
-  StringView string;
+  // rjf: str equipment
+  StringView str;
 }
 
 struct RD_EntityNode
@@ -530,7 +530,7 @@ enum RD_AutoCompListerFlags : uint32
 
 struct RD_AutoCompListerItem
 {
-  StringView string;
+  StringView str;
   StringView kind_string;
   FuzzyMatchRangeList matches;
   uint64 group;
@@ -779,7 +779,7 @@ struct RD_State
   // rjf: text editing mode state
   B32 text_edit_mode;
   
-  // rjf: string search state
+  // rjf: str search state
   Arena* string_search_arena;
   StringView string_search_string;
   
@@ -965,8 +965,8 @@ RD_HandleList rd_handle_list_copy(Arena* arena, RD_HandleList list);
 ////////////////////////////////
 //~ rjf: Config Type Pure Functions
 
-void rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView string, RD_CfgSrc source);
-RD_CfgVal* rd_cfg_val_from_string(RD_CfgTable* table, StringView string);
+void rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView str, RD_CfgSrc source);
+RD_CfgVal* rd_cfg_val_from_string(RD_CfgTable* table, StringView str);
 
 ////////////////////////////////
 //~ rjf: Registers Type Functions
@@ -1023,9 +1023,9 @@ RD_View* rd_view_from_handle(RD_Handle handle);
 ////////////////////////////////
 //~ rjf: View Spec Type Functions
 
-RD_ViewRuleKind rd_view_rule_kind_from_string(StringView string);
+RD_ViewRuleKind rd_view_rule_kind_from_string(StringView str);
 RD_ViewRuleInfo* rd_view_rule_info_from_kind(RD_ViewRuleKind kind);
-RD_ViewRuleInfo* rd_view_rule_info_from_string(StringView string);
+RD_ViewRuleInfo* rd_view_rule_info_from_string(StringView str);
 
 ////////////////////////////////
 //~ rjf: Panel Type Functions
@@ -1086,23 +1086,23 @@ void rd_open_ctx_menu(UI_Key anchor_box_key, Vec2F32 anchor_box_off, RD_RegSlot 
 //~ rjf: Name Allocation
 
 uint64 rd_name_bucket_idx_from_string_size(uint64 size);
-StringView rd_name_alloc(StringView string);
-void rd_name_release(StringView string);
+StringView rd_name_alloc(StringView str);
+void rd_name_release(StringView str);
 
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure Functions
 
 RD_Cfg* rd_cfg_alloc();
 void rd_cfg_release(RD_Cfg* cfg);
-RD_Cfg* rd_cfg_new(RD_Cfg* parent, StringView string);
+RD_Cfg* rd_cfg_new(RD_Cfg* parent, StringView str);
 RD_Cfg* rd_cfg_newf(RD_Cfg* parent, char* fmt, ...);
-void rd_cfg_equip_string(RD_Cfg* cfg, StringView string);
+void rd_cfg_equip_string(RD_Cfg* cfg, StringView str);
 void rd_cfg_insert_child(RD_Cfg* parent, RD_Cfg* prev_child, RD_Cfg* new_child);
 void rd_cfg_unhook(RD_Cfg* parent, RD_Cfg* child);
-RD_Cfg* rd_cfg_child_from_string(RD_Cfg* parent, StringView string);
-RD_CfgList rd_cfg_child_list_from_string(Arena* arena, RD_Cfg* parent, StringView string);
-RD_CfgList rd_cfg_top_level_list_from_string(Arena* arena, StringView string);
-RD_CfgList rd_cfg_tree_list_from_string(Arena* arena, StringView string);
+RD_Cfg* rd_cfg_child_from_string(RD_Cfg* parent, StringView str);
+RD_CfgList rd_cfg_child_list_from_string(Arena* arena, RD_Cfg* parent, StringView str);
+RD_CfgList rd_cfg_top_level_list_from_string(Arena* arena, StringView str);
+RD_CfgList rd_cfg_tree_list_from_string(Arena* arena, StringView str);
 StringView rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg);
 RD_CfgRec rd_cfg_rec__depth_first(RD_Cfg* root, RD_Cfg* cfg);
 void rd_cfg_list_push(Arena* arena, RD_CfgList* list, RD_Cfg* cfg);
@@ -1140,7 +1140,7 @@ String8List rd_possible_overrides_from_file_path(Arena* arena, StringView file_p
 RD_Entity* rd_entity_root();
 RD_EntityList rd_push_entity_list_with_kind(Arena* arena, RD_EntityKind kind);
 RD_Entity* rd_entity_from_id(RD_EntityID id);
-RD_Entity* rd_entity_from_name_and_kind(StringView string, RD_EntityKind kind);
+RD_Entity* rd_entity_from_name_and_kind(StringView str, RD_EntityKind kind);
 
 ////////////////////////////////
 //~ rjf: Frontend Entity Info Extraction
@@ -1184,7 +1184,7 @@ Rng1U64 rd_whole_range_from_eval_space(E_Space space);
 //~ rjf: Evaluation Visualization
 
 //- rjf: writing values back to child processes
-B32 rd_commit_eval_value_string(E_Eval dst_eval, StringView string, B32 string_needs_unescaping);
+B32 rd_commit_eval_value_string(E_Eval dst_eval, StringView str, B32 string_needs_unescaping);
 
 //- rjf: eval / view rule params tree info extraction
 uint64 rd_base_offset_from_eval(E_Eval eval);
@@ -1196,8 +1196,8 @@ Vec2S32 rd_dim2s32_from_eval_params(E_Eval eval, MD_Node* params);
 R_Tex2DFormat rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node* params);
 
 //- rjf: eval <. file path
-StringView rd_file_path_from_eval_string(Arena* arena, StringView string);
-StringView rd_eval_string_from_file_path(Arena* arena, StringView string);
+StringView rd_file_path_from_eval_string(Arena* arena, StringView str);
+StringView rd_eval_string_from_file_path(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: View State Functions
@@ -1238,8 +1238,8 @@ void* rd_view_state_by_size(uint64 size);
 Arena* rd_push_view_arena();
 
 //- rjf: storing view-attached state
-void rd_store_view_expr_string(StringView string);
-void rd_store_view_filter(StringView string);
+void rd_store_view_expr_string(StringView str);
+void rd_store_view_filter(StringView str);
 void rd_store_view_loading_info(B32 is_loading, uint64 progress_u64, uint64 progress_u64_target);
 void rd_store_view_scroll_pos(UI_ScrollPt2 pos);
 void rd_store_view_param(StringView key, StringView value);
@@ -1294,7 +1294,7 @@ StringView rd_value_string_from_eval(Arena* arena, EV_StringFlags flags, uint32 
 ////////////////////////////////
 //~ rjf: Hover Eval
 
-void rd_set_hover_eval(Vec2F32 pos, StringView file_path, TxtPt pt, uint64 vaddr, StringView string);
+void rd_set_hover_eval(Vec2F32 pos, StringView file_path, TxtPt pt, uint64 vaddr, StringView str);
 
 ////////////////////////////////
 //~ rjf: Auto-Complete Lister
@@ -1306,20 +1306,20 @@ void rd_autocomp_lister_item_array_sort__in_place(RD_AutoCompListerItemArray* ar
 
 StringView rd_autocomp_query_word_from_input_string_off(StringView input, uint64 cursor_off);
 StringView rd_autocomp_query_path_from_input_string_off(StringView input, uint64 cursor_off);
-RD_AutoCompListerParams rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView string, uint64 cursor_off);
+RD_AutoCompListerParams rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView str, uint64 cursor_off);
 void rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams* params, StringView input, uint64 cursor_off);
 
 ////////////////////////////////
 //~ rjf: Search Strings
 
-void rd_set_search_string(StringView string);
+void rd_set_search_string(StringView str);
 StringView rd_push_search_string(Arena* arena);
 
 ////////////////////////////////
 //~ rjf: Colors, Fonts, Config
 
 //- rjf: keybindings
-OS_Key rd_os_key_from_cfg_string(StringView string);
+OS_Key rd_os_key_from_cfg_string(StringView str);
 void rd_clear_bindings();
 RD_BindingList rd_bindings_from_name(Arena* arena, StringView name);
 void rd_bind_name(StringView name, RD_Binding binding);
@@ -1329,7 +1329,7 @@ String8List rd_cmd_name_list_from_binding(Arena* arena, RD_Binding binding);
 //- rjf: colors
 Vec4F32 rd_rgba_from_theme_color(RD_ThemeColor color);
 RD_ThemeColor rd_theme_color_from_txt_token_kind(TXT_TokenKind kind);
-RD_ThemeColor rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView string);
+RD_ThemeColor rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView str);
 
 //- rjf: code . palette
 UI_Palette* rd_palette_from_code(RD_PaletteCode code);
@@ -1383,18 +1383,18 @@ RD_Regs* rd_push_regs_(RD_Regs* regs);
 #define rd_push_regs(...) rd_push_regs_(&(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 RD_Regs* rd_pop_regs();
 #define RD_RegsScope(...) DeferLoop(rd_push_regs(__VA_ARGS__), rd_pop_regs())
-void rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string);
+void rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView str);
 
 ////////////////////////////////
 //~ rjf: Commands
 
 //- rjf: name . info
-RD_CmdKind rd_cmd_kind_from_string(StringView string);
-RD_CmdKindInfo* rd_cmd_kind_info_from_string(StringView string);
+RD_CmdKind rd_cmd_kind_from_string(StringView str);
+RD_CmdKindInfo* rd_cmd_kind_info_from_string(StringView str);
 
 //- rjf: pushing
 void rd_push_cmd(StringView name, RD_Regs* regs);
-#define rd_cmd(kind, ...) rd_push_cmd(rd_cmd_kind_info_table[kind].string, &(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
+#define rd_cmd(kind, ...) rd_push_cmd(rd_cmd_kind_info_table[kind].str, &(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 
 //- rjf: iterating
 B32 rd_next_cmd(RD_Cmd** cmd);

@@ -36,7 +36,7 @@ struct PDB_NamedStreamTable
 struct PDB_InfoNode
 {
   struct PDB_InfoNode* next;
-  StringView string;
+  StringView str;
   MSF_StreamNumber sn;
 }
 
@@ -198,7 +198,7 @@ PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena* arena,
                                                      StringView tpi_hash_data,
                                                      StringView tpi_hash_aux_data);
 PDB_GsiParsed*       pdb_gsi_from_data(Arena* arena, StringView gsi_data);
-uint64                  pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringView string);
+uint64                  pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringView str);
 
 COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena* arena, StringView section_data);
 
@@ -239,7 +239,7 @@ CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash,
 StringView              pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, uint32 off);
 StringView              pdb_strtbl_string_from_index(PDB_Strtbl* strtbl,
                                                            PDB_StringIndex idx);
-uint32                  pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, StringView string);
+uint32                  pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, StringView str);
 
 
 #endif // PDB_PARSE_H

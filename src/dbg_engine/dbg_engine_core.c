@@ -13,37 +13,37 @@
 //~ rjf: Basic Helpers
 
 uint64
-d_hash_from_seed_string(uint64 seed, StringView string)
+d_hash_from_seed_string(uint64 seed, StringView str)
 {
   uint64 result = seed;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
 
 uint64
-d_hash_from_string(StringView string)
+d_hash_from_string(StringView str)
 {
-  return d_hash_from_seed_string(5381, string);
+  return d_hash_from_seed_string(5381, str);
 }
 
 uint64
-d_hash_from_seed_string__case_insensitive(uint64 seed, StringView string)
+d_hash_from_seed_string__case_insensitive(uint64 seed, StringView str)
 {
   uint64 result = seed;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string[i].ToLower;
+    result = ((result << 5) + result) + str[i].ToLower;
   }
   return result;
 }
 
 uint64
-d_hash_from_string__case_insensitive(StringView string)
+d_hash_from_string__case_insensitive(StringView str)
 {
-  return d_hash_from_seed_string__case_insensitive(5381, string);
+  return d_hash_from_seed_string__case_insensitive(5381, str);
 }
 
 ////////////////////////////////
@@ -108,7 +108,7 @@ d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps
         String8Node* pth_n = pth_parts.first;
         for(;dst_n != 0 && pth_n != 0; dst_n = dst_n.next, pth_n = pth_n.next)
         {
-          if(!str8_match(dst_n.string, pth_n.string, StringMatchFlag_CaseInsensitive))
+          if(!str8_match(dst_n.str, pth_n.str, StringMatchFlag_CaseInsensitive))
           {
             dst_redirects_to_pth = 0;
             break;
@@ -125,7 +125,7 @@ d_possible_path_overrides_from_maps_path(Arena* arena, D_PathMapArray* path_maps
         String8List candidate_parts = src_parts;
         for(String8Node* p = non_redirected_pth_first; p != 0; p = p.next)
         {
-          str8_list_push(scratch.arena, &candidate_parts, p.string);
+          str8_list_push(scratch.arena, &candidate_parts, p.str);
         }
         StringJoin join = {0};
         join.sep = ("/");
@@ -206,13 +206,13 @@ d_register_view_rule_specs(D_ViewRuleSpecInfoArray specs)
     D_ViewRuleSpecInfo* info = &specs.v[idx];
     
     // rjf: skip empties
-    if(info.string.size == 0)
+    if(info.str.Length == 0)
     {
       continue;
     }
     
     // rjf: determine hash/slot
-    uint64 hash = d_hash_from_string(info.string);
+    uint64 hash = d_hash_from_string(info.str);
     uint64 slot_idx = hash%d_state.view_rule_spec_table_size;
     
     // rjf: allocate node & push
@@ -222,22 +222,22 @@ d_register_view_rule_specs(D_ViewRuleSpecInfoArray specs)
     // rjf: fill node
     D_ViewRuleSpecInfo* info_copy = &spec.info;
     MemoryCopyStruct(info_copy, info);
-    info_copy.string         = push_str8_copy(d_state.arena, info.string);
+    info_copy.str         = push_str8_copy(d_state.arena, info.str);
     info_copy.display_string = push_str8_copy(d_state.arena, info.display_string);
     info_copy.description    = push_str8_copy(d_state.arena, info.description);
   }
 }
 
 D_ViewRuleSpec *
-d_view_rule_spec_from_string(StringView string)
+d_view_rule_spec_from_string(StringView str)
 {
   D_ViewRuleSpec* spec = &d_nil_core_view_rule_spec;
   {
-    uint64 hash = d_hash_from_string(string);
+    uint64 hash = d_hash_from_string(str);
     uint64 slot_idx = hash%d_state.view_rule_spec_table_size;
     for(D_ViewRuleSpec* s = d_state.view_rule_spec_table[slot_idx]; s != 0; s = s.hash_next)
     {
-      if(str8_match(string, s.info.string, 0))
+      if(str8_match(str, s.info.str, 0))
       {
         spec = s;
         break;
@@ -441,7 +441,7 @@ d_trap_net_from_thread__step_over_line(Arena* arena, CTRL_Entity* thread)
       log_infof("bytes:\n[\n");
       for(uint64 idx = 0; idx < machine_code_slice.data.size; idx += 1)
       {
-        log_infof("0x%x,", machine_code_slice.data.str[idx]);
+        log_infof("0x%x,", machine_code_slice.data[idx]);
         if(idx%16 == 15 || idx+1 == machine_code_slice.data.size)
         {
           log_infof("\n");
@@ -682,7 +682,7 @@ d_symbol_name_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff, B3
       RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
       E_TypeKey type = e_type_key_ext(E_TypeKind_Function, procedure.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
       StringView name = {0};
-      name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
+      name.Ptr = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
       if(decorated && procedure.type_idx != 0)
       {
         String8List list = {0};
@@ -751,7 +751,7 @@ d_voff_from_dbgi_key_symbol_name(DI_Key* dbgi_key, StringView symbol_name)
         RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, name_map_kind);
         RDI_ParsedNameMap parsed_name_map = {0};
         rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, symbol_name.str, symbol_name.size);
+        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, symbol_name.Ptr, symbol_name.size);
         
         // rjf: node . num
         uint64 entity_num = 0;
@@ -819,7 +819,7 @@ d_type_num_from_dbgi_key_name(DI_Key* dbgi_key, StringView name)
     RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Types);
     RDI_ParsedNameMap parsed_name_map = {0};
     rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-    RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, name.str, name.size);
+    RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, name.Ptr, name.size);
     uint64 entity_num = 0;
     if(node != 0)
     {
@@ -903,7 +903,7 @@ d_lines_from_dbgi_key_voff(Arena* arena, DI_Key* dbgi_key, uint64 voff)
             fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn.parent_path_node))
         {
           StringView path_part = {0};
-          path_part.str = rdi_string_from_idx(rdi, fpn.name_string_idx, &path_part.size);
+          path_part.Ptr = rdi_string_from_idx(rdi, fpn.name_string_idx, &path_part.size);
           str8_list_push_front(scratch.arena, &path_parts, path_part);
         }
         StringJoin join = {0};
@@ -958,7 +958,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, 
       override_n != 0;
       override_n = override_n.next)
   {
-    StringView file_path = override_n.string;
+    StringView file_path = override_n.str;
     StringView file_path_normalized = lower_from_str8(scratch.arena, file_path);
     
     // rjf: binary . rdi
@@ -972,7 +972,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena* arena, DI_Key dbgi_key, 
       RDI_NameMap* mapptr = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_NormalSourcePaths);
       RDI_ParsedNameMap map = {0};
       rdi_parsed_from_name_map(rdi, mapptr, &map);
-      RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, file_path_normalized.str, file_path_normalized.size);
+      RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, file_path_normalized.Ptr, file_path_normalized.size);
       if(node != 0)
       {
         uint32 id_count = 0;
@@ -1052,7 +1052,7 @@ d_lines_array_from_file_path_line_range(Arena* arena, StringView file_path, Rng1
       override_n != 0;
       override_n = override_n.next)
   {
-    StringView file_path = override_n.string;
+    StringView file_path = override_n.str;
     StringView file_path_normalized = lower_from_str8(scratch.arena, file_path);
     for(DI_KeyNode* dbgi_key_n = dbgi_keys.first;
         dbgi_key_n != 0;
@@ -1070,7 +1070,7 @@ d_lines_array_from_file_path_line_range(Arena* arena, StringView file_path, Rng1
         RDI_NameMap* mapptr = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_NormalSourcePaths);
         RDI_ParsedNameMap map = {0};
         rdi_parsed_from_name_map(rdi, mapptr, &map);
-        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, file_path_normalized.str, file_path_normalized.size);
+        RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &map, file_path_normalized.Ptr, file_path_normalized.size);
         if(node != 0)
         {
           uint32 id_count = 0;
@@ -1187,7 +1187,7 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, 
       CTRL_ProcessMemorySlice tls_index_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, tls_vaddr_range, 0);
       if(tls_index_slice.data.size >= addr_size)
       {
-        tls_index = *(uint64 *)tls_index_slice.data.str;
+        tls_index = *(uint64 *)tls_index_slice.data.Ptr;
       }
     }
     
@@ -1201,13 +1201,13 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity* process, uint64 root_vaddr, 
       StringView tls_addr_array_data = tls_addr_array_slice.data;
       if(tls_addr_array_data.size >= 8)
       {
-        MemoryCopy(&tls_addr_array, tls_addr_array_data.str, sizeof(uint64));
+        MemoryCopy(&tls_addr_array, tls_addr_array_data.Ptr, sizeof(uint64));
       }
       CTRL_ProcessMemorySlice result_slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, process.handle, r1u64(tls_addr_array + tls_addr_off, tls_addr_array + tls_addr_off + addr_size), 0);
       StringView result_data = result_slice.data;
       if(result_data.size >= 8)
       {
-        MemoryCopy(&base_vaddr, result_data.str, sizeof(uint64));
+        MemoryCopy(&base_vaddr, result_data.Ptr, sizeof(uint64));
       }
     }
     
@@ -1664,7 +1664,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
         
         case CTRL_EventKind_Error:
         {
-          log_user_error(event.string);
+          log_user_error(event.str);
         }break;
         
         //- rjf: starts/stops
@@ -1693,7 +1693,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
           {
             arena_clear(d_state.ctrl_stop_arena);
             MemoryCopyStruct(&d_state.ctrl_last_stop_event, event);
-            d_state.ctrl_last_stop_event.string = push_str8_copy(d_state.ctrl_stop_arena, d_state.ctrl_last_stop_event.string);
+            d_state.ctrl_last_stop_event.str = push_str8_copy(d_state.ctrl_stop_arena, d_state.ctrl_last_stop_event.str);
           }
           
           // rjf: push stop event to caller, if this is not a soft-halt
@@ -1755,7 +1755,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
         
         case CTRL_EventKind_DebugString:
         {
-          MTX_Op op = {r1u64(max_U64, max_U64), event.string};
+          MTX_Op op = {r1u64(max_U64, max_U64), event.str};
           mtx_push_op(d_state.output_log_key, op);
         }break;
         
@@ -1838,8 +1838,8 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
     }
     
     // rjf: join & hash to produce result
-    StringView string = str8_list_join(scratch.arena, &strings, 0);
-    XXH128_hash_t hash = XXH3_128bits(string.str, string.size);
+    StringView str = str8_list_join(scratch.arena, &strings, 0);
+    XXH128_hash_t hash = XXH3_128bits(str.Ptr, str.Length);
     MemoryCopy(&ctrl_param_state_hash, &hash, sizeof(ctrl_param_state_hash));
   }
   
@@ -1887,11 +1887,11 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
         case DI_EventKind_ConversionStarted:
         {
           RD_Entity* task = rd_entity_alloc(rd_entity_root(), RD_EntityKind_ConversionTask);
-          rd_entity_equip_name(task, event.string);
+          rd_entity_equip_name(task, event.str);
         }break;
         case DI_EventKind_ConversionEnded:
         {
-          RD_Entity* task = rd_entity_from_name_and_kind(event.string, RD_EntityKind_ConversionTask);
+          RD_Entity* task = rd_entity_from_name_and_kind(event.str, RD_EntityKind_ConversionTask);
           if(!rd_entity_is_nil(task))
           {
             rd_entity_mark_for_deletion(task);
@@ -1967,7 +1967,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
                   B32 quoted = 0;
                   for(uint64 idx = 0; idx <= args.size; idx += 1)
                   {
-                    uint8 byte = idx < args.size ? args.str[idx] : 0;
+                    uint8 byte = idx < args.size ? args[idx] : 0;
                     if(byte == '"')
                     {
                       quoted ^= 1;
@@ -1975,10 +1975,10 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
                     B32 splitter_found = (!quoted && (byte == 0 || char_is_space(byte)));
                     if(splitter_found)
                     {
-                      StringView string = str8_substr(args, r1u64(start_split_idx, idx));
-                      if(string.size > 0)
+                      StringView str = str8_substr(args, r1u64(start_split_idx, idx));
+                      if(str.Length > 0)
                       {
-                        str8_list_push(scratch.arena, &cmdln_strings, string);
+                        str8_list_push(scratch.arena, &cmdln_strings, str);
                       }
                       start_split_idx = idx+1;
                     }
@@ -2318,7 +2318,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
         case D_CmdKind_SetEntityName:
         {
           CTRL_Entity* entity = ctrl_entity_from_handle(d_state.ctrl_entity_store, params.entity);
-          ctrl_entity_equip_string(d_state.ctrl_entity_store, entity, params.string);
+          ctrl_entity_equip_string(d_state.ctrl_entity_store, entity, params.str);
         }break;
         
         //- rjf: attaching
@@ -2375,7 +2375,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
                 for(String8Node* n = overrides.first; n != 0; n = n.next)
                 {
                   CTRL_UserBreakpoint ctrl_user_bp = {CTRL_UserBreakpointKind_FileNameAndLineColNumber};
-                  ctrl_user_bp.string    = n.string;
+                  ctrl_user_bp.str    = n.str;
                   ctrl_user_bp.pt        = bp.pt;
                   ctrl_user_bp.condition = bp.condition;
                   ctrl_user_breakpoint_list_push(scratch.arena, &msg.user_bps, &ctrl_user_bp);
@@ -2395,7 +2395,7 @@ d_tick(Arena* arena, D_TargetArray* targets, D_BreakpointArray* breakpoints, D_P
               else if(bp.symbol_name.size != 0)
               {
                 CTRL_UserBreakpoint ctrl_user_bp = {CTRL_UserBreakpointKind_SymbolNameAndOffset};
-                ctrl_user_bp.string    = bp.symbol_name;
+                ctrl_user_bp.str    = bp.symbol_name;
                 ctrl_user_bp.condition = bp.condition;
                 ctrl_user_breakpoint_list_push(scratch.arena, &msg.user_bps, &ctrl_user_bp);
               }

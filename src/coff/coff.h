@@ -231,7 +231,7 @@ struct COFF_SymbolName
   uint8 short_name[8];
   struct {
     // if this field is filled with zeroes we have a long name,
-    // which means name is stored in the string table
+    // which means name is stored in the str table
     // and we need to use the offset to look it up...
     uint32 zeroes;
     uint32 string_table_offset;

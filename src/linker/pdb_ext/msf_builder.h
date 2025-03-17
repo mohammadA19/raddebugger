@@ -172,10 +172,10 @@ uint64      msf_stream_read_u64(MSF_Context* msf, MSF_StreamNumber sn);
 #define msf_stream_read_struct(msf, sn, ptr) msf_stream_read_array(msf, sn, ptr, 1)
 
 B32 msf_stream_write(MSF_Context* msf, MSF_StreamNumber sn, void* buffer, MSF_UInt buffer_size);
-B32 msf_stream_write_string(MSF_Context* msf, MSF_StreamNumber sn, StringView string);
+B32 msf_stream_write_string(MSF_Context* msf, MSF_StreamNumber sn, StringView str);
 B32 msf_stream_write_list(MSF_Context* msf, MSF_StreamNumber sn, String8List list);
 B32 msf_stream_write_uint(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt value);
-B32 msf_stream_write_cstr(MSF_Context* msf, MSF_StreamNumber sn, StringView string);
+B32 msf_stream_write_cstr(MSF_Context* msf, MSF_StreamNumber sn, StringView str);
 B32 msf_stream_write_u8(MSF_Context* msf, MSF_StreamNumber sn, uint8 value);
 B32 msf_stream_write_u16(MSF_Context* msf, MSF_StreamNumber sn, uint16 value);
 B32 msf_stream_write_u32(MSF_Context* msf, MSF_StreamNumber sn, uint32 value);

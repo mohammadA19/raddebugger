@@ -370,7 +370,7 @@ struct DW_LineTableParseResult
 struct DW_PubStringsBucket
 {
   DW_PubStringsBucket* next;
-  StringView              string;
+  StringView              str;
   uint64                  info_off;
   uint64                  cu_info_off;
 }
@@ -384,7 +384,7 @@ struct DW_PubStringsTable
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 dw_hash_from_string(StringView string);
+uint64 dw_hash_from_string(StringView str);
 
 ////////////////////////////////
 //~ Specific Based Range Helpers

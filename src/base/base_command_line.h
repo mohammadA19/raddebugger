@@ -12,7 +12,7 @@ struct CmdLineOpt
   CmdLineOpt* next;
   CmdLineOpt* hash_next;
   uint64 hash;
-  StringView string;
+  StringView str;
   String8List value_strings;
   StringView value_string;
 }
@@ -38,11 +38,11 @@ struct CmdLine
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-uint64              cmd_line_hash_from_string(StringView string);
-CmdLineOpt**     cmd_line_slot_from_string(CmdLine* cmd_line, StringView string);
-CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt** slot, StringView string);
+uint64              cmd_line_hash_from_string(StringView str);
+CmdLineOpt**     cmd_line_slot_from_string(CmdLine* cmd_line, StringView str);
+CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt** slot, StringView str);
 void             cmd_line_push_opt(CmdLineOptList* list, CmdLineOpt* var);
-CmdLineOpt*      cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, StringView string, String8List values);
+CmdLineOpt*      cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, StringView str, String8List values);
 CmdLine          cmd_line_from_string_list(Arena* arena, String8List arguments);
 CmdLineOpt*      cmd_line_opt_from_string(CmdLine* cmd_line, StringView name);
 String8List      cmd_line_strings(CmdLine* cmd_line, StringView name);

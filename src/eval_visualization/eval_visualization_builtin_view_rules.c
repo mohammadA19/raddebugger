@@ -88,7 +88,7 @@ ev_arch_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Arch arch = Arch_Null;
   MD_Node* arch_node = md_child_from_string(params, ("arch"), 0);
-  StringView arch_kind_string = arch_node.first.string;
+  StringView arch_kind_string = arch_node.first.str;
   if(str8_match(arch_kind_string, ("x64"), StringMatchFlag_CaseInsensitive))
   {
     arch = Arch_x64;
@@ -418,7 +418,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(wrap)
     Task* last_task = first_task;
     for(Task* t = first_task; t != 0; t = t.next)
     {
-      if(t.expr.kind == E_ExprKind_LeafIdent && str8_match(t.expr.string, ("$expr"), 0))
+      if(t.expr.kind == E_ExprKind_LeafIdent && str8_match(t.expr.str, ("$expr"), 0))
       {
         E_Expr* original_expr_ref = e_expr_ref(arena, expr);
         if(t.parent != &e_expr_nil)
@@ -468,7 +468,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(only)
     {
       for EachIndex(idx, current_members.count)
       {
-        if(str8_match(node.string, current_members.v[idx].name, 0))
+        if(str8_match(node.str, current_members.v[idx].name, 0))
         {
           e_member_list_push(scratch.arena, &new_members, &current_members.v[idx]);
           break;
@@ -525,7 +525,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(omit)
       B32 include = 1;
       for MD_EachNode(node, params.first)
       {
-        if(str8_match(node.string, current_members.v[idx].name, 0))
+        if(str8_match(node.str, current_members.v[idx].name, 0))
         {
           include = 0;
           break;

@@ -90,7 +90,7 @@ typedef uint64 RD_Option;
 struct RD_Marker
 {
   uint64     off;
-  StringView string;
+  StringView str;
 }
 
 struct RD_MarkerArray

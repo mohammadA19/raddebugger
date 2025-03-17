@@ -4,5 +4,5 @@
 #pragma once
 
 uint32 update_crc32(uint32 crc, uint8* ptr, uint64 size);
-uint32 crc32_from_string(StringView string);
+uint32 crc32_from_string(StringView str);
 

@@ -76,7 +76,7 @@ os_write_data_to_file_path(StringView path, StringView data)
   if(!os_handle_match(file, os_handle_zero()))
   {
     good = 1;
-    os_file_write(file, r1u64(0, data.size), data.str);
+    os_file_write(file, r1u64(0, data.size), data.Ptr);
     os_file_close(file);
   }
   return good;
@@ -93,8 +93,8 @@ os_write_data_list_to_file_path(StringView path, String8List list)
     uint64 off = 0;
     for(String8Node* n = list.first; n != 0; n = n.next)
     {
-      os_file_write(file, r1u64(off, off+n.string.size), n.string.str);
-      off += n.string.size;
+      os_file_write(file, r1u64(off, off+n.str.Length), n.str.Ptr);
+      off += n.str.Length;
     }
     os_file_close(file);
   }
@@ -112,7 +112,7 @@ os_append_data_to_file_path(StringView path, StringView data)
     {
       good = 1;
       uint64 pos = os_properties_from_file(file).size;
-      os_file_write(file, r1u64(pos, pos+data.size), data.str);
+      os_file_write(file, r1u64(pos, pos+data.size), data.Ptr);
       os_file_close(file);
     }
   }
@@ -141,8 +141,8 @@ os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
   uint64 pre_pos = arena_pos(arena);
   StringView result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, uint8, result.size);
-  uint64 actual_read_size = os_file_read(file, range, result.str);
+  result.Ptr = push_array_no_zero(arena, uint8, result.size);
+  uint64 actual_read_size = os_file_read(file, range, result.Ptr);
   if(actual_read_size < result.size)
   {
     arena_pop_to(arena, pre_pos + actual_read_size);
@@ -155,16 +155,16 @@ os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
 //~ rjf: Process Launcher Helpers
 
 OS_Handle
-os_cmd_line_launch(StringView string)
+os_cmd_line_launch(StringView str)
 {
   Temp scratch = scratch_begin(0, 0);
   uint8 split_chars[] = {' '};
-  String8List parts = str8_split(scratch.arena, string, split_chars, ArrayCount(split_chars), 0);
+  String8List parts = str8_split(scratch.arena, str, split_chars, ArrayCount(split_chars), 0);
   OS_Handle handle = {0};
   if(parts.node_count != 0)
   {
     // rjf: unpack exe part
-    StringView exe = parts.first.string;
+    StringView exe = parts.first.str;
     StringView exe_folder = str8_chop_last_slash(exe);
     if(exe_folder.size == 0)
     {
@@ -175,7 +175,7 @@ os_cmd_line_launch(StringView string)
     String8Node* stdout_delimiter_n = 0;
     for(String8Node* n = parts.first; n != 0; n = n.next)
     {
-      if(str8_match(n.string, (">"), 0))
+      if(str8_match(n.str, (">"), 0))
       {
         stdout_delimiter_n = n;
         break;
@@ -186,7 +186,7 @@ os_cmd_line_launch(StringView string)
     StringView stdout_path = {0};
     if(stdout_delimiter_n && stdout_delimiter_n.next)
     {
-      stdout_path = stdout_delimiter_n.next.string;
+      stdout_path = stdout_delimiter_n.next.str;
     }
     
     // rjf: open stdout handle
@@ -202,7 +202,7 @@ os_cmd_line_launch(StringView string)
     String8List cmdline = {0};
     for(String8Node* n = parts.first; n != stdout_delimiter_n && n != 0; n = n.next)
     {
-      str8_list_push(scratch.arena, &cmdline, n.string);
+      str8_list_push(scratch.arena, &cmdline, n.str);
     }
     
     // rjf: launch
@@ -231,8 +231,8 @@ os_cmd_line_launchf(char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
-  OS_Handle result = os_cmd_line_launch(string);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
+  OS_Handle result = os_cmd_line_launch(str);
   va_end(args);
   scratch_end(scratch);
   return result;

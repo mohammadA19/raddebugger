@@ -233,7 +233,7 @@ thread_static B32 dmn_w32_ctrl_thread = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 dmn_w32_hash_from_string(StringView string);
+uint64 dmn_w32_hash_from_string(StringView str);
 uint64 dmn_w32_hash_from_id(uint64 id);
 
 ////////////////////////////////

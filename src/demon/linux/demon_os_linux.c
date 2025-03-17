@@ -85,7 +85,7 @@ demon_lnx_executable_path_from_pid(Arena* arena, pid_t pid){
   for (int64 r = 0; r < 4; cap *= 2, r += 1){
     temp_end(restore_point);
     buffer = push_array_no_zero(arena, uint8, cap);
-    size = readlink((char*)exe_symbol_path.str, (char*)buffer, cap);
+    size = readlink((char*)exe_symbol_path.Ptr, (char*)buffer, cap);
     if (size < cap){
       got_final_result = true;
       break;
@@ -110,7 +110,7 @@ int
 demon_lnx_open_memory_fd_for_pid(pid_t pid){
   Temp scratch = scratch_begin(0, 0);
   StringView memory_path = push_str8f(scratch.arena, "/proc/%i/mem", pid);
-  int result = open((char*)memory_path.str, O_RDWR);
+  int result = open((char*)memory_path.Ptr, O_RDWR);
   scratch_end(scratch);
   return(result);
 }
@@ -126,7 +126,7 @@ demon_lnx_arch_from_pid(pid_t pid){
   // handle to exe
   int exe_fd = -1;
   if (exe_path.size != 0){
-    exe_fd = open((char*)exe_path.str, O_RDONLY);
+    exe_fd = open((char*)exe_path.Ptr, O_RDONLY);
   }
   
   // elf identification
@@ -199,7 +199,7 @@ demon_lnx_aux_from_pid(pid_t pid, Arch arch){
   // open aux data
   Temp scratch = scratch_begin(0, 0);
   StringView auxv_symbol_path = push_str8f(scratch.arena, "/proc/%d/auxv", pid);
-  int aux_fd = open((char*)auxv_symbol_path.str, O_RDONLY);
+  int aux_fd = open((char*)auxv_symbol_path.Ptr, O_RDONLY);
   
   // scan aux data
   if (aux_fd >= 0){
@@ -670,7 +670,7 @@ int
 demon_lnx_open_maps(pid_t pid){
   Temp scratch = scratch_begin(0, 0);
   StringView path = push_str8f(scratch.arena, "/proc/%d/maps", pid);
-  int maps = open((char*)path.str, O_RDONLY);
+  int maps = open((char*)path.Ptr, O_RDONLY);
   scratch_end(scratch);
   return(maps);
 }
@@ -1441,8 +1441,8 @@ demon_os_launch_process(OS_LaunchOptions* options){
     for (String8Node* node = options.cmd_line.first;
          node != 0;
          node = node.next, arg_ptr += 1){
-      StringView string = push_str8_copy(scratch.arena, node.string);
-      *arg_ptr = (char*)string.str;
+      StringView str = push_str8_copy(scratch.arena, node.str);
+      *arg_ptr = (char*)str.Ptr;
     }
     *arg_ptr = 0;
     binary = args[0];
@@ -1450,8 +1450,8 @@ demon_os_launch_process(OS_LaunchOptions* options){
   
   char* path = 0;
   {
-    StringView string = push_str8_copy(scratch.arena, options.path);
-    path = (char*)string.str;
+    StringView str = push_str8_copy(scratch.arena, options.path);
+    path = (char*)str.Ptr;
   }
   
   char** env = 0;
@@ -1461,8 +1461,8 @@ demon_os_launch_process(OS_LaunchOptions* options){
     for (String8Node* node = options.env.first;
          node != 0;
          node = node.next, env_ptr += 1){
-      StringView string = push_str8_copy(scratch.arena, node.string);
-      *env_ptr = (char*)string.str;
+      StringView str = push_str8_copy(scratch.arena, node.str);
+      *env_ptr = (char*)str.Ptr;
     }
     *env_ptr = 0;
   }
@@ -1651,7 +1651,7 @@ demon_os_attach_process(uint32 pid){
   // open thread list
   if (attached_proc){
     StringView threads_path = push_str8f(scratch.arena, "/proc/%d/task", pid);
-    DIR* proc_dir = opendir((char*)threads_path.str);
+    DIR* proc_dir = opendir((char*)threads_path.Ptr);
     if (proc_dir == 0){
       // TODO(allen): could not read proc threads somehow; no good!
     }

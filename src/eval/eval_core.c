@@ -10,12 +10,12 @@
 //~ rjf: Basic Helper Functions
 
 uint64
-e_hash_from_string(uint64 seed, StringView string)
+e_hash_from_string(uint64 seed, StringView str)
 {
   uint64 result = seed;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }

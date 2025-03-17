@@ -22,7 +22,7 @@ static read_only int64 e_max_precedence = 15;
 ////////////////////////////////
 //~ rjf: Basic Map Functions
 
-//- rjf: string . num
+//- rjf: str . num
 
 E_String2NumMap
 e_string2num_map_make(Arena* arena, uint64 slot_count)
@@ -34,14 +34,14 @@ e_string2num_map_make(Arena* arena, uint64 slot_count)
 }
 
 void
-e_string2num_map_insert(Arena* arena, E_String2NumMap* map, StringView string, uint64 num)
+e_string2num_map_insert(Arena* arena, E_String2NumMap* map, StringView str, uint64 num)
 {
-  uint64 hash = e_hash_from_string(5381, string);
+  uint64 hash = e_hash_from_string(5381, str);
   uint64 slot_idx = hash%map.slots_count;
   E_String2NumMapNode* existing_node = 0;
   for(E_String2NumMapNode* node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
   {
-    if(str8_match(node.string, string, 0) && node.num == num)
+    if(str8_match(node.str, str, 0) && node.num == num)
     {
       existing_node = node;
       break;
@@ -52,24 +52,24 @@ e_string2num_map_insert(Arena* arena, E_String2NumMap* map, StringView string, u
     E_String2NumMapNode* node = push_array(arena, E_String2NumMapNode, 1);
     SLLQueuePush_N(map.slots[slot_idx].first, map.slots[slot_idx].last, node, hash_next);
     SLLQueuePush_N(map.first, map.last, node, order_next);
-    node.string = push_str8_copy(arena, string);
+    node.str = push_str8_copy(arena, str);
     node.num = num;
     map.node_count += 1;
   }
 }
 
 uint64
-e_num_from_string(E_String2NumMap* map, StringView string)
+e_num_from_string(E_String2NumMap* map, StringView str)
 {
   uint64 num = 0;
   if(map.slots_count != 0)
   {
-    uint64 hash = e_hash_from_string(5381, string);
+    uint64 hash = e_hash_from_string(5381, str);
     uint64 slot_idx = hash%map.slots_count;
     E_String2NumMapNode* existing_node = 0;
     for(E_String2NumMapNode* node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
     {
-      if(str8_match(node.string, string, 0))
+      if(str8_match(node.str, str, 0))
       {
         existing_node = node;
         break;
@@ -118,7 +118,7 @@ e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array)
   quick_sort(array.v, array.count, sizeof(array.v[0]), e_string2num_map_node_qsort_compare__num_ascending);
 }
 
-//- rjf: string . expr
+//- rjf: str . expr
 
 E_String2ExprMap
 e_string2expr_map_make(Arena* arena, uint64 slot_count)
@@ -130,16 +130,16 @@ e_string2expr_map_make(Arena* arena, uint64 slot_count)
 }
 
 void
-e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, StringView string, E_Expr* expr)
+e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, StringView str, E_Expr* expr)
 {
-  uint64 hash = e_hash_from_string(5381, string);
+  uint64 hash = e_hash_from_string(5381, str);
   uint64 slot_idx = hash%map.slots_count;
   E_String2ExprMapNode* existing_node = 0;
   for(E_String2ExprMapNode* node = map.slots[slot_idx].first;
       node != 0;
       node = node.hash_next)
   {
-    if(str8_match(node.string, string, 0))
+    if(str8_match(node.str, str, 0))
     {
       existing_node = node;
       break;
@@ -149,22 +149,22 @@ e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, StringView string,
   {
     E_String2ExprMapNode* node = push_array(arena, E_String2ExprMapNode, 1);
     SLLQueuePush_N(map.slots[slot_idx].first, map.slots[slot_idx].last, node, hash_next);
-    node.string = push_str8_copy(arena, string);
+    node.str = push_str8_copy(arena, str);
     existing_node = node;
   }
   existing_node.expr = expr;
 }
 
 void
-e_string2expr_map_inc_poison(E_String2ExprMap* map, StringView string)
+e_string2expr_map_inc_poison(E_String2ExprMap* map, StringView str)
 {
-  uint64 hash = e_hash_from_string(5381, string);
+  uint64 hash = e_hash_from_string(5381, str);
   uint64 slot_idx = hash%map.slots_count;
   for(E_String2ExprMapNode* node = map.slots[slot_idx].first;
       node != 0;
       node = node.hash_next)
   {
-    if(str8_match(node.string, string, 0))
+    if(str8_match(node.str, str, 0))
     {
       node.poison_count += 1;
       break;
@@ -173,15 +173,15 @@ e_string2expr_map_inc_poison(E_String2ExprMap* map, StringView string)
 }
 
 void
-e_string2expr_map_dec_poison(E_String2ExprMap* map, StringView string)
+e_string2expr_map_dec_poison(E_String2ExprMap* map, StringView str)
 {
-  uint64 hash = e_hash_from_string(5381, string);
+  uint64 hash = e_hash_from_string(5381, str);
   uint64 slot_idx = hash%map.slots_count;
   for(E_String2ExprMapNode* node = map.slots[slot_idx].first;
       node != 0;
       node = node.hash_next)
   {
-    if(str8_match(node.string, string, 0) && node.poison_count > 0)
+    if(str8_match(node.str, str, 0) && node.poison_count > 0)
     {
       node.poison_count -= 1;
       break;
@@ -190,17 +190,17 @@ e_string2expr_map_dec_poison(E_String2ExprMap* map, StringView string)
 }
 
 E_Expr *
-e_string2expr_lookup(E_String2ExprMap* map, StringView string)
+e_string2expr_lookup(E_String2ExprMap* map, StringView str)
 {
   E_Expr* expr = &e_expr_nil;
   if(map.slots_count != 0)
   {
-    uint64 hash = e_hash_from_string(5381, string);
+    uint64 hash = e_hash_from_string(5381, str);
     uint64 slot_idx = hash%map.slots_count;
     E_String2ExprMapNode* existing_node = 0;
     for(E_String2ExprMapNode* node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
     {
-      if(str8_match(node.string, string, 0) && node.poison_count == 0)
+      if(str8_match(node.str, str, 0) && node.poison_count == 0)
       {
         existing_node = node;
         break;
@@ -326,7 +326,7 @@ e_push_member_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, uint64 voff)
       if(m.kind == RDI_MemberKind_DataField)
       {
         StringView name = {0};
-        name.str = rdi_string_from_idx(rdi, m.name_string_idx, &name.size);
+        name.Ptr = rdi_string_from_idx(rdi, m.name_string_idx, &name.size);
         e_string2num_map_insert(arena, map, name, data_member_num);
         data_member_num += 1;
       }
@@ -391,9 +391,9 @@ e_token_array_from_text(Arena* arena, StringView text)
   B32 exp = 0;
   for(uint64 idx = 0, advance = 0; idx <= text.size; idx += advance)
   {
-    uint8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
-    uint8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
-    uint8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
+    uint8 byte      = (idx+0 < text.size) ? text[idx+0] : 0;
+    uint8 byte_next = (idx+1 < text.size) ? text[idx+1] : 0;
+    uint8 byte_next2= (idx+2 < text.size) ? text[idx+2] : 0;
     advance = 1;
     B32 token_formed = 0;
     uint64 token_end_idx_pad = 0;
@@ -457,11 +457,11 @@ e_token_array_from_text(Arena* arena, StringView text)
           int64 nest = 1;
           for(uint64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
           {
-            if(idx2 < text.size && text.str[idx2] == '<')
+            if(idx2 < text.size && text[idx2] == '<')
             {
               nest += 1;
             }
-            else if(idx2 < text.size && text.str[idx2] == '>')
+            else if(idx2 < text.size && text[idx2] == '>')
             {
               nest -= 1;
               if(nest == 0)
@@ -558,15 +558,15 @@ e_token_array_from_text(Arena* arena, StringView text)
         e_token_chunk_list_push(scratch.arena, &tokens, 256, &token);
       }
       
-      // rjf: symbolic strings matching `--` mean the remainder of the string
+      // rjf: symbolic strings matching `--` mean the remainder of the str
       // is reserved for external usage. the rest of the stream should not
       // be tokenized.
-      else if(idx == active_token_start_idx+2 && text.str[active_token_start_idx] == '-' && text.str[active_token_start_idx+1] == '-')
+      else if(idx == active_token_start_idx+2 && text[active_token_start_idx] == '-' && text[active_token_start_idx+1] == '-')
       {
         break;
       }
       
-      // rjf: if we got a symbol string of N>1 characters, then we need to
+      // rjf: if we got a symbol str of N>1 characters, then we need to
       // apply the maximum-munch rule, and produce M<=N tokens, where each
       // formed token is the maximum size possible, given the legal
       // >1-length symbol strings.
@@ -695,7 +695,7 @@ e_expr_ref_member_access(Arena* arena, E_Expr* lhs, StringView member_name)
   E_Expr* root = e_push_expr(arena, E_ExprKind_MemberAccess, 0);
   E_Expr* lhs_ref = e_expr_ref(arena, lhs);
   E_Expr* rhs = e_push_expr(arena, E_ExprKind_LeafMember, 0);
-  rhs.string = push_str8_copy(arena, member_name);
+  rhs.str = push_str8_copy(arena, member_name);
   e_expr_push_child(root, lhs_ref);
   e_expr_push_child(root, rhs);
   return root;
@@ -788,11 +788,11 @@ e_append_strings_from_expr(Arena* arena, E_Expr* expr, String8List* out)
     case E_ExprKind_LeafMember:
     case E_ExprKind_LeafIdent:
     {
-      str8_list_push(arena, out, expr.string);
+      str8_list_push(arena, out, expr.str);
     }break;
     case E_ExprKind_LeafStringLiteral:
     {
-      str8_list_pushf(arena, out, "\"%S\"", expr.string);
+      str8_list_pushf(arena, out, "\"%S\"", expr.str);
     }break;
     case E_ExprKind_LeafU64:
     case E_ExprKind_LeafBool:
@@ -805,7 +805,7 @@ e_append_strings_from_expr(Arena* arena, E_Expr* expr, String8List* out)
     }break;
     case E_ExprKind_LeafFilePath:
     {
-      str8_list_pushf(arena, out, "file:\"%S\"", escaped_from_raw_str8(arena, expr.string));
+      str8_list_pushf(arena, out, "file:\"%S\"", escaped_from_raw_str8(arena, expr.str));
     }break;
     case E_ExprKind_LeafF64:
     {
@@ -850,7 +850,7 @@ e_leaf_type_from_name(StringView name)
     RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Types);
     RDI_ParsedNameMap parsed_name_map = {0};
     rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-    RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, name.str, name.size);
+    RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, name.Ptr, name.size);
     if(node != 0)
     {
       uint32 match_count = 0;
@@ -991,7 +991,7 @@ e_push_leaf_ident_exprs_from_expr__in_place(Arena* arena, E_String2ExprMap* map,
       E_Expr* exprr = exprl.next;
       if(exprl.kind == E_ExprKind_LeafIdent)
       {
-        e_string2expr_map_insert(arena, map, exprl.string, exprr);
+        e_string2expr_map_insert(arena, map, exprl.str, exprr);
       }
     }break;
   }
@@ -1025,8 +1025,8 @@ e_parse_type_from_text_tokens(Arena* arena, StringView text, E_TokenArray* token
     {
       StringView token_string = str8_substr(text, token.range);
       if(token_string.size >= 2 &&
-         token_string.str[0] == '`' &&
-         token_string.str[token_string.size-1] == '`')
+         token_string[0] == '`' &&
+         token_string[token_string.size-1] == '`')
       {
         token_string = str8_substr(token_string, r1u64(1, token_string.size-1));
       }
@@ -1052,7 +1052,7 @@ e_parse_type_from_text_tokens(Arena* arena, StringView text, E_TokenArray* token
         }
         
         // rjf: construct leaf type
-        parse.expr = e_push_expr(arena, E_ExprKind_TypeIdent, token_string.str);
+        parse.expr = e_push_expr(arena, E_ExprKind_TypeIdent, token_string.Ptr);
         parse.expr.type_key = type_key;
       }
     }
@@ -1073,7 +1073,7 @@ e_parse_type_from_text_tokens(Arena* arena, StringView text, E_TokenArray* token
       {
         token_it += 1;
         E_Expr* ptee = parse.expr;
-        parse.expr = e_push_expr(arena, E_ExprKind_Ptr, token_string.str);
+        parse.expr = e_push_expr(arena, E_ExprKind_Ptr, token_string.Ptr);
         e_expr_push_child(parse.expr, ptee);
       }
       else
@@ -1133,7 +1133,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       // rjf: consume valid op
       if(prefix_unary_precedence != 0)
       {
-        location = token_string.str;
+        location = token_string.Ptr;
         it += 1;
       }
       
@@ -1156,14 +1156,14 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
             E_Expr* type = type_parse.expr;
             e_msg_list_concat_in_place(&result.msgs, &type_parse.msgs);
             it = type_parse.last_token;
-            location = token_string.str;
+            location = token_string.Ptr;
             
             // rjf: expect )
             E_Token close_paren_maybe = e_token_at_it(it, tokens);
             StringView close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
             if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, (")"), 0))
             {
-              e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Missing `)`.");
+              e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Missing `)`.");
             }
             
             // rjf: consume )
@@ -1244,7 +1244,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       StringView close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
       if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, (")"), 0))
       {
-        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Missing `)`.");
+        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Missing `)`.");
       }
       
       // rjf: consume )
@@ -1270,17 +1270,17 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       // rjf: build cast-to-uint64*, and dereference operators
       if(nested_parse.expr == &e_expr_nil)
       {
-        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Expected expression following `[`.");
+        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Expected expression following `[`.");
       }
       else
       {
-        E_Expr* type = e_push_expr(arena, E_ExprKind_TypeIdent, token_string.str);
+        E_Expr* type = e_push_expr(arena, E_ExprKind_TypeIdent, token_string.Ptr);
         type.type_key = e_type_key_cons_ptr(e_parse_ctx.primary_module.arch, e_type_key_basic(E_TypeKind_U64), 0);
         E_Expr* casted = atom;
-        E_Expr* cast = e_push_expr(arena, E_ExprKind_Cast, token_string.str);
+        E_Expr* cast = e_push_expr(arena, E_ExprKind_Cast, token_string.Ptr);
         e_expr_push_child(cast, type);
         e_expr_push_child(cast, casted);
-        atom = e_push_expr(arena, E_ExprKind_Deref, token_string.str);
+        atom = e_push_expr(arena, E_ExprKind_Deref, token_string.Ptr);
         e_expr_push_child(atom, cast);
       }
       
@@ -1289,7 +1289,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       StringView close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
       if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, ("]"), 0))
       {
-        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Missing `]`.");
+        e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Missing `]`.");
       }
       
       // rjf: consume )
@@ -1326,13 +1326,13 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           
           //- rjf: identifiers surrounded by ``s should have those `s stripped
           if(local_lookup_string.size >= 2 &&
-             local_lookup_string.str[0] == '`' &&
-             local_lookup_string.str[local_lookup_string.size-1] == '`')
+             local_lookup_string[0] == '`' &&
+             local_lookup_string[local_lookup_string.size-1] == '`')
           {
             token_string = local_lookup_string = str8_substr(local_lookup_string, r1u64(1, local_lookup_string.size-1));
           }
           
-          //- rjf: form namespaceified fallback versions of this lookup string
+          //- rjf: form namespaceified fallback versions of this lookup str
           String8List namespaceified_token_strings = {0};
           {
             E_Module* module = e_parse_ctx.primary_module;
@@ -1479,14 +1479,14 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
               RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_GlobalVariables);
               RDI_ParsedNameMap parsed_name_map = {0};
               rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.str, token_string.size);
+              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.Ptr, token_string.size);
               uint32 matches_count = 0;
               uint32* matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               for(String8Node* n = namespaceified_token_strings.first;
                   n != 0 && matches_count == 0;
                   n = n.next)
               {
-                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.string.str, n.string.size);
+                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.str.Ptr, n.str.Length);
                 matches_count = 0;
                 matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               }
@@ -1523,14 +1523,14 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
               RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_ThreadVariables);
               RDI_ParsedNameMap parsed_name_map = {0};
               rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.str, token_string.size);
+              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.Ptr, token_string.size);
               uint32 matches_count = 0;
               uint32* matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               for(String8Node* n = namespaceified_token_strings.first;
                   n != 0 && matches_count == 0;
                   n = n.next)
               {
-                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.string.str, n.string.size);
+                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.str.Ptr, n.str.Length);
                 matches_count = 0;
                 matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               }
@@ -1563,14 +1563,14 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
               RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Procedures);
               RDI_ParsedNameMap parsed_name_map = {0};
               rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.str, token_string.size);
+              RDI_NameMapNode* node = rdi_name_map_lookup(rdi, &parsed_name_map, token_string.Ptr, token_string.size);
               uint32 matches_count = 0;
               uint32* matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               for(String8Node* n = namespaceified_token_strings.first;
                   n != 0 && matches_count == 0;
                   n = n.next)
               {
-                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.string.str, n.string.size);
+                node = rdi_name_map_lookup(rdi, &parsed_name_map, n.str.Ptr, n.str.Length);
                 matches_count = 0;
                 matches = rdi_matches_from_map_node(rdi, node, &matches_count);
               }
@@ -1636,7 +1636,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
               {
                 if(identifier_is_constant_value)
                 {
-                  atom = e_push_expr(arena, E_ExprKind_LeafBool, token_string.str);
+                  atom = e_push_expr(arena, E_ExprKind_LeafBool, token_string.Ptr);
                   atom.value.u64 = constant_value;
                   atom.type_key  = type_key;
                 }
@@ -1654,11 +1654,11 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
                   REGS_Rng reg_rng = regs_reg_code_rng_table_from_arch(e_parse_ctx.primary_module.arch)[reg_code];
                   E_OpList oplist = {0};
                   e_oplist_push_uconst(arena, &oplist, reg_rng.byte_off);
-                  atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                  atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                   atom.mode     = E_Mode_Offset;
                   atom.space    = space;
                   atom.type_key = type_key;
-                  atom.string   = token_string;
+                  atom.str   = token_string;
                   atom.bytecode = e_bytecode_from_oplist(arena, &oplist);
                 }
                 else if(alias_code != 0)
@@ -1667,34 +1667,34 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
                   REGS_Rng alias_reg_rng = regs_reg_code_rng_table_from_arch(e_parse_ctx.primary_module.arch)[alias_slice.code];
                   E_OpList oplist = {0};
                   e_oplist_push_uconst(arena, &oplist, alias_reg_rng.byte_off + alias_slice.byte_off);
-                  atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                  atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                   atom.mode     = E_Mode_Offset;
                   atom.space    = space;
                   atom.type_key = type_key;
-                  atom.string   = token_string;
+                  atom.str   = token_string;
                   atom.bytecode = e_bytecode_from_oplist(arena, &oplist);
                 }
                 else
                 {
-                  e_msgf(arena, &result.msgs, E_MsgKind_MissingInfo, token_string.str, "Missing location information for `%S`.", token_string);
+                  e_msgf(arena, &result.msgs, E_MsgKind_MissingInfo, token_string.Ptr, "Missing location information for `%S`.", token_string);
                 }
               }break;
               case RDI_LocationKind_AddrBytecodeStream:
               {
-                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                 atom.mode     = E_Mode_Offset;
                 atom.space    = space;
                 atom.type_key = type_key;
-                atom.string   = token_string;
+                atom.str   = token_string;
                 atom.bytecode = loc_bytecode;
               }break;
               case RDI_LocationKind_ValBytecodeStream:
               {
-                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                 atom.mode     = E_Mode_Value;
                 atom.space    = space;
                 atom.type_key = type_key;
-                atom.string   = token_string;
+                atom.str   = token_string;
                 atom.bytecode = loc_bytecode;
               }break;
               case RDI_LocationKind_AddrRegPlusU16:
@@ -1705,11 +1705,11 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_RegRead, e_value_u64(regread_param));
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_ConstU16, e_value_u64(loc_reg_u16.offset));
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_Add, e_value_u64(0));
-                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                 atom.mode     = E_Mode_Offset;
                 atom.space    = space;
                 atom.type_key = type_key;
-                atom.string   = token_string;
+                atom.str   = token_string;
                 atom.bytecode = e_bytecode_from_oplist(arena, &oplist);
               }break;
               case RDI_LocationKind_AddrAddrRegPlusU16:
@@ -1721,11 +1721,11 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_ConstU16, e_value_u64(loc_reg_u16.offset));
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_Add, e_value_u64(0));
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_MemRead, e_value_u64(bit_size_from_arch(arch)/8));
-                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                 atom.mode     = E_Mode_Offset;
                 atom.space    = space;
                 atom.type_key = type_key;
-                atom.string   = token_string;
+                atom.str   = token_string;
                 atom.bytecode = e_bytecode_from_oplist(arena, &oplist);
               }break;
               case RDI_LocationKind_ValReg:
@@ -1737,11 +1737,11 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
                 uint64 byte_pos = 0;
                 uint64 regread_param = RDI_EncodeRegReadParam(loc_reg.reg_code, byte_size, byte_pos);
                 e_oplist_push_op(arena, &oplist, RDI_EvalOp_RegRead, e_value_u64(regread_param));
-                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.str);
+                atom = e_push_expr(arena, E_ExprKind_LeafBytecode, token_string.Ptr);
                 atom.mode     = E_Mode_Value;
                 atom.space    = space;
                 atom.type_key = type_key;
-                atom.string   = token_string;
+                atom.str   = token_string;
                 atom.bytecode = e_bytecode_from_oplist(arena, &oplist);
               }break;
             }
@@ -1750,9 +1750,9 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
             if(atom_implicit_member_name.size != 0 && atom != &e_expr_nil)
             {
               E_Expr* member_container = atom;
-              E_Expr* member_expr = e_push_expr(arena, E_ExprKind_LeafMember, atom_implicit_member_name.str);
-              member_expr.string = atom_implicit_member_name;
-              atom = e_push_expr(arena, E_ExprKind_MemberAccess, atom_implicit_member_name.str);
+              E_Expr* member_expr = e_push_expr(arena, E_ExprKind_LeafMember, atom_implicit_member_name.Ptr);
+              member_expr.str = atom_implicit_member_name;
+              atom = e_push_expr(arena, E_ExprKind_MemberAccess, atom_implicit_member_name.Ptr);
               atom.space = space;
               e_expr_push_child(atom, member_container);
               e_expr_push_child(atom, member_expr);
@@ -1762,8 +1762,8 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           //- rjf: map failure . attach as leaf identifier, to be resolved later
           if(!mapped_identifier)
           {
-            atom = e_push_expr(arena, E_ExprKind_LeafIdent, token_string.str);
-            atom.string = token_string;
+            atom = e_push_expr(arena, E_ExprKind_LeafIdent, token_string.Ptr);
+            atom.str = token_string;
             it += 1;
           }
         }break;
@@ -1779,7 +1779,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           {
             uint64 val = 0;
             try_u64_from_str8_c_rules(token_string, &val);
-            atom = e_push_expr(arena, E_ExprKind_LeafU64, token_string.str);
+            atom = e_push_expr(arena, E_ExprKind_LeafU64, token_string.Ptr);
             atom.value.u64 = val;
             break;
           }
@@ -1793,14 +1793,14 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
             // rjf: presence of f after . => f32
             if(f_pos < token_string.size)
             {
-              atom = e_push_expr(arena, E_ExprKind_LeafF32, token_string.str);
+              atom = e_push_expr(arena, E_ExprKind_LeafF32, token_string.Ptr);
               atom.value.f32 = val;
             }
             
             // rjf: no f => f64
             else
             {
-              atom = e_push_expr(arena, E_ExprKind_LeafF64, token_string.str);
+              atom = e_push_expr(arena, E_ExprKind_LeafF64, token_string.Ptr);
               atom.value.f64 = val;
             }
           }
@@ -1810,37 +1810,37 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
         case E_TokenKind_CharLiteral:
         {
           it += 1;
-          if(token_string.size > 1 && token_string.str[0] == '\'' && token_string.str[1] != '\'')
+          if(token_string.size > 1 && token_string[0] == '\'' && token_string[1] != '\'')
           {
             StringView char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
             StringView char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
-            uint8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
-            atom = e_push_expr(arena, E_ExprKind_LeafU64, token_string.str);
+            uint8 char_val = char_literal_raw.size > 0 ? char_literal_raw[0] : 0;
+            atom = e_push_expr(arena, E_ExprKind_LeafU64, token_string.Ptr);
             atom.value.u64 = (uint64)char_val;
           }
           else
           {
-            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Malformed character literal.");
+            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Malformed character literal.");
           }
         }break;
         
-        // rjf: string => leaf string literal, or file path
+        // rjf: str => leaf str literal, or file path
         case E_TokenKind_StringLiteral:
         {
           if(str8_match(resolution_qualifier, ("file"), 0))
           {
             StringView string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
             StringView string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
-            atom = e_push_expr(arena, E_ExprKind_LeafFilePath, token_string.str);
-            atom.string = string_value_raw;
+            atom = e_push_expr(arena, E_ExprKind_LeafFilePath, token_string.Ptr);
+            atom.str = string_value_raw;
             it += 1;
           }
           else
           {
             StringView string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
             StringView string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
-            atom = e_push_expr(arena, E_ExprKind_LeafStringLiteral, token_string.str);
-            atom.string = string_value_raw;
+            atom = e_push_expr(arena, E_ExprKind_LeafStringLiteral, token_string.Ptr);
+            atom.str = string_value_raw;
             it += 1;
           }
         }break;
@@ -1874,7 +1874,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
         StringView member_name_maybe_string = str8_substr(text, member_name_maybe.range);
         if(member_name_maybe.kind != E_TokenKind_Identifier)
         {
-          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Expected member name after `%S`.", token_string);
+          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Expected member name after `%S`.", token_string);
         }
         else
         {
@@ -1887,9 +1887,9 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       if(good_member_name)
       {
         E_Expr* member_container = atom;
-        E_Expr* member_expr = e_push_expr(arena, E_ExprKind_LeafMember, member_name.str);
-        member_expr.string = member_name;
-        atom = e_push_expr(arena, E_ExprKind_MemberAccess, token_string.str);
+        E_Expr* member_expr = e_push_expr(arena, E_ExprKind_LeafMember, member_name.Ptr);
+        member_expr.str = member_name;
+        atom = e_push_expr(arena, E_ExprKind_MemberAccess, token_string.Ptr);
         e_expr_push_child(atom, member_container);
         e_expr_push_child(atom, member_expr);
       }
@@ -1921,7 +1921,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
       {
         E_Expr* array_expr = atom;
         E_Expr* index_expr = idx_expr_parse.expr;
-        atom = e_push_expr(arena, E_ExprKind_ArrayIndex, token_string.str);
+        atom = e_push_expr(arena, E_ExprKind_ArrayIndex, token_string.Ptr);
         e_expr_push_child(atom, array_expr);
         e_expr_push_child(atom, index_expr);
       }
@@ -1932,7 +1932,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
         StringView close_brace_maybe_string = str8_substr(text, close_brace_maybe.range);
         if(close_brace_maybe.kind != E_TokenKind_Symbol || !str8_match(close_brace_maybe_string, ("]"), 0))
         {
-          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Unclosed `[`.");
+          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Unclosed `[`.");
         }
         else
         {
@@ -2020,12 +2020,12 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
         it = rhs_expr_parse.last_token;
         if(rhs == &e_expr_nil)
         {
-          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Missing right-hand-side of `%S`.", token_string);
+          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Missing right-hand-side of `%S`.", token_string);
         }
         else
         {
           E_Expr* lhs = atom;
-          atom = e_push_expr(arena, binary_kind, token_string.str);
+          atom = e_push_expr(arena, binary_kind, token_string.Ptr);
           e_expr_push_child(atom, lhs);
           e_expr_push_child(atom, rhs);
         }
@@ -2046,7 +2046,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
         e_msg_list_concat_in_place(&result.msgs, &middle_expr_parse.msgs);
         if(middle_expr_parse.expr == &e_expr_nil)
         {
-          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Expected expression after `?`.");
+          e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Expected expression after `?`.");
         }
         
         // rjf: expect :
@@ -2058,7 +2058,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           StringView colon_token_maybe_string = str8_substr(text, colon_token_maybe.range);
           if(colon_token_maybe.kind != E_TokenKind_Symbol || !str8_match(colon_token_maybe_string, (":"), 0))
           {
-            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.str, "Expected `:` after `?`.");
+            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token_string.Ptr, "Expected `:` after `?`.");
           }
           else
           {
@@ -2078,7 +2078,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           e_msg_list_concat_in_place(&result.msgs, &rhs_expr_parse.msgs);
           if(rhs_expr_parse.expr == &e_expr_nil)
           {
-            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, colon_token_string.str, "Expected expression after `:`.");
+            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, colon_token_string.Ptr, "Expected expression after `:`.");
           }
         }
         
@@ -2090,7 +2090,7 @@ e_parse_expr_from_text_tokens__prec(Arena* arena, StringView text, E_TokenArray*
           E_Expr* lhs = atom;
           E_Expr* mhs = middle_expr_parse.expr;
           E_Expr* rhs = rhs_expr_parse.expr;
-          atom = e_push_expr(arena, E_ExprKind_Ternary, token_string.str);
+          atom = e_push_expr(arena, E_ExprKind_Ternary, token_string.Ptr);
           e_expr_push_child(atom, lhs);
           e_expr_push_child(atom, mhs);
           e_expr_push_child(atom, rhs);

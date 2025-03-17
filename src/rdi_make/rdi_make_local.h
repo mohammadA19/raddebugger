@@ -10,7 +10,7 @@
 #define rdim_memset MemorySet
 #define rdim_memcpy MemoryCopy
 
-// rjf: base layer string overrides
+// rjf: base layer str overrides
 #define RDI_STRING8_OVERRIDE
 #define RDIM_String8 StringView
 #define RDIM_String8_BaseMember str
@@ -18,7 +18,7 @@
 #define RDI_STRING8LIST_OVERRIDE
 #define RDIM_String8Node String8Node
 #define RDIM_String8Node_NextPtrMember next
-#define RDIM_String8Node_StringMember string
+#define RDIM_String8Node_StringMember str
 #define RDIM_String8List String8List
 #define RDIM_String8List_FirstMember first
 #define RDIM_String8List_LastMember last

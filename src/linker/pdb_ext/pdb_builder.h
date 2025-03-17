@@ -454,14 +454,14 @@ void                     pdb_strtab_alloc(PDB_StringTable* strtab, uint32 max);
 PDB_StringTableOpenError pdb_strtab_open(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn);
 void                     pdb_strtab_build(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn);
 void                     pdb_strtab_release(PDB_StringTable* strtab);
-PDB_StringIndex          pdb_strtab_add(PDB_StringTable* strtab, StringView string);
-B32                      pdb_strtab_search(PDB_StringTable* strtab, StringView string, PDB_StringIndex* index_out);
+PDB_StringIndex          pdb_strtab_add(PDB_StringTable* strtab, StringView str);
+B32                      pdb_strtab_search(PDB_StringTable* strtab, StringView str, PDB_StringIndex* index_out);
 StringView                  pdb_strtab_string_from_offset(PDB_StringTable* strtab, PDB_StringOffset offset);
 PDB_StringOffset         pdb_strtab_string_to_offset(PDB_StringTable* strtab, PDB_StringIndex stridx);
 uint32                      pdb_strtab_get_serialized_size(PDB_StringTable* strtab);
-B32                      pdb_strtab_try_add(PDB_StringTable* strtab, StringView string, PDB_StringIndex* index_out);
+B32                      pdb_strtab_try_add(PDB_StringTable* strtab, StringView str, PDB_StringIndex* index_out);
 void                     pdb_strtab_grow(PDB_StringTable* strtab, uint64 new_max);
-uint32                      pdb_strtab_hash(PDB_StringTable* strtab, StringView string);
+uint32                      pdb_strtab_hash(PDB_StringTable* strtab, StringView str);
 
 ////////////////////////////////
 // Type Server
@@ -475,7 +475,7 @@ void                    pdb_type_server_build(TP_Context* tp, PDB_TypeServer* ts
 void                    pdb_type_server_release(PDB_TypeServer** serv_ptr);
 void                    pdb_type_server_push(PDB_TypeServer* ts, StringView raw_leaf);
 void                    pdb_type_server_push_parallel(TP_Context* tp, PDB_TypeServer* ts, CV_DebugT types);
-//internal CV_LeafNode *     pdb_type_server_leaf_from_string(PDB_TypeServer* ts, StringView string);
+//internal CV_LeafNode *     pdb_type_server_leaf_from_string(PDB_TypeServer* ts, StringView str);
 String8Node *           pdb_type_server_reserve(PDB_TypeServer* ts, uint64 count);
 String8Node *           pdb_type_server_make_leaf(PDB_TypeServer* ts, CV_LeafKind kind, StringView data);
 void                    pdb_type_server_push_bucket(PDB_TypeServer* ts, CV_Leaf* leaf);

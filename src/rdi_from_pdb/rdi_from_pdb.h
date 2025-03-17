@@ -122,7 +122,7 @@ struct P2R_CompUnitContributionsParseIn
 ////////////////////////////////
 //~ rjf: Conversion Data Structure & Task Types
 
-//- rjf: link name map (voff . string)
+//- rjf: link name map (voff . str)
 
 struct P2R_LinkNameNode
 {
@@ -258,7 +258,7 @@ struct P2R_BakeLineTablesIn
   RDIM_LineTableChunkList* line_tables;
 }
 
-//- rjf: string map baking task types
+//- rjf: str map baking task types
 
 struct P2R_BakeSrcFilesStringsIn
 {
@@ -349,7 +349,7 @@ struct P2R_BakeScopesStringsIn
   P2R_BakeScopesStringsInNode* last;
 }
 
-//- rjf: string map joining task types
+//- rjf: str map joining task types
 
 struct P2R_JoinBakeStringMapSlotsIn
 {
@@ -360,7 +360,7 @@ struct P2R_JoinBakeStringMapSlotsIn
   Rng1U64 slot_idx_range;
 }
 
-//- rjf: string map sorting task types
+//- rjf: str map sorting task types
 
 struct P2R_SortBakeStringMapSlotsIn
 {
@@ -371,7 +371,7 @@ struct P2R_SortBakeStringMapSlotsIn
   uint64 slot_count;
 }
 
-//- rjf: OLD string map baking types
+//- rjf: OLD str map baking types
 
 struct P2R_BuildBakeStringMapIn
 {
@@ -574,7 +574,7 @@ P2R_Convert2Bake* p2r_convert(Arena* arena, P2R_User2Convert* in);
 ////////////////////////////////
 //~ rjf: Baking Stage Tasks
 
-//- rjf: unsorted bake string map building
+//- rjf: unsorted bake str map building
 ASYNC_WORK_DEF(p2r_bake_src_files_strings_work);
 ASYNC_WORK_DEF(p2r_bake_units_strings_work);
 ASYNC_WORK_DEF(p2r_bake_types_strings_work);
@@ -583,16 +583,16 @@ ASYNC_WORK_DEF(p2r_bake_symbols_strings_work);
 ASYNC_WORK_DEF(p2r_bake_scopes_strings_work);
 ASYNC_WORK_DEF(p2r_bake_line_tables_work);
 
-//- rjf: bake string map joining
+//- rjf: bake str map joining
 ASYNC_WORK_DEF(p2r_bake_string_map_join_work);
 
-//- rjf: bake string map sorting
+//- rjf: bake str map sorting
 ASYNC_WORK_DEF(p2r_bake_string_map_sort_work);
 
 //- rjf: pass 1: interner/deduper map builds
 ASYNC_WORK_DEF(p2r_build_bake_name_map_work);
 
-//- rjf: pass 2: string-map-dependent debug info stream builds
+//- rjf: pass 2: str-map-dependent debug info stream builds
 ASYNC_WORK_DEF(p2r_bake_units_work);
 ASYNC_WORK_DEF(p2r_bake_unit_vmap_work);
 ASYNC_WORK_DEF(p2r_bake_src_files_work);

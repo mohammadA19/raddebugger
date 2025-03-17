@@ -122,12 +122,12 @@ dwarf_info_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -199,8 +199,8 @@ dwarf_info_from_data(Arena* arena, StringView data){
     uint8 offset_size = is_64bit?8:4;
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit unit
     DWARF_InfoUnit* unit = push_array(arena, DWARF_InfoUnit, 1);
@@ -253,12 +253,12 @@ dwarf_pubnames_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -290,8 +290,8 @@ dwarf_pubnames_from_data(Arena* arena, StringView data){
     uint8 offset_size = is_64bit?8:4;
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit unit
     DWARF_PubNamesUnit* unit = push_array(arena, DWARF_PubNamesUnit, 1);
@@ -331,12 +331,12 @@ dwarf_names_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -381,8 +381,8 @@ dwarf_names_from_data(Arena* arena, StringView data){
     uint8 offset_size = is_64bit?8:4;
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit unit
     DWARF_NamesUnit* unit = push_array(arena, DWARF_NamesUnit, 1);
@@ -426,12 +426,12 @@ dwarf_aranges_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -460,8 +460,8 @@ dwarf_aranges_from_data(Arena* arena, StringView data){
     uint8 offset_size = is_64bit?8:4;
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit unit
     DWARF_ArangesUnit* unit = push_array(arena, DWARF_ArangesUnit, 1);
@@ -502,12 +502,12 @@ dwarf_line_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -741,8 +741,8 @@ dwarf_line_from_data(Arena* arena, StringView data){
     }
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit unit
     DWARF_LineUnit* unit = push_array(arena, DWARF_LineUnit, 1);
@@ -814,11 +814,11 @@ dwarf_addr_from_data(Arena* arena, StringView data){
   
   // whole section loop
   uint64 unit_idx  = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
-    uint64 hdr_off = (ptr - data.str);
+    uint64 hdr_off = (ptr - data.Ptr);
     
     // initial length
     uint8* unit_opl = 0;
@@ -838,8 +838,8 @@ dwarf_addr_from_data(Arena* arena, StringView data){
     uint32 offset_size = is_64bit?8:4;
     
     // unit offsets
-    uint64 base_off = (ptr - data.str);
-    uint64 opl_off = (unit_opl - data.str);
+    uint64 base_off = (ptr - data.Ptr);
+    uint64 opl_off = (unit_opl - data.Ptr);
     
     // emit addr unit
     DWARF_AddrUnit* unit = push_array(arena, DWARF_AddrUnit, 1);
@@ -889,7 +889,7 @@ dwarf__initial_length(StringView data, uint8** ptr_inout, uint8** unit_opl_out, 
   uint8* unit_opl = 0;
   B32 is_64bit = 0;
   
-  uint8* opl = data.str + data.size;
+  uint8* opl = data.Ptr + data.size;
   uint8* ptr = *ptr_inout;
   {
     uint64 length = 0;
@@ -902,9 +902,9 @@ dwarf__initial_length(StringView data, uint8** ptr_inout, uint8** unit_opl_out, 
       length = ClampTop(m, 0xFFFFFFF0);
     }
     if (length > 0){
-      uint64 unit_opl_off_raw = (ptr - data.str) + length;
+      uint64 unit_opl_off_raw = (ptr - data.Ptr) + length;
       uint64 unit_opl_off = ClampTop(unit_opl_off_raw, data.size);
-      unit_opl = data.str + unit_opl_off;
+      unit_opl = data.Ptr + unit_opl_off;
     }
     else{
       unit_opl = ptr;
@@ -1206,7 +1206,7 @@ dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
 }
 
 
-// string functions
+// str functions
 
 static StringView
 dwarf_string_from_unit_type(DWARF_UnitType type){
@@ -1318,8 +1318,8 @@ dwarf_info_from_data(Arena* arena, StringView data, DWARF_InfoParams* params,
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // early escape on unit idx
@@ -1464,7 +1464,7 @@ dwarf_info_from_data(Arena* arena, StringView data, DWARF_InfoParams* params,
             push_array_no_zero(arena, DWARF_InfoAttribVal, attrib_count);
           
           // save entry offset
-          entry.info_offset = (uint64)(entry_start_ptr - data.str);
+          entry.info_offset = (uint64)(entry_start_ptr - data.Ptr);
           
           // set root at beginning
           if (entry_root == 0){
@@ -1727,8 +1727,8 @@ dwarf_abbrev_from_data(Arena* arena, StringView data, DWARF_AbbrevParams* params
   
   // whole section loop
   uint64 unit_idx = 0;
-  uint8* ptr = data.str;
-  uint8* opl = data.str + data.size;
+  uint8* ptr = data.Ptr;
+  uint8* opl = data.Ptr + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // early escape on unit idx
@@ -1740,7 +1740,7 @@ dwarf_abbrev_from_data(Arena* arena, StringView data, DWARF_AbbrevParams* params
     B32 full_parse = (unit_idx_min <= unit_idx);
     
     // save unit offset
-    uint64 abbrev_unit_offset = (uint64)(ptr - data.str);
+    uint64 abbrev_unit_offset = (uint64)(ptr - data.Ptr);
     
     // allocate unit
     DWARF_AbbrevUnit* unit = push_array(arena, DWARF_AbbrevUnit, 1);

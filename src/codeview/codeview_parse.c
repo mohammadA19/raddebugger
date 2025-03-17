@@ -4,12 +4,12 @@
 //- Hasher
 
 uint64
-cv_hash_from_string(StringView string)
+cv_hash_from_string(StringView str)
 {
   uint64 result = 5381;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
@@ -79,7 +79,7 @@ cv_numeric_from_data_range(uint8* first, uint8* opl)
 uint64
 cv_read_numeric(StringView data, uint64 offset, CV_NumericParsed* out)
 {
-  *out = cv_numeric_from_data_range(data.str + offset, data.str + data.size);
+  *out = cv_numeric_from_data_range(data.Ptr + offset, data.Ptr + data.size);
   return out.encoded_size;
 }
 
@@ -637,7 +637,7 @@ cv_get_symbol_type_index_offsets(Arena* arena, CV_SymKind kind, StringView data)
   case CV_SymKind_CALLEES:
   case CV_SymKind_INLINEES: {
     Assert(data.size >= sizeof(CV_SymFunctionList));
-    CV_SymFunctionList* func_list = (CV_SymFunctionList*)data.str;
+    CV_SymFunctionList* func_list = (CV_SymFunctionList*)data.Ptr;
     for (uint64 i = 0; i < func_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_SymFunctionList) + i * sizeof(CV_TypeIndex));
     }
@@ -669,7 +669,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, StringView d
   } break;
   case CV_LeafKind_POINTER: {
     cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, OffsetOf(CV_LeafPointer, itype));
-    CV_LeafPointer* ptr = (CV_LeafPointer *)data.str;
+    CV_LeafPointer* ptr = (CV_LeafPointer *)data.Ptr;
     CV_PointerKind ptr_kind = CV_PointerAttribs_Extract_Kind(ptr.attribs);
     if (ptr_kind == CV_PointerKind_BaseType) {
       // TODO: add CV_LeafPointerBaseType
@@ -726,7 +726,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, StringView d
   } break;
   case CV_LeafKind_BUILDINFO: {
     Assert(data.size >= sizeof(CV_LeafBuildInfo));
-    CV_LeafBuildInfo* build_info = (CV_LeafBuildInfo *)data.str;
+    CV_LeafBuildInfo* build_info = (CV_LeafBuildInfo *)data.Ptr;
     for (uint16 i = 0; i < build_info.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafBuildInfo) + i * sizeof(CV_ItemId));
     }
@@ -751,7 +751,7 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, StringView d
   } break;
   case CV_LeafKind_VFTPATH: {
     Assert(sizeof(CV_LeafVFPath) <= data.size);
-    CV_LeafVFPath* vfpath = (CV_LeafVFPath *)data.str;
+    CV_LeafVFPath* vfpath = (CV_LeafVFPath *)data.Ptr;
     for (uint32 i = 0; i < vfpath.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafVFPath) + i * sizeof(CV_TypeId));
     }
@@ -766,14 +766,14 @@ cv_get_leaf_type_index_offsets(Arena* arena, CV_LeafKind leaf_kind, StringView d
   } break;
   case CV_LeafKind_SUBSTR_LIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
-    CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
+    CV_LeafArgList* arg_list = (CV_LeafArgList*)data.Ptr;
     for (uint32 i = 0; i < arg_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
   } break;
   case CV_LeafKind_ARGLIST: {
     Assert(sizeof(CV_LeafArgList) <= data.size);
-    CV_LeafArgList* arg_list = (CV_LeafArgList*)data.str;
+    CV_LeafArgList* arg_list = (CV_LeafArgList*)data.Ptr;
     for (uint32 i = 0; i < arg_list.count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, sizeof(CV_LeafArgList) + i * sizeof(CV_TypeIndex));
     }
@@ -1000,12 +1000,12 @@ cv_get_data_around_type_indices(Arena* arena, CV_TypeIndexInfoList ti_list, Stri
     for(CV_TypeIndexInfo* ti_info = ti_list.first; ti_info != 0; ti_info = ti_info.next, ++ti_idx)
 	{
       result.v[ti_idx].size = ti_info.offset - cursor;
-      result.v[ti_idx].str  = data.str + cursor;
+      result.v[ti_idx].Ptr  = data.Ptr + cursor;
       cursor = ti_info.offset + sizeof(CV_TypeIndex);
     }
 
     result.v[result.count-1].size = data.size - cursor;
-    result.v[result.count-1].str  = data.str + cursor;
+    result.v[result.count-1].Ptr  = data.Ptr + cursor;
   }
   else
   {
@@ -1085,8 +1085,8 @@ StringView
 cv_name_from_symbol(CV_SymKind kind, StringView data)
 {
   uint64 buf_off = cv_name_offset_from_symbol(kind, data);
-  uint8* buf_ptr = data.str + buf_off;
-  uint8* buf_opl = data.str + data.size;
+  uint8* buf_ptr = data.Ptr + buf_off;
+  uint8* buf_opl = data.Ptr + data.size;
   StringView name = str8_cstring_capped(buf_ptr, buf_opl);
   return name;
 }
@@ -1213,7 +1213,7 @@ cv_rec_range_stream_from_data(Arena* arena, StringView sym_data, uint64 sym_alig
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   CV_RecRangeStream* result = push_array(arena, CV_RecRangeStream, 1);
-  uint8* data = sym_data.str;
+  uint8* data = sym_data.Ptr;
   uint64 cursor = 0;
   uint64 cap = sym_data.size;
   for(;cursor + sizeof(CV_RecHeader) <= cap;)
@@ -1285,7 +1285,7 @@ cv_sym_from_data(Arena* arena, StringView sym_data, uint64 sym_align)
     CV_RecRange* opl = range + result.sym_ranges.count;
     for(;range < opl; range += 1)
     {
-      uint8* first = sym_data.str + range.off + 2;
+      uint8* first = sym_data.Ptr + range.off + 2;
       uint64 cap = range.hdr.size - 2;
       switch(range.hdr.kind)
       {
@@ -1375,7 +1375,7 @@ cv_c13_parsed_from_data(Arena* arena, StringView c13_data, StringView strtbl, CO
     for(; cursor + sizeof(CV_C13SubSectionHeader) <= c13_data.size;)
     {
       // read header
-      CV_C13SubSectionHeader* hdr = (CV_C13SubSectionHeader*)(c13_data.str + cursor);
+      CV_C13SubSectionHeader* hdr = (CV_C13SubSectionHeader*)(c13_data.Ptr + cursor);
       
       // get sub section info
       uint32 sub_section_off = cursor + sizeof(*hdr);
@@ -1413,7 +1413,7 @@ cv_c13_parsed_from_data(Arena* arena, StringView c13_data, StringView strtbl, CO
       node != 0;
       node = node.next)
   {
-    uint8* first = c13_data.str + node.off;
+    uint8* first = c13_data.Ptr + node.off;
     uint32 cap = node.size;
     switch(node.kind)
     {
@@ -1459,10 +1459,10 @@ cv_c13_parsed_from_data(Arena* arena, StringView c13_data, StringView strtbl, CO
           StringView file_name = {0};
           if(file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
           {
-            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms.off + file_off);
+            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.Ptr + file_chksms.off + file_off);
             uint32 name_off = checksum.name_off;
-            file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
-                                             (char*)(strtbl.str + strtbl.size));
+            file_name =  str8_cstring_capped((char*)(strtbl.Ptr + name_off),
+                                             (char*)(strtbl.Ptr + strtbl.size));
           }
           
           // array layouts
@@ -1536,10 +1536,10 @@ cv_c13_parsed_from_data(Arena* arena, StringView c13_data, StringView strtbl, CO
           StringView file_name = {0};
           if(hdr.file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
           {
-            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.str + file_chksms.off + hdr.file_off);
+            CV_C13Checksum* checksum = (CV_C13Checksum*)(c13_data.Ptr + file_chksms.off + hdr.file_off);
             uint32 name_off = checksum.name_off;
-            file_name =  str8_cstring_capped((char*)(strtbl.str + name_off),
-                                             (char*)(strtbl.str + strtbl.size));
+            file_name =  str8_cstring_capped((char*)(strtbl.Ptr + name_off),
+                                             (char*)(strtbl.Ptr + strtbl.size));
           }
           
           // rjf: parse extra files

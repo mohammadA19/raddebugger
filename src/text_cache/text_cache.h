@@ -108,7 +108,7 @@ enum TXT_LangKind
   TXT_LangKind_COUNT
 }
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena* arena, uint64* bytes_processed_counter, StringView string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena* arena, uint64* bytes_processed_counter, StringView str);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -228,11 +228,11 @@ TXT_TokenArray txt_token_array_from_list(Arena* arena, TXT_TokenList* list);
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-TXT_TokenArray txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView string);
-TXT_TokenArray txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView string);
-TXT_TokenArray txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView string);
-TXT_TokenArray txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView string);
-TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView string);
+TXT_TokenArray txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView str);
+TXT_TokenArray txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView str);
+TXT_TokenArray txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView str);
+TXT_TokenArray txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView str);
+TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView str);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization

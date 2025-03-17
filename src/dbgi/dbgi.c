@@ -5,20 +5,20 @@
 //~ rjf: Basic Helpers
 
 uint64
-di_hash_from_seed_string(uint64 seed, StringView string, StringMatchFlags match_flags)
+di_hash_from_seed_string(uint64 seed, StringView str, StringMatchFlags match_flags)
 {
   uint64 result = seed;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? string[i].ToLower : string[i]);
+    result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? str[i].ToLower : str[i]);
   }
   return result;
 }
 
 uint64
-di_hash_from_string(StringView string, StringMatchFlags match_flags)
+di_hash_from_string(StringView str, StringMatchFlags match_flags)
 {
-  uint64 hash = di_hash_from_seed_string(5381, string, match_flags);
+  uint64 hash = di_hash_from_seed_string(5381, str, match_flags);
   return hash;
 }
 
@@ -374,10 +374,10 @@ di_string_bucket_idx_from_string_size(uint64 size)
 }
 
 StringView
-di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
+di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView str)
 {
-  if(string.size == 0) {return StringView();}
-  uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
+  if(str.Length == 0) {return StringView();}
+  uint64 bucket_idx = di_string_bucket_idx_from_string_size(str.Length);
   DI_StringChunkNode* node = stripe.free_string_chunks[bucket_idx];
   
   // rjf: pull from bucket free list
@@ -391,7 +391,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
           n != 0;
           prev = n, n = n.next)
       {
-        if(n.size >= string.size+1)
+        if(n.size >= str.Length+1)
         {
           if(prev == 0)
           {
@@ -422,25 +422,25 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
     }
     else
     {
-      chunk_size = u64_up_to_pow2(string.size);
+      chunk_size = u64_up_to_pow2(str.Length);
     }
     uint8* chunk_memory = push_array(stripe.arena, uint8, chunk_size);
     node = (DI_StringChunkNode *)chunk_memory;
   }
   
-  // rjf: fill string & return
-  StringView allocated_string = StringView((uint8 *)node, string.size);
-  MemoryCopy((uint8 *)node, string.str, string.size);
+  // rjf: fill str & return
+  StringView allocated_string = StringView((uint8 *)node, str.Length);
+  MemoryCopy((uint8 *)node, str.Ptr, str.Length);
   return allocated_string;
 }
 
 void
-di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string)
+di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView str)
 {
-  if(string.size == 0) {return;}
-  uint64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
-  DI_StringChunkNode* node = (DI_StringChunkNode *)string.str;
-  node.size = u64_up_to_pow2(string.size);
+  if(str.Length == 0) {return;}
+  uint64 bucket_idx = di_string_bucket_idx_from_string_size(str.Length);
+  DI_StringChunkNode* node = (DI_StringChunkNode *)str.Ptr;
+  node.size = u64_up_to_pow2(str.Length);
   SLLStackPush(stripe.free_string_chunks[bucket_idx], node);
 }
 
@@ -762,7 +762,7 @@ di_u2p_enqueue_key(DI_Key* key, uint64 endt_us)
     {
       di_shared.u2p_ring_write_pos += ring_write_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, &key.min_timestamp);
       di_shared.u2p_ring_write_pos += ring_write_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, &key.path.size);
-      di_shared.u2p_ring_write_pos += ring_write(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, key.path.str, key.path.size);
+      di_shared.u2p_ring_write_pos += ring_write(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_write_pos, key.path.Ptr, key.path.size);
       sent = 1;
       break;
     }
@@ -789,8 +789,8 @@ di_u2p_dequeue_key(Arena* arena, DI_Key* out_key)
     {
       di_shared.u2p_ring_read_pos += ring_read_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, &out_key.min_timestamp);
       di_shared.u2p_ring_read_pos += ring_read_struct(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, &out_key.path.size);
-      out_key.path.str = push_array(arena, uint8, out_key.path.size);
-      di_shared.u2p_ring_read_pos += ring_read(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, out_key.path.str, out_key.path.size);
+      out_key.path.Ptr = push_array(arena, uint8, out_key.path.size);
+      di_shared.u2p_ring_read_pos += ring_read(di_shared.u2p_ring_base, di_shared.u2p_ring_size, di_shared.u2p_ring_read_pos, out_key.path.Ptr, out_key.path.size);
       break;
     }
     os_condition_variable_wait(di_shared.u2p_ring_cv, di_shared.u2p_ring_mutex, max_U64);
@@ -805,12 +805,12 @@ di_p2u_push_event(DI_Event* event)
   {
     uint64 unconsumed_size = (di_shared.p2u_ring_write_pos-di_shared.p2u_ring_read_pos);
     uint64 available_size = di_shared.p2u_ring_size-unconsumed_size;
-    uint64 needed_size = sizeof(event.kind) + sizeof(event.string.size) + event.string.size;
+    uint64 needed_size = sizeof(event.kind) + sizeof(event.str.Length) + event.str.Length;
     if(available_size >= needed_size)
     {
       di_shared.p2u_ring_write_pos += ring_write_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, &event.kind);
-      di_shared.p2u_ring_write_pos += ring_write_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, &event.string.size);
-      di_shared.p2u_ring_write_pos += ring_write(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, event.string.str, event.string.size);
+      di_shared.p2u_ring_write_pos += ring_write_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, &event.str.Length);
+      di_shared.p2u_ring_write_pos += ring_write(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_write_pos, event.str.Ptr, event.str.Length);
       break;
     }
     os_condition_variable_wait(di_shared.p2u_ring_cv, di_shared.p2u_ring_mutex, max_U64);
@@ -831,9 +831,9 @@ di_p2u_pop_events(Arena* arena, uint64 endt_us)
       SLLQueuePush(events.first, events.last, n);
       events.count += 1;
       di_shared.p2u_ring_read_pos += ring_read_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, &n.v.kind);
-      di_shared.p2u_ring_read_pos += ring_read_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, &n.v.string.size);
-      n.v.string.str = push_array_no_zero(arena, uint8, n.v.string.size);
-      di_shared.p2u_ring_read_pos += ring_read(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, n.v.string.str, n.v.string.size);
+      di_shared.p2u_ring_read_pos += ring_read_struct(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, &n.v.str.Length);
+      n.v.str.Ptr = push_array_no_zero(arena, uint8, n.v.str.Length);
+      di_shared.p2u_ring_read_pos += ring_read(di_shared.p2u_ring_base, di_shared.p2u_ring_size, di_shared.p2u_ring_read_pos, n.v.str.Ptr, n.v.str.Length);
     }
     else if(os_now_microseconds() >= endt_us)
     {
@@ -899,7 +899,7 @@ ASYNC_WORK_DEF(di_parse_work)
     }
     if(!og_format_is_known)
     {
-      if(data.size >= 8 && *(uint64 *)data.str == RDI_MAGIC_CONSTANT)
+      if(data.size >= 8 && *(uint64 *)data.Ptr == RDI_MAGIC_CONSTANT)
       {
         og_format_is_known = 1;
         og_is_rdi = 1;
@@ -908,10 +908,10 @@ ASYNC_WORK_DEF(di_parse_work)
     if(!og_format_is_known)
     {
       if(data.size >= 4 &&
-         data.str[0] == 0x7f &&
-         data.str[1] == 'E' &&
-         data.str[2] == 'L' &&
-         data.str[3] == 'F')
+         data[0] == 0x7f &&
+         data[1] == 'E' &&
+         data[2] == 'L' &&
+         data[3] == 'F')
       {
         og_format_is_known = 1;
         og_is_elf = 1;
@@ -919,7 +919,7 @@ ASYNC_WORK_DEF(di_parse_work)
     }
     if(!og_format_is_known)
     {
-      if(data.size >= 2 && *(uint16 *)data.str == 0x5a4d)
+      if(data.size >= 2 && *(uint16 *)data.Ptr == 0x5a4d)
       {
         og_format_is_known = 1;
         og_is_pe = 1;
@@ -1010,7 +1010,7 @@ ASYNC_WORK_DEF(di_parse_work)
       //- rjf: push conversion task begin event
       {
         DI_Event event = {DI_EventKind_ConversionStarted};
-        event.string = rdi_path;
+        event.str = rdi_path;
         di_p2u_push_event(&event);
       }
       
@@ -1051,7 +1051,7 @@ ASYNC_WORK_DEF(di_parse_work)
       //- rjf: push conversion task end event
       {
         DI_Event event = {DI_EventKind_ConversionEnded};
-        event.string = rdi_path;
+        event.str = rdi_path;
         di_p2u_push_event(&event);
       }
     }
@@ -1061,7 +1061,7 @@ ASYNC_WORK_DEF(di_parse_work)
       //- rjf: push conversion task failure event
       {
         DI_Event event = {DI_EventKind_ConversionFailureUnsupportedFormat};
-        event.string = rdi_path;
+        event.str = rdi_path;
         di_p2u_push_event(&event);
       }
     }
@@ -1225,7 +1225,7 @@ ASYNC_WORK_DEF(di_search_work)
   void* table_base = rdi_section_raw_table_from_kind(in.rdi, in.section_kind, &element_count);
   uint64 element_size = rdi_section_element_size_table[in.section_kind];
   
-  //- rjf: determine name string index offset, depending on table kind
+  //- rjf: determine name str index offset, depending on table kind
   uint64 element_name_idx_off = 0;
   switch(in.section_kind)
   {
@@ -1272,7 +1272,7 @@ ASYNC_WORK_DEF(di_search_work)
       break;
     }
     
-    //- rjf: get element, map to string; if empty, continue to next element
+    //- rjf: get element, map to str; if empty, continue to next element
     void* element = (uint8 *)table_base + element_size*idx;
     uint32* name_idx_ptr = (uint32 *)((uint8 *)element + element_name_idx_off);
     if(in.section_kind == RDI_SectionKind_UDTs)
@@ -1684,7 +1684,7 @@ di_match_store_section_kind_from_name(DI_MatchStore* store, StringView name, uin
           store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &node);
           store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &node.alloc_gen);
           store.u2m_ring_write_pos += ring_write_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, &name.size);
-          store.u2m_ring_write_pos +=        ring_write(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, name.str, name.size);
+          store.u2m_ring_write_pos +=        ring_write(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_write_pos, name.Ptr, name.size);
           sent = 1;
           break;
         }
@@ -1744,8 +1744,8 @@ ASYNC_WORK_DEF(di_match_work)
         store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &node);
         store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &alloc_gen);
         store.u2m_ring_read_pos += ring_read_struct(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, &name.size);
-        name.str = push_array(scratch.arena, uint8, name.size);
-        store.u2m_ring_read_pos += ring_read(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, name.str, name.size);
+        name.Ptr = push_array(scratch.arena, uint8, name.size);
+        store.u2m_ring_read_pos += ring_read(store.u2m_ring_base, store.u2m_ring_size, store.u2m_ring_read_pos, name.Ptr, name.size);
         break;
       }
       os_condition_variable_wait(store.u2m_ring_cv, store.u2m_ring_mutex, max_U64);
@@ -1788,7 +1788,7 @@ ASYNC_WORK_DEF(di_match_work)
           RDI_NameMap* name_map = rdi_element_from_name_idx(rdi, NameMaps, name_map_kinds[name_map_kind_idx]);
           RDI_ParsedNameMap parsed_name_map = {0};
           rdi_parsed_from_name_map(rdi, name_map, &parsed_name_map);
-          RDI_NameMapNode* map_node = rdi_name_map_lookup(rdi, &parsed_name_map, name.str, name.size);
+          RDI_NameMapNode* map_node = rdi_name_map_lookup(rdi, &parsed_name_map, name.Ptr, name.size);
           uint32 num = 0;
           uint32* run = rdi_matches_from_map_node(rdi, map_node, &num);
           if(num != 0)

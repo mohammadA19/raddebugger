@@ -55,7 +55,7 @@ os_get_gfx_info()
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void
-os_set_clipboard_text(StringView string)
+os_set_clipboard_text(StringView str)
 {
   
 }
@@ -120,7 +120,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title)
   //- rjf: attach name
   Temp scratch = scratch_begin(0, 0);
   StringView title_copy = push_str8_copy(scratch.arena, title);
-  XStoreName(os_lnx_gfx_state.display, w.window, (char *)title_copy.str);
+  XStoreName(os_lnx_gfx_state.display, w.window, (char *)title_copy.Ptr);
   scratch_end(scratch);
   
   //- rjf: convert to handle & return

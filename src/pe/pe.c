@@ -27,7 +27,7 @@ pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode)
 
 read_only struct
 {
-  StringView             string;
+  StringView             str;
   PE_WindowsSubsystem type;
 } g_pe_subsystem_map[] = {
   { (""),                         PE_WindowsSubsystem_UNKNOWN                  },
@@ -52,7 +52,7 @@ pe_string_from_subsystem(PE_WindowsSubsystem subsystem)
 {
   for (uint64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
     if (g_pe_subsystem_map[i].type == subsystem) {
-      return g_pe_subsystem_map[i].string;
+      return g_pe_subsystem_map[i].str;
     }
   }
   return StringView(0,0);
@@ -395,10 +395,10 @@ pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars
 }
 
 PE_WindowsSubsystem
-pe_subsystem_from_string(StringView string)
+pe_subsystem_from_string(StringView str)
 {
   for (uint64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
-    if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_pe_subsystem_map[i].str, str, StringMatchFlag_CaseInsensitive)) {
       return g_pe_subsystem_map[i].type;
     }
   }
@@ -461,13 +461,13 @@ pe_bin_info_from_data(Arena* arena, StringView data)
   uint64                 sec_array_raw_opl = sec_array_off + file_header.section_count*sizeof(COFF_SectionHeader);
   uint64                 sec_array_opl     = ClampTop(sec_array_raw_opl, data.size);
   uint64                 clamped_sec_count = (sec_array_opl - sec_array_off)/sizeof(COFF_SectionHeader);
-  COFF_SectionHeader* sections          = (COFF_SectionHeader*)(data.str + sec_array_off);
+  COFF_SectionHeader* sections          = (COFF_SectionHeader*)(data.Ptr + sec_array_off);
   
   // rjf: get symbols
   uint64 symbol_array_off = file_header.symbol_table_foff;
   uint64 symbol_count = file_header.symbol_count;
   
-  // rjf: get string table
+  // rjf: get str table
   uint64 string_table_off = symbol_array_off + sizeof(COFF_Symbol16) * symbol_count;
   
   // rjf: read optional header
@@ -701,7 +701,7 @@ pe_pdata_off_from_voff__binary_search_x8664(StringView raw_pdata, uint64 voff)
   if(raw_pdata.size >= sizeof(PE_IntelPdata))
   {
     uint64            pdata_count = raw_pdata.size/sizeof(PE_IntelPdata);
-    PE_IntelPdata* pdata_array = (PE_IntelPdata*)raw_pdata.str;
+    PE_IntelPdata* pdata_array = (PE_IntelPdata*)raw_pdata.Ptr;
     if(voff >= pdata_array[0].voff_first)
     {
       // binary search:
@@ -753,7 +753,7 @@ pe_ptr_from_voff(StringView data, PE_BinInfo* bin, uint64 voff)
 {
   // rjf: get the section for this voff
   uint64 sec_count = bin.section_count;
-  COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.str + bin.section_array_off);
+  COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.Ptr + bin.section_array_off);
   COFF_SectionHeader* sec_ptr = sec_array;
   COFF_SectionHeader* sec = 0;
   for(uint64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
@@ -772,7 +772,7 @@ pe_ptr_from_voff(StringView data, PE_BinInfo* bin, uint64 voff)
     uint64 off = voff - sec.voff + sec.foff;
     if(off < data.size)
     {
-      result = data.str + off;
+      result = data.Ptr + off;
     }
   }
   return result;
@@ -782,7 +782,7 @@ uint64
 pe_section_num_from_voff(StringView data, PE_BinInfo* bin, uint64 voff)
 {
   uint64 sec_count = bin.section_count;
-  COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.str + bin.section_array_off);
+  COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.Ptr + bin.section_array_off);
   COFF_SectionHeader* sec_ptr = sec_array;
   uint64 result = 0;
   for(uint64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
@@ -803,11 +803,11 @@ pe_ptr_from_section_num(StringView data, PE_BinInfo* bin, uint64 n)
   uint64 sec_count = bin.section_count;
   if(1 <= n && n <= sec_count)
   {
-    COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.str + bin.section_array_off);
+    COFF_SectionHeader* sec_array = (COFF_SectionHeader*)((uint8*)data.Ptr + bin.section_array_off);
     COFF_SectionHeader* sec = sec_array + n - 1;
     if(sec.fsize > 0)
     {
-      result = data.str + sec.foff;
+      result = data.Ptr + sec.foff;
     }
   }
   return(result);
@@ -817,7 +817,7 @@ uint64
 pe_foff_from_voff(StringView data, PE_BinInfo* bin, uint64 voff)
 {
   uint64 foff = 0;
-  COFF_SectionHeader* sections = (COFF_SectionHeader*)(data.str+bin.section_array_off);
+  COFF_SectionHeader* sections = (COFF_SectionHeader*)(data.Ptr+bin.section_array_off);
   uint64 section_count = bin.section_count;
   for(uint64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
@@ -1079,7 +1079,7 @@ pe_parsed_imports_from_data(Arena*              arena,
         // fill out named import
         imp.type          = PE_ParsedImport_Name;
         imp.u.name.hint   = hint;
-        imp.u.name.string = name;
+        imp.u.name.str = name;
       }
     }
   } else {
@@ -1119,7 +1119,7 @@ pe_parsed_imports_from_data(Arena*              arena,
         // fill out named import
         imp.type          = PE_ParsedImport_Name;
         imp.u.name.hint   = hint;
-        imp.u.name.string = name;
+        imp.u.name.str = name;
       }
     }
   }
@@ -1135,8 +1135,8 @@ pe_array_from_null_term_addr(Arena* arena, B32 is_pe32, StringView raw_data, Rng
   *count_out = 0;
 
   if (is_pe32) {
-    uint32* src = (uint32 *)(raw_data.str + range.min);
-    uint32* opl = (uint32 *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
+    uint32* src = (uint32 *)(raw_data.Ptr + range.min);
+    uint32* opl = (uint32 *)(raw_data.Ptr + AlignDownPow2(range.max, sizeof(*opl)));
 
     // count items
     uint32* ptr;
@@ -1151,8 +1151,8 @@ pe_array_from_null_term_addr(Arena* arena, B32 is_pe32, StringView raw_data, Rng
       result[i] = (uint64)src[i];
     }
   } else {
-    uint64* src = (uint64 *)(raw_data.str + range.min);
-    uint64* opl = (uint64 *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
+    uint64* src = (uint64 *)(raw_data.Ptr + range.min);
+    uint64* opl = (uint64 *)(raw_data.Ptr + AlignDownPow2(range.max, sizeof(*opl)));
 
     // count items
     uint64* ptr;
@@ -1339,7 +1339,7 @@ pe_exports_from_data(Arena* arena, uint64 section_count, COFF_SectionHeader* sec
         // get name
         uint32     name_voff = name_table[i];
         uint64     name_foff = coff_foff_from_voff(sections, section_count, name_voff);
-        StringView name      = str8_cstring_capped(raw_data.str+name_foff, raw_data.str+raw_data.size);
+        StringView name      = str8_cstring_capped(raw_data.Ptr+name_foff, raw_data.Ptr+raw_data.size);
 
         // get ordinal
         uint16 ordinal_nb = ordinal_table[i];
@@ -1433,8 +1433,8 @@ pe_tls_from_data(Arena*              arena,
       uint64 callbacks_voff = header32.callbacks_address - image_base;
       uint64 callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
 
-      uint32* src = (uint32 *)(raw_data.str + callbacks_foff);
-      uint32* opl = (uint32 *)(raw_data.str + raw_data.size);
+      uint32* src = (uint32 *)(raw_data.Ptr + callbacks_foff);
+      uint32* opl = (uint32 *)(raw_data.Ptr + raw_data.size);
       uint32* ptr = src;
       for (; ptr < opl && *ptr != 0; ++ptr);
 
@@ -1450,8 +1450,8 @@ pe_tls_from_data(Arena*              arena,
       uint64 callbacks_voff = header64.callbacks_address - image_base;
       uint64 callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
 
-      uint64* src = (uint64 *)(raw_data.str + callbacks_foff);
-      uint64* opl = (uint64 *)(raw_data.str + raw_data.size);
+      uint64* src = (uint64 *)(raw_data.Ptr + callbacks_foff);
+      uint64* opl = (uint64 *)(raw_data.Ptr + raw_data.size);
       uint64* ptr = src;
       for (; ptr < opl && *ptr != 0; ++ptr);
 
@@ -1679,12 +1679,12 @@ pe_resource_table_from_directory_data(Arena* arena, StringView data)
       
       StringView name_block;
       str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(uint16), &name_block);
-      Span<char16> name16 = .((uint16*)name_block.str, name_size);
+      Span<char16> name16 = .((uint16*)name_block.Ptr, name_size);
       
       B32 is_dir = !!(coff_entry.id.data_entry_offset & COFF_Resource_SubDirFlag);
       
       entry.id.type = COFF_ResourceIDType_String;
-      entry.id.u.string = str8_from_16(arena, name16);
+      entry.id.u.str = str8_from_16(arena, name16);
       entry.kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
       
       if (is_dir) {

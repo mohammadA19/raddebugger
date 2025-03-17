@@ -186,17 +186,17 @@ entry_point(CmdLine* cmdline)
       RD_Option opt = 0;
       for (uint64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
         StringView opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
-        if (str8_match(cmd.string, opt_name, StringMatchFlag_CaseInsensitive)) {
+        if (str8_match(cmd.str, opt_name, StringMatchFlag_CaseInsensitive)) {
           opt = g_rd_dump_option_map[opt_idx].opt;
           break;
-        } else if (str8_match_lit("all", cmd.string, StringMatchFlag_CaseInsensitive)) {
+        } else if (str8_match_lit("all", cmd.str, StringMatchFlag_CaseInsensitive)) {
           opt = ~0ull & ~(RD_Option_Help|RD_Option_Version);
           break;
         }
       }
 
       if (opt == 0) {
-        rd_errorf("Unknown argument: \"%S\"", cmd.string);
+        rd_errorf("Unknown argument: \"%S\"", cmd.str);
         goto exit;
       }
 
@@ -218,7 +218,7 @@ entry_point(CmdLine* cmdline)
       char* name = g_rd_dump_option_map[opt_idx].name;
       char* help = g_rd_dump_option_map[opt_idx].help;
       int indent_size = longest_cmd_switch - strlen(name) + 1;
-      rd_printf("-%s%.*s%s", g_rd_dump_option_map[opt_idx].name, indent_size, indent.str, g_rd_dump_option_map[opt_idx].help);
+      rd_printf("-%s%.*s%s", g_rd_dump_option_map[opt_idx].name, indent_size, indent.Ptr, g_rd_dump_option_map[opt_idx].help);
     }
     rd_unindent();
     goto exit;
@@ -254,7 +254,7 @@ entry_point(CmdLine* cmdline)
   rd_format_preamble(arena, out, indent, file_path, raw_data);
   if (rd_is_rdi(raw_data)) {
     RDI_Parsed rdi = {0};
-    RDI_ParseStatus parse_status = rdi_parse(raw_data.str, raw_data.size, &rdi);
+    RDI_ParseStatus parse_status = rdi_parse(raw_data.Ptr, raw_data.size, &rdi);
     switch (parse_status) {
     case RDI_ParseStatus_Good:                     rdi_print(arena, out, indent, &rdi, opts);                     break;
     case RDI_ParseStatus_HeaderDoesNotMatch:       rd_errorf("RDI Parse: header does not match");                 break;
@@ -280,7 +280,7 @@ entry_point(CmdLine* cmdline)
   }
   
 exit:;
-  // print formatted string
+  // print formatted str
   StringView out_string = str8_list_join(arena, out, &(StringJoin){ .sep = ("\n"),});
   fprintf(stdout, "%.*s", str8_varg(out_string));
 

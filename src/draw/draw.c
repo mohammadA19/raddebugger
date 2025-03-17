@@ -31,12 +31,12 @@ return top_val
 //~ rjf: Basic Helpers
 
 uint64
-dr_hash_from_string(StringView string)
+dr_hash_from_string(StringView str)
 {
   uint64 result = 5381;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
@@ -51,7 +51,7 @@ dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString
   MemoryCopyStruct(&n.v, str);
   SLLQueuePush(list.first, list.last, n);
   list.node_count += 1;
-  list.total_size += str.string.size;
+  list.total_size += str.str.Length;
 }
 
 void
@@ -76,12 +76,12 @@ dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list)
 {
   StringView result = {0};
   result.size = list.total_size;
-  result.str = push_array_no_zero(arena, uint8, result.size);
+  result.Ptr = push_array_no_zero(arena, uint8, result.size);
   uint64 idx = 0;
   for(DR_FancyStringNode* n = list.first; n != 0; n = n.next)
   {
-    MemoryCopy(result.str+idx, n.v.string.str, n.v.string.size);
-    idx += n.v.string.size;
+    MemoryCopy(result.Ptr+idx, n.v.str.Ptr, n.v.str.Length);
+    idx += n.v.str.Length;
   }
   return result;
 }
@@ -95,7 +95,7 @@ dr_fancy_run_list_from_fancy_string_list(Arena* arena, float tab_size_px, FNT_Ra
   for(DR_FancyStringNode* n = strs.first; n != 0; n = n.next)
   {
     DR_FancyRunNode* dst_n = push_array(arena, DR_FancyRunNode, 1);
-    dst_n.v.run = fnt_push_run_from_string(arena, n.v.font, n.v.size, base_align_px, tab_size_px, flags, n.v.string);
+    dst_n.v.run = fnt_push_run_from_string(arena, n.v.font, n.v.size, base_align_px, tab_size_px, flags, n.v.str);
     dst_n.v.color = n.v.color;
     dst_n.v.underline_thickness = n.v.underline_thickness;
     dst_n.v.strikethrough_thickness = n.v.strikethrough_thickness;
@@ -634,10 +634,10 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 }
 
 void
-dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, StringView string)
+dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, StringView str)
 {
   Temp scratch = scratch_begin(0, 0);
-  FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, flags, string);
+  FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, flags, str);
   dr_text_run(p, color, run);
   scratch_end(scratch);
 }

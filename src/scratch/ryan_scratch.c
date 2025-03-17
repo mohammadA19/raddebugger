@@ -55,9 +55,9 @@ frame()
   {
     if(ev.kind != OS_EventKind_MouseMove)
     {
-      StringView string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev.kind), os_g_key_display_string_table[ev.key]);
-      printf("%.*s", str8_varg(string));
-      OutputDebugStringA((char *)string.str);
+      StringView str = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev.kind), os_g_key_display_string_table[ev.key]);
+      printf("%.*s", str8_varg(str));
+      OutputDebugStringA((char *)str.Ptr);
       fflush(stdout);
     }
     if(ev.kind == OS_EventKind_Press && ev.key == OS_Key_X)

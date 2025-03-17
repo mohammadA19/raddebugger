@@ -23,8 +23,8 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
   
   String8Node* node = list.first;
   if (node != 0){
-    uint8* ptr = node.string.str;;
-    uint8* opl = ptr + node.string.size;
+    uint8* ptr = node.str.Ptr;;
+    uint8* opl = ptr + node.str.Length;
     
     uint64 p = 0;
     for (;p < list.total_size;){
@@ -46,8 +46,8 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
           }
           break;
         }
-        ptr = node.string.str;
-        opl = ptr + node.string.size;
+        ptr = node.str.Ptr;
+        opl = ptr + node.str.Length;
       }
     }
   }
@@ -935,12 +935,12 @@ os_machine_name(){
       }
     }
     
-    // save string
+    // save str
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, uint8, name.size + 1);
-      MemoryCopy(name.str, buffer, name.size);
-      name.str[name.size] = 0;
+      name.Ptr = push_array_no_zero(lnx_perm_arena, uint8, name.size + 1);
+      MemoryCopy(name.Ptr, buffer, name.size);
+      name[name.size] = 0;
     }
     
     scratch_end(scratch);
@@ -1020,7 +1020,7 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
         Temp scratch = scratch_begin(&arena, 1);
         first = false;
         
-        // get self string
+        // get self str
         B32 got_final_result = false;
         uint8* buffer = 0;
         int size = 0;
@@ -1036,7 +1036,7 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
           }
         }
         
-        // save string
+        // save str
         if (got_final_result && size > 0){
           StringView full_name = StringView(buffer, size);
           StringView name_chopped = string_path_chop_last_slash(full_name);
@@ -1053,7 +1053,7 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
     
     case OS_SystemPath_Initial:
     {
-      Assert(lnx_initial_path.str != 0);
+      Assert(lnx_initial_path.Ptr != 0);
       result = 1;
       str8_list_push(arena, out, lnx_initial_path);
     }break;
@@ -1061,18 +1061,18 @@ os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* o
     case OS_SystemPath_Current:
     {
       char* cwdir = getcwd(0, 0);
-      StringView string = push_str8_copy(arena, str8_cstring(cwdir));
+      StringView str = push_str8_copy(arena, str8_cstring(cwdir));
       free(cwdir);
       result = 1;
-      str8_list_push(arena, out, string);
+      str8_list_push(arena, out, str);
     }break;
     
     case OS_SystemPath_UserProgramData:
     {
       char* home = getenv("HOME");
-      StringView string = str8_cstring(home);
+      StringView str = str8_cstring(home);
       result = 1;
-      str8_list_push(arena, out, string);
+      str8_list_push(arena, out, str);
     }break;
     
     case OS_SystemPath_ModuleLoad:
@@ -1155,7 +1155,7 @@ os_delete_file_at_path(StringView path)
   Temp scratch = scratch_begin(0, 0);
   B32 result = false;
   StringView name_copy = push_str8_copy(scratch.arena, name);
-  if (remove((char*)name_copy.str) != -1){
+  if (remove((char*)name_copy.Ptr) != -1){
     result = true;
   }
   scratch_end(scratch);
@@ -1252,7 +1252,7 @@ os_make_directory(StringView path)
   Temp scratch = scratch_begin(0, 0);
   B32 result = false;
   StringView name_copy = push_str8_copy(scratch.arena, name);
-  if (mkdir((char*)name_copy.str, 0777) != -1){
+  if (mkdir((char*)name_copy.Ptr, 0777) != -1){
     result = true;
   }
   scratch_end(scratch);
@@ -1613,7 +1613,7 @@ OS_Handle
 os_library_open(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
-  char* path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
+  char* path_cstr = (char *)push_str8_copy(scratch.arena, path).Ptr;
   void* so = dlopen(path_cstr, RTLD_LAZY);
   OS_Handle lib = { (uint64)so };
   scratch_end(scratch);
@@ -1625,7 +1625,7 @@ os_library_load_proc(OS_Handle lib, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   void* so = (void *)lib.id;
-  char* name_cstr = (char *)push_str8_copy(scratch.arena, name).str;
+  char* name_cstr = (char *)push_str8_copy(scratch.arena, name).Ptr;
   VoidProc* proc = (VoidProc *)dlsym(so, name_cstr);
   scratch_end(scratch);
   return proc;

@@ -507,7 +507,7 @@ static StringView elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx);
 
 static ELF_SymArray elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, StringView data);
 
-// string functions
+// str functions
 
 static StringView elf_string_from_section_type(ELF_SectionType section_type);
 static StringView elf_string_from_symbol_binding(ELF_SymbolBinding binding);

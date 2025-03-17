@@ -568,7 +568,7 @@ uint32 pid;
 B32 force_confirm;
 B32 prefer_disasm;
 Dir2 dir2;
-StringView string;
+StringView str;
 StringView cmd_name;
 MD_Node * params_tree;
 OS_Event * os_event;
@@ -585,7 +585,7 @@ CTRL_EntityKind ctrl_entity_kind;
 
 struct RD_CmdKindInfo
 {
-StringView string;
+StringView str;
 StringView description;
 StringView search_tags;
 StringView display_name;
@@ -596,7 +596,7 @@ RD_Query query;
 
 struct RD_ViewRuleInfo
 {
-StringView string;
+StringView str;
 StringView description;
 StringView display_name;
 StringView params_schema;
@@ -636,7 +636,7 @@ RD_ViewRuleUIFunctionType* ui;
 .force_confirm = rd_regs().force_confirm,\
 .prefer_disasm = rd_regs().prefer_disasm,\
 .dir2 = rd_regs().dir2,\
-.string = rd_regs().string,\
+.str = rd_regs().str,\
 .cmd_name = rd_regs().cmd_name,\
 .params_tree = rd_regs().params_tree,\
 .os_event = rd_regs().os_event,\

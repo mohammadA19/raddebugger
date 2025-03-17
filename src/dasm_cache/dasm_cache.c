@@ -32,7 +32,7 @@ dasm_inst_from_code(Arena* arena, Arch arch, uint64 vaddr, StringView code, DASM
       
       // rjf: disassemble one instruction
       ZydisDisassembledInstruction zinst = {0};
-      ZyanStatus status = ZydisDisassemble(ZYDIS_MACHINE_MODE_LONG_64, vaddr, code.str, code.size, &zinst, style);
+      ZyanStatus status = ZydisDisassemble(ZYDIS_MACHINE_MODE_LONG_64, vaddr, code.Ptr, code.size, &zinst, style);
       
       // rjf: analyze
       DASM_InstFlags flags = 0;
@@ -133,7 +133,7 @@ dasm_inst_from_code(Arena* arena, Arch arch, uint64 vaddr, StringView code, DASM
       {
         inst.flags           = flags;
         inst.size            = zinst.info.length;
-        inst.string          = push_str8_copy(arena, str8_cstring(zinst.text));
+        inst.str          = push_str8_copy(arena, str8_cstring(zinst.text));
         inst.jump_dest_vaddr = jump_dest_vaddr;
       }
     }break;
@@ -455,7 +455,7 @@ dasm_u2p_enqueue_req(U128 hash, DASM_Params* params, uint64 endt_us)
       dasm_shared.u2p_ring_write_pos += ring_write_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, &params.syntax);
       dasm_shared.u2p_ring_write_pos += ring_write_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, &params.base_vaddr);
       dasm_shared.u2p_ring_write_pos += ring_write_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, &params.dbgi_key.path.size);
-      dasm_shared.u2p_ring_write_pos += ring_write(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, params.dbgi_key.path.str, params.dbgi_key.path.size);
+      dasm_shared.u2p_ring_write_pos += ring_write(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, params.dbgi_key.path.Ptr, params.dbgi_key.path.size);
       dasm_shared.u2p_ring_write_pos += ring_write_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_write_pos, &params.dbgi_key.min_timestamp);
       break;
     }
@@ -487,8 +487,8 @@ dasm_u2p_dequeue_req(Arena* arena, U128* hash_out, DASM_Params* params_out)
       dasm_shared.u2p_ring_read_pos += ring_read_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, &params_out.syntax);
       dasm_shared.u2p_ring_read_pos += ring_read_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, &params_out.base_vaddr);
       dasm_shared.u2p_ring_read_pos += ring_read_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, &params_out.dbgi_key.path.size);
-      params_out.dbgi_key.path.str = push_array(arena, uint8, params_out.dbgi_key.path.size);
-      dasm_shared.u2p_ring_read_pos += ring_read(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, params_out.dbgi_key.path.str, params_out.dbgi_key.path.size);
+      params_out.dbgi_key.path.Ptr = push_array(arena, uint8, params_out.dbgi_key.path.size);
+      dasm_shared.u2p_ring_read_pos += ring_read(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, params_out.dbgi_key.path.Ptr, params_out.dbgi_key.path.size);
       dasm_shared.u2p_ring_read_pos += ring_read_struct(dasm_shared.u2p_ring_base, dasm_shared.u2p_ring_size, dasm_shared.u2p_ring_read_pos, &params_out.dbgi_key.min_timestamp);
       break;
     }
@@ -587,7 +587,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
                 RDI_Line* line = &unit_line_info.lines[line_info_idx];
                 RDI_SourceFile* file = rdi_element_from_name_idx(rdi, SourceFiles, line.file_idx);
                 StringView file_normalized_full_path = {0};
-                file_normalized_full_path.str = rdi_string_from_idx(rdi, file.normal_full_path_string_idx, &file_normalized_full_path.size);
+                file_normalized_full_path.Ptr = rdi_string_from_idx(rdi, file.normal_full_path_string_idx, &file_normalized_full_path.size);
                 if(file != last_file)
                 {
                   if(params.style_flags & DASM_StyleFlag_SourceFilesNames &&
@@ -666,7 +666,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
             {
               if(byte_idx < inst.size)
               {
-                str8_list_pushf(scratch.arena, &code_bytes_strings, "%02x%s ", (uint32)data.str[off+byte_idx], byte_idx == inst.size-1 ? "}" : "");
+                str8_list_pushf(scratch.arena, &code_bytes_strings, "%02x%s ", (uint32)data[off+byte_idx], byte_idx == inst.size-1 ? "}" : "");
               }
               else if(byte_idx < 8)
               {
@@ -686,14 +686,14 @@ ASYNC_WORK_DEF(dasm_parse_work)
               RDI_U32 procedure_idx = scope.proc_idx;
               RDI_Procedure* procedure = rdi_element_from_name_idx(rdi, Procedures, procedure_idx);
               StringView procedure_name = {0};
-              procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
+              procedure_name.Ptr = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
               if(procedure_name.size != 0)
               {
                 symbol_part = push_str8f(scratch.arena, " (%S)", procedure_name);
               }
             }
           }
-          StringView inst_string = push_str8f(scratch.arena, "%S%S%S%S", addr_part, code_bytes_part, inst.string, symbol_part);
+          StringView inst_string = push_str8f(scratch.arena, "%S%S%S%S", addr_part, code_bytes_part, inst.str, symbol_part);
           DASM_Line line = {u32_from_u64_saturate(off), 0, inst.jump_dest_vaddr, r1u64(inst_strings.total_size + inst_strings.node_count,
                                                                                        inst_strings.total_size + inst_strings.node_count + inst_string.size)};
           dasm_line_chunk_list_push(scratch.arena, &line_list, 1024, &line);

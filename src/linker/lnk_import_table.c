@@ -261,7 +261,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   StringView     imp_desc_name   = push_str8f(symtab.arena.v[0], "__DELAY_IMPORT_DESCRIPTOR_%S", dll_name);
   LNK_Symbol* imp_desc_symbol = lnk_symbol_table_push_defined_chunk(symtab, imp_desc_name, LNK_DefinedSymbolVisibility_Extern, 0, imp_desc_chunk, 0, 0, 0);
   
-  // emit string table chunk
+  // emit str table chunk
   StringView    int_table_chunk_debug = push_str8f(data_sect.arena, "delayed.%S.int", dll_name);
   LNK_Chunk* int_table_chunk       = lnk_section_push_chunk_list(data_sect, imptab.int_chunk, int_table_chunk_debug);
   
@@ -269,7 +269,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   LNK_Symbol* int_table_symbol      = lnk_symbol_table_push_defined_chunk(symtab, int_table_symbol_name, LNK_DefinedSymbolVisibility_Internal, 0, int_table_chunk, 0, 0, 0);
   
   LNK_Chunk* null_string_chunk = lnk_section_push_chunk_list(data_sect, int_table_chunk, ("zzzzz"));
-  lnk_chunk_set_debugf(data_sect.arena, null_string_chunk, "string table null");
+  lnk_chunk_set_debugf(data_sect.arena, null_string_chunk, "str table null");
   
   // emit DLL name chunk
   StringView    name_chunk_data = push_cstr(data_sect.arena, dll_name);
@@ -311,7 +311,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable* imptab, LNK_SymbolTable* symt
   // patch import address table voff
   lnk_section_push_reloc(data_sect, imp_desc_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_DelayedImportEntry, iat_voff), iat_table_symbol);
   
-  // patch string table voff
+  // patch str table voff
   lnk_section_push_reloc(data_sect, imp_desc_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_DelayedImportEntry, name_table_voff), ilt_table_symbol);
   
   // emit bound table chunk

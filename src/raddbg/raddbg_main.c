@@ -6,13 +6,13 @@
 //
 // [ ] frontend config entities, serialization/deserialization, remove hacks,
 //     etc. - the entity structure should be dramatically simplified & made
-//     to reflect a more flexible string-tree data structure which can be
+//     to reflect a more flexible str-tree data structure which can be
 //     more trivially derived from config, and more flexibly rearranged.
 //     drag/drop watch rows . tabs, tabs . watch rows, etc.
 // [ ] frontend entities need to be the "upstream state" for windows, panels,
 //     tabs, etc. - entities can be mapped to caches of window/panel/view state
 //     in purely immediate-mode fashion, so the only* state* part of the
-//     equation only has to do with the string tree.
+//     equation only has to do with the str tree.
 // [ ] config hot-reloading using the wins from the previous points
 // [ ] undo/redo, using the wins from the previous points
 // [ ] watch table UI - hidden table boundaries, special-cased control hacks
@@ -20,7 +20,7 @@
 //     depended upon by usage layers, e.g. extra dependency refcount, e.g.
 //     text cache can explicitly correllate nodes in its cache to hashes,
 //     bump their refcount - this would keep the hash correllated to its key
-//     and it would prevent it from being evicted (output debug string perf)
+//     and it would prevent it from being evicted (output debug str perf)
 // [ ] autocompletion lister, file lister, function lister, command lister,
 //     etc., all need to be merged, and optionally contextualized/filtered.
 //     right-clicking a tab should be equivalent to spawning a command lister,
@@ -70,7 +70,7 @@
 //  [ ] rich hover coverage; bitmap <. geo <. memory <. disassembly <. text; etc.
 //
 //  [ ] save view column pcts; generalize to being a first-class thing in
-//      RD_View, e.g. by just having a string . f32 store
+//      RD_View, e.g. by just having a str . f32 store
 //
 //  [ ] visualize all breakpoints everywhere - source view should show up in
 //      disasm, disasm should show up in source view, function should show up in
@@ -152,7 +152,7 @@
 //
 //  [ ] ** One very nice feature of RemedyBG that I use all the time is the
 //      ability to put "$err, hr" into the watch window, which will just show
-//      the value of GetLastError() as a string. This is super useful for
+//      the value of GetLastError() as a str. This is super useful for
 //      debugging, so you don't have to litter your own code with it.
 //      (NOTE(rjf): NtQueryInformationThread)
 //
@@ -224,7 +224,7 @@
 //  [ ]  undo close tab would be nice. If not for everything, then at least
 //       just for source files
 //
-// [ ] globally disable/configure default view rule-like things (string
+// [ ] globally disable/configure default view rule-like things (str
 //     viz for u8s in particular)
 //
 // [ ] @feature processor/data breakpoints
@@ -279,7 +279,7 @@
 //        which should allow the debugger to map native callstacks to python
 //        code
 //
-// [ ] fancy string runs can include "weakness" information for text truncation
+// [ ] fancy str runs can include "weakness" information for text truncation
 //     ... can prioritize certain parts of strings to be truncated before
 //     others. would be good for e.g. the middle of a path
 // [ ] font cache eviction (both for font tags, closing fp handles, and
@@ -287,7 +287,7 @@
 // [ ] frontend speedup opportunities
 //  [ ] tables in UI . currently building per-row, could probably cut down on
 //      # of boxes and # of draws by doing per-column in some cases?
-//  [ ] font cache layer . can probably cache (string*font*size) . (run) too
+//  [ ] font cache layer . can probably cache (str*font*size) . (run) too
 //      (not just rasterization)... would save a* lot*, there is a ton of work
 //      just in looking up & stitching stuff repeatedly
 //  [ ] convert UI layout pass to not be naive recursive version
@@ -465,7 +465,7 @@ ipc_signaler_thread__entry_point(void* p)
           if(available_size >= sizeof(uint64)+sizeof(msg.size))
           {
             ipc_s2m_ring_write_pos += ring_write_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_write_pos, &msg.size);
-            ipc_s2m_ring_write_pos += ring_write(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_write_pos, msg.str, msg.size);
+            ipc_s2m_ring_write_pos += ring_write(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_write_pos, msg.Ptr, msg.size);
             break;
           }
           os_condition_variable_wait(ipc_s2m_ring_cv, ipc_s2m_ring_mutex, max_U64);
@@ -597,7 +597,7 @@ entry_point(CmdLine* cmd_line)
       //- rjf: setup initial target from command line args
       {
         String8List args = cmd_line.inputs;
-        if(args.node_count > 0 && args.first.string.size != 0)
+        if(args.node_count > 0 && args.first.str.Length != 0)
         {
           //- TODO(rjf): @cfg setup initial target from command line arguments
           {
@@ -609,10 +609,10 @@ entry_point(CmdLine* cmd_line)
             StringView working_directory_string = {0};
             {
               // rjf: unpack full executable path
-              if(args.first.string.size != 0)
+              if(args.first.str.Length != 0)
               {
                 StringView current_path = os_get_current_path(scratch.arena);
-                StringView exe_name = args.first.string;
+                StringView exe_name = args.first.str;
                 PathStyle style = path_style_from_str8(exe_name);
                 if(style == PathStyle_Relative)
                 {
@@ -623,9 +623,9 @@ entry_point(CmdLine* cmd_line)
               }
               
               // rjf: unpack working directory
-              if(args.first.string.size != 0)
+              if(args.first.str.Length != 0)
               {
-                StringView path_part_of_arg = str8_chop_last_slash(args.first.string);
+                StringView path_part_of_arg = str8_chop_last_slash(args.first.str);
                 if(path_part_of_arg.size != 0)
                 {
                   StringView path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
@@ -637,7 +637,7 @@ entry_point(CmdLine* cmd_line)
               String8List passthrough_args_list = {0};
               for(String8Node* n = args.first.next; n != 0; n = n.next)
               {
-                str8_list_push(scratch.arena, &passthrough_args_list, n.string);
+                str8_list_push(scratch.arena, &passthrough_args_list, n.str);
               }
               StringJoin join = {(""), (" "), ("")};
               arguments_string = str8_list_join(scratch.arena, &passthrough_args_list, &join);
@@ -662,16 +662,16 @@ entry_point(CmdLine* cmd_line)
           String8List passthrough_args_list = {0};
           for(String8Node* n = args.first.next; n != 0; n = n.next)
           {
-            str8_list_push(scratch.arena, &passthrough_args_list, n.string);
+            str8_list_push(scratch.arena, &passthrough_args_list, n.str);
           }
           
           // rjf: get current path
           StringView current_path = os_get_current_path(scratch.arena);
           
           // rjf: equip exe
-          if(args.first.string.size != 0)
+          if(args.first.str.Length != 0)
           {
-            StringView exe_name = args.first.string;
+            StringView exe_name = args.first.str;
             RD_Entity* exe = rd_entity_alloc(target, RD_EntityKind_Executable);
             PathStyle style = path_style_from_str8(exe_name);
             if(style == PathStyle_Relative)
@@ -683,7 +683,7 @@ entry_point(CmdLine* cmd_line)
           }
           
           // rjf: equip working directory
-          StringView path_part_of_arg = str8_chop_last_slash(args.first.string);
+          StringView path_part_of_arg = str8_chop_last_slash(args.first.str);
           if(path_part_of_arg.size != 0)
           {
             StringView path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
@@ -739,8 +739,8 @@ entry_point(CmdLine* cmd_line)
                 consumed = 1;
                 ipc_s2m_ring_read_pos += ring_read_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, &msg.size);
                 msg.size = Min(msg.size, unconsumed_size);
-                msg.str = push_array(scratch.arena, uint8, msg.size);
-                ipc_s2m_ring_read_pos += ring_read(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, msg.str, msg.size);
+                msg.Ptr = push_array(scratch.arena, uint8, msg.size);
+                ipc_s2m_ring_read_pos += ring_read(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, msg.Ptr, msg.size);
               }
             }
             if(consumed)
@@ -871,7 +871,7 @@ entry_point(CmdLine* cmd_line)
         StringJoin join = {(""), (" "), ("")};
         StringView msg = str8_list_join(scratch.arena, &cmd_line.inputs, &join);
         ipc_info.msg_size = Min(buffer_max, msg.size);
-        MemoryCopy(buffer, msg.str, ipc_info.msg_size);
+        MemoryCopy(buffer, msg.Ptr, ipc_info.msg_size);
         os_semaphore_drop(ipc_signal_semaphore);
         os_semaphore_drop(ipc_lock_semaphore);
       }
@@ -938,8 +938,8 @@ entry_point(CmdLine* cmd_line)
         uint64 off = 0;
         for(String8Node* n = blobs.first; n != 0; n = n.next)
         {
-          os_file_write(out_file, r1u64(off, off+n.string.size), n.string.str);
-          off += n.string.size;
+          os_file_write(out_file, r1u64(off, off+n.str.Length), n.str.Ptr);
+          off += n.str.Length;
         }
       }
       

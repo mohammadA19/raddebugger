@@ -301,7 +301,7 @@ ASYNC_WORK_DEF(tex_xfer_work)
   R_Handle texture = {0};
   if(got_task && top.dim.x > 0 && top.dim.y > 0 && data.size >= (uint64)top.dim.x*(uint64)top.dim.y*(uint64)r_tex2d_format_bytes_per_pixel_table[top.fmt])
   {
-    texture = r_tex2d_alloc(R_ResourceKind_Static, v2s32(top.dim.x, top.dim.y), top.fmt, data.str);
+    texture = r_tex2d_alloc(R_ResourceKind_Static, v2s32(top.dim.x, top.dim.y), top.fmt, data.Ptr);
   }
   
   //- rjf: commit results to cache

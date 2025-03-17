@@ -33,7 +33,7 @@ struct DASM_Inst
 {
   DASM_InstFlags flags;
   uint32 size;
-  StringView string;
+  StringView str;
   uint64 jump_dest_vaddr;
 }
 

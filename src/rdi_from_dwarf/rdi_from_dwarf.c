@@ -89,7 +89,7 @@ dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
     for (String8Node* node = vals.first;
          node != 0;
          node = node.next){
-      if (str8_match(node.string, ("input"), 0)){
+      if (str8_match(node.str, ("input"), 0)){
         result.hide_errors.input = 1;
       }
     }
@@ -102,15 +102,15 @@ dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
     
     // single value unit index
     if (vals.node_count == 1){
-      uint64 idx = u64_from_str8(vals.first.string, 10);
+      uint64 idx = u64_from_str8(vals.first.str, 10);
       result.unit_idx_min = idx;
       result.unit_idx_max = idx;
     }
     
     // range value unit index
     else if (vals.node_count >= 2){
-      uint64 idx_a = u64_from_str8(vals.first.string, 10);
-      uint64 idx_b = u64_from_str8(vals.first.next.string, 10);
+      uint64 idx_a = u64_from_str8(vals.first.str, 10);
+      uint64 idx_b = u64_from_str8(vals.first.next.str, 10);
       result.unit_idx_min = Min(idx_a, idx_b);
       result.unit_idx_max = Max(idx_a, idx_b);
     }
@@ -131,43 +131,43 @@ dwarf_convert_params_from_cmd_line(Arena* arena, CmdLine* cmdline){
       for (String8Node* node = vals.first;
            node != 0;
            node = node.next){
-        if (str8_match(node.string, ("header"), 0)){
+        if (str8_match(node.str, ("header"), 0)){
           result.dump_header = 1;
         }
-        else if (str8_match(node.string, ("sections"), 0)){
+        else if (str8_match(node.str, ("sections"), 0)){
           result.dump_sections = 1;
         }
-        else if (str8_match(node.string, ("segments"), 0)){
+        else if (str8_match(node.str, ("segments"), 0)){
           result.dump_segments = 1;
         }
-        else if (str8_match(node.string, ("symtab"), 0)){
+        else if (str8_match(node.str, ("symtab"), 0)){
           result.dump_symtab = 1;
         }
-        else if (str8_match(node.string, ("dynsym"), 0)){
+        else if (str8_match(node.str, ("dynsym"), 0)){
           result.dump_dynsym = 1;
         }
-        else if (str8_match(node.string, ("debug_sections"), 0)){
+        else if (str8_match(node.str, ("debug_sections"), 0)){
           result.dump_debug_sections = 1;
         }
-        else if (str8_match(node.string, ("debug_info"), 0)){
+        else if (str8_match(node.str, ("debug_info"), 0)){
           result.dump_debug_info = 1;
         }
-        else if (str8_match(node.string, ("debug_abbrev"), 0)){
+        else if (str8_match(node.str, ("debug_abbrev"), 0)){
           result.dump_debug_abbrev = 1;
         }
-        else if (str8_match(node.string, ("debug_pubnames"), 0)){
+        else if (str8_match(node.str, ("debug_pubnames"), 0)){
           result.dump_debug_pubnames = 1;
         }
-        else if (str8_match(node.string, ("debug_pubtypes"), 0)){
+        else if (str8_match(node.str, ("debug_pubtypes"), 0)){
           result.dump_debug_pubtypes = 1;
         }
-        else if (str8_match(node.string, ("debug_names"), 0)){
+        else if (str8_match(node.str, ("debug_names"), 0)){
           result.dump_debug_names = 1;
         }
-        else if (str8_match(node.string, ("debug_aranges"), 0)){
+        else if (str8_match(node.str, ("debug_aranges"), 0)){
           result.dump_debug_aranges = 1;
         }
-        else if (str8_match(node.string, ("debug_addr"), 0)){
+        else if (str8_match(node.str, ("debug_addr"), 0)){
           result.dump_debug_addr = 1;
         }
       }
@@ -185,8 +185,8 @@ dump_symtab(Arena* arena, String8List* out, ELF_SymArray* symbols, StringView st
             uint32 indent){
   static char spaces[] = "                                ";
   
-  uint8* str_first = strtab.str;
-  uint8* str_opl   = strtab.str + strtab.size;
+  uint8* str_first = strtab.Ptr;
+  uint8* str_opl   = strtab.Ptr + strtab.size;
   
   ELF_Sym64* symbol = symbols.symbols;
   uint64 count = symbols.count;
@@ -257,8 +257,8 @@ dump_entry_tree(Arena* arena, String8List* out,
         StringView data = dwarf.debug_data[DWARF_SectionCode_Str];
         uint64 off = attrib_val.val;
         if (off < data.size){
-          uint8* start = data.str + off;
-          uint8* opl = data.str + data.size;
+          uint8* start = data.Ptr + off;
+          uint8* opl = data.Ptr + data.size;
           uint8* ptr = start;
           for (;ptr < opl && *ptr != 0;) ptr += 1;
           str = str8_range(start, ptr);
@@ -332,12 +332,12 @@ dump_entry_tree(Arena* arena, String8List* out,
         StringView str_offsets = dwarf.debug_data[DWARF_SectionCode_StrOffsets];
         if (str_offsets_off + unit.offset_size < str_offsets.size){
           uint64 off = 0;
-          MemoryCopy(&off, str_offsets.str + str_offsets_off, unit.offset_size);
+          MemoryCopy(&off, str_offsets.Ptr + str_offsets_off, unit.offset_size);
           
           StringView data = dwarf.debug_data[DWARF_SectionCode_Str];
           if (off < data.size){
-            uint8* start = data.str + off;
-            uint8* opl = data.str + data.size;
+            uint8* start = data.Ptr + off;
+            uint8* opl = data.Ptr + data.size;
             uint8* ptr = start;
             for (;ptr < opl && *ptr != 0;) ptr += 1;
             str = str8_range(start, ptr);
@@ -360,7 +360,7 @@ dump_entry_tree(Arena* arena, String8List* out,
         
         StringView data = dwarf.debug_data[DWARF_SectionCode_Addr];
         if (address_off + unit.address_size < data.size){
-          MemoryCopy(&address, data.str + address_off, unit.address_size);
+          MemoryCopy(&address, data.Ptr + address_off, unit.address_size);
         }
         
         str8_list_pushf(arena, out, "0x%x\n", address);
@@ -420,7 +420,7 @@ entry_point(CmdLine* cmd_line)
     for (String8Node* node = params.errors.first;
          node != 0;
          node = node.next){
-      fprintf(stdout, "error(input): %.*s\n", str8_varg(node.string));
+      fprintf(stdout, "error(input): %.*s\n", str8_varg(node.str));
     }
   }
   
@@ -888,7 +888,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     for (String8Node* node = dump.first;
          node != 0;
          node = node.next){
-      fwrite(node.string.str, 1, node.string.size, stdout);
+      fwrite(node.str.Ptr, 1, node.str.Length, stdout);
     }
   }
 }

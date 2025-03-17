@@ -1723,7 +1723,7 @@ rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, StringView path, RDIB_S
 
     // is there directory or file defined on this level?
     for (sub_child = curr_sub_path.first_child; sub_child != 0; sub_child = sub_child.next_sibling) {
-      if (str8_match(sub_child.sub_path, n.string, 0)) {
+      if (str8_match(sub_child.sub_path, n.str, 0)) {
         break;
       }
     }
@@ -1733,7 +1733,7 @@ rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, StringView path, RDIB_S
       sub_child           = push_array(arena, RDIB_PathTreeNode, 1);
       sub_child.node_idx = tree.node_count;
       sub_child.parent   = curr_sub_path;
-      sub_child.sub_path = n.string;
+      sub_child.sub_path = n.str;
       sub_child.src_file = 0;
       SLLQueuePush_N(curr_sub_path.first_child, curr_sub_path.last_child, sub_child, next_sibling);
       ++tree.node_count;
@@ -1761,7 +1761,7 @@ rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path)
 {
   Temp scratch = scratch_begin(0,0);
 
-  // redirect to special nil string
+  // redirect to special nil str
   if (path.size == 0) {
     path = RDIB_PATH_TREE_NIL_STRING;
   }
@@ -1777,7 +1777,7 @@ rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path)
     // scan children sub-path match
     RDIB_PathTreeNode* sub_child;
     for (sub_child = curr_sub_path.first_child; sub_child != 0; sub_child = sub_child.next_sibling) {
-      if (str8_match(sub_child.sub_path, n.string, 0)) {
+      if (str8_match(sub_child.sub_path, n.str, 0)) {
         break;
       }
     }
@@ -1807,9 +1807,9 @@ rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path)
 ////////////////////////////////
 
 uint64
-rdib_string_map_hash(StringView string)
+rdib_string_map_hash(StringView str)
 {
-  XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
+  XXH64_hash_t hash64 = XXH3_64bits(str.Ptr, str.Length);
   return hash64;
 }
 
@@ -1823,9 +1823,9 @@ rdib_init_string_map(Arena* arena, uint64 cap)
 }
 
 uint32
-rdib_idx_from_string_map(RDIB_StringMap* string_map, StringView string)
+rdib_idx_from_string_map(RDIB_StringMap* string_map, StringView str)
 {
-  uint64 hash     = rdib_string_map_hash(string);
+  uint64 hash     = rdib_string_map_hash(str);
   uint64 best_idx = hash % string_map.cap;
   uint64 idx      = best_idx;
 
@@ -1836,14 +1836,14 @@ rdib_idx_from_string_map(RDIB_StringMap* string_map, StringView string)
       break;
     }
 
-    if (str8_match(bucket.string, string, 0)) {
+    if (str8_match(bucket.str, str, 0)) {
       return safe_cast_u32(bucket.idx);
     }
 
     idx = (idx + 1) % string_map.cap;
   } while (idx != best_idx);
 
-  Assert(!"incomplete string map");
+  Assert(!"incomplete str map");
   return max_U32;
 }
 
@@ -1871,7 +1871,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket** buckets, uint64 cap, uin
 
       // another thread took the bucket...
       goto retry;
-    } else if (str8_match(curr_bucket.string, new_bucket.string, 0)) {
+    } else if (str8_match(curr_bucket.str, new_bucket.str, 0)) {
       if (curr_bucket.sorter.v <= new_bucket.sorter.v) {
         if (new_bucket.raw_values != 0) {
           void_node_concat_atomic(&curr_bucket.raw_values, new_bucket.raw_values);
@@ -1922,7 +1922,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket** buckets, uint64 cap, uin
 }
 
 void
-rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, void* value)
+rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str, void* value)
 {
   // do we have a free bucket?
   RDIB_StringMapBucket** bucket = &task.free_buckets[task_id];
@@ -1931,13 +1931,13 @@ rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 
   }
 
   // fill out bucket
-  (*bucket).string     = string;
+  (*bucket).str     = str;
   (*bucket).raw_values = value;
   (*bucket).sorter.hi  = safe_cast_u32(task_id);
   (*bucket).sorter.lo  = safe_cast_u32(task.element_indices[task_id]);
 
-  // insert bucket into string map
-  uint64                   hash             = rdib_string_map_hash(string);
+  // insert bucket into str map
+  uint64                   hash             = rdib_string_map_hash(str);
   RDIB_StringMapBucket* insert_or_update = rdib_string_map_insert_or_update(task.string_map.buckets, task.string_map.cap, hash, *bucket, task.string_map_update_func);
 
   // advance element index
@@ -2190,15 +2190,15 @@ rdib_string_map_assign_indices(RDIB_StringMapBucket** buckets, uint64 bucket_cou
 // Specialized Inserts
 
 void
-rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string)
+rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str)
 {
-  rdib_string_map_insert_item(arena, task, task_id, string, 0);
+  rdib_string_map_insert_item(arena, task, task_id, str, 0);
 }
 
 void
-rdib_string_map_insert_name_map_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, VoidNode* node)
+rdib_string_map_insert_name_map_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str, VoidNode* node)
 {
-  rdib_string_map_insert_item(arena, task, task_id, string, node);
+  rdib_string_map_insert_item(arena, task, task_id, str, node);
 }
 
 RDIB_STRING_MAP_UPDATE_FUNC(rdib_string_map_update_null)
@@ -3423,7 +3423,7 @@ rdib_data_from_vmap(Arena* arena, uint64 range_count, RDIB_VMapRange* ranges)
     // Recycle radix sort memory
     str8_list_push(arena, &raw_vmap, str8_array(vme_block, vme_block_cap));
 
-#define push_vme() (vme_block_size < raw_vmap.last.string.size/sizeof(vme_block[0])) ? &vme_block[vme_block_size++] :    \
+#define push_vme() (vme_block_size < raw_vmap.last.str.Length/sizeof(vme_block[0])) ? &vme_block[vme_block_size++] :    \
                                                   (vme_block = push_array(arena, RDI_VMapEntry, vme_block_cap),           \
                                                   vme_block_cap  = default_vme_cap,                                       \
                                                   vme_block_size = 0,                                                     \
@@ -3523,8 +3523,8 @@ rdib_data_from_vmap(Arena* arena, uint64 range_count, RDIB_VMapRange* ranges)
     }
 
     // Subtract unsued vmap entries
-    uint64 last_vme_unused         = raw_vmap.last.string.size - sizeof(vme_block[0]) * vme_block_size;
-    raw_vmap.last.string.size -= last_vme_unused;
+    uint64 last_vme_unused         = raw_vmap.last.str.Length - sizeof(vme_block[0]) * vme_block_size;
+    raw_vmap.last.str.Length -= last_vme_unused;
     raw_vmap.total_size        -= last_vme_unused;
 
 #undef push_vme
@@ -3536,8 +3536,8 @@ rdib_data_from_vmap(Arena* arena, uint64 range_count, RDIB_VMapRange* ranges)
 #if 0
   uint64 prev = max_U64;
   for (String8Node* node = raw_vmap.first; node != 0; node = node.next) {
-    RDI_VMapEntry* e = (RDI_VMapEntry*)node.string.str;
-    for (uint64 i = 0, c = node.string.size / sizeof(RDI_VMapEntry); i < c; ++i) {
+    RDI_VMapEntry* e = (RDI_VMapEntry*)node.str.Ptr;
+    for (uint64 i = 0, c = node.str.Length / sizeof(RDI_VMapEntry); i < c; ++i) {
       Assert(e[i].voff != prev);
       prev = e[i].voff;
     }
@@ -3677,8 +3677,8 @@ THREAD_POOL_TASK_FUNC(rdib_copy_string_data_task)
   for (uint64 bucket_idx = task.ranges[task_id].min; bucket_idx < task.ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket* bucket              = task.buckets[bucket_idx];
     uint64                   string_table_offset = task.string_table[bucket_idx];
-    Assert(string_table_offset + bucket.string.size <= task.string_data_size);
-    MemoryCopy(task.string_data + string_table_offset, bucket.string.str, bucket.string.size);
+    Assert(string_table_offset + bucket.str.Length <= task.string_data_size);
+    MemoryCopy(task.string_data + string_table_offset, bucket.str.Ptr, bucket.str.Length);
   }
 }
 
@@ -3688,15 +3688,15 @@ rdib_data_sections_from_string_map(TP_Context* tp, Arena* arena, RDIB_DataSectio
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
 
-  // assign string table offset for each bucket
+  // assign str table offset for each bucket
   uint64  cursor       = 0;
   uint32* string_table = push_array_no_zero(arena, uint32, bucket_count);
   for (uint64 bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
     string_table[bucket_idx] = cursor;
-    cursor += buckets[bucket_idx].string.size;
+    cursor += buckets[bucket_idx].str.Length;
   }
 
-  // populate string data buffer with bucket strings
+  // populate str data buffer with bucket strings
   RDIB_CopyStringDataTask task = {0};
   task.string_table     = string_table;
   task.string_data_size = cursor;
@@ -3705,12 +3705,12 @@ rdib_data_sections_from_string_map(TP_Context* tp, Arena* arena, RDIB_DataSectio
   task.ranges           = tp_divide_work(scratch.arena, bucket_count, tp.worker_count);
   tp_for_parallel(tp, 0, tp.worker_count, rdib_copy_string_data_task, &task);
 
-  // fill out string table section
+  // fill out str table section
   RDIB_DataSection string_table_sect = {0};
   string_table_sect.tag = RDI_SectionKind_StringTable;
   str8_list_push(arena, &string_table_sect.data, StringView((uint8 *)task.string_table, sizeof(task.string_table[0]) * bucket_count));
 
-  // fill out string data section
+  // fill out str data section
   RDIB_DataSection string_data_sect = { .tag = RDI_SectionKind_StringData };
   str8_list_push(arena, &string_data_sect.data, StringView(task.string_data, task.string_data_size));
   
@@ -4357,7 +4357,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
   for (uint64 i = 0; i < task.in_bucket_counts[name_map_idx]; ++i) {
     RDIB_StringMapBucket* src_bucket = task.in_buckets[name_map_idx][i];
 
-    uint64 hash       = rdi_hash(src_bucket.string.str, src_bucket.string.size);
+    uint64 hash       = rdi_hash(src_bucket.str.Ptr, src_bucket.str.Length);
     uint64 bucket_idx = hash % out_bucket_count;
 
     struct Node* node = temp_nodes + i;
@@ -4392,7 +4392,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
       RDIB_StringMapBucket* src_name = n.name;
 
       RDI_NameMapNode* dst_node = &out_nodes[node_cursor];
-      dst_node.string_idx      = rdib_idx_from_string_map(task.string_map, src_name.string);
+      dst_node.string_idx      = rdib_idx_from_string_map(task.string_map, src_name.str);
       dst_node.match_count     = src_name.count;
       if (src_name.count > 1) {
         dst_node.match_idx_or_idx_run_first = task.idx_run_map.buckets[src_name.idx_run_bucket_idx].index_in_output_array;
@@ -5276,7 +5276,7 @@ if (((RDIB_Type*)(t)).kind == RDI_TypeKindExt_VirtualTable) break; \
                                                   all_src_files.count,
                                                   all_src_file_chunks);
 
-  // loop over structs and build a map with every possible string
+  // loop over structs and build a map with every possible str
   ProfBegin("String Map");
   RDIB_StringMap* string_map;
   {
@@ -5577,7 +5577,7 @@ if (((RDIB_Type*)(t)).kind == RDI_TypeKindExt_VirtualTable) break; \
         {
           uint64 expected_total_size = 0;
           for (String8Node* n = rdi_data.first; n != 0; n = n.next) {
-            expected_total_size += n.string.size;
+            expected_total_size += n.str.Length;
           }
           Assert(expected_total_size == rdi_data.total_size);
         }

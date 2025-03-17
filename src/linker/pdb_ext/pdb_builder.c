@@ -302,7 +302,7 @@ pdb_hash_table_delete(PDB_HashTable* ht, StringView key)
       break;
     }
     PDB_HashTableBucket* bucket = &ht.bucket_arr[ibucket];
-    int cmp = MemoryCompare(key.str, bucket.key.str, key.size);
+    int cmp = MemoryCompare(key.Ptr, bucket.key.Ptr, key.size);
     if (cmp == 0) {
       bit_array_set_bit32(ht.present_bits, ibucket, 0);
       bit_array_set_bit32(ht.deleted_bits, ibucket, 1);
@@ -352,8 +352,8 @@ PDB_HASH_TABLE_UNPACK_FUNC(pdb_named_stream_ht_unpack)
   uint32 key_data_offset = max_U32;
   *key_value_cursor += str8_deserial_read_struct(key_value_data, *key_value_cursor, &key_data_offset);
 
-  uint8* cstr_ptr = local_data.str + key_data_offset;
-  uint8* cstr_opl = local_data.str + local_data.size;
+  uint8* cstr_ptr = local_data.Ptr + key_data_offset;
+  uint8* cstr_opl = local_data.Ptr + local_data.size;
   StringView stream_name = str8_cstring_capped(cstr_ptr, cstr_opl);
 
   // NOTE: stream number is uint16 but in the reference they cast to uint32
@@ -508,7 +508,7 @@ pdb_strtab_alloc(PDB_StringTable* strtab, uint32 max)
   ProfBeginFunction();
   
   uint64 bucket_max  = (uint64)((double)max * 1.3);
-  bucket_max     += 1; // reserve space for null string
+  bucket_max     += 1; // reserve space for null str
   
   strtab.arena         = arena_alloc();
   strtab.version       = 1;
@@ -519,7 +519,7 @@ pdb_strtab_alloc(PDB_StringTable* strtab, uint32 max)
   MemorySet(strtab.ibucket_array, 0xff, sizeof(strtab.ibucket_array[0]) * strtab.bucket_max);
   strtab.bucket_array = push_array(strtab.arena, PDB_StringTableBucket *, strtab.bucket_max);
 
-  // string table always has a null for first entry
+  // str table always has a null for first entry
   pdb_strtab_add(strtab, (""));
 
   ProfEnd();
@@ -569,15 +569,15 @@ pdb_strtab_open(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
           string_buffer.size == string_size &&
           offset_buffer.size == sizeof(uint32)*bucket_max &&
           bucket_count <= bucket_max) {
-        // init string table
+        // init str table
         ibucket_array = push_array_no_zero(arena, uint32, bucket_max);
         bucket_array  = push_array_no_zero(arena, PDB_StringTableBucket *, bucket_max);
 
         // open buckets
         PDB_StringTableBucket* node_arr = push_array_no_zero(arena, PDB_StringTableBucket, bucket_count);
-        uint8*  string_buffer_ptr = string_buffer.str;
-        uint8*  string_buffer_opl = string_buffer.str + string_buffer.size;
-        uint32* offset_array      = (uint32*)offset_buffer.str;
+        uint8*  string_buffer_ptr = string_buffer.Ptr;
+        uint8*  string_buffer_opl = string_buffer.Ptr + string_buffer.size;
+        uint32* offset_array      = (uint32*)offset_buffer.Ptr;
         uint32  bucket_read_idx   = 0;
 
         for (uint32 bucket_idx = 0; bucket_idx < bucket_max; bucket_idx += 1) {
@@ -595,7 +595,7 @@ pdb_strtab_open(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
             bucket_array[bucket_idx]  = 0;
           }
 
-          // bucket with string
+          // bucket with str
           else {
             if (bucket_read_idx >= bucket_count) {
               err = PDB_StringTableOpenError_OFFSETS_EXCEED_BUCKET_COUNT;
@@ -662,13 +662,13 @@ pdb_strtab_build(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
   for (uint32 bucket_idx = 0; bucket_idx < strtab.bucket_max; bucket_idx += 1) {
     PDB_StringTableBucket* bucket = strtab.bucket_array[bucket_idx];
     if (bucket) {
-      // store string offset
+      // store str offset
       Assert(bucket.offset + bucket.data.size <= strtab.size);
       bucket_offset_arr[bucket_idx] = bucket.offset;
 
-      // write c string at bucket offset
+      // write c str at bucket offset
       uint8* str_ptr = string_buffer + bucket.offset;
-      MemoryCopy(str_ptr, bucket.data.str, bucket.data.size);
+      MemoryCopy(str_ptr, bucket.data.Ptr, bucket.data.size);
       str_ptr[bucket.data.size] = '\0';
     }
   }
@@ -678,7 +678,7 @@ pdb_strtab_build(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
   header.magic = PDB_StringTableHeader_MAGIC;
   header.version = strtab.version;
 
-  // reserve memory for entire string table
+  // reserve memory for entire str table
   MSF_UInt reserve_size = sizeof(header)
                         + sizeof(strtab.size)
                         + strtab.size
@@ -686,7 +686,7 @@ pdb_strtab_build(PDB_StringTable* strtab, MSF_Context* msf, MSF_StreamNumber sn)
                         + sizeof(strtab.bucket_count);
   msf_stream_reserve(msf, sn, reserve_size);
 
-  // write out string table
+  // write out str table
   msf_stream_write_struct(msf, sn, &header);
   msf_stream_write_struct(msf, sn, &strtab.size);
   msf_stream_write_array (msf, sn, string_buffer, strtab.size);
@@ -716,16 +716,16 @@ pdb_strtab_get_serialized_size(PDB_StringTable* strtab)
   result += strtab.size;
   result += sizeof(uint32); // bucket count
   result += sizeof(uint32) * strtab.bucket_max;
-  result += sizeof(uint32); // string count
+  result += sizeof(uint32); // str count
   return result;
 }
 
 uint32
-pdb_strtab_hash(PDB_StringTable* strtab, StringView string)
+pdb_strtab_hash(PDB_StringTable* strtab, StringView str)
 {
   uint32 hash = 0;
   switch (strtab.version) {
-  case 1: hash = pdb_hash_v1(string); break;
+  case 1: hash = pdb_hash_v1(str); break;
   default: NotImplemented; break;
   }
   uint32 ibucket = hash % strtab.bucket_max;
@@ -762,11 +762,11 @@ pdb_strtab_add_cv_string_hash_table(PDB_StringTable* strtab, CV_StringHashTable 
 
   uint64 base_offset = strtab.size;
 
-  // proceed to fill out buckets & add them to the string table
+  // proceed to fill out buckets & add them to the str table
   for (uint64 bucket_idx = 0, string_idx = 0; bucket_idx < string_ht.bucket_cap; ++bucket_idx) {
     if (string_ht.buckets[bucket_idx] != 0) {
       PDB_StringTableBucket* dst = &buckets[string_idx++];
-      dst.data                  = string_ht.buckets[bucket_idx].string;
+      dst.data                  = string_ht.buckets[bucket_idx].str;
       dst.offset                = base_offset + string_ht.buckets[bucket_idx].u.offset;
       dst.istr                  = strtab.bucket_count++;
 
@@ -781,14 +781,14 @@ pdb_strtab_add_cv_string_hash_table(PDB_StringTable* strtab, CV_StringHashTable 
 }
 
 B32
-pdb_strtab_try_add(PDB_StringTable* strtab, StringView string, PDB_StringIndex* index_out)
+pdb_strtab_try_add(PDB_StringTable* strtab, StringView str, PDB_StringIndex* index_out)
 {
   PDB_StringTableBucket* bucket = push_array(strtab.arena, PDB_StringTableBucket, 1);
-  bucket.data                  = push_str8_copy(strtab.arena, string);
+  bucket.data                  = push_str8_copy(strtab.arena, str);
   bucket.offset                = strtab.size;
   bucket.istr                  = (PDB_StringIndex)strtab.bucket_count++;
 
-  uint32 hash      = pdb_strtab_hash(strtab, string);
+  uint32 hash      = pdb_strtab_hash(strtab, str);
   B32 was_added = pdb_strtab_add_(strtab, hash, bucket);
 
   *index_out = bucket.istr;
@@ -804,7 +804,7 @@ pdb_strtab_grow(PDB_StringTable* strtab, uint64 new_max)
   PDB_StringTable new_strtab;
   pdb_strtab_alloc(&new_strtab, new_max);
   
-  // start with 1 because null bucket is already added during string table alloc
+  // start with 1 because null bucket is already added during str table alloc
   for (PDB_StringIndex istr = 1; istr < strtab.bucket_max; ++istr) {
     uint32 ibucket = strtab.ibucket_array[istr];
     
@@ -831,26 +831,26 @@ pdb_strtab_grow(PDB_StringTable* strtab, uint64 new_max)
 }
 
 PDB_StringIndex
-pdb_strtab_add(PDB_StringTable* strtab, StringView string)
+pdb_strtab_add(PDB_StringTable* strtab, StringView str)
 {
   PDB_StringIndex index = 0;
-  B32 is_pushed = pdb_strtab_try_add(strtab, string, &index);
+  B32 is_pushed = pdb_strtab_try_add(strtab, str, &index);
   if (!is_pushed) {
     // increase number of slots in the hash table
     pdb_strtab_grow(strtab, strtab.bucket_max * 2);
 
-    // now we have enough slots for the new string
-    is_pushed = pdb_strtab_try_add(strtab, string, &index);
+    // now we have enough slots for the new str
+    is_pushed = pdb_strtab_try_add(strtab, str, &index);
     AssertAlways(is_pushed);
   }
   return index;
 }
 
 B32
-pdb_strtab_search(PDB_StringTable* strtab, StringView string, PDB_StringIndex* index_out)
+pdb_strtab_search(PDB_StringTable* strtab, StringView str, PDB_StringIndex* index_out)
 {
   B32 is_found = 0;
-  uint32 best_ibucket = pdb_strtab_hash(strtab, string);
+  uint32 best_ibucket = pdb_strtab_hash(strtab, str);
   uint32 ibucket = best_ibucket;
   do {
     PDB_StringTableBucket* bucket = strtab.bucket_array[ibucket];
@@ -858,7 +858,7 @@ pdb_strtab_search(PDB_StringTable* strtab, StringView string, PDB_StringIndex* i
       break;
     }
     
-    if (str8_match(bucket.data, string, 0)) {
+    if (str8_match(bucket.data, str, 0)) {
       *index_out = bucket.istr;
       is_found = 1;
       break;
@@ -872,17 +872,17 @@ pdb_strtab_search(PDB_StringTable* strtab, StringView string, PDB_StringIndex* i
 StringView
 pdb_strtab_string_from_offset(PDB_StringTable* strtab, PDB_StringOffset offset)
 {
-  StringView string = StringView(0,0);
+  StringView str = StringView(0,0);
   for (uint32 ibucket = 0; ibucket < strtab.bucket_max; ++ibucket) {
     PDB_StringTableBucket* bucket = strtab.bucket_array[ibucket];
     if (bucket) {
       if (bucket.offset == offset) {
-        string = bucket.data;
+        str = bucket.data;
         break;
       }
     }
   }
-  return string;
+  return str;
 }
 
 PDB_StringOffset
@@ -1073,7 +1073,7 @@ pdb_type_server_open_v80(MSF_Context* msf, MSF_StreamNumber sn, PDB_StringTable*
   // adjust type buckets
   for (uint64 i = 0; i < ts.hash_adj.count; i += 1) {
     StringView      type_name  = key_arr.v[i];
-    CV_TypeIndex type_index = *(CV_TypeIndex*)value_arr.v[i].str;
+    CV_TypeIndex type_index = *(CV_TypeIndex*)value_arr.v[i].Ptr;
 
     // name . hash
     uint64 hash = pdb_hash_v1(type_name);
@@ -1235,8 +1235,8 @@ THREAD_POOL_TASK_FUNC(pdb_write_types_task)
     }
 
     // copy leaf data
-    MemoryCopy(task.lf_buf + cursor, node.string.str, node.string.size);
-    cursor += node.string.size;
+    MemoryCopy(task.lf_buf + cursor, node.str.Ptr, node.str.Length);
+    cursor += node.str.Length;
   }
 
   ProfEnd();
@@ -1265,7 +1265,7 @@ pdb_type_server_build(TP_Context* tp, PDB_TypeServer* ts, PDB_StringTable* strta
       lf_arr[lf_arr_idx]        = lf;
       lf_arr_idx += 1;
     }
-    lf_buf_size += lf.string.size;
+    lf_buf_size += lf.str.Length;
     lf_node_idx += 1;
   }
 
@@ -1362,7 +1362,7 @@ pdb_type_server_push_udt_arr(PDB_TypeServer* ts, uint64 count, uint32* hash_arr,
         PDB_UDTInfo this_udt_info = pdb_get_udt_info(curr.leaf.kind, curr.leaf.data);
         if (str8_match(udt_info.name, this_udt_info.name)) {
           B32 is_data_match = curr.leaf.data.size == data.size &&
-            MemoryCompare(curr.leaf.data.str, data.str, data.size) == 0;
+            MemoryCompare(curr.leaf.data.Ptr, data.Ptr, data.size) == 0;
           if (is_data_match) {
             B32 is_not_head = (match_count > 0);
             if (is_not_head) {
@@ -1518,17 +1518,17 @@ pdb_type_server_push_parallel(TP_Context* tp, PDB_TypeServer* type_server, CV_De
 
 #if 0
 CV_LeafNode *
-pdb_type_server_leaf_from_string(PDB_TypeServer* ts, StringView string)
+pdb_type_server_leaf_from_string(PDB_TypeServer* ts, StringView str)
 {
   ProfBeginFunction();
-  uint32 hash = pdb_hash_v1(string);
+  uint32 hash = pdb_hash_v1(str);
   uint32 bucket_idx = hash % ts.bucket_count;
   PDB_TypeBucket* head_bucket = ts.bucket_table[bucket_idx];
   CV_LeafNode* result = 0;
   for (PDB_TypeBucket* i = head_bucket; i != 0; i = i.next) {
     CV_LeafNode* leaf = i.leaf_node;
     StringView leaf_name = cv_get_leaf_name(leaf.data.kind, leaf.data.data);
-    if (str8_match(leaf_name, string, 0)) {
+    if (str8_match(leaf_name, str, 0)) {
       result = leaf;
       break;
     }
@@ -1591,7 +1591,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer** type_server_arr, CV_LeafList leaf
       
       for (CV_TypeIndexInfo* ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info.next) {
         Assert(ti_info.offset + sizeof(CV_TypeIndex) <= leaf.data.size);
-        CV_TypeIndex* ti_ptr = (CV_TypeIndex *)(leaf.data.str + ti_info.offset);
+        CV_TypeIndex* ti_ptr = (CV_TypeIndex *)(leaf.data.Ptr + ti_info.offset);
         CV_TypeIndex external_ti = *ti_ptr;
         
         B32 is_complex_type = external_ti >= ti_map.min_itype[ti_info.source];
@@ -1745,7 +1745,7 @@ pdb_info_open(MSF_Context* msf, MSF_StreamNumber sn)
     }
   }
 
-  // open string table
+  // open str table
   PDB_StringTable strtab = {0};
   MSF_StreamNumber strtab_sn = pdb_find_named_stream(&named_stream_ht, PDB_NAMES_STREAM_NAME);
   if (strtab_sn != MSF_INVALID_STREAM_NUMBER) {
@@ -1914,7 +1914,7 @@ pdb_find_named_stream(PDB_HashTable* named_stream_ht, StringView name)
   StringView value;
   if (pdb_hash_table_get(named_stream_ht, name, &value)) {
     Assert(value.size == sizeof(uint32));
-    result = *(MSF_StreamNumber*)value.str;
+    result = *(MSF_StreamNumber*)value.Ptr;
   }
   ProfEnd();
   return result;
@@ -1956,7 +1956,7 @@ pdb_add_src(PDB_InfoContext* info, MSF_Context* msf, StringView file_path, Strin
             virt_path_stridx = pdb_strtab_add(&info.strtab, virt_path);
           }
 
-          // string indices . offsets
+          // str indices . offsets
           PDB_StringOffset file_path_stroff = pdb_strtab_string_to_offset(&info.strtab, file_path_stridx);
           PDB_StringOffset virt_path_stroff = pdb_strtab_string_to_offset(&info.strtab, virt_path_stridx);
 
@@ -1967,7 +1967,7 @@ pdb_add_src(PDB_InfoContext* info, MSF_Context* msf, StringView file_path, Strin
           entry.file_crc  = pdb_crc32_from_string(file_data);
           entry.file_size = file_data.size;
           entry.file_path = file_path_stroff;
-          entry.obj       = 0; // null string offset
+          entry.obj       = 0; // null str offset
           entry.virt_path = virt_path_stroff;
           entry.comp      = comp;
           entry.flags     = 0;
@@ -2074,7 +2074,7 @@ gsi_open(MSF_Context* msf, MSF_StreamNumber sn, StringView symbol_data)
               Assert(hash_record_ptr.cref > 0);
               
               uint32 symbol_off = hash_record_ptr.symbol_off -1;
-              uint8* symbol_ptr = symbol_data.str + symbol_off;
+              uint8* symbol_ptr = symbol_data.Ptr + symbol_off;
               uint16* size_ptr = (uint16*)symbol_ptr;
               CV_SymKind* kind_ptr = (CV_SymKind*)(size_ptr + 1);
               uint8* data_ptr = (uint8*)(kind_ptr + 1);
@@ -2259,7 +2259,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_pub32)
     CV_Symbol* symbol = &node.data;
     Assert(symbol.kind == CV_SymKind_PUB32);
 
-    CV_SymPub32* pub32    = (CV_SymPub32 *)symbol.data.str;
+    CV_SymPub32* pub32    = (CV_SymPub32 *)symbol.data.Ptr;
     uint8*          str_ptr  = (uint8 *)(pub32 + 1);
     uint64          str_size = symbol.data.size - sizeof(*pub32);
     StringView      name     = StringView(str_ptr, str_size);
@@ -2960,7 +2960,7 @@ THREAD_POOL_TASK_FUNC(dbi_build_file_info_assign_file_offsets_task)
     // assign source file offsets
     uint64 source_file_idx = 0;
     for (String8Node* string_n = mod.source_file_list.first; string_n != 0; string_n = string_n.next, ++source_file_idx) {
-      CV_StringBucket* string_bucket = cv_string_hash_table_lookup(task.string_ht, string_n.string);
+      CV_StringBucket* string_bucket = cv_string_hash_table_lookup(task.string_ht, string_n.str);
       task.source_file_name_offset_arr[mod.imod][source_file_idx] = safe_cast_u32(string_bucket.u.offset);
     }
   } else {

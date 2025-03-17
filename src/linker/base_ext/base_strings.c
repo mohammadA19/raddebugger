@@ -115,18 +115,18 @@ str8_list_pop_front(String8List* list)
   String8Node* node = 0;
   if (list.node_count) {
 	node = list.first;
-    Assert(list.total_size >= list.first.string.size);
+    Assert(list.total_size >= list.first.str.Length);
     list.node_count -= 1;
-    list.total_size -= list.first.string.size;
+    list.total_size -= list.first.str.Length;
     SLLQueuePop(list.first, list.last);
   }
   return node;
 }
 
 uint64
-hash_from_str8(StringView string)
+hash_from_str8(StringView str)
 {
-  XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
+  XXH64_hash_t hash64 = XXH3_64bits(str.Ptr, str.Length);
   return hash64;
 }
 

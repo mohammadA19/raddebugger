@@ -5,25 +5,25 @@
 //~ rjf: Basic Helpers
 
 uint64
-fs_little_hash_from_string(StringView string)
+fs_little_hash_from_string(StringView str)
 {
   uint64 result = 5381;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
 
 U128
-fs_big_hash_from_string_range(StringView string, Rng1U64 range)
+fs_big_hash_from_string_range(StringView str, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
-  uint64 buffer_size = string.size + sizeof(uint64)*2;
+  uint64 buffer_size = str.Length + sizeof(uint64)*2;
   uint8* buffer = push_array_no_zero(scratch.arena, uint8, buffer_size);
-  MemoryCopy(buffer, string.str, string.size);
-  MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
-  MemoryCopy(buffer + string.size + sizeof(range.min), &range.max, sizeof(range.max));
+  MemoryCopy(buffer, str.Ptr, str.Length);
+  MemoryCopy(buffer + str.Length, &range.min, sizeof(range.min));
+  MemoryCopy(buffer + str.Length + sizeof(range.min), &range.max, sizeof(range.max));
   U128 hash = hs_hash_from_data(StringView(buffer, buffer_size));
   scratch_end(scratch);
   return hash;
@@ -260,7 +260,7 @@ fs_u2s_enqueue_req(Rng1U64 range, StringView path, uint64 endt_us)
       fs_shared.u2s_ring_write_pos += ring_write_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_write_pos, &range.min);
       fs_shared.u2s_ring_write_pos += ring_write_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_write_pos, &range.max);
       fs_shared.u2s_ring_write_pos += ring_write_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_write_pos, &path.size);
-      fs_shared.u2s_ring_write_pos += ring_write(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_write_pos, path.str, path.size);
+      fs_shared.u2s_ring_write_pos += ring_write(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_write_pos, path.Ptr, path.size);
       break;
     }
     os_condition_variable_wait(fs_shared.u2s_ring_cv, fs_shared.u2s_ring_mutex, endt_us);
@@ -283,8 +283,8 @@ fs_u2s_dequeue_req(Arena* arena, Rng1U64* range_out, StringView* path_out)
       fs_shared.u2s_ring_read_pos += ring_read_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_read_pos, &range_out.min);
       fs_shared.u2s_ring_read_pos += ring_read_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_read_pos, &range_out.max);
       fs_shared.u2s_ring_read_pos += ring_read_struct(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_read_pos, &path_out.size);
-      path_out.str = push_array(arena, uint8, path_out.size);
-      fs_shared.u2s_ring_read_pos += ring_read(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_read_pos, path_out.str, path_out.size);
+      path_out.Ptr = push_array(arena, uint8, path_out.size);
+      fs_shared.u2s_ring_read_pos += ring_read(fs_shared.u2s_ring_base, fs_shared.u2s_ring_size, fs_shared.u2s_ring_read_pos, path_out.Ptr, path_out.size);
       break;
     }
     os_condition_variable_wait(fs_shared.u2s_ring_cv, fs_shared.u2s_ring_mutex, max_U64);

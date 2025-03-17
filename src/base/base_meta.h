@@ -229,7 +229,7 @@ Type String8Node__ptr_type = {TypeKind_Ptr, 0, sizeof(void *), &String8Node__typ
 Member String8Node__members[] =
 {
   {("next"),   {0}, &String8Node__ptr_type,     OffsetOf(String8Node, next)},
-  {("string"), {0}, type(StringView),              OffsetOf(String8Node, string)},
+  {("str"), {0}, type(StringView),              OffsetOf(String8Node, str)},
 }
 Type String8Node__type =
 {
@@ -278,7 +278,7 @@ StringView deserialized_from_typed_data(Arena* arena, Type* type, StringView dat
 StringView deep_copy_from_typed_data(Arena* arena, Type* type, StringView data, TypeSerializeParams* params);
 #define struct_rebase_ptrs(T, ptr, base)                   typed_data_rebase_ptrs(type(T), str8_struct(ptr), (base))
 #define serialized_from_struct(arena, T, ptr, ...)         serialized_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__})
-#define struct_from_serialized(arena, T, string, ...) (T *)deserialized_from_typed_data((arena), type(T), (string), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str
-#define deep_copy_from_struct(arena, T, ptr, ...)     (T *)deep_copy_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str
+#define struct_from_serialized(arena, T, str, ...) (T *)deserialized_from_typed_data((arena), type(T), (str), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).Ptr
+#define deep_copy_from_struct(arena, T, ptr, ...)     (T *)deep_copy_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).Ptr
 
 #endif // BASE_META_H

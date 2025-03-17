@@ -29,12 +29,12 @@ msf_raw_stream_table_from_data(Arena* arena, StringView msf_data)
     uint32 directory_super_map_raw   = 0;
 
     if (index_size == 2) {
-      MSF_Header20* header      = (MSF_Header20 *) msf_data.str;
+      MSF_Header20* header      = (MSF_Header20 *) msf_data.Ptr;
       page_size_raw             = header.page_size;
       whole_file_page_count_raw = header.page_count;
       directory_size_raw        = header.stream_table_size;
     } else if (index_size == 4) {
-      MSF_Header70* header      = (MSF_Header70 *) msf_data.str;
+      MSF_Header70* header      = (MSF_Header70 *) msf_data.Ptr;
       page_size_raw             = header.page_size;
       whole_file_page_count_raw = header.page_count;
       directory_size_raw        = header.stream_table_size;
@@ -96,7 +96,7 @@ msf_raw_stream_table_from_data(Arena* arena, StringView msf_data)
         directory_map_page_skip_size = OffsetOf(MSF_Header20, stream_table_size);
       } else {
         uint64 super_map_off   = OffsetOf(MSF_Header70, root_pn);
-        directory_super_map = (uint32 *) (msf_data.str + super_map_off);
+        directory_super_map = (uint32 *) (msf_data.Ptr + super_map_off);
       }
       
       uint32 max_index_count_in_map_page = (page_size - directory_map_page_skip_size) / index_size;
@@ -112,7 +112,7 @@ msf_raw_stream_table_from_data(Arena* arena, StringView msf_data)
         }
         
         uint64 directory_map_page_off  = ((uint64) directory_map_page_index) * page_size;
-        uint8* directory_map_page_base = msf_data.str + directory_map_page_off;
+        uint8* directory_map_page_base = msf_data.Ptr + directory_map_page_off;
         
         // clamp index count by end of directory
         uint32 index_count;
@@ -140,7 +140,7 @@ msf_raw_stream_table_from_data(Arena* arena, StringView msf_data)
           }
           
           uint64 directory_page_off  = ((uint64) directory_page_index) * page_size;
-          uint8* directory_page_base = msf_data.str + directory_page_off;
+          uint8* directory_page_base = msf_data.Ptr + directory_page_off;
           
           // clamp copy size by end of directory
           uint32 copy_size;
@@ -249,7 +249,7 @@ msf_data_from_stream_number(Arena* arena, StringView msf_data, MSF_RawStreamTabl
       break;
     }
 
-    uint8* stream_page_base = msf_data.str + stream_page_off;
+    uint8* stream_page_base = msf_data.Ptr + stream_page_off;
     
     // clamp copy size by end of stream
     uint32 stream_pos     = (uint32) (stream_out_ptr - stream_buf);

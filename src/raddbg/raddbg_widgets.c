@@ -111,14 +111,14 @@ rd_cmd_binding_buttons(StringView name)
     B32 has_conflicts = 0;
     for(String8Node* n = specs_with_binding.first; n != 0; n = n.next)
     {
-      if(!str8_match(n.string, name, 0))
+      if(!str8_match(n.str, name, 0))
       {
         has_conflicts = 1;
         break;
       }
     }
     
-    //- rjf: form binding string
+    //- rjf: form binding str
     StringView keybinding_str = {0};
     {
       if(binding.key != OS_Key_Null)
@@ -198,9 +198,9 @@ rd_cmd_binding_buttons(StringView name)
         UI_PrefWidth(ui_children_sum(1)) rd_error_label(("This binding conflicts with those for:"));
         for(String8Node* n = specs_with_binding.first; n != 0; n = n.next)
         {
-          if(!str8_match(n.string, name, 0))
+          if(!str8_match(n.str, name, 0))
           {
-            RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(n.string);
+            RD_CmdKindInfo* info = rd_cmd_kind_info_from_string(n.str);
             ui_labelf("%S", info.display_name);
           }
         }
@@ -276,10 +276,10 @@ rd_cmd_binding_buttons(StringView name)
 }
 
 UI_Signal
-rd_menu_bar_button(StringView string)
+rd_menu_bar_button(StringView str)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, str);
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
 }
@@ -351,9 +351,9 @@ rd_cmd_list_menu_buttons(uint64 count, StringView* cmd_names, uint32* fastpath_c
 }
 
 UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView string)
+rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView str)
 {
-  StringView display_string = ui_display_part_from_key_string(string);
+  StringView display_string = ui_display_part_from_key_string(str);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_child_layout_axis(Axis2_X);
   UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|
@@ -361,7 +361,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView string
                                          UI_BoxFlag_DrawBackground|
                                          UI_BoxFlag_DrawHotEffects|
                                          UI_BoxFlag_DrawActiveEffects,
-                                         string);
+                                         str);
   UI_Parent(box)
   {
     if(display_string.size == 0)
@@ -408,9 +408,9 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = rd_icon_button(kind, matches, string);
+  UI_Signal sig = rd_icon_button(kind, matches, str);
   scratch_end(scratch);
   return sig;
 }
@@ -581,7 +581,7 @@ UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, StringView string)
+rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, StringView str)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
@@ -620,7 +620,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     ui_set_next_child_layout_axis(Axis2_X);
     ui_set_next_pref_width(ui_px(params.line_text_max_width_px, 1));
     ui_set_next_pref_height(ui_children_sum(1));
-    top_container_box = ui_build_box_from_string(UI_BoxFlag_DisableFocusEffects|UI_BoxFlag_DrawBorder, string);
+    top_container_box = ui_build_box_from_string(UI_BoxFlag_DisableFocusEffects|UI_BoxFlag_DrawBorder, str);
     clipped_top_container_rect = top_container_box.rect;
     for(UI_Box* b = top_container_box; !ui_box_is_nil(b); b = b.parent)
     {
@@ -1261,7 +1261,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         for(RD_EntityNode* n = pins.first; n != 0; n = n.next)
         {
           RD_Entity* pin = n.entity;
-          StringView pin_expr = pin.string;
+          StringView pin_expr = pin.str;
           E_Eval eval = e_eval_from_string(scratch.arena, pin_expr);
           StringView eval_string = {0};
           if(!e_type_key_match(e_type_key_zero(), eval.type_key))
@@ -1328,7 +1328,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
     int64 line_num = (params.line_num_range.min + mouse_y_line_idx);
     StringView line_string = (params.line_num_range.min <= line_num && line_num <= params.line_num_range.max) ? (params.line_text[mouse_y_line_idx]) : StringView();
     
-    // rjf: mouse x * string => column
+    // rjf: mouse x * str => column
     int64 column = fnt_char_pos_from_tag_size_string_p(params.font, params.font_size, 0, params.tab_size, line_string, mouse.x-text_container_box.rect.x0-params.line_num_width_px-line_num_padding_px)+1;
     
     // rjf: bundle
@@ -1700,7 +1700,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
         DR_Bucket* line_bucket = dr_bucket_make();
         dr_push_bucket(line_bucket);
         
-        // rjf: string * tokens . fancy string list
+        // rjf: str * tokens . fancy str list
         DR_FancyStringList line_fancy_strings = {0};
         {
           if(line_tokens.count == 0)
@@ -1722,7 +1722,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
             TXT_Token* line_tokens_opl = line_tokens.v + line_tokens.count;
             for(TXT_Token* token = line_tokens_first; token < line_tokens_opl; token += 1)
             {
-              // rjf: token . token string
+              // rjf: token . token str
               StringView token_string = {0};
               {
                 Rng1U64 token_range = r1u64(0, line_string.size);
@@ -1748,7 +1748,7 @@ rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pre
                 token_color = mix_4f32(token_color, lookup_color, lookup_color_mix_t);
               }
               
-              // rjf: push fancy string
+              // rjf: push fancy str
               DR_FancyString fstr =
               {
                 params.font,
@@ -1923,8 +1923,8 @@ rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* pr
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
-  RD_CodeSliceSignal sig = rd_code_slice(params, cursor, mark, preferred_column, string);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
+  RD_CodeSliceSignal sig = rd_code_slice(params, cursor, mark, preferred_column, str);
   va_end(args);
   scratch_end(scratch);
   return sig;
@@ -2113,7 +2113,7 @@ rd_do_txt_controls(TXT_TextInfo* info, StringView data, uint64 line_count_per_pa
 //~ rjf: UI Widgets: Fancy Labels
 
 UI_Signal
-rd_label(StringView string)
+rd_label(StringView str)
 {
   Temp scratch = scratch_begin(0, 0);
   enum StringPartFlags : uint32
@@ -2126,26 +2126,26 @@ rd_label(StringView string)
   {
     StringPart* next;
     StringPartFlags flags;
-    StringView string;
+    StringView str;
   };
   StringPart* first_part = 0;
   StringPart* last_part = 0;
   uint64 active_part_start_idx = 0;
   StringPartFlags active_part_flags = 0;
-  for(uint64 idx = 0; idx <= string.size; idx += 1)
+  for(uint64 idx = 0; idx <= str.Length; idx += 1)
   {
-    if(idx == string.size)
+    if(idx == str.Length)
     {
       StringPart* p = push_array(scratch.arena, StringPart, 1);
       p.flags = active_part_flags;
-      p.string = str8_substr(string, r1u64(active_part_start_idx, idx));
+      p.str = str8_substr(str, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
     }
-    else if(string.str[idx] == '`')
+    else if(str[idx] == '`')
     {
       StringPart* p = push_array(scratch.arena, StringPart, 1);
       p.flags = active_part_flags;
-      p.string = str8_substr(string, r1u64(active_part_start_idx, idx));
+      p.str = str8_substr(str, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
       active_part_start_idx = idx+1;
       active_part_flags ^= StringPartFlag_Code;
@@ -2157,7 +2157,7 @@ rd_label(StringView string)
     DR_FancyString fstr = {0};
     {
       fstr.font   = ui_top_font();
-      fstr.string = p.string;
+      fstr.str = p.str;
       fstr.color  = ui_top_palette().colors[UI_ColorCode_Text];
       fstr.size   = ui_top_font_size();
       if(p.flags & StringPartFlag_Code)
@@ -2176,7 +2176,7 @@ rd_label(StringView string)
 }
 
 UI_Signal
-rd_error_label(StringView string)
+rd_error_label(StringView str)
 {
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
   UI_Signal sig = ui_signal_from_box(box);
@@ -2187,27 +2187,27 @@ rd_error_label(StringView string)
     ui_set_next_text_alignment(UI_TextAlign_Center);
     ui_set_next_flags(UI_BoxFlag_DrawTextWeak);
     UI_PrefWidth(ui_em(2.25f, 1.f)) ui_label(rd_icon_kind_text_table[RD_IconKind_WarningBig]);
-    UI_PrefWidth(ui_text_dim(10, 0)) rd_label(string);
+    UI_PrefWidth(ui_text_dim(10, 0)) rd_label(str);
   }
   return sig;
 }
 
 B32
-rd_help_label(StringView string)
+rd_help_label(StringView str)
 {
   B32 result = 0;
-  UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
+  UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", str);
   UI_Signal sig = ui_signal_from_box(box);
   UI_Parent(box)
   {
-    UI_PrefWidth(ui_pct(1, 0)) ui_label(string);
+    UI_PrefWidth(ui_pct(1, 0)) ui_label(str);
     if(ui_hovering(sig)) UI_PrefWidth(ui_em(2.25f, 1))
     {
       result = 1;
       ui_set_next_font(rd_font_from_slot(RD_FontSlot_Icons));
       ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
       ui_set_next_text_alignment(UI_TextAlign_Center);
-      UI_Box* help_hoverer = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects, "###help_hoverer_%S", string);
+      UI_Box* help_hoverer = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects, "###help_hoverer_%S", str);
       ui_box_equip_display_string(help_hoverer, rd_icon_kind_text_table[RD_IconKind_QuestionMark]);
       if(!contains_2f32(help_hoverer.rect, ui_mouse()))
       {
@@ -2219,12 +2219,12 @@ rd_help_label(StringView string)
 }
 
 DR_FancyStringList
-rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
+rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView str)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   DR_FancyStringList fancy_strings = {0};
-  TXT_TokenArray tokens = txt_token_array_from_string__c_cpp(scratch.arena, 0, string);
+  TXT_TokenArray tokens = txt_token_array_from_string__c_cpp(scratch.arena, 0, str);
   TXT_Token* tokens_opl = tokens.v+tokens.count;
   int32 indirection_counter = 0;
   indirection_size_change = 0;
@@ -2233,7 +2233,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
     RD_ThemeColor token_color = rd_theme_color_from_txt_token_kind(token.kind);
     Vec4F32 token_color_rgba = rd_rgba_from_theme_color(token_color);
     token_color_rgba.w *= alpha;
-    StringView token_string = str8_substr(string, token.range);
+    StringView token_string = str8_substr(str, token.range);
     if(str8_match(token_string, ("{"), 0)) { indirection_counter += 1; }
     if(str8_match(token_string, ("["), 0)) { indirection_counter += 1; }
     indirection_counter = ClampBot(0, indirection_counter);
@@ -2275,7 +2275,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         token_color_rgba_alt.w *= alpha;
         float font_size = ui_top_font_size() * (1.f - !!indirection_size_change*(indirection_counter/10.f));
         
-        // rjf: unpack string
+        // rjf: unpack str
         uint32 base = 10;
         uint64 prefix_skip = 0;
         uint64 digit_group_size = 3;
@@ -2298,7 +2298,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
           digit_group_size = 2;
         }
         
-        // rjf: grab string parts
+        // rjf: grab str parts
         uint64 dot_pos = str8_find_needle(token_string, 0, ("."), 0);
         StringView prefix = str8_prefix(token_string, prefix_skip);
         StringView whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
@@ -2308,7 +2308,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
         uint64 num_digits = 0;
         for(uint64 idx = 0; idx < whole.size; idx += 1)
         {
-          num_digits += char_is_digit(whole.str[idx], base);
+          num_digits += char_is_digit(whole[idx], base);
         }
         
         // rjf: push prefix
@@ -2330,7 +2330,7 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
           uint64 num_digits_passed = digit_group_size - num_digits%digit_group_size;
           for(uint64 idx = 0; idx <= whole.size; idx += 1)
           {
-            uint8 byte = idx < whole.size ? whole.str[idx] : 0;
+            uint8 byte = idx < whole.size ? whole[idx] : 0;
             if(num_digits_passed >= digit_group_size || idx == whole.size)
             {
               num_digits_passed = 0;
@@ -2379,10 +2379,10 @@ rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection
 }
 
 UI_Box *
-rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
+rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView str)
 {
   Temp scratch = scratch_begin(0, 0);
-  DR_FancyStringList fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
+  DR_FancyStringList fancy_strings = rd_fancy_string_list_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, str);
   UI_Box* box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
   ui_box_equip_display_fancy_strings(box, &fancy_strings);
   scratch_end(scratch);
@@ -2393,7 +2393,7 @@ rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, Stri
 //~ rjf: UI Widgets: Line Edit
 
 UI_Signal
-rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, StringView string)
+rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, StringView str)
 {
   ProfBeginFunction();
   
@@ -2401,7 +2401,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
   float expander_size_px = ui_top_font_size()*2.f;
   
   //- rjf: make key
-  UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
+  UI_Key key = ui_key_from_string(ui_active_seed_key(), str);
   
   //- rjf: calculate & push focus
   B32 is_auto_focus_hot = ui_is_key_auto_focus_hot(key);
@@ -2505,7 +2505,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     {
       for(UI_Event* evt = 0; ui_next_event(&evt);)
       {
-        if(evt.string.size != 0 || evt.flags & UI_EventFlag_Paste)
+        if(evt.str.Length != 0 || evt.flags & UI_EventFlag_Paste)
         {
           start_editing_via_typing = 1;
           break;
@@ -2520,7 +2520,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     {
       StringView edit_string = pre_edit_value;
       edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
-      MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
+      MemoryCopy(edit_buffer, edit_string.Ptr, edit_string.size);
       edit_string_size_out[0] = edit_string.size;
       ui_set_auto_focus_active_key(key);
       ui_kill_action();
@@ -2535,14 +2535,14 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     sig.f |= UI_SignalFlag_Commit;
   }
   
-  //- rjf: determine autocompletion string
+  //- rjf: determine autocompletion str
   StringView autocomplete_hint_string = {0};
   {
     for(UI_Event* evt = 0; ui_next_event(&evt);)
     {
       if(evt.kind == UI_EventKind_AutocompleteHint)
       {
-        autocomplete_hint_string = evt.string;
+        autocomplete_hint_string = evt.str;
       }
     }
   }
@@ -2570,10 +2570,10 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
       if(autocomplete_hint_string.size != 0)
       {
         StringView word_query = rd_autocomp_query_word_from_input_string_off(edit_string, cursor.column-1);
-        uint64 word_off = (uint64)(word_query.str - edit_string.str);
+        uint64 word_off = (uint64)(word_query.Ptr - edit_string.Ptr);
         StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
         new_string.size = Min(edit_buffer_size, new_string.size);
-        MemoryCopy(edit_buffer, new_string.str, new_string.size);
+        MemoryCopy(edit_buffer, new_string.Ptr, new_string.size);
         edit_string_size_out[0] = new_string.size;
         *cursor = *mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
         edit_string = StringView(edit_buffer, edit_string_size_out[0]);
@@ -2586,7 +2586,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
       {
         StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
         new_string.size = Min(edit_buffer_size, new_string.size);
-        MemoryCopy(edit_buffer, new_string.str, new_string.size);
+        MemoryCopy(edit_buffer, new_string.Ptr, new_string.size);
         edit_string_size_out[0] = new_string.size;
       }
       
@@ -2616,7 +2616,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
   {
     if(!is_focus_active && !is_focus_active_disabled && flags & RD_LineEditFlag_CodeContents)
     {
-      StringView display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(str);
       if(!(flags & RD_LineEditFlag_PreferDisplayString) && pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -2646,7 +2646,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
     }
     else if(!is_focus_active && !is_focus_active_disabled && !(flags & RD_LineEditFlag_CodeContents))
     {
-      StringView display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(str);
       if(!(flags & RD_LineEditFlag_PreferDisplayString) && pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -2679,18 +2679,18 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
         DR_FancyStringNode* prev_n = 0;
         for(DR_FancyStringNode* n = code_fancy_strings.first; n != 0; n = n.next)
         {
-          if(off <= cursor_off && cursor_off <= off+n.v.string.size)
+          if(off <= cursor_off && cursor_off <= off+n.v.str.Length)
           {
             prev_n = n;
             break;
           }
-          off += n.v.string.size;
+          off += n.v.str.Length;
         }
         {
           DR_FancyStringNode* autocomp_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
           DR_FancyString* fstr = &autocomp_fstr_n.v;
           fstr.font = ui_top_font();
-          fstr.string = autocomplete_append_string;
+          fstr.str = autocomplete_append_string;
           fstr.color = ui_top_palette().text;
           fstr.color.w *= 0.5f;
           fstr.size = ui_top_font_size();
@@ -2709,11 +2709,11 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
           }
           code_fancy_strings.node_count += 1;
           code_fancy_strings.total_size += autocomplete_hint_string.size;
-          if(prev_n != 0 && cursor_off - off < prev_n.v.string.size)
+          if(prev_n != 0 && cursor_off - off < prev_n.v.str.Length)
           {
-            StringView full_string = prev_n.v.string;
+            StringView full_string = prev_n.v.str;
             uint64 chop_amt = full_string.size - (cursor_off - off);
-            prev_n.v.string = str8_chop(full_string, chop_amt);
+            prev_n.v.str = str8_chop(full_string, chop_amt);
             code_fancy_strings.total_size -= chop_amt;
             if(chop_amt != 0)
             {
@@ -2721,7 +2721,7 @@ rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, 
               DR_FancyStringNode* post_fstr_n = push_array(scratch.arena, DR_FancyStringNode, 1);
               DR_FancyString* post_fstr = &post_fstr_n.v;
               MemoryCopyStruct(post_fstr, &prev_n.v);
-              post_fstr.string   = post_cursor;
+              post_fstr.str   = post_cursor;
               if(autocomp_fstr_n.next == 0)
               {
                 code_fancy_strings.last = post_fstr_n;
@@ -2812,9 +2812,9 @@ rd_line_editf(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches,
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = rd_line_edit(flags, depth, matches, cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, expanded_out, pre_edit_value, string);
+  UI_Signal sig = rd_line_edit(flags, depth, matches, cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, expanded_out, pre_edit_value, str);
   scratch_end(scratch);
   return sig;
 }

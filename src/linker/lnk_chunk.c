@@ -198,7 +198,7 @@ lnk_chunk_deep_copy(Arena* arena, LNK_Chunk* chunk)
       switch (src.type) {
       case LNK_Chunk_Null: break;
       case LNK_Chunk_Leaf: {
-        B32 is_bss = src.u.leaf.str == 0;
+        B32 is_bss = src.u.leaf.Ptr == 0;
         if (is_bss) {
           dst.u.leaf = src.u.leaf;
         } else {
@@ -628,14 +628,14 @@ THREAD_POOL_TASK_FUNC(lnk_fill_chunks_task)
     if (chunk.type == LNK_Chunk_Leaf) {
       uint64 off = layout.chunk_off_array[chunk.ref.chunk_id];
       Assert(off + chunk.u.leaf.size <= buffer.size);
-      uint8* buffer_ptr = buffer.str + off;
+      uint8* buffer_ptr = buffer.Ptr + off;
 
-      if (chunk.u.leaf.str == 0) {
+      if (chunk.u.leaf.Ptr == 0) {
         // zero out chunk bytes
         MemorySet(buffer_ptr, 0, chunk.u.leaf.size);
       } else {
         // copy chunk bytes
-        MemoryCopy(buffer_ptr, chunk.u.leaf.str, chunk.u.leaf.size);
+        MemoryCopy(buffer_ptr, chunk.u.leaf.Ptr, chunk.u.leaf.size);
       }
     }
   }
@@ -659,7 +659,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
     for (uint64 pad_idx = 0; pad_idx < pad_array.count; ++pad_idx) {
       LNK_ChunkPad pad = pad_array.v[pad_idx];
       Assert(pad.off + pad.size <= buffer.size);
-      MemorySet(buffer.str + pad.off, fill_byte, pad.size);
+      MemorySet(buffer.Ptr + pad.off, fill_byte, pad.size);
     }
   }
 

@@ -237,8 +237,8 @@ read_only static MG_StrExpr mg_str_expr_nil = {&mg_str_expr_nil, &mg_str_expr_ni
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 mg_hash_from_string(StringView string);
-TxtPt mg_txt_pt_from_string_off(StringView string, uint64 off);
+uint64 mg_hash_from_string(StringView str);
+TxtPt mg_txt_pt_from_string_off(StringView str, uint64 off);
 
 ////////////////////////////////
 //~ rjf: Message Lists
@@ -248,25 +248,25 @@ void mg_msg_list_push(Arena* arena, MG_MsgList* msgs, MG_Msg* msg);
 ////////////////////////////////
 //~ rjf: String Escaping
 
-StringView mg_escaped_from_str8(Arena* arena, StringView string);
+StringView mg_escaped_from_str8(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: String Wrapping
 
-String8List mg_wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
+String8List mg_wrapped_lines_from_string(Arena* arena, StringView str, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
 
 ////////////////////////////////
 //~ rjf: C-String-Izing
 
-StringView mg_c_string_literal_from_multiline_string(StringView string);
+StringView mg_c_string_literal_from_multiline_string(StringView str);
 StringView mg_c_array_literal_contents_from_data(StringView data);
 
 ////////////////////////////////
 //~ rjf: Map Functions
 
 MG_Map mg_push_map(Arena* arena, uint64 slot_count);
-void* mg_map_ptr_from_string(MG_Map* map, StringView string);
-void mg_map_insert_ptr(Arena* arena, MG_Map* map, StringView string, void* val);
+void* mg_map_ptr_from_string(MG_Map* map, StringView str);
+void mg_map_insert_ptr(Arena* arena, MG_Map* map, StringView str, void* val);
 
 ////////////////////////////////
 //~ rjf: String Expression Parsing

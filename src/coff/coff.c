@@ -55,11 +55,11 @@ StringView
 coff_name_from_section_header(StringView raw_coff, COFF_SectionHeader* header, uint64 string_table_off)
 {
   StringView name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
-  if (name.str[0] == '/') {
+  if (name[0] == '/') {
     StringView ascii_off    = str8_skip(name, 1);
     uint64     name_rel_off = u64_from_str8(ascii_off, 10);
     uint64     name_off     = name_rel_off + string_table_off;
-    name = str8_cstring_capped(raw_coff.str + name_off, raw_coff.str + raw_coff.size);
+    name = str8_cstring_capped(raw_coff.Ptr + name_off, raw_coff.Ptr + raw_coff.size);
   }
   return name;
 }
@@ -78,9 +78,9 @@ coff_parse_section_name(StringView full_name, StringView* name_out, StringView* 
   *name_out    = full_name;
   *postfix_out = ("");
   for (uint64 i = 0; i < full_name.size; ++i) {
-    if (full_name.str[i] == '$') {
-      *name_out    = StringView(full_name.str, i);
-      *postfix_out = StringView(full_name.str + i + 1, full_name.size - i - 1);
+    if (full_name[i] == '$') {
+      *name_out    = StringView(full_name.Ptr, i);
+      *postfix_out = StringView(full_name.Ptr + i + 1, full_name.size - i - 1);
       
       // TLS sections don't have a postfix but we still have to sort them based
       // on dollar sign so they are sloted between CRT's _tls_start and _tls_end sections.
@@ -187,7 +187,7 @@ coff_make_import_lookup(Arena* arena, uint16 hint, StringView name)
   uint64 buffer_size = sizeof(hint) + (name.size + 1);
   uint8* buffer = push_array(arena, uint8, buffer_size);
   *(uint16*)buffer = hint;
-  MemoryCopy(buffer + sizeof(hint), name.str, name.size);
+  MemoryCopy(buffer + sizeof(hint), name.Ptr, name.size);
   buffer[buffer_size - 1] = 0;
   StringView result = StringView(buffer, buffer_size);
   return result;
@@ -239,12 +239,12 @@ coff_make_import_header_by_name(Arena*            arena,
   
   // copy function name
   uint8* func_name = buffer + sizeof(header);
-  MemoryCopy(func_name, name.str, name.size);
+  MemoryCopy(func_name, name.Ptr, name.size);
   func_name[name.size] = 0;
   
   // copy dll name
   uint8* dll_name_buffer = buffer + sizeof(header) + name.size + 1;
-  MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
+  MemoryCopy(dll_name_buffer, dll_name.Ptr, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
   StringView import_data = StringView(buffer, buffer_size);
@@ -286,7 +286,7 @@ coff_make_import_header_by_ordinal(Arena*             arena,
   
   // copy dll name
   uint8* dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
-  MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
+  MemoryCopy(dll_name_buffer, dll_name.Ptr, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
   StringView import_data = StringView(buffer, buffer_size);

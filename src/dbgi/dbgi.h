@@ -47,7 +47,7 @@ enum DI_EventKind
 struct DI_Event
 {
   DI_EventKind kind;
-  StringView string;
+  StringView str;
 }
 
 struct DI_EventNode
@@ -351,8 +351,8 @@ static RDI_Parsed di_rdi_parsed_nil = {0};
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 di_hash_from_seed_string(uint64 seed, StringView string, StringMatchFlags match_flags);
-uint64 di_hash_from_string(StringView string, StringMatchFlags match_flags);
+uint64 di_hash_from_seed_string(uint64 seed, StringView str, StringMatchFlags match_flags);
+uint64 di_hash_from_string(StringView str, StringMatchFlags match_flags);
 uint64 di_hash_from_key(DI_Key* k);
 DI_Key di_key_zero();
 B32 di_key_match(DI_Key* a, DI_Key* b);
@@ -389,8 +389,8 @@ DI_Node* di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot* slot, DI_Key* ke
 //~ rjf: Per-Stripe Functions
 
 uint64 di_string_bucket_idx_from_string_size(uint64 size);
-StringView di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string);
-void di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView string);
+StringView di_string_alloc__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView str);
+void di_string_release__stripe_mutex_w_guarded(DI_Stripe* stripe, StringView str);
 
 ////////////////////////////////
 //~ rjf: Key Opening/Closing

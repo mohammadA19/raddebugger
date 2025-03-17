@@ -217,7 +217,7 @@ struct CV_TypeIdArray
 
 //- Hasher
 
-uint64 cv_hash_from_string(StringView string);
+uint64 cv_hash_from_string(StringView str);
 uint64 cv_hash_from_item_id(CV_ItemId item_id);
 
 //- Numeric Decoder

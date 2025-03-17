@@ -73,7 +73,7 @@ msf_set_page_data_list(Arena* arena, MSF_PageDataList* list, MSF_UInt page_size,
   uint64 node_idx;
   for (node_idx = 0; node_idx < node_count - 1; node_idx += 1) {
     MSF_PageDataNode* node = push_array(arena, MSF_PageDataNode, 1);
-    node.data = data.str + node_idx * node_size;
+    node.data = data.Ptr + node_idx * node_size;
     SLLQueuePush(list.first, list.last, node);
     list.count += 1;
   }
@@ -82,11 +82,11 @@ msf_set_page_data_list(Arena* arena, MSF_PageDataList* list, MSF_UInt page_size,
   B32 is_last_node_size_aligned = (data.size & (node_size - 1)) == 0;
   uint8* last_node_data = 0;
   if (is_last_node_size_aligned) {
-    last_node_data = data.str + node_idx * node_size;
+    last_node_data = data.Ptr + node_idx * node_size;
   } else {
     uint64 last_node_size = data.size % node_size;
     last_node_data = push_array_no_zero(arena, uint8, node_size);
-    MemoryCopy(last_node_data, data.str + node_idx * node_size, last_node_size);
+    MemoryCopy(last_node_data, data.Ptr + node_idx * node_size, last_node_size);
   }
   ProfEnd();
   
@@ -269,7 +269,7 @@ msf_fpm_data_from_pn(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_Pa
   StringView raw_fpm = msf_data_from_pn(page_data_list, page_size, fpm_pn);
   U32Array fpm_data;
   fpm_data.count = raw_fpm.size / sizeof(fpm_data.v[0]);
-  fpm_data.v = (uint32*)raw_fpm.str;
+  fpm_data.v = (uint32*)raw_fpm.Ptr;
   return fpm_data;
 }
 
@@ -420,8 +420,8 @@ msf_grow(MSF_Context* msf, MSF_PageNumber new_page_count)
     MSF_PageNumber fpm1_pn = pn + MSF_FPM1;
     StringView fpm0_data = msf_data_from_pn(msf.page_data_list, msf.page_size, fpm0_pn);
     StringView fpm1_data = msf_data_from_pn(msf.page_data_list, msf.page_size, fpm1_pn);
-    MemorySet(fpm0_data.str, 0xFF, msf.page_size);
-    MemorySet(fpm1_data.str, 0xFF, msf.page_size);
+    MemorySet(fpm0_data.Ptr, 0xFF, msf.page_size);
+    MemorySet(fpm1_data.Ptr, 0xFF, msf.page_size);
   }
   
   // set correct FPM bits
@@ -693,7 +693,7 @@ msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** 
 
     // copy bytes to buffer
     uint8* buffer_copy_ptr = (uint8*)buffer + buffer_pos;
-    uint8* page_bytes_ptr  = page_bytes.str + page_offset;
+    uint8* page_bytes_ptr  = page_bytes.Ptr + page_offset;
     MemoryCopy(page_bytes_ptr, buffer_copy_ptr, copy_size);
 
     // advance
@@ -740,7 +740,7 @@ msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** p
     
     // copy bytes to buffer
     uint8* buffer_ptr     = (uint8*)buffer + buffer_pos;
-    uint8* page_bytes_ptr = page_bytes.str + page_offset;
+    uint8* page_bytes_ptr = page_bytes.Ptr + page_offset;
     MemoryCopy(buffer_ptr, page_bytes_ptr, copy_size);
     
     // advance
@@ -1041,9 +1041,9 @@ msf_stream_write(MSF_Context* msf, MSF_StreamNumber sn, void* buffer, MSF_UInt b
 }
 
 B32
-msf_stream_write_string(MSF_Context* msf, MSF_StreamNumber sn, StringView string)
+msf_stream_write_string(MSF_Context* msf, MSF_StreamNumber sn, StringView str)
 {
-  return msf_stream_write(msf, sn, string.str, string.size);
+  return msf_stream_write(msf, sn, str.Ptr, str.Length);
 }
 
 B32
@@ -1053,7 +1053,7 @@ msf_stream_write_list(MSF_Context* msf, MSF_StreamNumber sn, String8List list)
   MSF_Stream* stream = msf_find_stream(msf, sn);
   if (stream) {
     for (String8Node* node = list.first; node != 0; node = node.next) {
-      is_write_ok = msf_stream_write__(msf, stream, node.string.str, node.string.size);
+      is_write_ok = msf_stream_write__(msf, stream, node.str.Ptr, node.str.Length);
       if (!is_write_ok) {
         break;
       }
@@ -1069,9 +1069,9 @@ msf_stream_write_uint(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt value)
 }
 
 B32
-msf_stream_write_cstr(MSF_Context* msf, MSF_StreamNumber sn, StringView string)
+msf_stream_write_cstr(MSF_Context* msf, MSF_StreamNumber sn, StringView str)
 {
-  B32 is_string_written = msf_stream_write_string(msf, sn, string);
+  B32 is_string_written = msf_stream_write_string(msf, sn, str);
   B32 is_null_written = msf_stream_write(msf, sn, 0, 1);
   return is_string_written && is_null_written;
 }
@@ -1137,7 +1137,7 @@ THREAD_POOL_TASK_FUNC(msf_write_task)
   MSF_UInt      page_idx = data_pos / task.page_size;
   MSF_PageNode* page     = msf_page_from_index(task.page_list, page_idx);
 
-  if (!msf_write__(task.page_data_list, task.page_size, &page, &data_pos, data.str, data.size)) {
+  if (!msf_write__(task.page_data_list, task.page_size, &page, &data_pos, data.Ptr, data.size)) {
     InvalidPath;
   }
   ProfEnd();
@@ -1206,9 +1206,9 @@ msf_stream_write_parallel(TP_Context* tp, MSF_Context* msf, MSF_StreamNumber sn,
 }
 
 B32
-msf_stream_write_string_parallel(TP_Context* tp, MSF_Context* msf, MSF_StreamNumber sn, StringView string)
+msf_stream_write_string_parallel(TP_Context* tp, MSF_Context* msf, MSF_StreamNumber sn, StringView str)
 {
-  return msf_stream_write_parallel(tp, msf, sn, string.str, string.size);
+  return msf_stream_write_parallel(tp, msf, sn, str.Ptr, str.Length);
 }
 
 ////////////////////////////////
@@ -1326,10 +1326,10 @@ msf_stream_read_string(Arena* arena, MSF_Context* msf, MSF_StreamNumber sn)
   }
   
   msf_stream_seek(msf, sn, start_pos);
-  StringView string = msf_stream_read_block(arena, msf, sn, size);
+  StringView str = msf_stream_read_block(arena, msf, sn, size);
   msf_stream_seek(msf, sn, start_pos + size + 1); // skip null
 
-  return string;
+  return str;
 }
 
 void 
@@ -1550,7 +1550,7 @@ msf_open(StringView data, MSF_Context** msf_out)
   }
   
   // is this MSF 7.0?
-  MSF_Header70* header = (MSF_Header70*)data.str;
+  MSF_Header70* header = (MSF_Header70*)data.Ptr;
   if (MemoryCompare(header.magic, msf_msf70_magic, sizeof(msf_msf70_magic)) != 0) {
     error = MSF_OpenError_INVALID_MAGIC; 
     goto exit;
@@ -1755,12 +1755,12 @@ msf_build_stream_table(MSF_Context* msf, MSF_UInt* stream_table_size_out)
   
   MSF_UInt cursor = 0;
   for (String8Node* node = st_data_list.first; node != 0; node = node.next) {
-    B32 is_data_written = msf_write(msf.page_data_list, msf.page_size, msf.st_page_list, cursor, node.string.str, node.string.size);
+    B32 is_data_written = msf_write(msf.page_data_list, msf.page_size, msf.st_page_list, cursor, node.str.Ptr, node.str.Length);
     if (!is_data_written) {
       error = MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE;
       goto exit;
     }
-    cursor += node.string.size;
+    cursor += node.str.Length;
   }
   
   *stream_table_size_out = st_data_list.total_size;

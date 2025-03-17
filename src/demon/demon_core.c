@@ -175,7 +175,7 @@ dmn_process_read_cstring(Arena* arena, DMN_Handle process, uint64 addr)
 
     str8_list_push(scratch.arena, &block_list, block);
 
-    if(read_size != stride || (block.size+1 <= read_size && block.str[block.size] == 0))
+    if(read_size != stride || (block.size+1 <= read_size && block[block.size] == 0))
     {
       break;
     }

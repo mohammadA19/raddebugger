@@ -46,7 +46,7 @@ path_canon_from_regular_path(Arena* arena, StringView path)
 }
 
 struct {
-  StringView   string;
+  StringView   str;
   PathStyle path_style;
 } g_path_style_map[] = {
   { ("windows"), PathStyle_WindowsAbsolute },
@@ -55,10 +55,10 @@ struct {
 };
 
 PathStyle
-path_style_from_string(StringView string)
+path_style_from_string(StringView str)
 {
   for (uint64 i = 0; i < ArrayCount(g_path_style_map); ++i) {
-    if (str8_match(g_path_style_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_path_style_map[i].str, str, StringMatchFlag_CaseInsensitive)) {
       return g_path_style_map[i].path_style;
     }
   }

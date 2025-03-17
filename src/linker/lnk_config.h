@@ -503,10 +503,10 @@ enum
 // Enum <. String
 
 StringView              lnk_string_cmd_switch_type(LNK_CmdSwitchType type);
-LNK_CmdSwitchType    lnk_cmd_switch_from_string(StringView string);
-LNK_InputType        lnk_input_type_from_string(StringView string);
-LNK_DebugMode        lnk_debug_mode_from_string(StringView string);
-LNK_TypeNameHashMode lnk_type_name_hash_mode_from_string(StringView string);
+LNK_CmdSwitchType    lnk_cmd_switch_from_string(StringView str);
+LNK_InputType        lnk_input_type_from_string(StringView str);
+LNK_DebugMode        lnk_debug_mode_from_string(StringView str);
+LNK_TypeNameHashMode lnk_type_name_hash_mode_from_string(StringView str);
 
 ////////////////////////////////
 // Command Line Helpers
@@ -558,7 +558,7 @@ StringView * lnk_parse_alt_name_directive_list(Arena* arena, String8List list, L
 LNK_ExportParse * lnk_parse_export_directive(Arena* arena, LNK_ExportParseList* list, String8List value_list, StringView obj_path, StringView lib_path);
 
 LNK_MergeDirectiveNode * lnk_merge_directive_list_push(Arena* arena, LNK_MergeDirectiveList* list, LNK_MergeDirective data);
-B32                      lnk_parse_merge_directive(StringView string, LNK_MergeDirective* out);
+B32                      lnk_parse_merge_directive(StringView str, LNK_MergeDirective* out);
 
 ////////////////////////////////
 

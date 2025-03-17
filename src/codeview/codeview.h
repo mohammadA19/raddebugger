@@ -2584,7 +2584,7 @@ struct CV_LeafMFuncId
 struct CV_LeafStringId
 {
   CV_ItemId substr_list_id;
-  // uint8[] string (null terminated)
+  // uint8[] str (null terminated)
 }
 
 //- (LeafIDKind: BUILDINFO)

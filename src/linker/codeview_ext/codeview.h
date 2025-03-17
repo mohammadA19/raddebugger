@@ -290,7 +290,7 @@ struct CV_StringTableRange
 
 struct CV_StringBucket
 {
-  StringView string;
+  StringView str;
   [Union]
   struct {
     struct {
@@ -447,7 +447,7 @@ CV_SymbolList     cv_global_scope_symbols_from_list(Arena* arena, CV_SymbolList 
 CV_SymbolPtrArray cv_symbol_ptr_array_from_list(Arena* arena, TP_Context* tp, uint64 count, CV_SymbolList* symbol_list_arr);
 
 // $$FileChksms
-#define CV_MAP_STRING_TO_OFFSET_FUNC(name) uint64 name(void* ud, StringView string)
+#define CV_MAP_STRING_TO_OFFSET_FUNC(name) uint64 name(void* ud, StringView str)
 typedef CV_MAP_STRING_TO_OFFSET_FUNC(CV_MapStringToOffsetFunc);
 
 void        cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, StringView string_data, uint64 string_data_base_offset, CV_StringHashTable string_ht);
@@ -482,7 +482,7 @@ CV_InlineeLinesAccel *     cv_c13_make_inlinee_lines_accel(Arena* arena, CV_C13I
 ////////////////////////////////
 // String Hash Table
 
-uint64                      cv_string_hash_table_hash(StringView string);
+uint64                      cv_string_hash_table_hash(StringView str);
 CV_StringHashTable       cv_dedup_string_tables(TP_Arena* arena, TP_Context* tp, uint64 count, CV_DebugS* arr);
 CV_StringHashTableResult cv_serialize_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable string_ht);
 StringView                  cv_pack_string_hash_table(Arena* arena, TP_Context* tp, CV_StringHashTable string_ht);

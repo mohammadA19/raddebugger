@@ -80,7 +80,7 @@ entry_point(CmdLine* cmdline)
     {
       for(String8Node* n = user2convert.errors.first; n != 0; n = n.next)
       {
-        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.string));
+        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.str));
       }
     }
     os_abort(0);
@@ -126,8 +126,8 @@ entry_point(CmdLine* cmdline)
     uint64 off = 0;
     for(String8Node* n = blobs.first; n != 0; n = n.next)
     {
-      os_file_write(output_file, r1u64(off, off+n.string.size), n.string.str);
-      off += n.string.size;
+      os_file_write(output_file, r1u64(off, off+n.str.Length), n.str.Ptr);
+      off += n.str.Length;
     }
     os_file_close(output_file);
   }

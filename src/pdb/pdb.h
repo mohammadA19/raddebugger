@@ -410,6 +410,6 @@ struct PDB_PsiHeader
 
 ////////////////////////////////
 
-uint32 pdb_hash_v1(StringView string);
+uint32 pdb_hash_v1(StringView str);
 
 #endif // PDB_H

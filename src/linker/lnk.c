@@ -283,7 +283,7 @@ lnk_make_linker_manifest(Arena*      arena,
                              "     <assemblyIdentity %S/>\n"
                              "   </dependentAssembly>\n"
                              " </dependency>\n",
-                             node.string);
+                             node.str);
     str8_serial_push_string(scratch.arena, &srl, dep);
   }
   str8_serial_push_string(scratch.arena, &srl, ("</assembly>\n"));
@@ -311,7 +311,7 @@ lnk_merge_manifest_files(StringView mt_path, StringView out_name, String8List ma
        man_node != 0;
        man_node = man_node.next) {
     // resolve relativ path inputs
-    StringView full_path = path_absolute_dst_from_relative_dst_src(scratch.arena, man_node.string, work_dir);
+    StringView full_path = path_absolute_dst_from_relative_dst_src(scratch.arena, man_node.str, work_dir);
 
     // normalize slashes
     full_path = path_convert_slashes(scratch.arena, full_path, PathStyle_UnixAbsolute);
@@ -395,7 +395,7 @@ lnk_res_string_id_is_before(void* raw_a, void* raw_b)
   PE_Resource* b = raw_b;
   Assert(a.id.type == COFF_ResourceIDType_String);
   Assert(b.id.type == COFF_ResourceIDType_String);
-  int is_before = str8_is_before_case_sensitive(&a.id.u.string, &b.id.u.string);
+  int is_before = str8_is_before_case_sensitive(&a.id.u.str, &b.id.u.str);
   return is_before;
 }
 
@@ -467,14 +467,14 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable* st, LNK_SymbolTable* symtab, PE
           } break;
 
           case COFF_ResourceIDType_String: {
-            // TODO: we can make string table smaller by reusing offsets for same strings
+            // TODO: we can make str table smaller by reusing offsets for same strings
             
-            // not sure why high bit has to be turned on here since number id and string id entries are
-            // in separate arrays but windows doesn't treat name offset like string without this bit.
+            // not sure why high bit has to be turned on here since number id and str id entries are
+            // in separate arrays but windows doesn't treat name offset like str without this bit.
             entry.name.offset |= (1 << 31);
             
             // make chunk and symbol
-            StringView     res_name    = coff_resource_string_from_str8(dir_sect.arena, res.id.u.string);
+            StringView     res_name    = coff_resource_string_from_str8(dir_sect.arena, res.id.u.str);
             LNK_Chunk*  name_chunk  = lnk_section_push_chunk_data(dir_sect, dir_string_chunk, res_name, StringView());
             LNK_Symbol* name_symbol = lnk_make_defined_symbol_chunk(symtab.arena.v[0], ("COFF_RESOURCE_ID_STRING"), LNK_DefinedSymbolVisibility_Static, 0, name_chunk, 0, 0, 0);
 
@@ -597,7 +597,7 @@ lnk_add_resource_debug_s(LNK_SectionTable* st,
   // reserve first byte for null
   str8_serial_push_u8(scratch.arena, &string_srl, 0);
   
-  // build file and string table
+  // build file and str table
   uint64 node_idx = 0;
   for (String8Node* n = res_file_list.first; n != NULL; n = n.next, ++node_idx) {
     CV_C13Checksum checksum = {0};
@@ -607,7 +607,7 @@ lnk_add_resource_debug_s(LNK_SectionTable* st,
     str8_serial_push_struct(scratch.arena, &file_srl, &checksum);
     str8_serial_push_struct(scratch.arena, &file_srl, &res_hash_array[node_idx]);
     str8_serial_push_align(scratch.arena, &file_srl, CV_FileCheckSumsAlign);
-    str8_serial_push_cstr(scratch.arena, &string_srl, n.string);
+    str8_serial_push_cstr(scratch.arena, &string_srl, n.str);
   }
   
   // build symbols
@@ -975,14 +975,14 @@ lnk_obj_from_res_file_list(TP_Context*       tp,
   MD5Hash*        res_hash_array = push_array(scratch.arena, MD5Hash, res_data_list.node_count);
   uint64 node_idx = 0;
   for (String8Node* node = res_data_list.first; node != 0; node = node.next, node_idx += 1) {
-    res_hash_array[node_idx] = md5_hash_from_string(node.string);
-    pe_resource_dir_push_res_file(scratch.arena, root_dir, node.string);
+    res_hash_array[node_idx] = md5_hash_from_string(node.str);
+    pe_resource_dir_push_res_file(scratch.arena, root_dir, node.str);
   }
   
   // convert res paths to stable paths
   String8List stable_res_file_list = {0};
   for (String8Node* node = res_path_list.first; node != 0; node = node.next) {
-    StringView stable_res_path = lnk_make_full_path(scratch.arena, work_dir, system_path_style, node.string);
+    StringView stable_res_path = lnk_make_full_path(scratch.arena, work_dir, system_path_style, node.str);
     str8_list_push(scratch.arena, &stable_res_file_list, stable_res_path);
   }
   
@@ -1116,7 +1116,7 @@ lnk_make_linker_coff_obj(TP_Context*       tp,
       // init section header
       COFF_SectionHeader* coff_sect_header = push_array(header_sect.arena, COFF_SectionHeader, 1);
       Assert(sect.name.size <= sizeof(coff_sect_header.name));
-      MemoryCopy(&coff_sect_header.name[0], sect.name.str, sect.name.size);
+      MemoryCopy(&coff_sect_header.name[0], sect.name.Ptr, sect.name.size);
       coff_sect_header.flags       = sect.flags;
       coff_sect_header.vsize       = 0; // ignored
       coff_sect_header.voff        = 0; // ignored
@@ -1314,7 +1314,7 @@ lnk_push_coff_symbols_from_data(Arena* arena, LNK_SymbolList* symbol_list, Strin
     // TODO: report invalid data size
   }
   uint64 count = data.size / sizeof(uint32);
-  for (uint32* ptr = (uint32*)data.str, *opl = ptr + count; ptr < opl; ++ptr) {
+  for (uint32* ptr = (uint32*)data.Ptr, *opl = ptr + count; ptr < opl; ++ptr) {
     uint32 coff_symbol_idx = *ptr;
     if (coff_symbol_idx >= obj_symbols.count) {
       // TODO: report invalid symbol index
@@ -2291,13 +2291,13 @@ lnk_build_coff_section_table(LNK_SymbolTable* symtab, LNK_Section* header_sect, 
     }
     COFF_SectionHeader* COFF_FileHeader = push_array_no_zero(header_sect.arena, COFF_SectionHeader, 1);
     
-    // TODO: for objs we can store long name in string table and write here /offset
+    // TODO: for objs we can store long name in str table and write here /offset
     if (sect.name.size > sizeof(COFF_FileHeader.name)) {
       lnk_error(LNK_Warning_LongSectionName, "not enough space in COFF section header to store entire name \"%S\"", sect.name);
     }
     
     MemorySet(&COFF_FileHeader.name[0], 0, sizeof(COFF_FileHeader.name));
-    MemoryCopy(&COFF_FileHeader.name[0], sect.name.str, Min(sect.name.size, sizeof(COFF_FileHeader.name)));
+    MemoryCopy(&COFF_FileHeader.name[0], sect.name.Ptr, Min(sect.name.size, sizeof(COFF_FileHeader.name)));
     COFF_FileHeader.vsize       = 0; // :vsize
     COFF_FileHeader.voff        = 0; // :voff
     COFF_FileHeader.fsize       = 0; // :fsize
@@ -2595,7 +2595,7 @@ THREAD_POOL_TASK_FUNC(lnk_lazy_symbol_pusher_task)
 
   for (uint64 symbol_idx = 0; symbol_idx < lib.symbol_count; ++symbol_idx, name_node = name_node.next) {
     LNK_Symbol* symbol = &lazy_symbols[symbol_idx];
-    lnk_init_lazy_symbol(symbol, name_node.string, lib, lib.member_off_arr[symbol_idx]);
+    lnk_init_lazy_symbol(symbol, name_node.str, lib, lib.member_off_arr[symbol_idx]);
 
     uint64 hash = lnk_symbol_hash(symbol.name);
     lnk_symbol_table_push_(symtab, arena, &symtab.chunk_lists[LNK_SymbolScopeIndex_Lib][worker_id], LNK_SymbolScopeIndex_Lib, hash, symbol);
@@ -2751,13 +2751,13 @@ lnk_apply_reloc(uint64               base_addr,
   // read addend
   Assert(reloc.apply_off + reloc_size <= chunk_data.size);
   uint64 raw_addend = 0;
-  MemoryCopy(&raw_addend, chunk_data.str + reloc.apply_off, reloc_size);
+  MemoryCopy(&raw_addend, chunk_data.Ptr + reloc.apply_off, reloc_size);
   int64 addend = extend_sign64(raw_addend, reloc_size);
   
   // commit reloc value
   reloc_value += addend;
   reloc_value = AlignPow2(reloc_value, reloc_align);
-  MemoryCopy(chunk_data.str + reloc.apply_off, &reloc_value, reloc_size);
+  MemoryCopy(chunk_data.Ptr + reloc.apply_off, &reloc_value, reloc_size);
 }
 
 internal
@@ -2910,9 +2910,9 @@ lnk_init_merge_directive_list(Arena* arena, LNK_ObjList obj_list)
     for (LNK_Directive* dir = obj.directive_info.v[LNK_CmdSwitch_Merge].first; dir != 0; dir = dir.next) {
       for (String8Node* value_node = dir.value_list.first; value_node != 0; value_node = value_node.next) {
         LNK_MergeDirective merge_dir;
-        if (lnk_parse_merge_directive(value_node.string, &merge_dir)) { lnk_merge_directive_list_push(arena, &result, merge_dir);
+        if (lnk_parse_merge_directive(value_node.str, &merge_dir)) { lnk_merge_directive_list_push(arena, &result, merge_dir);
         } else {
-          lnk_error_obj(LNK_Warning_IllData, obj, "can't parse merge directive \"%S\"", value_node.string);
+          lnk_error_obj(LNK_Warning_IllData, obj, "can't parse merge directive \"%S\"", value_node.str);
         }
       }
     }
@@ -3093,7 +3093,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
   StringView           sub_data = str8_substr(task.data, range);
   
   blake3_hasher hasher; blake3_hasher_init(&hasher);
-  blake3_hasher_update(&hasher, sub_data.str, sub_data.size);
+  blake3_hasher_update(&hasher, sub_data.Ptr, sub_data.size);
   blake3_hasher_finalize(&hasher, (uint8 *)task.hashes[task_id].u64, sizeof(task.hashes[task_id].u64));
   
   ProfEnd();
@@ -3266,7 +3266,7 @@ lnk_run(int argc, char** argv)
     for (String8Node* delay_load_dll_node = config.delay_load_dll_list.first;
          delay_load_dll_node != 0;
          delay_load_dll_node = delay_load_dll_node.next) {
-      hash_table_push_path_u64(scratch.arena, delay_load_dll_ht, delay_load_dll_node.string, 0);
+      hash_table_push_path_u64(scratch.arena, delay_load_dll_ht, delay_load_dll_node.str, 0);
     }
     state_list_push(scratch.arena, state_list, State_PushDllHelperUndefSymbol);
   }
@@ -3430,7 +3430,7 @@ lnk_run(int argc, char** argv)
         
         ProfBegin("Push /INCLUDE Symbols");
         for (String8Node* include_node = include_symbol_list.first; include_node != 0; include_node = include_node.next) {
-          StringView     name   = push_str8_copy(symtab.arena.v[0], include_node.string);
+          StringView     name   = push_str8_copy(symtab.arena.v[0], include_node.str);
           LNK_Symbol* symbol = lnk_make_undefined_symbol(symtab.arena.v[0], name, LNK_SymbolScopeFlag_Main);
           lnk_symbol_list_push(scratch.arena, &lookup_undef_list, symbol);
         }
@@ -3441,7 +3441,7 @@ lnk_run(int argc, char** argv)
         for (String8Node* from_node = alt_name_list.from_list.first, *to_node = alt_name_list.to_list.first;
              from_node != 0;
              from_node = from_node.next, to_node = to_node.next) {
-          LNK_Symbol* weak = lnk_symbol_table_push_weak(symtab, from_node.string, COFF_WeakExt_SearchAlias, to_node.string);
+          LNK_Symbol* weak = lnk_symbol_table_push_weak(symtab, from_node.str, COFF_WeakExt_SearchAlias, to_node.str);
           lnk_symbol_list_push(scratch.arena, &input_weak_list, weak);
         }
         ProfEnd();
@@ -3504,8 +3504,8 @@ lnk_run(int argc, char** argv)
         ProfBegin("Input /disallowlib");
         
         for (String8Node* name_n = input_disallow_lib_list.first; name_n != 0; name_n = name_n.next) {
-          if ( ! lnk_is_lib_disallowed(disallow_lib_ht, name_n.string)) {
-            lnk_push_disallow_lib(scratch.arena, disallow_lib_ht, name_n.string);
+          if ( ! lnk_is_lib_disallowed(disallow_lib_ht, name_n.str)) {
+            lnk_push_disallow_lib(scratch.arena, disallow_lib_ht, name_n.str);
           }
         }
         
@@ -3656,7 +3656,7 @@ lnk_run(int argc, char** argv)
 
           ProfBegin("Collect unique input libs");
           for (LNK_InputLib* input = input_lib_list.first; input != 0; input = input.next) {
-            StringView path = input.string;
+            StringView path = input.str;
 
             if (input_source == LNK_InputSource_Default || input_source == LNK_InputSource_Obj) {
               if (!str8_ends_with(path, (".lib"), StringMatchFlag_CaseInsensitive)) {
@@ -3778,17 +3778,17 @@ lnk_run(int argc, char** argv)
         
         ProfBegin("Load .res files from disk");
         for (String8Node* node = config.input_list[LNK_Input_Res].first; node != 0; node = node.next) {
-          StringView res_data = lnk_read_data_from_file_path(scratch.arena, node.string);
+          StringView res_data = lnk_read_data_from_file_path(scratch.arena, node.str);
           if (res_data.size > 0) {
             if (pe_is_res(res_data)) {
               str8_list_push(scratch.arena, &res_data_list, res_data);
-              StringView stable_res_path = lnk_make_full_path(scratch.arena, config.work_dir, config.path_style, node.string);
+              StringView stable_res_path = lnk_make_full_path(scratch.arena, config.work_dir, config.path_style, node.str);
               str8_list_push(scratch.arena, &res_path_list, stable_res_path);
             } else {
-              lnk_error(LNK_Error_LoadRes, "file is not of RES format: %S", node.string);
+              lnk_error(LNK_Error_LoadRes, "file is not of RES format: %S", node.str);
             }
           } else {
-            lnk_error(LNK_Error_LoadRes, "unable to open res file: %S", node.string);
+            lnk_error(LNK_Error_LoadRes, "unable to open res file: %S", node.str);
           }
         }
         ProfEnd();
@@ -3869,9 +3869,9 @@ lnk_run(int argc, char** argv)
       case State_CheckUnusedDelayLoads: {
         if (imptab_delayed) {
           for (String8Node* node = config.delay_load_dll_list.first; node != 0; node = node.next) {
-            LNK_ImportDLL* dll = lnk_import_table_search_dll(imptab_delayed, node.string);
+            LNK_ImportDLL* dll = lnk_import_table_search_dll(imptab_delayed, node.str);
             if (dll == 0) {
-              lnk_error(LNK_Warning_UnusedDelayLoadDll, "/DELAYLOAD: %S found no imports", node.string);
+              lnk_error(LNK_Warning_UnusedDelayLoadDll, "/DELAYLOAD: %S found no imports", node.str);
             }
           }
         }
@@ -3995,7 +3995,7 @@ lnk_run(int argc, char** argv)
           case COFF_Machine_X86:
           case COFF_Machine_X64: {
             uint64 count = pdata.size / sizeof(PE_IntelPdata);
-            radsort((PE_IntelPdata *)pdata.str, count, lnk_pdata_is_before_x8664);
+            radsort((PE_IntelPdata *)pdata.Ptr, count, lnk_pdata_is_before_x8664);
           } break;
           case COFF_Machine_Arm64:
           case COFF_Machine_Arm: {
@@ -4030,11 +4030,11 @@ lnk_run(int argc, char** argv)
             // patch TLS header
             if (coff_word_size_from_machine(config.machine) == 8) {
               StringView raw_tls_used = str8_substr(image_data, rng_1u64(tls_header_foff, tls_header_foff + sizeof(PE_TLSHeader64)));
-              PE_TLSHeader64* tls_header = (PE_TLSHeader64 *) raw_tls_used.str;
+              PE_TLSHeader64* tls_header = (PE_TLSHeader64 *) raw_tls_used.Ptr;
               tls_header.characteristics |= coff_section_flag_from_align_size(tls_align);
             } else {
               StringView raw_tls_used = str8_substr(image_data, rng_1u64(tls_header_foff, tls_header_foff + sizeof(PE_TLSHeader32)));
-              PE_TLSHeader32* tls_header = (PE_TLSHeader32 *) raw_tls_used.str;
+              PE_TLSHeader32* tls_header = (PE_TLSHeader32 *) raw_tls_used.Ptr;
               tls_header.characteristics |= coff_section_flag_from_align_size(tls_align);
             }
           } else {
@@ -4047,12 +4047,12 @@ lnk_run(int argc, char** argv)
         if (config.flags & LNK_ConfigFlag_WriteImageChecksum) {
           ProfBegin("Image Checksum");
           
-          uint32 image_checksum = pe_compute_checksum(image_data.str, image_data.size);
+          uint32 image_checksum = pe_compute_checksum(image_data.Ptr, image_data.size);
           
           LNK_Symbol*   checksum_symbol = lnk_symbol_table_searchf(symtab, LNK_SymbolScopeFlag_Internal, LNK_PE_CHECKSUM_SYMBOL_NAME); 
           uint64           checksum_foff   = lnk_file_off_from_symbol(sect_id_map, checksum_symbol);
           
-          uint32* checksum_ptr = (uint32 *)(image_data.str + checksum_foff);
+          uint32* checksum_ptr = (uint32 *)(image_data.Ptr + checksum_foff);
           *checksum_ptr = image_checksum;
           
           ProfEnd();
@@ -4072,7 +4072,7 @@ lnk_run(int argc, char** argv)
             MemoryCopy(&config.guid, hash.u64, sizeof(hash.u64));
             
             uint64   guid_foff = lnk_file_off_from_symbol(sect_id_map, guid_symbol);
-            Guid* guid_ptr  = (Guid *)(image_data.str + guid_foff);
+            Guid* guid_ptr  = (Guid *)(image_data.Ptr + guid_foff);
             MemoryCopy(guid_ptr, hash.u64, sizeof(hash.u64));
             
             ProfEnd();

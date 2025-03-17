@@ -61,8 +61,8 @@ e_interpret(StringView bytecode)
   E_Space selected_space = e_interpret_ctx.primary_space;
   
   //- rjf: iterate bytecode & perform ops
-  uint8* ptr = bytecode.str;
-  uint8* opl = bytecode.str + bytecode.size;
+  uint8* ptr = bytecode.Ptr;
+  uint8* opl = bytecode.Ptr + bytecode.size;
   for(;ptr < opl;)
   {
     // rjf: consume next opcode

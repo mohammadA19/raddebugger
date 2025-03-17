@@ -157,7 +157,7 @@ lnk_section_push_chunk_raw(LNK_Section* sect, LNK_Chunk* parent, void* raw_ptr, 
 LNK_Chunk *
 lnk_section_push_chunk_data(LNK_Section* sect, LNK_Chunk* parent, StringView data, StringView sort_index)
 {
-  return lnk_section_push_chunk_raw(sect, parent, data.str, data.size, sort_index);
+  return lnk_section_push_chunk_raw(sect, parent, data.Ptr, data.size, sort_index);
 }
 
 LNK_Chunk *
@@ -487,7 +487,7 @@ lnk_section_table_remove_empties(LNK_SectionTable* st, LNK_SymbolTable* symtab)
   }
   
   for (String8Node* name = name_list.first; name != NULL; name = name.next) {
-    lnk_section_table_remove(st, symtab, name.string);
+    lnk_section_table_remove(st, symtab, name.str);
   }
   scratch_end(scratch);
   ProfEnd();

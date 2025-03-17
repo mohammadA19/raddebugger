@@ -83,8 +83,8 @@ static FS_Shared* fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 fs_little_hash_from_string(StringView string);
-U128 fs_big_hash_from_string_range(StringView string, Rng1U64 range);
+uint64 fs_little_hash_from_string(StringView str);
+U128 fs_big_hash_from_string_range(StringView str, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Top-Level API

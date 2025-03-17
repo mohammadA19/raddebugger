@@ -9,14 +9,14 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
   //- test magic number
   B32 has_good_magic_number = 0;
   if (elf_data.size >= sizeof(ELF_NIDENT) &&
-      MemoryMatch(elf_data.str, elf_magic, sizeof(elf_magic))){
+      MemoryMatch(elf_data.Ptr, elf_magic, sizeof(elf_magic))){
     has_good_magic_number = 1;
   }
   
   //- determine elf class
   uint8 elf_class = ELF_Class_NONE;
   if (has_good_magic_number){
-    elf_class = elf_data.str[ELF_Identification_CLASS];
+    elf_class = elf_data[ELF_Identification_CLASS];
   }
   
   //- extract header information
@@ -43,7 +43,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
     case ELF_Class_32:
     {
       if (elf_data.size >= sizeof(ELF_Ehdr32)){
-        ELF_Ehdr32* hdr = (ELF_Ehdr32*)elf_data.str;
+        ELF_Ehdr32* hdr = (ELF_Ehdr32*)elf_data.Ptr;
         
         decoded_header = 1;
         e_data_encoding = hdr.e_ident[ELF_Identification_DATA];
@@ -62,7 +62,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
     case ELF_Class_64:
     {
       if (elf_data.size >= sizeof(ELF_Ehdr64)){
-        ELF_Ehdr64* hdr = (ELF_Ehdr64*)elf_data.str;
+        ELF_Ehdr64* hdr = (ELF_Ehdr64*)elf_data.Ptr;
         
         decoded_header = 1;
         e_data_encoding = hdr.e_ident[ELF_Identification_DATA];
@@ -133,13 +133,13 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       switch (elf_class){
         case ELF_Class_32:
         {
-          ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.str + e_shoff);
+          ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.Ptr + e_shoff);
           size = shdr.sh_size;
           link = shdr.sh_link;
         }break;
         case ELF_Class_64:
         {
-          ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.str + e_shoff);
+          ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.Ptr + e_shoff);
           size = shdr.sh_size;
           link = shdr.sh_link;
         }break;
@@ -150,7 +150,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
         section_count_raw = size;
       }
       
-      // extended section header string table index
+      // extended section header str table index
       if (link != 0){
         section_header_string_table_index = link;
       }
@@ -197,7 +197,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       uint64 segment_cursor = segment_foff;
       uint64 segment_opl = segment_foff + segment_size*segment_count;
       for (;segment_cursor < segment_opl; segment_cursor += segment_size){
-        uint32 p_type = *(uint32*)(elf_data.str + segment_cursor);
+        uint32 p_type = *(uint32*)(elf_data.Ptr + segment_cursor);
         if (p_type == ELF_SegmentType_LOAD){
           load_segment_off = segment_cursor;
           break;
@@ -210,19 +210,19 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       switch (elf_class){
         case ELF_Class_32:
         {
-          ELF_Phdr32* phdr = (ELF_Phdr32*)(elf_data.str + load_segment_off);
+          ELF_Phdr32* phdr = (ELF_Phdr32*)(elf_data.Ptr + load_segment_off);
           vbase = phdr.p_vaddr;
         }break;
         case ELF_Class_64:
         {
-          ELF_Phdr64* phdr = (ELF_Phdr64*)(elf_data.str + load_segment_off);
+          ELF_Phdr64* phdr = (ELF_Phdr64*)(elf_data.Ptr + load_segment_off);
           vbase = phdr.p_vaddr;
         }break;
       }
     }
   }
   
-  //- locate the section header string table
+  //- locate the section header str table
   uint64 section_name_table_foff = 0;
   uint64 section_name_table_opl = 0;
   if (header_is_good){
@@ -231,13 +231,13 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       switch (elf_class){
         case ELF_Class_32:
         {
-          ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.str + sec_foff);
+          ELF_Shdr32* shdr = (ELF_Shdr32*)(elf_data.Ptr + sec_foff);
           section_name_table_foff = shdr.sh_offset;
           section_name_table_opl  = shdr.sh_offset + shdr.sh_size;
         }break;
         case ELF_Class_64:
         {
-          ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.str + sec_foff);
+          ELF_Shdr64* shdr = (ELF_Shdr64*)(elf_data.Ptr + sec_foff);
           section_name_table_foff = shdr.sh_offset;
           section_name_table_opl  = shdr.sh_offset + shdr.sh_size;
         }break;
@@ -253,7 +253,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       {
         sections = push_array(arena, ELF_Shdr64, section_count);
         {
-          ELF_Shdr32* shdr32 = (ELF_Shdr32*)(elf_data.str + section_foff);
+          ELF_Shdr32* shdr32 = (ELF_Shdr32*)(elf_data.Ptr + section_foff);
           ELF_Shdr64* shdr64 = sections;
           for (uint64 i = 0; i < section_count; i += 1, shdr32 += 1, shdr64 += 1){
             shdr64.sh_name = shdr32.sh_name;
@@ -271,7 +271,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       }break;
       case ELF_Class_64:
       {
-        sections = (ELF_Shdr64*)(elf_data.str + section_foff);
+        sections = (ELF_Shdr64*)(elf_data.Ptr + section_foff);
       }break;
     }
   }
@@ -279,7 +279,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
   //- extract section names
   StringView* section_names = 0;
   if (sections != 0 && section_count > 0){
-    uint8* string_table_opl = elf_data.str + section_name_table_opl;
+    uint8* string_table_opl = elf_data.Ptr + section_name_table_opl;
     
     section_names = push_array(arena, StringView, section_count);
     StringView* sec_name = section_names;
@@ -289,10 +289,10 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
          i += 1, sec += 1, sec_name += 1){
       uint64 name_foff = section_name_table_foff + sec.sh_name;
       if (section_name_table_foff <= name_foff && name_foff < section_name_table_opl){
-        uint8* base = elf_data.str + name_foff;
+        uint8* base = elf_data.Ptr + name_foff;
         uint8* opl = base;
         for (;opl < string_table_opl && *opl != 0; opl += 1);
-        sec_name.str = base;
+        sec_name.Ptr = base;
         sec_name.size = (uint64)(opl - base);
       }
     }
@@ -306,7 +306,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       {
         segments = push_array(arena, ELF_Phdr64, segment_count);
         {
-          ELF_Phdr32* phdr32 = (ELF_Phdr32*)(elf_data.str + segment_foff);
+          ELF_Phdr32* phdr32 = (ELF_Phdr32*)(elf_data.Ptr + segment_foff);
           ELF_Phdr64* phdr64 = segments;
           for (uint64 i = 0; i < segment_count; i += 1, phdr32 += 1, phdr64 += 1){
             phdr64.p_type = phdr32.p_type;
@@ -322,7 +322,7 @@ elf_parsed_from_data(Arena* arena, StringView elf_data){
       }break;
       case ELF_Class_64:
       {
-        segments = (ELF_Phdr64*)(elf_data.str + segment_foff);
+        segments = (ELF_Phdr64*)(elf_data.Ptr + segment_foff);
       }break;
     }
   }
@@ -410,11 +410,11 @@ elf_section_name_from_name_offset(ELF_Parsed* elf, uint64 offset){
     if (offset > 0){
       uint64 foff = elf.section_name_table_foff + offset;
       if (elf.section_name_table_foff <= foff && foff < elf.section_name_table_opl){
-        uint8* base = elf.data.str + foff;
-        uint8* section_opl = elf.data.str + elf.section_name_table_opl;
+        uint8* base = elf.data.Ptr + foff;
+        uint8* section_opl = elf.data.Ptr + elf.section_name_table_opl;
         uint8* opl = base;
         for (;opl < section_opl && *opl != 0; opl += 1);
-        result.str = base;
+        result.Ptr = base;
         result.size = opl - base;
       }
     }
@@ -463,7 +463,7 @@ elf_section_data_from_idx(ELF_Parsed* elf, uint32 idx){
       uint64 opl_raw = off_raw + size;
       uint64 opl = ClampTop(opl_raw, elf.data.size);
       uint64 off = ClampTop(off_raw, opl);
-      result.str = elf.data.str + off;
+      result.Ptr = elf.data.Ptr + off;
       result.size = opl - off;
     }
   }
@@ -483,7 +483,7 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, StringView data){
       count = data.size/sizeof(ELF_Sym32);
       symbols = push_array(arena, ELF_Sym64, count);
       {
-        ELF_Sym32* sym32 = (ELF_Sym32*)(data.str);
+        ELF_Sym32* sym32 = (ELF_Sym32*)(data.Ptr);
         ELF_Sym64* sym64 = symbols;
         for (uint64 i = 0; i < count; i += 1, sym32 += 1, sym64 += 1){
           sym64.st_name  = sym32.st_name;
@@ -499,7 +499,7 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, StringView data){
     case ELF_Class_64:
     {
       count = data.size/sizeof(ELF_Sym64);
-      symbols = (ELF_Sym64*)(data.str);
+      symbols = (ELF_Sym64*)(data.Ptr);
     }break;
   }
   
@@ -510,7 +510,7 @@ elf_sym_array_from_data(Arena* arena, ELF_Class elf_class, StringView data){
   return(result);
 }
 
-// string functions
+// str functions
 
 static StringView
 elf_string_from_section_type(ELF_SectionType section_type){

@@ -18,7 +18,7 @@ coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp)
 
 read_only struct
 {
-  StringView          string;
+  StringView          str;
   COFF_MachineType machine;
 } g_coff_machine_map[] = {
   { (""),          COFF_Machine_Unknown   },
@@ -78,7 +78,7 @@ coff_string_from_machine_type(COFF_MachineType machine)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (g_coff_machine_map[i].machine == machine) {
-      return g_coff_machine_map[i].string;
+      return g_coff_machine_map[i].str;
     }
   }
   return StringView();
@@ -455,10 +455,10 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 }
 
 COFF_MachineType
-coff_machine_from_string(StringView string)
+coff_machine_from_string(StringView str)
 {
   for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
-    if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_coff_machine_map[i].str, str, StringMatchFlag_CaseInsensitive)) {
       return g_coff_machine_map[i].machine;
     }
   }

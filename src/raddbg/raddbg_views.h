@@ -61,7 +61,7 @@ enum RD_WatchViewColumnKind
 
 struct RD_WatchViewColumnParams
 {
-  StringView string;
+  StringView str;
   StringView display_string;
   StringView view_rule;
   B32 is_non_code;
@@ -188,7 +188,7 @@ RD_WatchViewTextEditState* rd_watch_view_text_edit_state_from_pt(RD_WatchViewSta
 
 //- rjf: watch view column state mutation
 RD_WatchViewColumn* rd_watch_view_column_alloc_(RD_WatchViewState* wv, RD_WatchViewColumnKind kind, float pct, RD_WatchViewColumnParams* params);
-#define rd_watch_view_column_alloc(wv, kind, pct, ...) rd_watch_view_column_alloc_((wv), (kind), (pct), &(RD_WatchViewColumnParams){.string = StringView(), __VA_ARGS__})
+#define rd_watch_view_column_alloc(wv, kind, pct, ...) rd_watch_view_column_alloc_((wv), (kind), (pct), &(RD_WatchViewColumnParams){.str = StringView(), __VA_ARGS__})
 void rd_watch_view_column_release(RD_WatchViewState* wv, RD_WatchViewColumn* col);
 
 //- rjf: watch view main hooks

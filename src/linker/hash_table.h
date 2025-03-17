@@ -49,7 +49,7 @@ BucketNode * bucket_list_pop(BucketList* list);
 
 //- main
 
-uint64         hash_table_hasher(StringView string);
+uint64         hash_table_hasher(StringView str);
 HashTable * hash_table_init(Arena* arena, uint64 cap);
 void        hash_table_purge(HashTable* ht);
 
@@ -68,7 +68,7 @@ BucketNode * hash_table_push_u64_u64      (Arena* arena, HashTable* ht, uint64  
 
 //- search
 
-KeyValuePair * hash_table_search_string  (HashTable* ht, StringView string);
+KeyValuePair * hash_table_search_string  (HashTable* ht, StringView str);
 KeyValuePair * hash_table_search_u32     (HashTable* ht, uint32 key);
 KeyValuePair * hash_table_search_u64     (HashTable* ht, uint64 key);
 KeyValuePair * hash_table_search_path    (HashTable* ht, StringView path);

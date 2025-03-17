@@ -15,13 +15,13 @@ p2r_end_of_cplusplus_container_name(StringView str)
   // NOTE: This finds the index one past the last "::" contained in str.
   //       if no "::" is contained in str, then the returned index is 0.
   //       The intent is that [0,clamp_bot(0,result - 2)) gives the
-  //       "container name" and [result,str.size) gives the leaf name.
+  //       "container name" and [result,str.Length) gives the leaf name.
   uint64 result = 0;
-  if(str.size >= 2)
+  if(str.Length >= 2)
   {
-    for(uint64 i = str.size; i >= 2; i -= 1)
+    for(uint64 i = str.Length; i >= 2; i -= 1)
     {
-      if(str.str[i - 2] == ':' && str.str[i - 1] == ':')
+      if(str[i - 2] == ':' && str[i - 1] == ':')
       {
         result = i;
         break;
@@ -95,7 +95,7 @@ p2r_user2convert_from_cmdln(Arena* arena, CmdLine* cmdline)
     }
   }
   
-  //- rjf: define string . section flag bits
+  //- rjf: define str . section flag bits
 #define FlagNameMapXList \
 Case("sections",            BinarySections)\
 Case("units",               Units)\
@@ -124,8 +124,8 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
       result.flags = 0;
       for(String8Node* n = only_names.first; n != 0; n = n.next)
       {
-        StringView string = n.string;
-#define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags |= P2R_ConvertFlag_##flag;}
+        StringView str = n.str;
+#define Case(str, flag) if(str8_match(str, (str), StringMatchFlag_CaseInsensitive)) {result.flags |= P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -134,8 +134,8 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
     {
       for(String8Node* n = omit_names.first; n != 0; n = n.next)
       {
-        StringView string = n.string;
-#define Case(str, flag) if(str8_match(string, (str), StringMatchFlag_CaseInsensitive)) {result.flags &= ~P2R_ConvertFlag_##flag;}
+        StringView str = n.str;
+#define Case(str, flag) if(str8_match(str, (str), StringMatchFlag_CaseInsensitive)) {result.flags &= ~P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -506,7 +506,7 @@ ASYNC_WORK_DEF(p2r_exe_hash_work)
   Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2R_EXEHashIn* in = (P2R_EXEHashIn *)input;
   uint64* out = push_array(arena, uint64, 1);
-  ProfScope("hash exe") *out = rdi_hash(in.exe_data.str, in.exe_data.size);
+  ProfScope("hash exe") *out = rdi_hash(in.exe_data.Ptr, in.exe_data.size);
   ProfEnd();
   return out;
 }
@@ -643,14 +643,14 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
             StringView file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
             for(uint64 idx = 0; idx < file_path_normalized.size; idx += 1)
             {
-              if(file_path_normalized.str[idx] == '\\')
+              if(file_path_normalized[idx] == '\\')
               {
-                file_path_normalized.str[idx] = '/';
+                file_path_normalized[idx] = '/';
               }
             }
             
             // rjf: normalized file path . source file node
-            uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+            uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.Ptr, file_path_normalized.size);
             uint64 src_file_slot = file_path_normalized_hash%src_file_map.slots_count;
             P2R_SrcFileNode* src_file_node = 0;
             for(P2R_SrcFileNode* n = src_file_map.slots[src_file_slot]; n != 0; n = n.next)
@@ -738,8 +738,8 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
         //- rjf: unpack symbol info
         CV_SymKind kind = rec_range.hdr.kind;
         uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-        void* sym_header_struct_base = unit_sym.data.str + sym_off_first;
-        void* sym_data_opl = unit_sym.data.str + sym_off_opl;
+        void* sym_header_struct_base = unit_sym.data.Ptr + sym_off_first;
+        void* sym_data_opl = unit_sym.data.Ptr + sym_off_opl;
         
         //- rjf: skip bad sizes
         if(sym_off_first + sym_header_struct_size > sym_off_opl)
@@ -831,7 +831,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
 
                   if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms.size)
                   {
-                    CV_C13Checksum* checksum = (CV_C13Checksum*)(unit_c13.data.str + file_chksms.off + last_file_off);
+                    CV_C13Checksum* checksum = (CV_C13Checksum*)(unit_c13.data.Ptr + file_chksms.off + last_file_off);
                     uint32             name_off = checksum.name_off;
                     seq_file_name = pdb_strtbl_string_from_off(in.pdb_strtbl, name_off);
                   }
@@ -841,14 +841,14 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
                   StringView file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
                   for(uint64 idx = 0; idx < file_path_normalized.size; idx += 1)
                   {
-                    if(file_path_normalized.str[idx] == '\\')
+                    if(file_path_normalized[idx] == '\\')
                     {
-                      file_path_normalized.str[idx] = '/';
+                      file_path_normalized[idx] = '/';
                     }
                   }
                   
                   // rjf: normalized file path . source file node
-                  uint64              file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+                  uint64              file_path_normalized_hash = rdi_hash(file_path_normalized.Ptr, file_path_normalized.size);
                   uint64              src_file_slot             = file_path_normalized_hash%src_file_map.slots_count;
                   P2R_SrcFileNode* src_file_node             = 0;
                   for(P2R_SrcFileNode* n = src_file_map.slots[src_file_slot]; n != 0; n = n.next)
@@ -952,11 +952,11 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
     //- rjf: unpack symbol range info
     CV_SymKind kind = rec_range.hdr.kind;
     uint64 header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-    uint8* sym_first = in.sym.data.str + rec_range.off + 2;
+    uint8* sym_first = in.sym.data.Ptr + rec_range.off + 2;
     uint8* sym_opl   = sym_first + rec_range.hdr.size;
     
     //- rjf: skip bad ranges
-    if(sym_opl > in.sym.data.str + in.sym.data.size || sym_first + header_struct_size > in.sym.data.str + in.sym.data.size)
+    if(sym_opl > in.sym.data.Ptr + in.sym.data.size || sym_first + header_struct_size > in.sym.data.Ptr + in.sym.data.size)
     {
       continue;
     }
@@ -1018,7 +1018,7 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
        range.off+2+header_struct_size <= in.tpi_leaf.data.size &&
        range.hdr.size >= 2)
     {
-      uint8* itype_leaf_first = in.tpi_leaf.data.str + range.off+2;
+      uint8* itype_leaf_first = in.tpi_leaf.data.Ptr + range.off+2;
       uint8* itype_leaf_opl   = itype_leaf_first + range.hdr.size-2;
       switch(kind)
       {
@@ -1169,7 +1169,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
            range.off+2+header_struct_size <= in.tpi_leaf.data.size &&
            range.hdr.size >= 2)
         {
-          uint8* itype_leaf_first = in.tpi_leaf.data.str + range.off+2;
+          uint8* itype_leaf_first = in.tpi_leaf.data.Ptr + range.off+2;
           uint8* itype_leaf_opl   = itype_leaf_first + range.hdr.size-2;
           switch(kind)
           {
@@ -1242,7 +1242,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              uint8* arglist_first = in.tpi_leaf.data.str + arglist_range.off + 2;
+              uint8* arglist_first = in.tpi_leaf.data.Ptr + arglist_range.off + 2;
               uint8* arglist_opl   = arglist_first+arglist_range.hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
@@ -1318,7 +1318,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              uint8* arglist_first = in.tpi_leaf.data.str + arglist_range.off + 2;
+              uint8* arglist_first = in.tpi_leaf.data.Ptr + arglist_range.off + 2;
               uint8* arglist_opl   = arglist_first+arglist_range.hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
@@ -1452,7 +1452,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
       CV_RecRange* range = &in.tpi_leaf.leaf_ranges.ranges[itype-in.tpi_leaf.itype_first];
       CV_LeafKind kind = range.hdr.kind;
       uint64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
-      uint8* itype_leaf_first = in.tpi_leaf.data.str + range.off+2;
+      uint8* itype_leaf_first = in.tpi_leaf.data.Ptr + range.off+2;
       uint8* itype_leaf_opl   = itype_leaf_first + range.hdr.size-2;
       if(range.off+range.hdr.size > in.tpi_leaf.data.size ||
          range.off+2+header_struct_size > in.tpi_leaf.data.size ||
@@ -1547,7 +1547,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              uint8* field_list_first = in.tpi_leaf.data.str+range.off+2;
+              uint8* field_list_first = in.tpi_leaf.data.Ptr+range.off+2;
               uint8* field_list_opl = field_list_first+range.hdr.size-2;
               for(uint8* read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
@@ -1619,7 +1619,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit member
                     RDIM_UDTMember* mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -1640,7 +1640,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit member
                     RDIM_UDTMember* mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -1658,7 +1658,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     //- rjf: method list itype . range
                     CV_RecRange* method_list_range = &in.tpi_leaf.leaf_ranges.ranges[lf.list_itype-in.tpi_leaf.itype_first];
@@ -1672,7 +1672,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     }
                     
                     //- rjf: loop through all methods & emit members
-                    uint8* method_list_first = in.tpi_leaf.data.str + method_list_range.off + 2;
+                    uint8* method_list_first = in.tpi_leaf.data.Ptr + method_list_range.off + 2;
                     uint8* method_list_opl   = method_list_first + method_list_range.hdr.size-2;
                     for(uint8* method_read_ptr = method_list_first, *next_method_read_ptr = method_list_opl;
                         method_read_ptr < method_list_opl;
@@ -1768,7 +1768,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     RDIM_Type* method_type = p2r_type_ptr_from_itype(lf.itype);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit method
                     switch(prop)
@@ -1811,7 +1811,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit member
                     RDIM_UDTMember* mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -1831,7 +1831,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit member
                     RDIM_UDTMember* mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -1967,7 +1967,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              uint8* field_list_first = in.tpi_leaf.data.str+range.off+2;
+              uint8* field_list_first = in.tpi_leaf.data.Ptr+range.off+2;
               uint8* field_list_opl = field_list_first+range.hdr.size-2;
               for(uint8* read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
@@ -2036,7 +2036,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     StringView name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
-                    next_read_ptr = name.str+name.size+1;
+                    next_read_ptr = name.Ptr+name.size+1;
                     
                     // rjf: emit member
                     RDIM_UDTEnumVal* enum_val = rdim_udt_push_enum_val(arena, udts, dst_udt);
@@ -2114,7 +2114,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
       //- rjf: unpack symbol info
       CV_SymKind kind = rec_range.hdr.kind;
       uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-      void* sym_header_struct_base = in.sym.data.str + sym_off_first;
+      void* sym_header_struct_base = in.sym.data.Ptr + sym_off_first;
       
       //- rjf: skip bad sizes
       if(sym_off_first + sym_header_struct_size > sym_off_opl)
@@ -2185,8 +2185,8 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
       //- rjf: unpack symbol info
       CV_SymKind kind = rec_range.hdr.kind;
       uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-      void* sym_header_struct_base = in.sym.data.str + sym_off_first;
-      void* sym_data_opl = in.sym.data.str + sym_off_opl;
+      void* sym_header_struct_base = in.sym.data.Ptr + sym_off_first;
+      void* sym_data_opl = in.sym.data.Ptr + sym_off_opl;
       
       //- rjf: skip bad sizes
       if(sym_off_first + sym_header_struct_size > sym_off_opl)
@@ -2284,7 +2284,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
             if(container_name_opl > 2)
             {
-              StringView container_name = StringView(name.str, container_name_opl - 2);
+              StringView container_name = StringView(name.Ptr, container_name_opl - 2);
               CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
               container_type = p2r_type_ptr_from_itype(cv_type_id);
             }
@@ -2321,7 +2321,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2 && in.tpi_hash != 0 && in.tpi_leaf != 0)
           {
-            StringView container_name = StringView(name.str, container_name_opl - 2);
+            StringView container_name = StringView(name.Ptr, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2507,7 +2507,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2)
           {
-            StringView container_name = StringView(name.str, container_name_opl - 2);
+            StringView container_name = StringView(name.Ptr, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in.tpi_hash, in.tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2785,14 +2785,14 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             CV_RecRange rec_range = in.ipi_leaf.leaf_ranges.ranges[sym.inlinee - in.ipi_leaf.itype_first];
             StringView     rec_data  = str8_substr(in.ipi_leaf.data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
-            void*       raw_leaf  = rec_data.str + sizeof(uint16);
+            void*       raw_leaf  = rec_data.Ptr + sizeof(uint16);
             
             // rjf: extract method inline info
             if(rec_range.hdr.kind == CV_LeafKind_MFUNC_ID &&
                rec_range.hdr.size >= sizeof(CV_LeafMFuncId))
             {
               CV_LeafMFuncId* mfunc_id = (CV_LeafMFuncId*)raw_leaf;
-              name  = str8_cstring_capped(mfunc_id + 1, rec_data.str + rec_data.size);
+              name  = str8_cstring_capped(mfunc_id + 1, rec_data.Ptr + rec_data.size);
               type  = p2r_type_ptr_from_itype(mfunc_id.itype);
               owner = mfunc_id.owner_itype != 0 ? p2r_type_ptr_from_itype(mfunc_id.owner_itype) : 0;
             }
@@ -2802,7 +2802,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
                     rec_range.hdr.size >= sizeof(CV_LeafFuncId))
             {
               CV_LeafFuncId* func_id = (CV_LeafFuncId*)raw_leaf;
-              name  = str8_cstring_capped(func_id + 1, rec_data.str + rec_data.size);
+              name  = str8_cstring_capped(func_id + 1, rec_data.Ptr + rec_data.size);
               type  = p2r_type_ptr_from_itype(func_id.itype);
               owner = func_id.scope_string_id != 0 ? p2r_type_ptr_from_itype(func_id.scope_string_id) : 0;
             }
@@ -3026,7 +3026,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
   if(dbi != 0) ProfScope("parse psi")
   {
     StringView psi_data = msf_data_from_stream(msf, dbi.psi_sn);
-    StringView psi_data_gsi_part = str8_range(psi_data.str + sizeof(PDB_PsiHeader), psi_data.str + psi_data.size);
+    StringView psi_data_gsi_part = str8_range(psi_data.Ptr + sizeof(PDB_PsiHeader), psi_data.Ptr + psi_data.size);
     psi_gsi_part = pdb_gsi_from_data(arena, psi_data_gsi_part);
   }
   
@@ -3473,7 +3473,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
              range.off+2+header_struct_size <= tpi_leaf.data.size &&
              range.hdr.size >= 2)
           {
-            uint8* itype_leaf_first = tpi_leaf.data.str + range.off+2;
+            uint8* itype_leaf_first = tpi_leaf.data.Ptr + range.off+2;
             uint8* itype_leaf_opl   = itype_leaf_first + range.hdr.size-2;
             switch(kind)
             {
@@ -3586,7 +3586,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 {
                   break;
                 }
-                uint8* arglist_first = tpi_leaf.data.str + arglist_range.off + 2;
+                uint8* arglist_first = tpi_leaf.data.Ptr + arglist_range.off + 2;
                 uint8* arglist_opl   = arglist_first+arglist_range.hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
@@ -3634,7 +3634,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
                 {
                   break;
                 }
-                uint8* arglist_first = tpi_leaf.data.str + arglist_range.off + 2;
+                uint8* arglist_first = tpi_leaf.data.Ptr + arglist_range.off + 2;
                 uint8* arglist_opl   = arglist_first+arglist_range.hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
@@ -3971,7 +3971,7 @@ p2r_convert(Arena* arena, P2R_User2Convert* in)
 ////////////////////////////////
 //~ rjf: Baking Stage Tasks
 
-//- rjf: bake string map building
+//- rjf: bake str map building
 
 #define p2r_make_string_map_if_needed() do {if(in.maps[thread_idx] == 0) ProfScope("make map") {in.maps[thread_idx] = rdim_bake_string_map_loose_make(arena, in.top);}} while(0)
 
@@ -4095,14 +4095,14 @@ ASYNC_WORK_DEF(p2r_bake_line_tables_work)
 
 #undef p2r_make_string_map_if_needed
 
-//- rjf: bake string map joining
+//- rjf: bake str map joining
 
 ASYNC_WORK_DEF(p2r_bake_string_map_join_work)
 {
   ProfBeginFunction();
   Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2R_JoinBakeStringMapSlotsIn* in = (P2R_JoinBakeStringMapSlotsIn *)input;
-  ProfScope("join bake string maps")
+  ProfScope("join bake str maps")
   {
     for(uint64 src_map_idx = 0; src_map_idx < in.src_maps_count; src_map_idx += 1)
     {
@@ -4125,14 +4125,14 @@ ASYNC_WORK_DEF(p2r_bake_string_map_join_work)
   return 0;
 }
 
-//- rjf: bake string map sorting
+//- rjf: bake str map sorting
 
 ASYNC_WORK_DEF(p2r_bake_string_map_sort_work)
 {
   ProfBeginFunction();
   Arena* arena = p2r_state.work_thread_arenas[thread_idx];
   P2R_SortBakeStringMapSlotsIn* in = (P2R_SortBakeStringMapSlotsIn *)input;
-  ProfScope("sort bake string chunk list map range")
+  ProfScope("sort bake str chunk list map range")
   {
     for(uint64 slot_idx = in.slot_idx;
         slot_idx < in.slot_idx+in.slot_count;
@@ -4169,7 +4169,7 @@ ASYNC_WORK_DEF(p2r_build_bake_name_map_work)
   return name_map;
 }
 
-//- rjf: pass 2: string-map-dependent debug info stream builds
+//- rjf: pass 2: str-map-dependent debug info stream builds
 
 ASYNC_WORK_DEF(p2r_bake_units_work)
 {
@@ -4397,7 +4397,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   }
   
   //////////////////////////////
-  //- rjf: kick off string map building tasks
+  //- rjf: kick off str map building tasks
   //
   RDIM_BakeStringMapTopology bake_string_map_topology = {(64 +
                                                           in_params.procedures.total_count*1 +
@@ -4408,7 +4408,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   ASYNC_TaskList bake_string_map_build_tasks = {0};
   {
     // rjf: src files
-    ProfScope("kick off src files string map build task")
+    ProfScope("kick off src files str map build task")
     {
       P2R_BakeSrcFilesStringsIn* in = push_array(scratch.arena, P2R_BakeSrcFilesStringsIn, 1);
       in.top = &bake_string_map_topology;
@@ -4418,7 +4418,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
     }
     
     // rjf: units
-    ProfScope("kick off units string map build task")
+    ProfScope("kick off units str map build task")
     {
       P2R_BakeUnitsStringsIn* in = push_array(scratch.arena, P2R_BakeUnitsStringsIn, 1);
       in.top = &bake_string_map_topology;
@@ -4428,7 +4428,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
     }
     
     // rjf: types
-    ProfScope("kick off types string map build tasks")
+    ProfScope("kick off types str map build tasks")
     {
       uint64 items_per_task = 4096;
       uint64 num_tasks = (in_params.types.total_count+items_per_task-1)/items_per_task;
@@ -4460,7 +4460,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
     }
     
     // rjf: UDTs
-    ProfScope("kick off udts string map build tasks")
+    ProfScope("kick off udts str map build tasks")
     {
       uint64 items_per_task = 4096;
       uint64 num_tasks = (in_params.udts.total_count+items_per_task-1)/items_per_task;
@@ -4492,7 +4492,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
     }
     
     // rjf: symbols
-    ProfScope("kick off symbols string map build tasks")
+    ProfScope("kick off symbols str map build tasks")
     {
       RDIM_SymbolChunkList* symbol_lists[] =
       {
@@ -4532,7 +4532,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
       }
     }
 
-    ProfScope("kick off inline site string map build task")
+    ProfScope("kick off inline site str map build task")
     {
       uint64 items_per_task = 4096;
       uint64 num_tasks = CeilIntegerDiv(in_params.inline_sites.total_count, items_per_task);
@@ -4564,7 +4564,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
     }
     
     // rjf: scope chunks
-    ProfScope("kick off scope chunks string map build tasks")
+    ProfScope("kick off scope chunks str map build tasks")
     {
       uint64 items_per_task = 4096;
       uint64 num_tasks = (in_params.scopes.total_count+items_per_task-1)/items_per_task;
@@ -4611,9 +4611,9 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   }
   
   //////////////////////////////
-  //- rjf: join string map building tasks
+  //- rjf: join str map building tasks
   //
-  ProfScope("join string map building tasks")
+  ProfScope("join str map building tasks")
   {
     for(ASYNC_TaskNode* n = bake_string_map_build_tasks.first; n != 0; n = n.next)
     {
@@ -4622,10 +4622,10 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   }
   
   //////////////////////////////
-  //- rjf: produce joined string map
+  //- rjf: produce joined str map
   //
   RDIM_BakeStringMapLoose* unsorted_bake_string_map = rdim_bake_string_map_loose_make(arena, &bake_string_map_topology);
-  ProfScope("produce joined string map")
+  ProfScope("produce joined str map")
   {
     uint64 slots_per_task = 16384;
     uint64 num_tasks = (bake_string_map_topology.slots_count+slots_per_task-1)/slots_per_task;
@@ -4657,7 +4657,7 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   }
   
   //////////////////////////////
-  //- rjf: kick off string map sorting tasks
+  //- rjf: kick off str map sorting tasks
   //
   ASYNC_TaskList sort_bake_string_map_tasks = {0};
   RDIM_BakeStringMapLoose* sorted_bake_string_map__in_progress = rdim_bake_string_map_loose_make(arena, &bake_string_map_topology);
@@ -4683,9 +4683,9 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   }
   
   //////////////////////////////
-  //- rjf: join string map sorting tasks
+  //- rjf: join str map sorting tasks
   //
-  ProfScope("join string map sorting tasks")
+  ProfScope("join str map sorting tasks")
   {
     for(ASYNC_TaskNode* n = sort_bake_string_map_tasks.first; n != 0; n = n.next)
     {
@@ -4695,12 +4695,12 @@ p2r_bake(Arena* arena, P2R_Convert2Bake* in)
   RDIM_BakeStringMapLoose* sorted_bake_string_map = sorted_bake_string_map__in_progress;
   
   //////////////////////////////
-  //- rjf: build finalized string map
+  //- rjf: build finalized str map
   //
-  ProfBegin("build finalized string map base indices");
+  ProfBegin("build finalized str map base indices");
   RDIM_BakeStringMapBaseIndices bake_string_map_base_idxes = rdim_bake_string_map_base_indices_from_map_loose(arena, &bake_string_map_topology, sorted_bake_string_map);
   ProfEnd();
-  ProfBegin("build finalized string map");
+  ProfBegin("build finalized str map");
   RDIM_BakeStringMapTight bake_strings = rdim_bake_string_map_tight_from_loose(arena, &bake_string_map_topology, &bake_string_map_base_idxes, sorted_bake_string_map);
   ProfEnd();
   
@@ -4894,7 +4894,7 @@ p2r_has_symbol_ref(StringView msf_data, String8List symbol_list, MSF_RawStreamTa
       
       for(String8Node* symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n.next)
       {
-        uint64 symbol_off = pdb_gsi_symbol_from_string(gsi_parsed, symbol_data, symbol_n.string);
+        uint64 symbol_off = pdb_gsi_symbol_from_string(gsi_parsed, symbol_data, symbol_n.str);
         if(symbol_off < symbol_data.size)
         {
           has_ref = 1;
@@ -4929,7 +4929,7 @@ p2r_has_file_ref(StringView msf_data, String8List file_list, MSF_RawStreamTable*
       {
         for(String8Node* file_n = file_list.first; file_n != 0; file_n = file_n.next)
         {
-          uint32 off = pdb_strtbl_off_from_string(strtbl, file_n.string);
+          uint32 off = pdb_strtbl_off_from_string(strtbl, file_n.str);
           if(off != max_U32)
           {
             has_ref = 1;

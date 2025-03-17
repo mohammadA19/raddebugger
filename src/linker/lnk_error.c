@@ -49,8 +49,8 @@ lnk_errorfv(LNK_ErrorCode code, char* fmt, va_list args)
   
   Temp scratch = scratch_begin(0,0);
   StringView message = push_str8fv(scratch.arena, fmt, args);
-  StringView string = push_str8f(scratch.arena, "%S(%03d): %S\n", lnk_string_from_error_mode(g_error_mode_arr[code]), code, message);
-  fprintf(stderr, "%.*s", str8_varg(string));
+  StringView str = push_str8f(scratch.arena, "%S(%03d): %S\n", lnk_string_from_error_mode(g_error_mode_arr[code]), code, message);
+  fprintf(stderr, "%.*s", str8_varg(str));
   scratch_end(scratch);
   
   if (g_error_mode_arr[code] == LNK_ErrorMode_Stop) {
@@ -99,10 +99,10 @@ lnk_supplement_error(char* fmt, ...)
   va_start(args, fmt);
 
   Temp scratch = scratch_begin(0,0);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
 
   fprintf(stderr, "\t");
-  fprintf(stderr, "%.*s", str8_varg(string));
+  fprintf(stderr, "%.*s", str8_varg(str));
   fprintf(stderr, "\n");
 
   va_end(args);
@@ -113,7 +113,7 @@ void
 lnk_supplement_error_list(String8List list)
 {
   for (String8Node* node = list.first; node != 0; node = node.next) {
-    lnk_supplement_error("%.*s", str8_varg(node.string));
+    lnk_supplement_error("%.*s", str8_varg(node.str));
   }
 }
 

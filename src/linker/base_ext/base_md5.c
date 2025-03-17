@@ -5,7 +5,7 @@ MD5Hash
 md5_hash_from_string(StringView data)
 {
   MD5_CTX ctx; MD5_Init(&ctx);
-  MD5_Update(&ctx, (void*)data.str, safe_cast_u32(data.size));
+  MD5_Update(&ctx, (void*)data.Ptr, safe_cast_u32(data.size));
   MD5Hash hash; MD5_Final((unsigned char*)&hash, &ctx);
   return hash;
 }

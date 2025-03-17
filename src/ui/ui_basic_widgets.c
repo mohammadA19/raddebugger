@@ -19,10 +19,10 @@ ui_divider(UI_Size size)
 }
 
 UI_Signal
-ui_label(StringView string)
+ui_label(StringView str)
 {
   UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText, StringView());
-  ui_box_equip_display_string(box, string);
+  ui_box_equip_display_string(box, str);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
 }
@@ -33,24 +33,24 @@ ui_labelf(char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal result = ui_label(string);
+  UI_Signal result = ui_label(str);
   scratch_end(scratch);
   return result;
 }
 
 void
-ui_label_multiline(float max, StringView string)
+ui_label_multiline(float max, StringView str)
 {
   Temp scratch = scratch_begin(0, 0);
   ui_set_next_child_layout_axis(Axis2_Y);
   ui_set_next_pref_height(ui_children_sum(1));
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
-  String8List lines = fnt_wrapped_string_lines_from_font_size_string_max(scratch.arena, ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), string, max);
+  String8List lines = fnt_wrapped_string_lines_from_font_size_string_max(scratch.arena, ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), str, max);
   for(String8Node* n = lines.first; n != 0; n = n.next)
   {
-    ui_label(n.string);
+    ui_label(n.str);
   }
   scratch_end(scratch);
 }
@@ -61,14 +61,14 @@ ui_label_multilinef(float max, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  ui_label_multiline(max, string);
+  ui_label_multiline(max, str);
   scratch_end(scratch);
 }
 
 UI_Signal
-ui_button(StringView string)
+ui_button(StringView str)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|
@@ -77,7 +77,7 @@ ui_button(StringView string)
                                          UI_BoxFlag_DrawText|
                                          UI_BoxFlag_DrawHotEffects|
                                          UI_BoxFlag_DrawActiveEffects,
-                                         string);
+                                         str);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
 }
@@ -88,17 +88,17 @@ ui_buttonf(char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal result = ui_button(string);
+  UI_Signal result = ui_button(str);
   scratch_end(scratch);
   return result;
 }
 
 UI_Signal
-ui_hover_label(StringView string)
+ui_hover_label(StringView str)
 {
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, str);
   UI_Signal interact = ui_signal_from_box(box);
   if(ui_hovering(interact))
   {
@@ -113,9 +113,9 @@ ui_hover_labelf(char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_hover_label(string);
+  UI_Signal sig = ui_hover_label(str);
   scratch_end(scratch);
   return sig;
 }
@@ -164,10 +164,10 @@ UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 }
 
 UI_Signal
-ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, StringView pre_edit_value, StringView string)
+ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, StringView pre_edit_value, StringView str)
 {
   //- rjf: make key
-  UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
+  UI_Key key = ui_key_from_string(ui_active_seed_key(), str);
   
   //- rjf: calculate focus
   B32 is_auto_focus_hot = ui_is_key_auto_focus_hot(key);
@@ -213,7 +213,7 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
       {
         StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
         new_string.size = Min(edit_buffer_size, new_string.size);
-        MemoryCopy(edit_buffer, new_string.str, new_string.size);
+        MemoryCopy(edit_buffer, new_string.Ptr, new_string.size);
         edit_string_size_out[0] = new_string.size;
       }
       
@@ -244,7 +244,7 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
     StringView edit_string = StringView(edit_buffer, edit_string_size_out[0]);
     if(!is_focus_active && !is_focus_active_disabled)
     {
-      StringView display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(str);
       if(pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -273,7 +273,7 @@ ui_line_edit(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_
   {
     StringView edit_string = pre_edit_value;
     edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
-    MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
+    MemoryCopy(edit_buffer, edit_string.Ptr, edit_string.size);
     edit_string_size_out[0] = edit_string.size;
     ui_set_auto_focus_active_key(key);
     ui_kill_action();
@@ -321,9 +321,9 @@ ui_line_editf(TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal result = ui_line_edit(cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, pre_edit_value, string);
+  UI_Signal result = ui_line_edit(cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, pre_edit_value, str);
   scratch_end(scratch);
   return result;
 }
@@ -369,9 +369,9 @@ UI_BOX_CUSTOM_DRAW(ui_image_draw)
 }
 
 UI_Signal
-ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, StringView string)
+ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, StringView str)
 {
-  UI_Box* box = ui_build_box_from_string(0, string);
+  UI_Box* box = ui_build_box_from_string(0, str);
   UI_ImageDrawData* draw_data = push_array(ui_build_arena(), UI_ImageDrawData, 1);
   draw_data.texture = texture;
   draw_data.sample_kind = sample_kind;
@@ -389,9 +389,9 @@ ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal result = ui_image(texture, sample_kind, region, tint, blur, string);
+  UI_Signal result = ui_image(texture, sample_kind, region, tint, blur, str);
   scratch_end(scratch);
   return result;
 }
@@ -400,12 +400,12 @@ ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F
 //~ rjf: Special Buttons
 
 UI_Signal
-ui_expander(B32 is_expanded, StringView string)
+ui_expander(B32 is_expanded, StringView str)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_text_alignment(UI_TextAlign_Center);
   ui_set_next_font(ui_icon_font());
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, str);
   ui_box_equip_display_string(box, is_expanded ? ("v") : (">"));
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
@@ -417,19 +417,19 @@ ui_expanderf(B32 is_expanded, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_expander(is_expanded, string);
+  UI_Signal sig = ui_expander(is_expanded, str);
   scratch_end(scratch);
   return sig;
 }
 
 UI_Signal
-ui_sort_header(B32 sorting, B32 ascending, StringView string)
+ui_sort_header(B32 sorting, B32 ascending, StringView str)
 {
   ui_set_next_child_layout_axis(Axis2_X);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, str);
   ui_push_parent(box);
   
   // rjf: make icon
@@ -444,7 +444,7 @@ ui_sort_header(B32 sorting, B32 ascending, StringView string)
   
   // rjf: make text
   {
-    ui_label(string);
+    ui_label(str);
   }
   
   ui_pop_parent();
@@ -458,9 +458,9 @@ ui_sort_headerf(B32 sorting, B32 ascending, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_sort_header(sorting, ascending, string);
+  UI_Signal sig = ui_sort_header(sorting, ascending, str);
   scratch_end(scratch);
   return sig;
 }
@@ -591,11 +591,11 @@ UI_BOX_CUSTOM_DRAW(ui_sat_val_picker_draw)
 }
 
 UI_Signal
-ui_sat_val_picker(float hue, float* out_sat, float* out_val, StringView string)
+ui_sat_val_picker(float hue, float* out_sat, float* out_val, StringView str)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, str);
   UI_SatValDrawData* user = push_array(ui_build_arena(), UI_SatValDrawData, 1);
   ui_box_equip_custom_draw(box, ui_sat_val_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -639,9 +639,9 @@ ui_sat_val_pickerf(float hue, float* out_sat, float* out_val, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_sat_val_picker(hue, out_sat, out_val, string);
+  UI_Signal sig = ui_sat_val_picker(hue, out_sat, out_val, str);
   scratch_end(scratch);
   return sig;
 }
@@ -699,11 +699,11 @@ UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
 }
 
 UI_Signal
-ui_hue_picker(float* out_hue, float sat, float val, StringView string)
+ui_hue_picker(float* out_hue, float sat, float val, StringView str)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, str);
   UI_HueDrawData* user = push_array(ui_build_arena(), UI_HueDrawData, 1);
   ui_box_equip_custom_draw(box, ui_hue_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -742,9 +742,9 @@ ui_hue_pickerf(float* out_hue, float sat, float val, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_hue_picker(out_hue, sat, val, string);
+  UI_Signal sig = ui_hue_picker(out_hue, sat, val, str);
   scratch_end(scratch);
   return sig;
 }
@@ -785,11 +785,11 @@ UI_BOX_CUSTOM_DRAW(ui_alpha_picker_draw)
 }
 
 UI_Signal
-ui_alpha_picker(float* out_alpha, StringView string)
+ui_alpha_picker(float* out_alpha, StringView str)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, str);
   UI_AlphaDrawData* user = push_array(ui_build_arena(), UI_AlphaDrawData, 1);
   ui_box_equip_custom_draw(box, ui_alpha_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -826,9 +826,9 @@ ui_alpha_pickerf(float* out_alpha, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Signal sig = ui_alpha_picker(out_alpha, string);
+  UI_Signal sig = ui_alpha_picker(out_alpha, str);
   scratch_end(scratch);
   return sig;
 }
@@ -842,10 +842,10 @@ UI_Box* ui_column_begin() { return ui_named_column_begin(("")); }
 UI_Signal ui_column_end() { return ui_named_column_end(); }
 
 UI_Box *
-ui_named_row_begin(StringView string)
+ui_named_row_begin(StringView str)
 {
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box* box = ui_build_box_from_string(0, string);
+  UI_Box* box = ui_build_box_from_string(0, str);
   ui_push_parent(box);
   return box;
 }
@@ -859,10 +859,10 @@ ui_named_row_end()
 }
 
 UI_Box *
-ui_named_column_begin(StringView string)
+ui_named_column_begin(StringView str)
 {
   ui_set_next_child_layout_axis(Axis2_Y);
-  UI_Box* box = ui_build_box_from_string(0, string);
+  UI_Box* box = ui_build_box_from_string(0, str);
   ui_push_parent(box);
   return box;
 }
@@ -879,11 +879,11 @@ ui_named_column_end()
 //~ rjf: Floating Panes
 
 UI_Box *
-ui_pane_begin(Rng2F32 rect, StringView string)
+ui_pane_begin(Rng2F32 rect, StringView str)
 {
   ui_push_rect(rect);
   ui_set_next_child_layout_axis(Axis2_Y);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_Clip|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_Clip|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str);
   ui_pop_rect();
   ui_push_parent(box);
   ui_push_pref_width(ui_pct(1, 0));
@@ -896,9 +896,9 @@ ui_pane_beginf(Rng2F32 rect, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Box* box = ui_pane_begin(rect, string);
+  UI_Box* box = ui_pane_begin(rect, str);
   scratch_end(scratch);
   return box;
 }
@@ -921,7 +921,7 @@ thread_static uint64 ui_ts_vector_idx = 0;
 thread_static uint64 ui_ts_cell_idx = 0;
 
 void
-ui_table_begin(uint64 column_pct_count, float** column_pcts, StringView string)
+ui_table_begin(uint64 column_pct_count, float** column_pcts, StringView str)
 {
   //- rjf: store off persistent, user-provided column info
   ui_ts_col_pct_count = column_pct_count;
@@ -929,7 +929,7 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, StringView string)
   //- rjf: build main table parent
   ui_set_next_pref_height(ui_children_sum(1));
   ui_set_next_child_layout_axis(Axis2_Y);
-  UI_Box* table = ui_build_box_from_string(0, string);
+  UI_Box* table = ui_build_box_from_string(0, str);
   ui_push_parent(table);
   
   //- rjf: build column boundaries
@@ -950,7 +950,7 @@ ui_table_begin(uint64 column_pct_count, float** column_pcts, StringView string)
     UI_Rect(rect)
     {
       ui_set_next_hover_cursor(OS_Cursor_LeftRight);
-      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table.string, column_idx);
+      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table.str, column_idx);
       
       float* left_pct_ptr  = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx-1] : 0;
       float* right_pct_ptr = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx] : 0;
@@ -1040,9 +1040,9 @@ ui_table_beginf(uint64 column_pct_count, float** column_pcts, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  ui_table_begin(column_pct_count, column_pcts, string);
+  ui_table_begin(column_pct_count, column_pcts, str);
   scratch_end(scratch);
 }
 
@@ -1053,11 +1053,11 @@ ui_table_end()
 }
 
 UI_Box *
-ui_named_table_vector_begin(StringView string)
+ui_named_table_vector_begin(StringView str)
 {
   ui_set_next_pref_width(ui_pct(1, 0));
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box* vector = ui_build_box_from_string(UI_BoxFlag_DrawSideBottom, string);
+  UI_Box* vector = ui_build_box_from_string(UI_BoxFlag_DrawSideBottom, str);
   ui_ts_vector_idx += 1;
   ui_ts_cell_idx = 0;
   ui_push_parent(vector);
@@ -1070,9 +1070,9 @@ ui_named_table_vector_beginf(char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
-  UI_Box* vector = ui_named_table_vector_begin(string);
+  UI_Box* vector = ui_named_table_vector_begin(str);
   scratch_end(scratch);
   return vector;
 }

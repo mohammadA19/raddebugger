@@ -6,7 +6,7 @@ coff_is_big_obj(StringView raw_coff)
 {
   B32 is_big_obj = 0;
   if (raw_coff.size >= sizeof(COFF_BigObjHeader)) {
-    COFF_BigObjHeader* file_header32 = (COFF_BigObjHeader*)(raw_coff.str);
+    COFF_BigObjHeader* file_header32 = (COFF_BigObjHeader*)(raw_coff.Ptr);
     is_big_obj = file_header32.sig1 == COFF_Machine_Unknown && 
       file_header32.sig2 == max_U16 &&
       file_header32.version >= 2 &&
@@ -21,7 +21,7 @@ coff_is_obj(StringView raw_coff)
   B32 is_obj = 0;
   
   if (raw_coff.size >= sizeof(COFF_FileHeader)) {
-    COFF_FileHeader* header = (COFF_FileHeader*)(raw_coff.str);
+    COFF_FileHeader* header = (COFF_FileHeader*)(raw_coff.Ptr);
     
     // validate machine
     B32 is_machine_type_valid = 0;
@@ -50,7 +50,7 @@ coff_is_obj(StringView raw_coff)
       uint64 section_hdr_opl_off = sizeof(*header) + section_count*sizeof(COFF_SectionHeader);
       if (raw_coff.size >= section_hdr_opl_off) {
         
-        COFF_SectionHeader* section_hdrs = (COFF_SectionHeader*)(raw_coff.str + sizeof(*header));
+        COFF_SectionHeader* section_hdrs = (COFF_SectionHeader*)(raw_coff.Ptr + sizeof(*header));
         COFF_SectionHeader* section_hdr_opl = section_hdrs + section_count;
         
         // validate section ranges
@@ -96,7 +96,7 @@ coff_file_header_info_from_data(StringView raw_coff)
 {
   COFF_FileHeaderInfo info = {0};
   if (coff_is_big_obj(raw_coff)) {
-    COFF_BigObjHeader* header32 = (COFF_BigObjHeader*)raw_coff.str;
+    COFF_BigObjHeader* header32 = (COFF_BigObjHeader*)raw_coff.Ptr;
     info.is_big_obj             = 1;
     info.machine                = header32.machine;
     info.header_size            = sizeof(COFF_BigObjHeader);
@@ -107,7 +107,7 @@ coff_file_header_info_from_data(StringView raw_coff)
     info.symbol_off             = header32.symbol_table_foff;
     info.symbol_count           = header32.symbol_count;
   } else if (coff_is_obj(raw_coff)) {
-    COFF_FileHeader* header16  = (COFF_FileHeader*)raw_coff.str;
+    COFF_FileHeader* header16  = (COFF_FileHeader*)raw_coff.Ptr;
     info.is_big_obj            = 0;
     info.machine               = header16.machine;
     info.header_size           = sizeof(COFF_FileHeader);
@@ -162,7 +162,7 @@ coff_symbol_array_from_data_16(Arena* arena, StringView raw_coff, uint64 symbol_
   
   Rng1U64        sym16_arr_range = rng_1u64(symbol_array_off, symbol_array_off + sizeof(COFF_Symbol16) * symbol_count);
   StringView        raw_sym16_arr   = str8_substr(raw_coff, sym16_arr_range);
-  COFF_Symbol16* sym16_arr       = (COFF_Symbol16 *)raw_sym16_arr.str;
+  COFF_Symbol16* sym16_arr       = (COFF_Symbol16 *)raw_sym16_arr.Ptr;
   
   for (uint64 isymbol = 0, count = raw_sym16_arr.size / sizeof(COFF_Symbol16); isymbol < count; isymbol += 1) {
     COFF_Symbol16* sym16 = &sym16_arr[isymbol];
@@ -203,7 +203,7 @@ coff_symbol_array_from_data_32(Arena* arena, StringView data, uint64 symbol_arra
 {
   COFF_Symbol32Array result;
   result.count = symbol_count;
-  result.v     = (COFF_Symbol32 *)(data.str + symbol_array_off);
+  result.v     = (COFF_Symbol32 *)(data.Ptr + symbol_array_off);
   return result;
 }
 
@@ -282,23 +282,23 @@ coff_reloc_info_from_section_header(StringView data, COFF_SectionHeader* header)
 }
 
 StringView
-coff_resource_string_from_str16(Arena* arena, Span<char16> string)
+coff_resource_string_from_str16(Arena* arena, Span<char16> str)
 {
-  AssertAlways(string.size <= max_U16);
-  uint16 size16 = (uint16)string.size;
+  AssertAlways(str.Length <= max_U16);
+  uint16 size16 = (uint16)str.Length;
   
   uint16* buffer = push_array_no_zero(arena, uint16, size16 + 1);
   MemoryCopy(buffer + 0, &size16,    sizeof(size16));
-  MemoryCopy(buffer + 1, string.str, size16 * sizeof(string.str[0]));
+  MemoryCopy(buffer + 1, str.Ptr, size16 * sizeof(str[0]));
   
   return str8_array(buffer, size16 + 1);
 }
 
 StringView
-coff_resource_string_from_str8(Arena* arena, StringView string)
+coff_resource_string_from_str8(Arena* arena, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  Span<char16> string16 = str16_from_8(scratch.arena, string);
+  Span<char16> string16 = str16_from_8(scratch.arena, str);
   StringView  result   = coff_resource_string_from_str16(arena, string16);
   scratch_end(scratch);
   return result;
@@ -324,7 +324,7 @@ coff_utf8_resource_id_from_utf16(Arena* arena, COFF_ResourceID16* id_16)
       id.u.number = id_16.u.number;
     } break;
     case COFF_ResourceIDType_String: {
-      id.u.string = str8_from_16(arena, id_16.u.string);
+      id.u.str = str8_from_16(arena, id_16.u.str);
     } break;
     default: InvalidPath;
   }
@@ -345,7 +345,7 @@ coff_read_resource_id_utf16(StringView raw_res, uint64 off, COFF_ResourceID16* i
     cursor += str8_deserial_read_struct(raw_res, cursor, &id_out.u.number);
   } else {
     id_out.type = COFF_ResourceIDType_String;
-    cursor += str8_deserial_read_windows_utf16_string16(raw_res, cursor, &id_out.u.string);
+    cursor += str8_deserial_read_windows_utf16_string16(raw_res, cursor, &id_out.u.str);
   }
   
   uint64 read_size = cursor - off;
@@ -416,7 +416,7 @@ coff_write_resource_id(Arena* arena, COFF_ResourceID id)
       result = coff_resource_number_from_u16(arena, id.u.number);
     } break;
     case COFF_ResourceIDType_String: {
-      result = coff_resource_string_from_str8(arena, id.u.string);
+      result = coff_resource_string_from_str8(arena, id.u.str);
     } break;
     default: InvalidPath;
   }
@@ -483,7 +483,7 @@ coff_resource_id_compar(void* raw_a, void* raw_b)
     switch (a.type) {
       case COFF_ResourceIDType_Null:   cmp = 0; break;
       case COFF_ResourceIDType_Number: cmp = MemoryCompare(&a.u.number, &b.u.number, sizeof(a.u.number)); break;
-      case COFF_ResourceIDType_String: cmp = strncmp((char *)a.u.string.str, (char *)b.u.string.str, Min(a.u.string.size, b.u.string.size)); break;
+      case COFF_ResourceIDType_String: cmp = strncmp((char *)a.u.str.Ptr, (char *)b.u.str.Ptr, Min(a.u.str.Length, b.u.str.Length)); break;
       default: InvalidPath; break;
     }
   } else {
@@ -497,7 +497,7 @@ coff_is_import(StringView raw_archive_member)
 {
   B32 is_import = 0;
   if (raw_archive_member.size >= sizeof(uint16)*2) {
-    uint16* sig1 = (uint16*)raw_archive_member.str;
+    uint16* sig1 = (uint16*)raw_archive_member.Ptr;
     uint16* sig2 = sig1 + 1;
     is_import = *sig1 == COFF_Machine_Unknown && *sig2 == 0xffff;
   }
@@ -599,7 +599,7 @@ coff_parse_first_archive_member(COFF_ArchiveMember* member)
   cursor += dim_1u64(string_table_range);
   
   StringView  raw_member_offsets  = str8_substr(member.data, member_offsets_range);
-  uint32*     member_offsets      = (uint32 *)raw_member_offsets.str;
+  uint32*     member_offsets      = (uint32 *)raw_member_offsets.Ptr;
   uint64      member_offset_count = raw_member_offsets.size / sizeof(member_offsets[0]);
   
   COFF_ArchiveFirstMember result = {0};
@@ -636,10 +636,10 @@ coff_parse_second_archive_member(COFF_ArchiveMember* member)
     StringView raw_member_offsets = str8_substr(member.data, member_offsets_range);
     StringView raw_indices        = str8_substr(member.data, symbol_indices_range);
     
-    uint32* member_offsets      = (uint32 *)raw_member_offsets.str;
+    uint32* member_offsets      = (uint32 *)raw_member_offsets.Ptr;
     uint64  member_offset_count = raw_member_offsets.size / sizeof(member_offsets[0]);
     
-    uint16* symbol_indices     = (uint16 *)raw_indices.str;
+    uint16* symbol_indices     = (uint16 *)raw_indices.Ptr;
     uint64  symbol_index_count = raw_indices.size / sizeof(symbol_indices[0]);
     
     result.member_count        = member_count;
@@ -658,18 +658,18 @@ StringView
 coff_parse_long_name(StringView long_names, StringView name)
 {
   StringView result = name;
-  if (name.size > 0 && name.str[0] == '/') {
-    StringView offset_str = StringView(name.str + 1, name.size - 1);
+  if (name.size > 0 && name[0] == '/') {
+    StringView offset_str = StringView(name.Ptr + 1, name.size - 1);
     uint64 offset = u64_from_str8(offset_str, 10);
     if (offset < long_names.size) {
-      uint8* ptr = long_names.str + offset;
-      uint8* opl = long_names.str + long_names.size;
+      uint8* ptr = long_names.Ptr + offset;
+      uint8* opl = long_names.Ptr + long_names.size;
       for (; ptr < opl; ++ptr) {
         if (*ptr == '\0' || *ptr == '\n') {
           break;
         }
       }
-      result = str8_range(long_names.str + offset, ptr);
+      result = str8_range(long_names.Ptr + offset, ptr);
     }
   }
   return result;

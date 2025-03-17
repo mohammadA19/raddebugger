@@ -27,8 +27,8 @@ pdb_hash_udt(CV_UDTInfo udt_info, StringView data)
 }
 
 uint32
-pdb_crc32_from_string(StringView string)
+pdb_crc32_from_string(StringView str)
 {
-  return ~update_crc32(~0, string.str, string.size);
+  return ~update_crc32(~0, str.Ptr, str.Length);
 }
 

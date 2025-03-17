@@ -135,7 +135,7 @@ struct E_Module
 ////////////////////////////////
 //~ rjf: Basic Helper Functions
 
-uint64 e_hash_from_string(uint64 seed, StringView string);
+uint64 e_hash_from_string(uint64 seed, StringView str);
 #define e_value_u64(v) (E_Value){.u64 = (v)}
 
 ////////////////////////////////

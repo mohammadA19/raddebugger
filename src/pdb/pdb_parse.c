@@ -11,7 +11,7 @@ pdb_info_from_data(Arena* arena, StringView data){
   // get header
   PDB_InfoHeader* header = 0;
   if (data.size >= sizeof(*header)){
-    header = (PDB_InfoHeader *)data.str;
+    header = (PDB_InfoHeader *)data.Ptr;
   }
   
   PDB_Info* result = 0;
@@ -26,7 +26,7 @@ pdb_info_from_data(Arena* arena, StringView data){
       case PDB_InfoVersion_VC110:
       case PDB_InfoVersion_VC140:
       {
-        auth_guid = (Guid*)(data.str + after_auth_guid_off);
+        auth_guid = (Guid*)(data.Ptr + after_auth_guid_off);
         after_auth_guid_off = sizeof(*header) + sizeof(*auth_guid);
       }break;
       
@@ -39,7 +39,7 @@ pdb_info_from_data(Arena* arena, StringView data){
       uint32 names_len_off = after_auth_guid_off;
       uint32 names_len = 0;
       if (names_len_off + 4 <= data.size){
-        names_len = *(uint32*)(data.str + names_len_off);
+        names_len = *(uint32*)(data.Ptr + names_len_off);
       }
       
       uint32 names_base_off = names_len_off + 4;
@@ -52,22 +52,22 @@ pdb_info_from_data(Arena* arena, StringView data){
       uint32 hash_table_count = 0;
       uint32 hash_table_max = 0;
       if (hash_table_max_off + 4 <= data.size){
-        hash_table_count = *(uint32*)(data.str + hash_table_count_off);
-        hash_table_max = *(uint32*)(data.str + hash_table_max_off);
+        hash_table_count = *(uint32*)(data.Ptr + hash_table_count_off);
+        hash_table_max = *(uint32*)(data.Ptr + hash_table_max_off);
       }
       
       // table layout: words
       uint32 num_present_words_off = hash_table_max_off + 4;
       uint32 num_present_words = 0;
       if (hash_table_max_off + 4 <= data.size){
-        num_present_words = *(uint32*)(data.str + num_present_words_off);
+        num_present_words = *(uint32*)(data.Ptr + num_present_words_off);
       }
       uint32 present_words_array_off = num_present_words_off + 4;
       
       uint32 num_deleted_words_off = present_words_array_off + num_present_words*sizeof(uint32);
       uint32 num_deleted_words = 0;
       if (num_deleted_words_off + 4 <= data.size){
-        num_deleted_words = *(uint32*)(data.str + num_deleted_words_off);
+        num_deleted_words = *(uint32*)(data.Ptr + num_deleted_words_off);
       }
       uint32 deleted_words_array_off = num_deleted_words_off + 4;
       
@@ -81,18 +81,18 @@ pdb_info_from_data(Arena* arena, StringView data){
         
         uint32 record_off = epilogue_base_off;
         for (uint32 i = 0; i < hash_table_count; i += 1, record_off += 8){
-          uint32* record = (uint32*)(data.str + record_off);
+          uint32* record = (uint32*)(data.Ptr + record_off);
           uint32 relative_name_off = record[0];
           MSF_StreamNumber sn = (MSF_StreamNumber)record[1];
           
           uint32 name_off = names_base_off + relative_name_off;
-          StringView name = str8_cstring_capped((char*)(data.str + name_off),
-                                             (char*)(data.str + names_base_opl));
+          StringView name = str8_cstring_capped((char*)(data.Ptr + name_off),
+                                             (char*)(data.Ptr + names_base_opl));
           
           // push info node
           PDB_InfoNode* node = push_array(arena, PDB_InfoNode, 1);
           SLLQueuePush(first, last, node);
-          node.string = name;
+          node.str = name;
           node.sn = sn;
         }
         
@@ -136,7 +136,7 @@ pdb_named_stream_table_from_info(Arena* arena, PDB_Info* info){
     for (PDB_InfoNode* node = info.first;
          node != 0;
          node = node.next){
-      if (str8_match(name, node.string, 0)){
+      if (str8_match(name, node.str, 0)){
         match = node;
         break;
       }
@@ -163,7 +163,7 @@ pdb_strtbl_from_data(Arena* arena, StringView data){
   // get header
   PDB_StringTableHeader* header = 0;
   if (sizeof(*header) <= data.size){
-    header = (PDB_StringTableHeader *)data.str;
+    header = (PDB_StringTableHeader *)data.Ptr;
   }
   
   PDB_Strtbl* result = push_array(arena, PDB_Strtbl, 1);
@@ -171,14 +171,14 @@ pdb_strtbl_from_data(Arena* arena, StringView data){
     uint32 strblock_size_off = sizeof(*header);
     uint32 strblock_size = 0;
     if (strblock_size_off + 4 <= data.size){
-      strblock_size = *(uint32*)(data.str + strblock_size_off);
+      strblock_size = *(uint32*)(data.Ptr + strblock_size_off);
     }
     uint32 strblock_off = strblock_size_off + 4;
     
     uint32 bucket_count_off = strblock_off + strblock_size;
     uint32 bucket_count = 0;
     if (bucket_count_off + 4 <= data.size){
-      bucket_count = *(uint32*)(data.str + bucket_count_off);
+      bucket_count = *(uint32*)(data.Ptr + bucket_count_off);
     }
     
     uint32 bucket_array_off = bucket_count_off + 4;
@@ -206,7 +206,7 @@ pdb_dbi_from_data(Arena* arena, StringView data){
   // get header
   PDB_DbiHeader* header = 0;
   if (sizeof(*header) <= data.size){
-    header = (PDB_DbiHeader*)data.str;
+    header = (PDB_DbiHeader*)data.Ptr;
   }
   
   PDB_DbiParsed* result = 0;
@@ -246,7 +246,7 @@ pdb_dbi_from_data(Arena* arena, StringView data){
     uint64 dbg_streams_max = result.range_off[PDB_DbiRange_DbgHeader + 1];
     uint64 dbg_streams_size_raw = dbg_streams_max - dbg_streams_min;
     uint64 dbg_streams_size = ClampTop(dbg_streams_size_raw, sizeof(result.dbg_streams));
-    MemoryCopy(result.dbg_streams, data.str + dbg_streams_min, dbg_streams_size);
+    MemoryCopy(result.dbg_streams, data.Ptr + dbg_streams_min, dbg_streams_size);
     if (dbg_streams_size < sizeof(result.dbg_streams)){
       uint64 filled_count = dbg_streams_size/sizeof(MSF_StreamNumber);
       MemorySet(result.dbg_streams + filled_count, 0xff,
@@ -266,7 +266,7 @@ pdb_tpi_from_data(Arena* arena, StringView data){
   // get header
   PDB_TpiHeader* header = 0;
   if (sizeof(*header) <= data.size){
-    header = (PDB_TpiHeader*)data.str;
+    header = (PDB_TpiHeader*)data.Ptr;
   }
   
   PDB_TpiParsed* result = 0;
@@ -309,13 +309,13 @@ pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, Str
   
   uint32 stride = tpi.hash_key_size;
   uint32 bucket_count = tpi.hash_bucket_count;
-  if (1 <= stride && stride <= 8 && bucket_count > 0 && data.str != 0){
+  if (1 <= stride && stride <= 8 && bucket_count > 0 && data.Ptr != 0){
     
     // allocate buckets
     PDB_TpiHashBlock** buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
     
     // extract "hash" array
-    uint8* hashes = data.str + tpi.hash_vals_off;
+    uint8* hashes = data.Ptr + tpi.hash_vals_off;
     uint8* hash_opl = hashes + tpi.hash_vals_size;
     
     // for each index in the array...
@@ -368,7 +368,7 @@ pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, Str
       // deleted_bit_array: uint32[deleted_bit_array_count] . 1 bit per slot, "is deleted"
       // (uint32, uint32)[pair_count] . array of name_index/type_index pairs
       //
-      uint8* adjs = data.str + tpi.hash_adj_off;
+      uint8* adjs = data.Ptr + tpi.hash_adj_off;
       uint8* adjs_opl = adjs + tpi.hash_adj_size;
       uint8* adjs_cursor = adjs;
       uint32 pair_count = *(uint32 *)adjs_cursor;
@@ -388,8 +388,8 @@ pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, Str
       {
         uint32 name_off = ((uint32 *)adjs_cursor)[0];
         CV_TypeId type_id = ((CV_TypeId *)adjs_cursor)[1];
-        StringView string = pdb_strtbl_string_from_off(strtbl, name_off);
-        uint32 hash = pdb_hash_v1(string);
+        StringView str = pdb_strtbl_string_from_off(strtbl, name_off);
+        uint32 hash = pdb_hash_v1(str);
         uint32 bucket_idx = ((bucket_mask != 0) ? hash&bucket_mask : hash%bucket_count);
         PDB_TpiHashBlock* prev_block = 0;
         for(PDB_TpiHashBlock* block = buckets[bucket_idx];
@@ -440,7 +440,7 @@ pdb_gsi_from_data(Arena* arena, StringView data){
   // get header
   PDB_GsiHeader* header = 0;
   if (sizeof(*header) <= data.size){
-    header = (PDB_GsiHeader*)data.str;
+    header = (PDB_GsiHeader*)data.Ptr;
   }
   
   PDB_GsiParsed* result = 0;
@@ -464,8 +464,8 @@ pdb_gsi_from_data(Arena* arena, StringView data){
     uint8* bitmasks = 0;
     uint8* packed_offsets = 0;
     if (bitmask_off + bitmask_byte_size <= data.size){
-      bitmasks = (data.str + bitmask_off);
-      packed_offsets = (data.str + offsets_off);
+      bitmasks = (data.Ptr + bitmask_off);
+      packed_offsets = (data.Ptr + offsets_off);
     }
     uint32 packed_offset_count = (data.size - offsets_off)/4;
     
@@ -509,7 +509,7 @@ pdb_gsi_from_data(Arena* arena, StringView data){
       result = push_array(arena, PDB_GsiParsed, 1);
       
       // hash records
-      PDB_GsiHashRecord* hash_records = (PDB_GsiHashRecord*)(data.str + hash_record_array_off);
+      PDB_GsiHashRecord* hash_records = (PDB_GsiHashRecord*)(data.Ptr + hash_record_array_off);
       uint32 hash_record_count = header.hash_record_arr_size/sizeof(PDB_GsiHashRecord);
       
       // * We unpack hash records into the the table by scanning backwards through the
@@ -562,11 +562,11 @@ pdb_gsi_from_data(Arena* arena, StringView data){
 }
 
 uint64
-pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringView string)
+pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringView str)
 {
   uint64 result = max_U64;
 
-  uint32           hash       = pdb_hash_v1(string);
+  uint32           hash       = pdb_hash_v1(str);
   uint32           bucket_idx = hash % ArrayCount(gsi.buckets);
   PDB_GsiBucket bucket     = gsi.buckets[bucket_idx];
 
@@ -575,7 +575,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringVie
     uint32 off = bucket.offs[i];
     if(off + sizeof(CV_RecHeader) <= symbol_data.size)
     {
-      CV_RecHeader* sym_header = (CV_RecHeader *)(symbol_data.str + off);
+      CV_RecHeader* sym_header = (CV_RecHeader *)(symbol_data.Ptr + off);
 
       if(sym_header.size >= sizeof(sym_header.kind))
       {
@@ -583,14 +583,14 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, StringView symbol_data, StringVie
         uint8*  sym_opl = (uint8*)sym_header;
         if(opl_off <= symbol_data.size)
         {
-          sym_opl = symbol_data.str + opl_off;
+          sym_opl = symbol_data.Ptr + opl_off;
         }
         
         Rng1U64 raw_symbol_range = rng_1u64(off + sizeof(*sym_header), off + (sym_header.size - sizeof(sym_header.kind)));
         StringView raw_symbol       = str8_substr(symbol_data, raw_symbol_range);
         StringView sym_name         = cv_name_from_symbol(sym_header.kind, raw_symbol);
 
-        if(str8_match(sym_name, string, 0))
+        if(str8_match(sym_name, str, 0))
         {
           result = off;
           goto exit;
@@ -607,7 +607,7 @@ COFF_SectionHeaderArray
 pdb_coff_section_array_from_data(Arena* arena, StringView data){
   COFF_SectionHeaderArray result = {0};
   result.count = data.size/sizeof(COFF_SectionHeader);
-  result.v = (COFF_SectionHeader*)data.str;
+  result.v = (COFF_SectionHeader*)data.Ptr;
   return(result);
 }
 
@@ -620,14 +620,14 @@ pdb_comp_unit_array_from_data(Arena* arena, StringView data){
   uint64 cursor = 0;
   for (;cursor + sizeof(PDB_DbiCompUnitHeader) <= data.size;){
     // get header
-    PDB_DbiCompUnitHeader* header = (PDB_DbiCompUnitHeader*)(data.str + cursor);
+    PDB_DbiCompUnitHeader* header = (PDB_DbiCompUnitHeader*)(data.Ptr + cursor);
     
     // get names
     uint64 name_off = cursor + sizeof(*header);
-    StringView name = str8_cstring_capped((char *)(data.str + name_off), (char *)(data.str + data.size));
+    StringView name = str8_cstring_capped((char *)(data.Ptr + name_off), (char *)(data.Ptr + data.size));
     
     uint64 name2_off = name_off + name.size + 1;
-    StringView name2 = str8_cstring_capped((char *)(data.str + name2_off), (char *)(data.str + data.size));
+    StringView name2 = str8_cstring_capped((char *)(data.Ptr + name2_off), (char *)(data.Ptr + data.size));
     
     uint64 after_name2_off = name2_off + name2.size + 1;
     
@@ -693,7 +693,7 @@ pdb_comp_unit_contribution_array_from_data(Arena* arena, StringView data,
   PDB_CompUnitContribution* contributions = 0;
   uint64 count = 0;
   if (data.size >= sizeof(PDB_DbiSectionContribVersion)){
-    PDB_DbiSectionContribVersion* version = (PDB_DbiSectionContribVersion*)data.str;
+    PDB_DbiSectionContribVersion* version = (PDB_DbiSectionContribVersion*)data.Ptr;
     
     // determine array layout from version
     uint32 item_size = 0;
@@ -728,7 +728,7 @@ pdb_comp_unit_contribution_array_from_data(Arena* arena, StringView data,
     PDB_CompUnitContribution* contribution_ptr = contributions;
     uint64 cursor = array_off;
     for (; cursor + item_size <= data.size; cursor += item_size){
-      PDB_DbiSectionContrib40* sc = (PDB_DbiSectionContrib40*)(data.str + cursor);
+      PDB_DbiSectionContrib40* sc = (PDB_DbiSectionContrib40*)(data.Ptr + cursor);
       if (sc.size > 0 && 1 <= sc.sec && sc.sec <= section_count){
         uint64 voff = section_headers[sc.sec - 1].voff + sc.sec_off;
         
@@ -758,7 +758,7 @@ pdb_data_from_dbi_range(PDB_DbiParsed* dbi, PDB_DbiRange range){
   if (range < PDB_DbiRange_COUNT){
     uint64 first = dbi.range_off[range];
     uint64 opl   = dbi.range_off[range + 1];
-    result.str = dbi.data.str + first;
+    result.Ptr = dbi.data.Ptr + first;
     result.size = opl - first;
   }
   return(result);
@@ -775,7 +775,7 @@ pdb_data_from_unit_range(MSF_Parsed* msf, PDB_CompUnit* unit, PDB_DbiCompUnitRan
     uint64 opl = ClampTop(opl_raw, full_stream_data.size);
     uint64 first = ClampTop(first_raw, opl);
     
-    result.str = full_stream_data.str + first;
+    result.Ptr = full_stream_data.Ptr + first;
     result.size = opl - first;
   }
   return(result);
@@ -787,8 +787,8 @@ pdb_data_from_unit_range(MSF_Parsed* msf, PDB_CompUnit* unit, PDB_DbiCompUnitRan
 StringView
 pdb_leaf_data_from_tpi(PDB_TpiParsed* tpi){
   StringView data = tpi.data;
-  uint8* first = data.str + tpi.leaf_first;
-  uint8* opl   = data.str + tpi.leaf_opl;
+  uint8* first = data.Ptr + tpi.leaf_first;
+  uint8* opl   = data.Ptr + tpi.leaf_opl;
   StringView result = str8_range(first, opl);
   return(result);
 }
@@ -827,7 +827,7 @@ pdb_tpi_itypes_from_name(Arena* arena, PDB_TpiHashParsed* tpi_hash, CV_LeafParse
       if (itype_first <= itype && itype < itype_opl){
         CV_RecRange* range = &leaf.leaf_ranges.ranges[itype - leaf.itype_first];
         if (range.off + range.hdr.size <= data.size){
-          uint8* first = data.str + range.off + 2;
+          uint8* first = data.Ptr + range.off + 2;
           uint64 cap = range.hdr.size - 2;
           
           switch (range.hdr.kind){
@@ -1007,8 +1007,8 @@ pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, uint32 off){
   uint32 strblock_max = strtbl.strblock_max;
   uint32 full_off_raw = strtbl.strblock_min + off;
   uint32 full_off = ClampTop(full_off_raw, strblock_max);
-  StringView result = str8_cstring_capped((char*)(strtbl.data.str + full_off),
-                                       (char*)(strtbl.data.str + strblock_max));
+  StringView result = str8_cstring_capped((char*)(strtbl.data.Ptr + full_off),
+                                       (char*)(strtbl.data.Ptr + strblock_max));
   return(result);
 }
 
@@ -1016,18 +1016,18 @@ StringView
 pdb_strtbl_string_from_index(PDB_Strtbl* strtbl, PDB_StringIndex idx){
   StringView result = {0};
   if (idx < strtbl.bucket_count){
-    uint32 off = *(uint32*)(strtbl.data.str + strtbl.buckets_min + idx*4);
+    uint32 off = *(uint32*)(strtbl.data.Ptr + strtbl.buckets_min + idx*4);
     result = pdb_strtbl_string_from_off(strtbl, off);
   }
   return(result);
 }
 
 uint32
-pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, StringView string)
+pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, StringView str)
 {
   uint32 result = max_U32;
 
-  uint32 hash            = pdb_hash_v1(string);
+  uint32 hash            = pdb_hash_v1(str);
   uint32 best_bucket_idx = hash % strtbl.bucket_count;
   uint32 bucket_idx      = best_bucket_idx;
 
@@ -1040,7 +1040,7 @@ pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, StringView string)
       break;
     }
 
-    if(str8_match(test_string, string, 0))
+    if(str8_match(test_string, str, 0))
     {
       result = bucket_idx;
       break;

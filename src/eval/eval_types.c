@@ -558,8 +558,8 @@ e_hash_from_type_key(E_TypeKey key)
         str8_serial_push_struct(scratch.arena, &strings, &member_type_hash);
       }
     }
-    StringView string = str8_serial_end(scratch.arena, &strings);
-    hash = e_hash_from_string(5381, string);
+    StringView str = str8_serial_end(scratch.arena, &strings);
+    hash = e_hash_from_string(5381, str);
     scratch_end(scratch);
   }
   return hash;
@@ -664,7 +664,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           {
             // rjf: unpack name
             StringView name = {0};
-            name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
+            name.Ptr = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack UDT info
             RDI_UDT* udt = rdi_element_from_name_idx(rdi, UDTs, rdi_type.user_defined.udt_idx);
@@ -688,7 +688,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
                   E_Member* dst = &members[member_idx-udt.member_first];
                   dst.kind     = e_member_kind_from_rdi(src.kind);
                   dst.type_key = e_type_key_ext(member_type_kind, src.type_idx, rdi_idx);
-                  dst.name.str = rdi_string_from_idx(rdi, src.name_string_idx, &dst.name.size);
+                  dst.name.Ptr = rdi_string_from_idx(rdi, src.name_string_idx, &dst.name.size);
                   dst.off      = (uint64)src.off;
                 }
               }
@@ -708,7 +708,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           {
             // rjf: unpack name
             StringView name = {0};
-            name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
+            name.Ptr = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
             E_TypeKey direct_type_key = {};
@@ -733,7 +733,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
               {
                 RDI_EnumMember* src = rdi_element_from_name_idx(rdi, EnumMembers, member_idx);
                 E_EnumVal* dst = &enum_vals[member_idx-udt.member_first];
-                dst.name.str = rdi_string_from_idx(rdi, src.name_string_idx, &dst.name.size);
+                dst.name.Ptr = rdi_string_from_idx(rdi, src.name_string_idx, &dst.name.size);
                 dst.val      = src.val;
               }
             }
@@ -895,7 +895,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           {
             // rjf: unpack name
             StringView name = {0};
-            name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
+            name.Ptr = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
             E_TypeKey direct_type_key = {};
@@ -944,7 +944,7 @@ e_type_from_key(Arena* arena, E_TypeKey key)
           {
             // rjf: unpack name
             StringView name = {0};
-            name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
+            name.Ptr = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
             
             // rjf: produce
             type = push_array(arena, E_Type, 1);

@@ -81,12 +81,12 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
       case RD_CmdKind_FindTextForward:
       {
         arena_clear(cv.find_text_arena);
-        cv.find_text_fwd = push_str8_copy(cv.find_text_arena, cmd.regs.string);
+        cv.find_text_fwd = push_str8_copy(cv.find_text_arena, cmd.regs.str);
       }break;
       case RD_CmdKind_FindTextBackward:
       {
         arena_clear(cv.find_text_arena);
-        cv.find_text_bwd = push_str8_copy(cv.find_text_arena, cmd.regs.string);
+        cv.find_text_bwd = push_str8_copy(cv.find_text_arena, cmd.regs.str);
       }break;
       case RD_CmdKind_ToggleWatchExpressionAtMouse:
       {
@@ -218,7 +218,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
               override_n != 0;
               override_n = override_n.next)
           {
-            if(path_match_normalized(loc.string, override_n.string))
+            if(path_match_normalized(loc.str, override_n.str))
             {
               uint64 slice_line_idx = (loc.text_point.line-visible_line_num_range.min);
               rd_entity_list_push(scratch.arena, &code_slice_params.line_bps[slice_line_idx], bp);
@@ -254,7 +254,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
                 override_n != 0;
                 override_n = override_n.next)
             {
-              if(path_match_normalized(n.v.file_path, override_n.string))
+              if(path_match_normalized(n.v.file_path, override_n.str))
               {
                 uint64 slice_line_idx = n.v.pt.line-visible_line_num_range.min;
                 ctrl_entity_list_push(scratch.arena, &code_slice_params.line_ips[slice_line_idx], thread);
@@ -280,7 +280,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
               override_n != 0;
               override_n = override_n.next)
           {
-            if(path_match_normalized(loc.string, override_n.string))
+            if(path_match_normalized(loc.str, override_n.str))
             {
               uint64 slice_line_idx = (loc.text_point.line-visible_line_num_range.min);
               rd_entity_list_push(scratch.arena, &code_slice_params.line_pins[slice_line_idx], wp);
@@ -439,7 +439,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
           search_start = rd_regs().cursor.column;
         }
         
-        // rjf: search string
+        // rjf: search str
         uint64 needle_pos = str8_find_needle(line_string, search_start, cv.find_text_fwd, StringMatchFlag_CaseInsensitive);
         if(needle_pos < line_string.size)
         {
@@ -486,7 +486,7 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
           line_string = str8_prefix(line_string, rd_regs().cursor.column-1);
         }
         
-        // rjf: search string
+        // rjf: search str
         uint64 next_needle_pos = line_string.size;
         for(uint64 needle_pos = 0; needle_pos < line_string.size;)
         {
@@ -594,14 +594,14 @@ rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags fla
     if(ui_pressed(sig.base) && sig.base.event_flags & OS_Modifier_Ctrl)
     {
       ui_kill_action();
-      rd_cmd(RD_CmdKind_GoToName, .string = txt_string_from_info_data_txt_rng(text_info, text_data, sig.mouse_expr_rng));
+      rd_cmd(RD_CmdKind_GoToName, .str = txt_string_from_info_data_txt_rng(text_info, text_data, sig.mouse_expr_rng));
     }
     
     //- rjf: watch expr at mouse
     if(cv.watch_expr_at_mouse)
     {
       cv.watch_expr_at_mouse = 0;
-      rd_cmd(RD_CmdKind_ToggleWatchExpression, .string = txt_string_from_info_data_txt_rng(text_info, text_data, sig.mouse_expr_rng));
+      rd_cmd(RD_CmdKind_ToggleWatchExpression, .str = txt_string_from_info_data_txt_rng(text_info, text_data, sig.mouse_expr_rng));
     }
     
     //- rjf: selected text on single line, no query? . set search text
@@ -962,7 +962,7 @@ RD_WatchViewRowKind
 rd_watch_view_row_kind_from_flags_row_info(RD_WatchViewFlags flags, EV_Row* row, RD_WatchViewRowInfo* info)
 {
   Temp scratch = scratch_begin(0, 0);
-  RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row.block.expand_view_rule_info.string);
+  RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row.block.expand_view_rule_info.str);
   MD_Node* ui_view_rule_params_root = row.block.expand_view_rule_params;
   if(ui_view_rule_info.ui == 0 || !(ui_view_rule_info.flags & RD_ViewRuleInfoFlag_CanUseInWatchTable))
   {
@@ -1008,7 +1008,7 @@ rd_expr_from_watch_view_row_column(Arena* arena, EV_View* ev_view, EV_Row* row, 
       String8List accesses = str8_split(scratch.arena, access_string, (uint8 *)".", 1, 0);
       for(String8Node* n = accesses.first; n != 0; n = n.next)
       {
-        expr = e_expr_ref_member_access(arena, expr, n.string);
+        expr = e_expr_ref_member_access(arena, expr, n.str);
       }
       scratch_end(scratch);
     }break;
@@ -1031,13 +1031,13 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
   {
     default:{}break;
     case RD_WatchViewColumnKind_Expr:
-    ProfScope("expr cell string")
+    ProfScope("expr cell str")
     {
       result = ev_expr_string_from_row(arena, row, string_flags);
     }break;
     case RD_WatchViewColumnKind_Value:
     case RD_WatchViewColumnKind_Member:
-    ProfScope("value/member cell string")
+    ProfScope("value/member cell str")
     {
       EV_ViewRuleList* view_rules = row.view_rules;
       if(col.view_rule_size != 0)
@@ -1049,7 +1049,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
       result = rd_value_string_from_eval(arena, string_flags, default_radix, font, font_size, max_size_px, eval, row.member, view_rules);
     }break;
     case RD_WatchViewColumnKind_Type:
-    ProfScope("type cell string")
+    ProfScope("type cell str")
     {
       E_IRTreeAndType irtree = e_irtree_and_type_from_expr(arena, row_col_expr);
       E_TypeKey type_key = irtree.type_key;
@@ -1057,22 +1057,22 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
       result = str8_skip_chop_whitespace(result);
     }break;
     case RD_WatchViewColumnKind_ViewRule:
-    ProfScope("view rule cell string")
+    ProfScope("view rule cell str")
     {
       result = ev_view_rule_from_key(ev, row.key);
     }break;
     case RD_WatchViewColumnKind_Module:
-    ProfScope("module cell string")
+    ProfScope("module cell str")
     {
       E_Eval eval = e_eval_from_expr(arena, row_col_expr);
       E_Eval value_eval = e_value_eval_from_eval(eval);
       CTRL_Entity* entity = rd_ctrl_entity_from_eval_space(eval.space);
       CTRL_Entity* process = ctrl_process_from_entity(entity);
       CTRL_Entity* module = ctrl_module_from_process_vaddr(process, value_eval.value.u64);
-      result = push_str8_copy(arena, str8_skip_last_slash(module.string));
+      result = push_str8_copy(arena, str8_skip_last_slash(module.str));
     }break;
     case RD_WatchViewColumnKind_CallStackFrame:
-    ProfScope("call stack frame cell string")
+    ProfScope("call stack frame cell str")
     {
       Temp scratch = scratch_begin(&arena, 1);
       DI_Scope* di_scope = di_scope_open();
@@ -1126,7 +1126,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
           String8List parts = {0};
           E_TypeKey type = e_type_key_ext(E_TypeKind_Function, inline_site.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
           StringView name = {0};
-          name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
+          name.Ptr = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
           String8List type_lhs_parts = {0};
           e_type_lhs_string_from_key(scratch.arena, type, &type_lhs_parts, 0, 0);
           String8List type_rhs_parts = {0};
@@ -1142,7 +1142,7 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
           String8List parts = {0};
           E_TypeKey type = e_type_key_ext(E_TypeKind_Function, procedure.type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
           StringView name = {0};
-          name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
+          name.Ptr = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
           String8List type_lhs_parts = {0};
           e_type_lhs_string_from_key(scratch.arena, type, &type_lhs_parts, 0, 0);
           String8List type_rhs_parts = {0};
@@ -1167,19 +1167,19 @@ rd_string_from_eval_viz_row_column(Arena* arena, EV_View* ev, EV_Row* row, RD_Wa
   }
   if(col.dequote_string &&
      result.size >= 2 &&
-     result.str[0] == '"' &&
-     result.str[result.size-1] == '"')
+     result[0] == '"' &&
+     result[result.size-1] == '"')
   {
     result = str8_skip(str8_chop(result, 1), 1);
     result = raw_from_escaped_str8(arena, result);
   }
   if(col.rangify_braces && result.size >= 2 &&
-     result.str[0] == '{' &&
-     result.str[result.size-1] == '}')
+     result[0] == '{' &&
+     result[result.size-1] == '}')
   {
     result = push_str8_copy(arena, result);
-    result.str[0] = '[';
-    result.str[result.size-1] = ')';
+    result[0] = '[';
+    result[result.size-1] = ')';
   }
   ProfEnd();
   return result;
@@ -1223,12 +1223,12 @@ rd_watch_view_column_alloc_(RD_WatchViewState* wv, RD_WatchViewColumnKind kind, 
   wv.column_count += 1;
   col.kind = kind;
   col.pct = pct;
-  col.string_size = Min(sizeof(col.string_buffer), params.string.size);
-  MemoryCopy(col.string_buffer, params.string.str, col.string_size);
+  col.string_size = Min(sizeof(col.string_buffer), params.str.Length);
+  MemoryCopy(col.string_buffer, params.str.Ptr, col.string_size);
   col.display_string_size = Min(sizeof(col.display_string_buffer), params.display_string.size);
-  MemoryCopy(col.display_string_buffer, params.display_string.str, col.display_string_size);
+  MemoryCopy(col.display_string_buffer, params.display_string.Ptr, col.display_string_size);
   col.view_rule_size = Min(sizeof(col.view_rule_buffer), params.view_rule.size);
-  MemoryCopy(col.view_rule_buffer, params.view_rule.str, col.view_rule_size);
+  MemoryCopy(col.view_rule_buffer, params.view_rule.Ptr, col.view_rule_size);
   col.is_non_code = params.is_non_code;
   col.dequote_string = params.dequote_string;
   col.rangify_braces = params.rangify_braces;
@@ -1308,7 +1308,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
     MD_Node* hook_rule_root = &md_nil_node;
     for(EV_ViewRuleNode* n = top_level_view_rules.first; n != 0; n = n.next)
     {
-      RD_ViewRuleInfo* rule_info = rd_view_rule_info_from_string(n.v.root.string);
+      RD_ViewRuleInfo* rule_info = rd_view_rule_info_from_string(n.v.root.str);
       if(rule_info != &rd_nil_view_rule_info && rule_info.ui != 0)
       {
         hook_rule_info = rule_info;
@@ -1324,7 +1324,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
   }
   
   //////////////////////////////
-  //- rjf: determine autocompletion string
+  //- rjf: determine autocompletion str
   //
   StringView autocomplete_hint_string = {0};
   if(!is_top_level_hook)
@@ -1333,7 +1333,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
     {
       if(evt.kind == UI_EventKind_AutocompleteHint)
       {
-        autocomplete_hint_string = evt.string;
+        autocomplete_hint_string = evt.str;
         break;
       }
     }
@@ -1579,20 +1579,20 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
             for(int64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
               RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
-              StringView string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
-              string.size = Min(string.size, sizeof(ewv.dummy_text_edit_state.input_buffer));
+              StringView str = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
+              str.Length = Min(str.Length, sizeof(ewv.dummy_text_edit_state.input_buffer));
               RD_WatchViewPoint pt = {x, row.block.key, row.key};
               uint64 hash = ev_hash_from_key(pt.key);
               uint64 slot_idx = hash%ewv.text_edit_state_slots_count;
               RD_WatchViewTextEditState* edit_state = push_array(ewv.text_edit_arena, RD_WatchViewTextEditState, 1);
               SLLStackPush_N(ewv.text_edit_state_slots[slot_idx], edit_state, pt_hash_next);
               edit_state.pt = pt;
-              edit_state.cursor = txt_pt(1, string.size+1);
+              edit_state.cursor = txt_pt(1, str.Length+1);
               edit_state.mark = txt_pt(1, 1);
-              edit_state.input_size = string.size;
-              MemoryCopy(edit_state.input_buffer, string.str, string.size);
-              edit_state.initial_size = string.size;
-              MemoryCopy(edit_state.initial_buffer, string.str, string.size);
+              edit_state.input_size = str.Length;
+              MemoryCopy(edit_state.input_buffer, str.Ptr, str.Length);
+              edit_state.initial_size = str.Length;
+              MemoryCopy(edit_state.initial_buffer, str.Ptr, str.Length);
             }
           }
         }
@@ -1686,8 +1686,8 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
             {
               RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, v2s64(x, y));
               RD_WatchViewTextEditState* edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
-              StringView string = StringView(edit_state.input_buffer, edit_state.input_size);
-              UI_TxtOp op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state.cursor, edit_state.mark);
+              StringView str = StringView(edit_state.input_buffer, edit_state.input_size);
+              UI_TxtOp op = ui_single_line_txt_op_from_event(scratch.arena, evt, str, edit_state.cursor, edit_state.mark);
               
               // rjf: copy
               if(op.flags & UI_TxtOpFlag_Copy && selection_tbl.min.x == selection_tbl.max.x && selection_tbl.min.y == selection_tbl.max.y)
@@ -1699,38 +1699,38 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
               if(autocomplete_hint_string.size != 0)
               {
                 take_autocomplete = 1;
-                StringView word_query = rd_autocomp_query_word_from_input_string_off(string, edit_state.cursor.column-1);
-                uint64 word_off = (uint64)(word_query.str - string.str);
-                StringView new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
+                StringView word_query = rd_autocomp_query_word_from_input_string_off(str, edit_state.cursor.column-1);
+                uint64 word_off = (uint64)(word_query.Ptr - str.Ptr);
+                StringView new_string = ui_push_string_replace_range(scratch.arena, str, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
                 new_string.size = Min(sizeof(edit_state.input_buffer), new_string.size);
-                MemoryCopy(edit_state.input_buffer, new_string.str, new_string.size);
+                MemoryCopy(edit_state.input_buffer, new_string.Ptr, new_string.size);
                 edit_state.input_size = new_string.size;
                 edit_state.cursor = edit_state.mark = txt_pt(1, word_off+1+autocomplete_hint_string.size);
-                string = StringView(edit_state.input_buffer, edit_state.input_size);
-                op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state.cursor, edit_state.mark);
+                str = StringView(edit_state.input_buffer, edit_state.input_size);
+                op = ui_single_line_txt_op_from_event(scratch.arena, evt, str, edit_state.cursor, edit_state.mark);
               }
               
-              // rjf: cancel? . revert to initial string
+              // rjf: cancel? . revert to initial str
               if(editing_complete && evt.slot == UI_EventActionSlot_Cancel)
               {
-                string = StringView(edit_state.initial_buffer, edit_state.initial_size);
+                str = StringView(edit_state.initial_buffer, edit_state.initial_size);
               }
               
-              // rjf: obtain edited string
-              StringView new_string = string;
+              // rjf: obtain edited str
+              StringView new_string = str;
               if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
               {
-                new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(op.range.min.column, op.range.max.column), op.replace);
+                new_string = ui_push_string_replace_range(scratch.arena, str, r1s64(op.range.min.column, op.range.max.column), op.replace);
               }
               
               // rjf: commit to edit state
               new_string.size = Min(new_string.size, sizeof(edit_state.input_buffer));
-              MemoryCopy(edit_state.input_buffer, new_string.str, new_string.size);
+              MemoryCopy(edit_state.input_buffer, new_string.Ptr, new_string.size);
               edit_state.input_size = new_string.size;
               edit_state.cursor = op.cursor;
               edit_state.mark = op.mark;
               
-              // rjf: commit edited cell string
+              // rjf: commit edited cell str
               Vec2S64 tbl = v2s64(x, y);
               RD_WatchViewColumn* col = rd_watch_view_column_from_x(ewv, x);
               {
@@ -1861,8 +1861,8 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
             str8_list_push(scratch.arena, &strs, ("\n"));
           }
         }
-        StringView string = str8_list_join(scratch.arena, &strs, 0);
-        os_set_clipboard_text(string);
+        StringView str = str8_list_join(scratch.arena, &strs, 0);
+        os_set_clipboard_text(str);
       }
       
       //////////////////////////
@@ -2273,7 +2273,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
           E_Type* row_type = e_type_from_key(scratch.arena, row_eval.type_key);
           B32 row_is_expandable = ev_row_is_expandable(row);
           B32 next_row_expanded = row_expanded;
-          RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row.block.expand_view_rule_info.string);
+          RD_ViewRuleInfo* ui_view_rule_info = rd_view_rule_info_from_string(row.block.expand_view_rule_info.str);
           MD_Node* ui_view_rule_params_root = row.block.expand_view_rule_params;
           if(ui_view_rule_info.ui == 0 || !(ui_view_rule_info.flags & RD_ViewRuleInfoFlag_CanUseInWatchTable))
           {
@@ -2495,7 +2495,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                 if(ui_clicked(sig))
                 {
                   rd_cmd(RD_CmdKind_OpenTab,
-                         .string      = e_string_from_expr(scratch.arena, row.expr),
+                         .str      = e_string_from_expr(scratch.arena, row.expr),
                          .params_tree = ui_view_rule_params_root);
                 }
               }
@@ -2583,32 +2583,32 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                 UI_Palette(palette)
               {
                 ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
-                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string)))
+                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddTarget].str)))
                 {
-                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string);
+                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddTarget].str);
                 }
               }
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_Breakpoint)
                 UI_Palette(palette)
               {
                 ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind_On : UI_FocusKind_Off);
-                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].string)))
+                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].str)))
                 {
-                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].string);
+                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].str);
                 }
                 ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 2 ? UI_FocusKind_On : UI_FocusKind_Off);
-                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].string)))
+                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].str)))
                 {
-                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].string);
+                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].str);
                 }
               }
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_WatchPin)
                 UI_Palette(palette)
               {
                 ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind_On : UI_FocusKind_Off);
-                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].string)))
+                if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].str)))
                 {
-                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].string);
+                  rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].str);
                 }
               }
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_FilePathMap)
@@ -2731,7 +2731,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                       {
                         RD_Entity* loc = rd_entity_child_from_kind(entity, RD_EntityKind_Location);
                         rd_cmd(RD_CmdKind_FindCodeLocation,
-                               .file_path = (loc.flags & RD_EntityFlag_HasTextPoint) ? loc.string : StringView(),
+                               .file_path = (loc.flags & RD_EntityFlag_HasTextPoint) ? loc.str : StringView(),
                                .cursor = loc.text_point,
                                .vaddr = loc.vaddr);
                       }
@@ -2936,10 +2936,10 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                     value_cell:;
                     {
                       E_MsgList msgs = cell_eval.msgs;
-                      if(row_depth == 0 && row.string.size != 0)
+                      if(row_depth == 0 && row.str.Length != 0)
                       {
-                        E_TokenArray tokens = e_token_array_from_text(scratch.arena, row.string);
-                        E_Parse parse = e_parse_expr_from_text_tokens(scratch.arena, row.string, &tokens);
+                        E_TokenArray tokens = e_token_array_from_text(scratch.arena, row.str);
+                        E_Parse parse = e_parse_expr_from_text_tokens(scratch.arena, row.str, &tokens);
                         e_msg_list_concat_in_place(&parse.msgs, &msgs);
                         msgs = parse.msgs;
                       }
@@ -2974,7 +2974,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                       for(EV_ViewRuleNode* n = row.view_rules.first; n != 0; n = n.next)
                       {
                         EV_ViewRule* vr = &n.v;
-                        RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr.root.string);
+                        RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr.root.str);
                         if(info.flags & RD_ViewRuleInfoFlag_CanFillValueCell && info.ui != 0)
                         {
                           cell_ui_hook = info.ui;
@@ -2997,7 +2997,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                         String8List strings = {0};
                         for(EV_ViewRuleNode* n = auto_view_rules.first; n != 0; n = n.next)
                         {
-                          str8_list_push(scratch.arena, &strings, n.v.root.string);
+                          str8_list_push(scratch.arena, &strings, n.v.root.str);
                         }
                         cell_ghost_text = str8_list_join(scratch.arena, &strings, &(StringJoin){.sep = (", ")});
                       }
@@ -3024,7 +3024,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                     for(EV_ViewRuleNode* n = view_rules.first; n != 0; n = n.next)
                     {
                       EV_ViewRule* vr = &n.v;
-                      RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr.root.string);
+                      RD_ViewRuleInfo* info = rd_view_rule_info_from_string(vr.root.str);
                       if(info.flags & RD_ViewRuleInfoFlag_CanFillValueCell && info.ui != 0)
                       {
                         cell_ui_hook = info.ui;
@@ -3225,7 +3225,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                       }
                     }
                     
-                    // rjf: hovering with inheritance string . show tooltip
+                    // rjf: hovering with inheritance str . show tooltip
                     if(ui_hovering(sig) && cell_inheritance_string.size != 0) UI_Tooltip
                     {
                       UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(1, 1)) UI_TextPadding(0)
@@ -3259,19 +3259,19 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                   if(DEV_eval_compiler_tooltips && x == 0 && ui_hovering(sig)) UI_Tooltip RD_Font(RD_FontSlot_Code)
                   {
                     static char* spaces = "                                                                        ";
-                    StringView         string      = ev_expr_string_from_row(scratch.arena, row, 0);
-                    E_TokenArray    tokens      = e_token_array_from_text(scratch.arena, string);
-                    E_Parse         parse       = e_parse_expr_from_text_tokens(scratch.arena, string, &tokens);
+                    StringView         str      = ev_expr_string_from_row(scratch.arena, row, 0);
+                    E_TokenArray    tokens      = e_token_array_from_text(scratch.arena, str);
+                    E_Parse         parse       = e_parse_expr_from_text_tokens(scratch.arena, str, &tokens);
                     E_IRTreeAndType irtree      = e_irtree_and_type_from_expr(scratch.arena, parse.expr);
                     E_OpList        oplist      = e_oplist_from_irtree(scratch.arena, irtree.root);
                     StringView         bytecode    = e_bytecode_from_oplist(scratch.arena, &oplist);
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Text:");
-                    ui_label(string);
+                    ui_label(str);
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Tokens:");
                     for(uint64 idx = 0; idx < tokens.count; idx += 1)
                     {
-                      ui_labelf("%S: '%S'", e_token_kind_strings[tokens.v[idx].kind], str8_substr(string, tokens.v[idx].range));
+                      ui_labelf("%S: '%S'", e_token_kind_strings[tokens.v[idx].kind], str8_substr(str, tokens.v[idx].range));
                     }
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Expression:");
@@ -3293,9 +3293,9 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                         {
                           default:
                           {
-                            if(t.expr.string.size != 0)
+                            if(t.expr.str.Length != 0)
                             {
-                              ext = push_str8f(scratch.arena, "'%S'", t.expr.string);
+                              ext = push_str8f(scratch.arena, "'%S'", t.expr.str);
                             }
                             else if(t.expr.value.u32 != 0)
                             {
@@ -3393,7 +3393,7 @@ rd_watch_view_build(RD_WatchViewState* ewv, RD_WatchViewFlags flags, StringView 
                     {
                       for(uint64 idx = 0; idx < bytecode.size; idx += 1)
                       {
-                        ui_labelf("  0x%x ('%c')", (uint32)bytecode.str[idx], (char)bytecode.str[idx]);
+                        ui_labelf("  0x%x ('%c')", (uint32)bytecode[idx], (char)bytecode[idx]);
                       }
                     }
                   }
@@ -3521,7 +3521,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
             RD_Palette(RD_PaletteCode_NeutralPopButton)
             if(ui_clicked(rd_icon_buttonf(RD_IconKind_Add, 0, "Add Target")))
           {
-            rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string);
+            rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddTarget].str);
           }
         }break;
         
@@ -3529,7 +3529,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         case 1:
         {
           RD_Entity* target = rd_first_entity_from_list(&targets);
-          StringView target_full_path = target.string;
+          StringView target_full_path = target.str;
           StringView target_name = str8_skip_last_slash(target_full_path);
           UI_PrefHeight(ui_em(3.75f, 1.f))
             UI_Row
@@ -3578,7 +3578,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
       RD_Palette(RD_PaletteCode_Floating)
     {
       ui_labelf("use");
-      UI_TextAlignment(UI_TextAlign_Center) rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
+      UI_TextAlignment(UI_TextAlign_Center) rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].str);
       ui_labelf("to open command menu");
     }
   }
@@ -3641,7 +3641,7 @@ rd_cmd_lister_item_list_from_needle(Arena* arena, StringView needle)
          name_matches.needle_part_count == 0)
       {
         RD_CmdListerItemNode* node = push_array(arena, RD_CmdListerItemNode, 1);
-        node.item.cmd_name = info.string;
+        node.item.cmd_name = info.str;
         node.item.registrar_idx = (uint64)k;
         node.item.ordering_idx = (uint64)k;
         node.item.name_match_ranges = name_matches;
@@ -3737,7 +3737,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   RD_CmdsViewState* cv = rd_view_state(RD_CmdsViewState);
   
   //- rjf: build filtered array of commands
-  RD_CmdListerItemList cmd_list = rd_cmd_lister_item_list_from_needle(scratch.arena, string);
+  RD_CmdListerItemList cmd_list = rd_cmd_lister_item_list_from_needle(scratch.arena, str);
   RD_CmdListerItemArray cmd_array = rd_cmd_lister_item_array_from_list(scratch.arena, cmd_list);
   rd_cmd_lister_item_array_sort_by_strength__in_place(cmd_array);
   
@@ -3831,11 +3831,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
           float font_line_height = fnt_line_height_from_metrics(&font_metrics);
           StringView cmd_display_name = info.display_name;
           StringView cmd_desc = info.description;
-          UI_Box* name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info.string);
+          UI_Box* name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info.str);
           UI_Box* desc_box = &ui_nil_box;
           UI_PrefHeight(ui_em(1.8f, 1.f)) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
           {
-            desc_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##desc_%S", cmd_desc, info.string);
+            desc_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##desc_%S", cmd_desc, info.str);
           }
           ui_box_equip_fuzzy_match_ranges(name_box, &item.name_match_ranges);
           ui_box_equip_fuzzy_match_ranges(desc_box, &item.desc_match_ranges);
@@ -3933,29 +3933,29 @@ struct RD_PathQuery
 };
 
 RD_PathQuery
-rd_path_query_from_string(StringView string)
+rd_path_query_from_string(StringView str)
 {
   StringView dir_str_in_input = {0};
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    StringView substr1 = str8_substr(string, r1u64(i, i+1));
-    StringView substr2 = str8_substr(string, r1u64(i, i+2));
-    StringView substr3 = str8_substr(string, r1u64(i, i+3));
+    StringView substr1 = str8_substr(str, r1u64(i, i+1));
+    StringView substr2 = str8_substr(str, r1u64(i, i+2));
+    StringView substr3 = str8_substr(str, r1u64(i, i+3));
     if(str8_match(substr1, ("/"), StringMatchFlag_SlashInsensitive))
     {
-      dir_str_in_input = str8_substr(string, r1u64(i, string.size));
+      dir_str_in_input = str8_substr(str, r1u64(i, str.Length));
     }
     else if(i != 0 && str8_match(substr2, (":/"), StringMatchFlag_SlashInsensitive))
     {
-      dir_str_in_input = str8_substr(string, r1u64(i-1, string.size));
+      dir_str_in_input = str8_substr(str, r1u64(i-1, str.Length));
     }
     else if(str8_match(substr2, ("./"), StringMatchFlag_SlashInsensitive))
     {
-      dir_str_in_input = str8_substr(string, r1u64(i, string.size));
+      dir_str_in_input = str8_substr(str, r1u64(i, str.Length));
     }
     else if(str8_match(substr3, ("../"), StringMatchFlag_SlashInsensitive))
     {
-      dir_str_in_input = str8_substr(string, r1u64(i, string.size));
+      dir_str_in_input = str8_substr(str, r1u64(i, str.Length));
     }
     if(dir_str_in_input.size != 0)
     {
@@ -3971,7 +3971,7 @@ rd_path_query_from_string(StringView string)
     uint64 one_past_last_slash = dir.size;
     for(uint64 i = 0; i < dir_str_in_input.size; i += 1)
     {
-      if(dir_str_in_input.str[i] == '/' || dir_str_in_input.str[i] == '\\')
+      if(dir_str_in_input[i] == '/' || dir_str_in_input[i] == '\\')
       {
         one_past_last_slash = i+1;
       }
@@ -3980,7 +3980,7 @@ rd_path_query_from_string(StringView string)
     search = str8_substr(dir_str_in_input, r1u64(one_past_last_slash, dir_str_in_input.size));
     path_query.path = dir;
     path_query.search = search;
-    path_query.prefix = str8_substr(string, r1u64(0, path_query.path.str - string.str));
+    path_query.prefix = str8_substr(str, r1u64(0, path_query.path.Ptr - str.Ptr));
   }
   return path_query;
 }
@@ -3988,7 +3988,7 @@ rd_path_query_from_string(StringView string)
 int
 rd_qsort_compare_file_info__filename(RD_FileInfo* a, RD_FileInfo* b)
 {
-  return strncmp((char *)a.filename.str, (char *)b.filename.str, Min(a.filename.size, b.filename.size));
+  return strncmp((char *)a.filename.Ptr, (char *)b.filename.Ptr, Min(a.filename.size, b.filename.size));
 }
 
 int
@@ -4045,9 +4045,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  StringView query = string;
+  StringView query = str;
   StringView query_normalized = path_normalized_from_string(scratch.arena, query);
-  B32 query_has_slash = (query.size != 0 && char_to_correct_slash(query.str[query.size-1]) == '/');
+  B32 query_has_slash = (query.size != 0 && char_to_correct_slash(query[query.size-1]) == '/');
   StringView query_normalized_with_opt_slash = push_str8f(scratch.arena, "%S%s", query_normalized, query_has_slash ? "/" : "");
   RD_PathQuery path_query = rd_path_query_from_string(query_normalized_with_opt_slash);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
@@ -4265,7 +4265,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       struct
       {
         RD_FileSortKind kind;
-        StringView string;
+        StringView str;
       }
       kinds[] =
       {
@@ -4280,7 +4280,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         {
           UI_Signal sig = ui_sort_header(sorting,
                                          fs.cached_files_sort_side == Side_Min,
-                                         kinds[idx].string);
+                                         kinds[idx].str);
           if(ui_clicked(sig))
           {
             if(fs.sort_kind != kinds[idx].kind)
@@ -4418,8 +4418,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         {
           DateTime time = date_time_from_dense_time(file.props.modified);
           DateTime time_local = os_local_time_from_universal(&time);
-          StringView string = push_date_time_string(scratch.arena, &time_local);
-          ui_label(string);
+          StringView str = push_date_time_string(scratch.arena, &time_local);
+          ui_label(str);
         }
         
         // rjf: file size
@@ -4645,7 +4645,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   }
   
   //- rjf: gather list of filtered process infos
-  StringView query = string;
+  StringView query = str;
   RD_ProcessInfoArray process_info_array = sp.cached_process_array;
   if(sp.need_initial_gather || !str8_match(sp.cached_process_arg, query, 0))
   {
@@ -4886,7 +4886,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   RD_Entity* selected_entity = rd_entity_from_handle(selected_entity_handle);
   
   //- rjf: build filtered array of entities
-  RD_EntityListerItemList ent_list = rd_entity_lister_item_list_from_needle(scratch.arena, entity_kind, 0, string);
+  RD_EntityListerItemList ent_list = rd_entity_lister_item_list_from_needle(scratch.arena, entity_kind, 0, str);
   RD_EntityListerItemArray ent_arr = rd_entity_lister_item_array_from_list(scratch.arena, ent_list);
   rd_entity_lister_item_array_sort_by_strength__in_place(ent_arr);
   
@@ -5085,7 +5085,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   CTRL_Entity* selected_entity = ctrl_entity_from_handle(d_state.ctrl_entity_store, selected_entity_handle);
   
   //- rjf: build filtered array of entities
-  RD_CtrlEntityListerItemList ent_list = rd_ctrl_entity_lister_item_list_from_needle(scratch.arena, entity_kind, string);
+  RD_CtrlEntityListerItemList ent_list = rd_ctrl_entity_lister_item_list_from_needle(scratch.arena, entity_kind, str);
   RD_CtrlEntityListerItemArray ent_arr = rd_ctrl_entity_lister_item_array_from_list(scratch.arena, ent_list);
   rd_ctrl_entity_lister_item_array_sort_by_strength__in_place(ent_arr);
   
@@ -5232,7 +5232,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   //- rjf: query . raddbg, filtered items
   U128 search_key = {rd_regs().view.u64[0], rd_regs().view.u64[1]};
   B32 items_stale = 0;
-  DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, string, endt_us, &items_stale);
+  DI_SearchItemArray items = di_search_items_from_key_params_query(di_scope, search_key, &search_params, str, endt_us, &items_stale);
   if(items_stale)
   {
     rd_request_frame();
@@ -5255,7 +5255,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         StringView name = StringView(name_base, name_size);
         if(name.size != 0)
         {
-          rd_cmd(RD_CmdKind_CompleteQuery, .string = name);
+          rd_cmd(RD_CmdKind_CompleteQuery, .str = name);
         }
       }
     }
@@ -5327,7 +5327,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
       UI_Signal sig = ui_signal_from_box(box);
       if(ui_clicked(sig))
       {
-        rd_cmd(RD_CmdKind_CompleteQuery, .string = name);
+        rd_cmd(RD_CmdKind_CompleteQuery, .str = name);
       }
       if(ui_hovering(sig)) UI_Tooltip
       {
@@ -5478,8 +5478,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(call_stack)
     rd_watch_view_init(wv);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrameSelection, 0.05f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrame,          0.50f, .display_string = ("Symbol"), .dequote_string = 1);
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .string = ("vaddr"), .display_string = ("Address"), .view_rule = ("cast:uint64"));
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Module,                  0.25f, .string = ("module.str"), .display_string = ("Module"), .dequote_string = 1, .is_non_code = 1);
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .str = ("vaddr"), .display_string = ("Address"), .view_rule = ("cast:uint64"));
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Module,                  0.25f, .str = ("module.Ptr"), .display_string = ("Module"), .dequote_string = 1, .is_non_code = 1);
   }
   rd_watch_view_build(wv, 0, ("thread:current_thread.callstack.v"), ("array:'thread:current_thread.callstack.count', hex"), 0, 10, rect);
   ProfEnd();
@@ -5698,7 +5698,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
       uint64 num_unknown_bytes = 0;
       for(uint64 idx = 0; idx < data.size && idx < file_range.max;)
       {
-        UnicodeDecode decode = utf8_decode(data.str+idx, data.size-idx);
+        UnicodeDecode decode = utf8_decode(data.Ptr+idx, data.size-idx);
         if(decode.codepoint != max_U32 && (decode.inc > 1 ||
                                            (10 <= decode.codepoint && decode.codepoint <= 13) ||
                                            (32 <= decode.codepoint && decode.codepoint <= 126)))
@@ -5813,7 +5813,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
         if(src.size != 0 && dst.size != 0)
         {
           // rjf: record src . dst mapping
-          rd_cmd(RD_CmdKind_SetFileReplacementPath, .string = src, .file_path = dst);
+          rd_cmd(RD_CmdKind_SetFileReplacementPath, .str = src, .file_path = dst);
           
           // rjf: switch this view to viewing replacement file
           rd_store_view_expr_string(rd_eval_string_from_file_path(scratch.arena, dst));
@@ -5825,7 +5825,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: unpack parameterization info
   //
-  StringView path = rd_file_path_from_eval_string(rd_frame_arena(), string);
+  StringView path = rd_file_path_from_eval_string(rd_frame_arena(), str);
   rd_regs().file_path     = path;
   rd_regs().vaddr         = 0;
   rd_regs().prefer_disasm = 0;
@@ -5837,7 +5837,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   if(rd_regs().cursor.column == 0) { rd_regs().cursor.column = 1; }
   if(rd_regs().mark.line == 0)   { rd_regs().mark.line = 1; }
   if(rd_regs().mark.column == 0) { rd_regs().mark.column = 1; }
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   Rng1U64 range = rd_range_from_eval_params(eval, params);
   rd_regs().text_key = rd_key_from_eval_space_range(eval.space, range, 1);
   rd_regs().lang_kind = rd_lang_kind_from_eval_params(eval, params);
@@ -5873,7 +5873,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
         UI_TextAlignment(UI_TextAlign_Center)
         if(ui_clicked(ui_buttonf("Find alternative...")))
       {
-        rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_PickFile].string);
+        rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_PickFile].str);
       }
       scratch_end(scratch);
     }
@@ -6046,19 +6046,19 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //
   B32 auto_selected = 0;
   E_Space auto_space = {0};
-  if(string.size == 0)
+  if(str.Length == 0)
   {
     if(dv.temp_look_vaddr != 0 && dv.temp_look_run_gen == ctrl_run_gen())
     {
       auto_selected = 1;
       auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(d_state.ctrl_entity_store, dv.temp_look_process), RD_EvalSpaceKind_CtrlEntity);
-      string = push_str8f(scratch.arena, "(0x%I64x & (~(0x4000 - 1)))", dv.temp_look_vaddr);
+      str = push_str8f(scratch.arena, "(0x%I64x & (~(0x4000 - 1)))", dv.temp_look_vaddr);
     }
     else
     {
       auto_selected = 1;
       auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(d_state.ctrl_entity_store, rd_regs().process), RD_EvalSpaceKind_CtrlEntity);
-      string = ("(rip.u64 & (~(0x4000 - 1)))");
+      str = ("(rip.u64 & (~(0x4000 - 1)))");
     }
   }
   
@@ -6103,7 +6103,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //////////////////////////////
   //- rjf: unpack parameterization info
   //
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   E_Space space = eval.space;
   if(auto_selected)
   {
@@ -6206,7 +6206,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
       uint64 cursor_vaddr = (1 <= rd_regs().cursor.line && rd_regs().cursor.line <= dasm_info.lines.count) ? (range.min+dasm_info.lines.v[rd_regs().cursor.line-1].code_off) : 0;
       if(dasm_module != &ctrl_entity_nil)
       {
-        ui_labelf("%S", path_normalized_from_string(scratch.arena, dasm_module.string));
+        ui_labelf("%S", path_normalized_from_string(scratch.arena, dasm_module.str));
         ui_spacer(ui_em(1.5f, 1));
       }
       ui_labelf("Address: 0x%I64x, Line: %I64d, Column: %I64d", cursor_vaddr, rd_regs().cursor.line, rd_regs().cursor.column);
@@ -6355,7 +6355,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: unpack parameterization info
   //
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   Rng1U64 space_range = rd_range_from_eval_params(eval, params);
   if(eval.space.kind == 0)
   {
@@ -6576,7 +6576,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   }
   
   //////////////////////////////
-  //- rjf: produce fancy string runs for all possible byte values in all cells
+  //- rjf: produce fancy str runs for all possible byte values in all cells
   //
   DR_FancyStringList byte_fancy_strings[256] = {0};
   {
@@ -6670,7 +6670,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       if(dim_1u64(stack_vaddr_range_in_viz) != 0)
       {
         Annotation* annotation = push_array(scratch.arena, Annotation, 1);
-        annotation.name_string = thread.string.size ? thread.string : push_str8f(scratch.arena, "TID: %I64u", thread.id);
+        annotation.name_string = thread.str.Length ? thread.str : push_str8f(scratch.arena, "TID: %I64u", thread.id);
         annotation.kind_string = ("Stack");
         annotation.color = rd_rgba_from_ctrl_entity(thread);
         annotation.vaddr_range = stack_vaddr_range;
@@ -6699,7 +6699,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       uint64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_regs().unwind_count);
       for(E_String2NumMapNode* n = e_parse_ctx.locals_map.first; n != 0; n = n.order_next)
       {
-        StringView local_name = n.string;
+        StringView local_name = n.str;
         E_Eval local_eval = e_eval_from_string(scratch.arena, local_name);
         if(local_eval.mode == E_Mode_Offset)
         {
@@ -7277,7 +7277,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   //////////////////////////////
   //- rjf: evaluate expression
   //
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   Vec2S32 dim = rd_dim2s32_from_eval_params(eval, params);
   R_Tex2DFormat fmt = rd_tex2dformat_from_eval_params(eval, params);
   uint64 base_offset = rd_base_offset_from_eval(eval);
@@ -7413,15 +7413,15 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
         switch(topology.fmt)
         {
           default:{color_is_good = 0;}break;
-          case R_Tex2DFormat_R8:     {color = v4f32(((uint8 *)(data.str+off_bytes))[0]/255.f, 0, 0, 1);}break;
-          case R_Tex2DFormat_RG8:    {color = v4f32(((uint8 *)(data.str+off_bytes))[0]/255.f, ((uint8 *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
-          case R_Tex2DFormat_RGBA8:  {color = v4f32(((uint8 *)(data.str+off_bytes))[0]/255.f, ((uint8 *)(data.str+off_bytes))[1]/255.f, ((uint8 *)(data.str+off_bytes))[2]/255.f, ((uint8 *)(data.str+off_bytes))[3]/255.f);}break;
-          case R_Tex2DFormat_BGRA8:  {color = v4f32(((uint8 *)(data.str+off_bytes))[3]/255.f, ((uint8 *)(data.str+off_bytes))[2]/255.f, ((uint8 *)(data.str+off_bytes))[1]/255.f, ((uint8 *)(data.str+off_bytes))[0]/255.f);}break;
-          case R_Tex2DFormat_R16:    {color = v4f32(((uint16 *)(data.str+off_bytes))[0]/(float)max_U16, 0, 0, 1);}break;
-          case R_Tex2DFormat_RGBA16: {color = v4f32(((uint16 *)(data.str+off_bytes))[0]/(float)max_U16, ((uint16 *)(data.str+off_bytes))[1]/(float)max_U16, ((uint16 *)(data.str+off_bytes))[2]/(float)max_U16, ((uint16 *)(data.str+off_bytes))[3]/(float)max_U16);}break;
-          case R_Tex2DFormat_R32:    {color = v4f32(((float *)(data.str+off_bytes))[0], 0, 0, 1);}break;
-          case R_Tex2DFormat_RG32:   {color = v4f32(((float *)(data.str+off_bytes))[0], ((float *)(data.str+off_bytes))[1], 0, 1);}break;
-          case R_Tex2DFormat_RGBA32: {color = v4f32(((float *)(data.str+off_bytes))[0], ((float *)(data.str+off_bytes))[1], ((float *)(data.str+off_bytes))[2], ((float *)(data.str+off_bytes))[3]);}break;
+          case R_Tex2DFormat_R8:     {color = v4f32(((uint8 *)(data.Ptr+off_bytes))[0]/255.f, 0, 0, 1);}break;
+          case R_Tex2DFormat_RG8:    {color = v4f32(((uint8 *)(data.Ptr+off_bytes))[0]/255.f, ((uint8 *)(data.Ptr+off_bytes))[1]/255.f, 0, 1);}break;
+          case R_Tex2DFormat_RGBA8:  {color = v4f32(((uint8 *)(data.Ptr+off_bytes))[0]/255.f, ((uint8 *)(data.Ptr+off_bytes))[1]/255.f, ((uint8 *)(data.Ptr+off_bytes))[2]/255.f, ((uint8 *)(data.Ptr+off_bytes))[3]/255.f);}break;
+          case R_Tex2DFormat_BGRA8:  {color = v4f32(((uint8 *)(data.Ptr+off_bytes))[3]/255.f, ((uint8 *)(data.Ptr+off_bytes))[2]/255.f, ((uint8 *)(data.Ptr+off_bytes))[1]/255.f, ((uint8 *)(data.Ptr+off_bytes))[0]/255.f);}break;
+          case R_Tex2DFormat_R16:    {color = v4f32(((uint16 *)(data.Ptr+off_bytes))[0]/(float)max_U16, 0, 0, 1);}break;
+          case R_Tex2DFormat_RGBA16: {color = v4f32(((uint16 *)(data.Ptr+off_bytes))[0]/(float)max_U16, ((uint16 *)(data.Ptr+off_bytes))[1]/(float)max_U16, ((uint16 *)(data.Ptr+off_bytes))[2]/(float)max_U16, ((uint16 *)(data.Ptr+off_bytes))[3]/(float)max_U16);}break;
+          case R_Tex2DFormat_R32:    {color = v4f32(((float *)(data.Ptr+off_bytes))[0], 0, 0, 1);}break;
+          case R_Tex2DFormat_RG32:   {color = v4f32(((float *)(data.Ptr+off_bytes))[0], ((float *)(data.Ptr+off_bytes))[1], 0, 1);}break;
+          case R_Tex2DFormat_RGBA32: {color = v4f32(((float *)(data.Ptr+off_bytes))[0], ((float *)(data.Ptr+off_bytes))[1], ((float *)(data.Ptr+off_bytes))[2], ((float *)(data.Ptr+off_bytes))[3]);}break;
         }
         if(color_is_good)
         {
@@ -7474,7 +7474,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
 RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox)
 {
   Temp scratch = scratch_begin(0, 0);
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   E_Eval value_eval = e_value_eval_from_eval(eval);
   if(ui_clicked(rd_icon_buttonf(value_eval.value.u64 == 0 ? RD_IconKind_CheckHollow : RD_IconKind_CheckFilled, 0, "###check")))
   {
@@ -7521,7 +7521,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
   Temp scratch = scratch_begin(0, 0);
   Vec2F32 dim = dim_2f32(rect);
   float padding = ui_top_font_size()*3.f;
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   Vec4F32 rgba = rd_rgba_from_eval_params(eval, params);
   Vec4F32 hsva = hsva_from_rgba(rgba);
   
@@ -7694,7 +7694,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //////////////////////////////
   //- rjf: evaluate & unpack expression
   //
-  E_Eval eval = e_eval_from_string(scratch.arena, string);
+  E_Eval eval = e_eval_from_string(scratch.arena, str);
   uint64 base_offset = rd_base_offset_from_eval(eval);
   Rng1U64 idxs_range = r1u64(base_offset, base_offset+count*sizeof(uint32));
   Rng1U64 vtxs_range = r1u64(vtx_base_off, vtx_base_off+vtx_size);
@@ -7797,7 +7797,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   Temp scratch = scratch_begin(0, 0);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  StringView query = string;
+  StringView query = str;
   
   //- rjf: get state
   struct RD_ExceptionFiltersViewState
@@ -7938,7 +7938,7 @@ struct RD_SettingsItem
 {
   RD_SettingsItemKind kind;
   StringView kind_string;
-  StringView string;
+  StringView str;
   FuzzyMatchRangeList kind_string_matches;
   FuzzyMatchRangeList string_matches;
   RD_IconKind icon_kind;
@@ -7995,7 +7995,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   float row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  StringView query = string;
+  StringView query = str;
   RD_Window* window = rd_window_from_handle(rd_regs().window);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   
@@ -8036,7 +8036,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n.v.kind = RD_SettingsItemKind_CategoryHeader;
-      n.v.string = ("Global Interface Settings");
+      n.v.str = ("Global Interface Settings");
       n.v.icon_kind = sv.category_opened[RD_SettingsItemKind_GlobalSetting] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n.v.category = RD_SettingsItemKind_GlobalSetting;
     }
@@ -8051,9 +8051,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           continue;
         }
         StringView kind_string = ("Global Interface Setting");
-        StringView string = rd_setting_code_display_string_table[code];
+        StringView str = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
-        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
+        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, str);
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
@@ -8062,7 +8062,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           items_list.count += 1;
           n.v.kind = RD_SettingsItemKind_GlobalSetting;
           n.v.kind_string = kind_string;
-          n.v.string = string;
+          n.v.str = str;
           n.v.kind_string_matches = kind_string_matches;
           n.v.string_matches = string_matches;
           n.v.icon_kind = RD_IconKind_Window;
@@ -8078,7 +8078,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n.v.kind = RD_SettingsItemKind_CategoryHeader;
-      n.v.string = ("Window Interface Settings");
+      n.v.str = ("Window Interface Settings");
       n.v.icon_kind = sv.category_opened[RD_SettingsItemKind_WindowSetting] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n.v.category = RD_SettingsItemKind_WindowSetting;
     }
@@ -8093,9 +8093,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           continue;
         }
         StringView kind_string = ("Window Interface Setting");
-        StringView string = rd_setting_code_display_string_table[code];
+        StringView str = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
-        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
+        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, str);
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
@@ -8104,7 +8104,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           items_list.count += 1;
           n.v.kind = RD_SettingsItemKind_WindowSetting;
           n.v.kind_string = kind_string;
-          n.v.string = string;
+          n.v.str = str;
           n.v.kind_string_matches = kind_string_matches;
           n.v.string_matches = string_matches;
           n.v.icon_kind = RD_IconKind_Window;
@@ -8120,7 +8120,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n.v.kind = RD_SettingsItemKind_CategoryHeader;
-      n.v.string = ("Theme Presets");
+      n.v.str = ("Theme Presets");
       n.v.icon_kind = sv.category_opened[RD_SettingsItemKind_ThemePreset] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n.v.category = RD_SettingsItemKind_ThemePreset;
     }
@@ -8131,9 +8131,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       for EachEnumVal(RD_ThemePreset, preset)
       {
         StringView kind_string = ("Theme Preset");
-        StringView string = rd_theme_preset_display_string_table[preset];
+        StringView str = rd_theme_preset_display_string_table[preset];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
-        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
+        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, str);
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
@@ -8142,7 +8142,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           items_list.count += 1;
           n.v.kind = RD_SettingsItemKind_ThemePreset;
           n.v.kind_string = kind_string;
-          n.v.string = string;
+          n.v.str = str;
           n.v.kind_string_matches = kind_string_matches;
           n.v.string_matches = string_matches;
           n.v.icon_kind = RD_IconKind_Palette;
@@ -8158,7 +8158,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n.v.kind = RD_SettingsItemKind_CategoryHeader;
-      n.v.string = ("Theme Colors");
+      n.v.str = ("Theme Colors");
       n.v.icon_kind = sv.category_opened[RD_SettingsItemKind_ThemeColor] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n.v.category = RD_SettingsItemKind_ThemeColor;
     }
@@ -8169,9 +8169,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       for EachNonZeroEnumVal(RD_ThemeColor, color)
       {
         StringView kind_string = ("Theme Color");
-        StringView string = rd_theme_color_display_string_table[color];
+        StringView str = rd_theme_color_display_string_table[color];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
-        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
+        FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, str);
         if(string_matches.count == string_matches.needle_part_count ||
            kind_string_matches.count == kind_string_matches.needle_part_count)
         {
@@ -8180,7 +8180,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           items_list.count += 1;
           n.v.kind = RD_SettingsItemKind_ThemeColor;
           n.v.kind_string = kind_string;
-          n.v.string = string;
+          n.v.str = str;
           n.v.kind_string_matches = kind_string_matches;
           n.v.string_matches = string_matches;
           n.v.icon_kind = RD_IconKind_Palette;
@@ -8292,8 +8292,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, hex_string, "###hex_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_rgba = rgba_from_hex_string_4f32(string);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_rgba = rgba_from_hex_string_4f32(str);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8305,8 +8305,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, r_string, "###r_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_rgba = v4f32((float)f64_from_str8(string), rgba.y, rgba.z, rgba.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_rgba = v4f32((float)f64_from_str8(str), rgba.y, rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8317,8 +8317,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, g_string, "###g_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_rgba = v4f32(rgba.x, (float)f64_from_str8(string), rgba.z, rgba.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_rgba = v4f32(rgba.x, (float)f64_from_str8(str), rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8329,8 +8329,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, b_string, "###b_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_rgba = v4f32(rgba.x, rgba.y, (float)f64_from_str8(string), rgba.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_rgba = v4f32(rgba.x, rgba.y, (float)f64_from_str8(str), rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8342,8 +8342,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, h_string, "###h_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_hsva = v4f32((float)f64_from_str8(string), hsva.y, hsva.z, hsva.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_hsva = v4f32((float)f64_from_str8(str), hsva.y, hsva.z, hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8353,8 +8353,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, s_string, "###s_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, (float)f64_from_str8(string), hsva.z, hsva.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_hsva = v4f32(hsva.x, (float)f64_from_str8(str), hsva.z, hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8364,8 +8364,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, v_string, "###v_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, (float)f64_from_str8(string), hsva.w);
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, (float)f64_from_str8(str), hsva.w);
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8376,8 +8376,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border, 0, 0, &sv.txt_cursor, &sv.txt_mark, sv.txt_buffer, sizeof(sv.txt_buffer), &sv.txt_size, 0, a_string, "###a_edit");
           if(ui_committed(sig))
           {
-            StringView string = StringView(sv.txt_buffer, sv.txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, hsva.z, (float)f64_from_str8(string));
+            StringView str = StringView(sv.txt_buffer, sv.txt_size);
+            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, hsva.z, (float)f64_from_str8(str));
             sv.color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8491,7 +8491,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         UI_Focus(row_num+1 == sv.cursor.y ? UI_FocusKind_On : UI_FocusKind_Off) UI_Palette(palette)
         {
           ui_set_next_hover_cursor(cursor);
-          item_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|flags, "###option_%S_%S", item.kind_string, item.string);
+          item_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|flags, "###option_%S_%S", item.kind_string, item.str);
           UI_Parent(item_box)
           {
             if(item.icon_kind != RD_IconKind_Null)
@@ -8509,7 +8509,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
             }
             UI_PrefWidth(ui_text_dim(10, 1))
             {
-              UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S", item.string);
+              UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S", item.str);
               ui_box_equip_fuzzy_match_ranges(box, &item.string_matches);
             }
             if(is_slider) UI_PrefWidth(ui_text_dim(10, 1))

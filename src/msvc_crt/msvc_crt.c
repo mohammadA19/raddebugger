@@ -410,7 +410,7 @@ mscrt_catch_blocks_from_data_x8664(Arena*              arena,
 
   StringView        raw_pdata   = str8_substr(raw_data, except_frange);
   uint64            pdata_count = raw_pdata.size / sizeof(PE_IntelPdata);
-  PE_IntelPdata* src_pdata   = (PE_IntelPdata *)raw_pdata.str;
+  PE_IntelPdata* src_pdata   = (PE_IntelPdata *)raw_pdata.Ptr;
   PE_IntelPdata* opl_pdata   = src_pdata + pdata_count;
 
   for (PE_IntelPdata* pdata = src_pdata; pdata < opl_pdata; ++pdata) {

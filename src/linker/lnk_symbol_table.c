@@ -318,7 +318,7 @@ lnk_can_replace_symbol(const LNK_Symbol* dst, const LNK_Symbol* src)
           uint64 dst_chunk_size = lnk_chunk_get_size(dst_chunk);
           uint64 src_chunk_size = lnk_chunk_get_size(src_chunk);
           if (dst_chunk_size == src_chunk_size) {
-            if (dst_defn.u.chunk.u.leaf.str == 0 && src_defn.u.chunk.u.leaf.size > 0) {
+            if (dst_defn.u.chunk.u.leaf.Ptr == 0 && src_defn.u.chunk.u.leaf.size > 0) {
               // handle communal variable
               //
               // MSVC CRT relies on this behaviour (e.g. __scrt_ucrt_dll_is_in_use in ucrt_detection.c)
@@ -487,11 +487,11 @@ lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie* trie)
 ////////////////////////////////
 
 uint64
-lnk_symbol_hash(StringView string)
+lnk_symbol_hash(StringView str)
 {
   XXH3_state_t hasher; XXH3_64bits_reset(&hasher);
-  XXH3_64bits_update(&hasher, &string.size, sizeof(string.size));
-  XXH3_64bits_update(&hasher, string.str, string.size);
+  XXH3_64bits_update(&hasher, &str.Length, sizeof(str.Length));
+  XXH3_64bits_update(&hasher, str.Ptr, str.Length);
   XXH64_hash_t result = XXH3_64bits_digest(&hasher);
   return result;
 }

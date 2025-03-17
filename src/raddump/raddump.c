@@ -118,7 +118,7 @@ rd_rdi_from_pe(Arena* arena, StringView data_path, StringView raw_data)
     rdi = push_array(arena, RDI_Parsed, 1);
 
     // TODO: check guid
-    RDI_ParseStatus parse_status = rdi_parse(raw_rdi.str, raw_rdi.size, rdi);
+    RDI_ParseStatus parse_status = rdi_parse(raw_rdi.Ptr, raw_rdi.size, rdi);
 
     StringView parse_status_string = StringView();
     if (parse_status == RDI_ParseStatus_Good) {
@@ -150,7 +150,7 @@ rd_proc_name_from_voff(RDI_Parsed* rdi, uint64 voff)
   RDI_Scope*     scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure* proc  = rdi_procedure_from_scope(rdi, scope);
   StringView        name  = {0};
-  name.str = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
+  name.Ptr = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
   return name;
 }
 
@@ -160,7 +160,7 @@ rd_format_proc_line(Arena* arena, RDI_Parsed* rdi, uint64 voff)
   RDI_Scope*     scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure* proc  = rdi_procedure_from_scope(rdi, scope);
   StringView        name  = {0};
-  name.str = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
+  name.Ptr = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
   uint64            rel   = voff - scope.voff_range_first;
   StringView result = StringView();
   if (name.size) {
@@ -182,7 +182,7 @@ rd_path_from_file_path_node_idx(Arena* arena, RDI_Parsed* rdi, uint32 file_path_
       fpn != rdi_element_from_name_idx(rdi, FilePathNodes, 0);
       fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn.parent_path_node)) {
     StringView p;
-    p.str = rdi_string_from_idx(rdi, fpn.name_string_idx, &p.size);
+    p.Ptr = rdi_string_from_idx(rdi, fpn.name_string_idx, &p.size);
     str8_list_push_front(scratch.arena, &parts, p);
   }
   StringView path = str8_path_list_join_by_style(arena, &parts, style);
@@ -227,7 +227,7 @@ rd_is_rdi(StringView raw_data)
 {
   B32 is_rdi = 0;
   if (raw_data.size > 8) {
-    uint64* magic = (uint64 *)raw_data.str;
+    uint64* magic = (uint64 *)raw_data.Ptr;
     is_rdi = *magic == RDI_MAGIC_CONSTANT;
   }
   return is_rdi;
@@ -402,11 +402,11 @@ rd_section_markers_from_rdi(Arena* arena, RDI_Parsed* rdi)
       uint64     sect_idx   = sect_range.max;
 
       StringView name = StringView();
-      name.str = rdi_name_from_procedure(rdi, proc, &name.size);
+      name.Ptr = rdi_name_from_procedure(rdi, proc, &name.size);
 
       RD_MarkerNode* n = push_array(scratch.arena, RD_MarkerNode, 1);
       n.v.off         = proc_voff_lo - sect_range.min;
-      n.v.string      = name;
+      n.v.str      = name;
 
       RD_MarkerList* list = &markers[sect_idx];
       SLLQueuePush(list.first, list.last, n);
@@ -453,7 +453,7 @@ rd_section_markers_from_coff_symbol_table(Arena* arena, StringView raw_data, uin
 
       RD_MarkerNode* n = push_array(scratch.arena, RD_MarkerNode, 1);
       n.v.off         = symbol.value;
-      n.v.string      = name;
+      n.v.str      = name;
 
       RD_MarkerList* list = &markers[symbol.section_number];
       SLLQueuePush(list.first, list.last, n);
@@ -535,7 +535,7 @@ rd_disasm_next_instruction(Arena* arena, Arch arch, uint64 addr, StringView raw_
     case Arch_x86: {
       ZydisMachineMode             machine_mode = bit_size_from_arch(arch) == 32 ? ZYDIS_MACHINE_MODE_LEGACY_32 : ZYDIS_MACHINE_MODE_LONG_64;
       ZydisDisassembledInstruction inst         = {0};
-      ZyanStatus                   status       = ZydisDisassemble(machine_mode, addr, raw_code.str, raw_code.size, &inst, ZYDIS_FORMATTER_STYLE_INTEL);
+      ZyanStatus                   status       = ZydisDisassemble(machine_mode, addr, raw_code.Ptr, raw_code.size, &inst, ZYDIS_FORMATTER_STYLE_INTEL);
 
       StringView text = str8_cstring_capped(inst.text, inst.text+sizeof(inst.text));
       result.text = push_str8_copy(arena, text);
@@ -580,7 +580,7 @@ rd_print_disasm(Arena*            arena,
     {
       uint64 bytes_size = 0;
       for (uint64 i = 0; i < disasm_result.size; ++i) {
-        bytes_size += raddbg_snprintf(bytes_buffer + bytes_size, bytes_buffer_max-bytes_size, "%s%02x", i > 0 ? " " : "", to_decode.str[i]);
+        bytes_size += raddbg_snprintf(bytes_buffer + bytes_size, bytes_buffer_max-bytes_size, "%s%02x", i > 0 ? " " : "", to_decode[i]);
       }
       bytes = StringView((uint8*)bytes_buffer, bytes_size);
     }
@@ -592,9 +592,9 @@ rd_print_disasm(Arena*            arena,
       if (decode_off <= m.off && m.off < decode_off + disasm_result.size) {
         if (m.off != decode_off) {
           uint64 off = m.off - decode_off;
-          rd_printf("; %S+%#llx", m.string, addr);
+          rd_printf("; %S+%#llx", m.str, addr);
         } else {
-          rd_printf("; %S", m.string);
+          rd_printf("; %S", m.str);
         }
         marker_cursor += 1;
       }
@@ -652,12 +652,12 @@ rd_print_raw_data(Arena*       arena,
     uint64 temp_cursor = 0;
 
     // offset
-    uint64 offset = (uint64)(raw_row.str-raw_data.str);
+    uint64 offset = (uint64)(raw_row.Ptr-raw_data.Ptr);
     temp_cursor += raddbg_snprintf(temp_buffer+temp_cursor, sizeof(temp_buffer)-temp_cursor, "%#08llx: ", offset);
 
     // hex
     for (uint64 i = 0; i < raw_row.size; ++i) {
-      uint8 b = raw_row.str[i];
+      uint8 b = raw_row[i];
       temp_cursor += raddbg_snprintf(temp_buffer+temp_cursor, sizeof(temp_buffer)-temp_cursor, "%s%02x", i>0 ? " " : "", b);
     }
     uint64 hex_indent_size = (bytes_per_row - raw_row.size) * 3;
@@ -668,7 +668,7 @@ rd_print_raw_data(Arena*       arena,
 
     // ascii
     for (uint64 i = 0; i < raw_row.size; ++i) {
-      uint8 b = raw_row.str[i];
+      uint8 b = raw_row[i];
       uint8 c = b;
       if (c < ' ' || c > '~') {
         c = '.';
@@ -687,7 +687,7 @@ StringView
 str8_from_rdi_string_idx(RDI_Parsed* rdi, uint32 idx)
 {
   StringView result = StringView();
-  result.str = rdi_string_from_idx(rdi, idx, &result.size);
+  result.Ptr = rdi_string_from_idx(rdi, idx, &result.size);
   return result;
 }
 
@@ -1224,14 +1224,14 @@ rdi_print_scope(Arena* arena, String8List* out, StringView indent, RDI_Parsed* r
               case RDI_LocationKind_AddrBytecodeStream: {
                 Temp temp = temp_begin(scratch.arena);
                 StringView raw_bytes = str8_cstring_capped(loc_base_ptr + 1, loc_data_opl);
-                rd_printf("AddrBytecodeStream: %S", rd_format_hex_array(temp.arena, raw_bytes.str, raw_bytes.size));
+                rd_printf("AddrBytecodeStream: %S", rd_format_hex_array(temp.arena, raw_bytes.Ptr, raw_bytes.size));
                 temp_end(temp);
               } break;
 
               case RDI_LocationKind_ValBytecodeStream: {
                 Temp temp = temp_begin(scratch.arena);
                 StringView raw_bytes = str8_cstring_capped(loc_base_ptr + 1, loc_data_opl);
-                rd_printf("ValBytecodeStream: %S", rd_format_hex_array(temp.arena, raw_bytes.str, raw_bytes.size));
+                rd_printf("ValBytecodeStream: %S", rd_format_hex_array(temp.arena, raw_bytes.Ptr, raw_bytes.size));
                 temp_end(temp);
               } break;
 
@@ -1589,7 +1589,7 @@ rdi_print(Arena* arena, String8List* out, StringView indent, RDI_Parsed* rdi, RD
     rd_printf("# STRINGS");
     rd_indent();
     for (uint64 i = 0; i < stridx_count; ++i) {
-      rd_printf("string[%llu]: \"%S\"", i, str8_from_rdi_string_idx(rdi, i));
+      rd_printf("str[%llu]: \"%S\"", i, str8_from_rdi_string_idx(rdi, i));
     }
     rd_unindent();
     rd_newline();
@@ -1874,7 +1874,7 @@ dw_print_cfi_program(Arena* arena, String8List* out, StringView indent, StringVi
       case DW_CFA_SetLoc: {
         uint64 address = 0;
         switch (arch) {
-          case Arch_x64: cursor += dw_unwind_parse_pointer_x64(raw_data.str, rng_1u64(0,raw_data.size), ptr_ctx, cie.addr_encoding, cursor, &address); break;
+          case Arch_x64: cursor += dw_unwind_parse_pointer_x64(raw_data.Ptr, rng_1u64(0,raw_data.size), ptr_ctx, cie.addr_encoding, cursor, &address); break;
 
           default: NotImplemented; break;
         }
@@ -2095,7 +2095,7 @@ dw_print_eh_frame(Arena* arena, String8List* out, StringView indent, StringView 
     uint64 header_offset = cursor;
     
     uint64 length = 0; // doesn't include bytes for size
-    cursor += dw_based_range_read_length(raw_eh_frame.str, rng_1u64(0,raw_eh_frame.size), cursor, &length);
+    cursor += dw_based_range_read_length(raw_eh_frame.Ptr, rng_1u64(0,raw_eh_frame.size), cursor, &length);
 
     if (length == 0) {
       break; // encountered exit marker
@@ -2116,7 +2116,7 @@ dw_print_eh_frame(Arena* arena, String8List* out, StringView indent, StringView 
     
     // CIE
     if (entry_id == 0) {
-      dw_unwind_parse_cie_x64(raw_frame.str, rng_1u64(0,raw_frame.size), ptr_ctx, 0, &cie);
+      dw_unwind_parse_cie_x64(raw_frame.Ptr, rng_1u64(0,raw_frame.size), ptr_ctx, 0, &cie);
       cfi_range = cie.cfi_range;
       
       rd_printf("CIE @ 0x%X, Length %u", header_offset, length);
@@ -2133,7 +2133,7 @@ dw_print_eh_frame(Arena* arena, String8List* out, StringView indent, StringView 
     // FDE
     else {
       DW_FDEUnpacked fde = {0};
-      dw_unwind_parse_fde_x64(raw_eh_frame.str, rng_1u64(0,raw_eh_frame.size), ptr_ctx, &cie, 0, &fde);
+      dw_unwind_parse_fde_x64(raw_eh_frame.Ptr, rng_1u64(0,raw_eh_frame.size), ptr_ctx, &cie, 0, &fde);
       cfi_range = fde.cfi_range;
 
       // calc parent CIE offset
@@ -2306,8 +2306,8 @@ dw_print_debug_info(Arena* arena, String8List* out, StringView indent, DW_Sectio
           str8_list_pushf(attrib_temp.arena, &attrib_list, "<%llx>", attrib_value.v[0]);
         } break;
         case DW_AttribClass_String: {
-          StringView string = dw_string_from_attrib_value(sections, attrib_value);
-          str8_list_pushf(attrib_temp.arena, &attrib_list, "\"%S\"", string);
+          StringView str = dw_string_from_attrib_value(sections, attrib_value);
+          str8_list_pushf(attrib_temp.arena, &attrib_list, "\"%S\"", str);
         } break;
         case DW_AttribClass_StrOffsetsPtr: {
           str8_list_pushf(attrib_temp.arena, &attrib_list, "%#llx", attrib_value.v[0]);
@@ -2667,8 +2667,8 @@ dw_print_debug_line(Arena* arena, String8List* out, StringView indent, DW_Sectio
       } break;
       }
 
-      StringView string = str8_list_join(opcode_temp.arena, &list, &(StringJoin){.sep=(" ")});
-      rd_printf("[%08llx] %S", opcode_offset, string);
+      StringView str = str8_list_join(opcode_temp.arena, &list, &(StringJoin){.sep=(" ")});
+      rd_printf("[%08llx] %S", opcode_offset, str);
 
       temp_end(opcode_temp);
     }
@@ -2691,9 +2691,9 @@ dw_print_debug_str(Arena* arena, String8List* out, StringView indent, DW_Section
   rd_printf("# %S", sections.v[DW_Section_Str].name);
   rd_indent();
   for (uint64 cursor = 0, read_size = 0; cursor < data.size; cursor += read_size) {
-    StringView string = {0};
-    read_size = str8_deserial_read_cstr(data, cursor, &string);
-    rd_printf("[%08llx] { %llu, \"%S\" }", cursor, string.size, string);
+    StringView str = {0};
+    read_size = str8_deserial_read_cstr(data, cursor, &str);
+    rd_printf("[%08llx] { %llu, \"%S\" }", cursor, str.Length, str);
   }
   rd_unindent();
 }
@@ -3473,10 +3473,10 @@ dw_format_string_table(Arena* arena, String8List* out, StringView indent, DW_Sec
     for (; cursor < unit_opl; ) {
       uint64 info_offset = 0;
       cursor += dw_based_range_read(base, range, cursor, sec_offset_size, &info_offset);
-      StringView string = dw_based_range_read_string(base, range, cursor);
-      cursor += (string.size + 1);
+      StringView str = dw_based_range_read_string(base, range, cursor);
+      cursor += (str.Length + 1);
 
-      rd_printf("%08llx %S", info_offset, string);
+      rd_printf("%08llx %S", info_offset, str);
     }
     rd_unindent();
     rd_newline();
@@ -3516,9 +3516,9 @@ dw_print_debug_line_str(Arena* arena, String8List* out, StringView indent, DW_Se
   rd_printf("%-8s %-8s", "Offset", "String");
   for (uint64 cursor = 0; cursor < dim_1u64(range); ) {
     uint64 offset = cursor;
-    StringView string = dw_based_range_read_string(base, range, cursor);
-    cursor += (string.size + 1);
-    rd_printf("%08llX %S", offset, string);
+    StringView str = dw_based_range_read_string(base, range, cursor);
+    cursor += (str.Length + 1);
+    rd_printf("%08llX %S", offset, str);
   }
   rd_unindent();
 
@@ -3575,8 +3575,8 @@ dw_print_debug_str_offsets(Arena* arena, String8List* out, StringView indent, DW
       cursor += dw_based_range_read(base, range, cursor, offset_size, &offset);
       rd_printf("%08llx %08llx", read_at, offset);
       if (dim_1u64(debug_str_range) > 0) {
-        StringView string = dw_based_range_read_string(debug_str_base, debug_str_range, offset);
-        rd_printf(" %S", string);
+        StringView str = dw_based_range_read_string(debug_str_base, debug_str_range, offset);
+        rd_printf(" %S", str);
       }
       rd_newline();
     }
@@ -4141,7 +4141,7 @@ cv_print_symbol(Arena* arena, String8List* out, StringView indent, CV_Arch arch,
         uint8 count = 0;
         cursor += str8_deserial_read_struct(raw_symbol, cursor, &count);
 
-        StringView data = rd_format_hex_array(scratch.arena, raw_symbol.str, raw_symbol.size);
+        StringView data = rd_format_hex_array(scratch.arena, raw_symbol.Ptr, raw_symbol.size);
         rd_printf("Byte Count: %u", count);
         rd_printf("Data:       %S", data);
       }
@@ -4924,11 +4924,11 @@ cv_print_leaf(Arena* arena, String8List* out, StringView indent, CV_TypeIndex mi
     } break;
     case CV_LeafKind_STRING_ID: {
       CV_LeafStringId lf    = {0};
-      StringView         string = {0};
+      StringView         str = {0};
       cursor += str8_deserial_read_struct(raw_leaf, cursor, &lf);
-      cursor += str8_deserial_read_cstr(raw_leaf, cursor, &string);
+      cursor += str8_deserial_read_cstr(raw_leaf, cursor, &str);
 
-      rd_printf("string:     %S", string);
+      rd_printf("str:     %S", str);
       rd_printf("Substrings: %S", cv_string_from_itemid(arena, lf.substr_list_id)); // TODO: print actual strings instead
     } break;
     case CV_LeafKind_POINTER: {
@@ -5202,7 +5202,7 @@ cv_print_debug_t(Arena* arena, String8List* out, StringView indent, CV_DebugT de
   Temp scratch = scratch_begin(&arena, 1);
   for (uint64 lf_idx = 0; lf_idx < debug_t.count; ++lf_idx) {
     CV_Leaf      lf     = cv_debug_t_get_leaf(debug_t, lf_idx);
-    uint64          offset = (uint64)(lf.data.str-debug_t.v[0]);
+    uint64          offset = (uint64)(lf.data.Ptr-debug_t.v[0]);
     CV_TypeIndex itype  = CV_MinComplexTypeIndex + lf_idx;
     rd_printf("LF_%S (%x) [%04llx-%04llx)", cv_string_from_leaf_kind(lf.kind), itype, offset, offset+lf.data.size);
     rd_indent();
@@ -5511,7 +5511,7 @@ cv_format_debug_sections(Arena* arena, String8List* out, StringView indent, Stri
              string_n != 0 && keep_parsing; string_n = string_n.next) {
           Temp temp = temp_begin(scratch.arena);
           CV_SymbolList symbol_list = {0};
-          cv_parse_symbol_sub_section(temp.arena, &symbol_list, 0, string_n.string, CV_SymbolAlign);
+          cv_parse_symbol_sub_section(temp.arena, &symbol_list, 0, string_n.str, CV_SymbolAlign);
           for (CV_SymbolNode* symbol_n = symbol_list.first; symbol_n != 0 && keep_parsing; symbol_n = symbol_n.next) {
             CV_Symbol symbol = symbol_n.data;
             if (symbol.kind == CV_SymKind_COMPILE) {
@@ -5883,7 +5883,7 @@ coff_print_relocs(Arena*              arena,
       rd_printf("%-4s %-8s %-16s %-16s %-8s %-7s", "No.", "Offset", "Type", "ApplyTo", "SymIdx", "SymName");
 
       for (uint64 reloc_idx = 0; reloc_idx < reloc_info.count; ++reloc_idx) {
-        COFF_Reloc* reloc      = (COFF_Reloc*)(raw_data.str + reloc_info.array_off) + reloc_idx;
+        COFF_Reloc* reloc      = (COFF_Reloc*)(raw_data.Ptr + reloc_info.array_off) + reloc_idx;
         StringView     type       = coff_string_from_reloc(machine, reloc.type);
         uint64         apply_size = coff_apply_size_from_reloc(machine, reloc.type);
 
@@ -5895,7 +5895,7 @@ coff_print_relocs(Arena*              arena,
 
         uint64 raw_apply;
         AssertAlways(apply_size <= sizeof(raw_apply));
-        MemoryCopy(&raw_apply, raw_data.str + apply_foff, apply_size);
+        MemoryCopy(&raw_apply, raw_data.Ptr + apply_foff, apply_size);
         int64 apply = extend_sign64(raw_apply, apply_size);
 
         if (reloc.isymbol > symbols.count) {
@@ -6154,7 +6154,7 @@ coff_print_obj(Arena* arena, String8List* out, StringView indent, StringView raw
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  COFF_FileHeader*    header           = (COFF_FileHeader *)raw_data.str;
+  COFF_FileHeader*    header           = (COFF_FileHeader *)raw_data.Ptr;
   COFF_SectionHeader* sections         = (COFF_SectionHeader *)(header+1);
   uint64                 string_table_off = header.symbol_table_foff + sizeof(COFF_Symbol16)*header.symbol_count;
   COFF_Symbol32Array  symbols          = coff_symbol_array_from_data_16(scratch.arena, raw_data, header.symbol_table_foff, header.symbol_count);
@@ -6256,10 +6256,10 @@ coff_print_archive(Arena* arena, String8List* out, StringView indent, StringView
 
       for (uint64 i = 0; i < string_table.node_count; ++i, string_n = string_n.next) {
         uint32 offset = from_be_u32(first_member.member_offsets[i]);
-        rd_printf("[%4u] %#08x %S", i, offset, string_n.string);
+        rd_printf("[%4u] %#08x %S", i, offset, string_n.str);
       }
     } else {
-      rd_errorf("Member offset count (%llu) doesn't match string table count (%llu)", first_member.member_offset_count);
+      rd_errorf("Member offset count (%llu) doesn't match str table count (%llu)", first_member.member_offset_count);
     }
 
     rd_unindent();
@@ -6288,7 +6288,7 @@ coff_print_archive(Arena* arena, String8List* out, StringView indent, StringView
         if (symbol_number > 0 && symbol_number <= second_member.member_offset_count) {
           uint16 symbol_idx    = symbol_number - 1;
           uint32 member_offset = second_member.member_offsets[i];
-          rd_printf("[%4u] %#08x %S", i, member_offset, string_n.string);
+          rd_printf("[%4u] %#08x %S", i, member_offset, string_n.str);
         } else {
           rd_errorf("[%4u] Out of bounds symbol number %u", i, symbol_number);
           break;
@@ -6311,8 +6311,8 @@ coff_print_archive(Arena* arena, String8List* out, StringView indent, StringView
     String8List long_names = str8_split_by_string_chars(scratch.arena, archive_parse.long_names, ("\0"), 0);
     uint64 name_idx = 0;
     for (String8Node* name_n = long_names.first; name_n != 0; name_n = name_n.next, ++name_idx) {
-      uint64 offset = (uint64)(name_n.string.str - archive_parse.long_names.str);
-      rd_printf("[%-4u] %#08x %S", name_idx, offset, name_n.string);
+      uint64 offset = (uint64)(name_n.str.Ptr - archive_parse.long_names.Ptr);
+      rd_printf("[%-4u] %#08x %S", name_idx, offset, name_n.str);
     }
 
     rd_unindent();
@@ -6394,7 +6394,7 @@ coff_string_from_resource_id(Arena* arena, COFF_ResourceID id)
   switch (id.type) {
   case COFF_ResourceIDType_Null:   result = ("\?\?\?");                   break;
   case COFF_ResourceIDType_Number: result = push_str8f(arena, "%u", id.u.number); break;
-  case COFF_ResourceIDType_String: result = id.u.string;                          break;
+  case COFF_ResourceIDType_String: result = id.u.str;                          break;
   }
   return result;
 }
@@ -6982,7 +6982,7 @@ pe_print_static_import_table(Arena* arena, String8List* out, StringView indent, 
           if (imp.type == PE_ParsedImport_Ordinal) {
             rd_printf("%#-6x", imp.u.ordinal);
           } else if (imp.type == PE_ParsedImport_Name) {
-            rd_printf("%#-6x %S", imp.u.name.hint, imp.u.name.string);
+            rd_printf("%#-6x %S", imp.u.name.hint, imp.u.name.str);
           }
         }
         rd_unindent();
@@ -7035,7 +7035,7 @@ pe_print_delay_import_table(Arena* arena, String8List* out, StringView indent, u
         if (imp.type == PE_ParsedImport_Ordinal) {
           rd_printf("%-16S %-16S %#-4x", bound, unload, imp.u.ordinal);
         } else if (imp.type == PE_ParsedImport_Name) {
-          rd_printf("%-16S %-16S %#-4x %S", bound, unload, imp.u.name.hint, imp.u.name.string);
+          rd_printf("%-16S %-16S %#-4x %S", bound, unload, imp.u.name.hint, imp.u.name.str);
         }
       }
       rd_unindent();
@@ -7127,7 +7127,7 @@ pe_print_resources(Arena* arena, String8List* out, StringView indent, PE_Resourc
           frame.table          = res.u.dir;
           frame.print_table    = 1;
           frame.dir_idx        = stack.name_idx;
-          frame.dir_name       = res.id.u.string;
+          frame.dir_name       = res.id.u.str;
           frame.is_named       = 1;
           frame.curr_name_node = frame.table.named_list.first;
           frame.curr_id_node   = frame.table.id_list.first;
@@ -7136,7 +7136,7 @@ pe_print_resources(Arena* arena, String8List* out, StringView indent, PE_Resourc
         } else if (res.kind == PE_ResDataKind_COFF_LEAF) {
           COFF_ResourceDataEntry* entry = &res.u.leaf;
           rd_printf("[%u] %S Data VOFF: %#08x, Data Size: %#08x, Code Page: %u", 
-                      name_idx, res.id.u.string, entry.data_voff, entry.data_size, entry.code_page);
+                      name_idx, res.id.u.str, entry.data_voff, entry.data_size, entry.code_page);
         } else {
           InvalidPath;
         }
@@ -7694,7 +7694,7 @@ pe_print_base_relocs(Arena*              arena,
       default: NotImplemented;
     }
    
-    // convert blocks to string list
+    // convert blocks to str list
     uint64 iblock = 0;
     for (PE_BaseRelocBlockNode* node = base_relocs.first; node != 0; node = node.next) {
       PE_BaseRelocBlock* block = &node.v;

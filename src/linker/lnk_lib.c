@@ -157,7 +157,7 @@ lnk_lib_from_data(Arena* arena, StringView data, StringView path)
     member_off_arr = 0;
   }
   
-  // parse string table
+  // parse str table
   String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, ("\0"), StringSplitFlag_KeepEmpties);
   Assert(symbol_name_list.node_count >= symbol_count);
   symbol_count = Min(symbol_count, symbol_name_list.node_count);
@@ -395,7 +395,7 @@ lnk_coff_archive_from_lib_build(Arena* arena, LNK_LibBuild* lib, B32 emit_second
     str8_list_push_front(arena, &member_data_list, header);
   }
   
-  // compute size for symbol string table
+  // compute size for symbol str table
   uint32 name_buffer_size = 0;
   for (LNK_LibSymbol* ptr = &symbol_arr[0], *opl = ptr + symbol_count; ptr < opl; ptr += 1) {
     name_buffer_size += ptr.name.size;
@@ -407,7 +407,7 @@ lnk_coff_archive_from_lib_build(Arena* arena, LNK_LibBuild* lib, B32 emit_second
   {
     uint64 name_cursor = 0;
     for (LNK_LibSymbol* ptr = &symbol_arr[0], *opl = ptr + symbol_count; ptr < opl; ptr += 1) {
-      MemoryCopy(name_buffer + name_cursor, ptr.name.str, ptr.name.size);
+      MemoryCopy(name_buffer + name_cursor, ptr.name.Ptr, ptr.name.size);
       name_buffer[name_cursor + ptr.name.size] = '\0';
       name_cursor += ptr.name.size + 1;
     }
@@ -728,7 +728,7 @@ lnk_build_import_entry_obj(Arena* arena, StringView dll_name, COFF_MachineType m
     symbol.storage_class                      = COFF_SymStorageClass_External;
   }
   
-  // update string table size
+  // update str table size
   *string_table_size_ptr = (list.total_size - string_table_base);
   
   ProfEnd();
@@ -790,7 +790,7 @@ lnk_build_null_import_descriptor_obj(Arena* arena, COFF_MachineType machine)
     symbol.storage_class                      = COFF_SymStorageClass_External;
   }
   
-  // update string table size
+  // update str table size
   *string_table_size_ptr = (list.total_size - string_table_base);
   
   ProfEnd();
@@ -877,7 +877,7 @@ lnk_build_null_thunk_data_obj(Arena* arena, StringView dll_name, COFF_MachineTyp
     symbol.storage_class                      = COFF_SymStorageClass_External;
   }
   
-  // update string table size
+  // update str table size
   *string_table_size_ptr = (list.total_size - string_table_base);
   
   ProfEnd();

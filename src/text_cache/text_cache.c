@@ -158,11 +158,11 @@ txt_token_array_from_list(Arena* arena, TXT_TokenList* list)
 //~ rjf: Lexing Functions
 
 TXT_TokenArray
-txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView string)
+txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter, StringView str)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
-  uint64 chunk_size = Clamp(8, string.size/8, 4096);
+  uint64 chunk_size = Clamp(8, str.Length/8, 4096);
   
   //- rjf: generate token list
   TXT_TokenChunkList tokens = {0};
@@ -174,13 +174,13 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
     B32 escaped = 0;
     B32 next_escaped = 0;
     uint64 byte_process_start_idx = 0;
-    for(uint64 idx = 0; idx <= string.size;)
+    for(uint64 idx = 0; idx <= str.Length;)
     {
-      uint8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      uint8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      uint8 byte      = (idx+0 < str.Length) ? (str[idx+0]) : 0;
+      uint8 next_byte = (idx+1 < str.Length) ? (str[idx+1]) : 0;
       
       // rjf: update counter
-      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
+      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == str.Length))
       {
         ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
@@ -245,7 +245,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
       B32 ender_found = 0;
       if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
       {
-        if(idx == string.size)
+        if(idx == str.Length)
         {
           ender_pad = 0;
           ender_found = 1;
@@ -413,7 +413,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
             ("xor"),
             ("xor_eq"),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(cpp_keywords); keyword_idx += 1)
           {
             if(str8_match(cpp_keywords[keyword_idx], token_string, 0))
@@ -451,7 +451,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
             (">>="),
             ("."),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -504,7 +504,7 @@ txt_token_array_from_string__c_cpp(Arena* arena, uint64* bytes_processed_counter
 }
 
 TXT_TokenArray
-txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView string)
+txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -518,13 +518,13 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
     B32 escaped = 0;
     B32 next_escaped = 0;
     uint64 byte_process_start_idx = 0;
-    for(uint64 idx = 0; idx <= string.size;)
+    for(uint64 idx = 0; idx <= str.Length;)
     {
-      uint8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      uint8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      uint8 byte      = (idx+0 < str.Length) ? (str[idx+0]) : 0;
+      uint8 next_byte = (idx+1 < str.Length) ? (str[idx+1]) : 0;
       
       // rjf: update counter
-      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
+      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == str.Length))
       {
         ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
@@ -589,7 +589,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
       B32 ender_found = 0;
       if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
       {
-        if(idx == string.size)
+        if(idx == str.Length)
         {
           ender_pad = 0;
           ender_found = 1;
@@ -700,7 +700,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
             ("where"),
             ("import"),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(odin_keywords); keyword_idx += 1)
           {
             if(str8_match(odin_keywords[keyword_idx], token_string, 0))
@@ -738,7 +738,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
             (">>="),
             ("."),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -790,7 +790,7 @@ txt_token_array_from_string__odin(Arena* arena, uint64* bytes_processed_counter,
 }
 
 TXT_TokenArray
-txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView string)
+txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -804,13 +804,13 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
     B32 escaped = 0;
     B32 next_escaped = 0;
     uint64 byte_process_start_idx = 0;
-    for(uint64 idx = 0; idx <= string.size;)
+    for(uint64 idx = 0; idx <= str.Length;)
     {
-      uint8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      uint8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      uint8 byte      = (idx+0 < str.Length) ? (str[idx+0]) : 0;
+      uint8 next_byte = (idx+1 < str.Length) ? (str[idx+1]) : 0;
       
       // rjf: update counter
-      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
+      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == str.Length))
       {
         ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
@@ -875,7 +875,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
       B32 ender_found = 0;
       if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
       {
-        if(idx == string.size)
+        if(idx == str.Length)
         {
           ender_pad = 0;
           ender_found = 1;
@@ -966,7 +966,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
             ("enum"),
             ("enum_flags"),
             ("size_of"),
-            ("string"),
+            ("str"),
             ("type_of"),
             ("cast"),
             ("if"),
@@ -985,7 +985,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
             ("defer"),
             ("xx"),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(jai_keywords); keyword_idx += 1)
           {
             if(str8_match(jai_keywords[keyword_idx], token_string, 0))
@@ -1023,7 +1023,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
             (">>="),
             ("."),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1075,7 +1075,7 @@ txt_token_array_from_string__jai(Arena* arena, uint64* bytes_processed_counter, 
 }
 
 TXT_TokenArray
-txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView string)
+txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1089,13 +1089,13 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
     B32 escaped = 0;
     B32 next_escaped = 0;
     uint64 byte_process_start_idx = 0;
-    for(uint64 idx = 0; idx <= string.size;)
+    for(uint64 idx = 0; idx <= str.Length;)
     {
-      uint8 byte        = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      uint8 next_byte   = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      uint8 byte        = (idx+0 < str.Length) ? (str[idx+0]) : 0;
+      uint8 next_byte   = (idx+1 < str.Length) ? (str[idx+1]) : 0;
       
       // rjf: update counter
-      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
+      if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == str.Length))
       {
         ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
@@ -1160,7 +1160,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
       B32 ender_found = 0;
       if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
       {
-        if(idx == string.size)
+        if(idx == str.Length)
         {
           ender_pad = 0;
           ender_found = 1;
@@ -1276,7 +1276,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
             ("volatile"),
             ("while"),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 keyword_idx = 0; keyword_idx < ArrayCount(zig_keywords); keyword_idx += 1)
           {
             if(str8_match(zig_keywords[keyword_idx], token_string, 0))
@@ -1314,7 +1314,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
             (">>="),
             ("."),
           };
-          StringView token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          StringView token_string = str8_substr(str, r1u64(active_token_start_idx, idx+ender_pad));
           for(uint64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1366,7 +1366,7 @@ txt_token_array_from_string__zig(Arena* arena, uint64* bytes_processed_counter, 
 }
 
 TXT_TokenArray
-txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView string)
+txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_processed_counter, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1381,13 +1381,13 @@ txt_token_array_from_string__disasm_x64_intel(Arena* arena, uint64* bytes_proces
     int32 brace_nest = 0;
     int32 paren_nest = 0;
     int32 string_tick_nest = 0;
-    for(uint64 advance = 0; off <= string.size; off += advance)
+    for(uint64 advance = 0; off <= str.Length; off += advance)
     {
-      uint8 byte      = (off+0 < string.size) ? string.str[off+0] : 0;
-      uint8 next_byte = (off+1 < string.size) ? string.str[off+1] : 0;
+      uint8 byte      = (off+0 < str.Length) ? str[off+0] : 0;
+      uint8 next_byte = (off+1 < str.Length) ? str[off+1] : 0;
       B32 ender_found = 0;
       advance = (active_token_kind != TXT_TokenKind_Null ? 1 : 0);
-      if(off == string.size && active_token_kind != TXT_TokenKind_Null)
+      if(off == str.Length && active_token_kind != TXT_TokenKind_Null)
       {
         ender_found = 1;
         advance = 1;
@@ -2204,11 +2204,11 @@ ASYNC_WORK_DEF(txt_parse_work)
       uint64 cr_count = 0;
       for(uint64 idx = 0; idx < data.size && idx < 1024; idx += 1)
       {
-        if(data.str[idx] == '\r')
+        if(data[idx] == '\r')
         {
           cr_count += 1;
         }
-        if(data.str[idx] == '\n')
+        if(data[idx] == '\n')
         {
           lf_count += 1;
         }
@@ -2235,10 +2235,10 @@ ASYNC_WORK_DEF(txt_parse_work)
     uint64 byte_process_start_idx = 0;
     for(uint64 idx = 0; idx < data.size; idx += 1)
     {
-      if(data.str[idx] == '\n' || data.str[idx] == '\r')
+      if(data[idx] == '\n' || data[idx] == '\r')
       {
         line_count += 1;
-        if(data.str[idx] == '\r')
+        if(data[idx] == '\r')
         {
           idx += 1;
         }
@@ -2262,7 +2262,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     uint64 line_start_idx = 0;
     for(uint64 idx = 0; idx <= data.size; idx += 1)
     {
-      if(idx == data.size || data.str[idx] == '\n' || data.str[idx] == '\r')
+      if(idx == data.size || data[idx] == '\n' || data[idx] == '\r')
       {
         Rng1U64 line_range = r1u64(line_start_idx, idx);
         uint64 line_size = dim_1u64(line_range);
@@ -2270,7 +2270,7 @@ ASYNC_WORK_DEF(txt_parse_work)
         info.lines_max_size = Max(info.lines_max_size, line_size);
         line_idx += 1;
         line_start_idx = idx+1;
-        if(idx < data.size && data.str[idx] == '\r')
+        if(idx < data.size && data[idx] == '\r')
         {
           line_start_idx += 1;
           idx += 1;

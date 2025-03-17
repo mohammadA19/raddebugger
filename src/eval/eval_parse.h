@@ -56,20 +56,20 @@ struct E_Expr
   E_Space space;
   E_TypeKey type_key;
   E_Value value;
-  StringView string;
+  StringView str;
   StringView bytecode;
 }
 
 ////////////////////////////////
 //~ rjf: Map Types
 
-//- rjf: string . num
+//- rjf: str . num
 
 struct E_String2NumMapNode
 {
   E_String2NumMapNode* order_next;
   E_String2NumMapNode* hash_next;
-  StringView string;
+  StringView str;
   uint64 num;
 }
 
@@ -94,12 +94,12 @@ struct E_String2NumMap
   E_String2NumMapNode* last;
 }
 
-//- rjf: string . expr
+//- rjf: str . expr
 
 struct E_String2ExprMapNode
 {
   E_String2ExprMapNode* hash_next;
-  StringView string;
+  StringView str;
   E_Expr* expr;
   uint64 poison_count;
 }
@@ -159,20 +159,20 @@ thread_static E_ParseCtx* e_parse_ctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Map Functions
 
-//- rjf: string . num
+//- rjf: str . num
 E_String2NumMap e_string2num_map_make(Arena* arena, uint64 slot_count);
-void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, StringView string, uint64 num);
-uint64 e_num_from_string(E_String2NumMap* map, StringView string);
+void e_string2num_map_insert(Arena* arena, E_String2NumMap* map, StringView str, uint64 num);
+uint64 e_num_from_string(E_String2NumMap* map, StringView str);
 E_String2NumMapNodeArray e_string2num_map_node_array_from_map(Arena* arena, E_String2NumMap* map);
 int e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b);
 void e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array);
 
-//- rjf: string . expr
+//- rjf: str . expr
 E_String2ExprMap e_string2expr_map_make(Arena* arena, uint64 slot_count);
-void e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, StringView string, E_Expr* expr);
-void e_string2expr_map_inc_poison(E_String2ExprMap* map, StringView string);
-void e_string2expr_map_dec_poison(E_String2ExprMap* map, StringView string);
-E_Expr* e_string2expr_lookup(E_String2ExprMap* map, StringView string);
+void e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, StringView str, E_Expr* expr);
+void e_string2expr_map_inc_poison(E_String2ExprMap* map, StringView str);
+void e_string2expr_map_dec_poison(E_String2ExprMap* map, StringView str);
+E_Expr* e_string2expr_lookup(E_String2ExprMap* map, StringView str);
 
 ////////////////////////////////
 //~ rjf: Debug-Info-Driven Map Building Functions

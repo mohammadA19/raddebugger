@@ -21,11 +21,11 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_s_task)
     CV_DebugS ds = cv_parse_debug_s(arena, chunk.u.leaf);
     cv_debug_s_concat_in_place(debug_s, &ds);
 
-    // make sure there is one string table
+    // make sure there is one str table
     String8List string_data_list = cv_sub_section_from_debug_s(*debug_s, CV_C13SubSectionKind_StringTable);
     if (string_data_list.node_count > 1) {
       // TODO: print section index
-      lnk_error_obj(LNK_Warning_IllData, obj, ".debug$S has %u string table sub-sections defined, picking first sub-section", string_data_list.node_count);
+      lnk_error_obj(LNK_Warning_IllData, obj, ".debug$S has %u str table sub-sections defined, picking first sub-section", string_data_list.node_count);
     }
 
     // make sure there is one file checksum table
@@ -74,7 +74,7 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
       lnk_error_obj(LNK_Error_IllData, obj, ".debug$T must have at least 4 bytes for CodeView signature");
     }
 
-    CV_Signature* sig_ptr = (CV_Signature *)data_ptr.str;
+    CV_Signature* sig_ptr = (CV_Signature *)data_ptr.Ptr;
     switch (*sig_ptr) {
     default: {
       lnk_error_obj(LNK_Warning_IllData, obj, "unknown CodeView type signature in section (TODO: print section index)");
@@ -93,7 +93,7 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
       *data_ptr = StringView(0,0);
     } break;
     case CV_Signature_C13: {
-      data_ptr.str += sizeof(CV_Signature);
+      data_ptr.Ptr += sizeof(CV_Signature);
       data_ptr.size -= sizeof(CV_Signature);
     } break;
     }
@@ -195,7 +195,7 @@ lnk_setup_pch(Arena* arena, uint64 obj_count, LNK_Obj* obj_arr, CV_DebugT* debug
       // get LF_PRECOMP
       CV_DebugT          debug_p         = debug_p_arr[debug_p_obj_idx];
       CV_Leaf            endprecomp_leaf = cv_debug_t_get_leaf(debug_p, precomp.leaf_count);
-      CV_LeafEndPreComp* endprecomp      = (CV_LeafEndPreComp*) endprecomp_leaf.data.str;
+      CV_LeafEndPreComp* endprecomp      = (CV_LeafEndPreComp*) endprecomp_leaf.data.Ptr;
 
       // error check LF_PRECOMP
       if (precomp.start_index > CV_MinComplexTypeIndex) {
@@ -512,7 +512,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
         LNK_CodeViewSymbolsInput* in = &symbol_inputs[input_idx];
         in.obj_idx                  = obj_idx;
         in.symbol_list              = &reserved_lists[input_idx];
-        in.raw_symbols              = data_n.string;
+        in.raw_symbols              = data_n.str;
       }
     }
   }
@@ -610,7 +610,7 @@ lnk_make_code_view_input(TP_Context* tp, TP_Arena* tp_arena, String8List lib_dir
         continue;
       }
 
-      StringView path = match_list.first.string;
+      StringView path = match_list.first.str;
       {
         struct HT_Value {
           CV_TypeServerInfo  ts;
@@ -1101,8 +1101,8 @@ lnk_match_leaf_ref_deep(Arena* arena, LNK_CodeViewInput* input, LNK_LeafHashes* 
     StringView a_raw_leaf = lnk_data_from_leaf_ref(input, a);
     StringView b_raw_leaf = lnk_data_from_leaf_ref(input, b);
 
-    CV_LeafHeader* a_header = (CV_LeafHeader *) a_raw_leaf.str;
-    CV_LeafHeader* b_header = (CV_LeafHeader *) b_raw_leaf.str;
+    CV_LeafHeader* a_header = (CV_LeafHeader *) a_raw_leaf.Ptr;
+    CV_LeafHeader* b_header = (CV_LeafHeader *) b_raw_leaf.Ptr;
 
     if (a_header.kind == b_header.kind && a_header.size == b_header.size) {
       CV_Leaf a_leaf = cv_leaf_from_string(a_raw_leaf);
@@ -1131,8 +1131,8 @@ lnk_match_leaf_ref_deep(Arena* arena, LNK_CodeViewInput* input, LNK_LeafHashes* 
       AssertAlways(a_ti_lo == b_ti_lo);
 
       for (CV_TypeIndexInfo* ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info.next) {
-        CV_TypeIndex* a_ti_ptr = (CV_TypeIndex *) (a_leaf.data.str + ti_info.offset);
-        CV_TypeIndex* b_ti_ptr = (CV_TypeIndex *)(b_leaf.data.str + ti_info.offset);
+        CV_TypeIndex* a_ti_ptr = (CV_TypeIndex *) (a_leaf.data.Ptr + ti_info.offset);
+        CV_TypeIndex* b_ti_ptr = (CV_TypeIndex *)(b_leaf.data.Ptr + ti_info.offset);
 
         if (*a_ti_ptr >= a_ti_lo && *b_ti_ptr >= b_ti_lo) {
           LNK_LeafLocType a_loc_type = (a.enc_loc_idx & LNK_LeafRefFlag_LocIdxExternal) >> 31;
@@ -1191,14 +1191,14 @@ lnk_hash_cv_leaf(Arena*               arena,
     Temp temp = temp_begin(arena);
     Span<StringView> raw_data_arr = cv_get_data_around_type_indices(temp.arena, ti_info_list, leaf.data);
     for (uint64 i = 0; i < raw_data_arr.count; ++i) {
-      blake3_hasher_update(&hasher, raw_data_arr.v[i].str, raw_data_arr.v[i].size);
+      blake3_hasher_update(&hasher, raw_data_arr.v[i].Ptr, raw_data_arr.v[i].size);
     }
     temp_end(temp);
   }
 
   // mix-in sub leaf hashes
   for (CV_TypeIndexInfo* ti_n = ti_info_list.first; ti_n != 0; ti_n = ti_n.next) {
-    CV_TypeIndex sub_ti = *(CV_TypeIndex *) (leaf.data.str + ti_n.offset);
+    CV_TypeIndex sub_ti = *(CV_TypeIndex *) (leaf.data.Ptr + ti_n.offset);
 
     // is type index complex?
     if (sub_ti >= ti_ranges[ti_n.source].min) {
@@ -1303,7 +1303,7 @@ lnk_hash_cv_leaf_deep(Arena*               arena,
       stack.ti_info = stack.ti_info.next;
 
       // get type index info
-      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (stack.data.str + curr_ti_info.offset);
+      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (stack.data.Ptr + curr_ti_info.offset);
 
       // is index complex?
       if (*ti_ptr >= ti_ranges[curr_ti_info.source].min) {
@@ -1603,8 +1603,8 @@ THREAD_POOL_TASK_FUNC(lnk_hash_type_server_leaves_task)
   String8List inline_data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_InlineeLines);
   for (String8Node* inline_data_node = inline_data_list.first; inline_data_node != 0; inline_data_node = inline_data_node.next) {
     Temp temp = temp_begin(task.fixed_arenas[worker_id]);
-    CV_TypeIndexInfoList ti_info_list = cv_get_inlinee_type_index_offsets(temp.arena, inline_data_node.string);
-    lnk_hash_cv_leaf_deep(temp.arena, task.input, ti_ranges, leaves, hashes, LNK_LeafLocType_External, ts_idx, ti_info_list, inline_data_node.string);
+    CV_TypeIndexInfoList ti_info_list = cv_get_inlinee_type_index_offsets(temp.arena, inline_data_node.str);
+    lnk_hash_cv_leaf_deep(temp.arena, task.input, ti_ranges, leaves, hashes, LNK_LeafLocType_External, ts_idx, ti_info_list, inline_data_node.str);
     temp_end(temp);
   }
 
@@ -2039,7 +2039,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_symbols_task)
     
     // overwrite type indices in symbol
     for (CV_TypeIndexInfo* ti_info = ti_list.first; ti_info != 0; ti_info = ti_info.next) {
-      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (symnode.data.data.str + ti_info.offset);
+      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (symnode.data.data.Ptr + ti_info.offset);
       if (*ti_ptr >= ti_lo_arr[ti_info.source]) {
         LNK_LeafHashTable* leaf_ht     = &task.leaf_ht_arr[ti_info.source];
         LNK_LeafRef        leaf_ref    = lnk_leaf_ref_from_loc_idx_and_ti(task.input, loc_type, ti_info.source, loc_idx, *ti_ptr);
@@ -2092,10 +2092,10 @@ THREAD_POOL_TASK_FUNC(lnk_patch_inlines_task)
     Temp temp = temp_begin(scratch.arena);
 
     // get indices offsets
-    CV_TypeIndexInfoList ti_info_list = cv_get_inlinee_type_index_offsets(temp.arena, inline_data_node.string);
+    CV_TypeIndexInfoList ti_info_list = cv_get_inlinee_type_index_offsets(temp.arena, inline_data_node.str);
 
     for (CV_TypeIndexInfo* ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info.next) {
-      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (inline_data_node.string.str + ti_info.offset);
+      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (inline_data_node.str.Ptr + ti_info.offset);
       CV_TypeIndex  ti_lo  = lnk_ti_lo_from_loc(task.input, loc_type, loc_idx, ti_info.source);
       if (*ti_ptr >= ti_lo) {
         LNK_LeafRef     leaf_ref    = lnk_leaf_ref_from_loc_idx_and_ti(task.input, loc_type, ti_info.source, loc_idx, *ti_ptr);
@@ -2155,7 +2155,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_leaves_task)
     // get type indices offsets
     CV_TypeIndexInfoList ti_info_list = cv_get_leaf_type_index_offsets(temp.arena, leaf.kind, leaf.data);
     for (CV_TypeIndexInfo* ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info.next) {
-      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (leaf.data.str + ti_info.offset);
+      CV_TypeIndex* ti_ptr = (CV_TypeIndex *) (leaf.data.Ptr + ti_info.offset);
       if (*ti_ptr >= ti_lo) {
         LNK_LeafHashTable* leaf_ht         = &task.leaf_ht_arr[ti_info.source];
         LNK_LeafRef        sub_leaf_ref    = lnk_leaf_ref_from_loc_idx_and_ti(task.input, loc_type, ti_info.source, loc_idx, *ti_ptr);
@@ -2198,7 +2198,7 @@ THREAD_POOL_TASK_FUNC(lnk_unbucket_raw_leaves_task)
   Rng1U64                    range = task.range_arr[task_id];
   for (uint64 i = range.min; i < range.max; ++i) {
     StringView raw_leaf = lnk_data_from_leaf_ref(task.input, task.bucket_arr[i].leaf_ref);
-    task.raw_leaf_arr[i] = raw_leaf.str;
+    task.raw_leaf_arr[i] = raw_leaf.Ptr;
   }
 }
 
@@ -2234,7 +2234,7 @@ THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
     CV_Symbol* symbol = &symnode.data;
 
     if (symbol.kind == CV_SymKind_LPROC32_ID || symbol.kind == CV_SymKind_GPROC32_ID || symbol.kind == CV_SymKind_LPROC32_DPC) {
-      CV_SymProc32* proc32 = (CV_SymProc32 *) symbol.data.str;
+      CV_SymProc32* proc32 = (CV_SymProc32 *) symbol.data.Ptr;
       if (proc32.itype >= task.ipi_min_type_index) {
         if ((proc32.itype - task.ipi_min_type_index) < task.ipi_types.count) {
           uint64     leaf_idx = proc32.itype - task.ipi_min_type_index;
@@ -2242,13 +2242,13 @@ THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
 
           if (leaf.kind == CV_LeafKind_FUNC_ID) {
             if (leaf.data.size >= sizeof(CV_LeafFuncId)) {
-              proc32.itype = ((CV_LeafFuncId *) leaf.data.str).itype;
+              proc32.itype = ((CV_LeafFuncId *) leaf.data.Ptr).itype;
             } else {
               Assert(!"TODO: error handle corrupt leaf");
             }
           } else if (leaf.kind == CV_LeafKind_MFUNC_ID) {
             if (leaf.data.size >= sizeof(CV_LeafMFuncId)) {
-              proc32.itype = ((CV_LeafMFuncId *) leaf.data.str).itype;
+              proc32.itype = ((CV_LeafMFuncId *) leaf.data.Ptr).itype;
             } else {
               Assert(!"TODO: error handle corrupt leaf");
             }
@@ -2519,7 +2519,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
         // hash unique name
         U128 name_hash;
         blake3_hasher hasher; blake3_hasher_init(&hasher);
-        blake3_hasher_update(&hasher, udt_info.unique_name.str, udt_info.unique_name.size);
+        blake3_hasher_update(&hasher, udt_info.unique_name.Ptr, udt_info.unique_name.size);
         blake3_hasher_finalize(&hasher, (uint8*)&name_hash, sizeof(name_hash));
 
         // emit hash . unique name map
@@ -2540,8 +2540,8 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
           uint64 size = lnk_format_u128(temp, sizeof(temp), hash_length, name_hash);
           Assert(size < udt_info.name.size);
           Assert(size < udt_info.unique_name.size);
-          MemoryCopy(udt_info.name.str, temp, size+1);
-          MemoryCopy(udt_info.name.str+size+1, temp, size+1);
+          MemoryCopy(udt_info.name.Ptr, temp, size+1);
+          MemoryCopy(udt_info.name.Ptr+size+1, temp, size+1);
           udt_info.name.size        = size;
           udt_info.unique_name.size = size;
 
@@ -2554,8 +2554,8 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
                                   udt_info.unique_name.size + 1;
         } else {
           // replace uniuqe type name with hash
-          udt_info.unique_name.str  = udt_info.name.str + udt_info.name.size + 1;
-          udt_info.unique_name.size = lnk_format_u128(udt_info.unique_name.str, udt_info.unique_name.size, hash_length, name_hash);
+          udt_info.unique_name.Ptr  = udt_info.name.Ptr + udt_info.name.size + 1;
+          udt_info.unique_name.size = lnk_format_u128(udt_info.unique_name.Ptr, udt_info.unique_name.size, hash_length, name_hash);
 
           // update leaf header
           CV_LeafHeader* header = cv_debug_t_get_leaf_header(debug_t, leaf_idx);
@@ -2610,7 +2610,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
         // hash name
         U128 name_hash;
         blake3_hasher hasher; blake3_hasher_init(&hasher);
-        blake3_hasher_update(&hasher, udt_info.name.str, udt_info.name.size);
+        blake3_hasher_update(&hasher, udt_info.name.Ptr, udt_info.name.size);
         blake3_hasher_finalize(&hasher, (uint8*)&name_hash, sizeof(name_hash));
 
         // emit hash . name map
@@ -2620,7 +2620,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
         }
 
         // replace name with hash
-        udt_info.name.size = lnk_format_u128(udt_info.name.str, udt_info.name.size, hash_length, name_hash);
+        udt_info.name.size = lnk_format_u128(udt_info.name.Ptr, udt_info.name.size, hash_length, name_hash);
 
         // parse struct size
         CV_NumericParsed dummy;
@@ -2947,7 +2947,7 @@ THREAD_POOL_TASK_FUNC(lnk_cv_symbol_ptr_array_hasher)
   LNK_CvSymbolPtrArrayHasher* task  = raw_task;
   Rng1U64                     range = task.range_arr[task_id];
   for (uint64 symbol_idx = range.min; symbol_idx < range.max; ++symbol_idx) {
-    task.hash_arr[symbol_idx] = XXH3_64bits(task.arr[symbol_idx].data.data.str, task.arr[symbol_idx].data.data.size);
+    task.hash_arr[symbol_idx] = XXH3_64bits(task.arr[symbol_idx].data.data.Ptr, task.arr[symbol_idx].data.data.size);
   }
 }
 
@@ -3004,7 +3004,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
     uint64          chunk_size = lnk_file_size_from_chunk_ref(sect_id_map, chunk.ref);
     
     // compute chunk CRC
-    uint32 data_crc  = update_crc32(0, chunk_data.str, chunk_data.size);
+    uint32 data_crc  = update_crc32(0, chunk_data.Ptr, chunk_data.size);
     uint32 reloc_crc = 0; // TODO: compute CRC for relocations block
 
     // fill out SC
@@ -3288,7 +3288,7 @@ lnk_build_pdb(TP_Context*               tp,
     LNK_Chunk*          coff_sect_chunk        = lnk_chunk_from_symbol(coff_sect_array_symbol);
     StringView             coff_sect_chunk_data   = lnk_data_from_chunk_ref(sect_id_map, image_data, coff_sect_chunk.ref);
     uint64                 coff_sect_count        = coff_sect_chunk_data.size / sizeof(COFF_SectionHeader);
-    COFF_SectionHeader* coff_sect_ptr          = (COFF_SectionHeader*)coff_sect_chunk_data.str;
+    COFF_SectionHeader* coff_sect_ptr          = (COFF_SectionHeader*)coff_sect_chunk_data.Ptr;
     for (COFF_SectionHeader* hdr_ptr = &coff_sect_ptr[0], *opl = hdr_ptr + coff_sect_count;
          hdr_ptr < opl;
          ++hdr_ptr) {
@@ -3372,9 +3372,9 @@ lnk_build_pdb(TP_Context*               tp,
 // RAD Debug Info
 
 uint64
-lnk_udt_name_hash_table_hash(StringView string)
+lnk_udt_name_hash_table_hash(StringView str)
 {
-  return XXH3_64bits(string.str, string.size);
+  return XXH3_64bits(str.Ptr, str.Length);
 }
 
 internal
@@ -3698,7 +3698,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
 
     switch (src.kind) {
     case CV_LeafKind_MODIFIER: {
-      CV_LeafModifier* modifier = (CV_LeafModifier *) src.data.str;
+      CV_LeafModifier* modifier = (CV_LeafModifier *) src.data.Ptr;
 
       RDIB_Type* dst         = lnk_push_converted_codeview_type(arena, &task.rdib_types_lists[task_id], task.tpi_itype_map, itype);
       dst.kind              = RDI_TypeKind_Modifier;
@@ -3706,7 +3706,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       dst.modifier.type_ref = lnk_rdib_type_from_itype(task, modifier.itype);
     } break;
     case CV_LeafKind_POINTER: {
-      CV_LeafPointer* ptr      = (CV_LeafPointer *) src.data.str;
+      CV_LeafPointer* ptr      = (CV_LeafPointer *) src.data.Ptr;
       CV_PointerKind  ptr_kind = CV_PointerAttribs_Extract_Kind(ptr.attribs);
       CV_PointerMode  ptr_mode = CV_PointerAttribs_Extract_Mode(ptr.attribs);
       uint32             ptr_size = CV_PointerAttribs_Extract_Size(ptr.attribs);
@@ -3723,7 +3723,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         }
 
         // parse LF_MODIFIER
-        CV_LeafModifier*       sym_modifier = (CV_LeafModifier *) next_leaf.data.str;
+        CV_LeafModifier*       sym_modifier = (CV_LeafModifier *) next_leaf.data.Ptr;
         RDI_TypeModifierFlags  flags        = rdi_type_modifier_flags_from_cv_modifier_flags(sym_modifier.flags);
 
         // accumulate modifier flags
@@ -3756,7 +3756,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       }
     } break;
     case CV_LeafKind_PROCEDURE: {
-      CV_LeafProcedure* proc = (CV_LeafProcedure *) src.data.str;
+      CV_LeafProcedure* proc = (CV_LeafProcedure *) src.data.Ptr;
 
       RDIB_Type* dst        = lnk_push_converted_codeview_type(arena, &task.rdib_types_lists[task_id], task.tpi_itype_map, itype);
       dst.kind             = RDI_TypeKind_Function;
@@ -3764,7 +3764,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       dst.func.params_type = lnk_rdib_type_from_itype(task, proc.arg_itype);
     } break;
     case CV_LeafKind_MFUNCTION: {
-      CV_LeafMFunction* mfunc = (CV_LeafMFunction *) src.data.str;
+      CV_LeafMFunction* mfunc = (CV_LeafMFunction *) src.data.Ptr;
       B32 is_static_method = mfunc.this_itype == 0;
       RDIB_Type* dst = lnk_push_converted_codeview_type(arena, &task.rdib_types_lists[task_id], task.tpi_itype_map, itype);
 
@@ -3782,7 +3782,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       }
     } break;
     case CV_LeafKind_BITFIELD: {
-      CV_LeafBitField* bitfield = (CV_LeafBitField *) src.data.str;
+      CV_LeafBitField* bitfield = (CV_LeafBitField *) src.data.Ptr;
 
       RDIB_Type* dst           = lnk_push_converted_codeview_type(arena, &task.rdib_types_lists[task_id], task.tpi_itype_map, itype);
       dst.kind                = RDI_TypeKind_Bitfield;
@@ -3791,8 +3791,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       dst.bitfield.value_type = lnk_rdib_type_from_itype(task, bitfield.itype);
     } break;
     case CV_LeafKind_ARRAY: {
-      CV_LeafArray*     array = (CV_LeafArray *) src.data.str;
-      CV_NumericParsed  size  = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafArray), src.data.str + src.data.size);
+      CV_LeafArray*     array = (CV_LeafArray *) src.data.Ptr;
+      CV_NumericParsed  size  = cv_numeric_from_data_range(src.data.Ptr + sizeof(CV_LeafArray), src.data.Ptr + src.data.size);
 
       RDIB_Type* dst        = lnk_push_converted_codeview_type(arena, &task.rdib_types_lists[task_id], task.tpi_itype_map, itype);
       dst.kind             = RDI_TypeKind_Array;
@@ -3801,16 +3801,16 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
     } break;
     case CV_LeafKind_CLASS:
     case CV_LeafKind_STRUCTURE: {
-      CV_LeafStruct*    udt  = (CV_LeafStruct *) src.data.str;
-      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafStruct), src.data.str + src.data.size);
+      CV_LeafStruct*    udt  = (CV_LeafStruct *) src.data.Ptr;
+      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.Ptr + sizeof(CV_LeafStruct), src.data.Ptr + src.data.size);
 
       StringView name;
       StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
-        name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafStruct) + size.encoded_size, src.data.str + src.data.size);
-        link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
+        name      = str8_cstring_capped(src.data.Ptr + sizeof(CV_LeafStruct) + size.encoded_size, src.data.Ptr + src.data.size);
+        link_name = str8_cstring_capped_reverse(name.Ptr + name.size + 1, src.data.Ptr + src.data.size);
       } else {
-        name      = str8_cstring_capped_reverse(src.data.str + sizeof(CV_LeafStruct) + size.encoded_size, src.data.str + src.data.size);
+        name      = str8_cstring_capped_reverse(src.data.Ptr + sizeof(CV_LeafStruct) + size.encoded_size, src.data.Ptr + src.data.size);
         link_name = name;
       }
 
@@ -3830,16 +3830,16 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
     } break;
     case CV_LeafKind_CLASS2:
     case CV_LeafKind_STRUCT2: {
-      CV_LeafStruct2*   udt  = (CV_LeafStruct2 *) src.data.str;
-      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafStruct2), src.data.str + src.data.size);
+      CV_LeafStruct2*   udt  = (CV_LeafStruct2 *) src.data.Ptr;
+      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.Ptr + sizeof(CV_LeafStruct2), src.data.Ptr + src.data.size);
 
       StringView name;
       StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
-        name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafStruct2) + size.encoded_size, src.data.str + src.data.size);
-        link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
+        name      = str8_cstring_capped(src.data.Ptr + sizeof(CV_LeafStruct2) + size.encoded_size, src.data.Ptr + src.data.size);
+        link_name = str8_cstring_capped_reverse(name.Ptr + name.size + 1, src.data.Ptr + src.data.size);
       } else {
-        name      = str8_cstring_capped_reverse(src.data.str + sizeof(CV_LeafStruct2) + size.encoded_size, src.data.str + src.data.size);
+        name      = str8_cstring_capped_reverse(src.data.Ptr + sizeof(CV_LeafStruct2) + size.encoded_size, src.data.Ptr + src.data.size);
         link_name = name;
       }
 
@@ -3858,16 +3858,16 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       }
     } break;
     case CV_LeafKind_UNION: {
-      CV_LeafUnion*     udt  = (CV_LeafUnion *) src.data.str;
-      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.str + sizeof(CV_LeafUnion), src.data.str + src.data.size);
+      CV_LeafUnion*     udt  = (CV_LeafUnion *) src.data.Ptr;
+      CV_NumericParsed  size = cv_numeric_from_data_range(src.data.Ptr + sizeof(CV_LeafUnion), src.data.Ptr + src.data.size);
 
       StringView name;
       StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
-        name      = str8_cstring_capped(src.data.str + sizeof(CV_LeafUnion) + size.encoded_size, src.data.str + src.data.size);
-        link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
+        name      = str8_cstring_capped(src.data.Ptr + sizeof(CV_LeafUnion) + size.encoded_size, src.data.Ptr + src.data.size);
+        link_name = str8_cstring_capped_reverse(name.Ptr + name.size + 1, src.data.Ptr + src.data.size);
       } else {
-        name      = str8_cstring_capped_reverse(src.data.str + sizeof(CV_LeafUnion) + size.encoded_size, src.data.str + src.data.size);
+        name      = str8_cstring_capped_reverse(src.data.Ptr + sizeof(CV_LeafUnion) + size.encoded_size, src.data.Ptr + src.data.size);
         link_name = name;
       }
 
@@ -3884,15 +3884,15 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       }
     } break;
     case CV_LeafKind_ENUM: {
-      CV_LeafEnum* udt  = (CV_LeafEnum *) src.data.str;
+      CV_LeafEnum* udt  = (CV_LeafEnum *) src.data.Ptr;
 
       StringView name;
       StringView link_name;
       if (udt.props & CV_TypeProp_HasUniqueName) {
-        name      = str8_cstring_capped(src.data.str + sizeof(*udt), src.data.str + src.data.size);
-        link_name = str8_cstring_capped_reverse(name.str + name.size + 1, src.data.str + src.data.size);
+        name      = str8_cstring_capped(src.data.Ptr + sizeof(*udt), src.data.Ptr + src.data.size);
+        link_name = str8_cstring_capped_reverse(name.Ptr + name.size + 1, src.data.Ptr + src.data.size);
       } else {
-        name      = str8_cstring_capped_reverse(src.data.str + sizeof(*udt), src.data.str + src.data.size);
+        name      = str8_cstring_capped_reverse(src.data.Ptr + sizeof(*udt), src.data.Ptr + src.data.size);
         link_name = name;
       }
 
@@ -3910,7 +3910,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       }
     } break;
     case CV_LeafKind_ARGLIST: {
-      CV_LeafArgList* arglist = (CV_LeafArgList *) src.data.str;
+      CV_LeafArgList* arglist = (CV_LeafArgList *) src.data.Ptr;
       CV_TypeIndex*   itypes  = (CV_TypeIndex *) (arglist + 1);
 
       if (arglist.count * sizeof(CV_TypeIndex) + sizeof(CV_LeafArgList) > src.data.size) {
@@ -3934,7 +3934,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
     case CV_LeafKind_FIELDLIST: {
       RDIB_UDTMemberChunkList* rdib_member_list;
       RDIB_TypeChunkList*      rdib_member_types;
-      B32 is_enum = sizeof(CV_LeafKind) <= src.data.size && (*(CV_LeafKind *)src.data.str == CV_LeafKind_ENUMERATE);
+      B32 is_enum = sizeof(CV_LeafKind) <= src.data.size && (*(CV_LeafKind *)src.data.Ptr == CV_LeafKind_ENUMERATE);
       if (is_enum) {
         rdib_member_list  = &task.rdib_enum_members_lists[worker_id];
         rdib_member_types = &task.rdib_types_enum_members_lists[worker_id];
@@ -3947,7 +3947,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       dst.kind = RDI_TypeKindExt_Members;
 
       for (uint64 cursor = 0; cursor + sizeof(CV_LeafKind) <= src.data.size; ) {
-        CV_LeafKind field_kind = *(CV_LeafKind *) (src.data.str + cursor);
+        CV_LeafKind field_kind = *(CV_LeafKind *) (src.data.Ptr + cursor);
         cursor += sizeof(field_kind);
 
         // do we have bytes to read?
@@ -3958,7 +3958,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
 
         switch (field_kind) {
         case CV_LeafKind_INDEX: {
-          CV_LeafIndex* index = (CV_LeafIndex *) (src.data.str + cursor);
+          CV_LeafIndex* index = (CV_LeafIndex *) (src.data.Ptr + cursor);
           cursor += sizeof(*index);
 
           // push new node
@@ -3971,9 +3971,9 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_MEMBER: {
           // prase CodeView struct/class/union data member
-          CV_LeafMember*   leaf_member = (CV_LeafMember *) (src.data.str + cursor);
-          CV_NumericParsed offset      = cv_numeric_from_data_range((uint8 *)(leaf_member + 1), src.data.str + src.data.size);
-          StringView          name        = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafMember) + offset.encoded_size, src.data.str + src.data.size);
+          CV_LeafMember*   leaf_member = (CV_LeafMember *) (src.data.Ptr + cursor);
+          CV_NumericParsed offset      = cv_numeric_from_data_range((uint8 *)(leaf_member + 1), src.data.Ptr + src.data.size);
+          StringView          name        = str8_cstring_capped(src.data.Ptr + cursor + sizeof(CV_LeafMember) + offset.encoded_size, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafMember);
           cursor += offset.encoded_size;
           cursor += name.size + 1;
@@ -3990,8 +3990,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_STMEMBER: {
           // parse CodeView static member
-          CV_LeafStMember* st_member = (CV_LeafStMember *) (src.data.str + cursor);
-          StringView         name      = str8_cstring_capped(st_member + 1, src.data.str + src.data.size);
+          CV_LeafStMember* st_member = (CV_LeafStMember *) (src.data.Ptr + cursor);
+          StringView         name      = str8_cstring_capped(st_member + 1, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafStMember);
           cursor += name.size + 1;
 
@@ -4006,8 +4006,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_METHOD: {
           // parse CodeView over-loaded method
-          CV_LeafMethod* method = (CV_LeafMethod *) (src.data.str + cursor);
-          StringView        name   = str8_cstring_capped(method + 1, src.data.str + src.data.size);
+          CV_LeafMethod* method = (CV_LeafMethod *) (src.data.Ptr + cursor);
+          StringView        name   = str8_cstring_capped(method + 1, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafMethod);
           cursor += name.size + 1;
 
@@ -4017,7 +4017,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
             if (method_list_leaf.kind == CV_LeafKind_METHODLIST) {
               for (uint64 cursor = 0; cursor + sizeof(CV_LeafMethodListMember) <= method_list_leaf.data.size; ) {
                 // parse CodeView method overload info
-                CV_LeafMethodListMember* list_member = (CV_LeafMethodListMember *) (method_list_leaf.data.str + cursor);
+                CV_LeafMethodListMember* list_member = (CV_LeafMethodListMember *) (method_list_leaf.data.Ptr + cursor);
                 CV_MethodProp            prop        = CV_FieldAttribs_Extract_MethodProp(list_member.attribs);
                 cursor += sizeof(CV_LeafMethodListMember);
                 uint32 vftable_offset = 0;
@@ -4044,7 +4044,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_ONEMETHOD: {
           // parse CodeView method
-          CV_LeafOneMethod* one_method = (CV_LeafOneMethod *) (src.data.str + cursor);
+          CV_LeafOneMethod* one_method = (CV_LeafOneMethod *) (src.data.Ptr + cursor);
           CV_MethodProp     prop       = CV_FieldAttribs_Extract_MethodProp(one_method.attribs);
           cursor += sizeof(CV_LeafOneMethod);
           uint32 vftable_offset = 0;
@@ -4052,7 +4052,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
             str8_deserial_read_struct(src.data, cursor, &vftable_offset);
             cursor += sizeof(vftable_offset);
           }
-          StringView name = str8_cstring_capped(src.data.str + cursor, src.data.str + src.data.size);
+          StringView name = str8_cstring_capped(src.data.Ptr + cursor, src.data.Ptr + src.data.size);
           cursor += name.size + 1;
 
           // push new node
@@ -4068,8 +4068,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_NESTTYPE: {
           // parse CodeView nested type
-          CV_LeafNestType* nest_type = (CV_LeafNestType *) (src.data.str + cursor);
-          StringView          name      = str8_cstring_capped(nest_type + 1, src.data.str + src.data.size);
+          CV_LeafNestType* nest_type = (CV_LeafNestType *) (src.data.Ptr + cursor);
+          StringView          name      = str8_cstring_capped(nest_type + 1, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafNestType);
           cursor += name.size + 1;
 
@@ -4084,8 +4084,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_NESTTYPEEX: {
           // parse CodeView nested type extended
-          CV_LeafNestTypeEx* nest_type_ex = (CV_LeafNestTypeEx *) (src.data.str + cursor);
-          StringView            name         = str8_cstring_capped(nest_type_ex + 1, src.data.str + src.data.size);
+          CV_LeafNestTypeEx* nest_type_ex = (CV_LeafNestTypeEx *) (src.data.Ptr + cursor);
+          StringView            name         = str8_cstring_capped(nest_type_ex + 1, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafNestTypeEx);
           cursor += name.size + 1;
 
@@ -4100,8 +4100,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_BCLASS: {
           // parse CodeView base class member
-          CV_LeafBClass*    bclass = (CV_LeafBClass *) (src.data.str + cursor);
-          CV_NumericParsed  offset = cv_numeric_from_data_range((uint8 *)(bclass + 1), src.data.str + src.data.size);
+          CV_LeafBClass*    bclass = (CV_LeafBClass *) (src.data.Ptr + cursor);
+          CV_NumericParsed  offset = cv_numeric_from_data_range((uint8 *)(bclass + 1), src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafBClass);
           cursor += offset.encoded_size;
 
@@ -4119,9 +4119,9 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_VBCLASS:
         case CV_LeafKind_IVBCLASS: {
           // parse CodeView virtual base class
-          CV_LeafVBClass*   vbclass    = (CV_LeafVBClass *) (src.data.str + cursor);
-          CV_NumericParsed  vbptr_off  = cv_numeric_from_data_range(src.data.str + cursor + sizeof(*vbclass), src.data.str + src.data.size);
-          CV_NumericParsed  vtable_off = cv_numeric_from_data_range(src.data.str + cursor + sizeof(*vbclass) + vbptr_off.encoded_size, src.data.str + src.data.size);
+          CV_LeafVBClass*   vbclass    = (CV_LeafVBClass *) (src.data.Ptr + cursor);
+          CV_NumericParsed  vbptr_off  = cv_numeric_from_data_range(src.data.Ptr + cursor + sizeof(*vbclass), src.data.Ptr + src.data.size);
+          CV_NumericParsed  vtable_off = cv_numeric_from_data_range(src.data.Ptr + cursor + sizeof(*vbclass) + vbptr_off.encoded_size, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafVBClass);
           cursor += vbptr_off.encoded_size;
           cursor += vtable_off.encoded_size;
@@ -4138,16 +4138,16 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         } break;
         case CV_LeafKind_VFUNCTAB: {
           // parse CodeView virtual function table
-          CV_LeafVFuncTab* vfunc_tab = (CV_LeafVFuncTab *) (src.data.str + cursor);
+          CV_LeafVFuncTab* vfunc_tab = (CV_LeafVFuncTab *) (src.data.Ptr + cursor);
           cursor += sizeof(*vfunc_tab);
 
           // TODO: we don't have an equivalent in RDI
         } break;
         case CV_LeafKind_ENUMERATE: {
           // parse CodeView enum member
-          CV_LeafEnumerate* enumerate = (CV_LeafEnumerate *) (src.data.str + cursor);
-          CV_NumericParsed  value     = cv_numeric_from_data_range((uint8 *) (enumerate + 1), src.data.str + src.data.size);
-          StringView           name      = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafEnumerate) + value.encoded_size, src.data.str + src.data.size);
+          CV_LeafEnumerate* enumerate = (CV_LeafEnumerate *) (src.data.Ptr + cursor);
+          CV_NumericParsed  value     = cv_numeric_from_data_range((uint8 *) (enumerate + 1), src.data.Ptr + src.data.size);
+          StringView           name      = str8_cstring_capped(src.data.Ptr + cursor + sizeof(CV_LeafEnumerate) + value.encoded_size, src.data.Ptr + src.data.size);
           cursor += sizeof(CV_LeafEnumerate);
           cursor += value.encoded_size;
           cursor += name.size + 1;
@@ -4195,9 +4195,9 @@ lnk_src_file_hash_cv(StringView normal_full_path, CV_C13ChecksumKind checksum_ki
   XXH3_state_t state;
   XXH3_INITSTATE(&state);
   XXH3_64bits_reset(&state);
-  XXH3_64bits_update(&state, normal_full_path.str, normal_full_path.size);
+  XXH3_64bits_update(&state, normal_full_path.Ptr, normal_full_path.size);
   XXH3_64bits_update(&state, &checksum_kind, sizeof(checksum_kind));
-  XXH3_64bits_update(&state, checksum.str, checksum.size);
+  XXH3_64bits_update(&state, checksum.Ptr, checksum.size);
   XXH64_hash_t result = XXH3_64bits_digest(&state);
   return result;
 }
@@ -4308,9 +4308,9 @@ THREAD_POOL_TASK_FUNC(lnk_count_source_files_task)
   uint64 count = 0;
 
   for (String8Node* raw_chksms_n = raw_chksms_list.first; raw_chksms_n != 0; raw_chksms_n = raw_chksms_n.next) {
-    for(uint64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n.string.size; ) {
+    for(uint64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n.str.Length; ) {
       // parse header
-      CV_C13Checksum* header = (CV_C13Checksum *) (raw_chksms_n.string.str + cursor);
+      CV_C13Checksum* header = (CV_C13Checksum *) (raw_chksms_n.str.Ptr + cursor);
 
       // update count
       ++count;
@@ -4339,7 +4339,7 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
   String8List                      raw_strtab_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_StringTable);
 
   if (raw_strtab_list.node_count > 1) {
-    lnk_error_obj(LNK_Warning_IllData, &task.obj_arr[obj_idx], "Multiple string table sub-sections, picking first one.");
+    lnk_error_obj(LNK_Warning_IllData, &task.obj_arr[obj_idx], "Multiple str table sub-sections, picking first one.");
   }
   if (raw_chksms_list.node_count > 1) {
     lnk_error_obj(LNK_Warning_IllData, &task.obj_arr[obj_idx], "Multiple file checksum sub-sections, picking first one.");
@@ -4349,17 +4349,17 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
   LNK_SourceFileBucket* curr_bucket  = 0;
 
   for (String8Node* raw_chksms_n = raw_chksms_list.first; raw_chksms_n != 0; raw_chksms_n = raw_chksms_n.next) {
-    for (uint64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n.string.size; ) {
+    for (uint64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n.str.Length; ) {
       // parse header
-      CV_C13Checksum* header = (CV_C13Checksum *) (raw_chksms_n.string.str + cursor);
+      CV_C13Checksum* header = (CV_C13Checksum *) (raw_chksms_n.str.Ptr + cursor);
 
       // grab checksum
-      StringView checksum = str8_substr(raw_chksms_n.string, rng_1u64(cursor + sizeof(CV_C13Checksum), 
+      StringView checksum = str8_substr(raw_chksms_n.str, rng_1u64(cursor + sizeof(CV_C13Checksum), 
                                                                     cursor + sizeof(CV_C13Checksum) + header.len));
 
       // grab file path
       Assert(header.name_off < string_table.size);
-      StringView file_path = str8_cstring_capped(string_table.str + header.name_off, string_table.str + string_table.size);
+      StringView file_path = str8_cstring_capped(string_table.Ptr + header.name_off, string_table.Ptr + string_table.size);
 
       // normalize file path
       StringView normal_path = lnk_normalize_src_file_path(arena, file_path);
@@ -4499,24 +4499,24 @@ THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
       CV_Symbol symbol = symbol_n.data;
       if (symbol.kind == CV_SymKind_COMPILE) {
         AssertAlways(sizeof(CV_SymCompile) <= symbol.data.size);
-        CV_SymCompile* compile = (CV_SymCompile *)symbol.data.str;
+        CV_SymCompile* compile = (CV_SymCompile *)symbol.data.Ptr;
         comp_info.arch          = compile.machine;
         comp_info.language      = CV_CompileFlags_Extract_Language(compile.flags);
-        comp_info.compiler_name = str8_cstring_capped(compile + 1, symbol.data.str + symbol.data.size);
+        comp_info.compiler_name = str8_cstring_capped(compile + 1, symbol.data.Ptr + symbol.data.size);
         goto exit;
       } else if (symbol.kind == CV_SymKind_COMPILE2) {
         AssertAlways(sizeof(CV_SymCompile2) <= symbol.data.size);
-        CV_SymCompile2* compile2 = (CV_SymCompile2 *)symbol.data.str;
+        CV_SymCompile2* compile2 = (CV_SymCompile2 *)symbol.data.Ptr;
         comp_info.arch          = compile2.machine;
         comp_info.language      = CV_Compile2Flags_Extract_Language(compile2.flags);
-        comp_info.compiler_name = str8_cstring_capped(compile2 + 1, symbol.data.str + symbol.data.size);
+        comp_info.compiler_name = str8_cstring_capped(compile2 + 1, symbol.data.Ptr + symbol.data.size);
         goto exit;
       } else if (symbol.kind == CV_SymKind_COMPILE3) {
         AssertAlways(sizeof(CV_SymCompile3) <= symbol.data.size);
-        CV_SymCompile3* compile3 = (CV_SymCompile3 *)symbol.data.str;
+        CV_SymCompile3* compile3 = (CV_SymCompile3 *)symbol.data.Ptr;
         comp_info.arch          = compile3.machine;
         comp_info.language      = CV_Compile3Flags_Extract_Language(compile3.flags);
-        comp_info.compiler_name = str8_cstring_capped(compile3 + 1, symbol.data.str + symbol.data.size);
+        comp_info.compiler_name = str8_cstring_capped(compile3 + 1, symbol.data.Ptr + symbol.data.size);
         goto exit;
       }
     }
@@ -4566,7 +4566,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
   dst.line_table = rdib_line_table_chunk_list_push(arena, &task.line_tables[worker_id], task.line_table_cap);
 
   for (String8Node* raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
-    StringView               raw_lines   = raw_lines_node.string;
+    StringView               raw_lines   = raw_lines_node.str;
     CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(scratch.arena, raw_lines, rng_1u64(0, raw_lines.size));
     for (CV_C13LinesHeaderNode* lines_node = parsed_list.first; lines_node != 0; lines_node = lines_node.next) {
       CV_C13LinesHeader parsed_lines = lines_node.v;
@@ -4576,12 +4576,12 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
         lnk_error_obj(LNK_Warning_IllData, obj, "Out of bounds $$FILE_CHECKSUM offset (0x%llx) in line table header.", parsed_lines.file_off);
         continue;
       }
-      CV_C13Checksum* checksum_header = (CV_C13Checksum *) (raw_file_chksms.str + parsed_lines.file_off);
+      CV_C13Checksum* checksum_header = (CV_C13Checksum *) (raw_file_chksms.Ptr + parsed_lines.file_off);
       if (parsed_lines.file_off + sizeof(CV_C13Checksum) + checksum_header.len > raw_file_chksms.size) {
         lnk_error_obj(LNK_Warning_IllData, obj, "Not enough bytes to read file checksum @ 0x%llx.", parsed_lines.file_off);
         continue;
       }
-      StringView file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
+      StringView file_path      = str8_cstring_capped(raw_string_table.Ptr + checksum_header.name_off, raw_string_table.Ptr + raw_string_table.size);
       StringView checksum_bytes = StringView((uint8 *) (checksum_header + 1), checksum_header.len);
 
       // read out lines
@@ -4702,7 +4702,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       }
     } break;
     case CV_SymKind_BLOCK32: {
-      CV_SymBlock32* block32    = (CV_SymBlock32 *) symbol.data.str;
+      CV_SymBlock32* block32    = (CV_SymBlock32 *) symbol.data.Ptr;
       Rng1U64        virt_range = lnk_virt_range_from_sect_off_size(block32.sec, block32.off, block32.len, task.image_sects, obj, symbol.kind, symbol.offset);
 
       // push new scope node
@@ -4730,8 +4730,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_GDATA32:
     case CV_SymKind_LDATA32: {
-      CV_SymData32* data32         = (CV_SymData32 *) symbol.data.str;
-      StringView       name           = str8_cstring_capped(data32 + 1, symbol.data.str + symbol.data.size);
+      CV_SymData32* data32         = (CV_SymData32 *) symbol.data.Ptr;
+      StringView       name           = str8_cstring_capped(data32 + 1, symbol.data.Ptr + symbol.data.size);
       RDIB_Type*    type           = lnk_type_from_itype(data32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       RDIB_Type*    container_type = lnk_find_container_type(name, task.tpi_itype_range, task.udt_name_buckets, task.udt_name_buckets_cap, task.tpi_itype_map);
       uint64           data_voff      = lnk_virt_off_from_sect_off(data32.sec, data32.off, task.image_sects, obj, symbol.kind, symbol.offset);
@@ -4783,8 +4783,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_LTHREAD32:
     case CV_SymKind_GTHREAD32: {
-      CV_SymThread32* thread32       = (CV_SymThread32 *) symbol.data.str;
-      StringView         name           = str8_cstring_capped(thread32 + 1, symbol.data.str + symbol.data.size);
+      CV_SymThread32* thread32       = (CV_SymThread32 *) symbol.data.Ptr;
+      StringView         name           = str8_cstring_capped(thread32 + 1, symbol.data.Ptr + symbol.data.size);
       RDIB_Type*      type           = lnk_type_from_itype(thread32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       RDIB_Type*      container_type = lnk_find_container_type(name, task.tpi_itype_range, task.udt_name_buckets, task.udt_name_buckets_cap, task.tpi_itype_map);
 
@@ -4820,8 +4820,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_LPROC32:
     case CV_SymKind_GPROC32: {
-      CV_SymProc32* proc32     = (CV_SymProc32 *) symbol.data.str;
-      StringView       name       = str8_cstring_capped(proc32 + 1, symbol.data.str + symbol.data.size);
+      CV_SymProc32* proc32     = (CV_SymProc32 *) symbol.data.Ptr;
+      StringView       name       = str8_cstring_capped(proc32 + 1, symbol.data.Ptr + symbol.data.size);
       RDIB_Type*    type       = lnk_type_from_itype(proc32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
       Rng1U64       virt_range = lnk_virt_range_from_sect_off_size(proc32.sec, proc32.off, proc32.len, task.image_sects, obj, symbol.kind, symbol.offset);
 
@@ -4851,7 +4851,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         uint64 depth = 1;
         for (CV_SymbolNode* lookahead = symbol_n.next; lookahead != 0; lookahead = lookahead.next) {
           if (lookahead.data.kind == CV_SymKind_FRAMEPROC) {
-            frameproc = (CV_SymFrameproc *) lookahead.data.data.str;
+            frameproc = (CV_SymFrameproc *) lookahead.data.data.Ptr;
             break;
           }
           if (cv_is_scope_symbol(lookahead.data.kind)) {
@@ -4924,8 +4924,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       }
     } break;
     case CV_SymKind_THUNK32: {
-      CV_SymThunk32* thunk32    = (CV_SymThunk32 *) symbol.data.str;
-      StringView        name       = str8_cstring_capped(thunk32 + 1, symbol.data.str + symbol.data.size);
+      CV_SymThunk32* thunk32    = (CV_SymThunk32 *) symbol.data.Ptr;
+      StringView        name       = str8_cstring_capped(thunk32 + 1, symbol.data.Ptr + symbol.data.size);
       Rng1U64        virt_range = lnk_virt_range_from_sect_off_size(thunk32.sec, thunk32.off, thunk32.len, task.image_sects, obj, symbol.kind, symbol.offset);
 
       // scan ahead for context S_FRAMEPROC (must be defined in scope of PROC symbol)
@@ -4934,7 +4934,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         uint64 depth = 1;
         for (CV_SymbolNode* lookahead = symbol_n.next; lookahead != 0; lookahead = lookahead.next) {
           if (lookahead.data.kind == CV_SymKind_FRAMEPROC) {
-            frameproc = (CV_SymFrameproc *) lookahead.data.data.str;
+            frameproc = (CV_SymFrameproc *) lookahead.data.data.Ptr;
             break;
           }
           if (cv_is_scope_symbol(lookahead.data.kind)) {
@@ -4975,8 +4975,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_REGREL32: {
       if (~scope_stack.proc_flags & CV_ProcFlag_OptDbgInfo) {
-        CV_SymRegrel32* regrel32 = (CV_SymRegrel32 *) symbol.data.str;
-        StringView         name     = str8_cstring_capped(regrel32 + 1, symbol.data.str + symbol.data.size);
+        CV_SymRegrel32* regrel32 = (CV_SymRegrel32 *) symbol.data.Ptr;
+        StringView         name     = str8_cstring_capped(regrel32 + 1, symbol.data.Ptr + symbol.data.size);
         RDIB_Type*      type     = lnk_type_from_itype(regrel32.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
         RDI_LocalKind local_kind = RDI_LocalKind_Variable;
@@ -5015,8 +5015,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       }
     } break;
     case CV_SymKind_LOCAL: {
-      CV_SymLocal* sym_local = (CV_SymLocal *) symbol.data.str;
-      StringView      name      = str8_cstring_capped(sym_local + 1, symbol.data.str + symbol.data.size);
+      CV_SymLocal* sym_local = (CV_SymLocal *) symbol.data.Ptr;
+      StringView      name      = str8_cstring_capped(sym_local + 1, symbol.data.Ptr + symbol.data.size);
       RDIB_Type*   type      = lnk_type_from_itype(sym_local.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
       // reset defrange target
@@ -5042,8 +5042,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       scope_stack.defrange_target = local;
     } break;
     case CV_SymKind_FILESTATIC: {
-      CV_SymFileStatic* file_static = (CV_SymFileStatic *) symbol.data.str;
-      StringView           name        = str8_cstring_capped(file_static + 1, symbol.data.str + symbol.data.size);
+      CV_SymFileStatic* file_static = (CV_SymFileStatic *) symbol.data.Ptr;
+      StringView           name        = str8_cstring_capped(file_static + 1, symbol.data.Ptr + symbol.data.size);
       RDIB_Type*        type        = lnk_type_from_itype(file_static.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
 
       // push New node
@@ -5066,7 +5066,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         break;
       }
 
-      CV_SymDefrangeRegister* defrange_reg = (CV_SymDefrangeRegister *) symbol.data.str;
+      CV_SymDefrangeRegister* defrange_reg = (CV_SymDefrangeRegister *) symbol.data.Ptr;
       RDI_RegCode             reg_code     = rdi_reg_code_from_cv(comp_info.arch, defrange_reg.reg);
       CV_LvarAddrGap*         gaps         = (CV_LvarAddrGap *) (defrange_reg + 1);
       uint64                     gap_count    = (symbol.data.size - sizeof(*defrange_reg)) / sizeof(*gaps);
@@ -5087,7 +5087,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         break;
       }
 
-      CV_SymDefrangeFramepointerRel* defrange_fprel = (CV_SymDefrangeFramepointerRel *)symbol.data.str;
+      CV_SymDefrangeFramepointerRel* defrange_fprel = (CV_SymDefrangeFramepointerRel *)symbol.data.Ptr;
       CV_LvarAddrGap*                gaps           = (CV_LvarAddrGap *) (defrange_fprel + 1);
       uint64                            gap_count      = (symbol.data.size - sizeof(*defrange_fprel)) / sizeof(gaps[0]);
 
@@ -5108,7 +5108,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         break;
       }
 
-      CV_SymDefrangeSubfieldRegister* defrange_subfield_register = (CV_SymDefrangeSubfieldRegister *) symbol.data.str;
+      CV_SymDefrangeSubfieldRegister* defrange_subfield_register = (CV_SymDefrangeSubfieldRegister *) symbol.data.Ptr;
       CV_LvarAddrGap*                 gaps                       = (CV_LvarAddrGap *) (defrange_subfield_register + 1);
       uint64                             gap_count                  = (symbol.data.size - sizeof(*defrange_subfield_register)) / sizeof(gaps[0]);
       RDI_RegCode                     reg_rdi                    = rdi_reg_code_from_cv(comp_info.arch, defrange_subfield_register.reg);
@@ -5129,7 +5129,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         break;
       }
 
-      CV_SymDefrangeFramepointerRelFullScope* defrange_fprelfs = (CV_SymDefrangeFramepointerRelFullScope *) symbol.data.str; 
+      CV_SymDefrangeFramepointerRelFullScope* defrange_fprelfs = (CV_SymDefrangeFramepointerRelFullScope *) symbol.data.Ptr; 
       B32                                     is_local_param   = scope_stack.defrange_target.kind == RDI_LocalKind_Parameter;
       CV_EncodedFramePtrReg                   encoded_fp_reg   = cv_pick_fp_encoding(scope_stack.frameproc, is_local_param);
       CV_Reg                                  fp_reg           = cv_decode_fp_reg(comp_info.arch, encoded_fp_reg);
@@ -5146,7 +5146,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         break;
       }
 
-      CV_SymDefrangeRegisterRel* defrange_register_rel = (CV_SymDefrangeRegisterRel *) symbol.data.str;
+      CV_SymDefrangeRegisterRel* defrange_register_rel = (CV_SymDefrangeRegisterRel *) symbol.data.Ptr;
       CV_LvarAddrGap*            gaps                  = (CV_LvarAddrGap *) (defrange_register_rel + 1);
       uint64                        gap_count             = (symbol.data.size - sizeof(*defrange_register_rel)) / sizeof(gaps[0]);
       RDI_RegCode                reg_rdi               = rdi_reg_code_from_cv(comp_info.arch, defrange_register_rel.reg);
@@ -5158,7 +5158,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       rdib_push_location_addr_reg_off(arena, &scope_stack.defrange_target.locations, arch_rdi, reg_rdi, value_size, value_pos, (int64)defrange_register_rel.reg_off, 0, ranges);
     } break;
     case CV_SymKind_INLINESITE: {
-      CV_SymInlineSite* sym_inline_site = (CV_SymInlineSite *) symbol.data.str;
+      CV_SymInlineSite* sym_inline_site = (CV_SymInlineSite *) symbol.data.Ptr;
       StringView           binary_annots   = str8_skip(symbol.data, sizeof(*sym_inline_site));
 
       uint64 parent_voff = 0;
@@ -5183,8 +5183,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         CV_Leaf leaf     = cv_debug_t_get_leaf(task.ipi, leaf_idx);
         if (leaf.kind == CV_LeafKind_MFUNC_ID) {
           if (sizeof(CV_LeafMFuncId) <= leaf.data.size) {
-            CV_LeafMFuncId* mfunc_id = (CV_LeafMFuncId *) leaf.data.str;
-            name  = str8_cstring_capped_reverse(mfunc_id + 1, leaf.data.str + leaf.data.size);
+            CV_LeafMFuncId* mfunc_id = (CV_LeafMFuncId *) leaf.data.Ptr;
+            name  = str8_cstring_capped_reverse(mfunc_id + 1, leaf.data.Ptr + leaf.data.size);
             type  = lnk_type_from_itype(mfunc_id.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
             owner = lnk_type_from_itype(mfunc_id.owner_itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
           } else {
@@ -5192,8 +5192,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
           }
         } else if (leaf.kind == CV_LeafKind_FUNC_ID) {
           if (sizeof(CV_LeafFuncId) <= leaf.data.size) {
-            CV_LeafFuncId* func_id = (CV_LeafFuncId *) leaf.data.str;
-            name  = str8_cstring_capped_reverse(func_id + 1, leaf.data.str + leaf.data.size);
+            CV_LeafFuncId* func_id = (CV_LeafFuncId *) leaf.data.Ptr;
+            name  = str8_cstring_capped_reverse(func_id + 1, leaf.data.Ptr + leaf.data.size);
             type  = lnk_type_from_itype(func_id.itype, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
             owner = lnk_type_from_itype(func_id.scope_string_id, task.tpi_itype_range, task.tpi_itype_map, obj, symbol.kind, symbol.offset);
           } else {
@@ -5274,13 +5274,13 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
       CV_LineArray lines = lines_arr[file_idx];
 
       // prase checksum header
-      CV_C13Checksum* checksum_header = (CV_C13Checksum *) (raw_file_chksms.str + lines.file_off);
+      CV_C13Checksum* checksum_header = (CV_C13Checksum *) (raw_file_chksms.Ptr + lines.file_off);
       if (lines.file_off + sizeof(CV_C13Checksum) + checksum_header.len > raw_file_chksms.size) {
         LNK_Obj* obj = task.obj_arr + obj_idx;
         lnk_error_obj(LNK_Warning_IllData, obj, "Not enough bytes to read file checksum @ 0x%llx.", lines.file_off);
         continue;
       }
-      StringView file_path      = str8_cstring_capped(raw_string_table.str + checksum_header.name_off, raw_string_table.str + raw_string_table.size);
+      StringView file_path      = str8_cstring_capped(raw_string_table.Ptr + checksum_header.name_off, raw_string_table.Ptr + raw_string_table.size);
       StringView checksum_bytes = StringView((uint8 *) (checksum_header + 1), checksum_header.len);
       
       // find source file for this line table
@@ -5394,7 +5394,7 @@ lnk_build_rad_debug_info(TP_Context*               tp,
 
     input.top_level_info.arch            = arch;
     input.top_level_info.exe_name        = image_name;
-    input.top_level_info.exe_hash        = rdi_hash(image_data.str, image_data.size);
+    input.top_level_info.exe_hash        = rdi_hash(image_data.Ptr, image_data.size);
     input.top_level_info.voff_max        = image_vsize;
     input.top_level_info.producer_string = push_str8f(scratch.arena, "%s [Debug Info: CodeView]", BUILD_VERSION_STRING_LITERAL);
   }

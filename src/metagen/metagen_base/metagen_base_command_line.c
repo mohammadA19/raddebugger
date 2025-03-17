@@ -5,23 +5,23 @@
 //~ NOTE(rjf): Command Line Option Parsing
 
 uint64
-cmd_line_hash_from_string(StringView string)
+cmd_line_hash_from_string(StringView str)
 {
   uint64 result = 5381;
-  for(uint64 i = 0; i < string.size; i += 1)
+  for(uint64 i = 0; i < str.Length; i += 1)
   {
-    result = ((result << 5) + result) + string.str[i];
+    result = ((result << 5) + result) + str[i];
   }
   return result;
 }
 
 CmdLineOpt **
-cmd_line_slot_from_string(CmdLine* cmd_line, StringView string)
+cmd_line_slot_from_string(CmdLine* cmd_line, StringView str)
 {
   CmdLineOpt** slot = 0;
   if(cmd_line.option_table_size != 0)
   {
-    uint64 hash = cmd_line_hash_from_string(string);
+    uint64 hash = cmd_line_hash_from_string(str);
     uint64 bucket = hash % cmd_line.option_table_size;
     slot = &cmd_line.option_table[bucket];
   }
@@ -29,12 +29,12 @@ cmd_line_slot_from_string(CmdLine* cmd_line, StringView string)
 }
 
 CmdLineOpt *
-cmd_line_opt_from_slot(CmdLineOpt** slot, StringView string)
+cmd_line_opt_from_slot(CmdLineOpt** slot, StringView str)
 {
   CmdLineOpt* result = 0;
   for(CmdLineOpt* var = *slot; var; var = var.hash_next)
   {
-    if(str8_match(string, var.string, 0))
+    if(str8_match(str, var.str, 0))
     {
       result = var;
       break;
@@ -51,11 +51,11 @@ cmd_line_push_opt(CmdLineOptList* list, CmdLineOpt* var)
 }
 
 CmdLineOpt *
-cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, StringView string, String8List values)
+cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, StringView str, String8List values)
 {
   CmdLineOpt* var = 0;
-  CmdLineOpt** slot = cmd_line_slot_from_string(cmd_line, string);
-  CmdLineOpt* existing_var = cmd_line_opt_from_slot(slot, string);
+  CmdLineOpt** slot = cmd_line_slot_from_string(cmd_line, str);
+  CmdLineOpt* existing_var = cmd_line_opt_from_slot(slot, str);
   if(existing_var != 0)
   {
     var = existing_var;
@@ -64,8 +64,8 @@ cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, StringView string, String8L
   {
     var = push_array(arena, CmdLineOpt, 1);
     var.hash_next = *slot;
-    var.hash = cmd_line_hash_from_string(string);
-    var.string = push_str8_copy(arena, string);
+    var.hash = cmd_line_hash_from_string(str);
+    var.str = push_str8_copy(arena, str);
     var.value_strings = values;
     StringJoin join = {0};
     join.pre = ("");
@@ -82,7 +82,7 @@ CmdLine
 cmd_line_from_string_list(Arena* arena, String8List command_line)
 {
   CmdLine parsed = {0};
-  parsed.exe_name = command_line.first.string;
+  parsed.exe_name = command_line.first.str;
   
   // NOTE(rjf): Set up config option table.
   {
@@ -96,24 +96,24 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
   for(String8Node* node = command_line.first.next, *next = 0; node != 0; node = next)
   {
     next = node.next;
-    StringView option_name = node.string;
+    StringView option_name = node.str;
     
     // NOTE(rjf): Look at -- or - at the start of an argument to determine if it's
-    // a flag option. All arguments after a single "--" (with no trailing string
+    // a flag option. All arguments after a single "--" (with no trailing str
     // on the command line will be considered as input files.
     B32 is_option = 1;
     if(after_passthrough_option == 0)
     {
-      if(str8_match(node.string, ("--"), 0))
+      if(str8_match(node.str, ("--"), 0))
       {
         after_passthrough_option = 1;
         is_option = 0;
       }
-      else if(str8_match(str8_prefix(node.string, 2), ("--"), 0))
+      else if(str8_match(str8_prefix(node.str, 2), ("--"), 0))
       {
         option_name = str8_skip(option_name, 2);
       }
-      else if(str8_match(str8_prefix(node.string, 1), ("-"), 0))
+      else if(str8_match(str8_prefix(node.str, 1), ("-"), 0))
       {
         option_name = str8_skip(option_name, 1);
       }
@@ -127,7 +127,7 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
       is_option = 0;
     }
     
-    // NOTE(rjf): This string is an option.
+    // NOTE(rjf): This str is an option.
     if(is_option)
     {
       B32 has_arguments = 0;
@@ -150,19 +150,19 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
         {
           next = n.next;
           
-          StringView string = n.string;
+          StringView str = n.str;
           if(n == node)
           {
-            string = arg_portion_this_string;
+            str = arg_portion_this_string;
           }
           
           uint8 splits[] = { ',' };
-          String8List args_in_this_string = str8_split(arena, string, splits, ArrayCount(splits), 0);
+          String8List args_in_this_string = str8_split(arena, str, splits, ArrayCount(splits), 0);
           for(String8Node* sub_arg = args_in_this_string.first; sub_arg; sub_arg = sub_arg.next)
           {
-            str8_list_push(arena, &arguments, sub_arg.string);
+            str8_list_push(arena, &arguments, sub_arg.str);
           }
-          if(!str8_match(str8_postfix(n.string, 1), (","), 0) &&
+          if(!str8_match(str8_postfix(n.str, 1), (","), 0) &&
              (n != node || arg_portion_this_string.size != 0))
           {
             break;
@@ -176,9 +176,9 @@ cmd_line_from_string_list(Arena* arena, String8List command_line)
     
     // NOTE(rjf): Default path, treat as a passthrough config option to be
     // handled by tool-specific code.
-    else if(!str8_match(node.string, ("--"), 0) || !first_passthrough)
+    else if(!str8_match(node.str, ("--"), 0) || !first_passthrough)
     {
-      str8_list_push(arena, &parsed.inputs, node.string);
+      str8_list_push(arena, &parsed.inputs, node.str);
       after_passthrough_option = 1;
       first_passthrough = 0;
     }

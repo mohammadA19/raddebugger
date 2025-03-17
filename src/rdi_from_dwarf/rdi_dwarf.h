@@ -132,7 +132,7 @@ X(macptr,         9)\
 X(reference,     10)\
 X(rnglist,       11)\
 X(rnglistsptr,   12)\
-X(string,        13)\
+X(str,        13)\
 X(stroffsetsptr, 14)
 
 enum DWARF_AttributeClassFlags : uint32{
@@ -161,7 +161,7 @@ enum DWARF_AttributeClassFlags : uint32{
 X(null,                    0x00, 0,             0,         0,         0)\
 X(sibling,                 0x01, reference,     0,         0,         0)\
 X(location,                0x02, exprloc,       loclist,   0,         0)\
-X(name,                    0x03, string,        0,         0,         0)\
+X(name,                    0x03, str,        0,         0,         0)\
 X(ordering,                0x09, constant,      0,         0,         0)\
 X(byte_size,               0x0b, constant,      exprloc,   reference, 0)\
 X(bit_size,                0x0d, constant,      exprloc,   reference, 0)\
@@ -175,14 +175,14 @@ X(visibility,              0x17, constant,      0,         0,         0)\
 X(import,                  0x18, reference,     0,         0,         0)\
 X(string_length,           0x19, exprloc,       loclist,   reference, 0)\
 X(common_reference,        0x1a, reference,     0,         0,         0)\
-X(comp_dir,                0x1b, string,        0,         0,         0)\
-X(const_value,             0x1c, block,         constant,  string,    0)\
+X(comp_dir,                0x1b, str,        0,         0,         0)\
+X(const_value,             0x1c, block,         constant,  str,    0)\
 X(containing_type,         0x1d, reference,     0,         0,         0)\
 X(default_value,           0x1e, constant,      reference, flag,      0)\
 X(inline,                  0x20, constant,      0,         0,         0)\
 X(is_optional,             0x21, flag,          0,         0,         0)\
 X(lower_bound,             0x22, constant,      exprloc,   reference, 0)\
-X(producer,                0x25, string,        0,         0,         0)\
+X(producer,                0x25, str,        0,         0,         0)\
 X(prototyped,              0x27, flag,          0,         0,         0)\
 X(return_addr,             0x2a, exprloc,       loclist,   0,         0)\
 X(start_scope,             0x2c, constant,      rnglist,   0,         0)\
@@ -224,17 +224,17 @@ X(entry_pc,                0x52, address,       constant,  0,         0)\
 X(use_UTF8,                0x53, flag,          0,         0,         0)\
 X(extension,               0x54, reference,     0,         0,         0)\
 X(ranges,                  0x55, rnglist,       0,         0,         0)\
-X(trampoline,              0x56, address,       flag,      reference, string)\
+X(trampoline,              0x56, address,       flag,      reference, str)\
 X(call_column,             0x57, constant,      0,         0,         0)\
 X(call_file,               0x58, constant,      0,         0,         0)\
 X(call_line,               0x59, constant,      0,         0,         0)\
-X(description,             0x5a, string,        0,         0,         0)\
+X(description,             0x5a, str,        0,         0,         0)\
 X(binary_scale,            0x5b, constant,      0,         0,         0)\
 X(decimal_scale,           0x5c, constant,      0,         0,         0)\
 X(small,                   0x5d, reference,     0,         0,         0)\
 X(decimal_sign,            0x5e, constant,      0,         0,         0)\
 X(digit_count,             0x5f, constant,      0,         0,         0)\
-X(picture_string,          0x60, string,        0,         0,         0)\
+X(picture_string,          0x60, str,        0,         0,         0)\
 X(mutable,                 0x61, flag,          0,         0,         0)\
 X(threads_scaled,          0x62, flag,          0,         0,         0)\
 X(explicit,                0x63, flag,          0,         0,         0)\
@@ -248,14 +248,14 @@ X(main_subprogram,         0x6a, flag,          0,         0,         0)\
 X(data_bit_offset,         0x6b, constant,      0,         0,         0)\
 X(const_expr,              0x6c, flag,          0,         0,         0)\
 X(enum_class,              0x6d, flag,          0,         0,         0)\
-X(linkage_name,            0x6e, string,        0,         0,         0)\
+X(linkage_name,            0x6e, str,        0,         0,         0)\
 X(string_length_bit_size,  0x6f, constant,      0,         0,         0)\
 X(string_length_byte_size, 0x70, constant,      0,         0,         0)\
 X(rank,                    0x71, constant,      exprloc,   0,         0)\
 X(str_offsets_base,        0x72, stroffsetsptr, 0,         0,         0)\
 X(addr_base,               0x73, addrptr,       0,         0,         0)\
 X(rnglists_base,           0x74, rnglistsptr,   0,         0,         0)\
-X(dwo_name,                0x76, string,        0,         0,         0)\
+X(dwo_name,                0x76, str,        0,         0,         0)\
 X(reference,               0x77, flag,          0,         0,         0)\
 X(rvalue_reference,        0x78, flag,          0,         0,         0)\
 X(macros,                  0x79, macptr,        0,         0,         0)\
@@ -297,13 +297,13 @@ X(block4,         0x04, block)\
 X(data2,          0x05, constant)\
 X(data4,          0x06, constant)\
 X(data8,          0x07, constant)\
-X(string,         0x08, string)\
+X(str,         0x08, str)\
 X(block,          0x09, block)\
 X(block1,         0x0a, block)\
 X(data1,          0x0b, constant)\
 X(flag,           0x0c, flag)\
 X(sdata,          0x0d, constant)\
-X(strp,           0x0e, string)\
+X(strp,           0x0e, str)\
 X(udata,          0x0f, constant)\
 X(ref_addr,       0x10, reference)\
 X(ref1,           0x11, reference)\
@@ -315,21 +315,21 @@ X(indirect,       0x16, specialcase)\
 X(sec_offset,     0x17, sec_offset_classes)\
 X(exprloc,        0x18, exprloc)\
 X(flag_present,   0x19, flag)\
-X(strx,           0x1a, string)\
+X(strx,           0x1a, str)\
 X(addrx,          0x1b, address)\
 X(ref_sup4,       0x1c, reference)\
-X(strp_sup,       0x1d, string)\
+X(strp_sup,       0x1d, str)\
 X(data16,         0x1e, constant)\
-X(line_strp,      0x1f, string)\
+X(line_strp,      0x1f, str)\
 X(ref_sig8,       0x20, reference)\
 X(implicit_const, 0x21, specialcase)\
 X(loclistx,       0x22, loclist)\
 X(rnglistx,       0x23, rnglist)\
 X(ref_sup8,       0x24, reference)\
-X(strx1,          0x25, string)\
-X(strx2,          0x26, string)\
-X(strx3,          0x27, string)\
-X(strx4,          0x28, string)\
+X(strx1,          0x25, str)\
+X(strx2,          0x26, str)\
+X(strx3,          0x27, str)\
+X(strx4,          0x28, str)\
 X(addrx1,         0x29, address)\
 X(addrx2,         0x2a, address)\
 X(addrx3,         0x2b, address)\
@@ -1185,7 +1185,7 @@ struct DWARF_RangesParsed{
 }
 
 
-// string offsets table: .debug_str_offsets
+// str offsets table: .debug_str_offsets
 //  (DWARF5.pdf + 7.26)
 
 // ** not implemented yet **
@@ -1478,7 +1478,7 @@ static DWARF_FormDecoded
 dwarf_form_decode(DWARF_FormDecodeRules* rules, uint8** ptr_io, uint8* opl,
                   DWARF_AbbrevDecl* abbrev_decl, uint32 attrib_i);
 
-// string functions
+// str functions
 
 static StringView dwarf_string_from_unit_type(DWARF_UnitType type);
 static StringView dwarf_string_from_tag(DWARF_Tag tag);

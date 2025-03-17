@@ -277,7 +277,7 @@ RDI_PROC RDI_U8 *
 rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64* size_out)
 {
   *size_out = rdi_eval_conversion_kind_message_string_table[kind].size;
-  return rdi_eval_conversion_kind_message_string_table[kind].str;
+  return rdi_eval_conversion_kind_message_string_table[kind].Ptr;
 }
 
 #endif // RDI_FORMAT_C

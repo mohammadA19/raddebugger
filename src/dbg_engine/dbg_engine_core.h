@@ -155,7 +155,7 @@ enum D_ViewRuleSpecInfoFlags : uint32 // NOTE(rjf): see @view_rule_info
 
 struct D_ViewRuleSpecInfo
 {
-  StringView string;
+  StringView str;
   StringView display_string;
   StringView schema;
   StringView description;
@@ -183,7 +183,7 @@ struct D_CmdParams
   CTRL_Handle process;
   CTRL_Handle thread;
   CTRL_Handle entity;
-  StringView string;
+  StringView str;
   StringView file_path;
   TxtPt cursor;
   uint64 vaddr;
@@ -353,10 +353,10 @@ static D_State* d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-uint64 d_hash_from_seed_string(uint64 seed, StringView string);
-uint64 d_hash_from_string(StringView string);
-uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, StringView string);
-uint64 d_hash_from_string__case_insensitive(StringView string);
+uint64 d_hash_from_seed_string(uint64 seed, StringView str);
+uint64 d_hash_from_string(StringView str);
+uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, StringView str);
+uint64 d_hash_from_string__case_insensitive(StringView str);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
@@ -386,7 +386,7 @@ void d_cmd_list_push_new(Arena* arena, D_CmdList* cmds, D_CmdKind kind, D_CmdPar
 //~ rjf: View Rule Spec Stateful Functions
 
 void d_register_view_rule_specs(D_ViewRuleSpecInfoArray specs);
-D_ViewRuleSpec* d_view_rule_spec_from_string(StringView string);
+D_ViewRuleSpec* d_view_rule_spec_from_string(StringView str);
 
 ////////////////////////////////
 //~ rjf: Stepping "Trap Net" Builders

@@ -5,12 +5,12 @@
 //~ rjf: Message Type Functions
 
 void
-md_msg_list_push(Arena* arena, MD_MsgList* msgs, MD_Node* node, MD_MsgKind kind, StringView string)
+md_msg_list_push(Arena* arena, MD_MsgList* msgs, MD_Node* node, MD_MsgKind kind, StringView str)
 {
   MD_Msg* msg = push_array(arena, MD_Msg, 1);
   msg.node = node;
   msg.kind = kind;
-  msg.string = string;
+  msg.str = str;
   SLLQueuePush(msgs.first, msgs.last, msg);
   msgs.count += 1;
   msgs.worst_message_kind = Max(kind, msgs.worst_message_kind);
@@ -21,8 +21,8 @@ md_msg_list_pushf(Arena* arena, MD_MsgList* msgs, MD_Node* node, MD_MsgKind kind
 {
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(arena, fmt, args);
-  md_msg_list_push(arena, msgs, node, kind, string);
+  StringView str = push_str8fv(arena, fmt, args);
+  md_msg_list_push(arena, msgs, node, kind, str);
   va_end(args);
 }
 
@@ -115,7 +115,7 @@ md_token_array_from_chunk_list(Arena* arena, MD_TokenChunkList* chunks)
 }
 
 StringView
-md_content_string_from_token_flags_str8(MD_TokenFlags flags, StringView string)
+md_content_string_from_token_flags_str8(MD_TokenFlags flags, StringView str)
 {
   uint64 num_chop = 0;
   uint64 num_skip = 0;
@@ -125,7 +125,7 @@ md_content_string_from_token_flags_str8(MD_TokenFlags flags, StringView string)
     num_skip += 1*(!(flags & MD_TokenFlag_StringTriplet) && flags & MD_TokenFlag_StringLiteral);
     num_chop += 1*(!(flags & MD_TokenFlag_StringTriplet) && flags & MD_TokenFlag_StringLiteral);
   }
-  StringView result = string;
+  StringView result = str;
   result = str8_chop(result, num_chop);
   result = str8_skip(result, num_skip);
   return result;
@@ -185,13 +185,13 @@ md_node_rec_depth_first(MD_Node* node, MD_Node* subtree_root, uint64 child_off, 
 //- rjf: tree building
 
 MD_Node *
-md_push_node(Arena* arena, MD_NodeKind kind, MD_NodeFlags flags, StringView string, StringView raw_string, uint64 src_offset)
+md_push_node(Arena* arena, MD_NodeKind kind, MD_NodeFlags flags, StringView str, StringView raw_string, uint64 src_offset)
 {
   MD_Node* node = push_array(arena, MD_Node, 1);
   node.first = node.last = node.parent = node.next = node.prev = node.first_tag = node.last_tag = &md_nil_node;
   node.kind       = kind;
   node.flags      = flags;
-  node.string     = string;
+  node.str     = str;
   node.raw_string = raw_string;
   node.src_offset = src_offset;
   return node;
@@ -248,12 +248,12 @@ md_unhook(MD_Node* node)
 //- rjf: tree introspection
 
 MD_Node *
-md_node_from_chain_string(MD_Node* first, MD_Node* opl, StringView string, StringMatchFlags flags)
+md_node_from_chain_string(MD_Node* first, MD_Node* opl, StringView str, StringMatchFlags flags)
 {
   MD_Node* result = &md_nil_node;
   for(MD_Node* n = first; !md_node_is_nil(n) && n != opl; n = n.next)
   {
-    if(str8_match(n.string, string, flags))
+    if(str8_match(n.str, str, flags))
     {
       result = n;
       break;
@@ -355,15 +355,15 @@ md_tag_arg_from_string(MD_Node* node, StringView tag_string, StringMatchFlags ta
 }
 
 B32
-md_node_has_child(MD_Node* node, StringView string, StringMatchFlags flags)
+md_node_has_child(MD_Node* node, StringView str, StringMatchFlags flags)
 {
-  return !md_node_is_nil(md_child_from_string(node, string, flags));
+  return !md_node_is_nil(md_child_from_string(node, str, flags));
 }
 
 B32
-md_node_has_tag(MD_Node* node, StringView string, StringMatchFlags flags)
+md_node_has_tag(MD_Node* node, StringView str, StringMatchFlags flags)
 {
-  return !md_node_is_nil(md_tag_from_string(node, string, flags));
+  return !md_node_is_nil(md_tag_from_string(node, str, flags));
 }
 
 uint64
@@ -399,7 +399,7 @@ md_string_from_children(Arena* arena, MD_Node* root)
     {
       str8_list_push(scratch.arena, &strs, (" "));
     }
-    str8_list_push(scratch.arena, &strs, child.string);
+    str8_list_push(scratch.arena, &strs, child.str);
   }
   StringView result = str8_list_join(arena, &strs, 0);
   scratch_end(scratch);
@@ -412,7 +412,7 @@ B32
 md_node_match(MD_Node* a, MD_Node* b, StringMatchFlags flags)
 {
   B32 result = 0;
-  if(a.kind == b.kind && str8_match(a.string, b.string, flags))
+  if(a.kind == b.kind && str8_match(a.str, b.str, flags))
   {
     result = 1;
     if(result)
@@ -487,7 +487,7 @@ md_tree_copy(Arena* arena, MD_Node* src_root)
       dst.first_tag = dst.last_tag = &md_nil_node;
       dst.kind  = src.kind;
       dst.flags = src.flags;
-      dst.string = push_str8_copy(arena, src.string);
+      dst.str = push_str8_copy(arena, src.str);
       dst.raw_string = push_str8_copy(arena, src.raw_string);
       dst.src_offset = src.src_offset;
       dst.parent = dst_parent;
@@ -522,11 +522,11 @@ md_tokenize_from_text(Arena* arena, StringView text)
   Temp scratch = scratch_begin(&arena, 1);
   MD_TokenChunkList tokens = {0};
   MD_MsgList msgs = {0};
-  uint8* byte_first = text.str;
+  uint8* byte_first = text.Ptr;
   uint8* byte_opl = byte_first + text.size;
   uint8* byte = byte_first;
   
-  //- rjf: scan string & produce tokens
+  //- rjf: scan str & produce tokens
   for(;byte < byte_opl;)
   {
     MD_TokenFlags token_flags = 0;
@@ -665,7 +665,7 @@ md_tokenize_from_text(Arena* arena, StringView text)
       }
     }
     
-    //- rjf: triplet string literals
+    //- rjf: triplet str literals
     if(token_flags == 0 && byte+2 < byte_opl &&
        ((byte[0] == '"' && byte[1] == '"' && byte[2] == '"') ||
         (byte[0] == '\''&& byte[1] == '\''&& byte[2] == '\'') ||
@@ -696,7 +696,7 @@ md_tokenize_from_text(Arena* arena, StringView text)
       }
     }
     
-    //- rjf: singlet string literals
+    //- rjf: singlet str literals
     if(token_flags == 0 && (byte[0] == '"' || byte[0] == '\'' || byte[0] == '`'))
     {
       uint8 literal_style = byte[0];
@@ -796,7 +796,7 @@ md_tokenize_from_text(Arena* arena, StringView text)
     if(token_flags & MD_TokenFlag_BrokenStringLiteral)
     {
       MD_Node* error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, (""), (""), token_start - byte_first);
-      StringView error_string = ("Unterminated string literal.");
+      StringView error_string = ("Unterminated str literal.");
       md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
     }
   }
@@ -1074,7 +1074,7 @@ if(work_top == 0) {work_top = &broken_work;}\
       {
         MD_Node* node = work_top.parent;
         MD_Node* error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
-        StringView error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node.string);
+        StringView error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node.str);
         md_msg_list_push(arena, &msgs, error, MD_MsgKind_Warning, error_string);
         MD_ParseWorkPop();
       }
@@ -1174,7 +1174,7 @@ md_debug_string_list_from_tree(Arena* arena, MD_Node* root)
       }
       
       // rjf: push node line
-      str8_list_pushf(arena, &strings, "%.*s\"%S\" : %S", depth, indentation, node.string, kind_string);
+      str8_list_pushf(arena, &strings, "%.*s\"%S\" : %S", depth, indentation, node.str, kind_string);
       
       // rjf: children . open brace
       if(rec.push_count != 0)

@@ -250,7 +250,7 @@ lnk_build_edata(LNK_ExportTable* exptab, LNK_SectionTable* st, LNK_SymbolTable* 
       LNK_Export* exp       = kv_arr[i].value_raw;
       StringView     name_cstr = push_cstr(edata.arena, exp.name);
       
-      // push name string
+      // push name str
       LNK_Chunk* name_chunk = lnk_section_push_chunk_data(edata, string_buffer_chunk, name_cstr, StringView(0,0));
       lnk_chunk_set_debugf(edata.arena, name_chunk, "export: %S", name_cstr);
       

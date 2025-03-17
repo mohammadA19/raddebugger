@@ -16,7 +16,7 @@
 struct String8Node
 {
   String8Node* next;
-  StringView string;
+  StringView str;
 }
 
 struct String8MetaNode
@@ -75,7 +75,7 @@ struct StringJoin
 
 struct String8TxtPtPair
 {
-  StringView string;
+  StringView str;
   TxtPt pt;
 }
 
@@ -125,7 +125,7 @@ uint64 cstring32_length(uint32* c);
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_varg(S) (int)((S).size), ((S).str)
+#define str8_varg(S) (int)((S).size), ((S).Ptr)
 
 #define str8_array(S,C) StringView((uint8*)(S), sizeof(*(S))*(C))
 #define str8_array_fixed(S) StringView((uint8*)(S), sizeof(S))
@@ -142,16 +142,16 @@ StringView  str8_cstring_capped(void* cstr, void* cap);
 ////////////////////////////////
 //~ rjf: String Stylization
 
-StringView upper_from_str8(Arena* arena, StringView string);
-StringView lower_from_str8(Arena* arena, StringView string);
-StringView backslashed_from_str8(Arena* arena, StringView string);
+StringView upper_from_str8(Arena* arena, StringView str);
+StringView lower_from_str8(Arena* arena, StringView str);
+StringView backslashed_from_str8(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: String Matching
 
 B32 str8_match(StringView a, StringView b, StringMatchFlags flags);
-uint64 str8_find_needle(StringView string, uint64 start_pos, StringView needle, StringMatchFlags flags);
-B32 str8_ends_with(StringView string, StringView end, StringMatchFlags flags);
+uint64 str8_find_needle(StringView str, uint64 start_pos, StringView needle, StringMatchFlags flags);
+B32 str8_ends_with(StringView str, StringView end, StringMatchFlags flags);
 
 ////////////////////////////////
 //~ rjf: String Slicing
@@ -161,7 +161,7 @@ StringView str8_prefix(StringView str, uint64 size);
 StringView str8_skip(StringView str, uint64 amt);
 StringView str8_postfix(StringView str, uint64 size);
 StringView str8_chop(StringView str, uint64 amt);
-StringView str8_skip_chop_whitespace(StringView string);
+StringView str8_skip_chop_whitespace(StringView str);
 
 ////////////////////////////////
 //~ rjf: String Formatting & Copying
@@ -174,15 +174,15 @@ StringView push_str8f(Arena* arena, char* fmt, ...);
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
 
-//- rjf: string . integer
-int64 sign_from_str8(StringView string, StringView* string_tail);
-B32 str8_is_integer(StringView string, uint32 radix);
-uint64 u64_from_str8(StringView string, uint32 radix);
-int64 s64_from_str8(StringView string, uint32 radix);
-B32 try_u64_from_str8_c_rules(StringView string, uint64* x);
-B32 try_s64_from_str8_c_rules(StringView string, int64* x);
+//- rjf: str . integer
+int64 sign_from_str8(StringView str, StringView* string_tail);
+B32 str8_is_integer(StringView str, uint32 radix);
+uint64 u64_from_str8(StringView str, uint32 radix);
+int64 s64_from_str8(StringView str, uint32 radix);
+B32 try_u64_from_str8_c_rules(StringView str, uint64* x);
+B32 try_s64_from_str8_c_rules(StringView str, int64* x);
 
-//- rjf: integer . string
+//- rjf: integer . str
 StringView str8_from_memory_size(Arena* arena, uint64 z);
 StringView str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
 StringView str8_from_s64(Arena* arena, int64 s64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
@@ -190,29 +190,29 @@ StringView str8_from_s64(Arena* arena, int64 s64, uint32 radix, uint8 min_digits
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
 
-double f64_from_str8(StringView string);
+double f64_from_str8(StringView str);
 
 ////////////////////////////////
 //~ rjf: String List Construction Functions
 
 String8Node* str8_list_push_node(String8List* list, String8Node* node);
-String8Node* str8_list_push_node_set_string(String8List* list, String8Node* node, StringView string);
+String8Node* str8_list_push_node_set_string(String8List* list, String8Node* node, StringView str);
 String8Node* str8_list_push_node_front(String8List* list, String8Node* node);
-String8Node* str8_list_push_node_front_set_string(String8List* list, String8Node* node, StringView string);
-String8Node* str8_list_push(Arena* arena, String8List* list, StringView string);
-String8Node* str8_list_push_front(Arena* arena, String8List* list, StringView string);
+String8Node* str8_list_push_node_front_set_string(String8List* list, String8Node* node, StringView str);
+String8Node* str8_list_push(Arena* arena, String8List* list, StringView str);
+String8Node* str8_list_push_front(Arena* arena, String8List* list, StringView str);
 void         str8_list_concat_in_place(String8List* list, String8List* to_push);
 String8Node* str8_list_push_aligner(Arena* arena, String8List* list, uint64 min, uint64 align);
 String8Node* str8_list_pushf(Arena* arena, String8List* list, char* fmt, ...);
 String8Node* str8_list_push_frontf(Arena* arena, String8List* list, char* fmt, ...);
 String8List  str8_list_copy(Arena* arena, String8List* list);
-#define str8_list_first(list) ((list).first ? (list).first.string : StringView())
+#define str8_list_first(list) ((list).first ? (list).first.str : StringView())
 
 ////////////////////////////////
 //~ rjf: String Splitting & Joining
 
-String8List  str8_split(Arena* arena, StringView string, uint8* split_chars, uint64 split_char_count, StringSplitFlags flags);
-String8List  str8_split_by_string_chars(Arena* arena, StringView string, StringView split_chars, StringSplitFlags flags);
+String8List  str8_split(Arena* arena, StringView str, uint8* split_chars, uint64 split_char_count, StringSplitFlags flags);
+String8List  str8_split_by_string_chars(Arena* arena, StringView str, StringView split_chars, StringSplitFlags flags);
 String8List  str8_list_split_by_string_chars(Arena* arena, String8List list, StringView split_chars, StringSplitFlags flags);
 StringView      str8_list_join(Arena* arena, String8List* list, StringJoin* optional_params);
 void         str8_list_from_flags(Arena* arena, String8List* list, uint32 flags, StringView* flag_string_table, uint32 flag_string_count);
@@ -226,17 +226,17 @@ Span<StringView> str8_array_reserve(Arena* arena, uint64 count);
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-StringView str8_chop_last_slash(StringView string);
-StringView str8_skip_last_slash(StringView string);
-StringView str8_chop_last_dot(StringView string);
-StringView str8_skip_last_dot(StringView string);
+StringView str8_chop_last_slash(StringView str);
+StringView str8_skip_last_slash(StringView str);
+StringView str8_chop_last_dot(StringView str);
+StringView str8_skip_last_dot(StringView str);
 
-PathStyle   path_style_from_str8(StringView string);
-String8List str8_split_path(Arena* arena, StringView string);
+PathStyle   path_style_from_str8(StringView str);
+String8List str8_split_path(Arena* arena, StringView str);
 void        str8_path_list_resolve_dots_in_place(String8List* path, PathStyle style);
 StringView     str8_path_list_join_by_style(Arena* arena, String8List* path, PathStyle style);
 
-String8TxtPtPair str8_txt_pt_pair_from_string(StringView string);
+String8TxtPtPair str8_txt_pt_pair_from_string(StringView str);
 
 ////////////////////////////////
 //~ rjf: UTF-8 & UTF-16 Decoding/Encoding
@@ -275,12 +275,12 @@ StringView string_from_elapsed_time(Arena* arena, DateTime dt);
 ////////////////////////////////
 //~ rjf: Basic Text Indentation
 
-StringView indented_from_string(Arena* arena, StringView string);
+StringView indented_from_string(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: Text Wrapping
 
-String8List wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
+String8List wrapped_lines_from_string(Arena* arena, StringView str, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
 
 ////////////////////////////////
 //~ rjf: String <. Color
@@ -316,12 +316,12 @@ void    str8_serial_push_string(Arena* arena, String8List* srl, StringView str);
 ////////////////////////////////
 //~ rjf: Deserialization Helpers
 
-uint64    str8_deserial_read(StringView string, uint64 off, void* read_dst, uint64 read_size, uint64 granularity);
-uint64    str8_deserial_find_first_match(StringView string, uint64 off, uint16 scan_val);
-void * str8_deserial_get_raw_ptr(StringView string, uint64 off, uint64 size);internal uint64 str8_deserial_read_cstr(StringView string, uint64 off, StringView* cstr_out);
-uint64    str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, Span<char16>* str_out);
-uint64    str8_deserial_read_block(StringView string, uint64 off, uint64 size, StringView* block_out);
-#define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
-#define str8_deserial_read_struct(string, off, ptr) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr)), sizeof(*(ptr)))
+uint64    str8_deserial_read(StringView str, uint64 off, void* read_dst, uint64 read_size, uint64 granularity);
+uint64    str8_deserial_find_first_match(StringView str, uint64 off, uint16 scan_val);
+void * str8_deserial_get_raw_ptr(StringView str, uint64 off, uint64 size);internal uint64 str8_deserial_read_cstr(StringView str, uint64 off, StringView* cstr_out);
+uint64    str8_deserial_read_windows_utf16_string16(StringView str, uint64 off, Span<char16>* str_out);
+uint64    str8_deserial_read_block(StringView str, uint64 off, uint64 size, StringView* block_out);
+#define str8_deserial_read_array(str, off, ptr, count) str8_deserial_read((str), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
+#define str8_deserial_read_struct(str, off, ptr) str8_deserial_read((str), (off), (ptr), sizeof(*(ptr)), sizeof(*(ptr)))
 
 #endif // BASE_STRINGS_H

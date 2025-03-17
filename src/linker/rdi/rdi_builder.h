@@ -610,7 +610,7 @@ struct RDIB_UDTFwdrefBucket
 
 struct RDIB_StringMapBucket
 {
-  StringView string;
+  StringView str;
 
   [Union]
   struct {
@@ -1162,7 +1162,7 @@ RDIB_LocationNode * rdib_push_location_addr_reg_off(Arena* arena, RDIB_LocationL
 
 //- UDT Fwdrefs
 
-uint64                    rdib_udt_fwdref_map_hash(StringView string);
+uint64                    rdib_udt_fwdref_map_hash(StringView str);
 RDIB_UDTFwdrefBucket * rdib_udt_fwdref_map_insert_or_update(RDIB_UDTFwdrefBucket** buckets, uint64 cap, uint64 hash, RDIB_UDTFwdrefBucket* new_bucket);
 RDIB_UDTFwdrefBucket * rdib_udt_fwdrefmap_map_lookup(RDIB_UDTFwdrefBucket** buckets, uint64 cap, uint64 hash, StringView name);
 
@@ -1187,9 +1187,9 @@ uint32             rdib_idx_from_path_tree(RDIB_PathTree* tree, StringView path)
 
 //- String Map
 
-uint64                     rdib_string_map_hash               (StringView string);
+uint64                     rdib_string_map_hash               (StringView str);
 RDIB_StringMap *        rdib_init_string_map               (Arena* arena, uint64 cap);
-uint32                     rdib_idx_from_string_map           (RDIB_StringMap* string_map, StringView string);
+uint32                     rdib_idx_from_string_map           (RDIB_StringMap* string_map, StringView str);
 RDIB_StringMapBucket *  rdib_string_map_insert_or_update   (RDIB_StringMapBucket** buckets, uint64 cap, uint64 hash, RDIB_StringMapBucket* new_bucket, RDIB_StringMapUpdateFunc* update_func);
 void                    rdib_string_map_assign_indices     (RDIB_StringMapBucket** buckets, uint64 bucket_count);
 RDIB_StringMapBucket ** rdib_extant_buckets_from_string_map(TP_Context* tp, Arena* arena, RDIB_StringMap* string_map, uint64* bucket_count_out);
@@ -1197,9 +1197,9 @@ void                    rdib_string_map_sort_buckets       (TP_Context* tp, RDIB
 
 //- String Map Specialized Inserters
 
-void rdib_string_map_insert_item             (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, void* value);
-void rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string);
-void rdib_string_map_insert_name_map_item    (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView string, VoidNode* node);
+void rdib_string_map_insert_item             (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str, void* value);
+void rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str);
+void rdib_string_map_insert_name_map_item    (Arena* arena, RDIB_CollectStringsTask* task, uint64 task_id, StringView str, VoidNode* node);
 
 //- Index Run Map
 

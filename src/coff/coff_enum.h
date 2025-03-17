@@ -21,7 +21,7 @@ StringView coff_string_from_reloc_arm(COFF_Reloc_Arm x);
 StringView coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x);
 StringView coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x);
 
-COFF_MachineType coff_machine_from_string(StringView string);
+COFF_MachineType coff_machine_from_string(StringView str);
 COFF_ImportType  coff_import_header_type_from_string(StringView name);
 
 #endif // COFF_ENUM_H

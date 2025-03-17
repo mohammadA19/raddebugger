@@ -11,7 +11,7 @@
 #endif
 
 U128
-fnt_hash_from_string(StringView string)
+fnt_hash_from_string(StringView str)
 {
   [Union]
   struct
@@ -20,14 +20,14 @@ fnt_hash_from_string(StringView string)
     U128 u128;
   }
   hash;
-  hash.xxhash = XXH3_128bits(string.str, string.size);
+  hash.xxhash = XXH3_128bits(str.Ptr, str.Length);
   return hash.u128;
 }
 
 uint64
-fnt_little_hash_from_string(StringView string)
+fnt_little_hash_from_string(StringView str)
 {
-  uint64 result = XXH3_64bits(string.str, string.size);
+  uint64 result = XXH3_64bits(str.Ptr, str.Length);
   return result;
 }
 
@@ -569,24 +569,24 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flag
 }
 
 FNT_Run
-fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, StringView string)
+fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, StringView str)
 {
   ProfBeginFunction();
   
   //- rjf: map tag/size to style node
   FNT_Hash2StyleRasterCacheNode* hash2style_node = fnt_hash2style_from_tag_size_flags(tag, size, flags);
   
-  //- rjf: decode string & produce run pieces
+  //- rjf: decode str & produce run pieces
   FNT_PieceChunkList piece_chunks = {0};
   Vec2F32 dim = {0};
   B32 font_handle_mapped_on_miss = 0;
   FP_Handle font_handle = {0};
   uint64 piece_substring_start_idx = 0;
   uint64 piece_substring_end_idx = 0;
-  for(uint64 idx = 0; idx <= string.size;)
+  for(uint64 idx = 0; idx <= str.Length;)
   {
     //- rjf: decode next codepoint & get piece substring, or continuation rule
-    uint8 byte = (idx < string.size ? string.str[idx] : 0);
+    uint8 byte = (idx < str.Length ? str[idx] : 0);
     B32 need_another_codepoint = 0;
     if(byte == 0)
     {
@@ -602,7 +602,7 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       }break;
       default:
       {
-        UnicodeDecode decode = utf8_decode(string.str+idx, string.size-idx);
+        UnicodeDecode decode = utf8_decode(str.Ptr+idx, str.Length-idx);
         idx += decode.inc;
         piece_substring_end_idx += decode.inc;
         need_another_codepoint = 0;
@@ -616,12 +616,12 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
     }
     
     //- rjf: do not need another codepoint? . grab substring, bump piece start idx
-    StringView piece_substring = str8_substr(string, r1u64(piece_substring_start_idx, piece_substring_end_idx));
+    StringView piece_substring = str8_substr(str, r1u64(piece_substring_start_idx, piece_substring_end_idx));
     piece_substring_start_idx = idx;
     piece_substring_end_idx = idx;
     
     //- rjf: determine if this piece is a tab - if so, use space info to draw
-    B32 is_tab = (piece_substring.size == 1 && piece_substring.str[0] == '\t');
+    B32 is_tab = (piece_substring.size == 1 && piece_substring[0] == '\t');
     if(is_tab)
     {
       piece_substring = (" ");
@@ -632,9 +632,9 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
     uint64 piece_hash = 0;
     {
       // rjf: fast path for utf8 class 1 . direct map
-      if(piece_substring.size == 1 && hash2style_node.utf8_class1_direct_map_mask[piece_substring.str[0]/64] & (1ull<<(piece_substring.str[0]%64)))
+      if(piece_substring.size == 1 && hash2style_node.utf8_class1_direct_map_mask[piece_substring[0]/64] & (1ull<<(piece_substring[0]%64)))
       {
-        info = &hash2style_node.utf8_class1_direct_map[piece_substring.str[0]];
+        info = &hash2style_node.utf8_class1_direct_map[piece_substring[0]];
       }
       
       // rjf: more general, slower path for other glyphs
@@ -757,8 +757,8 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       {
         if(piece_substring.size == 1)
         {
-          info = &hash2style_node.utf8_class1_direct_map[piece_substring.str[0]];
-          hash2style_node.utf8_class1_direct_map_mask[piece_substring.str[0]/64] |= (1ull<<(piece_substring.str[0]%64));
+          info = &hash2style_node.utf8_class1_direct_map[piece_substring[0]];
+          hash2style_node.utf8_class1_direct_map_mask[piece_substring[0]/64] |= (1ull<<(piece_substring[0]%64));
         }
         else
         {
@@ -811,7 +811,7 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
       
       // rjf: push piece
       {
-        FNT_Piece* piece = fnt_piece_chunk_list_push_new(arena, &piece_chunks, string.size);
+        FNT_Piece* piece = fnt_piece_chunk_list_push_new(arena, &piece_chunks, str.Length);
         {
           piece.texture = atlas ? atlas.texture : r_handle_zero();
           piece.subrect = r2s16p(info.subrect.x0,
@@ -851,12 +851,12 @@ fnt_push_run_from_string(Arena* arena, FNT_Tag tag, float size, float base_align
 }
 
 String8List
-fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, StringView string, float max)
+fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, StringView str, float max)
 {
   String8List list = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
-    FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, 0, string);
+    FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, 0, str);
     float off_px = 0;
     uint64 off_bytes = 0;
     uint64 line_start_off_bytes = 0;
@@ -872,7 +872,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
       if(piece != 0) {next = piece+1;}
       
       // rjf: gather info
-      uint8 byte         = off_bytes < string.size ? string.str[off_bytes] : 0;
+      uint8 byte         = off_bytes < str.Length ? str[off_bytes] : 0;
       float advance     = (piece != 0) ? piece.advance : 0;
       uint64 decode_size = (piece != 0) ? piece.decode_size : 0;
       
@@ -911,7 +911,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
       // rjf: illegal mid-word split . wrap mid-word
       if(is_next_illegal && word_start_off_px == 0)
       {
-        StringView line = StringView(string.str + line_start_off_bytes, off_bytes - line_start_off_bytes);
+        StringView line = StringView(str.Ptr + line_start_off_bytes, off_bytes - line_start_off_bytes);
         line = str8_skip_chop_whitespace(line);
         if(line.size != 0)
         {
@@ -929,7 +929,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
       // rjf: illegal word end . wrap line
       else if(is_first_space_after_word && (is_illegal || is_end))
       {
-        StringView line = StringView(string.str + line_start_off_bytes, line_end_off_bytes - line_start_off_bytes);
+        StringView line = StringView(str.Ptr + line_start_off_bytes, line_end_off_bytes - line_start_off_bytes);
         line = str8_skip_chop_whitespace(line);
         if(line.size != 0)
         {
@@ -964,12 +964,12 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena* arena, FNT_Tag font, f
 }
 
 Vec2F32
-fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView string)
+fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView str)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   Vec2F32 result = {0};
-  FNT_Run run = fnt_push_run_from_string(scratch.arena, tag, size, base_align_px, tab_size_px, 0, string);
+  FNT_Run run = fnt_push_run_from_string(scratch.arena, tag, size, base_align_px, tab_size_px, 0, str);
   result = run.dim;
   scratch_end(scratch);
   ProfEnd();
@@ -983,7 +983,7 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, float size, float base_align_px, 
   Vec2F32 sum = {0};
   for(String8Node* n = list.first; n != 0; n = n.next)
   {
-    Vec2F32 str_dim = fnt_dim_from_tag_size_string(tag, size, base_align_px, tab_size_px, n.string);
+    Vec2F32 str_dim = fnt_dim_from_tag_size_string(tag, size, base_align_px, tab_size_px, n.str);
     sum.x += str_dim.x;
     sum.y = Max(sum.y, str_dim.y);
   }
@@ -999,14 +999,14 @@ fnt_column_size_from_tag_size(FNT_Tag tag, float size)
 }
 
 uint64
-fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView string, float p)
+fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, StringView str, float p)
 {
   Temp scratch = scratch_begin(0, 0);
   uint64 best_offset_bytes = 0;
   float best_offset_px = inf32();
   uint64 offset_bytes = 0;
   float offset_px = 0.f;
-  FNT_Run run = fnt_push_run_from_string(scratch.arena, tag, size, base_align_px, tab_size_px, 0, string);
+  FNT_Run run = fnt_push_run_from_string(scratch.arena, tag, size, base_align_px, tab_size_px, 0, str);
   for(uint64 idx = 0; idx <= run.pieces.count; idx += 1)
   {
     float this_piece_offset_px = abs_f32(offset_px - p);

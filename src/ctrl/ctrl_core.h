@@ -28,7 +28,7 @@ struct_members(CTRL_CheckB32)
 }
 struct_type(CTRL_CheckB32);
 
-//- rjf: styled string types
+//- rjf: styled str types
 
 ptr_type(CTRL_PlainString8__str_ptr_type, type(uint8), .flags = TypeFlag_IsPlainText,.count_delimiter_name = ("size"));
 ptr_type(CTRL_CodeString8__str_ptr_type, type(uint8),  .flags = TypeFlag_IsCodeText, .count_delimiter_name = ("size"));
@@ -48,9 +48,9 @@ Member CTRL_PathString8__members[] =
   member_lit_comp(StringView, &CTRL_PathString8__str_ptr_type, str,  .pretty_name = ("Contents")),
   member_lit_comp(StringView, type(uint64),                        size, .pretty_name = ("Size")),
 }
-named_struct_type(CTRL_PlainString8, StringView, .name = ("string"));
-named_struct_type(CTRL_CodeString8,  StringView, .name = ("string"));
-named_struct_type(CTRL_PathString8,  StringView, .name = ("string"));
+named_struct_type(CTRL_PlainString8, StringView, .name = ("str"));
+named_struct_type(CTRL_CodeString8,  StringView, .name = ("str"));
+named_struct_type(CTRL_PathString8,  StringView, .name = ("str"));
 
 //- rjf: meta evaluation callstack types
 
@@ -276,7 +276,7 @@ struct CTRL_Entity
   Rng1U64 vaddr_range;
   uint64 stack_base;
   uint64 timestamp;
-  StringView string;
+  StringView str;
 }
 
 struct CTRL_EntityNode
@@ -460,7 +460,7 @@ enum CTRL_UserBreakpointKind
 struct CTRL_UserBreakpoint
 {
   CTRL_UserBreakpointKind kind;
-  StringView string;
+  StringView str;
   TxtPt pt;
   uint64 u64;
   StringView condition;
@@ -632,7 +632,7 @@ struct CTRL_Event
   uint64 timestamp;
   uint32 exception_code;
   uint32 rgba;
-  StringView string;
+  StringView str;
 }
 
 struct CTRL_EventNode
@@ -882,7 +882,7 @@ read_only static CTRL_Entity ctrl_entity_nil =
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-uint64 ctrl_hash_from_string(StringView string);
+uint64 ctrl_hash_from_string(StringView str);
 uint64 ctrl_hash_from_handle(CTRL_Handle handle);
 CTRL_EventCause ctrl_event_cause_from_dmn_event_kind(DMN_EventKind event_kind);
 StringView ctrl_string_from_event_kind(CTRL_EventKind kind);
@@ -922,7 +922,7 @@ void ctrl_msg_list_concat_in_place(CTRL_MsgList* dst, CTRL_MsgList* src);
 
 //- rjf: serialization
 StringView ctrl_serialized_string_from_msg_list(Arena* arena, CTRL_MsgList* msgs);
-CTRL_MsgList ctrl_msg_list_from_serialized_string(Arena* arena, StringView string);
+CTRL_MsgList ctrl_msg_list_from_serialized_string(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: Event Type Functions
@@ -933,7 +933,7 @@ void ctrl_event_list_concat_in_place(CTRL_EventList* dst, CTRL_EventList* to_pus
 
 //- rjf: serialization
 StringView ctrl_serialized_string_from_event(Arena* arena, CTRL_Event* event, uint64 max);
-CTRL_Event ctrl_event_from_serialized_string(Arena* arena, StringView string);
+CTRL_Event ctrl_event_from_serialized_string(Arena* arena, StringView str);
 
 ////////////////////////////////
 //~ rjf: Entity Type Functions
@@ -950,17 +950,17 @@ CTRL_EntityArray ctrl_entity_array_from_list(Arena* arena, CTRL_EntityList* list
 CTRL_EntityStore* ctrl_entity_store_alloc();
 void ctrl_entity_store_release(CTRL_EntityStore* store);
 
-//- rjf: string allocation/deletion
+//- rjf: str allocation/deletion
 uint64 ctrl_name_bucket_idx_from_string_size(uint64 size);
-StringView ctrl_entity_string_alloc(CTRL_EntityStore* store, StringView string);
-void ctrl_entity_string_release(CTRL_EntityStore* store, StringView string);
+StringView ctrl_entity_string_alloc(CTRL_EntityStore* store, StringView str);
+void ctrl_entity_string_release(CTRL_EntityStore* store, StringView str);
 
 //- rjf: entity construction/deletion
 CTRL_Entity* ctrl_entity_alloc(CTRL_EntityStore* store, CTRL_Entity* parent, CTRL_EntityKind kind, Arch arch, CTRL_Handle handle, uint64 id);
 void ctrl_entity_release(CTRL_EntityStore* store, CTRL_Entity* entity);
 
 //- rjf: entity equipment
-void ctrl_entity_equip_string(CTRL_EntityStore* store, CTRL_Entity* entity, StringView string);
+void ctrl_entity_equip_string(CTRL_EntityStore* store, CTRL_Entity* entity, StringView str);
 
 //- rjf: entity store lookups
 CTRL_Entity* ctrl_entity_from_handle(CTRL_EntityStore* store, CTRL_Handle handle);
@@ -1103,7 +1103,7 @@ DMN_Event* ctrl_thread__next_dmn_event(Arena* arena, DMN_CtrlCtx* ctrl_ctx, CTRL
 B32 ctrl_eval_space_read(void* u, E_Space space, void* out, Rng1U64 vaddr_range);
 
 //- rjf: log flusher
-void ctrl_thread__flush_info_log(StringView string);
+void ctrl_thread__flush_info_log(StringView str);
 void ctrl_thread__end_and_flush_info_log();
 
 //- rjf: msg kind implementations

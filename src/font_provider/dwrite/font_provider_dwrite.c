@@ -127,7 +127,7 @@ HRESULT
 fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context)
 {
   HRESULT result = S_OK;
-  *fragment_start = obj.data.str + file_offset;
+  *fragment_start = obj.data.Ptr + file_offset;
   *fragment_context = 0;
   return result;
 }
@@ -320,7 +320,7 @@ fp_font_open(StringView path)
   HRESULT error = 0;
   
   //- rjf: open font file reference
-  error = IDWriteFactory_CreateFontFileReference(fp_dwrite_state.factory, (WCHAR *)path16.str, 0, &font.file);
+  error = IDWriteFactory_CreateFontFileReference(fp_dwrite_state.factory, (WCHAR *)path16.Ptr, 0, &font.file);
   
   //- rjf: open font face
   error = IDWriteFactory_CreateFontFace(fp_dwrite_state.factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
@@ -392,12 +392,12 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags, StringView string)
+fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags, StringView str)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   HRESULT error = 0;
-  Span<char32> string32 = str32_from_8(scratch.arena, string);
+  Span<char32> string32 = str32_from_8(scratch.arena, str);
   FP_DWrite_Font font = fp_dwrite_font_from_handle(font_handle);
   COLORREF bg_color = RGB(0,   0,   0);
   COLORREF fg_color = RGB(255, 255, 255);
@@ -414,7 +414,7 @@ fp_raster(Arena* arena, FP_Handle font_handle, float size, FP_RasterFlags flags,
   uint16* glyph_indices = push_array_no_zero(scratch.arena, uint16, string32.size);
   if(font.face != 0)
   {
-    error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
+    error = IDWriteFontFace_GetGlyphIndices(font.face, string32.Ptr, string32.size, glyph_indices);
   }
   
   //- rjf: get metrics info

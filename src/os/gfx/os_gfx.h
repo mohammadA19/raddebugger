@@ -126,7 +126,7 @@ OS_GfxInfo* os_get_gfx_info();
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
-void    os_set_clipboard_text(StringView string);
+void    os_set_clipboard_text(StringView str);
 StringView os_get_clipboard_text(Arena* arena);
 
 ////////////////////////////////

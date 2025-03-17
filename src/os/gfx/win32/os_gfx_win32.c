@@ -966,17 +966,17 @@ os_get_gfx_info()
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void
-os_set_clipboard_text(StringView string)
+os_set_clipboard_text(StringView str)
 {
   if(OpenClipboard(0))
   {
     EmptyClipboard();
-    HANDLE string_copy_handle = GlobalAlloc(GMEM_MOVEABLE, string.size+1);
+    HANDLE string_copy_handle = GlobalAlloc(GMEM_MOVEABLE, str.Length+1);
     if(string_copy_handle)
     {
       uint8* copy_buffer = (uint8 *)GlobalLock(string_copy_handle);
-      MemoryCopy(copy_buffer, string.str, string.size);
-      copy_buffer[string.size] = 0;
+      MemoryCopy(copy_buffer, str.Ptr, str.Length);
+      copy_buffer[str.Length] = 0;
       GlobalUnlock(string_copy_handle);
       SetClipboardData(CF_TEXT, string_copy_handle);
     }
@@ -1023,7 +1023,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, StringView title)
     os_w32_new_window_custom_border = custom_border;
     hwnd = CreateWindowExW(WS_EX_APPWINDOW,
                            L"graphical-window",
-                           (WCHAR*)title16.str,
+                           (WCHAR*)title16.Ptr,
                            WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            (int)resolution.x,
@@ -1515,7 +1515,7 @@ os_graphical_message(B32 error, StringView title, StringView message)
   Temp scratch = scratch_begin(0, 0);
   Span<char16> title16 = str16_from_8(scratch.arena, title);
   Span<char16> message16 = str16_from_8(scratch.arena, message);
-  MessageBoxW(0, (WCHAR *)message16.str, (WCHAR *)title16.str, MB_OK|(!!error*MB_ICONERROR));
+  MessageBoxW(0, (WCHAR *)message16.Ptr, (WCHAR *)title16.Ptr, MB_OK|(!!error*MB_ICONERROR));
   scratch_end(scratch);
 }
 
@@ -1529,15 +1529,15 @@ os_show_in_filesystem_ui(StringView path)
   StringView path_copy = push_str8_copy(scratch.arena, path);
   for(uint64 idx = 0; idx < path_copy.size; idx += 1)
   {
-    if(path_copy.str[idx] == '/')
+    if(path_copy[idx] == '/')
     {
-      path_copy.str[idx] = '\\';
+      path_copy[idx] = '\\';
     }
   }
   Span<char16> path16 = str16_from_8(scratch.arena, path_copy);
   SFGAOF flags = 0;
   PIDLIST_ABSOLUTE list = 0;
-  if(path16.size != 0 && SUCCEEDED(SHParseDisplayName(path16.str, 0, &list, 0, &flags)))
+  if(path16.size != 0 && SUCCEEDED(SHParseDisplayName(path16.Ptr, 0, &list, 0, &flags)))
   {
     HRESULT hr = SHOpenFolderAndSelectItems(list, 0, 0, 0);
     CoTaskMemFree(list);
@@ -1551,6 +1551,6 @@ os_open_in_browser(StringView url)
 {
   Temp scratch = scratch_begin(0, 0);
   Span<char16> url16 = str16_from_8(scratch.arena, url);
-  ShellExecuteW(0, L"open", (WCHAR *)url16.str, 0, 0, SW_SHOWNORMAL);
+  ShellExecuteW(0, L"open", (WCHAR *)url16.Ptr, 0, 0, SW_SHOWNORMAL);
   scratch_end(scratch);
 }

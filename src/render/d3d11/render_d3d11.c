@@ -356,9 +356,9 @@ r_init(CmdLine* cmdln)
     ID3D11VertexShader* vshad = 0;
     ProfScope("compile vertex shader")
     {
-      error = D3DCompile(source.str,
+      error = D3DCompile(source.Ptr,
                          source.size,
-                         (char *)source_name.str,
+                         (char *)source_name.Ptr,
                          0,
                          0,
                          "vs_main",
@@ -411,9 +411,9 @@ r_init(CmdLine* cmdln)
     ID3D11PixelShader* pshad = 0;
     ProfScope("compile pixel shader")
     {
-      error = D3DCompile(source.str,
+      error = D3DCompile(source.Ptr,
                          source.size,
-                         (char *)source_name.str,
+                         (char *)source_name.Ptr,
                          0,
                          0,
                          "ps_main",

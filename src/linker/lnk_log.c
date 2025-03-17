@@ -22,15 +22,15 @@ lnk_log(LNK_LogType type, char* fmt, ...)
     Temp scratch = scratch_begin(0,0);
     va_list args;
     va_start(args, fmt);
-    StringView string = push_str8fv(scratch.arena, fmt, args);
-    fprintf(stdout, "%.*s\n", str8_varg(string));
+    StringView str = push_str8fv(scratch.arena, fmt, args);
+    fprintf(stdout, "%.*s\n", str8_varg(str));
     va_end(args);
     scratch_end(scratch);
   }
 }
 
 LNK_LogType
-lnk_log_type_from_string(StringView string)
+lnk_log_type_from_string(StringView str)
 {
   static struct {
     char*       name;
@@ -49,7 +49,7 @@ lnk_log_type_from_string(StringView string)
   Assert(ArrayCount(map) == LNK_Log_Count);
 
   for (uint64 i = 0; i < ArrayCount(map); ++i) {
-    if (str8_match(str8_cstring(map[i].name), string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(str8_cstring(map[i].name), str, StringMatchFlag_CaseInsensitive)) {
       return map[i].type;
     }
   }

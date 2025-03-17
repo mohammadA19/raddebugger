@@ -92,7 +92,7 @@ entry_point(CmdLine* cmdline)
         OS_HandleList processes = {0};
         for(String8Node* n = rdi_paths.first; n != 0; n = n.next)
         {
-          StringView rdi_path = n.string;
+          StringView rdi_path = n.str;
           StringView dump_path = push_str8f(arena, "%S.dump", rdi_path);
           str8_list_push(arena, &dump_paths, dump_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
@@ -115,7 +115,7 @@ entry_point(CmdLine* cmdline)
         for(String8Node* n = rdi_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          StringView path = n.string;
+          StringView path = n.str;
           StringView data = os_data_from_file_path(scratch.arena, path);
           rdi_hashes[idx] = hs_hash_from_data(data);
           rdi_paths_array[idx] = path;
@@ -127,7 +127,7 @@ entry_point(CmdLine* cmdline)
         for(String8Node* n = dump_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          StringView path = n.string;
+          StringView path = n.str;
           StringView data = os_data_from_file_path(scratch.arena, path);
           dump_hashes[idx] = hs_hash_from_data(data);
           dump_paths_array[idx] = path;
@@ -179,7 +179,7 @@ entry_point(CmdLine* cmdline)
   {
     for(String8Node* n = out.first; n != 0; n = n.next)
     {
-      fprintf(stderr, "%.*s", str8_varg(n.string));
+      fprintf(stderr, "%.*s", str8_varg(n.str));
     }
   }
   

@@ -149,9 +149,9 @@ StringView
 os_get_current_path(Arena* arena)
 {
   char* cwdir = getcwd(0, 0);
-  StringView string = push_str8_copy(arena, str8_cstring(cwdir));
+  StringView str = push_str8_copy(arena, str8_cstring(cwdir));
   free(cwdir);
-  return string;
+  return str;
 }
 
 uint32
@@ -162,7 +162,7 @@ os_get_process_start_time_unix()
   pid_t pid = getpid();
   StringView path = push_str8f(scratch.arena, "/proc/%u", pid);
   struct stat st;
-  int err = stat((char*)path.str, &st);
+  int err = stat((char*)path.Ptr, &st);
   if(err == 0)
   {
     start_time = st.st_mtime;
@@ -243,7 +243,7 @@ os_set_thread_name(StringView name)
   Temp scratch = scratch_begin(0, 0);
   StringView name_copy = push_str8_copy(scratch.arena, name);
   pthread_t current_thread = pthread_self();
-  pthread_setname_np(current_thread, (char *)name_copy.str);
+  pthread_setname_np(current_thread, (char *)name_copy.Ptr);
   scratch_end(scratch);
 }
 
@@ -287,7 +287,7 @@ os_file_open(OS_AccessFlags flags, StringView path)
   {
     lnx_flags |= O_CREAT;
   }
-  int fd = open((char *)path_copy.str, lnx_flags, 0755);
+  int fd = open((char *)path_copy.Ptr, lnx_flags, 0755);
   OS_Handle handle = {0};
   if(fd != -1)
   {
@@ -402,7 +402,7 @@ os_delete_file_at_path(StringView path)
   Temp scratch = scratch_begin(0, 0);
   B32 result = 0;
   StringView path_copy = push_str8_copy(scratch.arena, path);
-  if(remove((char*)path_copy.str) != -1)
+  if(remove((char*)path_copy.Ptr) != -1)
   {
     result = 1;
   }
@@ -449,7 +449,7 @@ os_full_path_from_path(Arena* arena, StringView path)
   Temp scratch = scratch_begin(&arena, 1);
   StringView path_copy = push_str8_copy(scratch.arena, path);
   char buffer[PATH_MAX] = {0};
-  realpath((char *)path_copy.str, buffer);
+  realpath((char *)path_copy.Ptr, buffer);
   StringView result = push_str8_copy(arena, str8_cstring(buffer));
   scratch_end(scratch);
   return result;
@@ -460,7 +460,7 @@ os_file_path_exists(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
   StringView path_copy = push_str8_copy(scratch.arena, path);
-  int access_result = access((char *)path_copy.str, F_OK);
+  int access_result = access((char *)path_copy.Ptr, F_OK);
   B32 result = 0;
   if(access_result == 0)
   {
@@ -476,7 +476,7 @@ os_folder_path_exists(StringView path)
   Temp scratch = scratch_begin(0, 0);
   B32      exists    = 0;
   StringView  path_copy = push_str8_copy(scratch.arena, path);
-  DIR*     handle    = opendir((char*)path_copy.str);
+  DIR*     handle    = opendir((char*)path_copy.Ptr);
   if(handle)
   {
     closedir(handle);
@@ -492,7 +492,7 @@ os_properties_from_file_path(StringView path)
   Temp scratch = scratch_begin(0, 0);
   StringView path_copy = push_str8_copy(scratch.arena, path);
   struct stat f_stat = {0};
-  int stat_result = stat((char *)path_copy.str, &f_stat);
+  int stat_result = stat((char *)path_copy.Ptr, &f_stat);
   FileProperties props = {0};
   if(stat_result != -1)
   {
@@ -551,7 +551,7 @@ os_file_iter_begin(Arena* arena, StringView path, OS_FileIterFlags flags)
   OS_LNX_FileIter* iter = (OS_LNX_FileIter *)base_iter.memory;
   {
     StringView path_copy = push_str8_copy(arena, path);
-    iter.dir = opendir((char *)path_copy.str);
+    iter.dir = opendir((char *)path_copy.Ptr);
     iter.path = path_copy;
   }
   return base_iter;
@@ -575,7 +575,7 @@ os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
     {
       Temp scratch = scratch_begin(&arena, 1);
       StringView full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter.path, lnx_iter.dp.d_name);
-      stat_result = stat((char *)full_path.str, &st);
+      stat_result = stat((char *)full_path.Ptr, &st);
       scratch_end(scratch);
     }
     
@@ -624,7 +624,7 @@ os_make_directory(StringView path)
   Temp scratch = scratch_begin(0, 0);
   B32 result = 0;
   StringView path_copy = push_str8_copy(scratch.arena, path);
-  if(mkdir((char*)path_copy.str, 0755) != -1)
+  if(mkdir((char*)path_copy.Ptr, 0755) != -1)
   {
     result = 1;
   }
@@ -640,7 +640,7 @@ os_shared_memory_alloc(uint64 size, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   StringView name_copy = push_str8_copy(scratch.arena, name);
-  int id = shm_open((char *)name_copy.str, O_RDWR, 0);
+  int id = shm_open((char *)name_copy.Ptr, O_RDWR, 0);
   ftruncate(id, size);
   OS_Handle result = {(uint64)id};
   scratch_end(scratch);
@@ -652,7 +652,7 @@ os_shared_memory_open(StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   StringView name_copy = push_str8_copy(scratch.arena, name);
-  int id = shm_open((char *)name_copy.str, O_RDWR, 0);
+  int id = shm_open((char *)name_copy.Ptr, O_RDWR, 0);
   OS_Handle result = {(uint64)id};
   scratch_end(scratch);
   return result;
@@ -1138,7 +1138,7 @@ OS_Handle
 os_library_open(StringView path)
 {
   Temp scratch = scratch_begin(0, 0);
-  char* path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
+  char* path_cstr = (char *)push_str8_copy(scratch.arena, path).Ptr;
   void* so = dlopen(path_cstr, RTLD_LAZY|RTLD_LOCAL);
   OS_Handle lib = { (uint64)so };
   scratch_end(scratch);
@@ -1150,7 +1150,7 @@ os_library_load_proc(OS_Handle lib, StringView name)
 {
   Temp scratch = scratch_begin(0, 0);
   void* so = (void *)lib.u64;
-  char* name_cstr = (char *)push_str8_copy(scratch.arena, name).str;
+  char* name_cstr = (char *)push_str8_copy(scratch.arena, name).Ptr;
   VoidProc* proc = (VoidProc *)dlsym(so, name_cstr);
   scratch_end(scratch);
   return proc;
@@ -1270,9 +1270,9 @@ main(int argc, char** argv)
       if(got_final_result && size > 0)
       {
         info.machine_name.size = size;
-        info.machine_name.str = push_array_no_zero(os_lnx_state.arena, uint8, info.machine_name.size + 1);
-        MemoryCopy(info.machine_name.str, buffer, info.machine_name.size);
-        info.machine_name.str[info.machine_name.size] = 0;
+        info.machine_name.Ptr = push_array_no_zero(os_lnx_state.arena, uint8, info.machine_name.size + 1);
+        MemoryCopy(info.machine_name.Ptr, buffer, info.machine_name.size);
+        info.machine_name[info.machine_name.size] = 0;
       }
       
       scratch_end(scratch);
@@ -1285,7 +1285,7 @@ main(int argc, char** argv)
       
       // rjf: grab binary path
       {
-        // rjf: get self string
+        // rjf: get self str
         B32 got_final_result = 0;
         uint8* buffer = 0;
         int size = 0;

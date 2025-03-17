@@ -42,7 +42,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, StringView dst, StringView
       src_n != 0 && bp_n != 0;
       src_n = src_n.next, bp_n = bp_n.next)
   {
-    if(str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context())))
+    if(str8_match(src_n.str, bp_n.str, path_match_flags_from_os(operating_system_from_context())))
     {
       num_backtracks -= 1;
     }
@@ -52,7 +52,7 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, StringView dst, StringView
     }
   }
   
-  // rjf: only build relative string if # of backtracks is not the entire `src`.
+  // rjf: only build relative str if # of backtracks is not the entire `src`.
   // if getting to `dst` from `src` requires erasing the entire `src`, then the
   // only possible way to get to `dst` from `src` is via absolute path.
   StringView dst_path = {0};
@@ -76,13 +76,13 @@ path_relative_dst_from_absolute_dst_src(Arena* arena, StringView dst, StringView
           bp_n != 0;
           bp_n = bp_n.next)
       {
-        if(!unique_from_src && (src_n == 0 || !str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context()))))
+        if(!unique_from_src && (src_n == 0 || !str8_match(src_n.str, bp_n.str, path_match_flags_from_os(operating_system_from_context()))))
         {
           unique_from_src = 1;
         }
         if(unique_from_src)
         {
-          str8_list_push(scratch.arena, &dst_path_strs, bp_n.string);
+          str8_list_push(scratch.arena, &dst_path_strs, bp_n.str);
         }
         if(src_n != 0)
         {

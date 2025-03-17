@@ -541,7 +541,7 @@ void lnk_replace_type_names_with_hashes(TP_Context* tp, TP_Arena* arena, CV_Debu
 ////////////////////////////////
 // RAD Debug info
 
-uint64                  lnk_udt_name_hash_table_hash(StringView string);
+uint64                  lnk_udt_name_hash_table_hash(StringView str);
 LNK_UDTNameBucket ** lnk_udt_name_hash_table_from_debug_t(TP_Context* tp, TP_Arena* arena, CV_DebugT debug_t, uint64* buckets_cap_out);
 LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket** buckets, uint64 cap, StringView name);
 CV_TypeIndex *       lnk_build_udt_fwdmap(TP_Context* tp, Arena* arena, CV_DebugT debug_t, CV_TypeIndex ti_lo, LNK_UDTNameBucket** udt_name_buckets, uint64 udt_name_buckets_cap);
@@ -605,7 +605,7 @@ String8List lnk_build_pdb(TP_Context*               tp,
 ////////////////////////////////
 // RAD Debug Info
 
-uint64                  lnk_udt_name_hash_table_hash(StringView string);
+uint64                  lnk_udt_name_hash_table_hash(StringView str);
 LNK_UDTNameBucket ** lnk_udt_name_hash_table_from_debug_t(TP_Context* tp, TP_Arena* arena, CV_DebugT debug_t, uint64* buckets_cap_out);
 LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket** buckets, uint64 cap, StringView name);
 

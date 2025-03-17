@@ -10,7 +10,7 @@
 #elif COMPILER_GCC
 # define COMPILER_STRING "GCC"
 #else
-# error "undefined compiler string"
+# error "undefined compiler str"
 #endif
 
 #if BUILD_DEBUG

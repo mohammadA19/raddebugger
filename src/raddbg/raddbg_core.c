@@ -55,28 +55,28 @@ rd_handle_list_copy(Arena* arena, RD_HandleList list)
 //~ rjf: Config Type Functions
 
 void
-rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView string, RD_CfgSrc source)
+rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView str, RD_CfgSrc source)
 {
   if(table.slot_count == 0)
   {
     table.slot_count = 64;
     table.slots = push_array(arena, RD_CfgSlot, table.slot_count);
   }
-  MD_TokenizeResult tokenize = md_tokenize_from_text(arena, string);
-  MD_ParseResult parse = md_parse_from_text_tokens(arena, (""), string, tokenize.tokens);
-  for MD_EachNode(tln, parse.root.first) if(tln.string.size != 0)
+  MD_TokenizeResult tokenize = md_tokenize_from_text(arena, str);
+  MD_ParseResult parse = md_parse_from_text_tokens(arena, (""), str, tokenize.tokens);
+  for MD_EachNode(tln, parse.root.first) if(tln.str.Length != 0)
   {
-    // rjf: map string . hash*slot
-    StringView string = StringView(tln.string.str, tln.string.size);
-    uint64 hash = d_hash_from_string__case_insensitive(string);
+    // rjf: map str . hash*slot
+    StringView str = StringView(tln.str.Ptr, tln.str.Length);
+    uint64 hash = d_hash_from_string__case_insensitive(str);
     uint64 slot_idx = hash % table.slot_count;
     RD_CfgSlot* slot = &table.slots[slot_idx];
     
-    // rjf: find existing value for this string
+    // rjf: find existing value for this str
     RD_CfgVal* val = 0;
     for(RD_CfgVal* v = slot.first; v != 0; v = v.hash_next)
     {
-      if(str8_match(v.string, string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(v.str, str, StringMatchFlag_CaseInsensitive))
       {
         val = v;
         break;
@@ -87,7 +87,7 @@ rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView s
     if(val == 0)
     {
       val = push_array(arena, RD_CfgVal, 1);
-      val.string = push_str8_copy(arena, string);
+      val.str = push_str8_copy(arena, str);
       val.insertion_stamp = table.insertion_stamp_counter;
       SLLStackPush_N(slot.first, val, hash_next);
       SLLQueuePush_N(table.first_val, table.last_val, val, linear_next);
@@ -103,17 +103,17 @@ rd_cfg_table_push_unparsed_string(Arena* arena, RD_CfgTable* table, StringView s
 }
 
 RD_CfgVal *
-rd_cfg_val_from_string(RD_CfgTable* table, StringView string)
+rd_cfg_val_from_string(RD_CfgTable* table, StringView str)
 {
   RD_CfgVal* result = &d_nil_cfg_val;
   if(table.slot_count != 0)
   {
-    uint64 hash = d_hash_from_string__case_insensitive(string);
+    uint64 hash = d_hash_from_string__case_insensitive(str);
     uint64 slot_idx = hash % table.slot_count;
     RD_CfgSlot* slot = &table.slots[slot_idx];
     for(RD_CfgVal* val = slot.first; val != 0; val = val.hash_next)
     {
-      if(str8_match(val.string, string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(val.str, str, StringMatchFlag_CaseInsensitive))
       {
         result = val;
         break;
@@ -134,7 +134,7 @@ rd_regs_copy_contents(Arena* arena, RD_Regs* dst, RD_Regs* src)
   dst.file_path   = push_str8_copy(arena, src.file_path);
   dst.lines       = d_line_list_copy(arena, &src.lines);
   dst.dbgi_key    = di_key_copy(arena, &src.dbgi_key);
-  dst.string      = push_str8_copy(arena, src.string);
+  dst.str      = push_str8_copy(arena, src.str);
   dst.cmd_name    = push_str8_copy(arena, src.cmd_name);
   dst.params_tree = md_tree_copy(arena, src.params_tree);
   if(dst.entity_list.count == 0 && !rd_handle_match(rd_handle_zero(), dst.entity))
@@ -338,9 +338,9 @@ rd_view_is_project_filtered(RD_View* view)
   StringView view_project = view.project_path;
   if(view_project.size != 0)
   {
-    RD_ViewRuleKind kind = rd_view_rule_kind_from_string(view.spec.string);
+    RD_ViewRuleKind kind = rd_view_rule_kind_from_string(view.spec.str);
     // TODO(rjf): @hack hack hack - this should be completely determined if the view
-    // is parameterized by an expression, but that is currently the same string as the
+    // is parameterized by an expression, but that is currently the same str as the
     // query, and so we can't rely on that. when query expressions are separated from
     // filter strings, we can rely on that here.
     if((kind == RD_ViewRuleKind_Text ||
@@ -384,12 +384,12 @@ rd_view_from_handle(RD_Handle handle)
 //~ rjf: View Spec Type Functions
 
 RD_ViewRuleKind
-rd_view_rule_kind_from_string(StringView string)
+rd_view_rule_kind_from_string(StringView str)
 {
   RD_ViewRuleKind kind = RD_ViewRuleKind_Null;
   for EachEnumVal(RD_ViewRuleKind, k)
   {
-    if(str8_match(string, rd_view_rule_kind_info_table[k].string, 0))
+    if(str8_match(str, rd_view_rule_kind_info_table[k].str, 0))
     {
       kind = k;
       break;
@@ -405,11 +405,11 @@ rd_view_rule_info_from_kind(RD_ViewRuleKind kind)
 }
 
 RD_ViewRuleInfo *
-rd_view_rule_info_from_string(StringView string)
+rd_view_rule_info_from_string(StringView str)
 {
   RD_ViewRuleInfo* result = &rd_nil_view_rule_info;
   {
-    RD_ViewRuleKind kind = rd_view_rule_kind_from_string(string);
+    RD_ViewRuleKind kind = rd_view_rule_kind_from_string(str);
     if(kind != RD_ViewRuleKind_Null)
     {
       result = &rd_view_rule_kind_info_table[kind];
@@ -689,7 +689,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
           String8List parts = str8_split_path(scratch.arena, collisions.v[idx]);
           for(String8Node* n = parts.first; n != 0; n = n.next)
           {
-            str8_list_push_front(scratch.arena, &collision_parts_reversed[idx], n.string);
+            str8_list_push_front(scratch.arena, &collision_parts_reversed[idx], n.str);
           }
         }
         
@@ -698,7 +698,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
         String8List parts_reversed = {0};
         for(String8Node* n = parts.first; n != 0; n = n.next)
         {
-          str8_list_push_front(scratch.arena, &parts_reversed, n.string);
+          str8_list_push_front(scratch.arena, &parts_reversed, n.str);
         }
         
         // rjf: iterate all collision part reversed lists, in lock-step with
@@ -716,7 +716,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
             B32 part_is_qualifier = 0;
             for EachIndex(idx, collisions.count)
             {
-              if(collision_nodes[idx] != 0 && !str8_match(collision_nodes[idx].string, n.string, StringMatchFlag_CaseInsensitive))
+              if(collision_nodes[idx] != 0 && !str8_match(collision_nodes[idx].str, n.str, StringMatchFlag_CaseInsensitive))
               {
                 collision_nodes[idx] = 0;
                 num_collisions_left -= 1;
@@ -729,7 +729,7 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
             }
             if(part_is_qualifier)
             {
-              str8_list_push_front(scratch.arena, &qualifiers, n.string);
+              str8_list_push_front(scratch.arena, &qualifiers, n.str);
             }
           }
         }
@@ -739,8 +739,8 @@ rd_title_fstrs_from_view(Arena* arena, RD_View* view, Vec4F32 primary_color, Vec
     // rjf: push qualifiers
     for(String8Node* n = qualifiers.first; n != 0; n = n.next)
     {
-      StringView string = push_str8f(arena, "<%S> ", n.string);
-      dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Main), size*0.95f, secondary_color, string);
+      StringView str = push_str8f(arena, "<%S> ", n.str);
+      dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Main), size*0.95f, secondary_color, str);
     }
     
     // rjf: push file name
@@ -823,7 +823,7 @@ rd_prefer_dasm_from_window(RD_Window* window)
 {
   RD_Panel* panel = window.focused_panel;
   RD_View* view = rd_selected_tab_from_panel(panel);
-  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.string);
+  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.str);
   B32 result = 0;
   if(view_kind == RD_ViewRuleKind_Disasm)
   {
@@ -840,7 +840,7 @@ rd_prefer_dasm_from_window(RD_Window* window)
     for(RD_Panel* p = window.root_panel; !rd_panel_is_nil(p); p = rd_panel_rec_depth_first_pre(p).next)
     {
       RD_View* p_view = rd_selected_tab_from_panel(p);
-      RD_ViewRuleKind p_view_kind = rd_view_rule_kind_from_string(p_view.spec.string);
+      RD_ViewRuleKind p_view_kind = rd_view_rule_kind_from_string(p_view.spec.str);
       if(p_view_kind == RD_ViewRuleKind_Text)
       {
         has_src = 1;
@@ -946,10 +946,10 @@ rd_name_bucket_idx_from_string_size(uint64 size)
 }
 
 StringView
-rd_name_alloc(StringView string)
+rd_name_alloc(StringView str)
 {
-  if(string.size == 0) {return StringView();}
-  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
+  if(str.Length == 0) {return StringView();}
+  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(str.Length);
   
   // rjf: loop . find node, allocate if not there
   //
@@ -975,7 +975,7 @@ rd_name_alloc(StringView string)
             n != 0;
             prev = n, n = n.next)
         {
-          if(n.size >= string.size)
+          if(n.size >= str.Length)
           {
             if(prev == 0)
             {
@@ -1006,7 +1006,7 @@ rd_name_alloc(StringView string)
       }
       else
       {
-        chunk_size = u64_up_to_pow2(string.size);
+        chunk_size = u64_up_to_pow2(str.Length);
       }
       uint8* chunk_memory = push_array(rd_state.arena, uint8, chunk_size);
       RD_NameChunkNode* chunk = (RD_NameChunkNode *)chunk_memory;
@@ -1015,19 +1015,19 @@ rd_name_alloc(StringView string)
     }
   }
   
-  // rjf: fill string & return
-  StringView allocated_string = StringView((uint8 *)node, string.size);
-  MemoryCopy((uint8 *)node, string.str, string.size);
+  // rjf: fill str & return
+  StringView allocated_string = StringView((uint8 *)node, str.Length);
+  MemoryCopy((uint8 *)node, str.Ptr, str.Length);
   return allocated_string;
 }
 
 void
-rd_name_release(StringView string)
+rd_name_release(StringView str)
 {
-  if(string.size == 0) {return;}
-  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(string.size);
-  RD_NameChunkNode* node = (RD_NameChunkNode *)string.str;
-  node.size = u64_up_to_pow2(string.size);
+  if(str.Length == 0) {return;}
+  uint64 bucket_idx = rd_name_bucket_idx_from_string_size(str.Length);
+  RD_NameChunkNode* node = (RD_NameChunkNode *)str.Ptr;
+  node.size = u64_up_to_pow2(str.Length);
   SLLStackPush(rd_state.free_name_chunks[bucket_idx], node);
 }
 
@@ -1067,18 +1067,18 @@ rd_cfg_release(RD_Cfg* cfg)
   {
     RD_Cfg* c = n.v;
     c.gen += 1;
-    rd_name_release(c.string);
+    rd_name_release(c.str);
     SLLStackPush(rd_state.free_cfg, c);
   }
   scratch_end(scratch);
 }
 
 RD_Cfg *
-rd_cfg_new(RD_Cfg* parent, StringView string)
+rd_cfg_new(RD_Cfg* parent, StringView str)
 {
   RD_Cfg* cfg = rd_cfg_alloc();
   rd_cfg_insert_child(parent, parent.last, cfg);
-  rd_cfg_equip_string(cfg, string);
+  rd_cfg_equip_string(cfg, str);
   return cfg;
 }
 
@@ -1088,21 +1088,21 @@ rd_cfg_newf(RD_Cfg* parent, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
-  RD_Cfg* result = rd_cfg_new(parent, string);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
+  RD_Cfg* result = rd_cfg_new(parent, str);
   va_end(args);
   scratch_end(scratch);
   return result;
 }
 
 void
-rd_cfg_equip_string(RD_Cfg* cfg, StringView string)
+rd_cfg_equip_string(RD_Cfg* cfg, StringView str)
 {
-  if(cfg.string.size != 0)
+  if(cfg.str.Length != 0)
   {
-    rd_name_release(cfg.string);
+    rd_name_release(cfg.str);
   }
-  cfg.string = rd_name_alloc(string);
+  cfg.str = rd_name_alloc(str);
 }
 
 void
@@ -1123,12 +1123,12 @@ rd_cfg_unhook(RD_Cfg* parent, RD_Cfg* child)
 }
 
 RD_Cfg *
-rd_cfg_child_from_string(RD_Cfg* parent, StringView string)
+rd_cfg_child_from_string(RD_Cfg* parent, StringView str)
 {
   RD_Cfg* child = &rd_nil_cfg;
   for(RD_Cfg* c = parent.first; c != &rd_nil_cfg; c = c.next)
   {
-    if(str8_match(c.string, string, 0))
+    if(str8_match(c.str, str, 0))
     {
       child = c;
       break;
@@ -1138,12 +1138,12 @@ rd_cfg_child_from_string(RD_Cfg* parent, StringView string)
 }
 
 RD_CfgList
-rd_cfg_child_list_from_string(Arena* arena, RD_Cfg* parent, StringView string)
+rd_cfg_child_list_from_string(Arena* arena, RD_Cfg* parent, StringView str)
 {
   RD_CfgList result = {0};
   for(RD_Cfg* child = parent.first; child != &rd_nil_cfg; child = child.next)
   {
-    if(str8_match(child.string, string, 0))
+    if(str8_match(child.str, str, 0))
     {
       rd_cfg_list_push(arena, &result, child);
     }
@@ -1152,14 +1152,14 @@ rd_cfg_child_list_from_string(Arena* arena, RD_Cfg* parent, StringView string)
 }
 
 RD_CfgList
-rd_cfg_top_level_list_from_string(Arena* arena, StringView string)
+rd_cfg_top_level_list_from_string(Arena* arena, StringView str)
 {
   RD_CfgList result = {0};
   for(RD_Cfg* bucket = rd_state.root_cfg.first; bucket != &rd_nil_cfg; bucket = bucket.next)
   {
     for(RD_Cfg* tln = bucket.first; tln != &rd_nil_cfg; tln = tln.next)
     {
-      if(str8_match(tln.string, string, 0))
+      if(str8_match(tln.str, str, 0))
       {
         rd_cfg_list_push(arena, &result, tln);
       }
@@ -1169,11 +1169,11 @@ rd_cfg_top_level_list_from_string(Arena* arena, StringView string)
 }
 
 RD_CfgList
-rd_cfg_tree_list_from_string(Arena* arena, StringView string)
+rd_cfg_tree_list_from_string(Arena* arena, StringView str)
 {
   RD_CfgList result = {0};
   Temp scratch = scratch_begin(&arena, 1);
-  MD_Node* root = md_tree_from_string(scratch.arena, string);
+  MD_Node* root = md_tree_from_string(scratch.arena, str);
   for MD_EachNode(tln, root.first)
   {
     RD_Cfg* dst_root_n = &rd_nil_cfg;
@@ -1182,7 +1182,7 @@ rd_cfg_tree_list_from_string(Arena* arena, StringView string)
     for(MD_Node* src_n = tln; !md_node_is_nil(src_n); src_n = rec.next)
     {
       RD_Cfg* dst_n = rd_cfg_alloc();
-      rd_cfg_equip_string(dst_n, src_n.string);
+      rd_cfg_equip_string(dst_n, src_n.str);
       if(dst_active_parent_n != &rd_nil_cfg)
       {
         rd_cfg_insert_child(dst_active_parent_n, dst_active_parent_n.last, dst_n);
@@ -1224,13 +1224,13 @@ rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg)
     for(RD_Cfg* c = cfg; c != &rd_nil_cfg; c = rec.next)
     {
       // rjf: push name of this node
-      if(c.string.size != 0 || c.first == &rd_nil_cfg)
+      if(c.str.Length != 0 || c.first == &rd_nil_cfg)
       {
         String8List c_name_strings = {0};
         B32 name_can_be_pushed_standalone = 0;
         {
           Temp temp = temp_begin(scratch.arena);
-          MD_TokenizeResult c_name_tokenize = md_tokenize_from_text(temp.arena, c.string);
+          MD_TokenizeResult c_name_tokenize = md_tokenize_from_text(temp.arena, c.str);
           name_can_be_pushed_standalone = (c_name_tokenize.tokens.count == 1 && c_name_tokenize.tokens.v[0].flags & (MD_TokenFlag_Identifier|
                                                                                                                      MD_TokenFlag_Numeric|
                                                                                                                      MD_TokenFlag_StringLiteral|
@@ -1239,11 +1239,11 @@ rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg)
         }
         if(name_can_be_pushed_standalone)
         {
-          str8_list_push(scratch.arena, &c_name_strings, c.string);
+          str8_list_push(scratch.arena, &c_name_strings, c.str);
         }
         else
         {
-          StringView c_name_escaped = escaped_from_raw_str8(scratch.arena, c.string);
+          StringView c_name_escaped = escaped_from_raw_str8(scratch.arena, c.str);
           str8_list_push(scratch.arena, &c_name_strings, ("\""));
           str8_list_push(scratch.arena, &c_name_strings, c_name_escaped);
           str8_list_push(scratch.arena, &c_name_strings, ("\""));
@@ -1280,13 +1280,13 @@ rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg)
       // rjf: tree navigations . encode hierarchy
       if(rec.push_count > 0)
       {
-        if(top_nest_task.is_simple && c.string.size != 0)
+        if(top_nest_task.is_simple && c.str.Length != 0)
         {
           str8_list_push(scratch.arena, &strings, (":"));
         }
         else
         {
-          if(c.string.size != 0)
+          if(c.str.Length != 0)
           {
             str8_list_push(scratch.arena, &strings, (":\n"));
           }
@@ -1299,7 +1299,7 @@ rd_string_from_cfg_tree(Arena* arena, RD_Cfg* cfg)
         {
           if(top_nest_task.is_simple)
           {
-            if(top_nest_task.cfg.string.size == 0)
+            if(top_nest_task.cfg.str.Length == 0)
             {
               str8_list_push(scratch.arena, &strings, (" }"));
             }
@@ -1469,9 +1469,9 @@ rd_entity_release(RD_Entity* entity)
     rd_state.entities_free_count += 1;
     rd_state.entities_active_count -= 1;
     task.e.gen += 1;
-    if(task.e.string.size != 0)
+    if(task.e.str.Length != 0)
     {
-      rd_name_release(task.e.string);
+      rd_name_release(task.e.str);
     }
     rd_state.kind_alloc_gens[task.e.kind] += 1;
   }
@@ -1586,17 +1586,17 @@ void
 rd_entity_equip_name(RD_Entity* entity, StringView name)
 {
   rd_require_entity_nonnil(entity, return);
-  if(entity.string.size != 0)
+  if(entity.str.Length != 0)
   {
-    rd_name_release(entity.string);
+    rd_name_release(entity.str);
   }
   if(name.size != 0)
   {
-    entity.string = rd_name_alloc(name);
+    entity.str = rd_name_alloc(name);
   }
   else
   {
-    entity.string = StringView();
+    entity.str = StringView();
   }
 }
 
@@ -1617,7 +1617,7 @@ rd_mapped_from_file_path(Arena* arena, StringView file_path)
     String8Node* best_map_remaining_suffix_first = 0;
     for(RD_EntityNode* n = maps.first; n != 0; n = n.next)
     {
-      StringView map_src = rd_entity_child_from_kind(n.entity, RD_EntityKind_Source).string;
+      StringView map_src = rd_entity_child_from_kind(n.entity, RD_EntityKind_Source).str;
       StringView map_src__normalized = path_normalized_from_string(scratch.arena, map_src);
       String8List map_src_parts = str8_split_path(scratch.arena, map_src__normalized);
       B32 matches = 1;
@@ -1627,7 +1627,7 @@ rd_mapped_from_file_path(Arena* arena, StringView file_path)
           map_src_n != 0 && file_path_part_n != 0;
           map_src_n = map_src_n.next, file_path_part_n = file_path_part_n.next)
       {
-        if(!str8_match(map_src_n.string, file_path_part_n.string, 0))
+        if(!str8_match(map_src_n.str, file_path_part_n.str, 0))
         {
           matches = 0;
           break;
@@ -1637,7 +1637,7 @@ rd_mapped_from_file_path(Arena* arena, StringView file_path)
       if(matches && match_length < best_map_match_length)
       {
         best_map_match_length = match_length;
-        best_map_dst = rd_entity_child_from_kind(n.entity, RD_EntityKind_Dest).string;
+        best_map_dst = rd_entity_child_from_kind(n.entity, RD_EntityKind_Dest).str;
         best_map_remaining_suffix_first = file_path_part_n;
       }
     }
@@ -1647,7 +1647,7 @@ rd_mapped_from_file_path(Arena* arena, StringView file_path)
       String8List best_map_dst_parts = str8_split_path(scratch.arena, best_map_dst__normalized);
       for(String8Node* n = best_map_remaining_suffix_first; n != 0; n = n.next)
       {
-        str8_list_push(scratch.arena, &best_map_dst_parts, n.string);
+        str8_list_push(scratch.arena, &best_map_dst_parts, n.str);
       }
       StringJoin join = {.sep = ("/")};
       result = str8_list_join(arena, &best_map_dst_parts, &join);
@@ -1691,8 +1691,8 @@ rd_possible_overrides_from_file_path(Arena* arena, StringView file_path)
       RD_Entity* dst = rd_entity_child_from_kind(link, RD_EntityKind_Dest);
       PathStyle src_style = PathStyle_Relative;
       PathStyle dst_style = PathStyle_Relative;
-      String8List src_parts = path_normalized_list_from_string(scratch.arena, src.string, &src_style);
-      String8List dst_parts = path_normalized_list_from_string(scratch.arena, dst.string, &dst_style);
+      String8List src_parts = path_normalized_list_from_string(scratch.arena, src.str, &src_style);
+      String8List dst_parts = path_normalized_list_from_string(scratch.arena, dst.str, &dst_style);
       
       //- rjf: determine if this link can possibly redirect to the target file path
       B32 dst_redirects_to_pth = 0;
@@ -1704,7 +1704,7 @@ rd_possible_overrides_from_file_path(Arena* arena, StringView file_path)
         String8Node* pth_n = pth_parts.first;
         for(;dst_n != 0 && pth_n != 0; dst_n = dst_n.next, pth_n = pth_n.next)
         {
-          if(!str8_match(dst_n.string, pth_n.string, StringMatchFlag_CaseInsensitive))
+          if(!str8_match(dst_n.str, pth_n.str, StringMatchFlag_CaseInsensitive))
           {
             dst_redirects_to_pth = 0;
             break;
@@ -1721,7 +1721,7 @@ rd_possible_overrides_from_file_path(Arena* arena, StringView file_path)
         String8List candidate_parts = src_parts;
         for(String8Node* p = non_redirected_pth_first; p != 0; p = p.next)
         {
-          str8_list_push(scratch.arena, &candidate_parts, p.string);
+          str8_list_push(scratch.arena, &candidate_parts, p.str);
         }
         StringJoin join = {0};
         join.sep = ("/");
@@ -1778,13 +1778,13 @@ rd_entity_from_id(RD_EntityID id)
 }
 
 RD_Entity *
-rd_entity_from_name_and_kind(StringView string, RD_EntityKind kind)
+rd_entity_from_name_and_kind(StringView str, RD_EntityKind kind)
 {
   RD_Entity* result = &rd_nil_entity;
   RD_EntityList all_of_this_kind = rd_query_cached_entity_list_with_kind(kind);
   for(RD_EntityNode* n = all_of_this_kind.first; n != 0; n = n.next)
   {
-    if(str8_match(n.entity.string, string, 0))
+    if(str8_match(n.entity.str, str, 0))
     {
       result = n.entity;
       break;
@@ -1807,13 +1807,13 @@ rd_d_target_from_entity(RD_Entity* entity)
   RD_Entity* src_target_stdi  = rd_entity_child_from_kind(entity, RD_EntityKind_StdinPath);
   RD_Entity* src_target_entry = rd_entity_child_from_kind(entity, RD_EntityKind_EntryPoint);
   D_Target target = {0};
-  target.exe                     = src_target_exe.string;
-  target.args                    = src_target_args.string;
-  target.working_directory       = src_target_wdir.string;
-  target.custom_entry_point_name = src_target_entry.string;
-  target.stdout_path             = src_target_stdo.string;
-  target.stderr_path             = src_target_stde.string;
-  target.stdin_path              = src_target_stdi.string;
+  target.exe                     = src_target_exe.str;
+  target.args                    = src_target_args.str;
+  target.working_directory       = src_target_wdir.str;
+  target.custom_entry_point_name = src_target_entry.str;
+  target.stdout_path             = src_target_stdo.str;
+  target.stderr_path             = src_target_stde.str;
+  target.stdin_path              = src_target_stdi.str;
   target.debug_subprocesses      = entity.debug_subprocesses;
   return target;
 }
@@ -1840,7 +1840,7 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
     dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Icons), size, rd_rgba_from_theme_color(RD_ThemeColor_TextNegative), rd_icon_kind_text_table[RD_IconKind_Info]);
     dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Code), size, secondary_color, (" "));
   }
-  StringView name = entity.string;
+  StringView name = entity.str;
   B32 name_is_code = 1;
   if(rd_entity_kind_flags_table[entity.kind] & RD_EntityKindFlag_NameIsPath)
   {
@@ -1848,19 +1848,19 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
   }
   StringView location = {0};
   B32 location_is_code = 0;
-  StringView exe_name = str8_skip_last_slash(exe.string);
-  StringView args_string = args.string;
-  StringView cnd_string = cnd.string;
+  StringView exe_name = str8_skip_last_slash(exe.str);
+  StringView args_string = args.str;
+  StringView cnd_string = cnd.str;
   if(!rd_entity_is_nil(loc))
   {
-    if(loc.string.size != 0 && loc.flags & RD_EntityFlag_HasTextPoint)
+    if(loc.str.Length != 0 && loc.flags & RD_EntityFlag_HasTextPoint)
     {
-      location = push_str8f(arena, "%S:%I64d:%I64d", loc.string, loc.text_point.line, loc.text_point.column);
+      location = push_str8f(arena, "%S:%I64d:%I64d", loc.str, loc.text_point.line, loc.text_point.column);
       location_is_code = 0;
     }
-    else if(loc.string.size != 0)
+    else if(loc.str.Length != 0)
     {
-      location = loc.string;
+      location = loc.str;
       location_is_code = 1;
     }
     else if(loc.flags & RD_EntityFlag_HasVAddr)
@@ -1933,9 +1933,9 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
   }
   if(entity.kind == RD_EntityKind_FilePathMap)
   {
-    StringView src_string = src.string;
+    StringView src_string = src.str;
     Vec4F32 src_color = color;
-    StringView dst_string = dst.string;
+    StringView dst_string = dst.str;
     Vec4F32 dst_color = color;
     if(src_string.size == 0)
     {
@@ -1955,9 +1955,9 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
   }
   if(entity.kind == RD_EntityKind_AutoViewRule)
   {
-    StringView src_string = src.string;
+    StringView src_string = src.str;
     Vec4F32 src_color = color;
-    StringView dst_string = dst.string;
+    StringView dst_string = dst.str;
     Vec4F32 dst_color = color;
     DR_FancyStringList src_fstrs = {0};
     DR_FancyStringList dst_fstrs = {0};
@@ -1995,8 +1995,8 @@ rd_title_fstrs_from_entity(Arena* arena, RD_Entity* entity, Vec4F32 secondary_co
   if(entity.kind == RD_EntityKind_Breakpoint)
   {
     dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Code), size, v4f32(0, 0, 0, 0), (" "));
-    StringView string = push_str8f(arena, "(%I64u hit%s)", entity.u64, entity.u64 == 1 ? "" : "s");
-    dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Main), size_extrafied, secondary_color, string);
+    StringView str = push_str8f(arena, "(%I64u hit%s)", entity.u64, entity.u64 == 1 ? "" : "s");
+    dr_fancy_string_list_push_new(arena, &result, rd_font_from_slot(RD_FontSlot_Main), size_extrafied, secondary_color, str);
   }
   return result;
 }
@@ -2035,16 +2035,16 @@ rd_rgba_from_ctrl_entity(CTRL_Entity* entity)
 StringView
 rd_name_from_ctrl_entity(Arena* arena, CTRL_Entity* entity)
 {
-  StringView string = entity.string;
-  if(string.size == 0)
+  StringView str = entity.str;
+  if(str.Length == 0)
   {
-    string = ("unnamed");
+    str = ("unnamed");
   }
   if(entity.kind == CTRL_EntityKind_Module)
   {
-    string = str8_skip_last_slash(string);
+    str = str8_skip_last_slash(str);
   }
-  return string;
+  return str;
 }
 
 DR_FancyStringList
@@ -2115,7 +2115,7 @@ rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* entity, Vec4F32 secon
       {
         RDI_Procedure* procedure = rdi_procedure_from_voff(rdi, rip_voff);
         StringView name = {0};
-        name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
+        name.Ptr = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
         name = push_str8_copy(arena, name);
         if(name.size != 0)
         {
@@ -2222,34 +2222,34 @@ rd_ctrl_meta_eval_from_entity(Arena* arena, RD_Entity* entity)
   RD_Entity* cnd = rd_entity_child_from_kind(entity, RD_EntityKind_Condition);
   RD_Entity* src = rd_entity_child_from_kind(entity, RD_EntityKind_Source);
   RD_Entity* dst = rd_entity_child_from_kind(entity, RD_EntityKind_Dest);
-  StringView label_string = push_str8_copy(arena, entity.string);
+  StringView label_string = push_str8_copy(arena, entity.str);
   StringView src_loc_string = {0};
   StringView vaddr_loc_string = {0};
   StringView function_loc_string = {0};
   if(loc.flags & RD_EntityFlag_HasTextPoint)
   {
-    src_loc_string = push_str8f(arena, "%S:%I64u:%I64u", loc.string, loc.text_point.line, loc.text_point.column);
+    src_loc_string = push_str8f(arena, "%S:%I64u:%I64u", loc.str, loc.text_point.line, loc.text_point.column);
   }
   else if(loc.flags & RD_EntityFlag_HasVAddr)
   {
     vaddr_loc_string = push_str8f(arena, "0x%I64x", loc.vaddr);
   }
-  else if(loc.string.size != 0)
+  else if(loc.str.Length != 0)
   {
-    function_loc_string = push_str8_copy(arena, loc.string);
+    function_loc_string = push_str8_copy(arena, loc.str);
   }
-  StringView cnd_string = push_str8_copy(arena, cnd.string);
+  StringView cnd_string = push_str8_copy(arena, cnd.str);
   meval.enabled   = !entity.disabled;
   meval.hit_count = entity.u64;
   meval.color     = u32_from_rgba(rd_rgba_from_entity(entity));
   meval.label     = label_string;
-  meval.exe       = exe.string;
-  meval.args      = args.string;
-  meval.working_directory = wdir.string;
-  meval.entry_point = entr.string;
-  meval.stdout_path = stdo.string;
-  meval.stderr_path = stde.string;
-  meval.stdin_path  = stdi.string;
+  meval.exe       = exe.str;
+  meval.args      = args.str;
+  meval.working_directory = wdir.str;
+  meval.entry_point = entr.str;
+  meval.stdout_path = stdo.str;
+  meval.stderr_path = stde.str;
+  meval.stdin_path  = stdi.str;
   meval.source_location = src_loc_string;
   meval.address_location = vaddr_loc_string;
   meval.function_location = function_loc_string;
@@ -2260,13 +2260,13 @@ rd_ctrl_meta_eval_from_entity(Arena* arena, RD_Entity* entity)
     default:{}break;
     case RD_EntityKind_FilePathMap:
     {
-      meval.source_path = src.string;
-      meval.destination_path = dst.string;
+      meval.source_path = src.str;
+      meval.destination_path = dst.str;
     }break;
     case RD_EntityKind_AutoViewRule:
     {
-      meval.type      = src.string;
-      meval.view_rule = dst.string;
+      meval.type      = src.str;
+      meval.view_rule = dst.str;
     }break;
   }
   ProfEnd();
@@ -2281,7 +2281,7 @@ rd_ctrl_meta_eval_from_ctrl_entity(Arena* arena, CTRL_Entity* entity)
   meval.frozen      = entity.is_frozen;
   meval.vaddr_range = entity.vaddr_range;
   meval.color       = entity.rgba;
-  meval.label       = entity.string;
+  meval.label       = entity.str;
   meval.id          = entity.id;
   if(entity.kind == CTRL_EntityKind_Thread)
   {
@@ -2309,8 +2309,8 @@ rd_ctrl_meta_eval_from_ctrl_entity(Arena* arena, CTRL_Entity* entity)
   if(entity.kind == CTRL_EntityKind_Module)
   {
     DI_Key dbgi_key = ctrl_dbgi_key_from_module(entity);
-    meval.label = str8_skip_last_slash(entity.string);
-    meval.exe = path_normalized_from_string(arena, entity.string);
+    meval.label = str8_skip_last_slash(entity.str);
+    meval.exe = path_normalized_from_string(arena, entity.str);
     meval.dbg = path_normalized_from_string(arena, dbgi_key.path);
   }
   ProfEnd();
@@ -2341,7 +2341,7 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
         if(read_range.min < read_range.max)
         {
           result = 1;
-          MemoryCopy(out, data.str + read_range.min, dim_1u64(read_range));
+          MemoryCopy(out, data.Ptr + read_range.min, dim_1u64(read_range));
         }
       }
       hs_scope_close(scope);
@@ -2362,7 +2362,7 @@ rd_eval_space_read(void* u, E_Space space, void* out, Rng1U64 range)
           if(data.size == dim_1u64(range))
           {
             result = 1;
-            MemoryCopy(out, data.str, data.size);
+            MemoryCopy(out, data.Ptr, data.size);
           }
           scratch_end(scratch);
         }break;
@@ -2514,7 +2514,7 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: perform write to entity
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read.name))
-#define StringMemberCase(name) else if(range.min == (uint64)meval_read.name.str)
+#define StringMemberCase(name) else if(range.min == (uint64)meval_read.name.Ptr)
       FlatMemberCase(enabled)             {result = 1; rd_entity_equip_disabled(entity, !!((uint8 *)in)[0]);}
       FlatMemberCase(debug_subprocesses)  {result = 1; entity.debug_subprocesses = !!((uint8 *)in)[0]; }
       StringMemberCase(label)             {result = 1; rd_entity_equip_name(entity, str8_cstring_capped(in, (uint8 *)in + 4096));}
@@ -2535,7 +2535,7 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
         result = 1;
         String8TxtPtPair src_loc = str8_txt_pt_pair_from_string(str8_cstring_capped(in, (uint8 *)in + 4096));
         RD_Entity* loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
-        rd_entity_equip_name(loc, src_loc.string);
+        rd_entity_equip_name(loc, src_loc.str);
         rd_entity_equip_txt_pt(loc, src_loc.pt);
       }
       StringMemberCase(address_location)
@@ -2582,7 +2582,7 @@ rd_eval_space_write(void* u, E_Space space, void* in, Rng1U64 range)
       // rjf: perform write to entity
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read.name))
-#define StringMemberCase(name) else if(range.min == (uint64)meval_read.name.str)
+#define StringMemberCase(name) else if(range.min == (uint64)meval_read.name.Ptr)
       StringMemberCase(label) {result = 1; ctrl_entity_equip_string(d_state.ctrl_entity_store, entity, str8_cstring_capped(in, (uint8 *)in + 4096));}
 #undef FlatMemberCase
 #undef StringMemberCase
@@ -2658,7 +2658,7 @@ rd_whole_range_from_eval_space(E_Space space)
 //- rjf: writing values back to child processes
 
 B32
-rd_commit_eval_value_string(E_Eval dst_eval, StringView string, B32 string_needs_unescaping)
+rd_commit_eval_value_string(E_Eval dst_eval, StringView str, B32 string_needs_unescaping)
 {
   B32 result = 0;
   if(dst_eval.mode == E_Mode_Offset)
@@ -2673,13 +2673,13 @@ rd_commit_eval_value_string(E_Eval dst_eval, StringView string, B32 string_needs
     if((E_TypeKind_FirstBasic <= type_kind && type_kind <= E_TypeKind_LastBasic) ||
        type_kind == E_TypeKind_Enum)
     {
-      E_Eval src_eval = e_eval_from_string(scratch.arena, string);
+      E_Eval src_eval = e_eval_from_string(scratch.arena, str);
       commit_data = push_str8_copy(scratch.arena, str8_struct(&src_eval.value));
       commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(type_key));
     }
     else if(type_kind == E_TypeKind_Ptr || type_kind == E_TypeKind_Array)
     {
-      E_Eval src_eval = e_eval_from_string(scratch.arena, string);
+      E_Eval src_eval = e_eval_from_string(scratch.arena, str);
       E_Eval src_eval_value = e_value_eval_from_eval(src_eval);
       E_TypeKind src_eval_value_type_kind = e_type_kind_from_key(src_eval_value.type_key);
       if(direct_type_kind == E_TypeKind_Char8 ||
@@ -2689,23 +2689,23 @@ rd_commit_eval_value_string(E_Eval dst_eval, StringView string, B32 string_needs
         B32 is_quoted = 0;
         if(string_needs_unescaping)
         {
-          if(string.size >= 1 && string.str[0] == '"')
+          if(str.Length >= 1 && str[0] == '"')
           {
-            string = str8_skip(string, 1);
+            str = str8_skip(str, 1);
             is_quoted = 1;
           }
-          if(string.size >= 1 && string.str[string.size-1] == '"')
+          if(str.Length >= 1 && str[str.Length-1] == '"')
           {
-            string = str8_chop(string, 1);
+            str = str8_chop(str, 1);
           }
         }
         if(is_quoted)
         {
-          commit_data = raw_from_escaped_str8(scratch.arena, string);
+          commit_data = raw_from_escaped_str8(scratch.arena, str);
         }
         else
         {
-          commit_data = push_str8_copy(scratch.arena, string);
+          commit_data = push_str8_copy(scratch.arena, str);
         }
         commit_data.size += 1;
         if(type_kind == E_TypeKind_Ptr)
@@ -2731,7 +2731,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, StringView string, B32 string_needs
         E_Eval dst_value_eval = e_value_eval_from_eval(dst_eval);
         dst_offset = dst_value_eval.value.u64;
       }
-      result = e_space_write(dst_eval.space, commit_data.str, r1u64(dst_offset, dst_offset + commit_data.size));
+      result = e_space_write(dst_eval.space, commit_data.Ptr, r1u64(dst_offset, dst_offset + commit_data.size));
     }
     scratch_end(scratch);
   }
@@ -2802,12 +2802,12 @@ rd_lang_kind_from_eval_params(E_Eval eval, MD_Node* params)
   TXT_LangKind lang_kind = TXT_LangKind_Null;
   if(eval.expr.kind == E_ExprKind_LeafFilePath)
   {
-    lang_kind = txt_lang_kind_from_extension(str8_skip_last_dot(eval.expr.string));
+    lang_kind = txt_lang_kind_from_extension(str8_skip_last_dot(eval.expr.str));
   }
   else
   {
     MD_Node* lang_node = md_child_from_string(params, ("lang"), 0);
-    StringView lang_kind_string = lang_node.first.string;
+    StringView lang_kind_string = lang_node.first.str;
     lang_kind = txt_lang_kind_from_extension(lang_kind_string);
   }
   return lang_kind;
@@ -2818,7 +2818,7 @@ rd_arch_from_eval_params(E_Eval eval, MD_Node* params)
 {
   Arch arch = Arch_Null;
   MD_Node* arch_node = md_child_from_string(params, ("arch"), 0);
-  StringView arch_kind_string = arch_node.first.string;
+  StringView arch_kind_string = arch_node.first.str;
   if(str8_match(arch_kind_string, ("x64"), StringMatchFlag_CaseInsensitive))
   {
     arch = Arch_x64;
@@ -2845,7 +2845,7 @@ rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node* params)
     MD_Node* fmt_node = md_child_from_string(params, ("fmt"), 0);
     for EachNonZeroEnumVal(R_Tex2DFormat, fmt)
     {
-      if(str8_match(r_tex2d_format_display_string_table[fmt], fmt_node.first.string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(r_tex2d_format_display_string_table[fmt], fmt_node.first.str, StringMatchFlag_CaseInsensitive))
       {
         result = fmt;
         break;
@@ -2858,15 +2858,15 @@ rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node* params)
 //- rjf: eval <. file path
 
 StringView
-rd_file_path_from_eval_string(Arena* arena, StringView string)
+rd_file_path_from_eval_string(Arena* arena, StringView str)
 {
   StringView result = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
-    E_Eval eval = e_eval_from_string(scratch.arena, string);
+    E_Eval eval = e_eval_from_string(scratch.arena, str);
     if(eval.expr.kind == E_ExprKind_LeafFilePath)
     {
-      result = raw_from_escaped_str8(arena, eval.expr.string);
+      result = raw_from_escaped_str8(arena, eval.expr.str);
     }
     scratch_end(scratch);
   }
@@ -2874,10 +2874,10 @@ rd_file_path_from_eval_string(Arena* arena, StringView string)
 }
 
 StringView
-rd_eval_string_from_file_path(Arena* arena, StringView string)
+rd_eval_string_from_file_path(Arena* arena, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  StringView string_escaped = escaped_from_raw_str8(scratch.arena, string);
+  StringView string_escaped = escaped_from_raw_str8(scratch.arena, str);
   StringView result = push_str8f(arena, "file:\"%S\"", string_escaped);
   scratch_end(scratch);
   return result;
@@ -3001,7 +3001,7 @@ void
 rd_view_equip_query(RD_View* view, StringView query)
 {
   view.query_string_size = Min(sizeof(view.query_buffer), query.size);
-  MemoryCopy(view.query_buffer, query.str, view.query_string_size);
+  MemoryCopy(view.query_buffer, query.Ptr, view.query_string_size);
   view.query_cursor = view.query_mark = txt_pt(1, query.size+1);
 }
 
@@ -3086,8 +3086,8 @@ rd_view_store_paramf(RD_View* view, StringView key, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
-  rd_view_store_param(view, key, string);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
+  rd_view_store_param(view, key, str);
   va_end(args);
   scratch_end(scratch);
 }
@@ -3114,7 +3114,7 @@ rd_view_scroll_pos()
 StringView
 rd_view_expr_string()
 {
-  // TODO(rjf): @entity_simplification filter and expr string need to be different
+  // TODO(rjf): @entity_simplification filter and expr str need to be different
   RD_View* view = rd_view_from_handle(rd_regs().view);
   StringView expr_string = StringView(view.query_buffer, view.query_string_size);
   return expr_string;
@@ -3123,7 +3123,7 @@ rd_view_expr_string()
 StringView
 rd_view_filter()
 {
-  // TODO(rjf): @entity_simplification filter and expr string need to be different
+  // TODO(rjf): @entity_simplification filter and expr str need to be different
   RD_View* view = rd_view_from_handle(rd_regs().view);
   StringView filter = StringView(view.query_buffer, view.query_string_size);
   return filter;
@@ -3150,19 +3150,19 @@ rd_push_view_arena()
 //- rjf: storing view-attached state
 
 void
-rd_store_view_expr_string(StringView string)
+rd_store_view_expr_string(StringView str)
 {
-  // TODO(rjf): @entity_simplification filter and expr string need to be different
+  // TODO(rjf): @entity_simplification filter and expr str need to be different
   RD_View* view = rd_view_from_handle(rd_regs().view);
-  rd_view_equip_query(view, string);
+  rd_view_equip_query(view, str);
 }
 
 void
-rd_store_view_filter(StringView string)
+rd_store_view_filter(StringView str)
 {
-  // TODO(rjf): @entity_simplification filter and expr string need to be different
+  // TODO(rjf): @entity_simplification filter and expr str need to be different
   RD_View* view = rd_view_from_handle(rd_regs().view);
-  rd_view_equip_query(view, string);
+  rd_view_equip_query(view, str);
 }
 
 void
@@ -3192,8 +3192,8 @@ rd_store_view_paramf(StringView key, char* fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(scratch.arena, fmt, args);
-  rd_store_view_param(key, string);
+  StringView str = push_str8fv(scratch.arena, fmt, args);
+  rd_store_view_param(key, str);
   va_end(args);
   scratch_end(scratch);
 }
@@ -3629,15 +3629,15 @@ rd_window_frame(RD_Window* ws)
     content_rect = pad_2f32(content_rect, -window_edge_px);
     
     ////////////////////////////
-    //- rjf: truncated string hover
+    //- rjf: truncated str hover
     //
     if(ui_string_hover_active()) UI_Tooltip
     {
       Temp scratch = scratch_begin(0, 0);
-      StringView string = ui_string_hover_string(scratch.arena);
+      StringView str = ui_string_hover_string(scratch.arena);
       DR_FancyRunList runs = ui_string_hover_runs(scratch.arena);
       UI_Box* box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
-      ui_box_equip_display_string_fancy_runs(box, string, &runs);
+      ui_box_equip_display_string_fancy_runs(box, str, &runs);
       scratch_end(scratch);
     }
     
@@ -3756,14 +3756,14 @@ rd_window_frame(RD_Window* ws)
               RDI_Procedure* procedure = f.procedure;
               uint64 rip_vaddr = regs_rip_from_arch_block(arch, f.regs);
               CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
-              StringView module_name = module == &ctrl_entity_nil ? ("???") : str8_skip_last_slash(module.string);
+              StringView module_name = module == &ctrl_entity_nil ? ("???") : str8_skip_last_slash(module.str);
               
               // rjf: inline frames
               for(CTRL_CallStackInlineFrame* fin = f.last_inline_frame; fin != 0; fin = fin.prev)
                 UI_PrefWidth(ui_children_sum(1)) UI_Row
               {
                 StringView name = {0};
-                name.str = rdi_string_from_idx(rdi, fin.inline_site.name_string_idx, &name.size);
+                name.Ptr = rdi_string_from_idx(rdi, fin.inline_site.name_string_idx, &name.size);
                 name.size = Min(512, name.size);
                 UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                 RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(("[inlined]"));
@@ -3784,7 +3784,7 @@ rd_window_frame(RD_Window* ws)
               UI_PrefWidth(ui_children_sum(1)) UI_Row
               {
                 StringView name = {0};
-                name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
+                name.Ptr = rdi_name_from_procedure(rdi, procedure, &name.size);
                 name.size = Min(512, name.size);
                 UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                 if(name.size != 0)
@@ -4005,11 +4005,11 @@ rd_window_frame(RD_Window* ws)
             RD_Entity* dst = rd_entity_from_handle(e.entity_handle);
             if(!rd_entity_is_nil(dst))
             {
-              ui_labelf("[link] %S . %S", e.string, dst.string);
+              ui_labelf("[link] %S . %S", e.str, dst.str);
             }
             else
             {
-              ui_labelf("%S: %S", d_entity_kind_display_string_table[e.kind], e.string);
+              ui_labelf("%S: %S", d_entity_kind_display_string_table[e.kind], e.str);
             }
           }
           rec = rd_entity_rec_depth_first_pre(e, rd_entity_root());
@@ -4049,7 +4049,7 @@ rd_window_frame(RD_Window* ws)
             HS_Scope* hs_scope = hs_scope_open();
             TxtRng range = txt_rng(regs.cursor, regs.mark);
             D_LineList lines = regs.lines;
-            if(!txt_pt_match(range.min, range.max) && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_Copy].string)))
+            if(!txt_pt_match(range.min, range.max) && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_Copy].str)))
             {
               U128 hash = {0};
               TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, regs.text_key, regs.lang_kind, &hash);
@@ -4105,7 +4105,7 @@ rd_window_frame(RD_Window* ws)
                 expr_off_range = txt_expr_off_range_from_info_data_pt(&info, data, range.min);
               }
               StringView expr = str8_substr(data, expr_off_range);
-              rd_cmd(RD_CmdKind_GoToName, .string = expr);
+              rd_cmd(RD_CmdKind_GoToName, .str = expr);
               ui_ctx_menu_close();
             }
             if(range.min.line == range.max.line && ui_clicked(rd_icon_buttonf(RD_IconKind_CircleFilled, 0, "Toggle Breakpoint")))
@@ -4131,15 +4131,15 @@ rd_window_frame(RD_Window* ws)
                 expr_off_range = txt_expr_off_range_from_info_data_pt(&info, data, range.min);
               }
               StringView expr = str8_substr(data, expr_off_range);
-              rd_cmd(RD_CmdKind_ToggleWatchExpression, .string = expr);
+              rd_cmd(RD_CmdKind_ToggleWatchExpression, .str = expr);
               ui_ctx_menu_close();
             }
-            if(regs.file_path.size == 0 && range.min.line == range.max.line && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_GoToSource].string)))
+            if(regs.file_path.size == 0 && range.min.line == range.max.line && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_GoToSource].str)))
             {
               rd_cmd(RD_CmdKind_GoToSource, .lines = lines);
               ui_ctx_menu_close();
             }
-            if(regs.file_path.size != 0 && range.min.line == range.max.line && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_GoToDisassembly].string)))
+            if(regs.file_path.size != 0 && range.min.line == range.max.line && ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_GoToDisassembly].str)))
             {
               rd_cmd(RD_CmdKind_GoToDisassembly, .lines = lines);
               ui_ctx_menu_close();
@@ -4217,12 +4217,12 @@ rd_window_frame(RD_Window* ws)
             // rjf: filter controls
             if(view.spec.flags & RD_ViewRuleInfoFlag_CanFilter)
             {
-              if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_Filter].string)))
+              if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_Filter].str)))
               {
                 rd_cmd(RD_CmdKind_Filter, .panel = rd_handle_from_panel(panel), .view = rd_handle_from_view(view));
                 ui_ctx_menu_close();
               }
-              if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_ClearFilter].string)))
+              if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_ClearFilter].str)))
               {
                 rd_cmd(RD_CmdKind_ClearFilter, .panel = rd_handle_from_panel(panel), .view = rd_handle_from_view(view));
                 ui_ctx_menu_close();
@@ -4255,14 +4255,14 @@ rd_window_frame(RD_Window* ws)
                   UI_Row
                   {
                     MD_Node* params = view.params_roots[view.params_write_gen%ArrayCount(view.params_roots)];
-                    MD_Node* param_tree = md_child_from_string(params, key.string, 0);
+                    MD_Node* param_tree = md_child_from_string(params, key.str, 0);
                     StringView pre_edit_value = md_string_from_children(scratch.arena, param_tree);
-                    UI_PrefWidth(ui_em(10.f, 1.f)) ui_label(key.string);
-                    UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, pre_edit_value, "%S##view_param", key.string);
+                    UI_PrefWidth(ui_em(10.f, 1.f)) ui_label(key.str);
+                    UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, pre_edit_value, "%S##view_param", key.str);
                     if(ui_committed(sig))
                     {
                       StringView new_string = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size);
-                      rd_view_store_param(view, key.string, new_string);
+                      rd_view_store_param(view, key.str, new_string);
                     }
                   }
                 }
@@ -4310,17 +4310,17 @@ rd_window_frame(RD_Window* ws)
             //- rjf: name editor
             if(ctrl_entity.kind == CTRL_EntityKind_Thread) RD_Font(RD_FontSlot_Code) UI_TextPadding(ui_top_font_size()*1.5f)
             {
-              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, ctrl_entity.string, "Name###ctrl_entity_string_edit_%p", ctrl_entity);
+              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, ctrl_entity.str, "Name###ctrl_entity_string_edit_%p", ctrl_entity);
               if(ui_committed(sig))
               {
-                rd_cmd(RD_CmdKind_SetEntityName, .ctrl_entity = ctrl_entity.handle, .string = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
+                rd_cmd(RD_CmdKind_SetEntityName, .ctrl_entity = ctrl_entity.handle, .str = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
               }
             }
             
             // rjf: copy full path
             if(ctrl_entity.kind == CTRL_EntityKind_Module) if(ui_clicked(rd_icon_buttonf(RD_IconKind_Clipboard, 0, "Copy Full Path")))
             {
-              os_set_clipboard_text(ctrl_entity.string);
+              os_set_clipboard_text(ctrl_entity.str);
               ui_ctx_menu_close();
             }
             
@@ -4329,8 +4329,8 @@ rd_window_frame(RD_Window* ws)
                 ctrl_entity.kind == CTRL_EntityKind_Process) &&
                ui_clicked(rd_icon_buttonf(RD_IconKind_Clipboard, 0, "Copy ID")))
             {
-              StringView string = str8_from_u64(scratch.arena, ctrl_entity.id, 10, 0, 0);
-              os_set_clipboard_text(string);
+              StringView str = str8_from_u64(scratch.arena, ctrl_entity.id, 10, 0, 0);
+              os_set_clipboard_text(str);
               ui_ctx_menu_close();
             }
             
@@ -4357,18 +4357,18 @@ rd_window_frame(RD_Window* ws)
                   {
                     RDI_InlineSite* inline_site = inline_frame.inline_site;
                     StringView name = {0};
-                    name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
-                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: [inlined] \"%S\"%s%S", rip_vaddr, name, module == &ctrl_entity_nil ? "" : " in ", module.string);
+                    name.Ptr = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
+                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: [inlined] \"%S\"%s%S", rip_vaddr, name, module == &ctrl_entity_nil ? "" : " in ", module.str);
                   }
                   if(procedure != 0)
                   {
                     StringView name = {0};
-                    name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
-                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: \"%S\"%s%S", rip_vaddr, name, module == &ctrl_entity_nil ? "" : " in ", module.string);
+                    name.Ptr = rdi_name_from_procedure(rdi, procedure, &name.size);
+                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: \"%S\"%s%S", rip_vaddr, name, module == &ctrl_entity_nil ? "" : " in ", module.str);
                   }
                   else if(module != &ctrl_entity_nil)
                   {
-                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: [??? in %S]", rip_vaddr, module.string);
+                    str8_list_pushf(scratch.arena, &lines, "0x%I64x: [??? in %S]", rip_vaddr, module.str);
                   }
                   else
                   {
@@ -4443,7 +4443,7 @@ rd_window_frame(RD_Window* ws)
                 RDI_Procedure* procedure = f.procedure;
                 uint64 rip_vaddr = regs_rip_from_arch_block(thread.arch, f.regs);
                 CTRL_Entity* module = ctrl_module_from_process_vaddr(process, rip_vaddr);
-                StringView module_name = module == &ctrl_entity_nil ? ("???") : str8_skip_last_slash(module.string);
+                StringView module_name = module == &ctrl_entity_nil ? ("???") : str8_skip_last_slash(module.str);
                 
                 // rjf: inline frames
                 for(CTRL_CallStackInlineFrame* fin = f.last_inline_frame; fin != 0; fin = fin.prev)
@@ -4452,7 +4452,7 @@ rd_window_frame(RD_Window* ws)
                   UI_Signal sig = ui_signal_from_box(row);
                   ui_push_parent(row);
                   StringView name = {0};
-                  name.str = rdi_string_from_idx(rdi, fin.inline_site.name_string_idx, &name.size);
+                  name.Ptr = rdi_string_from_idx(rdi, fin.inline_site.name_string_idx, &name.size);
                   UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                   RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(("[inlined]"));
                   if(name.size != 0)
@@ -4475,7 +4475,7 @@ rd_window_frame(RD_Window* ws)
                   UI_Signal sig = ui_signal_from_box(row);
                   ui_push_parent(row);
                   StringView name = {0};
-                  name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
+                  name.Ptr = rdi_name_from_procedure(rdi, procedure, &name.size);
                   UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                   if(name.size != 0)
                   {
@@ -4603,20 +4603,20 @@ rd_window_frame(RD_Window* ws)
             //- rjf: name editor
             if(kind_flags & RD_EntityKindFlag_CanRename) RD_Font(RD_FontSlot_Code) UI_TextPadding(ui_top_font_size()*1.5f)
             {
-              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, entity.string, "Name###entity_string_edit_%p", ctrl_entity);
+              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, entity.str, "Name###entity_string_edit_%p", ctrl_entity);
               if(ui_committed(sig))
               {
-                rd_cmd(RD_CmdKind_NameEntity, .entity = regs.entity, .string = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
+                rd_cmd(RD_CmdKind_NameEntity, .entity = regs.entity, .str = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
               }
             }
             
             //- rjf: condition editor
             if(kind_flags & RD_EntityKindFlag_CanCondition) RD_Font(RD_FontSlot_Code) UI_TextPadding(ui_top_font_size()*1.5f)
             {
-              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, rd_entity_child_from_kind(entity, RD_EntityKind_Condition).string, "Condition###entity_condition_edit_%p", entity);
+              UI_Signal sig = rd_line_editf(RD_LineEditFlag_Border|RD_LineEditFlag_CodeContents, 0, 0, &ws.ctx_menu_input_cursor, &ws.ctx_menu_input_mark, ws.ctx_menu_input_buffer, ws.ctx_menu_input_buffer_size, &ws.ctx_menu_input_string_size, 0, rd_entity_child_from_kind(entity, RD_EntityKind_Condition).str, "Condition###entity_condition_edit_%p", entity);
               if(ui_committed(sig))
               {
-                rd_cmd(RD_CmdKind_ConditionEntity, .entity = regs.entity, .string = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
+                rd_cmd(RD_CmdKind_ConditionEntity, .entity = regs.entity, .str = StringView(ws.ctx_menu_input_buffer, ws.ctx_menu_input_string_size));
               }
             }
             
@@ -4651,7 +4651,7 @@ rd_window_frame(RD_Window* ws)
           UI_Row UI_Padding(ui_em(1.f, 1.f))
           {
             UI_PrefWidth(ui_em(2.f, 1.f)) RD_Font(RD_FontSlot_Icons) ui_label(rd_icon_kind_text_table[RD_IconKind_FileOutline]);
-            UI_PrefWidth(ui_text_dim(10, 1)) ui_label(n.string);
+            UI_PrefWidth(ui_text_dim(10, 1)) ui_label(n.str);
           }
         }
         RD_Palette(RD_PaletteCode_Floating) ui_divider(ui_em(1.f, 1.f));
@@ -4661,7 +4661,7 @@ rd_window_frame(RD_Window* ws)
         {
           for(String8Node* n = ws.drop_completion_paths.first; n != 0; n = n.next)
           {
-            rd_cmd(RD_CmdKind_AddTarget, .file_path = n.string);
+            rd_cmd(RD_CmdKind_AddTarget, .file_path = n.str);
           }
           ui_ctx_menu_close();
         }
@@ -4673,7 +4673,7 @@ rd_window_frame(RD_Window* ws)
           {
             for(String8Node* n = ws.drop_completion_paths.first; n != 0; n = n.next)
             {
-              rd_cmd(RD_CmdKind_AddTarget, .file_path = n.string);
+              rd_cmd(RD_CmdKind_AddTarget, .file_path = n.str);
             }
             CTRL_EntityList processes = ctrl_entity_list_from_kind(d_state.ctrl_entity_store, CTRL_EntityKind_Process);
             if(processes.count != 0)
@@ -4692,7 +4692,7 @@ rd_window_frame(RD_Window* ws)
           {
             for(String8Node* n = ws.drop_completion_paths.first; n != 0; n = n.next)
             {
-              rd_cmd(RD_CmdKind_AddTarget, .file_path = n.string);
+              rd_cmd(RD_CmdKind_AddTarget, .file_path = n.str);
             }
             CTRL_EntityList processes = ctrl_entity_list_from_kind(d_state.ctrl_entity_store, CTRL_EntityKind_Process);
             if(processes.count != 0)
@@ -4708,7 +4708,7 @@ rd_window_frame(RD_Window* ws)
         {
           for(String8Node* n = ws.drop_completion_paths.first; n != 0; n = n.next)
           {
-            rd_cmd(RD_CmdKind_Open, .file_path = n.string);
+            rd_cmd(RD_CmdKind_Open, .file_path = n.str);
           }
           ui_ctx_menu_close();
         }
@@ -4817,9 +4817,9 @@ rd_window_frame(RD_Window* ws)
             {
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = n.string;
+                item.str      = n.str;
                 item.kind_string = ("Local");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, n.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, n.str);
               }
               if(query_word.size == 0 || item.matches.count != 0)
               {
@@ -4830,9 +4830,9 @@ rd_window_frame(RD_Window* ws)
             {
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = n.string;
+                item.str      = n.str;
                 item.kind_string = ("Local (Member)");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, n.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, n.str);
               }
               if(query_word.size == 0 || item.matches.count != 0)
               {
@@ -4855,7 +4855,7 @@ rd_window_frame(RD_Window* ws)
               {
                 RD_AutoCompListerItem item = {0};
                 {
-                  item.string      = reg_names[idx];
+                  item.str      = reg_names[idx];
                   item.kind_string = ("Register");
                   item.matches     = fuzzy_match_find(scratch.arena, query_word, reg_names[idx]);
                 }
@@ -4871,7 +4871,7 @@ rd_window_frame(RD_Window* ws)
               {
                 RD_AutoCompListerItem item = {0};
                 {
-                  item.string      = alias_names[idx];
+                  item.str      = alias_names[idx];
                   item.kind_string = ("Reg. Alias");
                   item.matches     = fuzzy_match_find(scratch.arena, query_word, alias_names[idx]);
                 }
@@ -4892,9 +4892,9 @@ rd_window_frame(RD_Window* ws)
               {
                 RD_AutoCompListerItem item = {0};
                 {
-                  item.string      = spec.info.string;
+                  item.str      = spec.info.str;
                   item.kind_string = ("View Rule");
-                  item.matches     = fuzzy_match_find(scratch.arena, query_word, spec.info.string);
+                  item.matches     = fuzzy_match_find(scratch.arena, query_word, spec.info.str);
                 }
                 if(query_word.size == 0 || item.matches.count != 0)
                 {
@@ -4936,7 +4936,7 @@ rd_window_frame(RD_Window* ws)
               // rjf: push item
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = name;
+                item.str      = name;
                 item.kind_string = ("Global");
                 item.matches     = items.v[idx].match_ranges;
                 item.group       = 1;
@@ -4971,7 +4971,7 @@ rd_window_frame(RD_Window* ws)
               // rjf: push item
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = name;
+                item.str      = name;
                 item.kind_string = ("Thread Local");
                 item.matches     = items.v[idx].match_ranges;
                 item.group       = 1;
@@ -5006,7 +5006,7 @@ rd_window_frame(RD_Window* ws)
               // rjf: push item
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = name;
+                item.str      = name;
                 item.kind_string = ("Procedure");
                 item.matches     = items.v[idx].match_ranges;
                 item.group       = 1;
@@ -5041,7 +5041,7 @@ rd_window_frame(RD_Window* ws)
               // rjf: push item
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = name;
+                item.str      = name;
                 item.kind_string = ("Type");
                 item.matches     = items.v[idx].match_ranges;
                 item.group       = 1;
@@ -5057,11 +5057,11 @@ rd_window_frame(RD_Window* ws)
             {
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = txt_extension_from_lang_kind(lang);
+                item.str      = txt_extension_from_lang_kind(lang);
                 item.kind_string = ("Language");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.str);
               }
-              if(item.string.size != 0 && (query_word.size == 0 || item.matches.count != 0))
+              if(item.str.Length != 0 && (query_word.size == 0 || item.matches.count != 0))
               {
                 rd_autocomp_lister_item_chunk_list_push(scratch.arena, &item_list, 256, &item);
               }
@@ -5075,9 +5075,9 @@ rd_window_frame(RD_Window* ws)
             {
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = string_from_arch(arch);
+                item.str      = string_from_arch(arch);
                 item.kind_string = ("Arch");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.str);
               }
               if(query_word.size == 0 || item.matches.count != 0)
               {
@@ -5093,9 +5093,9 @@ rd_window_frame(RD_Window* ws)
             {
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = lower_from_str8(scratch.arena, r_tex2d_format_display_string_table[fmt]);
+                item.str      = lower_from_str8(scratch.arena, r_tex2d_format_display_string_table[fmt]);
                 item.kind_string = ("Format");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.str);
               }
               if(query_word.size == 0 || item.matches.count != 0)
               {
@@ -5109,12 +5109,12 @@ rd_window_frame(RD_Window* ws)
           {
             for(String8Node* n = ws.autocomp_lister_params.strings.first; n != 0; n = n.next)
             {
-              StringView string = n.string;
+              StringView str = n.str;
               RD_AutoCompListerItem item = {0};
               {
-                item.string      = string;
+                item.str      = str;
                 item.kind_string = ("Parameter");
-                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.string);
+                item.matches     = fuzzy_match_find(scratch.arena, query_word, item.str);
               }
               if(query_word.size == 0 || item.matches.count != 0)
               {
@@ -5155,7 +5155,7 @@ rd_window_frame(RD_Window* ws)
               }
             }
             
-            // rjf: use query_path string to form various parts of search space
+            // rjf: use query_path str to form various parts of search space
             StringView prefix = {0};
             StringView path = {0};
             StringView search = {0};
@@ -5165,7 +5165,7 @@ rd_window_frame(RD_Window* ws)
               uint64 one_past_last_slash = dir.size;
               for(uint64 i = 0; i < dir_str_in_input.size; i += 1)
               {
-                if(dir_str_in_input.str[i] == '/' || dir_str_in_input.str[i] == '\\')
+                if(dir_str_in_input[i] == '/' || dir_str_in_input[i] == '\\')
                 {
                   one_past_last_slash = i+1;
                 }
@@ -5173,7 +5173,7 @@ rd_window_frame(RD_Window* ws)
               dir.size = one_past_last_slash;
               path = dir;
               search = str8_substr(dir_str_in_input, r1u64(one_past_last_slash, dir_str_in_input.size));
-              prefix = str8_substr(query_path, r1u64(0, path.str - query_path.str));
+              prefix = str8_substr(query_path, r1u64(0, path.Ptr - query_path.Ptr));
             }
             
             // rjf: get current files, filtered
@@ -5188,7 +5188,7 @@ rd_window_frame(RD_Window* ws)
               {
                 RD_AutoCompListerItem item = {0};
                 {
-                  item.string      = info.props.flags & FilePropertyFlag_IsFolder ? push_str8f(scratch.arena, "%S/", info.name) : info.name;
+                  item.str      = info.props.flags & FilePropertyFlag_IsFolder ? push_str8f(scratch.arena, "%S/", info.name) : info.name;
                   item.kind_string = info.props.flags & FilePropertyFlag_IsFolder ? ("Folder") : ("File");
                   item.matches     = match_ranges;
                   item.is_non_code = 1;
@@ -5287,7 +5287,7 @@ rd_window_frame(RD_Window* ws)
               {
                 UI_WidthFill RD_Font(item.is_non_code ? RD_FontSlot_Main : RD_FontSlot_Code)
                 {
-                  UI_Box* box = item.is_non_code ? ui_label(item.string).box : rd_code_label(1.f, 0, ui_top_palette().text, item.string);
+                  UI_Box* box = item.is_non_code ? ui_label(item.str).box : rd_code_label(1.f, 0, ui_top_palette().text, item.str);
                   ui_box_equip_fuzzy_match_ranges(box, &item.matches);
                 }
                 RD_Font(RD_FontSlot_Main)
@@ -5305,7 +5305,7 @@ rd_window_frame(RD_Window* ws)
                 ui_event_list_push(ui_build_arena(), &ws.ui_events, &move_back_evt);
                 UI_Event paste_evt = {};
                 paste_evt.kind = UI_EventKind_Text;
-                paste_evt.string = item.string;
+                paste_evt.str = item.str;
                 ui_event_list_push(ui_build_arena(), &ws.ui_events, &paste_evt);
                 autocomp_box.default_nav_focus_hot_key = autocomp_box.default_nav_focus_active_key = autocomp_box.default_nav_focus_next_hot_key = autocomp_box.default_nav_focus_next_active_key = ui_key_zero();
               }
@@ -5313,7 +5313,7 @@ rd_window_frame(RD_Window* ws)
               {
                 UI_Event evt = {};
                 evt.kind   = UI_EventKind_AutocompleteHint;
-                evt.string = item.string;
+                evt.str = item.str;
                 ui_event_list_push(ui_build_arena(), &ws.ui_events, &evt);
               }
             }
@@ -5374,11 +5374,11 @@ rd_window_frame(RD_Window* ws)
             {
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[RD_CmdKind_Open].string,
-                rd_cmd_kind_info_table[RD_CmdKind_OpenUser].string,
-                rd_cmd_kind_info_table[RD_CmdKind_OpenProject].string,
-                rd_cmd_kind_info_table[RD_CmdKind_OpenRecentProject].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Exit].string,
+                rd_cmd_kind_info_table[RD_CmdKind_Open].str,
+                rd_cmd_kind_info_table[RD_CmdKind_OpenUser].str,
+                rd_cmd_kind_info_table[RD_CmdKind_OpenProject].str,
+                rd_cmd_kind_info_table[RD_CmdKind_OpenRecentProject].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Exit].str,
               };
               uint32 codepoints[] =
               {
@@ -5401,9 +5401,9 @@ rd_window_frame(RD_Window* ws)
             {
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[RD_CmdKind_OpenWindow].string,
-                rd_cmd_kind_info_table[RD_CmdKind_CloseWindow].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ToggleFullscreen].string,
+                rd_cmd_kind_info_table[RD_CmdKind_OpenWindow].str,
+                rd_cmd_kind_info_table[RD_CmdKind_CloseWindow].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ToggleFullscreen].str,
               };
               uint32 codepoints[] =
               {
@@ -5424,21 +5424,21 @@ rd_window_frame(RD_Window* ws)
             {
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[RD_CmdKind_NewPanelUp].string,
-                rd_cmd_kind_info_table[RD_CmdKind_NewPanelDown].string,
-                rd_cmd_kind_info_table[RD_CmdKind_NewPanelRight].string,
-                rd_cmd_kind_info_table[RD_CmdKind_NewPanelLeft].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ClosePanel].string,
-                rd_cmd_kind_info_table[RD_CmdKind_RotatePanelColumns].string,
-                rd_cmd_kind_info_table[RD_CmdKind_NextPanel].string,
-                rd_cmd_kind_info_table[RD_CmdKind_PrevPanel].string,
-                rd_cmd_kind_info_table[RD_CmdKind_CloseTab].string,
-                rd_cmd_kind_info_table[RD_CmdKind_NextTab].string,
-                rd_cmd_kind_info_table[RD_CmdKind_PrevTab].string,
-                rd_cmd_kind_info_table[RD_CmdKind_TabBarTop].string,
-                rd_cmd_kind_info_table[RD_CmdKind_TabBarBottom].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ResetToDefaultPanels].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ResetToCompactPanels].string,
+                rd_cmd_kind_info_table[RD_CmdKind_NewPanelUp].str,
+                rd_cmd_kind_info_table[RD_CmdKind_NewPanelDown].str,
+                rd_cmd_kind_info_table[RD_CmdKind_NewPanelRight].str,
+                rd_cmd_kind_info_table[RD_CmdKind_NewPanelLeft].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ClosePanel].str,
+                rd_cmd_kind_info_table[RD_CmdKind_RotatePanelColumns].str,
+                rd_cmd_kind_info_table[RD_CmdKind_NextPanel].str,
+                rd_cmd_kind_info_table[RD_CmdKind_PrevPanel].str,
+                rd_cmd_kind_info_table[RD_CmdKind_CloseTab].str,
+                rd_cmd_kind_info_table[RD_CmdKind_NextTab].str,
+                rd_cmd_kind_info_table[RD_CmdKind_PrevTab].str,
+                rd_cmd_kind_info_table[RD_CmdKind_TabBarTop].str,
+                rd_cmd_kind_info_table[RD_CmdKind_TabBarBottom].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ResetToDefaultPanels].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ResetToCompactPanels].str,
               };
               uint32 codepoints[] =
               {
@@ -5471,27 +5471,27 @@ rd_window_frame(RD_Window* ws)
             {
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[RD_CmdKind_Targets].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Scheduler].string,
-                rd_cmd_kind_info_table[RD_CmdKind_CallStack].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Modules].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Output].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Memory].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Disassembly].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Watch].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Locals].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Registers].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Globals].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ThreadLocals].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Types].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Procedures].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Breakpoints].string,
-                rd_cmd_kind_info_table[RD_CmdKind_WatchPins].string,
-                rd_cmd_kind_info_table[RD_CmdKind_FilePathMap].string,
-                rd_cmd_kind_info_table[RD_CmdKind_AutoViewRules].string,
-                rd_cmd_kind_info_table[RD_CmdKind_Settings].string,
-                rd_cmd_kind_info_table[RD_CmdKind_ExceptionFilters].string,
-                rd_cmd_kind_info_table[RD_CmdKind_GettingStarted].string,
+                rd_cmd_kind_info_table[RD_CmdKind_Targets].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Scheduler].str,
+                rd_cmd_kind_info_table[RD_CmdKind_CallStack].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Modules].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Output].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Memory].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Disassembly].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Watch].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Locals].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Registers].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Globals].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ThreadLocals].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Types].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Procedures].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Breakpoints].str,
+                rd_cmd_kind_info_table[RD_CmdKind_WatchPins].str,
+                rd_cmd_kind_info_table[RD_CmdKind_FilePathMap].str,
+                rd_cmd_kind_info_table[RD_CmdKind_AutoViewRules].str,
+                rd_cmd_kind_info_table[RD_CmdKind_Settings].str,
+                rd_cmd_kind_info_table[RD_CmdKind_ExceptionFilters].str,
+                rd_cmd_kind_info_table[RD_CmdKind_GettingStarted].str,
               };
               uint32 codepoints[] =
               {
@@ -5531,7 +5531,7 @@ rd_window_frame(RD_Window* ws)
               Temp scratch = scratch_begin(0, 0);
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string,
+                rd_cmd_kind_info_table[RD_CmdKind_AddTarget].str,
               };
               uint32 codepoints[] =
               {
@@ -5551,15 +5551,15 @@ rd_window_frame(RD_Window* ws)
             {
               StringView cmds[] =
               {
-                rd_cmd_kind_info_table[D_CmdKind_Run].string,
-                rd_cmd_kind_info_table[D_CmdKind_KillAll].string,
-                rd_cmd_kind_info_table[D_CmdKind_Restart].string,
-                rd_cmd_kind_info_table[D_CmdKind_Halt].string,
-                rd_cmd_kind_info_table[D_CmdKind_SoftHaltRefresh].string,
-                rd_cmd_kind_info_table[D_CmdKind_StepInto].string,
-                rd_cmd_kind_info_table[D_CmdKind_StepOver].string,
-                rd_cmd_kind_info_table[D_CmdKind_StepOut].string,
-                rd_cmd_kind_info_table[D_CmdKind_Attach].string,
+                rd_cmd_kind_info_table[D_CmdKind_Run].str,
+                rd_cmd_kind_info_table[D_CmdKind_KillAll].str,
+                rd_cmd_kind_info_table[D_CmdKind_Restart].str,
+                rd_cmd_kind_info_table[D_CmdKind_Halt].str,
+                rd_cmd_kind_info_table[D_CmdKind_SoftHaltRefresh].str,
+                rd_cmd_kind_info_table[D_CmdKind_StepInto].str,
+                rd_cmd_kind_info_table[D_CmdKind_StepOver].str,
+                rd_cmd_kind_info_table[D_CmdKind_StepOut].str,
+                rd_cmd_kind_info_table[D_CmdKind_Attach].str,
               };
               uint32 codepoints[] =
               {
@@ -5604,7 +5604,7 @@ rd_window_frame(RD_Window* ws)
                 ui_labelf("Search for commands by pressing ");
                 UI_Flags(UI_BoxFlag_DrawBorder)
                   UI_TextAlignment(UI_TextAlign_Center)
-                  rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
+                  rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].str);
               }
               ui_spacer(ui_em(1.f, 1.f));
               RD_Palette(RD_PaletteCode_NeutralPopButton)
@@ -5731,7 +5731,7 @@ rd_window_frame(RD_Window* ws)
               RD_Entity* task = n.entity;
               if(task.alloc_time_us + 500000 < os_now_microseconds())
               {
-                StringView rdi_path = task.string;
+                StringView rdi_path = task.str;
                 StringView rdi_name = str8_skip_last_slash(rdi_path);
                 StringView task_text = push_str8f(scratch.arena, "Creating %S...", rdi_name);
                 UI_Key key = ui_key_from_stringf(ui_key_zero(), "task_%p", task);
@@ -6007,7 +6007,7 @@ rd_window_frame(RD_Window* ws)
             UI_Signal user_sig = ui_signal_from_box(user_box);
             if(ui_clicked(user_sig))
             {
-              rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_OpenUser].string);
+              rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_OpenUser].str);
             }
           }
           
@@ -6040,7 +6040,7 @@ rd_window_frame(RD_Window* ws)
             UI_Signal prof_sig = ui_signal_from_box(prof_box);
             if(ui_clicked(prof_sig))
             {
-              rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_OpenProject].string);
+              rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_OpenProject].str);
             }
           }
           
@@ -6215,11 +6215,11 @@ rd_window_frame(RD_Window* ws)
           case RD_RegSlot_Module:
           case RD_RegSlot_Process:
           case RD_RegSlot_Machine:
-          case RD_RegSlot_CtrlEntity:{query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_CtrlEntityLister].string;}break;
-          case RD_RegSlot_Entity:    {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_EntityLister].string;}break;
-          case RD_RegSlot_EntityList:{query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_EntityLister].string;}break;
-          case RD_RegSlot_FilePath:  {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_FileSystem].string;}break;
-          case RD_RegSlot_PID:       {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_SystemProcesses].string;}break;
+          case RD_RegSlot_CtrlEntity:{query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_CtrlEntityLister].str;}break;
+          case RD_RegSlot_Entity:    {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_EntityLister].str;}break;
+          case RD_RegSlot_EntityList:{query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_EntityLister].str;}break;
+          case RD_RegSlot_FilePath:  {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_FileSystem].str;}break;
+          case RD_RegSlot_PID:       {query_view_name = rd_view_rule_kind_info_table[RD_ViewRuleKind_SystemProcesses].str;}break;
         }
       }
       RD_ViewRuleInfo* view_spec = rd_view_rule_info_from_string(query_view_name);
@@ -6749,7 +6749,7 @@ rd_window_frame(RD_Window* ws)
                     }
                     if(ui_clicked(watch_sig))
                     {
-                      rd_cmd(RD_CmdKind_ToggleWatchExpression, .string = expr);
+                      rd_cmd(RD_CmdKind_ToggleWatchExpression, .str = expr);
                     }
                   }
                   if(ws.hover_eval_file_path.size != 0 || ws.hover_eval_vaddr != 0)
@@ -6772,7 +6772,7 @@ rd_window_frame(RD_Window* ws)
                              .file_path  = ws.hover_eval_file_path,
                              .cursor     = ws.hover_eval_file_pt,
                              .vaddr      = ws.hover_eval_vaddr,
-                             .string     = expr);
+                             .str     = expr);
                     }
                   }
                 }
@@ -7519,11 +7519,11 @@ rd_window_frame(RD_Window* ws)
                 rd_cmd(RD_CmdKind_Filter);
                 rd_cmd(RD_CmdKind_Paste);
               }
-              else if(evt.string.size != 0 && evt.kind == UI_EventKind_Text)
+              else if(evt.str.Length != 0 && evt.kind == UI_EventKind_Text)
               {
                 ui_eat_event(evt);
                 rd_cmd(RD_CmdKind_Filter);
-                rd_cmd(RD_CmdKind_InsertText, .string = evt.string);
+                rd_cmd(RD_CmdKind_InsertText, .str = evt.str);
               }
             }
           }
@@ -7913,7 +7913,7 @@ rd_window_frame(RD_Window* ws)
               for(String8Node* n = evt.paths.first; n != 0; n = n.next)
               {
                 Temp scratch = scratch_begin(0, 0);
-                StringView path = path_normalized_from_string(scratch.arena, n.string);
+                StringView path = path_normalized_from_string(scratch.arena, n.str);
                 if(str8_match(str8_skip_last_dot(path), ("exe"), StringMatchFlag_CaseInsensitive))
                 {
                   str8_list_push(ws.drop_completion_arena, &ws.drop_completion_paths, push_str8_copy(ws.drop_completion_arena, path));
@@ -8315,7 +8315,7 @@ rd_window_frame(RD_Window* ws)
         }
       }
       
-      // rjf: draw string
+      // rjf: draw str
       if(box.flags & UI_BoxFlag_DrawText)
       {
         Vec2F32 text_position = ui_box_text_position(box);
@@ -8739,7 +8739,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(scheduler_process)
         if(filter.size != 0)
         {
           is_in_filter = 0;
-          FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, child.string);
+          FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, child.str);
           if(matches.count == matches.needle_part_count)
           {
             is_in_filter = 1;
@@ -8753,7 +8753,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(scheduler_process)
             {
               CTRL_CallStackFrame* f = &call_stack.frames[idx];
               StringView name = {0};
-              name.str = rdi_string_from_idx(f.rdi, f.procedure.name_string_idx, &name.size);
+              name.Ptr = rdi_string_from_idx(f.rdi, f.procedure.name_string_idx, &name.size);
               FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, name);
               if(matches.count == matches.needle_part_count)
               {
@@ -8827,7 +8827,7 @@ EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(locals)
   String8List exprs_filtered = {0};
   for EachIndex(idx, nodes.count)
   {
-    StringView local_expr_string = nodes.v[idx].string;
+    StringView local_expr_string = nodes.v[idx].str;
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, local_expr_string);
     if(matches.count == matches.needle_part_count)
     {
@@ -8909,8 +8909,8 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(registers)
     result.row_members     = push_array(arena, E_Member *, result.row_exprs_count);
     for EachIndex(row_expr_idx, result.row_exprs_count)
     {
-      StringView string = push_str8f(arena, "reg:%S", accel.v[idx_range.min + row_expr_idx]);
-      result.row_exprs[row_expr_idx] = e_parse_expr_from_text(arena, string);
+      StringView str = push_str8f(arena, "reg:%S", accel.v[idx_range.min + row_expr_idx]);
+      result.row_exprs[row_expr_idx] = e_parse_expr_from_text(arena, str);
       result.row_members[row_expr_idx] = &e_member_nil;
     }
   }
@@ -8947,7 +8947,7 @@ rd_ev_view_rule_expr_expand_info__meta_entities(Arena* arena, EV_View* view, Str
     for(RD_EntityNode* n = entities.first; n != 0; n = n.next)
     {
       RD_Entity* entity = n.entity;
-      StringView entity_expr_string = entity.string;
+      StringView entity_expr_string = entity.str;
       B32 is_collection = 0;
       for EachElement(idx, rd_collection_name_table)
       {
@@ -8964,9 +8964,9 @@ rd_ev_view_rule_expr_expand_info__meta_entities(Arena* arena, EV_View* view, Str
         RD_Entity* exe  = rd_entity_child_from_kind(entity, RD_EntityKind_Executable);
         RD_Entity* args = rd_entity_child_from_kind(entity, RD_EntityKind_Arguments);
         FuzzyMatchRangeList expr_matches = fuzzy_match_find(scratch.arena, filter, entity_expr_string);
-        FuzzyMatchRangeList loc_matches  = fuzzy_match_find(scratch.arena, filter, loc.string);
-        FuzzyMatchRangeList exe_matches  = fuzzy_match_find(scratch.arena, filter, exe.string);
-        FuzzyMatchRangeList args_matches = fuzzy_match_find(scratch.arena, filter, args.string);
+        FuzzyMatchRangeList loc_matches  = fuzzy_match_find(scratch.arena, filter, loc.str);
+        FuzzyMatchRangeList exe_matches  = fuzzy_match_find(scratch.arena, filter, exe.str);
+        FuzzyMatchRangeList args_matches = fuzzy_match_find(scratch.arena, filter, args.str);
         is_in_filter = (expr_matches.count == expr_matches.needle_part_count ||
                         loc_matches.count  == loc_matches.needle_part_count ||
                         exe_matches.count  == exe_matches.needle_part_count ||
@@ -9008,13 +9008,13 @@ rd_ev_view_rule_expr_expand_range_info__meta_entities(Arena* arena, EV_View* vie
       }
       if(!rd_entity_is_nil(entity))
       {
-        StringView entity_expr_string = (kind == RD_EntityKind_Watch ? entity.string : push_str8f(arena, "entity:$%I64u", entity.id));
+        StringView entity_expr_string = (kind == RD_EntityKind_Watch ? entity.str : push_str8f(arena, "entity:$%I64u", entity.id));
         if(kind == RD_EntityKind_Watch)
         {
           result.row_strings[row_expr_idx] = entity_expr_string;
         }
         result.row_exprs[row_expr_idx] = e_parse_expr_from_text(arena, entity_expr_string);
-        result.row_view_rules[row_expr_idx] = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule).string;
+        result.row_view_rules[row_expr_idx] = rd_entity_child_from_kind(entity, RD_EntityKind_ViewRule).str;
       }
       else
       {
@@ -9079,7 +9079,7 @@ rd_ev_view_rule_expr_expand_info__meta_ctrl_entities(Arena* arena, EV_View* view
       if(filter.size != 0)
       {
         is_in_filter = 0;
-        FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, entity.string);
+        FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, entity.str);
         if(matches.count == matches.needle_part_count)
         {
           is_in_filter = 1;
@@ -9251,7 +9251,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
             item_expr.space    = module.space;
             item_expr.type_key = type_key;
             item_expr.bytecode = bytecode;
-            item_expr.string.str = rdi_string_from_idx(module.rdi, procedure.name_string_idx, &item_expr.string.size);
+            item_expr.str.Ptr = rdi_string_from_idx(module.rdi, procedure.name_string_idx, &item_expr.str.Length);
           }break;
           case RDI_SectionKind_GlobalVariables:
           {
@@ -9268,7 +9268,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
             item_expr.space    = module.space;
             item_expr.type_key = type_key;
             item_expr.bytecode = bytecode;
-            item_expr.string.str = rdi_string_from_idx(module.rdi, gvar.name_string_idx, &item_expr.string.size);
+            item_expr.str.Ptr = rdi_string_from_idx(module.rdi, gvar.name_string_idx, &item_expr.str.Length);
           }break;
           case RDI_SectionKind_ThreadVariables:
           {
@@ -9284,7 +9284,7 @@ rd_ev_view_rule_expr_expand_range_info__debug_info_tables(Arena* arena, EV_View*
             item_expr.space    = module.space;
             item_expr.type_key = type_key;
             item_expr.bytecode = bytecode;
-            item_expr.string.str = rdi_string_from_idx(module.rdi, tvar.name_string_idx, &item_expr.string.size);
+            item_expr.str.Ptr = rdi_string_from_idx(module.rdi, tvar.name_string_idx, &item_expr.str.Length);
           }break;
           case RDI_SectionKind_UDTs:
           {
@@ -9373,14 +9373,14 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
   for(EV_ViewRuleNode* n = view_rules.first; n != 0; n = n.next)
   {
     if(0){}
-    else if(str8_match(n.v.root.string, ("dec"), 0)) {radix = 10;}
-    else if(str8_match(n.v.root.string, ("hex"), 0)) {radix = 16;}
-    else if(str8_match(n.v.root.string, ("bin"), 0)) {radix = 2; }
-    else if(str8_match(n.v.root.string, ("oct"), 0)) {radix = 8; }
-    else if(str8_match(n.v.root.string, ("no_addr"), 0)) {no_addr = 1;}
-    else if(str8_match(n.v.root.string, ("no_string"), 0)) {no_string = 1;}
-    else if(str8_match(n.v.root.string, ("array"), 0)) {has_array = 1;}
-    else if(str8_match(n.v.root.string, ("digits"), 0))
+    else if(str8_match(n.v.root.str, ("dec"), 0)) {radix = 10;}
+    else if(str8_match(n.v.root.str, ("hex"), 0)) {radix = 16;}
+    else if(str8_match(n.v.root.str, ("bin"), 0)) {radix = 2; }
+    else if(str8_match(n.v.root.str, ("oct"), 0)) {radix = 8; }
+    else if(str8_match(n.v.root.str, ("no_addr"), 0)) {no_addr = 1;}
+    else if(str8_match(n.v.root.str, ("no_string"), 0)) {no_string = 1;}
+    else if(str8_match(n.v.root.str, ("array"), 0)) {has_array = 1;}
+    else if(str8_match(n.v.root.str, ("digits"), 0))
     {
       StringView expr = md_string_from_children(scratch.arena, n.v.root);
       E_Eval eval = e_eval_from_string(scratch.arena, expr);
@@ -9431,9 +9431,9 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
     default:
     {
       E_Eval value_eval = e_value_eval_from_eval(eval);
-      StringView string = ev_string_from_simple_typed_eval(arena, flags, radix, min_digits, value_eval);
-      space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string).x;
-      str8_list_push(arena, out, string);
+      StringView str = ev_string_from_simple_typed_eval(arena, flags, radix, min_digits, value_eval);
+      space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, str).x;
+      str8_list_push(arena, out, str);
     }break;
     
     //- rjf: pointers
@@ -9457,7 +9457,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
       CTRL_Entity* process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
       StringView symbol_name = d_symbol_name_from_process_vaddr(arena, process, value_eval.value.u64, 1);
       
-      // rjf: special case: push strings for textual string content
+      // rjf: special case: push strings for textual str content
       B32 did_content = 0;
       B32 did_string = 0;
       if(!did_content && ptee_has_string && !no_string)
@@ -9477,14 +9477,14 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
           }
         }
         string_buffer[string_buffer_size-1] = 0;
-        StringView string = {0};
+        StringView str = {0};
         switch(element_size)
         {
-          default:{string = str8_cstring((char *)string_buffer);}break;
-          case 2: {string = str8_from_16(arena, str16_cstring((uint16 *)string_buffer));}break;
-          case 4: {string = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
+          default:{str = str8_cstring((char *)string_buffer);}break;
+          case 2: {str = str8_from_16(arena, str16_cstring((uint16 *)string_buffer));}break;
+          case 4: {str = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
         }
-        StringView string_escaped = ev_escaped_from_raw_string(arena, string);
+        StringView string_escaped = ev_escaped_from_raw_string(arena, str);
         space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string_escaped).x;
         space_taken += 2*fnt_dim_from_tag_size_string(font, font_size, 0, 0, ("\"")).x;
         str8_list_push(arena, out, ("\""));
@@ -9514,9 +9514,9 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
          (flags & EV_StringFlag_ReadOnlyDisplayRules))
       {
         did_content = 1;
-        StringView string = ("???");
-        str8_list_push(arena, out, string);
-        space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string).x;
+        StringView str = ("???");
+        str8_list_push(arena, out, str);
+        space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, str).x;
       }
       
       // rjf: push pointer value
@@ -9530,9 +9530,9 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
           space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, left_paren).x;
           str8_list_push(arena, out, left_paren);
         }
-        StringView string = ev_string_from_simple_typed_eval(arena, flags, radix, min_digits, value_eval);
-        space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string).x;
-        str8_list_push(arena, out, string);
+        StringView str = ev_string_from_simple_typed_eval(arena, flags, radix, min_digits, value_eval);
+        space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, str).x;
+        str8_list_push(arena, out, str);
         if(did_content)
         {
           StringView right_paren = (")");
@@ -9582,7 +9582,7 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
                              direct_type_kind == E_TypeKind_S8 ||
                              direct_type_kind == E_TypeKind_U8);
       
-      // rjf: special case: push strings for textual string content
+      // rjf: special case: push strings for textual str content
       B32 did_content = 0;
       if(!did_content && array_is_string && !no_string && (member == 0 || member.kind != E_MemberKind_Padding))
       {
@@ -9603,14 +9603,14 @@ rd_append_value_strings_from_eval(Arena* arena, EV_StringFlags flags, uint32 def
             MemoryCopy(string_buffer, &eval.value.u512[0], Min(string_buffer_size, sizeof(eval.value)));
           }break;
         }
-        StringView string = {0};
+        StringView str = {0};
         switch(element_size)
         {
-          default:{string = str8_cstring_capped(string_buffer, string_buffer + string_buffer_size);}break;
-          case 2: {string = str8_from_16(arena, str16_cstring_capped(string_buffer, string_buffer + string_buffer_size));}break;
-          case 4: {string = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
+          default:{str = str8_cstring_capped(string_buffer, string_buffer + string_buffer_size);}break;
+          case 2: {str = str8_from_16(arena, str16_cstring_capped(string_buffer, string_buffer + string_buffer_size));}break;
+          case 4: {str = str8_from_32(arena, str32_cstring((uint32 *)string_buffer));}break;
         }
-        StringView string_escaped = ev_escaped_from_raw_string(arena, string);
+        StringView string_escaped = ev_escaped_from_raw_string(arena, str);
         space_taken += fnt_dim_from_tag_size_string(font, font_size, 0, 0, string_escaped).x;
         space_taken += 2*fnt_dim_from_tag_size_string(font, font_size, 0, 0, ("\"")).x;
         str8_list_push(arena, out, ("\""));
@@ -9752,7 +9752,7 @@ rd_value_string_from_eval(Arena* arena, EV_StringFlags flags, uint32 default_rad
 //~ rjf: Hover Eval
 
 void
-rd_set_hover_eval(Vec2F32 pos, StringView file_path, TxtPt pt, uint64 vaddr, StringView string)
+rd_set_hover_eval(Vec2F32 pos, StringView file_path, TxtPt pt, uint64 vaddr, StringView str)
 {
   RD_Window* window = rd_window_from_handle(rd_regs().window);
   if(window.hover_eval_last_frame_idx+1 < rd_state.frame_index &&
@@ -9760,12 +9760,12 @@ rd_set_hover_eval(Vec2F32 pos, StringView file_path, TxtPt pt, uint64 vaddr, Str
      ui_key_match(ui_active_key(UI_MouseButtonKind_Middle), ui_key_zero()) &&
      ui_key_match(ui_active_key(UI_MouseButtonKind_Right), ui_key_zero()))
   {
-    B32 is_new_string = !str8_match(window.hover_eval_string, string, 0);
+    B32 is_new_string = !str8_match(window.hover_eval_string, str, 0);
     if(is_new_string)
     {
       window.hover_eval_first_frame_idx = window.hover_eval_last_frame_idx = rd_state.frame_index;
       arena_clear(window.hover_eval_arena);
-      window.hover_eval_string = push_str8_copy(window.hover_eval_arena, string);
+      window.hover_eval_string = push_str8_copy(window.hover_eval_arena, str);
       window.hover_eval_file_path = push_str8_copy(window.hover_eval_arena, file_path);
       window.hover_eval_file_pt = pt;
       window.hover_eval_vaddr = vaddr;
@@ -9831,17 +9831,17 @@ rd_autocomp_lister_item_qsort_compare(RD_AutoCompListerItem* a, RD_AutoCompListe
   {
     result = +1;
   }
-  else if(a.string.size < b.string.size)
+  else if(a.str.Length < b.str.Length)
   {
     result = -1;
   }
-  else if(a.string.size > b.string.size)
+  else if(a.str.Length > b.str.Length)
   {
     result = +1;
   }
   else
   {
-    result = strncmp((char *)a.string.str, (char *)b.string.str, Min(a.string.size, b.string.size));
+    result = strncmp((char *)a.str.Ptr, (char *)b.str.Ptr, Min(a.str.Length, b.str.Length));
   }
   return result;
 }
@@ -9858,7 +9858,7 @@ rd_autocomp_query_word_from_input_string_off(StringView input, uint64 cursor_off
   uint64 word_start_off = 0;
   for(uint64 off = 0; off < input.size && off < cursor_off; off += 1)
   {
-    if(!input[off].IsLetter && !char_is_digit(input.str[off], 10) && input.str[off] != '_')
+    if(!input[off].IsLetter && !char_is_digit(input[off], 10) && input[off] != '_')
     {
       word_start_off = off+1;
     }
@@ -9877,15 +9877,15 @@ rd_autocomp_query_path_from_input_string_off(StringView input, uint64 cursor_off
     B32 double_quoted = 0;
     for(uint64 off = 0; off < input.size && off < cursor_off; off += 1)
     {
-      if(input.str[off] == '\'')
+      if(input[off] == '\'')
       {
         single_quoted ^= 1;
       }
-      if(input.str[off] == '\"')
+      if(input[off] == '\"')
       {
         double_quoted ^= 1;
       }
-      if(char_is_space(input.str[off]) && !single_quoted && !double_quoted)
+      if(char_is_space(input[off]) && !single_quoted && !double_quoted)
       {
         path_start_off = off+1;
       }
@@ -9894,29 +9894,29 @@ rd_autocomp_query_path_from_input_string_off(StringView input, uint64 cursor_off
   
   // rjf: form path
   StringView path = str8_skip(str8_prefix(input, cursor_off), path_start_off);
-  if(path.size >= 1 && path.str[0] == '"')  { path = str8_skip(path, 1); }
-  if(path.size >= 1 && path.str[0] == '\'') { path = str8_skip(path, 1); }
-  if(path.size >= 1 && path.str[path.size-1] == '"')  { path = str8_chop(path, 1); }
-  if(path.size >= 1 && path.str[path.size-1] == '\'') { path = str8_chop(path, 1); }
+  if(path.size >= 1 && path[0] == '"')  { path = str8_skip(path, 1); }
+  if(path.size >= 1 && path[0] == '\'') { path = str8_skip(path, 1); }
+  if(path.size >= 1 && path[path.size-1] == '"')  { path = str8_chop(path, 1); }
+  if(path.size >= 1 && path[path.size-1] == '\'') { path = str8_chop(path, 1); }
   return path;
 }
 
 RD_AutoCompListerParams
-rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView string, uint64 cursor_off)
+rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView str, uint64 cursor_off)
 {
   RD_AutoCompListerParams params = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
     
     //- rjf: do partial parse of input
-    MD_TokenizeResult input_tokenize = md_tokenize_from_text(scratch.arena, string);
+    MD_TokenizeResult input_tokenize = md_tokenize_from_text(scratch.arena, str);
     
     //- rjf: find descension steps to cursor
     struct DescendStep
     {
       DescendStep* next;
       DescendStep* prev;
-      StringView string;
+      StringView str;
     };
     DescendStep* first_step = 0;
     DescendStep* last_step = 0;
@@ -9931,7 +9931,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView s
       {
         break;
       }
-      StringView token_string = str8_substr(string, token.range);
+      StringView token_string = str8_substr(str, token.range);
       if(token.flags & (MD_TokenFlag_Identifier|MD_TokenFlag_StringLiteral))
       {
         last_step_string = token_string;
@@ -9974,7 +9974,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView s
           {
             step = push_array(scratch.arena, DescendStep, 1);
           }
-          step.string = last_step_string;
+          step.str = last_step_string;
           DLLPushBack(first_step, last_step, step);
         }
       }
@@ -9993,7 +9993,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView s
     }
     
     //- rjf: map view rule root to spec
-    D_ViewRuleSpec* spec = d_view_rule_spec_from_string(first_step ? first_step.string : StringView());
+    D_ViewRuleSpec* spec = d_view_rule_spec_from_string(first_step ? first_step.str : StringView());
     
     //- rjf: do parse of schema
     MD_TokenizeResult schema_tokenize = md_tokenize_from_text(scratch.arena, spec.info.schema);
@@ -10011,14 +10011,14 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView s
           for MD_EachNode(child, schema_node.first)
           {
             if(0){}
-            else if(str8_match(child.string, ("expr"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Locals;}
-            else if(str8_match(child.string, ("member"),         StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Members;}
-            else if(str8_match(child.string, ("lang"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Languages;}
-            else if(str8_match(child.string, ("arch"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Architectures;}
-            else if(str8_match(child.string, ("tex2dformat"),    StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Tex2DFormats;}
+            else if(str8_match(child.str, ("expr"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Locals;}
+            else if(str8_match(child.str, ("member"),         StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Members;}
+            else if(str8_match(child.str, ("lang"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Languages;}
+            else if(str8_match(child.str, ("arch"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Architectures;}
+            else if(str8_match(child.str, ("tex2dformat"),    StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Tex2DFormats;}
             else if(child.flags & (MD_NodeFlag_StringSingleQuote|MD_NodeFlag_StringDoubleQuote|MD_NodeFlag_StringTick))
             {
-              str8_list_push(arena, &params.strings, child.string);
+              str8_list_push(arena, &params.strings, child.str);
               params.flags |= RD_AutoCompListerFlag_ViewRuleParams;
             }
           }
@@ -10026,7 +10026,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena* arena, StringView s
         }
         if(step != 0)
         {
-          MD_Node* next_node = md_child_from_string(schema_node, step.string, StringMatchFlag_CaseInsensitive);
+          MD_Node* next_node = md_child_from_string(schema_node, step.str, StringMatchFlag_CaseInsensitive);
           schema_node = next_node;
           step = step.next;
         }
@@ -10066,7 +10066,7 @@ rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams* params, S
   MemoryCopyStruct(&window.autocomp_lister_params, params);
   window.autocomp_lister_params.strings = str8_list_copy(window.autocomp_lister_params_arena, &window.autocomp_lister_params.strings);
   window.autocomp_lister_input_size = Min(input.size, sizeof(window.autocomp_lister_input_buffer));
-  MemoryCopy(window.autocomp_lister_input_buffer, input.str, window.autocomp_lister_input_size);
+  MemoryCopy(window.autocomp_lister_input_buffer, input.Ptr, window.autocomp_lister_input_size);
   window.autocomp_last_frame_idx = rd_state.frame_index;
 }
 
@@ -10074,10 +10074,10 @@ rd_set_autocomp_lister_query(UI_Key root_key, RD_AutoCompListerParams* params, S
 //~ rjf: Search Strings
 
 void
-rd_set_search_string(StringView string)
+rd_set_search_string(StringView str)
 {
   arena_clear(rd_state.string_search_arena);
-  rd_state.string_search_string = push_str8_copy(rd_state.string_search_arena, string);
+  rd_state.string_search_string = push_str8_copy(rd_state.string_search_arena, str);
 }
 
 StringView
@@ -10093,13 +10093,13 @@ rd_push_search_string(Arena* arena)
 //- rjf: keybindings
 
 OS_Key
-rd_os_key_from_cfg_string(StringView string)
+rd_os_key_from_cfg_string(StringView str)
 {
   OS_Key result = OS_Key_Null;
   {
     for(OS_Key key = OS_Key_Null; key < OS_Key_COUNT; key = (OS_Key)(key+1))
     {
-      if(str8_match(string, os_g_key_cfg_string_table[key], StringMatchFlag_CaseInsensitive))
+      if(str8_match(str, os_g_key_cfg_string_table[key], StringMatchFlag_CaseInsensitive))
       {
         result = key;
         break;
@@ -10233,7 +10233,7 @@ rd_theme_color_from_txt_token_kind(TXT_TokenKind kind)
 }
 
 RD_ThemeColor
-rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView string)
+rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView str)
 {
   RD_ThemeColor color = RD_ThemeColor_CodeDefault;
   if(kind == TXT_TokenKind_Identifier || kind == TXT_TokenKind_Keyword)
@@ -10245,7 +10245,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as local
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      uint64 local_num = e_num_from_string(e_parse_ctx.locals_map, string);
+      uint64 local_num = e_num_from_string(e_parse_ctx.locals_map, str);
       if(local_num != 0)
       {
         mapped = 1;
@@ -10256,7 +10256,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as member
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      uint64 member_num = e_num_from_string(e_parse_ctx.member_map, string);
+      uint64 member_num = e_num_from_string(e_parse_ctx.member_map, str);
       if(member_num != 0)
       {
         mapped = 1;
@@ -10267,7 +10267,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as register
     if(!mapped)
     {
-      uint64 reg_num = e_num_from_string(e_parse_ctx.regs_map, string);
+      uint64 reg_num = e_num_from_string(e_parse_ctx.regs_map, str);
       if(reg_num != 0)
       {
         mapped = 1;
@@ -10278,7 +10278,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as register alias
     if(!mapped)
     {
-      uint64 alias_num = e_num_from_string(e_parse_ctx.reg_alias_map, string);
+      uint64 alias_num = e_num_from_string(e_parse_ctx.reg_alias_map, str);
       if(alias_num != 0)
       {
         mapped = 1;
@@ -10289,7 +10289,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map using asynchronous matching system
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      RDI_SectionKind section_kind = di_match_store_section_kind_from_name(rd_state.match_store, string, 0);
+      RDI_SectionKind section_kind = di_match_store_section_kind_from_name(rd_state.match_store, str, 0);
       mapped = 1;
       switch(section_kind)
       {
@@ -10311,7 +10311,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as symbol
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      uint64 voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, string);
+      uint64 voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, str);
       if(voff != 0)
       {
         mapped = 1;
@@ -10322,7 +10322,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView 
     // rjf: try to map as type
     if(!mapped && kind == TXT_TokenKind_Identifier)
     {
-      uint64 type_num = d_type_num_from_dbgi_key_name(&dbgi_key, string);
+      uint64 type_num = d_type_num_from_dbgi_key_name(&dbgi_key, str);
       if(type_num != 0)
       {
         mapped = 1;
@@ -10436,7 +10436,7 @@ rd_setting_val_from_code(RD_SettingCode code)
 int
 rd_qsort_compare__cfg_string_bindings(RD_StringBindingPair* a, RD_StringBindingPair* b)
 {
-  return strncmp((char *)a.string.str, (char *)b.string.str, Min(a.string.size, b.string.size));
+  return strncmp((char *)a.str.Ptr, (char *)b.str.Ptr, Min(a.str.Length, b.str.Length));
 }
 
 String8List
@@ -10493,21 +10493,21 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
             EntityInfoFlag_HasChildren = (1<<5),
             EntityInfoFlag_HasDebugSubprocesses = (1<<6),
           };
-          StringView entity_name_escaped = e.string;
+          StringView entity_name_escaped = e.str;
           // TODO(rjf): @hack - hardcoding in the "EntityKind_Location" here - this is because
-          // i am assuming an entity* kind* can 'know' about the 'pathness' of a string. this is
+          // i am assuming an entity* kind* can 'know' about the 'pathness' of a str. this is
           // not the case. post-0.9.12 i need to fix this.
           if(rd_entity_kind_flags_table[e.kind] & RD_EntityKindFlag_NameIsPath &&
              (e.kind != RD_EntityKind_Location || e.flags & RD_EntityFlag_HasTextPoint))
           {
             Temp scratch = scratch_begin(&arena, 1);
-            StringView path_normalized = path_normalized_from_string(scratch.arena, e.string);
+            StringView path_normalized = path_normalized_from_string(scratch.arena, e.str);
             entity_name_escaped = path_relative_dst_from_absolute_dst_src(arena, path_normalized, root_path);
             scratch_end(scratch);
           }
           else
           {
-            entity_name_escaped = escaped_from_raw_str8(arena, e.string);
+            entity_name_escaped = escaped_from_raw_str8(arena, e.str);
           }
           EntityInfoFlags info_flags = 0;
           if(entity_name_escaped.size != 0)         { info_flags |= EntityInfoFlag_HasName; }
@@ -10668,8 +10668,8 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
           // rjf: non-root needs pct node
           if(p != root_panel)
           {
-            str8_list_pushf(arena, &strs, "%.*s%g:\n", indentation*2, indent_str.str, p.pct_of_parent);
-            str8_list_pushf(arena, &strs, "%.*s{\n", indentation*2, indent_str.str);
+            str8_list_pushf(arena, &strs, "%.*s%g:\n", indentation*2, indent_str.Ptr, p.pct_of_parent);
+            str8_list_pushf(arena, &strs, "%.*s{\n", indentation*2, indent_str.Ptr);
             indentation += 1;
           }
           
@@ -10685,7 +10685,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
             {
               if(has_options == 0)
               {
-                str8_list_pushf(arena, &strs, "%.*s", indentation*2, indent_str.str);
+                str8_list_pushf(arena, &strs, "%.*s", indentation*2, indent_str.Ptr);
               }
               else
               {
@@ -10703,13 +10703,13 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
           // rjf: views
           for(RD_View* view = p.first_tab_view; !rd_view_is_nil(view); view = view.order_next)
           {
-            StringView view_string = view.spec.string;
+            StringView view_string = view.spec.str;
             
             // rjf: serialize views
             {
-              str8_list_pushf(arena, &strs, "%.*s", indentation*2, indent_str.str);
+              str8_list_pushf(arena, &strs, "%.*s", indentation*2, indent_str.Ptr);
               
-              // rjf: serialize view string
+              // rjf: serialize view str
               str8_list_push(arena, &strs, view_string);
               
               // rjf: serialize view parameterizations
@@ -10761,7 +10761,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
                   B32 is_reserved_key = 0;
                   for(uint64 idx = 0; idx < ArrayCount(reserved_keys); idx += 1)
                   {
-                    if(str8_match(n.string, reserved_keys[idx], 0))
+                    if(str8_match(n.str, reserved_keys[idx], 0))
                     {
                       is_reserved_key = 1;
                       break;
@@ -10773,7 +10773,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
                   }
                   if(!is_reserved_key && n != params_root)
                   {
-                    str8_list_pushf(arena, &strs, "%S", n.string);
+                    str8_list_pushf(arena, &strs, "%S", n.str);
                     if(n.first != &md_nil_node)
                     {
                       str8_list_pushf(arena, &strs, ":{");
@@ -10801,7 +10801,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
           if(p != root_panel && rec.push_count == 0)
           {
             indentation -= 1;
-            str8_list_pushf(arena, &strs, "%.*s}\n", indentation*2, indent_str.str);
+            str8_list_pushf(arena, &strs, "%.*s}\n", indentation*2, indent_str.Ptr);
           }
           
           // rjf: pop
@@ -10812,7 +10812,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
             {
               break;
             }
-            str8_list_pushf(arena, &strs, "%.*s}\n", indentation*2, indent_str.str);
+            str8_list_pushf(arena, &strs, "%.*s}\n", indentation*2, indent_str.Ptr);
           }
         }
         str8_list_pushf(arena, &strs, "  }\n");
@@ -10838,7 +10838,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
           n = n.hash_next)
       {
         RD_StringBindingPair* pair = string_binding_pairs + string_binding_pair_count;
-        pair.string = n.name;
+        pair.str = n.name;
         pair.binding = n.binding;
         string_binding_pair_count += 1;
       }
@@ -10866,10 +10866,10 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
                                             event_flags_string.size > 0 ? " " : "",
                                             key_string);
         str8_list_pushf(arena, &strs, "  {\"%S\"%.*s%S%.*s}\n",
-                        pair.string,
-                        40 > pair.string.size ? ((int)(40 - pair.string.size)) : 0, indent_str.str,
+                        pair.str,
+                        40 > pair.str.Length ? ((int)(40 - pair.str.Length)) : 0, indent_str.Ptr,
                         binding_string,
-                        20 > binding_string.size ? ((int)(20 - binding_string.size)) : 0, indent_str.str);
+                        20 > binding_string.size ? ((int)(20 - binding_string.size)) : 0, indent_str.Ptr);
       }
       str8_list_push(arena, &strs, ("}\n\n"));
     }
@@ -10928,7 +10928,7 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
         StringView color_hex  = hex_string_from_rgba_4f32(arena, color_rgba);
         str8_list_pushf(arena, &strs, "  %S:%.*s0x%S\n",
                         color_name,
-                        30 > color_name.size ? ((int)(30 - color_name.size)) : 0, indent_str.str,
+                        30 > color_name.size ? ((int)(30 - color_name.size)) : 0, indent_str.Ptr,
                         color_hex);
       }
       str8_list_push(arena, &strs, ("}\n\n"));
@@ -10984,16 +10984,16 @@ rd_cfg_strings_from_gfx(Arena* arena, StringView root_path, RD_CfgSrc source)
 StringView
 rd_string_from_exception_code(uint32 code)
 {
-  StringView string = {0};
+  StringView str = {0};
   for EachNonZeroEnumVal(CTRL_ExceptionCodeKind, k)
   {
     if(code == ctrl_exception_code_kind_code_table[k])
     {
-      string = ctrl_exception_code_kind_display_string_table[k];
+      str = ctrl_exception_code_kind_display_string_table[k];
       break;
     }
   }
-  return string;
+  return str;
 }
 
 DR_FancyStringList
@@ -11272,7 +11272,7 @@ rd_pop_regs()
 }
 
 void
-rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string)
+rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView str)
 {
   StringView error = {0};
   switch(slot)
@@ -11281,21 +11281,21 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string)
     case RD_RegSlot_String:
     case RD_RegSlot_FilePath:
     {
-      String8TxtPtPair pair = str8_txt_pt_pair_from_string(string);
+      String8TxtPtPair pair = str8_txt_pt_pair_from_string(str);
       if(pair.pt.line == 0 || slot == RD_RegSlot_String)
       {
-        rd_regs().string = push_str8_copy(rd_frame_arena(), string);
+        rd_regs().str = push_str8_copy(rd_frame_arena(), str);
       }
       else
       {
-        rd_regs().file_path = push_str8_copy(rd_frame_arena(), pair.string);
+        rd_regs().file_path = push_str8_copy(rd_frame_arena(), pair.str);
         rd_regs().cursor = pair.pt;
       }
     }break;
     case RD_RegSlot_Cursor:
     {
       uint64 v = 0;
-      if(try_u64_from_str8_c_rules(string, &v))
+      if(try_u64_from_str8_c_rules(str, &v))
       {
         rd_regs().cursor.column = 1;
         rd_regs().cursor.line = v;
@@ -11313,7 +11313,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string)
     use_numeric_eval:
     {
       Temp scratch = scratch_begin(0, 0);
-      E_Eval eval = e_eval_from_string(scratch.arena, string);
+      E_Eval eval = e_eval_from_string(scratch.arena, str);
       if(eval.msgs.max_kind == E_MsgKind_Null)
       {
         E_TypeKind eval_type_kind = e_type_kind_from_key(e_type_unwrap(eval.type_key));
@@ -11351,7 +11351,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string)
       }
       else
       {
-        log_user_errorf("Couldn't evaluate \"%S\" as an address.", string);
+        log_user_errorf("Couldn't evaluate \"%S\" as an address.", str);
       }
       scratch_end(scratch);
     }break;
@@ -11364,12 +11364,12 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView string)
 //- rjf: name . info
 
 RD_CmdKind
-rd_cmd_kind_from_string(StringView string)
+rd_cmd_kind_from_string(StringView str)
 {
   RD_CmdKind result = RD_CmdKind_Null;
   for(uint64 idx = 0; idx < ArrayCount(rd_cmd_kind_info_table); idx += 1)
   {
-    if(str8_match(string, rd_cmd_kind_info_table[idx].string, 0))
+    if(str8_match(str, rd_cmd_kind_info_table[idx].str, 0))
     {
       result = (RD_CmdKind)idx;
       break;
@@ -11379,12 +11379,12 @@ rd_cmd_kind_from_string(StringView string)
 }
 
 RD_CmdKindInfo *
-rd_cmd_kind_info_from_string(StringView string)
+rd_cmd_kind_info_from_string(StringView str)
 {
   RD_CmdKindInfo* info = &rd_nil_cmd_kind_info;
   {
     // TODO(rjf): extend this by looking up into dynamically-registered commands by views
-    RD_CmdKind kind = rd_cmd_kind_from_string(string);
+    RD_CmdKind kind = rd_cmd_kind_from_string(str);
     if(kind != RD_CmdKind_Null)
     {
       info = &rd_cmd_kind_info_table[kind];
@@ -11542,7 +11542,7 @@ rd_init(CmdLine* cmdln)
   {
     Temp scratch = scratch_begin(0, 0);
     StringView data = rd_icon_file_bytes;
-    uint8* ptr = data.str;
+    uint8* ptr = data.Ptr;
     uint8* opl = ptr+data.size;
     
     // rjf: read header
@@ -11615,7 +11615,7 @@ rd_init(CmdLine* cmdln)
     Vec2S32 image_dim = {0};
     if(best_entry != 0)
     {
-      uint8* file_data_ptr = data.str + best_entry.image_data_off;
+      uint8* file_data_ptr = data.Ptr + best_entry.image_data_off;
       uint64 file_data_size = best_entry.image_data_size;
       int width = 0;
       int height = 0;
@@ -11656,7 +11656,7 @@ rd_frame()
   
   //- TODO(rjf): @cfg debugging: stringify the current cfg tree
   {
-    // StringView string = rd_string_from_cfg_tree(scratch.arena, rd_state.root_cfg);
+    // StringView str = rd_string_from_cfg_tree(scratch.arena, rd_state.root_cfg);
     // int x = 0;
   }
   
@@ -11872,7 +11872,7 @@ rd_frame()
           uint32 hit_char = os_codepoint_from_modifiers_and_key(event.modifiers, event.key);
           if(hit_char == 0 || allow_text_hotkeys)
           {
-            rd_cmd(RD_CmdKind_RunCommand, .cmd_name = spec_candidates.first.string);
+            rd_cmd(RD_CmdKind_RunCommand, .cmd_name = spec_candidates.first.str);
             if(allow_text_hotkeys)
             {
               os_text(&events, event.window, hit_char);
@@ -11897,7 +11897,7 @@ rd_frame()
       {
         Span<char32> insertion32 = .(&event.character, 1);
         StringView insertion8 = str8_from_32(scratch.arena, insertion32);
-        rd_cmd(RD_CmdKind_InsertText, .string = insertion8);
+        rd_cmd(RD_CmdKind_InsertText, .str = insertion8);
         rd_request_frame();
         take = 1;
         if(event.modifiers & OS_Modifier_Alt)
@@ -12064,9 +12064,9 @@ rd_frame()
             expr.mode     = E_Mode_Offset;
             expr.type_key = evallable_kind_types[idx];
             e_string2expr_map_insert(scratch.arena, ctx.macro_map, push_str8f(scratch.arena, "$%I64u", entity.id), expr);
-            if(entity.string.size != 0 && entity.kind != RD_EntityKind_WatchPin)
+            if(entity.str.Length != 0 && entity.kind != RD_EntityKind_WatchPin)
             {
-              e_string2expr_map_insert(scratch.arena, ctx.macro_map, entity.string, expr);
+              e_string2expr_map_insert(scratch.arena, ctx.macro_map, entity.str, expr);
             }
           }
         }
@@ -12101,9 +12101,9 @@ rd_frame()
             expr.mode     = E_Mode_Offset;
             expr.type_key = evallable_kind_types[idx];
             e_string2expr_map_insert(scratch.arena, ctx.macro_map, push_str8f(scratch.arena, "$_%I64x_%I64x", entity.handle.machine_id, entity.handle.dmn_handle.u64[0]), expr);
-            if(entity.string.size != 0)
+            if(entity.str.Length != 0)
             {
-              e_string2expr_map_insert(scratch.arena, ctx.macro_map, entity.string, expr);
+              e_string2expr_map_insert(scratch.arena, ctx.macro_map, entity.str, expr);
             }
             if(kind == CTRL_EntityKind_Thread && ctrl_handle_match(rd_base_regs().thread, entity.handle))
             {
@@ -12126,7 +12126,7 @@ rd_frame()
       for(RD_EntityNode* n = watches.first; n != 0; n = n.next)
       {
         RD_Entity* watch = n.entity;
-        StringView expr = watch.string;
+        StringView expr = watch.str;
         E_TokenArray tokens   = e_token_array_from_text(scratch.arena, expr);
         E_Parse      parse    = e_parse_expr_from_text_tokens(scratch.arena, expr, &tokens);
         if(parse.msgs.max_kind == E_MsgKind_Null)
@@ -12167,7 +12167,7 @@ rd_frame()
       for EachElement(idx, rd_collection_name_table)
       {
         EV_ViewRuleInfo info = {0};
-        info.string                  = rd_collection_name_table[idx];
+        info.str                  = rd_collection_name_table[idx];
         info.flags                   = EV_ViewRuleInfoFlag_Expandable;
         info.expr_resolution         = EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(identity);
         info.expr_expand_info        = rd_collection_expr_expand_info_hook_function_table[idx];
@@ -12184,7 +12184,7 @@ rd_frame()
         if(src_info.flags & RD_ViewRuleInfoFlag_CanUseInWatchTable)
         {
           EV_ViewRuleInfo dst_info = {0};
-          dst_info.string                  = src_info.string;
+          dst_info.str                  = src_info.str;
           dst_info.flags                   = src_info.flags & RD_ViewRuleInfoFlag_CanExpand ? EV_ViewRuleInfoFlag_Expandable : 0;
           dst_info.expr_resolution         = EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(identity);
           dst_info.expr_expand_info        = src_info.expr_expand_info;
@@ -12216,8 +12216,8 @@ rd_frame()
         RD_Entity* rule = n.entity;
         RD_Entity* src = rd_entity_child_from_kind(rule, RD_EntityKind_Source);
         RD_Entity* dst = rd_entity_child_from_kind(rule, RD_EntityKind_Dest);
-        StringView type_string = src.string;
-        StringView view_rule_string = dst.string;
+        StringView type_string = src.str;
+        StringView view_rule_string = dst.str;
         E_TokenArray tokens = e_token_array_from_text(scratch.arena, type_string);
         E_Parse type_parse = e_parse_type_from_text_tokens(scratch.arena, type_string, &tokens);
         E_TypeKey type_key = e_type_from_expr(type_parse.expr);
@@ -12294,7 +12294,7 @@ rd_frame()
               params.process       = rd_regs().process;
               params.thread        = rd_regs().thread;
               params.entity        = rd_regs().ctrl_entity;
-              params.string        = rd_regs().string;
+              params.str        = rd_regs().str;
               params.file_path     = rd_regs().file_path;
               params.cursor        = rd_regs().cursor;
               params.vaddr         = rd_regs().vaddr;
@@ -12313,7 +12313,7 @@ rd_frame()
             RD_ViewRuleInfo* view_rule_info = rd_view_rule_info_from_string(cmd.name);
             if(view_rule_info != &rd_nil_view_rule_info)
             {
-              rd_cmd(RD_CmdKind_OpenTab, .string = StringView(), .params_tree = md_tree_from_string(scratch.arena, cmd.name).first);
+              rd_cmd(RD_CmdKind_OpenTab, .str = StringView(), .params_tree = md_tree_from_string(scratch.arena, cmd.name).first);
             }
           }break;
           
@@ -12362,7 +12362,7 @@ rd_frame()
                                                 processes.count == 1 ? ""   : "es");
               RD_Regs* regs = rd_regs_copy(rd_frame_arena(), rd_regs());
               regs.force_confirm = 1;
-              rd_cmd_list_push_new(rd_state.popup_arena, &rd_state.popup_cmds, rd_cmd_kind_info_table[RD_CmdKind_Exit].string, regs);
+              rd_cmd_list_push_new(rd_state.popup_arena, &rd_state.popup_cmds, rd_cmd_kind_info_table[RD_CmdKind_Exit].str, regs);
             }
             
             // rjf: otherwise, actually exit
@@ -12472,7 +12472,7 @@ rd_frame()
             RD_Entity* entity = rd_entity_from_handle(rd_regs().entity);
             if(entity.kind == RD_EntityKind_RecentProject)
             {
-              rd_cmd(RD_CmdKind_OpenProject, .file_path = entity.string);
+              rd_cmd(RD_CmdKind_OpenProject, .file_path = entity.str);
             }
           }break;
           case RD_CmdKind_OpenUser:
@@ -12686,7 +12686,7 @@ rd_frame()
                 RD_Cfg* recent_project = &rd_nil_cfg;
                 for(RD_CfgNode* n = recent_projects.first; n != 0; n = n.next)
                 {
-                  if(path_match_normalized(n.v.string, cfg_path))
+                  if(path_match_normalized(n.v.str, cfg_path))
                   {
                     recent_project = n.v;
                     break;
@@ -12709,7 +12709,7 @@ rd_frame()
               RD_Entity* recent_project = &rd_nil_entity;
               for(RD_EntityNode* n = recent_projects.first; n != 0; n = n.next)
               {
-                if(path_match_normalized(cfg_path, n.entity.string))
+                if(path_match_normalized(cfg_path, n.entity.str))
                 {
                   recent_project = n.entity;
                   break;
@@ -12776,102 +12776,102 @@ rd_frame()
                       MD_Node* node = t.n;
                       for MD_EachNode(child, node.first)
                       {
-                        // rjf: standalone string literals under an entity . name
+                        // rjf: standalone str literals under an entity . name
                         if(child.flags & MD_NodeFlag_StringLiteral && child.first == &md_nil_node)
                         {
-                          StringView string = raw_from_escaped_str8(scratch.arena, child.string);
+                          StringView str = raw_from_escaped_str8(scratch.arena, child.str);
                           // TODO(rjf): @hack - hardcoding in the "EntityKind_Location" here - this is because
-                          // i am assuming an entity* kind* can 'know' about the 'pathness' of a string. this is
+                          // i am assuming an entity* kind* can 'know' about the 'pathness' of a str. this is
                           // not the case. post-0.9.12 i need to fix this.
                           if(rd_entity_kind_flags_table[t.entity.kind] & RD_EntityKindFlag_NameIsPath &&
                              t.entity.kind != RD_EntityKind_Location)
                           {
-                            string = path_absolute_dst_from_relative_dst_src(scratch.arena, string, cfg_folder);
+                            str = path_absolute_dst_from_relative_dst_src(scratch.arena, str, cfg_folder);
                           }
-                          rd_entity_equip_name(t.entity, string);
+                          rd_entity_equip_name(t.entity, str);
                         }
                         
-                        // rjf: standalone string literals under an entity, with a numeric child . name & text location
+                        // rjf: standalone str literals under an entity, with a numeric child . name & text location
                         if(child.flags & MD_NodeFlag_StringLiteral && child.first.flags & MD_NodeFlag_Numeric && child.first.first == &md_nil_node)
                         {
-                          StringView string = raw_from_escaped_str8(scratch.arena, child.string);
+                          StringView str = raw_from_escaped_str8(scratch.arena, child.str);
                           if(rd_entity_kind_flags_table[t.entity.kind] & RD_EntityKindFlag_NameIsPath)
                           {
-                            string = path_absolute_dst_from_relative_dst_src(scratch.arena, string, cfg_folder);
+                            str = path_absolute_dst_from_relative_dst_src(scratch.arena, str, cfg_folder);
                           }
-                          rd_entity_equip_name(t.entity, string);
+                          rd_entity_equip_name(t.entity, str);
                           int64 line = 0;
-                          try_s64_from_str8_c_rules(child.first.string, &line);
+                          try_s64_from_str8_c_rules(child.first.str, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t.entity, pt);
                         }
                         
                         // rjf: standalone hex literals under an entity . vaddr
-                        if(child.flags & MD_NodeFlag_Numeric && child.first == &md_nil_node && str8_match(str8_substr(child.string, r1u64(0, 2)), ("0x"), 0))
+                        if(child.flags & MD_NodeFlag_Numeric && child.first == &md_nil_node && str8_match(str8_substr(child.str, r1u64(0, 2)), ("0x"), 0))
                         {
                           uint64 vaddr = 0;
-                          try_u64_from_str8_c_rules(child.string, &vaddr);
+                          try_u64_from_str8_c_rules(child.str, &vaddr);
                           rd_entity_equip_vaddr(t.entity, vaddr);
                         }
                         
                         // rjf: specifically named entity equipment
-                        if((str8_match(child.string, ("name"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child.string, ("label"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child.str, ("name"), StringMatchFlag_CaseInsensitive) ||
+                            str8_match(child.str, ("label"), StringMatchFlag_CaseInsensitive)) &&
                            child.first != &md_nil_node)
                         {
-                          StringView string = raw_from_escaped_str8(scratch.arena, child.first.string);
+                          StringView str = raw_from_escaped_str8(scratch.arena, child.first.str);
                           // TODO(rjf): @hack - hardcoding in the "EntityKind_Location" here - this is because
-                          // i am assuming an entity* kind* can 'know' about the 'pathness' of a string. this is
+                          // i am assuming an entity* kind* can 'know' about the 'pathness' of a str. this is
                           // not the case. post-0.9.12 i need to fix this.
                           if(rd_entity_kind_flags_table[t.entity.kind] & RD_EntityKindFlag_NameIsPath &&
                              (t.entity.kind != RD_EntityKind_Location || !md_node_is_nil(md_child_from_string(node, ("line"), 0))))
                           {
-                            string = path_absolute_dst_from_relative_dst_src(scratch.arena, string, cfg_folder);
+                            str = path_absolute_dst_from_relative_dst_src(scratch.arena, str, cfg_folder);
                           }
-                          rd_entity_equip_name(t.entity, string);
+                          rd_entity_equip_name(t.entity, str);
                         }
-                        if((str8_match(child.string, ("active"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child.string, ("enabled"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child.str, ("active"), StringMatchFlag_CaseInsensitive) ||
+                            str8_match(child.str, ("enabled"), StringMatchFlag_CaseInsensitive)) &&
                            child.first != &md_nil_node)
                         {
-                          rd_entity_equip_disabled(t.entity, !str8_match(child.first.string, ("1"), 0));
+                          rd_entity_equip_disabled(t.entity, !str8_match(child.first.str, ("1"), 0));
                         }
-                        if(str8_match(child.string, ("disabled"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
+                        if(str8_match(child.str, ("disabled"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
                         {
-                          rd_entity_equip_disabled(t.entity, str8_match(child.first.string, ("1"), 0));
+                          rd_entity_equip_disabled(t.entity, str8_match(child.first.str, ("1"), 0));
                         }
-                        if(str8_match(child.string, ("debug_subprocesses"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
+                        if(str8_match(child.str, ("debug_subprocesses"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
                         {
-                          t.entity.debug_subprocesses = str8_match(child.first.string, ("1"), 0);
+                          t.entity.debug_subprocesses = str8_match(child.first.str, ("1"), 0);
                         }
-                        if(str8_match(child.string, ("hsva"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
+                        if(str8_match(child.str, ("hsva"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
                         {
                           Vec4F32 hsva = {0};
-                          hsva.x = (float)f64_from_str8(child.first.string);
-                          hsva.y = (float)f64_from_str8(child.first.next.string);
-                          hsva.z = (float)f64_from_str8(child.first.next.next.string);
-                          hsva.w = (float)f64_from_str8(child.first.next.next.next.string);
+                          hsva.x = (float)f64_from_str8(child.first.str);
+                          hsva.y = (float)f64_from_str8(child.first.next.str);
+                          hsva.z = (float)f64_from_str8(child.first.next.next.str);
+                          hsva.w = (float)f64_from_str8(child.first.next.next.next.str);
                           rd_entity_equip_color_hsva(t.entity, hsva);
                         }
-                        if(str8_match(child.string, ("color"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
+                        if(str8_match(child.str, ("color"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
                         {
-                          Vec4F32 rgba = rgba_from_hex_string_4f32(child.first.string);
+                          Vec4F32 rgba = rgba_from_hex_string_4f32(child.first.str);
                           Vec4F32 hsva = hsva_from_rgba(rgba);
                           rd_entity_equip_color_hsva(t.entity, hsva);
                         }
-                        if(str8_match(child.string, ("line"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
+                        if(str8_match(child.str, ("line"), StringMatchFlag_CaseInsensitive) && child.first != &md_nil_node)
                         {
                           int64 line = 0;
-                          try_s64_from_str8_c_rules(child.first.string, &line);
+                          try_s64_from_str8_c_rules(child.first.str, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t.entity, pt);
                         }
-                        if((str8_match(child.string, ("vaddr"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child.string, ("addr"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child.str, ("vaddr"), StringMatchFlag_CaseInsensitive) ||
+                            str8_match(child.str, ("addr"), StringMatchFlag_CaseInsensitive)) &&
                            child.first != &md_nil_node)
                         {
                           uint64 vaddr = 0;
-                          try_u64_from_str8_c_rules(child.first.string, &vaddr);
+                          try_u64_from_str8_c_rules(child.first.str, &vaddr);
                           rd_entity_equip_vaddr(t.entity, vaddr);
                         }
                         
@@ -12880,8 +12880,8 @@ rd_frame()
                         for EachEnumVal(RD_EntityKind, k2)
                         {
                           if(child.flags & MD_NodeFlag_Identifier && child.first != &md_nil_node &&
-                             (str8_match(child.string, d_entity_kind_name_lower_table[k2], StringMatchFlag_CaseInsensitive) ||
-                              (k2 == RD_EntityKind_Executable && str8_match(child.string, ("exe"), StringMatchFlag_CaseInsensitive))))
+                             (str8_match(child.str, d_entity_kind_name_lower_table[k2], StringMatchFlag_CaseInsensitive) ||
+                              (k2 == RD_EntityKind_Executable && str8_match(child.str, ("exe"), StringMatchFlag_CaseInsensitive))))
                           {
                             Task* task = push_array(scratch.arena, Task, 1);
                             task.next = t.next;
@@ -12906,8 +12906,8 @@ rd_frame()
             {
               for MD_EachNode(rule, table.root.first)
               {
-                StringView name = rule.string;
-                StringView val_string = rule.first.string;
+                StringView name = rule.str;
+                StringView val_string = rule.first.str;
                 uint64 val = 0;
                 if(try_u64_from_str8_c_rules(val_string, &val))
                 {
@@ -12961,8 +12961,8 @@ rd_frame()
                 RD_CfgVal* main_font_val = rd_cfg_val_from_string(table, ("main_font"));
                 MD_Node* code_font_node = code_font_val.last.root;
                 MD_Node* main_font_node = main_font_val.last.root;
-                StringView code_font_relative_path = code_font_node.first.string;
-                StringView main_font_relative_path = main_font_node.first.string;
+                StringView code_font_relative_path = code_font_node.first.str;
+                StringView main_font_relative_path = main_font_node.first.str;
                 if(!md_node_is_nil(code_font_node))
                 {
                   arena_clear(rd_state.cfg_code_font_path_arena);
@@ -13018,31 +13018,31 @@ rd_frame()
                 {
                   if(n.flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n.first) &&
-                     str8_match(n.string, ("split_x"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n.str, ("split_x"), StringMatchFlag_CaseInsensitive))
                   {
                     top_level_split_axis = Axis2_X;
                   }
                   if(n.flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n.first) &&
-                     str8_match(n.string, ("split_y"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n.str, ("split_y"), StringMatchFlag_CaseInsensitive))
                   {
                     top_level_split_axis = Axis2_Y;
                   }
                   if(n.flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n.first) &&
-                     str8_match(n.string, ("fullscreen"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n.str, ("fullscreen"), StringMatchFlag_CaseInsensitive))
                   {
                     is_fullscreen = 1;
                   }
                   if(n.flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n.first) &&
-                     str8_match(n.string, ("maximized"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n.str, ("maximized"), StringMatchFlag_CaseInsensitive))
                   {
                     is_maximized = 1;
                   }
                 }
                 MD_Node* monitor_node = md_child_from_string(window_tree.root, ("monitor"), 0);
-                StringView preferred_monitor_name = monitor_node.first.string;
+                StringView preferred_monitor_name = monitor_node.first.str;
                 for(uint64 idx = 0; idx < monitors.count; idx += 1)
                 {
                   StringView monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
@@ -13055,8 +13055,8 @@ rd_frame()
                 Vec2F32 preferred_monitor_size = os_dim_from_monitor(preferred_monitor);
                 MD_Node* size_node = md_child_from_string(window_tree.root, ("size"), 0);
                 {
-                  StringView x_string = size_node.first.string;
-                  StringView y_string = size_node.first.next.string;
+                  StringView x_string = size_node.first.str;
+                  StringView y_string = size_node.first.next.str;
                   uint64 x_u64 = 0;
                   uint64 y_u64 = 0;
                   if(!try_u64_from_str8_c_rules(x_string, &x_u64))
@@ -13079,7 +13079,7 @@ rd_frame()
                   if(!md_node_is_nil(code_node))
                   {
                     int64 val_s64 = 0;
-                    try_s64_from_str8_c_rules(code_node.first.string, &val_s64);
+                    try_s64_from_str8_c_rules(code_node.first.str, &val_s64);
                     setting_vals[code].set = 1;
                     setting_vals[code].s32 = (int32)val_s64;
                     setting_vals[code].s32 = clamp_1s32(rd_setting_code_s32_range_table[code], setting_vals[code].s32);
@@ -13119,14 +13119,14 @@ rd_frame()
                   panel.pct_of_parent = 1.f;
                 }
                 
-                // rjf: allocate & insert non-root panels - these will have a numeric string, determining
+                // rjf: allocate & insert non-root panels - these will have a numeric str, determining
                 // pct of parent
                 if(n.flags & MD_NodeFlag_Numeric)
                 {
                   panel = rd_panel_alloc(ws);
                   rd_panel_insert(panel_parent, panel_parent.last, panel);
                   panel.split_axis = axis2_flip(panel_parent.split_axis);
-                  panel.pct_of_parent = (float)f64_from_str8(n.string);
+                  panel.pct_of_parent = (float)f64_from_str8(n.str);
                 }
                 
                 // rjf: do general per-panel work
@@ -13146,7 +13146,7 @@ rd_frame()
                   // rjf: apply panel options
                   for MD_EachNode(op, n.first)
                   {
-                    if(md_node_is_nil(op.first) && str8_match(op.string, ("tabs_on_bottom"), 0))
+                    if(md_node_is_nil(op.first) && str8_match(op.str, ("tabs_on_bottom"), 0))
                     {
                       panel.tab_side = Side_Max;
                     }
@@ -13156,7 +13156,7 @@ rd_frame()
                   RD_View* selected_view = &rd_nil_view;
                   for MD_EachNode(op, n.first)
                   {
-                    RD_ViewRuleInfo* view_rule_info = rd_view_rule_info_from_string(op.string);
+                    RD_ViewRuleInfo* view_rule_info = rd_view_rule_info_from_string(op.str);
                     if(view_rule_info == &rd_nil_view_rule_info || has_panel_children != 0)
                     {
                       continue;
@@ -13179,14 +13179,14 @@ rd_frame()
                         MD_Node* project_node = md_child_from_string(op, ("project"), 0);
                         if(!md_node_is_nil(project_node))
                         {
-                          project_path = path_absolute_dst_from_relative_dst_src(scratch.arena, project_node.first.string, cfg_folder);
+                          project_path = path_absolute_dst_from_relative_dst_src(scratch.arena, project_node.first.str, cfg_folder);
                         }
                       }
                       
-                      // rjf: read view query string
+                      // rjf: read view query str
                       StringView view_query = ("");
                       {
-                        StringView escaped_query = md_child_from_string(op, ("query"), 0).first.string;
+                        StringView escaped_query = md_child_from_string(op, ("query"), 0).first.str;
                         view_query = raw_from_escaped_str8(scratch.arena, escaped_query);
                       }
                       
@@ -13299,31 +13299,31 @@ rd_frame()
                 MD_Node* alt_node = &md_nil_node;
                 for MD_EachNode(child, keybind.first)
                 {
-                  if(str8_match(child.string, ("ctrl"), 0))
+                  if(str8_match(child.str, ("ctrl"), 0))
                   {
                     ctrl_node = child;
                   }
-                  else if(str8_match(child.string, ("shift"), 0))
+                  else if(str8_match(child.str, ("shift"), 0))
                   {
                     shift_node = child;
                   }
-                  else if(str8_match(child.string, ("alt"), 0))
+                  else if(str8_match(child.str, ("alt"), 0))
                   {
                     alt_node = child;
                   }
                   else
                   {
-                    OS_Key k = rd_os_key_from_cfg_string(child.string);
+                    OS_Key k = rd_os_key_from_cfg_string(child.str);
                     if(k != OS_Key_Null)
                     {
                       key = k;
                     }
                     else
                     {
-                      cmd_name = child.string;
+                      cmd_name = child.str;
                       for(uint64 idx = 0; idx < ArrayCount(rd_binding_version_remap_old_name_table); idx += 1)
                       {
-                        if(str8_match(rd_binding_version_remap_old_name_table[idx], child.string, StringMatchFlag_CaseInsensitive))
+                        if(str8_match(rd_binding_version_remap_old_name_table[idx], child.str, StringMatchFlag_CaseInsensitive))
                         {
                           StringView new_name = rd_binding_version_remap_new_name_table[idx];
                           cmd_name = new_name;
@@ -13353,7 +13353,7 @@ rd_frame()
             B32 preset_applied = 0;
             if(color_preset != &d_nil_cfg_val)
             {
-              StringView color_preset_name = color_preset.last.root.first.string;
+              StringView color_preset_name = color_preset.last.root.first.str;
               RD_ThemePreset preset = (RD_ThemePreset)0;
               B32 found_preset = 0;
               for(RD_ThemePreset p = (RD_ThemePreset)0; p < RD_ThemePreset_COUNT; p = (RD_ThemePreset)(p+1))
@@ -13382,7 +13382,7 @@ rd_frame()
             {
               for MD_EachNode(color, colors_set.root.first)
               {
-                StringView saved_color_name = color.string;
+                StringView saved_color_name = color.str;
                 String8List candidate_color_names = {0};
                 str8_list_push(scratch.arena, &candidate_color_names, saved_color_name);
                 for(uint64 idx = 0; idx < ArrayCount(rd_theme_color_version_remap_old_name_table); idx += 1)
@@ -13394,7 +13394,7 @@ rd_frame()
                 }
                 for(String8Node* name_n = candidate_color_names.first; name_n != 0; name_n = name_n.next)
                 {
-                  StringView name = name_n.string;
+                  StringView name = name_n.str;
                   RD_ThemeColor color_code = RD_ThemeColor_Null;
                   for(RD_ThemeColor c = RD_ThemeColor_Null; c < RD_ThemeColor_COUNT; c = (RD_ThemeColor)(c+1))
                   {
@@ -13408,7 +13408,7 @@ rd_frame()
                   {
                     theme_color_hit[color_code] = 1;
                     MD_Node* hex_cfg = color.first;
-                    StringView hex_string = hex_cfg.string;
+                    StringView hex_string = hex_cfg.str;
                     uint64 hex_val = 0;
                     try_u64_from_str8_c_rules(hex_string, &hex_val);
                     Vec4F32 color_rgba = rgba_from_u32((uint32)hex_val);
@@ -13482,7 +13482,7 @@ rd_frame()
               {
                 MD_Node* val_node = code_tree.root.first;
                 int64 val = 0;
-                if(try_s64_from_str8_c_rules(val_node.string, &val))
+                if(try_s64_from_str8_c_rules(val_node.str, &val))
                 {
                   rd_state.cfg_setting_vals[src][code].set = 1;
                   rd_state.cfg_setting_vals[src][code].s32 = (int32)val;
@@ -13528,7 +13528,7 @@ rd_frame()
               for(uint64 idx = 0; idx < ArrayCount(rd_default_binding_table); idx += 1)
               {
                 RD_StringBindingPair* pair = &rd_default_binding_table[idx];
-                rd_bind_name(pair.string, pair.binding);
+                rd_bind_name(pair.str, pair.binding);
               }
             }
             
@@ -13542,9 +13542,9 @@ rd_frame()
               }
               meta_ctrls[] =
               {
-                { rd_cmd_kind_info_table[RD_CmdKind_Edit].string, OS_Key_F2 },
-                { rd_cmd_kind_info_table[RD_CmdKind_Accept].string, OS_Key_Return },
-                { rd_cmd_kind_info_table[RD_CmdKind_Cancel].string, OS_Key_Esc },
+                { rd_cmd_kind_info_table[RD_CmdKind_Edit].str, OS_Key_F2 },
+                { rd_cmd_kind_info_table[RD_CmdKind_Accept].str, OS_Key_Return },
+                { rd_cmd_kind_info_table[RD_CmdKind_Cancel].str, OS_Key_Esc },
               };
               for(uint64 idx = 0; idx < ArrayCount(meta_ctrls); idx += 1)
               {
@@ -13573,7 +13573,7 @@ rd_frame()
             }
             StringView path = rd_cfg_path_from_src(src);
             String8List rd_strs = rd_cfg_strings_from_gfx(scratch.arena, path, src);
-            StringView header = push_str8f(scratch.arena, "// raddbg %s file\n\n", rd_cfg_src_string_table[src].str);
+            StringView header = push_str8f(scratch.arena, "// raddbg %s file\n\n", rd_cfg_src_string_table[src].Ptr);
             String8List strs = {0};
             str8_list_push(scratch.arena, &strs, header);
             str8_list_concat_in_place(&strs, &rd_strs);
@@ -13586,17 +13586,17 @@ rd_frame()
           case RD_CmdKind_FindTextForward:
           case RD_CmdKind_FindTextBackward:
           {
-            rd_set_search_string(rd_regs().string);
+            rd_set_search_string(rd_regs().str);
           }break;
           
           //- rjf: find next and find prev
           case RD_CmdKind_FindNext:
           {
-            rd_cmd(RD_CmdKind_FindTextForward, .string = rd_push_search_string(scratch.arena));
+            rd_cmd(RD_CmdKind_FindTextForward, .str = rd_push_search_string(scratch.arena));
           }break;
           case RD_CmdKind_FindPrev:
           {
-            rd_cmd(RD_CmdKind_FindTextBackward, .string = rd_push_search_string(scratch.arena));
+            rd_cmd(RD_CmdKind_FindTextBackward, .str = rd_push_search_string(scratch.arena));
           }break;
           
           //- rjf: font sizes
@@ -13883,7 +13883,7 @@ rd_frame()
             // . override C:/foo/bar/baz.c . D:/1/2/3.c
             
             //- rjf: unpack
-            StringView src_path = rd_regs().string;
+            StringView src_path = rd_regs().str;
             StringView dst_path = rd_regs().file_path;
             StringView src_path__normalized = path_normalized_from_string(scratch.arena, src_path);
             StringView dst_path__normalized = path_normalized_from_string(scratch.arena, dst_path);
@@ -13895,11 +13895,11 @@ rd_frame()
             String8List dst_path_parts__reversed = {0};
             for(String8Node* n = src_path_parts.first; n != 0; n = n.next)
             {
-              str8_list_push_front(scratch.arena, &src_path_parts__reversed, n.string);
+              str8_list_push_front(scratch.arena, &src_path_parts__reversed, n.str);
             }
             for(String8Node* n = dst_path_parts.first; n != 0; n = n.next)
             {
-              str8_list_push_front(scratch.arena, &dst_path_parts__reversed, n.string);
+              str8_list_push_front(scratch.arena, &dst_path_parts__reversed, n.str);
             }
             
             //- rjf: trace from each path upwards, in lock-step, to find the first difference
@@ -13908,7 +13908,7 @@ rd_frame()
             String8Node* first_diff_dst = dst_path_parts__reversed.first;
             for(;first_diff_src != 0 && first_diff_dst != 0;)
             {
-              if(!str8_match(first_diff_src.string, first_diff_dst.string, StringMatchFlag_CaseInsensitive))
+              if(!str8_match(first_diff_src.str, first_diff_dst.str, StringMatchFlag_CaseInsensitive))
               {
                 break;
               }
@@ -13921,11 +13921,11 @@ rd_frame()
             String8List map_dst_parts = {0};
             for(String8Node* n = first_diff_src; n != 0; n = n.next)
             {
-              str8_list_push_front(scratch.arena, &map_src_parts, n.string);
+              str8_list_push_front(scratch.arena, &map_src_parts, n.str);
             }
             for(String8Node* n = first_diff_dst; n != 0; n = n.next)
             {
-              str8_list_push_front(scratch.arena, &map_dst_parts, n.string);
+              str8_list_push_front(scratch.arena, &map_dst_parts, n.str);
             }
             StringJoin map_join = {.sep = ("/")};
             StringView map_src = str8_list_join(scratch.arena, &map_src_parts, &map_join);
@@ -14106,8 +14106,8 @@ rd_frame()
           {
             RD_Panel* panel = rd_panel_from_handle(rd_regs().panel);
             RD_View* view = rd_view_alloc();
-            StringView query = rd_regs().string;
-            RD_ViewRuleInfo* spec = rd_view_rule_info_from_string(rd_regs().params_tree.string);
+            StringView query = rd_regs().str;
+            RD_ViewRuleInfo* spec = rd_view_rule_info_from_string(rd_regs().params_tree.str);
             rd_view_equip_spec(view, spec, query, rd_regs().params_tree);
             rd_panel_insert_tab_view(panel, panel.last_tab_view, view);
           }break;
@@ -14171,8 +14171,8 @@ rd_frame()
             {
               rd_cmd(RD_CmdKind_RecordFileInProject);
               rd_cmd(RD_CmdKind_OpenTab,
-                     .string = rd_eval_string_from_file_path(scratch.arena, path),
-                     .params_tree = md_tree_from_string(scratch.arena, rd_view_rule_kind_info_table[RD_ViewRuleKind_PendingFile].string).first);
+                     .str = rd_eval_string_from_file_path(scratch.arena, path),
+                     .params_tree = md_tree_from_string(scratch.arena, rd_view_rule_kind_info_table[RD_ViewRuleKind_PendingFile].str).first);
             }
             else
             {
@@ -14184,11 +14184,11 @@ rd_frame()
             RD_Window* ws = rd_window_from_handle(rd_regs().window);
             RD_Panel* src_panel = rd_panel_from_handle(rd_regs().panel);
             RD_View* src_view = rd_view_from_handle(rd_regs().view);
-            RD_ViewRuleKind src_view_kind = rd_view_rule_kind_from_string(src_view.spec.string);
+            RD_ViewRuleKind src_view_kind = rd_view_rule_kind_from_string(src_view.spec.str);
             RD_Entity* recent_file = rd_entity_from_handle(rd_regs().entity);
             if(!rd_entity_is_nil(recent_file))
             {
-              StringView recent_file_path = recent_file.string;
+              StringView recent_file_path = recent_file.str;
               RD_Panel* existing_panel = &rd_nil_panel;
               RD_View* existing_view = &rd_nil_view;
               for(RD_Panel* panel = ws.root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
@@ -14201,7 +14201,7 @@ rd_frame()
                 {
                   if(rd_view_is_project_filtered(v)) { continue; }
                   StringView v_path = rd_file_path_from_eval_string(scratch.arena, StringView(v.query_buffer, v.query_string_size));
-                  RD_ViewRuleKind v_kind = rd_view_rule_kind_from_string(v.spec.string);
+                  RD_ViewRuleKind v_kind = rd_view_rule_kind_from_string(v.spec.str);
                   if(str8_match(v_path, recent_file_path, StringMatchFlag_CaseInsensitive) && v_kind == src_view_kind)
                   {
                     existing_panel = panel;
@@ -14214,8 +14214,8 @@ rd_frame()
               if(rd_view_is_nil(existing_view))
               {
                 rd_cmd(RD_CmdKind_OpenTab,
-                       .string = rd_eval_string_from_file_path(scratch.arena, recent_file_path),
-                       .params_tree = md_tree_from_string(scratch.arena, rd_view_rule_kind_info_table[RD_ViewRuleKind_PendingFile].string).first);
+                       .str = rd_eval_string_from_file_path(scratch.arena, recent_file_path),
+                       .params_tree = md_tree_from_string(scratch.arena, rd_view_rule_kind_info_table[RD_ViewRuleKind_PendingFile].str).first);
               }
               else
               {
@@ -14261,7 +14261,7 @@ rd_frame()
                     else
                     {
                       rd_cmd(RD_CmdKind_RecordFileInProject, .file_path = candidate_path);
-                      rd_cmd(RD_CmdKind_OpenTab, .string = rd_eval_string_from_file_path(scratch.arena, candidate_path), .params_tree = md_tree_from_string(scratch.arena, view.spec.string).first);
+                      rd_cmd(RD_CmdKind_OpenTab, .str = rd_eval_string_from_file_path(scratch.arena, candidate_path), .params_tree = md_tree_from_string(scratch.arena, view.spec.str).first);
                     }
                     break;
                   }
@@ -14281,7 +14281,7 @@ rd_frame()
               RD_Cfg* recent_file = &rd_nil_cfg;
               for(RD_CfgNode* n = recent_files.first; n != 0; n = n.next)
               {
-                if(path_match_normalized(n.v.string, path))
+                if(path_match_normalized(n.v.str, path))
                 {
                   recent_file = n.v;
                   break;
@@ -14309,7 +14309,7 @@ rd_frame()
             RD_Entity* existing_recent_file = &rd_nil_entity;
             for(RD_EntityNode* n = recent_files.first; n != 0; n = n.next)
             {
-              if(str8_match(n.entity.string, path, StringMatchFlag_CaseInsensitive))
+              if(str8_match(n.entity.str, path, StringMatchFlag_CaseInsensitive))
               {
                 existing_recent_file = n.entity;
                 break;
@@ -14407,7 +14407,7 @@ rd_frame()
               for(RD_View* view = panel.first_tab_view, *next = 0; !rd_view_is_nil(view); view = next)
               {
                 next = view.order_next;
-                RD_ViewRuleKind view_rule_kind = rd_view_rule_kind_from_string(view.spec.string);
+                RD_ViewRuleKind view_rule_kind = rd_view_rule_kind_from_string(view.spec.str);
                 B32 needs_delete = 1;
                 switch(view_rule_kind)
                 {
@@ -14809,7 +14809,7 @@ rd_frame()
           //- rjf: name finding
           case RD_CmdKind_GoToName:
           {
-            StringView name = rd_regs().string;
+            StringView name = rd_regs().str;
             if(name.size != 0)
             {
               B32 name_resolved = 0;
@@ -14837,7 +14837,7 @@ rd_frame()
               StringView file_path = {0};
               if(!name_resolved)
               {
-                // rjf: unpack quoted portion of string
+                // rjf: unpack quoted portion of str
                 StringView file_part_of_name = name;
                 uint64 quote_pos = str8_find_needle(name, 0, ("\""), 0);
                 if(quote_pos < name.size)
@@ -14861,11 +14861,11 @@ rd_frame()
                   String8List try_path_parts = {0};
                   for(String8Node* src_n = src_file_parts.first; src_n != n && src_n != 0; src_n = src_n.next)
                   {
-                    str8_list_push(temp.arena, &try_path_parts, src_n.string);
+                    str8_list_push(temp.arena, &try_path_parts, src_n.str);
                   }
                   for(String8Node* try_n = search_parts.first; try_n != 0; try_n = try_n.next)
                   {
-                    str8_list_push(temp.arena, &try_path_parts, try_n.string);
+                    str8_list_push(temp.arena, &try_path_parts, try_n.str);
                   }
                   StringView try_path = str8_list_join(temp.arena, &try_path_parts, &(StringJoin){.sep = ("/")});
                   FileProperties try_props = os_properties_from_file_path(try_path);
@@ -15011,7 +15011,7 @@ rd_frame()
               {
                 if(rd_view_is_project_filtered(view)) { continue; }
                 StringView view_file_path = rd_file_path_from_eval_string(scratch.arena, StringView(view.query_buffer, view.query_string_size));
-                RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.string);
+                RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.str);
                 if((view_kind == RD_ViewRuleKind_Text || view_kind == RD_ViewRuleKind_PendingFile) &&
                    path_match_normalized(view_file_path, file_path))
                 {
@@ -15042,7 +15042,7 @@ rd_frame()
                 for(RD_View* view = panel.first_tab_view; !rd_view_is_nil(view); view = view.order_next)
                 {
                   if(rd_view_is_project_filtered(view)) { continue; }
-                  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.string);
+                  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.str);
                   if(view_kind == RD_ViewRuleKind_Text && panel_area > best_panel_area)
                   {
                     panel_w_any_src_code = panel;
@@ -15072,7 +15072,7 @@ rd_frame()
                 for(RD_View* view = panel.first_tab_view; !rd_view_is_nil(view); view = view.order_next)
                 {
                   if(rd_view_is_project_filtered(view)) { continue; }
-                  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.string);
+                  RD_ViewRuleKind view_kind = rd_view_rule_kind_from_string(view.spec.str);
                   B32 view_is_selected = (view == panel_selected_tab);
                   if(view_kind == RD_ViewRuleKind_Disasm && view.query_string_size == 0 && panel_area > best_panel_area)
                   {
@@ -15407,17 +15407,17 @@ rd_frame()
           case RD_CmdKind_NameEntity:
           {
             RD_Entity* entity = rd_entity_from_handle(rd_regs().entity);
-            StringView string = rd_regs().string;
-            rd_entity_equip_name(entity, string);
+            StringView str = rd_regs().str;
+            rd_entity_equip_name(entity, str);
           }break;
           case RD_CmdKind_ConditionEntity:
           {
             RD_Entity* entity = rd_entity_from_handle(rd_regs().entity);
-            StringView string = rd_regs().string;
-            if(string.size != 0)
+            StringView str = rd_regs().str;
+            if(str.Length != 0)
             {
               RD_Entity* child = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Condition);
-              rd_entity_equip_name(child, string);
+              rd_entity_equip_name(child, str);
             }
             else
             {
@@ -15448,7 +15448,7 @@ rd_frame()
                 if(src_n.flags & RD_EntityFlag_HasColor)        {rd_entity_equip_color_hsva(dst_n, rd_hsva_from_entity(src_n));}
                 if(src_n.flags & RD_EntityFlag_HasVAddr)        {rd_entity_equip_vaddr(dst_n, src_n.vaddr);}
                 if(src_n.disabled)                              {rd_entity_equip_disabled(dst_n, 1);}
-                if(src_n.string.size != 0)                      {rd_entity_equip_name(dst_n, src_n.string);}
+                if(src_n.str.Length != 0)                      {rd_entity_equip_name(dst_n, src_n.str);}
                 dst_n.cfg_src = src_n.cfg_src;
                 for(RD_Entity* src_child = task.src_n.first; !rd_entity_is_nil(src_child); src_child = src_child.next)
                 {
@@ -15491,9 +15491,9 @@ rd_frame()
           {
             StringView file_path = rd_regs().file_path;
             TxtPt pt = rd_regs().cursor;
-            StringView string = rd_regs().string;
+            StringView str = rd_regs().str;
             uint64 vaddr = rd_regs().vaddr;
-            if(file_path.size != 0 || string.size != 0 || vaddr != 0)
+            if(file_path.size != 0 || str.Length != 0 || vaddr != 0)
             {
               //- TODO(rjf): @cfg add/toggle breakpoint
               {
@@ -15507,9 +15507,9 @@ rd_frame()
                     RD_Cfg* loc = rd_cfg_child_from_string(bp, ("location"));
                     int64 loc_line = 0;
                     uint64 loc_vaddr = 0;
-                    B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc.first.string, file_path) && try_s64_from_str8_c_rules(loc.first.first.string, &loc_line) && loc_line == pt.line);
-                    B32 loc_matches_string  = (string.size != 0 && str8_match(loc.first.string, string, 0));
-                    B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc.first.string, &loc_vaddr) && loc_vaddr == vaddr);
+                    B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc.first.str, file_path) && try_s64_from_str8_c_rules(loc.first.first.str, &loc_line) && loc_line == pt.line);
+                    B32 loc_matches_string  = (str.Length != 0 && str8_match(loc.first.str, str, 0));
+                    B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc.first.str, &loc_vaddr) && loc_vaddr == vaddr);
                     if(loc_matches_file_pt || loc_matches_string || loc_matches_vaddr)
                     {
                       rd_cfg_release(bp);
@@ -15527,9 +15527,9 @@ rd_frame()
                   {
                     rd_cfg_newf(loc, "0x%I64x", vaddr);
                   }
-                  else if(string.size != 0)
+                  else if(str.Length != 0)
                   {
-                    rd_cfg_new(loc, string);
+                    rd_cfg_new(loc, str);
                   }
                   else if(file_path.size != 0)
                   {
@@ -15546,9 +15546,9 @@ rd_frame()
                 {
                   RD_Entity* bp = n.entity;
                   RD_Entity* loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
-                  if((loc.flags & RD_EntityFlag_HasTextPoint && path_match_normalized(loc.string, file_path) && loc.text_point.line == pt.line) ||
+                  if((loc.flags & RD_EntityFlag_HasTextPoint && path_match_normalized(loc.str, file_path) && loc.text_point.line == pt.line) ||
                      (loc.flags & RD_EntityFlag_HasVAddr && loc.vaddr == vaddr) ||
-                     (!(loc.flags & RD_EntityFlag_HasTextPoint) && str8_match(loc.string, string, 0)))
+                     (!(loc.flags & RD_EntityFlag_HasTextPoint) && str8_match(loc.str, str, 0)))
                   {
                     rd_entity_mark_for_deletion(bp);
                     removed_already_existing = 1;
@@ -15565,9 +15565,9 @@ rd_frame()
                 {
                   rd_entity_equip_vaddr(loc, vaddr);
                 }
-                else if(string.size != 0)
+                else if(str.Length != 0)
                 {
-                  rd_entity_equip_name(loc, string);
+                  rd_entity_equip_name(loc, str);
                 }
                 else if(file_path.size != 0 && pt.line != 0)
                 {
@@ -15579,7 +15579,7 @@ rd_frame()
           }break;
           case RD_CmdKind_AddAddressBreakpoint:
           {
-            rd_cmd(RD_CmdKind_AddBreakpoint, .string = StringView());
+            rd_cmd(RD_CmdKind_AddBreakpoint, .str = StringView());
           }break;
           case RD_CmdKind_AddFunctionBreakpoint:
           {
@@ -15592,7 +15592,7 @@ rd_frame()
           {
             StringView file_path = rd_regs().file_path;
             TxtPt pt = rd_regs().cursor;
-            StringView string = rd_regs().string;
+            StringView str = rd_regs().str;
             uint64 vaddr = rd_regs().vaddr;
             //- TODO(rjf): @cfg add/toggle watch pin
             {
@@ -15607,9 +15607,9 @@ rd_frame()
                   RD_Cfg* loc = rd_cfg_child_from_string(wp, ("location"));
                   int64 loc_line = 0;
                   uint64 loc_vaddr = 0;
-                  B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc.first.string, file_path) && try_s64_from_str8_c_rules(loc.first.first.string, &loc_line) && loc_line == pt.line);
-                  B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc.first.string, &loc_vaddr) && loc_vaddr == vaddr);
-                  B32 loc_matches_expr    = (string.size != 0 && str8_match(name.first.string, string, 0));
+                  B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc.first.str, file_path) && try_s64_from_str8_c_rules(loc.first.first.str, &loc_line) && loc_line == pt.line);
+                  B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc.first.str, &loc_vaddr) && loc_vaddr == vaddr);
+                  B32 loc_matches_expr    = (str.Length != 0 && str8_match(name.first.str, str, 0));
                   if(loc_matches_expr && (loc_matches_file_pt || loc_matches_vaddr))
                   {
                     rd_cfg_release(wp);
@@ -15624,7 +15624,7 @@ rd_frame()
                 RD_Cfg* wp = rd_cfg_new(project, ("watch_pin"));
                 RD_Cfg* name = rd_cfg_new(wp, ("name"));
                 RD_Cfg* loc = rd_cfg_new(wp, ("location"));
-                rd_cfg_new(name, string);
+                rd_cfg_new(name, str);
                 if(vaddr != 0)
                 {
                   rd_cfg_newf(loc, "0x%I64x", vaddr);
@@ -15644,8 +15644,8 @@ rd_frame()
               {
                 RD_Entity* wp = n.entity;
                 RD_Entity* loc = rd_entity_child_from_kind(wp, RD_EntityKind_Location);
-                if(str8_match(wp.string, string, 0) &&
-                   ((loc.flags & RD_EntityFlag_HasTextPoint && path_match_normalized(loc.string, file_path) && loc.text_point.line == pt.line) ||
+                if(str8_match(wp.str, str, 0) &&
+                   ((loc.flags & RD_EntityFlag_HasTextPoint && path_match_normalized(loc.str, file_path) && loc.text_point.line == pt.line) ||
                     (loc.flags & RD_EntityFlag_HasVAddr && loc.vaddr == vaddr)))
                 {
                   rd_entity_mark_for_deletion(wp);
@@ -15657,7 +15657,7 @@ rd_frame()
             if(!removed_already_existing)
             {
               RD_Entity* wp = rd_entity_alloc(rd_entity_root(), RD_EntityKind_WatchPin);
-              rd_entity_equip_name(wp, string);
+              rd_entity_equip_name(wp, str);
               rd_entity_equip_cfg_src(wp, RD_CfgSrc_Project);
               RD_Entity* loc = rd_entity_alloc(wp, RD_EntityKind_Location);
               if(file_path.size != 0 && pt.line != 0)
@@ -15674,15 +15674,15 @@ rd_frame()
           
           //- rjf: watches
           case RD_CmdKind_ToggleWatchExpression:
-          if(rd_regs().string.size != 0)
+          if(rd_regs().str.Length != 0)
           {
-            RD_Entity* existing_watch = rd_entity_from_name_and_kind(rd_regs().string, RD_EntityKind_Watch);
+            RD_Entity* existing_watch = rd_entity_from_name_and_kind(rd_regs().str, RD_EntityKind_Watch);
             if(rd_entity_is_nil(existing_watch))
             {
               RD_Entity* watch = &rd_nil_entity;
               watch = rd_entity_alloc(rd_entity_root(), RD_EntityKind_Watch);
               rd_entity_equip_cfg_src(watch, RD_CfgSrc_Project);
-              rd_entity_equip_name(watch, rd_regs().string);
+              rd_entity_equip_name(watch, rd_regs().str);
             }
             else
             {
@@ -15716,7 +15716,7 @@ rd_frame()
             rd_cmd((kind == RD_CmdKind_GoToNameAtCursor ? RD_CmdKind_GoToName :
                     kind == RD_CmdKind_ToggleWatchExpressionAtCursor ? RD_CmdKind_ToggleWatchExpression :
                     RD_CmdKind_GoToName),
-                   .string = expr);
+                   .str = expr);
             txt_scope_close(txt_scope);
             hs_scope_close(hs_scope);
           }break;
@@ -15806,7 +15806,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(uint16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.Ptr, 0, REG_SZ, (BYTE *)data16.Ptr, data16.size*sizeof(uint16)+2);
               RegCloseKey(reg_key);
             }
             {
@@ -15814,7 +15814,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(uint16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.Ptr, 0, REG_SZ, (BYTE *)data16.Ptr, data16.size*sizeof(uint16)+2);
               RegCloseKey(reg_key);
             }
             if(likely_not_in_admin_mode)
@@ -15856,7 +15856,7 @@ rd_frame()
               ui_event.kind         = kind;
               ui_event.key          = os_event.key;
               ui_event.modifiers    = os_event.modifiers;
-              ui_event.string       = os_event.character ? str8_from_32(ui_build_arena(), Span<char32>(&os_event.character, 1)) : StringView();
+              ui_event.str       = os_event.character ? str8_from_32(ui_build_arena(), Span<char32>(&os_event.character, 1)) : StringView();
               ui_event.paths        = str8_list_copy(ui_build_arena(), &os_event.strings);
               ui_event.pos          = os_event.pos;
               ui_event.delta_2f32   = os_event.delta;
@@ -16355,7 +16355,7 @@ rd_frame()
             RD_Window* ws = rd_window_from_handle(rd_regs().window);
             UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
-            evt.string = os_get_clipboard_text(scratch.arena);
+            evt.str = os_get_clipboard_text(scratch.arena);
             ui_event_list_push(scratch.arena, &ws.ui_events, &evt);
           }break;
           case RD_CmdKind_InsertText:
@@ -16363,7 +16363,7 @@ rd_frame()
             RD_Window* ws = rd_window_from_handle(rd_regs().window);
             UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
-            evt.string = rd_regs().string;
+            evt.str = rd_regs().str;
             ui_event_list_push(scratch.arena, &ws.ui_events, &evt);
           }break;
         }
@@ -16434,21 +16434,21 @@ rd_frame()
         // or not it is 'static', w.r.t. the control thread.
         //
         B32 is_static_for_ctrl_thread = 0;
-        if(src_bp_cnd.string.size != 0)
+        if(src_bp_cnd.str.Length != 0)
         {
           struct ExprWalkTask
           {
             ExprWalkTask* next;
             E_Expr* expr;
           };
-          E_Expr* expr = e_parse_expr_from_text(scratch.arena, src_bp_cnd.string);
+          E_Expr* expr = e_parse_expr_from_text(scratch.arena, src_bp_cnd.str);
           ExprWalkTask start_task = {0, expr};
           ExprWalkTask* first_task = &start_task;
           for(ExprWalkTask* t = first_task; t != 0; t = t.next)
           {
             if(t.expr.kind == E_ExprKind_LeafIdent)
             {
-              E_Expr* macro_expr = e_string2expr_lookup(e_ir_ctx.macro_map, t.expr.string);
+              E_Expr* macro_expr = e_string2expr_lookup(e_ir_ctx.macro_map, t.expr.str);
               if(macro_expr != &e_expr_nil)
               {
                 E_Eval eval = e_eval_from_expr(scratch.arena, macro_expr);
@@ -16487,7 +16487,7 @@ rd_frame()
         B32 is_statically_disqualified = 0;
         if(is_static_for_ctrl_thread)
         {
-          E_Eval eval = e_eval_from_string(scratch.arena, src_bp_cnd.string);
+          E_Eval eval = e_eval_from_string(scratch.arena, src_bp_cnd.str);
           E_Eval value_eval = e_value_eval_from_eval(eval);
           if(value_eval.value.u64 == 0)
           {
@@ -16504,11 +16504,11 @@ rd_frame()
         
         //- rjf: fill breakpoint
         D_Breakpoint* dst_bp = &breakpoints.v[idx];
-        dst_bp.file_path   = src_bp_loc.string;
+        dst_bp.file_path   = src_bp_loc.str;
         dst_bp.pt          = src_bp_loc.text_point;
-        dst_bp.symbol_name = src_bp_loc.string;
+        dst_bp.symbol_name = src_bp_loc.str;
         dst_bp.vaddr       = src_bp_loc.vaddr;
-        dst_bp.condition   = src_bp_cnd.string;
+        dst_bp.condition   = src_bp_cnd.str;
         idx += 1;
       }
       
@@ -16537,8 +16537,8 @@ rd_frame()
       for(RD_EntityNode* n = maps.first; n != 0; n = n.next, idx += 1)
       {
         RD_Entity* map = n.entity;
-        path_maps.v[idx].src = rd_entity_child_from_kind(map, RD_EntityKind_Source).string;
-        path_maps.v[idx].dst = rd_entity_child_from_kind(map, RD_EntityKind_Dest).string;
+        path_maps.v[idx].src = rd_entity_child_from_kind(map, RD_EntityKind_Source).str;
+        path_maps.v[idx].dst = rd_entity_child_from_kind(map, RD_EntityKind_Dest).str;
       }
     }
     
@@ -16618,7 +16618,7 @@ rd_frame()
             {
               RD_Entity* bp = n.entity;
               RD_Entity* loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
-              D_LineList loc_lines = d_lines_from_file_path_line_num(scratch.arena, loc.string, loc.text_point.line);
+              D_LineList loc_lines = d_lines_from_file_path_line_num(scratch.arena, loc.str, loc.text_point.line);
               if(loc_lines.first != 0)
               {
                 for(D_LineNode* n = loc_lines.first; n != 0; n = n.next)
@@ -16634,9 +16634,9 @@ rd_frame()
               {
                 bp.u64 += 1;
               }
-              else if(loc.string.size != 0)
+              else if(loc.str.Length != 0)
               {
-                uint64 symb_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, loc.string);
+                uint64 symb_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, loc.str);
                 if(symb_voff == voff)
                 {
                   bp.u64 += 1;
@@ -17011,7 +17011,7 @@ rd_frame()
       for(RD_Window* w = rd_state.first_window; w != 0; w = w.next)
       {
         w.error_string_size = Min(sizeof(w.error_buffer), log.strings[LogMsgKind_UserError].size);
-        MemoryCopy(w.error_buffer, log.strings[LogMsgKind_UserError].str, w.error_string_size);
+        MemoryCopy(w.error_buffer, log.strings[LogMsgKind_UserError].Ptr, w.error_string_size);
         w.error_t = 1.f;
       }
     }

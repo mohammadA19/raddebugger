@@ -209,7 +209,7 @@ void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie* trie);
 
 ////////////////////////////////
 
-uint64  lnk_symbol_hash(StringView string);
+uint64  lnk_symbol_hash(StringView str);
 
 LNK_SymbolTable * lnk_symbol_table_init(TP_Arena* arena);
 LNK_Symbol *      lnk_symbol_table_search_hash(LNK_SymbolTable* symtab, LNK_SymbolScopeFlags scope, uint64 hash, StringView name);

@@ -15,7 +15,7 @@ pdb_read_bit_vector_string(StringView data, uint64 offset, U32Array* bits_out)
   
   if (word_data.size == word_data_read_size) {
     bits_out.count = word_count;
-    bits_out.v = (uint32*)word_data.str;
+    bits_out.v = (uint32*)word_data.Ptr;
   } else {
     bits_out.count = 0;
     bits_out.v = 0;

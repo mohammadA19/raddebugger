@@ -46,7 +46,7 @@ entry_point(CmdLine* cmdline)
   uint64 idx = 0;
   for(String8Node* n = lines.first; n != 0; n = n.next)
   {
-    StringView dll_path = n.string;
+    StringView dll_path = n.str;
     ProfScope("kick off %.*s", str8_varg(dll_path))
     {
       StringView dll_path_no_ext = str8_chop_last_dot(dll_path);
@@ -66,7 +66,7 @@ entry_point(CmdLine* cmdline)
       String8Node* line_n = processes_first_path_n;
       for(OS_HandleNode* n = processes.first; n != 0; n = n.next, line_n = line_n.next)
       {
-        ProfScope("join %.*s", str8_varg(line_n.string))
+        ProfScope("join %.*s", str8_varg(line_n.str))
         {
           os_process_join(n.v, max_U64);
         }

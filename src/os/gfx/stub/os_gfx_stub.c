@@ -20,7 +20,7 @@ os_get_gfx_info()
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 void
-os_set_clipboard_text(StringView string)
+os_set_clipboard_text(StringView str)
 {
 }
 

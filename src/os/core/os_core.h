@@ -148,7 +148,7 @@ StringView        os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U6
 ////////////////////////////////
 //~ rjf: Process Launcher Helpers
 
-OS_Handle os_cmd_line_launch(StringView string);
+OS_Handle os_cmd_line_launch(StringView str);
 OS_Handle os_cmd_line_launchf(char* fmt, ...);
 
 ////////////////////////////////
@@ -176,7 +176,7 @@ B32 os_commit_large(void* ptr, uint64 size);
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
 uint32 os_tid();
-void os_set_thread_name(StringView string);
+void os_set_thread_name(StringView str);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)

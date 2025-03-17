@@ -14,7 +14,7 @@ U128
 hs_hash_from_data(StringView data)
 {
   U128 u128 = {0};
-  XXH128_hash_t hash = XXH3_128bits(data.str, data.size);
+  XXH128_hash_t hash = XXH3_128bits(data.Ptr, data.size);
   MemoryCopy(&u128, &hash, sizeof(u128));
   return u128;
 }

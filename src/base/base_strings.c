@@ -198,36 +198,36 @@ str8_cstring_capped_reverse(void* raw_start, void* raw_cap)
 //~ rjf: String Stylization
 
 StringView
-upper_from_str8(Arena* arena, StringView string)
+upper_from_str8(Arena* arena, StringView str)
 {
-  string = push_str8_copy(arena, string);
-  for(uint64 idx = 0; idx < string.size; idx += 1)
+  str = push_str8_copy(arena, str);
+  for(uint64 idx = 0; idx < str.Length; idx += 1)
   {
-    string.str[idx] = char_to_upper(string.str[idx]);
+    str[idx] = char_to_upper(str[idx]);
   }
-  return string;
+  return str;
 }
 
 StringView
-lower_from_str8(Arena* arena, StringView string)
+lower_from_str8(Arena* arena, StringView str)
 {
-  string = push_str8_copy(arena, string);
-  for(uint64 idx = 0; idx < string.size; idx += 1)
+  str = push_str8_copy(arena, str);
+  for(uint64 idx = 0; idx < str.Length; idx += 1)
   {
-    string[idx] = string[idx].ToLower;
+    str[idx] = str[idx].ToLower;
   }
-  return string;
+  return str;
 }
 
 StringView
-backslashed_from_str8(Arena* arena, StringView string)
+backslashed_from_str8(Arena* arena, StringView str)
 {
-  string = push_str8_copy(arena, string);
-  for(uint64 idx = 0; idx < string.size; idx += 1)
+  str = push_str8_copy(arena, str);
+  for(uint64 idx = 0; idx < str.Length; idx += 1)
   {
-    string.str[idx] = char_is_slash(string.str[idx]) ? '\\' : string.str[idx];
+    str[idx] = char_is_slash(str[idx]) ? '\\' : str[idx];
   }
-  return string;
+  return str;
 }
 
 ////////////////////////////////
@@ -239,7 +239,7 @@ str8_match(StringView a, StringView b, StringMatchFlags flags)
   B32 result = 0;
   if(a.size == b.size && flags == 0)
   {
-    result = MemoryMatch(a.str, b.str, b.size);
+    result = MemoryMatch(a.Ptr, b.Ptr, b.size);
   }
   else if(a.size == b.size || (flags & StringMatchFlag_RightSideSloppy))
   {
@@ -249,8 +249,8 @@ str8_match(StringView a, StringView b, StringMatchFlags flags)
     result = 1;
     for(uint64 i = 0; i < size; i += 1)
     {
-      uint8 at = a.str[i];
-      uint8 bt = b.str[i];
+      uint8 at = a[i];
+      uint8 bt = b[i];
       if(case_insensitive)
       {
         at = char_to_upper(at);
@@ -272,15 +272,15 @@ str8_match(StringView a, StringView b, StringMatchFlags flags)
 }
 
 uint64
-str8_find_needle(StringView string, uint64 start_pos, StringView needle, StringMatchFlags flags){
-  uint8* p = string.str + start_pos;
-  uint64 stop_offset = Max(string.size + 1, needle.size) - needle.size;
-  uint8* stop_p = string.str + stop_offset;
+str8_find_needle(StringView str, uint64 start_pos, StringView needle, StringMatchFlags flags){
+  uint8* p = str.Ptr + start_pos;
+  uint64 stop_offset = Max(str.Length + 1, needle.size) - needle.size;
+  uint8* stop_p = str.Ptr + stop_offset;
   if (needle.size > 0){
-    uint8* string_opl = string.str + string.size;
+    uint8* string_opl = str.Ptr + str.Length;
     StringView needle_tail = str8_skip(needle, 1);
     StringMatchFlags adjusted_flags = flags | StringMatchFlag_RightSideSloppy;
-    uint8 needle_first_char_adjusted = needle.str[0];
+    uint8 needle_first_char_adjusted = needle[0];
     if(adjusted_flags & StringMatchFlag_CaseInsensitive){
       needle_first_char_adjusted = char_to_upper(needle_first_char_adjusted);
     }
@@ -296,20 +296,20 @@ str8_find_needle(StringView string, uint64 start_pos, StringView needle, StringM
       }
     }
   }
-  uint64 result = string.size;
+  uint64 result = str.Length;
   if (p < stop_p){
-    result = (uint64)(p - string.str);
+    result = (uint64)(p - str.Ptr);
   }
   return(result);
 }
 
 uint64
-str8_find_needle_reverse(StringView string, uint64 start_pos, StringView needle, StringMatchFlags flags)
+str8_find_needle_reverse(StringView str, uint64 start_pos, StringView needle, StringMatchFlags flags)
 {
   uint64 result = 0;
-  for(int64 i = string.size - start_pos - needle.size; i >= 0; --i)
+  for(int64 i = str.Length - start_pos - needle.size; i >= 0; --i)
   {
-    StringView haystack = str8_substr(string, rng_1u64(i, i + needle.size));
+    StringView haystack = str8_substr(str, rng_1u64(i, i + needle.size));
     if(str8_match(haystack, needle, flags))
     {
       result = (uint64)i + needle.size;
@@ -320,8 +320,8 @@ str8_find_needle_reverse(StringView string, uint64 start_pos, StringView needle,
 }
 
 B32
-str8_ends_with(StringView string, StringView end, StringMatchFlags flags){
-  StringView postfix = str8_postfix(string, end.size);
+str8_ends_with(StringView str, StringView end, StringMatchFlags flags){
+  StringView postfix = str8_postfix(str, end.size);
   B32 is_match = str8_match(end, postfix, flags);
   return is_match;
 }
@@ -331,46 +331,46 @@ str8_ends_with(StringView string, StringView end, StringMatchFlags flags){
 
 StringView
 str8_substr(StringView str, Rng1U64 range){
-  range.min = ClampTop(range.min, str.size);
-  range.max = ClampTop(range.max, str.size);
-  str.str += range.min;
-  str.size = dim_1u64(range);
+  range.min = ClampTop(range.min, str.Length);
+  range.max = ClampTop(range.max, str.Length);
+  str.Ptr += range.min;
+  str.Length = dim_1u64(range);
   return(str);
 }
 
 StringView
 str8_prefix(StringView str, uint64 size){
-  str.size = ClampTop(size, str.size);
+  str.Length = ClampTop(size, str.Length);
   return(str);
 }
 
 StringView
 str8_skip(StringView str, uint64 amt){
-  amt = ClampTop(amt, str.size);
-  str.str += amt;
-  str.size -= amt;
+  amt = ClampTop(amt, str.Length);
+  str.Ptr += amt;
+  str.Length -= amt;
   return(str);
 }
 
 StringView
 str8_postfix(StringView str, uint64 size){
-  size = ClampTop(size, str.size);
-  str.str = (str.str + str.size) - size;
-  str.size = size;
+  size = ClampTop(size, str.Length);
+  str.Ptr = (str.Ptr + str.Length) - size;
+  str.Length = size;
   return(str);
 }
 
 StringView
 str8_chop(StringView str, uint64 amt){
-  amt = ClampTop(amt, str.size);
-  str.size -= amt;
+  amt = ClampTop(amt, str.Length);
+  str.Length -= amt;
   return(str);
 }
 
 StringView
-str8_skip_chop_whitespace(StringView string){
-  uint8* first = string.str;
-  uint8* opl = first + string.size;
+str8_skip_chop_whitespace(StringView str){
+  uint8* first = str.Ptr;
+  uint8* opl = first + str.Length;
   for (;first < opl; first += 1){
     if (!char_is_space(*first)){
       break;
@@ -393,21 +393,21 @@ str8_skip_chop_whitespace(StringView string){
 StringView
 push_str8_cat(Arena* arena, StringView s1, StringView s2){
   StringView str;
-  str.size = s1.size + s2.size;
-  str.str = push_array_no_zero(arena, uint8, str.size + 1);
-  MemoryCopy(str.str, s1.str, s1.size);
-  MemoryCopy(str.str + s1.size, s2.str, s2.size);
-  str.str[str.size] = 0;
+  str.Length = s1.size + s2.size;
+  str.Ptr = push_array_no_zero(arena, uint8, str.Length + 1);
+  MemoryCopy(str.Ptr, s1.Ptr, s1.size);
+  MemoryCopy(str.Ptr + s1.size, s2.Ptr, s2.size);
+  str[str.Length] = 0;
   return(str);
 }
 
 StringView
 push_str8_copy(Arena* arena, StringView s){
   StringView str;
-  str.size = s.size;
-  str.str = push_array_no_zero(arena, uint8, str.size + 1);
-  MemoryCopy(str.str, s.str, s.size);
-  str.str[str.size] = 0;
+  str.Length = s.size;
+  str.Ptr = push_array_no_zero(arena, uint8, str.Length + 1);
+  MemoryCopy(str.Ptr, s.Ptr, s.size);
+  str[str.Length] = 0;
   return(str);
 }
 
@@ -417,9 +417,9 @@ push_str8fv(Arena* arena, char* fmt, va_list args){
   va_copy(args2, args);
   uint32 needed_bytes = raddbg_vsnprintf(0, 0, fmt, args) + 1;
   StringView result = {0};
-  result.str = push_array_no_zero(arena, uint8, needed_bytes);
-  result.size = raddbg_vsnprintf((char*)result.str, needed_bytes, fmt, args2);
-  result.str[result.size] = 0;
+  result.Ptr = push_array_no_zero(arena, uint8, needed_bytes);
+  result.size = raddbg_vsnprintf((char*)result.Ptr, needed_bytes, fmt, args2);
+  result[result.size] = 0;
   va_end(args2);
   return(result);
 }
@@ -436,24 +436,24 @@ push_str8f(Arena* arena, char* fmt, ...){
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
 
-//- rjf: string . integer
+//- rjf: str . integer
 
 int64
-sign_from_str8(StringView string, StringView* string_tail){
+sign_from_str8(StringView str, StringView* string_tail){
   // count negative signs
   uint64 neg_count = 0;
   uint64 i = 0;
-  for (; i < string.size; i += 1){
-    if (string.str[i] == '-'){
+  for (; i < str.Length; i += 1){
+    if (str[i] == '-'){
       neg_count += 1;
     }
-    else if (string.str[i] != '+'){
+    else if (str[i] != '+'){
       break;
     }
   }
   
-  // output part of string after signs
-  *string_tail = str8_skip(string, i);
+  // output part of str after signs
+  *string_tail = str8_skip(str, i);
   
   // output integer sign
   int64 sign = (neg_count & 1)?-1:+1;
@@ -461,13 +461,13 @@ sign_from_str8(StringView string, StringView* string_tail){
 }
 
 B32
-str8_is_integer(StringView string, uint32 radix){
+str8_is_integer(StringView str, uint32 radix){
   B32 result = 0;
-  if (string.size > 0){
+  if (str.Length > 0){
     if (1 < radix && radix <= 16){
       result = 1;
-      for (uint64 i = 0; i < string.size; i += 1){
-        uint8 c = string.str[i];
+      for (uint64 i = 0; i < str.Length; i += 1){
+        uint8 c = str[i];
         if (!(c < 0x80) || integer_symbol_reverse[c] >= radix){
           result = 0;
           break;
@@ -479,62 +479,62 @@ str8_is_integer(StringView string, uint32 radix){
 }
 
 uint64
-u64_from_str8(StringView string, uint32 radix){
+u64_from_str8(StringView str, uint32 radix){
   uint64 x = 0;
   if (1 < radix && radix <= 16){
-    for (uint64 i = 0; i < string.size; i += 1){
+    for (uint64 i = 0; i < str.Length; i += 1){
       x *= radix;
-      x += integer_symbol_reverse[string.str[i]&0x7F];
+      x += integer_symbol_reverse[str[i]&0x7F];
     }
   }
   return(x);
 }
 
 int64
-s64_from_str8(StringView string, uint32 radix){
-  int64 sign = sign_from_str8(string, &string);
-  int64 x = (int64)u64_from_str8(string, radix) * sign;
+s64_from_str8(StringView str, uint32 radix){
+  int64 sign = sign_from_str8(str, &str);
+  int64 x = (int64)u64_from_str8(str, radix) * sign;
   return(x);
 }
 
 uint32
-u32_from_str8(StringView string, uint32 radix)
+u32_from_str8(StringView str, uint32 radix)
 {
-  uint64 x64 = u64_from_str8(string, radix);
+  uint64 x64 = u64_from_str8(str, radix);
   uint32 x32 = safe_cast_u32(x64);
   return x32;
 }
 
 int32
-s32_from_str8(StringView string, uint32 radix)
+s32_from_str8(StringView str, uint32 radix)
 {
-  int64 x64 = s64_from_str8(string, radix);
+  int64 x64 = s64_from_str8(str, radix);
   int32 x32 = safe_cast_s32(x64);
   return x32;
 }
 
 B32
-try_u64_from_str8_c_rules(StringView string, uint64* x){
+try_u64_from_str8_c_rules(StringView str, uint64* x){
   B32 is_integer = 0;
-  if (str8_is_integer(string, 10)){
+  if (str8_is_integer(str, 10)){
     is_integer = 1;
-    *x = u64_from_str8(string, 10);
+    *x = u64_from_str8(str, 10);
   }
   else{
-    StringView hex_string = str8_skip(string, 2);
-    if (str8_match(str8_prefix(string, 2), ("0x"), 0) &&
+    StringView hex_string = str8_skip(str, 2);
+    if (str8_match(str8_prefix(str, 2), ("0x"), 0) &&
         str8_is_integer(hex_string, 0x10)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 0x10);
     }
-    else if (str8_match(str8_prefix(string, 2), ("0b"), 0) &&
+    else if (str8_match(str8_prefix(str, 2), ("0b"), 0) &&
              str8_is_integer(hex_string, 2)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 2);
     }
     else{
-      StringView oct_string = str8_skip(string, 1);
-      if (str8_match(str8_prefix(string, 1), ("0"), 0) &&
+      StringView oct_string = str8_skip(str, 1);
+      if (str8_match(str8_prefix(str, 1), ("0"), 0) &&
           str8_is_integer(hex_string, 010)){
         is_integer = 1;
         *x = u64_from_str8(oct_string, 010);
@@ -545,16 +545,16 @@ try_u64_from_str8_c_rules(StringView string, uint64* x){
 }
 
 B32
-try_s64_from_str8_c_rules(StringView string, int64* x){
+try_s64_from_str8_c_rules(StringView str, int64* x){
   StringView string_tail = {0};
-  int64 sign = sign_from_str8(string, &string_tail);
+  int64 sign = sign_from_str8(str, &string_tail);
   uint64 x_u64 = 0;
   B32 is_integer = try_u64_from_str8_c_rules(string_tail, &x_u64);
   *x = x_u64*sign;
   return(is_integer);
 }
 
-//- rjf: integer . string
+//- rjf: integer . str
 
 StringView
 str8_from_memory_size(Arena* arena, uint64 size)
@@ -790,19 +790,19 @@ str8_from_s64(Arena* arena, int64 s64, uint32 radix, uint8 min_digits, uint8 dig
 //~ rjf: String <=> Float Conversions
 
 double
-f64_from_str8(StringView string)
+f64_from_str8(StringView str)
 {
   // TODO(rjf): crappy implementation for now that just uses atof.
   double result = 0;
-  if(string.size > 0)
+  if(str.Length > 0)
   {
-    // rjf: find starting pos of numeric string, as well as sign
+    // rjf: find starting pos of numeric str, as well as sign
     double sign = +1.0;
-    if(string.str[0] == '-')
+    if(str[0] == '-')
     {
       sign = -1.0;
     }
-    else if(string.str[0] == '+')
+    else if(str[0] == '+')
     {
       sign = 1.0;
     }
@@ -811,15 +811,15 @@ f64_from_str8(StringView string)
     uint64 num_valid_chars = 0;
     char buffer[64];
     B32 exp = 0;
-    for(uint64 idx = 0; idx < string.size && num_valid_chars < sizeof(buffer)-1; idx += 1)
+    for(uint64 idx = 0; idx < str.Length && num_valid_chars < sizeof(buffer)-1; idx += 1)
     {
-      if(char_is_digit(string.str[idx], 10) || string.str[idx] == '.' || string.str[idx] == 'e' ||
-         (exp && (string.str[idx] == '+' || string.str[idx] == '-')))
+      if(char_is_digit(str[idx], 10) || str[idx] == '.' || str[idx] == 'e' ||
+         (exp && (str[idx] == '+' || str[idx] == '-')))
       {
-        buffer[num_valid_chars] = string.str[idx];
+        buffer[num_valid_chars] = str[idx];
         num_valid_chars += 1;
         exp = 0;
-        exp = (string.str[idx] == 'e');
+        exp = (str[idx] == 'e');
       }
     }
     
@@ -839,16 +839,16 @@ String8Node*
 str8_list_push_node(String8List* list, String8Node* node){
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
-  list.total_size += node.string.size;
+  list.total_size += node.str.Length;
   return(node);
 }
 
 String8Node*
-str8_list_push_node_set_string(String8List* list, String8Node* node, StringView string){
+str8_list_push_node_set_string(String8List* list, String8Node* node, StringView str){
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
-  list.total_size += string.size;
-  node.string = string;
+  list.total_size += str.Length;
+  node.str = str;
   return(node);
 }
 
@@ -856,30 +856,30 @@ String8Node*
 str8_list_push_node_front(String8List* list, String8Node* node){
   SLLQueuePushFront(list.first, list.last, node);
   list.node_count += 1;
-  list.total_size += node.string.size;
+  list.total_size += node.str.Length;
   return(node);
 }
 
 String8Node*
-str8_list_push_node_front_set_string(String8List* list, String8Node* node, StringView string){
+str8_list_push_node_front_set_string(String8List* list, String8Node* node, StringView str){
   SLLQueuePushFront(list.first, list.last, node);
   list.node_count += 1;
-  list.total_size += string.size;
-  node.string = string;
+  list.total_size += str.Length;
+  node.str = str;
   return(node);
 }
 
 String8Node*
-str8_list_push(Arena* arena, String8List* list, StringView string){
+str8_list_push(Arena* arena, String8List* list, StringView str){
   String8Node* node = push_array_no_zero(arena, String8Node, 1);
-  str8_list_push_node_set_string(list, node, string);
+  str8_list_push_node_set_string(list, node, str);
   return(node);
 }
 
 String8Node*
-str8_list_push_front(Arena* arena, String8List* list, StringView string){
+str8_list_push_front(Arena* arena, String8List* list, StringView str){
   String8Node* node = push_array_no_zero(arena, String8Node, 1);
-  str8_list_push_node_front_set_string(list, node, string);
+  str8_list_push_node_front_set_string(list, node, str);
   return(node);
 }
 
@@ -917,8 +917,8 @@ str8_list_push_aligner(Arena* arena, String8List* list, uint64 min, uint64 align
   SLLQueuePush(list.first, list.last, node);
   list.node_count += 1;
   list.total_size = new_size;
-  node.string.str = (uint8*)zeroes_buffer;
-  node.string.size = increase_size;
+  node.str.Ptr = (uint8*)zeroes_buffer;
+  node.str.Length = increase_size;
   return(node);
 }
 
@@ -926,8 +926,8 @@ String8Node*
 str8_list_pushf(Arena* arena, String8List* list, char* fmt, ...){
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(arena, fmt, args);
-  String8Node* result = str8_list_push(arena, list, string);
+  StringView str = push_str8fv(arena, fmt, args);
+  String8Node* result = str8_list_push(arena, list, str);
   va_end(args);
   return(result);
 }
@@ -936,8 +936,8 @@ String8Node*
 str8_list_push_frontf(Arena* arena, String8List* list, char* fmt, ...){
   va_list args;
   va_start(args, fmt);
-  StringView string = push_str8fv(arena, fmt, args);
-  String8Node* result = str8_list_push_front(arena, list, string);
+  StringView str = push_str8fv(arena, fmt, args);
+  String8Node* result = str8_list_push_front(arena, list, str);
   va_end(args);
   return(result);
 }
@@ -949,20 +949,20 @@ str8_list_copy(Arena* arena, String8List* list){
        node != 0;
        node = node.next){
     String8Node* new_node = push_array_no_zero(arena, String8Node, 1);
-    StringView new_string = push_str8_copy(arena, node.string);
+    StringView new_string = push_str8_copy(arena, node.str);
     str8_list_push_node_set_string(&result, new_node, new_string);
   }
   return(result);
 }
 
 String8List
-str8_split(Arena* arena, StringView string, uint8* split_chars, uint64 split_char_count, StringSplitFlags flags){
+str8_split(Arena* arena, StringView str, uint8* split_chars, uint64 split_char_count, StringSplitFlags flags){
   String8List list = {0};
   
   B32 keep_empties = (flags & StringSplitFlag_KeepEmpties);
   
-  uint8* ptr = string.str;
-  uint8* opl = string.str + string.size;
+  uint8* ptr = str.Ptr;
+  uint8* opl = str.Ptr + str.Length;
   for (;ptr < opl;){
     uint8* first = ptr;
     for (;ptr < opl; ptr += 1){
@@ -979,9 +979,9 @@ str8_split(Arena* arena, StringView string, uint8* split_chars, uint64 split_cha
       }
     }
     
-    StringView string = str8_range(first, ptr);
-    if (keep_empties || string.size > 0){
-      str8_list_push(arena, &list, string);
+    StringView str = str8_range(first, ptr);
+    if (keep_empties || str.Length > 0){
+      str8_list_push(arena, &list, str);
     }
     ptr += 1;
   }
@@ -990,8 +990,8 @@ str8_split(Arena* arena, StringView string, uint8* split_chars, uint64 split_cha
 }
 
 String8List
-str8_split_by_string_chars(Arena* arena, StringView string, StringView split_chars, StringSplitFlags flags){
-  String8List list = str8_split(arena, string, split_chars.str, split_chars.size, flags);
+str8_split_by_string_chars(Arena* arena, StringView str, StringView split_chars, StringSplitFlags flags){
+  String8List list = str8_split(arena, str, split_chars.Ptr, split_chars.size, flags);
   return list;
 }
 
@@ -999,7 +999,7 @@ String8List
 str8_list_split_by_string_chars(Arena* arena, String8List list, StringView split_chars, StringSplitFlags flags){
   String8List result = {0};
   for (String8Node* node = list.first; node != 0; node = node.next){
-    String8List split = str8_split_by_string_chars(arena, node.string, split_chars, flags);
+    String8List split = str8_split_by_string_chars(arena, node.str, split_chars, flags);
     str8_list_concat_in_place(&result, &split);
   }
   return result;
@@ -1019,21 +1019,21 @@ str8_list_join(Arena* arena, String8List* list, StringJoin* optional_params){
   
   StringView result;
   result.size = join.pre.size + join.post.size + sep_count*join.sep.size + list.total_size;
-  uint8* ptr = result.str = push_array_no_zero(arena, uint8, result.size + 1);
+  uint8* ptr = result.Ptr = push_array_no_zero(arena, uint8, result.size + 1);
   
-  MemoryCopy(ptr, join.pre.str, join.pre.size);
+  MemoryCopy(ptr, join.pre.Ptr, join.pre.size);
   ptr += join.pre.size;
   for (String8Node* node = list.first;
        node != 0;
        node = node.next){
-    MemoryCopy(ptr, node.string.str, node.string.size);
-    ptr += node.string.size;
+    MemoryCopy(ptr, node.str.Ptr, node.str.Length);
+    ptr += node.str.Length;
     if (node.next != 0){
-      MemoryCopy(ptr, join.sep.str, join.sep.size);
+      MemoryCopy(ptr, join.sep.Ptr, join.sep.size);
       ptr += join.sep.size;
     }
   }
-  MemoryCopy(ptr, join.post.str, join.post.size);
+  MemoryCopy(ptr, join.post.Ptr, join.post.size);
   ptr += join.post.size;
   
   *ptr = 0;
@@ -1064,7 +1064,7 @@ str8_array_from_list(Arena* arena, String8List* list)
   uint64 idx = 0;
   for(String8Node* n = list.first; n != 0; n = n.next, idx += 1)
   {
-    array.v[idx] = n.string;
+    array.v[idx] = n.str;
   }
   return array;
 }
@@ -1082,51 +1082,51 @@ str8_array_reserve(Arena* arena, uint64 count)
 //~ rjf: String Path Helpers
 
 StringView
-str8_chop_last_slash(StringView string){
-  if (string.size > 0){
-    uint8* ptr = string.str + string.size - 1;
-    for (;ptr >= string.str; ptr -= 1){
+str8_chop_last_slash(StringView str){
+  if (str.Length > 0){
+    uint8* ptr = str.Ptr + str.Length - 1;
+    for (;ptr >= str.Ptr; ptr -= 1){
       if (*ptr == '/' || *ptr == '\\'){
         break;
       }
     }
-    if (ptr >= string.str){
-      string.size = (uint64)(ptr - string.str);
+    if (ptr >= str.Ptr){
+      str.Length = (uint64)(ptr - str.Ptr);
     }
     else{
-      string.size = 0;
+      str.Length = 0;
     }
   }
-  return(string);
+  return(str);
 }
 
 StringView
-str8_skip_last_slash(StringView string){
-  if (string.size > 0){
-    uint8* ptr = string.str + string.size - 1;
-    for (;ptr >= string.str; ptr -= 1){
+str8_skip_last_slash(StringView str){
+  if (str.Length > 0){
+    uint8* ptr = str.Ptr + str.Length - 1;
+    for (;ptr >= str.Ptr; ptr -= 1){
       if (*ptr == '/' || *ptr == '\\'){
         break;
       }
     }
-    if (ptr >= string.str){
+    if (ptr >= str.Ptr){
       ptr += 1;
-      string.size = (uint64)(string.str + string.size - ptr);
-      string.str = ptr;
+      str.Length = (uint64)(str.Ptr + str.Length - ptr);
+      str.Ptr = ptr;
     }
   }
-  return(string);
+  return(str);
 }
 
 StringView
-str8_chop_last_dot(StringView string)
+str8_chop_last_dot(StringView str)
 {
-  StringView result = string;
-  uint64 p = string.size;
+  StringView result = str;
+  uint64 p = str.Length;
   for (;p > 0;){
     p -= 1;
-    if (string.str[p] == '.'){
-      result = str8_prefix(string, p);
+    if (str[p] == '.'){
+      result = str8_prefix(str, p);
       break;
     }
   }
@@ -1134,13 +1134,13 @@ str8_chop_last_dot(StringView string)
 }
 
 StringView
-str8_skip_last_dot(StringView string){
-  StringView result = string;
-  uint64 p = string.size;
+str8_skip_last_dot(StringView str){
+  StringView result = str;
+  uint64 p = str.Length;
   for (;p > 0;){
     p -= 1;
-    if (string.str[p] == '.'){
-      result = str8_skip(string, p + 1);
+    if (str[p] == '.'){
+      result = str8_skip(str, p + 1);
       break;
     }
   }
@@ -1148,16 +1148,16 @@ str8_skip_last_dot(StringView string){
 }
 
 PathStyle
-path_style_from_str8(StringView string){
+path_style_from_str8(StringView str){
   PathStyle result = PathStyle_Relative;
-  if (string.size >= 1 && string.str[0] == '/'){
+  if (str.Length >= 1 && str[0] == '/'){
     result = PathStyle_UnixAbsolute;
   }
-  else if (string.size >= 2 &&
-           string[0].IsLetter &&
-           string.str[1] == ':'){
-    if (string.size == 2 ||
-        char_is_slash(string.str[2])){
+  else if (str.Length >= 2 &&
+           str[0].IsLetter &&
+           str[1] == ':'){
+    if (str.Length == 2 ||
+        char_is_slash(str[2])){
       result = PathStyle_WindowsAbsolute;
     }
   }
@@ -1165,8 +1165,8 @@ path_style_from_str8(StringView string){
 }
 
 String8List
-str8_split_path(Arena* arena, StringView string){
-  String8List result = str8_split(arena, string, (uint8*)"/\\", 2, 0);
+str8_split_path(Arena* arena, StringView str){
+  String8List result = str8_split(arena, str, (uint8*)"/\\", 2, 0);
   return(result);
 }
 
@@ -1189,10 +1189,10 @@ str8_path_list_resolve_dots_in_place(String8List* path, PathStyle style){
     if (node == first && style == PathStyle_WindowsAbsolute){
       goto save_without_stack;
     }
-    if (node.string.size == 1 && node.string.str[0] == '.'){
+    if (node.str.Length == 1 && node.str[0] == '.'){
       goto do_nothing;
     }
-    if (node.string.size == 2 && node.string.str[0] == '.' && node.string.str[1] == '.'){
+    if (node.str.Length == 2 && node.str[0] == '.' && node.str[1] == '.'){
       if (stack != 0){
         goto eliminate_stack_top;
       }
@@ -1231,7 +1231,7 @@ str8_path_list_resolve_dots_in_place(String8List* path, PathStyle style){
     eliminate_stack_top:
     {
       path.node_count -= 1;
-      path.total_size -= stack.node.string.size;
+      path.total_size -= stack.node.str.Length;
       
       SLLStackPop(stack);
       
@@ -1272,7 +1272,7 @@ str8_path_list_join_by_style(Arena* arena, String8List* path, PathStyle style){
 }
 
 String8TxtPtPair
-str8_txt_pt_pair_from_string(StringView string)
+str8_txt_pt_pair_from_string(StringView str)
 {
   String8TxtPtPair pair = {0};
   {
@@ -1281,19 +1281,19 @@ str8_txt_pt_pair_from_string(StringView string)
     StringView col_part = {0};
     
     // rjf: grab file part
-    for(uint64 idx = 0; idx <= string.size; idx += 1)
+    for(uint64 idx = 0; idx <= str.Length; idx += 1)
     {
-      uint8 byte = (idx < string.size) ? (string.str[idx]) : 0;
-      uint8 next_byte = ((idx+1 < string.size) ? (string.str[idx+1]) : 0);
+      uint8 byte = (idx < str.Length) ? (str[idx]) : 0;
+      uint8 next_byte = ((idx+1 < str.Length) ? (str[idx+1]) : 0);
       if(byte == ':' && next_byte != '/' && next_byte != '\\')
       {
-        file_part = str8_prefix(string, idx);
-        line_part = str8_skip(string, idx+1);
+        file_part = str8_prefix(str, idx);
+        line_part = str8_skip(str, idx+1);
         break;
       }
       else if(byte == 0)
       {
-        file_part = string;
+        file_part = str;
         break;
       }
     }
@@ -1315,7 +1315,7 @@ str8_txt_pt_pair_from_string(StringView string)
     try_u64_from_str8_c_rules(col_part, &column);
     
     // rjf: fill
-    pair.string = file_part;
+    pair.str = file_part;
     pair.pt = txt_pt((int64)line, (int64)column);
     if(pair.pt.line == 0) { pair.pt.line = 1; }
     if(pair.pt.column == 0) { pair.pt.column = 1; }
@@ -1468,7 +1468,7 @@ str8_from_16(Arena* arena, Span<char16> in)
   {
     uint64 cap = in.size*3;
     uint8* str = push_array_no_zero(arena, uint8, cap + 1);
-    uint16* ptr = in.str;
+    uint16* ptr = in.Ptr;
     uint16* opl = ptr + in.size;
     uint64 size = 0;
     UnicodeDecode consume;
@@ -1492,7 +1492,7 @@ str16_from_8(Arena* arena, StringView in)
   {
     uint64 cap = in.size*2;
     uint16* str = push_array_no_zero(arena, uint16, cap + 1);
-    uint8* ptr = in.str;
+    uint8* ptr = in.Ptr;
     uint8* opl = ptr + in.size;
     uint64 size = 0;
     UnicodeDecode consume;
@@ -1516,7 +1516,7 @@ str8_from_32(Arena* arena, Span<char32> in)
   {
     uint64 cap = in.size*4;
     uint8* str = push_array_no_zero(arena, uint8, cap + 1);
-    uint32* ptr = in.str;
+    uint32* ptr = in.Ptr;
     uint32* opl = ptr + in.size;
     uint64 size = 0;
     for(;ptr < opl; ptr += 1)
@@ -1538,7 +1538,7 @@ str32_from_8(Arena* arena, StringView in)
   {
     uint64 cap = in.size;
     uint32* str = push_array_no_zero(arena, uint32, cap + 1);
-    uint8* ptr = in.str;
+    uint8* ptr = in.Ptr;
     uint8* opl = ptr + in.size;
     uint64 size = 0;
     UnicodeDecode consume;
@@ -1560,7 +1560,7 @@ str32_from_8(Arena* arena, StringView in)
 
 read_only static struct
 {
-  StringView         string;
+  StringView         str;
   OperatingSystem os;
 } g_os_enum_map[] =
 {
@@ -1572,11 +1572,11 @@ read_only static struct
 StaticAssert(ArrayCount(g_os_enum_map) == OperatingSystem_COUNT, g_os_enum_map_count_check);
 
 OperatingSystem
-operating_system_from_string(StringView string)
+operating_system_from_string(StringView str)
 {
   for(uint64 i = 0; i < ArrayCount(g_os_enum_map); ++i)
   {
-    if(str8_match(g_os_enum_map[i].string, string, StringMatchFlag_CaseInsensitive))
+    if(str8_match(g_os_enum_map[i].str, str, StringMatchFlag_CaseInsensitive))
     {
       return g_os_enum_map[i].os;
     }
@@ -1618,10 +1618,10 @@ string_from_side(Side side){
 StringView
 string_from_operating_system(OperatingSystem os)
 {
-  StringView result = g_os_enum_map[OperatingSystem_Null].string;
+  StringView result = g_os_enum_map[OperatingSystem_Null].str;
   if(os < ArrayCount(g_os_enum_map))
   {
-    result = g_os_enum_map[os].string;
+    result = g_os_enum_map[os].str;
   }
   return result;
 }
@@ -1688,7 +1688,7 @@ string_from_month(Month month){
 
 StringView
 push_date_time_string(Arena* arena, DateTime* date_time){
-  char* mon_str = (char*)string_from_month(date_time.month).str;
+  char* mon_str = (char*)string_from_month(date_time.month).Ptr;
   uint32 adjusted_hour = date_time.hour%12;
   if (adjusted_hour == 0){
     adjusted_hour = 12;
@@ -1705,7 +1705,7 @@ push_date_time_string(Arena* arena, DateTime* date_time){
 
 StringView
 push_file_name_date_time_string(Arena* arena, DateTime* date_time){
-  char* mon_str = (char*)string_from_month(date_time.month).str;
+  char* mon_str = (char*)string_from_month(date_time.month).Ptr;
   StringView result = push_str8f(arena, "%d-%s-%0d--%02d-%02d-%02d",
                               date_time.year, mon_str, date_time.day,
                               date_time.hour, date_time.min, date_time.sec);
@@ -1755,18 +1755,18 @@ string_from_guid(Arena* arena, Guid guid)
 }
 
 B32
-try_guid_from_string(StringView string, Guid* guid_out)
+try_guid_from_string(StringView str, Guid* guid_out)
 {
   Temp scratch = scratch_begin(0,0);
   B32 is_parsed = 0;
-  String8List list = str8_split_by_string_chars(scratch.arena, string, ("-"), StringSplitFlag_KeepEmpties);
+  String8List list = str8_split_by_string_chars(scratch.arena, str, ("-"), StringSplitFlag_KeepEmpties);
   if(list.node_count == 5)
   {
-    StringView data1_str    = list.first.string;
-    StringView data2_str    = list.first.next.string;
-    StringView data3_str    = list.first.next.next.string;
-    StringView data4_hi_str = list.first.next.next.next.string;
-    StringView data4_lo_str = list.first.next.next.next.next.string;
+    StringView data1_str    = list.first.str;
+    StringView data2_str    = list.first.next.str;
+    StringView data3_str    = list.first.next.next.str;
+    StringView data4_hi_str = list.first.next.next.next.str;
+    StringView data4_lo_str = list.first.next.next.next.next.str;
     if(str8_is_integer(data1_str, 16) && 
         str8_is_integer(data2_str, 16) &&
         str8_is_integer(data3_str, 16) &&
@@ -1798,10 +1798,10 @@ try_guid_from_string(StringView string, Guid* guid_out)
 }
 
 Guid
-guid_from_string(StringView string)
+guid_from_string(StringView str)
 {
   Guid guid = {0};
-  try_guid_from_string(string, &guid);
+  try_guid_from_string(str, &guid);
   return guid;
 }
 
@@ -1809,7 +1809,7 @@ guid_from_string(StringView string)
 //~ rjf: Basic Text Indentation
 
 StringView
-indented_from_string(Arena* arena, StringView string)
+indented_from_string(Arena* arena, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   read_only static uint8 indentation_bytes[] = "                                                                                                                                ";
@@ -1817,9 +1817,9 @@ indented_from_string(Arena* arena, StringView string)
   int64 depth = 0;
   int64 next_depth = 0;
   uint64 line_begin_off = 0;
-  for(uint64 off = 0; off <= string.size; off += 1)
+  for(uint64 off = 0; off <= str.Length; off += 1)
   {
-    uint8 byte = off<string.size ? string.str[off] : 0;
+    uint8 byte = off<str.Length ? str[off] : 0;
     switch(byte)
     {
       default:{}break;
@@ -1828,12 +1828,12 @@ indented_from_string(Arena* arena, StringView string)
       case '\n':
       case 0:
       {
-        StringView line = str8_skip_chop_whitespace(str8_substr(string, r1u64(line_begin_off, off)));
+        StringView line = str8_skip_chop_whitespace(str8_substr(str, r1u64(line_begin_off, off)));
         if(line.size != 0)
         {
           str8_list_pushf(scratch.arena, &indented_strings, "%.*s%S\n", (int)depth*2, indentation_bytes, line);
         }
-        if(line.size == 0 && indented_strings.node_count != 0 && off < string.size)
+        if(line.size == 0 && indented_strings.node_count != 0 && off < str.Length)
         {
           str8_list_pushf(scratch.arena, &indented_strings, "\n");
         }
@@ -1851,14 +1851,14 @@ indented_from_string(Arena* arena, StringView string)
 //~ rjf: Text Escaping
 
 StringView
-escaped_from_raw_str8(Arena* arena, StringView string)
+escaped_from_raw_str8(Arena* arena, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
   uint64 start_split_idx = 0;
-  for(uint64 idx = 0; idx <= string.size; idx += 1)
+  for(uint64 idx = 0; idx <= str.Length; idx += 1)
   {
-    uint8 byte = (idx < string.size) ? string.str[idx] : 0;
+    uint8 byte = (idx < str.Length) ? str[idx] : 0;
     B32 split = 1;
     StringView separator_replace = {0};
     switch(byte)
@@ -1878,7 +1878,7 @@ escaped_from_raw_str8(Arena* arena, StringView string)
     }
     if(split)
     {
-      StringView substr = str8_substr(string, r1u64(start_split_idx, idx));
+      StringView substr = str8_substr(str, r1u64(start_split_idx, idx));
       start_split_idx = idx+1;
       str8_list_push(scratch.arena, &parts, substr);
       if(separator_replace.size != 0)
@@ -1894,25 +1894,25 @@ escaped_from_raw_str8(Arena* arena, StringView string)
 }
 
 StringView
-raw_from_escaped_str8(Arena* arena, StringView string)
+raw_from_escaped_str8(Arena* arena, StringView str)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
   uint64 start = 0;
-  for(uint64 idx = 0; idx <= string.size; idx += 1)
+  for(uint64 idx = 0; idx <= str.Length; idx += 1)
   {
-    if(idx == string.size || string.str[idx] == '\\' || string.str[idx] == '\r')
+    if(idx == str.Length || str[idx] == '\\' || str[idx] == '\r')
     {
-      StringView str = str8_substr(string, r1u64(start, idx));
-      if(str.size != 0)
+      StringView str = str8_substr(str, r1u64(start, idx));
+      if(str.Length != 0)
       {
         str8_list_push(scratch.arena, &strs, str);
       }
       start = idx+1;
     }
-    if(idx < string.size && string.str[idx] == '\\')
+    if(idx < str.Length && str[idx] == '\\')
     {
-      uint8 next_char = string.str[idx+1];
+      uint8 next_char = str[idx+1];
       uint8 replace_byte = 0;
       switch(next_char)
       {
@@ -1945,24 +1945,24 @@ raw_from_escaped_str8(Arena* arena, StringView string)
 //~ rjf: Text Wrapping
 
 String8List
-wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent)
+wrapped_lines_from_string(Arena* arena, StringView str, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent)
 {
   String8List list = {0};
   Rng1U64 line_range = r1u64(0, 0);
   uint64 wrapped_indent_level = 0;
   static char* spaces = "                                                                ";
-  for (uint64 idx = 0; idx <= string.size; idx += 1){
-    uint8 chr = idx < string.size ? string.str[idx] : 0;
+  for (uint64 idx = 0; idx <= str.Length; idx += 1){
+    uint8 chr = idx < str.Length ? str[idx] : 0;
     if (chr == '\n'){
       Rng1U64 candidate_line_range = line_range;
       candidate_line_range.max = idx;
-      // NOTE(nick): when wrapping is interrupted with \n we emit a string without including \n
+      // NOTE(nick): when wrapping is interrupted with \n we emit a str without including \n
       // because later tool_fprint_list inserts separator after each node
       // except for last node, so don't strip last \n.
-      if (idx + 1 == string.size){
+      if (idx + 1 == str.Length){
         candidate_line_range.max += 1;
       }
-      StringView substr = str8_substr(string, candidate_line_range);
+      StringView substr = str8_substr(str, candidate_line_range);
       str8_list_push(arena, &list, substr);
       line_range = r1u64(idx+1,idx+1);
     }
@@ -1970,13 +1970,13 @@ wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max
       if (char_is_space(chr) || chr == 0){
       Rng1U64 candidate_line_range = line_range;
       candidate_line_range.max = idx;
-      StringView substr = str8_substr(string, candidate_line_range);
+      StringView substr = str8_substr(str, candidate_line_range);
       uint64 width_this_line = max_width-wrapped_indent_level;
       if (list.node_count == 0){
         width_this_line = first_line_max_width;
       }
       if (substr.size > width_this_line){
-        StringView line = str8_substr(string, line_range);
+        StringView line = str8_substr(str, line_range);
         if (wrapped_indent_level > 0){
           line = push_str8f(arena, "%.*s%S", wrapped_indent_level, spaces, line);
         }
@@ -1989,8 +1989,8 @@ wrapped_lines_from_string(Arena* arena, StringView string, uint64 first_line_max
       }
     }
   }
-  if (line_range.min < string.size && line_range.max > line_range.min){
-    StringView line = str8_substr(string, line_range);
+  if (line_range.min < str.Length && line_range.max > line_range.min){
+    StringView line = str8_substr(str, line_range);
     if (wrapped_indent_level > 0){
       line = push_str8f(arena, "%.*s%S", wrapped_indent_level, spaces, line);
     }
@@ -2046,7 +2046,7 @@ fuzzy_match_find(Arena* arena, StringView needle, StringView haystack)
     uint64 find_pos = 0;
     for(;find_pos < haystack.size;)
     {
-      find_pos = str8_find_needle(haystack, find_pos, needle_n.string, StringMatchFlag_CaseInsensitive);
+      find_pos = str8_find_needle(haystack, find_pos, needle_n.str, StringMatchFlag_CaseInsensitive);
       B32 is_in_gathered_ranges = 0;
       for(FuzzyMatchRangeNode* n = result.first; n != 0; n = n.next)
       {
@@ -2064,7 +2064,7 @@ fuzzy_match_find(Arena* arena, StringView needle, StringView haystack)
     }
     if(find_pos < haystack.size)
     {
-      Rng1U64 range = r1u64(find_pos, find_pos+needle_n.string.size);
+      Rng1U64 range = r1u64(find_pos, find_pos+needle_n.str.Length);
       FuzzyMatchRangeNode* n = push_array(arena, FuzzyMatchRangeNode, 1);
       n.range = range;
       SLLQueuePush(result.first, result.last, n);
@@ -2098,7 +2098,7 @@ fuzzy_match_range_list_copy(Arena* arena, FuzzyMatchRangeList* src)
 void
 str8_serial_begin(Arena* arena, String8List* srl){
   String8Node* node = push_array(arena, String8Node, 1);
-  node.string.str = push_array_no_zero(arena, uint8, 0);
+  node.str.Ptr = push_array_no_zero(arena, uint8, 0);
   srl.first = srl.last = node;
   srl.node_count = 1;
   srl.total_size = 0;
@@ -2119,8 +2119,8 @@ str8_serial_write_to_dst(String8List* srl, void* out){
   for (String8Node* node = srl.first;
        node != 0;
        node = node.next){
-    uint64 size = node.string.size;
-    MemoryCopy(ptr, node.string.str, size);
+    uint64 size = node.str.Length;
+    MemoryCopy(ptr, node.str.Ptr, size);
     ptr += size;
   }
 }
@@ -2137,9 +2137,9 @@ str8_serial_push_align(Arena* arena, String8List* srl, uint64 align){
   {
     uint8* buf = push_array(arena, uint8, size);
     
-    StringView* str = &srl.last.string;
-    if (str.str + str.size == buf){
-      srl.last.string.size += size;
+    StringView* str = &srl.last.str;
+    if (str.Ptr + str.Length == buf){
+      srl.last.str.Length += size;
       srl.total_size += size;
     }
     else{
@@ -2156,9 +2156,9 @@ str8_serial_push_size(Arena* arena, String8List* srl, uint64 size)
   if(size != 0)
   {
     uint8* buf = push_array_no_zero(arena, uint8, size);
-    StringView* str = &srl.last.string;
-    if (str.str + str.size == buf){
-      srl.last.string.size += size;
+    StringView* str = &srl.last.str;
+    if (str.Ptr + str.Length == buf){
+      srl.last.str.Length += size;
       srl.total_size += size;
     }
     else{
@@ -2184,7 +2184,7 @@ str8_serial_push_data_list(Arena* arena, String8List* srl, String8Node* first){
   for (String8Node* node = first;
        node != 0;
        node = node.next){
-    str8_serial_push_data(arena, srl, node.string.str, node.string.size);
+    str8_serial_push_data(arena, srl, node.str.Ptr, node.str.Length);
   }
 }
 
@@ -2192,9 +2192,9 @@ void
 str8_serial_push_u64(Arena* arena, String8List* srl, uint64 x){
   uint8* buf = push_array_no_zero(arena, uint8, 8);
   MemoryCopy(buf, &x, 8);
-  StringView* str = &srl.last.string;
-  if (str.str + str.size == buf){
-    srl.last.string.size += 8;
+  StringView* str = &srl.last.str;
+  if (str.Ptr + str.Length == buf){
+    srl.last.str.Length += 8;
     srl.total_size += 8;
   }
   else{
@@ -2206,9 +2206,9 @@ void
 str8_serial_push_u32(Arena* arena, String8List* srl, uint32 x){
   uint8* buf = push_array_no_zero(arena, uint8, 4);
   MemoryCopy(buf, &x, 4);
-  StringView* str = &srl.last.string;
-  if (str.str + str.size == buf){
-    srl.last.string.size += 4;
+  StringView* str = &srl.last.str;
+  if (str.Ptr + str.Length == buf){
+    srl.last.str.Length += 4;
     srl.total_size += 4;
   }
   else{
@@ -2228,38 +2228,38 @@ str8_serial_push_u8(Arena* arena, String8List* srl, uint8 x){
 
 void
 str8_serial_push_cstr(Arena* arena, String8List* srl, StringView str){
-  str8_serial_push_data(arena, srl, str.str, str.size);
+  str8_serial_push_data(arena, srl, str.Ptr, str.Length);
   str8_serial_push_u8(arena, srl, 0);
 }
 
 void
 str8_serial_push_string(Arena* arena, String8List* srl, StringView str){
-  str8_serial_push_data(arena, srl, str.str, str.size);
+  str8_serial_push_data(arena, srl, str.Ptr, str.Length);
 }
 
 ////////////////////////////////
 //~ rjf: Deserialization Helpers
 
 uint64
-str8_deserial_read(StringView string, uint64 off, void* read_dst, uint64 read_size, uint64 granularity)
+str8_deserial_read(StringView str, uint64 off, void* read_dst, uint64 read_size, uint64 granularity)
 {
-  uint64 bytes_left = string.size-Min(off, string.size);
+  uint64 bytes_left = str.Length-Min(off, str.Length);
   uint64 actually_readable_size = Min(bytes_left, read_size);
   uint64 legally_readable_size = actually_readable_size - actually_readable_size%granularity;
   if(legally_readable_size > 0)
   {
-    MemoryCopy(read_dst, string.str+off, legally_readable_size);
+    MemoryCopy(read_dst, str.Ptr+off, legally_readable_size);
   }
   return legally_readable_size;
 }
 
 uint64
-str8_deserial_find_first_match(StringView string, uint64 off, uint16 scan_val)
+str8_deserial_find_first_match(StringView str, uint64 off, uint16 scan_val)
 {
   uint64 cursor = off;
   for (;;) {
     uint16 val = 0;
-    str8_deserial_read_struct(string, cursor, &val);
+    str8_deserial_read_struct(str, cursor, &val);
     if (val == scan_val) {
       break;
     }
@@ -2269,22 +2269,22 @@ str8_deserial_find_first_match(StringView string, uint64 off, uint16 scan_val)
 }
 
 void *
-str8_deserial_get_raw_ptr(StringView string, uint64 off, uint64 size)
+str8_deserial_get_raw_ptr(StringView str, uint64 off, uint64 size)
 {
   void* raw_ptr = 0;
-  if (off + size <= string.size) {
-    raw_ptr = string.str + off;
+  if (off + size <= str.Length) {
+    raw_ptr = str.Ptr + off;
   }
   return raw_ptr;
 }
 
 uint64
-str8_deserial_read_cstr(StringView string, uint64 off, StringView* cstr_out)
+str8_deserial_read_cstr(StringView str, uint64 off, StringView* cstr_out)
 {
   uint64 cstr_size = 0;
-  if (off < string.size) {
-    uint8* ptr = string.str + off;
-    uint8* cap = string.str + string.size;
+  if (off < str.Length) {
+    uint8* ptr = str.Ptr + off;
+    uint8* cap = str.Ptr + str.Length;
     *cstr_out = str8_cstring_capped(ptr, cap);
     cstr_size = (cstr_out.size + 1);
   }
@@ -2292,11 +2292,11 @@ str8_deserial_read_cstr(StringView string, uint64 off, StringView* cstr_out)
 }
 
 uint64
-str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, Span<char16>* str_out)
+str8_deserial_read_windows_utf16_string16(StringView str, uint64 off, Span<char16>* str_out)
 {
-  uint64 null_off = str8_deserial_find_first_match(string, off, 0);
+  uint64 null_off = str8_deserial_find_first_match(str, off, 0);
   uint64 size = null_off - off;
-  uint16* str = (uint16 *)str8_deserial_get_raw_ptr(string, off, size);
+  uint16* str = (uint16 *)str8_deserial_get_raw_ptr(str, off, size);
   uint64 count = size / sizeof(*str);
   *str_out = Span<char16>(str, count);
   
@@ -2305,15 +2305,15 @@ str8_deserial_read_windows_utf16_string16(StringView string, uint64 off, Span<ch
 }
 
 uint64
-str8_deserial_read_block(StringView string, uint64 off, uint64 size, StringView* block_out)
+str8_deserial_read_block(StringView str, uint64 off, uint64 size, StringView* block_out)
 {
   Rng1U64 range = rng_1u64(off, off + size);
-  *block_out = str8_substr(string, range);
+  *block_out = str8_substr(str, range);
   return block_out.size;
 }
 
 uint64
-str8_deserial_read_uleb128(StringView string, uint64 off, uint64* value_out)
+str8_deserial_read_uleb128(StringView str, uint64 off, uint64* value_out)
 {
   uint64 value  = 0;
   uint64 shift  = 0;
@@ -2321,7 +2321,7 @@ str8_deserial_read_uleb128(StringView string, uint64 off, uint64* value_out)
   for(;;)
   {
     uint8  byte       = 0;
-    uint64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
+    uint64 bytes_read = str8_deserial_read_struct(str, cursor, &byte);
 
     if(bytes_read != sizeof(byte))
     {
@@ -2348,7 +2348,7 @@ str8_deserial_read_uleb128(StringView string, uint64 off, uint64* value_out)
 }
 
 uint64
-str8_deserial_read_sleb128(StringView string, uint64 off, int64* value_out)
+str8_deserial_read_sleb128(StringView str, uint64 off, int64* value_out)
 {
   uint64 value  = 0;
   uint64 shift  = 0;
@@ -2356,7 +2356,7 @@ str8_deserial_read_sleb128(StringView string, uint64 off, int64* value_out)
   for(;;)
   {
     uint8 byte;
-    uint64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
+    uint64 bytes_read = str8_deserial_read_struct(str, cursor, &byte);
     if(bytes_read != sizeof(byte))
     {
       break;

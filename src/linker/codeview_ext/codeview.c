@@ -10,7 +10,7 @@ hash_from_cv_symbol(CV_Symbol* symbol)
   XXH3_64bits_reset(&hasher);
   XXH3_64bits_update(&hasher, &symbol.kind, sizeof(symbol.kind));
   XXH3_64bits_update(&hasher, &symbol.data.size, sizeof(symbol.data.size));
-  XXH3_64bits_update(&hasher, symbol.data.str, symbol.data.size);
+  XXH3_64bits_update(&hasher, symbol.data.Ptr, symbol.data.size);
   XXH64_hash_t hash = XXH3_64bits_digest(&hasher);
   return hash;
 }
@@ -23,7 +23,7 @@ cv_obj_info_from_symbol(CV_Symbol symbol)
   CV_ObjInfo result; MemoryZeroStruct(&result);
   switch (symbol.kind) {
   case CV_SymKind_OBJNAME: {
-    CV_SymObjName* obj_name = (CV_SymObjName *) symbol.data.str;
+    CV_SymObjName* obj_name = (CV_SymObjName *) symbol.data.Ptr;
     result.sig = obj_name.sig;
     str8_deserial_read_cstr(symbol.data, sizeof(CV_SymObjName), &result.name);
   } break;
@@ -43,18 +43,18 @@ cv_type_server_info_from_leaf(CV_Leaf leaf)
   CV_TypeServerInfo result = {0};
   switch (leaf.kind) {
   case CV_LeafKind_TYPESERVER: {
-    CV_LeafTypeServer* ts   = (CV_LeafTypeServer *) leaf.data.str;
+    CV_LeafTypeServer* ts   = (CV_LeafTypeServer *) leaf.data.Ptr;
 
-    result.name      = str8_cstring_capped_reverse(ts + 1, leaf.data.str + leaf.data.size);
+    result.name      = str8_cstring_capped_reverse(ts + 1, leaf.data.Ptr + leaf.data.size);
     result.sig.data1 = ts.sig;
     result.age       = ts.age;
   } break;
   case CV_LeafKind_TYPESERVER2: {
-    CV_LeafTypeServer2* ts = (CV_LeafTypeServer2 *) leaf.data.str;
+    CV_LeafTypeServer2* ts = (CV_LeafTypeServer2 *) leaf.data.Ptr;
     
     Assert(sizeof(result.sig) == sizeof(ts.sig70));
     MemoryCopy(&result.sig, &ts.sig70, sizeof(ts.sig70));
-    result.name = str8_cstring_capped_reverse(ts + 1, leaf.data.str + leaf.data.size);
+    result.name = str8_cstring_capped_reverse(ts + 1, leaf.data.Ptr + leaf.data.size);
     result.age  = ts.age;
   } break;
   case CV_LeafKind_TYPESERVER_ST: {
@@ -71,7 +71,7 @@ cv_precomp_info_from_leaf(CV_Leaf leaf)
   CV_PrecompInfo result = {0};
   switch (leaf.kind) {
   case CV_LeafKind_PRECOMP: {
-    CV_LeafPreComp* precomp = (CV_LeafPreComp*)leaf.data.str;
+    CV_LeafPreComp* precomp = (CV_LeafPreComp*)leaf.data.Ptr;
     result.start_index = precomp.start_index;
     result.sig         = precomp.sig;
     result.leaf_count  = precomp.count;
@@ -127,7 +127,7 @@ cv_serialize_leaf_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer_s
 
   // write body
   uint8* leaf_data_ptr = buffer + buffer_cursor;
-  MemoryCopy(leaf_data_ptr, data.str, data.size);
+  MemoryCopy(leaf_data_ptr, data.Ptr, data.size);
   buffer_cursor += data.size;
 
   // write pad
@@ -170,7 +170,7 @@ cv_deserial_leaf(StringView raw_data, uint64 off, uint64 align, CV_Leaf* leaf_ou
   // do we have enough bytes to read header?
   Assert(raw_data.size >= sizeof(CV_LeafHeader));
 
-  CV_LeafHeader* header = (CV_LeafHeader*)(raw_data.str + off);
+  CV_LeafHeader* header = (CV_LeafHeader*)(raw_data.Ptr + off);
 
   // leaf size must have enough bytes for the kind enum
   Assert(header.size >= sizeof(CV_LeafKind));
@@ -180,7 +180,7 @@ cv_deserial_leaf(StringView raw_data, uint64 off, uint64 align, CV_Leaf* leaf_ou
 
   // fill out leaf
   leaf_out.kind = header.kind;
-  leaf_out.data = StringView(raw_data.str + sizeof(CV_LeafHeader), header.size - sizeof(CV_LeafKind));
+  leaf_out.data = StringView(raw_data.Ptr + sizeof(CV_LeafHeader), header.size - sizeof(CV_LeafKind));
 
   uint64 leaf_size = AlignPow2(sizeof(CV_LeafHeader) + leaf_out.data.size, align);
   Assert(leaf_size <= raw_data.size);
@@ -228,7 +228,7 @@ cv_serialize_symbol_to_buffer(uint8* buffer, uint64 buffer_cursor, uint64 buffer
 
   // copy symbol data
   uint8* data_dst = (uint8 *)(header + 1);
-  MemoryCopy(data_dst, symbol.data.str, symbol.data.size);
+  MemoryCopy(data_dst, symbol.data.Ptr, symbol.data.size);
 
   // set pad bytes
   uint64 pad_size = AlignPadPow2(symbol.data.size, align);
@@ -329,7 +329,7 @@ cv_make_envblock(Arena* arena, String8List string_list)
   CV_SymEnvBlock envblock = {0};
   str8_serial_push_struct(scratch.arena, &serial, &envblock);
   for (String8Node* n = string_list.first; n != NULL; n = n.next) {
-    str8_serial_push_cstr(scratch.arena, &serial, n.string);
+    str8_serial_push_cstr(scratch.arena, &serial, n.str);
   }
   StringView result = str8_serial_end(arena, &serial);
   scratch_end(scratch);
@@ -349,7 +349,7 @@ cv_make_proc_ref(Arena* arena, CV_ModIndex imod, uint32 stream_offset, StringVie
   ref.imod     = imod + 1; // MSVC adds one
   
   uint8* name_ptr = (uint8*)(ref + 1);
-  MemoryCopy(name_ptr, name.str, name.size);
+  MemoryCopy(name_ptr, name.Ptr, name.size);
   name_ptr[name.size] = '\0';
   
   CV_Symbol symbol;
@@ -372,7 +372,7 @@ cv_make_pub32(Arena* arena, CV_Pub32Flags flags, uint32 off, uint16 isect, Strin
   pub.sec   = isect;
   
   uint8* name_ptr = (uint8*)(pub + 1);
-  MemoryCopy(name_ptr, name.str, name.size);
+  MemoryCopy(name_ptr, name.Ptr, name.size);
   name_ptr[name.size] = '\0';
   
   CV_Symbol symbol;
@@ -444,7 +444,7 @@ cv_parse_debug_s_c13_list(Arena* arena, String8List raw_debug_s)
 {
   CV_DebugS debug_s = {0};
   for (String8Node* node = raw_debug_s.first; node != 0; node = node.next) {
-    cv_parse_debug_s_c13_(arena, &debug_s, node.string);
+    cv_parse_debug_s_c13_(arena, &debug_s, node.str);
   }
   return debug_s;
 }
@@ -454,7 +454,7 @@ cv_parse_debug_s(Arena* arena, StringView raw_debug_s)
 {
   CV_DebugS result; MemoryZeroStruct(&result);
   if (raw_debug_s.size >= sizeof(CV_Signature)) {
-    CV_Signature sig = *(CV_Signature *)raw_debug_s.str;
+    CV_Signature sig = *(CV_Signature *)raw_debug_s.Ptr;
     switch (sig) {
     case CV_Signature_C13: {
       StringView raw_debug_s_past_sig = str8_substr(raw_debug_s, r1u64(sizeof(sig), raw_debug_s.size));
@@ -526,8 +526,8 @@ cv_data_c13_from_debug_s(Arena* arena, CV_DebugS* debug_s, B32 write_sig)
   String8List* line_data = cv_sub_section_ptr_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
   for (String8Node* line_node = line_data.first; line_node != 0; line_node = line_node.next) {
     str8_serial_push_u32(arena, &srl, CV_C13SubSectionKind_Lines);
-    str8_serial_push_u32(arena, &srl, safe_cast_u32(line_node.string.size));
-    str8_serial_push_string(arena, &srl, line_node.string);
+    str8_serial_push_u32(arena, &srl, safe_cast_u32(line_node.str.Length));
+    str8_serial_push_string(arena, &srl, line_node.str);
     str8_serial_push_align(arena, &srl, 4);
   }
   
@@ -565,7 +565,7 @@ cv_string_table_from_debug_s(CV_DebugS debug_s)
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_StringTable);
   StringView string_data = StringView();
   if (data_list.node_count > 0) {
-    string_data = data_list.first.string;
+    string_data = data_list.first.str;
   }
   return string_data;
 }
@@ -576,7 +576,7 @@ cv_file_chksms_from_debug_s(CV_DebugS debug_s)
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_FileChksms);
   StringView file_chksms = StringView();
   if (data_list.node_count > 0) {
-    file_chksms = data_list.first.string;
+    file_chksms = data_list.first.str;
   }
   return file_chksms;
 }
@@ -585,9 +585,9 @@ cv_file_chksms_from_debug_s(CV_DebugS debug_s)
 //~ String Table Deduper
 
 uint64
-cv_string_hash_table_hash(StringView string)
+cv_string_hash_table_hash(StringView str)
 {
-  return hash_from_str8(string);
+  return hash_from_str8(str);
 }
 
 int
@@ -631,7 +631,7 @@ cv_string_hash_table_insert_or_update(CV_StringBucket** buckets, uint64 cap, uin
 
       // another thread took the bucket...
       goto retry;
-    } else if (str8_match(curr_bucket.string, new_bucket.string, 0)) {
+    } else if (str8_match(curr_bucket.str, new_bucket.str, 0)) {
       if (cv_string_bucket_is_before(&curr_bucket, &new_bucket)) {
         // recycle bucket
         result = new_bucket;
@@ -685,7 +685,7 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
 
     uint64 count = 0;
     for (uint64 i = range_n.range.min; i < range_n.range.max; ++i) {
-      uint8 b = string_buffer.str[i];
+      uint8 b = string_buffer[i];
       if (b == '\0') {
         count += 1;
       }
@@ -725,13 +725,13 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
 
     bucket.u.idx0 = debug_s_idx;
     bucket.u.idx1 = string_idx;
-    bucket.string = string_n.string;
+    bucket.str = string_n.str;
 
-    uint64              hash             = cv_string_hash_table_hash(string_n.string);
+    uint64              hash             = cv_string_hash_table_hash(string_n.str);
     CV_StringBucket* insert_or_update = cv_string_hash_table_insert_or_update(task.buckets, task.bucket_cap, hash, bucket);
 
     if (insert_or_update == 0) {
-      total_string_size  += string_n.string.size;
+      total_string_size  += string_n.str.Length;
       total_insert_count += 1;
     }
 
@@ -849,7 +849,7 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context* tp, CV_StringHashTable st
   for (uint64 i = 0, offset_cursor = 0; i < string_count; ++i) {
     CV_StringBucket* s = strings[i];
     s.u.offset = offset_cursor;
-    offset_cursor += s.string.size + 1;
+    offset_cursor += s.str.Length + 1;
   }
   ProfEnd();
 
@@ -858,9 +858,9 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context* tp, CV_StringHashTable st
 }
 
 CV_StringBucket *
-cv_string_hash_table_lookup(CV_StringHashTable ht, StringView string)
+cv_string_hash_table_lookup(CV_StringHashTable ht, StringView str)
 {
-  uint64 hash     = cv_string_hash_table_hash(string);
+  uint64 hash     = cv_string_hash_table_hash(str);
   uint64 best_idx = hash % ht.bucket_cap;
   uint64 idx      = best_idx;
 
@@ -869,7 +869,7 @@ cv_string_hash_table_lookup(CV_StringHashTable ht, StringView string)
       break;
     }
 
-    if (str8_match(ht.buckets[idx].string, string, 0)) {
+    if (str8_match(ht.buckets[idx].str, str, 0)) {
       return ht.buckets[idx];
     }
 
@@ -888,8 +888,8 @@ THREAD_POOL_TASK_FUNC(cv_pack_string_hash_table_task)
   for (uint64 bucket_idx = range.min; bucket_idx < range.max; ++bucket_idx) {
     CV_StringBucket* bucket = task.buckets[bucket_idx];
     if (bucket) {
-      MemoryCopy(task.buffer + bucket.u.offset, bucket.string.str, bucket.string.size);
-      task.buffer[bucket.u.offset + bucket.string.size] = '\0';
+      MemoryCopy(task.buffer + bucket.u.offset, bucket.str.Ptr, bucket.str.Length);
+      task.buffer[bucket.u.offset + bucket.str.Length] = '\0';
     }
   }
   ProfEnd();
@@ -953,7 +953,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode*** buckets, uint64 cap, uint64 
       goto retry;
     } else if ((*curr_bucket).data.kind == (*new_bucket).data.kind &&
                (*curr_bucket).data.data.size == (*new_bucket).data.data.size &&
-               MemoryMatch((*curr_bucket).data.data.str, (*new_bucket).data.data.str, (*new_bucket).data.data.size)) {
+               MemoryMatch((*curr_bucket).data.data.Ptr, (*new_bucket).data.data.Ptr, (*new_bucket).data.data.size)) {
       if (cv_symbol_deduper_is_before(curr_bucket, new_bucket)) {
         result = new_bucket;
 
@@ -1180,7 +1180,7 @@ THREAD_POOL_TASK_FUNC(cv_str8_list_from_debug_t_task)
   CV_Str8ListFromDebugT* task = raw_task;
   for (uint64 leaf_idx = task.ranges[task_id].min; leaf_idx < task.ranges[task_id].max; ++leaf_idx) {
     String8Node* node = &task.nodes[leaf_idx];
-    node.string = cv_debug_t_get_raw_leaf(task.debug_t, leaf_idx);
+    node.str = cv_debug_t_get_raw_leaf(task.debug_t, leaf_idx);
     str8_list_push_node(&task.lists[task_id], node);
   }
 }
@@ -1254,8 +1254,8 @@ cv_symbol_list_from_data_list(Arena* arena, String8List data_list, uint64 align)
 {
   CV_SymbolList symbol_list = {0};
   uint64 cursor = 0;
-  for (String8Node* sect = data_list.first; sect != 0; cursor += sect.string.size, sect = sect.next) {
-    cv_parse_symbol_sub_section(arena, &symbol_list, cursor, sect.string, align);
+  for (String8Node* sect = data_list.first; sect != 0; cursor += sect.str.Length, sect = sect.next) {
+    cv_parse_symbol_sub_section(arena, &symbol_list, cursor, sect.str, align);
   }
   return symbol_list;
 }
@@ -1488,7 +1488,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, uint64 base_offset, uint64 alig
 
       // patch symbol parent
       if (stack) {
-        uint32* parent_off_ptr = (uint32 *)symbol.data.str;
+        uint32* parent_off_ptr = (uint32 *)symbol.data.Ptr;
         *parent_off_ptr = stack.offset;
       }
 
@@ -1507,7 +1507,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, uint64 base_offset, uint64 alig
       SLLStackPush(stack, frame);
     } else if (cv_is_end_symbol(symbol.kind)) {
       // patch symbol end
-      uint32* end_off_ptr = (uint32 *)stack.symbol.data.str + /* skip parent off */ 1;
+      uint32* end_off_ptr = (uint32 *)stack.symbol.data.Ptr + /* skip parent off */ 1;
       *end_off_ptr = cursor;
 
       // recycle frame
@@ -1563,7 +1563,7 @@ cv_c13_parse_checksum_data_list(Arena* arena, String8List checksum_data_list)
 {
   CV_ChecksumList result = {0};
   for (String8Node* node = checksum_data_list.first; node != 0; node = node.next) {
-    cv_parse_checksum_data(arena, &result, node.string);
+    cv_parse_checksum_data(arena, &result, node.str);
   }
   return result;
 }
@@ -1574,7 +1574,7 @@ cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, Stri
   for (CV_ChecksumNode* node = checksum_list.first; node != 0; node = node.next) {
     CV_Checksum*     checksum = &node.data;
     CV_C13Checksum*  header   = checksum.header;
-    StringView          name     = str8_cstring_capped(string_data.str + header.name_off, string_data.str + string_data.size);
+    StringView          name     = str8_cstring_capped(string_data.Ptr + header.name_off, string_data.Ptr + string_data.size);
     CV_StringBucket* bucket   = cv_string_hash_table_lookup(string_ht, name);
 
     uint64 name_off64 = string_data_base_offset + bucket.u.offset;
@@ -1590,7 +1590,7 @@ cv_c13_collect_source_file_names(Arena* arena, CV_ChecksumList checksum_list, St
     CV_Checksum* checksum = &node.data;
     CV_C13Checksum* header = checksum.header;
     Assert(header.name_off < string_data.size);
-    StringView name = str8_cstring_capped(string_data.str + header.name_off, string_data.str + string_data.size);
+    StringView name = str8_cstring_capped(string_data.Ptr + header.name_off, string_data.Ptr + string_data.size);
     str8_list_push(arena, &source_file_name_list, name);
   }
   return source_file_name_list;
@@ -1608,13 +1608,13 @@ cv_c13_lines_from_sub_sections(Arena* arena, StringView c13_data, Rng1U64 ss_ran
   StringView sub_sect_data  = str8_substr(c13_data, ss_range);
 
   for (uint64 cursor = 0; cursor + sizeof(CV_C13SubSecLinesHeader) <= sub_sect_data.size; ) {
-    CV_C13SubSecLinesHeader* hdr = (CV_C13SubSecLinesHeader *)(sub_sect_data.str + cursor);
+    CV_C13SubSecLinesHeader* hdr = (CV_C13SubSecLinesHeader *)(sub_sect_data.Ptr + cursor);
     cursor += sizeof(*hdr);
 
     // read files
     for (; cursor + sizeof(CV_C13File) <= sub_sect_data.size; ) {
       // grab next file header
-      CV_C13File* file = (CV_C13File *)(sub_sect_data.str + cursor);
+      CV_C13File* file = (CV_C13File *)(sub_sect_data.Ptr + cursor);
       cursor += sizeof(CV_C13File);
 
       // parse lines and columns
@@ -1691,13 +1691,13 @@ cv_c13_patch_checksum_offsets_in_line_data_list(String8List line_data, uint64 ch
 {
   for(String8Node* node = line_data.first; node != 0; node = node.next)
   {
-    StringView raw_data = node.string;
+    StringView raw_data = node.str;
     if(raw_data.size < sizeof(CV_C13SubSecLinesHeader))
     {
       Assert(!"unable to patch checksum in line sub seciton header");
       continue;
     }
-    CV_C13File* file_header = (CV_C13File *)(raw_data.str + sizeof(CV_C13SubSecLinesHeader));
+    CV_C13File* file_header = (CV_C13File *)(raw_data.Ptr + sizeof(CV_C13SubSecLinesHeader));
     uint64 rebased_file_off = file_header.file_off + checksum_rebase;
     file_header.file_off = safe_cast_u32(rebased_file_off);
   }
@@ -1716,10 +1716,10 @@ cv_c13_inlinee_lines_from_sub_sections(Arena* arena, String8List raw_inlinee_lin
     uint64 cursor = 0;
 
     CV_C13InlineeLinesSig sig = 0;
-    cursor += str8_deserial_read_struct(raw_data_node.string, cursor, &sig);
+    cursor += str8_deserial_read_struct(raw_data_node.str, cursor, &sig);
 
-    for (; cursor + sizeof(CV_C13InlineeSourceLineHeader) <= raw_data_node.string.size; ) {
-      CV_C13InlineeSourceLineHeader* hdr = (CV_C13InlineeSourceLineHeader *)(raw_data_node.string.str + cursor);
+    for (; cursor + sizeof(CV_C13InlineeSourceLineHeader) <= raw_data_node.str.Length; ) {
+      CV_C13InlineeSourceLineHeader* hdr = (CV_C13InlineeSourceLineHeader *)(raw_data_node.str.Ptr + cursor);
       cursor += sizeof(*hdr);
 
       CV_C13InlineeLinesParsedNode* inlinee_parsed_node = push_array_no_zero(arena, CV_C13InlineeLinesParsedNode, 1);
@@ -1735,13 +1735,13 @@ cv_c13_inlinee_lines_from_sub_sections(Arena* arena, String8List raw_inlinee_lin
       inlinee_parsed.extra_files      = 0;
 
       if (sig == CV_C13InlineeLinesSig_EXTRA_FILES) {
-        if (cursor + sizeof(uint32) <= raw_data_node.string.size) {
-          uint32* extra_file_count_ptr = (uint32 *)(raw_data_node.string.str + cursor);
+        if (cursor + sizeof(uint32) <= raw_data_node.str.Length) {
+          uint32* extra_file_count_ptr = (uint32 *)(raw_data_node.str.Ptr + cursor);
           cursor += sizeof(*extra_file_count_ptr);
 
-          uint32 max_extra_file_count = (raw_data_node.string.size - cursor) / sizeof(uint32);
+          uint32 max_extra_file_count = (raw_data_node.str.Length - cursor) / sizeof(uint32);
           uint32 extra_file_count     = Min(*extra_file_count_ptr, max_extra_file_count);
-          uint32* extra_files         = (uint32 *)(raw_data_node.string.str + cursor);
+          uint32* extra_files         = (uint32 *)(raw_data_node.str.Ptr + cursor);
           cursor += sizeof(*extra_files) * extra_file_count;
 
           inlinee_parsed.extra_file_count = extra_file_count;
@@ -1762,9 +1762,9 @@ cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, uint32 
 {
   for(String8Node* node = frame_data.first; node != 0; node = node.next)
   {
-    StringView raw_data = node.string;
+    StringView raw_data = node.str;
     uint64 count = raw_data.size / sizeof(CV_C13FrameData);
-    CV_C13FrameData* arr = (CV_C13FrameData *)raw_data.str;
+    CV_C13FrameData* arr = (CV_C13FrameData *)raw_data.Ptr;
     CV_C13FrameData* ptr = arr;
     CV_C13FrameData* opl = arr + count;
     for(; ptr < opl; ptr += 1)

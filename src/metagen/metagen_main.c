@@ -86,7 +86,7 @@ entry_point(CmdLine* cmdline)
   {
     for(String8Node* n = file_paths.first; n != 0; n = n.next)
     {
-      StringView file_path = n.string;
+      StringView file_path = n.str;
       StringView file_ext = str8_skip_last_dot(file_path);
       if(str8_match(file_ext, ("mdesk"), 0))
       {
@@ -106,7 +106,7 @@ entry_point(CmdLine* cmdline)
             case MD_MsgKind_FatalError:  {msg_kind_string = ("fatal error");}break;
           }
           StringView location = push_str8f(mg_arena, "%S:%I64d:%I64d", file_path, pt.line, pt.column);
-          MG_Msg dst_m = {location, msg_kind_string, m.string};
+          MG_Msg dst_m = {location, msg_kind_string, m.str};
           mg_msg_list_push(mg_arena, &msgs, &dst_m);
         }
         MG_FileParseNode* parse_n = push_array(mg_arena, MG_FileParseNode, 1);
@@ -137,8 +137,8 @@ entry_point(CmdLine* cmdline)
           MG_ColumnDescArray* col_descs = push_array(mg_arena, MG_ColumnDescArray, 1);
           *table = mg_node_grid_make_from_node(mg_arena, node);
           *col_descs = mg_column_desc_array_from_tag(mg_arena, table_tag);
-          mg_map_insert_ptr(mg_arena, &table_grid_map, node.string, table);
-          mg_map_insert_ptr(mg_arena, &table_col_map, node.string, col_descs);
+          mg_map_insert_ptr(mg_arena, &table_grid_map, node.str, table);
+          mg_map_insert_ptr(mg_arena, &table_col_map, node.str, col_descs);
           table_count += 1;
         }
       }
@@ -151,35 +151,35 @@ entry_point(CmdLine* cmdline)
   for(MG_FileParseNode* n = parses.first; n != 0; n = n.next)
   {
     MD_Node* file = n.v.root;
-    StringView layer_key = mg_layer_key_from_path(file.string);
+    StringView layer_key = mg_layer_key_from_path(file.str);
     MG_Layer* layer = mg_layer_from_key(layer_key);
     for MD_EachNode(node, file.first)
     {
       if(md_node_has_tag(node, ("option"), 0))
       {
-        if(str8_match(node.string, ("library"), 0))
+        if(str8_match(node.str, ("library"), 0))
         {
           layer.is_library = 1;
         }
       }
       if(md_node_has_tag(node, ("gen_folder"), 0))
       {
-        layer.gen_folder_name = node.string;
+        layer.gen_folder_name = node.str;
       }
       if(md_node_has_tag(node, ("h_name"), 0))
       {
-        layer.h_name_override = node.string;
+        layer.h_name_override = node.str;
       }
       if(md_node_has_tag(node, ("c_name"), 0))
       {
-        layer.c_name_override = node.string;
+        layer.c_name_override = node.str;
       }
       if(md_node_has_tag(node, ("h_header"), 0))
       {
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          str8_list_push(mg_arena, &layer.h_header, n.string);
+          str8_list_push(mg_arena, &layer.h_header, n.str);
           str8_list_push(mg_arena, &layer.h_header, ("\n"));
         }
       }
@@ -188,7 +188,7 @@ entry_point(CmdLine* cmdline)
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          str8_list_push(mg_arena, &layer.h_footer, n.string);
+          str8_list_push(mg_arena, &layer.h_footer, n.str);
           str8_list_push(mg_arena, &layer.h_footer, ("\n"));
         }
       }
@@ -197,7 +197,7 @@ entry_point(CmdLine* cmdline)
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          str8_list_push(mg_arena, &layer.c_header, n.string);
+          str8_list_push(mg_arena, &layer.c_header, n.str);
           str8_list_push(mg_arena, &layer.c_header, ("\n"));
         }
       }
@@ -206,7 +206,7 @@ entry_point(CmdLine* cmdline)
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          str8_list_push(mg_arena, &layer.c_footer, n.string);
+          str8_list_push(mg_arena, &layer.c_footer, n.str);
           str8_list_push(mg_arena, &layer.c_footer, ("\n"));
         }
       }
@@ -224,14 +224,14 @@ entry_point(CmdLine* cmdline)
       MD_Node* tag = md_tag_from_string(node, ("enum"), 0);
       if(!md_node_is_nil(tag))
       {
-        StringView enum_name = node.string;
+        StringView enum_name = node.str;
         StringView enum_member_prefix = enum_name;
         if(str8_match(str8_postfix(enum_name, 5), ("Flags"), 0))
         {
           enum_member_prefix = str8_chop(enum_name, 1);
         }
-        StringView enum_base_type_name = tag.first.string;
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView enum_base_type_name = tag.first.str;
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         if(enum_base_type_name.size == 0)
@@ -245,7 +245,7 @@ entry_point(CmdLine* cmdline)
         }
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView escaped = mg_escaped_from_str8(mg_arena, n.string);
+          StringView escaped = mg_escaped_from_str8(mg_arena, n.str);
           str8_list_pushf(mg_arena, &layer.enums, "%S_%S,\n", enum_member_prefix, escaped);
         }
         if(enum_base_type_name.size == 0)
@@ -271,13 +271,13 @@ entry_point(CmdLine* cmdline)
       MD_Node* tag = md_tag_from_string(node, ("xlist"), 0);
       if(!md_node_is_nil(tag))
       {
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
-        str8_list_pushf(mg_arena, &layer.enums, "#define %S \\\n", node.string);
+        str8_list_pushf(mg_arena, &layer.enums, "#define %S \\\n", node.str);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView escaped = mg_escaped_from_str8(mg_arena, n.string);
+          StringView escaped = mg_escaped_from_str8(mg_arena, n.str);
           str8_list_pushf(mg_arena, &layer.enums, "X(%S)\\\n", escaped);
         }
         str8_list_push(mg_arena, &layer.enums, ("\n"));
@@ -295,14 +295,14 @@ entry_point(CmdLine* cmdline)
     {
       if(md_node_has_tag(node, ("struct"), 0))
       {
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
-        str8_list_pushf(mg_arena, &layer.structs, "typedef struct %S %S;\n", node.string, node.string);
-        str8_list_pushf(mg_arena, &layer.structs, "struct %S\n{\n", node.string);
+        str8_list_pushf(mg_arena, &layer.structs, "typedef struct %S %S;\n", node.str, node.str);
+        str8_list_pushf(mg_arena, &layer.structs, "struct %S\n{\n", node.str);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView escaped = mg_escaped_from_str8(mg_arena, n.string);
+          StringView escaped = mg_escaped_from_str8(mg_arena, n.str);
           str8_list_pushf(mg_arena, &layer.structs, "%S;\n", escaped);
         }
         str8_list_pushf(mg_arena, &layer.structs, "};\n\n");
@@ -321,18 +321,18 @@ entry_point(CmdLine* cmdline)
       MD_Node* tag = md_tag_from_string(node, ("data"), 0);
       if(!md_node_is_nil(tag))
       {
-        StringView element_type = tag.first.string;
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView element_type = tag.first.str;
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         if(!md_node_has_tag(node, ("c_file"), 0))
         {
-          str8_list_pushf(mg_arena, &layer.h_tables, "extern %S %S[%I64u];\n", element_type, node.string, gen_strings.node_count);
+          str8_list_pushf(mg_arena, &layer.h_tables, "extern %S %S[%I64u];\n", element_type, node.str, gen_strings.node_count);
         }
-        str8_list_pushf(mg_arena, &layer.c_tables, "%S %S[%I64u] =\n{\n", element_type, node.string, gen_strings.node_count);
+        str8_list_pushf(mg_arena, &layer.c_tables, "%S %S[%I64u] =\n{\n", element_type, node.str, gen_strings.node_count);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView escaped = mg_escaped_from_str8(mg_arena, n.string);
+          StringView escaped = mg_escaped_from_str8(mg_arena, n.str);
           str8_list_pushf(mg_arena, &layer.c_tables, "%S,\n", escaped);
         }
         str8_list_push(mg_arena, &layer.c_tables, ("};\n\n"));
@@ -341,7 +341,7 @@ entry_point(CmdLine* cmdline)
   }
   
   //////////////////////////////
-  //- rjf: generate enum . string mapping functions
+  //- rjf: generate enum . str mapping functions
   //
   for(MG_FileParseNode* n = parses.first; n != 0; n = n.next)
   {
@@ -351,19 +351,19 @@ entry_point(CmdLine* cmdline)
       MD_Node* tag = md_tag_from_string(node, ("enum2string_switch"), 0);
       if(!md_node_is_nil(tag))
       {
-        StringView enum_type = tag.first.string;
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView enum_type = tag.first.str;
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
-        str8_list_pushf(mg_arena, &layer.h_functions, "internal StringView %S(%S v);\n", node.string, enum_type);
-        str8_list_pushf(mg_arena, &layer.c_functions, "internal StringView\n%S(%S v)\n{\n", node.string, enum_type);
+        str8_list_pushf(mg_arena, &layer.h_functions, "internal StringView %S(%S v);\n", node.str, enum_type);
+        str8_list_pushf(mg_arena, &layer.c_functions, "internal StringView\n%S(%S v)\n{\n", node.str, enum_type);
         str8_list_pushf(mg_arena, &layer.c_functions, "StringView result = (\"<Unknown %S>\");\n", enum_type);
         str8_list_pushf(mg_arena, &layer.c_functions, "switch(v)\n");
         str8_list_pushf(mg_arena, &layer.c_functions, "{\n");
         str8_list_pushf(mg_arena, &layer.c_functions, "default:{}break;\n");
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView escaped = mg_escaped_from_str8(mg_arena, n.string);
+          StringView escaped = mg_escaped_from_str8(mg_arena, n.str);
           str8_list_pushf(mg_arena, &layer.c_functions, "%S;\n", escaped);
         }
         str8_list_pushf(mg_arena, &layer.c_functions, "}\n");
@@ -384,19 +384,19 @@ entry_point(CmdLine* cmdline)
       MD_Node* tag = md_tag_from_string(node, ("gen"), 0);
       if(!md_node_is_nil(tag))
       {
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
         B32 prefer_c_file = md_node_has_tag(node, ("c_file"), 0);
         String8List* out = prefer_c_file ? &layer.c_catchall : &layer.h_catchall;
-        if(tag.first.string.size == 0){}
-        else if(str8_match(tag.first.string, ("enums"), 0))     { out = &layer.enums; }
-        else if(str8_match(tag.first.string, ("structs"), 0))   { out = &layer.structs; }
-        else if(str8_match(tag.first.string, ("functions"), 0)) { out = prefer_c_file ? &layer.c_functions : &layer.h_functions; }
-        else if(str8_match(tag.first.string, ("tables"), 0))    { out = prefer_c_file ? &layer.c_tables : &layer.h_tables; }
+        if(tag.first.str.Length == 0){}
+        else if(str8_match(tag.first.str, ("enums"), 0))     { out = &layer.enums; }
+        else if(str8_match(tag.first.str, ("structs"), 0))   { out = &layer.structs; }
+        else if(str8_match(tag.first.str, ("functions"), 0)) { out = prefer_c_file ? &layer.c_functions : &layer.h_functions; }
+        else if(str8_match(tag.first.str, ("tables"), 0))    { out = prefer_c_file ? &layer.c_tables : &layer.h_tables; }
         String8List gen_strings = mg_string_list_from_table_gen(mg_arena, table_grid_map, table_col_map, (""), node);
         for(String8Node* n = gen_strings.first; n != 0; n = n.next)
         {
-          StringView trimmed = str8_skip_chop_whitespace(n.string);
+          StringView trimmed = str8_skip_chop_whitespace(n.str);
           StringView escaped = mg_escaped_from_str8(mg_arena, trimmed);
           str8_list_push(mg_arena, out, escaped);
           str8_list_push(mg_arena, out, ("\n"));
@@ -415,26 +415,26 @@ entry_point(CmdLine* cmdline)
     {
       if(md_node_has_tag(node, ("embed_string"), 0))
       {
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
-        StringView embed_string = mg_c_string_literal_from_multiline_string(node.first.string);
-        str8_list_pushf(mg_arena, &layer.h_tables, "read_only static StringView %S =\n(\n", node.string);
+        StringView embed_string = mg_c_string_literal_from_multiline_string(node.first.str);
+        str8_list_pushf(mg_arena, &layer.h_tables, "read_only static StringView %S =\n(\n", node.str);
         str8_list_push (mg_arena, &layer.h_tables, embed_string);
         str8_list_pushf(mg_arena, &layer.h_tables, ");\n\n");
       }
       if(md_node_has_tag(node, ("embed_file"), 0))
       {
-        StringView layer_key = mg_layer_key_from_path(file.string);
+        StringView layer_key = mg_layer_key_from_path(file.str);
         MG_Layer* layer = mg_layer_from_key(layer_key);
-        StringView data = os_data_from_file_path(mg_arena, node.first.string);
+        StringView data = os_data_from_file_path(mg_arena, node.first.str);
         StringView embed_string = mg_c_array_literal_contents_from_data(data);
-        str8_list_pushf(mg_arena, &layer.h_tables, "read_only static uint8 %S__data[] =\n{\n", node.string);
+        str8_list_pushf(mg_arena, &layer.h_tables, "read_only static uint8 %S__data[] =\n{\n", node.str);
         str8_list_push (mg_arena, &layer.h_tables, embed_string);
         str8_list_pushf(mg_arena, &layer.h_tables, "};\n\n");
         str8_list_pushf(mg_arena, &layer.h_tables, "read_only static StringView %S = {%S__data, sizeof(%S__data)};\n",
-                        node.string,
-                        node.string,
-                        node.string);
+                        node.str,
+                        node.str,
+                        node.str);
       }
     }
   }
@@ -455,19 +455,19 @@ entry_point(CmdLine* cmdline)
         {
           if(md_node_has_tag(piece, ("title"), 0))
           {
-            str8_list_pushf(mg_arena, &md_strs, "# %S\n\n", piece.string);
+            str8_list_pushf(mg_arena, &md_strs, "# %S\n\n", piece.str);
           }
           if(md_node_has_tag(piece, ("subtitle"), 0))
           {
-            str8_list_pushf(mg_arena, &md_strs, "## %S\n\n", piece.string);
+            str8_list_pushf(mg_arena, &md_strs, "## %S\n\n", piece.str);
           }
           if(md_node_has_tag(piece, ("p"), 0))
           {
-            StringView paragraph_text = piece.string;
+            StringView paragraph_text = piece.str;
             String8List paragraph_lines = mg_wrapped_lines_from_string(mg_arena, paragraph_text, 80, 80, 0);
             for(String8Node* n = paragraph_lines.first; n != 0; n = n.next)
             {
-              str8_list_push(mg_arena, &md_strs, n.string);
+              str8_list_push(mg_arena, &md_strs, n.str);
               str8_list_push(mg_arena, &md_strs, ("\n"));
             }
             str8_list_push(mg_arena, &md_strs, ("\n"));
@@ -478,22 +478,22 @@ entry_point(CmdLine* cmdline)
             for(String8Node* n = gen_strings.first; n != 0; n = n.next)
             {
               str8_list_pushf(mg_arena, &md_strs, " - ");
-              StringView item_text = n.string;
+              StringView item_text = n.str;
               String8List item_lines = mg_wrapped_lines_from_string(mg_arena, item_text, 80-3, 80, 3);
               for(String8Node* line_n = item_lines.first; line_n != 0; line_n = line_n.next)
               {
-                str8_list_push(mg_arena, &md_strs, line_n.string);
+                str8_list_push(mg_arena, &md_strs, line_n.str);
                 str8_list_pushf(mg_arena, &md_strs, "\n");
               }
             }
             str8_list_pushf(mg_arena, &md_strs, "\n");
           }
         }
-        StringView output_path = push_str8f(mg_arena, "%S/%S.md", build_dir_path, node.string);
-        FILE* file = fopen((char *)output_path.str, "w");
+        StringView output_path = push_str8f(mg_arena, "%S/%S.md", build_dir_path, node.str);
+        FILE* file = fopen((char *)output_path.Ptr, "w");
         for(String8Node* n = md_strs.first; n != 0; n = n.next)
         {
-          fwrite(n.string.str, n.string.size, 1, file);
+          fwrite(n.str.Ptr, n.str.Length, 1, file);
         }
         fclose(file);
       }
@@ -540,7 +540,7 @@ entry_point(CmdLine* cmdline)
             c_path = push_str8f(mg_arena, "%S/%S", layer_generated_folder, str8_skip_last_slash(layer.c_name_override));
           }
           {
-            FILE* h = fopen((char *)h_path.str, "w");
+            FILE* h = fopen((char *)h_path.Ptr, "w");
             fprintf(h, "// Copyright (c) 2024 Epic Games Tools\n");
             fprintf(h, "// Licensed under the MIT license (https://opensource.org/license/mit/)\n\n");
             if(layer.h_header.first == 0)
@@ -551,23 +551,23 @@ entry_point(CmdLine* cmdline)
             }
             else for(String8Node* n = layer.h_header.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             for(String8Node* n = layer.enums.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             for(String8Node* n = layer.structs.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             for(String8Node* n = layer.h_catchall.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             for(String8Node* n = layer.h_functions.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             if(layer.h_tables.first != 0)
             {
@@ -577,7 +577,7 @@ entry_point(CmdLine* cmdline)
               }
               for(String8Node* n = layer.h_tables.first; n != 0; n = n.next)
               {
-                fwrite(n.string.str, n.string.size, 1, h);
+                fwrite(n.str.Ptr, n.str.Length, 1, h);
               }
               fprintf(h, "\n");
               if(!layer.is_library)
@@ -591,12 +591,12 @@ entry_point(CmdLine* cmdline)
             }
             else for(String8Node* n = layer.h_footer.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, h);
+              fwrite(n.str.Ptr, n.str.Length, 1, h);
             }
             fclose(h);
           }
           {
-            FILE* c = fopen((char *)c_path.str, "w");
+            FILE* c = fopen((char *)c_path.Ptr, "w");
             fprintf(c, "// Copyright (c) 2024 Epic Games Tools\n");
             fprintf(c, "// Licensed under the MIT license (https://opensource.org/license/mit/)\n\n");
             if(layer.c_header.first == 0)
@@ -605,11 +605,11 @@ entry_point(CmdLine* cmdline)
             }
             else for(String8Node* n = layer.c_header.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, c);
+              fwrite(n.str.Ptr, n.str.Length, 1, c);
             }
             for(String8Node* n = layer.c_catchall.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, c);
+              fwrite(n.str.Ptr, n.str.Length, 1, c);
             }
             if(layer.c_tables.first != 0)
             {
@@ -619,7 +619,7 @@ entry_point(CmdLine* cmdline)
               }
               for(String8Node* n = layer.c_tables.first; n != 0; n = n.next)
               {
-                fwrite(n.string.str, n.string.size, 1, c);
+                fwrite(n.str.Ptr, n.str.Length, 1, c);
               }
               if(!layer.is_library)
               {
@@ -628,13 +628,13 @@ entry_point(CmdLine* cmdline)
             }
             for(String8Node* n = layer.c_functions.first; n != 0; n = n.next)
             {
-              fwrite(n.string.str, n.string.size, 1, c);
+              fwrite(n.str.Ptr, n.str.Length, 1, c);
             }
             if(layer.c_footer.first != 0)
             {
               for(String8Node* n = layer.c_footer.first; n != 0; n = n.next)
               {
-                fwrite(n.string.str, n.string.size, 1, c);
+                fwrite(n.str.Ptr, n.str.Length, 1, c);
               }
             }
             fclose(c);

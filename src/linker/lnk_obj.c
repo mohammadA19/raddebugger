@@ -83,8 +83,8 @@ lnk_input_obj_list_from_string_list(Arena* arena, String8List list)
   for (String8Node* path = list.first; path != 0; path = path.next) {
     LNK_InputObj* input = lnk_input_obj_list_push(arena, &input_list);
     input.is_thin  = 1;
-    input.dedup_id = path.string;
-    input.path     = path.string;
+    input.dedup_id = path.str;
+    input.path     = path.str;
   }
   return input_list;
 }
@@ -341,8 +341,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     lnk_error_with_loc(LNK_Error_IllData, cached_path, cached_lib_path, "corrupted file, unable to read symbol table");
   }
 
-  COFF_SectionHeader* coff_sect_arr = (COFF_SectionHeader *)raw_coff_sect_arr.str;
-  void*               coff_symbols  = raw_coff_symbols.str;
+  COFF_SectionHeader* coff_sect_arr = (COFF_SectionHeader *)raw_coff_sect_arr.Ptr;
+  void*               coff_symbols  = raw_coff_symbols.Ptr;
 
   // :function_pad_min
   uint64 function_pad_min;
@@ -1026,7 +1026,7 @@ lnk_reloc_list_array_from_coff(Arena* arena, COFF_MachineType machine, StringVie
   for (uint64 sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
     COFF_SectionHeader* COFF_FileHeader     = &coff_sect_arr[sect_idx];
     COFF_RelocInfo      coff_reloc_info = coff_reloc_info_from_section_header(coff_data, COFF_FileHeader);
-    COFF_Reloc*         coff_reloc_v    = (COFF_Reloc *)(coff_data.str + coff_reloc_info.array_off);
+    COFF_Reloc*         coff_reloc_v    = (COFF_Reloc *)(coff_data.Ptr + coff_reloc_info.array_off);
     LNK_Chunk*          sect_chunk      = chunk_ptr_arr[sect_idx];
     reloc_list_arr[sect_idx] = lnk_reloc_list_from_coff_reloc_array(arena, machine, sect_chunk, symbol_array, coff_reloc_v, coff_reloc_info.count);
   }
@@ -1067,10 +1067,10 @@ lnk_parse_msvc_linker_directive(Arena* arena, StringView obj_path, StringView li
   {
     static const uint8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
     static const uint8 ascii_sig[] = { 0x20, 0x20, 0x20 };
-    if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
+    if (MemoryMatch(buffer.Ptr, &bom_sig[0], sizeof(bom_sig))) {
       to_parse = StringView();
       lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "TODO: support for BOM encoding");
-    } else if (MemoryMatch(buffer.str, &ascii_sig[0], sizeof(ascii_sig))) {
+    } else if (MemoryMatch(buffer.Ptr, &ascii_sig[0], sizeof(ascii_sig))) {
       to_parse = str8_skip(buffer, sizeof(ascii_sig));
     } else {
       to_parse = buffer;
@@ -1081,20 +1081,20 @@ lnk_parse_msvc_linker_directive(Arena* arena, StringView obj_path, StringView li
   LNK_CmdLine cmd_line = lnk_cmd_line_parse_windows_rules(scratch.arena, arg_list);
 
   for (LNK_CmdOption* opt = cmd_line.first_option; opt != 0; opt = opt.next) {
-    LNK_CmdSwitchType type = lnk_cmd_switch_type_from_string(opt.string);
+    LNK_CmdSwitchType type = lnk_cmd_switch_type_from_string(opt.str);
 
     if (type == LNK_CmdSwitch_Null) {
-      lnk_error_with_loc(LNK_Warning_UnknownDirective, obj_path, lib_path, "unknown directive \"%S\"", opt.string);
+      lnk_error_with_loc(LNK_Warning_UnknownDirective, obj_path, lib_path, "unknown directive \"%S\"", opt.str);
       continue;
     }
     if (!is_legal[type]) {
-      lnk_error_with_loc(LNK_Warning_IllegalDirective, obj_path, lib_path, "illegal directive \"%S\"", opt.string);
+      lnk_error_with_loc(LNK_Warning_IllegalDirective, obj_path, lib_path, "illegal directive \"%S\"", opt.str);
       continue;
     }
 
     LNK_Directive* directive = push_array_no_zero(arena, LNK_Directive, 1);
     directive.next          = 0;
-    directive.id            = push_str8_copy(arena, opt.string);
+    directive.id            = push_str8_copy(arena, opt.str);
     directive.value_list    = str8_list_copy(arena, &opt.value_strings);
 
     LNK_DirectiveList* directive_list = &directive_info.v[type];

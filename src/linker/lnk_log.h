@@ -21,5 +21,5 @@ void set_log_level(LNK_LogType type, B32 is_enabled);
 B32  lnk_get_log_status(LNK_LogType type);
 void lnk_log(LNK_LogType type, char* fmt, ...);
 
-LNK_LogType lnk_log_type_from_string(StringView string);
+LNK_LogType lnk_log_type_from_string(StringView str);
 

@@ -144,7 +144,7 @@ enum EV_ViewRuleInfoFlags : uint32 // NOTE(rjf): see @view_rule_info
 
 struct EV_ViewRuleInfo
 {
-  StringView string;
+  StringView str;
   EV_ViewRuleInfoFlags flags;
   EV_ViewRuleExprResolutionHookFunctionType* expr_resolution;
   EV_ViewRuleExprExpandInfoHookFunctionType* expr_expand_info;
@@ -190,7 +190,7 @@ struct EV_Block
   uint64 split_relative_idx;
   
   // rjf: expression / visualization info
-  StringView string;
+  StringView str;
   E_Expr* expr;
   EV_ViewRuleList* view_rules;
   EV_ViewRuleInfo* expand_view_rule_info;
@@ -246,7 +246,7 @@ struct EV_Row
   uint64 visual_size_chopped;
   
   // rjf: expression / visualization info
-  StringView string;
+  StringView str;
   E_Expr* expr;
   E_Member* member;
   EV_ViewRuleList* view_rules;
@@ -333,7 +333,7 @@ EV_Key ev_key_make(uint64 parent_hash, uint64 child_id);
 EV_Key ev_key_zero();
 EV_Key ev_key_root();
 B32 ev_key_match(EV_Key a, EV_Key b);
-uint64 ev_hash_from_seed_string(uint64 seed, StringView string);
+uint64 ev_hash_from_seed_string(uint64 seed, StringView str);
 uint64 ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
@@ -363,7 +363,7 @@ void ev_key_set_view_rule(EV_View* view, EV_Key key, StringView view_rule_string
 void ev_view_rule_info_table_push(Arena* arena, EV_ViewRuleInfoTable* table, EV_ViewRuleInfo* info);
 void ev_view_rule_info_table_push_builtins(Arena* arena, EV_ViewRuleInfoTable* table);
 void ev_select_view_rule_info_table(EV_ViewRuleInfoTable* table);
-EV_ViewRuleInfo* ev_view_rule_info_from_string(StringView string);
+EV_ViewRuleInfo* ev_view_rule_info_from_string(StringView str);
 
 ////////////////////////////////
 //~ rjf: Automatic Type . View Rule Table Building / Selection / Lookups
@@ -376,9 +376,9 @@ EV_ViewRuleList* ev_auto_view_rules_from_type_key(Arena* arena, E_TypeKey type_k
 //~ rjf: View Rule Instance List Building
 
 void ev_view_rule_list_push_tree(Arena* arena, EV_ViewRuleList* list, MD_Node* root);
-void ev_view_rule_list_push_string(Arena* arena, EV_ViewRuleList* list, StringView string);
-EV_ViewRuleList* ev_view_rule_list_from_string(Arena* arena, StringView string);
-EV_ViewRuleList* ev_view_rule_list_from_expr_fastpaths(Arena* arena, StringView string);
+void ev_view_rule_list_push_string(Arena* arena, EV_ViewRuleList* list, StringView str);
+EV_ViewRuleList* ev_view_rule_list_from_string(Arena* arena, StringView str);
+EV_ViewRuleList* ev_view_rule_list_from_expr_fastpaths(Arena* arena, StringView str);
 EV_ViewRuleList* ev_view_rule_list_from_inheritance(Arena* arena, EV_ViewRuleList* src);
 EV_ViewRuleList* ev_view_rule_list_copy(Arena* arena, EV_ViewRuleList* src);
 void ev_view_rule_list_concat_in_place(EV_ViewRuleList* dst, EV_ViewRuleList** src);
@@ -391,8 +391,8 @@ E_Expr* ev_resolved_from_expr(Arena* arena, E_Expr* expr, EV_ViewRuleList* view_
 ////////////////////////////////
 //~ rjf: Block Building
 
-EV_BlockTree ev_block_tree_from_expr(Arena* arena, EV_View* view, StringView filter, StringView string, E_Expr* expr, EV_ViewRuleList* view_rules);
-EV_BlockTree ev_block_tree_from_string(Arena* arena, EV_View* view, StringView filter, StringView string, EV_ViewRuleList* view_rules);
+EV_BlockTree ev_block_tree_from_expr(Arena* arena, EV_View* view, StringView filter, StringView str, E_Expr* expr, EV_ViewRuleList* view_rules);
+EV_BlockTree ev_block_tree_from_string(Arena* arena, EV_View* view, StringView filter, StringView str, EV_ViewRuleList* view_rules);
 uint64 ev_depth_from_block(EV_Block* block);
 
 ////////////////////////////////

@@ -81,7 +81,7 @@ struct LNK_ChunkOp
   LNK_ChunkOpType     type;
   [Union]
   struct {
-    StringView    string;
+    StringView    str;
     LNK_Chunk* chunk;
     struct {
       uint64 val;
@@ -188,7 +188,7 @@ LNK_ChunkOp * lnk_push_chunk_op_begin(Arena* arena, uint64 chunk_id);
 LNK_ChunkOp * lnk_push_chunk_op_end_virt(Arena* arena);
 LNK_ChunkOp * lnk_push_chunk_op_end_file(Arena* arena);
 LNK_ChunkOp * lnk_push_chunk_op_align(Arena* arena, uint64 align, uint64 val);
-LNK_ChunkOp * lnk_push_chunk_op_write(Arena* arena, StringView string);
+LNK_ChunkOp * lnk_push_chunk_op_write(Arena* arena, StringView str);
 
 LNK_ChunkLayout lnk_layout_from_chunk(Arena* arena, LNK_Chunk* root, uint64 total_chunk_count);
 LNK_ChunkLayout lnk_build_chunk_layout(Arena* arena, LNK_ChunkManager* cman);

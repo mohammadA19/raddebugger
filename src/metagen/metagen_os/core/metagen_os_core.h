@@ -180,7 +180,7 @@ B32 os_commit_large(void* ptr, uint64 size);
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
 uint32 os_tid();
-void os_set_thread_name(StringView string);
+void os_set_thread_name(StringView str);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)

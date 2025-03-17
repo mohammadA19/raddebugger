@@ -5,7 +5,7 @@
 //
 // [ ] Any time we encode a subrange of a section inside of a
 //     DW_AttribValue, we need to do that consistently, regardless of
-//     whether or not it is a string, memory block, etc. We should just use
+//     whether or not it is a str, memory block, etc. We should just use
 //     the DW_SectionKind and then the min/max pair.
 //
 // [ ] Things we are not reporting, or haven't figured out:
@@ -62,9 +62,9 @@
 //~ rjf: Basic Helpers
 
 uint64
-dw_hash_from_string(StringView string)
+dw_hash_from_string(StringView str)
 {
-  XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
+  XXH64_hash_t hash64 = XXH3_64bits(str.Ptr, str.Length);
   return hash64;
 }
 
@@ -395,8 +395,8 @@ dw_based_range_read_attrib_form_value(void* base, Rng1U64 range, uint64 offset, 
     //- rjf: strings
     case DW_Form_String:
     {
-      StringView string = dw_based_range_read_string(base, range, offset);
-      bytes_read = string.size + 1;
+      StringView str = dw_based_range_read_string(base, range, offset);
+      bytes_read = str.Length + 1;
       uint64 string_offset = offset;
       uint64 string_size = (offset + bytes_read) - string_offset;
       form_value.v[0] = string_offset;
@@ -467,7 +467,7 @@ dw_range_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 void *
 dw_base_from_sec(DW_SectionArray* sections, DW_SectionKind kind)
 {
-  return sections.v[kind].data.str;
+  return sections.v[kind].data.Ptr;
 }
 
 ////////////////////////////////
@@ -665,15 +665,15 @@ dw_v4_pub_strings_table_from_section_kind(Arena* arena, DW_SectionArray* section
     //- rjf: if we got a nonzero .debug_info offset, we've found a valid entry.
     if(info_off != 0)
     {
-      StringView string = dw_based_range_read_string(base, rng, cursor);
-      cursor += string.size + 1;
+      StringView str = dw_based_range_read_string(base, rng, cursor);
+      cursor += str.Length + 1;
 
-      uint64 hash       = dw_hash_from_string(string);
+      uint64 hash       = dw_hash_from_string(str);
       uint64 bucket_idx = hash % names_table.size;
       
       DW_PubStringsBucket* bucket = push_array(arena, DW_PubStringsBucket, 1);
       bucket.next                = names_table.buckets[bucket_idx];
-      bucket.string              = string;
+      bucket.str              = str;
       bucket.info_off            = info_off;
       bucket.cu_info_off         = cu_info_off;
       names_table.buckets[bucket_idx] = bucket;
@@ -1050,10 +1050,10 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     uint64             str_offset = dw_v5_offset_from_offs_section_base_index(sections, DW_Section_StrOffsets, resolve_params.debug_str_offs_base, str_index);
     void*           base       = dw_base_from_sec(sections, section);
     Rng1U64         range      = dw_range_from_sec(sections, section);
-    StringView         string     = dw_based_range_read_string(base, range, str_offset);
+    StringView         str     = dw_based_range_read_string(base, range, str_offset);
     value.section = section;
     value.v[0]    = str_offset;
-    value.v[1]    = value.v[0] + string.size;
+    value.v[1]    = value.v[0] + str.Length;
   }
   //- rjf: (DWARF V5 ONLY) reference that we should resolve through ref_addr_desc
   else if(resolve_params.version >= DW_Version_5 &&
@@ -1083,7 +1083,7 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     value.v[0] = resolve_params.containing_unit_info_off + form_value.v[0];
   }
   
-  //- rjf: info-section string -- this is a string that is just pasted straight
+  //- rjf: info-section str -- this is a str that is just pasted straight
   // into the .debug_info section
   else if(value_class == DW_AttribClass_String && form_kind == DW_Form_String)
   {
@@ -1091,7 +1091,7 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     value.section = DW_Section_Info;
   }
   
-  //- rjf: string-section string -- this is a string that's inside the .debug_str
+  //- rjf: str-section str -- this is a str that's inside the .debug_str
   // section, and we've been provided an offset to it
   else if(value_class == DW_AttribClass_String && 
           (form_kind == DW_Form_Strp ||
@@ -1101,21 +1101,21 @@ dw_attrib_value_from_form_value(DW_SectionArray*             sections,
     DW_SectionKind  section = DW_Section_Str;
     void*           base    = dw_base_from_sec(sections, section);
     Rng1U64         range   = dw_range_from_sec(sections, section);
-    StringView         string  = dw_based_range_read_string(base, range, form_value.v[0]);
+    StringView         str  = dw_based_range_read_string(base, range, form_value.v[0]);
     value.section = section;
     value.v[0]    = form_value.v[0];
-    value.v[1]    = value.v[0] + string.size;
+    value.v[1]    = value.v[0] + str.Length;
   }
-  //- rjf: line-string
+  //- rjf: line-str
   else if(value_class == DW_AttribClass_String && form_kind == DW_Form_LineStrp)
   {
     DW_SectionKind  section = DW_Section_LineStr;
     void*           base    = dw_base_from_sec(sections, section);
     Rng1U64         range   = dw_range_from_sec(sections, section);
-    StringView         string  = dw_based_range_read_string(base, range, form_value.v[0]);
+    StringView         str  = dw_based_range_read_string(base, range, form_value.v[0]);
     value.section = section;
     value.v[0]    = form_value.v[0];
-    value.v[1]    = value.v[0] + string.size;
+    value.v[1]    = value.v[0] + str.Length;
   }
   //- rjf: .debug_ranges
   else if(resolve_params.version < DW_Version_5 &&
@@ -1157,10 +1157,10 @@ dw_string_from_attrib_value(DW_SectionArray* sections, DW_AttribValue value)
   void*           base         = dw_base_from_sec(sections, section_kind);
   Rng1U64         range        = dw_range_from_sec(sections, section_kind);
 
-  StringView string = {0};
-  string.str     = (uint8 *)dw_based_range_ptr(base, range, value.v[0]);
-  string.size    = value.v[1] - value.v[0];
-  return string;
+  StringView str = {0};
+  str.Ptr     = (uint8 *)dw_based_range_ptr(base, range, value.v[0]);
+  str.Length    = value.v[1] - value.v[0];
+  return str;
 }
 
 Rng1U64List
@@ -1444,7 +1444,7 @@ Rng1U64List
 dw_comp_unit_ranges_from_info(Arena* arena, DW_Section info)
 {
   Rng1U64List  result = {0};
-  void*        base   = info.data.str;
+  void*        base   = info.data.Ptr;
   Rng1U64      range  = rng_1u64(0, info.data.size);
   for(uint64 cursor = 0; cursor < info.data.size; )
   {
@@ -2335,7 +2335,7 @@ dw_read_line_vm_header(Arena*                       arena,
       String8Node* n = dir_list.first;
       for(uint64 idx = 0; n != 0 && idx < header_out.dir_table.count; idx += 1, n = n.next) 
       {
-        header_out.dir_table.v[idx] = push_str8_copy(arena, n.string);
+        header_out.dir_table.v[idx] = push_str8_copy(arena, n.str);
       }
     }
     

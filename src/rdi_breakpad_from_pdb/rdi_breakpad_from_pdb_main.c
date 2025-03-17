@@ -210,7 +210,7 @@ entry_point(CmdLine* cmdline)
     {
       for(String8Node* n = user2convert.errors.first; n != 0; n = n.next)
       {
-        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.string));
+        fprintf(stderr, "error(input): %.*s\n", str8_varg(n.str));
       }
     }
     os_abort(0);
@@ -320,7 +320,7 @@ entry_point(CmdLine* cmdline)
   ProfScope("write")
   {
     OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert.output_name);
-    os_file_write(output_file, r1u64(0, baked.size), baked.str);
+    os_file_write(output_file, r1u64(0, baked.size), baked.Ptr);
     os_file_close(output_file);
   }
 }

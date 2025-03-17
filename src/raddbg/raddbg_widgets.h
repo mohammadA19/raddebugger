@@ -82,10 +82,10 @@ void rd_loading_overlay(Rng2F32 rect, float loading_t, uint64 progress_v, uint64
 //~ rjf: UI Widgets: Fancy Buttons
 
 void rd_cmd_binding_buttons(StringView name);
-UI_Signal rd_menu_bar_button(StringView string);
+UI_Signal rd_menu_bar_button(StringView str);
 UI_Signal rd_cmd_spec_button(StringView name);
 void rd_cmd_list_menu_buttons(uint64 count, StringView* cmd_names, uint32* fastpath_codepoints);
-UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView string);
+UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, StringView str);
 UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* fmt, ...);
 
 ////////////////////////////////
@@ -93,7 +93,7 @@ UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* 
 
 UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
 UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
-RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, StringView string);
+RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, StringView str);
 RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, int64* preferred_column, char* fmt, ...);
 
 B32 rd_do_txt_controls(TXT_TextInfo* info, StringView data, uint64 line_count_per_page, TxtPt* cursor, TxtPt* mark, int64* preferred_column);
@@ -101,16 +101,16 @@ B32 rd_do_txt_controls(TXT_TextInfo* info, StringView data, uint64 line_count_pe
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
 
-UI_Signal rd_label(StringView string);
-UI_Signal rd_error_label(StringView string);
-B32 rd_help_label(StringView string);
-DR_FancyStringList rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string);
-UI_Box* rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string);
+UI_Signal rd_label(StringView str);
+UI_Signal rd_error_label(StringView str);
+B32 rd_help_label(StringView str);
+DR_FancyStringList rd_fancy_string_list_from_code_string(Arena* arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView str);
+UI_Box* rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, StringView str);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-UI_Signal rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, StringView string);
+UI_Signal rd_line_edit(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, StringView str);
 UI_Signal rd_line_editf(RD_LineEditFlags flags, int32 depth, FuzzyMatchRangeList* matches, TxtPt* cursor, TxtPt* mark, uint8* edit_buffer, uint64 edit_buffer_size, uint64* edit_string_size_out, B32* expanded_out, StringView pre_edit_value, char* fmt, ...);
 
 #endif // RADDBG_WIDGETS_H

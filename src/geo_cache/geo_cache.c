@@ -279,7 +279,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
   R_Handle buffer = {0};
   if(got_task && data.size != 0)
   {
-    buffer = r_buffer_alloc(R_ResourceKind_Static, data.size, data.str);
+    buffer = r_buffer_alloc(R_ResourceKind_Static, data.size, data.Ptr);
   }
   
   //- rjf: commit results to cache

@@ -58,7 +58,7 @@ mtx_enqueue_op(MTX_MutThread* thread, U128 buffer_key, MTX_Op op)
       thread.ring_write_pos += ring_write_struct(thread.ring_base, thread.ring_size, thread.ring_write_pos, &buffer_key);
       thread.ring_write_pos += ring_write_struct(thread.ring_base, thread.ring_size, thread.ring_write_pos, &op.range);
       thread.ring_write_pos += ring_write_struct(thread.ring_base, thread.ring_size, thread.ring_write_pos, &op.replace.size);
-      thread.ring_write_pos += ring_write(thread.ring_base, thread.ring_size, thread.ring_write_pos, op.replace.str, op.replace.size);
+      thread.ring_write_pos += ring_write(thread.ring_base, thread.ring_size, thread.ring_write_pos, op.replace.Ptr, op.replace.size);
       break;
     }
     os_condition_variable_wait(thread.cv, thread.mutex, max_U64);
@@ -77,8 +77,8 @@ mtx_dequeue_op(Arena* arena, MTX_MutThread* thread, U128* buffer_key_out, MTX_Op
       thread.ring_read_pos += ring_read_struct(thread.ring_base, thread.ring_size, thread.ring_read_pos, buffer_key_out);
       thread.ring_read_pos += ring_read_struct(thread.ring_base, thread.ring_size, thread.ring_read_pos, &op_out.range);
       thread.ring_read_pos += ring_read_struct(thread.ring_base, thread.ring_size, thread.ring_read_pos, &op_out.replace.size);
-      op_out.replace.str = push_array_no_zero(arena, uint8, op_out.replace.size);
-      thread.ring_read_pos += ring_read(thread.ring_base, thread.ring_size, thread.ring_read_pos, op_out.replace.str, op_out.replace.size);
+      op_out.replace.Ptr = push_array_no_zero(arena, uint8, op_out.replace.size);
+      thread.ring_read_pos += ring_read(thread.ring_base, thread.ring_size, thread.ring_read_pos, op_out.replace.Ptr, op_out.replace.size);
       break;
     }
     os_condition_variable_wait(thread.cv, thread.mutex, max_U64);
@@ -119,15 +119,15 @@ mtx_mut_thread__entry_point(void* p)
       StringView post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
       if(pre_replace_data.size != 0)
       {
-        MemoryCopy(new_data_base+0,                                     pre_replace_data.str, pre_replace_data.size);
+        MemoryCopy(new_data_base+0,                                     pre_replace_data.Ptr, pre_replace_data.size);
       }
       if(op.replace.size != 0)
       {
-        MemoryCopy(new_data_base+pre_replace_data.size,                 op.replace.str, op.replace.size);
+        MemoryCopy(new_data_base+pre_replace_data.size,                 op.replace.Ptr, op.replace.size);
       }
       if(post_replace_data.size != 0)
       {
-        MemoryCopy(new_data_base+pre_replace_data.size+op.replace.size, post_replace_data.str, post_replace_data.size);
+        MemoryCopy(new_data_base+pre_replace_data.size+op.replace.size, post_replace_data.Ptr, post_replace_data.size);
       }
       StringView new_data = StringView(new_data_base, new_data_size);
       hs_submit_data(buffer_key, &arena, new_data);

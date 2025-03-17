@@ -18,9 +18,9 @@ bucket_list_pop(BucketList* list)
 ////////////////////////////////
 
 uint64
-hash_table_hasher(StringView string)
+hash_table_hasher(StringView str)
 {
-  XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
+  XXH64_hash_t hash64 = XXH3_64bits(str.Ptr, str.Length);
   return hash64;
 }
 

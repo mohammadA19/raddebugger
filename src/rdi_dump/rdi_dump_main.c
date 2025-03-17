@@ -79,26 +79,26 @@ entry_point(CmdLine* cmd_line)
         for(String8Node* n = dump_options.first; n != 0; n = n.next)
         {
           if(0){}
-          else if(str8_match(n.string, ("data_sections"),           StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_DataSections; }
-          else if(str8_match(n.string, ("top_level_info"),          StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_TopLevelInfo; }
-          else if(str8_match(n.string, ("binary_sections"),         StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_BinarySections; }
-          else if(str8_match(n.string, ("file_paths"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_FilePaths; }
-          else if(str8_match(n.string, ("source_files"),            StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_SourceFiles; }
-          else if(str8_match(n.string, ("line_tables"),             StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_LineTables; }
-          else if(str8_match(n.string, ("source_line_maps"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_SourceLineMaps; }
-          else if(str8_match(n.string, ("units"),                   StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Units; }
-          else if(str8_match(n.string, ("unit_vmap"),               StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_UnitVMap; }
-          else if(str8_match(n.string, ("type_nodes"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_TypeNodes; }
-          else if(str8_match(n.string, ("udt_data"),                StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_UDTs; }
-          else if(str8_match(n.string, ("global_variables"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVariables; }
-          else if(str8_match(n.string, ("global_vmap"),             StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVMap; }
-          else if(str8_match(n.string, ("thread_variables"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_ThreadVariables; }
-          else if(str8_match(n.string, ("procedures"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Procedures; }
-          else if(str8_match(n.string, ("scopes"),                  StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Scopes; }
-          else if(str8_match(n.string, ("scope_vmap"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_ScopeVMap; }
-          else if(str8_match(n.string, ("inline_sites"),            StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_InlineSites; }
-          else if(str8_match(n.string, ("name_maps"),               StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_NameMaps; }
-          else if(str8_match(n.string, ("strings"),                 StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Strings; }
+          else if(str8_match(n.str, ("data_sections"),           StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_DataSections; }
+          else if(str8_match(n.str, ("top_level_info"),          StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_TopLevelInfo; }
+          else if(str8_match(n.str, ("binary_sections"),         StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_BinarySections; }
+          else if(str8_match(n.str, ("file_paths"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_FilePaths; }
+          else if(str8_match(n.str, ("source_files"),            StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_SourceFiles; }
+          else if(str8_match(n.str, ("line_tables"),             StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_LineTables; }
+          else if(str8_match(n.str, ("source_line_maps"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_SourceLineMaps; }
+          else if(str8_match(n.str, ("units"),                   StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Units; }
+          else if(str8_match(n.str, ("unit_vmap"),               StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_UnitVMap; }
+          else if(str8_match(n.str, ("type_nodes"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_TypeNodes; }
+          else if(str8_match(n.str, ("udt_data"),                StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_UDTs; }
+          else if(str8_match(n.str, ("global_variables"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVariables; }
+          else if(str8_match(n.str, ("global_vmap"),             StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVMap; }
+          else if(str8_match(n.str, ("thread_variables"),        StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_ThreadVariables; }
+          else if(str8_match(n.str, ("procedures"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Procedures; }
+          else if(str8_match(n.str, ("scopes"),                  StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Scopes; }
+          else if(str8_match(n.str, ("scope_vmap"),              StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_ScopeVMap; }
+          else if(str8_match(n.str, ("inline_sites"),            StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_InlineSites; }
+          else if(str8_match(n.str, ("name_maps"),               StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_NameMaps; }
+          else if(str8_match(n.str, ("strings"),                 StringMatchFlag_CaseInsensitive)) { dump_flags |= DumpFlag_Strings; }
         }
       }
     }
@@ -122,7 +122,7 @@ entry_point(CmdLine* cmd_line)
   //
   RDI_Parsed rdi_ = {0};
   RDI_Parsed* rdi = &rdi_;
-  RDI_ParseStatus status = rdi_parse(input_data.str, input_data.size, rdi);
+  RDI_ParseStatus status = rdi_parse(input_data.Ptr, input_data.size, rdi);
   
   //////////////////////////////
   //- rjf: decompress rdi if necessary
@@ -150,7 +150,7 @@ entry_point(CmdLine* cmd_line)
   //
   for(String8Node* n = errors.first; n != 0; n = n.next)
   {
-    fwrite(n.string.str, 1, n.string.size, stderr);
+    fwrite(n.str.Ptr, 1, n.str.Length, stderr);
     fprintf(stderr, "\n");
   }
   
@@ -456,9 +456,9 @@ entry_point(CmdLine* cmd_line)
             RDI_NameMapNode* node_opl = node + bucket.node_count;
             for(;node < node_opl; node += 1)
             {
-              StringView string = {0};
-              string.str = rdi_string_from_idx(rdi, node.string_idx, &string.size);
-              str8_list_pushf(arena, &dump, "   match \"%.*s\": ", str8_varg(string));
+              StringView str = {0};
+              str.Ptr = rdi_string_from_idx(rdi, node.string_idx, &str.Length);
+              str8_list_pushf(arena, &dump, "   match \"%.*s\": ", str8_varg(str));
               if(node.match_count == 1)
               {
                 str8_list_pushf(arena, &dump, "%u", node.match_idx_or_idx_run_first);
@@ -496,9 +496,9 @@ entry_point(CmdLine* cmd_line)
       uint32* v = rdi_table_from_name(rdi, StringTable, &count);
       for(uint64 idx = 0; idx < count; idx += 1)
       {
-        StringView string = {0};
-        string.str = rdi_string_from_idx(rdi, (RDI_U32)idx, &string.size);
-        str8_list_pushf(arena, &dump, " string[%I64u]: \"%S\"\n", idx, string);
+        StringView str = {0};
+        str.Ptr = rdi_string_from_idx(rdi, (RDI_U32)idx, &str.Length);
+        str8_list_pushf(arena, &dump, " str[%I64u]: \"%S\"\n", idx, str);
       }
       str8_list_push(arena, &dump, ("\n"));
     }
@@ -509,6 +509,6 @@ entry_point(CmdLine* cmd_line)
   //
   for(String8Node* n = dump.first; n != 0; n = n.next)
   {
-    fwrite(n.string.str, 1, n.string.size, stdout);
+    fwrite(n.str.Ptr, 1, n.str.Length, stdout);
   }
 }
