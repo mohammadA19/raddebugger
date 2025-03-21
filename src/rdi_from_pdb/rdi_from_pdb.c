@@ -384,10 +384,10 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 //~ rjf: Location Info Building Helpers
 
 internal RDIM_Location *
-p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
+p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, long offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
-  if(0 <= offset && offset <= (S64)max_U16)
+  if(0 <= offset && offset <= (long)max_U16)
   {
     if(extra_indirection)
     {
@@ -2490,7 +2490,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             U32 byte_pos = 0;
             
             // rjf: set location case
-            RDIM_Location *loc = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, (S64)(S32)var_off, extra_indirection_to_value);
+            RDIM_Location *loc = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, (long)(int)var_off, extra_indirection_to_value);
             RDIM_Rng1U64 voff_range = {0, max_U64};
             rdim_location_set_push_case(arena, &sym_scopes, &local->locset, voff_range, loc);
           }
@@ -2652,7 +2652,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           B32 extra_indirection = 0;
           U32 byte_size = rdi_addr_size_from_arch(in->arch);
           U32 byte_pos = 0;
-          S64 var_off = (S64)defrange_fprel->off;
+          long var_off = (long)defrange_fprel->off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, fp_register_code, byte_size, byte_pos, var_off, extra_indirection);
           
           // rjf: emit locations over ranges
@@ -2724,7 +2724,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           B32 extra_indirection = 0;
           U32 byte_size = rdi_addr_size_from_arch(in->arch);
           U32 byte_pos = 0;
-          S64 var_off = (S64)defrange_fprel_full_scope->off;
+          long var_off = (long)defrange_fprel_full_scope->off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, fp_register_code, byte_size, byte_pos, var_off, extra_indirection);
           
           // rjf: emit location over ranges
@@ -2756,7 +2756,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           U32 byte_size = rdi_addr_size_from_arch(in->arch);
           U32 byte_pos = 0;
           B32 extra_indirection_to_value = 0;
-          S64 var_off = defrange_register_rel->reg_off;
+          long var_off = defrange_register_rel->reg_off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, var_off, extra_indirection_to_value);
           
           // rjf: emit locations over ranges

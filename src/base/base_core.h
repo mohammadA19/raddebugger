@@ -368,14 +368,14 @@ typedef uint8_t  U8;
 typedef uint16_t U16;
 typedef uint32_t U32;
 typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
-typedef S8       B8;
-typedef S16      B16;
-typedef S32      B32;
-typedef S64      B64;
+typedef int8_t   sbyte;
+typedef int16_t  short;
+typedef int32_t  int;
+typedef int64_t  long;
+typedef sbyte       B8;
+typedef short      B16;
+typedef int      B32;
+typedef long      B64;
 typedef float    F32;
 typedef double   F64;
 typedef void VoidProc(void);
@@ -490,8 +490,8 @@ Compiler;
 typedef struct TxtPt TxtPt;
 struct TxtPt
 {
-  S64 line;
-  S64 column;
+  long line;
+  long column;
 };
 
 typedef struct TxtRng TxtRng;
@@ -565,15 +565,15 @@ global U32 max_U32 = 0xffffffff;
 global U16 max_U16 = 0xffff;
 global U8  max_U8  = 0xff;
 
-global S64 max_S64 = (S64)0x7fffffffffffffffull;
-global S32 max_S32 = (S32)0x7fffffff;
-global S16 max_S16 = (S16)0x7fff;
-global S8  max_S8  =  (S8)0x7f;
+global long max_S64 = (long)0x7fffffffffffffffull;
+global int max_S32 = (int)0x7fffffff;
+global short max_S16 = (short)0x7fff;
+global sbyte  max_S8  =  (sbyte)0x7f;
 
-global S64 min_S64 = (S64)0xffffffffffffffffull;
-global S32 min_S32 = (S32)0xffffffff;
-global S16 min_S16 = (S16)0xffff;
-global S8  min_S8  =  (S8)0xff;
+global long min_S64 = (long)0xffffffffffffffffull;
+global int min_S32 = (int)0xffffffff;
+global short min_S16 = (short)0xffff;
+global sbyte  min_S8  =  (sbyte)0xff;
 
 global const U32 bitmask1  = 0x00000001;
 global const U32 bitmask2  = 0x00000003;
@@ -788,7 +788,7 @@ struct FileProperties
 
 internal U16 safe_cast_u16(U32 x);
 internal U32 safe_cast_u32(U64 x);
-internal S32 safe_cast_s32(S64 x);
+internal int safe_cast_s32(long x);
 
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
@@ -802,8 +802,8 @@ internal B32 u128_match(U128 a, U128 b);
 
 internal U32 u32_from_u64_saturate(U64 x);
 internal U64 u64_up_to_pow2(U64 x);
-internal S32 extend_sign32(U32 x, U32 size);
-internal S64 extend_sign64(U64 x, U64 size);
+internal int extend_sign32(U32 x, U32 size);
+internal long extend_sign64(U64 x, U64 size);
 
 internal F32 inf32(void);
 internal F32 neg_inf32(void);
@@ -833,7 +833,7 @@ internal U64 clz64(U64 val);
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-internal S32 sign_from_side_S32(Side side);
+internal int sign_from_side_S32(Side side);
 internal F32 sign_from_side_F32(Side side);
 
 ////////////////////////////////
@@ -844,7 +844,7 @@ internal B32 memory_is_zero(void *ptr, U64 size);
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
 
-internal TxtPt txt_pt(S64 line, S64 column);
+internal TxtPt txt_pt(long line, long column);
 internal B32 txt_pt_match(TxtPt a, TxtPt b);
 internal B32 txt_pt_less_than(TxtPt a, TxtPt b);
 internal TxtPt txt_pt_min(TxtPt a, TxtPt b);

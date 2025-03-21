@@ -185,10 +185,10 @@ read_only global Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, st
 read_only global Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
 read_only global Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
 read_only global Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
-read_only global Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
-read_only global Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
-read_only global Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
-read_only global Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
+read_only global Type S8__type   = {TypeKind_S8,   0, sizeof(sbyte),  &type_nil, str8_lit_comp("sbyte")};
+read_only global Type S16__type  = {TypeKind_S16,  0, sizeof(short), &type_nil, str8_lit_comp("short")};
+read_only global Type S32__type  = {TypeKind_S32,  0, sizeof(int), &type_nil, str8_lit_comp("int")};
+read_only global Type S64__type  = {TypeKind_S64,  0, sizeof(long), &type_nil, str8_lit_comp("long")};
 read_only global Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
 read_only global Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
 read_only global Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
@@ -203,10 +203,10 @@ read_only global Type *type_kind_type_table[] =
   type(U16),
   type(U32),
   type(U64),
-  type(S8),
-  type(S16),
-  type(S32),
-  type(S64),
+  type(sbyte),
+  type(short),
+  type(int),
+  type(long),
   type(B8),
   type(B16),
   type(B32),

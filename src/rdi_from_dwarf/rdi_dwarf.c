@@ -23,7 +23,7 @@ dwarf_leb128_decode_U64(U8 *ptr, U8 *opl){
   return(r);
 }
 
-static S64
+static long
 dwarf_leb128_decode_S64(U8 *ptr, U8 *opl){
   U64 u = dwarf_leb128_decode_U32(ptr, opl);
   U64 s = (U64)(opl - ptr)*7;
@@ -41,7 +41,7 @@ dwarf_leb128_decode_S64(U8 *ptr, U8 *opl){
       case 1: u |= ~              0x7Fllu; break;
     }
   }
-  S64 r = (S64)(u);
+  long r = (long)(u);
   return(r);
 }
 
@@ -524,7 +524,7 @@ dwarf_line_from_data(Arena *arena, String8 data){
     U8  minimum_instruction_length = 0;
     U8  maximum_operations_per_instruction = 0;
     U8  default_is_stmt = 0;
-    S8  line_base = 0;
+    sbyte  line_base = 0;
     U8  line_range = 0;
     U8  opcode_base = 0;
     U8 *standard_opcode_lengths = 0;
@@ -567,7 +567,7 @@ dwarf_line_from_data(Arena *arena, String8 data){
         default_is_stmt = MemoryConsume(U8, ptr, header_opl);
         
         // line_base
-        line_base = MemoryConsume(S8, ptr, header_opl);
+        line_base = MemoryConsume(sbyte, ptr, header_opl);
         
         // line_range
         line_range = MemoryConsume(U8, ptr, header_opl);
@@ -674,7 +674,7 @@ dwarf_line_from_data(Arena *arena, String8 data){
         default_is_stmt = MemoryConsume(U8, ptr, header_opl);
         
         // line_base
-        line_base = MemoryConsume(S8, ptr, header_opl);
+        line_base = MemoryConsume(sbyte, ptr, header_opl);
         
         // line_range
         line_range = MemoryConsume(U8, ptr, header_opl);
@@ -1844,7 +1844,7 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
           if (form == DWARF_AttributeForm_implicit_const){
             U8 *attrib_value = attrib_ptr;
             DWARF_LEB128_ADV_NOCAP(attrib_ptr);
-            S64 value = dwarf_leb128_decode_S64(attrib_form, attrib_ptr);
+            long value = dwarf_leb128_decode_S64(attrib_form, attrib_ptr);
             implicit_const[i] = value;
           }
         }

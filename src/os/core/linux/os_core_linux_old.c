@@ -30,7 +30,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
     for (;p < list.total_size;){
       U64 amt64 = (U64)(opl - ptr);
       U32 amt = u32_from_u64_saturate(amt64);
-      S64 written_amt = write(fd, ptr, amt);
+      long written_amt = write(fd, ptr, amt);
       if (written_amt < 0){
         break;
       }
@@ -923,7 +923,7 @@ os_machine_name(void){
     B32 got_final_result = false;
     U8 *buffer = 0;
     int size = 0;
-    for (S64 cap = 4096, r = 0;
+    for (long cap = 4096, r = 0;
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
@@ -979,15 +979,15 @@ os_get_command_line_arguments(void)
   return lnx_cmd_line_args;
 }
 
-internal S32
+internal int
 os_pid(void){
-  S32 result = getpid();
+  int result = getpid();
   return(result);
 }
 
-internal S32
+internal int
 os_tid(void){
-  S32 result = 0;
+  int result = 0;
 #ifdef SYS_gettid
   result = syscall(SYS_gettid);
 #else
@@ -1024,7 +1024,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         B32 got_final_result = false;
         U8 *buffer = 0;
         int size = 0;
-        for (S64 cap = PATH_MAX, r = 0;
+        for (long cap = PATH_MAX, r = 0;
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
@@ -1090,7 +1090,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
 //~ rjf: @os_hooks Process Control (Implemented Per-OS)
 
 internal void
-os_abort(S32 exit_code){
+os_abort(int exit_code){
   exit(exit_code);
 }
 

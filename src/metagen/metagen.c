@@ -29,7 +29,7 @@ read_only global String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] 
   str8_lit_comp("!="), // MG_StrExprOp_DoesNotEqual
 };
 
-read_only global S8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
+read_only global sbyte mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
 {
   0,
   20, // MG_StrExprOp_Dot
@@ -364,7 +364,7 @@ mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
 }
 
 internal MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec)
+mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, sbyte min_prec)
 {
   MG_StrExprParseResult parse = {&mg_str_expr_nil};
   {
@@ -709,10 +709,10 @@ mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 i
   return result;
 }
 
-internal S64
+internal long
 mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
 {
-  S64 result = 0;
+  long result = 0;
   MG_StrExprOp op = expr->op;
   
   switch(op)
@@ -749,8 +749,8 @@ mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
     case MG_StrExprOp_BooleanAnd:
     case MG_StrExprOp_BooleanOr:
     {
-      S64 left_val = mg_eval_table_expand_expr__numeric(expr->left, info);
-      S64 right_val = mg_eval_table_expand_expr__numeric(expr->right, info);
+      long left_val = mg_eval_table_expand_expr__numeric(expr->left, info);
+      long right_val = mg_eval_table_expand_expr__numeric(expr->right, info);
       switch(op)
       {
         default:break;
@@ -773,11 +773,11 @@ mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
     case MG_StrExprOp_BitwiseNegate:
     case MG_StrExprOp_BooleanNot:
     {
-      S64 right_val = mg_eval_table_expand_expr__numeric(expr->left, info);
+      long right_val = mg_eval_table_expand_expr__numeric(expr->left, info);
       switch(op)
       {
         default:break;
-        case MG_StrExprOp_BitwiseNegate: result = (S64)(~((U64)right_val)); break;
+        case MG_StrExprOp_BitwiseNegate: result = (long)(~((U64)right_val)); break;
         case MG_StrExprOp_BooleanNot:    result = !right_val;
       }
     }break;
@@ -813,7 +813,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
     {
       if(MG_StrExprOp_FirstNumeric <= op && op <= MG_StrExprOp_LastNumeric)
       {
-        S64 numeric_eval = mg_eval_table_expand_expr__numeric(expr, info);
+        long numeric_eval = mg_eval_table_expand_expr__numeric(expr, info);
         String8 numeric_eval_stringized = {0};
         if(md_node_has_tag(md_root_from_node(expr->node), str8_lit("hex"), 0))
         {
@@ -907,7 +907,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
     
     case MG_StrExprOp_ExpandIfTrue:
     {
-      S64 bool_value = mg_eval_table_expand_expr__numeric(expr->left, info);
+      long bool_value = mg_eval_table_expand_expr__numeric(expr->left, info);
       if(bool_value)
       {
         mg_eval_table_expand_expr__string(arena, expr->right, info, out);
@@ -922,15 +922,15 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
     
     case MG_StrExprOp_BumpToColumn:
     {
-      S64 column = mg_eval_table_expand_expr__numeric(expr->left, info);
-      S64 current_column = out->total_size;
-      S64 spaces_to_push = column - current_column;
+      long column = mg_eval_table_expand_expr__numeric(expr->left, info);
+      long current_column = out->total_size;
+      long spaces_to_push = column - current_column;
       if(spaces_to_push > 0)
       {
         String8 str = {0};
         str.size = spaces_to_push;
         str.str = push_array(arena, U8, spaces_to_push);
-        for(S64 idx = 0; idx < spaces_to_push; idx += 1)
+        for(long idx = 0; idx < spaces_to_push; idx += 1)
         {
           str.str[idx] = ' ';
         }
@@ -977,7 +977,7 @@ mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo
         {
           String8 string = str8_skip(strexpr, char_idx+1);
           Rng1U64 expr_range = {0};
-          S64 paren_nest = 0;
+          long paren_nest = 0;
           for(U64 idx = 0; idx < string.size; idx += 1)
           {
             if(string.str[idx] == '(')

@@ -1846,7 +1846,7 @@ struct CV_SymDefrangeRegister
 typedef struct CV_SymDefrangeFramepointerRel CV_SymDefrangeFramepointerRel;
 struct CV_SymDefrangeFramepointerRel
 {
-  S32              off;
+  int              off;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
 };
@@ -1870,7 +1870,7 @@ struct CV_SymDefrangeSubfieldRegister
 typedef struct CV_SymDefrangeFramepointerRelFullScope CV_SymDefrangeFramepointerRelFullScope;
 struct CV_SymDefrangeFramepointerRelFullScope
 {
-  S32 off;
+  int off;
 };
 
 //- (SymKind: DEFRANGE_REGISTER_REL)
@@ -1887,7 +1887,7 @@ struct CV_SymDefrangeRegisterRel
 {
   CV_Reg                      reg;
   CV_DefrangeRegisterRelFlags flags;
-  S32                         reg_off;
+  int                         reg_off;
   CV_LvarAddrRange            range;
   // CV_LvarAddGap[] gaps (rest of data)
 };
@@ -2444,7 +2444,7 @@ struct CV_LeafMFunction
   CV_FunctionAttribs attribs;
   U16                arg_count;
   CV_TypeId          arg_itype;
-  S32                this_adjust;
+  int                this_adjust;
 };
 
 //- (LeafKind: ARGLIST)

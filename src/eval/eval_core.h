@@ -48,9 +48,9 @@ union E_Value
   U64 u64;
   U32 u32;
   U16 u16;
-  S64 s64;
-  S32 s32;
-  S32 s16;
+  long s64;
+  int s32;
+  int s16;
   F64 f64;
   F32 f32;
 };
@@ -70,7 +70,7 @@ typedef struct E_OpInfo E_OpInfo;
 struct E_OpInfo
 {
   E_OpKind kind;
-  S64 precedence;
+  long precedence;
   String8 pre;
   String8 sep;
   String8 post;

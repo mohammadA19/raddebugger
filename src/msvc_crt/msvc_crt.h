@@ -122,12 +122,12 @@ typedef struct MSCRT_FuncInfo32
 typedef struct MSCRT_IPState32
 {
   U32 ip;
-  S32 state;
+  int state;
 } MSCRT_IPState32;
 
 typedef struct MSCRT_UnwindMap32
 {
-  S32 next_state;
+  int next_state;
   U32 action_virt_off;
 } MSCRT_UnwindMap32;
 
@@ -142,31 +142,31 @@ typedef struct MSCRT_EhHandlerType32
 
 typedef struct MSCRT_TryMapBlock32
 {
-  S32 try_low;
-  S32 try_high;
-  S32 catch_high;
-  S32 catch_handlers_count;
+  int try_low;
+  int try_high;
+  int catch_high;
+  int catch_handlers_count;
   U32 catch_handlers_voff;
 } MSCRT_TryMapBlock32;
 
 typedef struct MSCRT_ExceptionSpecTypeList32
 {
-  S32 count;
+  int count;
   U32 handlers_voff;
 } MSCRT_ExceptionSpecTypeList32;
 
 typedef struct MSCRT_TryMapBlock
 {
-  S32                    try_low;
-  S32                    try_high;
-  S32                    catch_high;
-  S32                    catch_handlers_count;
+  int                    try_low;
+  int                    try_high;
+  int                    catch_high;
+  int                    catch_handlers_count;
   MSCRT_EhHandlerType32 *catch_handlers;
 } MSCRT_TryMapBlock;
 
 typedef struct MSCRT_ExceptionSpecTypeList
 {
-  S32                    count;
+  int                    count;
   MSCRT_EhHandlerType32 *handlers;
 } MSCRT_ExceptionSpecTypeList;
 
@@ -233,9 +233,9 @@ typedef struct MSCRT_EhHandlerTypeV4
 {
   MSCRT_EhHandlerV4Flags   flags;
   MSCRT_EhHandlerTypeFlags adjectives;
-  S32                      type_voff;
+  int                      type_voff;
   U32                      catch_obj_voff;
-  S32                      catch_code_voff;
+  int                      catch_code_voff;
   U64                      catch_funclet_cont_addr[2];
   U32                      catch_funclet_cont_addr_count;
 } MSCRT_EhHandlerTypeV4;
@@ -251,36 +251,36 @@ typedef struct MSCRT_TryBlockMap32V4
   U32 try_low;
   U32 try_high;
   U32 catch_high;
-  S32 handler_array_voff;
+  int handler_array_voff;
 } MSCRT_TryBlockMap32V4;
 
 typedef struct MSCRT_IP2State32V4
 {
   U32  count;
   U32 *voffs;
-  S32 *states;
+  int *states;
 } MSCRT_IP2State32V4;
 
 typedef struct MSCRT_SepIPState32V4
 {
-  S32 func_start_voff;
-  S32 ip_map_voff;
+  int func_start_voff;
+  int ip_map_voff;
 } MSCRT_SepIPState32V4;
 
 typedef struct MSCRT_FuncInfo32V4
 {
   MSCRT_FuncInfoV4Flags header;
   U32                   bbt_flags;
-  S32                   unwind_map_voff;
-  S32                   try_block_map_voff;
-  S32                   ip_to_state_map_voff;
-  S32                   wrt_frame_establisher_voff; // used only in catch funclets
+  int                   unwind_map_voff;
+  int                   try_block_map_voff;
+  int                   ip_to_state_map_voff;
+  int                   wrt_frame_establisher_voff; // used only in catch funclets
 } MSCRT_FuncInfo32V4;
 
 typedef struct MSCRT_UnwindEntryV4
 {
   MSCRT_UnwindMapV4Type type;
-  S32                   action;
+  int                   action;
   U32                   object;
   U32                   next_off;
 } MSCRT_UnwindEntryV4;

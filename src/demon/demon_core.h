@@ -74,8 +74,8 @@ struct DMN_Event
   String8 string;
   U32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
   U32 flags;
-  S32 signo;
-  S32 sigcode;
+  int signo;
+  int sigcode;
   U64 instruction_pointer;
   U64 stack_pointer;
   U64 user_data;

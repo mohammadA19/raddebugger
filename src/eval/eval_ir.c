@@ -99,7 +99,7 @@ e_oplist_push_uconst(Arena *arena, E_OpList *list, U64 x)
 }
 
 internal void
-e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x)
+e_oplist_push_sconst(Arena *arena, E_OpList *list, long x)
 {
   if(-0x80 <= x && x <= 0x7F)
   {

@@ -20,11 +20,11 @@ safe_cast_u32(U64 x)
   return result;
 }
 
-internal S32
-safe_cast_s32(S64 x)
+internal int
+safe_cast_s32(long x)
 {
   AssertAlways(x <= max_S32);
-  S32 result = (S32)x;
+  int result = (int)x;
   return result;
 }
 
@@ -78,19 +78,19 @@ u64_up_to_pow2(U64 x){
   return(x);
 }
 
-internal S32
+internal int
 extend_sign32(U32 x, U32 size){
   U32 high_bit = size * 8;
   U32 shift = 32 - high_bit;
-  S32 result = ((S32)x << shift) >> shift;
+  int result = ((int)x << shift) >> shift;
   return result;
 }
 
-internal S64
+internal long
 extend_sign64(U64 x, U64 size){
   U64 high_bit = size * 8;
   U64 shift = 64 - high_bit;
-  S64 result = ((S64)x << shift) >> shift;
+  long result = ((long)x << shift) >> shift;
   return result;
 }
 
@@ -232,7 +232,7 @@ clz64(U64 val)
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-internal S32
+internal int
 sign_from_side_S32(Side side){
   return((side == Side_Min)?-1:1);
 }
@@ -285,7 +285,7 @@ memory_is_zero(void *ptr, U64 size){
 //~ rjf: Text 2D Coordinate/Range Functions
 
 internal TxtPt
-txt_pt(S64 line, S64 column)
+txt_pt(long line, long column)
 {
   TxtPt p = {0};
   p.line = line;

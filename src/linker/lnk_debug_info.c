@@ -1911,9 +1911,9 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
     U32 loc_idx_max_bits = 32 - clz32(Max(obj_count, type_server_count));
 
     LNK_LeafRadixSortTask task = {0};
-    task.loc_idx_bit_count_0   = Clamp(0, (S32)loc_idx_max_bits - 21, 11);
-    task.loc_idx_bit_count_1   = Clamp(0, (S32)loc_idx_max_bits - 10, 11);
-    task.loc_idx_bit_count_2   = Clamp(0, (S32)loc_idx_max_bits,      10);
+    task.loc_idx_bit_count_0   = Clamp(0, (int)loc_idx_max_bits - 21, 11);
+    task.loc_idx_bit_count_1   = Clamp(0, (int)loc_idx_max_bits - 10, 11);
+    task.loc_idx_bit_count_2   = Clamp(0, (int)loc_idx_max_bits,      10);
     task.counts_max            = (1 << 11);
     task.loc_idx_max           = arr.count;
     task.ranges                = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
@@ -5008,7 +5008,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
         RDI_RegCode reg_code   = rdi_reg_code_from_cv(comp_info.arch, regrel32->reg);
         U32         value_size = 8;
         U32         value_pos  = 0;
-        rdib_push_location_addr_reg_off(arena, &local->locations, arch_rdi, reg_code, value_size, value_pos, (S64)regrel32->reg_off, is_ref, scope_stack->scope->ranges);
+        rdib_push_location_addr_reg_off(arena, &local->locations, arch_rdi, reg_code, value_size, value_pos, (long)regrel32->reg_off, is_ref, scope_stack->scope->ranges);
 
         // advance reg rel index
         ++scope_stack->regrel32_idx;
@@ -5100,7 +5100,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       U32                   value_pos      = 0;
       U32                   value_size     = rdi_addr_size_from_arch(arch_rdi);
 
-      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, fp_reg_rdi, value_size, value_pos, (S64)defrange_fprel->off, 0, ranges);
+      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, fp_reg_rdi, value_size, value_pos, (long)defrange_fprel->off, 0, ranges);
     } break;
     case CV_SymKind_DEFRANGE_SUBFIELD_REGISTER: {
       if (scope_stack->defrange_target == 0) {
@@ -5138,7 +5138,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       U32                                     value_pos        = 0;
       Rng1U64List                             ranges           = scope_stack->scope->ranges; // variable is available everywhere in the scope
 
-      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, fp_reg_rdi, value_size, value_pos, (S64)defrange_fprelfs->off, 0, ranges);
+      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, fp_reg_rdi, value_size, value_pos, (long)defrange_fprelfs->off, 0, ranges);
     } break;
     case CV_SymKind_DEFRANGE_REGISTER_REL: {
       if (scope_stack->defrange_target == 0) {
@@ -5155,7 +5155,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       Rng1U64                    defrange              = lnk_virt_range_from_sect_off_size(defrange_register_rel->range.sec, defrange_register_rel->range.off, defrange_register_rel->range.len, task->image_sects, obj, symbol.kind, symbol.offset);
       Rng1U64List                ranges                = cv_make_defined_range_list_from_gaps(arena, defrange, gaps, gap_count);
 
-      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, reg_rdi, value_size, value_pos, (S64)defrange_register_rel->reg_off, 0, ranges);
+      rdib_push_location_addr_reg_off(arena, &scope_stack->defrange_target->locations, arch_rdi, reg_rdi, value_size, value_pos, (long)defrange_register_rel->reg_off, 0, ranges);
     } break;
     case CV_SymKind_INLINESITE: {
       CV_SymInlineSite *sym_inline_site = (CV_SymInlineSite *) symbol.data.str;

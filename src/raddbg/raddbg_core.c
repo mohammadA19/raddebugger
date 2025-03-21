@@ -561,7 +561,7 @@ rd_target_rect_from_panel(Rng2F32 root_rect, RD_Panel *root, RD_Panel *panel)
   
   // rjf: go from highest ancestor => panel and calculate rect
   Rng2F32 parent_rect = root_rect;
-  for(S64 ancestor_idx = (S64)ancestor_count-1;
+  for(long ancestor_idx = (long)ancestor_count-1;
       0 <= ancestor_idx && ancestor_idx < ancestor_count;
       ancestor_idx -= 1)
   {
@@ -1196,7 +1196,7 @@ rd_cfg_tree_list_from_string(Arena *arena, String8 string)
         }
         dst_active_parent_n = dst_n;
       }
-      else for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+      else for(int pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
       {
         dst_active_parent_n = dst_active_parent_n->parent;
       }
@@ -1296,7 +1296,7 @@ rd_string_from_cfg_tree(Arena *arena, RD_Cfg *cfg)
       }
       else
       {
-        for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1, SLLStackPop(top_nest_task))
+        for(int pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1, SLLStackPop(top_nest_task))
         {
           if(top_nest_task->is_simple)
           {
@@ -3995,7 +3995,7 @@ rd_window_frame(RD_Window *ws)
         //- rjf: draw entity tree
 #if 0
         RD_EntityRec rec = {0};
-        S32 indent = 0;
+        int indent = 0;
         UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("Entity Tree:");
         for(RD_Entity *e = rd_entity_root(); !rd_entity_is_nil(e); e = rec.next)
         {
@@ -5303,7 +5303,7 @@ rd_window_frame(RD_Window *ws)
                 UI_Event move_back_evt = zero_struct;
                 move_back_evt.kind = UI_EventKind_Navigate;
                 move_back_evt.flags = UI_EventFlag_KeepMark;
-                move_back_evt.delta_2s32.x = -(S32)query_word.size;
+                move_back_evt.delta_2s32.x = -(int)query_word.size;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &move_back_evt);
                 UI_Event paste_evt = zero_struct;
                 paste_evt.kind = UI_EventKind_Text;
@@ -8147,7 +8147,7 @@ rd_window_frame(RD_Window *ws)
     {
       Rng2F32 rect = os_client_rect_from_window(ws->os);
       Vec2F32 size = dim_2f32(rect);
-      Vec2S32 buckets_dim = {(S32)(size.x/heatmap_bucket_size), (S32)(size.y/heatmap_bucket_size)};
+      Vec2S32 buckets_dim = {(int)(size.x/heatmap_bucket_size), (int)(size.y/heatmap_bucket_size)};
       heatmap_bucket_pitch = buckets_dim.x;
       heatmap_bucket_count = buckets_dim.x*buckets_dim.y;
       heatmap_buckets = push_array(scratch.arena, U64, heatmap_bucket_count);
@@ -8410,7 +8410,7 @@ rd_window_frame(RD_Window *ws)
       
       // rjf: pop
       {
-        S32 pop_idx = 0;
+        int pop_idx = 0;
         for(UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent)
         {
           pop_idx += 1;
@@ -9365,7 +9365,7 @@ rd_ev_view_from_key(U64 key)
 }
 
 internal F32
-rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, S32 depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out)
+rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -9929,8 +9929,8 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 stri
     DescendStep *first_step = 0;
     DescendStep *last_step = 0;
     DescendStep *free_step = 0;
-    S32 paren_nest = 0;
-    S32 colon_nest = 0;
+    int paren_nest = 0;
+    int colon_nest = 0;
     String8 last_step_string = {0};
     for(U64 idx = 0; idx < input_tokenize.tokens.count; idx += 1)
     {
@@ -10372,7 +10372,7 @@ rd_font_size_from_slot(RD_FontSlot slot)
     F32 old_dpi = ws->last_dpi;
     F32 new_dpi = dpi;
     ws->last_dpi = dpi;
-    S32 *pt_sizes[] =
+    int *pt_sizes[] =
     {
       &ws->setting_vals[RD_SettingCode_MainFontSize].s32,
       &ws->setting_vals[RD_SettingCode_CodeFontSize].s32,
@@ -10381,7 +10381,7 @@ rd_font_size_from_slot(RD_FontSlot slot)
     {
       F32 ratio = pt_sizes[idx][0] / old_dpi;
       F32 new_pt_size = ratio*new_dpi;
-      pt_sizes[idx][0] = (S32)new_pt_size;
+      pt_sizes[idx][0] = (int)new_pt_size;
     }
   }
   switch(slot)
@@ -10483,7 +10483,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
                           slashes);
         }
         RD_EntityRec rec = {0};
-        S64 depth = 0;
+        long depth = 0;
         for(RD_Entity *e = entity; !rd_entity_is_nil(e); e = rec.next)
         {
           //- rjf: get next iteration
@@ -10587,7 +10587,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
           // rjf: pop
           if(rec.push_count == 0)
           {
-            for(S64 pop_idx = 0; pop_idx < rec.pop_count + opened_brace; pop_idx += 1)
+            for(long pop_idx = 0; pop_idx < rec.pop_count + opened_brace; pop_idx += 1)
             {
               if(depth > 0)
               {
@@ -10664,7 +10664,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
       }
       {
         RD_PanelRec rec = {0};
-        S32 indentation = 2;
+        int indentation = 2;
         String8 indent_str = str8_lit("                                                                                                   ");
         str8_list_pushf(arena, &strs, "  panels:\n");
         str8_list_pushf(arena, &strs, "  {\n");
@@ -10786,7 +10786,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
                     {
                       str8_list_pushf(arena, &strs, ":{");
                     }
-                    for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+                    for(int pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
                     {
                       if(pop_idx == rec.pop_count-1 && rec.next == &md_nil_node)
                       {
@@ -10813,7 +10813,7 @@ rd_cfg_strings_from_gfx(Arena *arena, String8 root_path, RD_CfgSrc source)
           }
           
           // rjf: pop
-          for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+          for(int pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
           {
             indentation -= 1;
             if(pop_idx == rec.pop_count-1 && rec.next == &rd_nil_panel)
@@ -11659,7 +11659,7 @@ rd_frame(void)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  local_persist S32 depth = 0;
+  local_persist int depth = 0;
   log_scope_begin();
   
   //- TODO(rjf): @cfg debugging: stringify the current cfg tree
@@ -11723,14 +11723,14 @@ rd_frame(void)
     // we've been performing
     F32 possible_alternate_hz_targets[] = {target_hz, 60.f, 120.f, 144.f, 240.f};
     F32 best_target_hz = target_hz;
-    S64 best_target_hz_frame_time_us_diff = max_S64;
+    long best_target_hz_frame_time_us_diff = max_S64;
     for(U64 idx = 0; idx < ArrayCount(possible_alternate_hz_targets); idx += 1)
     {
       F32 candidate = possible_alternate_hz_targets[idx];
       if(candidate <= target_hz)
       {
         U64 candidate_frame_time_us = 1000000/(U64)candidate;
-        S64 frame_time_us_diff = (S64)frame_time_history_avg_us - (S64)candidate_frame_time_us;
+        long frame_time_us_diff = (long)frame_time_history_avg_us - (long)candidate_frame_time_us;
         if(abs_s64(frame_time_us_diff) < best_target_hz_frame_time_us_diff)
         {
           best_target_hz = candidate;
@@ -12809,7 +12809,7 @@ rd_frame(void)
                             string = path_absolute_dst_from_relative_dst_src(scratch.arena, string, cfg_folder);
                           }
                           rd_entity_equip_name(t->entity, string);
-                          S64 line = 0;
+                          long line = 0;
                           try_s64_from_str8_c_rules(child->first->string, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t->entity, pt);
@@ -12870,7 +12870,7 @@ rd_frame(void)
                         }
                         if(str8_match(child->string, str8_lit("line"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
                         {
-                          S64 line = 0;
+                          long line = 0;
                           try_s64_from_str8_c_rules(child->first->string, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t->entity, pt);
@@ -13087,10 +13087,10 @@ rd_frame(void)
                   MD_Node *code_node = md_child_from_string(window_tree->root, rd_setting_code_lower_string_table[code], 0);
                   if(!md_node_is_nil(code_node))
                   {
-                    S64 val_s64 = 0;
+                    long val_s64 = 0;
                     try_s64_from_str8_c_rules(code_node->first->string, &val_s64);
                     setting_vals[code].set = 1;
-                    setting_vals[code].s32 = (S32)val_s64;
+                    setting_vals[code].s32 = (int)val_s64;
                     setting_vals[code].s32 = clamp_1s32(rd_setting_code_s32_range_table[code], setting_vals[code].s32);
                   }
                 }
@@ -13490,11 +13490,11 @@ rd_frame(void)
               if(code_tree->source == src)
               {
                 MD_Node *val_node = code_tree->root->first;
-                S64 val = 0;
+                long val = 0;
                 if(try_s64_from_str8_c_rules(val_node->string, &val))
                 {
                   rd_state->cfg_setting_vals[src][code].set = 1;
-                  rd_state->cfg_setting_vals[src][code].s32 = (S32)val;
+                  rd_state->cfg_setting_vals[src][code].s32 = (int)val;
                 }
                 setting_codes_hit[code] = !md_node_is_nil(val_node);
               }
@@ -15283,7 +15283,7 @@ rd_frame(void)
             if(view_is_tab && view->spec->flags & RD_ViewRuleInfoFlag_CanFilter)
             {
               view->is_filtering ^= 1;
-              view->query_cursor = txt_pt(1, 1+(S64)view->query_string_size);
+              view->query_cursor = txt_pt(1, 1+(long)view->query_string_size);
               view->query_mark = txt_pt(1, 1);
             }
           }break;
@@ -15515,7 +15515,7 @@ rd_frame(void)
                   {
                     RD_Cfg *bp = n->v;
                     RD_Cfg *loc = rd_cfg_child_from_string(bp, str8_lit("location"));
-                    S64 loc_line = 0;
+                    long loc_line = 0;
                     U64 loc_vaddr = 0;
                     B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc->first->string, file_path) && try_s64_from_str8_c_rules(loc->first->first->string, &loc_line) && loc_line == pt.line);
                     B32 loc_matches_string  = (string.size != 0 && str8_match(loc->first->string, string, 0));
@@ -15615,7 +15615,7 @@ rd_frame(void)
                   RD_Cfg *wp = n->v;
                   RD_Cfg *name = rd_cfg_child_from_string(wp, str8_lit("name"));
                   RD_Cfg *loc = rd_cfg_child_from_string(wp, str8_lit("location"));
-                  S64 loc_line = 0;
+                  long loc_line = 0;
                   U64 loc_vaddr = 0;
                   B32 loc_matches_file_pt = (file_path.size != 0 && path_match_normalized(loc->first->string, file_path) && try_s64_from_str8_c_rules(loc->first->first->string, &loc_line) && loc_line == pt.line);
                   B32 loc_matches_vaddr   = (vaddr != 0 && try_u64_from_str8_c_rules(loc->first->string, &loc_vaddr) && loc_vaddr == vaddr);

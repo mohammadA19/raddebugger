@@ -128,10 +128,10 @@ os_id_from_file_path(String8 path)
   return id;
 }
 
-internal S64
+internal long
 os_file_id_compare(OS_FileID a, OS_FileID b)
 {
-  S64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
+  long cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
   return cmp;
 }
 

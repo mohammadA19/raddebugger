@@ -4,10 +4,10 @@ typedef U8  RDI_U8;
 typedef U16 RDI_U16;
 typedef U32 RDI_U32;
 typedef U64 RDI_U64;
-typedef S8  RDI_S8;
-typedef S16 RDI_S16;
-typedef S32 RDI_S32;
-typedef S64 RDI_S64;
+typedef sbyte  RDI_S8;
+typedef short RDI_S16;
+typedef int RDI_S32;
+typedef long RDI_S64;
 
 #define RDI_PROC internal
 #define RDIM_MEMSET_OVERRIDE

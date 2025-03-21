@@ -370,7 +370,7 @@ dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *
     case DW_EhPtrEnc_SLEB128:
     {
       U64 size = dw_based_range_read_sleb128(frame_base, frame_range, pointer_off,
-                                                    (S64*)&raw_pointer);
+                                                    (long*)&raw_pointer);
       after_pointer_off = pointer_off + size;
     } break;
   }
@@ -431,7 +431,7 @@ dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off
     
     // read data align
     U64 data_align_factor_off  = code_align_factor_off + code_align_factor_size;
-    S64 data_align_factor      = 0;
+    long data_align_factor      = 0;
     U64 data_align_factor_size = dw_based_range_read_sleb128(base, range, data_align_factor_off, &data_align_factor);
     
     // return address register
@@ -710,8 +710,8 @@ dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx
       cursor += dw_unwind_parse_pointer_x64(raw_eh_frame_hdr.str, rng_1u64(0, raw_eh_frame_hdr.size), ptr_ctx, table_enc, cursor, &init_location);
       cursor += dw_unwind_parse_pointer_x64(raw_eh_frame_hdr.str, rng_1u64(0, raw_eh_frame_hdr.size), ptr_ctx, table_enc, cursor, &address);
       
-      S64 current_delta = (S64)(location - init_location);
-      S64 closest_delta = (S64)(location - closest_location);
+      long current_delta = (long)(location - init_location);
+      long closest_delta = (long)(location - closest_location);
       if (0 <= current_delta && current_delta < closest_delta) {
         closest_location = init_location;
         closest_address  = address;
@@ -908,7 +908,7 @@ dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machin
             o_size = dw_based_range_read_uleb128(base, range, decode_cursor, out);
           } break;
           case DW_CFADecode_SLEB128: {
-            o_size = dw_based_range_read_sleb128(base, range, decode_cursor, (S64*)out);
+            o_size = dw_based_range_read_sleb128(base, range, decode_cursor, (long*)out);
           } break;
         }
         decode_cursor += o_size;
@@ -972,7 +972,7 @@ dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machin
       case DW_CFA_DefCfaSf: {
         row->cfa_cell.rule = DW_CFI_CFA_Rule_RegOff;
         row->cfa_cell.reg_idx = operand1;
-        row->cfa_cell.offset = ((S64)operand2)*cie->data_align_factor;
+        row->cfa_cell.offset = ((long)operand2)*cie->data_align_factor;
       } break;
       
       case DW_CFA_DefCfaRegister: {
@@ -999,7 +999,7 @@ dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machin
           goto done;
         }
         // commit new cfa
-        row->cfa_cell.offset = ((S64)operand1)*cie->data_align_factor;
+        row->cfa_cell.offset = ((long)operand1)*cie->data_align_factor;
       } break;
       
       case DW_CFA_DefCfaExpr: {
@@ -1040,7 +1040,7 @@ dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machin
       case DW_CFA_OffsetExtSf: {
         DW_CFICell *cell = &row->cells[operand1];
         cell->rule       = DW_CFIRegisterRule_Offset;
-        cell->n          = ((S64)operand2)*cie->data_align_factor;
+        cell->n          = ((long)operand2)*cie->data_align_factor;
       } break;
       
       case DW_CFA_ValOffset: {
@@ -1052,7 +1052,7 @@ dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machin
       case DW_CFA_ValOffsetSf: {
         DW_CFICell *cell = &row->cells[operand1];
         cell->rule       = DW_CFIRegisterRule_ValOffset;
-        cell->n          = ((S64)operand2)*cie->data_align_factor;
+        cell->n          = ((long)operand2)*cie->data_align_factor;
       } break;
       
       case DW_CFA_Register: {

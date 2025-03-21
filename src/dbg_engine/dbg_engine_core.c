@@ -994,7 +994,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
       RDI_ParsedSourceLineMap line_map = {0};
       rdi_parsed_from_source_line_map(rdi, src_line_map, &line_map);
       U64 line_idx = 0;
-      for(S64 line_num = line_num_range.min;
+      for(long line_num = line_num_range.min;
           line_num <= line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -1013,10 +1013,10 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
           if(unit_line_info.voffs != 0)
           {
             Rng1U64 range = r1u64(base_voff, unit_line_info.voffs[line_info_idx+1]);
-            S64 actual_line = (S64)unit_line_info.lines[line_info_idx].line_num;
+            long actual_line = (long)unit_line_info.lines[line_info_idx].line_num;
             D_LineNode *n = push_array(arena, D_LineNode, 1);
             n->v.voff_range = range;
-            n->v.pt.line = (S64)actual_line;
+            n->v.pt.line = (long)actual_line;
             n->v.pt.column = 1;
             n->v.dbgi_key = dbgi_key;
             SLLQueuePush(list->first, list->last, n);
@@ -1092,7 +1092,7 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
         RDI_ParsedSourceLineMap line_map = {0};
         rdi_parsed_from_source_line_map(rdi, src_line_map, &line_map);
         U64 line_idx = 0;
-        for(S64 line_num = line_num_range.min;
+        for(long line_num = line_num_range.min;
             line_num <= line_num_range.max;
             line_num += 1, line_idx += 1)
         {
@@ -1111,10 +1111,10 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
             if(unit_line_info.voffs != 0)
             {
               Rng1U64 range = r1u64(base_voff, unit_line_info.voffs[line_info_idx+1]);
-              S64 actual_line = (S64)unit_line_info.lines[line_info_idx].line_num;
+              long actual_line = (long)unit_line_info.lines[line_info_idx].line_num;
               D_LineNode *n = push_array(arena, D_LineNode, 1);
               n->v.voff_range = range;
-              n->v.pt.line = (S64)actual_line;
+              n->v.pt.line = (long)actual_line;
               n->v.pt.column = 1;
               n->v.dbgi_key = key;
               SLLQueuePush(list->first, list->last, n);
@@ -1142,7 +1142,7 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
 }
 
 internal D_LineList
-d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num)
+d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, long line_num)
 {
   D_LineListArray array = d_lines_array_from_dbgi_key_file_path_line_range(arena, dbgi_key, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1154,7 +1154,7 @@ d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 
 }
 
 internal D_LineList
-d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num)
+d_lines_from_file_path_line_num(Arena *arena, String8 file_path, long line_num)
 {
   D_LineListArray array = d_lines_array_from_file_path_line_range(arena, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};

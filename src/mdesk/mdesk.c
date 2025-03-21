@@ -266,7 +266,7 @@ internal MD_Node *
 md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
 {
   MD_Node *result = &md_nil_node;
-  S64 idx = 0;
+  long idx = 0;
   for(MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next, idx += 1)
   {
     if(index == idx)
@@ -841,7 +841,7 @@ md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_Token
     MD_Node *first_gathered_tag;
     MD_Node *last_gathered_tag;
     MD_NodeFlags gathered_node_flags;
-    S32 counted_newlines;
+    int counted_newlines;
   };
   MD_ParseWorkNode first_work =
   {
@@ -1154,7 +1154,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
   String8List strings = {0};
   {
     char *indentation = "                                                                                                                                ";
-    S32 depth = 0;
+    int depth = 0;
     for(MD_Node *node = root, *next = &md_nil_node; !md_node_is_nil(node); node = next)
     {
       // rjf: get next recursion
@@ -1187,7 +1187,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
       depth += rec.push_count;
       
       // rjf: popping -> close braces
-      for(S32 pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
+      for(int pop_idx = 0; pop_idx < rec.pop_count; pop_idx += 1)
       {
         str8_list_pushf(arena, &strings, "%.*s}", depth-1-pop_idx, indentation);
       }

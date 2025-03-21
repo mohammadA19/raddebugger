@@ -1101,25 +1101,25 @@ msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, U64 value)
 }
 
 internal B32
-msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, S8 value)
+msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, sbyte value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, S16 value)
+msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, short value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, S32 value)
+msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, int value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, S64 value)
+msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, long value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
@@ -1239,34 +1239,34 @@ msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt bu
   return 0;
 }
 
-internal S8
+internal sbyte
 msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S8 result = 0;
+  sbyte result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
 
-internal S16
+internal short
 msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S16 result = 0;
+  short result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
 
-internal S32
+internal int
 msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S32 result = 0;
+  int result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
 
-internal S64
+internal long
 msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S64 result = 0;
+  long result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }

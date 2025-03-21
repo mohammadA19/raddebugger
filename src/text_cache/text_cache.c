@@ -1378,9 +1378,9 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
     U64 off = 0;
     B32 escaped = 0;
     B32 string_is_char = 0;
-    S32 brace_nest = 0;
-    S32 paren_nest = 0;
-    S32 string_tick_nest = 0;
+    int brace_nest = 0;
+    int paren_nest = 0;
+    int string_tick_nest = 0;
     for(U64 advance = 0; off <= string.size; off += advance)
     {
       U8 byte      = (off+0 < string.size) ? string.str[off+0] : 0;
@@ -1811,8 +1811,8 @@ txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
     {
       if(contains_1u64(info->lines_ranges[line_idx], off))
       {
-        pt.line = (S64)line_idx + 1;
-        pt.column = (S64)(off - info->lines_ranges[line_idx].min) + 1;
+        pt.line = (long)line_idx + 1;
+        pt.column = (long)(off - info->lines_ranges[line_idx].min) + 1;
       }
     }
   }
@@ -1820,7 +1820,7 @@ txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off)
 }
 
 internal TXT_TokenArray
-txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num)
+txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, long line_num)
 {
   TXT_TokenArray line_tokens = {0};
   if(1 <= line_num && line_num <= info->lines_count)
@@ -1900,7 +1900,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
     if(pt_token != 0)
     {
       B32 walkback_done = 0;
-      S32 nest = 0;
+      int nest = 0;
       for(TXT_Token *wb_token = pt_token;
           wb_token >= line_tokens_first && walkback_done == 0;
           wb_token -= 1)
@@ -1981,7 +1981,7 @@ txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
 }
 
 internal String8
-txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num)
+txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, long line_num)
 {
   String8 result = {0};
   if(1 <= line_num && line_num <= info->lines_count)
@@ -1998,7 +1998,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
   Temp scratch = scratch_begin(&arena, 1);
   if(info->lines_count != 0)
   {
-    Rng1S64 line_range_clamped = r1s64(Clamp(1, line_range.min, (S64)info->lines_count), Clamp(1, line_range.max, (S64)info->lines_count));
+    Rng1S64 line_range_clamped = r1s64(Clamp(1, line_range.min, (long)info->lines_count), Clamp(1, line_range.max, (long)info->lines_count));
     U64 line_count = (U64)dim_1s64(line_range_clamped)+1;
     
     // rjf: allocate output arrays

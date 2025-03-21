@@ -126,15 +126,15 @@ ui_char_is_scan_boundary(U8 c)
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
 
-internal S64
-ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
+internal long
+ui_scanned_column_from_column(String8 string, long start_column, Side side)
 {
-  S64 new_column = start_column;
-  S64 delta = (!!side)*2 - 1;
+  long new_column = start_column;
+  long delta = (!!side)*2 - 1;
   B32 found_text = 0;
   B32 found_non_space = 0;
-  S64 start_off = delta < 0 ? delta : 0;
-  for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
+  long start_off = delta < 0 ? delta : 0;
+  for(long col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
     U8 byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
@@ -182,23 +182,23 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
     }break;
     case UI_EventDeltaUnit_Word:
     {
-      delta.x = (S32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
+      delta.x = (int)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
     case UI_EventDeltaUnit_Line:
     case UI_EventDeltaUnit_Whole:
     case UI_EventDeltaUnit_Page:
     {
-      S64 first_nonwhitespace_column = 1;
+      long first_nonwhitespace_column = 1;
       for(U64 idx = 0; idx < string.size; idx += 1)
       {
         if(!char_is_space(string.str[idx]))
         {
-          first_nonwhitespace_column = (S64)idx + 1;
+          first_nonwhitespace_column = (long)idx + 1;
           break;
         }
       }
-      S64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
-      delta.x = (delta.x > 0) ? ((S64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
+      long home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
+      delta.x = (delta.x > 0) ? ((long)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
     }break;
   }
   
@@ -217,7 +217,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   //- rjf: cap at line
   if(event->flags & UI_EventFlag_CapAtLine)
   {
-    next_cursor.column = Clamp(1, next_cursor.column, (S64)(string.size+1));
+    next_cursor.column = Clamp(1, next_cursor.column, (long)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
@@ -354,16 +354,16 @@ ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 //~ rjf: Scroll Point Type Functions
 
 internal UI_ScrollPt
-ui_scroll_pt(S64 idx, F32 off)
+ui_scroll_pt(long idx, F32 off)
 {
   UI_ScrollPt pt = {idx, off};
   return pt;
 }
 
 internal void
-ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx)
+ui_scroll_pt_target_idx(UI_ScrollPt *v, long idx)
 {
-  v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(S64)v->off - idx);
+  v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(long)v->off - idx);
   v->idx = idx;
 }
 
@@ -372,7 +372,7 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 {
   if(v->idx < range.min || range.max < v->idx)
   {
-    S64 clamped = range.min;
+    long clamped = range.min;
     ui_scroll_pt_target_idx(v, clamped);
   }
 }
@@ -1518,7 +1518,7 @@ ui_end_build(void)
       {
         UI_BoxRec rec = ui_box_rec_df_pre(box, ui_state->root);
         next = rec.next;
-        S32 pop_idx = 0;
+        int pop_idx = 0;
         for(UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
         {
           if(b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
@@ -2742,7 +2742,7 @@ ui_signal_from_box(UI_Box *box)
       {
         Swap(F32, delta.x, delta.y);
       }
-      Vec2S16 delta16 = v2s16((S16)(delta.x/30.f), (S16)(delta.y/30.f));
+      Vec2S16 delta16 = v2s16((short)(delta.x/30.f), (short)(delta.y/30.f));
       if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
       if(delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
       if(delta.y > 0 && delta16.y == 0) { delta16.y = +1; }

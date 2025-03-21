@@ -104,8 +104,8 @@ struct CV_C13InlineSiteDecoder
   U32                code_length;
   U32                code_offset;
   U32                file_off;
-  S32                ln;
-  S32                cn;
+  int                ln;
+  int                cn;
   U64                code_offset_lo;
   B32                code_offset_changed;
   B32                code_offset_lo_changed;
@@ -249,14 +249,14 @@ internal B32 cv_numeric_fits_in_s64(CV_NumericParsed *num);
 internal B32 cv_numeric_fits_in_f64(CV_NumericParsed *num);
 
 internal U64 cv_u64_from_numeric(CV_NumericParsed *num);
-internal S64 cv_s64_from_numeric(CV_NumericParsed *num);
+internal long cv_s64_from_numeric(CV_NumericParsed *num);
 internal F64 cv_f64_from_numeric(CV_NumericParsed *num);
 
 //- Inlinee Lines Binary Annot Decoder
 
 internal U64 cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value);
-internal U64 cv_decode_inline_annot_s32(String8 data, U64 offset, S32 *out_value);
-internal S32 cv_inline_annot_signed_from_unsigned_operand(U32 value);
+internal U64 cv_decode_inline_annot_s32(String8 data, U64 offset, int *out_value);
+internal int cv_inline_annot_signed_from_unsigned_operand(U32 value);
 
 internal CV_C13InlineSiteDecoder      cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_voff);
 internal CV_C13InlineSiteDecoderStep cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary_annots);

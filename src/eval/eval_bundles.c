@@ -185,11 +185,11 @@ e_value_eval_from_eval(E_Eval eval)
         {
           default: break;
           case E_TypeKind_Char8:
-          case E_TypeKind_S8:  {eval.value.s64 = (S64)*((S8 *)&eval.value.u64);}break;
+          case E_TypeKind_S8:  {eval.value.s64 = (long)*((sbyte *)&eval.value.u64);}break;
           case E_TypeKind_Char16:
-          case E_TypeKind_S16: {eval.value.s64 = (S64)*((S16 *)&eval.value.u64);}break;
+          case E_TypeKind_S16: {eval.value.s64 = (long)*((short *)&eval.value.u64);}break;
           case E_TypeKind_Char32:
-          case E_TypeKind_S32: {eval.value.s64 = (S64)*((S32 *)&eval.value.u64);}break;
+          case E_TypeKind_S32: {eval.value.s64 = (long)*((int *)&eval.value.u64);}break;
         }
       }
     }

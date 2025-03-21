@@ -125,7 +125,7 @@ mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
 }
 
 internal U64
-mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32 *int_out)
+mscrt_v4_parse_s32(String8 raw_data, U64 offset, int *int_out)
 {
   return str8_deserial_read_struct(raw_data, offset, int_out);
 }
@@ -152,13 +152,13 @@ mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_E
     switch (cont_type) {
     case MSCRT_ContV4Type_NoMetadata: break;
     case MSCRT_ContV4Type_OneFuncRelAddr: {
-      S32 v = 0;
+      int v = 0;
       cursor += mscrt_v4_parse_s32(raw_data, cursor, &v);
       handler->catch_funclet_cont_addr[0]    = (U64)v;
       handler->catch_funclet_cont_addr_count = 1;
     } break;
     case MSCRT_ContV4Type_TwoFuncRelAddr: {
-      S32 v1 = 0, v2 = 0;
+      int v1 = 0, v2 = 0;
       cursor += mscrt_v4_parse_s32(raw_data, cursor, &v1);
       cursor += mscrt_v4_parse_s32(raw_data, cursor, &v2);
       handler->catch_funclet_cont_addr[0]    = (U64)v1;
@@ -283,7 +283,7 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->try_high);
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->catch_high);
 
-    S32 handler_array_voff = 0;
+    int handler_array_voff = 0;
     cursor += mscrt_v4_parse_s32(raw_data, cursor, &handler_array_voff);
 
     U64 handler_array_foff = coff_foff_from_voff(sections, section_count, (U32)handler_array_voff);
@@ -310,7 +310,7 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &count);
 
   U32 *voffs  = push_array(arena, U32, count);
-  S32 *states = push_array(arena, S32, count);
+  int *states = push_array(arena, int, count);
 
   U32 prev_voff = func_voff;
   for (U32 i = 0; i < count; ++i) {
@@ -322,7 +322,7 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
     // states are encoded with +1 to avoid encoding negative integers
     U32 encoded_state = 0;
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &encoded_state);
-    states[i] = (S32)encoded_state - 1;
+    states[i] = (int)encoded_state - 1;
   }
 
   ip2state_map_out->count  = count;

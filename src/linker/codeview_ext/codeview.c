@@ -1406,7 +1406,7 @@ internal CV_SymbolList
 cv_global_scope_symbols_from_list(Arena *arena, CV_SymbolList list)
 {
   CV_SymbolList gsym_list = {0};
-  S64 scope_depth = 0;
+  long scope_depth = 0;
   for (CV_SymbolNode *symbol_n = list.first; symbol_n != 0; symbol_n = symbol_n->next) {
     CV_Symbol symbol = symbol_n->data;
     if (cv_is_global_symbol(symbol.kind) && scope_depth == 0) {

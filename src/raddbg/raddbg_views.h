@@ -19,11 +19,11 @@ struct RD_CodeViewState
 {
   // rjf: stable state
   B32 initialized;
-  S64 preferred_column;
+  long preferred_column;
   B32 drifted_for_search;
   
   // rjf: per-frame command info
-  S64 goto_line_num;
+  long goto_line_num;
   B32 center_cursor;
   B32 contain_cursor;
   B32 watch_expr_at_mouse;
@@ -113,7 +113,7 @@ RD_WatchViewRowKind;
 typedef struct RD_WatchViewPoint RD_WatchViewPoint;
 struct RD_WatchViewPoint
 {
-  S64 x;
+  long x;
   EV_Key parent_key;
   EV_Key key;
 };
@@ -179,7 +179,7 @@ internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewStat
 //~ rjf: Watch View Functions
 
 //- rjf: index -> column
-internal RD_WatchViewColumn *rd_watch_view_column_from_x(RD_WatchViewState *wv, S64 index);
+internal RD_WatchViewColumn *rd_watch_view_column_from_x(RD_WatchViewState *wv, long index);
 
 //- rjf: watch view points <-> table coordinates
 internal B32 rd_watch_view_point_match(RD_WatchViewPoint a, RD_WatchViewPoint b);

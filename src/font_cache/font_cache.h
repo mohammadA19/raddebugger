@@ -98,7 +98,7 @@ struct F_RasterCacheInfo
 {
   Rng2S16 subrect;
   Vec2S16 raster_dim;
-  S16 atlas_num;
+  short atlas_num;
   F32 advance;
 };
 

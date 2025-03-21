@@ -229,17 +229,17 @@ internal String8 push_str8f(Arena *arena, char *fmt, ...);
 //~ rjf: String <=> Integer Conversions
 
 //- rjf: string -> integer
-internal S64 sign_from_str8(String8 string, String8 *string_tail);
+internal long sign_from_str8(String8 string, String8 *string_tail);
 internal B32 str8_is_integer(String8 string, U32 radix);
 internal U64 u64_from_str8(String8 string, U32 radix);
-internal S64 s64_from_str8(String8 string, U32 radix);
+internal long s64_from_str8(String8 string, U32 radix);
 internal B32 try_u64_from_str8_c_rules(String8 string, U64 *x);
-internal B32 try_s64_from_str8_c_rules(String8 string, S64 *x);
+internal B32 try_s64_from_str8_c_rules(String8 string, long *x);
 
 //- rjf: integer -> string
 internal String8 str8_from_memory_size(Arena *arena, U64 z);
 internal String8 str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_separator);
-internal String8 str8_from_s64(Arena *arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_separator);
+internal String8 str8_from_s64(Arena *arena, long s64, U32 radix, U8 min_digits, U8 digit_group_separator);
 
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions

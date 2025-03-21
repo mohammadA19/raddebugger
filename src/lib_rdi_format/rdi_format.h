@@ -844,10 +844,10 @@ X(U64)\
 X(U128)\
 X(U256)\
 X(U512)\
-X(S8)\
-X(S16)\
-X(S32)\
-X(S64)\
+X(sbyte)\
+X(short)\
+X(int)\
+X(long)\
 X(S128)\
 X(S256)\
 X(S512)\

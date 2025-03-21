@@ -81,8 +81,8 @@ demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
   B32 got_final_result = false;
   U8 *buffer = 0;
   int size = 0;
-  S64 cap = PATH_MAX;
-  for (S64 r = 0; r < 4; cap *= 2, r += 1){
+  long cap = PATH_MAX;
+  for (long r = 0; r < 4; cap *= 2, r += 1){
     temp_end(restore_point);
     buffer = push_array_no_zero(arena, U8, cap);
     size = readlink((char*)exe_symbol_path.str, (char*)buffer, cap);
@@ -604,11 +604,11 @@ demon_lnx_read_u64(int fd, int radix){
   return(result);
 }
 
-internal S64
+internal long
 demon_lnx_read_s64(int fd, int radix){
   Temp scratch = scratch_begin(0, 0);
   String8 integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
-  S64 result = s64_from_str8(integer, radix);
+  long result = s64_from_str8(integer, radix);
   scratch_end(scratch);
   return(result);
 }

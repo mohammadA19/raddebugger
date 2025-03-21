@@ -9,7 +9,7 @@
 
 #define MSF_UINT_MAX max_U32
 typedef U32 MSF_UInt;
-typedef S32 MSF_Int;
+typedef int MSF_Int;
 
 #define MSF_BITS_PER_CHAR 8
 #define MSF_BITS_PER_WORD (sizeof(MSF_UInt) * MSF_BITS_PER_CHAR)

@@ -47,7 +47,7 @@ internal void
 print_inline_binary_annotations(String8 binary_annots)
 {
   U32 code_offset = 0;
-  S32 line_offset = 0;
+  int line_offset = 0;
 
   for (U64 cursor = 0; cursor < binary_annots.size; ) {
     U64 op_offset = cursor;
@@ -90,13 +90,13 @@ print_inline_binary_annotations(String8 binary_annots)
       fprintf(stdout, "ChangeFile: 0x%X", file_id);
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineOffset: {
-      S32 delta = 0;
+      int delta = 0;
       cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &delta);
       line_offset += delta;
       fprintf(stdout, "ChangeLineOffset: %d; Line %d", delta, line_offset);
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineEndDelta: {
-      S32 end_delta = 0;
+      int end_delta = 0;
       cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &end_delta);
       line_offset += end_delta;
       fprintf(stdout, "ChangeLineEndDelta: %d; Line %d", end_delta, line_offset);
@@ -108,14 +108,14 @@ print_inline_binary_annotations(String8 binary_annots)
       fprintf(stdout, "ChangeRangeKind: %.*s (%u)", str8_varg(range_kind_str), range_kind);
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnStart: {
-      S32 delta = 0;
+      int delta = 0;
       cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &delta);
       fprintf(stdout, "ChangeColumnStart: %d", delta);
     } break;
     case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: {
       U32 code_offset_and_line_offset = 0;
       cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &code_offset_and_line_offset);
-      S32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
+      int line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
       U32 code_delta = code_offset_and_line_offset & 0xF; 
       line_offset += line_delta;
       code_offset += code_delta;

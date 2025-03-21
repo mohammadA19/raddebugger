@@ -5,7 +5,7 @@ internal void
 tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 {
   for (;;) {
-    S64 task_left = ins_atomic_u64_dec_eval(&pool->task_left);
+    long task_left = ins_atomic_u64_dec_eval(&pool->task_left);
 
     // are there any tasks left to run?
     if (task_left < 0) {

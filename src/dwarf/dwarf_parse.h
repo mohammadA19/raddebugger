@@ -320,7 +320,7 @@ struct DW_LineVMHeader
   U8                  min_inst_len;
   U8                  max_ops_for_inst;
   U8                  default_is_stmt;
-  S8                  line_base;
+  sbyte                  line_base;
   U8                  line_range;
   U8                  opcode_base;
   U64                 num_opcode_lens;
@@ -429,7 +429,7 @@ internal String8 dw_based_range_read_string(void *base, Rng1U64 range, U64 offse
 internal void*   dw_based_range_ptr(void *base, Rng1U64 range, U64 offset);
 internal void*   dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size);
 internal U64     dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_value);
-internal U64     dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_value);
+internal U64     dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, long *out_value);
 internal U64     dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value);
 internal U64     dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
 internal U64     dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);

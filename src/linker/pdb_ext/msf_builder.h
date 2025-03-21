@@ -160,10 +160,10 @@ internal B32              msf_stream_seek_end(MSF_Context *msf, MSF_StreamNumber
 internal MSF_UInt msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *dst, MSF_UInt dst_len);
 internal String8  msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size);
 internal String8  msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn);
-internal S8       msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn);
-internal S16      msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn);
-internal S32      msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn);
-internal S64      msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn);
+internal sbyte       msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn);
+internal short      msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn);
+internal int      msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn);
+internal long      msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn);
 internal U8       msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn);
 internal U16      msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn);
 internal U32      msf_stream_read_u32(MSF_Context *msf, MSF_StreamNumber sn);
@@ -180,10 +180,10 @@ internal B32 msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, U8 value
 internal B32 msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, U16 value);
 internal B32 msf_stream_write_u32(MSF_Context *msf, MSF_StreamNumber sn, U32 value);
 internal B32 msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, U64 value);
-internal B32 msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, S8 value);
-internal B32 msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, S16 value);
-internal B32 msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, S32 value);
-internal B32 msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, S64 value);
+internal B32 msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, sbyte value);
+internal B32 msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, short value);
+internal B32 msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, int value);
+internal B32 msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, long value);
 internal B32 msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt buffer_size);
 #define msf_stream_write_array(m, s, v, c) msf_stream_write(m, s, (void*)(v), sizeof(*(v)) * (c))
 #define msf_stream_write_struct(m, s, v )  msf_stream_write_array(m, s, v, 1)

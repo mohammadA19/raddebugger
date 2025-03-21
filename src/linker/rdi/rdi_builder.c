@@ -954,11 +954,11 @@ rdib_location_list_push(Arena *arena, RDIB_LocationList *list, RDIB_Location v)
 }
 
 internal RDIB_LocationNode *
-rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges)
+rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, long offset, B32 is_reference, Rng1U64List ranges)
 {
   RDIB_Location loc;
 
-  if (0 <= offset && offset <= (S64)max_U16) {
+  if (0 <= offset && offset <= (long)max_U16) {
     if (is_reference) {
       loc = rdib_make_location_addr_addr_reg_plus_u16(ranges, reg_code, (U16)offset);
     } else {

@@ -17,7 +17,7 @@ global read_only String8 e_multichar_symbol_strings[] =
   str8_lit_comp("||"),
 };
 
-global read_only S64 e_max_precedence = 15;
+global read_only long e_max_precedence = 15;
 
 ////////////////////////////////
 //~ rjf: Basic Map Functions
@@ -455,7 +455,7 @@ e_token_array_from_text(Arena *arena, String8 text)
         {
           // NOTE(rjf): encountering C++-style templates - try to find ender. if no ender found,
           // assume this is an operator & just consume the identifier part.
-          S64 nest = 1;
+          long nest = 1;
           for(U64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
           {
             if(idx2 < text.size && text.str[idx2] == '<')
@@ -897,7 +897,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_U64);
     }
-    else if(Case("s8") || Case("b8") || Case("B8") || Case("i8") || Case("int8") || Case("int8_t") || Case("S8"))
+    else if(Case("s8") || Case("b8") || Case("B8") || Case("i8") || Case("int8") || Case("int8_t") || Case("sbyte"))
     {
       key = e_type_key_basic(E_TypeKind_S8);
     }
@@ -905,7 +905,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_Char8);
     }
-    else if(Case("s16") || Case("b16") || Case("B16") || Case("i16") ||  Case("int16") || Case("int16_t") || Case("S16"))
+    else if(Case("s16") || Case("b16") || Case("B16") || Case("i16") ||  Case("int16") || Case("int16_t") || Case("short"))
     {
       key = e_type_key_basic(E_TypeKind_S16);
     }
@@ -913,7 +913,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_Char16);
     }
-    else if(Case("s32") || Case("b32") || Case("B32") || Case("i32") || Case("int32") || Case("int32_t") || Case("char32") || Case("S32") || Case("int"))
+    else if(Case("s32") || Case("b32") || Case("B32") || Case("i32") || Case("int32") || Case("int32_t") || Case("char32") || Case("int") || Case("int"))
     {
       key = e_type_key_basic(E_TypeKind_S32);
     }
@@ -921,7 +921,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_Char32);
     }
-    else if(Case("s64") || Case("b64") || Case("B64") || Case("i64") || Case("int64") || Case("int64_t") || Case("S64") || Case("ssize_t"))
+    else if(Case("s64") || Case("b64") || Case("B64") || Case("i64") || Case("int64") || Case("int64_t") || Case("long") || Case("ssize_t"))
     {
       key = e_type_key_basic(E_TypeKind_S64);
     }
@@ -1090,7 +1090,7 @@ e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens)
 }
 
 internal E_Parse
-e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, S64 max_precedence)
+e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, long max_precedence)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1115,7 +1115,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
       E_Token *start_it = it;
       E_Token token = e_token_at_it(it, tokens);
       String8 token_string = str8_substr(text, token.range);
-      S64 prefix_unary_precedence = 0;
+      long prefix_unary_precedence = 0;
       E_ExprKind prefix_unary_kind = 0;
       E_Expr *cast_expr = &e_expr_nil;
       void *location = 0;
@@ -1997,7 +1997,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
     //- rjf: parse binaries
     {
       // rjf: first try to find a matching binary operator
-      S64 binary_precedence = 0;
+      long binary_precedence = 0;
       E_ExprKind binary_kind = 0;
       for EachNonZeroEnumVal(E_ExprKind, k)
       {

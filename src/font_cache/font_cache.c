@@ -698,7 +698,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
       }
       
       // rjf: allocate portion of an atlas to upload the rasterization
-      S16 chosen_atlas_num = 0;
+      short chosen_atlas_num = 0;
       FNT_Atlas *chosen_atlas = 0;
       Rng2S16 chosen_atlas_region = {0};
       if(raster.atlas_dim.x != 0 && raster.atlas_dim.y != 0)
@@ -717,7 +717,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
               atlas->root->max_free_size[Corner_01] =
               atlas->root->max_free_size[Corner_10] =
               atlas->root->max_free_size[Corner_11] = v2s16(atlas->root_dim.x/2, atlas->root_dim.y/2);
-            atlas->texture = r_tex2d_alloc(R_ResourceKind_Dynamic, v2s32((S32)atlas->root_dim.x, (S32)atlas->root_dim.y), R_Tex2DFormat_RGBA8, 0);
+            atlas->texture = r_tex2d_alloc(R_ResourceKind_Dynamic, v2s32((int)atlas->root_dim.x, (int)atlas->root_dim.y), R_Tex2DFormat_RGBA8, 0);
           }
           
           // rjf: allocate from atlas
@@ -728,7 +728,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
             if(chosen_atlas_region.x1 != chosen_atlas_region.x0)
             {
               chosen_atlas = atlas;
-              chosen_atlas_num = (S32)num_atlases;
+              chosen_atlas_num = (int)num_atlases;
               break;
             }
           }
@@ -789,7 +789,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
       {
         if(info->subrect.x1 != 0 && info->subrect.y1 != 0)
         {
-          S32 num = 0;
+          int num = 0;
           for(FNT_Atlas *a = f_state->first_atlas; a != 0; a = a->next, num += 1)
           {
             if(info->atlas_num == num)

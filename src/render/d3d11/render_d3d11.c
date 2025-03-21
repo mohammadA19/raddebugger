@@ -852,7 +852,7 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
     
     //- rjf: get resolution
     Rng2F32 client_rect = os_client_rect_from_window(window);
-    Vec2S32 resolution = {(S32)(client_rect.x1 - client_rect.x0), (S32)(client_rect.y1 - client_rect.y0)};
+    Vec2S32 resolution = {(int)(client_rect.x1 - client_rect.x0), (int)(client_rect.y1 - client_rect.y0)};
     
     //- rjf: resolution change
     B32 resize_done = 0;

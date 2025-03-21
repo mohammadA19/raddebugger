@@ -78,7 +78,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
       case DW_ExprOp_ConstS:
       {
         U64 x = 0;
-        step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, (S64*)&x);
+        step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, (long*)&x);
         result.kind = DW_SimpleLocKind_Address;
         result.addr = x;
       } break;
@@ -286,7 +286,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
           case DW_ExprOp_ConstS:
           {
             U64 x = 0;
-            step_cursor += dw_based_range_read_sleb128(task_base, task_range, step_cursor, (S64*)&x);
+            step_cursor += dw_based_range_read_sleb128(task_base, task_range, step_cursor, (long*)&x);
           } break;
           
           
@@ -294,7 +294,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
           
           case DW_ExprOp_FBReg:
           {
-            S64 offset = 0;
+            long offset = 0;
             step_cursor += dw_based_range_read_sleb128(task_base, task_range, step_cursor, &offset);
             result.flags |= DW_ExprFlag_UsesFrameBase;
           } break;
@@ -311,14 +311,14 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
           case DW_ExprOp_BReg27: case DW_ExprOp_BReg28: case DW_ExprOp_BReg29:
           case DW_ExprOp_BReg30: case DW_ExprOp_BReg31:
           {
-            S64 offset = 0;
+            long offset = 0;
             step_cursor += dw_based_range_read_sleb128(task_base, task_range, step_cursor, &offset);
             result.flags |= DW_ExprFlag_UsesRegisters;
           } break;
           
           case DW_ExprOp_BRegX:
           {
-            U64 reg_idx = 0; S64 offset = 0;
+            U64 reg_idx = 0; long offset = 0;
             step_cursor += dw_based_range_read_uleb128(task_base, task_range, step_cursor, &reg_idx);
             step_cursor += dw_based_range_read_sleb128(task_base, task_range, step_cursor, &offset);
             result.flags |= DW_ExprFlag_UsesRegisters;
@@ -417,7 +417,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
           case DW_ExprOp_Skip:
           case DW_ExprOp_Bra:
           {
-            S16 d = 0;
+            short d = 0;
             step_cursor += dw_based_range_read(task_base, task_range, step_cursor, 2, &d);
             result.flags |= DW_ExprFlag_NonLinearFlow;
           } break;
@@ -684,7 +684,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         case DW_ExprOp_ConstS:
         {
           U64 x = 0;
-          step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, (S64*)&x);
+          step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, (long*)&x);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
@@ -693,7 +693,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_FBReg:
         {
-          S64 offset = 0;
+          long offset = 0;
           step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, &offset);
           if (config->frame_base != 0) {
             U64 x = *config->frame_base + offset;
@@ -717,7 +717,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         case DW_ExprOp_BReg27: case DW_ExprOp_BReg28: case DW_ExprOp_BReg29:
         case DW_ExprOp_BReg30: case DW_ExprOp_BReg31:
         {
-          S64 offset = 0;
+          long offset = 0;
           step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, &offset);
           U64         reg_idx = op - DW_ExprOp_BReg0;
           DW_RegsX64 *regs    = config->regs;
@@ -740,7 +740,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_BRegX:
         {
-          U64 reg_idx = 0; S64 offset = 0;
+          U64 reg_idx = 0; long offset = 0;
           step_cursor += dw_based_range_read_uleb128(base, range, step_cursor, &reg_idx);
           step_cursor += dw_based_range_read_sleb128(base, range, step_cursor, &offset);
 
@@ -877,7 +877,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         case DW_ExprOp_GNU_PushTlsAddress:
         case DW_ExprOp_FormTlsAddress:
         {
-          S64 s = (S64)dw_expr__stack_pop(&stack);
+          long s = (long)dw_expr__stack_pop(&stack);
 
           if (config->tls_address != 0) {
             U64 x = *config->tls_address + s;
@@ -906,8 +906,8 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Abs:
         {
-          S64 s = (S64)dw_expr__stack_pop(&stack);
-          S64 x = abs_s64(s);
+          long s = (long)dw_expr__stack_pop(&stack);
+          long x = abs_s64(s);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
@@ -920,9 +920,9 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Div:
         {
-          S64 d = (S64)dw_expr__stack_pop(&stack);
-          S64 n = (S64)dw_expr__stack_pop(&stack);
-          S64 x = (d == 0)?0:n/d;
+          long d = (long)dw_expr__stack_pop(&stack);
+          long n = (long)dw_expr__stack_pop(&stack);
+          long x = (d == 0)?0:n/d;
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
@@ -936,9 +936,9 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Mod:
         {
-          S64 d = (S64)dw_expr__stack_pop(&stack);
-          S64 n = (S64)dw_expr__stack_pop(&stack);
-          S64 x = (d == 0)?0:n%d;
+          long d = (long)dw_expr__stack_pop(&stack);
+          long n = (long)dw_expr__stack_pop(&stack);
+          long x = (d == 0)?0:n%d;
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
@@ -952,8 +952,8 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Neg:
         {
-          S64 s = (S64)dw_expr__stack_pop(&stack);
-          S64 x = -s;
+          long s = (long)dw_expr__stack_pop(&stack);
+          long x = -s;
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
@@ -1039,62 +1039,62 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Le:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a <= b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Ge:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a >= b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Eq:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a == b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Lt:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a < b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Gt:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a > b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Ne:
         {
-          S64 b = (S64)dw_expr__stack_pop(&stack);
-          S64 a = (S64)dw_expr__stack_pop(&stack);
+          long b = (long)dw_expr__stack_pop(&stack);
+          long a = (long)dw_expr__stack_pop(&stack);
           U64 x = (a != b);
           dw_expr__stack_push(scratch.arena, &stack, x);
         } break;
         
         case DW_ExprOp_Skip:
         {
-          S16 d = 0;
+          short d = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &d);
           step_cursor = step_cursor + d;
         } break;
         
         case DW_ExprOp_Bra:
         {
-          S16 d = 0;
+          short d = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &d);
           U64 b = dw_expr__stack_pop(&stack);
           if (b != 0) {

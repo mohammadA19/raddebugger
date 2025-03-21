@@ -314,8 +314,8 @@ typedef struct CTRL_EntityRec CTRL_EntityRec;
 struct CTRL_EntityRec
 {
   CTRL_Entity *next;
-  S32 push_count;
-  S64 pop_count;
+  int push_count;
+  long pop_count;
 };
 
 typedef struct CTRL_EntityHashNode CTRL_EntityHashNode;

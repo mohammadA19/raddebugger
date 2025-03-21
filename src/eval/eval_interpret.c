@@ -686,11 +686,11 @@ e_interpret(String8 bytecode)
             
             case RDI_EvalTypeGroup_F32 + RDI_EvalTypeGroup_S*RDI_EvalTypeGroup_COUNT:
             {
-              nval.s64 = (S64)svals[0].f32;
+              nval.s64 = (long)svals[0].f32;
             }break;
             case RDI_EvalTypeGroup_F64 + RDI_EvalTypeGroup_S*RDI_EvalTypeGroup_COUNT:
             {
-              nval.s64 = (S64)svals[0].f64;
+              nval.s64 = (long)svals[0].f64;
             }break;
             
             case RDI_EvalTypeGroup_U + RDI_EvalTypeGroup_F32*RDI_EvalTypeGroup_COUNT:

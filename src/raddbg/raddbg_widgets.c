@@ -583,7 +583,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 internal RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
+rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, long *preferred_column, String8 string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
@@ -640,7 +640,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   {
     //- rjf: color line with stopper-thread red
     U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    for(long line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -675,7 +675,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     UI_Parent(priority_margin_container_box) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Palette(margin_contents_palette)
     {
       U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      for(long line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -821,7 +821,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     UI_Parent(catchall_margin_container_box) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Palette(margin_contents_palette)
     {
       U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      for(long line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -977,7 +977,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 D_LineList *lines = &params->line_infos[line_idx];
                 for(D_LineNode *n = lines->first; n != 0; n = n->next)
                 {
-                  S64 remap_line = n->v.pt.line;
+                  long remap_line = n->v.pt.line;
                   if(remap_line != line_num)
                   {
                     bp_draw->remap_px_delta = (remap_line - line_num) * params->line_height_px;
@@ -1117,7 +1117,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       UI_CornerRadius(0)
     {
       U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      for(long line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -1128,7 +1128,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         B32 has_line_info = 0;
         {
           U64 best_stamp = 0;
-          S64 line_info_line_num = 0;
+          long line_info_line_num = 0;
           F32 line_info_t = 0;
           D_LineList *lines = &params->line_infos[line_idx];
           for(D_LineNode *n = lines->first; n != 0; n = n->next)
@@ -1186,7 +1186,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   F32 *line_extras_off = push_array(scratch.arena, F32, dim_1s64(params->line_num_range)+1);
   {
     U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    for(long line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -1203,7 +1203,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind_Off)
   {
     U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    for(long line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -1219,7 +1219,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_Focus(UI_FocusKind_Off)
   {
     U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    for(long line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -1250,7 +1250,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   {
     DI_Scope *scope = di_scope_open();
     U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    for(long line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -1327,11 +1327,11 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     U64 mouse_y_line_idx = (U64)((mouse.y - text_container_box->rect.y0) / params->line_height_px);
     
     // rjf: index => line num
-    S64 line_num = (params->line_num_range.min + mouse_y_line_idx);
+    long line_num = (params->line_num_range.min + mouse_y_line_idx);
     String8 line_string = (params->line_num_range.min <= line_num && line_num <= params->line_num_range.max) ? (params->line_text[mouse_y_line_idx]) : str8_zero();
     
     // rjf: mouse x * string => column
-    S64 column = fnt_char_pos_from_tag_size_string_p(params->font, params->font_size, 0, params->tab_size, line_string, mouse.x-text_container_box->rect.x0-params->line_num_width_px-line_num_padding_px)+1;
+    long column = fnt_char_pos_from_tag_size_string_p(params->font, params->font_size, 0, params->tab_size, line_string, mouse.x-text_container_box->rect.x0-params->line_num_width_px-line_num_padding_px)+1;
     
     // rjf: bundle
     mouse_pt = txt_pt(line_num, column);
@@ -1485,7 +1485,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       if(!rd_entity_is_nil(line_drag_entity) && rd_drag_drop() && contains_1s64(params->line_num_range, mouse_pt.line))
       {
         RD_Entity *dropped_entity = line_drag_entity;
-        S64 line_num = mouse_pt.line;
+        long line_num = mouse_pt.line;
         U64 line_idx = line_num - params->line_num_range.min;
         U64 line_vaddr = params->line_vaddrs[line_idx];
         rd_cmd(RD_CmdKind_RelocateEntity,
@@ -1496,7 +1496,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       }
       if(line_drag_ctrl_entity != &ctrl_entity_nil && rd_drag_drop() && contains_1s64(params->line_num_range, mouse_pt.line))
       {
-        S64 line_num = mouse_pt.line;
+        long line_num = mouse_pt.line;
         U64 line_idx = line_num - params->line_num_range.min;
         U64 line_vaddr = params->line_vaddrs[line_idx];
         CTRL_Entity *thread = line_drag_ctrl_entity;
@@ -1684,7 +1684,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       UI_CornerRadius(0)
     {
       U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      for(long line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max; line_num += 1, line_idx += 1)
       {
         String8 line_string = params->line_text[line_idx];
@@ -1831,7 +1831,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               Rng1S64 select_column_range_in_line =
               {
                 (select_range.min.line == line_num) ? select_range.min.column : 1,
-                (select_range.max.line == line_num) ? select_range.max.column : (S64)(line_string.size+1),
+                (select_range.max.line == line_num) ? select_range.max.column : (long)(line_string.size+1),
               };
               Rng1F32 select_column_pixel_off_range =
               {
@@ -1863,7 +1863,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: extra rendering for cursor position
         if(cursor->line == line_num)
         {
-          S64 column = cursor->column;
+          long column = cursor->column;
           Vec2F32 advance = fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, column-1));
           F32 cursor_off_pixels = advance.x;
           F32 cursor_thickness = ClampBot(4.f, line_box->font_size/6.f);
@@ -1880,7 +1880,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: extra rendering for lines with line-info that match the hovered
         {
           B32 matches = 0;
-          S64 line_info_line_num = 0;
+          long line_info_line_num = 0;
           D_LineList *lines = &params->line_infos[line_idx];
           for(D_LineNode *n = lines->first; n != 0; n = n->next)
           {
@@ -1921,7 +1921,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
 }
 
 internal RD_CodeSliceSignal
-rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
+rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, long *preferred_column, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1934,7 +1934,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
 }
 
 internal B32
-rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, long *preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
@@ -1997,7 +1997,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       //- rjf: movement down (chunk)
       if(evt->delta_unit == UI_EventDeltaUnit_Word && delta.y > 0 && cursor->line+1 <= line_count)
       {
-        for(S64 line_num = cursor->line+1; line_num <= line_count; line_num += 1)
+        for(long line_num = cursor->line+1; line_num <= line_count; line_num += 1)
         {
           String8 line = txt_string_from_info_data_line_num(info, data, line_num);
           U64 line_size = line.size;
@@ -2020,7 +2020,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       //- rjf: movement up (chunk)
       if(evt->delta_unit == UI_EventDeltaUnit_Word && delta.y < 0 && cursor->line-1 >= 1)
       {
-        for(S64 line_num = cursor->line-1; line_num > 0; line_num -= 1)
+        for(long line_num = cursor->line-1; line_num > 0; line_num -= 1)
         {
           String8 line = txt_string_from_info_data_line_num(info, data, line_num);
           U64 line_size = line.size;
@@ -2231,7 +2231,7 @@ rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_s
   DR_FancyStringList fancy_strings = {0};
   TXT_TokenArray tokens = txt_token_array_from_string__c_cpp(scratch.arena, 0, string);
   TXT_Token *tokens_opl = tokens.v+tokens.count;
-  S32 indirection_counter = 0;
+  int indirection_counter = 0;
   indirection_size_change = 0;
   for(TXT_Token *token = tokens.v; token < tokens_opl; token += 1)
   {
@@ -2398,7 +2398,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 //~ rjf: UI Widgets: Line Edit
 
 internal UI_Signal
-rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string)
+rd_line_edit(RD_LineEditFlags flags, int depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string)
 {
   ProfBeginFunction();
   
@@ -2434,7 +2434,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
                                       key);
   
   //- rjf: build indent
-  UI_Parent(box) for(S32 idx = 0; idx < depth; idx += 1)
+  UI_Parent(box) for(int idx = 0; idx < depth; idx += 1)
   {
     ui_set_next_flags(UI_BoxFlag_DrawSideLeft);
     ui_spacer(ui_em(1.f, 1.f));
@@ -2812,7 +2812,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
 }
 
 internal UI_Signal
-rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...)
+rd_line_editf(RD_LineEditFlags flags, int depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

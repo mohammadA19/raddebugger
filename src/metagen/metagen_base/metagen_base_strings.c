@@ -441,7 +441,7 @@ push_str8f(Arena *arena, char *fmt, ...){
 
 //- rjf: string -> integer
 
-internal S64
+internal long
 sign_from_str8(String8 string, String8 *string_tail){
   // count negative signs
   U64 neg_count = 0;
@@ -459,7 +459,7 @@ sign_from_str8(String8 string, String8 *string_tail){
   *string_tail = str8_skip(string, i);
   
   // output integer sign
-  S64 sign = (neg_count & 1)?-1:+1;
+  long sign = (neg_count & 1)?-1:+1;
   return(sign);
 }
 
@@ -493,10 +493,10 @@ u64_from_str8(String8 string, U32 radix){
   return(x);
 }
 
-internal S64
+internal long
 s64_from_str8(String8 string, U32 radix){
-  S64 sign = sign_from_str8(string, &string);
-  S64 x = (S64)u64_from_str8(string, radix) * sign;
+  long sign = sign_from_str8(string, &string);
+  long x = (long)u64_from_str8(string, radix) * sign;
   return(x);
 }
 
@@ -532,9 +532,9 @@ try_u64_from_str8_c_rules(String8 string, U64 *x){
 }
 
 internal B32
-try_s64_from_str8_c_rules(String8 string, S64 *x){
+try_s64_from_str8_c_rules(String8 string, long *x){
   String8 string_tail = {0};
-  S64 sign = sign_from_str8(string, &string_tail);
+  long sign = sign_from_str8(string, &string_tail);
   U64 x_u64 = 0;
   B32 is_integer = try_u64_from_str8_c_rules(string_tail, &x_u64);
   *x = x_u64*sign;
@@ -655,7 +655,7 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
 }
 
 internal String8
-str8_from_s64(Arena *arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_separator)
+str8_from_s64(Arena *arena, long s64, U32 radix, U8 min_digits, U8 digit_group_separator)
 {
   String8 result = {0};
   // TODO(rjf): preeeeetty sloppy...
@@ -1201,7 +1201,7 @@ str8_txt_pt_pair_from_string(String8 string)
     
     // rjf: fill
     pair.string = file_part;
-    pair.pt = txt_pt((S64)line, (S64)column);
+    pair.pt = txt_pt((long)line, (long)column);
     if(pair.pt.line == 0) { pair.pt.line = 1; }
     if(pair.pt.column == 0) { pair.pt.column = 1; }
   }
@@ -1574,8 +1574,8 @@ indented_from_string(Arena *arena, String8 string)
   Temp scratch = scratch_begin(&arena, 1);
   read_only local_persist U8 indentation_bytes[] = "                                                                                                                                ";
   String8List indented_strings = {0};
-  S64 depth = 0;
-  S64 next_depth = 0;
+  long depth = 0;
+  long next_depth = 0;
   U64 line_begin_off = 0;
   for(U64 off = 0; off <= string.size; off += 1)
   {

@@ -144,16 +144,16 @@ cv_u64_from_numeric(CV_NumericParsed *num)
   return result;
 }
 
-internal S64
+internal long
 cv_s64_from_numeric(CV_NumericParsed *num)
 {
-  S64 result = 0;
+  long result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_CHAR:     {result = *(S8*)num->val;}break;
-    case CV_NumericKind_SHORT:    {result = *(S16*)num->val;}break;
-    case CV_NumericKind_LONG:     {result = *(S32*)num->val;}break;
-    case CV_NumericKind_QUADWORD: {result = *(S64*)num->val;}break;
+    case CV_NumericKind_CHAR:     {result = *(sbyte*)num->val;}break;
+    case CV_NumericKind_SHORT:    {result = *(short*)num->val;}break;
+    case CV_NumericKind_LONG:     {result = *(int*)num->val;}break;
+    case CV_NumericKind_QUADWORD: {result = *(long*)num->val;}break;
   }
   return(result);
 }
@@ -226,7 +226,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
 }
 
 internal U64
-cv_decode_inline_annot_s32(String8 data, U64 offset, S32 *out_value)
+cv_decode_inline_annot_s32(String8 data, U64 offset, int *out_value)
 {
   U32 value;
   U64 read_size = cv_decode_inline_annot_u32(data, offset, &value);
@@ -238,11 +238,11 @@ cv_decode_inline_annot_s32(String8 data, U64 offset, S32 *out_value)
   {
     value = value >> 1;
   }
-  *out_value = (S32)value;
+  *out_value = (int)value;
   return read_size;
 }
 
-internal S32
+internal int
 cv_inline_annot_signed_from_unsigned_operand(U32 value)
 {
   if(value & 1)
@@ -253,7 +253,7 @@ cv_inline_annot_signed_from_unsigned_operand(U32 value)
   {
     value = value >> 1;
   }
-  S32 result = (S32)value;
+  int result = (int)value;
   return result;
 }
 
@@ -263,7 +263,7 @@ cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_vo
   CV_C13InlineSiteDecoder decoder = {0};
   decoder.parent_voff             = parent_voff;
   decoder.file_off                = file_off;
-  decoder.ln                      = (S32)first_source_ln;
+  decoder.ln                      = (int)first_source_ln;
   decoder.cn                      = 1;
   decoder.ln_changed              = 1;
   return decoder;
@@ -323,7 +323,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary
       decoder->code_length_changed = decoder->file_off_changed;
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineOffset: {
-      S32 delta = 0;
+      int delta = 0;
       decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
 
       decoder->ln         += delta;
@@ -331,7 +331,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeLineEndDelta: {
       AssertAlways(!"TODO: test case");
-      // S32 end_delta = 1;
+      // int end_delta = 1;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
       // decoder->ln += end_delta;
     } break;
@@ -341,13 +341,13 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnStart: {
       AssertAlways(!"TODO: test case");
-      // S32 delta;
+      // int delta;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &delta);
       // decoder->cn += delta;
     } break;
     case CV_InlineBinaryAnnotation_ChangeColumnEndDelta: {
       AssertAlways(!"TODO: test case");
-      // S32 end_delta;
+      // int end_delta;
       // decoder->cursor += cv_decode_inline_annot_s32(binary_annots, decoder->cursor, &end_delta);
       // decoder->cn += end_delta;
     } break;
@@ -355,7 +355,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary
       U32 code_offset_and_line_offset = 0;
       decoder->cursor += cv_decode_inline_annot_u32(binary_annots, decoder->cursor, &code_offset_and_line_offset);
 
-      S32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
+      int line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
       U32 code_delta = (code_offset_and_line_offset & 0xf);
 
       decoder->code_offset += code_delta;

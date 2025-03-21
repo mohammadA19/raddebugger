@@ -230,7 +230,7 @@ os_set_thread_name(String8 name)
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)
 
 internal void
-os_abort(S32 exit_code)
+os_abort(int exit_code)
 {
   exit(exit_code);
 }
@@ -1184,7 +1184,7 @@ main(int argc, char **argv)
       B32 got_final_result = 0;
       U8 *buffer = 0;
       int size = 0;
-      for(S64 cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
+      for(long cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
       {
         scratch_end(scratch);
         buffer = push_array_no_zero(scratch.arena, U8, cap);
@@ -1219,7 +1219,7 @@ main(int argc, char **argv)
         B32 got_final_result = 0;
         U8 *buffer = 0;
         int size = 0;
-        for(S64 cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
+        for(long cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
         {
           scratch_end(scratch);
           buffer = push_array_no_zero(scratch.arena, U8, cap);

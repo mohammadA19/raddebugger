@@ -288,7 +288,7 @@ struct UI_AnimationInfo
 typedef struct UI_ScrollPt UI_ScrollPt;
 struct UI_ScrollPt
 {
-  S64 idx;
+  long idx;
   F32 off;
 };
 
@@ -462,8 +462,8 @@ typedef struct UI_BoxRec UI_BoxRec;
 struct UI_BoxRec
 {
   UI_Box *next;
-  S32 push_count;
-  S32 pop_count;
+  int push_count;
+  int pop_count;
 };
 
 typedef struct UI_BoxNode UI_BoxNode;
@@ -727,7 +727,7 @@ internal void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 //~ rjf: Text Operation Functions
 
 internal B32 ui_char_is_scan_boundary(U8 c);
-internal S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
+internal long ui_scanned_column_from_column(String8 string, long start_column, Side side);
 internal UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
 internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);
 
@@ -749,8 +749,8 @@ read_only global UI_Palette ui_g_nil_palette = {0};
 ////////////////////////////////
 //~ rjf: Scroll Point Type Functions
 
-internal UI_ScrollPt ui_scroll_pt(S64 idx, F32 off);
-internal void ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx);
+internal UI_ScrollPt ui_scroll_pt(long idx, F32 off);
+internal void ui_scroll_pt_target_idx(UI_ScrollPt *v, long idx);
 internal void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range);
 
 ////////////////////////////////

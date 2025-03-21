@@ -2245,7 +2245,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           case 0xE9:
           {
             U64 imm_vaddr = check_vaddr + 1;
-            S32 imm = 0;
+            int imm = 0;
             B32 imm_good = 0;
             if(read_vaddr + sizeof(imm) <= read_vaddr_opl)
             {
@@ -2361,7 +2361,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           read_vaddr += 1;
           
           // rjf: read the 4-byte immediate
-          S32 imm = 0;
+          int imm = 0;
           if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm, endt_us) ||
              is_stale)
           {
@@ -2384,7 +2384,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           read_vaddr += 1;
           
           // rjf: read the 4-byte immediate
-          S8 imm = 0;
+          sbyte imm = 0;
           if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm, endt_us) ||
              is_stale)
           {
@@ -2417,12 +2417,12 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           U64 reg_value = reg->u64;
           
           // rjf: read immediate
-          S32 imm = 0;
+          int imm = 0;
           {
             // rjf: read 1-byte immediate
             if((modrm >> 6) == 1)
             {
-              S8 imm8 = 0;
+              sbyte imm8 = 0;
               if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm8, endt_us) ||
                  is_stale)
               {
@@ -2430,7 +2430,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
                 break;
               }
               read_vaddr += 1;
-              imm = (S32)imm8;
+              imm = (int)imm8;
             }
             
             // rjf: read 4-byte immediate

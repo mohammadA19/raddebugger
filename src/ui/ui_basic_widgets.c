@@ -1210,12 +1210,12 @@ ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row)
 }
 
 internal UI_ScrollPt
-ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, S64 view_num_indices)
+ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, long view_num_indices)
 {
   ui_push_palette(ui_state->widget_palette_info.scrollbar_palette);
   
   //- rjf: unpack
-  S64 idx_range_dim = Max(dim_1s64(idx_range), 1);
+  long idx_range_dim = Max(dim_1s64(idx_range), 1);
   
   //- rjf: produce extra flags for cases in which scrolling is disabled
   UI_BoxFlags disabled_flags = 0;
@@ -1313,20 +1313,20 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
       UI_ScrollPt original_pt = drag_data->start_pt;
       F32 drag_delta = ui_drag_delta().v[axis];
       F32 drag_pct = drag_delta / drag_data->scroll_space_px;
-      S64 new_idx = original_pt.idx + drag_pct*idx_range_dim;
+      long new_idx = original_pt.idx + drag_pct*idx_range_dim;
       new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
       new_pt.off = 0;
     }
     if(ui_dragging(min_scroll_sig) || ui_dragging(space_before_sig))
     {
-      S64 new_idx = new_pt.idx-1;
+      long new_idx = new_pt.idx-1;
       new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
     }
     if(ui_dragging(max_scroll_sig) || ui_dragging(space_after_sig))
     {
-      S64 new_idx = new_pt.idx+1;
+      long new_idx = new_pt.idx+1;
       new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
     }
@@ -1346,7 +1346,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
 {
   //- rjf: unpack arguments
   Rng1S64 scroll_row_idx_range = r1s64(params->item_range.min, ClampBot(params->item_range.min, params->item_range.max-1));
-  S64 num_possible_visible_rows = (S64)(params->dim_px.y/params->row_height_px);
+  long num_possible_visible_rows = (long)(params->dim_px.y/params->row_height_px);
   
   //- rjf: do keyboard navigation
   B32 moved = 0;
@@ -1416,7 +1416,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
   //- rjf: moved -> snap
   if(params->flags & UI_ScrollListFlag_Snap && moved)
   {
-    S64 cursor_item_idx = cursor_out->y-1;
+    long cursor_item_idx = cursor_out->y-1;
     if(params->item_range.min <= cursor_item_idx && cursor_item_idx <= params->item_range.max)
     {
       //- rjf: compute visible row range
@@ -1431,14 +1431,14 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
       }
       else
       {
-        cursor_visibility_row_range.min = (S64)ui_scroll_list_row_from_item(&params->row_blocks, (U64)cursor_item_idx);
+        cursor_visibility_row_range.min = (long)ui_scroll_list_row_from_item(&params->row_blocks, (U64)cursor_item_idx);
         cursor_visibility_row_range.max = cursor_visibility_row_range.min + 4;
       }
       
       //- rjf: compute deltas & apply
-      S64 min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
-      S64 max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
-      S64 new_idx = scroll_pt->idx+min_delta+max_delta;
+      long min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
+      long max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
+      long new_idx = scroll_pt->idx+min_delta+max_delta;
       new_idx = clamp_1s64(scroll_row_idx_range, new_idx);
       ui_scroll_pt_target_idx(scroll_pt, new_idx);
     }
@@ -1451,8 +1451,8 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
   }
   
   //- rjf: determine ranges & limits
-  Rng1S64 visible_row_range = r1s64(scroll_pt->idx + (S64)(scroll_pt->off) + 0 - !!(scroll_pt->off < 0),
-                                    scroll_pt->idx + (S64)(scroll_pt->off) + 0 + num_possible_visible_rows + 1);
+  Rng1S64 visible_row_range = r1s64(scroll_pt->idx + (long)(scroll_pt->off) + 0 - !!(scroll_pt->off < 0),
+                                    scroll_pt->idx + (long)(scroll_pt->off) + 0 + num_possible_visible_rows + 1);
   visible_row_range.min = clamp_1s64(params->item_range, visible_row_range.min);
   visible_row_range.max = clamp_1s64(params->item_range, visible_row_range.max);
   *visible_row_range_out = visible_row_range;
@@ -1508,7 +1508,7 @@ ui_scroll_list_end(void)
     UI_Signal sig = ui_signal_from_box(scrollable_container_box);
     if(sig.scroll.y != 0)
     {
-      S64 new_idx = ui_scroll_list_scroll_pt_ptr->idx + sig.scroll.y;
+      long new_idx = ui_scroll_list_scroll_pt_ptr->idx + sig.scroll.y;
       new_idx = clamp_1s64(ui_scroll_list_scroll_idx_rng, new_idx);
       ui_scroll_pt_target_idx(ui_scroll_list_scroll_pt_ptr, new_idx);
     }

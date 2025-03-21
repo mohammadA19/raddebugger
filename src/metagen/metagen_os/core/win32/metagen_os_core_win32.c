@@ -274,7 +274,7 @@ os_set_thread_name(String8 name)
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)
 
 internal void
-os_abort(S32 exit_code)
+os_abort(int exit_code)
 {
   ExitProcess(exit_code);
 }

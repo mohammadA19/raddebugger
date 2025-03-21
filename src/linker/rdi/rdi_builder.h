@@ -1143,7 +1143,7 @@ internal RDIB_Location rdib_make_location_addr_addr_reg_plus_u16(Rng1U64List ran
 internal RDIB_Location rdib_make_location_addr_reg_plus_u16     (Rng1U64List ranges, RDI_RegCode reg_code, RDI_U16 offset);
 internal RDIB_Location rdib_make_location_val_reg               (Rng1U64List ranges, RDI_RegCode reg_code);
 
-internal RDIB_LocationNode * rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges);
+internal RDIB_LocationNode * rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, long offset, B32 is_reference, Rng1U64List ranges);
 
 //- UDT Fwdrefs
 

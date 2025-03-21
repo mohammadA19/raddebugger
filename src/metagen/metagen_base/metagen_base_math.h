@@ -25,10 +25,10 @@ union Vec2S64
 {
   struct
   {
-    S64 x;
-    S64 y;
+    long x;
+    long y;
   };
-  S64 v[2];
+  long v[2];
 };
 
 typedef union Vec2S32 Vec2S32;
@@ -36,10 +36,10 @@ union Vec2S32
 {
   struct
   {
-    S32 x;
-    S32 y;
+    int x;
+    int y;
   };
-  S32 v[2];
+  int v[2];
 };
 
 typedef union Vec2S16 Vec2S16;
@@ -47,10 +47,10 @@ union Vec2S16
 {
   struct
   {
-    S16 x;
-    S16 y;
+    short x;
+    short y;
   };
-  S16 v[2];
+  short v[2];
 };
 
 //- rjf: 3-vectors
@@ -82,21 +82,21 @@ union Vec3S32
 {
   struct
   {
-    S32 x;
-    S32 y;
-    S32 z;
+    int x;
+    int y;
+    int z;
   };
   struct
   {
     Vec2S32 xy;
-    S32 _z0;
+    int _z0;
   };
   struct
   {
-    S32 _x0;
+    int _x0;
     Vec2S32 yz;
   };
-  S32 v[3];
+  int v[3];
 };
 
 //- rjf: 4-vectors
@@ -134,10 +134,10 @@ union Vec4S32
 {
   struct
   {
-    S32 x;
-    S32 y;
-    S32 z;
-    S32 w;
+    int x;
+    int y;
+    int z;
+    int w;
   };
   struct
   {
@@ -147,14 +147,14 @@ union Vec4S32
   struct
   {
     Vec3S32 xyz;
-    S32 _z0;
+    int _z0;
   };
   struct
   {
-    S32 _x0;
+    int _x0;
     Vec3S32 yzw;
   };
-  S32 v[4];
+  int v[4];
 };
 
 ////////////////////////////////
@@ -193,10 +193,10 @@ union Rng1S32
 {
   struct
   {
-    S32 min;
-    S32 max;
+    int min;
+    int max;
   };
-  S32 v[2];
+  int v[2];
 };
 
 typedef union Rng1U64 Rng1U64;
@@ -215,10 +215,10 @@ union Rng1S64
 {
   struct
   {
-    S64 min;
-    S64 max;
+    long min;
+    long max;
   };
-  S64 v[2];
+  long v[2];
 };
 
 typedef union Rng1F32 Rng1F32;
@@ -249,10 +249,10 @@ union Rng2S16
   };
   struct
   {
-    S16 x0;
-    S16 y0;
-    S16 x1;
-    S16 y1;
+    short x0;
+    short y0;
+    short x1;
+    short y1;
   };
   Vec2S16 v[2];
 };
@@ -272,10 +272,10 @@ union Rng2S32
   };
   struct
   {
-    S32 x0;
-    S32 y0;
-    S32 x1;
-    S32 y1;
+    int x0;
+    int y0;
+    int x1;
+    int y1;
   };
   Vec2S32 v[2];
 };
@@ -318,10 +318,10 @@ union Rng2S64
   };
   struct
   {
-    S64 x0;
-    S64 y0;
-    S64 x1;
-    S64 y1;
+    long x0;
+    long y0;
+    long x1;
+    long y1;
   };
   Vec2S64 v[2];
 };
@@ -354,7 +354,7 @@ struct Rng1S64Array
 ////////////////////////////////
 //~ rjf: Scalar Ops
 
-#define abs_s64(v) (S64)llabs(v)
+#define abs_s64(v) (long)llabs(v)
 
 #define sqrt_f32(v)   sqrtf(v)
 #define mod_f32(a, b) fmodf((a), (b))
@@ -410,41 +410,41 @@ internal Vec2F32 normalize_2f32(Vec2F32 v);
 internal Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, F32 t);
 
 #define v2s64(x, y) vec_2s64((x), (y))
-internal Vec2S64 vec_2s64(S64 x, S64 y);
+internal Vec2S64 vec_2s64(long x, long y);
 internal Vec2S64 add_2s64(Vec2S64 a, Vec2S64 b);
 internal Vec2S64 sub_2s64(Vec2S64 a, Vec2S64 b);
 internal Vec2S64 mul_2s64(Vec2S64 a, Vec2S64 b);
 internal Vec2S64 div_2s64(Vec2S64 a, Vec2S64 b);
-internal Vec2S64 scale_2s64(Vec2S64 v, S64 s);
-internal S64 dot_2s64(Vec2S64 a, Vec2S64 b);
-internal S64 length_squared_2s64(Vec2S64 v);
-internal S64 length_2s64(Vec2S64 v);
+internal Vec2S64 scale_2s64(Vec2S64 v, long s);
+internal long dot_2s64(Vec2S64 a, Vec2S64 b);
+internal long length_squared_2s64(Vec2S64 v);
+internal long length_2s64(Vec2S64 v);
 internal Vec2S64 normalize_2s64(Vec2S64 v);
 internal Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t);
 
 #define v2s32(x, y) vec_2s32((x), (y))
-internal Vec2S32 vec_2s32(S32 x, S32 y);
+internal Vec2S32 vec_2s32(int x, int y);
 internal Vec2S32 add_2s32(Vec2S32 a, Vec2S32 b);
 internal Vec2S32 sub_2s32(Vec2S32 a, Vec2S32 b);
 internal Vec2S32 mul_2s32(Vec2S32 a, Vec2S32 b);
 internal Vec2S32 div_2s32(Vec2S32 a, Vec2S32 b);
-internal Vec2S32 scale_2s32(Vec2S32 v, S32 s);
-internal S32 dot_2s32(Vec2S32 a, Vec2S32 b);
-internal S32 length_squared_2s32(Vec2S32 v);
-internal S32 length_2s32(Vec2S32 v);
+internal Vec2S32 scale_2s32(Vec2S32 v, int s);
+internal int dot_2s32(Vec2S32 a, Vec2S32 b);
+internal int length_squared_2s32(Vec2S32 v);
+internal int length_2s32(Vec2S32 v);
 internal Vec2S32 normalize_2s32(Vec2S32 v);
 internal Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t);
 
 #define v2s16(x, y) vec_2s16((x), (y))
-internal Vec2S16 vec_2s16(S16 x, S16 y);
+internal Vec2S16 vec_2s16(short x, short y);
 internal Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b);
 internal Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b);
 internal Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b);
 internal Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b);
-internal Vec2S16 scale_2s16(Vec2S16 v, S16 s);
-internal S16 dot_2s16(Vec2S16 a, Vec2S16 b);
-internal S16 length_squared_2s16(Vec2S16 v);
-internal S16 length_2s16(Vec2S16 v);
+internal Vec2S16 scale_2s16(Vec2S16 v, short s);
+internal short dot_2s16(Vec2S16 a, Vec2S16 b);
+internal short length_squared_2s16(Vec2S16 v);
+internal short length_2s16(Vec2S16 v);
 internal Vec2S16 normalize_2s16(Vec2S16 v);
 internal Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t);
 
@@ -463,15 +463,15 @@ internal Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, F32 t);
 internal Vec3F32 cross_3f32(Vec3F32 a, Vec3F32 b);
 
 #define v3s32(x, y, z) vec_3s32((x), (y), (z))
-internal Vec3S32 vec_3s32(S32 x, S32 y, S32 z);
+internal Vec3S32 vec_3s32(int x, int y, int z);
 internal Vec3S32 add_3s32(Vec3S32 a, Vec3S32 b);
 internal Vec3S32 sub_3s32(Vec3S32 a, Vec3S32 b);
 internal Vec3S32 mul_3s32(Vec3S32 a, Vec3S32 b);
 internal Vec3S32 div_3s32(Vec3S32 a, Vec3S32 b);
-internal Vec3S32 scale_3s32(Vec3S32 v, S32 s);
-internal S32 dot_3s32(Vec3S32 a, Vec3S32 b);
-internal S32 length_squared_3s32(Vec3S32 v);
-internal S32 length_3s32(Vec3S32 v);
+internal Vec3S32 scale_3s32(Vec3S32 v, int s);
+internal int dot_3s32(Vec3S32 a, Vec3S32 b);
+internal int length_squared_3s32(Vec3S32 v);
+internal int length_3s32(Vec3S32 v);
 internal Vec3S32 normalize_3s32(Vec3S32 v);
 internal Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t);
 internal Vec3S32 cross_3s32(Vec3S32 a, Vec3S32 b);
@@ -490,15 +490,15 @@ internal Vec4F32 normalize_4f32(Vec4F32 v);
 internal Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, F32 t);
 
 #define v4s32(x, y, z, w) vec_4s32((x), (y), (z), (w))
-internal Vec4S32 vec_4s32(S32 x, S32 y, S32 z, S32 w);
+internal Vec4S32 vec_4s32(int x, int y, int z, int w);
 internal Vec4S32 add_4s32(Vec4S32 a, Vec4S32 b);
 internal Vec4S32 sub_4s32(Vec4S32 a, Vec4S32 b);
 internal Vec4S32 mul_4s32(Vec4S32 a, Vec4S32 b);
 internal Vec4S32 div_4s32(Vec4S32 a, Vec4S32 b);
-internal Vec4S32 scale_4s32(Vec4S32 v, S32 s);
-internal S32 dot_4s32(Vec4S32 a, Vec4S32 b);
-internal S32 length_squared_4s32(Vec4S32 v);
-internal S32 length_4s32(Vec4S32 v);
+internal Vec4S32 scale_4s32(Vec4S32 v, int s);
+internal int dot_4s32(Vec4S32 a, Vec4S32 b);
+internal int length_squared_4s32(Vec4S32 v);
+internal int length_4s32(Vec4S32 v);
 internal Vec4S32 normalize_4s32(Vec4S32 v);
 internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t);
 
@@ -537,15 +537,15 @@ internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b);
 internal U32 clamp_1u32(Rng1U32 r, U32 v);
 
 #define r1s32(min, max) rng_1s32((min), (max))
-internal Rng1S32 rng_1s32(S32 min, S32 max);
-internal Rng1S32 shift_1s32(Rng1S32 r, S32 x);
-internal Rng1S32 pad_1s32(Rng1S32 r, S32 x);
-internal S32 center_1s32(Rng1S32 r);
-internal B32 contains_1s32(Rng1S32 r, S32 x);
-internal S32 dim_1s32(Rng1S32 r);
+internal Rng1S32 rng_1s32(int min, int max);
+internal Rng1S32 shift_1s32(Rng1S32 r, int x);
+internal Rng1S32 pad_1s32(Rng1S32 r, int x);
+internal int center_1s32(Rng1S32 r);
+internal B32 contains_1s32(Rng1S32 r, int x);
+internal int dim_1s32(Rng1S32 r);
 internal Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b);
 internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b);
-internal S32 clamp_1s32(Rng1S32 r, S32 v);
+internal int clamp_1s32(Rng1S32 r, int v);
 
 #define r1u64(min, max) rng_1u64((min), (max))
 internal Rng1U64 rng_1u64(U64 min, U64 max);
@@ -559,15 +559,15 @@ internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b);
 internal U64 clamp_1u64(Rng1U64 r, U64 v);
 
 #define r1s64(min, max) rng_1s64((min), (max))
-internal Rng1S64 rng_1s64(S64 min, S64 max);
-internal Rng1S64 shift_1s64(Rng1S64 r, S64 x);
-internal Rng1S64 pad_1s64(Rng1S64 r, S64 x);
-internal S64 center_1s64(Rng1S64 r);
-internal B32 contains_1s64(Rng1S64 r, S64 x);
-internal S64 dim_1s64(Rng1S64 r);
+internal Rng1S64 rng_1s64(long min, long max);
+internal Rng1S64 shift_1s64(Rng1S64 r, long x);
+internal Rng1S64 pad_1s64(Rng1S64 r, long x);
+internal long center_1s64(Rng1S64 r);
+internal B32 contains_1s64(Rng1S64 r, long x);
+internal long dim_1s64(Rng1S64 r);
 internal Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b);
 internal Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b);
-internal S64 clamp_1s64(Rng1S64 r, S64 v);
+internal long clamp_1s64(Rng1S64 r, long v);
 
 #define r1f32(min, max) rng_1f32((min), (max))
 internal Rng1F32 rng_1f32(F32 min, F32 max);
@@ -584,7 +584,7 @@ internal F32 clamp_1f32(Rng1F32 r, F32 v);
 #define r2s16p(x, y, z, w) r2s16(v2s16((x), (y)), v2s16((z), (w)))
 internal Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max);
 internal Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x);
-internal Rng2S16 pad_2s16(Rng2S16 r, S16 x);
+internal Rng2S16 pad_2s16(Rng2S16 r, short x);
 internal Vec2S16 center_2s16(Rng2S16 r);
 internal B32 contains_2s16(Rng2S16 r, Vec2S16 x);
 internal Vec2S16 dim_2s16(Rng2S16 r);
@@ -596,7 +596,7 @@ internal Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v);
 #define r2s32p(x, y, z, w) r2s32(v2s32((x), (y)), v2s32((z), (w)))
 internal Rng2S32 rng_2s32(Vec2S32 min, Vec2S32 max);
 internal Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x);
-internal Rng2S32 pad_2s32(Rng2S32 r, S32 x);
+internal Rng2S32 pad_2s32(Rng2S32 r, int x);
 internal Vec2S32 center_2s32(Rng2S32 r);
 internal B32 contains_2s32(Rng2S32 r, Vec2S32 x);
 internal Vec2S32 dim_2s32(Rng2S32 r);
@@ -608,7 +608,7 @@ internal Vec2S32 clamp_2s32(Rng2S32 r, Vec2S32 v);
 #define r2s64p(x, y, z, w) r2s64(v2s64((x), (y)), v2s64((z), (w)))
 internal Rng2S64 rng_2s64(Vec2S64 min, Vec2S64 max);
 internal Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x);
-internal Rng2S64 pad_2s64(Rng2S64 r, S64 x);
+internal Rng2S64 pad_2s64(Rng2S64 r, long x);
 internal Vec2S64 center_2s64(Rng2S64 r);
 internal B32 contains_2s64(Rng2S64 r, Vec2S64 x);
 internal Vec2S64 dim_2s64(Rng2S64 r);

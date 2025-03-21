@@ -110,11 +110,11 @@ struct DEMON_LNX_UserRegsX64{
 
 struct DEMON_LNX_UserX64{
   DEMON_LNX_UserRegsX64 regs;
-  S32 u_fpvalid, _pad0;
+  int u_fpvalid, _pad0;
   SYMS_XSaveLegacy i387;
   U64 u_tsize, u_dsize, u_ssize, start_code, start_stack;
   U64 signal;
-  S32 reserved, _pad1;
+  int reserved, _pad1;
   U64 u_ar0, u_fpstate;
   U64 magic;
   U8  u_comm[32];
@@ -143,10 +143,10 @@ struct DEMON_LNX_UserRegsX86{
 
 struct DEMON_LNX_UserX86{
   DEMON_LNX_UserRegsX86 regs;
-  S32 u_fpvalid;
+  int u_fpvalid;
   SYMS_FSave i387;
   U32 u_tsize, u_dsize, u_ssize, start_code, start_stack;
-  S32 signal, reserved;
+  int signal, reserved;
   U32 u_ar0, u_fpstate;
   U32 magic;
   U8  u_comm[32];

@@ -78,16 +78,16 @@ bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
   Assert(lo <= hi);
   Assert(state == 0 || state == 1);
   
-  S64 word_lo = lo / 32;
-  S64 word_hi = CeilIntegerDiv(hi, 32) - 1;
+  long word_lo = lo / 32;
+  long word_hi = CeilIntegerDiv(hi, 32) - 1;
   
-  S64 word_idx = word_hi;
-  S64 bit_idx = -1;
+  long word_idx = word_hi;
+  long bit_idx = -1;
   
   U64 scan_count = hi - lo;
   if (scan_count < 32) {
-    S64 bit_lo = lo % 32;
-    S64 bit_hi = bit_lo + scan_count;
+    long bit_lo = lo % 32;
+    long bit_hi = bit_lo + scan_count;
     U32 word = bit_array.v[word_idx];
     for (bit_idx = bit_hi; bit_idx >= bit_lo; bit_idx -= 1) {
       U32 bit = ExtractBit(word, bit_idx);
@@ -97,7 +97,7 @@ bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
     }
   } else {
     U32 last_word = bit_array.v[word_idx];
-    S64 bit_hi = hi % 32;
+    long bit_hi = hi % 32;
     for (bit_idx = bit_hi; bit_idx >= 0; bit_idx -= 1) {
       U32 bit = ExtractBit(last_word, bit_idx);
       if (bit == state) {
@@ -116,7 +116,7 @@ bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
     }
     
     U32 first_word = bit_array.v[word_idx];
-    S64 bit_lo = lo % 32;
+    long bit_lo = lo % 32;
     for (bit_idx = 32 - 1; bit_idx >= bit_lo; bit_idx -= 1) {
       U32 bit = ExtractBit(first_word, bit_idx);
       if (bit == state) {
@@ -130,7 +130,7 @@ bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
   
   exit:;
   
-  S64 result_s64 = word_idx * 32 + bit_idx;
+  long result_s64 = word_idx * 32 + bit_idx;
   U64 result_u64 = (U64)result_s64;
   return result_u64;
 }

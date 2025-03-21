@@ -296,7 +296,7 @@ internal void mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void 
 //~ rjf: String Expression Parsing
 
 internal MG_StrExpr *mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node);
-internal MG_StrExprParseResult mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec);
+internal MG_StrExprParseResult mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, sbyte min_prec);
 internal MG_StrExprParseResult mg_str_expr_parse_from_first_opl(Arena *arena, MD_Node *first, MD_Node *opl);
 internal MG_StrExprParseResult mg_str_expr_parse_from_root(Arena *arena, MD_Node *root);
 
@@ -315,7 +315,7 @@ internal MG_ColumnDescArray mg_column_desc_array_from_tag(Arena *arena, MD_Node 
 internal U64 mg_column_index_from_name(MG_ColumnDescArray descs, String8 name);
 internal String8 mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 idx);
 
-internal S64 mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info);
+internal long mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info);
 internal void mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpandInfo *info, String8List *out);
 internal void mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo *info, MG_TableExpandTask *task, String8List *out);
 internal String8List mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_column_desc_map, String8 fallback, MD_Node *gen);

@@ -239,7 +239,7 @@ internal E_TypeKey e_leaf_type_from_name(String8 name);
 internal E_TypeKey e_type_from_expr(E_Expr *expr);
 internal void e_push_leaf_ident_exprs_from_expr__in_place(Arena *arena, E_String2ExprMap *map, E_Expr *expr);
 internal E_Parse e_parse_type_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
-internal E_Parse e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, S64 max_precedence);
+internal E_Parse e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *tokens, long max_precedence);
 internal E_Parse e_parse_expr_from_text_tokens(Arena *arena, String8 text, E_TokenArray *tokens);
 internal E_Expr *e_parse_expr_from_text(Arena *arena, String8 text);
 

@@ -133,7 +133,7 @@ dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_valu
 }
 
 internal U64
-dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_value)
+dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, long *out_value)
 {
   U64 value      = 0;
   U64 bytes_read = 0;
@@ -151,7 +151,7 @@ dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_valu
     {
       if(shift < sizeof(value) * 8 && (byte & 0x40u) != 0)
       {
-        value |= -(S64)(1ull << shift);
+        value |= -(long)(1ull << shift);
       }
       break;
     }
@@ -353,7 +353,7 @@ dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_
     //- rjf: sleb128 reads
     case DW_Form_SData:
     {
-      S64 value = 0;
+      long value = 0;
       bytes_read = dw_based_range_read_sleb128(base, range, offset, &value);
       form_value.v[0] = value;
     } break;
@@ -553,11 +553,11 @@ dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id)
   U64 abbrev_offset = max_U64;
   if(table.count > 0)
   {
-    S64 min = 0;
-    S64 max = (S64)table.count - 1;
+    long min = 0;
+    long max = (long)table.count - 1;
     while(min <= max)
     {
-      S64 mid = (min + max) / 2;
+      long mid = (min + max) / 2;
       if (abbrev_id > table.entries[mid].id)
       {
         min = mid + 1;
@@ -1834,13 +1834,13 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
         {
           U32 adjusted_opcode = (U32)(opcode - vm_header.opcode_base);
           U32 op_advance      = adjusted_opcode / vm_header.line_range;
-          S32 line_inc        = (S32)vm_header.line_base + ((S32)adjusted_opcode) % (S32)vm_header.line_range;
+          int line_inc        = (int)vm_header.line_base + ((int)adjusted_opcode) % (int)vm_header.line_range;
           // TODO: can we just call dw_advance_line_vm_state_pc
           U64 addr_inc        = vm_header.min_inst_len * ((vm_state.op_index+op_advance) / vm_header.max_ops_for_inst);
 
           vm_state.address        += addr_inc;
           vm_state.op_index        = (vm_state.op_index + op_advance) % vm_header.max_ops_for_inst;
-          vm_state.line            = (U32)((S32)vm_state.line + line_inc);
+          vm_state.line            = (U32)((int)vm_state.line + line_inc);
           vm_state.basic_block     = 0;
           vm_state.prologue_end    = 0;
           vm_state.epilogue_begin  = 0;
@@ -1900,7 +1900,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
       
       case DW_StdOpcode_AdvanceLine:
       {
-        S64 s = 0;
+        long s = 0;
         cursor += dw_based_range_read_sleb128(base, line_info_range, cursor, &s);
         vm_state.line += s;
       } break;

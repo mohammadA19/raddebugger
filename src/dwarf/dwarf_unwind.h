@@ -66,7 +66,7 @@ typedef struct DW_CIEUnpacked
   String8 augmentation;
   
   U64 code_align_factor;
-  S64 data_align_factor;
+  long data_align_factor;
   U64 ret_addr_reg;
   
   U64 handler_ip;
@@ -108,7 +108,7 @@ typedef struct DW_CFICFACell
   union {
     struct {
       U64 reg_idx;
-      S64 offset;
+      long offset;
     };
     Rng1U64 expr;
   };
@@ -129,7 +129,7 @@ typedef struct DW_CFICell
 {
   DW_CFIRegisterRule rule;
   union {
-    S64 n;
+    long n;
     Rng1U64 expr;
   };
 } DW_CFICell;

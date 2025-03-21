@@ -993,7 +993,7 @@ typedef struct DWARF_AbbrevDecl{
   U8 __filler__;
   U16 attrib_count;
   DWARF_AbbrevAttribSpec *attrib_specs;
-  S64 *implicit_const;
+  long *implicit_const;
 } DWARF_AbbrevDecl;
 
 typedef struct DWARF_AbbrevUnit{
@@ -1248,7 +1248,7 @@ if (((*(p))&0x80) == 0) { (p)+=1; break; }   \
 #define DWARF_LEB128_ADV_NOCAP(p) for((p)+=1; ((*(p-1))&0x80) != 0; (p)+=1)
 
 static U64 dwarf_leb128_decode_U64(U8 *ptr, U8 *opl);
-static S64 dwarf_leb128_decode_S64(U8 *ptr, U8 *opl);
+static long dwarf_leb128_decode_S64(U8 *ptr, U8 *opl);
 static U32 dwarf_leb128_decode_U32(U8 *ptr, U8 *opl);
 
 #define dwarf_leb128_decode(T,ptr,opl) dwarf_leb128_decode_##T(ptr,opl)
@@ -1317,7 +1317,7 @@ typedef struct UNW_DW_CIEUnpacked{
   String8 augmentation;
   
   U64 code_align_factor;
-  S64 data_align_factor;
+  long data_align_factor;
   U64 ret_addr_reg;
   
   U64 handler_ip;
@@ -1359,7 +1359,7 @@ typedef struct UNW_DW_CFICFACell{
   union{
     struct{
       U64 reg_idx;
-      S64 offset;
+      long offset;
     };
     U64 expr_min;
     U64 expr_max;
@@ -1379,7 +1379,7 @@ typedef enum UNW_DW_CFIRegisterRule{
 typedef struct UNW_DW_CFICell{
   UNW_DW_CFIRegisterRule rule;
   union{
-    S64 n;
+    long n;
     struct{
       U64 expr_min;
       U64 expr_max;

@@ -40,7 +40,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   Vec2F32 panel_box_dim = dim_2f32(rect);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   Vec2F32 code_area_dim = v2f32(panel_box_dim.x - scroll_bar_dim, panel_box_dim.y - scroll_bar_dim);
-  S64 num_possible_visible_lines = (S64)(code_area_dim.y/code_line_height)+1;
+  long num_possible_visible_lines = (long)(code_area_dim.y/code_line_height)+1;
   CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
   CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
   
@@ -98,18 +98,18 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: determine visible line range / count
   //
-  Rng1S64 visible_line_num_range = r1s64(scroll_pos.y.idx + (S64)(scroll_pos.y.off) + 1 - !!(scroll_pos.y.off < 0),
-                                         scroll_pos.y.idx + (S64)(scroll_pos.y.off) + 1 + num_possible_visible_lines);
+  Rng1S64 visible_line_num_range = r1s64(scroll_pos.y.idx + (long)(scroll_pos.y.off) + 1 - !!(scroll_pos.y.off < 0),
+                                         scroll_pos.y.idx + (long)(scroll_pos.y.off) + 1 + num_possible_visible_lines);
   Rng1S64 target_visible_line_num_range = r1s64(scroll_pos.y.idx + 1,
                                                 scroll_pos.y.idx + 1 + num_possible_visible_lines);
   U64 visible_line_count = 0;
   {
-    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
-    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
+    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (long)text_info->lines_count);
+    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (long)text_info->lines_count);
     visible_line_num_range.min = Max(1, visible_line_num_range.min);
     visible_line_num_range.max = Max(1, visible_line_num_range.max);
-    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
-    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
+    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (long)text_info->lines_count);
+    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (long)text_info->lines_count);
     target_visible_line_num_range.min = Max(1, target_visible_line_num_range.min);
     target_visible_line_num_range.max = Max(1, target_visible_line_num_range.max);
     visible_line_count = (U64)dim_1s64(visible_line_num_range)+1;
@@ -118,14 +118,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: calculate scroll bounds
   //
-  S64 line_size_x = 0;
+  long line_size_x = 0;
   Rng1S64 scroll_idx_rng[Axis2_COUNT] = {0};
   {
     line_size_x = (text_info->lines_max_size*big_glyph_advance*3)/2;
-    line_size_x = ClampBot(line_size_x, (S64)big_glyph_advance*120);
-    line_size_x = ClampBot(line_size_x, (S64)code_area_dim.x);
-    scroll_idx_rng[Axis2_X] = r1s64(0, line_size_x-(S64)code_area_dim.x);
-    scroll_idx_rng[Axis2_Y] = r1s64(0, (S64)text_info->lines_count-1);
+    line_size_x = ClampBot(line_size_x, (long)big_glyph_advance*120);
+    line_size_x = ClampBot(line_size_x, (long)code_area_dim.x);
+    scroll_idx_rng[Axis2_X] = r1s64(0, line_size_x-(long)code_area_dim.x);
+    scroll_idx_rng[Axis2_Y] = r1s64(0, (long)text_info->lines_count-1);
   }
   
   //////////////////////////////
@@ -192,7 +192,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     
     // rjf: fill text info
     {
-      S64 line_num = visible_line_num_range.min;
+      long line_num = visible_line_num_range.min;
       U64 line_idx = visible_line_num_range.min-1;
       for(U64 visible_line_idx = 0;
           visible_line_idx < visible_line_count && line_idx < text_info->lines_count;
@@ -318,7 +318,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         if(ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process) == process && contains_1u64(dasm_vaddr_range, rip_vaddr))
         {
           U64 rip_off = rip_vaddr - dasm_vaddr_range.min;
-          S64 line_num = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, rip_off)+1;
+          long line_num = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, rip_off)+1;
           if(contains_1s64(visible_line_num_range, line_num))
           {
             U64 slice_line_idx = (line_num-visible_line_num_range.min);
@@ -340,7 +340,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         {
           U64 off = loc->vaddr-dasm_vaddr_range.min;
           U64 idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
-          S64 line_num = (S64)(idx+1);
+          long line_num = (long)(idx+1);
           if(contains_1s64(visible_line_num_range, line_num))
           {
             U64 slice_line_idx = (line_num-visible_line_num_range.min);
@@ -362,7 +362,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         {
           U64 off = loc->vaddr-dasm_vaddr_range.min;
           U64 idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
-          S64 line_num = (S64)(idx+1);
+          long line_num = (long)(idx+1);
           if(contains_1s64(visible_line_num_range, line_num))
           {
             U64 slice_line_idx = (line_num-visible_line_num_range.min);
@@ -377,7 +377,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       CTRL_Entity *module = ctrl_module_from_process_vaddr(process, dasm_vaddr_range.min);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-      for(S64 line_num = visible_line_num_range.min; line_num < visible_line_num_range.max; line_num += 1)
+      for(long line_num = visible_line_num_range.min; line_num < visible_line_num_range.max; line_num += 1)
       {
         U64 vaddr = dasm_vaddr_range.min + dasm_line_array_code_off_from_idx(dasm_lines, line_num-1);
         U64 voff = ctrl_voff_from_vaddr(module, vaddr);
@@ -427,9 +427,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       B32 found = 0;
       B32 first = 1;
-      S64 line_num_start = rd_regs()->cursor.line;
-      S64 line_num_last = (S64)text_info->lines_count;
-      for(S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
+      long line_num_start = rd_regs()->cursor.line;
+      long line_num_last = (long)text_info->lines_count;
+      for(long line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
         String8 line_string = str8_substr(text_data, text_info->lines_ranges[line_num-1]);
@@ -475,9 +475,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       B32 found = 0;
       B32 first = 1;
-      S64 line_num_start = rd_regs()->cursor.line;
-      S64 line_num_last = (S64)text_info->lines_count;
-      for(S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
+      long line_num_start = rd_regs()->cursor.line;
+      long line_num_last = (long)text_info->lines_count;
+      for(long line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
         String8 line_string = str8_substr(text_data, text_info->lines_ranges[line_num-1]);
@@ -536,7 +536,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //
   if(cv->goto_line_num != 0 && text_info->lines_count != 0)
   {
-    S64 line_num = cv->goto_line_num;
+    long line_num = cv->goto_line_num;
     cv->goto_line_num = 0;
     line_num = Clamp(1, line_num, text_info->lines_count);
     rd_regs()->cursor = rd_regs()->mark = txt_pt(line_num, 1);
@@ -639,7 +639,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         
         // rjf: scroll x
         {
-          S64 new_idx = (S64)(cursor_advance - code_area_dim.x/2);
+          long new_idx = (long)(cursor_advance - code_area_dim.x/2);
           new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
           ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
           snap[Axis2_X] = 0;
@@ -647,7 +647,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         
         // rjf: scroll y
         {
-          S64 new_idx = (cursor.line-1) - num_possible_visible_lines/2 + 2;
+          long new_idx = (cursor.line-1) - num_possible_visible_lines/2 + 2;
           new_idx = Clamp(scroll_idx_rng[Axis2_Y].min, new_idx, scroll_idx_rng[Axis2_Y].max);
           ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
           snap[Axis2_Y] = 0;
@@ -659,20 +659,20 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if(snap[Axis2_X] && cursor_in_range)
     {
       String8 cursor_line = str8_substr(text_data, text_info->lines_ranges[cursor.line-1]);
-      S64 cursor_off = (S64)(fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x + priority_margin_width_px + catchall_margin_width_px + line_num_width_px);
+      long cursor_off = (long)(fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x + priority_margin_width_px + catchall_margin_width_px + line_num_width_px);
       Rng1S64 visible_pixel_range =
       {
         scroll_pos.x.idx,
-        scroll_pos.x.idx + (S64)code_area_dim.x,
+        scroll_pos.x.idx + (long)code_area_dim.x,
       };
       Rng1S64 cursor_pixel_range =
       {
-        cursor_off - (S64)(big_glyph_advance*4) - (S64)(priority_margin_width_px + catchall_margin_width_px + line_num_width_px),
-        cursor_off + (S64)(big_glyph_advance*4),
+        cursor_off - (long)(big_glyph_advance*4) - (long)(priority_margin_width_px + catchall_margin_width_px + line_num_width_px),
+        cursor_off + (long)(big_glyph_advance*4),
       };
-      S64 min_delta = Min(0, cursor_pixel_range.min - visible_pixel_range.min);
-      S64 max_delta = Max(0, cursor_pixel_range.max - visible_pixel_range.max);
-      S64 new_idx = scroll_pos.x.idx+min_delta+max_delta;
+      long min_delta = Min(0, cursor_pixel_range.min - visible_pixel_range.min);
+      long max_delta = Max(0, cursor_pixel_range.max - visible_pixel_range.max);
+      long new_idx = scroll_pos.x.idx+min_delta+max_delta;
       new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
       ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
     }
@@ -683,10 +683,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       Rng1S64 cursor_visibility_range = r1s64(cursor.line-4, cursor.line+4);
       cursor_visibility_range.min = ClampBot(0, cursor_visibility_range.min);
       cursor_visibility_range.max = ClampBot(0, cursor_visibility_range.max);
-      S64 min_delta = Min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
-      S64 max_delta = Max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
-      S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
-      new_idx = Clamp(0, new_idx, (S64)text_info->lines_count-1);
+      long min_delta = Min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
+      long max_delta = Max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
+      long new_idx = scroll_pos.y.idx+min_delta+max_delta;
+      new_idx = Clamp(0, new_idx, (long)text_info->lines_count-1);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
   }
@@ -704,7 +704,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
                                    ui_px(scroll_bar_dim, 1.f),
                                    scroll_pos.x,
                                    scroll_idx_rng[Axis2_X],
-                                   (S64)code_area_dim.x);
+                                   (long)code_area_dim.x);
     }
   }
   
@@ -733,13 +733,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     UI_Signal sig = ui_signal_from_box(container_box);
     if(sig.scroll.x != 0)
     {
-      S64 new_idx = scroll_pos.x.idx+sig.scroll.x*big_glyph_advance;
+      long new_idx = scroll_pos.x.idx+sig.scroll.x*big_glyph_advance;
       new_idx = clamp_1s64(scroll_idx_rng[Axis2_X], new_idx);
       ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
     }
     if(sig.scroll.y != 0)
     {
-      S64 new_idx = scroll_pos.y.idx + sig.scroll.y;
+      long new_idx = scroll_pos.y.idx + sig.scroll.y;
       new_idx = clamp_1s64(scroll_idx_rng[Axis2_Y], new_idx);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
@@ -793,10 +793,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
 //- rjf: index -> column
 
 internal RD_WatchViewColumn *
-rd_watch_view_column_from_x(RD_WatchViewState *wv, S64 index)
+rd_watch_view_column_from_x(RD_WatchViewState *wv, long index)
 {
   RD_WatchViewColumn *result = wv->first_column;
-  S64 idx = 0;
+  long idx = 0;
   for(RD_WatchViewColumn *c = wv->first_column; c != 0; c = c->next, idx += 1)
   {
     result = c;
@@ -833,7 +833,7 @@ rd_tbl_from_watch_view_point(EV_BlockRangeList *block_ranges, RD_WatchViewPoint 
 {
   Vec2S64 tbl = {0};
   tbl.x = pt.x;
-  tbl.y = (S64)ev_num_from_key(block_ranges, pt.key);
+  tbl.y = (long)ev_num_from_key(block_ranges, pt.key);
   return tbl;
 }
 
@@ -1274,7 +1274,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   EV_View *eval_view = rd_ev_view_from_key(d_hash_from_string(eval_view_key_string));
   String8 filter = rd_view_filter();
   F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  S64 num_possible_visible_rows = (S64)(dim_2f32(rect).y/row_height_px);
+  long num_possible_visible_rows = (long)(dim_2f32(rect).y/row_height_px);
   F32 row_string_max_size_px = dim_2f32(rect).x;
   EV_StringFlags string_flags = 0;
   if(flags & RD_WatchViewFlag_PrettyNameMembers)
@@ -1494,7 +1494,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         Rng1S64 item_range = r1s64(0, block_tree.total_item_count);
         Rng1S64 row_range  = r1s64(0, block_tree.total_row_count);
         Rng1S64 scroll_row_idx_range = r1s64(row_range.min, ClampBot(row_range.min, row_range.max-1));
-        S64 cursor_item_idx = cursor_tbl.y;
+        long cursor_item_idx = cursor_tbl.y;
         if(item_range.min <= cursor_item_idx && cursor_item_idx <= item_range.max)
         {
           UI_ScrollPt *scroll_pt = &scroll_pos.y;
@@ -1511,14 +1511,14 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           }
           else
           {
-            cursor_visibility_row_range.min = (S64)ui_scroll_list_row_from_item(&row_blocks, (U64)cursor_item_idx) - 1;
+            cursor_visibility_row_range.min = (long)ui_scroll_list_row_from_item(&row_blocks, (U64)cursor_item_idx) - 1;
             cursor_visibility_row_range.max = cursor_visibility_row_range.min + 3;
           }
           
           //- rjf: compute deltas & apply
-          S64 min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
-          S64 max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
-          S64 new_idx = scroll_pt->idx+min_delta+max_delta;
+          long min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
+          long max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
+          long new_idx = scroll_pt->idx+min_delta+max_delta;
           new_idx = clamp_1s64(scroll_row_idx_range, new_idx);
           ui_scroll_pt_target_idx(scroll_pt, new_idx);
         }
@@ -1570,14 +1570,14 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
         EV_Row *row = rows.first;
-        for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
+        for(long y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
         {
           RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
           RD_WatchViewRowKind row_kind = rd_watch_view_row_kind_from_flags_row_info(flags, row, &row_info);
           if(row_kind == RD_WatchViewRowKind_Normal)
           {
             ewv->text_editing = 1;
-            for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
+            for(long x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
               RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
               String8 string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
@@ -1609,14 +1609,14 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
         EV_Row *row = rows.first;
-        for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
+        for(long y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
         {
           // rjf: unpack row info
           RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
           RD_WatchViewRowKind row_kind = rd_watch_view_row_kind_from_flags_row_info(flags, row, &row_info);
           
           // rjf: loop through X selections and perform operations for each
-          for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
+          for(long x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
             //- rjf: determine operation for this cell
             typedef enum OpKind
@@ -1679,11 +1679,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                       ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
           EV_Row *row = rows.first;
-          for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
+          for(long y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
           {
             RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
             RD_WatchViewRowKind row_kind = rd_watch_view_row_kind_from_flags_row_info(flags, row, &row_info);
-            for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
+            for(long x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
             {
               RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, v2s64(x, y));
               RD_WatchViewTextEditState *edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
@@ -1836,9 +1836,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
         EV_Row *row = rows.first;
-        for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
+        for(long y = selection_tbl.min.y; y <= selection_tbl.max.y && row != 0; y += 1, row = row->next)
         {
-          for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
+          for(long x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
             RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
             String8 cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
@@ -1880,11 +1880,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
                                                                                                                                     ui_scroll_list_row_from_item(&row_blocks, selection_tbl.max.y)+1));
         EV_Row *row = rows.first;
-        for(S64 y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
+        for(long y = selection_tbl.min.y; y <= selection_tbl.max.y; y += 1, row = row->next)
         {
           RD_WatchViewRowInfo row_info = rd_watch_view_row_info_from_row(row);
           RD_WatchViewRowKind row_kind = rd_watch_view_row_kind_from_flags_row_info(flags, row, &row_info);
-          for(S64 x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
+          for(long x = selection_tbl.min.x; x <= selection_tbl.max.x; x += 1)
           {
             Vec2S64 tbl = v2s64(x, y);
             RD_WatchViewPoint pt = rd_watch_view_point_from_tbl(&block_ranges, tbl);
@@ -2180,7 +2180,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   {
     F32 **col_pcts = push_array(scratch.arena, F32*, ewv->column_count);
     {
-      S64 x = 0;
+      long x = 0;
       for(RD_WatchViewColumn *c = ewv->first_column; c != 0; c = c->next, x += 1)
       {
         col_pcts[x] = &c->pct;
@@ -2867,7 +2867,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               //
               ProfScope("build all columns")
               {
-                S64 x = 0;
+                long x = 0;
                 F32 x_px = 0;
                 for(RD_WatchViewColumn *col = ewv->first_column; col != 0; col = col->next, x += 1)
                 {
@@ -3283,7 +3283,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         Task *next;
                         Task *prev;
                         E_Expr *expr;
-                        S64 depth;
+                        long depth;
                       };
                       Task start_task = {0, 0, parse.expr};
                       Task *first_task = &start_task;
@@ -3336,7 +3336,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         Task *next;
                         Task *prev;
                         E_IRNode *node;
-                        S64 depth;
+                        long depth;
                       };
                       Task start_task = {0, 0, irtree.root};
                       Task *first_task = &start_task;
@@ -3762,7 +3762,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
     {
       if(d_hash_from_string(cmd_array.v[idx].cmd_name) == cv->selected_cmd_hash)
       {
-        cursor.y = (S64)idx+1;
+        cursor.y = (long)idx+1;
         break;
       }
     }
@@ -3790,7 +3790,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
     UI_Focus(UI_FocusKind_Null)
   {
     //- rjf: build buttons
-    for(S64 row_idx = visible_row_range.min;
+    for(long row_idx = visible_row_range.min;
         row_idx <= visible_row_range.max && row_idx < cmd_array.count;
         row_idx += 1)
     {
@@ -4928,7 +4928,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
     {
       if(ent_arr.v[idx].entity == selected_entity)
       {
-        cursor.y = (S64)(idx+1);
+        cursor.y = (long)(idx+1);
         break;
       }
     }
@@ -4956,7 +4956,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
                   &scroll_list_sig)
     UI_Focus(UI_FocusKind_Null)
   {
-    for(S64 idx = visible_row_range.min;
+    for(long idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < ent_arr.count;
         idx += 1)
     {
@@ -5143,7 +5143,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
     {
       if(ent_arr.v[idx].entity == selected_entity)
       {
-        cursor.y = (S64)(idx+1);
+        cursor.y = (long)(idx+1);
         break;
       }
     }
@@ -5171,7 +5171,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
                   &scroll_list_sig)
     UI_Focus(UI_FocusKind_Null)
   {
-    for(S64 idx = visible_row_range.min;
+    for(long idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < ent_arr.count;
         idx += 1)
     {
@@ -5369,7 +5369,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         if(lines.first != 0 && lines.first->v.file_path.size != 0 && lines.first->v.pt.line != 0)
         {
           String8 file_path = lines.first->v.file_path;
-          S64 line_num = lines.first->v.pt.line;
+          long line_num = lines.first->v.pt.line;
           RD_Font(RD_FontSlot_Main) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
             ui_labelf("%S:%I64d", file_path, line_num);
         }
@@ -6195,7 +6195,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
     U64 line_idx = dasm_line_array_idx_from_code_off__linear_scan(&dasm_info.lines, vaddr-range.min);
     if(line_idx < dasm_info.lines.count)
     {
-      S64 line_num = (S64)(line_idx+1);
+      long line_num = (long)(line_idx+1);
       dv->goto_vaddr = 0;
       cv->goto_line_num = line_num;
     }
@@ -6473,11 +6473,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //
   Rng1S64 viz_range_rows = {0};
   Rng1U64 viz_range_bytes = {0};
-  S64 num_possible_visible_rows = 0;
+  long num_possible_visible_rows = 0;
   {
     num_possible_visible_rows = dim_2f32(content_rect).y/row_height_px;
-    viz_range_rows.min = scroll_pos.y.idx + (S64)scroll_pos.y.off - !!(scroll_pos.y.off<0);
-    viz_range_rows.max = scroll_pos.y.idx + (S64)scroll_pos.y.off + num_possible_visible_rows,
+    viz_range_rows.min = scroll_pos.y.idx + (long)scroll_pos.y.off - !!(scroll_pos.y.off<0);
+    viz_range_rows.max = scroll_pos.y.idx + (long)scroll_pos.y.off + num_possible_visible_rows,
     viz_range_rows.min = clamp_1s64(scroll_idx_rng, viz_range_rows.min);
     viz_range_rows.max = clamp_1s64(scroll_idx_rng, viz_range_rows.max);
     viz_range_bytes.min = space_range.min + viz_range_rows.min*num_columns;
@@ -6504,19 +6504,19 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         default:{}break;
         case UI_EventDeltaUnit_Char:
         {
-          cell_delta.x = (S64)evt->delta_2s32.x;
-          cell_delta.y = (S64)evt->delta_2s32.y;
+          cell_delta.x = (long)evt->delta_2s32.x;
+          cell_delta.y = (long)evt->delta_2s32.y;
         }break;
         case UI_EventDeltaUnit_Word:
         case UI_EventDeltaUnit_Page:
         {
           if(evt->delta_2s32.x < 0)
           {
-            cell_delta.x = -(S64)(cursor%num_columns);
+            cell_delta.x = -(long)(cursor%num_columns);
           }
           else if(evt->delta_2s32.x > 0)
           {
-            cell_delta.x = (num_columns-1) - (S64)(cursor%num_columns);
+            cell_delta.x = (num_columns-1) - (long)(cursor%num_columns);
           }
           if(evt->delta_2s32.y < 0)
           {
@@ -6539,8 +6539,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       }
       if(good_action)
       {
-        cell_delta.x = ClampBot(cell_delta.x, (S64)-next_cursor);
-        cell_delta.y = ClampBot(cell_delta.y, (S64)-(next_cursor/num_columns));
+        cell_delta.x = ClampBot(cell_delta.x, (long)-next_cursor);
+        cell_delta.y = ClampBot(cell_delta.y, (long)-(next_cursor/num_columns));
         next_cursor += cell_delta.x;
         next_cursor += cell_delta.y*num_columns;
       }
@@ -6588,8 +6588,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   if(mv->center_cursor)
   {
     mv->center_cursor = 0;
-    S64 cursor_row_idx = cursor/num_columns;
-    S64 new_idx = (cursor_row_idx-num_possible_visible_rows/2+1);
+    long cursor_row_idx = cursor/num_columns;
+    long new_idx = (cursor_row_idx-num_possible_visible_rows/2+1);
     new_idx = clamp_1s64(scroll_idx_rng, new_idx);
     ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
   }
@@ -6600,11 +6600,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   if(mv->contain_cursor)
   {
     mv->contain_cursor = 0;
-    S64 cursor_row_idx = cursor/num_columns;
+    long cursor_row_idx = cursor/num_columns;
     Rng1S64 cursor_viz_range = r1s64(clamp_1s64(scroll_idx_rng, cursor_row_idx-2), clamp_1s64(scroll_idx_rng, cursor_row_idx+3));
-    S64 min_delta = Min(0, cursor_viz_range.min-viz_range_rows.min);
-    S64 max_delta = Max(0, cursor_viz_range.max-viz_range_rows.max);
-    S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
+    long min_delta = Min(0, cursor_viz_range.min-viz_range_rows.min);
+    long max_delta = Max(0, cursor_viz_range.max-viz_range_rows.max);
+    long new_idx = scroll_pos.y.idx+min_delta+max_delta;
     new_idx = clamp_1s64(scroll_idx_rng, new_idx);
     ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
   }
@@ -6946,7 +6946,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     Rng1U64 selection = r1u64(cursor, mark);
     U8 *row_ascii_buffer = push_array(scratch.arena, U8, num_columns);
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f))
-      for(S64 row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
+      for(long row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
     {
       Rng1U64 row_range_bytes = r1u64(space_range.min + row_idx*num_columns,
                                       space_range.min + (row_idx+1)*num_columns);
@@ -7183,7 +7183,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     UI_Signal sig = ui_signal_from_box(scrollable_box);
     if(sig.scroll.y != 0)
     {
-      S64 new_idx = scroll_pos.y.idx + sig.scroll.y;
+      long new_idx = scroll_pos.y.idx + sig.scroll.y;
       new_idx = clamp_1s64(scroll_idx_rng, new_idx);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
@@ -7440,9 +7440,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     Vec2F32 mouse_cvs = rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, canvas_rect, mouse_scr);
     if(contains_2f32(img_rect_cvs, mouse_cvs))
     {
-      mouse_bmp = v2s32((S32)(mouse_cvs.x-img_rect_cvs.x0), (S32)(mouse_cvs.y-img_rect_cvs.y0));
-      S64 off_px = mouse_bmp.y*topology.dim.x + mouse_bmp.x;
-      S64 off_bytes = off_px*r_tex2d_format_bytes_per_pixel_table[topology.fmt];
+      mouse_bmp = v2s32((int)(mouse_cvs.x-img_rect_cvs.x0), (int)(mouse_cvs.y-img_rect_cvs.y0));
+      long off_px = mouse_bmp.y*topology.dim.x + mouse_bmp.x;
+      long off_bytes = off_px*r_tex2d_format_bytes_per_pixel_table[topology.fmt];
       if(0 <= off_bytes && off_bytes+r_tex2d_format_bytes_per_pixel_table[topology.fmt] <= data.size &&
          r_tex2d_format_bytes_per_pixel_table[topology.fmt] != 0)
       {
@@ -7938,7 +7938,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
                   &scroll_list_sig)
     UI_Focus(UI_FocusKind_Null)
   {
-    for(S64 row = visible_row_range.min; row <= visible_row_range.max && row < opts.count; row += 1)
+    for(long row = visible_row_range.min; row <= visible_row_range.max && row < opts.count; row += 1)
       UI_FocusHot(sv->cursor.y == row+1 ? UI_FocusKind_On : UI_FocusKind_Off)
     {
       RD_ExceptionFiltersOption *opt = &opts.v[row];
@@ -8470,7 +8470,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     UI_ScrollList(&scroll_list_params, &scroll_pos.y, &sv->cursor, 0, &visible_row_range, &scroll_list_sig)
     UI_Focus(UI_FocusKind_Null)
   {
-    for(S64 row_num = visible_row_range.min; row_num <= visible_row_range.max && row_num < items.count; row_num += 1)
+    for(long row_num = visible_row_range.min; row_num <= visible_row_range.max && row_num < items.count; row_num += 1)
     {
       //- rjf: unpack item
       RD_SettingsItem *item = &items.v[row_num];
@@ -8481,7 +8481,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       B32 is_toggler = 0;
       B32 is_toggled = 0;
       B32 is_slider = 0;
-      S32 slider_s32_val = 0;
+      int slider_s32_val = 0;
       F32 slider_pct = 0.f;
       UI_BoxFlags flags = UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawActiveEffects;
       RD_SettingVal *val_table = &rd_state->cfg_setting_vals[RD_CfgSrc_User][0];
@@ -8625,9 +8625,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         {
           ui_store_drag_struct(&slider_s32_val);
         }
-        S32 pre_drag_val = *ui_get_drag_struct(S32);
+        int pre_drag_val = *ui_get_drag_struct(int);
         Vec2F32 delta = ui_drag_delta();
-        S32 pst_drag_val = pre_drag_val + (S32)(delta.x/(ui_top_font_size()*2.f));
+        int pst_drag_val = pre_drag_val + (int)(delta.x/(ui_top_font_size()*2.f));
         pst_drag_val = clamp_1s32(s32_range, pst_drag_val);
         val_table[item->code].s32 = pst_drag_val;
         val_table[item->code].set = 1;

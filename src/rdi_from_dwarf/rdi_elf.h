@@ -373,7 +373,7 @@ typedef struct ELF_Rel32{
 typedef struct ELF_Rela32{
   U32 r_offset;
   U32 r_info;
-  S32 r_addend;
+  int r_addend;
 } ELF_Rela32;
 
 typedef struct ELF_Rel64{
@@ -384,7 +384,7 @@ typedef struct ELF_Rel64{
 typedef struct ELF_Rela64{
   U64 r_offset;
   U64 r_info;
-  S64 r_addend;
+  long r_addend;
 } ELF_Rela64;
 
 #define ELF_RelSymIndexFromInfo32(x) ((x)>>8)

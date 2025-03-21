@@ -399,8 +399,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             event->key = OS_Key_RightMouseButton;
           }break;
         }
-        event->pos.x = (F32)(S16)LOWORD(lParam);
-        event->pos.y = (F32)(S16)HIWORD(lParam);
+        event->pos.x = (F32)(short)LOWORD(lParam);
+        event->pos.y = (F32)(short)HIWORD(lParam);
         if(release)
         {
           ReleaseCapture();
@@ -414,17 +414,17 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MOUSEMOVE:
       {
         OS_Event *event = os_w32_push_event(OS_EventKind_MouseMove, window);
-        event->pos.x = (F32)(S16)LOWORD(lParam);
-        event->pos.y = (F32)(S16)HIWORD(lParam);
+        event->pos.x = (F32)(short)LOWORD(lParam);
+        event->pos.y = (F32)(short)HIWORD(lParam);
       }break;
       
       case WM_MOUSEWHEEL:
       {
-        S16 wheel_delta = HIWORD(wParam);
+        short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(S16)LOWORD(lParam);
-        p.y = (S32)(S16)HIWORD(lParam);
+        p.x = (int)(short)LOWORD(lParam);
+        p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -433,11 +433,11 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       
       case WM_MOUSEHWHEEL:
       {
-        S16 wheel_delta = HIWORD(wParam);
+        short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(S16)LOWORD(lParam);
-        p.y = (S32)(S16)HIWORD(lParam);
+        p.x = (int)(short)LOWORD(lParam);
+        p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -644,9 +644,9 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         if(os_w32_new_window_custom_border || (window && window->custom_border))
         {
           F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
-          S32 frame_x = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXFRAME, dpi) : GetSystemMetrics(SM_CXFRAME);
-          S32 frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
-          S32 padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
+          int frame_x = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXFRAME, dpi) : GetSystemMetrics(SM_CXFRAME);
+          int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
+          int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
           DWORD window_style = GetWindowLong(hwnd, GWL_STYLE);
           B32 is_fullscreen = !(window_style & WS_OVERLAPPEDWINDOW);
           if(!is_fullscreen)
@@ -712,8 +712,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // Adjustments happening in NCCALCSIZE are messing with the detection
             // of the top hit area so manually checking that.
             F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
-            S32 frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
-            S32 padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
+            int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
+            int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
             
             B32 is_over_top_resize = pos_client.y >= 0 && pos_client.y < frame_y + padding;
             B32 is_over_title_bar  = pos_client.y >= 0 && pos_client.y < window->custom_border_title_thickness;

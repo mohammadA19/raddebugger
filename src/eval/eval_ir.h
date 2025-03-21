@@ -89,7 +89,7 @@ internal void e_select_ir_ctx(E_IRCtx *ctx);
 //- rjf: op list functions
 internal void e_oplist_push_op(Arena *arena, E_OpList *list, RDI_EvalOp opcode, E_Value value);
 internal void e_oplist_push_uconst(Arena *arena, E_OpList *list, U64 x);
-internal void e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x);
+internal void e_oplist_push_sconst(Arena *arena, E_OpList *list, long x);
 internal void e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode);
 internal void e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space);
 internal void e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string);

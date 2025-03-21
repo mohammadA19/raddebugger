@@ -8,8 +8,8 @@ internal TEX_Topology
 tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 {
   TEX_Topology top = {0};
-  top.dim.x = (S16)Clamp(0, dim.x, max_S32);
-  top.dim.y = (S16)Clamp(0, dim.y, max_S32);
+  top.dim.x = (short)Clamp(0, dim.x, max_S32);
+  top.dim.y = (short)Clamp(0, dim.y, max_S32);
   top.fmt = fmt;
   return top;
 }

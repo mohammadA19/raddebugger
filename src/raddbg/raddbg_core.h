@@ -142,7 +142,7 @@ typedef struct RD_SettingVal RD_SettingVal;
 struct RD_SettingVal
 {
   B32 set;
-  S32 s32;
+  int s32;
 };
 
 ////////////////////////////////
@@ -410,8 +410,8 @@ typedef struct RD_CfgRec RD_CfgRec;
 struct RD_CfgRec
 {
   RD_Cfg *next;
-  S32 push_count;
-  S32 pop_count;
+  int push_count;
+  int pop_count;
 };
 
 ////////////////////////////////
@@ -476,8 +476,8 @@ typedef struct RD_EntityRec RD_EntityRec;
 struct RD_EntityRec
 {
   RD_Entity *next;
-  S32 push_count;
-  S32 pop_count;
+  int push_count;
+  int pop_count;
 };
 
 ////////////////////////////////
@@ -674,7 +674,7 @@ struct RD_Window
   U64 autocomp_lister_input_size;
   F32 autocomp_open_t;
   F32 autocomp_num_visible_rows_t;
-  S64 autocomp_cursor_num;
+  long autocomp_cursor_num;
   
   // rjf: query view stack
   Arena *query_cmd_arena;
@@ -1347,7 +1347,7 @@ internal U64                rd_ev_view_rule_expr_id_from_num__debug_info_tables(
 internal U64                rd_ev_view_rule_expr_num_from_id__debug_info_tables(U64 id, void *user_data, RDI_SectionKind section);
 
 internal EV_View *rd_ev_view_from_key(U64 key);
-internal F32 rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, S32 depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out);
+internal F32 rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out);
 internal String8 rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules);
 
 ////////////////////////////////

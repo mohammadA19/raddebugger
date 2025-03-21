@@ -387,7 +387,7 @@ dump_entry_tree(Arena *arena, String8List *out,
       
       case DWARF_AttributeForm_sdata:
       {
-        str8_list_pushf(arena, out, "%lld\n", (S64)attrib_val->val);
+        str8_list_pushf(arena, out, "%lld\n", (long)attrib_val->val);
       }break;
       
       case DWARF_AttributeForm_string:

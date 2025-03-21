@@ -1658,7 +1658,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size,
       } break;
       
       case DW_ExprOp_ConstS: {
-        S64 x = 0;
+        long x = 0;
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &x);
         op_value = push_str8f(scratch.arena, "%lld", x);
       } break;
@@ -1716,10 +1716,10 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size,
       } break;
       
       case DW_ExprOp_Skip: {
-        S16 x = 0;
+        short x = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &x);
         
-        S64 new_offset = (S64)cursor + x;
+        long new_offset = (long)cursor + x;
         if (new_offset >= 0) {
           cursor = (U64)new_offset;
           op_value = push_str8f(scratch.arena, "constant %lld", x);
@@ -1729,7 +1729,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size,
       } break;
       
       case DW_ExprOp_Bra: {
-        S16 x = 0;
+        short x = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &x);
         op_value = push_str8f(scratch.arena, "%d", x);
       } break;
@@ -1746,20 +1746,20 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 address_size,
       case DW_ExprOp_BReg27: case DW_ExprOp_BReg28: case DW_ExprOp_BReg29: 
       case DW_ExprOp_BReg30: case DW_ExprOp_BReg31: {
         U64 reg_idx = op - DW_ExprOp_BReg0;
-        S64 reg_off = 0;
+        long reg_off = 0;
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &reg_off);
         op_value = push_str8f(scratch.arena, "%S offset %lld", dw_string_from_register(scratch.arena, arch, reg_idx), reg_off);
       } break;
       
       case DW_ExprOp_FBReg: {
-        S64 reg_off = 0;
+        long reg_off = 0;
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &reg_off);
         op_value = push_str8f(scratch.arena, "offset %lld", reg_off);
       } break;
       
       case DW_ExprOp_BRegX: {
         U64 reg_idx = 0;
-        S64 reg_off = 0;
+        long reg_off = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg_idx);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &reg_off);
         op_value = push_str8f(scratch.arena, "register %u (%S) offset %lld", reg_idx, dw_string_from_register(scratch.arena, arch, reg_idx), reg_off);
@@ -1906,7 +1906,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
         rd_printf("DW_CFA_offset_extended: register %llu (%S), offset %+llu", 
                   reg, 
                   dw_string_from_register(arena, arch, reg), 
-                  (S64)offset * cie->data_align_factor);
+                  (long)offset * cie->data_align_factor);
       } break;
       case DW_CFA_RestoreExt: {
         rd_printf("DW_CFA_restore_extended");
@@ -1988,7 +1988,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
       } break;
       case DW_CFA_OffsetExtSf: {
         U64 reg    = 0;
-        S64 offset = 0;
+        long offset = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &offset);
 
@@ -1997,7 +1997,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
       } break;
       case DW_CFA_DefCfaSf: {
         U64 reg    = 0;
-        S64 offset = 0;
+        long offset = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &offset);
 
@@ -2013,7 +2013,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
       } break;
       case DW_CFA_ValOffsetSf: {
         U64 val    = 0;
-        S64 offset = 0;
+        long offset = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &val);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &offset);
 
@@ -2037,7 +2037,7 @@ dw_print_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw
       case DW_CFA_Offset: {
         U64 offset = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &offset);
-        S64 v = (S64)offset * cie->data_align_factor;
+        long v = (long)offset * cie->data_align_factor;
 
         rd_printf("DW_CFA_offset: register %llu (%S), offset %lld", operand, dw_string_from_register(arena, arch, operand), v);
       } break;
@@ -2511,18 +2511,18 @@ dw_print_debug_line(Arena *arena, String8List *out, String8 indent, DW_SectionAr
         if (opcode >= vm_header.opcode_base) {
           U32 adjusted_opcode = 0;
           U32 op_advance      = 0;
-          S32 line_advance    = 0;
+          int line_advance    = 0;
           U64 addr_advance    = 0;
           if (vm_header.line_range > 0 && vm_header.max_ops_for_inst > 0) {
             adjusted_opcode = (U32)(opcode - vm_header.opcode_base);
             op_advance      = adjusted_opcode / vm_header.line_range;
-            line_advance    = (S32)vm_header.line_base + ((S32)adjusted_opcode) % (S32)vm_header.line_range;
+            line_advance    = (int)vm_header.line_base + ((int)adjusted_opcode) % (int)vm_header.line_range;
             addr_advance    = vm_header.min_inst_len * ((vm_state.op_index+op_advance) / vm_header.max_ops_for_inst);
           }
 
           vm_state.address        += addr_advance;
           vm_state.op_index        = (vm_state.op_index + op_advance) % vm_header.max_ops_for_inst;
-          vm_state.line            = (U32)((S32)vm_state.line + line_advance);
+          vm_state.line            = (U32)((int)vm_state.line + line_advance);
           vm_state.basic_block     = 0;
           vm_state.prologue_end    = 0;
           vm_state.epilogue_begin  = 0;
@@ -2560,7 +2560,7 @@ dw_print_debug_line(Arena *arena, String8List *out, String8 indent, DW_SectionAr
       } break;
 
       case DW_StdOpcode_AdvanceLine: {
-        S64 advance = 0;
+        long advance = 0;
         cursor += dw_based_range_read_sleb128(base, range, cursor, &advance);
         vm_state.line += advance;
         str8_list_pushf(opcode_temp.arena, &list, "advance %lld ; current line %u", advance, vm_state.line);
@@ -5896,7 +5896,7 @@ coff_print_relocs(Arena              *arena,
         U64 raw_apply;
         AssertAlways(apply_size <= sizeof(raw_apply));
         MemoryCopy(&raw_apply, raw_data.str + apply_foff, apply_size);
-        S64 apply = extend_sign64(raw_apply, apply_size);
+        long apply = extend_sign64(raw_apply, apply_size);
 
         if (reloc->isymbol > symbols.count) {
           rd_errorf("out of bounds symbol index %u in relocation %#llx", reloc->isymbol, reloc_idx);

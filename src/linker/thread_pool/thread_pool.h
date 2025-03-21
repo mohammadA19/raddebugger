@@ -40,7 +40,7 @@ typedef struct TP_Context
   void        *task_data;
   U64          task_count;
   U64          task_done;
-  S64          task_left;
+  long          task_left;
 } TP_Context;
 
 internal TP_Context * tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name);

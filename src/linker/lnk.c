@@ -2657,7 +2657,7 @@ lnk_apply_reloc(U64               base_addr,
   
   U64 reloc_align = 1;
   U64 reloc_size  = 0;
-  S64 reloc_value = 0;
+  long reloc_value = 0;
   
   switch (reloc->type) {
   case LNK_Reloc_NULL: /* ignore */ break;
@@ -2700,32 +2700,32 @@ lnk_apply_reloc(U64               base_addr,
   } break;
   case LNK_Reloc_REL32: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 0));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 0));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_1: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 1));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 1));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_2: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 2));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 2));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_3: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 3));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 3));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_4: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 4));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 4));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_5: {
     U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 5));
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 5));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_SECT_REL: {
@@ -2752,7 +2752,7 @@ lnk_apply_reloc(U64               base_addr,
   Assert(reloc->apply_off + reloc_size <= chunk_data.size);
   U64 raw_addend = 0;
   MemoryCopy(&raw_addend, chunk_data.str + reloc->apply_off, reloc_size);
-  S64 addend = extend_sign64(raw_addend, reloc_size);
+  long addend = extend_sign64(raw_addend, reloc_size);
   
   // commit reloc value
   reloc_value += addend;

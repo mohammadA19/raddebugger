@@ -198,8 +198,8 @@ typedef struct MD_NodeRec MD_NodeRec;
 struct MD_NodeRec
 {
   MD_Node *next;
-  S32 push_count;
-  S32 pop_count;
+  int push_count;
+  int pop_count;
 };
 
 ////////////////////////////////
