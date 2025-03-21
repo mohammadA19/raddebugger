@@ -30,7 +30,7 @@ struct E_MsgList
   E_Msg *first;
   E_Msg *last;
   E_MsgKind max_kind;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -38,15 +38,15 @@ struct E_MsgList
 
 union E_Value
 {
-  U64 u512[8];
-  U64 u256[4];
+  ulong u512[8];
+  ulong u256[4];
   U128 u128;
-  U64 u64;
-  U32 u32;
+  ulong u64;
+  uint u32;
   ushort u16;
-  S64 s64;
-  S32 s32;
-  S32 s16;
+  long s64;
+  int s32;
+  int s16;
   F64 f64;
   F32 f32;
 };
@@ -64,7 +64,7 @@ enum E_OpKind
 struct E_OpInfo
 {
   E_OpKind kind;
-  S64 precedence;
+  long precedence;
   String8 pre;
   String8 sep;
   String8 post;
@@ -83,7 +83,7 @@ struct E_OpInfo
 // value for understanding a key *into* a space, e.g. 1+2 -> 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
-enum E_SpaceKind : U64
+enum E_SpaceKind : ulong
 {
   E_SpaceKind_Null,
   E_SpaceKind_FileSystem,
@@ -95,10 +95,10 @@ struct E_Space
   E_SpaceKind kind;
   union
   {
-    U64 u64s[3];
+    ulong u64s[3];
     struct
     {
-      U64 u64_0;
+      ulong u64_0;
       U128 u128;
     };
   };
@@ -133,7 +133,7 @@ struct E_Module
 ////////////////////////////////
 //~ rjf: Basic Helper Functions
 
-U64 e_hash_from_string(U64 seed, String8 string);
+ulong e_hash_from_string(ulong seed, String8 string);
 #define e_value_u64(v) (E_Value){.u64 = (v)}
 
 ////////////////////////////////

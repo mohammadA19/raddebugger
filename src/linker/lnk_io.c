@@ -38,7 +38,7 @@ shared_function uint64_t
 lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
-  U64 read_size = os_file_read(handle, rng_1u64(0, buffer_max), buffer);
+  ulong read_size = os_file_read(handle, rng_1u64(0, buffer_max), buffer);
   Assert(read_size == buffer_max);
   return read_size;
 }
@@ -47,14 +47,14 @@ shared_function uint64_t
 lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_size)
 {
   OS_Handle handle = *(OS_Handle*)raw_handle;
-  U64 write_size = os_file_write(handle, r1u64(offset, offset + buffer_size), buffer);
+  ulong write_size = os_file_write(handle, r1u64(offset, offset + buffer_size), buffer);
   return write_size;
 }
 
 ////////////////////////////////
 
 void
-lnk_log_read(String8 path, U64 size)
+lnk_log_read(String8 path, ulong size)
 {
   lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
@@ -66,9 +66,9 @@ lnk_read_data_from_file_path(Arena *arena, String8 path)
   OS_Handle handle = {0};
   int is_open = lnk_open_file_read((char*)path.str, path.size, &handle, sizeof(handle));
   if (is_open) {
-    U64  buffer_size = lnk_size_from_file(&handle);
+    ulong  buffer_size = lnk_size_from_file(&handle);
     byte  *buffer      = push_array_no_zero(arena, byte, buffer_size);
-    U64  read_size   = lnk_read_file(&handle, buffer, buffer_size);
+    ulong  read_size   = lnk_read_file(&handle, buffer, buffer_size);
 
     data = str8(buffer, read_size);
 	
@@ -94,7 +94,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
   String8         path = task->path_arr.v[task_id];
 
   OS_Handle handle = {0};
-  U64       size   = 0;
+  ulong       size   = 0;
 
   int is_open = lnk_open_file_read((char*)path.str, path.size, &handle, sizeof(handle));
   if (is_open) {
@@ -111,10 +111,10 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   LNK_DiskReader *task = raw_task;
 
   OS_Handle handle      = task->handle_arr[task_id];
-  U64       buffer_size = task->size_arr[task_id];
+  ulong       buffer_size = task->size_arr[task_id];
   byte       *buffer      = task->buffer + task->off_arr[task_id];
 
-  U64 read_size = lnk_read_file(&handle, buffer, buffer_size);
+  ulong read_size = lnk_read_file(&handle, buffer, buffer_size);
   Assert(read_size == buffer_size);
 
   task->data_arr.v[task_id] = str8(buffer, read_size);
@@ -128,16 +128,16 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
   LNK_DiskReader reader = {0};
   reader.path_arr       = path_arr;
   reader.handle_arr     = push_array_no_zero(scratch.arena, OS_Handle, path_arr.count);
-  reader.size_arr       = push_array_no_zero(scratch.arena, U64, path_arr.count);
+  reader.size_arr       = push_array_no_zero(scratch.arena, ulong, path_arr.count);
 
   // open handles and get sizes
   tp_for_parallel(tp, 0, path_arr.count, lnk_data_size_from_file_path_task, &reader);
 
   // compute file buffer size
-  U64 total_data_size = sum_array_u64(path_arr.count, reader.size_arr);
+  ulong total_data_size = sum_array_u64(path_arr.count, reader.size_arr);
 
   // assign offsets into file buffer
-  U64 *off_arr = push_array_no_zero(scratch.arena, U64, path_arr.count);
+  ulong *off_arr = push_array_no_zero(scratch.arena, ulong, path_arr.count);
   MemoryCopyTyped(off_arr, reader.size_arr, path_arr.count);
   counts_to_offsets_array_u64(path_arr.count, off_arr);
 
@@ -153,7 +153,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
   result.v            = reader.data_arr.v;
 
   if (lnk_get_log_status(LNK_Log_IO_Read)) {
-    for (U64 i = 0; i < result.count; ++i) {
+    for (ulong i = 0; i < result.count; ++i) {
       lnk_log_read(path_arr.v[i], result.v[i].size);
     }
   }
@@ -171,9 +171,9 @@ lnk_write_data_list_to_file_path(String8 path, String8List data)
 
   OS_Handle handle;
   if (lnk_open_file_write((char*)path.str, path.size, &handle, sizeof(handle))) {
-    U64 offset = 0;
+    ulong offset = 0;
     for (String8Node *data_n = data.first; data_n != 0; data_n = data_n->next) {
-      U64 write_size = lnk_write_file(&handle, offset, data_n->string.str, data_n->string.size);
+      ulong write_size = lnk_write_file(&handle, offset, data_n->string.str, data_n->string.size);
       if (write_size != data_n->string.size) {
         break;
       }

@@ -10,8 +10,8 @@
 struct PTG_Key
 {
   U128 root_hash;
-  U64 link_offsets[8];
-  U64 link_offsets_count;
+  ulong link_offsets[8];
+  ulong link_offsets_count;
 };
 
 ////////////////////////////////
@@ -19,57 +19,57 @@ struct PTG_Key
 
 struct PTG_Node
 {
-  U64 value;
+  ulong value;
 };
 
 struct PTG_Link
 {
-  U32 from;
-  U32 to;
+  uint from;
+  uint to;
 };
 
 struct PTG_NodeChunkNode
 {
   PTG_NodeChunkNode *next;
   PTG_Node *v;
-  U64 count;
-  U64 cap;
+  ulong count;
+  ulong cap;
 };
 
 struct PTG_NodeChunkList
 {
   PTG_NodeChunkNode *first;
   PTG_NodeChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  ulong chunk_count;
+  ulong total_count;
 };
 
 struct PTG_NodeArray
 {
   PTG_Node *v;
-  U64 count;
+  ulong count;
 };
 
 struct PTG_LinkChunkNode
 {
   PTG_LinkChunkNode *next;
   PTG_Link *v;
-  U64 count;
-  U64 cap;
+  ulong count;
+  ulong cap;
 };
 
 struct PTG_LinkChunkList
 {
   PTG_LinkChunkNode *first;
   PTG_LinkChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  ulong chunk_count;
+  ulong total_count;
 };
 
 struct PTG_LinkArray
 {
   PTG_Link *v;
-  U64 count;
+  ulong count;
 };
 
 struct PTG_Graph
@@ -88,10 +88,10 @@ struct PTG_GraphNode
   PTG_Key key;
   
   // rjf: metadata
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  ulong scope_ref_count;
+  ulong last_time_touched_us;
+  ulong last_user_clock_idx_touched;
+  ulong load_count;
   B32 is_working;
   
   // rjf: content
@@ -146,24 +146,24 @@ struct PTG_Shared
   Arena *arena;
   
   // rjf: user clock
-  U64 user_clock_idx;
+  ulong user_clock_idx;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   PTG_GraphSlot *slots;
   PTG_GraphStripe *stripes;
   
   // rjf: user -> xfer thread
-  U64 u2b_ring_size;
+  ulong u2b_ring_size;
   byte *u2b_ring_base;
-  U64 u2b_ring_write_pos;
-  U64 u2b_ring_read_pos;
+  ulong u2b_ring_write_pos;
+  ulong u2b_ring_read_pos;
   OS_Handle u2b_ring_cv;
   OS_Handle u2b_ring_mutex;
   
   // rjf: builder threads
-  U64 builder_thread_count;
+  ulong builder_thread_count;
   OS_Handle *builder_threads;
   
   // rjf: evictor thread
@@ -185,7 +185,7 @@ void ptg_init();
 //~ rjf: User Clock
 
 void ptg_user_clock_tick();
-U64 ptg_user_clock_idx();
+ulong ptg_user_clock_idx();
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -202,7 +202,7 @@ PTG_Graph *ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key);
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-B32 ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us);
+B32 ptg_u2b_enqueue_req(PTG_Key *key, ulong endt_us);
 void ptg_u2b_dequeue_req(PTG_Key *key_out);
 void ptg_builder_thread__entry_point(void *p);
 

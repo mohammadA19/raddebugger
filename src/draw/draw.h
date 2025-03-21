@@ -27,8 +27,8 @@ struct DR_FancyStringList
 {
   DR_FancyStringNode *first;
   DR_FancyStringNode *last;
-  U64 node_count;
-  U64 total_size;
+  ulong node_count;
+  ulong total_size;
 };
 
 struct DR_FancyRun
@@ -49,7 +49,7 @@ struct DR_FancyRunList
 {
   DR_FancyRunNode *first;
   DR_FancyRunNode *last;
-  U64 node_count;
+  ulong node_count;
   Vec2F32 dim;
 };
 
@@ -64,8 +64,8 @@ struct DR_FancyRunList
 struct DR_Bucket
 {
   R_PassList passes;
-  U64 stack_gen;
-  U64 last_cmd_stack_gen;
+  ulong stack_gen;
+  ulong last_cmd_stack_gen;
   DR_BucketStackDecls;
 };
 
@@ -81,7 +81,7 @@ struct DR_BucketSelectionNode
 struct DR_ThreadCtx
 {
   Arena *arena;
-  U64 arena_frame_start_pos;
+  ulong arena_frame_start_pos;
   DR_BucketSelectionNode *top_bucket;
   DR_BucketSelectionNode *free_bucket_selection;
 };
@@ -94,7 +94,7 @@ thread_static DR_ThreadCtx *dr_thread_ctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64 dr_hash_from_string(String8 string);
+ulong dr_hash_from_string(String8 string);
 
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions

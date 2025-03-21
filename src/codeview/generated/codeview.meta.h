@@ -523,6 +523,6 @@ String8 cv_string_from_sym_kind(CV_SymKind v);
 String8 cv_string_from_basic_type(CV_BasicType v);
 String8 cv_type_name_from_basic_type(CV_BasicType v);
 String8 cv_string_from_leaf_kind(CV_LeafKind v);
-U64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
-U64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
+ulong cv_header_struct_size_from_sym_kind(CV_SymKind v);
+ulong cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
 #endif // CODEVIEW_META_H

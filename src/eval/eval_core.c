@@ -9,11 +9,11 @@
 ////////////////////////////////
 //~ rjf: Basic Helper Functions
 
-U64
-e_hash_from_string(U64 seed, String8 string)
+ulong
+e_hash_from_string(ulong seed, String8 string)
 {
-  U64 result = seed;
-  for(U64 i = 0; i < string.size; i += 1)
+  ulong result = seed;
+  for(ulong i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }

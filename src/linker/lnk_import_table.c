@@ -62,13 +62,13 @@ lnk_import_table_alloc_delayed(LNK_SectionTable *st, LNK_SymbolTable *symtab, CO
   lnk_chunk_set_debugf(data_sect->arena, null_dll_import, "DLL_DIRECTORY_TERMINATOR");
 
   if (is_unloadable) {
-    U64 import_size = coff_word_size_from_machine(machine);
+    ulong import_size = coff_word_size_from_machine(machine);
     LNK_Chunk *null_uiat_chunk = lnk_section_push_chunk_bss(data_sect, uiat_chunk, import_size, str8_lit("~1"));
     lnk_chunk_set_debugf(data_sect->arena, null_uiat_chunk, "UIAT_TERMINATOR");
   }
 
   if (is_bindable) {
-    U64 import_size = coff_word_size_from_machine(machine);
+    ulong import_size = coff_word_size_from_machine(machine);
     LNK_Chunk *null_biat_chunk = lnk_section_push_chunk_bss(data_sect, biat_chunk, import_size, str8_lit("~2"));
     lnk_chunk_set_debugf(data_sect->arena, null_biat_chunk, "BIAT_TERMINATOR");
   }
@@ -201,7 +201,7 @@ lnk_import_table_push_dll_static(LNK_ImportTable *imptab, LNK_SymbolTable *symta
   lnk_section_push_reloc(data_sect, dll_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_ImportEntry, name_voff), dll_name_voff_symbol);
   lnk_section_push_reloc(data_sect, dll_chunk, LNK_Reloc_VIRT_OFF_32, OffsetOf(PE_ImportEntry, import_addr_table_voff), iat_symbol);
   
-  U64 import_size = coff_word_size_from_machine(machine);
+  ulong import_size = coff_word_size_from_machine(machine);
   
   // null entry to terminate import lookup table array
   LNK_Chunk *null_ilt_chunk = lnk_section_push_chunk_data(data_sect, ilt_table_chunk, str8(0, import_size), str8_lit("zzzzzz"));
@@ -235,8 +235,8 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symt
 
   Assert(imptab->machine == machine);
   
-  U64 handle_size = coff_word_size_from_machine(machine);
-  U64 import_size = coff_word_size_from_machine(machine);
+  ulong handle_size = coff_word_size_from_machine(machine);
+  ulong import_size = coff_word_size_from_machine(machine);
   
   // shortcuts
   LNK_Section *data_sect = imptab->data_sect;
@@ -392,7 +392,7 @@ lnk_import_table_push_func_static(LNK_ImportTable *imptab, LNK_SymbolTable *symt
   LNK_Chunk *ilt_chunk = g_null_chunk_ptr;
   LNK_Chunk *iat_chunk = g_null_chunk_ptr;
   
-  U64 import_size = coff_word_size_from_machine(dll->machine);
+  ulong import_size = coff_word_size_from_machine(dll->machine);
   
   // generate sort index (optional)
   String8 sort_index = str8_from_bits_u32(data_sect->arena, header->hint_or_ordinal);
@@ -478,7 +478,7 @@ lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *sym
   
   Assert(dll->machine == header->machine); // TODO: error handle
 
-  U64 import_size = coff_word_size_from_machine(dll->machine);
+  ulong import_size = coff_word_size_from_machine(dll->machine);
   
   LNK_Section *data_sect = imptab->data_sect;
   LNK_Section *code_sect = imptab->code_sect;
@@ -625,12 +625,12 @@ lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, ushort hint)
   String8 ordinal_data = str8_zero();
   switch (machine) {
   case COFF_Machine_X64: {
-    U64 *ordinal = push_array(arena, U64, 1);
+    ulong *ordinal = push_array(arena, ulong, 1);
     *ordinal     = coff_make_ordinal64(hint);
     ordinal_data = str8_struct(ordinal);
   } break;
   case COFF_Machine_X86: {
-    U32 *ordinal = push_array(arena, U32, 1);
+    uint *ordinal = push_array(arena, uint, 1);
     *ordinal     = coff_make_ordinal32(hint);
     ordinal_data = str8_struct(ordinal);
   } break;
@@ -651,7 +651,7 @@ lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbo
   LNK_Chunk *jmp_chunk = lnk_section_push_chunk_data(sect, parent, jmp_data, str8_zero());
   
   // patch thunk with imports address
-  static const U64 JMP_OPERAND_OFFSET = 2;
+  static const ulong JMP_OPERAND_OFFSET = 2;
   lnk_section_push_reloc(sect, jmp_chunk, LNK_Reloc_REL32, JMP_OPERAND_OFFSET, addr_ptr);
   
   ProfEnd();
@@ -673,11 +673,11 @@ lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_ad
   LNK_Chunk *load_thunk_chunk = lnk_section_push_chunk_data(sect, parent, load_thunk_data, str8_zero());
   
   // patch lea with IAT entry
-  static const U64 LEA_OPERAND_OFFSET = 3;
+  static const ulong LEA_OPERAND_OFFSET = 3;
   lnk_section_push_reloc(sect, load_thunk_chunk, LNK_Reloc_REL32, LEA_OPERAND_OFFSET, imp_addr_ptr);
   
   // patch jmp __tailMerge_<DLL_NAME>
-  static const U64 JMP_OPERAND_OFFSET = 8;
+  static const ulong JMP_OPERAND_OFFSET = 8;
   lnk_section_push_reloc(sect, load_thunk_chunk, LNK_Reloc_REL32, JMP_OPERAND_OFFSET, tail_merge);
   
   ProfEnd();
@@ -719,11 +719,11 @@ lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *
   LNK_Chunk *tail_merge_chunk = lnk_section_push_chunk_data(sect, parent, tail_merge_data, str8_zero());
   
   // patch lea __DELAY_IMPORT_DESCRIPTOR_<DLL_NAME>
-  static const U64 LEA_OPERAND_OFFSET = 54;
+  static const ulong LEA_OPERAND_OFFSET = 54;
   lnk_section_push_reloc(sect, tail_merge_chunk, LNK_Reloc_REL32, LEA_OPERAND_OFFSET, dll_import_descriptor);
   
   // patch call __delayLoadHelper2
-  static const U64 CALL_OPERAND_OFFSET = 59;
+  static const ulong CALL_OPERAND_OFFSET = 59;
   lnk_section_push_reloc(sect, tail_merge_chunk, LNK_Reloc_REL32, CALL_OPERAND_OFFSET, delay_load_helper);
   
   ProfEnd();

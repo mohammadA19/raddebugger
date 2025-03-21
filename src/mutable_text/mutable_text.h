@@ -38,10 +38,10 @@ struct MTX_Op
 
 struct MTX_MutThread
 {
-  U64 ring_size;
+  ulong ring_size;
   byte *ring_base;
-  U64 ring_read_pos;
-  U64 ring_write_pos;
+  ulong ring_read_pos;
+  ulong ring_write_pos;
   OS_Handle cv;
   OS_Handle mutex;
   OS_Handle thread;
@@ -55,13 +55,13 @@ struct MTX_Shared
   Arena *arena;
   
   // rjf: buffer cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   MTX_Slot *slots;
   MTX_Stripe *stripes;
   
   // rjf: mut threads
-  U64 mut_threads_count;
+  ulong mut_threads_count;
   MTX_MutThread *mut_threads;
 };
 

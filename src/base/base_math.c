@@ -33,29 +33,29 @@ F32 length_2f32(Vec2F32 v)                             {F32 c = sqrt_f32(v.x*v.x
 Vec2F32 normalize_2f32(Vec2F32 v)                      {v = scale_2f32(v, 1.f/length_2f32(v)); return v;}
 Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, F32 t)          {Vec2F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t)}; return c;}
 
-Vec2S64 vec_2s64(S64 x, S64 y)                         {Vec2S64 v = {x, y}; return v;}
+Vec2S64 vec_2s64(long x, long y)                         {Vec2S64 v = {x, y}; return v;}
 Vec2S64 add_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x+b.x, a.y+b.y}; return c;}
 Vec2S64 sub_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x-b.x, a.y-b.y}; return c;}
 Vec2S64 mul_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x*b.x, a.y*b.y}; return c;}
 Vec2S64 div_2s64(Vec2S64 a, Vec2S64 b)                 {Vec2S64 c = {a.x/b.x, a.y/b.y}; return c;}
-Vec2S64 scale_2s64(Vec2S64 v, S64 s)                   {Vec2S64 c = {v.x*s, v.y*s}; return c;}
-S64 dot_2s64(Vec2S64 a, Vec2S64 b)                     {S64 c = a.x*b.x + a.y*b.y; return c;}
-S64 length_squared_2s64(Vec2S64 v)                     {S64 c = v.x*v.x + v.y*v.y; return c;}
-S64 length_2s64(Vec2S64 v)                             {S64 c = (S64)sqrt_f64((F64)(v.x*v.x + v.y*v.y)); return c;}
-Vec2S64 normalize_2s64(Vec2S64 v)                      {v = scale_2s64(v, (S64)(1.f/length_2s64(v))); return v;}
-Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t)          {Vec2S64 c = {(S64)mix_1f32((F32)a.x, (F32)b.x, t), (S64)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S64 scale_2s64(Vec2S64 v, long s)                   {Vec2S64 c = {v.x*s, v.y*s}; return c;}
+long dot_2s64(Vec2S64 a, Vec2S64 b)                     {long c = a.x*b.x + a.y*b.y; return c;}
+long length_squared_2s64(Vec2S64 v)                     {long c = v.x*v.x + v.y*v.y; return c;}
+long length_2s64(Vec2S64 v)                             {long c = (long)sqrt_f64((F64)(v.x*v.x + v.y*v.y)); return c;}
+Vec2S64 normalize_2s64(Vec2S64 v)                      {v = scale_2s64(v, (long)(1.f/length_2s64(v))); return v;}
+Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t)          {Vec2S64 c = {(long)mix_1f32((F32)a.x, (F32)b.x, t), (long)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
 
-Vec2S32 vec_2s32(S32 x, S32 y)                         {Vec2S32 v = {x, y}; return v;}
+Vec2S32 vec_2s32(int x, int y)                         {Vec2S32 v = {x, y}; return v;}
 Vec2S32 add_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x+b.x, a.y+b.y}; return c;}
 Vec2S32 sub_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x-b.x, a.y-b.y}; return c;}
 Vec2S32 mul_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x*b.x, a.y*b.y}; return c;}
 Vec2S32 div_2s32(Vec2S32 a, Vec2S32 b)                 {Vec2S32 c = {a.x/b.x, a.y/b.y}; return c;}
-Vec2S32 scale_2s32(Vec2S32 v, S32 s)                   {Vec2S32 c = {v.x*s, v.y*s}; return c;}
-S32 dot_2s32(Vec2S32 a, Vec2S32 b)                     {S32 c = a.x*b.x + a.y*b.y; return c;}
-S32 length_squared_2s32(Vec2S32 v)                     {S32 c = v.x*v.x + v.y*v.y; return c;}
-S32 length_2s32(Vec2S32 v)                             {S32 c = (S32)sqrt_f32((F32)v.x*(F32)v.x + (F32)v.y*(F32)v.y); return c;}
-Vec2S32 normalize_2s32(Vec2S32 v)                      {v = scale_2s32(v, (S32)(1.f/length_2s32(v))); return v;}
-Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t)          {Vec2S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S32 scale_2s32(Vec2S32 v, int s)                   {Vec2S32 c = {v.x*s, v.y*s}; return c;}
+int dot_2s32(Vec2S32 a, Vec2S32 b)                     {int c = a.x*b.x + a.y*b.y; return c;}
+int length_squared_2s32(Vec2S32 v)                     {int c = v.x*v.x + v.y*v.y; return c;}
+int length_2s32(Vec2S32 v)                             {int c = (int)sqrt_f32((F32)v.x*(F32)v.x + (F32)v.y*(F32)v.y); return c;}
+Vec2S32 normalize_2s32(Vec2S32 v)                      {v = scale_2s32(v, (int)(1.f/length_2s32(v))); return v;}
+Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t)          {Vec2S32 c = {(int)mix_1f32((F32)a.x, (F32)b.x, t), (int)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
 
 Vec2S16 vec_2s16(short x, short y)                         {Vec2S16 v = {x, y}; return v;}
 Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(short)(a.x+b.x), (short)(a.y+b.y)}; return c;}
@@ -82,17 +82,17 @@ Vec3F32 normalize_3f32(Vec3F32 v)                      {v = scale_3f32(v, 1.f/le
 Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, F32 t)          {Vec3F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t)}; return c;}
 Vec3F32 cross_3f32(Vec3F32 a, Vec3F32 b)               {Vec3F32 c = {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x}; return c;}
 
-Vec3S32 vec_3s32(S32 x, S32 y, S32 z)                  {Vec3S32 v = {x, y, z}; return v;}
+Vec3S32 vec_3s32(int x, int y, int z)                  {Vec3S32 v = {x, y, z}; return v;}
 Vec3S32 add_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x+b.x, a.y+b.y, a.z+b.z}; return c;}
 Vec3S32 sub_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x-b.x, a.y-b.y, a.z-b.z}; return c;}
 Vec3S32 mul_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x*b.x, a.y*b.y, a.z*b.z}; return c;}
 Vec3S32 div_3s32(Vec3S32 a, Vec3S32 b)                 {Vec3S32 c = {a.x/b.x, a.y/b.y, a.z/b.z}; return c;}
-Vec3S32 scale_3s32(Vec3S32 v, S32 s)                   {Vec3S32 c = {v.x*s, v.y*s, v.z*s}; return c;}
-S32 dot_3s32(Vec3S32 a, Vec3S32 b)                     {S32 c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
-S32 length_squared_3s32(Vec3S32 v)                     {S32 c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
-S32 length_3s32(Vec3S32 v)                             {S32 c = (S32)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z)); return c;}
-Vec3S32 normalize_3s32(Vec3S32 v)                      {v = scale_3s32(v, (S32)(1.f/length_3s32(v))); return v;}
-Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t)          {Vec3S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t), (S32)mix_1f32((F32)a.z, (F32)b.z, t)}; return c;}
+Vec3S32 scale_3s32(Vec3S32 v, int s)                   {Vec3S32 c = {v.x*s, v.y*s, v.z*s}; return c;}
+int dot_3s32(Vec3S32 a, Vec3S32 b)                     {int c = a.x*b.x + a.y*b.y + a.z*b.z; return c;}
+int length_squared_3s32(Vec3S32 v)                     {int c = v.x*v.x + v.y*v.y + v.z*v.z; return c;}
+int length_3s32(Vec3S32 v)                             {int c = (int)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z)); return c;}
+Vec3S32 normalize_3s32(Vec3S32 v)                      {v = scale_3s32(v, (int)(1.f/length_3s32(v))); return v;}
+Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t)          {Vec3S32 c = {(int)mix_1f32((F32)a.x, (F32)b.x, t), (int)mix_1f32((F32)a.y, (F32)b.y, t), (int)mix_1f32((F32)a.z, (F32)b.z, t)}; return c;}
 Vec3S32 cross_3s32(Vec3S32 a, Vec3S32 b)               {Vec3S32 c = {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x}; return c;}
 
 Vec4F32 vec_4f32(F32 x, F32 y, F32 z, F32 w)           {Vec4F32 v = {x, y, z, w}; return v;}
@@ -107,17 +107,17 @@ F32 length_4f32(Vec4F32 v)                             {F32 c = sqrt_f32(v.x*v.x
 Vec4F32 normalize_4f32(Vec4F32 v)                      {v = scale_4f32(v, 1.f/length_4f32(v)); return v;}
 Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, F32 t)          {Vec4F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t), mix_1f32(a.z, b.z, t), mix_1f32(a.w, b.w, t)}; return c;}
 
-Vec4S32 vec_4s32(S32 x, S32 y, S32 z, S32 w)           {Vec4S32 v = {x, y, z, w}; return v;}
+Vec4S32 vec_4s32(int x, int y, int z, int w)           {Vec4S32 v = {x, y, z, w}; return v;}
 Vec4S32 add_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w}; return c;}
 Vec4S32 sub_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w}; return c;}
 Vec4S32 mul_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w}; return c;}
 Vec4S32 div_4s32(Vec4S32 a, Vec4S32 b)                 {Vec4S32 c = {a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w}; return c;}
-Vec4S32 scale_4s32(Vec4S32 v, S32 s)                   {Vec4S32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
-S32 dot_4s32(Vec4S32 a, Vec4S32 b)                     {S32 c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
-S32 length_squared_4s32(Vec4S32 v)                     {S32 c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
-S32 length_4s32(Vec4S32 v)                             {S32 c = (S32)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w)); return c;}
-Vec4S32 normalize_4s32(Vec4S32 v)                      {v = scale_4s32(v, (S32)(1.f/length_4s32(v))); return v;}
-Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)          {Vec4S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t), (S32)mix_1f32((F32)a.z, (F32)b.z, t), (S32)mix_1f32((F32)a.w, (F32)b.w, t)}; return c;}
+Vec4S32 scale_4s32(Vec4S32 v, int s)                   {Vec4S32 c = {v.x*s, v.y*s, v.z*s, v.w*s}; return c;}
+int dot_4s32(Vec4S32 a, Vec4S32 b)                     {int c = a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; return c;}
+int length_squared_4s32(Vec4S32 v)                     {int c = v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w; return c;}
+int length_4s32(Vec4S32 v)                             {int c = (int)sqrt_f32((F32)(v.x*v.x + v.y*v.y + v.z*v.z + v.w*v.w)); return c;}
+Vec4S32 normalize_4s32(Vec4S32 v)                      {v = scale_4s32(v, (int)(1.f/length_4s32(v))); return v;}
+Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)          {Vec4S32 c = {(int)mix_1f32((F32)a.x, (F32)b.x, t), (int)mix_1f32((F32)a.y, (F32)b.y, t), (int)mix_1f32((F32)a.z, (F32)b.z, t), (int)mix_1f32((F32)a.w, (F32)b.w, t)}; return c;}
 
 ////////////////////////////////
 //~ rjf: Matrix Ops
@@ -347,7 +347,7 @@ inverse_4x4f32(Mat4x4F32 m)
   Vec4F32 sign_b = { -1, +1, -1, +1 };
   
   Mat4x4F32 inverse;
-  for(U32 i = 0; i < 4; i += 1)
+  for(uint i = 0; i < 4; i += 1)
   {
     inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
     inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
@@ -389,45 +389,45 @@ derotate_4x4f32(Mat4x4F32 mat)
 ////////////////////////////////
 //~ rjf: Range Ops
 
-Rng1U32 rng_1u32(U32 min, U32 max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(U32, r.min, r.max); } return r;}
-Rng1U32 shift_1u32(Rng1U32 r, U32 x)                   {r.min += x; r.max += x; return r;}
-Rng1U32 pad_1u32(Rng1U32 r, U32 x)                     {r.min -= x; r.max += x; return r;}
-U32 center_1u32(Rng1U32 r)                             {U32 c = (r.min+r.max)/2; return c;}
-B32 contains_1u32(Rng1U32 r, U32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-U32 dim_1u32(Rng1U32 r)                                {U32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1U32 rng_1u32(uint min, uint max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(uint, r.min, r.max); } return r;}
+Rng1U32 shift_1u32(Rng1U32 r, uint x)                   {r.min += x; r.max += x; return r;}
+Rng1U32 pad_1u32(Rng1U32 r, uint x)                     {r.min -= x; r.max += x; return r;}
+uint center_1u32(Rng1U32 r)                             {uint c = (r.min+r.max)/2; return c;}
+B32 contains_1u32(Rng1U32 r, uint x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+uint dim_1u32(Rng1U32 r)                                {uint c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b)               {Rng1U32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b)           {Rng1U32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-U32 clamp_1u32(Rng1U32 r, U32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+uint clamp_1u32(Rng1U32 r, uint v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1S32 rng_1s32(S32 min, S32 max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(S32, r.min, r.max); } return r;}
-Rng1S32 shift_1s32(Rng1S32 r, S32 x)                   {r.min += x; r.max += x; return r;}
-Rng1S32 pad_1s32(Rng1S32 r, S32 x)                     {r.min -= x; r.max += x; return r;}
-S32 center_1s32(Rng1S32 r)                             {S32 c = (r.min+r.max)/2; return c;}
-B32 contains_1s32(Rng1S32 r, S32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-S32 dim_1s32(Rng1S32 r)                                {S32 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1S32 rng_1s32(int min, int max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(int, r.min, r.max); } return r;}
+Rng1S32 shift_1s32(Rng1S32 r, int x)                   {r.min += x; r.max += x; return r;}
+Rng1S32 pad_1s32(Rng1S32 r, int x)                     {r.min -= x; r.max += x; return r;}
+int center_1s32(Rng1S32 r)                             {int c = (r.min+r.max)/2; return c;}
+B32 contains_1s32(Rng1S32 r, int x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+int dim_1s32(Rng1S32 r)                                {int c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b)               {Rng1S32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b)           {Rng1S32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-S32 clamp_1s32(Rng1S32 r, S32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+int clamp_1s32(Rng1S32 r, int v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1U64 rng_1u64(U64 min, U64 max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(U64, r.min, r.max); } return r;}
-Rng1U64 shift_1u64(Rng1U64 r, U64 x)                   {r.min += x; r.max += x; return r;}
-Rng1U64 pad_1u64(Rng1U64 r, U64 x)                     {r.min -= x; r.max += x; return r;}
-U64 center_1u64(Rng1U64 r)                             {U64 c = (r.min+r.max)/2; return c;}
-B32 contains_1u64(Rng1U64 r, U64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-U64 dim_1u64(Rng1U64 r)                                {U64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1U64 rng_1u64(ulong min, ulong max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(ulong, r.min, r.max); } return r;}
+Rng1U64 shift_1u64(Rng1U64 r, ulong x)                   {r.min += x; r.max += x; return r;}
+Rng1U64 pad_1u64(Rng1U64 r, ulong x)                     {r.min -= x; r.max += x; return r;}
+ulong center_1u64(Rng1U64 r)                             {ulong c = (r.min+r.max)/2; return c;}
+B32 contains_1u64(Rng1U64 r, ulong x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+ulong dim_1u64(Rng1U64 r)                                {ulong c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b)               {Rng1U64 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b)           {Rng1U64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-U64 clamp_1u64(Rng1U64 r, U64 v)                       {v = Clamp(r.min, v, r.max); return v;}
+ulong clamp_1u64(Rng1U64 r, ulong v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-Rng1S64 rng_1s64(S64 min, S64 max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(S64, r.min, r.max); } return r;}
-Rng1S64 shift_1s64(Rng1S64 r, S64 x)                   {r.min += x; r.max += x; return r;}
-Rng1S64 pad_1s64(Rng1S64 r, S64 x)                     {r.min -= x; r.max += x; return r;}
-S64 center_1s64(Rng1S64 r)                             {S64 c = (r.min+r.max)/2; return c;}
-B32 contains_1s64(Rng1S64 r, S64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-S64 dim_1s64(Rng1S64 r)                                {S64 c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
+Rng1S64 rng_1s64(long min, long max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(long, r.min, r.max); } return r;}
+Rng1S64 shift_1s64(Rng1S64 r, long x)                   {r.min += x; r.max += x; return r;}
+Rng1S64 pad_1s64(Rng1S64 r, long x)                     {r.min -= x; r.max += x; return r;}
+long center_1s64(Rng1S64 r)                             {long c = (r.min+r.max)/2; return c;}
+B32 contains_1s64(Rng1S64 r, long x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+long dim_1s64(Rng1S64 r)                                {long c = ((r.max > r.min) ? (r.max - r.min) : 0); return c;}
 Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b)               {Rng1S64 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b)           {Rng1S64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-S64 clamp_1s64(Rng1S64 r, S64 v)                       {v = Clamp(r.min, v, r.max); return v;}
+long clamp_1s64(Rng1S64 r, long v)                       {v = Clamp(r.min, v, r.max); return v;}
 
 Rng1F32 rng_1f32(F32 min, F32 max)                     {Rng1F32 r = {min, max}; if(r.min > r.max) { Swap(F32, r.min, r.max); } return r;}
 Rng1F32 shift_1f32(Rng1F32 r, F32 x)                   {r.min += x; r.max += x; return r;}
@@ -451,7 +451,7 @@ Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v)               {v.x = Clamp(r.min.x, v.x
 
 Rng2S32 rng_2s32(Vec2S32 min, Vec2S32 max)             {Rng2S32 r = {min, max}; return r;}
 Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x)               {r.min = add_2s32(r.min, x); r.max = add_2s32(r.max, x); return r;}
-Rng2S32 pad_2s32(Rng2S32 r, S32 x)                     {Vec2S32 xv = {x, x}; r.min = sub_2s32(r.min, xv); r.max = add_2s32(r.max, xv); return r;}
+Rng2S32 pad_2s32(Rng2S32 r, int x)                     {Vec2S32 xv = {x, x}; r.min = sub_2s32(r.min, xv); r.max = add_2s32(r.max, xv); return r;}
 Vec2S32 center_2s32(Rng2S32 r)                         {Vec2S32 c = {(r.min.x+r.max.x)/2, (r.min.y+r.max.y)/2}; return c;}
 B32 contains_2s32(Rng2S32 r, Vec2S32 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
 Vec2S32 dim_2s32(Rng2S32 r)                            {Vec2S32 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0), ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)}; return dim;}
@@ -461,7 +461,7 @@ Vec2S32 clamp_2s32(Rng2S32 r, Vec2S32 v)               {v.x = Clamp(r.min.x, v.x
 
 Rng2S64 rng_2s64(Vec2S64 min, Vec2S64 max)             {Rng2S64 r = {min, max}; return r;}
 Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x)               {r.min = add_2s64(r.min, x); r.max = add_2s64(r.max, x); return r;}
-Rng2S64 pad_2s64(Rng2S64 r, S64 x)                     {Vec2S64 xv = {x, x}; r.min = sub_2s64(r.min, xv); r.max = add_2s64(r.max, xv); return r;}
+Rng2S64 pad_2s64(Rng2S64 r, long x)                     {Vec2S64 xv = {x, x}; r.min = sub_2s64(r.min, xv); r.max = add_2s64(r.max, xv); return r;}
 Vec2S64 center_2s64(Rng2S64 r)                         {Vec2S64 c = {(r.min.x+r.max.x)/2, (r.min.y+r.max.y)/2}; return c;}
 B32 contains_2s64(Rng2S64 r, Vec2S64 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
 Vec2S64 dim_2s64(Rng2S64 r)                            {Vec2S64 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0), ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)}; return dim;}
@@ -568,7 +568,7 @@ rgba_from_hsva(Vec4F32 hsva)
 }
 
 Vec4F32
-rgba_from_u32(U32 hex)
+rgba_from_u32(uint hex)
 {
   Vec4F32 result = v4f32(((hex&0xff000000)>>24)/255.f,
                          ((hex&0x00ff0000)>>16)/255.f,
@@ -577,14 +577,14 @@ rgba_from_u32(U32 hex)
   return result;
 }
 
-U32
+uint
 u32_from_rgba(Vec4F32 rgba)
 {
-  U32 result = 0;
-  result |= ((U32)((byte)(rgba.x*255.f))) << 24;
-  result |= ((U32)((byte)(rgba.y*255.f))) << 16;
-  result |= ((U32)((byte)(rgba.z*255.f))) <<  8;
-  result |= ((U32)((byte)(rgba.w*255.f))) <<  0;
+  uint result = 0;
+  result |= ((uint)((byte)(rgba.x*255.f))) << 24;
+  result |= ((uint)((byte)(rgba.y*255.f))) << 16;
+  result |= ((uint)((byte)(rgba.z*255.f))) <<  8;
+  result |= ((uint)((byte)(rgba.w*255.f))) <<  0;
   return result;
 }
 
@@ -625,7 +625,7 @@ rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
   Rng1U64Array arr = {0};
   arr.count        = list->count;
   arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(Rng1U64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
@@ -649,7 +649,7 @@ rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
   Rng1S64Array arr = {0};
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(Rng1S64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;

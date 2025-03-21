@@ -5,7 +5,7 @@
 #include "lib_rdi_format/rdi_format_parse.c"
 
 void
-rdi_decompress_parsed(byte *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
+rdi_decompress_parsed(byte *decompressed_data, ulong decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header
   RDI_Header *src_header = (RDI_Header *)og_rdi->raw_data;
@@ -19,10 +19,10 @@ rdi_decompress_parsed(byte *decompressed_data, U64 decompressed_size, RDI_Parsed
   {
     RDI_Section *dsec_base = (RDI_Section *)(decompressed_data + dst_header->data_section_off);
     MemoryCopy(dsec_base, (byte *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
-    U64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
+    ulong off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
     off += 7;
     off -= off%8;
-    for(U64 idx = 0; idx < og_rdi->sections_count; idx += 1)
+    for(ulong idx = 0; idx < og_rdi->sections_count; idx += 1)
     {
       dsec_base[idx].encoding = RDI_SectionEncoding_Unpacked;
       dsec_base[idx].off = off;

@@ -21,7 +21,7 @@ read_only static byte g_coff_thin_archive_sig[8] = "!<thin>\n";
 
 #pragma pack(push, 1)
 
-typedef U32 COFF_TimeStamp;
+typedef uint COFF_TimeStamp;
 
 enum COFF_FileHeaderFlags : ushort
 {
@@ -77,8 +77,8 @@ srtuct COFF_FileHeader
   COFF_MachineType     machine;
   ushort                  section_count;
   COFF_TimeStamp       time_stamp;
-  U32                  symbol_table_foff;
-  U32                  symbol_count;
+  uint                  symbol_table_foff;
+  uint                  symbol_count;
   ushort                  optional_header_size;
   COFF_FileHeaderFlags flags;
 };
@@ -92,12 +92,12 @@ srtuct COFF_BigObjHeader
   COFF_TimeStamp   time_stamp;
   byte               magic[16];         // g_coff_big_header_magic
   byte               unused[16];
-  U32              section_count;
-  U32              symbol_table_foff;
-  U32              symbol_count;
+  uint              section_count;
+  uint              symbol_table_foff;
+  uint              symbol_count;
 };
 
-enum COFF_SectionAlign : U32
+enum COFF_SectionAlign : uint
 {
   COFF_SectionAlign_1Bytes    = 0x1,
   COFF_SectionAlign_2Bytes    = 0x2,
@@ -115,7 +115,7 @@ enum COFF_SectionAlign : U32
   COFF_SectionAlign_8192Bytes = 0xe
 };
 
-enum COFF_SectionFlags : U32
+enum COFF_SectionFlags : uint
 {
   COFF_SectionFlag_TypeNoPad            = (1 << 3),
   COFF_SectionFlag_CntCode              = (1 << 5),
@@ -146,12 +146,12 @@ enum COFF_SectionFlags : U32
 srtuct COFF_SectionHeader
 {
   byte                name[8];
-  U32               vsize;
-  U32               voff;
-  U32               fsize;
-  U32               foff;
-  U32               relocs_foff;
-  U32               lines_foff;
+  uint               vsize;
+  uint               voff;
+  uint               fsize;
+  uint               foff;
+  uint               relocs_foff;
+  uint               lines_foff;
   ushort               reloc_count;
   ushort               line_count;
   COFF_SectionFlags flags;
@@ -220,8 +220,8 @@ enum COFF_SymDType : byte
 
 // Special values for section number field in coff symbol
 #define COFF_Symbol_UndefinedSection 0
-#define COFF_Symbol_AbsSection32     ((U32)-1)
-#define COFF_Symbol_DebugSection32   ((U32)-2)
+#define COFF_Symbol_AbsSection32     ((uint)-1)
+#define COFF_Symbol_DebugSection32   ((uint)-2)
 #define COFF_Symbol_AbsSection16     ((ushort)-1)
 #define COFF_Symbol_DebugSection16   ((ushort)-2)
 
@@ -232,8 +232,8 @@ typedef union COFF_SymbolName
     // if this field is filled with zeroes we have a long name,
     // which means name is stored in the string table
     // and we need to use the offset to look it up...
-    U32 zeroes;
-    U32 string_table_offset;
+    uint zeroes;
+    uint string_table_offset;
   } long_name;
 };
 
@@ -251,7 +251,7 @@ typedef union COFF_SymbolType
 srtuct COFF_Symbol16
 {
   COFF_SymbolName      name;
-  U32                  value;
+  uint                  value;
   ushort                  section_number;
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
@@ -261,8 +261,8 @@ srtuct COFF_Symbol16
 srtuct COFF_Symbol32
 {
   COFF_SymbolName      name;
-  U32                  value;
-  U32                  section_number;
+  uint                  value;
+  uint                  section_number;
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
   byte                   aux_symbol_count;
@@ -271,7 +271,7 @@ srtuct COFF_Symbol32
 // Auxilary symbols are allocated with fixed size so that symbol table could be maintaned as array of regular size.
 #define COFF_AuxSymbolSize 18
 
-enum COFF_WeakExtType : U32
+enum COFF_WeakExtType : uint
 {
   COFF_WeakExt_NoLibrary     = 1,
   COFF_WeakExt_SearchLibrary = 2,
@@ -281,10 +281,10 @@ enum COFF_WeakExtType : U32
 // storage class: External
 srtuct COFF_SymbolFuncDef
 {
-  U32 tag_index;
-  U32 total_size;
-  U32 ptr_to_ln;
-  U32 ptr_to_next_func;
+  uint tag_index;
+  uint total_size;
+  uint ptr_to_ln;
+  uint ptr_to_next_func;
   byte  unused[2];
 };
 
@@ -294,14 +294,14 @@ srtuct COFF_SymbolFunc
   byte  unused[4];
   ushort ln;
   byte  unused2[2];
-  U32 ptr_to_next_func;
+  uint ptr_to_next_func;
   byte  unused3[2];
 };
 
 // storage class: WeakExternal
 srtuct COFF_SymbolWeakExt
 {
-  U32              tag_index;
+  uint              tag_index;
   COFF_WeakExtType characteristics;
   byte               unused[10];
 };
@@ -326,10 +326,10 @@ enum COFF_ComdatSelectType : byte
 // storage class: Static
 srtuct COFF_SymbolSecDef
 {
-  U32                   length;
+  uint                   length;
   ushort                   number_of_relocations;
   ushort                   number_of_ln;
-  U32                   check_sum;
+  uint                   check_sum;
   ushort                   number_lo;  // low 16 bits of one-based section index
   COFF_ComdatSelectType selection;
   byte                    unused;
@@ -432,8 +432,8 @@ enum COFF_Reloc_Arm64 : COFF_RelocType
 
 srtuct COFF_Reloc
 {
-  U32            apply_off; // section relative offset where relocation is placed
-  U32            isymbol;   // zero based index into coff symbol table
+  uint            apply_off; // section relative offset where relocation is placed
+  uint            isymbol;   // zero based index into coff symbol table
   COFF_RelocType type;      // relocation type that depends on the arch
 };
 
@@ -443,8 +443,8 @@ srtuct COFF_Reloc
 
 srtuct COFF_ResourceHeaderPrefix
 {
-  U32 data_size;
-  U32 header_size;
+  uint data_size;
+  uint header_size;
 };
 
 enum COFF_ResourceMemoryFlags : ushort
@@ -457,15 +457,15 @@ enum COFF_ResourceMemoryFlags : ushort
 
 srtuct COFF_ResourceDataEntry
 {
-  U32 data_voff;
-  U32 data_size;
-  U32 code_page;
-  U32 reserved;
+  uint data_voff;
+  uint data_size;
+  uint code_page;
+  uint reserved;
 };
 
 srtuct COFF_ResourceDirTable
 {
-  U32            characteristics;
+  uint            characteristics;
   COFF_TimeStamp time_stamp;
   ushort            major_version;
   ushort            minor_version;
@@ -477,12 +477,12 @@ srtuct COFF_ResourceDirTable
 srtuct COFF_ResourceDirEntry
 {
   union {
-    U32 offset;
-    U32 id;
+    uint offset;
+    uint id;
   } name;
   union {
-    U32 data_entry_offset;
-    U32 sub_dir_offset;
+    uint data_entry_offset;
+    uint sub_dir_offset;
   } id;
 };
 
@@ -510,7 +510,7 @@ enum COFF_ImportType : ushort
   COFF_ImportHeader_Const = 2
 };
 
-enum COFF_ImportByType : U32
+enum COFF_ImportByType : uint
 {
   COFF_ImportBy_Ordinal      = 0,
   COFF_ImportBy_Name         = 1,
@@ -535,7 +535,7 @@ srtuct COFF_ImportHeader
   ushort                    version;  // 0
   COFF_MachineType       machine;
   COFF_TimeStamp         time_stamp;
-  U32                    data_size;
+  uint                    data_size;
   ushort                    hint_or_ordinal;
   COFF_ImportHeaderFlags flags;
   // char *func_name;
@@ -547,28 +547,28 @@ srtuct COFF_ImportHeader
 ////////////////////////////////
 // Section
 
-U64               coff_align_size_from_section_flags(COFF_SectionFlags flags);
-COFF_SectionFlags coff_section_flag_from_align_size (U64 align);
+ulong               coff_align_size_from_section_flags(COFF_SectionFlags flags);
+COFF_SectionFlags coff_section_flag_from_align_size (ulong align);
 
-String8 coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader *header, U64 string_table_off);
+String8 coff_name_from_section_header(String8 raw_coff, COFF_SectionHeader *header, ulong string_table_off);
 void    coff_parse_section_name      (String8 full_name, String8 *name_out, String8 *postfix_out);
 
 ////////////////////////////////
 // Symbol
 
-String8 coff_read_symbol_name(String8 raw_coff, U64 string_table_off, COFF_SymbolName *name);
+String8 coff_read_symbol_name(String8 raw_coff, ulong string_table_off, COFF_SymbolName *name);
 
 ////////////////////////////////
 // Reloc
 
-U64 coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x);
-U64 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x);
+ulong coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x);
+ulong coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x);
 
 ////////////////////////////////
 // Import
 
-U32 coff_make_ordinal32(ushort hint);
-U64 coff_make_ordinal64(ushort hint);
+uint coff_make_ordinal32(ushort hint);
+ulong coff_make_ordinal64(ushort hint);
 
 String8 coff_make_import_lookup           (Arena *arena, ushort hint, String8 name);
 String8 coff_make_import_header_by_name   (Arena *arena, String8 dll_name, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 name, ushort hint, COFF_ImportType type);
@@ -577,11 +577,11 @@ String8 coff_make_import_header_by_ordinal(Arena *arena, String8 dll_name, COFF_
 ////////////////////////////////
 // Misc
 
-U64 coff_word_size_from_machine       (COFF_MachineType machine);
-U64 coff_default_exe_base_from_machine(COFF_MachineType machine);
-U64 coff_default_dll_base_from_machine(COFF_MachineType machine);
+ulong coff_word_size_from_machine       (COFF_MachineType machine);
+ulong coff_default_exe_base_from_machine(COFF_MachineType machine);
+ulong coff_default_dll_base_from_machine(COFF_MachineType machine);
 
 Arch arch_from_coff_machine(COFF_MachineType machine);
-U64  coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff);
+ulong  coff_foff_from_voff(COFF_SectionHeader *sections, ulong section_count, ulong voff);
 
 #endif // COFF_H

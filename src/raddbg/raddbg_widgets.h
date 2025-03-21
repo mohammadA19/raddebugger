@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Line Edit Types
 
-enum RD_LineEditFlags : U32
+enum RD_LineEditFlags : uint
 {
   RD_LineEditFlag_Expander            = (1<<0),
   RD_LineEditFlag_ExpanderSpace       = (1<<1),
@@ -24,7 +24,7 @@ enum RD_LineEditFlags : U32
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-enum RD_CodeSliceFlags : U32
+enum RD_CodeSliceFlags : uint
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
   RD_CodeSliceFlag_PriorityMargin    = (1<<1),
@@ -43,7 +43,7 @@ struct RD_CodeSliceParams
   RD_EntityList *line_bps;
   CTRL_EntityList *line_ips;
   RD_EntityList *line_pins;
-  U64 *line_vaddrs;
+  ulong *line_vaddrs;
   D_LineList *line_infos;
   DI_KeyList relevant_dbgi_keys;
   
@@ -76,7 +76,7 @@ struct RD_CodeSliceSignal
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target);
+void rd_loading_overlay(Rng2F32 rect, F32 loading_t, ulong progress_v, ulong progress_v_target);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
@@ -84,7 +84,7 @@ void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progres
 void rd_cmd_binding_buttons(String8 name);
 UI_Signal rd_menu_bar_button(String8 string);
 UI_Signal rd_cmd_spec_button(String8 name);
-void rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints);
+void rd_cmd_list_menu_buttons(ulong count, String8 *cmd_names, uint *fastpath_codepoints);
 UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string);
 UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...);
 
@@ -93,10 +93,10 @@ UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *
 
 UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
 UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
-RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string);
-RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...);
+RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, long *preferred_column, String8 string);
+RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, long *preferred_column, char *fmt, ...);
 
-B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column);
+B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, ulong line_count_per_page, TxtPt *cursor, TxtPt *mark, long *preferred_column);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
@@ -110,7 +110,7 @@ UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-UI_Signal rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string);
-UI_Signal rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...);
+UI_Signal rd_line_edit(RD_LineEditFlags flags, int depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, ulong edit_buffer_size, ulong *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string);
+UI_Signal rd_line_editf(RD_LineEditFlags flags, int depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, ulong edit_buffer_size, ulong *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...);
 
 #endif // RADDBG_WIDGETS_H

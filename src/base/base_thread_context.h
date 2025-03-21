@@ -12,10 +12,10 @@ struct TCTX
   Arena *arenas[2];
   
   byte thread_name[32];
-  U64 thread_name_size;
+  ulong thread_name_size;
   
   char *file_name;
-  U64 line_number;
+  ulong line_number;
 };
 
 ////////////////////////////////
@@ -25,13 +25,13 @@ void      tctx_init_and_equip(TCTX *tctx);
 void      tctx_release();
 TCTX*     tctx_get_equipped();
 
-Arena*    tctx_get_scratch(Arena **conflicts, U64 countt);
+Arena*    tctx_get_scratch(Arena **conflicts, ulong countt);
 
 void      tctx_set_thread_name(String8 name);
 String8   tctx_get_thread_name();
 
-void      tctx_write_srcloc(char *file_name, U64 line_number);
-void      tctx_read_srcloc(char **file_name, U64 *line_number);
+void      tctx_write_srcloc(char *file_name, ulong line_number);
+void      tctx_read_srcloc(char **file_name, ulong *line_number);
 #define tctx_write_this_srcloc() tctx_write_srcloc(__FILE__, __LINE__)
 
 #define scratch_begin(conflicts, count) temp_begin(tctx_get_scratch((conflicts), (count)))

@@ -15,8 +15,8 @@ enum LNK_TimerType
 
 srtuct LNK_Timer
 {
-  U64 begin;
-  U64 end;
+  ulong begin;
+  ulong end;
 };
 
 void lnk_timer_begin(LNK_TimerType timer);

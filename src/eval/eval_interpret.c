@@ -55,9 +55,9 @@ e_interpret(String8 bytecode)
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: allocate stack & "registers"
-  U64 stack_cap = 128; // TODO(rjf): scan bytecode; determine maximum stack depth
+  ulong stack_cap = 128; // TODO(rjf): scan bytecode; determine maximum stack depth
   E_Value *stack = push_array_no_zero(scratch.arena, E_Value, stack_cap);
-  U64 stack_count = 0;
+  ulong stack_count = 0;
   E_Space selected_space = e_interpret_ctx->primary_space;
   
   //- rjf: iterate bytecode & perform ops
@@ -86,7 +86,7 @@ e_interpret(String8 bytecode)
     // rjf: decode
     E_Value imm = {0};
     {
-      U32 decode_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
+      uint decode_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
       byte *next_ptr = ptr + decode_size;
       if(next_ptr > opl)
       {
@@ -102,7 +102,7 @@ e_interpret(String8 bytecode)
     // rjf: pop
     E_Value *svals = 0;
     {
-      U32 pop_count = RDI_POPN_FROM_CTRLBITS(ctrlbits);
+      uint pop_count = RDI_POPN_FROM_CTRLBITS(ctrlbits);
       if(pop_count > stack_count)
       {
         result.code = E_InterpretationCode_BadOp;
@@ -147,8 +147,8 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_MemRead:
       {
-        U64 addr = svals[0].u64;
-        U64 size = imm.u64;
+        ulong addr = svals[0].u64;
+        ulong size = imm.u64;
         B32 good_read = e_space_read(selected_space, &nval, r1u64(addr, addr+size));
         if(!good_read)
         {
@@ -164,8 +164,8 @@ e_interpret(String8 bytecode)
         byte byte_off         = (imm.u64&0xFF0000)>>16;
         REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx->reg_arch, rdi_reg_code);
         REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx->reg_arch)[base_reg_code];
-        U64 off = (U64)rng.byte_off + byte_off;
-        U64 size = (U64)byte_size;
+        ulong off = (ulong)rng.byte_off + byte_off;
+        ulong size = (ulong)byte_size;
         B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
         if(!good_read)
         {
@@ -176,8 +176,8 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_RegReadDyn:
       {
-        U64 off  = svals[0].u64;
-        U64 size = bit_size_from_arch(e_interpret_ctx->reg_arch)/8;
+        ulong off  = svals[0].u64;
+        ulong size = bit_size_from_arch(e_interpret_ctx->reg_arch)/8;
         B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
         if(!good_read)
         {
@@ -640,7 +640,7 @@ e_interpret(String8 bytecode)
       {
         if(0 < imm.u64)
         {
-          U64 mask = 0;
+          ulong mask = 0;
           if(imm.u64 < 64)
           {
             mask = max_U64 >> (64 - imm.u64);
@@ -653,12 +653,12 @@ e_interpret(String8 bytecode)
       {
         if(0 < imm.u64)
         {
-          U64 mask = 0;
+          ulong mask = 0;
           if(imm.u64 < 64)
           {
             mask = max_U64 >> (64 - imm.u64);
           }
-          U64 high = 0;
+          ulong high = 0;
           if(svals[0].u64 & (1 << (imm.u64 - 1)))
           {
             high = ~mask;
@@ -669,28 +669,28 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_Convert:
       {
-        U32 in = imm.u64&0xFF;
-        U32 out = (imm.u64 >> 8)&0xFF;
+        uint in = imm.u64&0xFF;
+        uint out = (imm.u64 >> 8)&0xFF;
         if(in != out)
         {
           switch(in + out*RDI_EvalTypeGroup_COUNT)
           {
             case RDI_EvalTypeGroup_F32 + RDI_EvalTypeGroup_U*RDI_EvalTypeGroup_COUNT:
             {
-              nval.u64 = (U64)svals[0].f32;
+              nval.u64 = (ulong)svals[0].f32;
             }break;
             case RDI_EvalTypeGroup_F64 + RDI_EvalTypeGroup_U*RDI_EvalTypeGroup_COUNT:
             {
-              nval.u64 = (U64)svals[0].f64;
+              nval.u64 = (ulong)svals[0].f64;
             }break;
             
             case RDI_EvalTypeGroup_F32 + RDI_EvalTypeGroup_S*RDI_EvalTypeGroup_COUNT:
             {
-              nval.s64 = (S64)svals[0].f32;
+              nval.s64 = (long)svals[0].f32;
             }break;
             case RDI_EvalTypeGroup_F64 + RDI_EvalTypeGroup_S*RDI_EvalTypeGroup_COUNT:
             {
-              nval.s64 = (S64)svals[0].f64;
+              nval.s64 = (long)svals[0].f64;
             }break;
             
             case RDI_EvalTypeGroup_U + RDI_EvalTypeGroup_F32*RDI_EvalTypeGroup_COUNT:
@@ -762,8 +762,8 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_ValueRead:
       {
-        U64 bytes_to_read = imm.u64;
-        U64 offset = svals[0].u64;
+        ulong bytes_to_read = imm.u64;
+        ulong offset = svals[0].u64;
         if(offset + bytes_to_read <= sizeof(E_Value))
         {
           E_Value src_val = svals[1];
@@ -773,7 +773,7 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_ByteSwap:
       {
-        U64 byte_size = imm.u64;
+        ulong byte_size = imm.u64;
         switch(byte_size)
         {
           default:
@@ -790,7 +790,7 @@ e_interpret(String8 bytecode)
     
     // rjf: push
     {
-      U64 push_count = RDI_PUSHN_FROM_CTRLBITS(ctrlbits);
+      ulong push_count = RDI_PUSHN_FROM_CTRLBITS(ctrlbits);
       if(push_count == 1)
       {
         if(stack_count < stack_cap)

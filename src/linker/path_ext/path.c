@@ -57,7 +57,7 @@ struct {
 PathStyle
 path_style_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_path_style_map); ++i) {
+  for (ulong i = 0; i < ArrayCount(g_path_style_map); ++i) {
     if (str8_match(g_path_style_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
       return g_path_style_map[i].path_style;
     }

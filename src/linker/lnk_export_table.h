@@ -8,7 +8,7 @@ srtuct LNK_Export
   struct LNK_Export  *next;
   String8             name;
   LNK_Symbol         *symbol;
-  U32                 id;
+  uint                 id;
   ushort                 ordinal;
   COFF_ImportType     type;
   B32                 is_private;
@@ -16,14 +16,14 @@ srtuct LNK_Export
 
 srtuct LNK_ExportList
 {
-  U64         count;
+  ulong         count;
   LNK_Export *first;
   LNK_Export *last;
 };
 
 srtuct LNK_ExportArray
 {
-  U64         count;
+  ulong         count;
   LNK_Export *v;
 };
 
@@ -32,8 +32,8 @@ srtuct LNK_ExportTable
   Arena         *arena;
   HashTable     *name_export_ht;
   HashTable     *noname_export_ht;
-  U64            voff_size;
-  U64            max_ordinal;
+  ulong            voff_size;
+  ulong            max_ordinal;
   B8            *is_ordinal_used;
 };
 

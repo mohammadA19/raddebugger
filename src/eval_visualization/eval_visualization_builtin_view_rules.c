@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: View Rule Tree Info Extraction Helpers
 
-U64
+ulong
 ev_base_offset_from_eval(E_Eval eval)
 {
   if(e_type_kind_is_pointer_or_ref(e_type_kind_from_key(eval.type_key)))
@@ -53,7 +53,7 @@ Rng1U64
 ev_range_from_eval_params(E_Eval eval, MD_Node *params)
 {
   Temp scratch = scratch_begin(0, 0);
-  U64 size = ev_value_from_params_key(params, str8_lit("size")).u64;
+  ulong size = ev_value_from_params_key(params, str8_lit("size")).u64;
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   E_TypeKey direct_type_key = e_type_unwrap(e_type_direct_from_key(eval.type_key));
@@ -103,7 +103,7 @@ struct EV_DefaultExpandAccel
 {
   E_MemberArray members;
   E_EnumValArray enum_vals;
-  U64 array_count;
+  ulong array_count;
   B32 array_need_extra_deref;
   B32 is_ptr2ptr;
 };
@@ -111,7 +111,7 @@ struct EV_DefaultExpandAccel
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(default)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  U64 total_row_count = 0;
+  ulong total_row_count = 0;
   EV_DefaultExpandAccel *accel = push_array(arena, EV_DefaultExpandAccel, 1);
   
   ////////////////////////////
@@ -190,7 +190,7 @@ EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(default)
 {
   EV_DefaultExpandAccel *accel = (EV_DefaultExpandAccel *)user_data;
   EV_ExpandRangeInfo result = {0};
-  U64 needed_row_count = dim_1u64(idx_range);
+  ulong needed_row_count = dim_1u64(idx_range);
   
   ////////////////////////////
   //- rjf: fill with members
@@ -317,7 +317,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     // rjf: choose base pointer & count members
     E_Member *base_ptr_member = 0;
     E_Member *count_member = 0;
-    for(U64 idx = 0; idx < members.count; idx += 1)
+    for(ulong idx = 0; idx < members.count; idx += 1)
     {
       E_Member *member = &members.v[idx];
       E_TypeKey member_type = e_type_unwrap(member->type_key);
@@ -337,7 +337,7 @@ EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_DEF(slice)
     }
     
     // rjf: evaluate count member, determine count
-    U64 count = 0;
+    ulong count = 0;
     if(count_member != 0)
     {
       E_Expr *count_member_expr = e_expr_ref_member_access(scratch.arena, expr, count_member->name);

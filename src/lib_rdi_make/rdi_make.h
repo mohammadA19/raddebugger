@@ -68,8 +68,8 @@
 // #define RDIM_String8List <name of your string list here>
 // #define RDIM_String8_FirstMember <name of member encoding first pointer>
 // #define RDIM_String8_LastMember <name of member encoding last pointer>
-// #define RDIM_String8_NodeCount <name of U64 list member containing node count>
-// #define RDIM_String8_TotalSizeMember <name of U64 list member containing total joined string size>
+// #define RDIM_String8_NodeCount <name of ulong list member containing node count>
+// #define RDIM_String8_TotalSizeMember <name of ulong list member containing total joined string size>
 
 #if !defined(RDIM_String8)
 #define RDIM_String8 RDIM_String8
@@ -122,9 +122,9 @@ enum RDIM_StringMatchFlags : RDI_U32
 // #define RDIM_Arena <name of your arena type here>
 // #define rdim_arena_alloc   <name of your creation function - must be () -> Arena*>
 // #define rdim_arena_release <name of your release function  - must be (Arena*) -> void>
-// #define rdim_arena_pos     <name of your position function - must be (Arena*) -> U64>
-// #define rdim_arena_push    <name of your pushing function  - must be (Arena*, U64 size) -> void*>
-// #define rdim_arena_pop_to  <name of your popping function  - must be (Arena*, U64 pos) -> void>
+// #define rdim_arena_pos     <name of your position function - must be (Arena*) -> ulong>
+// #define rdim_arena_push    <name of your pushing function  - must be (Arena*, ulong size) -> void*>
+// #define rdim_arena_pop_to  <name of your popping function  - must be (Arena*, ulong pos) -> void>
 
 #if !defined(RDIM_Arena)
 # define RDIM_Arena RDIM_Arena 
@@ -161,9 +161,9 @@ struct RDIM_Arena
 // do the following:
 //
 // #define RDIM_SCRATCH_OVERRIDE
-// #define RDIM_Temp <name of arena temp block type - generally struct: (Arena*, U64)
+// #define RDIM_Temp <name of arena temp block type - generally struct: (Arena*, ulong)
 // #define rdim_temp_arena <name of temp -> arena implementation - must be (Temp) -> (Arena*)>
-// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena **conflicts, U64 conflict_count) -> Temp>
+// #define rdim_scratch_begin <name of scratch begin implementation - must be (Arena **conflicts, ulong conflict_count) -> Temp>
 // #define rdim_scratch_end <name of scratch end function - must be (Temp) -> void
 
 #if !defined(RDIM_Temp)
@@ -306,7 +306,7 @@ RDIM_CheckNil(nil,p) ? \
 ////////////////////////////////
 //~ rjf: Auxiliary Data Structure Types
 
-//- rjf: 1-dimensional U64 ranges
+//- rjf: 1-dimensional ulong ranges
 
 struct RDIM_Rng1U64
 {

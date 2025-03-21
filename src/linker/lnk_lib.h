@@ -8,11 +8,11 @@ srtuct LNK_Lib
   String8          path;
   String8          data;
   COFF_ArchiveType type;
-  U32              symbol_count;
-  U32 *            member_off_arr;
+  uint              symbol_count;
+  uint *            member_off_arr;
   String8List      symbol_name_list;
   String8          long_names;
-  U64              input_idx;
+  ulong              input_idx;
 };
 
 srtuct LNK_LibNode
@@ -23,13 +23,13 @@ srtuct LNK_LibNode
 
 srtuct LNK_LibNodeArray
 {
-  U64          count;
+  ulong          count;
   LNK_LibNode *v;
 };
 
 srtuct LNK_LibList
 {
-  U64                 count;
+  ulong                 count;
   struct LNK_LibNode *first;
   struct LNK_LibNode *last;
 };
@@ -50,7 +50,7 @@ srtuct LNK_LibMemberNode
 
 srtuct LNK_LibMemberList
 {
-  U64                count;
+  ulong                count;
   LNK_LibMemberNode *first;
   LNK_LibMemberNode *last;
 };
@@ -58,7 +58,7 @@ srtuct LNK_LibMemberList
 srtuct LNK_LibSymbol
 {
   String8 name;
-  U64     member_idx;
+  ulong     member_idx;
 };
 
 srtuct LNK_LibSymbolNode
@@ -69,7 +69,7 @@ srtuct LNK_LibSymbolNode
 
 srtuct LNK_LibSymbolList
 {
-  U64                count;
+  ulong                count;
   LNK_LibSymbolNode *first;
   LNK_LibSymbolNode *last;
 };
@@ -83,8 +83,8 @@ srtuct LNK_LibWriter
 
 srtuct LNK_LibBuild
 {
-  U64            symbol_count;
-  U64            member_count;
+  ulong            symbol_count;
+  ulong            member_count;
   LNK_LibSymbol *symbol_array;
   LNK_LibMember *member_array;
 };
@@ -96,18 +96,18 @@ srtuct
   LNK_LibNode     *node_arr;
   String8         *data_arr;
   String8         *path_arr;
-  U64              base_input_idx;
+  ulong              base_input_idx;
 };
 
 ////////////////////////////////
 
-LNK_LibNode *       lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, U64 count);
+LNK_LibNode *       lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, ulong count);
 LNK_LibMemberNode * lnk_lib_member_list_push(Arena *arena, LNK_LibMemberList *list, LNK_LibMember member);
 LNK_LibMember *     lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list);
 LNK_LibSymbolNode * lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol symbol);
 
 LNK_LibSymbol * lnk_lib_symbol_array_from_list(Arena *arena, LNK_LibSymbolList list);
-void            lnk_lib_symbol_array_sort(LNK_LibSymbol *arr, U64 count);
+void            lnk_lib_symbol_array_sort(LNK_LibSymbol *arr, ulong count);
 
 ////////////////////////////////
 
@@ -121,9 +121,9 @@ LNK_LibNode *    lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data
 LNK_LibWriter * lnk_lib_writer_alloc();
 void            lnk_lib_writer_release(LNK_LibWriter **writer_ptr);
 void            lnk_lib_writer_push_obj(LNK_LibWriter *writer, LNK_Obj *obj);
-void            lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, U64 time_stamp, String8 dll_name, LNK_Export *exp);
+void            lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, ulong time_stamp, String8 dll_name, LNK_Export *exp);
 LNK_LibBuild    lnk_lib_build_from_writer(Arena *arena, LNK_LibWriter *writer);
-String8List     lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second_member, COFF_TimeStamp time_stamp, U32 mode);
+String8List     lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second_member, COFF_TimeStamp time_stamp, uint mode);
 
 ////////////////////////////////
 
@@ -131,6 +131,6 @@ LNK_LibBuild lnk_build_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStam
 String8List  lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType machine);
 String8List  lnk_build_null_import_descriptor_obj(Arena *arena, COFF_MachineType machine);
 String8List  lnk_build_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_MachineType machine);
-String8      lnk_build_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, ushort user_id, ushort group_id, ushort mode, U32 size);
+String8      lnk_build_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, ushort user_id, ushort group_id, ushort mode, uint size);
 String8List  lnk_build_import_lib(TP_Context *tp, TP_Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 lib_name, String8 dll_name, LNK_ExportTable *exptab);
 

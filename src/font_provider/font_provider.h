@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-enum FP_RasterFlags : U32
+enum FP_RasterFlags : uint
 {
   FP_RasterFlag_Smooth = (1<<0),
   FP_RasterFlag_Hinted = (1<<1),
@@ -17,7 +17,7 @@ enum FP_RasterFlags : U32
 
 struct FP_Handle
 {
-  U64 u64[2];
+  ulong u64[2];
 };
 
 struct FP_Metrics

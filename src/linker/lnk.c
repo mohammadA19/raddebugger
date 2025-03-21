@@ -165,7 +165,7 @@ LNK_InputImport **
 lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 {
   LNK_InputImport **result = push_array_no_zero(arena, LNK_InputImport *, list.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for (LNK_InputImport *node = list.first; node != 0; node = node->next) {
     Assert(idx < list.count);
     result[idx++] = node;
@@ -174,10 +174,10 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 }
 
 LNK_InputImportList
-lnk_list_from_input_import_arr(LNK_InputImport **arr, U64 count)
+lnk_list_from_input_import_arr(LNK_InputImport **arr, ulong count)
 {
   LNK_InputImportList list = {0};
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     SLLQueuePush(list.first, list.last, arr[i]);
     list.count += 1;
   }
@@ -435,8 +435,8 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable *st, LNK_SymbolTable *symtab, PE
   
   struct Stack {
     struct Stack     *next;
-    U64               arr_idx;
-    U64               res_idx[2];
+    ulong               arr_idx;
+    ulong               res_idx[2];
     PE_ResourceArray  res_arr[2];
     LNK_Chunk        *coff_entry_array_chunk;
     LNK_Chunk        *coff_entry_chunk;
@@ -445,7 +445,7 @@ lnk_serialize_pe_resource_tree(LNK_SectionTable *st, LNK_SymbolTable *symtab, PE
   stack->res_arr[0].count = 1;
   stack->res_arr[0].v     = &root_wrapper;
   
-  U64 total_res_count = 0;
+  ulong total_res_count = 0;
   
   while (stack) {
     while (stack->arr_idx < ArrayCount(stack->res_arr)) {
@@ -598,7 +598,7 @@ lnk_add_resource_debug_s(LNK_SectionTable *st,
   str8_serial_push_u8(scratch.arena, &string_srl, 0);
   
   // build file and string table
-  U64 node_idx = 0;
+  ulong node_idx = 0;
   for (String8Node *n = res_file_list.first; n != NULL; n = n->next, ++node_idx) {
     CV_C13Checksum checksum = {0};
     checksum.name_off = string_srl.total_size;
@@ -694,8 +694,8 @@ lnk_make_res_obj(TP_Context       *tp,
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   
-  static const U64 sect_virt_align = 1;
-  static const U64 sect_file_align = 1;
+  static const ulong sect_virt_align = 1;
+  static const ulong sect_file_align = 1;
 
   TP_Arena *temp_tp_arena = push_array(scratch.arena, TP_Arena, 1);
   temp_tp_arena->v        = push_array(scratch.arena, Arena *, 1);
@@ -737,13 +737,13 @@ lnk_make_res_obj(TP_Context       *tp,
     if (sect == header_sect) continue;
     if (!sect->emit_header) continue;
     
-    U64 reloc_count = 0;
+    ulong reloc_count = 0;
     LNK_Symbol *coff_reloc_count_symbol = lnk_symbol_table_searchf(symtab, LNK_SymbolScopeFlag_Internal, "%S.coff_relocs[].count", sect->name);
     if (coff_reloc_count_symbol) {
       reloc_count = coff_reloc_count_symbol->u.defined.u.va;
     }
     
-    U64 sect_size = lnk_virt_size_from_chunk_ref(sect_id_map, sect->root->ref);
+    ulong sect_size = lnk_virt_size_from_chunk_ref(sect_id_map, sect->root->ref);
     
     COFF_Symbol16 coff_sect_symbol = {0};
     Assert(sect->name.size <= 8);
@@ -796,9 +796,9 @@ lnk_make_res_obj(TP_Context       *tp,
         
         // resolve symbol offset
         LNK_Section *symbol_sect   = lnk_sect_from_chunk_ref(sect_id_map, def->u.chunk->ref);
-        U64          chunk_off     = lnk_off_from_chunk_ref(sect_id_map, def->u.chunk->ref);
-        U64          symbol_offset = chunk_off + def->u.chunk_offset;
-        U64          symbol_idx    = coff_symbol_list.count;
+        ulong          chunk_off     = lnk_off_from_chunk_ref(sect_id_map, def->u.chunk->ref);
+        ulong          symbol_offset = chunk_off + def->u.chunk_offset;
+        ulong          symbol_idx    = coff_symbol_list.count;
         
         // push coff symbol
         COFF_Symbol16 coff_symbol = {0};
@@ -811,7 +811,7 @@ lnk_make_res_obj(TP_Context       *tp,
         coff_symbol16_list_push(scratch.arena, &coff_symbol_list, coff_symbol);
         
         // push coff reloc
-        U64 reloc_off = lnk_off_from_chunk_ref(sect_id_map, reloc->chunk->ref);
+        ulong reloc_off = lnk_off_from_chunk_ref(sect_id_map, reloc->chunk->ref);
         reloc_off += reloc->apply_off;
         
         COFF_Reloc coff_reloc = {0};
@@ -933,7 +933,7 @@ lnk_make_res_obj(TP_Context       *tp,
     }
     
     // push section header count symbol
-    U64         symbol_count                     = coff_section_header_array_chunk->u.list->count;
+    ulong         symbol_count                     = coff_section_header_array_chunk->u.list->count;
     LNK_Symbol *coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab->arena->v[0], str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
     lnk_symbol_table_push(symtab, coff_section_header_count_symbol);
   }
@@ -960,7 +960,7 @@ lnk_obj_from_res_file_list(TP_Context       *tp,
                            String8List       res_data_list,
                            String8List       res_path_list,
                            COFF_MachineType  machine,
-                           U32               time_stamp,
+                           uint               time_stamp,
                            String8           work_dir,
                            PathStyle         system_path_style,
                            String8           obj_name)
@@ -973,7 +973,7 @@ lnk_obj_from_res_file_list(TP_Context       *tp,
   // load res files
   PE_ResourceDir *root_dir       = push_array(scratch.arena, PE_ResourceDir, 1);
   MD5Hash        *res_hash_array = push_array(scratch.arena, MD5Hash, res_data_list.node_count);
-  U64 node_idx = 0;
+  ulong node_idx = 0;
   for (String8Node *node = res_data_list.first; node != 0; node = node->next, node_idx += 1) {
     res_hash_array[node_idx] = md5_hash_from_string(node->string);
     pe_resource_dir_push_res_file(scratch.arena, root_dir, node->string);
@@ -1055,14 +1055,14 @@ lnk_make_linker_coff_obj(TP_Context       *tp,
     
     // S_COMPILE3
     CV_Arch cv_arch = cv_arch_from_coff_machine(machine);
-    U64 ver_fe_major = 0;
-    U64 ver_fe_minor = 0;
-    U64 ver_fe_build = 0;
-    U64 ver_feqfe    = 0;
-    U64 ver_major    = 14;
-    U64 ver_minor    = 36;
-    U64 ver_build    = 32537;
-    U64 ver_qfe      = 0;
+    ulong ver_fe_major = 0;
+    ulong ver_fe_minor = 0;
+    ulong ver_fe_build = 0;
+    ulong ver_feqfe    = 0;
+    ulong ver_major    = 14;
+    ulong ver_minor    = 36;
+    ulong ver_build    = 32537;
+    ulong ver_qfe      = 0;
     String8 version_string = push_str8f(scratch.arena, "Epic Games Tools (R) RAD Linker");
     String8 comp3_data     = cv_make_comp3(scratch.arena, 0, CV_Language_LINK, cv_arch, ver_fe_major, ver_fe_minor, ver_fe_build, ver_feqfe, ver_major, ver_minor, ver_build, ver_qfe, version_string);
     cv_symbol_list_push_data(scratch.arena, &symbol_list, CV_SymKind_COMPILE3, comp3_data);
@@ -1149,7 +1149,7 @@ lnk_make_linker_coff_obj(TP_Context       *tp,
     }
     
     // push section header count symbol
-    U64 symbol_count = coff_section_header_array_chunk->u.list->count;
+    ulong symbol_count = coff_section_header_array_chunk->u.list->count;
     LNK_Symbol *coff_section_header_count_symbol = lnk_make_defined_symbol_va(symtab->arena->v[0], str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, symbol_count);
     lnk_symbol_table_push(symtab, coff_section_header_count_symbol);
   }
@@ -1310,12 +1310,12 @@ lnk_push_linker_symbols(LNK_SymbolTable *symtab, COFF_MachineType machine)
 void
 lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
 {
-  if (data.size % sizeof(U32)) {
+  if (data.size % sizeof(uint)) {
     // TODO: report invalid data size
   }
-  U64 count = data.size / sizeof(U32);
-  for (U32 *ptr = (U32*)data.str, *opl = ptr + count; ptr < opl; ++ptr) {
-    U32 coff_symbol_idx = *ptr;
+  ulong count = data.size / sizeof(uint);
+  for (uint *ptr = (uint*)data.str, *opl = ptr + count; ptr < opl; ++ptr) {
+    uint coff_symbol_idx = *ptr;
     if (coff_symbol_idx >= obj_symbols.count) {
       // TODO: report invalid symbol index
       continue;
@@ -1327,21 +1327,21 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
 }
 
 String8
-lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
+lnk_build_guard_data(Arena *arena, U64Array voff_arr, ulong stride)
 {
-  Assert(stride >= sizeof(U32));
+  Assert(stride >= sizeof(uint));
   
   // check for duplicates
 #if DEBUG
-  for (U64 i = 1; i < voff_arr.count; ++i) {
+  for (ulong i = 1; i < voff_arr.count; ++i) {
     Assert(voff_arr.[i-1] != voff_ptr[i]);
   }
 #endif
   
-  U64 buffer_size = stride * voff_arr.count;
+  ulong buffer_size = stride * voff_arr.count;
   byte *buffer = push_array(arena, byte, buffer_size);
-  for (U64 i = 0; i < voff_arr.count; ++i) {
-    U32 *voff_ptr = (U32*)(buffer + i * stride);
+  for (ulong i = 0; i < voff_arr.count; ++i) {
+    uint *voff_ptr = (uint*)(buffer + i * stride);
     *voff_ptr = voff_arr.v[i];
   }
   
@@ -1381,7 +1381,7 @@ lnk_build_debug_pdb(LNK_SectionTable *st,
                     LNK_Chunk        *dir_array_chunk,
                     COFF_TimeStamp    time_stamp,
                     Guid              guid,
-                    U32               age,
+                    uint               age,
                     String8           pdb_path)
 {
   ProfBeginFunction();
@@ -1483,7 +1483,7 @@ lnk_build_guard_tables(TP_Context       *tp,
       }
     } else {
       // use relocation data in code sections to get function symbols
-      for (U64 isect = 0; isect < obj->sect_count; ++isect) {
+      for (ulong isect = 0; isect < obj->sect_count; ++isect) {
         LNK_Chunk *chunk = obj->chunk_arr[isect];
         if (!chunk) {
           continue;
@@ -1528,7 +1528,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   {
     Temp temp = temp_begin(scratch.arena);
     KeyValuePair *raw_exports = key_value_pairs_from_hash_table(temp.arena, exptab->name_export_ht);
-    for (U64 i = 0; i < exptab->name_export_ht->count; ++i) {
+    for (ulong i = 0; i < exptab->name_export_ht->count; ++i) {
       LNK_Export *exp = raw_exports[i].value_raw;
       lnk_symbol_list_push(scratch.arena, &guard_symbol_list_table[GUARD_FIDS], exp->symbol);
     }
@@ -1541,9 +1541,9 @@ lnk_build_guard_tables(TP_Context       *tp,
 #if 0
   // push thunks
   LNK_SymbolScopeIndex scope_array[] = { LNK_SymbolScopeIndex_Defined, LNK_SymbolScopeIndex_Internal };
-  for (U64 iscope = 0; iscope < ArrayCount(scope_array); ++iscope) {
+  for (ulong iscope = 0; iscope < ArrayCount(scope_array); ++iscope) {
     LNK_SymbolScopeIndex scope = scope_array[iscope];
-    for (U64 ibucket = 0; ibucket < symtab->bucket_count[scope]; ++ibucket) {
+    for (ulong ibucket = 0; ibucket < symtab->bucket_count[scope]; ++ibucket) {
       for (LNK_SymbolNode *symbol_node = symtab->buckets[scope][ibucket].first;
            symbol_node != NULL;
            symbol_node = symbol_node->next) {
@@ -1563,7 +1563,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   
   // compute symbols virtual offsets
   U64Array guard_voff_arr_table[GUARD_COUNT];
-  for (U64 i = 0; i < ArrayCount(guard_symbol_list_table); ++i) {
+  for (ulong i = 0; i < ArrayCount(guard_symbol_list_table); ++i) {
     U64List voff_list; MemoryZeroStruct(&voff_list);
     LNK_SymbolList symbol_list = guard_symbol_list_table[i];
     for (LNK_SymbolNode *symbol_node = symbol_list.first; symbol_node != NULL; symbol_node = symbol_node->next) {
@@ -1579,8 +1579,8 @@ lnk_build_guard_tables(TP_Context       *tp,
       if (lnk_chunk_is_discarded(chunk)) {
         continue;
       }
-      U64 chunk_voff = lnk_virt_off_from_chunk_ref(sect_id_map, chunk->ref);
-      U64 symbol_voff = chunk_voff + defined_symbol->u.chunk_offset;
+      ulong chunk_voff = lnk_virt_off_from_chunk_ref(sect_id_map, chunk->ref);
+      ulong symbol_voff = chunk_voff + defined_symbol->u.chunk_offset;
       Assert(symbol_voff != 0);
       u64_list_push(scratch.arena, &voff_list, symbol_voff);
     }
@@ -1600,7 +1600,7 @@ lnk_build_guard_tables(TP_Context       *tp,
     { ".gljmp",   LNK_GLJMP_SYMBOL_NAME,   LNK_GLJMP_SECTION_FLAGS   },
     { ".gehcont", LNK_GEHCONT_SYMBOL_NAME, LNK_GEHCONT_SECTION_FLAGS },
   };
-  for (U64 i = 0; i < ArrayCount(sect_layout); ++i) {
+  for (ulong i = 0; i < ArrayCount(sect_layout); ++i) {
     LNK_Section *sect = lnk_section_table_push(st, str8_cstring(sect_layout[i].name), sect_layout[i].flags);
     lnk_symbol_table_push_defined_chunk(symtab, str8_cstring(sect_layout[i].symbol), LNK_DefinedSymbolVisibility_Internal, 0, sect->root, 0, 0, 0);
   }
@@ -1627,7 +1627,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   LNK_Chunk *gehcont_array_chunk = gehcont_sect->root;
   
   // first 4 bytes are call's destination virtual offset
-  U64 entry_stride = sizeof(U32);
+  ulong entry_stride = sizeof(uint);
   if (emit_suppress_flag) {
     // 4th byte tells kernel what to do when destination VA is not in the bitmap. 
     // If byte is 1 exception is suppressed and program keeps running.
@@ -1685,8 +1685,8 @@ lnk_build_guard_tables(TP_Context       *tp,
       gflags_def->u.va |= PE_LoadConfigGuardFlags_DELAYLOAD_IAT_IN_ITS_OWN_SECTION;
     }
   }
-  if (entry_stride > sizeof(U32)) {
-    U64 size_bit = (entry_stride - 5);
+  if (entry_stride > sizeof(uint)) {
+    ulong size_bit = (entry_stride - 5);
     if (emit_suppress_flag) {
       gflags_def->u.va |= PE_LoadConfigGuardFlags_CF_EXPORT_SUPPRESSION_INFO_PRESENT;
     }
@@ -1733,15 +1733,15 @@ void
 lnk_emit_base_reloc_info(Arena                 *arena,
                          LNK_Section          **sect_id_map,
                          B32                    is_large_addr_aware,
-                         U64                    page_size,
+                         ulong                    page_size,
                          HashTable             *page_ht,
                          LNK_BaseRelocPageList *page_list,
                          LNK_Reloc             *reloc)
 {
   B32 is_addr = (reloc->type == LNK_Reloc_ADDR_64 || reloc->type == LNK_Reloc_ADDR_32);
   if (is_addr) {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    U64 page_voff  = AlignDownPow2(reloc_voff, page_size);
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    ulong page_voff  = AlignDownPow2(reloc_voff, page_size);
 
     LNK_BaseRelocPageNode *page;
     {
@@ -1780,7 +1780,7 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_reloc_array_task)
   ProfBeginFunction();
   LNK_BaseRelocTask task  = *(LNK_BaseRelocTask*)raw_task;
   Rng1U64           range = task.range_arr[task_id];
-  for (U64 reloc_idx = range.min; reloc_idx < range.max; reloc_idx += 1) {
+  for (ulong reloc_idx = range.min; reloc_idx < range.max; reloc_idx += 1) {
     LNK_Reloc *reloc = task.reloc_arr[reloc_idx];
     lnk_emit_base_reloc_info(arena, task.sect_id_map, task.is_large_addr_aware, task.page_size, task.page_ht_arr[task_id], &task.list_arr[task_id], reloc);
   }
@@ -1793,9 +1793,9 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_objs_task)
   ProfBeginFunction();
   LNK_ObjBaseRelocTask task  = *(LNK_ObjBaseRelocTask *)raw_task;
   Rng1U64              range = task.ranges[task_id];
-  for (U64 obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
+  for (ulong obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
     LNK_Obj *obj = task.obj_arr[obj_idx];
-    for (U64 sect_idx = 0; sect_idx < obj->sect_count; sect_idx += 1) {
+    for (ulong sect_idx = 0; sect_idx < obj->sect_count; sect_idx += 1) {
       B32 is_live = !lnk_chunk_is_discarded(obj->chunk_arr[sect_idx]);
       if (is_live) {
         LNK_RelocList reloc_list = obj->sect_reloc_list_arr[sect_idx];
@@ -1852,7 +1852,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
                       LNK_SectionTable            *st,
                       LNK_SymbolTable             *symtab,
                       COFF_MachineType             machine,
-                      U64                          page_size,
+                      ulong                          page_size,
                       PE_ImageFileCharacteristics  file_chars,
                       LNK_ObjList                  obj_list)
 {
@@ -1867,7 +1867,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
   
   LNK_BaseRelocPageList  *page_list_arr = push_array(tp_arena->v[0], LNK_BaseRelocPageList, tp->worker_count);
   HashTable             **page_ht_arr   = push_array_no_zero(tp_arena->v[0], HashTable *, tp->worker_count);
-  for (U64 i = 0; i < tp->worker_count; ++i) {
+  for (ulong i = 0; i < tp->worker_count; ++i) {
     page_ht_arr[i] = hash_table_init(tp_arena->v[0], 1024);
   }
   
@@ -1908,7 +1908,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
   HashTable             *main_ht        = page_ht_arr[0];
   LNK_BaseRelocPageList *main_page_list = &page_list_arr[0];
   
-  for (U64 list_idx = 1; list_idx < tp->worker_count; ++list_idx) {
+  for (ulong list_idx = 1; list_idx < tp->worker_count; ++list_idx) {
     LNK_BaseRelocPageList src = page_list_arr[list_idx];
     
     for (LNK_BaseRelocPageNode *src_page = src.first, *src_next; src_page != 0; src_page = src_next) {
@@ -1949,21 +1949,21 @@ lnk_build_base_relocs(TP_Context                  *tp,
     HashTable *voff_ht = hash_table_init(tp_arena->v[0], page_size);
     
     ProfBegin("Serialize Pages");
-    for (U64 page_idx = 0; page_idx < page_arr.count; ++page_idx) {
+    for (ulong page_idx = 0; page_idx < page_arr.count; ++page_idx) {
       LNK_BaseRelocPage *page = &page_arr.v[page_idx];
 
-      U64 total_entry_count = 0;
+      ulong total_entry_count = 0;
       total_entry_count += page->entries_addr32.count;
       total_entry_count += page->entries_addr64.count;
       
       // push buffer
-      U64 buf_align = sizeof(U32);
-      U64 buf_size  = AlignPow2(sizeof(U32)*2 + sizeof(ushort)*total_entry_count, buf_align);
+      ulong buf_align = sizeof(uint);
+      ulong buf_size  = AlignPow2(sizeof(uint)*2 + sizeof(ushort)*total_entry_count, buf_align);
       byte *buf       = push_array_no_zero(base_reloc_sect->arena, byte, buf_size);
       
       // setup pointers into buffer
-      U32 *page_voff_ptr  = (U32*)buf;
-      U32 *block_size_ptr = page_voff_ptr + 1;
+      uint *page_voff_ptr  = (uint*)buf;
+      uint *block_size_ptr = page_voff_ptr + 1;
       ushort *reloc_arr_base = (ushort*)(block_size_ptr + 1);
       ushort *reloc_arr_ptr  = reloc_arr_base;
       
@@ -1976,7 +1976,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
         hash_table_push_u64_u64(tp_arena->v[0], voff_ht, i->data, 0);
 
         // write entry
-        U64 rel_off = i->data - page->voff;
+        ulong rel_off = i->data - page->voff;
         Assert(rel_off <= page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_HIGHLOW, rel_off);
       }
@@ -1990,19 +1990,19 @@ lnk_build_base_relocs(TP_Context                  *tp,
         hash_table_push_u64_u64(tp_arena->v[0], voff_ht, i->data, 0);
         
         // write entry
-        U64 rel_off = i->data - page->voff;
+        ulong rel_off = i->data - page->voff;
         Assert(rel_off <= page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_DIR64, rel_off);
       }
       
       // write pad
-      U64 pad_reloc_count = AlignPadPow2(total_entry_count, sizeof(reloc_arr_ptr[0]));
+      ulong pad_reloc_count = AlignPadPow2(total_entry_count, sizeof(reloc_arr_ptr[0]));
       MemoryZeroTyped(reloc_arr_ptr, pad_reloc_count); // fill pad with PE_BaseRelocKind_ABSOLUTE
       reloc_arr_ptr += pad_reloc_count;
       
       // compute block size
-      U64 reloc_arr_size = (U64)((byte*)reloc_arr_ptr - (byte*)reloc_arr_base);
-      U64 block_size     = sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + reloc_arr_size;
+      ulong reloc_arr_size = (ulong)((byte*)reloc_arr_ptr - (byte*)reloc_arr_base);
+      ulong block_size     = sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + reloc_arr_size;
       
       // write header
       *page_voff_ptr  = safe_cast_u32(page->voff);
@@ -2025,7 +2025,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
 LNK_Chunk *
 lnk_build_dos_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk)
 {
-  U32 dos_stub_size = sizeof(PE_DosHeader) + pe_dos_program.size;
+  uint dos_stub_size = sizeof(PE_DosHeader) + pe_dos_program.size;
   
   PE_DosHeader *dos_header          = push_array(header_sect->arena, PE_DosHeader, 1);
   dos_header->magic                 = PE_DOS_MAGIC;
@@ -2066,7 +2066,7 @@ lnk_build_dos_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chun
 LNK_Chunk *
 lnk_build_pe_magic(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent)
 {
-  U32 *pe_magic = push_array_no_zero(header_sect->arena, U32, 1);
+  uint *pe_magic = push_array_no_zero(header_sect->arena, uint, 1);
   *pe_magic = PE_MAGIC;
   
   LNK_Chunk *pe_magic_chunk = lnk_section_push_chunk_raw(header_sect, parent, pe_magic, sizeof(*pe_magic), str8_zero());
@@ -2110,19 +2110,19 @@ lnk_build_pe_optional_header_x64(LNK_SymbolTable       *symtab,
                                  LNK_Section           *header_sect,
                                  LNK_Chunk             *parent,
                                  COFF_MachineType       machine,
-                                 U64                    base_addr,
-                                 U64                    sect_align,
-                                 U64                    file_align,
+                                 ulong                    base_addr,
+                                 ulong                    sect_align,
+                                 ulong                    file_align,
                                  Version                linker_ver,
                                  Version                os_ver,
                                  Version                image_ver,
                                  Version                subsystem_ver,
                                  PE_WindowsSubsystem    subsystem,
                                  PE_DllCharacteristics  dll_characteristics,
-                                 U64                    stack_reserve,
-                                 U64                    stack_commit,
-                                 U64                    heap_reserve,
-                                 U64                    heap_commit,
+                                 ulong                    stack_reserve,
+                                 ulong                    stack_commit,
+                                 ulong                    heap_reserve,
+                                 ulong                    heap_commit,
                                  String8                entry_point_name,
                                  LNK_SectionArray       sect_arr)
 {
@@ -2234,7 +2234,7 @@ lnk_build_pe_directories(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_
   };
   
   // init directory virtual coords from symbol names
-  U64 directory_count = PE_DataDirectoryIndex_COUNT;
+  ulong directory_count = PE_DataDirectoryIndex_COUNT;
   PE_DataDirectory *directory_array = push_array(header_sect->arena, PE_DataDirectory, directory_count);
   
   LNK_Chunk *directory_array_chunk = lnk_section_push_chunk_raw(header_sect, parent, directory_array, sizeof(directory_array[0])*directory_count, str8_zero());
@@ -2244,12 +2244,12 @@ lnk_build_pe_directories(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_
   LNK_Symbol *directory_array_symbol = lnk_symbol_table_push_defined_chunk(symtab, str8_lit(LNK_PE_DIRECTORY_ARRAY_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_array_chunk, 0, 0, 0);
   LNK_Symbol *directory_count_symbol = lnk_symbol_table_push_defined_va(symtab, str8_lit(LNK_PE_DIRECTORY_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, directory_count);
   
-  for (U64 dir_idx = 0; dir_idx < ArrayCount(directory_map); dir_idx += 1) {
+  for (ulong dir_idx = 0; dir_idx < ArrayCount(directory_map); dir_idx += 1) {
     String8 symbol_name = str8_cstring(directory_map[dir_idx].name);
     LNK_Symbol *symbol = lnk_symbol_table_search(symtab, directory_map[dir_idx].scope, symbol_name);
     if (symbol) {
-      U64 virt_off_field_off = sizeof(PE_DataDirectory) * directory_map[dir_idx].index + OffsetOf(PE_DataDirectory, virt_off);
-      U64 virt_size_field_off = sizeof(PE_DataDirectory) * directory_map[dir_idx].index + OffsetOf(PE_DataDirectory, virt_size);
+      ulong virt_off_field_off = sizeof(PE_DataDirectory) * directory_map[dir_idx].index + OffsetOf(PE_DataDirectory, virt_off);
+      ulong virt_size_field_off = sizeof(PE_DataDirectory) * directory_map[dir_idx].index + OffsetOf(PE_DataDirectory, virt_size);
       lnk_section_push_reloc(header_sect, directory_array_chunk, LNK_Reloc_VIRT_OFF_32, virt_off_field_off, symbol);
       lnk_section_push_reloc(header_sect, directory_array_chunk, LNK_Reloc_CHUNK_SIZE_VIRT_32, virt_size_field_off, symbol);
     }
@@ -2328,7 +2328,7 @@ lnk_build_coff_section_table(LNK_SymbolTable *symtab, LNK_Section *header_sect, 
   }
   
   // push symbol for section header count
-  U64 header_count = COFF_FileHeader_array_chunk->u.list->count;
+  ulong header_count = COFF_FileHeader_array_chunk->u.list->count;
   lnk_symbol_table_push_defined_va(symtab, str8_lit(LNK_COFF_SECT_HEADER_COUNT_SYMBOL_NAME), LNK_DefinedSymbolVisibility_Internal, 0, header_count);
   
   return COFF_FileHeader_array_chunk;
@@ -2415,7 +2415,7 @@ THREAD_POOL_TASK_FUNC(lnk_undef_symbol_finder)
   LNK_SymbolFinderResult *result = &task->result_arr[task_id];
   Rng1U64                 range  = task->range_arr[task_id];
   
-  for (U64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
+  for (ulong symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
     LNK_SymbolNode         *symbol_node = task->lookup_node_arr.v[symbol_idx];
     LNK_Symbol             *symbol      = symbol_node->data;
     Assert(symbol->type == LNK_Symbol_Undefined);
@@ -2443,7 +2443,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
   LNK_SymbolFinderResult *result = &task->result_arr[task_id];
   Rng1U64                 range  = task->range_arr[task_id];
   
-  for (U64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
+  for (ulong symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
     LNK_SymbolNode         *symbol_node = task->lookup_node_arr.v[symbol_idx];
     LNK_Symbol             *symbol      = symbol_node->data;
     Assert(symbol->type == LNK_Symbol_Weak);
@@ -2524,7 +2524,7 @@ lnk_run_symbol_finder(TP_Context      *tp,
   
   ProfBegin("Concat Results");
   LNK_SymbolFinderResult result = {0};
-  for (U64 i = 0; i < tp->worker_count; ++i) {
+  for (ulong i = 0; i < tp->worker_count; ++i) {
     LNK_SymbolFinderResult *src = &task.result_arr[i];
     lnk_symbol_list_concat_in_place(&result.unresolved_symbol_list, &src->unresolved_symbol_list);
     lnk_input_obj_list_concat_in_place(&result.input_obj_list, &src->input_obj_list);
@@ -2563,10 +2563,10 @@ THREAD_POOL_TASK_FUNC(lnk_defined_symbol_pusher_task)
 
   for (LNK_SymbolNode *symnode = obj->symbol_list.first; symnode != 0; symnode = symnode->next) {
     if (symnode->data->type == LNK_Symbol_DefinedExtern) {
-      U64 hash = lnk_symbol_hash(symnode->data->name);
+      ulong hash = lnk_symbol_hash(symnode->data->name);
       lnk_symbol_table_push_(symtab, arena, &chunk_lists[LNK_SymbolScopeIndex_Defined][worker_id], LNK_SymbolScopeIndex_Defined, hash, symnode->data);
     } else if (symnode->data->type == LNK_Symbol_Weak) {
-      U64 hash = lnk_symbol_hash(symnode->data->name);
+      ulong hash = lnk_symbol_hash(symnode->data->name);
       lnk_symbol_table_push_(symtab, arena, &chunk_lists[LNK_SymbolScopeIndex_Weak][worker_id], LNK_SymbolScopeIndex_Weak, hash, symnode->data);
     }
   }
@@ -2593,11 +2593,11 @@ THREAD_POOL_TASK_FUNC(lnk_lazy_symbol_pusher_task)
 
   LNK_Symbol *lazy_symbols = push_array_no_zero(arena, LNK_Symbol, lib->symbol_count);
 
-  for (U64 symbol_idx = 0; symbol_idx < lib->symbol_count; ++symbol_idx, name_node = name_node->next) {
+  for (ulong symbol_idx = 0; symbol_idx < lib->symbol_count; ++symbol_idx, name_node = name_node->next) {
     LNK_Symbol *symbol = &lazy_symbols[symbol_idx];
     lnk_init_lazy_symbol(symbol, name_node->string, lib, lib->member_off_arr[symbol_idx]);
 
-    U64 hash = lnk_symbol_hash(symbol->name);
+    ulong hash = lnk_symbol_hash(symbol->name);
     lnk_symbol_table_push_(symtab, arena, &symtab->chunk_lists[LNK_SymbolScopeIndex_Lib][worker_id], LNK_SymbolScopeIndex_Lib, hash, symbol);
   }
 }
@@ -2616,9 +2616,9 @@ lnk_push_lazy_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray 
 ////////////////////////////////
 
 void
-lnk_apply_reloc(U64               base_addr,
-                U64               virt_align,
-                U64               file_align,
+lnk_apply_reloc(ulong               base_addr,
+                ulong               virt_align,
+                ulong               file_align,
                 LNK_Section     **sect_id_map,
                 LNK_SymbolTable  *symtab,
                 String8           chunk_data,
@@ -2632,12 +2632,12 @@ lnk_apply_reloc(U64               base_addr,
     return;
   }
   
-  U64 symbol_vsize = 0;
-  U64 symbol_fsize = 0;
-  U64 symbol_isect = 0;
-  U64 symbol_off   = 0;
-  U64 symbol_voff  = 0;
-  U64 symbol_foff  = 0;
+  ulong symbol_vsize = 0;
+  ulong symbol_fsize = 0;
+  ulong symbol_isect = 0;
+  ulong symbol_off   = 0;
+  ulong symbol_voff  = 0;
+  ulong symbol_foff  = 0;
   
   LNK_DefinedSymbol *defined_symbol = &symbol->u.defined;
   switch (defined_symbol->value_type) {
@@ -2655,9 +2655,9 @@ lnk_apply_reloc(U64               base_addr,
   } break;
   }
   
-  U64 reloc_align = 1;
-  U64 reloc_size  = 0;
-  S64 reloc_value = 0;
+  ulong reloc_align = 1;
+  ulong reloc_size  = 0;
+  long reloc_value = 0;
   
   switch (reloc->type) {
   case LNK_Reloc_NULL: /* ignore */ break;
@@ -2666,7 +2666,7 @@ lnk_apply_reloc(U64               base_addr,
     reloc_size  = 2;
   } break;
   case LNK_Reloc_ADDR_32: {
-    reloc_value = (U32)(base_addr + symbol_voff);
+    reloc_value = (uint)(base_addr + symbol_voff);
     reloc_size  = 4;
   } break;
   case LNK_Reloc_ADDR_64: {
@@ -2699,33 +2699,33 @@ lnk_apply_reloc(U64               base_addr,
     reloc_size  = 8;
   } break;
   case LNK_Reloc_REL32: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 0));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 0));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_1: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 1));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 1));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_2: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 2));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 2));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_3: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 3));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 3));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_4: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 4));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 4));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_REL32_5: {
-    U64 reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
-    reloc_value    = safe_cast_s32((S64)(symbol_voff - reloc_voff) - (4 + 5));
+    ulong reloc_voff = lnk_virt_off_from_reloc(sect_id_map, reloc);
+    reloc_value    = safe_cast_s32((long)(symbol_voff - reloc_voff) - (4 + 5));
     reloc_size     = 4;
   } break;
   case LNK_Reloc_SECT_REL: {
@@ -2750,9 +2750,9 @@ lnk_apply_reloc(U64               base_addr,
   
   // read addend
   Assert(reloc->apply_off + reloc_size <= chunk_data.size);
-  U64 raw_addend = 0;
+  ulong raw_addend = 0;
   MemoryCopy(&raw_addend, chunk_data.str + reloc->apply_off, reloc_size);
-  S64 addend = extend_sign64(raw_addend, reloc_size);
+  long addend = extend_sign64(raw_addend, reloc_size);
   
   // commit reloc value
   reloc_value += addend;
@@ -2769,10 +2769,10 @@ THREAD_POOL_TASK_FUNC(lnk_section_reloc_patcher)
   LNK_SymbolTable  *symtab      = task->symtab;
   LNK_SectionTable *st          = task->st;
   LNK_Section     **sect_id_map = task->sect_id_map;
-  U64               base_addr   = task->base_addr;
+  ulong               base_addr   = task->base_addr;
   Rng1U64           range       = task->range_arr[task_id];
   
-  for (U64 sect_idx = range.min; sect_idx < range.max; sect_idx += 1) {
+  for (ulong sect_idx = range.min; sect_idx < range.max; sect_idx += 1) {
     LNK_Section *sect = task->sect_arr[sect_idx];
     
     for (LNK_Reloc *reloc = sect->reloc_list.first; reloc != 0; reloc = reloc->next) {
@@ -2788,7 +2788,7 @@ THREAD_POOL_TASK_FUNC(lnk_section_reloc_patcher)
 }
 
 void
-lnk_patch_relocs_linker(TP_Context *tp, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr)
+lnk_patch_relocs_linker(TP_Context *tp, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, ulong base_addr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2817,7 +2817,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
   LNK_Obj             *obj         = task->obj_arr[task_id];
   LNK_Section        **sect_id_map = task->sect_id_map;
   
-  for (U64 sect_idx = 0; sect_idx < obj->sect_count; sect_idx += 1) {
+  for (ulong sect_idx = 0; sect_idx < obj->sect_count; sect_idx += 1) {
     LNK_RelocList reloc_list = obj->sect_reloc_list_arr[sect_idx];
     for (LNK_Reloc *reloc = reloc_list.first; reloc != 0; reloc = reloc->next) {
       if (lnk_chunk_is_discarded(reloc->chunk)) {
@@ -2831,7 +2831,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 }
 
 void
-lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr)
+lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, ulong base_addr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2852,7 +2852,7 @@ lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symt
 ////////////////////////////////
 
 LNK_SectionTable *
-lnk_init_section_table(LNK_SymbolTable *symtab, U64 section_virt_off, U64 sect_align, U64 file_align)
+lnk_init_section_table(LNK_SymbolTable *symtab, ulong section_virt_off, ulong sect_align, ulong file_align)
 {
   ProfBeginFunction();
   
@@ -2875,7 +2875,7 @@ lnk_init_section_table(LNK_SymbolTable *symtab, U64 section_virt_off, U64 sect_a
   };
   
   LNK_SectionTable *st = lnk_section_table_alloc(section_virt_off, sect_align, file_align);
-  for (U64 i = 0; i < ArrayCount(sect_layout); ++i) {
+  for (ulong i = 0; i < ArrayCount(sect_layout); ++i) {
     LNK_Section *sect = lnk_section_table_push(st, str8_cstring(sect_layout[i].name), sect_layout[i].flags);
     sect->symbol_name = str8_cstring(sect_layout[i].symbol);
     sect->symbol_name = push_str8_copy(sect->arena, sect->symbol_name);
@@ -2931,7 +2931,7 @@ lnk_discard_meta_data_sections(LNK_SectionTable *st)
     ".gljmp",
     ".gehcont",
   };
-  for (U64 meta_idx = 0; meta_idx < ArrayCount(meta_data_sect_arr); meta_idx += 1) {
+  for (ulong meta_idx = 0; meta_idx < ArrayCount(meta_data_sect_arr); meta_idx += 1) {
     String8 name = str8_cstring(meta_data_sect_arr[meta_idx]);
     LNK_Section *sect = lnk_section_table_search(st, name);
     if (sect) {
@@ -2961,12 +2961,12 @@ lnk_log_size_breakdown(LNK_SectionTable *st, LNK_SymbolTable *symtab)
   
   LNK_Section **sect_id_map = lnk_sect_id_map_from_section_table(scratch.arena, st);
   
-  U64 code_size = 0;
-  U64 data_size = 0;
+  ulong code_size = 0;
+  ulong data_size = 0;
   for (LNK_SectionNode *sect_node = st->list.first; sect_node != NULL; sect_node = sect_node->next) {
     LNK_Section *sect = &sect_node->data;
     if (sect->has_layout) {
-      U64 sect_size = lnk_file_size_from_chunk_ref(sect_id_map, sect->root->ref);
+      ulong sect_size = lnk_file_size_from_chunk_ref(sect_id_map, sect->root->ref);
       if (sect->flags & COFF_SectionFlag_CntCode) {
         code_size += sect_size;
       } else if (sect->flags & COFF_SectionFlag_CntInitializedData) {
@@ -2989,12 +2989,12 @@ lnk_log_size_breakdown(LNK_SectionTable *st, LNK_SymbolTable *symtab)
   LNK_Chunk *pe_opt_header_chunk       = pe_opt_header_symbol->u.defined.u.chunk;
   LNK_Chunk *pe_directories_chunk      = pe_directories_symbol->u.defined.u.chunk;
   
-  U64 dos_header_size          = lnk_file_size_from_chunk_ref(sect_id_map, dos_header_chunk->ref);
-  U64 dos_program_size         = lnk_file_size_from_chunk_ref(sect_id_map, dos_program_chunk->ref);
-  U64 COFF_FileHeader_size         = lnk_file_size_from_chunk_ref(sect_id_map, COFF_FileHeader_chunk->ref);
-  U64 coff_section_header_size = lnk_file_size_from_chunk_ref(sect_id_map, coff_section_header_chunk->ref);
-  U64 pe_opt_header_size       = lnk_file_size_from_chunk_ref(sect_id_map, pe_opt_header_chunk->ref);
-  U64 pe_directories_size      = lnk_file_size_from_chunk_ref(sect_id_map, pe_directories_chunk->ref);
+  ulong dos_header_size          = lnk_file_size_from_chunk_ref(sect_id_map, dos_header_chunk->ref);
+  ulong dos_program_size         = lnk_file_size_from_chunk_ref(sect_id_map, dos_program_chunk->ref);
+  ulong COFF_FileHeader_size         = lnk_file_size_from_chunk_ref(sect_id_map, COFF_FileHeader_chunk->ref);
+  ulong coff_section_header_size = lnk_file_size_from_chunk_ref(sect_id_map, coff_section_header_chunk->ref);
+  ulong pe_opt_header_size       = lnk_file_size_from_chunk_ref(sect_id_map, pe_opt_header_chunk->ref);
+  ulong pe_directories_size      = lnk_file_size_from_chunk_ref(sect_id_map, pe_directories_chunk->ref);
   
   String8List output_list; MemoryZeroStruct(&output_list);
   str8_list_pushf(scratch.arena, &output_list, "--- Image Size Breakdown -------------------------------------------------------");
@@ -3019,11 +3019,11 @@ lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTabl
 {
   Temp scratch = scratch_begin(0, 0);
   
-  U32 lib_count = 0;
-  for (U32 i = 0; i < LNK_InputSource_Count; i += 1) {
+  uint lib_count = 0;
+  for (uint i = 0; i < LNK_InputSource_Count; i += 1) {
     lib_count += lib_index[i].count;
   }
-  U32 reloc_count = 0;
+  uint reloc_count = 0;
   for (LNK_SectionNode *sect_node = st->list.first; sect_node != NULL; sect_node = sect_node->next) {
     reloc_count += sect_node->data.reloc_list.count;
   }
@@ -3046,15 +3046,15 @@ lnk_log_timers()
 {
   Temp scratch = scratch_begin(0, 0);
   
-  U64 total_build_time_micro = 0;
-  for (U64 i = 0; i < LNK_Timer_Count; ++i) {
+  ulong total_build_time_micro = 0;
+  for (ulong i = 0; i < LNK_Timer_Count; ++i) {
     total_build_time_micro += g_timers[i].end - g_timers[i].begin;
   }
   
   String8List output_list = {0};
   str8_list_pushf(scratch.arena, &output_list, "------ Link Times --------------------------------------------------------------");
-  for (U64 i = 0; i < LNK_Timer_Count; ++i) {
-    U64 build_time_micro = g_timers[i].end - g_timers[i].begin;
+  for (ulong i = 0; i < LNK_Timer_Count; ++i) {
+    ulong build_time_micro = g_timers[i].end - g_timers[i].begin;
     if (build_time_micro != 0) {
       String8  timer_name = lnk_string_from_timer_type(i);
       DateTime time       = date_time_from_micro_seconds(build_time_micro);
@@ -3100,7 +3100,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
 }
 
 U128
-lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
+lnk_blake3_hash_parallel(TP_Context *tp, ulong chunk_count, String8 data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -3115,7 +3115,7 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
   
   ProfBegin("Combine Hashes");
   blake3_hasher hasher; blake3_hasher_init(&hasher);
-  for (U64 i = 0; i < chunk_count; ++i) {
+  for (ulong i = 0; i < chunk_count; ++i) {
     blake3_hasher_update(&hasher, (byte *)task.hashes[i].u64, sizeof(task.hashes[i].u64));
   }
   U128 result;
@@ -3130,7 +3130,7 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
 LNK_CHUNK_VISITOR_SIG(lnk_max_tls_align)
 {
   if (chunk->type == LNK_Chunk_Leaf) {
-    U64 *max_align = ud;
+    ulong *max_align = ud;
     *max_align = Max(*max_align, chunk->align);
   }
   return 0;
@@ -3171,7 +3171,7 @@ lnk_run(int argc, char **argv)
     enum   State      state;
   };
   struct StateList {
-    U64               count;
+    ulong               count;
     struct StateNode *first;
     struct StateNode *last;
   };
@@ -3238,7 +3238,7 @@ lnk_run(int argc, char **argv)
   LNK_SymbolList       lookup_weak_list                 = {0};
   LNK_SymbolList       unresolved_undef_list            = {0};
   LNK_SymbolList       unresolved_weak_list             = {0};
-  U64                  entry_search_attempts            = 0;
+  ulong                  entry_search_attempts            = 0;
   B32                  build_debug_info                 = lnk_do_debug_info(config);
   B32                  build_linker_obj                 = build_debug_info;
   B32                  build_debug_directory            = build_debug_info;
@@ -3294,9 +3294,9 @@ lnk_run(int argc, char **argv)
             // we don't have a subsystem and entry point name,
             // so we loop over every subsystem and search potential entry
             // points in the symbol table 
-            for (U64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
+            for (ulong subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
               String8Array name_arr  = pe_get_entry_point_names(config->machine, (PE_WindowsSubsystem)subsys_idx, config->file_characteristics);
-              for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+              for (ulong entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                 entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Defined, name_arr.v[entry_idx]);
                 if (entry_point_symbol) {
                   config->subsystem = (PE_WindowsSubsystem)subsys_idx;
@@ -3307,9 +3307,9 @@ lnk_run(int argc, char **argv)
             
             // search for potential entry points in libs
             if (!entry_point_symbol) {
-              for (U64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
+              for (ulong subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
                 String8Array name_arr = pe_get_entry_point_names(config->machine, (PE_WindowsSubsystem)subsys_idx, config->file_characteristics);
-                for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+                for (ulong entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                   entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Lib, name_arr.v[entry_idx]);
                   if (entry_point_symbol) {
                     config->subsystem = (PE_WindowsSubsystem)subsys_idx;
@@ -3324,7 +3324,7 @@ lnk_run(int argc, char **argv)
             // we have subsystem but no entry point name, get potential entry point names
             // and see which is in the symbol table
             String8Array name_arr = pe_get_entry_point_names(config->machine, config->subsystem, config->file_characteristics);
-            for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+            for (ulong entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
               LNK_Symbol *symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Defined, name_arr.v[entry_idx]);
               if (symbol) {
                 if (entry_point_symbol) {
@@ -3340,7 +3340,7 @@ lnk_run(int argc, char **argv)
             
             // search for entry point in libs
             if (!entry_point_symbol) {
-              for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+              for (ulong entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                 entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScopeFlag_Lib, name_arr.v[entry_idx]);
                 if (entry_point_symbol) {
                   break;
@@ -3549,7 +3549,7 @@ lnk_run(int argc, char **argv)
         ProfEnd();
         
         ProfBegin("Disk Read Check");
-        for (U64 input_idx = 0; input_idx < unique_obj_input_list.count; ++input_idx) {
+        for (ulong input_idx = 0; input_idx < unique_obj_input_list.count; ++input_idx) {
           if (input_obj_arr[input_idx]->has_disk_read_failed) {
             lnk_error(LNK_Error_InvalidPath, "unable to find obj \"%S\"", input_obj_arr[input_idx]->path);
           }
@@ -3559,7 +3559,7 @@ lnk_run(int argc, char **argv)
         LNK_ObjNodeArray obj_node_arr = lnk_obj_list_push_parallel(tp, tp_arena, &obj_list, st, config->function_pad_min, unique_obj_input_list.count, input_obj_arr);
         
         ProfBegin("Machine Compat Check");
-        for (U64 obj_idx = 0; obj_idx < obj_node_arr.count; ++obj_idx) {
+        for (ulong obj_idx = 0; obj_idx < obj_node_arr.count; ++obj_idx) {
           LNK_Obj *obj = &obj_node_arr.v[obj_idx].data;
           
           // derive machine from obj
@@ -3581,7 +3581,7 @@ lnk_run(int argc, char **argv)
         ProfEnd();
         
         ProfBegin("Collect Directives");
-        for (U64 i = 0; i < obj_node_arr.count; ++i) {
+        for (ulong i = 0; i < obj_node_arr.count; ++i) {
           LNK_Obj *obj = &obj_node_arr.v[i].data;
 
           str8_list_concat_in_place(&include_symbol_list, &obj->include_symbol_list);
@@ -3629,8 +3629,8 @@ lnk_run(int argc, char **argv)
         MemoryZeroStruct(&input_obj_list);
         
         if (lnk_get_log_status(LNK_Log_InputObj)) {
-          U64 input_size = 0;
-          for (U64 i = 0; i < obj_node_arr.count; ++i) {
+          ulong input_size = 0;
+          for (ulong i = 0; i < obj_node_arr.count; ++i) {
             input_size += obj_node_arr.v[i].data.data.size;
           }
           lnk_log(LNK_Log_InputObj, "[ Obj Input Size %M ]", input_size);
@@ -3642,12 +3642,12 @@ lnk_run(int argc, char **argv)
         ProfBegin("Input Libs");
 
         // input libs from command line only
-        U64 input_source_opl = ArrayCount(input_libs);
+        ulong input_source_opl = ArrayCount(input_libs);
         if (config->no_default_libs) {
           input_source_opl = LNK_InputSource_Default;
         }
         
-        for (U64 input_source = 0; input_source < ArrayCount(input_libs); ++input_source) {
+        for (ulong input_source = 0; input_source < ArrayCount(input_libs); ++input_source) {
           ProfBeginV("Input Source %S", lnk_string_from_input_source(input_source));
 
           Temp             temp                  = temp_begin(scratch.arena);
@@ -3721,8 +3721,8 @@ lnk_run(int argc, char **argv)
           
           if (lnk_get_log_status(LNK_Log_InputLib)) {
             if (lib_arr.count > 0) {
-              U64 input_size = 0;
-              for (U64 i = 0; i < lib_arr.count; ++i) {
+              ulong input_size = 0;
+              for (ulong i = 0; i < lib_arr.count; ++i) {
                 input_size += lib_arr.v[i].data.data.size;
               }
               lnk_log(LNK_Log_InputObj, "[ Lib Input Size %M ]", input_size);
@@ -3980,7 +3980,7 @@ lnk_run(int argc, char **argv)
 
         ProfBegin("Patch Relocs");
 
-        U64 base_addr = lnk_get_base_addr(config);
+        ulong base_addr = lnk_get_base_addr(config);
         lnk_patch_relocs_obj(tp, obj_list, symtab, st, sect_id_map, image_data, base_addr);
         lnk_patch_relocs_linker(tp, symtab, st, sect_id_map, image_data, base_addr);
 
@@ -3994,7 +3994,7 @@ lnk_run(int argc, char **argv)
           switch (config->machine) {
           case COFF_Machine_X86:
           case COFF_Machine_X64: {
-            U64 count = pdata.size / sizeof(PE_IntelPdata);
+            ulong count = pdata.size / sizeof(PE_IntelPdata);
             radsort((PE_IntelPdata *)pdata.str, count, lnk_pdata_is_before_x8664);
           } break;
           case COFF_Machine_Arm64:
@@ -4020,12 +4020,12 @@ lnk_run(int argc, char **argv)
           // loop over .tls sections and extract max alignment
           LNK_Symbol *tls_sect_symbol = lnk_symbol_table_searchf(symtab, LNK_SymbolScopeFlag_Internal, LNK_TLS_SYMBOL_NAME);
           LNK_Chunk  *tls_root_chunk  = tls_sect_symbol->u.defined.u.chunk;
-          U64         tls_align       = 0;
+          ulong         tls_align       = 0;
           lnk_visit_chunks(0, tls_root_chunk, lnk_max_tls_align, &tls_align);
 
           if (IsPow2(tls_align)) {
             // compute TLS header offset
-            U64 tls_header_foff = lnk_file_off_from_symbol(sect_id_map, tls_used_symbol);
+            ulong tls_header_foff = lnk_file_off_from_symbol(sect_id_map, tls_used_symbol);
 
             // patch TLS header
             if (coff_word_size_from_machine(config->machine) == 8) {
@@ -4047,12 +4047,12 @@ lnk_run(int argc, char **argv)
         if (config->flags & LNK_ConfigFlag_WriteImageChecksum) {
           ProfBegin("Image Checksum");
           
-          U32 image_checksum = pe_compute_checksum(image_data.str, image_data.size);
+          uint image_checksum = pe_compute_checksum(image_data.str, image_data.size);
           
           LNK_Symbol   *checksum_symbol = lnk_symbol_table_searchf(symtab, LNK_SymbolScopeFlag_Internal, LNK_PE_CHECKSUM_SYMBOL_NAME); 
-          U64           checksum_foff   = lnk_file_off_from_symbol(sect_id_map, checksum_symbol);
+          ulong           checksum_foff   = lnk_file_off_from_symbol(sect_id_map, checksum_symbol);
           
-          U32 *checksum_ptr = (U32 *)(image_data.str + checksum_foff);
+          uint *checksum_ptr = (uint *)(image_data.str + checksum_foff);
           *checksum_ptr = image_checksum;
           
           ProfEnd();
@@ -4071,7 +4071,7 @@ lnk_run(int argc, char **argv)
             U128 hash = lnk_blake3_hash_parallel(tp, 128, image_data);
             MemoryCopy(&config->guid, hash.u64, sizeof(hash.u64));
             
-            U64   guid_foff = lnk_file_off_from_symbol(sect_id_map, guid_symbol);
+            ulong   guid_foff = lnk_file_off_from_symbol(sect_id_map, guid_symbol);
             Guid *guid_ptr  = (Guid *)(image_data.str + guid_foff);
             MemoryCopy(guid_ptr, hash.u64, sizeof(hash.u64));
             
@@ -4086,15 +4086,15 @@ lnk_run(int argc, char **argv)
         image_write_thread = os_thread_launch(lnk_write_thread, ctx, 0);
 
         if (lnk_get_log_status(LNK_Log_InputObj)) {
-          U64 total_input_size = 0;
+          ulong total_input_size = 0;
           for (LNK_ObjNode *obj_n = obj_list.first; obj_n != 0; obj_n = obj_n->next) {
             total_input_size += obj_n->data.data.size;
           }
           lnk_log(LNK_Log_InputObj, "[Total Obj Input Size %M]", total_input_size);
         }
         if (lnk_get_log_status(LNK_Log_InputLib)) {
-          U64 total_input_size = 0;
-          for (U64 i = 0; i < ArrayCount(lib_index); ++i) {
+          ulong total_input_size = 0;
+          for (ulong i = 0; i < ArrayCount(lib_index); ++i) {
             LNK_LibList list = lib_index[i];
             for (LNK_LibNode *lib_n = list.first; lib_n != 0; lib_n = lib_n->next) {
               total_input_size += lib_n->data.data.size;
@@ -4207,7 +4207,7 @@ lnk_run(int argc, char **argv)
     }
     {
       B32 have_pending_lib_inputs = 0;
-      for (U64 i = 0; i < ArrayCount(input_libs); ++i) {
+      for (ulong i = 0; i < ArrayCount(input_libs); ++i) {
         if (input_libs[i].node_count) {
           have_pending_lib_inputs = 1;
           break;

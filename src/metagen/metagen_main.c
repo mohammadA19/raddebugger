@@ -122,7 +122,7 @@ entry_point(CmdLine *cmdline)
   //
   MG_Map table_grid_map = mg_push_map(mg_arena, 1024);
   MG_Map table_col_map = mg_push_map(mg_arena, 1024);
-  U64 table_count = 0;
+  ulong table_count = 0;
   DeferLoop(printf("gathering tables..."), printf(" %i tables found\n", (int)table_count))
   {
     for(MG_FileParseNode *n = parses.first; n != 0; n = n->next)
@@ -505,7 +505,7 @@ entry_point(CmdLine *cmdline)
   //
   DeferLoop(printf("generating layer code..."), printf("\n"))
   {
-    for(U64 slot_idx = 0; slot_idx < mg_state->slots_count; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < mg_state->slots_count; slot_idx += 1)
     {
       MG_LayerSlot *slot = &mg_state->slots[slot_idx];
       for(MG_LayerNode *n = slot->first; n != 0; n = n->next)

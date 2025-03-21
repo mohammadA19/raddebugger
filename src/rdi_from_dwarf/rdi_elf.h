@@ -17,11 +17,11 @@ srtuct ELF_Ehdr32{
   byte  e_ident[ELF_NIDENT];
   ushort e_type;
   ushort e_machine;
-  U32 e_version;
-  U32 e_entry;
-  U32 e_phoff;
-  U32 e_shoff;
-  U32 e_flags;
+  uint e_version;
+  uint e_entry;
+  uint e_phoff;
+  uint e_shoff;
+  uint e_flags;
   ushort e_ehsize;
   ushort e_phentsize;
   ushort e_phnum;
@@ -34,11 +34,11 @@ srtuct ELF_Ehdr64{
   byte  e_ident[ELF_NIDENT];
   ushort e_type;
   ushort e_machine;
-  U32 e_version;
-  U64 e_entry;
-  U64 e_phoff;
-  U64 e_shoff;
-  U32 e_flags;
+  uint e_version;
+  ulong e_entry;
+  ulong e_phoff;
+  ulong e_shoff;
+  uint e_flags;
   ushort e_ehsize;
   ushort e_phentsize;
   ushort e_phnum;
@@ -208,29 +208,29 @@ enum ELF_ReservedSectionIndex{
 };
 
 srtuct ELF_Shdr32{
-  U32 sh_name;
-  U32 sh_type;
-  U32 sh_flags;
-  U32 sh_addr;
-  U32 sh_offset;
-  U32 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U32 sh_addralign;
-  U32 sh_entsize;
+  uint sh_name;
+  uint sh_type;
+  uint sh_flags;
+  uint sh_addr;
+  uint sh_offset;
+  uint sh_size;
+  uint sh_link;
+  uint sh_info;
+  uint sh_addralign;
+  uint sh_entsize;
 };
 
 srtuct ELF_Shdr64{
-  U32 sh_name;
-  U32 sh_type;
-  U64 sh_flags;
-  U64 sh_addr;
-  U64 sh_offset;
-  U64 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U64 sh_addralign;
-  U64 sh_entsize;
+  uint sh_name;
+  uint sh_type;
+  ulong sh_flags;
+  ulong sh_addr;
+  ulong sh_offset;
+  ulong sh_size;
+  uint sh_link;
+  uint sh_info;
+  ulong sh_addralign;
+  ulong sh_entsize;
 };
 
 //  X(name, code)
@@ -293,21 +293,21 @@ enum ELF_ReservedSymbolTableIndex{
 // symbol table
 
 srtuct ELF_Sym32{
-  U32 st_name;
-  U32 st_value;
-  U32 st_size;
+  uint st_name;
+  uint st_value;
+  uint st_size;
   byte  st_info;
   byte  st_other;
   ushort st_shndx;
 };
 
 srtuct ELF_Sym64{
-  U32 st_name;
+  uint st_name;
   byte  st_info;
   byte  st_other;
   ushort st_shndx;
-  U64 st_value;
-  U64 st_size;
+  ulong st_value;
+  ulong st_size;
 };
 
 #define ELF_SymBindingFromInfo(x) (ELF_SymbolBinding)((x)>>4)
@@ -366,25 +366,25 @@ enum ELF_SymbolVisibility{
 // relocation
 
 srtuct ELF_Rel32{
-  U32 r_offset;
-  U32 r_info;
+  uint r_offset;
+  uint r_info;
 };
 
 srtuct ELF_Rela32{
-  U32 r_offset;
-  U32 r_info;
-  S32 r_addend;
+  uint r_offset;
+  uint r_info;
+  int r_addend;
 };
 
 srtuct ELF_Rel64{
-  U64 r_offset;
-  U64 r_info;
+  ulong r_offset;
+  ulong r_info;
 };
 
 srtuct ELF_Rela64{
-  U64 r_offset;
-  U64 r_info;
-  S64 r_addend;
+  ulong r_offset;
+  ulong r_info;
+  long r_addend;
 };
 
 #define ELF_RelSymIndexFromInfo32(x) ((x)>>8)
@@ -400,25 +400,25 @@ srtuct ELF_Rela64{
 // program header
 
 srtuct ELF_Phdr32{
-  U32 p_type;
-  U32 p_offset;
-  U32 p_vaddr;
-  U32 p_paddr;
-  U32 p_filesz;
-  U32 p_memsz;
-  U32 p_flags;
-  U32 p_align;
+  uint p_type;
+  uint p_offset;
+  uint p_vaddr;
+  uint p_paddr;
+  uint p_filesz;
+  uint p_memsz;
+  uint p_flags;
+  uint p_align;
 };
 
 srtuct ELF_Phdr64{
-  U32 p_type;
-  U32 p_flags;
-  U64 p_offset;
-  U64 p_vaddr;
-  U64 p_paddr;
-  U64 p_filesz;
-  U64 p_memsz;
-  U64 p_align;
+  uint p_type;
+  uint p_flags;
+  ulong p_offset;
+  ulong p_vaddr;
+  ulong p_paddr;
+  ulong p_filesz;
+  ulong p_memsz;
+  ulong p_align;
 };
 
 enum ELF_SegmentType{
@@ -451,12 +451,12 @@ enum ELF_SegmentFlags{
 
 srtuct ELF_SectionArray{
   ELF_Shdr64 *sections;
-  U64 count;
+  ulong count;
 };
 
 srtuct ELF_SegmentArray{
   ELF_Phdr64 *segments;
-  U64 count;
+  ulong count;
 };
 
 srtuct ELF_Parsed{
@@ -466,28 +466,28 @@ srtuct ELF_Parsed{
   
   ELF_Shdr64 *sections;
   String8 *section_names;
-  U64 section_foff;
-  U64 section_count;
+  ulong section_foff;
+  ulong section_count;
   
   ELF_Phdr64 *segments;
-  U64 segment_foff;
-  U64 segment_count;
+  ulong segment_foff;
+  ulong segment_count;
   
-  U64 vbase;
-  U64 entry_vaddr;
-  U64 section_name_table_foff;
-  U64 section_name_table_opl;
+  ulong vbase;
+  ulong entry_vaddr;
+  ulong section_name_table_foff;
+  ulong section_name_table_opl;
   
-  U64 strtab_idx;
-  U64 symtab_idx;
-  U64 dynsym_idx;
+  ulong strtab_idx;
+  ulong symtab_idx;
+  ulong dynsym_idx;
 };
 
 // elf symtab
 
 srtuct ELF_SymArray{
   ELF_Sym64 *symbols;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -499,11 +499,11 @@ static ELF_SectionArray elf_section_array_from_elf(ELF_Parsed *elf);
 static String8Array     elf_section_name_array_from_elf(ELF_Parsed *elf);
 static ELF_SegmentArray elf_segment_array_from_elf(ELF_Parsed *elf);
 
-static String8 elf_section_name_from_name_offset(ELF_Parsed *elf, U64 offset);
-static String8 elf_section_name_from_idx(ELF_Parsed *elf, U32 idx);
-static U32     elf_section_idx_from_name(ELF_Parsed *elf, String8 name);
+static String8 elf_section_name_from_name_offset(ELF_Parsed *elf, ulong offset);
+static String8 elf_section_name_from_idx(ELF_Parsed *elf, uint idx);
+static uint     elf_section_idx_from_name(ELF_Parsed *elf, String8 name);
 
-static String8 elf_section_data_from_idx(ELF_Parsed *elf, U32 idx);
+static String8 elf_section_data_from_idx(ELF_Parsed *elf, uint idx);
 
 static ELF_SymArray elf_sym_array_from_data(Arena *arena, ELF_Class elf_class, String8 data);
 

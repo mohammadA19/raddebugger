@@ -17,7 +17,7 @@ struct OS_GfxInfo
 ////////////////////////////////
 //~ rjf: Window Types
 
-enum OS_WindowFlags : U32
+enum OS_WindowFlags : uint
 {
   OS_WindowFlag_CustomBorder = (1<<0),
 };
@@ -62,7 +62,7 @@ enum OS_EventKind
   OS_EventKind_COUNT
 };
 
-enum OS_Modifiers : U32
+enum OS_Modifiers : uint
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),
@@ -73,15 +73,15 @@ struct OS_Event
 {
   OS_Event *next;
   OS_Event *prev;
-  U64 timestamp_us;
+  ulong timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
   OS_Modifiers modifiers;
   OS_Key key;
   B32 is_repeat;
   B32 right_sided;
-  U32 character;
-  U32 repeat_count;
+  uint character;
+  uint repeat_count;
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
@@ -89,7 +89,7 @@ struct OS_Event
 
 struct OS_EventList
 {
-  U64 count;
+  ulong count;
   OS_Event *first;
   OS_Event *last;
 };
@@ -104,11 +104,11 @@ B32 frame();
 
 String8 os_string_from_event_kind(OS_EventKind kind);
 String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
-U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
+uint os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 void os_eat_event(OS_EventList *events, OS_Event *event);
 B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
 B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
+B32  os_text(OS_EventList *events, OS_Handle window, uint character);
 OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
 void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
 OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);

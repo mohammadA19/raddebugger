@@ -2413,7 +2413,7 @@ rdim_bake_binary_sections(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, R
   RDIM_BinarySectionBakeResult result = {0};
   {
     RDI_BinarySection *dst_base = rdim_push_array(arena, RDI_BinarySection, src->count+1);
-    U64 dst_idx = 1;
+    ulong dst_idx = 1;
     for(RDIM_BinarySectionNode *src_n = src->first; src_n != 0; src_n = src_n->next, dst_idx += 1)
     {
       RDIM_BinarySection *src = &src_n->v;
@@ -3700,7 +3700,7 @@ rdim_file_blobs_from_section_bundle(RDIM_Arena *arena, RDIM_SerializedSectionBun
     RDI_Section *rdi_sections = rdim_push_array(arena, RDI_Section, RDI_SectionKind_COUNT);
     rdim_str8_list_push(arena, &strings, rdim_str8_struct(rdi_header));
     rdim_str8_list_push_align(arena, &strings, 8);
-    U32 data_section_off = (U32)strings.total_size;
+    uint data_section_off = (uint)strings.total_size;
     rdim_str8_list_push(arena, &strings, rdim_str8((RDI_U8 *)rdi_sections, sizeof(RDI_Section)*RDI_SectionKind_COUNT));
     
     // rjf: fill baked header
@@ -3715,7 +3715,7 @@ rdim_file_blobs_from_section_bundle(RDIM_Arena *arena, RDIM_SerializedSectionBun
     for(RDI_SectionKind k = RDI_SectionKind_NULL; k < RDI_SectionKind_COUNT; k += 1)
     {
       RDI_Section *dst = rdi_sections+k;
-      U64 data_section_off = 0;
+      ulong data_section_off = 0;
       if(bundle->sections[k].encoded_size != 0)
       {
         rdim_str8_list_push_align(arena, &strings, 8);

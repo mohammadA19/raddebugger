@@ -46,7 +46,7 @@ UI_PermissionFlags ui_top_permission_flags() { UI_StackTopImpl(ui_state, Permiss
 UI_BoxFlags ui_top_flags() { UI_StackTopImpl(ui_state, Flags, flags) }
 UI_FocusKind ui_top_focus_hot() { UI_StackTopImpl(ui_state, FocusHot, focus_hot) }
 UI_FocusKind ui_top_focus_active() { UI_StackTopImpl(ui_state, FocusActive, focus_active) }
-U32 ui_top_fastpath_codepoint() { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+uint ui_top_fastpath_codepoint() { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 UI_Key ui_top_group_key() { UI_StackTopImpl(ui_state, GroupKey, group_key) }
 F32 ui_top_transparency() { UI_StackTopImpl(ui_state, Transparency, transparency) }
 UI_Palette*     ui_top_palette() { UI_StackTopImpl(ui_state, Palette, palette) }
@@ -75,7 +75,7 @@ UI_PermissionFlags ui_bottom_permission_flags() { UI_StackBottomImpl(ui_state, P
 UI_BoxFlags ui_bottom_flags() { UI_StackBottomImpl(ui_state, Flags, flags) }
 UI_FocusKind ui_bottom_focus_hot() { UI_StackBottomImpl(ui_state, FocusHot, focus_hot) }
 UI_FocusKind ui_bottom_focus_active() { UI_StackBottomImpl(ui_state, FocusActive, focus_active) }
-U32 ui_bottom_fastpath_codepoint() { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+uint ui_bottom_fastpath_codepoint() { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 UI_Key ui_bottom_group_key() { UI_StackBottomImpl(ui_state, GroupKey, group_key) }
 F32 ui_bottom_transparency() { UI_StackBottomImpl(ui_state, Transparency, transparency) }
 UI_Palette*     ui_bottom_palette() { UI_StackBottomImpl(ui_state, Palette, palette) }
@@ -104,7 +104,7 @@ UI_PermissionFlags ui_push_permission_flags(UI_PermissionFlags v) { UI_StackPush
 UI_BoxFlags ui_push_flags(UI_BoxFlags v) { UI_StackPushImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 UI_FocusKind ui_push_focus_hot(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 UI_FocusKind ui_push_focus_active(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-U32 ui_push_fastpath_codepoint(U32 v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+uint ui_push_fastpath_codepoint(uint v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint, v) }
 UI_Key ui_push_group_key(UI_Key v) { UI_StackPushImpl(ui_state, GroupKey, group_key, UI_Key, v) }
 F32 ui_push_transparency(F32 v) { UI_StackPushImpl(ui_state, Transparency, transparency, F32, v) }
 UI_Palette*     ui_push_palette(UI_Palette*     v) { UI_StackPushImpl(ui_state, Palette, palette, UI_Palette*    , v) }
@@ -133,7 +133,7 @@ UI_PermissionFlags ui_pop_permission_flags() { UI_StackPopImpl(ui_state, Permiss
 UI_BoxFlags ui_pop_flags() { UI_StackPopImpl(ui_state, Flags, flags) }
 UI_FocusKind ui_pop_focus_hot() { UI_StackPopImpl(ui_state, FocusHot, focus_hot) }
 UI_FocusKind ui_pop_focus_active() { UI_StackPopImpl(ui_state, FocusActive, focus_active) }
-U32 ui_pop_fastpath_codepoint() { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+uint ui_pop_fastpath_codepoint() { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 UI_Key ui_pop_group_key() { UI_StackPopImpl(ui_state, GroupKey, group_key) }
 F32 ui_pop_transparency() { UI_StackPopImpl(ui_state, Transparency, transparency) }
 UI_Palette*     ui_pop_palette() { UI_StackPopImpl(ui_state, Palette, palette) }
@@ -162,7 +162,7 @@ UI_PermissionFlags ui_set_next_permission_flags(UI_PermissionFlags v) { UI_Stack
 UI_BoxFlags ui_set_next_flags(UI_BoxFlags v) { UI_StackSetNextImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 UI_FocusKind ui_set_next_focus_hot(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 UI_FocusKind ui_set_next_focus_active(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-U32 ui_set_next_fastpath_codepoint(U32 v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+uint ui_set_next_fastpath_codepoint(uint v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint, v) }
 UI_Key ui_set_next_group_key(UI_Key v) { UI_StackSetNextImpl(ui_state, GroupKey, group_key, UI_Key, v) }
 F32 ui_set_next_transparency(F32 v) { UI_StackSetNextImpl(ui_state, Transparency, transparency, F32, v) }
 UI_Palette*     ui_set_next_palette(UI_Palette*     v) { UI_StackSetNextImpl(ui_state, Palette, palette, UI_Palette*    , v) }

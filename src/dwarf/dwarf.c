@@ -95,11 +95,11 @@ dw_attrib_class_from_attrib_kind(DW_Version ver, DW_Ext ext, DW_AttribKind k)
   DW_AttribClass result = DW_AttribClass_Null;
 
   while (ext) {
-    U64 z = 64-clz64(ext);
+    ulong z = 64-clz64(ext);
     if (z == 0) {
       break;
     }
-    U64 flag = 1 << (z-1);
+    ulong flag = 1 << (z-1);
     ext &= ~flag;
 
     switch (flag) {
@@ -206,10 +206,10 @@ dw_dwo_name_string_from_section_kind(DW_SectionKind k)
   return str8_zero();
 }
 
-U64
+ulong
 dw_offset_size_from_mode(DW_Mode mode)
 {
-  U64 result = 0;
+  ulong result = 0;
   switch (mode) {
     case DW_Mode_Null: break;
     case DW_Mode_32Bit: result = 4; break;
@@ -246,9 +246,9 @@ dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, DW_Language lang, B32 rel
   {
     result = DW_AttribClass_Undefined;
 
-    for(U32 i = 0; i < 32; ++i)
+    for(uint i = 0; i < 32; ++i)
     {
-      U32 n = 1u << i;
+      uint n = 1u << i;
       if((attrib_class & n) != 0 && (form_class & n) != 0)
       {
         result = ((DW_AttribClass) n);

@@ -18,7 +18,7 @@ struct UI_PermissionFlagsNode{UI_PermissionFlagsNode *next; UI_PermissionFlags v
 struct UI_FlagsNode{UI_FlagsNode *next; UI_BoxFlags v;};
 struct UI_FocusHotNode{UI_FocusHotNode *next; UI_FocusKind v;};
 struct UI_FocusActiveNode{UI_FocusActiveNode *next; UI_FocusKind v;};
-struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; U32 v;};
+struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; uint v;};
 struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
 struct UI_TransparencyNode{UI_TransparencyNode *next; F32 v;};
 struct UI_PaletteNode{UI_PaletteNode *next; UI_Palette*     v;};
@@ -114,7 +114,7 @@ struct { UI_PermissionFlagsNode *top; UI_PermissionFlags bottom_val; UI_Permissi
 struct { UI_FlagsNode *top; UI_BoxFlags bottom_val; UI_FlagsNode *free; B32 auto_pop; } flags_stack;\
 struct { UI_FocusHotNode *top; UI_FocusKind bottom_val; UI_FocusHotNode *free; B32 auto_pop; } focus_hot_stack;\
 struct { UI_FocusActiveNode *top; UI_FocusKind bottom_val; UI_FocusActiveNode *free; B32 auto_pop; } focus_active_stack;\
-struct { UI_FastpathCodepointNode *top; U32 bottom_val; UI_FastpathCodepointNode *free; B32 auto_pop; } fastpath_codepoint_stack;\
+struct { UI_FastpathCodepointNode *top; uint bottom_val; UI_FastpathCodepointNode *free; B32 auto_pop; } fastpath_codepoint_stack;\
 struct { UI_GroupKeyNode *top; UI_Key bottom_val; UI_GroupKeyNode *free; B32 auto_pop; } group_key_stack;\
 struct { UI_TransparencyNode *top; F32 bottom_val; UI_TransparencyNode *free; B32 auto_pop; } transparency_stack;\
 struct { UI_PaletteNode *top; UI_Palette*     bottom_val; UI_PaletteNode *free; B32 auto_pop; } palette_stack;\
@@ -206,7 +206,7 @@ UI_PermissionFlags         ui_top_permission_flags();
 UI_BoxFlags                ui_top_flags();
 UI_FocusKind               ui_top_focus_hot();
 UI_FocusKind               ui_top_focus_active();
-U32                        ui_top_fastpath_codepoint();
+uint                        ui_top_fastpath_codepoint();
 UI_Key                     ui_top_group_key();
 F32                        ui_top_transparency();
 UI_Palette*                ui_top_palette();
@@ -235,7 +235,7 @@ UI_PermissionFlags         ui_bottom_permission_flags();
 UI_BoxFlags                ui_bottom_flags();
 UI_FocusKind               ui_bottom_focus_hot();
 UI_FocusKind               ui_bottom_focus_active();
-U32                        ui_bottom_fastpath_codepoint();
+uint                        ui_bottom_fastpath_codepoint();
 UI_Key                     ui_bottom_group_key();
 F32                        ui_bottom_transparency();
 UI_Palette*                ui_bottom_palette();
@@ -264,7 +264,7 @@ UI_PermissionFlags         ui_push_permission_flags(UI_PermissionFlags v);
 UI_BoxFlags                ui_push_flags(UI_BoxFlags v);
 UI_FocusKind               ui_push_focus_hot(UI_FocusKind v);
 UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
-U32                        ui_push_fastpath_codepoint(U32 v);
+uint                        ui_push_fastpath_codepoint(uint v);
 UI_Key                     ui_push_group_key(UI_Key v);
 F32                        ui_push_transparency(F32 v);
 UI_Palette*                ui_push_palette(UI_Palette*     v);
@@ -293,7 +293,7 @@ UI_PermissionFlags         ui_pop_permission_flags();
 UI_BoxFlags                ui_pop_flags();
 UI_FocusKind               ui_pop_focus_hot();
 UI_FocusKind               ui_pop_focus_active();
-U32                        ui_pop_fastpath_codepoint();
+uint                        ui_pop_fastpath_codepoint();
 UI_Key                     ui_pop_group_key();
 F32                        ui_pop_transparency();
 UI_Palette*                ui_pop_palette();
@@ -322,7 +322,7 @@ UI_PermissionFlags         ui_set_next_permission_flags(UI_PermissionFlags v);
 UI_BoxFlags                ui_set_next_flags(UI_BoxFlags v);
 UI_FocusKind               ui_set_next_focus_hot(UI_FocusKind v);
 UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
-U32                        ui_set_next_fastpath_codepoint(U32 v);
+uint                        ui_set_next_fastpath_codepoint(uint v);
 UI_Key                     ui_set_next_group_key(UI_Key v);
 F32                        ui_set_next_transparency(F32 v);
 UI_Palette*                ui_set_next_palette(UI_Palette*     v);

@@ -4,11 +4,11 @@
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-U64
+ulong
 cmd_line_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  ulong result = 5381;
+  for(ulong i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -21,8 +21,8 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
   CmdLineOpt **slot = 0;
   if(cmd_line->option_table_size != 0)
   {
-    U64 hash = cmd_line_hash_from_string(string);
-    U64 bucket = hash % cmd_line->option_table_size;
+    ulong hash = cmd_line_hash_from_string(string);
+    ulong bucket = hash % cmd_line->option_table_size;
     slot = &cmd_line->option_table[bucket];
   }
   return slot;
@@ -131,9 +131,9 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
     if(is_option)
     {
       B32 has_arguments = 0;
-      U64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
-      U64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
-      U64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
+      ulong arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
+      ulong arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
+      ulong arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
       String8 arg_portion_this_string = str8_skip(option_name, arg_signifier_position+1);
       if(arg_signifier_position < option_name.size)
       {

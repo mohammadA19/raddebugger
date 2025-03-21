@@ -15,7 +15,7 @@ geo_init()
   geo_shared->slots = push_array(arena, GEO_Slot, geo_shared->slots_count);
   geo_shared->stripes = push_array(arena, GEO_Stripe, geo_shared->stripes_count);
   geo_shared->stripes_free_nodes = push_array(arena, GEO_Node *, geo_shared->stripes_count);
-  for(U64 idx = 0; idx < geo_shared->stripes_count; idx += 1)
+  for(ulong idx = 0; idx < geo_shared->stripes_count; idx += 1)
   {
     geo_shared->stripes[idx].arena = arena_alloc();
     geo_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
@@ -69,8 +69,8 @@ geo_scope_close(GEO_Scope *scope)
   {
     U128 hash = touch->hash;
     next = touch->next;
-    U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
-    U64 stripe_idx = slot_idx%geo_shared->stripes_count;
+    ulong slot_idx = hash.u64[1]%geo_shared->slots_count;
+    ulong stripe_idx = slot_idx%geo_shared->stripes_count;
     GEO_Slot *slot = &geo_shared->slots[slot_idx];
     GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
@@ -118,8 +118,8 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
   R_Handle handle = {0};
   if(!u128_match(hash, u128_zero()))
   {
-    U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
-    U64 stripe_idx = slot_idx%geo_shared->stripes_count;
+    ulong slot_idx = hash.u64[1]%geo_shared->slots_count;
+    ulong stripe_idx = slot_idx%geo_shared->stripes_count;
     GEO_Slot *slot = &geo_shared->slots[slot_idx];
     GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
     B32 found = 0;
@@ -181,7 +181,7 @@ R_Handle
 geo_buffer_from_key(GEO_Scope *scope, U128 key)
 {
   R_Handle handle = {0};
-  for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
+  for(ulong rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
     U128 hash = hs_hash_from_key(key, rewind_idx);
     handle = geo_buffer_from_hash(scope, hash);
@@ -197,13 +197,13 @@ geo_buffer_from_key(GEO_Scope *scope, U128 key)
 //~ rjf: Transfer Threads
 
 B32
-geo_u2x_enqueue_req(U128 hash, U64 endt_us)
+geo_u2x_enqueue_req(U128 hash, ulong endt_us)
 {
   B32 good = 0;
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = geo_shared->u2x_ring_write_pos-geo_shared->u2x_ring_read_pos;
-    U64 available_size = geo_shared->u2x_ring_size-unconsumed_size;
+    ulong unconsumed_size = geo_shared->u2x_ring_write_pos-geo_shared->u2x_ring_read_pos;
+    ulong available_size = geo_shared->u2x_ring_size-unconsumed_size;
     if(available_size >= sizeof(hash))
     {
       good = 1;
@@ -228,7 +228,7 @@ geo_u2x_dequeue_req(U128 *hash_out)
 {
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = geo_shared->u2x_ring_write_pos-geo_shared->u2x_ring_read_pos;
+    ulong unconsumed_size = geo_shared->u2x_ring_write_pos-geo_shared->u2x_ring_read_pos;
     if(unconsumed_size >= sizeof(*hash_out))
     {
       geo_shared->u2x_ring_read_pos += ring_read_struct(geo_shared->u2x_ring_base, geo_shared->u2x_ring_size, geo_shared->u2x_ring_read_pos, hash_out);
@@ -249,8 +249,8 @@ ASYNC_WORK_DEF(geo_xfer_work)
   geo_u2x_dequeue_req(&hash);
   
   //- rjf: unpack hash
-  U64 slot_idx = hash.u64[1]%geo_shared->slots_count;
-  U64 stripe_idx = slot_idx%geo_shared->stripes_count;
+  ulong slot_idx = hash.u64[1]%geo_shared->slots_count;
+  ulong stripe_idx = slot_idx%geo_shared->stripes_count;
   GEO_Slot *slot = &geo_shared->slots[slot_idx];
   GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
   
@@ -311,13 +311,13 @@ geo_evictor_thread__entry_point(void *p)
   ThreadNameF("[geo] evictor thread");
   for(;;)
   {
-    U64 check_time_us = os_now_microseconds();
-    U64 check_time_user_clocks = update_tick_idx();
-    U64 evict_threshold_us = 10*1000000;
-    U64 evict_threshold_user_clocks = 10;
-    for(U64 slot_idx = 0; slot_idx < geo_shared->slots_count; slot_idx += 1)
+    ulong check_time_us = os_now_microseconds();
+    ulong check_time_user_clocks = update_tick_idx();
+    ulong evict_threshold_us = 10*1000000;
+    ulong evict_threshold_user_clocks = 10;
+    for(ulong slot_idx = 0; slot_idx < geo_shared->slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%geo_shared->stripes_count;
+      ulong stripe_idx = slot_idx%geo_shared->stripes_count;
       GEO_Slot *slot = &geo_shared->slots[slot_idx];
       GEO_Stripe *stripe = &geo_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;

@@ -6,12 +6,12 @@
 srtuct U64Node
 {
   struct U64Node *next;
-  U64             data;
+  ulong             data;
 };
 
 srtuct U64List
 {
-  U64      count;
+  ulong      count;
   U64Node *first;
   U64Node *last;
 };
@@ -24,23 +24,23 @@ srtuct VoidNode
 
 ////////////////////////////////
 
-U64Node * u64_list_push(Arena *arena, U64List *list, U64 data);
+U64Node * u64_list_push(Arena *arena, U64List *list, ulong data);
 void      u64_list_concat_in_place(U64List *list, U64List *to_concat);
 U64Array  u64_array_from_list(Arena *arena, U64List *list);
 
 U64Array u64_array_remove_duplicates(Arena *arena, U64Array in);
 
-void u32_array_sort(U64 count, U32 *v);
-void u64_array_sort(U64 count, U64 *v);
+void u32_array_sort(ulong count, uint *v);
+void u64_array_sort(ulong count, ulong *v);
 B32  u32_array_compare(U32Array a, U32Array b);
 
-U64 sum_array_u64(U64 count, U64 *v);
-U64 max_array_u64(U64 count, U64 *v);
-U64 min_array_u64(U64 count, U64 *v);
+ulong sum_array_u64(ulong count, ulong *v);
+ulong max_array_u64(ulong count, ulong *v);
+ulong min_array_u64(ulong count, ulong *v);
 
-void  counts_to_offsets_array_u32(U64 count, U32 *arr);
-void  counts_to_offsets_array_u64(U64 count, U64 *arr);
+void  counts_to_offsets_array_u32(ulong count, uint *arr);
+void  counts_to_offsets_array_u64(ulong count, ulong *arr);
 
-U32 * offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count);
-U64 * offsets_from_counts_array_u64(Arena *arena, U64 *v, U64 count);
+uint * offsets_from_counts_array_u32(Arena *arena, uint *v, ulong count);
+ulong * offsets_from_counts_array_u64(Arena *arena, ulong *v, ulong count);
 

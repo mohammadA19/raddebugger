@@ -35,7 +35,7 @@ async_init(CmdLine *cmdline)
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-U64
+ulong
 async_thread_count()
 {
   return async_shared->work_threads_count;
@@ -65,14 +65,14 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
   B32 need_to_execute_on_this_thread = 0;
   OS_MutexScope(ring->ring_mutex) for(;;)
   {
-    U64 num_available_work_threads = (async_shared->work_threads_count - ins_atomic_u64_eval(&async_shared->work_threads_live_count));
+    ulong num_available_work_threads = (async_shared->work_threads_count - ins_atomic_u64_eval(&async_shared->work_threads_live_count));
     if(num_available_work_threads == 0 && async_work_thread_depth > 0)
     {
       need_to_execute_on_this_thread = 1;
       break;
     }
-    U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
-    U64 available_size = ring->ring_size - unconsumed_size;
+    ulong unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+    ulong available_size = ring->ring_size - unconsumed_size;
     if(available_size >= sizeof(work))
     {
       queued_in_ring_buffer = 1;
@@ -170,7 +170,7 @@ async_pop_work()
       ASYNC_Ring *ring = &async_shared->rings[priority];
       OS_MutexScope(ring->ring_mutex)
       {
-        U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+        ulong unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
         if(unconsumed_size >= sizeof(work))
         {
           ring->ring_read_pos += ring_read_struct(ring->ring_base, ring->ring_size, ring->ring_read_pos, &work);
@@ -209,7 +209,7 @@ async_execute_work(ASYNC_Work work)
   //- rjf: store output
   if(work.output != 0)
   {
-    ins_atomic_u64_eval_assign((U64 *)work.output, (U64)work_out);
+    ins_atomic_u64_eval_assign((ulong *)work.output, (ulong)work_out);
   }
   
   //- rjf: release semaphore
@@ -231,7 +231,7 @@ async_execute_work(ASYNC_Work work)
 void
 async_work_thread__entry_point(void *p)
 {
-  U64 thread_idx = (U64)p;
+  ulong thread_idx = (ulong)p;
   ThreadNameF("[async] work thread #%I64u", thread_idx);
   async_work_thread_idx = thread_idx;
   for(;;)

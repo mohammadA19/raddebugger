@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Scroll List Types
 
-enum UI_ScrollListFlags : U32
+enum UI_ScrollListFlags : uint
 {
   UI_ScrollListFlag_Nav  = (1<<0),
   UI_ScrollListFlag_Snap = (1<<1),
@@ -16,30 +16,30 @@ enum UI_ScrollListFlags : U32
 
 struct UI_ScrollListRowBlock
 {
-  U64 row_count;
-  U64 item_count;
+  ulong row_count;
+  ulong item_count;
 };
 
 struct UI_ScrollListRowBlockChunkNode
 {
   UI_ScrollListRowBlockChunkNode *next;
   UI_ScrollListRowBlock *v;
-  U64 count;
-  U64 cap;
+  ulong count;
+  ulong cap;
 };
 
 struct UI_ScrollListRowBlockChunkList
 {
   UI_ScrollListRowBlockChunkNode *first;
   UI_ScrollListRowBlockChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  ulong chunk_count;
+  ulong total_count;
 };
 
 struct UI_ScrollListRowBlockArray
 {
   UI_ScrollListRowBlock *v;
-  U64 count;
+  ulong count;
 };
 
 struct UI_ScrollListParams
@@ -70,8 +70,8 @@ UI_Signal ui_button(String8 string);
 UI_Signal ui_buttonf(char *fmt, ...);
 UI_Signal ui_hover_label(String8 string);
 UI_Signal ui_hover_labelf(char *fmt, ...);
-UI_Signal ui_line_edit(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, String8 string);
-UI_Signal ui_line_editf(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...);
+UI_Signal ui_line_edit(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, ulong edit_buffer_size, ulong *edit_string_size_out, String8 pre_edit_value, String8 string);
+UI_Signal ui_line_editf(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, ulong edit_buffer_size, ulong *edit_string_size_out, String8 pre_edit_value, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Images
@@ -128,8 +128,8 @@ UI_Signal ui_pane_end();
 ////////////////////////////////
 //~ rjf: Tables
 
-void ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string);
-void ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...);
+void ui_table_begin(ulong column_pct_count, F32 **column_pcts, String8 string);
+void ui_table_beginf(ulong column_pct_count, F32 **column_pcts, char *fmt, ...);
 void ui_table_end();
 UI_Box *  ui_named_table_vector_begin(String8 string);
 UI_Box *  ui_named_table_vector_beginf(char *fmt, ...);
@@ -142,12 +142,12 @@ UI_Box *  ui_table_cell_sized_begin(UI_Size size);
 ////////////////////////////////
 //~ rjf: Scroll Regions
 
-void ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block);
+void ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, ulong cap, UI_ScrollListRowBlock *block);
 UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list);
-U64 ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, U64 item);
-U64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row);
+ulong ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, ulong item);
+ulong ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, ulong row);
 
-UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, S64 view_num_indices);
+UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_range, long view_num_indices);
 void ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt_out, Vec2S64 *cursor_out, Vec2S64 *mark_out, Rng1S64 *visible_row_range_out, UI_ScrollListSignal *signal_out);
 void ui_scroll_list_end();
 

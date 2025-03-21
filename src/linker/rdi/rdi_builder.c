@@ -200,49 +200,49 @@ rdib_line_table_push(Arena *arena, RDIB_LineTable *list)
 ////////////////////////////////
 
 RDIB_LineTableFragment *
-rdib_line_table_fragment_chunk_list_push(Arena *arena, RDIB_LineTableFragmentChunkList *list, U64 cap)
+rdib_line_table_fragment_chunk_list_push(Arena *arena, RDIB_LineTableFragmentChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_LineTableFragment);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Unit *
-rdib_unit_chunk_list_push(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_push(Arena *arena, RDIB_UnitChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Unit);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Scope *
-rdib_scope_chunk_list_push(Arena *arena, RDIB_ScopeChunkList *list, U64 cap)
+rdib_scope_chunk_list_push(Arena *arena, RDIB_ScopeChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Scope);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Procedure *
-rdib_procedure_chunk_list_push(Arena *arena, RDIB_ProcedureChunkList *list, U64 cap)
+rdib_procedure_chunk_list_push(Arena *arena, RDIB_ProcedureChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Procedure);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Variable *
-rdib_variable_chunk_list_push(Arena *arena, RDIB_VariableChunkList *list, U64 cap)
+rdib_variable_chunk_list_push(Arena *arena, RDIB_VariableChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Variable);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_LineTable *
-rdib_line_table_chunk_list_push(Arena *arena, RDIB_LineTableChunkList *list, U64 cap)
+rdib_line_table_chunk_list_push(Arena *arena, RDIB_LineTableChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_LineTable);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Type *
-rdib_type_chunk_list_push(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_push(Arena *arena, RDIB_TypeChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Type);
   RDIB_Type *type = SLLChunkListLastItem(list);
@@ -251,104 +251,104 @@ rdib_type_chunk_list_push(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
 }
 
 RDIB_UDTMember *
-rdib_udt_member_chunk_list_push(Arena *arena, RDIB_UDTMemberChunkList *list, U64 cap)
+rdib_udt_member_chunk_list_push(Arena *arena, RDIB_UDTMemberChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_UDTMember);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_SourceFile *
-rdib_source_file_chunk_list_push(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_chunk_list_push(Arena *arena, RDIB_SourceFileChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_SourceFile);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_InlineSite *
-rdib_inline_site_chunk_list_push(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap)
+rdib_inline_site_chunk_list_push(Arena *arena, RDIB_InlineSiteChunkList *list, ulong cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_InlineSite);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Unit *
-rdib_unit_chunk_list_push_zero(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_push_zero(Arena *arena, RDIB_UnitChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Unit);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Scope *
-rdib_scope_chunk_list_push_zero(Arena *arena, RDIB_ScopeChunkList *list, U64 cap)
+rdib_scope_chunk_list_push_zero(Arena *arena, RDIB_ScopeChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Scope);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Procedure *
-rdib_procedure_chunk_list_push_zero(Arena *arena, RDIB_ProcedureChunkList *list, U64 cap)
+rdib_procedure_chunk_list_push_zero(Arena *arena, RDIB_ProcedureChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Procedure);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Variable *
-rdib_variable_chunk_list_push_zero(Arena *arena, RDIB_VariableChunkList *list, U64 cap)
+rdib_variable_chunk_list_push_zero(Arena *arena, RDIB_VariableChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Variable);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_LineTable *
-rdib_line_table_chunk_list_push_zero(Arena *arena, RDIB_LineTableChunkList *list, U64 cap)
+rdib_line_table_chunk_list_push_zero(Arena *arena, RDIB_LineTableChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_LineTable);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_Type *
-rdib_type_chunk_list_push_zero(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_push_zero(Arena *arena, RDIB_TypeChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Type);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_UDTMember *
-rdib_udt_member_chunk_list_push_zero(Arena *arena, RDIB_UDTMemberChunkList *list, U64 cap)
+rdib_udt_member_chunk_list_push_zero(Arena *arena, RDIB_UDTMemberChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_UDTMember);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_SourceFile *
-rdib_source_file_chunk_list_push_zero(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_chunk_list_push_zero(Arena *arena, RDIB_SourceFileChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_SourceFile);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_InlineSite *
-rdib_inline_site_chunk_list_push_zero(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap)
+rdib_inline_site_chunk_list_push_zero(Arena *arena, RDIB_InlineSiteChunkList *list, ulong cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_InlineSite);
   return SLLChunkListLastItem(list);
 }
 
 RDIB_UnitChunk *
-rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 count_per_chunk, U64 item_count)
+rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, ulong count_per_chunk, ulong item_count)
 {
-  U64             chunk_count = CeilIntegerDiv(item_count, count_per_chunk);
+  ulong             chunk_count = CeilIntegerDiv(item_count, count_per_chunk);
   RDIB_UnitChunk *chunks      = push_array(arena, RDIB_UnitChunk, chunk_count);
-  U64             base        = list->last ? list->last->base : 0;
+  ulong             base        = list->last ? list->last->base : 0;
 
-  for (U64 i = 0; i+1 < chunk_count; i += 1, item_count -= count_per_chunk, base += count_per_chunk) {
+  for (ulong i = 0; i+1 < chunk_count; i += 1, item_count -= count_per_chunk, base += count_per_chunk) {
     chunks[i].base  = base;
     chunks[i].count = count_per_chunk;
     chunks[i].cap   = count_per_chunk;
     chunks[i].v     = push_array(arena, RDIB_Unit, count_per_chunk);
     SLLQueuePush(list->first, list->last, &chunks[i]);
 
-    for (U64 k = 0; k < count_per_chunk; ++k) {
+    for (ulong k = 0; k < count_per_chunk; ++k) {
       chunks[i].v[k].chunk = &chunks[i];
     }
   }
@@ -357,7 +357,7 @@ rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 coun
   chunks[chunk_count-1].count = item_count;
   chunks[chunk_count-1].cap   = item_count;
   chunks[chunk_count-1].v     = push_array(arena, RDIB_Unit, item_count);
-  for (U64 k = 0; k < item_count; ++k) {
+  for (ulong k = 0; k < item_count; ++k) {
     chunks[chunk_count-1].v[k].chunk = &chunks[chunk_count-1];
   }
 
@@ -368,7 +368,7 @@ rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 coun
 }
 
 void
-rdib_unit_chunk_list_reserve(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_reserve(Arena *arena, RDIB_UnitChunkList *list, ulong cap)
 {
   // fill out node
   RDIB_UnitChunk *chunk = push_array(arena, RDIB_UnitChunk, 1);
@@ -381,7 +381,7 @@ rdib_unit_chunk_list_reserve(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
 }
 
 void
-rdib_type_chunk_list_reserve(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_reserve(Arena *arena, RDIB_TypeChunkList *list, ulong cap)
 {
   // fill out node
   RDIB_TypeChunk *chunk = push_array(arena, RDIB_TypeChunk, 1);
@@ -394,7 +394,7 @@ rdib_type_chunk_list_reserve(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
 }
 
 void
-rdib_source_file_list_reserve(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_list_reserve(Arena *arena, RDIB_SourceFileChunkList *list, ulong cap)
 {
   // fill out node
   RDIB_SourceFileChunk *chunk = push_array(arena, RDIB_SourceFileChunk, 1);
@@ -461,43 +461,43 @@ rdib_source_file_chunk_list_concat_in_place(RDIB_SourceFileChunkList *list, RDIB
 }
 
 void
-rdib_line_table_chunk_list_concat_in_place_many(RDIB_LineTableChunkList *list, RDIB_LineTableChunkList *to_concat, U64 count)
+rdib_line_table_chunk_list_concat_in_place_many(RDIB_LineTableChunkList *list, RDIB_LineTableChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_LineTableChunk, count);
 }
 
 void
-rdib_scope_chunk_list_concat_in_place_many(RDIB_ScopeChunkList *list, RDIB_ScopeChunkList *to_concat, U64 count)
+rdib_scope_chunk_list_concat_in_place_many(RDIB_ScopeChunkList *list, RDIB_ScopeChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_ScopeChunk, count);
 }
 
 void
-rdib_variable_chunk_list_concat_in_place_many(RDIB_VariableChunkList *list, RDIB_VariableChunkList *to_concat, U64 count)
+rdib_variable_chunk_list_concat_in_place_many(RDIB_VariableChunkList *list, RDIB_VariableChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_VariableChunk, count);
 }
 
 void
-rdib_procedure_chunk_list_concat_in_place_many(RDIB_ProcedureChunkList *list, RDIB_ProcedureChunkList *to_concat, U64 count)
+rdib_procedure_chunk_list_concat_in_place_many(RDIB_ProcedureChunkList *list, RDIB_ProcedureChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_ProcedureChunk, count);
 }
 
 void
-rdib_inline_site_chunk_list_concat_in_place_many(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat, U64 count)
+rdib_inline_site_chunk_list_concat_in_place_many(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_InlineSiteChunk, count);
 }
 
 void
-rdib_type_chunk_list_concat_in_place_many(RDIB_TypeChunkList *list, RDIB_TypeChunkList *to_concat, U64 count)
+rdib_type_chunk_list_concat_in_place_many(RDIB_TypeChunkList *list, RDIB_TypeChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_TypeChunk, count);
 }
 
 void
-rdib_udt_member_chunk_list_concat_in_place_many(RDIB_UDTMemberChunkList *list, RDIB_UDTMemberChunkList *to_concat, U64 count)
+rdib_udt_member_chunk_list_concat_in_place_many(RDIB_UDTMemberChunkList *list, RDIB_UDTMemberChunkList *to_concat, ulong count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_UDTMemberChunk, count);
 }
@@ -507,7 +507,7 @@ rdib_array_from_unit_chunk_list(Arena *arena, RDIB_UnitChunkList list)
 {
   ProfBeginFunction();
   RDIB_UnitChunk **result = push_array_no_zero(arena, RDIB_UnitChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_UnitChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -520,7 +520,7 @@ rdib_array_from_scope_chunk_list(Arena *arena, RDIB_ScopeChunkList list)
 {
   ProfBeginFunction();
   RDIB_ScopeChunk **result = push_array_no_zero(arena, RDIB_ScopeChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_ScopeChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -533,7 +533,7 @@ rdib_array_from_variable_chunk_list(Arena *arena, RDIB_VariableChunkList list)
 {
   ProfBeginFunction();
   RDIB_VariableChunk **result = push_array_no_zero(arena, RDIB_VariableChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_VariableChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -546,7 +546,7 @@ rdib_array_from_line_table_chunk_list(Arena *arena, RDIB_LineTableChunkList list
 {
   ProfBeginFunction();
   RDIB_LineTableChunk **result = push_array_no_zero(arena, RDIB_LineTableChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_LineTableChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -559,7 +559,7 @@ rdib_array_from_procedure_chunk_list(Arena *arena, RDIB_ProcedureChunkList list)
 {
   ProfBeginFunction();
   RDIB_ProcedureChunk **result = push_array_no_zero(arena, RDIB_ProcedureChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_ProcedureChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -572,7 +572,7 @@ rdib_array_from_inline_site_chunk_list(Arena *arena, RDIB_InlineSiteChunkList li
 {
   ProfBeginFunction();
   RDIB_InlineSiteChunk **result = push_array_no_zero(arena, RDIB_InlineSiteChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_InlineSiteChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -585,7 +585,7 @@ rdib_array_from_udt_member_chunk_list(Arena *arena, RDIB_UDTMemberChunkList list
 {
   ProfBeginFunction();
   RDIB_UDTMemberChunk **result = push_array_no_zero(arena, RDIB_UDTMemberChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_UDTMemberChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -598,7 +598,7 @@ rdib_array_from_type_chunk_list(Arena *arena, RDIB_TypeChunkList list)
 {
   ProfBeginFunction();
   RDIB_TypeChunk **result = push_array_no_zero(arena, RDIB_TypeChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_TypeChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
   }
@@ -611,7 +611,7 @@ rdib_array_from_source_file_chunk_list(Arena *arena, RDIB_SourceFileChunkList li
 {
   ProfBeginFunction();
   RDIB_SourceFileChunk **result = push_array_no_zero(arena, RDIB_SourceFileChunk *, list.count);
-  U64 chunk_idx = 0;
+  ulong chunk_idx = 0;
   for (RDIB_SourceFileChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     result[chunk_idx++] = chunk;
   }
@@ -619,100 +619,100 @@ rdib_array_from_source_file_chunk_list(Arena *arena, RDIB_SourceFileChunkList li
   return result;
 }
 
-U64
+ulong
 rdib_unit_chunk_list_total_count(RDIB_UnitChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_UnitChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_scope_chunk_list_total_count(RDIB_ScopeChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_ScopeChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_variable_chunk_list_total_count(RDIB_VariableChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_VariableChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_line_table_chunk_list_total_count(RDIB_LineTableChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_LineTableChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_procedure_chunk_list_total_count(RDIB_ProcedureChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_ProcedureChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_inline_site_chunk_list_total_count(RDIB_InlineSiteChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_InlineSiteChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_udt_member_chunk_list_total_count(RDIB_UDTMemberChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_UDTMemberChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_type_chunk_list_total_count(RDIB_TypeChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_TypeChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U64
+ulong
 rdib_source_file_chunk_list_total_count(RDIB_SourceFileChunkList list)
 {
-  U64 total_count = 0;
+  ulong total_count = 0;
   for (RDIB_SourceFileChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     total_count += chunk->count;
   }
   return total_count;
 }
 
-U32
+uint
 rdib_idx_from_unit(RDIB_Unit *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -721,10 +721,10 @@ rdib_idx_from_unit(RDIB_Unit *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_scope(RDIB_Scope *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -733,10 +733,10 @@ rdib_idx_from_scope(RDIB_Scope *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_inline_site(RDIB_InlineSite *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -745,10 +745,10 @@ rdib_idx_from_inline_site(RDIB_InlineSite *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_variable(RDIB_Variable *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -757,10 +757,10 @@ rdib_idx_from_variable(RDIB_Variable *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_procedure(RDIB_Procedure *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -769,10 +769,10 @@ rdib_idx_from_procedure(RDIB_Procedure *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_source_file(RDIB_SourceFile *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -781,10 +781,10 @@ rdib_idx_from_source_file(RDIB_SourceFile *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_line_table(RDIB_LineTable *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
@@ -793,20 +793,20 @@ rdib_idx_from_line_table(RDIB_LineTable *n)
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_type(RDIB_Type *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n) {
     idx = safe_cast_u32(n->final_idx);
   }
   return idx;
 }
 
-U32
+uint
 rdib_idx_from_udt_type(RDIB_Type *n)
 {
-  U32 idx = 0;
+  uint idx = 0;
   if (n && RDI_IsUserDefinedType(n->kind)) {
     idx = safe_cast_u32(n->udt.udt_idx);
   }
@@ -954,11 +954,11 @@ rdib_location_list_push(Arena *arena, RDIB_LocationList *list, RDIB_Location v)
 }
 
 RDIB_LocationNode *
-rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges)
+rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, uint reg_byte_size, uint reg_byte_pos, long offset, B32 is_reference, Rng1U64List ranges)
 {
   RDIB_Location loc;
 
-  if (0 <= offset && offset <= (S64)max_U16) {
+  if (0 <= offset && offset <= (long)max_U16) {
     if (is_reference) {
       loc = rdib_make_location_addr_addr_reg_plus_u16(ranges, reg_code, (ushort)offset);
     } else {
@@ -969,13 +969,13 @@ rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch 
   // long offset, emit byte code
   else {
     RDIB_EvalBytecode bytecode = {0};
-    U32 reg_read_param = RDI_EncodeRegReadParam(reg_code, reg_byte_size, reg_byte_pos);
+    uint reg_read_param = RDI_EncodeRegReadParam(reg_code, reg_byte_size, reg_byte_pos);
     rdib_bytecode_push_op(arena, &bytecode, RDI_EvalOp_RegRead, reg_read_param);
     rdib_bytecode_push_sconst(arena, &bytecode, offset);
     rdib_bytecode_push_op(arena, &bytecode, RDI_EvalOp_Add, 0);
 
     if (is_reference) {
-      U64 addr_size = rdi_addr_size_from_arch(arch);
+      ulong addr_size = rdi_addr_size_from_arch(arch);
       rdib_bytecode_push_op(arena, &bytecode, RDI_EvalOp_MemRead, addr_size);
     }
 
@@ -1004,7 +1004,7 @@ rdib_variable_list_push(Arena *arena, RDIB_VariableList *list)
 ////////////////////////////////
 // Types
 
-U64
+ulong
 rdib_size_from_type(RDIB_Type *type)
 {
   if (type) {
@@ -1099,7 +1099,7 @@ void
 rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list)
 {
   for (RDIB_TypeChunk *chunk = list->first; chunk != 0; chunk = chunk->next) {
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Type *type = &chunk->v[i];
       if (type->kind == RDI_TypeKind_Struct || type->kind == RDI_TypeKind_Class ||
           type->kind == RDI_TypeKind_IncompleteStruct || type->kind == RDI_TypeKind_IncompleteClass) {
@@ -1132,7 +1132,7 @@ rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list)
       } else if (type->kind == RDI_TypeKind_Bitfield) {
         type->bitfield.value_type = *(RDIB_Type **)type->bitfield.value_type;
       } else if (type->kind == RDI_TypeKindExt_Params) {
-        for (U64 i = 0; i < type->params.count; ++i) {
+        for (ulong i = 0; i < type->params.count; ++i) {
           type->params.types[i] = *(RDIB_Type **)type->params.types[i];
         }
       } else if (type->kind == RDI_TypeKindExt_Members) {
@@ -1173,10 +1173,10 @@ rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list)
   }
 }
 
-U64
+ulong
 rdib_sizeof_type(RDIB_Type *type)
 {
-  U64 size = 0;
+  ulong size = 0;
   if (RDI_TypeKind_FirstBuiltIn <= type->kind && type->kind < RDI_TypeKind_LastBuiltIn) {
     size = type->builtin.size;
   } else if (type->kind == RDI_TypeKind_Modifier) {
@@ -1200,10 +1200,10 @@ rdib_sizeof_type(RDIB_Type *type)
   return size;
 }
 
-U64
+ulong
 rdib_count_members_deep(RDIB_Type *type)
 {
-  U64 member_count = 0;
+  ulong member_count = 0;
   for (RDIB_UDTMember *member = type->members.list.first; member != 0; member = member->next) {
     if (member->kind == RDI_MemberKindExt_MemberListPointer) {
       member_count += rdib_count_members_deep(member->member_list_pointer);
@@ -1222,7 +1222,7 @@ THREAD_POOL_TASK_FUNC(rdib_type_stats_task)
   RDIB_TypeStatsTask *task  = raw_task;
   RDIB_TypeChunk     *chunk = task->chunks[task_id];
 
-  for (U64 itype = 0; itype < chunk->count; ++itype) {
+  for (ulong itype = 0; itype < chunk->count; ++itype) {
     RDIB_Type *type = chunk->v + itype;
 
     if (type->kind == RDI_TypeKind_Class || type->kind == RDI_TypeKind_Struct || type->kind == RDI_TypeKind_Union || type->kind == RDI_TypeKind_Enum) {
@@ -1239,9 +1239,9 @@ THREAD_POOL_TASK_FUNC(rdib_concat_members_task)
   ProfBeginFunction();
   RDIB_MembersTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_TypeChunk *chunk = task->type_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Type          *type = &chunk->v[i];
       RDIB_UDTMemberList  acc  = {0};
 
@@ -1280,9 +1280,9 @@ THREAD_POOL_TASK_FUNC(rdib_count_head_members_task)
 {
   ProfBeginFunction();
   RDIB_MembersTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_TypeChunk *chunk = task->type_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Type *type = &chunk->v[i];
       if (type->kind == RDI_TypeKindExt_Members) {
         task->counts[task_id] += type->members.list.count;
@@ -1297,10 +1297,10 @@ THREAD_POOL_TASK_FUNC(rdib_assign_head_member_indices_task)
 {
   ProfBeginFunction();
   RDIB_MembersTask *task = raw_task;
-  U64 cursor = task->offsets[task_id];
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  ulong cursor = task->offsets[task_id];
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_TypeChunk *chunk = task->type_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Type *type = &chunk->v[i];
       if (type->kind == RDI_TypeKindExt_Members) {
         type->members.first_member_idx = cursor;
@@ -1317,13 +1317,13 @@ THREAD_POOL_TASK_FUNC(rdib_fill_udt_members_task)
   ProfBeginFunction();
   RDIB_MembersTask *task  = raw_task;
   RDIB_TypeChunk   *chunk = task->type_chunks[task_id];
-  for (U64 i = 0; i < chunk->count; ++i) {
+  for (ulong i = 0; i < chunk->count; ++i) {
     RDIB_Type *type = chunk->v + i;
     Assert(type->kind == RDI_TypeKindExt_Members);
 
-    U64 member_idx = 0;
+    ulong member_idx = 0;
     for (RDIB_UDTMember *src = type->members.list.first; src != 0; src = src->next, ++member_idx) {
-      U64        idx  = type->members.first_member_idx + member_idx;
+      ulong        idx  = type->members.first_member_idx + member_idx;
       RDI_Member *dst = &task->udt_members_rdi[idx];
 
       switch (src->kind) {
@@ -1382,14 +1382,14 @@ THREAD_POOL_TASK_FUNC(rdib_fill_enum_members_task)
   ProfBeginFunction();
   RDIB_MembersTask *task = raw_task;
   RDIB_TypeChunk   *chunk = task->type_chunks[task_id];
-  for (U64 i = 0; i < chunk->count; ++i) {
+  for (ulong i = 0; i < chunk->count; ++i) {
     RDIB_Type *type = chunk->v + i;
 
     if (type->kind != RDI_TypeKindExt_Members) continue;
 
-    U64 member_idx = 0;
+    ulong member_idx = 0;
     for (RDIB_UDTMember *src = type->members.list.first; src != 0; src = src->next, ++member_idx) {
-      U64            idx   = type->members.first_member_idx + member_idx;
+      ulong            idx   = type->members.first_member_idx + member_idx;
       RDI_EnumMember *dst  = &task->enum_members_rdi[idx];
       dst->name_string_idx = rdib_idx_from_string_map(task->string_map, src->enumerate.name);
       dst->val             = src->enumerate.value;
@@ -1404,12 +1404,12 @@ THREAD_POOL_TASK_FUNC(rdib_fill_udts_task)
   ProfBeginFunction();
   RDIB_UserDefinesTask *task = raw_task;
 
-  U64             ichunk     = task_id;
+  ulong             ichunk     = task_id;
   RDIB_TypeChunk *chunk      = task->type_chunks[ichunk];
-  U64             udt_cursor = task->udt_base_idx[ichunk];
-  U64             udt_cap    = task->type_stats.udt_counts[ichunk];
+  ulong             udt_cursor = task->udt_base_idx[ichunk];
+  ulong             udt_cap    = task->type_stats.udt_counts[ichunk];
 
-  for (U64 i = 0; i < chunk->count; ++i) {
+  for (ulong i = 0; i < chunk->count; ++i) {
     RDIB_Type *type = &chunk->v[i];
 
     if (RDI_IsCompleteUserDefinedTypeKind(type->kind)) {
@@ -1444,13 +1444,13 @@ THREAD_POOL_TASK_FUNC(rdib_type_nodes_task)
 {
   Temp scratch = scratch_begin(0, 0);
 
-  U64                 ichunk = task_id;
+  ulong                 ichunk = task_id;
   RDIB_TypeNodesTask *task   = raw_task;
   RDIB_TypeChunk     *chunk  = task->type_chunks[ichunk];
 
-  for (U64 itype = 0; itype < chunk->count; ++itype) {
+  for (ulong itype = 0; itype < chunk->count; ++itype) {
     RDIB_Type *src = &chunk->v[itype];
-    U64 dst_idx = rdib_idx_from_type(src);
+    ulong dst_idx = rdib_idx_from_type(src);
     RDI_TypeNode *dst = &task->type_nodes[dst_idx];
 
     if (src->kind == RDI_TypeKind_NULL) {
@@ -1505,9 +1505,9 @@ THREAD_POOL_TASK_FUNC(rdib_type_nodes_task)
       dst->constructed.count               = param_idx_run->indices.count;
       dst->constructed.param_idx_run_first = param_idx_run->index_in_output_array;
     } else if (src->kind == RDI_TypeKind_Array) {
-      U64 entry_size = rdib_size_from_type(src->array.entry_type);
-      U64 array_size = src->array.size;
-      U64 array_count = entry_size > 0 ? array_size / entry_size : 0;
+      ulong entry_size = rdib_size_from_type(src->array.entry_type);
+      ulong array_size = src->array.size;
+      ulong array_count = entry_size > 0 ? array_size / entry_size : 0;
 
       dst->kind                        = src->kind;
       dst->flags                       = 0;
@@ -1571,12 +1571,12 @@ rdib_data_sections_from_types(TP_Context            *tp,
                               RDI_Arch               arch,
                               RDIB_StringMap        *string_map,
                               RDIB_IndexRunMap      *idx_run_map,
-                              U64                    udt_member_chunk_count,
+                              ulong                    udt_member_chunk_count,
                               RDIB_TypeChunk       **udt_member_type_chunks,
-                              U64                    enum_member_chunk_count,
+                              ulong                    enum_member_chunk_count,
                               RDIB_TypeChunk       **enum_member_type_chunks,
-                              U64                    total_type_node_count,
-                              U64                    type_chunk_count,
+                              ulong                    total_type_node_count,
+                              ulong                    type_chunk_count,
                               RDIB_TypeChunk       **type_chunks,
                               RDIB_TypeStats         type_stats)
 {
@@ -1584,7 +1584,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
   Temp scratch = scratch_begin(&arena, 1);
 
   ProfBegin("UDT Members");
-  U64         udt_member_count_rdi;
+  ulong         udt_member_count_rdi;
   RDI_Member *udt_members_rdi;
   {
     RDIB_MembersTask task = {0};
@@ -1596,7 +1596,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
     ProfEnd();
 
     ProfBegin("Count");
-    task.counts = push_array(scratch.arena, U64, tp->worker_count);
+    task.counts = push_array(scratch.arena, ulong, tp->worker_count);
     tp_for_parallel(tp, 0, tp->worker_count, rdib_count_head_members_task, &task);
     ProfEnd();
 
@@ -1617,7 +1617,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
   ProfEnd();
 
   ProfBegin("Enum Members");
-  U64             enum_member_count_rdi;
+  ulong             enum_member_count_rdi;
   RDI_EnumMember *enum_members_rdi;
   {
     RDIB_MembersTask task = {0};
@@ -1629,7 +1629,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
     ProfEnd();
 
     ProfBegin("Count");
-    task.counts = push_array(scratch.arena, U64, tp->worker_count);
+    task.counts = push_array(scratch.arena, ulong, tp->worker_count);
     tp_for_parallel(tp, 0, tp->worker_count, rdib_count_head_members_task, &task);
     ProfEnd();
 
@@ -1650,7 +1650,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
   ProfEnd();
 
   ProfBegin("Sum type stats");
-  U64 total_udt_count = sum_array_u64(type_chunk_count, type_stats.udt_counts);
+  ulong total_udt_count = sum_array_u64(type_chunk_count, type_stats.udt_counts);
   ProfEnd();
 
   ProfBegin("Up front pushes");
@@ -1700,7 +1700,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
 ////////////////////////////////
 
 RDIB_PathTree *
-rdib_path_tree_init(Arena *arena, U64 list_count)
+rdib_path_tree_init(Arena *arena, ulong list_count)
 {
   RDIB_PathTree *tree = push_array(arena, RDIB_PathTree, 1);
   tree->root          = push_array(arena, RDIB_PathTreeNode, 1);
@@ -1744,7 +1744,7 @@ rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, String8 path, RDIB_Sour
       }
 
       // HACK: setup node list per thread for serialization step
-      U64 list_idx = tree->next_list_idx % tree->list_count;
+      ulong list_idx = tree->next_list_idx % tree->list_count;
       SLLQueuePush_N(tree->node_lists[list_idx].first, tree->node_lists[list_idx].last, sub_child, next_order);
       ++tree->next_list_idx;
     }
@@ -1756,7 +1756,7 @@ rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, String8 path, RDIB_Sour
   scratch_end(scratch);
 }
 
-U32
+uint
 rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1792,7 +1792,7 @@ rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
   }
 
   // did we find source file?
-  U64 idx = 0;
+  ulong idx = 0;
   if (curr_sub_path != 0 && curr_sub_path->src_file != 0) {
     idx = curr_sub_path->node_idx;
   } else {
@@ -1806,7 +1806,7 @@ rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
 
 ////////////////////////////////
 
-U64
+ulong
 rdib_string_map_hash(String8 string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
@@ -1814,20 +1814,20 @@ rdib_string_map_hash(String8 string)
 }
 
 RDIB_StringMap *
-rdib_init_string_map(Arena *arena, U64 cap)
+rdib_init_string_map(Arena *arena, ulong cap)
 {
   RDIB_StringMap *string_map = push_array(arena, RDIB_StringMap, 1);
-  string_map->cap            = (U64)((F64)cap * 1.3);
+  string_map->cap            = (ulong)((F64)cap * 1.3);
   string_map->buckets        = push_array(arena, RDIB_StringMapBucket *, string_map->cap);
   return string_map;
 }
 
-U32
+uint
 rdib_idx_from_string_map(RDIB_StringMap *string_map, String8 string)
 {
-  U64 hash     = rdib_string_map_hash(string);
-  U64 best_idx = hash % string_map->cap;
-  U64 idx      = best_idx;
+  ulong hash     = rdib_string_map_hash(string);
+  ulong best_idx = hash % string_map->cap;
+  ulong idx      = best_idx;
 
   do {
     RDIB_StringMapBucket *bucket = string_map->buckets[idx];
@@ -1848,13 +1848,13 @@ rdib_idx_from_string_map(RDIB_StringMap *string_map, String8 string)
 }
 
 RDIB_StringMapBucket *
-rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 hash, RDIB_StringMapBucket *new_bucket, RDIB_StringMapUpdateFunc *update_func)
+rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, ulong cap, ulong hash, RDIB_StringMapBucket *new_bucket, RDIB_StringMapUpdateFunc *update_func)
 {
   RDIB_StringMapBucket *result                         = 0;
   B32                   was_bucket_inserted_or_updated = 0;
 
-  U64 best_idx = hash % cap;
-  U64 idx      = best_idx;
+  ulong best_idx = hash % cap;
+  ulong idx      = best_idx;
 
   do {
     retry:;
@@ -1922,7 +1922,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
 }
 
 void
-rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, void *value)
+rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, ulong task_id, String8 string, void *value)
 {
   // do we have a free bucket?
   RDIB_StringMapBucket **bucket = &task->free_buckets[task_id];
@@ -1937,7 +1937,7 @@ rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, U64 tas
   (*bucket)->sorter.lo  = safe_cast_u32(task->element_indices[task_id]);
 
   // insert bucket into string map
-  U64                   hash             = rdib_string_map_hash(string);
+  ulong                   hash             = rdib_string_map_hash(string);
   RDIB_StringMapBucket *insert_or_update = rdib_string_map_insert_or_update(task->string_map->buckets, task->string_map->cap, hash, *bucket, task->string_map_update_func);
 
   // advance element index
@@ -1954,7 +1954,7 @@ THREAD_POOL_TASK_FUNC(rdib_count_extant_buckets_string_map_task)
 {
   ProfBeginFunction();
   RDIB_GetExtantBucketsStringMapTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     if (task->string_map->buckets[bucket_idx] != 0) {
       task->counts[task_id] += 1;
     }
@@ -1967,7 +1967,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_string_map_task)
 {
   ProfBeginFunction();
   RDIB_GetExtantBucketsStringMapTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min, cursor = task->offsets[task_id]; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min, cursor = task->offsets[task_id]; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket = task->string_map->buckets[bucket_idx];
     if (bucket != 0) {
       task->result[cursor] = bucket;
@@ -1978,7 +1978,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_string_map_task)
 }
 
 RDIB_StringMapBucket **
-rdib_extant_buckets_from_string_map(TP_Context *tp, Arena *arena, RDIB_StringMap *string_map, U64 *bucket_count_out)
+rdib_extant_buckets_from_string_map(TP_Context *tp, Arena *arena, RDIB_StringMap *string_map, ulong *bucket_count_out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1987,7 +1987,7 @@ rdib_extant_buckets_from_string_map(TP_Context *tp, Arena *arena, RDIB_StringMap
   task.string_map = string_map;
 
   ProfBegin("Count Extant Buckets");
-  task.counts = push_array(scratch.arena, U64, tp->worker_count);
+  task.counts = push_array(scratch.arena, ulong, tp->worker_count);
   task.ranges = tp_divide_work(scratch.arena, string_map->cap, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_count_extant_buckets_string_map_task, &task);
   ProfEnd();
@@ -2012,18 +2012,18 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_bucket_chunk_idx_histo_task)
   RDIB_StringMapRadixSort *task    = raw_task;
   Temp                     scratch = scratch_begin(0,0);
 
-  U32 *range_histo = push_array(scratch.arena, U32, task->chunk_idx_opl);
+  uint *range_histo = push_array(scratch.arena, uint, task->chunk_idx_opl);
 
   // count items per sorter
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket = task->src[bucket_idx];
-    U64 chunk_idx = bucket->sorter.hi;
+    ulong chunk_idx = bucket->sorter.hi;
     Assert(chunk_idx < task->chunk_idx_opl);
     ++range_histo[chunk_idx];
   }
 
   // add in per thread sorter counts
-  for (U64 i = 0; i < task->chunk_idx_opl; ++i) {
+  for (ulong i = 0; i < task->chunk_idx_opl; ++i) {
     ins_atomic_u32_add_eval(&task->chunk_histo[i], range_histo[i]);
   }
 
@@ -2036,10 +2036,10 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_chunk_idx_task)
 {
   ProfBeginFunction();
   RDIB_StringMapRadixSort *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket    = task->src[bucket_idx];
-    U32                   chunk_idx = bucket->sorter.hi;
-    U32                   dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
+    uint                   chunk_idx = bucket->sorter.hi;
+    uint                   dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
     task->dst[dst_idx] = bucket;
   }
   ProfEnd();
@@ -2051,23 +2051,23 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
   ProfBeginFunction();
   RDIB_StringMapRadixSort *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
-    U64 range_lo = task->chunk_offsets[chunk_idx];
-    U64 range_hi = task->chunk_offsets[chunk_idx] + task->chunk_histo[chunk_idx];
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+    ulong range_lo = task->chunk_offsets[chunk_idx];
+    ulong range_hi = task->chunk_offsets[chunk_idx] + task->chunk_histo[chunk_idx];
 
     ProfBegin("Zero out Histogram");
-    U32 histo_bot[1 << 10]; MemoryZeroArray(histo_bot);
-    U32 histo_mid[1 << 11]; MemoryZeroArray(histo_mid);
-    U32 histo_top[1 << 11]; MemoryZeroArray(histo_top);
+    uint histo_bot[1 << 10]; MemoryZeroArray(histo_bot);
+    uint histo_mid[1 << 11]; MemoryZeroArray(histo_mid);
+    uint histo_top[1 << 11]; MemoryZeroArray(histo_top);
     ProfEnd();
 
     ProfBegin("Element Histogram");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem = task->dst[i];
-      U32 elem_idx  = elem->sorter.lo;
-      U32 digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
-      U32 digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32 digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
+      uint elem_idx  = elem->sorter.lo;
+      uint digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
+      uint digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
+      uint digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
       histo_bot[digit_bot] += 1;
       histo_mid[digit_mid] += 1;
       histo_top[digit_top] += 1;
@@ -2081,31 +2081,31 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
     ProfEnd();
 
     ProfBegin("Sort Bot");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->dst[i];
-      U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
-      U32                   src_idx  = range_lo + histo_bot[digit]++;
+      uint                   elem_idx = elem->sorter.lo;
+      uint                   digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
+      uint                   src_idx  = range_lo + histo_bot[digit]++;
       task->src[src_idx] = elem;
     }
     ProfEnd();
 
     ProfBegin("Sort Mid");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->src[i];
-      U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32                   dst_idx  = range_lo + histo_mid[digit]++;
+      uint                   elem_idx = elem->sorter.lo;
+      uint                   digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
+      uint                   dst_idx  = range_lo + histo_mid[digit]++;
       task->dst[dst_idx] = elem;
     }
     ProfEnd();
 
     ProfBegin("Sort Top");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->dst[i];
-      U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 21) % ArrayCount(histo_top);
-      U32                   src_idx  = range_lo + histo_top[digit]++;
+      uint                   elem_idx = elem->sorter.lo;
+      uint                   digit    = (elem_idx >> 21) % ArrayCount(histo_top);
+      uint                   src_idx  = range_lo + histo_top[digit]++;
       task->src[src_idx] = elem;
     }
     ProfEnd();
@@ -2115,7 +2115,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
 }
 
 void
-rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64 bucket_count, U64 chunk_idx_opl)
+rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, ulong bucket_count, ulong chunk_idx_opl)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2127,17 +2127,17 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
   task.dst           = push_array_no_zero(scratch.arena, RDIB_StringMapBucket *, bucket_count);
 
   ProfBegin("Chunk Index Histogram");
-  task.chunk_histo = push_array(scratch.arena, U32, chunk_idx_opl);
+  task.chunk_histo = push_array(scratch.arena, uint, chunk_idx_opl);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_string_map_bucket_chunk_idx_histo_task, &task);
   ProfEnd();
 
   // sort correctness check on chunk index
 #if 0
-  for (U64 i = 1; i < bucket_count; ++i) {
+  for (ulong i = 1; i < bucket_count; ++i) {
     RDIB_StringMapBucket *prev = buckets[i - 1];
     RDIB_StringMapBucket *curr = buckets[i + 0];
-    U32 prev_chunk_idx = prev->sorter.hi;
-    U32 curr_chunk_idx = curr->sorter.hi;
+    uint prev_chunk_idx = prev->sorter.hi;
+    uint curr_chunk_idx = curr->sorter.hi;
     AssertAlways(prev_chunk_idx <= curr_chunk_idx);
   }
 #endif
@@ -2159,14 +2159,14 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
   // sort correctness check on element index
 #if 0
   {
-    for (U64 i = 1; i < bucket_count; ++i) {
+    for (ulong i = 1; i < bucket_count; ++i) {
       RDIB_StringMapBucket *prev = buckets[i - 1];
       RDIB_StringMapBucket *curr = buckets[i + 0];
-      U32 prev_chunk_idx = prev->sorter.hi;
-      U32 curr_chunk_idx = curr->sorter.hi;
+      uint prev_chunk_idx = prev->sorter.hi;
+      uint curr_chunk_idx = curr->sorter.hi;
       if (prev_chunk_idx == curr_chunk_idx) {
-        U32 prev_elem_idx = prev->sorter.lo;
-        U32 curr_elem_idx = curr->sorter.lo;
+        uint prev_elem_idx = prev->sorter.lo;
+        uint curr_elem_idx = curr->sorter.lo;
         AssertAlways(prev_elem_idx < curr_elem_idx);
       }
     }
@@ -2178,10 +2178,10 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
 }
 
 void
-rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, U64 bucket_count)
+rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, ulong bucket_count)
 {
   ProfBeginFunction();
-  for (U64 idx = 0; idx < bucket_count; ++idx) {
+  for (ulong idx = 0; idx < bucket_count; ++idx) {
     buckets[idx]->idx = idx;
   }
   ProfEnd();
@@ -2190,13 +2190,13 @@ rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, U64 bucket_count)
 // Specialized Inserts
 
 void
-rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string)
+rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, ulong task_id, String8 string)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, 0);
 }
 
 void
-rdib_string_map_insert_name_map_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, VoidNode *node)
+rdib_string_map_insert_name_map_item(Arena *arena, RDIB_CollectStringsTask *task, ulong task_id, String8 string, VoidNode *node)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, node);
 }
@@ -2219,7 +2219,7 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_sects_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 sect_idx = task->ranges[task_id].min; sect_idx < task->ranges[task_id].max; ++sect_idx) {
+  for (ulong sect_idx = task->ranges[task_id].min; sect_idx < task->ranges[task_id].max; ++sect_idx) {
     RDIB_BinarySection *sect = &task->sects[sect_idx];
     rdib_string_map_insert_string_table_item(arena, task, task_id, sect->name);
   }
@@ -2231,9 +2231,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_units_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_UnitChunk *chunk = task->units[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Unit *unit = &chunk->v[i];
       rdib_string_map_insert_string_table_item(arena, task, task_id, unit->unit_name);
       rdib_string_map_insert_string_table_item(arena, task, task_id, unit->compiler_name);
@@ -2251,9 +2251,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_source_files_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = task->src_file_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_SourceFile *src_file = chunk->v + i;
       rdib_string_map_insert_string_table_item(arena, task, task_id, src_file->normal_full_path);
     }
@@ -2266,9 +2266,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_vars_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->vars[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Variable *var = &chunk->v[i];
       rdib_string_map_insert_string_table_item(arena, task, task_id, var->name);
       rdib_string_map_insert_string_table_item(arena, task, task_id, var->link_name);
@@ -2282,9 +2282,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_procs_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ProcedureChunk *chunk = task->procs[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Procedure *proc = &chunk->v[i];
       rdib_string_map_insert_string_table_item(arena, task, task_id, proc->name);
       rdib_string_map_insert_string_table_item(arena, task, task_id, proc->link_name);
@@ -2298,9 +2298,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_inline_sites_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_InlineSiteChunk *chunk = task->inline_sites[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_InlineSite *inline_site = &chunk->v[i];
       rdib_string_map_insert_string_table_item(arena, task, task_id, inline_site->name);
     }
@@ -2313,9 +2313,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_udt_members_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_UDTMemberChunk *chunk = task->udt_members[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_UDTMember *udt_member = &chunk->v[i];
       switch (udt_member->kind) {
       case RDI_MemberKind_NULL            : break;
@@ -2339,9 +2339,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_enum_members_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_UDTMemberChunk *chunk = task->enum_members[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       rdib_string_map_insert_string_table_item(arena, task, task_id, chunk->v[i].enumerate.name);
     }
   }
@@ -2353,9 +2353,9 @@ THREAD_POOL_TASK_FUNC(rdib_collect_strings_types_task)
 {
   ProfBeginFunction();
   RDIB_CollectStringsTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_TypeChunk *chunk = task->types[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Type *type = &chunk->v[i];
       if (RDI_TypeKind_FirstBuiltIn <= type->kind && type->kind <= RDI_TypeKind_LastBuiltIn) {
         rdib_string_map_insert_string_table_item(arena, task, task_id, type->builtin.name);
@@ -2386,10 +2386,10 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_var_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->vars[chunk_idx];
     VoidNode           *nodes = push_array(arena, VoidNode, chunk->count);
-    for (U64 var_idx = 0; var_idx < chunk->count; ++var_idx) {
+    for (ulong var_idx = 0; var_idx < chunk->count; ++var_idx) {
       RDIB_Variable *n = &chunk->v[var_idx];
       nodes[var_idx].v = n;
       rdib_string_map_insert_name_map_item(arena, task, task_id, n->name, &nodes[var_idx]);
@@ -2402,10 +2402,10 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_var_link_name_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->vars[chunk_idx];
     VoidNode           *nodes = push_array(arena, VoidNode, chunk->count);
-    for (U64 var_idx = 0; var_idx < chunk->count; ++var_idx) {
+    for (ulong var_idx = 0; var_idx < chunk->count; ++var_idx) {
       RDIB_Variable *n = &chunk->v[var_idx];
       nodes[var_idx].v = n;
       rdib_string_map_insert_name_map_item(arena, task, task_id, n->link_name, &nodes[var_idx]);
@@ -2418,10 +2418,10 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_procedure_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ProcedureChunk *chunk = task->procs[chunk_idx];
     VoidNode *nodes = push_array(arena, VoidNode, chunk->count);
-    for (U64 proc_idx = 0; proc_idx < chunk->count; ++proc_idx) {
+    for (ulong proc_idx = 0; proc_idx < chunk->count; ++proc_idx) {
       RDIB_Procedure *n = &chunk->v[proc_idx];
       nodes[proc_idx].v = n;
       rdib_string_map_insert_name_map_item(arena, task, task_id, n->name, &nodes[proc_idx]);
@@ -2434,10 +2434,10 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_procedures_link_name_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ProcedureChunk *chunk = task->procs[chunk_idx];
     VoidNode            *nodes = push_array(arena, VoidNode, chunk->count);
-    for (U64 proc_idx = 0; proc_idx < chunk->count; ++proc_idx) {
+    for (ulong proc_idx = 0; proc_idx < chunk->count; ++proc_idx) {
       RDIB_Procedure *n = &chunk->v[proc_idx];
       nodes[proc_idx].v = n;
       rdib_string_map_insert_name_map_item(arena, task, task_id, n->link_name, &nodes[proc_idx]);
@@ -2450,11 +2450,11 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_types_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_TypeChunk *chunk = task->types[chunk_idx];
     VoidNode *nodes       = push_array(arena, VoidNode, chunk->count);
     VoidNode *node_cursor = nodes;
-    for (U64 type_idx = 0; type_idx < chunk->count; ++type_idx) {
+    for (ulong type_idx = 0; type_idx < chunk->count; ++type_idx) {
       RDIB_Type *type = &chunk->v[type_idx];
       node_cursor->v = type;
 
@@ -2471,11 +2471,11 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_normal_paths_task)
 {
   RDIB_CollectStringsTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = task->src_file_chunks[chunk_idx];
     VoidNode *nodes             = push_array(arena, VoidNode, chunk->count);
     VoidNode *node_cursor       = nodes;
-    for (U64 i = 0; i < chunk->count; ++i, ++node_cursor) {
+    for (ulong i = 0; i < chunk->count; ++i, ++node_cursor) {
       node_cursor->v = &chunk->v[i];
       rdib_string_map_insert_name_map_item(arena, task, task_id, chunk->v[i].normal_full_path, node_cursor);
     }
@@ -2485,15 +2485,15 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_normal_paths_task)
 ////////////////////////////////
 // Index Run Map
 
-U64
-rdib_index_run_hash(U32 count, U32 *idxs)
+ulong
+rdib_index_run_hash(uint count, uint *idxs)
 {
   XXH64_hash_t hash64 = XXH3_64bits(idxs, count * sizeof(idxs[0]));
   return hash64;
 }
 
 RDIB_IndexRunMap *
-rdib_init_index_run_map(Arena *arena, U64 cap)
+rdib_init_index_run_map(Arena *arena, ulong cap)
 {
   ProfBeginFunction();
   RDIB_IndexRunMap *map = push_array(arena, RDIB_IndexRunMap, 1);
@@ -2504,14 +2504,14 @@ rdib_init_index_run_map(Arena *arena, U64 cap)
 }
 
 RDIB_IndexRunBucket *
-rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets, U64 cap, U64 hash, RDIB_IndexRunBucket *new_bucket, U64 *bucket_idx_out)
+rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets, ulong cap, ulong hash, RDIB_IndexRunBucket *new_bucket, ulong *bucket_idx_out)
 {
   B32 was_bucket_inserted_or_updated = 0;
 
   RDIB_IndexRunBucket *result = 0;
 
-  U64 best_idx = hash % cap;
-  U64 idx      = best_idx;
+  ulong best_idx = hash % cap;
+  ulong idx      = best_idx;
 
   do {
     retry:;
@@ -2565,11 +2565,11 @@ rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets,
   return result;
 }
 
-U32
-rdib_idx_run_from_bucket_idx(RDIB_IndexRunMap *map, U64 bucket_idx)
+uint
+rdib_idx_run_from_bucket_idx(RDIB_IndexRunMap *map, ulong bucket_idx)
 {
   RDIB_IndexRunBucket *bucket = map->buckets[bucket_idx];
-  U32 idx_run32 = safe_cast_u32(bucket->index_in_output_array);
+  uint idx_run32 = safe_cast_u32(bucket->index_in_output_array);
   return idx_run32;
 }
 
@@ -2578,7 +2578,7 @@ THREAD_POOL_TASK_FUNC(rdib_count_extant_buckets_index_run_map_task)
 {
   ProfBeginFunction();
   RDIB_GetExtantBucketsIndexRunMapTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     if (task->idx_run_map->buckets[bucket_idx] != 0) {
       task->counts[task_id] += 1;
     }
@@ -2591,7 +2591,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_index_run_map_task)
 {
   ProfBeginFunction();
   RDIB_GetExtantBucketsIndexRunMapTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min, cursor = task->offsets[task_id]; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min, cursor = task->offsets[task_id]; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket = task->idx_run_map->buckets[bucket_idx];
     if (bucket != 0) {
       task->result[cursor] = bucket;
@@ -2602,7 +2602,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_index_run_map_task)
 }
 
 RDIB_IndexRunBucket **
-rdib_extant_buckets_from_index_run_map(TP_Context *tp, Arena *arena, RDIB_IndexRunMap *idx_run_map, U64 *bucket_count_out)
+rdib_extant_buckets_from_index_run_map(TP_Context *tp, Arena *arena, RDIB_IndexRunMap *idx_run_map, ulong *bucket_count_out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2611,7 +2611,7 @@ rdib_extant_buckets_from_index_run_map(TP_Context *tp, Arena *arena, RDIB_IndexR
   task.idx_run_map = idx_run_map;
 
   ProfBegin("Count Extant Buckets");
-  task.counts = push_array(scratch.arena, U64, tp->worker_count);
+  task.counts = push_array(scratch.arena, ulong, tp->worker_count);
   task.ranges = tp_divide_work(scratch.arena, idx_run_map->cap, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_count_extant_buckets_index_run_map_task, &task);
   ProfEnd();
@@ -2636,18 +2636,18 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_bucket_chunk_idx_histo_task)
   RDIB_IndexRunMapRadixSort *task    = raw_task;
   Temp                       scratch = scratch_begin(0,0);
 
-  U32 *range_histo = push_array(scratch.arena, U32, task->chunk_idx_opl);
+  uint *range_histo = push_array(scratch.arena, uint, task->chunk_idx_opl);
 
   // count items per sorter
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket = task->src[bucket_idx];
-    U32 chunk_idx = bucket->sorter.hi;
+    uint chunk_idx = bucket->sorter.hi;
     Assert(chunk_idx < task->chunk_idx_opl);
     ++range_histo[chunk_idx];
   }
 
   // add in per thread sorter counts
-  for (U64 i = 0; i < task->chunk_idx_opl; ++i) {
+  for (ulong i = 0; i < task->chunk_idx_opl; ++i) {
     ins_atomic_u32_add_eval(&task->chunk_histo[i], range_histo[i]);
   }
 
@@ -2660,10 +2660,10 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_chunk_idx_task)
 {
   ProfBeginFunction();
   RDIB_IndexRunMapRadixSort *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket    = task->src[bucket_idx];
-    U32                  chunk_idx = bucket->sorter.hi;
-    U32                  dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
+    uint                  chunk_idx = bucket->sorter.hi;
+    uint                  dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
     task->dst[dst_idx] = bucket;
   }
   ProfEnd();
@@ -2675,23 +2675,23 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
   ProfBeginFunction();
   RDIB_IndexRunMapRadixSort *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
-    U64 range_lo = task->chunk_offsets[chunk_idx];
-    U64 range_hi = task->chunk_offsets[chunk_idx] + task->chunk_histo[chunk_idx];
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+    ulong range_lo = task->chunk_offsets[chunk_idx];
+    ulong range_hi = task->chunk_offsets[chunk_idx] + task->chunk_histo[chunk_idx];
 
     ProfBegin("Zero out Histogram");
-    U32 histo_bot[1 << 10]; MemoryZeroArray(histo_bot);
-    U32 histo_mid[1 << 11]; MemoryZeroArray(histo_mid);
-    U32 histo_top[1 << 11]; MemoryZeroArray(histo_top);
+    uint histo_bot[1 << 10]; MemoryZeroArray(histo_bot);
+    uint histo_mid[1 << 11]; MemoryZeroArray(histo_mid);
+    uint histo_top[1 << 11]; MemoryZeroArray(histo_top);
     ProfEnd();
 
     ProfBegin("Element Histogram");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem = task->dst[i];
-      U32 elem_idx  = elem->sorter.lo;
-      U32 digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
-      U32 digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32 digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
+      uint elem_idx  = elem->sorter.lo;
+      uint digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
+      uint digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
+      uint digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
       histo_bot[digit_bot] += 1;
       histo_mid[digit_mid] += 1;
       histo_top[digit_top] += 1;
@@ -2705,31 +2705,31 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
     ProfEnd();
 
     ProfBegin("Sort Bot");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->dst[i];
-      U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
-      U32                  src_idx  = range_lo + histo_bot[digit]++;
+      uint                  elem_idx = elem->sorter.lo;
+      uint                  digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
+      uint                  src_idx  = range_lo + histo_bot[digit]++;
       task->src[src_idx] = elem;
     }
     ProfEnd();
 
     ProfBegin("Sort Mid");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->src[i];
-      U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32                  dst_idx  = range_lo + histo_mid[digit]++;
+      uint                  elem_idx = elem->sorter.lo;
+      uint                  digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
+      uint                  dst_idx  = range_lo + histo_mid[digit]++;
       task->dst[dst_idx] = elem;
     }
     ProfEnd();
 
     ProfBegin("Sort Top");
-    for (U64 i = range_lo; i < range_hi; ++i) {
+    for (ulong i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->dst[i];
-      U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 21) % ArrayCount(histo_top);
-      U32                  src_idx  = range_lo + histo_top[digit]++;
+      uint                  elem_idx = elem->sorter.lo;
+      uint                  digit    = (elem_idx >> 21) % ArrayCount(histo_top);
+      uint                  src_idx  = range_lo + histo_top[digit]++;
       task->src[src_idx] = elem;
     }
     ProfEnd();
@@ -2739,7 +2739,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
 }
 
 void
-rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U64 bucket_count, U64 chunk_idx_opl)
+rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, ulong bucket_count, ulong chunk_idx_opl)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2751,17 +2751,17 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
   task.dst           = push_array_no_zero(scratch.arena, RDIB_IndexRunBucket *, bucket_count);
 
   ProfBegin("Chunk Index Histogram");
-  task.chunk_histo = push_array(scratch.arena, U32, chunk_idx_opl);
+  task.chunk_histo = push_array(scratch.arena, uint, chunk_idx_opl);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_index_run_map_bucket_chunk_idx_histo_task, &task);
   ProfEnd();
 
   // sort correctness check on chunk index
 #if 0
-  for (U64 i = 1; i < bucket_count; ++i) {
+  for (ulong i = 1; i < bucket_count; ++i) {
     RDIB_StringMapBucket *prev = buckets[i - 1];
     RDIB_StringMapBucket *curr = buckets[i + 0];
-    U32 prev_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(prev->sorter);
-    U32 curr_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(curr->sorter);
+    uint prev_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(prev->sorter);
+    uint curr_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(curr->sorter);
     AssertAlways(prev_chunk_idx <= curr_chunk_idx);
   }
 #endif
@@ -2783,14 +2783,14 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
   // sort correctness check on element index
 #if 0
   {
-    for (U64 i = 1; i < bucket_count; ++i) {
+    for (ulong i = 1; i < bucket_count; ++i) {
       RDIB_IndexRunBucket *prev = buckets[i - 1];
       RDIB_IndexRunBucket *curr = buckets[i + 0];
-      U32 prev_chunk_idx = prev->sorter.hi;
-      U32 curr_chunk_idx = curr->sorter.hi;
+      uint prev_chunk_idx = prev->sorter.hi;
+      uint curr_chunk_idx = curr->sorter.hi;
       if (prev_chunk_idx == curr_chunk_idx) {
-        U32 prev_elem_idx = prev->sorter.lo;
-        U32 curr_elem_idx = curr->sorter.lo;
+        uint prev_elem_idx = prev->sorter.lo;
+        uint curr_elem_idx = curr->sorter.lo;
         AssertAlways(prev_elem_idx < curr_elem_idx);
       }
     }
@@ -2802,10 +2802,10 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
 }
 
 void
-rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, U64 bucket_count)
+rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, ulong bucket_count)
 {
   ProfBeginFunction();
-  for (U64 bucket_idx = 0, cursor = 0; bucket_idx < bucket_count; ++bucket_idx) {
+  for (ulong bucket_idx = 0, cursor = 0; bucket_idx < bucket_count; ++bucket_idx) {
     buckets[bucket_idx]->index_in_output_array = cursor;
     cursor += buckets[bucket_idx]->indices.count;
   }
@@ -2814,8 +2814,8 @@ rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, U64 bucket_coun
 
 // index run map specialization
 
-U64
-rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, U64 worker_id, U64 item_idx, U64 count, U32 *idxs)
+ulong
+rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, ulong worker_id, ulong item_idx, ulong count, uint *idxs)
 {
   Assert(item_idx < max_U32);
 
@@ -2828,11 +2828,11 @@ rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, U64 
   // fill out bucket
   bucket->indices.count = count;
   bucket->indices.v     = idxs;
-  bucket->sorter.v      = task->sorter_idx << 32 | (U32)item_idx;
+  bucket->sorter.v      = task->sorter_idx << 32 | (uint)item_idx;
 
   // insert bucket
-  U64                  hash       = rdib_index_run_hash(count, idxs);
-  U64                  bucket_idx = max_U64;
+  ulong                  hash       = rdib_index_run_hash(count, idxs);
+  ulong                  bucket_idx = max_U64;
   RDIB_IndexRunBucket *free_bucket = rdib_index_run_map_insert_or_update(arena,
                                                                          task->idx_run_map->buckets,
                                                                          task->idx_run_map->cap,
@@ -2860,50 +2860,50 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
       RDIB_Type *params = type->func.params_type;
 
       // pack params
-      U64  type_index_count = params->params.count;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
-      for (U64 param_idx = 0; param_idx < params->params.count; ++param_idx) {
+      ulong  type_index_count = params->params.count;
+      uint *type_indices     = push_array_no_zero(arena, uint, type_index_count);
+      for (ulong param_idx = 0; param_idx < params->params.count; ++param_idx) {
         type_indices[param_idx] = rdib_idx_from_type(params->params.types[param_idx]);
       }
 
       // insert type indices
-      U32 func_type_idx = rdib_idx_from_type(type);
+      uint func_type_idx = rdib_idx_from_type(type);
       type->func.param_idx_run_bucket_idx = rdib_index_run_map_insert_item(arena, task, worker_id, func_type_idx, type_index_count, type_indices);
     } else if (type->kind == RDI_TypeKind_Method) {
       RDIB_Type *params = type->method.params_type;
 
-      U64  type_index_count = params->params.count + 1;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
-      U64  type_idx_cursor  = 0;
+      ulong  type_index_count = params->params.count + 1;
+      uint *type_indices     = push_array_no_zero(arena, uint, type_index_count);
+      ulong  type_idx_cursor  = 0;
 
       // pack 'this' type
       type_indices[type_idx_cursor++] = rdib_idx_from_type(type->method.this_type);
 
       // pack params
-      for (U64 param_idx = 0; param_idx < params->params.count; ++param_idx) {
+      for (ulong param_idx = 0; param_idx < params->params.count; ++param_idx) {
         type_indices[type_idx_cursor++] = rdib_idx_from_type(params->params.types[param_idx]);
       }
 
       // insert type indices
-      U32 method_type_idx = rdib_idx_from_type(type);
+      uint method_type_idx = rdib_idx_from_type(type);
       type->method.param_idx_run_bucket_idx = rdib_index_run_map_insert_item(arena, task, worker_id, method_type_idx, type_index_count, type_indices);
     } else if (type->kind == RDI_TypeKindExt_StaticMethod) {
       RDIB_Type *params = type->static_method.params_type;
 
-      U64  type_index_count = params->params.count + 1;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
-      U64  type_idx_cursor  = 0;
+      ulong  type_index_count = params->params.count + 1;
+      uint *type_indices     = push_array_no_zero(arena, uint, type_index_count);
+      ulong  type_idx_cursor  = 0;
 
       // static methods don't have 'this'
       type_indices[type_idx_cursor++] = 0;
 
       // pack params
-      for (U64 param_idx = 0; param_idx < params->params.count; ++param_idx) {
+      for (ulong param_idx = 0; param_idx < params->params.count; ++param_idx) {
         type_indices[type_idx_cursor++] = rdib_idx_from_type(params->params.types[param_idx]);
       }
 
       // insert type indices
-      U32 static_method_type_idx = rdib_idx_from_type(type);
+      uint static_method_type_idx = rdib_idx_from_type(type);
       type->static_method.param_idx_run_bucket_idx = rdib_index_run_map_insert_item(arena, task, worker_id, static_method_type_idx, type_index_count, type_indices);
     }
   }
@@ -2911,10 +2911,10 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
   ProfEnd();
 }
 
-U32
+uint
 rdib_idx_from_name_map_void_node(RDIB_BuildIndexRunsTask *task, VoidNode *node)
 {
-  U64 idx = 0;
+  ulong idx = 0;
   switch (task->name_map_kind) {
   case RDI_NameMapKind_NULL              : break;
   case RDI_NameMapKind_GlobalVariables   : idx = rdib_idx_from_variable   ((RDIB_Variable*   ) node); break;
@@ -2925,7 +2925,7 @@ rdib_idx_from_name_map_void_node(RDIB_BuildIndexRunsTask *task, VoidNode *node)
   case RDI_NameMapKind_NormalSourcePaths : idx = rdib_idx_from_source_file((RDIB_SourceFile *) node); break;
   default: InvalidPath;
   }
-  U32 idx32 = safe_cast_u32(idx);
+  uint idx32 = safe_cast_u32(idx);
   return idx32;
 }
 
@@ -2936,15 +2936,15 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
 
   RDIB_BuildIndexRunsTask *task = raw_task;
 
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket = task->name_map_buckets[bucket_idx];
-    U64                   count  = void_list_count_nodes(bucket->raw_values);
+    ulong                   count  = void_list_count_nodes(bucket->raw_values);
 
     if (count > 1) {
       // build array of indices that point to name map respective arrays
-      U32 *idxs = push_array_no_zero(arena, U32, count);
+      uint *idxs = push_array_no_zero(arena, uint, count);
       {
-        U64 curr_idx = 0;
+        ulong curr_idx = 0;
         for (VoidNode *curr = bucket->raw_values; curr != 0; curr = curr->next, ++curr_idx) {
           idxs[curr_idx] = rdib_idx_from_name_map_void_node(task, curr->v);
         }
@@ -2954,13 +2954,13 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
       u32_array_sort(count, idxs); // TODO: we don't need to sort with one worker thread
 
       // :string_map_bucket_sorter_copy
-      U64 idx_run_bucket_idx = rdib_index_run_map_insert_item(arena, task, worker_id, bucket_idx, count, idxs); // TODO: fix `idx` leak when we insert same runs
+      ulong idx_run_bucket_idx = rdib_index_run_map_insert_item(arena, task, worker_id, bucket_idx, count, idxs); // TODO: fix `idx` leak when we insert same runs
       
       // fill out bucket
       bucket->count              = count;
       bucket->idx_run_bucket_idx = idx_run_bucket_idx;
     } if (count == 1) {
-      U32 match_idx = rdib_idx_from_name_map_void_node(task, bucket->raw_values->v);
+      uint match_idx = rdib_idx_from_name_map_void_node(task, bucket->raw_values->v);
 
       // fill out bucket
       bucket->count     = 1;
@@ -2974,11 +2974,11 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
 ////////////////////////////////
 
 #if 0
-U32
+uint
 rdib_idx_from_params(RDIB_IndexRunMap *map, RDIB_Type *params)
 {
   Assert(params->kind == RDI_TypeKindExt_Params);
-  U32 idx = params->params.idx_run_bucket->index_in_output_array;
+  uint idx = params->params.idx_run_bucket->index_in_output_array;
   return idx;
 }
 #endif
@@ -3027,13 +3027,13 @@ rdib_data_sections_from_top_level_info(Arena *arena, RDIB_DataSectionList *sect_
 }
 
 void
-rdib_data_sections_from_binary_sections(Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_BinarySection *binary_sects, U64 binary_sects_count)
+rdib_data_sections_from_binary_sections(Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_BinarySection *binary_sects, ulong binary_sects_count)
 {
   ProfBeginFunction();
 
   RDI_BinarySection *dst_arr = push_array(arena, RDI_BinarySection, binary_sects_count);
 
-  for (U64 sect_idx = 0; sect_idx < binary_sects_count; ++sect_idx) {
+  for (ulong sect_idx = 0; sect_idx < binary_sects_count; ++sect_idx) {
     RDIB_BinarySection *src = &binary_sects[sect_idx];
     RDI_BinarySection  *dst = &dst_arr[sect_idx];
 
@@ -3057,18 +3057,18 @@ rdib_data_sections_from_units(Arena                *arena,
                               RDIB_DataSectionList *sect_list,
                               RDIB_StringMap       *string_map,
                               RDIB_PathTree        *path_tree,
-                              U64                   total_unit_count,
-                              U64                   unit_chunk_count,
+                              ulong                   total_unit_count,
+                              ulong                   unit_chunk_count,
                               RDIB_UnitChunk      **unit_chunks)
 {
   ProfBeginFunction();
 
   RDI_Unit *dst_arr = push_array(arena, RDI_Unit, total_unit_count);
-  for (U64 chunk_idx = 0; chunk_idx < unit_chunk_count; chunk_idx += 1) {
+  for (ulong chunk_idx = 0; chunk_idx < unit_chunk_count; chunk_idx += 1) {
     RDIB_UnitChunk *chunk = unit_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; i += 1) {
+    for (ulong i = 0; i < chunk->count; i += 1) {
       RDIB_Unit *src     = &chunk->v[i];
-      U64       unit_idx = rdib_idx_from_unit(src);
+      ulong       unit_idx = rdib_idx_from_unit(src);
       RDI_Unit  *dst     = &dst_arr[unit_idx];
       dst->unit_name_string_idx     = rdib_idx_from_string_map(string_map, src->unit_name);
       dst->compiler_name_string_idx = rdib_idx_from_string_map(string_map, src->compiler_name);
@@ -3093,9 +3093,9 @@ THREAD_POOL_TASK_FUNC(rdib_vmap_count_ranges_unit_task)
 {
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_UnitChunk *chunk = task->unit_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Unit *unit = &chunk->v[i];
       task->counts[task_id] += unit->virt_range_count;
     }
@@ -3108,9 +3108,9 @@ THREAD_POOL_TASK_FUNC(rdib_vmap_count_ranges_gvar_task)
 {
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->gvar_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Variable *var = &chunk->v[i];
       for (RDIB_LocationNode *loc_n = var->locations.first; loc_n != 0; loc_n = loc_n->next) {
         task->counts[task_id] += loc_n->v.ranges.count;
@@ -3125,9 +3125,9 @@ THREAD_POOL_TASK_FUNC(rdib_vmap_count_ranges_scope_task)
 {
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ScopeChunk *chunk = task->scope_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       task->counts[task_id] += chunk->v[i].ranges.count;
     }
   }
@@ -3139,12 +3139,12 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_unit_task)
 {
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task            = raw_task;
-  U64                  range_cursor     = task->offsets[task_id];
-  U64                  range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
+  ulong                  range_cursor     = task->offsets[task_id];
+  ulong                  range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_UnitChunk *chunk = task->unit_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Unit *unit = &chunk->v[i];
       for (Rng1U64 *range_ptr = unit->virt_ranges, *range_opl = unit->virt_ranges + unit->virt_range_count;
            range_ptr < range_opl; ++range_ptr) {
@@ -3168,18 +3168,18 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_gvar_task)
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task = raw_task;
 
-  U64 range_cursor     = task->offsets[task_id];
-  U64 range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
+  ulong range_cursor     = task->offsets[task_id];
+  ulong range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->gvar_chunks[chunk_idx];
-    for (U64 var_idx = 0; var_idx < chunk->count; ++var_idx) {
+    for (ulong var_idx = 0; var_idx < chunk->count; ++var_idx) {
       RDIB_Variable *var = &chunk->v[var_idx];
       for (RDIB_LocationNode *loc_n = var->locations.first; loc_n != 0; loc_n = loc_n->next) {
         for (Rng1U64Node *range_n = loc_n->v.ranges.first; range_n != 0; range_n = range_n->next) {
           Assert(range_cursor < range_cursor_opl);
           Assert(range_n->v.min <= range_n->v.max);
-          U64 size = range_n->v.max - range_n->v.min;
+          ulong size = range_n->v.max - range_n->v.min;
 
           RDIB_VMapRange *vmap_range = task->vmap + range_cursor;
           vmap_range->voff           = range_n->v.min;
@@ -3200,12 +3200,12 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_scope_task)
   ProfBeginFunction();
   RDIB_VMapBuilderTask *task = raw_task;
 
-  U64 range_cursor     = task->offsets[task_id];
-  U64 range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
+  ulong range_cursor     = task->offsets[task_id];
+  ulong range_cursor_opl = task->offsets[task_id] + task->counts[task_id];
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ScopeChunk *chunk = task->scope_chunks[chunk_idx];
-    for (U64 scope_idx = 0; scope_idx < chunk->count; ++scope_idx) {
+    for (ulong scope_idx = 0; scope_idx < chunk->count; ++scope_idx) {
       RDIB_Scope *scope = &chunk->v[scope_idx];
       for (Rng1U64Node *range_n = scope->ranges.first; range_n != 0; range_n = range_n->next) {
         Assert(range_cursor  < range_cursor_opl);
@@ -3224,7 +3224,7 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_scope_task)
 }
 
 void
-rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
+rdib_sort_procs_radix_32(RDIB_Procedure **v, ulong count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -3234,18 +3234,18 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   RDIB_Procedure **dst  = temp;
 
   ProfBegin("Count Memzero");
-  U32 count_8lo[256];    MemoryZeroArray(count_8lo);
-  U32 count_8hi[256];    MemoryZeroArray(count_8hi);
-  U32 count_16[1 << 16]; MemoryZeroArray(count_16);
+  uint count_8lo[256];    MemoryZeroArray(count_8lo);
+  uint count_8hi[256];    MemoryZeroArray(count_8hi);
+  uint count_16[1 << 16]; MemoryZeroArray(count_16);
   ProfEnd();
 
   ProfBegin("Histogram");
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
 
-    U64 digit_8lo  = (p->scope->ranges.first->v.min >> 0)  % ArrayCount(count_8lo);
-    U64 digit_8hi  = (p->scope->ranges.first->v.min >> 8)  % ArrayCount(count_8hi);
-    U64 digit_16   = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
+    ulong digit_8lo  = (p->scope->ranges.first->v.min >> 0)  % ArrayCount(count_8lo);
+    ulong digit_8hi  = (p->scope->ranges.first->v.min >> 8)  % ArrayCount(count_8hi);
+    ulong digit_16   = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
 
     count_8lo[digit_8lo]  += 1;
     count_8hi[digit_8hi]  += 1;
@@ -3260,25 +3260,25 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   ProfEnd();
 
   ProfBegin("Order 8 Lo");
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 0) % ArrayCount(count_8lo);
+    ulong digit = (p->scope->ranges.first->v.min >> 0) % ArrayCount(count_8lo);
     dst[count_8lo[digit]++] = p;
   }
   ProfEnd();
 
   ProfBegin("Order 8 Hi");
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     RDIB_Procedure *p = dst[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 8) % ArrayCount(count_8hi);
+    ulong digit = (p->scope->ranges.first->v.min >> 8) % ArrayCount(count_8hi);
     src[count_8hi[digit]++] = p;
   }
   ProfEnd();
 
   ProfBegin("Order 16");
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
+    ulong digit = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
     dst[count_16[digit]++] = p;
   }
   ProfEnd();
@@ -3290,23 +3290,23 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
 }
 
 String8List
-rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
+rdib_data_from_vmap(Arena *arena, ulong range_count, RDIB_VMapRange *ranges)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
 
-  const U64 size_bit_count0 = 8;
-  const U64 size_bit_count1 = 8;
-  const U64 size_bit_count2 = 16;
+  const ulong size_bit_count0 = 8;
+  const ulong size_bit_count1 = 8;
+  const ulong size_bit_count2 = 16;
 
-  const U64 voff_bit_count0 = 11;
-  const U64 voff_bit_count1 = 11;
-  const U64 voff_bit_count2 = 10;
+  const ulong voff_bit_count0 = 11;
+  const ulong voff_bit_count1 = 11;
+  const ulong voff_bit_count2 = 10;
 
   ProfBegin("Push shared buffer");
-  U64 radix_memory_size = sizeof(RDIB_VMapRange) * range_count +
-                          sizeof(U32) * ((1 << size_bit_count0) + (1 << size_bit_count1) + (1 << size_bit_count2)) +
-                          sizeof(U32) * ((1 << voff_bit_count0) + (1 << voff_bit_count1) + (1 << voff_bit_count2));
+  ulong radix_memory_size = sizeof(RDIB_VMapRange) * range_count +
+                          sizeof(uint) * ((1 << size_bit_count0) + (1 << size_bit_count1) + (1 << size_bit_count2)) +
+                          sizeof(uint) * ((1 << voff_bit_count0) + (1 << voff_bit_count1) + (1 << voff_bit_count2));
   byte *radix_memory      = push_array_no_zero(arena, byte, radix_memory_size);
   ProfEnd();
 
@@ -3318,13 +3318,13 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     RDIB_VMapRange *src = ranges;
     RDIB_VMapRange *dst = (RDIB_VMapRange *)radix_memory;
 
-    U32 *size_count0 = (U32 *)(dst + range_count);
-    U32 *size_count1 = size_count0 + (1 << size_bit_count0);
-    U32 *size_count2 = size_count1 + (1 << size_bit_count1);
+    uint *size_count0 = (uint *)(dst + range_count);
+    uint *size_count1 = size_count0 + (1 << size_bit_count0);
+    uint *size_count2 = size_count1 + (1 << size_bit_count1);
 
-    U32 *voff_count0 = size_count2 + (1 << size_bit_count2);
-    U32 *voff_count1 = voff_count0 + (1 << voff_bit_count0);
-    U32 *voff_count2 = voff_count1 + (1 << voff_bit_count1);
+    uint *voff_count0 = size_count2 + (1 << size_bit_count2);
+    uint *voff_count1 = voff_count0 + (1 << voff_bit_count0);
+    uint *voff_count2 = voff_count1 + (1 << voff_bit_count1);
 
     //
     // Build histogram
@@ -3338,16 +3338,16 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     MemoryZeroTyped(voff_count1, 1 << voff_bit_count1);
     MemoryZeroTyped(voff_count2, 1 << voff_bit_count2);
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange *r = src+i;
 
-      U32 size_digit0 = (-r->size >> 0)                                   % (1 << size_bit_count0);
-      U32 size_digit1 = (-r->size >> size_bit_count0)                     % (1 << size_bit_count1);
-      U32 size_digit2 = (-r->size >> (size_bit_count0 + size_bit_count1)) % (1 << size_bit_count2);
+      uint size_digit0 = (-r->size >> 0)                                   % (1 << size_bit_count0);
+      uint size_digit1 = (-r->size >> size_bit_count0)                     % (1 << size_bit_count1);
+      uint size_digit2 = (-r->size >> (size_bit_count0 + size_bit_count1)) % (1 << size_bit_count2);
 
-      U64 voff_digit0 = (r->voff >> 0)                                   % (1 << voff_bit_count0);
-      U64 voff_digit1 = (r->voff >> voff_bit_count0)                     % (1 << voff_bit_count1);
-      U64 voff_digit2 = (r->voff >> (voff_bit_count0 + voff_bit_count1)) % (1 << voff_bit_count2);
+      ulong voff_digit0 = (r->voff >> 0)                                   % (1 << voff_bit_count0);
+      ulong voff_digit1 = (r->voff >> voff_bit_count0)                     % (1 << voff_bit_count1);
+      ulong voff_digit2 = (r->voff >> (voff_bit_count0 + voff_bit_count1)) % (1 << voff_bit_count2);
 
       ++size_count0[size_digit0];
       ++size_count1[size_digit1];
@@ -3370,21 +3370,21 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     // Sort on range size (high to low)
     //
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = src[i];
-      U32 digit = (-r.size >> 0) % (1 << size_bit_count0);
+      uint digit = (-r.size >> 0) % (1 << size_bit_count0);
       dst[size_count0[digit]++] = r;
     }
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = dst[i];
-      U32 digit = (-r.size >> size_bit_count0) % (1 << size_bit_count1);
+      uint digit = (-r.size >> size_bit_count0) % (1 << size_bit_count1);
       src[size_count1[digit]++] = r;
     }
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = src[i];
-      U32 digit = (-r.size >> (size_bit_count0 + size_bit_count1)) % (1 << size_bit_count2);
+      uint digit = (-r.size >> (size_bit_count0 + size_bit_count1)) % (1 << size_bit_count2);
       dst[size_count2[digit]++] = r;
     }
 
@@ -3392,21 +3392,21 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     // Sort on range voff (low to high)
     //
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = dst[i];
-      U32 digit = (r.voff >> 0) % (1 << voff_bit_count0);
+      uint digit = (r.voff >> 0) % (1 << voff_bit_count0);
       src[voff_count0[digit]++] = r;
     }
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = src[i];
-      U32 digit = (r.voff >> voff_bit_count0) % (1 << voff_bit_count1);
+      uint digit = (r.voff >> voff_bit_count0) % (1 << voff_bit_count1);
       dst[voff_count1[digit]++] = r;
     }
 
-    for (U64 i = 0; i < range_count; ++i) {
+    for (ulong i = 0; i < range_count; ++i) {
       RDIB_VMapRange r = dst[i];
-      U32 digit = (r.voff >> (voff_bit_count0 + voff_bit_count1)) % (1 << voff_bit_count2);
+      uint digit = (r.voff >> (voff_bit_count0 + voff_bit_count1)) % (1 << voff_bit_count2);
       src[voff_count2[digit]++] = r;
     }
   }
@@ -3415,9 +3415,9 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
   ProfBegin("Layout virtual map");
   String8List raw_vmap = {0};
   {
-    U64            default_vme_cap = 4096;
-    U64            vme_block_cap   = radix_memory_size / sizeof(RDI_VMapEntry);
-    U64            vme_block_size  = 0;
+    ulong            default_vme_cap = 4096;
+    ulong            vme_block_cap   = radix_memory_size / sizeof(RDI_VMapEntry);
+    ulong            vme_block_size  = 0;
     RDI_VMapEntry *vme_block       = (RDI_VMapEntry *)radix_memory;
 
     // Recycle radix sort memory
@@ -3439,7 +3439,7 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     stack        = push_array(scratch.arena, struct Stack, 1);
     stack->range = &ranges[0];
 
-    for (U64 range_idx = 1; range_idx < range_count; ++range_idx) {
+    for (ulong range_idx = 1; range_idx < range_count; ++range_idx) {
       RDIB_VMapRange *r = ranges+range_idx;
       RDIB_VMapRange *last_bot_range = stack->range;
       RDIB_VMapRange *last_pop_range = 0;
@@ -3523,7 +3523,7 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
     }
 
     // Subtract unsued vmap entries
-    U64 last_vme_unused         = raw_vmap.last->string.size - sizeof(vme_block[0]) * vme_block_size;
+    ulong last_vme_unused         = raw_vmap.last->string.size - sizeof(vme_block[0]) * vme_block_size;
     raw_vmap.last->string.size -= last_vme_unused;
     raw_vmap.total_size        -= last_vme_unused;
 
@@ -3534,10 +3534,10 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
 
   // duplicate voff check
 #if 0
-  U64 prev = max_U64;
+  ulong prev = max_U64;
   for (String8Node *node = raw_vmap.first; node != 0; node = node->next) {
     RDI_VMapEntry *e = (RDI_VMapEntry*)node->string.str;
-    for (U64 i = 0, c = node->string.size / sizeof(RDI_VMapEntry); i < c; ++i) {
+    for (ulong i = 0, c = node->string.size / sizeof(RDI_VMapEntry); i < c; ++i) {
       Assert(e[i].voff != prev);
       prev = e[i].voff;
     }
@@ -3561,19 +3561,19 @@ void
 rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
                                               TP_Arena             *arena,
                                               RDIB_DataSectionList *sect_list,
-                                              U64 unit_chunk_count,  RDIB_UnitChunk     **unit_chunks,
-                                              U64 gvar_chunk_count,  RDIB_VariableChunk **gvar_chunks,
-                                              U64 scope_chunk_count, RDIB_ScopeChunk    **scope_chunks)
+                                              ulong unit_chunk_count,  RDIB_UnitChunk     **unit_chunks,
+                                              ulong gvar_chunk_count,  RDIB_VariableChunk **gvar_chunks,
+                                              ulong scope_chunk_count, RDIB_ScopeChunk    **scope_chunks)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);
 
   RDIB_VMapBuilderTask task = {0};
-  task.counts               = push_array(scratch.arena, U64, tp->worker_count);
+  task.counts               = push_array(scratch.arena, ulong, tp->worker_count);
   task.ranges               = tp_divide_work(scratch.arena, unit_chunk_count, tp->worker_count);
 
   ProfBegin("Unit VMap");
-  U64             unit_vmap_count;
+  ulong             unit_vmap_count;
   RDIB_VMapRange *unit_vmaps;
   {
     ProfBegin("Count Ranges");
@@ -3598,7 +3598,7 @@ rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
   ProfEnd();
 
   ProfBegin("Global Variables");
-  U64             gvar_vmap_count;
+  ulong             gvar_vmap_count;
   RDIB_VMapRange *gvar_vmaps;
   {
     ProfBegin("Count");
@@ -3623,7 +3623,7 @@ rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
   ProfEnd();
 
   ProfBegin("Scopes");
-  U64             scope_vmap_count;
+  ulong             scope_vmap_count;
   RDIB_VMapRange *scope_vmaps;
   {
     ProfBegin("Count");
@@ -3674,24 +3674,24 @@ internal
 THREAD_POOL_TASK_FUNC(rdib_copy_string_data_task)
 {
   RDIB_CopyStringDataTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket              = task->buckets[bucket_idx];
-    U64                   string_table_offset = task->string_table[bucket_idx];
+    ulong                   string_table_offset = task->string_table[bucket_idx];
     Assert(string_table_offset + bucket->string.size <= task->string_data_size);
     MemoryCopy(task->string_data + string_table_offset, bucket->string.str, bucket->string.size);
   }
 }
 
 void
-rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMapBucket **buckets, U64 bucket_count)
+rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMapBucket **buckets, ulong bucket_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
 
   // assign string table offset for each bucket
-  U64  cursor       = 0;
-  U32 *string_table = push_array_no_zero(arena, U32, bucket_count);
-  for (U64 bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
+  ulong  cursor       = 0;
+  uint *string_table = push_array_no_zero(arena, uint, bucket_count);
+  for (ulong bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
     string_table[bucket_idx] = cursor;
     cursor += buckets[bucket_idx]->string.size;
   }
@@ -3726,26 +3726,26 @@ internal
 THREAD_POOL_TASK_FUNC(rdib_idx_run_copy_task)
 {
   RDIB_IdxRunCopyTask *task = raw_task;
-  for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
+  for (ulong bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket = task->buckets[bucket_idx];
     MemoryCopyTyped(&task->output_array[bucket->index_in_output_array], bucket->indices.v, bucket->indices.count);
   }
 }
 
 void
-rdib_data_sections_from_index_runs(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_IndexRunBucket **buckets, U64 bucket_count)
+rdib_data_sections_from_index_runs(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_IndexRunBucket **buckets, ulong bucket_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
 
   ProfBegin("Count Indices");
-  U64 total_index_count = 0;
-  for (U64 bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
+  ulong total_index_count = 0;
+  for (ulong bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
     total_index_count += buckets[bucket_idx]->indices.count;
   }
   ProfEnd();
 
-  U32 *output_array = push_array_no_zero(arena, U32, total_index_count);
+  uint *output_array = push_array_no_zero(arena, uint, total_index_count);
 
   RDIB_IdxRunCopyTask task = {0};
   task.buckets             = buckets;
@@ -3817,11 +3817,11 @@ rdib_data_sections_from_path_tree(TP_Context *tp, Arena *arena, RDIB_DataSection
 
 RDIB_PathTree *
 rdib_build_path_tree(Arena                 *arena,
-                     U64                    worker_count,
+                     ulong                    worker_count,
                      RDIB_SourceFile       *null_src_file,
-                     U64                    unit_chunk_count,
+                     ulong                    unit_chunk_count,
                      RDIB_UnitChunk       **unit_chunks,
-                     U64                    src_file_chunk_count,
+                     ulong                    src_file_chunk_count,
                      RDIB_SourceFileChunk **src_file_chunks)
 {
   ProfBeginFunction();
@@ -3831,9 +3831,9 @@ rdib_build_path_tree(Arena                 *arena,
   rdib_path_tree_insert(arena, tree, RDIB_PATH_TREE_NIL_STRING, null_src_file);
 
   ProfBegin("Units");
-  for (U64 ichunk = 0; ichunk < unit_chunk_count; ++ichunk) {
+  for (ulong ichunk = 0; ichunk < unit_chunk_count; ++ichunk) {
     RDIB_UnitChunk *chunk = unit_chunks[ichunk];
-    for (U64 iunit = 0; iunit < chunk->count; ++iunit) {
+    for (ulong iunit = 0; iunit < chunk->count; ++iunit) {
       RDIB_Unit *unit = &chunk->v[iunit];
       rdib_path_tree_insert(arena, tree, unit->source_file,  null_src_file);
       rdib_path_tree_insert(arena, tree, unit->object_file,  null_src_file);
@@ -3844,9 +3844,9 @@ rdib_build_path_tree(Arena                 *arena,
   ProfEnd();
 
   ProfBegin("Source Files");
-  for (U64 chunk_idx = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = src_file_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_SourceFile *src_file = chunk->v + i;
       rdib_path_tree_insert(arena, tree, src_file->file_path, src_file);
     }
@@ -3864,16 +3864,16 @@ THREAD_POOL_TASK_FUNC(rdib_build_var_section_task)
   ProfBeginDynamic("Global Variables Task %llu", task_id);
   RDIB_BuildSymbolSectionTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->gvars_rdib[chunk_idx];
     RDI_GlobalVariable *vars  = push_array_no_zero(arena, RDI_GlobalVariable, chunk->count);
 
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Variable      *src = &chunk->v[i];
       RDI_GlobalVariable *dst = &vars[i];
 
       // TODO: temporary hack while we don't have bytecode eval in RDI_GlobalVariable
-      U64 voff = 0;
+      ulong voff = 0;
       if (src->locations.first != 0) {
         if (src->locations.first->v.kind == RDI_LocationKind_AddrBytecodeStream && src->locations.first->v.bytecode.first->op == RDI_EvalOp_ModuleOff) {
           voff = src->locations.first->v.bytecode.first->p;
@@ -3908,8 +3908,8 @@ rdib_data_sections_from_global_variables(TP_Context           *tp,
                                          TP_Arena             *arena,
                                          RDIB_DataSectionList *sect_list,
                                          RDIB_StringMap       *string_map,
-                                         U64                   total_count,
-                                         U64                   chunk_count,
+                                         ulong                   total_count,
+                                         ulong                   chunk_count,
                                          RDIB_VariableChunk   **chunks)
 {
   ProfBeginFunction();
@@ -3938,15 +3938,15 @@ THREAD_POOL_TASK_FUNC(rdib_build_tvar_section_task)
   RDIB_BuildSymbolSectionTask *task = raw_task;
   ProfBeginDynamic("Thread Variables Task [Chunk Count: %llu]", task->ranges[task_id].max - task->ranges[task_id].min);
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->tvars_rdib[chunk_idx];
     RDI_ThreadVariable *vars  = push_array_no_zero(arena, RDI_ThreadVariable, chunk->count);
 
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Variable      *src = &chunk->v[i];
       RDI_ThreadVariable *dst = &vars[i];
 
-      U32 tls_off = 0;
+      uint tls_off = 0;
       if (src->locations.first != 0) {
         if (src->locations.first->v.kind == RDI_LocationKind_AddrBytecodeStream && src->locations.first->v.bytecode.first->op == RDI_EvalOp_TLSOff) {
           tls_off = src->locations.first->v.bytecode.first->p;
@@ -3980,8 +3980,8 @@ rdib_data_sections_from_thread_variables(TP_Context           *tp,
                                          TP_Arena             *arena,
                                          RDIB_DataSectionList *sect_list,
                                          RDIB_StringMap       *string_map,
-                                         U64                   total_count,
-                                         U64                   chunk_count,
+                                         ulong                   total_count,
+                                         ulong                   chunk_count,
                                          RDIB_VariableChunk   **chunks)
 {
   ProfBeginDynamic("Thread Variables [Chunk Count: %llu, Total Count %llu]", total_count, chunk_count);
@@ -4010,11 +4010,11 @@ THREAD_POOL_TASK_FUNC(rdib_build_procs_section_task)
   RDIB_BuildSymbolSectionTask *task = raw_task;
   ProfBeginDynamic("Procedures Task [Chunk Count: %llu]", task->ranges[task_id].max - task->ranges[task_id].min);
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ProcedureChunk *chunk = task->procs_rdib[chunk_idx];
     RDI_Procedure       *procs = push_array_no_zero(arena, RDI_Procedure, chunk->count);
 
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_Procedure *src = &chunk->v[i];
       RDI_Procedure  *dst = &procs[i];
 
@@ -4048,8 +4048,8 @@ rdib_data_sections_from_procedures(TP_Context           *tp,
                                    TP_Arena             *arena,
                                    RDIB_DataSectionList *sect_list,
                                    RDIB_StringMap       *string_map,
-                                   U64                   total_count,
-                                   U64                   chunk_count,
+                                   ulong                   total_count,
+                                   ulong                   chunk_count,
                                    RDIB_ProcedureChunk  **chunks)
 {
   ProfBeginDynamic("Procedures [Total Count: %llu, Chunk Count: %llu]", total_count, chunk_count);
@@ -4077,9 +4077,9 @@ THREAD_POOL_TASK_FUNC(rdib_count_scopes_task)
 {
   ProfBeginFunction();
   RDIB_BuildSymbolSectionTask *task = raw_task;
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ScopeChunk *chunk = task->scopes_rdib[chunk_idx];
-    for (U64 scope_i = 0; scope_i < chunk->count; ++scope_i) {
+    for (ulong scope_i = 0; scope_i < chunk->count; ++scope_i) {
       RDIB_Scope *scope = &chunk->v[scope_i];
 
       task->scope_voff_counts[task_id] += scope->ranges.count * 2;
@@ -4119,30 +4119,30 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
   ProfBeginDynamic("Scopes [Chunk Count: %llu]", task->ranges[task_id].max - task->ranges[task_id].min);
 
   // scope voff fill info
-  U64  scope_voff_cursor = task->scope_voff_offsets[task_id];
-  U64  scope_voff_max    = task->scope_voff_offsets[task_id] + task->scope_voff_counts[task_id];
-  U64 *scope_voff_ptr    = task->scope_voffs_rdi;
+  ulong  scope_voff_cursor = task->scope_voff_offsets[task_id];
+  ulong  scope_voff_max    = task->scope_voff_offsets[task_id] + task->scope_voff_counts[task_id];
+  ulong *scope_voff_ptr    = task->scope_voffs_rdi;
  
   // local fill info
-  U64 local_cursor  = task->local_offsets[task_id];
-  U64 local_max     = task->local_offsets[task_id] + task->local_counts[task_id];
+  ulong local_cursor  = task->local_offsets[task_id];
+  ulong local_max     = task->local_offsets[task_id] + task->local_counts[task_id];
   RDI_Local *locals = task->locals_rdi;
 
   // location data fill info
-  U64  loc_data_max    = task->loc_data_offsets[task_id] + task->loc_data_sizes[task_id];
-  U64  loc_data_cursor = task->loc_data_offsets[task_id];
+  ulong  loc_data_max    = task->loc_data_offsets[task_id] + task->loc_data_sizes[task_id];
+  ulong  loc_data_cursor = task->loc_data_offsets[task_id];
   byte  *loc_data        = task->loc_data_rdi;
 
   // location block fill info
-  U64                loc_block_cursor = task->loc_block_offsets[task_id];
-  U64                loc_block_max    = task->loc_block_offsets[task_id] + task->loc_block_counts[task_id];
+  ulong                loc_block_cursor = task->loc_block_offsets[task_id];
+  ulong                loc_block_max    = task->loc_block_offsets[task_id] + task->loc_block_counts[task_id];
   RDI_LocationBlock *loc_blocks       = task->loc_blocks_rdi;
 
-  for (U64 ichunk = task->ranges[task_id].min; ichunk < task->ranges[task_id].max; ++ichunk) {
+  for (ulong ichunk = task->ranges[task_id].min; ichunk < task->ranges[task_id].max; ++ichunk) {
     RDIB_ScopeChunk *chunk = task->scopes_rdib[ichunk];
-    for (U64 iscope = 0; iscope < chunk->count; ++iscope) {
+    for (ulong iscope = 0; iscope < chunk->count; ++iscope) {
       RDIB_Scope *scope_src = &chunk->v[iscope];
-      U64         scope_idx = rdib_idx_from_scope(scope_src);
+      ulong         scope_idx = rdib_idx_from_scope(scope_src);
       RDI_Scope  *scope_dst = &task->scopes_rdi[scope_idx];
 
       scope_dst->proc_idx               = rdib_idx_from_procedure(scope_src->container_proc);
@@ -4172,13 +4172,13 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
 
       // fill out locals & locations
       for (RDIB_Variable *local_src = scope_src->local_first; local_src != 0; local_src = local_src->next, ++local_cursor) {
-        U64 loc_block_first = loc_block_cursor;
+        ulong loc_block_first = loc_block_cursor;
 
         for (RDIB_LocationNode *loc_n = local_src->locations.first; loc_n != 0; loc_n = loc_n->next) {
           RDIB_Location *loc = &loc_n->v;
 
           // fill out location data
-          U64 location_data_off = loc_data_cursor;
+          ulong location_data_off = loc_data_cursor;
           switch (loc->kind) {
           case RDI_LocationKind_NULL: break;
           case RDI_LocationKind_AddrBytecodeStream:
@@ -4222,7 +4222,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
           }
 
           // zero out align bytes
-          U64 align_size = AlignPadPow2(loc_data_cursor, 8);
+          ulong align_size = AlignPadPow2(loc_data_cursor, 8);
           Assert(loc_data_cursor + align_size <= loc_data_max);
           MemorySet(loc_data + loc_data_cursor, 0, align_size);
           loc_data_cursor += align_size;
@@ -4265,8 +4265,8 @@ rdib_data_sections_from_scopes(TP_Context            *tp,
                                TP_Arena              *arena,
                                RDIB_DataSectionList  *sect_list,
                                RDIB_StringMap        *string_map,
-                               U64                    total_scope_count,
-                               U64                    chunk_count,
+                               ulong                    total_scope_count,
+                               ulong                    chunk_count,
                                RDIB_ScopeChunk      **scopes)
 {
   ProfBeginFunction();
@@ -4278,17 +4278,17 @@ rdib_data_sections_from_scopes(TP_Context            *tp,
   task.scopes_rdib                 = scopes;
   
   ProfBegin("Count Locals & Locations");
-  task.scope_voff_counts = push_array(scratch.arena, U64, tp->worker_count);
-  task.local_counts      = push_array(scratch.arena, U64, tp->worker_count);
-  task.loc_block_counts  = push_array(scratch.arena, U64, tp->worker_count);
-  task.loc_data_sizes    = push_array(scratch.arena, U64, tp->worker_count);
+  task.scope_voff_counts = push_array(scratch.arena, ulong, tp->worker_count);
+  task.local_counts      = push_array(scratch.arena, ulong, tp->worker_count);
+  task.loc_block_counts  = push_array(scratch.arena, ulong, tp->worker_count);
+  task.loc_data_sizes    = push_array(scratch.arena, ulong, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_count_scopes_task, &task);
   ProfEnd();
 
-  U64 total_scope_voff_count = sum_array_u64(tp->worker_count, task.scope_voff_counts);
-  U64 total_local_count      = sum_array_u64(tp->worker_count, task.local_counts     );
-  U64 total_loc_block_count  = sum_array_u64(tp->worker_count, task.loc_block_counts );
-  U64 total_loc_data_size    = sum_array_u64(tp->worker_count, task.loc_data_sizes   );
+  ulong total_scope_voff_count = sum_array_u64(tp->worker_count, task.scope_voff_counts);
+  ulong total_local_count      = sum_array_u64(tp->worker_count, task.local_counts     );
+  ulong total_loc_block_count  = sum_array_u64(tp->worker_count, task.loc_block_counts );
+  ulong total_loc_data_size    = sum_array_u64(tp->worker_count, task.loc_data_sizes   );
 
   ProfBegin("Fill out scopes, locals, location blocks, and location data");
   task.scope_voff_offsets = offsets_from_counts_array_u64(scratch.arena, task.scope_voff_counts, tp->worker_count);
@@ -4297,7 +4297,7 @@ rdib_data_sections_from_scopes(TP_Context            *tp,
   task.loc_data_offsets   = offsets_from_counts_array_u64(scratch.arena, task.loc_data_sizes,    tp->worker_count);
 
   ProfBegin("Push");
-  task.scope_voffs_rdi = push_array_no_zero(arena->v[0], U64,               total_scope_voff_count);
+  task.scope_voffs_rdi = push_array_no_zero(arena->v[0], ulong,               total_scope_voff_count);
   task.scopes_rdi      = push_array_no_zero(arena->v[0], RDI_Scope,         total_scope_count     );
   task.locals_rdi      = push_array_no_zero(arena->v[0], RDI_Local,         total_local_count     );
   task.loc_blocks_rdi  = push_array_no_zero(arena->v[0], RDI_LocationBlock, total_loc_block_count );
@@ -4338,9 +4338,9 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
   RDIB_NameMapBuilderTask *task         = raw_task;
   RDI_NameMapKind          name_map_idx = (RDI_NameMapKind)task_id;
 
-  U64 out_node_count   = task->in_bucket_counts[name_map_idx];
-  U64 load_factor      = 4;
-  U64 out_bucket_count = CeilIntegerDiv(out_node_count, load_factor);
+  ulong out_node_count   = task->in_bucket_counts[name_map_idx];
+  ulong load_factor      = 4;
+  ulong out_bucket_count = CeilIntegerDiv(out_node_count, load_factor);
 
   ProfBegin("Build temp hash map");
   struct Node {
@@ -4350,15 +4350,15 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
   struct NodeList {
     struct Node *first;
     struct Node *last;
-    U64          node_count;
+    ulong          node_count;
   };
   struct NodeList *temp_map   = push_array(scratch.arena,         struct NodeList, out_bucket_count);
   struct Node     *temp_nodes = push_array_no_zero(scratch.arena, struct Node,     out_node_count);
-  for (U64 i = 0; i < task->in_bucket_counts[name_map_idx]; ++i) {
+  for (ulong i = 0; i < task->in_bucket_counts[name_map_idx]; ++i) {
     RDIB_StringMapBucket *src_bucket = task->in_buckets[name_map_idx][i];
 
-    U64 hash       = rdi_hash(src_bucket->string.str, src_bucket->string.size);
-    U64 bucket_idx = hash % out_bucket_count;
+    ulong hash       = rdi_hash(src_bucket->string.str, src_bucket->string.size);
+    ulong bucket_idx = hash % out_bucket_count;
 
     struct Node *node = temp_nodes + i;
     node->next = 0;
@@ -4375,7 +4375,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
   ProfEnd();
 
   ProfBegin("Fill out buckets");
-  for (U64 bucket_idx = 0, node_cursor = 0; bucket_idx < out_bucket_count; ++bucket_idx) {
+  for (ulong bucket_idx = 0, node_cursor = 0; bucket_idx < out_bucket_count; ++bucket_idx) {
     struct NodeList   *src_bucket = &temp_map[bucket_idx];
     RDI_NameMapBucket *dst_bucket = &out_buckets[bucket_idx];
 
@@ -4420,7 +4420,7 @@ rdib_data_sections_from_name_maps(TP_Context            *tp,
                                   RDIB_StringMap        *string_map,
                                   RDIB_IndexRunMap      *idx_run_map,
                                   RDIB_StringMapBucket **src_name_maps[RDI_NameMapKind_COUNT],
-                                  U64                    src_name_map_counts[RDI_NameMapKind_COUNT])
+                                  ulong                    src_name_map_counts[RDI_NameMapKind_COUNT])
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);
@@ -4433,16 +4433,16 @@ rdib_data_sections_from_name_maps(TP_Context            *tp,
   task.in_buckets        = src_name_maps;
   task.out_buckets       = push_array(scratch.arena, RDI_NameMapBucket *, RDI_NameMapKind_COUNT);
   task.out_nodes         = push_array(scratch.arena, RDI_NameMapNode *,   RDI_NameMapKind_COUNT);
-  task.out_bucket_counts = push_array(scratch.arena, U64,                 RDI_NameMapKind_COUNT);
-  task.out_node_counts   = push_array(scratch.arena, U64,                 RDI_NameMapKind_COUNT);
+  task.out_bucket_counts = push_array(scratch.arena, ulong,                 RDI_NameMapKind_COUNT);
+  task.out_node_counts   = push_array(scratch.arena, ulong,                 RDI_NameMapKind_COUNT);
   tp_for_parallel(tp, arena, RDI_NameMapKind_COUNT, rdib_build_name_map_task, &task);
   ProfEnd();
 
-  U64 *bucket_offsets = offsets_from_counts_array_u64(scratch.arena, task.out_bucket_counts, RDI_NameMapKind_COUNT);
-  U64 *node_offsets   = offsets_from_counts_array_u64(scratch.arena, task.out_node_counts,   RDI_NameMapKind_COUNT);
+  ulong *bucket_offsets = offsets_from_counts_array_u64(scratch.arena, task.out_bucket_counts, RDI_NameMapKind_COUNT);
+  ulong *node_offsets   = offsets_from_counts_array_u64(scratch.arena, task.out_node_counts,   RDI_NameMapKind_COUNT);
 
   String8List raw_name_maps = {0}, raw_name_map_buckets = {0}, raw_name_map_nodes = {0}; 
-  for (U64 i = 0; i < RDI_NameMapKind_COUNT; ++i) {
+  for (ulong i = 0; i < RDI_NameMapKind_COUNT; ++i) {
     RDI_NameMap *dst_name_map = push_array(arena->v[0], RDI_NameMap, 1);
     dst_name_map->bucket_base_idx = bucket_offsets[i];
     dst_name_map->node_base_idx   = node_offsets[i];
@@ -4479,13 +4479,13 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
   RDIB_SrcLineMapsTask *task    = raw_task;
 
   RDIB_SourceFile *src_file     = task->src_file_arr[task_id];
-  U64              src_file_idx = rdib_idx_from_source_file(src_file);
+  ulong              src_file_idx = rdib_idx_from_source_file(src_file);
 
   //ProfBeginDynamic("Build Source Line Map [%.*s]", str8_varg(src_file->file_path));
   ProfBegin("Build Source Line Map");
 
   ProfBegin("Count lines/virt offsets");
-  U64 ln_voff_count = 0;
+  ulong ln_voff_count = 0;
   for (RDIB_LineTableFragment *frag = src_file->line_table_frags; frag != 0; frag = frag->next_src_file) {
     ln_voff_count += frag->line_count;
   }
@@ -4497,9 +4497,9 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
 
   ProfBegin("Fill out ln_voff_arr");
   {
-    U64 cursor = 0;
+    ulong cursor = 0;
     for (RDIB_LineTableFragment *frag = src_file->line_table_frags; frag != 0; frag = frag->next_src_file) {
-      for (U64 line_idx = 0; line_idx < frag->line_count; ++line_idx) {
+      for (ulong line_idx = 0; line_idx < frag->line_count; ++line_idx) {
         ln_voff_arr[cursor].v0 = frag->line_nums[line_idx];
         ln_voff_arr[cursor].v1 = frag->voffs[line_idx];
         ++cursor;
@@ -4522,12 +4522,12 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
   ProfEnd();
 
   // TODO: leak, precompute unique line number count and push exact array lengths
-  U32 *line_nums   = push_array_no_zero(arena, U32, ln_voff_count);
-  U32 *line_ranges = push_array_no_zero(arena, U32, ln_voff_count + 1);
-  U64 *voffs       = push_array_no_zero(arena, U64, ln_voff_count);
+  uint *line_nums   = push_array_no_zero(arena, uint, ln_voff_count);
+  uint *line_ranges = push_array_no_zero(arena, uint, ln_voff_count + 1);
+  ulong *voffs       = push_array_no_zero(arena, ulong, ln_voff_count);
 
-  U64 voff_cursor     = 0;
-  U64 line_num_cursor = 0;
+  ulong voff_cursor     = 0;
+  ulong line_num_cursor = 0;
   if (ln_voff_count > 0) {
     line_nums[line_num_cursor]   = ln_voff_arr[0].v0;
     voffs[voff_cursor]           = ln_voff_arr[0].v1;
@@ -4537,11 +4537,11 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
     ++line_num_cursor;
 
     ProfBegin("Fill out output array");
-    for (U64 i = 1; i < ln_voff_count; ++i) {
+    for (ulong i = 1; i < ln_voff_count; ++i) {
       // does this voff belong to next line number?
       if (ln_voff_arr[i].v0 != line_nums[line_num_cursor-1]) {
         line_nums[line_num_cursor]   = ln_voff_arr[i].v0;
-        line_ranges[line_num_cursor] = (U32)voff_cursor;
+        line_ranges[line_num_cursor] = (uint)voff_cursor;
         ++line_num_cursor;
       }
       voffs[voff_cursor++] = ln_voff_arr[i].v1;
@@ -4570,8 +4570,8 @@ void
 rdib_data_sections_from_source_line_maps(TP_Context            *tp,
                                          TP_Arena              *arena,
                                          RDIB_DataSectionList  *sect_list,
-                                         U64                    total_src_file_count,
-                                         U64                    src_file_chunk_count,
+                                         ulong                    total_src_file_count,
+                                         ulong                    src_file_chunk_count,
                                          RDIB_SourceFileChunk **src_file_chunks)
 {
   ProfBeginFunction();
@@ -4579,9 +4579,9 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
 
   ProfBegin("Prepare Source File Array");
   RDIB_SourceFile **src_file_arr = push_array_no_zero(scratch.arena, RDIB_SourceFile *, total_src_file_count);
-  for (U64 chunk_idx = 0, cursor = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0, cursor = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = src_file_chunks[chunk_idx];  
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       src_file_arr[cursor++] = &chunk->v[i];
     }
   }
@@ -4590,11 +4590,11 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
   ProfBegin("Init Task Context");
   RDIB_SrcLineMapsTask task = {0};
   task.src_file_arr    = src_file_arr;
-  task.out_line_counts = push_array_no_zero(scratch.arena, U32,   total_src_file_count);
-  task.out_voff_counts = push_array_no_zero(scratch.arena, U32,   total_src_file_count);
-  task.out_line_nums   = push_array_no_zero(scratch.arena, U32 *, total_src_file_count);
-  task.out_line_ranges = push_array_no_zero(scratch.arena, U32 *, total_src_file_count);
-  task.out_voffs       = push_array_no_zero(scratch.arena, U64 *, total_src_file_count);
+  task.out_line_counts = push_array_no_zero(scratch.arena, uint,   total_src_file_count);
+  task.out_voff_counts = push_array_no_zero(scratch.arena, uint,   total_src_file_count);
+  task.out_line_nums   = push_array_no_zero(scratch.arena, uint *, total_src_file_count);
+  task.out_line_ranges = push_array_no_zero(scratch.arena, uint *, total_src_file_count);
+  task.out_voffs       = push_array_no_zero(scratch.arena, ulong *, total_src_file_count);
   ProfEnd();
 
   ProfBegin("Build Source Line Maps");
@@ -4611,20 +4611,20 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
   RDI_SourceLineMap *src_line_maps = push_array_no_zero(arena->v[0], RDI_SourceLineMap, total_src_file_count + 1);
   ProfEnd();
 
-  U64 src_line_map_cursor = 0;
-  U64 line_num_cursor     = 0;
-  U64 line_range_cursor   = 0;
-  U64 voff_cursor         = 0;
+  ulong src_line_map_cursor = 0;
+  ulong line_num_cursor     = 0;
+  ulong line_range_cursor   = 0;
+  ulong voff_cursor         = 0;
 
   // zero-out null source line map
   MemoryZeroStruct(&src_line_maps[src_line_map_cursor]);
   ++src_line_map_cursor;
 
-  for (U64 chunk_idx = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = src_file_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_SourceFile *src_file     = chunk->v + i;
-      U64              src_file_idx = rdib_idx_from_source_file(src_file);
+      ulong              src_file_idx = rdib_idx_from_source_file(src_file);
 
       if (task.out_line_counts[src_file_idx] > 0) {
         src_file->src_line_map_idx = src_line_map_cursor;
@@ -4669,30 +4669,30 @@ THREAD_POOL_TASK_FUNC(rdib_build_line_tables_task)
   RDIB_BuildLineTablesTask *task    = raw_task;
   Rng1U64                   range   = task->ranges[task_id];
 
-  for (U64 chunk_idx = range.min; chunk_idx < range.max; ++chunk_idx) {
+  for (ulong chunk_idx = range.min; chunk_idx < range.max; ++chunk_idx) {
     RDIB_LineTableChunk *chunk = task->chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_LineTable *line_table     = &chunk->v[i];
-      U64             line_table_idx = chunk->base + i;
+      ulong             line_table_idx = chunk->base + i;
 
-      U64 total_line_count = 0;
+      ulong total_line_count = 0;
       for (RDIB_LineTableFragment *frag = line_table->first; frag != 0; frag = frag->next_line_table) {
         total_line_count += frag->line_count + /* range terminator */ 1;
       }
 
       if (total_line_count > 0) {
         struct Value {
-          U32 src_file_idx;
-          U32 line_num;
+          uint src_file_idx;
+          uint line_num;
           ushort col_first;
           ushort col_opl;
         };
         KeyValuePair *pairs       = push_array_no_zero(scratch.arena, KeyValuePair, total_line_count);
         struct Value *values      = push_array_no_zero(scratch.arena, struct Value, total_line_count);
-        U64           pair_cursor = 0;
+        ulong           pair_cursor = 0;
 
         for (RDIB_LineTableFragment *frag = line_table->first; frag != 0; frag = frag->next_line_table) {
-          for (U64 line_idx = 0; line_idx < frag->line_count; ++line_idx, ++pair_cursor) {
+          for (ulong line_idx = 0; line_idx < frag->line_count; ++line_idx, ++pair_cursor) {
             struct Value *value = &values[pair_cursor];
             KeyValuePair *pair  = &pairs[pair_cursor];
 
@@ -4730,12 +4730,12 @@ THREAD_POOL_TASK_FUNC(rdib_build_line_tables_task)
         sort_key_value_pairs_as_u64(pairs, pair_cursor);
 
         // fill out RDI_Line output
-        U64       line_count = pair_cursor + 1;
-        U64      *voffs      = push_array_no_zero(arena, U64,      line_count);
+        ulong       line_count = pair_cursor + 1;
+        ulong      *voffs      = push_array_no_zero(arena, ulong,      line_count);
         RDI_Line *lines      = push_array_no_zero(arena, RDI_Line, line_count);
 
-        U64 line_cursor = 0;
-        for (U64 line_idx = 0; line_idx < pair_cursor; ++line_idx) {
+        ulong line_cursor = 0;
+        for (ulong line_idx = 0; line_idx < pair_cursor; ++line_idx) {
           // remove terminator if there is a real line number
           if (line_idx + 1 < pair_cursor && pairs[line_idx].key_u64 == pairs[line_idx+1].key_u64) {
             continue;
@@ -4772,8 +4772,8 @@ void
 rdib_data_sections_from_line_tables(TP_Context            *tp,
                                     TP_Arena              *arena,
                                     RDIB_DataSectionList  *sect_list,
-                                    U64                    total_line_table_count,
-                                    U64                    chunk_count,
+                                    ulong                    total_line_table_count,
+                                    ulong                    chunk_count,
                                     RDIB_LineTableChunk  **chunks)
 {
   ProfBeginFunction();
@@ -4783,8 +4783,8 @@ rdib_data_sections_from_line_tables(TP_Context            *tp,
   RDIB_BuildLineTablesTask task = {0};
   task.chunks                   = chunks;
   task.ranges                   = tp_divide_work(scratch.arena, chunk_count, tp->worker_count);
-  task.out_line_table_counts    = push_array_no_zero(scratch.arena, U64,        total_line_table_count);
-  task.out_line_table_voffs     = push_array_no_zero(scratch.arena, U64 *,      total_line_table_count);
+  task.out_line_table_counts    = push_array_no_zero(scratch.arena, ulong,        total_line_table_count);
+  task.out_line_table_voffs     = push_array_no_zero(scratch.arena, ulong *,      total_line_table_count);
   task.out_line_table_lines     = push_array_no_zero(scratch.arena, RDI_Line *, total_line_table_count);
   tp_for_parallel(tp, arena, tp->worker_count, rdib_build_line_tables_task, &task);
   ProfEnd();
@@ -4800,15 +4800,15 @@ rdib_data_sections_from_line_tables(TP_Context            *tp,
   RDI_LineTable *line_tables_rdi = push_array_no_zero(arena->v[0], RDI_LineTable, total_line_table_count);
   ProfEnd();
 
-  U64 line_table_cursor      = 0;
-  U64 line_table_voff_cursor = 0;
-  U64 line_table_line_cursor = 0;
+  ulong line_table_cursor      = 0;
+  ulong line_table_voff_cursor = 0;
+  ulong line_table_line_cursor = 0;
 
-  for (U64 chunk_idx = 0; chunk_idx < chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0; chunk_idx < chunk_count; ++chunk_idx) {
     RDIB_LineTableChunk *chunk = chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_LineTable *src     = &chunk->v[i];
-      U64             src_idx = rdib_idx_from_line_table(src);
+      ulong             src_idx = rdib_idx_from_line_table(src);
       if (task.out_line_table_counts[src_idx] > 0) {
         RDI_LineTable *dst = &line_tables_rdi[line_table_cursor];
 
@@ -4851,11 +4851,11 @@ THREAD_POOL_TASK_FUNC(rdib_fill_src_files_task)
 {
   RDIB_FillSourceFilesTask *task = raw_task;
 
-  for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
+  for (ulong chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = task->src_file_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_SourceFile *src          = chunk->v + i;
-      U32              src_file_idx = rdib_idx_from_source_file(src);
+      uint              src_file_idx = rdib_idx_from_source_file(src);
       RDI_SourceFile  *dst          = task->src_files_dst + src_file_idx;
 
       dst->file_path_node_idx          = rdib_idx_from_path_tree(task->path_tree, src->file_path);
@@ -4871,8 +4871,8 @@ rdib_data_sections_from_source_files(TP_Context            *tp,
                                      RDIB_DataSectionList  *sect_list,
                                      RDIB_StringMap        *string_map,
                                      RDIB_PathTree         *path_tree,
-                                     U64                    total_src_file_count,
-                                     U64                    src_file_chunk_count,
+                                     ulong                    total_src_file_count,
+                                     ulong                    src_file_chunk_count,
                                      RDIB_SourceFileChunk **src_file_chunks)
 {
   ProfBeginFunction();
@@ -4899,19 +4899,19 @@ rdib_data_sections_from_inline_sites(TP_Context *tp,
                                      Arena *arena,
                                      RDIB_DataSectionList *sect_list,
                                      RDIB_StringMap *string_map,
-                                     U64 total_inline_site_count,
-                                     U64 inline_site_chunk_count,
+                                     ulong total_inline_site_count,
+                                     ulong inline_site_chunk_count,
                                      RDIB_InlineSiteChunk **inline_site_chunks)
 {
   ProfBeginFunction();
 
   RDI_InlineSite *dst_arr = push_array(arena, RDI_InlineSite, total_inline_site_count);
 
-  for (U64 chunk_idx = 0; chunk_idx < inline_site_chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0; chunk_idx < inline_site_chunk_count; ++chunk_idx) {
     RDIB_InlineSiteChunk *chunk = inline_site_chunks[chunk_idx];
-    for (U64 i = 0; i < chunk->count; ++i) {
+    for (ulong i = 0; i < chunk->count; ++i) {
       RDIB_InlineSite *src = &chunk->v[i];
-      U64 idx = rdib_idx_from_inline_site(src);
+      ulong idx = rdib_idx_from_inline_site(src);
       RDI_InlineSite *dst = &dst_arr[idx];
 
       dst->name_string_idx = rdib_idx_from_string_map(string_map, src->name);
@@ -4966,7 +4966,7 @@ rdib_init_input(Arena *arena)
   {
     // Line Table Fragment
     null_frag->src_file = null_src_file;
-    null_frag->voffs    = push_array(arena, U64, 1);
+    null_frag->voffs    = push_array(arena, ulong, 1);
 
     // Source File
     null_src_file->line_table_frags = null_frag;
@@ -5060,22 +5060,22 @@ rdib_finish(TP_Context *tp, TP_Arena *arena, RDIB_Input *input)
   RDIB_UDTMemberChunkList  all_udt_members       = {0};
   RDIB_UDTMemberChunkList  all_enum_members      = {0};
 
-  //U64 type_chunk_count        = types.count;
-  //U64 struct_chunk_count      = struct_list.count;
-  //U64 union_chunk_count       = union_list.count;
-  //U64 enum_chunk_count        = enum_list.count;
-  //U64 total_struct_count      = rdib_type_chunk_list_total_count(struct_list);
-  //U64 total_union_count       = rdib_type_chunk_list_total_count(union_list);
-  //U64 total_enum_count        = rdib_type_chunk_list_total_count(enum_list);
-  //U64 extern_gvar_chunk_count = extern_gvars.count;
-  //U64 extern_tvar_chunk_count = extern_tvars.count;
-  //U64 extern_proc_chunk_count = extern_procs.count;
-  //U64 static_gvar_chunk_count = static_gvars.count;
-  //U64 static_tvar_chunk_count = static_tvars.count;
-  //U64 static_proc_chunk_count = static_procs.count;
-  //U64 total_extern_gvar_count = rdib_variable_chunk_list_total_count (extern_gvars);
-  //U64 total_extern_tvar_count = rdib_variable_chunk_list_total_count (extern_tvars);
-  //U64 total_extern_proc_count = rdib_procedure_chunk_list_total_count(extern_procs);
+  //ulong type_chunk_count        = types.count;
+  //ulong struct_chunk_count      = struct_list.count;
+  //ulong union_chunk_count       = union_list.count;
+  //ulong enum_chunk_count        = enum_list.count;
+  //ulong total_struct_count      = rdib_type_chunk_list_total_count(struct_list);
+  //ulong total_union_count       = rdib_type_chunk_list_total_count(union_list);
+  //ulong total_enum_count        = rdib_type_chunk_list_total_count(enum_list);
+  //ulong extern_gvar_chunk_count = extern_gvars.count;
+  //ulong extern_tvar_chunk_count = extern_tvars.count;
+  //ulong extern_proc_chunk_count = extern_procs.count;
+  //ulong static_gvar_chunk_count = static_gvars.count;
+  //ulong static_tvar_chunk_count = static_tvars.count;
+  //ulong static_proc_chunk_count = static_procs.count;
+  //ulong total_extern_gvar_count = rdib_variable_chunk_list_total_count (extern_gvars);
+  //ulong total_extern_tvar_count = rdib_variable_chunk_list_total_count (extern_tvars);
+  //ulong total_extern_proc_count = rdib_procedure_chunk_list_total_count(extern_procs);
 
   ProfBegin("Concat Chunk Lists");
   rdib_unit_chunk_list_concat_in_place       (&all_units,             &input->units            );
@@ -5123,21 +5123,21 @@ rdib_finish(TP_Context *tp, TP_Arena *arena, RDIB_Input *input)
   ProfEnd();
 
   ProfBegin("Count Symbols, Types, and etc.");
-  U64 total_unit_count             = rdib_unit_chunk_list_total_count       (all_units            );
-  U64 total_src_file_count         = rdib_source_file_chunk_list_total_count(all_src_files        );
-  U64 total_line_table_count       = rdib_line_table_chunk_list_total_count (all_line_tables      );
-  U64 total_scope_count            = rdib_scope_chunk_list_total_count      (all_scopes           );
-  U64 total_local_count            = rdib_variable_chunk_list_total_count   (all_locals           );
-  U64 total_inline_site_count      = rdib_inline_site_chunk_list_total_count(all_inline_sites     );
-  U64 total_udt_member_count       = rdib_udt_member_chunk_list_total_count (all_udt_members      );
-  U64 total_enum_member_count      = rdib_udt_member_chunk_list_total_count (all_enum_members     );
-  U64 total_type_count             = rdib_type_chunk_list_total_count       (all_types            );
-  U64 total_param_type_count       = rdib_type_chunk_list_total_count       (all_param_types      );
-  //U64 total_udt_member_type_count  = rdib_type_chunk_list_total_count       (all_udt_member_types );
-  //U64 total_enum_member_type_count = rdib_type_chunk_list_total_count       (all_enum_member_types); 
-  U64 total_tvar_count             = rdib_variable_chunk_list_total_count   (all_tvars            );
-  U64 total_gvar_count             = rdib_variable_chunk_list_total_count   (all_gvars            );
-  U64 total_proc_count             = rdib_procedure_chunk_list_total_count  (all_procs            );
+  ulong total_unit_count             = rdib_unit_chunk_list_total_count       (all_units            );
+  ulong total_src_file_count         = rdib_source_file_chunk_list_total_count(all_src_files        );
+  ulong total_line_table_count       = rdib_line_table_chunk_list_total_count (all_line_tables      );
+  ulong total_scope_count            = rdib_scope_chunk_list_total_count      (all_scopes           );
+  ulong total_local_count            = rdib_variable_chunk_list_total_count   (all_locals           );
+  ulong total_inline_site_count      = rdib_inline_site_chunk_list_total_count(all_inline_sites     );
+  ulong total_udt_member_count       = rdib_udt_member_chunk_list_total_count (all_udt_members      );
+  ulong total_enum_member_count      = rdib_udt_member_chunk_list_total_count (all_enum_members     );
+  ulong total_type_count             = rdib_type_chunk_list_total_count       (all_types            );
+  ulong total_param_type_count       = rdib_type_chunk_list_total_count       (all_param_types      );
+  //ulong total_udt_member_type_count  = rdib_type_chunk_list_total_count       (all_udt_member_types );
+  //ulong total_enum_member_type_count = rdib_type_chunk_list_total_count       (all_enum_member_types); 
+  ulong total_tvar_count             = rdib_variable_chunk_list_total_count   (all_tvars            );
+  ulong total_gvar_count             = rdib_variable_chunk_list_total_count   (all_gvars            );
+  ulong total_proc_count             = rdib_procedure_chunk_list_total_count  (all_procs            );
   ProfEnd();
 
   // +1 to skip nulls
@@ -5152,10 +5152,10 @@ rdib_finish(TP_Context *tp, TP_Arena *arena, RDIB_Input *input)
   //RDIB_TypeChunk      **union_chunks       = struct_chunks + struct_chunk_count;
   //RDIB_TypeChunk      **enum_chunks        = union_chunks + union_chunk_count;
   //RDIB_TypeChunk      **udt_chunks         = struct_chunks;
-  //U64                  udt_chunk_count     = struct_chunk_count + union_chunk_count + enum_chunk_count;
+  //ulong                  udt_chunk_count     = struct_chunk_count + union_chunk_count + enum_chunk_count;
 
   ProfBegin("Assign Type Indices");
-  U64 total_type_node_count = 1;
+  ulong total_type_node_count = 1;
   {
     struct TypeNode {
       struct TypeNode *next;
@@ -5177,9 +5177,9 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   SLLStackPush(stack, n);                                           \
 } while (0)
 
-    for (U64 chunk_idx = 0; chunk_idx < all_types.count; ++chunk_idx) {
+    for (ulong chunk_idx = 0; chunk_idx < all_types.count; ++chunk_idx) {
       RDIB_TypeChunk *chunk = all_type_chunks[chunk_idx];
-      for (U64 i = 0; i < chunk->count; ++i) {
+      for (ulong i = 0; i < chunk->count; ++i) {
         push_node(&chunk->v[i]);
 
         for (struct TypeNode *cursor = stack; cursor != 0; cursor = cursor->next) {
@@ -5207,7 +5207,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
             push_node(cursor->type->func.return_type);
             push_node(cursor->type->func.params_type);
             RDIB_Type *params = cursor->type->func.params_type;
-            for (U64 i = 0; i < params->params.count; ++i) {
+            for (ulong i = 0; i < params->params.count; ++i) {
               push_node(params->params.types[i]);
             }
           } else if (cursor->type->kind == RDI_TypeKind_Method) {
@@ -5215,14 +5215,14 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
             push_node(cursor->type->method.this_type);
             push_node(cursor->type->method.return_type);
             RDIB_Type *params = cursor->type->method.params_type;
-            for (U64 i = 0; i < params->params.count; ++i) {
+            for (ulong i = 0; i < params->params.count; ++i) {
               push_node(params->params.types[i]);
             }
           } else if (cursor->type->kind == RDI_TypeKindExt_StaticMethod) {
             push_node(cursor->type->static_method.class_type);
             push_node(cursor->type->static_method.return_type);
             RDIB_Type *params = cursor->type->static_method.params_type;
-            for (U64 i = 0; i < params->params.count; ++i) {
+            for (ulong i = 0; i < params->params.count; ++i) {
               push_node(params->params.types[i]);
             }
           } else if (cursor->type->kind == RDI_TypeKind_Bitfield) {
@@ -5262,7 +5262,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   ProfBegin("Type Stats");
   RDIB_TypeStats type_stats = {0};
   {
-    type_stats.udt_counts = push_array(scratch.arena, U64, all_types.count);
+    type_stats.udt_counts = push_array(scratch.arena, ulong, all_types.count);
     RDIB_TypeStatsTask task = { .chunks = all_type_chunks, .type_stats = &type_stats };
     tp_for_parallel(tp, 0, all_types.count, rdib_type_stats_task, &task);
   }
@@ -5280,19 +5280,19 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   ProfBegin("String Map");
   RDIB_StringMap *string_map;
   {
-    U64 top_level_string_count   = 2;
-    U64 sect_string_count        = 1;
-    U64 src_file_string_count    = 1;
-    U64 unit_string_count        = 6;
-    U64 variable_string_count    = 2;
-    U64 procedure_string_count   = 2;
-    U64 scope_string_count       = 0;
-    U64 inline_site_string_count = 0;
-    U64 member_string_count      = 2;
-    U64 type_string_count        = 3;
-    U64 path_tree_node_count     = 1;
+    ulong top_level_string_count   = 2;
+    ulong sect_string_count        = 1;
+    ulong src_file_string_count    = 1;
+    ulong unit_string_count        = 6;
+    ulong variable_string_count    = 2;
+    ulong procedure_string_count   = 2;
+    ulong scope_string_count       = 0;
+    ulong inline_site_string_count = 0;
+    ulong member_string_count      = 2;
+    ulong type_string_count        = 3;
+    ulong path_tree_node_count     = 1;
 
-    U64 total_string_count = 1 /* :string_map_null */                           +
+    ulong total_string_count = 1 /* :string_map_null */                           +
                              1                       * top_level_string_count   +
                              input->sect_count       * sect_string_count        +
                              total_src_file_count    * src_file_string_count    +
@@ -5314,7 +5314,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     task.string_map             = string_map;
     task.string_map_update_func = rdib_string_map_update_null;
     task.free_buckets           = push_array(scratch.arena, RDIB_StringMapBucket *, tp->worker_count);
-    task.element_indices        = push_array(scratch.arena, U64,                    tp->worker_count);
+    task.element_indices        = push_array(scratch.arena, ulong,                    tp->worker_count);
 
     // :string_map_null
     rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, str8_lit(""));
@@ -5412,7 +5412,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     task.string_map             = 0;
     task.string_map_update_func = rdib_string_map_update_concat_void_list_atomic;
     task.free_buckets           = push_array(scratch.arena, RDIB_StringMapBucket *, tp->worker_count);
-    task.element_indices        = push_array(scratch.arena, U64,                    tp->worker_count);
+    task.element_indices        = push_array(scratch.arena, ulong,                    tp->worker_count);
 
     ProfBegin("Global Variables");
     task.string_map = name_maps[RDI_NameMapKind_GlobalVariables];
@@ -5452,7 +5452,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   ProfEnd();
 
   ProfBeginDynamic("Extract String Table Buckets [Cap: %llu]", string_map->cap);
-  U64                    string_map_bucket_count;
+  ulong                    string_map_bucket_count;
   RDIB_StringMapBucket **string_map_buckets = rdib_extant_buckets_from_string_map(tp, scratch.arena, string_map, &string_map_bucket_count);
   rdib_string_map_sort_buckets(tp, string_map_buckets, string_map_bucket_count, tp->worker_count);
   rdib_string_map_assign_indices(string_map_buckets, string_map_bucket_count);
@@ -5460,8 +5460,8 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
 
   ProfBegin("Extract Name Maps Buckets");
   RDIB_StringMapBucket **name_map_buckets[RDI_NameMapKind_COUNT];
-  U64                    name_map_bucket_counts[RDI_NameMapKind_COUNT];
-  for (U64 i = 0; i < ArrayCount(name_map_buckets); ++i) {
+  ulong                    name_map_bucket_counts[RDI_NameMapKind_COUNT];
+  for (ulong i = 0; i < ArrayCount(name_map_buckets); ++i) {
     ProfBeginDynamic("Name Map: %.*s", str8_varg(rdi_string_from_name_map_kind(i)));
     name_map_buckets[i] = rdib_extant_buckets_from_string_map(tp, scratch.arena, name_maps[i], &name_map_bucket_counts[i]);
     rdib_string_map_sort_buckets(tp, name_map_buckets[i], name_map_bucket_counts[i], tp->worker_count);
@@ -5473,16 +5473,16 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   ProfBegin("Index Run Map");
   RDIB_IndexRunMap     *idx_run_map;
   RDIB_IndexRunBucket **idx_run_buckets;
-  U64                   idx_run_bucket_count;
+  ulong                   idx_run_bucket_count;
   {
     // TODO: we over-allocate for name map index runs since not every bucket has > 1 value
-    U64 total_name_map_value_count = 0;
-    for (U64 i = 0; i < ArrayCount(name_map_bucket_counts); ++i) {
+    ulong total_name_map_value_count = 0;
+    for (ulong i = 0; i < ArrayCount(name_map_bucket_counts); ++i) {
       total_name_map_value_count += name_map_bucket_counts[i];
     }
 
     // rough bucket estimate
-    U64 idx_run_cap = (total_param_type_count + total_name_map_value_count) * 2;
+    ulong idx_run_cap = (total_param_type_count + total_name_map_value_count) * 2;
     idx_run_map     = rdib_init_index_run_map(arena->v[0], idx_run_cap);
 
     // setup task context
@@ -5497,7 +5497,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     ProfEnd();
 
     ProfBegin("Name Maps Pass - Build Index Runs");
-    for (U64 name_map_kind = 0; name_map_kind < ArrayCount(name_maps); ++name_map_kind) {
+    for (ulong name_map_kind = 0; name_map_kind < ArrayCount(name_maps); ++name_map_kind) {
       ProfBeginDynamic("Name Map: %.*s", str8_varg(rdi_string_from_name_map_kind(name_map_kind)));
       task.name_map_kind     = name_map_kind;
       task.ranges            = tp_divide_work(scratch.arena, name_map_bucket_counts[name_map_kind], tp->worker_count);
@@ -5556,7 +5556,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     str8_list_push(arena->v[0], &rdi_data, str8_struct(rdi_header));
     str8_list_push(arena->v[0], &rdi_data, str8_array(rdi_sections, RDI_SectionKind_COUNT));
 
-    for (U64 sect_idx = 0; sect_idx < RDI_SectionKind_COUNT; ++sect_idx) {
+    for (ulong sect_idx = 0; sect_idx < RDI_SectionKind_COUNT; ++sect_idx) {
       RDI_Section *dst   = &rdi_sections[sect_idx];
       dst->encoding      = RDI_SectionEncoding_Unpacked;
       dst->pad           = 0;
@@ -5575,7 +5575,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
 
 #if BUILD_DEBUG
         {
-          U64 expected_total_size = 0;
+          ulong expected_total_size = 0;
           for (String8Node *n = rdi_data.first; n != 0; n = n->next) {
             expected_total_size += n->string.size;
           }

@@ -24,10 +24,10 @@ struct TEX_Node
   TEX_Topology topology;
   R_Handle texture;
   B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  ulong scope_ref_count;
+  ulong last_time_touched_us;
+  ulong last_user_clock_idx_touched;
+  ulong load_count;
 };
 
 struct TEX_Slot
@@ -77,17 +77,17 @@ struct TEX_Shared
   Arena *arena;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   TEX_Slot *slots;
   TEX_Stripe *stripes;
   TEX_Node **stripes_free_nodes;
   
   // rjf: user -> xfer thread
-  U64 u2x_ring_size;
+  ulong u2x_ring_size;
   byte *u2x_ring_base;
-  U64 u2x_ring_write_pos;
-  U64 u2x_ring_read_pos;
+  ulong u2x_ring_write_pos;
+  ulong u2x_ring_read_pos;
   OS_Handle u2x_ring_cv;
   OS_Handle u2x_ring_mutex;
   
@@ -132,7 +132,7 @@ R_Handle tex_texture_from_key_topology(TEX_Scope *scope, U128 key, TEX_Topology 
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-B32 tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us);
+B32 tex_u2x_enqueue_req(U128 hash, TEX_Topology top, ulong endt_us);
 void tex_u2x_dequeue_req(U128 *hash_out, TEX_Topology *top_out);
 ASYNC_WORK_DEF(tex_xfer_work);
 

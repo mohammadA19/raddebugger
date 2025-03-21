@@ -11,7 +11,7 @@ struct CmdLineOpt
 {
   CmdLineOpt *next;
   CmdLineOpt *hash_next;
-  U64 hash;
+  ulong hash;
   String8 string;
   String8List value_strings;
   String8 value_string;
@@ -19,7 +19,7 @@ struct CmdLineOpt
 
 struct CmdLineOptList
 {
-  U64 count;
+  ulong count;
   CmdLineOpt *first;
   CmdLineOpt *last;
 };
@@ -29,16 +29,16 @@ struct CmdLine
   String8 exe_name;
   CmdLineOptList options;
   String8List inputs;
-  U64 option_table_size;
+  ulong option_table_size;
   CmdLineOpt **option_table;
-  U64 argc;
+  ulong argc;
   char **argv;
 };
 
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-U64              cmd_line_hash_from_string(String8 string);
+ulong              cmd_line_hash_from_string(String8 string);
 CmdLineOpt**     cmd_line_slot_from_string(CmdLine *cmd_line, String8 string);
 CmdLineOpt*      cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string);
 void             cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var);

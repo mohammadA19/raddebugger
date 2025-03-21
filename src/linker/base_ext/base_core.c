@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 ushort
-safe_cast_u16x(U64 x)
+safe_cast_u16x(ulong x)
 {
   AssertAlways(x <= max_U16);
   return (ushort)x;
@@ -10,8 +10,8 @@ safe_cast_u16x(U64 x)
 
 ////////////////////////////////
 
-U64
-u128_mod64(U128 a, U64 b)
+ulong
+u128_mod64(U128 a, ulong b)
 {
   return a.u64[1] % b;
 }
@@ -19,7 +19,7 @@ u128_mod64(U128 a, U64 b)
 ////////////////////////////////
 
 Version
-make_version(U64 major, U64 minor)
+make_version(ulong major, ulong minor)
 {
   Version version;
   version.major = major;
@@ -48,7 +48,7 @@ version_compar(Version a, Version b)
 ////////////////////////////////
 
 ISectOff
-isect_off(U32 isect, U32 off)
+isect_off(uint isect, uint off)
 {
   ISectOff result = { isect, off };
   return result;
@@ -70,8 +70,8 @@ u16_compar(const void *raw_a, const void *raw_b)
 int
 u32_compar(const void *raw_a, const void *raw_b)
 {
-  U32 a = *(U32*)raw_a;
-  U32 b = *(U32*)raw_b;
+  uint a = *(uint*)raw_a;
+  uint b = *(uint*)raw_b;
   int result = a < b  ? -1 :
   a > b  ? +1 :
   0;
@@ -81,8 +81,8 @@ u32_compar(const void *raw_a, const void *raw_b)
 int
 u64_compar(const void *raw_a, const void *raw_b)
 {
-  U64 a = *(const U64*)raw_a;
-  U64 b = *(const U64*)raw_b;
+  ulong a = *(const ulong*)raw_a;
+  ulong b = *(const ulong*)raw_b;
   int result = a < b  ? -1 : a > b  ? +1 : 0;
   return result;
 }
@@ -90,8 +90,8 @@ u64_compar(const void *raw_a, const void *raw_b)
 int
 u64_compar_inv(const void *raw_a, const void *raw_b)
 {
-  U64 a = *(const U64*)raw_a;
-  U64 b = *(const U64*)raw_b;
+  ulong a = *(const ulong*)raw_a;
+  ulong b = *(const ulong*)raw_b;
   int result = a < b  ? +1 : a > b  ? -1 : 0;
   return result;
 }
@@ -108,8 +108,8 @@ u16_compar_is_before(void *raw_a, void *raw_b)
 int
 u32_compar_is_before(void *raw_a, void *raw_b)
 {
-  U32 *a = (U32 *)raw_a;
-  U32 *b = (U32 *)raw_b;
+  uint *a = (uint *)raw_a;
+  uint *b = (uint *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -117,8 +117,8 @@ u32_compar_is_before(void *raw_a, void *raw_b)
 int
 u64_compar_is_before(void *raw_a, void *raw_b)
 {
-  U64 *a = (U64 *)raw_a;
-  U64 *b = (U64 *)raw_b;
+  ulong *a = (ulong *)raw_a;
+  ulong *b = (ulong *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -143,16 +143,16 @@ u16_is_before(void *raw_a, void *raw_b)
 int
 u32_is_before(void *raw_a, void *raw_b)
 {
-  U32 *a = (U32 *) raw_a;
-  U32 *b = (U32 *) raw_b;
+  uint *a = (uint *) raw_a;
+  uint *b = (uint *) raw_b;
   return *a < *b;
 }
 
 int
 u64_is_before(void *raw_a, void *raw_b)
 {
-  U64 *a = (U64 *) raw_a;
-  U64 *b = (U64 *) raw_b;
+  ulong *a = (ulong *) raw_a;
+  ulong *b = (ulong *) raw_b;
   return *a < *b;
 }
 
@@ -216,9 +216,9 @@ pair_u64_compar_v1(const void *raw_a, const void *raw_b)
 ////////////////////////////////
 
 void
-str8_list_concat_in_place_array(String8List *list, String8List *arr, U64 count)
+str8_list_concat_in_place_array(String8List *list, String8List *arr, ulong count)
 {
-  for (U64 i = 0; i < count; ++i) {
+  for (ulong i = 0; i < count; ++i) {
     str8_list_concat_in_place(list, &arr[i]);
   }
 }

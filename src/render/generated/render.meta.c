@@ -57,7 +57,7 @@ byte r_pass_kind_batch_table[3] =
 1,
 };
 
-U64 r_pass_kind_params_size_table[3] =
+ulong r_pass_kind_params_size_table[3] =
 {
 sizeof(R_PassParams_UI),
 sizeof(R_PassParams_Blur),

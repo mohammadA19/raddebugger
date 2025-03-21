@@ -12,7 +12,7 @@ srtuct LNK_CmdOption
 
 srtuct LNK_CmdLine
 {
-  U64            option_count;
+  ulong            option_count;
   LNK_CmdOption *first_option;
   LNK_CmdOption *last_option;
   String8List    input_list;

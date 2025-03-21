@@ -7,7 +7,7 @@
 String8 cv_string_from_type_index_source(CV_TypeIndexSource ti_source);
 String8 cv_string_from_language(CV_Language x);
 String8 cv_string_from_numeric(Arena *arena, CV_NumericParsed num);
-String8 cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id);
+String8 cv_string_from_reg_id(Arena *arena, CV_Arch arch, uint id);
 String8 cv_string_from_member_access(CV_MemberAccess x);
 String8 cv_string_from_method_prop(CV_MethodProp x);
 String8 cv_string_from_hfa(CV_HFAKind x);
@@ -41,11 +41,11 @@ String8 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegi
 String8 cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs);
 String8 cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype);
 String8 cv_string_from_itemid(Arena *arena, CV_ItemId itemid);
-String8 cv_string_from_reg_off(Arena *arena, CV_Arch arch, U32 reg, U32 off);
+String8 cv_string_from_reg_off(Arena *arena, CV_Arch arch, uint reg, uint off);
 String8 cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type);
 String8 cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind);
-String8 cv_string_from_leaf_name(Arena *arena, U32 leaf_type);
-String8 cv_string_sec_off(Arena *arena, U32 sec, U32 off);
+String8 cv_string_from_leaf_name(Arena *arena, uint leaf_type);
+String8 cv_string_sec_off(Arena *arena, uint sec, uint off);
 
 #endif // CODEVIEW_ENUM_H
 

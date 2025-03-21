@@ -5,9 +5,9 @@ int
 str8_compar(String8 a, String8 b, B32 ignore_case)
 {
   int cmp = 0;
-  U64 size = Min(a.size, b.size);
+  ulong size = Min(a.size, b.size);
   if (ignore_case) {
-    for (U64 i = 0; i < size; ++i) {
+    for (ulong i = 0; i < size; ++i) {
       byte la = char_to_lower(a.str[i]);
       byte lb = char_to_lower(b.str[i]);
       if (la < lb) {
@@ -19,7 +19,7 @@ str8_compar(String8 a, String8 b, B32 ignore_case)
       }
     } 
   } else {
-    for (U64 i = 0; i < size; ++i) {
+    for (ulong i = 0; i < size; ++i) {
       if (a.str[i] < b.str[i]) {
         cmp = -1;
         break;
@@ -62,27 +62,27 @@ str8_is_before_case_sensitive(const void *a, const void *b)
 }
 
 String8Node *
-str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_size)
+str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, ulong data_size)
 {
   String8 data = str8((byte *)data_ptr, data_size);
   String8Node *node = str8_list_push(arena, list, data);
   return node;
 }
 
-U64
-str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
+ulong
+str8_list_push_pad(Arena *arena, String8List *list, ulong offset, ulong align)
 {
-  U64 pad_size = AlignPow2(offset, align) - offset;
+  ulong pad_size = AlignPow2(offset, align) - offset;
   byte *pad = push_array(arena, byte, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push(arena, list, str8(pad, pad_size));
   return pad_size;
 }
 
-U64
-str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
+ulong
+str8_list_push_pad_front(Arena *arena, String8List *list, ulong offset, ulong align)
 {
-  U64 pad_size = AlignPow2(offset, align) - offset;
+  ulong pad_size = AlignPow2(offset, align) - offset;
   byte *pad = push_array(arena, byte, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push_front(arena, list, str8(pad, pad_size));
@@ -90,20 +90,20 @@ str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
 }
 
 String8List
-str8_list_arr_concat(String8List *v, U64 count)
+str8_list_arr_concat(String8List *v, ulong count)
 {
   String8List result = {0};
-  for (U64 i = 0; i < count; i += 1) {
+  for (ulong i = 0; i < count; i += 1) {
     str8_list_concat_in_place(&result, &v[i]);
   }
   return result;
 }
 
 String8Node *
-str8_list_push_many(Arena *arena, String8List *list, U64 count)
+str8_list_push_many(Arena *arena, String8List *list, ulong count)
 {
   String8Node *arr = push_array(arena, String8Node, count);
-  for (U64 i = 0; i < count; ++i) {
+  for (ulong i = 0; i < count; ++i) {
     str8_list_push_node(list, arr + i);
   }
   return arr;
@@ -123,7 +123,7 @@ str8_list_pop_front(String8List *list)
   return node;
 }
 
-U64
+ulong
 hash_from_str8(String8 string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);

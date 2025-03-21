@@ -1,12 +1,12 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-U32
-update_crc32(U32 crc, byte *ptr, U64 size)
+uint
+update_crc32(uint crc, byte *ptr, ulong size)
 {
   // CRC-32 algo borrowed from stb.h
 
-  static U32 crc_table[256] = {
+  static uint crc_table[256] = {
 		0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535,
 		0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd,
 		0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d,
@@ -47,9 +47,9 @@ update_crc32(U32 crc, byte *ptr, U64 size)
   };
 
 #if 0
-  for (U32 i = 0; i < 256; ++i) {
-    U32 s = i;
-    for (U32 j = 0; j < 8; ++j) {
+  for (uint i = 0; i < 256; ++i) {
+    uint s = i;
+    for (uint j = 0; j < 8; ++j) {
       s = (s >> 1) ^ (s & 1 ? 0xedb88320 : 0);
     }
     crc_table[i] = s;
@@ -57,14 +57,14 @@ update_crc32(U32 crc, byte *ptr, U64 size)
 #endif
 
   crc = ~crc;
-  for (U32 i = 0; i < size; ++i) {
+  for (uint i = 0; i < size; ++i) {
     crc = (crc >> 8) ^ crc_table[(ptr[i] ^ crc) & 0xff];
   }
 
   return ~crc;
 }
 
-U32
+uint
 crc32_from_string(String8 string)
 {
   return update_crc32(0, string.str, string.size);

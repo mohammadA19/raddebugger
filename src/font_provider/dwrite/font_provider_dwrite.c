@@ -42,8 +42,8 @@ FP_Handle
 fp_dwrite_handle_from_font(FP_DWrite_Font font)
 {
   FP_Handle result = {0};
-  result.u64[0] = (U64)font.file;
-  result.u64[1] = (U64)font.face;
+  result.u64[0] = (ulong)font.file;
+  result.u64[1] = (ulong)font.face;
   return result;
 }
 
@@ -418,7 +418,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   }
   
   //- rjf: get metrics info
-  U64 glyphs_count = string32.size;
+  ulong glyphs_count = string32.size;
   DWRITE_GLYPH_METRICS *glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
   if(font.face != 0)
   {
@@ -433,7 +433,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   if(font.face != 0)
   {
     atlas_dim.y = (short)ceil_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent) / design_units_per_em) + 1;
-    for(U64 idx = 0; idx < glyphs_count; idx += 1)
+    for(ulong idx = 0; idx < glyphs_count; idx += 1)
     {
       DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
       F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
@@ -530,17 +530,17 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
     // rjf: fill atlas
     {
       byte *in_data   = (byte *)dib.dsBm.bmBits;
-      U64 in_pitch  = (U64)dib.dsBm.bmWidthBytes;
+      ulong in_pitch  = (ulong)dib.dsBm.bmWidthBytes;
       byte *out_data  = (byte *)result.atlas;
-      U64 out_pitch = atlas_dim.x * 4;
-      U64 color_sum = 0;
+      ulong out_pitch = atlas_dim.x * 4;
+      ulong color_sum = 0;
       byte *in_line = (byte *)in_data;
       byte *out_line = out_data;
-      for(U64 y = 0; y < atlas_dim.y; y += 1)
+      for(ulong y = 0; y < atlas_dim.y; y += 1)
       {
         byte *in_pixel = in_line;
         byte *out_pixel = out_line;
-        for(U64 x = 0; x < atlas_dim.x; x += 1)
+        for(ulong x = 0; x < atlas_dim.x; x += 1)
         {
           byte in_pixel_byte = in_pixel[0];
           out_pixel[0] = 255;

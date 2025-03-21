@@ -3,9 +3,9 @@
 
 //- GENERATED CODE
 
-U64 regs_block_size_from_arch(Arch arch)
+ulong regs_block_size_from_arch(Arch arch)
 {
-U64 result = 8;
+ulong result = 8;
 switch(arch)
 {
 default:{}break;
@@ -14,9 +14,9 @@ case Arch_x86:{result = sizeof(REGS_RegBlockX86);}break;
 }
 return result;
 }
-U64 regs_reg_code_count_from_arch(Arch arch)
+ulong regs_reg_code_count_from_arch(Arch arch)
 {
-U64 result = 0;
+ulong result = 0;
 switch(arch)
 {
 default:{}break;
@@ -25,9 +25,9 @@ case Arch_x86:{result = REGS_RegCodeX86_COUNT;}break;
 }
 return result;
 }
-U64 regs_alias_code_count_from_arch(Arch arch)
+ulong regs_alias_code_count_from_arch(Arch arch)
 {
-U64 result = 0;
+ulong result = 0;
 switch(arch)
 {
 default:{}break;

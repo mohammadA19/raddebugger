@@ -12,7 +12,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
   MSF_RawStreamTable *result = 0;
   
   //- determine msf type
-  U32 index_size = 0;
+  uint index_size = 0;
   if (msf_data.size >= sizeof(msf_msf20_magic) &&
       str8_match(msf_data, str8_lit(msf_msf20_magic), StringMatchFlag_RightSideSloppy)) {
     index_size = 2;
@@ -23,10 +23,10 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
   
   if (index_size == 2 || index_size == 4) {
     //- extract info from header
-    U32 page_size_raw             = 0;
-    U32 whole_file_page_count_raw = 0;
-    U32 directory_size_raw        = 0;
-    U32 directory_super_map_raw   = 0;
+    uint page_size_raw             = 0;
+    uint whole_file_page_count_raw = 0;
+    uint directory_size_raw        = 0;
+    uint directory_super_map_raw   = 0;
 
     if (index_size == 2) {
       MSF_Header20 *header      = (MSF_Header20 *) msf_data.str;
@@ -44,19 +44,19 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     //- setup important sizes & counts
     
     //  (pages)
-    U32 page_size = ClampTop(page_size_raw, msf_data.size);
+    uint page_size = ClampTop(page_size_raw, msf_data.size);
     
     //  (whole file page count)
-    U32 whole_file_page_count_max = CeilIntegerDiv(msf_data.size, page_size);
-    U32 whole_file_page_count     = ClampTop(whole_file_page_count_raw, whole_file_page_count_max);
+    uint whole_file_page_count_max = CeilIntegerDiv(msf_data.size, page_size);
+    uint whole_file_page_count     = ClampTop(whole_file_page_count_raw, whole_file_page_count_max);
     
     //  (directory)
-    U32 directory_size          = ClampTop(directory_size_raw, msf_data.size);
-    U32 page_count_in_directory = CeilIntegerDiv(directory_size, page_size);
+    uint directory_size          = ClampTop(directory_size_raw, msf_data.size);
+    uint page_count_in_directory = CeilIntegerDiv(directory_size, page_size);
     
     //  (map)
-    U32 directory_map_size           = page_count_in_directory * index_size;
-    U32 page_count_in_directory_map = CeilIntegerDiv(directory_map_size, page_size);
+    uint directory_map_size           = page_count_in_directory * index_size;
+    uint page_count_in_directory_map = CeilIntegerDiv(directory_map_size, page_size);
     
     // Layout of the "directory":
     //
@@ -67,20 +67,20 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     // The "data" in the directory describes streams:
     // PDB20:
     // struct Pdb20StreamSize {
-    //  U32 size;
-    //  U32 unknown; // looks like kind codes or revision counters or something
+    //  uint size;
+    //  uint unknown; // looks like kind codes or revision counters or something
     // }
     // struct {
-    //  U32 stream_count;
+    //  uint stream_count;
     //  Pdb20StreamSize stream_sizes[stream_count];
     //  ushort stream_indices[stream_count][...];
     // }
     //
     // PDB70:
     // struct {
-    //  U32 stream_count;
-    //  U32 stream_sizes[stream_count];
-    //  U32 stream_indices[stream_count][...];
+    //  uint stream_count;
+    //  uint stream_sizes[stream_count];
+    //  uint stream_indices[stream_count][...];
     // }
     
     //- parse stream directory
@@ -88,49 +88,49 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     B32 got_directory = 1;
     
     {
-      U32  directory_super_map_dummy    = 0;
-      U32 *directory_super_map          = 0;
-      U32  directory_map_page_skip_size = 0;
+      uint  directory_super_map_dummy    = 0;
+      uint *directory_super_map          = 0;
+      uint  directory_map_page_skip_size = 0;
       if (index_size == 2) {
         directory_super_map           = &directory_super_map_dummy;
         directory_map_page_skip_size = OffsetOf(MSF_Header20, stream_table_size);
       } else {
-        U64 super_map_off   = OffsetOf(MSF_Header70, root_pn);
-        directory_super_map = (U32 *) (msf_data.str + super_map_off);
+        ulong super_map_off   = OffsetOf(MSF_Header70, root_pn);
+        directory_super_map = (uint *) (msf_data.str + super_map_off);
       }
       
-      U32 max_index_count_in_map_page = (page_size - directory_map_page_skip_size) / index_size;
+      uint max_index_count_in_map_page = (page_size - directory_map_page_skip_size) / index_size;
       
       // for each index in super map ...
       byte  *out_ptr       = directory_buf;
-      U32 *super_map_ptr = directory_super_map;
-      for (U32 i = 0; i < page_count_in_directory_map; ++i, ++super_map_ptr) {
-        U32 directory_map_page_index = *super_map_ptr;
+      uint *super_map_ptr = directory_super_map;
+      for (uint i = 0; i < page_count_in_directory_map; ++i, ++super_map_ptr) {
+        uint directory_map_page_index = *super_map_ptr;
         if (directory_map_page_index >= whole_file_page_count) {
           got_directory = 0;
           goto parse_directory_done;
         }
         
-        U64 directory_map_page_off  = ((U64) directory_map_page_index) * page_size;
+        ulong directory_map_page_off  = ((ulong) directory_map_page_index) * page_size;
         byte *directory_map_page_base = msf_data.str + directory_map_page_off;
         
         // clamp index count by end of directory
-        U32 index_count;
+        uint index_count;
         {
-          U32 directory_pos            = (U32)(out_ptr - directory_buf);
-          U32 remaining_size           = directory_size - directory_pos;
-          U32 remaining_map_page_count = CeilIntegerDiv(remaining_size, page_size);
+          uint directory_pos            = (uint)(out_ptr - directory_buf);
+          uint remaining_size           = directory_size - directory_pos;
+          uint remaining_map_page_count = CeilIntegerDiv(remaining_size, page_size);
           index_count = ClampTop(max_index_count_in_map_page, remaining_map_page_count);
         }
         
         // for each index in map ...
         byte *map_ptr = directory_map_page_base + directory_map_page_skip_size;
-        for (U32 j = 0; j < index_count; ++j, map_ptr += index_size) {
+        for (uint j = 0; j < index_count; ++j, map_ptr += index_size) {
           
           // read index
-          U32 directory_page_index = 0;
+          uint directory_page_index = 0;
           if (index_size == 4) {
-            directory_page_index = *(U32 *) map_ptr;
+            directory_page_index = *(uint *) map_ptr;
           } else {
             directory_page_index = *(ushort *) map_ptr;
           }
@@ -139,14 +139,14 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
             goto parse_directory_done;
           }
           
-          U64 directory_page_off  = ((U64) directory_page_index) * page_size;
+          ulong directory_page_off  = ((ulong) directory_page_index) * page_size;
           byte *directory_page_base = msf_data.str + directory_page_off;
           
           // clamp copy size by end of directory
-          U32 copy_size;
+          uint copy_size;
           {
-            U32 directory_pos  = (U32) (out_ptr - directory_buf);
-            U32 remaining_size = directory_size - directory_pos;
+            uint directory_pos  = (uint) (out_ptr - directory_buf);
+            uint remaining_size = directory_size - directory_pos;
             copy_size          = ClampTop(page_size, remaining_size);
           }
           
@@ -161,7 +161,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     }
     
     //- parse streams from directory
-    U32            stream_count = 0;
+    uint            stream_count = 0;
     B32            got_streams  = 0;
     MSF_RawStream *streams      = 0;
     
@@ -169,41 +169,41 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
       got_streams = 1;
       
       // read stream count
-      U32 stream_count_raw = *(U32 *) directory_buf;
+      uint stream_count_raw = *(uint *) directory_buf;
       
       // setup counts, sizes, and offsets
-      U32 size_of_stream_entry   = index_size == 2 ? 8 : 4;
-      U32 stream_count_max       = (directory_size - 4) / size_of_stream_entry;
-      U32 stream_count__inner    = ClampTop(stream_count_raw, stream_count_max);
-      U32 all_stream_entries_off = 4;
-      U32 all_indices_off        = all_stream_entries_off + (stream_count__inner * size_of_stream_entry);
+      uint size_of_stream_entry   = index_size == 2 ? 8 : 4;
+      uint stream_count_max       = (directory_size - 4) / size_of_stream_entry;
+      uint stream_count__inner    = ClampTop(stream_count_raw, stream_count_max);
+      uint all_stream_entries_off = 4;
+      uint all_indices_off        = all_stream_entries_off + (stream_count__inner * size_of_stream_entry);
       
       // set output buffer and count
       stream_count = stream_count__inner;
       streams      = push_array_no_zero(arena, MSF_RawStream, stream_count);
       
       // iterate sizes and indices in lock step
-      U32            entry_cursor = all_stream_entries_off;
-      U32            index_cursor = all_indices_off;
+      uint            entry_cursor = all_stream_entries_off;
+      uint            index_cursor = all_indices_off;
       MSF_RawStream *stream_ptr   = streams;
-      for (U32 i = 0; i < stream_count; ++i) {
+      for (uint i = 0; i < stream_count; ++i) {
         // read stream size
-        U32 stream_size_raw = *(U32 *) (directory_buf + entry_cursor);
+        uint stream_size_raw = *(uint *) (directory_buf + entry_cursor);
         if (stream_size_raw == MSF_DELETED_STREAM_STAMP) {
           stream_size_raw = 0;
         }
         
         // compute page count
-        U32 stream_page_count_raw = CeilIntegerDiv(stream_size_raw, page_size);
-        U32 stream_page_count_max = (directory_size - index_cursor) / index_size;
-        U32 stream_page_count     = ClampTop(stream_page_count_raw, stream_page_count_max);
-        U32 stream_size           = ClampTop(stream_size_raw, stream_page_count*page_size);
+        uint stream_page_count_raw = CeilIntegerDiv(stream_size_raw, page_size);
+        uint stream_page_count_max = (directory_size - index_cursor) / index_size;
+        uint stream_page_count     = ClampTop(stream_page_count_raw, stream_page_count_max);
+        uint stream_size           = ClampTop(stream_size_raw, stream_page_count*page_size);
         
         // copy stream data
         stream_ptr->size       = stream_size;
         stream_ptr->page_count = stream_page_count;
         if (index_size == 4) {
-          stream_ptr->u.page_indices_u32 = (U32 *)(directory_buf + index_cursor);
+          stream_ptr->u.page_indices_u32 = (uint *)(directory_buf + index_cursor);
         } else {
           stream_ptr->u.page_indices_u16 = (ushort *)(directory_buf + index_cursor);
         }
@@ -236,15 +236,15 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
 
   byte *stream_buf     = push_array_no_zero(arena, byte, stream.size);
   byte *stream_out_ptr = stream_buf;
-  for (U32 i = 0; i < stream.page_count; ++i) {
-    U64 page_idx;
+  for (uint i = 0; i < stream.page_count; ++i) {
+    ulong page_idx;
     if (st->index_size == 4) {
       page_idx = stream.u.page_indices_u32[i];
     } else {
       page_idx = stream.u.page_indices_u16[i];
     }
 
-    U64 stream_page_off = (U64)page_idx * st->page_size;
+    ulong stream_page_off = (ulong)page_idx * st->page_size;
     if (stream_page_off + st->page_size > msf_data.size) {
       break;
     }
@@ -252,18 +252,18 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
     byte *stream_page_base = msf_data.str + stream_page_off;
     
     // clamp copy size by end of stream
-    U32 stream_pos     = (U32) (stream_out_ptr - stream_buf);
-    U32 remaining_size = stream.size - stream_pos;
-    U32 copy_size      = ClampTop(st->page_size, remaining_size);
+    uint stream_pos     = (uint) (stream_out_ptr - stream_buf);
+    uint remaining_size = stream.size - stream_pos;
+    uint copy_size      = ClampTop(st->page_size, remaining_size);
     
     // copy page data
     MemoryCopy(stream_out_ptr, stream_page_base, copy_size);
     stream_out_ptr += copy_size;
   }
 
-  U64 copy_size = (U64)(stream_out_ptr - stream_buf);
+  ulong copy_size = (ulong)(stream_out_ptr - stream_buf);
 
-  U64 unused_buf_size = stream.size - copy_size;
+  ulong unused_buf_size = stream.size - copy_size;
   arena_pop(arena, unused_buf_size);
 
   String8 result = str8(stream_buf, copy_size);

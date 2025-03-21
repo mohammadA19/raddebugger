@@ -8,8 +8,8 @@
 //~ rjf: MSF Format Types
 
 #define MSF_UINT_MAX max_U32
-typedef U32 MSF_UInt;
-typedef S32 MSF_Int;
+typedef uint MSF_UInt;
+typedef int MSF_Int;
 
 #define MSF_BITS_PER_CHAR 8
 #define MSF_BITS_PER_WORD (sizeof(MSF_UInt) * MSF_BITS_PER_CHAR)
@@ -31,11 +31,11 @@ static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 struct MSF_Header20
 {
   byte  magic[sizeof(msf_msf20_magic)];
-  U32 page_size;
+  uint page_size;
   ushort active_fpm;
   ushort page_count;
-  U32 stream_table_size;
-  U32 unknown;
+  uint stream_table_size;
+  uint unknown;
   ushort root_pn;
 };
 

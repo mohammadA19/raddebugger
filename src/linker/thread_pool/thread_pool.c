@@ -5,7 +5,7 @@ void
 tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 {
   for (;;) {
-    S64 task_left = ins_atomic_u64_dec_eval(&pool->task_left);
+    long task_left = ins_atomic_u64_dec_eval(&pool->task_left);
 
     // are there any tasks left to run?
     if (task_left < 0) {
@@ -14,14 +14,14 @@ tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 
     // run task
     Arena *arena   = pool->task_arena ? pool->task_arena->v[worker->id] : 0;
-    U64    task_id = pool->task_count - (task_left+1);
+    ulong    task_id = pool->task_count - (task_left+1);
     pool->task_func(arena, worker->id, task_id, pool->task_data);
 
     // cache task count so we dont touch pool memory after atomic inc
-    U64 task_count = pool->task_count;
+    ulong task_count = pool->task_count;
 
     // on last task ping main thread
-    U64 task_done = ins_atomic_u64_inc_eval(&pool->task_done);
+    ulong task_done = ins_atomic_u64_inc_eval(&pool->task_done);
     if (task_done == task_count) {
       os_semaphore_drop(pool->main_semaphore);
     }
@@ -57,7 +57,7 @@ tp_worker_main_shared(void *raw_worker)
 }
 
 TP_Context * 
-tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
+tp_alloc(Arena *arena, uint worker_count, uint max_worker_count, String8 name)
 {
   ProfBeginDynamic("Alloc Thread Pool [Worker Count: %u]", worker_count);
   AssertAlways(worker_count > 0);
@@ -92,14 +92,14 @@ tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
   pool->worker_arr     = push_array(arena, TP_Worker, worker_count);
   
   // init worker data
-  for (U64 i = 0; i < worker_count; i += 1) {
+  for (ulong i = 0; i < worker_count; i += 1) {
     TP_Worker *worker = &pool->worker_arr[i];
     worker->id        = i;
     worker->pool      = pool;
   }
   
   // launch worker threads
-  for (U64 i = 1; i < worker_count; i += 1) {
+  for (ulong i = 1; i < worker_count; i += 1) {
     TP_Worker *worker = &pool->worker_arr[i];
     worker->handle    = os_thread_launch(worker_entry, worker, 0);
   }
@@ -115,14 +115,14 @@ tp_release(TP_Context *pool)
 
   B32 is_shared = !os_handle_match(pool->exec_semaphore, os_handle_zero());
   if (is_shared) {
-    for (U64 i = 0; i < pool->worker_count; ++i) {
+    for (ulong i = 0; i < pool->worker_count; ++i) {
       os_semaphore_drop(pool->exec_semaphore);
     }
   }
-  for (U64 i = 0; i < pool->worker_count; ++i) {
+  for (ulong i = 0; i < pool->worker_count; ++i) {
     os_semaphore_drop(pool->task_semaphore);
   }
-  for (U64 i = 1; i < pool->worker_count; i += 1) {
+  for (ulong i = 1; i < pool->worker_count; i += 1) {
     os_thread_detach(pool->worker_arr[i].handle);
   }
   if (is_shared) {
@@ -140,7 +140,7 @@ tp_arena_alloc(TP_Context *pool)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
   Arena **arr = push_array(scratch.arena, Arena *, pool->worker_count);
-  for (U64 i = 0; i < pool->worker_count; ++i) {
+  for (ulong i = 0; i < pool->worker_count; ++i) {
     arr[i] = arena_alloc();
   }
   Arena **dst = push_array(arr[0], Arena *, pool->worker_count);
@@ -157,7 +157,7 @@ void
 tp_arena_release(TP_Arena **arena_ptr)
 {
   ProfBeginFunction();
-  for (U64 i = 1; i < (*arena_ptr)->count; ++i) {
+  for (ulong i = 1; i < (*arena_ptr)->count; ++i) {
     arena_release((*arena_ptr)->v[i]);
   }
   arena_release((*arena_ptr)->v[0]);
@@ -178,7 +178,7 @@ tp_temp_begin(TP_Arena *arena)
 
   temp.v[0] = first_temp;
 
-  for (U64 arena_idx = 1; arena_idx < arena->count; arena_idx += 1) {
+  for (ulong arena_idx = 1; arena_idx < arena->count; arena_idx += 1) {
     temp.v[arena_idx] = temp_begin(arena->v[arena_idx]);
   }
 
@@ -190,14 +190,14 @@ void
 tp_temp_end(TP_Temp temp)
 {
   ProfBeginFunction();
-  for (U64 temp_idx = temp.count - 1; temp_idx > 0; temp_idx -= 1) {
+  for (ulong temp_idx = temp.count - 1; temp_idx > 0; temp_idx -= 1) {
     temp_end(temp.v[temp_idx]);
   }
   ProfEnd();
 }
 
 void
-tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskFunc *task_func, void *task_data)
+tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, ulong task_count, TP_TaskFunc *task_func, void *task_data)
 {
   if (task_count > 0) {
     // init run
@@ -208,17 +208,17 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
     pool->task_done  = 0;
     ins_atomic_u64_eval_assign(&pool->task_left, task_count);
 
-    U64 drop_count = Min(task_count, pool->worker_count);
+    ulong drop_count = Min(task_count, pool->worker_count);
 
     // if we are in shared mode ping local semaphore
     if (!os_handle_match(pool->exec_semaphore, os_handle_zero())) {
-      for (U64 worker_idx = 0; worker_idx < drop_count; worker_idx +=1) {
+      for (ulong worker_idx = 0; worker_idx < drop_count; worker_idx +=1) {
         os_semaphore_drop(pool->exec_semaphore);
       }
     }
     
     // ping shared semaphore
-    for (U64 worker_idx = 0; worker_idx < drop_count; worker_idx += 1) {
+    for (ulong worker_idx = 0; worker_idx < drop_count; worker_idx += 1) {
       os_semaphore_drop(pool->task_semaphore);
     }
     
@@ -231,11 +231,11 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
 }
 
 Rng1U64 *
-tp_divide_work(Arena *arena, U64 item_count, U32 worker_count)
+tp_divide_work(Arena *arena, ulong item_count, uint worker_count)
 {
-  U64      per_count = CeilIntegerDiv(item_count, worker_count);
+  ulong      per_count = CeilIntegerDiv(item_count, worker_count);
   Rng1U64 *range_arr = push_array_no_zero(arena, Rng1U64, worker_count + 1);
-  for (U64 i = 0; i < worker_count; i += 1) {
+  for (ulong i = 0; i < worker_count; i += 1) {
     range_arr[i] = rng_1u64(Min(item_count, i * per_count), 
                             Min(item_count, i * per_count + per_count));
   }

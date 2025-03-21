@@ -42,8 +42,8 @@ entry_point(CmdLine *cmdline)
   String8List lines = str8_split(arena, list_data, splits, ArrayCount(splits), 0);
   OS_HandleList processes = {0};
   String8Node *processes_first_path_n = 0;
-  U64 limit = 64;
-  U64 idx = 0;
+  ulong limit = 64;
+  ulong idx = 0;
   for(String8Node *n = lines.first; n != 0; n = n->next)
   {
     String8 dll_path = n->string;

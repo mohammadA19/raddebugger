@@ -14,7 +14,7 @@
 ////////////////////////////////
 //~ rjf: Enums
 
-enum R_GeoVertexFlags : U32
+enum R_GeoVertexFlags : uint
 {
   R_GeoVertexFlag_TexCoord = (1<<0),
   R_GeoVertexFlag_Normals  = (1<<1),
@@ -27,8 +27,8 @@ enum R_GeoVertexFlags : U32
 
 union R_Handle
 {
-  U64 u64[1];
-  U32 u32[2];
+  ulong u64[1];
+  uint u32[2];
   ushort u16[4];
 };
 
@@ -58,8 +58,8 @@ struct R_Mesh3DInst
 struct R_Batch
 {
   byte *v;
-  U64 byte_count;
-  U64 byte_cap;
+  ulong byte_count;
+  ulong byte_cap;
 };
 
 struct R_BatchNode
@@ -72,9 +72,9 @@ struct R_BatchList
 {
   R_BatchNode *first;
   R_BatchNode *last;
-  U64 batch_count;
-  U64 byte_count;
-  U64 bytes_per_inst;
+  ulong batch_count;
+  ulong byte_count;
+  ulong bytes_per_inst;
 };
 
 struct R_BatchGroup2DParams
@@ -97,7 +97,7 @@ struct R_BatchGroup2DList
 {
   R_BatchGroup2DNode *first;
   R_BatchGroup2DNode *last;
-  U64 count;
+  ulong count;
 };
 
 struct R_BatchGroup3DParams
@@ -114,7 +114,7 @@ struct R_BatchGroup3DParams
 struct R_BatchGroup3DMapNode
 {
   R_BatchGroup3DMapNode *next;
-  U64 hash;
+  ulong hash;
   R_BatchList batches;
   R_BatchGroup3DParams params;
 };
@@ -122,7 +122,7 @@ struct R_BatchGroup3DMapNode
 struct R_BatchGroup3DMap
 {
   R_BatchGroup3DMapNode **slots;
-  U64 slots_count;
+  ulong slots_count;
 };
 
 ////////////////////////////////
@@ -172,7 +172,7 @@ struct R_PassList
 {
   R_PassNode *first;
   R_PassNode *last;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -184,8 +184,8 @@ B32 r_handle_match(R_Handle a, R_Handle b);
 ////////////////////////////////
 //~ rjf: Batch Type Functions
 
-R_BatchList r_batch_list_make(U64 instance_size);
-void *r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap);
+R_BatchList r_batch_list_make(ulong instance_size);
+void *r_batch_list_push_inst(Arena *arena, R_BatchList *list, ulong batch_inst_cap);
 
 ////////////////////////////////
 //~ rjf: Pass Type Functions
@@ -211,7 +211,7 @@ r_hook R_Tex2DFormat     r_format_from_tex2d(R_Handle texture);
 r_hook void              r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data);
 
 //- rjf: buffers
-r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, U64 size, void *data);
+r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, ulong size, void *data);
 r_hook void              r_buffer_release(R_Handle buffer);
 
 //- rjf: frame markers

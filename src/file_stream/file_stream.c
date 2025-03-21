@@ -4,11 +4,11 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-U64
+ulong
 fs_little_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  ulong result = 5381;
+  for(ulong i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -19,7 +19,7 @@ U128
 fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
-  U64 buffer_size = string.size + sizeof(U64)*2;
+  ulong buffer_size = string.size + sizeof(ulong)*2;
   byte *buffer = push_array_no_zero(scratch.arena, byte, buffer_size);
   MemoryCopy(buffer, string.str, string.size);
   MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
@@ -43,7 +43,7 @@ fs_init()
   fs_shared->stripes_count = os_get_system_info()->logical_processor_count;
   fs_shared->slots = push_array(arena, FS_Slot, fs_shared->slots_count);
   fs_shared->stripes = push_array(arena, FS_Stripe, fs_shared->stripes_count);
-  for(U64 idx = 0; idx < fs_shared->stripes_count; idx += 1)
+  for(ulong idx = 0; idx < fs_shared->stripes_count; idx += 1)
   {
     fs_shared->stripes[idx].arena = arena_alloc();
     fs_shared->stripes[idx].cv = os_condition_variable_alloc();
@@ -59,7 +59,7 @@ fs_init()
 ////////////////////////////////
 //~ rjf: Change Generation
 
-U64
+ulong
 fs_change_gen()
 {
   return ins_atomic_u64_eval(&fs_shared->change_gen);
@@ -69,7 +69,7 @@ fs_change_gen()
 //~ rjf: Cache Interaction
 
 U128
-fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
+fs_hash_from_path_range(String8 path, Rng1U64 range, ulong endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -79,7 +79,7 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
   
   //- rjf: loop through key -> hash history; obtain most recent hash for this key
   U128 result = {0};
-  for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
+  for(ulong rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
     result = hs_hash_from_key(key, rewind_idx);
     
@@ -93,9 +93,9 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
     else if(u128_match(result, u128_zero()) && rewind_idx == 0)
     {
       // rjf: unpack path cache info
-      U64 path_little_hash = fs_little_hash_from_string(path);
-      U64 path_slot_idx = path_little_hash%fs_shared->slots_count;
-      U64 path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
+      ulong path_little_hash = fs_little_hash_from_string(path);
+      ulong path_slot_idx = path_little_hash%fs_shared->slots_count;
+      ulong path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
       FS_Slot *path_slot = &fs_shared->slots[path_slot_idx];
       FS_Stripe *path_stripe = &fs_shared->stripes[path_stripe_idx];
       
@@ -124,8 +124,8 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
         }
         
         // rjf: range -> node
-        U64 range_hash = fs_little_hash_from_string(str8_struct(&range));
-        U64 range_slot_idx = range_hash%node->slots_count;
+        ulong range_hash = fs_little_hash_from_string(str8_struct(&range));
+        ulong range_slot_idx = range_hash%node->slots_count;
         FS_RangeSlot *range_slot = &node->slots[range_slot_idx];
         FS_RangeNode *range_node = 0;
         for(FS_RangeNode *n = range_slot->first; n != 0; n = n->next)
@@ -189,15 +189,15 @@ fs_key_from_path_range(String8 path, Rng1U64 range)
   return key;
 }
 
-U64
+ulong
 fs_timestamp_from_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
-  U64 result = 0;
+  ulong result = 0;
   path = path_normalized_from_string(scratch.arena, path);
-  U64 path_hash = fs_little_hash_from_string(path);
-  U64 slot_idx = path_hash%fs_shared->slots_count;
-  U64 stripe_idx = slot_idx%fs_shared->stripes_count;
+  ulong path_hash = fs_little_hash_from_string(path);
+  ulong slot_idx = path_hash%fs_shared->slots_count;
+  ulong stripe_idx = slot_idx%fs_shared->stripes_count;
   FS_Slot *slot = &fs_shared->slots[slot_idx];
   FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
@@ -215,15 +215,15 @@ fs_timestamp_from_path(String8 path)
   return result;
 }
 
-U64
+ulong
 fs_size_from_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
-  U64 result = 0;
+  ulong result = 0;
   path = path_normalized_from_string(scratch.arena, path);
-  U64 path_hash = fs_little_hash_from_string(path);
-  U64 slot_idx = path_hash%fs_shared->slots_count;
-  U64 stripe_idx = slot_idx%fs_shared->stripes_count;
+  ulong path_hash = fs_little_hash_from_string(path);
+  ulong slot_idx = path_hash%fs_shared->slots_count;
+  ulong stripe_idx = slot_idx%fs_shared->stripes_count;
   FS_Slot *slot = &fs_shared->slots[slot_idx];
   FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
@@ -245,15 +245,15 @@ fs_size_from_path(String8 path)
 //~ rjf: Streamer Threads
 
 B32
-fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
+fs_u2s_enqueue_req(Rng1U64 range, String8 path, ulong endt_us)
 {
   B32 result = 0;
   path.size = Min(path.size, fs_shared->u2s_ring_size);
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
-    U64 available_size = fs_shared->u2s_ring_size - unconsumed_size;
-    U64 needed_size = sizeof(range.min) + sizeof(range.max) + sizeof(path.size) + path.size;
+    ulong unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
+    ulong available_size = fs_shared->u2s_ring_size - unconsumed_size;
+    ulong needed_size = sizeof(range.min) + sizeof(range.max) + sizeof(path.size) + path.size;
     if(available_size >= needed_size)
     {
       result = 1;
@@ -277,8 +277,8 @@ fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out)
 {
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
-    if(unconsumed_size >= sizeof(U64))
+    ulong unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
+    if(unconsumed_size >= sizeof(ulong))
     {
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->min);
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->max);
@@ -304,19 +304,19 @@ ASYNC_WORK_DEF(fs_stream_work)
   
   //- rjf: unpack request
   U128 key = fs_big_hash_from_string_range(path, range);
-  U64 path_hash = fs_little_hash_from_string(path);
-  U64 path_slot_idx = path_hash%fs_shared->slots_count;
-  U64 path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
+  ulong path_hash = fs_little_hash_from_string(path);
+  ulong path_slot_idx = path_hash%fs_shared->slots_count;
+  ulong path_stripe_idx = path_slot_idx%fs_shared->stripes_count;
   FS_Slot *path_slot = &fs_shared->slots[path_slot_idx];
   FS_Stripe *path_stripe = &fs_shared->stripes[path_stripe_idx];
   
   //- rjf: load
   ProfBegin("load \"%.*s\"", str8_varg(path));
   FileProperties pre_props = os_properties_from_file_path(path);
-  U64 range_size = dim_1u64(range);
-  U64 read_size = Min(pre_props.size, range_size);
+  ulong range_size = dim_1u64(range);
+  ulong read_size = Min(pre_props.size, range_size);
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite, path);
-  U64 data_arena_size = read_size+ARENA_HEADER_SIZE;
+  ulong data_arena_size = read_size+ARENA_HEADER_SIZE;
   data_arena_size += KB(4)-1;
   data_arena_size -= data_arena_size%KB(4);
   ProfBegin("allocate");
@@ -371,8 +371,8 @@ ASYNC_WORK_DEF(fs_stream_work)
         node->timestamp = post_props.modified;
         node->size = post_props.size;
       }
-      U64 range_hash = fs_little_hash_from_string(str8_struct(&range));
-      U64 range_slot_idx = range_hash%node->slots_count;
+      ulong range_hash = fs_little_hash_from_string(str8_struct(&range));
+      ulong range_slot_idx = range_hash%node->slots_count;
       FS_RangeSlot *range_slot = &node->slots[range_slot_idx];
       FS_RangeNode *range_node = 0;
       for(FS_RangeNode *n = range_slot->first; n != 0; n = n->next)
@@ -402,20 +402,20 @@ fs_detector_thread__entry_point(void *p)
   ThreadNameF("[fs] detector thread");
   for(;;)
   {
-    U64 slots_per_stripe = fs_shared->slots_count/fs_shared->stripes_count;
-    for(U64 stripe_idx = 0; stripe_idx < fs_shared->stripes_count; stripe_idx += 1)
+    ulong slots_per_stripe = fs_shared->slots_count/fs_shared->stripes_count;
+    for(ulong stripe_idx = 0; stripe_idx < fs_shared->stripes_count; stripe_idx += 1)
     {
       FS_Stripe *stripe = &fs_shared->stripes[stripe_idx];
-      OS_MutexScopeR(stripe->rw_mutex) for(U64 slot_in_stripe_idx = 0; slot_in_stripe_idx < slots_per_stripe; slot_in_stripe_idx += 1)
+      OS_MutexScopeR(stripe->rw_mutex) for(ulong slot_in_stripe_idx = 0; slot_in_stripe_idx < slots_per_stripe; slot_in_stripe_idx += 1)
       {
-        U64 slot_idx = stripe_idx*slots_per_stripe + slot_in_stripe_idx;
+        ulong slot_idx = stripe_idx*slots_per_stripe + slot_in_stripe_idx;
         FS_Slot *slot = &fs_shared->slots[slot_idx];
         for(FS_Node *n = slot->first; n != 0; n = n->next)
         {
           FileProperties props = os_properties_from_file_path(n->path);
           if(props.modified != n->timestamp)
           {
-            for(U64 range_slot_idx = 0; range_slot_idx < n->slots_count; range_slot_idx += 1)
+            for(ulong range_slot_idx = 0; range_slot_idx < n->slots_count; range_slot_idx += 1)
             {
               for(FS_RangeNode *range_n = n->slots[range_slot_idx].first;
                   range_n != 0;

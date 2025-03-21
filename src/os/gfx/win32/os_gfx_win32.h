@@ -64,7 +64,7 @@ struct OS_W32_MonitorGatherBundle
 struct OS_W32_GfxState
 {
   Arena *arena;
-  U32 gfx_thread_tid;
+  uint gfx_thread_tid;
   HINSTANCE hInstance;
   HCURSOR hCursor;
   OS_GfxInfo gfx_info;

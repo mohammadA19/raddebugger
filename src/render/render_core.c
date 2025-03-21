@@ -26,7 +26,7 @@ r_handle_match(R_Handle a, R_Handle b)
 //~ rjf: Batch Type Functions
 
 R_BatchList
-r_batch_list_make(U64 instance_size)
+r_batch_list_make(ulong instance_size)
 {
   R_BatchList list = {0};
   list.bytes_per_inst = instance_size;
@@ -34,7 +34,7 @@ r_batch_list_make(U64 instance_size)
 }
 
 void *
-r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
+r_batch_list_push_inst(Arena *arena, R_BatchList *list, ulong batch_inst_cap)
 {
   void *inst = 0;
   {

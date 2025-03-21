@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 String8
-cv_string_from_unknown_value(Arena *arena, U32 x)
+cv_string_from_unknown_value(Arena *arena, uint x)
 {
   return push_str8f(arena, "%#x", x);
 }
@@ -43,17 +43,17 @@ cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
     case CV_NumericKind_FLOAT128:  NotImplemented; break; // TODO: format float128
     case CV_NumericKind_CHAR:      result = push_str8f(arena, "%d",   *(sbyte *)num.val); break;
     case CV_NumericKind_SHORT:     result = push_str8f(arena, "%d",   *(short*)num.val); break;
-    case CV_NumericKind_LONG:      result = push_str8f(arena, "%d",   *(S32*)num.val); break;
-    case CV_NumericKind_QUADWORD:  result = push_str8f(arena, "%lld", *(S64*)num.val); break;
+    case CV_NumericKind_LONG:      result = push_str8f(arena, "%d",   *(int*)num.val); break;
+    case CV_NumericKind_QUADWORD:  result = push_str8f(arena, "%lld", *(long*)num.val); break;
     case CV_NumericKind_USHORT:    result = push_str8f(arena, "%u",   *(ushort*)num.val); break;
-    case CV_NumericKind_ULONG:     result = push_str8f(arena, "%u",   *(U32*)num.val); break;
-    case CV_NumericKind_UQUADWORD: result = push_str8f(arena, "%llu", *(U64*)num.val); break;
+    case CV_NumericKind_ULONG:     result = push_str8f(arena, "%u",   *(uint*)num.val); break;
+    case CV_NumericKind_UQUADWORD: result = push_str8f(arena, "%llu", *(ulong*)num.val); break;
   }
   return result;
 }
 
 String8 
-cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
+cv_string_from_reg_id(Arena *arena, CV_Arch arch, uint id)
 {
   String8 result = str8_zero();
   switch (arch) {
@@ -394,7 +394,7 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
 
   CV_PointerKind kind = CV_PointerAttribs_Extract_Kind(x);
   CV_PointerMode mode = CV_PointerAttribs_Extract_Mode(x);
-  U64            size = CV_PointerAttribs_Extract_Size(x);
+  ulong            size = CV_PointerAttribs_Extract_Size(x);
 
   x &= ~(0x1f|(0x7<<5)|(0x3f<<13));
 
@@ -592,8 +592,8 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  U32 hfa  = CV_TypeProps_Extract_HFA(x);
-  U32 mcom = CV_TypeProps_Extract_MOCOM(x);
+  uint hfa  = CV_TypeProps_Extract_HFA(x);
+  uint mcom = CV_TypeProps_Extract_MOCOM(x);
 
   String8 hfa_str  = cv_string_from_hfa(hfa);
   String8 mcom_str = cv_string_from_mcom(mcom);
@@ -786,8 +786,8 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  U32 access = CV_FieldAttribs_Extract_Access(attribs);
-  U32 mprop  = CV_FieldAttribs_Extract_MethodProp(attribs);
+  uint access = CV_FieldAttribs_Extract_Access(attribs);
+  uint mprop  = CV_FieldAttribs_Extract_MethodProp(attribs);
   attribs &= ~(0x3 | 0x7);
 
   String8 access_str = cv_string_from_member_access(access);
@@ -842,7 +842,7 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
     if (n.size) {
       Temp scratch = scratch_begin(&arena, 1);
 
-      U64 type = CV_BasicTypeFromTypeId(itype);
+      ulong type = CV_BasicTypeFromTypeId(itype);
       char *type_str = "???";
       switch (type) {
         case CV_BasicType_NOTYPE:     type_str = "NOTYPE";     break;
@@ -900,7 +900,7 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
         case CV_BasicType_PTR:        type_str = "PTR";        break;
       }
 
-      U64 ptr = CV_BasicPointerKindFromTypeId(itype);
+      ulong ptr = CV_BasicPointerKindFromTypeId(itype);
       char *ptr_str = "";
       switch (ptr) {
         case 0x1: ptr_str = "P";    break;
@@ -931,7 +931,7 @@ cv_string_from_itemid(Arena *arena, CV_ItemId itemid)
 }
 
 String8
-cv_string_from_reg_off(Arena *arena, CV_Arch arch, U32 reg, U32 off)
+cv_string_from_reg_off(Arena *arena, CV_Arch arch, uint reg, uint off)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 result = push_str8f(arena, "%S+%x", cv_string_from_reg_id(scratch.arena, arch, reg), off);
@@ -956,7 +956,7 @@ cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind)
 }
 
 String8
-cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
+cv_string_from_leaf_name(Arena *arena, uint leaf_type)
 {
   String8 str    = cv_string_from_leaf_kind(leaf_type);
   String8 result = push_str8f(arena, "LF_%S", str);
@@ -964,7 +964,7 @@ cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
 }
 
 String8 
-cv_string_sec_off(Arena *arena, U32 sec, U32 off)
+cv_string_sec_off(Arena *arena, uint sec, uint off)
 {
   return push_str8f(arena, "%04x:%08x", sec, off);
 }

@@ -9,10 +9,10 @@
 
 struct OS_SystemInfo
 {
-  U32 logical_processor_count;
-  U64 page_size;
-  U64 large_page_size;
-  U64 allocation_granularity;
+  uint logical_processor_count;
+  ulong page_size;
+  ulong large_page_size;
+  ulong allocation_granularity;
   String8 machine_name;
 };
 
@@ -21,7 +21,7 @@ struct OS_SystemInfo
 
 struct OS_ProcessInfo
 {
-  U32 pid;
+  uint pid;
   String8 binary_path;
   String8 initial_path;
   String8 user_program_data_path;
@@ -32,7 +32,7 @@ struct OS_ProcessInfo
 ////////////////////////////////
 //~ rjf: Access Flags
 
-enum OS_AccessFlags : U32
+enum OS_AccessFlags : uint
 {
   OS_AccessFlag_Read       = (1<<0),
   OS_AccessFlag_Write      = (1<<1),
@@ -45,7 +45,7 @@ enum OS_AccessFlags : U32
 ////////////////////////////////
 //~ rjf: Files
 
-enum OS_FileIterFlags : U32
+enum OS_FileIterFlags : uint
 {
   OS_FileIterFlag_SkipFolders     = (1 << 0),
   OS_FileIterFlag_SkipFiles       = (1 << 1),
@@ -68,7 +68,7 @@ struct OS_FileInfo
 // nick: on-disk file identifier
 struct OS_FileID
 {
-  U64 v[3];
+  ulong v[3];
 };
 
 ////////////////////////////////
@@ -88,7 +88,7 @@ struct OS_ProcessLaunchParams
 
 struct OS_Handle
 {
-  U64 u64[1];
+  ulong u64[1];
 };
 
 struct OS_HandleNode
@@ -101,13 +101,13 @@ struct OS_HandleList
 {
   OS_HandleNode *first;
   OS_HandleNode *last;
-  U64 count;
+  ulong count;
 };
 
 struct OS_HandleArray
 {
   OS_Handle *v;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -115,7 +115,7 @@ struct OS_HandleArray
 
 struct OS_Guid
 {
-  U32 data1;
+  uint data1;
   ushort data2;
   ushort data3;
   byte  data4[8];
@@ -148,7 +148,7 @@ B32            os_write_data_to_file_path(String8 path, String8 data);
 B32            os_write_data_list_to_file_path(String8 path, String8List list);
 B32            os_append_data_to_file_path(String8 path, String8 data);
 OS_FileID      os_id_from_file_path(String8 path);
-S64            os_file_id_compare(OS_FileID a, OS_FileID b);
+long            os_file_id_compare(OS_FileID a, OS_FileID b);
 String8        os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range);
 
 ////////////////////////////////
@@ -167,25 +167,25 @@ String8 os_get_current_path(Arena *arena);
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
 
 //- rjf: basic
-void *os_reserve(U64 size);
-B32   os_commit(void *ptr, U64 size);
-void  os_decommit(void *ptr, U64 size);
-void  os_release(void *ptr, U64 size);
+void *os_reserve(ulong size);
+B32   os_commit(void *ptr, ulong size);
+void  os_decommit(void *ptr, ulong size);
+void  os_release(void *ptr, ulong size);
 
 //- rjf: large pages
-void *os_reserve_large(U64 size);
-B32 os_commit_large(void *ptr, U64 size);
+void *os_reserve_large(ulong size);
+B32 os_commit_large(void *ptr, ulong size);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
-U32 os_tid();
+uint os_tid();
 void os_set_thread_name(String8 string);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)
 
-void os_abort(S32 exit_code);
+void os_abort(int exit_code);
 
 ////////////////////////////////
 //~ rjf: @os_hooks File System (Implemented Per-OS)
@@ -193,8 +193,8 @@ void os_abort(S32 exit_code);
 //- rjf: files
 OS_Handle      os_file_open(OS_AccessFlags flags, String8 path);
 void           os_file_close(OS_Handle file);
-U64            os_file_read(OS_Handle file, Rng1U64 rng, void *out_data);
-U64            os_file_write(OS_Handle file, Rng1U64 rng, void *data);
+ulong            os_file_read(OS_Handle file, Rng1U64 rng, void *out_data);
+ulong            os_file_write(OS_Handle file, Rng1U64 rng, void *data);
 B32            os_file_set_times(OS_Handle file, DateTime time);
 FileProperties os_properties_from_file(OS_Handle file);
 OS_FileID      os_id_from_file(OS_Handle file);
@@ -221,7 +221,7 @@ B32 os_make_directory(String8 path);
 ////////////////////////////////
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
-OS_Handle os_shared_memory_alloc(U64 size, String8 name);
+OS_Handle os_shared_memory_alloc(ulong size, String8 name);
 OS_Handle os_shared_memory_open(String8 name);
 void      os_shared_memory_close(OS_Handle handle);
 void *    os_shared_memory_view_open(OS_Handle handle, Rng1U64 range);
@@ -230,25 +230,25 @@ void      os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-U64         os_now_microseconds();
-U32         os_now_unix();
+ulong         os_now_microseconds();
+uint         os_now_unix();
 DateTime    os_now_universal_time();
 DateTime    os_universal_time_from_local(DateTime *local_time);
 DateTime    os_local_time_from_universal(DateTime *universal_time);
-void        os_sleep_milliseconds(U32 msec);
+void        os_sleep_milliseconds(uint msec);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
 OS_Handle os_process_launch(OS_ProcessLaunchParams *params);
-B32       os_process_join(OS_Handle handle, U64 endt_us);
+B32       os_process_join(OS_Handle handle, ulong endt_us);
 void      os_process_detach(OS_Handle handle);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
 OS_Handle os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params);
-B32       os_thread_join(OS_Handle handle, U64 endt_us);
+B32       os_thread_join(OS_Handle handle, ulong endt_us);
 void      os_thread_detach(OS_Handle handle);
 
 ////////////////////////////////
@@ -272,18 +272,18 @@ void      os_rw_mutex_drop_w(OS_Handle mutex);
 OS_Handle os_condition_variable_alloc();
 void      os_condition_variable_release(OS_Handle cv);
 // returns false on timeout, true on signal, (max_wait_ms = max_U64) -> no timeout
-B32       os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us);
-B32       os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us);
-B32       os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us);
+B32       os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, ulong endt_us);
+B32       os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, ulong endt_us);
+B32       os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, ulong endt_us);
 void      os_condition_variable_signal(OS_Handle cv);
 void      os_condition_variable_broadcast(OS_Handle cv);
 
 //- rjf: cross-process semaphores
-OS_Handle os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name);
+OS_Handle os_semaphore_alloc(uint initial_count, uint max_count, String8 name);
 void      os_semaphore_release(OS_Handle semaphore);
 OS_Handle os_semaphore_open(String8 name);
 void      os_semaphore_close(OS_Handle semaphore);
-B32       os_semaphore_take(OS_Handle semaphore, U64 endt_us);
+B32       os_semaphore_take(OS_Handle semaphore, ulong endt_us);
 void      os_semaphore_drop(OS_Handle semaphore);
 
 //- rjf: scope macros

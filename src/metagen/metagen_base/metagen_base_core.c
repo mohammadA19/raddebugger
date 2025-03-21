@@ -5,26 +5,26 @@
 //~ rjf: Safe Casts
 
 ushort
-safe_cast_u16(U32 x)
+safe_cast_u16(uint x)
 {
   AssertAlways(x <= max_U16);
   ushort result = (ushort)x;
   return result;
 }
 
-U32
-safe_cast_u32(U64 x)
+uint
+safe_cast_u32(ulong x)
 {
   AssertAlways(x <= max_U32);
-  U32 result = (U32)x;
+  uint result = (uint)x;
   return result;
 }
 
-S32
-safe_cast_s32(S64 x)
+int
+safe_cast_s32(long x)
 {
   AssertAlways(x <= max_S32);
-  S32 result = (S32)x;
+  int result = (int)x;
   return result;
 }
 
@@ -39,7 +39,7 @@ u128_zero()
 }
 
 U128
-u128_make(U64 v0, U64 v1)
+u128_make(ulong v0, ulong v1)
 {
   U128 v = {v0, v1};
   return v;
@@ -54,14 +54,14 @@ u128_match(U128 a, U128 b)
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-U32
-u32_from_u64_saturate(U64 x){
-  U32 x32 = (x > max_U32)?max_U32:(U32)x;
+uint
+u32_from_u64_saturate(ulong x){
+  uint x32 = (x > max_U32)?max_U32:(uint)x;
   return(x32);
 }
 
-U64
-u64_up_to_pow2(U64 x){
+ulong
+u64_up_to_pow2(ulong x){
   if (x == 0){
     x = 1;
   }
@@ -78,32 +78,32 @@ u64_up_to_pow2(U64 x){
   return(x);
 }
 
-S32
-extend_sign32(U32 x, U32 size){
-  U32 high_bit = size * 8;
-  U32 shift = 32 - high_bit;
-  S32 result = ((S32)x << shift) >> shift;
+int
+extend_sign32(uint x, uint size){
+  uint high_bit = size * 8;
+  uint shift = 32 - high_bit;
+  int result = ((int)x << shift) >> shift;
   return result;
 }
 
-S64
-extend_sign64(U64 x, U64 size){
-  U64 high_bit = size * 8;
-  U64 shift = 64 - high_bit;
-  S64 result = ((S64)x << shift) >> shift;
+long
+extend_sign64(ulong x, ulong size){
+  ulong high_bit = size * 8;
+  ulong shift = 64 - high_bit;
+  long result = ((long)x << shift) >> shift;
   return result;
 }
 
 F32
 inf32(){
-  union { U32 u; F32 f; } x;
+  union { uint u; F32 f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
 F32
 neg_inf32(){
-  union { U32 u; F32 f; } x;
+  union { uint u; F32 f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
 }
@@ -116,21 +116,21 @@ bswap_u16(ushort x)
   return result;
 }
 
-U32
-bswap_u32(U32 x)
+uint
+bswap_u32(uint x)
 {
-  U32 result = (((x & 0xFF000000) >> 24) |
+  uint result = (((x & 0xFF000000) >> 24) |
                 ((x & 0x00FF0000) >> 8)  |
                 ((x & 0x0000FF00) << 8)  |
                 ((x & 0x000000FF) << 24));
   return result;
 }
 
-U64
-bswap_u64(U64 x)
+ulong
+bswap_u64(ulong x)
 {
   // TODO(nick): naive bswap, replace with something that is faster like an intrinsic
-  U64 result = (((x & 0xFF00000000000000ULL) >> 56) |
+  ulong result = (((x & 0xFF00000000000000ULL) >> 56) |
                 ((x & 0x00FF000000000000ULL) >> 40) |
                 ((x & 0x0000FF0000000000ULL) >> 24) |
                 ((x & 0x000000FF00000000ULL) >> 8)  |
@@ -143,50 +143,50 @@ bswap_u64(U64 x)
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 
-U64
+ulong
 count_bits_set16(ushort val)
 {
   return __popcnt16(val);
 }
 
-U64
-count_bits_set32(U32 val)
+ulong
+count_bits_set32(uint val)
 {
   return __popcnt(val);
 }
 
-U64
-count_bits_set64(U64 val)
+ulong
+count_bits_set64(ulong val)
 {
   return __popcnt64(val);
 }
 
-U64
-ctz32(U32 mask)
+ulong
+ctz32(uint mask)
 {
   unsigned long idx;
   _BitScanForward(&idx, mask);
   return idx;
 }
 
-U64
-ctz64(U64 mask)
+ulong
+ctz64(ulong mask)
 {
   unsigned long idx;
   _BitScanForward64(&idx, mask);
   return idx;
 }
 
-U64
-clz32(U32 mask)
+ulong
+clz32(uint mask)
 {
   unsigned long idx;
   _BitScanReverse(&idx, mask);
   return 31 - idx;
 }
 
-U64
-clz64(U64 mask)
+ulong
+clz64(ulong mask)
 {
   unsigned long idx;
   _BitScanReverse64(&idx, mask);
@@ -195,43 +195,43 @@ clz64(U64 mask)
 
 #elif COMPILER_CLANG || COMPILER_GCC
 
-U64
+ulong
 count_bits_set16(ushort val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-count_bits_set32(U32 val)
+ulong
+count_bits_set32(uint val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-count_bits_set64(U64 val)
+ulong
+count_bits_set64(ulong val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-ctz32(U32 val)
+ulong
+ctz32(uint val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-clz32(U32 val)
+ulong
+clz32(uint val)
 {
   NotImplemented;
   return 0;
 }
 
-U64
-clz64(U64 val)
+ulong
+clz64(ulong val)
 {
   NotImplemented;
   return 0;
@@ -244,7 +244,7 @@ clz64(U64 val)
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-S32
+int
 sign_from_side_S32(Side side){
   return((side == Side_Min)?-1:1);
 }
@@ -258,18 +258,18 @@ sign_from_side_F32(Side side){
 //~ rjf: Memory Functions
 
 B32
-memory_is_zero(void *ptr, U64 size){
+memory_is_zero(void *ptr, ulong size){
   B32 result = 1;
   
   // break down size
-  U64 extra = (size&0x7);
-  U64 count8 = (size >> 3);
+  ulong extra = (size&0x7);
+  ulong count8 = (size >> 3);
   
   // check with 8-byte stride
-  U64 *p64 = (U64*)ptr;
+  ulong *p64 = (ulong*)ptr;
   if(result)
   {
-    for (U64 i = 0; i < count8; i += 1, p64 += 1){
+    for (ulong i = 0; i < count8; i += 1, p64 += 1){
       if (*p64 != 0){
         result = 0;
         goto done;
@@ -281,7 +281,7 @@ memory_is_zero(void *ptr, U64 size){
   if(result)
   {
     byte *p8 = (byte*)p64;
-    for (U64 i = 0; i < extra; i += 1, p8 += 1){
+    for (ulong i = 0; i < extra; i += 1, p8 += 1){
       if (*p8 != 0){
         result = 0;
         goto done;
@@ -297,7 +297,7 @@ memory_is_zero(void *ptr, U64 size){
 //~ rjf: Text 2D Coordinate/Range Functions
 
 TxtPt
-txt_pt(S64 line, S64 column)
+txt_pt(long line, long column)
 {
   TxtPt p = {0};
   p.line = line;
@@ -398,11 +398,11 @@ txt_rng_contains(TxtRng r, TxtPt pt)
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-U64
+ulong
 bit_size_from_arch(Architecture arch)
 {
   // TODO(rjf): metacode
-  U64 arch_bitsize = 0;
+  ulong arch_bitsize = 0;
   switch(arch)
   {
     case Architecture_x64:   arch_bitsize = 64; break;
@@ -414,7 +414,7 @@ bit_size_from_arch(Architecture arch)
   return arch_bitsize;
 }
 
-U64
+ulong
 max_instruction_size_from_arch(Architecture arch)
 {
   // TODO(rjf): make this real
@@ -500,12 +500,12 @@ date_time_from_dense_time(DenseTime time){
   result.mon  = time%12;
   time /= 12;
   Assert(time <= max_U32);
-  result.year = (U32)time;
+  result.year = (uint)time;
   return(result);
 }
 
 DateTime
-date_time_from_micro_seconds(U64 time){
+date_time_from_micro_seconds(ulong time){
   DateTime result = {0};
   result.micro_sec = time%1000;
   time /= 1000;
@@ -522,22 +522,22 @@ date_time_from_micro_seconds(U64 time){
   result.mon = time%12;
   time /= 12;
   Assert(time <= max_U32);
-  result.year = (U32)time;
+  result.year = (uint)time;
   return(result);
 }
 
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-U64
-ring_write(byte *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
+ulong
+ring_write(byte *ring_base, ulong ring_size, ulong ring_pos, void *src_data, ulong src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
-    U64 ring_off = ring_pos%ring_size;
-    U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
-    U64 pst_split_bytes = src_data_size-pre_split_bytes;
+    ulong ring_off = ring_pos%ring_size;
+    ulong bytes_before_split = ring_size-ring_off;
+    ulong pre_split_bytes = Min(bytes_before_split, src_data_size);
+    ulong pst_split_bytes = src_data_size-pre_split_bytes;
     void *pre_split_data = src_data;
     void *pst_split_data = ((byte *)src_data + pre_split_bytes);
     MemoryCopy(ring_base+ring_off, pre_split_data, pre_split_bytes);
@@ -546,15 +546,15 @@ ring_write(byte *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src
   return src_data_size;
 }
 
-U64
-ring_read(byte *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
+ulong
+ring_read(byte *ring_base, ulong ring_size, ulong ring_pos, void *dst_data, ulong read_size)
 {
   Assert(read_size <= ring_size);
   {
-    U64 ring_off = ring_pos%ring_size;
-    U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, read_size);
-    U64 pst_split_bytes = read_size-pre_split_bytes;
+    ulong ring_off = ring_pos%ring_size;
+    ulong bytes_before_split = ring_size-ring_off;
+    ulong pre_split_bytes = Min(bytes_before_split, read_size);
+    ulong pst_split_bytes = read_size-pre_split_bytes;
     MemoryCopy(dst_data, ring_base+ring_off, pre_split_bytes);
     MemoryCopy((byte *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);
   }

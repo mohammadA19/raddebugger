@@ -135,7 +135,7 @@ X(rnglistsptr,   12)\
 X(string,        13)\
 X(stroffsetsptr, 14)
 
-enum DWARF_AttributeClassFlags : U32{
+enum DWARF_AttributeClassFlags : uint{
 #define X(N,C) DWARF_AttributeClassFlag_##N = (1 << C),
   DWARF_AttributeClassXList(X)
 #undef X
@@ -841,7 +841,7 @@ read_only static DWARF_SectionNameRow dwarf_section_name_table[] = {
 
 srtuct DWARF_Parsed{
   ELF_Parsed *elf;
-  U32 debug_section_idx[DWARF_SectionCode_COUNT];
+  uint debug_section_idx[DWARF_SectionCode_COUNT];
   String8 debug_section_name[DWARF_SectionCode_COUNT];
   String8 debug_data[DWARF_SectionCode_COUNT];
 };
@@ -863,12 +863,12 @@ srtuct DWARF_FormDecodeRules{
     };
     
     // for alignment and padding to 8
-    U64 x;
+    ulong x;
   };
 };
 
 srtuct DWARF_FormDecoded{
-  U64 val;
+  ulong val;
   byte *dataptr;
   B32 error;
 };
@@ -880,7 +880,7 @@ srtuct DWARF_FormDecoded{
 // ** not implemented yet **
 
 srtuct DWARF_IndexParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -890,7 +890,7 @@ srtuct DWARF_IndexParsed{
 // ** not implemented yet **
 
 srtuct DWARF_SupParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -898,7 +898,7 @@ srtuct DWARF_SupParsed{
 //  (DWARF4.pdb + 7.5) (DWARF5.pdf + 7.5)
 
 srtuct DWARF_InfoAttribVal{
-  U64 val;
+  ulong val;
   byte *dataptr;
 };
 
@@ -906,10 +906,10 @@ srtuct DWARF_InfoEntry{
   struct DWARF_InfoEntry *next_sibling;
   struct DWARF_InfoEntry *first_child;
   struct DWARF_InfoEntry *last_child;
-  U64 child_count;
+  ulong child_count;
   struct DWARF_InfoEntry *parent;
   
-  U64 info_offset;
+  ulong info_offset;
   struct DWARF_AbbrevDecl *abbrev_decl;
   DWARF_InfoAttribVal *attrib_vals;
 };
@@ -919,52 +919,52 @@ srtuct DWARF_InfoUnit{
   struct DWARF_InfoUnit *next;
   
   // header
-  U32 version;
-  U32 offset_size;
-  U32 address_size;
+  uint version;
+  uint offset_size;
+  uint address_size;
   
   // root attributes
   DWARF_Language language;
-  U64 line_info_offset;
-  U64 vbase;
-  U64 str_offsets_base;
-  U64 addr_base;
-  U64 rnglists_base;
-  U64 loclists_base;
+  ulong line_info_offset;
+  ulong vbase;
+  ulong str_offsets_base;
+  ulong addr_base;
+  ulong rnglists_base;
+  ulong loclists_base;
   
   // info entries
   DWARF_InfoEntry *entry_root;
-  U64 entry_count;
+  ulong entry_count;
 };
 #endif
 
 #if 0
 srtuct DWARF_InfoParams{
-  U64 unit_idx_min;
-  U64 unit_idx_max;
+  ulong unit_idx_min;
+  ulong unit_idx_max;
 };
 #endif
 
 srtuct DWARF_InfoUnit{
   struct DWARF_InfoUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte  offset_size;
   byte  version;
   byte  unit_type; // (DWARF_UnitType)
   byte  address_size;
-  U64 abbrev_off;
+  ulong abbrev_off;
   
   union{
     // unit_type: skeleton, split_compile
-    U64 dwo_id;
+    ulong dwo_id;
     // unit_type: type, split_type
     struct{
-      U64 type_signature;
-      U64 type_offset;
+      ulong type_signature;
+      ulong type_offset;
     };
   };
 };
@@ -972,7 +972,7 @@ srtuct DWARF_InfoUnit{
 srtuct DWARF_InfoParsed{
   DWARF_InfoUnit *unit_first;
   DWARF_InfoUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -986,34 +986,34 @@ srtuct DWARF_AbbrevAttribSpec{
 
 srtuct DWARF_AbbrevDecl{
   struct DWARF_AbbrevDecl *next;
-  U32 abbrev_code;
+  uint abbrev_code;
   DWARF_Tag tag;
   B8 has_children;
   byte __filler__;
   ushort attrib_count;
   DWARF_AbbrevAttribSpec *attrib_specs;
-  S64 *implicit_const;
+  long *implicit_const;
 };
 
 srtuct DWARF_AbbrevUnit{
   struct DWARF_AbbrevUnit *next;
-  U64 offset;
+  ulong offset;
   DWARF_AbbrevDecl *first;
   DWARF_AbbrevDecl *last;
-  U64 count;
+  ulong count;
 };
 
 #if 0
 srtuct DWARF_AbbrevParams{
-  U64 unit_idx_min;
-  U64 unit_idx_max;
+  ulong unit_idx_min;
+  ulong unit_idx_max;
 };
 #endif
 
 srtuct DWARF_AbbrevParsed{
   DWARF_AbbrevUnit *unit_first;
   DWARF_AbbrevUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
   B32 decoding_error;
 };
 
@@ -1024,20 +1024,20 @@ srtuct DWARF_AbbrevParsed{
 srtuct DWARF_PubNamesUnit{
   struct DWARF_PubNamesUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte  offset_size;
   byte  version;
-  U64 info_off;
-  U64 info_length;
+  ulong info_off;
+  ulong info_length;
 };
 
 srtuct DWARF_PubNamesParsed{
   DWARF_PubNamesUnit *unit_first;
   DWARF_PubNamesUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -1047,17 +1047,17 @@ srtuct DWARF_PubNamesParsed{
 srtuct DWARF_NamesUnit{
   struct DWARF_NamesUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte version;
-  U32 comp_unit_count;
-  U32 local_type_unit_count;
-  U32 foreign_type_unit_count;
-  U32 bucket_count;
-  U32 name_count;
-  U32 abbrev_table_size;
+  uint comp_unit_count;
+  uint local_type_unit_count;
+  uint foreign_type_unit_count;
+  uint bucket_count;
+  uint name_count;
+  uint abbrev_table_size;
   String8 augmentation_string;
   
 };
@@ -1065,7 +1065,7 @@ srtuct DWARF_NamesUnit{
 srtuct DWARF_NamesParsed{
   DWARF_NamesUnit *unit_first;
   DWARF_NamesUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -1075,21 +1075,21 @@ srtuct DWARF_NamesParsed{
 srtuct DWARF_ArangesUnit{
   struct DWARF_ArangesUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte version;
   byte address_size;
   byte segment_selector_size;
   byte offset_size;
-  U64 info_off;
+  ulong info_off;
 };
 
 srtuct DWARF_ArangesParsed{
   DWARF_ArangesUnit *unit_first;
   DWARF_ArangesUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -1099,38 +1099,38 @@ srtuct DWARF_ArangesParsed{
 srtuct DWARF_V4LineFileNamesEntry{
   struct DWARF_V4LineFileNamesEntry *next;
   String8 file_name;
-  U64 include_directory_idx;
-  U64 last_modified_time;
-  U64 file_size;
+  ulong include_directory_idx;
+  ulong last_modified_time;
+  ulong file_size;
 };
 
 srtuct DWARF_V4LineFileNamesList{
   DWARF_V4LineFileNamesEntry *first;
   DWARF_V4LineFileNamesEntry *last;
-  U64 count;
+  ulong count;
 };
 
 srtuct DWARF_V5LinePathEntryFormat{
-  U32 content_type; /* DWARF_LineEntryFormat */
-  U32 form;         /* DWARF_AttributeForm */
+  uint content_type; /* DWARF_LineEntryFormat */
+  uint form;         /* DWARF_AttributeForm */
 };
 
 srtuct DWARF_V5Directory{
   String8 path_str;
-  U64 path_off;
-  U64 path_sec_form;
-  U64 directory_index;
-  U64 timestamp;
-  U64 size;
+  ulong path_off;
+  ulong path_sec_form;
+  ulong directory_index;
+  ulong timestamp;
+  ulong size;
   byte md5_checksum[16];
 };
 
 srtuct DWARF_LineUnit{
   struct DWARF_LineUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte version;
   
@@ -1139,7 +1139,7 @@ srtuct DWARF_LineUnit{
 srtuct DWARF_LineParsed{
   DWARF_LineUnit *unit_first;
   DWARF_LineUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -1149,7 +1149,7 @@ srtuct DWARF_LineParsed{
 // ** not implemented yet **
 
 srtuct DWARF_MacInfoParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1159,7 +1159,7 @@ srtuct DWARF_MacInfoParsed{
 // ** not implemented yet **
 
 srtuct DWARF_MacroParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1169,7 +1169,7 @@ srtuct DWARF_MacroParsed{
 // ** not implemented yet **
 
 srtuct DWARF_FrameParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1179,7 +1179,7 @@ srtuct DWARF_FrameParsed{
 // ** not implemented yet **
 
 srtuct DWARF_RangesParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1189,7 +1189,7 @@ srtuct DWARF_RangesParsed{
 // ** not implemented yet **
 
 srtuct DWARF_StrOffsetsParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1199,9 +1199,9 @@ srtuct DWARF_StrOffsetsParsed{
 srtuct DWARF_AddrUnit{
   struct DWARF_AddrUnit *next;
   
-  U64 hdr_off;
-  U64 base_off;
-  U64 opl_off;
+  ulong hdr_off;
+  ulong base_off;
+  ulong opl_off;
   
   byte offset_size;
   byte dwarf_version;
@@ -1212,7 +1212,7 @@ srtuct DWARF_AddrUnit{
 srtuct DWARF_AddrParsed{
   DWARF_AddrUnit *unit_first;
   DWARF_AddrUnit *unit_last;
-  U64 unit_count;
+  ulong unit_count;
 };
 
 
@@ -1222,7 +1222,7 @@ srtuct DWARF_AddrParsed{
 // ** not implemented yet **
 
 srtuct DWARF_RngListsParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1232,7 +1232,7 @@ srtuct DWARF_RngListsParsed{
 // ** not implemented yet **
 
 srtuct DWARF_LocListsParsed{
-  U32 dummy;
+  uint dummy;
 };
 
 
@@ -1246,9 +1246,9 @@ if (((*(p))&0x80) == 0) { (p)+=1; break; }   \
 
 #define DWARF_LEB128_ADV_NOCAP(p) for((p)+=1; ((*(p-1))&0x80) != 0; (p)+=1)
 
-static U64 dwarf_leb128_decode_U64(byte *ptr, byte *opl);
-static S64 dwarf_leb128_decode_S64(byte *ptr, byte *opl);
-static U32 dwarf_leb128_decode_U32(byte *ptr, byte *opl);
+static ulong dwarf_leb128_decode_U64(byte *ptr, byte *opl);
+static long dwarf_leb128_decode_S64(byte *ptr, byte *opl);
+static uint dwarf_leb128_decode_U32(byte *ptr, byte *opl);
 
 #define dwarf_leb128_decode(T,ptr,opl) dwarf_leb128_decode_##T(ptr,opl)
 
@@ -1298,10 +1298,10 @@ enum{
 };
 
 srtuct UNW_DW_EhPtrCtx{
-  U64 raw_base_vaddr; // address where pointer is being read
-  U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
-  U64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
-  U64 func_vaddr;     // base address of function where IP is located
+  ulong raw_base_vaddr; // address where pointer is being read
+  ulong text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
+  ulong data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
+  ulong func_vaddr;     // base address of function where IP is located
 };
 
 // CIE: Common Information Entry
@@ -1311,33 +1311,33 @@ srtuct UNW_DW_CIEUnpacked{
   UNW_DW_EhPtrEnc addr_encoding;
   
   B8 has_augmentation_size;
-  U64 augmentation_size;
+  ulong augmentation_size;
   String8 augmentation;
   
-  U64 code_align_factor;
-  S64 data_align_factor;
-  U64 ret_addr_reg;
+  ulong code_align_factor;
+  long data_align_factor;
+  ulong ret_addr_reg;
   
-  U64 handler_ip;
+  ulong handler_ip;
   
-  U64 cfi_range_min;
-  U64 cfi_range_max;
+  ulong cfi_range_min;
+  ulong cfi_range_max;
 };
 
 srtuct UNW_DW_CIEUnpackedNode{
   struct UNW_DW_CIEUnpackedNode *next;
   UNW_DW_CIEUnpacked cie;
-  U64 offset;
+  ulong offset;
 };
 
 // FDE: Frame Description Entry
 srtuct UNW_DW_FDEUnpacked{
-  U64 ip_voff_min;
-  U64 ip_voff_max;
-  U64 lsda_ip;
+  ulong ip_voff_min;
+  ulong ip_voff_max;
+  ulong lsda_ip;
   
-  U64 cfi_range_min;
-  U64 cfi_range_max;
+  ulong cfi_range_min;
+  ulong cfi_range_max;
 };
 
 // CFI: Call Frame Information
@@ -1356,11 +1356,11 @@ srtuct UNW_DW_CFICFACell{
   UNW_DW_CFICFARule rule;
   union{
     struct{
-      U64 reg_idx;
-      S64 offset;
+      ulong reg_idx;
+      long offset;
     };
-    U64 expr_min;
-    U64 expr_max;
+    ulong expr_min;
+    ulong expr_max;
   };
 };
 
@@ -1377,10 +1377,10 @@ enum UNW_DW_CFIRegisterRule{
 srtuct UNW_DW_CFICell{
   UNW_DW_CFIRegisterRule rule;
   union{
-    S64 n;
+    long n;
     struct{
-      U64 expr_min;
-      U64 expr_max;
+      ulong expr_min;
+      ulong expr_max;
     };
   };
 };
@@ -1392,11 +1392,11 @@ srtuct UNW_DW_CFIRow{
 };
 
 srtuct UNW_DW_CFIMachine{
-  U64 cells_per_row;
+  ulong cells_per_row;
   UNW_DW_CIEUnpacked *cie;
   UNW_DW_EhPtrCtx *ptr_ctx;
   UNW_DW_CFIRow *initial_row;
-  U64 fde_ip;
+  ulong fde_ip;
 };
 
 enum UNW_DW_CFADecode : byte{
@@ -1446,9 +1446,9 @@ static void dwarf__initial_length(String8 data,
                                   byte **ptr_inout, byte **unit_opl_out, B32 *is_64bit_out);
 
 static void
-dwarf__line_v5_directories(U64 address_size, U64 offset_size,
-                           DWARF_V5LinePathEntryFormat *format, U64 format_count,
-                           DWARF_V5Directory *directories_out, U64 dir_count,
+dwarf__line_v5_directories(ulong address_size, ulong offset_size,
+                           DWARF_V5LinePathEntryFormat *format, ulong format_count,
+                           DWARF_V5Directory *directories_out, ulong dir_count,
                            byte **ptr_io, byte *opl);
 
 // debug sections
@@ -1457,8 +1457,8 @@ static String8 dwarf_name_from_debug_section(DWARF_Parsed *dwarf, DWARF_SectionC
 
 // abbrev functions
 
-static DWARF_AbbrevUnit* dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, U64 off);
-static DWARF_AbbrevDecl* dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit *unit, U32 code);
+static DWARF_AbbrevUnit* dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, ulong off);
+static DWARF_AbbrevDecl* dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit *unit, uint code);
 
 // attribute decoding functions
 
@@ -1468,11 +1468,11 @@ static DWARF_AttributeClassFlags dwarf_attribute_class_from_name(DWARF_Attribute
 // form decoding functions
 
 static DWARF_FormDecodeRules
-dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_size);
+dwarf_form_decode_rule(DWARF_AttributeForm form, ulong address_size, ulong offset_size);
 
 static DWARF_FormDecoded
 dwarf_form_decode(DWARF_FormDecodeRules *rules, byte **ptr_io, byte *opl,
-                  DWARF_AbbrevDecl *abbrev_decl, U32 attrib_i);
+                  DWARF_AbbrevDecl *abbrev_decl, uint attrib_i);
 
 // string functions
 

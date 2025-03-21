@@ -33,7 +33,7 @@ os_w32_rng2f32_from_rect(RECT rect)
 OS_Handle
 os_w32_handle_from_window(OS_W32_Window *window)
 {
-  OS_Handle handle = {(U64)window};
+  OS_Handle handle = {(ulong)window};
   return handle;
 }
 
@@ -143,13 +143,13 @@ os_w32_os_key_from_vkey(WPARAM vkey)
     key_table[(unsigned int)'Y'] = OS_Key_Y;
     key_table[(unsigned int)'Z'] = OS_Key_Z;
     
-    for (U64 i = '0', j = OS_Key_0; i <= '9'; i += 1, j += 1){
+    for (ulong i = '0', j = OS_Key_0; i <= '9'; i += 1, j += 1){
       key_table[i] = (OS_Key)j;
     }
-    for (U64 i = VK_NUMPAD0, j = OS_Key_0; i <= VK_NUMPAD9; i += 1, j += 1){
+    for (ulong i = VK_NUMPAD0, j = OS_Key_0; i <= VK_NUMPAD9; i += 1, j += 1){
       key_table[i] = (OS_Key)j;
     }
-    for (U64 i = VK_F1, j = OS_Key_F1; i <= VK_F24; i += 1, j += 1){
+    for (ulong i = VK_F1, j = OS_Key_F1; i <= VK_F24; i += 1, j += 1){
       key_table[i] = (OS_Key)j;
     }
     
@@ -206,12 +206,12 @@ os_w32_os_key_from_vkey(WPARAM vkey)
     key_table[VK_ADD]      = OS_Key_NumPlus;
     key_table[VK_DECIMAL]  = OS_Key_NumPeriod;
     
-    for (U32 i = 0; i < 10; i += 1){
-      key_table[VK_NUMPAD0 + i] = (OS_Key)((U64)OS_Key_Num0 + i);
+    for (uint i = 0; i < 10; i += 1){
+      key_table[VK_NUMPAD0 + i] = (OS_Key)((ulong)OS_Key_Num0 + i);
     }
     
-    for (U64 i = 0xDF, j = 0; i < 0xFF; i += 1, j += 1){
-      key_table[i] = (OS_Key)((U64)OS_Key_Ex0 + j);
+    for (ulong i = 0xDF, j = 0; i < 0xFF; i += 1, j += 1){
+      key_table[i] = (OS_Key)((ulong)OS_Key_Ex0 + j);
     }
   }
   
@@ -423,8 +423,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(short)LOWORD(lParam);
-        p.y = (S32)(short)HIWORD(lParam);
+        p.x = (int)(short)LOWORD(lParam);
+        p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -436,8 +436,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(short)LOWORD(lParam);
-        p.y = (S32)(short)HIWORD(lParam);
+        p.x = (int)(short)LOWORD(lParam);
+        p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -492,7 +492,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       
       case WM_CHAR:
       {
-        U32 character = wParam;
+        uint character = wParam;
         if(character >= 32 && character != 127)
         {
           OS_Event *event = os_w32_push_event(OS_EventKind_Text, window);
@@ -545,12 +545,12 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HDROP drop = (HDROP)wParam;
         POINT drop_pt = {0};
         DragQueryPoint(drop, &drop_pt);
-        U64 num_files_dropped = DragQueryFile(drop, 0xffffffff, 0, 0);
+        ulong num_files_dropped = DragQueryFile(drop, 0xffffffff, 0, 0);
         OS_Event *event = os_w32_push_event(OS_EventKind_FileDrop, window);
         event->pos = v2f32((F32)drop_pt.x, (F32)drop_pt.y);
-        for(U64 idx = 0; idx < num_files_dropped; idx += 1)
+        for(ulong idx = 0; idx < num_files_dropped; idx += 1)
         {
-          U64 name_size = DragQueryFile(drop, idx, 0, 0) + 1;
+          ulong name_size = DragQueryFile(drop, idx, 0, 0) + 1;
           byte *name_ptr = push_array(os_w32_event_arena, byte, name_size);
           DragQueryFile(drop, idx, (char *)name_ptr, name_size);
           str8_list_push(os_w32_event_arena, &event->strings, str8(name_ptr, name_size - 1));
@@ -644,9 +644,9 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         if(os_w32_new_window_custom_border || (window && window->custom_border))
         {
           F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
-          S32 frame_x = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXFRAME, dpi) : GetSystemMetrics(SM_CXFRAME);
-          S32 frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
-          S32 padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
+          int frame_x = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXFRAME, dpi) : GetSystemMetrics(SM_CXFRAME);
+          int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
+          int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
           DWORD window_style = GetWindowLong(hwnd, GWL_STYLE);
           B32 is_fullscreen = !(window_style & WS_OVERLAPPEDWINDOW);
           if(!is_fullscreen)
@@ -712,8 +712,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // Adjustments happening in NCCALCSIZE are messing with the detection
             // of the top hit area so manually checking that.
             F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
-            S32 frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
-            S32 padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
+            int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
+            int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
             
             B32 is_over_top_resize = pos_client.y >= 0 && pos_client.y < frame_y + padding;
             B32 is_over_title_bar  = pos_client.y >= 0 && pos_client.y < window->custom_border_title_thickness;
@@ -784,7 +784,7 @@ BOOL
 os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr)
 {
   OS_W32_MonitorGatherBundle *bundle = (OS_W32_MonitorGatherBundle *)bundle_ptr;
-  OS_Handle handle = {(U64)monitor};
+  OS_Handle handle = {(ulong)monitor};
   os_handle_list_push(bundle->arena, bundle->list, handle);
   return 1;
 }
@@ -799,7 +799,7 @@ os_gfx_init()
   Arena *arena = arena_alloc();
   os_w32_gfx_state = push_array(arena, OS_W32_GfxState, 1);
   os_w32_gfx_state->arena = arena;
-  os_w32_gfx_state->gfx_thread_tid = (U32)GetCurrentThreadId();
+  os_w32_gfx_state->gfx_thread_tid = (uint)GetCurrentThreadId();
   os_w32_gfx_state->hInstance = GetModuleHandle(0);
   
   //- rjf: set dpi awareness
@@ -875,15 +875,15 @@ os_gfx_init()
     os_w32_gfx_state->key_from_vkey_table[(unsigned int)'Y'] = OS_Key_Y;
     os_w32_gfx_state->key_from_vkey_table[(unsigned int)'Z'] = OS_Key_Z;
     
-    for(U64 i = '0', j = OS_Key_0; i <= '9'; i += 1, j += 1)
+    for(ulong i = '0', j = OS_Key_0; i <= '9'; i += 1, j += 1)
     {
       os_w32_gfx_state->key_from_vkey_table[i] = (OS_Key)j;
     }
-    for(U64 i = VK_NUMPAD0, j = OS_Key_0; i <= VK_NUMPAD9; i += 1, j += 1)
+    for(ulong i = VK_NUMPAD0, j = OS_Key_0; i <= VK_NUMPAD9; i += 1, j += 1)
     {
       os_w32_gfx_state->key_from_vkey_table[i] = (OS_Key)j;
     }
-    for(U64 i = VK_F1, j = OS_Key_F1; i <= VK_F24; i += 1, j += 1)
+    for(ulong i = VK_F1, j = OS_Key_F1; i <= VK_F24; i += 1, j += 1)
     {
       os_w32_gfx_state->key_from_vkey_table[i] = (OS_Key)j;
     }
@@ -941,14 +941,14 @@ os_gfx_init()
     os_w32_gfx_state->key_from_vkey_table[VK_ADD]      = OS_Key_NumPlus;
     os_w32_gfx_state->key_from_vkey_table[VK_DECIMAL]  = OS_Key_NumPeriod;
     
-    for(U32 i = 0; i < 10; i += 1)
+    for(uint i = 0; i < 10; i += 1)
     {
-      os_w32_gfx_state->key_from_vkey_table[VK_NUMPAD0 + i] = (OS_Key)((U64)OS_Key_Num0 + i);
+      os_w32_gfx_state->key_from_vkey_table[VK_NUMPAD0 + i] = (OS_Key)((ulong)OS_Key_Num0 + i);
     }
     
-    for(U64 i = 0xDF, j = 0; i < 0xFF; i += 1, j += 1)
+    for(ulong i = 0xDF, j = 0; i < 0xFF; i += 1, j += 1)
     {
-      os_w32_gfx_state->key_from_vkey_table[i] = (OS_Key)((U64)OS_Key_Ex0 + j);
+      os_w32_gfx_state->key_from_vkey_table[i] = (OS_Key)((ulong)OS_Key_Ex0 + j);
     }
   }
 }
@@ -997,7 +997,7 @@ os_get_clipboard_text(Arena *arena)
       byte *buffer = (byte *)GlobalLock(data_handle);
       if(buffer)
       {
-        U64 size = cstring8_length(buffer);
+        ulong size = cstring8_length(buffer);
         result = push_str8_copy(arena, str8(buffer, size));
         GlobalUnlock(data_handle);
       }
@@ -1342,7 +1342,7 @@ os_primary_monitor()
 {
   POINT zero_pt = {0, 0};
   HMONITOR monitor = MonitorFromPoint(zero_pt, MONITOR_DEFAULTTOPRIMARY);
-  OS_Handle result = {(U64)monitor};
+  OS_Handle result = {(ulong)monitor};
   return result;
 }
 
@@ -1351,7 +1351,7 @@ os_monitor_from_window(OS_Handle window)
 {
   OS_W32_Window *w = os_w32_window_from_handle(window);
   HMONITOR handle = MonitorFromWindow(w->hwnd, MONITOR_DEFAULTTOPRIMARY);
-  OS_Handle result = {(U64)handle};
+  OS_Handle result = {(ulong)handle};
   return result;
 }
 
@@ -1527,7 +1527,7 @@ os_show_in_filesystem_ui(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
   String8 path_copy = push_str8_copy(scratch.arena, path);
-  for(U64 idx = 0; idx < path_copy.size; idx += 1)
+  for(ulong idx = 0; idx < path_copy.size; idx += 1)
   {
     if(path_copy.str[idx] == '/')
     {

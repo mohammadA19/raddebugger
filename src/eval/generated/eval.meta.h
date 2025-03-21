@@ -88,7 +88,7 @@ E_TypeKind_FirstIncomplete = E_TypeKind_IncompleteStruct,
 E_TypeKind_LastIncomplete  = E_TypeKind_IncompleteEnum,
 };
 
-typedef U32 E_ExprKind;
+typedef uint E_ExprKind;
 enum E_ExprKindEnum
 {
 E_ExprKind_Nil,

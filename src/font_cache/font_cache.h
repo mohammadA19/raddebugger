@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Rasterization Flags
 
-enum FNT_RasterFlags : U32
+enum FNT_RasterFlags : uint
 {
   FNT_RasterFlag_Smooth = (1<<0),
   FNT_RasterFlag_Hinted = (1<<1),
@@ -18,7 +18,7 @@ enum FNT_RasterFlags : U32
 
 struct FNT_Tag
 {
-  U64 u64[2];
+  ulong u64[2];
 };
 
 ////////////////////////////////
@@ -37,22 +37,22 @@ struct FNT_PieceChunkNode
 {
   FNT_PieceChunkNode *next;
   FNT_Piece *v;
-  U64 count;
-  U64 cap;
+  ulong count;
+  ulong cap;
 };
 
 struct FNT_PieceChunkList
 {
   FNT_PieceChunkNode *first;
   FNT_PieceChunkNode *last;
-  U64 node_count;
-  U64 total_piece_count;
+  ulong node_count;
+  ulong total_piece_count;
 };
 
 struct FNT_PieceArray
 {
   FNT_Piece *v;
-  U64 count;
+  ulong count;
 };
 
 struct FNT_Run
@@ -96,7 +96,7 @@ struct F_Hash2InfoRasterCacheNode
 {
   F_Hash2InfoRasterCacheNode *hash_next;
   F_Hash2InfoRasterCacheNode *hash_prev;
-  U64 hash;
+  ulong hash;
   F_RasterCacheInfo info;
 };
 
@@ -110,13 +110,13 @@ struct FNT_Hash2StyleRasterCacheNode
 {
   FNT_Hash2StyleRasterCacheNode *hash_next;
   FNT_Hash2StyleRasterCacheNode *hash_prev;
-  U64 style_hash;
+  ulong style_hash;
   F32 ascent;
   F32 descent;
   F32 column_width;
   F_RasterCacheInfo *utf8_class1_direct_map;
-  U64 utf8_class1_direct_map_mask[4];
-  U64 hash2info_slots_count;
+  ulong utf8_class1_direct_map_mask[4];
+  ulong hash2info_slots_count;
   FNT_Hash2InfoRasterCacheSlot *hash2info_slots;
 };
 
@@ -129,7 +129,7 @@ struct FNT_Hash2StyleRasterCacheSlot
 ////////////////////////////////
 //~ rjf: Atlas Types
 
-enum FNT_AtlasRegionNodeFlags : U32
+enum FNT_AtlasRegionNodeFlags : uint
 {
   FNT_AtlasRegionNodeFlag_Taken = (1<<0),
 };
@@ -140,7 +140,7 @@ struct FNT_AtlasRegionNode
   FNT_AtlasRegionNode *children[Corner_COUNT];
   Vec2S16 max_free_size[Corner_COUNT];
   FNT_AtlasRegionNodeFlags flags;
-  U64 num_allocated_descendants;
+  ulong num_allocated_descendants;
 };
 
 struct FNT_Atlas
@@ -172,11 +172,11 @@ struct FNT_State
   Arena *raster_arena;
   
   // rjf: font table
-  U64 font_hash_table_size;
+  ulong font_hash_table_size;
   FNT_FontHashSlot *font_hash_table;
   
   // rjf: hash -> raster cache table
-  U64 hash2style_slots_count;
+  ulong hash2style_slots_count;
   FNT_Hash2StyleRasterCacheSlot *hash2style_slots;
   
   // rjf: atlas list
@@ -193,7 +193,7 @@ static FNT_State *f_state = 0;
 //~ rjf: Basic Functions
 
 U128 fnt_hash_from_string(String8 string);
-U64 fnt_little_hash_from_string(String8 string);
+ulong fnt_little_hash_from_string(String8 string);
 Vec2S32 fnt_vertex_from_corner(Corner corner);
 
 ////////////////////////////////
@@ -216,8 +216,8 @@ void fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region);
 ////////////////////////////////
 //~ rjf: Piece Type Functions
 
-FNT_Piece *fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap);
-void fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece);
+FNT_Piece *fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, ulong cap);
+void fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, ulong cap, FNT_Piece *piece);
 FNT_PieceArray fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list);
 FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src);
 
@@ -230,7 +230,7 @@ String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT
 Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string);
 Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list);
 F32 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size);
-U64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p);
+ulong fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p);
 
 ////////////////////////////////
 //~ rjf: Metrics
