@@ -61,7 +61,7 @@ struct RDI_Parsed
   RDI_U64 raw_data_size;
   RDI_Section *sections;
   RDI_U64 sections_count;
-};
+}
 
 typedef struct RDI_ParsedLineTable RDI_ParsedLineTable;
 struct RDI_ParsedLineTable
@@ -75,7 +75,7 @@ struct RDI_ParsedLineTable
   RDI_Column* cols;  // [col_count]
   RDI_U64 count;
   RDI_U64 col_count;
-};
+}
 
 typedef struct RDI_ParsedSourceLineMap RDI_ParsedSourceLineMap;
 struct RDI_ParsedSourceLineMap
@@ -93,7 +93,7 @@ struct RDI_ParsedSourceLineMap
   RDI_U64* voffs;  // [voff_count]
   RDI_U64 count;
   RDI_U64 voff_count;
-};
+}
 
 typedef struct RDI_ParsedNameMap RDI_ParsedNameMap;
 struct RDI_ParsedNameMap
@@ -102,7 +102,7 @@ struct RDI_ParsedNameMap
   RDI_NameMapNode *nodes;
   RDI_U64 bucket_count;
   RDI_U64 node_count;
-};
+}
 
 ////////////////////////////////
 //~ Global Nils

@@ -13,7 +13,7 @@ struct PTG_Key
   U128 root_hash;
   ulong link_offsets[8];
   ulong link_offsets_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -22,14 +22,14 @@ typedef struct PTG_Node PTG_Node;
 struct PTG_Node
 {
   ulong value;
-};
+}
 
 typedef struct PTG_Link PTG_Link;
 struct PTG_Link
 {
   uint from;
   uint to;
-};
+}
 
 typedef struct PTG_NodeChunkNode PTG_NodeChunkNode;
 struct PTG_NodeChunkNode
@@ -38,7 +38,7 @@ struct PTG_NodeChunkNode
   PTG_Node *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct PTG_NodeChunkList PTG_NodeChunkList;
 struct PTG_NodeChunkList
@@ -47,14 +47,14 @@ struct PTG_NodeChunkList
   PTG_NodeChunkNode *last;
   ulong chunk_count;
   ulong total_count;
-};
+}
 
 typedef struct PTG_NodeArray PTG_NodeArray;
 struct PTG_NodeArray
 {
   PTG_Node *v;
   ulong count;
-};
+}
 
 typedef struct PTG_LinkChunkNode PTG_LinkChunkNode;
 struct PTG_LinkChunkNode
@@ -63,7 +63,7 @@ struct PTG_LinkChunkNode
   PTG_Link *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct PTG_LinkChunkList PTG_LinkChunkList;
 struct PTG_LinkChunkList
@@ -72,21 +72,21 @@ struct PTG_LinkChunkList
   PTG_LinkChunkNode *last;
   ulong chunk_count;
   ulong total_count;
-};
+}
 
 typedef struct PTG_LinkArray PTG_LinkArray;
 struct PTG_LinkArray
 {
   PTG_Link *v;
   ulong count;
-};
+}
 
 typedef struct PTG_Graph PTG_Graph;
 struct PTG_Graph
 {
   PTG_NodeArray nodes;
   PTG_LinkArray links;
-};
+}
 
 typedef struct PTG_GraphNode PTG_GraphNode;
 struct PTG_GraphNode
@@ -108,14 +108,14 @@ struct PTG_GraphNode
   // rjf: content
   Arena *arena;
   PTG_Graph graph;
-};
+}
 
 typedef struct PTG_GraphSlot PTG_GraphSlot;
 struct PTG_GraphSlot
 {
   PTG_GraphNode *first;
   PTG_GraphNode *last;
-};
+}
 
 typedef struct PTG_GraphStripe PTG_GraphStripe;
 struct PTG_GraphStripe
@@ -124,7 +124,7 @@ struct PTG_GraphStripe
   OS_Handle rw_mutex;
   OS_Handle cv;
   PTG_GraphNode *free_node;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access Types
@@ -134,14 +134,14 @@ struct PTG_Touch
 {
   PTG_Touch *next;
   PTG_GraphNode *node;
-};
+}
 
 typedef struct PTG_Scope PTG_Scope;
 struct PTG_Scope
 {
   PTG_Scope *next;
   PTG_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -152,7 +152,7 @@ struct PTG_TCTX
   Arena *arena;
   PTG_Scope *free_scope;
   PTG_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -185,7 +185,7 @@ struct PTG_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

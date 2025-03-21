@@ -15,7 +15,7 @@ global read_only String8 e_multichar_symbol_strings[] =
   str8_lit_comp("!="),
   str8_lit_comp("&&"),
   str8_lit_comp("||"),
-};
+}
 
 global read_only long e_max_precedence = 15;
 

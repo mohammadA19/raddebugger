@@ -114,7 +114,7 @@ typedef enum MSF_Error
 
 ////////////////////////////////
 
-typedef struct
+typedef struct MSF_WriteTask
 {
   MSF_UInt         page_size;
   MSF_PageDataList page_data_list;
@@ -122,7 +122,7 @@ typedef struct
   MSF_UInt         stream_pos;
   String8          data;
   Rng1U64         *range_arr;
-} MSF_WriteTask;
+}
 
 ////////////////////////////////
 

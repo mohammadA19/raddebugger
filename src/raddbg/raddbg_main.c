@@ -427,7 +427,7 @@ typedef struct IPCInfo IPCInfo;
 struct IPCInfo
 {
   ulong msg_size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

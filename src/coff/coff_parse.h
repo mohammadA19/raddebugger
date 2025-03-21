@@ -65,7 +65,7 @@ enum
   COFF_SymbolValueInterp_Common,    // symbol has no section but still has size.
   COFF_SymbolValueInterp_Abs,       // symbol has an absolute (non-relocatable) value and is not an address.
   COFF_SymbolValueInterp_Debug      // symbol is used to provide general type of debugging information.
-};
+}
 
 ////////////////////////////////
 
@@ -103,7 +103,7 @@ enum  COFF_ResourceIDTypeEnum
   COFF_ResourceIDType_Number,
   COFF_ResourceIDType_String,
   COFF_ResourceIDType_Count
-};
+}
 
 typedef struct COFF_ResourceID16
 {

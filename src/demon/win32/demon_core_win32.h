@@ -131,14 +131,14 @@ struct DMN_W32_Entity
     }
     module;
   };
-};
+}
 
 typedef struct DMN_W32_EntityNode DMN_W32_EntityNode;
 struct DMN_W32_EntityNode
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
-};
+}
 
 typedef struct DMN_W32_EntityIDHashNode DMN_W32_EntityIDHashNode;
 struct DMN_W32_EntityIDHashNode
@@ -147,14 +147,14 @@ struct DMN_W32_EntityIDHashNode
   DMN_W32_EntityIDHashNode *prev;
   ulong id;
   DMN_W32_Entity *entity;
-};
+}
 
 typedef struct DMN_W32_EntityIDHashSlot DMN_W32_EntityIDHashSlot;
 struct DMN_W32_EntityIDHashSlot
 {
   DMN_W32_EntityIDHashNode *first;
   DMN_W32_EntityIDHashNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Injection Types
@@ -164,7 +164,7 @@ struct DMN_W32_InjectedBreak
 {
   ulong code;
   ulong user_data;
-};
+}
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
 
@@ -176,7 +176,7 @@ struct DMN_W32_ImageInfo
 {
   Arch arch;
   uint size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Dynamically-Loaded Win32 Function Types
@@ -227,7 +227,7 @@ struct DMN_W32_Shared
   // rjf: halting info
   DMN_Handle halter_process;
   uint halter_tid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

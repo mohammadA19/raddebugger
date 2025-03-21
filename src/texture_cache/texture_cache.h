@@ -12,7 +12,7 @@ struct TEX_Topology
 {
   Vec2S16 dim;
   R_Tex2DFormat fmt;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -30,14 +30,14 @@ struct TEX_Node
   ulong last_time_touched_us;
   ulong last_user_clock_idx_touched;
   ulong load_count;
-};
+}
 
 typedef struct TEX_Slot TEX_Slot;
 struct TEX_Slot
 {
   TEX_Node *first;
   TEX_Node *last;
-};
+}
 
 typedef struct TEX_Stripe TEX_Stripe;
 struct TEX_Stripe
@@ -45,7 +45,7 @@ struct TEX_Stripe
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -56,14 +56,14 @@ struct TEX_Touch
   TEX_Touch *next;
   U128 hash;
   TEX_Topology topology;
-};
+}
 
 typedef struct TEX_Scope TEX_Scope;
 struct TEX_Scope
 {
   TEX_Scope *next;
   TEX_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -74,7 +74,7 @@ struct TEX_TCTX
   Arena *arena;
   TEX_Scope *free_scope;
   TEX_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -101,7 +101,7 @@ struct TEX_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

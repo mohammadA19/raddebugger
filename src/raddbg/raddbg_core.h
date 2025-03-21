@@ -11,7 +11,7 @@ typedef struct RD_Handle RD_Handle;
 struct RD_Handle
 {
   ulong u64[2];
-};
+}
 
 typedef struct RD_HandleNode RD_HandleNode;
 struct RD_HandleNode
@@ -19,7 +19,7 @@ struct RD_HandleNode
   RD_HandleNode *next;
   RD_HandleNode *prev;
   RD_Handle handle;
-};
+}
 
 typedef struct RD_HandleList RD_HandleList;
 struct RD_HandleList
@@ -27,7 +27,7 @@ struct RD_HandleList
   RD_HandleNode *first;
   RD_HandleNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -39,7 +39,7 @@ enum
   RD_EvalSpaceKind_MetaEntity,
   RD_EvalSpaceKind_MetaCtrlEntity,
   RD_EvalSpaceKind_MetaCollection,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Kind Flags
@@ -65,7 +65,7 @@ enum
   
   //- rjf: serialization
   RD_EntityKindFlag_IsSerializedToConfig     = (1<<10),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Flags
@@ -82,7 +82,7 @@ enum
   
   //- rjf: deletion
   RD_EntityFlag_MarkedForDeletion = (1<<31),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Binding Types
@@ -92,14 +92,14 @@ struct RD_Binding
 {
   OS_Key key;
   OS_Modifiers modifiers;
-};
+}
 
 typedef struct RD_BindingNode RD_BindingNode;
 struct RD_BindingNode
 {
   RD_BindingNode *next;
   RD_Binding binding;
-};
+}
 
 typedef struct RD_BindingList RD_BindingList;
 struct RD_BindingList
@@ -107,14 +107,14 @@ struct RD_BindingList
   RD_BindingNode *first;
   RD_BindingNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_StringBindingPair RD_StringBindingPair;
 struct RD_StringBindingPair
 {
   String8 string;
   RD_Binding binding;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Key Map Types
@@ -126,14 +126,14 @@ struct RD_KeyMapNode
   RD_KeyMapNode *hash_prev;
   String8 name;
   RD_Binding binding;
-};
+}
 
 typedef struct RD_KeyMapSlot RD_KeyMapSlot;
 struct RD_KeyMapSlot
 {
   RD_KeyMapNode *first;
   RD_KeyMapNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Setting Types
@@ -143,7 +143,7 @@ struct RD_SettingVal
 {
   B32 set;
   int s32;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Info Types
@@ -159,7 +159,7 @@ enum
   RD_ViewRuleInfoFlag_CanFillValueCell           = (1<<5),
   RD_ViewRuleInfoFlag_CanExpand                  = (1<<6),
   RD_ViewRuleInfoFlag_ProjectFiltered            = (1<<7),
-};
+}
 
 #define RD_VIEW_RULE_UI_FUNCTION_SIG(name) void name(String8 string, MD_Node *params, Rng2F32 rect)
 #define RD_VIEW_RULE_UI_FUNCTION_NAME(name) rd_view_rule_ui_##name
@@ -176,7 +176,7 @@ struct RD_ArenaExt
 {
   RD_ArenaExt *next;
   Arena *arena;
-};
+}
 
 typedef struct RD_TransientViewNode RD_TransientViewNode;
 struct RD_TransientViewNode
@@ -189,14 +189,14 @@ struct RD_TransientViewNode
   MD_Node *initial_params;
   ulong first_frame_index_touched;
   ulong last_frame_index_touched;
-};
+}
 
 typedef struct RD_TransientViewSlot RD_TransientViewSlot;
 struct RD_TransientViewSlot
 {
   RD_TransientViewNode *first;
   RD_TransientViewNode *last;
-};
+}
 
 typedef struct RD_View RD_View;
 struct RD_View
@@ -256,7 +256,7 @@ struct RD_View
   TxtPt query_mark;
   ulong query_string_size;
   byte query_buffer[KB(4)];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Panel Types
@@ -290,7 +290,7 @@ struct RD_Panel
   RD_View *last_tab_view;
   ulong tab_view_count;
   RD_Handle selected_tab_view;
-};
+}
 
 typedef struct RD_PanelRec RD_PanelRec;
 struct RD_PanelRec
@@ -298,7 +298,7 @@ struct RD_PanelRec
   RD_Panel *next;
   int push_count;
   int pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
@@ -324,14 +324,14 @@ enum
   RD_QueryFlag_KeepOldInput     = (1<<3),
   RD_QueryFlag_SelectOldInput   = (1<<4),
   RD_QueryFlag_Required         = (1<<5),
-};
+}
 
 typedef uint RD_CmdKindFlags;
 enum
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -347,7 +347,7 @@ struct RD_CfgTree
   RD_CfgTree *next;
   RD_CfgSrc source;
   MD_Node *root;
-};
+}
 
 typedef struct RD_CfgVal RD_CfgVal;
 struct RD_CfgVal
@@ -358,13 +358,13 @@ struct RD_CfgVal
   RD_CfgTree *last;
   ulong insertion_stamp;
   String8 string;
-};
+}
 
 typedef struct RD_CfgSlot RD_CfgSlot;
 struct RD_CfgSlot
 {
   RD_CfgVal *first;
-};
+}
 
 typedef struct RD_CfgTable RD_CfgTable;
 struct RD_CfgTable
@@ -374,7 +374,7 @@ struct RD_CfgTable
   ulong insertion_stamp_counter;
   RD_CfgVal *first_val;
   RD_CfgVal *last_val;
-};
+}
 
 ////////////////////////////////
 //~ rjf: New Config/Entity Data Structure
@@ -389,14 +389,14 @@ struct RD_Cfg
   RD_Cfg *parent;
   ulong gen;
   String8 string;
-};
+}
 
 typedef struct RD_CfgNode RD_CfgNode;
 struct RD_CfgNode
 {
   RD_CfgNode *next;
   RD_Cfg *v;
-};
+}
 
 typedef struct RD_CfgList RD_CfgList;
 struct RD_CfgList
@@ -404,7 +404,7 @@ struct RD_CfgList
   RD_CfgNode *first;
   RD_CfgNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_CfgRec RD_CfgRec;
 struct RD_CfgRec
@@ -412,7 +412,7 @@ struct RD_CfgRec
   RD_Cfg *next;
   int push_count;
   int pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Entity Types
@@ -448,14 +448,14 @@ struct RD_Entity
   
   // rjf: string equipment
   String8 string;
-};
+}
 
 typedef struct RD_EntityNode RD_EntityNode;
 struct RD_EntityNode
 {
   RD_EntityNode *next;
   RD_Entity *entity;
-};
+}
 
 typedef struct RD_EntityList RD_EntityList;
 struct RD_EntityList
@@ -463,14 +463,14 @@ struct RD_EntityList
   RD_EntityNode *first;
   RD_EntityNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_EntityArray RD_EntityArray;
 struct RD_EntityArray
 {
   RD_Entity **v;
   ulong count;
-};
+}
 
 typedef struct RD_EntityRec RD_EntityRec;
 struct RD_EntityRec
@@ -478,7 +478,7 @@ struct RD_EntityRec
   RD_Entity *next;
   int push_count;
   int pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Command Types
@@ -488,7 +488,7 @@ struct RD_Cmd
 {
   String8 name;
   RD_Regs *regs;
-};
+}
 
 typedef struct RD_CmdNode RD_CmdNode;
 struct RD_CmdNode
@@ -496,7 +496,7 @@ struct RD_CmdNode
   RD_CmdNode *next;
   RD_CmdNode *prev;
   RD_Cmd cmd;
-};
+}
 
 typedef struct RD_CmdList RD_CmdList;
 struct RD_CmdList
@@ -504,7 +504,7 @@ struct RD_CmdList
   RD_CmdNode *first;
   RD_CmdNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Context Register Types
@@ -514,7 +514,7 @@ struct RD_RegsNode
 {
   RD_RegsNode *next;
   RD_Regs v;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Theme Types
@@ -523,7 +523,7 @@ typedef struct RD_Theme RD_Theme;
 struct RD_Theme
 {
   Vec4F32 colors[RD_ThemeColor_COUNT];
-};
+}
 
 typedef enum RD_FontSlot
 {
@@ -571,7 +571,7 @@ enum
   RD_AutoCompListerFlag_Architectures = (1<<10),
   RD_AutoCompListerFlag_Tex2DFormats  = (1<<11),
   RD_AutoCompListerFlag_Files         = (1<<12),
-};
+}
 
 typedef struct RD_AutoCompListerItem RD_AutoCompListerItem;
 struct RD_AutoCompListerItem
@@ -581,7 +581,7 @@ struct RD_AutoCompListerItem
   FuzzyMatchRangeList matches;
   ulong group;
   B32 is_non_code;
-};
+}
 
 typedef struct RD_AutoCompListerItemChunkNode RD_AutoCompListerItemChunkNode;
 struct RD_AutoCompListerItemChunkNode
@@ -590,7 +590,7 @@ struct RD_AutoCompListerItemChunkNode
   RD_AutoCompListerItem *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct RD_AutoCompListerItemChunkList RD_AutoCompListerItemChunkList;
 struct RD_AutoCompListerItemChunkList
@@ -599,21 +599,21 @@ struct RD_AutoCompListerItemChunkList
   RD_AutoCompListerItemChunkNode *last;
   ulong chunk_count;
   ulong total_count;
-};
+}
 
 typedef struct RD_AutoCompListerItemArray RD_AutoCompListerItemArray;
 struct RD_AutoCompListerItemArray
 {
   RD_AutoCompListerItem *v;
   ulong count;
-};
+}
 
 typedef struct RD_AutoCompListerParams RD_AutoCompListerParams;
 struct RD_AutoCompListerParams
 {
   RD_AutoCompListerFlags flags;
   String8List strings;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Per-Window State
@@ -718,7 +718,7 @@ struct RD_Window
   
   // rjf: per-frame drawing state
   DR_Bucket *draw_bucket;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Eval Visualization View Cache Types
@@ -730,14 +730,14 @@ struct RD_EvalVizViewCacheNode
   RD_EvalVizViewCacheNode *prev;
   ulong key;
   EV_View *v;
-};
+}
 
 typedef struct RD_EvalVizViewCacheSlot RD_EvalVizViewCacheSlot;
 struct RD_EvalVizViewCacheSlot
 {
   RD_EvalVizViewCacheNode *first;
   RD_EvalVizViewCacheNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Meta Evaluation Cache Types
@@ -749,14 +749,14 @@ struct RD_CtrlEntityMetaEvalCacheNode
   CTRL_Handle handle;
   CTRL_MetaEval *meval;
   Rng1U64 range;
-};
+}
 
 typedef struct RD_CtrlEntityMetaEvalCacheSlot RD_CtrlEntityMetaEvalCacheSlot;
 struct RD_CtrlEntityMetaEvalCacheSlot
 {
   RD_CtrlEntityMetaEvalCacheNode *first;
   RD_CtrlEntityMetaEvalCacheNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
@@ -766,7 +766,7 @@ struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
   ulong size;
-};
+}
 
 typedef struct RD_EntityListCache RD_EntityListCache;
 struct RD_EntityListCache
@@ -774,7 +774,7 @@ struct RD_EntityListCache
   Arena *arena;
   ulong alloc_gen;
   RD_EntityList list;
-};
+}
 
 typedef struct RD_AmbiguousPathNode RD_AmbiguousPathNode;
 struct RD_AmbiguousPathNode
@@ -782,7 +782,7 @@ struct RD_AmbiguousPathNode
   RD_AmbiguousPathNode *next;
   String8 name;
   String8List paths;
-};
+}
 
 typedef struct RD_State RD_State;
 struct RD_State
@@ -948,7 +948,7 @@ struct RD_State
   //-
   // TODO(rjf): TO BE ELIMINATED OR REPLACED ^^^^^^^^^^^^^^^^^^
   //-
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
@@ -963,7 +963,7 @@ read_only global RD_Cfg rd_nil_cfg =
   &rd_nil_cfg,
   &rd_nil_cfg,
   &rd_nil_cfg,
-};
+}
 
 read_only global RD_Entity rd_nil_entity =
 {
@@ -972,7 +972,7 @@ read_only global RD_Entity rd_nil_entity =
   &rd_nil_entity,
   &rd_nil_entity,
   &rd_nil_entity,
-};
+}
 
 read_only global RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
 
@@ -986,7 +986,7 @@ read_only global RD_ViewRuleInfo rd_nil_view_rule_info =
   0,
   EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil),
   RD_VIEW_RULE_UI_FUNCTION_NAME(null)
-};
+}
 
 read_only global RD_View rd_nil_view =
 {
@@ -997,7 +997,7 @@ read_only global RD_View rd_nil_view =
   &rd_nil_view,
   &rd_nil_view,
   &rd_nil_view_rule_info,
-};
+}
 
 read_only global RD_Panel rd_nil_panel =
 {
@@ -1006,7 +1006,7 @@ read_only global RD_Panel rd_nil_panel =
   &rd_nil_panel,
   &rd_nil_panel,
   &rd_nil_panel,
-};
+}
 
 global RD_State *rd_state = 0;
 global RD_Handle rd_last_drag_drop_panel = {0};

@@ -21,7 +21,7 @@ enum
   
   LNK_SymbolScopeFlag_Main = LNK_SymbolScopeFlag_Defined | LNK_SymbolScopeFlag_Weak,
   LNK_SymbolScopeFlag_All  = LNK_SymbolScopeFlag_Defined | LNK_SymbolScopeFlag_Weak | LNK_SymbolScopeFlag_Lib | LNK_SymbolScopeFlag_Internal
-};
+}
 typedef ulong LNK_SymbolScopeFlags;
 
 typedef enum
@@ -35,7 +35,7 @@ enum
 {
   LNK_DefinedSymbolFlag_IsFunc  = (1 << 0),
   LNK_DefinedSymbolFlag_IsThunk = (1 << 1),
-};
+}
 typedef ulong LNK_DefinedSymbolFlags;
 
 typedef enum
@@ -160,12 +160,12 @@ typedef struct LNK_SymbolTable
 ////////////////////////////////
 // parallel for wrappers
 
-typedef struct
+typedef struct LNK_LazySymbolInserter
 {
   LNK_SymbolTable *symtab;
   Rng1U64         *ranges;
   LNK_Symbol      *arr;
-} LNK_LazySymbolInserter;
+}
 
 ////////////////////////////////
 

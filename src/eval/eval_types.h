@@ -26,14 +26,14 @@ struct E_TypeKey
   // [0] -> E_TypeKind (Basic, Cons, Ext); Arch (Reg, RegAlias)
   // [1] -> Type Index In RDI (Ext); Code (Reg, RegAlias); Type Index In Constructed (Cons)
   // [2] -> RDI Index (Ext)
-};
+}
 
 typedef struct E_TypeKeyNode E_TypeKeyNode;
 struct E_TypeKeyNode
 {
   E_TypeKeyNode *next;
   E_TypeKey v;
-};
+}
 
 typedef struct E_TypeKeyList E_TypeKeyList;
 struct E_TypeKeyList
@@ -41,7 +41,7 @@ struct E_TypeKeyList
   E_TypeKeyNode *first;
   E_TypeKeyNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Full Extracted Type Information Types
@@ -72,7 +72,7 @@ enum
   E_TypeFlag_IsPlainText= (1<<3),
   E_TypeFlag_IsCodeText = (1<<4),
   E_TypeFlag_IsPathText = (1<<5),
-};
+}
 
 typedef struct E_Member E_Member;
 struct E_Member
@@ -83,14 +83,14 @@ struct E_Member
   String8 pretty_name;
   ulong off;
   E_TypeKeyList inheritance_key_chain;
-};
+}
 
 typedef struct E_MemberNode E_MemberNode;
 struct E_MemberNode
 {
   E_MemberNode *next;
   E_Member v;
-};
+}
 
 typedef struct E_MemberList E_MemberList;
 struct E_MemberList
@@ -98,28 +98,28 @@ struct E_MemberList
   E_MemberNode *first;
   E_MemberNode *last;
   ulong count;
-};
+}
 
 typedef struct E_MemberArray E_MemberArray;
 struct E_MemberArray
 {
   E_Member *v;
   ulong count;
-};
+}
 
 typedef struct E_EnumVal E_EnumVal;
 struct E_EnumVal
 {
   String8 name;
   ulong val;
-};
+}
 
 typedef struct E_EnumValArray E_EnumValArray;
 struct E_EnumValArray
 {
   E_EnumVal *v;
   ulong count;
-};
+}
 
 typedef struct E_Type E_Type;
 struct E_Type
@@ -135,7 +135,7 @@ struct E_Type
   E_TypeKey *param_type_keys;
   E_Member *members;
   E_EnumVal *enum_vals;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Context
@@ -153,7 +153,7 @@ struct E_ConsTypeParams
   ulong count;
   E_Member *members;
   E_EnumVal *enum_vals;
-};
+}
 
 typedef struct E_ConsTypeNode  E_ConsTypeNode;
 struct E_ConsTypeNode
@@ -163,14 +163,14 @@ struct E_ConsTypeNode
   E_TypeKey key;
   E_ConsTypeParams params;
   ulong byte_size;
-};
+}
 
 typedef struct E_ConsTypeSlot E_ConsTypeSlot;
 struct E_ConsTypeSlot
 {
   E_ConsTypeNode *first;
   E_ConsTypeNode *last;
-};
+}
 
 //- rjf: member lookup cache types
 
@@ -179,14 +179,14 @@ struct E_MemberHashNode
 {
   E_MemberHashNode *next;
   ulong member_idx;
-};
+}
 
 typedef struct E_MemberHashSlot E_MemberHashSlot;
 struct E_MemberHashSlot
 {
   E_MemberHashNode *first;
   E_MemberHashNode *last;
-};
+}
 
 typedef struct E_MemberCacheNode E_MemberCacheNode;
 struct E_MemberCacheNode
@@ -196,14 +196,14 @@ struct E_MemberCacheNode
   E_MemberArray members;
   ulong member_hash_slots_count;
   E_MemberHashSlot *member_hash_slots;
-};
+}
 
 typedef struct E_MemberCacheSlot E_MemberCacheSlot;
 struct E_MemberCacheSlot
 {
   E_MemberCacheNode *first;
   E_MemberCacheNode *last;
-};
+}
 
 //- rjf: context parameterization
 
@@ -218,7 +218,7 @@ struct E_TypeCtx
   E_Module *modules;
   ulong modules_count;
   E_Module *primary_module;
-};
+}
 
 //- rjf: stateful machine part of context (not provided by user)
 
@@ -241,7 +241,7 @@ struct E_TypeState
   // rjf: member cache table
   ulong member_cache_slots_count;
   E_MemberCacheSlot *member_cache_slots;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

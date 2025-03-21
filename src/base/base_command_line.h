@@ -16,7 +16,7 @@ struct CmdLineOpt
   String8 string;
   String8List value_strings;
   String8 value_string;
-};
+}
 
 typedef struct CmdLineOptList CmdLineOptList;
 struct CmdLineOptList
@@ -24,7 +24,7 @@ struct CmdLineOptList
   ulong count;
   CmdLineOpt *first;
   CmdLineOpt *last;
-};
+}
 
 typedef struct CmdLine CmdLine;
 struct CmdLine
@@ -36,7 +36,7 @@ struct CmdLine
   CmdLineOpt **option_table;
   ulong argc;
   char **argv;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing

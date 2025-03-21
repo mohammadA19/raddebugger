@@ -29,7 +29,7 @@ struct UI_IconInfo
 {
   FNT_Tag icon_font;
   String8 icon_kind_text_map[UI_IconKind_COUNT];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
@@ -60,7 +60,7 @@ enum
   //- rjf bundles
   UI_PermissionFlag_Clicks = (UI_PermissionFlag_ClicksLeft|UI_PermissionFlag_ClicksMiddle|UI_PermissionFlag_ClicksRight),
   UI_PermissionFlag_All = 0xffffffff,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Focus Types
@@ -118,7 +118,7 @@ enum
   UI_EventFlag_CapAtLine           = (1<<6),
   UI_EventFlag_ExplicitDirectional = (1<<7),
   UI_EventFlag_Reorder             = (1<<8),
-};
+}
 
 typedef enum UI_EventDeltaUnit
 {
@@ -147,7 +147,7 @@ struct UI_Event
   Vec2F32 delta_2f32;
   Vec2S32 delta_2s32;
   ulong timestamp_us;
-};
+}
 
 typedef struct UI_EventNode UI_EventNode;
 struct UI_EventNode
@@ -155,7 +155,7 @@ struct UI_EventNode
   UI_EventNode *next;
   UI_EventNode *prev;
   UI_Event v;
-};
+}
 
 typedef struct UI_EventList UI_EventList;
 struct UI_EventList
@@ -163,7 +163,7 @@ struct UI_EventList
   UI_EventNode *first;
   UI_EventNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Textual Operations
@@ -173,7 +173,7 @@ enum
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
-};
+}
 
 typedef struct UI_TxtOp UI_TxtOp;
 struct UI_TxtOp
@@ -184,7 +184,7 @@ struct UI_TxtOp
   TxtRng range;
   TxtPt cursor;
   TxtPt mark;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Keys
@@ -193,7 +193,7 @@ typedef struct UI_Key UI_Key;
 struct UI_Key
 {
   ulong u64[1];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Sizes
@@ -214,7 +214,7 @@ struct UI_Size
   UI_SizeKind kind;
   float value;
   float strictness;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Palettes
@@ -251,7 +251,7 @@ struct UI_Palette
       Vec4F32 selection;
     };
   };
-};
+}
 
 typedef struct UI_WidgetPaletteInfo UI_WidgetPaletteInfo;
 struct UI_WidgetPaletteInfo
@@ -259,7 +259,7 @@ struct UI_WidgetPaletteInfo
   UI_Palette *tooltip_palette;
   UI_Palette *ctx_menu_palette;
   UI_Palette *scrollbar_palette;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Animation Info
@@ -274,13 +274,13 @@ enum
   UI_AnimationInfoFlag_ContextMenuAnimations  = (1<<4),
   UI_AnimationInfoFlag_ScrollingAnimations    = (1<<5),
   UI_AnimationInfoFlag_All = 0xffffffff,
-};
+}
 
 typedef struct UI_AnimationInfo UI_AnimationInfo;
 struct UI_AnimationInfo
 {
   UI_AnimationInfoFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scroll Positions
@@ -290,7 +290,7 @@ struct UI_ScrollPt
 {
   long idx;
   float off;
-};
+}
 
 typedef union UI_ScrollPt2 UI_ScrollPt2;
 union UI_ScrollPt2
@@ -301,7 +301,7 @@ union UI_ScrollPt2
     UI_ScrollPt x;
     UI_ScrollPt y;
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: Box Types
@@ -456,7 +456,7 @@ struct UI_Box
   UI_Key default_nav_focus_active_key;
   UI_Key default_nav_focus_next_hot_key;
   UI_Key default_nav_focus_next_active_key;
-};
+}
 
 typedef struct UI_BoxRec UI_BoxRec;
 struct UI_BoxRec
@@ -464,14 +464,14 @@ struct UI_BoxRec
   UI_Box *next;
   int push_count;
   int pop_count;
-};
+}
 
 typedef struct UI_BoxNode UI_BoxNode;
 struct UI_BoxNode
 {
   UI_BoxNode *next;
   UI_Box *box;
-};
+}
 
 typedef struct UI_BoxList UI_BoxList;
 struct UI_BoxList
@@ -479,7 +479,7 @@ struct UI_BoxList
   UI_BoxNode *first;
   UI_BoxNode *last;
   ulong count;
-};
+}
 
 typedef uint UI_SignalFlags;
 enum
@@ -541,7 +541,7 @@ enum
   UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
   UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
   UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
-};
+}
 
 typedef struct UI_Signal UI_Signal;
 struct UI_Signal
@@ -550,7 +550,7 @@ struct UI_Signal
   OS_Modifiers event_flags;
   Vec2S16 scroll;
   UI_SignalFlags f;
-};
+}
 
 #define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
 #define ui_clicked(s)        !!((s).f&UI_SignalFlag_Clicked)
@@ -569,7 +569,7 @@ struct UI_Nav
 {
   B32 moved;
   Vec2S64 new_p;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Animation State Types
@@ -581,7 +581,7 @@ struct UI_AnimParams
   float target;
   float rate;
   float epsilon;
-};
+}
 
 typedef struct UI_AnimNode UI_AnimNode;
 struct UI_AnimNode
@@ -595,14 +595,14 @@ struct UI_AnimNode
   UI_Key key;
   UI_AnimParams params;
   float current;
-};
+}
 
 typedef struct UI_AnimSlot UI_AnimSlot;
 struct UI_AnimSlot
 {
   UI_AnimNode *first;
   UI_AnimNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -617,7 +617,7 @@ struct UI_BoxHashSlot
 {
   UI_Box *hash_first;
   UI_Box *hash_last;
-};
+}
 
 typedef struct UI_State UI_State;
 struct UI_State
@@ -703,7 +703,7 @@ struct UI_State
   //- rjf: build phase stacks
   UI_DeclStackNils;
   UI_DeclStacks;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions
@@ -765,7 +765,7 @@ read_only global UI_Box ui_nil_box =
   &ui_nil_box,
   &ui_nil_box,
   &ui_nil_box,
-};
+}
 internal B32 ui_box_is_nil(UI_Box *box);
 internal UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, ulong sib_member_off, ulong child_member_off);
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
@@ -903,7 +903,7 @@ read_only global UI_AnimNode ui_nil_anim_node =
 {
   &ui_nil_anim_node,
   &ui_nil_anim_node,
-};
+}
 
 internal float ui_anim_(UI_Key key, UI_AnimParams *params);
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})

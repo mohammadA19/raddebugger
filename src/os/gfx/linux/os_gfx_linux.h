@@ -24,7 +24,7 @@ struct OS_LNX_Window
   Window window;
   XID counter_xid;
   ulong counter_value;
-};
+}
 
 ////////////////////////////////
 //~ rjf: State Bundle
@@ -41,7 +41,7 @@ struct OS_LNX_GfxState
   Atom wm_sync_request_atom;
   Atom wm_sync_request_counter_atom;
   OS_GfxInfo gfx_info;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

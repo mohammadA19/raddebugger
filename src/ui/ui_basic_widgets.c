@@ -126,7 +126,7 @@ struct UI_LineEditDrawData
   String8 edited_string;
   TxtPt cursor;
   TxtPt mark;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 {
@@ -340,7 +340,7 @@ struct UI_ImageDrawData
   Rng2F32 region;
   Vec4F32 tint;
   float blur;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(ui_image_draw)
 {
@@ -558,7 +558,7 @@ struct UI_SatValDrawData
   float hue;
   float sat;
   float val;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(ui_sat_val_picker_draw)
 {
@@ -657,7 +657,7 @@ struct UI_HueDrawData
   float hue;
   float sat;
   float val;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
 {
@@ -759,7 +759,7 @@ typedef struct UI_AlphaDrawData UI_AlphaDrawData;
 struct UI_AlphaDrawData
 {
   float alpha;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(ui_alpha_picker_draw)
 {

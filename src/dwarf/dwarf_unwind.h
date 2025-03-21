@@ -28,7 +28,7 @@ enum
   DW_EhPtrEnc_SData2    = 0x0A, // Signed 16-bit value
   DW_EhPtrEnc_SData4    = 0x0B, // Signed 32-bit value
   DW_EhPtrEnc_SData8    = 0x0C, // Signed 64-bit value
-};
+}
 
 enum
 {
@@ -38,13 +38,13 @@ enum
   DW_EhPtrEnc_DataRel    = 0x30, // Value is relative to the .got or .eh_frame_hdr section.
   DW_EhPtrEnc_FuncRel    = 0x40, // Value is relative to the function.
   DW_EhPtrEnc_Aligned    = 0x50, // Value is aligned to an address unit sized boundary.
-};
+}
 
 enum
 {
   DW_EhPtrEnc_Indirect = 0x80, // This flag indicates that value is stored in virtual memory.
   DW_EhPtrEnc_Omit     = 0xFF,
-};
+}
 
 typedef struct DW_EhPtrCtx
 {
@@ -158,7 +158,7 @@ enum
   DW_CFADecode_Address = 0x9,
   DW_CFADecode_ULEB128 = 0xA,
   DW_CFADecode_SLEB128 = 0xB,
-};
+}
 
 typedef ushort DW_CFAControlBits;
 enum
@@ -169,7 +169,7 @@ enum
   DW_CFAControlBits_IsReg1   = 0x200,
   DW_CFAControlBits_IsReg2   = 0x400,
   DW_CFAControlBits_NewRow   = 0x800,
-};
+}
 
 global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind1[DW_CFA_OplKind1 + 1];
 global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind2[DW_CFA_OplKind2 + 1];

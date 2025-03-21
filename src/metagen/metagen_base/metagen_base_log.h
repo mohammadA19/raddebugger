@@ -21,20 +21,20 @@ struct LogScope
   LogScope *next;
   ulong pos;
   String8List strings[LogMsgKind_COUNT];
-};
+}
 
 typedef struct LogScopeResult LogScopeResult;
 struct LogScopeResult
 {
   String8 strings[LogMsgKind_COUNT];
-};
+}
 
 typedef struct Log Log;
 struct Log
 {
   Arena *arena;
   LogScope *top_scope;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Log Creation/Selection

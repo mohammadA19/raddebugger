@@ -154,7 +154,7 @@ enum{
    DWARF_AttributeClassFlag_stroffsetsptr |
    0),
   
-};
+}
 
 
 // attribute name:  X(name, code, classflag1, classflag2, classflag3, classflag4)
@@ -831,7 +831,7 @@ read_only global DWARF_SectionNameRow dwarf_section_name_table[] = {
 { { str8_lit_comp(n0), str8_lit_comp(n1), str8_lit_comp(n2) } },
   DWARF_SectionNameXList(X,0,0)
 #undef X
-};
+}
 
 
 #pragma pack(pop)
@@ -1285,7 +1285,7 @@ enum{
   UNW_DW_EhPtrEnc_SDATA2  = 0x0A, // Signed 16-bit value
   UNW_DW_EhPtrEnc_SDATA4  = 0x0B, // Signed 32-bit value
   UNW_DW_EhPtrEnc_SDATA8  = 0x0C, // Signed 64-bit value
-};
+}
 enum{
   UNW_DW_EhPtrEnc_MODIF_MASK = 0x70,
   UNW_DW_EhPtrEnc_PCREL   = 0x10, // Value is relative to the current program counter.
@@ -1293,11 +1293,11 @@ enum{
   UNW_DW_EhPtrEnc_DATAREL = 0x30, // Value is relative to the .got or .eh_frame_hdr section.
   UNW_DW_EhPtrEnc_FUNCREL = 0x40, // Value is relative to the function.
   UNW_DW_EhPtrEnc_ALIGNED = 0x50, // Value is aligned to an address unit sized boundary.
-};
+}
 enum{
   UNW_DW_EhPtrEnc_INDIRECT = 0x80, // This flag indicates that value is stored in virtual memory.
   UNW_DW_EhPtrEnc_OMIT     = 0xFF,
-};
+}
 
 typedef struct UNW_DW_EhPtrCtx{
   ulong raw_base_vaddr; // address where pointer is being read
@@ -1408,7 +1408,7 @@ enum{
   UNW_DW_CFADecode_ADDRESS = 0x9,
   UNW_DW_CFADecode_ULEB128 = 0xA,
   UNW_DW_CFADecode_SLEB128 = 0xB,
-};
+}
 
 typedef ushort UNW_DW_CFAControlBits;
 enum{
@@ -1418,7 +1418,7 @@ enum{
   UNW_DW_CFAControlBits_IS_REG_1  = 0x200,
   UNW_DW_CFAControlBits_IS_REG_2  = 0x400,
   UNW_DW_CFAControlBits_NEW_ROW   = 0x800,
-};
+}
 #endif
 
 ////////////////////////////////

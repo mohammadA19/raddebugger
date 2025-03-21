@@ -117,7 +117,7 @@ typedef struct PDB_TypeServerParse
   String8 leaf_data;
 } PDB_TypeServerParse;
 
-typedef struct
+typedef struct PDB_PushLeafTask
 {
   CV_DebugT       debug_t;
   ulong            *udt_counts;
@@ -125,15 +125,15 @@ typedef struct
   Rng1U64        *ranges;
   PDB_TypeServer *type_server;
   PDB_TypeBucket *udt_buckets;
-} PDB_PushLeafTask;
+}
 
-typedef struct
+typedef struct PDB_WriteTypeToBucketMap
 {
   PDB_TypeServer *ts;
   uint            *map;
-} PDB_WriteTypeToBucketMap;
+}
 
-typedef struct
+typedef struct PDB_WriteTypesTask
 {
   CV_TypeIndex    ti_lo;
   CV_TypeIndex    ti_hi;
@@ -144,7 +144,7 @@ typedef struct
   ulong            *lf_cursor_arr;
   byte             *lf_buf;
   ulong             lf_buf_size;
-} PDB_WriteTypesTask;
+}
 
 ////////////////////////////////
 // Info
@@ -327,22 +327,22 @@ typedef struct PDB_Context
 
 ////////////////////////////////
 
-typedef struct
+typedef struct GSI_SymbolHasherTask
 {
   PDB_GsiContext *gsi;
   Rng1U64        *ranges;
   CV_SymbolNode **symbols;
   uint            *hashes;
-} GSI_SymbolHasherTask;
+}
 
-typedef struct
+typedef struct PDB_DbiBuildFileInfoTask
 {
   CV_StringHashTable   string_ht;
   PDB_DbiModule      **mod_arr;
   ushort                 *imod_arr;
   ushort                 *source_file_name_count_arr;
   uint                **source_file_name_offset_arr;
-} PDB_DbiBuildFileInfoTask;
+}
 
 ////////////////////////////////
 // PDB

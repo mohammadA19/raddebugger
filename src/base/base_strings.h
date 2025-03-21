@@ -18,21 +18,21 @@ struct String8
 {
   byte *str;
   ulong size;
-};
+}
 
 typedef struct String16 String16;
 struct String16
 {
   ushort *str;
   ulong size;
-};
+}
 
 typedef struct String32 String32;
 struct String32
 {
   uint *str;
   ulong size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String List & Array Types
@@ -42,14 +42,14 @@ struct String8Node
 {
   String8Node *next;
   String8 string;
-};
+}
 
 typedef struct String8MetaNode String8MetaNode;
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
-};
+}
 
 typedef struct String8List String8List;
 struct String8List
@@ -58,14 +58,14 @@ struct String8List
   String8Node *last;
   ulong node_count;
   ulong total_size;
-};
+}
 
 typedef struct String8Array String8Array;
 struct String8Array
 {
   String8 *v;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
@@ -76,13 +76,13 @@ enum
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
-};
+}
 
 typedef uint StringSplitFlags;
 enum
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
-};
+}
 
 typedef enum PathStyle
 {
@@ -107,7 +107,7 @@ struct StringJoin
   String8 pre;
   String8 sep;
   String8 post;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Pair Types
@@ -117,7 +117,7 @@ struct String8TxtPtPair
 {
   String8 string;
   TxtPt pt;
-};
+}
 
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
@@ -127,7 +127,7 @@ struct UnicodeDecode
 {
   uint inc;
   uint codepoint;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
@@ -137,7 +137,7 @@ struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
-};
+}
 
 typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
 struct FuzzyMatchRangeList
@@ -147,7 +147,7 @@ struct FuzzyMatchRangeList
   ulong count;
   ulong needle_part_count;
   ulong total_dim;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Character Classification & Conversion Functions

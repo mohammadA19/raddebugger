@@ -193,7 +193,7 @@ enum
   LNK_ConfigFlag_NoTsAware               = (1 << 6),
   LNK_ConfigFlag_WriteImageChecksum      = (1 << 8),
   LNK_ConfigFlag_ManifestEmbed           = (1 << 9),
-};
+}
 typedef ulong LNK_ConfigFlags;
 
 typedef enum
@@ -212,7 +212,7 @@ enum
   LNK_Guard_LongJmp = (1 << 1),
   LNK_Guard_EhCont  = (1 << 2),
   LNK_Guard_All     = LNK_Guard_Cf | LNK_Guard_LongJmp | LNK_Guard_EhCont
-};
+}
 typedef uint LNK_GuardFlags;
 
 typedef enum

@@ -139,19 +139,19 @@ typedef struct LNK_ChunkManager
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_OffsetChunks
 {
   ulong              offset;
   LNK_ChunkLayout *layout;
-} LNK_OffsetChunks;
+}
 
-typedef struct
+typedef struct LNK_ChunkLayoutSerializer
 {
   LNK_ChunkLayout  layout;
   String8          buffer;
   byte               fill_byte;
   Rng1U64         *ranges;
-} LNK_ChunkLayoutSerializer;
+}
 
 ////////////////////////////////
 

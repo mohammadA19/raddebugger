@@ -23,7 +23,7 @@ str8_lit_comp("Halt"),
 str8_lit_comp("Memory"),
 str8_lit_comp("DebugString"),
 str8_lit_comp("SetThreadName"),
-};
+}
 
 String8 dmn_exception_kind_string_table[5] =
 {
@@ -32,7 +32,7 @@ str8_lit_comp("MemoryRead"),
 str8_lit_comp("MemoryWrite"),
 str8_lit_comp("MemoryExecute"),
 str8_lit_comp("CppThrow"),
-};
+}
 
 C_LINKAGE_END
 

@@ -8608,13 +8608,13 @@ typedef struct RD_EntityExpandAccel RD_EntityExpandAccel;
 struct RD_EntityExpandAccel
 {
   RD_EntityArray entities;
-};
+}
 
 typedef struct RD_CtrlEntityExpandAccel RD_CtrlEntityExpandAccel;
 struct RD_CtrlEntityExpandAccel
 {
   CTRL_EntityArray entities;
-};
+}
 
 //- rjf: meta entities
 
@@ -9169,7 +9169,7 @@ struct RD_DebugInfoTableExpandAccel
   ulong rdis_count;
   RDI_Parsed **rdis;
   DI_SearchItemArray items;
-};
+}
 
 internal EV_ExpandInfo
 rd_ev_view_rule_expr_expand_info__debug_info_tables(Arena *arena, EV_View *view, String8 filter, E_Expr *expr, MD_Node *params, RDI_SectionKind section)

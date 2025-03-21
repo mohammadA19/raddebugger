@@ -12,7 +12,7 @@ enum
 {
   FNT_RasterFlag_Smooth = (1<<0),
   FNT_RasterFlag_Hinted = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handles & Tags
@@ -21,7 +21,7 @@ typedef struct FNT_Tag FNT_Tag;
 struct FNT_Tag
 {
   ulong u64[2];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Draw Package Types (For Cache Queries)
@@ -34,7 +34,7 @@ struct FNT_Piece
   Vec2S16 offset;
   float advance;
   ushort decode_size;
-};
+}
 
 typedef struct FNT_PieceChunkNode FNT_PieceChunkNode;
 struct FNT_PieceChunkNode
@@ -43,7 +43,7 @@ struct FNT_PieceChunkNode
   FNT_Piece *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct FNT_PieceChunkList FNT_PieceChunkList;
 struct FNT_PieceChunkList
@@ -52,14 +52,14 @@ struct FNT_PieceChunkList
   FNT_PieceChunkNode *last;
   ulong node_count;
   ulong total_piece_count;
-};
+}
 
 typedef struct FNT_PieceArray FNT_PieceArray;
 struct FNT_PieceArray
 {
   FNT_Piece *v;
   ulong count;
-};
+}
 
 typedef struct FNT_Run FNT_Run;
 struct FNT_Run
@@ -68,7 +68,7 @@ struct FNT_Run
   Vec2F32 dim;
   float ascent;
   float descent;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Font Path -> Handle * Metrics * Path Cache Types
@@ -81,14 +81,14 @@ struct FNT_FontHashNode
   FP_Handle handle;
   FP_Metrics metrics;
   String8 path;
-};
+}
 
 typedef struct FNT_FontHashSlot FNT_FontHashSlot;
 struct FNT_FontHashSlot
 {
   FNT_FontHashNode *first;
   FNT_FontHashNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Rasterization Cache Types
@@ -100,7 +100,7 @@ struct F_RasterCacheInfo
   Vec2S16 raster_dim;
   short atlas_num;
   float advance;
-};
+}
 
 typedef struct F_Hash2InfoRasterCacheNode F_Hash2InfoRasterCacheNode;
 struct F_Hash2InfoRasterCacheNode
@@ -109,14 +109,14 @@ struct F_Hash2InfoRasterCacheNode
   F_Hash2InfoRasterCacheNode *hash_prev;
   ulong hash;
   F_RasterCacheInfo info;
-};
+}
 
 typedef struct FNT_Hash2InfoRasterCacheSlot FNT_Hash2InfoRasterCacheSlot;
 struct FNT_Hash2InfoRasterCacheSlot
 {
   F_Hash2InfoRasterCacheNode *first;
   F_Hash2InfoRasterCacheNode *last;
-};
+}
 
 typedef struct FNT_Hash2StyleRasterCacheNode FNT_Hash2StyleRasterCacheNode;
 struct FNT_Hash2StyleRasterCacheNode
@@ -131,14 +131,14 @@ struct FNT_Hash2StyleRasterCacheNode
   ulong utf8_class1_direct_map_mask[4];
   ulong hash2info_slots_count;
   FNT_Hash2InfoRasterCacheSlot *hash2info_slots;
-};
+}
 
 typedef struct FNT_Hash2StyleRasterCacheSlot FNT_Hash2StyleRasterCacheSlot;
 struct FNT_Hash2StyleRasterCacheSlot
 {
   FNT_Hash2StyleRasterCacheNode *first;
   FNT_Hash2StyleRasterCacheNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Atlas Types
@@ -147,7 +147,7 @@ typedef uint FNT_AtlasRegionNodeFlags;
 enum
 {
   FNT_AtlasRegionNodeFlag_Taken = (1<<0),
-};
+}
 
 typedef struct FNT_AtlasRegionNode FNT_AtlasRegionNode;
 struct FNT_AtlasRegionNode
@@ -157,7 +157,7 @@ struct FNT_AtlasRegionNode
   Vec2S16 max_free_size[Corner_COUNT];
   FNT_AtlasRegionNodeFlags flags;
   ulong num_allocated_descendants;
-};
+}
 
 typedef struct FNT_Atlas FNT_Atlas;
 struct FNT_Atlas
@@ -167,7 +167,7 @@ struct FNT_Atlas
   R_Handle texture;
   Vec2S16 root_dim;
   FNT_AtlasRegionNode *root;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Metrics
@@ -179,7 +179,7 @@ struct FNT_Metrics
   float descent;
   float line_gap;
   float capital_height;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main State Type
@@ -201,7 +201,7 @@ struct FNT_State
   // rjf: atlas list
   FNT_Atlas *first_atlas;
   FNT_Atlas *last_atlas;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

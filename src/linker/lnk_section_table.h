@@ -75,12 +75,12 @@ typedef struct LNK_SectionTable
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_SectionDataBuilder
 {
   COFF_MachineType  machine;
   Rng1U64          *range_arr;
   LNK_Section      **sect_arr;
-} LNK_SectionDataBuilder;
+}
 
 ////////////////////////////////
 

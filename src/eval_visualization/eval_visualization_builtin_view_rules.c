@@ -107,7 +107,7 @@ struct EV_DefaultExpandAccel
   ulong array_count;
   B32 array_need_extra_deref;
   B32 is_ptr2ptr;
-};
+}
 
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(default)
 {

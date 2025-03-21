@@ -33,7 +33,7 @@ struct OS_W32_FileIter
   B32 is_volume_iter;
   String8Array drive_strings;
   ulong drive_strings_iter_idx;
-};
+}
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), file_iter_memory_size);
 
 ////////////////////////////////
@@ -67,7 +67,7 @@ struct OS_W32_Entity
     SRWLOCK rw_mutex;
     CONDITION_VARIABLE cv;
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: State
@@ -86,7 +86,7 @@ struct OS_W32_State
   CRITICAL_SECTION entity_mutex;
   Arena *entity_arena;
   OS_W32_Entity *entity_free;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
