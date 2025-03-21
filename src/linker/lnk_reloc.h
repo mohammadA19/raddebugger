@@ -33,24 +33,24 @@ typedef struct LNK_Reloc
   struct LNK_Reloc  *next;
   LNK_Chunk         *chunk;
   LNK_RelocType      type;
-  U64                apply_off;
+  ulong                apply_off;
   struct LNK_Symbol *symbol;
 } LNK_Reloc;
 
 typedef struct LNK_RelocList
 {
-  U64        count;
+  ulong        count;
   LNK_Reloc *first;
   LNK_Reloc *last;
 } LNK_RelocList;
 
-internal LNK_Reloc *      lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, U64 count);
+internal LNK_Reloc *      lnk_reloc_list_reserve(Arena *arena, LNK_RelocList *list, ulong count);
 internal LNK_Reloc *      lnk_reloc_list_push(Arena *arena, LNK_RelocList *list);
 internal LNK_RelocList    lnk_reloc_list_copy(Arena *arena, LNK_RelocList *list);
 internal void             lnk_reloc_list_concat_in_place(LNK_RelocList *list, LNK_RelocList *to_concat);
-internal void             lnk_reloc_list_concat_in_place_arr(LNK_RelocList *list, LNK_RelocList *arr, U64 count);
-internal LNK_RelocList ** lnk_make_reloc_list_arr_arr(Arena *arena, U64 slot_count, U64 per_count);
+internal void             lnk_reloc_list_concat_in_place_arr(LNK_RelocList *list, LNK_RelocList *arr, ulong count);
+internal LNK_RelocList ** lnk_make_reloc_list_arr_arr(Arena *arena, ulong slot_count, ulong per_count);
 internal LNK_Reloc **     lnk_reloc_array_from_list(Arena *arena, LNK_RelocList list);
-internal LNK_RelocType    lnk_ext_reloc_type_from_coff(COFF_MachineType machine, U32 type);
-internal U32              lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type);
+internal LNK_RelocType    lnk_ext_reloc_type_from_coff(COFF_MachineType machine, uint type);
+internal uint              lnk_ext_reloc_type_to_coff(COFF_MachineType machine, LNK_RelocType type);
 

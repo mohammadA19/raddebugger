@@ -17,29 +17,29 @@ REGS_UsageKind;
 ////////////////////////////////
 //~ rjf: Register Types
 
-typedef U8 REGS_RegCode;
-typedef U8 REGS_AliasCode;
+typedef byte REGS_RegCode;
+typedef byte REGS_AliasCode;
 
 typedef union REGS_Reg16 REGS_Reg16;
 union REGS_Reg16
 {
-  U8 v[2];
-  U16 u16;
+  byte v[2];
+  ushort u16;
 };
 
 typedef union REGS_Reg32 REGS_Reg32;
 union REGS_Reg32
 {
-  U8 v[4];
-  U32 u32;
+  byte v[4];
+  uint u32;
   F32 f32;
 };
 
 typedef union REGS_Reg64 REGS_Reg64;
 union REGS_Reg64
 {
-  U8 v[8];
-  U64 u64;
+  byte v[8];
+  ulong u64;
   F64 f64;
 };
 
@@ -47,38 +47,38 @@ union REGS_Reg64
 typedef struct REGS_Reg80 REGS_Reg80;
 struct REGS_Reg80
 {
-  U64 int1_frac63;
-  U16 sign1_exp15;
+  ulong int1_frac63;
+  ushort sign1_exp15;
 };
 #pragma pack(pop)
 
 typedef union REGS_Reg128 REGS_Reg128;
 union REGS_Reg128
 {
-  U8 v[16];
-  U32 u32[4];
+  byte v[16];
+  uint u32[4];
   F32 f32[4];
-  U64 u64[2];
+  ulong u64[2];
   F64 f64[2];
 };
 
 typedef union REGS_Reg256 REGS_Reg256;
 union REGS_Reg256
 {
-  U8 v[32];
-  U32 u32[8];
+  byte v[32];
+  uint u32[8];
   F32 f32[8];
-  U64 u64[4];
+  ulong u64[4];
   F64 f64[4];
 };
 
 typedef union REGS_Reg512 REGS_Reg512;
 union REGS_Reg512
 {
-  U8 v[64];
-  U32 u32[16];
+  byte v[64];
+  uint u32[16];
   F32 f32[16];
-  U64 u64[8];
+  ulong u64[8];
   F64 f64[8];
 };
 
@@ -88,16 +88,16 @@ union REGS_Reg512
 typedef struct REGS_Rng REGS_Rng;
 struct REGS_Rng
 {
-  U16 byte_off;
-  U16 byte_size;
+  ushort byte_off;
+  ushort byte_size;
 };
 
 typedef struct REGS_Slice REGS_Slice;
 struct REGS_Slice
 {
-  U16 code;
-  U8 byte_off;
-  U8 byte_size;
+  ushort code;
+  byte byte_off;
+  byte byte_size;
 };
 
 ////////////////////////////////
@@ -108,18 +108,18 @@ struct REGS_Slice
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal U64 regs_block_size_from_arch(Arch arch);
-internal U64 regs_reg_code_count_from_arch(Arch arch);
-internal U64 regs_alias_code_count_from_arch(Arch arch);
+internal ulong regs_block_size_from_arch(Arch arch);
+internal ulong regs_reg_code_count_from_arch(Arch arch);
+internal ulong regs_alias_code_count_from_arch(Arch arch);
 internal String8 *regs_reg_code_string_table_from_arch(Arch arch);
 internal String8 *regs_alias_code_string_table_from_arch(Arch arch);
 internal REGS_Rng *regs_reg_code_rng_table_from_arch(Arch arch);
 internal REGS_Slice *regs_alias_code_slice_table_from_arch(Arch arch);
 internal REGS_UsageKind *regs_reg_code_usage_kind_table_from_arch(Arch arch);
 internal REGS_UsageKind *regs_alias_code_usage_kind_table_from_arch(Arch arch);
-internal U64 regs_rip_from_arch_block(Arch arch, void *block);
-internal U64 regs_rsp_from_arch_block(Arch arch, void *block);
-internal void regs_arch_block_write_rip(Arch arch, void *block, U64 rip);
-internal void regs_arch_block_write_rsp(Arch arch, void *block, U64 rsp);
+internal ulong regs_rip_from_arch_block(Arch arch, void *block);
+internal ulong regs_rsp_from_arch_block(Arch arch, void *block);
+internal void regs_arch_block_write_rip(Arch arch, void *block, ulong rip);
+internal void regs_arch_block_write_rsp(Arch arch, void *block, ulong rsp);
 
 #endif // REGS_H

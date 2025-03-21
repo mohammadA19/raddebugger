@@ -23,7 +23,7 @@ struct OS_LNX_Window
   OS_LNX_Window *prev;
   Window window;
   XID counter_xid;
-  U64 counter_value;
+  ulong counter_value;
 };
 
 ////////////////////////////////

@@ -10,8 +10,8 @@ internal Arena *
 arena_alloc_(ArenaParams *params)
 {
   // rjf: round up reserve/commit sizes
-  U64 reserve_size = params->reserve_size;
-  U64 commit_size = params->commit_size;
+  ulong reserve_size = params->reserve_size;
+  ulong commit_size = params->commit_size;
   if(params->flags & ArenaFlag_LargePages)
   {
     reserve_size = AlignPow2(reserve_size, os_get_system_info()->large_page_size);
@@ -52,7 +52,7 @@ arena_alloc_(ArenaParams *params)
   Arena *arena = (Arena *)base;
   arena->current = arena;
   arena->flags = params->flags;
-  arena->cmt_size = (U32)params->commit_size;
+  arena->cmt_size = (uint)params->commit_size;
   arena->res_size = params->reserve_size;
   arena->base_pos = 0;
   arena->pos = ARENA_HEADER_SIZE;
@@ -76,17 +76,17 @@ arena_release(Arena *arena)
 //- rjf: arena push/pop core functions
 
 internal void *
-arena_push(Arena *arena, U64 size, U64 align)
+arena_push(Arena *arena, ulong size, ulong align)
 {
   Arena *current = arena->current;
-  U64 pos_pre = AlignPow2(current->pos, align);
-  U64 pos_pst = pos_pre + size;
+  ulong pos_pre = AlignPow2(current->pos, align);
+  ulong pos_pst = pos_pre + size;
   
   // rjf: chain, if needed
   if(current->res < pos_pst && !(arena->flags & ArenaFlag_NoChain))
   {
-    U64 res_size = current->res_size;
-    U64 cmt_size = current->cmt_size;
+    ulong res_size = current->res_size;
+    ulong cmt_size = current->cmt_size;
     if(size + ARENA_HEADER_SIZE > res_size)
     {
       res_size = size + ARENA_HEADER_SIZE;
@@ -105,10 +105,10 @@ arena_push(Arena *arena, U64 size, U64 align)
   // rjf: commit new pages, if needed
   if(current->cmt < pos_pst && !(current->flags & ArenaFlag_LargePages))
   {
-    U64 cmt_pst_aligned = AlignPow2(pos_pst, current->cmt_size);
-    U64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
-    U64 cmt_size = cmt_pst_clamped - current->cmt;
-    os_commit((U8 *)current + current->cmt, cmt_size);
+    ulong cmt_pst_aligned = AlignPow2(pos_pst, current->cmt_size);
+    ulong cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
+    ulong cmt_size = cmt_pst_clamped - current->cmt;
+    os_commit((byte *)current + current->cmt, cmt_size);
     current->cmt = cmt_pst_clamped;
   }
   
@@ -116,7 +116,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   void *result = 0;
   if(current->cmt >= pos_pst)
   {
-    result = (U8 *)current+pos_pre;
+    result = (byte *)current+pos_pre;
     current->pos = pos_pst;
     AsanUnpoisonMemoryRegion(result, size);
   }
@@ -133,18 +133,18 @@ arena_push(Arena *arena, U64 size, U64 align)
   return result;
 }
 
-internal U64
+internal ulong
 arena_pos(Arena *arena)
 {
   Arena *current = arena->current;
-  U64 pos = current->base_pos + current->pos;
+  ulong pos = current->base_pos + current->pos;
   return pos;
 }
 
 internal void
-arena_pop_to(Arena *arena, U64 pos)
+arena_pop_to(Arena *arena, ulong pos)
 {
-  U64 big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
+  ulong big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
   Arena *current = arena->current;
   for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
   {
@@ -152,9 +152,9 @@ arena_pop_to(Arena *arena, U64 pos)
     os_release(current, current->res);
   }
   arena->current = current;
-  U64 new_pos = big_pos - current->base_pos;
+  ulong new_pos = big_pos - current->base_pos;
   AssertAlways(new_pos <= current->pos);
-  AsanPoisonMemoryRegion((U8*)current + new_pos, (current->pos - new_pos));
+  AsanPoisonMemoryRegion((byte*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }
 
@@ -167,10 +167,10 @@ arena_clear(Arena *arena)
 }
 
 internal void
-arena_pop(Arena *arena, U64 amt)
+arena_pop(Arena *arena, ulong amt)
 {
-  U64 pos_old = arena_pos(arena);
-  U64 pos_new = pos_old;
+  ulong pos_old = arena_pos(arena);
+  ulong pos_new = pos_old;
   if(amt < pos_old)
   {
     pos_new = pos_old - amt;
@@ -183,7 +183,7 @@ arena_pop(Arena *arena, U64 amt)
 internal Temp
 temp_begin(Arena *arena)
 {
-  U64 pos = arena_pos(arena);
+  ulong pos = arena_pos(arena);
   Temp temp = {arena, pos};
   return temp;
 }

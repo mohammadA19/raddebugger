@@ -24,7 +24,7 @@ struct DW_ExtDebugRef
 {
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
   String8 dwo_path;
-  U64     dwo_id;
+  ulong     dwo_id;
 };
 
 ////////////////////////////////
@@ -33,14 +33,14 @@ struct DW_ExtDebugRef
 typedef struct DW_AbbrevTableEntry DW_AbbrevTableEntry;
 struct DW_AbbrevTableEntry
 {
-  U64 id;
-  U64 off;
+  ulong id;
+  ulong off;
 };
 
 typedef struct DW_AbbrevTable DW_AbbrevTable;
 struct DW_AbbrevTable
 {
-  U64                  count;
+  ulong                  count;
   DW_AbbrevTableEntry *entries;
 };
 
@@ -69,10 +69,10 @@ typedef struct DW_LineFile DW_LineFile;
 struct DW_LineFile
 {
   String8 file_name;
-  U64     dir_idx;
-  U64     modify_time;
-  U64     md5_digest[2];
-  U64     file_size;
+  ulong     dir_idx;
+  ulong     modify_time;
+  ulong     md5_digest[2];
+  ulong     file_size;
 };
 
 typedef struct DW_LineVMFileNode DW_LineVMFileNode;
@@ -85,7 +85,7 @@ struct DW_LineVMFileNode
 typedef struct DW_LineVMFileList DW_LineVMFileList;
 struct DW_LineVMFileList
 {
-  U64                node_count;
+  ulong                node_count;
   DW_LineVMFileNode *first;
   DW_LineVMFileNode *last;
 };
@@ -93,7 +93,7 @@ struct DW_LineVMFileList
 typedef struct DW_LineVMFileArray DW_LineVMFileArray;
 struct DW_LineVMFileArray
 {
-  U64          count;
+  ulong          count;
   DW_LineFile *v;
 };
 
@@ -111,7 +111,7 @@ typedef enum DW_AbbrevKind
 }
 DW_AbbrevKind;
 
-typedef U32 DW_AbbrevFlags;
+typedef uint DW_AbbrevFlags;
 enum{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),
   DW_AbbrevFlag_HasChildren      = (1<<1),
@@ -122,9 +122,9 @@ struct DW_Abbrev
 {
   DW_AbbrevKind  kind;
   Rng1U64        abbrev_range;
-  U64            sub_kind;
-  U64            id;
-  U64            const_value;
+  ulong            sub_kind;
+  ulong            id;
+  ulong            const_value;
   DW_AbbrevFlags flags;
 };
 
@@ -136,26 +136,26 @@ struct DW_AttribValueResolveParams
 {
   DW_Version  version;
   DW_Language language;
-  U64         addr_size;                // NOTE(rjf): size in bytes of containing compilation unit's addresses
-  U64         containing_unit_info_off; // NOTE(rjf): containing compilation unit's offset into the .debug_info section
-  U64         debug_addrs_base;         // NOTE(rjf): containing compilation unit's offset into the .debug_addrs section       (DWARF V5 ONLY)
-  U64         debug_rnglists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_rnglists section    (DWARF V5 ONLY)
-  U64         debug_str_offs_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_str_offsets section (DWARF V5 ONLY)
-  U64         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
+  ulong         addr_size;                // NOTE(rjf): size in bytes of containing compilation unit's addresses
+  ulong         containing_unit_info_off; // NOTE(rjf): containing compilation unit's offset into the .debug_info section
+  ulong         debug_addrs_base;         // NOTE(rjf): containing compilation unit's offset into the .debug_addrs section       (DWARF V5 ONLY)
+  ulong         debug_rnglists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_rnglists section    (DWARF V5 ONLY)
+  ulong         debug_str_offs_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_str_offsets section (DWARF V5 ONLY)
+  ulong         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
 };
 
 typedef struct DW_AttribValue DW_AttribValue;
 struct DW_AttribValue
 {
   DW_SectionKind section;
-  U64            v[2];
+  ulong            v[2];
 };
 
 typedef struct DW_Attrib DW_Attrib;
 struct DW_Attrib
 {
-  U64            info_off;
-  U64            abbrev_id;
+  ulong            info_off;
+  ulong            abbrev_id;
   DW_AttribKind  attrib_kind;
   DW_FormKind    form_kind;
   DW_AttribClass value_class;
@@ -166,7 +166,7 @@ typedef struct DW_AttribArray DW_AttribArray;
 struct DW_AttribArray
 {
   DW_Attrib *v;
-  U64        count;
+  ulong        count;
 };
 
 typedef struct DW_AttribNode DW_AttribNode;
@@ -181,15 +181,15 @@ struct DW_AttribList
 {
   DW_AttribNode *first;
   DW_AttribNode *last;
-  U64            count;
+  ulong            count;
 };
 
 typedef struct DW_AttribListParseResult DW_AttribListParseResult;
 struct DW_AttribListParseResult
 {
   DW_AttribList attribs;
-  U64           max_info_off;
-  U64           max_abbrev_off;
+  ulong           max_info_off;
+  ulong           max_abbrev_off;
 };
 
 ////////////////////////////////
@@ -199,35 +199,35 @@ typedef struct DW_CompRoot DW_CompRoot;
 struct DW_CompRoot
 {
   // NOTE(rjf): Header Data
-  U64             size;
+  ulong             size;
   DW_CompUnitKind kind;
   DW_Version      version;
-  U64             address_size;
-  U64             abbrev_off;
-  U64             info_off;
+  ulong             address_size;
+  ulong             abbrev_off;
+  ulong             info_off;
   Rng1U64         tags_info_range;
   DW_AbbrevTable  abbrev_table;
   
   // NOTE(rjf): [parsed from DWARF attributes] Offsets For More Info (DWARF V5 ONLY)
-  U64 rnglist_base; // NOTE(rjf): Offset into the .debug_rnglists section where this comp unit's data is.
-  U64 loclist_base; // NOTE(rjf): Offset into the .debug_loclists section where this comp unit's data is.
-  U64 addrs_base;   // NOTE(rjf): Offset into the .debug_addr section where this comp unit's data is.
-  U64 stroffs_base; // NOTE(rjf): Offset into the .debug_str_offsets section where this comp unit's data is.
+  ulong rnglist_base; // NOTE(rjf): Offset into the .debug_rnglists section where this comp unit's data is.
+  ulong loclist_base; // NOTE(rjf): Offset into the .debug_loclists section where this comp unit's data is.
+  ulong addrs_base;   // NOTE(rjf): Offset into the .debug_addr section where this comp unit's data is.
+  ulong stroffs_base; // NOTE(rjf): Offset into the .debug_str_offsets section where this comp unit's data is.
   
   // NOTE(rjf): [parsed from DWARF attributes] General Info
   String8        name;
   String8        producer;
   String8        compile_dir;
   String8        external_dwo_name;
-  U64            dwo_id;
+  ulong            dwo_id;
   DW_Language    language;
-  U64            name_case;
+  ulong            name_case;
   B32            use_utf8;
-  U64            line_off;
-  U64            low_pc;
-  U64            high_pc;
+  ulong            line_off;
+  ulong            low_pc;
+  ulong            high_pc;
   DW_AttribValue ranges_attrib_value;
-  U64            base_addr;
+  ulong            base_addr;
 };
 
 ////////////////////////////////
@@ -243,14 +243,14 @@ struct DW_Tag
   Rng1U64        info_range;
   Rng1U64        abbrev_range;
   B32            has_children;
-  U64            abbrev_id;
+  ulong            abbrev_id;
   DW_TagKind     kind;
-  U64            attribs_info_off;
-  U64            attribs_abbrev_off;
+  ulong            attribs_info_off;
+  ulong            attribs_abbrev_off;
   DW_AttribList  attribs;
 };
 
-typedef U32 DW_TagStubFlags;
+typedef uint DW_TagStubFlags;
 enum
 {
   DW_TagStubFlag_HasObjectPointerArg  = (1<<0),
@@ -262,12 +262,12 @@ enum
 typedef struct DW_TagStub DW_TagStub;
 struct DW_TagStub
 {
-  U64             info_off;
+  ulong             info_off;
   DW_TagKind      kind;
   DW_TagStubFlags flags;
-  U64             children_info_off;
-  U64             attribs_info_off;
-  U64             attribs_abbrev_off;
+  ulong             children_info_off;
+  ulong             attribs_info_off;
+  ulong             attribs_abbrev_off;
   
   // NOTE(rjf): DW_Attrib_Specification is tacked onto definitions that
   // are filling out more info about a "prototype". That attribute is a reference
@@ -286,7 +286,7 @@ struct DW_TagStub
   // information, like name/linkage-name/etc.
   //SYMS_SymbolID abstract_origin;
   
-  U64 _unused_;
+  ulong _unused_;
 };
 
 typedef struct DW_TagStubNode DW_TagStubNode;
@@ -301,7 +301,7 @@ struct DW_TagStubList
 {
   DW_TagStubNode *first;
   DW_TagStubNode *last;
-  U64             count;
+  ulong             count;
 };
 
 ////////////////////////////////
@@ -310,21 +310,21 @@ struct DW_TagStubList
 typedef struct DW_LineVMHeader DW_LineVMHeader;
 struct DW_LineVMHeader
 {
-  U64                 unit_length;
-  U64                 unit_opl;
+  ulong                 unit_length;
+  ulong                 unit_opl;
   DW_Version          version;
-  U8                  address_size; // Duplicates size from the compilation unit but is needed to support stripped exe that just have .debug_line and .debug_line_str.
-  U8                  segment_selector_size;
-  U64                 header_length;
-  U64                 program_off;
-  U8                  min_inst_len;
-  U8                  max_ops_for_inst;
-  U8                  default_is_stmt;
+  byte                  address_size; // Duplicates size from the compilation unit but is needed to support stripped exe that just have .debug_line and .debug_line_str.
+  byte                  segment_selector_size;
+  ulong                 header_length;
+  ulong                 program_off;
+  byte                  min_inst_len;
+  byte                  max_ops_for_inst;
+  byte                  default_is_stmt;
   sbyte                  line_base;
-  U8                  line_range;
-  U8                  opcode_base;
-  U64                 num_opcode_lens;
-  U8                 *opcode_lens;
+  byte                  line_range;
+  byte                  opcode_base;
+  ulong                 num_opcode_lens;
+  byte                 *opcode_lens;
   String8Array        dir_table;
   DW_LineVMFileArray  file_table;
 };
@@ -332,16 +332,16 @@ struct DW_LineVMHeader
 typedef struct DW_LineVMState DW_LineVMState;
 struct DW_LineVMState
 {
-  U64 address;  // Address of a machine instruction.
-  U32 op_index; // This is used by the VLIW instructions to indicate index of operation inside the instruction.
+  ulong address;  // Address of a machine instruction.
+  uint op_index; // This is used by the VLIW instructions to indicate index of operation inside the instruction.
   
   // Line table doesn't contain full path to a file, instead
   // DWARF encodes path as two indices. First index will point into a directory
   // table,  and second points into a file name table.
-  U32 file_index;
+  uint file_index;
   
-  U32 line;
-  U32 column;
+  uint line;
+  uint column;
   
   B32 is_stmt;      // Indicates that "address" points to place suitable for a breakpoint.
   B32 basic_block;  // Indicates that the "address" is inside a basic block.
@@ -352,8 +352,8 @@ struct DW_LineVMState
   B32 prologue_end;
   
   B32 epilogue_begin;  // NOTE(nick): Indicates that "address" points to section where function exits and unwinds stack.
-  U64 isa;             // NOTE(nick): Instruction set that is used.
-  U64 discriminator;   // NOTE(nick): Arbitrary id that indicates to which block these instructions belong.
+  ulong isa;             // NOTE(nick): Instruction set that is used.
+  ulong discriminator;   // NOTE(nick): Arbitrary id that indicates to which block these instructions belong.
   B32 end_sequence;    // NOTE(nick): Indicates that "address" points to the first instruction in the instruction block that follows.
   
   // NOTE(rjf): it looks like LTO might sometimes zero out high PC and low PCs, causing a
@@ -365,10 +365,10 @@ struct DW_LineVMState
 typedef struct DW_Line DW_Line;
 struct DW_Line
 {
-  U64 file_index;
-  U32 line;
-  U32 column;
-  U64 voff;
+  ulong file_index;
+  uint line;
+  uint column;
+  ulong voff;
 };
 
 typedef struct DW_LineNode DW_LineNode;
@@ -382,7 +382,7 @@ typedef struct DW_LineSeqNode DW_LineSeqNode;
 struct DW_LineSeqNode
 {
   DW_LineSeqNode *next;
-  U64             count;
+  ulong             count;
   DW_LineNode    *first;
   DW_LineNode    *last;
 };
@@ -390,7 +390,7 @@ struct DW_LineSeqNode
 typedef struct DW_LineTableParseResult DW_LineTableParseResult;
 struct DW_LineTableParseResult
 {
-  U64             seq_count;
+  ulong             seq_count;
   DW_LineSeqNode *first_seq;
   DW_LineSeqNode *last_seq;
 };
@@ -403,37 +403,37 @@ struct DW_PubStringsBucket
 {
   DW_PubStringsBucket *next;
   String8              string;
-  U64                  info_off;
-  U64                  cu_info_off;
+  ulong                  info_off;
+  ulong                  cu_info_off;
 };
 
 typedef struct DW_PubStringsTable DW_PubStringsTable;
 struct DW_PubStringsTable
 {
-  U64 size;
+  ulong size;
   DW_PubStringsBucket **buckets;
 };
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 dw_hash_from_string(String8 string);
+internal ulong dw_hash_from_string(String8 string);
 
 ////////////////////////////////
 //~ Specific Based Range Helpers
 
 #define dw_based_range_read_struct(base, range, offset, out) dw_based_range_read(base, range, offset, sizeof(*out), out)
 
-internal U64     dw_based_range_read(void *base, Rng1U64 range, U64 offset, U64 size, void *out);
-internal String8 dw_based_range_read_string(void *base, Rng1U64 range, U64 offset);
-internal void*   dw_based_range_ptr(void *base, Rng1U64 range, U64 offset);
-internal void*   dw_based_range_ptr_size(void *base, Rng1U64 range, U64 offset, U64 size);
-internal U64     dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_value);
-internal U64     dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, long *out_value);
-internal U64     dw_based_range_read_length(void *base, Rng1U64 range, U64 offset, U64 *out_value);
-internal U64     dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
-internal U64     dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, U64 offset, DW_Abbrev *out_abbrev);
-internal U64     dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, U64 offset, DW_Mode mode, U64 address_size, DW_FormKind form_kind, U64 implicit_const, DW_AttribValue *form_value_out);
+internal ulong     dw_based_range_read(void *base, Rng1U64 range, ulong offset, ulong size, void *out);
+internal String8 dw_based_range_read_string(void *base, Rng1U64 range, ulong offset);
+internal void*   dw_based_range_ptr(void *base, Rng1U64 range, ulong offset);
+internal void*   dw_based_range_ptr_size(void *base, Rng1U64 range, ulong offset, ulong size);
+internal ulong     dw_based_range_read_uleb128(void *base, Rng1U64 range, ulong offset, ulong *out_value);
+internal ulong     dw_based_range_read_sleb128(void *base, Rng1U64 range, ulong offset, long *out_value);
+internal ulong     dw_based_range_read_length(void *base, Rng1U64 range, ulong offset, ulong *out_value);
+internal ulong     dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, ulong offset, DW_Abbrev *out_abbrev);
+internal ulong     dw_based_range_read_abbrev_attrib_info(void *base, Rng1U64 range, ulong offset, DW_Abbrev *out_abbrev);
+internal ulong     dw_based_range_read_attrib_form_value(void *base, Rng1U64 range, ulong offset, DW_Mode mode, ulong address_size, DW_FormKind form_kind, ulong implicit_const, DW_AttribValue *form_value_out);
 
 internal DW_Mode dw_mode_from_sec(DW_SectionArray *sections, DW_SectionKind kind);
 internal B32     dw_sec_is_present(DW_SectionArray *sections, DW_SectionKind kind);
@@ -443,27 +443,27 @@ internal Rng1U64 dw_range_from_sec(DW_SectionArray *sections, DW_SectionKind kin
 ////////////////////////////////
 //~ rjf: Abbrev Table
 
-internal DW_AbbrevTable dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, U64 start_abbrev_off);
-internal U64            dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, U64 abbrev_id);
+internal DW_AbbrevTable dw_make_abbrev_table(Arena *arena, DW_SectionArray *sections, ulong start_abbrev_off);
+internal ulong            dw_abbrev_offset_from_abbrev_id(DW_AbbrevTable table, ulong abbrev_id);
 
 ////////////////////////////////
 //~ rjf: Miscellaneous DWARF Section Parsing
 
 //- rjf: .debug_ranges (DWARF V4)
-internal Rng1U64List dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, U64 addr_size, U64 comp_unit_base_addr, U64 range_off);
+internal Rng1U64List dw_v4_range_list_from_range_offset(Arena *arena, DW_SectionArray *sections, ulong addr_size, ulong comp_unit_base_addr, ulong range_off);
 
 //- rjf: .debug_pubtypes + .debug_pubnames (DWARF V4)
 internal DW_PubStringsTable dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *sections, DW_SectionKind section_kind);
 
 //- rjf: .debug_str_offsets (DWARF V5)
-internal U64 dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
+internal ulong dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, ulong base, ulong index);
 
 //- rjf: .debug_addr (DWARF V5)
-internal U64 dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, U64 base, U64 index);
+internal ulong dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKind section, ulong base, ulong index);
 
 //- rjf: .debug_rnglists parsing (DWARF V5)
-internal U64         dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sections, DW_SectionKind section_kind, U64 base, U64 index);
-internal Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, U64 addr_size, U64 addr_section_base, U64 offset);
+internal ulong         dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sections, DW_SectionKind section_kind, ulong base, ulong index);
+internal Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW_SectionKind section, ulong addr_size, ulong addr_section_base, ulong offset);
 
 ////////////////////////////////
 //~ rjf: Attrib Value Parsing
@@ -471,24 +471,24 @@ internal Rng1U64List dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_Secti
 internal DW_AttribValueResolveParams dw_attrib_value_resolve_params_from_comp_root(DW_CompRoot *root);
 internal DW_AttribValue              dw_attrib_value_from_form_value(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_FormKind form_kind, DW_AttribClass value_class, DW_AttribValue form_value);
 internal String8                     dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value);
-internal Rng1U64List                 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, U64 address_size, U64 comp_unit_base_addr, U64 addr_section_base, U64 low_pc, U64 high_pc, DW_AttribValue ranges_value);
+internal Rng1U64List                 dw_range_list_from_high_low_pc_and_ranges_attrib_value(Arena *arena, DW_SectionArray *sections, ulong address_size, ulong comp_unit_base_addr, ulong addr_section_base, ulong low_pc, ulong high_pc, DW_AttribValue ranges_value);
 
 ////////////////////////////////
 //~ rjf: Tag Parsing
 
-internal DW_AttribListParseResult dw_parse_attrib_list_from_info_abbrev_offsets(Arena *arena, DW_SectionArray *sections, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_off, U64 abbrev_off, B32 relaxed);
-internal DW_Tag*                  dw_tag_from_info_offset(Arena *arena, DW_SectionArray *sections, DW_AbbrevTable abbrev_table, DW_Version ver, DW_Ext ext, DW_Language lang, U64 address_size, U64 info_offset, B32 relaxed);
+internal DW_AttribListParseResult dw_parse_attrib_list_from_info_abbrev_offsets(Arena *arena, DW_SectionArray *sections, DW_Version ver, DW_Ext ext, DW_Language lang, ulong address_size, ulong info_off, ulong abbrev_off, B32 relaxed);
+internal DW_Tag*                  dw_tag_from_info_offset(Arena *arena, DW_SectionArray *sections, DW_AbbrevTable abbrev_table, DW_Version ver, DW_Ext ext, DW_Language lang, ulong address_size, ulong info_offset, B32 relaxed);
 internal DW_TagStub               dw_stub_from_tag(DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, DW_Tag *tag);
 
 //- rjf: line info
 internal void dw_line_vm_reset(DW_LineVMState *state, B32 default_is_stmt);
-internal void dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max_ops_for_inst);
+internal void dw_line_vm_advance(DW_LineVMState *state, ulong advance, ulong min_inst_len, ulong max_ops_for_inst);
 
 internal DW_LineSeqNode*         dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl);
 internal DW_LineNode*            dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence);
 internal DW_LineTableParseResult dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root);
-internal U64                     dw_read_line_file(void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, U8 address_size, U64 format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
-internal U64                     dw_read_line_vm_header(Arena *arena, void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader *header_out);
+internal ulong                     dw_read_line_file(void *line_base, Rng1U64 line_rng, ulong line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, byte address_size, ulong format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
+internal ulong                     dw_read_line_vm_header(Arena *arena, void *line_base, Rng1U64 line_rng, ulong line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader *header_out);
 
 #endif // DWARF_PARSE_H
 

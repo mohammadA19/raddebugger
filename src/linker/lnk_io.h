@@ -7,9 +7,9 @@ typedef struct
   String8Array path_arr;
   String8Array data_arr;
   OS_Handle   *handle_arr;
-  U64         *size_arr;
-  U64         *off_arr;
-  U8          *buffer;
+  ulong         *size_arr;
+  ulong         *off_arr;
+  byte          *buffer;
 } LNK_DiskReader;
 
 ////////////////////////////////

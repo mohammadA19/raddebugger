@@ -837,10 +837,10 @@ X(Char32)\
 X(UChar8)\
 X(UChar16)\
 X(UChar32)\
-X(U8)\
-X(U16)\
-X(U32)\
-X(U64)\
+X(byte)\
+X(ushort)\
+X(uint)\
+X(ulong)\
 X(U128)\
 X(U256)\
 X(U512)\

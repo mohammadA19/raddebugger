@@ -120,7 +120,7 @@ typedef struct LNK_InputImport
 
 typedef struct LNK_InputImportList
 {
-  U64              count;
+  ulong              count;
   LNK_InputImport *first;
   LNK_InputImport *last;
 } LNK_InputImportList;
@@ -129,7 +129,7 @@ typedef struct LNK_InputImportList
 
 typedef struct LNK_BaseRelocPage
 {
-  U64     voff;
+  ulong     voff;
   U64List entries_addr32;
   U64List entries_addr64;
 } LNK_BaseRelocPage;
@@ -142,20 +142,20 @@ typedef struct LNK_BaseRelocPageNode
 
 typedef struct LNK_BaseRelocPageList
 {
-  U64                    count;
+  ulong                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
 } LNK_BaseRelocPageList;
 
 typedef struct LNK_BaseRelocPageArray
 {
-  U64                count;
+  ulong                count;
   LNK_BaseRelocPage *v;
 } LNK_BaseRelocPageArray;
 
 typedef struct
 {
-  U64                     page_size;
+  ulong                     page_size;
   LNK_Section           **sect_id_map;
   LNK_Reloc             **reloc_arr;
   Rng1U64                *range_arr;
@@ -167,7 +167,7 @@ typedef struct
 typedef struct
 {
   Rng1U64                *ranges;
-  U64                     page_size;
+  ulong                     page_size;
   LNK_Section           **sect_id_map;
   LNK_BaseRelocPageList  *list_arr;
   LNK_Obj               **obj_arr;
@@ -206,7 +206,7 @@ typedef struct
   LNK_SymbolTable   *symtab;
   LNK_SectionTable  *st;
   LNK_Section      **sect_id_map;
-  U64                base_addr;
+  ulong                base_addr;
   LNK_Section      **sect_arr;
   Rng1U64           *range_arr;
 } LNK_SectionRelocPatcher;
@@ -217,7 +217,7 @@ typedef struct
   LNK_SymbolTable   *symtab;
   LNK_SectionTable  *st;
   LNK_Section      **sect_id_map;
-  U64                base_addr;
+  ulong                base_addr;
   LNK_Obj          **obj_arr;
 } LNK_ObjRelocPatcher;
 
@@ -239,7 +239,7 @@ typedef struct
 internal LNK_InputImport *   lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list);
 internal void                lnk_input_import_list_concat_in_place(LNK_InputImportList *list, LNK_InputImportList *to_concat);
 internal LNK_InputImport **  lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list);
-internal LNK_InputImportList lnk_list_from_input_import_arr(LNK_InputImport **arr, U64 count);
+internal LNK_InputImportList lnk_list_from_input_import_arr(LNK_InputImport **arr, ulong count);
 
 ////////////////////////////////
 // Helpers
@@ -264,7 +264,7 @@ internal void    lnk_merge_manifest_files(String8 mt_path, String8 out_name, Str
 internal void    lnk_serialize_pe_resource_tree(LNK_SectionTable *st, LNK_SymbolTable *symtab, PE_ResourceDir *root_dir);
 internal void    lnk_add_resource_debug_s(LNK_SectionTable *st, LNK_SymbolTable *symtab, String8 obj_path, String8 cwd_path, String8 exe_path, CV_Arch arch, String8List res_file_list, MD5Hash *res_hash_array);
 internal String8 lnk_make_res_obj(TP_Context *tp, Arena *arena, PE_ResourceDir *root_dir, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 path, String8 cwd_path, String8 exe_path, String8List res_file_list, MD5Hash *res_hash_array);
-internal String8 lnk_obj_from_res_file_list(TP_Context *tp, Arena *arena, LNK_SectionTable *st, LNK_SymbolTable *symtab, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, U32 time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name); 
+internal String8 lnk_obj_from_res_file_list(TP_Context *tp, Arena *arena, LNK_SectionTable *st, LNK_SymbolTable *symtab, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, uint time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name); 
 
 ////////////////////////////////
 // Debug
@@ -274,14 +274,14 @@ internal String8 lnk_make_linker_coff_obj(TP_Context *tp, Arena *arena, COFF_Tim
 ////////////////////////////////
 // Win32 Image Helpers
 
-internal void        lnk_build_debug_pdb(LNK_SectionTable *st, LNK_SymbolTable *symtab, LNK_Section *debug_sect, LNK_Chunk *debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, U32 age, String8 pdb_path);
+internal void        lnk_build_debug_pdb(LNK_SectionTable *st, LNK_SymbolTable *symtab, LNK_Section *debug_sect, LNK_Chunk *debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, uint age, String8 pdb_path);
 internal void        lnk_build_debug_rdi(LNK_SectionTable *st, LNK_SymbolTable *symtab, LNK_Section *debug_sect, LNK_Chunk *debug_dir_array_chunk, COFF_TimeStamp time_stamp, Guid guid, String8 rdi_path);
 internal void        lnk_build_guard_tables(TP_Context *tp, LNK_SectionTable *st, LNK_SymbolTable *symtab, LNK_ExportTable *exptab, LNK_ObjList obj_list, COFF_MachineType machine, String8 entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
-internal void        lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType  machine, U64 page_size, PE_ImageFileCharacteristics file_chars, LNK_ObjList obj_list);
+internal void        lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_SectionTable *st, LNK_SymbolTable *symtab, COFF_MachineType  machine, ulong page_size, PE_ImageFileCharacteristics file_chars, LNK_ObjList obj_list);
 internal LNK_Chunk * lnk_build_dos_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk);
 internal LNK_Chunk * lnk_build_pe_magic(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent);
 internal LNK_Chunk * lnk_build_coff_file_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent, COFF_MachineType machine, COFF_TimeStamp time_stamp, PE_ImageFileCharacteristics file_characteristics);
-internal LNK_Chunk * lnk_build_pe_optional_header_x64(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent, COFF_MachineType machine, U64 base_addr, U64 sect_align, U64 file_align, Version linker_ver, Version os_ver, Version image_ver, Version subsystem_ver, PE_WindowsSubsystem subsystem, PE_DllCharacteristics dll_characteristics, U64 stack_reserve, U64 stack_commit, U64 heap_reserve, U64 heap_commit, String8 entry_point_name, LNK_SectionArray sect_arr);
+internal LNK_Chunk * lnk_build_pe_optional_header_x64(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent, COFF_MachineType machine, ulong base_addr, ulong sect_align, ulong file_align, Version linker_ver, Version os_ver, Version image_ver, Version subsystem_ver, PE_WindowsSubsystem subsystem, PE_DllCharacteristics dll_characteristics, ulong stack_reserve, ulong stack_commit, ulong heap_reserve, ulong heap_commit, String8 entry_point_name, LNK_SectionArray sect_arr);
 internal LNK_Chunk * lnk_build_pe_directories(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent);
 internal LNK_Chunk * lnk_build_coff_section_table(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk, LNK_SectionArray sect_arr);
 internal LNK_Chunk * lnk_build_win32_image_header(LNK_SymbolTable *symtab, LNK_Section *header_sect, LNK_Chunk *parent_chunk, LNK_Config *config, LNK_SectionArray sect_arr);
@@ -289,10 +289,10 @@ internal LNK_Chunk * lnk_build_win32_image_header(LNK_SymbolTable *symtab, LNK_S
 ////////////////////////////////
 // Relocs
 
-internal void lnk_patch_relocs_linker(TP_Context *tp, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr);
-internal void lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, U64 base_addr);
+internal void lnk_patch_relocs_linker(TP_Context *tp, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, ulong base_addr);
+internal void lnk_patch_relocs_obj(TP_Context *tp, LNK_ObjList obj_list, LNK_SymbolTable *symtab, LNK_SectionTable *st, LNK_Section **sect_id_map, String8 image_data, ulong base_addr);
 
-internal void lnk_apply_reloc(U64 base_addr, U64 virt_align, U64 file_align, LNK_Section **sect_id_map, LNK_SymbolTable *symtab, String8 chunk_data, LNK_Reloc *reloc);
+internal void lnk_apply_reloc(ulong base_addr, ulong virt_align, ulong file_align, LNK_Section **sect_id_map, LNK_SymbolTable *symtab, String8 chunk_data, LNK_Reloc *reloc);
 
 ////////////////////////////////
 

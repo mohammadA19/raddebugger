@@ -347,7 +347,7 @@ inverse_4x4f32(Mat4x4F32 m)
   Vec4F32 sign_b = { -1, +1, -1, +1 };
   
   Mat4x4F32 inverse;
-  for(U32 i = 0; i < 4; i += 1)
+  for(uint i = 0; i < 4; i += 1)
   {
     inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
     inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
@@ -389,15 +389,15 @@ derotate_4x4f32(Mat4x4F32 mat)
 ////////////////////////////////
 //~ rjf: Range Ops
 
-internal Rng1U32 rng_1u32(U32 min, U32 max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(U32, r.min, r.max); } return r;}
-internal Rng1U32 shift_1u32(Rng1U32 r, U32 x)                   {r.min += x; r.max += x; return r;}
-internal Rng1U32 pad_1u32(Rng1U32 r, U32 x)                     {r.min -= x; r.max += x; return r;}
-internal U32 center_1u32(Rng1U32 r)                             {U32 c = (r.min+r.max)/2; return c;}
-internal B32 contains_1u32(Rng1U32 r, U32 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-internal U32 dim_1u32(Rng1U32 r)                                {U32 c = r.max-r.min; return c;}
+internal Rng1U32 rng_1u32(uint min, uint max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(uint, r.min, r.max); } return r;}
+internal Rng1U32 shift_1u32(Rng1U32 r, uint x)                   {r.min += x; r.max += x; return r;}
+internal Rng1U32 pad_1u32(Rng1U32 r, uint x)                     {r.min -= x; r.max += x; return r;}
+internal uint center_1u32(Rng1U32 r)                             {uint c = (r.min+r.max)/2; return c;}
+internal B32 contains_1u32(Rng1U32 r, uint x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+internal uint dim_1u32(Rng1U32 r)                                {uint c = r.max-r.min; return c;}
 internal Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b)               {Rng1U32 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b)           {Rng1U32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-internal U32 clamp_1u32(Rng1U32 r, U32 v)                       {v = Clamp(r.min, v, r.max); return v;}
+internal uint clamp_1u32(Rng1U32 r, uint v)                       {v = Clamp(r.min, v, r.max); return v;}
 
 internal Rng1S32 rng_1s32(int min, int max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(int, r.min, r.max); } return r;}
 internal Rng1S32 shift_1s32(Rng1S32 r, int x)                   {r.min += x; r.max += x; return r;}
@@ -409,15 +409,15 @@ internal Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b)               {Rng1S32 c = {Mi
 internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b)           {Rng1S32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
 internal int clamp_1s32(Rng1S32 r, int v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-internal Rng1U64 rng_1u64(U64 min, U64 max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(U64, r.min, r.max); } return r;}
-internal Rng1U64 shift_1u64(Rng1U64 r, U64 x)                   {r.min += x; r.max += x; return r;}
-internal Rng1U64 pad_1u64(Rng1U64 r, U64 x)                     {r.min -= x; r.max += x; return r;}
-internal U64 center_1u64(Rng1U64 r)                             {U64 c = (r.min+r.max)/2; return c;}
-internal B32 contains_1u64(Rng1U64 r, U64 x)                    {B32 c = (r.min <= x && x < r.max); return c;}
-internal U64 dim_1u64(Rng1U64 r)                                {U64 c = r.max-r.min; return c;}
+internal Rng1U64 rng_1u64(ulong min, ulong max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(ulong, r.min, r.max); } return r;}
+internal Rng1U64 shift_1u64(Rng1U64 r, ulong x)                   {r.min += x; r.max += x; return r;}
+internal Rng1U64 pad_1u64(Rng1U64 r, ulong x)                     {r.min -= x; r.max += x; return r;}
+internal ulong center_1u64(Rng1U64 r)                             {ulong c = (r.min+r.max)/2; return c;}
+internal B32 contains_1u64(Rng1U64 r, ulong x)                    {B32 c = (r.min <= x && x < r.max); return c;}
+internal ulong dim_1u64(Rng1U64 r)                                {ulong c = r.max-r.min; return c;}
 internal Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b)               {Rng1U64 c = {Min(a.min, b.min), Max(a.max, b.max)}; return c;}
 internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b)           {Rng1U64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
-internal U64 clamp_1u64(Rng1U64 r, U64 v)                       {v = Clamp(r.min, v, r.max); return v;}
+internal ulong clamp_1u64(Rng1U64 r, ulong v)                       {v = Clamp(r.min, v, r.max); return v;}
 
 internal Rng1S64 rng_1s64(long min, long max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(long, r.min, r.max); } return r;}
 internal Rng1S64 shift_1s64(Rng1S64 r, long x)                   {r.min += x; r.max += x; return r;}
@@ -568,7 +568,7 @@ rgba_from_hsva(Vec4F32 hsva)
 }
 
 internal Vec4F32
-rgba_from_u32(U32 hex)
+rgba_from_u32(uint hex)
 {
   Vec4F32 result = v4f32(((hex&0xff000000)>>24)/255.f,
                          ((hex&0x00ff0000)>>16)/255.f,
@@ -577,14 +577,14 @@ rgba_from_u32(U32 hex)
   return result;
 }
 
-internal U32
+internal uint
 u32_from_rgba(Vec4F32 rgba)
 {
-  U32 result = 0;
-  result |= ((U32)((U8)(rgba.x*255.f))) << 24;
-  result |= ((U32)((U8)(rgba.y*255.f))) << 16;
-  result |= ((U32)((U8)(rgba.z*255.f))) <<  8;
-  result |= ((U32)((U8)(rgba.w*255.f))) <<  0;
+  uint result = 0;
+  result |= ((uint)((byte)(rgba.x*255.f))) << 24;
+  result |= ((uint)((byte)(rgba.y*255.f))) << 16;
+  result |= ((uint)((byte)(rgba.z*255.f))) <<  8;
+  result |= ((uint)((byte)(rgba.w*255.f))) <<  0;
   return result;
 }
 
@@ -606,7 +606,7 @@ rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
   Rng1S64Array arr = {0};
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(Rng1S64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;

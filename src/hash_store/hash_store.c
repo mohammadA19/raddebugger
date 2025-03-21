@@ -33,7 +33,7 @@ hs_init(void)
   hs_shared->slots = push_array(arena, HS_Slot, hs_shared->slots_count);
   hs_shared->stripes = push_array(arena, HS_Stripe, hs_shared->stripes_count);
   hs_shared->stripes_free_nodes = push_array(arena, HS_Node *, hs_shared->stripes_count);
-  for(U64 idx = 0; idx < hs_shared->stripes_count; idx += 1)
+  for(ulong idx = 0; idx < hs_shared->stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->stripes[idx];
     stripe->arena = arena_alloc();
@@ -44,7 +44,7 @@ hs_init(void)
   hs_shared->key_stripes_count = Min(hs_shared->key_slots_count, os_get_system_info()->logical_processor_count);
   hs_shared->key_slots = push_array(arena, HS_KeySlot, hs_shared->key_slots_count);
   hs_shared->key_stripes = push_array(arena, HS_Stripe, hs_shared->key_stripes_count);
-  for(U64 idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
+  for(ulong idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->key_stripes[idx];
     stripe->arena = arena_alloc();
@@ -74,13 +74,13 @@ hs_tctx_ensure_inited(void)
 internal U128
 hs_submit_data(U128 key, Arena **data_arena, String8 data)
 {
-  U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
-  U64 key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;
+  ulong key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
+  ulong key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;
   HS_KeySlot *key_slot = &hs_shared->key_slots[key_slot_idx];
   HS_Stripe *key_stripe = &hs_shared->key_stripes[key_stripe_idx];
   U128 hash = hs_hash_from_data(data);
-  U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
-  U64 stripe_idx = slot_idx%hs_shared->stripes_count;
+  ulong slot_idx = hash.u64[1]%hs_shared->slots_count;
+  ulong stripe_idx = slot_idx%hs_shared->stripes_count;
   HS_Slot *slot = &hs_shared->slots[slot_idx];
   HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
   
@@ -156,8 +156,8 @@ hs_submit_data(U128 key, Arena **data_arena, String8 data)
   ProfScope("if this key's history cache was full, dec key ref count of oldest hash")
     if(!u128_match(key_expired_hash, u128_zero()))
   {
-    U64 old_hash_slot_idx = key_expired_hash.u64[1]%hs_shared->slots_count;
-    U64 old_hash_stripe_idx = old_hash_slot_idx%hs_shared->stripes_count;
+    ulong old_hash_slot_idx = key_expired_hash.u64[1]%hs_shared->slots_count;
+    ulong old_hash_stripe_idx = old_hash_slot_idx%hs_shared->stripes_count;
     HS_Slot *old_hash_slot = &hs_shared->slots[old_hash_slot_idx];
     HS_Stripe *old_hash_stripe = &hs_shared->stripes[old_hash_stripe_idx];
     OS_MutexScopeR(old_hash_stripe->rw_mutex)
@@ -203,8 +203,8 @@ hs_scope_close(HS_Scope *scope)
   {
     U128 hash = touch->hash;
     next = touch->next;
-    U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
-    U64 stripe_idx = slot_idx%hs_shared->stripes_count;
+    ulong slot_idx = hash.u64[1]%hs_shared->slots_count;
+    ulong stripe_idx = slot_idx%hs_shared->stripes_count;
     HS_Slot *slot = &hs_shared->slots[slot_idx];
     HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
@@ -245,11 +245,11 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 //~ rjf: Cache Lookup
 
 internal U128
-hs_hash_from_key(U128 key, U64 rewind_count)
+hs_hash_from_key(U128 key, ulong rewind_count)
 {
   U128 result = {0};
-  U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
-  U64 key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;
+  ulong key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
+  ulong key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;
   HS_KeySlot *key_slot = &hs_shared->key_slots[key_slot_idx];
   HS_Stripe *key_stripe = &hs_shared->key_stripes[key_stripe_idx];
   OS_MutexScopeR(key_stripe->rw_mutex)
@@ -271,8 +271,8 @@ hs_data_from_hash(HS_Scope *scope, U128 hash)
 {
   ProfBeginFunction();
   String8 result = {0};
-  U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
-  U64 stripe_idx = slot_idx%hs_shared->stripes_count;
+  ulong slot_idx = hash.u64[1]%hs_shared->slots_count;
+  ulong stripe_idx = slot_idx%hs_shared->stripes_count;
   HS_Slot *slot = &hs_shared->slots[slot_idx];
   HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
@@ -300,9 +300,9 @@ hs_evictor_thread__entry_point(void *p)
   ThreadNameF("[hs] evictor thread");
   for(;;)
   {
-    for(U64 slot_idx = 0; slot_idx < hs_shared->slots_count; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < hs_shared->slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%hs_shared->stripes_count;
+      ulong stripe_idx = slot_idx%hs_shared->stripes_count;
       HS_Slot *slot = &hs_shared->slots[slot_idx];
       HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;
@@ -310,8 +310,8 @@ hs_evictor_thread__entry_point(void *p)
       {
         for(HS_Node *n = slot->first; n != 0; n = n->next)
         {
-          U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
-          U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
+          ulong key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
+          ulong scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
           if(key_ref_count == 0 && scope_ref_count == 0)
           {
             slot_has_work = 1;
@@ -324,8 +324,8 @@ hs_evictor_thread__entry_point(void *p)
         for(HS_Node *n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
-          U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
-          U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
+          ulong key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
+          ulong scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
           if(key_ref_count == 0 && scope_ref_count == 0)
           {
             DLLRemove(slot->first, slot->last, n);

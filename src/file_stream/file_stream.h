@@ -12,9 +12,9 @@ struct FS_RangeNode
 {
   FS_RangeNode *next;
   Rng1U64 range;
-  U64 request_count;
-  U64 completion_count;
-  U64 last_time_requested_us;
+  ulong request_count;
+  ulong completion_count;
+  ulong last_time_requested_us;
 };
 
 typedef struct FS_RangeSlot FS_RangeSlot;
@@ -31,11 +31,11 @@ struct FS_Node
   
   // rjf: file metadata
   String8 path;
-  U64 timestamp;
-  U64 size;
+  ulong timestamp;
+  ulong size;
   
   // rjf: sub-table of per-requested-file-range info
-  U64 slots_count;
+  ulong slots_count;
   FS_RangeSlot *slots;
 };
 
@@ -61,19 +61,19 @@ typedef struct FS_Shared FS_Shared;
 struct FS_Shared
 {
   Arena *arena;
-  U64 change_gen;
+  ulong change_gen;
   
   // rjf: path info cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   FS_Slot *slots;
   FS_Stripe *stripes;
   
   // rjf: user -> streamer ring buffer
-  U64 u2s_ring_size;
-  U8 *u2s_ring_base;
-  U64 u2s_ring_write_pos;
-  U64 u2s_ring_read_pos;
+  ulong u2s_ring_size;
+  byte *u2s_ring_base;
+  ulong u2s_ring_write_pos;
+  ulong u2s_ring_read_pos;
   OS_Handle u2s_ring_cv;
   OS_Handle u2s_ring_mutex;
   
@@ -89,7 +89,7 @@ global FS_Shared *fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 fs_little_hash_from_string(String8 string);
+internal ulong fs_little_hash_from_string(String8 string);
 internal U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
 
 ////////////////////////////////
@@ -100,21 +100,21 @@ internal void fs_init(void);
 ////////////////////////////////
 //~ rjf: Change Generation
 
-internal U64 fs_change_gen(void);
+internal ulong fs_change_gen(void);
 
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
+internal U128 fs_hash_from_path_range(String8 path, Rng1U64 range, ulong endt_us);
 internal U128 fs_key_from_path_range(String8 path, Rng1U64 range);
 
-internal U64 fs_timestamp_from_path(String8 path);
-internal U64 fs_size_from_path(String8 path);
+internal ulong fs_timestamp_from_path(String8 path);
+internal ulong fs_size_from_path(String8 path);
 
 ////////////////////////////////
 //~ rjf: Streaming Work
 
-internal B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us);
+internal B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, ulong endt_us);
 internal void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 

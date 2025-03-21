@@ -70,21 +70,21 @@ os_w32_dense_time_from_file_time(DenseTime *out, FILETIME *in)
   *out = dense_time_from_date_time(date_time);
 }
 
-internal U32
-os_w32_sleep_ms_from_endt_us(U64 endt_us)
+internal uint
+os_w32_sleep_ms_from_endt_us(ulong endt_us)
 {
-  U32 sleep_ms = 0;
+  uint sleep_ms = 0;
   if(endt_us == max_U64)
   {
     sleep_ms = INFINITE;
   }
   else
   {
-    U64 begint = os_now_microseconds();
+    ulong begint = os_now_microseconds();
     if(begint < endt_us)
     {
-      U64 sleep_us = endt_us - begint;
-      sleep_ms = (U32)((sleep_us + 999)/1000);
+      ulong sleep_us = endt_us - begint;
+      sleep_ms = (uint)((sleep_us + 999)/1000);
     }
   }
   return sleep_ms;
@@ -160,7 +160,7 @@ os_get_current_path(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
-  U16 *memory = push_array_no_zero(scratch.arena, U16, length + 1);
+  ushort *memory = push_array_no_zero(scratch.arena, ushort, length + 1);
   length = GetCurrentDirectoryW(length + 1, (WCHAR*)memory);
   String8 name = str8_from_16(arena, str16(memory, length));
   scratch_end(scratch);
@@ -173,27 +173,27 @@ os_get_current_path(Arena *arena)
 //- rjf: basic
 
 internal void *
-os_reserve(U64 size)
+os_reserve(ulong size)
 {
   void *result = VirtualAlloc(0, size, MEM_RESERVE, PAGE_READWRITE);
   return result;
 }
 
 internal B32
-os_commit(void *ptr, U64 size)
+os_commit(void *ptr, ulong size)
 {
   B32 result = (VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE) != 0);
   return result;
 }
 
 internal void
-os_decommit(void *ptr, U64 size)
+os_decommit(void *ptr, ulong size)
 {
   VirtualFree(ptr, size, MEM_DECOMMIT);
 }
 
 internal void
-os_release(void *ptr, U64 size)
+os_release(void *ptr, ulong size)
 {
   // NOTE(rjf): size not used - not necessary on Windows, but necessary for other OSes.
   VirtualFree(ptr, 0, MEM_RELEASE);
@@ -202,7 +202,7 @@ os_release(void *ptr, U64 size)
 //- rjf: large pages
 
 internal void *
-os_reserve_large(U64 size)
+os_reserve_large(ulong size)
 {
   // we commit on reserve because windows
   void *result = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_LARGE_PAGES, PAGE_READWRITE);
@@ -210,7 +210,7 @@ os_reserve_large(U64 size)
 }
 
 internal B32
-os_commit_large(void *ptr, U64 size)
+os_commit_large(void *ptr, ulong size)
 {
   return 1;
 }
@@ -218,11 +218,11 @@ os_commit_large(void *ptr, U64 size)
 ////////////////////////////////
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
-internal U32
+internal uint
 os_tid(void)
 {
   DWORD id = GetCurrentThreadId();
-  return (U32)id;
+  return (uint)id;
 }
 
 internal void
@@ -244,10 +244,10 @@ os_set_thread_name(String8 name)
     typedef struct THREADNAME_INFO THREADNAME_INFO;
     struct THREADNAME_INFO
     {
-      U32 dwType;     // Must be 0x1000.
+      uint dwType;     // Must be 0x1000.
       char *szName;   // Pointer to name (in user addr space).
-      U32 dwThreadID; // Thread ID (-1=caller thread).
-      U32 dwFlags;    // Reserved for future use, must be zero.
+      uint dwThreadID; // Thread ID (-1=caller thread).
+      uint dwFlags;    // Reserved for future use, must be zero.
     };
 #pragma pack(pop)
     THREADNAME_INFO info;
@@ -303,7 +303,7 @@ os_file_open(OS_AccessFlags flags, String8 path)
   HANDLE file = CreateFileW((WCHAR *)path16.str, access_flags, share_mode, 0, creation_disposition, FILE_ATTRIBUTE_NORMAL, 0);
   if(file != INVALID_HANDLE_VALUE)
   {
-    result.u64[0] = (U64)file;
+    result.u64[0] = (ulong)file;
   }
   scratch_end(scratch);
   return result;
@@ -318,30 +318,30 @@ os_file_close(OS_Handle file)
   (void)result;
 }
 
-internal U64
+internal ulong
 os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE handle = (HANDLE)file.u64[0];
   
   // rjf: clamp range by file size
-  U64 size = 0;
+  ulong size = 0;
   GetFileSizeEx(handle, (LARGE_INTEGER *)&size);
   Rng1U64 rng_clamped  = r1u64(ClampTop(rng.min, size), ClampTop(rng.max, size));
-  U64 total_read_size = 0;
+  ulong total_read_size = 0;
   
   // rjf: read loop
   {
-    U64 to_read = dim_1u64(rng_clamped);
-    for(U64 off = rng.min; total_read_size < to_read;)
+    ulong to_read = dim_1u64(rng_clamped);
+    for(ulong off = rng.min; total_read_size < to_read;)
     {
-      U64 amt64 = to_read - total_read_size;
-      U32 amt32 = u32_from_u64_saturate(amt64);
+      ulong amt64 = to_read - total_read_size;
+      uint amt32 = u32_from_u64_saturate(amt64);
       DWORD read_size = 0;
       OVERLAPPED overlapped = {0};
       overlapped.Offset     = (off&0x00000000ffffffffull);
       overlapped.OffsetHigh = (off&0xffffffff00000000ull) >> 32;
-      ReadFile(handle, (U8 *)out_data + total_read_size, amt32, &read_size, &overlapped);
+      ReadFile(handle, (byte *)out_data + total_read_size, amt32, &read_size, &overlapped);
       off += read_size;
       total_read_size += read_size;
       if(read_size != amt32)
@@ -354,21 +354,21 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
   return total_read_size;
 }
 
-internal U64
+internal ulong
 os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE win_handle = (HANDLE)file.u64[0];
-  U64 src_off = 0;
-  U64 dst_off = rng.min;
-  U64 bytes_to_write_total = rng.max-rng.min;
-  U64 total_bytes_written = 0;
+  ulong src_off = 0;
+  ulong dst_off = rng.min;
+  ulong bytes_to_write_total = rng.max-rng.min;
+  ulong total_bytes_written = 0;
   for(;src_off < bytes_to_write_total;)
   {
-    void *bytes_src = (void *)((U8 *)data + src_off);
-    U64 bytes_to_write_64 = (bytes_to_write_total-src_off);
-    U32 bytes_to_write_32 = u32_from_u64_saturate(bytes_to_write_64);
-    U32 bytes_written = 0;
+    void *bytes_src = (void *)((byte *)data + src_off);
+    ulong bytes_to_write_64 = (bytes_to_write_total-src_off);
+    uint bytes_to_write_32 = u32_from_u64_saturate(bytes_to_write_64);
+    uint bytes_written = 0;
     OVERLAPPED overlapped = {0};
     overlapped.Offset     = (dst_off&0x00000000ffffffffull);
     overlapped.OffsetHigh = (dst_off&0xffffffff00000000ull) >> 32;
@@ -408,9 +408,9 @@ os_properties_from_file(OS_Handle file)
   BOOL info_good = GetFileInformationByHandle(handle, &info);
   if(info_good)
   {
-    U32 size_lo = info.nFileSizeLow;
-    U32 size_hi = info.nFileSizeHigh;
-    props.size     = (U64)size_lo | (((U64)size_hi)<<32);
+    uint size_lo = info.nFileSizeLow;
+    uint size_hi = info.nFileSizeHigh;
+    props.size     = (ulong)size_lo | (((ulong)size_hi)<<32);
     os_w32_dense_time_from_file_time(&props.modified, &info.ftLastWriteTime);
     os_w32_dense_time_from_file_time(&props.created, &info.ftCreationTime);
     props.flags = os_w32_file_property_flags_from_dwFileAttributes(info.dwFileAttributes);
@@ -461,7 +461,7 @@ os_full_path_from_path(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD buffer_size = MAX_PATH + 1;
-  U16 *buffer = push_array_no_zero(scratch.arena, U16, buffer_size);
+  ushort *buffer = push_array_no_zero(scratch.arena, ushort, buffer_size);
   String16 path16 = str16_from_8(scratch.arena, path);
   DWORD path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, (WCHAR*)buffer, NULL);
   String8 full_path = str8_from_16(arena, str16(buffer, path16_size));
@@ -527,7 +527,7 @@ os_file_map_open(OS_AccessFlags flags, OS_Handle file)
       }
     }
     HANDLE map_handle = CreateFileMappingA(file_handle, 0, protect_flags, 0, 0, 0);
-    map.u64[0] = (U64)map_handle;
+    map.u64[0] = (ulong)map_handle;
   }
   return map;
 }
@@ -544,9 +544,9 @@ internal void *
 os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 {
   HANDLE handle = (HANDLE)map.u64[0];
-  U32 off_lo = (U32)((range.min&0x00000000ffffffffull)>>0);
-  U32 off_hi = (U32)((range.min&0xffffffff00000000ull)>>32);
-  U64 size = dim_1u64(range);
+  uint off_lo = (uint)((range.min&0x00000000ffffffffull)>>0);
+  uint off_hi = (uint)((range.min&0xffffffff00000000ull)>>32);
+  ulong size = dim_1u64(range);
   DWORD access_flags = 0;
   {
     switch(flags)
@@ -601,9 +601,9 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
     WCHAR buffer[512] = {0};
     DWORD length = GetLogicalDriveStringsW(sizeof(buffer), buffer);
     String8List drive_strings = {0};
-    for(U64 off = 0; off < (U64)length;)
+    for(ulong off = 0; off < (ulong)length;)
     {
-      String16 next_drive_string_16 = str16_cstring((U16 *)buffer+off);
+      String16 next_drive_string_16 = str16_cstring((ushort *)buffer+off);
       off += next_drive_string_16.size+1;
       String8 next_drive_string = str8_from_16(arena, next_drive_string_16);
       next_drive_string = str8_chop_last_slash(next_drive_string);
@@ -665,8 +665,8 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
           
           // emit if usable
           if (usable_file){
-            info_out->name = str8_from_16(arena, str16_cstring((U16*)file_name));
-            info_out->props.size = (U64)w32_iter->find_data.nFileSizeLow | (((U64)w32_iter->find_data.nFileSizeHigh)<<32);
+            info_out->name = str8_from_16(arena, str16_cstring((ushort*)file_name));
+            info_out->props.size = (ulong)w32_iter->find_data.nFileSizeLow | (((ulong)w32_iter->find_data.nFileSizeHigh)<<32);
             os_w32_dense_time_from_file_time(&info_out->props.created,  &w32_iter->find_data.ftCreationTime);
             os_w32_dense_time_from_file_time(&info_out->props.modified, &w32_iter->find_data.ftLastWriteTime);
             info_out->props.flags = os_w32_file_property_flags_from_dwFileAttributes(attributes);
@@ -733,17 +733,17 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 internal OS_Handle
-os_shared_memory_alloc(U64 size, String8 name)
+os_shared_memory_alloc(ulong size, String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
   HANDLE file = CreateFileMappingW(INVALID_HANDLE_VALUE,
                                    0,
                                    PAGE_READWRITE,
-                                   (U32)((size & 0xffffffff00000000) >> 32),
-                                   (U32)((size & 0x00000000ffffffff)),
+                                   (uint)((size & 0xffffffff00000000) >> 32),
+                                   (uint)((size & 0x00000000ffffffff)),
                                    (WCHAR *)name16.str);
-  OS_Handle result = {(U64)file};
+  OS_Handle result = {(ulong)file};
   scratch_end(scratch);
   return result;
 }
@@ -754,7 +754,7 @@ os_shared_memory_open(String8 name)
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
   HANDLE file = OpenFileMappingW(FILE_MAP_ALL_ACCESS, 0, (WCHAR *)name16.str);
-  OS_Handle result = {(U64)file};
+  OS_Handle result = {(ulong)file};
   scratch_end(scratch);
   return result;
 }
@@ -770,11 +770,11 @@ internal void *
 os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 {
   HANDLE file = (HANDLE)(handle.u64[0]);
-  U64 offset = range.min;
-  U64 size = range.max-range.min;
+  ulong offset = range.min;
+  ulong size = range.max-range.min;
   void *ptr = MapViewOfFile(file, FILE_MAP_ALL_ACCESS,
-                            (U32)((offset & 0xffffffff00000000) >> 32),
-                            (U32)((offset & 0x00000000ffffffff)),
+                            (uint)((offset & 0xffffffff00000000) >> 32),
+                            (uint)((offset & 0x00000000ffffffff)),
                             size);
   return ptr;
 }
@@ -788,10 +788,10 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-internal U64
+internal ulong
 os_now_microseconds(void)
 {
-  U64 result = 0;
+  ulong result = 0;
   LARGE_INTEGER large_int_counter;
   if(QueryPerformanceCounter(&large_int_counter))
   {
@@ -800,14 +800,14 @@ os_now_microseconds(void)
   return result;
 }
 
-internal U32
+internal uint
 os_now_unix(void)
 {
   FILETIME file_time;
   GetSystemTimeAsFileTime(&file_time);
-  U64 win32_time = ((U64)file_time.dwHighDateTime << 32) | file_time.dwLowDateTime;
-  U64 unix_time64 = ((win32_time - 0x19DB1DED53E8000ULL) / 10000000);
-  U32 unix_time32 = (U32)unix_time64;
+  ulong win32_time = ((ulong)file_time.dwHighDateTime << 32) | file_time.dwLowDateTime;
+  ulong unix_time64 = ((win32_time - 0x19DB1DED53E8000ULL) / 10000000);
+  uint unix_time32 = (uint)unix_time64;
   return unix_time32;
 }
 
@@ -852,7 +852,7 @@ os_local_time_from_universal(DateTime *date_time)
 }
 
 internal void
-os_sleep_milliseconds(U32 msec)
+os_sleep_milliseconds(uint msec)
 {
   Sleep(msec);
 }
@@ -930,7 +930,7 @@ os_process_launch(OS_ProcessLaunchParams *params)
   PROCESS_INFORMATION process_info = {0};
   if(CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, 0, creation_flags, use_null_env_arg ? 0 : (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
   {
-    result.u64[0] = (U64)process_info.hProcess;
+    result.u64[0] = (ulong)process_info.hProcess;
     CloseHandle(process_info.hThread);
   }
   
@@ -939,7 +939,7 @@ os_process_launch(OS_ProcessLaunchParams *params)
 }
 
 internal B32
-os_process_join(OS_Handle handle, U64 endt_us)
+os_process_join(OS_Handle handle, ulong endt_us)
 {
   HANDLE process = (HANDLE)(handle.u64[0]);
   DWORD sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
@@ -969,7 +969,7 @@ os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
 }
 
 internal B32
-os_thread_join(OS_Handle handle, U64 endt_us)
+os_thread_join(OS_Handle handle, ulong endt_us)
 {
   DWORD sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   OS_W32_Entity *entity = (OS_W32_Entity *)PtrFromInt(handle.u64[0]);
@@ -1089,9 +1089,9 @@ os_condition_variable_release(OS_Handle cv)
 }
 
 internal B32
-os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
+os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, ulong endt_us)
 {
-  U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
+  uint sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
   if(sleep_ms > 0)
   {
@@ -1103,9 +1103,9 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
 }
 
 internal B32
-os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, ulong endt_us)
 {
-  U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
+  uint sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
   if(sleep_ms > 0)
   {
@@ -1118,9 +1118,9 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 }
 
 internal B32
-os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, ulong endt_us)
 {
-  U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
+  uint sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
   if(sleep_ms > 0)
   {
@@ -1148,12 +1148,12 @@ os_condition_variable_broadcast(OS_Handle cv)
 //- rjf: cross-process semaphores
 
 internal OS_Handle
-os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
+os_semaphore_alloc(uint initial_count, uint max_count, String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
   HANDLE handle = CreateSemaphoreW(0, initial_count, max_count, (WCHAR *)name16.str);
-  OS_Handle result = {(U64)handle};
+  OS_Handle result = {(ulong)handle};
   scratch_end(scratch);
   return result;
 }
@@ -1171,7 +1171,7 @@ os_semaphore_open(String8 name)
   Temp scratch = scratch_begin(0, 0);
   String16 name16 = str16_from_8(scratch.arena, name);
   HANDLE handle = OpenSemaphoreW(SEMAPHORE_ALL_ACCESS , 0, (WCHAR *)name16.str);
-  OS_Handle result = {(U64)handle};
+  OS_Handle result = {(ulong)handle};
   scratch_end(scratch);
   return result;
 }
@@ -1184,9 +1184,9 @@ os_semaphore_close(OS_Handle semaphore)
 }
 
 internal B32
-os_semaphore_take(OS_Handle semaphore, U64 endt_us)
+os_semaphore_take(OS_Handle semaphore, ulong endt_us)
 {
-  U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
+  uint sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   HANDLE handle = (HANDLE)semaphore.u64[0];
   DWORD wait_result = WaitForSingleObject(handle, sleep_ms);
   B32 result = (wait_result == WAIT_OBJECT_0);
@@ -1209,7 +1209,7 @@ os_library_open(String8 path)
   Temp scratch = scratch_begin(0, 0);
   String16 path16 = str16_from_8(scratch.arena, path);
   HMODULE mod = LoadLibraryW((LPCWSTR)path16.str);
-  OS_Handle result = { (U64)mod };
+  OS_Handle result = { (ulong)mod };
   scratch_end(scratch);
   return result;
 }
@@ -1387,9 +1387,9 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
 #  error Architecture not supported!
 #endif
           
-          for(U32 idx=0; ;idx++)
+          for(uint idx=0; ;idx++)
           {
-            const U32 max_frames = 32;
+            const uint max_frames = 32;
             if(idx == max_frames)
             {
               buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"...");
@@ -1401,7 +1401,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
               break;
             }
             
-            U64 address = frame.AddrPC.Offset;
+            ulong address = frame.AddrPC.Offset;
             if(address == 0)
             {
               break;
@@ -1534,7 +1534,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     }
     {
       OS_SystemInfo *info = &os_w32_state.system_info;
-      info->logical_processor_count = (U64)sysinfo.dwNumberOfProcessors;
+      info->logical_processor_count = (ulong)sysinfo.dwNumberOfProcessors;
       info->page_size               = sysinfo.dwPageSize;
       info->large_page_size         = GetLargePageMinimum();
       info->allocation_granularity  = sysinfo.dwAllocationGranularity;
@@ -1554,7 +1554,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       os_w32_state.arena = arena;
       {
         OS_SystemInfo *info = &os_w32_state.system_info;
-        U8 buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
+        byte buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
         DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
         if(GetComputerNameA((char*)buffer, &size))
         {
@@ -1567,7 +1567,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       {
         Temp scratch = scratch_begin(0, 0);
         DWORD size = KB(32);
-        U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+        ushort *buffer = push_array_no_zero(scratch.arena, ushort, size);
         DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
         String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
         String8 name_chopped = str8_chop_last_slash(name8);
@@ -1577,8 +1577,8 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       info->initial_path = os_get_current_path(arena);
       {
         Temp scratch = scratch_begin(0, 0);
-        U64 size = KB(32);
-        U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+        ulong size = KB(32);
+        ushort *buffer = push_array_no_zero(scratch.arena, ushort, size);
         if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
         {
           info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
@@ -1587,8 +1587,8 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       }
       {
         WCHAR *this_proc_env = GetEnvironmentStringsW();
-        U64 start_idx = 0;
-        for(U64 idx = 0;; idx += 1)
+        ulong start_idx = 0;
+        for(ulong idx = 0;; idx += 1)
         {
           if(this_proc_env[idx] == 0)
           {
@@ -1598,7 +1598,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
             }
             else
             {
-              String16 string16 = str16((U16 *)this_proc_env + start_idx, idx - start_idx);
+              String16 string16 = str16((ushort *)this_proc_env + start_idx, idx - start_idx);
               String8 string = str8_from_16(arena, string16);
               str8_list_push(arena, &info->environment, string);
               start_idx = idx+1;
@@ -1618,7 +1618,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   char **argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {
-    String16 arg16 = str16_cstring((U16 *)wargv[i]);
+    String16 arg16 = str16_cstring((ushort *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
     if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive))
     {
@@ -1628,7 +1628,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   }
   
   //- rjf: call into "real" entry point
-  main_thread_base_entry_point(entry_point, argv, (U64)argc);
+  main_thread_base_entry_point(entry_point, argv, (ulong)argc);
 }
 
 #if BUILD_CONSOLE_INTERFACE

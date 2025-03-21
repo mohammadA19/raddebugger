@@ -30,11 +30,11 @@ return top_val
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+internal ulong
 dr_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  ulong result = 5381;
+  for(ulong i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -76,8 +76,8 @@ dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
 {
   String8 result = {0};
   result.size = list->total_size;
-  result.str = push_array_no_zero(arena, U8, result.size);
-  U64 idx = 0;
+  result.str = push_array_no_zero(arena, byte, result.size);
+  ulong idx = 0;
   for(DR_FancyStringNode *n = list->first; n != 0; n = n->next)
   {
     MemoryCopy(result.str+idx, n->v.string.str, n->v.string.size);
@@ -349,22 +349,22 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   }
   
   // rjf: hash batch group 3d params
-  U64 hash = 0;
-  U64 slot_idx = 0;
+  ulong hash = 0;
+  ulong slot_idx = 0;
   {
-    U64 buffer[] =
+    ulong buffer[] =
     {
       mesh_vertices.u64[0],
       mesh_vertices.u64[1],
       mesh_indices.u64[0],
       mesh_indices.u64[1],
-      (U64)mesh_geo_topology,
-      (U64)mesh_geo_vertex_flags,
+      (ulong)mesh_geo_topology,
+      (ulong)mesh_geo_vertex_flags,
       albedo_tex.u64[0],
       albedo_tex.u64[1],
-      (U64)dr_top_tex2d_sample_kind(),
+      (ulong)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
+    hash = dr_hash_from_string(str8((byte *)buffer, sizeof(buffer)));
     slot_idx = hash%params->mesh_batches.slots_count;
   }
   
@@ -466,7 +466,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run
   F32 advance = 0;
   B32 trailer_found = 0;
   Vec4F32 last_color = {0};
-  U64 byte_off = 0;
+  ulong byte_off = 0;
   for(DR_FancyRunNode *n = list->first; n != 0; n = n->next)
   {
     DR_FancyRun *fr = &n->v;
@@ -569,7 +569,7 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x
       pixel_range.max = 0;
     }
     F32 last_piece_end_pad = 0;
-    U64 byte_off = 0;
+    ulong byte_off = 0;
     F32 advance = 0;
     F32 ascent = 0;
     F32 descent = 0;
@@ -579,7 +579,7 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x
       FNT_Run *run = &fr->run;
       ascent = run->ascent;
       descent = run->descent;
-      for(U64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
+      for(ulong piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
       {
         FNT_Piece *piece = &run->pieces.v[piece_idx];
         if(contains_1u64(byte_range, byte_off))

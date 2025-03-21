@@ -15,7 +15,7 @@ struct HS_KeyNode
   HS_KeyNode *next;
   U128 key;
   U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
-  U64 hash_history_gen;
+  ulong hash_history_gen;
 };
 
 typedef struct HS_KeySlot HS_KeySlot;
@@ -33,8 +33,8 @@ struct HS_Node
   U128 hash;
   Arena *arena;
   String8 data;
-  U64 scope_ref_count;
-  U64 key_ref_count;
+  ulong scope_ref_count;
+  ulong key_ref_count;
 };
 
 typedef struct HS_Slot HS_Slot;
@@ -89,15 +89,15 @@ struct HS_Shared
   Arena *arena;
   
   // rjf: main data cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   HS_Slot *slots;
   HS_Stripe *stripes;
   HS_Node **stripes_free_nodes;
   
   // rjf: key cache
-  U64 key_slots_count;
-  U64 key_stripes_count;
+  ulong key_slots_count;
+  ulong key_stripes_count;
   HS_KeySlot *key_slots;
   HS_Stripe *key_stripes;
   
@@ -141,7 +141,7 @@ internal void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *no
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal U128 hs_hash_from_key(U128 key, U64 rewind_count);
+internal U128 hs_hash_from_key(U128 key, ulong rewind_count);
 internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
 
 ////////////////////////////////

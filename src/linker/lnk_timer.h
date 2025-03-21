@@ -15,8 +15,8 @@ typedef enum LNK_TimerType
 
 typedef struct LNK_Timer
 {
-  U64 begin;
-  U64 end;
+  ulong begin;
+  ulong end;
 } LNK_Timer;
 
 internal void lnk_timer_begin(LNK_TimerType timer);

@@ -18,10 +18,10 @@ thread_static UI_State *ui_state = 0;
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U64
-ui_hash_from_string(U64 seed, String8 string)
+internal ulong
+ui_hash_from_string(ulong seed, String8 string)
 {
-  U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  ulong result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
@@ -32,7 +32,7 @@ ui_hash_part_from_key_string(String8 string)
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  ulong hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
   if(hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -44,7 +44,7 @@ ui_hash_part_from_key_string(String8 string)
 internal String8
 ui_display_part_from_key_string(String8 string)
 {
-  U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  ulong hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -57,7 +57,7 @@ ui_key_zero(void)
 }
 
 internal UI_Key
-ui_key_make(U64 v)
+ui_key_make(ulong v)
 {
   UI_Key result = {v};
   return result;
@@ -121,7 +121,7 @@ ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
 //~ rjf: Text Operation Functions
 
 internal B32
-ui_char_is_scan_boundary(U8 c)
+ui_char_is_scan_boundary(byte c)
 {
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
@@ -136,7 +136,7 @@ ui_scanned_column_from_column(String8 string, long start_column, Side side)
   long start_off = delta < 0 ? delta : 0;
   for(long col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
-    U8 byte = (col <= string.size) ? string.str[col-1] : 0;
+    byte byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
     if(((side == Side_Min) && (col == 1)) || 
@@ -189,7 +189,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
     case UI_EventDeltaUnit_Page:
     {
       long first_nonwhitespace_column = 1;
-      for(U64 idx = 0; idx < string.size; idx += 1)
+      for(ulong idx = 0; idx < string.size; idx += 1)
       {
         if(!char_is_space(string.str[idx]))
         {
@@ -307,8 +307,8 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   //- rjf: convert to offset range
   Rng1U64 range =
   {
-    (U64)(col_range.min-1),
-    (U64)(col_range.max-1),
+    (ulong)(col_range.min-1),
+    (ulong)(col_range.max-1),
   };
   
   //- rjf: clamp range
@@ -322,11 +322,11 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   }
   
   //- rjf: calculate new size
-  U64 old_size = string.size;
-  U64 new_size = old_size - (range.max - range.min) + replace.size;
+  ulong old_size = string.size;
+  ulong new_size = old_size - (range.max - range.min) + replace.size;
   
   //- rjf: push+fill new string storage
-  U8 *push_base = push_array(arena, U8, new_size);
+  byte *push_base = push_array(arena, byte, new_size);
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
@@ -387,7 +387,7 @@ ui_box_is_nil(UI_Box *box)
 }
 
 internal UI_BoxRec
-ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off)
+ui_box_rec_df(UI_Box *box, UI_Box *root, ulong sib_member_off, ulong child_member_off)
 {
   UI_BoxRec result = {0};
   result.next = &ui_nil_box;
@@ -634,7 +634,7 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
 }
 
 internal B32
-ui_text(U32 character)
+ui_text(uint character)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -690,12 +690,12 @@ ui_store_drag_data(String8 string)
 }
 
 internal String8
-ui_get_drag_data(U64 min_required_size)
+ui_get_drag_data(ulong min_required_size)
 {
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
+    String8 str = {push_array(scratch.arena, byte, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -711,7 +711,7 @@ ui_string_hover_active(void)
           os_now_microseconds() >= ui_state->string_hover_begin_us + 500000);
 }
 
-internal U64
+internal ulong
 ui_string_hover_begin_time_us(void)
 {
   return ui_state->string_hover_begin_us;
@@ -771,7 +771,7 @@ ui_box_from_key(UI_Key key)
   UI_Box *result = &ui_nil_box;
   if(!ui_key_match(key, ui_key_zero()))
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    ulong slot = key.u64[0] % ui_state->box_table_size;
     for(UI_Box *b = ui_state->box_table[slot].hash_first; !ui_box_is_nil(b); b = b->hash_next)
     {
       if(ui_key_match(b->key, key))
@@ -813,7 +813,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
       next = n->lru_next;
       if(n->last_touched_build_index+1 < ui_state->build_index)
       {
-        U64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
+        ulong slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
         UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
         DLLRemove_NPZ(&ui_nil_anim_node, slot->first, slot->last, n, slot_next, slot_prev);;
         DLLRemove_NPZ(&ui_nil_anim_node, ui_state->lru_anim_node, ui_state->mru_anim_node, n, lru_next, lru_prev);
@@ -929,7 +929,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             if(nav_next)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              ulong moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
@@ -968,7 +968,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             if(nav_prev)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              ulong moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
@@ -1076,7 +1076,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
   
   //- rjf: next-default-nav-focus keys -> current-default-nav-focus-keys
-  for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+  for(ulong slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
   {
     for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
         !ui_box_is_nil(box);
@@ -1185,7 +1185,7 @@ ui_end_build(void)
   //- rjf: prune untouched or transient boxes in the cache
   ProfScope("ui prune unused boxes")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first, *next = 0;
           !ui_box_is_nil(box);
@@ -1246,7 +1246,7 @@ ui_end_build(void)
      ui_key_match(ui_active_key(UI_MouseButtonKind_Middle), ui_key_zero())),
     1,
   };
-  for(U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
+  for(ulong idx = 0; idx < ArrayCount(floating_roots); idx += 1)
   {
     UI_Box *root = floating_roots[idx];
     if(!ui_box_is_nil(root))
@@ -1282,7 +1282,7 @@ ui_end_build(void)
   
   //- rjf: enforce child-rounding
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
@@ -1303,7 +1303,7 @@ ui_end_build(void)
   //- rjf: animate
   ProfScope("animate")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
     {
       for(UI_AnimNode *n = ui_state->anim_slots[slot_idx].first;
           n != &ui_nil_anim_node && n != 0;
@@ -1331,7 +1331,7 @@ ui_end_build(void)
     {
       ui_state->tooltip_open_t = 1.f;
     }
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(ulong slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
@@ -1755,7 +1755,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
       F32 child_fixup_sum = 0;
       F32 *child_fixups = push_array(scratch.arena, F32, root->child_count);
       {
-        U64 child_idx = 0;
+        ulong child_idx = 0;
         for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1770,7 +1770,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
       
       // rjf: fixup child sizes
       {
-        U64 child_idx = 0;
+        ulong child_idx = 0;
         for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -2241,7 +2241,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   //- rjf: hook into persistent state table
   if(box_first_frame && !box_is_transient)
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    ulong slot = key.u64[0] % ui_state->box_table_size;
     DLLInsert_NPZ(&ui_nil_box, ui_state->box_table[slot].hash_first, ui_state->box_table[slot].hash_last, ui_state->box_table[slot].hash_last, box, hash_next, hash_prev);
   }
   
@@ -2431,7 +2431,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
     String8 display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box->fastpath_codepoint, 1);
     String8 fpcp = str8_from_32(scratch.arena, fpcp32);
-    U64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
+    ulong fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
       DR_FancyStringNode pst_fancy_string_n = {0,                   {box->font, str8_skip(display_string, fpcp_pos+fpcp.size), box->palette->colors[text_color_code], box->font_size, 0, 0}};
@@ -2544,13 +2544,13 @@ ui_box_text_position(UI_Box *box)
   return result;
 }
 
-internal U64
+internal ulong
 ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
   F32 font_size = box->font_size;
   String8 line = ui_box_display_string(box);
-  U64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
+  ulong result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
 }
 
@@ -2980,7 +2980,7 @@ ui_anim_(UI_Key key, UI_AnimParams *params)
   // rjf: get animation cache node
   UI_AnimNode *node = &ui_nil_anim_node;
   {
-    U64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
+    ulong slot_idx = key.u64[0]%ui_state->anim_slots_count;
     UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
     for(UI_AnimNode *n = slot->first; n != &ui_nil_anim_node && n != 0; n = n->slot_next)
     {

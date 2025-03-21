@@ -13,8 +13,8 @@ typedef struct DWARFCONV_Params{
   
   String8 output_name;
   
-  U64 unit_idx_min;
-  U64 unit_idx_max;
+  ulong unit_idx_min;
+  ulong unit_idx_max;
   
   struct{
     B8 input;

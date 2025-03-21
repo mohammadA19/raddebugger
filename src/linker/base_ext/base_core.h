@@ -40,7 +40,7 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (ulong i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLQueuePushCount(list, node) do { \
   SLLQueuePush((list)->first, (list)->last, node); \
@@ -73,11 +73,11 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (ulong i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLConcatInPlaceChunkList(list, to_concat, chunk_type) do {   \
     if ((list)->last != 0) {                                          \
-      U64 base_cursor = (list)->last->base + (list)->last->count;     \
+      ulong base_cursor = (list)->last->base + (list)->last->count;     \
       for (chunk_type *c = (to_concat)->first; c != 0; c = c->next) { \
         c->base = base_cursor;                                        \
         base_cursor += c->count;                                      \
@@ -86,7 +86,7 @@
     SLLConcatInPlace(list, to_concat);                                \
   } while (0)
 
-#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
+#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (ulong i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
   if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
@@ -116,48 +116,48 @@
 
 typedef struct
 {
-  U64 major;
-  U64 minor;
+  ulong major;
+  ulong minor;
 } Version;
 
 ////////////////////////////////
 
 typedef struct ISectOff
 {
-  U32 isect;
-  U32 off;
+  uint isect;
+  uint off;
 } ISectOff;
 
 ////////////////////////////////
 
 typedef struct PairU32
 {
-  U32 v0;
-  U32 v1;
+  uint v0;
+  uint v1;
 } PairU32;
 
 typedef struct PairU64
 {
-  U64 v0;
-  U64 v1;
+  ulong v0;
+  ulong v1;
 } PairU64;
 
 ////////////////////////////////
 
-internal U16 safe_cast_u16x(U64 x);
+internal ushort safe_cast_u16x(ulong x);
 
 ////////////////////////////////
 
-internal U64 u128_mod64(U128 a, U64 b);
+internal ulong u128_mod64(U128 a, ulong b);
 
 ////////////////////////////////
 
-internal Version make_version(U64 major, U64 minor);
+internal Version make_version(ulong major, ulong minor);
 internal int     version_compar(Version a, Version b);
 
 ////////////////////////////////
 
-internal ISectOff isect_off(U32 isect, U32 off);
+internal ISectOff isect_off(uint isect, uint off);
 
 ////////////////////////////////
 
@@ -177,5 +177,5 @@ internal int pair_u64_is_before_v1(void *raw_a, void *raw_b);
 
 ////////////////////////////////
 
-internal void str8_list_concat_in_place_array(String8List *list, String8List *arr, U64 count);
+internal void str8_list_concat_in_place_array(String8List *list, String8List *arr, ulong count);
 

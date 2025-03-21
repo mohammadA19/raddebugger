@@ -27,7 +27,7 @@ dmn_handle_match(DMN_Handle a, DMN_Handle b)
 //- rjf: trap chunk lists
 
 internal void
-dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Trap *trap)
+dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, ulong cap, DMN_Trap *trap)
 {
   DMN_TrapChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -92,7 +92,7 @@ dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
   DMN_HandleArray array = {0};
   array.count = list->count;
   array.handles = push_array_no_zero(arena, DMN_Handle, array.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(DMN_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
     array.handles[idx] = n->v;
@@ -125,15 +125,15 @@ dmn_event_list_push(Arena *arena, DMN_EventList *list)
 ////////////////////////////////
 //~ rjf: Thread Reading Helper Functions (Helpers, Implemented Once)
 
-internal U64
+internal ulong
 dmn_rip_from_thread(DMN_Handle thread)
 {
-  U64 result = 0;
+  ulong result = 0;
   Temp scratch = scratch_begin(0, 0);
   {
     Arch arch = dmn_arch_from_thread(thread);
-    U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(scratch.arena, U8, reg_block_size);
+    ulong reg_block_size = regs_block_size_from_arch(arch);
+    void *reg_block = push_array(scratch.arena, byte, reg_block_size);
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rip_from_arch_block(arch, reg_block);
   }
@@ -141,15 +141,15 @@ dmn_rip_from_thread(DMN_Handle thread)
   return result;
 }
 
-internal U64
+internal ulong
 dmn_rsp_from_thread(DMN_Handle thread)
 {
-  U64 result = 0;
+  ulong result = 0;
   Temp scratch = scratch_begin(0, 0);
   {
     Arch arch = dmn_arch_from_thread(thread);
-    U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(scratch.arena, U8, reg_block_size);
+    ulong reg_block_size = regs_block_size_from_arch(arch);
+    void *reg_block = push_array(scratch.arena, byte, reg_block_size);
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rsp_from_arch_block(arch, reg_block);
   }
@@ -161,16 +161,16 @@ dmn_rsp_from_thread(DMN_Handle thread)
 //~ Memory Helpers
 
 internal String8
-dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
+dmn_process_read_cstring(Arena *arena, DMN_Handle process, ulong addr)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
   String8List block_list = {0};
 
-  for(U64 cursor = addr, stride = 256; ; cursor += stride)
+  for(ulong cursor = addr, stride = 256; ; cursor += stride)
   {
-    U8      *raw_block = push_array_no_zero(scratch.arena, U8, stride);
-    U64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
+    byte      *raw_block = push_array_no_zero(scratch.arena, byte, stride);
+    ulong      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
 
     str8_list_push(scratch.arena, &block_list, block);

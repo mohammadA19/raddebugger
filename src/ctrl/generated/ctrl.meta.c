@@ -17,7 +17,7 @@ str8_lit_comp("DebugInfoPath"),
 str8_lit_comp("PendingThreadName"),
 };
 
-U32 ctrl_exception_code_kind_code_table[38] =
+uint ctrl_exception_code_kind_code_table[38] =
 {
 0,
 0x40010005,

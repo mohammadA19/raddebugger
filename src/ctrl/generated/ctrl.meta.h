@@ -65,7 +65,7 @@ CTRL_ExceptionCodeKind_COUNT,
 
 C_LINKAGE_BEGIN
 extern String8 ctrl_entity_kind_display_string_table[9];
-extern U32 ctrl_exception_code_kind_code_table[38];
+extern uint ctrl_exception_code_kind_code_table[38];
 extern String8 ctrl_exception_code_kind_display_string_table[38];
 extern String8 ctrl_exception_code_kind_lowercase_code_string_table[38];
 extern B8 ctrl_exception_code_kind_default_enable_table[38];

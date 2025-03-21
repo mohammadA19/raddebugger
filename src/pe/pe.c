@@ -4,10 +4,10 @@
 ////////////////////////////////
 //~ rjf: Basic Enum Functions
 
-internal U32
+internal uint
 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode)
 {
-  U32 result = 0;
+  uint result = 0;
   switch(opcode)
   {
     case PE_UnwindOpCode_PUSH_NONVOL:     result = 1; break;
@@ -50,7 +50,7 @@ StaticAssert(ArrayCount(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_s
 internal String8
 pe_string_from_subsystem(PE_WindowsSubsystem subsystem)
 {
-  for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
+  for (ulong i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
     if (g_pe_subsystem_map[i].type == subsystem) {
       return g_pe_subsystem_map[i].string;
     }
@@ -397,7 +397,7 @@ pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars
 internal PE_WindowsSubsystem
 pe_subsystem_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
+  for (ulong i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
     if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
       return g_pe_subsystem_map[i].type;
     }
@@ -425,7 +425,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
   }
   
   // rjf: read pe magic
-  U32 pe_magic = 0;
+  uint pe_magic = 0;
   if(valid)
   {
     str8_deserial_read_struct(data, dos_header.coff_file_offset, &pe_magic);
@@ -438,7 +438,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
   }
   
   // rjf: read coff header
-  U32             file_header_off = dos_header.coff_file_offset + sizeof(pe_magic);
+  uint             file_header_off = dos_header.coff_file_offset + sizeof(pe_magic);
   COFF_FileHeader file_header     = {0};
   if(valid)
   {
@@ -446,9 +446,9 @@ pe_bin_info_from_data(Arena *arena, String8 data)
   }
   
   // rjf: range of optional extension header ("optional" for short)
-  U32     optional_size             = file_header.optional_header_size;
-  U64     after_file_header_off     = file_header_off + sizeof(COFF_FileHeader);
-  U64     after_optional_header_off = after_file_header_off + optional_size;
+  uint     optional_size             = file_header.optional_header_size;
+  ulong     after_file_header_off     = file_header_off + sizeof(COFF_FileHeader);
+  ulong     after_optional_header_off = after_file_header_off + optional_size;
   Rng1U64 optional_range            = {0};
   if(valid)
   {
@@ -457,26 +457,26 @@ pe_bin_info_from_data(Arena *arena, String8 data)
   }
   
   // rjf: get sections
-  U64                 sec_array_off     = optional_range.max;
-  U64                 sec_array_raw_opl = sec_array_off + file_header.section_count*sizeof(COFF_SectionHeader);
-  U64                 sec_array_opl     = ClampTop(sec_array_raw_opl, data.size);
-  U64                 clamped_sec_count = (sec_array_opl - sec_array_off)/sizeof(COFF_SectionHeader);
+  ulong                 sec_array_off     = optional_range.max;
+  ulong                 sec_array_raw_opl = sec_array_off + file_header.section_count*sizeof(COFF_SectionHeader);
+  ulong                 sec_array_opl     = ClampTop(sec_array_raw_opl, data.size);
+  ulong                 clamped_sec_count = (sec_array_opl - sec_array_off)/sizeof(COFF_SectionHeader);
   COFF_SectionHeader *sections          = (COFF_SectionHeader*)(data.str + sec_array_off);
   
   // rjf: get symbols
-  U64 symbol_array_off = file_header.symbol_table_foff;
-  U64 symbol_count = file_header.symbol_count;
+  ulong symbol_array_off = file_header.symbol_table_foff;
+  ulong symbol_count = file_header.symbol_count;
   
   // rjf: get string table
-  U64 string_table_off = symbol_array_off + sizeof(COFF_Symbol16) * symbol_count;
+  ulong string_table_off = symbol_array_off + sizeof(COFF_Symbol16) * symbol_count;
   
   // rjf: read optional header
-  U16      optional_magic     = 0;
-  U64      image_base         = 0;
-  U64      entry_point        = 0;
-  U32      data_dir_count     = 0;
-  U64      virt_section_align = 0;
-  U64      file_section_align = 0;
+  ushort      optional_magic     = 0;
+  ulong      image_base         = 0;
+  ulong      entry_point        = 0;
+  uint      data_dir_count     = 0;
+  ulong      virt_section_align = 0;
+  ulong      file_section_align = 0;
   Rng1U64 *data_dir_franges   = 0;
   if(valid && optional_size > 0)
   {
@@ -484,8 +484,8 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     str8_deserial_read_struct(data, optional_range.min, &optional_magic);
     
     // rjf: read info
-    U32 reported_data_dir_offset = 0;
-    U32 reported_data_dir_count = 0;
+    uint reported_data_dir_offset = 0;
+    uint reported_data_dir_count = 0;
     switch(optional_magic)
     {
       case PE_PE32_MAGIC:
@@ -525,18 +525,18 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     }
     
     // rjf: find file ranges of data directories
-    U32 data_dir_max = (optional_size - reported_data_dir_offset) / sizeof(PE_DataDirectory);
+    uint data_dir_max = (optional_size - reported_data_dir_offset) / sizeof(PE_DataDirectory);
     data_dir_count = ClampTop(reported_data_dir_count, data_dir_max);
     
     // rjf: convert PE directories to ranges
     data_dir_franges = push_array(arena, Rng1U64, data_dir_count);
-    for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
+    for(uint dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
     {
-      U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
+      ulong              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
       PE_DataDirectory dir        = {0};
       if(str8_deserial_read_struct(data, dir_offset, &dir) == sizeof(dir))
       {
-        U64 file_off = coff_foff_from_voff(sections, clamped_sec_count, dir.virt_off);
+        ulong file_off = coff_foff_from_voff(sections, clamped_sec_count, dir.virt_off);
         data_dir_franges[dir_idx] = r1u64(file_off, file_off+dir.virt_size);
       }
       else
@@ -560,12 +560,12 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         PE_TLSHeader32 tls_header32 = {0};
         if(str8_deserial_read_struct(data, tls_header_frng.min, &tls_header32) == sizeof(tls_header32))
         {
-          tls_header.raw_data_start    = (U64)tls_header32.raw_data_start;
-          tls_header.raw_data_end      = (U64)tls_header32.raw_data_end;
-          tls_header.index_address     = (U64)tls_header32.index_address;
-          tls_header.callbacks_address = (U64)tls_header32.callbacks_address;
-          tls_header.zero_fill_size    = (U64)tls_header32.zero_fill_size;
-          tls_header.characteristics   = (U64)tls_header32.characteristics;
+          tls_header.raw_data_start    = (ulong)tls_header32.raw_data_start;
+          tls_header.raw_data_end      = (ulong)tls_header32.raw_data_end;
+          tls_header.index_address     = (ulong)tls_header32.index_address;
+          tls_header.callbacks_address = (ulong)tls_header32.callbacks_address;
+          tls_header.zero_fill_size    = (ulong)tls_header32.zero_fill_size;
+          tls_header.characteristics   = (ulong)tls_header32.characteristics;
         }
         else
         {
@@ -623,13 +623,13 @@ pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir)
         ++result.count;
       } break;
       case PE_DebugDirectoryType_CODEVIEW: {
-        U32 cv_magic = 0;
+        uint cv_magic = 0;
         str8_deserial_read_struct(raw_image, entry->foff, &cv_magic);
 
         switch (cv_magic) {
           case PE_CODEVIEW_PDB20_MAGIC: {
             PE_CvHeaderPDB20 cv = {0};
-            U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+            ulong cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if (cv_read_size == sizeof(cv)) {
               String8 path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -647,7 +647,7 @@ pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir)
           } break;
           case PE_CODEVIEW_PDB70_MAGIC: {
             PE_CvHeaderPDB70 cv = {0};
-            U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+            ulong cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if (cv_read_size == sizeof(cv)) {
               String8 path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -665,7 +665,7 @@ pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir)
           } break;
           case PE_CODEVIEW_RDI_MAGIC: {
             PE_CvHeaderRDI cv = {0};
-            U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+            ulong cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if (cv_read_size == sizeof(cv)) {
               String8 path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -693,26 +693,26 @@ pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir)
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal U64
-pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
+internal ulong
+pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, ulong voff)
 {
-  U64 result = 0;
+  ulong result = 0;
 
   if(raw_pdata.size >= sizeof(PE_IntelPdata))
   {
-    U64            pdata_count = raw_pdata.size/sizeof(PE_IntelPdata);
+    ulong            pdata_count = raw_pdata.size/sizeof(PE_IntelPdata);
     PE_IntelPdata *pdata_array = (PE_IntelPdata*)raw_pdata.str;
     if(voff >= pdata_array[0].voff_first)
     {
       // binary search:
       //  find max index s.t. pdata_array[index].voff_first <= voff
       //  we assume (i < j) -> (pdata_array[i].voff_first < pdata_array[j].voff_first)
-      U64 index = pdata_count;
-      U64 min   = 0;
-      U64 opl   = pdata_count;
+      ulong index = pdata_count;
+      ulong min   = 0;
+      ulong opl   = pdata_count;
       for(;;)
       {
-        U64            mid   = (min + opl)/2;
+        ulong            mid   = (min + opl)/2;
         PE_IntelPdata *pdata = pdata_array + mid;
         if(voff < pdata->voff_first)
         {
@@ -749,14 +749,14 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
 }
 
 internal void *
-pe_ptr_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
+pe_ptr_from_voff(String8 data, PE_BinInfo *bin, ulong voff)
 {
   // rjf: get the section for this voff
-  U64 sec_count = bin->section_count;
-  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+  ulong sec_count = bin->section_count;
+  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
   COFF_SectionHeader *sec_ptr = sec_array;
   COFF_SectionHeader *sec = 0;
-  for(U64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
+  for(ulong i = 1; i <= sec_count; i += 1, sec_ptr += 1)
   {
     if(sec_ptr->voff <= voff && voff < sec_ptr->voff + sec_ptr->vsize)
     {
@@ -769,7 +769,7 @@ pe_ptr_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
   void *result = 0;
   if(sec != 0 && sec_ptr->fsize > 0)
   {
-    U64 off = voff - sec->voff + sec->foff;
+    ulong off = voff - sec->voff + sec->foff;
     if(off < data.size)
     {
       result = data.str + off;
@@ -778,14 +778,14 @@ pe_ptr_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
   return result;
 }
 
-internal U64
-pe_section_num_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
+internal ulong
+pe_section_num_from_voff(String8 data, PE_BinInfo *bin, ulong voff)
 {
-  U64 sec_count = bin->section_count;
-  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+  ulong sec_count = bin->section_count;
+  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
   COFF_SectionHeader *sec_ptr = sec_array;
-  U64 result = 0;
-  for(U64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
+  ulong result = 0;
+  for(ulong i = 1; i <= sec_count; i += 1, sec_ptr += 1)
   {
     if(sec_ptr->voff <= voff && voff < sec_ptr->voff + sec_ptr->vsize)
     {
@@ -797,13 +797,13 @@ pe_section_num_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 }
 
 internal void *
-pe_ptr_from_section_num(String8 data, PE_BinInfo *bin, U64 n)
+pe_ptr_from_section_num(String8 data, PE_BinInfo *bin, ulong n)
 {
   void *result = 0;
-  U64 sec_count = bin->section_count;
+  ulong sec_count = bin->section_count;
   if(1 <= n && n <= sec_count)
   {
-    COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+    COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
     COFF_SectionHeader *sec = sec_array + n - 1;
     if(sec->fsize > 0)
     {
@@ -813,13 +813,13 @@ pe_ptr_from_section_num(String8 data, PE_BinInfo *bin, U64 n)
   return(result);
 }
 
-internal U64
-pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
+internal ulong
+pe_foff_from_voff(String8 data, PE_BinInfo *bin, ulong voff)
 {
-  U64 foff = 0;
+  ulong foff = 0;
   COFF_SectionHeader *sections = (COFF_SectionHeader*)(data.str+bin->section_array_off);
-  U64 section_count = bin->section_count;
-  for(U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
+  ulong section_count = bin->section_count;
+  for(ulong sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
     COFF_SectionHeader *sect = &sections[sect_idx];
     if(sect->voff <= voff && voff < sect->voff + sect->vsize)
@@ -838,11 +838,11 @@ internal PE_BaseRelocBlockList
 pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
 {
   PE_BaseRelocBlockList list = {0};
-  for(U64 off = 0; off < raw_base_relocs.size;)
+  for(ulong off = 0; off < raw_base_relocs.size;)
   {
     // rjf: read next entry
-    U32 page_virt_off = 0;
-    U32 block_size = 0;
+    uint page_virt_off = 0;
+    uint block_size = 0;
     off += str8_deserial_read_struct(raw_base_relocs, off, &page_virt_off);
     off += str8_deserial_read_struct(raw_base_relocs, off, &block_size);
     
@@ -857,14 +857,14 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
     SLLQueuePush(list.first, list.last, node);
     list.count += 1;
 
-    U64 entries_size = block_size - (sizeof(block_size) + sizeof(page_virt_off));
+    ulong entries_size = block_size - (sizeof(block_size) + sizeof(page_virt_off));
     
     // rjf: fill block
     PE_BaseRelocBlock *block = &node->v;
     block->page_virt_off     = page_virt_off;
-    block->entry_count       = entries_size / sizeof(U16);
-    block->entries           = push_array(arena, U16, block->entry_count);
-    U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
+    block->entry_count       = entries_size / sizeof(ushort);
+    block->entries           = push_array(arena, ushort, block->entry_count);
+    ulong entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
     Assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
 
     off += entry_read_size;
@@ -873,31 +873,31 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
 }
 
 internal Rng1U64
-pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
+pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, ulong base_vaddr)
 {
-  U64 result_addr = (bin->tls_header.index_address - bin->image_base);
-  U64 result_size = sizeof(U32);
+  ulong result_addr = (bin->tls_header.index_address - bin->image_base);
+  ulong result_size = sizeof(uint);
   if(bin->arch != Arch_Null)
   {
-    U64 addr_size = bit_size_from_arch(bin->arch)/8;
+    ulong addr_size = bit_size_from_arch(bin->arch)/8;
     Temp scratch = scratch_begin(0, 0);
     String8 raw_relocs = str8_substr(data, bin->data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
     PE_BaseRelocBlockList relocs = pe_base_reloc_block_list_from_data(scratch.arena, raw_relocs);
     for(PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n->next)
     {
       PE_BaseRelocBlock *block = &n->v;
-      for(U64 ientry = 0; ientry < block->entry_count;)
+      for(ulong ientry = 0; ientry < block->entry_count;)
       {
-        U32 reloc = block->entries[ientry];
-        U16 kind = PE_BaseRelocKindFromEntry(reloc);
-        U16 offset = PE_BaseRelocOffsetFromEntry(reloc);
-        U64 apply_to_voff = block->page_virt_off + offset;
-        U64 apply_to_foff = pe_foff_from_voff(data, bin, apply_to_voff);
-        U64 apply_to      = 0;
+        uint reloc = block->entries[ientry];
+        ushort kind = PE_BaseRelocKindFromEntry(reloc);
+        ushort offset = PE_BaseRelocOffsetFromEntry(reloc);
+        ulong apply_to_voff = block->page_virt_off + offset;
+        ulong apply_to_foff = pe_foff_from_voff(data, bin, apply_to_voff);
+        ulong apply_to      = 0;
         str8_deserial_read(data, apply_to_foff, &apply_to, addr_size, 1);
         if(apply_to == bin->tls_header.index_address)
         {
-          U64 base_diff = base_vaddr-bin->image_base;
+          ulong base_diff = base_vaddr-bin->image_base;
           switch(kind)
           {
             default:
@@ -908,13 +908,13 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
             case PE_BaseRelocKind_HIGH:
             {
               // rjf: relocate high 16-bits.
-              U64 high_bits = (apply_to & max_U16) << 16;
+              ulong high_bits = (apply_to & max_U16) << 16;
               result_addr = (high_bits + ((base_diff & max_U32) >> 16)) & max_U16;
             }break;
             case PE_BaseRelocKind_LOW:
             {
               // rjf: relocate low 16-bits.
-              U64 low_bits = apply_to & max_U16;
+              ulong low_bits = apply_to & max_U16;
               result_addr = (low_bits + (base_diff & max_U32)) & max_U16;
             }break;
             case PE_BaseRelocKind_HIGHLOW:
@@ -931,7 +931,7 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
               }
               
               // rjf: relocate high bits and adjust sign bit on lower half.
-              U16 adj_offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry + 1]);
+              ushort adj_offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry + 1]);
               result_addr  = (apply_to & max_U16) << 16;
               result_addr += adj_offset;
               result_addr += (base_diff & max_U32);
@@ -948,7 +948,7 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
           goto dbl_break;
         }
         
-        U32 advance = (kind == PE_BaseRelocKind_HIGHADJ) ? 2 : 1;
+        uint advance = (kind == PE_BaseRelocKind_HIGHADJ) ? 2 : 1;
         ientry += advance;
       }
     }
@@ -1031,20 +1031,20 @@ pe_get_entry_point_names(COFF_MachineType            machine,
 internal PE_ParsedImport *
 pe_parsed_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
-                            U64                 section_count,
+                            ulong                 section_count,
                             COFF_SectionHeader *sections,
                             String8             raw_data,
-                            U64                 name_table_voff,
-                            U64                *import_count_out)
+                            ulong                 name_table_voff,
+                            ulong                *import_count_out)
 {
   PE_ParsedImport *imports      = 0;
-  U64              import_count = 0;
+  ulong              import_count = 0;
 
-  U64 name_table_off = coff_foff_from_voff(sections, section_count, name_table_voff);
+  ulong name_table_off = coff_foff_from_voff(sections, section_count, name_table_voff);
 
   if (is_pe32) {
     for (;; ++import_count) {
-      U32 raw_entry = 0;
+      uint raw_entry = 0;
       str8_deserial_read_struct(raw_data, name_table_off + import_count*sizeof(raw_entry), &raw_entry);
       if (raw_entry == 0) {
         break;
@@ -1053,8 +1053,8 @@ pe_parsed_imports_from_data(Arena              *arena,
 
     imports = push_array(arena, PE_ParsedImport, import_count);
 
-    for (U64 imp_idx = 0; imp_idx < import_count; ++imp_idx) {
-      U32 raw_entry = 0;
+    for (ulong imp_idx = 0; imp_idx < import_count; ++imp_idx) {
+      uint raw_entry = 0;
       str8_deserial_read_struct(raw_data, name_table_off + imp_idx*sizeof(raw_entry), &raw_entry);
 
       B32 is_ordinal = raw_entry & (1 << 31);
@@ -1068,10 +1068,10 @@ pe_parsed_imports_from_data(Arena              *arena,
         imp->u.ordinal = raw_entry & max_U16;
       } else {
         // map voff -> foff
-        U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
+        ulong off = coff_foff_from_voff(sections, section_count, raw_entry);
 
         // read hint & name
-        U16     hint = 0;
+        ushort     hint = 0;
         String8 name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off+sizeof(hint), &name);
@@ -1084,7 +1084,7 @@ pe_parsed_imports_from_data(Arena              *arena,
     }
   } else {
     for (;; ++import_count) {
-      U64 raw_entry = 0;
+      ulong raw_entry = 0;
       str8_deserial_read_struct(raw_data, name_table_off + import_count*sizeof(raw_entry), &raw_entry);
       if (raw_entry == 0) {
         break;
@@ -1093,8 +1093,8 @@ pe_parsed_imports_from_data(Arena              *arena,
 
     imports = push_array(arena, PE_ParsedImport, import_count);
 
-    for (U64 imp_idx = 0; imp_idx < import_count; ++imp_idx) {
-      U64 raw_entry = 0;
+    for (ulong imp_idx = 0; imp_idx < import_count; ++imp_idx) {
+      ulong raw_entry = 0;
       str8_deserial_read_struct(raw_data, name_table_off + imp_idx*sizeof(raw_entry), &raw_entry);
 
       B32 is_ordinal = raw_entry & (1ull << 63);
@@ -1108,10 +1108,10 @@ pe_parsed_imports_from_data(Arena              *arena,
         imp->u.ordinal = raw_entry & max_U16;
       } else {
         // map voff -> foff
-        U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
+        ulong off = coff_foff_from_voff(sections, section_count, raw_entry);
 
         // read hint & name
-        U16     hint = 0;
+        ushort     hint = 0;
         String8 name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off + sizeof(hint), &name);
@@ -1128,39 +1128,39 @@ pe_parsed_imports_from_data(Arena              *arena,
   return imports;
 }
 
-internal U64 *
-pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U64 range, U64 *count_out)
+internal ulong *
+pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U64 range, ulong *count_out)
 {
-  U64 *result = 0;
+  ulong *result = 0;
   *count_out = 0;
 
   if (is_pe32) {
-    U32 *src = (U32 *)(raw_data.str + range.min);
-    U32 *opl = (U32 *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
+    uint *src = (uint *)(raw_data.str + range.min);
+    uint *opl = (uint *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
 
     // count items
-    U32 *ptr;
+    uint *ptr;
     for (ptr = src; ptr < opl && *ptr != 0; ++ptr);
     
     // push output array
-    *count_out = (U64)(ptr - src);
-    result     = push_array(arena, U64, *count_out);
+    *count_out = (ulong)(ptr - src);
+    result     = push_array(arena, ulong, *count_out);
 
     // convert & copy
-    for (U64 i = 0; i < *count_out; ++i) {
-      result[i] = (U64)src[i];
+    for (ulong i = 0; i < *count_out; ++i) {
+      result[i] = (ulong)src[i];
     }
   } else {
-    U64 *src = (U64 *)(raw_data.str + range.min);
-    U64 *opl = (U64 *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
+    ulong *src = (ulong *)(raw_data.str + range.min);
+    ulong *opl = (ulong *)(raw_data.str + AlignDownPow2(range.max, sizeof(*opl)));
 
     // count items
-    U64 *ptr;
+    ulong *ptr;
     for (ptr = src; ptr < opl && *ptr != 0; ++ptr);
 
     // push output array
-    *count_out = (U64)(ptr - src);
-    result     = push_array(arena, U64, *count_out);
+    *count_out = (ulong)(ptr - src);
+    result     = push_array(arena, ulong, *count_out);
 
     // copy
     MemoryCopyTyped(result, src, *count_out);
@@ -1172,15 +1172,15 @@ pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U6
 internal PE_ParsedStaticImportTable
 pe_static_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
-                            U64                 section_count,
+                            ulong                 section_count,
                             COFF_SectionHeader *sections,
                             String8             raw_data,
                             Rng1U64             dir_file_range)
 {
   // count imports
-  U64 max_dll_count = dim_1u64(dir_file_range) / sizeof (PE_ImportEntry);
-  U64 dll_count     = max_dll_count;
-  for (U64 i = 0; i < max_dll_count; ++i) {
+  ulong max_dll_count = dim_1u64(dir_file_range) / sizeof (PE_ImportEntry);
+  ulong dll_count     = max_dll_count;
+  for (ulong i = 0; i < max_dll_count; ++i) {
     PE_ImportEntry *imp = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(i*sizeof(*imp)), sizeof(*imp));
     if (memory_is_zero(imp, sizeof(*imp))) {
       dll_count = i;
@@ -1190,15 +1190,15 @@ pe_static_imports_from_data(Arena              *arena,
 
   PE_ParsedStaticDLLImport *dlls = push_array(arena, PE_ParsedStaticDLLImport, dll_count);
 
-  for (U64 dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
+  for (ulong dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
     PE_ImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
 
     // get name
-    U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
+    ulong     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
     String8 name     = str8_zero();
     str8_deserial_read_cstr(raw_data, name_off, &name);
 
-    U64              import_count = 0;
+    ulong              import_count = 0;
     PE_ParsedImport *imports      = pe_parsed_imports_from_data(arena,
                                                                 is_pe32,
                                                                 section_count,
@@ -1227,14 +1227,14 @@ pe_static_imports_from_data(Arena              *arena,
 internal PE_ParsedDelayImportTable
 pe_delay_imports_from_data(Arena              *arena,
                            B32                 is_pe32,
-                           U64                 section_count,
+                           ulong                 section_count,
                            COFF_SectionHeader *sections,
                            String8             raw_data,
                            Rng1U64             dir_file_range)
 {
   // count imports
-  U64 max_dll_count = dim_1u64(dir_file_range) / sizeof(PE_DelayedImportEntry);
-  U64 dll_count     = 0;
+  ulong max_dll_count = dim_1u64(dir_file_range) / sizeof(PE_DelayedImportEntry);
+  ulong dll_count     = 0;
   for (; dll_count < max_dll_count; ++dll_count) {
     PE_DelayedImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_count*sizeof(*raw_dll)), sizeof(*raw_dll));
     if (memory_is_zero(raw_dll, sizeof(*raw_dll))) {
@@ -1244,15 +1244,15 @@ pe_delay_imports_from_data(Arena              *arena,
 
   // parse dll imports
   PE_ParsedDelayDLLImport *dlls = push_array(arena, PE_ParsedDelayDLLImport, dll_count);
-  for (U64 dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
+  for (ulong dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
     PE_DelayedImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
 
-    U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
+    ulong     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
     String8 name     = str8_zero();
     str8_deserial_read_cstr(raw_data, name_off, &name);
 
     // parse import table
-    U64              import_count = 0;
+    ulong              import_count = 0;
     PE_ParsedImport *imports      = pe_parsed_imports_from_data(arena,
                                                                 is_pe32,
                                                                 section_count,
@@ -1262,16 +1262,16 @@ pe_delay_imports_from_data(Arena              *arena,
                                                                 &import_count);
 
     // parse bound table
-    U64     bound_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll->bound_table_voff);
+    ulong     bound_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll->bound_table_voff);
     Rng1U64 bound_table_range = rng_1u64(bound_table_foff, raw_data.size);
-    U64     bound_table_count;
-    U64 *   bound_table       = pe_array_from_null_term_addr(arena, is_pe32, raw_data, bound_table_range, &bound_table_count);
+    ulong     bound_table_count;
+    ulong *   bound_table       = pe_array_from_null_term_addr(arena, is_pe32, raw_data, bound_table_range, &bound_table_count);
 
     // parse unload table
-    U64     unload_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll->unload_table_voff);
+    ulong     unload_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll->unload_table_voff);
     Rng1U64 unload_table_range = rng_1u64(unload_table_foff, raw_data.size);
-    U64     unload_table_count;
-    U64 *   unload_table       = pe_array_from_null_term_addr(arena, is_pe32, raw_data, unload_table_range, &unload_table_count);
+    ulong     unload_table_count;
+    ulong *   unload_table       = pe_array_from_null_term_addr(arena, is_pe32, raw_data, unload_table_range, &unload_table_count);
 
     // fill out DLL
     PE_ParsedDelayDLLImport *dll = dlls+dll_idx;
@@ -1300,7 +1300,7 @@ pe_delay_imports_from_data(Arena              *arena,
 }
 
 internal PE_ParsedExportTable
-pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
+pe_exports_from_data(Arena *arena, ulong section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1309,59 +1309,59 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
   String8               raw_dir = str8_substr(raw_data, dir_file_range);
   PE_ExportTableHeader *header  = str8_deserial_get_raw_ptr(raw_dir, 0, sizeof(*header));
   if (header) {
-    U64 name_table_off    = coff_foff_from_voff(sections, section_count, header->name_pointer_table_voff);
-    U64 export_table_off  = coff_foff_from_voff(sections, section_count, header->export_address_table_voff);
-    U64 ordinal_table_off = coff_foff_from_voff(sections, section_count, header->ordinal_table_voff);
+    ulong name_table_off    = coff_foff_from_voff(sections, section_count, header->name_pointer_table_voff);
+    ulong export_table_off  = coff_foff_from_voff(sections, section_count, header->export_address_table_voff);
+    ulong ordinal_table_off = coff_foff_from_voff(sections, section_count, header->ordinal_table_voff);
 
-    U32 *name_table    = str8_deserial_get_raw_ptr(raw_data, name_table_off,    sizeof(*name_table   )*header->name_pointer_table_count);
-    U32 *export_table  = str8_deserial_get_raw_ptr(raw_data, export_table_off,  sizeof(*export_table )*header->export_address_table_count);
-    U16 *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header->name_pointer_table_count);
+    uint *name_table    = str8_deserial_get_raw_ptr(raw_data, name_table_off,    sizeof(*name_table   )*header->name_pointer_table_count);
+    uint *export_table  = str8_deserial_get_raw_ptr(raw_data, export_table_off,  sizeof(*export_table )*header->export_address_table_count);
+    ushort *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header->name_pointer_table_count);
 
     if (name_table && export_table && ordinal_table) {
       // Scan export address table to get accruate count of ordinals. 
       // We can't rely on "name_pointer_table_count" becuase it is possible
       // to define an export without a name through NONAME attribute in DEF file
-      U64 ordinal_count = 0;
-      for (U64 voff_idx = 0; voff_idx < header->export_address_table_count; ++voff_idx) {
+      ulong ordinal_count = 0;
+      for (ulong voff_idx = 0; voff_idx < header->export_address_table_count; ++voff_idx) {
         if (export_table[voff_idx] != 0) {
           ++ordinal_count;
         }
       }
 
-      U64  ordinal_max     = header->export_address_table_count;
+      ulong  ordinal_max     = header->export_address_table_count;
       B32 *is_ordinal_used = push_array(scratch.arena, B32, ordinal_max);
 
       PE_ParsedExport *exports  = push_array(arena, PE_ParsedExport, ordinal_count);
       PE_ParsedExport *curr_exp = exports;
 
       // parse exports with name
-      for (U64 i = 0; i < header->name_pointer_table_count; ++i) {
+      for (ulong i = 0; i < header->name_pointer_table_count; ++i) {
         // get name
-        U32     name_voff = name_table[i];
-        U64     name_foff = coff_foff_from_voff(sections, section_count, name_voff);
+        uint     name_voff = name_table[i];
+        ulong     name_foff = coff_foff_from_voff(sections, section_count, name_voff);
         String8 name      = str8_cstring_capped(raw_data.str+name_foff, raw_data.str+raw_data.size);
 
         // get ordinal
-        U16 ordinal_nb = ordinal_table[i];
+        ushort ordinal_nb = ordinal_table[i];
 
         // mark ordinal
         Assert(ordinal_nb < ordinal_max);
         is_ordinal_used[ordinal_nb] = 1;
 
         // get voff
-        U32 export_voff = 0;
+        uint export_voff = 0;
         if (ordinal_nb < header->export_address_table_count) {
           export_voff = export_table[ordinal_nb];
         }
 
         // make ordinal
-        U16 ordinal = header->ordinal_base + ordinal_nb;
+        ushort ordinal = header->ordinal_base + ordinal_nb;
 
         String8 forwarder = str8_zero();
         {
           B32 is_forwarder = dir_virt_range.min <= export_voff && export_voff < dir_virt_range.max;
           if (is_forwarder) {
-            U64 fwd_name_off = coff_foff_from_voff(sections, section_count, name_voff);
+            ulong fwd_name_off = coff_foff_from_voff(sections, section_count, name_voff);
             str8_deserial_read_cstr(raw_data, fwd_name_off, &forwarder);
           }
         }
@@ -1374,8 +1374,8 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
       }
 
       // parse exports with ordinal
-      for (U64 ordinal_nb = 0; ordinal_nb < header->export_address_table_count; ++ordinal_nb) {
-        U32 voff            = export_table[ordinal_nb];
+      for (ulong ordinal_nb = 0; ordinal_nb < header->export_address_table_count; ++ordinal_nb) {
+        uint voff            = export_table[ordinal_nb];
         B32 is_voff_taken   = (voff != 0);
         B32 is_ordinal_free = !is_ordinal_used[ordinal_nb];
         if (is_voff_taken && is_ordinal_free) {
@@ -1405,8 +1405,8 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
 internal PE_ParsedTLS
 pe_tls_from_data(Arena              *arena,
                  COFF_MachineType    machine,
-                 U64                 image_base,
-                 U64                 section_count,
+                 ulong                 image_base,
+                 ulong                 section_count,
                  COFF_SectionHeader *sections,
                  String8             raw_data,
                  Rng1U64             tls_frange)
@@ -1414,8 +1414,8 @@ pe_tls_from_data(Arena              *arena,
   String8 raw_tls = str8_substr(raw_data, tls_frange);
 
   PE_TLSHeader64  header64       = {0};
-  U64             callback_count = 0;
-  U64            *callback_addrs = 0;
+  ulong             callback_count = 0;
+  ulong            *callback_addrs = 0;
 
   switch (machine) {
     case COFF_Machine_Unknown: break;
@@ -1430,33 +1430,33 @@ pe_tls_from_data(Arena              *arena,
       header64.zero_fill_size    = header32.zero_fill_size;
       header64.characteristics   = header32.characteristics;
 
-      U64 callbacks_voff = header32.callbacks_address - image_base;
-      U64 callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
+      ulong callbacks_voff = header32.callbacks_address - image_base;
+      ulong callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
 
-      U32 *src = (U32 *)(raw_data.str + callbacks_foff);
-      U32 *opl = (U32 *)(raw_data.str + raw_data.size);
-      U32 *ptr = src;
+      uint *src = (uint *)(raw_data.str + callbacks_foff);
+      uint *opl = (uint *)(raw_data.str + raw_data.size);
+      uint *ptr = src;
       for (; ptr < opl && *ptr != 0; ++ptr);
 
-      callback_count = (U64)(ptr-src);
-      callback_addrs = push_array(arena, U64, callback_count);
-      for (U64 i = 0; i < callback_count; ++i) {
-        callback_addrs[i] = (U64)src[i];
+      callback_count = (ulong)(ptr-src);
+      callback_addrs = push_array(arena, ulong, callback_count);
+      for (ulong i = 0; i < callback_count; ++i) {
+        callback_addrs[i] = (ulong)src[i];
       }
     } break;
     case COFF_Machine_X64: {
       str8_deserial_read_struct(raw_tls, 0, &header64);
 
-      U64 callbacks_voff = header64.callbacks_address - image_base;
-      U64 callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
+      ulong callbacks_voff = header64.callbacks_address - image_base;
+      ulong callbacks_foff = coff_foff_from_voff(sections, section_count, callbacks_voff);
 
-      U64 *src = (U64 *)(raw_data.str + callbacks_foff);
-      U64 *opl = (U64 *)(raw_data.str + raw_data.size);
-      U64 *ptr = src;
+      ulong *src = (ulong *)(raw_data.str + callbacks_foff);
+      ulong *opl = (ulong *)(raw_data.str + raw_data.size);
+      ulong *ptr = src;
       for (; ptr < opl && *ptr != 0; ++ptr);
 
-      callback_count = (U64)(ptr-src);
-      callback_addrs = push_array(arena, U64, callback_count);
+      callback_count = (ulong)(ptr-src);
+      callback_addrs = push_array(arena, ulong, callback_count);
       MemoryCopyTyped(callback_addrs, src, callback_count);
     } break;
     default: NotImplemented;
@@ -1475,14 +1475,14 @@ pe_tls_from_data(Arena              *arena,
 internal B32
 pe_is_res(String8 data)
 {
-  U8 magic[sizeof(PE_RES_MAGIC)]; MemoryZeroStruct(&magic);
+  byte magic[sizeof(PE_RES_MAGIC)]; MemoryZeroStruct(&magic);
   str8_deserial_read_struct(data, 0, &magic);
   B32 is_res = MemoryCompare(&PE_RES_MAGIC, &magic, sizeof(magic)) == 0;
   return is_res;
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, uint characteristics, COFF_TimeStamp time_stamp, ushort major_version, ushort minor_version)
 {
   PE_ResourceList *list = 0;
   switch (id.type) {
@@ -1511,7 +1511,7 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, uint data_version, uint version, COFF_ResourceMemoryFlags memory_flags, String8 data)
 {
   PE_ResourceList *list = NULL;
   switch (id.type) {
@@ -1538,14 +1538,14 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
 }
 
 internal PE_Resource *
-pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, uint data_version, uint version, COFF_ResourceMemoryFlags memory_flags, String8 data)
 {
   PE_ResourceNode *node = pe_resource_dir_push_entry_node(arena, dir, id, type, data_version, version, memory_flags, data);
   return &node->data;
 }
 
 internal PE_Resource *
-pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, uint characteristics, COFF_TimeStamp time_stamp, ushort major_version, ushort minor_version)
 {
   PE_ResourceNode *dir_node = pe_resource_dir_push_dir_node(arena, dir, id, characteristics, time_stamp, major_version, minor_version); 
   return &dir_node->data;
@@ -1623,15 +1623,15 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
 {
   struct stack_s {
     struct stack_s *next;
-    U64 table_offset;
-    U64 name_base_offset;
-    U64 id_base_offset;
+    ulong table_offset;
+    ulong name_base_offset;
+    ulong id_base_offset;
     PE_ResourceDir *table;
     PE_ResourceDir **directory_ptr;
-    U64 name_ientry;
-    U64 id_ientry;
-    U64 name_entry_count;
-    U64 id_entry_count;
+    ulong name_ientry;
+    ulong id_ientry;
+    ulong name_entry_count;
+    ulong id_entry_count;
   };
   
   Temp scratch = scratch_begin(&arena,1);
@@ -1661,7 +1661,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
     }
     
     while (stack->name_ientry < stack->name_entry_count) {
-      U64 entry_offset = stack->name_base_offset + stack->name_ientry * sizeof(COFF_ResourceDirEntry);
+      ulong entry_offset = stack->name_base_offset + stack->name_ientry * sizeof(COFF_ResourceDirEntry);
       ++stack->name_ientry;
       
       PE_ResourceNode *named_node = push_array(arena, PE_ResourceNode, 1);
@@ -1673,13 +1673,13 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       str8_deserial_read_struct(data, entry_offset, &coff_entry);
       
       // NOTE: this is not documented on MSDN but high bit here is set for some reason
-      U32 name_offset = coff_entry.name.offset & ~COFF_Resource_SubDirFlag;
-      U16 name_size = 0;
+      uint name_offset = coff_entry.name.offset & ~COFF_Resource_SubDirFlag;
+      ushort name_size = 0;
       str8_deserial_read_struct(data, name_offset, &name_size);
       
       String8 name_block;
-      str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(U16), &name_block);
-      String16 name16 = str16((U16*)name_block.str, name_size);
+      str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(ushort), &name_block);
+      String16 name16 = str16((ushort*)name_block.str, name_size);
       
       B32 is_dir = !!(coff_entry.id.data_entry_offset & COFF_Resource_SubDirFlag);
       
@@ -1699,7 +1699,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
     }
     
     while (stack->id_ientry < stack->id_entry_count) {
-      U64 entry_offset = stack->id_base_offset + stack->id_ientry * sizeof(COFF_ResourceDirEntry);
+      ulong entry_offset = stack->id_base_offset + stack->id_ientry * sizeof(COFF_ResourceDirEntry);
       ++stack->id_ientry;
       
       PE_ResourceNode *id_node = push_array(arena, PE_ResourceNode, 1);
@@ -1737,7 +1737,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
 }
 
 internal String8
-pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
+pe_make_manifest_resource(Arena *arena, uint resource_id, String8 manifest_data)
 {
   COFF_ResourceID type = {0};
   type.type            = COFF_ResourceIDType_Number;
@@ -1755,7 +1755,7 @@ pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
 //~ Debug Directory
 
 internal String8
-pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path)
+pe_make_debug_header_pdb70(Arena *arena, Guid guid, uint age, String8 pdb_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1798,18 +1798,18 @@ pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path)
 ////////////////////////////////
 //~ Image Checksum
 
-internal U32 
-pe_compute_checksum(U8 *buffer, U64 buffer_size)
+internal uint 
+pe_compute_checksum(byte *buffer, ulong buffer_size)
 {
   // https://bytepointer.com/resources/microsoft_pe_checksum_algo_distilled.htm
-  U32 hash = 0;
-  for (U16 *ptr16 = (U16*)buffer, *opl16 = (U16*)(buffer + buffer_size);
+  uint hash = 0;
+  for (ushort *ptr16 = (ushort*)buffer, *opl16 = (ushort*)(buffer + buffer_size);
        ptr16 < opl16;
        ptr16 += 1) {
     hash += *ptr16;
     hash = (hash >> 16) + (hash & 0xffff);
   }
-  hash = (U16)(((hash >> 16) + hash) & 0xffff);
+  hash = (ushort)(((hash >> 16) + hash) & 0xffff);
   hash += buffer_size;
   return hash;
 }

@@ -8,13 +8,13 @@ typedef struct DW_UnwindResult
 {
   B32 is_invalid;
   B32 missed_read;
-  U64 missed_read_addr;
-  U64 stack_pointer;
+  ulong missed_read_addr;
+  ulong stack_pointer;
 } DW_UnwindResult;
 
 // EH: Exception Frames
 
-typedef U8 DW_EhPtrEnc;
+typedef byte DW_EhPtrEnc;
 enum
 {
   DW_EhPtrEnc_TypeMask = 0x0F,
@@ -48,28 +48,28 @@ enum
 
 typedef struct DW_EhPtrCtx
 {
-  U64 raw_base_vaddr; // address where pointer is being read
-  U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
-  U64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
-  U64 func_vaddr;     // base address of function where IP is located
+  ulong raw_base_vaddr; // address where pointer is being read
+  ulong text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
+  ulong data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
+  ulong func_vaddr;     // base address of function where IP is located
 } DW_EhPtrCtx;
 
 // CIE: Common Information Entry
 typedef struct DW_CIEUnpacked
 {
-  U8          version;
+  byte          version;
   DW_EhPtrEnc lsda_encoding;
   DW_EhPtrEnc addr_encoding;
   
   B32     has_augmentation_size;
-  U64     augmentation_size;
+  ulong     augmentation_size;
   String8 augmentation;
   
-  U64 code_align_factor;
+  ulong code_align_factor;
   long data_align_factor;
-  U64 ret_addr_reg;
+  ulong ret_addr_reg;
   
-  U64 handler_ip;
+  ulong handler_ip;
   
   Rng1U64 cfi_range;
 } DW_CIEUnpacked;
@@ -78,14 +78,14 @@ typedef struct DW_CIEUnpackedNode
 {
   struct DW_CIEUnpackedNode *next;
   DW_CIEUnpacked             cie;
-  U64                        offset;
+  ulong                        offset;
 } DW_CIEUnpackedNode;
 
 // FDE: Frame Description Entry
 typedef struct DW_FDEUnpacked
 {
   Rng1U64 ip_voff_range;
-  U64     lsda_ip;
+  ulong     lsda_ip;
   Rng1U64 cfi_range;
 } DW_FDEUnpacked;
 
@@ -107,7 +107,7 @@ typedef struct DW_CFICFACell
   DW_CFICFARule rule;
   union {
     struct {
-      U64 reg_idx;
+      ulong reg_idx;
       long offset;
     };
     Rng1U64 expr;
@@ -143,14 +143,14 @@ typedef struct DW_CFIRow
 
 typedef struct DW_CFIMachine
 {
-  U64             cells_per_row;
+  ulong             cells_per_row;
   DW_CIEUnpacked *cie;
   DW_EhPtrCtx    *ptr_ctx;
   DW_CFIRow      *initial_row;
-  U64             fde_ip;
+  ulong             fde_ip;
 } DW_CFIMachine;
 
-typedef U8 DW_CFADecode;
+typedef byte DW_CFADecode;
 enum
 {
   DW_CFADecode_Nop     = 0x0,
@@ -160,7 +160,7 @@ enum
   DW_CFADecode_SLEB128 = 0xB,
 };
 
-typedef U16 DW_CFAControlBits;
+typedef ushort DW_CFAControlBits;
 enum
 {
   DW_CFAControlBits_Dec1Mask = 0x00F,
@@ -187,38 +187,38 @@ dw_unwind_x64(String8           raw_text,
               Rng1U64           text_vrange,
               Rng1U64           eh_frame_vrange,
               Rng1U64           eh_frame_header_vrange,
-              U64               default_image_base,
-              U64               image_base,
-              U64               stack_pointer,
+              ulong               default_image_base,
+              ulong               image_base,
+              ulong               stack_pointer,
               DW_RegsX64       *regs,
               DW_ReadMemorySig *read_memory,
               void             *read_memory_ud);
 
-internal DW_UnwindResult dw_unwind_x64__apply_frame_rules(String8 raw_eh_frame, DW_CFIRow *row, U64 text_base_vaddr, DW_ReadMemorySig *read_memory, void *read_memory_ud, U64 stack_pointer, DW_RegsX64 *regs);
+internal DW_UnwindResult dw_unwind_x64__apply_frame_rules(String8 raw_eh_frame, DW_CFIRow *row, ulong text_base_vaddr, DW_ReadMemorySig *read_memory, void *read_memory_ud, ulong stack_pointer, DW_RegsX64 *regs);
 
 ////////////////////////////////
 // x64 Unwind Helper Functions
 
 internal void dw_unwind_init_x64(void);
-internal U64  dw_unwind_parse_pointer_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_EhPtrEnc ptr_enc, U64 off, U64 *ptr_out);
+internal ulong  dw_unwind_parse_pointer_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_EhPtrEnc ptr_enc, ulong off, ulong *ptr_out);
 
 //- eh_frame parsing
-internal void dw_unwind_parse_cie_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, U64 off, DW_CIEUnpacked *cie_out);
-internal void dw_unwind_parse_fde_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, DW_CIEUnpacked *parent_cie, U64 off, DW_FDEUnpacked *fde_out);
-internal DW_CFIRecords dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
-internal DW_CFIRecords dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
+internal void dw_unwind_parse_cie_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, ulong off, DW_CIEUnpacked *cie_out);
+internal void dw_unwind_parse_fde_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, DW_CIEUnpacked *parent_cie, ulong off, DW_FDEUnpacked *fde_out);
+internal DW_CFIRecords dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_ctx, ulong ip_voff);
+internal DW_CFIRecords dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, ulong ip_voff);
 
 //- cfi machine
 
-internal DW_CFIMachine dw_unwind_make_machine_x64(U64 cells_per_row, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx);
+internal DW_CFIMachine dw_unwind_make_machine_x64(ulong cells_per_row, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx);
 internal void          dw_unwind_machine_equip_initial_row_x64(DW_CFIMachine *machine, DW_CFIRow *initial_row);
-internal void          dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip);
+internal void          dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, ulong fde_ip);
 
-internal DW_CFIRow* dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row);
-internal void       dw_unwind_row_zero_x64(DW_CFIRow *row, U64 cells_per_row);
-internal void       dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, U64 cells_per_row);
+internal DW_CFIRow* dw_unwind_row_alloc_x64(Arena *arena, ulong cells_per_row);
+internal void       dw_unwind_row_zero_x64(DW_CFIRow *row, ulong cells_per_row);
+internal void       dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, ulong cells_per_row);
 
-internal B32 dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machine, U64 target_ip, DW_CFIRow *row_out);
+internal B32 dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machine, ulong target_ip, DW_CFIRow *row_out);
 
 #endif // DWARF_UNWIND_H
 

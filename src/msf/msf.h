@@ -8,7 +8,7 @@
 //~ rjf: MSF Format Types
 
 #define MSF_UINT_MAX max_U32
-typedef U32 MSF_UInt;
+typedef uint MSF_UInt;
 typedef int MSF_Int;
 
 #define MSF_BITS_PER_CHAR 8
@@ -23,7 +23,7 @@ typedef MSF_UInt MSF_PageNumber;
 #define MSF_DELETED_STREAM_STAMP  MSF_UINT_MAX
 #define MSF_STREAM_NUMBER_MAX     max_U16
 #define MSF_INVALID_STREAM_NUMBER MSF_STREAM_NUMBER_MAX
-typedef U16 MSF_StreamNumber;
+typedef ushort MSF_StreamNumber;
 
 static char msf_msf20_magic[] = "Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0";
 static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
@@ -31,19 +31,19 @@ static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 typedef struct MSF_Header20 MSF_Header20;
 struct MSF_Header20
 {
-  U8  magic[sizeof(msf_msf20_magic)];
-  U32 page_size;
-  U16 active_fpm;
-  U16 page_count;
-  U32 stream_table_size;
-  U32 unknown;
-  U16 root_pn;
+  byte  magic[sizeof(msf_msf20_magic)];
+  uint page_size;
+  ushort active_fpm;
+  ushort page_count;
+  uint stream_table_size;
+  uint unknown;
+  ushort root_pn;
 };
 
 typedef struct MSF_Header70 MSF_Header70;
 struct MSF_Header70
 {
-  U8             magic[sizeof(msf_msf70_magic)];
+  byte             magic[sizeof(msf_msf70_magic)];
   MSF_UInt       page_size;
   MSF_PageNumber active_fpm;
   MSF_PageNumber page_count;

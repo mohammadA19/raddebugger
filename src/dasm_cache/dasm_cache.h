@@ -18,7 +18,7 @@ DASM_Syntax;
 ////////////////////////////////
 //~ rjf: Disassembly Instruction Info Types
 
-typedef U32 DASM_InstFlags;
+typedef uint DASM_InstFlags;
 enum
 {
   DASM_InstFlag_Call                        = (1<<0),
@@ -35,9 +35,9 @@ typedef struct DASM_Inst DASM_Inst;
 struct DASM_Inst
 {
   DASM_InstFlags flags;
-  U32 size;
+  uint size;
   String8 string;
-  U64 jump_dest_vaddr;
+  ulong jump_dest_vaddr;
 };
 
 ////////////////////////////////
@@ -46,8 +46,8 @@ struct DASM_Inst
 typedef struct DASM_CtrlFlowPoint DASM_CtrlFlowPoint;
 struct DASM_CtrlFlowPoint
 {
-  U64 vaddr;
-  U64 jump_dest_vaddr;
+  ulong vaddr;
+  ulong jump_dest_vaddr;
   DASM_InstFlags inst_flags;
 };
 
@@ -63,20 +63,20 @@ struct DASM_CtrlFlowPointList
 {
   DASM_CtrlFlowPointNode *first;
   DASM_CtrlFlowPointNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct DASM_CtrlFlowInfo DASM_CtrlFlowInfo;
 struct DASM_CtrlFlowInfo
 {
   DASM_CtrlFlowPointList exit_points;
-  U64 total_size;
+  ulong total_size;
 };
 
 ////////////////////////////////
 //~ rjf: Disassembly Text Decoration Types
 
-typedef U32 DASM_StyleFlags;
+typedef uint DASM_StyleFlags;
 enum
 {
   DASM_StyleFlag_Addresses        = (1<<0),
@@ -92,18 +92,18 @@ enum
 typedef struct DASM_Params DASM_Params;
 struct DASM_Params
 {
-  U64 vaddr;
+  ulong vaddr;
   Arch arch;
   DASM_StyleFlags style_flags;
   DASM_Syntax syntax;
-  U64 base_vaddr;
+  ulong base_vaddr;
   DI_Key dbgi_key;
 };
 
 ////////////////////////////////
 //~ rjf: Disassembly Text Line Types
 
-typedef U32 DASM_LineFlags;
+typedef uint DASM_LineFlags;
 enum
 {
   DASM_LineFlag_Decorative = (1<<0),
@@ -112,9 +112,9 @@ enum
 typedef struct DASM_Line DASM_Line;
 struct DASM_Line
 {
-  U32 code_off;
+  uint code_off;
   DASM_LineFlags flags;
-  U64 addr;
+  ulong addr;
   Rng1U64 text_range;
 };
 
@@ -123,8 +123,8 @@ struct DASM_LineChunkNode
 {
   DASM_LineChunkNode *next;
   DASM_Line *v;
-  U64 cap;
-  U64 count;
+  ulong cap;
+  ulong count;
 };
 
 typedef struct DASM_LineChunkList DASM_LineChunkList;
@@ -132,15 +132,15 @@ struct DASM_LineChunkList
 {
   DASM_LineChunkNode *first;
   DASM_LineChunkNode *last;
-  U64 node_count;
-  U64 line_count;
+  ulong node_count;
+  ulong line_count;
 };
 
 typedef struct DASM_LineArray DASM_LineArray;
 struct DASM_LineArray
 {
   DASM_Line *v;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -178,7 +178,7 @@ struct DASM_Node
   DASM_Params params;
   
   // rjf: generations
-  U64 change_gen;
+  ulong change_gen;
   
   // rjf: value
   Arena *info_arena;
@@ -186,12 +186,12 @@ struct DASM_Node
   
   // rjf: metadata
   B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
-  U64 last_time_requested_us;
-  U64 last_user_clock_idx_requested;
+  ulong scope_ref_count;
+  ulong last_time_touched_us;
+  ulong last_user_clock_idx_touched;
+  ulong load_count;
+  ulong last_time_requested_us;
+  ulong last_user_clock_idx_requested;
 };
 
 typedef struct DASM_Slot DASM_Slot;
@@ -226,7 +226,7 @@ struct DASM_Scope
 {
   DASM_Scope *next;
   DASM_Touch *top_touch;
-  U64 base_pos;
+  ulong base_pos;
 };
 
 ////////////////////////////////
@@ -247,16 +247,16 @@ struct DASM_Shared
   Arena *arena;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   DASM_Slot *slots;
   DASM_Stripe *stripes;
   
   // rjf: user -> parse thread
-  U64 u2p_ring_size;
-  U8 *u2p_ring_base;
-  U64 u2p_ring_write_pos;
-  U64 u2p_ring_read_pos;
+  ulong u2p_ring_size;
+  byte *u2p_ring_base;
+  ulong u2p_ring_write_pos;
+  ulong u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;
   OS_Handle u2p_ring_mutex;
   
@@ -273,12 +273,12 @@ global DASM_Shared *dasm_shared = 0;
 ////////////////////////////////
 //~ rjf: Instruction Decoding/Disassembling Type Functions
 
-internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
+internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, ulong vaddr, String8 code, DASM_Syntax syntax);
 
 ////////////////////////////////
 //~ rjf: Control Flow Analysis
 
-internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
+internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, ulong vaddr, String8 code);
 
 ////////////////////////////////
 //~ rjf: Parameter Type Functions
@@ -288,10 +288,10 @@ internal B32 dasm_params_match(DASM_Params *a, DASM_Params *b);
 ////////////////////////////////
 //~ rjf: Line Type Functions
 
-internal void dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *line);
+internal void dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, ulong cap, DASM_Line *line);
 internal DASM_LineArray dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list);
-internal U64 dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off);
-internal U64 dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx);
+internal ulong dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, ulong off);
+internal ulong dasm_line_array_code_off_from_idx(DASM_LineArray *array, ulong idx);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -314,7 +314,7 @@ internal DASM_Info dasm_info_from_key_params(DASM_Scope *scope, U128 key, DASM_P
 ////////////////////////////////
 //~ rjf: Parse Threads
 
-internal B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, U64 endt_us);
+internal B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, ulong endt_us);
 internal void dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out);
 ASYNC_WORK_DEF(dasm_parse_work);
 

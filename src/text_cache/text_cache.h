@@ -43,8 +43,8 @@ typedef struct TXT_TokenChunkNode TXT_TokenChunkNode;
 struct TXT_TokenChunkNode
 {
   TXT_TokenChunkNode *next;
-  U64 count;
-  U64 cap;
+  ulong count;
+  ulong cap;
   TXT_Token *v;
 };
 
@@ -53,8 +53,8 @@ struct TXT_TokenChunkList
 {
   TXT_TokenChunkNode *first;
   TXT_TokenChunkNode *last;
-  U64 chunk_count;
-  U64 token_count;
+  ulong chunk_count;
+  ulong token_count;
 };
 
 typedef struct TXT_TokenNode TXT_TokenNode;
@@ -69,33 +69,33 @@ struct TXT_TokenList
 {
   TXT_TokenNode *first;
   TXT_TokenNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct TXT_TokenArray TXT_TokenArray;
 struct TXT_TokenArray
 {
-  U64 count;
+  ulong count;
   TXT_Token *v;
 };
 
 typedef struct TXT_TokenArrayArray TXT_TokenArrayArray;
 struct TXT_TokenArrayArray
 {
-  U64 count;
+  ulong count;
   TXT_TokenArray *v;
 };
 
 typedef struct TXT_TextInfo TXT_TextInfo;
 struct TXT_TextInfo
 {
-  U64 lines_count;
+  ulong lines_count;
   Rng1U64 *lines_ranges;
-  U64 lines_max_size;
+  ulong lines_max_size;
   TXT_LineEndKind line_end_kind;
   TXT_TokenArray tokens;
-  U64 bytes_processed;
-  U64 bytes_to_process;
+  ulong bytes_processed;
+  ulong bytes_to_process;
 };
 
 typedef struct TXT_LineTokensSlice TXT_LineTokensSlice;
@@ -120,7 +120,7 @@ typedef enum TXT_LangKind
 }
 TXT_LangKind;
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, ulong *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -142,10 +142,10 @@ struct TXT_Node
   
   // rjf: metadata
   B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  ulong scope_ref_count;
+  ulong last_time_touched_us;
+  ulong last_user_clock_idx_touched;
+  ulong load_count;
 };
 
 typedef struct TXT_Slot TXT_Slot;
@@ -201,20 +201,20 @@ struct TXT_Shared
   Arena *arena;
   
   // rjf: user clock
-  U64 user_clock_idx;
+  ulong user_clock_idx;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  ulong slots_count;
+  ulong stripes_count;
   TXT_Slot *slots;
   TXT_Stripe *stripes;
   TXT_Node **stripes_free_nodes;
   
   // rjf: user -> parse thread
-  U64 u2p_ring_size;
-  U8 *u2p_ring_base;
-  U64 u2p_ring_write_pos;
-  U64 u2p_ring_read_pos;
+  ulong u2p_ring_size;
+  byte *u2p_ring_base;
+  ulong u2p_ring_write_pos;
+  ulong u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;
   OS_Handle u2p_ring_mutex;
   
@@ -239,7 +239,7 @@ internal TXT_LangLexFunctionType *txt_lex_function_from_lang_kind(TXT_LangKind k
 ////////////////////////////////
 //~ rjf: Token Type Functions
 
-internal void txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_Token *token);
+internal void txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, ulong cap, TXT_Token *token);
 internal void txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token);
 internal TXT_TokenArray txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list);
 internal TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *list);
@@ -247,11 +247,11 @@ internal TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *l
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, ulong *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, ulong *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, ulong *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, ulong *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, ulong *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -279,10 +279,10 @@ internal TXT_TextInfo txt_text_info_from_key_lang(TXT_Scope *scope, U128 key, TX
 ////////////////////////////////
 //~ rjf: Text Info Extractor Helpers
 
-internal U64 txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt);
-internal TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off);
+internal ulong txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt);
+internal TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, ulong off);
 internal TXT_TokenArray txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, long line_num);
-internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens);
+internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(ulong off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens);
 internal Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt);
 internal String8 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng);
 internal String8 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, long line_num);
@@ -291,7 +291,7 @@ internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Are
 ////////////////////////////////
 //~ rjf: Parse Threads
 
-internal B32 txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, U64 endt_us);
+internal B32 txt_u2p_enqueue_req(U128 hash, TXT_LangKind lang, ulong endt_us);
 internal void txt_u2p_dequeue_req(U128 *hash_out, TXT_LangKind *lang_out);
 ASYNC_WORK_DEF(txt_parse_work);
 

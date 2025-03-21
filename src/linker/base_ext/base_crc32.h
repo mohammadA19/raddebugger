@@ -3,6 +3,6 @@
 
 #pragma once
 
-internal U32 update_crc32(U32 crc, U8 *ptr, U64 size);
-internal U32 crc32_from_string(String8 string);
+internal uint update_crc32(uint crc, byte *ptr, ulong size);
+internal uint crc32_from_string(String8 string);
 

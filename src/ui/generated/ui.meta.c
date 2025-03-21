@@ -46,7 +46,7 @@ internal UI_PermissionFlags ui_top_permission_flags(void) { UI_StackTopImpl(ui_s
 internal UI_BoxFlags ui_top_flags(void) { UI_StackTopImpl(ui_state, Flags, flags) }
 internal UI_FocusKind ui_top_focus_hot(void) { UI_StackTopImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_top_focus_active(void) { UI_StackTopImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_top_fastpath_codepoint(void) { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint ui_top_fastpath_codepoint(void) { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_top_group_key(void) { UI_StackTopImpl(ui_state, GroupKey, group_key) }
 internal F32 ui_top_transparency(void) { UI_StackTopImpl(ui_state, Transparency, transparency) }
 internal UI_Palette*     ui_top_palette(void) { UI_StackTopImpl(ui_state, Palette, palette) }
@@ -75,7 +75,7 @@ internal UI_PermissionFlags ui_bottom_permission_flags(void) { UI_StackBottomImp
 internal UI_BoxFlags ui_bottom_flags(void) { UI_StackBottomImpl(ui_state, Flags, flags) }
 internal UI_FocusKind ui_bottom_focus_hot(void) { UI_StackBottomImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_bottom_focus_active(void) { UI_StackBottomImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_bottom_fastpath_codepoint(void) { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint ui_bottom_fastpath_codepoint(void) { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_bottom_group_key(void) { UI_StackBottomImpl(ui_state, GroupKey, group_key) }
 internal F32 ui_bottom_transparency(void) { UI_StackBottomImpl(ui_state, Transparency, transparency) }
 internal UI_Palette*     ui_bottom_palette(void) { UI_StackBottomImpl(ui_state, Palette, palette) }
@@ -104,7 +104,7 @@ internal UI_PermissionFlags ui_push_permission_flags(UI_PermissionFlags v) { UI_
 internal UI_BoxFlags ui_push_flags(UI_BoxFlags v) { UI_StackPushImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 internal UI_FocusKind ui_push_focus_hot(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 internal UI_FocusKind ui_push_focus_active(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-internal U32 ui_push_fastpath_codepoint(U32 v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+internal uint ui_push_fastpath_codepoint(uint v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint, v) }
 internal UI_Key ui_push_group_key(UI_Key v) { UI_StackPushImpl(ui_state, GroupKey, group_key, UI_Key, v) }
 internal F32 ui_push_transparency(F32 v) { UI_StackPushImpl(ui_state, Transparency, transparency, F32, v) }
 internal UI_Palette*     ui_push_palette(UI_Palette*     v) { UI_StackPushImpl(ui_state, Palette, palette, UI_Palette*    , v) }
@@ -133,7 +133,7 @@ internal UI_PermissionFlags ui_pop_permission_flags(void) { UI_StackPopImpl(ui_s
 internal UI_BoxFlags ui_pop_flags(void) { UI_StackPopImpl(ui_state, Flags, flags) }
 internal UI_FocusKind ui_pop_focus_hot(void) { UI_StackPopImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_pop_focus_active(void) { UI_StackPopImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_pop_fastpath_codepoint(void) { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint ui_pop_fastpath_codepoint(void) { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_pop_group_key(void) { UI_StackPopImpl(ui_state, GroupKey, group_key) }
 internal F32 ui_pop_transparency(void) { UI_StackPopImpl(ui_state, Transparency, transparency) }
 internal UI_Palette*     ui_pop_palette(void) { UI_StackPopImpl(ui_state, Palette, palette) }
@@ -162,7 +162,7 @@ internal UI_PermissionFlags ui_set_next_permission_flags(UI_PermissionFlags v) {
 internal UI_BoxFlags ui_set_next_flags(UI_BoxFlags v) { UI_StackSetNextImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 internal UI_FocusKind ui_set_next_focus_hot(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 internal UI_FocusKind ui_set_next_focus_active(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-internal U32 ui_set_next_fastpath_codepoint(U32 v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+internal uint ui_set_next_fastpath_codepoint(uint v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint, v) }
 internal UI_Key ui_set_next_group_key(UI_Key v) { UI_StackSetNextImpl(ui_state, GroupKey, group_key, UI_Key, v) }
 internal F32 ui_set_next_transparency(F32 v) { UI_StackSetNextImpl(ui_state, Transparency, transparency, F32, v) }
 internal UI_Palette*     ui_set_next_palette(UI_Palette*     v) { UI_StackSetNextImpl(ui_state, Palette, palette, UI_Palette*    , v) }

@@ -102,7 +102,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
                                          scroll_pos.y.idx + (long)(scroll_pos.y.off) + 1 + num_possible_visible_lines);
   Rng1S64 target_visible_line_num_range = r1s64(scroll_pos.y.idx + 1,
                                                 scroll_pos.y.idx + 1 + num_possible_visible_lines);
-  U64 visible_line_count = 0;
+  ulong visible_line_count = 0;
   {
     visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (long)text_info->lines_count);
     visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (long)text_info->lines_count);
@@ -112,7 +112,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (long)text_info->lines_count);
     target_visible_line_num_range.min = Max(1, target_visible_line_num_range.min);
     target_visible_line_num_range.max = Max(1, target_visible_line_num_range.max);
-    visible_line_count = (U64)dim_1s64(visible_line_num_range)+1;
+    visible_line_count = (ulong)dim_1s64(visible_line_num_range)+1;
   }
   
   //////////////////////////////
@@ -177,7 +177,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     code_slice_params.line_bps                  = push_array(scratch.arena, RD_EntityList, visible_line_count);
     code_slice_params.line_ips                  = push_array(scratch.arena, CTRL_EntityList, visible_line_count);
     code_slice_params.line_pins                 = push_array(scratch.arena, RD_EntityList, visible_line_count);
-    code_slice_params.line_vaddrs               = push_array(scratch.arena, U64, visible_line_count);
+    code_slice_params.line_vaddrs               = push_array(scratch.arena, ulong, visible_line_count);
     code_slice_params.line_infos                = push_array(scratch.arena, D_LineList, visible_line_count);
     code_slice_params.font                      = code_font;
     code_slice_params.font_size                 = code_font_size;
@@ -193,8 +193,8 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: fill text info
     {
       long line_num = visible_line_num_range.min;
-      U64 line_idx = visible_line_num_range.min-1;
-      for(U64 visible_line_idx = 0;
+      ulong line_idx = visible_line_num_range.min-1;
+      for(ulong visible_line_idx = 0;
           visible_line_idx < visible_line_count && line_idx < text_info->lines_count;
           visible_line_idx += 1, line_idx += 1, line_num += 1)
       {
@@ -220,7 +220,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
           {
             if(path_match_normalized(loc->string, override_n->string))
             {
-              U64 slice_line_idx = (loc->text_point.line-visible_line_num_range.min);
+              ulong slice_line_idx = (loc->text_point.line-visible_line_num_range.min);
               rd_entity_list_push(scratch.arena, &code_slice_params.line_bps[slice_line_idx], bp);
               break;
             }
@@ -238,12 +238,12 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       {
         CTRL_Entity *thread = thread_n->v;
         CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
-        U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
-        U64 inline_depth = (thread == selected_thread) ? rd_regs()->inline_depth : 0;
-        U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
-        U64 last_inst_on_unwound_rip_vaddr = rip_vaddr - !!unwind_count;
+        ulong unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
+        ulong inline_depth = (thread == selected_thread) ? rd_regs()->inline_depth : 0;
+        ulong rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
+        ulong last_inst_on_unwound_rip_vaddr = rip_vaddr - !!unwind_count;
         CTRL_Entity *module = ctrl_module_from_process_vaddr(process, last_inst_on_unwound_rip_vaddr);
-        U64 rip_voff = ctrl_voff_from_vaddr(module, last_inst_on_unwound_rip_vaddr);
+        ulong rip_voff = ctrl_voff_from_vaddr(module, last_inst_on_unwound_rip_vaddr);
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
         D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff);
         for(D_LineNode *n = lines.first; n != 0; n = n->next)
@@ -256,7 +256,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             {
               if(path_match_normalized(n->v.file_path, override_n->string))
               {
-                U64 slice_line_idx = n->v.pt.line-visible_line_num_range.min;
+                ulong slice_line_idx = n->v.pt.line-visible_line_num_range.min;
                 ctrl_entity_list_push(scratch.arena, &code_slice_params.line_ips[slice_line_idx], thread);
                 break;
               }
@@ -282,7 +282,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
           {
             if(path_match_normalized(loc->string, override_n->string))
             {
-              U64 slice_line_idx = (loc->text_point.line-visible_line_num_range.min);
+              ulong slice_line_idx = (loc->text_point.line-visible_line_num_range.min);
               rd_entity_list_push(scratch.arena, &code_slice_params.line_pins[slice_line_idx], wp);
               break;
             }
@@ -313,15 +313,15 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       for(CTRL_EntityNode *thread_n = threads.first; thread_n != 0; thread_n = thread_n->next)
       {
         CTRL_Entity *thread = thread_n->v;
-        U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
-        U64 rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
+        ulong unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
+        ulong rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
         if(ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process) == process && contains_1u64(dasm_vaddr_range, rip_vaddr))
         {
-          U64 rip_off = rip_vaddr - dasm_vaddr_range.min;
+          ulong rip_off = rip_vaddr - dasm_vaddr_range.min;
           long line_num = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, rip_off)+1;
           if(contains_1s64(visible_line_num_range, line_num))
           {
-            U64 slice_line_idx = (line_num-visible_line_num_range.min);
+            ulong slice_line_idx = (line_num-visible_line_num_range.min);
             ctrl_entity_list_push(scratch.arena, &code_slice_params.line_ips[slice_line_idx], thread);
           }
         }
@@ -338,12 +338,12 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         RD_Entity *loc = rd_entity_child_from_kind(bp, RD_EntityKind_Location);
         if(loc->flags & RD_EntityFlag_HasVAddr && contains_1u64(dasm_vaddr_range, loc->vaddr))
         {
-          U64 off = loc->vaddr-dasm_vaddr_range.min;
-          U64 idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
+          ulong off = loc->vaddr-dasm_vaddr_range.min;
+          ulong idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
           long line_num = (long)(idx+1);
           if(contains_1s64(visible_line_num_range, line_num))
           {
-            U64 slice_line_idx = (line_num-visible_line_num_range.min);
+            ulong slice_line_idx = (line_num-visible_line_num_range.min);
             rd_entity_list_push(scratch.arena, &code_slice_params.line_bps[slice_line_idx], bp);
           }
         }
@@ -360,12 +360,12 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         RD_Entity *loc = rd_entity_child_from_kind(pin, RD_EntityKind_Location);
         if(loc->flags & RD_EntityFlag_HasVAddr && contains_1u64(dasm_vaddr_range, loc->vaddr))
         {
-          U64 off = loc->vaddr-dasm_vaddr_range.min;
-          U64 idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
+          ulong off = loc->vaddr-dasm_vaddr_range.min;
+          ulong idx = dasm_line_array_idx_from_code_off__linear_scan(dasm_lines, off);
           long line_num = (long)(idx+1);
           if(contains_1s64(visible_line_num_range, line_num))
           {
-            U64 slice_line_idx = (line_num-visible_line_num_range.min);
+            ulong slice_line_idx = (line_num-visible_line_num_range.min);
             rd_entity_list_push(scratch.arena, &code_slice_params.line_pins[slice_line_idx], pin);
           }
         }
@@ -379,9 +379,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       for(long line_num = visible_line_num_range.min; line_num < visible_line_num_range.max; line_num += 1)
       {
-        U64 vaddr = dasm_vaddr_range.min + dasm_line_array_code_off_from_idx(dasm_lines, line_num-1);
-        U64 voff = ctrl_voff_from_vaddr(module, vaddr);
-        U64 slice_idx = line_num-visible_line_num_range.min;
+        ulong vaddr = dasm_vaddr_range.min + dasm_line_array_code_off_from_idx(dasm_lines, line_num-1);
+        ulong voff = ctrl_voff_from_vaddr(module, vaddr);
+        ulong slice_idx = line_num-visible_line_num_range.min;
         code_slice_params.line_vaddrs[slice_idx] = vaddr;
         code_slice_params.line_infos[slice_idx] = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, voff);
       }
@@ -433,14 +433,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       {
         // rjf: gather line info
         String8 line_string = str8_substr(text_data, text_info->lines_ranges[line_num-1]);
-        U64 search_start = 0;
+        ulong search_start = 0;
         if(rd_regs()->cursor.line == line_num && first)
         {
           search_start = rd_regs()->cursor.column;
         }
         
         // rjf: search string
-        U64 needle_pos = str8_find_needle(line_string, search_start, cv->find_text_fwd, StringMatchFlag_CaseInsensitive);
+        ulong needle_pos = str8_find_needle(line_string, search_start, cv->find_text_fwd, StringMatchFlag_CaseInsensitive);
         if(needle_pos < line_string.size)
         {
           rd_regs()->cursor.line = line_num;
@@ -487,8 +487,8 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         }
         
         // rjf: search string
-        U64 next_needle_pos = line_string.size;
-        for(U64 needle_pos = 0; needle_pos < line_string.size;)
+        ulong next_needle_pos = line_string.size;
+        for(ulong needle_pos = 0; needle_pos < line_string.size;)
         {
           needle_pos = str8_find_needle(line_string, needle_pos, cv->find_text_bwd, StringMatchFlag_CaseInsensitive);
           if(needle_pos < line_string.size)
@@ -823,8 +823,8 @@ rd_watch_view_point_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 {
   RD_WatchViewPoint pt = zero_struct;
   pt.x           = tbl.x;
-  pt.key         = ev_key_from_num(block_ranges, (U64)tbl.y);
-  pt.parent_key  = ev_block_range_from_num(block_ranges, (U64)tbl.y).block->key;
+  pt.key         = ev_key_from_num(block_ranges, (ulong)tbl.y);
+  pt.parent_key  = ev_block_range_from_num(block_ranges, (ulong)tbl.y).block->key;
   return pt;
 }
 
@@ -882,7 +882,7 @@ rd_watch_view_row_info_from_row(EV_Row *row)
     CTRL_Entity *ctrl_entity = &ctrl_entity_nil;
     if(collection_ctrl_entity_kind != CTRL_EntityKind_Null && block->expand_view_rule_info_user_data != 0)
     {
-      U64 block_relative_num = block->expand_view_rule_info->expr_expand_num_from_id(key.child_id, block->expand_view_rule_info_user_data);
+      ulong block_relative_num = block->expand_view_rule_info->expr_expand_num_from_id(key.child_id, block->expand_view_rule_info_user_data);
       RD_CtrlEntityExpandAccel *accel = block->expand_view_rule_info_user_data;
       if(1 <= block_relative_num && block_relative_num <= accel->entities.count)
       {
@@ -921,15 +921,15 @@ rd_watch_view_row_info_from_row(EV_Row *row)
     done:;
     
     // rjf: extract callstack row information, if any
-    U64 unwind_count = 0;
-    U64 inline_depth = 0;
+    ulong unwind_count = 0;
+    ulong inline_depth = 0;
     if(thread != &ctrl_entity_nil)
     {
-      U64 block_relative_num = block->expand_view_rule_info->expr_expand_num_from_id(key.child_id, block->expand_view_rule_info_user_data);
+      ulong block_relative_num = block->expand_view_rule_info->expr_expand_num_from_id(key.child_id, block->expand_view_rule_info_user_data);
       CTRL_Unwind base_unwind = d_query_cached_unwind_from_thread(thread);
       CTRL_CallStack rich_unwind = ctrl_call_stack_from_unwind(scratch.arena, di_scope, ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process), &base_unwind);
-      U64 frame_num = 1;
-      for(U64 base_frame_idx = 0; base_frame_idx < rich_unwind.concrete_frame_count; base_frame_idx += 1, frame_num += 1)
+      ulong frame_num = 1;
+      for(ulong base_frame_idx = 0; base_frame_idx < rich_unwind.concrete_frame_count; base_frame_idx += 1, frame_num += 1)
       {
         if(frame_num <= block_relative_num && block_relative_num < frame_num+1+rich_unwind.frames[base_frame_idx].inline_frame_count)
         {
@@ -1005,7 +1005,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
     {
       Temp scratch = scratch_begin(&arena, 1);
       String8 access_string = str8(col->string_buffer, col->string_size);
-      String8List accesses = str8_split(scratch.arena, access_string, (U8 *)".", 1, 0);
+      String8List accesses = str8_split(scratch.arena, access_string, (byte *)".", 1, 0);
       for(String8Node *n = accesses.first; n != 0; n = n->next)
       {
         expr = e_expr_ref_member_access(arena, expr, n->string);
@@ -1022,7 +1022,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
 }
 
 internal String8
-rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
+rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   ProfBeginFunction();
   String8 result = {0};
@@ -1083,8 +1083,8 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
       E_Eval depth_eval = e_eval_from_expr(scratch.arena, depth_expr);
       E_Eval vaddr_value_eval = e_value_eval_from_eval(vaddr_eval);
       E_Eval depth_value_eval = e_value_eval_from_eval(depth_eval);
-      U64 vaddr = vaddr_value_eval.value.u64;
-      U64 depth = depth_value_eval.value.u64;
+      ulong vaddr = vaddr_value_eval.value.u64;
+      ulong depth = depth_value_eval.value.u64;
       CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(eval.space);
       CTRL_Entity *process = ctrl_process_from_entity(entity);
       CTRL_Entity *module = ctrl_module_from_process_vaddr(process, vaddr);
@@ -1098,7 +1098,7 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
           ScopeTask *next;
           RDI_Scope *scope;
         };
-        U64 voff = ctrl_voff_from_vaddr(module, vaddr);
+        ulong voff = ctrl_voff_from_vaddr(module, vaddr);
         RDI_Scope *root_scope = rdi_scope_from_voff(rdi, voff);
         ScopeTask start_task = {0, root_scope};
         ScopeTask *first_task = &start_task;
@@ -1111,7 +1111,7 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
           t->scope = root_scope;
         }
         RDI_Scope *scope = root_scope;
-        U64 idx = 0;
+        ulong idx = 0;
         for(ScopeTask *t = first_task; t != 0; t = t->next, idx += 1)
         {
           if(idx == depth)
@@ -1194,8 +1194,8 @@ rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint p
   RD_WatchViewTextEditState *result = &wv->dummy_text_edit_state;
   if(wv->text_edit_state_slots_count != 0 && wv->text_editing != 0)
   {
-    U64 hash = ev_hash_from_key(pt.key);
-    U64 slot_idx = hash%wv->text_edit_state_slots_count;
+    ulong hash = ev_hash_from_key(pt.key);
+    ulong slot_idx = hash%wv->text_edit_state_slots_count;
     for(RD_WatchViewTextEditState *s = wv->text_edit_state_slots[slot_idx]; s != 0; s = s->pt_hash_next)
     {
       if(rd_watch_view_point_match(pt, s->pt))
@@ -1258,7 +1258,7 @@ rd_watch_view_init(RD_WatchViewState *ewv)
 }
 
 internal void
-rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, U32 default_radix, Rng2F32 rect)
+rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, uint default_radix, Rng2F32 rect)
 {
   ProfBeginFunction();
   DI_Scope *di_scope = di_scope_open();
@@ -1298,7 +1298,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     {RD_EntityKind_Nil, CTRL_EntityKind_Thread,  RD_CmdKind_FreezeEntity  },
   };
   RD_WatchViewRowCtrl *row_ctrls = row_ctrls_;
-  U64 row_ctrls_count = ArrayCount(row_ctrls_);
+  ulong row_ctrls_count = ArrayCount(row_ctrls_);
   
   //////////////////////////////
   //- rjf: root-level view rule which has a ui hook? call into that to build the UI
@@ -1409,7 +1409,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           {&ewv->cursor, cursor_tbl},
           {&ewv->mark, mark_tbl},
         };
-        for(U64 point_idx = 0; point_idx < ArrayCount(points); point_idx += 1)
+        for(ulong point_idx = 0; point_idx < ArrayCount(points); point_idx += 1)
         {
           EV_Key last_key = points[point_idx].pt_state->key;
           EV_Key last_parent_key = points[point_idx].pt_state->parent_key;
@@ -1460,7 +1460,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           RD_WatchViewRowKind row_kind = rd_watch_view_row_kind_from_flags_row_info(flags, mark_rows.first, &row_info);
           if(row_kind == RD_WatchViewRowKind_PrettyEntityControls)
           {
-            U64 row_ctrl_count = 0;
+            ulong row_ctrl_count = 0;
             for EachIndex(idx, row_ctrls_count)
             {
               if(row_ctrls[idx].entity_kind == row_info.collection_entity->kind &&
@@ -1511,7 +1511,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           }
           else
           {
-            cursor_visibility_row_range.min = (long)ui_scroll_list_row_from_item(&row_blocks, (U64)cursor_item_idx) - 1;
+            cursor_visibility_row_range.min = (long)ui_scroll_list_row_from_item(&row_blocks, (ulong)cursor_item_idx) - 1;
             cursor_visibility_row_range.max = cursor_visibility_row_range.min + 3;
           }
           
@@ -1583,8 +1583,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               String8 string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
               string.size = Min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
               RD_WatchViewPoint pt = {x, row->block->key, row->key};
-              U64 hash = ev_hash_from_key(pt.key);
-              U64 slot_idx = hash%ewv->text_edit_state_slots_count;
+              ulong hash = ev_hash_from_key(pt.key);
+              ulong slot_idx = hash%ewv->text_edit_state_slots_count;
               RD_WatchViewTextEditState *edit_state = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState, 1);
               SLLStackPush_N(ewv->text_edit_state_slots[slot_idx], edit_state, pt_hash_next);
               edit_state->pt = pt;
@@ -1701,7 +1701,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               {
                 take_autocomplete = 1;
                 String8 word_query = rd_autocomp_query_word_from_input_string_off(string, edit_state->cursor.column-1);
-                U64 word_off = (U64)(word_query.str - string.str);
+                ulong word_off = (ulong)(word_query.str - string.str);
                 String8 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(word_off+1, word_off+1+word_query.size), autocomplete_hint_string);
                 new_string.size = Min(sizeof(edit_state->input_buffer), new_string.size);
                 MemoryCopy(edit_state->input_buffer, new_string.str, new_string.size);
@@ -1843,7 +1843,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
             String8 cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
             cell_string = str8_skip_chop_whitespace(cell_string);
-            U64 comma_pos = str8_find_needle(cell_string, 0, str8_lit(","), 0);
+            ulong comma_pos = str8_find_needle(cell_string, 0, str8_lit(","), 0);
             if(selection_tbl.min.x != selection_tbl.max.x || selection_tbl.min.y != selection_tbl.max.y)
             {
               str8_list_pushf(scratch.arena, &strs, "%s%S%s%s",
@@ -1896,12 +1896,12 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(!rd_entity_is_nil(entity))
               {
                 rd_entity_list_push(scratch.arena, &entities_to_remove, entity);
-                U64 deleted_id = row->key.child_id;
-                U64 deleted_num = row->block->expand_view_rule_info->expr_expand_num_from_id(deleted_id, row->block->expand_view_rule_info_user_data);
+                ulong deleted_id = row->key.child_id;
+                ulong deleted_num = row->block->expand_view_rule_info->expr_expand_num_from_id(deleted_id, row->block->expand_view_rule_info_user_data);
                 if(deleted_num != 0)
                 {
-                  U64 fallback_id_next = row->block->expand_view_rule_info->expr_expand_id_from_num(deleted_num+1, row->block->expand_view_rule_info_user_data);
-                  U64 fallback_id_prev = row->block->expand_view_rule_info->expr_expand_id_from_num(deleted_num-1, row->block->expand_view_rule_info_user_data);
+                  ulong fallback_id_next = row->block->expand_view_rule_info->expr_expand_id_from_num(deleted_num+1, row->block->expand_view_rule_info_user_data);
+                  ulong fallback_id_prev = row->block->expand_view_rule_info->expr_expand_id_from_num(deleted_num-1, row->block->expand_view_rule_info_user_data);
                   EV_Key parent_key = row->block->key;
                   EV_Key key = ev_key_make(row->key.parent_hash, fallback_id_next ? fallback_id_next : fallback_id_prev);
                   if(key.child_id == 0)
@@ -2044,7 +2044,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           };
           
           // rjf: pick shallowest block within which we can do reordering
-          U64 selection_depths[2] =
+          ulong selection_depths[2] =
           {
             ev_depth_from_block(selection_endpoint_blocks[0]),
             ev_depth_from_block(selection_endpoint_blocks[1]),
@@ -2227,7 +2227,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       //
       ProfScope("build table")
       {
-        U64 global_row_idx = rows.count_before_semantic;
+        ulong global_row_idx = rows.count_before_semantic;
         for(EV_Row *row = rows.first; row != 0; row = row->next, global_row_idx += 1)
         {
           ////////////////////////
@@ -2242,8 +2242,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           //- rjf: unpack row info
           //
           ProfBegin("unpack row info");
-          U64 row_hash = ev_hash_from_key(row->key);
-          U64 row_depth = ev_depth_from_block(row->block);
+          ulong row_hash = ev_hash_from_key(row->key);
+          ulong row_depth = ev_depth_from_block(row->block);
           if(row_depth > 0)
           {
             row_depth -= 1;
@@ -2299,11 +2299,11 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               CTRL_Entity *space_entity = rd_ctrl_entity_from_eval_space(row_eval.space);
               if(row_eval.space.kind == RD_EvalSpaceKind_CtrlEntity && space_entity->kind == CTRL_EntityKind_Process)
               {
-                U64 size = e_type_byte_size_from_key(row_eval.type_key);
+                ulong size = e_type_byte_size_from_key(row_eval.type_key);
                 size = Min(size, 64);
                 Rng1U64 vaddr_rng = r1u64(row_eval.value.u64, row_eval.value.u64+size);
                 CTRL_ProcessMemorySlice slice = ctrl_query_cached_data_from_process_vaddr_range(scratch.arena, space_entity->handle, vaddr_rng, 0);
-                for(U64 idx = 0; idx < (slice.data.size+63)/64; idx += 1)
+                for(ulong idx = 0; idx < (slice.data.size+63)/64; idx += 1)
                 {
                   if(slice.byte_changed_flags[idx] != 0)
                   {
@@ -2573,7 +2573,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               }
               
               //- rjf: build indentation
-              for(U64 idx = 0; idx < row_depth; idx += 1)
+              for(ulong idx = 0; idx < row_depth; idx += 1)
               {
                 ui_set_next_flags(UI_BoxFlag_DrawSideLeft);
                 ui_spacer(ui_em(1.f, 1.f));
@@ -2743,7 +2743,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 //- rjf: build extra entity controls
                 UI_PrefWidth(ui_em(3.f, 1.f))
                 {
-                  U64 ctrl_idx = 1;
+                  ulong ctrl_idx = 1;
                   for EachIndex(idx, row_ctrls_count)
                   {
                     RD_WatchViewRowCtrl *ctrl = &row_ctrls[idx];
@@ -2826,7 +2826,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               //
               if(!(flags & RD_WatchViewFlag_DisableCacheLines))
               {
-                U64 row_offset = row_eval.value.u64;
+                ulong row_offset = row_eval.value.u64;
                 if((row_eval.mode == E_Mode_Offset || row_eval.mode == E_Mode_Null) &&
                    row_offset%64 == 0 && row_depth > 0)
                 {
@@ -2848,7 +2848,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                    row_depth > 0 &&
                    !row_expanded)
                 {
-                  U64 next_off = (row_eval.value.u64 + e_type_byte_size_from_key(row_eval.type_key));
+                  ulong next_off = (row_eval.value.u64 + e_type_byte_size_from_key(row_eval.type_key));
                   if(next_off%64 != 0 && row_eval.value.u64/64 < next_off/64)
                   {
                     ui_set_next_fixed_x(0);
@@ -3205,10 +3205,10 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         CTRL_Entity *process = ctrl_process_from_entity(entity);
                         if(process != &ctrl_entity_nil)
                         {
-                          U64 vaddr = cell_eval.value.u64;
+                          ulong vaddr = cell_eval.value.u64;
                           CTRL_Entity *module = ctrl_module_from_process_vaddr(process, vaddr);
                           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-                          U64 voff = ctrl_voff_from_vaddr(module, vaddr);
+                          ulong voff = ctrl_voff_from_vaddr(module, vaddr);
                           D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, voff);
                           String8 file_path = {0};
                           TxtPt pt = {0};
@@ -3270,7 +3270,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ui_label(string);
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Tokens:");
-                    for(U64 idx = 0; idx < tokens.count; idx += 1)
+                    for(ulong idx = 0; idx < tokens.count; idx += 1)
                     {
                       ui_labelf("%S: '%S'", e_token_kind_strings[tokens.v[idx].kind], str8_substr(string, tokens.v[idx].range));
                     }
@@ -3394,9 +3394,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     ui_spacer(ui_em(2.f, 1.f));
                     UI_Flags(UI_BoxFlag_DrawTextWeak) ui_labelf("Bytecode:");
                     {
-                      for(U64 idx = 0; idx < bytecode.size; idx += 1)
+                      for(ulong idx = 0; idx < bytecode.size; idx += 1)
                       {
-                        ui_labelf("  0x%x ('%c')", (U32)bytecode.str[idx], (char)bytecode.str[idx]);
+                        ui_labelf("  0x%x ('%c')", (uint)bytecode.str[idx], (char)bytecode.str[idx]);
                       }
                     }
                   }
@@ -3596,8 +3596,8 @@ typedef struct RD_CmdListerItem RD_CmdListerItem;
 struct RD_CmdListerItem
 {
   String8 cmd_name;
-  U64 registrar_idx;
-  U64 ordering_idx;
+  ulong registrar_idx;
+  ulong ordering_idx;
   FuzzyMatchRangeList name_match_ranges;
   FuzzyMatchRangeList desc_match_ranges;
   FuzzyMatchRangeList tags_match_ranges;
@@ -3615,14 +3615,14 @@ struct RD_CmdListerItemList
 {
   RD_CmdListerItemNode *first;
   RD_CmdListerItemNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct RD_CmdListerItemArray RD_CmdListerItemArray;
 struct RD_CmdListerItemArray
 {
   RD_CmdListerItem *v;
-  U64 count;
+  ulong count;
 };
 
 internal RD_CmdListerItemList
@@ -3649,8 +3649,8 @@ rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
       {
         RD_CmdListerItemNode *node = push_array(arena, RD_CmdListerItemNode, 1);
         node->item.cmd_name = info->string;
-        node->item.registrar_idx = (U64)k;
-        node->item.ordering_idx = (U64)k;
+        node->item.registrar_idx = (ulong)k;
+        node->item.ordering_idx = (ulong)k;
         node->item.name_match_ranges = name_matches;
         node->item.desc_match_ranges = desc_matches;
         node->item.tags_match_ranges = tags_matches;
@@ -3669,7 +3669,7 @@ rd_cmd_lister_item_array_from_list(Arena *arena, RD_CmdListerItemList list)
   RD_CmdListerItemArray result = {0};
   result.count = list.count;
   result.v = push_array(arena, RD_CmdListerItem, result.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(RD_CmdListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->item;
@@ -3739,7 +3739,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   typedef struct RD_CmdsViewState RD_CmdsViewState;
   struct RD_CmdsViewState
   {
-    U64 selected_cmd_hash;
+    ulong selected_cmd_hash;
   };
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   RD_CmdsViewState *cv = rd_view_state(RD_CmdsViewState);
@@ -3758,7 +3758,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   //- rjf: selected kind -> cursor
   Vec2S64 cursor = {0};
   {
-    for(U64 idx = 0; idx < cmd_array.count; idx += 1)
+    for(ulong idx = 0; idx < cmd_array.count; idx += 1)
     {
       if(d_hash_from_string(cmd_array.v[idx].cmd_name) == cv->selected_cmd_hash)
       {
@@ -3925,7 +3925,7 @@ typedef struct RD_FileSystemViewState RD_FileSystemViewState;
 struct RD_FileSystemViewState
 {
   B32 initialized;
-  U64 path_state_table_size;
+  ulong path_state_table_size;
   RD_FileSystemViewPathState **path_state_table;
   RD_FileSortKind sort_kind;
   Side sort_side;
@@ -3933,7 +3933,7 @@ struct RD_FileSystemViewState
   String8 cached_files_path;
   RD_FileSortKind cached_files_sort_kind;
   Side cached_files_sort_side;
-  U64 cached_file_count;
+  ulong cached_file_count;
   RD_FileInfo *cached_files;
   F32 col_pcts[3];
 };
@@ -3950,7 +3950,7 @@ internal RD_PathQuery
 rd_path_query_from_string(String8 string)
 {
   String8 dir_str_in_input = {0};
-  for(U64 i = 0; i < string.size; i += 1)
+  for(ulong i = 0; i < string.size; i += 1)
   {
     String8 substr1 = str8_substr(string, r1u64(i, i+1));
     String8 substr2 = str8_substr(string, r1u64(i, i+2));
@@ -3982,8 +3982,8 @@ rd_path_query_from_string(String8 string)
   {
     String8 dir = dir_str_in_input;
     String8 search = {0};
-    U64 one_past_last_slash = dir.size;
-    for(U64 i = 0; i < dir_str_in_input.size; i += 1)
+    ulong one_past_last_slash = dir.size;
+    for(ulong i = 0; i < dir_str_in_input.size; i += 1)
     {
       if(dir_str_in_input.str[i] == '/' || dir_str_in_input.str[i] == '\\')
       {
@@ -4089,8 +4089,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   RD_FileSystemViewPathState *ps = 0;
   {
     String8 key = query_normalized;
-    U64 hash = d_hash_from_string(key);
-    U64 slot = hash % fs->path_state_table_size;
+    ulong hash = d_hash_from_string(key);
+    ulong slot = hash % fs->path_state_table_size;
     for(RD_FileSystemViewPathState *p = fs->path_state_table[slot]; p != 0; p = p->hash_next)
     {
       if(str8_match(p->normalized_path, key, 0))
@@ -4109,7 +4109,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   }
   
   //- rjf: get file array from the current path
-  U64 file_count = fs->cached_file_count;
+  ulong file_count = fs->cached_file_count;
   RD_FileInfo *files = fs->cached_files;
   if(!str8_match(fs->cached_files_path, query_normalized_with_opt_slash, 0) ||
      fs->cached_files_sort_kind != fs->sort_kind ||
@@ -4131,7 +4131,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     }
     
     //- rjf: get files, filtered
-    U64 new_file_count = 0;
+    ulong new_file_count = 0;
     RD_FileInfoNode *first_file = 0;
     RD_FileInfoNode *last_file = 0;
     {
@@ -4157,7 +4157,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     //- rjf: convert list to array
     RD_FileInfo *new_files = push_array(fs->cached_files_arena, RD_FileInfo, new_file_count);
     {
-      U64 idx = 0;
+      ulong idx = 0;
       for(RD_FileInfoNode *n = first_file; n != 0; n = n->next, idx += 1)
       {
         new_files[idx] = n->file_info;
@@ -4195,9 +4195,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     //- rjf: apply reverse
     if(fs->sort_kind != RD_FileSortKind_Null && fs->sort_side == Side_Max)
     {
-      for(U64 idx = 0; idx < new_file_count/2; idx += 1)
+      for(ulong idx = 0; idx < new_file_count/2; idx += 1)
       {
-        U64 rev_idx = new_file_count - idx - 1;
+        ulong rev_idx = new_file_count - idx - 1;
         Swap(RD_FileInfo, new_files[idx], new_files[rev_idx]);
       }
     }
@@ -4266,9 +4266,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   }
   
   //- rjf: build non-scrolled table header
-  U64 row_num = 1;
+  ulong row_num = 1;
   F32 **col_pcts = push_array(scratch.arena, F32 *, ArrayCount(fs->col_pcts));
-  for(U64 idx = 0; idx < ArrayCount(fs->col_pcts); idx += 1)
+  for(ulong idx = 0; idx < ArrayCount(fs->col_pcts); idx += 1)
   {
     col_pcts[idx] = &fs->col_pcts[idx];
   }
@@ -4287,7 +4287,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         { RD_FileSortKind_LastModified, str8_lit_comp("Last Modified") },
         { RD_FileSortKind_Size,         str8_lit_comp("Size") },
       };
-      for(U64 idx = 0; idx < ArrayCount(kinds); idx += 1)
+      for(ulong idx = 0; idx < ArrayCount(kinds); idx += 1)
       {
         B32 sorting = (fs->sort_kind == kinds[idx].kind);
         UI_TableCell UI_FlagsAdd(sorting ? 0 : UI_BoxFlag_DrawTextWeak)
@@ -4379,11 +4379,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     }
     
     // rjf: file buttons
-    for(U64 row_idx = Max(visible_row_range.min, 1);
+    for(ulong row_idx = Max(visible_row_range.min, 1);
         row_idx <= visible_row_range.max && row_idx <= file_count;
         row_idx += 1, row_num += 1)
     {
-      U64 file_idx = row_idx-1;
+      ulong file_idx = row_idx-1;
       RD_FileInfo *file = &files[file_idx];
       B32 file_kb_focus = (ps->cursor.y == (row_idx+1));
       
@@ -4496,14 +4496,14 @@ struct RD_ProcessInfoList
 {
   RD_ProcessInfoNode *first;
   RD_ProcessInfoNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct RD_ProcessInfoArray RD_ProcessInfoArray;
 struct RD_ProcessInfoArray
 {
   RD_ProcessInfo *v;
-  U64 count;
+  ulong count;
 };
 
 internal RD_ProcessInfoList
@@ -4512,13 +4512,13 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: gather PIDs that we're currently attached to
-  U64 attached_process_count = 0;
-  U32 *attached_process_pids = 0;
+  ulong attached_process_count = 0;
+  uint *attached_process_pids = 0;
   {
     CTRL_EntityList processes = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Process);
     attached_process_count = processes.count;
-    attached_process_pids = push_array(scratch.arena, U32, attached_process_count);
-    U64 idx = 0;
+    attached_process_pids = push_array(scratch.arena, uint, attached_process_count);
+    ulong idx = 0;
     for(CTRL_EntityNode *n = processes.first; n != 0; n = n->next, idx += 1)
     {
       CTRL_Entity *process = n->v;
@@ -4541,7 +4541,7 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
       
       // rjf: determine if this process is attached
       B32 is_attached = 0;
-      for(U64 attached_idx = 0; attached_idx < attached_process_count; attached_idx += 1)
+      for(ulong attached_idx = 0; attached_idx < attached_process_count; attached_idx += 1)
       {
         if(attached_process_pids[attached_idx] == info.pid)
         {
@@ -4592,7 +4592,7 @@ rd_process_info_array_from_list(Arena *arena, RD_ProcessInfoList list)
   RD_ProcessInfoArray array = {0};
   array.count = list.count;
   array.v = push_array(arena, RD_ProcessInfo, array.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for(RD_ProcessInfoNode *n = list.first; n != 0; n = n->next, idx += 1)
   {
     array.v[idx] = n->info;
@@ -4649,7 +4649,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   {
     B32 initialized;
     B32 need_initial_gather;
-    U32 selected_pid;
+    uint selected_pid;
     Arena *cached_process_arena;
     String8 cached_process_arg;
     RD_ProcessInfoArray cached_process_array;
@@ -4687,7 +4687,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   //- rjf: selected PID -> cursor
   Vec2S64 cursor = {0};
   {
-    for(U64 idx = 0; idx < process_info_array.count; idx += 1)
+    for(ulong idx = 0; idx < process_info_array.count; idx += 1)
     {
       if(process_info_array.v[idx].info.pid == sp->selected_pid)
       {
@@ -4720,7 +4720,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
     UI_Focus(UI_FocusKind_Null)
   {
     //- rjf: build rows
-    for(U64 idx = visible_row_range.min;
+    for(ulong idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < process_info_array.count;
         idx += 1)
     {
@@ -4813,14 +4813,14 @@ struct RD_EntityListerItemList
 {
   RD_EntityListerItemNode *first;
   RD_EntityListerItemNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct RD_EntityListerItemArray RD_EntityListerItemArray;
 struct RD_EntityListerItemArray
 {
   RD_EntityListerItem *v;
-  U64 count;
+  ulong count;
 };
 
 internal RD_EntityListerItemList
@@ -4858,7 +4858,7 @@ rd_entity_lister_item_array_from_list(Arena *arena, RD_EntityListerItemList list
   result.count = list.count;
   result.v = push_array(arena, RD_EntityListerItem, result.count);
   {
-    U64 idx = 0;
+    ulong idx = 0;
     for(RD_EntityListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
     {
       result.v[idx] = n->item;
@@ -4924,7 +4924,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   //- rjf: selected entity -> cursor
   Vec2S64 cursor = {0};
   {
-    for(U64 idx = 0; idx < ent_arr.count; idx += 1)
+    for(ulong idx = 0; idx < ent_arr.count; idx += 1)
     {
       if(ent_arr.v[idx].entity == selected_entity)
       {
@@ -5020,14 +5020,14 @@ struct RD_CtrlEntityListerItemList
 {
   RD_CtrlEntityListerItemNode *first;
   RD_CtrlEntityListerItemNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct RD_CtrlEntityListerItemArray RD_CtrlEntityListerItemArray;
 struct RD_CtrlEntityListerItemArray
 {
   RD_CtrlEntityListerItem *v;
-  U64 count;
+  ulong count;
 };
 
 internal RD_CtrlEntityListerItemList
@@ -5062,7 +5062,7 @@ rd_ctrl_entity_lister_item_array_from_list(Arena *arena, RD_CtrlEntityListerItem
   result.count = list.count;
   result.v = push_array(arena, RD_CtrlEntityListerItem, result.count);
   {
-    U64 idx = 0;
+    ulong idx = 0;
     for(RD_CtrlEntityListerItemNode *n = list.first; n != 0; n = n->next, idx += 1)
     {
       result.v[idx] = n->item;
@@ -5139,7 +5139,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   //- rjf: selected entity -> cursor
   Vec2S64 cursor = {0};
   {
-    for(U64 idx = 0; idx < ent_arr.count; idx += 1)
+    for(ulong idx = 0; idx < ent_arr.count; idx += 1)
     {
       if(ent_arr.v[idx].entity == selected_entity)
       {
@@ -5236,13 +5236,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
   DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
   DI_SearchParams search_params = {RDI_SectionKind_Procedures, dbgi_keys};
-  U64 endt_us = os_now_microseconds()+200;
+  ulong endt_us = os_now_microseconds()+200;
   
   //- rjf: grab rdis
-  U64 rdis_count = dbgi_keys.count;
+  ulong rdis_count = dbgi_keys.count;
   RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
   {
-    for(U64 idx = 0; idx < rdis_count; idx += 1)
+    for(ulong idx = 0; idx < rdis_count; idx += 1)
     {
       RDI_Parsed *rdi = di_rdi_from_key(di_scope, &dbgi_keys.v[idx], endt_us);
       RDI_TopLevelInfo *tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
@@ -5275,13 +5275,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
     if(item->dbgi_idx < rdis_count)
     {
       RDI_Parsed *rdi = rdis[item->dbgi_idx];
-      U64 rdi_procedures_count = 0;
+      ulong rdi_procedures_count = 0;
       rdi_section_raw_table_from_kind(rdi, RDI_SectionKind_Procedures, &rdi_procedures_count);
       if(item->idx < rdi_procedures_count)
       {
         RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
-        U64 name_size = 0;
-        U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+        ulong name_size = 0;
+        byte *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
         String8 name = str8(name_base, name_size);
         if(name.size != 0)
         {
@@ -5315,7 +5315,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
     UI_TextRasterFlags(rd_raster_flags_from_slot(RD_FontSlot_Code))
   {
     //- rjf: build rows
-    for(U64 idx = visible_row_range.min;
+    for(ulong idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < items.count;
         idx += 1)
       UI_Focus((slv->cursor.y == idx+1) ? UI_FocusKind_On : UI_FocusKind_Off)
@@ -5327,8 +5327,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
       
       //- rjf: unpack this item's info
       RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
-      U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+      ulong name_size = 0;
+      byte *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
       String8 name = str8(name_base, name_size);
       RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
       E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), procedure->type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
@@ -5364,7 +5364,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         RD_Font(RD_FontSlot_Code) rd_code_label(1.f, 0, rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol), name);
         RD_Font(RD_FontSlot_Main) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
           ui_labelf("Procedure #%I64u", idx);
-        U64 binary_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, name);
+        ulong binary_voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, name);
         D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, binary_voff);
         if(lines.first != 0 && lines.first->v.file_path.size != 0 && lines.first->v.pt.line != 0)
         {
@@ -5508,7 +5508,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(call_stack)
     rd_watch_view_init(wv);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrameSelection, 0.05f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrame,          0.50f, .display_string = str8_lit("Symbol"), .dequote_string = 1);
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .string = str8_lit("vaddr"), .display_string = str8_lit("Address"), .view_rule = str8_lit("cast:U64"));
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .string = str8_lit("vaddr"), .display_string = str8_lit("Address"), .view_rule = str8_lit("cast:ulong"));
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Module,                  0.25f, .string = str8_lit("module.str"), .display_string = str8_lit("Module"), .dequote_string = 1, .is_non_code = 1);
   }
   rd_watch_view_build(wv, 0, str8_lit("thread:current_thread.callstack.v"), str8_lit("array:'thread:current_thread.callstack.count', hex"), 0, 10, rect);
@@ -5725,9 +5725,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
     String8 data = hs_data_from_hash(hs_scope, file_hash);
     if(!u128_match(file_hash, u128_zero()))
     {
-      U64 num_utf8_bytes = 0;
-      U64 num_unknown_bytes = 0;
-      for(U64 idx = 0; idx < data.size && idx < file_range.max;)
+      ulong num_utf8_bytes = 0;
+      ulong num_unknown_bytes = 0;
+      for(ulong idx = 0; idx < data.size && idx < file_range.max;)
       {
         UnicodeDecode decode = utf8_decode(data.str+idx, data.size-idx);
         if(decode.codepoint != max_U32 && (decode.inc > 1 ||
@@ -5944,7 +5944,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   B32 file_is_out_of_date = 0;
   String8 out_of_date_dbgi_name = {0};
   {
-    U64 file_timestamp = fs_timestamp_from_path(path);
+    ulong file_timestamp = fs_timestamp_from_path(path);
     if(file_timestamp != 0)
     {
       for(DI_KeyNode *n = dbgi_keys.first; n != 0; n = n->next)
@@ -6039,9 +6039,9 @@ struct RD_DisasmViewState
   TxtPt mark;
   DASM_StyleFlags style_flags;
   CTRL_Handle temp_look_process;
-  U64 temp_look_vaddr;
-  U64 temp_look_run_gen;
-  U64 goto_vaddr;
+  ulong temp_look_vaddr;
+  ulong temp_look_run_gen;
+  ulong goto_vaddr;
   RD_CodeViewState cv;
 };
 
@@ -6146,7 +6146,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   CTRL_Entity *space_entity = rd_ctrl_entity_from_eval_space(space);
   CTRL_Entity *dasm_module = &ctrl_entity_nil;
   DI_Key dbgi_key = {0};
-  U64 base_vaddr = 0;
+  ulong base_vaddr = 0;
   switch(space_entity->kind)
   {
     default:{}break;
@@ -6191,8 +6191,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //
   if(!is_loading && has_disasm && dv->goto_vaddr != 0 && contains_1u64(range, dv->goto_vaddr))
   {
-    U64 vaddr = dv->goto_vaddr;
-    U64 line_idx = dasm_line_array_idx_from_code_off__linear_scan(&dasm_info.lines, vaddr-range.min);
+    ulong vaddr = dv->goto_vaddr;
+    ulong line_idx = dasm_line_array_idx_from_code_off__linear_scan(&dasm_info.lines, vaddr-range.min);
     if(line_idx < dasm_info.lines.count)
     {
       long line_num = (long)(line_idx+1);
@@ -6214,7 +6214,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //
   if(!is_loading && has_disasm)
   {
-    U64 off = dasm_line_array_code_off_from_idx(&dasm_info.lines, rd_regs()->cursor.line-1);
+    ulong off = dasm_line_array_code_off_from_idx(&dasm_info.lines, rd_regs()->cursor.line-1);
     rd_regs()->prefer_disasm = 1;
     rd_regs()->vaddr = range.min+off;
     rd_regs()->vaddr_range = r1u64(range.min+off, range.min+off);
@@ -6235,7 +6235,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
       UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
       RD_Font(RD_FontSlot_Code)
     {
-      U64 cursor_vaddr = (1 <= rd_regs()->cursor.line && rd_regs()->cursor.line <= dasm_info.lines.count) ? (range.min+dasm_info.lines.v[rd_regs()->cursor.line-1].code_off) : 0;
+      ulong cursor_vaddr = (1 <= rd_regs()->cursor.line && rd_regs()->cursor.line <= dasm_info.lines.count) ? (range.min+dasm_info.lines.v[rd_regs()->cursor.line-1].code_off) : 0;
       if(dasm_module != &ctrl_entity_nil)
       {
         ui_labelf("%S", path_normalized_from_string(scratch.arena, dasm_module->string));
@@ -6400,10 +6400,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   {
     space_range = r1u64(0, 0x7FFFFFFFFFFFull);
   }
-  U64 cursor          = rd_value_from_params_key(params, str8_lit("cursor_vaddr")).u64;
-  U64 mark            = rd_value_from_params_key(params, str8_lit("mark_vaddr")).u64;
-  U64 bytes_per_cell  = rd_value_from_params_key(params, str8_lit("bytes_per_cell")).u64;
-  U64 num_columns     = rd_value_from_params_key(params, str8_lit("num_columns")).u64;
+  ulong cursor          = rd_value_from_params_key(params, str8_lit("cursor_vaddr")).u64;
+  ulong mark            = rd_value_from_params_key(params, str8_lit("mark_vaddr")).u64;
+  ulong bytes_per_cell  = rd_value_from_params_key(params, str8_lit("bytes_per_cell")).u64;
+  ulong num_columns     = rd_value_from_params_key(params, str8_lit("num_columns")).u64;
   if(num_columns == 0)
   {
     num_columns = 16;
@@ -6484,7 +6484,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     viz_range_bytes.max = space_range.min + (viz_range_rows.max+1)*num_columns+1;
     if(viz_range_bytes.min > viz_range_bytes.max)
     {
-      Swap(U64, viz_range_bytes.min, viz_range_bytes.max);
+      Swap(ulong, viz_range_bytes.min, viz_range_bytes.max);
     }
     viz_range_bytes = intersect_1u64(space_range, viz_range_bytes);
   }
@@ -6494,8 +6494,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //
   UI_Focus(UI_FocusKind_On) if(ui_is_focus_active())
   {
-    U64 next_cursor = cursor;
-    U64 next_mark = mark;
+    ulong next_cursor = cursor;
+    ulong next_mark = mark;
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
       Vec2S64 cell_delta = {0};
@@ -6616,9 +6616,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   {
     Vec4F32 full_color = rd_rgba_from_theme_color(RD_ThemeColor_TextPositive);
     Vec4F32 zero_color = rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
-    for(U64 idx = 0; idx < ArrayCount(byte_fancy_strings); idx += 1)
+    for(ulong idx = 0; idx < ArrayCount(byte_fancy_strings); idx += 1)
     {
-      U8 byte = (U8)idx;
+      byte byte = (byte)idx;
       F32 pct = (byte/255.f);
       Vec4F32 text_color = mix_4f32(zero_color, full_color, pct);
       if(byte == 0)
@@ -6633,8 +6633,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: grab windowed memory
   //
-  U64 visible_memory_size = dim_1u64(viz_range_bytes);
-  U8 *visible_memory = push_array(scratch.arena, U8, visible_memory_size);
+  ulong visible_memory_size = dim_1u64(viz_range_bytes);
+  byte *visible_memory = push_array(scratch.arena, byte, visible_memory_size);
   {
     e_space_read(eval.space, visible_memory, viz_range_bytes);
   }
@@ -6667,29 +6667,29 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     //- rjf: fill unwind frame annotations
     if(unwind.frames.count != 0)
     {
-      U64 last_stack_top = regs_rsp_from_arch_block(thread->arch, unwind.frames.v[0].regs);
-      for(U64 idx = 1; idx < unwind.frames.count; idx += 1)
+      ulong last_stack_top = regs_rsp_from_arch_block(thread->arch, unwind.frames.v[0].regs);
+      for(ulong idx = 1; idx < unwind.frames.count; idx += 1)
       {
         CTRL_UnwindFrame *f = &unwind.frames.v[idx];
-        U64 f_stack_top = regs_rsp_from_arch_block(thread->arch, f->regs);
+        ulong f_stack_top = regs_rsp_from_arch_block(thread->arch, f->regs);
         Rng1U64 frame_vaddr_range = r1u64(last_stack_top, f_stack_top);
         Rng1U64 frame_vaddr_range_in_viz = intersect_1u64(frame_vaddr_range, viz_range_bytes);
         last_stack_top = f_stack_top;
         if(dim_1u64(frame_vaddr_range_in_viz) != 0)
         {
-          U64 f_rip = regs_rip_from_arch_block(thread->arch, f->regs);
+          ulong f_rip = regs_rip_from_arch_block(thread->arch, f->regs);
           CTRL_Entity *module = ctrl_module_from_process_vaddr(process, f_rip);
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-          U64 rip_voff = ctrl_voff_from_vaddr(module, f_rip);
+          ulong rip_voff = ctrl_voff_from_vaddr(module, f_rip);
           String8 symbol_name = d_symbol_name_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff, 1);
           Annotation *annotation = push_array(scratch.arena, Annotation, 1);
           annotation->name_string = symbol_name.size != 0 ? symbol_name : str8_lit("[external code]");
           annotation->kind_string = str8_lit("Call Stack Frame");
           annotation->color = symbol_name.size != 0 ? rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol) : rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
           annotation->vaddr_range = frame_vaddr_range;
-          for(U64 vaddr = frame_vaddr_range_in_viz.min; vaddr < frame_vaddr_range_in_viz.max; vaddr += 1)
+          for(ulong vaddr = frame_vaddr_range_in_viz.min; vaddr < frame_vaddr_range_in_viz.max; vaddr += 1)
           {
-            U64 visible_byte_idx = vaddr - viz_range_bytes.min;
+            ulong visible_byte_idx = vaddr - viz_range_bytes.min;
             SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, annotation);
           }
         }
@@ -6699,8 +6699,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     //- rjf: fill selected thread stack range annotation
     if(unwind.frames.count > 0)
     {
-      U64 stack_base_vaddr = thread->stack_base;
-      U64 stack_top_vaddr = regs_rsp_from_arch_block(thread->arch, unwind.frames.v[0].regs);
+      ulong stack_base_vaddr = thread->stack_base;
+      ulong stack_top_vaddr = regs_rsp_from_arch_block(thread->arch, unwind.frames.v[0].regs);
       Rng1U64 stack_vaddr_range = r1u64(stack_base_vaddr, stack_top_vaddr);
       Rng1U64 stack_vaddr_range_in_viz = intersect_1u64(stack_vaddr_range, viz_range_bytes);
       if(dim_1u64(stack_vaddr_range_in_viz) != 0)
@@ -6710,9 +6710,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         annotation->kind_string = str8_lit("Stack");
         annotation->color = rd_rgba_from_ctrl_entity(thread);
         annotation->vaddr_range = stack_vaddr_range;
-        for(U64 vaddr = stack_vaddr_range_in_viz.min; vaddr < stack_vaddr_range_in_viz.max; vaddr += 1)
+        for(ulong vaddr = stack_vaddr_range_in_viz.min; vaddr < stack_vaddr_range_in_viz.max; vaddr += 1)
         {
-          U64 visible_byte_idx = vaddr - viz_range_bytes.min;
+          ulong visible_byte_idx = vaddr - viz_range_bytes.min;
           SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, annotation);
         }
       }
@@ -6732,7 +6732,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         rd_rgba_from_theme_color(RD_ThemeColor_Thread6),
         rd_rgba_from_theme_color(RD_ThemeColor_Thread7),
       };
-      U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_regs()->unwind_count);
+      ulong thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, rd_regs()->unwind_count);
       for(E_String2NumMapNode *n = e_parse_ctx->locals_map->first; n != 0; n = n->order_next)
       {
         String8 local_name = n->string;
@@ -6740,7 +6740,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         if(local_eval.mode == E_Mode_Offset)
         {
           E_TypeKind local_eval_type_kind = e_type_kind_from_key(local_eval.type_key);
-          U64 local_eval_type_size = e_type_byte_size_from_key(local_eval.type_key);
+          ulong local_eval_type_size = e_type_byte_size_from_key(local_eval.type_key);
           Rng1U64 vaddr_rng = r1u64(local_eval.value.u64, local_eval.value.u64+local_eval_type_size);
           Rng1U64 vaddr_rng_in_visible = intersect_1u64(viz_range_bytes, vaddr_rng);
           if(vaddr_rng_in_visible.max != vaddr_rng_in_visible.min)
@@ -6753,7 +6753,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
               annotation->color = color_gen_table[(vaddr_rng.min/8)%ArrayCount(color_gen_table)];
               annotation->vaddr_range = vaddr_rng;
             }
-            for(U64 vaddr = vaddr_rng_in_visible.min; vaddr < vaddr_rng_in_visible.max; vaddr += 1)
+            for(ulong vaddr = vaddr_rng_in_visible.min; vaddr < vaddr_rng_in_visible.max; vaddr += 1)
             {
               SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, annotation);
             }
@@ -6794,7 +6794,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         UI_TextAlignment(UI_TextAlign_Center)
       {
         Rng1U64 col_selection_rng = r1u64(cursor%num_columns, mark%num_columns);
-        for(U64 row_off = 0; row_off < num_columns*bytes_per_cell; row_off += bytes_per_cell)
+        for(ulong row_off = 0; row_off < num_columns*bytes_per_cell; row_off += bytes_per_cell)
         {
           if(!(col_selection_rng.min <= row_off && row_off <= col_selection_rng.max))
           {
@@ -6865,7 +6865,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: interact with row container
   //
-  U64 mouse_hover_byte_num = 0;
+  ulong mouse_hover_byte_num = 0;
   {
     UI_Signal sig = ui_signal_from_box(row_container_box);
     
@@ -6873,12 +6873,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     if(ui_hovering(sig) || ui_dragging(sig))
     {
       Vec2F32 mouse_rel = sub_2f32(ui_mouse(), row_container_box->rect.p0);
-      U64 row_idx = ClampBot(0, mouse_rel.y) / row_height_px;
+      ulong row_idx = ClampBot(0, mouse_rel.y) / row_height_px;
       
       // rjf: try from cells
       if(mouse_hover_byte_num == 0)
       {
-        U64 col_idx = ClampBot(mouse_rel.x-big_glyph_advance*20.f, 0)/cell_width_px;
+        ulong col_idx = ClampBot(mouse_rel.x-big_glyph_advance*20.f, 0)/cell_width_px;
         if(col_idx < num_columns)
         {
           mouse_hover_byte_num = viz_range_bytes.min + row_idx*num_columns + col_idx + 1;
@@ -6888,7 +6888,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       // rjf: try from ascii
       if(mouse_hover_byte_num == 0)
       {
-        U64 col_idx = ClampBot(mouse_rel.x - (big_glyph_advance*20.f + cell_width_px*num_columns + big_glyph_advance*1.5f), 0)/big_glyph_advance;
+        ulong col_idx = ClampBot(mouse_rel.x - (big_glyph_advance*20.f + cell_width_px*num_columns + big_glyph_advance*1.5f), 0)/big_glyph_advance;
         col_idx = ClampTop(col_idx, num_columns-1);
         mouse_hover_byte_num = viz_range_bytes.min + row_idx*num_columns + col_idx + 1;
       }
@@ -6944,7 +6944,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   UI_Parent(row_container_box) RD_Font(RD_FontSlot_Code) UI_FontSize(font_size)
   {
     Rng1U64 selection = r1u64(cursor, mark);
-    U8 *row_ascii_buffer = push_array(scratch.arena, U8, num_columns);
+    byte *row_ascii_buffer = push_array(scratch.arena, byte, num_columns);
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f))
       for(long row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
     {
@@ -6976,12 +6976,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           UI_TextAlignment(UI_TextAlign_Center)
           UI_CornerRadius(0)
         {
-          for(U64 col_idx = 0; col_idx < num_columns; col_idx += 1)
+          for(ulong col_idx = 0; col_idx < num_columns; col_idx += 1)
           {
             // rjf: unpack information about this slot
-            U64 visible_byte_idx = (row_idx-viz_range_rows.min)*num_columns + col_idx;
-            U64 global_byte_idx = viz_range_bytes.min+visible_byte_idx;
-            U64 global_byte_num = global_byte_idx+1;
+            ulong visible_byte_idx = (row_idx-viz_range_rows.min)*num_columns + col_idx;
+            ulong global_byte_idx = viz_range_bytes.min+visible_byte_idx;
+            ulong global_byte_num = global_byte_idx+1;
             
             // rjf: build space, if this cell is out-of-range
             if(global_byte_idx >= viz_range_bytes.max)
@@ -6993,7 +6993,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             else
             {
               // rjf: unpack byte info
-              U8 byte_value = visible_memory[visible_byte_idx];
+              byte byte_value = visible_memory[visible_byte_idx];
               Annotation *annotation = visible_memory_annotations[visible_byte_idx].first;
               
               // rjf: unpack visual cell info
@@ -7075,13 +7075,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         UI_WidthFill
         {
           MemoryZero(row_ascii_buffer, num_columns);
-          U64 num_bytes_this_row = 0;
-          for(U64 col_idx = 0; col_idx < num_columns; col_idx += 1)
+          ulong num_bytes_this_row = 0;
+          for(ulong col_idx = 0; col_idx < num_columns; col_idx += 1)
           {
-            U64 visible_byte_idx = (row_idx-viz_range_rows.min)*num_columns + col_idx;
+            ulong visible_byte_idx = (row_idx-viz_range_rows.min)*num_columns + col_idx;
             if(visible_byte_idx < visible_memory_size)
             {
-              U8 byte_value = visible_memory[visible_byte_idx];
+              byte byte_value = visible_memory[visible_byte_idx];
               row_ascii_buffer[col_idx] = byte_value;
               if(byte_value <= 32 || 127 < byte_value)
               {
@@ -7146,10 +7146,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         UI_PrefHeight(ui_px(row_height_px, 0.f))
       {
         ui_labelf("Address:");
-        ui_labelf("U8:");
-        ui_labelf("U16:");
-        ui_labelf("U32:");
-        ui_labelf("U64:");
+        ui_labelf("byte:");
+        ui_labelf("ushort:");
+        ui_labelf("uint:");
+        ui_labelf("ulong:");
       }
       UI_PrefWidth(ui_em(45.f, 1.f)) UI_HeightFill UI_Column
         UI_PrefHeight(ui_px(row_height_px, 0.f))
@@ -7158,15 +7158,15 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         ui_labelf("%016I64X", cursor);
         if(cursor_in_range)
         {
-          U64 as_u8  = 0;
-          U64 as_u16 = 0;
-          U64 as_u32 = 0;
-          U64 as_u64 = 0;
-          U64 cursor_off = cursor-viz_range_bytes.min;
-          as_u8  = (U64)*(U8 *)(visible_memory + cursor_off);
-          as_u16 = (U64)*(U16*)(visible_memory + cursor_off);
-          as_u32 = (U64)*(U32*)(visible_memory + cursor_off);
-          as_u64 = (U64)*(U64*)(visible_memory + cursor_off);
+          ulong as_u8  = 0;
+          ulong as_u16 = 0;
+          ulong as_u32 = 0;
+          ulong as_u64 = 0;
+          ulong cursor_off = cursor-viz_range_bytes.min;
+          as_u8  = (ulong)*(byte *)(visible_memory + cursor_off);
+          as_u16 = (ulong)*(ushort*)(visible_memory + cursor_off);
+          as_u32 = (ulong)*(uint*)(visible_memory + cursor_off);
+          as_u64 = (ulong)*(ulong*)(visible_memory + cursor_off);
           ui_labelf("%02X (%I64u)",  as_u8,  as_u8);
           ui_labelf("%04X (%I64u)",  as_u16, as_u16);
           ui_labelf("%08X (%I64u)",  as_u32, as_u32);
@@ -7318,8 +7318,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   E_Eval eval = e_eval_from_string(scratch.arena, string);
   Vec2S32 dim = rd_dim2s32_from_eval_params(eval, params);
   R_Tex2DFormat fmt = rd_tex2dformat_from_eval_params(eval, params);
-  U64 base_offset = rd_base_offset_from_eval(eval);
-  U64 expected_size = dim.x*dim.y*r_tex2d_format_bytes_per_pixel_table[fmt];
+  ulong base_offset = rd_base_offset_from_eval(eval);
+  ulong expected_size = dim.x*dim.y*r_tex2d_format_bytes_per_pixel_table[fmt];
   Rng1U64 offset_range = r1u64(base_offset, base_offset + expected_size);
   
   //////////////////////////////
@@ -7451,12 +7451,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
         switch(topology.fmt)
         {
           default:{color_is_good = 0;}break;
-          case R_Tex2DFormat_R8:     {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, 0, 0, 1);}break;
-          case R_Tex2DFormat_RG8:    {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
-          case R_Tex2DFormat_RGBA8:  {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, ((U8 *)(data.str+off_bytes))[2]/255.f, ((U8 *)(data.str+off_bytes))[3]/255.f);}break;
-          case R_Tex2DFormat_BGRA8:  {color = v4f32(((U8 *)(data.str+off_bytes))[3]/255.f, ((U8 *)(data.str+off_bytes))[2]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, ((U8 *)(data.str+off_bytes))[0]/255.f);}break;
-          case R_Tex2DFormat_R16:    {color = v4f32(((U16 *)(data.str+off_bytes))[0]/(F32)max_U16, 0, 0, 1);}break;
-          case R_Tex2DFormat_RGBA16: {color = v4f32(((U16 *)(data.str+off_bytes))[0]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[1]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[2]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[3]/(F32)max_U16);}break;
+          case R_Tex2DFormat_R8:     {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, 0, 0, 1);}break;
+          case R_Tex2DFormat_RG8:    {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
+          case R_Tex2DFormat_RGBA8:  {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[3]/255.f);}break;
+          case R_Tex2DFormat_BGRA8:  {color = v4f32(((byte *)(data.str+off_bytes))[3]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[0]/255.f);}break;
+          case R_Tex2DFormat_R16:    {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, 0, 0, 1);}break;
+          case R_Tex2DFormat_RGBA16: {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[1]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[2]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[3]/(F32)max_U16);}break;
           case R_Tex2DFormat_R32:    {color = v4f32(((F32 *)(data.str+off_bytes))[0], 0, 0, 1);}break;
           case R_Tex2DFormat_RG32:   {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], 0, 1);}break;
           case R_Tex2DFormat_RGBA32: {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], ((F32 *)(data.str+off_bytes))[2], ((F32 *)(data.str+off_bytes))[3]);}break;
@@ -7532,14 +7532,14 @@ rd_rgba_from_eval_params(E_Eval eval, MD_Node *params)
     E_Eval value_eval = e_value_eval_from_eval(eval);
     E_TypeKey type_key = eval.type_key;
     E_TypeKind type_kind = e_type_kind_from_key(type_key);
-    U64 type_size = e_type_byte_size_from_key(type_key);
+    ulong type_size = e_type_byte_size_from_key(type_key);
     if(16 <= type_size)
     {
       e_space_read(eval.space, &rgba, r1u64(eval.value.u64, eval.value.u64 + 16));
     }
     else if(4 <= type_size)
     {
-      U32 hex_val = value_eval.value.u32;
+      uint hex_val = value_eval.value.u32;
       rgba = rgba_from_u32(hex_val);
     }
   }
@@ -7724,9 +7724,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //////////////////////////////
   //- rjf: unpack parameters
   //
-  U64 count        = rd_value_from_params_key(params, str8_lit("count")).u64;
-  U64 vtx_base_off = rd_value_from_params_key(params, str8_lit("vtx")).u64;
-  U64 vtx_size     = rd_value_from_params_key(params, str8_lit("vtx_size")).u64;
+  ulong count        = rd_value_from_params_key(params, str8_lit("count")).u64;
+  ulong vtx_base_off = rd_value_from_params_key(params, str8_lit("vtx")).u64;
+  ulong vtx_size     = rd_value_from_params_key(params, str8_lit("vtx_size")).u64;
   F32 yaw_target   = rd_value_from_params_key(params, str8_lit("yaw")).f32;
   F32 pitch_target = rd_value_from_params_key(params, str8_lit("pitch")).f32;
   F32 zoom_target  = rd_value_from_params_key(params, str8_lit("zoom")).f32;
@@ -7735,8 +7735,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //- rjf: evaluate & unpack expression
   //
   E_Eval eval = e_eval_from_string(scratch.arena, string);
-  U64 base_offset = rd_base_offset_from_eval(eval);
-  Rng1U64 idxs_range = r1u64(base_offset, base_offset+count*sizeof(U32));
+  ulong base_offset = rd_base_offset_from_eval(eval);
+  Rng1U64 idxs_range = r1u64(base_offset, base_offset+count*sizeof(uint));
   Rng1U64 vtxs_range = r1u64(vtx_base_off, vtx_base_off+vtx_size);
   U128 idxs_key = rd_key_from_eval_space_range(eval.space, idxs_range, 0);
   U128 vtxs_key = rd_key_from_eval_space_range(eval.space, vtxs_range, 0);
@@ -7861,22 +7861,22 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   {
     RD_ExceptionFiltersOptionChunkNode *next;
     RD_ExceptionFiltersOption *v;
-    U64 cap;
-    U64 count;
+    ulong cap;
+    ulong count;
   };
   typedef struct RD_ExceptionFiltersOptionChunkList RD_ExceptionFiltersOptionChunkList;
   struct RD_ExceptionFiltersOptionChunkList
   {
     RD_ExceptionFiltersOptionChunkNode *first;
     RD_ExceptionFiltersOptionChunkNode *last;
-    U64 option_count;
-    U64 node_count;
+    ulong option_count;
+    ulong node_count;
   };
   typedef struct RD_ExceptionFiltersOptionArray RD_ExceptionFiltersOptionArray;
   struct RD_ExceptionFiltersOptionArray
   {
     RD_ExceptionFiltersOption *v;
-    U64 count;
+    ulong count;
   };
   RD_ExceptionFiltersOptionChunkList opts_list = {0};
   for(CTRL_ExceptionCodeKind k = (CTRL_ExceptionCodeKind)(CTRL_ExceptionCodeKind_Null+1);
@@ -7908,7 +7908,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
   {
     opts.count = opts_list.option_count;
     opts.v = push_array_no_zero(scratch.arena, RD_ExceptionFiltersOption, opts.count);
-    U64 idx = 0;
+    ulong idx = 0;
     for(RD_ExceptionFiltersOptionChunkNode *n = opts_list.first; n != 0; n = n->next)
     {
       MemoryCopy(opts.v+idx, n->v, n->count*sizeof(RD_ExceptionFiltersOption));
@@ -8007,14 +8007,14 @@ struct RD_SettingsItemList
 {
   RD_SettingsItemNode *first;
   RD_SettingsItemNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct RD_SettingsItemArray RD_SettingsItemArray;
 struct RD_SettingsItemArray
 {
   RD_SettingsItem *v;
-  U64 count;
+  ulong count;
 };
 
 internal int
@@ -8059,8 +8059,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     Vec2S64 cursor;
     TxtPt txt_cursor;
     TxtPt txt_mark;
-    U8 txt_buffer[1024];
-    U64 txt_size;
+    byte txt_buffer[1024];
+    ulong txt_size;
     RD_ThemeColor color_ctx_menu_color;
     Vec4F32 color_ctx_menu_color_hsva;
     RD_ThemePreset preset_apply_confirm;
@@ -8244,7 +8244,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     items.count = items_list.count;
     items.v = push_array(scratch.arena, RD_SettingsItem, items.count);
     {
-      U64 idx = 0;
+      ulong idx = 0;
       for(RD_SettingsItemNode *n = items_list.first; n != 0; n = n->next, idx += 1)
       {
         items.v[idx] = n->v;
@@ -8269,7 +8269,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         color < RD_ThemeColor_COUNT;
         color = (RD_ThemeColor)(color+1))
     {
-      color_ctx_menu_keys[color] = ui_key_from_stringf(ui_key_zero(), "###settings_color_ctx_menu_%I64x", (U64)color);
+      color_ctx_menu_keys[color] = ui_key_from_stringf(ui_key_zero(), "###settings_color_ctx_menu_%I64x", (ulong)color);
     }
   }
   

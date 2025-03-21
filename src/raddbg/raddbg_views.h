@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Code View Types
 
-typedef U32 RD_CodeViewBuildFlags;
+typedef uint RD_CodeViewBuildFlags;
 enum
 {
   RD_CodeViewBuildFlag_Margins = (1<<0),
@@ -41,7 +41,7 @@ struct RD_CodeViewBuildResult
 ////////////////////////////////
 //~ rjf: Watch View Types
 
-typedef U32 RD_WatchViewFlags;
+typedef uint RD_WatchViewFlags;
 enum
 {
   RD_WatchViewFlag_NoHeader                   = (1<<0),
@@ -82,12 +82,12 @@ struct RD_WatchViewColumn
   RD_WatchViewColumn *prev;
   RD_WatchViewColumnKind kind;
   F32 pct;
-  U8 string_buffer[1024];
-  U64 string_size;
-  U8 display_string_buffer[1024];
-  U64 display_string_size;
-  U8 view_rule_buffer[1024];
-  U64 view_rule_size;
+  byte string_buffer[1024];
+  ulong string_size;
+  byte display_string_buffer[1024];
+  ulong display_string_size;
+  byte view_rule_buffer[1024];
+  ulong view_rule_size;
   B32 is_non_code;
   B32 dequote_string;
   B32 rangify_braces;
@@ -126,8 +126,8 @@ struct RD_WatchViewRowInfo
   CTRL_EntityKind collection_ctrl_entity_kind;
   CTRL_Entity *collection_ctrl_entity;
   CTRL_Entity *callstack_thread;
-  U64 callstack_unwind_index;
-  U64 callstack_inline_depth;
+  ulong callstack_unwind_index;
+  ulong callstack_inline_depth;
 };
 
 typedef struct RD_WatchViewTextEditState RD_WatchViewTextEditState;
@@ -137,10 +137,10 @@ struct RD_WatchViewTextEditState
   RD_WatchViewPoint pt;
   TxtPt cursor;
   TxtPt mark;
-  U8 input_buffer[1024];
-  U64 input_size;
-  U8 initial_buffer[1024];
-  U64 initial_size;
+  byte input_buffer[1024];
+  ulong input_size;
+  byte initial_buffer[1024];
+  ulong initial_size;
 };
 
 typedef struct RD_WatchViewState RD_WatchViewState;
@@ -153,7 +153,7 @@ struct RD_WatchViewState
   RD_WatchViewColumn *first_column;
   RD_WatchViewColumn *last_column;
   RD_WatchViewColumn *free_column;
-  U64 column_count;
+  ulong column_count;
   
   // rjf; table cursor state
   RD_WatchViewPoint cursor;
@@ -163,7 +163,7 @@ struct RD_WatchViewState
   
   // rjf: text input state
   Arena *text_edit_arena;
-  U64 text_edit_state_slots_count;
+  ulong text_edit_state_slots_count;
   RD_WatchViewTextEditState dummy_text_edit_state;
   RD_WatchViewTextEditState **text_edit_state_slots;
   B32 text_editing;
@@ -194,7 +194,7 @@ internal RD_WatchViewRowKind rd_watch_view_row_kind_from_flags_row_info(RD_Watch
 
 //- rjf: row/column -> exprs / strings
 internal E_Expr *rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col);
-internal String8 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, U32 default_radix, FNT_Tag font, F32 font_size, F32 max_size_px);
+internal String8 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size_px);
 
 //- rjf: table coordinates -> text edit state
 internal RD_WatchViewTextEditState *rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint pt);
@@ -206,6 +206,6 @@ internal void rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewCo
 
 //- rjf: watch view main hooks
 internal void rd_watch_view_init(RD_WatchViewState *ewv);
-internal void rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, U32 default_radix, Rng2F32 rect);
+internal void rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 root_expr, String8 root_view_rule, B32 modifiable, uint default_radix, Rng2F32 rect);
 
 #endif // RADDBG_VIEWS_H

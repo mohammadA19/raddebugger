@@ -32,7 +32,7 @@ internal LNK_InputObj **
 lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
-  U64 i = 0;
+  ulong i = 0;
   for (LNK_InputObj *n = list.first; n != 0; n = n->next, ++i) {
     Assert(i < list.count);
     result[i] = n;
@@ -66,10 +66,10 @@ lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
 }
 
 internal LNK_InputObjList
-lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
+lnk_list_from_input_obj_arr(LNK_InputObj **arr, ulong count)
 {
   LNK_InputObjList list = {0};
-  for (U64 i = 0; i < count; ++i) {
+  for (ulong i = 0; i < count; ++i) {
     SLLQueuePush(list.first, list.last, arr[i]);
     ++list.count;
   }
@@ -95,7 +95,7 @@ internal LNK_Obj **
 lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
 {
   LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
-  U64 idx = 0;
+  ulong idx = 0;
   for (LNK_ObjNode *node = list.first; node != 0; node = node->next, ++idx) {
     arr[idx] = &node->data;
   }
@@ -103,7 +103,7 @@ lnk_obj_arr_from_list(Arena *arena, LNK_ObjList list)
 }
 
 internal LNK_ObjNodeArray
-lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, U64 count)
+lnk_obj_list_reserve(Arena *arena, LNK_ObjList *list, ulong count)
 {
   LNK_ObjNodeArray arr = {0};
   if (count) {
@@ -124,7 +124,7 @@ internal LNK_ChunkList
 lnk_obj_search_chunks(Arena *arena, LNK_Obj *obj, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_ChunkList list = {0};
-  for (U64 sect_idx = 0; sect_idx < obj->chunk_count; ++sect_idx) {
+  for (ulong sect_idx = 0; sect_idx < obj->chunk_count; ++sect_idx) {
     String8 obj_sect_name = obj->sect_name_arr[sect_idx];
     String8 obj_sect_sort = obj->sect_sort_arr[sect_idx];
 
@@ -152,7 +152,7 @@ lnk_obj_search_chunks(Arena *arena, LNK_Obj *obj, String8 name, String8 postfix,
 internal
 THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 {
-  U64                           obj_idx  = task_id;
+  ulong                           obj_idx  = task_id;
   LNK_CollectObjChunksTaskData *task     = raw_task;
   LNK_Obj                      *obj      = task->obj_arr[obj_idx];
   LNK_ChunkList                *list_ptr = &task->list_arr[obj_idx];
@@ -160,7 +160,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 }
 
 internal LNK_ChunkList *
-lnk_collect_obj_chunks(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
+lnk_collect_obj_chunks(TP_Context *tp, TP_Arena *arena, ulong obj_count, LNK_Obj **obj_arr, String8 name, String8 postfix, B32 collect_discarded)
 {
   LNK_CollectObjChunksTaskData task_data = {0};
   task_data.obj_arr                      = obj_arr;
@@ -178,7 +178,7 @@ THREAD_POOL_TASK_FUNC(lnk_symbol_collector)
   LNK_SymbolCollector *task  = raw_task;
   Rng1U64              range = task->range_arr[task_id];
   LNK_SymbolList      *list  = &task->out_arr[task_id];
-  for (U64 obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
+  for (ulong obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
     LNK_Obj *obj = &task->in_arr.v[obj_idx].data;
     for (LNK_SymbolNode *node = obj->symbol_list.first; node != 0; node = node->next) {
       if (node->data->type == task->type) {
@@ -203,7 +203,7 @@ lnk_run_symbol_collector(TP_Context *tp, TP_Arena *arena, LNK_ObjNodeArray arr, 
   tp_for_parallel(tp, arena, tp->worker_count, lnk_symbol_collector, &task_data);
 
   LNK_SymbolList list = {0};
-  for (U64 ithread = 0; ithread < tp->worker_count; ++ithread) {
+  for (ulong ithread = 0; ithread < tp->worker_count; ++ithread) {
     lnk_symbol_list_concat_in_place(&list, &task_data.out_arr[ithread]);
   }
 
@@ -218,7 +218,7 @@ THREAD_POOL_TASK_FUNC(lnk_default_lib_collector)
   LNK_DefaultLibCollector *task   = raw_task;
   Rng1U64                  range  = task->range_arr[task_id];
   String8List             *result = &task->out_arr[task_id];
-  for (U64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
+  for (ulong obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
     LNK_Obj *obj = &task->in_arr.v[obj_idx].data;
     for (LNK_Directive *dir = obj->directive_info.v[LNK_CmdSwitch_DefaultLib].first; dir != 0; dir = dir->next) {
       str8_list_concat_in_place(result, &dir->value_list);
@@ -288,7 +288,7 @@ lnk_sect_defn_list_push_node(LNK_SectDefnList *list, LNK_SectDefn *node)
 }
 
 internal LNK_SectDefn *
-lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, U64 idx, COFF_SectionFlags flags)
+lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, ulong idx, COFF_SectionFlags flags)
 {
   LNK_SectDefn *node = push_array_no_zero(arena, LNK_SectDefn, 1);
   node->next         = 0;
@@ -307,7 +307,7 @@ lnk_sect_defn_list_concat_in_place(LNK_SectDefnList *list, LNK_SectDefnList *to_
 }
 
 internal void
-lnk_sect_defn_list_concat_in_place_arr(LNK_SectDefnList *list, LNK_SectDefnList *to_concat_arr, U64 count)
+lnk_sect_defn_list_concat_in_place_arr(LNK_SectDefnList *list, LNK_SectDefnList *to_concat_arr, ulong count)
 {
   SLLConcatInPlaceArray(list, to_concat_arr, count);
 }
@@ -319,7 +319,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
 
   LNK_ObjIniter *task     = raw_task;
   LNK_InputObj  *input    = task->inputs[task_id];
-  U64            obj_idx  = task->obj_id_base + task_id;
+  ulong            obj_idx  = task->obj_id_base + task_id;
   LNK_ObjNode   *obj_node = task->obj_node_arr + task_id;
   LNK_Obj       *obj      = &obj_node->data;
   
@@ -345,14 +345,14 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   void               *coff_symbols  = raw_coff_symbols.str;
 
   // :function_pad_min
-  U64 function_pad_min;
+  ulong function_pad_min;
   if (task->function_pad_min) {
     function_pad_min = *task->function_pad_min;
   } else {
     function_pad_min = lnk_get_default_function_pad_min(coff_info.machine);
   }
 
-  U64 chunk_count = 1;  // :common_block
+  ulong chunk_count = 1;  // :common_block
   chunk_count    += coff_info.section_count_no_null;
 
   String8   *sect_name_arr = push_array_no_zero(arena, String8,   chunk_count);
@@ -360,11 +360,11 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   LNK_Chunk *chunk_arr     = push_array(arena, LNK_Chunk, chunk_count);
 
   // :common_block
-  U64 common_block_idx = chunk_count - 1;
+  ulong common_block_idx = chunk_count - 1;
   sect_name_arr[common_block_idx] = str8_lit(".bss");
   sect_sort_arr[common_block_idx] = str8_lit("~");
 
-  for (U64 sect_idx = 0; sect_idx < coff_info.section_count_no_null; sect_idx += 1) {
+  for (ulong sect_idx = 0; sect_idx < coff_info.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *coff_sect = &coff_sect_arr[sect_idx];
 
     // read name
@@ -428,7 +428,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   lnk_chunk_set_debugf(arena, master_common_block, "%S: master common block", cached_path);
 
   LNK_ChunkPtr *chunk_ptr_arr = push_array_no_zero(arena, LNK_ChunkPtr, chunk_count);
-  for (U64 i = 0; i < chunk_count; ++i) {
+  for (ulong i = 0; i < chunk_count; ++i) {
     chunk_ptr_arr[i] = &chunk_arr[i];
   }
 
@@ -489,10 +489,10 @@ THREAD_POOL_TASK_FUNC(lnk_obj_new_sect_scanner)
   Rng1U64    range = task->range_arr[task_id];
   HashTable *ht    = hash_table_init(arena, 128);
 
-  for (U64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
+  for (ulong obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
     LNK_Obj *obj = &task->obj_node_arr[obj_idx].data;
 
-    for (U64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
+    for (ulong chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
       String8           sect_name  = obj->sect_name_arr[chunk_idx];
       COFF_SectionFlags sect_flags = obj->chunk_arr[chunk_idx]->flags & ~COFF_SectionFlags_LnkFlags;
 
@@ -514,7 +514,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_new_sect_scanner)
 
 LNK_CHUNK_VISITOR_SIG(lnk_chunk_get_count_cb)
 {
-  U64 *counter = (U64 *)ud;
+  ulong *counter = (ulong *)ud;
   *counter += 1;
   return 0;
 }
@@ -522,15 +522,15 @@ LNK_CHUNK_VISITOR_SIG(lnk_chunk_get_count_cb)
 internal
 THREAD_POOL_TASK_FUNC(lnk_chunk_counter)
 {
-  U64               obj_idx = task_id;
+  ulong               obj_idx = task_id;
   LNK_ChunkCounter *task    = raw_task;
   LNK_Obj          *obj     = &task->obj_arr[obj_idx].data;
-  for (U64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
+  for (ulong chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
     String8 name = obj->sect_name_arr[chunk_idx];
     LNK_Chunk   *chunk = obj->chunk_arr[chunk_idx];
     LNK_Section *sect  = lnk_section_table_search(task->st, name);
 
-    U64 count = 0;
+    ulong count = 0;
     lnk_visit_chunks(0, chunk, lnk_chunk_get_count_cb, &count);
 
     task->chunk_count_arr_arr[sect->id][obj_idx] += count;
@@ -543,7 +543,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_chunk_ref_assign)
   LNK_ChunkRefAssign *ctx = ud;
 
   // alloc chunk id
-  U64 chunk_id = ctx->chunk_id_arr_arr[sect_id][ctx->obj_idx];
+  ulong chunk_id = ctx->chunk_id_arr_arr[sect_id][ctx->obj_idx];
   ctx->chunk_id_arr_arr[sect_id][ctx->obj_idx] += 1;
   
   // set chunk ref
@@ -559,10 +559,10 @@ THREAD_POOL_TASK_FUNC(lnk_chunk_ref_assigner)
   LNK_ChunkRefAssigner *task  = raw_task;
   Rng1U64               range = task->range_arr[task_id];
 
-  for (U64 obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
+  for (ulong obj_idx = range.min; obj_idx < range.max; obj_idx += 1) {
     LNK_Obj *obj = &task->obj_arr[obj_idx].data;
 
-    for (U64 chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
+    for (ulong chunk_idx = 0; chunk_idx < obj->chunk_count; chunk_idx += 1) {
       String8    name  = obj->sect_name_arr[chunk_idx];
       String8    sort  = obj->sect_sort_arr[chunk_idx];
       LNK_Chunk *chunk = obj->chunk_arr[chunk_idx];
@@ -590,14 +590,14 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
                            TP_Arena          *arena,
                            LNK_ObjList       *obj_list,
                            LNK_SectionTable  *st,
-                           U64               *function_pad_min,
-                           U64                input_count,
+                           ulong               *function_pad_min,
+                           ulong                input_count,
                            LNK_InputObj     **inputs)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);
   
-  U64              obj_id_base = obj_list->count;
+  ulong              obj_id_base = obj_list->count;
   LNK_ObjNodeArray obj_arr     = lnk_obj_list_reserve(arena->v[0], obj_list, input_count);
   
   ProfBegin("Obj Initer");
@@ -664,7 +664,7 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
         if (!is_present) {
           InvalidPath;
         }
-        U64               sect_number        = (defn->idx + 1);
+        ulong               sect_number        = (defn->idx + 1);
         COFF_SectionFlags expected_flags     = is_present->value_u64;
         String8           expected_flags_str = coff_string_from_section_flags(scratch.arena, expected_flags);
         String8           current_flags_str  = coff_string_from_section_flags(scratch.arena, defn->flags);
@@ -682,11 +682,11 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
     ProfEnd();
 
     ProfBegin("Count Chunks Per Section");
-    U64 **chunk_id_arr_arr;
+    ulong **chunk_id_arr_arr;
     {
-      U64 **chunk_count_arr_arr = push_array_no_zero(scratch.arena, U64 *, st->id_max);
-      for (U64 sect_idx = 0; sect_idx < st->id_max; sect_idx += 1) {
-        chunk_count_arr_arr[sect_idx] = push_array(scratch.arena, U64, obj_arr.count);
+      ulong **chunk_count_arr_arr = push_array_no_zero(scratch.arena, ulong *, st->id_max);
+      for (ulong sect_idx = 0; sect_idx < st->id_max; sect_idx += 1) {
+        chunk_count_arr_arr[sect_idx] = push_array(scratch.arena, ulong, obj_arr.count);
       }
 
       LNK_ChunkCounter task;
@@ -696,11 +696,11 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
       tp_for_parallel(tp, 0, obj_arr.count, lnk_chunk_counter, &task);
 
       chunk_id_arr_arr = chunk_count_arr_arr;
-      for (U64 sect_idx = 1; sect_idx < st->id_max; sect_idx += 1) {
+      for (ulong sect_idx = 1; sect_idx < st->id_max; sect_idx += 1) {
         LNK_Section *sect = lnk_section_table_search_id(st, sect_idx);
         if (!sect) continue;
-        for (U64 obj_idx = 0; obj_idx < obj_arr.count; obj_idx += 1) {
-          U64 chunk_id_base = sect->cman->total_chunk_count;
+        for (ulong obj_idx = 0; obj_idx < obj_arr.count; obj_idx += 1) {
+          ulong chunk_id_base = sect->cman->total_chunk_count;
           sect->cman->total_chunk_count += chunk_count_arr_arr[sect_idx][obj_idx];
           chunk_id_arr_arr[sect_idx][obj_idx] = chunk_id_base;
         }
@@ -741,18 +741,18 @@ lnk_symbol_array_from_coff(Arena              *arena,
                            String8             obj_path,
                            String8             lib_path,
                            B32                 is_big_obj,
-                           U64                 function_pad_min,
-                           U64                 string_table_off,
-                           U64                 sect_count,
+                           ulong                 function_pad_min,
+                           ulong                 string_table_off,
+                           ulong                 sect_count,
                            COFF_SectionHeader *coff_sect_arr,
-                           U64                 coff_symbol_count,
+                           ulong                 coff_symbol_count,
                            void               *coff_symbols,
                            LNK_ChunkPtr       *chunk_ptr_arr,
                            LNK_Chunk          *master_common_block)
 {
   if (function_pad_min) {
     COFF_ParsedSymbol symbol;
-    for (U64 symbol_idx = 0; symbol_idx < coff_symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+    for (ulong symbol_idx = 0; symbol_idx < coff_symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
       // read symbol
       if (is_big_obj) {
         symbol = coff_parse_symbol32(raw_coff, string_table_off, &((COFF_Symbol32 *)coff_symbols)[symbol_idx]);
@@ -806,7 +806,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
           }
 
           // find chunk that is near symbol
-          U64            offset_cursor = 0;
+          ulong            offset_cursor = 0;
           LNK_ChunkNode *current       = chunk->u.list->last;
           for (LNK_ChunkNode *c = chunk->u.list->first; c != 0; c = c->next) {
             Assert(c->data->type == LNK_Chunk_Leaf);
@@ -820,7 +820,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
 
           if (offset_cursor < symbol.value) {
             // bifurcate chunk at symbol offset
-            U64     split_pos        = symbol.value - offset_cursor;
+            ulong     split_pos        = symbol.value - offset_cursor;
             Rng1U64 left_data_range  = rng_1u64(0, split_pos);
             Rng1U64 right_data_range = rng_1u64(left_data_range.max, current->data->u.leaf.size);
             String8 left_data        = str8_substr(current->data->u.leaf, left_data_range);
@@ -860,7 +860,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
   symbol_array.v               = push_array(arena, LNK_Symbol, symbol_array.count);
 
   COFF_ParsedSymbol parsed_symbol;
-  for (U64 symbol_idx = 0; symbol_idx < coff_symbol_count; symbol_idx += (1 + parsed_symbol.aux_symbol_count)) {
+  for (ulong symbol_idx = 0; symbol_idx < coff_symbol_count; symbol_idx += (1 + parsed_symbol.aux_symbol_count)) {
     void *aux_symbols;
     if (is_big_obj) {
       COFF_Symbol32 *ptr = &((COFF_Symbol32 *)coff_symbols)[symbol_idx];
@@ -898,9 +898,9 @@ lnk_symbol_array_from_coff(Arena              *arena,
 
 
         LNK_Chunk             *chunk     = chunk_ptr_arr[parsed_symbol.section_number-1];
-        U64                    offset    = parsed_symbol.value;
+        ulong                    offset    = parsed_symbol.value;
         COFF_ComdatSelectType  selection = COFF_ComdatSelect_Any;
-        U64                    check_sum = 0;
+        ulong                    check_sum = 0;
 
 
         B32 is_comdat = (coff_sect_arr[parsed_symbol.section_number-1].flags & COFF_SectionFlag_LnkCOMDAT) &&
@@ -916,11 +916,11 @@ lnk_symbol_array_from_coff(Arena              *arena,
 
           // create association link between chunks
           if (secdef->selection == COFF_ComdatSelect_Associative) {
-            U32 secdef_number = secdef->number_lo;
+            uint secdef_number = secdef->number_lo;
 
             // promote secdef number to 32 bits
             if (is_big_obj) {
-              secdef_number |= (U32)secdef->number_hi << 16;
+              secdef_number |= (uint)secdef->number_hi << 16;
             }
 
             // associate chunks
@@ -937,7 +937,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
 
         if (chunk->type == LNK_Chunk_List) {
           LNK_Chunk *closest_chunk = chunk->u.list->last->data;
-          U64        offset_cursor = 0;
+          ulong        offset_cursor = 0;
           for (LNK_ChunkNode *c = chunk->u.list->first; c != 0; c = c->next) {
             if (offset_cursor + c->data->u.leaf.size > offset) {
               closest_chunk = c->data;
@@ -1020,10 +1020,10 @@ lnk_symbol_array_from_coff(Arena              *arena,
 }
 
 internal LNK_RelocList *
-lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 coff_data, U64 sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
+lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 coff_data, ulong sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
 {
   LNK_RelocList *reloc_list_arr = push_array_no_zero(arena, LNK_RelocList, sect_count);
-  for (U64 sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
+  for (ulong sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
     COFF_SectionHeader *COFF_FileHeader     = &coff_sect_arr[sect_idx];
     COFF_RelocInfo      coff_reloc_info = coff_reloc_info_from_section_header(coff_data, COFF_FileHeader);
     COFF_Reloc         *coff_reloc_v    = (COFF_Reloc *)(coff_data.str + coff_reloc_info.array_off);
@@ -1065,8 +1065,8 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
   
   String8 to_parse;
   {
-    local_persist const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
-    local_persist const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
+    local_persist const byte bom_sig[]   = { 0xEF, 0xBB, 0xBF };
+    local_persist const byte ascii_sig[] = { 0x20, 0x20, 0x20 };
     if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
       to_parse = str8_zero();
       lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "TODO: support for BOM encoding");
@@ -1109,13 +1109,13 @@ internal LNK_DirectiveInfo
 lnk_directive_info_from_sections(Arena         *arena,
                                  String8        obj_path,
                                  String8        lib_path,
-                                 U64            chunk_count,
+                                 ulong            chunk_count,
                                  LNK_RelocList *reloc_list_arr,
                                  String8       *sect_name_arr,
                                  LNK_Chunk     *chunk_arr)
 {
   LNK_DirectiveInfo directive_info = {0};
-  for (U64 chunk_idx = 0; chunk_idx < chunk_count; ++chunk_idx) {
+  for (ulong chunk_idx = 0; chunk_idx < chunk_count; ++chunk_idx) {
     String8    sect_name  = sect_name_arr[chunk_idx];
     LNK_Chunk *sect_chunk = chunk_arr + chunk_idx;
     if (str8_match_lit(".drectve", sect_name, 0)) {
@@ -1152,10 +1152,10 @@ lnk_obj_get_features(LNK_Obj *obj)
   return result;
 }
 
-internal U32
+internal uint
 lnk_obj_get_comp_id(LNK_Obj *obj)
 {
-  U32 result = 0;
+  uint result = 0;
   LNK_Symbol *sym = lnk_symbol_list_search(obj->symbol_list, str8_lit("@comp.id"), 0);
   if (sym) {
     Assert(LNK_Symbol_IsDefined(sym->type));
@@ -1165,10 +1165,10 @@ lnk_obj_get_comp_id(LNK_Obj *obj)
   return result;
 }
 
-internal U32
+internal uint
 lnk_obj_get_vol_md(LNK_Obj *obj)
 {
-  U32 result = 0;
+  uint result = 0;
   LNK_Symbol *sym = lnk_symbol_list_search(obj->symbol_list, str8_lit("@vol.md"), 0);
   if (sym) {
     Assert(LNK_Symbol_IsDefined(sym->type));

@@ -68,10 +68,10 @@
 ////////////////////////////////
 //~ rjf: Units
 
-#define KB(n)  (((U64)(n)) << 10)
-#define MB(n)  (((U64)(n)) << 20)
-#define GB(n)  (((U64)(n)) << 30)
-#define TB(n)  (((U64)(n)) << 40)
+#define KB(n)  (((ulong)(n)) << 10)
+#define MB(n)  (((ulong)(n)) << 20)
+#define GB(n)  (((ulong)(n)) << 30)
+#define TB(n)  (((ulong)(n)) << 40)
 #define Thousand(n)   ((n)*1000)
 #define Million(n)    ((n)*1000000)
 #define Billion(n)    ((n)*1000000000)
@@ -115,8 +115,8 @@
 
 #define Member(T,m)                 (((T*)0)->m)
 #define OffsetOf(T,m)               IntFromPtr(&Member(T,m))
-#define MemberFromOffset(T,ptr,off) (T)((((U8 *)ptr)+(off)))
-#define CastFromMember(T,m,ptr)     (T*)(((U8*)ptr) - OffsetOf(T,m))
+#define MemberFromOffset(T,ptr,off) (T)((((byte *)ptr)+(off)))
+#define CastFromMember(T,m,ptr)     (T*)(((byte*)ptr) - OffsetOf(T,m))
 
 ////////////////////////////////
 //~ rjf: For-Loop Construct Macros
@@ -124,8 +124,8 @@
 #define DeferLoop(begin, end)        for(int _i_ = ((begin), 0); !_i_; _i_ += 1, (end))
 #define DeferLoopChecked(begin, end) for(int _i_ = 2 * !(begin); (_i_ == 2 ? ((end), 0) : !_i_); _i_ += 1, (end))
 
-#define EachIndex(it, count) (U64 it = 0; it < (count); it += 1)
-#define EachElement(it, array) (U64 it = 0; it < ArrayCount(array); it += 1)
+#define EachIndex(it, count) (ulong it = 0; it < (count); it += 1)
+#define EachElement(it, array) (ulong it = 0; it < ArrayCount(array); it += 1)
 #define EachEnumVal(type, it) (type it = (type)0; it < type##_COUNT; it = (type)(it+1))
 #define EachNonZeroEnumVal(type, it) (type it = (type)1; it < type##_COUNT; it = (type)(it+1))
 
@@ -173,7 +173,7 @@
 #define InvalidPath        Assert(!"Invalid Path!")
 #define NotImplemented     Assert(!"Not Implemented!")
 #define NoOp               ((void)0)
-#define StaticAssert(C, ID) global U8 Glue(ID, __LINE__)[(C)?1:-1]
+#define StaticAssert(C, ID) global byte Glue(ID, __LINE__)[(C)?1:-1]
 
 ////////////////////////////////
 //~ rjf: Atomic Operations
@@ -181,13 +181,13 @@
 #if COMPILER_MSVC
 # include <intrin.h>
 # if ARCH_X64
-#  define ins_atomic_u64_eval(x)                 *((volatile U64 *)(x))
+#  define ins_atomic_u64_eval(x)                 *((volatile ulong *)(x))
 #  define ins_atomic_u64_inc_eval(x)             InterlockedIncrement64((volatile __int64 *)(x))
 #  define ins_atomic_u64_dec_eval(x)             InterlockedDecrement64((volatile __int64 *)(x))
 #  define ins_atomic_u64_eval_assign(x,c)        InterlockedExchange64((volatile __int64 *)(x),(c))
 #  define ins_atomic_u64_add_eval(x,c)           InterlockedAdd64((volatile __int64 *)(x), c)
 #  define ins_atomic_u64_eval_cond_assign(x,k,c) InterlockedCompareExchange64((volatile __int64 *)(x),(k),(c))
-#  define ins_atomic_u32_eval(x)                 *((volatile U32 *)(x))
+#  define ins_atomic_u32_eval(x)                 *((volatile uint *)(x))
 #  define ins_atomic_u32_inc_eval(x)             InterlockedIncrement((volatile LONG *)x)
 #  define ins_atomic_u32_eval_assign(x,c)        InterlockedExchange((volatile LONG *)(x),(c))
 #  define ins_atomic_u32_eval_cond_assign(x,k,c) InterlockedCompareExchange((volatile LONG *)(x),(k),(c))
@@ -197,28 +197,28 @@
 # endif
 #elif COMPILER_CLANG || COMPILER_GCC
 #  define ins_atomic_u64_eval(x)                 __atomic_load_n(x, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u64_inc_eval(x)             (__atomic_fetch_add((volatile U64 *)(x), 1, __ATOMIC_SEQ_CST) + 1)
-#  define ins_atomic_u64_dec_eval(x)             (__atomic_fetch_sub((volatile U64 *)(x), 1, __ATOMIC_SEQ_CST) - 1)
+#  define ins_atomic_u64_inc_eval(x)             (__atomic_fetch_add((volatile ulong *)(x), 1, __ATOMIC_SEQ_CST) + 1)
+#  define ins_atomic_u64_dec_eval(x)             (__atomic_fetch_sub((volatile ulong *)(x), 1, __ATOMIC_SEQ_CST) - 1)
 #  define ins_atomic_u64_eval_assign(x,c)        __atomic_exchange_n(x, c, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u64_add_eval(x,c)           (__atomic_fetch_add((volatile U64 *)(x), c, __ATOMIC_SEQ_CST) + (c))
-#  define ins_atomic_u64_eval_cond_assign(x,k,c) ({ U64 _new = (c); __atomic_compare_exchange_n((volatile U64 *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
+#  define ins_atomic_u64_add_eval(x,c)           (__atomic_fetch_add((volatile ulong *)(x), c, __ATOMIC_SEQ_CST) + (c))
+#  define ins_atomic_u64_eval_cond_assign(x,k,c) ({ ulong _new = (c); __atomic_compare_exchange_n((volatile ulong *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
 #  define ins_atomic_u32_eval(x)                 __atomic_load_n(x, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u32_inc_eval(x)             (__atomic_fetch_add((volatile U32 *)(x), 1, __ATOMIC_SEQ_CST) + 1)
-#  define ins_atomic_u32_add_eval(x,c)           (__atomic_fetch_add((volatile U32 *)(x), c, __ATOMIC_SEQ_CST) + (c))
+#  define ins_atomic_u32_inc_eval(x)             (__atomic_fetch_add((volatile uint *)(x), 1, __ATOMIC_SEQ_CST) + 1)
+#  define ins_atomic_u32_add_eval(x,c)           (__atomic_fetch_add((volatile uint *)(x), c, __ATOMIC_SEQ_CST) + (c))
 #  define ins_atomic_u32_eval_assign(x,c)        __atomic_exchange_n(x, c, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u32_eval_cond_assign(x,k,c) ({ U32 _new = (c); __atomic_compare_exchange_n((volatile U32 *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
+#  define ins_atomic_u32_eval_cond_assign(x,k,c) ({ uint _new = (c); __atomic_compare_exchange_n((volatile uint *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
 #else
 #  error Atomic intrinsics not defined for this compiler / architecture.
 #endif
 
 #if ARCH_64BIT
-# define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u64_eval_cond_assign((volatile U64 *)(x), (U64)(k), (U64)(c))
-# define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u64_eval_assign((volatile U64 *)(x), (U64)(c))
-# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u64_eval((volatile U64 *)x)
+# define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u64_eval_cond_assign((volatile ulong *)(x), (ulong)(k), (ulong)(c))
+# define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u64_eval_assign((volatile ulong *)(x), (ulong)(c))
+# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u64_eval((volatile ulong *)x)
 #elif ARCH_32BIT
-# define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u32_eval_cond_assign((volatile U32 *)(x), (U32)(k), (U32)(c))
-# define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u32_eval_assign((volatile U32 *)(x), (U32)(c))
-# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u32_eval((volatile U32 *)x)
+# define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u32_eval_cond_assign((volatile uint *)(x), (uint)(k), (uint)(c))
+# define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u32_eval_assign((volatile uint *)(x), (uint)(c))
+# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u32_eval((volatile uint *)x)
 #else
 # error Atomic intrinsics for pointers not defined for this architecture.
 #endif
@@ -332,15 +332,15 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 #define Swap(T,a,b) do{T t__ = a; a = b; b = t__;}while(0)
 
 #if ARCH_64BIT
-# define IntFromPtr(ptr) ((U64)(ptr))
+# define IntFromPtr(ptr) ((ulong)(ptr))
 #elif ARCH_32BIT
-# define IntFromPtr(ptr) ((U32)(ptr))
+# define IntFromPtr(ptr) ((uint)(ptr))
 #else
 # error Missing pointer-to-integer cast for this architecture.
 #endif
-#define PtrFromInt(i) (void*)((U8*)0 + (i))
+#define PtrFromInt(i) (void*)((byte*)0 + (i))
 
-#define Compose64Bit(a,b)  ((((U64)a) << 32) | ((U64)b));
+#define Compose64Bit(a,b)  ((((ulong)a) << 32) | ((ulong)b));
 #define AlignPow2(x,b)     (((x) + (b) - 1)&(~((b) - 1)))
 #define AlignDownPow2(x,b) ((x)&(~((b) - 1)))
 #define AlignPadPow2(x,b)  ((0-(x)) & ((b) - 1))
@@ -364,10 +364,10 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 ////////////////////////////////
 //~ rjf: Base Types
 
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
+typedef uint8_t  byte;
+typedef uint16_t ushort;
+typedef uint32_t uint;
+typedef uint64_t ulong;
 typedef int8_t   sbyte;
 typedef int16_t  short;
 typedef int32_t  int;
@@ -382,7 +382,7 @@ typedef void VoidProc(void);
 typedef struct U128 U128;
 struct U128
 {
-  U64 u64[2];
+  ulong u64[2];
 };
 
 ////////////////////////////////
@@ -509,12 +509,12 @@ union Guid
 {
   struct
   {
-    U32 data1;
-    U16 data2;
-    U16 data3;
-    U8  data4[8];
+    uint data1;
+    ushort data2;
+    ushort data3;
+    byte  data4[8];
   };
-  U8 v[16];
+  byte v[16];
 };
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
@@ -524,34 +524,34 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 typedef struct U16Array U16Array;
 struct U16Array
 {
-  U64  count;
-  U16 *v;
+  ulong  count;
+  ushort *v;
 };
 typedef struct U32Array U32Array;
 struct U32Array
 {
-  U64  count;
-  U32 *v;
+  ulong  count;
+  uint *v;
 };
 typedef struct U64Array U64Array;
 struct U64Array
 {
-  U64  count;
-  U64 *v;
+  ulong  count;
+  ulong *v;
 };
 typedef struct U128Array U128Array;
 struct U128Array
 {
-  U64   count;
+  ulong   count;
   U128 *v;
 };
 
 ////////////////////////////////
 //~ NOTE(allen): Constants
 
-global U32 sign32     = 0x80000000;
-global U32 exponent32 = 0x7F800000;
-global U32 mantissa32 = 0x007FFFFF;
+global uint sign32     = 0x80000000;
+global uint exponent32 = 0x7F800000;
+global uint mantissa32 = 0x007FFFFF;
 
 global F32   big_golden32 = 1.61803398875f;
 global F32 small_golden32 = 0.61803398875f;
@@ -560,10 +560,10 @@ global F32 pi32 = 3.1415926535897f;
 
 global F64 machine_epsilon64 = 4.94065645841247e-324;
 
-global U64 max_U64 = 0xffffffffffffffffull;
-global U32 max_U32 = 0xffffffff;
-global U16 max_U16 = 0xffff;
-global U8  max_U8  = 0xff;
+global ulong max_U64 = 0xffffffffffffffffull;
+global uint max_U32 = 0xffffffff;
+global ushort max_U16 = 0xffff;
+global byte  max_U8  = 0xff;
 
 global long max_S64 = (long)0x7fffffffffffffffull;
 global int max_S32 = (int)0x7fffffff;
@@ -575,137 +575,137 @@ global int min_S32 = (int)0xffffffff;
 global short min_S16 = (short)0xffff;
 global sbyte  min_S8  =  (sbyte)0xff;
 
-global const U32 bitmask1  = 0x00000001;
-global const U32 bitmask2  = 0x00000003;
-global const U32 bitmask3  = 0x00000007;
-global const U32 bitmask4  = 0x0000000f;
-global const U32 bitmask5  = 0x0000001f;
-global const U32 bitmask6  = 0x0000003f;
-global const U32 bitmask7  = 0x0000007f;
-global const U32 bitmask8  = 0x000000ff;
-global const U32 bitmask9  = 0x000001ff;
-global const U32 bitmask10 = 0x000003ff;
-global const U32 bitmask11 = 0x000007ff;
-global const U32 bitmask12 = 0x00000fff;
-global const U32 bitmask13 = 0x00001fff;
-global const U32 bitmask14 = 0x00003fff;
-global const U32 bitmask15 = 0x00007fff;
-global const U32 bitmask16 = 0x0000ffff;
-global const U32 bitmask17 = 0x0001ffff;
-global const U32 bitmask18 = 0x0003ffff;
-global const U32 bitmask19 = 0x0007ffff;
-global const U32 bitmask20 = 0x000fffff;
-global const U32 bitmask21 = 0x001fffff;
-global const U32 bitmask22 = 0x003fffff;
-global const U32 bitmask23 = 0x007fffff;
-global const U32 bitmask24 = 0x00ffffff;
-global const U32 bitmask25 = 0x01ffffff;
-global const U32 bitmask26 = 0x03ffffff;
-global const U32 bitmask27 = 0x07ffffff;
-global const U32 bitmask28 = 0x0fffffff;
-global const U32 bitmask29 = 0x1fffffff;
-global const U32 bitmask30 = 0x3fffffff;
-global const U32 bitmask31 = 0x7fffffff;
-global const U32 bitmask32 = 0xffffffff;
+global const uint bitmask1  = 0x00000001;
+global const uint bitmask2  = 0x00000003;
+global const uint bitmask3  = 0x00000007;
+global const uint bitmask4  = 0x0000000f;
+global const uint bitmask5  = 0x0000001f;
+global const uint bitmask6  = 0x0000003f;
+global const uint bitmask7  = 0x0000007f;
+global const uint bitmask8  = 0x000000ff;
+global const uint bitmask9  = 0x000001ff;
+global const uint bitmask10 = 0x000003ff;
+global const uint bitmask11 = 0x000007ff;
+global const uint bitmask12 = 0x00000fff;
+global const uint bitmask13 = 0x00001fff;
+global const uint bitmask14 = 0x00003fff;
+global const uint bitmask15 = 0x00007fff;
+global const uint bitmask16 = 0x0000ffff;
+global const uint bitmask17 = 0x0001ffff;
+global const uint bitmask18 = 0x0003ffff;
+global const uint bitmask19 = 0x0007ffff;
+global const uint bitmask20 = 0x000fffff;
+global const uint bitmask21 = 0x001fffff;
+global const uint bitmask22 = 0x003fffff;
+global const uint bitmask23 = 0x007fffff;
+global const uint bitmask24 = 0x00ffffff;
+global const uint bitmask25 = 0x01ffffff;
+global const uint bitmask26 = 0x03ffffff;
+global const uint bitmask27 = 0x07ffffff;
+global const uint bitmask28 = 0x0fffffff;
+global const uint bitmask29 = 0x1fffffff;
+global const uint bitmask30 = 0x3fffffff;
+global const uint bitmask31 = 0x7fffffff;
+global const uint bitmask32 = 0xffffffff;
 
-global const U64 bitmask33 = 0x00000001ffffffffull;
-global const U64 bitmask34 = 0x00000003ffffffffull;
-global const U64 bitmask35 = 0x00000007ffffffffull;
-global const U64 bitmask36 = 0x0000000fffffffffull;
-global const U64 bitmask37 = 0x0000001fffffffffull;
-global const U64 bitmask38 = 0x0000003fffffffffull;
-global const U64 bitmask39 = 0x0000007fffffffffull;
-global const U64 bitmask40 = 0x000000ffffffffffull;
-global const U64 bitmask41 = 0x000001ffffffffffull;
-global const U64 bitmask42 = 0x000003ffffffffffull;
-global const U64 bitmask43 = 0x000007ffffffffffull;
-global const U64 bitmask44 = 0x00000fffffffffffull;
-global const U64 bitmask45 = 0x00001fffffffffffull;
-global const U64 bitmask46 = 0x00003fffffffffffull;
-global const U64 bitmask47 = 0x00007fffffffffffull;
-global const U64 bitmask48 = 0x0000ffffffffffffull;
-global const U64 bitmask49 = 0x0001ffffffffffffull;
-global const U64 bitmask50 = 0x0003ffffffffffffull;
-global const U64 bitmask51 = 0x0007ffffffffffffull;
-global const U64 bitmask52 = 0x000fffffffffffffull;
-global const U64 bitmask53 = 0x001fffffffffffffull;
-global const U64 bitmask54 = 0x003fffffffffffffull;
-global const U64 bitmask55 = 0x007fffffffffffffull;
-global const U64 bitmask56 = 0x00ffffffffffffffull;
-global const U64 bitmask57 = 0x01ffffffffffffffull;
-global const U64 bitmask58 = 0x03ffffffffffffffull;
-global const U64 bitmask59 = 0x07ffffffffffffffull;
-global const U64 bitmask60 = 0x0fffffffffffffffull;
-global const U64 bitmask61 = 0x1fffffffffffffffull;
-global const U64 bitmask62 = 0x3fffffffffffffffull;
-global const U64 bitmask63 = 0x7fffffffffffffffull;
-global const U64 bitmask64 = 0xffffffffffffffffull;
+global const ulong bitmask33 = 0x00000001ffffffffull;
+global const ulong bitmask34 = 0x00000003ffffffffull;
+global const ulong bitmask35 = 0x00000007ffffffffull;
+global const ulong bitmask36 = 0x0000000fffffffffull;
+global const ulong bitmask37 = 0x0000001fffffffffull;
+global const ulong bitmask38 = 0x0000003fffffffffull;
+global const ulong bitmask39 = 0x0000007fffffffffull;
+global const ulong bitmask40 = 0x000000ffffffffffull;
+global const ulong bitmask41 = 0x000001ffffffffffull;
+global const ulong bitmask42 = 0x000003ffffffffffull;
+global const ulong bitmask43 = 0x000007ffffffffffull;
+global const ulong bitmask44 = 0x00000fffffffffffull;
+global const ulong bitmask45 = 0x00001fffffffffffull;
+global const ulong bitmask46 = 0x00003fffffffffffull;
+global const ulong bitmask47 = 0x00007fffffffffffull;
+global const ulong bitmask48 = 0x0000ffffffffffffull;
+global const ulong bitmask49 = 0x0001ffffffffffffull;
+global const ulong bitmask50 = 0x0003ffffffffffffull;
+global const ulong bitmask51 = 0x0007ffffffffffffull;
+global const ulong bitmask52 = 0x000fffffffffffffull;
+global const ulong bitmask53 = 0x001fffffffffffffull;
+global const ulong bitmask54 = 0x003fffffffffffffull;
+global const ulong bitmask55 = 0x007fffffffffffffull;
+global const ulong bitmask56 = 0x00ffffffffffffffull;
+global const ulong bitmask57 = 0x01ffffffffffffffull;
+global const ulong bitmask58 = 0x03ffffffffffffffull;
+global const ulong bitmask59 = 0x07ffffffffffffffull;
+global const ulong bitmask60 = 0x0fffffffffffffffull;
+global const ulong bitmask61 = 0x1fffffffffffffffull;
+global const ulong bitmask62 = 0x3fffffffffffffffull;
+global const ulong bitmask63 = 0x7fffffffffffffffull;
+global const ulong bitmask64 = 0xffffffffffffffffull;
 
-global const U32 bit1  = (1<<0);
-global const U32 bit2  = (1<<1);
-global const U32 bit3  = (1<<2);
-global const U32 bit4  = (1<<3);
-global const U32 bit5  = (1<<4);
-global const U32 bit6  = (1<<5);
-global const U32 bit7  = (1<<6);
-global const U32 bit8  = (1<<7);
-global const U32 bit9  = (1<<8);
-global const U32 bit10 = (1<<9);
-global const U32 bit11 = (1<<10);
-global const U32 bit12 = (1<<11);
-global const U32 bit13 = (1<<12);
-global const U32 bit14 = (1<<13);
-global const U32 bit15 = (1<<14);
-global const U32 bit16 = (1<<15);
-global const U32 bit17 = (1<<16);
-global const U32 bit18 = (1<<17);
-global const U32 bit19 = (1<<18);
-global const U32 bit20 = (1<<19);
-global const U32 bit21 = (1<<20);
-global const U32 bit22 = (1<<21);
-global const U32 bit23 = (1<<22);
-global const U32 bit24 = (1<<23);
-global const U32 bit25 = (1<<24);
-global const U32 bit26 = (1<<25);
-global const U32 bit27 = (1<<26);
-global const U32 bit28 = (1<<27);
-global const U32 bit29 = (1<<28);
-global const U32 bit30 = (1<<29);
-global const U32 bit31 = (1<<30);
-global const U32 bit32 = (1<<31);
+global const uint bit1  = (1<<0);
+global const uint bit2  = (1<<1);
+global const uint bit3  = (1<<2);
+global const uint bit4  = (1<<3);
+global const uint bit5  = (1<<4);
+global const uint bit6  = (1<<5);
+global const uint bit7  = (1<<6);
+global const uint bit8  = (1<<7);
+global const uint bit9  = (1<<8);
+global const uint bit10 = (1<<9);
+global const uint bit11 = (1<<10);
+global const uint bit12 = (1<<11);
+global const uint bit13 = (1<<12);
+global const uint bit14 = (1<<13);
+global const uint bit15 = (1<<14);
+global const uint bit16 = (1<<15);
+global const uint bit17 = (1<<16);
+global const uint bit18 = (1<<17);
+global const uint bit19 = (1<<18);
+global const uint bit20 = (1<<19);
+global const uint bit21 = (1<<20);
+global const uint bit22 = (1<<21);
+global const uint bit23 = (1<<22);
+global const uint bit24 = (1<<23);
+global const uint bit25 = (1<<24);
+global const uint bit26 = (1<<25);
+global const uint bit27 = (1<<26);
+global const uint bit28 = (1<<27);
+global const uint bit29 = (1<<28);
+global const uint bit30 = (1<<29);
+global const uint bit31 = (1<<30);
+global const uint bit32 = (1<<31);
 
-global const U64 bit33 = (1ull<<32);
-global const U64 bit34 = (1ull<<33);
-global const U64 bit35 = (1ull<<34);
-global const U64 bit36 = (1ull<<35);
-global const U64 bit37 = (1ull<<36);
-global const U64 bit38 = (1ull<<37);
-global const U64 bit39 = (1ull<<38);
-global const U64 bit40 = (1ull<<39);
-global const U64 bit41 = (1ull<<40);
-global const U64 bit42 = (1ull<<41);
-global const U64 bit43 = (1ull<<42);
-global const U64 bit44 = (1ull<<43);
-global const U64 bit45 = (1ull<<44);
-global const U64 bit46 = (1ull<<45);
-global const U64 bit47 = (1ull<<46);
-global const U64 bit48 = (1ull<<47);
-global const U64 bit49 = (1ull<<48);
-global const U64 bit50 = (1ull<<49);
-global const U64 bit51 = (1ull<<50);
-global const U64 bit52 = (1ull<<51);
-global const U64 bit53 = (1ull<<52);
-global const U64 bit54 = (1ull<<53);
-global const U64 bit55 = (1ull<<54);
-global const U64 bit56 = (1ull<<55);
-global const U64 bit57 = (1ull<<56);
-global const U64 bit58 = (1ull<<57);
-global const U64 bit59 = (1ull<<58);
-global const U64 bit60 = (1ull<<59);
-global const U64 bit61 = (1ull<<60);
-global const U64 bit62 = (1ull<<61);
-global const U64 bit63 = (1ull<<62);
-global const U64 bit64 = (1ull<<63);
+global const ulong bit33 = (1ull<<32);
+global const ulong bit34 = (1ull<<33);
+global const ulong bit35 = (1ull<<34);
+global const ulong bit36 = (1ull<<35);
+global const ulong bit37 = (1ull<<36);
+global const ulong bit38 = (1ull<<37);
+global const ulong bit39 = (1ull<<38);
+global const ulong bit40 = (1ull<<39);
+global const ulong bit41 = (1ull<<40);
+global const ulong bit42 = (1ull<<41);
+global const ulong bit43 = (1ull<<42);
+global const ulong bit44 = (1ull<<43);
+global const ulong bit45 = (1ull<<44);
+global const ulong bit46 = (1ull<<45);
+global const ulong bit47 = (1ull<<46);
+global const ulong bit48 = (1ull<<47);
+global const ulong bit49 = (1ull<<48);
+global const ulong bit50 = (1ull<<49);
+global const ulong bit51 = (1ull<<50);
+global const ulong bit52 = (1ull<<51);
+global const ulong bit53 = (1ull<<52);
+global const ulong bit54 = (1ull<<53);
+global const ulong bit55 = (1ull<<54);
+global const ulong bit56 = (1ull<<55);
+global const ulong bit57 = (1ull<<56);
+global const ulong bit58 = (1ull<<57);
+global const ulong bit59 = (1ull<<58);
+global const ulong bit60 = (1ull<<59);
+global const ulong bit61 = (1ull<<60);
+global const ulong bit62 = (1ull<<61);
+global const ulong bit63 = (1ull<<62);
+global const ulong bit64 = (1ull<<63);
 
 ////////////////////////////////
 //~ allen: Time
@@ -744,31 +744,31 @@ Month;
 typedef struct DateTime DateTime;
 struct DateTime
 {
-  U16 micro_sec; // [0,999]
-  U16 msec; // [0,999]
-  U16 sec;  // [0,60]
-  U16 min;  // [0,59]
-  U16 hour; // [0,24]
-  U16 day;  // [0,30]
+  ushort micro_sec; // [0,999]
+  ushort msec; // [0,999]
+  ushort sec;  // [0,60]
+  ushort min;  // [0,59]
+  ushort hour; // [0,24]
+  ushort day;  // [0,30]
   union
   {
     WeekDay week_day;
-    U32 wday;
+    uint wday;
   };
   union
   {
     Month month;
-    U32 mon;
+    uint mon;
   };
-  U32 year; // 1 = 1 CE, 0 = 1 BC
+  uint year; // 1 = 1 CE, 0 = 1 BC
 };
 
-typedef U64 DenseTime;
+typedef ulong DenseTime;
 
 ////////////////////////////////
 //~ allen: Files
 
-typedef U32 FilePropertyFlags;
+typedef uint FilePropertyFlags;
 enum
 {
   FilePropertyFlag_IsFolder = (1 << 0),
@@ -777,7 +777,7 @@ enum
 typedef struct FileProperties FileProperties;
 struct FileProperties
 {
-  U64 size;
+  ulong size;
   DenseTime modified;
   DenseTime created;
   FilePropertyFlags flags;
@@ -786,31 +786,31 @@ struct FileProperties
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-internal U16 safe_cast_u16(U32 x);
-internal U32 safe_cast_u32(U64 x);
+internal ushort safe_cast_u16(uint x);
+internal uint safe_cast_u32(ulong x);
 internal int safe_cast_s32(long x);
 
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
 
 internal U128 u128_zero(void);
-internal U128 u128_make(U64 v0, U64 v1);
+internal U128 u128_make(ulong v0, ulong v1);
 internal B32 u128_match(U128 a, U128 b);
 
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-internal U32 u32_from_u64_saturate(U64 x);
-internal U64 u64_up_to_pow2(U64 x);
-internal int extend_sign32(U32 x, U32 size);
-internal long extend_sign64(U64 x, U64 size);
+internal uint u32_from_u64_saturate(ulong x);
+internal ulong u64_up_to_pow2(ulong x);
+internal int extend_sign32(uint x, uint size);
+internal long extend_sign64(ulong x, ulong size);
 
 internal F32 inf32(void);
 internal F32 neg_inf32(void);
 
-internal U16 bswap_u16(U16 x);
-internal U32 bswap_u32(U32 x);
-internal U64 bswap_u64(U64 x);
+internal ushort bswap_u16(ushort x);
+internal uint bswap_u32(uint x);
+internal ulong bswap_u64(ulong x);
 
 #if ARCH_LITTLE_ENDIAN
 # define from_be_u16(x) bswap_u16(x)
@@ -822,13 +822,13 @@ internal U64 bswap_u64(U64 x);
 # define from_be_u64(x) (x)
 #endif
 
-internal U64 count_bits_set32(U32 val);
-internal U64 count_bits_set64(U64 val);
+internal ulong count_bits_set32(uint val);
+internal ulong count_bits_set64(ulong val);
 
-internal U64 ctz32(U32 val);
-internal U64 ctz64(U64 val);
-internal U64 clz32(U32 val);
-internal U64 clz64(U64 val);
+internal ulong ctz32(uint val);
+internal ulong ctz64(ulong val);
+internal ulong clz32(uint val);
+internal ulong clz64(ulong val);
 
 ////////////////////////////////
 //~ rjf: Enum -> Sign
@@ -839,7 +839,7 @@ internal F32 sign_from_side_F32(Side side);
 ////////////////////////////////
 //~ rjf: Memory Functions
 
-internal B32 memory_is_zero(void *ptr, U64 size);
+internal B32 memory_is_zero(void *ptr, ulong size);
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
@@ -857,8 +857,8 @@ internal B32 txt_rng_contains(TxtRng r, TxtPt pt);
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-internal U64 bit_size_from_arch(Arch arch);
-internal U64 max_instruction_size_from_arch(Arch arch);
+internal ulong bit_size_from_arch(Arch arch);
+internal ulong max_instruction_size_from_arch(Arch arch);
 
 internal OperatingSystem operating_system_from_context(void);
 internal Arch arch_from_context(void);
@@ -869,14 +869,14 @@ internal Compiler compiler_from_context(void);
 
 internal DenseTime dense_time_from_date_time(DateTime date_time);
 internal DateTime  date_time_from_dense_time(DenseTime time);
-internal DateTime  date_time_from_micro_seconds(U64 time);
-internal DateTime  date_time_from_unix_time(U64 unix_time);
+internal DateTime  date_time_from_micro_seconds(ulong time);
+internal DateTime  date_time_from_unix_time(ulong unix_time);
 
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-internal U64 ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size);
-internal U64 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size);
+internal ulong ring_write(byte *ring_base, ulong ring_size, ulong ring_pos, void *src_data, ulong src_data_size);
+internal ulong ring_read(byte *ring_base, ulong ring_size, ulong ring_pos, void *dst_data, ulong read_size);
 #define ring_write_struct(ring_base, ring_size, ring_pos, ptr) ring_write((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 #define ring_read_struct(ring_base, ring_size, ring_pos, ptr) ring_read((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: View Rule Tree Info Extraction Helpers
 
-internal U64 ev_base_offset_from_eval(E_Eval eval);
+internal ulong ev_base_offset_from_eval(E_Eval eval);
 internal E_Value ev_value_from_params(MD_Node *params);
 internal E_TypeKey ev_type_key_from_params(MD_Node *params);
 internal E_Value ev_value_from_params_key(MD_Node *params, String8 key);

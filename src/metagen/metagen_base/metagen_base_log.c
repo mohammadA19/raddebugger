@@ -69,7 +69,7 @@ log_scope_begin(void)
 {
   if(log_active != 0)
   {
-    U64 pos = arena_pos(log_active->arena);
+    ulong pos = arena_pos(log_active->arena);
     LogScope *scope = push_array(log_active->arena, LogScope, 1);
     scope->pos = pos;
     SLLStackPush(log_active->top_scope, scope);

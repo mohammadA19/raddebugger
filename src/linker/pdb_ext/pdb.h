@@ -3,5 +3,5 @@
 
 #pragma once
 
-internal U32 pdb_hash_udt(CV_UDTInfo udt_info, String8 data);
-internal U32 pdb_crc32_from_string(String8 string);
+internal uint pdb_hash_udt(CV_UDTInfo udt_info, String8 data);
+internal uint pdb_crc32_from_string(String8 string);

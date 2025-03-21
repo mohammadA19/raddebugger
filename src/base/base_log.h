@@ -19,7 +19,7 @@ typedef struct LogScope LogScope;
 struct LogScope
 {
   LogScope *next;
-  U64 pos;
+  ulong pos;
   String8List strings[LogMsgKind_COUNT];
 };
 

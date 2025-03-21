@@ -18,7 +18,7 @@ struct OS_GfxInfo
 ////////////////////////////////
 //~ rjf: Window Types
 
-typedef U32 OS_WindowFlags;
+typedef uint OS_WindowFlags;
 enum
 {
   OS_WindowFlag_CustomBorder = (1<<0),
@@ -66,7 +66,7 @@ typedef enum OS_EventKind
 }
 OS_EventKind;
 
-typedef U32 OS_Modifiers;
+typedef uint OS_Modifiers;
 enum
 {
   OS_Modifier_Ctrl  = (1<<0),
@@ -79,15 +79,15 @@ struct OS_Event
 {
   OS_Event *next;
   OS_Event *prev;
-  U64 timestamp_us;
+  ulong timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
   OS_Modifiers modifiers;
   OS_Key key;
   B32 is_repeat;
   B32 right_sided;
-  U32 character;
-  U32 repeat_count;
+  uint character;
+  uint repeat_count;
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
@@ -96,7 +96,7 @@ struct OS_Event
 typedef struct OS_EventList OS_EventList;
 struct OS_EventList
 {
-  U64 count;
+  ulong count;
   OS_Event *first;
   OS_Event *last;
 };
@@ -111,11 +111,11 @@ internal B32 frame(void);
 
 internal String8 os_string_from_event_kind(OS_EventKind kind);
 internal String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
-internal U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
+internal uint os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 internal void os_eat_event(OS_EventList *events, OS_Event *event);
 internal B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
 internal B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-internal B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
+internal B32  os_text(OS_EventList *events, OS_Handle window, uint character);
 internal OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
 internal void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
 internal OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);

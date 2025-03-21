@@ -63,11 +63,11 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   #define X(_N,...) case DW_Attrib_##_N: return str8_lit(Stringify(_N));
 
   while (ext) {
-    U64 z = 64-clz64(ext);
+    ulong z = 64-clz64(ext);
     if (z == 0) {
       break;
     }
-    U64 flag = 1 << (z-1);
+    ulong flag = 1 << (z-1);
     ext &= ~flag;
 
     switch (flag) {
@@ -194,7 +194,7 @@ dw_string_from_rng_list_entry_kind(Arena *arena, DW_RngListEntryKind kind)
 }
 
 internal String8
-dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
+dw_string_from_register(Arena *arena, Arch arch, ulong reg_id)
 {
   String8 reg_str = str8_zero();
   switch (arch) {

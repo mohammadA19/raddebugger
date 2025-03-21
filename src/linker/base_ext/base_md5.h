@@ -5,7 +5,7 @@
 
 typedef struct MD5Hash
 {
-  U8 value[16];
+  byte value[16];
 } MD5Hash;
 
 internal MD5Hash md5_hash_from_string(String8 data);

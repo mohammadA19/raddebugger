@@ -10,8 +10,8 @@
 typedef struct EV_Key EV_Key;
 struct EV_Key
 {
-  U64 parent_hash;
-  U64 child_id;
+  ulong parent_hash;
+  ulong child_id;
 };
 
 ////////////////////////////////
@@ -48,9 +48,9 @@ struct EV_KeyViewRuleNode
   EV_KeyViewRuleNode *hash_next;
   EV_KeyViewRuleNode *hash_prev;
   EV_Key key;
-  U8 *buffer;
-  U64 buffer_cap;
-  U64 buffer_string_size;
+  byte *buffer;
+  ulong buffer_cap;
+  ulong buffer_string_size;
 };
 
 typedef struct EV_KeyViewRuleSlot EV_KeyViewRuleSlot;
@@ -67,10 +67,10 @@ struct EV_View
 {
   Arena *arena;
   EV_ExpandSlot *expand_slots;
-  U64 expand_slots_count;
+  ulong expand_slots_count;
   EV_ExpandNode *free_expand_node;
   EV_KeyViewRuleSlot *key_view_rule_slots;
-  U64 key_view_rule_slots_count;
+  ulong key_view_rule_slots_count;
   EV_KeyViewRuleNode *free_key_view_rule_node;
 };
 
@@ -95,7 +95,7 @@ struct EV_ViewRuleList
 {
   EV_ViewRuleNode *first;
   EV_ViewRuleNode *last;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -105,7 +105,7 @@ typedef struct EV_ExpandInfo EV_ExpandInfo;
 struct EV_ExpandInfo
 {
   void *user_data;
-  U64 row_count;
+  ulong row_count;
   B32 single_item; // all rows form a single "item" - a singular, but large, row
   B32 add_new_row; // also supports an 'add new row', as the final row, within `row_count`
   B32 rows_default_expanded;
@@ -114,7 +114,7 @@ struct EV_ExpandInfo
 typedef struct EV_ExpandRangeInfo EV_ExpandRangeInfo;
 struct EV_ExpandRangeInfo
 {
-  U64 row_exprs_count;
+  ulong row_exprs_count;
   String8 *row_strings;
   String8 *row_view_rules;
   E_Expr **row_exprs;
@@ -133,11 +133,11 @@ struct EV_ExpandRangeInfo
 #define EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(name) ev_view_rule_expr_expand_range_info__##name
 #define EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(name))
 
-#define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(name) U64 name(U64 num, void *user_data)
+#define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(name) ulong name(ulong num, void *user_data)
 #define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(name) ev_view_rule_expr_expand_id_from_num_##name
 #define EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(name))
 
-#define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(name) U64 name(U64 id, void *user_data)
+#define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(name) ulong name(ulong id, void *user_data)
 #define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(name) ev_view_rule_expr_expand_num_from_id_##name
 #define EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_DEF(name) internal EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(name))
 
@@ -147,7 +147,7 @@ typedef EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_SIG(EV_ViewRuleExprExpandRa
 typedef EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_SIG(EV_ViewRuleExprExpandIDFromNumHookFunctionType);
 typedef EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_SIG(EV_ViewRuleExprExpandNumFromIDHookFunctionType);
 
-typedef U32 EV_ViewRuleInfoFlags; // NOTE(rjf): see @view_rule_info
+typedef uint EV_ViewRuleInfoFlags; // NOTE(rjf): see @view_rule_info
 enum
 {
   EV_ViewRuleInfoFlag_Inherited           = (1<<0),
@@ -184,7 +184,7 @@ typedef struct EV_ViewRuleInfoTable EV_ViewRuleInfoTable;
 struct EV_ViewRuleInfoTable
 {
   EV_ViewRuleInfoSlot *slots;
-  U64 slots_count;
+  ulong slots_count;
 };
 
 ////////////////////////////////
@@ -204,7 +204,7 @@ struct EV_Block
   EV_Key key;
   
   // rjf: split index, relative to parent's space
-  U64 split_relative_idx;
+  ulong split_relative_idx;
   
   // rjf: expression / visualization info
   String8 string;
@@ -215,7 +215,7 @@ struct EV_Block
   void *expand_view_rule_info_user_data;
   
   // rjf: expansion info
-  U64 row_count;
+  ulong row_count;
   B32 single_item;
   B32 rows_default_expanded;
 };
@@ -224,8 +224,8 @@ typedef struct EV_BlockTree EV_BlockTree;
 struct EV_BlockTree
 {
   EV_Block *root;
-  U64 total_row_count;
-  U64 total_item_count;
+  ulong total_row_count;
+  ulong total_item_count;
 };
 
 typedef struct EV_BlockRange EV_BlockRange;
@@ -247,7 +247,7 @@ struct EV_BlockRangeList
 {
   EV_BlockRangeNode *first;
   EV_BlockRangeNode *last;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -263,9 +263,9 @@ struct EV_Row
   EV_Key key;
   
   // rjf: row size/scroll info
-  U64 visual_size;
-  U64 visual_size_skipped;
-  U64 visual_size_chopped;
+  ulong visual_size;
+  ulong visual_size_skipped;
+  ulong visual_size_chopped;
   
   // rjf: expression / visualization info
   String8 string;
@@ -279,9 +279,9 @@ struct EV_WindowedRowList
 {
   EV_Row *first;
   EV_Row *last;
-  U64 count;
-  U64 count_before_visual;
-  U64 count_before_semantic;
+  ulong count;
+  ulong count_before_visual;
+  ulong count_before_semantic;
 };
 
 ////////////////////////////////
@@ -301,14 +301,14 @@ struct EV_AutoViewRuleSlot
 {
   EV_AutoViewRuleNode *first;
   EV_AutoViewRuleNode *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct EV_AutoViewRuleTable EV_AutoViewRuleTable;
 struct EV_AutoViewRuleTable
 {
   EV_AutoViewRuleSlot *slots;
-  U64 slots_count;
+  ulong slots_count;
 };
 
 ////////////////////////////////
@@ -319,7 +319,7 @@ struct EV_AutoViewRuleTable
 ////////////////////////////////
 //~ rjf: String Generation Types
 
-typedef U32 EV_StringFlags;
+typedef uint EV_StringFlags;
 enum
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
@@ -356,12 +356,12 @@ global read_only EV_Block ev_nil_block = {&ev_nil_block, &ev_nil_block, &ev_nil_
 ////////////////////////////////
 //~ rjf: Key Functions
 
-internal EV_Key ev_key_make(U64 parent_hash, U64 child_id);
+internal EV_Key ev_key_make(ulong parent_hash, ulong child_id);
 internal EV_Key ev_key_zero(void);
 internal EV_Key ev_key_root(void);
 internal B32 ev_key_match(EV_Key a, EV_Key b);
-internal U64 ev_hash_from_seed_string(U64 seed, String8 string);
-internal U64 ev_hash_from_key(EV_Key key);
+internal ulong ev_hash_from_seed_string(ulong seed, String8 string);
+internal ulong ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Type Info Helpers
@@ -420,15 +420,15 @@ internal E_Expr *ev_resolved_from_expr(Arena *arena, E_Expr *expr, EV_ViewRuleLi
 
 internal EV_BlockTree ev_block_tree_from_expr(Arena *arena, EV_View *view, String8 filter, String8 string, E_Expr *expr, EV_ViewRuleList *view_rules);
 internal EV_BlockTree ev_block_tree_from_string(Arena *arena, EV_View *view, String8 filter, String8 string, EV_ViewRuleList *view_rules);
-internal U64 ev_depth_from_block(EV_Block *block);
+internal ulong ev_depth_from_block(EV_Block *block);
 
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
 internal EV_BlockRangeList ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree);
-internal EV_BlockRange ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal EV_Key ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal U64    ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key);
+internal EV_BlockRange ev_block_range_from_num(EV_BlockRangeList *block_ranges, ulong num);
+internal EV_Key ev_key_from_num(EV_BlockRangeList *block_ranges, ulong num);
+internal ulong    ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Row Building
@@ -442,10 +442,10 @@ internal B32 ev_row_is_editable(EV_Row *row);
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-internal String8 ev_string_from_ascii_value(Arena *arena, U8 val);
-internal String8 ev_string_from_hresult_facility_code(U32 code);
-internal String8 ev_string_from_hresult_code(U32 code);
-internal String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval);
+internal String8 ev_string_from_ascii_value(Arena *arena, byte val);
+internal String8 ev_string_from_hresult_facility_code(uint code);
+internal String8 ev_string_from_hresult_code(uint code);
+internal String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, uint radix, uint min_digits, E_Eval eval);
 internal String8 ev_escaped_from_raw_string(Arena *arena, String8 raw);
 
 #endif // EVAL_VISUALIZATION_CORE_H

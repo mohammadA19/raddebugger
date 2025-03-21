@@ -83,7 +83,7 @@ md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags)
 }
 
 internal void
-md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Token token)
+md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, ulong cap, MD_Token token)
 {
   MD_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -105,7 +105,7 @@ md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
   MD_TokenArray result = {0};
   result.count = chunks->total_token_count;
   result.v = push_array_no_zero(arena, MD_Token, result.count);
-  U64 write_idx = 0;
+  ulong write_idx = 0;
   for(MD_TokenChunkNode *n = chunks->first; n != 0; n = n->next)
   {
     MemoryCopy(result.v+write_idx, n->v, sizeof(MD_Token)*n->count);
@@ -117,8 +117,8 @@ md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
 internal String8
 md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
 {
-  U64 num_chop = 0;
-  U64 num_skip = 0;
+  ulong num_chop = 0;
+  ulong num_skip = 0;
   {
     num_skip += 3*!!(flags & MD_TokenFlag_StringTriplet);
     num_chop += 3*!!(flags & MD_TokenFlag_StringTriplet);
@@ -162,7 +162,7 @@ md_node_is_nil(MD_Node *node)
 //- rjf: iteration
 
 internal MD_NodeRec
-md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64 sib_off)
+md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, ulong child_off, ulong sib_off)
 {
   MD_NodeRec rec = {0};
   rec.next = &md_nil_node;
@@ -185,7 +185,7 @@ md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64
 //- rjf: tree building
 
 internal MD_Node *
-md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
+md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, ulong src_offset)
 {
   MD_Node *node = push_array(arena, MD_Node, 1);
   node->first = node->last = node->parent = node->next = node->prev = node->first_tag = node->last_tag = &md_nil_node;
@@ -263,7 +263,7 @@ md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMa
 }
 
 internal MD_Node *
-md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
+md_node_from_chain_index(MD_Node *first, MD_Node *opl, ulong index)
 {
   MD_Node *result = &md_nil_node;
   long idx = 0;
@@ -293,10 +293,10 @@ md_node_from_chain_flags(MD_Node *first, MD_Node *opl, MD_NodeFlags flags)
   return result;
 }
 
-internal U64
+internal ulong
 md_index_from_node(MD_Node *node)
 {
-  U64 index = 0;
+  ulong index = 0;
   for(MD_Node *n = node->prev; !md_node_is_nil(n); n = n->prev)
   {
     index += 1;
@@ -328,19 +328,19 @@ md_tag_from_string(MD_Node *node, String8 tag_string, StringMatchFlags flags)
 }
 
 internal MD_Node *
-md_child_from_index(MD_Node *node, U64 index)
+md_child_from_index(MD_Node *node, ulong index)
 {
   return md_node_from_chain_index(node->first, &md_nil_node, index);
 }
 
 internal MD_Node *
-md_tag_from_index(MD_Node *node, U64 index)
+md_tag_from_index(MD_Node *node, ulong index)
 {
   return md_node_from_chain_index(node->first_tag, &md_nil_node, index);
 }
 
 internal MD_Node *
-md_tag_arg_from_index(MD_Node *node, String8 tag_string, StringMatchFlags flags, U64 index)
+md_tag_arg_from_index(MD_Node *node, String8 tag_string, StringMatchFlags flags, ulong index)
 {
   MD_Node *tag = md_tag_from_string(node, tag_string, flags);
   return md_child_from_index(tag, index);
@@ -366,10 +366,10 @@ md_node_has_tag(MD_Node *node, String8 string, StringMatchFlags flags)
   return !md_node_is_nil(md_tag_from_string(node, string, flags));
 }
 
-internal U64
+internal ulong
 md_child_count_from_node(MD_Node *node)
 {
-  U64 result = 0;
+  ulong result = 0;
   for(MD_Node *child = node->first; !md_node_is_nil(child); child = child->next)
   {
     result += 1;
@@ -377,10 +377,10 @@ md_child_count_from_node(MD_Node *node)
   return result;
 }
 
-internal U64
+internal ulong
 md_tag_count_from_node(MD_Node *node)
 {
-  U64 result = 0;
+  ulong result = 0;
   for(MD_Node *child = node->first_tag; !md_node_is_nil(child); child = child->next)
   {
     result += 1;
@@ -504,7 +504,7 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
       {
         dst_parent = dst;
       }
-      else for(U64 idx = 0; idx < rec.pop_count; idx += 1)
+      else for(ulong idx = 0; idx < rec.pop_count; idx += 1)
       {
         dst_parent = dst_parent->parent;
       }
@@ -522,16 +522,16 @@ md_tokenize_from_text(Arena *arena, String8 text)
   Temp scratch = scratch_begin(&arena, 1);
   MD_TokenChunkList tokens = {0};
   MD_MsgList msgs = {0};
-  U8 *byte_first = text.str;
-  U8 *byte_opl = byte_first + text.size;
-  U8 *byte = byte_first;
+  byte *byte_first = text.str;
+  byte *byte_opl = byte_first + text.size;
+  byte *byte = byte_first;
   
   //- rjf: scan string & produce tokens
   for(;byte < byte_opl;)
   {
     MD_TokenFlags token_flags = 0;
-    U8 *token_start = 0;
-    U8 *token_opl = 0;
+    byte *token_start = 0;
+    byte *token_opl = 0;
     
     //- rjf: whitespace
     if(token_flags == 0 && (*byte == ' ' || *byte == '\t' || *byte == '\v' || *byte == '\r'))
@@ -671,7 +671,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
         (byte[0] == '\''&& byte[1] == '\''&& byte[2] == '\'') ||
         (byte[0] == '`' && byte[1] == '`' && byte[2] == '`')))
     {
-      U8 literal_style = byte[0];
+      byte literal_style = byte[0];
       token_flags = MD_TokenFlag_StringLiteral|MD_TokenFlag_StringTriplet;
       token_flags |= (literal_style == '\'')*MD_TokenFlag_StringSingleQuote;
       token_flags |= (literal_style ==  '"')*MD_TokenFlag_StringDoubleQuote;
@@ -699,7 +699,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
     //- rjf: singlet string literals
     if(token_flags == 0 && (byte[0] == '"' || byte[0] == '\'' || byte[0] == '`'))
     {
-      U8 literal_style = byte[0];
+      byte literal_style = byte[0];
       token_flags = MD_TokenFlag_StringLiteral;
       token_flags |= (literal_style == '\'')*MD_TokenFlag_StringSingleQuote;
       token_flags |= (literal_style ==  '"')*MD_TokenFlag_StringDoubleQuote;
@@ -780,7 +780,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
     //- rjf; push token if formed
     if(token_flags != 0 && token_start != 0 && token_opl > token_start)
     {
-      MD_Token token = {{(U64)(token_start - byte_first), (U64)(token_opl - byte_first)}, token_flags};
+      MD_Token token = {{(ulong)(token_start - byte_first), (ulong)(token_opl - byte_first)}, token_flags};
       md_token_chunk_list_push(scratch.arena, &tokens, 4096, token);
     }
     

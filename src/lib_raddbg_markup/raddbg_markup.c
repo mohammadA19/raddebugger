@@ -125,7 +125,7 @@ raddbg_encode_utf16(wchar_t *str, unsigned __int32 codepoint)
   }
   else
   {
-    U32 v = codepoint - 0x10000;
+    uint v = codepoint - 0x10000;
     str[0] = (wchar_t)(0xD800 + (v >> 10));
     str[1] = (wchar_t)(0xDC00 + (v & 0x000003ff));
     inc = 2;

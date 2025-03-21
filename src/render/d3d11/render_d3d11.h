@@ -43,8 +43,8 @@ struct R_D3D11_Uniforms_BlurPass
   Vec4F32 corner_radii;
   Vec2F32 direction;
   Vec2F32 viewport_size;
-  U32 blur_count;
-  U8 _padding0_[204];
+  uint blur_count;
+  byte _padding0_[204];
 };
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 
@@ -68,7 +68,7 @@ typedef struct R_D3D11_Tex2D R_D3D11_Tex2D;
 struct R_D3D11_Tex2D
 {
   R_D3D11_Tex2D *next;
-  U64 generation;
+  ulong generation;
   ID3D11Texture2D *texture;
   ID3D11ShaderResourceView *view;
   R_ResourceKind kind;
@@ -80,17 +80,17 @@ typedef struct R_D3D11_Buffer R_D3D11_Buffer;
 struct R_D3D11_Buffer
 {
   R_D3D11_Buffer *next;
-  U64 generation;
+  ulong generation;
   ID3D11Buffer *buffer;
   R_ResourceKind kind;
-  U64 size;
+  ulong size;
 };
 
 typedef struct R_D3D11_Window R_D3D11_Window;
 struct R_D3D11_Window
 {
   R_D3D11_Window *next;
-  U64 generation;
+  ulong generation;
   
   // rjf: swapchain/framebuffer
   IDXGISwapChain1        *swapchain;
@@ -184,7 +184,7 @@ internal R_D3D11_Tex2D *r_d3d11_tex2d_from_handle(R_Handle handle);
 internal R_Handle r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture);
 internal R_D3D11_Buffer *r_d3d11_buffer_from_handle(R_Handle handle);
 internal R_Handle r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer);
-internal ID3D11Buffer *r_d3d11_instance_buffer_from_size(U64 size);
+internal ID3D11Buffer *r_d3d11_instance_buffer_from_size(ulong size);
 internal void r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags);
 
 #endif // RENDER_D3D11_H

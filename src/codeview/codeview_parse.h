@@ -8,23 +8,23 @@
 //~ CodeView Common Parser Types
 
 // CV_Numeric layout
-// x: U16
-// buf: U8[]
-// case (x < 0x8000):  kind=U16 val=x
+// x: ushort
+// buf: byte[]
+// case (x < 0x8000):  kind=ushort val=x
 // case (x >= 0x8000): kind=x   val=buf
 
 typedef struct CV_NumericParsed CV_NumericParsed;
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
-  U8             *val;
-  U64             encoded_size;
+  byte             *val;
+  ulong             encoded_size;
 };
 
 typedef struct CV_RecRange CV_RecRange;
 struct CV_RecRange
 {
-  U32          off;
+  uint          off;
   CV_RecHeader hdr;
 };
 
@@ -42,14 +42,14 @@ struct CV_RecRangeStream
 {
   CV_RecRangeChunk *first_chunk;
   CV_RecRangeChunk *last_chunk;
-  U64               total_count;
+  ulong               total_count;
 };
 
 typedef struct CV_RecRangeArray CV_RecRangeArray;
 struct CV_RecRangeArray
 {
   CV_RecRange *ranges;
-  U64          count;
+  ulong          count;
 };
 
 ////////////////////////////////
@@ -68,7 +68,7 @@ struct CV_SymParsed
 {
   // source information
   String8 data;
-  U64     sym_align;
+  ulong     sym_align;
   
   // sym index derived from source
   CV_RecRangeArray sym_ranges;
@@ -98,28 +98,28 @@ struct CV_LeafParsed
 typedef struct CV_C13InlineSiteDecoder CV_C13InlineSiteDecoder;
 struct CV_C13InlineSiteDecoder
 {
-  U64                cursor;
-  U64                parent_voff;
+  ulong                cursor;
+  ulong                parent_voff;
   CV_InlineRangeKind range_kind;
-  U32                code_length;
-  U32                code_offset;
-  U32                file_off;
+  uint                code_length;
+  uint                code_offset;
+  uint                file_off;
   int                ln;
   int                cn;
-  U64                code_offset_lo;
+  ulong                code_offset_lo;
   B32                code_offset_changed;
   B32                code_offset_lo_changed;
   B32                code_length_changed;
   B32                ln_changed;
   B32                file_off_changed;
   Rng1U64            last_range;
-  U32                file_count;
+  uint                file_count;
   Rng1U64            file_last_range;
-  U64                file_line_count;
-  U64                file_last_ln;
+  ulong                file_line_count;
+  ulong                file_last_ln;
 };
 
-typedef U32 CV_C13InlineSiteDecoderStepFlags;
+typedef uint CV_C13InlineSiteDecoderStepFlags;
 enum
 {
   CV_C13InlineSiteDecoderStepFlag_EmitRange       = (1 << 0),
@@ -133,27 +133,27 @@ struct CV_C13InlineSiteDecoderStep
 {
   CV_C13InlineSiteDecoderStepFlags flags;
   Rng1U64                     range;
-  U64                         line_voff;
-  U64                         line_voff_end;
-  U64                         ln;
-  U64                         cn;
-  U32                         file_off;
+  ulong                         line_voff;
+  ulong                         line_voff_end;
+  ulong                         ln;
+  ulong                         cn;
+  uint                         file_off;
 };
 
 typedef struct CV_C13LinesParsed CV_C13LinesParsed;
 struct CV_C13LinesParsed
 {
   // raw info
-  U32 sec_idx;
-  U32 file_off;
-  U64 secrel_base_off;
+  uint sec_idx;
+  uint file_off;
+  ulong secrel_base_off;
   
   // parsed info
   String8  file_name;
-  U64     *voffs;     // [line_count + 1]
-  U32     *line_nums; // [line_count]
-  U16     *col_nums;  // [2*line_count]
-  U32      line_count;
+  ulong     *voffs;     // [line_count + 1]
+  uint     *line_nums; // [line_count]
+  ushort     *col_nums;  // [2*line_count]
+  uint      line_count;
 };
 
 typedef struct CV_C13LinesParsedNode CV_C13LinesParsedNode;
@@ -167,11 +167,11 @@ typedef struct CV_C13InlineeLinesParsed CV_C13InlineeLinesParsed;
 struct CV_C13InlineeLinesParsed
 {
   CV_ItemId  inlinee;
-  U32        file_off;
+  uint        file_off;
   String8    file_name;
-  U32        first_source_ln;
-  U32        extra_file_count;
-  U32       *extra_files;
+  uint        first_source_ln;
+  uint        extra_file_count;
+  uint       *extra_files;
 };
 
 typedef struct CV_C13InlineeLinesParsedNode CV_C13InlineeLinesParsedNode;
@@ -187,8 +187,8 @@ struct CV_C13SubSectionNode
 {
   struct CV_C13SubSectionNode  *next;
   CV_C13SubSectionKind          kind;
-  U32                           off;
-  U32                           size;
+  uint                           off;
+  uint                           size;
   CV_C13LinesParsedNode        *lines_first;
   CV_C13LinesParsedNode        *lines_last;
   CV_C13InlineeLinesParsedNode *inlinee_lines_first;
@@ -204,14 +204,14 @@ struct CV_C13Parsed
   // rjf: full sub-section list
   CV_C13SubSectionNode *first_sub_section;
   CV_C13SubSectionNode *last_sub_section;
-  U64                   sub_section_count;
+  ulong                   sub_section_count;
   
   // rjf: fastpath to file checksums section
   CV_C13SubSectionNode *file_chksms_sub_section;
   
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
   CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots;
-  U64                            inlinee_lines_parsed_slots_count;
+  ulong                            inlinee_lines_parsed_slots_count;
 };
 
 typedef struct CV_UDTInfo CV_UDTInfo;
@@ -229,36 +229,36 @@ typedef struct CV_TypeIdArray CV_TypeIdArray;
 struct CV_TypeIdArray
 {
   CV_TypeId *itypes;
-  U64        count;
+  ulong        count;
 };
 
 ////////////////////////////////
 
 //- Hasher
 
-internal U64 cv_hash_from_string(String8 string);
-internal U64 cv_hash_from_item_id(CV_ItemId item_id);
+internal ulong cv_hash_from_string(String8 string);
+internal ulong cv_hash_from_item_id(CV_ItemId item_id);
 
 //- Numeric Decoder
 
-internal CV_NumericParsed cv_numeric_from_data_range(U8 *first, U8 *opl);
-internal U64              cv_read_numeric(String8 data, U64 offset, CV_NumericParsed *out);
+internal CV_NumericParsed cv_numeric_from_data_range(byte *first, byte *opl);
+internal ulong              cv_read_numeric(String8 data, ulong offset, CV_NumericParsed *out);
 
 internal B32 cv_numeric_fits_in_u64(CV_NumericParsed *num);
 internal B32 cv_numeric_fits_in_s64(CV_NumericParsed *num);
 internal B32 cv_numeric_fits_in_f64(CV_NumericParsed *num);
 
-internal U64 cv_u64_from_numeric(CV_NumericParsed *num);
+internal ulong cv_u64_from_numeric(CV_NumericParsed *num);
 internal long cv_s64_from_numeric(CV_NumericParsed *num);
 internal F64 cv_f64_from_numeric(CV_NumericParsed *num);
 
 //- Inlinee Lines Binary Annot Decoder
 
-internal U64 cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value);
-internal U64 cv_decode_inline_annot_s32(String8 data, U64 offset, int *out_value);
-internal int cv_inline_annot_signed_from_unsigned_operand(U32 value);
+internal ulong cv_decode_inline_annot_u32(String8 data, ulong offset, uint *out_value);
+internal ulong cv_decode_inline_annot_s32(String8 data, ulong offset, int *out_value);
+internal int cv_inline_annot_signed_from_unsigned_operand(uint value);
 
-internal CV_C13InlineSiteDecoder      cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_voff);
+internal CV_C13InlineSiteDecoder      cv_c13_inline_site_decoder_init(uint file_off, uint first_source_ln, uint parent_voff);
 internal CV_C13InlineSiteDecoderStep cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary_annots);
 
 //- Symbol/Leaf Helpers
@@ -280,18 +280,18 @@ internal CV_TypeIndexInfoList cv_get_leaf_type_index_offsets(Arena *arena, CV_Le
 internal CV_TypeIndexInfoList cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data);
 internal String8Array         cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, String8 data);
 
-internal U64     cv_name_offset_from_symbol(CV_SymKind kind, String8 data);
+internal ulong     cv_name_offset_from_symbol(CV_SymKind kind, String8 data);
 internal String8 cv_name_from_symbol(CV_SymKind kind, String8 data);
 
 internal CV_UDTInfo cv_get_udt_info(CV_LeafKind kind, String8 data);
 internal String8    cv_name_from_udt_info(CV_UDTInfo udt_info);
 
 //- rjf: record range stream parsing
-internal CV_RecRangeStream * cv_rec_range_stream_from_data(Arena *arena, String8 data, U64 align);
+internal CV_RecRangeStream * cv_rec_range_stream_from_data(Arena *arena, String8 data, ulong align);
 internal CV_RecRangeArray    cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream);
 
 //- rjf: sym stream parsing
-internal CV_SymParsed * cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align);
+internal CV_SymParsed * cv_sym_from_data(Arena *arena, String8 sym_data, ulong sym_align);
 
 //- rjf: leaf stream parsing
 internal CV_LeafParsed * cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId first);

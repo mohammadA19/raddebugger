@@ -35,14 +35,14 @@ typedef struct TweakB32InfoTable TweakB32InfoTable;
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
-  U64 count;
+  ulong count;
 };
 
 typedef struct TweakF32InfoTable TweakF32InfoTable;
 struct TweakF32InfoTable
 {
   TweakF32Info *v;
-  U64 count;
+  ulong count;
 };
 
 typedef struct EmbedInfo EmbedInfo;
@@ -57,7 +57,7 @@ typedef struct EmbedInfoTable EmbedInfoTable;
 struct EmbedInfoTable
 {
   EmbedInfo *v;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -97,7 +97,7 @@ typedef enum TypeKind
 }
 TypeKind;
 
-typedef U32 TypeFlags;
+typedef uint TypeFlags;
 enum
 {
   TypeFlag_IsExternal  = (1<<0),
@@ -106,7 +106,7 @@ enum
   TypeFlag_IsPathText  = (1<<3),
 };
 
-typedef U32 MemberFlags;
+typedef uint MemberFlags;
 enum
 {
   MemberFlag_DoNotSerialize  = (1<<0),
@@ -119,7 +119,7 @@ struct Member
   String8 name;
   String8 pretty_name;
   Type *type;
-  U64 value;
+  ulong value;
   MemberFlags flags;
 };
 
@@ -128,11 +128,11 @@ struct Type
 {
   TypeKind kind;
   TypeFlags flags;
-  U64 size;
+  ulong size;
   Type *direct;
   String8 name;
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
-  U64 count;
+  ulong count;
   Member *members;
 };
 
@@ -151,9 +151,9 @@ struct TypeSerializePtrRefInfo
 typedef struct TypeSerializeParams TypeSerializeParams;
 struct TypeSerializeParams
 {
-  U64 *advance_out;
+  ulong *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
-  U64 ptr_ref_infos_count;
+  ulong ptr_ref_infos_count;
 };
 
 ////////////////////////////////
@@ -181,10 +181,10 @@ read_only global Member member_nil = {{0}, {0}, &type_nil};
 
 //- rjf: leaves
 read_only global Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
-read_only global Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
-read_only global Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
-read_only global Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
-read_only global Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
+read_only global Type U8__type   = {TypeKind_U8,   0, sizeof(byte),  &type_nil, str8_lit_comp("byte")};
+read_only global Type U16__type  = {TypeKind_U16,  0, sizeof(ushort), &type_nil, str8_lit_comp("ushort")};
+read_only global Type U32__type  = {TypeKind_U32,  0, sizeof(uint), &type_nil, str8_lit_comp("uint")};
+read_only global Type U64__type  = {TypeKind_U64,  0, sizeof(ulong), &type_nil, str8_lit_comp("ulong")};
 read_only global Type S8__type   = {TypeKind_S8,   0, sizeof(sbyte),  &type_nil, str8_lit_comp("sbyte")};
 read_only global Type S16__type  = {TypeKind_S16,  0, sizeof(short), &type_nil, str8_lit_comp("short")};
 read_only global Type S32__type  = {TypeKind_S32,  0, sizeof(int), &type_nil, str8_lit_comp("int")};
@@ -199,10 +199,10 @@ read_only global Type *type_kind_type_table[] =
 {
   &type_nil,
   type(void),
-  type(U8),
-  type(U16),
-  type(U32),
-  type(U64),
+  type(byte),
+  type(ushort),
+  type(uint),
+  type(ulong),
   type(sbyte),
   type(short),
   type(int),
@@ -223,17 +223,17 @@ read_only global Type *type_kind_type_table[] =
 //- rjf: Rng1U64
 struct_members(Rng1U64)
 {
-  member_lit_comp(Rng1U64, type(U64), min),
-  member_lit_comp(Rng1U64, type(U64), max),
+  member_lit_comp(Rng1U64, type(ulong), min),
+  member_lit_comp(Rng1U64, type(ulong), max),
 };
 struct_type(Rng1U64);
 
 //- rjf: String8
-ptr_type(String8__str_ptr_type, type(U8), str8_lit_comp("size"));
+ptr_type(String8__str_ptr_type, type(byte), str8_lit_comp("size"));
 struct_members(String8)
 {
   member_lit_comp(String8, &String8__str_ptr_type, str),
-  member_lit_comp(String8, type(U64),              size),
+  member_lit_comp(String8, type(ulong),              size),
 };
 struct_type(String8);
 
@@ -262,8 +262,8 @@ Member String8List__members[] =
 {
   {str8_lit_comp("first"),      {0}, &String8Node__ptr_type,     OffsetOf(String8List, first)},
   {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
-  {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
-  {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
+  {str8_lit_comp("node_count"), {0}, type(ulong), OffsetOf(String8List, node_count)},
+  {str8_lit_comp("total_size"), {0}, type(ulong), OffsetOf(String8List, total_size)},
 };
 Type String8List__type =
 {

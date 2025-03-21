@@ -4,29 +4,29 @@
 ////////////////////////////////
 //~ Dwarf Decode Helpers
 
-static U64
-dwarf_leb128_decode_U64(U8 *ptr, U8 *opl){
-  U64 r = 0;
+static ulong
+dwarf_leb128_decode_U64(byte *ptr, byte *opl){
+  ulong r = 0;
   switch (opl - ptr){
-    case 10: r |= ((U64)(ptr[9]&0x7F) << 63);
-    case  9: r |= ((U64)(ptr[8]&0x7F) << 56);
-    case  8: r |= ((U64)(ptr[7]&0x7F) << 49);
-    case  7: r |= ((U64)(ptr[6]&0x7F) << 42);
-    case  6: r |= ((U64)(ptr[5]&0x7F) << 35);
-    case  5: r |= ((U64)(ptr[4]&0x7F) << 28);
-    case  4: r |= ((U64)(ptr[3]&0x7F) << 21);
-    case  3: r |= ((U64)(ptr[2]&0x7F) << 14);
-    case  2: r |= ((U64)(ptr[1]&0x7F) <<  7);
-    case  1: r |= ((U64)(ptr[0]&0x7F)      );
+    case 10: r |= ((ulong)(ptr[9]&0x7F) << 63);
+    case  9: r |= ((ulong)(ptr[8]&0x7F) << 56);
+    case  8: r |= ((ulong)(ptr[7]&0x7F) << 49);
+    case  7: r |= ((ulong)(ptr[6]&0x7F) << 42);
+    case  6: r |= ((ulong)(ptr[5]&0x7F) << 35);
+    case  5: r |= ((ulong)(ptr[4]&0x7F) << 28);
+    case  4: r |= ((ulong)(ptr[3]&0x7F) << 21);
+    case  3: r |= ((ulong)(ptr[2]&0x7F) << 14);
+    case  2: r |= ((ulong)(ptr[1]&0x7F) <<  7);
+    case  1: r |= ((ulong)(ptr[0]&0x7F)      );
     case  0: default: break;
   }
   return(r);
 }
 
 static long
-dwarf_leb128_decode_S64(U8 *ptr, U8 *opl){
-  U64 u = dwarf_leb128_decode_U32(ptr, opl);
-  U64 s = (U64)(opl - ptr)*7;
+dwarf_leb128_decode_S64(byte *ptr, byte *opl){
+  ulong u = dwarf_leb128_decode_U32(ptr, opl);
+  ulong s = (ulong)(opl - ptr)*7;
   B32 neg = ((u & (1llu << s)) != 0);
   if (neg){
     switch (opl - ptr){
@@ -45,15 +45,15 @@ dwarf_leb128_decode_S64(U8 *ptr, U8 *opl){
   return(r);
 }
 
-static U32
-dwarf_leb128_decode_U32(U8 *ptr, U8 *opl){
-  U32 r = 0;
+static uint
+dwarf_leb128_decode_U32(byte *ptr, byte *opl){
+  uint r = 0;
   switch (opl - ptr){
-    case 5: r |= ((U32)(ptr[4]&0x7F) << 28);
-    case 4: r |= ((U32)(ptr[3]&0x7F) << 21);
-    case 3: r |= ((U32)(ptr[2]&0x7F) << 14);
-    case 2: r |= ((U32)(ptr[1]&0x7F) <<  7);
-    case 1: r |= ((U32)(ptr[0]&0x7F)      );
+    case 5: r |= ((uint)(ptr[4]&0x7F) << 28);
+    case 4: r |= ((uint)(ptr[3]&0x7F) << 21);
+    case 3: r |= ((uint)(ptr[2]&0x7F) << 14);
+    case 2: r |= ((uint)(ptr[1]&0x7F) <<  7);
+    case 1: r |= ((uint)(ptr[0]&0x7F)      );
     case 0: default: break;
   }
   return(r);
@@ -69,13 +69,13 @@ dwarf_parsed_from_elf(Arena *arena, ELF_Parsed *elf){
   
   if (elf != 0){
     //- extract debug info
-    U32 debug_section_idx[DWARF_SectionCode_COUNT] = {0};
+    uint debug_section_idx[DWARF_SectionCode_COUNT] = {0};
     String8 debug_section_name[DWARF_SectionCode_COUNT] = {0};
     String8 debug_data[DWARF_SectionCode_COUNT] = {0};
-    for (U64 i = 1; i < DWARF_SectionCode_COUNT; i += 1){
+    for (ulong i = 1; i < DWARF_SectionCode_COUNT; i += 1){
       DWARF_SectionNameRow *row = dwarf_section_name_table + i;
-      U32 idx = 0;
-      for (U32 j = 0; idx == 0 && j < DWARF_SECTION_NAME_VARIANT_COUNT; j += 1){
+      uint idx = 0;
+      for (uint j = 0; idx == 0 && j < DWARF_SECTION_NAME_VARIANT_COUNT; j += 1){
         idx = elf_section_idx_from_name(elf, row->name[j]);
       }
       debug_section_idx[i] = idx;
@@ -118,77 +118,77 @@ dwarf_info_from_data(Arena *arena, String8 data){
   // empty unit list
   DWARF_InfoUnit *first = 0;
   DWARF_InfoUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8 version = MemoryConsume(U16, ptr, unit_opl);
+    byte version = MemoryConsume(ushort, ptr, unit_opl);
     
     // rest of header depends on version
-    U64 abbrev_off = 0;
-    U8  address_size = 0;
-    U8  unit_type = 0;
-    U64 unit_dwo_id = 0;
-    U64 unit_type_signature = 0;
-    U64 unit_type_offset = 0;
+    ulong abbrev_off = 0;
+    byte  address_size = 0;
+    byte  unit_type = 0;
+    ulong unit_dwo_id = 0;
+    ulong unit_type_signature = 0;
+    ulong unit_type_offset = 0;
     switch (version){
       case 4:
       {
         // abbrev_off
         if (is_64bit){
-          abbrev_off = MemoryConsume(U64, ptr, unit_opl);
+          abbrev_off = MemoryConsume(ulong, ptr, unit_opl);
         }
         else{
-          abbrev_off = MemoryConsume(U32, ptr, unit_opl);
+          abbrev_off = MemoryConsume(uint, ptr, unit_opl);
         }
         
         // address_size
-        address_size = MemoryConsume(U8, ptr, unit_opl);
+        address_size = MemoryConsume(byte, ptr, unit_opl);
       }break;
       
       case 5:
       {
         // unit_type
-        unit_type = (DWARF_UnitType)MemoryConsume(U8, ptr, unit_opl);
+        unit_type = (DWARF_UnitType)MemoryConsume(byte, ptr, unit_opl);
         
         // address_size
-        address_size = MemoryConsume(U8, ptr, unit_opl);
+        address_size = MemoryConsume(byte, ptr, unit_opl);
         
         // abbrev_off
         if (is_64bit){
-          abbrev_off = MemoryConsume(U64, ptr, unit_opl);
+          abbrev_off = MemoryConsume(ulong, ptr, unit_opl);
         }
         else{
-          abbrev_off = MemoryConsume(U32, ptr, unit_opl);
+          abbrev_off = MemoryConsume(uint, ptr, unit_opl);
         }
         
         // rest of header depends on unit_type
         switch (unit_type){
           case DWARF_UnitType_skeleton: case DWARF_UnitType_split_compile:
           {
-            unit_dwo_id = MemoryConsume(U64, ptr, unit_opl);
+            unit_dwo_id = MemoryConsume(ulong, ptr, unit_opl);
           }break;
           case DWARF_UnitType_type: case DWARF_UnitType_split_type:
           {
-            unit_type_signature = MemoryConsume(U64, ptr, unit_opl);
+            unit_type_signature = MemoryConsume(ulong, ptr, unit_opl);
             if (is_64bit){
-              unit_type_offset = MemoryConsume(U64, ptr, unit_opl);
+              unit_type_offset = MemoryConsume(ulong, ptr, unit_opl);
             }
             else{
-              unit_type_offset = MemoryConsume(U32, ptr, unit_opl);
+              unit_type_offset = MemoryConsume(uint, ptr, unit_opl);
             }
           }break;
         }
@@ -196,11 +196,11 @@ dwarf_info_from_data(Arena *arena, String8 data){
     }
     
     // offset size
-    U8 offset_size = is_64bit?8:4;
+    byte offset_size = is_64bit?8:4;
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit unit
     DWARF_InfoUnit *unit = push_array(arena, DWARF_InfoUnit, 1);
@@ -249,49 +249,49 @@ dwarf_pubnames_from_data(Arena *arena, String8 data){
   // empty unit list
   DWARF_PubNamesUnit *first = 0;
   DWARF_PubNamesUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8  version = MemoryConsume(U16, ptr, unit_opl);
+    byte  version = MemoryConsume(ushort, ptr, unit_opl);
     
     // info_off
-    U64 info_off = 0;
+    ulong info_off = 0;
     if (is_64bit){
-      info_off = MemoryConsume(U64, ptr, unit_opl);
+      info_off = MemoryConsume(ulong, ptr, unit_opl);
     }
     else{
-      info_off = MemoryConsume(U32, ptr, unit_opl);
+      info_off = MemoryConsume(uint, ptr, unit_opl);
     }
     
     // info_length
-    U64 info_length = 0;
+    ulong info_length = 0;
     if (is_64bit){
-      info_length = MemoryConsume(U64, ptr, unit_opl);
+      info_length = MemoryConsume(ulong, ptr, unit_opl);
     }
     else{
-      info_length = MemoryConsume(U32, ptr, unit_opl);
+      info_length = MemoryConsume(uint, ptr, unit_opl);
     }
     
     // offset size
-    U8 offset_size = is_64bit?8:4;
+    byte offset_size = is_64bit?8:4;
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit unit
     DWARF_PubNamesUnit *unit = push_array(arena, DWARF_PubNamesUnit, 1);
@@ -327,62 +327,62 @@ dwarf_names_from_data(Arena *arena, String8 data){
   // empty unit list
   DWARF_NamesUnit *first = 0;
   DWARF_NamesUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8 version = MemoryConsume(U16, ptr, unit_opl);
+    byte version = MemoryConsume(ushort, ptr, unit_opl);
     
     // *padding*
-    MemoryConsume(U16, ptr, unit_opl);
+    MemoryConsume(ushort, ptr, unit_opl);
     
     // comp_unit_count
-    U32 comp_unit_count = MemoryConsume(U32, ptr, unit_opl);
+    uint comp_unit_count = MemoryConsume(uint, ptr, unit_opl);
     
     // local_type_unit_count
-    U32 local_type_unit_count = MemoryConsume(U32, ptr, unit_opl);
+    uint local_type_unit_count = MemoryConsume(uint, ptr, unit_opl);
     
     // foreign_type_unit_count
-    U32 foreign_type_unit_count = MemoryConsume(U32, ptr, unit_opl);
+    uint foreign_type_unit_count = MemoryConsume(uint, ptr, unit_opl);
     
     // bucket_count
-    U32 bucket_count = MemoryConsume(U32, ptr, unit_opl);
+    uint bucket_count = MemoryConsume(uint, ptr, unit_opl);
     
     // name_count
-    U32 name_count = MemoryConsume(U32, ptr, unit_opl);
+    uint name_count = MemoryConsume(uint, ptr, unit_opl);
     
     // abbrev_table_size
-    U32 abbrev_table_size = MemoryConsume(U32, ptr, unit_opl);
+    uint abbrev_table_size = MemoryConsume(uint, ptr, unit_opl);
     
     // augmentation_string_size
-    U32 augmentation_string_size = MemoryConsume(U32, ptr, unit_opl);
+    uint augmentation_string_size = MemoryConsume(uint, ptr, unit_opl);
     
     // augmentation_string
-    U8 *augmentation_string = ptr;
+    byte *augmentation_string = ptr;
     {
-      U8 *ptr_raw = ptr + augmentation_string_size;
+      byte *ptr_raw = ptr + augmentation_string_size;
       ptr = ClampTop(ptr_raw, unit_opl);
     }
     
     // offset size
-    U8 offset_size = is_64bit?8:4;
+    byte offset_size = is_64bit?8:4;
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit unit
     DWARF_NamesUnit *unit = push_array(arena, DWARF_NamesUnit, 1);
@@ -422,46 +422,46 @@ dwarf_aranges_from_data(Arena *arena, String8 data){
   // empty unit list
   DWARF_ArangesUnit *first = 0;
   DWARF_ArangesUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8 version = MemoryConsume(U16, ptr, unit_opl);
+    byte version = MemoryConsume(ushort, ptr, unit_opl);
     
     // info_off
-    U64 info_off = 0;
+    ulong info_off = 0;
     if (is_64bit){
-      info_off = MemoryConsume(U64, ptr, unit_opl);
+      info_off = MemoryConsume(ulong, ptr, unit_opl);
     }
     else{
-      info_off = MemoryConsume(U32, ptr, unit_opl);
+      info_off = MemoryConsume(uint, ptr, unit_opl);
     }
     
     // address_size
-    U8 address_size = MemoryConsume(U8, ptr, unit_opl);
+    byte address_size = MemoryConsume(byte, ptr, unit_opl);
     
     // segment_selector_size
-    U8 segment_selector_size = MemoryConsume(U8, ptr, unit_opl);
+    byte segment_selector_size = MemoryConsume(byte, ptr, unit_opl);
     
     // offset size
-    U8 offset_size = is_64bit?8:4;
+    byte offset_size = is_64bit?8:4;
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit unit
     DWARF_ArangesUnit *unit = push_array(arena, DWARF_ArangesUnit, 1);
@@ -498,82 +498,82 @@ dwarf_line_from_data(Arena *arena, String8 data){
   // empty unit list
   DWARF_LineUnit *first = 0;
   DWARF_LineUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // remember header offset
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8 version = MemoryConsume(U16, ptr, unit_opl);
+    byte version = MemoryConsume(ushort, ptr, unit_opl);
     
     // offset size
-    U8 offset_size = is_64bit?8:4;
+    byte offset_size = is_64bit?8:4;
     
     // rest of header depends on version
-    U8  minimum_instruction_length = 0;
-    U8  maximum_operations_per_instruction = 0;
-    U8  default_is_stmt = 0;
+    byte  minimum_instruction_length = 0;
+    byte  maximum_operations_per_instruction = 0;
+    byte  default_is_stmt = 0;
     sbyte  line_base = 0;
-    U8  line_range = 0;
-    U8  opcode_base = 0;
-    U8 *standard_opcode_lengths = 0;
+    byte  line_range = 0;
+    byte  opcode_base = 0;
+    byte *standard_opcode_lengths = 0;
     // v4
     String8List include_directories = {0};
     DWARF_V4LineFileNamesList file_names = {0};
     // v5
-    U8  address_size = 0;
-    U8  segment_selector_size = 0;
-    U8  directory_entry_format_count = 0;
+    byte  address_size = 0;
+    byte  segment_selector_size = 0;
+    byte  directory_entry_format_count = 0;
     DWARF_V5LinePathEntryFormat *directory_entry_format = 0;
-    U64 directories_count = 0;
-    U8  file_name_entry_format_count = 0;
+    ulong directories_count = 0;
+    byte  file_name_entry_format_count = 0;
     DWARF_V5LinePathEntryFormat *file_name_entry_format = 0;
-    U64 file_names_count = 0;
+    ulong file_names_count = 0;
     
     switch (version){
       case 4:
       {
         // header_length
-        U64 header_length = 0;
+        ulong header_length = 0;
         if (is_64bit){
-          header_length = MemoryConsume(U64, ptr, unit_opl);
+          header_length = MemoryConsume(ulong, ptr, unit_opl);
         }
         else{
-          header_length = MemoryConsume(U32, ptr, unit_opl);
+          header_length = MemoryConsume(uint, ptr, unit_opl);
         }
         
         // header opl
-        U8 *header_opl_raw = ptr + header_length;
-        U8 *header_opl = ClampTop(header_opl_raw, unit_opl);
+        byte *header_opl_raw = ptr + header_length;
+        byte *header_opl = ClampTop(header_opl_raw, unit_opl);
         
         // minimum_instruction_length
-        minimum_instruction_length = MemoryConsume(U8, ptr, header_opl);
+        minimum_instruction_length = MemoryConsume(byte, ptr, header_opl);
         
         // maximum_operations_per_instruction
-        maximum_operations_per_instruction = MemoryConsume(U8, ptr, header_opl);
+        maximum_operations_per_instruction = MemoryConsume(byte, ptr, header_opl);
         
         // default_is_stmt
-        default_is_stmt = MemoryConsume(U8, ptr, header_opl);
+        default_is_stmt = MemoryConsume(byte, ptr, header_opl);
         
         // line_base
         line_base = MemoryConsume(sbyte, ptr, header_opl);
         
         // line_range
-        line_range = MemoryConsume(U8, ptr, header_opl);
+        line_range = MemoryConsume(byte, ptr, header_opl);
         
         // opcode_base
-        opcode_base = MemoryConsume(U8, ptr, header_opl);
+        opcode_base = MemoryConsume(byte, ptr, header_opl);
         
         // standard_opcode_lengths
         if (opcode_base > 1){
@@ -590,9 +590,9 @@ dwarf_line_from_data(Arena *arena, String8 data){
           }
           
           // extract dir range
-          U8 *dir_first = ptr;
+          byte *dir_first = ptr;
           for (;ptr < header_opl && *ptr != 0;) ptr += 1;
-          U8 *dir_opl = ptr;
+          byte *dir_opl = ptr;
           if (ptr < header_opl){
             ptr += 1;
           }
@@ -611,24 +611,24 @@ dwarf_line_from_data(Arena *arena, String8 data){
           }
           
           // extract file_name range
-          U8 *file_name_first = ptr;
+          byte *file_name_first = ptr;
           for (;ptr < header_opl && *ptr != 0;) ptr += 1;
-          U8 *file_name_opl = ptr;
+          byte *file_name_opl = ptr;
           if (ptr < header_opl){
             ptr += 1;
           }
           
           // extract include directory index
-          U64 include_directory_idx = 0;
-          DWARF_LEB128_DECODE_ADV(U64, include_directory_idx, ptr, header_opl);
+          ulong include_directory_idx = 0;
+          DWARF_LEB128_DECODE_ADV(ulong, include_directory_idx, ptr, header_opl);
           
           // extract last modified time
-          U64 last_modified_time = 0;
-          DWARF_LEB128_DECODE_ADV(U64, last_modified_time, ptr, header_opl);
+          ulong last_modified_time = 0;
+          DWARF_LEB128_DECODE_ADV(ulong, last_modified_time, ptr, header_opl);
           
           // extract file size
-          U64 file_size = 0;
-          DWARF_LEB128_DECODE_ADV(U64, file_size, ptr, header_opl);
+          ulong file_size = 0;
+          DWARF_LEB128_DECODE_ADV(ulong, file_size, ptr, header_opl);
           
           // emit file name entry
           DWARF_V4LineFileNamesEntry *entry = push_array(arena, DWARF_V4LineFileNamesEntry, 1);
@@ -646,41 +646,41 @@ dwarf_line_from_data(Arena *arena, String8 data){
       case 5:
       {
         // address_size
-        address_size = MemoryConsume(U8, ptr, unit_opl);
+        address_size = MemoryConsume(byte, ptr, unit_opl);
         
         // segment_selector_size
-        segment_selector_size = MemoryConsume(U8, ptr, unit_opl);
+        segment_selector_size = MemoryConsume(byte, ptr, unit_opl);
         
         // header_length
-        U64 header_length = 0;
+        ulong header_length = 0;
         if (is_64bit){
-          header_length = MemoryConsume(U64, ptr, unit_opl);
+          header_length = MemoryConsume(ulong, ptr, unit_opl);
         }
         else{
-          header_length = MemoryConsume(U32, ptr, unit_opl);
+          header_length = MemoryConsume(uint, ptr, unit_opl);
         }
         
         // header opl
-        U8 *header_opl_raw = ptr + header_length;
-        U8 *header_opl = ClampTop(header_opl_raw, unit_opl);
+        byte *header_opl_raw = ptr + header_length;
+        byte *header_opl = ClampTop(header_opl_raw, unit_opl);
         
         // minimum_instruction_length
-        minimum_instruction_length = MemoryConsume(U8, ptr, header_opl);
+        minimum_instruction_length = MemoryConsume(byte, ptr, header_opl);
         
         // maximum_operations_per_instruction
-        maximum_operations_per_instruction = MemoryConsume(U8, ptr, header_opl);
+        maximum_operations_per_instruction = MemoryConsume(byte, ptr, header_opl);
         
         // default_is_stmt
-        default_is_stmt = MemoryConsume(U8, ptr, header_opl);
+        default_is_stmt = MemoryConsume(byte, ptr, header_opl);
         
         // line_base
         line_base = MemoryConsume(sbyte, ptr, header_opl);
         
         // line_range
-        line_range = MemoryConsume(U8, ptr, header_opl);
+        line_range = MemoryConsume(byte, ptr, header_opl);
         
         // opcode_base
-        opcode_base = MemoryConsume(U8, ptr, header_opl);
+        opcode_base = MemoryConsume(byte, ptr, header_opl);
         
         // standard_opcode_lengths
         if (opcode_base > 1){
@@ -689,7 +689,7 @@ dwarf_line_from_data(Arena *arena, String8 data){
         }
         
         // directory_entry_format_count
-        directory_entry_format_count = MemoryConsume(U8, ptr, header_opl);
+        directory_entry_format_count = MemoryConsume(byte, ptr, header_opl);
         
         // directory_entry_format
         {
@@ -699,13 +699,13 @@ dwarf_line_from_data(Arena *arena, String8 data){
           DWARF_V5LinePathEntryFormat *entry_opl =
             directory_entry_format + directory_entry_format_count;
           for (;entry < entry_opl && ptr < header_opl; entry += 1){
-            DWARF_LEB128_DECODE_ADV(U64, entry->content_type, ptr, header_opl);
-            DWARF_LEB128_DECODE_ADV(U64, entry->form, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(ulong, entry->content_type, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(ulong, entry->form, ptr, header_opl);
           }
         }
         
         // directories_count
-        DWARF_LEB128_DECODE_ADV(U64, directories_count, ptr, header_opl);
+        DWARF_LEB128_DECODE_ADV(ulong, directories_count, ptr, header_opl);
         
         // directories
         DWARF_V5Directory *directories = push_array(arena, DWARF_V5Directory, directories_count);
@@ -715,7 +715,7 @@ dwarf_line_from_data(Arena *arena, String8 data){
                                    &ptr, header_opl);
         
         // file_name_entry_format_count
-        file_name_entry_format_count = MemoryConsume(U8, ptr, header_opl);
+        file_name_entry_format_count = MemoryConsume(byte, ptr, header_opl);
         
         // file_name_entry_format
         {
@@ -723,13 +723,13 @@ dwarf_line_from_data(Arena *arena, String8 data){
                                               file_name_entry_format_count);
           DWARF_V5LinePathEntryFormat *entry = file_name_entry_format;
           for (;ptr < header_opl; entry += 1){
-            DWARF_LEB128_DECODE_ADV(U64, entry->content_type, ptr, header_opl);
-            DWARF_LEB128_DECODE_ADV(U64, entry->form, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(ulong, entry->content_type, ptr, header_opl);
+            DWARF_LEB128_DECODE_ADV(ulong, entry->form, ptr, header_opl);
           }
         }
         
         // file_names_count
-        DWARF_LEB128_DECODE_ADV(U64, file_names_count, ptr, header_opl);
+        DWARF_LEB128_DECODE_ADV(ulong, file_names_count, ptr, header_opl);
         
         // file_names
         DWARF_V5Directory *file_names = push_array(arena, DWARF_V5Directory, file_names_count);
@@ -741,8 +741,8 @@ dwarf_line_from_data(Arena *arena, String8 data){
     }
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit unit
     DWARF_LineUnit *unit = push_array(arena, DWARF_LineUnit, 1);
@@ -810,36 +810,36 @@ dwarf_addr_from_data(Arena *arena, String8 data){
   // addr unit list
   DWARF_AddrUnit *first = 0;
   DWARF_AddrUnit *last = 0;
-  U64 count = 0;
+  ulong count = 0;
   
   // whole section loop
-  U64 unit_idx  = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx  = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
-    U64 hdr_off = (ptr - data.str);
+    ulong hdr_off = (ptr - data.str);
     
     // initial length
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
     dwarf__initial_length(data, &ptr, &unit_opl, &is_64bit);
     
     // version
-    U8 version = MemoryConsume(U16, ptr, unit_opl);
+    byte version = MemoryConsume(ushort, ptr, unit_opl);
     
     // address size
-    U8 address_size = MemoryConsume(U8, ptr, unit_opl);
+    byte address_size = MemoryConsume(byte, ptr, unit_opl);
     
     // segment selector size
-    U8 segment_selector_size = MemoryConsume(U8, ptr, unit_opl);
+    byte segment_selector_size = MemoryConsume(byte, ptr, unit_opl);
     
     // offset size
-    U32 offset_size = is_64bit?8:4;
+    uint offset_size = is_64bit?8:4;
     
     // unit offsets
-    U64 base_off = (ptr - data.str);
-    U64 opl_off = (unit_opl - data.str);
+    ulong base_off = (ptr - data.str);
+    ulong opl_off = (unit_opl - data.str);
     
     // emit addr unit
     DWARF_AddrUnit *unit = push_array(arena, DWARF_AddrUnit, 1);
@@ -885,25 +885,25 @@ dwarf_loc_lists_from_data(Arena *arena, String8 data){
 // parse helpers
 
 static void
-dwarf__initial_length(String8 data, U8 **ptr_inout, U8 **unit_opl_out, B32 *is_64bit_out){
-  U8 *unit_opl = 0;
+dwarf__initial_length(String8 data, byte **ptr_inout, byte **unit_opl_out, B32 *is_64bit_out){
+  byte *unit_opl = 0;
   B32 is_64bit = 0;
   
-  U8 *opl = data.str + data.size;
-  U8 *ptr = *ptr_inout;
+  byte *opl = data.str + data.size;
+  byte *ptr = *ptr_inout;
   {
-    U64 length = 0;
-    U32 m = MemoryConsume(U32, ptr, opl);
+    ulong length = 0;
+    uint m = MemoryConsume(uint, ptr, opl);
     if (m == 0xFFFFFFFF){
       is_64bit = 1;
-      length = MemoryConsume(U64, ptr, opl);
+      length = MemoryConsume(ulong, ptr, opl);
     }
     else{
       length = ClampTop(m, 0xFFFFFFF0);
     }
     if (length > 0){
-      U64 unit_opl_off_raw = (ptr - data.str) + length;
-      U64 unit_opl_off = ClampTop(unit_opl_off_raw, data.size);
+      ulong unit_opl_off_raw = (ptr - data.str) + length;
+      ulong unit_opl_off = ClampTop(unit_opl_off_raw, data.size);
       unit_opl = data.str + unit_opl_off;
     }
     else{
@@ -917,17 +917,17 @@ dwarf__initial_length(String8 data, U8 **ptr_inout, U8 **unit_opl_out, B32 *is_6
 }
 
 static void
-dwarf__line_v5_directories(U64 address_size, U64 offset_size,
-                           DWARF_V5LinePathEntryFormat *format, U64 format_count,
-                           DWARF_V5Directory *directories_out, U64 dir_count,
-                           U8 **ptr_io, U8 *opl){
+dwarf__line_v5_directories(ulong address_size, ulong offset_size,
+                           DWARF_V5LinePathEntryFormat *format, ulong format_count,
+                           DWARF_V5Directory *directories_out, ulong dir_count,
+                           byte **ptr_io, byte *opl){
   
-  U8 *ptr = *ptr_io;
+  byte *ptr = *ptr_io;
   
   DWARF_V5Directory *directory_ptr = directories_out;
-  for (U32 i = 0; i < dir_count; i += 1, directory_ptr += 1){
+  for (uint i = 0; i < dir_count; i += 1, directory_ptr += 1){
     DWARF_V5LinePathEntryFormat *fmt = format;
-    for (U32 j = 0; j < format_count; j += 1){
+    for (uint j = 0; j < format_count; j += 1){
       
       // form decode
       DWARF_FormDecodeRules rules =
@@ -937,7 +937,7 @@ dwarf__line_v5_directories(U64 address_size, U64 offset_size,
       DWARF_FormDecoded decoded = dwarf_form_decode(&rules, &ptr, opl, 0, 0);
       
       // store to correct field
-      U64 *target = 0;
+      ulong *target = 0;
       switch (fmt->content_type){
         case DWARF_LineEntryFormat_path:
         {
@@ -968,7 +968,7 @@ dwarf__line_v5_directories(U64 address_size, U64 offset_size,
         v5_directory_u64:
         {
           if (decoded.dataptr != 0){
-            U64 size = ClampTop(decoded.val, 8);
+            ulong size = ClampTop(decoded.val, 8);
             MemoryCopy(target, decoded.dataptr, size);
           }
           else{
@@ -979,7 +979,7 @@ dwarf__line_v5_directories(U64 address_size, U64 offset_size,
         case DWARF_LineEntryFormat_MD5:
         {
           if (decoded.dataptr != 0){
-            U64 size = ClampTop(decoded.val, 16);
+            ulong size = ClampTop(decoded.val, 16);
             MemoryCopy(directory_ptr->md5_checksum, decoded.dataptr, size);
           }
         }break;
@@ -1008,7 +1008,7 @@ dwarf_name_from_debug_section(DWARF_Parsed *dwarf, DWARF_SectionCode sec_code){
 // abbrev functions
 
 static DWARF_AbbrevUnit*
-dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, U64 offset){
+dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, ulong offset){
   DWARF_AbbrevUnit *result = 0;
   for (DWARF_AbbrevUnit *unit = abbrev->unit_first;
        unit != 0;
@@ -1022,7 +1022,7 @@ dwarf_abbrev_unit_from_offset(DWARF_AbbrevParsed *abbrev, U64 offset){
 }
 
 static DWARF_AbbrevDecl*
-dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit *unit, U32 abbrev_code){
+dwarf_abbrev_decl_from_code(DWARF_AbbrevUnit *unit, uint abbrev_code){
   DWARF_AbbrevDecl *result = 0;
   for (DWARF_AbbrevDecl *decl = unit->first;
        decl != 0;
@@ -1067,7 +1067,7 @@ dwarf_attribute_class_from_name(DWARF_AttributeName name){
 // form decoding functions
 
 static DWARF_FormDecodeRules
-dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_size){
+dwarf_form_decode_rule(DWARF_AttributeForm form, ulong address_size, ulong offset_size){
   DWARF_FormDecodeRules result = {0};
   switch (form){
     case DWARF_AttributeForm_null:
@@ -1136,15 +1136,15 @@ dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_si
 }
 
 static DWARF_FormDecoded
-dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
-                  DWARF_AbbrevDecl *abbrev_decl, U32 attrib_i){
+dwarf_form_decode(DWARF_FormDecodeRules *rules, byte **ptr_io, byte *opl,
+                  DWARF_AbbrevDecl *abbrev_decl, uint attrib_i){
   
   // local copy of ptr
-  U8 *ptr = *ptr_io;
+  byte *ptr = *ptr_io;
   
   // apply rules
-  U64 val = 0;
-  U8 *dataptr = 0;
+  ulong val = 0;
+  byte *dataptr = 0;
   
   B32 success = 1;
   if (rules->size > 0){
@@ -1157,21 +1157,21 @@ dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
     }
   }
   else if (rules->uleb128 || rules->sleb128){
-    U8 *val_ptr = ptr;
+    byte *val_ptr = ptr;
     DWARF_LEB128_ADV(ptr, opl, success);
     if (success){
       if (rules->uleb128){
         val = dwarf_leb128_decode_U64(val_ptr, ptr);
       }
       else{
-        val = (U64)dwarf_leb128_decode_S64(val_ptr, ptr);
+        val = (ulong)dwarf_leb128_decode_S64(val_ptr, ptr);
       }
     }
   }
   else if (rules->in_abbrev){
     if (abbrev_decl != 0){
       if (abbrev_decl->implicit_const != 0){
-        val = (U64)abbrev_decl->implicit_const[attrib_i];
+        val = (ulong)abbrev_decl->implicit_const[attrib_i];
       }
     }
     else{
@@ -1188,7 +1188,7 @@ dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
   else if (rules->null_terminated){
     dataptr = ptr;
     for (;ptr < opl && *ptr != 0;) ptr += 1;
-    val = (U64)(ptr - dataptr);
+    val = (ulong)(ptr - dataptr);
     if (ptr < opl){
       ptr += 1;
     }
@@ -1307,19 +1307,19 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
                      DWARF_AbbrevParsed *abbrev){
   
   // unit index range to extract
-  U64 unit_idx_min = params->unit_idx_min;
-  U64 unit_idx_max = params->unit_idx_max;
+  ulong unit_idx_min = params->unit_idx_min;
+  ulong unit_idx_max = params->unit_idx_max;
   
   // empty unit list
   DWARF_InfoUnit *unit_first = 0;
   DWARF_InfoUnit *unit_last = 0;
-  U64 unit_count = 0;
+  ulong unit_count = 0;
   B32 decoding_error = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // early escape on unit idx
@@ -1331,15 +1331,15 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
     B32 full_parse = (unit_idx_min <= unit_idx);
     
     // header fields
-    U8 *unit_opl = 0;
+    byte *unit_opl = 0;
     B32 is_64bit = 0;
-    U16 version = 0;
-    U64 abbrev_offset = 0;
-    U32 address_size = 0;
+    ushort version = 0;
+    ulong abbrev_offset = 0;
+    uint address_size = 0;
     DWARF_UnitType unit_type = DWARF_UnitType_null;
-    U64 unit_dwo_id = 0;
-    U64 unit_type_signature = 0;
-    U64 unit_type_offset = 0;
+    ulong unit_dwo_id = 0;
+    ulong unit_type_signature = 0;
+    ulong unit_type_offset = 0;
     
     // initial length
     dwarf__initial_length(&ptr, opl, &unit_opl, &is_64bit);
@@ -1349,7 +1349,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
     if (full_parse){
       
       // version (part of header)
-      version = MemoryConsume(U16, ptr, unit_opl);
+      version = MemoryConsume(ushort, ptr, unit_opl);
       
       // rest of header depends on version
       switch (version){
@@ -1357,30 +1357,30 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
         {
           // abbrev_offset (part of header)
           if (is_64bit){
-            abbrev_offset = MemoryConsume(U64, ptr, unit_opl);
+            abbrev_offset = MemoryConsume(ulong, ptr, unit_opl);
           }
           else{
-            abbrev_offset = MemoryConsume(U32, ptr, unit_opl);
+            abbrev_offset = MemoryConsume(uint, ptr, unit_opl);
           }
           
           // address_size (part of header)
-          address_size = MemoryConsume(U8, ptr, unit_opl);
+          address_size = MemoryConsume(byte, ptr, unit_opl);
         }break;
         
         case 5:
         {
           // unit_type (part of header)
-          unit_type = (DWARF_UnitType)MemoryConsume(U8, ptr, unit_opl);
+          unit_type = (DWARF_UnitType)MemoryConsume(byte, ptr, unit_opl);
           
           // address_size (part of header)
-          address_size = MemoryConsume(U8, ptr, unit_opl);
+          address_size = MemoryConsume(byte, ptr, unit_opl);
           
           // abbrev_offset (part of header)
           if (is_64bit){
-            abbrev_offset = MemoryConsume(U64, ptr, unit_opl);
+            abbrev_offset = MemoryConsume(ulong, ptr, unit_opl);
           }
           else{
-            abbrev_offset = MemoryConsume(U32, ptr, unit_opl);
+            abbrev_offset = MemoryConsume(uint, ptr, unit_opl);
           }
           
           // rest of header depends on unit_type
@@ -1388,17 +1388,17 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
             case DWARF_UnitType_skeleton:
             case DWARF_UnitType_split_compile:
             {
-              unit_dwo_id = MemoryConsume(U64, ptr, unit_opl);
+              unit_dwo_id = MemoryConsume(ulong, ptr, unit_opl);
             }break;
             case DWARF_UnitType_type:
             case DWARF_UnitType_split_type:
             {
-              unit_type_signature = MemoryConsume(U64, ptr, unit_opl);
+              unit_type_signature = MemoryConsume(ulong, ptr, unit_opl);
               if (is_64bit){
-                unit_type_offset = MemoryConsume(U64, ptr, unit_opl);
+                unit_type_offset = MemoryConsume(ulong, ptr, unit_opl);
               }
               else{
-                unit_type_offset = MemoryConsume(U32, ptr, unit_opl);
+                unit_type_offset = MemoryConsume(uint, ptr, unit_opl);
               }
             }break;
           }
@@ -1406,7 +1406,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
       }
       
       // offset size
-      U32 offset_size = is_64bit?8:4;
+      uint offset_size = is_64bit?8:4;
       
       // find matching abbrev unit
       DWARF_AbbrevUnit *abbrev_unit = dwarf_abbrev_unit_from_offset(abbrev, abbrev_offset);
@@ -1417,7 +1417,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
       
       // consume info entries
       DWARF_InfoEntry *entry_root = 0;
-      U64 entry_count = 0;
+      ulong entry_count = 0;
       
       DWARF_InfoEntry *entry_consptr = 0;
       if (abbrev_unit != 0){
@@ -1425,10 +1425,10 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
           B32 success = 1;
           
           // mark beginning of entry
-          U8 *entry_start_ptr = ptr;
+          byte *entry_start_ptr = ptr;
           
           // extract abbrev code
-          U8 *abbrev_code_ptr = ptr;
+          byte *abbrev_code_ptr = ptr;
           DWARF_LEB128_ADV(ptr, unit_opl, success);
           if (!success){
             // TODO: preserve error info
@@ -1436,7 +1436,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
             goto exit_unit_loop;
           }
           
-          U32 abbrev_code = dwarf_leb128_decode_U32(abbrev_code_ptr, ptr);
+          uint abbrev_code = dwarf_leb128_decode_U32(abbrev_code_ptr, ptr);
           
           // null abbrev code means pop
           if (abbrev_code == 0){
@@ -1458,13 +1458,13 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
           }
           
           // allocate entry
-          U32 attrib_count = abbrev_decl->attrib_count;
+          uint attrib_count = abbrev_decl->attrib_count;
           DWARF_InfoEntry *entry = push_array(arena, DWARF_InfoEntry, 1);
           DWARF_InfoAttribVal *attrib_vals =
             push_array_no_zero(arena, DWARF_InfoAttribVal, attrib_count);
           
           // save entry offset
-          entry->info_offset = (U64)(entry_start_ptr - data.str);
+          entry->info_offset = (ulong)(entry_start_ptr - data.str);
           
           // set root at beginning
           if (entry_root == 0){
@@ -1474,10 +1474,10 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
           // attribute loop
           DWARF_AbbrevAttribSpec *attrib_spec = abbrev_decl->attrib_specs;
           DWARF_InfoAttribVal *attrib_val = attrib_vals;
-          for (U32 i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
+          for (uint i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
             
             // determine decoding rules
-            U32 size = 0;
+            uint size = 0;
             B8 uleb128 = 0;
             B8 sleb128 = 0;
             B8 in_abbrev = 0;
@@ -1548,8 +1548,8 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
             }
             
             // execute decoding rules
-            U64 val = 0;
-            U8 *dataptr = 0;
+            ulong val = 0;
+            byte *dataptr = 0;
             {
               if (size > 0){
                 if (ptr + size <= unit_opl){
@@ -1563,7 +1563,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
                 }
               }
               else if (uleb128 || sleb128){
-                U8 *val_ptr = ptr;
+                byte *val_ptr = ptr;
                 DWARF_LEB128_ADV(ptr, unit_opl, success);
                 if (!success){
                   // TODO: preserve error info
@@ -1575,13 +1575,13 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
                     val = dwarf_leb128_decode_U64(val_ptr, ptr);
                   }
                   else{
-                    val = (U64)dwarf_leb128_decode_S64(val_ptr, ptr);
+                    val = (ulong)dwarf_leb128_decode_S64(val_ptr, ptr);
                   }
                 }
               }
               else if (in_abbrev){
                 if (abbrev_decl->implicit_const != 0){
-                  val = (U64)abbrev_decl->implicit_const[i];
+                  val = (ulong)abbrev_decl->implicit_const[i];
                 }
               }
               else if (auto_1){
@@ -1594,7 +1594,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
               else if (null_terminated){
                 dataptr = ptr;
                 for (;ptr < unit_opl && *ptr != 0;) ptr += 1;
-                val = (U64)(ptr - dataptr);
+                val = (ulong)(ptr - dataptr);
               }
             }
             
@@ -1630,28 +1630,28 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
       }
       
       // extract root attributes
-      U64 language = 0;
-      U64 str_offsets_base = 0;
-      U64 line_info_offset = 0;
-      U64 vbase = 0;
-      U64 addr_base = 0;
-      U64 rnglists_base = 0;
-      U64 loclists_base = 0;
+      ulong language = 0;
+      ulong str_offsets_base = 0;
+      ulong line_info_offset = 0;
+      ulong vbase = 0;
+      ulong addr_base = 0;
+      ulong rnglists_base = 0;
+      ulong loclists_base = 0;
       if (entry_root != 0){
         
         // pull out attributes
         DWARF_AbbrevDecl *root_abbrev_decl = entry_root->abbrev_decl;
         DWARF_AbbrevAttribSpec *attrib_specs = root_abbrev_decl->attrib_specs;
         DWARF_InfoAttribVal *attrib_vals = entry_root->attrib_vals;
-        U32 attrib_count = root_abbrev_decl->attrib_count;
+        uint attrib_count = root_abbrev_decl->attrib_count;
         
         // examine each attribute
         DWARF_AbbrevAttribSpec *attrib_spec = attrib_specs;
         DWARF_InfoAttribVal *attrib_val = attrib_vals;
-        for (U32 i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
+        for (uint i = 0; i < attrib_count; i += 1, attrib_spec += 1, attrib_val += 1){
           
           // determine if there is a root attribute to extract here
-          U64 *target_u64 = 0;
+          ulong *target_u64 = 0;
           switch (attrib_spec->name){
             case DWARF_AttributeName_language:         target_u64 = &language;         break;
             case DWARF_AttributeName_str_offsets_base: target_u64 = &str_offsets_base; break;
@@ -1716,19 +1716,19 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
   */
   
   // unit index range to extract
-  U64 unit_idx_min = params->unit_idx_min;
-  U64 unit_idx_max = params->unit_idx_max;
+  ulong unit_idx_min = params->unit_idx_min;
+  ulong unit_idx_max = params->unit_idx_max;
   
   // empty unit list
   DWARF_AbbrevUnit *unit_first = 0;
   DWARF_AbbrevUnit *unit_last = 0;
-  U64 unit_count = 0;
+  ulong unit_count = 0;
   B32 decoding_error = 0;
   
   // whole section loop
-  U64 unit_idx = 0;
-  U8 *ptr = data.str;
-  U8 *opl = data.str + data.size;
+  ulong unit_idx = 0;
+  byte *ptr = data.str;
+  byte *opl = data.str + data.size;
   for (;ptr < opl; unit_idx += 1){
     
     // early escape on unit idx
@@ -1740,7 +1740,7 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
     B32 full_parse = (unit_idx_min <= unit_idx);
     
     // save unit offset
-    U64 abbrev_unit_offset = (U64)(ptr - data.str);
+    ulong abbrev_unit_offset = (ulong)(ptr - data.str);
     
     // allocate unit
     DWARF_AbbrevUnit *unit = push_array(arena, DWARF_AbbrevUnit, 1);
@@ -1748,14 +1748,14 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
     // empty abbrev list
     DWARF_AbbrevDecl *abbrev_first = 0;
     DWARF_AbbrevDecl *abbrev_last = 0;
-    U64 abbrev_count = 0;
+    ulong abbrev_count = 0;
     
     // abbrev decl loop
     for (;ptr < opl;){
       B32 success = 1;
       
       // mark abbrev_code field
-      U8 *abbrev_code_ptr = ptr;
+      byte *abbrev_code_ptr = ptr;
       DWARF_LEB128_ADV(ptr, opl, success);
       
       // null abbrev code means end of unit
@@ -1764,9 +1764,9 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
       }
       
       // mark tag
-      U8 *tag_ptr = ptr;
+      byte *tag_ptr = ptr;
       DWARF_LEB128_ADV(ptr, opl, success);
-      U8 *end_tag_ptr = ptr;
+      byte *end_tag_ptr = ptr;
       
       // extract has_children
       B8 has_children = 0;
@@ -1779,19 +1779,19 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
       }
       
       // count attributes
-      U8 *attrib_start_ptr = ptr;
-      U32 attrib_count = 0;
+      byte *attrib_start_ptr = ptr;
+      uint attrib_count = 0;
       B32 has_implicit_const = 0;
       if (success){
         for (;;){
           // decode normal attribute layout
-          U8 *attrib_name = ptr;
+          byte *attrib_name = ptr;
           DWARF_LEB128_ADV(ptr, opl, success);
-          U8 *attrib_form = ptr;
+          byte *attrib_form = ptr;
           DWARF_LEB128_ADV(ptr, opl, success);
           
           // handle special case implicit_const
-          if (success && *attrib_form == (U8)DWARF_AttributeForm_implicit_const){
+          if (success && *attrib_form == (byte)DWARF_AttributeForm_implicit_const){
             DWARF_LEB128_ADV(ptr, opl, success);
             has_implicit_const = 1;
           }
@@ -1814,27 +1814,27 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
         DWARF_AbbrevDecl *abbrev = push_array(arena, DWARF_AbbrevDecl, 1);
         DWARF_AbbrevAttribSpec *attribs =
           push_array_no_zero(arena, DWARF_AbbrevAttribSpec, attrib_count);
-        U64 *implicit_const = 0;
+        ulong *implicit_const = 0;
         if (has_implicit_const){
-          implicit_const = push_array(arena, U64, attrib_count);
+          implicit_const = push_array(arena, ulong, attrib_count);
         }
         
         // extract abbrev fields
-        U32 abbrev_code = dwarf_leb128_decode_U32(abbrev_code_ptr, tag_ptr);
-        U32 tag = dwarf_leb128_decode_U32(tag_ptr, end_tag_ptr);
+        uint abbrev_code = dwarf_leb128_decode_U32(abbrev_code_ptr, tag_ptr);
+        uint tag = dwarf_leb128_decode_U32(tag_ptr, end_tag_ptr);
         
-        U8 *attrib_ptr = attrib_start_ptr;
+        byte *attrib_ptr = attrib_start_ptr;
         DWARF_AbbrevAttribSpec *attrib = attribs;
-        for (U32 i = 0; i < attrib_count; i += 1, attrib += 1){
+        for (uint i = 0; i < attrib_count; i += 1, attrib += 1){
           // mark attribute fields
-          U8 *attrib_name = attrib_ptr;
+          byte *attrib_name = attrib_ptr;
           DWARF_LEB128_ADV_NOCAP(attrib_ptr);
-          U8 *attrib_form = attrib_ptr;
+          byte *attrib_form = attrib_ptr;
           DWARF_LEB128_ADV_NOCAP(attrib_ptr);
           
           // extract attribute fields
-          U32 name = dwarf_leb128_decode_U32(attrib_name, attrib_form);
-          U32 form = dwarf_leb128_decode_U32(attrib_form, attrib_ptr);
+          uint name = dwarf_leb128_decode_U32(attrib_name, attrib_form);
+          uint form = dwarf_leb128_decode_U32(attrib_form, attrib_ptr);
           
           // fill attribute spec
           attrib->name = (DWARF_AttributeName)name;
@@ -1842,7 +1842,7 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
           
           // handle special case implicit_const
           if (form == DWARF_AttributeForm_implicit_const){
-            U8 *attrib_value = attrib_ptr;
+            byte *attrib_value = attrib_ptr;
             DWARF_LEB128_ADV_NOCAP(attrib_ptr);
             long value = dwarf_leb128_decode_S64(attrib_form, attrib_ptr);
             implicit_const[i] = value;

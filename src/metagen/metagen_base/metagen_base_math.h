@@ -182,10 +182,10 @@ union Rng1U32
 {
   struct
   {
-    U32 min;
-    U32 max;
+    uint min;
+    uint max;
   };
-  U32 v[2];
+  uint v[2];
 };
 
 typedef union Rng1S32 Rng1S32;
@@ -204,10 +204,10 @@ union Rng1U64
 {
   struct
   {
-    U64 min;
-    U64 max;
+    ulong min;
+    ulong max;
   };
-  U64 v[2];
+  ulong v[2];
 };
 
 typedef union Rng1S64 Rng1S64;
@@ -341,14 +341,14 @@ struct Rng1S64List
 {
   Rng1S64Node *first;
   Rng1S64Node *last;
-  U64 count;
+  ulong count;
 };
 
 typedef struct Rng1S64Array Rng1S64Array;
 struct Rng1S64Array
 {
   Rng1S64 *v;
-  U64 count;
+  ulong count;
 };
 
 ////////////////////////////////
@@ -526,15 +526,15 @@ internal Mat4x4F32 derotate_4x4f32(Mat4x4F32 mat);
 //~ rjf: Range Ops
 
 #define r1u32(min, max) rng_1u32((min), (max))
-internal Rng1U32 rng_1u32(U32 min, U32 max);
-internal Rng1U32 shift_1u32(Rng1U32 r, U32 x);
-internal Rng1U32 pad_1u32(Rng1U32 r, U32 x);
-internal U32 center_1u32(Rng1U32 r);
-internal B32 contains_1u32(Rng1U32 r, U32 x);
-internal U32 dim_1u32(Rng1U32 r);
+internal Rng1U32 rng_1u32(uint min, uint max);
+internal Rng1U32 shift_1u32(Rng1U32 r, uint x);
+internal Rng1U32 pad_1u32(Rng1U32 r, uint x);
+internal uint center_1u32(Rng1U32 r);
+internal B32 contains_1u32(Rng1U32 r, uint x);
+internal uint dim_1u32(Rng1U32 r);
 internal Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b);
 internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b);
-internal U32 clamp_1u32(Rng1U32 r, U32 v);
+internal uint clamp_1u32(Rng1U32 r, uint v);
 
 #define r1s32(min, max) rng_1s32((min), (max))
 internal Rng1S32 rng_1s32(int min, int max);
@@ -548,15 +548,15 @@ internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b);
 internal int clamp_1s32(Rng1S32 r, int v);
 
 #define r1u64(min, max) rng_1u64((min), (max))
-internal Rng1U64 rng_1u64(U64 min, U64 max);
-internal Rng1U64 shift_1u64(Rng1U64 r, U64 x);
-internal Rng1U64 pad_1u64(Rng1U64 r, U64 x);
-internal U64 center_1u64(Rng1U64 r);
-internal B32 contains_1u64(Rng1U64 r, U64 x);
-internal U64 dim_1u64(Rng1U64 r);
+internal Rng1U64 rng_1u64(ulong min, ulong max);
+internal Rng1U64 shift_1u64(Rng1U64 r, ulong x);
+internal Rng1U64 pad_1u64(Rng1U64 r, ulong x);
+internal ulong center_1u64(Rng1U64 r);
+internal B32 contains_1u64(Rng1U64 r, ulong x);
+internal ulong dim_1u64(Rng1U64 r);
 internal Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b);
 internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b);
-internal U64 clamp_1u64(Rng1U64 r, U64 v);
+internal ulong clamp_1u64(Rng1U64 r, ulong v);
 
 #define r1s64(min, max) rng_1s64((min), (max))
 internal Rng1S64 rng_1s64(long min, long max);
@@ -635,8 +635,8 @@ internal Vec3F32 hsv_from_rgb(Vec3F32 rgb);
 internal Vec3F32 rgb_from_hsv(Vec3F32 hsv);
 internal Vec4F32 hsva_from_rgba(Vec4F32 rgba);
 internal Vec4F32 rgba_from_hsva(Vec4F32 hsva);
-internal Vec4F32 rgba_from_u32(U32 hex);
-internal U32 u32_from_rgba(Vec4F32 rgba);
+internal Vec4F32 rgba_from_u32(uint hex);
+internal uint u32_from_rgba(Vec4F32 rgba);
 
 #define rgba_from_u32_lit_comp(h) { (((h)&0xff000000)>>24)/255.f, (((h)&0x00ff0000)>>16)/255.f, (((h)&0x0000ff00)>> 8)/255.f, (((h)&0x000000ff)>> 0)/255.f }
 

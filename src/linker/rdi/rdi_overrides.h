@@ -1,9 +1,9 @@
 #pragma once
 
-typedef U8  RDI_U8;
-typedef U16 RDI_U16;
-typedef U32 RDI_U32;
-typedef U64 RDI_U64;
+typedef byte  RDI_U8;
+typedef ushort RDI_U16;
+typedef uint RDI_U32;
+typedef ulong RDI_U64;
 typedef sbyte  RDI_S8;
 typedef short RDI_S16;
 typedef int RDI_S32;

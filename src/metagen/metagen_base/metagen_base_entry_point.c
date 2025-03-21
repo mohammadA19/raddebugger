@@ -2,10 +2,10 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal void
-main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **arguments, U64 arguments_count)
+main_thread_base_entry_point(void (*entry_point)(CmdLine *cmdline), char **arguments, ulong arguments_count)
 {
 #if PROFILE_TELEMETRY
-  local_persist U8 tm_data[MB(64)];
+  local_persist byte tm_data[MB(64)];
   tmLoadLibrary(TM_RELEASE);
   tmSetMaxThreadCount(256);
   tmInitialize(sizeof(tm_data), (char *)tm_data);

@@ -18,7 +18,7 @@ typedef struct UI_PermissionFlagsNode UI_PermissionFlagsNode; struct UI_Permissi
 typedef struct UI_FlagsNode UI_FlagsNode; struct UI_FlagsNode{UI_FlagsNode *next; UI_BoxFlags v;};
 typedef struct UI_FocusHotNode UI_FocusHotNode; struct UI_FocusHotNode{UI_FocusHotNode *next; UI_FocusKind v;};
 typedef struct UI_FocusActiveNode UI_FocusActiveNode; struct UI_FocusActiveNode{UI_FocusActiveNode *next; UI_FocusKind v;};
-typedef struct UI_FastpathCodepointNode UI_FastpathCodepointNode; struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; U32 v;};
+typedef struct UI_FastpathCodepointNode UI_FastpathCodepointNode; struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; uint v;};
 typedef struct UI_GroupKeyNode UI_GroupKeyNode; struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
 typedef struct UI_TransparencyNode UI_TransparencyNode; struct UI_TransparencyNode{UI_TransparencyNode *next; F32 v;};
 typedef struct UI_PaletteNode UI_PaletteNode; struct UI_PaletteNode{UI_PaletteNode *next; UI_Palette*     v;};
@@ -114,7 +114,7 @@ struct { UI_PermissionFlagsNode *top; UI_PermissionFlags bottom_val; UI_Permissi
 struct { UI_FlagsNode *top; UI_BoxFlags bottom_val; UI_FlagsNode *free; B32 auto_pop; } flags_stack;\
 struct { UI_FocusHotNode *top; UI_FocusKind bottom_val; UI_FocusHotNode *free; B32 auto_pop; } focus_hot_stack;\
 struct { UI_FocusActiveNode *top; UI_FocusKind bottom_val; UI_FocusActiveNode *free; B32 auto_pop; } focus_active_stack;\
-struct { UI_FastpathCodepointNode *top; U32 bottom_val; UI_FastpathCodepointNode *free; B32 auto_pop; } fastpath_codepoint_stack;\
+struct { UI_FastpathCodepointNode *top; uint bottom_val; UI_FastpathCodepointNode *free; B32 auto_pop; } fastpath_codepoint_stack;\
 struct { UI_GroupKeyNode *top; UI_Key bottom_val; UI_GroupKeyNode *free; B32 auto_pop; } group_key_stack;\
 struct { UI_TransparencyNode *top; F32 bottom_val; UI_TransparencyNode *free; B32 auto_pop; } transparency_stack;\
 struct { UI_PaletteNode *top; UI_Palette*     bottom_val; UI_PaletteNode *free; B32 auto_pop; } palette_stack;\
@@ -206,7 +206,7 @@ internal UI_PermissionFlags         ui_top_permission_flags(void);
 internal UI_BoxFlags                ui_top_flags(void);
 internal UI_FocusKind               ui_top_focus_hot(void);
 internal UI_FocusKind               ui_top_focus_active(void);
-internal U32                        ui_top_fastpath_codepoint(void);
+internal uint                        ui_top_fastpath_codepoint(void);
 internal UI_Key                     ui_top_group_key(void);
 internal F32                        ui_top_transparency(void);
 internal UI_Palette*                ui_top_palette(void);
@@ -235,7 +235,7 @@ internal UI_PermissionFlags         ui_bottom_permission_flags(void);
 internal UI_BoxFlags                ui_bottom_flags(void);
 internal UI_FocusKind               ui_bottom_focus_hot(void);
 internal UI_FocusKind               ui_bottom_focus_active(void);
-internal U32                        ui_bottom_fastpath_codepoint(void);
+internal uint                        ui_bottom_fastpath_codepoint(void);
 internal UI_Key                     ui_bottom_group_key(void);
 internal F32                        ui_bottom_transparency(void);
 internal UI_Palette*                ui_bottom_palette(void);
@@ -264,7 +264,7 @@ internal UI_PermissionFlags         ui_push_permission_flags(UI_PermissionFlags 
 internal UI_BoxFlags                ui_push_flags(UI_BoxFlags v);
 internal UI_FocusKind               ui_push_focus_hot(UI_FocusKind v);
 internal UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
-internal U32                        ui_push_fastpath_codepoint(U32 v);
+internal uint                        ui_push_fastpath_codepoint(uint v);
 internal UI_Key                     ui_push_group_key(UI_Key v);
 internal F32                        ui_push_transparency(F32 v);
 internal UI_Palette*                ui_push_palette(UI_Palette*     v);
@@ -293,7 +293,7 @@ internal UI_PermissionFlags         ui_pop_permission_flags(void);
 internal UI_BoxFlags                ui_pop_flags(void);
 internal UI_FocusKind               ui_pop_focus_hot(void);
 internal UI_FocusKind               ui_pop_focus_active(void);
-internal U32                        ui_pop_fastpath_codepoint(void);
+internal uint                        ui_pop_fastpath_codepoint(void);
 internal UI_Key                     ui_pop_group_key(void);
 internal F32                        ui_pop_transparency(void);
 internal UI_Palette*                ui_pop_palette(void);
@@ -322,7 +322,7 @@ internal UI_PermissionFlags         ui_set_next_permission_flags(UI_PermissionFl
 internal UI_BoxFlags                ui_set_next_flags(UI_BoxFlags v);
 internal UI_FocusKind               ui_set_next_focus_hot(UI_FocusKind v);
 internal UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
-internal U32                        ui_set_next_fastpath_codepoint(U32 v);
+internal uint                        ui_set_next_fastpath_codepoint(uint v);
 internal UI_Key                     ui_set_next_group_key(UI_Key v);
 internal F32                        ui_set_next_transparency(F32 v);
 internal UI_Palette*                ui_set_next_palette(UI_Palette*     v);

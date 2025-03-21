@@ -41,7 +41,7 @@ entry_point(CmdLine *cmd_line)
   //////////////////////////////
   //- rjf: extract command line parameters
   //
-  typedef U32 DumpFlags;
+  typedef uint DumpFlags;
   enum
   {
     DumpFlag_DataSections       = (1<<0),
@@ -66,7 +66,7 @@ entry_point(CmdLine *cmd_line)
     DumpFlag_Strings            = (1<<19),
   };
   String8 input_name = {0};
-  DumpFlags dump_flags = (U32)0xffffffff;
+  DumpFlags dump_flags = (uint)0xffffffff;
   {
     // rjf: extract input file path
     input_name = str8_list_first(&cmd_line->inputs);
@@ -129,10 +129,10 @@ entry_point(CmdLine *cmd_line)
   //- rjf: decompress rdi if necessary
   //
   {
-    U64 decompressed_size = rdi_decompressed_size_from_parsed(rdi);
+    ulong decompressed_size = rdi_decompressed_size_from_parsed(rdi);
     if(decompressed_size > input_data.size)
     {
-      U8 *decompressed_data = push_array_no_zero(arena, U8, decompressed_size);
+      byte *decompressed_data = push_array_no_zero(arena, byte, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, rdi);
       status = rdi_parse(decompressed_data, decompressed_size, rdi);
     }
@@ -182,9 +182,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_BinarySections)
     {
       str8_list_pushf(arena, &dump, "# BINARY SECTIONS:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_BinarySection *v = rdi_table_from_name(rdi, BinarySections, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " section[%I64u]:\n", idx);
         rdi_stringize_binary_section(arena, &dump, rdi, &v[idx], 2);
@@ -199,7 +199,7 @@ entry_point(CmdLine *cmd_line)
       file_path_bundle.file_paths = rdi_table_from_name(rdi, FilePathNodes, &file_path_bundle.file_path_count);
       str8_list_pushf(arena, &dump, "# FILE PATHS\n");
       RDI_FilePathNode *ptr = file_path_bundle.file_paths;
-      for(U32 i = 0; i < file_path_bundle.file_path_count; i += 1, ptr += 1)
+      for(uint i = 0; i < file_path_bundle.file_path_count; i += 1, ptr += 1)
       {
         if(ptr->parent_path_node == 0)
         {
@@ -213,9 +213,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_SourceFiles)
     {
       str8_list_pushf(arena, &dump, "# SOURCE FILES\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_SourceFile *v = rdi_table_from_name(rdi, SourceFiles, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " source_file[%I64u]:\n", idx);
         rdi_stringize_source_file(arena, &dump, rdi, &v[idx], 2);
@@ -227,9 +227,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_LineTables)
     {
       str8_list_pushf(arena, &dump, "# LINE TABLES\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_LineTable *v = rdi_table_from_name(rdi, LineTables, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " line_table[%I64u]:\n", idx);
         rdi_stringize_line_table(arena, &dump, rdi, &v[idx], 2);
@@ -241,9 +241,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_SourceLineMaps)
     {
       str8_list_pushf(arena, &dump, "# SOURCE LINE MAPS\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_SourceLineMap *v = rdi_table_from_name(rdi, SourceLineMaps, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " source_line_map[%I64u]:\n", idx);
         rdi_stringize_source_line_map(arena, &dump, rdi, &v[idx], 2);
@@ -255,9 +255,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_Units)
     {
       str8_list_pushf(arena, &dump, "# UNITS\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_Unit *v = rdi_table_from_name(rdi, Units, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " unit[%I64u]:\n", idx);
         rdi_stringize_unit(arena, &dump, rdi, &v[idx], 2);
@@ -269,9 +269,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_UnitVMap)
     {
       str8_list_pushf(arena, &dump, "# UNIT VMAP\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_VMapEntry *v = rdi_table_from_name(rdi, UnitVMap, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
@@ -282,9 +282,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_TypeNodes)
     {
       str8_list_pushf(arena, &dump, "# TYPE NODES:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_TypeNode *v = rdi_table_from_name(rdi, TypeNodes, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " type[%I64u]:\n", idx);
         rdi_stringize_type_node(arena, &dump, rdi, &v[idx], 2);
@@ -295,11 +295,11 @@ entry_point(CmdLine *cmd_line)
     //- rjf: UDT DATA
     if(dump_flags & DumpFlag_UDTs)
     {
-      U64 all_members_count = 0;
+      ulong all_members_count = 0;
       RDI_Member *all_members = rdi_table_from_name(rdi, Members, &all_members_count);
-      U64 all_enum_members_count = 0;
+      ulong all_enum_members_count = 0;
       RDI_EnumMember *all_enum_members = rdi_table_from_name(rdi, EnumMembers, &all_enum_members_count);
-      U64 all_udts_count = 0;
+      ulong all_udts_count = 0;
       RDI_UDT *all_udts = rdi_table_from_name(rdi, UDTs, &all_udts_count);
       RDI_UDTMemberBundle member_bundle = {0};
       {
@@ -309,7 +309,7 @@ entry_point(CmdLine *cmd_line)
         member_bundle.enum_member_count = (RDI_U32)all_enum_members_count;
       }
       str8_list_pushf(arena, &dump, "# UDTS:\n");
-      for(U64 idx = 0; idx < all_udts_count; idx += 1)
+      for(ulong idx = 0; idx < all_udts_count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " udt[%I64u]:\n", idx);
         rdi_stringize_udt(arena, &dump, rdi, &member_bundle, &all_udts[idx], 2);
@@ -323,7 +323,7 @@ entry_point(CmdLine *cmd_line)
       str8_list_pushf(arena, &dump, "# GLOBAL VARIABLES:\n");
       RDI_U64 count = 0;
       RDI_GlobalVariable *v = rdi_table_from_name(rdi, GlobalVariables, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " global_variable[%I64u]:\n", idx);
         rdi_stringize_global_variable(arena, &dump, rdi, &v[idx], 2);
@@ -335,9 +335,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_GlobalVMap)
     {
       str8_list_pushf(arena, &dump, "# GLOBAL VMAP:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_VMapEntry *v = rdi_table_from_name(rdi, GlobalVMap, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
@@ -348,9 +348,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_ThreadVariables)
     {
       str8_list_pushf(arena, &dump, "# THREAD VARIABLES:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_ThreadVariable *v = rdi_table_from_name(rdi, ThreadVariables, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " thread_variable[%I64u]:\n", idx);
         rdi_stringize_thread_variable(arena, &dump, rdi, &v[idx], 2);
@@ -362,9 +362,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_Procedures)
     {
       str8_list_pushf(arena, &dump, "# PROCEDURES:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_Procedure *v = rdi_table_from_name(rdi, Procedures, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " procedure[%I64u]:\n", idx);
         rdi_stringize_procedure(arena, &dump, rdi, &v[idx], 2);
@@ -375,15 +375,15 @@ entry_point(CmdLine *cmd_line)
     //- rjf: SCOPES
     if(dump_flags & DumpFlag_Scopes)
     {
-      U64 scopes_count = 0;
+      ulong scopes_count = 0;
       RDI_Scope *scopes = rdi_table_from_name(rdi, Scopes, &scopes_count);
-      U64 scopes_voffs_count = 0;
-      U64 *scopes_voffs = rdi_table_from_name(rdi, ScopeVOffData, &scopes_voffs_count);
-      U64 locals_count = 0;
+      ulong scopes_voffs_count = 0;
+      ulong *scopes_voffs = rdi_table_from_name(rdi, ScopeVOffData, &scopes_voffs_count);
+      ulong locals_count = 0;
       RDI_Local *locals = rdi_table_from_name(rdi, Locals, &locals_count);
-      U64 location_block_count = 0;
+      ulong location_block_count = 0;
       RDI_LocationBlock *location_blocks = rdi_table_from_name(rdi, LocationBlocks, &location_block_count);
-      U64 location_data_size = 0;
+      ulong location_data_size = 0;
       RDI_U8 *location_data = rdi_table_from_name(rdi, LocationData, &location_data_size);
       RDI_ScopeBundle scope_bundle = {0};
       {
@@ -399,7 +399,7 @@ entry_point(CmdLine *cmd_line)
         scope_bundle.location_data_size = location_data_size;
       }
       str8_list_pushf(arena, &dump, "# SCOPES:\n");
-      for(U64 idx = 0; idx < scopes_count; idx += 1)
+      for(ulong idx = 0; idx < scopes_count; idx += 1)
       {
         if(scopes[idx].parent_scope_idx == 0)
         {
@@ -413,9 +413,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_ScopeVMap)
     {
       str8_list_pushf(arena, &dump, "# SCOPE VMAP:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_VMapEntry *v = rdi_table_from_name(rdi, ScopeVMap, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
@@ -426,9 +426,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_InlineSites)
     {
       str8_list_pushf(arena, &dump, "# INLINE SITES:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_InlineSite *v = rdi_table_from_name(rdi, InlineSites, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         str8_list_pushf(arena, &dump, " inline_site[%I64u]:\n", idx);
         rdi_stringize_inline_site(arena, &dump, rdi, &v[idx], 2);
@@ -440,15 +440,15 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_NameMaps)
     {
       str8_list_pushf(arena, &dump, "# NAME MAP:\n");
-      U64 count = 0;
+      ulong count = 0;
       RDI_NameMap *v = rdi_table_from_name(rdi, NameMaps, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         RDI_ParsedNameMap name_map = {0};
         rdi_parsed_from_name_map(rdi, &v[idx], &name_map);
         str8_list_pushf(arena, &dump, " name_map[%I64u]:\n", idx);
         RDI_NameMapBucket *bucket = name_map.buckets;
-        for(U32 j = 0; j < name_map.bucket_count; j += 1, bucket += 1)
+        for(uint j = 0; j < name_map.bucket_count; j += 1, bucket += 1)
         {
           if(bucket->node_count > 0)
           {
@@ -473,7 +473,7 @@ entry_point(CmdLine *cmd_line)
                 if(idx_count > 0)
                 {
                   RDI_U32 last = idx_count - 1;
-                  for(U32 k = 0; k < last; k += 1)
+                  for(uint k = 0; k < last; k += 1)
                   {
                     str8_list_pushf(arena, &dump, "%u, ", idx_run[k]);
                   }
@@ -493,9 +493,9 @@ entry_point(CmdLine *cmd_line)
     if(dump_flags & DumpFlag_Strings)
     {
       str8_list_pushf(arena, &dump, "# STRINGS:\n");
-      U64 count = 0;
-      U32 *v = rdi_table_from_name(rdi, StringTable, &count);
-      for(U64 idx = 0; idx < count; idx += 1)
+      ulong count = 0;
+      uint *v = rdi_table_from_name(rdi, StringTable, &count);
+      for(ulong idx = 0; idx < count; idx += 1)
       {
         String8 string = {0};
         string.str = rdi_string_from_idx(rdi, (RDI_U32)idx, &string.size);
