@@ -8,8 +8,8 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
   
   String8List list = {0};
   
-  U8 *ptr = string.str;
-  U8 *opl = string.str + string.size;
+  byte *ptr = string.str;
+  byte *opl = string.str + string.size;
   while (ptr < opl) {
     // skip white space and new lines
     for (;;) {
@@ -26,7 +26,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
     }
     
     String8List token_builder = {0};
-    U8 *anchor = ptr;
+    byte *anchor = ptr;
     while (ptr < opl) {
       UnicodeDecode uni;
       
@@ -44,7 +44,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
         ptr += uni.inc;
         anchor = ptr;
         
-        U8 *quote_end = ptr;
+        byte *quote_end = ptr;
         while (ptr < opl) {
           uni = utf8_decode(ptr, (U64)(opl - ptr));
           ptr += uni.inc;

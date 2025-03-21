@@ -149,7 +149,7 @@ srtuct
 {
   LNK_ChunkLayout  layout;
   String8          buffer;
-  U8               fill_byte;
+  byte               fill_byte;
   Rng1U64         *ranges;
 };
 

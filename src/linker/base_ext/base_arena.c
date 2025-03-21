@@ -5,7 +5,7 @@ String8
 push_cstr(Arena *arena, String8 str)
 {
   U64 buffer_size = str.size + 1;
-  U8 *buffer = push_array_no_zero(arena, U8, buffer_size);
+  byte *buffer = push_array_no_zero(arena, byte, buffer_size);
   MemoryCopy(buffer, str.str, str.size);
   buffer[str.size] = 0;
   String8 result = str8(buffer, buffer_size);
@@ -58,7 +58,7 @@ Arena **
 alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
 {
   U64 data_size = sizeof(count) + sizeof(Arena *) * count;
-  U8 *data = push_array_no_zero(arena, U8, data_size);
+  byte *data = push_array_no_zero(arena, byte, data_size);
   U64 *count_ptr = (U64 *)data;
   Arena **arr = (Arena **)(count_ptr + 1);
   *count_ptr = count;

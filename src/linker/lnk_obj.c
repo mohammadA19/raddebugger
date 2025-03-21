@@ -1065,8 +1065,8 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
   
   String8 to_parse;
   {
-    static const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
-    static const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
+    static const byte bom_sig[]   = { 0xEF, 0xBB, 0xBF };
+    static const byte ascii_sig[] = { 0x20, 0x20, 0x20 };
     if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
       to_parse = str8_zero();
       lnk_error_with_loc(LNK_Error_IllData, obj_path, lib_path, "TODO: support for BOM encoding");

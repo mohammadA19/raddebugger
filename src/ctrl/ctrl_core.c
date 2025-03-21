@@ -24,7 +24,7 @@ U64
 ctrl_hash_from_handle(CTRL_Handle handle)
 {
   U64 buf[] = {handle.machine_id, handle.dmn_handle.u64[0]};
-  U64 hash = ctrl_hash_from_string(str8((U8 *)buf, sizeof(buf)));
+  U64 hash = ctrl_hash_from_string(str8((byte *)buf, sizeof(buf)));
   return hash;
 }
 
@@ -377,7 +377,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       
       // rjf: read path string
       read_off += str8_deserial_read_struct(string, read_off, &msg->path.size);
-      msg->path.str = push_array_no_zero(arena, U8, msg->path.size);
+      msg->path.str = push_array_no_zero(arena, byte, msg->path.size);
       read_off += str8_deserial_read(string, read_off, msg->path.str, msg->path.size, 1);
       
       // rjf: read entry point string list
@@ -387,7 +387,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &str.size);
-        str.str = push_array_no_zero(arena, U8, str.size);
+        str.str = push_array_no_zero(arena, byte, str.size);
         read_off += str8_deserial_read(string, read_off, str.str, str.size, 1);
         str8_list_push(arena, &msg->entry_points, str);
       }
@@ -399,7 +399,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 cmd_line_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &cmd_line_str.size);
-        cmd_line_str.str = push_array_no_zero(arena, U8, cmd_line_str.size);
+        cmd_line_str.str = push_array_no_zero(arena, byte, cmd_line_str.size);
         read_off += str8_deserial_read(string, read_off, cmd_line_str.str, cmd_line_str.size, 1);
         str8_list_push(arena, &msg->cmd_line_string_list, cmd_line_str);
       }
@@ -411,20 +411,20 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 env_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &env_str.size);
-        env_str.str = push_array_no_zero(arena, U8, env_str.size);
+        env_str.str = push_array_no_zero(arena, byte, env_str.size);
         read_off += str8_deserial_read(string, read_off, env_str.str, env_str.size, 1);
         str8_list_push(arena, &msg->env_string_list, env_str);
       }
       
       // rjf: read stdout/stderr/stdin paths
       read_off += str8_deserial_read_struct(string, read_off, &msg->stdout_path.size);
-      msg->stdout_path.str = push_array(arena, U8, msg->stdout_path.size);
+      msg->stdout_path.str = push_array(arena, byte, msg->stdout_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stdout_path.str, msg->stdout_path.size, 1);
       read_off += str8_deserial_read_struct(string, read_off, &msg->stderr_path.size);
-      msg->stderr_path.str = push_array(arena, U8, msg->stderr_path.size);
+      msg->stderr_path.str = push_array(arena, byte, msg->stderr_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stderr_path.str, msg->stderr_path.size, 1);
       read_off += str8_deserial_read_struct(string, read_off, &msg->stdin_path.size);
-      msg->stdin_path.str = push_array(arena, U8, msg->stdin_path.size);
+      msg->stdin_path.str = push_array(arena, byte, msg->stdin_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stdin_path.str, msg->stdin_path.size, 1);
       
       // rjf: read trap list
@@ -451,12 +451,12 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
         CTRL_UserBreakpoint *bp = &n->v;
         read_off += str8_deserial_read_struct(string, read_off, &bp->kind);
         read_off += str8_deserial_read_struct(string, read_off, &bp->string.size);
-        bp->string.str = push_array_no_zero(arena, U8, bp->string.size);
+        bp->string.str = push_array_no_zero(arena, byte, bp->string.size);
         read_off += str8_deserial_read(string, read_off, bp->string.str, bp->string.size, 1);
         read_off += str8_deserial_read_struct(string, read_off, &bp->pt);
         read_off += str8_deserial_read_struct(string, read_off, &bp->u64);
         read_off += str8_deserial_read_struct(string, read_off, &bp->condition.size);
-        bp->condition.str = push_array_no_zero(arena, U8, bp->condition.size);
+        bp->condition.str = push_array_no_zero(arena, byte, bp->condition.size);
         read_off += str8_deserial_read(string, read_off, bp->condition.str, bp->condition.size, 1);
       }
       
@@ -559,7 +559,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
     read_off += str8_deserial_read_struct(string, read_off, &event.exception_code);
     read_off += str8_deserial_read_struct(string, read_off, &event.rgba);
     read_off += str8_deserial_read_struct(string, read_off, &event.string.size);
-    event.string.str = push_array_no_zero(arena, U8, event.string.size);
+    event.string.str = push_array_no_zero(arena, byte, event.string.size);
     read_off += str8_deserial_read(string, read_off, event.string.str, event.string.size, 1);
   }
   return event;
@@ -709,14 +709,14 @@ ctrl_entity_string_alloc(CTRL_EntityStore *store, String8 string)
     {
       chunk_size = u64_up_to_pow2(string.size);
     }
-    U8 *chunk_memory = push_array(store->arena, U8, chunk_size);
+    byte *chunk_memory = push_array(store->arena, byte, chunk_size);
     node = (CTRL_EntityStringChunkNode *)chunk_memory;
     node->size = chunk_size;
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((U8 *)node, string.size);
-  MemoryCopy((U8 *)node, string.str, string.size);
+  String8 allocated_string = str8((byte *)node, string.size);
+  MemoryCopy((byte *)node, string.str, string.size);
   return allocated_string;
 }
 
@@ -1284,12 +1284,12 @@ ctrl_init()
     ctrl_state->module_image_info_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->u2c_ring_size = KB(64);
-  ctrl_state->u2c_ring_base = push_array_no_zero(arena, U8, ctrl_state->u2c_ring_size);
+  ctrl_state->u2c_ring_base = push_array_no_zero(arena, byte, ctrl_state->u2c_ring_size);
   ctrl_state->u2c_ring_mutex = os_mutex_alloc();
   ctrl_state->u2c_ring_cv = os_condition_variable_alloc();
   ctrl_state->c2u_ring_size = KB(64);
   ctrl_state->c2u_ring_max_string_size = ctrl_state->c2u_ring_size/2;
-  ctrl_state->c2u_ring_base = push_array_no_zero(arena, U8, ctrl_state->c2u_ring_size);
+  ctrl_state->c2u_ring_base = push_array_no_zero(arena, byte, ctrl_state->c2u_ring_size);
   ctrl_state->c2u_ring_mutex = os_mutex_alloc();
   ctrl_state->c2u_ring_cv = os_condition_variable_alloc();
   {
@@ -1314,7 +1314,7 @@ ctrl_init()
     }
   }
   ctrl_state->u2ms_ring_size = KB(64);
-  ctrl_state->u2ms_ring_base = push_array(arena, U8, ctrl_state->u2ms_ring_size);
+  ctrl_state->u2ms_ring_base = push_array(arena, byte, ctrl_state->u2ms_ring_size);
   ctrl_state->u2ms_ring_mutex = os_mutex_alloc();
   ctrl_state->u2ms_ring_cv = os_condition_variable_alloc();
   ctrl_state->ctrl_thread_log = log_alloc();
@@ -1346,7 +1346,7 @@ ctrl_calc_hash_store_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 r
     range.max,
     (U64)zero_terminated,
   };
-  U128 key = hs_hash_from_data(str8((U8*)key_hash_data, sizeof(key_hash_data)));
+  U128 key = hs_hash_from_data(str8((byte*)key_hash_data, sizeof(key_hash_data)));
   return key;
 }
 
@@ -1564,7 +1564,7 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle proces
     }
     
     //- rjf: setup output buffers
-    void *read_out = push_array(arena, U8, dim_1u64(range));
+    void *read_out = push_array(arena, byte, dim_1u64(range));
     U64 *byte_bad_flags = push_array(arena, U64, (dim_1u64(range)+63)/64);
     U64 *byte_changed_flags = push_array(arena, U64, (dim_1u64(range)+63)/64);
     
@@ -1590,7 +1590,7 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle proces
         }
         
         // rjf: write this chunk
-        MemoryCopy((U8*)read_out+write_off, in_range_data.str, in_range_data.size);
+        MemoryCopy((byte*)read_out+write_off, in_range_data.str, in_range_data.size);
         
         // rjf; if this page's data doesn't fill the entire range, mark
         // missing bytes as bad
@@ -1623,8 +1623,8 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle proces
           }
           for(U64 idx = 0; idx < in_range_data.size; idx += 1)
           {
-            U8 last_byte = idx < in_range_last_data.size ? in_range_last_data.str[idx] : 0;
-            U8 now_byte  = idx < in_range_data.size ? in_range_data.str[idx] : 0;
+            byte last_byte = idx < in_range_last_data.size ? in_range_last_data.str[idx] : 0;
+            byte now_byte  = idx < in_range_data.size ? in_range_data.str[idx] : 0;
             if(last_byte != now_byte)
             {
               U64 idx_in_read_out = write_off+idx;
@@ -1644,7 +1644,7 @@ ctrl_query_cached_data_from_process_vaddr_range(Arena *arena, CTRL_Handle proces
     }
     
     //- rjf: fill result
-    result.data.str = (U8*)read_out;
+    result.data.str = (byte*)read_out;
     result.data.size = dim_1u64(range);
     result.byte_bad_flags = byte_bad_flags;
     result.byte_changed_flags = byte_changed_flags;
@@ -1800,7 +1800,7 @@ ctrl_query_cached_reg_block_from_thread(Arena *arena, CTRL_EntityStore *store, C
   U64 stripe_idx = slot_idx%cache->stripes_count;
   CTRL_ThreadRegCacheSlot *slot = &cache->slots[slot_idx];
   CTRL_ThreadRegCacheStripe *stripe = &cache->stripes[stripe_idx];
-  void *result = push_array(arena, U8, reg_block_size);
+  void *result = push_array(arena, byte, reg_block_size);
   OS_MutexScopeW(stripe->rw_mutex)
   {
     // rjf: find existing node
@@ -1821,7 +1821,7 @@ ctrl_query_cached_reg_block_from_thread(Arena *arena, CTRL_EntityStore *store, C
       DLLPushBack(slot->first, slot->last, node);
       node->handle     = handle;
       node->block_size = reg_block_size;
-      node->block      = push_array(stripe->arena, U8, reg_block_size);
+      node->block      = push_array(stripe->arena, byte, reg_block_size);
     }
     
     // rjf: copy from node
@@ -2036,7 +2036,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
     U64 block_size = regs_block_size_from_arch(arch);
     for(U64 idx = 0; idx < dst.frames.count; idx += 1)
     {
-      dst.frames.v[idx].regs = push_array_no_zero(arena, U8, block_size);
+      dst.frames.v[idx].regs = push_array_no_zero(arena, byte, block_size);
       MemoryCopy(dst.frames.v[idx].regs, src->frames.v[idx].regs, block_size);
     }
   }
@@ -2111,7 +2111,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
     //- rjf: check first instruction
     {
       B32 inst_good = 0;
-      U8 inst[4] = {0};
+      byte inst[4] = {0};
       if(read_vaddr + sizeof(inst) <= read_vaddr_opl)
       {
         inst_good = ctrl_read_cached_process_memory(process_handle, r1u64(read_vaddr, read_vaddr+sizeof(inst)), &is_stale, inst, endt_us);
@@ -2158,7 +2158,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
                ((inst[2] >> 3) & 0x07) == 0x04 &&
                (inst[2] & 0x07) != 0x04)
             {
-              U8 imm_size = (inst[2] >> 6);
+              byte imm_size = (inst[2] >> 6);
               
               // rjf: 1-byte immediate
               if(imm_size == 1)
@@ -2192,7 +2192,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
     {
       // rjf: read next instruction byte
       B32 inst_byte_good = 0;
-      U8 inst_byte = 0;
+      byte inst_byte = 0;
       if(read_vaddr + sizeof(inst_byte) <= read_vaddr_opl)
       {
         inst_byte_good = ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &inst_byte, endt_us);
@@ -2205,7 +2205,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
       // rjf: when (... I don't know ...) rely on the next byte
       B32 check_inst_byte_good = inst_byte_good;
       U64 check_vaddr = read_vaddr;
-      U8 check_inst_byte = inst_byte;
+      byte check_inst_byte = inst_byte;
       if(inst_byte_good && (inst_byte & 0xF0) == 0x40)
       {
         check_vaddr = read_vaddr + 1;
@@ -2272,7 +2272,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           // rjf: rep; ret (for amd64 prediction bug)
           case 0xF3:
           {
-            U8 next_inst_byte = 0;
+            byte next_inst_byte = 0;
             B32 next_inst_byte_good = 0;
             if(read_vaddr + sizeof(next_inst_byte) <= read_vaddr_opl)
             {
@@ -2304,13 +2304,13 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
       keep_parsing = 0;
       
       //- rjf: read next instruction byte
-      U8 inst_byte = 0;
+      byte inst_byte = 0;
       is_good = is_good && ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &inst_byte, endt_us);
       is_good = is_good && !is_stale;
       read_vaddr += 1;
       
       //- rjf: extract rex from instruction byte
-      U8 rex = 0;
+      byte rex = 0;
       if((inst_byte & 0xF0) == 0x40)
       {
         rex = inst_byte & 0xF; // rex prefix
@@ -2382,7 +2382,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           read_vaddr += 1;
           
           // rjf: read the 4-byte immediate
-          S8 imm = 0;
+          sbyte imm = 0;
           if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm, endt_us) ||
              is_stale)
           {
@@ -2402,7 +2402,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
         case 0x8D:
         {
           // rjf: read source register
-          U8 modrm = 0;
+          byte modrm = 0;
           if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &modrm, endt_us) ||
              is_stale)
           {
@@ -2420,7 +2420,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
             // rjf: read 1-byte immediate
             if((modrm >> 6) == 1)
             {
-              S8 imm8 = 0;
+              sbyte imm8 = 0;
               if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm8, endt_us) ||
                  is_stale)
               {
@@ -2465,7 +2465,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
           }
           
           // rjf: read 2-byte immediate & advance stack pointer
-          U16 imm = 0;
+          ushort imm = 0;
           if(!ctrl_read_cached_process_memory_struct(process->handle, read_vaddr, &is_stale, &imm, endt_us) ||
              is_stale)
           {
@@ -2728,7 +2728,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
             case PE_UnwindOpCode_SAVE_XMM128:
             {
               // rjf: read new register values
-              U8 buf[16];
+              byte buf[16];
               U64 off = code_ptr[1].u16*16;
               U64 addr = frame_base + off;
               if(!ctrl_read_cached_process_memory(process->handle, r1u64(addr, addr+sizeof(buf)), &is_stale, buf, endt_us))
@@ -2746,7 +2746,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
             case PE_UnwindOpCode_SAVE_XMM128_FAR:
             {
               // rjf: read new register values
-              U8 buf[16];
+              byte buf[16];
               U64 off = code_ptr[1].u16 + ((U32)code_ptr[2].u16 << 16);
               U64 addr = frame_base + off;
               if(!ctrl_read_cached_process_memory(process->handle, r1u64(addr, addr+16), &is_stale, buf, endt_us) ||
@@ -2789,7 +2789,7 @@ ctrl_unwind_step__pe_x64(CTRL_EntityStore *store, CTRL_Handle process_handle, CT
                 break;
               }
               U64 sp_after_ip = sp_adj + 8;
-              U16 ss_value = 0;
+              ushort ss_value = 0;
               if(!ctrl_read_cached_process_memory_struct(process->handle, sp_after_ip, &is_stale, &ss_value, endt_us) ||
                  is_stale)
               {
@@ -2952,7 +2952,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityStore *store, CTRL_Handle threa
       // rjf: valid step -> push frame
       CTRL_UnwindFrameNode *frame_node = push_array(scratch.arena, CTRL_UnwindFrameNode, 1);
       CTRL_UnwindFrame *frame = &frame_node->v;
-      frame->regs = push_array_no_zero(arena, U8, arch_reg_block_size);
+      frame->regs = push_array_no_zero(arena, byte, arch_reg_block_size);
       MemoryCopy(frame->regs, regs_block, arch_reg_block_size);
       DLLPushBack(first_frame_node, last_frame_node, frame_node);
       frame_node_count += 1;
@@ -3129,7 +3129,7 @@ ctrl_u2c_pop_msgs(Arena *arena)
       U64 size_to_decode = 0;
       ctrl_state->u2c_ring_read_pos += ring_read_struct(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, &size_to_decode);
       msgs_srlzed_baked.size = size_to_decode;
-      msgs_srlzed_baked.str = push_array_no_zero(scratch.arena, U8, msgs_srlzed_baked.size);
+      msgs_srlzed_baked.str = push_array_no_zero(scratch.arena, byte, msgs_srlzed_baked.size);
       ctrl_state->u2c_ring_read_pos += ring_read(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, msgs_srlzed_baked.str, size_to_decode);
       break;
     }
@@ -3191,7 +3191,7 @@ ctrl_c2u_pop_events(Arena *arena)
       ctrl_state->c2u_ring_read_pos += ring_read_struct(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, &size_to_decode);
       String8 event_srlzed = {0};
       event_srlzed.size = size_to_decode;
-      event_srlzed.str = push_array_no_zero(scratch.arena, U8, event_srlzed.size);
+      event_srlzed.str = push_array_no_zero(scratch.arena, byte, event_srlzed.size);
       ctrl_state->c2u_ring_read_pos += ring_read(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, event_srlzed.str, event_srlzed.size);
       CTRL_Event *new_event = ctrl_event_list_push(arena, &events);
       *new_event = ctrl_event_from_serialized_string(arena, event_srlzed);
@@ -3503,7 +3503,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
                                       file_header_off + sizeof(COFF_FileHeader) + opt_ext_size);
     
     //- rjf: read optional header
-    U16 optional_magic = 0;
+    ushort optional_magic = 0;
     U64 image_base = 0;
     U64 entry_point = 0;
     U32 data_dir_count = 0;
@@ -3513,7 +3513,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
     if(opt_ext_size > 0)
     {
       // rjf: read magic number
-      U16 opt_ext_magic = 0;
+      ushort opt_ext_magic = 0;
       dmn_process_read_struct(process.dmn_handle, vaddr_range.min + opt_ext_off_range.min, &opt_ext_magic);
       
       // rjf: read info
@@ -4007,7 +4007,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
   {
     CTRL_Entity *thread = ctrl_entity_from_handle(ctrl_state->ctrl_thread_entity_store, ctrl_handle_make(CTRL_MachineID_Local, spoof->thread));
     Arch arch = thread->arch;
-    void *regs_block = push_array(scratch.arena, U8, regs_block_size_from_arch(arch));
+    void *regs_block = push_array(scratch.arena, byte, regs_block_size_from_arch(arch));
     dmn_thread_read_reg_block(spoof->thread, regs_block);
     U64 spoof_thread_rip = regs_rip_from_arch_block(arch, regs_block);
     if(spoof_thread_rip == spoof->new_ip_value)
@@ -4391,7 +4391,7 @@ ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
           Rng1U64 legal_range = r1u64(0, regs_size);
           Rng1U64 read_range = intersect_1u64(legal_range, range);
           U64 read_size = dim_1u64(read_range);
-          MemoryCopy(out, (U8 *)regs + read_range.min, read_size);
+          MemoryCopy(out, (byte *)regs + read_range.min, read_size);
           result = (read_size == dim_1u64(range));
           scratch_end(scratch);
         }break;
@@ -4424,10 +4424,10 @@ ctrl_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
           result = 1;
           U64 range_dim = dim_1u64(range);
           U64 bytes_to_read = Min(range_dim, (legal_range.max - range.min));
-          MemoryCopy(out, ((U8 *)meval_read) + range.min, bytes_to_read);
+          MemoryCopy(out, ((byte *)meval_read) + range.min, bytes_to_read);
           if(bytes_to_read < range_dim)
           {
-            MemoryZero((U8 *)out + bytes_to_read, range_dim - bytes_to_read);
+            MemoryZero((byte *)out + bytes_to_read, range_dim - bytes_to_read);
           }
         }
       }
@@ -6045,7 +6045,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
     }
     else
     {
-      range_base = push_array_no_zero(range_arena, U8, range_size);
+      range_base = push_array_no_zero(range_arena, byte, range_size);
       U64 bytes_read = 0;
       U64 retry_count = 0;
       U64 retry_limit = range_size > page_size ? 64 : 0;
@@ -6078,14 +6078,14 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
       }
       else if(bytes_read < range_size)
       {
-        MemoryZero((U8 *)range_base + bytes_read, range_size-bytes_read);
+        MemoryZero((byte *)range_base + bytes_read, range_size-bytes_read);
       }
       zero_terminated_size = range_size;
       if(zero_terminated)
       {
         for(U64 idx = 0; idx < bytes_read; idx += 1)
         {
-          if(((U8 *)range_base)[idx] == 0)
+          if(((byte *)range_base)[idx] == 0)
           {
             zero_terminated_size = idx;
             break;
@@ -6100,7 +6100,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
   U128 hash = {0};
   if(got_task && range_base != 0 && pre_read_mem_gen == post_read_mem_gen)
   {
-    hash = hs_submit_data(key, &range_arena, str8((U8*)range_base, zero_terminated_size));
+    hash = hs_submit_data(key, &range_arena, str8((byte*)range_base, zero_terminated_size));
   }
   else if(range_arena != 0)
   {

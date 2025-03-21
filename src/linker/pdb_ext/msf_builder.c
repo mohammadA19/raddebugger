@@ -21,7 +21,7 @@ msf_page_data_list_push(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size
     // we can make API for stream allocation to let user 
     // choose between zeroed and dirty allocations
     //
-    U8 *data = push_array_aligned(arena, U8, data_size, page_size);
+    byte *data = push_array_aligned(arena, byte, data_size, page_size);
 
     // init node
     MSF_PageDataNode *node = push_array_no_zero(arena, MSF_PageDataNode, 1);
@@ -80,12 +80,12 @@ msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size,
   
   ProfBegin("Last Page Handle");
   B32 is_last_node_size_aligned = (data.size & (node_size - 1)) == 0;
-  U8 *last_node_data = 0;
+  byte *last_node_data = 0;
   if (is_last_node_size_aligned) {
     last_node_data = data.str + node_idx * node_size;
   } else {
     U64 last_node_size = data.size % node_size;
-    last_node_data = push_array_no_zero(arena, U8, node_size);
+    last_node_data = push_array_no_zero(arena, byte, node_size);
     MemoryCopy(last_node_data, data.str + node_idx * node_size, last_node_size);
   }
   ProfEnd();
@@ -109,7 +109,7 @@ msf_data_from_pn(MSF_PageDataList list, MSF_UInt page_size, MSF_PageNumber pn)
     node = node->next;
   }
   U64 node_offset = page_offset % node_size;
-  U8 *ptr = node->data + node_offset;
+  byte *ptr = node->data + node_offset;
   String8 data = str8(ptr, page_size);
   return data;
 }
@@ -692,8 +692,8 @@ msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **
     String8        page_bytes  = msf_data_from_pn(page_data_list, page_size, page_number);
 
     // copy bytes to buffer
-    U8 *buffer_copy_ptr = (U8*)buffer + buffer_pos;
-    U8 *page_bytes_ptr  = page_bytes.str + page_offset;
+    byte *buffer_copy_ptr = (byte*)buffer + buffer_pos;
+    byte *page_bytes_ptr  = page_bytes.str + page_offset;
     MemoryCopy(page_bytes_ptr, buffer_copy_ptr, copy_size);
 
     // advance
@@ -739,8 +739,8 @@ msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **p
     String8        page_bytes  = msf_data_from_pn(page_data_list, page_size, page_number);
     
     // copy bytes to buffer
-    U8 *buffer_ptr     = (U8*)buffer + buffer_pos;
-    U8 *page_bytes_ptr = page_bytes.str + page_offset;
+    byte *buffer_ptr     = (byte*)buffer + buffer_pos;
+    byte *page_bytes_ptr = page_bytes.str + page_offset;
     MemoryCopy(buffer_ptr, page_bytes_ptr, copy_size);
     
     // advance
@@ -1077,13 +1077,13 @@ msf_stream_write_cstr(MSF_Context *msf, MSF_StreamNumber sn, String8 string)
 }
 
 B32
-msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, U8 value)
+msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, byte value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 B32
-msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, U16 value)
+msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, ushort value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
@@ -1101,13 +1101,13 @@ msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, U64 value)
 }
 
 B32
-msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, S8 value)
+msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, sbyte value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 B32
-msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, S16 value)
+msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, short value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
@@ -1159,9 +1159,9 @@ msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn,
     U64 mid_size = AlignDownPow2(buffer_size - pre_size, msf->page_size);
     U64 end_size = buffer_size - (pre_size + mid_size);
 
-    U8 *pre_ptr = (U8*)buffer;
-    U8 *mid_ptr = (U8*)buffer + pre_size;
-    U8 *end_ptr = (U8*)buffer + pre_size + mid_size;
+    byte *pre_ptr = (byte*)buffer;
+    byte *mid_ptr = (byte*)buffer + pre_size;
+    byte *end_ptr = (byte*)buffer + pre_size + mid_size;
 
     ProfBeginV("Write Buffer Pre %M", pre_size);
     B32 is_pre_written = msf_stream_write__(msf, stream, pre_ptr, pre_size);
@@ -1239,18 +1239,18 @@ msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt bu
   return 0;
 }
 
-S8
+sbyte
 msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S8 result = 0;
+  sbyte result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
 
-S16
+short
 msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  S16 result = 0;
+  short result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
@@ -1271,18 +1271,18 @@ msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn)
   return result;
 }
 
-U8
+byte
 msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  U8 result = 0;
+  byte result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
 
-U16
+ushort
 msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn)
 {
-  U16 result = 0;
+  ushort result = 0;
   msf_stream_read_struct(msf, sn, &result);
   return result;
 }
@@ -1306,7 +1306,7 @@ msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn)
 String8
 msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size)
 {
-  U8 *block_buffer = push_array(arena, U8, block_size);
+  byte *block_buffer = push_array(arena, byte, block_size);
   MSF_UInt block_read = msf_stream_read(msf, sn, block_buffer, block_size);
   Assert((U64)block_read == block_size);
   String8 block = str8(block_buffer, block_size);
@@ -1319,7 +1319,7 @@ msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
   MSF_UInt start_pos = msf_stream_get_pos(msf, sn);
   U64 size = 0;
   for (;; size += 1) {
-    U8 cp = msf_stream_read_u8(msf, sn);
+    byte cp = msf_stream_read_u8(msf, sn);
     if (cp == 0) {
       break;
     }
@@ -1456,7 +1456,7 @@ msf_open_stream_table(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt pa
   MSF_Error error = MSF_Error_OK;
   
   // read out entire stream table
-  U8 *st_buffer = push_array(scratch.arena, U8, stream_table_size);
+  byte *st_buffer = push_array(scratch.arena, byte, stream_table_size);
   MSF_UInt st_read_size = msf_read(page_data_list, page_size, st_page_list, 0, st_buffer, stream_table_size);
   if (st_read_size != stream_table_size) {
     error = MSF_OpenError_INVALID_STREAM_TABLE;
@@ -1731,9 +1731,9 @@ msf_build_stream_table_data(Arena *arena, MSF_StreamList *st, MSF_UInt page_size
   //  MSF_UInt stream_size[stream_count];
   //  MSF_PageNumber pages[stream_count][*];
   String8List st_data_list = {0};
-  str8_list_push(arena, &st_data_list, str8((U8*)stream_count_ptr, sizeof(*stream_count_ptr)));
-  str8_list_push(arena, &st_data_list, str8((U8*)stream_size_arr, sizeof(*stream_size_arr) * (*stream_count_ptr)));
-  str8_list_push(arena, &st_data_list, str8((U8*)stream_pages_arr, sizeof(*stream_pages_arr) * stream_page_count));
+  str8_list_push(arena, &st_data_list, str8((byte*)stream_count_ptr, sizeof(*stream_count_ptr)));
+  str8_list_push(arena, &st_data_list, str8((byte*)stream_size_arr, sizeof(*stream_size_arr) * (*stream_count_ptr)));
+  str8_list_push(arena, &st_data_list, str8((byte*)stream_pages_arr, sizeof(*stream_pages_arr) * stream_page_count));
   
   ProfEnd();
   return st_data_list;
@@ -1911,8 +1911,8 @@ msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
     U64 to_copy = Min(bytes_in_buffer, node_size);
 
     // copy MSF bytes to output buffer
-    U8 *dst = (U8 *)buffer + cursor;
-    U8 *src = node->data;
+    byte *dst = (byte *)buffer + cursor;
+    byte *src = node->data;
     MemoryCopy(dst, src, to_copy);
 
     // advance cursor
@@ -1938,7 +1938,7 @@ msf_save_arena(Arena *arena, MSF_Context *msf, String8 *data_out)
   MSF_Error err = msf_build(msf);
   if (err == MSF_Error_OK) {
     U64 buffer_size = msf_get_save_size(msf);
-    U8 *buffer = push_array(arena, U8, buffer_size);
+    byte *buffer = push_array(arena, byte, buffer_size);
     B32 is_saved = msf_save(msf, buffer, buffer_size);
     if (is_saved) {
       *data_out = str8(buffer, buffer_size);
@@ -2029,7 +2029,7 @@ msf_bytedump_stream(char *file_name, MSF_Context *msf, MSF_StreamNumber sn, U64 
   U64 pos = msf_stream_get_pos(msf, sn);
   msf_stream_seek(msf, sn, start);
   U64 buffer_size = byte_count;
-  U8 *buffer = push_array(scratch.arena, U8, buffer_size);
+  byte *buffer = push_array(scratch.arena, byte, buffer_size);
   MSF_UInt read_size = msf_stream_read(msf, sn, buffer, buffer_size);
   os_write_file(str8_cstring(file_name), str8(buffer, read_size));
   msf_stream_seek(msf, sn, pos);
@@ -2040,7 +2040,7 @@ void
 msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
 {
   Temp scratch = scratch_begin(0, 0);
-  U8 *row_buffer = push_array(scratch.arena, U8, stride);
+  byte *row_buffer = push_array(scratch.arena, byte, stride);
   U64 stream_size = msf_stream_get_size(msf, sn);
   U64 cursor = start;
   U64 end = Min(start + byte_count, stream_size);
@@ -2062,7 +2062,7 @@ msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start,
     // print ascii
     fprintf(file, "    ");
     for (U64 i = 0; i < read_size; i += 1) {
-      U8 print_char = row_buffer[i];
+      byte print_char = row_buffer[i];
       if (0x20 > print_char || print_char > 0x7E) {
         print_char = '.';
       }
@@ -2147,7 +2147,7 @@ test_size_limit()
   U64 stream_count = 8;
   
   U64 data_size = msf->page_size;
-  U8 *data = push_array(scratch.arena, U8, data_size);
+  byte *data = push_array(scratch.arena, byte, data_size);
   
   for (U64 stream_idx = 0; stream_idx < stream_count; stream_idx += 1) {
     MSF_StreamNumber stream = msf_stream_alloc(msf);
@@ -2181,7 +2181,7 @@ test_size_limit()
   Assert(err == MSF_Error_OK);
   
 #if 1
-  U8 *buffer = push_array(scratch.arena, U8, data_size);
+  byte *buffer = push_array(scratch.arena, byte, data_size);
   for (U64 stream_idx = 0; stream_idx < stream_count; stream_idx += 1) {
     MSF_StreamNumber sn = (MSF_StreamNumber)stream_idx;
     

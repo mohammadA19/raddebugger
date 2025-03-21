@@ -133,7 +133,7 @@ E_OpInfo e_expr_kind_op_info_table[48] =
 { E_OpKind_Binary, 13, str8_lit_comp(""), str8_lit_comp("="), str8_lit_comp("") },
 };
 
-U8 e_kind_basic_byte_size_table[56] =
+byte e_kind_basic_byte_size_table[56] =
 {
 0,
 0,
@@ -205,15 +205,15 @@ str8_lit_comp("char32"),
 str8_lit_comp("uchar8"),
 str8_lit_comp("uchar16"),
 str8_lit_comp("uchar32"),
-str8_lit_comp("U8"),
-str8_lit_comp("U16"),
+str8_lit_comp("byte"),
+str8_lit_comp("ushort"),
 str8_lit_comp("U32"),
 str8_lit_comp("U64"),
 str8_lit_comp("U128"),
 str8_lit_comp("U256"),
 str8_lit_comp("U512"),
-str8_lit_comp("S8"),
-str8_lit_comp("S16"),
+str8_lit_comp("sbyte"),
+str8_lit_comp("short"),
 str8_lit_comp("S32"),
 str8_lit_comp("S64"),
 str8_lit_comp("S128"),

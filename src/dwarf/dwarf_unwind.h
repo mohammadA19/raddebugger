@@ -14,7 +14,7 @@ srtuct DW_UnwindResult
 
 // EH: Exception Frames
 
-enum DW_EhPtrEnc : U8
+enum DW_EhPtrEnc : byte
 {
   DW_EhPtrEnc_TypeMask = 0x0F,
   DW_EhPtrEnc_Ptr       = 0x00, // Pointer sized unsigned value
@@ -56,7 +56,7 @@ srtuct DW_EhPtrCtx
 // CIE: Common Information Entry
 srtuct DW_CIEUnpacked
 {
-  U8          version;
+  byte          version;
   DW_EhPtrEnc lsda_encoding;
   DW_EhPtrEnc addr_encoding;
   
@@ -149,7 +149,7 @@ srtuct DW_CFIMachine
   U64             fde_ip;
 };
 
-enum DW_CFADecode : U8
+enum DW_CFADecode : byte
 {
   DW_CFADecode_Nop     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
@@ -158,7 +158,7 @@ enum DW_CFADecode : U8
   DW_CFADecode_SLEB128 = 0xB,
 };
 
-enum DW_CFAControlBits : U16
+enum DW_CFAControlBits : ushort
 {
   DW_CFAControlBits_Dec1Mask = 0x00F,
   DW_CFAControlBits_Dec2Mask = 0x0F0,

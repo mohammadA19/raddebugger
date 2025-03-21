@@ -11,7 +11,7 @@ struct TCTX
 {
   Arena *arenas[2];
   
-  U8 thread_name[32];
+  byte thread_name[32];
   U64 thread_name_size;
   
   char *file_name;

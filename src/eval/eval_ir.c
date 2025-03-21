@@ -78,7 +78,7 @@ e_select_ir_ctx(E_IRCtx *ctx)
 void
 e_oplist_push_op(Arena *arena, E_OpList *list, RDI_EvalOp opcode, E_Value value)
 {
-  U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
+  ushort ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
   U32 p_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
   E_Op *node = push_array_no_zero(arena, E_Op, 1);
   node->opcode = opcode;
@@ -149,7 +149,7 @@ void
 e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
 {
   RDI_EvalOp opcode = RDI_EvalOp_ConstString;
-  U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
+  ushort ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
   U32 p_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
   E_Op *node = push_array_no_zero(arena, E_Op, 1);
   node->opcode = opcode;
@@ -341,8 +341,8 @@ e_irtree_convert_hi(Arena *arena, E_IRNode *c, E_TypeKey out, E_TypeKey in)
   E_IRNode *result = c;
   E_TypeKind in_kind = e_type_kind_from_key(in);
   E_TypeKind out_kind = e_type_kind_from_key(out);
-  U8 in_group  = e_type_group_from_kind(in_kind);
-  U8 out_group = e_type_group_from_kind(out_kind);
+  byte in_group  = e_type_group_from_kind(in_kind);
+  byte out_group = e_type_group_from_kind(out_kind);
   U32 conversion_rule = rdi_eval_conversion_kind_from_typegroups(in_group, out_group);
   if(conversion_rule == RDI_EvalConversionKind_Legal)
   {
@@ -709,8 +709,8 @@ e_irtree_and_type_from_expr(Arena *arena, E_Expr *expr)
       E_TypeKey casted_type = e_type_unwrap(casted_tree.type_key);
       E_TypeKind casted_type_kind = e_type_kind_from_key(casted_type);
       U64 casted_type_byte_size = e_type_byte_size_from_key(casted_type);
-      U8 in_group  = e_type_group_from_kind(casted_type_kind);
-      U8 out_group = e_type_group_from_kind(cast_type_kind);
+      byte in_group  = e_type_group_from_kind(casted_type_kind);
+      byte out_group = e_type_group_from_kind(cast_type_kind);
       RDI_EvalConversionKind conversion_rule = rdi_eval_conversion_kind_from_typegroups(in_group, out_group);
       
       // rjf: bad conditions? -> error if applicable, exit
@@ -1427,7 +1427,7 @@ e_append_oplist_from_irtree(Arena *arena, E_IRNode *root, E_OpList *out)
       else
       {
         // rjf: append ops for all children
-        U16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
+        ushort ctrlbits = rdi_eval_op_ctrlbits_table[op];
         U64 child_count = RDI_POPN_FROM_CTRLBITS(ctrlbits);
         U64 idx = 0;
         for(E_IRNode *child = root->first;
@@ -1457,11 +1457,11 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 {
   // rjf: allocate buffer
   U64 size = oplist->encoded_size;
-  U8 *str = push_array_no_zero(arena, U8, size);
+  byte *str = push_array_no_zero(arena, byte, size);
   
   // rjf: iterate loose op nodes; fill buffer
-  U8 *ptr = str;
-  U8 *opl = str + size;
+  byte *ptr = str;
+  byte *opl = str + size;
   for(E_Op *op = oplist->first;
       op != 0;
       op = op->next)
@@ -1472,9 +1472,9 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
       default:
       {
         // rjf: compute bytecode advance
-        U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
+        ushort ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
         U64 extra_byte_count = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
-        U8 *next_ptr = ptr + 1 + extra_byte_count;
+        byte *next_ptr = ptr + 1 + extra_byte_count;
         Assert(next_ptr <= opl);
         
         // rjf: fill bytecode
@@ -1488,12 +1488,12 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
       case RDI_EvalOp_ConstString:
       {
         // rjf: compute bytecode advance
-        U8 *next_ptr = ptr + 2 + op->value.u64;
+        byte *next_ptr = ptr + 2 + op->value.u64;
         Assert(next_ptr <= opl);
         
         // rjf: fill
         ptr[0] = opcode;
-        ptr[1] = (U8)op->value.u64;
+        ptr[1] = (byte)op->value.u64;
         MemoryCopy(ptr+2, op->string.str, op->value.u64);
         
         // rjf: advance
@@ -1504,7 +1504,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
       {
         // rjf: compute bytecode advance
         U64 size = op->string.size;
-        U8 *next_ptr = ptr + size;
+        byte *next_ptr = ptr + size;
         Assert(next_ptr <= opl);
         
         // rjf: fill bytecode
@@ -1518,7 +1518,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
       {
         // rjf: compute bytecode advance
         U64 extra_byte_count = sizeof(E_Space);
-        U8 *next_ptr = ptr + 1 + extra_byte_count;
+        byte *next_ptr = ptr + 1 + extra_byte_count;
         Assert(next_ptr <= opl);
         
         // rjf: fill bytecode

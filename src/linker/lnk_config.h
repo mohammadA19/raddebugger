@@ -541,9 +541,9 @@ B32  lnk_cmd_switch_parse_tuple    (String8 obj_path, String8 lib_path, LNK_CmdS
 B32  lnk_cmd_switch_parse_u64      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *value_out, LNK_ParseU64Flags flags);
 B32  lnk_cmd_switch_parse_u32      (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32 *value_out, LNK_ParseU64Flags flags);
 B32  lnk_cmd_switch_parse_flag     (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, LNK_SwitchState *value_out);
-void lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits);
+void lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, ushort *flags, ushort bits);
 void lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *flags, U64 bits);
-void lnk_cmd_switch_set_flag_16    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits);
+void lnk_cmd_switch_set_flag_16    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, ushort *flags, ushort bits);
 void lnk_cmd_switch_set_flag_32    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32 *flags, U32 bits);
 void lnk_cmd_switch_set_flag_64    (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *flags, U64 bits);
 B32  lnk_cmd_switch_parse_string   (String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8 *string_out);

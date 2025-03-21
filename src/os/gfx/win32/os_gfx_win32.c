@@ -399,8 +399,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             event->key = OS_Key_RightMouseButton;
           }break;
         }
-        event->pos.x = (F32)(S16)LOWORD(lParam);
-        event->pos.y = (F32)(S16)HIWORD(lParam);
+        event->pos.x = (F32)(short)LOWORD(lParam);
+        event->pos.y = (F32)(short)HIWORD(lParam);
         if(release)
         {
           ReleaseCapture();
@@ -414,17 +414,17 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MOUSEMOVE:
       {
         OS_Event *event = os_w32_push_event(OS_EventKind_MouseMove, window);
-        event->pos.x = (F32)(S16)LOWORD(lParam);
-        event->pos.y = (F32)(S16)HIWORD(lParam);
+        event->pos.x = (F32)(short)LOWORD(lParam);
+        event->pos.y = (F32)(short)HIWORD(lParam);
       }break;
       
       case WM_MOUSEWHEEL:
       {
-        S16 wheel_delta = HIWORD(wParam);
+        short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(S16)LOWORD(lParam);
-        p.y = (S32)(S16)HIWORD(lParam);
+        p.x = (S32)(short)LOWORD(lParam);
+        p.y = (S32)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -433,11 +433,11 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       
       case WM_MOUSEHWHEEL:
       {
-        S16 wheel_delta = HIWORD(wParam);
+        short wheel_delta = HIWORD(wParam);
         OS_Event *event = os_w32_push_event(OS_EventKind_Scroll, window);
         POINT p;
-        p.x = (S32)(S16)LOWORD(lParam);
-        p.y = (S32)(S16)HIWORD(lParam);
+        p.x = (S32)(short)LOWORD(lParam);
+        p.y = (S32)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
         event->pos.x = (F32)p.x;
         event->pos.y = (F32)p.y;
@@ -551,7 +551,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         for(U64 idx = 0; idx < num_files_dropped; idx += 1)
         {
           U64 name_size = DragQueryFile(drop, idx, 0, 0) + 1;
-          U8 *name_ptr = push_array(os_w32_event_arena, U8, name_size);
+          byte *name_ptr = push_array(os_w32_event_arena, byte, name_size);
           DragQueryFile(drop, idx, (char *)name_ptr, name_size);
           str8_list_push(os_w32_event_arena, &event->strings, str8(name_ptr, name_size - 1));
         }
@@ -974,7 +974,7 @@ os_set_clipboard_text(String8 string)
     HANDLE string_copy_handle = GlobalAlloc(GMEM_MOVEABLE, string.size+1);
     if(string_copy_handle)
     {
-      U8 *copy_buffer = (U8 *)GlobalLock(string_copy_handle);
+      byte *copy_buffer = (byte *)GlobalLock(string_copy_handle);
       MemoryCopy(copy_buffer, string.str, string.size);
       copy_buffer[string.size] = 0;
       GlobalUnlock(string_copy_handle);
@@ -994,7 +994,7 @@ os_get_clipboard_text(Arena *arena)
     HANDLE data_handle = GetClipboardData(CF_TEXT);
     if(data_handle)
     {
-      U8 *buffer = (U8 *)GlobalLock(data_handle);
+      byte *buffer = (byte *)GlobalLock(data_handle);
       if(buffer)
       {
         U64 size = cstring8_length(buffer);
@@ -1364,7 +1364,7 @@ os_name_from_monitor(Arena *arena, OS_Handle monitor)
   info.cbSize = sizeof(MONITORINFOEXW);
   if(GetMonitorInfoW(monitor_handle, (MONITORINFO *)&info))
   {
-    String16 result16 = str16_cstring((U16 *)info.szDevice);
+    String16 result16 = str16_cstring((ushort *)info.szDevice);
     result = str8_from_16(arena, result16);
   }
   return result;

@@ -9,7 +9,7 @@ srtuct LNK_Export
   String8             name;
   LNK_Symbol         *symbol;
   U32                 id;
-  U16                 ordinal;
+  ushort                 ordinal;
   COFF_ImportType     type;
   B32                 is_private;
 };

@@ -20,7 +20,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 buffer_size = string.size + sizeof(U64)*2;
-  U8 *buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
+  byte *buffer = push_array_no_zero(scratch.arena, byte, buffer_size);
   MemoryCopy(buffer, string.str, string.size);
   MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
   MemoryCopy(buffer + string.size + sizeof(range.min), &range.max, sizeof(range.max));
@@ -50,7 +50,7 @@ fs_init()
     fs_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   fs_shared->u2s_ring_size = KB(64);
-  fs_shared->u2s_ring_base = push_array_no_zero(arena, U8, fs_shared->u2s_ring_size);
+  fs_shared->u2s_ring_base = push_array_no_zero(arena, byte, fs_shared->u2s_ring_size);
   fs_shared->u2s_ring_cv = os_condition_variable_alloc();
   fs_shared->u2s_ring_mutex = os_mutex_alloc();
   fs_shared->detector_thread = os_thread_launch(fs_detector_thread__entry_point, 0, 0);
@@ -283,7 +283,7 @@ fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out)
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->min);
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->max);
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &path_out->size);
-      path_out->str = push_array(arena, U8, path_out->size);
+      path_out->str = push_array(arena, byte, path_out->size);
       fs_shared->u2s_ring_read_pos += ring_read(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, path_out->str, path_out->size);
       break;
     }

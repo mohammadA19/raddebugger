@@ -79,12 +79,12 @@ demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
   // try to read the link for a bit
   Temp restore_point = temp_begin(arena);
   B32 got_final_result = false;
-  U8 *buffer = 0;
+  byte *buffer = 0;
   int size = 0;
   S64 cap = PATH_MAX;
   for (S64 r = 0; r < 4; cap *= 2, r += 1){
     temp_end(restore_point);
-    buffer = push_array_no_zero(arena, U8, cap);
+    buffer = push_array_no_zero(arena, byte, cap);
     size = readlink((char*)exe_symbol_path.str, (char*)buffer, cap);
     if (size < cap){
       got_final_result = true;
@@ -131,7 +131,7 @@ demon_lnx_arch_from_pid(pid_t pid){
   
   // elf identification
   B32 is_elf = false;
-  U8 e_ident[SYMS_ElfIdentifier_NIDENT] = {0};
+  byte e_ident[SYMS_ElfIdentifier_NIDENT] = {0};
   if (exe_fd >= 0){
     if (pread(exe_fd, e_ident, sizeof(e_ident), 0) == sizeof(e_ident)){
       is_elf = (e_ident[SYMS_ElfIdentifier_MAG0] == 0x7f && 
@@ -142,7 +142,7 @@ demon_lnx_arch_from_pid(pid_t pid){
   }
   
   // elf class
-  U8 elf_class = 0;
+  byte elf_class = 0;
   if (is_elf){
     elf_class = e_ident[SYMS_ElfIdentifier_CLASS];
   }
@@ -426,8 +426,8 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
 U64
 demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size){
   U64 bytes_read = 0;
-  U8 *ptr = (U8*)dst;
-  U8 *opl = ptr + size;
+  byte *ptr = (byte*)dst;
+  byte *opl = ptr + size;
   U64 cursor = src;
   for (;ptr < opl;){
     size_t to_read = (size_t)(opl - ptr);
@@ -445,8 +445,8 @@ demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size){
 B32
 demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size){
   B32 result = true;
-  U8 *ptr = (U8*)src;
-  U8 *opl = ptr + size;
+  byte *ptr = (byte*)src;
+  byte *opl = ptr + size;
   U64 cursor = dst;
   for (;ptr < opl;){
     size_t to_write = (size_t)(opl - ptr);
@@ -474,7 +474,7 @@ demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    byte *block = push_array(scratch.arena, byte, cap);
     for (;cap > 0;){
       if (demon_lnx_read_memory(memory_fd, block, read_p, cap)){
         break;
@@ -589,7 +589,7 @@ demon_lnx_read_int_string(Arena *arena, int fd, int radix){
     char *buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
-    integer = str8((U8*)buf, (U64)to_read);
+    integer = str8((byte*)buf, (U64)to_read);
   }
   
   return(integer);
@@ -660,7 +660,7 @@ demon_lnx_read_string(Arena *arena, int fd){
     char *buf = push_array_no_zero(arena, char, to_read + 1);
     read(fd, buf, to_read);
     buf[to_read] = '\0';
-    result = str8((U8*)buf, to_read);
+    result = str8((byte*)buf, to_read);
   }
   
   return(result);
@@ -836,7 +836,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
     
     // do setup
     B32 did_setup = false;
-    U8 *trap_swap_bytes = 0;
+    byte *trap_swap_bytes = 0;
     
     if (result.first == 0){
       // TODO(allen): per-Arch implementation of single steps
@@ -864,13 +864,13 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       }
       
       // TODO(allen): per-Arch implementation of traps
-      trap_swap_bytes = push_array_no_zero(scratch.arena, U8, controls->trap_count);
+      trap_swap_bytes = push_array_no_zero(scratch.arena, byte, controls->trap_count);
       
       {
         DEMON_OS_Trap *trap = controls->traps;
         for (U64 i = 0; i < controls->trap_count; i += 1, trap += 1){
           if (demon_os_read_memory(trap->process, trap_swap_bytes + i, trap->address, 1)){
-            U8 int3 = 0xCC;
+            byte int3 = 0xCC;
             demon_os_write_memory(trap->process, trap->address, &int3, 1);
           }
           else{
@@ -1341,7 +1341,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       {
         DEMON_OS_Trap *trap = controls->traps;
         for (U64 i = 0; i < controls->trap_count; i += 1, trap += 1){
-          U8 og_byte = trap_swap_bytes[i];
+          byte og_byte = trap_swap_bytes[i];
           if (og_byte != 0xCC){
             demon_os_write_memory(trap->process, trap->address, &og_byte, 1);
           }
@@ -1906,7 +1906,7 @@ demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
   if (got_gpr){
     B32 got_xsave = false;
     {
-      U8 xsave_buffer[KB(4)];
+      byte xsave_buffer[KB(4)];
       struct iovec iov_xsave = {0};
       iov_xsave.iov_len = sizeof(xsave_buffer);
       iov_xsave.iov_base = xsave_buffer;
@@ -1986,7 +1986,7 @@ demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
   int fxsave_result = 0;
   
   {
-    U8 xsave_buffer[KB(4)] = {0};
+    byte xsave_buffer[KB(4)] = {0};
     SYMS_XSave *xsave = (SYMS_XSave*)xsave_buffer;
     syms_x64_regs__set_xsave_legacy_from_full_regs(&xsave->legacy, src);
     

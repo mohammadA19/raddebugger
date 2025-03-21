@@ -24,12 +24,12 @@ cv_hash_from_item_id(CV_ItemId item_id)
 //- Numeric Decoder
 
 CV_NumericParsed
-cv_numeric_from_data_range(U8 *first, U8 *opl)
+cv_numeric_from_data_range(byte *first, byte *opl)
 {
   CV_NumericParsed result = {0};
   if(first + 2 <= opl)
   {
-    U16 x = *(U16*)first;
+    ushort x = *(ushort*)first;
     if(x < 0x8000)
     {
       result.kind = CV_NumericKind_USHORT;
@@ -137,7 +137,7 @@ cv_u64_from_numeric(CV_NumericParsed *num)
   U64 result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_USHORT:   {result = *(U16*)num->val;}break;
+    case CV_NumericKind_USHORT:   {result = *(ushort*)num->val;}break;
     case CV_NumericKind_ULONG:    {result = *(U32*)num->val;}break;
     case CV_NumericKind_UQUADWORD:{result = *(U64*)num->val;}break;
   }
@@ -150,8 +150,8 @@ cv_s64_from_numeric(CV_NumericParsed *num)
   S64 result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_CHAR:     {result = *(S8*)num->val;}break;
-    case CV_NumericKind_SHORT:    {result = *(S16*)num->val;}break;
+    case CV_NumericKind_CHAR:     {result = *(sbyte*)num->val;}break;
+    case CV_NumericKind_SHORT:    {result = *(short*)num->val;}break;
     case CV_NumericKind_LONG:     {result = *(S32*)num->val;}break;
     case CV_NumericKind_QUADWORD: {result = *(S64*)num->val;}break;
   }
@@ -178,7 +178,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
   U64 cursor = offset;
   
   // rjf: read header
-  U8 header = 0;
+  byte header = 0;
   cursor += str8_deserial_read_struct(data, cursor, &header);
   
   // rjf: decode value
@@ -193,7 +193,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
     // 2 bytes
     else if((header & 0xC0) == 0x80 && cursor+1 <= data.size)
     {
-      U8 second_byte;
+      byte second_byte;
       cursor += str8_deserial_read_struct(data, cursor, &second_byte);
       value = ((header & 0x3F) << 8) | second_byte;
     }
@@ -201,7 +201,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
     // 4 bytes
     else if((header & 0xE0) == 0xC0 && cursor+3 <= data.size)
     {
-      U8 second_byte, third_byte, fourth_byte;
+      byte second_byte, third_byte, fourth_byte;
       cursor += str8_deserial_read_struct(data, cursor, &second_byte);
       cursor += str8_deserial_read_struct(data, cursor, &third_byte);
       cursor += str8_deserial_read_struct(data, cursor, &fourth_byte);
@@ -727,7 +727,7 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
   case CV_LeafKind_BUILDINFO: {
     Assert(data.size >= sizeof(CV_LeafBuildInfo));
     CV_LeafBuildInfo *build_info = (CV_LeafBuildInfo *)data.str;
-    for (U16 i = 0; i < build_info->count; ++i) {
+    for (ushort i = 0; i < build_info->count; ++i) {
       cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_IPI, sizeof(CV_LeafBuildInfo) + i * sizeof(CV_ItemId));
     }
   } break;
@@ -1085,8 +1085,8 @@ String8
 cv_name_from_symbol(CV_SymKind kind, String8 data)
 {
   U64 buf_off = cv_name_offset_from_symbol(kind, data);
-  U8 *buf_ptr = data.str + buf_off;
-  U8 *buf_opl = data.str + data.size;
+  byte *buf_ptr = data.str + buf_off;
+  byte *buf_opl = data.str + data.size;
   String8 name = str8_cstring_capped(buf_ptr, buf_opl);
   return name;
 }
@@ -1213,7 +1213,7 @@ cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   CV_RecRangeStream *result = push_array(arena, CV_RecRangeStream, 1);
-  U8 *data = sym_data.str;
+  byte *data = sym_data.str;
   U64 cursor = 0;
   U64 cap = sym_data.size;
   for(;cursor + sizeof(CV_RecHeader) <= cap;)
@@ -1285,7 +1285,7 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
     CV_RecRange *opl = range + result->sym_ranges.count;
     for(;range < opl; range += 1)
     {
-      U8 *first = sym_data.str + range->off + 2;
+      byte *first = sym_data.str + range->off + 2;
       U64 cap = range->hdr.size - 2;
       switch(range->hdr.kind)
       {
@@ -1413,7 +1413,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
       node != 0;
       node = node->next)
   {
-    U8 *first = c13_data.str + node->off;
+    byte *first = c13_data.str + node->off;
     U32 cap = node->size;
     switch(node->kind)
     {

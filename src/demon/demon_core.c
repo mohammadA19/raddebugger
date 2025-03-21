@@ -133,7 +133,7 @@ dmn_rip_from_thread(DMN_Handle thread)
   {
     Arch arch = dmn_arch_from_thread(thread);
     U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(scratch.arena, U8, reg_block_size);
+    void *reg_block = push_array(scratch.arena, byte, reg_block_size);
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rip_from_arch_block(arch, reg_block);
   }
@@ -149,7 +149,7 @@ dmn_rsp_from_thread(DMN_Handle thread)
   {
     Arch arch = dmn_arch_from_thread(thread);
     U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(scratch.arena, U8, reg_block_size);
+    void *reg_block = push_array(scratch.arena, byte, reg_block_size);
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rsp_from_arch_block(arch, reg_block);
   }
@@ -169,7 +169,7 @@ dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
 
   for(U64 cursor = addr, stride = 256; ; cursor += stride)
   {
-    U8      *raw_block = push_array_no_zero(scratch.arena, U8, stride);
+    byte      *raw_block = push_array_no_zero(scratch.arena, byte, stride);
     U64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
 

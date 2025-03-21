@@ -14,7 +14,7 @@ elf_parsed_from_data(Arena *arena, String8 elf_data){
   }
   
   //- determine elf class
-  U8 elf_class = ELF_Class_NONE;
+  byte elf_class = ELF_Class_NONE;
   if (has_good_magic_number){
     elf_class = elf_data.str[ELF_Identification_CLASS];
   }
@@ -22,20 +22,20 @@ elf_parsed_from_data(Arena *arena, String8 elf_data){
   //- extract header information
   B32 decoded_header = 0;
   
-  U8 e_data_encoding = ELF_DataEncoding_NONE;
-  U16 e_machine = ELF_Machine_NONE;
+  byte e_data_encoding = ELF_DataEncoding_NONE;
+  ushort e_machine = ELF_Machine_NONE;
   
   U64 e_entry = 0;
   
   U64 e_shoff = 0;
-  U16 e_shentsize = 0;
-  U16 e_shnum = 0;
+  ushort e_shentsize = 0;
+  ushort e_shnum = 0;
   
   U64 e_phoff = 0;
-  U16 e_phentsize = 0;
-  U16 e_phnum = 0;
+  ushort e_phentsize = 0;
+  ushort e_phnum = 0;
   
-  U16 e_shstrndx = 0;
+  ushort e_shstrndx = 0;
   
   switch (elf_class){
     case ELF_Class_NONE: /* not good */ break;
@@ -279,7 +279,7 @@ elf_parsed_from_data(Arena *arena, String8 elf_data){
   //- extract section names
   String8 *section_names = 0;
   if (sections != 0 && section_count > 0){
-    U8 *string_table_opl = elf_data.str + section_name_table_opl;
+    byte *string_table_opl = elf_data.str + section_name_table_opl;
     
     section_names = push_array(arena, String8, section_count);
     String8 *sec_name = section_names;
@@ -289,8 +289,8 @@ elf_parsed_from_data(Arena *arena, String8 elf_data){
          i += 1, sec += 1, sec_name += 1){
       U64 name_foff = section_name_table_foff + sec->sh_name;
       if (section_name_table_foff <= name_foff && name_foff < section_name_table_opl){
-        U8 *base = elf_data.str + name_foff;
-        U8 *opl = base;
+        byte *base = elf_data.str + name_foff;
+        byte *opl = base;
         for (;opl < string_table_opl && *opl != 0; opl += 1);
         sec_name->str = base;
         sec_name->size = (U64)(opl - base);
@@ -410,9 +410,9 @@ elf_section_name_from_name_offset(ELF_Parsed *elf, U64 offset){
     if (offset > 0){
       U64 foff = elf->section_name_table_foff + offset;
       if (elf->section_name_table_foff <= foff && foff < elf->section_name_table_opl){
-        U8 *base = elf->data.str + foff;
-        U8 *section_opl = elf->data.str + elf->section_name_table_opl;
-        U8 *opl = base;
+        byte *base = elf->data.str + foff;
+        byte *section_opl = elf->data.str + elf->section_name_table_opl;
+        byte *opl = base;
         for (;opl < section_opl && *opl != 0; opl += 1);
         result.str = base;
         result.size = opl - base;

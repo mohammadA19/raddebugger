@@ -106,7 +106,7 @@ arena_push(Arena *arena, U64 size, U64 align)
           arena->free_last = new_block->prev;
         }
         arena->free_size -= new_block->res_size;
-        AsanUnpoisonMemoryRegion((U8*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
+        AsanUnpoisonMemoryRegion((byte*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
         break;
       }
     }
@@ -141,7 +141,7 @@ arena_push(Arena *arena, U64 size, U64 align)
     cmt_pst_aligned -= cmt_pst_aligned%current->cmt_size;
     U64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
     U64 cmt_size = cmt_pst_clamped - current->cmt;
-    U8 *cmt_ptr = (U8 *)current + current->cmt;
+    byte *cmt_ptr = (byte *)current + current->cmt;
     if(current->flags & ArenaFlag_LargePages)
     {
       os_commit_large(cmt_ptr, cmt_size);
@@ -157,7 +157,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   void *result = 0;
   if(current->cmt >= pos_pst)
   {
-    result = (U8 *)current+pos_pre;
+    result = (byte *)current+pos_pre;
     current->pos = pos_pst;
     AsanUnpoisonMemoryRegion(result, size);
   }
@@ -195,7 +195,7 @@ arena_pop_to(Arena *arena, U64 pos)
     current->pos = ARENA_HEADER_SIZE;
     arena->free_size += current->res_size;
     SLLStackPush_N(arena->free_last, current, prev);
-    AsanPoisonMemoryRegion((U8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
+    AsanPoisonMemoryRegion((byte*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
   }
 #else
   for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
@@ -207,7 +207,7 @@ arena_pop_to(Arena *arena, U64 pos)
   arena->current = current;
   U64 new_pos = big_pos - current->base_pos;
   AssertAlways(new_pos <= current->pos);
-  AsanPoisonMemoryRegion((U8*)current + new_pos, (current->pos - new_pos));
+  AsanPoisonMemoryRegion((byte*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }
 

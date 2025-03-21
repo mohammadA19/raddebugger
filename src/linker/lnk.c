@@ -1339,7 +1339,7 @@ lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
 #endif
   
   U64 buffer_size = stride * voff_arr.count;
-  U8 *buffer = push_array(arena, U8, buffer_size);
+  byte *buffer = push_array(arena, byte, buffer_size);
   for (U64 i = 0; i < voff_arr.count; ++i) {
     U32 *voff_ptr = (U32*)(buffer + i * stride);
     *voff_ptr = voff_arr.v[i];
@@ -1958,14 +1958,14 @@ lnk_build_base_relocs(TP_Context                  *tp,
       
       // push buffer
       U64 buf_align = sizeof(U32);
-      U64 buf_size  = AlignPow2(sizeof(U32)*2 + sizeof(U16)*total_entry_count, buf_align);
-      U8 *buf       = push_array_no_zero(base_reloc_sect->arena, U8, buf_size);
+      U64 buf_size  = AlignPow2(sizeof(U32)*2 + sizeof(ushort)*total_entry_count, buf_align);
+      byte *buf       = push_array_no_zero(base_reloc_sect->arena, byte, buf_size);
       
       // setup pointers into buffer
       U32 *page_voff_ptr  = (U32*)buf;
       U32 *block_size_ptr = page_voff_ptr + 1;
-      U16 *reloc_arr_base = (U16*)(block_size_ptr + 1);
-      U16 *reloc_arr_ptr  = reloc_arr_base;
+      ushort *reloc_arr_base = (ushort*)(block_size_ptr + 1);
+      ushort *reloc_arr_ptr  = reloc_arr_base;
       
       // write 32-bit relocations
       for (U64Node *i = page->entries_addr32.first; i != 0; i = i->next) {
@@ -2001,7 +2001,7 @@ lnk_build_base_relocs(TP_Context                  *tp,
       reloc_arr_ptr += pad_reloc_count;
       
       // compute block size
-      U64 reloc_arr_size = (U64)((U8*)reloc_arr_ptr - (U8*)reloc_arr_base);
+      U64 reloc_arr_size = (U64)((byte*)reloc_arr_ptr - (byte*)reloc_arr_base);
       U64 block_size     = sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + reloc_arr_size;
       
       // write header
@@ -3094,7 +3094,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
   
   blake3_hasher hasher; blake3_hasher_init(&hasher);
   blake3_hasher_update(&hasher, sub_data.str, sub_data.size);
-  blake3_hasher_finalize(&hasher, (U8 *)task->hashes[task_id].u64, sizeof(task->hashes[task_id].u64));
+  blake3_hasher_finalize(&hasher, (byte *)task->hashes[task_id].u64, sizeof(task->hashes[task_id].u64));
   
   ProfEnd();
 }
@@ -3116,10 +3116,10 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
   ProfBegin("Combine Hashes");
   blake3_hasher hasher; blake3_hasher_init(&hasher);
   for (U64 i = 0; i < chunk_count; ++i) {
-    blake3_hasher_update(&hasher, (U8 *)task.hashes[i].u64, sizeof(task.hashes[i].u64));
+    blake3_hasher_update(&hasher, (byte *)task.hashes[i].u64, sizeof(task.hashes[i].u64));
   }
   U128 result;
-  blake3_hasher_finalize(&hasher, (U8 *)result.u64, sizeof(result.u64));
+  blake3_hasher_finalize(&hasher, (byte *)result.u64, sizeof(result.u64));
   ProfEnd();
   
   scratch_end(scratch);

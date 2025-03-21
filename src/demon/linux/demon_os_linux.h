@@ -117,7 +117,7 @@ struct DEMON_LNX_UserX64{
   S32 reserved, _pad1;
   U64 u_ar0, u_fpstate;
   U64 magic;
-  U8  u_comm[32];
+  byte  u_comm[32];
   U64 u_debugreg[8];
 };
 
@@ -149,7 +149,7 @@ struct DEMON_LNX_UserX86{
   S32 signal, reserved;
   U32 u_ar0, u_fpstate;
   U32 magic;
-  U8  u_comm[32];
+  byte  u_comm[32];
   U32 u_debugreg[8];
 };
 

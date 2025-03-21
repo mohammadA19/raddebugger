@@ -111,8 +111,8 @@
 
 #define Member(T,m)                 (((T*)0)->m)
 #define OffsetOf(T,m)               IntFromPtr(&Member(T,m))
-#define MemberFromOffset(T,ptr,off) (T)((((U8 *)ptr)+(off)))
-#define CastFromMember(T,m,ptr)     (T*)(((U8*)ptr) - OffsetOf(T,m))
+#define MemberFromOffset(T,ptr,off) (T)((((byte *)ptr)+(off)))
+#define CastFromMember(T,m,ptr)     (T*)(((byte*)ptr) - OffsetOf(T,m))
 
 ////////////////////////////////
 //~ rjf: For-Loop Construct Macros
@@ -169,7 +169,7 @@
 #define InvalidPath        Assert(!"Invalid Path!")
 #define NotImplemented     Assert(!"Not Implemented!")
 #define NoOp               (()0)
-#define StaticAssert(C, ID) static U8 Glue(ID, __LINE__)[(C)?1:-1]
+#define StaticAssert(C, ID) static byte Glue(ID, __LINE__)[(C)?1:-1]
 
 ////////////////////////////////
 //~ rjf: Atomic Operations
@@ -334,7 +334,7 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 #else
 # error Missing pointer-to-integer cast for this architecture.
 #endif
-#define PtrFromInt(i) (void*)((U8*)0 + (i))
+#define PtrFromInt(i) (void*)((byte*)0 + (i))
 
 #define Compose64Bit(a,b)  ((((U64)a) << 32) | ((U64)b));
 #define AlignPow2(x,b)     (((x) + (b) - 1)&(~((b) - 1)))
@@ -354,16 +354,16 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 ////////////////////////////////
 //~ rjf: Base Types
 
-typedef uint8_t  U8;
-typedef uint16_t U16;
+typedef uint8_t  byte;
+typedef uint16_t ushort;
 typedef uint32_t U32;
 typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
+typedef int8_t   sbyte;
+typedef int16_t  short;
 typedef int32_t  S32;
 typedef int64_t  S64;
-typedef S8       B8;
-typedef S16      B16;
+typedef sbyte       B8;
+typedef short      B16;
 typedef S32      B32;
 typedef S64      B64;
 typedef float    F32;
@@ -488,11 +488,11 @@ union Guid
   struct
   {
     U32 data1;
-    U16 data2;
-    U16 data3;
-    U8  data4[8];
+    ushort data2;
+    ushort data3;
+    byte  data4[8];
   };
-  U8 v[16];
+  byte v[16];
 };
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
@@ -502,7 +502,7 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 struct U16Array
 {
   U64  count;
-  U16 *v;
+  ushort *v;
 };
 struct U32Array
 {
@@ -536,18 +536,18 @@ static F64 machine_epsilon64 = 4.94065645841247e-324;
 
 static U64 max_U64 = 0xffffffffffffffffull;
 static U32 max_U32 = 0xffffffff;
-static U16 max_U16 = 0xffff;
-static U8  max_U8  = 0xff;
+static ushort max_U16 = 0xffff;
+static byte  max_U8  = 0xff;
 
 static S64 max_S64 = (S64)0x7fffffffffffffffull;
 static S32 max_S32 = (S32)0x7fffffff;
-static S16 max_S16 = (S16)0x7fff;
-static S8  max_S8  =  (S8)0x7f;
+static short max_S16 = (short)0x7fff;
+static sbyte  max_S8  =  (sbyte)0x7f;
 
 static S64 min_S64 = (S64)0xffffffffffffffffull;
 static S32 min_S32 = (S32)0xffffffff;
-static S16 min_S16 = (S16)0xffff;
-static S8  min_S8  =  (S8)0xff;
+static short min_S16 = (short)0xffff;
+static sbyte  min_S8  =  (sbyte)0xff;
 
 static const U32 bitmask1  = 0x00000001;
 static const U32 bitmask2  = 0x00000003;
@@ -715,12 +715,12 @@ enum Month
 
 struct DateTime
 {
-  U16 micro_sec; // [0,999]
-  U16 msec; // [0,999]
-  U16 sec;  // [0,60]
-  U16 min;  // [0,59]
-  U16 hour; // [0,24]
-  U16 day;  // [0,30]
+  ushort micro_sec; // [0,999]
+  ushort msec; // [0,999]
+  ushort sec;  // [0,60]
+  ushort min;  // [0,59]
+  ushort hour; // [0,24]
+  ushort day;  // [0,30]
   union
   {
     WeekDay week_day;
@@ -755,7 +755,7 @@ struct FileProperties
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-U16 safe_cast_u16(U32 x);
+ushort safe_cast_u16(U32 x);
 U32 safe_cast_u32(U64 x);
 S32 safe_cast_s32(S64 x);
 
@@ -777,7 +777,7 @@ S64 extend_sign64(U64 x, U64 size);
 F32 inf32();
 F32 neg_inf32();
 
-U16 bswap_u16(U16 x);
+ushort bswap_u16(ushort x);
 U32 bswap_u32(U32 x);
 U64 bswap_u64(U64 x);
 
@@ -844,8 +844,8 @@ DateTime  date_time_from_unix_time(U64 unix_time);
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-U64 ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size);
-U64 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size);
+U64 ring_write(byte *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size);
+U64 ring_read(byte *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size);
 #define ring_write_struct(ring_base, ring_size, ring_pos, ptr) ring_write((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 #define ring_read_struct(ring_base, ring_size, ring_pos, ptr) ring_read((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 

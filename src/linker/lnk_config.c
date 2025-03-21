@@ -659,7 +659,7 @@ lnk_cmd_switch_parse_flag(String8 obj_path, String8 lib_path, LNK_CmdSwitchType 
 }
 
 void
-lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits)
+lnk_cmd_switch_set_flag_inv_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, ushort *flags, ushort bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {
@@ -685,7 +685,7 @@ lnk_cmd_switch_set_flag_inv_64(String8 obj_path, String8 lib_path, LNK_CmdSwitch
 }
 
 void
-lnk_cmd_switch_set_flag_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits)
+lnk_cmd_switch_set_flag_16(String8 obj_path, String8 lib_path, LNK_CmdSwitchType cmd_switch, String8List value_strings, ushort *flags, ushort bits)
 {
   LNK_SwitchState state;
   if (lnk_cmd_switch_parse_flag(obj_path, lib_path, cmd_switch, value_strings, &state)) {

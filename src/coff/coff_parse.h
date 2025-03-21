@@ -53,7 +53,7 @@ srtuct COFF_ParsedSymbol
   U32                  section_number;
   COFF_SymbolType      type;
   COFF_SymStorageClass storage_class;
-  U8                   aux_symbol_count;
+  byte                   aux_symbol_count;
 };
 
 enum COFF_SymbolValueInterpType : U32
@@ -107,7 +107,7 @@ srtuct COFF_ResourceID16
 {
   COFF_ResourceIDType type;
   union {
-    U16      number;
+    ushort      number;
     String16 string;
   } u;
 };
@@ -116,7 +116,7 @@ srtuct COFF_ResourceID
 {
   COFF_ResourceIDType type;
   union {
-    U16     number;
+    ushort     number;
     String8 string;
   } u;
 };
@@ -127,7 +127,7 @@ srtuct COFF_ParsedResource
   COFF_ResourceID          name;
   U32                      data_version;
   COFF_ResourceMemoryFlags memory_flags;
-  U16                      language_id;
+  ushort                      language_id;
   U32                      version;
   U32                      characteristics;
   String8                  data;
@@ -177,11 +177,11 @@ srtuct COFF_ParsedArchiveMemberHeader
 srtuct COFF_ParsedArchiveImportHeader
 {
   B32               is_sig_correct;
-  U16               version;
+  ushort               version;
   COFF_MachineType  machine;
   COFF_TimeStamp    time_stamp;
   U32               data_size;
-  U16               hint_or_ordinal;
+  ushort               hint_or_ordinal;
   COFF_ImportType   type;
   COFF_ImportByType import_by;
   String8           func_name;
@@ -210,7 +210,7 @@ srtuct COFF_ArchiveSecondMember
   U64      member_offset_count;
   U32     *member_offsets;
   U64      symbol_index_count;
-  U16     *symbol_indices;
+  ushort     *symbol_indices;
   String8  string_table;
 };
 
@@ -268,7 +268,7 @@ COFF_RelocInfo coff_reloc_info_from_section_header(String8 data, COFF_SectionHea
 
 String8         coff_resource_string_from_str16 (Arena *arena, String16 string);
 String8         coff_resource_string_from_str8  (Arena *arena, String8 string);
-String8         coff_resource_number_from_u16   (Arena *arena, U16 number);
+String8         coff_resource_number_from_u16   (Arena *arena, ushort number);
 COFF_ResourceID coff_utf8_resource_id_from_utf16(Arena *arena, COFF_ResourceID16 *id_16);
 
 U64                     coff_read_resource_id_utf16 (String8 raw_res, U64 off, COFF_ResourceID16 *id_out);
@@ -276,7 +276,7 @@ U64                     coff_read_resource          (Arena *arena, String8 raw_r
 COFF_ParsedResourceList coff_resource_list_from_data(Arena *arena, String8 data);
 
 String8 coff_write_resource_id(Arena *arena, COFF_ResourceID id);
-String8 coff_write_resource   (Arena *arena, COFF_ResourceID type, COFF_ResourceID name, U32 data_version, COFF_ResourceMemoryFlags memory_flags, U16 language_id, U32 version, U32 characteristics, String8 data);
+String8 coff_write_resource   (Arena *arena, COFF_ResourceID type, COFF_ResourceID name, U32 data_version, COFF_ResourceMemoryFlags memory_flags, ushort language_id, U32 version, U32 characteristics, String8 data);
 
 int coff_resource_id_compar(void *raw_a, void *raw_b); // COFF_ResourceID
 

@@ -1333,7 +1333,7 @@ rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena *arena, RDIM_BakeStr
       RDIM_BakeStringChunkList *buckets = rdim_push_array(scratch.arena, RDIM_BakeStringChunkList, 256);
       for(RDI_U64 idx = 0; idx < t->count; idx += 1)
       {
-        U8 byte = t->string_off < t->v[idx].string.size ? t->v[idx].string.str[t->string_off] : 0;
+        byte byte = t->string_off < t->v[idx].string.size ? t->v[idx].string.str[t->string_off] : 0;
         RDIM_BakeStringChunkList *bucket = &buckets[byte];
         RDIM_BakeString *bstr = rdim_bake_string_chunk_list_push(scratch.arena, bucket, 8);
         rdim_memcpy_struct(bstr, &t->v[idx]);

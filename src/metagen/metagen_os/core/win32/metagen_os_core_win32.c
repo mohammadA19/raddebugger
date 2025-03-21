@@ -160,7 +160,7 @@ os_get_current_path(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
-  U16 *memory = push_array_no_zero(scratch.arena, U16, length + 1);
+  ushort *memory = push_array_no_zero(scratch.arena, ushort, length + 1);
   length = GetCurrentDirectoryW(length + 1, (WCHAR*)memory);
   String8 name = str8_from_16(arena, str16(memory, length));
   scratch_end(scratch);
@@ -340,7 +340,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
       OVERLAPPED overlapped = {0};
       overlapped.Offset     = (off&0x00000000ffffffffull);
       overlapped.OffsetHigh = (off&0xffffffff00000000ull) >> 32;
-      ReadFile(handle, (U8 *)out_data + total_read_size, amt32, &read_size, &overlapped);
+      ReadFile(handle, (byte *)out_data + total_read_size, amt32, &read_size, &overlapped);
       off += read_size;
       total_read_size += read_size;
       if(read_size != amt32)
@@ -364,7 +364,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
   U64 total_bytes_written = 0;
   for(;src_off < bytes_to_write_total;)
   {
-    void *bytes_src = (void *)((U8 *)data + src_off);
+    void *bytes_src = (void *)((byte *)data + src_off);
     U64 bytes_to_write_64 = (bytes_to_write_total-src_off);
     U32 bytes_to_write_32 = u32_from_u64_saturate(bytes_to_write_64);
     U32 bytes_written = 0;
@@ -460,7 +460,7 @@ os_full_path_from_path(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD buffer_size = MAX_PATH + 1;
-  U16 *buffer = push_array_no_zero(scratch.arena, U16, buffer_size);
+  ushort *buffer = push_array_no_zero(scratch.arena, ushort, buffer_size);
   String16 path16 = str16_from_8(scratch.arena, path);
   DWORD path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, (WCHAR*)buffer, NULL);
   String8 full_path = str8_from_16(arena, str16(buffer, path16_size));
@@ -602,7 +602,7 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
     String8List drive_strings = {0};
     for(U64 off = 0; off < (U64)length;)
     {
-      String16 next_drive_string_16 = str16_cstring((U16 *)buffer+off);
+      String16 next_drive_string_16 = str16_cstring((ushort *)buffer+off);
       off += next_drive_string_16.size+1;
       String8 next_drive_string = str8_from_16(arena, next_drive_string_16);
       next_drive_string = str8_chop_last_slash(next_drive_string);
@@ -664,7 +664,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
           
           // emit if usable
           if (usable_file){
-            info_out->name = str8_from_16(arena, str16_cstring((U16*)file_name));
+            info_out->name = str8_from_16(arena, str16_cstring((ushort*)file_name));
             info_out->props.size = (U64)w32_iter->find_data.nFileSizeLow | (((U64)w32_iter->find_data.nFileSizeHigh)<<32);
             os_w32_dense_time_from_file_time(&info_out->props.created,  &w32_iter->find_data.ftCreationTime);
             os_w32_dense_time_from_file_time(&info_out->props.modified, &w32_iter->find_data.ftLastWriteTime);
@@ -1553,7 +1553,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       os_w32_state.arena = arena;
       {
         OS_SystemInfo *info = &os_w32_state.system_info;
-        U8 buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
+        byte buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
         DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
         if(GetComputerNameA((char*)buffer, &size))
         {
@@ -1566,7 +1566,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       {
         Temp scratch = scratch_begin(0, 0);
         DWORD size = KB(32);
-        U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+        ushort *buffer = push_array_no_zero(scratch.arena, ushort, size);
         DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
         String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
         String8 name_chopped = str8_chop_last_slash(name8);
@@ -1577,7 +1577,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       {
         Temp scratch = scratch_begin(0, 0);
         U64 size = KB(32);
-        U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+        ushort *buffer = push_array_no_zero(scratch.arena, ushort, size);
         if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
         {
           info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
@@ -1597,7 +1597,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
             }
             else
             {
-              String16 string16 = str16((U16 *)this_proc_env + start_idx, idx - start_idx);
+              String16 string16 = str16((ushort *)this_proc_env + start_idx, idx - start_idx);
               String8 string = str8_from_16(arena, string16);
               str8_list_push(arena, &info->environment, string);
               start_idx = idx+1;
@@ -1617,7 +1617,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   char **argv = push_array(args_arena, char *, argc);
   for(int i = 0; i < argc; i += 1)
   {
-    String16 arg16 = str16_cstring((U16 *)wargv[i]);
+    String16 arg16 = str16_cstring((ushort *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
     if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive))
     {

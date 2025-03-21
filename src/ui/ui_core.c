@@ -121,7 +121,7 @@ ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
 //~ rjf: Text Operation Functions
 
 B32
-ui_char_is_scan_boundary(U8 c)
+ui_char_is_scan_boundary(byte c)
 {
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
@@ -136,7 +136,7 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
   S64 start_off = delta < 0 ? delta : 0;
   for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
-    U8 byte = (col <= string.size) ? string.str[col-1] : 0;
+    byte byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
     if(((side == Side_Min) && (col == 1)) || 
@@ -326,7 +326,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   U64 new_size = old_size - (range.max - range.min) + replace.size;
   
   //- rjf: push+fill new string storage
-  U8 *push_base = push_array(arena, U8, new_size);
+  byte *push_base = push_array(arena, byte, new_size);
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
@@ -695,7 +695,7 @@ ui_get_drag_data(U64 min_required_size)
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
+    String8 str = {push_array(scratch.arena, byte, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -2742,7 +2742,7 @@ ui_signal_from_box(UI_Box *box)
       {
         Swap(F32, delta.x, delta.y);
       }
-      Vec2S16 delta16 = v2s16((S16)(delta.x/30.f), (S16)(delta.y/30.f));
+      Vec2S16 delta16 = v2s16((short)(delta.x/30.f), (short)(delta.y/30.f));
       if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
       if(delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
       if(delta.y > 0 && delta16.y == 0) { delta16.y = +1; }

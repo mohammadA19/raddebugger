@@ -30,9 +30,9 @@ struct_type(CTRL_CheckB32);
 
 //- rjf: styled string types
 
-ptr_type(CTRL_PlainString8__str_ptr_type, type(U8), .flags = TypeFlag_IsPlainText,.count_delimiter_name = str8_lit_comp("size"));
-ptr_type(CTRL_CodeString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsCodeText, .count_delimiter_name = str8_lit_comp("size"));
-ptr_type(CTRL_PathString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsPathText, .count_delimiter_name = str8_lit_comp("size"));
+ptr_type(CTRL_PlainString8__str_ptr_type, type(byte), .flags = TypeFlag_IsPlainText,.count_delimiter_name = str8_lit_comp("size"));
+ptr_type(CTRL_CodeString8__str_ptr_type, type(byte),  .flags = TypeFlag_IsCodeText, .count_delimiter_name = str8_lit_comp("size"));
+ptr_type(CTRL_PathString8__str_ptr_type, type(byte),  .flags = TypeFlag_IsPathText, .count_delimiter_name = str8_lit_comp("size"));
 Member CTRL_PlainString8__members[] =
 {
   member_lit_comp(String8, &CTRL_PlainString8__str_ptr_type, str,  .pretty_name = str8_lit_comp("Contents")),
@@ -819,7 +819,7 @@ struct CTRL_State
   
   // rjf: user -> ctrl msg ring buffer
   U64 u2c_ring_size;
-  U8 *u2c_ring_base;
+  byte *u2c_ring_base;
   U64 u2c_ring_write_pos;
   U64 u2c_ring_read_pos;
   OS_Handle u2c_ring_mutex;
@@ -828,7 +828,7 @@ struct CTRL_State
   // rjf: ctrl -> user event ring buffer
   U64 c2u_ring_size;
   U64 c2u_ring_max_string_size;
-  U8 *c2u_ring_base;
+  byte *c2u_ring_base;
   U64 c2u_ring_write_pos;
   U64 c2u_ring_read_pos;
   OS_Handle c2u_ring_mutex;
@@ -854,7 +854,7 @@ struct CTRL_State
   
   // rjf: user -> memstream ring buffer
   U64 u2ms_ring_size;
-  U8 *u2ms_ring_base;
+  byte *u2ms_ring_base;
   U64 u2ms_ring_write_pos;
   U64 u2ms_ring_read_pos;
   OS_Handle u2ms_ring_mutex;

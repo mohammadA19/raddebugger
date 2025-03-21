@@ -2330,7 +2330,7 @@ rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_s
           U64 num_digits_passed = digit_group_size - num_digits%digit_group_size;
           for(U64 idx = 0; idx <= whole.size; idx += 1)
           {
-            U8 byte = idx < whole.size ? whole.str[idx] : 0;
+            byte byte = idx < whole.size ? whole.str[idx] : 0;
             if(num_digits_passed >= digit_group_size || idx == whole.size)
             {
               num_digits_passed = 0;
@@ -2393,7 +2393,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 //~ rjf: UI Widgets: Line Edit
 
 UI_Signal
-rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string)
+rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string)
 {
   ProfBeginFunction();
   
@@ -2807,7 +2807,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
 }
 
 UI_Signal
-rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...)
+rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

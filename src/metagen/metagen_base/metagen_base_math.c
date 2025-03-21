@@ -57,17 +57,17 @@ S32 length_2s32(Vec2S32 v)                             {S32 c = (S32)sqrt_f32((F
 Vec2S32 normalize_2s32(Vec2S32 v)                      {v = scale_2s32(v, (S32)(1.f/length_2s32(v))); return v;}
 Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t)          {Vec2S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t), (S32)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
 
-Vec2S16 vec_2s16(S16 x, S16 y)                         {Vec2S16 v = {x, y}; return v;}
-Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x+b.x), (S16)(a.y+b.y)}; return c;}
-Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x-b.x), (S16)(a.y-b.y)}; return c;}
-Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x*b.x), (S16)(a.y*b.y)}; return c;}
-Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(S16)(a.x/b.x), (S16)(a.y/b.y)}; return c;}
-Vec2S16 scale_2s16(Vec2S16 v, S16 s)                   {Vec2S16 c = {(S16)(v.x*s), (S16)(v.y*s)}; return c;}
-S16 dot_2s16(Vec2S16 a, Vec2S16 b)                     {S16 c = a.x*b.x + a.y*b.y; return c;}
-S16 length_squared_2s16(Vec2S16 v)                     {S16 c = v.x*v.x + v.y*v.y; return c;}
-S16 length_2s16(Vec2S16 v)                             {S16 c = (S16)sqrt_f32((F32)(v.x*v.x + v.y*v.y)); return c;}
-Vec2S16 normalize_2s16(Vec2S16 v)                      {v = scale_2s16(v, (S16)(1.f/length_2s16(v))); return v;}
-Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t)          {Vec2S16 c = {(S16)mix_1f32((F32)a.x, (F32)b.x, t), (S16)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
+Vec2S16 vec_2s16(short x, short y)                         {Vec2S16 v = {x, y}; return v;}
+Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(short)(a.x+b.x), (short)(a.y+b.y)}; return c;}
+Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(short)(a.x-b.x), (short)(a.y-b.y)}; return c;}
+Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(short)(a.x*b.x), (short)(a.y*b.y)}; return c;}
+Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b)                 {Vec2S16 c = {(short)(a.x/b.x), (short)(a.y/b.y)}; return c;}
+Vec2S16 scale_2s16(Vec2S16 v, short s)                   {Vec2S16 c = {(short)(v.x*s), (short)(v.y*s)}; return c;}
+short dot_2s16(Vec2S16 a, Vec2S16 b)                     {short c = a.x*b.x + a.y*b.y; return c;}
+short length_squared_2s16(Vec2S16 v)                     {short c = v.x*v.x + v.y*v.y; return c;}
+short length_2s16(Vec2S16 v)                             {short c = (short)sqrt_f32((F32)(v.x*v.x + v.y*v.y)); return c;}
+Vec2S16 normalize_2s16(Vec2S16 v)                      {v = scale_2s16(v, (short)(1.f/length_2s16(v))); return v;}
+Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t)          {Vec2S16 c = {(short)mix_1f32((F32)a.x, (F32)b.x, t), (short)mix_1f32((F32)a.y, (F32)b.y, t)}; return c;}
 
 Vec3F32 vec_3f32(F32 x, F32 y, F32 z)                  {Vec3F32 v = {x, y, z}; return v;}
 Vec3F32 add_3f32(Vec3F32 a, Vec3F32 b)                 {Vec3F32 c = {a.x+b.x, a.y+b.y, a.z+b.z}; return c;}
@@ -441,10 +441,10 @@ F32 clamp_1f32(Rng1F32 r, F32 v)                       {v = Clamp(r.min, v, r.ma
 
 Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max)             {Rng2S16 r = {min, max}; return r;}
 Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x)               {r.min = add_2s16(r.min, x); r.max = add_2s16(r.max, x); return r;}
-Rng2S16 pad_2s16(Rng2S16 r, S16 x)                     {Vec2S16 xv = {x, x}; r.min = sub_2s16(r.min, xv); r.max = add_2s16(r.max, xv); return r;}
-Vec2S16 center_2s16(Rng2S16 r)                         {Vec2S16 c = {(S16)((r.min.x+r.max.x)/2), (S16)((r.min.y+r.max.y)/2)}; return c;}
+Rng2S16 pad_2s16(Rng2S16 r, short x)                     {Vec2S16 xv = {x, x}; r.min = sub_2s16(r.min, xv); r.max = add_2s16(r.max, xv); return r;}
+Vec2S16 center_2s16(Rng2S16 r)                         {Vec2S16 c = {(short)((r.min.x+r.max.x)/2), (short)((r.min.y+r.max.y)/2)}; return c;}
 B32 contains_2s16(Rng2S16 r, Vec2S16 x)                {B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y); return c;}
-Vec2S16 dim_2s16(Rng2S16 r)                            {Vec2S16 dim = {(S16)(r.max.x-r.min.x), (S16)(r.max.y-r.min.y)}; return dim;}
+Vec2S16 dim_2s16(Rng2S16 r)                            {Vec2S16 dim = {(short)(r.max.x-r.min.x), (short)(r.max.y-r.min.y)}; return dim;}
 Rng2S16 union_2s16(Rng2S16 a, Rng2S16 b)               {Rng2S16 c; c.p0.x = Min(a.min.x, b.min.x); c.p0.y = Min(a.min.y, b.min.y); c.p1.x = Max(a.max.x, b.max.x); c.p1.y = Max(a.max.y, b.max.y); return c;}
 Rng2S16 intersect_2s16(Rng2S16 a, Rng2S16 b)           {Rng2S16 c; c.p0.x = Max(a.min.x, b.min.x); c.p0.y = Max(a.min.y, b.min.y); c.p1.x = Min(a.max.x, b.max.x); c.p1.y = Min(a.max.y, b.max.y); return c;}
 Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v)               {v.x = Clamp(r.min.x, v.x, r.max.x); v.y = Clamp(r.min.y, v.y, r.max.y); return v;}
@@ -581,10 +581,10 @@ U32
 u32_from_rgba(Vec4F32 rgba)
 {
   U32 result = 0;
-  result |= ((U32)((U8)(rgba.x*255.f))) << 24;
-  result |= ((U32)((U8)(rgba.y*255.f))) << 16;
-  result |= ((U32)((U8)(rgba.z*255.f))) <<  8;
-  result |= ((U32)((U8)(rgba.w*255.f))) <<  0;
+  result |= ((U32)((byte)(rgba.x*255.f))) << 24;
+  result |= ((U32)((byte)(rgba.y*255.f))) << 16;
+  result |= ((U32)((byte)(rgba.z*255.f))) <<  8;
+  result |= ((U32)((byte)(rgba.w*255.f))) <<  0;
   return result;
 }
 

@@ -174,7 +174,7 @@ entry_point(CmdLine *cmdline)
   String8      indent;
   {
     U64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
-    U8 *indent_buffer      = push_array(arena, U8, indent_buffer_size);
+    byte *indent_buffer      = push_array(arena, byte, indent_buffer_size);
     MemorySet(indent_buffer, ' ', indent_buffer_size);
     indent = str8(indent_buffer, 0);
   }

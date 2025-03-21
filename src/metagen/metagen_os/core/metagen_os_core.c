@@ -141,7 +141,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
   U64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, U8, result.size);
+  result.str = push_array_no_zero(arena, byte, result.size);
   U64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {

@@ -33,7 +33,7 @@ typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
   {
     RebaseTypeTask *next;
     Type *type;
-    U8 *ptr;
+    byte *ptr;
   };
   RebaseTypeTask start_task = {0, type, data.str};
   RebaseTypeTask *first_task = &start_task;
@@ -46,7 +46,7 @@ typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
       case TypeKind_Ptr:
       if(!(t->type->flags & TypeFlag_IsExternal))
       {
-        *(U64 *)t->ptr = ((U64)(*(U8 **)t->ptr - (U8 *)base_ptr));
+        *(U64 *)t->ptr = ((U64)(*(byte **)t->ptr - (byte *)base_ptr));
       }break;
       case TypeKind_Array:
       {
@@ -86,9 +86,9 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
       SerializeTypeTask *next;
       Type *type;
       U64 count;
-      U8 *src;
+      byte *src;
       Type *containing_type;
-      U8 *containing_ptr;
+      byte *containing_ptr;
       B32 is_post_header;
     };
     SerializeTypeTask start_task = {0, type, 1, data.str};
@@ -124,7 +124,7 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
           {
             U64 ptr_value = 0;
             MemoryCopy(&ptr_value, t->src, sizeof(ptr_value));
-            U64 ptr_write_value = ((U64)((U8 *)ptr_value - (U8 *)ptr_ref_info->indexify_base)/t->type->direct->size);
+            U64 ptr_write_value = ((U64)((byte *)ptr_value - (byte *)ptr_ref_info->indexify_base)/t->type->direct->size);
             str8_serial_push_struct(scratch.arena, &strings, &ptr_write_value);
           }
           
@@ -133,7 +133,7 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
           {
             U64 ptr_value = 0;
             MemoryCopy(&ptr_value, t->src, sizeof(ptr_value));
-            U64 ptr_write_value = (U64)((U8 *)ptr_value - (U8 *)ptr_ref_info->offsetify_base);
+            U64 ptr_write_value = (U64)((byte *)ptr_value - (byte *)ptr_ref_info->offsetify_base);
             str8_serial_push_struct(scratch.arena, &strings, &ptr_write_value);
           }
           
@@ -239,7 +239,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
 {
   String8 result = {0};
   result.size = type->size;
-  result.str  = push_array(arena, U8, result.size);
+  result.str  = push_array(arena, byte, result.size);
   {
     Temp scratch = scratch_begin(&arena, 1);
     struct DeserializeTypeTask
@@ -247,9 +247,9 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
       DeserializeTypeTask *next;
       Type *type;
       U64 count;
-      U8 *dst;
+      byte *dst;
       Type *containing_type;
-      U8 *containing_ptr;
+      byte *containing_ptr;
       B32 is_post_header;
     };
     U64 read_off = 0;
@@ -258,7 +258,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
     DeserializeTypeTask *last_task = first_task;
     for(DeserializeTypeTask *t = first_task; t != 0; t = t->next)
     {
-      U8 *t_src = data.str + read_off;
+      byte *t_src = data.str + read_off;
       switch(t->type->kind)
       {
         //- rjf: leaf -> copy the data directly
@@ -331,7 +331,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
             
             // rjf: allocate buffer for pointer destination; write address into pointer value slot
             U64 ptr_dest_buffer_size = (count+1)*t->type->direct->size;
-            U8 *ptr_dest_buffer = push_array(arena, U8, ptr_dest_buffer_size);
+            byte *ptr_dest_buffer = push_array(arena, byte, ptr_dest_buffer_size);
             MemoryCopy(t->dst, &ptr_dest_buffer, sizeof(ptr_dest_buffer));
             
             // rjf: push task

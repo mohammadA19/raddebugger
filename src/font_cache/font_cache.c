@@ -166,7 +166,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
   //- rjf: produce tag hash of ptr
   FNT_Tag result = {0};
   {
-    U128 hash = fnt_hash_from_string(str8((U8 *)&data_ptr, sizeof(String8 *)));
+    U128 hash = fnt_hash_from_string(str8((byte *)&data_ptr, sizeof(String8 *)));
     MemoryCopy(&result, &hash, sizeof(result));
     result.u64[1] &= ~bit64;
   }
@@ -530,7 +530,7 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
       *(U64 *)(&size_f64),
       (U64)flags,
     };
-    style_hash = fnt_little_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
+    style_hash = fnt_little_hash_from_string(str8((byte *)buffer, sizeof(buffer)));
   }
   
   //- rjf: style hash -> style node
@@ -585,7 +585,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
   for(U64 idx = 0; idx <= string.size;)
   {
     //- rjf: decode next codepoint & get piece substring, or continuation rule
-    U8 byte = (idx < string.size ? string.str[idx] : 0);
+    byte byte = (idx < string.size ? string.str[idx] : 0);
     B32 need_another_codepoint = 0;
     if(byte == 0)
     {
@@ -698,7 +698,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
       }
       
       // rjf: allocate portion of an atlas to upload the rasterization
-      S16 chosen_atlas_num = 0;
+      short chosen_atlas_num = 0;
       FNT_Atlas *chosen_atlas = 0;
       Rng2S16 chosen_atlas_region = {0};
       if(raster.atlas_dim.x != 0 && raster.atlas_dim.y != 0)
@@ -871,7 +871,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F
       if(piece != 0) {next = piece+1;}
       
       // rjf: gather info
-      U8 byte         = off_bytes < string.size ? string.str[off_bytes] : 0;
+      byte byte         = off_bytes < string.size ? string.str[off_bytes] : 0;
       F32 advance     = (piece != 0) ? piece->advance : 0;
       U64 decode_size = (piece != 0) ? piece->decode_size : 0;
       

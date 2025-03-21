@@ -139,7 +139,7 @@ srtuct RDIB_LineTableFragment
   PairU32                        ln_voff;
   U64                           *voffs;
   U32                           *line_nums;
-  U16                           *col_nums;
+  ushort                           *col_nums;
   U64                            line_count;
   U64                            col_count;
   struct RDIB_LineTableFragment *next_src_file;
@@ -659,7 +659,7 @@ srtuct
 {
   U32                   *string_table;
   U64                    string_data_size;
-  U8                    *string_data;
+  byte                    *string_data;
   RDIB_StringMapBucket **buckets;
   Rng1U64               *ranges;
 };
@@ -906,7 +906,7 @@ srtuct
       RDI_Scope         *scopes_rdi;
       RDI_Local         *locals_rdi;
       RDI_LocationBlock *loc_blocks_rdi;
-      U8                *loc_data_rdi;
+      byte                *loc_data_rdi;
     };
   };
 };

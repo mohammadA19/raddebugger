@@ -141,7 +141,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
   U64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, U8, result.size);
+  result.str = push_array_no_zero(arena, byte, result.size);
   U64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {
@@ -158,7 +158,7 @@ OS_Handle
 os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
-  U8 split_chars[] = {' '};
+  byte split_chars[] = {' '};
   String8List parts = str8_split(scratch.arena, string, split_chars, ArrayCount(split_chars), 0);
   OS_Handle handle = {0};
   if(parts.node_count != 0)

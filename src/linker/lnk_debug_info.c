@@ -1254,7 +1254,7 @@ lnk_hash_cv_leaf(Arena               *arena,
   }
 
   U128 hash;
-  blake3_hasher_finalize(&hasher, (U8 *) &hash, sizeof hash);
+  blake3_hasher_finalize(&hasher, (byte *) &hash, sizeof hash);
 
   return hash;
 }
@@ -2211,7 +2211,7 @@ lnk_unbucket_leaf_array(TP_Context *tp, Arena *arena, LNK_CodeViewInput *input, 
   LNK_UnbucketRawLeavesTask task = {0};
   task.input        = input;
   task.bucket_arr   = bucket_arr.v;
-  task.raw_leaf_arr = push_array_no_zero(arena, U8 *, bucket_arr.count);
+  task.raw_leaf_arr = push_array_no_zero(arena, byte *, bucket_arr.count);
   task.range_arr    = tp_divide_work(scratch.arena, bucket_arr.count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, lnk_unbucket_raw_leaves_task, &task);
 
@@ -2472,7 +2472,7 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
 }
 
 U64
-lnk_format_u128(U8 *buf, U64 buf_max, U64 length, U128 v)
+lnk_format_u128(byte *buf, U64 buf_max, U64 length, U128 v)
 {
   U64 size = 0;
   if (length > 0 && buf_max > 0) {
@@ -2506,7 +2506,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
   }
 
   U64 hash_max_chars = hash_length*2;
-  U8  temp[128];
+  byte  temp[128];
 
   for (U64 leaf_idx = range.min; leaf_idx < range.max; ++leaf_idx) {
     CV_Leaf leaf = cv_debug_t_get_leaf(debug_t, leaf_idx);
@@ -2520,7 +2520,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
         U128 name_hash;
         blake3_hasher hasher; blake3_hasher_init(&hasher);
         blake3_hasher_update(&hasher, udt_info.unique_name.str, udt_info.unique_name.size);
-        blake3_hasher_finalize(&hasher, (U8*)&name_hash, sizeof(name_hash));
+        blake3_hasher_finalize(&hasher, (byte*)&name_hash, sizeof(name_hash));
 
         // emit hash -> unique name map
         if (make_map) {
@@ -2591,7 +2591,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
   }
 
   U64 hash_max_chars = hash_length*2;
-  U8  temp[128];
+  byte  temp[128];
 
   for (U64 leaf_idx = range.min; leaf_idx < range.max; ++leaf_idx) {
     CV_Leaf leaf = cv_debug_t_get_leaf(debug_t, leaf_idx);
@@ -2611,7 +2611,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
         U128 name_hash;
         blake3_hasher hasher; blake3_hasher_init(&hasher);
         blake3_hasher_update(&hasher, udt_info.name.str, udt_info.name.size);
-        blake3_hasher_finalize(&hasher, (U8*)&name_hash, sizeof(name_hash));
+        blake3_hasher_finalize(&hasher, (byte*)&name_hash, sizeof(name_hash));
 
         // emit hash -> name map
         if (make_map) {
@@ -2777,7 +2777,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
   ProfEnd();
 
   // alloc buffer
-  U8 *buffer        = push_array_no_zero(arena, U8, buffer_size);
+  byte *buffer        = push_array_no_zero(arena, byte, buffer_size);
   U64 buffer_cursor = 0;
 
   // MS Symbol and Type Information p.4:
@@ -3064,7 +3064,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_pdb_public_symbols_defined_task)
         U64 symbol_isect = lnk_isect_from_symbol(sect_id_map, symbol);
 
         U32 symbol_off32   = safe_cast_u32(symbol_off);
-        U16 symbol_isect16 = safe_cast_u16(symbol_isect);
+        ushort symbol_isect16 = safe_cast_u16(symbol_isect);
 
         nodes[node_idx].data = cv_make_pub32(arena, flags, symbol_off32, symbol_isect16, symbol->name);
         cv_symbol_list_push_node(pub_list, &nodes[node_idx]);
@@ -3972,7 +3972,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_MEMBER: {
           // prase CodeView struct/class/union data member
           CV_LeafMember   *leaf_member = (CV_LeafMember *) (src.data.str + cursor);
-          CV_NumericParsed offset      = cv_numeric_from_data_range((U8 *)(leaf_member + 1), src.data.str + src.data.size);
+          CV_NumericParsed offset      = cv_numeric_from_data_range((byte *)(leaf_member + 1), src.data.str + src.data.size);
           String8          name        = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafMember) + offset.encoded_size, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafMember);
           cursor += offset.encoded_size;
@@ -4101,7 +4101,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_BCLASS: {
           // parse CodeView base class member
           CV_LeafBClass    *bclass = (CV_LeafBClass *) (src.data.str + cursor);
-          CV_NumericParsed  offset = cv_numeric_from_data_range((U8 *)(bclass + 1), src.data.str + src.data.size);
+          CV_NumericParsed  offset = cv_numeric_from_data_range((byte *)(bclass + 1), src.data.str + src.data.size);
           cursor += sizeof(CV_LeafBClass);
           cursor += offset.encoded_size;
 
@@ -4146,7 +4146,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
         case CV_LeafKind_ENUMERATE: {
           // parse CodeView enum member
           CV_LeafEnumerate *enumerate = (CV_LeafEnumerate *) (src.data.str + cursor);
-          CV_NumericParsed  value     = cv_numeric_from_data_range((U8 *) (enumerate + 1), src.data.str + src.data.size);
+          CV_NumericParsed  value     = cv_numeric_from_data_range((byte *) (enumerate + 1), src.data.str + src.data.size);
           String8           name      = str8_cstring_capped(src.data.str + cursor + sizeof(CV_LeafEnumerate) + value.encoded_size, src.data.str + src.data.size);
           cursor += sizeof(CV_LeafEnumerate);
           cursor += value.encoded_size;
@@ -4582,7 +4582,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
         continue;
       }
       String8 file_path      = str8_cstring_capped(raw_string_table.str + checksum_header->name_off, raw_string_table.str + raw_string_table.size);
-      String8 checksum_bytes = str8((U8 *) (checksum_header + 1), checksum_header->len);
+      String8 checksum_bytes = str8((byte *) (checksum_header + 1), checksum_header->len);
 
       // read out lines
       if (0 == parsed_lines.sec_idx || parsed_lines.sec_idx > task->image_sects.count) {
@@ -5281,7 +5281,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
         continue;
       }
       String8 file_path      = str8_cstring_capped(raw_string_table.str + checksum_header->name_off, raw_string_table.str + raw_string_table.size);
-      String8 checksum_bytes = str8((U8 *) (checksum_header + 1), checksum_header->len);
+      String8 checksum_bytes = str8((byte *) (checksum_header + 1), checksum_header->len);
       
       // find source file for this line table
       String8               normal_path     = lnk_normalize_src_file_path(scratch.arena, file_path);

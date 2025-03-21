@@ -167,12 +167,12 @@ read_only static Member member_nil = {{0}, {0}, &type_nil};
 
 //- rjf: leaves
 read_only static Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
-read_only static Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
-read_only static Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
+read_only static Type U8__type   = {TypeKind_U8,   0, sizeof(byte),  &type_nil, str8_lit_comp("byte")};
+read_only static Type U16__type  = {TypeKind_U16,  0, sizeof(ushort), &type_nil, str8_lit_comp("ushort")};
 read_only static Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
 read_only static Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
-read_only static Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
-read_only static Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
+read_only static Type S8__type   = {TypeKind_S8,   0, sizeof(sbyte),  &type_nil, str8_lit_comp("sbyte")};
+read_only static Type S16__type  = {TypeKind_S16,  0, sizeof(short), &type_nil, str8_lit_comp("short")};
 read_only static Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
 read_only static Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
 read_only static Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
@@ -185,12 +185,12 @@ read_only static Type *type_kind_type_table[] =
 {
   &type_nil,
   type(),
-  type(U8),
-  type(U16),
+  type(byte),
+  type(ushort),
   type(U32),
   type(U64),
-  type(S8),
-  type(S16),
+  type(sbyte),
+  type(short),
   type(S32),
   type(S64),
   type(B8),
@@ -215,7 +215,7 @@ struct_members(Rng1U64)
 struct_type(Rng1U64);
 
 //- rjf: String8
-ptr_type(String8__str_ptr_type, type(U8), str8_lit_comp("size"));
+ptr_type(String8__str_ptr_type, type(byte), str8_lit_comp("size"));
 struct_members(String8)
 {
   member_lit_comp(String8, &String8__str_ptr_type, str),

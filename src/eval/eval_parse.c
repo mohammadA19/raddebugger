@@ -284,7 +284,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
       {
         RDI_Local *local_var = rdi_element_from_name_idx(rdi, Locals, local_idx);
         U64 local_name_size = 0;
-        U8 *local_name_str = rdi_string_from_idx(rdi, local_var->name_string_idx, &local_name_size);
+        byte *local_name_str = rdi_string_from_idx(rdi, local_var->name_string_idx, &local_name_size);
         String8 name = push_str8_copy(arena, str8(local_name_str, local_name_size));
         e_string2num_map_insert(arena, map, name, (U64)local_idx+1);
       }
@@ -391,9 +391,9 @@ e_token_array_from_text(Arena *arena, String8 text)
   B32 exp = 0;
   for(U64 idx = 0, advance = 0; idx <= text.size; idx += advance)
   {
-    U8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
-    U8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
-    U8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
+    byte byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
+    byte byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
+    byte byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
     advance = 1;
     B32 token_formed = 0;
     U64 token_end_idx_pad = 0;
@@ -868,7 +868,7 @@ e_leaf_type_from_name(String8 name)
   {
 #define Case(str) (str8_match(name, str8_lit(str), 0))
     if(0){}
-    else if(Case("u8") || Case("uint8") || Case("uint8_t") || Case("U8"))
+    else if(Case("u8") || Case("uint8") || Case("uint8_t") || Case("byte"))
     {
       key = e_type_key_basic(E_TypeKind_U8);
     }
@@ -876,7 +876,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_UChar8);
     }
-    else if(Case("u16") || Case("uint16") || Case("uint16_t") || Case("U16"))
+    else if(Case("u16") || Case("uint16") || Case("uint16_t") || Case("ushort"))
     {
       key = e_type_key_basic(E_TypeKind_U16);
     }
@@ -896,7 +896,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_U64);
     }
-    else if(Case("s8") || Case("b8") || Case("B8") || Case("i8") || Case("int8") || Case("int8_t") || Case("S8"))
+    else if(Case("s8") || Case("b8") || Case("B8") || Case("i8") || Case("int8") || Case("int8_t") || Case("sbyte"))
     {
       key = e_type_key_basic(E_TypeKind_S8);
     }
@@ -904,7 +904,7 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_Char8);
     }
-    else if(Case("s16") || Case("b16") || Case("B16") || Case("i16") ||  Case("int16") || Case("int16_t") || Case("S16"))
+    else if(Case("s16") || Case("b16") || Case("B16") || Case("i16") ||  Case("int16") || Case("int16_t") || Case("short"))
     {
       key = e_type_key_basic(E_TypeKind_S16);
     }
@@ -1342,7 +1342,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
             U64 proc_idx = scope->proc_idx;
             RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
             U64 name_size = 0;
-            U8 *name_ptr = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+            byte *name_ptr = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
             String8 containing_procedure_name = str8(name_ptr, name_size);
             U64 last_past_scope_resolution_pos = 0;
             for(;;)
@@ -1397,7 +1397,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
                   space = module->space;
                   arch = module->arch;
                   U64 all_location_data_size = 0;
-                  U8 *all_location_data = rdi_table_from_name(rdi, LocationData, &all_location_data_size);
+                  byte *all_location_data = rdi_table_from_name(rdi, LocationData, &all_location_data_size);
                   loc_kind = *((RDI_LocationKind *)(all_location_data + block->location_data_off));
                   switch(loc_kind)
                   {
@@ -1414,12 +1414,12 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
                           off = next_off)
                       {
                         next_off = off_opl;
-                        U8 op = all_location_data[off];
+                        byte op = all_location_data[off];
                         if(op == 0)
                         {
                           break;
                         }
-                        U16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
+                        ushort ctrlbits = rdi_eval_op_ctrlbits_table[op];
                         U32 p_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
                         bytecode_size += (1 + p_size);
                         next_off = (off + 1 + p_size);
@@ -1814,7 +1814,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
           {
             String8 char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
             String8 char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
-            U8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
+            byte char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
             atom = e_push_expr(arena, E_ExprKind_LeafU64, token_string.str);
             atom->value.u64 = (U64)char_val;
           }

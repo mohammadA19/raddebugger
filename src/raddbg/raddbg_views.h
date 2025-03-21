@@ -75,11 +75,11 @@ struct RD_WatchViewColumn
   RD_WatchViewColumn *prev;
   RD_WatchViewColumnKind kind;
   F32 pct;
-  U8 string_buffer[1024];
+  byte string_buffer[1024];
   U64 string_size;
-  U8 display_string_buffer[1024];
+  byte display_string_buffer[1024];
   U64 display_string_size;
-  U8 view_rule_buffer[1024];
+  byte view_rule_buffer[1024];
   U64 view_rule_size;
   B32 is_non_code;
   B32 dequote_string;
@@ -125,9 +125,9 @@ struct RD_WatchViewTextEditState
   RD_WatchViewPoint pt;
   TxtPt cursor;
   TxtPt mark;
-  U8 input_buffer[1024];
+  byte input_buffer[1024];
   U64 input_size;
-  U8 initial_buffer[1024];
+  byte initial_buffer[1024];
   U64 initial_size;
 };
 

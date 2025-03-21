@@ -522,16 +522,16 @@ md_tokenize_from_text(Arena *arena, String8 text)
   Temp scratch = scratch_begin(&arena, 1);
   MD_TokenChunkList tokens = {0};
   MD_MsgList msgs = {0};
-  U8 *byte_first = text.str;
-  U8 *byte_opl = byte_first + text.size;
-  U8 *byte = byte_first;
+  byte *byte_first = text.str;
+  byte *byte_opl = byte_first + text.size;
+  byte *byte = byte_first;
   
   //- rjf: scan string & produce tokens
   for(;byte < byte_opl;)
   {
     MD_TokenFlags token_flags = 0;
-    U8 *token_start = 0;
-    U8 *token_opl = 0;
+    byte *token_start = 0;
+    byte *token_opl = 0;
     
     //- rjf: whitespace
     if(token_flags == 0 && (*byte == ' ' || *byte == '\t' || *byte == '\v' || *byte == '\r'))
@@ -671,7 +671,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
         (byte[0] == '\''&& byte[1] == '\''&& byte[2] == '\'') ||
         (byte[0] == '`' && byte[1] == '`' && byte[2] == '`')))
     {
-      U8 literal_style = byte[0];
+      byte literal_style = byte[0];
       token_flags = MD_TokenFlag_StringLiteral|MD_TokenFlag_StringTriplet;
       token_flags |= (literal_style == '\'')*MD_TokenFlag_StringSingleQuote;
       token_flags |= (literal_style ==  '"')*MD_TokenFlag_StringDoubleQuote;
@@ -699,7 +699,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
     //- rjf: singlet string literals
     if(token_flags == 0 && (byte[0] == '"' || byte[0] == '\'' || byte[0] == '`'))
     {
-      U8 literal_style = byte[0];
+      byte literal_style = byte[0];
       token_flags = MD_TokenFlag_StringLiteral;
       token_flags |= (literal_style == '\'')*MD_TokenFlag_StringSingleQuote;
       token_flags |= (literal_style ==  '"')*MD_TokenFlag_StringDoubleQuote;

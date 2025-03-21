@@ -370,7 +370,7 @@ r_init(CmdLine *cmdln)
       String8 errors = {0};
       if(FAILED(error))
       {
-        errors = str8((U8 *)vshad_source_errors->lpVtbl->GetBufferPointer(vshad_source_errors),
+        errors = str8((byte *)vshad_source_errors->lpVtbl->GetBufferPointer(vshad_source_errors),
                       (U64)vshad_source_errors->lpVtbl->GetBufferSize(vshad_source_errors));
         os_graphical_message(1, str8_lit("Vertex Shader Compilation Failure"), errors);
       }
@@ -425,7 +425,7 @@ r_init(CmdLine *cmdln)
       String8 errors = {0};
       if(FAILED(error))
       {
-        errors = str8((U8 *)pshad_source_errors->lpVtbl->GetBufferPointer(pshad_source_errors),
+        errors = str8((byte *)pshad_source_errors->lpVtbl->GetBufferPointer(pshad_source_errors),
                       (U64)pshad_source_errors->lpVtbl->GetBufferSize(pshad_source_errors));
         os_graphical_message(1, str8_lit("Pixel Shader Compilation Failure"), errors);
       }
@@ -1095,7 +1095,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             {
               D3D11_MAPPED_SUBRESOURCE sub_rsrc = {0};
               d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
-              U8 *dst_ptr = (U8 *)sub_rsrc.pData;
+              byte *dst_ptr = (byte *)sub_rsrc.pData;
               U64 off = 0;
               for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
               {
@@ -1149,7 +1149,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             {
               D3D11_MAPPED_SUBRESOURCE sub_rsrc = {0};
               d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)uniforms_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
-              MemoryCopy((U8 *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
+              MemoryCopy((byte *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
               d_ctx->lpVtbl->Unmap(d_ctx, (ID3D11Resource *)uniforms_buffer, 0);
             }
             
@@ -1314,7 +1314,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             
             D3D11_MAPPED_SUBRESOURCE sub_rsrc = {0};
             d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)uniforms_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
-            MemoryCopy((U8 *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
+            MemoryCopy((byte *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
             d_ctx->lpVtbl->Unmap(d_ctx, (ID3D11Resource *)uniforms_buffer, 0);
           }
           
@@ -1443,7 +1443,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                 {
                   D3D11_MAPPED_SUBRESOURCE sub_rsrc = {0};
                   d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)uniforms_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
-                  MemoryCopy((U8 *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
+                  MemoryCopy((byte *)sub_rsrc.pData, &uniforms, sizeof(uniforms));
                   d_ctx->lpVtbl->Unmap(d_ctx, (ID3D11Resource *)uniforms_buffer, 0);
                 }
                 

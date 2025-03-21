@@ -218,7 +218,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     if(module->handle != 0)
     {
       DWORD cap16 = GetFinalPathNameByHandleW(module->handle, 0, 0, VOLUME_NAME_DOS);
-      U16 *buffer16 = push_array_no_zero(scratch.arena, U16, cap16);
+      ushort *buffer16 = push_array_no_zero(scratch.arena, ushort, cap16);
       DWORD size16 = GetFinalPathNameByHandleW(module->handle, (WCHAR*)buffer16, cap16, VOLUME_NAME_DOS);
       path16 = str16(buffer16, size16);
     }
@@ -228,7 +228,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     {
       DMN_W32_Entity *process = module->parent;
       DWORD size = KB(4);
-      U16 *buf = push_array_no_zero(scratch.arena, U16, size);
+      ushort *buf = push_array_no_zero(scratch.arena, ushort, size);
       if(QueryFullProcessImageNameW(process->handle, 0, (WCHAR*)buf, &size))
       {
         path16 = str16(buf, size);
@@ -308,8 +308,8 @@ U64
 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
 {
   U64 bytes_read = 0;
-  U8 *ptr = (U8*)dst;
-  U8 *opl = ptr + dim_1u64(range);
+  byte *ptr = (byte*)dst;
+  byte *opl = ptr + dim_1u64(range);
   U64 cursor = range.min;
   for(;ptr < opl;)
   {
@@ -331,8 +331,8 @@ B32
 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
 {
   B32 result = 1;
-  U8 *ptr = (U8*)src;
-  U8 *opl = ptr + dim_1u64(range);
+  byte *ptr = (byte*)src;
+  byte *opl = ptr + dim_1u64(range);
   U64 cursor = range.min;
   for(;ptr < opl;)
   {
@@ -368,7 +368,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    byte *block = push_array(scratch.arena, byte, cap);
     for (;cap > 0;){
       if (dmn_w32_process_read(process_handle, r1u64(read_p, read_p+cap), block)){
         break;
@@ -417,7 +417,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    byte *block = push_array(scratch.arena, byte, cap);
     for (;cap > 1;){
       if (dmn_w32_process_read(process_handle, r1u64(read_p, read_p+cap), block)){
         break;
@@ -426,11 +426,11 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
     }
     read_p += cap;
     
-    U16 *block16 = (U16*)block;
+    ushort *block16 = (ushort*)block;
     ()block16;
     U64 block_opl = 0;
     for (;block_opl < cap; block_opl += 2){
-      if (*(U16*)(block + block_opl) == 0){
+      if (*(ushort*)(block + block_opl) == 0){
         break;
       }
     }
@@ -446,7 +446,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
   
   // assemble results
   String8 joined = str8_list_join(arena, &list, 0);
-  String16 result = {(U16*)joined.str, joined.size/2};
+  String16 result = {(ushort*)joined.str, joined.size/2};
   scratch_end(scratch);
   return(result);
 }
@@ -458,7 +458,7 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
   U32 pe_offset = 0;
   {
     U64 dos_magic_off = base_vaddr;
-    U16 dos_magic = 0;
+    ushort dos_magic = 0;
     dmn_w32_process_read_struct(process, dos_magic_off, &dos_magic);
     if(dos_magic == PE_DOS_MAGIC)
     {
@@ -524,10 +524,10 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
 
 //- rjf: threads
 
-U16
+ushort
 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
 {
-  U16 result = 0;
+  ushort result = 0;
   U32 top = (fxsave->StatusWord >> 11) & 7;
   for(U32 fpr = 0; fpr < 8; fpr += 1)
   {
@@ -537,7 +537,7 @@ dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
       U32 st = (fpr - top)&7;
       
       REGS_Reg80 *fp = (REGS_Reg80*)&fxsave->FloatRegisters[st*16];
-      U16 exponent = fp->sign1_exp15 & bitmask15;
+      ushort exponent = fp->sign1_exp15 & bitmask15;
       U64 integer_part  = fp->int1_frac63 >> 63;
       U64 fraction_part = fp->int1_frac63 & bitmask63;
       
@@ -560,10 +560,10 @@ dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
   return result;
 }
 
-U16
-dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw)
+ushort
+dmn_w32_xsave_tag_word_from_real_tag_word(ushort ftw)
 {
-  U16 compact = 0;
+  ushort compact = 0;
   for(U32 fpr = 0; fpr < 8; fpr++)
   {
     U32 tag = (ftw >> (fpr * 2)) & 3;
@@ -694,7 +694,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
       InitializeContext(0, ctx_flags, 0, &size);
       if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
-        void *ctx_memory = push_array(scratch.arena, U8, size);
+        void *ctx_memory = push_array(scratch.arena, byte, size);
         if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
         {
           ctx = 0;
@@ -790,7 +790,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
       if(xstate_mask & XSTATE_MASK_AVX)
       {
         DWORD avx_length = 0;
-        U8* avx_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
+        byte* avx_s = (byte*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
         Assert(avx_length == 16 * sizeof(REGS_Reg128));
         
         REGS_Reg512 *zmm_d = &dst->zmm0;
@@ -822,7 +822,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
         }
         
         DWORD avx512h_length = 0;
-        U8* avx512h_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
+        byte* avx512h_s = (byte*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
         Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
         
         REGS_Reg512 *zmmh_d = &dst->zmm0;
@@ -832,7 +832,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
         }
         
         DWORD avx512_length = 0;
-        U8* avx512_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
+        byte* avx512_s = (byte*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
         Assert(avx512_length == 16 * sizeof(REGS_Reg512));
         
         REGS_Reg512 *zmm_d = &dst->zmm16;
@@ -973,7 +973,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
       InitializeContext(0, ctx_flags, 0, &size);
       if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
-        void *ctx_memory = push_array(scratch.arena, U8, size);
+        void *ctx_memory = push_array(scratch.arena, byte, size);
         if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
         {
           ctx = 0;
@@ -1057,7 +1057,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
       if(feature_mask & XSTATE_MASK_AVX)
       {
         DWORD avx_length = 0;
-        U8* avx_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
+        byte* avx_d = (byte*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
         Assert(avx_length == 16 * sizeof(REGS_Reg128));
         
         REGS_Reg512 *zmm_s = &src->zmm0;
@@ -1081,7 +1081,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
         }
         
         DWORD avx512h_length = 0;
-        U8* avx512h_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
+        byte* avx512h_d = (byte*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
         Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
         
         REGS_Reg512 *zmmh_s = &src->zmm0;
@@ -1091,7 +1091,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
         }
         
         DWORD avx512_length = 0;
-        U8* avx512_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
+        byte* avx512_d = (byte*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
         Assert(avx512_length == 16 * sizeof(REGS_Reg512));
         
         REGS_Reg512 *zmm_s = &src->zmm16;
@@ -1164,7 +1164,7 @@ dmn_init()
         }
         else
         {
-          String16 string16 = str16((U16 *)this_proc_env + start_idx, idx - start_idx);
+          String16 string16 = str16((ushort *)this_proc_env + start_idx, idx - start_idx);
           String8 string = str8_from_16(dmn_w32_shared->arena, string16);
           str8_list_push(dmn_w32_shared->arena, &dmn_w32_shared->env_strings, string);
           start_idx = idx+1;
@@ -1491,7 +1491,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             InitializeContext(0, ctx_flags, 0, &size);
             if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
             {
-              void *ctx_memory = push_array(scratch.arena, U8, size);
+              void *ctx_memory = push_array(scratch.arena, byte, size);
               if(!InitializeContext(ctx_memory, ctx_flags, &single_step_thread_ctx, &size))
               {
                 single_step_thread_ctx = 0;
@@ -1549,7 +1549,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
       //////////////////////////
       //- rjf: write all traps into memory
       //
-      U8 *trap_swap_bytes = push_array_no_zero(scratch.arena, U8, ctrls->traps.trap_count);
+      byte *trap_swap_bytes = push_array_no_zero(scratch.arena, byte, ctrls->traps.trap_count);
       ProfScope("write all traps into memory")
       {
         U64 trap_idx = 0;
@@ -1560,7 +1560,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             DMN_Trap *trap = n->v+n_idx;
             trap_swap_bytes[trap_idx] = 0xCC;
             dmn_process_read(trap->process, r1u64(trap->vaddr, trap->vaddr+1), trap_swap_bytes+trap_idx);
-            U8 int3 = 0xCC;
+            byte int3 = 0xCC;
             dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+1), &int3);
           }
         }
@@ -1790,7 +1790,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               // rjf: set up per-process injected code (to run halter threads on &
               // generate debug events)
               {
-                U8 injection_code[DMN_W32_INJECTED_CODE_SIZE];
+                byte injection_code[DMN_W32_INJECTED_CODE_SIZE];
                 MemorySet(injection_code, 0xCC, DMN_W32_INJECTED_CODE_SIZE);
                 injection_code[0] = 0xC3;
                 U64 injection_size = DMN_W32_INJECTED_CODE_SIZE + sizeof(DMN_W32_InjectedBreak);
@@ -1907,7 +1907,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 HRESULT hr = dmn_w32_GetThreadDescription(thread->handle, &thread_name_w);
                 if(SUCCEEDED(hr))
                 {
-                  thread_name = str8_from_16(arena, str16_cstring((U16 *)thread_name_w));
+                  thread_name = str8_from_16(arena, str16_cstring((ushort *)thread_name_w));
                   LocalFree(thread_name_w);
                 }
               }
@@ -2106,7 +2106,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               B32 hit_explicit_trap = 0;
               if(is_trap && !hit_user_trap)
               {
-                U8 instruction_byte = 0;
+                byte instruction_byte = 0;
                 if(dmn_w32_process_read_struct(process->handle, instruction_pointer, &instruction_byte))
                 {
                   hit_explicit_trap = (instruction_byte == 0xCC || instruction_byte == 0xCD);
@@ -2126,7 +2126,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                   {
                     Temp temp = temp_begin(scratch.arena);
                     U64 regs_block_size = regs_block_size_from_arch(thread->arch);
-                    void *regs_block = push_array(scratch.arena, U8, regs_block_size);
+                    void *regs_block = push_array(scratch.arena, byte, regs_block_size);
                     if(dmn_w32_thread_read_reg_block(thread->arch, thread->handle, regs_block))
                     {
                       regs_arch_block_write_rip(thread->arch, regs_block, instruction_pointer);
@@ -2144,7 +2144,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     InitializeContext(0, ctx_flags, 0, &size);
                     if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
                     {
-                      void *ctx_memory = push_array(scratch.arena, U8, size);
+                      void *ctx_memory = push_array(scratch.arena, byte, size);
                       if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
                       {
                         ctx = 0;
@@ -2265,7 +2265,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                       U64 total_string_size = 0;
                       for(;total_string_size < KB(4);)
                       {
-                        U8 *buffer = push_array(scratch.arena, U8, 256);
+                        byte *buffer = push_array(scratch.arena, byte, 256);
                         B32 good_read = dmn_w32_process_read(process->handle, r1u64(read_addr, read_addr+256), buffer);
                         if(good_read)
                         {
@@ -2323,7 +2323,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               U64 string_size = (U64)evt.u.DebugString.nDebugStringLength;
               
               // rjf: read memory
-              U8 *buffer = push_array_no_zero(scratch.arena, U8, string_size + 1);
+              byte *buffer = push_array_no_zero(scratch.arena, byte, string_size + 1);
               dmn_w32_process_read(process->handle, r1u64(string_address, string_address+string_size), buffer);
               buffer[string_size] = 0;
               
@@ -2448,7 +2448,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 HRESULT hr = dmn_w32_GetThreadDescription(thread->handle, &thread_name_w);
                 if(SUCCEEDED(hr))
                 {
-                  name = str8_from_16(scratch.arena, str16_cstring((U16 *)thread_name_w));
+                  name = str8_from_16(scratch.arena, str16_cstring((ushort *)thread_name_w));
                   LocalFree(thread_name_w);
                 }
               }
@@ -2479,7 +2479,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
           for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
           {
             DMN_Trap *trap = n->v+n_idx;
-            U8 og_byte = trap_swap_bytes[trap_idx];
+            byte og_byte = trap_swap_bytes[trap_idx];
             if(og_byte != 0xCC)
             {
               dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+1), &og_byte);
@@ -2908,7 +2908,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
   //- rjf: convert to process info
   if(result)
   {
-    info_out->name = str8_from_16(arena, str16_cstring((U16*)process_entry.szExeFile));
+    info_out->name = str8_from_16(arena, str16_cstring((ushort*)process_entry.szExeFile));
     info_out->pid = (U32)process_entry.th32ProcessID;
   }
   

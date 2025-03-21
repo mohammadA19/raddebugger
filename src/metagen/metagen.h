@@ -272,7 +272,7 @@ void mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val);
 //~ rjf: String Expression Parsing
 
 MG_StrExpr *mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node);
-MG_StrExprParseResult mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec);
+MG_StrExprParseResult mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, sbyte min_prec);
 MG_StrExprParseResult mg_str_expr_parse_from_first_opl(Arena *arena, MD_Node *first, MD_Node *opl);
 MG_StrExprParseResult mg_str_expr_parse_from_root(Arena *arena, MD_Node *root);
 

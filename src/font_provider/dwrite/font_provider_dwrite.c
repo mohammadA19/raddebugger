@@ -411,7 +411,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   F32 design_units_per_em = (F32)font_metrics.designUnitsPerEm;
   
   //- rjf: get glyph indices
-  U16 *glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
+  ushort *glyph_indices = push_array_no_zero(scratch.arena, ushort, string32.size);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
@@ -432,13 +432,13 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   F32 right_side_bearing = 0;
   if(font.face != 0)
   {
-    atlas_dim.y = (S16)ceil_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent) / design_units_per_em) + 1;
+    atlas_dim.y = (short)ceil_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent) / design_units_per_em) + 1;
     for(U64 idx = 0; idx < glyphs_count; idx += 1)
     {
       DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
       F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
-      atlas_dim.x = Max(atlas_dim.x, (S16)(advance+1));
+      atlas_dim.x = Max(atlas_dim.x, (short)(advance+1));
       if(idx == 0)
       {
         left_side_bearing = (96.f/72.f) * size * glyph_metrics->leftSideBearing    / design_units_per_em;
@@ -524,25 +524,25 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   {
     // rjf: fill basics
     result.atlas_dim    = atlas_dim;
-    result.atlas        = push_array_no_zero(arena, U8, atlas_dim.x*atlas_dim.y*4);
+    result.atlas        = push_array_no_zero(arena, byte, atlas_dim.x*atlas_dim.y*4);
     result.advance      = floor_f32(advance);
     
     // rjf: fill atlas
     {
-      U8 *in_data   = (U8 *)dib.dsBm.bmBits;
+      byte *in_data   = (byte *)dib.dsBm.bmBits;
       U64 in_pitch  = (U64)dib.dsBm.bmWidthBytes;
-      U8 *out_data  = (U8 *)result.atlas;
+      byte *out_data  = (byte *)result.atlas;
       U64 out_pitch = atlas_dim.x * 4;
       U64 color_sum = 0;
-      U8 *in_line = (U8 *)in_data;
-      U8 *out_line = out_data;
+      byte *in_line = (byte *)in_data;
+      byte *out_line = out_data;
       for(U64 y = 0; y < atlas_dim.y; y += 1)
       {
-        U8 *in_pixel = in_line;
-        U8 *out_pixel = out_line;
+        byte *in_pixel = in_line;
+        byte *out_pixel = out_line;
         for(U64 x = 0; x < atlas_dim.x; x += 1)
         {
-          U8 in_pixel_byte = in_pixel[0];
+          byte in_pixel_byte = in_pixel[0];
           out_pixel[0] = 255;
           out_pixel[1] = 255;
           out_pixel[2] = 255;

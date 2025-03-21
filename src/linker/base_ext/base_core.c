@@ -1,11 +1,11 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-U16
+ushort
 safe_cast_u16x(U64 x)
 {
   AssertAlways(x <= max_U16);
-  return (U16)x;
+  return (ushort)x;
 }
 
 ////////////////////////////////
@@ -59,8 +59,8 @@ isect_off(U32 isect, U32 off)
 int
 u16_compar(const void *raw_a, const void *raw_b)
 {
-  U16 a = *(U16*)raw_a;
-  U16 b = *(U16*)raw_b;
+  ushort a = *(ushort*)raw_a;
+  ushort b = *(ushort*)raw_b;
   int result = a < b  ? -1 :
                a > b  ? +1 :
                0;
@@ -99,8 +99,8 @@ u64_compar_inv(const void *raw_a, const void *raw_b)
 int
 u16_compar_is_before(void *raw_a, void *raw_b)
 {
-  U16 *a = (U16 *)raw_a;
-  U16 *b = (U16 *)raw_b;
+  ushort *a = (ushort *)raw_a;
+  ushort *b = (ushort *)raw_b;
   int is_before = *a < *b;
   return is_before; 
 }
@@ -127,16 +127,16 @@ u64_compar_is_before(void *raw_a, void *raw_b)
 int
 u8_is_before(void *raw_a, void *raw_b)
 {
-  U8 *a = (U8 *) raw_a;
-  U8 *b = (U8 *) raw_b;
+  byte *a = (byte *) raw_a;
+  byte *b = (byte *) raw_b;
   return *a < *b;
 }
 
 int
 u16_is_before(void *raw_a, void *raw_b)
 {
-  U16 *a = (U16 *) raw_a;
-  U16 *b = (U16 *) raw_b;
+  ushort *a = (ushort *) raw_a;
+  ushort *b = (ushort *) raw_b;
   return *a < *b;
 }
 

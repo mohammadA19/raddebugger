@@ -322,7 +322,7 @@ e_hash_from_cons_type_params(E_ConsTypeParams *params)
     (U32)((params->count & 0x00000000ffffffffull)>> 0),
     (U32)((params->count & 0xffffffff00000000ull)>> 32),
   };
-  U64 hash = e_hash_from_string(5381, str8((U8 *)buffer, sizeof(buffer)));
+  U64 hash = e_hash_from_string(5381, str8((byte *)buffer, sizeof(buffer)));
   hash = e_hash_from_string(hash, params->name);
   return hash;
 }

@@ -58,7 +58,7 @@ enum OS_FileIterFlags : U32
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
-  U8 memory[800];
+  byte memory[800];
 };
 
 struct OS_FileInfo

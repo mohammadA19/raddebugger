@@ -21,7 +21,7 @@ ptg_init()
     ptg_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   ptg_shared->u2b_ring_size = KB(64);
-  ptg_shared->u2b_ring_base = push_array_no_zero(arena, U8, ptg_shared->u2b_ring_size);
+  ptg_shared->u2b_ring_base = push_array_no_zero(arena, byte, ptg_shared->u2b_ring_size);
   ptg_shared->u2b_ring_cv = os_condition_variable_alloc();
   ptg_shared->u2b_ring_mutex = os_mutex_alloc();
   ptg_shared->builder_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);

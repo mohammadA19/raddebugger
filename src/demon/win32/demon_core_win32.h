@@ -267,8 +267,8 @@ String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 addr
 DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr);
 
 //- rjf: threads
-U16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave);
-U16 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw);
+ushort dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave);
+ushort dmn_w32_xsave_tag_word_from_real_tag_word(ushort ftw);
 B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block);
 B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block);
 

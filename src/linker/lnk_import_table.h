@@ -69,7 +69,7 @@ LNK_ImportFunc *  lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LN
 LNK_ImportDLL *   lnk_import_table_search_dll(LNK_ImportTable *imptab, String8 name);
 LNK_ImportFunc *  lnk_import_table_search_func(LNK_ImportDLL *dll, String8 name);
 
-String8 lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint);
+String8 lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, ushort hint);
 
 LNK_Chunk * lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *addr_ptr);
 LNK_Chunk * lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_addr_ptr, LNK_Symbol *tail_merge);

@@ -853,7 +853,7 @@ srtuct DWARF_FormDecodeRules{
   union{
     // form decode fields
     struct{
-      U8 size;
+      byte size;
       B8 uleb128;
       B8 sleb128;
       B8 in_abbrev;
@@ -869,7 +869,7 @@ srtuct DWARF_FormDecodeRules{
 
 srtuct DWARF_FormDecoded{
   U64 val;
-  U8 *dataptr;
+  byte *dataptr;
   B32 error;
 };
 
@@ -899,7 +899,7 @@ srtuct DWARF_SupParsed{
 
 srtuct DWARF_InfoAttribVal{
   U64 val;
-  U8 *dataptr;
+  byte *dataptr;
 };
 
 srtuct DWARF_InfoEntry{
@@ -952,10 +952,10 @@ srtuct DWARF_InfoUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8  offset_size;
-  U8  version;
-  U8  unit_type; // (DWARF_UnitType)
-  U8  address_size;
+  byte  offset_size;
+  byte  version;
+  byte  unit_type; // (DWARF_UnitType)
+  byte  address_size;
   U64 abbrev_off;
   
   union{
@@ -989,8 +989,8 @@ srtuct DWARF_AbbrevDecl{
   U32 abbrev_code;
   DWARF_Tag tag;
   B8 has_children;
-  U8 __filler__;
-  U16 attrib_count;
+  byte __filler__;
+  ushort attrib_count;
   DWARF_AbbrevAttribSpec *attrib_specs;
   S64 *implicit_const;
 };
@@ -1028,8 +1028,8 @@ srtuct DWARF_PubNamesUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8  offset_size;
-  U8  version;
+  byte  offset_size;
+  byte  version;
   U64 info_off;
   U64 info_length;
 };
@@ -1051,7 +1051,7 @@ srtuct DWARF_NamesUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8 version;
+  byte version;
   U32 comp_unit_count;
   U32 local_type_unit_count;
   U32 foreign_type_unit_count;
@@ -1079,10 +1079,10 @@ srtuct DWARF_ArangesUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8 version;
-  U8 address_size;
-  U8 segment_selector_size;
-  U8 offset_size;
+  byte version;
+  byte address_size;
+  byte segment_selector_size;
+  byte offset_size;
   U64 info_off;
 };
 
@@ -1122,7 +1122,7 @@ srtuct DWARF_V5Directory{
   U64 directory_index;
   U64 timestamp;
   U64 size;
-  U8 md5_checksum[16];
+  byte md5_checksum[16];
 };
 
 srtuct DWARF_LineUnit{
@@ -1132,7 +1132,7 @@ srtuct DWARF_LineUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8 version;
+  byte version;
   
 };
 
@@ -1203,10 +1203,10 @@ srtuct DWARF_AddrUnit{
   U64 base_off;
   U64 opl_off;
   
-  U8 offset_size;
-  U8 dwarf_version;
-  U8 address_size;
-  U8 segment_selector_size;
+  byte offset_size;
+  byte dwarf_version;
+  byte address_size;
+  byte segment_selector_size;
 };
 
 srtuct DWARF_AddrParsed{
@@ -1246,14 +1246,14 @@ if (((*(p))&0x80) == 0) { (p)+=1; break; }   \
 
 #define DWARF_LEB128_ADV_NOCAP(p) for((p)+=1; ((*(p-1))&0x80) != 0; (p)+=1)
 
-static U64 dwarf_leb128_decode_U64(U8 *ptr, U8 *opl);
-static S64 dwarf_leb128_decode_S64(U8 *ptr, U8 *opl);
-static U32 dwarf_leb128_decode_U32(U8 *ptr, U8 *opl);
+static U64 dwarf_leb128_decode_U64(byte *ptr, byte *opl);
+static S64 dwarf_leb128_decode_S64(byte *ptr, byte *opl);
+static U32 dwarf_leb128_decode_U32(byte *ptr, byte *opl);
 
 #define dwarf_leb128_decode(T,ptr,opl) dwarf_leb128_decode_##T(ptr,opl)
 
 #define DWARF_LEB128_DECODE_ADV(T,x,p,o) do{ \
-U8 *first__ = (p); B32 success__;          \
+byte *first__ = (p); B32 success__;          \
 DWARF_LEB128_ADV(p,o,success__);           \
 if (success__)                             \
 (x) = dwarf_leb128_decode(T,first__, (p)); \
@@ -1271,7 +1271,7 @@ if (success__)                             \
 // * applies to (any X: unwind(ELF/DW, X))
 
 // EH: Exception Frames
-enum UNW_DW_EhPtrEnc : U8{
+enum UNW_DW_EhPtrEnc : byte{
   UNW_DW_EhPtrEnc_TYPE_MASK = 0x0F,
   UNW_DW_EhPtrEnc_PTR     = 0x00, // Pointer sized unsigned value
   UNW_DW_EhPtrEnc_ULEB128 = 0x01, // Unsigned LE base-128 value
@@ -1306,7 +1306,7 @@ srtuct UNW_DW_EhPtrCtx{
 
 // CIE: Common Information Entry
 srtuct UNW_DW_CIEUnpacked{
-  U8 version;
+  byte version;
   UNW_DW_EhPtrEnc lsda_encoding;
   UNW_DW_EhPtrEnc addr_encoding;
   
@@ -1399,7 +1399,7 @@ srtuct UNW_DW_CFIMachine{
   U64 fde_ip;
 };
 
-enum UNW_DW_CFADecode : U8{
+enum UNW_DW_CFADecode : byte{
   UNW_DW_CFADecode_NOP     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
   UNW_DW_CFADecode_ADDRESS = 0x9,
@@ -1407,7 +1407,7 @@ enum UNW_DW_CFADecode : U8{
   UNW_DW_CFADecode_SLEB128 = 0xB,
 };
 
-enum UNW_DW_CFAControlBits : U16{
+enum UNW_DW_CFAControlBits : ushort{
   UNW_DW_CFAControlBits_DEC1_MASK = 0x00F,
   UNW_DW_CFAControlBits_DEC2_MASK = 0x0F0,
   UNW_DW_CFAControlBits_IS_REG_0  = 0x100,
@@ -1443,13 +1443,13 @@ static DWARF_LocListsParsed* dwarf_loc_lists_from_data(Arena *arena, String8 dat
 
 // (DWARF4.pdf + 7.2.2) (DWARF5.pdf + 7.2.2)
 static void dwarf__initial_length(String8 data,
-                                  U8 **ptr_inout, U8 **unit_opl_out, B32 *is_64bit_out);
+                                  byte **ptr_inout, byte **unit_opl_out, B32 *is_64bit_out);
 
 static void
 dwarf__line_v5_directories(U64 address_size, U64 offset_size,
                            DWARF_V5LinePathEntryFormat *format, U64 format_count,
                            DWARF_V5Directory *directories_out, U64 dir_count,
-                           U8 **ptr_io, U8 *opl);
+                           byte **ptr_io, byte *opl);
 
 // debug sections
 
@@ -1471,7 +1471,7 @@ static DWARF_FormDecodeRules
 dwarf_form_decode_rule(DWARF_AttributeForm form, U64 address_size, U64 offset_size);
 
 static DWARF_FormDecoded
-dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
+dwarf_form_decode(DWARF_FormDecodeRules *rules, byte **ptr_io, byte *opl,
                   DWARF_AbbrevDecl *abbrev_decl, U32 attrib_i);
 
 // string functions

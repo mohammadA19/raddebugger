@@ -471,7 +471,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
   U64 string_table_off = symbol_array_off + sizeof(COFF_Symbol16) * symbol_count;
   
   // rjf: read optional header
-  U16      optional_magic     = 0;
+  ushort      optional_magic     = 0;
   U64      image_base         = 0;
   U64      entry_point        = 0;
   U32      data_dir_count     = 0;
@@ -753,7 +753,7 @@ pe_ptr_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 {
   // rjf: get the section for this voff
   U64 sec_count = bin->section_count;
-  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
   COFF_SectionHeader *sec_ptr = sec_array;
   COFF_SectionHeader *sec = 0;
   for(U64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
@@ -782,7 +782,7 @@ U64
 pe_section_num_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 {
   U64 sec_count = bin->section_count;
-  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+  COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
   COFF_SectionHeader *sec_ptr = sec_array;
   U64 result = 0;
   for(U64 i = 1; i <= sec_count; i += 1, sec_ptr += 1)
@@ -803,7 +803,7 @@ pe_ptr_from_section_num(String8 data, PE_BinInfo *bin, U64 n)
   U64 sec_count = bin->section_count;
   if(1 <= n && n <= sec_count)
   {
-    COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((U8*)data.str + bin->section_array_off);
+    COFF_SectionHeader *sec_array = (COFF_SectionHeader*)((byte*)data.str + bin->section_array_off);
     COFF_SectionHeader *sec = sec_array + n - 1;
     if(sec->fsize > 0)
     {
@@ -862,8 +862,8 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
     // rjf: fill block
     PE_BaseRelocBlock *block = &node->v;
     block->page_virt_off     = page_virt_off;
-    block->entry_count       = entries_size / sizeof(U16);
-    block->entries           = push_array(arena, U16, block->entry_count);
+    block->entry_count       = entries_size / sizeof(ushort);
+    block->entries           = push_array(arena, ushort, block->entry_count);
     U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
     Assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
 
@@ -889,8 +889,8 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
       for(U64 ientry = 0; ientry < block->entry_count;)
       {
         U32 reloc = block->entries[ientry];
-        U16 kind = PE_BaseRelocKindFromEntry(reloc);
-        U16 offset = PE_BaseRelocOffsetFromEntry(reloc);
+        ushort kind = PE_BaseRelocKindFromEntry(reloc);
+        ushort offset = PE_BaseRelocOffsetFromEntry(reloc);
         U64 apply_to_voff = block->page_virt_off + offset;
         U64 apply_to_foff = pe_foff_from_voff(data, bin, apply_to_voff);
         U64 apply_to      = 0;
@@ -931,7 +931,7 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
               }
               
               // rjf: relocate high bits and adjust sign bit on lower half.
-              U16 adj_offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry + 1]);
+              ushort adj_offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry + 1]);
               result_addr  = (apply_to & max_U16) << 16;
               result_addr += adj_offset;
               result_addr += (base_diff & max_U32);
@@ -1071,7 +1071,7 @@ pe_parsed_imports_from_data(Arena              *arena,
         U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
 
         // read hint & name
-        U16     hint = 0;
+        ushort     hint = 0;
         String8 name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off+sizeof(hint), &name);
@@ -1111,7 +1111,7 @@ pe_parsed_imports_from_data(Arena              *arena,
         U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
 
         // read hint & name
-        U16     hint = 0;
+        ushort     hint = 0;
         String8 name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off + sizeof(hint), &name);
@@ -1315,7 +1315,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
 
     U32 *name_table    = str8_deserial_get_raw_ptr(raw_data, name_table_off,    sizeof(*name_table   )*header->name_pointer_table_count);
     U32 *export_table  = str8_deserial_get_raw_ptr(raw_data, export_table_off,  sizeof(*export_table )*header->export_address_table_count);
-    U16 *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header->name_pointer_table_count);
+    ushort *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header->name_pointer_table_count);
 
     if (name_table && export_table && ordinal_table) {
       // Scan export address table to get accruate count of ordinals. 
@@ -1342,7 +1342,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
         String8 name      = str8_cstring_capped(raw_data.str+name_foff, raw_data.str+raw_data.size);
 
         // get ordinal
-        U16 ordinal_nb = ordinal_table[i];
+        ushort ordinal_nb = ordinal_table[i];
 
         // mark ordinal
         Assert(ordinal_nb < ordinal_max);
@@ -1355,7 +1355,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
         }
 
         // make ordinal
-        U16 ordinal = header->ordinal_base + ordinal_nb;
+        ushort ordinal = header->ordinal_base + ordinal_nb;
 
         String8 forwarder = str8_zero();
         {
@@ -1475,14 +1475,14 @@ pe_tls_from_data(Arena              *arena,
 B32
 pe_is_res(String8 data)
 {
-  U8 magic[sizeof(PE_RES_MAGIC)]; MemoryZeroStruct(&magic);
+  byte magic[sizeof(PE_RES_MAGIC)]; MemoryZeroStruct(&magic);
   str8_deserial_read_struct(data, 0, &magic);
   B32 is_res = MemoryCompare(&PE_RES_MAGIC, &magic, sizeof(magic)) == 0;
   return is_res;
 }
 
 PE_ResourceNode *
-pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, ushort major_version, ushort minor_version)
 {
   PE_ResourceList *list = 0;
   switch (id.type) {
@@ -1545,7 +1545,7 @@ pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id
 }
 
 PE_Resource *
-pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, ushort major_version, ushort minor_version)
 {
   PE_ResourceNode *dir_node = pe_resource_dir_push_dir_node(arena, dir, id, characteristics, time_stamp, major_version, minor_version); 
   return &dir_node->data;
@@ -1674,12 +1674,12 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       
       // NOTE: this is not documented on MSDN but high bit here is set for some reason
       U32 name_offset = coff_entry.name.offset & ~COFF_Resource_SubDirFlag;
-      U16 name_size = 0;
+      ushort name_size = 0;
       str8_deserial_read_struct(data, name_offset, &name_size);
       
       String8 name_block;
-      str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(U16), &name_block);
-      String16 name16 = str16((U16*)name_block.str, name_size);
+      str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(ushort), &name_block);
+      String16 name16 = str16((ushort*)name_block.str, name_size);
       
       B32 is_dir = !!(coff_entry.id.data_entry_offset & COFF_Resource_SubDirFlag);
       
@@ -1799,17 +1799,17 @@ pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path)
 //~ Image Checksum
 
 U32 
-pe_compute_checksum(U8 *buffer, U64 buffer_size)
+pe_compute_checksum(byte *buffer, U64 buffer_size)
 {
   // https://bytepointer.com/resources/microsoft_pe_checksum_algo_distilled.htm
   U32 hash = 0;
-  for (U16 *ptr16 = (U16*)buffer, *opl16 = (U16*)(buffer + buffer_size);
+  for (ushort *ptr16 = (ushort*)buffer, *opl16 = (ushort*)(buffer + buffer_size);
        ptr16 < opl16;
        ptr16 += 1) {
     hash += *ptr16;
     hash = (hash >> 16) + (hash & 0xffff);
   }
-  hash = (U16)(((hash >> 16) + hash) & 0xffff);
+  hash = (ushort)(((hash >> 16) + hash) & 0xffff);
   hash += buffer_size;
   return hash;
 }

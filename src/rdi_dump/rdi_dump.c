@@ -732,8 +732,8 @@ rdi_stringize_scope(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Arch ar
             else{
               str8_list_pushf(arena, out, "%.*s    ", indent_level, rdi_stringize_spaces);
               
-              U8 *loc_data_opl = bundle->location_data + bundle->location_data_size;
-              U8 *loc_base_ptr = bundle->location_data + block_ptr->location_data_off;
+              byte *loc_data_opl = bundle->location_data + bundle->location_data_size;
+              byte *loc_base_ptr = bundle->location_data + block_ptr->location_data_off;
               RDI_LocationKind kind = (RDI_LocationKind)*loc_base_ptr;
               switch (kind){
                 default:
@@ -745,7 +745,7 @@ rdi_stringize_scope(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Arch ar
                 {
                   str8_list_pushf(arena, out, "AddrBytecodeStream\n");
                   str8_list_pushf(arena, out, "%.*s     ", indent_level, rdi_stringize_spaces);
-                  U8 *bytecode_ptr = loc_base_ptr + 1;
+                  byte *bytecode_ptr = loc_base_ptr + 1;
                   for (;bytecode_ptr < loc_data_opl && *bytecode_ptr != 0; bytecode_ptr += 1){
                     str8_list_pushf(arena, out, "%02x ", *bytecode_ptr);
                   }
@@ -756,7 +756,7 @@ rdi_stringize_scope(Arena *arena, String8List *out, RDI_Parsed *rdi, RDI_Arch ar
                 {
                   str8_list_pushf(arena, out, "ValBytecodeStream\n");
                   str8_list_pushf(arena, out, "%.*s     ", indent_level, rdi_stringize_spaces);
-                  U8 *bytecode_ptr = loc_base_ptr + 1;
+                  byte *bytecode_ptr = loc_base_ptr + 1;
                   for (;bytecode_ptr < loc_data_opl && *bytecode_ptr != 0; bytecode_ptr += 1){
                     str8_list_pushf(arena, out, "%02x ", *bytecode_ptr);
                   }

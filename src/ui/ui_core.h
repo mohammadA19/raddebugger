@@ -689,7 +689,7 @@ void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 ////////////////////////////////
 //~ rjf: Text Operation Functions
 
-B32 ui_char_is_scan_boundary(U8 c);
+B32 ui_char_is_scan_boundary(byte c);
 S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
 UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
 String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);

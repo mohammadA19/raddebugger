@@ -91,29 +91,29 @@ mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
 {
   U64 cursor = offset;
 
-  U8 one = 0;
+  byte one = 0;
   cursor += str8_deserial_read_struct(raw_data, cursor, &one);
 
   if ((one & 0xF) == 15) {
-    U8 two = 0, three = 0, four = 0, five = 0;
+    byte two = 0, three = 0, four = 0, five = 0;
     cursor += str8_deserial_read_struct(raw_data, cursor, &two);
     cursor += str8_deserial_read_struct(raw_data, cursor, &three);
     cursor += str8_deserial_read_struct(raw_data, cursor, &four);
     cursor += str8_deserial_read_struct(raw_data, cursor, &five);
     *uint_out = (U32)two | ((U32)three << 8) | ((U32)four << 16) | ((U32)five << 24);
   } else if ((one & 0xF) == 7) {
-    U8 two = 0, three = 0, four = 0;
+    byte two = 0, three = 0, four = 0;
     cursor += str8_deserial_read_struct(raw_data, cursor, &two);
     cursor += str8_deserial_read_struct(raw_data, cursor, &three);
     cursor += str8_deserial_read_struct(raw_data, cursor, &four);
     *uint_out = ((U32)one >> 4) | ((U32)two << 4) | ((U32)three << 12) | ((U32)four << 20);
   } else if ((one & 0x7) == 3) {
-    U8 two = 0, three = 0;
+    byte two = 0, three = 0;
     cursor += str8_deserial_read_struct(raw_data, cursor, &two);
     cursor += str8_deserial_read_struct(raw_data, cursor, &three);
     *uint_out = ((U32)one >> 3) | ((U32)two << 5) | ((U32)three << 13);
   } else if ((one & 0x3) == 1) {
-    U8 two = 0;
+    byte two = 0;
     cursor += str8_deserial_read_struct(raw_data, cursor, &two);
     *uint_out = ((U32)one >> 2) | ((U32)two << 6);
   } else {
@@ -417,7 +417,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
     U64            uwinfo_foff = coff_foff_from_voff(sections, section_count, pdata->voff_unwind_info);
     PE_UnwindInfo *uwinfo      = str8_deserial_get_raw_ptr(raw_data, uwinfo_foff, sizeof(*uwinfo));
 
-    U8  flags            = PE_UNWIND_INFO_FLAGS_FROM_HDR(uwinfo->header);
+    byte  flags            = PE_UNWIND_INFO_FLAGS_FROM_HDR(uwinfo->header);
     B32 is_chained       = !!(flags & PE_UnwindInfoFlag_CHAINED);
     B32 has_handler_data = !is_chained && ((flags & (PE_UnwindInfoFlag_EHANDLER | PE_UnwindInfoFlag_UHANDLER)) != 0);
 

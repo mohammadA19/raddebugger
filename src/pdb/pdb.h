@@ -104,7 +104,7 @@ srtuct PDB_SrcHeaderBlockHeader
   U32 stream_size;
   U64 file_time;
   U32 age;
-  U8  pad[44];
+  byte  pad[44];
 };
 
 enum
@@ -115,13 +115,13 @@ enum
   PDB_SrcComp_LZ,
   PDB_SrcComp_DOTNET
 };
-typedef U8 PDB_SrcCompType;
+typedef byte PDB_SrcCompType;
 
 enum
 {
   PDB_SrcHeaderBlockEntryFlag_IS_VIRTUAL = (1 << 0)
 };
-typedef U8 PDB_SrcHeaderFlags;
+typedef byte PDB_SrcHeaderFlags;
 
 // (PDB/include/pdb.h: SrcHeaderOut)
 srtuct PDB_SrcHeaderBlockEntry
@@ -135,8 +135,8 @@ srtuct PDB_SrcHeaderBlockEntry
   PDB_StringOffset   virt_path;
   PDB_SrcCompType    comp;
   PDB_SrcHeaderFlags flags;
-  U8                 pad[2];
-  U8                 reserved[8];
+  byte                 pad[2];
+  byte                 reserved[8];
 };
 
 ////////////////////////////////
@@ -172,14 +172,14 @@ enum PDB_DbiVersion : U32
   PDB_DbiVersion_110 = 20091201,
 };
 
-typedef U16 PDB_DbiBuildNumber;
+typedef ushort PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormatFlag 0x8000
 #define PDB_DbiBuildNumberMinor(bn)     ((bn)&0xFF)
 #define PDB_DbiBuildNumberMajor(bn)     (((bn) >> 8)&0x7F)
 #define PDB_DbiBuildNumberNewFormat(bn) (!!((bn)&PDB_DbiBuildNumberNewFormatFlag))
 #define PDB_DbiMakeBuildNumber(maj, min) (PDB_DbiBuildNumber)(PDB_DbiBuildNumberNewFormatFlag | ((min)&0xFF) | (((maj)&0x7F) << 16))
 
-enum PDB_DbiHeaderFlags : U16
+enum PDB_DbiHeaderFlags : ushort
 {
   PDB_DbiHeaderFlag_Incremental = 0x1,
   PDB_DbiHeaderFlag_Stripped    = 0x2,
@@ -195,10 +195,10 @@ srtuct PDB_DbiHeader
   PDB_DbiBuildNumber build_number;
   
   MSF_StreamNumber psi_sn;
-  U16 pdb_version;
+  ushort pdb_version;
   
   MSF_StreamNumber sym_sn;
-  U16 pdb_version2;
+  ushort pdb_version2;
   
   U32 module_info_size;
   U32 sec_con_size;
@@ -225,12 +225,12 @@ typedef U32 PDB_DbiSectionContribVersion;
 srtuct PDB_DbiSectionContrib40
 {
   CV_SectionIndex sec;
-  U16 pad0;
+  ushort pad0;
   U32 sec_off;
   U32 size;
   U32 flags;
   CV_ModIndex mod;
-  U16 pad1;
+  ushort pad1;
 };
 
 srtuct PDB_DbiSectionContrib
@@ -252,22 +252,22 @@ srtuct PDB_DbiCompUnitHeader
 {
   U32 unused;
   PDB_DbiSectionContrib contribution;
-  U16 flags; // unknown
+  ushort flags; // unknown
   
   MSF_StreamNumber sn;
   U32 symbols_size;
   U32 c11_lines_size;
   U32 c13_lines_size;
   
-  U16 num_contrib_files;
-  U16 unused2;
+  ushort num_contrib_files;
+  ushort unused2;
   U32 file_names_offset;
   
   PDB_StringIndex src_file;
   PDB_StringIndex pdb_file;
   
-  // U8[] module_name (null terminated)
-  // U8[] obj_name (null terminated)
+  // byte[] module_name (null terminated)
+  // byte[] obj_name (null terminated)
 };
 
 ////////////////////////////////
@@ -283,24 +283,24 @@ enum
   PDB_DbiOMF_IS_ABS_ADDR   = (1 << 9), // Frame is absolute address
   PDB_DbiOMF_IS_GROUP      = (1 << 10) // Descriptor is a group
 };
-typedef U16 PDB_DbiOMF;
+typedef ushort PDB_DbiOMF;
 
 srtuct PDB_DbiSecMapEntry
 {
   PDB_DbiOMF flags;
-  U16        ovl;
-  U16        group;
-  U16        frame;
-  U16        sec_name;
-  U16        class_name;
+  ushort        ovl;
+  ushort        group;
+  ushort        frame;
+  ushort        sec_name;
+  ushort        class_name;
   U32        offset;
   U32        sec_size;
 };
 
 srtuct PDB_DbiSecMapHeader
 {
-  U16 section_count;
-  U16 segment_count;
+  ushort section_count;
+  ushort segment_count;
 };
 
 ////////////////////////////////
@@ -403,7 +403,7 @@ srtuct PDB_PsiHeader
   U32 thunk_count;
   U32 thunk_size;
   CV_SectionIndex isec_thunk_table;
-  U16 padding;
+  ushort padding;
   U32 sec_thunk_table_off;
   U32 sec_count;
 };

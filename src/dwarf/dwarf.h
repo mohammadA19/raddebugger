@@ -4,7 +4,7 @@
 #ifndef DWARF_H
 #define DWARF_H
 
-typedef U16 DW_Version;
+typedef ushort DW_Version;
 enum DW_VersionEnum
 {
   DW_Version_Null,
@@ -1259,7 +1259,7 @@ enum DW_LocListEntryEnum
   X(SplitCompile, 5)             \
   X(SplitType,    6)
 
-typedef U8 DW_CompUnitKind;
+typedef byte DW_CompUnitKind;
 enum DW_CompUnitKindEnum
 {
 #define X(_N, _ID) DW_CompUnitKind_##_N = _ID,
@@ -1310,7 +1310,7 @@ enum DW_LNCT
   X(Offset,            0x80)  \
   X(Restore,           0xC0)
 
-typedef U8 DW_CFA;
+typedef byte DW_CFA;
 enum DW_CFAEnum
 {
 #define X(_N, _ID) DW_CFA_##_N = _ID,
@@ -1322,7 +1322,7 @@ enum DW_CFAEnum
   DW_CFA_OplKind2 = DW_CFA_Restore,
 };
 
-enum DW_CFAMask : U8
+enum DW_CFAMask : byte
 {
   //  kind1:  opcode: [0,5] zeroes:[6,7]; kind2:  operand:[0,5] opcode:[6,7] 
   DW_CFAMask_OpcodeHi = 0xC0,

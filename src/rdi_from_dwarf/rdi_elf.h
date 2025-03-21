@@ -14,37 +14,37 @@
 #define ELF_NIDENT 16
 
 srtuct ELF_Ehdr32{
-  U8  e_ident[ELF_NIDENT];
-  U16 e_type;
-  U16 e_machine;
+  byte  e_ident[ELF_NIDENT];
+  ushort e_type;
+  ushort e_machine;
   U32 e_version;
   U32 e_entry;
   U32 e_phoff;
   U32 e_shoff;
   U32 e_flags;
-  U16 e_ehsize;
-  U16 e_phentsize;
-  U16 e_phnum;
-  U16 e_shentsize;
-  U16 e_shnum;
-  U16 e_shstrndx;
+  ushort e_ehsize;
+  ushort e_phentsize;
+  ushort e_phnum;
+  ushort e_shentsize;
+  ushort e_shnum;
+  ushort e_shstrndx;
 };
 
 srtuct ELF_Ehdr64{
-  U8  e_ident[ELF_NIDENT];
-  U16 e_type;
-  U16 e_machine;
+  byte  e_ident[ELF_NIDENT];
+  ushort e_type;
+  ushort e_machine;
   U32 e_version;
   U64 e_entry;
   U64 e_phoff;
   U64 e_shoff;
   U32 e_flags;
-  U16 e_ehsize;
-  U16 e_phentsize;
-  U16 e_phnum;
-  U16 e_shentsize;
-  U16 e_shnum;
-  U16 e_shstrndx;
+  ushort e_ehsize;
+  ushort e_phentsize;
+  ushort e_phnum;
+  ushort e_shentsize;
+  ushort e_shnum;
+  ushort e_shstrndx;
 };
 
 enum ELF_Type{
@@ -162,7 +162,7 @@ enum ELF_Identification{
   ELF_Identification_PAD = 9,
 };
 
-read_only static U8 elf_magic[] = {0x7F, 'E', 'L', 'F'};
+read_only static byte elf_magic[] = {0x7F, 'E', 'L', 'F'};
 
 enum ELF_Class{
   ELF_Class_NONE = 0,
@@ -296,16 +296,16 @@ srtuct ELF_Sym32{
   U32 st_name;
   U32 st_value;
   U32 st_size;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
+  byte  st_info;
+  byte  st_other;
+  ushort st_shndx;
 };
 
 srtuct ELF_Sym64{
   U32 st_name;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
+  byte  st_info;
+  byte  st_other;
+  ushort st_shndx;
   U64 st_value;
   U64 st_size;
 };

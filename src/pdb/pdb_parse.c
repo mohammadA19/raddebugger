@@ -315,12 +315,12 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
     PDB_TpiHashBlock **buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
     
     // extract "hash" array
-    U8 *hashes = data.str + tpi->hash_vals_off;
-    U8 *hash_opl = hashes + tpi->hash_vals_size;
+    byte *hashes = data.str + tpi->hash_vals_off;
+    byte *hash_opl = hashes + tpi->hash_vals_size;
     
     // for each index in the array...
     CV_TypeId itype = tpi->itype_first;
-    U8 *hash_cursor = hashes;
+    byte *hash_cursor = hashes;
     for (;hash_cursor + stride <= hash_opl;){
       
       // read index
@@ -368,9 +368,9 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
       // deleted_bit_array: U32[deleted_bit_array_count] -> 1 bit per slot, "is deleted"
       // (U32, U32)[pair_count] -> array of name_index/type_index pairs
       //
-      U8 *adjs = data.str + tpi->hash_adj_off;
-      U8 *adjs_opl = adjs + tpi->hash_adj_size;
-      U8 *adjs_cursor = adjs;
+      byte *adjs = data.str + tpi->hash_adj_off;
+      byte *adjs_opl = adjs + tpi->hash_adj_size;
+      byte *adjs_cursor = adjs;
       U32 pair_count = *(U32 *)adjs_cursor;
       adjs_cursor += sizeof(U32);
       U32 slot_count = *(U32 *)adjs_cursor;
@@ -461,8 +461,8 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     U32 offsets_off = bitmask_off + bitmask_byte_size;
     
     // get bitmask & packed offset arrays
-    U8 *bitmasks = 0;
-    U8 *packed_offsets = 0;
+    byte *bitmasks = 0;
+    byte *packed_offsets = 0;
     if (bitmask_off + bitmask_byte_size <= data.size){
       bitmasks = (data.str + bitmask_off);
       packed_offsets = (data.str + offsets_off);
@@ -580,7 +580,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
       if(sym_header->size >= sizeof(sym_header->kind))
       {
         U64  opl_off = off + sizeof(sym_header->size) + sym_header->size;
-        U8  *sym_opl = (U8*)sym_header;
+        byte  *sym_opl = (byte*)sym_header;
         if(opl_off <= symbol_data.size)
         {
           sym_opl = symbol_data.str + opl_off;
@@ -787,8 +787,8 @@ pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRan
 String8
 pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
   String8 data = tpi->data;
-  U8 *first = data.str + tpi->leaf_first;
-  U8 *opl   = data.str + tpi->leaf_opl;
+  byte *first = data.str + tpi->leaf_first;
+  byte *opl   = data.str + tpi->leaf_opl;
   String8 result = str8_range(first, opl);
   return(result);
 }
@@ -827,7 +827,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
       if (itype_first <= itype && itype < itype_opl){
         CV_RecRange *range = &leaf->leaf_ranges.ranges[itype - leaf->itype_first];
         if (range->off + range->hdr.size <= data.size){
-          U8 *first = data.str + range->off + 2;
+          byte *first = data.str + range->off + 2;
           U64 cap = range->hdr.size - 2;
           
           switch (range->hdr.kind){
@@ -841,17 +841,17 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                 
                 if (!(lf_struct->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_struct + 1);
+                  byte *numeric_ptr = (byte*)(lf_struct + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  byte *name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_struct->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      byte *unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -871,17 +871,17 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                 
                 if (!(lf_struct->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_struct + 1);
+                  byte *numeric_ptr = (byte*)(lf_struct + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  byte *name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_struct->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      byte *unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -900,17 +900,17 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                 
                 if (!(lf_union->props & CV_TypeProp_FwdRef)){
                   // size
-                  U8 *numeric_ptr = (U8*)(lf_union + 1);
+                  byte *numeric_ptr = (byte*)(lf_union + 1);
                   CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, first + cap);
                   
                   // name
-                  U8 *name_ptr = numeric_ptr + size.encoded_size;
+                  byte *name_ptr = numeric_ptr + size.encoded_size;
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_union->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      byte *unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }
@@ -929,13 +929,13 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                 
                 if (!(lf_enum->props & CV_TypeProp_FwdRef)){
                   // name
-                  U8 *name_ptr = (U8*)(lf_enum + 1);
+                  byte *name_ptr = (byte*)(lf_enum + 1);
                   String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                   
                   // unique name
                   if (compare_unique_name){
                     if (lf_enum->props & CV_TypeProp_HasUniqueName) {
-                      U8 *unique_name_ptr = name_ptr + name.size + 1;
+                      byte *unique_name_ptr = name_ptr + name.size + 1;
                       String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                       extracted_name = unique_name;
                     }

@@ -74,14 +74,14 @@ dw_hash_from_string(String8 string)
 U64
 dw_based_range_read(void *base, Rng1U64 range, U64 offset, U64 size, void *out)
 {
-  String8 data = str8((U8*)base+range.min, dim_1u64(range));
+  String8 data = str8((byte*)base+range.min, dim_1u64(range));
   return str8_deserial_read(data, offset, out, size, 1);
 }
 
 String8
 dw_based_range_read_string(void *base, Rng1U64 range, U64 offset)
 {
-  String8 data = str8((U8*)base+range.min, dim_1u64(range));
+  String8 data = str8((byte*)base+range.min, dim_1u64(range));
   String8 result = {0};
   str8_deserial_read_cstr(data, offset, &result);
   return result;
@@ -91,7 +91,7 @@ void *
 dw_based_range_ptr(void *base, Rng1U64 range, U64 offset)
 {
   Assert(offset < dim_1u64(range));
-  U8 *data = (U8*)base + range.min + offset;
+  byte *data = (byte*)base + range.min + offset;
   return data;
 }
 
@@ -111,13 +111,13 @@ dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 offset, U64 *out_valu
   U64 value      = 0;
   U64 bytes_read = 0;
   U64 shift      = 0;
-  U8  byte       = 0;
+  byte  byte       = 0;
   for(U64 cursor = offset;
       dw_based_range_read_struct(base, range, cursor, &byte) == 1;
       cursor += 1)
   {
     bytes_read += 1;
-    U8 val = byte & 0x7fu;
+    byte val = byte & 0x7fu;
     value |= ((U64)val) << shift;
     if((byte&0x80u) == 0)
     {
@@ -138,13 +138,13 @@ dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 offset, S64 *out_valu
   U64 value      = 0;
   U64 bytes_read = 0;
   U64 shift      = 0;
-  U8  byte       = 0;
+  byte  byte       = 0;
   for(U64 cursor = offset;
       dw_based_range_read_struct(base, range, cursor, &byte) == 1;
       cursor += 1)
   {
     bytes_read += 1;
-    U8 val = byte & 0x7fu;
+    byte val = byte & 0x7fu;
     value |= ((U64)val) << shift;
     shift += 7u;
     if((byte&0x80u) == 0)
@@ -217,7 +217,7 @@ dw_based_range_read_abbrev_tag(void *base, Rng1U64 range, U64 offset, DW_Abbrev 
   }
   
   //- rjf: parse whether this tag has children
-  U8 has_children = 0;
+  byte has_children = 0;
   if(id != 0)
   {
     total_bytes_read += dw_based_range_read_struct(base, range, next_off, &has_children);
@@ -642,7 +642,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_SectionArray *section
   U64      cursor   = 0;
   
   U64 table_length = 0;
-  U16 unit_version = 0;
+  ushort unit_version = 0;
   U64 cu_info_off  = 0;
   U64 cu_info_len  = 0;
   cursor += dw_based_range_read_length(base, rng, cursor, &table_length);
@@ -723,20 +723,20 @@ dw_v5_offset_from_offs_section_base_index(DW_SectionArray *sections, DW_SectionK
   cursor += dw_based_range_read_length(sec_base, rng, cursor, &unit_length);
   
   //- rjf: parse version
-  U16 version = 0;
+  ushort version = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &version);
   Assert(version == 5); // must be 5 as of V5.
   
   //- rjf: parse padding
-  U16 padding = 0;
+  ushort padding = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &padding);
   Assert(padding == 0); // must be 0 as of V5.
   
   //- rjf: read
-  if (unit_length >= sizeof(U16)*2) 
+  if (unit_length >= sizeof(ushort)*2) 
   {
-    void *entries = (U8 *)sec_base + cursor;
-    U64 count = (unit_length - sizeof(U16)*2) / entry_len;
+    void *entries = (byte *)sec_base + cursor;
+    U64 count = (unit_length - sizeof(ushort)*2) / entry_len;
     if(0 <= index && index < count)
     {
       switch(entry_len)
@@ -767,24 +767,24 @@ dw_v5_addr_from_addrs_section_base_index(DW_SectionArray *sections, DW_SectionKi
   cursor += dw_based_range_read_length(sec_base, rng, cursor, &unit_length);
   
   //- rjf: parse version
-  U16 version = 0;
+  ushort version = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &version);
   Assert(version == 5); // must be 5 as of V5.
   
   //- rjf: parse address size
-  U8 address_size = 0;
+  byte address_size = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &address_size);
   
   //- rjf: parse segment selector size
-  U8 segment_selector_size = 0;
+  byte segment_selector_size = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &segment_selector_size);
   
   //- rjf: read
   U64 entry_size = address_size + segment_selector_size;
-  U64 count = (unit_length - sizeof(U16)*2) / entry_size;
+  U64 count = (unit_length - sizeof(ushort)*2) / entry_size;
   if(0 <= index && index < count)
   {
-    void    *entry     = (U8 *)dw_based_range_ptr(sec_base, rng, cursor) + entry_size*index;
+    void    *entry     = (byte *)dw_based_range_ptr(sec_base, rng, cursor) + entry_size*index;
     Rng1U64  entry_rng = rng_1u64(0, entry_size);
     U64      segment   = 0;
     U64      addr      = 0;
@@ -825,16 +825,16 @@ dw_v5_sec_offset_from_rnglist_or_loclist_section_base_index(DW_SectionArray *sec
   cursor += dw_based_range_read_length(sec_base, rng, cursor, &unit_length);
   
   //- rjf: parse version
-  U16 version = 0;
+  ushort version = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &version);
   Assert(version == 5); // must be 5 as of V5.
   
   //- rjf: parse address size
-  U8 address_size = 0;
+  byte address_size = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &address_size);
   
   //- rjf: parse segment selector size
-  U8 segment_selector_size = 0;
+  byte segment_selector_size = 0;
   cursor += dw_based_range_read_struct(sec_base, rng, cursor, &segment_selector_size);
   
   //- rjf: parse offset entry count
@@ -872,7 +872,7 @@ dw_v5_range_list_from_rnglist_offset(Arena *arena, DW_SectionArray *sections, DW
   
   for(B32 done = 0; !done;)
   {
-    U8 kind8 = 0;
+    byte kind8 = 0;
     cursor += dw_based_range_read_struct(base, rng, cursor, &kind8);
     DW_RngListEntryKind kind = (DW_RngListEntryKind)kind8;
     
@@ -1158,7 +1158,7 @@ dw_string_from_attrib_value(DW_SectionArray *sections, DW_AttribValue value)
   Rng1U64         range        = dw_range_from_sec(sections, section_kind);
 
   String8 string = {0};
-  string.str     = (U8 *)dw_based_range_ptr(base, range, value.v[0]);
+  string.str     = (byte *)dw_based_range_ptr(base, range, value.v[0]);
   string.size    = value.v[1] - value.v[0];
   return string;
 }
@@ -1822,7 +1822,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
   B32                     error      = 0;
   for (;!error && cursor < vm_header.unit_opl;) {
     //- rjf: parse opcode
-    U8 opcode = 0;
+    byte opcode = 0;
     cursor += dw_based_range_read_struct(base, line_info_range, cursor, &opcode);
     
     //- rjf: do opcode action
@@ -1864,8 +1864,8 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
         {
           if(opcode > 0 && opcode <= vm_header.num_opcode_lens)
           {
-            U8 num_operands = vm_header.opcode_lens[opcode - 1];
-            for(U8 i = 0; i < num_operands; ++i)
+            byte num_operands = vm_header.opcode_lens[opcode - 1];
+            for(byte i = 0; i < num_operands; ++i)
             {
               U64 operand = 0;
               cursor += dw_based_range_read_uleb128(base, line_info_range, cursor, &operand);
@@ -1937,7 +1937,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
       
       case DW_StdOpcode_FixedAdvancePc:
       {
-        U16 operand = 0;
+        ushort operand = 0;
         cursor += dw_based_range_read_struct(base, line_info_range, cursor, &operand);
         vm_state.address += operand;
         vm_state.op_index = 0;
@@ -1966,7 +1966,7 @@ dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_
         U64 length = 0;
         cursor += dw_based_range_read_uleb128(base, line_info_range, cursor, &length);
         U64 start_off       = cursor;
-        U8  extended_opcode = 0;
+        byte  extended_opcode = 0;
         cursor += dw_based_range_read_struct(base, line_info_range, cursor, &extended_opcode);
         
         switch (extended_opcode) {
@@ -2071,7 +2071,7 @@ dw_read_line_file(void                        *line_base,
                   DW_Mode                      mode,
                   DW_SectionArray             *sections,
                   DW_AttribValueResolveParams  resolve_params,
-                  U8                           address_size,
+                  byte                           address_size,
                   U64                          format_count,
                   Rng1U64                     *formats,
                   DW_LineFile                 *line_file_out)
@@ -2216,11 +2216,11 @@ dw_read_line_vm_header(Arena                       *arena,
   if(header_out->version == DW_Version_5)
   {
     //- parse directory names
-    U8 directory_entry_format_count = 0;
+    byte directory_entry_format_count = 0;
     cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &directory_entry_format_count);
     Assert(directory_entry_format_count == 1);
     Rng1U64 *directory_entry_formats = push_array(scratch.arena, Rng1U64, directory_entry_format_count);
-    for(U8 format_idx = 0; format_idx < directory_entry_format_count; ++format_idx) 
+    for(byte format_idx = 0; format_idx < directory_entry_format_count; ++format_idx) 
     {
       U64 content_type_code = 0, form_code = 0;
       cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &content_type_code);
@@ -2249,10 +2249,10 @@ dw_read_line_vm_header(Arena                       *arena,
     }
 
     //- parse file table
-    U8 file_name_entry_format_count = 0;
+    byte file_name_entry_format_count = 0;
     cursor += dw_based_range_read_struct(line_base, parse_rng, cursor, &file_name_entry_format_count);
     Rng1U64 *file_name_entry_formats = push_array(scratch.arena, Rng1U64, file_name_entry_format_count);
-    for(U8 format_idx = 0; format_idx < file_name_entry_format_count; ++format_idx) 
+    for(byte format_idx = 0; format_idx < file_name_entry_format_count; ++format_idx) 
     {
       U64 content_type_code = 0, form_code = 0;
       cursor += dw_based_range_read_uleb128(line_base, parse_rng, cursor, &content_type_code);

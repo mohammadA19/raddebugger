@@ -161,21 +161,21 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
     {
       RDI_Procedure *proc = rdi_element_from_name_idx(rdi, Procedures, element_idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, proc->name_string_idx, &name_size);
+      byte *name_base = rdi_string_from_idx(rdi, proc->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_GlobalVariables:
     {
       RDI_GlobalVariable *gvar = rdi_element_from_name_idx(rdi, GlobalVariables, element_idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, gvar->name_string_idx, &name_size);
+      byte *name_base = rdi_string_from_idx(rdi, gvar->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_ThreadVariables:
     {
       RDI_ThreadVariable *tvar = rdi_element_from_name_idx(rdi, ThreadVariables, element_idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, tvar->name_string_idx, &name_size);
+      byte *name_base = rdi_string_from_idx(rdi, tvar->name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
     case RDI_SectionKind_UDTs:
@@ -183,7 +183,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
       RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, element_idx);
       RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, udt->self_type_idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, type_node->user_defined.name_string_idx, &name_size);
+      byte *name_base = rdi_string_from_idx(rdi, type_node->user_defined.name_string_idx, &name_size);
       result = str8(name_base, name_size);
     }break;
   }
@@ -222,11 +222,11 @@ di_init()
   di_shared->u2p_ring_mutex = os_mutex_alloc();
   di_shared->u2p_ring_cv = os_condition_variable_alloc();
   di_shared->u2p_ring_size = KB(64);
-  di_shared->u2p_ring_base = push_array_no_zero(arena, U8, di_shared->u2p_ring_size);
+  di_shared->u2p_ring_base = push_array_no_zero(arena, byte, di_shared->u2p_ring_size);
   di_shared->p2u_ring_mutex = os_mutex_alloc();
   di_shared->p2u_ring_cv = os_condition_variable_alloc();
   di_shared->p2u_ring_size = KB(64);
-  di_shared->p2u_ring_base = push_array_no_zero(arena, U8, di_shared->p2u_ring_size);
+  di_shared->p2u_ring_base = push_array_no_zero(arena, byte, di_shared->p2u_ring_size);
   di_shared->search_threads_count = 1;
   di_shared->search_threads = push_array(arena, DI_SearchThread, di_shared->search_threads_count);
   for EachIndex(idx, di_shared->search_threads_count)
@@ -234,7 +234,7 @@ di_init()
     di_shared->search_threads[idx].ring_mutex = os_mutex_alloc();
     di_shared->search_threads[idx].ring_cv    = os_condition_variable_alloc();
     di_shared->search_threads[idx].ring_size  = KB(64);
-    di_shared->search_threads[idx].ring_base  = push_array_no_zero(arena, U8, di_shared->search_threads[idx].ring_size);
+    di_shared->search_threads[idx].ring_base  = push_array_no_zero(arena, byte, di_shared->search_threads[idx].ring_size);
     di_shared->search_threads[idx].thread = os_thread_launch(di_search_thread__entry_point, (void *)idx, 0);
   }
   di_shared->search_evictor_thread = os_thread_launch(di_search_evictor_thread__entry_point, 0, 0);
@@ -424,13 +424,13 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
     {
       chunk_size = u64_up_to_pow2(string.size);
     }
-    U8 *chunk_memory = push_array(stripe->arena, U8, chunk_size);
+    byte *chunk_memory = push_array(stripe->arena, byte, chunk_size);
     node = (DI_StringChunkNode *)chunk_memory;
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((U8 *)node, string.size);
-  MemoryCopy((U8 *)node, string.str, string.size);
+  String8 allocated_string = str8((byte *)node, string.size);
+  MemoryCopy((byte *)node, string.str, string.size);
   return allocated_string;
 }
 
@@ -789,7 +789,7 @@ di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
     {
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->min_timestamp);
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->path.size);
-      out_key->path.str = push_array(arena, U8, out_key->path.size);
+      out_key->path.str = push_array(arena, byte, out_key->path.size);
       di_shared->u2p_ring_read_pos += ring_read(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, out_key->path.str, out_key->path.size);
       break;
     }
@@ -832,7 +832,7 @@ di_p2u_pop_events(Arena *arena, U64 endt_us)
       events.count += 1;
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.kind);
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.string.size);
-      n->v.string.str = push_array_no_zero(arena, U8, n->v.string.size);
+      n->v.string.str = push_array_no_zero(arena, byte, n->v.string.size);
       di_shared->p2u_ring_read_pos += ring_read(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, n->v.string.str, n->v.string.size);
     }
     else if(os_now_microseconds() >= endt_us)
@@ -883,7 +883,7 @@ ASYNC_WORK_DEF(di_parse_work)
     OS_Handle file_map = os_file_map_open(OS_AccessFlag_Read, file);
     FileProperties props = og_props = os_properties_from_file(file);
     void *base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, props.size));
-    String8 data = str8((U8 *)base, props.size);
+    String8 data = str8((byte *)base, props.size);
     if(!og_format_is_known)
     {
       String8 msf20_magic = str8_lit("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
@@ -919,7 +919,7 @@ ASYNC_WORK_DEF(di_parse_work)
     }
     if(!og_format_is_known)
     {
-      if(data.size >= 2 && *(U16 *)data.str == 0x5a4d)
+      if(data.size >= 2 && *(ushort *)data.str == 0x5a4d)
       {
         og_format_is_known = 1;
         og_is_pe = 1;
@@ -1086,7 +1086,7 @@ ASYNC_WORK_DEF(di_parse_work)
   //
   RDI_Parsed rdi_parsed_maybe_compressed = di_rdi_parsed_nil;
   {
-    RDI_ParseStatus parse_status = rdi_parse((U8 *)file_base, file_props.size, &rdi_parsed_maybe_compressed);
+    RDI_ParseStatus parse_status = rdi_parse((byte *)file_base, file_props.size, &rdi_parsed_maybe_compressed);
     ()parse_status;
   }
   
@@ -1100,7 +1100,7 @@ ASYNC_WORK_DEF(di_parse_work)
     if(decompressed_size > file_props.size)
     {
       rdi_parsed_arena = arena_alloc();
-      U8 *decompressed_data = push_array_no_zero(rdi_parsed_arena, U8, decompressed_size);
+      byte *decompressed_data = push_array_no_zero(rdi_parsed_arena, byte, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, &rdi_parsed_maybe_compressed);
       RDI_ParseStatus parse_status = rdi_parse(decompressed_data, decompressed_size, &rdi_parsed);
       ()parse_status;
@@ -1273,8 +1273,8 @@ ASYNC_WORK_DEF(di_search_work)
     }
     
     //- rjf: get element, map to string; if empty, continue to next element
-    void *element = (U8 *)table_base + element_size*idx;
-    U32 *name_idx_ptr = (U32 *)((U8 *)element + element_name_idx_off);
+    void *element = (byte *)table_base + element_size*idx;
+    U32 *name_idx_ptr = (U32 *)((byte *)element + element_name_idx_off);
     if(in->section_kind == RDI_SectionKind_UDTs)
     {
       RDI_UDT *udt = (RDI_UDT *)element;
@@ -1283,7 +1283,7 @@ ASYNC_WORK_DEF(di_search_work)
     }
     U32 name_idx = *name_idx_ptr;
     U64 name_size = 0;
-    U8 *name_base = rdi_string_from_idx(in->rdi, name_idx, &name_size);
+    byte *name_base = rdi_string_from_idx(in->rdi, name_idx, &name_size);
     String8 name = str8(name_base, name_size);
     if(name.size == 0) { continue; }
     
@@ -1567,7 +1567,7 @@ di_match_store_alloc()
   store->u2m_ring_cv            = os_condition_variable_alloc();
   store->u2m_ring_mutex         = os_mutex_alloc();
   store->u2m_ring_size          = KB(2);
-  store->u2m_ring_base          = push_array_no_zero(arena, U8, store->u2m_ring_size);
+  store->u2m_ring_base          = push_array_no_zero(arena, byte, store->u2m_ring_size);
   return store;
 }
 
@@ -1744,7 +1744,7 @@ ASYNC_WORK_DEF(di_match_work)
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &node);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &alloc_gen);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &name.size);
-        name.str = push_array(scratch.arena, U8, name.size);
+        name.str = push_array(scratch.arena, byte, name.size);
         store->u2m_ring_read_pos += ring_read(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, name.str, name.size);
         break;
       }

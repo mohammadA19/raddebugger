@@ -231,10 +231,10 @@ lnk_section_merge(LNK_Section *dst, LNK_Section *src)
   ProfEnd();
 }
 
-U8
+byte
 lnk_code_align_byte_from_machine(COFF_MachineType machine)
 {
-  U8 align_byte = 0;
+  byte align_byte = 0;
   switch (machine) {
   case COFF_Machine_X64:
   case COFF_Machine_X86: {
@@ -610,7 +610,7 @@ lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *st, 
     }
   }
 
-  U8      *image_buffer = push_array_no_zero(arena, U8, image_size);
+  byte      *image_buffer = push_array_no_zero(arena, byte, image_size);
   String8  image        = str8(image_buffer, image_size);
   U64      image_cursor = 0;
 
@@ -624,7 +624,7 @@ lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *st, 
       U64     sect_size = sect->layout.chunk_file_size_array[sect->root->ref.chunk_id];
       String8 sect_data = str8_substr(image, rng_1u64(image_cursor, image_cursor + sect_size));
 
-      U8 fill_byte = 0;
+      byte fill_byte = 0;
       if (sect->flags & COFF_SectionFlag_CntCode) {
         fill_byte = lnk_code_align_byte_from_machine(machine);
       }

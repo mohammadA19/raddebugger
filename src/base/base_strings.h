@@ -15,13 +15,13 @@
 
 struct String8
 {
-  U8 *str;
+  byte *str;
   U64 size;
 };
 
 struct String16
 {
-  U16 *str;
+  ushort *str;
   U64 size;
 };
 
@@ -137,45 +137,45 @@ struct FuzzyMatchRangeList
 ////////////////////////////////
 //~ rjf: Character Classification & Conversion Functions
 
-B32 char_is_space(U8 c);
-B32 char_is_upper(U8 c);
-B32 char_is_lower(U8 c);
-B32 char_is_alpha(U8 c);
-B32 char_is_slash(U8 c);
-B32 char_is_digit(U8 c, U32 base);
-U8 char_to_lower(U8 c);
-U8 char_to_upper(U8 c);
-U8 char_to_correct_slash(U8 c);
+B32 char_is_space(byte c);
+B32 char_is_upper(byte c);
+B32 char_is_lower(byte c);
+B32 char_is_alpha(byte c);
+B32 char_is_slash(byte c);
+B32 char_is_digit(byte c, U32 base);
+byte char_to_lower(byte c);
+byte char_to_upper(byte c);
+byte char_to_correct_slash(byte c);
 
 ////////////////////////////////
 //~ rjf: C-String Measurement
 
-U64 cstring8_length(U8 *c);
-U64 cstring16_length(U16 *c);
+U64 cstring8_length(byte *c);
+U64 cstring16_length(ushort *c);
 U64 cstring32_length(U32 *c);
 
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((U8*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(U8*)(S), sizeof(S) - 1,}
+#define str8_lit(S)  str8((byte*)(S), sizeof(S) - 1)
+#define str8_lit_comp(S) {(byte*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
 
-#define str8_array(S,C) str8((U8*)(S), sizeof(*(S))*(C))
-#define str8_array_fixed(S) str8((U8*)(S), sizeof(S))
-#define str8_struct(S) str8((U8*)(S), sizeof(*(S)))
+#define str8_array(S,C) str8((byte*)(S), sizeof(*(S))*(C))
+#define str8_array_fixed(S) str8((byte*)(S), sizeof(S))
+#define str8_struct(S) str8((byte*)(S), sizeof(*(S)))
 
-String8  str8(U8 *str, U64 size);
-String8  str8_range(U8 *first, U8 *one_past_last);
+String8  str8(byte *str, U64 size);
+String8  str8_range(byte *first, byte *one_past_last);
 String8  str8_zero();
-String16 str16(U16 *str, U64 size);
-String16 str16_range(U16 *first, U16 *one_past_last);
+String16 str16(ushort *str, U64 size);
+String16 str16_range(ushort *first, ushort *one_past_last);
 String16 str16_zero();
 String32 str32(U32 *str, U64 size);
 String32 str32_range(U32 *first, U32 *one_past_last);
 String32 str32_zero();
 String8  str8_cstring(char *c);
-String16 str16_cstring(U16 *c);
+String16 str16_cstring(ushort *c);
 String32 str32_cstring(U32 *c);
 String8  str8_cstring_capped(void *cstr, void *cap);
 String16 str16_cstring_capped(void *cstr, void *cap);
@@ -236,8 +236,8 @@ String8 str8_from_memory_size(Arena *arena, U64 size);
 String8 str8_from_count(Arena *arena, U64 count);
 String8 str8_from_bits_u32(Arena *arena, U32 x);
 String8 str8_from_bits_u64(Arena *arena, U64 x);
-String8 str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_separator);
-String8 str8_from_s64(Arena *arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_separator);
+String8 str8_from_u64(Arena *arena, U64 u64, U32 radix, byte min_digits, byte digit_group_separator);
+String8 str8_from_s64(Arena *arena, S64 s64, U32 radix, byte min_digits, byte digit_group_separator);
 
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
@@ -263,7 +263,7 @@ String8List  str8_list_copy(Arena *arena, String8List *list);
 ////////////////////////////////
 //~ rjf: String Splitting & Joining
 
-String8List  str8_split(Arena *arena, String8 string, U8 *split_chars, U64 split_char_count, StringSplitFlags flags);
+String8List  str8_split(Arena *arena, String8 string, byte *split_chars, U64 split_char_count, StringSplitFlags flags);
 String8List  str8_split_by_string_chars(Arena *arena, String8 string, String8 split_chars, StringSplitFlags flags);
 String8List  str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_chars, StringSplitFlags flags);
 String8      str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params);
@@ -293,11 +293,11 @@ String8TxtPtPair str8_txt_pt_pair_from_string(String8 string);
 ////////////////////////////////
 //~ rjf: UTF-8 & UTF-16 Decoding/Encoding
 
-UnicodeDecode utf8_decode(U8 *str, U64 max);
-UnicodeDecode utf16_decode(U16 *str, U64 max);
-U32 utf8_encode(U8 *str, U32 codepoint);
-U32 utf16_encode(U16 *str, U32 codepoint);
-U32 utf8_from_utf32_single(U8 *buffer, U32 character);
+UnicodeDecode utf8_decode(byte *str, U64 max);
+UnicodeDecode utf16_decode(ushort *str, U64 max);
+U32 utf8_encode(byte *str, U32 codepoint);
+U32 utf16_encode(ushort *str, U32 codepoint);
+U32 utf8_from_utf32_single(byte *buffer, U32 character);
 
 ////////////////////////////////
 //~ rjf: Unicode String Conversions
@@ -376,8 +376,8 @@ void *  str8_serial_push_data(Arena *arena, String8List *srl, void *data, U64 si
 void    str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first);
 void    str8_serial_push_u64(Arena *arena, String8List *srl, U64 x);
 void    str8_serial_push_u32(Arena *arena, String8List *srl, U32 x);
-void    str8_serial_push_u16(Arena *arena, String8List *srl, U16 x);
-void    str8_serial_push_u8(Arena *arena, String8List *srl, U8 x);
+void    str8_serial_push_u16(Arena *arena, String8List *srl, ushort x);
+void    str8_serial_push_u8(Arena *arena, String8List *srl, byte x);
 void    str8_serial_push_cstr(Arena *arena, String8List *srl, String8 str);
 void    str8_serial_push_string(Arena *arena, String8List *srl, String8 str);
 #define str8_serial_push_array(arena, srl, ptr, count) str8_serial_push_data(arena, srl, ptr, sizeof(*(ptr)) * (count))
@@ -387,7 +387,7 @@ void    str8_serial_push_string(Arena *arena, String8List *srl, String8 str);
 //~ rjf: Deserialization Helpers
 
 U64    str8_deserial_read(String8 string, U64 off, void *read_dst, U64 read_size, U64 granularity);
-U64    str8_deserial_find_first_match(String8 string, U64 off, U16 scan_val);
+U64    str8_deserial_find_first_match(String8 string, U64 off, ushort scan_val);
 void * str8_deserial_get_raw_ptr(String8 string, U64 off, U64 size);
 U64    str8_deserial_read_cstr(String8 string, U64 off, String8 *cstr_out);
 U64    str8_deserial_read_windows_utf16_string16(String8 string, U64 off, String16 *str_out);

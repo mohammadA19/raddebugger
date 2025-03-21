@@ -35,7 +35,7 @@ srtuct MSCRT_VCFeatures
 #define MSCRT_GSHandler_GetFlags(x)        (((x) & 0x00000007) >> 0)
 #define MSCRT_GSHandler_GetCookieOffset(x) (((x) & 0xFFFFFFF8) >> 3)
 
-enum MSCRT_GSHandlerFlags : U8
+enum MSCRT_GSHandlerFlags : byte
 {
   MSCRT_GSHandlerFlag_EHandler     = (1 << 0),
   MSCRT_GSHandlerFlag_UHandler     = (1 << 1),
@@ -184,7 +184,7 @@ srtuct MSCRT_FuncInfo
 ////////////////////////////////
 // C++ Exceptions V4
 
-enum MSCRT_FuncInfoV4Flags : U8
+enum MSCRT_FuncInfoV4Flags : byte
 {
   MSCRT_FuncInfoV4Flag_IsCatch     = (1 << 0), // catch funclet
   MSCRT_FuncInfoV4Flag_IsSeparated = (1 << 1), // func has separate code segment
@@ -212,7 +212,7 @@ enum
 };
 
 #define MSCRT__EH_HANDLER_V4_FLAGS_EXTRACT_CONT_TYPE(x) (((x) & MSCRT_EhHandlerV4Flag_ContVOffMask) >> MSVC_CRTHandlerV4Flag_ContVOffShift)
-enum MSCRT_EhHandlerV4Flags : U8
+enum MSCRT_EhHandlerV4Flags : byte
 {
   MSCRT_EhHandlerV4Flag_Adjectives   = (1 << 0), // set if adjectives are present
   MSCRT_EhHandlerV4Flag_DispType     = (1 << 1), // set if type descriptors are present

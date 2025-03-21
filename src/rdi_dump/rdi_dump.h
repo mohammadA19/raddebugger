@@ -27,7 +27,7 @@ struct RDI_ScopeBundle
   U64 *scope_voffs;
   RDI_Local *locals;
   RDI_LocationBlock *location_blocks;
-  U8 *location_data;
+  byte *location_data;
   U32 scope_count;
   U32 scope_voff_count;
   U32 local_count;

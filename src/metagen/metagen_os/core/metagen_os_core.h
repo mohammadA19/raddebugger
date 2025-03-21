@@ -56,7 +56,7 @@ enum OS_FileIterFlags : U32
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
-  U8 memory[800];
+  byte memory[800];
 };
 
 struct OS_FileInfo
@@ -116,9 +116,9 @@ struct OS_HandleArray
 struct OS_Guid
 {
   U32 data1;
-  U16 data2;
-  U16 data3;
-  U8  data4[8];
+  ushort data2;
+  ushort data3;
+  byte  data4[8];
 };
 StaticAssert(sizeof(OS_Guid) == 16, os_guid_check);
 

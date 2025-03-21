@@ -125,7 +125,7 @@ lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, L
   
   
   // find free ordinal
-  U16 ordinal;
+  ushort ordinal;
   for (ordinal = 0; ordinal < exptab->max_ordinal; ++ordinal) {
     if (!exptab->is_ordinal_used[ordinal]) {
       exptab->is_ordinal_used[ordinal] = 1;
@@ -203,7 +203,7 @@ lnk_build_edata(LNK_ExportTable *exptab, LNK_SectionTable *st, LNK_SymbolTable *
   header->export_address_table_count = safe_cast_u32(exptab->name_export_ht->count + exptab->noname_export_ht->count);
   header->name_pointer_table_count   = safe_cast_u32(exptab->name_export_ht->count);
   
-  String8 header_data = str8((U8*)header, sizeof(*header));
+  String8 header_data = str8((byte*)header, sizeof(*header));
   String8 image_name_cstr = push_cstr(edata->arena, str8_skip_last_slash(image_name));
   
   // push edata chunks
@@ -266,7 +266,7 @@ lnk_build_edata(LNK_ExportTable *exptab, LNK_SectionTable *st, LNK_SymbolTable *
       lnk_section_push_reloc(edata, voff_chunk, LNK_Reloc_VIRT_OFF_32, 0, name_symbol);
 
       // make ordinal relative
-      U16 *ordinal_ptr = push_array(edata->arena, U16, 1);
+      ushort *ordinal_ptr = push_array(edata->arena, ushort, 1);
       *ordinal_ptr = (exp->ordinal - ordinal_low);
       
       // ordinal

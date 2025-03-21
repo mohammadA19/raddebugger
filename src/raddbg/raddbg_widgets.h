@@ -110,7 +110,7 @@ UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-UI_Signal rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string);
-UI_Signal rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...);
+UI_Signal rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, String8 string);
+UI_Signal rd_line_editf(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, B32 *expanded_out, String8 pre_edit_value, char *fmt, ...);
 
 #endif // RADDBG_WIDGETS_H

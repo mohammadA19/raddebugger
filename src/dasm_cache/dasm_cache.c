@@ -271,7 +271,7 @@ dasm_init()
     dasm_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   dasm_shared->u2p_ring_size = KB(64);
-  dasm_shared->u2p_ring_base = push_array_no_zero(arena, U8, dasm_shared->u2p_ring_size);
+  dasm_shared->u2p_ring_base = push_array_no_zero(arena, byte, dasm_shared->u2p_ring_size);
   dasm_shared->u2p_ring_cv = os_condition_variable_alloc();
   dasm_shared->u2p_ring_mutex = os_mutex_alloc();
   dasm_shared->evictor_detector_thread = os_thread_launch(dasm_evictor_detector_thread__entry_point, 0, 0);
@@ -487,7 +487,7 @@ dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out)
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->syntax);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->base_vaddr);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.path.size);
-      params_out->dbgi_key.path.str = push_array(arena, U8, params_out->dbgi_key.path.size);
+      params_out->dbgi_key.path.str = push_array(arena, byte, params_out->dbgi_key.path.size);
       dasm_shared->u2p_ring_read_pos += ring_read(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, params_out->dbgi_key.path.str, params_out->dbgi_key.path.size);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.min_timestamp);
       break;
@@ -731,7 +731,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
         (U64)rdi,
         0x4d534144,
       };
-      text_key = hs_hash_from_data(str8((U8 *)hash_data, sizeof(hash_data)));
+      text_key = hs_hash_from_data(str8((byte *)hash_data, sizeof(hash_data)));
     }
     
     //- rjf: submit text data to hash store

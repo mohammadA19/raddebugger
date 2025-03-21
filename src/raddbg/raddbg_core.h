@@ -236,7 +236,7 @@ struct RD_View
   TxtPt query_cursor;
   TxtPt query_mark;
   U64 query_string_size;
-  U8 query_buffer[KB(4)];
+  byte query_buffer[KB(4)];
 };
 
 ////////////////////////////////
@@ -602,7 +602,7 @@ struct RD_Window
   Arena *ctx_menu_arena;
   RD_Regs *ctx_menu_regs;
   RD_RegSlot ctx_menu_regs_slot;
-  U8 *ctx_menu_input_buffer;
+  byte *ctx_menu_input_buffer;
   U64 ctx_menu_input_buffer_size;
   U64 ctx_menu_input_string_size;
   TxtPt ctx_menu_input_cursor;
@@ -619,7 +619,7 @@ struct RD_Window
   Arena *autocomp_lister_params_arena;
   RD_AutoCompListerParams autocomp_lister_params;
   U64 autocomp_cursor_off;
-  U8 autocomp_lister_input_buffer[1024];
+  byte autocomp_lister_input_buffer[1024];
   U64 autocomp_lister_input_size;
   F32 autocomp_open_t;
   F32 autocomp_num_visible_rows_t;
@@ -639,7 +639,7 @@ struct RD_Window
   B32 hover_eval_focused;
   TxtPt hover_eval_txt_cursor;
   TxtPt hover_eval_txt_mark;
-  U8 hover_eval_txt_buffer[1024];
+  byte hover_eval_txt_buffer[1024];
   U64 hover_eval_txt_size;
   Arena *hover_eval_arena;
   Vec2F32 hover_eval_spawn_pos;
@@ -653,7 +653,7 @@ struct RD_Window
   F32 hover_eval_num_visible_rows_t;
   
   // rjf: error state
-  U8 error_buffer[512];
+  byte error_buffer[512];
   U64 error_string_size;
   F32 error_t;
   

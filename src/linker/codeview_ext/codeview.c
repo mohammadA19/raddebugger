@@ -105,7 +105,7 @@ cv_compute_leaf_record_size(String8 data, U64 align)
 }
 
 U64
-cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align)
+cv_serialize_leaf_to_buffer(byte *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align)
 {
   U64 buffer_cursor_start = buffer_cursor;
 
@@ -115,7 +115,7 @@ cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_L
   CV_LeafSize record_size16 = (CV_LeafSize)record_size;
 
   // compute pad
-  static U8 LEAF_PAD_ARR[] = { 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff };
+  static byte LEAF_PAD_ARR[] = { 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff };
   U64 pad_size = AlignPadPow2(data.size, align);
   Assert(pad_size <= ArrayCount(LEAF_PAD_ARR));
 
@@ -126,12 +126,12 @@ cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_L
   buffer_cursor += sizeof(*header_ptr);
 
   // write body
-  U8 *leaf_data_ptr = buffer + buffer_cursor;
+  byte *leaf_data_ptr = buffer + buffer_cursor;
   MemoryCopy(leaf_data_ptr, data.str, data.size);
   buffer_cursor += data.size;
 
   // write pad
-  U8 *pad_data_ptr = buffer + buffer_cursor;
+  byte *pad_data_ptr = buffer + buffer_cursor;
   MemoryCopy(pad_data_ptr, &LEAF_PAD_ARR[0], pad_size);
   buffer_cursor += pad_size;
 
@@ -143,7 +143,7 @@ String8
 cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, String8 data, U64 align)
 {
   U64      buffer_size = cv_compute_leaf_record_size(data, align);
-  U8      *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte      *buffer      = push_array_no_zero(arena, byte, buffer_size);
   U64      size        = cv_serialize_leaf_to_buffer(buffer, 0, buffer_size, kind, data, align);
   String8  raw_leaf    = str8(buffer, size);
   return raw_leaf;
@@ -209,7 +209,7 @@ cv_compute_symbol_record_size(CV_Symbol *symbol, U64 align)
 }
 
 U64
-cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align)
+cv_serialize_symbol_to_buffer(byte *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align)
 {
   U64 write_size = cv_compute_symbol_record_size(symbol, align);
   Assert(buffer_cursor + write_size <= buffer_size);
@@ -227,12 +227,12 @@ cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV
   header->kind = symbol->kind;
 
   // copy symbol data
-  U8 *data_dst = (U8 *)(header + 1);
+  byte *data_dst = (byte *)(header + 1);
   MemoryCopy(data_dst, symbol->data.str, symbol->data.size);
 
   // set pad bytes
   U64 pad_size = AlignPadPow2(symbol->data.size, align);
-  U8 *pad_dst = data_dst + symbol->data.size;
+  byte *pad_dst = data_dst + symbol->data.size;
   MemorySet(&pad_dst[0], 0, pad_size);
 
   return write_size;
@@ -242,7 +242,7 @@ String8
 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, U64 align)
 {
   U64 buffer_size = cv_compute_symbol_record_size(symbol, align);
-  U8 *buffer = push_array(arena, U8, buffer_size);
+  byte *buffer = push_array(arena, byte, buffer_size);
   cv_serialize_symbol_to_buffer(buffer, 0, buffer_size, symbol, align);
   String8 result = str8(buffer, buffer_size);
   return result;
@@ -289,8 +289,8 @@ cv_make_obj_name(Arena *arena, String8 obj_path, U32 sig)
 String8
 cv_make_comp3(Arena *arena,
               CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
-              U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
-              U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
+              ushort ver_fe_major, ushort ver_fe_minor, ushort ver_fe_build, ushort ver_feqfe,
+              ushort ver_major, ushort ver_minor, ushort ver_build, ushort ver_qfe,
               String8 version_string)
 {
   ProfBeginFunction();
@@ -341,14 +341,14 @@ CV_Symbol
 cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name, B32 is_local)
 {
   U64 buffer_size = sizeof(CV_SymRef2) + name.size + 1;
-  U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte *buffer      = push_array_no_zero(arena, byte, buffer_size);
   
   CV_SymRef2 *ref = (CV_SymRef2*)buffer;
   ref->suc_name = 0;
   ref->sym_off  = stream_offset;
   ref->imod     = imod + 1; // MSVC adds one
   
-  U8 *name_ptr = (U8*)(ref + 1);
+  byte *name_ptr = (byte*)(ref + 1);
   MemoryCopy(name_ptr, name.str, name.size);
   name_ptr[name.size] = '\0';
   
@@ -361,17 +361,17 @@ cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name
 }
 
 CV_Symbol
-cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, U16 isect, String8 name)
+cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, ushort isect, String8 name)
 {
   U64 buffer_size = sizeof(CV_SymPub32) + name.size + 1;
-  U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte *buffer      = push_array_no_zero(arena, byte, buffer_size);
 
   CV_SymPub32 *pub = (CV_SymPub32 *)buffer;
   pub->flags = flags;
   pub->off   = off;
   pub->sec   = isect;
   
-  U8 *name_ptr = (U8*)(pub + 1);
+  byte *name_ptr = (byte*)(pub + 1);
   MemoryCopy(name_ptr, name.str, name.size);
   name_ptr[name.size] = '\0';
   
@@ -685,7 +685,7 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
 
     U64 count = 0;
     for (U64 i = range_n->range.min; i < range_n->range.max; ++i) {
-      U8 b = string_buffer.str[i];
+      byte b = string_buffer.str[i];
       if (b == '\0') {
         count += 1;
       }
@@ -902,7 +902,7 @@ cv_pack_string_hash_table(Arena *arena, TP_Context *tp, CV_StringHashTable strin
   Temp scratch = scratch_begin(&arena, 1);
 
   U64  buffer_size = string_ht.total_string_size + /* nulls: */ string_ht.total_insert_count;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte  *buffer      = push_array_no_zero(arena, byte, buffer_size);
 
   CV_PackStringHashTableTask task = {0};
   task.buckets                    = string_ht.buckets;
@@ -1075,7 +1075,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
   }
   ProfEnd();
 
-  U8 **leaf_arr   = push_array_no_zero(arena, U8 *, max_leaf_count);
+  byte **leaf_arr   = push_array_no_zero(arena, byte *, max_leaf_count);
   U64  leaf_count = 0;
   for (U64 data_idx = 0; data_idx < data_arr.count; data_idx += 1) {
     String8 data = data_arr.v[data_idx];
@@ -1114,7 +1114,7 @@ cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
 {
   Assert(leaf_idx < debug_t.count);
 
-  U8 *ptr = debug_t.v[leaf_idx];
+  byte *ptr = debug_t.v[leaf_idx];
   String8 data = str8(ptr, max_U64);
 
   CV_Leaf leaf;
@@ -1130,7 +1130,7 @@ String8
 cv_debug_t_get_raw_leaf(CV_DebugT debug_t, U64 leaf_idx)
 {
   Assert(leaf_idx < debug_t.count);
-  U8          *leaf_ptr   = debug_t.v[leaf_idx];
+  byte          *leaf_ptr   = debug_t.v[leaf_idx];
   CV_LeafSize *size_ptr   = (CV_LeafSize *)leaf_ptr;
   CV_LeafSize  total_size = sizeof(*size_ptr) + *size_ptr;
   String8 raw_leaf = str8(leaf_ptr, total_size);

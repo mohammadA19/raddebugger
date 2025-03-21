@@ -294,7 +294,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
   U64 total_num_bytes_left_to_read = total_num_bytes_to_read;
   for(;total_num_bytes_left_to_read > 0;)
   {
-    int read_result = read(fd, (U8 *)out_data + total_num_bytes_read, total_num_bytes_left_to_read);
+    int read_result = read(fd, (byte *)out_data + total_num_bytes_read, total_num_bytes_left_to_read);
     if(read_result >= 0)
     {
       total_num_bytes_read += read_result;
@@ -322,7 +322,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
   U64 total_num_bytes_left_to_write = total_num_bytes_to_write;
   for(;total_num_bytes_left_to_write > 0;)
   {
-    int write_result = write(fd, (U8 *)data + total_num_bytes_written, total_num_bytes_left_to_write);
+    int write_result = write(fd, (byte *)data + total_num_bytes_written, total_num_bytes_left_to_write);
     if(write_result >= 0)
     {
       total_num_bytes_written += write_result;
@@ -410,7 +410,7 @@ os_copy_file_path(String8 dst, String8 src)
     {
       Temp scratch = scratch_begin(0, 0);
       U64 buffer_size = Min(bytes_left_to_copy, MB(8));
-      U8 *buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
+      byte *buffer = push_array_no_zero(scratch.arena, byte, buffer_size);
       U64 bytes_read = os_file_read(src_h, r1u64(total_bytes_copied, total_bytes_copied+buffer_size), buffer);
       U64 bytes_written = os_file_write(dst_h, r1u64(total_bytes_copied, total_bytes_copied+bytes_read), buffer);
       U64 bytes_copied = Min(bytes_read, bytes_written);
@@ -1133,7 +1133,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
 OS_Guid
 os_make_guid()
 {
-  U8 random_bytes[16] = {0};
+  byte random_bytes[16] = {0};
   StaticAssert(sizeof(random_bytes) == sizeof(OS_Guid), os_lnx_guid_size_check);
   getrandom(random_bytes, sizeof(random_bytes), 0);
   OS_Guid guid = {0};
@@ -1182,12 +1182,12 @@ main(int argc, char **argv)
       
       // rjf: get machine name
       B32 got_final_result = 0;
-      U8 *buffer = 0;
+      byte *buffer = 0;
       int size = 0;
       for(S64 cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
       {
         scratch_end(scratch);
-        buffer = push_array_no_zero(scratch.arena, U8, cap);
+        buffer = push_array_no_zero(scratch.arena, byte, cap);
         size = gethostname((char*)buffer, cap);
         if(size < cap)
         {
@@ -1200,7 +1200,7 @@ main(int argc, char **argv)
       if(got_final_result && size > 0)
       {
         info->machine_name.size = size;
-        info->machine_name.str = push_array_no_zero(os_lnx_state.arena, U8, info->machine_name.size + 1);
+        info->machine_name.str = push_array_no_zero(os_lnx_state.arena, byte, info->machine_name.size + 1);
         MemoryCopy(info->machine_name.str, buffer, info->machine_name.size);
         info->machine_name.str[info->machine_name.size] = 0;
       }
@@ -1217,12 +1217,12 @@ main(int argc, char **argv)
       {
         // rjf: get self string
         B32 got_final_result = 0;
-        U8 *buffer = 0;
+        byte *buffer = 0;
         int size = 0;
         for(S64 cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
         {
           scratch_end(scratch);
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = push_array_no_zero(scratch.arena, byte, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if(size < cap)
           {

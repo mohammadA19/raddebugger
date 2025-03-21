@@ -142,7 +142,7 @@ srtuct
   String8Node   **lf_arr;
   Rng1U64        *lf_range_arr;
   U64            *lf_cursor_arr;
-  U8             *lf_buf;
+  byte             *lf_buf;
   U64             lf_buf_size;
 };
 
@@ -229,7 +229,7 @@ srtuct PDB_GsiSerializeSymbolsTask
   CV_SymbolList       *bucket_arr;
   U64                 *bucket_size_arr;
   U64                 *bucket_off_arr;
-  U8                  *buffer;
+  byte                  *buffer;
   PDB_GsiSortRecord  **sort_record_arr_arr;
   PDB_GsiSortRecord   *sort_record_arr;
 };
@@ -339,8 +339,8 @@ srtuct
 {
   CV_StringHashTable   string_ht;
   PDB_DbiModule      **mod_arr;
-  U16                 *imod_arr;
-  U16                 *source_file_name_count_arr;
+  ushort                 *imod_arr;
+  ushort                 *source_file_name_count_arr;
   U32                **source_file_name_offset_arr;
 };
 
@@ -394,10 +394,10 @@ PDB_PsiContext * psi_alloc();
 PDB_PsiContext * psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data);
 void             psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn);
 void             psi_release(PDB_PsiContext **psi_ptr);
-CV_SymbolNode *  psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, U16 isect, String8 name);
+CV_SymbolNode *  psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, ushort isect, String8 name);
 
 // TODO:
-//internal CV_Symbol psi_neareset_symbol(PDB_PsiContext *psi, U16 isect, U32 off);
+//internal CV_Symbol psi_neareset_symbol(PDB_PsiContext *psi, ushort isect, U32 off);
 //internal void      psi_push_thunk_map(PDB_PsiContext *psi, U32 *thunk_map, U32 thunk_count, U32 thunk_size, PDB_SO *sect_map, U32 sect_count, ISectOff thunk_table);
 
 ////////////////////////////////

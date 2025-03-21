@@ -13,7 +13,7 @@ struct MSF_RawStream
   U64 page_count;
   union {
     U32 *page_indices_u32;
-    U16 *page_indices_u16;
+    ushort *page_indices_u16;
   } u;
 };
 

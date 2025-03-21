@@ -185,14 +185,14 @@ dump_symtab(Arena *arena, String8List *out, ELF_SymArray *symbols, String8 strta
             U32 indent){
   static char spaces[] = "                                ";
   
-  U8 *str_first = strtab.str;
-  U8 *str_opl   = strtab.str + strtab.size;
+  byte *str_first = strtab.str;
+  byte *str_opl   = strtab.str + strtab.size;
   
   ELF_Sym64 *symbol = symbols->symbols;
   U64 count = symbols->count;
   for (U64 i = 0; i < count; i += 1, symbol += 1){
-    U8 *name_first = str_first + symbol->st_name;
-    U8 *name_opl = name_first;
+    byte *name_first = str_first + symbol->st_name;
+    byte *name_opl = name_first;
     for (;name_opl < str_opl && *name_opl != 0;) name_opl += 1;
     String8 name = str8_range(name_first, name_opl);
     
@@ -257,9 +257,9 @@ dump_entry_tree(Arena *arena, String8List *out,
         String8 data = dwarf->debug_data[DWARF_SectionCode_Str];
         U64 off = attrib_val->val;
         if (off < data.size){
-          U8 *start = data.str + off;
-          U8 *opl = data.str + data.size;
-          U8 *ptr = start;
+          byte *start = data.str + off;
+          byte *opl = data.str + data.size;
+          byte *ptr = start;
           for (;ptr < opl && *ptr != 0;) ptr += 1;
           str = str8_range(start, ptr);
         }
@@ -336,9 +336,9 @@ dump_entry_tree(Arena *arena, String8List *out,
           
           String8 data = dwarf->debug_data[DWARF_SectionCode_Str];
           if (off < data.size){
-            U8 *start = data.str + off;
-            U8 *opl = data.str + data.size;
-            U8 *ptr = start;
+            byte *start = data.str + off;
+            byte *opl = data.str + data.size;
+            byte *ptr = start;
             for (;ptr < opl && *ptr != 0;) ptr += 1;
             str = str8_range(start, ptr);
           }

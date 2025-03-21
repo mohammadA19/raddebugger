@@ -8,15 +8,15 @@
 //~ CodeView Common Parser Types
 
 // CV_Numeric layout
-// x: U16
-// buf: U8[]
-// case (x < 0x8000):  kind=U16 val=x
+// x: ushort
+// buf: byte[]
+// case (x < 0x8000):  kind=ushort val=x
 // case (x >= 0x8000): kind=x   val=buf
 
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
-  U8             *val;
+  byte             *val;
   U64             encoded_size;
 };
 
@@ -140,7 +140,7 @@ struct CV_C13LinesParsed
   String8  file_name;
   U64     *voffs;     // [line_count + 1]
   U32     *line_nums; // [line_count]
-  U16     *col_nums;  // [2*line_count]
+  ushort     *col_nums;  // [2*line_count]
   U32      line_count;
 };
 
@@ -222,7 +222,7 @@ U64 cv_hash_from_item_id(CV_ItemId item_id);
 
 //- Numeric Decoder
 
-CV_NumericParsed cv_numeric_from_data_range(U8 *first, U8 *opl);
+CV_NumericParsed cv_numeric_from_data_range(byte *first, byte *opl);
 U64              cv_read_numeric(String8 data, U64 offset, CV_NumericParsed *out);
 
 B32 cv_numeric_fits_in_u64(CV_NumericParsed *num);

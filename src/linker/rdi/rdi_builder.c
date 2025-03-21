@@ -960,9 +960,9 @@ rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch 
 
   if (0 <= offset && offset <= (S64)max_U16) {
     if (is_reference) {
-      loc = rdib_make_location_addr_addr_reg_plus_u16(ranges, reg_code, (U16)offset);
+      loc = rdib_make_location_addr_addr_reg_plus_u16(ranges, reg_code, (ushort)offset);
     } else {
-      loc = rdib_make_location_addr_reg_plus_u16(ranges, reg_code, (U16)offset);
+      loc = rdib_make_location_addr_reg_plus_u16(ranges, reg_code, (ushort)offset);
     }
   }
 
@@ -3307,7 +3307,7 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
   U64 radix_memory_size = sizeof(RDIB_VMapRange) * range_count +
                           sizeof(U32) * ((1 << size_bit_count0) + (1 << size_bit_count1) + (1 << size_bit_count2)) +
                           sizeof(U32) * ((1 << voff_bit_count0) + (1 << voff_bit_count1) + (1 << voff_bit_count2));
-  U8 *radix_memory      = push_array_no_zero(arena, U8, radix_memory_size);
+  byte *radix_memory      = push_array_no_zero(arena, byte, radix_memory_size);
   ProfEnd();
 
   // TODO: windows caps images at 4GiB so we use 32-bit radix sort, but on linux
@@ -3700,7 +3700,7 @@ rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectio
   RDIB_CopyStringDataTask task = {0};
   task.string_table     = string_table;
   task.string_data_size = cursor;
-  task.string_data      = push_array_no_zero(arena, U8, task.string_data_size);
+  task.string_data      = push_array_no_zero(arena, byte, task.string_data_size);
   task.buckets          = buckets;
   task.ranges           = tp_divide_work(scratch.arena, bucket_count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_copy_string_data_task, &task);
@@ -3708,7 +3708,7 @@ rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectio
   // fill out string table section
   RDIB_DataSection string_table_sect = {0};
   string_table_sect.tag = RDI_SectionKind_StringTable;
-  str8_list_push(arena, &string_table_sect.data, str8((U8 *)task.string_table, sizeof(task.string_table[0]) * bucket_count));
+  str8_list_push(arena, &string_table_sect.data, str8((byte *)task.string_table, sizeof(task.string_table[0]) * bucket_count));
 
   // fill out string data section
   RDIB_DataSection string_data_sect = { .tag = RDI_SectionKind_StringData };
@@ -4131,7 +4131,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
   // location data fill info
   U64  loc_data_max    = task->loc_data_offsets[task_id] + task->loc_data_sizes[task_id];
   U64  loc_data_cursor = task->loc_data_offsets[task_id];
-  U8  *loc_data        = task->loc_data_rdi;
+  byte  *loc_data        = task->loc_data_rdi;
 
   // location block fill info
   U64                loc_block_cursor = task->loc_block_offsets[task_id];
@@ -4301,7 +4301,7 @@ rdib_data_sections_from_scopes(TP_Context            *tp,
   task.scopes_rdi      = push_array_no_zero(arena->v[0], RDI_Scope,         total_scope_count     );
   task.locals_rdi      = push_array_no_zero(arena->v[0], RDI_Local,         total_local_count     );
   task.loc_blocks_rdi  = push_array_no_zero(arena->v[0], RDI_LocationBlock, total_loc_block_count );
-  task.loc_data_rdi    = push_array_no_zero(arena->v[0], U8,                total_loc_data_size   );
+  task.loc_data_rdi    = push_array_no_zero(arena->v[0], byte,                total_loc_data_size   );
   ProfEnd();
 
   tp_for_parallel(tp, 0, tp->worker_count, rdib_build_scopes_task, &task);
@@ -4684,8 +4684,8 @@ THREAD_POOL_TASK_FUNC(rdib_build_line_tables_task)
         struct Value {
           U32 src_file_idx;
           U32 line_num;
-          U16 col_first;
-          U16 col_opl;
+          ushort col_first;
+          ushort col_opl;
         };
         KeyValuePair *pairs       = push_array_no_zero(scratch.arena, KeyValuePair, total_line_count);
         struct Value *values      = push_array_no_zero(scratch.arena, struct Value, total_line_count);

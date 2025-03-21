@@ -116,7 +116,7 @@ srtuct CV_LineArray
   U64  col_count;
   U64 *voffs;     // [line_count + 1]
   U32 *line_nums; // [line_count]
-  U16 *col_nums;  // [line_count * 2]
+  ushort *col_nums;  // [line_count * 2]
 };
 
 srtuct CV_File
@@ -194,7 +194,7 @@ srtuct CV_Line
   U64 voff;
   U32 file_off;
   U32 line_num;
-  U16 col_num;
+  ushort col_num;
 };
 
 srtuct CV_LinesAccel
@@ -253,7 +253,7 @@ srtuct CV_DebugT
 {
   U64  size;
   U64  count;
-  U8 **v;
+  byte **v;
 };
 
 ////////////////////////////////
@@ -349,7 +349,7 @@ srtuct
 
 srtuct
 {
-  U8               *buffer;
+  byte               *buffer;
   Rng1U64          *ranges;
   CV_StringBucket **buckets;
 };
@@ -372,7 +372,7 @@ CV_PrecompInfo    cv_precomp_info_from_leaf(CV_Leaf leaf);
 //~ Leaf Helpers
 
 U64     cv_compute_leaf_record_size(String8 data, U64 align);
-U64     cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align);
+U64     cv_serialize_leaf_to_buffer(byte *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align);
 String8 cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, String8 data, U64 align);
 String8 cv_serialize_leaf(Arena *arena, CV_Leaf *leaf, U64 align);
 CV_Leaf cv_make_leaf(Arena *arena, CV_LeafKind kind, String8 data);
@@ -383,19 +383,19 @@ CV_Leaf cv_leaf_from_string(String8 raw_data);
 //~ Symbol Helpers
 
 U64     cv_compute_symbol_record_size(CV_Symbol *symbol, U64 align);
-U64     cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align);
+U64     cv_serialize_symbol_to_buffer(byte *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align);
 String8 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, U64 align);
 
 String8       cv_make_symbol(Arena *arena, CV_SymKind kind, String8 data);
 String8       cv_make_obj_name(Arena *arena, String8 obj_path, U32 sig);
 String8       cv_make_comp3(Arena *arena,
                                      CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
-                                     U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
-                                     U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
+                                     ushort ver_fe_major, ushort ver_fe_minor, ushort ver_fe_build, ushort ver_feqfe,
+                                     ushort ver_major, ushort ver_minor, ushort ver_build, ushort ver_qfe,
                                      String8 version_string);
 String8       cv_make_envblock(Arena *arena, String8List string_list);
 CV_Symbol     cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name, B32 is_local);
-CV_Symbol     cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, U16 isect, String8 name);
+CV_Symbol     cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, ushort isect, String8 name);
 CV_SymbolList cv_make_proc_refs(Arena *arena, CV_ModIndex imod, CV_SymbolList symbol_list);
 
 ////////////////////////////////

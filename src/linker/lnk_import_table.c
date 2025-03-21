@@ -620,7 +620,7 @@ lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *sym
 }
 
 String8
-lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
+lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, ushort hint)
 {
   String8 ordinal_data = str8_zero();
   switch (machine) {
@@ -644,7 +644,7 @@ lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbo
 {
   ProfBeginFunction();
   
-  static U8 thunk[] = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 }; // jmp [__imp_<FUNC_NAME>]
+  static byte thunk[] = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 }; // jmp [__imp_<FUNC_NAME>]
   
   // emit chunk
   String8 jmp_data = push_str8_copy(sect->arena, str8_array_fixed(thunk));
@@ -663,7 +663,7 @@ lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_ad
 {
   ProfBeginFunction();
   
-  static U8 load_thunk[] = {
+  static byte load_thunk[] = {
     0x48, 0x8D, 0x05, 0x00, 0x00, 0x00, 0x00,  // lea rax, [__imp_<FUNC_NAME>]
     0xE9, 0x00, 0x00, 0x00, 0x00               // jmp __tailMerge_<DLL_NAME>
   };
@@ -689,7 +689,7 @@ lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *
 {
   ProfBeginFunction();
   
-  static U8 tail_merge[] = {
+  static byte tail_merge[] = {
     0x48, 0x89, 0x4C, 0x24, 0x08,                   // mov         qword ptr [rsp+8],rcx  
     0x48, 0x89, 0x54, 0x24, 0x10,                   // mov         qword ptr [rsp+10h],rdx  
     0x4C, 0x89, 0x44, 0x24, 0x18,                   // mov         qword ptr [rsp+18h],r8  

@@ -44,7 +44,7 @@ struct EV_KeyViewRuleNode
   EV_KeyViewRuleNode *hash_next;
   EV_KeyViewRuleNode *hash_prev;
   EV_Key key;
-  U8 *buffer;
+  byte *buffer;
   U64 buffer_cap;
   U64 buffer_string_size;
 };
@@ -415,7 +415,7 @@ B32 ev_row_is_editable(EV_Row *row);
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-String8 ev_string_from_ascii_value(Arena *arena, U8 val);
+String8 ev_string_from_ascii_value(Arena *arena, byte val);
 String8 ev_string_from_hresult_facility_code(U32 code);
 String8 ev_string_from_hresult_code(U32 code);
 String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, U32 min_digits, E_Eval eval);

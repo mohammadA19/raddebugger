@@ -156,7 +156,7 @@ struct PTG_Shared
   
   // rjf: user -> xfer thread
   U64 u2b_ring_size;
-  U8 *u2b_ring_base;
+  byte *u2b_ring_base;
   U64 u2b_ring_write_pos;
   U64 u2b_ring_read_pos;
   OS_Handle u2b_ring_cv;

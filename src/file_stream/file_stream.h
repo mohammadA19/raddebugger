@@ -65,7 +65,7 @@ struct FS_Shared
   
   // rjf: user -> streamer ring buffer
   U64 u2s_ring_size;
-  U8 *u2s_ring_base;
+  byte *u2s_ring_base;
   U64 u2s_ring_write_pos;
   U64 u2s_ring_read_pos;
   OS_Handle u2s_ring_cv;

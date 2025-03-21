@@ -701,7 +701,7 @@ d_symbol_name_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff, B32 d
       U64 global_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, voff);
       RDI_GlobalVariable *global_var = rdi_element_from_name_idx(rdi, GlobalVariables, global_idx);
       U64 name_size = 0;
-      U8 *name_ptr = rdi_string_from_idx(rdi, global_var->name_string_idx, &name_size);
+      byte *name_ptr = rdi_string_from_idx(rdi, global_var->name_string_idx, &name_size);
       result = push_str8_copy(arena, str8(name_ptr, name_size));
     }
     di_scope_close(scope);
@@ -1966,7 +1966,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                   B32 quoted = 0;
                   for(U64 idx = 0; idx <= args.size; idx += 1)
                   {
-                    U8 byte = idx < args.size ? args.str[idx] : 0;
+                    byte byte = idx < args.size ? args.str[idx] : 0;
                     if(byte == '"')
                     {
                       quoted ^= 1;

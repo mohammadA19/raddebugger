@@ -391,11 +391,11 @@ p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code
   {
     if(extra_indirection)
     {
-      result = rdim_push_location_addr_addr_reg_plus_u16(arena, reg_code, (U16)offset);
+      result = rdim_push_location_addr_addr_reg_plus_u16(arena, reg_code, (ushort)offset);
     }
     else
     {
-      result = rdim_push_location_addr_reg_plus_u16(arena, reg_code, (U16)offset);
+      result = rdim_push_location_addr_reg_plus_u16(arena, reg_code, (ushort)offset);
     }
   }
   else
@@ -769,7 +769,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
           {
             // rjf: unpack sym
             CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-            String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+            String8           binary_annots = str8((byte *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
             
             // rjf: map inlinee -> parsed cv c13 inlinee line info
             CV_C13InlineeLinesParsed *inlinee_lines_parsed = 0;
@@ -801,7 +801,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
                 U64        count;
                 U64       *voffs;     // [line_count + 1] (sorted)
                 U32       *line_nums; // [line_count]
-                U16       *col_nums;  // [2*line_count]
+                ushort       *col_nums;  // [2*line_count]
               };
               LineChunk       *first_line_chunk            = 0;
               LineChunk       *last_line_chunk             = 0;
@@ -952,8 +952,8 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
     //- rjf: unpack symbol range info
     CV_SymKind kind = rec_range->hdr.kind;
     U64 header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-    U8 *sym_first = in->sym->data.str + rec_range->off + 2;
-    U8 *sym_opl   = sym_first + rec_range->hdr.size;
+    byte *sym_first = in->sym->data.str + rec_range->off + 2;
+    byte *sym_opl   = sym_first + rec_range->hdr.size;
     
     //- rjf: skip bad ranges
     if(sym_opl > in->sym->data.str + in->sym->data.size || sym_first + header_struct_size > in->sym->data.str + in->sym->data.size)
@@ -1018,8 +1018,8 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
        range->off+2+header_struct_size <= in->tpi_leaf->data.size &&
        range->hdr.size >= 2)
     {
-      U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-      U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+      byte *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+      byte *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
       switch(kind)
       {
         default:{}break;
@@ -1035,11 +1035,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           if(lf_struct->props & CV_TypeProp_FwdRef)
           {
             // rjf: unpack rest of leaf
-            U8 *numeric_ptr = (U8 *)(lf_struct + 1);
+            byte *numeric_ptr = (byte *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-            U8 *name_ptr = numeric_ptr + size.encoded_size;
+            byte *name_ptr = numeric_ptr + size.encoded_size;
             String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-            U8 *unique_name_ptr = name_ptr + name.size + 1;
+            byte *unique_name_ptr = name_ptr + name.size + 1;
             String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
@@ -1060,11 +1060,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           if(lf_struct->props & CV_TypeProp_FwdRef)
           {
             // rjf: unpack rest of leaf
-            U8 *numeric_ptr = (U8 *)(lf_struct + 1);
+            byte *numeric_ptr = (byte *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-            U8 *name_ptr = (U8 *)numeric_ptr + size.encoded_size;
+            byte *name_ptr = (byte *)numeric_ptr + size.encoded_size;
             String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-            U8 *unique_name_ptr = name_ptr + name.size + 1;
+            byte *unique_name_ptr = name_ptr + name.size + 1;
             String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
@@ -1079,11 +1079,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
         {
           // rjf: unpack leaf
           CV_LeafUnion *lf_union = (CV_LeafUnion *)itype_leaf_first;
-          U8 *numeric_ptr = (U8 *)(lf_union + 1);
+          byte *numeric_ptr = (byte *)(lf_union + 1);
           CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-          U8 *name_ptr = numeric_ptr + size.encoded_size;
+          byte *name_ptr = numeric_ptr + size.encoded_size;
           String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-          U8 *unique_name_ptr = name_ptr + name.size + 1;
+          byte *unique_name_ptr = name_ptr + name.size + 1;
           String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves tos
@@ -1100,9 +1100,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
         {
           // rjf: unpack leaf
           CV_LeafEnum *lf_enum = (CV_LeafEnum*)itype_leaf_first;
-          U8 *name_ptr = (U8 *)(lf_enum + 1);
+          byte *name_ptr = (byte *)(lf_enum + 1);
           String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-          U8 *unique_name_ptr = name_ptr + name.size + 1;
+          byte *unique_name_ptr = name_ptr + name.size + 1;
           String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves to
@@ -1169,8 +1169,8 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
            range->off+2+header_struct_size <= in->tpi_leaf->data.size &&
            range->hdr.size >= 2)
         {
-          U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-          U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+          byte *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+          byte *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
           switch(kind)
           {
             default:{}break;
@@ -1242,8 +1242,8 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              U8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
-              U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+              byte *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
+              byte *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
                 break;
@@ -1318,8 +1318,8 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              U8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
-              U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+              byte *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
+              byte *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
                 break;
@@ -1452,8 +1452,8 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
       CV_RecRange *range = &in->tpi_leaf->leaf_ranges.ranges[itype-in->tpi_leaf->itype_first];
       CV_LeafKind kind = range->hdr.kind;
       U64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
-      U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-      U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+      byte *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+      byte *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
       if(range->off+range->hdr.size > in->tpi_leaf->data.size ||
          range->off+2+header_struct_size > in->tpi_leaf->data.size ||
          range->hdr.size < 2)
@@ -1547,17 +1547,17 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              U8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
-              U8 *field_list_opl = field_list_first+range->hdr.size-2;
-              for(U8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
+              byte *field_list_first = in->tpi_leaf->data.str+range->off+2;
+              byte *field_list_opl = field_list_first+range->hdr.size-2;
+              for(byte *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
                   read_ptr = next_read_ptr)
               {
                 // rjf: unpack field
                 CV_LeafKind field_kind = *(CV_LeafKind *)read_ptr;
                 U64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
-                U8 *field_leaf_first = read_ptr+2;
-                U8 *field_leaf_opl   = field_list_opl;
+                byte *field_leaf_first = read_ptr+2;
+                byte *field_leaf_opl   = field_list_opl;
                 next_read_ptr = field_leaf_opl;
                 
                 // rjf: skip out-of-bounds fields
@@ -1583,7 +1583,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_TypeId new_itype = lf->itype;
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (byte *)(lf+1);
                     
                     // rjf: determine if index itype is new
                     B32 is_new = 1;
@@ -1612,10 +1612,10 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafMember *lf = (CV_LeafMember *)field_leaf_first;
-                    U8 *offset_ptr = (U8 *)(lf+1);
+                    byte *offset_ptr = (byte *)(lf+1);
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
                     U64 offset64 = cv_u64_from_numeric(&offset);
-                    U8 *name_ptr = offset_ptr + offset.encoded_size;
+                    byte *name_ptr = offset_ptr + offset.encoded_size;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1636,7 +1636,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafStMember *lf = (CV_LeafStMember *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    byte *name_ptr = (byte *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1654,7 +1654,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                   {
                     // rjf: unpack leaf
                     CV_LeafMethod *lf = (CV_LeafMethod *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    byte *name_ptr = (byte *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1672,16 +1672,16 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     }
                     
                     //- rjf: loop through all methods & emit members
-                    U8 *method_list_first = in->tpi_leaf->data.str + method_list_range->off + 2;
-                    U8 *method_list_opl   = method_list_first + method_list_range->hdr.size-2;
-                    for(U8 *method_read_ptr = method_list_first, *next_method_read_ptr = method_list_opl;
+                    byte *method_list_first = in->tpi_leaf->data.str + method_list_range->off + 2;
+                    byte *method_list_opl   = method_list_first + method_list_range->hdr.size-2;
+                    for(byte *method_read_ptr = method_list_first, *next_method_read_ptr = method_list_opl;
                         method_read_ptr < method_list_opl;
                         method_read_ptr = next_method_read_ptr)
                     {
                       CV_LeafMethodListMember *method = (CV_LeafMethodListMember*)method_read_ptr;
                       CV_MethodProp prop = CV_FieldAttribs_Extract_MethodProp(method->attribs);
                       RDIM_Type *method_type = p2r_type_ptr_from_itype(method->itype);
-                      next_method_read_ptr = (U8 *)(method+1);
+                      next_method_read_ptr = (byte *)(method+1);
                       
                       // TODO(allen): PROBLEM
                       // We only get offsets for virtual functions (the "vbaseoff") from
@@ -1755,15 +1755,15 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafOneMethod *lf = (CV_LeafOneMethod *)field_leaf_first;
                     CV_MethodProp prop = CV_FieldAttribs_Extract_MethodProp(lf->attribs);
-                    U8 *vbaseoff_ptr = (U8 *)(lf+1);
-                    U8 *vbaseoff_opl_ptr = vbaseoff_ptr;
+                    byte *vbaseoff_ptr = (byte *)(lf+1);
+                    byte *vbaseoff_opl_ptr = vbaseoff_ptr;
                     U32 vbaseoff = 0;
                     if(prop == CV_MethodProp_Intro || prop == CV_MethodProp_PureIntro)
                     {
                       vbaseoff = *(U32 *)(vbaseoff_ptr);
                       vbaseoff_opl_ptr += sizeof(U32);
                     }
-                    U8 *name_ptr = vbaseoff_opl_ptr;
+                    byte *name_ptr = vbaseoff_opl_ptr;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     RDIM_Type *method_type = p2r_type_ptr_from_itype(lf->itype);
                     
@@ -1807,7 +1807,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                   {
                     // rjf: unpack leaf
                     CV_LeafNestType *lf = (CV_LeafNestType *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    byte *name_ptr = (byte *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1827,7 +1827,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafNestTypeEx *lf = (CV_LeafNestTypeEx *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    byte *name_ptr = (byte *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1847,7 +1847,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafBClass *lf = (CV_LeafBClass *)field_leaf_first;
-                    U8 *offset_ptr = (U8 *)(lf+1);
+                    byte *offset_ptr = (byte *)(lf+1);
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
                     U64 offset64 = cv_u64_from_numeric(&offset);
                     
@@ -1871,13 +1871,13 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafVBClass *lf = (CV_LeafVBClass *)field_leaf_first;
-                    U8 *num1_ptr = (U8 *)(lf+1);
+                    byte *num1_ptr = (byte *)(lf+1);
                     CV_NumericParsed num1 = cv_numeric_from_data_range(num1_ptr, field_leaf_opl);
-                    U8 *num2_ptr = num1_ptr + num1.encoded_size;
+                    byte *num2_ptr = num1_ptr + num1.encoded_size;
                     CV_NumericParsed num2 = cv_numeric_from_data_range(num2_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (byte *)(lf+1);
                     
                     // rjf: emit member
                     RDIM_UDTMember *mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -1891,7 +1891,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_LeafVFuncTab *lf = (CV_LeafVFuncTab *)field_leaf_first;
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (byte *)(lf+1);
                     
                     // NOTE(rjf): currently no-op this case
                     ()lf;
@@ -1899,7 +1899,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                 }
                 
                 // rjf: align-up next field
-                next_read_ptr = (U8 *)AlignPow2((U64)next_read_ptr, 4);
+                next_read_ptr = (byte *)AlignPow2((U64)next_read_ptr, 4);
               }
             }
           }
@@ -1967,17 +1967,17 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              U8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
-              U8 *field_list_opl = field_list_first+range->hdr.size-2;
-              for(U8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
+              byte *field_list_first = in->tpi_leaf->data.str+range->off+2;
+              byte *field_list_opl = field_list_first+range->hdr.size-2;
+              for(byte *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
                   read_ptr = next_read_ptr)
               {
                 // rjf: unpack field
                 CV_LeafKind field_kind = *(CV_LeafKind *)read_ptr;
                 U64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
-                U8 *field_leaf_first = read_ptr+2;
-                U8 *field_leaf_opl   = field_leaf_first+range->hdr.size-2;
+                byte *field_leaf_first = read_ptr+2;
+                byte *field_leaf_opl   = field_leaf_first+range->hdr.size-2;
                 next_read_ptr = field_leaf_opl;
                 
                 // rjf: skip out-of-bounds fields
@@ -2029,10 +2029,10 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafEnumerate *lf = (CV_LeafEnumerate *)field_leaf_first;
-                    U8 *val_ptr = (U8 *)(lf+1);
+                    byte *val_ptr = (byte *)(lf+1);
                     CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, field_leaf_opl);
                     U64 val64 = cv_u64_from_numeric(&val);
-                    U8 *name_ptr = val_ptr + val.encoded_size;
+                    byte *name_ptr = val_ptr + val.encoded_size;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -2046,7 +2046,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                 }
                 
                 // rjf: align-up next field
-                next_read_ptr = (U8 *)AlignPow2((U64)next_read_ptr, 4);
+                next_read_ptr = (byte *)AlignPow2((U64)next_read_ptr, 4);
               }
             }
           }
@@ -2599,7 +2599,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_register->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_register+1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          U64 gap_count = ((byte*)sym_data_opl - (byte*)gaps) / sizeof(*gaps);
           RDI_RegCode reg_code = p2r_rdi_reg_code_from_cv_reg_code(in->arch, cv_reg);
           
           // rjf: build location
@@ -2638,7 +2638,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_fprel->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_fprel + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          U64 gap_count = ((byte*)sym_data_opl - (byte*)gaps) / sizeof(*gaps);
           
           // rjf: select frame pointer register
           CV_EncodedFramePtrReg encoded_fp_reg = cv_pick_fp_encoding(frameproc, defrange_target_is_param);
@@ -2671,7 +2671,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_subfield_register->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_subfield_register + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          U64 gap_count = ((byte*)sym_data_opl - (byte*)gaps) / sizeof(*gaps);
           RDI_RegCode reg_code = p2r_rdi_reg_code_from_cv_reg_code(in->arch, cv_reg);
           
           // rjf: skip "subfield" location info - currently not supported
@@ -2745,7 +2745,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_register_rel->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_register_rel + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          U64 gap_count = ((byte*)sym_data_opl - (byte*)gaps) / sizeof(*gaps);
           
           // rjf: build location
           // TODO(rjf): offset & size from cv_reg code
@@ -2775,7 +2775,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+          String8           binary_annots = str8((byte *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
           
           // rjf: extract external info about inline site
           String8    name      = str8_zero();
@@ -2785,7 +2785,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             CV_RecRange rec_range = in->ipi_leaf->leaf_ranges.ranges[sym->inlinee - in->ipi_leaf->itype_first];
             String8     rec_data  = str8_substr(in->ipi_leaf->data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
-            void       *raw_leaf  = rec_data.str + sizeof(U16);
+            void       *raw_leaf  = rec_data.str + sizeof(ushort);
             
             // rjf: extract method inline info
             if(rec_range.hdr.kind == CV_LeafKind_MFUNC_ID &&
@@ -3473,8 +3473,8 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
              range->off+2+header_struct_size <= tpi_leaf->data.size &&
              range->hdr.size >= 2)
           {
-            U8 *itype_leaf_first = tpi_leaf->data.str + range->off+2;
-            U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+            byte *itype_leaf_first = tpi_leaf->data.str + range->off+2;
+            byte *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
             switch(kind)
             {
               //- rjf: MODIFIER
@@ -3586,8 +3586,8 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 {
                   break;
                 }
-                U8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
-                U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+                byte *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
+                byte *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
                   break;
@@ -3634,8 +3634,8 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 {
                   break;
                 }
-                U8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
-                U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+                byte *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
+                byte *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
                   break;
@@ -3689,7 +3689,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 // rjf: unpack leaf
                 CV_LeafArray *lf = (CV_LeafArray *)itype_leaf_first;
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->entry_itype);
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                byte *numeric_ptr = (byte*)(lf + 1);
                 CV_NumericParsed array_count = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 full_size = cv_u64_from_numeric(&array_count);
                 
@@ -3709,10 +3709,10 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 
                 // rjf: unpack leaf
                 CV_LeafStruct *lf = (CV_LeafStruct *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                byte *numeric_ptr = (byte*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                byte *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
@@ -3738,10 +3738,10 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 
                 // rjf: unpack leaf
                 CV_LeafStruct2 *lf = (CV_LeafStruct2 *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                byte *numeric_ptr = (byte*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                byte *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
@@ -3766,10 +3766,10 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 
                 // rjf: unpack leaf
                 CV_LeafUnion *lf = (CV_LeafUnion *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                byte *numeric_ptr = (byte*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                byte *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
@@ -3795,7 +3795,7 @@ p2r_convert(Arena *arena, P2R_User2Convert *in)
                 // rjf: unpack leaf
                 CV_LeafEnum *lf = (CV_LeafEnum *)itype_leaf_first;
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->base_itype);
-                U8 *name_ptr = (U8 *)(lf + 1);
+                byte *name_ptr = (byte *)(lf + 1);
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
@@ -4847,7 +4847,7 @@ p2r_compress(Arena *arena, P2R_Serialize2File *in)
     //- rjf: set up compression context
     rr_lzb_simple_context ctx = {0};
     ctx.m_tableSizeBits = 14;
-    ctx.m_hashTable = push_array(arena, U16, 1<<ctx.m_tableSizeBits);
+    ctx.m_hashTable = push_array(arena, ushort, 1<<ctx.m_tableSizeBits);
     
     //- rjf: compress, or just copy, all sections
     for EachEnumVal(RDI_SectionKind, k)
@@ -4862,8 +4862,8 @@ p2r_compress(Arena *arena, P2R_Serialize2File *in)
       // rjf: compress if needed
       if(should_compress)
       {
-        MemoryZero(ctx.m_hashTable, sizeof(U16)*(1<<ctx.m_tableSizeBits));
-        dst->data = push_array_no_zero(arena, U8, src->encoded_size);
+        MemoryZero(ctx.m_hashTable, sizeof(ushort)*(1<<ctx.m_tableSizeBits));
+        dst->data = push_array_no_zero(arena, byte, src->encoded_size);
         dst->encoded_size = rr_lzb_simple_encode_veryfast(&ctx, src->data, src->encoded_size, dst->data);
         dst->unpacked_size = src->encoded_size;
         dst->encoding = RDI_SectionEncoding_LZB;

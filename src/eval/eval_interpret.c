@@ -61,13 +61,13 @@ e_interpret(String8 bytecode)
   E_Space selected_space = e_interpret_ctx->primary_space;
   
   //- rjf: iterate bytecode & perform ops
-  U8 *ptr = bytecode.str;
-  U8 *opl = bytecode.str + bytecode.size;
+  byte *ptr = bytecode.str;
+  byte *opl = bytecode.str + bytecode.size;
   for(;ptr < opl;)
   {
     // rjf: consume next opcode
     RDI_EvalOp op = (RDI_EvalOp)*ptr;
-    U16 ctrlbits = 0;
+    ushort ctrlbits = 0;
     if(op < RDI_EvalOp_COUNT)
     {
       ctrlbits = rdi_eval_op_ctrlbits_table[op];
@@ -87,7 +87,7 @@ e_interpret(String8 bytecode)
     E_Value imm = {0};
     {
       U32 decode_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
-      U8 *next_ptr = ptr + decode_size;
+      byte *next_ptr = ptr + decode_size;
       if(next_ptr > opl)
       {
         result.code = E_InterpretationCode_BadOp;
@@ -159,9 +159,9 @@ e_interpret(String8 bytecode)
       
       case RDI_EvalOp_RegRead:
       {
-        U8 rdi_reg_code     = (imm.u64&0x0000FF)>>0;
-        U8 byte_size        = (imm.u64&0x00FF00)>>8;
-        U8 byte_off         = (imm.u64&0xFF0000)>>16;
+        byte rdi_reg_code     = (imm.u64&0x0000FF)>>0;
+        byte byte_size        = (imm.u64&0x00FF00)>>8;
+        byte byte_off         = (imm.u64&0xFF0000)>>16;
         REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx->reg_arch, rdi_reg_code);
         REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx->reg_arch)[base_reg_code];
         U64 off = (U64)rng.byte_off + byte_off;
@@ -767,7 +767,7 @@ e_interpret(String8 bytecode)
         if(offset + bytes_to_read <= sizeof(E_Value))
         {
           E_Value src_val = svals[1];
-          MemoryCopy(&nval.u512[0], (U8 *)(&src_val.u512[0]) + offset, bytes_to_read);
+          MemoryCopy(&nval.u512[0], (byte *)(&src_val.u512[0]) + offset, bytes_to_read);
         }
       }break;
       

@@ -216,7 +216,7 @@ pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity)
 U32
 pdb_hash_table_hash(String8 key)
 {
-  return (U16)pdb_hash_v1(key);
+  return (ushort)pdb_hash_v1(key);
 }
 
 B32
@@ -352,11 +352,11 @@ PDB_HASH_TABLE_UNPACK_FUNC(pdb_named_stream_ht_unpack)
   U32 key_data_offset = max_U32;
   *key_value_cursor += str8_deserial_read_struct(key_value_data, *key_value_cursor, &key_data_offset);
 
-  U8 *cstr_ptr = local_data.str + key_data_offset;
-  U8 *cstr_opl = local_data.str + local_data.size;
+  byte *cstr_ptr = local_data.str + key_data_offset;
+  byte *cstr_opl = local_data.str + local_data.size;
   String8 stream_name = str8_cstring_capped(cstr_ptr, cstr_opl);
 
-  // NOTE: stream number is U16 but in the reference they cast to U32
+  // NOTE: stream number is ushort but in the reference they cast to U32
   String8 stream_number = {0};
   *key_value_cursor += str8_deserial_read_block(key_value_data, *key_value_cursor, sizeof(U32), &stream_number);
 
@@ -575,8 +575,8 @@ pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
 
         // open buckets
         PDB_StringTableBucket *node_arr = push_array_no_zero(arena, PDB_StringTableBucket, bucket_count);
-        U8  *string_buffer_ptr = string_buffer.str;
-        U8  *string_buffer_opl = string_buffer.str + string_buffer.size;
+        byte  *string_buffer_ptr = string_buffer.str;
+        byte  *string_buffer_opl = string_buffer.str + string_buffer.size;
         U32 *offset_array      = (U32*)offset_buffer.str;
         U32  bucket_read_idx   = 0;
 
@@ -656,7 +656,7 @@ pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
   Temp scratch = scratch_begin(0,0);
 
   // serialize bucket data
-  U8  *string_buffer     = push_array_no_zero(scratch.arena, U8, strtab->size);
+  byte  *string_buffer     = push_array_no_zero(scratch.arena, byte, strtab->size);
   U32 *bucket_offset_arr = push_array(scratch.arena, U32, strtab->bucket_max);
 
   for (U32 bucket_idx = 0; bucket_idx < strtab->bucket_max; bucket_idx += 1) {
@@ -667,7 +667,7 @@ pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
       bucket_offset_arr[bucket_idx] = bucket->offset;
 
       // write c string at bucket offset
-      U8 *str_ptr = string_buffer + bucket->offset;
+      byte *str_ptr = string_buffer + bucket->offset;
       MemoryCopy(str_ptr, bucket->data.str, bucket->data.size);
       str_ptr[bucket->data.size] = '\0';
     }
@@ -1029,7 +1029,7 @@ pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable 
   CV_DebugT debug_t = cv_debug_t_from_data(scratch.arena, types_data, PDB_LEAF_ALIGN);
   
   // read hash data
-  U8 *hash_buffer = push_array(scratch.arena, U8, header.hash_vals.size);
+  byte *hash_buffer = push_array(scratch.arena, byte, header.hash_vals.size);
   msf_stream_seek(msf, header.hash_sn, header.hash_vals.off);
   MSF_UInt hash_buffer_size = msf_stream_read(msf, header.hash_sn, hash_buffer, header.hash_vals.size);
   Assert(hash_buffer_size == header.hash_vals.size);
@@ -1281,7 +1281,7 @@ pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strta
   write_types_task.lf_arr        = lf_arr;
   write_types_task.lf_range_arr  = lf_range_arr;
   write_types_task.lf_cursor_arr = lf_cursor_arr;
-  write_types_task.lf_buf        = push_array_no_zero(scratch.arena, U8, lf_buf_size);
+  write_types_task.lf_buf        = push_array_no_zero(scratch.arena, byte, lf_buf_size);
   write_types_task.lf_buf_size   = lf_buf_size;
   tp_for_parallel(tp, 0, tp->worker_count, pdb_write_types_task, &write_types_task);
 
@@ -1373,7 +1373,7 @@ pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, Strin
               
               // update hash adjust
               pdb_hash_table_delete(&ts->hash_adj, udt_info.name);
-              pdb_hash_table_set(&ts->hash_adj, udt_info.name, str8((U8*)&curr->leaf->type_index, sizeof(curr->leaf->type_index)));
+              pdb_hash_table_set(&ts->hash_adj, udt_info.name, str8((byte*)&curr->leaf->type_index, sizeof(curr->leaf->type_index)));
             }
             
             return curr->leaf;
@@ -2074,10 +2074,10 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
               Assert(hash_record_ptr->cref > 0);
               
               U32 symbol_off = hash_record_ptr->symbol_off -1;
-              U8 *symbol_ptr = symbol_data.str + symbol_off;
-              U16 *size_ptr = (U16*)symbol_ptr;
+              byte *symbol_ptr = symbol_data.str + symbol_off;
+              ushort *size_ptr = (ushort*)symbol_ptr;
               CV_SymKind *kind_ptr = (CV_SymKind*)(size_ptr + 1);
-              U8 *data_ptr = (U8*)(kind_ptr + 1);
+              byte *data_ptr = (byte*)(kind_ptr + 1);
               
               if (*size_ptr >= sizeof(*kind_ptr)) {
                 CV_Symbol symbol;
@@ -2250,7 +2250,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_pub32)
   PDB_GsiSortRecord *sort_record_arr = task->sort_record_arr_arr[bucket_idx];
   U64                buffer_size     = task->bucket_size_arr[bucket_idx];
   U64                buffer_base     = task->bucket_off_arr[bucket_idx];
-  U8                *buffer          = task->buffer + buffer_base;
+  byte                *buffer          = task->buffer + buffer_base;
 
   U64 sort_idx      = 0;
   U64 buffer_cursor = 0;
@@ -2260,7 +2260,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_pub32)
     Assert(symbol->kind == CV_SymKind_PUB32);
 
     CV_SymPub32 *pub32    = (CV_SymPub32 *)symbol->data.str;
-    U8          *str_ptr  = (U8 *)(pub32 + 1);
+    byte          *str_ptr  = (byte *)(pub32 + 1);
     U64          str_size = symbol->data.size - sizeof(*pub32);
     String8      name     = str8(str_ptr, str_size);
 
@@ -2295,7 +2295,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_symbols_task)
   PDB_GsiSortRecord   *sort_record_arr = task->sort_record_arr_arr[bucket_idx];
   U64                  buffer_size     = task->bucket_size_arr[bucket_idx];
   U64                  buffer_base     = task->bucket_off_arr[bucket_idx];
-  U8                  *buffer          = task->buffer + buffer_base;
+  byte                  *buffer          = task->buffer + buffer_base;
 
   U64 sort_idx      = 0;
   U64 buffer_cursor = 0;
@@ -2342,7 +2342,7 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
 
   // prepare serial buffer
   U64 buffer_size = sum_array_u64(gsi->bucket_count, serial_task.bucket_size_arr);
-  serial_task.buffer         = push_array_no_zero(arena, U8, buffer_size);
+  serial_task.buffer         = push_array_no_zero(arena, byte, buffer_size);
   serial_task.bucket_off_arr = push_array_copy_u64(scratch.arena, serial_task.bucket_size_arr, gsi->bucket_count);
   counts_to_offsets_array_u64(gsi->bucket_count, serial_task.bucket_off_arr);
 
@@ -2631,7 +2631,7 @@ psi_release(PDB_PsiContext **psi_ptr)
 }
 
 CV_SymbolNode *
-psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, U16 isect, String8 name)
+psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, ushort isect, String8 name)
 {
   CV_Symbol pub = cv_make_pub32(psi->arena, flags, offset, isect, name);
   CV_SymbolNode *node = gsi_push(psi->gsi, &pub);
@@ -2695,17 +2695,17 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
     dbi_header->sec_map_size;
   msf_stream_seek(msf, sn, file_info_pos);
   
-  U16 mod_count = msf_stream_read_u16(msf, sn);
-  U16 total_file_count16 = msf_stream_read_u16(msf, sn);
+  ushort mod_count = msf_stream_read_u16(msf, sn);
+  ushort total_file_count16 = msf_stream_read_u16(msf, sn);
   
   CV_ModIndex *imod_array = push_array(scratch.arena, CV_ModIndex, mod_count);
   msf_stream_read_array(msf, sn, &imod_array[0], mod_count);
   
-  U16 *mod_file_count = push_array(scratch.arena, U16, mod_count);
+  ushort *mod_file_count = push_array(scratch.arena, ushort, mod_count);
   msf_stream_read_array(msf, sn, &mod_file_count[0], mod_count);
   
   U64 total_file_count = 0;
-  for (U16 imod = 0; imod < mod_count; imod += 1) {
+  for (ushort imod = 0; imod < mod_count; imod += 1) {
     total_file_count += mod_file_count[imod];
   }
   
@@ -2727,8 +2727,8 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
   U32 *file_name_offset_ptr = &file_name_offset_array[0];
   for (U64 mod_idx = 0; mod_idx < mod_count; ++mod_idx) {
     String8List *file_list = &file_info[mod_idx];
-    U16 file_count = mod_file_count[mod_idx];
-    for (U16 ifile = 0; ifile < file_count; ifile += 1, file_name_offset_ptr += 1) {
+    ushort file_count = mod_file_count[mod_idx];
+    for (ushort ifile = 0; ifile < file_count; ifile += 1, file_name_offset_ptr += 1) {
       Assert(*file_name_offset_ptr <= file_name_buffer_size);
       String8 file_path = str8_cstring(file_name_buffer + *file_name_offset_ptr);
       str8_list_push(arena, file_list, file_path);
@@ -2999,14 +2999,14 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
     }
   }
 
-  U16 total_source_file_count16    = Min(max_U16, total_source_file_count);
-  U16 mod_count16                  = Min(max_U16, mod_list.count);
+  ushort total_source_file_count16    = Min(max_U16, total_source_file_count);
+  ushort mod_count16                  = Min(max_U16, mod_list.count);
 
   PDB_DbiBuildFileInfoTask task    = {0};
   task.string_ht                   = string_ht;
   task.mod_arr                     = mod_arr;
-  task.imod_arr                    = push_array_no_zero(arena, U16, mod_count16);
-  task.source_file_name_count_arr  = push_array_no_zero(arena, U16, mod_list.count);
+  task.imod_arr                    = push_array_no_zero(arena, ushort, mod_count16);
+  task.source_file_name_count_arr  = push_array_no_zero(arena, ushort, mod_list.count);
   task.source_file_name_offset_arr = source_file_name_offsets_arr;
   tp_for_parallel(tp, 0, mod_arr_count, dbi_build_file_info_assign_file_offsets_task, &task);
 
@@ -3042,9 +3042,9 @@ dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
     PDB_DbiCompUnitHeader *header = push_array(arena, PDB_DbiCompUnitHeader, 1);
     header->contribution          = mod->first_sc;
     // we don't use these flags right now
-    // U16 is_written : 1
-    // U16 unused     : 7
-    // U16 tsm_index  : 8 ; index into type server map
+    // ushort is_written : 1
+    // ushort unused     : 7
+    // ushort tsm_index  : 8 ; index into type server map
     header->flags                = 0;
     header->sn                   = mod->sn;
     header->symbols_size         = mod->sym_data_size;
@@ -3252,8 +3252,8 @@ dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
   // push section contrib info
   ProfBegin("List Push");
   String8List sec_con_list = {0};
-  str8_list_push(arena, &sec_con_list, str8((U8*)version, sizeof(*version)));
-  str8_list_push(arena, &sec_con_list, str8((U8*)sc_array, sizeof(sc_array[0])*dbi->sec_contrib_list.count));
+  str8_list_push(arena, &sec_con_list, str8((byte*)version, sizeof(*version)));
+  str8_list_push(arena, &sec_con_list, str8((byte*)sc_array, sizeof(sc_array[0])*dbi->sec_contrib_list.count));
   ProfEnd();
   
   ProfEnd();
@@ -3306,8 +3306,8 @@ dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
   
   // push section map info
   String8List sec_map_list = {0};
-  str8_list_push(arena, &sec_map_list, str8((U8*)header, sizeof(*header)));
-  str8_list_push(arena, &sec_map_list, str8((U8*)entry_array, sizeof(entry_array[0])*entry_count));
+  str8_list_push(arena, &sec_map_list, str8((byte*)header, sizeof(*header)));
+  str8_list_push(arena, &sec_map_list, str8((byte*)entry_array, sizeof(entry_array[0])*entry_count));
   
   ProfEnd();
   return sec_map_list;

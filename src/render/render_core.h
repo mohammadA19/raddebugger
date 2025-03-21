@@ -29,7 +29,7 @@ union R_Handle
 {
   U64 u64[1];
   U32 u32[2];
-  U16 u16[4];
+  ushort u16[4];
 };
 
 ////////////////////////////////
@@ -57,7 +57,7 @@ struct R_Mesh3DInst
 
 struct R_Batch
 {
-  U8 *v;
+  byte *v;
   U64 byte_count;
   U64 byte_cap;
 };

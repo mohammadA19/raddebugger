@@ -23,8 +23,8 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
   
   String8Node *node = list.first;
   if (node != 0){
-    U8 *ptr = node->string.str;;
-    U8 *opl = ptr + node->string.size;
+    byte *ptr = node->string.str;;
+    byte *opl = ptr + node->string.size;
     
     U64 p = 0;
     for (;p < list.total_size;){
@@ -921,13 +921,13 @@ os_machine_name(){
     
     // get name
     B32 got_final_result = false;
-    U8 *buffer = 0;
+    byte *buffer = 0;
     int size = 0;
     for (S64 cap = 4096, r = 0;
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
-      buffer = push_array_no_zero(scratch.arena, U8, cap);
+      buffer = push_array_no_zero(scratch.arena, byte, cap);
       size = gethostname((char*)buffer, cap);
       if (size < cap){
         got_final_result = true;
@@ -938,7 +938,7 @@ os_machine_name(){
     // save string
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, U8, name.size + 1);
+      name.str = push_array_no_zero(lnx_perm_arena, byte, name.size + 1);
       MemoryCopy(name.str, buffer, name.size);
       name.str[name.size] = 0;
     }
@@ -1022,13 +1022,13 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         
         // get self string
         B32 got_final_result = false;
-        U8 *buffer = 0;
+        byte *buffer = 0;
         int size = 0;
         for (S64 cap = PATH_MAX, r = 0;
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = push_array_no_zero(scratch.arena, byte, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if (size < cap){
             got_final_result = true;

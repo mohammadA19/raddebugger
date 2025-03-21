@@ -43,10 +43,10 @@ union Vec2S16
 {
   struct
   {
-    S16 x;
-    S16 y;
+    short x;
+    short y;
   };
-  S16 v[2];
+  short v[2];
 };
 
 //- rjf: 3-vectors
@@ -233,10 +233,10 @@ union Rng2S16
   };
   struct
   {
-    S16 x0;
-    S16 y0;
-    S16 x1;
-    S16 y1;
+    short x0;
+    short y0;
+    short x1;
+    short y1;
   };
   Vec2S16 v[2];
 };
@@ -414,15 +414,15 @@ Vec2S32 normalize_2s32(Vec2S32 v);
 Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t);
 
 #define v2s16(x, y) vec_2s16((x), (y))
-Vec2S16 vec_2s16(S16 x, S16 y);
+Vec2S16 vec_2s16(short x, short y);
 Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b);
 Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b);
 Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b);
 Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b);
-Vec2S16 scale_2s16(Vec2S16 v, S16 s);
-S16 dot_2s16(Vec2S16 a, Vec2S16 b);
-S16 length_squared_2s16(Vec2S16 v);
-S16 length_2s16(Vec2S16 v);
+Vec2S16 scale_2s16(Vec2S16 v, short s);
+short dot_2s16(Vec2S16 a, Vec2S16 b);
+short length_squared_2s16(Vec2S16 v);
+short length_2s16(Vec2S16 v);
 Vec2S16 normalize_2s16(Vec2S16 v);
 Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t);
 
@@ -562,7 +562,7 @@ F32 clamp_1f32(Rng1F32 r, F32 v);
 #define r2s16p(x, y, z, w) r2s16(v2s16((x), (y)), v2s16((z), (w)))
 Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max);
 Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x);
-Rng2S16 pad_2s16(Rng2S16 r, S16 x);
+Rng2S16 pad_2s16(Rng2S16 r, short x);
 Vec2S16 center_2s16(Rng2S16 r);
 B32 contains_2s16(Rng2S16 r, Vec2S16 x);
 Vec2S16 dim_2s16(Rng2S16 r);

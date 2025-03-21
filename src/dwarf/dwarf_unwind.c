@@ -414,7 +414,7 @@ dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off
   
   // get version
   U64 version_off = off;
-  U8  version     = 0;
+  byte  version     = 0;
   dw_based_range_read(base, range, version_off, 1, &version);
   
   // check version
@@ -473,7 +473,7 @@ dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off
     
     if (has_augmentation_size > 0) {
       U64 aug_data_cursor = aug_data_off;
-      for (U8 *ptr = augmentation.str + 1, *opl = augmentation.str + augmentation.size; ptr < opl; ++ptr) {
+      for (byte *ptr = augmentation.str + 1, *opl = augmentation.str + augmentation.size; ptr < opl; ++ptr) {
         switch (*ptr) {
           case 'L': {
             dw_based_range_read_struct(base, range, aug_data_cursor, &lsda_encoding);
@@ -682,7 +682,7 @@ dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx
   
   U64 cursor = 0;
   
-  U8 version = 0;
+  byte version = 0;
   cursor += str8_deserial_read_struct(raw_eh_frame_hdr, cursor, &version);
   
   if (version == 1) {

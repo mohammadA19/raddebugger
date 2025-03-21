@@ -1005,7 +1005,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
     {
       Temp scratch = scratch_begin(&arena, 1);
       String8 access_string = str8(col->string_buffer, col->string_size);
-      String8List accesses = str8_split(scratch.arena, access_string, (U8 *)".", 1, 0);
+      String8List accesses = str8_split(scratch.arena, access_string, (byte *)".", 1, 0);
       for(String8Node *n = accesses.first; n != 0; n = n->next)
       {
         expr = e_expr_ref_member_access(arena, expr, n->string);
@@ -5251,7 +5251,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
       {
         RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
         U64 name_size = 0;
-        U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+        byte *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
         String8 name = str8(name_base, name_size);
         if(name.size != 0)
         {
@@ -5298,7 +5298,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
       //- rjf: unpack this item's info
       RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, item->idx);
       U64 name_size = 0;
-      U8 *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
+      byte *name_base = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
       String8 name = str8(name_base, name_size);
       RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
       E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), procedure->type_idx, e_parse_ctx_module_idx_from_rdi(rdi));
@@ -6584,7 +6584,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     Vec4F32 zero_color = rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
     for(U64 idx = 0; idx < ArrayCount(byte_fancy_strings); idx += 1)
     {
-      U8 byte = (U8)idx;
+      byte byte = (byte)idx;
       F32 pct = (byte/255.f);
       Vec4F32 text_color = mix_4f32(zero_color, full_color, pct);
       if(byte == 0)
@@ -6600,7 +6600,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //- rjf: grab windowed memory
   //
   U64 visible_memory_size = dim_1u64(viz_range_bytes);
-  U8 *visible_memory = push_array(scratch.arena, U8, visible_memory_size);
+  byte *visible_memory = push_array(scratch.arena, byte, visible_memory_size);
   {
     e_space_read(eval.space, visible_memory, viz_range_bytes);
   }
@@ -6908,7 +6908,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   UI_Parent(row_container_box) RD_Font(RD_FontSlot_Code) UI_FontSize(font_size)
   {
     Rng1U64 selection = r1u64(cursor, mark);
-    U8 *row_ascii_buffer = push_array(scratch.arena, U8, num_columns);
+    byte *row_ascii_buffer = push_array(scratch.arena, byte, num_columns);
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f))
       for(S64 row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
     {
@@ -6957,7 +6957,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             else
             {
               // rjf: unpack byte info
-              U8 byte_value = visible_memory[visible_byte_idx];
+              byte byte_value = visible_memory[visible_byte_idx];
               Annotation *annotation = visible_memory_annotations[visible_byte_idx].first;
               
               // rjf: unpack visual cell info
@@ -7045,7 +7045,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             U64 visible_byte_idx = (row_idx-viz_range_rows.min)*num_columns + col_idx;
             if(visible_byte_idx < visible_memory_size)
             {
-              U8 byte_value = visible_memory[visible_byte_idx];
+              byte byte_value = visible_memory[visible_byte_idx];
               row_ascii_buffer[col_idx] = byte_value;
               if(byte_value <= 32 || 127 < byte_value)
               {
@@ -7110,8 +7110,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
         UI_PrefHeight(ui_px(row_height_px, 0.f))
       {
         ui_labelf("Address:");
-        ui_labelf("U8:");
-        ui_labelf("U16:");
+        ui_labelf("byte:");
+        ui_labelf("ushort:");
         ui_labelf("U32:");
         ui_labelf("U64:");
       }
@@ -7127,8 +7127,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           U64 as_u32 = 0;
           U64 as_u64 = 0;
           U64 cursor_off = cursor-viz_range_bytes.min;
-          as_u8  = (U64)*(U8 *)(visible_memory + cursor_off);
-          as_u16 = (U64)*(U16*)(visible_memory + cursor_off);
+          as_u8  = (U64)*(byte *)(visible_memory + cursor_off);
+          as_u16 = (U64)*(ushort*)(visible_memory + cursor_off);
           as_u32 = (U64)*(U32*)(visible_memory + cursor_off);
           as_u64 = (U64)*(U64*)(visible_memory + cursor_off);
           ui_labelf("%02X (%I64u)",  as_u8,  as_u8);
@@ -7413,12 +7413,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
         switch(topology.fmt)
         {
           default:{color_is_good = 0;}break;
-          case R_Tex2DFormat_R8:     {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, 0, 0, 1);}break;
-          case R_Tex2DFormat_RG8:    {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
-          case R_Tex2DFormat_RGBA8:  {color = v4f32(((U8 *)(data.str+off_bytes))[0]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, ((U8 *)(data.str+off_bytes))[2]/255.f, ((U8 *)(data.str+off_bytes))[3]/255.f);}break;
-          case R_Tex2DFormat_BGRA8:  {color = v4f32(((U8 *)(data.str+off_bytes))[3]/255.f, ((U8 *)(data.str+off_bytes))[2]/255.f, ((U8 *)(data.str+off_bytes))[1]/255.f, ((U8 *)(data.str+off_bytes))[0]/255.f);}break;
-          case R_Tex2DFormat_R16:    {color = v4f32(((U16 *)(data.str+off_bytes))[0]/(F32)max_U16, 0, 0, 1);}break;
-          case R_Tex2DFormat_RGBA16: {color = v4f32(((U16 *)(data.str+off_bytes))[0]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[1]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[2]/(F32)max_U16, ((U16 *)(data.str+off_bytes))[3]/(F32)max_U16);}break;
+          case R_Tex2DFormat_R8:     {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, 0, 0, 1);}break;
+          case R_Tex2DFormat_RG8:    {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
+          case R_Tex2DFormat_RGBA8:  {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[3]/255.f);}break;
+          case R_Tex2DFormat_BGRA8:  {color = v4f32(((byte *)(data.str+off_bytes))[3]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[0]/255.f);}break;
+          case R_Tex2DFormat_R16:    {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, 0, 0, 1);}break;
+          case R_Tex2DFormat_RGBA16: {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[1]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[2]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[3]/(F32)max_U16);}break;
           case R_Tex2DFormat_R32:    {color = v4f32(((F32 *)(data.str+off_bytes))[0], 0, 0, 1);}break;
           case R_Tex2DFormat_RG32:   {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], 0, 1);}break;
           case R_Tex2DFormat_RGBA32: {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], ((F32 *)(data.str+off_bytes))[2], ((F32 *)(data.str+off_bytes))[3]);}break;
@@ -8008,7 +8008,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     Vec2S64 cursor;
     TxtPt txt_cursor;
     TxtPt txt_mark;
-    U8 txt_buffer[1024];
+    byte txt_buffer[1024];
     U64 txt_size;
     RD_ThemeColor color_ctx_menu_color;
     Vec4F32 color_ctx_menu_color_hsva;

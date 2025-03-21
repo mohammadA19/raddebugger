@@ -222,7 +222,7 @@ struct DI_SearchThread
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
   U64 ring_size;
-  U8 *ring_base;
+  byte *ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
 };
@@ -295,7 +295,7 @@ struct DI_MatchStore
   OS_Handle u2m_ring_cv;
   OS_Handle u2m_ring_mutex;
   U64 u2m_ring_size;
-  U8 *u2m_ring_base;
+  byte *u2m_ring_base;
   U64 u2m_ring_write_pos;
   U64 u2m_ring_read_pos;
 };
@@ -323,7 +323,7 @@ struct DI_Shared
   OS_Handle u2p_ring_mutex;
   OS_Handle u2p_ring_cv;
   U64 u2p_ring_size;
-  U8 *u2p_ring_base;
+  byte *u2p_ring_base;
   U64 u2p_ring_write_pos;
   U64 u2p_ring_read_pos;
   
@@ -331,7 +331,7 @@ struct DI_Shared
   OS_Handle p2u_ring_mutex;
   OS_Handle p2u_ring_cv;
   U64 p2u_ring_size;
-  U8 *p2u_ring_base;
+  byte *p2u_ring_base;
   U64 p2u_ring_write_pos;
   U64 p2u_ring_read_pos;
   

@@ -73,7 +73,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     // struct {
     //  U32 stream_count;
     //  Pdb20StreamSize stream_sizes[stream_count];
-    //  U16 stream_indices[stream_count][...];
+    //  ushort stream_indices[stream_count][...];
     // }
     //
     // PDB70:
@@ -84,7 +84,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     // }
     
     //- parse stream directory
-    U8 *directory_buf = push_array_no_zero(arena, U8, directory_size);
+    byte *directory_buf = push_array_no_zero(arena, byte, directory_size);
     B32 got_directory = 1;
     
     {
@@ -102,7 +102,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
       U32 max_index_count_in_map_page = (page_size - directory_map_page_skip_size) / index_size;
       
       // for each index in super map ...
-      U8  *out_ptr       = directory_buf;
+      byte  *out_ptr       = directory_buf;
       U32 *super_map_ptr = directory_super_map;
       for (U32 i = 0; i < page_count_in_directory_map; ++i, ++super_map_ptr) {
         U32 directory_map_page_index = *super_map_ptr;
@@ -112,7 +112,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
         }
         
         U64 directory_map_page_off  = ((U64) directory_map_page_index) * page_size;
-        U8 *directory_map_page_base = msf_data.str + directory_map_page_off;
+        byte *directory_map_page_base = msf_data.str + directory_map_page_off;
         
         // clamp index count by end of directory
         U32 index_count;
@@ -124,7 +124,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
         }
         
         // for each index in map ...
-        U8 *map_ptr = directory_map_page_base + directory_map_page_skip_size;
+        byte *map_ptr = directory_map_page_base + directory_map_page_skip_size;
         for (U32 j = 0; j < index_count; ++j, map_ptr += index_size) {
           
           // read index
@@ -132,7 +132,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
           if (index_size == 4) {
             directory_page_index = *(U32 *) map_ptr;
           } else {
-            directory_page_index = *(U16 *) map_ptr;
+            directory_page_index = *(ushort *) map_ptr;
           }
           if (directory_page_index >= whole_file_page_count) {
             got_directory = 0;
@@ -140,7 +140,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
           }
           
           U64 directory_page_off  = ((U64) directory_page_index) * page_size;
-          U8 *directory_page_base = msf_data.str + directory_page_off;
+          byte *directory_page_base = msf_data.str + directory_page_off;
           
           // clamp copy size by end of directory
           U32 copy_size;
@@ -205,7 +205,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
         if (index_size == 4) {
           stream_ptr->u.page_indices_u32 = (U32 *)(directory_buf + index_cursor);
         } else {
-          stream_ptr->u.page_indices_u16 = (U16 *)(directory_buf + index_cursor);
+          stream_ptr->u.page_indices_u16 = (ushort *)(directory_buf + index_cursor);
         }
         
         // advance cursors
@@ -234,8 +234,8 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
 {
   MSF_RawStream stream = st->streams[sn];
 
-  U8 *stream_buf     = push_array_no_zero(arena, U8, stream.size);
-  U8 *stream_out_ptr = stream_buf;
+  byte *stream_buf     = push_array_no_zero(arena, byte, stream.size);
+  byte *stream_out_ptr = stream_buf;
   for (U32 i = 0; i < stream.page_count; ++i) {
     U64 page_idx;
     if (st->index_size == 4) {
@@ -249,7 +249,7 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
       break;
     }
 
-    U8 *stream_page_base = msf_data.str + stream_page_off;
+    byte *stream_page_base = msf_data.str + stream_page_off;
     
     // clamp copy size by end of stream
     U32 stream_pos     = (U32) (stream_out_ptr - stream_buf);

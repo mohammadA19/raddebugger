@@ -185,9 +185,9 @@ e_value_eval_from_eval(E_Eval eval)
         {
           default: break;
           case E_TypeKind_Char8:
-          case E_TypeKind_S8:  {eval.value.s64 = (S64)*((S8 *)&eval.value.u64);}break;
+          case E_TypeKind_S8:  {eval.value.s64 = (S64)*((sbyte *)&eval.value.u64);}break;
           case E_TypeKind_Char16:
-          case E_TypeKind_S16: {eval.value.s64 = (S64)*((S16 *)&eval.value.u64);}break;
+          case E_TypeKind_S16: {eval.value.s64 = (S64)*((short *)&eval.value.u64);}break;
           case E_TypeKind_Char32:
           case E_TypeKind_S32: {eval.value.s64 = (S64)*((S32 *)&eval.value.u64);}break;
         }
@@ -215,8 +215,8 @@ e_element_eval_from_array_eval_index(E_Eval eval, U64 index)
     if(element_size <= sizeof(E_Value) &&
        index < sizeof(E_Value)/element_size)
     {
-      MemoryCopy((U8 *)(&result.value.u512[0]),
-                 (U8 *)(&eval.value.u512[0]) + index*element_size,
+      MemoryCopy((byte *)(&result.value.u512[0]),
+                 (byte *)(&eval.value.u512[0]) + index*element_size,
                  element_size);
     }break;
     case E_Mode_Offset:
@@ -247,8 +247,8 @@ e_member_eval_from_eval_member_name(E_Eval eval, String8 member_name)
         if(member.off < sizeof(eval.value))
         {
           U64 member_size = e_type_byte_size_from_key(member.type_key);
-          MemoryCopy((U8 *)(&result.value.u512[0]),
-                     (U8 *)(&eval.value.u512[0]) + member.off,
+          MemoryCopy((byte *)(&result.value.u512[0]),
+                     (byte *)(&eval.value.u512[0]) + member.off,
                      Min(member_size, sizeof(eval.value) - member.off));
         }break;
         case E_Mode_Offset:

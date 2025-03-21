@@ -141,7 +141,7 @@ lnk_chunk_push_leaf(Arena *arena, LNK_ChunkManager *cman, LNK_Chunk *parent, Str
 {
   LNK_Chunk *chunk = lnk_chunk_push(arena, cman, parent, sort_index);
   chunk->type      = LNK_Chunk_Leaf;
-  chunk->u.leaf    = str8((U8 *)raw_ptr, raw_size);
+  chunk->u.leaf    = str8((byte *)raw_ptr, raw_size);
   return chunk;
 }
 
@@ -628,7 +628,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_chunks_task)
     if (chunk->type == LNK_Chunk_Leaf) {
       U64 off = layout.chunk_off_array[chunk->ref.chunk_id];
       Assert(off + chunk->u.leaf.size <= buffer.size);
-      U8 *buffer_ptr = buffer.str + off;
+      byte *buffer_ptr = buffer.str + off;
 
       if (chunk->u.leaf.str == 0) {
         // zero out chunk bytes
@@ -652,7 +652,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
   Rng1U64                    range     = task->ranges[task_id];
   LNK_ChunkLayout            layout    = task->layout;
   String8                    buffer    = task->buffer;
-  U8                         fill_byte = task->fill_byte;
+  byte                         fill_byte = task->fill_byte;
 
   for (U64 pad_array_idx = range.min; pad_array_idx < range.max; ++pad_array_idx) {
     LNK_ChunkPadArray pad_array = layout.pad_array[pad_array_idx];
@@ -667,7 +667,7 @@ THREAD_POOL_TASK_FUNC(lnk_fill_pads_task)
 }
 
 void
-lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffer, U8 fill_byte)
+lnk_serialize_chunk_layout(TP_Context *tp, LNK_ChunkLayout layout, String8 buffer, byte fill_byte)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);

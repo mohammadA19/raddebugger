@@ -1008,7 +1008,7 @@ rd_name_alloc(String8 string)
       {
         chunk_size = u64_up_to_pow2(string.size);
       }
-      U8 *chunk_memory = push_array(rd_state->arena, U8, chunk_size);
+      byte *chunk_memory = push_array(rd_state->arena, byte, chunk_size);
       RD_NameChunkNode *chunk = (RD_NameChunkNode *)chunk_memory;
       chunk->size = chunk_size;
       SLLStackPush(rd_state->free_name_chunks[bucket_idx], chunk);
@@ -1016,8 +1016,8 @@ rd_name_alloc(String8 string)
   }
   
   // rjf: fill string & return
-  String8 allocated_string = str8((U8 *)node, string.size);
-  MemoryCopy((U8 *)node, string.str, string.size);
+  String8 allocated_string = str8((byte *)node, string.size);
+  MemoryCopy((byte *)node, string.str, string.size);
   return allocated_string;
 }
 
@@ -2378,7 +2378,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
             Rng1U64 legal_range = r1u64(0, regs_size);
             Rng1U64 read_range = intersect_1u64(legal_range, range);
             U64 read_size = dim_1u64(read_range);
-            MemoryCopy(out, (U8 *)f->regs + read_range.min, read_size);
+            MemoryCopy(out, (byte *)f->regs + read_range.min, read_size);
             result = (read_size == dim_1u64(range));
           }
           scratch_end(scratch);
@@ -2445,10 +2445,10 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
         result = 1;
         U64 range_dim = dim_1u64(range);
         U64 bytes_to_read = Min(range_dim, (meval_legal_range.max - range.min));
-        MemoryCopy(out, ((U8 *)meval_read) + range.min, bytes_to_read);
+        MemoryCopy(out, ((byte *)meval_read) + range.min, bytes_to_read);
         if(bytes_to_read < range_dim)
         {
-          MemoryZero((U8 *)out + bytes_to_read, range_dim - bytes_to_read);
+          MemoryZero((byte *)out + bytes_to_read, range_dim - bytes_to_read);
         }
       }
     }break;
@@ -2485,7 +2485,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
           Rng1U64 write_range = intersect_1u64(legal_range, range);
           U64 write_size = dim_1u64(write_range);
           void *new_regs = ctrl_query_cached_reg_block_from_thread(scratch.arena, d_state->ctrl_entity_store, entity->handle);
-          MemoryCopy((U8 *)new_regs + write_range.min, in, write_size);
+          MemoryCopy((byte *)new_regs + write_range.min, in, write_size);
           result = ctrl_thread_write_reg_block(entity->handle, new_regs);
           scratch_end(scratch);
         }break;
@@ -2515,25 +2515,25 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read->name))
 #define StringMemberCase(name) else if(range.min == (U64)meval_read->name.str)
-      FlatMemberCase(enabled)             {result = 1; rd_entity_equip_disabled(entity, !!((U8 *)in)[0]);}
-      FlatMemberCase(debug_subprocesses)  {result = 1; entity->debug_subprocesses = !!((U8 *)in)[0]; }
-      StringMemberCase(label)             {result = 1; rd_entity_equip_name(entity, str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(exe)               {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Executable), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(args)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Arguments), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(working_directory) {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_WorkingDirectory), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(entry_point)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_EntryPoint), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stdout_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdoutPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stderr_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StderrPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(stdin_path)        {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdinPath), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(source_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(destination_path)  {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(type)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(view_rule)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (U8 *)in + 4096));}
-      StringMemberCase(condition)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Condition), str8_cstring_capped(in, (U8 *)in + 4096));}
+      FlatMemberCase(enabled)             {result = 1; rd_entity_equip_disabled(entity, !!((byte *)in)[0]);}
+      FlatMemberCase(debug_subprocesses)  {result = 1; entity->debug_subprocesses = !!((byte *)in)[0]; }
+      StringMemberCase(label)             {result = 1; rd_entity_equip_name(entity, str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(exe)               {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Executable), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(args)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Arguments), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(working_directory) {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_WorkingDirectory), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(entry_point)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_EntryPoint), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(stdout_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdoutPath), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(stderr_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StderrPath), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(stdin_path)        {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_StdinPath), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(source_path)       {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(destination_path)  {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(type)              {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Source), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(view_rule)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Dest), str8_cstring_capped(in, (byte *)in + 4096));}
+      StringMemberCase(condition)         {result = 1; rd_entity_equip_name(rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Condition), str8_cstring_capped(in, (byte *)in + 4096));}
       StringMemberCase(source_location)
       {
         result = 1;
-        String8TxtPtPair src_loc = str8_txt_pt_pair_from_string(str8_cstring_capped(in, (U8 *)in + 4096));
+        String8TxtPtPair src_loc = str8_txt_pt_pair_from_string(str8_cstring_capped(in, (byte *)in + 4096));
         RD_Entity *loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
         rd_entity_equip_name(loc, src_loc.string);
         rd_entity_equip_txt_pt(loc, src_loc.pt);
@@ -2541,7 +2541,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
       StringMemberCase(address_location)
       {
         U64 vaddr = 0;
-        if(try_u64_from_str8_c_rules(str8_cstring_capped(in, (U8 *)in + 4096), &vaddr))
+        if(try_u64_from_str8_c_rules(str8_cstring_capped(in, (byte *)in + 4096), &vaddr))
         {
           RD_Entity *loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
           rd_entity_equip_vaddr(loc, vaddr);
@@ -2555,7 +2555,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
         result = 1;
         RD_Entity *loc = rd_entity_child_from_kind_or_alloc(entity, RD_EntityKind_Location);
         loc->flags &= ~RD_EntityFlag_HasTextPoint;
-        rd_entity_equip_name(loc, str8_cstring_capped(in, (U8 *)in + 4096));
+        rd_entity_equip_name(loc, str8_cstring_capped(in, (byte *)in + 4096));
       }
 #undef FlatMemberCase
 #undef StringMemberCase
@@ -2583,7 +2583,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
       if(0){}
 #define FlatMemberCase(name) else if(range.min == OffsetOf(CTRL_MetaEval, name) && dim_1u64(range) <= sizeof(meval_read->name))
 #define StringMemberCase(name) else if(range.min == (U64)meval_read->name.str)
-      StringMemberCase(label) {result = 1; ctrl_entity_equip_string(d_state->ctrl_entity_store, entity, str8_cstring_capped(in, (U8 *)in + 4096));}
+      StringMemberCase(label) {result = 1; ctrl_entity_equip_string(d_state->ctrl_entity_store, entity, str8_cstring_capped(in, (byte *)in + 4096));}
 #undef FlatMemberCase
 #undef StringMemberCase
       scratch_end(scratch);
@@ -3025,7 +3025,7 @@ rd_view_get_or_push_user_state(RD_View *view, U64 size)
   void *result = view->user_data;
   if(result == 0)
   {
-    view->user_data = result = push_array(view->arena, U8, size);
+    view->user_data = result = push_array(view->arena, byte, size);
   }
   return result;
 }
@@ -3317,7 +3317,7 @@ rd_window_open(Vec2F32 size, OS_Handle preferred_monitor, RD_CfgSrc cfg_src)
   window->ctx_menu_arena = arena_alloc();
   window->ctx_menu_regs = push_array(window->ctx_menu_arena, RD_Regs, 1);
   window->ctx_menu_input_buffer_size = KB(4);
-  window->ctx_menu_input_buffer = push_array(window->arena, U8, window->ctx_menu_input_buffer_size);
+  window->ctx_menu_input_buffer = push_array(window->arena, byte, window->ctx_menu_input_buffer_size);
   window->drop_completion_arena = arena_alloc();
   window->hover_eval_arena = arena_alloc();
   window->autocomp_lister_params_arena = arena_alloc();
@@ -9467,7 +9467,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 defaul
         U64 string_memory_addr = value_eval.value.u64;
         U64 element_size = e_type_byte_size_from_key(direct_type_key);
         U64 string_buffer_size = 256;
-        U8 *string_buffer = push_array(arena, U8, string_buffer_size);
+        byte *string_buffer = push_array(arena, byte, string_buffer_size);
         for(U64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
         {
           B32 read_good = e_space_read(eval.space, string_buffer, r1u64(string_memory_addr, string_memory_addr+try_size));
@@ -9481,7 +9481,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 defaul
         switch(element_size)
         {
           default:{string = str8_cstring((char *)string_buffer);}break;
-          case 2: {string = str8_from_16(arena, str16_cstring((U16 *)string_buffer));}break;
+          case 2: {string = str8_from_16(arena, str16_cstring((ushort *)string_buffer));}break;
           case 4: {string = str8_from_32(arena, str32_cstring((U32 *)string_buffer));}break;
         }
         String8 string_escaped = ev_escaped_from_raw_string(arena, string);
@@ -9589,7 +9589,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, U32 defaul
         U64 element_size = e_type_byte_size_from_key(direct_type_key);
         did_content = 1;
         U64 string_buffer_size = Clamp(1, array_count, 1024);
-        U8 *string_buffer = push_array(arena, U8, string_buffer_size);
+        byte *string_buffer = push_array(arena, byte, string_buffer_size);
         switch(eval.mode)
         {
           default:{}break;
@@ -11542,32 +11542,32 @@ rd_init(CmdLine *cmdln)
   {
     Temp scratch = scratch_begin(0, 0);
     String8 data = rd_icon_file_bytes;
-    U8 *ptr = data.str;
-    U8 *opl = ptr+data.size;
+    byte *ptr = data.str;
+    byte *opl = ptr+data.size;
     
     // rjf: read header
 #pragma pack(push, 1)
     struct ICO_Header
     {
-      U16 reserved_padding; // must be 0
-      U16 image_type; // if 1 -> ICO, if 2 -> CUR
-      U16 num_images;
+      ushort reserved_padding; // must be 0
+      ushort image_type; // if 1 -> ICO, if 2 -> CUR
+      ushort num_images;
     };
     struct ICO_Entry
     {
-      U8 image_width_px;
-      U8 image_height_px;
-      U8 num_colors;
-      U8 reserved_padding; // should be 0
+      byte image_width_px;
+      byte image_height_px;
+      byte num_colors;
+      byte reserved_padding; // should be 0
       union
       {
-        U16 ico_color_planes; // in ICO
-        U16 cur_hotspot_x_px; // in CUR
+        ushort ico_color_planes; // in ICO
+        ushort cur_hotspot_x_px; // in CUR
       };
       union
       {
-        U16 ico_bits_per_pixel; // in ICO
-        U16 cur_hotspot_y_px;   // in CUR
+        ushort ico_bits_per_pixel; // in ICO
+        ushort cur_hotspot_y_px;   // in CUR
       };
       U32 image_data_size;
       U32 image_data_off;
@@ -11609,11 +11609,11 @@ rd_init(CmdLine *cmdln)
     }
     
     // rjf: deserialize raw image data from best entry's offset
-    U8 *image_data = 0;
+    byte *image_data = 0;
     Vec2S32 image_dim = {0};
     if(best_entry != 0)
     {
-      U8 *file_data_ptr = data.str + best_entry->image_data_off;
+      byte *file_data_ptr = data.str + best_entry->image_data_off;
       U64 file_data_size = best_entry->image_data_size;
       int width = 0;
       int height = 0;
@@ -15308,8 +15308,8 @@ rd_frame()
             {
               RD_Regs *regs_copy = rd_regs_copy(ws->query_cmd_arena, rd_regs());
               Rng1U64 offset_range_in_regs = rd_reg_slot_range_table[slot];
-              MemoryCopy((U8 *)(ws->query_cmd_regs) + offset_range_in_regs.min,
-                         (U8 *)(regs_copy) + offset_range_in_regs.min,
+              MemoryCopy((byte *)(ws->query_cmd_regs) + offset_range_in_regs.min,
+                         (byte *)(regs_copy) + offset_range_in_regs.min,
                          dim_1u64(offset_range_in_regs));
               ws->query_cmd_regs_mask[slot/64] |= (1ull<<(slot%64));
             }
@@ -15804,7 +15804,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(U16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(ushort)+2);
               RegCloseKey(reg_key);
             }
             {
@@ -15812,7 +15812,7 @@ rd_frame()
               LSTATUS status = 0;
               status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\", 0, KEY_SET_VALUE, &reg_key);
               likely_not_in_admin_mode = (status == ERROR_ACCESS_DENIED);
-              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(U16)+2);
+              status = RegSetValueExW(reg_key, (LPCWSTR)name16.str, 0, REG_SZ, (BYTE *)data16.str, data16.size*sizeof(ushort)+2);
               RegCloseKey(reg_key);
             }
             if(likely_not_in_admin_mode)

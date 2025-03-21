@@ -156,7 +156,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
             string = arg_portion_this_string;
           }
           
-          U8 splits[] = { ',' };
+          byte splits[] = { ',' };
           String8List args_in_this_string = str8_split(arena, string, splits, ArrayCount(splits), 0);
           for(String8Node *sub_arg = args_in_this_string.first; sub_arg; sub_arg = sub_arg->next)
           {

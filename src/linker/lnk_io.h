@@ -9,7 +9,7 @@ srtuct
   OS_Handle   *handle_arr;
   U64         *size_arr;
   U64         *off_arr;
-  U8          *buffer;
+  byte          *buffer;
 };
 
 ////////////////////////////////

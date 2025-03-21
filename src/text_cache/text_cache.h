@@ -193,7 +193,7 @@ struct TXT_Shared
   
   // rjf: user -> parse thread
   U64 u2p_ring_size;
-  U8 *u2p_ring_base;
+  byte *u2p_ring_base;
   U64 u2p_ring_write_pos;
   U64 u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;

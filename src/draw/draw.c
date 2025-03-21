@@ -76,7 +76,7 @@ dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
 {
   String8 result = {0};
   result.size = list->total_size;
-  result.str = push_array_no_zero(arena, U8, result.size);
+  result.str = push_array_no_zero(arena, byte, result.size);
   U64 idx = 0;
   for(DR_FancyStringNode *n = list->first; n != 0; n = n->next)
   {
@@ -364,7 +364,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
       albedo_tex.u64[1],
       (U64)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
+    hash = dr_hash_from_string(str8((byte *)buffer, sizeof(buffer)));
     slot_idx = hash%params->mesh_batches.slots_count;
   }
   

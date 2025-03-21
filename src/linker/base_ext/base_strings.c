@@ -8,8 +8,8 @@ str8_compar(String8 a, String8 b, B32 ignore_case)
   U64 size = Min(a.size, b.size);
   if (ignore_case) {
     for (U64 i = 0; i < size; ++i) {
-      U8 la = char_to_lower(a.str[i]);
-      U8 lb = char_to_lower(b.str[i]);
+      byte la = char_to_lower(a.str[i]);
+      byte lb = char_to_lower(b.str[i]);
       if (la < lb) {
         cmp = -1;
         break;
@@ -64,7 +64,7 @@ str8_is_before_case_sensitive(const void *a, const void *b)
 String8Node *
 str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_size)
 {
-  String8 data = str8((U8 *)data_ptr, data_size);
+  String8 data = str8((byte *)data_ptr, data_size);
   String8Node *node = str8_list_push(arena, list, data);
   return node;
 }
@@ -73,7 +73,7 @@ U64
 str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(arena, U8, pad_size);
+  byte *pad = push_array(arena, byte, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push(arena, list, str8(pad, pad_size));
   return pad_size;
@@ -83,7 +83,7 @@ U64
 str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(arena, U8, pad_size);
+  byte *pad = push_array(arena, byte, pad_size);
   MemorySet(pad, 0, pad_size);
   str8_list_push_front(arena, list, str8(pad, pad_size));
   return pad_size;

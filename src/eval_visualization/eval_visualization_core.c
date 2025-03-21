@@ -91,7 +91,7 @@ ev_hash_from_key(EV_Key key)
   {
     key.child_id,
   };
-  U64 hash = ev_hash_from_seed_string(key.parent_hash, str8((U8 *)data, sizeof(data)));
+  U64 hash = ev_hash_from_seed_string(key.parent_hash, str8((byte *)data, sizeof(data)));
   return hash;
 }
 
@@ -322,7 +322,7 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
     DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
     node->key = key;
     node->buffer_cap = 512;
-    node->buffer = push_array(view->arena, U8, node->buffer_cap);
+    node->buffer = push_array(view->arena, byte, node->buffer_cap);
   }
   
   //- rjf: mutate node
@@ -1298,7 +1298,7 @@ ev_row_is_editable(EV_Row *row)
 //- rjf: leaf stringification
 
 String8
-ev_string_from_ascii_value(Arena *arena, U8 val)
+ev_string_from_ascii_value(Arena *arena, byte val)
 {
   String8 result = {0};
   switch(val)
@@ -1483,7 +1483,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, U32 radix, 
   E_TypeKey type_key = e_type_unwrap(eval.type_key);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   U64 type_byte_size = e_type_byte_size_from_key(type_key);
-  U8 digit_group_separator = 0;
+  byte digit_group_separator = 0;
   if(!(flags & EV_StringFlag_ReadOnlyDisplayRules))
   {
     digit_group_separator = 0;
@@ -1656,7 +1656,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
   U64 start_split_idx = 0;
   for(U64 idx = 0; idx <= raw.size; idx += 1)
   {
-    U8 byte = (idx < raw.size) ? raw.str[idx] : 0;
+    byte byte = (idx < raw.size) ? raw.str[idx] : 0;
     B32 split = 1;
     String8 separator_replace = {0};
     switch(byte)

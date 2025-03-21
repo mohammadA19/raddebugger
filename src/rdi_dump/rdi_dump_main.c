@@ -131,7 +131,7 @@ entry_point(CmdLine *cmd_line)
     U64 decompressed_size = rdi_decompressed_size_from_parsed(rdi);
     if(decompressed_size > input_data.size)
     {
-      U8 *decompressed_data = push_array_no_zero(arena, U8, decompressed_size);
+      byte *decompressed_data = push_array_no_zero(arena, byte, decompressed_size);
       rdi_decompress_parsed(decompressed_data, decompressed_size, rdi);
       status = rdi_parse(decompressed_data, decompressed_size, rdi);
     }

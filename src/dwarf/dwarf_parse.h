@@ -287,18 +287,18 @@ struct DW_LineVMHeader
   U64                 unit_length;
   U64                 unit_opl;
   DW_Version          version;
-  U8                  address_size; // Duplicates size from the compilation unit but is needed to support stripped exe that just have .debug_line and .debug_line_str.
-  U8                  segment_selector_size;
+  byte                  address_size; // Duplicates size from the compilation unit but is needed to support stripped exe that just have .debug_line and .debug_line_str.
+  byte                  segment_selector_size;
   U64                 header_length;
   U64                 program_off;
-  U8                  min_inst_len;
-  U8                  max_ops_for_inst;
-  U8                  default_is_stmt;
-  S8                  line_base;
-  U8                  line_range;
-  U8                  opcode_base;
+  byte                  min_inst_len;
+  byte                  max_ops_for_inst;
+  byte                  default_is_stmt;
+  sbyte                  line_base;
+  byte                  line_range;
+  byte                  opcode_base;
   U64                 num_opcode_lens;
-  U8                 *opcode_lens;
+  byte                 *opcode_lens;
   String8Array        dir_table;
   DW_LineVMFileArray  file_table;
 };
@@ -454,7 +454,7 @@ void dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U6
 DW_LineSeqNode*         dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl);
 DW_LineNode*            dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence);
 DW_LineTableParseResult dw_parsed_line_table_from_comp_root(Arena *arena, DW_SectionArray *sections, DW_CompRoot *root);
-U64                     dw_read_line_file(void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, U8 address_size, U64 format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
+U64                     dw_read_line_file(void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, byte address_size, U64 format_count, Rng1U64 *formats, DW_LineFile *line_file_out);
 U64                     dw_read_line_vm_header(Arena *arena, void *line_base, Rng1U64 line_rng, U64 line_off, DW_Mode mode, DW_SectionArray *sections, DW_AttribValueResolveParams resolve_params, String8 compile_dir, String8 unit_name, DW_LineVMHeader *header_out);
 
 #endif // DWARF_PARSE_H

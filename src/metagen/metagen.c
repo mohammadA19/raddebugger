@@ -29,7 +29,7 @@ read_only static String8 mg_str_expr_op_symbol_string_table[MG_StrExprOp_COUNT] 
   str8_lit_comp("!="), // MG_StrExprOp_DoesNotEqual
 };
 
-read_only static S8 mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
+read_only static sbyte mg_str_expr_op_precedence_table[MG_StrExprOp_COUNT] =
 {
   0,
   20, // MG_StrExprOp_Dot
@@ -148,8 +148,8 @@ mg_escaped_from_str8(Arena *arena, String8 string)
     }
     if(idx < string.size && string.str[idx] == '\\')
     {
-      U8 next_char = string.str[idx+1];
-      U8 replace_byte = 0;
+      byte next_char = string.str[idx+1];
+      byte replace_byte = 0;
       switch(next_char)
       {
         default:{}break;
@@ -191,7 +191,7 @@ mg_wrapped_lines_from_string(Arena *arena, String8 string, U64 first_line_max_wi
   U64 wrapped_indent_level = 0;
   static char *spaces = "                                                                ";
   for (U64 idx = 0; idx <= string.size; idx += 1){
-    U8 chr = idx < string.size ? string.str[idx] : 0;
+    byte chr = idx < string.size ? string.str[idx] : 0;
     if (chr == '\n'){
       Rng1U64 candidate_line_range = line_range;
       candidate_line_range.max = idx;
@@ -287,10 +287,10 @@ mg_c_array_literal_contents_from_data(String8 data)
     for(U64 off = 0; off < data.size;)
     {
       U64 chunk_size = Min(data.size-off, 64);
-      U8 *chunk_bytes = data.str+off;
+      byte *chunk_bytes = data.str+off;
       String8 chunk_text_string = {0};
       chunk_text_string.size = chunk_size*5;
-      chunk_text_string.str = push_array(mg_arena, U8, chunk_text_string.size);
+      chunk_text_string.str = push_array(mg_arena, byte, chunk_text_string.size);
       for(U64 byte_idx = 0; byte_idx < chunk_size; byte_idx += 1)
       {
         String8 byte_str = push_str8f(scratch.arena, "0x%02x,", chunk_bytes[byte_idx]);
@@ -364,7 +364,7 @@ mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
 }
 
 MG_StrExprParseResult
-mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, S8 min_prec)
+mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node *opl, sbyte min_prec)
 {
   MG_StrExprParseResult parse = {&mg_str_expr_nil};
   {
@@ -929,7 +929,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       {
         String8 str = {0};
         str.size = spaces_to_push;
-        str.str = push_array(arena, U8, spaces_to_push);
+        str.str = push_array(arena, byte, spaces_to_push);
         for(S64 idx = 0; idx < spaces_to_push; idx += 1)
         {
           str.str[idx] = ' ';

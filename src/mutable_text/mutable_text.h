@@ -39,7 +39,7 @@ struct MTX_Op
 struct MTX_MutThread
 {
   U64 ring_size;
-  U8 *ring_base;
+  byte *ring_base;
   U64 ring_read_pos;
   U64 ring_write_pos;
   OS_Handle cv;

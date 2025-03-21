@@ -182,11 +182,11 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 }
 
 String8
-coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
+coff_make_import_lookup(Arena *arena, ushort hint, String8 name)
 {
   U64 buffer_size = sizeof(hint) + (name.size + 1);
-  U8 *buffer = push_array(arena, U8, buffer_size);
-  *(U16*)buffer = hint;
+  byte *buffer = push_array(arena, byte, buffer_size);
+  *(ushort*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
   String8 result = str8(buffer, buffer_size);
@@ -194,14 +194,14 @@ coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
 }
 
 U32
-coff_make_ordinal32(U16 hint)
+coff_make_ordinal32(ushort hint)
 {
   U32 ordinal = (1 << 31) | hint;
   return ordinal;
 }
 
 U64
-coff_make_ordinal64(U16 hint)
+coff_make_ordinal64(ushort hint)
 {
   U64 ordinal = (1ULL << 63) | hint;
   return ordinal;
@@ -213,7 +213,7 @@ coff_make_import_header_by_name(Arena            *arena,
                                 COFF_MachineType  machine,
                                 COFF_TimeStamp    time_stamp,
                                 String8           name,
-                                U16               hint,
+                                ushort               hint,
                                 COFF_ImportType   type)
 {
   COFF_ImportHeaderFlags flags = 0;
@@ -232,18 +232,18 @@ coff_make_import_header_by_name(Arena            *arena,
   
   // alloc memory
   U64  buffer_size = sizeof(header) + header.data_size;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte  *buffer      = push_array_no_zero(arena, byte, buffer_size);
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));
   
   // copy function name
-  U8 *func_name = buffer + sizeof(header);
+  byte *func_name = buffer + sizeof(header);
   MemoryCopy(func_name, name.str, name.size);
   func_name[name.size] = 0;
   
   // copy dll name
-  U8 *dll_name_buffer = buffer + sizeof(header) + name.size + 1;
+  byte *dll_name_buffer = buffer + sizeof(header) + name.size + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -256,7 +256,7 @@ coff_make_import_header_by_ordinal(Arena             *arena,
                                    String8            dll_name,
                                    COFF_MachineType   machine,
                                    COFF_TimeStamp     time_stamp,
-                                   U16                ordinal,
+                                   ushort                ordinal,
                                    COFF_ImportType    type)
 {
   COFF_ImportHeaderFlags flags = 0;
@@ -275,17 +275,17 @@ coff_make_import_header_by_ordinal(Arena             *arena,
   
   // alloc memory
   U64 buffer_size = sizeof(header) + header.data_size;
-  U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  byte *buffer      = push_array_no_zero(arena, byte, buffer_size);
   
   // copy header
   MemoryCopyStruct(buffer, &header);
   
   // no function name write zero
-  U8 *func_name = buffer + sizeof(header);
+  byte *func_name = buffer + sizeof(header);
   func_name[0]  = 0;
   
   // copy dll name
-  U8 *dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
+  byte *dll_name_buffer = buffer + sizeof(header) + /* name.size */ + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   

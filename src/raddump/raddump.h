@@ -162,7 +162,7 @@ void            rd_print_disasm           (Arena *arena, String8List *out, Strin
 
 // Raw Data
 
-String8 rd_format_hex_array(Arena *arena, U8 *ptr, U64 size);
+String8 rd_format_hex_array(Arena *arena, byte *ptr, U64 size);
 void    rd_print_raw_data  (Arena *arena, String8List *out, String8 indent, U64 bytes_per_row, U64 marker_count, RD_Marker *markers, String8 raw_data);
 
 // RDI

@@ -115,7 +115,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
     XSyncIntToValue(&initial_value, 0);
     w->counter_xid = XSyncCreateCounter(os_lnx_gfx_state->display, initial_value);
   }
-  XChangeProperty(os_lnx_gfx_state->display, w->window, os_lnx_gfx_state->wm_sync_request_counter_atom, XA_CARDINAL, 32, PropModeReplace, (U8 *)&w->counter_xid, 1);
+  XChangeProperty(os_lnx_gfx_state->display, w->window, os_lnx_gfx_state->wm_sync_request_counter_atom, XA_CARDINAL, 32, PropModeReplace, (byte *)&w->counter_xid, 1);
   
   //- rjf: attach name
   Temp scratch = scratch_begin(0, 0);

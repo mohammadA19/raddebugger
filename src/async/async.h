@@ -68,7 +68,7 @@ struct ASYNC_TaskList
 struct ASYNC_Ring
 {
   U64 ring_size;
-  U8 *ring_base;
+  byte *ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
   OS_Handle ring_mutex;

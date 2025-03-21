@@ -108,7 +108,7 @@ arena_push(Arena *arena, U64 size, U64 align)
     U64 cmt_pst_aligned = AlignPow2(pos_pst, current->cmt_size);
     U64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
     U64 cmt_size = cmt_pst_clamped - current->cmt;
-    os_commit((U8 *)current + current->cmt, cmt_size);
+    os_commit((byte *)current + current->cmt, cmt_size);
     current->cmt = cmt_pst_clamped;
   }
   
@@ -116,7 +116,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   void *result = 0;
   if(current->cmt >= pos_pst)
   {
-    result = (U8 *)current+pos_pre;
+    result = (byte *)current+pos_pre;
     current->pos = pos_pst;
     AsanUnpoisonMemoryRegion(result, size);
   }
@@ -154,7 +154,7 @@ arena_pop_to(Arena *arena, U64 pos)
   arena->current = current;
   U64 new_pos = big_pos - current->base_pos;
   AssertAlways(new_pos <= current->pos);
-  AsanPoisonMemoryRegion((U8*)current + new_pos, (current->pos - new_pos));
+  AsanPoisonMemoryRegion((byte*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }
 

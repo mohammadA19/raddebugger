@@ -43,7 +43,7 @@ union E_Value
   U128 u128;
   U64 u64;
   U32 u32;
-  U16 u16;
+  ushort u16;
   S64 s64;
   S32 s32;
   S32 s16;

@@ -8,8 +8,8 @@ TEX_Topology
 tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 {
   TEX_Topology top = {0};
-  top.dim.x = (S16)Clamp(0, dim.x, max_S32);
-  top.dim.y = (S16)Clamp(0, dim.y, max_S32);
+  top.dim.x = (short)Clamp(0, dim.x, max_S32);
+  top.dim.y = (short)Clamp(0, dim.y, max_S32);
   top.fmt = fmt;
   return top;
 }
@@ -35,7 +35,7 @@ tex_init()
     tex_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   tex_shared->u2x_ring_size = KB(64);
-  tex_shared->u2x_ring_base = push_array_no_zero(arena, U8, tex_shared->u2x_ring_size);
+  tex_shared->u2x_ring_base = push_array_no_zero(arena, byte, tex_shared->u2x_ring_size);
   tex_shared->u2x_ring_cv = os_condition_variable_alloc();
   tex_shared->u2x_ring_mutex = os_mutex_alloc();
   tex_shared->evictor_thread = os_thread_launch(tex_evictor_thread__entry_point, 0, 0);

@@ -8,7 +8,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
 {
   DW_SimpleLoc result = {DW_SimpleLocKind_Empty};
   
-  U8 op = 0;
+  byte op = 0;
   if (dw_based_range_read(base, range, 0, 1, &op)) {
     // step params
     U64 size_param = 0;
@@ -120,7 +120,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
         step_cursor += dw_based_range_read_uleb128(base, range, step_cursor, &size);
         if (step_cursor + size <= range.max) {
           result.kind          = DW_SimpleLocKind_ValueLong;
-          result.val_long.str  = (U8*)base + range.min + step_cursor;
+          result.val_long.str  = (byte*)base + range.min + step_cursor;
           result.val_long.size = size;
         }
         step_cursor += size;
@@ -188,7 +188,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   DW_ExprAnalysisTask *finished_tasks   = 0;
   
   // convert range input to string
-  String8 in_data = str8((U8*)in_base + in_range.min, in_range.max - in_range.min);
+  String8 in_data = str8((byte*)in_base + in_range.min, in_range.max - in_range.min);
   
   // put input task onto the list
   {
@@ -210,7 +210,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
     }
     
     String8  task_data  = task->data;
-    U8      *task_base  = task_data.str;
+    byte      *task_base  = task_data.str;
     Rng1U64  task_range = rng_1u64(0, task_data.size);
     
     // move the task to finished now
@@ -221,7 +221,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
     for (U64 cursor = 0;;) {
       // decode op
       U64 op_offset = cursor;
-      U8  op        = 0;
+      byte  op        = 0;
       if (dw_based_range_read(task_base, task_range, op_offset, 1, &op)) {
         U64 after_op_off = cursor + 1;
         
@@ -417,7 +417,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
           case DW_ExprOp_Skip:
           case DW_ExprOp_Bra:
           {
-            S16 d = 0;
+            short d = 0;
             step_cursor += dw_based_range_read(task_base, task_range, step_cursor, 2, &d);
             result.flags |= DW_ExprFlag_NonLinearFlow;
           } break;
@@ -562,7 +562,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
   DW_ExprStack stack = dw_expr__stack_make(scratch.arena);
   
   // adjust expr range
-  void *expr_ptr  = (U8*)expr_base + expr_range.min;
+  void *expr_ptr  = (byte*)expr_base + expr_range.min;
   U64   expr_size = expr_range.max - expr_range.min;
   
   // setup call stack
@@ -589,7 +589,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
     
     // decode op
     U64 op_offset = cursor;
-    U8  op        = 0;
+    byte  op        = 0;
     if (dw_based_range_read(base, range, op_offset, 1, &op)) {
       U64 after_op_off = cursor + 1;
       
@@ -654,7 +654,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           // earlier versions of GCC emit TLS offset with DW_ExprOp_Addr.
           B32 is_text_relative;
           {
-            U8 next_op = 0;
+            byte next_op = 0;
             dw_based_range_read_struct(base, range, step_cursor, &next_op);
             is_text_relative = (next_op != DW_ExprOp_GNU_PushTlsAddress);
           }
@@ -1087,14 +1087,14 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Skip:
         {
-          S16 d = 0;
+          short d = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &d);
           step_cursor = step_cursor + d;
         } break;
         
         case DW_ExprOp_Bra:
         {
-          S16 d = 0;
+          short d = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &d);
           U64 b = dw_expr__stack_pop(&stack);
           if (b != 0) {
@@ -1104,7 +1104,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
         
         case DW_ExprOp_Call2:
         {
-          U16 p = 0;
+          ushort p = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &p);
           if (config->call.func != 0) {
             String8 sub_data = config->call.func(config->call.user_ptr, p);
@@ -1178,9 +1178,9 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           U64 size = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, size_param, &size);
           if (step_cursor + size <= range.max) {
-            void *data = (U8*)base + range.min + step_cursor;
+            void *data = (byte*)base + range.min + step_cursor;
             stashed_loc.kind = DW_SimpleLocKind_ValueLong;
-            stashed_loc.val_long.str  = (U8*)data;
+            stashed_loc.val_long.str  = (byte*)data;
             stashed_loc.val_long.size = size;
           } else {
             stashed_loc.kind = DW_SimpleLocKind_Fail;

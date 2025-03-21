@@ -4,11 +4,11 @@
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-U16
+ushort
 safe_cast_u16(U32 x)
 {
   AssertAlways(x <= max_U16);
-  U16 result = (U16)x;
+  ushort result = (ushort)x;
   return result;
 }
 
@@ -108,10 +108,10 @@ neg_inf32(){
   return(x.f);
 }
 
-U16
-bswap_u16(U16 x)
+ushort
+bswap_u16(ushort x)
 {
-  U16 result = (((x & 0xFF00) >> 8) |
+  ushort result = (((x & 0xFF00) >> 8) |
                 ((x & 0x00FF) << 8));
   return result;
 }
@@ -144,7 +144,7 @@ bswap_u64(U64 x)
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 
 U64
-count_bits_set16(U16 val)
+count_bits_set16(ushort val)
 {
   return __popcnt16(val);
 }
@@ -196,7 +196,7 @@ clz64(U64 mask)
 #elif COMPILER_CLANG || COMPILER_GCC
 
 U64
-count_bits_set16(U16 val)
+count_bits_set16(ushort val)
 {
   NotImplemented;
   return 0;
@@ -280,7 +280,7 @@ memory_is_zero(void *ptr, U64 size){
   // check extra
   if(result)
   {
-    U8 *p8 = (U8*)p64;
+    byte *p8 = (byte*)p64;
     for (U64 i = 0; i < extra; i += 1, p8 += 1){
       if (*p8 != 0){
         result = 0;
@@ -530,7 +530,7 @@ date_time_from_micro_seconds(U64 time){
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
 U64
-ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
+ring_write(byte *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
@@ -539,7 +539,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
     U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
     U64 pst_split_bytes = src_data_size-pre_split_bytes;
     void *pre_split_data = src_data;
-    void *pst_split_data = ((U8 *)src_data + pre_split_bytes);
+    void *pst_split_data = ((byte *)src_data + pre_split_bytes);
     MemoryCopy(ring_base+ring_off, pre_split_data, pre_split_bytes);
     MemoryCopy(ring_base+0, pst_split_data, pst_split_bytes);
   }
@@ -547,7 +547,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
 }
 
 U64
-ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
+ring_read(byte *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
 {
   Assert(read_size <= ring_size);
   {
@@ -556,7 +556,7 @@ ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_s
     U64 pre_split_bytes = Min(bytes_before_split, read_size);
     U64 pst_split_bytes = read_size-pre_split_bytes;
     MemoryCopy(dst_data, ring_base+ring_off, pre_split_bytes);
-    MemoryCopy((U8 *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);
+    MemoryCopy((byte *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);
   }
   return read_size;
 }

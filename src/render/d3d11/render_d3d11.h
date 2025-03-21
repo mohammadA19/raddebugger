@@ -42,7 +42,7 @@ struct R_D3D11_Uniforms_BlurPass
   Vec2F32 direction;
   Vec2F32 viewport_size;
   U32 blur_count;
-  U8 _padding0_[204];
+  byte _padding0_[204];
 };
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 

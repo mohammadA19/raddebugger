@@ -230,7 +230,7 @@ srtuct
 {
   LNK_CodeViewInput  *input;
   LNK_LeafBucket    **bucket_arr;
-  U8                **raw_leaf_arr;
+  byte                **raw_leaf_arr;
   Rng1U64            *range_arr;
 };
 

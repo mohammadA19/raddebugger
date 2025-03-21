@@ -176,8 +176,8 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
     U64 byte_process_start_idx = 0;
     for(U64 idx = 0; idx <= string.size;)
     {
-      U8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      U8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      byte byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
+      byte next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
       
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
@@ -520,8 +520,8 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
     U64 byte_process_start_idx = 0;
     for(U64 idx = 0; idx <= string.size;)
     {
-      U8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      U8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      byte byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
+      byte next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
       
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
@@ -806,8 +806,8 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
     U64 byte_process_start_idx = 0;
     for(U64 idx = 0; idx <= string.size;)
     {
-      U8 byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      U8 next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      byte byte      = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
+      byte next_byte = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
       
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
@@ -1091,8 +1091,8 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
     U64 byte_process_start_idx = 0;
     for(U64 idx = 0; idx <= string.size;)
     {
-      U8 byte        = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
-      U8 next_byte   = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
+      byte byte        = (idx+0 < string.size) ? (string.str[idx+0]) : 0;
+      byte next_byte   = (idx+1 < string.size) ? (string.str[idx+1]) : 0;
       
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
@@ -1383,8 +1383,8 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
     S32 string_tick_nest = 0;
     for(U64 advance = 0; off <= string.size; off += advance)
     {
-      U8 byte      = (off+0 < string.size) ? string.str[off+0] : 0;
-      U8 next_byte = (off+1 < string.size) ? string.str[off+1] : 0;
+      byte byte      = (off+0 < string.size) ? string.str[off+0] : 0;
+      byte next_byte = (off+1 < string.size) ? string.str[off+1] : 0;
       B32 ender_found = 0;
       advance = (active_token_kind != TXT_TokenKind_Null ? 1 : 0);
       if(off == string.size && active_token_kind != TXT_TokenKind_Null)
@@ -1490,7 +1490,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
         }break;
         case TXT_TokenKind_String:
         {
-          U8 ender_byte = (string_tick_nest > 0 ? '\'' :
+          byte ender_byte = (string_tick_nest > 0 ? '\'' :
                            string_is_char ? '\''
                            : '"');
           if(!escaped && byte == ender_byte)
@@ -1521,7 +1521,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
           }
           else
           {
-            U8 byte_class = utf8_class[byte>>3];
+            byte byte_class = utf8_class[byte>>3];
             if(byte_class > 1)
             {
               advance = (U64)byte_class;
@@ -1608,7 +1608,7 @@ txt_init()
     txt_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   txt_shared->u2p_ring_size = KB(64);
-  txt_shared->u2p_ring_base = push_array_no_zero(arena, U8, txt_shared->u2p_ring_size);
+  txt_shared->u2p_ring_base = push_array_no_zero(arena, byte, txt_shared->u2p_ring_size);
   txt_shared->u2p_ring_cv = os_condition_variable_alloc();
   txt_shared->u2p_ring_mutex = os_mutex_alloc();
   txt_shared->evictor_thread = os_thread_launch(txt_evictor_thread__entry_point, 0, 0);

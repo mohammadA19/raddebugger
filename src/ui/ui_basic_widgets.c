@@ -164,7 +164,7 @@ UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 }
 
 UI_Signal
-ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, String8 string)
+ui_line_edit(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, String8 string)
 {
   //- rjf: make key
   UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
@@ -316,7 +316,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
 }
 
 UI_Signal
-ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...)
+ui_line_editf(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -486,7 +486,7 @@ ui_do_color_tooltip_hsv(Vec3F32 hsv)
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
     {
-      ui_labelf("Hex: #%02x%02x%02x", (U8)(rgb.x*255.f), (U8)(rgb.y*255.f), (U8)(rgb.z*255.f));
+      ui_labelf("Hex: #%02x%02x%02x", (byte)(rgb.x*255.f), (byte)(rgb.y*255.f), (byte)(rgb.z*255.f));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_PrefHeight(ui_children_sum(1)) UI_Row
@@ -525,7 +525,7 @@ ui_do_color_tooltip_hsva(Vec4F32 hsva)
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
     {
-      ui_labelf("Hex: #%02x%02x%02x%02x", (U8)(rgba.x*255.f), (U8)(rgba.y*255.f), (U8)(rgba.z*255.f), (U8)(rgba.w*255.f));
+      ui_labelf("Hex: #%02x%02x%02x%02x", (byte)(rgba.x*255.f), (byte)(rgba.y*255.f), (byte)(rgba.z*255.f), (byte)(rgba.w*255.f));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_PrefHeight(ui_children_sum(1)) UI_Row
