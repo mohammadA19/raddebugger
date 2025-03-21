@@ -27,7 +27,7 @@ D_ViewRuleSpecInfo d_core_view_rule_spec_info_table[21] =
 {str8_lit_comp("graph"), str8_lit_comp("Graph"), str8_lit_comp(""), str8_lit_comp("Displays as a pointer graph, visualizing nodes and edges formed by pointers directly."), (D_ViewRuleSpecInfoFlag_Inherited*0)|(D_ViewRuleSpecInfoFlag_Expandable*1)|(D_ViewRuleSpecInfoFlag_ExprResolution*0)|(D_ViewRuleSpecInfoFlag_VizBlockProd*1), },
 {str8_lit_comp("bitmap"), str8_lit_comp("Bitmap"), str8_lit_comp("x:{'w':expr, 'h':expr, 'fmt':tex2dformat}"), str8_lit_comp("Displays as a bitmap, interpreting the data as raw pixel data."), (D_ViewRuleSpecInfoFlag_Inherited*0)|(D_ViewRuleSpecInfoFlag_Expandable*1)|(D_ViewRuleSpecInfoFlag_ExprResolution*0)|(D_ViewRuleSpecInfoFlag_VizBlockProd*1), },
 {str8_lit_comp("geo3d"), str8_lit_comp("Geometry (3D)"), str8_lit_comp("x:{'count':expr, 'vtx':expr, 'vtx_size':expr}"), str8_lit_comp("Displays as geometry, interpreting the data as index or vertex data."), (D_ViewRuleSpecInfoFlag_Inherited*0)|(D_ViewRuleSpecInfoFlag_Expandable*1)|(D_ViewRuleSpecInfoFlag_ExprResolution*0)|(D_ViewRuleSpecInfoFlag_VizBlockProd*1), },
-};
+}
 
 C_LINKAGE_END
 

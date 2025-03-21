@@ -12,7 +12,7 @@ enum
 {
   RD_CodeViewBuildFlag_Margins = (1<<0),
   RD_CodeViewBuildFlag_All     = 0xffffffff,
-};
+}
 
 typedef struct RD_CodeViewState RD_CodeViewState;
 struct RD_CodeViewState
@@ -30,13 +30,13 @@ struct RD_CodeViewState
   Arena *find_text_arena;
   String8 find_text_fwd;
   String8 find_text_bwd;
-};
+}
 
 typedef struct RD_CodeViewBuildResult RD_CodeViewBuildResult;
 struct RD_CodeViewBuildResult
 {
   DI_KeyList dbgi_keys;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Watch View Types
@@ -48,7 +48,7 @@ enum
   RD_WatchViewFlag_PrettyNameMembers          = (1<<1),
   RD_WatchViewFlag_PrettyEntityRows           = (1<<2),
   RD_WatchViewFlag_DisableCacheLines          = (1<<3),
-};
+}
 
 typedef enum RD_WatchViewColumnKind
 {
@@ -73,7 +73,7 @@ struct RD_WatchViewColumnParams
   B32 is_non_code;
   B32 dequote_string;
   B32 rangify_braces;
-};
+}
 
 typedef struct RD_WatchViewColumn RD_WatchViewColumn;
 struct RD_WatchViewColumn
@@ -91,7 +91,7 @@ struct RD_WatchViewColumn
   B32 is_non_code;
   B32 dequote_string;
   B32 rangify_braces;
-};
+}
 
 typedef struct RD_WatchViewRowCtrl RD_WatchViewRowCtrl;
 struct RD_WatchViewRowCtrl
@@ -99,7 +99,7 @@ struct RD_WatchViewRowCtrl
   RD_EntityKind entity_kind;
   CTRL_EntityKind ctrl_entity_kind;
   RD_CmdKind kind;
-};
+}
 
 typedef enum RD_WatchViewRowKind
 {
@@ -116,7 +116,7 @@ struct RD_WatchViewPoint
   long x;
   EV_Key parent_key;
   EV_Key key;
-};
+}
 
 typedef struct RD_WatchViewRowInfo RD_WatchViewRowInfo;
 struct RD_WatchViewRowInfo
@@ -128,7 +128,7 @@ struct RD_WatchViewRowInfo
   CTRL_Entity *callstack_thread;
   ulong callstack_unwind_index;
   ulong callstack_inline_depth;
-};
+}
 
 typedef struct RD_WatchViewTextEditState RD_WatchViewTextEditState;
 struct RD_WatchViewTextEditState
@@ -141,7 +141,7 @@ struct RD_WatchViewTextEditState
   ulong input_size;
   byte initial_buffer[1024];
   ulong initial_size;
-};
+}
 
 typedef struct RD_WatchViewState RD_WatchViewState;
 struct RD_WatchViewState
@@ -167,7 +167,7 @@ struct RD_WatchViewState
   RD_WatchViewTextEditState dummy_text_edit_state;
   RD_WatchViewTextEditState **text_edit_state_slots;
   B32 text_editing;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Code View Functions

@@ -13,7 +13,7 @@ struct OS_GfxInfo
   float double_click_time;
   float caret_blink_time;
   float default_refresh_rate;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Window Types
@@ -22,7 +22,7 @@ typedef uint OS_WindowFlags;
 enum
 {
   OS_WindowFlag_CustomBorder = (1<<0),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Cursor Types
@@ -72,7 +72,7 @@ enum
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),
   OS_Modifier_Alt   = (1<<2),
-};
+}
 
 typedef struct OS_Event OS_Event;
 struct OS_Event
@@ -91,7 +91,7 @@ struct OS_Event
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
-};
+}
 
 typedef struct OS_EventList OS_EventList;
 struct OS_EventList
@@ -99,7 +99,7 @@ struct OS_EventList
   ulong count;
   OS_Event *first;
   OS_Event *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Application-Defined Frame Hook Forward Declaration

@@ -1195,13 +1195,13 @@ struct DI_SearchWorkIn
   Rng1U64 element_range;
   String8 query;
   ulong dbgi_idx;
-};
+}
 typedef struct DI_SearchWorkOut DI_SearchWorkOut;
 struct DI_SearchWorkOut
 {
   B32 cancelled;
   DI_SearchItemChunkList items;
-};
+}
 ASYNC_WORK_DEF(di_search_work)
 {
   ProfBeginFunction();

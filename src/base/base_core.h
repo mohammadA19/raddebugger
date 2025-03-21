@@ -383,7 +383,7 @@ typedef struct U128 U128;
 struct U128
 {
   ulong u64[2];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
@@ -492,14 +492,14 @@ struct TxtPt
 {
   long line;
   long column;
-};
+}
 
 typedef struct TxtRng TxtRng;
 struct TxtRng
 {
   TxtPt min;
   TxtPt max;
-};
+}
 
 ////////////////////////////////
 //~ Globally Unique Ids
@@ -515,7 +515,7 @@ union Guid
     byte  data4[8];
   };
   byte v[16];
-};
+}
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
 ////////////////////////////////
@@ -526,25 +526,25 @@ struct U16Array
 {
   ulong  count;
   ushort *v;
-};
+}
 typedef struct U32Array U32Array;
 struct U32Array
 {
   ulong  count;
   uint *v;
-};
+}
 typedef struct U64Array U64Array;
 struct U64Array
 {
   ulong  count;
   ulong *v;
-};
+}
 typedef struct U128Array U128Array;
 struct U128Array
 {
   ulong   count;
   U128 *v;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(allen): Constants
@@ -761,7 +761,7 @@ struct DateTime
     uint mon;
   };
   uint year; // 1 = 1 CE, 0 = 1 BC
-};
+}
 
 typedef ulong DenseTime;
 
@@ -772,7 +772,7 @@ typedef uint FilePropertyFlags;
 enum
 {
   FilePropertyFlag_IsFolder = (1 << 0),
-};
+}
 
 typedef struct FileProperties FileProperties;
 struct FileProperties
@@ -781,7 +781,7 @@ struct FileProperties
   DenseTime modified;
   DenseTime created;
   FilePropertyFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Safe Casts

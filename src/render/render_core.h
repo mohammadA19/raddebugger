@@ -21,7 +21,7 @@ enum
   R_GeoVertexFlag_Normals  = (1<<1),
   R_GeoVertexFlag_RGB      = (1<<2),
   R_GeoVertexFlag_RGBA     = (1<<3),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Type
@@ -32,7 +32,7 @@ union R_Handle
   ulong u64[1];
   uint u32[2];
   ushort u16[4];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Instance Types
@@ -48,13 +48,13 @@ struct R_Rect2DInst
   float edge_softness;
   float white_texture_override;
   float _unused_[1];
-};
+}
 
 typedef struct R_Mesh3DInst R_Mesh3DInst;
 struct R_Mesh3DInst
 {
   Mat4x4F32 xform;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Batch Types
@@ -65,14 +65,14 @@ struct R_Batch
   byte *v;
   ulong byte_count;
   ulong byte_cap;
-};
+}
 
 typedef struct R_BatchNode R_BatchNode;
 struct R_BatchNode
 {
   R_BatchNode *next;
   R_Batch v;
-};
+}
 
 typedef struct R_BatchList R_BatchList;
 struct R_BatchList
@@ -82,7 +82,7 @@ struct R_BatchList
   ulong batch_count;
   ulong byte_count;
   ulong bytes_per_inst;
-};
+}
 
 typedef struct R_BatchGroup2DParams R_BatchGroup2DParams;
 struct R_BatchGroup2DParams
@@ -92,7 +92,7 @@ struct R_BatchGroup2DParams
   Mat3x3F32 xform;
   Rng2F32 clip;
   float transparency;
-};
+}
 
 typedef struct R_BatchGroup2DNode R_BatchGroup2DNode;
 struct R_BatchGroup2DNode
@@ -100,7 +100,7 @@ struct R_BatchGroup2DNode
   R_BatchGroup2DNode *next;
   R_BatchList batches;
   R_BatchGroup2DParams params;
-};
+}
 
 typedef struct R_BatchGroup2DList R_BatchGroup2DList;
 struct R_BatchGroup2DList
@@ -108,7 +108,7 @@ struct R_BatchGroup2DList
   R_BatchGroup2DNode *first;
   R_BatchGroup2DNode *last;
   ulong count;
-};
+}
 
 typedef struct R_BatchGroup3DParams R_BatchGroup3DParams;
 struct R_BatchGroup3DParams
@@ -120,7 +120,7 @@ struct R_BatchGroup3DParams
   R_Handle albedo_tex;
   R_Tex2DSampleKind albedo_tex_sample_kind;
   Mat4x4F32 xform;
-};
+}
 
 typedef struct R_BatchGroup3DMapNode R_BatchGroup3DMapNode;
 struct R_BatchGroup3DMapNode
@@ -129,14 +129,14 @@ struct R_BatchGroup3DMapNode
   ulong hash;
   R_BatchList batches;
   R_BatchGroup3DParams params;
-};
+}
 
 typedef struct R_BatchGroup3DMap R_BatchGroup3DMap;
 struct R_BatchGroup3DMap
 {
   R_BatchGroup3DMapNode **slots;
   ulong slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Pass Types
@@ -145,7 +145,7 @@ typedef struct R_PassParams_UI R_PassParams_UI;
 struct R_PassParams_UI
 {
   R_BatchGroup2DList rects;
-};
+}
 
 typedef struct R_PassParams_Blur R_PassParams_Blur;
 struct R_PassParams_Blur
@@ -154,7 +154,7 @@ struct R_PassParams_Blur
   Rng2F32 clip;
   float blur_size;
   float corner_radii[Corner_COUNT];
-};
+}
 
 typedef struct R_PassParams_Geo3D R_PassParams_Geo3D;
 struct R_PassParams_Geo3D
@@ -164,7 +164,7 @@ struct R_PassParams_Geo3D
   Mat4x4F32 view;
   Mat4x4F32 projection;
   R_BatchGroup3DMap mesh_batches;
-};
+}
 
 typedef struct R_Pass R_Pass;
 struct R_Pass
@@ -177,14 +177,14 @@ struct R_Pass
     R_PassParams_Blur *params_blur;
     R_PassParams_Geo3D *params_geo3d;
   };
-};
+}
 
 typedef struct R_PassNode R_PassNode;
 struct R_PassNode
 {
   R_PassNode *next;
   R_Pass v;
-};
+}
 
 typedef struct R_PassList R_PassList;
 struct R_PassList
@@ -192,7 +192,7 @@ struct R_PassList
   R_PassNode *first;
   R_PassNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Type Functions

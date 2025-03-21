@@ -89,14 +89,14 @@ struct TypeWithBitfield
   int x : 32;
   int y : 4;
   int z : 10;
-};
+}
 
 typedef struct BitfieldType64 BitfieldType64;
 struct BitfieldType64
 {
   uint64_t size    : 63;
   uint64_t is_free : 1;
-};
+}
 
 void
 c_type_with_bitfield_usage(void)

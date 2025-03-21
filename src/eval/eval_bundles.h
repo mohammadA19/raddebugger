@@ -17,7 +17,7 @@ struct E_Eval
   E_TypeKey type_key;
   E_InterpretationCode code;
   E_MsgList msgs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Bundled Evaluation Functions

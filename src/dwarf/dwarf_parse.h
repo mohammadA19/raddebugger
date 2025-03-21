@@ -25,7 +25,7 @@ struct DW_ExtDebugRef
   // NOTE(rjf): .dwo => an external DWARF V5 .dwo file
   String8 dwo_path;
   ulong     dwo_id;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Abbrev Table
@@ -35,14 +35,14 @@ struct DW_AbbrevTableEntry
 {
   ulong id;
   ulong off;
-};
+}
 
 typedef struct DW_AbbrevTable DW_AbbrevTable;
 struct DW_AbbrevTable
 {
   ulong                  count;
   DW_AbbrevTableEntry *entries;
-};
+}
 
 ////////////////////////////////
 //~ Sections
@@ -54,13 +54,13 @@ struct DW_Section
   String8 data;
   DW_Mode mode;
   B32     is_dwo;
-};
+}
 
 typedef struct DW_SectionArray DW_SectionArray;
 struct DW_SectionArray
 {
   DW_Section v[DW_Section_Count];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Line Info
@@ -73,14 +73,14 @@ struct DW_LineFile
   ulong     modify_time;
   ulong     md5_digest[2];
   ulong     file_size;
-};
+}
 
 typedef struct DW_LineVMFileNode DW_LineVMFileNode;
 struct DW_LineVMFileNode
 {
   DW_LineVMFileNode *next;
   DW_LineFile        file;
-};
+}
 
 typedef struct DW_LineVMFileList DW_LineVMFileList;
 struct DW_LineVMFileList
@@ -88,14 +88,14 @@ struct DW_LineVMFileList
   ulong                node_count;
   DW_LineVMFileNode *first;
   DW_LineVMFileNode *last;
-};
+}
 
 typedef struct DW_LineVMFileArray DW_LineVMFileArray;
 struct DW_LineVMFileArray
 {
   ulong          count;
   DW_LineFile *v;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Abbrevs
@@ -115,7 +115,7 @@ typedef uint DW_AbbrevFlags;
 enum{
   DW_AbbrevFlag_HasImplicitConst = (1<<0),
   DW_AbbrevFlag_HasChildren      = (1<<1),
-};
+}
 
 typedef struct DW_Abbrev DW_Abbrev;
 struct DW_Abbrev
@@ -126,7 +126,7 @@ struct DW_Abbrev
   ulong            id;
   ulong            const_value;
   DW_AbbrevFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Attribs
@@ -142,14 +142,14 @@ struct DW_AttribValueResolveParams
   ulong         debug_rnglists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_rnglists section    (DWARF V5 ONLY)
   ulong         debug_str_offs_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_str_offsets section (DWARF V5 ONLY)
   ulong         debug_loclists_base;      // NOTE(rjf): containing compilation unit's offset into the .debug_loclists section    (DWARF V5 ONLY)
-};
+}
 
 typedef struct DW_AttribValue DW_AttribValue;
 struct DW_AttribValue
 {
   DW_SectionKind section;
   ulong            v[2];
-};
+}
 
 typedef struct DW_Attrib DW_Attrib;
 struct DW_Attrib
@@ -160,21 +160,21 @@ struct DW_Attrib
   DW_FormKind    form_kind;
   DW_AttribClass value_class;
   DW_AttribValue form_value;
-};
+}
 
 typedef struct DW_AttribArray DW_AttribArray;
 struct DW_AttribArray
 {
   DW_Attrib *v;
   ulong        count;
-};
+}
 
 typedef struct DW_AttribNode DW_AttribNode;
 struct DW_AttribNode
 {
   DW_AttribNode *next;
   DW_Attrib      attrib;
-};
+}
 
 typedef struct DW_AttribList DW_AttribList;
 struct DW_AttribList
@@ -182,7 +182,7 @@ struct DW_AttribList
   DW_AttribNode *first;
   DW_AttribNode *last;
   ulong            count;
-};
+}
 
 typedef struct DW_AttribListParseResult DW_AttribListParseResult;
 struct DW_AttribListParseResult
@@ -190,7 +190,7 @@ struct DW_AttribListParseResult
   DW_AttribList attribs;
   ulong           max_info_off;
   ulong           max_abbrev_off;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Compilation Units + Accelerators
@@ -228,7 +228,7 @@ struct DW_CompRoot
   ulong            high_pc;
   DW_AttribValue ranges_attrib_value;
   ulong            base_addr;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Tags
@@ -248,7 +248,7 @@ struct DW_Tag
   ulong            attribs_info_off;
   ulong            attribs_abbrev_off;
   DW_AttribList  attribs;
-};
+}
 
 typedef uint DW_TagStubFlags;
 enum
@@ -257,7 +257,7 @@ enum
   DW_TagStubFlag_HasLocation          = (1<<1),
   DW_TagStubFlag_HasExternal          = (1<<2),
   DW_TagStubFlag_HasSpecification     = (1<<3),
-};
+}
 
 typedef struct DW_TagStub DW_TagStub;
 struct DW_TagStub
@@ -287,14 +287,14 @@ struct DW_TagStub
   //SYMS_SymbolID abstract_origin;
   
   ulong _unused_;
-};
+}
 
 typedef struct DW_TagStubNode DW_TagStubNode;
 struct DW_TagStubNode
 {
   DW_TagStubNode *next;
   DW_TagStub      stub;
-};
+}
 
 typedef struct DW_TagStubList DW_TagStubList;
 struct DW_TagStubList
@@ -302,7 +302,7 @@ struct DW_TagStubList
   DW_TagStubNode *first;
   DW_TagStubNode *last;
   ulong             count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Line Info VM Types
@@ -327,7 +327,7 @@ struct DW_LineVMHeader
   byte                 *opcode_lens;
   String8Array        dir_table;
   DW_LineVMFileArray  file_table;
-};
+}
 
 typedef struct DW_LineVMState DW_LineVMState;
 struct DW_LineVMState
@@ -360,7 +360,7 @@ struct DW_LineVMState
   // swath of line info to map to a range starting at 0. This causes overlapping ranges
   // which we do not want to report. So this B32 will turn on emission.
   B32 busted_seq;
-};
+}
 
 typedef struct DW_Line DW_Line;
 struct DW_Line
@@ -369,14 +369,14 @@ struct DW_Line
   uint line;
   uint column;
   ulong voff;
-};
+}
 
 typedef struct DW_LineNode DW_LineNode;
 struct DW_LineNode
 {
   DW_LineNode *next;
   DW_Line      v;
-};
+}
 
 typedef struct DW_LineSeqNode DW_LineSeqNode;
 struct DW_LineSeqNode
@@ -385,7 +385,7 @@ struct DW_LineSeqNode
   ulong             count;
   DW_LineNode    *first;
   DW_LineNode    *last;
-};
+}
 
 typedef struct DW_LineTableParseResult DW_LineTableParseResult;
 struct DW_LineTableParseResult
@@ -393,7 +393,7 @@ struct DW_LineTableParseResult
   ulong             seq_count;
   DW_LineSeqNode *first_seq;
   DW_LineSeqNode *last_seq;
-};
+}
 
 ////////////////////////////////
 //~ rjf: .debug_pubnames and .debug_pubtypes
@@ -405,14 +405,14 @@ struct DW_PubStringsBucket
   String8              string;
   ulong                  info_off;
   ulong                  cu_info_off;
-};
+}
 
 typedef struct DW_PubStringsTable DW_PubStringsTable;
 struct DW_PubStringsTable
 {
   ulong size;
   DW_PubStringsBucket **buckets;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

@@ -13,14 +13,14 @@ enum
   UI_ScrollListFlag_Nav  = (1<<0),
   UI_ScrollListFlag_Snap = (1<<1),
   UI_ScrollListFlag_All  = 0xffffffff,
-};
+}
 
 typedef struct UI_ScrollListRowBlock UI_ScrollListRowBlock;
 struct UI_ScrollListRowBlock
 {
   ulong row_count;
   ulong item_count;
-};
+}
 
 typedef struct UI_ScrollListRowBlockChunkNode UI_ScrollListRowBlockChunkNode;
 struct UI_ScrollListRowBlockChunkNode
@@ -29,7 +29,7 @@ struct UI_ScrollListRowBlockChunkNode
   UI_ScrollListRowBlock *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct UI_ScrollListRowBlockChunkList UI_ScrollListRowBlockChunkList;
 struct UI_ScrollListRowBlockChunkList
@@ -38,14 +38,14 @@ struct UI_ScrollListRowBlockChunkList
   UI_ScrollListRowBlockChunkNode *last;
   ulong chunk_count;
   ulong total_count;
-};
+}
 
 typedef struct UI_ScrollListRowBlockArray UI_ScrollListRowBlockArray;
 struct UI_ScrollListRowBlockArray
 {
   UI_ScrollListRowBlock *v;
   ulong count;
-};
+}
 
 typedef struct UI_ScrollListParams UI_ScrollListParams;
 struct UI_ScrollListParams
@@ -57,13 +57,13 @@ struct UI_ScrollListParams
   Rng2S64 cursor_range;
   Rng1S64 item_range;
   B32 cursor_min_is_empty_selection[Axis2_COUNT];
-};
+}
 
 typedef struct UI_ScrollListSignal UI_ScrollListSignal;
 struct UI_ScrollListSignal
 {
   B32 cursor_moved;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Widgets

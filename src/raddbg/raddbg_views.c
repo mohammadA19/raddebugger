@@ -3601,14 +3601,14 @@ struct RD_CmdListerItem
   FuzzyMatchRangeList name_match_ranges;
   FuzzyMatchRangeList desc_match_ranges;
   FuzzyMatchRangeList tags_match_ranges;
-};
+}
 
 typedef struct RD_CmdListerItemNode RD_CmdListerItemNode;
 struct RD_CmdListerItemNode
 {
   RD_CmdListerItemNode *next;
   RD_CmdListerItem item;
-};
+}
 
 typedef struct RD_CmdListerItemList RD_CmdListerItemList;
 struct RD_CmdListerItemList
@@ -3616,14 +3616,14 @@ struct RD_CmdListerItemList
   RD_CmdListerItemNode *first;
   RD_CmdListerItemNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_CmdListerItemArray RD_CmdListerItemArray;
 struct RD_CmdListerItemArray
 {
   RD_CmdListerItem *v;
   ulong count;
-};
+}
 
 internal RD_CmdListerItemList
 rd_cmd_lister_item_list_from_needle(Arena *arena, String8 needle)
@@ -3904,14 +3904,14 @@ struct RD_FileInfo
   String8 filename;
   FileProperties props;
   FuzzyMatchRangeList match_ranges;
-};
+}
 
 typedef struct RD_FileInfoNode RD_FileInfoNode;
 struct RD_FileInfoNode
 {
   RD_FileInfoNode *next;
   RD_FileInfo file_info;
-};
+}
 
 typedef struct RD_FileSystemViewPathState RD_FileSystemViewPathState;
 struct RD_FileSystemViewPathState
@@ -3919,7 +3919,7 @@ struct RD_FileSystemViewPathState
   RD_FileSystemViewPathState *hash_next;
   String8 normalized_path;
   Vec2S64 cursor;
-};
+}
 
 typedef struct RD_FileSystemViewState RD_FileSystemViewState;
 struct RD_FileSystemViewState
@@ -3936,7 +3936,7 @@ struct RD_FileSystemViewState
   ulong cached_file_count;
   RD_FileInfo *cached_files;
   float col_pcts[3];
-};
+}
 
 typedef struct RD_PathQuery RD_PathQuery;
 struct RD_PathQuery
@@ -3944,7 +3944,7 @@ struct RD_PathQuery
   String8 prefix;
   String8 path;
   String8 search;
-};
+}
 
 internal RD_PathQuery
 rd_path_query_from_string(String8 string)
@@ -4482,14 +4482,14 @@ struct RD_ProcessInfo
   FuzzyMatchRangeList attached_match_ranges;
   FuzzyMatchRangeList name_match_ranges;
   FuzzyMatchRangeList pid_match_ranges;
-};
+}
 
 typedef struct RD_ProcessInfoNode RD_ProcessInfoNode;
 struct RD_ProcessInfoNode
 {
   RD_ProcessInfoNode *next;
   RD_ProcessInfo info;
-};
+}
 
 typedef struct RD_ProcessInfoList RD_ProcessInfoList;
 struct RD_ProcessInfoList
@@ -4497,14 +4497,14 @@ struct RD_ProcessInfoList
   RD_ProcessInfoNode *first;
   RD_ProcessInfoNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_ProcessInfoArray RD_ProcessInfoArray;
 struct RD_ProcessInfoArray
 {
   RD_ProcessInfo *v;
   ulong count;
-};
+}
 
 internal RD_ProcessInfoList
 rd_process_info_list_from_query(Arena *arena, String8 query)
@@ -4799,14 +4799,14 @@ struct RD_EntityListerItem
 {
   RD_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
-};
+}
 
 typedef struct RD_EntityListerItemNode RD_EntityListerItemNode;
 struct RD_EntityListerItemNode
 {
   RD_EntityListerItemNode *next;
   RD_EntityListerItem item;
-};
+}
 
 typedef struct RD_EntityListerItemList RD_EntityListerItemList;
 struct RD_EntityListerItemList
@@ -4814,14 +4814,14 @@ struct RD_EntityListerItemList
   RD_EntityListerItemNode *first;
   RD_EntityListerItemNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_EntityListerItemArray RD_EntityListerItemArray;
 struct RD_EntityListerItemArray
 {
   RD_EntityListerItem *v;
   ulong count;
-};
+}
 
 internal RD_EntityListerItemList
 rd_entity_lister_item_list_from_needle(Arena *arena, RD_EntityKind kind, RD_EntityFlags omit_flags, String8 needle)
@@ -5006,14 +5006,14 @@ struct RD_CtrlEntityListerItem
 {
   CTRL_Entity *entity;
   FuzzyMatchRangeList name_match_ranges;
-};
+}
 
 typedef struct RD_CtrlEntityListerItemNode RD_CtrlEntityListerItemNode;
 struct RD_CtrlEntityListerItemNode
 {
   RD_CtrlEntityListerItemNode *next;
   RD_CtrlEntityListerItem item;
-};
+}
 
 typedef struct RD_CtrlEntityListerItemList RD_CtrlEntityListerItemList;
 struct RD_CtrlEntityListerItemList
@@ -5021,14 +5021,14 @@ struct RD_CtrlEntityListerItemList
   RD_CtrlEntityListerItemNode *first;
   RD_CtrlEntityListerItemNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_CtrlEntityListerItemArray RD_CtrlEntityListerItemArray;
 struct RD_CtrlEntityListerItemArray
 {
   RD_CtrlEntityListerItem *v;
   ulong count;
-};
+}
 
 internal RD_CtrlEntityListerItemList
 rd_ctrl_entity_lister_item_list_from_needle(Arena *arena, CTRL_EntityKind kind, String8 needle)
@@ -5673,7 +5673,7 @@ struct RD_PendingFileViewState
 {
   Arena *deferred_cmd_arena;
   RD_CmdList deferred_cmds;
-};
+}
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(pending_file)
 {
@@ -6043,7 +6043,7 @@ struct RD_DisasmViewState
   ulong temp_look_run_gen;
   ulong goto_vaddr;
   RD_CodeViewState cv;
-};
+}
 
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(disasm)
 {
@@ -6268,7 +6268,7 @@ struct RD_OutputViewState
 {
   U128 last_hash;
   RD_CodeViewState cv;
-};
+}
 
 RD_VIEW_RULE_UI_FUNCTION_DEF(output)
 {
@@ -6369,7 +6369,7 @@ struct RD_MemoryViewState
 {
   B32 center_cursor;
   B32 contain_cursor;
-};
+}
 
 EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_DEF(memory)
 {
@@ -7226,14 +7226,14 @@ struct RD_BitmapBoxDrawData
   B32 hovered;
   Vec2S32 mouse_px;
   float ui_per_bmp_px;
-};
+}
 
 typedef struct RD_BitmapCanvasBoxDrawData RD_BitmapCanvasBoxDrawData;
 struct RD_BitmapCanvasBoxDrawData
 {
   Vec2F32 view_center_pos;
   float zoom;
-};
+}
 
 internal Vec2F32
 rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, float zoom, Rng2F32 rect, Vec2F32 cvs)
@@ -7666,7 +7666,7 @@ struct RD_Geo3DViewState
   float yaw;
   float pitch;
   float zoom;
-};
+}
 
 typedef struct RD_Geo3DBoxDrawData RD_Geo3DBoxDrawData;
 struct RD_Geo3DBoxDrawData
@@ -7676,7 +7676,7 @@ struct RD_Geo3DBoxDrawData
   float zoom;
   R_Handle vertex_buffer;
   R_Handle index_buffer;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
 {
@@ -7993,14 +7993,14 @@ struct RD_SettingsItem
   RD_ThemeColor color;
   RD_ThemePreset preset;
   RD_SettingsItemKind category;
-};
+}
 
 typedef struct RD_SettingsItemNode RD_SettingsItemNode;
 struct RD_SettingsItemNode
 {
   RD_SettingsItemNode *next;
   RD_SettingsItem v;
-};
+}
 
 typedef struct RD_SettingsItemList RD_SettingsItemList;
 struct RD_SettingsItemList
@@ -8008,14 +8008,14 @@ struct RD_SettingsItemList
   RD_SettingsItemNode *first;
   RD_SettingsItemNode *last;
   ulong count;
-};
+}
 
 typedef struct RD_SettingsItemArray RD_SettingsItemArray;
 struct RD_SettingsItemArray
 {
   RD_SettingsItem *v;
   ulong count;
-};
+}
 
 internal int
 rd_qsort_compare_settings_item(RD_SettingsItem *a, RD_SettingsItem *b)

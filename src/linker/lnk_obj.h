@@ -99,14 +99,14 @@ typedef struct LNK_SectDefn
   ulong                  idx;
 } LNK_SectDefn;
 
-typedef struct
+typedef struct LNK_SectDefnList
 {
   ulong           count;
   LNK_SectDefn *first;
   LNK_SectDefn *last;
-} LNK_SectDefnList;
+}
 
-typedef struct
+typedef struct LNK_ObjIniter
 {
   LNK_InputObj    **inputs;
   LNK_ObjNode      *obj_node_arr;
@@ -114,31 +114,31 @@ typedef struct
   LNK_SectDefnList *defn_arr;
   LNK_SectionTable *st;
   ulong              *function_pad_min;
-} LNK_ObjIniter;
+}
 
-typedef struct
+typedef struct LNK_ObjNewSectScanner
 {
   Rng1U64          *range_arr;
   LNK_ObjNode      *obj_node_arr;
   LNK_SectDefnList *defn_arr;
   LNK_SectDefnList *conf_arr;
-} LNK_ObjNewSectScanner;
+}
 
-typedef struct
+typedef struct LNK_ChunkCounter
 {
   LNK_SectionTable *st;
   LNK_ObjNode      *obj_arr;
   ulong             **chunk_count_arr_arr;
-} LNK_ChunkCounter;
+}
 
-typedef struct
+typedef struct LNK_ChunkRefAssign
 {
   LNK_ChunkManager *cman;
   ulong             **chunk_id_arr_arr;
   ulong               obj_idx;
-} LNK_ChunkRefAssign;
+}
 
-typedef struct
+typedef struct LNK_ChunkRefAssigner
 {
   LNK_SectionTable *st;
   Rng1U64          *range_arr;
@@ -146,38 +146,38 @@ typedef struct
   LNK_ObjNode      *obj_arr;
   LNK_ChunkList   **nosort_chunk_list_arr_arr;
   LNK_ChunkList   **chunk_list_arr_arr;
-} LNK_ChunkRefAssigner;
+}
 
-typedef struct
+typedef struct LNK_SymbolCollector
 {
   LNK_SymbolType   type;
   LNK_ObjNodeArray in_arr;
   LNK_SymbolList  *out_arr;
   Rng1U64         *range_arr;
-} LNK_SymbolCollector;
+}
 
-typedef struct
+typedef struct LNK_CollectObjChunksTaskData
 {
   LNK_Obj      **obj_arr;
   String8        name;
   String8        postfix;
   B32            collect_discarded;
   LNK_ChunkList *list_arr;
-} LNK_CollectObjChunksTaskData;
+}
 
-typedef struct
+typedef struct LNK_DefaultLibCollector
 {
   Rng1U64          *range_arr;
   LNK_ObjNodeArray  in_arr;
   String8List      *out_arr;
-} LNK_DefaultLibCollector;
+}
 
-typedef struct
+typedef struct LNK_ManifestDependencyCollector
 {
   LNK_ObjNode  *in_arr;
   String8List  *out_arr;
   Rng1U64      *range_arr;
-} LNK_ManifestDependencyCollector;
+}
 
 ////////////////////////////////
 

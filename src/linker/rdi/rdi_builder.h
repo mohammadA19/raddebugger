@@ -114,16 +114,16 @@ typedef struct RDIB_VariableList
 
 ////////////////////////////////
 
-typedef struct
+typedef struct RDIB_TopLevelInfo
 {
   RDI_Arch arch;
   ulong      exe_hash;
   ulong      voff_max;
   String8  exe_name;
   String8  producer_string;
-} RDIB_TopLevelInfo;
+}
 
-typedef struct
+typedef struct RDIB_BinarySection
 {
   String8                name;
   RDI_BinarySectionFlags flags;
@@ -131,7 +131,7 @@ typedef struct
   ulong                    voff_opl;
   ulong                    foff_first;
   ulong                    foff_opl;
-} RDIB_BinarySection;
+}
 
 typedef struct RDIB_LineTableFragment
 {
@@ -275,7 +275,7 @@ enum
 {
   RDI_MemberKind_COUNT = RDI_MemberKind_NestedType,
   RDI_MemberKindExt_MemberListPointer // NOTE: must always be last in the list!
-};
+}
 
 typedef struct RDIB_UDTMember
 {
@@ -343,7 +343,7 @@ enum
   RDI_TypeKindExt_Members,
   RDI_TypeKindExt_Params,
   RDI_TypeKindExt_Count,
-};
+}
 typedef RDI_TypeKind RDI_TypeKindExt;
 
 typedef struct RDIB_Type
@@ -569,12 +569,12 @@ typedef struct RDIB_TypeChunk
   RDIB_Type             *v;
 } RDIB_TypeChunk;
 
-typedef struct
+typedef struct RDIB_TypeChunkList
 {
   ulong             count;
   RDIB_TypeChunk *first;
   RDIB_TypeChunk *last;
-} RDIB_TypeChunkList;
+}
 
 typedef struct RDIB_UDTMemberChunk
 {
@@ -595,11 +595,11 @@ typedef struct RDIB_UDTMemberChunkList
 ////////////////////////////////
 // UDT Forward Ref Map
 
-typedef struct
+typedef struct RDIB_UDTFwdrefBucket
 {
   struct RDIB_Type *type;
   ulong idx;
-} RDIB_UDTFwdrefBucket;
+}
 
 ////////////////////////////////
 // String Map
@@ -647,25 +647,25 @@ typedef struct RDIB_StringMap
 #define RDIB_STRING_MAP_UPDATE_FUNC(name) void name(VoidNode **head, VoidNode *node)
 typedef RDIB_STRING_MAP_UPDATE_FUNC(RDIB_StringMapUpdateFunc);
 
-typedef struct
+typedef struct RDIB_GetExtantBucketsStringMapTask
 {
   RDIB_StringMap        *string_map;
   Rng1U64               *ranges;
   ulong                   *counts;
   ulong                   *offsets;
   RDIB_StringMapBucket **result;
-} RDIB_GetExtantBucketsStringMapTask;
+}
 
-typedef struct
+typedef struct RDIB_CopyStringDataTask
 {
   uint                   *string_table;
   ulong                    string_data_size;
   byte                    *string_data;
   RDIB_StringMapBucket **buckets;
   Rng1U64               *ranges;
-} RDIB_CopyStringDataTask;
+}
 
-typedef struct
+typedef struct RDIB_StringMapRadixSort
 {
   ulong                    chunk_idx_opl;
   Rng1U64               *ranges;
@@ -673,7 +673,7 @@ typedef struct
   RDIB_StringMapBucket **dst;
   uint                   *chunk_histo;
   uint                   *chunk_offsets;
-} RDIB_StringMapRadixSort;
+}
 
 ////////////////////////////////
 // Index Run Map
@@ -699,12 +699,12 @@ typedef struct RDIB_IndexRunMap
 
 ////////////////////////////////
 
-typedef struct
+typedef struct RDIB_VMapRange
 {
   ulong voff;
   uint size;
   uint idx;
-} RDIB_VMapRange;
+}
 
 ////////////////////////////////
 
@@ -803,18 +803,18 @@ typedef struct RDIB_Input
 ////////////////////////////////
 // Parallel For Tasks
 
-typedef struct
+typedef struct RDIB_TypeStats
 {
   ulong *udt_counts;
-} RDIB_TypeStats;
+}
 
-typedef struct
+typedef struct RDIB_TypeStatsTask
 {
   RDIB_TypeChunk **chunks;
   RDIB_TypeStats  *type_stats;
-} RDIB_TypeStatsTask;
+}
 
-typedef struct
+typedef struct RDIB_MembersTask
 {
   Rng1U64         *ranges;
   ulong             *counts;
@@ -825,17 +825,17 @@ typedef struct
     RDI_Member     *udt_members_rdi;
     RDI_EnumMember *enum_members_rdi;
   };
-} RDIB_MembersTask;
+}
 
-typedef struct
+typedef struct RDIB_UserDefinesTask
 {
   RDIB_TypeChunk    **type_chunks;
   RDIB_TypeStats      type_stats;
   ulong                *udt_base_idx;
   RDI_UDT            *udts;
-} RDIB_UserDefinesTask;
+}
 
-typedef struct
+typedef struct RDIB_TypeNodesTask
 {
   ulong                 addr_size;
   RDIB_StringMap     *string_map;
@@ -843,9 +843,9 @@ typedef struct
   RDIB_TypeChunk    **type_chunks;
   RDIB_TypeStats      type_stats;
   RDI_TypeNode       *type_nodes;
-} RDIB_TypeNodesTask;
+}
 
-typedef struct
+typedef struct RDIB_CollectStringsTask
 {
   RDIB_StringMap            *string_map;
   Rng1U64                   *ranges;
@@ -866,17 +866,17 @@ typedef struct
     RDIB_TypeChunk        **types;
     RDIB_PathTreeNodeList  *path_node_lists;
   };
-} RDIB_CollectStringsTask;
+}
 
-typedef struct
+typedef struct RDIB_BuildTypeDataTask
 {
   RDIB_StringMap  *string_map;
   Rng1U64         *ranges;
   RDIB_TypeChunk **chunks;
   String8List     *data_lists;
-} RDIB_BuildTypeDataTask;
+}
 
-typedef struct
+typedef struct RDIB_BuildSymbolSectionTask
 {
   RDIB_StringMap *string_map;
   Rng1U64        *ranges;
@@ -910,9 +910,9 @@ typedef struct
       byte                *loc_data_rdi;
     };
   };
-} RDIB_BuildSymbolSectionTask;
+}
 
-typedef union
+typedef union RDIB_VMapBuilderTask
 {
   struct {
     ulong            *counts;
@@ -931,9 +931,9 @@ typedef union
     RDIB_VMapRange *vmaps[3];
     String8List     raw_vmaps[3];
   };
-} RDIB_VMapBuilderTask;
+}
 
-typedef struct
+typedef struct RDIB_BuildIndexRunsTask
 {
   ulong                   sorter_idx;
   RDI_NameMapKind       name_map_kind;
@@ -944,25 +944,25 @@ typedef struct
     RDIB_TypeChunk       **type_chunks;
     RDIB_StringMapBucket **name_map_buckets;
   };
-} RDIB_BuildIndexRunsTask;
+}
 
-typedef struct
+typedef struct RDIB_IdxRunCopyTask
 {
   RDIB_IndexRunBucket **buckets;
   Rng1U64             *ranges;
   uint                 *output_array;
-} RDIB_IdxRunCopyTask;
+}
 
-typedef struct
+typedef struct RDIB_GetExtantBucketsIndexRunMapTask
 {
   RDIB_IndexRunMap     *idx_run_map;
   Rng1U64              *ranges;
   ulong                  *counts;
   ulong                  *offsets;
   RDIB_IndexRunBucket **result;
-} RDIB_GetExtantBucketsIndexRunMapTask;
+}
 
-typedef struct
+typedef struct RDIB_IndexRunMapRadixSort
 {
   ulong                   chunk_idx_opl;
   Rng1U64              *ranges;
@@ -970,9 +970,9 @@ typedef struct
   RDIB_IndexRunBucket **dst;
   uint                  *chunk_histo;
   uint                  *chunk_offsets;
-} RDIB_IndexRunMapRadixSort;
+}
 
-typedef struct
+typedef struct RDIB_NameMapBuilderTask
 {
   RDIB_StringMap         *string_map;
   RDIB_IndexRunMap       *idx_run_map;
@@ -983,16 +983,16 @@ typedef struct
   RDI_NameMapNode   **out_nodes;
   ulong                *out_bucket_counts;
   ulong                *out_node_counts;
-} RDIB_NameMapBuilderTask;
+}
 
-typedef struct
+typedef struct RDIB_BuildFilePathNodesTask
 {
   RDIB_PathTree    *path_tree;
   RDIB_StringMap   *string_map;
   RDI_FilePathNode *nodes_dst;
-} RDIB_BuildFilePathNodesTask;
+}
 
-typedef struct
+typedef struct RDIB_SrcLineMapsTask
 {
   RDIB_SourceFile **src_file_arr;
   uint             *out_line_counts;
@@ -1000,9 +1000,9 @@ typedef struct
   uint             **out_line_nums;
   uint             **out_line_ranges;
   ulong             **out_voffs;
-} RDIB_SrcLineMapsTask;
+}
 
-typedef struct
+typedef struct RDIB_BuildLineTablesTask
 {
   RDIB_LineTableChunk **chunks;
   Rng1U64              *ranges;
@@ -1010,16 +1010,16 @@ typedef struct
   ulong       *out_line_table_counts;
   ulong      **out_line_table_voffs;
   RDI_Line **out_line_table_lines;
-} RDIB_BuildLineTablesTask;
+}
 
-typedef struct
+typedef struct RDIB_FillSourceFilesTask
 {
   Rng1U64               *ranges;
   RDIB_StringMap        *string_map;
   RDIB_PathTree         *path_tree;
   RDIB_SourceFileChunk **src_file_chunks;
   RDI_SourceFile        *src_files_dst;
-} RDIB_FillSourceFilesTask;
+}
 
 ////////////////////////////////
 // Data Model Helpers

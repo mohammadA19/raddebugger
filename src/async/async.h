@@ -31,7 +31,7 @@ struct ASYNC_WorkParams
   ulong *completion_counter;
   ulong endt_us;
   ASYNC_Priority priority;
-};
+}
 
 typedef struct ASYNC_Work ASYNC_Work;
 struct ASYNC_Work
@@ -41,7 +41,7 @@ struct ASYNC_Work
   void **output;
   OS_Handle semaphore;
   ulong *completion_counter;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Task-Based Work Types
@@ -51,14 +51,14 @@ struct ASYNC_Task
 {
   OS_Handle semaphore;
   void *output;
-};
+}
 
 typedef struct ASYNC_TaskNode ASYNC_TaskNode;
 struct ASYNC_TaskNode
 {
   ASYNC_TaskNode *next;
   ASYNC_Task *v;
-};
+}
 
 typedef struct ASYNC_TaskList ASYNC_TaskList;
 struct ASYNC_TaskList
@@ -66,7 +66,7 @@ struct ASYNC_TaskList
   ASYNC_TaskNode *first;
   ASYNC_TaskNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
@@ -80,7 +80,7 @@ struct ASYNC_Ring
   ulong ring_read_pos;
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
-};
+}
 
 typedef struct ASYNC_Shared ASYNC_Shared;
 struct ASYNC_Shared
@@ -96,7 +96,7 @@ struct ASYNC_Shared
   OS_Handle *work_threads;
   ulong work_threads_count;
   ulong work_threads_live_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

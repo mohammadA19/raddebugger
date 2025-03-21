@@ -429,7 +429,7 @@ struct RD_ThreadBoxDrawExtData
   B32 is_frozen;
   B32 do_lines;
   B32 do_glow;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
 {
@@ -511,7 +511,7 @@ struct RD_BreakpointBoxDrawExtData
   float remap_px_delta;
   B32 do_lines;
   B32 do_glow;
-};
+}
 
 internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 {

@@ -12,14 +12,14 @@ struct DI_Key
 {
   String8 path;
   ulong min_timestamp;
-};
+}
 
 typedef struct DI_KeyNode DI_KeyNode;
 struct DI_KeyNode
 {
   DI_KeyNode *next;
   DI_Key v;
-};
+}
 
 typedef struct DI_KeyList DI_KeyList;
 struct DI_KeyList
@@ -27,14 +27,14 @@ struct DI_KeyList
   DI_KeyNode *first;
   DI_KeyNode *last;
   ulong count;
-};
+}
 
 typedef struct DI_KeyArray DI_KeyArray;
 struct DI_KeyArray
 {
   DI_Key *v;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Event Types
@@ -54,14 +54,14 @@ struct DI_Event
 {
   DI_EventKind kind;
   String8 string;
-};
+}
 
 typedef struct DI_EventNode DI_EventNode;
 struct DI_EventNode
 {
   DI_EventNode *next;
   DI_Event v;
-};
+}
 
 typedef struct DI_EventList DI_EventList;
 struct DI_EventList
@@ -69,7 +69,7 @@ struct DI_EventList
   DI_EventNode *first;
   DI_EventNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Debug Info Cache Types
@@ -79,7 +79,7 @@ struct DI_StringChunkNode
 {
   DI_StringChunkNode *next;
   ulong size;
-};
+}
 
 typedef struct DI_Node DI_Node;
 struct DI_Node
@@ -106,14 +106,14 @@ struct DI_Node
   Arena *arena;
   RDI_Parsed rdi;
   B32 parse_done;
-};
+}
 
 typedef struct DI_Slot DI_Slot;
 struct DI_Slot
 {
   DI_Node *first;
   DI_Node *last;
-};
+}
 
 typedef struct DI_Stripe DI_Stripe;
 struct DI_Stripe
@@ -123,7 +123,7 @@ struct DI_Stripe
   DI_StringChunkNode *free_string_chunks[8];
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Search Cache Types
@@ -135,7 +135,7 @@ struct DI_SearchItem
   ulong dbgi_idx;
   ulong missed_size;
   FuzzyMatchRangeList match_ranges;
-};
+}
 
 typedef struct DI_SearchItemChunk DI_SearchItemChunk;
 struct DI_SearchItemChunk
@@ -144,7 +144,7 @@ struct DI_SearchItemChunk
   DI_SearchItem *v;
   ulong count;
   ulong cap;
-};
+}
 
 typedef struct DI_SearchItemChunkList DI_SearchItemChunkList;
 struct DI_SearchItemChunkList
@@ -153,21 +153,21 @@ struct DI_SearchItemChunkList
   DI_SearchItemChunk *last;
   ulong chunk_count;
   ulong total_count;
-};
+}
 
 typedef struct DI_SearchItemArray DI_SearchItemArray;
 struct DI_SearchItemArray
 {
   DI_SearchItem *v;
   ulong count;
-};
+}
 
 typedef struct DI_SearchParams DI_SearchParams;
 struct DI_SearchParams
 {
   RDI_SectionKind target;
   DI_KeyArray dbgi_keys;
-};
+}
 
 typedef struct DI_SearchBucket DI_SearchBucket;
 struct DI_SearchBucket
@@ -176,7 +176,7 @@ struct DI_SearchBucket
   String8 query;
   ulong params_hash;
   DI_SearchParams params;
-};
+}
 
 typedef struct DI_SearchNode DI_SearchNode;
 struct DI_SearchNode
@@ -192,14 +192,14 @@ struct DI_SearchNode
   ulong bucket_items_gen;
   DI_SearchBucket buckets[6];
   DI_SearchItemArray items;
-};
+}
 
 typedef struct DI_SearchSlot DI_SearchSlot;
 struct DI_SearchSlot
 {
   DI_SearchNode *first;
   DI_SearchNode *last;
-};
+}
 
 typedef struct DI_SearchStripe DI_SearchStripe;
 struct DI_SearchStripe
@@ -208,7 +208,7 @@ struct DI_SearchStripe
   DI_SearchNode *free_node;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access Types
@@ -219,7 +219,7 @@ struct DI_Touch
   DI_Touch *next;
   DI_Node *node;
   DI_SearchNode *search_node;
-};
+}
 
 typedef struct DI_Scope DI_Scope;
 struct DI_Scope
@@ -227,7 +227,7 @@ struct DI_Scope
   DI_Scope *next;
   DI_Touch *first_touch;
   DI_Touch *last_touch;
-};
+}
 
 typedef struct DI_TCTX DI_TCTX;
 struct DI_TCTX
@@ -235,7 +235,7 @@ struct DI_TCTX
   Arena *arena;
   DI_Scope *free_scope;
   DI_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Search Thread State Types
@@ -250,7 +250,7 @@ struct DI_SearchThread
   byte *ring_base;
   ulong ring_write_pos;
   ulong ring_read_pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Match Cache State Types
@@ -263,7 +263,7 @@ struct DI_Match
   ulong dbgi_idx;
   RDI_SectionKind section;
   uint idx;
-};
+}
 
 typedef struct DI_MatchNameNode DI_MatchNameNode;
 struct DI_MatchNameNode
@@ -287,14 +287,14 @@ struct DI_MatchNameNode
   RDI_SectionKind section_kind;
   // DI_Match *first_match;
   // DI_Match *last_match;
-};
+}
 
 typedef struct DI_MatchNameSlot DI_MatchNameSlot;
 struct DI_MatchNameSlot
 {
   DI_MatchNameNode *first;
   DI_MatchNameNode *last;
-};
+}
 
 typedef struct DI_MatchStore DI_MatchStore;
 struct DI_MatchStore
@@ -327,7 +327,7 @@ struct DI_MatchStore
   byte *u2m_ring_base;
   ulong u2m_ring_write_pos;
   ulong u2m_ring_read_pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Types
@@ -369,7 +369,7 @@ struct DI_Shared
   ulong search_threads_count;
   DI_SearchThread *search_threads;
   OS_Handle search_evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

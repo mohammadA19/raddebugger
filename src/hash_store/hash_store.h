@@ -16,14 +16,14 @@ struct HS_KeyNode
   U128 key;
   U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
   ulong hash_history_gen;
-};
+}
 
 typedef struct HS_KeySlot HS_KeySlot;
 struct HS_KeySlot
 {
   HS_KeyNode *first;
   HS_KeyNode *last;
-};
+}
 
 typedef struct HS_Node HS_Node;
 struct HS_Node
@@ -35,14 +35,14 @@ struct HS_Node
   String8 data;
   ulong scope_ref_count;
   ulong key_ref_count;
-};
+}
 
 typedef struct HS_Slot HS_Slot;
 struct HS_Slot
 {
   HS_Node *first;
   HS_Node *last;
-};
+}
 
 typedef struct HS_Stripe HS_Stripe;
 struct HS_Stripe
@@ -50,7 +50,7 @@ struct HS_Stripe
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -60,14 +60,14 @@ struct HS_Touch
 {
   HS_Touch *next;
   U128 hash;
-};
+}
 
 typedef struct HS_Scope HS_Scope;
 struct HS_Scope
 {
   HS_Scope *next;
   HS_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -78,7 +78,7 @@ struct HS_TCTX
   Arena *arena;
   HS_Scope *free_scope;
   HS_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -103,7 +103,7 @@ struct HS_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

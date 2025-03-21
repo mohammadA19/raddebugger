@@ -2,7 +2,7 @@
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_DiskReader
 {
   String8Array path_arr;
   String8Array data_arr;
@@ -10,7 +10,7 @@ typedef struct
   ulong         *size_arr;
   ulong         *off_arr;
   byte          *buffer;
-} LNK_DiskReader;
+}
 
 ////////////////////////////////
 // Shared File API

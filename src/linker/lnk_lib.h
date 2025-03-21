@@ -91,13 +91,13 @@ typedef struct LNK_LibBuild
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_LibIniter
 {
   LNK_LibNode     *node_arr;
   String8         *data_arr;
   String8         *path_arr;
   ulong              base_input_idx;
-} LNK_LibIniter;
+}
 
 ////////////////////////////////
 

@@ -18,7 +18,7 @@ union Vec2F32
     float y;
   };
   float v[2];
-};
+}
 
 typedef union Vec2S64 Vec2S64;
 union Vec2S64
@@ -29,7 +29,7 @@ union Vec2S64
     long y;
   };
   long v[2];
-};
+}
 
 typedef union Vec2S32 Vec2S32;
 union Vec2S32
@@ -40,7 +40,7 @@ union Vec2S32
     int y;
   };
   int v[2];
-};
+}
 
 typedef union Vec2S16 Vec2S16;
 union Vec2S16
@@ -51,7 +51,7 @@ union Vec2S16
     short y;
   };
   short v[2];
-};
+}
 
 //- rjf: 3-vectors
 
@@ -75,7 +75,7 @@ union Vec3F32
     Vec2F32 yz;
   };
   float v[3];
-};
+}
 
 typedef union Vec3S32 Vec3S32;
 union Vec3S32
@@ -97,7 +97,7 @@ union Vec3S32
     Vec2S32 yz;
   };
   int v[3];
-};
+}
 
 //- rjf: 4-vectors
 
@@ -127,7 +127,7 @@ union Vec4F32
     Vec3F32 yzw;
   };
   float v[4];
-};
+}
 
 typedef union Vec4S32 Vec4S32;
 union Vec4S32
@@ -155,7 +155,7 @@ union Vec4S32
     Vec3S32 yzw;
   };
   int v[4];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Matrix Types
@@ -164,13 +164,13 @@ typedef struct Mat3x3F32 Mat3x3F32;
 struct Mat3x3F32
 {
   float v[3][3];
-};
+}
 
 typedef struct Mat4x4F32 Mat4x4F32;
 struct Mat4x4F32
 {
   float v[4][4];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Range Types
@@ -186,7 +186,7 @@ union Rng1U32
     uint max;
   };
   uint v[2];
-};
+}
 
 typedef union Rng1S32 Rng1S32;
 union Rng1S32
@@ -197,7 +197,7 @@ union Rng1S32
     int max;
   };
   int v[2];
-};
+}
 
 typedef union Rng1U64 Rng1U64;
 union Rng1U64
@@ -208,7 +208,7 @@ union Rng1U64
     ulong max;
   };
   ulong v[2];
-};
+}
 
 typedef union Rng1S64 Rng1S64;
 union Rng1S64
@@ -219,7 +219,7 @@ union Rng1S64
     long max;
   };
   long v[2];
-};
+}
 
 typedef union Rng1F32 Rng1F32;
 union Rng1F32
@@ -230,7 +230,7 @@ union Rng1F32
     float max;
   };
   float v[2];
-};
+}
 
 //- rjf: 2-range (rectangles)
 
@@ -255,7 +255,7 @@ union Rng2S16
     short y1;
   };
   Vec2S16 v[2];
-};
+}
 
 typedef union Rng2S32 Rng2S32;
 union Rng2S32
@@ -278,7 +278,7 @@ union Rng2S32
     int y1;
   };
   Vec2S32 v[2];
-};
+}
 
 typedef union Rng2F32 Rng2F32;
 union Rng2F32
@@ -301,7 +301,7 @@ union Rng2F32
     float y1;
   };
   Vec2F32 v[2];
-};
+}
 
 typedef union Rng2S64 Rng2S64;
 union Rng2S64
@@ -324,7 +324,7 @@ union Rng2S64
     long y1;
   };
   Vec2S64 v[2];
-};
+}
 
 ////////////////////////////////
 //~ rjf: List Types
@@ -334,7 +334,7 @@ struct Rng1S64Node
 {
   Rng1S64Node *next;
   Rng1S64 v;
-};
+}
 
 typedef struct Rng1S64List Rng1S64List;
 struct Rng1S64List
@@ -342,14 +342,14 @@ struct Rng1S64List
   Rng1S64Node *first;
   Rng1S64Node *last;
   ulong count;
-};
+}
 
 typedef struct Rng1S64Array Rng1S64Array;
 struct Rng1S64Array
 {
   Rng1S64 *v;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scalar Ops

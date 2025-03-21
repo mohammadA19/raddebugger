@@ -423,7 +423,7 @@ REGS_Reg64 k4;
 REGS_Reg64 k5;
 REGS_Reg64 k6;
 REGS_Reg64 k7;
-};
+}
 
 typedef struct REGS_RegBlockX86 REGS_RegBlockX86;
 struct REGS_RegBlockX86
@@ -488,7 +488,7 @@ REGS_Reg256 ymm4;
 REGS_Reg256 ymm5;
 REGS_Reg256 ymm6;
 REGS_Reg256 ymm7;
-};
+}
 
 C_LINKAGE_BEGIN
 extern REGS_UsageKind regs_g_reg_code_x64_usage_kind_table[101];

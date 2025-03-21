@@ -16,7 +16,7 @@ struct MSF_RawStream
     uint *page_indices_u32;
     ushort *page_indices_u16;
   } u;
-};
+}
 
 typedef struct MSF_RawStreamTable MSF_RawStreamTable;
 struct MSF_RawStreamTable
@@ -26,7 +26,7 @@ struct MSF_RawStreamTable
   ulong            page_size;
   ulong            stream_count;
   MSF_RawStream *streams;
-};
+}
 
 typedef struct MSF_Parsed MSF_Parsed;
 struct MSF_Parsed
@@ -35,7 +35,7 @@ struct MSF_Parsed
   ulong      stream_count;
   ulong      page_size;
   ulong      page_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: MSF Parser Functions

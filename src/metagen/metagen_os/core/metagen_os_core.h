@@ -15,7 +15,7 @@ struct OS_SystemInfo
   ulong large_page_size;
   ulong allocation_granularity;
   String8 machine_name;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Info
@@ -29,7 +29,7 @@ struct OS_ProcessInfo
   String8 user_program_data_path;
   String8List module_load_paths;
   String8List environment;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Access Flags
@@ -43,7 +43,7 @@ enum
   OS_AccessFlag_Append     = (1<<3),
   OS_AccessFlag_ShareRead  = (1<<4),
   OS_AccessFlag_ShareWrite = (1<<5),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Files
@@ -55,28 +55,28 @@ enum
   OS_FileIterFlag_SkipFiles       = (1 << 1),
   OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
   OS_FileIterFlag_Done            = (1 << 31),
-};
+}
 
 typedef struct OS_FileIter OS_FileIter;
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
   byte memory[800];
-};
+}
 
 typedef struct OS_FileInfo OS_FileInfo;
 struct OS_FileInfo
 {
   String8 name;
   FileProperties props;
-};
+}
 
 // nick: on-disk file identifier
 typedef struct OS_FileID OS_FileID;
 struct OS_FileID
 {
   ulong v[3];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Launch Parameters
@@ -89,7 +89,7 @@ struct OS_ProcessLaunchParams
   String8List env;
   B32 inherit_env;
   B32 consoleless;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Type
@@ -98,14 +98,14 @@ typedef struct OS_Handle OS_Handle;
 struct OS_Handle
 {
   ulong u64[1];
-};
+}
 
 typedef struct OS_HandleNode OS_HandleNode;
 struct OS_HandleNode
 {
   OS_HandleNode *next;
   OS_Handle v;
-};
+}
 
 typedef struct OS_HandleList OS_HandleList;
 struct OS_HandleList
@@ -113,14 +113,14 @@ struct OS_HandleList
   OS_HandleNode *first;
   OS_HandleNode *last;
   ulong count;
-};
+}
 
 typedef struct OS_HandleArray OS_HandleArray;
 struct OS_HandleArray
 {
   OS_Handle *v;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globally Unique IDs
@@ -132,7 +132,7 @@ struct OS_Guid
   ushort data2;
   ushort data3;
   byte  data4[8];
-};
+}
 StaticAssert(sizeof(OS_Guid) == 16, os_guid_check);
 
 ////////////////////////////////

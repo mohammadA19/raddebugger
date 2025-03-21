@@ -114,11 +114,11 @@
 
 ////////////////////////////////
 
-typedef struct
+typedef struct Version
 {
   ulong major;
   ulong minor;
-} Version;
+}
 
 ////////////////////////////////
 

@@ -38,7 +38,7 @@ struct MSF_Header20
   uint stream_table_size;
   uint unknown;
   ushort root_pn;
-};
+}
 
 typedef struct MSF_Header70 MSF_Header70;
 struct MSF_Header70
@@ -50,6 +50,6 @@ struct MSF_Header70
   MSF_UInt       stream_table_size;
   MSF_UInt       unknown; // always set to zero (used to be stream table page number, see SI_PERSIST in msf.cpp)
   MSF_PageNumber root_pn;
-};
+}
 
 #endif // MSF_H

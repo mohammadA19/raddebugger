@@ -359,7 +359,7 @@ typedef struct U128 U128;
 struct U128
 {
   ulong u64[2];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
@@ -459,14 +459,14 @@ struct TxtPt
 {
   long line;
   long column;
-};
+}
 
 typedef struct TxtRng TxtRng;
 struct TxtRng
 {
   TxtPt min;
   TxtPt max;
-};
+}
 
 ////////////////////////////////
 //~ NOTE(allen): Constants
@@ -683,7 +683,7 @@ struct DateTime
     uint mon;
   };
   uint year; // 1 = 1 CE, 0 = 1 BC
-};
+}
 
 typedef ulong DenseTime;
 
@@ -694,7 +694,7 @@ typedef uint FilePropertyFlags;
 enum
 {
   FilePropertyFlag_IsFolder = (1 << 0),
-};
+}
 
 typedef struct FileProperties FileProperties;
 struct FileProperties
@@ -703,7 +703,7 @@ struct FileProperties
   DenseTime modified;
   DenseTime created;
   FilePropertyFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Safe Casts

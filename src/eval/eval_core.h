@@ -25,7 +25,7 @@ struct E_Msg
   E_MsgKind kind;
   void *location;
   String8 text;
-};
+}
 
 typedef struct E_MsgList E_MsgList;
 struct E_MsgList
@@ -34,7 +34,7 @@ struct E_MsgList
   E_Msg *last;
   E_MsgKind max_kind;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Register-Sized Value Type
@@ -53,7 +53,7 @@ union E_Value
   int s16;
   double f64;
   float f32;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Operator Info
@@ -74,7 +74,7 @@ struct E_OpInfo
   String8 pre;
   String8 sep;
   String8 post;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -95,7 +95,7 @@ enum
   E_SpaceKind_Null,
   E_SpaceKind_FileSystem,
   E_SpaceKind_FirstUserDefined,
-};
+}
 
 typedef struct E_Space E_Space;
 struct E_Space
@@ -110,7 +110,7 @@ struct E_Space
       U128 u128;
     };
   };
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Modes
@@ -133,7 +133,7 @@ struct E_Module
   Rng1U64 vaddr_range;
   Arch arch;
   E_Space space;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code

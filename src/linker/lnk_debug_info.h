@@ -71,11 +71,11 @@ typedef enum
 
 #define LNK_LeafRefFlag_LocIdxExternal (1 << 31)
 #define LNK_LeafRefFlag_LeafIdxIPI     (1 << 31)
-typedef struct
+typedef struct LNK_LeafRef
 {
   uint enc_loc_idx;
   uint enc_leaf_idx;
-} LNK_LeafRef;
+}
 
 typedef struct LNK_LeafRange
 {
@@ -91,112 +91,112 @@ typedef struct LNK_LeafRangeList
   LNK_LeafRange *last;
 } LNK_LeafRangeList;
 
-typedef struct
+typedef struct LNK_LeafBucket
 {
   LNK_LeafRef  leaf_ref;
   CV_TypeIndex type_index;
-} LNK_LeafBucket;
+}
 
-typedef struct
+typedef struct LNK_LeafBucketArray
 {
   ulong              count;
   LNK_LeafBucket **v;
-} LNK_LeafBucketArray;
+}
 
-typedef struct
+typedef struct LNK_LeafHashTable
 {
   ulong              cap;
   LNK_LeafBucket **bucket_arr;
-} LNK_LeafHashTable;
+}
 
-typedef union
+typedef union LNK_LeafHashes
 {
   struct {
     U128Array **internal_hashes;
     U128Array **external_hashes;
   };
   U128Array **v[CV_TypeIndexSource_COUNT];
-} LNK_LeafHashes;
+}
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_ParseDebugSTaskData
 {
   LNK_Obj      **obj_arr;
   LNK_ChunkList *sect_list_arr;
   CV_DebugS     *debug_s_arr;
-} LNK_ParseDebugSTaskData;
+}
 
-typedef struct
+typedef struct LNK_CheckDebugTSigTaskData
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
-} LNK_CheckDebugTSigTaskData;
+}
 
-typedef struct
+typedef struct LNK_ParseDebugTTaskData
 {
   LNK_Obj     **obj_arr;
   String8Array *data_arr_arr;
   CV_DebugT    *debug_t_arr;
-} LNK_ParseDebugTTaskData;
+}
 
-typedef struct
+typedef struct LNK_MsfParsedFromDataTask
 {
   String8Array   data_arr;
   MSF_Parsed   **msf_parse_arr;
-} LNK_MsfParsedFromDataTask;
+}
 
-typedef struct
+typedef struct LNK_GetExternalLeavesTask
 {
   CV_TypeServerInfo  *ts_info_arr;
   MSF_Parsed        **msf_parse_arr;
   Rng1U64           **external_ti_ranges;
   CV_DebugT         **external_leaves;
   B8                 *is_corrupted;
-} LNK_GetExternalLeavesTask;
+}
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_CountPerSourceLeafTask
 {
   LNK_LeafRangeList  *leaf_ranges_per_task;
   ulong               **count_arr_arr;
-} LNK_CountPerSourceLeafTask;
+}
 
-typedef struct
+typedef struct LNK_LeafHasherTask
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
   Arena            **fixed_arenas;
   CV_DebugT         *debug_t_arr;
-} LNK_LeafHasherTask;
+}
 
-typedef struct
+typedef struct LNK_LeafDedupInternal
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_DebugT          *debug_t_arr;
-} LNK_LeafDedupInternal;
+}
 
-typedef struct
+typedef struct LNK_LeafDedupExternal
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_TypeIndexSource  dedup_ti_source;
-} LNK_LeafDedupExternal;
+}
 
-typedef struct
+typedef struct LNK_GetPresentBucketsTask
 {
   LNK_LeafHashTable   *ht;
   ulong                 *count_arr;
   Rng1U64             *range_arr;
   ulong                 *offset_arr;
   LNK_LeafBucketArray  result;
-} LNK_GetPresentBucketsTask;
+}
 
-typedef struct
+typedef struct LNK_LeafRadixSortTask
 {
   ulong             loc_idx_bit_count_0;
   ulong             loc_idx_bit_count_1;
@@ -208,50 +208,50 @@ typedef struct
   LNK_LeafBucket **src;
   ulong             loc_idx_max;
   ulong             pass_idx;
-} LNK_LeafRadixSortTask;
+}
 
-typedef struct
+typedef struct LNK_LeafLocRadixSortTask
 {
   uint             *counts;
   uint             *offsets;
   LNK_LeafBucket **dst;
   LNK_LeafBucket **src;
   Rng1U64         *ranges;
-} LNK_LeafLocRadixSortTask;
+}
 
-typedef struct
+typedef struct LNK_AssignTypeIndicesTask
 {
   Rng1U64            *range_arr;
   CV_TypeIndex        min_type_index;
   LNK_LeafBucketArray bucket_arr;
-} LNK_AssignTypeIndicesTask;
+}
 
-typedef struct
+typedef struct LNK_UnbucketRawLeavesTask
 {
   LNK_CodeViewInput  *input;
   LNK_LeafBucket    **bucket_arr;
   byte                **raw_leaf_arr;
   Rng1U64            *range_arr;
-} LNK_UnbucketRawLeavesTask;
+}
 
-typedef struct
+typedef struct LNK_PatchSymbolTypesTask
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   CV_SymbolList      *symbol_list_arr;
   Arena             **arena_arr;
-} LNK_PatchSymbolTypesTask;
+}
 
-typedef struct
+typedef struct LNK_PatchInlinesTask
 {
   LNK_CodeViewInput *input;
   LNK_LeafHashes    *hashes;
   LNK_LeafHashTable *leaf_ht_arr;
   CV_DebugS         *debug_s_arr;
-} LNK_PatchInlinesTask;
+}
 
-typedef struct
+typedef struct LNK_PatchLeavesTask
 {
   LNK_CodeViewInput  *input;
   LNK_LeafHashes     *hashes;
@@ -259,27 +259,27 @@ typedef struct
   LNK_LeafBucket    **bucket_arr;
   Rng1U64            *range_arr;
   Arena             **fixed_arena_arr;
-} LNK_PatchLeavesTask;
+}
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_ProcessedCodeViewC11Data
 {
   String8List *data_list_arr;
-} LNK_ProcessedCodeViewC11Data;
+}
 
-typedef struct
+typedef struct LNK_ProcessedCodeViewC13Data
 {
   String8List *data_list_arr;
   String8List *source_file_names_list_arr;
-} LNK_ProcessedCodeViewC13Data;
+}
 
-typedef struct
+typedef struct LNK_ParseCVSymbolsTaskData
 {
   LNK_CodeViewSymbolsInput *inputs;
-} LNK_ParseCVSymbolsTaskData;
+}
 
-typedef struct
+typedef struct LNK_ProcessSymDataTaskData
 {
   ulong                        total_symbol_input_count;
   LNK_CodeViewSymbolsInput  *symbol_inputs;
@@ -287,9 +287,9 @@ typedef struct
   PDB_DbiModule            **mod_arr;
   String8List               *symbol_data_arr;
   CV_SymbolList             *gsi_list_arr;
-} LNK_ProcessSymDataTaskData;
+}
 
-typedef struct
+typedef struct LNK_ProcessC13DataTask
 {
   CV_DebugS          *debug_s_arr;
   MSF_Context        *msf;
@@ -298,9 +298,9 @@ typedef struct
   String8List        *source_file_names_list_arr;
   ulong                 string_data_base_offset;
   CV_StringHashTable  string_ht;
-} LNK_ProcessC13DataTask;
+}
 
-typedef struct
+typedef struct LNK_WriteModuleDataTask
 {
   MSF_Context    *msf;
   PDB_DbiModule **mod_arr;
@@ -308,31 +308,31 @@ typedef struct
   String8List    *c11_data_list_arr;
   String8List    *c13_data_list_arr;
   String8List    *globrefs_arr;
-} LNK_WriteModuleDataTask;
+}
 
-typedef struct
+typedef struct LNK_PushDbiSecContribTaskData
 {
   LNK_Obj                    *obj_arr;
   LNK_Section               **sect_id_map;
   PDB_DbiModule             **mod_arr;
   PDB_DbiSectionContribList  *sc_list;
   String8                     image_data;
-} LNK_PushDbiSecContribTaskData;
+}
 
-typedef struct
+typedef struct LNK_HashCVSymbolListTask
 {
   U32Array      *hash_arr_arr;
   CV_SymbolList *list_arr;
-} LNK_HashCVSymbolListTask;
+}
 
-typedef struct
+typedef struct LNK_CvSymbolPtrArrayHasher
 {
   ulong            *hash_arr;
   CV_SymbolNode **arr;
   Rng1U64        *range_arr;
-} LNK_CvSymbolPtrArrayHasher;
+}
 
-typedef struct
+typedef struct LNK_BuildPublicSymbolsTask
 {
   LNK_Section                 **sect_id_map;
   LNK_SymbolHashTrieChunkList  *chunk_lists;
@@ -342,33 +342,33 @@ typedef struct
   PDB_GsiContext    *gsi;
   CV_SymbolPtrArray  symbols;
   uint               *hashes;
-} LNK_BuildPublicSymbolsTask;
+}
 
-typedef struct
+typedef struct LNK_PostProcessCvSymbolsTask
 {
   CV_TypeIndex              ipi_min_type_index;
   CV_DebugT                 ipi_types;
   LNK_CodeViewSymbolsInput *symbol_inputs;
   CV_SymbolListArray       *parsed_symbols;
-} LNK_PostProcessCvSymbolsTask;
+}
 
-typedef struct
+typedef struct LNK_GsiDeduper
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
   CV_SymbolPtrNode **out_arr;
   ulong               *out_count_arr;
-} LNK_GsiDeduper;
+}
 
-typedef struct
+typedef struct LNK_GsiUnbucket
 {
   Rng1U64           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
   ulong               *symbol_base_arr;
   CV_SymbolNode    **symbol_arr;
-} LNK_GsiUnbucket;
+}
 
-typedef struct
+typedef struct LNK_TypeNameReplacer
 {
   CV_DebugT    debug_t;
   Rng1U64     *ranges;
@@ -376,26 +376,26 @@ typedef struct
   B32          make_map;
   TP_Arena    *map_arena;
   String8List *maps;
-} LNK_TypeNameReplacer;
+}
 
 ////////////////////////////////
 // RAD Debug Info
 
-typedef struct
+typedef struct LNK_UDTNameBucket
 {
   String8 name;
   ulong     leaf_idx;
-} LNK_UDTNameBucket;
+}
 
-typedef struct
+typedef struct LNK_BuildUDTNameHashTableTask
 {
   CV_DebugT           debug_t;
   Rng1U64            *ranges;
   ulong                 buckets_cap;
   LNK_UDTNameBucket **buckets;
-} LNK_BuildUDTNameHashTableTask;
+}
 
-typedef struct
+typedef struct LNK_BuildUDTFwdMapTask
 {
   CV_DebugT           debug_t;
   CV_TypeIndex        ti_lo;
@@ -403,11 +403,11 @@ typedef struct
   ulong                 udt_name_buckets_cap;
   LNK_UDTNameBucket **udt_name_buckets;
   CV_TypeIndex       *fwdmap;
-} LNK_BuildUDTFwdMapTask;
+}
 
 ////////////////////////////////
 
-typedef struct
+typedef struct LNK_ConvertTypesToRDI
 {
   CV_DebugT               *types;
   ulong                      type_cap;
@@ -427,31 +427,31 @@ typedef struct
   RDIB_UDTMemberChunkList *rdib_udt_members_lists;
   RDIB_UDTMemberChunkList *rdib_enum_members_lists;
   Rng1U64                 *ranges;
-} LNK_ConvertTypesToRDI;
+}
 
-typedef struct
+typedef struct LNK_SourceFileBucket
 {
   ulong              obj_idx;
   RDIB_SourceFile *src_file;
-} LNK_SourceFileBucket;
+}
 
-typedef struct
+typedef struct LNK_ConvertSourceFilesToRDITask
 {
   LNK_Obj               *obj_arr;
   CV_DebugS             *debug_s_arr;
   ulong                    total_src_file_count;
   LNK_SourceFileBucket **src_file_buckets;
   ulong                    src_file_buckets_cap;
-} LNK_ConvertSourceFilesToRDITask;
+}
 
-typedef struct
+typedef struct LNK_CodeViewCompilerInfo
 {
   CV_Arch     arch;
   CV_Language language;
   String8     compiler_name;
-} LNK_CodeViewCompilerInfo;
+}
 
-typedef struct
+typedef struct LNK_ConvertUnitToRDITask
 {
   LNK_SectionArray          image_sects;
   LNK_Section             **sect_id_map;
@@ -491,7 +491,7 @@ typedef struct
   RDIB_ProcedureChunkList  *static_procs;
   RDIB_InlineSiteChunkList *inline_sites;
   RDIB_LineTableChunkList  *line_tables;
-} LNK_ConvertUnitToRDITask;
+}
 
 ////////////////////////////////
 // CodeView

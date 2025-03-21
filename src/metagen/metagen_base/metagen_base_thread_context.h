@@ -17,7 +17,7 @@ struct TCTX
   
   char *file_name;
   ulong line_number;
-};
+}
 
 ////////////////////////////////
 // NOTE(allen): Thread Context Functions

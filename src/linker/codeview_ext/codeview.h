@@ -234,7 +234,7 @@ enum
   CV_C13SubSectionKindXList(X)
 #undef X
   CV_C13SubSectionIdxKind_COUNT
-};
+}
 
 typedef struct CV_C13SubSectionList
 {
@@ -318,7 +318,7 @@ typedef struct CV_StringHashTableResult
 ////////////////////////////////
 //~ Task Contexts
 
-typedef struct
+typedef struct CV_SymbolDeduperTask
 {
   ulong              cap;
   union {
@@ -327,17 +327,17 @@ typedef struct
   } u;
   Rng1U64         *ranges;
   CV_SymbolNode  **symbols;
-} CV_SymbolDeduperTask;
+}
 
-typedef struct
+typedef struct CV_SymbolListSyncer
 {
   CV_SymbolList  *list_arr;
   Rng1U64        *list_range_arr;
   ulong            *symbol_base_arr;
   CV_SymbolNode **symbol_arr;
-} CV_SymbolListSyncer;
+}
 
-typedef struct
+typedef struct CV_DedupStringTablesTask
 {
   CV_DebugS            *arr;
   CV_StringTableRange **range_lists;
@@ -346,22 +346,22 @@ typedef struct
   CV_StringBucket     **buckets;
   ulong                   total_string_size;
   ulong                   total_insert_count;
-} CV_DedupStringTablesTask;
+}
 
-typedef struct
+typedef struct CV_PackStringHashTableTask
 {
   byte               *buffer;
   Rng1U64          *ranges;
   CV_StringBucket **buckets;
-} CV_PackStringHashTableTask;
+}
 
-typedef struct
+typedef struct CV_Str8ListFromDebugT
 {
   CV_DebugT    debug_t;
   Rng1U64     *ranges;
   String8List *lists;
   String8Node *nodes;
-} CV_Str8ListFromDebugT;
+}
 
 ////////////////////////////////
 

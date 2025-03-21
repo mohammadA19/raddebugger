@@ -149,7 +149,7 @@ str8_lit_comp("Numpad 9"),
 str8_lit_comp("Left Mouse Button"),
 str8_lit_comp("Middle Mouse Button"),
 str8_lit_comp("Right Mouse Button"),
-};
+}
 
 String8 os_g_key_cfg_string_table[143] =
 {
@@ -296,7 +296,7 @@ str8_lit_comp("numpad_9"),
 str8_lit_comp("left_mouse"),
 str8_lit_comp("middle_mouse"),
 str8_lit_comp("right_mouse"),
-};
+}
 
 C_LINKAGE_END
 

@@ -12,7 +12,7 @@ struct EV_Key
 {
   ulong parent_hash;
   ulong child_id;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Visualization State Type
@@ -31,14 +31,14 @@ struct EV_ExpandNode
   EV_ExpandNode *parent;
   EV_Key key;
   B32 expanded;
-};
+}
 
 typedef struct EV_ExpandSlot EV_ExpandSlot;
 struct EV_ExpandSlot
 {
   EV_ExpandNode *first;
   EV_ExpandNode *last;
-};
+}
 
 //- rjf: hash table for view rules
 
@@ -51,14 +51,14 @@ struct EV_KeyViewRuleNode
   byte *buffer;
   ulong buffer_cap;
   ulong buffer_string_size;
-};
+}
 
 typedef struct EV_KeyViewRuleSlot EV_KeyViewRuleSlot;
 struct EV_KeyViewRuleSlot
 {
   EV_KeyViewRuleNode *first;
   EV_KeyViewRuleNode *last;
-};
+}
 
 //- rjf: view state bundle
 
@@ -72,7 +72,7 @@ struct EV_View
   EV_KeyViewRuleSlot *key_view_rule_slots;
   ulong key_view_rule_slots_count;
   EV_KeyViewRuleNode *free_key_view_rule_node;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Instance Types
@@ -81,14 +81,14 @@ typedef struct EV_ViewRule EV_ViewRule;
 struct EV_ViewRule
 {
   MD_Node *root;
-};
+}
 
 typedef struct EV_ViewRuleNode EV_ViewRuleNode;
 struct EV_ViewRuleNode
 {
   EV_ViewRuleNode *next;
   EV_ViewRule v;
-};
+}
 
 typedef struct EV_ViewRuleList EV_ViewRuleList;
 struct EV_ViewRuleList
@@ -96,7 +96,7 @@ struct EV_ViewRuleList
   EV_ViewRuleNode *first;
   EV_ViewRuleNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: View Rule Info Types
@@ -109,7 +109,7 @@ struct EV_ExpandInfo
   B32 single_item; // all rows form a single "item" - a singular, but large, row
   B32 add_new_row; // also supports an 'add new row', as the final row, within `row_count`
   B32 rows_default_expanded;
-};
+}
 
 typedef struct EV_ExpandRangeInfo EV_ExpandRangeInfo;
 struct EV_ExpandRangeInfo
@@ -119,7 +119,7 @@ struct EV_ExpandRangeInfo
   String8 *row_view_rules;
   E_Expr **row_exprs;
   E_Member **row_members;
-};
+}
 
 #define EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_SIG(name) E_Expr *name(Arena *arena, E_Expr *expr, MD_Node *params)
 #define EV_VIEW_RULE_EXPR_RESOLUTION_FUNCTION_NAME(name) ev_view_rule_expr_resolution__##name
@@ -152,7 +152,7 @@ enum
 {
   EV_ViewRuleInfoFlag_Inherited           = (1<<0),
   EV_ViewRuleInfoFlag_Expandable          = (1<<1),
-};
+}
 
 typedef struct EV_ViewRuleInfo EV_ViewRuleInfo;
 struct EV_ViewRuleInfo
@@ -164,28 +164,28 @@ struct EV_ViewRuleInfo
   EV_ViewRuleExprExpandRangeInfoHookFunctionType *expr_expand_range_info;
   EV_ViewRuleExprExpandIDFromNumHookFunctionType *expr_expand_id_from_num;
   EV_ViewRuleExprExpandIDFromNumHookFunctionType *expr_expand_num_from_id;
-};
+}
 
 typedef struct EV_ViewRuleInfoNode EV_ViewRuleInfoNode;
 struct EV_ViewRuleInfoNode
 {
   EV_ViewRuleInfoNode *next;
   EV_ViewRuleInfo v;
-};
+}
 
 typedef struct EV_ViewRuleInfoSlot EV_ViewRuleInfoSlot;
 struct EV_ViewRuleInfoSlot
 {
   EV_ViewRuleInfoNode *first;
   EV_ViewRuleInfoNode *last;
-};
+}
 
 typedef struct EV_ViewRuleInfoTable EV_ViewRuleInfoTable;
 struct EV_ViewRuleInfoTable
 {
   EV_ViewRuleInfoSlot *slots;
   ulong slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Blocks
@@ -218,7 +218,7 @@ struct EV_Block
   ulong row_count;
   B32 single_item;
   B32 rows_default_expanded;
-};
+}
 
 typedef struct EV_BlockTree EV_BlockTree;
 struct EV_BlockTree
@@ -226,21 +226,21 @@ struct EV_BlockTree
   EV_Block *root;
   ulong total_row_count;
   ulong total_item_count;
-};
+}
 
 typedef struct EV_BlockRange EV_BlockRange;
 struct EV_BlockRange
 {
   EV_Block *block;
   Rng1U64 range;
-};
+}
 
 typedef struct EV_BlockRangeNode EV_BlockRangeNode;
 struct EV_BlockRangeNode
 {
   EV_BlockRangeNode *next;
   EV_BlockRange v;
-};
+}
 
 typedef struct EV_BlockRangeList EV_BlockRangeList;
 struct EV_BlockRangeList
@@ -248,7 +248,7 @@ struct EV_BlockRangeList
   EV_BlockRangeNode *first;
   EV_BlockRangeNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Rows
@@ -272,7 +272,7 @@ struct EV_Row
   E_Expr *expr;
   E_Member *member;
   EV_ViewRuleList *view_rules;
-};
+}
 
 typedef struct EV_WindowedRowList EV_WindowedRowList;
 struct EV_WindowedRowList
@@ -282,7 +282,7 @@ struct EV_WindowedRowList
   ulong count;
   ulong count_before_visual;
   ulong count_before_semantic;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Automatic Type -> View Rule Map Types
@@ -294,7 +294,7 @@ struct EV_AutoViewRuleNode
   E_TypeKey key;
   String8 view_rule;
   B32 is_required;
-};
+}
 
 typedef struct EV_AutoViewRuleSlot EV_AutoViewRuleSlot;
 struct EV_AutoViewRuleSlot
@@ -302,14 +302,14 @@ struct EV_AutoViewRuleSlot
   EV_AutoViewRuleNode *first;
   EV_AutoViewRuleNode *last;
   ulong count;
-};
+}
 
 typedef struct EV_AutoViewRuleTable EV_AutoViewRuleTable;
 struct EV_AutoViewRuleTable
 {
   EV_AutoViewRuleSlot *slots;
   ulong slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -324,7 +324,7 @@ enum
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
   EV_StringFlag_PrettyNames          = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Nil/Identity View Rule Hooks
@@ -347,7 +347,7 @@ global read_only EV_ViewRuleInfo ev_nil_view_rule_info =
   EV_VIEW_RULE_EXPR_EXPAND_RANGE_INFO_FUNCTION_NAME(nil),
   EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
   EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
-};
+}
 thread_static EV_ViewRuleInfoTable *ev_view_rule_info_table = 0;
 global read_only EV_ViewRuleList ev_nil_view_rule_list = {0};
 thread_static EV_AutoViewRuleTable *ev_auto_view_rule_table = 0;

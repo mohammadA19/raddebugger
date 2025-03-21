@@ -17,7 +17,7 @@ enum
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
-};
+}
 
 typedef struct ArenaParams ArenaParams;
 struct ArenaParams
@@ -26,7 +26,7 @@ struct ArenaParams
   ulong reserve_size;
   ulong commit_size;
   void *optional_backing_buffer;
-};
+}
 
 typedef struct Arena Arena;
 struct Arena
@@ -40,7 +40,7 @@ struct Arena
   ulong pos;
   ulong cmt;
   ulong res;
-};
+}
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 typedef struct Temp Temp;
@@ -48,7 +48,7 @@ struct Temp
 {
   Arena *arena;
   ulong pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Arena Functions

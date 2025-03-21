@@ -209,12 +209,12 @@ struct FP_DWrite_FontFileLoaderVTable
   ULONG (*AddRef)(void *obj);
   ULONG (*Release)(void *obj);
   HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader *loader, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
-};
+}
 
 struct FP_DWrite_FontFileLoader
 {
   FP_DWrite_FontFileLoaderVTable *lpVtbl;
-};
+}
 
 //- rjf: font file stream interface types
 
@@ -231,20 +231,20 @@ struct FP_DWrite_FontFileStreamVTable
   HRESULT (*ReleaseFileFragment)(FP_DWrite_FontFileStream *obj, void *fragment_context);
   HRESULT (*GetFileSize)(FP_DWrite_FontFileStream *obj, UINT64 *size_out);
   HRESULT (*GetLastWriteTime)(FP_DWrite_FontFileStream *obj, UINT64 *time_out);
-};
+}
 
 struct FP_DWrite_FontFileStream
 {
   FP_DWrite_FontFileStreamVTable *lpVtbl;
   String8 *data;
-};
+}
 
 struct FP_DWrite_FontFileStreamNode
 {
   FP_DWrite_FontFileStreamNode *next;
   FP_DWrite_FontFileStreamNode *prev;
   FP_DWrite_FontFileStream stream;
-};
+}
 
 //- rjf: state & underlying handle types
 
@@ -265,14 +265,14 @@ struct FP_DWrite_State
   FP_DWrite_FontFileStreamNode *first_stream_node;
   FP_DWrite_FontFileStreamNode *last_stream_node;
   FP_DWrite_FontFileStreamNode *free_stream_node;
-};
+}
 
 typedef struct FP_DWrite_Font FP_DWrite_Font;
 struct FP_DWrite_Font
 {
   IDWriteFontFile *file;
   IDWriteFontFace *face;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Helpers

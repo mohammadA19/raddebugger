@@ -19,14 +19,14 @@ struct CV_NumericParsed
   CV_NumericKind  kind;
   byte             *val;
   ulong             encoded_size;
-};
+}
 
 typedef struct CV_RecRange CV_RecRange;
 struct CV_RecRange
 {
   uint          off;
   CV_RecHeader hdr;
-};
+}
 
 #define CV_REC_RANGE_CHUNK_SIZE 511
 
@@ -35,7 +35,7 @@ struct CV_RecRangeChunk
 {
   struct CV_RecRangeChunk *next;
   CV_RecRange              ranges[CV_REC_RANGE_CHUNK_SIZE];
-};
+}
 
 typedef struct CV_RecRangeStream CV_RecRangeStream;
 struct CV_RecRangeStream
@@ -43,14 +43,14 @@ struct CV_RecRangeStream
   CV_RecRangeChunk *first_chunk;
   CV_RecRangeChunk *last_chunk;
   ulong               total_count;
-};
+}
 
 typedef struct CV_RecRangeArray CV_RecRangeArray;
 struct CV_RecRangeArray
 {
   CV_RecRange *ranges;
   ulong          count;
-};
+}
 
 ////////////////////////////////
 //~ CodeView Sym Parser Types
@@ -61,7 +61,7 @@ struct CV_SymTopLevelInfo
   CV_Arch     arch;
   CV_Language language;
   String8     compiler_name;
-};
+}
 
 typedef struct CV_SymParsed CV_SymParsed;
 struct CV_SymParsed
@@ -75,7 +75,7 @@ struct CV_SymParsed
   
   // top-level info derived from the syms
   CV_SymTopLevelInfo info;
-};
+}
 
 ////////////////////////////////
 //~ CodeView Leaf Parser Types
@@ -90,7 +90,7 @@ struct CV_LeafParsed
   
   // leaf index derived from source
   CV_RecRangeArray leaf_ranges;
-};
+}
 
 ////////////////////////////////
 //~ CodeView C13 Info Parser Types
@@ -117,7 +117,7 @@ struct CV_C13InlineSiteDecoder
   Rng1U64            file_last_range;
   ulong                file_line_count;
   ulong                file_last_ln;
-};
+}
 
 typedef uint CV_C13InlineSiteDecoderStepFlags;
 enum
@@ -126,7 +126,7 @@ enum
   CV_C13InlineSiteDecoderStepFlag_ExtendLastRange = (1 << 1),
   CV_C13InlineSiteDecoderStepFlag_EmitFile        = (1 << 2),
   CV_C13InlineSiteDecoderStepFlag_EmitLine        = (1 << 3),
-};
+}
 
 typedef struct CV_C13InlineSiteDecoderStep CV_C13InlineSiteDecoderStep;
 struct CV_C13InlineSiteDecoderStep
@@ -138,7 +138,7 @@ struct CV_C13InlineSiteDecoderStep
   ulong                         ln;
   ulong                         cn;
   uint                         file_off;
-};
+}
 
 typedef struct CV_C13LinesParsed CV_C13LinesParsed;
 struct CV_C13LinesParsed
@@ -154,14 +154,14 @@ struct CV_C13LinesParsed
   uint     *line_nums; // [line_count]
   ushort     *col_nums;  // [2*line_count]
   uint      line_count;
-};
+}
 
 typedef struct CV_C13LinesParsedNode CV_C13LinesParsedNode;
 struct CV_C13LinesParsedNode
 {
   CV_C13LinesParsedNode *next;
   CV_C13LinesParsed      v;
-};
+}
 
 typedef struct CV_C13InlineeLinesParsed CV_C13InlineeLinesParsed;
 struct CV_C13InlineeLinesParsed
@@ -172,7 +172,7 @@ struct CV_C13InlineeLinesParsed
   uint        first_source_ln;
   uint        extra_file_count;
   uint       *extra_files;
-};
+}
 
 typedef struct CV_C13InlineeLinesParsedNode CV_C13InlineeLinesParsedNode;
 struct CV_C13InlineeLinesParsedNode
@@ -180,7 +180,7 @@ struct CV_C13InlineeLinesParsedNode
   CV_C13InlineeLinesParsedNode *next;
   CV_C13InlineeLinesParsedNode *hash_next;
   CV_C13InlineeLinesParsed      v;
-};
+}
 
 typedef struct CV_C13SubSectionNode CV_C13SubSectionNode;
 struct CV_C13SubSectionNode
@@ -193,7 +193,7 @@ struct CV_C13SubSectionNode
   CV_C13LinesParsedNode        *lines_last;
   CV_C13InlineeLinesParsedNode *inlinee_lines_first;
   CV_C13InlineeLinesParsedNode *inlinee_lines_last;
-};
+}
 
 typedef struct CV_C13Parsed CV_C13Parsed;
 struct CV_C13Parsed
@@ -212,7 +212,7 @@ struct CV_C13Parsed
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
   CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots;
   ulong                            inlinee_lines_parsed_slots_count;
-};
+}
 
 typedef struct CV_UDTInfo CV_UDTInfo;
 struct CV_UDTInfo
@@ -220,7 +220,7 @@ struct CV_UDTInfo
   String8      name;
   String8      unique_name;
   CV_TypeProps props;
-};
+}
 
 ////////////////////////////////
 //~ CodeView Compound Types
@@ -230,7 +230,7 @@ struct CV_TypeIdArray
 {
   CV_TypeId *itypes;
   ulong        count;
-};
+}
 
 ////////////////////////////////
 

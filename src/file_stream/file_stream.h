@@ -15,14 +15,14 @@ struct FS_RangeNode
   ulong request_count;
   ulong completion_count;
   ulong last_time_requested_us;
-};
+}
 
 typedef struct FS_RangeSlot FS_RangeSlot;
 struct FS_RangeSlot
 {
   FS_RangeNode *first;
   FS_RangeNode *last;
-};
+}
 
 typedef struct FS_Node FS_Node;
 struct FS_Node
@@ -37,14 +37,14 @@ struct FS_Node
   // rjf: sub-table of per-requested-file-range info
   ulong slots_count;
   FS_RangeSlot *slots;
-};
+}
 
 typedef struct FS_Slot FS_Slot;
 struct FS_Slot
 {
   FS_Node *first;
   FS_Node *last;
-};
+}
 
 typedef struct FS_Stripe FS_Stripe;
 struct FS_Stripe
@@ -52,7 +52,7 @@ struct FS_Stripe
   Arena *arena;
   OS_Handle cv;
   OS_Handle rw_mutex;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
@@ -79,7 +79,7 @@ struct FS_Shared
   
   // rjf: change detector threads
   OS_Handle detector_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

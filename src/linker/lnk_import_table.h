@@ -36,7 +36,7 @@ enum
 {
   LNK_ImportTableFlag_EmitBiat = (1 << 0),
   LNK_ImportTableFlag_EmitUiat = (1 << 1),
-};
+}
 typedef uint LNK_ImportTableFlags;
 
 typedef struct LNK_ImportTable

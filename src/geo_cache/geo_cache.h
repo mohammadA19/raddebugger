@@ -19,14 +19,14 @@ struct GEO_Node
   ulong last_time_touched_us;
   ulong last_user_clock_idx_touched;
   ulong load_count;
-};
+}
 
 typedef struct GEO_Slot GEO_Slot;
 struct GEO_Slot
 {
   GEO_Node *first;
   GEO_Node *last;
-};
+}
 
 typedef struct GEO_Stripe GEO_Stripe;
 struct GEO_Stripe
@@ -34,7 +34,7 @@ struct GEO_Stripe
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -44,14 +44,14 @@ struct GEO_Touch
 {
   GEO_Touch *next;
   U128 hash;
-};
+}
 
 typedef struct GEO_Scope GEO_Scope;
 struct GEO_Scope
 {
   GEO_Scope *next;
   GEO_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -62,7 +62,7 @@ struct GEO_TCTX
   Arena *arena;
   GEO_Scope *free_scope;
   GEO_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -89,7 +89,7 @@ struct GEO_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

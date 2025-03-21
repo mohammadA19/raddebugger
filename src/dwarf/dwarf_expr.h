@@ -80,7 +80,7 @@ enum
   DW_ExprFlag_NotSupported  = (1 << 16),
   DW_ExprFlag_BadData       = (1 << 17),
   DW_ExprFlag_NonLinearFlow = (1 << 18)
-};
+}
 
 typedef struct DW_ExprAnalysis
 {

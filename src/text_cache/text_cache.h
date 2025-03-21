@@ -37,7 +37,7 @@ struct TXT_Token
 {
   TXT_TokenKind kind;
   Rng1U64 range;
-};
+}
 
 typedef struct TXT_TokenChunkNode TXT_TokenChunkNode;
 struct TXT_TokenChunkNode
@@ -46,7 +46,7 @@ struct TXT_TokenChunkNode
   ulong count;
   ulong cap;
   TXT_Token *v;
-};
+}
 
 typedef struct TXT_TokenChunkList TXT_TokenChunkList;
 struct TXT_TokenChunkList
@@ -55,14 +55,14 @@ struct TXT_TokenChunkList
   TXT_TokenChunkNode *last;
   ulong chunk_count;
   ulong token_count;
-};
+}
 
 typedef struct TXT_TokenNode TXT_TokenNode;
 struct TXT_TokenNode
 {
   TXT_TokenNode *next;
   TXT_Token v;
-};
+}
 
 typedef struct TXT_TokenList TXT_TokenList;
 struct TXT_TokenList
@@ -70,21 +70,21 @@ struct TXT_TokenList
   TXT_TokenNode *first;
   TXT_TokenNode *last;
   ulong count;
-};
+}
 
 typedef struct TXT_TokenArray TXT_TokenArray;
 struct TXT_TokenArray
 {
   ulong count;
   TXT_Token *v;
-};
+}
 
 typedef struct TXT_TokenArrayArray TXT_TokenArrayArray;
 struct TXT_TokenArrayArray
 {
   ulong count;
   TXT_TokenArray *v;
-};
+}
 
 typedef struct TXT_TextInfo TXT_TextInfo;
 struct TXT_TextInfo
@@ -96,13 +96,13 @@ struct TXT_TextInfo
   TXT_TokenArray tokens;
   ulong bytes_processed;
   ulong bytes_to_process;
-};
+}
 
 typedef struct TXT_LineTokensSlice TXT_LineTokensSlice;
 struct TXT_LineTokensSlice
 {
   TXT_TokenArray *line_tokens;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Language Kind Types
@@ -146,14 +146,14 @@ struct TXT_Node
   ulong last_time_touched_us;
   ulong last_user_clock_idx_touched;
   ulong load_count;
-};
+}
 
 typedef struct TXT_Slot TXT_Slot;
 struct TXT_Slot
 {
   TXT_Node *first;
   TXT_Node *last;
-};
+}
 
 typedef struct TXT_Stripe TXT_Stripe;
 struct TXT_Stripe
@@ -161,7 +161,7 @@ struct TXT_Stripe
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -172,14 +172,14 @@ struct TXT_Touch
   TXT_Touch *next;
   U128 hash;
   TXT_LangKind lang;
-};
+}
 
 typedef struct TXT_Scope TXT_Scope;
 struct TXT_Scope
 {
   TXT_Scope *next;
   TXT_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
@@ -190,7 +190,7 @@ struct TXT_TCTX
   Arena *arena;
   TXT_Scope *free_scope;
   TXT_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
@@ -220,7 +220,7 @@ struct TXT_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

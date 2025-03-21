@@ -16,7 +16,7 @@ typedef struct DMN_CtrlCtx DMN_CtrlCtx;
 struct DMN_CtrlCtx
 {
   ulong u64[1];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Types
@@ -26,14 +26,14 @@ union DMN_Handle
 {
   uint u32[2];
   ulong u64[1];
-};
+}
 
 typedef struct DMN_HandleNode DMN_HandleNode;
 struct DMN_HandleNode
 {
   DMN_HandleNode *next;
   DMN_Handle v;
-};
+}
 
 typedef struct DMN_HandleList DMN_HandleList;
 struct DMN_HandleList
@@ -41,14 +41,14 @@ struct DMN_HandleList
   DMN_HandleNode *first;
   DMN_HandleNode *last;
   ulong count;
-};
+}
 
 typedef struct DMN_HandleArray DMN_HandleArray;
 struct DMN_HandleArray
 {
   DMN_Handle *handles;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -80,14 +80,14 @@ struct DMN_Event
   ulong stack_pointer;
   ulong user_data;
   B32 exception_repeated;
-};
+}
 
 typedef struct DMN_EventNode DMN_EventNode;
 struct DMN_EventNode
 {
   DMN_EventNode *next;
   DMN_Event v;
-};
+}
 
 typedef struct DMN_EventList DMN_EventList;
 struct DMN_EventList
@@ -95,7 +95,7 @@ struct DMN_EventList
   DMN_EventNode *first;
   DMN_EventNode *last;
   ulong count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Run Control Types
@@ -106,7 +106,7 @@ struct DMN_Trap
   DMN_Handle process;
   ulong vaddr;
   ulong id;
-};
+}
 
 typedef struct DMN_TrapChunkNode DMN_TrapChunkNode;
 struct DMN_TrapChunkNode
@@ -115,7 +115,7 @@ struct DMN_TrapChunkNode
   DMN_Trap *v;
   ulong cap;
   ulong count;
-};
+}
 
 typedef struct DMN_TrapChunkList DMN_TrapChunkList;
 struct DMN_TrapChunkList
@@ -124,7 +124,7 @@ struct DMN_TrapChunkList
   DMN_TrapChunkNode *last;
   ulong node_count;
   ulong trap_count;
-};
+}
 
 typedef struct DMN_RunCtrls DMN_RunCtrls;
 struct DMN_RunCtrls
@@ -136,7 +136,7 @@ struct DMN_RunCtrls
   DMN_Handle *run_entities;
   ulong run_entity_count;
   DMN_TrapChunkList traps;
-};
+}
 
 ////////////////////////////////
 //~ rjf: System Process Listing Types
@@ -145,14 +145,14 @@ typedef struct DMN_ProcessIter DMN_ProcessIter;
 struct DMN_ProcessIter
 {
   ulong v[2];
-};
+}
 
 typedef struct DMN_ProcessInfo DMN_ProcessInfo;
 struct DMN_ProcessInfo
 {
   String8 name;
   uint pid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions (Helpers, Implemented Once)

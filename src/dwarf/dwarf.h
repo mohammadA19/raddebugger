@@ -1329,7 +1329,7 @@ enum
   DW_CFAMask_OpcodeHi = 0xC0,
   DW_CFAMask_Operand  = 0x3F,
   DW_CFAMask_Count    = 2
-};
+}
 
 ////////////////////////////////
 // Expression Opcodes

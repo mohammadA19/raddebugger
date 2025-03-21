@@ -153,7 +153,7 @@ typedef struct LNK_BaseRelocPageArray
   LNK_BaseRelocPage *v;
 } LNK_BaseRelocPageArray;
 
-typedef struct
+typedef struct LNK_BaseRelocTask
 {
   ulong                     page_size;
   LNK_Section           **sect_id_map;
@@ -162,9 +162,9 @@ typedef struct
   LNK_BaseRelocPageList  *list_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-} LNK_BaseRelocTask;
+}
 
-typedef struct
+typedef struct LNK_ObjBaseRelocTask
 {
   Rng1U64                *ranges;
   ulong                     page_size;
@@ -173,34 +173,34 @@ typedef struct
   LNK_Obj               **obj_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
-} LNK_ObjBaseRelocTask;
+}
 
-typedef struct
+typedef struct LNK_SymbolFinderResult
 {
   LNK_InputObjList    input_obj_list;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
-} LNK_SymbolFinderResult;
+}
 
-typedef struct
+typedef struct LNK_SymbolFinder
 {
   PathStyle               path_style;
   LNK_SymbolTable        *symtab;
   LNK_SymbolNodeArray     lookup_node_arr;
   LNK_SymbolFinderResult *result_arr;
   Rng1U64                *range_arr;
-} LNK_SymbolFinder;
+}
 
-typedef struct
+typedef struct LNK_SymbolPusher
 {
   LNK_SymbolTable  *symtab;
   union {
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
   } u;
-} LNK_SymbolPusher;
+}
 
-typedef struct
+typedef struct LNK_SectionRelocPatcher
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -209,9 +209,9 @@ typedef struct
   ulong                base_addr;
   LNK_Section      **sect_arr;
   Rng1U64           *range_arr;
-} LNK_SectionRelocPatcher;
+}
 
-typedef struct
+typedef struct LNK_ObjRelocPatcher
 {
   String8            image_data;
   LNK_SymbolTable   *symtab;
@@ -219,20 +219,20 @@ typedef struct
   LNK_Section      **sect_id_map;
   ulong                base_addr;
   LNK_Obj          **obj_arr;
-} LNK_ObjRelocPatcher;
+}
 
-typedef struct
+typedef struct LNK_WriteThreadContext
 {
   String8 path;
   String8 data;
-} LNK_WriteThreadContext;
+}
 
-typedef struct
+typedef struct LNK_Blake3Hasher
 {
   String8  data;
   Rng1U64 *ranges;
   U128    *hashes;
-} LNK_Blake3Hasher;
+}
 
 ////////////////////////////////
 
