@@ -10,9 +10,9 @@
 typedef struct OS_GfxInfo OS_GfxInfo;
 struct OS_GfxInfo
 {
-  F32 double_click_time;
-  F32 caret_blink_time;
-  F32 default_refresh_rate;
+  float double_click_time;
+  float caret_blink_time;
+  float default_refresh_rate;
 };
 
 ////////////////////////////////
@@ -153,12 +153,12 @@ internal void           os_window_set_minimized(OS_Handle window, B32 minimized)
 internal void           os_window_bring_to_front(OS_Handle window);
 internal void           os_window_set_monitor(OS_Handle window, OS_Handle monitor);
 internal void           os_window_clear_custom_border_data(OS_Handle handle);
-internal void           os_window_push_custom_title_bar(OS_Handle handle, F32 thickness);
-internal void           os_window_push_custom_edges(OS_Handle handle, F32 thickness);
+internal void           os_window_push_custom_title_bar(OS_Handle handle, float thickness);
+internal void           os_window_push_custom_edges(OS_Handle handle, float thickness);
 internal void           os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect);
 internal Rng2F32        os_rect_from_window(OS_Handle window);
 internal Rng2F32        os_client_rect_from_window(OS_Handle window);
-internal F32            os_dpi_from_window(OS_Handle window);
+internal float            os_dpi_from_window(OS_Handle window);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)

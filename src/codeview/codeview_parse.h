@@ -250,7 +250,7 @@ internal B32 cv_numeric_fits_in_f64(CV_NumericParsed *num);
 
 internal ulong cv_u64_from_numeric(CV_NumericParsed *num);
 internal long cv_s64_from_numeric(CV_NumericParsed *num);
-internal F64 cv_f64_from_numeric(CV_NumericParsed *num);
+internal double cv_f64_from_numeric(CV_NumericParsed *num);
 
 //- Inlinee Lines Binary Annot Decoder
 

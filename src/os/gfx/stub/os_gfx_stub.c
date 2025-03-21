@@ -110,12 +110,12 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 internal void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, float thickness)
 {
 }
 
 internal void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, float thickness)
 {
 }
 
@@ -138,7 +138,7 @@ os_client_rect_from_window(OS_Handle window)
   return rect;
 }
 
-internal F32
+internal float
 os_dpi_from_window(OS_Handle window)
 {
   return 96.f;

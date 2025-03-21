@@ -695,28 +695,28 @@ e_interpret(String8 bytecode)
             
             case RDI_EvalTypeGroup_U + RDI_EvalTypeGroup_F32*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f32 = (F32)svals[0].u64;
+              nval.f32 = (float)svals[0].u64;
             }break;
             case RDI_EvalTypeGroup_S + RDI_EvalTypeGroup_F32*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f32 = (F32)svals[0].s64;
+              nval.f32 = (float)svals[0].s64;
             }break;
             case RDI_EvalTypeGroup_F64 + RDI_EvalTypeGroup_F32*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f32 = (F32)svals[0].f64;
+              nval.f32 = (float)svals[0].f64;
             }break;
             
             case RDI_EvalTypeGroup_U + RDI_EvalTypeGroup_F64*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f64 = (F64)svals[0].u64;
+              nval.f64 = (double)svals[0].u64;
             }break;
             case RDI_EvalTypeGroup_S + RDI_EvalTypeGroup_F64*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f64 = (F64)svals[0].s64;
+              nval.f64 = (double)svals[0].s64;
             }break;
             case RDI_EvalTypeGroup_F32 + RDI_EvalTypeGroup_F64*RDI_EvalTypeGroup_COUNT:
             {
-              nval.f64 = (F64)svals[0].f32;
+              nval.f64 = (double)svals[0].f32;
             }break;
           }
         }

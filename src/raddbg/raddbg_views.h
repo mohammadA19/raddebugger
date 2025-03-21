@@ -81,7 +81,7 @@ struct RD_WatchViewColumn
   RD_WatchViewColumn *next;
   RD_WatchViewColumn *prev;
   RD_WatchViewColumnKind kind;
-  F32 pct;
+  float pct;
   byte string_buffer[1024];
   ulong string_size;
   byte display_string_buffer[1024];
@@ -194,13 +194,13 @@ internal RD_WatchViewRowKind rd_watch_view_row_kind_from_flags_row_info(RD_Watch
 
 //- rjf: row/column -> exprs / strings
 internal E_Expr *rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, RD_WatchViewColumn *col);
-internal String8 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size_px);
+internal String8 rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, float font_size, float max_size_px);
 
 //- rjf: table coordinates -> text edit state
 internal RD_WatchViewTextEditState *rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint pt);
 
 //- rjf: watch view column state mutation
-internal RD_WatchViewColumn *rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, F32 pct, RD_WatchViewColumnParams *params);
+internal RD_WatchViewColumn *rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, float pct, RD_WatchViewColumnParams *params);
 #define rd_watch_view_column_alloc(wv, kind, pct, ...) rd_watch_view_column_alloc_((wv), (kind), (pct), &(RD_WatchViewColumnParams){.string = str8_zero(), __VA_ARGS__})
 internal void rd_watch_view_column_release(RD_WatchViewState *wv, RD_WatchViewColumn *col);
 

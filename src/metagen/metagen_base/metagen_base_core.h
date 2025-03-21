@@ -352,8 +352,8 @@ typedef sbyte       B8;
 typedef short      B16;
 typedef int      B32;
 typedef long      B64;
-typedef float    F32;
-typedef double   F64;
+typedef float    float;
+typedef double   double;
 typedef void VoidProc(void);
 typedef struct U128 U128;
 struct U128
@@ -475,12 +475,12 @@ global uint sign32     = 0x80000000;
 global uint exponent32 = 0x7F800000;
 global uint mantissa32 = 0x007FFFFF;
 
-global F32   big_golden32 = 1.61803398875f;
-global F32 small_golden32 = 0.61803398875f;
+global float   big_golden32 = 1.61803398875f;
+global float small_golden32 = 0.61803398875f;
 
-global F32 pi32 = 3.1415926535897f;
+global float pi32 = 3.1415926535897f;
 
-global F64 machine_epsilon64 = 4.94065645841247e-324;
+global double machine_epsilon64 = 4.94065645841247e-324;
 
 global ulong max_U64 = 0xffffffffffffffffull;
 global uint max_U32 = 0xffffffff;
@@ -727,8 +727,8 @@ internal ulong u64_up_to_pow2(ulong x);
 internal int extend_sign32(uint x, uint size);
 internal long extend_sign64(ulong x, ulong size);
 
-internal F32 inf32(void);
-internal F32 neg_inf32(void);
+internal float inf32(void);
+internal float neg_inf32(void);
 
 internal ushort bswap_u16(ushort x);
 internal uint bswap_u32(uint x);
@@ -747,7 +747,7 @@ internal ulong clz64(ulong val);
 //~ rjf: Enum -> Sign
 
 internal int sign_from_side_S32(Side side);
-internal F32 sign_from_side_F32(Side side);
+internal float sign_from_side_F32(Side side);
 
 ////////////////////////////////
 //~ rjf: Memory Functions

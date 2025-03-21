@@ -853,10 +853,10 @@ X(S256)\
 X(S512)\
 X(Bool)\
 X(F16)\
-X(F32)\
+X(float)\
 X(F32PP)\
 X(F48)\
-X(F64)\
+X(double)\
 X(F80)\
 X(F128)\
 X(ComplexF32)\
@@ -1067,8 +1067,8 @@ X(ByteSwap)\
 X(Other)\
 X(U)\
 X(S)\
-X(F32)\
-X(F64)\
+X(float)\
+X(double)\
 
 #define RDI_EvalConversionKind_XList \
 X(Noop)\

@@ -52,7 +52,7 @@ struct UI_ScrollListParams
 {
   UI_ScrollListFlags flags;
   Vec2F32 dim_px;
-  F32 row_height_px;
+  float row_height_px;
   UI_ScrollListRowBlockArray row_blocks;
   Rng2S64 cursor_range;
   Rng1S64 item_range;
@@ -71,8 +71,8 @@ struct UI_ScrollListSignal
 internal void ui_divider(UI_Size size);
 internal UI_Signal ui_label(String8 string);
 internal UI_Signal ui_labelf(char *fmt, ...);
-internal void ui_label_multiline(F32 max, String8 string);
-internal void ui_label_multilinef(F32 max, char *fmt, ...);
+internal void ui_label_multiline(float max, String8 string);
+internal void ui_label_multilinef(float max, char *fmt, ...);
 internal UI_Signal ui_button(String8 string);
 internal UI_Signal ui_buttonf(char *fmt, ...);
 internal UI_Signal ui_hover_label(String8 string);
@@ -83,8 +83,8 @@ internal UI_Signal ui_line_editf(TxtPt *cursor, TxtPt *mark, byte *edit_buffer, 
 ////////////////////////////////
 //~ rjf: Images
 
-internal UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, String8 string);
-internal UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, char *fmt, ...);
+internal UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, String8 string);
+internal UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, float blur, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Special Buttons
@@ -102,16 +102,16 @@ internal void ui_do_color_tooltip_hsv(Vec3F32 hsv);
 internal void ui_do_color_tooltip_hsva(Vec4F32 hsva);
 
 //- rjf: saturation/value picker
-internal UI_Signal ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string);
-internal UI_Signal ui_sat_val_pickerf(F32 hue, F32 *out_sat, F32 *out_val, char *fmt, ...);
+internal UI_Signal ui_sat_val_picker(float hue, float *out_sat, float *out_val, String8 string);
+internal UI_Signal ui_sat_val_pickerf(float hue, float *out_sat, float *out_val, char *fmt, ...);
 
 //- rjf: hue picker
-internal UI_Signal ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string);
-internal UI_Signal ui_hue_pickerf(F32 *out_hue, F32 sat, F32 val, char *fmt, ...);
+internal UI_Signal ui_hue_picker(float *out_hue, float sat, float val, String8 string);
+internal UI_Signal ui_hue_pickerf(float *out_hue, float sat, float val, char *fmt, ...);
 
 //- rjf: alpha picker
-internal UI_Signal ui_alpha_picker(F32 *out_alpha, String8 string);
-internal UI_Signal ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...);
+internal UI_Signal ui_alpha_picker(float *out_alpha, String8 string);
+internal UI_Signal ui_alpha_pickerf(float *out_alpha, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
@@ -135,8 +135,8 @@ internal UI_Signal ui_pane_end(void);
 ////////////////////////////////
 //~ rjf: Tables
 
-internal void ui_table_begin(ulong column_pct_count, F32 **column_pcts, String8 string);
-internal void ui_table_beginf(ulong column_pct_count, F32 **column_pcts, char *fmt, ...);
+internal void ui_table_begin(ulong column_pct_count, float **column_pcts, String8 string);
+internal void ui_table_beginf(ulong column_pct_count, float **column_pcts, char *fmt, ...);
 internal void ui_table_end(void);
 internal UI_Box *  ui_named_table_vector_begin(String8 string);
 internal UI_Box *  ui_named_table_vector_beginf(char *fmt, ...);

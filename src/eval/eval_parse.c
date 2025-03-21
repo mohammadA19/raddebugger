@@ -933,11 +933,11 @@ e_leaf_type_from_name(String8 name)
     {
       key = e_type_key_basic(E_TypeKind_Bool);
     }
-    else if(Case("float") || Case("f32") || Case("F32") || Case("r32") || Case("R32"))
+    else if(Case("float") || Case("f32") || Case("float") || Case("r32") || Case("R32"))
     {
       key = e_type_key_basic(E_TypeKind_F32);
     }
-    else if(Case("double") || Case("f64") || Case("F64") || Case("r64") || Case("R64"))
+    else if(Case("double") || Case("f64") || Case("double") || Case("r64") || Case("R64"))
     {
       key = e_type_key_basic(E_TypeKind_F64);
     }
@@ -1789,7 +1789,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
           // rjf: presence of . => double or float
           if(dot_pos < token_string.size)
           {
-            F64 val = f64_from_str8(token_string);
+            double val = f64_from_str8(token_string);
             ulong f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
             
             // rjf: presence of f after . => f32

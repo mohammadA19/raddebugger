@@ -1817,7 +1817,7 @@ internal RDIB_StringMap *
 rdib_init_string_map(Arena *arena, ulong cap)
 {
   RDIB_StringMap *string_map = push_array(arena, RDIB_StringMap, 1);
-  string_map->cap            = (ulong)((F64)cap * 1.3);
+  string_map->cap            = (ulong)((double)cap * 1.3);
   string_map->buckets        = push_array(arena, RDIB_StringMapBucket *, string_map->cap);
   return string_map;
 }

@@ -36,9 +36,9 @@ cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
   String8 result = str8_zero();
   switch (num.kind) {
     case CV_NumericKind_FLOAT16:   NotImplemented; break; // TODO: format float16
-    case CV_NumericKind_FLOAT32:   result = push_str8f(arena, "%f", (F64)(*(F32*)num.val)); break;
+    case CV_NumericKind_FLOAT32:   result = push_str8f(arena, "%f", (double)(*(float*)num.val)); break;
     case CV_NumericKind_FLOAT48:   NotImplemented; break; // TODO: format float48
-    case CV_NumericKind_FLOAT64:   result = push_str8f(arena, "%f", *(F64*)num.val); break;
+    case CV_NumericKind_FLOAT64:   result = push_str8f(arena, "%f", *(double*)num.val); break;
     case CV_NumericKind_FLOAT80:   NotImplemented; break; // TODO: format float80
     case CV_NumericKind_FLOAT128:  NotImplemented; break; // TODO: format float128
     case CV_NumericKind_CHAR:      result = push_str8f(arena, "%d",   *(sbyte *)num.val); break;

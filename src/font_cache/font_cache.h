@@ -32,7 +32,7 @@ struct FNT_Piece
   R_Handle texture;
   Rng2S16 subrect;
   Vec2S16 offset;
-  F32 advance;
+  float advance;
   ushort decode_size;
 };
 
@@ -66,8 +66,8 @@ struct FNT_Run
 {
   FNT_PieceArray pieces;
   Vec2F32 dim;
-  F32 ascent;
-  F32 descent;
+  float ascent;
+  float descent;
 };
 
 ////////////////////////////////
@@ -99,7 +99,7 @@ struct F_RasterCacheInfo
   Rng2S16 subrect;
   Vec2S16 raster_dim;
   short atlas_num;
-  F32 advance;
+  float advance;
 };
 
 typedef struct F_Hash2InfoRasterCacheNode F_Hash2InfoRasterCacheNode;
@@ -124,9 +124,9 @@ struct FNT_Hash2StyleRasterCacheNode
   FNT_Hash2StyleRasterCacheNode *hash_next;
   FNT_Hash2StyleRasterCacheNode *hash_prev;
   ulong style_hash;
-  F32 ascent;
-  F32 descent;
-  F32 column_width;
+  float ascent;
+  float descent;
+  float column_width;
   F_RasterCacheInfo *utf8_class1_direct_map;
   ulong utf8_class1_direct_map_mask[4];
   ulong hash2info_slots_count;
@@ -175,10 +175,10 @@ struct FNT_Atlas
 typedef struct FNT_Metrics FNT_Metrics;
 struct FNT_Metrics
 {
-  F32 ascent;
-  F32 descent;
-  F32 line_gap;
-  F32 capital_height;
+  float ascent;
+  float descent;
+  float line_gap;
+  float capital_height;
 };
 
 ////////////////////////////////
@@ -243,19 +243,19 @@ internal FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src);
 ////////////////////////////////
 //~ rjf: Rasterization Cache
 
-internal FNT_Hash2StyleRasterCacheNode *fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags);
-internal FNT_Run fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string);
-internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max);
-internal Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string);
-internal Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list);
-internal F32 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size);
-internal ulong fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p);
+internal FNT_Hash2StyleRasterCacheNode *fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flags);
+internal FNT_Run fnt_push_run_from_string(Arena *arena, FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, String8 string);
+internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, String8 string, float max);
+internal Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string);
+internal Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8List list);
+internal float fnt_column_size_from_tag_size(FNT_Tag tag, float size);
+internal ulong fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string, float p);
 
 ////////////////////////////////
 //~ rjf: Metrics
 
-internal FNT_Metrics fnt_metrics_from_tag_size(FNT_Tag tag, F32 size);
-internal F32 fnt_line_height_from_metrics(FNT_Metrics *metrics);
+internal FNT_Metrics fnt_metrics_from_tag_size(FNT_Tag tag, float size);
+internal float fnt_line_height_from_metrics(FNT_Metrics *metrics);
 
 ////////////////////////////////
 //~ rjf: Main Calls

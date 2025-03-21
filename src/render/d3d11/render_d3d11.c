@@ -994,7 +994,7 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
       
       // rjf: set up rasterizer
       Vec2S32 resolution = wnd->last_resolution;
-      D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (F32)resolution.x, (F32)resolution.y, 0.0f, 1.0f };
+      D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (float)resolution.x, (float)resolution.y, 0.0f, 1.0f };
       d_ctx->lpVtbl->RSSetViewports(d_ctx, 1, &viewport);
       d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
       
@@ -1073,7 +1073,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           
           //- rjf: set up rasterizer
           Vec2S32 resolution = wnd->last_resolution;
-          D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (F32)resolution.x, (F32)resolution.y, 0.0f, 1.0f };
+          D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (float)resolution.x, (float)resolution.y, 0.0f, 1.0f };
           d_ctx->lpVtbl->RSSetViewports(d_ctx, 1, &viewport);
           d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
           
@@ -1225,7 +1225,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           
           // rjf: set up viewport
           Vec2S32 resolution = wnd->last_resolution;
-          D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (F32)resolution.x, (F32)resolution.y, 0.0f, 1.0f };
+          D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (float)resolution.x, (float)resolution.y, 0.0f, 1.0f };
           d_ctx->lpVtbl->RSSetViewports(d_ctx, 1, &viewport);
           d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
           
@@ -1252,21 +1252,21 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           // rjf: set up uniforms
           R_D3D11_Uniforms_Blur uniforms = { 0 };
           {
-            F32 weights[ArrayCount(uniforms.kernel)*2] = {0};
+            float weights[ArrayCount(uniforms.kernel)*2] = {0};
             
-            F32 blur_size = Min(params->blur_size, ArrayCount(weights));
+            float blur_size = Min(params->blur_size, ArrayCount(weights));
             ulong blur_count = (ulong)round_f32(blur_size);
             
-            F32 stdev = (blur_size-1.f)/2.f;
-            F32 one_over_root_2pi_stdev2 = 1/sqrt_f32(2*pi32*stdev*stdev);
-            F32 euler32 = 2.718281828459045f;
+            float stdev = (blur_size-1.f)/2.f;
+            float one_over_root_2pi_stdev2 = 1/sqrt_f32(2*pi32*stdev*stdev);
+            float euler32 = 2.718281828459045f;
             
             weights[0] = 1.f;
             if(stdev > 0.f)
             {
               for(ulong idx = 0; idx < blur_count; idx += 1)
               {
-                F32 kernel_x = (F32)idx;
+                float kernel_x = (float)idx;
                 weights[idx] = one_over_root_2pi_stdev2*pow_f32(euler32, -kernel_x*kernel_x/(2.f*stdev*stdev)); 
               }
             }
@@ -1284,15 +1284,15 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
               // thus w=w0+w1 and t=w1/w
               for (ulong idx = 1; idx < blur_count; idx += 2)
               {
-                F32 w0 = weights[idx + 0];
-                F32 w1 = weights[idx + 1];
-                F32 w = w0 + w1;
-                F32 t = w1 / w;
+                float w0 = weights[idx + 0];
+                float w1 = weights[idx + 1];
+                float w = w0 + w1;
+                float t = w1 / w;
                 
                 // each kernel element is float2(weight, offset)
                 // weights & offsets are adjusted for bilinear sampling
                 // zw elements are not used, a bit of waste but it allows for simpler shader code
-                uniforms.kernel[(idx+1)/2] = v4f32(w, (F32)idx + t, 0, 0);
+                uniforms.kernel[(idx+1)/2] = v4f32(w, (float)idx + t, 0, 0);
               }
             }
             uniforms.kernel[0].x = weights[0];
@@ -1428,7 +1428,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                 R_D3D11_Buffer *mesh_indices = r_d3d11_buffer_from_handle(group_params->mesh_indices);
                 
                 // rjf: setup input assembly
-                uint stride = 11 * sizeof(F32);
+                uint stride = 11 * sizeof(float);
                 uint offset = 0;
                 d_ctx->lpVtbl->IASetPrimitiveTopology(d_ctx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
                 d_ctx->lpVtbl->IASetInputLayout(d_ctx, ilay);
@@ -1485,7 +1485,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             
             // rjf: set up rasterizer
             Vec2S32 resolution = wnd->last_resolution;
-            D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (F32)resolution.x, (F32)resolution.y, 0.0f, 1.0f };
+            D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (float)resolution.x, (float)resolution.y, 0.0f, 1.0f };
             d_ctx->lpVtbl->RSSetViewports(d_ctx, 1, &viewport);
             d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
             
