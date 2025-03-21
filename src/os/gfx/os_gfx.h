@@ -9,9 +9,9 @@
 
 struct OS_GfxInfo
 {
-  F32 double_click_time;
-  F32 caret_blink_time;
-  F32 default_refresh_rate;
+  float double_click_time;
+  float caret_blink_time;
+  float default_refresh_rate;
 };
 
 ////////////////////////////////
@@ -146,12 +146,12 @@ void           os_window_set_minimized(OS_Handle window, B32 minimized);
 void           os_window_bring_to_front(OS_Handle window);
 void           os_window_set_monitor(OS_Handle window, OS_Handle monitor);
 void           os_window_clear_custom_border_data(OS_Handle handle);
-void           os_window_push_custom_title_bar(OS_Handle handle, F32 thickness);
-void           os_window_push_custom_edges(OS_Handle handle, F32 thickness);
+void           os_window_push_custom_title_bar(OS_Handle handle, float thickness);
+void           os_window_push_custom_edges(OS_Handle handle, float thickness);
 void           os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect);
 Rng2F32        os_rect_from_window(OS_Handle window);
 Rng2F32        os_client_rect_from_window(OS_Handle window);
-F32            os_dpi_from_window(OS_Handle window);
+float            os_dpi_from_window(OS_Handle window);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)

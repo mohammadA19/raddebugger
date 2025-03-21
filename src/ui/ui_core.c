@@ -344,7 +344,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
 //~ rjf: Sizes
 
 UI_Size
-ui_size(UI_SizeKind kind, F32 value, F32 strictness)
+ui_size(UI_SizeKind kind, float value, float strictness)
 {
   UI_Size size = {kind, value, strictness};
   return size;
@@ -354,7 +354,7 @@ ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 //~ rjf: Scroll Point Type Functions
 
 UI_ScrollPt
-ui_scroll_pt(long idx, F32 off)
+ui_scroll_pt(long idx, float off)
 {
   UI_ScrollPt pt = {idx, off};
   return pt;
@@ -363,7 +363,7 @@ ui_scroll_pt(long idx, F32 off)
 void
 ui_scroll_pt_target_idx(UI_ScrollPt *v, long idx)
 {
-  v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(long)v->off - idx);
+  v->off = mod_f32(v->off, 1.f) + (float)(v->idx+(long)v->off - idx);
   v->idx = idx;
 }
 
@@ -511,7 +511,7 @@ ui_icon_string_from_kind(UI_IconKind icon_kind)
   return ui_state->icon_info.icon_kind_text_map[icon_kind];
 }
 
-F32
+float
 ui_dt()
 {
   return ui_state->animation_dt;
@@ -789,7 +789,7 @@ ui_box_from_key(UI_Key key)
 //~ rjf: Top-Level Building API
 
 void
-ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_WidgetPaletteInfo *widget_palette_info, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt)
+ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_WidgetPaletteInfo *widget_palette_info, UI_AnimationInfo *animation_info, float real_dt, float animation_dt)
 {
   //- rjf: reset per-build ui state
   {
@@ -1019,11 +1019,11 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             
             // rjf: scan candidates and grab next focus box
             UI_Box *next_focus_box = focus_box;
-            F32 best_distance_from_start = 1000000;
+            float best_distance_from_start = 1000000;
             for(UI_BoxNode *n = next_focus_box_candidates.first; n != 0; n = n->next)
             {
               UI_Box *box = n->box;
-              F32 distance_from_start = 0;
+              float distance_from_start = 0;
               if(axis_lock != Axis2_Invalid)
               {
                 distance_from_start = abs_f32(center_2f32(box->rect).v[axis2_flip(axis_lock)] - center_2f32(focus_box->rect).v[axis2_flip(axis_lock)]);
@@ -1313,20 +1313,20 @@ ui_end_build()
         ui_state->is_animating = (ui_state->is_animating || abs_f32(n->params.target - n->current) > n->params.epsilon);
       }
     }
-    F32 vast_rate = 1 - pow_f32(2, (-60.f * ui_state->animation_dt));
-    F32 fast_rate = 1 - pow_f32(2, (-50.f * ui_state->animation_dt));
-    F32 fish_rate = 1 - pow_f32(2, (-40.f * ui_state->animation_dt));
-    F32 slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
-    F32 slug_rate = 1 - pow_f32(2, (-15.f * ui_state->animation_dt));
-    F32 slaf_rate = 1 - pow_f32(2, (-8.f * ui_state->animation_dt));
-    ui_state->ctx_menu_open_t += ((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_ContextMenuAnimations ? vast_rate : 1);
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
+    float vast_rate = 1 - pow_f32(2, (-60.f * ui_state->animation_dt));
+    float fast_rate = 1 - pow_f32(2, (-50.f * ui_state->animation_dt));
+    float fish_rate = 1 - pow_f32(2, (-40.f * ui_state->animation_dt));
+    float slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
+    float slug_rate = 1 - pow_f32(2, (-15.f * ui_state->animation_dt));
+    float slaf_rate = 1 - pow_f32(2, (-8.f * ui_state->animation_dt));
+    ui_state->ctx_menu_open_t += ((float)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_ContextMenuAnimations ? vast_rate : 1);
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((float)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
     if(ui_state->ctx_menu_open_t >= 0.99f && ui_state->ctx_menu_open)
     {
       ui_state->ctx_menu_open_t = 1.f;
     }
-    ui_state->tooltip_open_t += ((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_TooltipAnimations ? vast_rate : 1);
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
+    ui_state->tooltip_open_t += ((float)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * (ui_state->animation_info.flags & UI_AnimationInfoFlag_TooltipAnimations ? vast_rate : 1);
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((float)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
     if(ui_state->tooltip_open_t >= 0.99f && ui_state->tooltip_open)
     {
       ui_state->tooltip_open_t = 1.f;
@@ -1347,19 +1347,19 @@ ui_end_build()
         B32 is_focus_active_disabled = !!(box->flags & UI_BoxFlag_FocusActiveDisabled);
         
         // rjf: determine rates
-        F32 hot_rate      = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? fast_rate : 1);
-        F32 active_rate   = (ui_state->animation_info.flags & UI_AnimationInfoFlag_ActiveAnimations ? fast_rate : 1);
-        F32 disabled_rate = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? slow_rate : 1);
-        F32 focus_rate    = (ui_state->animation_info.flags & UI_AnimationInfoFlag_FocusAnimations ? fast_rate : 1);
+        float hot_rate      = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? fast_rate : 1);
+        float active_rate   = (ui_state->animation_info.flags & UI_AnimationInfoFlag_ActiveAnimations ? fast_rate : 1);
+        float disabled_rate = (ui_state->animation_info.flags & UI_AnimationInfoFlag_HotAnimations ? slow_rate : 1);
+        float focus_rate    = (ui_state->animation_info.flags & UI_AnimationInfoFlag_FocusAnimations ? fast_rate : 1);
         
         // rjf: determine animating status
         B32 box_is_animating = 0;
-        box_is_animating = (box_is_animating || abs_f32((F32)is_hot          - box->hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_active       - box->active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_disabled     - box->disabled_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_hot    - box->focus_hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active - box->focus_active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_hot          - box->hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_active       - box->active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_disabled     - box->disabled_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_hot    - box->focus_hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_active - box->focus_active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((float)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.x - box->view_off.x) > 0.5f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.y - box->view_off.y) > 0.5f);
         if(box->flags & UI_BoxFlag_AnimatePosX)
@@ -1380,12 +1380,12 @@ ui_end_build()
 #endif
         
         // rjf: animate interaction transition states
-        box->hot_t                   += hot_rate      * ((F32)is_hot - box->hot_t);
-        box->active_t                += active_rate   * ((F32)is_active - box->active_t);
-        box->disabled_t              += disabled_rate * ((F32)is_disabled - box->disabled_t);
-        box->focus_hot_t             += focus_rate    * ((F32)is_focus_hot - box->focus_hot_t);
-        box->focus_active_t          += focus_rate    * ((F32)is_focus_active - box->focus_active_t);
-        box->focus_active_disabled_t += focus_rate    * ((F32)is_focus_active_disabled - box->focus_active_disabled_t);
+        box->hot_t                   += hot_rate      * ((float)is_hot - box->hot_t);
+        box->active_t                += active_rate   * ((float)is_active - box->active_t);
+        box->disabled_t              += disabled_rate * ((float)is_disabled - box->disabled_t);
+        box->focus_hot_t             += focus_rate    * ((float)is_focus_hot - box->focus_hot_t);
+        box->focus_active_t          += focus_rate    * ((float)is_focus_active - box->focus_active_t);
+        box->focus_active_disabled_t += focus_rate    * ((float)is_focus_active_disabled - box->focus_active_disabled_t);
         
         // rjf: animate positions
         {
@@ -1598,8 +1598,8 @@ ui_calc_sizes_standalone__in_place_rec(UI_Box *root, Axis2 axis)
     
     case UI_SizeKind_TextContent:
     {
-      F32 padding = root->pref_size[axis].value;
-      F32 text_size = root->display_string_runs.dim.x;
+      float padding = root->pref_size[axis].value;
+      float text_size = root->display_string_runs.dim.x;
       root->fixed_size.v[axis] = padding + text_size + root->text_padding*2;
     }break;
   }
@@ -1641,7 +1641,7 @@ ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
       }
       
       // rjf: figure out root's size on this axis
-      F32 size = fixed_parent->fixed_size.v[axis] * root->pref_size[axis].value;
+      float size = fixed_parent->fixed_size.v[axis] * root->pref_size[axis].value;
       
       // rjf: mutate root to have this size
       root->fixed_size.v[axis] = size;
@@ -1677,7 +1677,7 @@ ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
     // rjf: sum children
     case UI_SizeKind_ChildrenSum:
     {
-      F32 sum = 0;
+      float sum = 0;
       for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
       {
         if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1713,15 +1713,15 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
   //- rjf: fixup children sizes (if we're solving along the *non-layout* axis)
   if(axis != root->child_layout_axis && !(root->flags & (UI_BoxFlag_AllowOverflowX << axis)))
   {
-    F32 allowed_size = root->fixed_size.v[axis];
+    float allowed_size = root->fixed_size.v[axis];
     for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
     {
       if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
       {
-        F32 child_size = child->fixed_size.v[axis];
-        F32 violation = child_size - allowed_size;
-        F32 max_fixup = child_size;
-        F32 fixup = Clamp(0, violation, max_fixup);
+        float child_size = child->fixed_size.v[axis];
+        float violation = child_size - allowed_size;
+        float max_fixup = child_size;
+        float fixup = Clamp(0, violation, max_fixup);
         if(fixup > 0)
         {
           child->fixed_size.v[axis] -= fixup;
@@ -1735,9 +1735,9 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
   if(axis == root->child_layout_axis && !(root->flags & (UI_BoxFlag_AllowOverflowX << axis)))
   {
     // rjf: figure out total allowed size & total size
-    F32 total_allowed_size = root->fixed_size.v[axis];
-    F32 total_size = 0;
-    F32 total_weighted_size = 0;
+    float total_allowed_size = root->fixed_size.v[axis];
+    float total_size = 0;
+    float total_weighted_size = 0;
     for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
     {
       if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1748,19 +1748,19 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
     }
     
     // rjf: if we have a violation, we need to subtract some amount from all children
-    F32 violation = total_size - total_allowed_size;
+    float violation = total_size - total_allowed_size;
     if(violation > 0)
     {
       // rjf: figure out how much we can take in totality
-      F32 child_fixup_sum = 0;
-      F32 *child_fixups = push_array(scratch.arena, F32, root->child_count);
+      float child_fixup_sum = 0;
+      float *child_fixups = push_array(scratch.arena, float, root->child_count);
       {
         ulong child_idx = 0;
         for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
-            F32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
+            float fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
             fixup_size_this_child = ClampBot(0, fixup_size_this_child);
             child_fixups[child_idx] = fixup_size_this_child;
             child_fixup_sum += fixup_size_this_child;
@@ -1775,7 +1775,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
-            F32 fixup_pct = (violation / total_weighted_size);
+            float fixup_pct = (violation / total_weighted_size);
             fixup_pct = Clamp(0, fixup_pct, 1);
             child->fixed_size.v[axis] -= child_fixups[child_idx] * fixup_pct;
           }
@@ -1810,14 +1810,14 @@ void
 ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
-  F32 layout_position = 0;
+  float layout_position = 0;
   
   //- rjf: lay out children
-  F32 bounds = 0;
+  float bounds = 0;
   for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
   {
     // rjf: grab original position
-    F32 original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    float original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: calculate fixed position & size
     if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1854,7 +1854,7 @@ ui_layout_position__in_place_rec(UI_Box *root, Axis2 axis)
     child->rect.p1.y = floor_f32(child->rect.p1.y);
     
     // rjf: grab new position
-    F32 new_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+    float new_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
     
     // rjf: store position delta
     child->position_delta.v[axis] = new_position - original_position;
@@ -1969,8 +1969,8 @@ ui_tooltip_end()
 void
 ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
 {
-  anchor_off.x = (F32)(int)anchor_off.x;
-  anchor_off.y = (F32)(int)anchor_off.y;
+  anchor_off.x = (float)(int)anchor_off.x;
+  anchor_off.y = (float)(int)anchor_off.y;
   ui_state->next_ctx_menu_open = 1;
   ui_state->ctx_menu_changed = 1;
   ui_state->ctx_menu_open_t = 0;
@@ -2268,7 +2268,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     if(box_first_frame)
     {
       box->first_touched_build_index = ui_state->build_index;
-      box->disabled_t = (F32)!!(box->flags & UI_BoxFlag_Disabled);
+      box->disabled_t = (float)!!(box->flags & UI_BoxFlag_Disabled);
     }
     box->last_touched_build_index = ui_state->build_index;
     
@@ -2513,7 +2513,7 @@ ui_box_text_position(UI_Box *box)
 {
   Vec2F32 result = {0};
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  float font_size = box->font_size;
   FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
   result.y = floor_f32((box->rect.p0.y + box->rect.p1.y)/2.f) + font_metrics.capital_height/2.f - 1.f;
   if(!fnt_tag_match(font, ui_icon_font()))
@@ -2548,7 +2548,7 @@ ulong
 ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  float font_size = box->font_size;
   String8 line = ui_box_display_string(box);
   ulong result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
@@ -2740,7 +2740,7 @@ ui_signal_from_box(UI_Box *box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(float, delta.x, delta.y);
       }
       Vec2S16 delta16 = v2s16((short)(delta.x/30.f), (short)(delta.y/30.f));
       if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
@@ -2761,7 +2761,7 @@ ui_signal_from_box(UI_Box *box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(float, delta.x, delta.y);
       }
       if(!(box->flags & UI_BoxFlag_ViewScrollX))
       {
@@ -2974,7 +2974,7 @@ ui_signal_from_box(UI_Box *box)
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-F32
+float
 ui_anim_(UI_Key key, UI_AnimParams *params)
 {
   // rjf: get animation cache node
@@ -3099,7 +3099,7 @@ ui_set_next_pref_size(Axis2 axis, UI_Size v)
 }
 
 void
-ui_push_corner_radius(F32 v)
+ui_push_corner_radius(float v)
 {
   ui_push_corner_radius_00(v);
   ui_push_corner_radius_01(v);

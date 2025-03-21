@@ -29,14 +29,14 @@ union REGS_Reg32
 {
   byte v[4];
   uint u32;
-  F32 f32;
+  float f32;
 };
 
 union REGS_Reg64
 {
   byte v[8];
   ulong u64;
-  F64 f64;
+  double f64;
 };
 
 #pragma pack(push, 1)
@@ -51,27 +51,27 @@ union REGS_Reg128
 {
   byte v[16];
   uint u32[4];
-  F32 f32[4];
+  float f32[4];
   ulong u64[2];
-  F64 f64[2];
+  double f64[2];
 };
 
 union REGS_Reg256
 {
   byte v[32];
   uint u32[8];
-  F32 f32[8];
+  float f32[8];
   ulong u64[4];
-  F64 f64[4];
+  double f64[4];
 };
 
 union REGS_Reg512
 {
   byte v[64];
   uint u32[16];
-  F32 f32[16];
+  float f32[16];
   ulong u64[8];
-  F64 f64[8];
+  double f64[8];
 };
 
 ////////////////////////////////

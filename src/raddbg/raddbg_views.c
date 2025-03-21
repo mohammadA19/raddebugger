@@ -32,13 +32,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //- rjf: extract invariants
   //
   FNT_Tag code_font = rd_font_from_slot(RD_FontSlot_Code);
-  F32 code_font_size = rd_font_size_from_slot(RD_FontSlot_Code);
-  F32 code_tab_size = fnt_column_size_from_tag_size(code_font, code_font_size)*rd_setting_val_from_code(RD_SettingCode_TabWidth).s32;
+  float code_font_size = rd_font_size_from_slot(RD_FontSlot_Code);
+  float code_tab_size = fnt_column_size_from_tag_size(code_font, code_font_size)*rd_setting_val_from_code(RD_SettingCode_TabWidth).s32;
   FNT_Metrics code_font_metrics = fnt_metrics_from_tag_size(code_font, code_font_size);
-  F32 code_line_height = ceil_f32(fnt_line_height_from_metrics(&code_font_metrics) * 1.5f);
-  F32 big_glyph_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, 0, str8_lit("H")).x;
+  float code_line_height = ceil_f32(fnt_line_height_from_metrics(&code_font_metrics) * 1.5f);
+  float big_glyph_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, 0, str8_lit("H")).x;
   Vec2F32 panel_box_dim = dim_2f32(rect);
-  F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
+  float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   Vec2F32 code_area_dim = v2f32(panel_box_dim.x - scroll_bar_dim, panel_box_dim.y - scroll_bar_dim);
   long num_possible_visible_lines = (long)(code_area_dim.y/code_line_height)+1;
   CTRL_Entity *thread = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->thread);
@@ -131,9 +131,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: calculate line-range-dependent info
   //
-  F32 line_num_width_px = big_glyph_advance * (log10(visible_line_num_range.max) + 3);
-  F32 priority_margin_width_px = 0;
-  F32 catchall_margin_width_px = 0;
+  float line_num_width_px = big_glyph_advance * (log10(visible_line_num_range.max) + 3);
+  float priority_margin_width_px = 0;
+  float catchall_margin_width_px = 0;
   if(flags & RD_CodeViewBuildFlag_Margins)
   {
     priority_margin_width_px = big_glyph_advance*3.5f;
@@ -187,7 +187,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     code_slice_params.priority_margin_width_px  = priority_margin_width_px;
     code_slice_params.catchall_margin_width_px  = catchall_margin_width_px;
     code_slice_params.line_num_width_px         = line_num_width_px;
-    code_slice_params.line_text_max_width_px    = (F32)line_size_x;
+    code_slice_params.line_text_max_width_px    = (float)line_size_x;
     code_slice_params.margin_float_off_px       = scroll_pos.x.idx + scroll_pos.x.off;
     
     // rjf: fill text info
@@ -635,7 +635,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       if(cursor_in_range)
       {
         String8 cursor_line = str8_substr(text_data, text_info->lines_ranges[cursor.line-1]);
-        F32 cursor_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x;
+        float cursor_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x;
         
         // rjf: scroll x
         {
@@ -1022,7 +1022,7 @@ rd_expr_from_watch_view_row_column(Arena *arena, EV_View *ev_view, EV_Row *row, 
 }
 
 String8
-rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size_px)
+rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_WatchViewColumn *col, EV_StringFlags string_flags, uint default_radix, FNT_Tag font, float font_size, float max_size_px)
 {
   ProfBeginFunction();
   String8 result = {0};
@@ -1210,7 +1210,7 @@ rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchViewPoint p
 //- rjf: watch view column state mutation
 
 RD_WatchViewColumn *
-rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, F32 pct, RD_WatchViewColumnParams *params)
+rd_watch_view_column_alloc_(RD_WatchViewState *wv, RD_WatchViewColumnKind kind, float pct, RD_WatchViewColumnParams *params)
 {
   if(!wv->free_column)
   {
@@ -1263,7 +1263,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   DI_Scope *di_scope = di_scope_open();
   Temp scratch = scratch_begin(0, 0);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
-  F32 entity_hover_t_rate = rd_setting_val_from_code(RD_SettingCode_HoverAnimations).s32 ? (1 - pow_f32(2, (-20.f * rd_state->frame_dt))) : 1.f;
+  float entity_hover_t_rate = rd_setting_val_from_code(RD_SettingCode_HoverAnimations).s32 ? (1 - pow_f32(2, (-20.f * rd_state->frame_dt))) : 1.f;
   
   //////////////////////////////
   //- rjf: unpack arguments
@@ -1272,9 +1272,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   String8 eval_view_key_string = push_str8f(scratch.arena, "eval_view_watch_%p", ewv);
   EV_View *eval_view = rd_ev_view_from_key(d_hash_from_string(eval_view_key_string));
   String8 filter = rd_view_filter();
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   long num_possible_visible_rows = (long)(dim_2f32(rect).y/row_height_px);
-  F32 row_string_max_size_px = dim_2f32(rect).x;
+  float row_string_max_size_px = dim_2f32(rect).x;
   EV_StringFlags string_flags = 0;
   if(flags & RD_WatchViewFlag_PrettyNameMembers)
   {
@@ -2177,7 +2177,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   B32 pressed = 0;
   if(!is_top_level_hook) ProfScope("build ui")
   {
-    F32 **col_pcts = push_array(scratch.arena, F32*, ewv->column_count);
+    float **col_pcts = push_array(scratch.arena, float*, ewv->column_count);
     {
       long x = 0;
       for(RD_WatchViewColumn *c = ewv->first_column; c != 0; c = c->next, x += 1)
@@ -2399,7 +2399,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     {
                       if(rd_help_label(name)) UI_Tooltip
                       {
-                        F32 max_width = ui_top_font_size()*35;
+                        float max_width = ui_top_font_size()*35;
                         ui_label_multiline(max_width, str8_lit("View rules are used to tweak the way evaluated expressions are visualized. Multiple rules can be specified on each row. They are specified in a key:(value) form. Some examples follow:"));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("array:(N)");
@@ -2646,7 +2646,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 String8 fstrs_string = dr_string_from_fancy_string_list(scratch.arena, &fstrs);
                 FuzzyMatchRangeList fstrs_matches = fuzzy_match_find(scratch.arena, filter, fstrs_string);
                 UI_Key hover_t_key = ui_key_from_stringf(ui_key_zero(), "entity_hover_t_%p_%p", entity, ctrl_entity);
-                F32 hover_t = ui_anim(hover_t_key, (F32)!!is_hovering, .rate = entity_hover_t_rate);
+                float hover_t = ui_anim(hover_t_key, (float)!!is_hovering, .rate = entity_hover_t_rate);
                 if(!rd_entity_is_nil(entity))
                 {
                   palette->overlay = rd_rgba_from_entity(entity);
@@ -2867,7 +2867,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               ProfScope("build all columns")
               {
                 long x = 0;
-                F32 x_px = 0;
+                float x_px = 0;
                 for(RD_WatchViewColumn *col = ewv->first_column; col != 0; col = col->next, x += 1)
                 {
                   //- rjf: unpack cell info
@@ -3478,7 +3478,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
     {
       //- rjf: icon
       {
-        F32 icon_dim = ui_top_font_size()*10.f;
+        float icon_dim = ui_top_font_size()*10.f;
         UI_PrefHeight(ui_px(icon_dim, 1.f))
           UI_Row
           UI_Padding(ui_pct(1, 0))
@@ -3826,9 +3826,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
         UI_Column UI_Padding(ui_pct(1, 0))
         {
           FNT_Tag font = ui_top_font();
-          F32 font_size = ui_top_font_size();
+          float font_size = ui_top_font_size();
           FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
-          F32 font_line_height = fnt_line_height_from_metrics(&font_metrics);
+          float font_line_height = fnt_line_height_from_metrics(&font_metrics);
           String8 cmd_display_name = info->display_name;
           String8 cmd_desc = info->description;
           UI_Box *name_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S##name_%S", cmd_display_name, info->string);
@@ -3922,7 +3922,7 @@ struct RD_FileSystemViewState
   Side cached_files_sort_side;
   ulong cached_file_count;
   RD_FileInfo *cached_files;
-  F32 col_pcts[3];
+  float col_pcts[3];
 };
 
 struct RD_PathQuery
@@ -4050,8 +4050,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   B32 query_has_slash = (query.size != 0 && char_to_correct_slash(query.str[query.size-1]) == '/');
   String8 query_normalized_with_opt_slash = push_str8f(scratch.arena, "%S%s", query_normalized, query_has_slash ? "/" : "");
   RD_PathQuery path_query = rd_path_query_from_string(query_normalized_with_opt_slash);
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
   RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   B32 file_selection = !!(cmd_kind_info->query.flags & RD_QueryFlag_AllowFiles);
@@ -4253,7 +4253,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   
   //- rjf: build non-scrolled table header
   ulong row_num = 1;
-  F32 **col_pcts = push_array(scratch.arena, F32 *, ArrayCount(fs->col_pcts));
+  float **col_pcts = push_array(scratch.arena, float *, ArrayCount(fs->col_pcts));
   for(ulong idx = 0; idx < ArrayCount(fs->col_pcts); idx += 1)
   {
     col_pcts[idx] = &fs->col_pcts[idx];
@@ -4623,7 +4623,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   
   //- rjf: grab state
   struct RD_SystemProcessesViewState
@@ -4872,8 +4872,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
   RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   RD_EntityKind entity_kind = cmd_kind_info->query.entity_kind;
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   
   //- rjf: grab state
   struct RD_EntityListerViewState
@@ -5071,8 +5071,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
   RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(window->query_cmd_name);
   CTRL_EntityKind entity_kind = cmd_kind_info->query.ctrl_entity_kind;
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
-  F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   
   //- rjf: grab state
   struct RD_CtrlEntityListerViewState
@@ -5203,7 +5203,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   DI_Scope *di_scope = di_scope_open();
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
   DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
   DI_SearchParams search_params = {RDI_SectionKind_Procedures, dbgi_keys};
@@ -5784,7 +5784,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: set up invariants
   //
-  F32 bottom_bar_height = ui_top_font_size()*2.f;
+  float bottom_bar_height = ui_top_font_size()*2.f;
   Rng2F32 code_area_rect = r2f32p(rect.x0, rect.y0, rect.x1, rect.y1 - bottom_bar_height);
   Rng2F32 bottom_bar_rect = r2f32p(rect.x0, rect.y1 - bottom_bar_height, rect.x1, rect.y1);
   
@@ -6065,7 +6065,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
   //////////////////////////////
   //- rjf: set up invariants
   //
-  F32 bottom_bar_height = ui_top_font_size()*2.f;
+  float bottom_bar_height = ui_top_font_size()*2.f;
   Rng2F32 code_area_rect = r2f32p(rect.x0, rect.y0, rect.x1, rect.y1 - bottom_bar_height);
   Rng2F32 bottom_bar_rect = r2f32p(rect.x0, rect.y1 - bottom_bar_height, rect.x1, rect.y1);
   rd_regs()->file_path = str8_zero();
@@ -6249,7 +6249,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   //////////////////////////////
   //- rjf: set up invariants
   //
-  F32 bottom_bar_height = ui_top_font_size()*2.f;
+  float bottom_bar_height = ui_top_font_size()*2.f;
   Rng2F32 code_area_rect = r2f32p(rect.x0, rect.y0, rect.x1, rect.y1 - bottom_bar_height);
   Rng2F32 bottom_bar_rect = r2f32p(rect.x0, rect.y1 - bottom_bar_height, rect.x1, rect.y1);
   
@@ -6418,13 +6418,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //- rjf: unpack visual params
   //
   FNT_Tag font = rd_font_from_slot(RD_FontSlot_Code);
-  F32 font_size = rd_font_size_from_slot(RD_FontSlot_Code);
-  F32 big_glyph_advance = fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_lit("H")).x;
-  F32 row_height_px = floor_f32(font_size*2.f);
-  F32 cell_width_px = floor_f32(font_size*2.f * bytes_per_cell);
-  F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
+  float font_size = rd_font_size_from_slot(RD_FontSlot_Code);
+  float big_glyph_advance = fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_lit("H")).x;
+  float row_height_px = floor_f32(font_size*2.f);
+  float cell_width_px = floor_f32(font_size*2.f * bytes_per_cell);
+  float scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   Vec2F32 panel_dim = dim_2f32(rect);
-  F32 footer_dim = font_size*10.f;
+  float footer_dim = font_size*10.f;
   Rng2F32 header_rect = r2f32p(0, 0, panel_dim.x, row_height_px);
   Rng2F32 footer_rect = r2f32p(0, panel_dim.y-footer_dim, panel_dim.x, panel_dim.y);
   Rng2F32 content_rect = r2f32p(0, row_height_px, panel_dim.x-scroll_bar_dim, footer_rect.y0);
@@ -6585,7 +6585,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     for(ulong idx = 0; idx < ArrayCount(byte_fancy_strings); idx += 1)
     {
       byte byte = (byte)idx;
-      F32 pct = (byte/255.f);
+      float pct = (byte/255.f);
       Vec4F32 text_color = mix_4f32(zero_color, full_color, pct);
       if(byte == 0)
       {
@@ -6993,7 +6993,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
               UI_Box *cell_box = ui_build_box_from_key(UI_BoxFlag_DrawText|cell_flags, ui_key_zero());
               ui_box_equip_display_fancy_strings(cell_box, &byte_fancy_strings[byte_value]);
               {
-                F32 off = 0;
+                float off = 0;
                 for(Annotation *a = annotation; a != 0; a = a->next)
                 {
                   if(global_byte_idx == a->vaddr_range.min) UI_Parent(row_overlay_box)
@@ -7185,20 +7185,20 @@ struct RD_BitmapBoxDrawData
 {
   Rng2F32 src;
   R_Handle texture;
-  F32 loaded_t;
+  float loaded_t;
   B32 hovered;
   Vec2S32 mouse_px;
-  F32 ui_per_bmp_px;
+  float ui_per_bmp_px;
 };
 
 struct RD_BitmapCanvasBoxDrawData
 {
   Vec2F32 view_center_pos;
-  F32 zoom;
+  float zoom;
 };
 
 Vec2F32
-rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 cvs)
+rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, float zoom, Rng2F32 rect, Vec2F32 cvs)
 {
   Vec2F32 scr =
   {
@@ -7209,14 +7209,14 @@ rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
 }
 
 Rng2F32
-rd_bitmap_screen_from_canvas_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 cvs)
+rd_bitmap_screen_from_canvas_rect(Vec2F32 view_center_pos, float zoom, Rng2F32 rect, Rng2F32 cvs)
 {
   Rng2F32 scr = r2f32(rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p0), rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p1));
   return scr;
 }
 
 Vec2F32
-rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 scr)
+rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, float zoom, Rng2F32 rect, Vec2F32 scr)
 {
   Vec2F32 cvs =
   {
@@ -7227,7 +7227,7 @@ rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
 }
 
 Rng2F32
-rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 scr)
+rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, float zoom, Rng2F32 rect, Rng2F32 scr)
 {
   Rng2F32 cvs = r2f32(rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p0), rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p1));
   return cvs;
@@ -7238,12 +7238,12 @@ UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
   RD_BitmapCanvasBoxDrawData *draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
   Rng2F32 rect_scrn = box->rect;
   Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data->view_center_pos, draw_data->zoom, rect_scrn, rect_scrn);
-  F32 grid_cell_size_cvs = box->font_size*10.f;
-  F32 grid_line_thickness_px = Max(2.f, box->font_size*0.1f);
+  float grid_cell_size_cvs = box->font_size*10.f;
+  float grid_line_thickness_px = Max(2.f, box->font_size*0.1f);
   Vec4F32 grid_line_color = rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
   for EachEnumVal(Axis2, axis)
   {
-    for(F32 v = rect_cvs.p0.v[axis] - mod_f32(rect_cvs.p0.v[axis], grid_cell_size_cvs);
+    for(float v = rect_cvs.p0.v[axis] - mod_f32(rect_cvs.p0.v[axis], grid_cell_size_cvs);
         v < rect_cvs.p1.v[axis];
         v += grid_cell_size_cvs)
     {
@@ -7287,7 +7287,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   //////////////////////////////
   //- rjf: unpack params
   //
-  F32 zoom = rd_value_from_params_key(params, str8_lit("zoom")).f32;
+  float zoom = rd_value_from_params_key(params, str8_lit("zoom")).f32;
   Vec2F32 view_center_pos =
   {
     rd_value_from_params_key(params, str8_lit("x")).f32,
@@ -7295,8 +7295,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   };
   if(zoom == 0)
   {
-    F32 available_dim_y = dim_2f32(rect).y;
-    F32 image_dim_y = (F32)dim.y;
+    float available_dim_y = dim_2f32(rect).y;
+    float image_dim_y = (float)dim.y;
     if(image_dim_y != 0)
     {
       zoom = (available_dim_y / image_dim_y) * 0.8f;
@@ -7359,7 +7359,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     }
     if(canvas_sig.scroll.y != 0)
     {
-      F32 new_zoom = zoom - zoom*canvas_sig.scroll.y/10.f;
+      float new_zoom = zoom - zoom*canvas_sig.scroll.y/10.f;
       new_zoom = Clamp(1.f/256.f, new_zoom, 256.f);
       Vec2F32 mouse_scr_pre = sub_2f32(ui_mouse(), rect.p0);
       Vec2F32 mouse_cvs = rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, canvas_rect, mouse_scr_pre);
@@ -7417,11 +7417,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
           case R_Tex2DFormat_RG8:    {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, 0, 1);}break;
           case R_Tex2DFormat_RGBA8:  {color = v4f32(((byte *)(data.str+off_bytes))[0]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[3]/255.f);}break;
           case R_Tex2DFormat_BGRA8:  {color = v4f32(((byte *)(data.str+off_bytes))[3]/255.f, ((byte *)(data.str+off_bytes))[2]/255.f, ((byte *)(data.str+off_bytes))[1]/255.f, ((byte *)(data.str+off_bytes))[0]/255.f);}break;
-          case R_Tex2DFormat_R16:    {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, 0, 0, 1);}break;
-          case R_Tex2DFormat_RGBA16: {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[1]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[2]/(F32)max_U16, ((ushort *)(data.str+off_bytes))[3]/(F32)max_U16);}break;
-          case R_Tex2DFormat_R32:    {color = v4f32(((F32 *)(data.str+off_bytes))[0], 0, 0, 1);}break;
-          case R_Tex2DFormat_RG32:   {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], 0, 1);}break;
-          case R_Tex2DFormat_RGBA32: {color = v4f32(((F32 *)(data.str+off_bytes))[0], ((F32 *)(data.str+off_bytes))[1], ((F32 *)(data.str+off_bytes))[2], ((F32 *)(data.str+off_bytes))[3]);}break;
+          case R_Tex2DFormat_R16:    {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(float)max_U16, 0, 0, 1);}break;
+          case R_Tex2DFormat_RGBA16: {color = v4f32(((ushort *)(data.str+off_bytes))[0]/(float)max_U16, ((ushort *)(data.str+off_bytes))[1]/(float)max_U16, ((ushort *)(data.str+off_bytes))[2]/(float)max_U16, ((ushort *)(data.str+off_bytes))[3]/(float)max_U16);}break;
+          case R_Tex2DFormat_R32:    {color = v4f32(((float *)(data.str+off_bytes))[0], 0, 0, 1);}break;
+          case R_Tex2DFormat_RG32:   {color = v4f32(((float *)(data.str+off_bytes))[0], ((float *)(data.str+off_bytes))[1], 0, 1);}break;
+          case R_Tex2DFormat_RGBA32: {color = v4f32(((float *)(data.str+off_bytes))[0], ((float *)(data.str+off_bytes))[1], ((float *)(data.str+off_bytes))[2], ((float *)(data.str+off_bytes))[3]);}break;
         }
         if(color_is_good)
         {
@@ -7440,7 +7440,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     if(0 <= mouse_bmp.x && mouse_bmp.x < dim.x &&
        0 <= mouse_bmp.x && mouse_bmp.x < dim.y)
     {
-      F32 pixel_size_scr = 1.f*zoom;
+      float pixel_size_scr = 1.f*zoom;
       Rng2F32 indicator_rect_scr = r2f32p(img_rect_scr.x0 + mouse_bmp.x*pixel_size_scr,
                                           img_rect_scr.y0 + mouse_bmp.y*pixel_size_scr,
                                           img_rect_scr.x0 + (mouse_bmp.x+1)*pixel_size_scr,
@@ -7452,7 +7452,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     }
     UI_Rect(img_rect_scr) UI_Flags(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawDropShadow|UI_BoxFlag_Floating)
     {
-      ui_image(texture, R_Tex2DSampleKind_Nearest, r2f32p(0, 0, (F32)dim.x, (F32)dim.y), v4f32(1, 1, 1, 1), 0, str8_lit("bmp_image"));
+      ui_image(texture, R_Tex2DSampleKind_Nearest, r2f32p(0, 0, (float)dim.x, (float)dim.y), v4f32(1, 1, 1, 1), 0, str8_lit("bmp_image"));
     }
   }
   
@@ -7520,7 +7520,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
 {
   Temp scratch = scratch_begin(0, 0);
   Vec2F32 dim = dim_2f32(rect);
-  F32 padding = ui_top_font_size()*3.f;
+  float padding = ui_top_font_size()*3.f;
   E_Eval eval = e_eval_from_string(scratch.arena, string);
   Vec4F32 rgba = rd_rgba_from_eval_params(eval, params);
   Vec4F32 hsva = hsva_from_rgba(rgba);
@@ -7624,16 +7624,16 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
 
 struct RD_Geo3DViewState
 {
-  F32 yaw;
-  F32 pitch;
-  F32 zoom;
+  float yaw;
+  float pitch;
+  float zoom;
 };
 
 struct RD_Geo3DBoxDrawData
 {
-  F32 yaw;
-  F32 pitch;
-  F32 zoom;
+  float yaw;
+  float pitch;
+  float zoom;
   R_Handle vertex_buffer;
   R_Handle index_buffer;
 };
@@ -7687,9 +7687,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   ulong count        = rd_value_from_params_key(params, str8_lit("count")).u64;
   ulong vtx_base_off = rd_value_from_params_key(params, str8_lit("vtx")).u64;
   ulong vtx_size     = rd_value_from_params_key(params, str8_lit("vtx_size")).u64;
-  F32 yaw_target   = rd_value_from_params_key(params, str8_lit("yaw")).f32;
-  F32 pitch_target = rd_value_from_params_key(params, str8_lit("pitch")).f32;
-  F32 zoom_target  = rd_value_from_params_key(params, str8_lit("zoom")).f32;
+  float yaw_target   = rd_value_from_params_key(params, str8_lit("yaw")).f32;
+  float pitch_target = rd_value_from_params_key(params, str8_lit("pitch")).f32;
+  float zoom_target  = rd_value_from_params_key(params, str8_lit("zoom")).f32;
   
   //////////////////////////////
   //- rjf: evaluate & unpack expression
@@ -7727,8 +7727,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //- rjf: animate camera
   //
   {
-    F32 fast_rate = 1 - pow_f32(2, (-60.f * rd_state->frame_dt));
-    F32 slow_rate = 1 - pow_f32(2, (-30.f * rd_state->frame_dt));
+    float fast_rate = 1 - pow_f32(2, (-60.f * rd_state->frame_dt));
+    float slow_rate = 1 - pow_f32(2, (-30.f * rd_state->frame_dt));
     state->zoom  += (zoom_target - state->zoom) * slow_rate;
     state->yaw   += (yaw_target - state->yaw) * fast_rate;
     state->pitch += (pitch_target - state->pitch) * fast_rate;
@@ -7795,7 +7795,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
   String8 query = string;
   
@@ -7994,7 +7994,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+  float row_height_px = floor_f32(ui_top_font_size()*2.5f);
   String8 query = string;
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
   UI_ScrollPt2 scroll_pos = rd_view_scroll_pos();
@@ -8306,7 +8306,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_rgba = v4f32((F32)f64_from_str8(string), rgba.y, rgba.z, rgba.w);
+            Vec4F32 new_rgba = v4f32((float)f64_from_str8(string), rgba.y, rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8318,7 +8318,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_rgba = v4f32(rgba.x, (F32)f64_from_str8(string), rgba.z, rgba.w);
+            Vec4F32 new_rgba = v4f32(rgba.x, (float)f64_from_str8(string), rgba.z, rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8330,7 +8330,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_rgba = v4f32(rgba.x, rgba.y, (F32)f64_from_str8(string), rgba.w);
+            Vec4F32 new_rgba = v4f32(rgba.x, rgba.y, (float)f64_from_str8(string), rgba.w);
             Vec4F32 new_hsva = hsva_from_rgba(new_rgba);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
@@ -8343,7 +8343,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_hsva = v4f32((F32)f64_from_str8(string), hsva.y, hsva.z, hsva.w);
+            Vec4F32 new_hsva = v4f32((float)f64_from_str8(string), hsva.y, hsva.z, hsva.w);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8354,7 +8354,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, (F32)f64_from_str8(string), hsva.z, hsva.w);
+            Vec4F32 new_hsva = v4f32(hsva.x, (float)f64_from_str8(string), hsva.z, hsva.w);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8365,7 +8365,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, (F32)f64_from_str8(string), hsva.w);
+            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, (float)f64_from_str8(string), hsva.w);
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8377,7 +8377,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           if(ui_committed(sig))
           {
             String8 string = str8(sv->txt_buffer, sv->txt_size);
-            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, hsva.z, (F32)f64_from_str8(string));
+            Vec4F32 new_hsva = v4f32(hsva.x, hsva.y, hsva.z, (float)f64_from_str8(string));
             sv->color_ctx_menu_color_hsva = new_hsva;
           }
         }
@@ -8431,7 +8431,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       B32 is_toggled = 0;
       B32 is_slider = 0;
       int slider_s32_val = 0;
-      F32 slider_pct = 0.f;
+      float slider_pct = 0.f;
       UI_BoxFlags flags = UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawActiveEffects;
       RD_SettingVal *val_table = &rd_state->cfg_setting_vals[RD_CfgSrc_User][0];
       switch(item->kind)
@@ -8469,7 +8469,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
             cursor = OS_Cursor_LeftRight;
             is_slider = 1;
             slider_s32_val = val_table[item->code].s32;
-            slider_pct = (F32)(slider_s32_val - s32_range.min) / dim_1s32(s32_range);
+            slider_pct = (float)(slider_s32_val - s32_range.min) / dim_1s32(s32_range);
           }
           else
           {

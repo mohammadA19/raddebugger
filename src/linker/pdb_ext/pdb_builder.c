@@ -507,7 +507,7 @@ pdb_strtab_alloc(PDB_StringTable *strtab, uint max)
 {
   ProfBeginFunction();
   
-  ulong bucket_max  = (ulong)((F64)max * 1.3);
+  ulong bucket_max  = (ulong)((double)max * 1.3);
   bucket_max     += 1; // reserve space for null string
   
   strtab->arena         = arena_alloc();

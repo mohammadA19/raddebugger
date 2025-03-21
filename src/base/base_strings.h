@@ -242,7 +242,7 @@ String8 str8_from_s64(Arena *arena, long s64, uint radix, byte min_digits, byte 
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
 
-F64 f64_from_str8(String8 string);
+double f64_from_str8(String8 string);
 
 ////////////////////////////////
 //~ rjf: String List Construction Functions

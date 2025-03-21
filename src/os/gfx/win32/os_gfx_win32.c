@@ -20,10 +20,10 @@ Rng2F32
 os_w32_rng2f32_from_rect(RECT rect)
 {
   Rng2F32 r = {0};
-  r.x0 = (F32)rect.left;
-  r.x1 = (F32)rect.right;
-  r.y0 = (F32)rect.top;
-  r.y1 = (F32)rect.bottom;
+  r.x0 = (float)rect.left;
+  r.x1 = (float)rect.right;
+  r.y0 = (float)rect.top;
+  r.y1 = (float)rect.bottom;
   return r;
 }
 
@@ -399,8 +399,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             event->key = OS_Key_RightMouseButton;
           }break;
         }
-        event->pos.x = (F32)(short)LOWORD(lParam);
-        event->pos.y = (F32)(short)HIWORD(lParam);
+        event->pos.x = (float)(short)LOWORD(lParam);
+        event->pos.y = (float)(short)HIWORD(lParam);
         if(release)
         {
           ReleaseCapture();
@@ -414,8 +414,8 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       case WM_MOUSEMOVE:
       {
         OS_Event *event = os_w32_push_event(OS_EventKind_MouseMove, window);
-        event->pos.x = (F32)(short)LOWORD(lParam);
-        event->pos.y = (F32)(short)HIWORD(lParam);
+        event->pos.x = (float)(short)LOWORD(lParam);
+        event->pos.y = (float)(short)HIWORD(lParam);
       }break;
       
       case WM_MOUSEWHEEL:
@@ -426,9 +426,9 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         p.x = (int)(short)LOWORD(lParam);
         p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
-        event->pos.x = (F32)p.x;
-        event->pos.y = (F32)p.y;
-        event->delta = v2f32(0.f, -(F32)wheel_delta);
+        event->pos.x = (float)p.x;
+        event->pos.y = (float)p.y;
+        event->delta = v2f32(0.f, -(float)wheel_delta);
       }break;
       
       case WM_MOUSEHWHEEL:
@@ -439,9 +439,9 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         p.x = (int)(short)LOWORD(lParam);
         p.y = (int)(short)HIWORD(lParam);
         ScreenToClient(window->hwnd, &p);
-        event->pos.x = (F32)p.x;
-        event->pos.y = (F32)p.y;
-        event->delta = v2f32((F32)wheel_delta, 0.f);
+        event->pos.x = (float)p.x;
+        event->pos.y = (float)p.y;
+        event->delta = v2f32((float)wheel_delta, 0.f);
       }break;
       
       case WM_SYSKEYDOWN: case WM_SYSKEYUP:
@@ -535,7 +535,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       
       case WM_DPICHANGED:
       {
-        F32 new_dpi = (F32)(wParam & 0xffff);
+        float new_dpi = (float)(wParam & 0xffff);
         window->dpi = new_dpi;
       }break;
       
@@ -547,7 +547,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DragQueryPoint(drop, &drop_pt);
         ulong num_files_dropped = DragQueryFile(drop, 0xffffffff, 0, 0);
         OS_Event *event = os_w32_push_event(OS_EventKind_FileDrop, window);
-        event->pos = v2f32((F32)drop_pt.x, (F32)drop_pt.y);
+        event->pos = v2f32((float)drop_pt.x, (float)drop_pt.y);
         for(ulong idx = 0; idx < num_files_dropped; idx += 1)
         {
           ulong name_size = DragQueryFile(drop, idx, 0, 0) + 1;
@@ -643,7 +643,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       {
         if(os_w32_new_window_custom_border || (window && window->custom_border))
         {
-          F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
+          float dpi = w32_GetDpiForWindow_func ? (float)w32_GetDpiForWindow_func(hwnd) : 96.f;
           int frame_x = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXFRAME, dpi) : GetSystemMetrics(SM_CXFRAME);
           int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
           int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
@@ -711,7 +711,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             
             // Adjustments happening in NCCALCSIZE are messing with the detection
             // of the top hit area so manually checking that.
-            F32 dpi = w32_GetDpiForWindow_func ? (F32)w32_GetDpiForWindow_func(hwnd) : 96.f;
+            float dpi = w32_GetDpiForWindow_func ? (float)w32_GetDpiForWindow_func(hwnd) : 96.f;
             int frame_y = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CYFRAME, dpi) : GetSystemMetrics(SM_CYFRAME);
             int padding = w32_GetSystemMetricsForDpi_func ? w32_GetSystemMetricsForDpi_func(SM_CXPADDEDBORDER, dpi) : GetSystemMetrics(SM_CXPADDEDBORDER);
             
@@ -839,7 +839,7 @@ os_gfx_init()
     DEVMODEW devmodew = {0};
     if(EnumDisplaySettingsW(0, ENUM_CURRENT_SETTINGS, &devmodew))
     {
-      os_w32_gfx_state->gfx_info.default_refresh_rate = (F32)devmodew.dmDisplayFrequency;
+      os_w32_gfx_state->gfx_info.default_refresh_rate = (float)devmodew.dmDisplayFrequency;
     }
   }
   
@@ -1042,7 +1042,7 @@ os_window_open(Vec2F32 resolution, OS_WindowFlags flags, String8 title)
     window->hwnd = hwnd;
     if(w32_GetDpiForWindow_func != 0)
     {
-      window->dpi = (F32)w32_GetDpiForWindow_func(hwnd);
+      window->dpi = (float)w32_GetDpiForWindow_func(hwnd);
     }
     else
     {
@@ -1252,14 +1252,14 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, float thickness)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   window->custom_border_title_thickness = thickness;
 }
 
 void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, float thickness)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   window->custom_border_edge_thickness = thickness;
@@ -1308,10 +1308,10 @@ os_client_rect_from_window(OS_Handle handle)
   return r;
 }
 
-F32
+float
 os_dpi_from_window(OS_Handle handle)
 {
-  F32 result = 96.f;
+  float result = 96.f;
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window != 0)
   {
@@ -1457,8 +1457,8 @@ os_mouse_from_window(OS_Handle handle)
   {
     OS_W32_Window *window = os_w32_window_from_handle(handle);
     ScreenToClient(window->hwnd, &p);
-    v.x = (F32)p.x;
-    v.y = (F32)p.y;
+    v.x = (float)p.x;
+    v.y = (float)p.y;
   }
   ProfEnd();
   return v;

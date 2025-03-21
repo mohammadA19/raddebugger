@@ -676,15 +676,15 @@ str8_from_s64(Arena *arena, long s64, uint radix, byte min_digits, byte digit_gr
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
 
-F64
+double
 f64_from_str8(String8 string)
 {
   // TODO(rjf): crappy implementation for now that just uses atof.
-  F64 result = 0;
+  double result = 0;
   if(string.size > 0)
   {
     // rjf: find starting pos of numeric string, as well as sign
-    F64 sign = +1.0;
+    double sign = +1.0;
     //ulong first_numeric = 0;
     if(string.str[0] == '-')
     {

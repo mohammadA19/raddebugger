@@ -26,8 +26,8 @@
 struct R_D3D11_Uniforms_Rect
 {
   Vec2F32 viewport_size;
-  F32 opacity;
-  F32 _padding0_;
+  float opacity;
+  float _padding0_;
   Vec4F32 texture_sample_channel_map[4];
   Vec2F32 texture_t2d_size;
   Vec2F32 translate;

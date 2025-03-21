@@ -158,14 +158,14 @@ cv_s64_from_numeric(CV_NumericParsed *num)
   return(result);
 }
 
-F64
+double
 cv_f64_from_numeric(CV_NumericParsed *num)
 {
-  F64 result = 0;
+  double result = 0;
   switch(num->kind)
   {
-    case CV_NumericKind_FLOAT32:{result = *(F32*)num->val;}break;
-    case CV_NumericKind_FLOAT64:{result = *(F64*)num->val;}break;
+    case CV_NumericKind_FLOAT32:{result = *(float*)num->val;}break;
+    case CV_NumericKind_FLOAT64:{result = *(double*)num->val;}break;
   }
   return(result);
 }

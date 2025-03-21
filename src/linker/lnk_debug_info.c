@@ -2372,7 +2372,7 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
       ulong bucket_cap = 0;
       bucket_cap += internal_per_source_count[ti_source];
       bucket_cap += external_per_source_count[ti_source];
-      bucket_cap  = (ulong) ((F64) bucket_cap * 1.3);
+      bucket_cap  = (ulong) ((double) bucket_cap * 1.3);
 
       #if PROFILE_TELEMETRY
       tmMessage(0, TMMF_ICON_NOTE, "%.*s Bucket Count: %llu", str8_varg(cv_string_from_type_index_source(ti_source)), bucket_cap);
@@ -3458,7 +3458,7 @@ lnk_udt_name_hash_table_from_debug_t(TP_Context *tp,
   Temp scratch = scratch_begin(&arena->v[0], 1);
   LNK_BuildUDTNameHashTableTask task = {0};
   task.debug_t     = debug_t;
-  task.buckets_cap = (ulong)((F64)debug_t.count * 1.3);
+  task.buckets_cap = (ulong)((double)debug_t.count * 1.3);
   task.buckets     = push_array(arena->v[0], LNK_UDTNameBucket *, task.buckets_cap);
   task.ranges      = tp_divide_work(scratch.arena, debug_t.count, tp->worker_count);
   tp_for_parallel(tp, arena, tp->worker_count, lnk_build_udt_name_hash_table_task, &task);

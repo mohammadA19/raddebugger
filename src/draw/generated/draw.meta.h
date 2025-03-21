@@ -9,7 +9,7 @@
 struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
 struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
 struct DR_ClipNode {DR_ClipNode *next; Rng2F32 v;};
-struct DR_TransparencyNode {DR_TransparencyNode *next; F32 v;};
+struct DR_TransparencyNode {DR_TransparencyNode *next; float v;};
 #define DR_BucketStackDecls struct{\
 DR_Tex2DSampleKindNode *top_tex2d_sample_kind;\
 DR_XForm2DNode *top_xform2d;\
@@ -30,15 +30,15 @@ read_only static DR_TransparencyNode dr_nil_transparency = {0, 0};
 R_Tex2DSampleKind          dr_push_tex2d_sample_kind(R_Tex2DSampleKind v);
 Mat3x3F32                  dr_push_xform2d(Mat3x3F32 v);
 Rng2F32                    dr_push_clip(Rng2F32 v);
-F32                        dr_push_transparency(F32 v);
+float                        dr_push_transparency(float v);
 R_Tex2DSampleKind          dr_pop_tex2d_sample_kind();
 Mat3x3F32                  dr_pop_xform2d();
 Rng2F32                    dr_pop_clip();
-F32                        dr_pop_transparency();
+float                        dr_pop_transparency();
 R_Tex2DSampleKind          dr_top_tex2d_sample_kind();
 Mat3x3F32                  dr_top_xform2d();
 Rng2F32                    dr_top_clip();
-F32                        dr_top_transparency();
+float                        dr_top_transparency();
 #endif
 #if 0
 #define DR_Tex2DSampleKindScope(v)  DeferLoop(dr_push_tex2d_sample_kind(v), dr_pop_tex2d_sample_kind())

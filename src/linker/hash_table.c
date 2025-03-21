@@ -299,7 +299,7 @@ remove_duplicates_u64_array(Arena *arena, U64Array arr)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
-  HashTable *ht = hash_table_init(scratch.arena, ((ulong)(F64)arr.count * 0.5));
+  HashTable *ht = hash_table_init(scratch.arena, ((ulong)(double)arr.count * 0.5));
 
   for (ulong i = 0; i < arr.count; ++i) {
     KeyValuePair *is_present = hash_table_search_u64(ht, arr.v[i]);

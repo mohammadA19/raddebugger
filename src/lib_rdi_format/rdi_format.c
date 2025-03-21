@@ -160,8 +160,8 @@ struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_tabl
 {(RDI_U8 *)"Other", sizeof("Other")},
 {(RDI_U8 *)"U", sizeof("U")},
 {(RDI_U8 *)"S", sizeof("S")},
-{(RDI_U8 *)"F32", sizeof("F32")},
-{(RDI_U8 *)"F64", sizeof("F64")},
+{(RDI_U8 *)"float", sizeof("float")},
+{(RDI_U8 *)"double", sizeof("double")},
 {(RDI_U8 *)"COUNT", sizeof("COUNT")},
 };
 

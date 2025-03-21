@@ -37,12 +37,12 @@ struct OS_W32_Window
   OS_W32_Window *prev;
   HWND hwnd;
   WINDOWPLACEMENT last_window_placement;
-  F32 dpi;
+  float dpi;
   B32 first_paint_done;
   B32 maximized;
   B32 custom_border;
-  F32 custom_border_title_thickness;
-  F32 custom_border_edge_thickness;
+  float custom_border_title_thickness;
+  float custom_border_edge_thickness;
   B32 custom_border_composition_enabled;
   Arena *paint_arena;
   OS_W32_TitleBarClientArea *first_title_bar_client_area;

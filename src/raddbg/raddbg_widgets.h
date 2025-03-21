@@ -49,15 +49,15 @@ struct RD_CodeSliceParams
   
   // rjf: visual parameters
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  float font_size;
+  float tab_size;
   String8 search_query;
-  F32 line_height_px;
-  F32 priority_margin_width_px;
-  F32 catchall_margin_width_px;
-  F32 line_num_width_px;
-  F32 line_text_max_width_px;
-  F32 margin_float_off_px;
+  float line_height_px;
+  float priority_margin_width_px;
+  float catchall_margin_width_px;
+  float line_num_width_px;
+  float line_text_max_width_px;
+  float margin_float_off_px;
 };
 
 struct RD_CodeSliceSignal
@@ -76,7 +76,7 @@ struct RD_CodeSliceSignal
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-void rd_loading_overlay(Rng2F32 rect, F32 loading_t, ulong progress_v, ulong progress_v_target);
+void rd_loading_overlay(Rng2F32 rect, float loading_t, ulong progress_v, ulong progress_v_target);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
@@ -104,8 +104,8 @@ B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, ulong line_count_per_pa
 UI_Signal rd_label(String8 string);
 UI_Signal rd_error_label(String8 string);
 B32 rd_help_label(String8 string);
-DR_FancyStringList rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
-UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+DR_FancyStringList rd_fancy_string_list_from_code_string(Arena *arena, float alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+UI_Box *rd_code_label(float alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit

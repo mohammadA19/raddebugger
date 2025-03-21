@@ -212,13 +212,13 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, float thickness)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
 }
 
 void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, float thickness)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
 }
@@ -241,7 +241,7 @@ os_client_rect_from_window(OS_Handle handle)
   return r2f32p(0, 0, 0, 0);
 }
 
-F32
+float
 os_dpi_from_window(OS_Handle handle)
 {
   return 0;
@@ -409,8 +409,8 @@ os_get_events(Arena *arena, B32 wait)
         OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
         OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_MouseMove);
         e->window.u64[0] = (ulong)window;
-        e->pos.x = (F32)evt.xmotion.x;
-        e->pos.y = (F32)evt.xmotion.y;
+        e->pos.x = (float)evt.xmotion.x;
+        e->pos.y = (float)evt.xmotion.y;
       }break;
       
       //- rjf: window focus/unfocus

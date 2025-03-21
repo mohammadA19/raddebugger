@@ -647,7 +647,7 @@ rd_icon_kind_from_view(RD_View *view)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec4F32 secondary_color, F32 size)
+rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec4F32 secondary_color, float size)
 {
   DR_FancyStringList result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -1819,7 +1819,7 @@ rd_d_target_from_entity(RD_Entity *entity)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_color, F32 size)
+rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_color, float size)
 {
   DR_FancyStringList result = {0};
   RD_Entity *exe  = rd_entity_child_from_kind(entity, RD_EntityKind_Executable);
@@ -1870,7 +1870,7 @@ rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_co
     }
   }
   B32 extra = 0;
-  F32 size_extrafied = size;
+  float size_extrafied = size;
   Vec4F32 color_extrafied = color;
   if(name.size != 0)
   {
@@ -2048,12 +2048,12 @@ rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
 }
 
 DR_FancyStringList
-rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secondary_color, F32 size, B32 include_extras)
+rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secondary_color, float size, B32 include_extras)
 {
   DR_FancyStringList result = {0};
   
   //- rjf: unpack entity info
-  F32 extras_size = size*0.95f;
+  float extras_size = size*0.95f;
   Vec4F32 color = rd_rgba_from_ctrl_entity(entity);
   String8 name = rd_name_from_ctrl_entity(arena, entity);
   RD_IconKind icon_kind = RD_IconKind_Null;
@@ -3008,7 +3008,7 @@ rd_view_equip_query(RD_View *view, String8 query)
 void
 rd_view_equip_loading_info(RD_View *view, B32 is_loading, ulong progress_v, ulong progress_target)
 {
-  view->loading_t_target = (F32)!!is_loading;
+  view->loading_t_target = (float)!!is_loading;
   view->loading_progress_v = progress_v;
   view->loading_progress_v_target = progress_target;
   if(is_loading)
@@ -3564,7 +3564,7 @@ rd_window_frame(RD_Window *ws)
     {
       // rjf: gather font info
       FNT_Tag main_font = rd_font_from_slot(RD_FontSlot_Main);
-      F32 main_font_size = rd_font_size_from_slot(RD_FontSlot_Main);
+      float main_font_size = rd_font_size_from_slot(RD_FontSlot_Main);
       FNT_Tag icon_font = rd_font_from_slot(RD_FontSlot_Icons);
       
       // rjf: build icon info
@@ -3625,7 +3625,7 @@ rd_window_frame(RD_Window *ws)
     Rng2F32 top_bar_rect = r2f32p(window_rect.x0, window_rect.y0, window_rect.x0+window_rect_dim.x+1, window_rect.y0+ui_top_pref_height().value);
     Rng2F32 bottom_bar_rect = r2f32p(window_rect.x0, window_rect_dim.y - ui_top_pref_height().value, window_rect.x0+window_rect_dim.x, window_rect.y0+window_rect_dim.y);
     Rng2F32 content_rect = r2f32p(window_rect.x0, top_bar_rect.y1, window_rect.x0+window_rect_dim.x, bottom_bar_rect.y0);
-    F32 window_edge_px = os_dpi_from_window(ws->os)*0.035f;
+    float window_edge_px = os_dpi_from_window(ws->os)*0.035f;
     content_rect = pad_2f32(content_rect, -window_edge_px);
     
     ////////////////////////////
@@ -3949,13 +3949,13 @@ rd_window_frame(RD_Window *ws)
         for(RD_Window *window = rd_state->first_window; window != 0; window = window->next)
         {
           // rjf: calc ui hash chain length
-          F64 avg_ui_hash_chain_length = 0;
+          double avg_ui_hash_chain_length = 0;
           {
-            F64 chain_count = 0;
-            F64 chain_length_sum = 0;
+            double chain_count = 0;
+            double chain_length_sum = 0;
             for(ulong idx = 0; idx < ws->ui->box_table_size; idx += 1)
             {
-              F64 chain_length = 0;
+              double chain_length = 0;
               for(UI_Box *b = ws->ui->box_table[idx].hash_first; !ui_box_is_nil(b); b = b->hash_next)
               {
                 chain_length += 1;
@@ -5208,8 +5208,8 @@ rd_window_frame(RD_Window *ws)
         {
           // rjf: animate target # of rows
           {
-            F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? (1 - pow_f32(2, (-60.f * rd_state->frame_dt))) : 1.f;
-            F32 target = Min((F32)item_array.count, 16.f);
+            float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? (1 - pow_f32(2, (-60.f * rd_state->frame_dt))) : 1.f;
+            float target = Min((float)item_array.count, 16.f);
             if(abs_f32(target - ws->autocomp_num_visible_rows_t) > 0.01f)
             {
               rd_request_frame();
@@ -5223,8 +5223,8 @@ rd_window_frame(RD_Window *ws)
           
           // rjf: animate open
           {
-            F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-            F32 diff = 1.f-ws->autocomp_open_t;
+            float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+            float diff = 1.f-ws->autocomp_open_t;
             ws->autocomp_open_t += diff*rate;
             if(abs_f32(diff) < 0.05f)
             {
@@ -5240,7 +5240,7 @@ rd_window_frame(RD_Window *ws)
         //- rjf: build
         if(item_array.count != 0)
         {
-          F32 row_height_px = floor_f32(ui_top_font_size()*2.5f);
+          float row_height_px = floor_f32(ui_top_font_size()*2.5f);
           ui_set_next_fixed_x(autocomp_root_box->rect.x0);
           ui_set_next_fixed_y(autocomp_root_box->rect.y1);
           ui_set_next_pref_width(ui_em(30.f, 1.f));
@@ -6055,7 +6055,7 @@ rd_window_frame(RD_Window *ws)
             UI_Signal max_sig = {0};
             UI_Signal cls_sig = {0};
             Vec2F32 bar_dim = dim_2f32(top_bar_rect);
-            F32 button_dim = floor_f32(bar_dim.y);
+            float button_dim = floor_f32(bar_dim.y);
             UI_PrefWidth(ui_px(button_dim, 1.f))
             {
               min_sig = rd_icon_buttonf(RD_IconKind_Minus,  0, "##minimize");
@@ -6136,7 +6136,7 @@ rd_window_frame(RD_Window *ws)
         // rjf: developer frame-time indicator
         if(DEV_updating_indicator)
         {
-          F32 animation_t = pow_f32(sin_f32(rd_state->time_in_seconds/2.f), 2.f);
+          float animation_t = pow_f32(sin_f32(rd_state->time_in_seconds/2.f), 2.f);
           ui_spacer(ui_em(0.3f, 1.f));
           ui_spacer(ui_em(1.5f*animation_t, 1.f));
           UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("*");
@@ -6272,12 +6272,12 @@ rd_window_frame(RD_Window *ws)
     //- rjf: animate query info
     //
     {
-      F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+      float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
       
       // rjf: animate query view selection transition
       {
-        F32 target = (F32)!!ws->query_view_selected;
-        F32 diff = abs_f32(target - ws->query_view_selected_t);
+        float target = (float)!!ws->query_view_selected;
+        float diff = abs_f32(target - ws->query_view_selected_t);
         if(diff > 0.005f)
         {
           rd_request_frame();
@@ -6291,8 +6291,8 @@ rd_window_frame(RD_Window *ws)
       
       // rjf: animate query view open/close transition
       {
-        F32 query_view_t_target = !rd_view_is_nil(ws->query_view_stack_top);
-        F32 diff = abs_f32(query_view_t_target - ws->query_view_t);
+        float query_view_t_target = !rd_view_is_nil(ws->query_view_stack_top);
+        float diff = abs_f32(query_view_t_target - ws->query_view_t);
         if(diff > 0.005f)
         {
           rd_request_frame();
@@ -6319,9 +6319,9 @@ rd_window_frame(RD_Window *ws)
       
       //- rjf: calculate rectangles
       Vec2F32 window_center = center_2f32(window_rect);
-      F32 query_container_width = dim_2f32(window_rect).x*0.5f;
-      F32 query_container_margin = ui_top_font_size()*8.f;
-      F32 query_line_edit_height = ui_top_font_size()*3.f;
+      float query_container_width = dim_2f32(window_rect).x*0.5f;
+      float query_container_margin = ui_top_font_size()*8.f;
+      float query_line_edit_height = ui_top_font_size()*3.f;
       Rng2F32 query_container_rect = r2f32p(window_center.x - query_container_width/2 + (1-ws->query_view_t)*query_container_width/4,
                                             window_rect.y0 + query_container_margin,
                                             window_center.x + query_container_width/2 - (1-ws->query_view_t)*query_container_width/4,
@@ -6525,7 +6525,7 @@ rd_window_frame(RD_Window *ws)
           UI_Focus((hover_eval_is_open && !ui_any_ctx_menu_is_open() && ws->hover_eval_focused && (!query_is_open || !ws->query_view_selected)) ? UI_FocusKind_Null : UI_FocusKind_Off)
         {
           //- rjf: eval -> viz artifacts
-          F32 row_height = floor_f32(ui_top_font_size()*2.8f);
+          float row_height = floor_f32(ui_top_font_size()*2.8f);
           RD_CfgTable cfg_table = {0};
           ulong expr_hash = d_hash_from_string(expr);
           String8 ev_view_key_string = push_str8f(scratch.arena, "eval_hover_%I64x", expr_hash);
@@ -6544,8 +6544,8 @@ rd_window_frame(RD_Window *ws)
           {
             // rjf: animate height
             {
-              F32 fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-              F32 hover_eval_container_height_target = row_height * Min(30, block_tree.total_row_count);
+              float fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+              float hover_eval_container_height_target = row_height * Min(30, block_tree.total_row_count);
               ws->hover_eval_num_visible_rows_t += (hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) * fish_rate;
               if(abs_f32(hover_eval_container_height_target - ws->hover_eval_num_visible_rows_t) > 0.5f)
               {
@@ -6559,8 +6559,8 @@ rd_window_frame(RD_Window *ws)
             
             // rjf: animate open
             {
-              F32 fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
-              F32 diff = 1.f - ws->hover_eval_open_t;
+              float fish_rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-60.f * rd_state->frame_dt)) : 1.f;
+              float diff = 1.f - ws->hover_eval_open_t;
               ws->hover_eval_open_t += diff*fish_rate;
               if(abs_f32(diff) < 0.01f)
               {
@@ -6574,9 +6574,9 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: calculate width
-          F32 width_px = 40.f*ui_top_font_size();
-          F32 expr_column_width_px = 15.f*ui_top_font_size();
-          F32 value_column_width_px = 25.f*ui_top_font_size();
+          float width_px = 40.f*ui_top_font_size();
+          float expr_column_width_px = 15.f*ui_top_font_size();
+          float value_column_width_px = 25.f*ui_top_font_size();
           if(rows.first != 0)
           {
             EV_Row *row = rows.first;
@@ -6585,13 +6585,13 @@ rd_window_frame(RD_Window *ws)
             String8 row_display_value = rd_value_string_from_eval(scratch.arena, EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), 500.f, row_eval, row->member, row->view_rules);
             expr_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_expr_string).x + ui_top_font_size()*10.f;
             value_column_width_px = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, 0, row_display_value).x + ui_top_font_size()*5.f;
-            F32 total_dim_px = (expr_column_width_px + value_column_width_px);
+            float total_dim_px = (expr_column_width_px + value_column_width_px);
             width_px = Min(80.f*ui_top_font_size(), total_dim_px*1.5f);
           }
           
           //- rjf: build hover eval box
-          F32 hover_eval_container_height = ws->hover_eval_num_visible_rows_t;
-          F32 corner_radius = ui_top_font_size()*0.25f;
+          float hover_eval_container_height = ws->hover_eval_num_visible_rows_t;
+          float corner_radius = ui_top_font_size()*0.25f;
           ui_set_next_fixed_x(ws->hover_eval_spawn_pos.x);
           ui_set_next_fixed_y(ws->hover_eval_spawn_pos.y);
           ui_set_next_pref_width(ui_px(width_px, 1.f));
@@ -6835,10 +6835,10 @@ rd_window_frame(RD_Window *ws)
         if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && !rd_view_is_nil(drag_view))
         {
           //- rjf: params
-          F32 drop_site_major_dim_px = ceil_f32(ui_top_font_size()*7.f);
-          F32 drop_site_minor_dim_px = ceil_f32(ui_top_font_size()*5.f);
-          F32 corner_radius = ui_top_font_size()*0.5f;
-          F32 padding = ceil_f32(ui_top_font_size()*0.5f);
+          float drop_site_major_dim_px = ceil_f32(ui_top_font_size()*7.f);
+          float drop_site_minor_dim_px = ceil_f32(ui_top_font_size()*5.f);
+          float corner_radius = ui_top_font_size()*0.5f;
+          float padding = ceil_f32(ui_top_font_size()*0.5f);
           
           //- rjf: special case - build Y boundary drop sites on root panel
           //
@@ -7041,7 +7041,7 @@ rd_window_frame(RD_Window *ws)
           if(ui_double_clicked(sig))
           {
             ui_kill_action();
-            F32 sum_pct = min_child->pct_of_parent + max_child->pct_of_parent;
+            float sum_pct = min_child->pct_of_parent + max_child->pct_of_parent;
             min_child->pct_of_parent = 0.5f * sum_pct;
             max_child->pct_of_parent = 0.5f * sum_pct;
           }
@@ -7054,19 +7054,19 @@ rd_window_frame(RD_Window *ws)
           {
             Vec2F32 v = *ui_get_drag_struct(Vec2F32);
             Vec2F32 mouse_delta      = ui_drag_delta();
-            F32 total_size           = dim_2f32(panel_rect).v[split_axis];
-            F32 min_pct__before      = v.v[0];
-            F32 min_pixels__before   = min_pct__before * total_size;
-            F32 min_pixels__after    = min_pixels__before + mouse_delta.v[split_axis];
+            float total_size           = dim_2f32(panel_rect).v[split_axis];
+            float min_pct__before      = v.v[0];
+            float min_pixels__before   = min_pct__before * total_size;
+            float min_pixels__after    = min_pixels__before + mouse_delta.v[split_axis];
             if(min_pixels__after < 50.f)
             {
               min_pixels__after = 50.f;
             }
-            F32 min_pct__after       = min_pixels__after / total_size;
-            F32 pct_delta            = min_pct__after - min_pct__before;
-            F32 max_pct__before      = v.v[1];
-            F32 max_pct__after       = max_pct__before - pct_delta;
-            F32 max_pixels__after    = max_pct__after * total_size;
+            float min_pct__after       = min_pixels__after / total_size;
+            float pct_delta            = min_pct__after - min_pct__before;
+            float max_pct__before      = v.v[1];
+            float max_pct__after       = max_pct__before - pct_delta;
+            float max_pixels__after    = max_pct__after * total_size;
             if(max_pixels__after < 50.f)
             {
               max_pixels__after = 50.f;
@@ -7086,7 +7086,7 @@ rd_window_frame(RD_Window *ws)
     //- rjf: animate panels
     //
     {
-      F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-50.f * rd_state->frame_dt)) : 1.f;
+      float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-50.f * rd_state->frame_dt)) : 1.f;
       Vec2F32 content_rect_dim = dim_2f32(content_rect);
       if(content_rect_dim.x > 0 && content_rect_dim.y > 0)
       {
@@ -7143,11 +7143,11 @@ rd_window_frame(RD_Window *ws)
                                     panel_rect_pct.x1*content_rect_dim.x,
                                     panel_rect_pct.y1*content_rect_dim.y);
         panel_rect = pad_2f32(panel_rect, -1.f);
-        F32 tab_bar_rheight = ui_top_font_size()*3.f;
-        F32 tab_bar_vheight = ui_top_font_size()*2.6f;
-        F32 tab_bar_rv_diff = tab_bar_rheight - tab_bar_vheight;
-        F32 tab_spacing = ui_top_font_size()*0.4f;
-        F32 filter_bar_height = ui_top_font_size()*3.f;
+        float tab_bar_rheight = ui_top_font_size()*3.f;
+        float tab_bar_vheight = ui_top_font_size()*2.6f;
+        float tab_bar_rv_diff = tab_bar_rheight - tab_bar_vheight;
+        float tab_spacing = ui_top_font_size()*0.4f;
+        float filter_bar_height = ui_top_font_size()*3.f;
         Rng2F32 tab_bar_rect = r2f32p(panel_rect.x0, panel_rect.y0, panel_rect.x1, panel_rect.y0 + tab_bar_vheight);
         Rng2F32 content_rect = r2f32p(panel_rect.x0, panel_rect.y0+tab_bar_vheight, panel_rect.x1, panel_rect.y1);
         Rng2F32 filter_rect = {0};
@@ -7177,11 +7177,11 @@ rd_window_frame(RD_Window *ws)
           RD_View *view = rd_view_from_handle(rd_state->drag_drop_regs->view);
           if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && !rd_view_is_nil(view) && contains_2f32(panel_rect, ui_mouse()))
           {
-            F32 drop_site_dim_px = ceil_f32(ui_top_font_size()*7.f);
+            float drop_site_dim_px = ceil_f32(ui_top_font_size()*7.f);
             Vec2F32 drop_site_half_dim = v2f32(drop_site_dim_px/2, drop_site_dim_px/2);
             Vec2F32 panel_center = center_2f32(panel_rect);
-            F32 corner_radius = ui_top_font_size()*0.5f;
-            F32 padding = ceil_f32(ui_top_font_size()*0.5f);
+            float corner_radius = ui_top_font_size()*0.5f;
+            float padding = ceil_f32(ui_top_font_size()*0.5f);
             struct
             {
               UI_Key key;
@@ -7552,7 +7552,7 @@ rd_window_frame(RD_Window *ws)
           // rjf: types
           struct DropSite
           {
-            F32 p;
+            float p;
             RD_View *prev_view;
           };
           
@@ -7561,7 +7561,7 @@ rd_window_frame(RD_Window *ws)
           UI_Box *tab_bar_box = &ui_nil_box;
           ulong drop_site_count = panel->tab_view_count+1;
           DropSite *drop_sites = push_array(scratch.arena, DropSite, drop_site_count);
-          F32 drop_site_max_p = 0;
+          float drop_site_max_p = 0;
           ulong view_idx = 0;
           
           // rjf: build
@@ -7580,7 +7580,7 @@ rd_window_frame(RD_Window *ws)
           UI_Parent(tab_bar_box) UI_PrefHeight(ui_pct(1, 0))
           {
             Temp scratch = scratch_begin(0, 0);
-            F32 corner_radius = ui_em(0.6f, 1.f).value;
+            float corner_radius = ui_em(0.6f, 1.f).value;
             ui_spacer(ui_px(1.f, 1.f));
             
             // rjf: build tabs
@@ -7795,13 +7795,13 @@ rd_window_frame(RD_Window *ws)
             if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && window_is_focused && contains_2f32(panel_rect, mouse) && !rd_view_is_nil(view))
             {
               // rjf: mouse => hovered drop site
-              F32 min_distance = 0;
+              float min_distance = 0;
               DropSite *active_drop_site = 0;
               if(catchall_drop_site_hovered)
               {
                 for(ulong drop_site_idx = 0; drop_site_idx < drop_site_count; drop_site_idx += 1)
                 {
-                  F32 distance = abs_f32(drop_sites[drop_site_idx].p - mouse.x);
+                  float distance = abs_f32(drop_sites[drop_site_idx].p - mouse.x);
                   if(drop_site_idx == 0 || distance < min_distance)
                   {
                     active_drop_site = &drop_sites[drop_site_idx];
@@ -7951,8 +7951,8 @@ rd_window_frame(RD_Window *ws)
       Task start_task = {0, &rd_nil_panel, ws->query_view_stack_top};
       Task *first_task = &start_task;
       Task *last_task = first_task;
-      F32 rate = 1 - pow_f32(2, (-10.f * rd_state->frame_dt));
-      F32 fast_rate = 1 - pow_f32(2, (-40.f * rd_state->frame_dt));
+      float rate = 1 - pow_f32(2, (-10.f * rd_state->frame_dt));
+      float fast_rate = 1 - pow_f32(2, (-40.f * rd_state->frame_dt));
       for(RD_Panel *panel = ws->root_panel;
           !rd_panel_is_nil(panel);
           panel = rd_panel_rec_depth_first_pre(panel).next)
@@ -7980,7 +7980,7 @@ rd_window_frame(RD_Window *ws)
             if(abs_f32(view->loading_t_target - view->loading_t) > 0.01f ||
                abs_f32(view->scroll_pos.x.off) > 0.01f ||
                abs_f32(view->scroll_pos.y.off) > 0.01f ||
-               abs_f32(view->is_filtering_t - (F32)!!view->is_filtering))
+               abs_f32(view->is_filtering_t - (float)!!view->is_filtering))
             {
               rd_request_frame();
             }
@@ -7991,7 +7991,7 @@ rd_window_frame(RD_Window *ws)
             }
           }
           view->loading_t += (view->loading_t_target - view->loading_t) * rate;
-          view->is_filtering_t += ((F32)!!view->is_filtering - view->is_filtering_t) * fast_rate;
+          view->is_filtering_t += ((float)!!view->is_filtering - view->is_filtering_t) * fast_rate;
           view->scroll_pos.x.off -= view->scroll_pos.x.off * (rd_setting_val_from_code(RD_SettingCode_ScrollingAnimations).s32 ? fast_rate : 1.f);
           view->scroll_pos.y.off -= view->scroll_pos.y.off * (rd_setting_val_from_code(RD_SettingCode_ScrollingAnimations).s32 ? fast_rate : 1.f);
           if(abs_f32(view->scroll_pos.x.off) < 0.01f)
@@ -8002,9 +8002,9 @@ rd_window_frame(RD_Window *ws)
           {
             view->scroll_pos.y.off = 0;
           }
-          if(abs_f32(view->is_filtering_t - (F32)!!view->is_filtering) < 0.01f)
+          if(abs_f32(view->is_filtering_t - (float)!!view->is_filtering) < 0.01f)
           {
-            view->is_filtering_t = (F32)!!view->is_filtering;
+            view->is_filtering_t = (float)!!view->is_filtering;
           }
           if(view == rd_selected_tab_from_panel(t->panel) ||
              t->transient_owner == rd_selected_tab_from_panel(t->panel))
@@ -8135,7 +8135,7 @@ rd_window_frame(RD_Window *ws)
     Temp scratch = scratch_begin(0, 0);
     
     //- rjf: set up heatmap buckets
-    F32 heatmap_bucket_size = 32.f;
+    float heatmap_bucket_size = 32.f;
     ulong *heatmap_buckets = 0;
     ulong heatmap_bucket_pitch = 0;
     ulong heatmap_bucket_count = 0;
@@ -8226,12 +8226,12 @@ rd_window_frame(RD_Window *ws)
         // rjf: hot effect extension
         if(box->flags & UI_BoxFlag_DrawHotEffects)
         {
-          F32 effective_active_t = box->active_t;
+          float effective_active_t = box->active_t;
           if(!(box->flags & UI_BoxFlag_DrawActiveEffects))
           {
             effective_active_t = 0;
           }
-          F32 t = box->hot_t*(1-effective_active_t);
+          float t = box->hot_t*(1-effective_active_t);
           
           // rjf: brighten
           {
@@ -8324,7 +8324,7 @@ rd_window_frame(RD_Window *ws)
           dr_rect(r2f32p(text_position.x-4, text_position.y-4, text_position.x+4, text_position.y+4),
                   v4f32(1, 0, 1, 1), 1, 0, 1);
         }
-        F32 max_x = 100000.f;
+        float max_x = 100000.f;
         FNT_Run ellipses_run = {0};
         if(!(box->flags & UI_BoxFlag_DisableTextTrunc))
         {
@@ -8454,8 +8454,8 @@ rd_window_frame(RD_Window *ws)
           // rjf: draw sides
           {
             Rng2F32 r = b->rect;
-            F32 half_thickness = 1.f;
-            F32 softness = 0.5f;
+            float half_thickness = 1.f;
+            float softness = 0.5f;
             if(b->flags & UI_BoxFlag_DrawSideTop)
             {
               dr_rect(r2f32p(r.x0, r.y0-half_thickness, r.x1, r.y0+half_thickness), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
@@ -8530,7 +8530,7 @@ rd_window_frame(RD_Window *ws)
         ulong x = bucket_idx % heatmap_bucket_pitch;
         ulong y = bucket_idx / heatmap_bucket_pitch;
         ulong bucket = heatmap_buckets[bucket_idx];
-        F32 pct = (F32)bucket / uniform_dist_count;
+        float pct = (float)bucket / uniform_dist_count;
         pct = Clamp(0, pct, 1);
         Vec3F32 hsv = v3f32((1-pct) * 0.9411f, 1, 0.5f);
         Vec3F32 rgb = rgb_from_hsv(hsv);
@@ -8575,7 +8575,7 @@ rd_window_frame(RD_Window *ws)
       dr_fancy_string_list_push(scratch.arena, &strs, &str3);
       DR_FancyRunList runs = dr_fancy_run_list_from_fancy_string_list(scratch.arena, 0, 0, &strs);
       FNT_Run trailer_run = fnt_push_run_from_string(scratch.arena, rd_font_from_slot(RD_FontSlot_Main), 16.f, 0, 0, 0, str8_lit("..."));
-      F32 limit = 500.f + sin_f32(rd_state->time_in_seconds/10.f)*200.f;
+      float limit = 500.f + sin_f32(rd_state->time_in_seconds/10.f)*200.f;
       dr_truncated_fancy_run_list(p, &runs, limit, trailer_run);
       dr_rect(r2f32p(p.x+limit, 0, p.x+limit+2.f, 1000), v4f32(1, 0, 0, 1), 0, 0, 0);
       rd_request_frame();
@@ -9357,12 +9357,12 @@ rd_ev_view_from_key(ulong key)
   return node->v;
 }
 
-F32
-rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out)
+float
+rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, float font_size, float max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
-  F32 space_taken = 0;
+  float space_taken = 0;
   
   //- rjf: unpack view rules
   uint radix = default_radix;
@@ -9738,7 +9738,7 @@ rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, uint defau
 }
 
 String8
-rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules)
+rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, float font_size, float max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
@@ -10353,16 +10353,16 @@ rd_font_from_slot(RD_FontSlot slot)
   return result;
 }
 
-F32
+float
 rd_font_size_from_slot(RD_FontSlot slot)
 {
-  F32 result = 0;
+  float result = 0;
   RD_Window *ws = rd_window_from_handle(rd_regs()->window);
-  F32 dpi = os_dpi_from_window(ws->os);
+  float dpi = os_dpi_from_window(ws->os);
   if(dpi != ws->last_dpi)
   {
-    F32 old_dpi = ws->last_dpi;
-    F32 new_dpi = dpi;
+    float old_dpi = ws->last_dpi;
+    float new_dpi = dpi;
     ws->last_dpi = dpi;
     int *pt_sizes[] =
     {
@@ -10371,8 +10371,8 @@ rd_font_size_from_slot(RD_FontSlot slot)
     };
     for(ulong idx = 0; idx < ArrayCount(pt_sizes); idx += 1)
     {
-      F32 ratio = pt_sizes[idx][0] / old_dpi;
-      F32 new_pt_size = ratio*new_dpi;
+      float ratio = pt_sizes[idx][0] / old_dpi;
+      float new_pt_size = ratio*new_dpi;
       pt_sizes[idx][0] = (int)new_pt_size;
     }
   }
@@ -10380,13 +10380,13 @@ rd_font_size_from_slot(RD_FontSlot slot)
   {
     case RD_FontSlot_Code:
     {
-      result = (F32)ws->setting_vals[RD_SettingCode_CodeFontSize].s32;
+      result = (float)ws->setting_vals[RD_SettingCode_CodeFontSize].s32;
     }break;
     default:
     case RD_FontSlot_Main:
     case RD_FontSlot_Icons:
     {
-      result = (F32)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
+      result = (float)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
     }break;
   }
   return result;
@@ -11697,7 +11697,7 @@ rd_frame()
   //- rjf: pick target hz
   //
   // TODO(rjf): maximize target, given all windows and their monitors
-  F32 target_hz = os_get_gfx_info()->default_refresh_rate;
+  float target_hz = os_get_gfx_info()->default_refresh_rate;
   if(rd_state->frame_index > 32)
   {
     // rjf: calculate average frame time out of the last N
@@ -11711,12 +11711,12 @@ rd_frame()
     
     // rjf: pick among a number of sensible targets to snap to, given how well
     // we've been performing
-    F32 possible_alternate_hz_targets[] = {target_hz, 60.f, 120.f, 144.f, 240.f};
-    F32 best_target_hz = target_hz;
+    float possible_alternate_hz_targets[] = {target_hz, 60.f, 120.f, 144.f, 240.f};
+    float best_target_hz = target_hz;
     long best_target_hz_frame_time_us_diff = max_S64;
     for(ulong idx = 0; idx < ArrayCount(possible_alternate_hz_targets); idx += 1)
     {
-      F32 candidate = possible_alternate_hz_targets[idx];
+      float candidate = possible_alternate_hz_targets[idx];
       if(candidate <= target_hz)
       {
         ulong candidate_frame_time_us = 1000000/(ulong)candidate;
@@ -12845,10 +12845,10 @@ rd_frame()
                         if(str8_match(child->string, str8_lit("hsva"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
                         {
                           Vec4F32 hsva = {0};
-                          hsva.x = (F32)f64_from_str8(child->first->string);
-                          hsva.y = (F32)f64_from_str8(child->first->next->string);
-                          hsva.z = (F32)f64_from_str8(child->first->next->next->string);
-                          hsva.w = (F32)f64_from_str8(child->first->next->next->next->string);
+                          hsva.x = (float)f64_from_str8(child->first->string);
+                          hsva.y = (float)f64_from_str8(child->first->next->string);
+                          hsva.z = (float)f64_from_str8(child->first->next->next->string);
+                          hsva.w = (float)f64_from_str8(child->first->next->next->next->string);
                           rd_entity_equip_color_hsva(t->entity, hsva);
                         }
                         if(str8_match(child->string, str8_lit("color"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
@@ -13009,7 +13009,7 @@ rd_frame()
               Axis2 top_level_split_axis = Axis2_X;
               OS_Handle preferred_monitor = os_primary_monitor();
               Vec2F32 size = {0};
-              F32 dpi = 0.f;
+              float dpi = 0.f;
               RD_SettingVal setting_vals[RD_SettingCode_COUNT] = {0};
               {
                 for MD_EachNode(n, window_tree->root->first)
@@ -13065,8 +13065,8 @@ rd_frame()
                   {
                     y_u64 = (ulong)(preferred_monitor_size.y*2/3);
                   }
-                  size.x = (F32)x_u64;
-                  size.y = (F32)y_u64;
+                  size.x = (float)x_u64;
+                  size.y = (float)y_u64;
                 }
                 MD_Node *dpi_node = md_child_from_string(window_tree->root, str8_lit("dpi"), 0);
                 String8 dpi_string = md_string_from_children(scratch.arena, dpi_node);
@@ -13124,7 +13124,7 @@ rd_frame()
                   panel = rd_panel_alloc(ws);
                   rd_panel_insert(panel_parent, panel_parent->last, panel);
                   panel->split_axis = axis2_flip(panel_parent->split_axis);
-                  panel->pct_of_parent = (F32)f64_from_str8(n->string);
+                  panel->pct_of_parent = (float)f64_from_str8(n->string);
                 }
                 
                 // rjf: do general per-panel work
@@ -13258,7 +13258,7 @@ rd_frame()
               // rjf: focus the biggest panel
               {
                 RD_Panel *best_leaf_panel = &rd_nil_panel;
-                F32 best_leaf_panel_area = 0;
+                float best_leaf_panel_area = 0;
                 Rng2F32 root_rect = r2f32p(0, 0, 1000, 1000); // NOTE(rjf): we can assume any size - just need proportions.
                 for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
                 {
@@ -13266,7 +13266,7 @@ rd_frame()
                   {
                     Rng2F32 rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                     Vec2F32 dim = dim_2f32(rect);
-                    F32 area = dim.x*dim.y;
+                    float area = dim.x*dim.y;
                     if(best_leaf_panel_area == 0 || area > best_leaf_panel_area)
                     {
                       best_leaf_panel_area = area;
@@ -13424,14 +13424,14 @@ rd_frame()
             if(!preset_applied)
             {
               RD_ThemePreset closest_preset = RD_ThemePreset_DefaultDark;
-              F32 closest_preset_bg_distance = 100000000;
+              float closest_preset_bg_distance = 100000000;
               for(RD_ThemePreset p = (RD_ThemePreset)0; p < RD_ThemePreset_COUNT; p = (RD_ThemePreset)(p+1))
               {
                 Vec4F32 cfg_bg = rd_state->cfg_theme_target.colors[RD_ThemeColor_BaseBackground];
                 Vec4F32 pre_bg = rd_theme_preset_colors_table[p][RD_ThemeColor_BaseBackground];
                 Vec4F32 diff = sub_4f32(cfg_bg, pre_bg);
                 Vec3F32 diff3 = diff.xyz;
-                F32 distance = length_3f32(diff3);
+                float distance = length_3f32(diff3);
                 if(distance < closest_preset_bg_distance)
                 {
                   closest_preset = p;
@@ -13508,8 +13508,8 @@ rd_frame()
               Vec2F32 monitor_dim = os_dim_from_monitor(preferred_monitor);
               Vec2F32 window_dim = v2f32(monitor_dim.x*4/5, monitor_dim.y*4/5);
               RD_Window *ws = rd_window_open(window_dim, preferred_monitor, RD_CfgSrc_User);
-              F32 font_size = (F32)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
-              F32 num_lines_in_monitor_height = monitor_dim.y / font_size;
+              float font_size = (float)ws->setting_vals[RD_SettingCode_MainFontSize].s32;
+              float num_lines_in_monitor_height = monitor_dim.y / font_size;
               if(num_lines_in_monitor_height < 100)
               {
                 rd_cmd(RD_CmdKind_ResetToCompactPanels, .window = rd_handle_from_window(ws));
@@ -13675,7 +13675,7 @@ rd_frame()
               {
                 if(child != next)
                 {
-                  child->pct_of_parent *= (F32)(parent->child_count-1) / (parent->child_count);
+                  child->pct_of_parent *= (float)(parent->child_count-1) / (parent->child_count);
                 }
               }
               ws->focused_panel = next;
@@ -13820,7 +13820,7 @@ rd_frame()
             Vec2F32 src_panel_center = center_2f32(src_panel_rect);
             Vec2F32 src_panel_half_dim = scale_2f32(dim_2f32(src_panel_rect), 0.5f);
             Vec2F32 travel_dim = add_2f32(src_panel_half_dim, v2f32(10.f, 10.f));
-            Vec2F32 travel_dst = add_2f32(src_panel_center, mul_2f32(travel_dim, v2f32((F32)panel_change_dir.x, (F32)panel_change_dir.y)));
+            Vec2F32 travel_dst = add_2f32(src_panel_center, mul_2f32(travel_dim, v2f32((float)panel_change_dir.x, (float)panel_change_dir.y)));
             RD_Panel *dst_root = &rd_nil_panel;
             for(RD_Panel *p = ws->root_panel; !rd_panel_is_nil(p); p = rd_panel_rec_depth_first_pre(p).next)
             {
@@ -13964,7 +13964,7 @@ rd_frame()
                 RD_Panel *keep_child = panel == parent->first ? parent->last : parent->first;
                 RD_Panel *grandparent = parent->parent;
                 RD_Panel *parent_prev = parent->prev;
-                F32 pct_of_parent = parent->pct_of_parent;
+                float pct_of_parent = parent->pct_of_parent;
                 
                 // rjf: unhook kept child
                 rd_panel_remove(parent, keep_child);
@@ -14022,7 +14022,7 @@ rd_frame()
               else
               {
                 RD_Panel *next = &rd_nil_panel;
-                F32 removed_size_pct = panel->pct_of_parent;
+                float removed_size_pct = panel->pct_of_parent;
                 if(rd_panel_is_nil(next)) { next = panel->prev; }
                 if(rd_panel_is_nil(next)) { next = panel->next; }
                 rd_panel_remove(parent, panel);
@@ -15027,7 +15027,7 @@ rd_frame()
             RD_Panel *panel_w_any_src_code = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15036,7 +15036,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 panel_area = panel_rect_dim.x*panel_rect_dim.y;
+                float panel_area = panel_rect_dim.x*panel_rect_dim.y;
                 for(RD_View *view = panel->first_tab_view; !rd_view_is_nil(view); view = view->order_next)
                 {
                   if(rd_view_is_project_filtered(view)) { continue; }
@@ -15056,7 +15056,7 @@ rd_frame()
             RD_View *view_w_disasm = &rd_nil_view;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15065,7 +15065,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 panel_area = panel_rect_dim.x*panel_rect_dim.y;
+                float panel_area = panel_rect_dim.x*panel_rect_dim.y;
                 RD_View *panel_selected_tab = rd_selected_tab_from_panel(panel);
                 for(RD_View *view = panel->first_tab_view; !rd_view_is_nil(view); view = view->order_next)
                 {
@@ -15090,7 +15090,7 @@ rd_frame()
             RD_Panel *biggest_panel = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15099,7 +15099,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 area = panel_rect_dim.x * panel_rect_dim.y;
+                float area = panel_rect_dim.x * panel_rect_dim.y;
                 if((best_panel_area == 0 || area > best_panel_area))
                 {
                   best_panel_area = area;
@@ -15112,7 +15112,7 @@ rd_frame()
             RD_Panel *biggest_empty_panel = &rd_nil_panel;
             {
               Rng2F32 root_rect = os_client_rect_from_window(ws->os);
-              F32 best_panel_area = 0;
+              float best_panel_area = 0;
               for(RD_Panel *panel = ws->root_panel; !rd_panel_is_nil(panel); panel = rd_panel_rec_depth_first_pre(panel).next)
               {
                 if(!rd_panel_is_nil(panel->first))
@@ -15121,7 +15121,7 @@ rd_frame()
                 }
                 Rng2F32 panel_rect = rd_target_rect_from_panel(root_rect, ws->root_panel, panel);
                 Vec2F32 panel_rect_dim = dim_2f32(panel_rect);
-                F32 area = panel_rect_dim.x * panel_rect_dim.y;
+                float area = panel_rect_dim.x * panel_rect_dim.y;
                 B32 panel_is_empty = 1;
                 for(RD_View *v = panel->first_tab_view; !rd_view_is_nil(v); v = v->order_next)
                 {
@@ -16695,10 +16695,10 @@ rd_frame()
   //- rjf: animate confirmation
   //
   {
-    F32 rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-10.f * rd_state->frame_dt)) : 1.f;
+    float rate = rd_setting_val_from_code(RD_SettingCode_MenuAnimations).s32 ? 1 - pow_f32(2, (-10.f * rd_state->frame_dt)) : 1.f;
     B32 popup_open = rd_state->popup_active;
-    rd_state->popup_t += rate * ((F32)!!popup_open-rd_state->popup_t);
-    if(abs_f32(rd_state->popup_t - (F32)!!popup_open) > 0.005f)
+    rd_state->popup_t += rate * ((float)!!popup_open-rd_state->popup_t);
+    if(abs_f32(rd_state->popup_t - (float)!!popup_open) > 0.005f)
     {
       rd_request_frame();
     }
@@ -16710,7 +16710,7 @@ rd_frame()
   {
     RD_Theme *current = &rd_state->cfg_theme;
     RD_Theme *target = &rd_state->cfg_theme_target;
-    F32 rate = 1 - pow_f32(2, (-50.f * rd_state->frame_dt));
+    float rate = 1 - pow_f32(2, (-50.f * rd_state->frame_dt));
     for(RD_ThemeColor color = RD_ThemeColor_Null;
         color < RD_ThemeColor_COUNT;
         color = (RD_ThemeColor)(color+1))

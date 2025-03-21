@@ -231,7 +231,7 @@ B32 cv_numeric_fits_in_f64(CV_NumericParsed *num);
 
 ulong cv_u64_from_numeric(CV_NumericParsed *num);
 long cv_s64_from_numeric(CV_NumericParsed *num);
-F64 cv_f64_from_numeric(CV_NumericParsed *num);
+double cv_f64_from_numeric(CV_NumericParsed *num);
 
 //- Inlinee Lines Binary Annot Decoder
 

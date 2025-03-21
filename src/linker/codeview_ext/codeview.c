@@ -798,7 +798,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, ulong count, CV_DebugS *
 
   ProfBegin("Dedup");
   ulong total_string_count = sum_array_u64(count, task.string_counts);
-  task.bucket_cap = (ulong)((F64)total_string_count * 1.3);
+  task.bucket_cap = (ulong)((double)total_string_count * 1.3);
   task.buckets    = push_array(arena->v[0], CV_StringBucket *, task.bucket_cap);
   tp_for_parallel(tp, arena, count, cv_dedup_strings_in_debug_s_arr_task, &task);
   ProfEnd();
@@ -1022,7 +1022,7 @@ cv_dedup_symbol_ptr_array(TP_Context *tp, CV_SymbolPtrArray *symbols)
   ProfBegin("Setup Task");
   CV_SymbolDeduperTask task = {0};
   task.symbols              = symbols->v;
-  task.cap                  = (ulong)((F64)symbols->count * 1.3);
+  task.cap                  = (ulong)((double)symbols->count * 1.3);
   task.u.buckets            = push_array(scratch.arena, CV_SymbolNode **, task.cap);
   ProfEnd();
 
@@ -1937,7 +1937,7 @@ cv_c13_make_inlinee_lines_accel(Arena *arena, CV_C13InlineeLinesParsedList inlin
   // alloc hash table
   CV_InlineeLinesAccel *accel = push_array(arena, CV_InlineeLinesAccel, 1);
   accel->bucket_count = 0;
-  accel->bucket_max   = (ulong)((F64)inlinee_lines.count * 2.5);
+  accel->bucket_max   = (ulong)((double)inlinee_lines.count * 2.5);
   accel->buckets      = push_array(arena, CV_C13InlineeLinesParsed *, accel->bucket_max);
 
   // push parsed inlinees

@@ -24,9 +24,9 @@ struct TweakB32Info
 struct TweakF32Info
 {
   String8 name;
-  F32 default_value;
+  float default_value;
   Rng1F32 value_range;
-  F32 *value_ptr;
+  float *value_ptr;
 };
 
 struct TweakB32InfoTable
@@ -179,8 +179,8 @@ read_only static Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, st
 read_only static Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
 read_only static Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
 read_only static Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
-read_only static Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
-read_only static Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
+read_only static Type F32__type  = {TypeKind_F32,  0, sizeof(float), &type_nil, str8_lit_comp("float")};
+read_only static Type F64__type  = {TypeKind_F64,  0, sizeof(double), &type_nil, str8_lit_comp("double")};
 read_only static Type *type_kind_type_table[] =
 {
   &type_nil,
@@ -197,8 +197,8 @@ read_only static Type *type_kind_type_table[] =
   type(B16),
   type(B32),
   type(B64),
-  type(F32),
-  type(F64),
+  type(float),
+  type(double),
   &type_nil,
   &type_nil,
   &type_nil,

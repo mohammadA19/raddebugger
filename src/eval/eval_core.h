@@ -47,8 +47,8 @@ union E_Value
   long s64;
   int s32;
   int s16;
-  F64 f64;
-  F32 f32;
+  double f64;
+  float f32;
 };
 
 ////////////////////////////////

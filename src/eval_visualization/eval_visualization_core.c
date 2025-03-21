@@ -1488,7 +1488,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, uint radix,
   {
     digit_group_separator = 0;
   }
-  F64 f64 = 0;
+  double f64 = 0;
   switch(type_kind)
   {
     default:{}break;
@@ -1583,7 +1583,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringFlags flags, uint radix,
       scratch_end(scratch);
     }break;
     
-    case E_TypeKind_F32:{f64 = (F64)eval.value.f32;}goto f64_path;
+    case E_TypeKind_F32:{f64 = (double)eval.value.f32;}goto f64_path;
     case E_TypeKind_F64:{f64 = eval.value.f64;}goto f64_path;
     f64_path:;
     {

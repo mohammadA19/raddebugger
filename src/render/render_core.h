@@ -40,11 +40,11 @@ struct R_Rect2DInst
   Rng2F32 dst;
   Rng2F32 src;
   Vec4F32 colors[Corner_COUNT];
-  F32 corner_radii[Corner_COUNT];
-  F32 border_thickness;
-  F32 edge_softness;
-  F32 white_texture_override;
-  F32 _unused_[1];
+  float corner_radii[Corner_COUNT];
+  float border_thickness;
+  float edge_softness;
+  float white_texture_override;
+  float _unused_[1];
 };
 
 struct R_Mesh3DInst
@@ -83,7 +83,7 @@ struct R_BatchGroup2DParams
   R_Tex2DSampleKind tex_sample_kind;
   Mat3x3F32 xform;
   Rng2F32 clip;
-  F32 transparency;
+  float transparency;
 };
 
 struct R_BatchGroup2DNode
@@ -137,8 +137,8 @@ struct R_PassParams_Blur
 {
   Rng2F32 rect;
   Rng2F32 clip;
-  F32 blur_size;
-  F32 corner_radii[Corner_COUNT];
+  float blur_size;
+  float corner_radii[Corner_COUNT];
 };
 
 struct R_PassParams_Geo3D

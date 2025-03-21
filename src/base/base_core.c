@@ -94,16 +94,16 @@ extend_sign64(ulong x, ulong size){
   return result;
 }
 
-F32
+float
 inf32(){
-  union { uint u; F32 f; } x;
+  union { uint u; float f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
-F32
+float
 neg_inf32(){
-  union { uint u; F32 f; } x;
+  union { uint u; float f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
 }
@@ -237,7 +237,7 @@ sign_from_side_S32(Side side){
   return((side == Side_Min)?-1:1);
 }
 
-F32
+float
 sign_from_side_F32(Side side){
   return((side == Side_Min)?-1.f:1.f);
 }

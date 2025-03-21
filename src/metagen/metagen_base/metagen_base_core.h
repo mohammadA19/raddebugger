@@ -352,8 +352,8 @@ typedef sbyte       B8;
 typedef short      B16;
 typedef int      B32;
 typedef long      B64;
-typedef float    F32;
-typedef double   F64;
+typedef float    float;
+typedef double   double;
 typedef void VoidProc();
 struct U128
 {
@@ -464,12 +464,12 @@ static uint sign32     = 0x80000000;
 static uint exponent32 = 0x7F800000;
 static uint mantissa32 = 0x007FFFFF;
 
-static F32   big_golden32 = 1.61803398875f;
-static F32 small_golden32 = 0.61803398875f;
+static float   big_golden32 = 1.61803398875f;
+static float small_golden32 = 0.61803398875f;
 
-static F32 pi32 = 3.1415926535897f;
+static float pi32 = 3.1415926535897f;
 
-static F64 machine_epsilon64 = 4.94065645841247e-324;
+static double machine_epsilon64 = 4.94065645841247e-324;
 
 static ulong max_U64 = 0xffffffffffffffffull;
 static uint max_U32 = 0xffffffff;
@@ -711,8 +711,8 @@ ulong u64_up_to_pow2(ulong x);
 int extend_sign32(uint x, uint size);
 long extend_sign64(ulong x, ulong size);
 
-F32 inf32();
-F32 neg_inf32();
+float inf32();
+float neg_inf32();
 
 ushort bswap_u16(ushort x);
 uint bswap_u32(uint x);
@@ -731,7 +731,7 @@ ulong clz64(ulong val);
 //~ rjf: Enum -> Sign
 
 int sign_from_side_S32(Side side);
-F32 sign_from_side_F32(Side side);
+float sign_from_side_F32(Side side);
 
 ////////////////////////////////
 //~ rjf: Memory Functions

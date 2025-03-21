@@ -201,8 +201,8 @@ struct RD_View
   ulong generation;
   
   // rjf: loading animation state
-  F32 loading_t;
-  F32 loading_t_target;
+  float loading_t;
+  float loading_t_target;
   ulong loading_progress_v;
   ulong loading_progress_v_target;
   
@@ -224,7 +224,7 @@ struct RD_View
   
   // rjf: filter mode
   B32 is_filtering;
-  F32 is_filtering_t;
+  float is_filtering_t;
   
   // rjf: params tree state
   Arena *params_arenas[2];
@@ -257,7 +257,7 @@ struct RD_Panel
   
   // rjf: split data
   Axis2 split_axis;
-  F32 pct_of_parent;
+  float pct_of_parent;
   
   // rjf: animated rectangle data
   Rng2F32 animated_rect_pct;
@@ -582,7 +582,7 @@ struct RD_Window
   OS_Handle os;
   R_Handle r;
   UI_State *ui;
-  F32 last_dpi;
+  float last_dpi;
   B32 window_temporarily_focused_ipc;
   
   // rjf: config/settings
@@ -621,8 +621,8 @@ struct RD_Window
   ulong autocomp_cursor_off;
   byte autocomp_lister_input_buffer[1024];
   ulong autocomp_lister_input_size;
-  F32 autocomp_open_t;
-  F32 autocomp_num_visible_rows_t;
+  float autocomp_open_t;
+  float autocomp_num_visible_rows_t;
   long autocomp_cursor_num;
   
   // rjf: query view stack
@@ -632,8 +632,8 @@ struct RD_Window
   ulong query_cmd_regs_mask[(RD_RegSlot_COUNT + 63) / 64];
   RD_View *query_view_stack_top;
   B32 query_view_selected;
-  F32 query_view_selected_t;
-  F32 query_view_t;
+  float query_view_selected_t;
+  float query_view_t;
   
   // rjf: hover eval state
   B32 hover_eval_focused;
@@ -649,13 +649,13 @@ struct RD_Window
   String8 hover_eval_file_path;
   TxtPt hover_eval_file_pt;
   ulong hover_eval_vaddr;
-  F32 hover_eval_open_t;
-  F32 hover_eval_num_visible_rows_t;
+  float hover_eval_open_t;
+  float hover_eval_num_visible_rows_t;
   
   // rjf: error state
   byte error_buffer[512];
   ulong error_string_size;
-  F32 error_t;
+  float error_t;
   
   // rjf: panel state
   RD_Panel *root_panel;
@@ -742,10 +742,10 @@ struct RD_State
   Arena *frame_arenas[2];
   ulong frame_time_us_history[64];
   ulong num_frames_requested;
-  F64 time_in_seconds;
+  double time_in_seconds;
   
   // rjf: frame parameters
-  F32 frame_dt;
+  float frame_dt;
   DI_Scope *frame_di_scope;
   
   // rjf: dbgi match store
@@ -760,7 +760,7 @@ struct RD_State
   RD_RegsNode *top_regs;
   
   // rjf: autosave state
-  F32 seconds_until_autosave;
+  float seconds_until_autosave;
   
   // rjf: commands
   Arena *cmds_arenas[2];
@@ -770,7 +770,7 @@ struct RD_State
   // rjf: popup state
   UI_Key popup_key;
   B32 popup_active;
-  F32 popup_t;
+  float popup_t;
   Arena *popup_arena;
   RD_CmdList popup_cmds;
   String8 popup_title;
@@ -1056,7 +1056,7 @@ RD_View *rd_selected_tab_from_panel(RD_Panel *panel);
 
 //- rjf: icons & display strings
 RD_IconKind rd_icon_kind_from_view(RD_View *view);
-DR_FancyStringList rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec4F32 secondary_color, F32 size);
+DR_FancyStringList rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec4F32 secondary_color, float size);
 
 ////////////////////////////////
 //~ rjf: Window Type Functions
@@ -1146,14 +1146,14 @@ RD_Entity *rd_entity_from_name_and_kind(String8 string, RD_EntityKind kind);
 //~ rjf: Frontend Entity Info Extraction
 
 D_Target rd_d_target_from_entity(RD_Entity *entity);
-DR_FancyStringList rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_color, F32 size);
+DR_FancyStringList rd_title_fstrs_from_entity(Arena *arena, RD_Entity *entity, Vec4F32 secondary_color, float size);
 
 ////////////////////////////////
 //~ rjf: Control Entity Info Extraction
 
 Vec4F32 rd_rgba_from_ctrl_entity(CTRL_Entity *entity);
 String8 rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity);
-DR_FancyStringList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secondary_color, F32 size, B32 include_extras);
+DR_FancyStringList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, Vec4F32 secondary_color, float size, B32 include_extras);
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -1288,8 +1288,8 @@ ulong                rd_ev_view_rule_expr_id_from_num__debug_info_tables(ulong n
 ulong                rd_ev_view_rule_expr_num_from_id__debug_info_tables(ulong id, void *user_data, RDI_SectionKind section);
 
 EV_View *rd_ev_view_from_key(ulong key);
-F32 rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out);
-String8 rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules);
+float rd_append_value_strings_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, float font_size, float max_size, int depth, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules, String8List *out);
+String8 rd_value_string_from_eval(Arena *arena, EV_StringFlags flags, uint default_radix, FNT_Tag font, float font_size, float max_size, E_Eval eval, E_Member *member, EV_ViewRuleList *view_rules);
 
 ////////////////////////////////
 //~ rjf: Hover Eval
@@ -1336,7 +1336,7 @@ UI_Palette *rd_palette_from_code(RD_PaletteCode code);
 
 //- rjf: fonts/sizes
 FNT_Tag rd_font_from_slot(RD_FontSlot slot);
-F32 rd_font_size_from_slot(RD_FontSlot slot);
+float rd_font_size_from_slot(RD_FontSlot slot);
 FNT_RasterFlags rd_raster_flags_from_slot(RD_FontSlot slot);
 
 //- rjf: settings
