@@ -920,10 +920,10 @@ ui_pane_end(void)
 ////////////////////////////////
 //~ rjf: Tables
 
-thread_static U64 ui_ts_col_pct_count = 0;
-thread_static F32 *ui_ts_col_pcts_stable = 0;
-thread_static U64 ui_ts_vector_idx = 0;
-thread_static U64 ui_ts_cell_idx = 0;
+thread_local U64 ui_ts_col_pct_count = 0;
+thread_local F32 *ui_ts_col_pcts_stable = 0;
+thread_local U64 ui_ts_vector_idx = 0;
+thread_local U64 ui_ts_cell_idx = 0;
 
 internal void
 ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
@@ -1336,10 +1336,10 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   return new_pt;
 }
 
-thread_static UI_ScrollPt *ui_scroll_list_scroll_pt_ptr = 0;
-thread_static F32 ui_scroll_list_scroll_bar_dim_px = 0;
-thread_static Vec2F32 ui_scroll_list_dim_px = {0};
-thread_static Rng1S64 ui_scroll_list_scroll_idx_rng = {0};
+thread_local UI_ScrollPt *ui_scroll_list_scroll_pt_ptr = 0;
+thread_local F32 ui_scroll_list_scroll_bar_dim_px = 0;
+thread_local Vec2F32 ui_scroll_list_dim_px = {0};
+thread_local Rng1S64 ui_scroll_list_scroll_idx_rng = {0};
 
 internal void
 ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S64 *cursor_out, Vec2S64 *mark_out, Rng1S64 *visible_row_range_out, UI_ScrollListSignal *signal_out)

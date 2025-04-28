@@ -34,12 +34,6 @@
 # define read_only
 #endif
 
-#if COMPILER_MSVC
-# define thread_static __declspec(thread)
-#elif COMPILER_CLANG || COMPILER_GCC
-# define thread_static __thread
-#endif
-
 ////////////////////////////////
 //~ rjf: Linkage Keyword Macros
 

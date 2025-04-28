@@ -35,12 +35,6 @@
 #endif
 
 #if COMPILER_MSVC
-# define thread_static __declspec(thread)
-#elif COMPILER_CLANG || COMPILER_GCC
-# define thread_static __thread
-#endif
-
-#if COMPILER_MSVC
 # define force_inline __forceinline
 #elif COMPILER_CLANG || COMPILER_GCC
 # define force_inline __attribute__((always_inline))

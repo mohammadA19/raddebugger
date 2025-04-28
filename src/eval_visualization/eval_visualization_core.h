@@ -348,9 +348,9 @@ global read_only EV_ViewRuleInfo ev_nil_view_rule_info =
   EV_VIEW_RULE_EXPR_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
   EV_VIEW_RULE_EXPR_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
 };
-thread_static EV_ViewRuleInfoTable *ev_view_rule_info_table = 0;
+thread_local EV_ViewRuleInfoTable *ev_view_rule_info_table = 0;
 global read_only EV_ViewRuleList ev_nil_view_rule_list = {0};
-thread_static EV_AutoViewRuleTable *ev_auto_view_rule_table = 0;
+thread_local EV_AutoViewRuleTable *ev_auto_view_rule_table = 0;
 global read_only EV_Block ev_nil_block = {&ev_nil_block, &ev_nil_block, &ev_nil_block, &ev_nil_block, &ev_nil_block, {0}, 0, {0}, &e_expr_nil, &ev_nil_view_rule_list, &ev_nil_view_rule_info};
 
 ////////////////////////////////

@@ -267,7 +267,7 @@ struct DASM_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static DASM_TCTX *dasm_tctx = 0;
+thread_local DASM_TCTX *dasm_tctx = 0;
 global DASM_Shared *dasm_shared = 0;
 
 ////////////////////////////////

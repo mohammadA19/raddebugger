@@ -106,7 +106,7 @@ struct TEX_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static TEX_TCTX *tex_tctx = 0;
+thread_local TEX_TCTX *tex_tctx = 0;
 global TEX_Shared *tex_shared = 0;
 
 ////////////////////////////////
