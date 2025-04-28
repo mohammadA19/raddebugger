@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_local UI_State *ui_state = 0;
+thread_local UI_State *ui_state = nullptr;
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions
@@ -289,15 +289,15 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: build+fill
-  UI_TxtOp op = {0};
+  UI_TxtOp op = 
   {
-    op.flags   = flags;
-    op.replace = replace;
-    op.copy    = copy;
-    op.range   = range;
-    op.cursor  = next_cursor;
-    op.mark    = next_mark;
-  }
+    .flags   = flags;
+    .replace = replace;
+    .copy    = copy;
+    .range   = range;
+    .cursor  = next_cursor;
+    .mark    = next_mark;
+  };
   return op;
 }
 
