@@ -547,7 +547,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //- rjf: do keyboard interaction
   //
   B32 snap[Axis2_COUNT] = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
   {
     if(ui_is_focus_active() && visible_line_num_range.max >= visible_line_num_range.min)
     {
@@ -566,7 +566,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     
     //- rjf: build code slice
     RD_CodeSliceSignal sig = {0};
-    UI_Focus(UI_FocusKind_On)
+    UI_Focus(UI_FocusKind.On)
     {
       sig = rd_code_slicef(&code_slice_params, &rd_regs()->cursor, &rd_regs()->mark, &cv->preferred_column, "code_slice");
     }
@@ -749,7 +749,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       for(UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
+        if(evt->kind == UI_EventKind.Scroll && evt->modifiers & OS_Modifier_Ctrl)
         {
           ui_eat_event(evt);
           if(evt->delta_2f32.y < 0)
@@ -1332,7 +1332,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   {
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind_AutocompleteHint)
+      if(evt->kind == UI_EventKind.AutocompleteHint)
       {
         autocomplete_hint_string = evt->string;
         break;
@@ -1349,7 +1349,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
   Vec2S64 cursor_tbl = {0};
   Vec2S64 mark_tbl = {0};
   Rng2S64 selection_tbl = {0};
-  if(!is_top_level_hook) ProfScope("consume events & perform navigations/edits - calculate state") UI_Focus(UI_FocusKind_On)
+  if(!is_top_level_hook) ProfScope("consume events & perform navigations/edits - calculate state") UI_Focus(UI_FocusKind.On)
   {
     B32 state_dirty = 1;
     B32 snap_to_cursor = 0;
@@ -1556,9 +1556,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       //- rjf: begin editing on some operations
       //
       if(!ewv->text_editing &&
-         (evt->kind == UI_EventKind_Text ||
+         (evt->kind == UI_EventKind.Text ||
           evt->flags & UI_EventFlag_Paste ||
-          (evt->kind == UI_EventKind_Press && evt->slot == UI_EventActionSlot_Edit)) &&
+          (evt->kind == UI_EventKind.Press && evt->slot == UI_EventActionSlot.Edit)) &&
          selection_tbl.min.x == selection_tbl.max.x &&
          (selection_tbl.min.y != 0 || selection_tbl.min.y != 0))
       {
@@ -1603,7 +1603,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       //- rjf: [table] do cell-granularity multi-cursor 'accept' operations (expansions / etc.); if
       // cannot apply to multi-cursor, then just don't take the event
       //
-      if(!ewv->text_editing && evt->slot == UI_EventActionSlot_Accept)
+      if(!ewv->text_editing && evt->slot == UI_EventActionSlot.Accept)
       {
         taken = 1;
         EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(scratch.arena, eval_view, filter, &block_ranges, r1u64(ui_scroll_list_row_from_item(&row_blocks, selection_tbl.min.y),
@@ -1665,14 +1665,14 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       //
       if(ewv->text_editing)
       {
-        B32 editing_complete = ((evt->kind == UI_EventKind_Press && (evt->slot == UI_EventActionSlot_Cancel || evt->slot == UI_EventActionSlot_Accept)) ||
-                                (evt->kind == UI_EventKind_Navigate && evt->delta_2s32.y != 0) ||
+        B32 editing_complete = ((evt->kind == UI_EventKind.Press && (evt->slot == UI_EventActionSlot.Cancel || evt->slot == UI_EventActionSlot.Accept)) ||
+                                (evt->kind == UI_EventKind.Navigate && evt->delta_2s32.y != 0) ||
                                 cursor_rugpull);
         rd_state->text_edit_mode = 1;
         if(editing_complete ||
-           ((evt->kind == UI_EventKind_Edit ||
-             evt->kind == UI_EventKind_Navigate ||
-             evt->kind == UI_EventKind_Text) &&
+           ((evt->kind == UI_EventKind.Edit ||
+             evt->kind == UI_EventKind.Navigate ||
+             evt->kind == UI_EventKind.Text) &&
             evt->delta_2s32.y == 0))
         {
           taken = 1;
@@ -1712,7 +1712,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               }
               
               // rjf: cancel? -> revert to initial string
-              if(editing_complete && evt->slot == UI_EventActionSlot_Cancel)
+              if(editing_complete && evt->slot == UI_EventActionSlot.Cancel)
               {
                 string = str8(edit_state->initial_buffer, edit_state->initial_size);
               }
@@ -1774,7 +1774,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       {
                         should_commit_asap = 1;
                       }
-                      else if(evt->slot != UI_EventActionSlot_Cancel)
+                      else if(evt->slot != UI_EventActionSlot.Cancel)
                       {
                         should_commit_asap = editing_complete;
                       }
@@ -1971,7 +1971,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
         switch(evt->delta_unit)
         {
           default:{moved = 0;}break;
-          case UI_EventDeltaUnit_Char:
+          case UI_EventDeltaUnit.Char:
           {
             for EachEnumVal(Axis2, axis)
             {
@@ -1987,9 +1987,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               cursor_tbl.v[axis] = clamp_1s64(r1s64(cursor_tbl_range.min.v[axis], cursor_tbl_range.max.v[axis]), cursor_tbl.v[axis]);
             }
           }break;
-          case UI_EventDeltaUnit_Word:
-          case UI_EventDeltaUnit_Line:
-          case UI_EventDeltaUnit_Page:
+          case UI_EventDeltaUnit.Word:
+          case UI_EventDeltaUnit.Line:
+          case UI_EventDeltaUnit.Page:
           {
             cursor_tbl.x  = (delta.x>0 ? (cursor_tbl_range.max.x) :
                              delta.x<0 ? (cursor_tbl_range.min.x + !!cursor_tbl_min_is_empty_selection[Axis2_X]) :
@@ -2001,7 +2001,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                                             cursor_tbl_range.max.y),
                                       cursor_tbl.y);
           }break;
-          case UI_EventDeltaUnit_Whole:
+          case UI_EventDeltaUnit.Whole:
           {
             for EachEnumVal(Axis2, axis)
             {
@@ -2163,7 +2163,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
     {
       for(UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if(evt->kind == UI_EventKind_AutocompleteHint)
+        if(evt->kind == UI_EventKind.AutocompleteHint)
         {
           ui_eat_event(evt);
           break;
@@ -2203,13 +2203,13 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
       disabled_flags |= UI_BoxFlag_Disabled;
     }
     UI_ScrollListSignal scroll_list_sig = {0};
-    UI_Focus(UI_FocusKind_On)
+    UI_Focus(UI_FocusKind.On)
       UI_ScrollList(&scroll_list_params, &scroll_pos.y,
                     0,
                     0,
                     &visible_row_rng,
                     &scroll_list_sig)
-      UI_Focus(UI_FocusKind_Null)
+      UI_Focus(UI_FocusKind.Null)
       UI_TableF(ewv->column_count, col_pcts, "table")
     {
       Vec2F32 scroll_list_view_off_px = ui_top_parent()->parent->view_off;
@@ -2353,7 +2353,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           ui_set_next_flags(disabled_flags);
           ui_set_next_pref_width(ui_pct(1, 0));
           ui_set_next_pref_height(ui_px(scroll_list_params.row_height_px*row->visual_size, 1.f));
-          ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
+          ui_set_next_focus_hot(row_selected ? UI_FocusKind.On : UI_FocusKind.Off);
           UI_Box *row_box = ui_build_box_from_stringf(row_flags|(!row->next)*UI_BoxFlag_DrawSideBottom|UI_BoxFlag_Clickable, "row_%I64x", row_hash);
           ui_ts_vector_idx += 1;
           ui_ts_cell_idx = 0;
@@ -2443,7 +2443,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             //- rjf: canvas row
             //
             case RD_WatchViewRowKind_Canvas:
-            ProfScope("canvas row") UI_FocusHot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off)
+            ProfScope("canvas row") UI_FocusHot(row_selected ? UI_FocusKind.On : UI_FocusKind.Off)
             {
               //- rjf: unpack
               RD_WatchViewPoint pt = {0, row->block->key, row->key};
@@ -2469,7 +2469,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               //- rjf: peek clicks in canvas region, mark clicked
               for(UI_Event *evt = 0; ui_next_event(&evt);)
               {
-                if(evt->kind == UI_EventKind_Press && evt->key == OS_Key_LeftMouseButton && contains_2f32(canvas_rect, evt->pos) &&
+                if(evt->kind == UI_EventKind.Press && evt->key == OS_Key_LeftMouseButton && contains_2f32(canvas_rect, evt->pos) &&
                    contains_2f32(rect, evt->pos))
                 {
                   pressed = 1;
@@ -2583,7 +2583,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_Target)
                 UI_Palette(palette)
               {
-                ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string)))
                 {
                   rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string);
@@ -2592,12 +2592,12 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_Breakpoint)
                 UI_Palette(palette)
               {
-                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].string)))
                 {
                   rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddAddressBreakpoint].string);
                 }
-                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 2 ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 2 ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].string)))
                 {
                   rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddFunctionBreakpoint].string);
@@ -2606,7 +2606,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_WatchPin)
                 UI_Palette(palette)
               {
-                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected && selection_tbl.min.x == 1 ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_cmd_spec_button(rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].string)))
                 {
                   rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_AddWatchPin].string);
@@ -2615,7 +2615,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_FilePathMap)
                 UI_Palette(palette)
               {
-                ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_icon_buttonf(RD_IconKind_FileOutline, 0, "Add File Path Map")))
                 {
                   rd_entity_alloc(rd_entity_root(), RD_EntityKind_FilePathMap);
@@ -2624,7 +2624,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
               if(rd_entity_is_nil(entity) && collection_entity_kind == RD_EntityKind_AutoViewRule)
                 UI_Palette(palette)
               {
-                ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
+                ui_set_next_focus_hot(row_selected ? UI_FocusKind.On : UI_FocusKind.Off);
                 if(ui_clicked(rd_icon_buttonf(RD_IconKind_Binoculars, 0, "Add Auto View Rule")))
                 {
                   rd_entity_alloc(rd_entity_root(), RD_EntityKind_AutoViewRule);
@@ -2667,7 +2667,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                 //- rjf: build
                 ui_set_next_hover_cursor(OS_Cursor_HandPoint);
                 UI_Box *entity_box = &ui_nil_box;
-                UI_FocusHot(entity_box_selected ? UI_FocusKind_On : UI_FocusKind_Off) UI_Palette(palette)
+                UI_FocusHot(entity_box_selected ? UI_FocusKind.On : UI_FocusKind.Off) UI_Palette(palette)
                 {
                   entity_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
                                                          UI_BoxFlag_DrawOverlay|
@@ -2750,7 +2750,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     if(ctrl->entity_kind == entity->kind &&
                        ctrl->ctrl_entity_kind == ctrl_entity->kind)
                     {
-                      UI_FocusHot(row_selected && selection_tbl.min.x <= ctrl_idx+1 && ctrl_idx+1 <= selection_tbl.max.x ? UI_FocusKind_On : UI_FocusKind_Off)
+                      UI_FocusHot(row_selected && selection_tbl.min.x <= ctrl_idx+1 && ctrl_idx+1 <= selection_tbl.max.x ? UI_FocusKind.On : UI_FocusKind.Off)
                       {
                         B32 is_frozen = ctrl_entity_tree_is_frozen(ctrl_entity);
                         RD_IconKind icon_kind = rd_cmd_kind_info_table[ctrl->kind].icon_kind;
@@ -3091,8 +3091,8 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                   ProfScope("build cell")
                     UI_Palette(palette)
                     UI_TableCell
-                    UI_FocusHot(cell_selected ? UI_FocusKind_On : UI_FocusKind_Off)
-                    UI_FocusActive((cell_selected && ewv->text_editing) ? UI_FocusKind_On : UI_FocusKind_Off)
+                    UI_FocusHot(cell_selected ? UI_FocusKind.On : UI_FocusKind.Off)
+                    UI_FocusActive((cell_selected && ewv->text_editing) ? UI_FocusKind.On : UI_FocusKind.Off)
                     RD_Font(cell_is_code ? RD_FontSlot_Code : RD_FontSlot_Main)
                     UI_FlagsAdd(row_depth > 0 ? UI_BoxFlag_DrawTextWeak : 0)
                   {
@@ -3125,7 +3125,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     else if(cell_icon != RD_IconKind_Null)
                     {
                       UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###cell_%I64x", row_hash);
-                      UI_Parent(box) RD_Font(RD_FontSlot_Icons) UI_WidthFill UI_TextAlignment(UI_TextAlign_Center)
+                      UI_Parent(box) RD_Font(RD_FontSlot_Icons) UI_WidthFill UI_TextAlignment(UI_TextAlign.Center)
                       {
                         ui_label(rd_icon_kind_text_table[cell_icon]);
                       }
@@ -3442,13 +3442,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(null) {}
 RD_VIEW_RULE_UI_FUNCTION_DEF(empty)
 {
   ui_set_next_flags(UI_BoxFlag_DefaultFocusNav);
-  UI_Focus(UI_FocusKind_On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view")) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
-    UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind_Null)
+  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view")) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+    UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind.Null)
   {
     UI_PrefHeight(ui_em(3.f, 1.f))
       UI_Row
       UI_Padding(ui_pct(1, 0))
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_em(15.f, 1.f))
       UI_CornerRadius(ui_top_font_size()/2.f)
       RD_Palette(RD_PaletteCode_NegativePopButton)
@@ -3469,9 +3469,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   ui_set_next_flags(UI_BoxFlag_DefaultFocusNav);
-  UI_Focus(UI_FocusKind_On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view"))
+  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view"))
     UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
-    UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind_Null)
+    UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind.Null)
   {
     RD_EntityList targets = rd_push_active_target_list(scratch.arena);
     CTRL_EntityList processes = ctrl_entity_list_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Process);
@@ -3498,7 +3498,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         UI_WidthFill UI_PrefHeight(ui_em(2.f, 1.f))
         UI_Row
         UI_Padding(ui_pct(1, 0))
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_TextAlignment(UI_TextAlign.Center)
         UI_PrefWidth(ui_text_dim(10, 1))
       {
         ui_label(str8_lit(BUILD_TITLE_STRING_LITERAL));
@@ -3518,7 +3518,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
           UI_PrefHeight(ui_em(3.75f, 1.f))
             UI_Row
             UI_Padding(ui_pct(1, 0))
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
             UI_PrefWidth(ui_em(22.f, 1.f))
             UI_CornerRadius(ui_top_font_size()/2.f)
             RD_Palette(RD_PaletteCode_NeutralPopButton)
@@ -3537,7 +3537,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
           UI_PrefHeight(ui_em(3.75f, 1.f))
             UI_Row
             UI_Padding(ui_pct(1, 0))
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
             UI_PrefWidth(ui_em(22.f, 1.f))
             UI_CornerRadius(ui_top_font_size()/2.f)
             RD_Palette(RD_PaletteCode_PositivePopButton)
@@ -3568,7 +3568,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
       UI_PrefHeight(ui_em(2.25f, 1.f))
         UI_Row
         UI_Padding(ui_pct(1, 0))
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_TextAlignment(UI_TextAlign.Center)
         UI_WidthFill
         ui_labelf("- or -");
     }
@@ -3576,12 +3576,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
     //- rjf: helper text for command lister activation
     UI_PrefHeight(ui_em(2.25f, 1.f)) UI_Row
       UI_PrefWidth(ui_text_dim(10, 1))
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_Padding(ui_pct(1, 0))
       RD_Palette(RD_PaletteCode_Floating)
     {
       ui_labelf("use");
-      UI_TextAlignment(UI_TextAlign_Center) rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
+      UI_TextAlignment(UI_TextAlign.Center) rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
       ui_labelf("to open command menu");
     }
   }
@@ -3750,7 +3750,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
   rd_cmd_lister_item_array_sort_by_strength__in_place(cmd_array);
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(cv->selected_cmd_hash == 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(cv->selected_cmd_hash == 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     rd_cmd(RD_CmdKind_CompleteQuery, .cmd_name = (cmd_array.count > 0 ? cmd_array.v[0].cmd_name : str8_zero()));
   }
@@ -3780,14 +3780,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     //- rjf: build buttons
     for(S64 row_idx = visible_row_range.min;
@@ -3801,7 +3801,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
       UI_Box *box = &ui_nil_box;
-      UI_Focus(cursor.y == row_idx+1 ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_Focus(cursor.y == row_idx+1 ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
                                         UI_BoxFlag_DrawBorder|
@@ -3820,7 +3820,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
           UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
           UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
           UI_HeightFill
-          UI_TextAlignment(UI_TextAlign_Center)
+          UI_TextAlignment(UI_TextAlign.Center)
         {
           RD_IconKind icon = info->icon_kind;
           if(icon != RD_IconKind_Null)
@@ -4207,7 +4207,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   }
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(ps->cursor.y == 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(ps->cursor.y == 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     FileProperties query_normalized_with_opt_slash_props = os_properties_from_file_path(query_normalized_with_opt_slash);
     FileProperties path_query_path_props = os_properties_from_file_path(path_query.path);
@@ -4272,7 +4272,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
   {
     col_pcts[idx] = &fs->col_pcts[idx];
   }
-  UI_PrefHeight(ui_px(row_height_px, 1)) UI_Focus(UI_FocusKind_Off) UI_TableF(ArrayCount(fs->col_pcts), col_pcts, "###fs_tbl")
+  UI_PrefHeight(ui_px(row_height_px, 1)) UI_Focus(UI_FocusKind.Off) UI_TableF(ArrayCount(fs->col_pcts), col_pcts, "###fs_tbl")
   {
     UI_TableVector
     {
@@ -4329,21 +4329,21 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &ps->cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     // rjf: up-one-directory button (at idx 0)
     if(visible_row_range.min == 0)
     {
       // rjf: build
       UI_Signal sig = {0};
-      UI_FocusHot(ps->cursor.y == row_num ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(ps->cursor.y == row_num ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         sig = ui_buttonf("###up_one");
       }
@@ -4355,7 +4355,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         RD_Font(RD_FontSlot_Icons)
           UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
           UI_PrefWidth(ui_em(3.f, 1.f))
-          UI_TextAlignment(UI_TextAlign_Center)
+          UI_TextAlignment(UI_TextAlign.Center)
         {
           ui_label(rd_icon_kind_text_table[RD_IconKind_LeftArrow]);
         }
@@ -4389,7 +4389,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       
       // rjf: make button
       UI_Signal file_sig = {0};
-      UI_FocusHot(file_kb_focus ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(file_kb_focus ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         file_sig = ui_buttonf("##%S", file->filename);
       }
@@ -4403,7 +4403,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
           RD_Font(RD_FontSlot_Icons)
             UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
             UI_PrefWidth(ui_em(3.f, 1.f))
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
           {
             if(file->props.flags & FilePropertyFlag_IsFolder)
             {
@@ -4678,7 +4678,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
   }
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(sp->selected_pid == 0 && process_info_array.count > 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(sp->selected_pid == 0 && process_info_array.count > 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     RD_ProcessInfo *info = &process_info_array.v[0];
     rd_cmd(RD_CmdKind_CompleteQuery, .pid = info->info.pid);
@@ -4710,14 +4710,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     //- rjf: build rows
     for(U64 idx = visible_row_range.min;
@@ -4727,7 +4727,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
       RD_ProcessInfo *info = &process_info_array.v[idx];
       B32 is_attached = info->is_attached;
       UI_Signal sig = {0};
-      UI_FocusHot(cursor.y == idx+1 ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(cursor.y == idx+1 ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         sig = ui_buttonf("###proc_%i", info->info.pid);
       }
@@ -4737,7 +4737,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
         RD_Font(RD_FontSlot_Icons)
           UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
           UI_PrefWidth(ui_em(3.f, 1.f))
-          UI_TextAlignment(UI_TextAlign_Center)
+          UI_TextAlignment(UI_TextAlign.Center)
         {
           ui_label(rd_icon_kind_text_table[RD_IconKind_Threads]);
         }
@@ -4757,7 +4757,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(system_processes)
         }
         
         // rjf: process number
-        UI_PrefWidth(ui_text_dim(1, 1)) UI_TextAlignment(UI_TextAlign_Center) UI_TextPadding(0)
+        UI_PrefWidth(ui_text_dim(1, 1)) UI_TextAlignment(UI_TextAlign.Center) UI_TextPadding(0)
         {
           ui_labelf("[PID: ");
           UI_Box *pid_label = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%i##pid_label", info->info.pid);
@@ -4915,7 +4915,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
   rd_entity_lister_item_array_sort_by_strength__in_place(ent_arr);
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(rd_entity_is_nil(rd_entity_from_handle(fev->selected_entity_handle)) && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(rd_entity_is_nil(rd_entity_from_handle(fev->selected_entity_handle)) && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     RD_Entity *ent = ent_arr.v[0].entity;
     rd_cmd(RD_CmdKind_CompleteQuery, .entity = rd_handle_from_entity(ent));
@@ -4947,14 +4947,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     for(S64 idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < ent_arr.count;
@@ -4965,7 +4965,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(entity_lister)
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
       UI_Box *box = &ui_nil_box;
-      UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
                                         UI_BoxFlag_DrawBorder|
@@ -5119,7 +5119,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
   rd_ctrl_entity_lister_item_array_sort_by_strength__in_place(ent_arr);
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(ctrl_entity_from_handle(d_state->ctrl_entity_store, fev->selected_entity_handle) == &ctrl_entity_nil && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(ctrl_entity_from_handle(d_state->ctrl_entity_store, fev->selected_entity_handle) == &ctrl_entity_nil && ent_arr.count != 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     CTRL_Entity *ent = ent_arr.v[0].entity;
     RD_RegsScope()
@@ -5162,14 +5162,14 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     for(S64 idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < ent_arr.count;
@@ -5180,7 +5180,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(ctrl_entity_lister)
       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
       ui_set_next_child_layout_axis(Axis2_X);
       UI_Box *box = &ui_nil_box;
-      UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(idx+1 == cursor.y ? UI_FocusKind.On : UI_FocusKind.Off)
       {
         box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
                                         UI_BoxFlag_DrawBorder|
@@ -5269,7 +5269,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
   }
   
   //- rjf: submit best match when hitting enter w/ no selection
-  if(slv->cursor.y == 0 && items.count != 0 && ui_slot_press(UI_EventActionSlot_Accept))
+  if(slv->cursor.y == 0 && items.count != 0 && ui_slot_press(UI_EventActionSlot.Accept))
   {
     DI_SearchItem *item = &items.v[0];
     if(item->dbgi_idx < rdis_count)
@@ -5304,21 +5304,21 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &slv->cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
     UI_TextRasterFlags(rd_raster_flags_from_slot(RD_FontSlot_Code))
   {
     //- rjf: build rows
     for(U64 idx = visible_row_range.min;
         idx <= visible_row_range.max && idx < items.count;
         idx += 1)
-      UI_Focus((slv->cursor.y == idx+1) ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_Focus((slv->cursor.y == idx+1) ? UI_FocusKind.On : UI_FocusKind.Off)
     {
       DI_SearchItem *item = &items.v[idx];
       if(item->dbgi_idx >= rdis_count) {continue;}
@@ -5899,9 +5899,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
         UI_PrefWidth(ui_text_dim(10, 1))
         UI_CornerRadius(ui_top_font_size()/3)
         UI_PrefWidth(ui_text_dim(10, 1))
-        UI_Focus(UI_FocusKind_On)
+        UI_Focus(UI_FocusKind.On)
         RD_Palette(RD_PaletteCode_NeutralPopButton)
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_TextAlignment(UI_TextAlign.Center)
         if(ui_clicked(ui_buttonf("Find alternative...")))
       {
         rd_cmd(RD_CmdKind_RunCommand, .cmd_name = rd_cmd_kind_info_table[RD_CmdKind_PickFile].string);
@@ -5974,7 +5974,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
     }
     UI_Palette(palette)
       UI_Row
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_text_dim(10, 1))
       UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
     {
@@ -6230,7 +6230,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
     ui_set_next_rect(shift_2f32(bottom_bar_rect, scale_2f32(rect.p0, -1.f)));
     ui_set_next_flags(UI_BoxFlag_DrawBackground);
     UI_Row
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_text_dim(10, 1))
       UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
       RD_Font(RD_FontSlot_Code)
@@ -6335,7 +6335,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
     ui_set_next_rect(shift_2f32(bottom_bar_rect, scale_2f32(rect.p0, -1.f)));
     ui_set_next_flags(UI_BoxFlag_DrawBackground);
     UI_Row
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_text_dim(10, 1))
       UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
       RD_Font(RD_FontSlot_Code)
@@ -6492,7 +6492,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: take keyboard controls
   //
-  UI_Focus(UI_FocusKind_On) if(ui_is_focus_active())
+  UI_Focus(UI_FocusKind.On) if(ui_is_focus_active())
   {
     U64 next_cursor = cursor;
     U64 next_mark = mark;
@@ -6502,13 +6502,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       switch(evt->delta_unit)
       {
         default:{}break;
-        case UI_EventDeltaUnit_Char:
+        case UI_EventDeltaUnit.Char:
         {
           cell_delta.x = (S64)evt->delta_2s32.x;
           cell_delta.y = (S64)evt->delta_2s32.y;
         }break;
-        case UI_EventDeltaUnit_Word:
-        case UI_EventDeltaUnit_Page:
+        case UI_EventDeltaUnit.Word:
+        case UI_EventDeltaUnit.Page:
         {
           if(evt->delta_2s32.x < 0)
           {
@@ -6791,7 +6791,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     {
       UI_PrefWidth(ui_px(big_glyph_advance*20.f, 1.f)) ui_labelf("Address");
       UI_PrefWidth(ui_px(cell_width_px, 1.f))
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_TextAlignment(UI_TextAlign.Center)
       {
         Rng1U64 col_selection_rng = r1u64(cursor%num_columns, mark%num_columns);
         for(U64 row_off = 0; row_off < num_columns*bytes_per_cell; row_off += bytes_per_cell)
@@ -6922,7 +6922,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
     {
       for(UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
+        if(evt->kind == UI_EventKind.Scroll && evt->modifiers & OS_Modifier_Ctrl)
         {
           ui_eat_event(evt);
           if(evt->delta_2f32.y < 0)
@@ -6973,7 +6973,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           ui_labelf("0x%016I64X", row_range_bytes.min);
         }
         UI_PrefWidth(ui_px(cell_width_px, 1.f))
-          UI_TextAlignment(UI_TextAlign_Center)
+          UI_TextAlignment(UI_TextAlign.Center)
           UI_CornerRadius(0)
         {
           for(U64 col_idx = 0; col_idx < num_columns; col_idx += 1)
@@ -7929,17 +7929,17 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(exception_filters)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params,
                   &scroll_pos.y,
                   &sv->cursor,
                   0,
                   &visible_row_range,
                   &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     for(S64 row = visible_row_range.min; row <= visible_row_range.max && row < opts.count; row += 1)
-      UI_FocusHot(sv->cursor.y == row+1 ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_FocusHot(sv->cursor.y == row+1 ? UI_FocusKind.On : UI_FocusKind.Off)
     {
       RD_ExceptionFiltersOption *opt = &opts.v[row];
       UI_Signal sig = rd_icon_buttonf(opt->is_enabled ? RD_IconKind_CheckFilled : RD_IconKind_CheckHollow, &opt->matches, "%S", opt->name);
@@ -8446,7 +8446,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
   //////////////////////////////
   //- rjf: cancels
   //
-  UI_Focus(UI_FocusKind_On) if(ui_is_focus_active() && sv->preset_apply_confirm < RD_ThemePreset_COUNT && ui_slot_press(UI_EventActionSlot_Cancel))
+  UI_Focus(UI_FocusKind.On) if(ui_is_focus_active() && sv->preset_apply_confirm < RD_ThemePreset_COUNT && ui_slot_press(UI_EventActionSlot.Cancel))
   {
     sv->preset_apply_confirm = RD_ThemePreset_COUNT;
   }
@@ -8466,9 +8466,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     scroll_list_params.cursor_min_is_empty_selection[Axis2_Y] = 1;
   }
   UI_ScrollListSignal scroll_list_sig = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
     UI_ScrollList(&scroll_list_params, &scroll_pos.y, &sv->cursor, 0, &visible_row_range, &scroll_list_sig)
-    UI_Focus(UI_FocusKind_Null)
+    UI_Focus(UI_FocusKind.Null)
   {
     for(S64 row_num = visible_row_range.min; row_num <= visible_row_range.max && row_num < items.count; row_num += 1)
     {
@@ -8539,7 +8539,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
           ui_set_next_flags(UI_BoxFlag_DrawSideLeft);
           ui_spacer(ui_em(2.f, 1.f));
         }
-        UI_Focus(row_num+1 == sv->cursor.y ? UI_FocusKind_On : UI_FocusKind_Off) UI_Palette(palette)
+        UI_Focus(row_num+1 == sv->cursor.y ? UI_FocusKind.On : UI_FocusKind.Off) UI_Palette(palette)
         {
           ui_set_next_hover_cursor(cursor);
           item_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|flags, "###option_%S_%S", item->kind_string, item->string);
@@ -8550,7 +8550,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
               UI_PrefWidth(ui_em(3.f, 1.f))
                 RD_Font(RD_FontSlot_Icons)
                 UI_Palette(ui_build_palette(ui_top_palette(), .text = rgba))
-                UI_TextAlignment(UI_TextAlign_Center)
+                UI_TextAlignment(UI_TextAlign.Center)
                 ui_label(rd_icon_kind_text_table[item->icon_kind]);
             }
             if(query.size != 0 && item->kind_string.size != 0) UI_PrefWidth(ui_text_dim(10, 1))
@@ -8586,7 +8586,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
                 RD_Palette(RD_PaletteCode_NegativePopButton)
                 UI_CornerRadius(ui_top_font_size()*0.5f)
                 UI_FontSize(ui_top_font_size()*0.9f)
-                UI_TextAlignment(UI_TextAlign_Center)
+                UI_TextAlignment(UI_TextAlign.Center)
                 ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBackground, "Click Again To Apply");
             }
           }

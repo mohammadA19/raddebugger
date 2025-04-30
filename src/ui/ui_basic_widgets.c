@@ -134,9 +134,9 @@ internal UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
   FNT_Tag font = box->font;
   F32 font_size = box->font_size;
   F32 tab_size = box->tab_size;
-  Vec4F32 cursor_color = box->palette->colors[UI_ColorCode_Cursor];
+  Vec4F32 cursor_color = box->palette->colors[UI_ColorCode.Cursor];
   cursor_color.w *= box->parent->parent->focus_active_t;
-  Vec4F32 select_color = box->palette->colors[UI_ColorCode_Selection];
+  Vec4F32 select_color = box->palette->colors[UI_ColorCode.Selection];
   select_color.w *= (box->parent->parent->focus_active_t*0.2f + 0.8f);
   Vec2F32 text_position = ui_box_text_position(box);
   String8 edited_string = draw_data->edited_string;
@@ -173,12 +173,12 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   //- rjf: calculate focus
   B32 is_auto_focus_hot = ui_is_key_auto_focus_hot(key);
   B32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
-  ui_push_focus_hot(is_auto_focus_hot ? UI_FocusKind_On : UI_FocusKind_Null);
-  ui_push_focus_active(is_auto_focus_active ? UI_FocusKind_On : UI_FocusKind_Null);
+  ui_push_focus_hot(is_auto_focus_hot ? UI_FocusKind.On : UI_FocusKind.Null);
+  ui_push_focus_active(is_auto_focus_active ? UI_FocusKind.On : UI_FocusKind.Null);
   B32 is_focus_hot    = ui_is_focus_hot();
   B32 is_focus_active = ui_is_focus_active();
-  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind_On);
-  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind_On);
+  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind.On);
+  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind.On);
   
   //- rjf: build top-level box
   ui_set_next_hover_cursor(is_focus_active ? OS_Cursor_IBar : OS_Cursor_HandPoint);
@@ -201,7 +201,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
       String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
-      if((evt->kind != UI_EventKind_Edit && evt->kind != UI_EventKind_Navigate && evt->kind != UI_EventKind_Text) || evt->delta_2s32.y != 0)
+      if((evt->kind != UI_EventKind.Edit && evt->kind != UI_EventKind.Navigate && evt->kind != UI_EventKind.Text) || evt->delta_2s32.y != 0)
       {
         continue;
       }
@@ -405,7 +405,7 @@ internal UI_Signal
 ui_expander(B32 is_expanded, String8 string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  ui_set_next_text_alignment(UI_TextAlign_Center);
+  ui_set_next_text_alignment(UI_TextAlign.Center);
   ui_set_next_font(ui_icon_font());
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
   ui_box_equip_display_string(box, is_expanded ? str8_lit("v") : str8_lit(">"));
@@ -438,7 +438,7 @@ ui_sort_header(B32 sorting, B32 ascending, String8 string)
   if(sorting)
   {
     ui_set_next_pref_width(ui_em(1.8f, 1.f));
-    ui_set_next_text_alignment(UI_TextAlign_Center);
+    ui_set_next_text_alignment(UI_TextAlign.Center);
     ui_set_next_font(ui_icon_font());
     UI_Box *icon = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_lit(""));
     ui_box_equip_display_string(icon, ascending ? str8_lit("^") : str8_lit("v"));
@@ -486,7 +486,7 @@ ui_do_color_tooltip_hsv(Vec3F32 hsv)
         ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
-    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
+    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
     {
       ui_labelf("Hex: #%02x%02x%02x", (U8)(rgb.x*255.f), (U8)(rgb.y*255.f), (U8)(rgb.z*255.f));
     }
@@ -525,7 +525,7 @@ ui_do_color_tooltip_hsva(Vec4F32 hsva)
         ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
-    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
+    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
     {
       ui_labelf("Hex: #%02x%02x%02x%02x", (U8)(rgba.x*255.f), (U8)(rgba.y*255.f), (U8)(rgba.z*255.f), (U8)(rgba.w*255.f));
     }
@@ -617,7 +617,7 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
       Vec2F32 data = v2f32(*out_sat, *out_val);
       ui_store_drag_struct(&data);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       Vec2F32 data = *ui_get_drag_struct(Vec2F32);
       *out_sat = data.x;
@@ -723,7 +723,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
     {
       ui_store_drag_struct(out_hue);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       *out_hue = *ui_get_drag_struct(F32);
       ui_kill_action();
@@ -810,7 +810,7 @@ ui_alpha_picker(F32 *out_alpha, String8 string)
     {
       ui_store_drag_struct(out_alpha);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       *out_alpha = *ui_get_drag_struct(F32);
       ui_kill_action();
@@ -1234,10 +1234,10 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
     UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
-    UI_TextAlignment(UI_TextAlign_Center)
+    UI_TextAlignment(UI_TextAlign.Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_LeftArrow : UI_IconKind_UpArrow);
+    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind.LeftArrow : UI_IconKind.UpArrow);
     min_scroll_sig = ui_buttonf("%S##_min_scroll_%i", arrow_string, axis);
   }
   
@@ -1286,10 +1286,10 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
     UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
-    UI_TextAlignment(UI_TextAlign_Center)
+    UI_TextAlignment(UI_TextAlign.Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_RightArrow : UI_IconKind_DownArrow);
+    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind.RightArrow : UI_IconKind.DownArrow);
     max_scroll_sig = ui_buttonf("%S##_max_scroll_%i", arrow_string, axis);
   }
   
@@ -1366,7 +1366,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
       switch(evt->delta_unit)
       {
         default:{moved = 0;}break;
-        case UI_EventDeltaUnit_Char:
+        case UI_EventDeltaUnit.Char:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
@@ -1382,15 +1382,15 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
             cursor.v[axis] = clamp_1s64(r1s64(params->cursor_range.min.v[axis], params->cursor_range.max.v[axis]), cursor.v[axis]);
           }
         }break;
-        case UI_EventDeltaUnit_Word:
-        case UI_EventDeltaUnit_Line:
-        case UI_EventDeltaUnit_Page:
+        case UI_EventDeltaUnit.Word:
+        case UI_EventDeltaUnit.Line:
+        case UI_EventDeltaUnit.Page:
         {
           cursor.x  = (evt->delta_2s32.x>0 ? params->cursor_range.max.x : evt->delta_2s32.x<0 ? params->cursor_range.min.x + !!params->cursor_min_is_empty_selection[Axis2_X] : cursor.x);
           cursor.y += ((evt->delta_2s32.y>0 ? +(num_possible_visible_rows-3) : evt->delta_2s32.y<0 ? -(num_possible_visible_rows-3) : 0));
           cursor.y = clamp_1s64(r1s64(params->cursor_range.min.y + !!params->cursor_min_is_empty_selection[Axis2_Y], params->cursor_range.max.y), cursor.y);
         }break;
-        case UI_EventDeltaUnit_Whole:
+        case UI_EventDeltaUnit.Whole:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
@@ -1479,7 +1479,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
   }
   
   //- rjf: build vertical scroll bar
-  UI_Parent(container_box) UI_Focus(UI_FocusKind_Null)
+  UI_Parent(container_box) UI_Focus(UI_FocusKind.Null)
   {
     ui_set_next_fixed_width(ui_scroll_list_scroll_bar_dim_px);
     ui_set_next_fixed_height(ui_scroll_list_dim_px.y);

@@ -3573,16 +3573,16 @@ rd_window_frame(RD_Window *ws)
       UI_IconInfo icon_info = {0};
       {
         icon_info.icon_font = icon_font;
-        icon_info.icon_kind_text_map[UI_IconKind_RightArrow]     = rd_icon_kind_text_table[RD_IconKind_RightScroll];
-        icon_info.icon_kind_text_map[UI_IconKind_DownArrow]      = rd_icon_kind_text_table[RD_IconKind_DownScroll];
-        icon_info.icon_kind_text_map[UI_IconKind_LeftArrow]      = rd_icon_kind_text_table[RD_IconKind_LeftScroll];
-        icon_info.icon_kind_text_map[UI_IconKind_UpArrow]        = rd_icon_kind_text_table[RD_IconKind_UpScroll];
-        icon_info.icon_kind_text_map[UI_IconKind_RightCaret]     = rd_icon_kind_text_table[RD_IconKind_RightCaret];
-        icon_info.icon_kind_text_map[UI_IconKind_DownCaret]      = rd_icon_kind_text_table[RD_IconKind_DownCaret];
-        icon_info.icon_kind_text_map[UI_IconKind_LeftCaret]      = rd_icon_kind_text_table[RD_IconKind_LeftCaret];
-        icon_info.icon_kind_text_map[UI_IconKind_UpCaret]        = rd_icon_kind_text_table[RD_IconKind_UpCaret];
-        icon_info.icon_kind_text_map[UI_IconKind_CheckHollow]    = rd_icon_kind_text_table[RD_IconKind_CheckHollow];
-        icon_info.icon_kind_text_map[UI_IconKind_CheckFilled]    = rd_icon_kind_text_table[RD_IconKind_CheckFilled];
+        icon_info.icon_kind_text_map[UI_IconKind.RightArrow]     = rd_icon_kind_text_table[RD_IconKind_RightScroll];
+        icon_info.icon_kind_text_map[UI_IconKind.DownArrow]      = rd_icon_kind_text_table[RD_IconKind_DownScroll];
+        icon_info.icon_kind_text_map[UI_IconKind.LeftArrow]      = rd_icon_kind_text_table[RD_IconKind_LeftScroll];
+        icon_info.icon_kind_text_map[UI_IconKind.UpArrow]        = rd_icon_kind_text_table[RD_IconKind_UpScroll];
+        icon_info.icon_kind_text_map[UI_IconKind.RightCaret]     = rd_icon_kind_text_table[RD_IconKind_RightCaret];
+        icon_info.icon_kind_text_map[UI_IconKind.DownCaret]      = rd_icon_kind_text_table[RD_IconKind_DownCaret];
+        icon_info.icon_kind_text_map[UI_IconKind.LeftCaret]      = rd_icon_kind_text_table[RD_IconKind_LeftCaret];
+        icon_info.icon_kind_text_map[UI_IconKind.UpCaret]        = rd_icon_kind_text_table[RD_IconKind_UpCaret];
+        icon_info.icon_kind_text_map[UI_IconKind.CheckHollow]    = rd_icon_kind_text_table[RD_IconKind_CheckHollow];
+        icon_info.icon_kind_text_map[UI_IconKind.CheckFilled]    = rd_icon_kind_text_table[RD_IconKind_CheckFilled];
       }
       
       // rjf: build widget palette info
@@ -3767,7 +3767,7 @@ rd_window_frame(RD_Window *ws)
                 String8 name = {0};
                 name.str = rdi_string_from_idx(rdi, fin->inline_site->name_string_idx, &name.size);
                 name.size = Min(512, name.size);
-                UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                UI_TextAlignment(UI_TextAlign.Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                 RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
                 if(name.size != 0)
                 {
@@ -3788,7 +3788,7 @@ rd_window_frame(RD_Window *ws)
                 String8 name = {0};
                 name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
                 name.size = Min(512, name.size);
-                UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                UI_TextAlignment(UI_TextAlign.Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                 if(name.size != 0)
                 {
                   RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -3860,7 +3860,7 @@ rd_window_frame(RD_Window *ws)
               ui_set_next_pref_height(ui_pct(1, 0));
               ui_set_next_child_layout_axis(Axis2_Y);
               UI_Box *view_preview_container = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clip, "###view_preview_container");
-              UI_Parent(view_preview_container) UI_Focus(UI_FocusKind_Off) UI_WidthFill
+              UI_Parent(view_preview_container) UI_Focus(UI_FocusKind.Off) UI_WidthFill
               {
                 RD_ViewRuleUIFunctionType *view_ui = view->spec->ui;
                 view_ui(str8(view->query_buffer, view->query_string_size), view->params_roots[view->params_read_gen%ArrayCount(view->params_roots)], view_preview_container->rect);
@@ -4169,7 +4169,7 @@ rd_window_frame(RD_Window *ws)
                 UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
                 UI_PrefWidth(ui_em(2.f, 1.f))
                 UI_PrefHeight(ui_pct(1, 0))
-                UI_TextAlignment(UI_TextAlign_Center)
+                UI_TextAlignment(UI_TextAlign.Center)
                 UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
                 ui_label(rd_icon_kind_text_table[view_icon]);
               UI_PrefWidth(ui_text_dim(10, 1))
@@ -4286,7 +4286,7 @@ rd_window_frame(RD_Window *ws)
             //- rjf: title
             UI_Row
               UI_PrefWidth(ui_text_dim(5, 1))
-              UI_TextAlignment(UI_TextAlign_Center)
+              UI_TextAlignment(UI_TextAlign.Center)
               UI_TextPadding(ui_top_font_size()*1.5f)
             {
               DR_FancyStringList fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, ctrl_entity, ui_top_palette()->text_weak, ui_top_font_size(), 0);
@@ -4455,7 +4455,7 @@ rd_window_frame(RD_Window *ws)
                   ui_push_parent(row);
                   String8 name = {0};
                   name.str = rdi_string_from_idx(rdi, fin->inline_site->name_string_idx, &name.size);
-                  UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                  UI_TextAlignment(UI_TextAlign.Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                   RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
                   if(name.size != 0)
                   {
@@ -4478,7 +4478,7 @@ rd_window_frame(RD_Window *ws)
                   ui_push_parent(row);
                   String8 name = {0};
                   name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
-                  UI_TextAlignment(UI_TextAlign_Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                  UI_TextAlignment(UI_TextAlign.Left) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                   if(name.size != 0)
                   {
                     RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -4554,7 +4554,7 @@ rd_window_frame(RD_Window *ws)
                 }
               }
               
-              UI_Row UI_Padding(ui_pct(1, 0)) UI_PrefWidth(ui_em(16.f, 1.f)) UI_CornerRadius(8.f) UI_TextAlignment(UI_TextAlign_Center)
+              UI_Row UI_Padding(ui_pct(1, 0)) UI_PrefWidth(ui_em(16.f, 1.f)) UI_CornerRadius(8.f) UI_TextAlignment(UI_TextAlign.Center)
                 RD_Palette(RD_PaletteCode_Floating)
               {
                 if(ui_clicked(rd_icon_buttonf(RD_IconKind_Trash, 0, "Remove Color###color_toggle")))
@@ -4579,7 +4579,7 @@ rd_window_frame(RD_Window *ws)
             //- rjf: title
             UI_Row
               UI_PrefWidth(ui_text_dim(5, 1))
-              UI_TextAlignment(UI_TextAlign_Center)
+              UI_TextAlignment(UI_TextAlign.Center)
               UI_TextPadding(ui_top_font_size()*1.5f)
             {
               DR_FancyStringList fstrs = rd_title_fstrs_from_entity(scratch.arena, entity, ui_top_palette()->text_weak, ui_top_font_size());
@@ -4721,7 +4721,7 @@ rd_window_frame(RD_Window *ws)
     //- rjf: popup
     //
     {
-      if(rd_state->popup_t > 0.005f) UI_TextAlignment(UI_TextAlign_Center) UI_Focus(rd_state->popup_active ? UI_FocusKind_Root : UI_FocusKind_Off)
+      if(rd_state->popup_t > 0.005f) UI_TextAlignment(UI_TextAlign.Center) UI_Focus(rd_state->popup_active ? UI_FocusKind.Root : UI_FocusKind.Off)
       {
         Vec2F32 window_dim = dim_2f32(window_rect);
         UI_Box *bg_box = &ui_nil_box;
@@ -4729,7 +4729,7 @@ rd_window_frame(RD_Window *ws)
         palette->background.w *= rd_state->popup_t;
         UI_Rect(window_rect)
           UI_ChildLayoutAxis(Axis2_X)
-          UI_Focus(UI_FocusKind_On)
+          UI_Focus(UI_FocusKind.On)
           UI_BlurSize(10*rd_state->popup_t)
           UI_Palette(palette)
         {
@@ -4753,12 +4753,12 @@ rd_window_frame(RD_Window *ws)
             UI_Row UI_Padding(ui_pct(1.f, 0.f)) UI_PrefWidth(ui_em(16.f, 1.f)) UI_PrefHeight(ui_em(3.5f, 1.f)) UI_CornerRadius(ui_top_font_size()*0.5f)
             {
               RD_Palette(RD_PaletteCode_NeutralPopButton)
-                if(ui_clicked(ui_buttonf("OK")) || (ui_key_match(bg_box->default_nav_focus_hot_key, ui_key_zero()) && ui_slot_press(UI_EventActionSlot_Accept)))
+                if(ui_clicked(ui_buttonf("OK")) || (ui_key_match(bg_box->default_nav_focus_hot_key, ui_key_zero()) && ui_slot_press(UI_EventActionSlot.Accept)))
               {
                 rd_cmd(RD_CmdKind_PopupAccept);
               }
               ui_spacer(ui_em(1.f, 1.f));
-              if(ui_clicked(ui_buttonf("Cancel")) || ui_slot_press(UI_EventActionSlot_Cancel))
+              if(ui_clicked(ui_buttonf("Cancel")) || ui_slot_press(UI_EventActionSlot.Cancel))
               {
                 rd_cmd(RD_CmdKind_PopupCancel);
               }
@@ -5251,7 +5251,7 @@ rd_window_frame(RD_Window *ws)
           ui_set_next_corner_radius_01(ui_top_font_size()*0.25f);
           ui_set_next_corner_radius_11(ui_top_font_size()*0.25f);
           ui_set_next_corner_radius_10(ui_top_font_size()*0.25f);
-          UI_Focus(UI_FocusKind_On)
+          UI_Focus(UI_FocusKind.On)
             UI_Squish(0.25f-0.25f*ws->autocomp_open_t)
             UI_Transparency(1.f-ws->autocomp_open_t)
             RD_Palette(RD_PaletteCode_Floating)
@@ -5277,7 +5277,7 @@ rd_window_frame(RD_Window *ws)
             UI_PrefHeight(ui_px(row_height_px, 1.f))
             RD_Font(RD_FontSlot_Code)
             UI_HoverCursor(OS_Cursor_HandPoint)
-            UI_Focus(UI_FocusKind_Null)
+            UI_Focus(UI_FocusKind.Null)
             RD_Palette(RD_PaletteCode_ImplicitButton)
             UI_Padding(ui_em(1.f, 1.f))
           {
@@ -5301,12 +5301,12 @@ rd_window_frame(RD_Window *ws)
               if(ui_clicked(item_sig))
               {
                 UI_Event move_back_evt = zero_struct;
-                move_back_evt.kind = UI_EventKind_Navigate;
+                move_back_evt.kind = UI_EventKind.Navigate;
                 move_back_evt.flags = UI_EventFlag_KeepMark;
                 move_back_evt.delta_2s32.x = -(S32)query_word.size;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &move_back_evt);
                 UI_Event paste_evt = zero_struct;
-                paste_evt.kind = UI_EventKind_Text;
+                paste_evt.kind = UI_EventKind.Text;
                 paste_evt.string = item->string;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &paste_evt);
                 autocomp_box->default_nav_focus_hot_key = autocomp_box->default_nav_focus_active_key = autocomp_box->default_nav_focus_next_hot_key = autocomp_box->default_nav_focus_next_active_key = ui_key_zero();
@@ -5314,7 +5314,7 @@ rd_window_frame(RD_Window *ws)
               else if(item_box->flags & UI_BoxFlag_FocusHot && !(item_box->flags & UI_BoxFlag_FocusHotDisabled))
               {
                 UI_Event evt = zero_struct;
-                evt.kind   = UI_EventKind_AutocompleteHint;
+                evt.kind   = UI_EventKind.AutocompleteHint;
                 evt.string = item->string;
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &evt);
               }
@@ -5337,10 +5337,10 @@ rd_window_frame(RD_Window *ws)
       os_window_push_custom_title_bar(ws->os, dim_2f32(top_bar_rect).y);
       ui_set_next_flags(UI_BoxFlag_DefaultFocusNav|UI_BoxFlag_DisableFocusOverlay);
       RD_Palette(RD_PaletteCode_MenuBar)
-        UI_Focus((ws->menu_bar_focused && window_is_focused && !ui_any_ctx_menu_is_open() && !ws->hover_eval_focused) ? UI_FocusKind_On : UI_FocusKind_Null)
+        UI_Focus((ws->menu_bar_focused && window_is_focused && !ui_any_ctx_menu_is_open() && !ws->hover_eval_focused) ? UI_FocusKind.On : UI_FocusKind.Null)
         UI_Pane(top_bar_rect, str8_lit("###top_bar"))
         UI_WidthFill UI_Row
-        UI_Focus(UI_FocusKind_Null)
+        UI_Focus(UI_FocusKind.Null)
       {
         UI_Key menu_bar_group_key = ui_key_from_string(ui_key_zero(), str8_lit("###top_bar_group"));
         MemoryZeroArray(ui_top_parent()->parent->corner_radii);
@@ -5586,7 +5586,7 @@ rd_window_frame(RD_Window *ws)
               UI_PrefWidth(ui_em(50.f, 1.f))
               RD_Palette(RD_PaletteCode_ImplicitButton)
             {
-              UI_Row UI_TextAlignment(UI_TextAlign_Center) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+              UI_Row UI_TextAlignment(UI_TextAlign.Center) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
                 ui_label(str8_lit(BUILD_TITLE_STRING_LITERAL));
               ui_spacer(ui_em(1.f, 1.f));
               UI_PrefHeight(ui_children_sum(1)) UI_Row UI_Padding(ui_pct(1, 0))
@@ -5600,17 +5600,17 @@ rd_window_frame(RD_Window *ws)
               ui_spacer(ui_em(1.f, 1.f));
               UI_Row
                 UI_PrefWidth(ui_text_dim(10, 1))
-                UI_TextAlignment(UI_TextAlign_Center)
+                UI_TextAlignment(UI_TextAlign.Center)
                 UI_Padding(ui_pct(1, 0))
               {
                 ui_labelf("Search for commands by pressing ");
                 UI_Flags(UI_BoxFlag_DrawBorder)
-                  UI_TextAlignment(UI_TextAlign_Center)
+                  UI_TextAlignment(UI_TextAlign.Center)
                   rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
               }
               ui_spacer(ui_em(1.f, 1.f));
               RD_Palette(RD_PaletteCode_NeutralPopButton)
-                UI_Row UI_Padding(ui_pct(1, 0)) UI_TextAlignment(UI_TextAlign_Center) UI_PrefWidth(ui_text_dim(10, 1))
+                UI_Row UI_Padding(ui_pct(1, 0)) UI_TextAlignment(UI_TextAlign.Center) UI_PrefWidth(ui_text_dim(10, 1))
                 UI_CornerRadius(ui_top_font_size()*0.5f)
               {
                 String8 url = str8_lit("https://github.com/EpicGamesExt/raddebugger/issues");
@@ -5624,7 +5624,7 @@ rd_window_frame(RD_Window *ws)
             }
             
             // rjf: buttons
-            UI_TextAlignment(UI_TextAlign_Center) UI_HeightFill
+            UI_TextAlignment(UI_TextAlign.Center) UI_HeightFill
             {
               // rjf: set up table
               struct
@@ -5769,7 +5769,7 @@ rd_window_frame(RD_Window *ws)
           
           //- rjf: play button
           if(can_play || !have_targets || processes.count == 0)
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
             UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextPositive)))
           {
@@ -5811,7 +5811,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: restart button
-          else UI_TextAlignment(UI_TextAlign_Center)
+          else UI_TextAlignment(UI_TextAlign.Center)
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextPositive)))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_Redo]);
@@ -5832,7 +5832,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: pause button
-          UI_TextAlignment(UI_TextAlign_Center) UI_Flags(can_pause ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.Center) UI_Flags(can_pause ? 0 : UI_BoxFlag_Disabled)
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNeutral)))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_Pause]);
@@ -5858,7 +5858,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: stop button
-          UI_TextAlignment(UI_TextAlign_Center) UI_Flags(can_stop ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.Center) UI_Flags(can_stop ? 0 : UI_BoxFlag_Disabled)
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative)))
           {
             UI_Signal sig = {0};
@@ -5887,7 +5887,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step over button
-          UI_TextAlignment(UI_TextAlign_Center) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
+          UI_TextAlignment(UI_TextAlign.Center) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepOver]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5915,7 +5915,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step into button
-          UI_TextAlignment(UI_TextAlign_Center) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
+          UI_TextAlignment(UI_TextAlign.Center) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepInto]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5943,7 +5943,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step out button
-          UI_TextAlignment(UI_TextAlign_Center) UI_Flags(can_step ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.Center) UI_Flags(can_step ? 0 : UI_BoxFlag_Disabled)
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepOut]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5997,7 +5997,7 @@ rd_window_frame(RD_Window *ws)
                                                          UI_BoxFlag_DrawActiveEffects,
                                                          "###loaded_user_button");
             os_window_push_custom_title_bar_client_area(ws->os, user_box->rect);
-            UI_Parent(user_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign_Center)
+            UI_Parent(user_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign.Center)
             {
               String8 user_path = rd_cfg_path_from_src(RD_CfgSrc_User);
               user_path = str8_chop_last_dot(user_path);
@@ -6031,7 +6031,7 @@ rd_window_frame(RD_Window *ws)
                                                          UI_BoxFlag_DrawActiveEffects,
                                                          "###loaded_project_button");
             os_window_push_custom_title_bar_client_area(ws->os, prof_box->rect);
-            UI_Parent(prof_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign_Center)
+            UI_Parent(prof_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign.Center)
             {
               String8 prof_path = rd_cfg_path_from_src(RD_CfgSrc_Project);
               prof_path = str8_chop_last_dot(prof_path);
@@ -6170,7 +6170,7 @@ rd_window_frame(RD_Window *ws)
           RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(rd_state->bind_change_cmd_name);
           UI_PrefWidth(ui_text_dim(10, 1))
             UI_Flags(UI_BoxFlag_DrawBackground)
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
             UI_CornerRadius(4)
             RD_Palette(RD_PaletteCode_NeutralPopButton)
             ui_labelf("Currently rebinding \"%S\" hotkey", info->display_name);
@@ -6188,7 +6188,7 @@ rd_window_frame(RD_Window *ws)
             UI_CornerRadius(4)
               UI_Row
               UI_PrefWidth(ui_text_dim(10, 1))
-              UI_TextAlignment(UI_TextAlign_Center)
+              UI_TextAlignment(UI_TextAlign.Center)
             {
               RD_Font(RD_FontSlot_Icons)
                 UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
@@ -6311,7 +6311,7 @@ rd_window_frame(RD_Window *ws)
     //- rjf: build query
     //
     if(!rd_view_is_nil(ws->query_view_stack_top))
-      UI_Focus((window_is_focused && !ui_any_ctx_menu_is_open() && !ws->menu_bar_focused && ws->query_view_selected) ? UI_FocusKind_On : UI_FocusKind_Off)
+      UI_Focus((window_is_focused && !ui_any_ctx_menu_is_open() && !ws->menu_bar_focused && ws->query_view_selected) ? UI_FocusKind.On : UI_FocusKind.Off)
       RD_Palette(RD_PaletteCode_Floating)
     {
       RD_View *view = ws->query_view_stack_top;
@@ -6363,7 +6363,7 @@ rd_window_frame(RD_Window *ws)
       B32 query_cancelled = 0;
       UI_Parent(query_container_box)
         UI_WidthFill UI_PrefHeight(ui_px(query_line_edit_height, 1.f))
-        UI_Focus(UI_FocusKind_On)
+        UI_Focus(UI_FocusKind.On)
       {
         ui_set_next_flags(UI_BoxFlag_DrawDropShadow|UI_BoxFlag_DrawBorder);
         UI_Row
@@ -6397,14 +6397,14 @@ rd_window_frame(RD_Window *ws)
               ws->query_view_selected = 1;
             }
           }
-          UI_PrefWidth(ui_em(5.f, 1.f)) UI_Focus(UI_FocusKind_Off) RD_Palette(RD_PaletteCode_PositivePopButton)
+          UI_PrefWidth(ui_em(5.f, 1.f)) UI_Focus(UI_FocusKind.Off) RD_Palette(RD_PaletteCode_PositivePopButton)
           {
             if(ui_clicked(rd_icon_buttonf(RD_IconKind_RightArrow, 0, "##complete_query")))
             {
               query_completed = 1;
             }
           }
-          UI_PrefWidth(ui_em(3.f, 1.f)) UI_Focus(UI_FocusKind_Off) RD_Palette(RD_PaletteCode_PlainButton)
+          UI_PrefWidth(ui_em(3.f, 1.f)) UI_Focus(UI_FocusKind.Off) RD_Palette(RD_PaletteCode_PlainButton)
           {
             if(ui_clicked(rd_icon_buttonf(RD_IconKind_X, 0, "##cancel_query")))
             {
@@ -6415,7 +6415,7 @@ rd_window_frame(RD_Window *ws)
       }
       
       //- rjf: build query view
-      UI_Parent(query_container_box) UI_WidthFill UI_Focus(UI_FocusKind_Null)
+      UI_Parent(query_container_box) UI_WidthFill UI_Focus(UI_FocusKind.Null)
         RD_RegsScope(.view = rd_handle_from_view(view))
       {
         RD_ViewRuleUIFunctionType *view_ui = view->spec->ui;
@@ -6424,11 +6424,11 @@ rd_window_frame(RD_Window *ws)
       
       //- rjf: query submission
       if(((ui_is_focus_active() || (window_is_focused && !ui_any_ctx_menu_is_open() && !ws->menu_bar_focused && !ws->query_view_selected)) &&
-          ui_slot_press(UI_EventActionSlot_Cancel)) || query_cancelled)
+          ui_slot_press(UI_EventActionSlot.Cancel)) || query_cancelled)
       {
         rd_cmd(RD_CmdKind_CancelQuery);
       }
-      if((ui_is_focus_active() && ui_slot_press(UI_EventActionSlot_Accept)) || query_completed)
+      if((ui_is_focus_active() && ui_slot_press(UI_EventActionSlot.Accept)) || query_completed)
       {
         Temp scratch = scratch_begin(0, 0);
         RD_View *view = ws->query_view_stack_top;
@@ -6524,7 +6524,7 @@ rd_window_frame(RD_Window *ws)
         
         //- rjf: build if good
         if(!e_type_key_match(eval.type_key, e_type_key_zero()) && !ui_any_ctx_menu_is_open())
-          UI_Focus((hover_eval_is_open && !ui_any_ctx_menu_is_open() && ws->hover_eval_focused && (!query_is_open || !ws->query_view_selected)) ? UI_FocusKind_Null : UI_FocusKind_Off)
+          UI_Focus((hover_eval_is_open && !ui_any_ctx_menu_is_open() && ws->hover_eval_focused && (!query_is_open || !ws->query_view_selected)) ? UI_FocusKind.Null : UI_FocusKind.Off)
         {
           //- rjf: eval -> viz artifacts
           F32 row_height = floor_f32(ui_top_font_size()*2.8f);
@@ -6605,7 +6605,7 @@ rd_window_frame(RD_Window *ws)
           ui_set_next_child_layout_axis(Axis2_Y);
           ui_set_next_squish(0.25f-0.25f*ws->hover_eval_open_t);
           ui_set_next_transparency(1.f-ws->hover_eval_open_t);
-          UI_Focus(UI_FocusKind_On)
+          UI_Focus(UI_FocusKind.On)
           {
             hover_eval_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|
                                                        UI_BoxFlag_DrawBackground|
@@ -6738,7 +6738,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 if(row == rows.first)
                 {
-                  UI_TextAlignment(UI_TextAlign_Center) UI_PrefWidth(ui_em(3.f, 1.f))
+                  UI_TextAlignment(UI_TextAlign.Center) UI_PrefWidth(ui_em(3.f, 1.f))
                     UI_CornerRadius00(0)
                     UI_CornerRadius01(0)
                     UI_CornerRadius10(0)
@@ -6755,7 +6755,7 @@ rd_window_frame(RD_Window *ws)
                     }
                   }
                   if(ws->hover_eval_file_path.size != 0 || ws->hover_eval_vaddr != 0)
-                    UI_TextAlignment(UI_TextAlign_Center) UI_PrefWidth(ui_em(3.f, 1.f))
+                    UI_TextAlignment(UI_TextAlign.Center) UI_PrefWidth(ui_em(3.f, 1.f))
                     UI_CornerRadius10(corner_radius)
                     UI_CornerRadius11(corner_radius)
                   {
@@ -7133,7 +7133,7 @@ rd_window_frame(RD_Window *ws)
                               !ui_any_ctx_menu_is_open() &&
                               !ws->hover_eval_focused &&
                               ws->focused_panel == panel);
-      UI_Focus(panel_is_focused ? UI_FocusKind_Null : UI_FocusKind_Off)
+      UI_Focus(panel_is_focused ? UI_FocusKind.Null : UI_FocusKind.Off)
       {
         //////////////////////////
         //- rjf: calculate UI rectangles
@@ -7356,9 +7356,9 @@ rd_window_frame(RD_Window *ws)
         //
         {
           RD_View *view = rd_selected_tab_from_panel(panel);
-          UI_Focus(UI_FocusKind_On)
+          UI_Focus(UI_FocusKind.On)
           {
-            if(view->is_filtering && ui_is_focus_active() && ui_slot_press(UI_EventActionSlot_Accept))
+            if(view->is_filtering && ui_is_focus_active() && ui_slot_press(UI_EventActionSlot.Accept))
             {
               rd_cmd(RD_CmdKind_ApplyFilter, .view = rd_handle_from_view(view));
             }
@@ -7375,7 +7375,7 @@ rd_window_frame(RD_Window *ws)
                 UI_PrefWidth(ui_em(3.f, 1.f))
                   UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
                   RD_Font(RD_FontSlot_Icons)
-                  UI_TextAlignment(UI_TextAlign_Center)
+                  UI_TextAlignment(UI_TextAlign.Center)
                   ui_label(rd_icon_kind_text_table[RD_IconKind_Find]);
                 UI_PrefWidth(ui_text_dim(10, 1))
                 {
@@ -7383,7 +7383,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 ui_spacer(ui_em(0.5f, 1.f));
                 RD_Font(view->spec->flags & RD_ViewRuleInfoFlag_FilterIsCode ? RD_FontSlot_Code : RD_FontSlot_Main)
-                  UI_Focus(view->is_filtering ? UI_FocusKind_On : UI_FocusKind_Off)
+                  UI_Focus(view->is_filtering ? UI_FocusKind.On : UI_FocusKind.Off)
                   UI_TextPadding(ui_top_font_size()*0.5f)
                 {
                   UI_Signal sig = rd_line_edit(RD_LineEditFlag_CodeContents*!!(view->spec->flags & RD_ViewRuleInfoFlag_FilterIsCode),
@@ -7423,7 +7423,7 @@ rd_window_frame(RD_Window *ws)
         //- rjf: build panel container box
         //
         UI_Box *panel_box = &ui_nil_box;
-        UI_Rect(content_rect) UI_ChildLayoutAxis(Axis2_Y) UI_CornerRadius(0) UI_Focus(UI_FocusKind_On)
+        UI_Rect(content_rect) UI_ChildLayoutAxis(Axis2_Y) UI_CornerRadius(0) UI_Focus(UI_FocusKind.On)
         {
           UI_Key panel_key = rd_ui_key_from_panel(panel);
           panel_box = ui_build_box_from_key(UI_BoxFlag_MouseClickable|
@@ -7447,7 +7447,7 @@ rd_window_frame(RD_Window *ws)
         //- rjf: build selected tab view
         //
         UI_Parent(panel_box)
-          UI_Focus(panel_is_focused ? UI_FocusKind_Null : UI_FocusKind_Off)
+          UI_Focus(panel_is_focused ? UI_FocusKind.Null : UI_FocusKind.Off)
           UI_WidthFill
         {
           //- rjf: push interaction registers, fill with per-view states
@@ -7508,7 +7508,7 @@ rd_window_frame(RD_Window *ws)
         //////////////////////////
         //- rjf: take events to automatically start/end filtering, if applicable
         //
-        UI_Focus(UI_FocusKind_On)
+        UI_Focus(UI_FocusKind.On)
         {
           RD_View *view = rd_selected_tab_from_panel(panel);
           if(ui_is_focus_active() && view->spec->flags & RD_ViewRuleInfoFlag_TypingAutomaticallyFilters && !view->is_filtering)
@@ -7521,7 +7521,7 @@ rd_window_frame(RD_Window *ws)
                 rd_cmd(RD_CmdKind_Filter);
                 rd_cmd(RD_CmdKind_Paste);
               }
-              else if(evt->string.size != 0 && evt->kind == UI_EventKind_Text)
+              else if(evt->string.size != 0 && evt->kind == UI_EventKind.Text)
               {
                 ui_eat_event(evt);
                 rd_cmd(RD_CmdKind_Filter);
@@ -7529,7 +7529,7 @@ rd_window_frame(RD_Window *ws)
               }
             }
           }
-          if(view->spec->flags & RD_ViewRuleInfoFlag_CanFilter && (view->query_string_size != 0 || view->is_filtering) && ui_is_focus_active() && ui_slot_press(UI_EventActionSlot_Cancel))
+          if(view->spec->flags & RD_ViewRuleInfoFlag_CanFilter && (view->query_string_size != 0 || view->is_filtering) && ui_is_focus_active() && ui_slot_press(UI_EventActionSlot.Cancel))
           {
             rd_cmd(RD_CmdKind_ClearFilter, .view = rd_handle_from_view(view));
           }
@@ -7547,7 +7547,7 @@ rd_window_frame(RD_Window *ws)
         //////////////////////////
         //- rjf: build tab bar
         //
-        UI_Focus(UI_FocusKind_Off)
+        UI_Focus(UI_FocusKind.Off)
         {
           Temp scratch = scratch_begin(0, 0);
           
@@ -7665,7 +7665,7 @@ rd_window_frame(RD_Window *ws)
                     {
                       UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
                         RD_Font(RD_FontSlot_Icons)
-                        UI_TextAlignment(UI_TextAlign_Center)
+                        UI_TextAlignment(UI_TextAlign.Center)
                         UI_PrefWidth(ui_em(1.75f, 1.f))
                         ui_label(rd_icon_kind_text_table[icon_kind]);
                     }
@@ -7675,7 +7675,7 @@ rd_window_frame(RD_Window *ws)
                       ui_box_equip_display_fancy_strings(name_box, &title_fstrs);
                     }
                   }
-                  UI_PrefWidth(ui_em(2.35f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
+                  UI_PrefWidth(ui_em(2.35f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
                     RD_Font(RD_FontSlot_Icons)
                     UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons)*0.75f)
                     UI_Flags(UI_BoxFlag_DrawTextWeak)
@@ -7736,7 +7736,7 @@ rd_window_frame(RD_Window *ws)
             }
             
             // rjf: build add-new-tab button
-            UI_TextAlignment(UI_TextAlign_Center)
+            UI_TextAlignment(UI_TextAlign.Center)
               UI_PrefWidth(ui_px(tab_bar_vheight, 1.f))
               UI_PrefHeight(ui_px(tab_bar_vheight, 1.f))
               UI_Column
@@ -7908,7 +7908,7 @@ rd_window_frame(RD_Window *ws)
         {
           for(UI_Event *evt = 0; ui_next_event(&evt);)
           {
-            if(evt->kind == UI_EventKind_FileDrop && contains_2f32(content_rect, evt->pos))
+            if(evt->kind == UI_EventKind.FileDrop && contains_2f32(content_rect, evt->pos))
             {
               B32 need_drop_completion = 0;
               arena_clear(ws->drop_completion_arena);
@@ -8023,7 +8023,7 @@ rd_window_frame(RD_Window *ws)
     ////////////////////////////
     //- rjf: drag/drop cancelling
     //
-    if(rd_drag_is_active() && ui_slot_press(UI_EventActionSlot_Cancel))
+    if(rd_drag_is_active() && ui_slot_press(UI_EventActionSlot.Cancel))
     {
       rd_drag_kill();
       ui_kill_action();
@@ -8034,7 +8034,7 @@ rd_window_frame(RD_Window *ws)
     //
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
+      if(evt->kind == UI_EventKind.Scroll && evt->modifiers & OS_Modifier_Ctrl)
       {
         ui_eat_event(evt);
         if(evt->delta_2f32.y < 0)
@@ -8114,7 +8114,7 @@ rd_window_frame(RD_Window *ws)
   //////////////////////////////
   //- rjf: hover eval cancelling
   //
-  if(ws->hover_eval_string.size != 0 && ui_slot_press(UI_EventActionSlot_Cancel))
+  if(ws->hover_eval_string.size != 0 && ui_slot_press(UI_EventActionSlot.Cancel))
   {
     MemoryZeroStruct(&ws->hover_eval_string);
     arena_clear(ws->hover_eval_arena);
@@ -8223,7 +8223,7 @@ rd_window_frame(RD_Window *ws)
       {
         // rjf: main rectangle
         {
-          R_Rect2DInst *inst = dr_rect(pad_2f32(box->rect, 1), box->palette->colors[UI_ColorCode_Background], 0, 0, 1.f);
+          R_Rect2DInst *inst = dr_rect(pad_2f32(box->rect, 1), box->palette->colors[UI_ColorCode.Background], 0, 0, 1.f);
           MemoryCopyArray(inst->corner_radii, box->corner_radii);
         }
         
@@ -8428,14 +8428,14 @@ rd_window_frame(RD_Window *ws)
           // rjf: draw overlay
           if(b->flags & UI_BoxFlag_DrawOverlay)
           {
-            R_Rect2DInst *inst = dr_rect(b->rect, b->palette->colors[UI_ColorCode_Overlay], 0, 0, 1.f);
+            R_Rect2DInst *inst = dr_rect(b->rect, b->palette->colors[UI_ColorCode.Overlay], 0, 0, 1.f);
             MemoryCopyArray(inst->corner_radii, b->corner_radii);
           }
           
           // rjf: draw border
           if(b->flags & UI_BoxFlag_DrawBorder)
           {
-            R_Rect2DInst *inst = dr_rect(pad_2f32(b->rect, 1.f), b->palette->colors[UI_ColorCode_Border], 0, 1.f, 1.f);
+            R_Rect2DInst *inst = dr_rect(pad_2f32(b->rect, 1.f), b->palette->colors[UI_ColorCode.Border], 0, 1.f, 1.f);
             MemoryCopyArray(inst->corner_radii, b->corner_radii);
             
             // rjf: hover effect
@@ -8462,19 +8462,19 @@ rd_window_frame(RD_Window *ws)
             F32 softness = 0.5f;
             if(b->flags & UI_BoxFlag_DrawSideTop)
             {
-              dr_rect(r2f32p(r.x0, r.y0-half_thickness, r.x1, r.y0+half_thickness), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
+              dr_rect(r2f32p(r.x0, r.y0-half_thickness, r.x1, r.y0+half_thickness), b->palette->colors[UI_ColorCode.Border], 0, 0, softness);
             }
             if(b->flags & UI_BoxFlag_DrawSideBottom)
             {
-              dr_rect(r2f32p(r.x0, r.y1-half_thickness, r.x1, r.y1+half_thickness), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
+              dr_rect(r2f32p(r.x0, r.y1-half_thickness, r.x1, r.y1+half_thickness), b->palette->colors[UI_ColorCode.Border], 0, 0, softness);
             }
             if(b->flags & UI_BoxFlag_DrawSideLeft)
             {
-              dr_rect(r2f32p(r.x0-half_thickness, r.y0, r.x0+half_thickness, r.y1), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
+              dr_rect(r2f32p(r.x0-half_thickness, r.y0, r.x0+half_thickness, r.y1), b->palette->colors[UI_ColorCode.Border], 0, 0, softness);
             }
             if(b->flags & UI_BoxFlag_DrawSideRight)
             {
-              dr_rect(r2f32p(r.x1-half_thickness, r.y0, r.x1+half_thickness, r.y1), b->palette->colors[UI_ColorCode_Border], 0, 0, softness);
+              dr_rect(r2f32p(r.x1-half_thickness, r.y0, r.x1+half_thickness, r.y1), b->palette->colors[UI_ColorCode.Border], 0, 0, softness);
             }
           }
           
@@ -9763,9 +9763,9 @@ rd_set_hover_eval(Vec2F32 pos, String8 file_path, TxtPt pt, U64 vaddr, String8 s
 {
   RD_Window *window = rd_window_from_handle(rd_regs()->window);
   if(window->hover_eval_last_frame_idx+1 < rd_state->frame_index &&
-     ui_key_match(ui_active_key(UI_MouseButtonKind_Left), ui_key_zero()) &&
-     ui_key_match(ui_active_key(UI_MouseButtonKind_Middle), ui_key_zero()) &&
-     ui_key_match(ui_active_key(UI_MouseButtonKind_Right), ui_key_zero()))
+     ui_key_match(ui_active_key(UI_MouseButtonKind.Left), ui_key_zero()) &&
+     ui_key_match(ui_active_key(UI_MouseButtonKind.Middle), ui_key_zero()) &&
+     ui_key_match(ui_active_key(UI_MouseButtonKind.Right), ui_key_zero()))
   {
     B32 is_new_string = !str8_match(window->hover_eval_string, string, 0);
     if(is_new_string)
@@ -15850,17 +15850,17 @@ rd_frame(void)
             if(os_event != 0 && ws != 0)
             {
               UI_Event ui_event = zero_struct;
-              UI_EventKind kind = UI_EventKind_Null;
+              UI_EventKind kind = UI_EventKind.Null;
               {
                 switch(os_event->kind)
                 {
                   default:{}break;
-                  case OS_EventKind_Press:     {kind = UI_EventKind_Press;}break;
-                  case OS_EventKind_Release:   {kind = UI_EventKind_Release;}break;
-                  case OS_EventKind_MouseMove: {kind = UI_EventKind_MouseMove;}break;
-                  case OS_EventKind_Text:      {kind = UI_EventKind_Text;}break;
-                  case OS_EventKind_Scroll:    {kind = UI_EventKind_Scroll;}break;
-                  case OS_EventKind_FileDrop:  {kind = UI_EventKind_FileDrop;}break;
+                  case OS_EventKind_Press:     {kind = UI_EventKind.Press;}break;
+                  case OS_EventKind_Release:   {kind = UI_EventKind.Release;}break;
+                  case OS_EventKind_MouseMove: {kind = UI_EventKind.MouseMove;}break;
+                  case OS_EventKind_Text:      {kind = UI_EventKind.Text;}break;
+                  case OS_EventKind_Scroll:    {kind = UI_EventKind.Scroll;}break;
+                  case OS_EventKind_FileDrop:  {kind = UI_EventKind.FileDrop;}break;
                 }
               }
               ui_event.kind         = kind;
@@ -15968,24 +15968,24 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Press;
-            evt.slot       = UI_EventActionSlot_Edit;
+            evt.kind       = UI_EventKind.Press;
+            evt.slot       = UI_EventActionSlot.Edit;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
           case RD_CmdKind_Accept:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Press;
-            evt.slot       = UI_EventActionSlot_Accept;
+            evt.kind       = UI_EventKind.Press;
+            evt.slot       = UI_EventActionSlot.Accept;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
           case RD_CmdKind_Cancel:
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Press;
-            evt.slot       = UI_EventActionSlot_Cancel;
+            evt.kind       = UI_EventKind.Press;
+            evt.slot       = UI_EventActionSlot.Cancel;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
           
@@ -15999,9 +15999,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16009,9 +16009,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16019,9 +16019,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16029,9 +16029,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16039,9 +16039,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16049,9 +16049,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16059,9 +16059,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16069,9 +16069,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16079,9 +16079,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16089,9 +16089,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16099,9 +16099,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16109,9 +16109,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16119,8 +16119,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Page;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Page;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16128,8 +16128,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Page;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Page;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16137,8 +16137,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Whole;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Whole;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16146,8 +16146,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Whole;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Whole;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16155,9 +16155,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16165,9 +16165,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16175,9 +16175,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16185,9 +16185,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16195,9 +16195,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Page;
+            evt.delta_unit = UI_EventDeltaUnit.Page;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16205,9 +16205,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Page;
+            evt.delta_unit = UI_EventDeltaUnit.Page;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16215,9 +16215,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Whole;
+            evt.delta_unit = UI_EventDeltaUnit.Whole;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16225,9 +16225,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Whole;
+            evt.delta_unit = UI_EventDeltaUnit.Whole;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16235,9 +16235,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_Reorder;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, -1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16245,9 +16245,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_Reorder;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+0, +1);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16255,8 +16255,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Line;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Line;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16264,8 +16264,8 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
-            evt.delta_unit = UI_EventDeltaUnit_Line;
+            evt.kind       = UI_EventKind.Navigate;
+            evt.delta_unit = UI_EventDeltaUnit.Line;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16273,9 +16273,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Line;
+            evt.delta_unit = UI_EventDeltaUnit.Line;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16283,9 +16283,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Navigate;
+            evt.kind       = UI_EventKind.Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
-            evt.delta_unit = UI_EventDeltaUnit_Line;
+            evt.delta_unit = UI_EventDeltaUnit.Line;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16293,14 +16293,14 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt1 = zero_struct;
-            evt1.kind       = UI_EventKind_Navigate;
-            evt1.delta_unit = UI_EventDeltaUnit_Whole;
+            evt1.kind       = UI_EventKind.Navigate;
+            evt1.delta_unit = UI_EventDeltaUnit.Whole;
             evt1.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt1);
             UI_Event evt2 = zero_struct;
-            evt2.kind       = UI_EventKind_Navigate;
+            evt2.kind       = UI_EventKind.Navigate;
             evt2.flags      = UI_EventFlag_KeepMark;
-            evt2.delta_unit = UI_EventDeltaUnit_Whole;
+            evt2.delta_unit = UI_EventDeltaUnit.Whole;
             evt2.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt2);
           }break;
@@ -16308,9 +16308,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Edit;
+            evt.kind       = UI_EventKind.Edit;
             evt.flags      = UI_EventFlag_Delete;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16318,9 +16318,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Edit;
+            evt.kind       = UI_EventKind.Edit;
             evt.flags      = UI_EventFlag_Delete;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(+1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16328,9 +16328,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Edit;
+            evt.kind       = UI_EventKind.Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
-            evt.delta_unit = UI_EventDeltaUnit_Char;
+            evt.delta_unit = UI_EventDeltaUnit.Char;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16338,9 +16338,9 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind       = UI_EventKind_Edit;
+            evt.kind       = UI_EventKind.Edit;
             evt.flags      = UI_EventFlag_Delete;
-            evt.delta_unit = UI_EventDeltaUnit_Word;
+            evt.delta_unit = UI_EventDeltaUnit.Word;
             evt.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16348,7 +16348,7 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind  = UI_EventKind_Edit;
+            evt.kind  = UI_EventKind.Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_KeepMark;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16356,7 +16356,7 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind  = UI_EventKind_Edit;
+            evt.kind  = UI_EventKind.Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_Delete;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16364,7 +16364,7 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind   = UI_EventKind_Text;
+            evt.kind   = UI_EventKind.Text;
             evt.string = os_get_clipboard_text(scratch.arena);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;
@@ -16372,7 +16372,7 @@ rd_frame(void)
           {
             RD_Window *ws = rd_window_from_handle(rd_regs()->window);
             UI_Event evt = zero_struct;
-            evt.kind   = UI_EventKind_Text;
+            evt.kind   = UI_EventKind.Text;
             evt.string = rd_regs()->string;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
           }break;

@@ -7,41 +7,38 @@
 ////////////////////////////////
 //~ rjf: Icon Info
 
-typedef enum UI_IconKind
+enum UI_IconKind
 {
-  UI_IconKind_Null,
-  UI_IconKind_RightArrow,
-  UI_IconKind_DownArrow,
-  UI_IconKind_LeftArrow,
-  UI_IconKind_UpArrow,
-  UI_IconKind_RightCaret,
-  UI_IconKind_DownCaret,
-  UI_IconKind_LeftCaret,
-  UI_IconKind_UpCaret,
-  UI_IconKind_CheckHollow,
-  UI_IconKind_CheckFilled,
-  UI_IconKind_COUNT
+  Null,
+  RightArrow,
+  DownArrow,
+  LeftArrow,
+  UpArrow,
+  RightCaret,
+  DownCaret,
+  LeftCaret,
+  UpCaret,
+  CheckHollow,
+  CheckFilled,
+  COUNT
 }
-UI_IconKind;
 
-typedef struct UI_IconInfo UI_IconInfo;
 struct UI_IconInfo
 {
   FNT_Tag icon_font;
-  String8 icon_kind_text_map[UI_IconKind_COUNT];
-};
+  String8[UI_IconKind.COUNT] icon_kind_text_map;
+}
 
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
 
-typedef enum UI_MouseButtonKind
+enum UI_MouseButtonKind
 {
-  UI_MouseButtonKind_Left,
-  UI_MouseButtonKind_Middle,
-  UI_MouseButtonKind_Right,
-  UI_MouseButtonKind_COUNT
+  Left,
+  Middle,
+  Right,
+  COUNT
 }
-UI_MouseButtonKind;
 
 ////////////////////////////////
 //~ rjf: Codepath Permissions
@@ -65,46 +62,43 @@ enum
 ////////////////////////////////
 //~ rjf: Focus Types
 
-typedef enum UI_FocusKind
+enum UI_FocusKind
 {
-  UI_FocusKind_Null,
-  UI_FocusKind_Off,
-  UI_FocusKind_On,
-  UI_FocusKind_Root,
-  UI_FocusKind_COUNT
+  Null,
+  Off,
+  On,
+  Root,
+  COUNT
 }
-UI_FocusKind;
 
 ////////////////////////////////
 //~ rjf: Events
 
 // TODO(rjf): clean all this up
 
-typedef enum UI_EventKind
+enum UI_EventKind
 {
-  UI_EventKind_Null,
-  UI_EventKind_Press,
-  UI_EventKind_Release,
-  UI_EventKind_Text,
-  UI_EventKind_Navigate,
-  UI_EventKind_Edit,
-  UI_EventKind_MouseMove,
-  UI_EventKind_Scroll,
-  UI_EventKind_AutocompleteHint,
-  UI_EventKind_FileDrop,
-  UI_EventKind_COUNT
+  Null,
+  Press,
+  Release,
+  Text,
+  Navigate,
+  Edit,
+  MouseMove,
+  Scroll,
+  AutocompleteHint,
+  FileDrop,
+  COUNT
 }
-UI_EventKind;
 
-typedef enum UI_EventActionSlot
+enum UI_EventActionSlot
 {
-  UI_EventActionSlot_Null,
-  UI_EventActionSlot_Accept,
-  UI_EventActionSlot_Cancel,
-  UI_EventActionSlot_Edit,
-  UI_EventActionSlot_COUNT
+  Null,
+  Accept,
+  Cancel,
+  Edit,
+  COUNT
 }
-UI_EventActionSlot;
 
 typedef U32 UI_EventFlags;
 enum
@@ -120,19 +114,17 @@ enum
   UI_EventFlag_Reorder             = (1<<8),
 };
 
-typedef enum UI_EventDeltaUnit
+enum UI_EventDeltaUnit
 {
-  UI_EventDeltaUnit_Null,
-  UI_EventDeltaUnit_Char,
-  UI_EventDeltaUnit_Word,
-  UI_EventDeltaUnit_Line,
-  UI_EventDeltaUnit_Page,
-  UI_EventDeltaUnit_Whole,
-  UI_EventDeltaUnit_COUNT
+  Null,
+  Char,
+  Word,
+  Line,
+  Page,
+  Whole,
+  COUNT
 }
-UI_EventDeltaUnit;
 
-typedef struct UI_Event UI_Event;
 struct UI_Event
 {
   UI_EventKind kind;
@@ -147,23 +139,21 @@ struct UI_Event
   Vec2F32 delta_2f32;
   Vec2S32 delta_2s32;
   U64 timestamp_us;
-};
+}
 
-typedef struct UI_EventNode UI_EventNode;
 struct UI_EventNode
 {
-  UI_EventNode *next;
-  UI_EventNode *prev;
+  UI_EventNode* next;
+  UI_EventNode* prev;
   UI_Event v;
-};
+}
 
-typedef struct UI_EventList UI_EventList;
 struct UI_EventList
 {
-  UI_EventNode *first;
-  UI_EventNode *last;
+  UI_EventNode* first;
+  UI_EventNode* last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Textual Operations
@@ -175,7 +165,6 @@ enum
   UI_TxtOpFlag_Copy    = (1<<1),
 };
 
-typedef struct UI_TxtOp UI_TxtOp;
 struct UI_TxtOp
 {
   UI_TxtOpFlags flags;
@@ -184,61 +173,56 @@ struct UI_TxtOp
   TxtRng range;
   TxtPt cursor;
   TxtPt mark;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Keys
 
-typedef struct UI_Key UI_Key;
 struct UI_Key
 {
-  U64 u64[1];
-};
+  U64[1] u64;
+}
 
 ////////////////////////////////
 //~ rjf: Sizes
 
-typedef enum UI_SizeKind
+enum UI_SizeKind
 {
-  UI_SizeKind_Null,
-  UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
-  UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
-  UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
-  UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
+  Null,
+  Pixels,      // size is computed via a preferred pixel value
+  TextContent, // size is computed via the dimensions of box's rendered string
+  ParentPct,   // size is computed via a well-determined parent or grandparent size
+  ChildrenSum, // size is computed via summing well-determined sizes of children
 }
-UI_SizeKind;
 
-typedef struct UI_Size UI_Size;
 struct UI_Size
 {
   UI_SizeKind kind;
   F32 value;
   F32 strictness;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Palettes
 
-typedef enum UI_ColorCode
+enum UI_ColorCode
 {
-  UI_ColorCode_Null,
-  UI_ColorCode_Background,
-  UI_ColorCode_Text,
-  UI_ColorCode_TextWeak,
-  UI_ColorCode_Border,
-  UI_ColorCode_Overlay,
-  UI_ColorCode_Cursor,
-  UI_ColorCode_Selection,
-  UI_ColorCode_COUNT
+  Null,
+  Background,
+  Text,
+  TextWeak,
+  Border,
+  Overlay,
+  Cursor,
+  Selection,
+  COUNT
 }
-UI_ColorCode;
 
-typedef struct UI_Palette UI_Palette;
 struct UI_Palette
 {
   union
   {
-    Vec4F32 colors[UI_ColorCode_COUNT];
+    Vec4F32[UI_ColorCode.COUNT] colors;
     struct
     {
       Vec4F32 null;
@@ -249,17 +233,16 @@ struct UI_Palette
       Vec4F32 overlay;
       Vec4F32 cursor;
       Vec4F32 selection;
-    };
-  };
-};
+    }
+  }
+}
 
-typedef struct UI_WidgetPaletteInfo UI_WidgetPaletteInfo;
 struct UI_WidgetPaletteInfo
 {
-  UI_Palette *tooltip_palette;
-  UI_Palette *ctx_menu_palette;
-  UI_Palette *scrollbar_palette;
-};
+  UI_Palette* tooltip_palette;
+  UI_Palette* ctx_menu_palette;
+  UI_Palette* scrollbar_palette;
+}
 
 ////////////////////////////////
 //~ rjf: Animation Info
@@ -276,23 +259,20 @@ enum
   UI_AnimationInfoFlag_All = 0xffffffff,
 };
 
-typedef struct UI_AnimationInfo UI_AnimationInfo;
 struct UI_AnimationInfo
 {
   UI_AnimationInfoFlags flags;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scroll Positions
 
-typedef struct UI_ScrollPt UI_ScrollPt;
 struct UI_ScrollPt
 {
   S64 idx;
   F32 off;
-};
+}
 
-typedef union UI_ScrollPt2 UI_ScrollPt2;
 union UI_ScrollPt2
 {
   UI_ScrollPt v[2];
@@ -300,20 +280,19 @@ union UI_ScrollPt2
   {
     UI_ScrollPt x;
     UI_ScrollPt y;
-  };
-};
+  }
+}
 
 ////////////////////////////////
 //~ rjf: Box Types
 
-typedef enum UI_TextAlign
+enum UI_TextAlign
 {
-  UI_TextAlign_Left,
-  UI_TextAlign_Center,
-  UI_TextAlign_Right,
-  UI_TextAlign_COUNT
+  Left,
+  Center,
+  Right,
+  COUNT
 }
-UI_TextAlign;
 
 struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
@@ -391,19 +370,18 @@ typedef U64 UI_BoxFlags;
 # define UI_BoxFlag_DisableFocusEffects (UI_BoxFlag_DisableFocusBorder|UI_BoxFlag_DisableFocusOverlay)
 //}
 
-typedef struct UI_Box UI_Box;
 struct UI_Box
 {
   //- rjf: persistent links
-  UI_Box *hash_next;
-  UI_Box *hash_prev;
+  UI_Box* hash_next;
+  UI_Box* hash_prev;
   
   //- rjf: per-build links/data
-  UI_Box *first;
-  UI_Box *last;
-  UI_Box *next;
-  UI_Box *prev;
-  UI_Box *parent;
+  UI_Box* first;
+  UI_Box* last;
+  UI_Box* next;
+  UI_Box* prev;
+  UI_Box* parent;
   U64 child_count;
   
   //- rjf: per-build equipment
@@ -418,15 +396,15 @@ struct UI_Box
   OS_Cursor hover_cursor;
   U32 fastpath_codepoint;
   UI_Key group_key;
-  DR_Bucket *draw_bucket;
+  DR_Bucket* draw_bucket;
   UI_BoxCustomDrawFunctionType *custom_draw;
-  void *custom_draw_user_data;
-  UI_Palette *palette;
+  void* custom_draw_user_data;
+  UI_Palette* palette;
   FNT_Tag font;
   F32 font_size;
   F32 tab_size;
   FNT_RasterFlags text_raster_flags;
-  F32 corner_radii[Corner_COUNT];
+  F32[Corner_COUNT] corner_radii;
   F32 blur_size;
   F32 transparency;
   F32 squish;
@@ -456,30 +434,27 @@ struct UI_Box
   UI_Key default_nav_focus_active_key;
   UI_Key default_nav_focus_next_hot_key;
   UI_Key default_nav_focus_next_active_key;
-};
+}
 
-typedef struct UI_BoxRec UI_BoxRec;
 struct UI_BoxRec
 {
-  UI_Box *next;
+  UI_Box* next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
-typedef struct UI_BoxNode UI_BoxNode;
 struct UI_BoxNode
 {
-  UI_BoxNode *next;
-  UI_Box *box;
-};
+  UI_BoxNode* next;
+  UI_Box* box;
+}
 
-typedef struct UI_BoxList UI_BoxList;
 struct UI_BoxList
 {
-  UI_BoxNode *first;
-  UI_BoxNode *last;
+  UI_BoxNode* first;
+  UI_BoxNode* last;
   U64 count;
-};
+}
 
 typedef U32 UI_SignalFlags;
 enum
@@ -543,14 +518,13 @@ enum
   UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
 };
 
-typedef struct UI_Signal UI_Signal;
 struct UI_Signal
 {
-  UI_Box *box;
+  UI_Box* box;
   OS_Modifiers event_flags;
   Vec2S16 scroll;
   UI_SignalFlags f;
-};
+}
 
 #define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
 #define ui_clicked(s)        !!((s).f&UI_SignalFlag_Clicked)
@@ -564,44 +538,40 @@ struct UI_Signal
 #define ui_mouse_over(s)     !!((s).f&UI_SignalFlag_MouseOver)
 #define ui_committed(s)      !!((s).f&UI_SignalFlag_Commit)
 
-typedef struct UI_Nav UI_Nav;
 struct UI_Nav
 {
   B32 moved;
   Vec2S64 new_p;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Animation State Types
 
-typedef struct UI_AnimParams UI_AnimParams;
 struct UI_AnimParams
 {
   F32 initial;
   F32 target;
   F32 rate;
   F32 epsilon;
-};
+}
 
-typedef struct UI_AnimNode UI_AnimNode;
 struct UI_AnimNode
 {
-  UI_AnimNode *slot_next;
-  UI_AnimNode *slot_prev;
-  UI_AnimNode *lru_next;
-  UI_AnimNode *lru_prev;
+  UI_AnimNode* slot_next;
+  UI_AnimNode* slot_prev;
+  UI_AnimNode* lru_next;
+  UI_AnimNode* lru_prev;
   U64 first_touched_build_index;
   U64 last_touched_build_index;
   UI_Key key;
   UI_AnimParams params;
   F32 current;
-};
+}
 
-typedef struct UI_AnimSlot UI_AnimSlot;
 struct UI_AnimSlot
 {
-  UI_AnimNode *first;
-  UI_AnimNode *last;
+  UI_AnimNode* first;
+  UI_AnimNode* last;
 };
 
 ////////////////////////////////
@@ -612,45 +582,43 @@ struct UI_AnimSlot
 ////////////////////////////////
 //~ rjf: State Types
 
-typedef struct UI_BoxHashSlot UI_BoxHashSlot;
 struct UI_BoxHashSlot
 {
-  UI_Box *hash_first;
-  UI_Box *hash_last;
-};
+  UI_Box* hash_first;
+  UI_Box* hash_last;
+}
 
-typedef struct UI_State UI_State;
 struct UI_State
 {
   //- rjf: main arena
-  Arena *arena;
+  Arena* arena;
   
   //- rjf: fixed keys
   UI_Key external_key;
   
   //- rjf: build arenas
-  Arena *build_arenas[2];
+  Arena*[2] build_arenas;
   U64 build_index;
   
   //- rjf: box cache
-  UI_Box *first_free_box;
+  UI_Box* first_free_box;
   U64 box_table_size;
   UI_BoxHashSlot *box_table;
   
   //- rjf: anim cache
-  UI_AnimNode *free_anim_node;
-  UI_AnimNode *lru_anim_node;
-  UI_AnimNode *mru_anim_node;
+  UI_AnimNode* free_anim_node;
+  UI_AnimNode* lru_anim_node;
+  UI_AnimNode* mru_anim_node;
   U64 anim_slots_count;
-  UI_AnimSlot *anim_slots;
+  UI_AnimSlot* anim_slots;
   
   //- rjf: build state machine state
   B32 is_in_open_ctx_menu;
   
   //- rjf: build phase output
-  UI_Box *root;
-  UI_Box *tooltip_root;
-  UI_Box *ctx_menu_root;
+  UI_Box* root;
+  UI_Box* tooltip_root;
+  UI_Box* ctx_menu_root;
   UI_Key default_nav_root_key;
   U64 build_box_count;
   U64 last_build_box_count;
@@ -662,23 +630,23 @@ struct UI_State
   UI_WidgetPaletteInfo widget_palette_info;
   UI_AnimationInfo animation_info;
   OS_Handle window;
-  UI_EventList *events;
+  UI_EventList* events;
   Vec2F32 mouse;
   F32 animation_dt;
   F32 default_animation_rate;
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
-  UI_Key active_box_key[UI_MouseButtonKind_COUNT];
+  UI_Key[UI_MouseButtonKind.COUNT] active_box_key;
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  U64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
-  UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
+  U64[UI_MouseButtonKind.COUNT][3] press_timestamp_history_us;
+  UI_Key[UI_MouseButtonKind.COUNT][3] press_key_history;
+  Vec2F32[UI_MouseButtonKind.COUNT][3] press_pos_history;
   Vec2F32 drag_start_mouse;
-  Arena *drag_state_arena;
+  Arena* drag_state_arena;
   String8 drag_state_data;
-  Arena *string_hover_arena;
+  Arena* string_hover_arena;
   String8 string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
   U64 string_hover_begin_us;
@@ -703,7 +671,7 @@ struct UI_State
   //- rjf: build phase stacks
   UI_DeclStackNils;
   UI_DeclStacks;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions
@@ -735,11 +703,11 @@ internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1
 //~ rjf: Size Type Functions
 
 internal UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
-#define ui_px(value, strictness)         ui_size(UI_SizeKind_Pixels, value, strictness)
-#define ui_em(value, strictness)         ui_size(UI_SizeKind_Pixels, (value) * ui_top_font_size(), strictness)
-#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind_TextContent, padding, strictness)
-#define ui_pct(value, strictness)        ui_size(UI_SizeKind_ParentPct, value, strictness)
-#define ui_children_sum(strictness)      ui_size(UI_SizeKind_ChildrenSum, 0.f, strictness)
+#define ui_px(value, strictness)         ui_size(UI_SizeKind.Pixels, value, strictness)
+#define ui_em(value, strictness)         ui_size(UI_SizeKind.Pixels, (value) * ui_top_font_size(), strictness)
+#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind.TextContent, padding, strictness)
+#define ui_pct(value, strictness)        ui_size(UI_SizeKind.ParentPct, value, strictness)
+#define ui_children_sum(strictness)      ui_size(UI_SizeKind.ChildrenSum, 0.f, strictness)
 
 ////////////////////////////////
 //~ rjf: Color Scheme Type Functions

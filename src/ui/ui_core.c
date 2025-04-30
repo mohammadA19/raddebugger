@@ -175,18 +175,18 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   switch(event->delta_unit)
   {
     default:{}break;
-    case UI_EventDeltaUnit_Char:
+    case UI_EventDeltaUnit.Char:
     {
       // TODO(rjf): this should account for multi-byte characters in UTF-8... for now, just assume ASCII and
       // no-op
     }break;
-    case UI_EventDeltaUnit_Word:
+    case UI_EventDeltaUnit.Word:
     {
       delta.x = (S32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
-    case UI_EventDeltaUnit_Line:
-    case UI_EventDeltaUnit_Whole:
-    case UI_EventDeltaUnit_Page:
+    case UI_EventDeltaUnit.Line:
+    case UI_EventDeltaUnit.Whole:
+    case UI_EventDeltaUnit.Page:
     {
       S64 first_nonwhitespace_column = 1;
       for(U64 idx = 0; idx < string.size; idx += 1)
@@ -537,44 +537,44 @@ ui_next_event(UI_Event **ev)
     {
       B32 good = 1;
       if(!(perms & UI_PermissionFlag_ClicksLeft) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_LeftMouseButton))
       {
         good = 0;
       }
       if(!(perms & UI_PermissionFlag_ClicksMiddle) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_MiddleMouseButton))
       {
         good = 0;
       }
       if(!(perms & UI_PermissionFlag_ClicksRight) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_RightMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollX) && (n->v.kind == UI_EventKind_Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers & OS_Modifier_Shift))
+      if(!(perms & UI_PermissionFlag_ScrollX) && (n->v.kind == UI_EventKind.Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers & OS_Modifier_Shift))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollY) && (n->v.kind == UI_EventKind_Scroll) && n->v.delta_2f32.y != 0 && !(n->v.modifiers & OS_Modifier_Shift))
+      if(!(perms & UI_PermissionFlag_ScrollY) && (n->v.kind == UI_EventKind.Scroll) && n->v.delta_2f32.y != 0 && !(n->v.modifiers & OS_Modifier_Shift))
       {
         good = 0;
       }
       if(!(perms & UI_PermissionFlag_Keyboard) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key != OS_Key_LeftMouseButton &&
           n->v.key != OS_Key_MiddleMouseButton &&
           n->v.key != OS_Key_RightMouseButton))
       {
         good = 0;
       }
-      else if(!(perms & UI_PermissionFlag_Text) && (n->v.kind == UI_EventKind_Text))
+      else if(!(perms & UI_PermissionFlag_Text) && (n->v.kind == UI_EventKind.Text))
       {
         good = 0;
       }
@@ -607,7 +607,7 @@ ui_key_press(OS_Modifiers mods, OS_Key key)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->key == key && evt->modifiers == mods)
+    if(evt->kind == UI_EventKind.Press && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -623,7 +623,7 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Release && evt->key == key && evt->modifiers == mods)
+    if(evt->kind == UI_EventKind.Release && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -641,7 +641,7 @@ ui_text(U32 character)
   String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Text && str8_match(character_text, evt->string, 0))
+    if(evt->kind == UI_EventKind.Text && str8_match(character_text, evt->string, 0))
     {
       result = 1;
       ui_eat_event(evt);
@@ -658,7 +658,7 @@ ui_slot_press(UI_EventActionSlot slot)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->slot == slot)
+    if(evt->kind == UI_EventKind.Press && evt->slot == slot)
     {
       result = 1;
       ui_eat_event(evt);
@@ -829,7 +829,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: detect mouse-moves
   for(UI_EventNode *n = events->first; n != 0; n = n->next)
   {
-    if(n->v.kind == UI_EventKind_MouseMove)
+    if(n->v.kind == UI_EventKind.MouseMove)
     {
       ui_state->last_time_mousemoved_us = os_now_microseconds();
     }
@@ -856,8 +856,8 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     ui_state->animation_dt = animation_dt;
     MemoryZeroStruct(&ui_state->icon_info);
     ui_state->icon_info.icon_font = icon_info->icon_font;
-    for(UI_IconKind icon_kind = UI_IconKind_Null;
-        icon_kind < UI_IconKind_COUNT;
+    for(UI_IconKind icon_kind = UI_IconKind.Null;
+        icon_kind < UI_IconKind.COUNT;
         icon_kind = (UI_IconKind)(icon_kind + 1))
     {
       ui_state->icon_info.icon_kind_text_map[icon_kind] = push_str8_copy(ui_build_arena(), icon_info->icon_kind_text_map[icon_kind]);
@@ -1049,7 +1049,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
         //- rjf: some child has the active focus -> accept escape keys to pop from the active key stack
         if(!ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
         {
-          for(;ui_slot_press(UI_EventActionSlot_Cancel);)
+          for(;ui_slot_press(UI_EventActionSlot.Cancel);)
           {
             UI_Box *prev_focus_root = nav_root;
             for(UI_Box *focus_root = ui_box_from_key(nav_root->default_nav_focus_active_key);
@@ -1117,7 +1117,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     }
     Vec2F32 anchor = add_2f32(ui_state->ctx_menu_anchor_box_last_pos, ui_state->ctx_menu_anchor_off);
     UI_FixedX(anchor.x) UI_FixedY(anchor.y) UI_PrefWidth(ui_children_sum(1.f)) UI_PrefHeight(ui_children_sum(1.f))
-      UI_Focus(UI_FocusKind_On)
+      UI_Focus(UI_FocusKind.On)
       UI_Squish(0.25f-ui_state->ctx_menu_open_t*0.25f)
       UI_Transparency(1-ui_state->ctx_menu_open_t)
     {
@@ -1177,7 +1177,7 @@ ui_end_build(void)
   ProfBeginFunction();
   
   //- rjf: escape -> close context menu
-  if(ui_state->ctx_menu_open != 0 && ui_slot_press(UI_EventActionSlot_Cancel))
+  if(ui_state->ctx_menu_open != 0 && ui_slot_press(UI_EventActionSlot.Cancel))
   {
     ui_ctx_menu_close();
   }
@@ -1241,9 +1241,9 @@ ui_end_build(void)
   UI_Box *floating_roots[] = {ui_state->tooltip_root, ui_state->ctx_menu_root};
   B32 force_contain[] =
   {
-    (ui_key_match(ui_active_key(UI_MouseButtonKind_Left), ui_key_zero()) &&
-     ui_key_match(ui_active_key(UI_MouseButtonKind_Right), ui_key_zero()) &&
-     ui_key_match(ui_active_key(UI_MouseButtonKind_Middle), ui_key_zero())),
+    (ui_key_match(ui_active_key(UI_MouseButtonKind.Left), ui_key_zero()) &&
+     ui_key_match(ui_active_key(UI_MouseButtonKind.Right), ui_key_zero()) &&
+     ui_key_match(ui_active_key(UI_MouseButtonKind.Middle), ui_key_zero())),
     1,
   };
   for(U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
@@ -1339,7 +1339,7 @@ ui_end_build(void)
       {
         // rjf: grab states informing animation
         B32 is_hot            = ui_key_match(box->key, ui_state->hot_box_key);
-        B32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind_Left]);
+        B32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind.Left]);
         B32 is_disabled       = !!(box->flags & UI_BoxFlag_Disabled) && (box->first_disabled_build_index+2 < ui_state->build_index ||
                                                                          box->first_touched_build_index == box->first_disabled_build_index);
         B32 is_focus_hot      = !!(box->flags & UI_BoxFlag_FocusHot) && !(box->flags & UI_BoxFlag_FocusHotDisabled);
@@ -1448,7 +1448,7 @@ ui_end_build(void)
   {
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind_Press &&
+      if(evt->kind == UI_EventKind.Press &&
          (evt->key == OS_Key_LeftMouseButton || evt->key == OS_Key_RightMouseButton))
       {
         ui_ctx_menu_close();
@@ -1457,10 +1457,10 @@ ui_end_build(void)
   }
   
   //- rjf: hover cursor
-  if(!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_state->external_key))
+  if(!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], ui_state->external_key))
   {
     UI_Box *hot = ui_box_from_key(ui_state->hot_box_key);
-    UI_Box *active = ui_box_from_key(ui_state->active_box_key[UI_MouseButtonKind_Left]);
+    UI_Box *active = ui_box_from_key(ui_state->active_box_key[UI_MouseButtonKind.Left]);
     UI_Box *box = ui_box_is_nil(active) ? hot : active;
     OS_Cursor cursor = box->hover_cursor;
     if(box->flags & UI_BoxFlag_Disabled && box->flags & UI_BoxFlag_Clickable)
@@ -1591,12 +1591,12 @@ ui_calc_sizes_standalone__in_place_rec(UI_Box *root, Axis2 axis)
   switch(root->pref_size[axis].kind)
   {
     default:{}break;
-    case UI_SizeKind_Pixels:
+    case UI_SizeKind.Pixels:
     {
       root->fixed_size.v[axis] = root->pref_size[axis].value;
     }break;
     
-    case UI_SizeKind_TextContent:
+    case UI_SizeKind.TextContent:
     {
       F32 padding = root->pref_size[axis].value;
       F32 text_size = root->display_string_runs.dim.x;
@@ -1624,16 +1624,16 @@ ui_calc_sizes_upwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
     default: break;
     
     // rjf: if root has a parent percentage, figure out its size
-    case UI_SizeKind_ParentPct:
+    case UI_SizeKind.ParentPct:
     {
       // rjf: find parent that has a fixed size
       UI_Box *fixed_parent = &ui_nil_box;
       for(UI_Box *p = root->parent; !ui_box_is_nil(p); p = p->parent)
       {
         if(p->flags & (UI_BoxFlag_FixedWidth<<axis) ||
-           p->pref_size[axis].kind == UI_SizeKind_Pixels ||
-           p->pref_size[axis].kind == UI_SizeKind_TextContent ||
-           p->pref_size[axis].kind == UI_SizeKind_ParentPct)
+           p->pref_size[axis].kind == UI_SizeKind.Pixels ||
+           p->pref_size[axis].kind == UI_SizeKind.TextContent ||
+           p->pref_size[axis].kind == UI_SizeKind.ParentPct)
         {
           fixed_parent = p;
           break;
@@ -1675,7 +1675,7 @@ ui_calc_sizes_downwards_dependent__in_place_rec(UI_Box *root, Axis2 axis)
     default: break;
     
     // rjf: sum children
-    case UI_SizeKind_ChildrenSum:
+    case UI_SizeKind.ChildrenSum:
     {
       F32 sum = 0;
       for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
@@ -1789,7 +1789,7 @@ ui_layout_enforce_constraints__in_place_rec(UI_Box *root, Axis2 axis)
   {
     for(UI_Box *child = root->first; !ui_box_is_nil(child); child = child->next)
     {
-      if(child->pref_size[axis].kind == UI_SizeKind_ParentPct)
+      if(child->pref_size[axis].kind == UI_SizeKind.ParentPct)
       {
         child->fixed_size.v[axis] = root->fixed_size.v[axis] * child->pref_size[axis].value;
       }
@@ -1946,7 +1946,7 @@ ui_tooltip_begin(void)
     ui_column_begin();
   ui_push_pref_width(ui_text_dim(10.f, 1.f));
   ui_push_pref_height(ui_em(2.f, 1.f));
-  ui_push_text_alignment(UI_TextAlign_Center);
+  ui_push_text_alignment(UI_TextAlign.Center);
 }
 
 internal void
@@ -1996,8 +1996,8 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_parent(ui_state->ctx_menu_root);
   ui_push_pref_width(ui_bottom_pref_width());
   ui_push_pref_height(ui_bottom_pref_height());
-  ui_push_focus_hot(UI_FocusKind_Root);
-  ui_push_focus_active(UI_FocusKind_Root);
+  ui_push_focus_hot(UI_FocusKind.Root);
+  ui_push_focus_active(UI_FocusKind.Root);
   ui_push_palette(ui_state->widget_palette_info.ctx_menu_palette);
   B32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
   if(is_open != 0)
@@ -2053,16 +2053,16 @@ ui_any_ctx_menu_is_open(void)
 internal B32
 ui_is_focus_hot(void)
 {
-  B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
+  B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind.On);
   if(result)
   {
     for(UI_FocusHotNode *n = ui_state->focus_hot_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if(n->v == UI_FocusKind.Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if(n->v == UI_FocusKind.Off)
       {
         result = 0;
         break;
@@ -2075,16 +2075,16 @@ ui_is_focus_hot(void)
 internal B32
 ui_is_focus_active(void)
 {
-  B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
+  B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind.On);
   if(result)
   {
     for(UI_FocusActiveNode *n = ui_state->focus_active_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if(n->v == UI_FocusKind.Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if(n->v == UI_FocusKind.Off)
       {
         result = 0;
         break;
@@ -2310,14 +2310,14 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     B32 is_auto_focus_hot    = ui_is_key_auto_focus_hot(key);
     if(is_auto_focus_active)
     {
-      ui_set_next_focus_active(UI_FocusKind_On);
+      ui_set_next_focus_active(UI_FocusKind.On);
     }
     if(is_auto_focus_hot)
     {
-      ui_set_next_focus_hot(UI_FocusKind_On);
+      ui_set_next_focus_hot(UI_FocusKind.On);
     }
-    box->flags |= UI_BoxFlag_FocusHot    * (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
-    box->flags |= UI_BoxFlag_FocusActive * (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
+    box->flags |= UI_BoxFlag_FocusHot    * (ui_state->focus_hot_stack.top->v == UI_FocusKind.On);
+    box->flags |= UI_BoxFlag_FocusActive * (ui_state->focus_active_stack.top->v == UI_FocusKind.On);
     if(box->flags & UI_BoxFlag_FocusHot && !ui_is_focus_hot())
     {
       box->flags |= UI_BoxFlag_FocusHotDisabled;
@@ -2417,7 +2417,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
   ProfBeginFunction();
   box->string = push_str8_copy(ui_build_arena(), string);
   box->flags |= UI_BoxFlag_HasDisplayString;
-  UI_ColorCode text_color_code = (box->flags & UI_BoxFlag_DrawTextWeak ? UI_ColorCode_TextWeak : UI_ColorCode_Text);
+  UI_ColorCode text_color_code = (box->flags & UI_BoxFlag_DrawTextWeak ? UI_ColorCode.TextWeak : UI_ColorCode.Text);
   if(box->flags & UI_BoxFlag_DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
   {
     String8 display_string = ui_box_display_string(box);
@@ -2442,7 +2442,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
     }
     else
     {
-      DR_FancyStringNode fancy_string_n = {0, {box->font, display_string, box->palette->colors[UI_ColorCode_Text], box->font_size, 0, 0}};
+      DR_FancyStringNode fancy_string_n = {0, {box->font, display_string, box->palette->colors[UI_ColorCode.Text], box->font_size, 0, 0}};
       DR_FancyStringList fancy_strings = {&fancy_string_n, &fancy_string_n, 1};
       box->display_string_runs = dr_fancy_run_list_from_fancy_string_list(ui_build_arena(), box->tab_size, box->text_raster_flags, &fancy_strings);
     }
@@ -2523,17 +2523,17 @@ ui_box_text_position(UI_Box *box)
   switch(box->text_align)
   {
     default:
-    case UI_TextAlign_Left:
+    case UI_TextAlign.Left:
     {
       result.x = box->rect.p0.x + box->text_padding;
     }break;
-    case UI_TextAlign_Center:
+    case UI_TextAlign.Center:
     {
       Vec2F32 text_dim = box->display_string_runs.dim;
       result.x = round_f32((box->rect.p0.x + box->rect.p1.x)/2 - text_dim.x/2);
       result.x = ClampBot(result.x, box->rect.x0);
     }break;
-    case UI_TextAlign_Right:
+    case UI_TextAlign.Right:
     {
       Vec2F32 text_dim = box->display_string_runs.dim;
       result.x = round_f32((box->rect.p1.x) - text_dim.x - box->text_padding);
@@ -2613,10 +2613,10 @@ ui_signal_from_box(UI_Box *box)
     //- rjf: unpack event
     Vec2F32 evt_mouse = evt->pos;
     B32 evt_mouse_in_bounds = !contains_2f32(blacklist_rect, evt_mouse) && contains_2f32(rect, evt_mouse);
-    UI_MouseButtonKind evt_mouse_button_kind = (evt->key == OS_Key_LeftMouseButton   ? UI_MouseButtonKind_Left :
-                                                evt->key == OS_Key_MiddleMouseButton ? UI_MouseButtonKind_Middle :
-                                                evt->key == OS_Key_RightMouseButton  ? UI_MouseButtonKind_Right :
-                                                UI_MouseButtonKind_Left);
+    UI_MouseButtonKind evt_mouse_button_kind = (evt->key == OS_Key_LeftMouseButton   ? UI_MouseButtonKind.Left :
+                                                evt->key == OS_Key_MiddleMouseButton ? UI_MouseButtonKind.Middle :
+                                                evt->key == OS_Key_RightMouseButton  ? UI_MouseButtonKind.Right :
+                                                UI_MouseButtonKind.Left);
     B32 evt_key_is_mouse = (evt->key == OS_Key_LeftMouseButton ||
                             evt->key == OS_Key_MiddleMouseButton ||
                             evt->key == OS_Key_RightMouseButton);
@@ -2624,7 +2624,7 @@ ui_signal_from_box(UI_Box *box)
     
     //- rjf: mouse presses in box -> set hot/active; mark signal accordingly
     if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Press &&
+       evt->kind == UI_EventKind.Press &&
        evt_mouse_in_bounds &&
        evt_key_is_mouse)
     {
@@ -2658,7 +2658,7 @@ ui_signal_from_box(UI_Box *box)
     
     //- rjf: mouse releases in active box -> unset active; mark signal accordingly
     if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Release &&
+       evt->kind == UI_EventKind.Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        evt_mouse_in_bounds &&
        evt_key_is_mouse)
@@ -2671,7 +2671,7 @@ ui_signal_from_box(UI_Box *box)
     
     //- rjf: mouse releases outside active box -> unset hot/active
     if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Release &&
+       evt->kind == UI_EventKind.Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        !evt_mouse_in_bounds &&
        evt_key_is_mouse)
@@ -2685,8 +2685,8 @@ ui_signal_from_box(UI_Box *box)
     //- rjf: focus is hot & keyboard click -> mark signal
     if(box->flags & UI_BoxFlag_KeyboardClickable &&
        is_focus_hot &&
-       evt->kind == UI_EventKind_Press &&
-       evt->slot == UI_EventActionSlot_Accept)
+       evt->kind == UI_EventKind.Press &&
+       evt->slot == UI_EventActionSlot.Accept)
     {
       sig.f |= UI_SignalFlag_KeyboardPressed;
       taken = 1;
@@ -2733,7 +2733,7 @@ ui_signal_from_box(UI_Box *box)
     
     //- rjf: scrolling
     if(box->flags & UI_BoxFlag_Scroll &&
-       evt->kind == UI_EventKind_Scroll &&
+       evt->kind == UI_EventKind.Scroll &&
        evt->modifiers != OS_Modifier_Ctrl &&
        evt_mouse_in_bounds)
     {
@@ -2754,7 +2754,7 @@ ui_signal_from_box(UI_Box *box)
     
     //- rjf: view scrolling
     if(box->flags & UI_BoxFlag_ViewScroll && box->first_touched_build_index != box->last_touched_build_index &&
-       evt->kind == UI_EventKind_Scroll &&
+       evt->kind == UI_EventKind.Scroll &&
        evt->modifiers != OS_Modifier_Ctrl &&
        evt_mouse_in_bounds)
     {
@@ -2879,9 +2879,9 @@ ui_signal_from_box(UI_Box *box)
        contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse) &&
        (ui_key_match(ui_state->hot_box_key, ui_key_zero()) || ui_key_match(ui_state->hot_box_key, box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Middle], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Middle], box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Right], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Right], box->key)))
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], box->key)) &&
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Middle], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Middle], box->key)) &&
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Right], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Right], box->key)))
     {
       ui_state->hot_box_key = box->key;
       sig.f |= UI_SignalFlag_Hovering;
