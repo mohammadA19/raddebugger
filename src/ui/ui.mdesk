@@ -25,8 +25,8 @@ UI_StackTable:
   { Flags                              flags                         UI_BoxFlags           0                                  }
   
   //- rjf: interaction
-  { FocusHot                           focus_hot                     UI_FocusKind          UI_FocusKind.Null                  }
-  { FocusActive                        focus_active                  UI_FocusKind          UI_FocusKind.Null                  }
+  { FocusHot                           focus_hot                     UI_FocusKind          UI_FocusKind.NULL                  }
+  { FocusActive                        focus_active                  UI_FocusKind          UI_FocusKind.NULL                  }
   { FastpathCodepoint                  fastpath_codepoint            U32                   0                                  }
   { GroupKey                           group_key                     UI_Key                `ui_key_zero()`                    }
   
@@ -57,7 +57,7 @@ UI_StackTable:
   
   //- rjf: text parameters
   { TextPadding                        text_padding                  F32                   0                                  }
-  { TextAlignment                      text_alignment                UI_TextAlign          UI_TextAlign.Left                  }
+  { TextAlignment                      text_alignment                UI_TextAlign          UI_TextAlign.LEFT                  }
 }
 
 //- rjf: declaring stack node types

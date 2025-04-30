@@ -9,17 +9,17 @@
 
 enum UI_IconKind
 {
-  Null,
-  RightArrow,
-  DownArrow,
-  LeftArrow,
-  UpArrow,
-  RightCaret,
-  DownCaret,
-  LeftCaret,
-  UpCaret,
-  CheckHollow,
-  CheckFilled,
+  NULL,
+  RIGHT_ARROW,
+  DOWN_ARROW,
+  LEFT_ARROW,
+  UP_ARROW,
+  RIGHT_CARET,
+  DOWN_CARET,
+  LEFT_CARET,
+  UP_CARET,
+  CHECK_HOLLOW,
+  CHECK_FILLED,
   COUNT
 }
 
@@ -34,9 +34,9 @@ struct UI_IconInfo
 
 enum UI_MouseButtonKind
 {
-  Left,
-  Middle,
-  Right,
+  LEFT,
+  MIDDLE,
+  RIGHT,
   COUNT
 }
 
@@ -64,10 +64,10 @@ enum
 
 enum UI_FocusKind
 {
-  Null,
-  Off,
-  On,
-  Root,
+  NULL,
+  OFF,
+  ON,
+  ROOT,
   COUNT
 }
 
@@ -78,25 +78,25 @@ enum UI_FocusKind
 
 enum UI_EventKind
 {
-  Null,
-  Press,
-  Release,
-  Text,
-  Navigate,
-  Edit,
-  MouseMove,
-  Scroll,
-  AutocompleteHint,
-  FileDrop,
+  NULL,
+  PRESS,
+  RELEASE,
+  TEXT,
+  NAVIGATE,
+  EDIT,
+  MOUSEMOVE,
+  SCROLL,
+  AUTOCOMPLETE_HINT,
+  FILEDROP,
   COUNT
 }
 
 enum UI_EventActionSlot
 {
-  Null,
-  Accept,
-  Cancel,
-  Edit,
+  NULL,
+  ACCEPT,
+  CANCEL,
+  EDIT,
   COUNT
 }
 
@@ -116,12 +116,12 @@ enum
 
 enum UI_EventDeltaUnit
 {
-  Null,
-  Char,
-  Word,
-  Line,
-  Page,
-  Whole,
+  NULL,
+  CHAR,
+  WORD,
+  LINE,
+  PAGE,
+  WHOLE,
   COUNT
 }
 
@@ -188,11 +188,11 @@ struct UI_Key
 
 enum UI_SizeKind
 {
-  Null,
-  Pixels,      // size is computed via a preferred pixel value
-  TextContent, // size is computed via the dimensions of box's rendered string
-  ParentPct,   // size is computed via a well-determined parent or grandparent size
-  ChildrenSum, // size is computed via summing well-determined sizes of children
+  NULL,
+  PIXELS,      // size is computed via a preferred pixel value
+  TEXT_CONTENT, // size is computed via the dimensions of box's rendered string
+  PARENT_PCT,   // size is computed via a well-determined parent or grandparent size
+  CHILDREN_SUM, // size is computed via summing well-determined sizes of children
 }
 
 struct UI_Size
@@ -207,14 +207,14 @@ struct UI_Size
 
 enum UI_ColorCode
 {
-  Null,
-  Background,
-  Text,
-  TextWeak,
-  Border,
-  Overlay,
-  Cursor,
-  Selection,
+  NULL,
+  BACKGROUND,
+  TEXT,
+  TEXT_WEAK,
+  BORDER,
+  OVERLAY,
+  CURSOR,
+  SELECTION,
   COUNT
 }
 
@@ -288,9 +288,9 @@ union UI_ScrollPt2
 
 enum UI_TextAlign
 {
-  Left,
-  Center,
-  Right,
+  LEFT,
+  CENTER,
+  RIGHT,
   COUNT
 }
 
@@ -703,11 +703,11 @@ internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1
 //~ rjf: Size Type Functions
 
 internal UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
-#define ui_px(value, strictness)         ui_size(UI_SizeKind.Pixels, value, strictness)
-#define ui_em(value, strictness)         ui_size(UI_SizeKind.Pixels, (value) * ui_top_font_size(), strictness)
-#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind.TextContent, padding, strictness)
-#define ui_pct(value, strictness)        ui_size(UI_SizeKind.ParentPct, value, strictness)
-#define ui_children_sum(strictness)      ui_size(UI_SizeKind.ChildrenSum, 0.f, strictness)
+#define ui_px(value, strictness)         ui_size(UI_SizeKind.PIXELS, value, strictness)
+#define ui_em(value, strictness)         ui_size(UI_SizeKind.PIXELS, (value) * ui_top_font_size(), strictness)
+#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind.TEXT_CONTENT, padding, strictness)
+#define ui_pct(value, strictness)        ui_size(UI_SizeKind.PARENT_PCT, value, strictness)
+#define ui_children_sum(strictness)      ui_size(UI_SizeKind.CHILDREN_SUM, 0.f, strictness)
 
 ////////////////////////////////
 //~ rjf: Color Scheme Type Functions

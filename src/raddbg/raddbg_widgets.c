@@ -144,20 +144,20 @@ rd_cmd_binding_buttons(String8 name)
       MemoryCopyStruct(palette, ui_top_palette());
       if(has_conflicts)
       {
-        palette->colors[UI_ColorCode.Text] = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative);
-        palette->colors[UI_ColorCode.TextWeak] = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative);
+        palette->colors[UI_ColorCode.TEXT] = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative);
+        palette->colors[UI_ColorCode.TEXT_WEAK] = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative);
       }
       if(rebinding_active_for_this_binding)
       {
-        palette->colors[UI_ColorCode.Border] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
-        palette->colors[UI_ColorCode.Background] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
-        palette->colors[UI_ColorCode.Background].w *= 0.25f;
+        palette->colors[UI_ColorCode.BORDER] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
+        palette->colors[UI_ColorCode.BACKGROUND] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
+        palette->colors[UI_ColorCode.BACKGROUND].w *= 0.25f;
       }
     }
     
     //- rjf: build box
     ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-    ui_set_next_text_alignment(UI_TextAlign.Center);
+    ui_set_next_text_alignment(UI_TextAlign.CENTER);
     ui_set_next_palette(palette);
     ui_set_next_group_key(ui_key_zero());
     ui_set_next_pref_width(ui_text_dim(ui_top_font_size()*1.f, 1));
@@ -239,12 +239,12 @@ rd_cmd_binding_buttons(String8 name)
     if(adding_new_binding)
     {
       palette = ui_build_palette(ui_top_palette());
-      palette->colors[UI_ColorCode.Border] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
-      palette->colors[UI_ColorCode.Background] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
-      palette->colors[UI_ColorCode.Background].w *= 0.25f;
+      palette->colors[UI_ColorCode.BORDER] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
+      palette->colors[UI_ColorCode.BACKGROUND] = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
+      palette->colors[UI_ColorCode.BACKGROUND].w *= 0.25f;
     }
     ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-    ui_set_next_text_alignment(UI_TextAlign.Center);
+    ui_set_next_text_alignment(UI_TextAlign.CENTER);
     ui_set_next_group_key(ui_key_zero());
     ui_set_next_pref_width(ui_text_dim(ui_top_font_size()*1.f, 1));
     ui_set_next_palette(palette);
@@ -303,7 +303,7 @@ rd_cmd_spec_button(String8 name)
     {
       RD_Font(RD_FontSlot_Icons)
         UI_PrefWidth(ui_em(2.f, 1.f))
-        UI_TextAlignment(UI_TextAlign.Center)
+        UI_TextAlignment(UI_TextAlign.CENTER)
         UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
       {
         ui_label(rd_icon_kind_text_table[canonical_icon]);
@@ -372,7 +372,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
     {
       ui_spacer(ui_em(1.f, 1.f));
     }
-    UI_TextAlignment(UI_TextAlign.Center)
+    UI_TextAlignment(UI_TextAlign.CENTER)
       RD_Font(RD_FontSlot_Icons)
       UI_PrefWidth(ui_em(2.f, 1.f))
       UI_PrefHeight(ui_pct(1, 0))
@@ -659,7 +659,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: build priority margin
   //
   UI_Box *priority_margin_container_box = &ui_nil_box;
-  if(params->flags & RD_CodeSliceFlag_PriorityMargin) UI_Focus(UI_FocusKind.Off) UI_Parent(top_container_box) UI_Palette(margin_palette) ProfScope("build priority margins")
+  if(params->flags & RD_CodeSliceFlag_PriorityMargin) UI_Focus(UI_FocusKind.OFF) UI_Parent(top_container_box) UI_Palette(margin_palette) ProfScope("build priority margins")
   {
     if(params->margin_float_off_px != 0)
     {
@@ -732,7 +732,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_pref_width(ui_pct(1, 0));
             ui_set_next_pref_height(ui_pct(1, 0));
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
-            ui_set_next_text_alignment(UI_TextAlign.Center);
+            ui_set_next_text_alignment(UI_TextAlign.CENTER);
             UI_Key thread_box_key = ui_key_from_stringf(top_container_box->key, "###ip_%I64x_%p", line_num, thread);
             UI_Box *thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
@@ -805,7 +805,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: build catchall margin
   //
   UI_Box *catchall_margin_container_box = &ui_nil_box;
-  if(params->flags & RD_CodeSliceFlag_CatchallMargin) UI_Focus(UI_FocusKind.Off) UI_Palette(margin_palette) UI_Parent(top_container_box) ProfScope("build catchall margins")
+  if(params->flags & RD_CodeSliceFlag_CatchallMargin) UI_Focus(UI_FocusKind.OFF) UI_Palette(margin_palette) UI_Parent(top_container_box) ProfScope("build catchall margins")
   {
     if(params->margin_float_off_px != 0)
     {
@@ -880,7 +880,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_pref_width(ui_pct(1, 0));
             ui_set_next_pref_height(ui_pct(1, 0));
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
-            ui_set_next_text_alignment(UI_TextAlign.Center);
+            ui_set_next_text_alignment(UI_TextAlign.CENTER);
             UI_Key thread_box_key = ui_key_from_stringf(top_container_box->key, "###ip_%I64x_catchall_%p", line_num, thread);
             UI_Box *thread_box = ui_build_box_from_key(UI_BoxFlag_DisableTextTrunc|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
@@ -993,7 +993,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = bp_color));
-            ui_set_next_text_alignment(UI_TextAlign.Center);
+            ui_set_next_text_alignment(UI_TextAlign.CENTER);
             UI_Box *bp_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                                        UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                        UI_BoxFlag_DisableTextTrunc,
@@ -1050,7 +1050,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
             ui_set_next_palette(ui_build_palette(ui_top_palette(), .text = color));
-            ui_set_next_text_alignment(UI_TextAlign.Center);
+            ui_set_next_text_alignment(UI_TextAlign.CENTER);
             UI_Box *pin_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|
                                                         UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable)|
                                                         UI_BoxFlag_DisableTextTrunc,
@@ -1101,7 +1101,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build line numbers
   //
-  if(params->flags & RD_CodeSliceFlag_LineNums) UI_Parent(top_container_box) ProfScope("build line numbers") UI_Focus(UI_FocusKind.Off)
+  if(params->flags & RD_CodeSliceFlag_LineNums) UI_Parent(top_container_box) ProfScope("build line numbers") UI_Focus(UI_FocusKind.OFF)
   {
     TxtRng select_rng = txt_rng(*cursor, *mark);
     Vec4F32 active_color = rd_rgba_from_theme_color(RD_ThemeColor_CodeLineNumbersSelected);
@@ -1173,7 +1173,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: build main text container box, for mouse interaction on both lines & line numbers
   //
   UI_Box *text_container_box = &ui_nil_box;
-  UI_Parent(top_container_box) UI_Focus(UI_FocusKind.Off)
+  UI_Parent(top_container_box) UI_Focus(UI_FocusKind.OFF)
   {
     ui_set_next_hover_cursor(ctrlified ? OS_Cursor_HandPoint : OS_Cursor_IBar);
     ui_set_next_pref_height(ui_px(params->line_height_px*(dim_1s64(params->line_num_range)+1), 1.f));
@@ -1200,7 +1200,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: produce per-line extra annotation containers
   //
   UI_Box **line_extras_boxes = push_array(scratch.arena, UI_Box *, dim_1s64(params->line_num_range)+1);
-  UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind.Off)
+  UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind.OFF)
   {
     U64 line_idx = 0;
     for(S64 line_num = params->line_num_range.min;
@@ -1216,7 +1216,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build exception annotations
   //
-  UI_Focus(UI_FocusKind.Off)
+  UI_Focus(UI_FocusKind.OFF)
   {
     U64 line_idx = 0;
     for(S64 line_num = params->line_num_range.min;
@@ -1246,7 +1246,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build watch pin annotations
   //
-  UI_Focus(UI_FocusKind.Off)
+  UI_Focus(UI_FocusKind.OFF)
   {
     DI_Scope *scope = di_scope_open();
     U64 line_idx = 0;
@@ -1288,7 +1288,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             UI_PrefWidth(ui_em(1.5f, 1.f))
               RD_Font(RD_FontSlot_Icons)
               UI_Palette(ui_build_palette(ui_top_palette(), .text = pin_color))
-              UI_TextAlignment(UI_TextAlign.Center)
+              UI_TextAlignment(UI_TextAlign.CENTER)
               UI_Flags(UI_BoxFlag_DisableTextTrunc)
             {
               UI_Signal sig = ui_buttonf("%S###pin_nub", rd_icon_kind_text_table[RD_IconKind_Pin]);
@@ -1639,7 +1639,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     {
       TxtRngColorPairNode *n = push_array(scratch.arena, TxtRngColorPairNode, 1);
       n->rng = txt_rng(*cursor, *mark);
-      n->color = ui_top_palette()->colors[UI_ColorCode.Selection];
+      n->color = ui_top_palette()->colors[UI_ColorCode.SELECTION];
       SLLQueuePush(first_txt_rng_color_pair, last_txt_rng_color_pair, n);
     }
     
@@ -1656,7 +1656,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build line numbers region (line number interaction should be basically identical to lines)
   //
-  if(params->flags & RD_CodeSliceFlag_LineNums) UI_Parent(text_container_box) ProfScope("build line number interaction box") UI_Focus(UI_FocusKind.Off)
+  if(params->flags & RD_CodeSliceFlag_LineNums) UI_Parent(text_container_box) ProfScope("build line number interaction box") UI_Focus(UI_FocusKind.OFF)
   {
     ui_set_next_pref_width(ui_px(params->line_num_width_px, 1.f));
     ui_set_next_pref_height(ui_px(params->line_height_px*(dim_1s64(params->line_num_range)+1), 1.f));
@@ -1666,7 +1666,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build line text
   //
-  UI_Parent(text_container_box) ProfScope("build line text") UI_Focus(UI_FocusKind.Off)
+  UI_Parent(text_container_box) ProfScope("build line text") UI_Focus(UI_FocusKind.OFF)
   {
     RD_Regs *hover_regs = rd_get_hover_regs();
     Rng1U64 hover_voff_range = hover_regs->voff_range;
@@ -1940,7 +1940,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
   B32 change = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind != UI_EventKind.Navigate && evt->kind != UI_EventKind.Edit)
+    if(evt->kind != UI_EventKind.NAVIGATE && evt->kind != UI_EventKind.EDIT)
     {
       continue;
     }
@@ -1949,7 +1949,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
     UI_TxtOp single_line_op = ui_single_line_txt_op_from_event(scratch.arena, evt, line, *cursor, *mark);
     
     //- rjf: invalid single-line op or endpoint units => try multiline
-    if(evt->delta_unit == UI_EventDeltaUnit.Whole || single_line_op.flags & UI_TxtOpFlag_Invalid)
+    if(evt->delta_unit == UI_EventDeltaUnit.WHOLE || single_line_op.flags & UI_TxtOpFlag_Invalid)
     {
       U64 line_count = info->lines_count;
       String8 prev_line = txt_string_from_info_data_line_num(info, data, cursor->line-1);
@@ -1957,7 +1957,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       Vec2S32 delta = evt->delta_2s32;
       
       //- rjf: wrap lines right
-      if(evt->delta_unit != UI_EventDeltaUnit.Whole && delta.x > 0 && cursor->column == line.size+1 && cursor->line+1 <= line_count)
+      if(evt->delta_unit != UI_EventDeltaUnit.WHOLE && delta.x > 0 && cursor->column == line.size+1 && cursor->line+1 <= line_count)
       {
         cursor->line += 1;
         cursor->column = 1;
@@ -1967,7 +1967,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: wrap lines left
-      if(evt->delta_unit != UI_EventDeltaUnit.Whole && delta.x < 0 && cursor->column == 1 && cursor->line-1 >= 1)
+      if(evt->delta_unit != UI_EventDeltaUnit.WHOLE && delta.x < 0 && cursor->column == 1 && cursor->line-1 >= 1)
       {
         cursor->line -= 1;
         cursor->column = prev_line.size+1;
@@ -1977,7 +1977,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement down (plain)
-      if(evt->delta_unit == UI_EventDeltaUnit.Char && delta.y > 0 && cursor->line+1 <= line_count)
+      if(evt->delta_unit == UI_EventDeltaUnit.CHAR && delta.y > 0 && cursor->line+1 <= line_count)
       {
         cursor->line += 1;
         cursor->column = Min(*preferred_column, next_line.size+1);
@@ -1986,7 +1986,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement up (plain)
-      if(evt->delta_unit == UI_EventDeltaUnit.Char && delta.y < 0 && cursor->line-1 >= 1)
+      if(evt->delta_unit == UI_EventDeltaUnit.CHAR && delta.y < 0 && cursor->line-1 >= 1)
       {
         cursor->line -= 1;
         cursor->column = Min(*preferred_column, prev_line.size+1);
@@ -1995,7 +1995,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement down (chunk)
-      if(evt->delta_unit == UI_EventDeltaUnit.Word && delta.y > 0 && cursor->line+1 <= line_count)
+      if(evt->delta_unit == UI_EventDeltaUnit.WORD && delta.y > 0 && cursor->line+1 <= line_count)
       {
         for(S64 line_num = cursor->line+1; line_num <= line_count; line_num += 1)
         {
@@ -2018,7 +2018,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement up (chunk)
-      if(evt->delta_unit == UI_EventDeltaUnit.Word && delta.y < 0 && cursor->line-1 >= 1)
+      if(evt->delta_unit == UI_EventDeltaUnit.WORD && delta.y < 0 && cursor->line-1 >= 1)
       {
         for(S64 line_num = cursor->line-1; line_num > 0; line_num -= 1)
         {
@@ -2041,7 +2041,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement down (page)
-      if(evt->delta_unit == UI_EventDeltaUnit.Page && delta.y > 0)
+      if(evt->delta_unit == UI_EventDeltaUnit.PAGE && delta.y > 0)
       {
         cursor->line += line_count_per_page;
         cursor->column = 1;
@@ -2051,7 +2051,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement up (page)
-      if(evt->delta_unit == UI_EventDeltaUnit.Page && delta.y < 0)
+      if(evt->delta_unit == UI_EventDeltaUnit.PAGE && delta.y < 0)
       {
         cursor->line -= line_count_per_page;
         cursor->column = 1;
@@ -2061,7 +2061,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement to endpoint (+)
-      if(evt->delta_unit == UI_EventDeltaUnit.Whole && (delta.y > 0 || delta.x > 0))
+      if(evt->delta_unit == UI_EventDeltaUnit.WHOLE && (delta.y > 0 || delta.x > 0))
       {
         *cursor = txt_pt(line_count, info->lines_count ? dim_1u64(info->lines_ranges[info->lines_count-1])+1 : 1);
         change = 1;
@@ -2069,7 +2069,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       }
       
       //- rjf: movement to endpoint (-)
-      if(evt->delta_unit == UI_EventDeltaUnit.Whole && (delta.y < 0 || delta.x < 0))
+      if(evt->delta_unit == UI_EventDeltaUnit.WHOLE && (delta.y < 0 || delta.x < 0))
       {
         *cursor = txt_pt(1, 1);
         change = 1;
@@ -2163,7 +2163,7 @@ rd_label(String8 string)
     {
       fstr.font   = ui_top_font();
       fstr.string = p->string;
-      fstr.color  = ui_top_palette()->colors[UI_ColorCode.Text];
+      fstr.color  = ui_top_palette()->colors[UI_ColorCode.TEXT];
       fstr.size   = ui_top_font_size();
       if(p->flags & StringPartFlag_Code)
       {
@@ -2189,7 +2189,7 @@ rd_error_label(String8 string)
   {
     ui_set_next_font(rd_font_from_slot(RD_FontSlot_Icons));
     ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
-    ui_set_next_text_alignment(UI_TextAlign.Center);
+    ui_set_next_text_alignment(UI_TextAlign.CENTER);
     ui_set_next_flags(UI_BoxFlag_DrawTextWeak);
     UI_PrefWidth(ui_em(2.25f, 1.f)) ui_label(rd_icon_kind_text_table[RD_IconKind_WarningBig]);
     UI_PrefWidth(ui_text_dim(10, 0)) rd_label(string);
@@ -2211,7 +2211,7 @@ rd_help_label(String8 string)
       result = 1;
       ui_set_next_font(rd_font_from_slot(RD_FontSlot_Icons));
       ui_set_next_text_raster_flags(FNT_RasterFlag_Smooth);
-      ui_set_next_text_alignment(UI_TextAlign.Center);
+      ui_set_next_text_alignment(UI_TextAlign.CENTER);
       UI_Box *help_hoverer = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawHotEffects, "###help_hoverer_%S", string);
       ui_box_equip_display_string(help_hoverer, rd_icon_kind_text_table[RD_IconKind_QuestionMark]);
       if(!contains_2f32(help_hoverer->rect, ui_mouse()))
@@ -2411,12 +2411,12 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   //- rjf: calculate & push focus
   B32 is_auto_focus_hot = ui_is_key_auto_focus_hot(key);
   B32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
-  if(is_auto_focus_hot) { ui_push_focus_hot(UI_FocusKind.On); }
-  if(is_auto_focus_active) { ui_push_focus_active(UI_FocusKind.On); }
+  if(is_auto_focus_hot) { ui_push_focus_hot(UI_FocusKind.ON); }
+  if(is_auto_focus_active) { ui_push_focus_active(UI_FocusKind.ON); }
   B32 is_focus_hot    = ui_is_focus_hot();
   B32 is_focus_active = ui_is_focus_active();
-  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind.On);
-  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind.On);
+  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind.ON);
+  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind.ON);
   
   //- rjf: build top-level box
   if(is_focus_active || is_focus_active_disabled)
@@ -2443,7 +2443,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   //- rjf: build expander
   if(flags & RD_LineEditFlag_Expander) UI_PrefWidth(ui_px(expander_size_px, 1.f)) UI_Parent(box)
     UI_Flags(UI_BoxFlag_DrawSideLeft)
-    UI_Focus(UI_FocusKind.Off)
+    UI_Focus(UI_FocusKind.OFF)
   {
     UI_Signal expander_sig = ui_expanderf(*expanded_out, "expander");
     if(ui_pressed(expander_sig))
@@ -2453,17 +2453,17 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   }
   
   //- rjf: build expander placeholder
-  else if(flags & RD_LineEditFlag_ExpanderPlaceholder) UI_Parent(box) UI_PrefWidth(ui_px(expander_size_px, 1.f)) UI_Focus(UI_FocusKind.Off)
+  else if(flags & RD_LineEditFlag_ExpanderPlaceholder) UI_Parent(box) UI_PrefWidth(ui_px(expander_size_px, 1.f)) UI_Focus(UI_FocusKind.OFF)
   {
     UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
       UI_Flags(UI_BoxFlag_DrawSideLeft)
       RD_Font(RD_FontSlot_Icons)
-      UI_TextAlignment(UI_TextAlign.Center)
+      UI_TextAlignment(UI_TextAlign.CENTER)
       ui_label(rd_icon_kind_text_table[RD_IconKind_Dot]);
   }
   
   //- rjf: build expander space
-  else if(flags & RD_LineEditFlag_ExpanderSpace) UI_Parent(box) UI_Focus(UI_FocusKind.Off)
+  else if(flags & RD_LineEditFlag_ExpanderSpace) UI_Parent(box) UI_Focus(UI_FocusKind.OFF)
   {
     UI_Flags(UI_BoxFlag_DrawSideLeft) ui_spacer(ui_px(expander_size_px, 1.f));
   }
@@ -2517,7 +2517,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
         }
       }
     }
-    if(is_focus_hot && ui_slot_press(UI_EventActionSlot.Edit))
+    if(is_focus_hot && ui_slot_press(UI_EventActionSlot.EDIT))
     {
       start_editing_via_typing = 1;
     }
@@ -2545,7 +2545,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
   {
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind.AutocompleteHint)
+      if(evt->kind == UI_EventKind.AUTOCOMPLETE_HINT)
       {
         autocomplete_hint_string = evt->string;
       }
@@ -2563,7 +2563,7 @@ rd_line_edit(RD_LineEditFlags flags, S32 depth, FuzzyMatchRangeList *matches, Tx
       String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
-      if((evt->kind != UI_EventKind.Edit && evt->kind != UI_EventKind.Navigate && evt->kind != UI_EventKind.Text) || evt->delta_2s32.y != 0)
+      if((evt->kind != UI_EventKind.EDIT && evt->kind != UI_EventKind.NAVIGATE && evt->kind != UI_EventKind.TEXT) || evt->delta_2s32.y != 0)
       {
         continue;
       }
