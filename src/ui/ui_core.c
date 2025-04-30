@@ -48,7 +48,7 @@ fn String8 ui_display_part_from_key_string(String8 string)
 
 fn UI_Key ui_key_zero()
 {
-  UI_Key result = {0};
+  UI_Key result;
   return result;
 }
 
@@ -61,7 +61,7 @@ fn UI_Key ui_key_make(ulong v)
 fn UI_Key ui_key_from_string(UI_Key seed_key, String8 string)
 {
   ProfBeginFunction();
-  UI_Key result = {0};
+  UI_Key result;
   if(string.size != 0)
   {
     String8 hash_part = ui_hash_part_from_key_string(string);
@@ -151,9 +151,9 @@ fn UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, Stri
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
-  TxtRng range = {0};
-  String8 replace = {0};
-  String8 copy = {0};
+  TxtRng range;
+  String8 replace;
+  String8 copy;
   UI_TxtOpFlags flags = 0;
   Vec2S32 delta = event.delta_2s32;
   Vec2S32 original_delta = delta;
@@ -276,7 +276,7 @@ fn UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, Stri
   }
   
   //- rjf: build+fill
-  UI_TxtOp op = {0};
+  UI_TxtOp op;
   {
     op.flags   = flags;
     op.replace = replace;
@@ -369,7 +369,7 @@ fn B32 ui_box_is_nil(UI_Box* box)
 
 fn UI_BoxRec ui_box_rec_df(UI_Box* box, UI_Box* root, ulong sib_member_off, ulong child_member_off)
 {
-  UI_BoxRec result = {0};
+  UI_BoxRec result;
   result.next = &ui_nil_box;
   if(!ui_box_is_nil(*MemberFromOffset(UI_Box **, box, child_member_off)))
   {
@@ -829,7 +829,7 @@ fn void ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon
           {
             B32 moved = 0;
             UI_Box* focus_box = ui_box_from_key(nav_root.default_nav_focus_next_hot_key);
-            UI_BoxList next_focus_box_candidates = {0};
+            UI_BoxList next_focus_box_candidates;
             
             // rjf: gather & consume events & nav actions
             B32 nav_next = 0;
@@ -877,7 +877,7 @@ fn void ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon
             if(nav_next)
             {
               UI_Box* search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              ulong moved_in_axis[Axis2_COUNT] = {0};
+              ulong moved_in_axis[Axis2_COUNT];
               moved = 1;
               for(UI_Box* box = search_start;;)
               {
@@ -916,7 +916,7 @@ fn void ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon
             if(nav_prev)
             {
               UI_Box* search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              ulong moved_in_axis[Axis2_COUNT] = {0};
+              ulong moved_in_axis[Axis2_COUNT];
               moved = 1;
               for(UI_Box* box = search_start;;)
               {
@@ -1426,8 +1426,8 @@ fn void ui_end_build()
     if(!ui_box_is_nil(box))
     {
       Temp scratch = scratch_begin(0, 0);
-      String8List strs = {0};
-      UI_BoxRec rec = {0};
+      String8List strs;
+      UI_BoxRec rec;
       for(UI_Box* b = box; !ui_box_is_nil(b); rec = ui_box_rec_df_pre(b, box), b = rec.next)
       {
         if(b.flags & UI_BoxFlag_DrawText && b.flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b.font, ui_icon_font()))
@@ -1438,7 +1438,7 @@ fn void ui_end_build()
       }
       if(strs.node_count != 0)
       {
-        StringJoin join = {0};
+        StringJoin join;
         join.sep = str8_lit(" ");
         String8 string = str8_list_join(scratch.arena, &strs, &join);
         os_set_clipboard_text(string);
@@ -2421,7 +2421,7 @@ fn String8 ui_box_display_string(UI_Box* box)
 
 fn Vec2F32 ui_box_text_position(UI_Box* box)
 {
-  Vec2F32 result = {0};
+  Vec2F32 result;
   FNT_Tag font = box.font;
   float font_size = box.font_size;
   FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
@@ -2504,7 +2504,7 @@ fn UI_Signal ui_signal_from_box(UI_Box* box)
   //////////////////////////////
   //- rjf: calculate blacklist rectangles
   //
-  Rng2F32 blacklist_rect = {0};
+  Rng2F32 blacklist_rect;
   if(!ctx_menu_is_ancestor && ui_state.ctx_menu_open)
   {
     blacklist_rect = ui_state.ctx_menu_root.rect;
@@ -2942,7 +2942,7 @@ fn float ui_anim_(UI_Key key, UI_AnimParams* params)
 
 fn Rng2F32 ui_push_rect(Rng2F32 rect)
 {
-  Rng2F32 replaced = {0};
+  Rng2F32 replaced;
   Vec2F32 size = dim_2f32(rect);
   replaced.x0 = ui_push_fixed_x(rect.x0);
   replaced.y0 = ui_push_fixed_y(rect.y0);
@@ -2953,7 +2953,7 @@ fn Rng2F32 ui_push_rect(Rng2F32 rect)
 
 fn Rng2F32 ui_pop_rect()
 {
-  Rng2F32 popped = {0};
+  Rng2F32 popped;
   popped.x0 = ui_pop_fixed_x();
   popped.y0 = ui_pop_fixed_y();
   popped.x1 = popped.x0 + ui_pop_fixed_width();
