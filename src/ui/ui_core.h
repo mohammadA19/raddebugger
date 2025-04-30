@@ -43,7 +43,7 @@ enum UI_MouseButtonKind
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-typedef U32 UI_PermissionFlags;
+typedef uint UI_PermissionFlags;
 enum
 {
   UI_PermissionFlag_ClicksLeft   = (1<<0),
@@ -100,7 +100,7 @@ enum UI_EventActionSlot
   COUNT
 }
 
-typedef U32 UI_EventFlags;
+typedef uint UI_EventFlags;
 enum
 {
   UI_EventFlag_KeepMark            = (1<<0),
@@ -138,7 +138,7 @@ struct UI_Event
   Vec2F32 pos;
   Vec2F32 delta_2f32;
   Vec2S32 delta_2s32;
-  U64 timestamp_us;
+  ulong timestamp_us;
 }
 
 struct UI_EventNode
@@ -152,13 +152,13 @@ struct UI_EventList
 {
   UI_EventNode* first;
   UI_EventNode* last;
-  U64 count;
+  ulong count;
 }
 
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-typedef U32 UI_TxtOpFlags;
+typedef uint UI_TxtOpFlags;
 enum
 {
   UI_TxtOpFlag_Invalid = (1<<0),
@@ -180,7 +180,7 @@ struct UI_TxtOp
 
 struct UI_Key
 {
-  U64[1] u64;
+  ulong[1] u64;
 }
 
 ////////////////////////////////
@@ -198,8 +198,8 @@ enum UI_SizeKind
 struct UI_Size
 {
   UI_SizeKind kind;
-  F32 value;
-  F32 strictness;
+  float value;
+  float strictness;
 }
 
 ////////////////////////////////
@@ -247,7 +247,7 @@ struct UI_WidgetPaletteInfo
 ////////////////////////////////
 //~ rjf: Animation Info
 
-typedef U32 UI_AnimationInfoFlags;
+typedef uint UI_AnimationInfoFlags;
 enum
 {
   UI_AnimationInfoFlag_HotAnimations          = (1<<0),
@@ -269,8 +269,8 @@ struct UI_AnimationInfo
 
 struct UI_ScrollPt
 {
-  S64 idx;
-  F32 off;
+  long idx;
+  float off;
 }
 
 union UI_ScrollPt2
@@ -298,7 +298,7 @@ struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
-typedef U64 UI_BoxFlags;
+typedef ulong UI_BoxFlags;
 //{
 //- rjf: interaction
 # define UI_BoxFlag_MouseClickable            (UI_BoxFlags)(1ull<<0)
@@ -382,7 +382,7 @@ struct UI_Box
   UI_Box* next;
   UI_Box* prev;
   UI_Box* parent;
-  U64 child_count;
+  ulong child_count;
   
   //- rjf: per-build equipment
   UI_Key key;
@@ -394,21 +394,21 @@ struct UI_Box
   UI_Size pref_size[Axis2_COUNT];
   Axis2 child_layout_axis;
   OS_Cursor hover_cursor;
-  U32 fastpath_codepoint;
+  uint fastpath_codepoint;
   UI_Key group_key;
   DR_Bucket* draw_bucket;
   UI_BoxCustomDrawFunctionType *custom_draw;
   void* custom_draw_user_data;
   UI_Palette* palette;
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  float font_size;
+  float tab_size;
   FNT_RasterFlags text_raster_flags;
-  F32[Corner_COUNT] corner_radii;
-  F32 blur_size;
-  F32 transparency;
-  F32 squish;
-  F32 text_padding;
+  float[Corner_COUNT] corner_radii;
+  float blur_size;
+  float transparency;
+  float squish;
+  float text_padding;
   
   //- rjf: per-build artifacts
   DR_FancyRunList display_string_runs;
@@ -418,15 +418,15 @@ struct UI_Box
   FuzzyMatchRangeList fuzzy_match_ranges;
   
   //- rjf: persistent data
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
-  U64 first_disabled_build_index;
-  F32 hot_t;
-  F32 active_t;
-  F32 disabled_t;
-  F32 focus_hot_t;
-  F32 focus_active_t;
-  F32 focus_active_disabled_t;
+  ulong first_touched_build_index;
+  ulong last_touched_build_index;
+  ulong first_disabled_build_index;
+  float hot_t;
+  float active_t;
+  float disabled_t;
+  float focus_hot_t;
+  float focus_active_t;
+  float focus_active_disabled_t;
   Vec2F32 view_off;
   Vec2F32 view_off_target;
   Vec2F32 view_bounds;
@@ -439,8 +439,8 @@ struct UI_Box
 struct UI_BoxRec
 {
   UI_Box* next;
-  S32 push_count;
-  S32 pop_count;
+  int push_count;
+  int pop_count;
 }
 
 struct UI_BoxNode
@@ -453,10 +453,10 @@ struct UI_BoxList
 {
   UI_BoxNode* first;
   UI_BoxNode* last;
-  U64 count;
+  ulong count;
 }
 
-typedef U32 UI_SignalFlags;
+typedef uint UI_SignalFlags;
 enum
 {
   // rjf: mouse press -> box was pressed while hovering
@@ -549,10 +549,10 @@ struct UI_Nav
 
 struct UI_AnimParams
 {
-  F32 initial;
-  F32 target;
-  F32 rate;
-  F32 epsilon;
+  float initial;
+  float target;
+  float rate;
+  float epsilon;
 }
 
 struct UI_AnimNode
@@ -561,11 +561,11 @@ struct UI_AnimNode
   UI_AnimNode* slot_prev;
   UI_AnimNode* lru_next;
   UI_AnimNode* lru_prev;
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
+  ulong first_touched_build_index;
+  ulong last_touched_build_index;
   UI_Key key;
   UI_AnimParams params;
-  F32 current;
+  float current;
 }
 
 struct UI_AnimSlot
@@ -598,18 +598,18 @@ struct UI_State
   
   //- rjf: build arenas
   Arena*[2] build_arenas;
-  U64 build_index;
+  ulong build_index;
   
   //- rjf: box cache
   UI_Box* first_free_box;
-  U64 box_table_size;
+  ulong box_table_size;
   UI_BoxHashSlot *box_table;
   
   //- rjf: anim cache
   UI_AnimNode* free_anim_node;
   UI_AnimNode* lru_anim_node;
   UI_AnimNode* mru_anim_node;
-  U64 anim_slots_count;
+  ulong anim_slots_count;
   UI_AnimSlot* anim_slots;
   
   //- rjf: build state machine state
@@ -620,8 +620,8 @@ struct UI_State
   UI_Box* tooltip_root;
   UI_Box* ctx_menu_root;
   UI_Key default_nav_root_key;
-  U64 build_box_count;
-  U64 last_build_box_count;
+  ulong build_box_count;
+  ulong last_build_box_count;
   B32 ctx_menu_touched_this_frame;
   B32 is_animating;
   
@@ -632,15 +632,15 @@ struct UI_State
   OS_Handle window;
   UI_EventList* events;
   Vec2F32 mouse;
-  F32 animation_dt;
-  F32 default_animation_rate;
+  float animation_dt;
+  float default_animation_rate;
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
   UI_Key[UI_MouseButtonKind.COUNT] active_box_key;
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  U64[UI_MouseButtonKind.COUNT][3] press_timestamp_history_us;
+  ulong[UI_MouseButtonKind.COUNT][3] press_timestamp_history_us;
   UI_Key[UI_MouseButtonKind.COUNT][3] press_key_history;
   Vec2F32[UI_MouseButtonKind.COUNT][3] press_pos_history;
   Vec2F32 drag_start_mouse;
@@ -649,12 +649,12 @@ struct UI_State
   Arena* string_hover_arena;
   String8 string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
-  U64 string_hover_begin_us;
-  U64 string_hover_build_index;
-  U64 last_time_mousemoved_us;
+  ulong string_hover_begin_us;
+  ulong string_hover_build_index;
+  ulong last_time_mousemoved_us;
   
   //- rjf: tooltip state
-  F32 tooltip_open_t;
+  float tooltip_open_t;
   B32 tooltip_open;
   
   //- rjf: context menu state
@@ -664,7 +664,7 @@ struct UI_State
   Vec2F32 ctx_menu_anchor_off;
   B32 ctx_menu_open;
   B32 next_ctx_menu_open;
-  F32 ctx_menu_open_t;
+  float ctx_menu_open_t;
   UI_Key ctx_menu_key;
   B32 ctx_menu_changed;
   
@@ -676,7 +676,7 @@ struct UI_State
 ////////////////////////////////
 //~ rjf: Size Type Functions
 
-internal UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
+internal UI_Size ui_size(UI_SizeKind kind, float value, float strictness);
 #define ui_px(value, strictness)         ui_size(UI_SizeKind.PIXELS, value, strictness)
 #define ui_em(value, strictness)         ui_size(UI_SizeKind.PIXELS, (value) * ui_top_font_size(), strictness)
 #define ui_text_dim(padding, strictness) ui_size(UI_SizeKind.TEXT_CONTENT, padding, strictness)
@@ -726,7 +726,7 @@ read_only global UI_AnimNode ui_nil_anim_node =
   &ui_nil_anim_node,
 };
 
-internal F32 ui_anim_(UI_Key key, UI_AnimParams *params);
+internal float ui_anim_(UI_Key key, UI_AnimParams *params);
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})
 
 ////////////////////////////////
