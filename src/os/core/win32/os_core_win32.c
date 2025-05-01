@@ -1365,7 +1365,7 @@ internal B32 win32_g_is_quiet = 0;
 internal HRESULT WINAPI
 win32_dialog_callback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, LONG_PTR data)
 {
-  if(msg == TDN_HYPERLINK_CLICKED)
+  if(msg == TDN_HYPERLINK__CLICKED)
   {
     ShellExecuteW(NULL, L"open", (LPWSTR)lparam, NULL, NULL, SW_SHOWNORMAL);
   }

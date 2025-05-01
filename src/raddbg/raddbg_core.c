@@ -3638,7 +3638,7 @@ rd_window_frame(RD_Window *ws)
       Temp scratch = scratch_begin(0, 0);
       String8 string = ui_string_hover_string(scratch.arena);
       DR_FancyRunList runs = ui_string_hover_runs(scratch.arena);
-      UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+      UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
       ui_box_equip_display_string_fancy_runs(box, string, &runs);
       scratch_end(scratch);
     }
@@ -3670,14 +3670,14 @@ rd_window_frame(RD_Window *ws)
           // rjf: title
           UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(5, 1))
           {
-            UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+            UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
             ui_box_equip_display_fancy_strings(box, &fstrs);
           }
           
           // rjf: temporary target -> display
           if(entity->kind == RD_EntityKind_Target && entity->cfg_src == RD_CfgSrc_CommandLine)
           {
-            UI_Flags(UI_BoxFlag_DrawTextWeak) ui_label(str8_lit("Specified on the command line; will not be saved."));
+            UI_Flags(UI_BoxFlags.DRAWTEXTWEAK) ui_label(str8_lit("Specified on the command line; will not be saved."));
           }
         }break;
         
@@ -3703,25 +3703,25 @@ rd_window_frame(RD_Window *ws)
           // rjf: title
           UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(5, 1))
           {
-            UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+            UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
             ui_box_equip_display_fancy_strings(box, &fstrs);
             ui_spacer(ui_em(0.5f, 1.f));
             UI_FontSize(ui_top_font_size() - 1.f)
               UI_CornerRadius(ui_top_font_size()*0.5f)
               RD_Palette(RD_PaletteCode_NeutralPopButton)
             {
-              UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_label(arch_str);
+              UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_label(arch_str);
               ui_spacer(ui_em(0.5f, 1.f));
               if(ctrl_entity->kind == CTRL_EntityKind_Thread ||
                  ctrl_entity->kind == CTRL_EntityKind_Process)
               {
-                UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("ID: %i", (U32)ctrl_entity->id);
+                UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_labelf("ID: %i", (U32)ctrl_entity->id);
               }
             }
           }
           
           // rjf: debug info status
-          if(ctrl_entity->kind == CTRL_EntityKind_Module) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+          if(ctrl_entity->kind == CTRL_EntityKind_Module) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
           {
             DI_Scope *di_scope = di_scope_open();
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(ctrl_entity);
@@ -3767,8 +3767,8 @@ rd_window_frame(RD_Window *ws)
                 String8 name = {0};
                 name.str = rdi_string_from_idx(rdi, fin->inline_site->name_string_idx, &name.size);
                 name.size = Min(512, name.size);
-                UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
-                RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
+                UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
                 if(name.size != 0)
                 {
                   RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -3778,7 +3778,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 else
                 {
-                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
+                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
                 }
               }
               
@@ -3788,7 +3788,7 @@ rd_window_frame(RD_Window *ws)
                 String8 name = {0};
                 name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
                 name.size = Min(512, name.size);
-                UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_em(12.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                 if(name.size != 0)
                 {
                   RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -3798,7 +3798,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 else
                 {
-                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
+                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
                 }
               }
             }
@@ -3848,18 +3848,18 @@ rd_window_frame(RD_Window *ws)
                 RD_Font(RD_FontSlot_Icons)
                   UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons))
                   UI_PrefWidth(ui_em(2.5f, 1.f))
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                   ui_label(rd_icon_kind_text_table[icon_kind]);
                 UI_PrefWidth(ui_text_dim(10, 1))
                 {
-                  UI_Box *name_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+                  UI_Box *name_box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
                   ui_box_equip_display_fancy_strings(name_box, &fstrs);
                 }
               }
               ui_set_next_pref_width(ui_pct(1, 0));
               ui_set_next_pref_height(ui_pct(1, 0));
               ui_set_next_child_layout_axis(Axis2_Y);
-              UI_Box *view_preview_container = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clip, "###view_preview_container");
+              UI_Box *view_preview_container = ui_build_box_from_stringf(UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.CLIP, "###view_preview_container");
               UI_Parent(view_preview_container) UI_Focus(UI_FocusKind.OFF) UI_WidthFill
               {
                 RD_ViewRuleUIFunctionType *view_ui = view->spec->ui;
@@ -3877,7 +3877,7 @@ rd_window_frame(RD_Window *ws)
     //
     if(ws->dev_menu_is_open) RD_Font(RD_FontSlot_Code)
     {
-      ui_set_next_flags(UI_BoxFlag_ViewScrollY|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_ViewClamp);
+      ui_set_next_flags(UI_BoxFlags.VIEWSCROLLY|UI_BoxFlags.ALLOWOVERFLOWY|UI_BoxFlags.VIEWCLAMP);
       UI_PaneF(r2f32p(30, 30, 30+ui_top_font_size()*100, ui_top_font_size()*150), "###dev_ctx_menu")
       {
         //- rjf: capture
@@ -4170,11 +4170,11 @@ rd_window_frame(RD_Window *ws)
                 UI_PrefWidth(ui_em(2.f, 1.f))
                 UI_PrefHeight(ui_pct(1, 0))
                 UI_TextAlignment(UI_TextAlign.CENTER)
-                UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                 ui_label(rd_icon_kind_text_table[view_icon]);
               UI_PrefWidth(ui_text_dim(10, 1))
               {
-                UI_Box *name_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+                UI_Box *name_box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
                 ui_box_equip_display_fancy_strings(name_box, &fstrs);
               }
             }
@@ -4290,7 +4290,7 @@ rd_window_frame(RD_Window *ws)
               UI_TextPadding(ui_top_font_size()*1.5f)
             {
               DR_FancyStringList fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, ctrl_entity, ui_top_palette()->text_weak, ui_top_font_size(), 0);
-              UI_Box *title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+              UI_Box *title_box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
               ui_box_equip_display_fancy_strings(title_box, &fstrs);
               if(ctrl_entity->kind == CTRL_EntityKind_Thread)
               {
@@ -4300,9 +4300,9 @@ rd_window_frame(RD_Window *ws)
                   RD_Palette(RD_PaletteCode_NeutralPopButton)
                   UI_TextPadding(ui_top_font_size()*0.5f)
                 {
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_label(string_from_arch(ctrl_entity->arch));
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_label(string_from_arch(ctrl_entity->arch));
                   ui_spacer(ui_em(0.5f, 1.f));
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (U32)ctrl_entity->id);
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_labelf("TID: %i", (U32)ctrl_entity->id);
                 }
               }
             }
@@ -4450,13 +4450,13 @@ rd_window_frame(RD_Window *ws)
                 // rjf: inline frames
                 for(CTRL_CallStackInlineFrame *fin = f->last_inline_frame; fin != 0; fin = fin->prev)
                 {
-                  UI_Box *row = ui_build_box_from_stringf(UI_BoxFlag_Clickable|UI_BoxFlag_ClickToFocus, "###callstack_row_%I64x", idx);
+                  UI_Box *row = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE|UI_BoxFlags.CLICKTOFOCUS, "###callstack_row_%I64x", idx);
                   UI_Signal sig = ui_signal_from_box(row);
                   ui_push_parent(row);
                   String8 name = {0};
                   name.str = rdi_string_from_idx(rdi, fin->inline_site->name_string_idx, &name.size);
-                  UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
-                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
+                  UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                  RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_label(str8_lit("[inlined]"));
                   if(name.size != 0)
                   {
                     RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -4466,19 +4466,19 @@ rd_window_frame(RD_Window *ws)
                   }
                   else
                   {
-                    RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
+                    RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
                   }
                   ui_pop_parent();
                 }
                 
                 // rjf: concrete frame
                 {
-                  UI_Box *row = ui_build_box_from_stringf(UI_BoxFlag_Clickable|UI_BoxFlag_ClickToFocus, "###callstack_row_%I64x", idx);
+                  UI_Box *row = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE|UI_BoxFlags.CLICKTOFOCUS, "###callstack_row_%I64x", idx);
                   UI_Signal sig = ui_signal_from_box(row);
                   ui_push_parent(row);
                   String8 name = {0};
                   name.str = rdi_name_from_procedure(rdi, procedure, &name.size);
-                  UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
+                  UI_TextAlignment(UI_TextAlign.LEFT) RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_em(16.f, 1)) ui_labelf("0x%I64x", rip_vaddr);
                   if(name.size != 0)
                   {
                     RD_Font(RD_FontSlot_Code) UI_PrefWidth(ui_text_dim(10, 1))
@@ -4488,7 +4488,7 @@ rd_window_frame(RD_Window *ws)
                   }
                   else
                   {
-                    RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
+                    RD_Font(RD_FontSlot_Code) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) UI_PrefWidth(ui_text_dim(10, 1)) ui_labelf("[??? in %S]", module_name);
                   }
                   ui_pop_parent();
                 }
@@ -4523,11 +4523,11 @@ rd_window_frame(RD_Window *ws)
                     {
                       ui_set_next_hover_cursor(OS_Cursor_HandPoint);
                       ui_set_next_palette(ui_build_palette(ui_top_palette(), .background = presets[preset_idx]));
-                      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_DrawBackground|
-                                                              UI_BoxFlag_DrawBorder|
-                                                              UI_BoxFlag_Clickable|
-                                                              UI_BoxFlag_DrawHotEffects|
-                                                              UI_BoxFlag_DrawActiveEffects,
+                      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlags.DRAWBACKGROUND|
+                                                              UI_BoxFlags.DRAWBORDER|
+                                                              UI_BoxFlags.CLICKABLE|
+                                                              UI_BoxFlags.DRAWHOTEFFECTS|
+                                                              UI_BoxFlags.DRAWACTIVEEFFECTS,
                                                               "###color_preset_%i", (int)preset_idx);
                       UI_Signal sig = ui_signal_from_box(box);
                       if(ui_clicked(sig))
@@ -4583,7 +4583,7 @@ rd_window_frame(RD_Window *ws)
               UI_TextPadding(ui_top_font_size()*1.5f)
             {
               DR_FancyStringList fstrs = rd_title_fstrs_from_entity(scratch.arena, entity, ui_top_palette()->text_weak, ui_top_font_size());
-              UI_Box *title_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+              UI_Box *title_box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
               ui_box_equip_display_fancy_strings(title_box, &fstrs);
               if(ctrl_entity->kind == CTRL_EntityKind_Thread)
               {
@@ -4593,9 +4593,9 @@ rd_window_frame(RD_Window *ws)
                   RD_Palette(RD_PaletteCode_NeutralPopButton)
                   UI_TextPadding(ui_top_font_size()*0.5f)
                 {
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_label(string_from_arch(ctrl_entity->arch));
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_label(string_from_arch(ctrl_entity->arch));
                   ui_spacer(ui_em(0.5f, 1.f));
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak|UI_BoxFlag_DrawBorder) ui_labelf("TID: %i", (U32)ctrl_entity->id);
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK|UI_BoxFlags.DRAWBORDER) ui_labelf("TID: %i", (U32)ctrl_entity->id);
                 }
               }
             }
@@ -4647,7 +4647,7 @@ rd_window_frame(RD_Window *ws)
         RD_Palette(RD_PaletteCode_ImplicitButton)
         UI_PrefWidth(ui_em(40.f, 1.f))
       {
-        UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+        UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
           for(String8Node *n = ws->drop_completion_paths.first; n != 0; n = n->next)
         {
           UI_Row UI_Padding(ui_em(1.f, 1.f))
@@ -4733,14 +4733,14 @@ rd_window_frame(RD_Window *ws)
           UI_BlurSize(10*rd_state->popup_t)
           UI_Palette(palette)
         {
-          bg_box = ui_build_box_from_stringf(UI_BoxFlag_FixedSize|
-                                             UI_BoxFlag_Floating|
-                                             UI_BoxFlag_Clickable|
-                                             UI_BoxFlag_Scroll|
-                                             UI_BoxFlag_DefaultFocusNav|
-                                             UI_BoxFlag_DisableFocusOverlay|
-                                             UI_BoxFlag_DrawBackgroundBlur|
-                                             UI_BoxFlag_DrawBackground, "###popup_%p", ws);
+          bg_box = ui_build_box_from_stringf(UI_BoxFlags.FIXEDSIZE|
+                                             UI_BoxFlags.FLOATING|
+                                             UI_BoxFlags.CLICKABLE|
+                                             UI_BoxFlags.SCROLL|
+                                             UI_BoxFlags.DEFAULTFOCUSNAV|
+                                             UI_BoxFlags.DISABLEFOCUSOVERLAY|
+                                             UI_BoxFlags.DRAWBACKGROUNDBLUR|
+                                             UI_BoxFlags.DRAWBACKGROUND, "###popup_%p", ws);
         }
         if(rd_state->popup_active) UI_Parent(bg_box) UI_Transparency(1-rd_state->popup_t)
         {
@@ -4748,7 +4748,7 @@ rd_window_frame(RD_Window *ws)
           UI_WidthFill UI_PrefHeight(ui_children_sum(1.f)) UI_Column UI_Padding(ui_pct(1, 0))
           {
             UI_TextRasterFlags(rd_raster_flags_from_slot(RD_FontSlot_Main)) UI_FontSize(ui_top_font_size()*2.f) UI_PrefHeight(ui_em(3.f, 1.f)) ui_label(rd_state->popup_title);
-            UI_PrefHeight(ui_em(3.f, 1.f)) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) ui_label(rd_state->popup_desc);
+            UI_PrefHeight(ui_em(3.f, 1.f)) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK) ui_label(rd_state->popup_desc);
             ui_spacer(ui_em(1.5f, 1.f));
             UI_Row UI_Padding(ui_pct(1.f, 0.f)) UI_PrefWidth(ui_em(16.f, 1.f)) UI_PrefHeight(ui_em(3.5f, 1.f)) UI_CornerRadius(ui_top_font_size()*0.5f)
             {
@@ -5256,15 +5256,15 @@ rd_window_frame(RD_Window *ws)
             UI_Transparency(1.f-ws->autocomp_open_t)
             RD_Palette(RD_PaletteCode_Floating)
           {
-            autocomp_box = ui_build_box_from_stringf(UI_BoxFlag_DefaultFocusNavY|
-                                                     UI_BoxFlag_Clickable|
-                                                     UI_BoxFlag_Clip|
-                                                     UI_BoxFlag_RoundChildrenByParent|
-                                                     UI_BoxFlag_DisableFocusOverlay|
-                                                     UI_BoxFlag_DrawBorder|
-                                                     UI_BoxFlag_DrawBackgroundBlur|
-                                                     UI_BoxFlag_DrawDropShadow|
-                                                     UI_BoxFlag_DrawBackground,
+            autocomp_box = ui_build_box_from_stringf(UI_BoxFlags.DEFAULTFOCUSNAVY|
+                                                     UI_BoxFlags.CLICKABLE|
+                                                     UI_BoxFlags.CLIP|
+                                                     UI_BoxFlags.ROUNDCHILDRENBYPARENT|
+                                                     UI_BoxFlags.DISABLEFOCUSOVERLAY|
+                                                     UI_BoxFlags.DRAWBORDER|
+                                                     UI_BoxFlags.DRAWBACKGROUNDBLUR|
+                                                     UI_BoxFlags.DRAWDROPSHADOW|
+                                                     UI_BoxFlags.DRAWBACKGROUND,
                                                      "autocomp_box");
             if(ws->autocomp_input_dirty)
             {
@@ -5284,7 +5284,7 @@ rd_window_frame(RD_Window *ws)
             for(U64 idx = 0; idx < item_array.count; idx += 1)
             {
               RD_AutoCompListerItem *item = &item_array.v[idx];
-              UI_Box *item_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawActiveEffects|UI_BoxFlag_MouseClickable, "autocomp_%I64x", idx);
+              UI_Box *item_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.DRAWHOTEFFECTS|UI_BoxFlags.DRAWACTIVEEFFECTS|UI_BoxFlags.MOUSECLICKABLE, "autocomp_%I64x", idx);
               UI_Parent(item_box) UI_Padding(ui_em(1.f, 1.f))
               {
                 UI_WidthFill RD_Font(item->is_non_code ? RD_FontSlot_Main : RD_FontSlot_Code)
@@ -5294,7 +5294,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 RD_Font(RD_FontSlot_Main)
                   UI_PrefWidth(ui_text_dim(10, 1))
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                   ui_label(item->kind_string);
               }
               UI_Signal item_sig = ui_signal_from_box(item_box);
@@ -5311,7 +5311,7 @@ rd_window_frame(RD_Window *ws)
                 ui_event_list_push(ui_build_arena(), &ws->ui_events, &paste_evt);
                 autocomp_box->default_nav_focus_hot_key = autocomp_box->default_nav_focus_active_key = autocomp_box->default_nav_focus_next_hot_key = autocomp_box->default_nav_focus_next_active_key = ui_key_zero();
               }
-              else if(item_box->flags & UI_BoxFlag_FocusHot && !(item_box->flags & UI_BoxFlag_FocusHotDisabled))
+              else if(item_box->flags & UI_BoxFlags.FOCUSHOT && !(item_box->flags & UI_BoxFlags.FOCUSHOTDISABLED))
               {
                 UI_Event evt = zero_struct;
                 evt.kind   = UI_EventKind.AUTOCOMPLETE_HINT;
@@ -5335,7 +5335,7 @@ rd_window_frame(RD_Window *ws)
       os_window_clear_custom_border_data(ws->os);
       os_window_push_custom_edges(ws->os, window_edge_px);
       os_window_push_custom_title_bar(ws->os, dim_2f32(top_bar_rect).y);
-      ui_set_next_flags(UI_BoxFlag_DefaultFocusNav|UI_BoxFlag_DisableFocusOverlay);
+      ui_set_next_flags(UI_BoxFlags.DEFAULTFOCUSNAV|UI_BoxFlags.DISABLEFOCUSOVERLAY);
       RD_Palette(RD_PaletteCode_MenuBar)
         UI_Focus((ws->menu_bar_focused && window_is_focused && !ui_any_ctx_menu_is_open() && !ws->hover_eval_focused) ? UI_FocusKind.ON : UI_FocusKind.NULL)
         UI_Pane(top_bar_rect, str8_lit("###top_bar"))
@@ -5346,7 +5346,7 @@ rd_window_frame(RD_Window *ws)
         MemoryZeroArray(ui_top_parent()->parent->corner_radii);
         
         //- rjf: left column
-        ui_set_next_flags(UI_BoxFlag_Clip|UI_BoxFlag_ViewScrollX|UI_BoxFlag_ViewClamp);
+        ui_set_next_flags(UI_BoxFlags.CLIP|UI_BoxFlags.VIEWSCROLLX|UI_BoxFlags.VIEWCLAMP);
         UI_WidthFill UI_NamedRow(str8_lit("###menu_bar"))
         {
           //- rjf: icon
@@ -5364,7 +5364,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: menu items
-          ui_set_next_flags(UI_BoxFlag_DrawBackground);
+          ui_set_next_flags(UI_BoxFlags.DRAWBACKGROUND);
           UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(20, 1)) UI_GroupKey(menu_bar_group_key)
           {
             // rjf: file menu
@@ -5586,7 +5586,7 @@ rd_window_frame(RD_Window *ws)
               UI_PrefWidth(ui_em(50.f, 1.f))
               RD_Palette(RD_PaletteCode_ImplicitButton)
             {
-              UI_Row UI_TextAlignment(UI_TextAlign.CENTER) UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+              UI_Row UI_TextAlignment(UI_TextAlign.CENTER) UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                 ui_label(str8_lit(BUILD_TITLE_STRING_LITERAL));
               ui_spacer(ui_em(1.f, 1.f));
               UI_PrefHeight(ui_children_sum(1)) UI_Row UI_Padding(ui_pct(1, 0))
@@ -5604,7 +5604,7 @@ rd_window_frame(RD_Window *ws)
                 UI_Padding(ui_pct(1, 0))
               {
                 ui_labelf("Search for commands by pressing ");
-                UI_Flags(UI_BoxFlag_DrawBorder)
+                UI_Flags(UI_BoxFlags.DRAWBORDER)
                   UI_TextAlignment(UI_TextAlign.CENTER)
                   rd_cmd_binding_buttons(rd_cmd_kind_info_table[RD_CmdKind_RunCommand].string);
               }
@@ -5694,7 +5694,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 if((ws->menu_bar_key_held || ws->menu_bar_focused) && !ui_any_ctx_menu_is_open())
                 {
-                  ui_set_next_flags(UI_BoxFlag_DrawTextFastpathCodepoint);
+                  ui_set_next_flags(UI_BoxFlags.DRAWTEXTFASTPATHCODEPOINT);
                 }
                 UI_Signal sig = rd_menu_bar_button(items[idx].name);
                 os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5737,7 +5737,7 @@ rd_window_frame(RD_Window *ws)
                 String8 rdi_name = str8_skip_last_slash(rdi_path);
                 String8 task_text = push_str8f(scratch.arena, "Creating %S...", rdi_name);
                 UI_Key key = ui_key_from_stringf(ui_key_zero(), "task_%p", task);
-                UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable, key);
+                UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWHOTEFFECTS|UI_BoxFlags.DRAWTEXT|UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.CLICKABLE, key);
                 os_window_push_custom_title_bar_client_area(ws->os, box->rect);
                 UI_Signal sig = ui_signal_from_box(box);
                 if(ui_hovering(sig)) UI_Tooltip
@@ -5770,7 +5770,7 @@ rd_window_frame(RD_Window *ws)
           //- rjf: play button
           if(can_play || !have_targets || processes.count == 0)
             UI_TextAlignment(UI_TextAlign.CENTER)
-            UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
+            UI_Flags((can_play ? 0 : UI_BoxFlags.DISABLED))
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextPositive)))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_Play]);
@@ -5798,7 +5798,7 @@ rd_window_frame(RD_Window *ws)
                   for(RD_EntityNode *n = targets.first; n != 0; n = n->next)
                   {
                     DR_FancyStringList title_fstrs = rd_title_fstrs_from_entity(ui_build_arena(), n->entity, ui_top_palette()->text_weak, ui_top_font_size());
-                    UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+                    UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
                     ui_box_equip_display_fancy_strings(box, &title_fstrs);
                   }
                 }
@@ -5832,7 +5832,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: pause button
-          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_pause ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_pause ? 0 : UI_BoxFlags.DISABLED)
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNeutral)))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_Pause]);
@@ -5858,7 +5858,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: stop button
-          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_stop ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_stop ? 0 : UI_BoxFlags.DISABLED)
             UI_Palette(ui_build_palette(ui_top_palette(), .text = rd_rgba_from_theme_color(RD_ThemeColor_TextNegative)))
           {
             UI_Signal sig = {0};
@@ -5887,7 +5887,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step over button
-          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
+          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags((can_play ? 0 : UI_BoxFlags.DISABLED))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepOver]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5915,7 +5915,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step into button
-          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags((can_play ? 0 : UI_BoxFlag_Disabled))
+          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags((can_play ? 0 : UI_BoxFlags.DISABLED))
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepInto]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5943,7 +5943,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           //- rjf: step out button
-          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_step ? 0 : UI_BoxFlag_Disabled)
+          UI_TextAlignment(UI_TextAlign.CENTER) UI_Flags(can_step ? 0 : UI_BoxFlags.DISABLED)
           {
             UI_Signal sig = ui_button(rd_icon_kind_text_table[RD_IconKind_StepOut]);
             os_window_push_custom_title_bar_client_area(ws->os, sig.box->rect);
@@ -5990,11 +5990,11 @@ rd_window_frame(RD_Window *ws)
             ui_set_next_pref_width(ui_children_sum(1));
             ui_set_next_child_layout_axis(Axis2_X);
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-            UI_Box *user_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
-                                                         UI_BoxFlag_DrawBorder|
-                                                         UI_BoxFlag_DrawBackground|
-                                                         UI_BoxFlag_DrawHotEffects|
-                                                         UI_BoxFlag_DrawActiveEffects,
+            UI_Box *user_box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE|
+                                                         UI_BoxFlags.DRAWBORDER|
+                                                         UI_BoxFlags.DRAWBACKGROUND|
+                                                         UI_BoxFlags.DRAWHOTEFFECTS|
+                                                         UI_BoxFlags.DRAWACTIVEEFFECTS,
                                                          "###loaded_user_button");
             os_window_push_custom_title_bar_client_area(ws->os, user_box->rect);
             UI_Parent(user_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign.CENTER)
@@ -6024,11 +6024,11 @@ rd_window_frame(RD_Window *ws)
             ui_set_next_pref_width(ui_children_sum(1));
             ui_set_next_child_layout_axis(Axis2_X);
             ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-            UI_Box *prof_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
-                                                         UI_BoxFlag_DrawBorder|
-                                                         UI_BoxFlag_DrawBackground|
-                                                         UI_BoxFlag_DrawHotEffects|
-                                                         UI_BoxFlag_DrawActiveEffects,
+            UI_Box *prof_box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE|
+                                                         UI_BoxFlags.DRAWBORDER|
+                                                         UI_BoxFlags.DRAWBACKGROUND|
+                                                         UI_BoxFlags.DRAWHOTEFFECTS|
+                                                         UI_BoxFlags.DRAWACTIVEEFFECTS,
                                                          "###loaded_project_button");
             os_window_push_custom_title_bar_client_area(ws->os, prof_box->rect);
             UI_Parent(prof_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign.CENTER)
@@ -6130,7 +6130,7 @@ rd_window_frame(RD_Window *ws)
         }
         palette = blended_scheme;
       }
-      UI_Flags(UI_BoxFlag_DrawBackground) UI_CornerRadius(0)
+      UI_Flags(UI_BoxFlags.DRAWBACKGROUND) UI_CornerRadius(0)
         UI_Palette(palette)
         UI_Pane(bottom_bar_rect, str8_lit("###bottom_bar")) UI_WidthFill UI_Row
         UI_Flags(0)
@@ -6156,7 +6156,7 @@ rd_window_frame(RD_Window *ws)
           {
             Temp scratch = scratch_begin(0, 0);
             DR_FancyStringList explanation_fstrs = rd_stop_explanation_fstrs_from_ctrl_event(scratch.arena, &stop_event);
-            UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+            UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
             ui_box_equip_display_fancy_strings(box, &explanation_fstrs);
             scratch_end(scratch);
           }
@@ -6169,7 +6169,7 @@ rd_window_frame(RD_Window *ws)
         {
           RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(rd_state->bind_change_cmd_name);
           UI_PrefWidth(ui_text_dim(10, 1))
-            UI_Flags(UI_BoxFlag_DrawBackground)
+            UI_Flags(UI_BoxFlags.DRAWBACKGROUND)
             UI_TextAlignment(UI_TextAlign.CENTER)
             UI_CornerRadius(4)
             RD_Palette(RD_PaletteCode_NeutralPopButton)
@@ -6346,15 +6346,15 @@ rd_window_frame(RD_Window *ws)
         UI_Squish(0.25f-ws->query_view_t*0.25f)
         UI_Transparency(1-ws->query_view_t)
       {
-        query_container_box = ui_build_box_from_stringf(UI_BoxFlag_Floating|
-                                                        UI_BoxFlag_AllowOverflow|
-                                                        UI_BoxFlag_Clickable|
-                                                        UI_BoxFlag_Clip|
-                                                        UI_BoxFlag_DisableFocusOverlay|
-                                                        UI_BoxFlag_DrawBorder|
-                                                        UI_BoxFlag_DrawBackground|
-                                                        UI_BoxFlag_DrawBackgroundBlur|
-                                                        UI_BoxFlag_DrawDropShadow,
+        query_container_box = ui_build_box_from_stringf(UI_BoxFlags.FLOATING|
+                                                        UI_BoxFlags.ALLOWOVERFLOW|
+                                                        UI_BoxFlags.CLICKABLE|
+                                                        UI_BoxFlags.CLIP|
+                                                        UI_BoxFlags.DISABLEFOCUSOVERLAY|
+                                                        UI_BoxFlags.DRAWBORDER|
+                                                        UI_BoxFlags.DRAWBACKGROUND|
+                                                        UI_BoxFlags.DRAWBACKGROUNDBLUR|
+                                                        UI_BoxFlags.DRAWDROPSHADOW,
                                                         "panel_query_container");
       }
       
@@ -6365,7 +6365,7 @@ rd_window_frame(RD_Window *ws)
         UI_WidthFill UI_PrefHeight(ui_px(query_line_edit_height, 1.f))
         UI_Focus(UI_FocusKind.ON)
       {
-        ui_set_next_flags(UI_BoxFlag_DrawDropShadow|UI_BoxFlag_DrawBorder);
+        ui_set_next_flags(UI_BoxFlags.DRAWDROPSHADOW|UI_BoxFlags.DRAWBORDER);
         UI_Row
         {
           UI_PrefWidth(ui_text_dim(0.f, 1.f)) UI_Padding(ui_em(1.f, 1.f))
@@ -6453,7 +6453,7 @@ rd_window_frame(RD_Window *ws)
       UI_Palette(ui_build_palette(0, .background = mix_4f32(rd_rgba_from_theme_color(RD_ThemeColor_InactivePanelOverlay), v4f32(0, 0, 0, 0), 1-ws->query_view_selected_t)))
         UI_Rect(window_rect)
       {
-        ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+        ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
       }
     }
     else
@@ -6607,19 +6607,19 @@ rd_window_frame(RD_Window *ws)
           ui_set_next_transparency(1.f-ws->hover_eval_open_t);
           UI_Focus(UI_FocusKind.ON)
           {
-            hover_eval_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|
-                                                       UI_BoxFlag_DrawBackground|
-                                                       UI_BoxFlag_DrawBackgroundBlur|
-                                                       UI_BoxFlag_DrawDropShadow|
-                                                       UI_BoxFlag_DisableFocusOverlay|
-                                                       UI_BoxFlag_Clip|
-                                                       UI_BoxFlag_AllowOverflowY|
-                                                       UI_BoxFlag_ViewScroll|
-                                                       UI_BoxFlag_ViewClamp|
-                                                       UI_BoxFlag_Floating|
-                                                       UI_BoxFlag_AnimatePos|
-                                                       UI_BoxFlag_Clickable|
-                                                       UI_BoxFlag_DefaultFocusNav,
+            hover_eval_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWBORDER|
+                                                       UI_BoxFlags.DRAWBACKGROUND|
+                                                       UI_BoxFlags.DRAWBACKGROUNDBLUR|
+                                                       UI_BoxFlags.DRAWDROPSHADOW|
+                                                       UI_BoxFlags.DISABLEFOCUSOVERLAY|
+                                                       UI_BoxFlags.CLIP|
+                                                       UI_BoxFlags.ALLOWOVERFLOWY|
+                                                       UI_BoxFlags.VIEWSCROLL|
+                                                       UI_BoxFlags.VIEWCLAMP|
+                                                       UI_BoxFlags.FLOATING|
+                                                       UI_BoxFlags.ANIMATEPOS|
+                                                       UI_BoxFlags.CLICKABLE|
+                                                       UI_BoxFlags.DEFAULTFOCUSNAV,
                                                        "###hover_eval");
           }
           
@@ -6677,7 +6677,7 @@ rd_window_frame(RD_Window *ws)
                   for(U64 indent = 0; indent < row_depth; indent += 1)
                   {
                     ui_spacer(ui_em(0.5f, 1.f));
-                    UI_Flags(UI_BoxFlag_DrawSideLeft) ui_spacer(ui_em(1.f, 1.f));
+                    UI_Flags(UI_BoxFlags.DRAWSIDELEFT) ui_spacer(ui_em(1.f, 1.f));
                   }
                 }
                 U64 row_hash = ev_hash_from_key(row->key);
@@ -6691,7 +6691,7 @@ rd_window_frame(RD_Window *ws)
                 if(!row_is_expandable)
                 {
                   UI_PrefWidth(ui_em(1.f, 1))
-                    UI_Flags(UI_BoxFlag_DrawTextWeak)
+                    UI_Flags(UI_BoxFlags.DRAWTEXTWEAK)
                     RD_Font(RD_FontSlot_Icons)
                     ui_label(rd_icon_kind_text_table[RD_IconKind_Dot]);
                 }
@@ -6731,7 +6731,7 @@ rd_window_frame(RD_Window *ws)
                     {
                       Vec4F32 rgba = rd_rgba_from_theme_color(RD_ThemeColor_HighlightOverlay);
                       ui_set_next_palette(ui_build_palette(ui_top_palette(), .background = rgba));
-                      ui_set_next_flags(UI_BoxFlag_DrawBackground);
+                      ui_set_next_flags(UI_BoxFlags.DRAWBACKGROUND);
                     }
                     rd_code_label(1.f, 1, rd_rgba_from_theme_color(RD_ThemeColor_CodeDefault), row_display_value);
                   }
@@ -6864,7 +6864,7 @@ rd_window_frame(RD_Window *ws)
               {
                 UI_Rect(site_rect)
                 {
-                  site_box = ui_build_box_from_key(UI_BoxFlag_DropSite, key);
+                  site_box = ui_build_box_from_key(UI_BoxFlags.DROPSITE, key);
                   ui_signal_from_box(site_box);
                 }
                 UI_Box *site_box_viz = &ui_nil_box;
@@ -6878,19 +6878,19 @@ rd_window_frame(RD_Window *ws)
                   {
                     ui_set_next_palette(ui_build_palette(ui_top_palette(), .border = rd_rgba_from_theme_color(RD_ThemeColor_Hover)));
                   }
-                  site_box_viz = ui_build_box_from_key(UI_BoxFlag_DrawBackground|
-                                                       UI_BoxFlag_DrawBorder|
-                                                       UI_BoxFlag_DrawDropShadow|
-                                                       UI_BoxFlag_DrawBackgroundBlur, ui_key_zero());
+                  site_box_viz = ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND|
+                                                       UI_BoxFlags.DRAWBORDER|
+                                                       UI_BoxFlags.DRAWDROPSHADOW|
+                                                       UI_BoxFlags.DRAWBACKGROUNDBLUR, ui_key_zero());
                 }
                 UI_Parent(site_box_viz) UI_WidthFill UI_HeightFill UI_Padding(ui_px(padding, 1.f))
                 {
                   ui_set_next_child_layout_axis(axis);
                   UI_Box *row_or_column = ui_build_box_from_key(0, ui_key_zero()); UI_Parent(row_or_column) UI_Padding(ui_px(padding, 1.f))
                   {
-                    ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                    ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                     ui_spacer(ui_px(padding, 1.f));
-                    ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                    ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                   }
                 }
               }
@@ -6905,7 +6905,7 @@ rd_window_frame(RD_Window *ws)
                 future_split_rect.p1.v[axis2_flip(axis)] = panel_rect.p1.v[axis2_flip(axis)];
                 UI_Rect(future_split_rect) RD_Palette(RD_PaletteCode_DropSiteOverlay)
                 {
-                  ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+                  ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
                 }
               }
               
@@ -6947,7 +6947,7 @@ rd_window_frame(RD_Window *ws)
             {
               UI_Rect(site_rect)
               {
-                site_box = ui_build_box_from_key(UI_BoxFlag_DropSite, key);
+                site_box = ui_build_box_from_key(UI_BoxFlags.DROPSITE, key);
                 ui_signal_from_box(site_box);
               }
               UI_Box *site_box_viz = &ui_nil_box;
@@ -6961,19 +6961,19 @@ rd_window_frame(RD_Window *ws)
                 {
                   ui_set_next_palette(ui_build_palette(ui_top_palette(), .border = rd_rgba_from_theme_color(RD_ThemeColor_Hover)));
                 }
-                site_box_viz = ui_build_box_from_key(UI_BoxFlag_DrawBackground|
-                                                     UI_BoxFlag_DrawBorder|
-                                                     UI_BoxFlag_DrawDropShadow|
-                                                     UI_BoxFlag_DrawBackgroundBlur, ui_key_zero());
+                site_box_viz = ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND|
+                                                     UI_BoxFlags.DRAWBORDER|
+                                                     UI_BoxFlags.DRAWDROPSHADOW|
+                                                     UI_BoxFlags.DRAWBACKGROUNDBLUR, ui_key_zero());
               }
               UI_Parent(site_box_viz) UI_WidthFill UI_HeightFill UI_Padding(ui_px(padding, 1.f))
               {
                 ui_set_next_child_layout_axis(split_axis);
                 UI_Box *row_or_column = ui_build_box_from_key(0, ui_key_zero()); UI_Parent(row_or_column) UI_Padding(ui_px(padding, 1.f))
                 {
-                  ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                  ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                   ui_spacer(ui_px(padding, 1.f));
-                  ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                  ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                 }
               }
             }
@@ -6988,7 +6988,7 @@ rd_window_frame(RD_Window *ws)
               future_split_rect.p1.v[axis2_flip(split_axis)] = child_rect.p1.v[axis2_flip(split_axis)];
               UI_Rect(future_split_rect) RD_Palette(RD_PaletteCode_DropSiteOverlay)
               {
-                ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+                ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
               }
             }
             
@@ -7038,7 +7038,7 @@ rd_window_frame(RD_Window *ws)
         UI_Rect(boundary_rect)
         {
           ui_set_next_hover_cursor(split_axis == Axis2_X ? OS_Cursor_LeftRight : OS_Cursor_UpDown);
-          UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%p_%p", min_child, max_child);
+          UI_Box *box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE, "###%p_%p", min_child, max_child);
           UI_Signal sig = ui_signal_from_box(box);
           if(ui_double_clicked(sig))
           {
@@ -7247,7 +7247,7 @@ rd_window_frame(RD_Window *ws)
               {
                 UI_Rect(rect)
                 {
-                  site_box = ui_build_box_from_key(UI_BoxFlag_DropSite, key);
+                  site_box = ui_build_box_from_key(UI_BoxFlags.DROPSITE, key);
                   ui_signal_from_box(site_box);
                 }
                 UI_Box *site_box_viz = &ui_nil_box;
@@ -7261,10 +7261,10 @@ rd_window_frame(RD_Window *ws)
                   {
                     ui_set_next_palette(ui_build_palette(ui_top_palette(), .border = rd_rgba_from_theme_color(RD_ThemeColor_Hover)));
                   }
-                  site_box_viz = ui_build_box_from_key(UI_BoxFlag_DrawBackground|
-                                                       UI_BoxFlag_DrawBorder|
-                                                       UI_BoxFlag_DrawDropShadow|
-                                                       UI_BoxFlag_DrawBackgroundBlur, ui_key_zero());
+                  site_box_viz = ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND|
+                                                       UI_BoxFlags.DRAWBORDER|
+                                                       UI_BoxFlags.DRAWDROPSHADOW|
+                                                       UI_BoxFlags.DRAWBACKGROUNDBLUR, ui_key_zero());
                 }
                 if(dir != Dir2_Invalid)
                 {
@@ -7273,11 +7273,11 @@ rd_window_frame(RD_Window *ws)
                     ui_set_next_child_layout_axis(split_axis);
                     UI_Box *row_or_column = ui_build_box_from_key(0, ui_key_zero()); UI_Parent(row_or_column) UI_Padding(ui_px(padding, 1.f))
                     {
-                      if(split_side == Side_Min) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
-                      RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                      if(split_side == Side_Min) { ui_set_next_flags(UI_BoxFlags.DRAWBACKGROUND); }
+                      RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                       ui_spacer(ui_px(padding, 1.f));
-                      if(split_side == Side_Max) { ui_set_next_flags(UI_BoxFlag_DrawBackground); }
-                      RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+                      if(split_side == Side_Max) { ui_set_next_flags(UI_BoxFlags.DRAWBACKGROUND); }
+                      RD_Palette(RD_PaletteCode_DropSiteOverlay) ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
                     }
                   }
                 }
@@ -7289,7 +7289,7 @@ rd_window_frame(RD_Window *ws)
                     UI_Box *row_or_column = ui_build_box_from_key(0, ui_key_zero());
                     UI_Parent(row_or_column) UI_Padding(ui_px(padding, 1.f)) RD_Palette(RD_PaletteCode_DropSiteOverlay)
                     {
-                      ui_build_box_from_key(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, ui_key_zero());
+                      ui_build_box_from_key(UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
                     }
                   }
                 }
@@ -7329,7 +7329,7 @@ rd_window_frame(RD_Window *ws)
                 }
                 UI_Rect(future_split_rect) RD_Palette(RD_PaletteCode_DropSiteOverlay)
                 {
-                  ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+                  ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
                 }
               }
             }
@@ -7345,7 +7345,7 @@ rd_window_frame(RD_Window *ws)
           UI_Rect(panel_rect)
           {
             UI_Key key = ui_key_from_stringf(ui_key_zero(), "catchall_drop_site_%p", panel);
-            UI_Box *catchall_drop_site = ui_build_box_from_key(UI_BoxFlag_DropSite, key);
+            UI_Box *catchall_drop_site = ui_build_box_from_key(UI_BoxFlags.DROPSITE, key);
             ui_signal_from_box(catchall_drop_site);
             catchall_drop_site_hovered = ui_key_match(key, ui_drop_hot_key());
           }
@@ -7368,12 +7368,12 @@ rd_window_frame(RD_Window *ws)
               UI_Rect(filter_rect)
               {
                 ui_set_next_child_layout_axis(Axis2_X);
-                filter_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBackground|UI_BoxFlag_Clip|UI_BoxFlag_DrawBorder, "filter_box_%p", view);
+                filter_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.CLIP|UI_BoxFlags.DRAWBORDER, "filter_box_%p", view);
               }
               UI_Parent(filter_box) UI_WidthFill UI_HeightFill
               {
                 UI_PrefWidth(ui_em(3.f, 1.f))
-                  UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                  UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                   RD_Font(RD_FontSlot_Icons)
                   UI_TextAlignment(UI_TextAlign.CENTER)
                   ui_label(rd_icon_kind_text_table[RD_IconKind_Find]);
@@ -7415,7 +7415,7 @@ rd_window_frame(RD_Window *ws)
           UI_Palette(ui_build_palette(0, .background = rd_rgba_from_theme_color(RD_ThemeColor_InactivePanelOverlay)))
             UI_Rect(content_rect)
           {
-            ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+            ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
           }
         }
         
@@ -7426,11 +7426,11 @@ rd_window_frame(RD_Window *ws)
         UI_Rect(content_rect) UI_ChildLayoutAxis(Axis2_Y) UI_CornerRadius(0) UI_Focus(UI_FocusKind.ON)
         {
           UI_Key panel_key = rd_ui_key_from_panel(panel);
-          panel_box = ui_build_box_from_key(UI_BoxFlag_MouseClickable|
-                                            UI_BoxFlag_Clip|
-                                            UI_BoxFlag_DrawBorder|
-                                            UI_BoxFlag_DisableFocusOverlay|
-                                            ((ws->focused_panel != panel)*UI_BoxFlag_DisableFocusBorder),
+          panel_box = ui_build_box_from_key(UI_BoxFlags.MOUSECLICKABLE|
+                                            UI_BoxFlags.CLIP|
+                                            UI_BoxFlags.DRAWBORDER|
+                                            UI_BoxFlags.DISABLEFOCUSOVERLAY|
+                                            ((ws->focused_panel != panel)*UI_BoxFlags.DISABLEFOCUSBORDER),
                                             panel_key);
         }
         
@@ -7440,7 +7440,7 @@ rd_window_frame(RD_Window *ws)
         UI_Box *loading_overlay_container = &ui_nil_box;
         UI_Parent(panel_box) UI_WidthFill UI_HeightFill
         {
-          loading_overlay_container = ui_build_box_from_key(UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY, ui_key_zero());
+          loading_overlay_container = ui_build_box_from_key(UI_BoxFlags.FLOATINGX|UI_BoxFlags.FLOATINGY, ui_key_zero());
         }
         
         //////////////////////////
@@ -7570,7 +7570,7 @@ rd_window_frame(RD_Window *ws)
           // rjf: build
           UI_CornerRadius(0)
           {
-            UI_Rect(tab_bar_rect) tab_bar_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_ViewClampX|UI_BoxFlag_ViewScrollX|UI_BoxFlag_Clickable, "tab_bar_%p", panel);
+            UI_Rect(tab_bar_rect) tab_bar_box = ui_build_box_from_stringf(UI_BoxFlags.CLIP|UI_BoxFlags.ALLOWOVERFLOWY|UI_BoxFlags.VIEWCLAMPX|UI_BoxFlags.VIEWSCROLLX|UI_BoxFlags.CLICKABLE, "tab_bar_%p", panel);
             if(panel->tab_side == Side_Max)
             {
               tab_bar_box->view_off.y = tab_bar_box->view_off_target.y = (tab_bar_rheight - tab_bar_vheight);
@@ -7615,7 +7615,7 @@ rd_window_frame(RD_Window *ws)
                       UI_CornerRadius10(corner_radius)
                       RD_Palette(RD_PaletteCode_DropSiteOverlay)
                     {
-                      ui_build_box_from_key(UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder, ui_key_zero());
+                      ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.DRAWBORDER, ui_key_zero());
                     }
                   }
                 }
@@ -7634,7 +7634,7 @@ rd_window_frame(RD_Window *ws)
               
               // rjf: begin vertical region for this tab
               ui_set_next_child_layout_axis(Axis2_Y);
-              UI_Box *tab_column_box = ui_build_box_from_stringf(!is_changing_panel_boundaries*UI_BoxFlag_AnimatePosX, "tab_column_%p", view);
+              UI_Box *tab_column_box = ui_build_box_from_stringf(!is_changing_panel_boundaries*UI_BoxFlags.ANIMATEPOSX, "tab_column_%p", view);
               
               // rjf: build tab container box
               UI_Parent(tab_column_box) UI_PrefHeight(ui_px(tab_bar_vheight, 1)) RD_Palette(view_is_selected ? RD_PaletteCode_Tab : RD_PaletteCode_TabInactive)
@@ -7648,11 +7648,11 @@ rd_window_frame(RD_Window *ws)
                   ui_spacer(ui_px(1.f, 1.f));
                 }
                 ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-                UI_Box *tab_box = ui_build_box_from_stringf(UI_BoxFlag_DrawHotEffects|
-                                                            UI_BoxFlag_DrawBackground|
-                                                            UI_BoxFlag_DrawBorder|
-                                                            (UI_BoxFlag_DrawDropShadow*view_is_selected)|
-                                                            UI_BoxFlag_Clickable,
+                UI_Box *tab_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWHOTEFFECTS|
+                                                            UI_BoxFlags.DRAWBACKGROUND|
+                                                            UI_BoxFlags.DRAWBORDER|
+                                                            (UI_BoxFlags.DRAWDROPSHADOW*view_is_selected)|
+                                                            UI_BoxFlags.CLICKABLE,
                                                             "tab_%p", view);
                 
                 // rjf: build tab contents
@@ -7663,7 +7663,7 @@ rd_window_frame(RD_Window *ws)
                     ui_spacer(ui_em(0.5f, 1.f));
                     if(icon_kind != RD_IconKind_Null)
                     {
-                      UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                      UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                         RD_Font(RD_FontSlot_Icons)
                         UI_TextAlignment(UI_TextAlign.CENTER)
                         UI_PrefWidth(ui_em(1.75f, 1.f))
@@ -7671,14 +7671,14 @@ rd_window_frame(RD_Window *ws)
                     }
                     UI_PrefWidth(ui_text_dim(10, 0))
                     {
-                      UI_Box *name_box = ui_build_box_from_key(UI_BoxFlag_DrawText, ui_key_zero());
+                      UI_Box *name_box = ui_build_box_from_key(UI_BoxFlags.DRAWTEXT, ui_key_zero());
                       ui_box_equip_display_fancy_strings(name_box, &title_fstrs);
                     }
                   }
                   UI_PrefWidth(ui_em(2.35f, 1.f)) UI_TextAlignment(UI_TextAlign.CENTER)
                     RD_Font(RD_FontSlot_Icons)
                     UI_FontSize(rd_font_size_from_slot(RD_FontSlot_Icons)*0.75f)
-                    UI_Flags(UI_BoxFlag_DrawTextWeak)
+                    UI_Flags(UI_BoxFlags.DRAWTEXTWEAK)
                     UI_CornerRadius00(0)
                     UI_CornerRadius01(0)
                   {
@@ -7755,17 +7755,17 @@ rd_window_frame(RD_Window *ws)
                 UI_CornerRadius11(panel->tab_side == Side_Max ? corner_radius : 0)
                 RD_Font(RD_FontSlot_Icons)
                 UI_FontSize(ui_top_font_size())
-                UI_FlagsAdd(UI_BoxFlag_DrawTextWeak)
+                UI_FlagsAdd(UI_BoxFlags.DRAWTEXTWEAK)
                 UI_HoverCursor(OS_Cursor_HandPoint)
                 RD_Palette(RD_PaletteCode_ImplicitButton)
               {
-                UI_Box *add_new_box = ui_build_box_from_stringf(UI_BoxFlag_DrawBackground|
-                                                                UI_BoxFlag_DrawText|
-                                                                UI_BoxFlag_DrawBorder|
-                                                                UI_BoxFlag_DrawHotEffects|
-                                                                UI_BoxFlag_DrawActiveEffects|
-                                                                UI_BoxFlag_Clickable|
-                                                                UI_BoxFlag_DisableTextTrunc,
+                UI_Box *add_new_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWBACKGROUND|
+                                                                UI_BoxFlags.DRAWTEXT|
+                                                                UI_BoxFlags.DRAWBORDER|
+                                                                UI_BoxFlags.DRAWHOTEFFECTS|
+                                                                UI_BoxFlags.DRAWACTIVEEFFECTS|
+                                                                UI_BoxFlags.CLICKABLE|
+                                                                UI_BoxFlags.DISABLETEXTTRUNC,
                                                                 "%S##add_new_tab_button_%p",
                                                                 rd_icon_kind_text_table[RD_IconKind_Add],
                                                                 panel);
@@ -7828,7 +7828,7 @@ rd_window_frame(RD_Window *ws)
               if(!rd_view_is_nil(view) && active_drop_site != 0) 
               {
                 RD_Palette(RD_PaletteCode_DropSiteOverlay) UI_Rect(tab_bar_rect)
-                  ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+                  ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
               }
               
               // rjf: drop
@@ -7880,7 +7880,7 @@ rd_window_frame(RD_Window *ws)
             // rjf: vis
             {
               RD_Palette(RD_PaletteCode_DropSiteOverlay) UI_Rect(content_rect)
-                ui_build_box_from_key(UI_BoxFlag_DrawBackground, ui_key_zero());
+                ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND, ui_key_zero());
             }
             
             // rjf: drop
@@ -8204,7 +8204,7 @@ rd_window_frame(RD_Window *ws)
       }
       
       // rjf: draw drop shadow
-      if(box->flags & UI_BoxFlag_DrawDropShadow)
+      if(box->flags & UI_BoxFlags.DRAWDROPSHADOW)
       {
         Rng2F32 drop_shadow_rect = shift_2f32(pad_2f32(box->rect, 8), v2f32(4, 4));
         Vec4F32 drop_shadow_color = rd_rgba_from_theme_color(RD_ThemeColor_DropShadow);
@@ -8212,14 +8212,14 @@ rd_window_frame(RD_Window *ws)
       }
       
       // rjf: blur background
-      if(box->flags & UI_BoxFlag_DrawBackgroundBlur && rd_setting_val_from_code(RD_SettingCode_BackgroundBlur).s32)
+      if(box->flags & UI_BoxFlags.DRAWBACKGROUNDBLUR && rd_setting_val_from_code(RD_SettingCode_BackgroundBlur).s32)
       {
         R_PassParams_Blur *params = dr_blur(pad_2f32(box->rect, 1.f), box->blur_size*(1-box->transparency), 0);
         MemoryCopyArray(params->corner_radii, box->corner_radii);
       }
       
       // rjf: draw background
-      if(box->flags & UI_BoxFlag_DrawBackground)
+      if(box->flags & UI_BoxFlags.DRAWBACKGROUND)
       {
         // rjf: main rectangle
         {
@@ -8228,10 +8228,10 @@ rd_window_frame(RD_Window *ws)
         }
         
         // rjf: hot effect extension
-        if(box->flags & UI_BoxFlag_DrawHotEffects)
+        if(box->flags & UI_BoxFlags.DRAWHOTEFFECTS)
         {
           F32 effective_active_t = box->active_t;
-          if(!(box->flags & UI_BoxFlag_DrawActiveEffects))
+          if(!(box->flags & UI_BoxFlags.DRAWACTIVEEFFECTS))
           {
             effective_active_t = 0;
           }
@@ -8268,7 +8268,7 @@ rd_window_frame(RD_Window *ws)
         }
         
         // rjf: active effect extension
-        if(box->flags & UI_BoxFlag_DrawActiveEffects)
+        if(box->flags & UI_BoxFlags.DRAWACTIVEEFFECTS)
         {
           Vec4F32 shadow_color = rd_rgba_from_theme_color(RD_ThemeColor_Hover);
           shadow_color.x *= 0.3f;
@@ -8320,7 +8320,7 @@ rd_window_frame(RD_Window *ws)
       }
       
       // rjf: draw string
-      if(box->flags & UI_BoxFlag_DrawText)
+      if(box->flags & UI_BoxFlags.DRAWTEXT)
       {
         Vec2F32 text_position = ui_box_text_position(box);
         if(DEV_draw_ui_text_pos)
@@ -8330,13 +8330,13 @@ rd_window_frame(RD_Window *ws)
         }
         F32 max_x = 100000.f;
         FNT_Run ellipses_run = {0};
-        if(!(box->flags & UI_BoxFlag_DisableTextTrunc))
+        if(!(box->flags & UI_BoxFlags.DISABLETEXTTRUNC))
         {
           max_x = (box->rect.x1-text_position.x);
           ellipses_run = fnt_push_run_from_string(scratch.arena, box->font, box->font_size, 0, box->tab_size, 0, str8_lit("..."));
         }
         dr_truncated_fancy_run_list(text_position, &box->display_string_runs, max_x, ellipses_run);
-        if(box->flags & UI_BoxFlag_HasFuzzyMatchRanges)
+        if(box->flags & UI_BoxFlags.HASFUZZYMATCHRANGES)
         {
           Vec4F32 match_color = rd_rgba_from_theme_color(RD_ThemeColor_HighlightOverlay);
           dr_truncated_fancy_run_fuzzy_matches(text_position, &box->display_string_runs, max_x, &box->fuzzy_match_ranges, match_color);
@@ -8346,12 +8346,12 @@ rd_window_frame(RD_Window *ws)
       // rjf: draw focus viz
       if(DEV_draw_ui_focus_debug)
       {
-        B32 focused = (box->flags & (UI_BoxFlag_FocusHot|UI_BoxFlag_FocusActive) &&
-                       box->flags & UI_BoxFlag_Clickable);
+        B32 focused = (box->flags & (UI_BoxFlags.FOCUSHOT|UI_BoxFlags.FOCUSACTIVE) &&
+                       box->flags & UI_BoxFlags.CLICKABLE);
         B32 disabled = 0;
         for(UI_Box *p = box; !ui_box_is_nil(p); p = p->parent)
         {
-          if(p->flags & (UI_BoxFlag_FocusHotDisabled|UI_BoxFlag_FocusActiveDisabled))
+          if(p->flags & (UI_BoxFlags.FOCUSHOTDISABLED|UI_BoxFlags.FOCUSACTIVEDISABLED))
           {
             disabled = 1;
             break;
@@ -8367,9 +8367,9 @@ rd_window_frame(RD_Window *ws)
           dr_rect(r2f32p(box->rect.x0-6, box->rect.y0-6, box->rect.x0+6, box->rect.y0+6), color, 2, 0, 1);
           dr_rect(box->rect, color, 2, 2, 1);
         }
-        if(box->flags & (UI_BoxFlag_FocusHot|UI_BoxFlag_FocusActive))
+        if(box->flags & (UI_BoxFlags.FOCUSHOT|UI_BoxFlags.FOCUSACTIVE))
         {
-          if(box->flags & (UI_BoxFlag_FocusHotDisabled|UI_BoxFlag_FocusActiveDisabled))
+          if(box->flags & (UI_BoxFlags.FOCUSHOTDISABLED|UI_BoxFlags.FOCUSACTIVEDISABLED))
           {
             dr_rect(r2f32p(box->rect.x0-6, box->rect.y0-6, box->rect.x0+6, box->rect.y0+6), v4f32(1, 0, 0, 0.2f), 2, 0, 1);
           }
@@ -8381,7 +8381,7 @@ rd_window_frame(RD_Window *ws)
       }
       
       // rjf: push clip
-      if(box->flags & UI_BoxFlag_Clip)
+      if(box->flags & UI_BoxFlags.CLIP)
       {
         Rng2F32 top_clip = dr_top_clip();
         Rng2F32 new_clip = pad_2f32(box->rect, -1);
@@ -8393,7 +8393,7 @@ rd_window_frame(RD_Window *ws)
       }
       
       // rjf: custom draw list
-      if(box->flags & UI_BoxFlag_DrawBucket)
+      if(box->flags & UI_BoxFlags.DRAWBUCKET)
       {
         Mat3x3F32 xform = make_translate_3x3f32(box->position_delta);
         DR_XForm2DScope(xform)
@@ -8420,26 +8420,26 @@ rd_window_frame(RD_Window *ws)
           }
           
           // rjf: pop clips
-          if(b->flags & UI_BoxFlag_Clip)
+          if(b->flags & UI_BoxFlags.CLIP)
           {
             dr_pop_clip();
           }
           
           // rjf: draw overlay
-          if(b->flags & UI_BoxFlag_DrawOverlay)
+          if(b->flags & UI_BoxFlags.DRAWOVERLAY)
           {
             R_Rect2DInst *inst = dr_rect(b->rect, b->palette->colors[UI_ColorCode.OVERLAY], 0, 0, 1.f);
             MemoryCopyArray(inst->corner_radii, b->corner_radii);
           }
           
           // rjf: draw border
-          if(b->flags & UI_BoxFlag_DrawBorder)
+          if(b->flags & UI_BoxFlags.DRAWBORDER)
           {
             R_Rect2DInst *inst = dr_rect(pad_2f32(b->rect, 1.f), b->palette->colors[UI_ColorCode.BORDER], 0, 1.f, 1.f);
             MemoryCopyArray(inst->corner_radii, b->corner_radii);
             
             // rjf: hover effect
-            if(b->flags & UI_BoxFlag_DrawHotEffects)
+            if(b->flags & UI_BoxFlags.DRAWHOTEFFECTS)
             {
               Vec4F32 color = rd_rgba_from_theme_color(RD_ThemeColor_Hover);
               color.w *= b->hot_t;
@@ -8460,26 +8460,26 @@ rd_window_frame(RD_Window *ws)
             Rng2F32 r = b->rect;
             F32 half_thickness = 1.f;
             F32 softness = 0.5f;
-            if(b->flags & UI_BoxFlag_DrawSideTop)
+            if(b->flags & UI_BoxFlags.DRAWSIDETOP)
             {
               dr_rect(r2f32p(r.x0, r.y0-half_thickness, r.x1, r.y0+half_thickness), b->palette->colors[UI_ColorCode.BORDER], 0, 0, softness);
             }
-            if(b->flags & UI_BoxFlag_DrawSideBottom)
+            if(b->flags & UI_BoxFlags.DRAWSIDEBOTTOM)
             {
               dr_rect(r2f32p(r.x0, r.y1-half_thickness, r.x1, r.y1+half_thickness), b->palette->colors[UI_ColorCode.BORDER], 0, 0, softness);
             }
-            if(b->flags & UI_BoxFlag_DrawSideLeft)
+            if(b->flags & UI_BoxFlags.DRAWSIDELEFT)
             {
               dr_rect(r2f32p(r.x0-half_thickness, r.y0, r.x0+half_thickness, r.y1), b->palette->colors[UI_ColorCode.BORDER], 0, 0, softness);
             }
-            if(b->flags & UI_BoxFlag_DrawSideRight)
+            if(b->flags & UI_BoxFlags.DRAWSIDERIGHT)
             {
               dr_rect(r2f32p(r.x1-half_thickness, r.y0, r.x1+half_thickness, r.y1), b->palette->colors[UI_ColorCode.BORDER], 0, 0, softness);
             }
           }
           
           // rjf: draw focus overlay
-          if(b->flags & UI_BoxFlag_Clickable && !(b->flags & UI_BoxFlag_DisableFocusOverlay) && b->focus_hot_t > 0.01f)
+          if(b->flags & UI_BoxFlags.CLICKABLE && !(b->flags & UI_BoxFlags.DISABLEFOCUSOVERLAY) && b->focus_hot_t > 0.01f)
           {
             Vec4F32 color = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
             color.w *= 0.2f*b->focus_hot_t;
@@ -8488,7 +8488,7 @@ rd_window_frame(RD_Window *ws)
           }
           
           // rjf: draw focus border
-          if(b->flags & UI_BoxFlag_Clickable && !(b->flags & UI_BoxFlag_DisableFocusBorder) && b->focus_active_t > 0.01f)
+          if(b->flags & UI_BoxFlags.CLICKABLE && !(b->flags & UI_BoxFlags.DISABLEFOCUSBORDER) && b->focus_active_t > 0.01f)
           {
             Vec4F32 color = rd_rgba_from_theme_color(RD_ThemeColor_Focus);
             color.w *= b->focus_active_t;

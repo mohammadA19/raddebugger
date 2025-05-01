@@ -12,14 +12,14 @@ fn void ui_divider(UI_Size size)
   UI_Box* box = ui_build_box_from_key(0, ui_key_zero());
   UI_Parent(box) UI_PrefSize(parent.child_layout_axis, ui_pct(1, 0))
   {
-    ui_build_box_from_key(UI_BoxFlag_DrawSideBottom, ui_key_zero());
+    ui_build_box_from_key(UI_BoxFlags.DRAWSIDEBOTTOM, ui_key_zero());
     ui_build_box_from_key(0, ui_key_zero());
   }
 }
 
 fn UI_Signal ui_label(String8 string)
 {
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_zero());
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.DRAWTEXT, str8_zero());
   ui_box_equip_display_string(box, string);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
@@ -65,12 +65,12 @@ fn void ui_label_multilinef(F32 max, char* fmt, ...)
 fn UI_Signal ui_button(String8 string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|
-                                         UI_BoxFlag_DrawBackground|
-                                         UI_BoxFlag_DrawBorder|
-                                         UI_BoxFlag_DrawText|
-                                         UI_BoxFlag_DrawHotEffects|
-                                         UI_BoxFlag_DrawActiveEffects,
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE|
+                                         UI_BoxFlags.DRAWBACKGROUND|
+                                         UI_BoxFlags.DRAWBORDER|
+                                         UI_BoxFlags.DRAWTEXT|
+                                         UI_BoxFlags.DRAWHOTEFFECTS|
+                                         UI_BoxFlags.DRAWACTIVEEFFECTS,
                                          string);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
@@ -90,11 +90,11 @@ fn UI_Signal ui_buttonf(char* fmt, ...)
 
 fn UI_Signal ui_hover_label(String8 string)
 {
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE|UI_BoxFlags.DRAWTEXT, string);
   UI_Signal interact = ui_signal_from_box(box);
   if(ui_hovering(interact))
   {
-    box.flags |= UI_BoxFlag_DrawBorder;
+    box.flags |= UI_BoxFlags.DRAWBORDER;
   }
   return interact;
 }
@@ -171,13 +171,13 @@ fn UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, ulong edi
   
   //- rjf: build top-level box
   ui_set_next_hover_cursor(is_focus_active ? OS_Cursor_IBar : OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_key(UI_BoxFlag_DrawBackground|
-                                      UI_BoxFlag_DrawBorder|
-                                      UI_BoxFlag_MouseClickable|
-                                      UI_BoxFlag_ClickToFocus|
-                                      ((is_auto_focus_hot || is_auto_focus_active)*UI_BoxFlag_KeyboardClickable)|
-                                      UI_BoxFlag_DrawHotEffects|
-                                      (is_focus_active || is_focus_active_disabled)*(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowX|UI_BoxFlag_ViewClamp),
+  UI_Box* box = ui_build_box_from_key(UI_BoxFlags.DRAWBACKGROUND|
+                                      UI_BoxFlags.DRAWBORDER|
+                                      UI_BoxFlags.MOUSECLICKABLE|
+                                      UI_BoxFlags.CLICKTOFOCUS|
+                                      ((is_auto_focus_hot || is_auto_focus_active)*UI_BoxFlags.KEYBOARDCLICKABLE)|
+                                      UI_BoxFlags.DRAWHOTEFFECTS|
+                                      (is_focus_active || is_focus_active_disabled)*(UI_BoxFlags.CLIP|UI_BoxFlags.ALLOWOVERFLOWX|UI_BoxFlags.VIEWCLAMP),
                                       key);
   
   //- rjf: take navigation actions for editing
@@ -245,7 +245,7 @@ fn UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, ulong edi
     {
       F32 total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       ui_set_next_pref_width(ui_px(total_text_width+ui_top_font_size()*5, 1.f));
-      UI_Box* editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
+      UI_Box* editstr_box = ui_build_box_from_stringf(UI_BoxFlags.DRAWTEXT|UI_BoxFlags.DISABLETEXTTRUNC, "###editstr");
       UI_LineEditDrawData* draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
       draw_data.edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data.cursor = *cursor;
@@ -259,7 +259,7 @@ fn UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, ulong edi
   
   //- rjf: interact
   UI_Signal sig = ui_signal_from_box(box);
-  if(!is_focus_active && sig.f&(UI_SignalFlag_DoubleClicked|UI_SignalFlag_KeyboardPressed))
+  if(!is_focus_active && sig.f&(UI_SignalFlags.DOUBLE_CLICKED|UI_SignalFlags.KEYBOARD_PRESSED))
   {
     String8 edit_string = pre_edit_value;
     edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
@@ -270,10 +270,10 @@ fn UI_Signal ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, ulong edi
     *cursor = txt_pt(1, edit_string.size+1);
     *mark = txt_pt(1, 1);
   }
-  if(is_focus_active && sig.f&UI_SignalFlag_KeyboardPressed)
+  if(is_focus_active && sig.f&UI_SignalFlags.KEYBOARD_PRESSED)
   {
     ui_set_auto_focus_active_key(ui_key_zero());
-    sig.f |= UI_SignalFlag_Commit;
+    sig.f |= UI_SignalFlags.COMMIT;
   }
   if(is_focus_active && ui_dragging(sig))
   {
@@ -347,7 +347,7 @@ fn UI_BOX_CUSTOM_DRAW(ui_image_draw)
     Rng2F32 clip = box.rect;
     for(UI_Box* b = box.parent; !ui_box_is_nil(b); b = b.parent)
     {
-      if(b.flags & UI_BoxFlag_Clip)
+      if(b.flags & UI_BoxFlags.CLIP)
       {
         clip = intersect_2f32(b.rect, clip);
       }
@@ -391,7 +391,7 @@ fn UI_Signal ui_expander(B32 is_expanded, String8 string)
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_text_alignment(UI_TextAlign.CENTER);
   ui_set_next_font(ui_icon_font());
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE|UI_BoxFlags.DRAWTEXT, string);
   ui_box_equip_display_string(box, is_expanded ? str8_lit("v") : str8_lit(">"));
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
@@ -413,7 +413,7 @@ fn UI_Signal ui_sort_header(B32 sorting, B32 ascending, String8 string)
 {
   ui_set_next_child_layout_axis(Axis2_X);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE|UI_BoxFlags.DRAWBACKGROUND|UI_BoxFlags.DRAWACTIVEEFFECTS, string);
   ui_push_parent(box);
   
   // rjf: make icon
@@ -422,7 +422,7 @@ fn UI_Signal ui_sort_header(B32 sorting, B32 ascending, String8 string)
     ui_set_next_pref_width(ui_em(1.8f, 1.f));
     ui_set_next_text_alignment(UI_TextAlign.CENTER);
     ui_set_next_font(ui_icon_font());
-    UI_Box* icon = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_lit(""));
+    UI_Box* icon = ui_build_box_from_string(UI_BoxFlags.DRAWTEXT, str8_lit(""));
     ui_box_equip_display_string(icon, ascending ? str8_lit("^") : str8_lit("v"));
   }
   
@@ -463,7 +463,7 @@ fn void ui_do_color_tooltip_hsv(Vec3F32 hsv)
       UI_Palette(ui_build_palette(ui_top_palette(), .background = v4f32(rgb.x, rgb.y, rgb.z, 1.f)))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.CENTER)
@@ -501,7 +501,7 @@ fn void ui_do_color_tooltip_hsva(Vec4F32 hsva)
       UI_Palette(ui_build_palette(ui_top_palette(), .background = rgba))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.CENTER)
@@ -576,7 +576,7 @@ fn UI_Signal ui_sat_val_picker(F32 hue, F32* out_sat, F32* out_val, String8 stri
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE, string);
   UI_SatValDrawData* user = push_array(ui_build_arena(), UI_SatValDrawData, 1);
   ui_box_equip_custom_draw(box, ui_sat_val_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -683,7 +683,7 @@ fn UI_Signal ui_hue_picker(F32* out_hue, F32 sat, F32 val, String8 string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE, string);
   UI_HueDrawData* user = push_array(ui_build_arena(), UI_HueDrawData, 1);
   ui_box_equip_custom_draw(box, ui_hue_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -768,7 +768,7 @@ fn UI_Signal ui_alpha_picker(F32* out_alpha, String8 string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE, string);
   UI_AlphaDrawData* user = push_array(ui_build_arena(), UI_AlphaDrawData, 1);
   ui_box_equip_custom_draw(box, ui_alpha_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -859,7 +859,7 @@ ui_pane_begin(Rng2F32 rect, String8 string)
 {
   ui_push_rect(rect);
   ui_set_next_child_layout_axis(Axis2_Y);
-  UI_Box* box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_Clip|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, string);
+  UI_Box* box = ui_build_box_from_string(UI_BoxFlags.CLICKABLE|UI_BoxFlags.CLIP|UI_BoxFlags.DRAWBORDER|UI_BoxFlags.DRAWBACKGROUND, string);
   ui_pop_rect();
   ui_push_parent(box);
   ui_push_pref_width(ui_pct(1, 0));
@@ -924,7 +924,7 @@ fn void ui_table_begin(ulong column_pct_count, F32 **column_pcts, String8 string
     UI_Rect(rect)
     {
       ui_set_next_hover_cursor(OS_Cursor_LeftRight);
-      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table.string, column_idx);
+      UI_Box* box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE, "###%S_boundary_%I64u", table.string, column_idx);
       
       F32* left_pct_ptr  = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx-1] : 0;
       F32* right_pct_ptr = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx] : 0;
@@ -1029,7 +1029,7 @@ ui_named_table_vector_begin(String8 string)
 {
   ui_set_next_pref_width(ui_pct(1, 0));
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box* vector = ui_build_box_from_string(UI_BoxFlag_DrawSideBottom, string);
+  UI_Box* vector = ui_build_box_from_string(UI_BoxFlags.DRAWSIDEBOTTOM, string);
   ui_ts_vector_idx += 1;
   ui_ts_cell_idx = 0;
   ui_push_parent(vector);
@@ -1085,7 +1085,7 @@ ui_table_cell_sized_begin(UI_Size size)
   ui_ts_cell_idx += 1;
   ui_set_next_pref_width(size);
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box* cell = ui_build_box_from_stringf((column_idx > 0 ? UI_BoxFlag_DrawSideLeft : 0), "###tbl_cell_%p_%I64u", vector, ui_ts_cell_idx);
+  UI_Box* cell = ui_build_box_from_stringf((column_idx > 0 ? UI_BoxFlags.DRAWSIDELEFT : 0), "###tbl_cell_%p_%I64u", vector, ui_ts_cell_idx);
   ui_push_parent(cell);
   return cell;
 }
@@ -1181,19 +1181,19 @@ fn UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, 
   UI_BoxFlags disabled_flags = 0;
   if(idx_range.min == idx_range.max)
   {
-    disabled_flags |= UI_BoxFlag_Disabled;
+    disabled_flags |= UI_BoxFlags.DISABLED;
   }
   
   //- rjf: build main container
   ui_set_next_pref_size(axis2_flip(axis), off_axis_size);
   ui_set_next_child_layout_axis(axis);
-  UI_Box* container_box = ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+  UI_Box* container_box = ui_build_box_from_key(UI_BoxFlags.DRAWBORDER, ui_key_zero());
   
   //- rjf: build scroll-min button
   UI_Signal min_scroll_sig = {0};
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
-    UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
+    UI_Flags(UI_BoxFlags.DRAWBORDER|disabled_flags)
     UI_TextAlignment(UI_TextAlign.CENTER)
     UI_Font(ui_icon_font())
   {
@@ -1219,7 +1219,7 @@ fn UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, 
       {
         ui_set_next_pref_size(axis, ui_pct((F32)((F64)(pt.idx-idx_range.min)/(F64)idx_range_dim), 0));
         ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-        UI_Box* space_before_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "##scroll_area_before");
+        UI_Box* space_before_box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE, "##scroll_area_before");
         space_before_sig = ui_signal_from_box(space_before_box);
       }
       
@@ -1235,7 +1235,7 @@ fn UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, 
       {
         ui_set_next_pref_size(axis, ui_pct(1.f - (F32)((F64)(pt.idx-idx_range.min)/(F64)idx_range_dim), 0));
         ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-        UI_Box* space_after_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "##scroll_area_after");
+        UI_Box* space_after_box = ui_build_box_from_stringf(UI_BoxFlags.CLICKABLE, "##scroll_area_after");
         space_after_sig = ui_signal_from_box(space_after_box);
       }
     }
@@ -1245,7 +1245,7 @@ fn UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, 
   UI_Signal max_scroll_sig = {0};
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
-    UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
+    UI_Flags(UI_BoxFlags.DRAWBORDER|disabled_flags)
     UI_TextAlignment(UI_TextAlign.CENTER)
     UI_Font(ui_icon_font())
   {
@@ -1433,7 +1433,7 @@ fn void ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt
   UI_Box* scrollable_container_box = &ui_nil_box;
   UI_Parent(container_box) UI_ChildLayoutAxis(Axis2_Y) UI_FixedWidth(params.dim_px.x-ui_scroll_list_scroll_bar_dim_px) UI_FixedHeight(params.dim_px.y)
   {
-    scrollable_container_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_Scroll, "###sp");
+    scrollable_container_box = ui_build_box_from_stringf(UI_BoxFlags.CLIP|UI_BoxFlags.ALLOWOVERFLOWY|UI_BoxFlags.SCROLL, "###sp");
     scrollable_container_box.view_off.y = scrollable_container_box.view_off_target.y = params.row_height_px*mod_f32(scroll_pt.off, 1.f) + params.row_height_px*(scroll_pt.off < 0) - params.row_height_px*(scroll_pt.off == -1.f && scroll_pt.idx == 1);
   }
   

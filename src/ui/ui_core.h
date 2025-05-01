@@ -298,77 +298,77 @@ struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
-typedef ulong UI_BoxFlags;
-//{
+enum UI_BoxFlags : ulong
+{
 //- rjf: interaction
-# define UI_BoxFlag_MouseClickable            (UI_BoxFlags)(1ull<<0)
-# define UI_BoxFlag_KeyboardClickable         (UI_BoxFlags)(1ull<<1)
-# define UI_BoxFlag_DropSite                  (UI_BoxFlags)(1ull<<2)
-# define UI_BoxFlag_ClickToFocus              (UI_BoxFlags)(1ull<<3)
-# define UI_BoxFlag_Scroll                    (UI_BoxFlags)(1ull<<4)
-# define UI_BoxFlag_ViewScrollX               (UI_BoxFlags)(1ull<<5)
-# define UI_BoxFlag_ViewScrollY               (UI_BoxFlags)(1ull<<6)
-# define UI_BoxFlag_ViewClampX                (UI_BoxFlags)(1ull<<7)
-# define UI_BoxFlag_ViewClampY                (UI_BoxFlags)(1ull<<8)
-# define UI_BoxFlag_FocusHot                  (UI_BoxFlags)(1ull<<9)
-# define UI_BoxFlag_FocusActive               (UI_BoxFlags)(1ull<<10)
-# define UI_BoxFlag_FocusHotDisabled          (UI_BoxFlags)(1ull<<11)
-# define UI_BoxFlag_FocusActiveDisabled       (UI_BoxFlags)(1ull<<12)
-# define UI_BoxFlag_DefaultFocusNavX          (UI_BoxFlags)(1ull<<13)
-# define UI_BoxFlag_DefaultFocusNavY          (UI_BoxFlags)(1ull<<14)
-# define UI_BoxFlag_DefaultFocusEdit          (UI_BoxFlags)(1ull<<15)
-# define UI_BoxFlag_FocusNavSkip              (UI_BoxFlags)(1ull<<16)
-# define UI_BoxFlag_DisableTruncatedHover     (UI_BoxFlags)(1ull<<17)
-# define UI_BoxFlag_Disabled                  (UI_BoxFlags)(1ull<<18)
+  MOUSECLICKABLE            = 1 << 0,
+  KEYBOARDCLICKABLE         = 1 << 1,
+  DROPSITE                  = 1 << 2,
+  CLICKTOFOCUS              = 1 << 3,
+  SCROLL                    = 1 << 4,
+  VIEWSCROLLX               = 1 << 5,
+  VIEWSCROLLY               = 1 << 6,
+  VIEWCLAMPX                = 1 << 7,
+  VIEWCLAMPY                = 1 << 8,
+  FOCUSHOT                  = 1 << 9,
+  FOCUSACTIVE               = 1 << 10,
+  FOCUSHOTDISABLED          = 1 << 11,
+  FOCUSACTIVEDISABLED       = 1 << 12,
+  DEFAULTFOCUSNAVX          = 1 << 13,
+  DEFAULTFOCUSNAVY          = 1 << 14,
+  DEFAULTFOCUSEDIT          = 1 << 15,
+  FOCUSNAVSKIP              = 1 << 16,
+  DISABLETRUNCATEDHOVER     = 1 << 17,
+  DISABLED                  = 1 << 18,
 
 //- rjf: layout
-# define UI_BoxFlag_FloatingX                 (UI_BoxFlags)(1ull<<19)
-# define UI_BoxFlag_FloatingY                 (UI_BoxFlags)(1ull<<20)
-# define UI_BoxFlag_FixedWidth                (UI_BoxFlags)(1ull<<21)
-# define UI_BoxFlag_FixedHeight               (UI_BoxFlags)(1ull<<22)
-# define UI_BoxFlag_AllowOverflowX            (UI_BoxFlags)(1ull<<23)
-# define UI_BoxFlag_AllowOverflowY            (UI_BoxFlags)(1ull<<24)
-# define UI_BoxFlag_SkipViewOffX              (UI_BoxFlags)(1ull<<25)
-# define UI_BoxFlag_SkipViewOffY              (UI_BoxFlags)(1ull<<26)
+  FLOATINGX                 = 1 << 19,
+  FLOATINGY                 = 1 << 20,
+  FIXEDWIDTH                = 1 << 21,
+  FIXEDHEIGHT               = 1 << 22,
+  ALLOWOVERFLOWX            = 1 << 23,
+  ALLOWOVERFLOWY            = 1 << 24,
+  SKIPVIEWOFFX              = 1 << 25,
+  SKIPVIEWOFFY              = 1 << 26,
 
 //- rjf: appearance / animation
-# define UI_BoxFlag_DrawDropShadow            (UI_BoxFlags)(1ull<<27)
-# define UI_BoxFlag_DrawBackgroundBlur        (UI_BoxFlags)(1ull<<28)
-# define UI_BoxFlag_DrawBackground            (UI_BoxFlags)(1ull<<29)
-# define UI_BoxFlag_DrawBorder                (UI_BoxFlags)(1ull<<30)
-# define UI_BoxFlag_DrawSideTop               (UI_BoxFlags)(1ull<<31)
-# define UI_BoxFlag_DrawSideBottom            (UI_BoxFlags)(1ull<<32)
-# define UI_BoxFlag_DrawSideLeft              (UI_BoxFlags)(1ull<<33)
-# define UI_BoxFlag_DrawSideRight             (UI_BoxFlags)(1ull<<34)
-# define UI_BoxFlag_DrawText                  (UI_BoxFlags)(1ull<<35)
-# define UI_BoxFlag_DrawTextFastpathCodepoint (UI_BoxFlags)(1ull<<36)
-# define UI_BoxFlag_DrawTextWeak              (UI_BoxFlags)(1ull<<37)
-# define UI_BoxFlag_DrawHotEffects            (UI_BoxFlags)(1ull<<38)
-# define UI_BoxFlag_DrawActiveEffects         (UI_BoxFlags)(1ull<<39)
-# define UI_BoxFlag_DrawOverlay               (UI_BoxFlags)(1ull<<40)
-# define UI_BoxFlag_DrawBucket                (UI_BoxFlags)(1ull<<41)
-# define UI_BoxFlag_Clip                      (UI_BoxFlags)(1ull<<42)
-# define UI_BoxFlag_AnimatePosX               (UI_BoxFlags)(1ull<<43)
-# define UI_BoxFlag_AnimatePosY               (UI_BoxFlags)(1ull<<44)
-# define UI_BoxFlag_DisableTextTrunc          (UI_BoxFlags)(1ull<<45)
-# define UI_BoxFlag_DisableIDString           (UI_BoxFlags)(1ull<<46)
-# define UI_BoxFlag_DisableFocusBorder        (UI_BoxFlags)(1ull<<47)
-# define UI_BoxFlag_DisableFocusOverlay       (UI_BoxFlags)(1ull<<48)
-# define UI_BoxFlag_HasDisplayString          (UI_BoxFlags)(1ull<<49)
-# define UI_BoxFlag_HasFuzzyMatchRanges       (UI_BoxFlags)(1ull<<50)
-# define UI_BoxFlag_RoundChildrenByParent     (UI_BoxFlags)(1ull<<51)
+  DRAWDROPSHADOW            = 1 << 27,
+  DRAWBACKGROUNDBLUR        = 1 << 28,
+  DRAWBACKGROUND            = 1 << 29,
+  DRAWBORDER                = 1 << 30,
+  DRAWSIDETOP               = 1 << 31,
+  DRAWSIDEBOTTOM            = 1 << 32,
+  DRAWSIDELEFT              = 1 << 33,
+  DRAWSIDERIGHT             = 1 << 34,
+  DRAWTEXT                  = 1 << 35,
+  DRAWTEXTFASTPATHCODEPOINT = 1 << 36,
+  DRAWTEXTWEAK              = 1 << 37,
+  DRAWHOTEFFECTS            = 1 << 38,
+  DRAWACTIVEEFFECTS         = 1 << 39,
+  DRAWOVERLAY               = 1 << 40,
+  DRAWBUCKET                = 1 << 41,
+  CLIP                      = 1 << 42,
+  ANIMATEPOSX               = 1 << 43,
+  ANIMATEPOSY               = 1 << 44,
+  DISABLETEXTTRUNC          = 1 << 45,
+  DISABLEIDSTRING           = 1 << 46,
+  DISABLEFOCUSBORDER        = 1 << 47,
+  DISABLEFOCUSOVERLAY       = 1 << 48,
+  HASDISPLAYSTRING          = 1 << 49,
+  HASFUZZYMATCHRANGES       = 1 << 50,
+  ROUNDCHILDRENBYPARENT     = 1 << 51,
 
 //- rjf: bundles
-# define UI_BoxFlag_Clickable           (UI_BoxFlag_MouseClickable|UI_BoxFlag_KeyboardClickable)
-# define UI_BoxFlag_DefaultFocusNav     (UI_BoxFlag_DefaultFocusNavX|UI_BoxFlag_DefaultFocusNavY|UI_BoxFlag_DefaultFocusEdit)
-# define UI_BoxFlag_Floating            (UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY)
-# define UI_BoxFlag_FixedSize           (UI_BoxFlag_FixedWidth|UI_BoxFlag_FixedHeight)
-# define UI_BoxFlag_AllowOverflow       (UI_BoxFlag_AllowOverflowX|UI_BoxFlag_AllowOverflowY)
-# define UI_BoxFlag_AnimatePos          (UI_BoxFlag_AnimatePosX|UI_BoxFlag_AnimatePosY)
-# define UI_BoxFlag_ViewScroll          (UI_BoxFlag_ViewScrollX|UI_BoxFlag_ViewScrollY)
-# define UI_BoxFlag_ViewClamp           (UI_BoxFlag_ViewClampX|UI_BoxFlag_ViewClampY)
-# define UI_BoxFlag_DisableFocusEffects (UI_BoxFlag_DisableFocusBorder|UI_BoxFlag_DisableFocusOverlay)
-//}
+  CLICKABLE           = MOUSECLICKABLE | KEYBOARDCLICKABLE,
+  DEFAULTFOCUSNAV     = DEFAULTFOCUSNAVX | DEFAULTFOCUSNAVY | DEFAULTFOCUSEDIT,
+  FLOATING            = FLOATINGX | FLOATINGY,
+  FIXEDSIZE           = FIXEDWIDTH | FIXEDHEIGHT,
+  ALLOWOVERFLOW       = ALLOWOVERFLOWX | ALLOWOVERFLOWY,
+  ANIMATEPOS          = ANIMATEPOSX | ANIMATEPOSY,
+  VIEWSCROLL          = VIEWSCROLLX | VIEWSCROLLY,
+  VIEWCLAMP           = VIEWCLAMPX | VIEWCLAMPY,
+  DISABLEFOCUSEFFECTS = DISABLEFOCUSBORDER | DISABLEFOCUSOVERLAY,
+}
 
 struct UI_Box
 {
@@ -456,67 +456,66 @@ struct UI_BoxList
   ulong count;
 }
 
-typedef uint UI_SignalFlags;
-enum
+enum UI_SignalFlags : uint
 {
   // rjf: mouse press -> box was pressed while hovering
-  UI_SignalFlag_LeftPressed         = (1<<0),
-  UI_SignalFlag_MiddlePressed       = (1<<1),
-  UI_SignalFlag_RightPressed        = (1<<2),
+  LEFT_PRESSED         = (1<<0),
+  MIDDLE_PRESSED       = (1<<1),
+  RIGHT_PRESSED        = (1<<2),
   
   // rjf: dragging -> box was previously pressed, user is still holding button
-  UI_SignalFlag_LeftDragging        = (1<<3),
-  UI_SignalFlag_MiddleDragging      = (1<<4),
-  UI_SignalFlag_RightDragging       = (1<<5),
+  LEFT_DRAGGING        = (1<<3),
+  MIDDLE_DRAGGING      = (1<<4),
+  RIGHT_DRAGGING       = (1<<5),
   
   // rjf: double-dragging -> box was previously double-clicked, user is still holding button
-  UI_SignalFlag_LeftDoubleDragging  = (1<<6),
-  UI_SignalFlag_MiddleDoubleDragging= (1<<7),
-  UI_SignalFlag_RightDoubleDragging = (1<<8),
+  LEFT_DOUBLE_DRAGGING  = (1<<6),
+  MIDDLE_DOUBLE_DRAGGING= (1<<7),
+  RIGHT_DOUBLE_DRAGGING = (1<<8),
   
   // rjf: triple-dragging -> box was previously triple-clicked, user is still holding button
-  UI_SignalFlag_LeftTripleDragging  = (1<<9),
-  UI_SignalFlag_MiddleTripleDragging= (1<<10),
-  UI_SignalFlag_RightTripleDragging = (1<<11),
+  LEFT_TRIPLE_DRAGGING  = (1<<9),
+  MIDDLE_TRIPLE_DRAGGING= (1<<10),
+  RIGHT_TRIPLE_DRAGGING = (1<<11),
   
   // rjf: released -> box was previously pressed & user released, in or out of bounds
-  UI_SignalFlag_LeftReleased        = (1<<12),
-  UI_SignalFlag_MiddleReleased      = (1<<13),
-  UI_SignalFlag_RightReleased       = (1<<14),
+  LEFT_RELEASED        = (1<<12),
+  MIDDLE_RELEASED      = (1<<13),
+  RIGHT_RELEASED       = (1<<14),
   
   // rjf: clicked -> box was previously pressed & user released, in bounds
-  UI_SignalFlag_LeftClicked         = (1<<15),
-  UI_SignalFlag_MiddleClicked       = (1<<16),
-  UI_SignalFlag_RightClicked        = (1<<17),
-  
+  LEFT_CLICKED         = (1<<15),
+  MIDDLE_CLICKED       = (1<<16),
+  RIGHT_CLICKED        = (1<<17),
+
   // rjf: double clicked -> box was previously clicked, pressed again
-  UI_SignalFlag_LeftDoubleClicked   = (1<<18),
-  UI_SignalFlag_MiddleDoubleClicked = (1<<19),
-  UI_SignalFlag_RightDoubleClicked  = (1<<20),
+  LEFT_DOUBLE_CLICKED   = (1<<18),
+  MIDDLE_DOUBLE_CLICKED = (1<<19),
+  RIGHT_DOUBLE_CLICKED  = (1<<20),
   
   // rjf: triple clicked -> box was previously clicked twice, pressed again
-  UI_SignalFlag_LeftTripleClicked   = (1<<21),
-  UI_SignalFlag_MiddleTripleClicked = (1<<22),
-  UI_SignalFlag_RightTripleClicked  = (1<<23),
+  LEFT_TRIPLE_CLICKED   = (1<<21),
+  MIDDLE_TRIPLE_CLICKED = (1<<22),
+  RIGHT_TRIPLE_CLICKED  = (1<<23),
   
   // rjf: keyboard pressed -> box had focus, user activated via their keyboard
-  UI_SignalFlag_KeyboardPressed     = (1<<24),
+  KEYBOARD_PRESSED     = (1<<24),
   
   // rjf: passive mouse info
-  UI_SignalFlag_Hovering            = (1<<25), // hovering specifically this box
-  UI_SignalFlag_MouseOver           = (1<<26), // mouse is over, but may be occluded
+  HOVERING            = (1<<25), // hovering specifically this box
+  MOUSE_OVER           = (1<<26), // mouse is over, but may be occluded
   
   // rjf: committing state changes via user interaction
-  UI_SignalFlag_Commit              = (1<<27),
+  COMMIT              = (1<<27),
   
   // rjf: high-level combos
-  UI_SignalFlag_Pressed = UI_SignalFlag_LeftPressed|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_Released = UI_SignalFlag_LeftReleased,
-  UI_SignalFlag_Clicked = UI_SignalFlag_LeftClicked|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
-  UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
-  UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
-};
+  PRESSED = LEFT_PRESSED | KEYBOARD_PRESSED,
+  RELEASED = LEFT_RELEASED,
+  CLICKED = LEFT_CLICKED | KEYBOARD_PRESSED,
+  DOUBLE_CLICKED = LEFT_DOUBLE_CLICKED,
+  TRIPLE_CLICKED = LEFT_TRIPLE_CLICKED,
+  DRAGGING = LEFT_DRAGGING,
+}
 
 struct UI_Signal
 {
@@ -526,17 +525,17 @@ struct UI_Signal
   UI_SignalFlags f;
 }
 
-#define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
-#define ui_clicked(s)        !!((s).f&UI_SignalFlag_Clicked)
-#define ui_released(s)       !!((s).f&UI_SignalFlag_Released)
-#define ui_double_clicked(s) !!((s).f&UI_SignalFlag_DoubleClicked)
-#define ui_triple_clicked(s) !!((s).f&UI_SignalFlag_TripleClicked)
-#define ui_middle_clicked(s) !!((s).f&UI_SignalFlag_MiddleClicked)
-#define ui_right_clicked(s)  !!((s).f&UI_SignalFlag_RightClicked)
-#define ui_dragging(s)       !!((s).f&UI_SignalFlag_Dragging)
-#define ui_hovering(s)       !!((s).f&UI_SignalFlag_Hovering)
-#define ui_mouse_over(s)     !!((s).f&UI_SignalFlag_MouseOver)
-#define ui_committed(s)      !!((s).f&UI_SignalFlag_Commit)
+#define ui_pressed(s)        !!((s).f&UI_SignalFlags.PRESSED)
+#define ui_clicked(s)        !!((s).f&UI_SignalFlags.CLICKED)
+#define ui_released(s)       !!((s).f&UI_SignalFlags.RELEASED)
+#define ui_double_clicked(s) !!((s).f&UI_SignalFlags.DOUBLE_CLICKED)
+#define ui_triple_clicked(s) !!((s).f&UI_SignalFlags.TRIPLE_CLICKED)
+#define ui_middle_clicked(s) !!((s).f&UI_SignalFlags.MIDDLE_CLICKED)
+#define ui_right_clicked(s)  !!((s).f&UI_SignalFlags.RIGHT_CLICKED)
+#define ui_dragging(s)       !!((s).f&UI_SignalFlags.DRAGGING)
+#define ui_hovering(s)       !!((s).f&UI_SignalFlags.HOVERING)
+#define ui_mouse_over(s)     !!((s).f&UI_SignalFlags.MOUSE_OVER)
+#define ui_committed(s)      !!((s).f&UI_SignalFlags.COMMIT)
 
 struct UI_Nav
 {
