@@ -2733,11 +2733,11 @@ dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFla
     switch(flags)
     {
       default:{}break;
-      case OS_AccessFlag_Execute:{new_flags = PAGE_EXECUTE;}break;
-      case OS_AccessFlag_Execute|OS_AccessFlag_Read:{new_flags = PAGE_EXECUTE_READ;}break;
-      case OS_AccessFlag_Execute|OS_AccessFlag_Read|OS_AccessFlag_Write:{new_flags = PAGE_EXECUTE_READWRITE;}break;
-      case OS_AccessFlag_Read:{new_flags = PAGE_READONLY;}break;
-      case OS_AccessFlag_Read|OS_AccessFlag_Write:{new_flags = PAGE_READWRITE;}break;
+      case OS_AccessFlags.Execute:{new_flags = PAGE_EXECUTE;}break;
+      case OS_AccessFlags.Execute|OS_AccessFlags.Read:{new_flags = PAGE_EXECUTE_READ;}break;
+      case OS_AccessFlags.Execute|OS_AccessFlags.Read|OS_AccessFlags.Write:{new_flags = PAGE_EXECUTE_READWRITE;}break;
+      case OS_AccessFlags.Read:{new_flags = PAGE_READONLY;}break;
+      case OS_AccessFlags.Read|OS_AccessFlags.Write:{new_flags = PAGE_READWRITE;}break;
     }
     VirtualProtectEx(process_entity->handle, (void *)vaddr, size, new_flags, &old_flags);
   }

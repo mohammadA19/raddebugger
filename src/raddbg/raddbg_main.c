@@ -894,7 +894,7 @@ entry_point(CmdLine *cmd_line)
       
       //- rjf: open output file
       String8 output_name = push_str8_copy(scratch.arena, user2convert->output_name);
-      OS_Handle out_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, output_name);
+      OS_Handle out_file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.Write, output_name);
       B32 out_file_is_good = !os_handle_match(out_file, os_handle_zero());
       
       //- rjf: convert

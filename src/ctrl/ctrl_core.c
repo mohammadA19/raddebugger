@@ -4468,19 +4468,19 @@ ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   OS_Handle stdin_handle  = {0};
   if(msg->stdout_path.size != 0)
   {
-    OS_Handle f = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Read, msg->stdout_path);
+    OS_Handle f = os_file_open(OS_AccessFlags.Write|OS_AccessFlags.Read, msg->stdout_path);
     os_file_close(f);
-    stdout_handle = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Append|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite|OS_AccessFlag_Inherited, msg->stdout_path);
+    stdout_handle = os_file_open(OS_AccessFlags.Write|OS_AccessFlags.Append|OS_AccessFlags.ShareRead|OS_AccessFlags.ShareWrite|OS_AccessFlags.Inherited, msg->stdout_path);
   }
   if(msg->stderr_path.size != 0)
   {
-    OS_Handle f = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Read, msg->stderr_path);
+    OS_Handle f = os_file_open(OS_AccessFlags.Write|OS_AccessFlags.Read, msg->stderr_path);
     os_file_close(f);
-    stderr_handle = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Append|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite|OS_AccessFlag_Inherited, msg->stderr_path);
+    stderr_handle = os_file_open(OS_AccessFlags.Write|OS_AccessFlags.Append|OS_AccessFlags.ShareRead|OS_AccessFlags.ShareWrite|OS_AccessFlags.Inherited, msg->stderr_path);
   }
   if(msg->stdin_path.size != 0)
   {
-    stdin_handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite|OS_AccessFlag_Inherited, msg->stdin_path);
+    stdin_handle = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead|OS_AccessFlags.ShareWrite|OS_AccessFlags.Inherited, msg->stdin_path);
   }
   
   //- rjf: launch

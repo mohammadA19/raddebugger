@@ -315,7 +315,7 @@ ASYNC_WORK_DEF(fs_stream_work)
   FileProperties pre_props = os_properties_from_file_path(path);
   U64 range_size = dim_1u64(range);
   U64 read_size = Min(pre_props.size, range_size);
-  OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite, path);
+  OS_Handle file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead|OS_AccessFlags.ShareWrite, path);
   U64 data_arena_size = read_size+ARENA_HEADER_SIZE;
   data_arena_size += KB(4)-1;
   data_arena_size -= data_arena_size%KB(4);

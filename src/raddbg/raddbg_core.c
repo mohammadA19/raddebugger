@@ -12534,7 +12534,7 @@ rd_frame(void)
             FileProperties props = {0};
             String8 data = {0};
             {
-              OS_Handle file = os_file_open(OS_AccessFlag_ShareRead|OS_AccessFlag_Read, new_path);
+              OS_Handle file = os_file_open(OS_AccessFlags.ShareRead|OS_AccessFlags.Read, new_path);
               props = os_properties_from_file(file);
               data = os_string_from_file_range(scratch.arena, file, r1u64(0, props.size));
               os_file_close(file);
@@ -12579,7 +12579,7 @@ rd_frame(void)
               for(RD_CfgSrc src = (RD_CfgSrc)0; src < RD_CfgSrc_COUNT; src = (RD_CfgSrc)(src+1))
               {
                 String8 path = rd_cfg_path_from_src(src);
-                OS_Handle file = os_file_open(OS_AccessFlag_ShareRead|OS_AccessFlag_Read, path);
+                OS_Handle file = os_file_open(OS_AccessFlags.ShareRead|OS_AccessFlags.Read, path);
                 FileProperties props = os_properties_from_file(file);
                 String8 data = os_string_from_file_range(scratch.arena, file, r1u64(0, props.size));
                 if(props.modified != 0)

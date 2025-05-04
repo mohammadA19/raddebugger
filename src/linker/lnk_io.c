@@ -4,7 +4,7 @@
 shared_function int
 lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
 {
-  OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, str8((U8*)path, path_size));
+  OS_Handle handle = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());
@@ -13,7 +13,7 @@ lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t
 shared_function int
 lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
 {
-  OS_Handle handle = os_file_open(OS_AccessFlag_Write, str8((U8*)path, path_size));
+  OS_Handle handle = os_file_open(OS_AccessFlags.Write, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());

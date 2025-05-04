@@ -322,7 +322,7 @@ entry_point(CmdLine *cmdline)
   //- rjf: write
   ProfScope("write")
   {
-    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
+    OS_Handle output_file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.Write, user2convert->output_name);
     os_file_write(output_file, r1u64(0, baked.size), baked.str);
     os_file_close(output_file);
   }

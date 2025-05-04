@@ -122,7 +122,7 @@ entry_point(CmdLine *cmdline)
   //- rjf: write
   ProfScope("write")
   {
-    OS_Handle output_file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_Write, user2convert->output_name);
+    OS_Handle output_file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.Write, user2convert->output_name);
     U64 off = 0;
     for(String8Node *n = blobs.first; n != 0; n = n->next)
     {

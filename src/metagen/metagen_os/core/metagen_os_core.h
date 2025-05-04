@@ -37,12 +37,12 @@ struct OS_ProcessInfo
 typedef U32 OS_AccessFlags;
 enum
 {
-  OS_AccessFlag_Read       = (1<<0),
-  OS_AccessFlag_Write      = (1<<1),
-  OS_AccessFlag_Execute    = (1<<2),
-  OS_AccessFlag_Append     = (1<<3),
-  OS_AccessFlag_ShareRead  = (1<<4),
-  OS_AccessFlag_ShareWrite = (1<<5),
+  OS_AccessFlags.Read       = (1<<0),
+  OS_AccessFlags.Write      = (1<<1),
+  OS_AccessFlags.Execute    = (1<<2),
+  OS_AccessFlags.Append     = (1<<3),
+  OS_AccessFlags.ShareRead  = (1<<4),
+  OS_AccessFlags.ShareWrite = (1<<5),
 };
 
 ////////////////////////////////
@@ -51,10 +51,10 @@ enum
 typedef U32 OS_FileIterFlags;
 enum
 {
-  OS_FileIterFlag_SkipFolders     = (1 << 0),
-  OS_FileIterFlag_SkipFiles       = (1 << 1),
-  OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
-  OS_FileIterFlag_Done            = (1 << 31),
+  OS_FileIterFlags.SkipFolders     = (1 << 0),
+  OS_FileIterFlags.SkipFiles       = (1 << 1),
+  OS_FileIterFlags.SkipHiddenFiles = (1 << 2),
+  OS_FileIterFlags.Done            = (1 << 31),
 };
 
 typedef struct OS_FileIter OS_FileIter;

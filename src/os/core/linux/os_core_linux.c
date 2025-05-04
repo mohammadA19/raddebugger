@@ -267,23 +267,23 @@ os_file_open(OS_AccessFlags flags, String8 path)
   Temp scratch = scratch_begin(0, 0);
   String8 path_copy = push_str8_copy(scratch.arena, path);
   int lnx_flags = 0;
-  if(flags & OS_AccessFlag_Read && flags & OS_AccessFlag_Write)
+  if(flags & OS_AccessFlags.Read && flags & OS_AccessFlags.Write)
   {
     lnx_flags = O_RDWR;
   }
-  else if(flags & OS_AccessFlag_Write)
+  else if(flags & OS_AccessFlags.Write)
   {
     lnx_flags = O_WRONLY;
   }
-  else if(flags & OS_AccessFlag_Read)
+  else if(flags & OS_AccessFlags.Read)
   {
     lnx_flags = O_RDONLY;
   }
-  if(flags & OS_AccessFlag_Append)
+  if(flags & OS_AccessFlags.Append)
   {
     lnx_flags |= O_APPEND;
   }
-  if(flags & (OS_AccessFlag_Write|OS_AccessFlag_Append))
+  if(flags & (OS_AccessFlags.Write|OS_AccessFlags.Append))
   {
     lnx_flags |= O_CREAT;
   }
@@ -414,8 +414,8 @@ internal B32
 os_copy_file_path(String8 dst, String8 src)
 {
   B32 result = 0;
-  OS_Handle src_h = os_file_open(OS_AccessFlag_Read, src);
-  OS_Handle dst_h = os_file_open(OS_AccessFlag_Write, dst);
+  OS_Handle src_h = os_file_open(OS_AccessFlags.Read, src);
+  OS_Handle dst_h = os_file_open(OS_AccessFlags.Write, dst);
   if(!os_handle_match(src_h, os_handle_zero()) &&
      !os_handle_match(dst_h, os_handle_zero()))
   {
@@ -524,8 +524,8 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
   if(os_handle_match(map, os_handle_zero())) { return 0; }
   int fd = (int)map.u64[0];
   int prot_flags = 0;
-  if(flags & OS_AccessFlag_Write) { prot_flags |= PROT_WRITE; }
-  if(flags & OS_AccessFlag_Read)  { prot_flags |= PROT_READ; }
+  if(flags & OS_AccessFlags.Write) { prot_flags |= PROT_WRITE; }
+  if(flags & OS_AccessFlags.Read)  { prot_flags |= PROT_READ; }
   int map_flags = MAP_PRIVATE;
   void *base = mmap(0, dim_1u64(range), prot_flags, map_flags, fd, range.min);
   if(base == MAP_FAILED)
@@ -583,8 +583,8 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
     B32 filtered = 0;
     if(good)
     {
-      filtered = ((st.st_mode == S_IFDIR && iter->flags & OS_FileIterFlag_SkipFolders) ||
-                  (st.st_mode == S_IFREG && iter->flags & OS_FileIterFlag_SkipFiles) ||
+      filtered = ((st.st_mode == S_IFDIR && iter->flags & OS_FileIterFlags.SkipFolders) ||
+                  (st.st_mode == S_IFREG && iter->flags & OS_FileIterFlags.SkipFiles) ||
                   (lnx_iter->dp->d_name[0] == '.' && lnx_iter->dp->d_name[1] == 0) ||
                   (lnx_iter->dp->d_name[0] == '.' && lnx_iter->dp->d_name[1] == '.' && lnx_iter->dp->d_name[2] == 0));
     }

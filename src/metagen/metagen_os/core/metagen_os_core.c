@@ -61,7 +61,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 internal String8
 os_data_from_file_path(Arena *arena, String8 path)
 {
-  OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
+  OS_Handle file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead, path);
   FileProperties props = os_properties_from_file(file);
   String8 data = os_string_from_file_range(arena, file, r1u64(0, props.size));
   os_file_close(file);
@@ -72,7 +72,7 @@ internal B32
 os_write_data_to_file_path(String8 path, String8 data)
 {
   B32 good = 0;
-  OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
+  OS_Handle file = os_file_open(OS_AccessFlags.Write, path);
   if(!os_handle_match(file, os_handle_zero()))
   {
     good = 1;
@@ -86,7 +86,7 @@ internal B32
 os_write_data_list_to_file_path(String8 path, String8List list)
 {
   B32 good = 0;
-  OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
+  OS_Handle file = os_file_open(OS_AccessFlags.Write, path);
   if(!os_handle_match(file, os_handle_zero()))
   {
     good = 1;
@@ -107,7 +107,7 @@ os_append_data_to_file_path(String8 path, String8 data)
   B32 good = 0;
   if(data.size != 0)
   {
-    OS_Handle file = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Append, path);
+    OS_Handle file = os_file_open(OS_AccessFlags.Write|OS_AccessFlags.Append, path);
     if(!os_handle_match(file, os_handle_zero()))
     {
       good = 1;
@@ -122,7 +122,7 @@ os_append_data_to_file_path(String8 path, String8 data)
 internal OS_FileID
 os_id_from_file_path(String8 path)
 {
-  OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
+  OS_Handle file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead, path);
   OS_FileID id = os_id_from_file(file);
   os_file_close(file);
   return id;

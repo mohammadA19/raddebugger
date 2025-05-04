@@ -293,13 +293,13 @@ os_file_open(OS_AccessFlags flags, String8 path)
   DWORD access_flags = 0;
   DWORD share_mode = 0;
   DWORD creation_disposition = OPEN_EXISTING;
-  if(flags & OS_AccessFlag_Read)    {access_flags |= GENERIC_READ;}
-  if(flags & OS_AccessFlag_Write)   {access_flags |= GENERIC_WRITE;}
-  if(flags & OS_AccessFlag_Execute) {access_flags |= GENERIC_EXECUTE;}
-  if(flags & OS_AccessFlag_ShareRead)  {share_mode |= FILE_SHARE_READ;}
-  if(flags & OS_AccessFlag_ShareWrite) {share_mode |= FILE_SHARE_WRITE|FILE_SHARE_DELETE;}
-  if(flags & OS_AccessFlag_Write)   {creation_disposition = CREATE_ALWAYS;}
-  if(flags & OS_AccessFlag_Append)  {creation_disposition = OPEN_ALWAYS;}
+  if(flags & OS_AccessFlags.Read)    {access_flags |= GENERIC_READ;}
+  if(flags & OS_AccessFlags.Write)   {access_flags |= GENERIC_WRITE;}
+  if(flags & OS_AccessFlags.Execute) {access_flags |= GENERIC_EXECUTE;}
+  if(flags & OS_AccessFlags.ShareRead)  {share_mode |= FILE_SHARE_READ;}
+  if(flags & OS_AccessFlags.ShareWrite) {share_mode |= FILE_SHARE_WRITE|FILE_SHARE_DELETE;}
+  if(flags & OS_AccessFlags.Write)   {creation_disposition = CREATE_ALWAYS;}
+  if(flags & OS_AccessFlags.Append)  {creation_disposition = OPEN_ALWAYS;}
   HANDLE file = CreateFileW((WCHAR *)path16.str, access_flags, share_mode, 0, creation_disposition, FILE_ATTRIBUTE_NORMAL, 0);
   if(file != INVALID_HANDLE_VALUE)
   {
@@ -513,16 +513,16 @@ os_file_map_open(OS_AccessFlags flags, OS_Handle file)
       switch(flags)
       {
         default:{}break;
-        case OS_AccessFlag_Read:
+        case OS_AccessFlags.Read:
         {protect_flags = PAGE_READONLY;}break;
-        case OS_AccessFlag_Write:
-        case OS_AccessFlag_Read|OS_AccessFlag_Write:
+        case OS_AccessFlags.Write:
+        case OS_AccessFlags.Read|OS_AccessFlags.Write:
         {protect_flags = PAGE_READWRITE;}break;
-        case OS_AccessFlag_Execute:
-        case OS_AccessFlag_Read|OS_AccessFlag_Execute:
+        case OS_AccessFlags.Execute:
+        case OS_AccessFlags.Read|OS_AccessFlags.Execute:
         {protect_flags = PAGE_EXECUTE_READ;}break;
-        case OS_AccessFlag_Execute|OS_AccessFlag_Write|OS_AccessFlag_Read:
-        case OS_AccessFlag_Execute|OS_AccessFlag_Write:
+        case OS_AccessFlags.Execute|OS_AccessFlags.Write|OS_AccessFlags.Read:
+        case OS_AccessFlags.Execute|OS_AccessFlags.Write:
         {protect_flags = PAGE_EXECUTE_READWRITE;}break;
       }
     }
@@ -552,22 +552,22 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
     switch(flags)
     {
       default:{}break;
-      case OS_AccessFlag_Read:
+      case OS_AccessFlags.Read:
       {
         access_flags = FILE_MAP_READ;
       }break;
-      case OS_AccessFlag_Write:
+      case OS_AccessFlags.Write:
       {
         access_flags = FILE_MAP_WRITE;
       }break;
-      case OS_AccessFlag_Read|OS_AccessFlag_Write:
+      case OS_AccessFlags.Read|OS_AccessFlags.Write:
       {
         access_flags = FILE_MAP_ALL_ACCESS;
       }break;
-      case OS_AccessFlag_Execute:
-      case OS_AccessFlag_Read|OS_AccessFlag_Execute:
-      case OS_AccessFlag_Write|OS_AccessFlag_Execute:
-      case OS_AccessFlag_Read|OS_AccessFlag_Write|OS_AccessFlag_Execute:
+      case OS_AccessFlags.Execute:
+      case OS_AccessFlags.Read|OS_AccessFlags.Execute:
+      case OS_AccessFlags.Write|OS_AccessFlags.Execute:
+      case OS_AccessFlags.Read|OS_AccessFlags.Write|OS_AccessFlags.Execute:
       {
         access_flags = FILE_MAP_ALL_ACCESS|FILE_MAP_EXECUTE;
       }break;
@@ -632,7 +632,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
     default:
     case 0:
     {
-      if (!(flags & OS_FileIterFlag_Done) && w32_iter->handle != INVALID_HANDLE_VALUE)
+      if (!(flags & OS_FileIterFlags.Done) && w32_iter->handle != INVALID_HANDLE_VALUE)
       {
         do
         {
@@ -642,7 +642,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
           WCHAR *file_name = w32_iter->find_data.cFileName;
           DWORD attributes = w32_iter->find_data.dwFileAttributes;
           if (file_name[0] == '.'){
-            if (flags & OS_FileIterFlag_SkipHiddenFiles){
+            if (flags & OS_FileIterFlags.SkipHiddenFiles){
               usable_file = 0;
             }
             else if (file_name[1] == 0){
@@ -653,12 +653,12 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
             }
           }
           if (attributes & FILE_ATTRIBUTE_DIRECTORY){
-            if (flags & OS_FileIterFlag_SkipFolders){
+            if (flags & OS_FileIterFlags.SkipFolders){
               usable_file = 0;
             }
           }
           else{
-            if (flags & OS_FileIterFlag_SkipFiles){
+            if (flags & OS_FileIterFlags.SkipFiles){
               usable_file = 0;
             }
           }
@@ -672,7 +672,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
             info_out->props.flags = os_w32_file_property_flags_from_dwFileAttributes(attributes);
             result = 1;
             if (!FindNextFileW(w32_iter->handle, &w32_iter->find_data)){
-              iter->flags |= OS_FileIterFlag_Done;
+              iter->flags |= OS_FileIterFlags.Done;
             }
             break;
           }
@@ -695,7 +695,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
   }
   if(!result)
   {
-    iter->flags |= OS_FileIterFlag_Done;
+    iter->flags |= OS_FileIterFlags.Done;
   }
   return result;
 }

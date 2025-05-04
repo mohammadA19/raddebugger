@@ -879,10 +879,10 @@ ASYNC_WORK_DEF(di_parse_work)
   FileProperties og_props = {0};
   ProfScope("analyze %.*s", str8_varg(og_path))
   {
-    OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, og_path);
-    OS_Handle file_map = os_file_map_open(OS_AccessFlag_Read, file);
+    OS_Handle file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead, og_path);
+    OS_Handle file_map = os_file_map_open(OS_AccessFlags.Read, file);
     FileProperties props = og_props = os_properties_from_file(file);
-    void *base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, props.size));
+    void *base = os_file_map_view_open(file_map, OS_AccessFlags.Read, r1u64(0, props.size));
     String8 data = str8((U8 *)base, props.size);
     if(!og_format_is_known)
     {
@@ -968,10 +968,10 @@ ASYNC_WORK_DEF(di_parse_work)
     OS_Handle file_map = {0};
     FileProperties file_props = {0};
     void *file_base = 0;
-    file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, rdi_path);
-    file_map = os_file_map_open(OS_AccessFlag_Read, file);
+    file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead, rdi_path);
+    file_map = os_file_map_open(OS_AccessFlags.Read, file);
     file_props = os_properties_from_file(file);
-    file_base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, file_props.size));
+    file_base = os_file_map_view_open(file_map, OS_AccessFlags.Read, r1u64(0, file_props.size));
     if(sizeof(RDI_Header) <= file_props.size)
     {
       RDI_Header *header = (RDI_Header*)file_base;
@@ -1075,10 +1075,10 @@ ASYNC_WORK_DEF(di_parse_work)
   FileProperties file_props = {0};
   void *file_base = 0;
   {
-    file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite, rdi_path);
-    file_map = os_file_map_open(OS_AccessFlag_Read, file);
+    file = os_file_open(OS_AccessFlags.Read|OS_AccessFlags.ShareRead|OS_AccessFlags.ShareWrite, rdi_path);
+    file_map = os_file_map_open(OS_AccessFlags.Read, file);
     file_props = os_properties_from_file(file);
-    file_base = os_file_map_view_open(file_map, OS_AccessFlag_Read, r1u64(0, file_props.size));
+    file_base = os_file_map_view_open(file_map, OS_AccessFlags.Read, r1u64(0, file_props.size));
   }
   
   ////////////////////////////
