@@ -26,7 +26,7 @@ public enum UI_IconKind
 public struct UI_IconInfo
 {
   FNT_Tag icon_font;
-  String8 icon_kind_text_map[UI_IconKind_COUNT];
+  String8[UI_IconKind_COUNT] icon_kind_text_map;
 }
 
 ////////////////////////////////
@@ -141,15 +141,15 @@ public struct UI_Event
 
 public struct UI_EventNode
 {
-  UI_EventNode *next;
-  UI_EventNode *prev;
+  UI_EventNode* next;
+  UI_EventNode* prev;
   UI_Event v;
 }
 
 public struct UI_EventList
 {
-  UI_EventNode *first;
-  UI_EventNode *last;
+  UI_EventNode* first;
+  UI_EventNode* last;
   uint64 count;
 }
 
@@ -177,7 +177,7 @@ public struct UI_TxtOp
 
 public struct UI_Key
 {
-  uint64 u64[1];
+  uint64[1] u64;
 }
 
 ////////////////////////////////
@@ -219,7 +219,7 @@ public struct UI_Palette
 {
   union
   {
-    Vec4F32 colors[UI_ColorCode_COUNT];
+    Vec4F32[UI_ColorCode_COUNT] colors;
     struct
     {
       Vec4F32 null;
@@ -236,9 +236,9 @@ public struct UI_Palette
 
 public struct UI_WidgetPaletteInfo
 {
-  UI_Palette *tooltip_palette;
-  UI_Palette *ctx_menu_palette;
-  UI_Palette *scrollbar_palette;
+  UI_Palette* tooltip_palette;
+  UI_Palette* ctx_menu_palette;
+  UI_Palette* scrollbar_palette;
 }
 
 ////////////////////////////////
@@ -272,7 +272,7 @@ public struct UI_ScrollPt
 [Union]
 struct UI_ScrollPt2
 {
-  UI_ScrollPt v[2];
+  UI_ScrollPt[2] v;
   struct
   {
     UI_ScrollPt x;
@@ -292,7 +292,7 @@ public enum UI_TextAlign
 }
 
 struct UI_Box;
-#define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
+#define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box* box, void* user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
 public enum UI_BoxFlags : uint64
@@ -370,15 +370,15 @@ public enum UI_BoxFlags : uint64
 public struct UI_Box
 {
   //- rjf: persistent links
-  UI_Box *hash_next;
-  UI_Box *hash_prev;
+  UI_Box* hash_next;
+  UI_Box* hash_prev;
   
   //- rjf: per-build links/data
-  UI_Box *first;
-  UI_Box *last;
-  UI_Box *next;
-  UI_Box *prev;
-  UI_Box *parent;
+  UI_Box* first;
+  UI_Box* last;
+  UI_Box* next;
+  UI_Box* prev;
+  UI_Box* parent;
   uint64 child_count;
   
   //- rjf: per-build equipment
@@ -388,20 +388,20 @@ public struct UI_Box
   UI_TextAlign text_align;
   Vec2F32 fixed_position;
   Vec2F32 fixed_size;
-  UI_Size pref_size[Axis2_COUNT];
+  UI_Size[Axis2_COUNT] pref_size;
   Axis2 child_layout_axis;
   OS_Cursor hover_cursor;
   uint32 fastpath_codepoint;
   UI_Key group_key;
-  DR_Bucket *draw_bucket;
-  UI_BoxCustomDrawFunctionType *custom_draw;
-  void *custom_draw_user_data;
-  UI_Palette *palette;
+  DR_Bucket* draw_bucket;
+  UI_BoxCustomDrawFunctionType* custom_draw;
+  void* custom_draw_user_data;
+  UI_Palette* palette;
   FNT_Tag font;
   float font_size;
   float tab_size;
   FNT_RasterFlags text_raster_flags;
-  float corner_radii[Corner_COUNT];
+  float[Corner_COUNT] corner_radii;
   float blur_size;
   float transparency;
   float squish;
@@ -435,21 +435,21 @@ public struct UI_Box
 
 public struct UI_BoxRec
 {
-  UI_Box *next;
+  UI_Box* next;
   int32 push_count;
   int32 pop_count;
 }
 
 public struct UI_BoxNode
 {
-  UI_BoxNode *next;
-  UI_Box *box;
+  UI_BoxNode* next;
+  UI_Box* box;
 }
 
 public struct UI_BoxList
 {
-  UI_BoxNode *first;
-  UI_BoxNode *last;
+  UI_BoxNode* first;
+  UI_BoxNode* last;
   uint64 count;
 }
 
@@ -516,7 +516,7 @@ public enum UI_SignalFlags : uint32
 
 public struct UI_Signal
 {
-  UI_Box *box;
+  UI_Box* box;
   OS_Modifiers event_flags;
   Vec2S16 scroll;
   UI_SignalFlags f;
@@ -553,10 +553,10 @@ public struct UI_AnimParams
 
 public struct UI_AnimNode
 {
-  UI_AnimNode *slot_next;
-  UI_AnimNode *slot_prev;
-  UI_AnimNode *lru_next;
-  UI_AnimNode *lru_prev;
+  UI_AnimNode* slot_next;
+  UI_AnimNode* slot_prev;
+  UI_AnimNode* lru_next;
+  UI_AnimNode* lru_prev;
   uint64 first_touched_build_index;
   uint64 last_touched_build_index;
   UI_Key key;
@@ -566,8 +566,8 @@ public struct UI_AnimNode
 
 public struct UI_AnimSlot
 {
-  UI_AnimNode *first;
-  UI_AnimNode *last;
+  UI_AnimNode* first;
+  UI_AnimNode* last;
 }
 
 ////////////////////////////////
@@ -580,41 +580,41 @@ public struct UI_AnimSlot
 
 public struct UI_BoxHashSlot
 {
-  UI_Box *hash_first;
-  UI_Box *hash_last;
+  UI_Box* hash_first;
+  UI_Box* hash_last;
 }
 
 public struct UI_State
 {
   //- rjf: main arena
-  Arena *arena;
+  Arena* arena;
   
   //- rjf: fixed keys
   UI_Key external_key;
   
   //- rjf: build arenas
-  Arena *build_arenas[2];
+  Arena*[2] build_arenas;
   uint64 build_index;
   
   //- rjf: box cache
-  UI_Box *first_free_box;
+  UI_Box* first_free_box;
   uint64 box_table_size;
-  UI_BoxHashSlot *box_table;
+  UI_BoxHashSlot* box_table;
   
   //- rjf: anim cache
-  UI_AnimNode *free_anim_node;
-  UI_AnimNode *lru_anim_node;
-  UI_AnimNode *mru_anim_node;
+  UI_AnimNode* free_anim_node;
+  UI_AnimNode* lru_anim_node;
+  UI_AnimNode* mru_anim_node;
   uint64 anim_slots_count;
-  UI_AnimSlot *anim_slots;
+  UI_AnimSlot* anim_slots;
   
   //- rjf: build state machine state
   B32 is_in_open_ctx_menu;
   
   //- rjf: build phase output
-  UI_Box *root;
-  UI_Box *tooltip_root;
-  UI_Box *ctx_menu_root;
+  UI_Box* root;
+  UI_Box* tooltip_root;
+  UI_Box* ctx_menu_root;
   UI_Key default_nav_root_key;
   uint64 build_box_count;
   uint64 last_build_box_count;
@@ -626,23 +626,23 @@ public struct UI_State
   UI_WidgetPaletteInfo widget_palette_info;
   UI_AnimationInfo animation_info;
   OS_Handle window;
-  UI_EventList *events;
+  UI_EventList* events;
   Vec2F32 mouse;
   float animation_dt;
   float default_animation_rate;
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
-  UI_Key active_box_key[UI_MouseButtonKind_COUNT];
+  UI_Key[UI_MouseButtonKind_COUNT] active_box_key;
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  uint64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
-  UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
+  uint64[UI_MouseButtonKind_COUNT][3] press_timestamp_history_us;
+  UI_Key[UI_MouseButtonKind_COUNT][3] press_key_history;
+  Vec2F32[UI_MouseButtonKind_COUNT][3] press_pos_history;
   Vec2F32 drag_start_mouse;
-  Arena *drag_state_arena;
+  Arena* drag_state_arena;
   String8 drag_state_data;
-  Arena *string_hover_arena;
+  Arena* string_hover_arena;
   String8 string_hover_string;
   DR_FancyRunList string_hover_fancy_runs;
   uint64 string_hover_begin_us;
