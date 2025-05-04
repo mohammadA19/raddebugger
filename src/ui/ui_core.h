@@ -1,32 +1,29 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef UI_H
-#define UI_H
-
 ////////////////////////////////
 //~ rjf: Icon Info
 
 public enum UI_IconKind
 {
-  UI_IconKind_Null,
-  UI_IconKind_RightArrow,
-  UI_IconKind_DownArrow,
-  UI_IconKind_LeftArrow,
-  UI_IconKind_UpArrow,
-  UI_IconKind_RightCaret,
-  UI_IconKind_DownCaret,
-  UI_IconKind_LeftCaret,
-  UI_IconKind_UpCaret,
-  UI_IconKind_CheckHollow,
-  UI_IconKind_CheckFilled,
-  UI_IconKind_COUNT
+  Null,
+  RightArrow,
+  DownArrow,
+  LeftArrow,
+  UpArrow,
+  RightCaret,
+  DownCaret,
+  LeftCaret,
+  UpCaret,
+  CheckHollow,
+  CheckFilled,
+  COUNT
 }
 
 public struct UI_IconInfo
 {
   FNT_Tag icon_font;
-  String8[UI_IconKind_COUNT] icon_kind_text_map;
+  String8[UI_IconKind.COUNT] icon_kind_text_map;
 }
 
 ////////////////////////////////
@@ -34,10 +31,10 @@ public struct UI_IconInfo
 
 public enum UI_MouseButtonKind
 {
-  UI_MouseButtonKind_Left,
-  UI_MouseButtonKind_Middle,
-  UI_MouseButtonKind_Right,
-  UI_MouseButtonKind_COUNT
+  Left,
+  Middle,
+  Right,
+  COUNT
 }
 
 ////////////////////////////////
@@ -45,17 +42,17 @@ public enum UI_MouseButtonKind
 
 public enum UI_PermissionFlags : uint32
 {
-  UI_PermissionFlag_ClicksLeft   = (1<<0),
-  UI_PermissionFlag_ClicksMiddle = (1<<1),
-  UI_PermissionFlag_ClicksRight  = (1<<2),
-  UI_PermissionFlag_ScrollX      = (1<<3),
-  UI_PermissionFlag_ScrollY      = (1<<4),
-  UI_PermissionFlag_Keyboard     = (1<<5),
-  UI_PermissionFlag_Text         = (1<<6),
+  ClicksLeft   = 1 << 0,
+  ClicksMiddle = 1 << 1,
+  ClicksRight  = 1 << 2,
+  ScrollX      = 1 << 3,
+  ScrollY      = 1 << 4,
+  Keyboard     = 1 << 5,
+  Text         = 1 << 6,
   
   //- rjf bundles
-  UI_PermissionFlag_Clicks = (UI_PermissionFlag_ClicksLeft|UI_PermissionFlag_ClicksMiddle|UI_PermissionFlag_ClicksRight),
-  UI_PermissionFlag_All = 0xffffffff,
+  Clicks = ClicksLeft | ClicksMiddle | ClicksRight,
+  All = 0xffffffff,
 }
 
 ////////////////////////////////
@@ -63,11 +60,11 @@ public enum UI_PermissionFlags : uint32
 
 public enum UI_FocusKind
 {
-  UI_FocusKind_Null,
-  UI_FocusKind_Off,
-  UI_FocusKind_On,
-  UI_FocusKind_Root,
-  UI_FocusKind_COUNT
+  Null,
+  Off,
+  On,
+  Root,
+  COUNT
 }
 
 ////////////////////////////////
@@ -77,50 +74,50 @@ public enum UI_FocusKind
 
 public enum UI_EventKind
 {
-  UI_EventKind_Null,
-  UI_EventKind_Press,
-  UI_EventKind_Release,
-  UI_EventKind_Text,
-  UI_EventKind_Navigate,
-  UI_EventKind_Edit,
-  UI_EventKind_MouseMove,
-  UI_EventKind_Scroll,
-  UI_EventKind_AutocompleteHint,
-  UI_EventKind_FileDrop,
-  UI_EventKind_COUNT
+  Null,
+  Press,
+  Release,
+  Text,
+  Navigate,
+  Edit,
+  MouseMove,
+  Scroll,
+  AutocompleteHint,
+  FileDrop,
+  COUNT
 }
 
 public enum UI_EventActionSlot
 {
-  UI_EventActionSlot_Null,
-  UI_EventActionSlot_Accept,
-  UI_EventActionSlot_Cancel,
-  UI_EventActionSlot_Edit,
-  UI_EventActionSlot_COUNT
+  Null,
+  Accept,
+  Cancel,
+  Edit,
+  COUNT
 }
 
 public enum UI_EventFlags : uint32
 {
-  UI_EventFlag_KeepMark            = (1<<0),
-  UI_EventFlag_Delete              = (1<<1),
-  UI_EventFlag_Copy                = (1<<2),
-  UI_EventFlag_Paste               = (1<<3),
-  UI_EventFlag_ZeroDeltaOnSelect   = (1<<4),
-  UI_EventFlag_PickSelectSide      = (1<<5),
-  UI_EventFlag_CapAtLine           = (1<<6),
-  UI_EventFlag_ExplicitDirectional = (1<<7),
-  UI_EventFlag_Reorder             = (1<<8),
+  KeepMark            = (1<<0),
+  Delete              = (1<<1),
+  Copy                = (1<<2),
+  Paste               = (1<<3),
+  ZeroDeltaOnSelect   = (1<<4),
+  PickSelectSide      = (1<<5),
+  CapAtLine           = (1<<6),
+  ExplicitDirectional = (1<<7),
+  Reorder             = (1<<8),
 }
 
 public enum UI_EventDeltaUnit
 {
-  UI_EventDeltaUnit_Null,
-  UI_EventDeltaUnit_Char,
-  UI_EventDeltaUnit_Word,
-  UI_EventDeltaUnit_Line,
-  UI_EventDeltaUnit_Page,
-  UI_EventDeltaUnit_Whole,
-  UI_EventDeltaUnit_COUNT
+  Null,
+  Char,
+  Word,
+  Line,
+  Page,
+  Whole,
+  COUNT
 }
 
 public struct UI_Event
@@ -158,8 +155,8 @@ public struct UI_EventList
 
 public enum UI_TxtOpFlags : uint32
 {
-  UI_TxtOpFlag_Invalid = (1<<0),
-  UI_TxtOpFlag_Copy    = (1<<1),
+  Invalid = (1<<0),
+  Copy    = (1<<1),
 }
 
 public struct UI_TxtOp
@@ -185,11 +182,11 @@ public struct UI_Key
 
 public enum UI_SizeKind
 {
-  UI_SizeKind_Null,
-  UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
-  UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
-  UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
-  UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
+  Null,
+  Pixels,      // size is computed via a preferred pixel value
+  TextContent, // size is computed via the dimensions of box's rendered string
+  ParentPct,   // size is computed via a well-determined parent or grandparent size
+  ChildrenSum, // size is computed via summing well-determined sizes of children
 }
 
 public struct UI_Size
@@ -204,22 +201,22 @@ public struct UI_Size
 
 public enum UI_ColorCode
 {
-  UI_ColorCode_Null,
-  UI_ColorCode_Background,
-  UI_ColorCode_Text,
-  UI_ColorCode_TextWeak,
-  UI_ColorCode_Border,
-  UI_ColorCode_Overlay,
-  UI_ColorCode_Cursor,
-  UI_ColorCode_Selection,
-  UI_ColorCode_COUNT
+  Null,
+  Background,
+  Text,
+  TextWeak,
+  Border,
+  Overlay,
+  Cursor,
+  Selection,
+  COUNT
 }
 
 public struct UI_Palette
 {
   union
   {
-    Vec4F32[UI_ColorCode_COUNT] colors;
+    Vec4F32[UI_ColorCode.COUNT] colors;
     struct
     {
       Vec4F32 null;
@@ -246,13 +243,13 @@ public struct UI_WidgetPaletteInfo
 
 public enum UI_AnimationInfoFlags : uint32
 {
-  UI_AnimationInfoFlag_HotAnimations          = (1<<0),
-  UI_AnimationInfoFlag_ActiveAnimations       = (1<<1),
-  UI_AnimationInfoFlag_FocusAnimations        = (1<<2),
-  UI_AnimationInfoFlag_TooltipAnimations      = (1<<3),
-  UI_AnimationInfoFlag_ContextMenuAnimations  = (1<<4),
-  UI_AnimationInfoFlag_ScrollingAnimations    = (1<<5),
-  UI_AnimationInfoFlag_All = 0xffffffff,
+  HotAnimations          = 1 << 0,
+  ActiveAnimations       = 1 << 1,
+  FocusAnimations        = 1 << 2,
+  TooltipAnimations      = 1 << 3,
+  ContextMenuAnimations  = 1 << 4,
+  ScrollingAnimations    = 1 << 5,
+  All = 0xffffffff,
 }
 
 public struct UI_AnimationInfo
@@ -285,10 +282,10 @@ struct UI_ScrollPt2
 
 public enum UI_TextAlign
 {
-  UI_TextAlign_Left,
-  UI_TextAlign_Center,
-  UI_TextAlign_Right,
-  UI_TextAlign_COUNT
+  Left,
+  Center,
+  Right,
+  COUNT
 }
 
 struct UI_Box;
@@ -298,73 +295,73 @@ typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 public enum UI_BoxFlags : uint64
 {
 //- rjf: interaction
-# define UI_BoxFlag_MouseClickable            (UI_BoxFlags)(1ull<<0)
-# define UI_BoxFlag_KeyboardClickable         (UI_BoxFlags)(1ull<<1)
-# define UI_BoxFlag_DropSite                  (UI_BoxFlags)(1ull<<2)
-# define UI_BoxFlag_ClickToFocus              (UI_BoxFlags)(1ull<<3)
-# define UI_BoxFlag_Scroll                    (UI_BoxFlags)(1ull<<4)
-# define UI_BoxFlag_ViewScrollX               (UI_BoxFlags)(1ull<<5)
-# define UI_BoxFlag_ViewScrollY               (UI_BoxFlags)(1ull<<6)
-# define UI_BoxFlag_ViewClampX                (UI_BoxFlags)(1ull<<7)
-# define UI_BoxFlag_ViewClampY                (UI_BoxFlags)(1ull<<8)
-# define UI_BoxFlag_FocusHot                  (UI_BoxFlags)(1ull<<9)
-# define UI_BoxFlag_FocusActive               (UI_BoxFlags)(1ull<<10)
-# define UI_BoxFlag_FocusHotDisabled          (UI_BoxFlags)(1ull<<11)
-# define UI_BoxFlag_FocusActiveDisabled       (UI_BoxFlags)(1ull<<12)
-# define UI_BoxFlag_DefaultFocusNavX          (UI_BoxFlags)(1ull<<13)
-# define UI_BoxFlag_DefaultFocusNavY          (UI_BoxFlags)(1ull<<14)
-# define UI_BoxFlag_DefaultFocusEdit          (UI_BoxFlags)(1ull<<15)
-# define UI_BoxFlag_FocusNavSkip              (UI_BoxFlags)(1ull<<16)
-# define UI_BoxFlag_DisableTruncatedHover     (UI_BoxFlags)(1ull<<17)
-# define UI_BoxFlag_Disabled                  (UI_BoxFlags)(1ull<<18)
+  MouseClickable            = 1 << 0,
+  KeyboardClickable         = 1 << 1,
+  DropSite                  = 1 << 2,
+  ClickToFocus              = 1 << 3,
+  Scroll                    = 1 << 4,
+  ViewScrollX               = 1 << 5,
+  ViewScrollY               = 1 << 6,
+  ViewClampX                = 1 << 7,
+  ViewClampY                = 1 << 8,
+  FocusHot                  = 1 << 9,
+  FocusActive               = 1 << 10,
+  FocusHotDisabled          = 1 << 11,
+  FocusActiveDisabled       = 1 << 12,
+  DefaultFocusNavX          = 1 << 13,
+  DefaultFocusNavY          = 1 << 14,
+  DefaultFocusEdit          = 1 << 15,
+  FocusNavSkip              = 1 << 16,
+  DisableTruncatedHover     = 1 << 17,
+  Disabled                  = 1 << 18,
 
 //- rjf: layout
-# define UI_BoxFlag_FloatingX                 (UI_BoxFlags)(1ull<<19)
-# define UI_BoxFlag_FloatingY                 (UI_BoxFlags)(1ull<<20)
-# define UI_BoxFlag_FixedWidth                (UI_BoxFlags)(1ull<<21)
-# define UI_BoxFlag_FixedHeight               (UI_BoxFlags)(1ull<<22)
-# define UI_BoxFlag_AllowOverflowX            (UI_BoxFlags)(1ull<<23)
-# define UI_BoxFlag_AllowOverflowY            (UI_BoxFlags)(1ull<<24)
-# define UI_BoxFlag_SkipViewOffX              (UI_BoxFlags)(1ull<<25)
-# define UI_BoxFlag_SkipViewOffY              (UI_BoxFlags)(1ull<<26)
+  FloatingX                 = 1 << 19,
+  FloatingY                 = 1 << 20,
+  FixedWidth                = 1 << 21,
+  FixedHeight               = 1 << 22,
+  AllowOverflowX            = 1 << 23,
+  AllowOverflowY            = 1 << 24,
+  SkipViewOffX              = 1 << 25,
+  SkipViewOffY              = 1 << 26,
 
 //- rjf: appearance / animation
-# define UI_BoxFlag_DrawDropShadow            (UI_BoxFlags)(1ull<<27)
-# define UI_BoxFlag_DrawBackgroundBlur        (UI_BoxFlags)(1ull<<28)
-# define UI_BoxFlag_DrawBackground            (UI_BoxFlags)(1ull<<29)
-# define UI_BoxFlag_DrawBorder                (UI_BoxFlags)(1ull<<30)
-# define UI_BoxFlag_DrawSideTop               (UI_BoxFlags)(1ull<<31)
-# define UI_BoxFlag_DrawSideBottom            (UI_BoxFlags)(1ull<<32)
-# define UI_BoxFlag_DrawSideLeft              (UI_BoxFlags)(1ull<<33)
-# define UI_BoxFlag_DrawSideRight             (UI_BoxFlags)(1ull<<34)
-# define UI_BoxFlag_DrawText                  (UI_BoxFlags)(1ull<<35)
-# define UI_BoxFlag_DrawTextFastpathCodepoint (UI_BoxFlags)(1ull<<36)
-# define UI_BoxFlag_DrawTextWeak              (UI_BoxFlags)(1ull<<37)
-# define UI_BoxFlag_DrawHotEffects            (UI_BoxFlags)(1ull<<38)
-# define UI_BoxFlag_DrawActiveEffects         (UI_BoxFlags)(1ull<<39)
-# define UI_BoxFlag_DrawOverlay               (UI_BoxFlags)(1ull<<40)
-# define UI_BoxFlag_DrawBucket                (UI_BoxFlags)(1ull<<41)
-# define UI_BoxFlag_Clip                      (UI_BoxFlags)(1ull<<42)
-# define UI_BoxFlag_AnimatePosX               (UI_BoxFlags)(1ull<<43)
-# define UI_BoxFlag_AnimatePosY               (UI_BoxFlags)(1ull<<44)
-# define UI_BoxFlag_DisableTextTrunc          (UI_BoxFlags)(1ull<<45)
-# define UI_BoxFlag_DisableIDString           (UI_BoxFlags)(1ull<<46)
-# define UI_BoxFlag_DisableFocusBorder        (UI_BoxFlags)(1ull<<47)
-# define UI_BoxFlag_DisableFocusOverlay       (UI_BoxFlags)(1ull<<48)
-# define UI_BoxFlag_HasDisplayString          (UI_BoxFlags)(1ull<<49)
-# define UI_BoxFlag_HasFuzzyMatchRanges       (UI_BoxFlags)(1ull<<50)
-# define UI_BoxFlag_RoundChildrenByParent     (UI_BoxFlags)(1ull<<51)
+  DrawDropShadow            = 1 << 27,
+  DrawBackgroundBlur        = 1 << 28,
+  DrawBackground            = 1 << 29,
+  DrawBorder                = 1 << 30,
+  DrawSideTop               = 1 << 31,
+  DrawSideBottom            = 1 << 32,
+  DrawSideLeft              = 1 << 33,
+  DrawSideRight             = 1 << 34,
+  DrawText                  = 1 << 35,
+  DrawTextFastpathCodepoint = 1 << 36,
+  DrawTextWeak              = 1 << 37,
+  DrawHotEffects            = 1 << 38,
+  DrawActiveEffects         = 1 << 39,
+  DrawOverlay               = 1 << 40,
+  DrawBucket                = 1 << 41,
+  Clip                      = 1 << 42,
+  AnimatePosX               = 1 << 43,
+  AnimatePosY               = 1 << 44,
+  DisableTextTrunc          = 1 << 45,
+  DisableIDString           = 1 << 46,
+  DisableFocusBorder        = 1 << 47,
+  DisableFocusOverlay       = 1 << 48,
+  HasDisplayString          = 1 << 49,
+  HasFuzzyMatchRanges       = 1 << 50,
+  RoundChildrenByParent     = 1 << 51,
 
 //- rjf: bundles
-# define UI_BoxFlag_Clickable           (UI_BoxFlag_MouseClickable|UI_BoxFlag_KeyboardClickable)
-# define UI_BoxFlag_DefaultFocusNav     (UI_BoxFlag_DefaultFocusNavX|UI_BoxFlag_DefaultFocusNavY|UI_BoxFlag_DefaultFocusEdit)
-# define UI_BoxFlag_Floating            (UI_BoxFlag_FloatingX|UI_BoxFlag_FloatingY)
-# define UI_BoxFlag_FixedSize           (UI_BoxFlag_FixedWidth|UI_BoxFlag_FixedHeight)
-# define UI_BoxFlag_AllowOverflow       (UI_BoxFlag_AllowOverflowX|UI_BoxFlag_AllowOverflowY)
-# define UI_BoxFlag_AnimatePos          (UI_BoxFlag_AnimatePosX|UI_BoxFlag_AnimatePosY)
-# define UI_BoxFlag_ViewScroll          (UI_BoxFlag_ViewScrollX|UI_BoxFlag_ViewScrollY)
-# define UI_BoxFlag_ViewClamp           (UI_BoxFlag_ViewClampX|UI_BoxFlag_ViewClampY)
-# define UI_BoxFlag_DisableFocusEffects (UI_BoxFlag_DisableFocusBorder|UI_BoxFlag_DisableFocusOverlay)
+  Clickable           = MouseClickable | KeyboardClickable,
+  DefaultFocusNav     = DefaultFocusNavX | DefaultFocusNavY | DefaultFocusEdit,
+  Floating            = FloatingX | FloatingY,
+  FixedSize           = FixedWidth | FixedHeight,
+  AllowOverflow       = AllowOverflowX | AllowOverflowY,
+  AnimatePos          = AnimatePosX | AnimatePosY,
+  ViewScroll          = ViewScrollX | ViewScrollY,
+  ViewClamp           = ViewClampX | ViewClampY,
+  DisableFocusEffects = DisableFocusBorder | DisableFocusOverlay,
 }
 
 public struct UI_Box
@@ -456,62 +453,62 @@ public struct UI_BoxList
 public enum UI_SignalFlags : uint32
 {
   // rjf: mouse press -> box was pressed while hovering
-  UI_SignalFlag_LeftPressed         = (1<<0),
-  UI_SignalFlag_MiddlePressed       = (1<<1),
-  UI_SignalFlag_RightPressed        = (1<<2),
+  LeftPressed         = (1<<0),
+  MiddlePressed       = (1<<1),
+  RightPressed        = (1<<2),
   
   // rjf: dragging -> box was previously pressed, user is still holding button
-  UI_SignalFlag_LeftDragging        = (1<<3),
-  UI_SignalFlag_MiddleDragging      = (1<<4),
-  UI_SignalFlag_RightDragging       = (1<<5),
+  LeftDragging        = (1<<3),
+  MiddleDragging      = (1<<4),
+  RightDragging       = (1<<5),
   
   // rjf: double-dragging -> box was previously double-clicked, user is still holding button
-  UI_SignalFlag_LeftDoubleDragging  = (1<<6),
-  UI_SignalFlag_MiddleDoubleDragging= (1<<7),
-  UI_SignalFlag_RightDoubleDragging = (1<<8),
+  LeftDoubleDragging  = (1<<6),
+  MiddleDoubleDragging= (1<<7),
+  RightDoubleDragging = (1<<8),
   
   // rjf: triple-dragging -> box was previously triple-clicked, user is still holding button
-  UI_SignalFlag_LeftTripleDragging  = (1<<9),
-  UI_SignalFlag_MiddleTripleDragging= (1<<10),
-  UI_SignalFlag_RightTripleDragging = (1<<11),
+  LeftTripleDragging  = (1<<9),
+  MiddleTripleDragging= (1<<10),
+  RightTripleDragging = (1<<11),
   
   // rjf: released -> box was previously pressed & user released, in or out of bounds
-  UI_SignalFlag_LeftReleased        = (1<<12),
-  UI_SignalFlag_MiddleReleased      = (1<<13),
-  UI_SignalFlag_RightReleased       = (1<<14),
+  LeftReleased        = (1<<12),
+  MiddleReleased      = (1<<13),
+  RightReleased       = (1<<14),
   
   // rjf: clicked -> box was previously pressed & user released, in bounds
-  UI_SignalFlag_LeftClicked         = (1<<15),
-  UI_SignalFlag_MiddleClicked       = (1<<16),
-  UI_SignalFlag_RightClicked        = (1<<17),
+  LeftClicked         = (1<<15),
+  MiddleClicked       = (1<<16),
+  RightClicked        = (1<<17),
   
   // rjf: double clicked -> box was previously clicked, pressed again
-  UI_SignalFlag_LeftDoubleClicked   = (1<<18),
-  UI_SignalFlag_MiddleDoubleClicked = (1<<19),
-  UI_SignalFlag_RightDoubleClicked  = (1<<20),
+  LeftDoubleClicked   = (1<<18),
+  MiddleDoubleClicked = (1<<19),
+  RightDoubleClicked  = (1<<20),
   
   // rjf: triple clicked -> box was previously clicked twice, pressed again
-  UI_SignalFlag_LeftTripleClicked   = (1<<21),
-  UI_SignalFlag_MiddleTripleClicked = (1<<22),
-  UI_SignalFlag_RightTripleClicked  = (1<<23),
+  LeftTripleClicked   = (1<<21),
+  MiddleTripleClicked = (1<<22),
+  RightTripleClicked  = (1<<23),
   
   // rjf: keyboard pressed -> box had focus, user activated via their keyboard
-  UI_SignalFlag_KeyboardPressed     = (1<<24),
+  KeyboardPressed     = (1<<24),
   
   // rjf: passive mouse info
-  UI_SignalFlag_Hovering            = (1<<25), // hovering specifically this box
-  UI_SignalFlag_MouseOver           = (1<<26), // mouse is over, but may be occluded
+  Hovering            = (1<<25), // hovering specifically this box
+  MouseOver           = (1<<26), // mouse is over, but may be occluded
   
   // rjf: committing state changes via user interaction
-  UI_SignalFlag_Commit              = (1<<27),
+  Commit              = (1<<27),
   
   // rjf: high-level combos
-  UI_SignalFlag_Pressed = UI_SignalFlag_LeftPressed|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_Released = UI_SignalFlag_LeftReleased,
-  UI_SignalFlag_Clicked = UI_SignalFlag_LeftClicked|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
-  UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
-  UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
+  Pressed = LeftPressed | KeyboardPressed,
+  Released = LeftReleased,
+  Clicked = LeftClicked | KeyboardPressed,
+  DoubleClicked = LeftDoubleClicked,
+  TripleClicked = LeftTripleClicked,
+  Dragging = LeftDragging,
 }
 
 public struct UI_Signal
@@ -522,17 +519,17 @@ public struct UI_Signal
   UI_SignalFlags f;
 }
 
-#define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
-#define ui_clicked(s)        !!((s).f&UI_SignalFlag_Clicked)
-#define ui_released(s)       !!((s).f&UI_SignalFlag_Released)
-#define ui_double_clicked(s) !!((s).f&UI_SignalFlag_DoubleClicked)
-#define ui_triple_clicked(s) !!((s).f&UI_SignalFlag_TripleClicked)
-#define ui_middle_clicked(s) !!((s).f&UI_SignalFlag_MiddleClicked)
-#define ui_right_clicked(s)  !!((s).f&UI_SignalFlag_RightClicked)
-#define ui_dragging(s)       !!((s).f&UI_SignalFlag_Dragging)
-#define ui_hovering(s)       !!((s).f&UI_SignalFlag_Hovering)
-#define ui_mouse_over(s)     !!((s).f&UI_SignalFlag_MouseOver)
-#define ui_committed(s)      !!((s).f&UI_SignalFlag_Commit)
+#define ui_pressed(s)        !!((s).f&UI_SignalFlags.Pressed)
+#define ui_clicked(s)        !!((s).f&UI_SignalFlags.Clicked)
+#define ui_released(s)       !!((s).f&UI_SignalFlags.Released)
+#define ui_double_clicked(s) !!((s).f&UI_SignalFlags.DoubleClicked)
+#define ui_triple_clicked(s) !!((s).f&UI_SignalFlags.TripleClicked)
+#define ui_middle_clicked(s) !!((s).f&UI_SignalFlags.MiddleClicked)
+#define ui_right_clicked(s)  !!((s).f&UI_SignalFlags.RightClicked)
+#define ui_dragging(s)       !!((s).f&UI_SignalFlags.Dragging)
+#define ui_hovering(s)       !!((s).f&UI_SignalFlags.Hovering)
+#define ui_mouse_over(s)     !!((s).f&UI_SignalFlags.MouseOver)
+#define ui_committed(s)      !!((s).f&UI_SignalFlags.Commit)
 
 public struct UI_Nav
 {
@@ -633,12 +630,12 @@ public struct UI_State
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
-  UI_Key[UI_MouseButtonKind_COUNT] active_box_key;
+  UI_Key[UI_MouseButtonKind.COUNT] active_box_key;
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  uint64[UI_MouseButtonKind_COUNT][3] press_timestamp_history_us;
-  UI_Key[UI_MouseButtonKind_COUNT][3] press_key_history;
-  Vec2F32[UI_MouseButtonKind_COUNT][3] press_pos_history;
+  uint64[UI_MouseButtonKind.COUNT][3] press_timestamp_history_us;
+  UI_Key[UI_MouseButtonKind.COUNT][3] press_key_history;
+  Vec2F32[UI_MouseButtonKind.COUNT][3] press_pos_history;
   Vec2F32 drag_start_mouse;
   Arena* drag_state_arena;
   String8 drag_state_data;
@@ -672,11 +669,11 @@ public struct UI_State
 ////////////////////////////////
 //~ rjf: Size Type Functions
 
-#define ui_px(value, strictness)         ui_size(UI_SizeKind_Pixels, value, strictness)
-#define ui_em(value, strictness)         ui_size(UI_SizeKind_Pixels, (value) * ui_top_font_size(), strictness)
-#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind_TextContent, padding, strictness)
-#define ui_pct(value, strictness)        ui_size(UI_SizeKind_ParentPct, value, strictness)
-#define ui_children_sum(strictness)      ui_size(UI_SizeKind_ChildrenSum, 0.f, strictness)
+#define ui_px(value, strictness)         ui_size(UI_SizeKind.Pixels, value, strictness)
+#define ui_em(value, strictness)         ui_size(UI_SizeKind.Pixels, (value) * ui_top_font_size(), strictness)
+#define ui_text_dim(padding, strictness) ui_size(UI_SizeKind.TextContent, padding, strictness)
+#define ui_pct(value, strictness)        ui_size(UI_SizeKind.ParentPct, value, strictness)
+#define ui_children_sum(strictness)      ui_size(UI_SizeKind.ChildrenSum, 0.f, strictness)
 
 ////////////////////////////////
 //~ rjf: Color Scheme Type Functions
@@ -778,5 +775,3 @@ read_only global UI_AnimNode ui_nil_anim_node =
 
 //- rjf: context menu
 #define UI_CtxMenu(key) DeferLoopChecked(ui_begin_ctx_menu(key), ui_end_ctx_menu())
-
-#endif // UI_H
