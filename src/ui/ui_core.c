@@ -171,9 +171,7 @@ static UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, 
     {
       delta.x = (int32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
-    case UI_EventDeltaUnit.Line:
-    case UI_EventDeltaUnit.Whole:
-    case UI_EventDeltaUnit.Page:
+    case UI_EventDeltaUnit.Line, UI_EventDeltaUnit.Whole, UI_EventDeltaUnit.Page:
     {
       int64 first_nonwhitespace_column = 1;
       for(uint64 idx = 0; idx < string.size; idx += 1)
