@@ -42,11 +42,11 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), fil
 
 typedef enum OS_W32_EntityKind
 {
-  OS_W32_EntityKind_Null,
-  OS_W32_EntityKind_Thread,
-  OS_W32_EntityKind_Mutex,
-  OS_W32_EntityKind_RWMutex,
-  OS_W32_EntityKind_ConditionVariable,
+  OS_W32_EntityKind.Null,
+  OS_W32_EntityKind.Thread,
+  OS_W32_EntityKind.Mutex,
+  OS_W32_EntityKind.RWMutex,
+  OS_W32_EntityKind.ConditionVariable,
 }
 OS_W32_EntityKind;
 

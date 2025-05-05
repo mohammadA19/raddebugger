@@ -118,7 +118,7 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
 internal void
 os_w32_entity_release(OS_W32_Entity *entity)
 {
-  entity->kind = OS_W32_EntityKind_Null;
+  entity->kind = OS_W32_EntityKind.Null;
   EnterCriticalSection(&os_w32_state.entity_mutex);
   SLLStackPush(os_w32_state.entity_free, entity);
   LeaveCriticalSection(&os_w32_state.entity_mutex);
@@ -960,7 +960,7 @@ os_process_detach(OS_Handle handle)
 internal OS_Handle
 os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Thread);
+  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind.Thread);
   entity->thread.func = func;
   entity->thread.ptr = ptr;
   entity->thread.handle = CreateThread(0, 0, os_w32_thread_entry_point, entity, 0, &entity->thread.tid);
@@ -997,7 +997,7 @@ os_thread_detach(OS_Handle thread)
 internal OS_Handle
 os_mutex_alloc(void)
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Mutex);
+  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind.Mutex);
   InitializeCriticalSection(&entity->mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
@@ -1029,7 +1029,7 @@ os_mutex_drop(OS_Handle mutex)
 internal OS_Handle
 os_rw_mutex_alloc(void)
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_RWMutex);
+  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind.RWMutex);
   InitializeSRWLock(&entity->rw_mutex);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
@@ -1075,7 +1075,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 internal OS_Handle
 os_condition_variable_alloc(void)
 {
-  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_ConditionVariable);
+  OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind.ConditionVariable);
   InitializeConditionVariable(&entity->cv);
   OS_Handle result = {IntFromPtr(entity)};
   return result;
