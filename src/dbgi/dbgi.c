@@ -1699,7 +1699,7 @@ di_match_store_section_kind_from_name(DI_MatchStore *store, String8 name, U64 en
       if(sent)
       {
         os_condition_variable_broadcast(store->u2m_ring_cv);
-        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority_Low, .completion_counter = &node->cmp_count);
+        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority.Low, .completion_counter = &node->cmp_count);
         node->req_params_hash = store->params_hash;
         node->req_count += 1;
       }
