@@ -6008,8 +6008,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
         ui_spacer(ui_pct(1, 0));
         ui_labelf("(read only)");
         ui_labelf("%s",
-                  info.line_end_kind == TXT_LineEndKind_LF   ? "lf" :
-                  info.line_end_kind == TXT_LineEndKind_CRLF ? "crlf" :
+                  info.line_end_kind == TXT_LineEndKind.LF   ? "lf" :
+                  info.line_end_kind == TXT_LineEndKind.CRLF ? "crlf" :
                   "bin");
       }
     }
@@ -6300,7 +6300,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   //- rjf: unpack text info
   //
   U128 key = d_state->output_log_key;
-  TXT_LangKind lang_kind = TXT_LangKind_Null;
+  TXT_LangKind lang_kind = TXT_LangKind.Null;
   U128 hash = {0};
   TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, key, lang_kind, &hash);
   String8 data = hs_data_from_hash(hs_scope, hash);

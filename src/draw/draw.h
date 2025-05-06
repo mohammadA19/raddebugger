@@ -87,7 +87,7 @@ public struct DR_ThreadCtx
 //~ rjf: Globals
 
 [ThreadStatic]
-static DR_ThreadCtx* dr_thread_ctx = null;
+public static DR_ThreadCtx* dr_thread_ctx = null;
 
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions

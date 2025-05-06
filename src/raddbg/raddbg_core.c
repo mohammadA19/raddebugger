@@ -2801,7 +2801,7 @@ rd_range_from_eval_params(E_Eval eval, MD_Node *params)
 internal TXT_LangKind
 rd_lang_kind_from_eval_params(E_Eval eval, MD_Node *params)
 {
-  TXT_LangKind lang_kind = TXT_LangKind_Null;
+  TXT_LangKind lang_kind = TXT_LangKind.Null;
   if(eval.expr->kind == E_ExprKind_LeafFilePath)
   {
     lang_kind = txt_lang_kind_from_extension(str8_skip_last_dot(eval.expr->string));
@@ -10230,12 +10230,12 @@ rd_theme_color_from_txt_token_kind(TXT_TokenKind kind)
   switch(kind)
   {
     default:break;
-    case TXT_TokenKind_Keyword:{color = RD_ThemeColor_CodeKeyword;}break;
-    case TXT_TokenKind_Numeric:{color = RD_ThemeColor_CodeNumeric;}break;
-    case TXT_TokenKind_String: {color = RD_ThemeColor_CodeString;}break;
-    case TXT_TokenKind_Meta:   {color = RD_ThemeColor_CodeMeta;}break;
-    case TXT_TokenKind_Comment:{color = RD_ThemeColor_CodeComment;}break;
-    case TXT_TokenKind_Symbol: {color = RD_ThemeColor_CodeDelimiterOperator;}break;
+    case TXT_TokenKind.Keyword:{color = RD_ThemeColor_CodeKeyword;}break;
+    case TXT_TokenKind.Numeric:{color = RD_ThemeColor_CodeNumeric;}break;
+    case TXT_TokenKind.String: {color = RD_ThemeColor_CodeString;}break;
+    case TXT_TokenKind.Meta:   {color = RD_ThemeColor_CodeMeta;}break;
+    case TXT_TokenKind.Comment:{color = RD_ThemeColor_CodeComment;}break;
+    case TXT_TokenKind.Symbol: {color = RD_ThemeColor_CodeDelimiterOperator;}break;
   }
   return color;
 }
@@ -10244,14 +10244,14 @@ internal RD_ThemeColor
 rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 string)
 {
   RD_ThemeColor color = RD_ThemeColor_CodeDefault;
-  if(kind == TXT_TokenKind_Identifier || kind == TXT_TokenKind_Keyword)
+  if(kind == TXT_TokenKind.Identifier || kind == TXT_TokenKind.Keyword)
   {
     CTRL_Entity *module = ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->module);
     DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
     B32 mapped = 0;
     
     // rjf: try to map as local
-    if(!mapped && kind == TXT_TokenKind_Identifier)
+    if(!mapped && kind == TXT_TokenKind.Identifier)
     {
       U64 local_num = e_num_from_string(e_parse_ctx->locals_map, string);
       if(local_num != 0)
@@ -10262,7 +10262,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     }
     
     // rjf: try to map as member
-    if(!mapped && kind == TXT_TokenKind_Identifier)
+    if(!mapped && kind == TXT_TokenKind.Identifier)
     {
       U64 member_num = e_num_from_string(e_parse_ctx->member_map, string);
       if(member_num != 0)
@@ -10295,7 +10295,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     }
     
     // rjf: try to map using asynchronous matching system
-    if(!mapped && kind == TXT_TokenKind_Identifier)
+    if(!mapped && kind == TXT_TokenKind.Identifier)
     {
       RDI_SectionKind section_kind = di_match_store_section_kind_from_name(rd_state->match_store, string, 0);
       mapped = 1;
@@ -10317,7 +10317,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     
 #if 0
     // rjf: try to map as symbol
-    if(!mapped && kind == TXT_TokenKind_Identifier)
+    if(!mapped && kind == TXT_TokenKind.Identifier)
     {
       U64 voff = d_voff_from_dbgi_key_symbol_name(&dbgi_key, string);
       if(voff != 0)
@@ -10328,7 +10328,7 @@ rd_theme_color_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 str
     }
     
     // rjf: try to map as type
-    if(!mapped && kind == TXT_TokenKind_Identifier)
+    if(!mapped && kind == TXT_TokenKind.Identifier)
     {
       U64 type_num = d_type_num_from_dbgi_key_name(&dbgi_key, string);
       if(type_num != 0)

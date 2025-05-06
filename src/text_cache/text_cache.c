@@ -7,11 +7,11 @@
 internal TXT_LangKind
 txt_lang_kind_from_extension(String8 extension)
 {
-  TXT_LangKind kind = TXT_LangKind_Null;
+  TXT_LangKind kind = TXT_LangKind.Null;
   if(str8_match(extension, ("c"), 0) ||
      str8_match(extension, ("h"), 0))
   {
-    kind = TXT_LangKind_C;
+    kind = TXT_LangKind.C;
   }
   else if(str8_match(extension, ("cpp"), StringMatchFlags.CaseInsensitive) ||
           str8_match(extension, ("cxx"), StringMatchFlags.CaseInsensitive) ||
@@ -30,19 +30,19 @@ txt_lang_kind_from_extension(String8 extension)
           str8_match(extension, ("h++"), StringMatchFlags.CaseInsensitive) ||
           str8_match(extension, ("H"), 0))
   {
-    kind = TXT_LangKind_CPlusPlus;
+    kind = TXT_LangKind.CPlusPlus;
   }
   else if(str8_match(extension, ("odin"), StringMatchFlags.CaseInsensitive))
   {
-    kind = TXT_LangKind_Odin;
+    kind = TXT_LangKind.Odin;
   }
   else if(str8_match(extension, ("jai"), StringMatchFlags.CaseInsensitive))
   {
-    kind = TXT_LangKind_Jai;
+    kind = TXT_LangKind.Jai;
   }
   else if(str8_match(extension, ("zig"), StringMatchFlags.CaseInsensitive))
   {
-    kind = TXT_LangKind_Zig;
+    kind = TXT_LangKind.Zig;
   }
   return kind;
 }
@@ -53,15 +53,15 @@ txt_extension_from_lang_kind(TXT_LangKind kind)
   String8 result = {0};
   switch(kind)
   {
-    case TXT_LangKind_Null:
-    case TXT_LangKind_COUNT:
-    case TXT_LangKind_DisasmX64Intel:
+    case TXT_LangKind.Null:
+    case TXT_LangKind.COUNT:
+    case TXT_LangKind.DisasmX64Intel:
     {}break;
-    case TXT_LangKind_C:               {result = ("c");}break;
-    case TXT_LangKind_CPlusPlus:       {result = ("cpp");}break;
-    case TXT_LangKind_Odin:            {result = ("odin");}break;
-    case TXT_LangKind_Jai:             {result = ("jai");}break;
-    case TXT_LangKind_Zig:             {result = ("zig");}break;
+    case TXT_LangKind.C:               {result = ("c");}break;
+    case TXT_LangKind.CPlusPlus:       {result = ("cpp");}break;
+    case TXT_LangKind.Odin:            {result = ("odin");}break;
+    case TXT_LangKind.Jai:             {result = ("jai");}break;
+    case TXT_LangKind.Zig:             {result = ("zig");}break;
   }
   return result;
 }
@@ -69,11 +69,11 @@ txt_extension_from_lang_kind(TXT_LangKind kind)
 internal TXT_LangKind
 txt_lang_kind_from_arch(Arch arch)
 {
-  TXT_LangKind kind = TXT_LangKind_Null;
+  TXT_LangKind kind = TXT_LangKind.Null;
   switch(arch)
   {
     default:{}break;
-    case Arch_x64:{kind = TXT_LangKind_DisasmX64Intel;}break;
+    case Arch_x64:{kind = TXT_LangKind.DisasmX64Intel;}break;
   }
   return kind;
 }
@@ -85,12 +85,12 @@ txt_lex_function_from_lang_kind(TXT_LangKind kind)
   switch(kind)
   {
     default:{}break;
-    case TXT_LangKind_C:             {fn = txt_token_array_from_string__c_cpp;}break;
-    case TXT_LangKind_CPlusPlus:     {fn = txt_token_array_from_string__c_cpp;}break;
-    case TXT_LangKind_Odin:          {fn = txt_token_array_from_string__odin;}break;
-    case TXT_LangKind_Jai:           {fn = txt_token_array_from_string__jai;}break;
-    case TXT_LangKind_Zig:           {fn = txt_token_array_from_string__zig;}break;
-    case TXT_LangKind_DisasmX64Intel:{fn = txt_token_array_from_string__disasm_x64_intel;}break;
+    case TXT_LangKind.C:             {fn = txt_token_array_from_string__c_cpp;}break;
+    case TXT_LangKind.CPlusPlus:     {fn = txt_token_array_from_string__c_cpp;}break;
+    case TXT_LangKind.Odin:          {fn = txt_token_array_from_string__odin;}break;
+    case TXT_LangKind.Jai:           {fn = txt_token_array_from_string__jai;}break;
+    case TXT_LangKind.Zig:           {fn = txt_token_array_from_string__zig;}break;
+    case TXT_LangKind.DisasmX64Intel:{fn = txt_token_array_from_string__disasm_x64_intel;}break;
   }
   return fn;
 }
@@ -169,7 +169,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
   {
     B32 comment_is_single_line = 0;
     B32 string_is_char = 0;
-    TXT_TokenKind active_token_kind = TXT_TokenKind_Null;
+    TXT_TokenKind active_token_kind = TXT_TokenKind.Null;
     U64 active_token_start_idx = 0;
     B32 escaped = 0;
     B32 next_escaped = 0;
@@ -197,21 +197,21 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
       }
       
       // rjf: take starter, determine active token kind
-      if(active_token_kind == TXT_TokenKind_Null)
+      if(active_token_kind == TXT_TokenKind.Null)
       {
         // rjf: use next bytes to start a new token
         if(0){}
-        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
+        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind.Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind.Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
-                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
-        else if(byte == '"')                     { active_token_kind = TXT_TokenKind_String; string_is_char = 0; }
-        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind_String; string_is_char = 1; }
-        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 1; }
-        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 0; }
+                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind.Numeric; }
+        else if(byte == '"')                     { active_token_kind = TXT_TokenKind.String; string_is_char = 0; }
+        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind.String; string_is_char = 1; }
+        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 1; }
+        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 0; }
         else if(byte == '~' || byte == '!' ||
                 byte == '%' || byte == '^' ||
                 byte == '&' || byte == '*' ||
@@ -223,11 +223,11 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
                 byte == ';' || byte == ',' ||
                 byte == '.' || byte == '<' ||
                 byte == '>' || byte == '/' ||
-                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind_Symbol; }
-        else if(byte == '#')                     { active_token_kind = TXT_TokenKind_Meta; }
+                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind.Symbol; }
+        else if(byte == '#')                     { active_token_kind = TXT_TokenKind.Meta; }
         
         // rjf: start new token
-        if(active_token_kind != TXT_TokenKind_Null)
+        if(active_token_kind != TXT_TokenKind.Null)
         {
           active_token_start_idx = idx;
         }
@@ -235,7 +235,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         // rjf: invalid token kind -> emit error
         else
         {
-          TXT_Token token = {TXT_TokenKind_Error, r1u64(idx, idx+1)};
+          TXT_Token token = {TXT_TokenKind.Error, r1u64(idx, idx+1)};
           txt_token_chunk_list_push(scratch.arena, &tokens, chunk_size, &token);
         }
       }
@@ -243,7 +243,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
       // rjf: look for ender
       U64 ender_pad = 0;
       B32 ender_found = 0;
-      if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
+      if(active_token_kind != TXT_TokenKind.Null && idx>active_token_start_idx)
       {
         if(idx == string.size)
         {
@@ -253,24 +253,24 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         else switch(active_token_kind)
         {
           default:break;
-          case TXT_TokenKind_Whitespace:
+          case TXT_TokenKind.Whitespace:
           {
             ender_found = !char_is_space(byte);
           }break;
-          case TXT_TokenKind_Identifier:
+          case TXT_TokenKind.Identifier:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
-          case TXT_TokenKind_Numeric:
+          case TXT_TokenKind.Numeric:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
-          case TXT_TokenKind_String:
+          case TXT_TokenKind.String:
           {
             ender_found = (!escaped && ((!string_is_char && byte == '"') || (string_is_char && byte == '\'')));
             ender_pad += 1;
           }break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             ender_found = (byte != '~' && byte != '!' &&
                            byte != '%' && byte != '^' &&
@@ -285,7 +285,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
                            byte != '>' && byte != '/' &&
                            byte != '?' && byte != '|');
           }break;
-          case TXT_TokenKind_Comment:
+          case TXT_TokenKind.Comment:
           {
             if(comment_is_single_line)
             {
@@ -297,7 +297,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
               ender_pad += 2;
             }
           }break;
-          case TXT_TokenKind_Meta:
+          case TXT_TokenKind.Meta:
           {
             ender_found = (!escaped && (byte == '\r' || byte == '\n'));
           }break;
@@ -308,10 +308,10 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
       if(ender_found)
       {
         TXT_Token token = {active_token_kind, r1u64(active_token_start_idx, idx+ender_pad)};
-        active_token_kind = TXT_TokenKind_Null;
+        active_token_kind = TXT_TokenKind.Null;
         
         // rjf: identifier -> keyword in special cases
-        if(token.kind == TXT_TokenKind_Identifier)
+        if(token.kind == TXT_TokenKind.Identifier)
         {
           read_only local_persist String8 cpp_keywords[] =
           {
@@ -418,7 +418,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
           {
             if(str8_match(cpp_keywords[keyword_idx], token_string, 0))
             {
-              token.kind = TXT_TokenKind_Keyword;
+              token.kind = TXT_TokenKind.Keyword;
               break;
             }
           }
@@ -426,7 +426,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         }
         
         // rjf: split symbols by maximum-munch-rule
-        else if(token.kind == TXT_TokenKind_Symbol)
+        else if(token.kind == TXT_TokenKind.Symbol)
         {
           read_only local_persist String8 c_cpp_multichar_symbol_strings[] =
           {
@@ -463,7 +463,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
               {
                 found = 1;
                 next_off = off + c_cpp_multichar_symbol_strings[idx].size;
-                TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+                TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
                 txt_token_chunk_list_push(scratch.arena, &tokens, chunk_size, &token);
                 break;
               }
@@ -471,7 +471,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
             if(!found)
             {
               next_off = off+1;
-              TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+              TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
               txt_token_chunk_list_push(scratch.arena, &tokens, chunk_size, &token);
             }
           }
@@ -513,7 +513,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
   {
     B32 comment_is_single_line = 0;
     B32 string_is_char = 0;
-    TXT_TokenKind active_token_kind = TXT_TokenKind_Null;
+    TXT_TokenKind active_token_kind = TXT_TokenKind.Null;
     U64 active_token_start_idx = 0;
     B32 escaped = 0;
     B32 next_escaped = 0;
@@ -541,21 +541,21 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
       }
       
       // rjf: take starter, determine active token kind
-      if(active_token_kind == TXT_TokenKind_Null)
+      if(active_token_kind == TXT_TokenKind.Null)
       {
         // rjf: use next bytes to start a new token
         if(0){}
-        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
+        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind.Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind.Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
-                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
-        else if(byte == '"')                     { active_token_kind = TXT_TokenKind_String; string_is_char = 0; }
-        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind_String; string_is_char = 1; }
-        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 1; }
-        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 0; }
+                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind.Numeric; }
+        else if(byte == '"')                     { active_token_kind = TXT_TokenKind.String; string_is_char = 0; }
+        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind.String; string_is_char = 1; }
+        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 1; }
+        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 0; }
         else if(byte == '~' || byte == '!' ||
                 byte == '%' || byte == '^' ||
                 byte == '&' || byte == '*' ||
@@ -567,11 +567,11 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
                 byte == ';' || byte == ',' ||
                 byte == '.' || byte == '<' ||
                 byte == '>' || byte == '/' ||
-                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind_Symbol; }
-        else if(byte == '#')                     { active_token_kind = TXT_TokenKind_Meta; }
+                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind.Symbol; }
+        else if(byte == '#')                     { active_token_kind = TXT_TokenKind.Meta; }
         
         // rjf: start new token
-        if(active_token_kind != TXT_TokenKind_Null)
+        if(active_token_kind != TXT_TokenKind.Null)
         {
           active_token_start_idx = idx;
         }
@@ -579,7 +579,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         // rjf: invalid token kind -> emit error
         else
         {
-          TXT_Token token = {TXT_TokenKind_Error, r1u64(idx, idx+1)};
+          TXT_Token token = {TXT_TokenKind.Error, r1u64(idx, idx+1)};
           txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
         }
       }
@@ -587,7 +587,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
       // rjf: look for ender
       U64 ender_pad = 0;
       B32 ender_found = 0;
-      if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
+      if(active_token_kind != TXT_TokenKind.Null && idx>active_token_start_idx)
       {
         if(idx == string.size)
         {
@@ -597,24 +597,24 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         else switch(active_token_kind)
         {
           default:break;
-          case TXT_TokenKind_Whitespace:
+          case TXT_TokenKind.Whitespace:
           {
             ender_found = !char_is_space(byte);
           }break;
-          case TXT_TokenKind_Identifier:
+          case TXT_TokenKind.Identifier:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
-          case TXT_TokenKind_Numeric:
+          case TXT_TokenKind.Numeric:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
-          case TXT_TokenKind_String:
+          case TXT_TokenKind.String:
           {
             ender_found = (!escaped && ((!string_is_char && byte == '"') || (string_is_char && byte == '\'')));
             ender_pad += 1;
           }break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             ender_found = (byte != '~' && byte != '!' &&
                            byte != '%' && byte != '^' &&
@@ -629,7 +629,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
                            byte != '>' && byte != '/' &&
                            byte != '?' && byte != '|');
           }break;
-          case TXT_TokenKind_Comment:
+          case TXT_TokenKind.Comment:
           {
             if(comment_is_single_line)
             {
@@ -641,7 +641,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
               ender_pad += 2;
             }
           }break;
-          case TXT_TokenKind_Meta:
+          case TXT_TokenKind.Meta:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
@@ -652,10 +652,10 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
       if(ender_found)
       {
         TXT_Token token = {active_token_kind, r1u64(active_token_start_idx, idx+ender_pad)};
-        active_token_kind = TXT_TokenKind_Null;
+        active_token_kind = TXT_TokenKind.Null;
         
         // rjf: identifier -> keyword in special cases
-        if(token.kind == TXT_TokenKind_Identifier)
+        if(token.kind == TXT_TokenKind.Identifier)
         {
           read_only local_persist String8 odin_keywords[] =
           {
@@ -705,7 +705,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
           {
             if(str8_match(odin_keywords[keyword_idx], token_string, 0))
             {
-              token.kind = TXT_TokenKind_Keyword;
+              token.kind = TXT_TokenKind.Keyword;
               break;
             }
           }
@@ -713,7 +713,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         }
         
         // rjf: split symbols by maximum-munch-rule
-        else if(token.kind == TXT_TokenKind_Symbol)
+        else if(token.kind == TXT_TokenKind.Symbol)
         {
           read_only local_persist String8 odin_multichar_symbol_strings[] =
           {
@@ -750,7 +750,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
               {
                 found = 1;
                 next_off = off + odin_multichar_symbol_strings[idx].size;
-                TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+                TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
                 txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
                 break;
               }
@@ -758,7 +758,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
             if(!found)
             {
               next_off = off+1;
-              TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+              TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
               txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
             }
           }
@@ -799,7 +799,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
   {
     B32 comment_is_single_line = 0;
     B32 string_is_char = 0;
-    TXT_TokenKind active_token_kind = TXT_TokenKind_Null;
+    TXT_TokenKind active_token_kind = TXT_TokenKind.Null;
     U64 active_token_start_idx = 0;
     B32 escaped = 0;
     B32 next_escaped = 0;
@@ -827,21 +827,21 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
       }
       
       // rjf: take starter, determine active token kind
-      if(active_token_kind == TXT_TokenKind_Null)
+      if(active_token_kind == TXT_TokenKind.Null)
       {
         // rjf: use next bytes to start a new token
         if(0){}
-        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
+        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind.Whitespace; }
         else if(byte == '_' ||
                 byte == '$' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind.Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
-                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
-        else if(byte == '"')                     { active_token_kind = TXT_TokenKind_String; string_is_char = 0; }
-        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind_String; string_is_char = 1; }
-        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 1; }
-        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind_Comment; comment_is_single_line = 0; }
+                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind.Numeric; }
+        else if(byte == '"')                     { active_token_kind = TXT_TokenKind.String; string_is_char = 0; }
+        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind.String; string_is_char = 1; }
+        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 1; }
+        else if(byte == '/' && next_byte == '*') { active_token_kind = TXT_TokenKind.Comment; comment_is_single_line = 0; }
         else if(byte == '~' || byte == '!' ||
                 byte == '%' || byte == '^' ||
                 byte == '&' || byte == '*' ||
@@ -853,11 +853,11 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
                 byte == ';' || byte == ',' ||
                 byte == '.' || byte == '<' ||
                 byte == '>' || byte == '/' ||
-                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind_Symbol; }
-        else if(byte == '#')                     { active_token_kind = TXT_TokenKind_Meta; }
+                byte == '?' || byte == '|')      { active_token_kind = TXT_TokenKind.Symbol; }
+        else if(byte == '#')                     { active_token_kind = TXT_TokenKind.Meta; }
         
         // rjf: start new token
-        if(active_token_kind != TXT_TokenKind_Null)
+        if(active_token_kind != TXT_TokenKind.Null)
         {
           active_token_start_idx = idx;
         }
@@ -865,7 +865,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: invalid token kind -> emit error
         else
         {
-          TXT_Token token = {TXT_TokenKind_Error, r1u64(idx, idx+1)};
+          TXT_Token token = {TXT_TokenKind.Error, r1u64(idx, idx+1)};
           txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
         }
       }
@@ -873,7 +873,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
       // rjf: look for ender
       U64 ender_pad = 0;
       B32 ender_found = 0;
-      if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
+      if(active_token_kind != TXT_TokenKind.Null && idx>active_token_start_idx)
       {
         if(idx == string.size)
         {
@@ -883,24 +883,24 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         else switch(active_token_kind)
         {
           default:break;
-          case TXT_TokenKind_Whitespace:
+          case TXT_TokenKind.Whitespace:
           {
             ender_found = !char_is_space(byte);
           }break;
-          case TXT_TokenKind_Identifier:
+          case TXT_TokenKind.Identifier:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
-          case TXT_TokenKind_Numeric:
+          case TXT_TokenKind.Numeric:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
-          case TXT_TokenKind_String:
+          case TXT_TokenKind.String:
           {
             ender_found = (!escaped && ((!string_is_char && byte == '"') || (string_is_char && byte == '\'')));
             ender_pad += 1;
           }break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             ender_found = (byte != '~' && byte != '!' &&
                            byte != '%' && byte != '^' &&
@@ -915,7 +915,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
                            byte != '>' && byte != '/' &&
                            byte != '?' && byte != '|');
           }break;
-          case TXT_TokenKind_Comment:
+          case TXT_TokenKind.Comment:
           {
             if(comment_is_single_line)
             {
@@ -927,7 +927,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
               ender_pad += 2;
             }
           }break;
-          case TXT_TokenKind_Meta:
+          case TXT_TokenKind.Meta:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
@@ -938,10 +938,10 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
       if(ender_found)
       {
         TXT_Token token = {active_token_kind, r1u64(active_token_start_idx, idx+ender_pad)};
-        active_token_kind = TXT_TokenKind_Null;
+        active_token_kind = TXT_TokenKind.Null;
         
         // rjf: identifier -> keyword in special cases
-        if(token.kind == TXT_TokenKind_Identifier)
+        if(token.kind == TXT_TokenKind.Identifier)
         {
           read_only local_persist String8 jai_keywords[] =
           {
@@ -990,7 +990,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
           {
             if(str8_match(jai_keywords[keyword_idx], token_string, 0))
             {
-              token.kind = TXT_TokenKind_Keyword;
+              token.kind = TXT_TokenKind.Keyword;
               break;
             }
           }
@@ -998,7 +998,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         }
         
         // rjf: split symbols by maximum-munch-rule
-        else if(token.kind == TXT_TokenKind_Symbol)
+        else if(token.kind == TXT_TokenKind.Symbol)
         {
           read_only local_persist String8 jai_multichar_symbol_strings[] =
           {
@@ -1035,7 +1035,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
               {
                 found = 1;
                 next_off = off + jai_multichar_symbol_strings[idx].size;
-                TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+                TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
                 txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
                 break;
               }
@@ -1043,7 +1043,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
             if(!found)
             {
               next_off = off+1;
-              TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+              TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
               txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
             }
           }
@@ -1084,7 +1084,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
   {
     B32 string_is_char = 0;
     B32 string_is_line = 0;
-    TXT_TokenKind active_token_kind = TXT_TokenKind_Null;
+    TXT_TokenKind active_token_kind = TXT_TokenKind.Null;
     U64 active_token_start_idx = 0;
     B32 escaped = 0;
     B32 next_escaped = 0;
@@ -1112,21 +1112,21 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
       }
       
       // rjf: take starter, determine active token kind
-      if(active_token_kind == TXT_TokenKind_Null)
+      if(active_token_kind == TXT_TokenKind.Null)
       {
         // rjf: use next bytes to start a new token
         if(0){}
-        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind_Whitespace; }
+        else if(char_is_space(byte))             { active_token_kind = TXT_TokenKind.Whitespace; }
         else if(byte == '_' ||
-                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind_Identifier; }
+                char_is_alpha(byte))             { active_token_kind = TXT_TokenKind.Identifier; }
         else if(char_is_digit(byte, 10) ||
                 (byte == '.' &&
-                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind_Numeric; }
-        else if(byte == '"')                     { active_token_kind = TXT_TokenKind_String; string_is_char = 0; }
-        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind_String; string_is_char = 1; }
+                 char_is_digit(next_byte, 10)))  { active_token_kind = TXT_TokenKind.Numeric; }
+        else if(byte == '"')                     { active_token_kind = TXT_TokenKind.String; string_is_char = 0; }
+        else if(byte == '\'')                    { active_token_kind = TXT_TokenKind.String; string_is_char = 1; }
         else if(byte == '\\' &&
-                next_byte == '\\')               { active_token_kind = TXT_TokenKind_String; string_is_line = 1; }
-        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind_Comment; }
+                next_byte == '\\')               { active_token_kind = TXT_TokenKind.String; string_is_line = 1; }
+        else if(byte == '/' && next_byte == '/') { active_token_kind = TXT_TokenKind.Comment; }
         else if(byte == '~' || byte == '!' ||
                 byte == '%' || byte == '^' ||
                 byte == '&' || byte == '*' ||
@@ -1139,10 +1139,10 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
                 byte == '.' || byte == '<' ||
                 byte == '>' || byte == '/' ||
                 byte == '?' || byte == '|' ||
-                byte == 'c')                     { active_token_kind = TXT_TokenKind_Symbol; }
+                byte == 'c')                     { active_token_kind = TXT_TokenKind.Symbol; }
         
         // rjf: start new token
-        if(active_token_kind != TXT_TokenKind_Null)
+        if(active_token_kind != TXT_TokenKind.Null)
         {
           active_token_start_idx = idx;
         }
@@ -1150,7 +1150,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: invalid token kind -> emit error
         else
         {
-          TXT_Token token = {TXT_TokenKind_Error, r1u64(idx, idx+1)};
+          TXT_Token token = {TXT_TokenKind.Error, r1u64(idx, idx+1)};
           txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
         }
       }
@@ -1158,7 +1158,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
       // rjf: look for ender
       U64 ender_pad = 0;
       B32 ender_found = 0;
-      if(active_token_kind != TXT_TokenKind_Null && idx>active_token_start_idx)
+      if(active_token_kind != TXT_TokenKind.Null && idx>active_token_start_idx)
       {
         if(idx == string.size)
         {
@@ -1168,19 +1168,19 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         else switch(active_token_kind)
         {
           default:break;
-          case TXT_TokenKind_Whitespace:
+          case TXT_TokenKind.Whitespace:
           {
             ender_found = !char_is_space(byte);
           }break;
-          case TXT_TokenKind_Identifier:
+          case TXT_TokenKind.Identifier:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '$');
           }break;
-          case TXT_TokenKind_Numeric:
+          case TXT_TokenKind.Numeric:
           {
             ender_found = (!char_is_alpha(byte) && !char_is_digit(byte, 10) && byte != '_' && byte != '.' && byte != '\'');
           }break;
-          case TXT_TokenKind_String:
+          case TXT_TokenKind.String:
           {
             if (string_is_line)
             {
@@ -1192,7 +1192,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
               ender_pad += 1;
             }
           }break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             ender_found = (byte != '~' && byte != '!' &&
                            byte != '%' && byte != '^' &&
@@ -1208,7 +1208,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
                            byte != '?' && byte != '|' &&
                            byte != 'c');
           }break;
-          case TXT_TokenKind_Comment:
+          case TXT_TokenKind.Comment:
           {
             ender_found = (!escaped && (byte == '\r' || byte == '\n'));
           }break;
@@ -1219,10 +1219,10 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
       if(ender_found)
       {
         TXT_Token token = {active_token_kind, r1u64(active_token_start_idx, idx+ender_pad)};
-        active_token_kind = TXT_TokenKind_Null;
+        active_token_kind = TXT_TokenKind.Null;
         
         // rjf: identifier -> keyword in special cases
-        if(token.kind == TXT_TokenKind_Identifier)
+        if(token.kind == TXT_TokenKind.Identifier)
         {
           read_only local_persist String8 zig_keywords[] =
           {
@@ -1281,7 +1281,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
           {
             if(str8_match(zig_keywords[keyword_idx], token_string, 0))
             {
-              token.kind = TXT_TokenKind_Keyword;
+              token.kind = TXT_TokenKind.Keyword;
               break;
             }
           }
@@ -1289,7 +1289,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         }
         
         // rjf: split symbols by maximum-munch-rule
-        else if(token.kind == TXT_TokenKind_Symbol)
+        else if(token.kind == TXT_TokenKind.Symbol)
         {
           read_only local_persist String8 zig_multichar_symbol_strings[] =
           {
@@ -1326,7 +1326,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
               {
                 found = 1;
                 next_off = off + zig_multichar_symbol_strings[idx].size;
-                TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+                TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
                 txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
                 break;
               }
@@ -1334,7 +1334,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
             if(!found)
             {
               next_off = off+1;
-              TXT_Token token = {TXT_TokenKind_Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
+              TXT_Token token = {TXT_TokenKind.Symbol, r1u64(active_token_start_idx+off, active_token_start_idx+next_off)};
               txt_token_chunk_list_push(scratch.arena, &tokens, 4096, &token);
             }
           }
@@ -1373,7 +1373,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
   //- rjf: parse tokens
   TXT_TokenChunkList tokens = {0};
   {
-    TXT_TokenKind active_token_kind = TXT_TokenKind_Null;
+    TXT_TokenKind active_token_kind = TXT_TokenKind.Null;
     U64 active_token_start_off = 0;
     U64 off = 0;
     B32 escaped = 0;
@@ -1386,8 +1386,8 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
       U8 byte      = (off+0 < string.size) ? string.str[off+0] : 0;
       U8 next_byte = (off+1 < string.size) ? string.str[off+1] : 0;
       B32 ender_found = 0;
-      advance = (active_token_kind != TXT_TokenKind_Null ? 1 : 0);
-      if(off == string.size && active_token_kind != TXT_TokenKind_Null)
+      advance = (active_token_kind != TXT_TokenKind.Null ? 1 : 0);
+      if(off == string.size && active_token_kind != TXT_TokenKind.Null)
       {
         ender_found = 1;
         advance = 1;
@@ -1395,51 +1395,51 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
       switch(active_token_kind)
       {
         default:
-        case TXT_TokenKind_Null:
+        case TXT_TokenKind.Null:
         {
           if(byte == ' ' || byte == '\t' || byte == '\v' || byte == '\f' || byte == '\r' || byte == '\n')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Whitespace;
+            active_token_kind = TXT_TokenKind.Whitespace;
             advance = 1;
           }
           else if(byte == '>' && brace_nest == 0 && paren_nest == 0)
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Comment;
+            active_token_kind = TXT_TokenKind.Comment;
             advance = 1;
           }
           else if(('a' <= byte && byte <= 'z') || ('A' <= byte && byte <= 'Z') || byte == '_')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Keyword;
+            active_token_kind = TXT_TokenKind.Keyword;
             advance = 1;
           }
           else if(byte == '\'')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_String;
+            active_token_kind = TXT_TokenKind.String;
             advance = 1;
             string_is_char = 1;
           }
           else if(byte == '"')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_String;
+            active_token_kind = TXT_TokenKind.String;
             advance = 1;
             string_is_char = 0;
           }
           else if(byte == '`')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_String;
+            active_token_kind = TXT_TokenKind.String;
             advance = 1;
             string_tick_nest += 1;
           }
           else if(('0' <= byte && byte <= '9') || (byte == '.' && '0' <= next_byte && next_byte <= '9'))
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Numeric;
+            active_token_kind = TXT_TokenKind.Numeric;
             advance = 1;
           }
           else if(byte == '~' || byte == '!' || byte == '%' || byte == '^' ||
@@ -1450,7 +1450,7 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
                   byte == '>' || byte == ',' || byte == '.')
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Symbol;
+            active_token_kind = TXT_TokenKind.Symbol;
             advance = 1;
             if(byte == '{')
             {
@@ -1472,23 +1472,23 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
           else
           {
             active_token_start_off = off;
-            active_token_kind = TXT_TokenKind_Error;
+            active_token_kind = TXT_TokenKind.Error;
             advance = 1;
           }
         }break;
-        case TXT_TokenKind_Whitespace:
+        case TXT_TokenKind.Whitespace:
         if(byte != ' ' && byte != '\t' && byte != '\v' && byte != '\f')
         {
           ender_found = 1;
           advance = 0;
         }break;
-        case TXT_TokenKind_Keyword:
+        case TXT_TokenKind.Keyword:
         if((byte < 'a' || 'z' < byte) && (byte < 'A' || 'Z' < byte) && (byte < '0' || '9' < byte) && byte != '_')
         {
           ender_found = 1;
           advance = 0;
         }break;
-        case TXT_TokenKind_String:
+        case TXT_TokenKind.String:
         {
           U8 ender_byte = (string_tick_nest > 0 ? '\'' :
                            string_is_char ? '\''
@@ -1528,13 +1528,13 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
             }
           }
         }break;
-        case TXT_TokenKind_Numeric:
+        case TXT_TokenKind.Numeric:
         if((byte < 'a' || 'z' < byte) && (byte < 'A' || 'Z' < byte) && (byte < '0' || '9' < byte) && byte != '.')
         {
           ender_found = 1;
           advance = 0;
         }break;
-        case TXT_TokenKind_Symbol:
+        case TXT_TokenKind.Symbol:
         if(1)
         {
           // NOTE(rjf): avoiding maximum munch rule for now
@@ -1551,12 +1551,12 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
           ender_found = 1;
           advance = 0;
         }break;
-        case TXT_TokenKind_Error:
+        case TXT_TokenKind.Error:
         {
           ender_found = 1;
           advance = 0;
         }break;
-        case TXT_TokenKind_Comment:
+        case TXT_TokenKind.Comment:
         if(byte == '\n')
         {
           ender_found = 1;
@@ -1565,17 +1565,17 @@ txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed
       }
       if(ender_found != 0)
       {
-        if(brace_nest != 0 && active_token_kind == TXT_TokenKind_Keyword)
+        if(brace_nest != 0 && active_token_kind == TXT_TokenKind.Keyword)
         {
-          active_token_kind = TXT_TokenKind_Numeric;
+          active_token_kind = TXT_TokenKind.Numeric;
         }
-        if(paren_nest != 0 && active_token_kind == TXT_TokenKind_Keyword)
+        if(paren_nest != 0 && active_token_kind == TXT_TokenKind.Keyword)
         {
-          active_token_kind = TXT_TokenKind_Identifier;
+          active_token_kind = TXT_TokenKind.Identifier;
         }
         TXT_Token token = {active_token_kind, r1u64(active_token_start_off, off+advance)};
         txt_token_chunk_list_push(arena, &tokens, 1024, &token);
-        active_token_kind = TXT_TokenKind_Null;
+        active_token_kind = TXT_TokenKind.Null;
         active_token_start_off = token.range.max;
       }
     }
@@ -1871,13 +1871,13 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
         switch(token->kind)
         {
           default:{}break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             token_ender = (str8_match(token_string, ("]"), 0));
           }break;
-          case TXT_TokenKind_Identifier:
-          case TXT_TokenKind_Keyword:
-          case TXT_TokenKind_Meta:
+          case TXT_TokenKind.Identifier:
+          case TXT_TokenKind.Keyword:
+          case TXT_TokenKind.Meta:
           {
             token_ender = 1;
           }break;
@@ -1911,7 +1911,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
         switch(wb_token->kind)
         {
           default:{}break;
-          case TXT_TokenKind_Symbol:
+          case TXT_TokenKind.Symbol:
           {
             B32 is_scope_resolution = str8_match(wb_token_string, ("::"), 0);
             B32 is_dot = str8_match(wb_token_string, ("."), 0);
@@ -1929,7 +1929,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
               include_wb_token = 1;
             }
           }break;
-          case TXT_TokenKind_Identifier:
+          case TXT_TokenKind.Identifier:
           {
             include_wb_token = 1;
           }break;
@@ -2137,7 +2137,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   
   //- rjf: get next key
   U128 hash = {0};
-  TXT_LangKind lang = TXT_LangKind_Null;
+  TXT_LangKind lang = TXT_LangKind.Null;
   txt_u2p_dequeue_req(&hash, &lang);
   HS_Scope *scope = hs_scope_open();
   
@@ -2194,11 +2194,11 @@ ASYNC_WORK_DEF(txt_parse_work)
     if(bytes_to_process_ptr)
     {
       //                                               (line ending calc)     (line counting)    (line measuring)   (lexing)
-      ins_atomic_u64_eval_assign(bytes_to_process_ptr, Min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind_Null));
+      ins_atomic_u64_eval_assign(bytes_to_process_ptr, Min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind.Null));
     }
     
     //- rjf: detect line end kind
-    TXT_LineEndKind line_end_kind = TXT_LineEndKind_Null;
+    TXT_LineEndKind line_end_kind = TXT_LineEndKind.Null;
     {
       U64 lf_count = 0;
       U64 cr_count = 0;
@@ -2215,11 +2215,11 @@ ASYNC_WORK_DEF(txt_parse_work)
       }
       if(cr_count >= lf_count/2 && lf_count >= 1)
       {
-        line_end_kind = TXT_LineEndKind_CRLF;
+        line_end_kind = TXT_LineEndKind.CRLF;
       }
       else if(lf_count >= 1)
       {
-        line_end_kind = TXT_LineEndKind_LF;
+        line_end_kind = TXT_LineEndKind.LF;
       }
       info.line_end_kind = line_end_kind;
     }

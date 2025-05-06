@@ -2255,8 +2255,8 @@ rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_s
         };
         dr_fancy_string_list_push(arena, &fancy_strings, &fancy_string);
       }break;
-      case TXT_TokenKind_Identifier:
-      case TXT_TokenKind_Keyword:
+      case TXT_TokenKind.Identifier:
+      case TXT_TokenKind.Keyword:
       {
         RD_ThemeColor lookup_theme_color = rd_theme_color_from_txt_token_kind_lookup_string(token->kind, token_string);
         if(lookup_theme_color != RD_ThemeColor_CodeDefault)
@@ -2274,7 +2274,7 @@ rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_s
         };
         dr_fancy_string_list_push(arena, &fancy_strings, &fancy_string);
       }break;
-      case TXT_TokenKind_Numeric:
+      case TXT_TokenKind.Numeric:
       {
         Vec4F32 token_color_rgba_alt = rd_rgba_from_theme_color(RD_ThemeColor_CodeNumericAltDigitGroup);
         token_color_rgba_alt.w *= alpha;
