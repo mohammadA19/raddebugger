@@ -398,7 +398,7 @@ internal PE_WindowsSubsystem
 pe_subsystem_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
-    if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlags.CaseInsensitive)) {
       return g_pe_subsystem_map[i].type;
     }
   }

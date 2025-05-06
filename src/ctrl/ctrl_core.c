@@ -4201,7 +4201,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
         CTRL_DbgDirNode *next_child = 0;
         for(CTRL_DbgDirNode *child = parent_dir_node->first; child != 0; child = child->next)
         {
-          if(str8_match(child->name, name, StringMatchFlag_CaseInsensitive))
+          if(str8_match(child->name, name, StringMatchFlags.CaseInsensitive))
           {
             next_child = child;
             break;
@@ -4278,7 +4278,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                 CTRL_DbgDirNode *existing_dir_child = 0;
                 for(CTRL_DbgDirNode *child = t->node->first; child != 0; child = child->next)
                 {
-                  if(str8_match(child->name, info.name, StringMatchFlag_CaseInsensitive))
+                  if(str8_match(child->name, info.name, StringMatchFlags.CaseInsensitive))
                   {
                     existing_dir_child = child;
                     break;
@@ -4305,8 +4305,8 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
               // rjf: debug info file -> kick off open
               else if(preemptively_loaded_keys.count < 4096 &&
                       !(info.props.flags & FilePropertyFlag_IsFolder) &&
-                      str8_match(str8_skip_last_dot(info.name), debug_info_ext, StringMatchFlag_CaseInsensitive) &&
-                      !str8_match(loaded_di_name, info.name, StringMatchFlag_CaseInsensitive))
+                      str8_match(str8_skip_last_dot(info.name), debug_info_ext, StringMatchFlags.CaseInsensitive) &&
+                      !str8_match(loaded_di_name, info.name, StringMatchFlags.CaseInsensitive))
               {
                 DI_Key key = {push_str8f(scratch.arena, "%S/%S", t->path, info.name), info.props.modified};
                 di_open(&key);

@@ -7,13 +7,13 @@
 internal StringMatchFlags
 path_match_flags_from_os(OperatingSystem os)
 {
-  StringMatchFlags flags = StringMatchFlag_SlashInsensitive;
+  StringMatchFlags flags = StringMatchFlags.SlashInsensitive;
   switch(os)
   {
     default:{}break;
     case OperatingSystem_Windows:
     {
-      flags |= StringMatchFlag_CaseInsensitive;
+      flags |= StringMatchFlags.CaseInsensitive;
     }break;
     case OperatingSystem_Linux:
     case OperatingSystem_Mac:
@@ -110,7 +110,7 @@ path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
 {
   String8 result = dst;
   PathStyle dst_style = path_style_from_str8(dst);
-  if(dst_style == PathStyle_Relative)
+  if(dst_style == PathStyle.Relative)
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8 dst_from_src_absolute = push_str8f(scratch.arena, "%S/%S", src, dst);
@@ -129,11 +129,11 @@ path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *s
   
   // prepend current path to convert relative -> absolute
   PathStyle path_style_full = path_style;
-  if (path.node_count != 0 && path_style == PathStyle_Relative){
+  if (path.node_count != 0 && path_style == PathStyle.Relative){
     String8 current_path_string = os_get_current_path(arena);
     
     PathStyle current_path_style = path_style_from_str8(current_path_string);
-    Assert(current_path_style != PathStyle_Relative);
+    Assert(current_path_style != PathStyle.Relative);
     
     String8List current_path = str8_split_path(arena, current_path_string);
     str8_list_concat_in_place(&current_path, &path);
@@ -155,7 +155,7 @@ internal String8
 path_normalized_from_string(Arena *arena, String8 path_string){
   Temp scratch = scratch_begin(&arena, 1);
   
-  PathStyle style = PathStyle_Relative;
+  PathStyle style = PathStyle.Relative;
   String8List path = path_normalized_list_from_string(scratch.arena, path_string, &style);
   
   String8 result = str8_path_list_join_by_style(arena, &path, style);
@@ -171,7 +171,7 @@ path_match_normalized(String8 left, String8 right)
     Temp scratch = scratch_begin(0, 0);
     String8 left_normalized = path_normalized_from_string(scratch.arena, left);
     String8 right_normalized = path_normalized_from_string(scratch.arena, right);
-    result = str8_match(left_normalized, right_normalized, StringMatchFlag_CaseInsensitive);
+    result = str8_match(left_normalized, right_normalized, StringMatchFlags.CaseInsensitive);
     scratch_end(scratch);
   }
   return result;

@@ -1774,7 +1774,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         {
           for(U64 needle_pos = 0; needle_pos < line_string.size;)
           {
-            needle_pos = str8_find_needle(line_string, needle_pos, params->search_query, StringMatchFlag_CaseInsensitive);
+            needle_pos = str8_find_needle(line_string, needle_pos, params->search_query, StringMatchFlags.CaseInsensitive);
             if(needle_pos < line_string.size)
             {
               Rng1U64 match_range = r1u64(needle_pos, needle_pos+params->search_query.size);
@@ -2284,19 +2284,19 @@ rd_fancy_string_list_from_code_string(Arena *arena, F32 alpha, B32 indirection_s
         U32 base = 10;
         U64 prefix_skip = 0;
         U64 digit_group_size = 3;
-        if(str8_match(str8_prefix(token_string, 2), str8_lit("0x"), StringMatchFlag_CaseInsensitive))
+        if(str8_match(str8_prefix(token_string, 2), str8_lit("0x"), StringMatchFlags.CaseInsensitive))
         {
           base = 16;
           prefix_skip = 2;
           digit_group_size = 4;
         }
-        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0b"), StringMatchFlag_CaseInsensitive))
+        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0b"), StringMatchFlags.CaseInsensitive))
         {
           base = 2;
           prefix_skip = 2;
           digit_group_size = 8;
         }
-        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0o"), StringMatchFlag_CaseInsensitive))
+        else if(str8_match(str8_prefix(token_string, 2), str8_lit("0o"), StringMatchFlags.CaseInsensitive))
         {
           base = 8;
           prefix_skip = 2;

@@ -6443,7 +6443,7 @@ internal void
 mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 catch_line     = rd_format_line_from_voff(scratch.arena, rdi, handler->catch_handler_voff, PathStyle_WindowsAbsolute);
+  String8 catch_line     = rd_format_line_from_voff(scratch.arena, rdi, handler->catch_handler_voff, PathStyle.WindowsAbsolute);
   String8 adjectives_str = mscrt_string_from_eh_adjectives(scratch.arena, handler->adjectives);
   rd_printf("Adjectives:                %S",      adjectives_str, handler->adjectives);
   rd_printf("Descriptor:                %#x",     handler->descriptor_voff);
@@ -7408,7 +7408,7 @@ pe_print_exceptions_x8664(Arena              *arena,
           rd_printf("%8s %8s", "State", "IP");
           for (U32 i = 0; i < func_info.ip_map_count; ++i) {
             MSCRT_IPState32 state = func_info.ip_map[i];
-            String8 line = rd_format_line_from_voff(scratch.arena, rdi, state.ip, PathStyle_WindowsAbsolute);
+            String8 line = rd_format_line_from_voff(scratch.arena, rdi, state.ip, PathStyle.WindowsAbsolute);
             rd_printf("%8d %08x %S", state.state, state.ip, line);
           }
           rd_unindent();
@@ -7420,7 +7420,7 @@ pe_print_exceptions_x8664(Arena              *arena,
           rd_printf("%13s  %10s  %8s", "Current State", "Next State", "Action @");
           for (U32 i = 0; i < func_info.max_state; ++i) {
             MSCRT_UnwindMap32 map = func_info.unwind_map[i];
-            String8 line = rd_format_line_from_voff(scratch.arena, rdi, map.action_virt_off, PathStyle_WindowsAbsolute);
+            String8 line = rd_format_line_from_voff(scratch.arena, rdi, map.action_virt_off, PathStyle.WindowsAbsolute);
             rd_printf("%13u  %10d  %8x %S", i, map.next_state, map.action_virt_off, line);
           }
           rd_unindent();
@@ -7504,7 +7504,7 @@ pe_print_exceptions_x8664(Arena              *arena,
         rd_indent();
         rd_printf("%8s %8s", "State", "IP");
         for (U32 i = 0; i < ip2state_map.count; ++i) {
-          String8 line_str = rd_format_line_from_voff(scratch.arena, rdi, ip2state_map.voffs[i], PathStyle_WindowsAbsolute);
+          String8 line_str = rd_format_line_from_voff(scratch.arena, rdi, ip2state_map.voffs[i], PathStyle.WindowsAbsolute);
           rd_printf("%8d %08X %S", ip2state_map.states[i], ip2state_map.voffs[i], line_str);
         }
         rd_unindent();

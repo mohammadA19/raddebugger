@@ -221,15 +221,15 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
   }
 
   PathStyle file_path_style = path_style_from_str8(file_path);
-  B32 is_relative = file_path_style != PathStyle_WindowsAbsolute &&
-                    file_path_style != PathStyle_UnixAbsolute;
+  B32 is_relative = file_path_style != PathStyle.WindowsAbsolute &&
+                    file_path_style != PathStyle.UnixAbsolute;
 
   if (is_relative) {
     for (String8Node *i = dir_list.first; i != 0; i = i->next) {
       String8List path_list = {0};
       str8_list_push(scratch.arena, &path_list, i->string);
       str8_list_push(scratch.arena, &path_list, file_path);
-      String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
+      String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle.SystemAbsolute);
       B32 file_exists = os_file_path_exists(path);
       if (file_exists) {
         B32 is_unique = 1;

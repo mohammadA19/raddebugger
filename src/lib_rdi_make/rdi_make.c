@@ -174,7 +174,7 @@ rdim_str8_match(RDIM_String8 a, RDIM_String8 b, RDIM_StringMatchFlags flags)
   RDI_S32 result = 0;
   if(a.RDIM_String8_SizeMember == b.RDIM_String8_SizeMember)
   {
-    RDI_S32 case_insensitive = (flags & RDIM_StringMatchFlag_CaseInsensitive);
+    RDI_S32 case_insensitive = (flags & RDIM_StringMatchFlags.CaseInsensitive);
     RDI_U64 size = a.RDIM_String8_SizeMember;
     result = 1;
     for(RDI_U64 idx = 0; idx < size; idx += 1)
@@ -1692,7 +1692,7 @@ rdim_bake_path_node_from_string(RDIM_BakePathTree *tree, RDIM_String8 string)
     RDIM_BakePathNode *sub_dir_node = 0;
     for(RDIM_BakePathNode *child = node->first_child; child != 0; child = child->next_sibling)
     {
-      if(rdim_str8_match(child->name, sub_dir, RDIM_StringMatchFlag_CaseInsensitive))
+      if(rdim_str8_match(child->name, sub_dir, RDIM_StringMatchFlags.CaseInsensitive))
       {
         sub_dir_node = child;
       }
@@ -1746,7 +1746,7 @@ rdim_bake_path_tree_insert(RDIM_Arena *arena, RDIM_BakePathTree *tree, RDIM_Stri
     RDIM_BakePathNode *sub_dir_node = 0;
     for(RDIM_BakePathNode *child = node->first_child; child != 0; child = child->next_sibling)
     {
-      if(rdim_str8_match(child->name, sub_dir, RDIM_StringMatchFlag_CaseInsensitive))
+      if(rdim_str8_match(child->name, sub_dir, RDIM_StringMatchFlags.CaseInsensitive))
       {
         sub_dir_node = child;
       }

@@ -440,7 +440,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         }
         
         // rjf: search string
-        U64 needle_pos = str8_find_needle(line_string, search_start, cv->find_text_fwd, StringMatchFlag_CaseInsensitive);
+        U64 needle_pos = str8_find_needle(line_string, search_start, cv->find_text_fwd, StringMatchFlags.CaseInsensitive);
         if(needle_pos < line_string.size)
         {
           rd_regs()->cursor.line = line_num;
@@ -490,7 +490,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         U64 next_needle_pos = line_string.size;
         for(U64 needle_pos = 0; needle_pos < line_string.size;)
         {
-          needle_pos = str8_find_needle(line_string, needle_pos, cv->find_text_bwd, StringMatchFlag_CaseInsensitive);
+          needle_pos = str8_find_needle(line_string, needle_pos, cv->find_text_bwd, StringMatchFlags.CaseInsensitive);
           if(needle_pos < line_string.size)
           {
             next_needle_pos = needle_pos;
@@ -3955,19 +3955,19 @@ rd_path_query_from_string(String8 string)
     String8 substr1 = str8_substr(string, r1u64(i, i+1));
     String8 substr2 = str8_substr(string, r1u64(i, i+2));
     String8 substr3 = str8_substr(string, r1u64(i, i+3));
-    if(str8_match(substr1, str8_lit("/"), StringMatchFlag_SlashInsensitive))
+    if(str8_match(substr1, str8_lit("/"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }
-    else if(i != 0 && str8_match(substr2, str8_lit(":/"), StringMatchFlag_SlashInsensitive))
+    else if(i != 0 && str8_match(substr2, str8_lit(":/"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i-1, string.size));
     }
-    else if(str8_match(substr2, str8_lit("./"), StringMatchFlag_SlashInsensitive))
+    else if(str8_match(substr2, str8_lit("./"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }
-    else if(str8_match(substr3, str8_lit("../"), StringMatchFlag_SlashInsensitive))
+    else if(str8_match(substr3, str8_lit("../"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }

@@ -2346,7 +2346,7 @@ static void ui_box_equip_display_string(UI_Box* box, String8 string)
     String8 display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box.fastpath_codepoint, 1);
     String8 fpcp = str8_from_32(scratch.arena, fpcp32);
-    uint64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
+    uint64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlags.CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
       DR_FancyStringNode pst_fancy_string_n = {0,                   {box.font, str8_skip(display_string, fpcp_pos+fpcp.size), box.palette.colors[text_color_code], box.font_size, 0, 0}};

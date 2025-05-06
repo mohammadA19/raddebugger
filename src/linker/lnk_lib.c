@@ -158,7 +158,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path)
   }
   
   // parse string table
-  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, str8_lit("\0"), StringSplitFlag_KeepEmpties);
+  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, str8_lit("\0"), StringSplitFlags.KeepEmpties);
   Assert(symbol_name_list.node_count >= symbol_count);
   symbol_count = Min(symbol_count, symbol_name_list.node_count);
   
@@ -542,7 +542,7 @@ lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType mach
   ProfBeginFunction();
   
   Assert(machine == COFF_Machine_X64);
-  Assert(str8_match_lit("dll", str8_skip_last_dot(dll_name), StringMatchFlag_CaseInsensitive|StringMatchFlag_RightSideSloppy));
+  Assert(str8_match_lit("dll", str8_skip_last_dot(dll_name), StringMatchFlags.CaseInsensitive|StringMatchFlags.RightSideSloppy));
   
   String8List list = {0};
   
@@ -802,7 +802,7 @@ lnk_build_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_MachineType m
 {
   ProfBeginFunction();
   
-  Assert(str8_match_lit("dll", str8_skip_last_dot(dll_name), StringMatchFlag_CaseInsensitive|StringMatchFlag_RightSideSloppy));
+  Assert(str8_match_lit("dll", str8_skip_last_dot(dll_name), StringMatchFlags.CaseInsensitive|StringMatchFlags.RightSideSloppy));
   
   String8List list = {0};
   

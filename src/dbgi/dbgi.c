@@ -10,7 +10,7 @@ di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags)
   U64 result = seed;
   for(U64 i = 0; i < string.size; i += 1)
   {
-    result = ((result << 5) + result) + ((match_flags & StringMatchFlag_CaseInsensitive) ? char_to_lower(string.str[i]) : string.str[i]);
+    result = ((result << 5) + result) + ((match_flags & StringMatchFlags.CaseInsensitive) ? char_to_lower(string.str[i]) : string.str[i]);
   }
   return result;
 }
@@ -25,7 +25,7 @@ di_hash_from_string(String8 string, StringMatchFlags match_flags)
 internal U64
 di_hash_from_key(DI_Key *k)
 {
-  U64 hash = di_hash_from_string(k->path, StringMatchFlag_CaseInsensitive);
+  U64 hash = di_hash_from_string(k->path, StringMatchFlags.CaseInsensitive);
   return hash;
 }
 
@@ -39,7 +39,7 @@ di_key_zero(void)
 internal B32
 di_key_match(DI_Key *a, DI_Key *b)
 {
-  return (str8_match(a->path, b->path, StringMatchFlag_CaseInsensitive) && a->min_timestamp == b->min_timestamp);
+  return (str8_match(a->path, b->path, StringMatchFlags.CaseInsensitive) && a->min_timestamp == b->min_timestamp);
 }
 
 internal DI_Key
@@ -113,7 +113,7 @@ di_hash_from_search_params(DI_SearchParams *params)
   for(U64 idx = 0; idx < params->dbgi_keys.count; idx += 1)
   {
     hash = di_hash_from_seed_string(hash, str8_struct(&params->dbgi_keys.v[idx].min_timestamp), 0);
-    hash = di_hash_from_seed_string(hash, params->dbgi_keys.v[idx].path, StringMatchFlag_CaseInsensitive);
+    hash = di_hash_from_seed_string(hash, params->dbgi_keys.v[idx].path, StringMatchFlags.CaseInsensitive);
   }
   return hash;
 }
@@ -862,7 +862,7 @@ ASYNC_WORK_DEF(di_parse_work)
   ////////////////////////////
   //- rjf: unpack key
   //
-  U64 hash = di_hash_from_string(og_path, StringMatchFlag_CaseInsensitive);
+  U64 hash = di_hash_from_string(og_path, StringMatchFlags.CaseInsensitive);
   U64 slot_idx = hash%di_shared->slots_count;
   U64 stripe_idx = slot_idx%di_shared->stripes_count;
   DI_Slot *slot = &di_shared->slots[slot_idx];
@@ -889,9 +889,9 @@ ASYNC_WORK_DEF(di_parse_work)
       String8 msf20_magic = str8_lit("Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0");
       String8 msf70_magic = str8_lit("Microsoft C/C++ MSF 7.00\r\n\032DS\0\0");
       String8 msfxx_magic = str8_lit("Microsoft C/C++");
-      if((data.size >= msf20_magic.size && str8_match(data, msf20_magic, StringMatchFlag_RightSideSloppy)) ||
-         (data.size >= msf70_magic.size && str8_match(data, msf70_magic, StringMatchFlag_RightSideSloppy)) ||
-         (data.size >= msfxx_magic.size && str8_match(data, msfxx_magic, StringMatchFlag_RightSideSloppy)))
+      if((data.size >= msf20_magic.size && str8_match(data, msf20_magic, StringMatchFlags.RightSideSloppy)) ||
+         (data.size >= msf70_magic.size && str8_match(data, msf70_magic, StringMatchFlags.RightSideSloppy)) ||
+         (data.size >= msfxx_magic.size && str8_match(data, msfxx_magic, StringMatchFlags.RightSideSloppy)))
       {
         og_format_is_known = 1;
         og_is_pdb = 1;
@@ -1585,7 +1585,7 @@ di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
   for EachIndex(idx, keys.count)
   {
     params_hash = di_hash_from_seed_string(params_hash, str8_struct(&keys.v[idx].min_timestamp), 0);
-    params_hash = di_hash_from_seed_string(params_hash, keys.v[idx].path, StringMatchFlag_CaseInsensitive);
+    params_hash = di_hash_from_seed_string(params_hash, keys.v[idx].path, StringMatchFlags.CaseInsensitive);
   }
   
   // rjf: store parameters if needed

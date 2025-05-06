@@ -3328,7 +3328,7 @@ lnk_build_pdb(TP_Context               *tp,
 
       // sanity check file extension or VS wont load NatVis
       String8 ext = str8_skip_last_dot(natvis_file_path);
-      if (!str8_match(ext, str8_lit("natvis"), StringMatchFlag_CaseInsensitive)) {
+      if (!str8_match(ext, str8_lit("natvis"), StringMatchFlags.CaseInsensitive)) {
         lnk_error(LNK_Warning_Natvis, "Visual Studio expects .natvis extension: \"%S\"", natvis_file_path);
       }
 
@@ -4208,7 +4208,7 @@ lnk_normalize_src_file_path(Arena *arena, String8 file_path)
   Temp scratch = scratch_begin(&arena, 1);
   String8 result = file_path;
   result = lower_from_str8(scratch.arena, result);
-  result = path_convert_slashes(scratch.arena, result, PathStyle_UnixAbsolute);
+  result = path_convert_slashes(scratch.arena, result, PathStyle.UnixAbsolute);
   result = push_str8_copy(arena, result);
   scratch_end(scratch);
   return result;

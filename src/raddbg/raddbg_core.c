@@ -76,7 +76,7 @@ rd_cfg_table_push_unparsed_string(Arena *arena, RD_CfgTable *table, String8 stri
     RD_CfgVal *val = 0;
     for(RD_CfgVal *v = slot->first; v != 0; v = v->hash_next)
     {
-      if(str8_match(v->string, string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(v->string, string, StringMatchFlags.CaseInsensitive))
       {
         val = v;
         break;
@@ -113,7 +113,7 @@ rd_cfg_val_from_string(RD_CfgTable *table, String8 string)
     RD_CfgSlot *slot = &table->slots[slot_idx];
     for(RD_CfgVal *val = slot->first; val != 0; val = val->hash_next)
     {
-      if(str8_match(val->string, string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(val->string, string, StringMatchFlags.CaseInsensitive))
       {
         result = val;
         break;
@@ -670,7 +670,7 @@ rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec
             n != 0;
             n = n->next)
         {
-          if(str8_match(n->name, file_name, StringMatchFlag_CaseInsensitive))
+          if(str8_match(n->name, file_name, StringMatchFlags.CaseInsensitive))
           {
             node = n;
             break;
@@ -716,7 +716,7 @@ rd_title_fstrs_from_view(Arena *arena, RD_View *view, Vec4F32 primary_color, Vec
             B32 part_is_qualifier = 0;
             for EachIndex(idx, collisions.count)
             {
-              if(collision_nodes[idx] != 0 && !str8_match(collision_nodes[idx]->string, n->string, StringMatchFlag_CaseInsensitive))
+              if(collision_nodes[idx] != 0 && !str8_match(collision_nodes[idx]->string, n->string, StringMatchFlags.CaseInsensitive))
               {
                 collision_nodes[idx] = 0;
                 num_collisions_left -= 1;
@@ -1681,7 +1681,7 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
   String8List result = {0};
   str8_list_push(arena, &result, file_path);
   Temp scratch = scratch_begin(&arena, 1);
-  PathStyle pth_style = PathStyle_Relative;
+  PathStyle pth_style = PathStyle.Relative;
   String8List pth_parts = path_normalized_list_from_string(scratch.arena, file_path, &pth_style);
   {
     RD_EntityList links = rd_query_cached_entity_list_with_kind(RD_EntityKind_FilePathMap);
@@ -1691,8 +1691,8 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
       RD_Entity *link = n->entity;
       RD_Entity *src = rd_entity_child_from_kind(link, RD_EntityKind_Source);
       RD_Entity *dst = rd_entity_child_from_kind(link, RD_EntityKind_Dest);
-      PathStyle src_style = PathStyle_Relative;
-      PathStyle dst_style = PathStyle_Relative;
+      PathStyle src_style = PathStyle.Relative;
+      PathStyle dst_style = PathStyle.Relative;
       String8List src_parts = path_normalized_list_from_string(scratch.arena, src->string, &src_style);
       String8List dst_parts = path_normalized_list_from_string(scratch.arena, dst->string, &dst_style);
       
@@ -1706,7 +1706,7 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
         String8Node *pth_n = pth_parts.first;
         for(;dst_n != 0 && pth_n != 0; dst_n = dst_n->next, pth_n = pth_n->next)
         {
-          if(!str8_match(dst_n->string, pth_n->string, StringMatchFlag_CaseInsensitive))
+          if(!str8_match(dst_n->string, pth_n->string, StringMatchFlags.CaseInsensitive))
           {
             dst_redirects_to_pth = 0;
             break;
@@ -2821,7 +2821,7 @@ rd_arch_from_eval_params(E_Eval eval, MD_Node *params)
   Arch arch = Arch_Null;
   MD_Node *arch_node = md_child_from_string(params, str8_lit("arch"), 0);
   String8 arch_kind_string = arch_node->first->string;
-  if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlag_CaseInsensitive))
+  if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlags.CaseInsensitive))
   {
     arch = Arch_x64;
   }
@@ -2847,7 +2847,7 @@ rd_tex2dformat_from_eval_params(E_Eval eval, MD_Node *params)
     MD_Node *fmt_node = md_child_from_string(params, str8_lit("fmt"), 0);
     for EachNonZeroEnumVal(R_Tex2DFormat, fmt)
     {
-      if(str8_match(r_tex2d_format_display_string_table[fmt], fmt_node->first->string, StringMatchFlag_CaseInsensitive))
+      if(str8_match(r_tex2d_format_display_string_table[fmt], fmt_node->first->string, StringMatchFlags.CaseInsensitive))
       {
         result = fmt;
         break;
@@ -5135,19 +5135,19 @@ rd_window_frame(RD_Window *ws)
               String8 substr1 = str8_substr(query_path, r1u64(i, i+1));
               String8 substr2 = str8_substr(query_path, r1u64(i, i+2));
               String8 substr3 = str8_substr(query_path, r1u64(i, i+3));
-              if(str8_match(substr1, str8_lit("/"), StringMatchFlag_SlashInsensitive))
+              if(str8_match(substr1, str8_lit("/"), StringMatchFlags.SlashInsensitive))
               {
                 dir_str_in_input = str8_substr(query_path, r1u64(i, query_path.size));
               }
-              else if(i != 0 && str8_match(substr2, str8_lit(":/"), StringMatchFlag_SlashInsensitive))
+              else if(i != 0 && str8_match(substr2, str8_lit(":/"), StringMatchFlags.SlashInsensitive))
               {
                 dir_str_in_input = str8_substr(query_path, r1u64(i-1, query_path.size));
               }
-              else if(str8_match(substr2, str8_lit("./"), StringMatchFlag_SlashInsensitive))
+              else if(str8_match(substr2, str8_lit("./"), StringMatchFlags.SlashInsensitive))
               {
                 dir_str_in_input = str8_substr(query_path, r1u64(i, query_path.size));
               }
-              else if(str8_match(substr3, str8_lit("../"), StringMatchFlag_SlashInsensitive))
+              else if(str8_match(substr3, str8_lit("../"), StringMatchFlags.SlashInsensitive))
               {
                 dir_str_in_input = str8_substr(query_path, r1u64(i, query_path.size));
               }
@@ -7917,7 +7917,7 @@ rd_window_frame(RD_Window *ws)
               {
                 Temp scratch = scratch_begin(0, 0);
                 String8 path = path_normalized_from_string(scratch.arena, n->string);
-                if(str8_match(str8_skip_last_dot(path), str8_lit("exe"), StringMatchFlag_CaseInsensitive))
+                if(str8_match(str8_skip_last_dot(path), str8_lit("exe"), StringMatchFlags.CaseInsensitive))
                 {
                   str8_list_push(ws->drop_completion_arena, &ws->drop_completion_paths, push_str8_copy(ws->drop_completion_arena, path));
                   need_drop_completion = 1;
@@ -10019,11 +10019,11 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 stri
           for MD_EachNode(child, schema_node->first)
           {
             if(0){}
-            else if(str8_match(child->string, str8_lit("expr"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Locals;}
-            else if(str8_match(child->string, str8_lit("member"),         StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Members;}
-            else if(str8_match(child->string, str8_lit("lang"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Languages;}
-            else if(str8_match(child->string, str8_lit("arch"),           StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Architectures;}
-            else if(str8_match(child->string, str8_lit("tex2dformat"),    StringMatchFlag_CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Tex2DFormats;}
+            else if(str8_match(child->string, str8_lit("expr"),           StringMatchFlags.CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Locals;}
+            else if(str8_match(child->string, str8_lit("member"),         StringMatchFlags.CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Members;}
+            else if(str8_match(child->string, str8_lit("lang"),           StringMatchFlags.CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Languages;}
+            else if(str8_match(child->string, str8_lit("arch"),           StringMatchFlags.CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Architectures;}
+            else if(str8_match(child->string, str8_lit("tex2dformat"),    StringMatchFlags.CaseInsensitive)) {params.flags |= RD_AutoCompListerFlag_Tex2DFormats;}
             else if(child->flags & (MD_NodeFlag_StringSingleQuote|MD_NodeFlag_StringDoubleQuote|MD_NodeFlag_StringTick))
             {
               str8_list_push(arena, &params.strings, child->string);
@@ -10034,7 +10034,7 @@ rd_view_rule_autocomp_lister_params_from_input_cursor(Arena *arena, String8 stri
         }
         if(step != 0)
         {
-          MD_Node *next_node = md_child_from_string(schema_node, step->string, StringMatchFlag_CaseInsensitive);
+          MD_Node *next_node = md_child_from_string(schema_node, step->string, StringMatchFlags.CaseInsensitive);
           schema_node = next_node;
           step = step->next;
         }
@@ -10107,7 +10107,7 @@ rd_os_key_from_cfg_string(String8 string)
   {
     for(OS_Key key = OS_Key_Null; key < OS_Key_COUNT; key = (OS_Key)(key+1))
     {
-      if(str8_match(string, os_g_key_cfg_string_table[key], StringMatchFlag_CaseInsensitive))
+      if(str8_match(string, os_g_key_cfg_string_table[key], StringMatchFlags.CaseInsensitive))
       {
         result = key;
         break;
@@ -12824,8 +12824,8 @@ rd_frame(void)
                         }
                         
                         // rjf: specifically named entity equipment
-                        if((str8_match(child->string, str8_lit("name"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child->string, str8_lit("label"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child->string, str8_lit("name"), StringMatchFlags.CaseInsensitive) ||
+                            str8_match(child->string, str8_lit("label"), StringMatchFlags.CaseInsensitive)) &&
                            child->first != &md_nil_node)
                         {
                           String8 string = raw_from_escaped_str8(scratch.arena, child->first->string);
@@ -12839,21 +12839,21 @@ rd_frame(void)
                           }
                           rd_entity_equip_name(t->entity, string);
                         }
-                        if((str8_match(child->string, str8_lit("active"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child->string, str8_lit("enabled"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child->string, str8_lit("active"), StringMatchFlags.CaseInsensitive) ||
+                            str8_match(child->string, str8_lit("enabled"), StringMatchFlags.CaseInsensitive)) &&
                            child->first != &md_nil_node)
                         {
                           rd_entity_equip_disabled(t->entity, !str8_match(child->first->string, str8_lit("1"), 0));
                         }
-                        if(str8_match(child->string, str8_lit("disabled"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
+                        if(str8_match(child->string, str8_lit("disabled"), StringMatchFlags.CaseInsensitive) && child->first != &md_nil_node)
                         {
                           rd_entity_equip_disabled(t->entity, str8_match(child->first->string, str8_lit("1"), 0));
                         }
-                        if(str8_match(child->string, str8_lit("debug_subprocesses"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
+                        if(str8_match(child->string, str8_lit("debug_subprocesses"), StringMatchFlags.CaseInsensitive) && child->first != &md_nil_node)
                         {
                           t->entity->debug_subprocesses = str8_match(child->first->string, str8_lit("1"), 0);
                         }
-                        if(str8_match(child->string, str8_lit("hsva"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
+                        if(str8_match(child->string, str8_lit("hsva"), StringMatchFlags.CaseInsensitive) && child->first != &md_nil_node)
                         {
                           Vec4F32 hsva = {0};
                           hsva.x = (F32)f64_from_str8(child->first->string);
@@ -12862,21 +12862,21 @@ rd_frame(void)
                           hsva.w = (F32)f64_from_str8(child->first->next->next->next->string);
                           rd_entity_equip_color_hsva(t->entity, hsva);
                         }
-                        if(str8_match(child->string, str8_lit("color"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
+                        if(str8_match(child->string, str8_lit("color"), StringMatchFlags.CaseInsensitive) && child->first != &md_nil_node)
                         {
                           Vec4F32 rgba = rgba_from_hex_string_4f32(child->first->string);
                           Vec4F32 hsva = hsva_from_rgba(rgba);
                           rd_entity_equip_color_hsva(t->entity, hsva);
                         }
-                        if(str8_match(child->string, str8_lit("line"), StringMatchFlag_CaseInsensitive) && child->first != &md_nil_node)
+                        if(str8_match(child->string, str8_lit("line"), StringMatchFlags.CaseInsensitive) && child->first != &md_nil_node)
                         {
                           S64 line = 0;
                           try_s64_from_str8_c_rules(child->first->string, &line);
                           TxtPt pt = txt_pt(line, 1);
                           rd_entity_equip_txt_pt(t->entity, pt);
                         }
-                        if((str8_match(child->string, str8_lit("vaddr"), StringMatchFlag_CaseInsensitive) ||
-                            str8_match(child->string, str8_lit("addr"), StringMatchFlag_CaseInsensitive)) &&
+                        if((str8_match(child->string, str8_lit("vaddr"), StringMatchFlags.CaseInsensitive) ||
+                            str8_match(child->string, str8_lit("addr"), StringMatchFlags.CaseInsensitive)) &&
                            child->first != &md_nil_node)
                         {
                           U64 vaddr = 0;
@@ -12889,8 +12889,8 @@ rd_frame(void)
                         for EachEnumVal(RD_EntityKind, k2)
                         {
                           if(child->flags & MD_NodeFlag_Identifier && child->first != &md_nil_node &&
-                             (str8_match(child->string, d_entity_kind_name_lower_table[k2], StringMatchFlag_CaseInsensitive) ||
-                              (k2 == RD_EntityKind_Executable && str8_match(child->string, str8_lit("exe"), StringMatchFlag_CaseInsensitive))))
+                             (str8_match(child->string, d_entity_kind_name_lower_table[k2], StringMatchFlags.CaseInsensitive) ||
+                              (k2 == RD_EntityKind_Executable && str8_match(child->string, str8_lit("exe"), StringMatchFlags.CaseInsensitive))))
                           {
                             Task *task = push_array(scratch.arena, Task, 1);
                             task->next = t->next;
@@ -13027,25 +13027,25 @@ rd_frame(void)
                 {
                   if(n->flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n->first) &&
-                     str8_match(n->string, str8_lit("split_x"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n->string, str8_lit("split_x"), StringMatchFlags.CaseInsensitive))
                   {
                     top_level_split_axis = Axis2_X;
                   }
                   if(n->flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n->first) &&
-                     str8_match(n->string, str8_lit("split_y"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n->string, str8_lit("split_y"), StringMatchFlags.CaseInsensitive))
                   {
                     top_level_split_axis = Axis2_Y;
                   }
                   if(n->flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n->first) &&
-                     str8_match(n->string, str8_lit("fullscreen"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n->string, str8_lit("fullscreen"), StringMatchFlags.CaseInsensitive))
                   {
                     is_fullscreen = 1;
                   }
                   if(n->flags & MD_NodeFlag_Identifier &&
                      md_node_is_nil(n->first) &&
-                     str8_match(n->string, str8_lit("maximized"), StringMatchFlag_CaseInsensitive))
+                     str8_match(n->string, str8_lit("maximized"), StringMatchFlags.CaseInsensitive))
                   {
                     is_maximized = 1;
                   }
@@ -13055,7 +13055,7 @@ rd_frame(void)
                 for(U64 idx = 0; idx < monitors.count; idx += 1)
                 {
                   String8 monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
-                  if(str8_match(monitor_name, preferred_monitor_name, StringMatchFlag_CaseInsensitive))
+                  if(str8_match(monitor_name, preferred_monitor_name, StringMatchFlags.CaseInsensitive))
                   {
                     preferred_monitor = monitors.v[idx];
                     break;
@@ -13332,7 +13332,7 @@ rd_frame(void)
                       cmd_name = child->string;
                       for(U64 idx = 0; idx < ArrayCount(rd_binding_version_remap_old_name_table); idx += 1)
                       {
-                        if(str8_match(rd_binding_version_remap_old_name_table[idx], child->string, StringMatchFlag_CaseInsensitive))
+                        if(str8_match(rd_binding_version_remap_old_name_table[idx], child->string, StringMatchFlags.CaseInsensitive))
                         {
                           String8 new_name = rd_binding_version_remap_new_name_table[idx];
                           cmd_name = new_name;
@@ -13367,7 +13367,7 @@ rd_frame(void)
               B32 found_preset = 0;
               for(RD_ThemePreset p = (RD_ThemePreset)0; p < RD_ThemePreset_COUNT; p = (RD_ThemePreset)(p+1))
               {
-                if(str8_match(color_preset_name, rd_theme_preset_code_string_table[p], StringMatchFlag_CaseInsensitive))
+                if(str8_match(color_preset_name, rd_theme_preset_code_string_table[p], StringMatchFlags.CaseInsensitive))
                 {
                   found_preset = 1;
                   preset = p;
@@ -13396,7 +13396,7 @@ rd_frame(void)
                 str8_list_push(scratch.arena, &candidate_color_names, saved_color_name);
                 for(U64 idx = 0; idx < ArrayCount(rd_theme_color_version_remap_old_name_table); idx += 1)
                 {
-                  if(str8_match(rd_theme_color_version_remap_old_name_table[idx], saved_color_name, StringMatchFlag_CaseInsensitive))
+                  if(str8_match(rd_theme_color_version_remap_old_name_table[idx], saved_color_name, StringMatchFlags.CaseInsensitive))
                   {
                     str8_list_push(scratch.arena, &candidate_color_names, rd_theme_color_version_remap_new_name_table[idx]);
                   }
@@ -13407,7 +13407,7 @@ rd_frame(void)
                   RD_ThemeColor color_code = RD_ThemeColor_Null;
                   for(RD_ThemeColor c = RD_ThemeColor_Null; c < RD_ThemeColor_COUNT; c = (RD_ThemeColor)(c+1))
                   {
-                    if(str8_match(rd_theme_color_cfg_string_table[c], name, StringMatchFlag_CaseInsensitive))
+                    if(str8_match(rd_theme_color_cfg_string_table[c], name, StringMatchFlags.CaseInsensitive))
                     {
                       color_code = c;
                       break;
@@ -13917,7 +13917,7 @@ rd_frame(void)
             String8Node *first_diff_dst = dst_path_parts__reversed.first;
             for(;first_diff_src != 0 && first_diff_dst != 0;)
             {
-              if(!str8_match(first_diff_src->string, first_diff_dst->string, StringMatchFlag_CaseInsensitive))
+              if(!str8_match(first_diff_src->string, first_diff_dst->string, StringMatchFlags.CaseInsensitive))
               {
                 break;
               }
@@ -14211,7 +14211,7 @@ rd_frame(void)
                   if(rd_view_is_project_filtered(v)) { continue; }
                   String8 v_path = rd_file_path_from_eval_string(scratch.arena, str8(v->query_buffer, v->query_string_size));
                   RD_ViewRuleKind v_kind = rd_view_rule_kind_from_string(v->spec->string);
-                  if(str8_match(v_path, recent_file_path, StringMatchFlag_CaseInsensitive) && v_kind == src_view_kind)
+                  if(str8_match(v_path, recent_file_path, StringMatchFlags.CaseInsensitive) && v_kind == src_view_kind)
                   {
                     existing_panel = panel;
                     existing_view = v;
@@ -14255,7 +14255,7 @@ rd_frame(void)
               };
               for(U64 idx = 0; idx < ArrayCount(partner_ext_candidates); idx += 1)
               {
-                if(!str8_match(partner_ext_candidates[idx], file_ext, StringMatchFlag_CaseInsensitive))
+                if(!str8_match(partner_ext_candidates[idx], file_ext, StringMatchFlags.CaseInsensitive))
                 {
                   String8 candidate = push_str8f(scratch.arena, "%S.%S", file_name, partner_ext_candidates[idx]);
                   String8 candidate_path = push_str8f(scratch.arena, "%S/%S", file_folder, candidate);
@@ -14318,7 +14318,7 @@ rd_frame(void)
             RD_Entity *existing_recent_file = &rd_nil_entity;
             for(RD_EntityNode *n = recent_files.first; n != 0; n = n->next)
             {
-              if(str8_match(n->entity->string, path, StringMatchFlag_CaseInsensitive))
+              if(str8_match(n->entity->string, path, StringMatchFlags.CaseInsensitive))
               {
                 existing_recent_file = n->entity;
                 break;
@@ -16842,7 +16842,7 @@ rd_frame(void)
                 n != 0;
                 n = n->next)
             {
-              if(str8_match(n->name, name, StringMatchFlag_CaseInsensitive))
+              if(str8_match(n->name, name, StringMatchFlags.CaseInsensitive))
               {
                 node = n;
                 break;

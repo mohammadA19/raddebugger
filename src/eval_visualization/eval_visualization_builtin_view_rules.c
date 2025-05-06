@@ -89,7 +89,7 @@ ev_arch_from_eval_params(E_Eval eval, MD_Node *params)
   Arch arch = Arch_Null;
   MD_Node *arch_node = md_child_from_string(params, str8_lit("arch"), 0);
   String8 arch_kind_string = arch_node->first->string;
-  if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlag_CaseInsensitive))
+  if(str8_match(arch_kind_string, str8_lit("x64"), StringMatchFlags.CaseInsensitive))
   {
     arch = Arch_x64;
   }

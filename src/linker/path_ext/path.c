@@ -14,10 +14,10 @@ path_char_from_style(PathStyle style)
 {
   String8 result = str8_zero();
   switch (style) {
-  case PathStyle_Null:     break;
-  case PathStyle_Relative: break;
-  case PathStyle_WindowsAbsolute: result = str8_lit("\\"); break;
-  case PathStyle_UnixAbsolute:    result = str8_lit("/");  break;
+  case PathStyle.Null:     break;
+  case PathStyle.Relative: break;
+  case PathStyle.WindowsAbsolute: result = str8_lit("\\"); break;
+  case PathStyle.UnixAbsolute:    result = str8_lit("/");  break;
   }
   return result;
 }
@@ -40,7 +40,7 @@ path_canon_from_regular_path(Arena *arena, String8 path)
   Temp scratch = scratch_begin(&arena, 1);
   String8 result;
   result = lower_from_str8(scratch.arena, path);
-  result = path_convert_slashes(arena, result, PathStyle_UnixAbsolute);
+  result = path_convert_slashes(arena, result, PathStyle.UnixAbsolute);
   scratch_end(scratch);
   return result;
 }
@@ -49,19 +49,19 @@ struct {
   String8   string;
   PathStyle path_style;
 } g_path_style_map[] = {
-  { str8_lit_comp("windows"), PathStyle_WindowsAbsolute },
-  { str8_lit_comp("unix"),    PathStyle_UnixAbsolute    },
-  { str8_lit_comp("system"),  PathStyle_SystemAbsolute  },
+  { str8_lit_comp("windows"), PathStyle.WindowsAbsolute },
+  { str8_lit_comp("unix"),    PathStyle.UnixAbsolute    },
+  { str8_lit_comp("system"),  PathStyle.SystemAbsolute  },
 };
 
 internal PathStyle
 path_style_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_path_style_map); ++i) {
-    if (str8_match(g_path_style_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_path_style_map[i].string, string, StringMatchFlags.CaseInsensitive)) {
       return g_path_style_map[i].path_style;
     }
   }
-  return PathStyle_Null;
+  return PathStyle.Null;
 }
 

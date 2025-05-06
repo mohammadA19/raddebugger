@@ -616,7 +616,7 @@ entry_point(CmdLine *cmd_line)
                 String8 current_path = os_get_current_path(scratch.arena);
                 String8 exe_name = args.first->string;
                 PathStyle style = path_style_from_str8(exe_name);
-                if(style == PathStyle_Relative)
+                if(style == PathStyle.Relative)
                 {
                   exe_name = push_str8f(scratch.arena, "%S/%S", current_path, exe_name);
                   exe_name = path_normalized_from_string(scratch.arena, exe_name);
@@ -676,7 +676,7 @@ entry_point(CmdLine *cmd_line)
             String8 exe_name = args.first->string;
             RD_Entity *exe = rd_entity_alloc(target, RD_EntityKind_Executable);
             PathStyle style = path_style_from_str8(exe_name);
-            if(style == PathStyle_Relative)
+            if(style == PathStyle.Relative)
             {
               exe_name = push_str8f(scratch.arena, "%S/%S", current_path, exe_name);
               exe_name = path_normalized_from_string(scratch.arena, exe_name);
@@ -844,7 +844,7 @@ entry_point(CmdLine *cmd_line)
         dmn_process_iter_begin(&it);
         for(DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &it, &info);)
         {
-          if(str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line->exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlag_CaseInsensitive) &&
+          if(str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line->exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlags.CaseInsensitive) &&
              this_pid != info.pid)
           {
             dst_pid = info.pid;

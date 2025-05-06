@@ -1932,7 +1932,7 @@ pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 file_path, String8 
     String8 work_dir = os_get_current_path(scratch.arena);
     virt_path = path_absolute_dst_from_relative_dst_src(scratch.arena, virt_path, work_dir);
     virt_path = lower_from_str8(scratch.arena, virt_path);
-    virt_path = path_convert_slashes(scratch.arena, virt_path, PathStyle_UnixAbsolute);
+    virt_path = path_convert_slashes(scratch.arena, virt_path, PathStyle.UnixAbsolute);
 
     String8 dummy_value;
     B32 is_virt_path_present = pdb_hash_table_get(&info->src_header_block_ht, virt_path, &dummy_value);

@@ -300,10 +300,10 @@ str8_match(String8 a, String8 b, StringMatchFlags flags)
   {
     result = MemoryMatch(a.str, b.str, b.size);
   }
-  else if(a.size == b.size || (flags & StringMatchFlag_RightSideSloppy))
+  else if(a.size == b.size || (flags & StringMatchFlags.RightSideSloppy))
   {
-    B32 case_insensitive  = (flags & StringMatchFlag_CaseInsensitive);
-    B32 slash_insensitive = (flags & StringMatchFlag_SlashInsensitive);
+    B32 case_insensitive  = (flags & StringMatchFlags.CaseInsensitive);
+    B32 slash_insensitive = (flags & StringMatchFlags.SlashInsensitive);
     U64 size              = Min(a.size, b.size);
     result = 1;
     for(U64 i = 0; i < size; i += 1)
@@ -338,14 +338,14 @@ str8_find_needle(String8 string, U64 start_pos, String8 needle, StringMatchFlags
   if (needle.size > 0){
     U8 *string_opl = string.str + string.size;
     String8 needle_tail = str8_skip(needle, 1);
-    StringMatchFlags adjusted_flags = flags | StringMatchFlag_RightSideSloppy;
+    StringMatchFlags adjusted_flags = flags | StringMatchFlags.RightSideSloppy;
     U8 needle_first_char_adjusted = needle.str[0];
-    if(adjusted_flags & StringMatchFlag_CaseInsensitive){
+    if(adjusted_flags & StringMatchFlags.CaseInsensitive){
       needle_first_char_adjusted = char_to_upper(needle_first_char_adjusted);
     }
     for (;p < stop_p; p += 1){
       U8 haystack_char_adjusted = *p;
-      if(adjusted_flags & StringMatchFlag_CaseInsensitive){
+      if(adjusted_flags & StringMatchFlags.CaseInsensitive){
         haystack_char_adjusted = char_to_upper(haystack_char_adjusted);
       }
       if (haystack_char_adjusted == needle_first_char_adjusted){
@@ -1018,7 +1018,7 @@ internal String8List
 str8_split(Arena *arena, String8 string, U8 *split_chars, U64 split_char_count, StringSplitFlags flags){
   String8List list = {0};
   
-  B32 keep_empties = (flags & StringSplitFlag_KeepEmpties);
+  B32 keep_empties = (flags & StringSplitFlags.KeepEmpties);
   
   U8 *ptr = string.str;
   U8 *opl = string.str + string.size;
@@ -1208,16 +1208,16 @@ str8_skip_last_dot(String8 string){
 
 internal PathStyle
 path_style_from_str8(String8 string){
-  PathStyle result = PathStyle_Relative;
+  PathStyle result = PathStyle.Relative;
   if (string.size >= 1 && string.str[0] == '/'){
-    result = PathStyle_UnixAbsolute;
+    result = PathStyle.UnixAbsolute;
   }
   else if (string.size >= 2 &&
            char_is_alpha(string.str[0]) &&
            string.str[1] == ':'){
     if (string.size == 2 ||
         char_is_slash(string.str[2])){
-      result = PathStyle_WindowsAbsolute;
+      result = PathStyle.WindowsAbsolute;
     }
   }
   return(result);
@@ -1245,7 +1245,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style){
     next = node->next;
     
     // cases:
-    if (node == first && style == PathStyle_WindowsAbsolute){
+    if (node == first && style == PathStyle.WindowsAbsolute){
       goto save_without_stack;
     }
     if (node->string.size == 1 && node->string.str[0] == '.'){
@@ -1313,14 +1313,14 @@ str8_path_list_join_by_style(Arena *arena, String8List *path, PathStyle style){
   StringJoin params = {0};
   switch(style)
   {
-    case PathStyle_Null:{}break;
-    case PathStyle_Relative:
-    case PathStyle_WindowsAbsolute:
+    case PathStyle.Null:{}break;
+    case PathStyle.Relative:
+    case PathStyle.WindowsAbsolute:
     {
       params.sep = str8_lit("/");
     }break;
     
-    case PathStyle_UnixAbsolute:
+    case PathStyle.UnixAbsolute:
     {
       params.pre = str8_lit("/");
       params.sep = str8_lit("/");
@@ -1635,7 +1635,7 @@ operating_system_from_string(String8 string)
 {
   for(U64 i = 0; i < ArrayCount(g_os_enum_map); ++i)
   {
-    if(str8_match(g_os_enum_map[i].string, string, StringMatchFlag_CaseInsensitive))
+    if(str8_match(g_os_enum_map[i].string, string, StringMatchFlags.CaseInsensitive))
     {
       return g_os_enum_map[i].os;
     }
@@ -1818,7 +1818,7 @@ try_guid_from_string(String8 string, Guid *guid_out)
 {
   Temp scratch = scratch_begin(0,0);
   B32 is_parsed = 0;
-  String8List list = str8_split_by_string_chars(scratch.arena, string, str8_lit("-"), StringSplitFlag_KeepEmpties);
+  String8List list = str8_split_by_string_chars(scratch.arena, string, str8_lit("-"), StringSplitFlags.KeepEmpties);
   if(list.node_count == 5)
   {
     String8 data1_str    = list.first->string;
@@ -2105,7 +2105,7 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
     U64 find_pos = 0;
     for(;find_pos < haystack.size;)
     {
-      find_pos = str8_find_needle(haystack, find_pos, needle_n->string, StringMatchFlag_CaseInsensitive);
+      find_pos = str8_find_needle(haystack, find_pos, needle_n->string, StringMatchFlags.CaseInsensitive);
       B32 is_in_gathered_ranges = 0;
       for(FuzzyMatchRangeNode *n = result.first; n != 0; n = n->next)
       {

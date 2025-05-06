@@ -1790,7 +1790,7 @@ e_parse_expr_from_text_tokens__prec(Arena *arena, String8 text, E_TokenArray *to
           if(dot_pos < token_string.size)
           {
             F64 val = f64_from_str8(token_string);
-            U64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
+            U64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlags.CaseInsensitive);
             
             // rjf: presence of f after . => f32
             if(f_pos < token_string.size)

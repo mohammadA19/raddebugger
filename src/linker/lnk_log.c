@@ -49,7 +49,7 @@ lnk_log_type_from_string(String8 string)
   Assert(ArrayCount(map) == LNK_Log_Count);
 
   for (U64 i = 0; i < ArrayCount(map); ++i) {
-    if (str8_match(str8_cstring(map[i].name), string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(str8_cstring(map[i].name), string, StringMatchFlags.CaseInsensitive)) {
       return map[i].type;
     }
   }

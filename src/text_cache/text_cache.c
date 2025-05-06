@@ -13,34 +13,34 @@ txt_lang_kind_from_extension(String8 extension)
   {
     kind = TXT_LangKind_C;
   }
-  else if(str8_match(extension, str8_lit("cpp"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cxx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cc"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("c++"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("ixx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cxxm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("c++m"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("ccm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cppm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("mpp"), StringMatchFlag_CaseInsensitive) ||
+  else if(str8_match(extension, str8_lit("cpp"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("cxx"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("cc"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("c++"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("ixx"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("cxxm"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("c++m"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("ccm"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("cppm"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("mpp"), StringMatchFlags.CaseInsensitive) ||
           str8_match(extension, str8_lit("C"), 0) ||
-          str8_match(extension, str8_lit("hpp"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("hxx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("hh"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("h++"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, str8_lit("hpp"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("hxx"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("hh"), StringMatchFlags.CaseInsensitive) ||
+          str8_match(extension, str8_lit("h++"), StringMatchFlags.CaseInsensitive) ||
           str8_match(extension, str8_lit("H"), 0))
   {
     kind = TXT_LangKind_CPlusPlus;
   }
-  else if(str8_match(extension, str8_lit("odin"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, str8_lit("odin"), StringMatchFlags.CaseInsensitive))
   {
     kind = TXT_LangKind_Odin;
   }
-  else if(str8_match(extension, str8_lit("jai"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, str8_lit("jai"), StringMatchFlags.CaseInsensitive))
   {
     kind = TXT_LangKind_Jai;
   }
-  else if(str8_match(extension, str8_lit("zig"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, str8_lit("zig"), StringMatchFlags.CaseInsensitive))
   {
     kind = TXT_LangKind_Zig;
   }

@@ -458,7 +458,7 @@ internal COFF_MachineType
 coff_machine_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
-    if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlags.CaseInsensitive)) {
       return g_coff_machine_map[i].machine;
     }
   }
@@ -469,7 +469,7 @@ internal COFF_ImportType
 coff_import_header_type_from_string(String8 name)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
-    if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlags.CaseInsensitive)) {
       return g_coff_import_header_type_map[i].type;
     }
   }

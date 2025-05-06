@@ -460,8 +460,8 @@ cv_is_udt_name_anon(String8 name)
   // corresponds to fUDTAnon from dbi/tm.cpp:817
   B32 is_anon = str8_match_lit("<unnamed-tag>",   name, 0) ||
                 str8_match_lit("__unnamed",       name, 0) ||
-                str8_match_lit("::<unnamed-tag>", name, StringMatchFlag_RightSideSloppy) ||
-                str8_match_lit("::__unnamed",     name, StringMatchFlag_RightSideSloppy);
+                str8_match_lit("::<unnamed-tag>", name, StringMatchFlags.RightSideSloppy) ||
+                str8_match_lit("::__unnamed",     name, StringMatchFlags.RightSideSloppy);
   return is_anon;
 }
 

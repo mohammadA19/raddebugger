@@ -506,15 +506,15 @@ ev_view_rule_list_from_expr_fastpaths(Arena *arena, String8 string)
     if(comma_pos < string.size && comma_pos < passthrough_pos)
     {
       String8 comma_extension = str8_skip_chop_whitespace(str8_substr(string, r1u64(comma_pos+1, passthrough_pos)));
-      if(str8_match(comma_extension, str8_lit("x"), StringMatchFlag_CaseInsensitive))
+      if(str8_match(comma_extension, str8_lit("x"), StringMatchFlags.CaseInsensitive))
       {
         str8_list_pushf(scratch.arena, &fastpath_view_rules, "hex");
       }
-      else if(str8_match(comma_extension, str8_lit("b"), StringMatchFlag_CaseInsensitive))
+      else if(str8_match(comma_extension, str8_lit("b"), StringMatchFlags.CaseInsensitive))
       {
         str8_list_pushf(scratch.arena, &fastpath_view_rules, "bin");
       }
-      else if(str8_match(comma_extension, str8_lit("o"), StringMatchFlag_CaseInsensitive))
+      else if(str8_match(comma_extension, str8_lit("o"), StringMatchFlags.CaseInsensitive))
       {
         str8_list_pushf(scratch.arena, &fastpath_view_rules, "oct");
       }

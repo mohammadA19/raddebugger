@@ -1543,13 +1543,13 @@ public static void w32_entry_point_caller(int argc, WCHAR **wargv)
   {
     String16 arg16 = str16_cstring((uint16 *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
-    if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive) ||
-       str8_match(arg8, str8_lit("-quiet"), StringMatchFlag_CaseInsensitive))
+    if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlags.CaseInsensitive) ||
+       str8_match(arg8, str8_lit("-quiet"), StringMatchFlags.CaseInsensitive))
     {
       win32_g_is_quiet = 1;
     }
-    if(str8_match(arg8, str8_lit("--large_pages"), StringMatchFlag_CaseInsensitive) ||
-       str8_match(arg8, str8_lit("-large_pages"), StringMatchFlag_CaseInsensitive))
+    if(str8_match(arg8, str8_lit("--large_pages"), StringMatchFlags.CaseInsensitive) ||
+       str8_match(arg8, str8_lit("-large_pages"), StringMatchFlags.CaseInsensitive))
     {
       arena_default_flags        = ArenaFlag_LargePages;
       arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);

@@ -216,7 +216,7 @@ lnk_make_full_path(Arena *arena, String8 work_dir, PathStyle system_path_style, 
   ProfBeginFunction();
   String8 result = str8(0,0);
   PathStyle path_style = path_style_from_str8(path);
-  if (path_style == PathStyle_Relative) {
+  if (path_style == PathStyle.Relative) {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
     str8_list_push(scratch.arena, &list, work_dir);
@@ -314,7 +314,7 @@ lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest
     String8 full_path = path_absolute_dst_from_relative_dst_src(scratch.arena, man_node->string, work_dir);
 
     // normalize slashes
-    full_path = path_convert_slashes(scratch.arena, full_path, PathStyle_UnixAbsolute);
+    full_path = path_convert_slashes(scratch.arena, full_path, PathStyle.UnixAbsolute);
 
     // push input to command line
     str8_list_pushf(scratch.arena, &cmd_line, "-manifest");
@@ -772,7 +772,7 @@ lnk_make_res_obj(TP_Context       *tp,
       LNK_RelocList reloc_list          = {0};
       LNK_RelocList res_data_reloc_list = {0};
       for (LNK_Reloc *reloc = sect->reloc_list.first; reloc != 0; reloc = reloc->next) {
-        B32 is_reloc_symbol = str8_match_lit("$R", reloc->symbol->name, StringMatchFlag_RightSideSloppy);
+        B32 is_reloc_symbol = str8_match_lit("$R", reloc->symbol->name, StringMatchFlags.RightSideSloppy);
         LNK_Reloc *dst;
         if (is_reloc_symbol) {
           dst = lnk_reloc_list_push(sect->arena, &res_data_reloc_list);
@@ -1189,7 +1189,7 @@ lnk_get_lib_name(String8 path)
   
   // strip extension
   String8 name_ext = str8_postfix(name, LIB_EXT.size);
-  if (str8_match(name_ext, LIB_EXT, StringMatchFlag_CaseInsensitive)) {
+  if (str8_match(name_ext, LIB_EXT, StringMatchFlags.CaseInsensitive)) {
     name = str8_chop(name, LIB_EXT.size);
   }
   
@@ -2467,7 +2467,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
       case COFF_WeakExt_SearchAlias: {
         lazy = lnk_symbol_table_search(task->symtab, LNK_SymbolScopeFlag_Lib, symbol->name);
         if (!lazy) {
-          if (str8_match_lit(".weak.", symbol->name, StringMatchFlag_RightSideSloppy)) {
+          if (str8_match_lit(".weak.", symbol->name, StringMatchFlags.RightSideSloppy)) {
             // TODO: Clang and MingGW encode extra info in alias
             // 
             // __attribute__((weak,alias("foo"))) void bar(void);
@@ -3534,7 +3534,7 @@ lnk_run(int argc, char **argv)
           }
           
           hash_table_push_path_u64(scratch.arena, loaded_obj_ht, input->dedup_id, 0);
-          if (!str8_match(input->dedup_id, full_path, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive)) {
+          if (!str8_match(input->dedup_id, full_path, StringMatchFlags.CaseInsensitive|StringMatchFlags.SlashInsensitive)) {
             hash_table_push_path_u64(scratch.arena, loaded_obj_ht, full_path, 0);
           }
           
@@ -3659,7 +3659,7 @@ lnk_run(int argc, char **argv)
             String8 path = input->string;
 
             if (input_source == LNK_InputSource_Default || input_source == LNK_InputSource_Obj) {
-              if (!str8_ends_with(path, str8_lit(".lib"), StringMatchFlag_CaseInsensitive)) {
+              if (!str8_ends_with(path, str8_lit(".lib"), StringMatchFlags.CaseInsensitive)) {
                 path = push_str8f(temp.arena, "%S.lib", path);
               }
               if (lnk_is_lib_disallowed(disallow_lib_ht, path)) {

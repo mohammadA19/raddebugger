@@ -773,13 +773,13 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
     entry_out->type       = DEMON_LNX_MapsEntryType_Null;
     entry_out->stack_tid  = 0;
     
-    if (str8_match(pathname, str8_lit("/"), StringMatchFlag_RightSideSloppy)){
+    if (str8_match(pathname, str8_lit("/"), StringMatchFlags.RightSideSloppy)){
       entry_out->type = DEMON_LNX_MapsEntryType_Path;
     } else if (str8_match(pathname, str8_lit("[heap]"), 0)){
       entry_out->type = DEMON_LNX_MapsEntryType_Heap;
     } else if (str8_match(pathname, str8_lit("[stack]"), 0)){
       entry_out->type = DEMON_LNX_MapsEntryType_Stack;
-    } else if (str8_match(pathname, str8_lit("[stack:"), StringMatchFlag_RightSideSloppy)){
+    } else if (str8_match(pathname, str8_lit("[stack:"), StringMatchFlags.RightSideSloppy)){
       entry_out->type = DEMON_LNX_MapsEntryType_Stack;
       String8 tid = str8_substr(pathname, r1u64(7, pathname.size - 8));
       entry_out->stack_tid = (pid_t)u64_from_str8(tid, 10);

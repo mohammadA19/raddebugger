@@ -86,15 +86,15 @@ d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps
   String8List result = {0};
   str8_list_push(arena, &result, file_path);
   Temp scratch = scratch_begin(&arena, 1);
-  PathStyle pth_style = PathStyle_Relative;
+  PathStyle pth_style = PathStyle.Relative;
   String8List pth_parts = path_normalized_list_from_string(scratch.arena, file_path, &pth_style);
   {
     for(U64 idx = 0; idx < path_maps->count; idx += 1)
     {
       //- rjf: unpack link
       D_PathMap *map = &path_maps->v[idx];
-      PathStyle src_style = PathStyle_Relative;
-      PathStyle dst_style = PathStyle_Relative;
+      PathStyle src_style = PathStyle.Relative;
+      PathStyle dst_style = PathStyle.Relative;
       String8List src_parts = path_normalized_list_from_string(scratch.arena, map->src, &src_style);
       String8List dst_parts = path_normalized_list_from_string(scratch.arena, map->dst, &dst_style);
       
@@ -108,7 +108,7 @@ d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps
         String8Node *pth_n = pth_parts.first;
         for(;dst_n != 0 && pth_n != 0; dst_n = dst_n->next, pth_n = pth_n->next)
         {
-          if(!str8_match(dst_n->string, pth_n->string, StringMatchFlag_CaseInsensitive))
+          if(!str8_match(dst_n->string, pth_n->string, StringMatchFlags.CaseInsensitive))
           {
             dst_redirects_to_pth = 0;
             break;

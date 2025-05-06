@@ -106,7 +106,7 @@ lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 strin
 internal LNK_CmdOption *
 lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8 value)
 {
-  String8List value_list = str8_split_by_string_chars(arena, value, str8_lit(","), StringSplitFlag_KeepEmpties);
+  String8List value_list = str8_split_by_string_chars(arena, value, str8_lit(","), StringSplitFlags.KeepEmpties);
   LNK_CmdOption *opt = lnk_cmd_line_push_option_list(arena, cmd_line, string, value_list);
   return opt;
 }
@@ -135,8 +135,8 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
 
   for (String8Node *arg_node = arg_list.first; arg_node != 0; arg_node = arg_node->next) {
     String8 arg = arg_node->string;
-    B32 is_option = str8_match_lit("/", arg, StringMatchFlag_RightSideSloppy) ||
-                    str8_match_lit("-", arg, StringMatchFlag_RightSideSloppy);
+    B32 is_option = str8_match_lit("/", arg, StringMatchFlags.RightSideSloppy) ||
+                    str8_match_lit("-", arg, StringMatchFlags.RightSideSloppy);
     if (is_option) {
       U64 param_start_pos = str8_find_needle(arg, 0, str8_lit(":"), 0);
       String8 option_name = str8_chop(arg, arg.size - param_start_pos);
@@ -166,7 +166,7 @@ lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
 {
   LNK_CmdOption *opt;
   for (opt = cmd_line.first_option; opt != NULL; opt = opt->next) {
-    if (str8_match(string, opt->string, StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(string, opt->string, StringMatchFlags.CaseInsensitive)) {
       break;
     }
   }
@@ -195,7 +195,7 @@ lnk_unwrap_rsp(Arena *arena, String8List arg_list)
   String8List result = {0};
 
   for (String8Node *curr = arg_list.first; curr != 0; curr = curr->next) {
-    B32 is_rsp = str8_match_lit("@", curr->string, StringMatchFlag_RightSideSloppy);
+    B32 is_rsp = str8_match_lit("@", curr->string, StringMatchFlags.RightSideSloppy);
     if (is_rsp) {
       // remove "@"
       String8 name = str8_skip(curr->string, 1);
@@ -252,7 +252,7 @@ lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line)
         }
 
         // push argument
-        B32 has_spaces = str8_find_needle(value_node->string, 0, str8_lit(" "), StringMatchFlag_CaseInsensitive) < value_node->string.size;
+        B32 has_spaces = str8_find_needle(value_node->string, 0, str8_lit(" "), StringMatchFlags.CaseInsensitive) < value_node->string.size;
         if (has_spaces) {
           str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(value_node->string));
         } else {

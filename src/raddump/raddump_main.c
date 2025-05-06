@@ -186,10 +186,10 @@ entry_point(CmdLine *cmdline)
       RD_Option opt = 0;
       for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
         String8 opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
-        if (str8_match(cmd->string, opt_name, StringMatchFlag_CaseInsensitive)) {
+        if (str8_match(cmd->string, opt_name, StringMatchFlags.CaseInsensitive)) {
           opt = g_rd_dump_option_map[opt_idx].opt;
           break;
-        } else if (str8_match_lit("all", cmd->string, StringMatchFlag_CaseInsensitive)) {
+        } else if (str8_match_lit("all", cmd->string, StringMatchFlags.CaseInsensitive)) {
           opt = ~0ull & ~(RD_Option_Help|RD_Option_Version);
           break;
         }

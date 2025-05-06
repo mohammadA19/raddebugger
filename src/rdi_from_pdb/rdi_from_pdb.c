@@ -125,7 +125,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
       for(String8Node *n = only_names.first; n != 0; n = n->next)
       {
         String8 string = n->string;
-#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlag_CaseInsensitive)) {result->flags |= P2R_ConvertFlag_##flag;}
+#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlags.CaseInsensitive)) {result->flags |= P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -135,7 +135,7 @@ Case("source_path_name_map",NormalSourcePathNameMap)\
       for(String8Node *n = omit_names.first; n != 0; n = n->next)
       {
         String8 string = n->string;
-#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlag_CaseInsensitive)) {result->flags &= ~P2R_ConvertFlag_##flag;}
+#define Case(str, flag) if(str8_match(string, str8_lit(str), StringMatchFlags.CaseInsensitive)) {result->flags &= ~P2R_ConvertFlag_##flag;}
         FlagNameMapXList;
 #undef Case
       }
@@ -619,7 +619,7 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
       //- rjf: produce obj name
       String8 obj_name = pdb_unit->obj_name;
       if(str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-         str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+         str8_match(obj_name, str8_lit("Import:"), StringMatchFlags.RightSideSloppy))
       {
         MemoryZeroStruct(&obj_name);
       }

@@ -193,7 +193,7 @@ hash_table_search_path(HashTable *ht, String8 path)
   Temp scratch = scratch_begin(0,0);
   String8 path_canon = path;
   path_canon = lower_from_str8(scratch.arena, path_canon);
-  path_canon = path_convert_slashes(scratch.arena, path_canon, PathStyle_UnixAbsolute);
+  path_canon = path_convert_slashes(scratch.arena, path_canon, PathStyle.UnixAbsolute);
   KeyValuePair *result = hash_table_search_string(ht, path_canon);
   scratch_end(scratch);
   return result;
