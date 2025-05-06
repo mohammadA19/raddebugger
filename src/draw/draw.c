@@ -5,24 +5,24 @@
 //~ rjf: Generated Code
 
 #define DR_StackPushImpl(name_upper, name_lower, type, val) \
-DR_Bucket *bucket = dr_top_bucket();\
-type old_val = bucket->top_##name_lower->v;\
-DR_##name_upper##Node *node = push_array(dr_thread_ctx->arena, DR_##name_upper##Node, 1);\
-node->v = (val);\
-SLLStackPush(bucket->top_##name_lower, node);\
-bucket->stack_gen += 1;\
+DR_Bucket* bucket = dr_top_bucket();\
+type old_val = bucket.top_##name_lower.v;\
+DR_##name_upper##Node* node = push_array(dr_thread_ctx.arena, DR_##name_upper##Node, 1);\
+node.v = (val);\
+SLLStackPush(bucket.top_##name_lower, node);\
+bucket.stack_gen += 1;\
 return old_val
 
 #define DR_StackPopImpl(name_upper, name_lower, type) \
-DR_Bucket *bucket = dr_top_bucket();\
-type popped_val = bucket->top_##name_lower->v;\
-SLLStackPop(bucket->top_##name_lower);\
-bucket->stack_gen += 1;\
+DR_Bucket* bucket = dr_top_bucket();\
+type popped_val = bucket.top_##name_lower.v;\
+SLLStackPop(bucket.top_##name_lower);\
+bucket.stack_gen += 1;\
 return popped_val
 
 #define DR_StackTopImpl(name_upper, name_lower, type) \
-DR_Bucket *bucket = dr_top_bucket();\
-type top_val = bucket->top_##name_lower->v;\
+DR_Bucket* bucket = dr_top_bucket();\
+type top_val = bucket.top_##name_lower.v;\
 return top_val
 
 #include "generated/draw.meta.c"
@@ -30,11 +30,10 @@ return top_val
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
-dr_hash_from_string(String8 string)
+public static uint64 dr_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  uint64 result = 5381;
+  for(uint64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -44,84 +43,79 @@ dr_hash_from_string(String8 string)
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions
 
-internal void
-dr_fancy_string_list_push(Arena *arena, DR_FancyStringList *list, DR_FancyString *str)
+public static void dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString* str)
 {
-  DR_FancyStringNode *n = push_array_no_zero(arena, DR_FancyStringNode, 1);
-  MemoryCopyStruct(&n->v, str);
-  SLLQueuePush(list->first, list->last, n);
-  list->node_count += 1;
-  list->total_size += str->string.size;
+  DR_FancyStringNode* n = push_array_no_zero(arena, DR_FancyStringNode, 1);
+  MemoryCopyStruct(&n.v, str);
+  SLLQueuePush(list.first, list.last, n);
+  list.node_count += 1;
+  list.total_size += str.string.size;
 }
 
-internal void
-dr_fancy_string_list_concat_in_place(DR_FancyStringList *dst, DR_FancyStringList *to_push)
+public static void dr_fancy_string_list_concat_in_place(DR_FancyStringList* dst, DR_FancyStringList* to_push)
 {
-  if(dst->last != 0 && to_push->first != 0)
+  if(dst.last != 0 && to_push.first != 0)
   {
-    dst->last->next = to_push->first;
-    dst->last = to_push->last;
-    dst->node_count += to_push->node_count;
-    dst->total_size += to_push->total_size;
+    dst.last.next = to_push.first;
+    dst.last = to_push.last;
+    dst.node_count += to_push.node_count;
+    dst.total_size += to_push.total_size;
   }
-  else if(to_push->first != 0)
+  else if(to_push.first != 0)
   {
     MemoryCopyStruct(dst, to_push);
   }
   MemoryZeroStruct(to_push);
 }
 
-internal String8
-dr_string_from_fancy_string_list(Arena *arena, DR_FancyStringList *list)
+public static String8 dr_string_from_fancy_string_list(Arena* arena, DR_FancyStringList* list)
 {
-  String8 result = {0};
-  result.size = list->total_size;
-  result.str = push_array_no_zero(arena, U8, result.size);
-  U64 idx = 0;
-  for(DR_FancyStringNode *n = list->first; n != 0; n = n->next)
+  String8 result = default;
+  result.size = list.total_size;
+  result.str = push_array_no_zero(arena, uint8, result.size);
+  uint64 idx = 0;
+  for(DR_FancyStringNode* n = list.first; n != 0; n = n.next)
   {
-    MemoryCopy(result.str+idx, n->v.string.str, n->v.string.size);
-    idx += n->v.string.size;
+    MemoryCopy(result.str+idx, n.v.string.str, n.v.string.size);
+    idx += n.v.string.size;
   }
   return result;
 }
 
-internal DR_FancyRunList
-dr_fancy_run_list_from_fancy_string_list(Arena *arena, F32 tab_size_px, FNT_RasterFlags flags, DR_FancyStringList *strs)
+public static DR_FancyRunList dr_fancy_run_list_from_fancy_string_list(Arena* arena, float tab_size_px, FNT_RasterFlags flags, DR_FancyStringList* strs)
 {
   ProfBeginFunction();
-  DR_FancyRunList run_list = {0};
-  F32 base_align_px = 0;
-  for(DR_FancyStringNode *n = strs->first; n != 0; n = n->next)
+  DR_FancyRunList run_list = default;
+  float base_align_px = 0;
+  for(DR_FancyStringNode* n = strs.first; n != 0; n = n.next)
   {
-    DR_FancyRunNode *dst_n = push_array(arena, DR_FancyRunNode, 1);
-    dst_n->v.run = fnt_push_run_from_string(arena, n->v.font, n->v.size, base_align_px, tab_size_px, flags, n->v.string);
-    dst_n->v.color = n->v.color;
-    dst_n->v.underline_thickness = n->v.underline_thickness;
-    dst_n->v.strikethrough_thickness = n->v.strikethrough_thickness;
+    DR_FancyRunNode* dst_n = push_array(arena, DR_FancyRunNode, 1);
+    dst_n.v.run = fnt_push_run_from_string(arena, n.v.font, n.v.size, base_align_px, tab_size_px, flags, n.v.string);
+    dst_n.v.color = n.v.color;
+    dst_n.v.underline_thickness = n.v.underline_thickness;
+    dst_n.v.strikethrough_thickness = n.v.strikethrough_thickness;
     SLLQueuePush(run_list.first, run_list.last, dst_n);
     run_list.node_count += 1;
-    run_list.dim.x += dst_n->v.run.dim.x;
-    run_list.dim.y = Max(run_list.dim.y, dst_n->v.run.dim.y);
-    base_align_px += dst_n->v.run.dim.x;
+    run_list.dim.x += dst_n.v.run.dim.x;
+    run_list.dim.y = Max(run_list.dim.y, dst_n.v.run.dim.y);
+    base_align_px += dst_n.v.run.dim.x;
   }
   ProfEnd();
   return run_list;
 }
 
-internal DR_FancyRunList
-dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src)
+public static DR_FancyRunList dr_fancy_run_list_copy(Arena* arena, DR_FancyRunList* src)
 {
-  DR_FancyRunList dst = {0};
-  for(DR_FancyRunNode *src_n = src->first; src_n != 0; src_n = src_n->next)
+  DR_FancyRunList dst = default;
+  for(DR_FancyRunNode* src_n = src.first; src_n != 0; src_n = src_n.next)
   {
-    DR_FancyRunNode *dst_n = push_array(arena, DR_FancyRunNode, 1);
+    DR_FancyRunNode* dst_n = push_array(arena, DR_FancyRunNode, 1);
     SLLQueuePush(dst.first, dst.last, dst_n);
-    MemoryCopyStruct(&dst_n->v, &src_n->v);
-    dst_n->v.run.pieces = fnt_piece_array_copy(arena, &src_n->v.run.pieces);
+    MemoryCopyStruct(&dst_n.v, &src_n.v);
+    dst_n.v.run.pieces = fnt_piece_array_copy(arena, &src_n.v.run.pieces);
     dst.node_count += 1;
   }
-  dst.dim = src->dim;
+  dst.dim = src.dim;
   return dst;
 }
 
@@ -130,25 +124,23 @@ dr_fancy_run_list_copy(Arena *arena, DR_FancyRunList *src)
 //
 // (Frame boundaries)
 
-internal void
-dr_begin_frame(void)
+public static void dr_begin_frame()
 {
   if(dr_thread_ctx == 0)
   {
-    Arena *arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(8));
+    Arena* arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(8));
     dr_thread_ctx = push_array(arena, DR_ThreadCtx, 1);
-    dr_thread_ctx->arena = arena;
-    dr_thread_ctx->arena_frame_start_pos = arena_pos(arena);
+    dr_thread_ctx.arena = arena;
+    dr_thread_ctx.arena_frame_start_pos = arena_pos(arena);
   }
-  arena_pop_to(dr_thread_ctx->arena, dr_thread_ctx->arena_frame_start_pos);
-  dr_thread_ctx->free_bucket_selection = 0;
-  dr_thread_ctx->top_bucket = 0;
+  arena_pop_to(dr_thread_ctx.arena, dr_thread_ctx.arena_frame_start_pos);
+  dr_thread_ctx.free_bucket_selection = 0;
+  dr_thread_ctx.top_bucket = 0;
 }
 
-internal void
-dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
+public static void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket* bucket)
 {
-  r_window_submit(os_window, r_window, &bucket->passes);
+  r_window_submit(os_window, r_window, &bucket.passes);
 }
 
 ////////////////////////////////
@@ -156,45 +148,41 @@ dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 //
 // (Bucket: Handle to sequence of many render passes, constructed by this layer)
 
-internal DR_Bucket *
-dr_bucket_make(void)
+public static DR_Bucket* dr_bucket_make()
 {
-  DR_Bucket *bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
+  DR_Bucket* bucket = push_array(dr_thread_ctx.arena, DR_Bucket, 1);
   DR_BucketStackInits(bucket);
   return bucket;
 }
 
-internal void
-dr_push_bucket(DR_Bucket *bucket)
+public static void dr_push_bucket(DR_Bucket* bucket)
 {
-  DR_BucketSelectionNode *node = dr_thread_ctx->free_bucket_selection;
+  DR_BucketSelectionNode* node = dr_thread_ctx.free_bucket_selection;
   if(node)
   {
-    SLLStackPop(dr_thread_ctx->free_bucket_selection);
+    SLLStackPop(dr_thread_ctx.free_bucket_selection);
   }
   else
   {
-    node = push_array(dr_thread_ctx->arena, DR_BucketSelectionNode, 1);
+    node = push_array(dr_thread_ctx.arena, DR_BucketSelectionNode, 1);
   }
-  SLLStackPush(dr_thread_ctx->top_bucket, node);
-  node->bucket = bucket;
+  SLLStackPush(dr_thread_ctx.top_bucket, node);
+  node.bucket = bucket;
 }
 
-internal void
-dr_pop_bucket(void)
+public static void dr_pop_bucket()
 {
-  DR_BucketSelectionNode *node = dr_thread_ctx->top_bucket;
-  SLLStackPop(dr_thread_ctx->top_bucket);
-  SLLStackPush(dr_thread_ctx->free_bucket_selection, node);
+  DR_BucketSelectionNode* node = dr_thread_ctx.top_bucket;
+  SLLStackPop(dr_thread_ctx.top_bucket);
+  SLLStackPush(dr_thread_ctx.free_bucket_selection, node);
 }
 
-internal DR_Bucket *
-dr_top_bucket(void)
+public static DR_Bucket* dr_top_bucket()
 {
-  DR_Bucket *bucket = 0;
-  if(dr_thread_ctx->top_bucket != 0)
+  DR_Bucket* bucket = 0;
+  if(dr_thread_ctx.top_bucket != 0)
   {
-    bucket = dr_thread_ctx->top_bucket->bucket;
+    bucket = dr_thread_ctx.top_bucket.bucket;
   }
   return bucket;
 }
@@ -213,167 +201,164 @@ dr_top_bucket(void)
 
 //- rjf: rectangles
 
-internal inline R_Rect2DInst *
-dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+[Inline]
+public static R_Rect2DInst* dr_rect(Rng2F32 dst, Vec4F32 color, float corner_radius, float border_thickness, float edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
-  R_PassParams_UI *params = pass->params_ui;
-  R_BatchGroup2DList *rects = &params->rects;
-  R_BatchGroup2DNode *node = rects->last;
-  if(node == 0 || bucket->stack_gen != bucket->last_cmd_stack_gen)
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket.passes, R_PassKind_UI);
+  R_PassParams_UI* params = pass.params_ui;
+  R_BatchGroup2DList* rects = &params.rects;
+  R_BatchGroup2DNode* node = rects.last;
+  if(node == 0 || bucket.stack_gen != bucket.last_cmd_stack_gen)
   {
     node = push_array(arena, R_BatchGroup2DNode, 1);
-    SLLQueuePush(rects->first, rects->last, node);
-    rects->count += 1;
-    node->batches = r_batch_list_make(sizeof(R_Rect2DInst));
-    node->params.tex = r_handle_zero();
-    node->params.tex_sample_kind = bucket->top_tex2d_sample_kind->v;
-    node->params.xform           = bucket->top_xform2d->v;
-    node->params.clip            = bucket->top_clip->v;
-    node->params.transparency    = bucket->top_transparency->v;
+    SLLQueuePush(rects.first, rects.last, node);
+    rects.count += 1;
+    node.batches = r_batch_list_make(sizeof(R_Rect2DInst));
+    node.params.tex = r_handle_zero();
+    node.params.tex_sample_kind = bucket.top_tex2d_sample_kind.v;
+    node.params.xform           = bucket.top_xform2d.v;
+    node.params.clip            = bucket.top_clip.v;
+    node.params.transparency    = bucket.top_transparency.v;
   }
-  R_Rect2DInst *inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
-  inst->dst = dst;
-  inst->src = r2f32p(0, 0, 0, 0);
-  inst->colors[Corner_00] = color;
-  inst->colors[Corner_01] = color;
-  inst->colors[Corner_10] = color;
-  inst->colors[Corner_11] = color;
-  inst->corner_radii[Corner_00] = corner_radius;
-  inst->corner_radii[Corner_01] = corner_radius;
-  inst->corner_radii[Corner_10] = corner_radius;
-  inst->corner_radii[Corner_11] = corner_radius;
-  inst->border_thickness = border_thickness;
-  inst->edge_softness = edge_softness;
-  inst->white_texture_override = 1.f;
-  bucket->last_cmd_stack_gen = bucket->stack_gen;
+  R_Rect2DInst* inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node.batches, 256);
+  inst.dst = dst;
+  inst.src = r2f32p(0, 0, 0, 0);
+  inst.colors[Corner_00] = color;
+  inst.colors[Corner_01] = color;
+  inst.colors[Corner_10] = color;
+  inst.colors[Corner_11] = color;
+  inst.corner_radii[Corner_00] = corner_radius;
+  inst.corner_radii[Corner_01] = corner_radius;
+  inst.corner_radii[Corner_10] = corner_radius;
+  inst.corner_radii[Corner_11] = corner_radius;
+  inst.border_thickness = border_thickness;
+  inst.edge_softness = edge_softness;
+  inst.white_texture_override = 1.f;
+  bucket.last_cmd_stack_gen = bucket.stack_gen;
   return inst;
 }
 
 //- rjf: images
 
-internal inline R_Rect2DInst *
-dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+[Inline]
+public static R_Rect2DInst* dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, float corner_radius, float border_thickness, float edge_softness)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_UI);
-  R_PassParams_UI *params = pass->params_ui;
-  R_BatchGroup2DList *rects = &params->rects;
-  R_BatchGroup2DNode *node = rects->last;
-  if(node != 0 && bucket->stack_gen == bucket->last_cmd_stack_gen && r_handle_match(node->params.tex, r_handle_zero()))
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket.passes, R_PassKind_UI);
+  R_PassParams_UI* params = pass.params_ui;
+  R_BatchGroup2DList* rects = &params.rects;
+  R_BatchGroup2DNode* node = rects.last;
+  if(node != 0 && bucket.stack_gen == bucket.last_cmd_stack_gen && r_handle_match(node.params.tex, r_handle_zero()))
   {
-    node->params.tex = texture;
+    node.params.tex = texture;
   }
-  else if(node == 0 || bucket->stack_gen != bucket->last_cmd_stack_gen || !r_handle_match(texture, node->params.tex))
+  else if(node == 0 || bucket.stack_gen != bucket.last_cmd_stack_gen || !r_handle_match(texture, node.params.tex))
   {
     node = push_array(arena, R_BatchGroup2DNode, 1);
-    SLLQueuePush(rects->first, rects->last, node);
-    rects->count += 1;
-    node->batches = r_batch_list_make(sizeof(R_Rect2DInst));
-    node->params.tex             = texture;
-    node->params.tex_sample_kind = bucket->top_tex2d_sample_kind->v;
-    node->params.xform           = bucket->top_xform2d->v;
-    node->params.clip            = bucket->top_clip->v;
-    node->params.transparency    = bucket->top_transparency->v;
+    SLLQueuePush(rects.first, rects.last, node);
+    rects.count += 1;
+    node.batches = r_batch_list_make(sizeof(R_Rect2DInst));
+    node.params.tex             = texture;
+    node.params.tex_sample_kind = bucket.top_tex2d_sample_kind.v;
+    node.params.xform           = bucket.top_xform2d.v;
+    node.params.clip            = bucket.top_clip.v;
+    node.params.transparency    = bucket.top_transparency.v;
   }
-  R_Rect2DInst *inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
-  inst->dst = dst;
-  inst->src = src;
-  inst->colors[Corner_00] = color;
-  inst->colors[Corner_01] = color;
-  inst->colors[Corner_10] = color;
-  inst->colors[Corner_11] = color;
-  inst->corner_radii[Corner_00] = corner_radius;
-  inst->corner_radii[Corner_01] = corner_radius;
-  inst->corner_radii[Corner_10] = corner_radius;
-  inst->corner_radii[Corner_11] = corner_radius;
-  inst->border_thickness = border_thickness;
-  inst->edge_softness = edge_softness;
-  inst->white_texture_override = 0.f;
-  bucket->last_cmd_stack_gen = bucket->stack_gen;
+  R_Rect2DInst* inst = (R_Rect2DInst *)r_batch_list_push_inst(arena, &node.batches, 256);
+  inst.dst = dst;
+  inst.src = src;
+  inst.colors[Corner_00] = color;
+  inst.colors[Corner_01] = color;
+  inst.colors[Corner_10] = color;
+  inst.colors[Corner_11] = color;
+  inst.corner_radii[Corner_00] = corner_radius;
+  inst.corner_radii[Corner_01] = corner_radius;
+  inst.corner_radii[Corner_10] = corner_radius;
+  inst.corner_radii[Corner_11] = corner_radius;
+  inst.border_thickness = border_thickness;
+  inst.edge_softness = edge_softness;
+  inst.white_texture_override = 0.f;
+  bucket.last_cmd_stack_gen = bucket.stack_gen;
   return inst;
 }
 
 //- rjf: blurs
 
-internal R_PassParams_Blur *
-dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
+public static R_PassParams_Blur* dr_blur(Rng2F32 rect, float blur_size, float corner_radius)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Blur);
-  R_PassParams_Blur *params = pass->params_blur;
-  params->rect = rect;
-  params->clip = dr_top_clip();
-  params->blur_size = blur_size;
-  params->corner_radii[Corner_00] = corner_radius;
-  params->corner_radii[Corner_01] = corner_radius;
-  params->corner_radii[Corner_10] = corner_radius;
-  params->corner_radii[Corner_11] = corner_radius;
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket.passes, R_PassKind_Blur);
+  R_PassParams_Blur* params = pass.params_blur;
+  params.rect = rect;
+  params.clip = dr_top_clip();
+  params.blur_size = blur_size;
+  params.corner_radii[Corner_00] = corner_radius;
+  params.corner_radii[Corner_01] = corner_radius;
+  params.corner_radii[Corner_10] = corner_radius;
+  params.corner_radii[Corner_11] = corner_radius;
   return params;
 }
 
 //- rjf: 3d rendering pass params
 
-internal R_PassParams_Geo3D *
-dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
+public static R_PassParams_Geo3D* dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
-  R_PassParams_Geo3D *params = pass->params_geo3d;
-  params->viewport = viewport;
-  params->view = view;
-  params->projection = projection;
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket.passes, R_PassKind_Geo3D);
+  R_PassParams_Geo3D* params = pass.params_geo3d;
+  params.viewport = viewport;
+  params.view = view;
+  params.projection = projection;
   return params;
 }
 
 //- rjf: meshes
 
-internal R_Mesh3DInst *
-dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
+public static R_Mesh3DInst* dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *bucket = dr_top_bucket();
-  R_Pass *pass = r_pass_from_kind(arena, &bucket->passes, R_PassKind_Geo3D);
-  R_PassParams_Geo3D *params = pass->params_geo3d;
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* bucket = dr_top_bucket();
+  R_Pass* pass = r_pass_from_kind(arena, &bucket.passes, R_PassKind_Geo3D);
+  R_PassParams_Geo3D* params = pass.params_geo3d;
   
   // rjf: mesh batch map not made yet -> make
-  if(params->mesh_batches.slots_count == 0)
+  if(params.mesh_batches.slots_count == 0)
   {
-    params->mesh_batches.slots_count = 64;
-    params->mesh_batches.slots = push_array(arena, R_BatchGroup3DMapNode *, params->mesh_batches.slots_count);
+    params.mesh_batches.slots_count = 64;
+    params.mesh_batches.slots = push_array(arena, R_BatchGroup3DMapNode *, params.mesh_batches.slots_count);
   }
   
   // rjf: hash batch group 3d params
-  U64 hash = 0;
-  U64 slot_idx = 0;
+  uint64 hash = 0;
+  uint64 slot_idx = 0;
   {
-    U64 buffer[] =
+    uint64[] buffer =
     {
       mesh_vertices.u64[0],
       mesh_vertices.u64[1],
       mesh_indices.u64[0],
       mesh_indices.u64[1],
-      (U64)mesh_geo_topology,
-      (U64)mesh_geo_vertex_flags,
+      (uint64)mesh_geo_topology,
+      (uint64)mesh_geo_vertex_flags,
       albedo_tex.u64[0],
       albedo_tex.u64[1],
-      (U64)dr_top_tex2d_sample_kind(),
+      (uint64)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
-    slot_idx = hash%params->mesh_batches.slots_count;
+    hash = dr_hash_from_string(str8((uint8 *)buffer, sizeof(buffer)));
+    slot_idx = hash%params.mesh_batches.slots_count;
   }
   
   // rjf: map hash -> existing batch group node
-  R_BatchGroup3DMapNode *node = 0;
+  R_BatchGroup3DMapNode* node = 0;
   {
-    for(R_BatchGroup3DMapNode *n = params->mesh_batches.slots[slot_idx]; n != 0; n = n->next)
+    for(R_BatchGroup3DMapNode* n = params.mesh_batches.slots[slot_idx]; n != 0; n = n.next)
     {
-      if(n->hash == hash)
+      if(n.hash == hash)
       {
         node = n;
         break;
@@ -385,63 +370,62 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   if(node == 0)
   {
     node = push_array(arena, R_BatchGroup3DMapNode, 1);
-    SLLStackPush(params->mesh_batches.slots[slot_idx], node);
-    node->hash = hash;
-    node->batches = r_batch_list_make(sizeof(R_Mesh3DInst));
-    node->params.mesh_vertices = mesh_vertices;
-    node->params.mesh_indices = mesh_indices;
-    node->params.mesh_geo_topology = mesh_geo_topology;
-    node->params.mesh_geo_vertex_flags = mesh_geo_vertex_flags;
-    node->params.albedo_tex = albedo_tex;
-    node->params.albedo_tex_sample_kind = dr_top_tex2d_sample_kind();
-    node->params.xform = mat_4x4f32(1.f);
+    SLLStackPush(params.mesh_batches.slots[slot_idx], node);
+    node.hash = hash;
+    node.batches = r_batch_list_make(sizeof(R_Mesh3DInst));
+    node.params.mesh_vertices = mesh_vertices;
+    node.params.mesh_indices = mesh_indices;
+    node.params.mesh_geo_topology = mesh_geo_topology;
+    node.params.mesh_geo_vertex_flags = mesh_geo_vertex_flags;
+    node.params.albedo_tex = albedo_tex;
+    node.params.albedo_tex_sample_kind = dr_top_tex2d_sample_kind();
+    node.params.xform = mat_4x4f32(1.f);
   }
   
   // rjf: push new instance to batch group
-  R_Mesh3DInst *inst = (R_Mesh3DInst *)r_batch_list_push_inst(arena, &node->batches, 256);
-  inst->xform = inst_xform;
+  R_Mesh3DInst* inst = (R_Mesh3DInst *)r_batch_list_push_inst(arena, &node.batches, 256);
+  inst.xform = inst_xform;
   return inst;
 }
 
 //- rjf: collating one pre-prepped bucket into parent bucket
 
-internal void
-dr_sub_bucket(DR_Bucket *bucket)
+public static void dr_sub_bucket(DR_Bucket* bucket)
 {
-  Arena *arena = dr_thread_ctx->arena;
-  DR_Bucket *src = bucket;
-  DR_Bucket *dst = dr_top_bucket();
+  Arena* arena = dr_thread_ctx.arena;
+  DR_Bucket* src = bucket;
+  DR_Bucket* dst = dr_top_bucket();
   Rng2F32 dst_clip = dr_top_clip();
   B32 dst_clip_is_set = !(dst_clip.x0 == 0 && dst_clip.x1 == 0 &&
                           dst_clip.y0 == 0 && dst_clip.y1 == 0);
-  for(R_PassNode *n = src->passes.first; n != 0; n = n->next)
+  for(R_PassNode* n = src.passes.first; n != 0; n = n.next)
   {
-    R_Pass *src_pass = &n->v;
-    R_Pass *dst_pass = r_pass_from_kind(arena, &dst->passes, src_pass->kind);
-    switch(dst_pass->kind)
+    R_Pass* src_pass = &n.v;
+    R_Pass* dst_pass = r_pass_from_kind(arena, &dst.passes, src_pass.kind);
+    switch(dst_pass.kind)
     {
-      default:{dst_pass->params = src_pass->params;}break;
+      default:{dst_pass.params = src_pass.params;}break;
       case R_PassKind_UI:
       {
-        R_PassParams_UI *src_ui = src_pass->params_ui;
-        R_PassParams_UI *dst_ui = dst_pass->params_ui;
-        for(R_BatchGroup2DNode *src_group_n = src_ui->rects.first;
+        R_PassParams_UI* src_ui = src_pass.params_ui;
+        R_PassParams_UI* dst_ui = dst_pass.params_ui;
+        for(R_BatchGroup2DNode* src_group_n = src_ui.rects.first;
             src_group_n != 0;
-            src_group_n = src_group_n->next)
+            src_group_n = src_group_n.next)
         {
-          R_BatchGroup2DNode *dst_group_n = push_array(arena, R_BatchGroup2DNode, 1);
-          SLLQueuePush(dst_ui->rects.first, dst_ui->rects.last, dst_group_n);
-          dst_ui->rects.count += 1;
-          MemoryCopyStruct(&dst_group_n->params, &src_group_n->params);
-          dst_group_n->batches = src_group_n->batches;
-          dst_group_n->params.xform = dr_top_xform2d();
+          R_BatchGroup2DNode* dst_group_n = push_array(arena, R_BatchGroup2DNode, 1);
+          SLLQueuePush(dst_ui.rects.first, dst_ui.rects.last, dst_group_n);
+          dst_ui.rects.count += 1;
+          MemoryCopyStruct(&dst_group_n.params, &src_group_n.params);
+          dst_group_n.batches = src_group_n.batches;
+          dst_group_n.params.xform = dr_top_xform2d();
           if(dst_clip_is_set)
           {
-            B32 clip_is_set = !(dst_group_n->params.clip.x0 == 0 &&
-                                dst_group_n->params.clip.y0 == 0 &&
-                                dst_group_n->params.clip.x1 == 0 &&
-                                dst_group_n->params.clip.y1 == 0);
-            dst_group_n->params.clip = clip_is_set ? intersect_2f32(dst_clip, dst_group_n->params.clip) : dst_clip;
+            B32 clip_is_set = !(dst_group_n.params.clip.x0 == 0 &&
+                                dst_group_n.params.clip.y0 == 0 &&
+                                dst_group_n.params.clip.x1 == 0 &&
+                                dst_group_n.params.clip.y1 == 0);
+            dst_group_n.params.clip = clip_is_set ? intersect_2f32(dst_clip, dst_group_n.params.clip) : dst_clip;
           }
         }
       }break;
@@ -454,71 +438,70 @@ dr_sub_bucket(DR_Bucket *bucket)
 
 //- rjf: text
 
-internal void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run trailer_run)
+public static void dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList* list, float max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
   //- rjf: total advance > max? -> enable trailer
-  B32 trailer_enabled = (list->dim.x > max_x && trailer_run.dim.x < max_x);
+  B32 trailer_enabled = (list.dim.x > max_x && trailer_run.dim.x < max_x);
   
   //- rjf: draw runs
-  F32 advance = 0;
+  float advance = 0;
   B32 trailer_found = 0;
-  Vec4F32 last_color = {0};
-  U64 byte_off = 0;
-  for(DR_FancyRunNode *n = list->first; n != 0; n = n->next)
+  Vec4F32 last_color = default;
+  uint64 byte_off = 0;
+  for(DR_FancyRunNode* n = list.first; n != 0; n = n.next)
   {
-    DR_FancyRun *fr = &n->v;
-    Rng1F32 pixel_range = {0};
+    DR_FancyRun* fr = &n.v;
+    Rng1F32 pixel_range = default;
     {
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
-    FNT_Piece *piece_first = fr->run.pieces.v;
-    FNT_Piece *piece_opl = piece_first + fr->run.pieces.count;
-    F32 pre_advance = advance;
-    last_color = fr->color;
-    for(FNT_Piece *piece = piece_first;
+    FNT_Piece* piece_first = fr.run.pieces.v;
+    FNT_Piece* piece_opl = piece_first + fr.run.pieces.count;
+    float pre_advance = advance;
+    last_color = fr.color;
+    for(FNT_Piece* piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
-      if(trailer_enabled && advance + piece->advance > (max_x - trailer_run.dim.x))
+      if(trailer_enabled && advance + piece.advance > (max_x - trailer_run.dim.x))
       {
         trailer_found = 1;
         break;
       }
-      if(!trailer_enabled && advance + piece->advance > max_x)
+      if(!trailer_enabled && advance + piece.advance > max_x)
       {
         goto end_draw;
       }
-      R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+      R_Handle texture = piece.texture;
+      Rng2F32 src = r2f32p((float)piece.subrect.x0, (float)piece.subrect.y0, (float)piece.subrect.x1, (float)piece.subrect.y1);
       Vec2F32 size = dim_2f32(src);
-      Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
-                           p.y + piece->offset.y,
-                           p.x + piece->offset.x + advance + size.x,
-                           p.y + piece->offset.y + size.y);
+      Rng2F32 dst = r2f32p(p.x + piece.offset.x + advance,
+                           p.y + piece.offset.y,
+                           p.x + piece.offset.x + advance + size.x,
+                           p.y + piece.offset.y + size.y);
       if(!r_handle_match(texture, r_handle_zero()))
       {
-        dr_img(dst, src, texture, fr->color, 0, 0, 0);
+        dr_img(dst, src, texture, fr.color, 0, 0, 0);
         //dr_rect(dst, v4f32(0, 1, 0, 0.5f), 0, 1.f, 0.f);
       }
-      advance += piece->advance;
+      advance += piece.advance;
       pixel_range.min = Min(pre_advance, pixel_range.min);
       pixel_range.max = Max(advance, pixel_range.max);
     }
-    if(fr->underline_thickness > 0)
+    if(fr.underline_thickness > 0)
     {
       dr_rect(r2f32p(p.x + pixel_range.min,
-                     p.y+fr->run.descent+fr->run.descent/8,
+                     p.y+fr.run.descent+fr.run.descent/8,
                      p.x + pixel_range.max,
-                     p.y+fr->run.descent+fr->run.descent/8+fr->underline_thickness),
-              fr->color, 0, 0, 0.8f);
+                     p.y+fr.run.descent+fr.run.descent/8+fr.underline_thickness),
+              fr.color, 0, 0, 0.8f);
     }
-    if(fr->strikethrough_thickness > 0)
+    if(fr.strikethrough_thickness > 0)
     {
-      dr_rect(r2f32p(p.x+pre_advance, p.y+fr->run.descent - fr->run.ascent/2, p.x+advance, p.y+fr->run.descent - fr->run.ascent/2 + fr->strikethrough_thickness), fr->color, 0, 0, 1.f);
+      dr_rect(r2f32p(p.x+pre_advance, p.y+fr.run.descent - fr.run.ascent/2, p.x+advance, p.y+fr.run.descent - fr.run.ascent/2 + fr.strikethrough_thickness), fr.color, 0, 0, 1.f);
     }
     if(trailer_found)
     {
@@ -530,67 +513,66 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FNT_Run
   //- rjf: draw trailer
   if(trailer_found)
   {
-    FNT_Piece *piece_first = trailer_run.pieces.v;
-    FNT_Piece *piece_opl = piece_first + trailer_run.pieces.count;
-    F32 pre_advance = advance;
+    FNT_Piece* piece_first = trailer_run.pieces.v;
+    FNT_Piece* piece_opl = piece_first + trailer_run.pieces.count;
+    float pre_advance = advance;
     Vec4F32 trailer_piece_color = last_color;
-    for(FNT_Piece *piece = piece_first;
+    for(FNT_Piece* piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
-      R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+      R_Handle texture = piece.texture;
+      Rng2F32 src = r2f32p((float)piece.subrect.x0, (float)piece.subrect.y0, (float)piece.subrect.x1, (float)piece.subrect.y1);
       Vec2F32 size = dim_2f32(src);
-      Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
-                           p.y + piece->offset.y,
-                           p.x + piece->offset.x + advance + size.x,
-                           p.y + piece->offset.y + size.y);
+      Rng2F32 dst = r2f32p(p.x + piece.offset.x + advance,
+                           p.y + piece.offset.y,
+                           p.x + piece.offset.x + advance + size.x,
+                           p.y + piece.offset.y + size.y);
       if(!r_handle_match(texture, r_handle_zero()))
       {
         dr_img(dst, src, texture, trailer_piece_color, 0, 0, 0);
         trailer_piece_color.w *= 0.5f;
       }
-      advance += piece->advance;
+      advance += piece.advance;
     }
   }
   
   ProfEnd();
 }
 
-internal void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+public static void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList* list, float max_x, FuzzyMatchRangeList* ranges, Vec4F32 color)
 {
-  for(FuzzyMatchRangeNode *match_n = ranges->first; match_n != 0; match_n = match_n->next)
+  for(FuzzyMatchRangeNode* match_n = ranges.first; match_n != 0; match_n = match_n.next)
   {
-    Rng1U64 byte_range = match_n->range;
-    Rng1F32 pixel_range = {0};
+    Rng1U64 byte_range = match_n.range;
+    Rng1F32 pixel_range = default;
     {
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
-    F32 last_piece_end_pad = 0;
-    U64 byte_off = 0;
-    F32 advance = 0;
-    F32 ascent = 0;
-    F32 descent = 0;
-    for(DR_FancyRunNode *fr_n = list->first; fr_n != 0; fr_n = fr_n->next)
+    float last_piece_end_pad = 0;
+    uint64 byte_off = 0;
+    float advance = 0;
+    float ascent = 0;
+    float descent = 0;
+    for(DR_FancyRunNode* fr_n = list.first; fr_n != 0; fr_n = fr_n.next)
     {
-      DR_FancyRun *fr = &fr_n->v;
-      FNT_Run *run = &fr->run;
-      ascent = run->ascent;
-      descent = run->descent;
-      for(U64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
+      DR_FancyRun* fr = &fr_n.v;
+      FNT_Run* run = &fr.run;
+      ascent = run.ascent;
+      descent = run.descent;
+      for(uint64 piece_idx = 0; piece_idx < run.pieces.count; piece_idx += 1)
       {
-        FNT_Piece *piece = &run->pieces.v[piece_idx];
+        FNT_Piece* piece = &run.pieces.v[piece_idx];
         if(contains_1u64(byte_range, byte_off))
         {
-          F32 pre_advance  = advance + piece->offset.x;
-          F32 post_advance = advance + piece->advance;
+          float pre_advance  = advance + piece.offset.x;
+          float post_advance = advance + piece.advance;
           pixel_range.min = Min(pre_advance,  pixel_range.min);
           pixel_range.max = Max(post_advance, pixel_range.max);
         }
-        byte_off += piece->decode_size;
-        advance += piece->advance;
+        byte_off += piece.decode_size;
+        advance += piece.advance;
       }
     }
     if(pixel_range.min < pixel_range.max)
@@ -598,7 +580,7 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x
       Rng2F32 rect = r2f32p(p.x + pixel_range.min - ascent/4.f,
                             p.y - descent - ascent - ascent/8.f,
                             p.x + pixel_range.max + ascent/4.f,
-                            p.y - descent - ascent + ascent/8.f + list->dim.y);
+                            p.y - descent - ascent + ascent/8.f + list.dim.y);
       rect.x0 = Min(rect.x0, p.x+max_x);
       rect.x1 = Min(rect.x1, p.x+max_x);
       dr_rect(rect, color, (descent+ascent)/4.f, 0, 1.f);
@@ -606,35 +588,33 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FancyRunList *list, F32 max_x
   }
 }
 
-internal void
-dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
+public static void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 {
   ProfBeginFunction();
-  F32 advance = 0;
-  FNT_Piece *piece_first = run.pieces.v;
-  FNT_Piece *piece_opl = piece_first + run.pieces.count;
-  for(FNT_Piece *piece = piece_first;
+  float advance = 0;
+  FNT_Piece* piece_first = run.pieces.v;
+  FNT_Piece* piece_opl = piece_first + run.pieces.count;
+  for(FNT_Piece* piece = piece_first;
       piece < piece_opl;
       piece += 1)
   {
-    R_Handle texture = piece->texture;
-    Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+    R_Handle texture = piece.texture;
+    Rng2F32 src = r2f32p((float)piece.subrect.x0, (float)piece.subrect.y0, (float)piece.subrect.x1, (float)piece.subrect.y1);
     Vec2F32 size = dim_2f32(src);
-    Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
-                         p.y + piece->offset.y,
-                         p.x + piece->offset.x + advance + size.x,
-                         p.y + piece->offset.y + size.y);
+    Rng2F32 dst = r2f32p(p.x + piece.offset.x + advance,
+                         p.y + piece.offset.y,
+                         p.x + piece.offset.x + advance + size.x,
+                         p.y + piece.offset.y + size.y);
     if(size.x != 0 && size.y != 0 && !r_handle_match(texture, r_handle_zero()))
     {
       dr_img(dst, src, texture, color, 0, 0, 0);
     }
-    advance += piece->advance;
+    advance += piece.advance;
   }
   ProfEnd();
 }
 
-internal void
-dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+public static void dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_push_run_from_string(scratch.arena, font, size, base_align_px, tab_size_px, flags, string);
