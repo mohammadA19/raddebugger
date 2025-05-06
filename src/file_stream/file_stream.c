@@ -73,7 +73,7 @@ public static U128 fs_hash_from_path_range(String8 path, Rng1U64 range, uint64 e
   U128 key = fs_big_hash_from_string_range(path, range);
   
   //- rjf: loop through key -> hash history; obtain most recent hash for this key
-  U128 result = {0};
+  U128 result = default;
   for(uint64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
     result = hs_hash_from_key(key, rewind_idx);
@@ -288,8 +288,8 @@ ASYNC_WORK_DEF(fs_stream_work)
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: get next request
-  Rng1U64 range = {0};
-  String8 path = {0};
+  Rng1U64 range = default;
+  String8 path = default;
   fs_u2s_dequeue_req(scratch.arena, &range, &path);
   
   //- rjf: unpack request
