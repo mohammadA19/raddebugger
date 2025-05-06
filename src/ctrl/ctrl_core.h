@@ -31,27 +31,27 @@ struct_type(CTRL_CheckB32);
 
 //- rjf: styled string types
 
-ptr_type(CTRL_PlainString8__str_ptr_type, type(U8), .flags = TypeFlag_IsPlainText,.count_delimiter_name = str8_lit_comp("size"));
-ptr_type(CTRL_CodeString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsCodeText, .count_delimiter_name = str8_lit_comp("size"));
-ptr_type(CTRL_PathString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsPathText, .count_delimiter_name = str8_lit_comp("size"));
+ptr_type(CTRL_PlainString8__str_ptr_type, type(U8), .flags = TypeFlag_IsPlainText,.count_delimiter_name = ("size"));
+ptr_type(CTRL_CodeString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsCodeText, .count_delimiter_name = ("size"));
+ptr_type(CTRL_PathString8__str_ptr_type, type(U8),  .flags = TypeFlag_IsPathText, .count_delimiter_name = ("size"));
 Member CTRL_PlainString8__members[] =
 {
-  member_lit_comp(String8, &CTRL_PlainString8__str_ptr_type, str,  .pretty_name = str8_lit_comp("Contents")),
-  member_lit_comp(String8, type(U64),                        size, .pretty_name = str8_lit_comp("Size")),
+  member_lit_comp(String8, &CTRL_PlainString8__str_ptr_type, str,  .pretty_name = ("Contents")),
+  member_lit_comp(String8, type(U64),                        size, .pretty_name = ("Size")),
 };
 Member CTRL_CodeString8__members[] =
 {
-  member_lit_comp(String8, &CTRL_CodeString8__str_ptr_type, str,  .pretty_name = str8_lit_comp("Contents")),
-  member_lit_comp(String8, type(U64),                       size, .pretty_name = str8_lit_comp("Size")),
+  member_lit_comp(String8, &CTRL_CodeString8__str_ptr_type, str,  .pretty_name = ("Contents")),
+  member_lit_comp(String8, type(U64),                       size, .pretty_name = ("Size")),
 };
 Member CTRL_PathString8__members[] =
 {
-  member_lit_comp(String8, &CTRL_PathString8__str_ptr_type, str,  .pretty_name = str8_lit_comp("Contents")),
-  member_lit_comp(String8, type(U64),                        size, .pretty_name = str8_lit_comp("Size")),
+  member_lit_comp(String8, &CTRL_PathString8__str_ptr_type, str,  .pretty_name = ("Contents")),
+  member_lit_comp(String8, type(U64),                        size, .pretty_name = ("Size")),
 };
-named_struct_type(CTRL_PlainString8, String8, .name = str8_lit_comp("string"));
-named_struct_type(CTRL_CodeString8,  String8, .name = str8_lit_comp("string"));
-named_struct_type(CTRL_PathString8,  String8, .name = str8_lit_comp("string"));
+named_struct_type(CTRL_PlainString8, String8, .name = ("string"));
+named_struct_type(CTRL_CodeString8,  String8, .name = ("string"));
+named_struct_type(CTRL_PathString8,  String8, .name = ("string"));
 
 //- rjf: meta evaluation callstack types
 
@@ -67,20 +67,20 @@ struct_members(CTRL_MetaEvalFrame)
   member_lit_comp(CTRL_MetaEvalFrame, &CTRL_MetaEvalFrame__vaddr_type, vaddr),
   member_lit_comp(CTRL_MetaEvalFrame, type(U64), inline_depth),
 };
-struct_type(CTRL_MetaEvalFrame, .name = str8_lit_comp("callstack_frame"));
+struct_type(CTRL_MetaEvalFrame, .name = ("callstack_frame"));
 typedef struct CTRL_MetaEvalFrameArray CTRL_MetaEvalFrameArray;
 struct CTRL_MetaEvalFrameArray
 {
   U64 count;
   CTRL_MetaEvalFrame *v;
 };
-ptr_type(CTRL_MetaEvalFrameArray__v_ptr_type, type(CTRL_MetaEvalFrame), .count_delimiter_name = str8_lit_comp("count"));
+ptr_type(CTRL_MetaEvalFrameArray__v_ptr_type, type(CTRL_MetaEvalFrame), .count_delimiter_name = ("count"));
 struct_members(CTRL_MetaEvalFrameArray)
 {
-  member_lit_comp(CTRL_MetaEvalFrameArray, type(U64), count, .pretty_name = str8_lit_comp("Frame Count")),
-  {str8_lit_comp("v"), str8_lit_comp("Frame Addresses"), &CTRL_MetaEvalFrameArray__v_ptr_type, OffsetOf(CTRL_MetaEvalFrameArray, v)},
+  member_lit_comp(CTRL_MetaEvalFrameArray, type(U64), count, .pretty_name = ("Frame Count")),
+  {("v"), ("Frame Addresses"), &CTRL_MetaEvalFrameArray__v_ptr_type, OffsetOf(CTRL_MetaEvalFrameArray, v)},
 };
-struct_type(CTRL_MetaEvalFrameArray, .name = str8_lit_comp("callstack_frames"));
+struct_type(CTRL_MetaEvalFrameArray, .name = ("callstack_frames"));
 
 //- rjf: meta evaluation instance types
 
@@ -121,8 +121,8 @@ X(CTRL_MetaEvalFrameArray, callstack, "Call Stack")
 };
 struct_members(CTRL_MetaEval)
 {
-#define X(T, name, pretty_name_) member_lit_comp(CTRL_MetaEval, type(T), name, .pretty_name = str8_lit_comp(pretty_name_)),
-#define Y(T, ti, name, pretty_name_) member_lit_comp(CTRL_MetaEval, (ti), name, .pretty_name = str8_lit_comp(pretty_name_)),
+#define X(T, name, pretty_name_) member_lit_comp(CTRL_MetaEval, type(T), name, .pretty_name = (pretty_name_)),
+#define Y(T, ti, name, pretty_name_) member_lit_comp(CTRL_MetaEval, (ti), name, .pretty_name = (pretty_name_)),
   CTRL_MetaEval_MemberXList
 #undef X
 #undef Y
@@ -133,91 +133,91 @@ struct_type(CTRL_MetaEval);
 
 struct_members(CTRL_BreakpointMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(B32),              enabled,           .pretty_name = str8_lit_comp("Enabled")),
-  member_lit_comp(CTRL_MetaEval, type(U32),              color,             .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(U64),              hit_count,         .pretty_name = str8_lit_comp("Hit Count")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,             .pretty_name = str8_lit_comp("Label")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), condition,         .pretty_name = str8_lit_comp("Condition")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_location,   .pretty_name = str8_lit_comp("Source Location")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), function_location, .pretty_name = str8_lit_comp("Function Location")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), address_location,  .pretty_name = str8_lit_comp("Address Location")),
+  member_lit_comp(CTRL_MetaEval, type(B32),              enabled,           .pretty_name = ("Enabled")),
+  member_lit_comp(CTRL_MetaEval, type(U32),              color,             .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(U64),              hit_count,         .pretty_name = ("Hit Count")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,             .pretty_name = ("Label")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), condition,         .pretty_name = ("Condition")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_location,   .pretty_name = ("Source Location")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), function_location, .pretty_name = ("Function Location")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), address_location,  .pretty_name = ("Address Location")),
 };
 
 struct_members(CTRL_TargetMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,              .pretty_name = str8_lit_comp("Label")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), exe,                .pretty_name = str8_lit_comp("Executable")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PlainString8),args,               .pretty_name = str8_lit_comp("Arguments")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), working_directory,  .pretty_name = str8_lit_comp("Working Directory")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), entry_point,        .pretty_name = str8_lit_comp("Custom Entry Point")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stdout_path,        .pretty_name = str8_lit_comp("Standard Output Path")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stderr_path,        .pretty_name = str8_lit_comp("Standard Error Path")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stdin_path,         .pretty_name = str8_lit_comp("Standard Input Path")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CheckB32),    debug_subprocesses, .pretty_name = str8_lit_comp("Debug Subprocesses")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,              .pretty_name = ("Label")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), exe,                .pretty_name = ("Executable")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PlainString8),args,               .pretty_name = ("Arguments")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), working_directory,  .pretty_name = ("Working Directory")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), entry_point,        .pretty_name = ("Custom Entry Point")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stdout_path,        .pretty_name = ("Standard Output Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stderr_path,        .pretty_name = ("Standard Error Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), stdin_path,         .pretty_name = ("Standard Input Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CheckB32),    debug_subprocesses, .pretty_name = ("Debug Subprocesses")),
 };
 
 struct_members(CTRL_PinMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,              .pretty_name = str8_lit_comp("Expression")),
-  member_lit_comp(CTRL_MetaEval, type(U32),              color,              .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_location,    .pretty_name = str8_lit_comp("Source Location")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), address_location,   .pretty_name = str8_lit_comp("Address Location")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,              .pretty_name = ("Expression")),
+  member_lit_comp(CTRL_MetaEval, type(U32),              color,              .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_location,    .pretty_name = ("Source Location")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), address_location,   .pretty_name = ("Address Location")),
 };
 
 struct_members(CTRL_FilePathMapMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_path,        .pretty_name = str8_lit_comp("Source Path")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), destination_path,   .pretty_name = str8_lit_comp("Destination Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), source_path,        .pretty_name = ("Source Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), destination_path,   .pretty_name = ("Destination Path")),
 };
 
 struct_members(CTRL_AutoViewRuleMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), type,        .pretty_name = str8_lit_comp("Type")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), view_rule,   .pretty_name = str8_lit_comp("View Rule")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), type,        .pretty_name = ("Type")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), view_rule,   .pretty_name = ("View Rule")),
 };
 
 struct_members(CTRL_MachineMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(B32),              frozen,    .pretty_name = str8_lit_comp("Frozen")),
-  member_lit_comp(CTRL_MetaEval, type(U32),              color,     .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,     .pretty_name = str8_lit_comp("Name")),
+  member_lit_comp(CTRL_MetaEval, type(B32),              frozen,    .pretty_name = ("Frozen")),
+  member_lit_comp(CTRL_MetaEval, type(U32),              color,     .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,     .pretty_name = ("Name")),
 };
 
 struct_members(CTRL_ProcessMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(B32),              frozen,    .pretty_name = str8_lit_comp("Frozen")),
-  member_lit_comp(CTRL_MetaEval, type(U32),              color,     .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,     .pretty_name = str8_lit_comp("Name")),
-  member_lit_comp(CTRL_MetaEval, type(U64),              id,        .pretty_name = str8_lit_comp("ID")),
+  member_lit_comp(CTRL_MetaEval, type(B32),              frozen,    .pretty_name = ("Frozen")),
+  member_lit_comp(CTRL_MetaEval, type(U32),              color,     .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,     .pretty_name = ("Name")),
+  member_lit_comp(CTRL_MetaEval, type(U64),              id,        .pretty_name = ("ID")),
 };
 
 struct_members(CTRL_ModuleMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(U32),              color,       .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,       .pretty_name = str8_lit_comp("Name")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), exe,         .pretty_name = str8_lit_comp("Executable Path")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), dbg,         .pretty_name = str8_lit_comp("Debug Info Path")),
-  member_lit_comp(CTRL_MetaEval, type(Rng1U64),          vaddr_range, .pretty_name = str8_lit_comp("Address Range")),
+  member_lit_comp(CTRL_MetaEval, type(U32),              color,       .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8), label,       .pretty_name = ("Name")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), exe,         .pretty_name = ("Executable Path")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_PathString8), dbg,         .pretty_name = ("Debug Info Path")),
+  member_lit_comp(CTRL_MetaEval, type(Rng1U64),          vaddr_range, .pretty_name = ("Address Range")),
 };
 
 struct_members(CTRL_ThreadMetaEval)
 {
-  member_lit_comp(CTRL_MetaEval, type(B32),                     frozen,    .pretty_name = str8_lit_comp("Frozen")),
-  member_lit_comp(CTRL_MetaEval, type(U32),                     color,     .pretty_name = str8_lit_comp("Color")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8),        label,     .pretty_name = str8_lit_comp("Name")),
-  member_lit_comp(CTRL_MetaEval, type(U64),                     id,        .pretty_name = str8_lit_comp("ID")),
-  member_lit_comp(CTRL_MetaEval, type(CTRL_MetaEvalFrameArray), callstack, .pretty_name = str8_lit_comp("Call Stack")),
+  member_lit_comp(CTRL_MetaEval, type(B32),                     frozen,    .pretty_name = ("Frozen")),
+  member_lit_comp(CTRL_MetaEval, type(U32),                     color,     .pretty_name = ("Color")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_CodeString8),        label,     .pretty_name = ("Name")),
+  member_lit_comp(CTRL_MetaEval, type(U64),                     id,        .pretty_name = ("ID")),
+  member_lit_comp(CTRL_MetaEval, type(CTRL_MetaEvalFrameArray), callstack, .pretty_name = ("Call Stack")),
 };
 
-named_struct_type(CTRL_BreakpointMetaEval,  CTRL_MetaEval, .name = str8_lit_comp("breakpoint"));
-named_struct_type(CTRL_TargetMetaEval,      CTRL_MetaEval, .name = str8_lit_comp("target"));
-named_struct_type(CTRL_PinMetaEval,         CTRL_MetaEval, .name = str8_lit_comp("pin"));
-named_struct_type(CTRL_FilePathMapMetaEval, CTRL_MetaEval, .name = str8_lit_comp("file_path_map"));
-named_struct_type(CTRL_AutoViewRuleMetaEval,CTRL_MetaEval, .name = str8_lit_comp("auto_view_rule"));
-named_struct_type(CTRL_MachineMetaEval,     CTRL_MetaEval, .name = str8_lit_comp("machine"));
-named_struct_type(CTRL_ProcessMetaEval,     CTRL_MetaEval, .name = str8_lit_comp("process"));
-named_struct_type(CTRL_ModuleMetaEval,      CTRL_MetaEval, .name = str8_lit_comp("module"));
-named_struct_type(CTRL_ThreadMetaEval,      CTRL_MetaEval, .name = str8_lit_comp("thread"));
+named_struct_type(CTRL_BreakpointMetaEval,  CTRL_MetaEval, .name = ("breakpoint"));
+named_struct_type(CTRL_TargetMetaEval,      CTRL_MetaEval, .name = ("target"));
+named_struct_type(CTRL_PinMetaEval,         CTRL_MetaEval, .name = ("pin"));
+named_struct_type(CTRL_FilePathMapMetaEval, CTRL_MetaEval, .name = ("file_path_map"));
+named_struct_type(CTRL_AutoViewRuleMetaEval,CTRL_MetaEval, .name = ("auto_view_rule"));
+named_struct_type(CTRL_MachineMetaEval,     CTRL_MetaEval, .name = ("machine"));
+named_struct_type(CTRL_ProcessMetaEval,     CTRL_MetaEval, .name = ("process"));
+named_struct_type(CTRL_ModuleMetaEval,      CTRL_MetaEval, .name = ("module"));
+named_struct_type(CTRL_ThreadMetaEval,      CTRL_MetaEval, .name = ("thread"));
 
 //- rjf: meta evaluation array
 
@@ -227,10 +227,10 @@ struct CTRL_MetaEvalArray
   CTRL_MetaEval *v;
   U64 count;
 };
-ptr_type(CTRL_MetaEvalArray__v_ptr_type, type(CTRL_BreakpointMetaEval), .count_delimiter_name = str8_lit_comp("count"));
+ptr_type(CTRL_MetaEvalArray__v_ptr_type, type(CTRL_BreakpointMetaEval), .count_delimiter_name = ("count"));
 struct_members(CTRL_MetaEvalArray)
 {
-  {str8_lit_comp("v"), {0}, &CTRL_MetaEvalArray__v_ptr_type, OffsetOf(CTRL_MetaEvalArray, v)},
+  {("v"), {0}, &CTRL_MetaEvalArray__v_ptr_type, OffsetOf(CTRL_MetaEvalArray, v)},
   member_lit_comp(CTRL_MetaEvalArray, type(U64), count),
 };
 struct_type(CTRL_MetaEvalArray);

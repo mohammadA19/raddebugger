@@ -520,7 +520,7 @@ pdb_strtab_alloc(PDB_StringTable *strtab, U32 max)
   strtab->bucket_array = push_array(strtab->arena, PDB_StringTableBucket *, strtab->bucket_max);
 
   // string table always has a null for first entry
-  pdb_strtab_add(strtab, str8_lit(""));
+  pdb_strtab_add(strtab, (""));
 
   ProfEnd();
 }
@@ -900,11 +900,11 @@ pdb_string_from_string_table_open_error(PDB_StringTableOpenError err)
   String8 result = str8(0,0);
   switch (err) {
   case PDB_StringTableOpenError_OK: break;
-  case PDB_StringTableOpenError_BAD_MAGIC:                   result = str8_lit("BAD_MAGIC");                   break;
-  case PDB_StringTableOpenError_UNKNOWN_VERSION:             result = str8_lit("UNKNOWN_VERSION");             break;
-  case PDB_StringTableOpenError_CORRUPTED:                   result = str8_lit("CORRUPTED");                   break;
-  case PDB_StringTableOpenError_OFFSETS_EXCEED_BUCKET_COUNT: result = str8_lit("OFFSETS_EXCEED_BUCKET_COUNT"); break;
-  case PDB_StringTableOpenError_STRING_OFFSET_OUT_OF_BOUNDS: result = str8_lit("STRING_OFFSET_OUT_OF_BOUNDS"); break;
+  case PDB_StringTableOpenError_BAD_MAGIC:                   result = ("BAD_MAGIC");                   break;
+  case PDB_StringTableOpenError_UNKNOWN_VERSION:             result = ("UNKNOWN_VERSION");             break;
+  case PDB_StringTableOpenError_CORRUPTED:                   result = ("CORRUPTED");                   break;
+  case PDB_StringTableOpenError_OFFSETS_EXCEED_BUCKET_COUNT: result = ("OFFSETS_EXCEED_BUCKET_COUNT"); break;
+  case PDB_StringTableOpenError_STRING_OFFSET_OUT_OF_BOUNDS: result = ("STRING_OFFSET_OUT_OF_BOUNDS"); break;
   }
   return result;
 }
@@ -3689,12 +3689,12 @@ internal String8
 pdb_string_from_src_error(PDB_SrcError error)
 {
   switch (error) {
-  case PDB_SrcError_OK:                      return str8_lit("OK");
-  case PDB_SrcError_DUPLICATE_NAME_STREAM:   return str8_lit("DUPLICATE_NAME_STREAM");
-  case PDB_SrcError_DUPLICATE_ENTRY:         return str8_lit("DUPLICATE_ENTRY");
-  case PDB_SrcError_UNABLE_TO_WRITE_DATA:    return str8_lit("UNABLE_TO_WRITE_DATA");
-  case PDB_SrcError_UNSUPPORTED_COMPRESSION: return str8_lit("UNSUPPORTED_COMPRESSION");
-  case PDB_SrcError_UNKNOWN:                 return str8_lit("UNKNOWN");
+  case PDB_SrcError_OK:                      return ("OK");
+  case PDB_SrcError_DUPLICATE_NAME_STREAM:   return ("DUPLICATE_NAME_STREAM");
+  case PDB_SrcError_DUPLICATE_ENTRY:         return ("DUPLICATE_ENTRY");
+  case PDB_SrcError_UNABLE_TO_WRITE_DATA:    return ("UNABLE_TO_WRITE_DATA");
+  case PDB_SrcError_UNSUPPORTED_COMPRESSION: return ("UNSUPPORTED_COMPRESSION");
+  case PDB_SrcError_UNKNOWN:                 return ("UNKNOWN");
   }
   return str8(0,0);
 }
@@ -3703,11 +3703,11 @@ internal String8
 pdb_string_from_open_type_server_error(PDB_OpenTypeServerError error)
 {
   switch (error) {
-  case PDB_OpenTypeServerError_OK:                    return str8_lit("OK");
-  case PDB_OpenTypeServerError_UNKNOWN:               return str8_lit("UNKNOWN");
-  case PDB_OpenTypeServerError_INVALID_BUCKET_COUNT:  return str8_lit("INVALID_BUCKET_COUNT");
-  case PDB_OpenTypeServerError_INVALID_TI_RANGE:      return str8_lit("INVALID_TI_RANGE");
-  case PDB_OpenTypeServerError_UNSUPPORTED_VERSION:   return str8_lit("UNSUPPORTED_VERSION");
+  case PDB_OpenTypeServerError_OK:                    return ("OK");
+  case PDB_OpenTypeServerError_UNKNOWN:               return ("UNKNOWN");
+  case PDB_OpenTypeServerError_INVALID_BUCKET_COUNT:  return ("INVALID_BUCKET_COUNT");
+  case PDB_OpenTypeServerError_INVALID_TI_RANGE:      return ("INVALID_TI_RANGE");
+  case PDB_OpenTypeServerError_UNSUPPORTED_VERSION:   return ("UNSUPPORTED_VERSION");
   }
   return str8(0,0);
 }

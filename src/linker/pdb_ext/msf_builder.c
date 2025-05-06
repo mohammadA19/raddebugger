@@ -2175,7 +2175,7 @@ test_size_limit(void)
   Assert(msf_data.size > 0);
   msf_release(&msf);
   
-  //os_write_file(str8_lit("test.msf"), msf_data);
+  //os_write_file(("test.msf"), msf_data);
   
   MSF_Error err = msf_open(msf_data, &msf);
   Assert(err == MSF_Error_OK);

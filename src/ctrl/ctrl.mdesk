@@ -27,7 +27,7 @@ CTRL_EntityKindTable:
 @data(String8) ctrl_entity_kind_display_string_table:
 {
   `{0}`,
-  @expand(CTRL_EntityKindTable a) `str8_lit_comp("$(a.display_name)")`
+  @expand(CTRL_EntityKindTable a) `("$(a.display_name)")`
 }
 
 ////////////////////////////////
@@ -91,13 +91,13 @@ CTRL_ExceptionCodeKindTable:
 @data(String8) ctrl_exception_code_kind_display_string_table:
 {
   `{0}`;
-  @expand(CTRL_ExceptionCodeKindTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(CTRL_ExceptionCodeKindTable a) `("$(a.display_string)")`;
 }
 
 @data(String8) ctrl_exception_code_kind_lowercase_code_string_table:
 {
   `{0}`;
-  @expand(CTRL_ExceptionCodeKindTable a) `str8_lit_comp("$(a.lower_name)")`;
+  @expand(CTRL_ExceptionCodeKindTable a) `("$(a.lower_name)")`;
 }
 
 @data(B8) ctrl_exception_code_kind_default_enable_table:

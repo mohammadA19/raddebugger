@@ -408,7 +408,7 @@ ui_expander(B32 is_expanded, String8 string)
   ui_set_next_text_alignment(UI_TextAlign.Center);
   ui_set_next_font(ui_icon_font());
   UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|UI_BoxFlags.DrawText, string);
-  ui_box_equip_display_string(box, is_expanded ? str8_lit("v") : str8_lit(">"));
+  ui_box_equip_display_string(box, is_expanded ? ("v") : (">"));
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
 }
@@ -440,8 +440,8 @@ ui_sort_header(B32 sorting, B32 ascending, String8 string)
     ui_set_next_pref_width(ui_em(1.8f, 1.f));
     ui_set_next_text_alignment(UI_TextAlign.Center);
     ui_set_next_font(ui_icon_font());
-    UI_Box *icon = ui_build_box_from_string(UI_BoxFlags.DrawText, str8_lit(""));
-    ui_box_equip_display_string(icon, ascending ? str8_lit("^") : str8_lit("v"));
+    UI_Box *icon = ui_build_box_from_string(UI_BoxFlags.DrawText, (""));
+    ui_box_equip_display_string(icon, ascending ? ("^") : ("v"));
   }
   
   // rjf: make text
@@ -483,7 +483,7 @@ ui_do_color_tooltip_hsv(Vec3F32 hsv)
       UI_Palette(ui_build_palette(ui_top_palette(), .background = v4f32(rgb.x, rgb.y, rgb.z, 1.f)))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, (""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
@@ -522,7 +522,7 @@ ui_do_color_tooltip_hsva(Vec4F32 hsva)
       UI_Palette(ui_build_palette(ui_top_palette(), .background = rgba))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, (""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
     UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
@@ -841,9 +841,9 @@ ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
 
-internal UI_Box *ui_row_begin(void)    { return ui_named_row_begin(str8_lit("")); }
+internal UI_Box *ui_row_begin(void)    { return ui_named_row_begin(("")); }
 internal UI_Signal ui_row_end(void)    { return ui_named_row_end(); }
-internal UI_Box *ui_column_begin(void) { return ui_named_column_begin(str8_lit("")); }
+internal UI_Box *ui_column_begin(void) { return ui_named_column_begin(("")); }
 internal UI_Signal ui_column_end(void) { return ui_named_column_end(); }
 
 internal UI_Box *

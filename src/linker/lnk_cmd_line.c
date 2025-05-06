@@ -106,7 +106,7 @@ lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 strin
 internal LNK_CmdOption *
 lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8 value)
 {
-  String8List value_list = str8_split_by_string_chars(arena, value, str8_lit(","), StringSplitFlags.KeepEmpties);
+  String8List value_list = str8_split_by_string_chars(arena, value, (","), StringSplitFlags.KeepEmpties);
   LNK_CmdOption *opt = lnk_cmd_line_push_option_list(arena, cmd_line, string, value_list);
   return opt;
 }
@@ -138,7 +138,7 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
     B32 is_option = str8_match_lit("/", arg, StringMatchFlags.RightSideSloppy) ||
                     str8_match_lit("-", arg, StringMatchFlags.RightSideSloppy);
     if (is_option) {
-      U64 param_start_pos = str8_find_needle(arg, 0, str8_lit(":"), 0);
+      U64 param_start_pos = str8_find_needle(arg, 0, (":"), 0);
       String8 option_name = str8_chop(arg, arg.size - param_start_pos);
 
       // remove '/' or '-' from option name
@@ -148,7 +148,7 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
       String8 value_string = str8_skip(arg, param_start_pos + 1);
 
       // make value list
-      String8List value_list = str8_split_by_string_chars(arena, value_string, str8_lit(","), 0);
+      String8List value_list = str8_split_by_string_chars(arena, value_string, (","), 0);
 
       // push command
       lnk_cmd_line_push_option_list(arena, &cmd_line, option_name, value_list);
@@ -252,7 +252,7 @@ lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line)
         }
 
         // push argument
-        B32 has_spaces = str8_find_needle(value_node->string, 0, str8_lit(" "), StringMatchFlags.CaseInsensitive) < value_node->string.size;
+        B32 has_spaces = str8_find_needle(value_node->string, 0, (" "), StringMatchFlags.CaseInsensitive) < value_node->string.size;
         if (has_spaces) {
           str8_list_pushf(arena, &result, "\"%.*s\"", str8_varg(value_node->string));
         } else {

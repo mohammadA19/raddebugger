@@ -5317,7 +5317,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     task.element_indices        = push_array(scratch.arena, U64,                    tp->worker_count);
 
     // :string_map_null
-    rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, str8_lit(""));
+    rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, (""));
 
     // top level info
     rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, input->top_level_info.exe_name);

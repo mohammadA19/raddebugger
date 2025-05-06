@@ -36,7 +36,7 @@ entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: unpack command line
   //
-  String8 test_data_folder_path = cmd_line_string(cmdline, str8_lit("test_data"));
+  String8 test_data_folder_path = cmd_line_string(cmdline, ("test_data"));
   if(test_data_folder_path.size == 0)
   {
     fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline->exe_name));
@@ -46,7 +46,7 @@ entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: make artifacts directory
   //
-  String8 artifacts_path = path_normalized_from_string(arena, str8_lit("./tester_artifacts"));
+  String8 artifacts_path = path_normalized_from_string(arena, ("./tester_artifacts"));
   os_make_directory(artifacts_path);
   
   //////////////////////////////
@@ -56,7 +56,7 @@ entry_point(CmdLine *cmdline)
   B32 good = 1;
   String8List out = {0};
   {
-    name = str8_lit("pdb2rdi_determinism");
+    name = ("pdb2rdi_determinism");
     U64 num_repeats_per_pdb = 32;
     String8 pdb_paths[] =
     {

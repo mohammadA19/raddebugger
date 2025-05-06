@@ -37,7 +37,7 @@ CV_NumericKindTable:
 @enum2string_switch(CV_NumericKind)
 cv_string_from_numeric_kind:
 {
-  @expand(CV_NumericKindTable a) `case CV_NumericKind_$(a.name):{result = str8_lit("$(a.name)");}break`;
+  @expand(CV_NumericKindTable a) `case CV_NumericKind_$(a.name):{result = ("$(a.name)");}break`;
 }
 
 ////////////////////////////////
@@ -121,7 +121,7 @@ CV_ArchTable:
 @enum2string_switch(CV_Arch)
 cv_string_from_arch:
 {
-  @expand(CV_ArchTable a) `case CV_Arch_$(a.name):{result = str8_lit("$(a.name)");}break`;
+  @expand(CV_ArchTable a) `case CV_Arch_$(a.name):{result = ("$(a.name)");}break`;
 }
 
 ////////////////////////////////
@@ -357,7 +357,7 @@ cv_string_from_arch:
 @enum2string_switch(CV_SymKind)
 cv_string_from_sym_kind:
 {
-  @expand(CV_SymKindTable a) `case CV_SymKind_$(a.name):{result = str8_lit("$(a.name)");}break`;
+  @expand(CV_SymKindTable a) `case CV_SymKind_$(a.name):{result = ("$(a.name)");}break`;
 }
 
 @gen(functions)
@@ -448,12 +448,12 @@ CV_BasicTypeTable:
 
 @enum2string_switch(CV_BasicType) cv_string_from_basic_type:
 {
-  @expand(CV_BasicTypeTable a) `case CV_BasicType_$(a.name):{result = str8_lit("$(a.name)");}break`
+  @expand(CV_BasicTypeTable a) `case CV_BasicType_$(a.name):{result = ("$(a.name)");}break`
 }
 
 @enum2string_switch(CV_BasicType) cv_type_name_from_basic_type:
 {
-  @expand(CV_BasicTypeTable a) `case CV_BasicType_$(a.name):{result = str8_lit("$(a.type_name)");}break`
+  @expand(CV_BasicTypeTable a) `case CV_BasicType_$(a.name):{result = ("$(a.type_name)");}break`
 }
 
 ////////////////////////////////
@@ -606,7 +606,7 @@ CV_LeafKindTable:
 @enum2string_switch(CV_LeafKind)
 cv_string_from_leaf_kind:
 {
-  @expand(CV_LeafKindTable a) `case CV_LeafKind_$(a.name):{result = str8_lit("$(a.name)");}break`;
+  @expand(CV_LeafKindTable a) `case CV_LeafKind_$(a.name):{result = ("$(a.name)");}break`;
 }
 
 @gen(functions)

@@ -281,7 +281,7 @@ entry_point(CmdLine *cmdline)
   
 exit:;
   // print formatted string
-  String8 out_string = str8_list_join(arena, out, &(StringJoin){ .sep = str8_lit("\n"),});
+  String8 out_string = str8_list_join(arena, out, &(StringJoin){ .sep = ("\n"),});
   fprintf(stdout, "%.*s", str8_varg(out_string));
 
   arena_release(arena);

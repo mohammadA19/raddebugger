@@ -990,7 +990,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u128");
+              mem->name = ("u128");
               mem->type_key = e_type_key_basic(E_TypeKind_U128);
             }
             if(type->byte_size == 8)
@@ -1000,7 +1000,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u64");
+              mem->name = ("u64");
               mem->type_key = e_type_key_basic(E_TypeKind_U64);
             }
             if(type->byte_size == 4)
@@ -1010,7 +1010,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u32");
+              mem->name = ("u32");
               mem->type_key = e_type_key_basic(E_TypeKind_U32);
             }
             if(type->byte_size == 2)
@@ -1020,7 +1020,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u16");
+              mem->name = ("u16");
               mem->type_key = e_type_key_basic(E_TypeKind_U16);
             }
             if(type->byte_size == 1)
@@ -1030,7 +1030,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u8");
+              mem->name = ("u8");
               mem->type_key = e_type_key_basic(E_TypeKind_U8);
             }
           }
@@ -1044,7 +1044,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u128s");
+              mem->name = ("u128s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U128), reg_byte_count/16);
             }
             if(type->byte_size > 8 && type->byte_size%8 == 0)
@@ -1054,7 +1054,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u64s");
+              mem->name = ("u64s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U64), reg_byte_count/8);
             }
             if(type->byte_size > 4 && type->byte_size%4 == 0)
@@ -1064,7 +1064,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u32s");
+              mem->name = ("u32s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U32), reg_byte_count/4);
             }
             if(type->byte_size > 2 && type->byte_size%2 == 0)
@@ -1074,7 +1074,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u16s");
+              mem->name = ("u16s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U16), reg_byte_count/2);
             }
             if(type->byte_size > 1)
@@ -1084,7 +1084,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("u8s");
+              mem->name = ("u8s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), reg_byte_count);
             }
             if(type->byte_size > 4 && type->byte_size%4 == 0)
@@ -1094,7 +1094,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("f32s");
+              mem->name = ("f32s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_F32), reg_byte_count/4);
             }
             if(type->byte_size > 8 && type->byte_size%8 == 0)
@@ -1104,7 +1104,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
               members.count += 1;
               E_Member *mem = &n->v;
               mem->kind = E_MemberKind_DataField;
-              mem->name = str8_lit("f64s");
+              mem->name = ("f64s");
               mem->type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_F64), reg_byte_count/8);
             }
           }
@@ -1605,7 +1605,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       Temp scratch = scratch_begin(&arena, 1);
       E_Type *type = e_type_from_key(scratch.arena, key);
       str8_list_push(arena, out, push_str8_copy(arena, type->name));
-      str8_list_push(arena, out, str8_lit(" "));
+      str8_list_push(arena, out, (" "));
       scratch_end(scratch);
     }break;
     
@@ -1626,18 +1626,18 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
       if(type->flags & E_TypeFlag_Const)
       {
-        str8_list_push(arena, out, str8_lit("const "));
+        str8_list_push(arena, out, ("const "));
       }
       if(type->flags & E_TypeFlag_Volatile)
       {
-        str8_list_push(arena, out, str8_lit("volatile "));
+        str8_list_push(arena, out, ("volatile "));
       }
       scratch_end(scratch);
     }break;
     
     case E_TypeKind_Variadic:
     {
-      str8_list_push(arena, out, str8_lit("..."));
+      str8_list_push(arena, out, ("..."));
     }break;
     
     case E_TypeKind_Struct:
@@ -1649,22 +1649,22 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       Temp scratch = scratch_begin(&arena, 1);
       E_Type *type = e_type_from_key(scratch.arena, key);
       str8_list_push(arena, out, push_str8_copy(arena, type->name));
-      str8_list_push(arena, out, str8_lit(" "));
+      str8_list_push(arena, out, (" "));
       scratch_end(scratch);
     }break;
     
-    case E_TypeKind_IncompleteStruct: keyword = str8_lit("struct"); goto fwd_udt;
-    case E_TypeKind_IncompleteUnion:  keyword = str8_lit("union"); goto fwd_udt;
-    case E_TypeKind_IncompleteEnum:   keyword = str8_lit("enum"); goto fwd_udt;
-    case E_TypeKind_IncompleteClass:  keyword = str8_lit("class"); goto fwd_udt;
+    case E_TypeKind_IncompleteStruct: keyword = ("struct"); goto fwd_udt;
+    case E_TypeKind_IncompleteUnion:  keyword = ("union"); goto fwd_udt;
+    case E_TypeKind_IncompleteEnum:   keyword = ("enum"); goto fwd_udt;
+    case E_TypeKind_IncompleteClass:  keyword = ("class"); goto fwd_udt;
     fwd_udt:;
     {
       Temp scratch = scratch_begin(&arena, 1);
       E_Type *type = e_type_from_key(scratch.arena, key);
       str8_list_push(arena, out, keyword);
-      str8_list_push(arena, out, str8_lit(" "));
+      str8_list_push(arena, out, (" "));
       str8_list_push(arena, out, push_str8_copy(arena, type->name));
-      str8_list_push(arena, out, str8_lit(" "));
+      str8_list_push(arena, out, (" "));
       scratch_end(scratch);
     }break;
     
@@ -1674,7 +1674,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       e_type_lhs_string_from_key(arena, direct, out, 2, skip_return);
       if(prec == 1)
       {
-        str8_list_push(arena, out, str8_lit("("));
+        str8_list_push(arena, out, ("("));
       }
     }break;
     
@@ -1687,7 +1687,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       }
       if(prec == 1)
       {
-        str8_list_push(arena, out, str8_lit("("));
+        str8_list_push(arena, out, ("("));
       }
     }break;
     
@@ -1695,21 +1695,21 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
     {
       E_TypeKey direct = e_type_direct_from_key(key);
       e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-      str8_list_push(arena, out, str8_lit("*"));
+      str8_list_push(arena, out, ("*"));
     }break;
     
     case E_TypeKind_LRef:
     {
       E_TypeKey direct = e_type_direct_from_key(key);
       e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-      str8_list_push(arena, out, str8_lit("&"));
+      str8_list_push(arena, out, ("&"));
     }break;
     
     case E_TypeKind_RRef:
     {
       E_TypeKey direct = e_type_direct_from_key(key);
       e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-      str8_list_push(arena, out, str8_lit("&&"));
+      str8_list_push(arena, out, ("&&"));
     }break;
     
     case E_TypeKind_MemberPtr:
@@ -1725,9 +1725,9 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       }
       else
       {
-        str8_list_push(arena, out, str8_lit("<unknown-class>"));
+        str8_list_push(arena, out, ("<unknown-class>"));
       }
-      str8_list_push(arena, out, str8_lit("::*"));
+      str8_list_push(arena, out, ("::*"));
       scratch_end(scratch);
     }break;
   }
@@ -1763,12 +1763,12 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       E_Type *type = e_type_from_key(scratch.arena, key);
       if(prec == 1)
       {
-        str8_list_push(arena, out, str8_lit(")"));
+        str8_list_push(arena, out, (")"));
       }
       String8 count_str = str8_from_u64(arena, type->count, 10, 0, 0);
-      str8_list_push(arena, out, str8_lit("["));
+      str8_list_push(arena, out, ("["));
       str8_list_push(arena, out, count_str);
-      str8_list_push(arena, out, str8_lit("]"));
+      str8_list_push(arena, out, ("]"));
       E_TypeKey direct = e_type_direct_from_key(key);
       e_type_rhs_string_from_key(arena, direct, out, 2);
       scratch_end(scratch);
@@ -1780,15 +1780,15 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       E_Type *type = e_type_from_key(scratch.arena, key);
       if(prec == 1)
       {
-        str8_list_push(arena, out, str8_lit(")"));
+        str8_list_push(arena, out, (")"));
       }
       if(type->count == 0)
       {
-        str8_list_push(arena, out, str8_lit("(void)"));
+        str8_list_push(arena, out, ("(void)"));
       }
       else
       {
-        str8_list_push(arena, out, str8_lit("("));
+        str8_list_push(arena, out, ("("));
         U64 param_count = type->count;
         E_TypeKey *param_type_keys = type->param_type_keys;
         for(U64 param_idx = 0; param_idx < param_count; param_idx += 1)
@@ -1799,10 +1799,10 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
           str8_list_push(arena, out, param_str_trimmed);
           if(param_idx+1 < param_count)
           {
-            str8_list_push(arena, out, str8_lit(", "));
+            str8_list_push(arena, out, (", "));
           }
         }
-        str8_list_push(arena, out, str8_lit(")"));
+        str8_list_push(arena, out, (")"));
       }
       E_TypeKey direct = e_type_direct_from_key(key);
       e_type_rhs_string_from_key(arena, direct, out, 2);

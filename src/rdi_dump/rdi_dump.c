@@ -7,23 +7,23 @@
 internal String8
 rdi_string_from_reg_code_x86(U64 reg_code)
 {
-#define X(name, value) case RDI_RegCodeX86_##name: return str8_lit(#name);
+#define X(name, value) case RDI_RegCodeX86_##name: return (#name);
   switch (reg_code) {
     RDI_RegCodeX86_XList
   }
 #undef X
-  return str8_lit("");
+  return ("");
 }
 
 internal String8
 rdi_string_from_reg_code_x64(U64 reg_code)
 {
-#define X(name, value) case RDI_RegCodeX64_##name: return str8_lit(#name);
+#define X(name, value) case RDI_RegCodeX64_##name: return (#name);
   switch (reg_code) {
     RDI_RegCodeX64_XList
   }
 #undef X
-  return str8_lit("");
+  return ("");
 }
 
 internal String8
@@ -35,17 +35,17 @@ rdi_string_from_reg_code(RDI_Arch arch, U64 reg_code)
   case RDI_Arch_X64: return rdi_string_from_reg_code_x64(reg_code);
   default: InvalidPath;
   }
-  return str8_lit("");
+  return ("");
 }
 
 internal String8
 rdi_string_from_data_section_kind(RDI_SectionKind v)
 {
-  String8 result = str8_lit("<invalid RDI_SectionKind>");
+  String8 result = ("<invalid RDI_SectionKind>");
   switch(v)
   {
     default:{}break;
-#define X(name, lower, type) case RDI_SectionKind_##name:{result = str8_lit(#name);}break;
+#define X(name, lower, type) case RDI_SectionKind_##name:{result = (#name);}break;
     RDI_SectionKind_XList
 #undef X
   }
@@ -55,11 +55,11 @@ rdi_string_from_data_section_kind(RDI_SectionKind v)
 internal String8
 rdi_string_from_arch(RDI_Arch v)
 {
-  String8 result = str8_lit("<invalid RDI_Arch>");
+  String8 result = ("<invalid RDI_Arch>");
   switch(v)
   {
     default:{}break;
-#define X(name) case RDI_Arch_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_Arch_##name:{result = (#name);}break;
     RDI_Arch_XList
 #undef X
   }
@@ -69,11 +69,11 @@ rdi_string_from_arch(RDI_Arch v)
 internal String8
 rdi_string_from_language(RDI_Language v)
 {
-  String8 result = str8_lit("<invalid RDI_Language>");
+  String8 result = ("<invalid RDI_Language>");
   switch(v)
   {
     default:{}break;
-#define X(name) case RDI_Language_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_Language_##name:{result = (#name);}break;
     RDI_Language_XList
 #undef X
   }
@@ -83,11 +83,11 @@ rdi_string_from_language(RDI_Language v)
 internal String8
 rdi_string_from_type_kind(RDI_TypeKind v)
 {
-  String8 result = str8_lit("<invalid RDI_TypeKind>");
+  String8 result = ("<invalid RDI_TypeKind>");
   switch(v)
   {
     default:{}break;
-#define X(name) case RDI_TypeKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_TypeKind_##name:{result = (#name);}break;
     RDI_TypeKind_XList
 #undef X
   }
@@ -97,11 +97,11 @@ rdi_string_from_type_kind(RDI_TypeKind v)
 internal String8
 rdi_string_from_member_kind(RDI_MemberKind v)
 {
-  String8 result = str8_lit("<invalid RDI_MemberKind>");
+  String8 result = ("<invalid RDI_MemberKind>");
   switch(v)
   {
     default:{}break;
-#define X(name) case RDI_MemberKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_MemberKind_##name:{result = (#name);}break;
     RDI_MemberKind_XList
 #undef X
   }
@@ -111,11 +111,11 @@ rdi_string_from_member_kind(RDI_MemberKind v)
 internal String8
 rdi_string_from_local_kind(RDI_LocalKind v)
 {
-  String8 result = str8_lit("<invalid RDI_LocalKind>");
+  String8 result = ("<invalid RDI_LocalKind>");
   switch(v)
   {
     default:{}break;
-#define X(name) case RDI_LocalKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_LocalKind_##name:{result = (#name);}break;
     RDI_LocalKind_XList
 #undef X
   }
@@ -128,8 +128,8 @@ rdi_string_from_local_kind(RDI_LocalKind v)
 internal void
 rdi_stringize_binary_section_flags(Arena *arena, String8List *out, RDI_BinarySectionFlags flags)
 {
-  if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
-#define X(name) if(flags & RDI_BinarySectionFlag_##name) { str8_list_push(arena, out, str8_lit(#name " ")); }
+  if(flags == 0) { str8_list_push(arena, out, ("0")); }
+#define X(name) if(flags & RDI_BinarySectionFlag_##name) { str8_list_push(arena, out, (#name " ")); }
   RDI_BinarySectionFlags_XList;
 #undef X
 }
@@ -138,8 +138,8 @@ internal void
 rdi_stringize_type_modifier_flags(Arena *arena, String8List *out,
                                   RDI_TypeModifierFlags flags)
 {
-  if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
-#define X(name) if(flags & RDI_TypeModifierFlag_##name) { str8_list_push(arena, out, str8_lit(#name " ")); }
+  if(flags == 0) { str8_list_push(arena, out, ("0")); }
+#define X(name) if(flags & RDI_TypeModifierFlag_##name) { str8_list_push(arena, out, (#name " ")); }
   RDI_TypeModifierFlags_XList;
 #undef X
 }
@@ -147,8 +147,8 @@ rdi_stringize_type_modifier_flags(Arena *arena, String8List *out,
 internal void
 rdi_stringize_udt_flags(Arena *arena, String8List *out, RDI_UDTFlags flags)
 {
-  if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
-#define X(name) if(flags & RDI_UDTFlag_##name) { str8_list_push(arena, out, str8_lit(#name " ")); }
+  if(flags == 0) { str8_list_push(arena, out, ("0")); }
+#define X(name) if(flags & RDI_UDTFlag_##name) { str8_list_push(arena, out, (#name " ")); }
   RDI_UDTFlags_XList;
 #undef X
 }
@@ -156,8 +156,8 @@ rdi_stringize_udt_flags(Arena *arena, String8List *out, RDI_UDTFlags flags)
 internal void
 rdi_stringize_link_flags(Arena *arena, String8List *out, RDI_LinkFlags flags)
 {
-  if(flags == 0) { str8_list_push(arena, out, str8_lit("0")); }
-#define X(name) if(flags & RDI_LinkFlag_##name) { str8_list_push(arena, out, str8_lit(#name " ")); }
+  if(flags == 0) { str8_list_push(arena, out, ("0")); }
+#define X(name) if(flags & RDI_LinkFlag_##name) { str8_list_push(arena, out, (#name " ")); }
   RDI_LinkFlags_XList;
 #undef X
 }
@@ -397,7 +397,7 @@ rdi_stringize_type_node(Arena *arena, String8List *out, RDI_Parsed *rdi,
     {
       str8_list_pushf(arena, out, "%.*sflags=", indent_level, rdi_stringize_spaces);
       rdi_stringize_type_modifier_flags(arena, out, type->flags);
-      str8_list_push(arena, out, str8_lit("\n"));
+      str8_list_push(arena, out, ("\n"));
     }break;
     
     default:
@@ -461,7 +461,7 @@ rdi_stringize_type_node(Arena *arena, String8List *out, RDI_Parsed *rdi,
         str8_list_pushf(arena, out, " %u ", run[last]);
       }
       
-      str8_list_push(arena, out, str8_lit("}\n"));
+      str8_list_push(arena, out, ("}\n"));
     }
   }
   
@@ -496,7 +496,7 @@ rdi_stringize_udt(Arena *arena, String8List *out, RDI_Parsed *rdi,
   
   str8_list_pushf(arena, out, "%.*sflags=", indent_level, rdi_stringize_spaces);
   rdi_stringize_udt_flags(arena, out, udt->flags);
-  str8_list_push(arena, out, str8_lit("\n"));
+  str8_list_push(arena, out, ("\n"));
   
   if (udt->file_idx != 0){
     str8_list_pushf(arena, out, "%.*sloc={file=%u; line=%u; col=%u}\n",
@@ -571,7 +571,7 @@ rdi_stringize_global_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
   
   str8_list_pushf(arena, out, "%.*slink_flags=", indent_level, rdi_stringize_spaces);
   rdi_stringize_link_flags(arena, out, global_variable->link_flags);
-  str8_list_push(arena, out, str8_lit("\n"));
+  str8_list_push(arena, out, ("\n"));
   
   str8_list_pushf(arena, out, "%.*svoff=0x%08llx\n",
                   indent_level, rdi_stringize_spaces, global_variable->voff);
@@ -594,7 +594,7 @@ rdi_stringize_thread_variable(Arena *arena, String8List *out, RDI_Parsed *rdi,
   
   str8_list_pushf(arena, out, "%.*slink_flags=", indent_level, rdi_stringize_spaces);
   rdi_stringize_link_flags(arena, out, thread_var->link_flags);
-  str8_list_push(arena, out, str8_lit("\n"));
+  str8_list_push(arena, out, ("\n"));
   
   str8_list_pushf(arena, out, "%.*stls_off=0x%08x\n",
                   indent_level, rdi_stringize_spaces, thread_var->tls_off);
@@ -621,7 +621,7 @@ rdi_stringize_procedure(Arena *arena, String8List *out, RDI_Parsed *rdi,
   
   str8_list_pushf(arena, out, "%.*slink_flags=", indent_level, rdi_stringize_spaces);
   rdi_stringize_link_flags(arena, out, proc->link_flags);
-  str8_list_push(arena, out, str8_lit("\n"));
+  str8_list_push(arena, out, ("\n"));
   
   str8_list_pushf(arena, out, "%.*stype_idx=%u\n",
                   indent_level, rdi_stringize_spaces, proc->type_idx);

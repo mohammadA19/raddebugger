@@ -120,9 +120,9 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
     String8 name;
   };
   struct StreamNameIndexPair pairs[] = {
-    {PDB_NamedStream_HeaderBlock, str8_lit("/src/headerblock")},
-    {PDB_NamedStream_StringTable, str8_lit("/names")},
-    {PDB_NamedStream_LinkInfo,    str8_lit("/LinkInfo")},
+    {PDB_NamedStream_HeaderBlock, ("/src/headerblock")},
+    {PDB_NamedStream_StringTable, ("/names")},
+    {PDB_NamedStream_LinkInfo,    ("/LinkInfo")},
   };
   
   // build baked table

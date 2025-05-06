@@ -828,7 +828,7 @@ typedef struct DWARF_SectionNameRow{
 
 read_only global DWARF_SectionNameRow dwarf_section_name_table[] = {
 #define X(c,vf,n0,n1,n2) \
-{ { str8_lit_comp(n0), str8_lit_comp(n1), str8_lit_comp(n2) } },
+{ { (n0), (n1), (n2) } },
   DWARF_SectionNameXList(X,0,0)
 #undef X
 };

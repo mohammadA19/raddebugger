@@ -177,7 +177,7 @@ internal String8
 dw_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
-    #define X(_N,_L,_M,_D) case DW_Section_##_N: return str8_lit(_L);
+    #define X(_N,_L,_M,_D) case DW_Section_##_N: return (_L);
     DW_SectionKind_XList(X)
     #undef X
   }
@@ -188,7 +188,7 @@ internal String8
 dw_mach_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
-    #define X(_N,_L,_M,_D) case DW_Section_##_N: return str8_lit(_M);
+    #define X(_N,_L,_M,_D) case DW_Section_##_N: return (_M);
     DW_SectionKind_XList(X)
     #undef X
   }
@@ -199,7 +199,7 @@ internal String8
 dw_dwo_name_string_from_section_kind(DW_SectionKind k)
 {
   switch (k) {
-    #define X(_N,_L,_M,_D) case DW_Section_##_N: return str8_lit(_D); 
+    #define X(_N,_L,_M,_D) case DW_Section_##_N: return (_D); 
     DW_SectionKind_XList(X)
     #undef X
   }

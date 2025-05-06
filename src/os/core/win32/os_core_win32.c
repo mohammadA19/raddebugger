@@ -597,7 +597,7 @@ public static void os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 rang
 public static OS_FileIter* os_file_iter_begin(Arena* arena, String8 path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
+  String8 path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
   String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
   OS_FileIter* iter = push_array(arena, OS_FileIter, 1);
   iter.flags = flags;
@@ -865,9 +865,9 @@ public static OS_Handle os_process_launch(OS_ProcessLaunchParams* params)
   String8 cmd = default;
   {
     StringJoin join_params = default;
-    join_params.pre = str8_lit("\"");
-    join_params.sep = str8_lit("\" \"");
-    join_params.post = str8_lit("\"");
+    join_params.pre = ("\"");
+    join_params.sep = ("\" \"");
+    join_params.post = ("\"");
     cmd = str8_list_join(scratch.arena, &params.cmd_line, &join_params);
   }
   
@@ -876,8 +876,8 @@ public static OS_Handle os_process_launch(OS_ProcessLaunchParams* params)
   String8 env = default;
   {
     StringJoin join_params2 = default;
-    join_params2.sep = str8_lit("\0");
-    join_params2.post = str8_lit("\0");
+    join_params2.sep = ("\0");
+    join_params2.post = ("\0");
     String8List all_opts = params.env;
     if(params.inherit_env != 0)
     {
@@ -1543,13 +1543,13 @@ public static void w32_entry_point_caller(int argc, WCHAR **wargv)
   {
     String16 arg16 = str16_cstring((uint16 *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
-    if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlags.CaseInsensitive) ||
-       str8_match(arg8, str8_lit("-quiet"), StringMatchFlags.CaseInsensitive))
+    if(str8_match(arg8, ("--quiet"), StringMatchFlags.CaseInsensitive) ||
+       str8_match(arg8, ("-quiet"), StringMatchFlags.CaseInsensitive))
     {
       win32_g_is_quiet = 1;
     }
-    if(str8_match(arg8, str8_lit("--large_pages"), StringMatchFlags.CaseInsensitive) ||
-       str8_match(arg8, str8_lit("-large_pages"), StringMatchFlags.CaseInsensitive))
+    if(str8_match(arg8, ("--large_pages"), StringMatchFlags.CaseInsensitive) ||
+       str8_match(arg8, ("-large_pages"), StringMatchFlags.CaseInsensitive))
     {
       arena_default_flags        = ArenaFlag_LargePages;
       arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);

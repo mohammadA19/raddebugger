@@ -36,7 +36,7 @@ R_D3D11_UniformTypeKind_COUNT,
 
 C_LINKAGE_BEGIN
 read_only global String8 r_d3d11_g_rect_shader_src =
-str8_lit_comp(
+(
 ""
 "\n"
 "cbuffer Globals : register(b0)\n"
@@ -205,7 +205,7 @@ str8_lit_comp(
 );
 
 read_only global String8 r_d3d11_g_blur_shader_src =
-str8_lit_comp(
+(
 ""
 "\n"
 "cbuffer Globals : register(b0)\n"
@@ -316,7 +316,7 @@ str8_lit_comp(
 );
 
 read_only global String8 r_d3d11_g_mesh_shader_src =
-str8_lit_comp(
+(
 ""
 "\n"
 "cbuffer Uniforms : register(b0)\n"
@@ -356,7 +356,7 @@ str8_lit_comp(
 );
 
 read_only global String8 r_d3d11_g_geo3dcomposite_shader_src =
-str8_lit_comp(
+(
 ""
 "\n"
 "struct CPU2Vertex\n"
@@ -409,7 +409,7 @@ str8_lit_comp(
 );
 
 read_only global String8 r_d3d11_g_finalize_shader_src =
-str8_lit_comp(
+(
 ""
 "\n"
 "struct CPU2Vertex\n"

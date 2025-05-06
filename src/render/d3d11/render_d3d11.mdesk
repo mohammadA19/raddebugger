@@ -489,7 +489,7 @@ r_d3d11_g_vshad_kind_source_table:
 @c_file @data(String8)
 r_d3d11_g_vshad_kind_source_name_table:
 {
-  @expand(R_D3D11_VShadTable a) `str8_lit_comp("$(a.source)")`;
+  @expand(R_D3D11_VShadTable a) `("$(a.source)")`;
 }
 
 @c_file @data(`D3D11_INPUT_ELEMENT_DESC *`)
@@ -513,7 +513,7 @@ r_d3d11_g_pshad_kind_source_table:
 @c_file @data(String8)
 r_d3d11_g_pshad_kind_source_name_table:
 {
-  @expand(R_D3D11_PShadTable a) `str8_lit_comp("$(a.source)")`;
+  @expand(R_D3D11_PShadTable a) `("$(a.source)")`;
 }
 
 @c_file @data(U64)

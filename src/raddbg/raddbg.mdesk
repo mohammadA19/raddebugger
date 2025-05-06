@@ -30,7 +30,7 @@ RD_CfgSrcTable:
 
 @data(String8) rd_cfg_src_string_table:
 {
-  @expand(RD_CfgSrcTable a) `str8_lit_comp("$(a.string)")`,
+  @expand(RD_CfgSrcTable a) `("$(a.string)")`,
 }
 
 @data(RD_CmdKind) rd_cfg_src_load_cmd_kind_table:
@@ -121,22 +121,22 @@ RD_EntityKindTable:
 
 @data(String8) d_entity_kind_display_string_table:
 {
-  @expand(RD_EntityKindTable a) `str8_lit_comp("$(a.display_string)")`,
+  @expand(RD_EntityKindTable a) `("$(a.display_string)")`,
 }
 
 @data(String8) d_entity_kind_name_lower_table:
 {
-  @expand(RD_EntityKindTable a) `str8_lit_comp("$(a.name_lower)")`,
+  @expand(RD_EntityKindTable a) `("$(a.name_lower)")`,
 }
 
 @data(String8) d_entity_kind_name_lower_plural_table:
 {
-  @expand(RD_EntityKindTable a) `str8_lit_comp("$(a.name_lower_plural)")`,
+  @expand(RD_EntityKindTable a) `("$(a.name_lower_plural)")`,
 }
 
 @data(String8) d_entity_kind_name_label_table:
 {
-  @expand(RD_EntityKindTable a) `str8_lit_comp("$(a.name_label)")`,
+  @expand(RD_EntityKindTable a) `("$(a.name_label)")`,
 }
 
 @data(RD_EntityKindFlags) rd_entity_kind_flags_table:
@@ -517,9 +517,9 @@ RD_CmdTable:    //               |        |              |                  |   
 {
   `{0}`,
   @expand(D_CmdTable, a)
-    ```{ str8_lit_comp("$(a.string)"), str8_lit_comp("$(a.desc)"), str8_lit_comp("$(a.search_tags)"), str8_lit_comp("$(a.display_name)"), RD_IconKind_$(a.canonical_icon), (RD_CmdKindFlag_ListInUI*$(a.ui_vis))|(RD_CmdKindFlag_ListInIPCDocs*$(a.ipc_docs_vis)), {(RD_QueryFlag_AllowFiles*$(a.q_allow_files))|(RD_QueryFlag_AllowFolders*$(a.q_allow_folders))|(RD_QueryFlag_CodeInput*$(a.q_is_code))|(RD_QueryFlag_KeepOldInput*$(a.q_keep_oi))|(RD_QueryFlag_SelectOldInput*$(a.q_select_oi))|(RD_QueryFlag_Required*$(a.q_required)), RD_RegSlot_$(a.q_slot), str8_lit_comp("$(a.q_view != 'null' -> a.q_view)"), RD_EntityKind_$(a.q_ent_kind), CTRL_EntityKind_$(a.q_ctrl_ent_kind)}}```;
+    ```{ ("$(a.string)"), ("$(a.desc)"), ("$(a.search_tags)"), ("$(a.display_name)"), RD_IconKind_$(a.canonical_icon), (RD_CmdKindFlag_ListInUI*$(a.ui_vis))|(RD_CmdKindFlag_ListInIPCDocs*$(a.ipc_docs_vis)), {(RD_QueryFlag_AllowFiles*$(a.q_allow_files))|(RD_QueryFlag_AllowFolders*$(a.q_allow_folders))|(RD_QueryFlag_CodeInput*$(a.q_is_code))|(RD_QueryFlag_KeepOldInput*$(a.q_keep_oi))|(RD_QueryFlag_SelectOldInput*$(a.q_select_oi))|(RD_QueryFlag_Required*$(a.q_required)), RD_RegSlot_$(a.q_slot), ("$(a.q_view != 'null' -> a.q_view)"), RD_EntityKind_$(a.q_ent_kind), CTRL_EntityKind_$(a.q_ctrl_ent_kind)}}```;
   @expand(RD_CmdTable, a)
-    ```{ str8_lit_comp("$(a.string)"), str8_lit_comp("$(a.desc)"), str8_lit_comp("$(a.search_tags)"), str8_lit_comp("$(a.display_name)"), RD_IconKind_$(a.canonical_icon), (RD_CmdKindFlag_ListInUI*$(a.ui_vis))|(RD_CmdKindFlag_ListInIPCDocs*$(a.ipc_docs_vis)), {(RD_QueryFlag_AllowFiles*$(a.q_allow_files))|(RD_QueryFlag_AllowFolders*$(a.q_allow_folders))|(RD_QueryFlag_CodeInput*$(a.q_is_code))|(RD_QueryFlag_KeepOldInput*$(a.q_keep_oi))|(RD_QueryFlag_SelectOldInput*$(a.q_select_oi))|(RD_QueryFlag_Required*$(a.q_required)), RD_RegSlot_$(a.q_slot), str8_lit_comp("$(a.q_view != 'null' -> a.q_view)"), RD_EntityKind_$(a.q_ent_kind), CTRL_EntityKind_$(a.q_ctrl_ent_kind)}}```;
+    ```{ ("$(a.string)"), ("$(a.desc)"), ("$(a.search_tags)"), ("$(a.display_name)"), RD_IconKind_$(a.canonical_icon), (RD_CmdKindFlag_ListInUI*$(a.ui_vis))|(RD_CmdKindFlag_ListInIPCDocs*$(a.ipc_docs_vis)), {(RD_QueryFlag_AllowFiles*$(a.q_allow_files))|(RD_QueryFlag_AllowFolders*$(a.q_allow_folders))|(RD_QueryFlag_CodeInput*$(a.q_is_code))|(RD_QueryFlag_KeepOldInput*$(a.q_keep_oi))|(RD_QueryFlag_SelectOldInput*$(a.q_select_oi))|(RD_QueryFlag_Required*$(a.q_required)), RD_RegSlot_$(a.q_slot), ("$(a.q_view != 'null' -> a.q_view)"), RD_EntityKind_$(a.q_ent_kind), CTRL_EntityKind_$(a.q_ctrl_ent_kind)}}```;
 }
 
 ////////////////////////////////
@@ -691,7 +691,7 @@ RD_DefaultBindingTable:
 
 @data(RD_StringBindingPair) rd_default_binding_table:
 {
-  @expand(RD_DefaultBindingTable a) ```{str8_lit_comp("$(a.name)"), {OS_Key_$(a.key), 0 $(a.ctrl != 0 -> `|OS_Modifier_Ctrl`) $(a.shift != 0 -> `|OS_Modifier_Shift`) $(a.alt != 0 -> `|OS_Modifier_Alt`)}}```;
+  @expand(RD_DefaultBindingTable a) ```{("$(a.name)"), {OS_Key_$(a.key), 0 $(a.ctrl != 0 -> `|OS_Modifier_Ctrl`) $(a.shift != 0 -> `|OS_Modifier_Shift`) $(a.alt != 0 -> `|OS_Modifier_Alt`)}}```;
 }
 
 ////////////////////////////////
@@ -713,12 +713,12 @@ RD_BindingVersionRemapTable:
 
 @data(String8) rd_binding_version_remap_old_name_table:
 {
-  @expand(RD_BindingVersionRemapTable a) `str8_lit_comp("$(a.old_name)")`
+  @expand(RD_BindingVersionRemapTable a) `("$(a.old_name)")`
 }
 
 @data(String8) rd_binding_version_remap_new_name_table:
 {
-  @expand(RD_BindingVersionRemapTable a) `str8_lit_comp("$(a.new_name)")`
+  @expand(RD_BindingVersionRemapTable a) `("$(a.new_name)")`
 }
 
 ////////////////////////////////
@@ -806,7 +806,7 @@ RD_IconTable:
 
 @data(String8) rd_icon_kind_text_table:
 {
-  @expand(RD_IconTable a) `str8_lit_comp("$(a.text)")`;
+  @expand(RD_IconTable a) `("$(a.text)")`;
 }
 
 ////////////////////////////////
@@ -852,7 +852,7 @@ RD_CollectionTable:
 
 @data(String8) rd_collection_name_table:
 {
-  @expand(RD_CollectionTable a) `str8_lit_comp("$(a.name)")`
+  @expand(RD_CollectionTable a) `("$(a.name)")`
 }
 
 @data(RD_EntityKind) rd_collection_entity_kind_table:
@@ -971,7 +971,7 @@ RD_ViewRuleTable:
 @data(RD_ViewRuleInfo) rd_view_rule_kind_info_table:
 {
   `{{0}, {0}, {0}, {0}, RD_IconKind_Null, 0, EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil), RD_VIEW_RULE_UI_FUNCTION_NAME(null)}`,
-  @expand(RD_ViewRuleTable a) `{str8_lit_comp("$(a.name_lower)"), str8_lit_comp("$(a.description)"), str8_lit_comp("$(a.display_name)"), str8_lit_comp("$(a.params_schema)"), RD_IconKind_$(a.icon), (RD_ViewRuleInfoFlag_ShowInDocs*$(a.show_in_docs)|RD_ViewRuleInfoFlag_CanFilter*$(a.can_filter)|RD_ViewRuleInfoFlag_FilterIsCode*$(a.filter_is_code)|RD_ViewRuleInfoFlag_TypingAutomaticallyFilters*$(a.typing_automatically_filters)|RD_ViewRuleInfoFlag_CanUseInWatchTable*$(a.can_use_in_watch_table)|RD_ViewRuleInfoFlag_CanFillValueCell*$(a.can_fill_value_cell)|RD_ViewRuleInfoFlag_CanExpand*$(a.can_expand)), $(a.can_expand != 0 -> "EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(" .. a.name_lower .. ")") $(a.can_expand == 0 -> "EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil)"), RD_VIEW_RULE_UI_FUNCTION_NAME($(a.name_lower))}`,
+  @expand(RD_ViewRuleTable a) `{("$(a.name_lower)"), ("$(a.description)"), ("$(a.display_name)"), ("$(a.params_schema)"), RD_IconKind_$(a.icon), (RD_ViewRuleInfoFlag_ShowInDocs*$(a.show_in_docs)|RD_ViewRuleInfoFlag_CanFilter*$(a.can_filter)|RD_ViewRuleInfoFlag_FilterIsCode*$(a.filter_is_code)|RD_ViewRuleInfoFlag_TypingAutomaticallyFilters*$(a.typing_automatically_filters)|RD_ViewRuleInfoFlag_CanUseInWatchTable*$(a.can_use_in_watch_table)|RD_ViewRuleInfoFlag_CanFillValueCell*$(a.can_fill_value_cell)|RD_ViewRuleInfoFlag_CanExpand*$(a.can_expand)), $(a.can_expand != 0 -> "EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(" .. a.name_lower .. ")") $(a.can_expand == 0 -> "EV_VIEW_RULE_EXPR_EXPAND_INFO_FUNCTION_NAME(nil)"), RD_VIEW_RULE_UI_FUNCTION_NAME($(a.name_lower))}`,
 }
 
 ////////////////////////////////
@@ -1135,22 +1135,22 @@ RD_ThemeColorVersionRemapTable:
 
 @data(String8) rd_theme_preset_display_string_table:
 {
-  @expand(RD_ThemePresetTable a) `str8_lit_comp("$(a.display_string)")`,
+  @expand(RD_ThemePresetTable a) `("$(a.display_string)")`,
 }
 
 @data(String8) rd_theme_preset_code_string_table:
 {
-  @expand(RD_ThemePresetTable a) `str8_lit_comp("$(a.name_lower)")`,
+  @expand(RD_ThemePresetTable a) `("$(a.name_lower)")`,
 }
 
 @data(String8) rd_theme_color_version_remap_old_name_table:
 {
-  @expand(RD_ThemeColorVersionRemapTable a) `str8_lit_comp("$(a.old_name)")`
+  @expand(RD_ThemeColorVersionRemapTable a) `("$(a.old_name)")`
 }
 
 @data(String8) rd_theme_color_version_remap_new_name_table:
 {
-  @expand(RD_ThemeColorVersionRemapTable a) `str8_lit_comp("$(a.new_name)")`
+  @expand(RD_ThemeColorVersionRemapTable a) `("$(a.new_name)")`
 }
 
 @data(Vec4F32) rd_theme_preset_colors__default_dark:   {@expand(RD_ThemeColorTable a) `rgba_from_u32_lit_comp($(a.default_dark))`}
@@ -1169,12 +1169,12 @@ RD_ThemeColorVersionRemapTable:
 
 @data(String8) rd_theme_color_display_string_table:
 {
-  @expand(RD_ThemeColorTable a) `str8_lit_comp("$(a.display_name)")`
+  @expand(RD_ThemeColorTable a) `("$(a.display_name)")`
 }
 
 @data(String8) rd_theme_color_cfg_string_table:
 {
-  @expand(RD_ThemeColorTable a) `str8_lit_comp("$(a.name_lower)")`
+  @expand(RD_ThemeColorTable a) `("$(a.name_lower)")`
 }
 
 ////////////////////////////////
@@ -1212,12 +1212,12 @@ RD_SettingTable:
 
 @data(String8) rd_setting_code_display_string_table:
 {
-  @expand(RD_SettingTable a) `str8_lit_comp("$(a.display_string)")`
+  @expand(RD_SettingTable a) `("$(a.display_string)")`
 }
 
 @data(String8) rd_setting_code_lower_string_table:
 {
-  @expand(RD_SettingTable a) `str8_lit_comp("$(a.name_lower)")`
+  @expand(RD_SettingTable a) `("$(a.name_lower)")`
 }
 
 @data(B8) rd_setting_code_default_is_per_window_table:

@@ -773,13 +773,13 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
     entry_out->type       = DEMON_LNX_MapsEntryType_Null;
     entry_out->stack_tid  = 0;
     
-    if (str8_match(pathname, str8_lit("/"), StringMatchFlags.RightSideSloppy)){
+    if (str8_match(pathname, ("/"), StringMatchFlags.RightSideSloppy)){
       entry_out->type = DEMON_LNX_MapsEntryType_Path;
-    } else if (str8_match(pathname, str8_lit("[heap]"), 0)){
+    } else if (str8_match(pathname, ("[heap]"), 0)){
       entry_out->type = DEMON_LNX_MapsEntryType_Heap;
-    } else if (str8_match(pathname, str8_lit("[stack]"), 0)){
+    } else if (str8_match(pathname, ("[stack]"), 0)){
       entry_out->type = DEMON_LNX_MapsEntryType_Stack;
-    } else if (str8_match(pathname, str8_lit("[stack:"), StringMatchFlags.RightSideSloppy)){
+    } else if (str8_match(pathname, ("[stack:"), StringMatchFlags.RightSideSloppy)){
       entry_out->type = DEMON_LNX_MapsEntryType_Stack;
       String8 tid = str8_substr(pathname, r1u64(7, pathname.size - 8));
       entry_out->stack_tid = (pid_t)u64_from_str8(tid, 10);
@@ -2084,7 +2084,7 @@ demon_os_proc_iter_next(Arena *arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo
     pid_t pid = u64_from_str8(pid_string, 10);
     String8 name = demon_lnx_executable_path_from_pid(arena, pid);
     if (name.size == 0){
-      name = str8_lit("<name-not-resolved>");
+      name = ("<name-not-resolved>");
     }
     
     // finish conversion

@@ -63,7 +63,7 @@ DMN_ExceptionKindTable:
 
 @data(String8) dmn_event_kind_string_table:
 {
-  @expand(DMN_EventKindTable a) `str8_lit_comp("$(a.name)")`
+  @expand(DMN_EventKindTable a) `("$(a.name)")`
 }
 
 @enum DMN_ErrorKind:
@@ -86,5 +86,5 @@ DMN_ExceptionKindTable:
 
 @data(String8) dmn_exception_kind_string_table:
 {
-  @expand(DMN_ExceptionKindTable a) `str8_lit_comp("$(a.name)")`
+  @expand(DMN_ExceptionKindTable a) `("$(a.name)")`
 }

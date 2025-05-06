@@ -163,10 +163,10 @@ OS_KeyTable:
 
 @data(String8) os_g_key_display_string_table:
 {
-  @expand(OS_KeyTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(OS_KeyTable a) `("$(a.display_string)")`;
 }
 
 @data(String8) os_g_key_cfg_string_table:
 {
-  @expand(OS_KeyTable a) `str8_lit_comp("$(a.cfg_string)")`;
+  @expand(OS_KeyTable a) `("$(a.cfg_string)")`;
 }

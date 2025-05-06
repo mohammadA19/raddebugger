@@ -46,10 +46,10 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
   
   // get input pdb
   {
-    String8 input_name = cmd_line_string(cmdline, str8_lit("elf"));
+    String8 input_name = cmd_line_string(cmdline, ("elf"));
     if (input_name.size == 0){
       str8_list_push(arena, &result->errors,
-                     str8_lit("missing required parameter '--elf:<elf_file>'"));
+                     ("missing required parameter '--elf:<elf_file>'"));
     }
     
     if (input_name.size > 0){
@@ -69,12 +69,12 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
   
   // get output name
   {
-    result->output_name = cmd_line_string(cmdline, str8_lit("out"));
+    result->output_name = cmd_line_string(cmdline, ("out"));
   }
   
   // error options
-  if (cmd_line_has_flag(cmdline, str8_lit("hide_errors"))){
-    String8List vals = cmd_line_strings(cmdline, str8_lit("hide_errors"));
+  if (cmd_line_has_flag(cmdline, ("hide_errors"))){
+    String8List vals = cmd_line_strings(cmdline, ("hide_errors"));
     
     // if no values - set all to hidden
     if (vals.node_count == 0){
@@ -89,7 +89,7 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
     for (String8Node *node = vals.first;
          node != 0;
          node = node->next){
-      if (str8_match(node->string, str8_lit("input"), 0)){
+      if (str8_match(node->string, ("input"), 0)){
         result->hide_errors.input = 1;
       }
     }
@@ -97,8 +97,8 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
   }
   
   // unit idx selector
-  if (cmd_line_has_flag(cmdline, str8_lit("unit_idx"))){
-    String8List vals = cmd_line_strings(cmdline, str8_lit("unit_idx"));
+  if (cmd_line_has_flag(cmdline, ("unit_idx"))){
+    String8List vals = cmd_line_strings(cmdline, ("unit_idx"));
     
     // single value unit index
     if (vals.node_count == 1){
@@ -117,10 +117,10 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
   }
   
   // dump options
-  if (cmd_line_has_flag(cmdline, str8_lit("dump"))){
+  if (cmd_line_has_flag(cmdline, ("dump"))){
     result->dump = 1;
     
-    String8List vals = cmd_line_strings(cmdline, str8_lit("dump"));
+    String8List vals = cmd_line_strings(cmdline, ("dump"));
     if (vals.first == 0){
       B8 *ptr = &result->dump__first;
       for (; ptr < &result->dump__last; ptr += 1){
@@ -131,43 +131,43 @@ dwarf_convert_params_from_cmd_line(Arena *arena, CmdLine *cmdline){
       for (String8Node *node = vals.first;
            node != 0;
            node = node->next){
-        if (str8_match(node->string, str8_lit("header"), 0)){
+        if (str8_match(node->string, ("header"), 0)){
           result->dump_header = 1;
         }
-        else if (str8_match(node->string, str8_lit("sections"), 0)){
+        else if (str8_match(node->string, ("sections"), 0)){
           result->dump_sections = 1;
         }
-        else if (str8_match(node->string, str8_lit("segments"), 0)){
+        else if (str8_match(node->string, ("segments"), 0)){
           result->dump_segments = 1;
         }
-        else if (str8_match(node->string, str8_lit("symtab"), 0)){
+        else if (str8_match(node->string, ("symtab"), 0)){
           result->dump_symtab = 1;
         }
-        else if (str8_match(node->string, str8_lit("dynsym"), 0)){
+        else if (str8_match(node->string, ("dynsym"), 0)){
           result->dump_dynsym = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_sections"), 0)){
+        else if (str8_match(node->string, ("debug_sections"), 0)){
           result->dump_debug_sections = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_info"), 0)){
+        else if (str8_match(node->string, ("debug_info"), 0)){
           result->dump_debug_info = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_abbrev"), 0)){
+        else if (str8_match(node->string, ("debug_abbrev"), 0)){
           result->dump_debug_abbrev = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_pubnames"), 0)){
+        else if (str8_match(node->string, ("debug_pubnames"), 0)){
           result->dump_debug_pubnames = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_pubtypes"), 0)){
+        else if (str8_match(node->string, ("debug_pubtypes"), 0)){
           result->dump_debug_pubtypes = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_names"), 0)){
+        else if (str8_match(node->string, ("debug_names"), 0)){
           result->dump_debug_names = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_aranges"), 0)){
+        else if (str8_match(node->string, ("debug_aranges"), 0)){
           result->dump_debug_aranges = 1;
         }
-        else if (str8_match(node->string, str8_lit("debug_addr"), 0)){
+        else if (str8_match(node->string, ("debug_addr"), 0)){
           result->dump_debug_addr = 1;
         }
       }
@@ -565,7 +565,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_header){
       if (elf != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "ELF:\n"));
         
@@ -577,7 +577,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
         str8_list_pushf(arena, &dump, " vbase=0x%llx\n", elf->vbase);
         str8_list_pushf(arena, &dump, " entry_vaddr=0x%llx\n", elf->vbase);
         
-        str8_list_push(arena, &dump, str8_lit("\n"));
+        str8_list_push(arena, &dump, ("\n"));
       }
     }
     
@@ -588,7 +588,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
         String8Array section_name_array = elf_section_name_array_from_elf(elf);
         
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "SECTIONS:\n"));
         
@@ -610,7 +610,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
           str8_list_pushf(arena, &dump, "  info=%u\n", sec->sh_info);
           str8_list_pushf(arena, &dump, "  addralign=0x%llx\n", sec->sh_addralign);
           str8_list_pushf(arena, &dump, "  entsize=%llu\n", sec->sh_entsize);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
       }
     }
@@ -618,23 +618,23 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     // SYMTAB
     if (symtab.count > 0 && params->dump_symtab){
       str8_list_push(arena, &dump,
-                     str8_lit("################################"
+                     ("################################"
                               "################################\n"
                               "SYMTAB:\n"));
       str8_list_pushf(arena, &dump, " section: %llu\n", elf->symtab_idx);
       dump_symtab(arena, &dump, &symtab, strtab, 1);
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     // DYNSYM
     if (dynsym.count > 0 && params->dump_dynsym){
       str8_list_push(arena, &dump,
-                     str8_lit("################################"
+                     ("################################"
                               "################################\n"
                               "DYNSYM:\n"));
       str8_list_pushf(arena, &dump, " section: %llu\n", elf->dynsym_idx);
       dump_symtab(arena, &dump, &dynsym, strtab, 1);
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     // SEGMENTS
@@ -643,7 +643,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
         ELF_SegmentArray segment_array = elf_segment_array_from_elf(elf);
         
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "SEGMENTS:\n"));
         
@@ -662,7 +662,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
           str8_list_pushf(arena, &dump, "  p_filesz=%llu\n", seg->p_filesz);
           str8_list_pushf(arena, &dump, "  p_memsz=%llu\n", seg->p_memsz);
           str8_list_pushf(arena, &dump, "  p_align=%llu\n", seg->p_align);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
       }
     }
@@ -671,7 +671,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_sections){
       if (dwarf != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG SECTIONS:\n"));
         
@@ -682,7 +682,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
           String8 name = dwarf_string_from_section_code(i);
           str8_list_pushf(arena, &dump, " %-10.*s section_idx=%u\n", str8_varg(name), idx);
         }
-        str8_list_push(arena, &dump, str8_lit("\n"));
+        str8_list_push(arena, &dump, ("\n"));
       }
     }
     
@@ -690,7 +690,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_info){
       if (info != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG INFO:\n"));
         
@@ -700,7 +700,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_info(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -710,7 +710,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_pubnames){
       if (pubnames != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG PUBNAMES:\n"));
         
@@ -720,7 +720,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_pubnames(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -730,7 +730,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_pubtypes){
       if (pubtypes != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG PUBTYPES:\n"));
         
@@ -740,7 +740,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_pubnames(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -750,7 +750,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_names){
       if (names != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG NAMES:\n"));
         
@@ -760,7 +760,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_names(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -770,7 +770,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_aranges){
       if (aranges != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG ARANGES:\n"));
         
@@ -780,7 +780,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_aranges(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -790,7 +790,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_addr){
       if (addr != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG ADDR:\n"));
         
@@ -800,7 +800,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
              unit = unit->next, i += 1){
           str8_list_pushf(arena, &dump, " unit[%u]:\n", i);
           dwarf_stringize_addr(arena, &dump, unit, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }
@@ -811,7 +811,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_abbrev){
       if (abbrev != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG ABBREV:\n"));
         
@@ -842,7 +842,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
                               str8_varg(name_string), str8_varg(form_string));
             }
             
-            str8_list_push(arena, &dump, str8_lit("\n"));
+            str8_list_push(arena, &dump, ("\n"));
           }
         }
         
@@ -855,7 +855,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
     if (params->dump_debug_info){
       if (info != 0){
         str8_list_push(arena, &dump,
-                       str8_lit("################################"
+                       ("################################"
                                 "################################\n"
                                 "DEBUG INFO:\n"));
         
@@ -877,7 +877,7 @@ fprintf(stdout, "error(parsing): " fmt "\n",##__VA_ARGS__); \
           str8_list_pushf(arena, &dump, "  rnglists_base=%llu\n", unit->rnglists_base);
           str8_list_pushf(arena, &dump, "  loclists_base=%llu\n", unit->loclists_base);
           dump_entry_tree(arena, &dump, dwarf, unit, unit->entry_root, 2);
-          str8_list_push(arena, &dump, str8_lit("\n"));
+          str8_list_push(arena, &dump, ("\n"));
         }
         
       }

@@ -708,7 +708,7 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
   CV_DebugS                 debug_s     = task->arr[debug_s_idx];
 
   String8     string_table = cv_string_table_from_debug_s(debug_s);
-  String8List strings_list = str8_split_by_string_chars(scratch.arena, string_table, str8_lit("\0"), 0);
+  String8List strings_list = str8_split_by_string_chars(scratch.arena, string_table, ("\0"), 0);
 
   CV_StringBucket *bucket = 0;
 

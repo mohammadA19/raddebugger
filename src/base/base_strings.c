@@ -530,19 +530,19 @@ public static B32 try_u64_from_str8_c_rules(String8 string_, uint64* x){
   }
   else{
     String8 hex_string = str8_skip(string_, 2);
-    if (str8_match(str8_prefix(string_, 2), str8_lit("0x"), 0) &&
+    if (str8_match(str8_prefix(string_, 2), ("0x"), 0) &&
         str8_is_integer(hex_string, 0x10)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 0x10);
     }
-    else if (str8_match(str8_prefix(string_, 2), str8_lit("0b"), 0) &&
+    else if (str8_match(str8_prefix(string_, 2), ("0b"), 0) &&
              str8_is_integer(hex_string, 2)){
       is_integer = 1;
       *x = u64_from_str8(hex_string, 2);
     }
     else{
       String8 oct_string = str8_skip(string_, 1);
-      if (str8_match(str8_prefix(string_, 1), str8_lit("0"), 0) &&
+      if (str8_match(str8_prefix(string_, 1), ("0"), 0) &&
           str8_is_integer(hex_string, 010)){
         is_integer = 1;
         *x = u64_from_str8(oct_string, 010);
@@ -685,9 +685,9 @@ public static String8 str8_from_u64(Arena* arena, uint64 u64, uint32 radix, uint
     String8 prefix = default;
     switch(radix)
     {
-      case 16:{prefix = str8_lit("0x");}break;
-      case 8: {prefix = str8_lit("0o");}break;
-      case 2: {prefix = str8_lit("0b");}break;
+      case 16:{prefix = ("0x");}break;
+      case 8: {prefix = ("0o");}break;
+      case 2: {prefix = ("0b");}break;
     }
     
     // rjf: determine # of chars between separators
@@ -1229,13 +1229,13 @@ public static String8 str8_path_list_join_by_style(Arena* arena, String8List* pa
     case PathStyle.Null:{}break;
     case PathStyle.Relative, PathStyle.WindowsAbsolute:
     {
-      params.sep = str8_lit("/");
+      params.sep = ("/");
     }break;
     
     case PathStyle.UnixAbsolute:
     {
-      params.pre = str8_lit("/");
-      params.sep = str8_lit("/");
+      params.pre = ("/");
+      params.sep = ("/");
     }break;
   }
   String8 result = str8_list_join(arena, path, &params);
@@ -1270,7 +1270,7 @@ public static String8TxtPtPair str8_txt_pt_pair_from_string(String8 string_)
     
     // rjf: grab line/column
     {
-      uint64 colon_pos = str8_find_needle(line_part, 0, str8_lit(":"), 0);
+      uint64 colon_pos = str8_find_needle(line_part, 0, (":"), 0);
       if(colon_pos < line_part.size)
       {
         col_part = str8_skip(line_part, colon_pos+1);
@@ -1525,10 +1525,10 @@ static readonly
   OperatingSystem os,
 )[] g_os_enum_map =
 {
-  ( str8_lit_comp(""),        OperatingSystem_Null     ),
-  ( str8_lit_comp("Windows"), OperatingSystem_Windows, ),
-  ( str8_lit_comp("Linux"),   OperatingSystem_Linux,   ),
-  ( str8_lit_comp("Mac"),     OperatingSystem_Mac,     ),
+  ( (""),        OperatingSystem_Null     ),
+  ( ("Windows"), OperatingSystem_Windows, ),
+  ( ("Linux"),   OperatingSystem_Linux,   ),
+  ( ("Mac"),     OperatingSystem_Mac,     ),
 };
 StaticAssert(ArrayCount(g_os_enum_map) == OperatingSystem_COUNT, g_os_enum_map_count_check);
 
@@ -1549,12 +1549,12 @@ public static OperatingSystem operating_system_from_string(String8 string_)
 
 public static String8 string_from_dimension(Dimension dimension){
   static String8[] strings = {
-    str8_lit_comp("X"),
-    str8_lit_comp("Y"),
-    str8_lit_comp("Z"),
-    str8_lit_comp("W"),
+    ("X"),
+    ("Y"),
+    ("Z"),
+    ("W"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if ((uint32)dimension < 4){
     result = strings[dimension];
   }
@@ -1563,10 +1563,10 @@ public static String8 string_from_dimension(Dimension dimension){
 
 public static String8 string_from_side(Side side){
   static String8[] strings = {
-    str8_lit_comp("Min"),
-    str8_lit_comp("Max"),
+    ("Min"),
+    ("Max"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if ((uint32)side < 2){
     result = strings[side];
   }
@@ -1585,13 +1585,13 @@ public static String8 string_from_operating_system(OperatingSystem os)
 
 public static String8 string_from_arch(Arch arch){
   static String8[] strings = {
-    str8_lit_comp("Null"),
-    str8_lit_comp("x64"),
-    str8_lit_comp("x86"),
-    str8_lit_comp("arm64"),
-    str8_lit_comp("arm32"),
+    ("Null"),
+    ("x64"),
+    ("x86"),
+    ("arm64"),
+    ("arm32"),
   };
-  String8 result = str8_lit("error");
+  String8 result = ("error");
   if (arch < Arch_COUNT){
     result = strings[arch];
   }
@@ -1603,15 +1603,15 @@ public static String8 string_from_arch(Arch arch){
 
 public static String8 string_from_week_day(WeekDay week_day){
   static String8[] strings = {
-    str8_lit_comp("Sun"),
-    str8_lit_comp("Mon"),
-    str8_lit_comp("Tue"),
-    str8_lit_comp("Wed"),
-    str8_lit_comp("Thu"),
-    str8_lit_comp("Fri"),
-    str8_lit_comp("Sat"),
+    ("Sun"),
+    ("Mon"),
+    ("Tue"),
+    ("Wed"),
+    ("Thu"),
+    ("Fri"),
+    ("Sat"),
   };
-  String8 result = str8_lit("Err");
+  String8 result = ("Err");
   if ((uint32)week_day < WeekDay_COUNT){
     result = strings[week_day];
   }
@@ -1620,20 +1620,20 @@ public static String8 string_from_week_day(WeekDay week_day){
 
 public static String8 string_from_month(Month month){
   static String8[] strings = {
-    str8_lit_comp("Jan"),
-    str8_lit_comp("Feb"),
-    str8_lit_comp("Mar"),
-    str8_lit_comp("Apr"),
-    str8_lit_comp("May"),
-    str8_lit_comp("Jun"),
-    str8_lit_comp("Jul"),
-    str8_lit_comp("Aug"),
-    str8_lit_comp("Sep"),
-    str8_lit_comp("Oct"),
-    str8_lit_comp("Nov"),
-    str8_lit_comp("Dec"),
+    ("Jan"),
+    ("Feb"),
+    ("Mar"),
+    ("Apr"),
+    ("May"),
+    ("Jun"),
+    ("Jul"),
+    ("Aug"),
+    ("Sep"),
+    ("Oct"),
+    ("Nov"),
+    ("Dec"),
   };
-  String8 result = str8_lit("Err");
+  String8 result = ("Err");
   if ((uint32)month < Month_COUNT){
     result = strings[month];
   }
@@ -1678,7 +1678,7 @@ public static String8 string_from_elapsed_time(Arena* arena, DateTime dt){
     str8_list_pushf(scratch.arena, &list, "%ud", dt.day);
   }
   str8_list_pushf(scratch.arena, &list, "%u:%u:%u:%u ms", dt.hour, dt.min, dt.sec, dt.msec);
-  StringJoin join = { str8_lit_comp(""), str8_lit_comp(" "), str8_lit_comp("") };
+  StringJoin join = { (""), (" "), ("") };
   String8 result = str8_list_join(arena, &list, &join);
   scratch_end(scratch);
   return(result);
@@ -1708,7 +1708,7 @@ public static B32 try_guid_from_string(String8 string_, Guid* guid_out)
 {
   Temp scratch = scratch_begin(0,0);
   B32 is_parsed = 0;
-  String8List list = str8_split_by_string_chars(scratch.arena, string_, str8_lit("-"), StringSplitFlags.KeepEmpties);
+  String8List list = str8_split_by_string_chars(scratch.arena, string_, ("-"), StringSplitFlags.KeepEmpties);
   if(list.node_count == 5)
   {
     String8 data1_str    = list.first.string_;
@@ -1810,16 +1810,16 @@ public static String8 escaped_from_raw_str8(Arena* arena, String8 string_)
     {
       default:{split = 0;}break;
       case 0:    {}break;
-      case '\a': {separator_replace = str8_lit("\\a");}break;
-      case '\b': {separator_replace = str8_lit("\\b");}break;
-      case '\f': {separator_replace = str8_lit("\\f");}break;
-      case '\n': {separator_replace = str8_lit("\\n");}break;
-      case '\r': {separator_replace = str8_lit("\\r");}break;
-      case '\t': {separator_replace = str8_lit("\\t");}break;
-      case '\v': {separator_replace = str8_lit("\\v");}break;
-      case '\\': {separator_replace = str8_lit("\\\\");}break;
-      case '"':  {separator_replace = str8_lit("\\\"");}break;
-      case '?':  {separator_replace = str8_lit("\\?");}break;
+      case '\a': {separator_replace = ("\\a");}break;
+      case '\b': {separator_replace = ("\\b");}break;
+      case '\f': {separator_replace = ("\\f");}break;
+      case '\n': {separator_replace = ("\\n");}break;
+      case '\r': {separator_replace = ("\\r");}break;
+      case '\t': {separator_replace = ("\\t");}break;
+      case '\v': {separator_replace = ("\\v");}break;
+      case '\\': {separator_replace = ("\\\\");}break;
+      case '"':  {separator_replace = ("\\\"");}break;
+      case '?':  {separator_replace = ("\\?");}break;
     }
     if(split)
     {

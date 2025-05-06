@@ -16,8 +16,8 @@ path_char_from_style(PathStyle style)
   switch (style) {
   case PathStyle.Null:     break;
   case PathStyle.Relative: break;
-  case PathStyle.WindowsAbsolute: result = str8_lit("\\"); break;
-  case PathStyle.UnixAbsolute:    result = str8_lit("/");  break;
+  case PathStyle.WindowsAbsolute: result = ("\\"); break;
+  case PathStyle.UnixAbsolute:    result = ("/");  break;
   }
   return result;
 }
@@ -49,9 +49,9 @@ struct {
   String8   string;
   PathStyle path_style;
 } g_path_style_map[] = {
-  { str8_lit_comp("windows"), PathStyle.WindowsAbsolute },
-  { str8_lit_comp("unix"),    PathStyle.UnixAbsolute    },
-  { str8_lit_comp("system"),  PathStyle.SystemAbsolute  },
+  { ("windows"), PathStyle.WindowsAbsolute },
+  { ("unix"),    PathStyle.UnixAbsolute    },
+  { ("system"),  PathStyle.SystemAbsolute  },
 };
 
 internal PathStyle

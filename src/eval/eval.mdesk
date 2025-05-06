@@ -188,23 +188,23 @@ E_InterpretationCodeTable:
 @data(String8)
 e_token_kind_strings:
 {
-  @expand(E_TokenKindTable a) `str8_lit_comp("$(a.name)")`
+  @expand(E_TokenKindTable a) `("$(a.name)")`
 }
 
 @data(String8)
 e_expr_kind_strings:
 {
-  @expand(E_ExprKindTable a) `str8_lit_comp("$(a.name)")`
+  @expand(E_ExprKindTable a) `("$(a.name)")`
 }
 
 @data(String8) e_interpretation_code_display_strings:
 {
-  @expand(E_InterpretationCodeTable a) `str8_lit_comp("$(a.display_string)")`
+  @expand(E_InterpretationCodeTable a) `("$(a.display_string)")`
 }
 
 @data(E_OpInfo) e_expr_kind_op_info_table:
 {
-  @expand(E_ExprKindTable a) `{ E_OpKind_$(a.op_kind), $(a.precedence), str8_lit_comp("$(a.op_pre)"), str8_lit_comp("$(a.op_sep)"), str8_lit_comp("$(a.op_pos)") }`
+  @expand(E_ExprKindTable a) `{ E_OpKind_$(a.op_kind), $(a.precedence), ("$(a.op_pre)"), ("$(a.op_sep)"), ("$(a.op_pos)") }`
 }
 
 @data(U8) e_kind_basic_byte_size_table:
@@ -214,5 +214,5 @@ e_expr_kind_strings:
 
 @data(String8) e_kind_basic_string_table:
 {
-  @expand(E_TypeKindTable a) `str8_lit_comp("$(a.basic_string)")`;
+  @expand(E_TypeKindTable a) `("$(a.basic_string)")`;
 }

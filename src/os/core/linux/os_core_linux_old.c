@@ -99,131 +99,131 @@ lnx_file_properties_from_stat(FileProperties *out, struct stat *in){
 
 internal String8
 lnx_string_from_signal(int signum){
-  String8 result = str8_lit("<unknown-signal>");
+  String8 result = ("<unknown-signal>");
   switch (signum){
     case SIGABRT:
     {
-      result = str8_lit("SIGABRT");
+      result = ("SIGABRT");
     }break;
     case SIGALRM:
     {
-      result = str8_lit("SIGALRM");
+      result = ("SIGALRM");
     }break;
     case SIGBUS:
     {
-      result = str8_lit("SIGBUS");
+      result = ("SIGBUS");
     }break;
     case SIGCHLD:
     {
-      result = str8_lit("SIGCHLD");
+      result = ("SIGCHLD");
     }break;
     case SIGCONT:
     {
-      result = str8_lit("SIGCONT");
+      result = ("SIGCONT");
     }break;
     case SIGFPE:
     {
-      result = str8_lit("SIGFPE");
+      result = ("SIGFPE");
     }break;
     case SIGHUP:
     {
-      result = str8_lit("SIGHUP");
+      result = ("SIGHUP");
     }break;
     case SIGILL:
     {
-      result = str8_lit("SIGILL");
+      result = ("SIGILL");
     }break;
     case SIGINT:
     {
-      result = str8_lit("SIGINT");
+      result = ("SIGINT");
     }break;
     case SIGIO:
     {
-      result = str8_lit("SIGIO");
+      result = ("SIGIO");
     }
     case SIGKILL:
     {
-      result = str8_lit("SIGKILL");
+      result = ("SIGKILL");
     }break;
     case SIGPIPE:
     {
-      result = str8_lit("SIGPIPE");
+      result = ("SIGPIPE");
     }break;
     case SIGPROF:
     {
-      result = str8_lit("SIGPROF");
+      result = ("SIGPROF");
     }break;
     case SIGPWR:
     {
-      result = str8_lit("SIGPWR");
+      result = ("SIGPWR");
     }break;
     case SIGQUIT:
     {
-      result = str8_lit("SIGQUIT");
+      result = ("SIGQUIT");
     }break;
     case SIGSEGV:
     {
-      result = str8_lit("SIGSEGV");
+      result = ("SIGSEGV");
     }break;
     case SIGSTKFLT:
     {
-      result = str8_lit("SIGSTKFLT");
+      result = ("SIGSTKFLT");
     }break;
     case SIGSTOP:
     {
-      result = str8_lit("SIGSTOP");
+      result = ("SIGSTOP");
     }break;
     case SIGTSTP:
     {
-      result = str8_lit("SIGTSTP");
+      result = ("SIGTSTP");
     }break;
     case SIGSYS:
     {
-      result = str8_lit("SIGSYS");
+      result = ("SIGSYS");
     }break;
     case SIGTERM:
     {
-      result = str8_lit("SIGTERM");
+      result = ("SIGTERM");
     }break;
     case SIGTRAP:
     {
-      result = str8_lit("SIGTRAP");
+      result = ("SIGTRAP");
     }break;
     case SIGTTIN:
     {
-      result = str8_lit("SIGTTIN");
+      result = ("SIGTTIN");
     }break;
     case SIGTTOU:
     {
-      result = str8_lit("SIGTTOU");
+      result = ("SIGTTOU");
     }break;
     case SIGURG:
     {
-      result = str8_lit("SIGURG");
+      result = ("SIGURG");
     }break;
     case SIGUSR1:
     {
-      result = str8_lit("SIGUSR1");
+      result = ("SIGUSR1");
     }break;
     case SIGUSR2:
     {
-      result = str8_lit("SIGUSR2");
+      result = ("SIGUSR2");
     }break;
     case SIGVTALRM:
     {
-      result = str8_lit("SIGVTALRM");
+      result = ("SIGVTALRM");
     }break;
     case SIGXCPU:
     {
-      result = str8_lit("SIGXCPU");
+      result = ("SIGXCPU");
     }break;
     case SIGXFSZ:
     {
-      result = str8_lit("SIGXFSZ");
+      result = ("SIGXFSZ");
     }break;
     case SIGWINCH:
     {
-      result = str8_lit("SIGWINCH");
+      result = ("SIGWINCH");
     }break;
   }
   return(result);
@@ -231,531 +231,531 @@ lnx_string_from_signal(int signum){
 
 internal String8
 lnx_string_from_errno(int error_number){
-  String8 result = str8_lit("<unknown-errno>");
+  String8 result = ("<unknown-errno>");
   switch (error_number){
     case EPERM:
     {
-      result = str8_lit("EPERM");
+      result = ("EPERM");
     }break;
     case ENOENT:
     {
-      result = str8_lit("ENOENT");
+      result = ("ENOENT");
     }break;
     case ESRCH:
     {
-      result = str8_lit("ESRCH");
+      result = ("ESRCH");
     }break;
     case EINTR:
     {
-      result = str8_lit("EINTR");
+      result = ("EINTR");
     }break;
     case EIO:
     {
-      result = str8_lit("EIO");
+      result = ("EIO");
     }break;
     case ENXIO:
     {
-      result = str8_lit("ENXIO");
+      result = ("ENXIO");
     }break;
     case E2BIG:
     {
-      result = str8_lit("E2BIG");
+      result = ("E2BIG");
     }break;
     case ENOEXEC:
     {
-      result = str8_lit("ENOEXEC");
+      result = ("ENOEXEC");
     }break;
     case EBADF:
     {
-      result = str8_lit("EBADF");
+      result = ("EBADF");
     }break;
     case ECHILD:
     {
-      result = str8_lit("ECHILD");
+      result = ("ECHILD");
     }break;
     case EAGAIN:
     {
-      result = str8_lit("EAGAIN");
+      result = ("EAGAIN");
     }break;
     case ENOMEM:
     {
-      result = str8_lit("ENOMEM");
+      result = ("ENOMEM");
     }break;
     case EACCES:
     {
-      result = str8_lit("EACCES");
+      result = ("EACCES");
     }break;
     case EFAULT:
     {
-      result = str8_lit("EFAULT");
+      result = ("EFAULT");
     }break;
     case ENOTBLK:
     {
-      result = str8_lit("ENOTBLK");
+      result = ("ENOTBLK");
     }break;
     case EBUSY:
     {
-      result = str8_lit("EBUSY");
+      result = ("EBUSY");
     }break;
     case EEXIST:
     {
-      result = str8_lit("EEXIST");
+      result = ("EEXIST");
     }break;
     case EXDEV:
     {
-      result = str8_lit("EXDEV");
+      result = ("EXDEV");
     }break;
     case ENODEV:
     {
-      result = str8_lit("ENODEV");
+      result = ("ENODEV");
     }break;
     case ENOTDIR:
     {
-      result = str8_lit("ENOTDIR");
+      result = ("ENOTDIR");
     }break;
     case EISDIR:
     {
-      result = str8_lit("EISDIR");
+      result = ("EISDIR");
     }break;
     case EINVAL:
     {
-      result = str8_lit("EINVAL");
+      result = ("EINVAL");
     }break;
     case ENFILE:
     {
-      result = str8_lit("ENFILE");
+      result = ("ENFILE");
     }break;
     case EMFILE:
     {
-      result = str8_lit("EMFILE");
+      result = ("EMFILE");
     }break;
     case ENOTTY:
     {
-      result = str8_lit("ENOTTY");
+      result = ("ENOTTY");
     }break;
     case ETXTBSY:
     {
-      result = str8_lit("ETXTBSY");
+      result = ("ETXTBSY");
     }break;
     case EFBIG:
     {
-      result = str8_lit("EFBIG");
+      result = ("EFBIG");
     }break;
     case ENOSPC:
     {
-      result = str8_lit("ENOSPC");
+      result = ("ENOSPC");
     }break;
     case ESPIPE:
     {
-      result = str8_lit("ESPIPE");
+      result = ("ESPIPE");
     }break;
     case EROFS:
     {
-      result = str8_lit("EROFS");
+      result = ("EROFS");
     }break;
     case EMLINK:
     {
-      result = str8_lit("EMLINK");
+      result = ("EMLINK");
     }break;
     case EPIPE:
     {
-      result = str8_lit("EPIPE");
+      result = ("EPIPE");
     }break;
     case EDOM:
     {
-      result = str8_lit("EDOM");
+      result = ("EDOM");
     }break;
     case ERANGE:
     {
-      result = str8_lit("ERANGE");
+      result = ("ERANGE");
     }break;
     case EDEADLK:
     {
-      result = str8_lit("EDEADLK");
+      result = ("EDEADLK");
     }break;
     case ENAMETOOLONG:
     {
-      result = str8_lit("ENAMETOOLONG");
+      result = ("ENAMETOOLONG");
     }break;
     case ENOLCK:
     {
-      result = str8_lit("ENOLCK");
+      result = ("ENOLCK");
     }break;
     case ENOSYS:
     {
-      result = str8_lit("ENOSYS");
+      result = ("ENOSYS");
     }break;
     case ENOTEMPTY:
     {
-      result = str8_lit("ENOTEMPTY");
+      result = ("ENOTEMPTY");
     }break;
     case ELOOP:
     {
-      result = str8_lit("ELOOP");
+      result = ("ELOOP");
     }break;
     case ENOMSG:
     {
-      result = str8_lit("ENOMSG");
+      result = ("ENOMSG");
     }break;
     case EIDRM:
     {
-      result = str8_lit("EIDRM");
+      result = ("EIDRM");
     }break;
     case ECHRNG:
     {
-      result = str8_lit("ECHRNG");
+      result = ("ECHRNG");
     }break;
     case EL2NSYNC:
     {
-      result = str8_lit("EL2NSYNC");
+      result = ("EL2NSYNC");
     }break;
     case EL3HLT:
     {
-      result = str8_lit("EL3HLT");
+      result = ("EL3HLT");
     }break;
     case EL3RST:
     {
-      result = str8_lit("EL3RST");
+      result = ("EL3RST");
     }break;
     case ELNRNG:
     {
-      result = str8_lit("ELNRNG");
+      result = ("ELNRNG");
     }break;
     case EUNATCH:
     {
-      result = str8_lit("EUNATCH");
+      result = ("EUNATCH");
     }break;
     case ENOCSI:
     {
-      result = str8_lit("ENOCSI");
+      result = ("ENOCSI");
     }break;
     case EL2HLT:
     {
-      result = str8_lit("EL2HLT");
+      result = ("EL2HLT");
     }break;
     case EBADE:
     {
-      result = str8_lit("EBADE");
+      result = ("EBADE");
     }break;
     case EBADR:
     {
-      result = str8_lit("EBADR");
+      result = ("EBADR");
     }break;
     case EXFULL:
     {
-      result = str8_lit("EXFULL");
+      result = ("EXFULL");
     }break;
     case ENOANO:
     {
-      result = str8_lit("ENOANO");
+      result = ("ENOANO");
     }break;
     case EBADRQC:
     {
-      result = str8_lit("EBADRQC");
+      result = ("EBADRQC");
     }break;
     case EBADSLT:
     {
-      result = str8_lit("EBADSLT");
+      result = ("EBADSLT");
     }break;
     case EBFONT:
     {
-      result = str8_lit("EBFONT");
+      result = ("EBFONT");
     }break;
     case ENOSTR:
     {
-      result = str8_lit("ENOSTR");
+      result = ("ENOSTR");
     }break;
     case ENODATA:
     {
-      result = str8_lit("ENODATA");
+      result = ("ENODATA");
     }break;
     case ETIME:
     {
-      result = str8_lit("ETIME");
+      result = ("ETIME");
     }break;
     case ENOSR:
     {
-      result = str8_lit("ENOSR");
+      result = ("ENOSR");
     }break;
     case ENONET:
     {
-      result = str8_lit("ENONET");
+      result = ("ENONET");
     }break;
     case ENOPKG:
     {
-      result = str8_lit("ENOPKG");
+      result = ("ENOPKG");
     }break;
     case EREMOTE:
     {
-      result = str8_lit("EREMOTE");
+      result = ("EREMOTE");
     }break;
     case ENOLINK:
     {
-      result = str8_lit("ENOLINK");
+      result = ("ENOLINK");
     }break;
     case EADV:
     {
-      result = str8_lit("EADV");
+      result = ("EADV");
     }break;
     case ESRMNT:
     {
-      result = str8_lit("ESRMNT");
+      result = ("ESRMNT");
     }break;
     case ECOMM:
     {
-      result = str8_lit("ECOMM");
+      result = ("ECOMM");
     }break;
     case EPROTO:
     {
-      result = str8_lit("EPROTO");
+      result = ("EPROTO");
     }break;
     case EMULTIHOP:
     {
-      result = str8_lit("EMULTIHOP");
+      result = ("EMULTIHOP");
     }break;
     case EDOTDOT:
     {
-      result = str8_lit("EDOTDOT");
+      result = ("EDOTDOT");
     }break;
     case EBADMSG:
     {
-      result = str8_lit("EBADMSG");
+      result = ("EBADMSG");
     }break;
     case EOVERFLOW:
     {
-      result = str8_lit("EOVERFLOW");
+      result = ("EOVERFLOW");
     }break;
     case ENOTUNIQ:
     {
-      result = str8_lit("ENOTUNIQ");
+      result = ("ENOTUNIQ");
     }break;
     case EBADFD:
     {
-      result = str8_lit("EBADFD");
+      result = ("EBADFD");
     }break;
     case EREMCHG:
     {
-      result = str8_lit("EREMCHG");
+      result = ("EREMCHG");
     }break;
     case ELIBACC:
     {
-      result = str8_lit("ELIBACC");
+      result = ("ELIBACC");
     }break;
     case ELIBBAD:
     {
-      result = str8_lit("ELIBBAD");
+      result = ("ELIBBAD");
     }break;
     case ELIBSCN:
     {
-      result = str8_lit("ELIBSCN");
+      result = ("ELIBSCN");
     }break;
     case ELIBMAX:
     {
-      result = str8_lit("ELIBMAX");
+      result = ("ELIBMAX");
     }break;
     case ELIBEXEC:
     {
-      result = str8_lit("ELIBEXEC");
+      result = ("ELIBEXEC");
     }break;
     case EILSEQ:
     {
-      result = str8_lit("EILSEQ");
+      result = ("EILSEQ");
     }break;
     case ERESTART:
     {
-      result = str8_lit("ERESTART");
+      result = ("ERESTART");
     }break;
     case ESTRPIPE:
     {
-      result = str8_lit("ESTRPIPE");
+      result = ("ESTRPIPE");
     }break;
     case EUSERS:
     {
-      result = str8_lit("EUSERS");
+      result = ("EUSERS");
     }break;
     case ENOTSOCK:
     {
-      result = str8_lit("ENOTSOCK");
+      result = ("ENOTSOCK");
     }break;
     case EDESTADDRREQ:
     {
-      result = str8_lit("EDESTADDRREQ");
+      result = ("EDESTADDRREQ");
     }break;
     case EMSGSIZE:
     {
-      result = str8_lit("EMSGSIZE");
+      result = ("EMSGSIZE");
     }break;
     case EPROTOTYPE:
     {
-      result = str8_lit("EPROTOTYPE");
+      result = ("EPROTOTYPE");
     }break;
     case ENOPROTOOPT:
     {
-      result = str8_lit("ENOPROTOOPT");
+      result = ("ENOPROTOOPT");
     }break;
     case EPROTONOSUPPORT:
     {
-      result = str8_lit("EPROTONOSUPPORT");
+      result = ("EPROTONOSUPPORT");
     }break;
     case ESOCKTNOSUPPORT:
     {
-      result = str8_lit("ESOCKTNOSUPPORT");
+      result = ("ESOCKTNOSUPPORT");
     }break;
     case EOPNOTSUPP:
     {
-      result = str8_lit("EOPNOTSUPP");
+      result = ("EOPNOTSUPP");
     }break;
     case EPFNOSUPPORT:
     {
-      result = str8_lit("EPFNOSUPPORT");
+      result = ("EPFNOSUPPORT");
     }break;
     case EAFNOSUPPORT:
     {
-      result = str8_lit("EAFNOSUPPORT");
+      result = ("EAFNOSUPPORT");
     }break;
     case EADDRINUSE:
     {
-      result = str8_lit("EADDRINUSE");
+      result = ("EADDRINUSE");
     }break;
     case EADDRNOTAVAIL:
     {
-      result = str8_lit("EADDRNOTAVAIL");
+      result = ("EADDRNOTAVAIL");
     }break;
     case ENETDOWN:
     {
-      result = str8_lit("ENETDOWN");
+      result = ("ENETDOWN");
     }break;
     case ENETUNREACH:
     {
-      result = str8_lit("ENETUNREACH");
+      result = ("ENETUNREACH");
     }break;
     case ENETRESET:
     {
-      result = str8_lit("ENETRESET");
+      result = ("ENETRESET");
     }break;
     case ECONNABORTED:
     {
-      result = str8_lit("ECONNABORTED");
+      result = ("ECONNABORTED");
     }break;
     case ECONNRESET:
     {
-      result = str8_lit("ECONNRESET");
+      result = ("ECONNRESET");
     }break;
     case ENOBUFS:
     {
-      result = str8_lit("ENOBUFS");
+      result = ("ENOBUFS");
     }break;
     case EISCONN:
     {
-      result = str8_lit("EISCONN");
+      result = ("EISCONN");
     }break;
     case ENOTCONN:
     {
-      result = str8_lit("ENOTCONN");
+      result = ("ENOTCONN");
     }break;
     case ESHUTDOWN:
     {
-      result = str8_lit("ESHUTDOWN");
+      result = ("ESHUTDOWN");
     }break;
     case ETOOMANYREFS:
     {
-      result = str8_lit("ETOOMANYREFS");
+      result = ("ETOOMANYREFS");
     }break;
     case ETIMEDOUT:
     {
-      result = str8_lit("ETIMEDOUT");
+      result = ("ETIMEDOUT");
     }break;
     case ECONNREFUSED:
     {
-      result = str8_lit("ECONNREFUSED");
+      result = ("ECONNREFUSED");
     }break;
     case EHOSTDOWN:
     {
-      result = str8_lit("EHOSTDOWN");
+      result = ("EHOSTDOWN");
     }break;
     case EHOSTUNREACH:
     {
-      result = str8_lit("EHOSTUNREACH");
+      result = ("EHOSTUNREACH");
     }break;
     case EALREADY:
     {
-      result = str8_lit("EALREADY");
+      result = ("EALREADY");
     }break;
     case EINPROGRESS:
     {
-      result = str8_lit("EINPROGRESS");
+      result = ("EINPROGRESS");
     }break;
     case ESTALE:
     {
-      result = str8_lit("ESTALE");
+      result = ("ESTALE");
     }break;
     case EUCLEAN:
     {
-      result = str8_lit("EUCLEAN");
+      result = ("EUCLEAN");
     }break;
     case ENOTNAM:
     {
-      result = str8_lit("ENOTNAM");
+      result = ("ENOTNAM");
     }break;
     case ENAVAIL:
     {
-      result = str8_lit("ENAVAIL");
+      result = ("ENAVAIL");
     }break;
     case EISNAM:
     {
-      result = str8_lit("EISNAM");
+      result = ("EISNAM");
     }break;
     case EREMOTEIO:
     {
-      result = str8_lit("EREMOTEIO");
+      result = ("EREMOTEIO");
     }break;
     case EDQUOT:
     {
-      result = str8_lit("EDQUOT");
+      result = ("EDQUOT");
     }break;
     case ENOMEDIUM:
     {
-      result = str8_lit("ENOMEDIUM");
+      result = ("ENOMEDIUM");
     }break;
     case EMEDIUMTYPE:
     {
-      result = str8_lit("EMEDIUMTYPE");
+      result = ("EMEDIUMTYPE");
     }break;
     case ECANCELED:
     {
-      result = str8_lit("ECANCELED");
+      result = ("ECANCELED");
     }break;
     case ENOKEY:
     {
-      result = str8_lit("ENOKEY");
+      result = ("ENOKEY");
     }break;
     case EKEYEXPIRED:
     {
-      result = str8_lit("EKEYEXPIRED");
+      result = ("EKEYEXPIRED");
     }break;
     case EKEYREVOKED:
     {
-      result = str8_lit("EKEYREVOKED");
+      result = ("EKEYREVOKED");
     }break;
     case EKEYREJECTED:
     {
-      result = str8_lit("EKEYREJECTED");
+      result = ("EKEYREJECTED");
     }break;
     case EOWNERDEAD:
     {
-      result = str8_lit("EOWNERDEAD");
+      result = ("EOWNERDEAD");
     }break;
     case ENOTRECOVERABLE:
     {
-      result = str8_lit("ENOTRECOVERABLE");
+      result = ("ENOTRECOVERABLE");
     }break;
     case ERFKILL:
     {
-      result = str8_lit("ERFKILL");
+      result = ("ERFKILL");
     }break;
     case EHWPOISON:
     {
-      result = str8_lit("EHWPOISON");
+      result = ("EHWPOISON");
     }break;
   }
   return(result);

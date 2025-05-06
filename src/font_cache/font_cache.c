@@ -196,7 +196,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
     new_node->tag = result;
     new_node->handle = fp_font_open_from_static_data_string(data_ptr);
     new_node->metrics = fp_metrics_from_font(new_node->handle);
-    new_node->path = str8_lit("");
+    new_node->path = ("");
     SLLQueuePush_N(slot->first, slot->last, new_node, hash_next);
   }
   
@@ -623,7 +623,7 @@ fnt_push_run_from_string(Arena *arena, FNT_Tag tag, F32 size, F32 base_align_px,
     B32 is_tab = (piece_substring.size == 1 && piece_substring.str[0] == '\t');
     if(is_tab)
     {
-      piece_substring = str8_lit(" ");
+      piece_substring = (" ");
     }
     
     //- rjf: piece substring -> raster cache info
@@ -993,7 +993,7 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 
 internal F32
 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size)
 {
-  F32 result = fnt_dim_from_tag_size_string(tag, size, 0, 0, str8_lit("H")).x;
+  F32 result = fnt_dim_from_tag_size_string(tag, size, 0, 0, ("H")).x;
   return result;
 }
 

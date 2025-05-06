@@ -30,7 +30,7 @@ static String8 ui_hash_part_from_key_string(String8 string)
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  uint64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  uint64 hash_replace_signifier_pos = str8_find_needle(string, 0, ("###"), 0);
   if(hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -41,7 +41,7 @@ static String8 ui_hash_part_from_key_string(String8 string)
 
 static String8 ui_display_part_from_key_string(String8 string)
 {
-  uint64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  uint64 hash_pos = str8_find_needle(string, 0, ("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -245,7 +245,7 @@ static UI_TxtOp ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, 
   {
     TxtPt new_pos = txt_pt_min(next_cursor, next_mark);
     range = txt_rng(next_cursor, next_mark);
-    replace = str8_lit("");
+    replace = ("");
     next_cursor = next_mark = new_pos;
   }
   
@@ -402,7 +402,7 @@ static UI_State* ui_state_alloc()
   Arena* arena = arena_alloc();
   UI_State* ui = push_array(arena, UI_State, 1);
   ui.arena = arena;
-  ui.external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
+  ui.external_key = ui_key_from_string(ui_key_zero(), ("###external_interaction_key###"));
   ui.build_arenas[0] = arena_alloc();
   ui.build_arenas[1] = arena_alloc();
   ui.drag_state_arena = arena_alloc();
@@ -1436,7 +1436,7 @@ static void ui_end_build()
       if(strs.node_count != 0)
       {
         StringJoin join = default;
-        join.sep = str8_lit(" ");
+        join.sep = (" ");
         String8 string = str8_list_join(scratch.arena, &strs, &join);
         os_set_clipboard_text(string);
       }

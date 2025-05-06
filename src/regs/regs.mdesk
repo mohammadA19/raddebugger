@@ -373,14 +373,14 @@ regs_g_alias_code_x64_usage_kind_table:
 
 @data(String8) regs_g_reg_code_x64_string_table:
 {
-  `str8_lit_comp("")`;
-  @expand(REGS_RegTableX64 a) `str8_lit_comp("$(a.name)")`;
+  `("")`;
+  @expand(REGS_RegTableX64 a) `("$(a.name)")`;
 }
 
 @data(String8) regs_g_alias_code_x64_string_table:
 {
-  `str8_lit_comp("")`;
-  @expand(REGS_AliasTableX64 a) `str8_lit_comp("$(a.name)")`;
+  `("")`;
+  @expand(REGS_AliasTableX64 a) `("$(a.name)")`;
 }
 
 @data(REGS_Rng) regs_g_reg_code_x64_rng_table:
@@ -432,14 +432,14 @@ regs_g_reg_code_x86_usage_kind_table:
 
 @data(String8) regs_g_reg_code_x86_string_table:
 {
-  `str8_lit_comp("")`;
-  @expand(REGS_RegTableX86 a) `str8_lit_comp("$(a.name)")`;
+  `("")`;
+  @expand(REGS_RegTableX86 a) `("$(a.name)")`;
 }
 
 @data(String8) regs_g_alias_code_x86_string_table:
 {
-  `str8_lit_comp("")`;
-  @expand(REGS_AliasTableX86 a) `str8_lit_comp("$(a.name)")`;
+  `("")`;
+  @expand(REGS_AliasTableX86 a) `("$(a.name)")`;
 }
 
 @data(REGS_Rng) regs_g_reg_code_x86_rng_table:

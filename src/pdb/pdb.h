@@ -90,9 +90,9 @@ typedef struct PDB_InfoHeaderV70
 #pragma pack(pop)
 StaticAssert(sizeof(PDB_InfoHeaderV70) == 28, pdb_info_header_v70_size_check);
 
-#define PDB_SRC_HEADER_BLOCK_STREAM_NAME str8_lit("/src/headerblock")
-#define PDB_LINK_INFO_STREAM_NAME        str8_lit("/LinkInfo")
-#define PDB_NAMES_STREAM_NAME            str8_lit("/names")
+#define PDB_SRC_HEADER_BLOCK_STREAM_NAME ("/src/headerblock")
+#define PDB_LINK_INFO_STREAM_NAME        ("/LinkInfo")
+#define PDB_NAMES_STREAM_NAME            ("/names")
 
 ////////////////////////////////
 // SRC Header Block

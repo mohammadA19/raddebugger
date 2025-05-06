@@ -73,33 +73,33 @@ entry_point(CmdLine *cmd_line)
     
     // rjf: extract "only" options
     {
-      String8List dump_options = cmd_line_strings(cmd_line, str8_lit("only"));
+      String8List dump_options = cmd_line_strings(cmd_line, ("only"));
       if(dump_options.first != 0)
       {
         dump_flags = 0;
         for(String8Node *n = dump_options.first; n != 0; n = n->next)
         {
           if(0){}
-          else if(str8_match(n->string, str8_lit("data_sections"),           StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_DataSections; }
-          else if(str8_match(n->string, str8_lit("top_level_info"),          StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_TopLevelInfo; }
-          else if(str8_match(n->string, str8_lit("binary_sections"),         StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_BinarySections; }
-          else if(str8_match(n->string, str8_lit("file_paths"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_FilePaths; }
-          else if(str8_match(n->string, str8_lit("source_files"),            StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_SourceFiles; }
-          else if(str8_match(n->string, str8_lit("line_tables"),             StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_LineTables; }
-          else if(str8_match(n->string, str8_lit("source_line_maps"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_SourceLineMaps; }
-          else if(str8_match(n->string, str8_lit("units"),                   StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Units; }
-          else if(str8_match(n->string, str8_lit("unit_vmap"),               StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_UnitVMap; }
-          else if(str8_match(n->string, str8_lit("type_nodes"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_TypeNodes; }
-          else if(str8_match(n->string, str8_lit("udt_data"),                StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_UDTs; }
-          else if(str8_match(n->string, str8_lit("global_variables"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVariables; }
-          else if(str8_match(n->string, str8_lit("global_vmap"),             StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVMap; }
-          else if(str8_match(n->string, str8_lit("thread_variables"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_ThreadVariables; }
-          else if(str8_match(n->string, str8_lit("procedures"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Procedures; }
-          else if(str8_match(n->string, str8_lit("scopes"),                  StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Scopes; }
-          else if(str8_match(n->string, str8_lit("scope_vmap"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_ScopeVMap; }
-          else if(str8_match(n->string, str8_lit("inline_sites"),            StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_InlineSites; }
-          else if(str8_match(n->string, str8_lit("name_maps"),               StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_NameMaps; }
-          else if(str8_match(n->string, str8_lit("strings"),                 StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Strings; }
+          else if(str8_match(n->string, ("data_sections"),           StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_DataSections; }
+          else if(str8_match(n->string, ("top_level_info"),          StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_TopLevelInfo; }
+          else if(str8_match(n->string, ("binary_sections"),         StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_BinarySections; }
+          else if(str8_match(n->string, ("file_paths"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_FilePaths; }
+          else if(str8_match(n->string, ("source_files"),            StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_SourceFiles; }
+          else if(str8_match(n->string, ("line_tables"),             StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_LineTables; }
+          else if(str8_match(n->string, ("source_line_maps"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_SourceLineMaps; }
+          else if(str8_match(n->string, ("units"),                   StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Units; }
+          else if(str8_match(n->string, ("unit_vmap"),               StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_UnitVMap; }
+          else if(str8_match(n->string, ("type_nodes"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_TypeNodes; }
+          else if(str8_match(n->string, ("udt_data"),                StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_UDTs; }
+          else if(str8_match(n->string, ("global_variables"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVariables; }
+          else if(str8_match(n->string, ("global_vmap"),             StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_GlobalVMap; }
+          else if(str8_match(n->string, ("thread_variables"),        StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_ThreadVariables; }
+          else if(str8_match(n->string, ("procedures"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Procedures; }
+          else if(str8_match(n->string, ("scopes"),                  StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Scopes; }
+          else if(str8_match(n->string, ("scope_vmap"),              StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_ScopeVMap; }
+          else if(str8_match(n->string, ("inline_sites"),            StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_InlineSites; }
+          else if(str8_match(n->string, ("name_maps"),               StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_NameMaps; }
+          else if(str8_match(n->string, ("strings"),                 StringMatchFlags.CaseInsensitive)) { dump_flags |= DumpFlag_Strings; }
         }
       }
     }
@@ -166,7 +166,7 @@ entry_point(CmdLine *cmd_line)
     {
       str8_list_pushf(arena, &dump, "# DATA SECTIONS:\n");
       rdi_stringize_data_sections(arena, &dump, rdi, 1);
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: TOP LEVEL INFO
@@ -175,7 +175,7 @@ entry_point(CmdLine *cmd_line)
     {
       str8_list_pushf(arena, &dump, "# TOP LEVEL INFO:\n");
       rdi_stringize_top_level_info(arena, &dump, rdi, tli, 1);
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: BINARY SECTIONS
@@ -189,7 +189,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " section[%I64u]:\n", idx);
         rdi_stringize_binary_section(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: FILE PATHS
@@ -206,7 +206,7 @@ entry_point(CmdLine *cmd_line)
           rdi_stringize_file_path(arena, &dump, rdi, &file_path_bundle, ptr, 1);
         }
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: SOURCE FILES
@@ -220,7 +220,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " source_file[%I64u]:\n", idx);
         rdi_stringize_source_file(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: LINE TABLES
@@ -234,7 +234,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " line_table[%I64u]:\n", idx);
         rdi_stringize_line_table(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: SOURCE LINE MAPS
@@ -248,7 +248,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " source_line_map[%I64u]:\n", idx);
         rdi_stringize_source_line_map(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: UNITS
@@ -262,7 +262,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " unit[%I64u]:\n", idx);
         rdi_stringize_unit(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: UNIT VMAP
@@ -275,7 +275,7 @@ entry_point(CmdLine *cmd_line)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: TYPE NODES
@@ -289,7 +289,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " type[%I64u]:\n", idx);
         rdi_stringize_type_node(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: UDT DATA
@@ -314,7 +314,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " udt[%I64u]:\n", idx);
         rdi_stringize_udt(arena, &dump, rdi, &member_bundle, &all_udts[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: GLOBAL VARIABLES
@@ -328,7 +328,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " global_variable[%I64u]:\n", idx);
         rdi_stringize_global_variable(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: GLOBAL VMAP
@@ -341,7 +341,7 @@ entry_point(CmdLine *cmd_line)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: THREAD LOCAL VARIABLES
@@ -355,7 +355,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " thread_variable[%I64u]:\n", idx);
         rdi_stringize_thread_variable(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: PROCEDURES
@@ -369,7 +369,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " procedure[%I64u]:\n", idx);
         rdi_stringize_procedure(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: SCOPES
@@ -406,7 +406,7 @@ entry_point(CmdLine *cmd_line)
           rdi_stringize_scope(arena, &dump, rdi, tli->arch, &scope_bundle, &scopes[idx], 1);
         }
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: SCOPE VMAP
@@ -419,7 +419,7 @@ entry_point(CmdLine *cmd_line)
       {
         str8_list_pushf(arena, &dump, " 0x%08x: %llu\n", v[idx].voff, v[idx].idx);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: INLINE SITES
@@ -433,7 +433,7 @@ entry_point(CmdLine *cmd_line)
         str8_list_pushf(arena, &dump, " inline_site[%I64u]:\n", idx);
         rdi_stringize_inline_site(arena, &dump, rdi, &v[idx], 2);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: NAME MAPS
@@ -484,9 +484,9 @@ entry_point(CmdLine *cmd_line)
             }
           }
         }
-        str8_list_push(arena, &dump, str8_lit("\n"));
+        str8_list_push(arena, &dump, ("\n"));
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
     
     //- rjf: STRINGS
@@ -501,7 +501,7 @@ entry_point(CmdLine *cmd_line)
         string.str = rdi_string_from_idx(rdi, (RDI_U32)idx, &string.size);
         str8_list_pushf(arena, &dump, " string[%I64u]: \"%S\"\n", idx, string);
       }
-      str8_list_push(arena, &dump, str8_lit("\n"));
+      str8_list_push(arena, &dump, ("\n"));
     }
   }
   

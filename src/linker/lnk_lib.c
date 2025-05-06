@@ -158,7 +158,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path)
   }
   
   // parse string table
-  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, str8_lit("\0"), StringSplitFlags.KeepEmpties);
+  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, ("\0"), StringSplitFlags.KeepEmpties);
   Assert(symbol_name_list.node_count >= symbol_count);
   symbol_count = Min(symbol_count, symbol_name_list.node_count);
   
@@ -387,7 +387,7 @@ lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second
   
   // long names member
   if (long_names_list.total_size > 0) {
-    String8 header = lnk_build_lib_member_header(arena, str8_lit("//"), time_stamp, 0, 0, mode, long_names_list.total_size);
+    String8 header = lnk_build_lib_member_header(arena, ("//"), time_stamp, 0, 0, mode, long_names_list.total_size);
     String8 data = str8_list_join(arena, &long_names_list, 0);
     U64 member_offset = member_data_list.total_size + data.size + header.size;
     str8_list_push_pad_front(arena, &member_data_list, member_offset, COFF_Archive_MemberAlign);
@@ -465,7 +465,7 @@ lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second
     str8_list_push(scratch.arena, &second_member_data_list, str8(name_buffer, name_buffer_size));
 
     String8 member_data   = str8_list_join(arena, &second_member_data_list, 0);
-    String8 member_header = lnk_build_lib_member_header(arena, str8_lit("/"), time_stamp, 0, 0, mode, member_data.size);
+    String8 member_header = lnk_build_lib_member_header(arena, ("/"), time_stamp, 0, 0, mode, member_data.size);
     
     U64 member_offset = member_data_list.total_size + member_data.size + member_header.size;
     str8_list_push_pad_front(arena, &member_data_list, member_offset, COFF_Archive_MemberAlign);
@@ -494,7 +494,7 @@ lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second
     str8_list_push(scratch.arena, &first_member_data_list, str8(name_buffer, name_buffer_size));
 
     String8 member_data   = str8_list_join(arena, &first_member_data_list, 0);
-    String8 member_header = lnk_build_lib_member_header(arena, str8_lit("/"), time_stamp, 0, 0, mode, member_data.size);
+    String8 member_header = lnk_build_lib_member_header(arena, ("/"), time_stamp, 0, 0, mode, member_data.size);
     
     U64 member_offset = sizeof(g_coff_archive_sig) + member_header.size + member_data.size;
     str8_list_push_pad_front(arena, &member_data_list, member_offset, COFF_Archive_MemberAlign);
@@ -704,7 +704,7 @@ lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType mach
   // __NULL_IMPORT_DESCRIPTOR
   {
     U64 symbol_name_off = (list.total_size - string_table_base);
-    str8_list_push(arena, &list, push_cstr(arena, str8_lit("__NULL_IMPORT_DESCRIPTOR")));
+    str8_list_push(arena, &list, push_cstr(arena, ("__NULL_IMPORT_DESCRIPTOR")));
     
     COFF_Symbol16 *symbol                      = &symbol_array[5];
     symbol->name.long_name.zeroes              = 0;
@@ -781,7 +781,7 @@ lnk_build_null_import_descriptor_obj(Arena *arena, COFF_MachineType machine)
   
   {
     U64 symbol_name_off = list.total_size - string_table_base;
-    str8_list_push(arena, &list, push_cstr(arena, str8_lit("__NULL_IMPORT_DESCRIPTOR")));
+    str8_list_push(arena, &list, push_cstr(arena, ("__NULL_IMPORT_DESCRIPTOR")));
     
     COFF_Symbol16 *symbol                      = &symbol_array[0];
     symbol->name.long_name.zeroes              = 0;

@@ -995,7 +995,7 @@ dwarf__line_v5_directories(U64 address_size, U64 offset_size,
 
 static String8
 dwarf_name_from_debug_section(DWARF_Parsed *dwarf, DWARF_SectionCode sec_code){
-  String8 result = str8_lit("invalid_debug_section");
+  String8 result = ("invalid_debug_section");
   if (sec_code < DWARF_SectionCode_COUNT){
     if (dwarf->debug_section_idx[sec_code] != 0){
       result = dwarf->debug_section_name[sec_code];
@@ -1210,9 +1210,9 @@ dwarf_form_decode(DWARF_FormDecodeRules *rules, U8 **ptr_io, U8 *opl,
 
 static String8
 dwarf_string_from_unit_type(DWARF_UnitType type){
-  String8 result = str8_lit("unrecognized_type");
+  String8 result = ("unrecognized_type");
   switch (type){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     DWARF_UnitTypeXList(X)
 #undef X
   }
@@ -1221,9 +1221,9 @@ dwarf_string_from_unit_type(DWARF_UnitType type){
 
 static String8
 dwarf_string_from_tag(DWARF_Tag tag){
-  String8 result = str8_lit("unrecognized_tag");
+  String8 result = ("unrecognized_tag");
   switch (tag){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     DWARF_TagXList(X)
 #undef X
   }
@@ -1232,9 +1232,9 @@ dwarf_string_from_tag(DWARF_Tag tag){
 
 static String8
 dwarf_string_from_attribute_name(DWARF_AttributeName name){
-  String8 result = str8_lit("unrecognized_attribute_name");
+  String8 result = ("unrecognized_attribute_name");
   switch (name){
-#define X(N,C,f1,f2,f3,f4) case C: result = str8_lit(#N); break;
+#define X(N,C,f1,f2,f3,f4) case C: result = (#N); break;
     DWARF_AttributeNameXList(X)
 #undef X
   }
@@ -1243,9 +1243,9 @@ dwarf_string_from_attribute_name(DWARF_AttributeName name){
 
 static String8
 dwarf_string_from_attribute_form(DWARF_AttributeForm form){
-  String8 result = str8_lit("unrecognized_attribute_form");
+  String8 result = ("unrecognized_attribute_form");
   switch (form){
-#define X(N,C,k) case C: result = str8_lit(#N); break;
+#define X(N,C,k) case C: result = (#N); break;
     DWARF_AttributeFormXList(X)
 #undef X
   }
@@ -1254,9 +1254,9 @@ dwarf_string_from_attribute_form(DWARF_AttributeForm form){
 
 static String8
 dwarf_string_from_line_std_op(DWARF_LineStdOp op){
-  String8 result = str8_lit("unrecognized_line_std_op");
+  String8 result = ("unrecognized_line_std_op");
   switch (op){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     DWARF_LineStdOpXList(X)
 #undef X
   }
@@ -1265,9 +1265,9 @@ dwarf_string_from_line_std_op(DWARF_LineStdOp op){
 
 static String8
 dwarf_string_from_line_ext_op(DWARF_LineExtOp op){
-  String8 result = str8_lit("unrecognized_line_ext_op");
+  String8 result = ("unrecognized_line_ext_op");
   switch (op){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     DWARF_LineExtOpXList(X)
 #undef X
   }
@@ -1276,9 +1276,9 @@ dwarf_string_from_line_ext_op(DWARF_LineExtOp op){
 
 static String8
 dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format){
-  String8 result = str8_lit("unrecognized_line_entry_format");
+  String8 result = ("unrecognized_line_entry_format");
   switch (format){
-#define X(N,C) case C: result = str8_lit(#N); break;
+#define X(N,C) case C: result = (#N); break;
     DWARF_LineEntryFormatXList(X)
 #undef X
   }
@@ -1287,10 +1287,10 @@ dwarf_string_from_line_entry_format(DWARF_LineEntryFormat format){
 
 static String8
 dwarf_string_from_section_code(DWARF_SectionCode sec_code){
-  String8 result = str8_lit("unrecognized_section_code");
+  String8 result = ("unrecognized_section_code");
   switch (sec_code){
     case DWARF_SectionCode_COUNT:{}break;
-#define X(Nc,Vf,N0,N1,N2) case DWARF_SectionCode_##Nc: result = str8_lit(#Nc); break;
+#define X(Nc,Vf,N0,N1,N2) case DWARF_SectionCode_##Nc: result = (#Nc); break;
     DWARF_SectionNameXList(X,0,0)
 #undef X
   }

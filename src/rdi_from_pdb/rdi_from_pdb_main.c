@@ -56,9 +56,9 @@ entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line
   Arena *arena = arena_alloc();
-  B32 do_help = (cmd_line_has_flag(cmdline, str8_lit("help")) ||
-                 cmd_line_has_flag(cmdline, str8_lit("h")) ||
-                 cmd_line_has_flag(cmdline, str8_lit("?")));
+  B32 do_help = (cmd_line_has_flag(cmdline, ("help")) ||
+                 cmd_line_has_flag(cmdline, ("h")) ||
+                 cmd_line_has_flag(cmdline, ("?")));
   P2R_User2Convert *user2convert = p2r_user2convert_from_cmdln(arena, cmdline);
   
   //- rjf: display help
@@ -110,7 +110,7 @@ entry_point(CmdLine *cmdline)
   
   //- rjf: compress
   P2R_Serialize2File *srlz2file_compressed = srlz2file;
-  if(cmd_line_has_flag(cmdline, str8_lit("compress"))) ProfScope("compress")
+  if(cmd_line_has_flag(cmdline, ("compress"))) ProfScope("compress")
   {
     srlz2file_compressed = push_array(arena, P2R_Serialize2File, 1);
     srlz2file_compressed = p2r_compress(arena, srlz2file);

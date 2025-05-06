@@ -134,8 +134,8 @@ public struct FuzzyMatchRangeList
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((uint8*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(uint8*)(S), sizeof(S) - 1,}
+// #define str8_lit(S)  str8((uint8*)(S), sizeof(S) - 1)
+// #define str8_lit_comp(S) {(uint8*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
 
 #define str8_array(S,C) str8((uint8*)(S), sizeof(*(S))*(C))
@@ -146,9 +146,9 @@ public struct FuzzyMatchRangeList
 ////////////////////////////////
 //~ rjf: String Matching
 
-#define str8_match_lit(a_lit, b, flags)   str8_match(str8_lit(a_lit), (b), (flags))
+#define str8_match_lit(a_lit, b, flags)   str8_match((a_lit), (b), (flags))
 #define str8_match_cstr(a_cstr, b, flags) str8_match(str8_cstring(a_cstr), (b), (flags))
-#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), str8_lit(end_lit), (flags))
+#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), (end_lit), (flags))
 
 ////////////////////////////////
 //~ rjf: String List Construction Functions
@@ -166,3 +166,11 @@ public struct FuzzyMatchRangeList
 
 #define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
 #define str8_deserial_read_struct(string, off, ptr)       str8_deserial_read_array(string, off, ptr, 1)
+
+
+
+
+public static implicit operator String8(String str)
+{
+  return str8(str, str.Count);
+}

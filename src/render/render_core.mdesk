@@ -97,7 +97,7 @@ R_PassKindTable:
 
 @data(String8) r_tex2d_format_display_string_table:
 {
-  @expand(R_Tex2DFormatTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(R_Tex2DFormatTable a) `("$(a.display_string)")`;
 }
 
 @data(U8) r_tex2d_format_bytes_per_pixel_table:
@@ -107,17 +107,17 @@ R_PassKindTable:
 
 @data(String8) r_resource_kind_display_string_table:
 {
-  @expand(R_ResourceKindTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(R_ResourceKindTable a) `("$(a.display_string)")`;
 }
 
 @data(String8) r_tex2d_sample_kind_display_string_table:
 {
-  @expand(R_Tex2DSampleKindTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(R_Tex2DSampleKindTable a) `("$(a.display_string)")`;
 }
 
 @data(String8) r_pass_kind_display_string_table:
 {
-  @expand(R_PassKindTable a) `str8_lit_comp("$(a.display_string)")`;
+  @expand(R_PassKindTable a) `("$(a.display_string)")`;
 }
 
 @data(U8) r_pass_kind_batch_table:

@@ -36,7 +36,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   F32 code_tab_size = fnt_column_size_from_tag_size(code_font, code_font_size)*rd_setting_val_from_code(RD_SettingCode_TabWidth).s32;
   FNT_Metrics code_font_metrics = fnt_metrics_from_tag_size(code_font, code_font_size);
   F32 code_line_height = ceil_f32(fnt_line_height_from_metrics(&code_font_metrics) * 1.5f);
-  F32 big_glyph_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, 0, str8_lit("H")).x;
+  F32 big_glyph_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, 0, ("H")).x;
   Vec2F32 panel_box_dim = dim_2f32(rect);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
   Vec2F32 code_area_dim = v2f32(panel_box_dim.x - scroll_bar_dim, panel_box_dim.y - scroll_bar_dim);
@@ -1077,8 +1077,8 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
       Temp scratch = scratch_begin(&arena, 1);
       DI_Scope *di_scope = di_scope_open();
       E_Eval eval = e_eval_from_expr(arena, row_col_expr);
-      E_Expr *vaddr_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("vaddr"));
-      E_Expr *depth_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, str8_lit("inline_depth"));
+      E_Expr *vaddr_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, ("vaddr"));
+      E_Expr *depth_expr = e_expr_ref_member_access(scratch.arena, row_col_expr, ("inline_depth"));
       E_Eval vaddr_eval = e_eval_from_expr(scratch.arena, vaddr_expr);
       E_Eval depth_eval = e_eval_from_expr(scratch.arena, depth_expr);
       E_Eval vaddr_value_eval = e_value_eval_from_eval(vaddr_eval);
@@ -1155,12 +1155,12 @@ rd_string_from_eval_viz_row_column(Arena *arena, EV_View *ev, EV_Row *row, RD_Wa
         }
         else
         {
-          result = str8_lit("???");
+          result = ("???");
         }
       }
       else
       {
-        result = str8_lit("???");
+        result = ("???");
       }
       di_scope_close(di_scope);
       scratch_end(scratch);
@@ -1784,7 +1784,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         success = rd_commit_eval_value_string(dst_eval, new_string, !col->dequote_string);
                         if(!success)
                         {
-                          log_user_error(str8_lit("Could not commit value successfully."));
+                          log_user_error(("Could not commit value successfully."));
                         }
                       }
                     }
@@ -1843,7 +1843,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
             RD_WatchViewColumn *col = rd_watch_view_column_from_x(ewv, x);
             String8 cell_string = rd_string_from_eval_viz_row_column(scratch.arena, eval_view, row, col, string_flags|EV_StringFlag_ReadOnlyDisplayRules, default_radix, ui_top_font(), ui_top_font_size(), row_string_max_size_px);
             cell_string = str8_skip_chop_whitespace(cell_string);
-            U64 comma_pos = str8_find_needle(cell_string, 0, str8_lit(","), 0);
+            U64 comma_pos = str8_find_needle(cell_string, 0, (","), 0);
             if(selection_tbl.min.x != selection_tbl.max.x || selection_tbl.min.y != selection_tbl.max.y)
             {
               str8_list_pushf(scratch.arena, &strs, "%s%S%s%s",
@@ -1859,7 +1859,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
           }
           if(y+1 <= selection_tbl.max.y)
           {
-            str8_list_push(scratch.arena, &strs, str8_lit("\n"));
+            str8_list_push(scratch.arena, &strs, ("\n"));
           }
         }
         String8 string = str8_list_join(scratch.arena, &strs, 0);
@@ -2380,10 +2380,10 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                     switch(col->kind)
                     {
                       default:{}break;
-                      case RD_WatchViewColumnKind_Expr:    {name = str8_lit("Expression");}break;
-                      case RD_WatchViewColumnKind_Value:   {name = str8_lit("Value");}break;
-                      case RD_WatchViewColumnKind_Type:    {name = str8_lit("Type");}break;
-                      case RD_WatchViewColumnKind_ViewRule:{name = str8_lit("View Rule");}break;
+                      case RD_WatchViewColumnKind_Expr:    {name = ("Expression");}break;
+                      case RD_WatchViewColumnKind_Value:   {name = ("Value");}break;
+                      case RD_WatchViewColumnKind_Type:    {name = ("Type");}break;
+                      case RD_WatchViewColumnKind_ViewRule:{name = ("View Rule");}break;
                       case RD_WatchViewColumnKind_Member:
                       {
                         name = str8(col->string_buffer, col->string_size);
@@ -2401,36 +2401,36 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       if(rd_help_label(name)) UI_Tooltip
                       {
                         F32 max_width = ui_top_font_size()*35;
-                        ui_label_multiline(max_width, str8_lit("View rules are used to tweak the way evaluated expressions are visualized. Multiple rules can be specified on each row. They are specified in a key:(value) form. Some examples follow:"));
+                        ui_label_multiline(max_width, ("View rules are used to tweak the way evaluated expressions are visualized. Multiple rules can be specified on each row. They are specified in a key:(value) form. Some examples follow:"));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("array:(N)");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that a pointer points to N elements, rather than only 1."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that a pointer points to N elements, rather than only 1."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("omit:(member_1 ... member_n)");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Omits a list of member names from appearing in struct, union, or class evaluations."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Omits a list of member names from appearing in struct, union, or class evaluations."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("only:(member_1 ... member_n)");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that only the specified members should appear in struct, union, or class evaluations."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that only the specified members should appear in struct, union, or class evaluations."));
                         ui_spacer(ui_em(1.5f, 1));
 #if 0 // TODO(rjf): disabling until post-0.9.12
                         RD_Font(RD_FontSlot_Code) ui_labelf("list:(next_link_member_name)");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that some struct, union, or class forms the top of a linked list, with next_link_member_name being the member which points at the next element in the list."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that some struct, union, or class forms the top of a linked list, with next_link_member_name being the member which points at the next element in the list."));
                         ui_spacer(ui_em(1.5f, 1));
 #endif
                         RD_Font(RD_FontSlot_Code) ui_labelf("dec");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that all integral evaluations should appear in base-10 form."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that all integral evaluations should appear in base-10 form."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("hex");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that all integral evaluations should appear in base-16 form."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that all integral evaluations should appear in base-16 form."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("oct");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that all integral evaluations should appear in base-8 form."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that all integral evaluations should appear in base-8 form."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("bin");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Specifies that all integral evaluations should appear in base-2 form."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Specifies that all integral evaluations should appear in base-2 form."));
                         ui_spacer(ui_em(1.5f, 1));
                         RD_Font(RD_FontSlot_Code) ui_labelf("no_addr");
-                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, str8_lit("Displays only what pointers point to, if possible, without the pointer's address value."));
+                        UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label_multiline(max_width, ("Displays only what pointers point to, if possible, without the pointer's address value."));
                         ui_spacer(ui_em(1.5f, 1));
                       }
                     }break;
@@ -2689,7 +2689,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                       case CTRL_EntityKind_Process:{slot = RD_RegSlot_Process; rd_regs()->process = ctrl_entity->handle;}break;
                       case CTRL_EntityKind_Module: {slot = RD_RegSlot_Module; rd_regs()->module = ctrl_entity->handle;}break;
                     }
-                    UI_PrefWidth(ui_em(2.f, 1.f)) if(ui_pressed(ui_expander(row->block->rows_default_expanded ? !row_expanded : row_expanded, str8_lit("###expanded"))))
+                    UI_PrefWidth(ui_em(2.f, 1.f)) if(ui_pressed(ui_expander(row->block->rows_default_expanded ? !row_expanded : row_expanded, ("###expanded"))))
                     {
                       next_row_expanded = !row_expanded;
                     }
@@ -2919,7 +2919,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         if(inheritance_chain_type_names.node_count != 0)
                         {
                           StringJoin join = {0};
-                          join.sep = str8_lit("::");
+                          join.sep = ("::");
                           String8 inheritance_type = str8_list_join(scratch.arena, &inheritance_chain_type_names, &join);
                           cell_inheritance_string = inheritance_type;
                         }
@@ -2951,12 +2951,12 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         {
                           str8_list_push(scratch.arena, &strings, msg->text);
                         }
-                        StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
+                        StringJoin join = {(""), (" "), ("")};
                         cell_error_string = str8_list_join(scratch.arena, &strings, &join);
                       }
                       if(row_is_bad)
                       {
-                        cell_error_tooltip_string = str8_lit("Could not read memory successfully.");
+                        cell_error_tooltip_string = ("Could not read memory successfully.");
                       }
                       cell_autocomp_flags = (RD_AutoCompListerFlag_Locals|
                                              RD_AutoCompListerFlag_Procedures|
@@ -3000,7 +3000,7 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         {
                           str8_list_push(scratch.arena, &strings, n->v.root->string);
                         }
-                        cell_ghost_text = str8_list_join(scratch.arena, &strings, &(StringJoin){.sep = str8_lit(", ")});
+                        cell_ghost_text = str8_list_join(scratch.arena, &strings, &(StringJoin){.sep = (", ")});
                       }
                     }break;
                     case RD_WatchViewColumnKind_CallStackFrameSelection:
@@ -3347,9 +3347,9 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         switch(t->node->op)
                         {
                           default:{}break;
-                          case E_IRExtKind_Bytecode:{op_string = str8_lit("Bytecode");}break;
-                          case E_IRExtKind_SetSpace:{op_string = str8_lit("SetSpace");}break;
-#define X(name) case RDI_EvalOp_##name:{op_string = str8_lit(#name);}break;
+                          case E_IRExtKind_Bytecode:{op_string = ("Bytecode");}break;
+                          case E_IRExtKind_SetSpace:{op_string = ("SetSpace");}break;
+#define X(name) case RDI_EvalOp_##name:{op_string = (#name);}break;
                           RDI_EvalOp_XList
 #undef X
                         }
@@ -3373,16 +3373,16 @@ rd_watch_view_build(RD_WatchViewState *ewv, RD_WatchViewFlags flags, String8 roo
                         switch(op->opcode)
                         {
                           default:{}break;
-                          case E_IRExtKind_Bytecode:{op_string = str8_lit("Bytecode");}break;
-                          case E_IRExtKind_SetSpace:{op_string = str8_lit("SetSpace");}break;
-#define X(name) case RDI_EvalOp_##name:{op_string = str8_lit(#name);}break;
+                          case E_IRExtKind_Bytecode:{op_string = ("Bytecode");}break;
+                          case E_IRExtKind_SetSpace:{op_string = ("SetSpace");}break;
+#define X(name) case RDI_EvalOp_##name:{op_string = (#name);}break;
                           RDI_EvalOp_XList
 #undef X
                         }
                         String8 ext = {0};
                         switch(op->opcode)
                         {
-                          case E_IRExtKind_Bytecode:{ext = str8_lit("[bytecode]");}break;
+                          case E_IRExtKind_Bytecode:{ext = ("[bytecode]");}break;
                           default:
                           {
                             ext = str8_from_u64(scratch.arena, op->value.u64, 16, 0, 0);
@@ -3442,7 +3442,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(null) {}
 RD_VIEW_RULE_UI_FUNCTION_DEF(empty)
 {
   ui_set_next_flags(UI_BoxFlags.DefaultFocusNav);
-  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view")) UI_FlagsAdd(UI_BoxFlags.DrawTextWeak)
+  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(("empty_view")) UI_FlagsAdd(UI_BoxFlags.DrawTextWeak)
     UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind.Null)
   {
     UI_PrefHeight(ui_em(3.f, 1.f))
@@ -3469,7 +3469,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   ui_set_next_flags(UI_BoxFlags.DefaultFocusNav);
-  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(str8_lit("empty_view"))
+  UI_Focus(UI_FocusKind.On) UI_WidthFill UI_HeightFill UI_NamedColumn(("empty_view"))
     UI_FlagsAdd(UI_BoxFlags.DrawTextWeak)
     UI_Padding(ui_pct(1, 0)) UI_Focus(UI_FocusKind.Null)
   {
@@ -3489,7 +3489,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         {
           R_Handle texture = rd_state->icon_texture;
           Vec2S32 texture_dim = r_size_from_tex2d(texture);
-          ui_image(texture, R_Tex2DSampleKind_Linear, r2f32p(0, 0, texture_dim.x, texture_dim.y), v4f32(1, 1, 1, 1), 0, str8_lit(""));
+          ui_image(texture, R_Tex2DSampleKind_Linear, r2f32p(0, 0, texture_dim.x, texture_dim.y), v4f32(1, 1, 1, 1), 0, (""));
         }
       }
       
@@ -3501,7 +3501,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(getting_started)
         UI_TextAlignment(UI_TextAlign.Center)
         UI_PrefWidth(ui_text_dim(10, 1))
       {
-        ui_label(str8_lit(BUILD_TITLE_STRING_LITERAL));
+        ui_label((BUILD_TITLE_STRING_LITERAL));
       }
     }
     
@@ -3851,10 +3851,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(commands)
         
         //- rjf: bindings
         ui_set_next_flags(UI_BoxFlags.Clickable);
-        UI_PrefWidth(ui_children_sum(1.f)) UI_HeightFill UI_NamedColumn(str8_lit("binding_column")) UI_Padding(ui_em(1.5f, 1.f))
+        UI_PrefWidth(ui_children_sum(1.f)) UI_HeightFill UI_NamedColumn(("binding_column")) UI_Padding(ui_em(1.5f, 1.f))
         {
           ui_set_next_flags(UI_BoxFlags.Clickable);
-          UI_NamedRow(str8_lit("binding_row")) UI_Padding(ui_em(1.f, 1.f))
+          UI_NamedRow(("binding_row")) UI_Padding(ui_em(1.f, 1.f))
           {
             rd_cmd_binding_buttons(item->cmd_name);
           }
@@ -3955,19 +3955,19 @@ rd_path_query_from_string(String8 string)
     String8 substr1 = str8_substr(string, r1u64(i, i+1));
     String8 substr2 = str8_substr(string, r1u64(i, i+2));
     String8 substr3 = str8_substr(string, r1u64(i, i+3));
-    if(str8_match(substr1, str8_lit("/"), StringMatchFlags.SlashInsensitive))
+    if(str8_match(substr1, ("/"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }
-    else if(i != 0 && str8_match(substr2, str8_lit(":/"), StringMatchFlags.SlashInsensitive))
+    else if(i != 0 && str8_match(substr2, (":/"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i-1, string.size));
     }
-    else if(str8_match(substr2, str8_lit("./"), StringMatchFlags.SlashInsensitive))
+    else if(str8_match(substr2, ("./"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }
-    else if(str8_match(substr3, str8_lit("../"), StringMatchFlags.SlashInsensitive))
+    else if(str8_match(substr3, ("../"), StringMatchFlags.SlashInsensitive))
     {
       dir_str_in_input = str8_substr(string, r1u64(i, string.size));
     }
@@ -4283,9 +4283,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
       }
       kinds[] =
       {
-        { RD_FileSortKind_Filename,     str8_lit_comp("Filename") },
-        { RD_FileSortKind_LastModified, str8_lit_comp("Last Modified") },
-        { RD_FileSortKind_Size,         str8_lit_comp("Size") },
+        { RD_FileSortKind_Filename,     ("Filename") },
+        { RD_FileSortKind_LastModified, ("Last Modified") },
+        { RD_FileSortKind_Size,         ("Size") },
       };
       for(U64 idx = 0; idx < ArrayCount(kinds); idx += 1)
       {
@@ -4362,7 +4362,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_system)
         
         // rjf: text
         {
-          ui_label(str8_lit("Up One Directory"));
+          ui_label(("Up One Directory"));
         }
         
         row_num += 1;
@@ -4556,7 +4556,7 @@ rd_process_info_list_from_query(Arena *arena, String8 query)
       FuzzyMatchRangeList pid_match_ranges      = fuzzy_match_find(arena, query, push_str8f(scratch.arena, "%i", info.pid));
       if(is_attached)
       {
-        attached_match_ranges = fuzzy_match_find(arena, query, str8_lit("[attached]"));
+        attached_match_ranges = fuzzy_match_find(arena, query, ("[attached]"));
       }
       
       // rjf: determine if this item is filtered out
@@ -5376,7 +5376,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(symbol_lister)
         else
         {
           RD_Font(RD_FontSlot_Main) UI_FlagsAdd(UI_BoxFlags.DrawTextWeak)
-            ui_label(str8_lit("(No source code location found)"));
+            ui_label(("(No source code location found)"));
         }
       }
     }
@@ -5402,7 +5402,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(targets)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1, .is_non_code = 0);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:targets"), str8_lit("only: label exe args working_directory entry_point stdout_path stderr_path stdin_path debug_subprocesses b32 str"), 1, 10, rect);
+                      ("collection:targets"), ("only: label exe args working_directory entry_point stdout_path stderr_path stdin_path debug_subprocesses b32 str"), 1, 10, rect);
   ProfEnd();
 }
 
@@ -5420,7 +5420,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(file_path_map)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1, .is_non_code = 0);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:file_path_maps"), str8_lit("only: source_path destination_path str"), 1, 10, rect);
+                      ("collection:file_path_maps"), ("only: source_path destination_path str"), 1, 10, rect);
   ProfEnd();
 }
 
@@ -5438,7 +5438,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(auto_view_rules)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1, .is_non_code = 0);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:auto_view_rules"), str8_lit("only: type view_rule str"), 1, 10, rect);
+                      ("collection:auto_view_rules"), ("only: type view_rule str"), 1, 10, rect);
   ProfEnd();
 }
 
@@ -5456,7 +5456,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(breakpoints)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:breakpoints"), str8_lit("only: label condition str hit_count source_location address_location function_location"), 0, 10, rect);
+                      ("collection:breakpoints"), ("only: label condition str hit_count source_location address_location function_location"), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5474,7 +5474,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(watch_pins)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:watch_pins"), str8_lit("only: label source_location address_location str"), 0, 10, rect);
+                      ("collection:watch_pins"), ("only: label source_location address_location str"), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5492,7 +5492,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(scheduler)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:machines"), str8_lit("only: label str id callstack v count vaddr inline_depth"), 0, 10, rect);
+                      ("collection:machines"), ("only: label str id callstack v count vaddr inline_depth"), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5507,11 +5507,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(call_stack)
   {
     rd_watch_view_init(wv);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrameSelection, 0.05f);
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrame,          0.50f, .display_string = str8_lit("Symbol"), .dequote_string = 1);
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .string = str8_lit("vaddr"), .display_string = str8_lit("Address"), .view_rule = str8_lit("cast:U64"));
-    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Module,                  0.25f, .string = str8_lit("module.str"), .display_string = str8_lit("Module"), .dequote_string = 1, .is_non_code = 1);
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_CallStackFrame,          0.50f, .display_string = ("Symbol"), .dequote_string = 1);
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Member,                  0.20f, .string = ("vaddr"), .display_string = ("Address"), .view_rule = ("cast:U64"));
+    rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Module,                  0.25f, .string = ("module.str"), .display_string = ("Module"), .dequote_string = 1, .is_non_code = 1);
   }
-  rd_watch_view_build(wv, 0, str8_lit("thread:current_thread.callstack.v"), str8_lit("array:'thread:current_thread.callstack.count', hex"), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("thread:current_thread.callstack.v"), ("array:'thread:current_thread.callstack.count', hex"), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5529,7 +5529,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(modules)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,      0.75f, .dequote_string = 1);
   }
   rd_watch_view_build(wv, RD_WatchViewFlag_NoHeader|RD_WatchViewFlag_PrettyNameMembers|RD_WatchViewFlag_PrettyEntityRows|RD_WatchViewFlag_DisableCacheLines,
-                      str8_lit("collection:modules"), str8_lit("only: exe dbg str vaddr_range min max"), 0, 16, rect);
+                      ("collection:modules"), ("only: exe dbg str vaddr_range min max"), 0, 16, rect);
   ProfEnd();
 }
 
@@ -5548,7 +5548,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(watch)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:watches"), str8_lit(""), 1, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:watches"), (""), 1, 10, rect);
   ProfEnd();
 }
 
@@ -5567,7 +5567,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(locals)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:locals"), str8_lit(""), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:locals"), (""), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5586,7 +5586,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(registers)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:registers"), str8_lit("hex"), 0, 16, rect);
+  rd_watch_view_build(wv, 0, ("collection:registers"), ("hex"), 0, 16, rect);
   ProfEnd();
 }
 
@@ -5605,7 +5605,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(globals)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:globals"), str8_lit(""), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:globals"), (""), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5624,7 +5624,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(thread_locals)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:thread_locals"), str8_lit(""), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:thread_locals"), (""), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5643,7 +5643,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(types)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Type,      0.15f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.30f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:types"), str8_lit(""), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:types"), (""), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5661,7 +5661,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(procedures)
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_Value,     0.6f);
     rd_watch_view_column_alloc(wv, RD_WatchViewColumnKind_ViewRule,  0.2f);
   }
-  rd_watch_view_build(wv, 0, str8_lit("collection:procedures"), str8_lit(""), 0, 10, rect);
+  rd_watch_view_build(wv, 0, ("collection:procedures"), (""), 0, 10, rect);
   ProfEnd();
 }
 
@@ -5860,10 +5860,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   rd_regs()->file_path     = path;
   rd_regs()->vaddr         = 0;
   rd_regs()->prefer_disasm = 0;
-  rd_regs()->cursor.line   = rd_value_from_params_key(params, str8_lit("cursor_line")).s64;
-  rd_regs()->cursor.column = rd_value_from_params_key(params, str8_lit("cursor_column")).s64;
-  rd_regs()->mark.line     = rd_value_from_params_key(params, str8_lit("mark_line")).s64;
-  rd_regs()->mark.column   = rd_value_from_params_key(params, str8_lit("mark_column")).s64;
+  rd_regs()->cursor.line   = rd_value_from_params_key(params, ("cursor_line")).s64;
+  rd_regs()->cursor.column = rd_value_from_params_key(params, ("cursor_column")).s64;
+  rd_regs()->mark.line     = rd_value_from_params_key(params, ("mark_line")).s64;
+  rd_regs()->mark.column   = rd_value_from_params_key(params, ("mark_column")).s64;
   if(rd_regs()->cursor.line == 0)   { rd_regs()->cursor.line = 1; }
   if(rd_regs()->cursor.column == 0) { rd_regs()->cursor.column = 1; }
   if(rd_regs()->mark.line == 0)   { rd_regs()->mark.line = 1; }
@@ -6018,10 +6018,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: store params
   //
-  rd_store_view_param_s64(str8_lit("cursor_line"), rd_regs()->cursor.line);
-  rd_store_view_param_s64(str8_lit("cursor_column"), rd_regs()->cursor.column);
-  rd_store_view_param_s64(str8_lit("mark_line"), rd_regs()->mark.line);
-  rd_store_view_param_s64(str8_lit("mark_column"), rd_regs()->mark.column);
+  rd_store_view_param_s64(("cursor_line"), rd_regs()->cursor.line);
+  rd_store_view_param_s64(("cursor_column"), rd_regs()->cursor.column);
+  rd_store_view_param_s64(("mark_line"), rd_regs()->mark.line);
+  rd_store_view_param_s64(("mark_column"), rd_regs()->mark.column);
   
   txt_scope_close(txt_scope);
   hs_scope_close(hs_scope);
@@ -6090,7 +6090,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(disasm)
     {
       auto_selected = 1;
       auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(d_state->ctrl_entity_store, rd_regs()->process), RD_EvalSpaceKind_CtrlEntity);
-      string = str8_lit("(rip.u64 & (~(0x4000 - 1)))");
+      string = ("(rip.u64 & (~(0x4000 - 1)))");
     }
   }
   
@@ -6291,10 +6291,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   //
   rd_regs()->file_path     = str8_zero();
   rd_regs()->vaddr         = 0;
-  rd_regs()->cursor.line   = rd_value_from_params_key(params, str8_lit("cursor_line")).s64;
-  rd_regs()->cursor.column = rd_value_from_params_key(params, str8_lit("cursor_column")).s64;
-  rd_regs()->mark.line     = rd_value_from_params_key(params, str8_lit("mark_line")).s64;
-  rd_regs()->mark.column   = rd_value_from_params_key(params, str8_lit("mark_column")).s64;
+  rd_regs()->cursor.line   = rd_value_from_params_key(params, ("cursor_line")).s64;
+  rd_regs()->cursor.column = rd_value_from_params_key(params, ("cursor_column")).s64;
+  rd_regs()->mark.line     = rd_value_from_params_key(params, ("mark_line")).s64;
+  rd_regs()->mark.column   = rd_value_from_params_key(params, ("mark_column")).s64;
   
   //////////////////////////////
   //- rjf: unpack text info
@@ -6351,10 +6351,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(output)
   //////////////////////////////
   //- rjf: store params
   //
-  rd_store_view_param_s64(str8_lit("cursor_line"), rd_regs()->cursor.line);
-  rd_store_view_param_s64(str8_lit("cursor_column"), rd_regs()->cursor.column);
-  rd_store_view_param_s64(str8_lit("mark_line"), rd_regs()->mark.line);
-  rd_store_view_param_s64(str8_lit("mark_column"), rd_regs()->mark.column);
+  rd_store_view_param_s64(("cursor_line"), rd_regs()->cursor.line);
+  rd_store_view_param_s64(("cursor_column"), rd_regs()->cursor.column);
+  rd_store_view_param_s64(("mark_line"), rd_regs()->mark.line);
+  rd_store_view_param_s64(("mark_column"), rd_regs()->mark.column);
   
   txt_scope_close(txt_scope);
   hs_scope_close(hs_scope);
@@ -6400,10 +6400,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   {
     space_range = r1u64(0, 0x7FFFFFFFFFFFull);
   }
-  U64 cursor          = rd_value_from_params_key(params, str8_lit("cursor_vaddr")).u64;
-  U64 mark            = rd_value_from_params_key(params, str8_lit("mark_vaddr")).u64;
-  U64 bytes_per_cell  = rd_value_from_params_key(params, str8_lit("bytes_per_cell")).u64;
-  U64 num_columns     = rd_value_from_params_key(params, str8_lit("num_columns")).u64;
+  U64 cursor          = rd_value_from_params_key(params, ("cursor_vaddr")).u64;
+  U64 mark            = rd_value_from_params_key(params, ("mark_vaddr")).u64;
+  U64 bytes_per_cell  = rd_value_from_params_key(params, ("bytes_per_cell")).u64;
+  U64 num_columns     = rd_value_from_params_key(params, ("num_columns")).u64;
   if(num_columns == 0)
   {
     num_columns = 16;
@@ -6453,7 +6453,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //
   FNT_Tag font = rd_font_from_slot(RD_FontSlot_Code);
   F32 font_size = rd_font_size_from_slot(RD_FontSlot_Code);
-  F32 big_glyph_advance = fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_lit("H")).x;
+  F32 big_glyph_advance = fnt_dim_from_tag_size_string(font, font_size, 0, 0, ("H")).x;
   F32 row_height_px = floor_f32(font_size*2.f);
   F32 cell_width_px = floor_f32(font_size*2.f * bytes_per_cell);
   F32 scroll_bar_dim = floor_f32(ui_top_font_size()*1.5f);
@@ -6683,8 +6683,8 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
           U64 rip_voff = ctrl_voff_from_vaddr(module, f_rip);
           String8 symbol_name = d_symbol_name_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff, 1);
           Annotation *annotation = push_array(scratch.arena, Annotation, 1);
-          annotation->name_string = symbol_name.size != 0 ? symbol_name : str8_lit("[external code]");
-          annotation->kind_string = str8_lit("Call Stack Frame");
+          annotation->name_string = symbol_name.size != 0 ? symbol_name : ("[external code]");
+          annotation->kind_string = ("Call Stack Frame");
           annotation->color = symbol_name.size != 0 ? rd_rgba_from_theme_color(RD_ThemeColor_CodeSymbol) : rd_rgba_from_theme_color(RD_ThemeColor_TextWeak);
           annotation->vaddr_range = frame_vaddr_range;
           for(U64 vaddr = frame_vaddr_range_in_viz.min; vaddr < frame_vaddr_range_in_viz.max; vaddr += 1)
@@ -6707,7 +6707,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
       {
         Annotation *annotation = push_array(scratch.arena, Annotation, 1);
         annotation->name_string = thread->string.size ? thread->string : push_str8f(scratch.arena, "TID: %I64u", thread->id);
-        annotation->kind_string = str8_lit("Stack");
+        annotation->kind_string = ("Stack");
         annotation->color = rd_rgba_from_ctrl_entity(thread);
         annotation->vaddr_range = stack_vaddr_range;
         for(U64 vaddr = stack_vaddr_range_in_viz.min; vaddr < stack_vaddr_range_in_viz.max; vaddr += 1)
@@ -6748,7 +6748,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
             Annotation *annotation = push_array(scratch.arena, Annotation, 1);
             {
               annotation->name_string = push_str8_copy(scratch.arena, local_name);
-              annotation->kind_string = str8_lit("Local");
+              annotation->kind_string = ("Local");
               annotation->type_string = e_type_string_from_key(scratch.arena, local_eval.type_key);
               annotation->color = color_gen_table[(vaddr_rng.min/8)%ArrayCount(color_gen_table)];
               annotation->vaddr_range = vaddr_rng;
@@ -7192,10 +7192,10 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: save parameters
   //
-  rd_store_view_param_u64(str8_lit("cursor_vaddr"), cursor);
-  rd_store_view_param_u64(str8_lit("mark_vaddr"), mark);
-  rd_store_view_param_u64(str8_lit("bytes_per_cell"), bytes_per_cell);
-  rd_store_view_param_u64(str8_lit("num_columns"), num_columns);
+  rd_store_view_param_u64(("cursor_vaddr"), cursor);
+  rd_store_view_param_u64(("mark_vaddr"), mark);
+  rd_store_view_param_u64(("bytes_per_cell"), bytes_per_cell);
+  rd_store_view_param_u64(("num_columns"), num_columns);
   rd_store_view_scroll_pos(scroll_pos);
   
   hs_scope_close(hs_scope);
@@ -7325,11 +7325,11 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
   //////////////////////////////
   //- rjf: unpack params
   //
-  F32 zoom = rd_value_from_params_key(params, str8_lit("zoom")).f32;
+  F32 zoom = rd_value_from_params_key(params, ("zoom")).f32;
   Vec2F32 view_center_pos =
   {
-    rd_value_from_params_key(params, str8_lit("x")).f32,
-    rd_value_from_params_key(params, str8_lit("y")).f32,
+    rd_value_from_params_key(params, ("x")).f32,
+    rd_value_from_params_key(params, ("y")).f32,
   };
   if(zoom == 0)
   {
@@ -7490,16 +7490,16 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(bitmap)
     }
     UI_Rect(img_rect_scr) UI_Flags(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawDropShadow|UI_BoxFlags.Floating)
     {
-      ui_image(texture, R_Tex2DSampleKind_Nearest, r2f32p(0, 0, (F32)dim.x, (F32)dim.y), v4f32(1, 1, 1, 1), 0, str8_lit("bmp_image"));
+      ui_image(texture, R_Tex2DSampleKind_Nearest, r2f32p(0, 0, (F32)dim.x, (F32)dim.y), v4f32(1, 1, 1, 1), 0, ("bmp_image"));
     }
   }
   
   //////////////////////////////
   //- rjf: store params
   //
-  rd_store_view_param_f32(str8_lit("zoom"), zoom);
-  rd_store_view_param_f32(str8_lit("x"), view_center_pos.x);
-  rd_store_view_param_f32(str8_lit("y"), view_center_pos.y);
+  rd_store_view_param_f32(("zoom"), zoom);
+  rd_store_view_param_f32(("x"), view_center_pos.x);
+  rd_store_view_param_f32(("y"), view_center_pos.y);
   
   hs_scope_close(hs_scope);
   tex_scope_close(tex_scope);
@@ -7516,7 +7516,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(checkbox)
   E_Eval value_eval = e_value_eval_from_eval(eval);
   if(ui_clicked(rd_icon_buttonf(value_eval.value.u64 == 0 ? RD_IconKind_CheckHollow : RD_IconKind_CheckFilled, 0, "###check")))
   {
-    rd_commit_eval_value_string(eval, value_eval.value.u64 == 0 ? str8_lit("1") : str8_lit("0"), 0);
+    rd_commit_eval_value_string(eval, value_eval.value.u64 == 0 ? ("1") : ("0"), 0);
   }
   scratch_end(scratch);
 }
@@ -7573,13 +7573,13 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(color_rgba)
       text_box = ui_build_box_from_key(UI_BoxFlags.DrawText, ui_key_zero());
       DR_FancyStringList fancy_strings = {0};
       {
-        DR_FancyString open_paren = {ui_top_font(), str8_lit("("), ui_top_palette()->text, ui_top_font_size(), 0, 0};
-        DR_FancyString comma = {ui_top_font(), str8_lit(", "), ui_top_palette()->text, ui_top_font_size(), 0, 0};
+        DR_FancyString open_paren = {ui_top_font(), ("("), ui_top_palette()->text, ui_top_font_size(), 0, 0};
+        DR_FancyString comma = {ui_top_font(), (", "), ui_top_palette()->text, ui_top_font_size(), 0, 0};
         DR_FancyString r_fstr = {ui_top_font(), push_str8f(scratch.arena, "%.2f", rgba.x), v4f32(1.f, 0.25f, 0.25f, 1.f), ui_top_font_size(), 4.f, 0};
         DR_FancyString g_fstr = {ui_top_font(), push_str8f(scratch.arena, "%.2f", rgba.y), v4f32(0.25f, 1.f, 0.25f, 1.f), ui_top_font_size(), 4.f, 0};
         DR_FancyString b_fstr = {ui_top_font(), push_str8f(scratch.arena, "%.2f", rgba.z), v4f32(0.25f, 0.25f, 1.f, 1.f), ui_top_font_size(), 4.f, 0};
         DR_FancyString a_fstr = {ui_top_font(), push_str8f(scratch.arena, "%.2f", rgba.w), v4f32(1.f,   1.f,   1.f, 1.f), ui_top_font_size(), 4.f, 0};
-        DR_FancyString clse_paren = {ui_top_font(), str8_lit(")"), ui_top_palette()->text, ui_top_font_size(), 0, 0};
+        DR_FancyString clse_paren = {ui_top_font(), (")"), ui_top_palette()->text, ui_top_font_size(), 0, 0};
         dr_fancy_string_list_push(scratch.arena, &fancy_strings, &open_paren);
         dr_fancy_string_list_push(scratch.arena, &fancy_strings, &r_fstr);
         dr_fancy_string_list_push(scratch.arena, &fancy_strings, &comma);
@@ -7724,12 +7724,12 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //////////////////////////////
   //- rjf: unpack parameters
   //
-  U64 count        = rd_value_from_params_key(params, str8_lit("count")).u64;
-  U64 vtx_base_off = rd_value_from_params_key(params, str8_lit("vtx")).u64;
-  U64 vtx_size     = rd_value_from_params_key(params, str8_lit("vtx_size")).u64;
-  F32 yaw_target   = rd_value_from_params_key(params, str8_lit("yaw")).f32;
-  F32 pitch_target = rd_value_from_params_key(params, str8_lit("pitch")).f32;
-  F32 zoom_target  = rd_value_from_params_key(params, str8_lit("zoom")).f32;
+  U64 count        = rd_value_from_params_key(params, ("count")).u64;
+  U64 vtx_base_off = rd_value_from_params_key(params, ("vtx")).u64;
+  U64 vtx_size     = rd_value_from_params_key(params, ("vtx_size")).u64;
+  F32 yaw_target   = rd_value_from_params_key(params, ("yaw")).f32;
+  F32 pitch_target = rd_value_from_params_key(params, ("pitch")).f32;
+  F32 zoom_target  = rd_value_from_params_key(params, ("zoom")).f32;
   
   //////////////////////////////
   //- rjf: evaluate & unpack expression
@@ -7820,9 +7820,9 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(geo3d)
   //////////////////////////////
   //- rjf: commit parameters
   //
-  rd_store_view_param_f32(str8_lit("yaw"),   yaw_target);
-  rd_store_view_param_f32(str8_lit("pitch"), pitch_target);
-  rd_store_view_param_f32(str8_lit("zoom"),  zoom_target);
+  rd_store_view_param_f32(("yaw"),   yaw_target);
+  rd_store_view_param_f32(("pitch"), pitch_target);
+  rd_store_view_param_f32(("zoom"),  zoom_target);
   
   geo_scope_close(geo_scope);
   scratch_end(scratch);
@@ -8087,7 +8087,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
-      n->v.string = str8_lit("Global Interface Settings");
+      n->v.string = ("Global Interface Settings");
       n->v.icon_kind = sv->category_opened[RD_SettingsItemKind_GlobalSetting] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n->v.category = RD_SettingsItemKind_GlobalSetting;
     }
@@ -8101,7 +8101,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         {
           continue;
         }
-        String8 kind_string = str8_lit("Global Interface Setting");
+        String8 kind_string = ("Global Interface Setting");
         String8 string = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
@@ -8129,7 +8129,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
-      n->v.string = str8_lit("Window Interface Settings");
+      n->v.string = ("Window Interface Settings");
       n->v.icon_kind = sv->category_opened[RD_SettingsItemKind_WindowSetting] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n->v.category = RD_SettingsItemKind_WindowSetting;
     }
@@ -8143,7 +8143,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
         {
           continue;
         }
-        String8 kind_string = str8_lit("Window Interface Setting");
+        String8 kind_string = ("Window Interface Setting");
         String8 string = rd_setting_code_display_string_table[code];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
@@ -8171,7 +8171,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
-      n->v.string = str8_lit("Theme Presets");
+      n->v.string = ("Theme Presets");
       n->v.icon_kind = sv->category_opened[RD_SettingsItemKind_ThemePreset] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n->v.category = RD_SettingsItemKind_ThemePreset;
     }
@@ -8181,7 +8181,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     {
       for EachEnumVal(RD_ThemePreset, preset)
       {
-        String8 kind_string = str8_lit("Theme Preset");
+        String8 kind_string = ("Theme Preset");
         String8 string = rd_theme_preset_display_string_table[preset];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
@@ -8209,7 +8209,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
       SLLQueuePush(items_list.first, items_list.last, n);
       items_list.count += 1;
       n->v.kind = RD_SettingsItemKind_CategoryHeader;
-      n->v.string = str8_lit("Theme Colors");
+      n->v.string = ("Theme Colors");
       n->v.icon_kind = sv->category_opened[RD_SettingsItemKind_ThemeColor] ? RD_IconKind_DownCaret : RD_IconKind_RightCaret;
       n->v.category = RD_SettingsItemKind_ThemeColor;
     }
@@ -8219,7 +8219,7 @@ RD_VIEW_RULE_UI_FUNCTION_DEF(settings)
     {
       for EachNonZeroEnumVal(RD_ThemeColor, color)
       {
-        String8 kind_string = str8_lit("Theme Color");
+        String8 kind_string = ("Theme Color");
         String8 string = rd_theme_color_display_string_table[color];
         FuzzyMatchRangeList kind_string_matches = fuzzy_match_find(scratch.arena, query, kind_string);
         FuzzyMatchRangeList string_matches = fuzzy_match_find(scratch.arena, query, string);
