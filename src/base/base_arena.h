@@ -38,6 +38,28 @@ public struct Arena
   uint64 free_size;
   Arena* free_last;
 #endif
+
+  // MH
+  
+  public T* PushArrayNoZeroAligned<T>(uint64 count, uint64 align)
+  {
+    return (T*)arena_push(this, sizeof(T) * count, align);
+  }
+
+  public T* PushArrayAligned<T>(uint64 count, uint64 align)
+  {
+    return (T*)MemoryZero(this.PushArrayNoZeroAligned<T>(count, align), sizeof(T) * c);
+  }
+
+  public T* PushArrayNoZero<T>(uint64 count)
+  {
+    return (T*)arena_push(this, sizeof(T) * count, Math.Max(8, alignof(T)));
+  }
+
+  public T* PushArray<T>(uint64 count)
+  {
+    return this.PushArrayAligned<T>(count, Math.Max(8, alignof(T)))
+  }
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 

@@ -1246,7 +1246,7 @@ internal CV_RecRangeArray
 cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream)
 {
   U64 total_count = stream->total_count;
-  CV_RecRange *ranges = push_array_no_zero_aligned(arena, CV_RecRange, total_count, 8);
+  CV_RecRange *ranges = arena.PushArrayNoZeroAligned<CV_RecRange>(total_count, 8);
   U64 idx = 0;
   for(CV_RecRangeChunk *chunk = stream->first_chunk; chunk != 0; chunk = chunk->next)
   {

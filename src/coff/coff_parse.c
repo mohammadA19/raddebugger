@@ -158,7 +158,7 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
 {
   COFF_Symbol32Array result = {0};
   result.count              = symbol_count;
-  result.v                  = push_array_no_zero_aligned(arena, COFF_Symbol32, result.count, 8);
+  result.v                  = arena.PushArrayNoZeroAligned<COFF_Symbol32>(result.count, 8);
   
   Rng1U64        sym16_arr_range = rng_1u64(symbol_array_off, symbol_array_off + sizeof(COFF_Symbol16) * symbol_count);
   String8        raw_sym16_arr   = str8_substr(raw_coff, sym16_arr_range);
