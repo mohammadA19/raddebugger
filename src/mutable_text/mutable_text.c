@@ -24,7 +24,7 @@ mtx_init(void)
   for(U64 idx = 0; idx < mtx_shared->mut_threads_count; idx += 1)
   {
     mtx_shared->mut_threads[idx].ring_size = KB(64);
-    mtx_shared->mut_threads[idx].ring_base = push_array_no_zero(arena, U8, mtx_shared->mut_threads[idx].ring_size);
+    mtx_shared->mut_threads[idx].ring_base = arena.PushArrayNoZero<U8>(mtx_shared->mut_threads[idx].ring_size);
     mtx_shared->mut_threads[idx].cv = os_condition_variable_alloc();
     mtx_shared->mut_threads[idx].mutex = os_mutex_alloc();
     mtx_shared->mut_threads[idx].thread = os_thread_launch(mtx_mut_thread__entry_point, &mtx_shared->mut_threads[idx], 0);
@@ -77,7 +77,7 @@ mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, U128 *buffer_key_out, MTX_Op
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, buffer_key_out);
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, &op_out->range);
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, &op_out->replace.size);
-      op_out->replace.str = push_array_no_zero(arena, U8, op_out->replace.size);
+      op_out->replace.str = arena.PushArrayNoZero<U8>(op_out->replace.size);
       thread->ring_read_pos += ring_read(thread->ring_base, thread->ring_size, thread->ring_read_pos, op_out->replace.str, op_out->replace.size);
       break;
     }
@@ -114,7 +114,7 @@ mtx_mut_thread__entry_point(void *p)
     {
       U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
       Arena *arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
-      U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
+      U8 *new_data_base = arena.PushArrayNoZero<U8>(new_data_size);
       String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
       String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
       if(pre_replace_data.size != 0)

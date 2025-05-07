@@ -80,7 +80,7 @@ e_oplist_push_op(Arena *arena, E_OpList *list, RDI_EvalOp opcode, E_Value value)
 {
   U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
   U32 p_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
-  E_Op *node = push_array_no_zero(arena, E_Op, 1);
+  E_Op *node = arena.PushArrayNoZero<E_Op>(1);
   node->opcode = opcode;
   node->value = value;
   SLLQueuePush(list->first, list->last, node);
@@ -125,7 +125,7 @@ e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x)
 internal void
 e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode)
 {
-  E_Op *node = push_array_no_zero(arena, E_Op, 1);
+  E_Op *node = arena.PushArrayNoZero<E_Op>(1);
   node->opcode = E_IRExtKind_Bytecode;
   node->string = bytecode;
   SLLQueuePush(list->first, list->last, node);
@@ -136,7 +136,7 @@ e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode)
 internal void
 e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space)
 {
-  E_Op *node = push_array_no_zero(arena, E_Op, 1);
+  E_Op *node = arena.PushArrayNoZero<E_Op>(1);
   node->opcode = E_IRExtKind_SetSpace;
   StaticAssert(sizeof(E_Space) <= sizeof(E_Value), space_size_check);
   MemoryCopy(&node->value, &space, sizeof(space));
@@ -151,7 +151,7 @@ e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
   RDI_EvalOp opcode = RDI_EvalOp_ConstString;
   U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
   U32 p_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
-  E_Op *node = push_array_no_zero(arena, E_Op, 1);
+  E_Op *node = arena.PushArrayNoZero<E_Op>(1);
   node->opcode = opcode;
   node->string = string;
   node->value.u64 = Min(string.size, 64);
@@ -1457,7 +1457,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 {
   // rjf: allocate buffer
   U64 size = oplist->encoded_size;
-  U8 *str = push_array_no_zero(arena, U8, size);
+  U8 *str = arena.PushArrayNoZero<U8>(size);
   
   // rjf: iterate loose op nodes; fill buffer
   U8 *ptr = str;

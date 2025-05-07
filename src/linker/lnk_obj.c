@@ -138,7 +138,7 @@ lnk_obj_search_chunks(Arena *arena, LNK_Obj *obj, String8 name, String8 postfix,
         continue;
       }
 
-      LNK_ChunkNode *node = push_array_no_zero(arena, LNK_ChunkNode, 1);
+      LNK_ChunkNode *node = arena.PushArrayNoZero<LNK_ChunkNode>(1);
       node->next          = 0;
       node->data          = chunk;
 
@@ -290,7 +290,7 @@ lnk_sect_defn_list_push_node(LNK_SectDefnList *list, LNK_SectDefn *node)
 internal LNK_SectDefn *
 lnk_sect_defn_list_push(Arena *arena, LNK_SectDefnList *list, LNK_Obj *obj, String8 name, U64 idx, COFF_SectionFlags flags)
 {
-  LNK_SectDefn *node = push_array_no_zero(arena, LNK_SectDefn, 1);
+  LNK_SectDefn *node = arena.PushArrayNoZero<LNK_SectDefn>(1);
   node->next         = 0;
   node->obj          = obj;
   node->name         = name;
@@ -355,8 +355,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   U64 chunk_count = 1;  // :common_block
   chunk_count    += coff_info.section_count_no_null;
 
-  String8   *sect_name_arr = push_array_no_zero(arena, String8,   chunk_count);
-  String8   *sect_sort_arr = push_array_no_zero(arena, String8,   chunk_count);
+  String8   *sect_name_arr = arena.PushArrayNoZero<String8>(  chunk_count);
+  String8   *sect_sort_arr = arena.PushArrayNoZero<String8>(  chunk_count);
   LNK_Chunk *chunk_arr     = push_array(arena, LNK_Chunk, chunk_count);
 
   // :common_block
@@ -427,7 +427,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   master_common_block->u.list       = push_array(arena, LNK_ChunkList, 1);
   lnk_chunk_set_debugf(arena, master_common_block, "%S: master common block", cached_path);
 
-  LNK_ChunkPtr *chunk_ptr_arr = push_array_no_zero(arena, LNK_ChunkPtr, chunk_count);
+  LNK_ChunkPtr *chunk_ptr_arr = arena.PushArrayNoZero<LNK_ChunkPtr>(chunk_count);
   for (U64 i = 0; i < chunk_count; ++i) {
     chunk_ptr_arr[i] = &chunk_arr[i];
   }
@@ -1022,7 +1022,7 @@ lnk_symbol_array_from_coff(Arena              *arena,
 internal LNK_RelocList *
 lnk_reloc_list_array_from_coff(Arena *arena, COFF_MachineType machine, String8 coff_data, U64 sect_count, COFF_SectionHeader *coff_sect_arr, LNK_ChunkPtr *chunk_ptr_arr, LNK_SymbolArray symbol_array)
 {
-  LNK_RelocList *reloc_list_arr = push_array_no_zero(arena, LNK_RelocList, sect_count);
+  LNK_RelocList *reloc_list_arr = arena.PushArrayNoZero<LNK_RelocList>(sect_count);
   for (U64 sect_idx = 0; sect_idx < sect_count; ++sect_idx) {
     COFF_SectionHeader *COFF_FileHeader     = &coff_sect_arr[sect_idx];
     COFF_RelocInfo      coff_reloc_info = coff_reloc_info_from_section_header(coff_data, COFF_FileHeader);
@@ -1092,7 +1092,7 @@ lnk_parse_msvc_linker_directive(Arena *arena, String8 obj_path, String8 lib_path
       continue;
     }
 
-    LNK_Directive *directive = push_array_no_zero(arena, LNK_Directive, 1);
+    LNK_Directive *directive = arena.PushArrayNoZero<LNK_Directive>(1);
     directive->next          = 0;
     directive->id            = push_str8_copy(arena, opt->string);
     directive->value_list    = str8_list_copy(arena, &opt->value_strings);

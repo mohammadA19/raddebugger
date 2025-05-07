@@ -575,7 +575,7 @@ cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind)
 internal CV_TypeIndexInfo *
 cv_symbol_type_index_info_push(Arena *arena, CV_TypeIndexInfoList *list, CV_TypeIndexSource source, U64 offset)
 {
-  CV_TypeIndexInfo *info = push_array_no_zero(arena, CV_TypeIndexInfo, 1);
+  CV_TypeIndexInfo *info = arena.PushArrayNoZero<CV_TypeIndexInfo>(1);
   info->next   = 0;
   info->offset = offset;
   info->source = source;
@@ -992,7 +992,7 @@ cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, Stri
   if(ti_list.count > 0)
   {
     result.count = ti_list.count + 1;
-    result.v = push_array_no_zero(arena, String8, result.count);
+    result.v = arena.PushArrayNoZero<String8>(result.count);
 
     U64 cursor = 0;
     U64 ti_idx = 0;
@@ -1010,7 +1010,7 @@ cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, Stri
   else
   {
     result.count = 1;
-    result.v = push_array_no_zero(arena, String8, 1);
+    result.v = arena.PushArrayNoZero<String8>(1);
     result.v[0] = data;
   }
   return result;
@@ -1478,8 +1478,8 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           U32 col_array_off = line_array_off + line_count*sizeof(CV_C13Line);
           
           // parse lines
-          U64 *voffs = push_array_no_zero(arena, U64, line_count + 1);
-          U32 *line_nums = push_array_no_zero(arena, U32, line_count);
+          U64 *voffs = arena.PushArrayNoZero<U64>(line_count + 1);
+          U32 *line_nums = arena.PushArrayNoZero<U32>(line_count);
           
           {
             CV_C13Line *line_ptr = (CV_C13Line*)(first + line_array_off);

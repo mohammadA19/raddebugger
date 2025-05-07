@@ -47,7 +47,7 @@ public static void fs_init()
     fs_shared.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   fs_shared.u2s_ring_size = KB(64);
-  fs_shared.u2s_ring_base = push_array_no_zero(arena, uint8, fs_shared.u2s_ring_size);
+  fs_shared.u2s_ring_base = arena.PushArrayNoZero<uint8>(fs_shared.u2s_ring_size);
   fs_shared.u2s_ring_cv = os_condition_variable_alloc();
   fs_shared.u2s_ring_mutex = os_mutex_alloc();
   fs_shared.detector_thread = os_thread_launch(fs_detector_thread__entry_point, 0, 0);

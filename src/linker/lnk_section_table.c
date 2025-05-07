@@ -56,7 +56,7 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
 {
   LNK_SectionArray result;
   result.count = 0;
-  result.v = push_array_no_zero(arena, LNK_Section, list.count);
+  result.v = arena.PushArrayNoZero<LNK_Section>(list.count);
   for (LNK_SectionNode *node = list.first; node != 0; node = node->next) {
     result.v[result.count] = node->data;
     result.count += 1;
@@ -610,7 +610,7 @@ lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *st, 
     }
   }
 
-  U8      *image_buffer = push_array_no_zero(arena, U8, image_size);
+  U8      *image_buffer = arena.PushArrayNoZero<U8>(image_size);
   String8  image        = str8(image_buffer, image_size);
   U64      image_cursor = 0;
 

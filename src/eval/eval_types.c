@@ -815,7 +815,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
                   type->byte_size       = bit_size_from_arch(e_type_state->ctx->modules[rdi_idx].arch)/8;
                   type->direct_type_key = direct_type_key;
                   type->count           = count;
-                  type->param_type_keys = push_array_no_zero(arena, E_TypeKey, type->count);
+                  type->param_type_keys = arena.PushArrayNoZero<E_TypeKey>(type->count);
                   for(U32 idx = 0; idx < type->count; idx += 1)
                   {
                     U32 param_type_idx = idx_run[idx];
@@ -848,7 +848,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
                   type->byte_size       = bit_size_from_arch(e_type_state->ctx->modules[rdi_idx].arch)/8;
                   type->owner_type_key  = direct_type_key;
                   type->count           = count;
-                  type->param_type_keys = push_array_no_zero(arena, E_TypeKey, type->count);
+                  type->param_type_keys = arena.PushArrayNoZero<E_TypeKey>(type->count);
                   for(U32 idx = 0; idx < type->count; idx += 1)
                   {
                     U32 param_type_idx = idx_run[idx];
@@ -1112,7 +1112,7 @@ e_type_from_key(Arena *arena, E_TypeKey key)
         
         // rjf: commit members
         type->count = members.count;
-        type->members = push_array_no_zero(arena, E_Member, members.count);
+        type->members = arena.PushArrayNoZero<E_Member>(members.count);
         U64 idx = 0;
         for(E_MemberNode *n = members.first; n != 0; n = n->next, idx += 1)
         {

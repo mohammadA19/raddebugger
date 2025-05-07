@@ -67,7 +67,7 @@ lnk_read_data_from_file_path(Arena *arena, String8 path)
   int is_open = lnk_open_file_read((char*)path.str, path.size, &handle, sizeof(handle));
   if (is_open) {
     U64  buffer_size = lnk_size_from_file(&handle);
-    U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+    U8  *buffer      = arena.PushArrayNoZero<U8>(buffer_size);
     U64  read_size   = lnk_read_file(&handle, buffer, buffer_size);
 
     data = str8(buffer, read_size);
@@ -143,7 +143,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
 
   reader.data_arr = str8_array_reserve(arena, path_arr.count);
   reader.off_arr  = off_arr;
-  reader.buffer   = push_array_no_zero(arena, U8, total_data_size);
+  reader.buffer   = arena.PushArrayNoZero<U8>(total_data_size);
 
   // read files and close handles
   tp_for_parallel(tp, 0, path_arr.count, lnk_data_from_file_path_task, &reader);

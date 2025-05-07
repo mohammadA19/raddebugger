@@ -18,7 +18,7 @@ lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, U64 count)
 internal LNK_LibMemberNode *
 lnk_lib_member_list_push(Arena *arena, LNK_LibMemberList *list, LNK_LibMember member)
 {
-  LNK_LibMemberNode *n = push_array_no_zero(arena, LNK_LibMemberNode, 1);
+  LNK_LibMemberNode *n = arena.PushArrayNoZero<LNK_LibMemberNode>(1);
   n->next              = 0;
   n->data              = member;
   
@@ -32,7 +32,7 @@ internal LNK_LibMember *
 lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list)
 {
   ProfBeginFunction();
-  LNK_LibMember *arr = push_array_no_zero(arena, LNK_LibMember, list.count);
+  LNK_LibMember *arr = arena.PushArrayNoZero<LNK_LibMember>(list.count);
   LNK_LibMember *ptr = arr;
   for (LNK_LibMemberNode *i = list.first; i != 0; i = i->next, ptr += 1) {
     ptr->name = push_str8_copy(arena, i->data.name);
@@ -45,7 +45,7 @@ lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list)
 internal LNK_LibSymbolNode *
 lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol symbol)
 {
-  LNK_LibSymbolNode *n = push_array_no_zero(arena, LNK_LibSymbolNode, 1);
+  LNK_LibSymbolNode *n = arena.PushArrayNoZero<LNK_LibSymbolNode>(1);
   n->next              = 0;
   n->data              = symbol;
   
@@ -58,7 +58,7 @@ lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol sy
 internal LNK_LibSymbol *
 lnk_lib_symbol_array_from_list(Arena *arena, LNK_LibSymbolList list)
 {
-  LNK_LibSymbol *arr = push_array_no_zero(arena, LNK_LibSymbol, list.count + 2);
+  LNK_LibSymbol *arr = arena.PushArrayNoZero<LNK_LibSymbol>(list.count + 2);
   LNK_LibSymbol *ptr = arr + 1;
   for (LNK_LibSymbolNode *i = list.first; i != 0; i = i->next, ptr += 1) {
     ptr->name = push_str8_copy(arena, i->data.name);
@@ -124,7 +124,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path)
     
     symbol_count   = second_member.symbol_count;
     string_table   = second_member.string_table;
-    member_off_arr = push_array_no_zero(arena, U32, symbol_count);
+    member_off_arr = arena.PushArrayNoZero<U32>(symbol_count);
     
     // decompress member offsets
     for (U64 symbol_idx = 0; symbol_idx < symbol_count; symbol_idx += 1) {

@@ -470,7 +470,7 @@ fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
   if(node == 0 || node->count >= node->cap)
   {
     node = push_array(arena, FNT_PieceChunkNode, 1);
-    node->v = push_array_no_zero(arena, FNT_Piece, cap);
+    node->v = arena.PushArrayNoZero<FNT_Piece>(cap);
     node->cap = cap;
     SLLQueuePush(list->first, list->last, node);
     list->node_count += 1;
@@ -493,7 +493,7 @@ fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
 {
   FNT_PieceArray array = {0};
   array.count = list->total_piece_count;
-  array.v = push_array_no_zero(arena, FNT_Piece, array.count);
+  array.v = arena.PushArrayNoZero<FNT_Piece>(array.count);
   U64 write_idx = 0;
   for(FNT_PieceChunkNode *node = list->first; node != 0; node = node->next)
   {
@@ -508,7 +508,7 @@ fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
 {
   FNT_PieceArray dst = {0};
   dst.count = src->count;
-  dst.v = push_array_no_zero(arena, FNT_Piece, dst.count);
+  dst.v = arena.PushArrayNoZero<FNT_Piece>(dst.count);
   MemoryCopy(dst.v, src->v, sizeof(FNT_Piece)*dst.count);
   return dst;
 }

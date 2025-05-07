@@ -1813,7 +1813,7 @@ lnk_base_reloc_page_array_from_list(Arena* arena, LNK_BaseRelocPageList list)
 {
   LNK_BaseRelocPageArray result = {0};
   result.count                  = 0;
-  result.v                      = push_array_no_zero(arena, LNK_BaseRelocPage, list.count);
+  result.v                      = arena.PushArrayNoZero<LNK_BaseRelocPage>(list.count);
   for (LNK_BaseRelocPageNode* n = list.first; n != 0; n = n->next) {
     result.v[result.count++] = n->v;
   }
@@ -2591,7 +2591,7 @@ THREAD_POOL_TASK_FUNC(lnk_lazy_symbol_pusher_task)
   LNK_Lib          *lib       = &task->u.libs.v[task_id].data;
   String8Node      *name_node = lib->symbol_name_list.first;
 
-  LNK_Symbol *lazy_symbols = push_array_no_zero(arena, LNK_Symbol, lib->symbol_count);
+  LNK_Symbol *lazy_symbols = arena.PushArrayNoZero<LNK_Symbol>(lib->symbol_count);
 
   for (U64 symbol_idx = 0; symbol_idx < lib->symbol_count; ++symbol_idx, name_node = name_node->next) {
     LNK_Symbol *symbol = &lazy_symbols[symbol_idx];

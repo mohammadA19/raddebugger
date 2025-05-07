@@ -938,7 +938,7 @@ os_machine_name(void){
     // save string
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, U8, name.size + 1);
+      name.str = lnx_perm_arena.PushArrayNoZero<U8>(name.size + 1);
       MemoryCopy(name.str, buffer, name.size);
       name.str[name.size] = 0;
     }

@@ -90,7 +90,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
     B32 is_deleted_bits_ok = deleted_bits.count <= AlignPow2(max, 32);
     if (is_count_ok && is_load_factor_ok && is_present_bits_ok && is_deleted_bits_ok) {
       Arena *arena = arena_alloc();
-      PDB_HashTableBucket *bucket_arr = push_array_no_zero(arena, PDB_HashTableBucket, max);
+      PDB_HashTableBucket *bucket_arr = arena.PushArrayNoZero<PDB_HashTableBucket>(max);
       U32Array present_bits_new = bit_array_init32(arena, max);
       U32Array deleted_bits_new = bit_array_init32(arena, max);
       MemoryCopyTyped(&present_bits_new.v[0], &present_bits.v[0], present_bits.count);
@@ -570,11 +570,11 @@ pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
           offset_buffer.size == sizeof(U32)*bucket_max &&
           bucket_count <= bucket_max) {
         // init string table
-        ibucket_array = push_array_no_zero(arena, U32, bucket_max);
+        ibucket_array = arena.PushArrayNoZero<U32>(bucket_max);
         bucket_array  = push_array_no_zero(arena, PDB_StringTableBucket *, bucket_max);
 
         // open buckets
-        PDB_StringTableBucket *node_arr = push_array_no_zero(arena, PDB_StringTableBucket, bucket_count);
+        PDB_StringTableBucket *node_arr = arena.PushArrayNoZero<PDB_StringTableBucket>(bucket_count);
         U8  *string_buffer_ptr = string_buffer.str;
         U8  *string_buffer_opl = string_buffer.str + string_buffer.size;
         U32 *offset_array      = (U32*)offset_buffer.str;
@@ -1765,7 +1765,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
     
   // fill out info
   Arena *arena = arena_alloc();
-  PDB_InfoContext *info = push_array_no_zero(arena, PDB_InfoContext, 1);
+  PDB_InfoContext *info = arena.PushArrayNoZero<PDB_InfoContext>(1);
   info->arena               = arena;
   info->time_stamp          = parse.time_stamp;
   info->age                 = parse.age;
@@ -2342,13 +2342,13 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
 
   // prepare serial buffer
   U64 buffer_size = sum_array_u64(gsi->bucket_count, serial_task.bucket_size_arr);
-  serial_task.buffer         = push_array_no_zero(arena, U8, buffer_size);
+  serial_task.buffer         = arena.PushArrayNoZero<U8>(buffer_size);
   serial_task.bucket_off_arr = push_array_copy_u64(scratch.arena, serial_task.bucket_size_arr, gsi->bucket_count);
   counts_to_offsets_array_u64(gsi->bucket_count, serial_task.bucket_off_arr);
 
   // prepare GSI records
   serial_task.sort_record_arr_arr  = push_array_no_zero(scratch.arena, PDB_GsiSortRecord *, gsi->bucket_count);
-  serial_task.sort_record_arr      = push_array_no_zero(arena, PDB_GsiSortRecord, gsi->symbol_count);
+  serial_task.sort_record_arr      = arena.PushArrayNoZero<PDB_GsiSortRecord>(gsi->symbol_count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < gsi->bucket_count; bucket_idx += 1) {
     serial_task.sort_record_arr_arr[bucket_idx] = serial_task.sort_record_arr + cursor;
     cursor += gsi->bucket_arr[bucket_idx].count;
@@ -2364,8 +2364,8 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
   U64             compressed_offset_count = 0;
   U64             hash_record_count       = gsi->symbol_count;
   U32            *bitmap                  = push_array(arena, U32, bitmap_count);
-  U32            *compressed_offset_arr   = push_array_no_zero(arena, U32, gsi->bucket_count);
-  PDB_GsiHashRecord *hash_record_arr      = push_array_no_zero(arena, PDB_GsiHashRecord, hash_record_count);
+  U32            *compressed_offset_arr   = arena.PushArrayNoZero<U32>(gsi->bucket_count);
+  PDB_GsiHashRecord *hash_record_arr      = arena.PushArrayNoZero<PDB_GsiHashRecord>(hash_record_count);
 
   // offsets for symbol stream are shifted by one to tell apart from null and zero (see GSI1::fixSymRecs) 
   U64 offset_cursor = (1 + symbol_data_base);
@@ -2651,7 +2651,7 @@ dbi_sec_contrib_list_push_node(PDB_DbiSectionContribList *list, PDB_DbiSectionCo
 internal PDB_DbiSectionContribNode *
 dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
 {
-  PDB_DbiSectionContribNode *node = push_array_no_zero(arena, PDB_DbiSectionContribNode, 1);
+  PDB_DbiSectionContribNode *node = arena.PushArrayNoZero<PDB_DbiSectionContribNode>(1);
   node->next = 0;
   dbi_sec_contrib_list_push_node(list, node);
   return node;
@@ -2809,7 +2809,7 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
       MSF_UInt sec_con_read = msf_stream_read_array(msf, sn, &src_contrib_array[0], contrib_count);
       Assert(sec_con_read == sizeof(src_contrib_array[0]) * contrib_count);
       
-      PDB_DbiSectionContribNode *dst_contrib_array = push_array_no_zero(arena, PDB_DbiSectionContribNode, contrib_count);
+      PDB_DbiSectionContribNode *dst_contrib_array = arena.PushArrayNoZero<PDB_DbiSectionContribNode>(contrib_count);
       for (U64 icontrib = 0; icontrib < contrib_count; icontrib += 1) {
         dst_contrib_array[icontrib].next = 0;
         dst_contrib_array[icontrib].data = src_contrib_array[icontrib];
@@ -2989,7 +2989,7 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
   }
 
   U32 **source_file_name_offsets_arr = push_array_no_zero(scratch.arena, U32 *, mod_list.count);
-  U32  *source_file_name_offsets     = push_array_no_zero(arena, U32, total_source_file_count);
+  U32  *source_file_name_offsets     = arena.PushArrayNoZero<U32>(total_source_file_count);
   for (U64 mod_idx = 0, cursor = 0; mod_idx < mod_list.count; ++mod_idx) {
     if (mod_arr[mod_idx]->imod != CV_ModIndex_Invalid) {
       source_file_name_offsets_arr[mod_idx] = source_file_name_offsets + cursor;
@@ -3005,8 +3005,8 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
   PDB_DbiBuildFileInfoTask task    = {0};
   task.string_ht                   = string_ht;
   task.mod_arr                     = mod_arr;
-  task.imod_arr                    = push_array_no_zero(arena, U16, mod_count16);
-  task.source_file_name_count_arr  = push_array_no_zero(arena, U16, mod_list.count);
+  task.imod_arr                    = arena.PushArrayNoZero<U16>(mod_count16);
+  task.source_file_name_count_arr  = arena.PushArrayNoZero<U16>(mod_list.count);
   task.source_file_name_offset_arr = source_file_name_offsets_arr;
   tp_for_parallel(tp, 0, mod_arr_count, dbi_build_file_info_assign_file_offsets_task, &task);
 
@@ -3239,7 +3239,7 @@ dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
   
   // push section contribs V1
   ProfBegin("Push sect contribs [Count %llu]", dbi->sec_contrib_list.count);
-  PDB_DbiSectionContrib *sc_array = push_array_no_zero(arena, PDB_DbiSectionContrib, dbi->sec_contrib_list.count);
+  PDB_DbiSectionContrib *sc_array = arena.PushArrayNoZero<PDB_DbiSectionContrib>(dbi->sec_contrib_list.count);
   PDB_DbiSectionContrib *dst = &sc_array[0];
   for (PDB_DbiSectionContribNode *src = dbi->sec_contrib_list.first; src != 0; src = src->next, dst += 1) {
     *dst = src->data;

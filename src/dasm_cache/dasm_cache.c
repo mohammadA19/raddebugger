@@ -196,7 +196,7 @@ dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_
   if(node == 0 || node->count >= node->cap)
   {
     node = push_array(arena, DASM_LineChunkNode, 1);
-    node->v = push_array_no_zero(arena, DASM_Line, cap);
+    node->v = arena.PushArrayNoZero<DASM_Line>(cap);
     node->cap = cap;
     SLLQueuePush(list->first, list->last, node);
     list->node_count += 1;
@@ -211,7 +211,7 @@ dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
 {
   DASM_LineArray array = {0};
   array.count = list->line_count;
-  array.v = push_array_no_zero(arena, DASM_Line, array.count);
+  array.v = arena.PushArrayNoZero<DASM_Line>(array.count);
   U64 idx = 0;
   for(DASM_LineChunkNode *n = list->first; n != 0; n = n->next)
   {
@@ -271,7 +271,7 @@ dasm_init(void)
     dasm_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   dasm_shared->u2p_ring_size = KB(64);
-  dasm_shared->u2p_ring_base = push_array_no_zero(arena, U8, dasm_shared->u2p_ring_size);
+  dasm_shared->u2p_ring_base = arena.PushArrayNoZero<U8>(dasm_shared->u2p_ring_size);
   dasm_shared->u2p_ring_cv = os_condition_variable_alloc();
   dasm_shared->u2p_ring_mutex = os_mutex_alloc();
   dasm_shared->evictor_detector_thread = os_thread_launch(dasm_evictor_detector_thread__entry_point, 0, 0);

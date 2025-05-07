@@ -39,7 +39,7 @@ public static void* r_batch_list_push_inst(Arena* arena, R_BatchList* list, uint
     {
       n = push_array(arena, R_BatchNode, 1);
       n.v.byte_cap = batch_inst_cap*list.bytes_per_inst;
-      n.v.v = push_array_no_zero(arena, uint8, n.v.byte_cap); 
+      n.v.v = arena.PushArrayNoZero<uint8>(n.v.byte_cap); 
       SLLQueuePush(list.first, list.last, n);
       list.batch_count += 1;
     }

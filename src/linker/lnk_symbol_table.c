@@ -69,7 +69,7 @@ lnk_init_lazy_symbol(LNK_Symbol *symbol, String8 name, LNK_Lib *lib, U64 member_
 internal LNK_Symbol *
 lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_defined_symbol(symbol, name, visibility, flags);
   return symbol;
 }
@@ -77,7 +77,7 @@ lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility 
 internal LNK_Symbol * 
 lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_defined_symbol_chunk(symbol, name, visibility, flags, chunk, offset, selection, check_sum);
   return symbol;
 }
@@ -85,7 +85,7 @@ lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisib
 internal LNK_Symbol *
 lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_defined_symbol_va(symbol, name, visibility, flags, va);
   return symbol;
 }
@@ -93,7 +93,7 @@ lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibili
 internal LNK_Symbol * 
 lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags flags)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_undefined_symbol(symbol, name, flags);
   return symbol;
 }
@@ -101,7 +101,7 @@ lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags flags
 internal LNK_Symbol *
 lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_weak_symbol(symbol, name, lookup, fallback);
   return symbol;
 }
@@ -109,7 +109,7 @@ lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Sy
 internal LNK_Symbol *
 lnk_make_lazy_symbol(Arena *arena, String8 name, LNK_Lib *lib, U64 member_offset)
 {
-  LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
+  LNK_Symbol *symbol = arena.PushArrayNoZero<LNK_Symbol>(1);
   lnk_init_lazy_symbol(symbol, name, lib, member_offset);
   return symbol;
 }
@@ -169,7 +169,7 @@ internal LNK_SymbolList
 lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr)
 {
   LNK_SymbolList list = {0};
-  LNK_SymbolNode *node_arr = push_array_no_zero(arena, LNK_SymbolNode, arr.count);
+  LNK_SymbolNode *node_arr = arena.PushArrayNoZero<LNK_SymbolNode>(arr.count);
   for (U64 i = 0; i < arr.count; i += 1) {
     LNK_SymbolNode *node = &node_arr[i];
     node->next           = 0;
@@ -196,7 +196,7 @@ lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolArray arr = {0};
   arr.count           = 0;
-  arr.v               = push_array_no_zero(arena, LNK_Symbol, list.count);
+  arr.v               = arena.PushArrayNoZero<LNK_Symbol>(list.count);
   for (LNK_SymbolNode *node = list.first; node != 0; node = node->next) {
     arr.v[arr.count++] = *node->data;
   }
@@ -211,7 +211,7 @@ lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *
   if (list->last == 0 || list->last->count >= list->last->cap) {
     LNK_SymbolHashTrieChunk *chunk = push_array(arena, LNK_SymbolHashTrieChunk, 1);
     chunk->cap                     = cap;
-    chunk->v                       = push_array_no_zero(arena, LNK_SymbolHashTrie, cap);
+    chunk->v                       = arena.PushArrayNoZero<LNK_SymbolHashTrie>(cap);
     SLLQueuePush(list->first, list->last, chunk);
     ++list->count;
   }

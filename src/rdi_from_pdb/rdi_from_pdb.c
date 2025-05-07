@@ -869,8 +869,8 @@ ASYNC_WORK_DEF(p2r_units_convert_work)
                   }
                   
                   // rjf: gather all lines
-                  RDI_U64 *voffs      = push_array_no_zero(arena, RDI_U64, total_line_chunk_line_count+1);
-                  RDI_U32 *line_nums  = push_array_no_zero(arena, RDI_U32, total_line_chunk_line_count);
+                  RDI_U64 *voffs      = arena.PushArrayNoZero<RDI_U64>(total_line_chunk_line_count+1);
+                  RDI_U32 *line_nums  = arena.PushArrayNoZero<RDI_U32>(total_line_chunk_line_count);
                   RDI_U64  line_count = total_line_chunk_line_count;
                   {
                     U64 dst_idx = 0;
@@ -4867,7 +4867,7 @@ p2r_compress(Arena *arena, P2R_Serialize2File *in)
       if(should_compress)
       {
         MemoryZero(ctx.m_hashTable, sizeof(U16)*(1<<ctx.m_tableSizeBits));
-        dst->data = push_array_no_zero(arena, U8, src->encoded_size);
+        dst->data = arena.PushArrayNoZero<U8>(src->encoded_size);
         dst->encoded_size = rr_lzb_simple_encode_veryfast(&ctx, src->data, src->encoded_size, dst->data);
         dst->unpacked_size = src->encoded_size;
         dst->encoding = RDI_SectionEncoding_LZB;

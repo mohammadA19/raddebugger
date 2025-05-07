@@ -817,7 +817,7 @@ lnk_parse_export_directive(Arena *arena, LNK_ExportParseList *list, String8List 
     goto exit;
   }
   
-  parse        = push_array_no_zero(arena, LNK_ExportParse, 1);
+  parse        = arena.PushArrayNoZero<LNK_ExportParse>(1);
   parse->next  = 0;
   parse->name  = name;
   parse->alias = alias;
@@ -836,7 +836,7 @@ exit:;
 internal LNK_MergeDirectiveNode *
 lnk_merge_directive_list_push(Arena *arena, LNK_MergeDirectiveList *list, LNK_MergeDirective data)
 {
-  LNK_MergeDirectiveNode *node = push_array_no_zero(arena, LNK_MergeDirectiveNode, 1);
+  LNK_MergeDirectiveNode *node = arena.PushArrayNoZero<LNK_MergeDirectiveNode>(1);
   node->data                   = data;
   node->next                   = 0;
   

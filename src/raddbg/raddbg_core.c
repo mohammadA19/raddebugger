@@ -9795,7 +9795,7 @@ rd_autocomp_lister_item_chunk_list_push(Arena *arena, RD_AutoCompListerItemChunk
     n = push_array(arena, RD_AutoCompListerItemChunkNode, 1);
     SLLQueuePush(list->first, list->last, n);
     n->cap = cap;
-    n->v = push_array_no_zero(arena, RD_AutoCompListerItem, n->cap);
+    n->v = arena.PushArrayNoZero<RD_AutoCompListerItem>(n->cap);
     list->chunk_count += 1;
   }
   MemoryCopyStruct(&n->v[n->count], item);
@@ -9808,7 +9808,7 @@ rd_autocomp_lister_item_array_from_chunk_list(Arena *arena, RD_AutoCompListerIte
 {
   RD_AutoCompListerItemArray array = {0};
   array.count = list->total_count;
-  array.v = push_array_no_zero(arena, RD_AutoCompListerItem, array.count);
+  array.v = arena.PushArrayNoZero<RD_AutoCompListerItem>(array.count);
   U64 idx = 0;
   for(RD_AutoCompListerItemChunkNode *n = list->first; n != 0; n = n->next)
   {

@@ -1461,7 +1461,7 @@ dwarf_info_from_data(Arena *arena, String8 data, DWARF_InfoParams *params,
           U32 attrib_count = abbrev_decl->attrib_count;
           DWARF_InfoEntry *entry = push_array(arena, DWARF_InfoEntry, 1);
           DWARF_InfoAttribVal *attrib_vals =
-            push_array_no_zero(arena, DWARF_InfoAttribVal, attrib_count);
+            arena.PushArrayNoZero<DWARF_InfoAttribVal>(attrib_count);
           
           // save entry offset
           entry->info_offset = (U64)(entry_start_ptr - data.str);
@@ -1813,7 +1813,7 @@ dwarf_abbrev_from_data(Arena *arena, String8 data, DWARF_AbbrevParams *params){
         // allocate abbrev
         DWARF_AbbrevDecl *abbrev = push_array(arena, DWARF_AbbrevDecl, 1);
         DWARF_AbbrevAttribSpec *attribs =
-          push_array_no_zero(arena, DWARF_AbbrevAttribSpec, attrib_count);
+          arena.PushArrayNoZero<DWARF_AbbrevAttribSpec>(attrib_count);
         U64 *implicit_const = 0;
         if (has_implicit_const){
           implicit_const = push_array(arena, U64, attrib_count);

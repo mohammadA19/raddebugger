@@ -162,7 +162,7 @@ lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
   ProfBeginFunction();
   LNK_ExportArray arr;
   arr.count = 0;
-  arr.v = push_array_no_zero(arena, LNK_Export, list.count);
+  arr.v = arena.PushArrayNoZero<LNK_Export>(list.count);
   for (LNK_Export *exp = list.first; exp != NULL; exp = exp->next) {
     arr.v[arr.count++] = *exp;
   }

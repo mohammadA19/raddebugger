@@ -287,7 +287,7 @@ coff_resource_string_from_str16(Arena *arena, String16 string)
   AssertAlways(string.size <= max_U16);
   U16 size16 = (U16)string.size;
   
-  U16 *buffer = push_array_no_zero(arena, U16, size16 + 1);
+  U16 *buffer = arena.PushArrayNoZero<U16>(size16 + 1);
   MemoryCopy(buffer + 0, &size16,    sizeof(size16));
   MemoryCopy(buffer + 1, string.str, size16 * sizeof(string.str[0]));
   
@@ -307,7 +307,7 @@ coff_resource_string_from_str8(Arena *arena, String8 string)
 internal String8
 coff_resource_number_from_u16(Arena *arena, U16 number)
 {
-  U16 *buffer = push_array_no_zero(arena, U16, 2);
+  U16 *buffer = arena.PushArrayNoZero<U16>(2);
   buffer[0] = max_U16;
   buffer[1] = number;
   return str8_array(buffer, 2);

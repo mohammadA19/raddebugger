@@ -45,7 +45,7 @@ public static uint64 dr_hash_from_string(String8 string)
 
 public static void dr_fancy_string_list_push(Arena* arena, DR_FancyStringList* list, DR_FancyString* str)
 {
-  DR_FancyStringNode* n = push_array_no_zero(arena, DR_FancyStringNode, 1);
+  DR_FancyStringNode* n = arena.PushArrayNoZero<DR_FancyStringNode>(1);
   MemoryCopyStruct(&n.v, str);
   SLLQueuePush(list.first, list.last, n);
   list.node_count += 1;
@@ -72,7 +72,7 @@ public static String8 dr_string_from_fancy_string_list(Arena* arena, DR_FancyStr
 {
   String8 result = default;
   result.size = list.total_size;
-  result.str = push_array_no_zero(arena, uint8, result.size);
+  result.str = arena.PushArrayNoZero<uint8>(result.size);
   uint64 idx = 0;
   for(DR_FancyStringNode* n = list.first; n != 0; n = n.next)
   {

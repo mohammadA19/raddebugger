@@ -22,7 +22,7 @@ geo_init(void)
     geo_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   geo_shared->u2x_ring_size = KB(64);
-  geo_shared->u2x_ring_base = push_array_no_zero(arena, U8, geo_shared->u2x_ring_size);
+  geo_shared->u2x_ring_base = arena.PushArrayNoZero<U8>(geo_shared->u2x_ring_size);
   geo_shared->u2x_ring_cv = os_condition_variable_alloc();
   geo_shared->u2x_ring_mutex = os_mutex_alloc();
   geo_shared->evictor_thread = os_thread_launch(geo_evictor_thread__entry_point, 0, 0);

@@ -234,7 +234,7 @@ internal Rng1U64 *
 tp_divide_work(Arena *arena, U64 item_count, U32 worker_count)
 {
   U64      per_count = CeilIntegerDiv(item_count, worker_count);
-  Rng1U64 *range_arr = push_array_no_zero(arena, Rng1U64, worker_count + 1);
+  Rng1U64 *range_arr = arena.PushArrayNoZero<Rng1U64>(worker_count + 1);
   for (U64 i = 0; i < worker_count; i += 1) {
     range_arr[i] = rng_1u64(Min(item_count, i * per_count), 
                             Min(item_count, i * per_count + per_count));

@@ -632,7 +632,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     U64 after_name2_off = name2_off + name2.size + 1;
     
     // save mod info
-    PDB_CompUnitNode *node = push_array_no_zero(arena, PDB_CompUnitNode, 1);
+    PDB_CompUnitNode *node = arena.PushArrayNoZero<PDB_CompUnitNode>(1);
     SLLQueuePush(first, last, node);
     count += 1;
     node->unit.sn = header->sn;
@@ -718,7 +718,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data,
     
     // allocate ranges
     U64 max_count = (data.size - array_off)/item_size;
-    contributions = push_array_no_zero(arena, PDB_CompUnitContribution, max_count);
+    contributions = arena.PushArrayNoZero<PDB_CompUnitContribution>(max_count);
     
     // binary section info
     U64 section_count = sections.count;

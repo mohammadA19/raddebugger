@@ -624,7 +624,7 @@ rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 {
   Rng1U64Array arr = {0};
   arr.count        = list->count;
-  arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
+  arr.v            = arena.PushArrayNoZero<Rng1U64>(arr.count);
   U64 idx = 0;
   for(Rng1U64Node *n = list->first; n != 0; n = n->next)
   {
@@ -648,7 +648,7 @@ rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
 {
   Rng1S64Array arr = {0};
   arr.count = list->count;
-  arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
+  arr.v = arena.PushArrayNoZero<Rng1S64>(arr.count);
   U64 idx = 0;
   for(Rng1S64Node *n = list->first; n != 0; n = n->next)
   {

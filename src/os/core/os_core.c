@@ -27,7 +27,7 @@ public static OS_HandleArray os_handle_array_from_list(Arena* arena, OS_HandleLi
 {
   OS_HandleArray result = default;
   result.count = list.count;
-  result.v = push_array_no_zero(arena, OS_Handle, result.count);
+  result.v = arena.PushArrayNoZero<OS_Handle>(result.count);
   uint64 idx = 0;
   for(OS_HandleNode* n = list.first; n != 0; n = n.next, idx += 1)
   {
@@ -129,7 +129,7 @@ public static String8 os_string_from_file_range(Arena* arena, OS_Handle file, Rn
   uint64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, uint8, result.size);
+  result.str = arena.PushArrayNoZero<uint8>(result.size);
   uint64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {

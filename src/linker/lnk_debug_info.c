@@ -176,7 +176,7 @@ lnk_setup_pch(Arena *arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_
     }
   }
 
-  LNK_PchInfo* pch_arr = push_array_no_zero(arena, LNK_PchInfo, obj_count);
+  LNK_PchInfo* pch_arr = arena.PushArrayNoZero<LNK_PchInfo>(obj_count);
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     CV_DebugT debug_t = debug_t_arr[obj_idx];
     if (cv_debug_t_is_pch(debug_t)) {
@@ -345,7 +345,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_external_leaves_task)
 internal CV_DebugT *
 lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr)
 {
-  CV_DebugT *result = push_array_no_zero(arena, CV_DebugT, obj_count);
+  CV_DebugT *result = arena.PushArrayNoZero<CV_DebugT>(obj_count);
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     CV_DebugT *debug_p = &debug_p_arr[obj_idx];
     CV_DebugT *debug_t = &debug_t_arr[obj_idx];
@@ -1630,7 +1630,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_internal_task)
     U128        leaf_hash = lnk_hash_from_leaf_ref(task->hashes, leaf_ref);
 
     if (bucket == 0) {
-      bucket = push_array_no_zero(arena, LNK_LeafBucket, 1);
+      bucket = arena.PushArrayNoZero<LNK_LeafBucket>(1);
     }
     bucket->leaf_ref = leaf_ref;
 
@@ -1665,7 +1665,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_external_task)
       U128        leaf_hash = lnk_hash_from_leaf_ref(task->hashes, leaf_ref);
 
       if (bucket == 0) {
-        bucket = push_array_no_zero(arena, LNK_LeafBucket, 1);
+        bucket = arena.PushArrayNoZero<LNK_LeafBucket>(1);
       }
       bucket->leaf_ref = leaf_ref;
 
@@ -2777,7 +2777,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
   ProfEnd();
 
   // alloc buffer
-  U8 *buffer        = push_array_no_zero(arena, U8, buffer_size);
+  U8 *buffer        = arena.PushArrayNoZero<U8>(buffer_size);
   U64 buffer_cursor = 0;
 
   // MS Symbol and Type Information p.4:
@@ -2958,7 +2958,7 @@ lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena *arena, CV_SymbolPtrArray arr)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_CvSymbolPtrArrayHasher task = {0};
-  task.hash_arr                   = push_array_no_zero(arena, U64, arr.count);
+  task.hash_arr                   = arena.PushArrayNoZero<U64>(arr.count);
   task.arr                        = arr.v;
   task.range_arr = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, lnk_cv_symbol_ptr_array_hasher, &task);
@@ -2982,7 +2982,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
   // TODO: use chunked lists for SC
 
   // TODO: put back unused nodes
-  PDB_DbiSectionContribNode *sc_arr   = push_array_no_zero(arena, PDB_DbiSectionContribNode, obj->sect_count);
+  PDB_DbiSectionContribNode *sc_arr   = arena.PushArrayNoZero<PDB_DbiSectionContribNode>(obj->sect_count);
   U64                        sc_count = 0;
   
   for (U64 chunk_idx = 0; chunk_idx < obj->sect_count; ++chunk_idx) {
@@ -3046,7 +3046,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_pdb_public_symbols_defined_task)
   LNK_SymbolHashTrieChunkList   chunk_list  = task->chunk_lists[task_id];
 
   for (LNK_SymbolHashTrieChunk *chunk = chunk_list.first; chunk != 0; chunk = chunk->next) {
-    CV_SymbolNode *nodes = push_array_no_zero(arena, CV_SymbolNode, chunk->count);
+    CV_SymbolNode *nodes = arena.PushArrayNoZero<CV_SymbolNode>(chunk->count);
 
     for (U64 i = 0, node_idx = 0; i < chunk->count; ++i) {
       LNK_Symbol *symbol = chunk->v[i].symbol;
@@ -5330,7 +5330,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_virtual_ranges_task)
 
   RDIB_Unit *dst        = &task->units[unit_chunk_idx].v[local_unit_idx];
   dst->virt_range_count = 0;
-  dst->virt_ranges      = push_array_no_zero(arena, Rng1U64, obj->sect_count);
+  dst->virt_ranges      = arena.PushArrayNoZero<Rng1U64>(obj->sect_count);
 
   for (U64 chunk_idx = 0; chunk_idx < obj->sect_count; ++chunk_idx) {
     LNK_Chunk *chunk = obj->chunk_arr[chunk_idx];

@@ -13,7 +13,7 @@ public static void async_init(CmdLine* cmdline)
   {
     ASYNC_Ring* ring = &async_shared.rings[p];
     ring.ring_size  = MB(8);
-    ring.ring_base  = push_array_no_zero(arena, uint8, ring.ring_size);
+    ring.ring_base  = arena.PushArrayNoZero<uint8>(ring.ring_size);
     ring.ring_mutex = os_mutex_alloc();
     ring.ring_cv    = os_condition_variable_alloc();
   }

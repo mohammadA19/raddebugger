@@ -232,7 +232,7 @@ coff_make_import_header_by_name(Arena            *arena,
   
   // alloc memory
   U64  buffer_size = sizeof(header) + header.data_size;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  U8  *buffer      = arena.PushArrayNoZero<U8>(buffer_size);
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));
@@ -275,7 +275,7 @@ coff_make_import_header_by_ordinal(Arena             *arena,
   
   // alloc memory
   U64 buffer_size = sizeof(header) + header.data_size;
-  U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  U8 *buffer      = arena.PushArrayNoZero<U8>(buffer_size);
   
   // copy header
   MemoryCopyStruct(buffer, &header);

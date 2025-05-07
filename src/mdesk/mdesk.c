@@ -90,7 +90,7 @@ md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Toke
   {
     node = push_array(arena, MD_TokenChunkNode, 1);
     node->cap = cap;
-    node->v = push_array_no_zero(arena, MD_Token, cap);
+    node->v = arena.PushArrayNoZero<MD_Token>(cap);
     SLLQueuePush(list->first, list->last, node);
     list->chunk_count += 1;
   }
@@ -104,7 +104,7 @@ md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
 {
   MD_TokenArray result = {0};
   result.count = chunks->total_token_count;
-  result.v = push_array_no_zero(arena, MD_Token, result.count);
+  result.v = arena.PushArrayNoZero<MD_Token>(result.count);
   U64 write_idx = 0;
   for(MD_TokenChunkNode *n = chunks->first; n != 0; n = n->next)
   {

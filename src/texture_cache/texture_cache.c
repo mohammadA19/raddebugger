@@ -35,7 +35,7 @@ tex_init(void)
     tex_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   tex_shared->u2x_ring_size = KB(64);
-  tex_shared->u2x_ring_base = push_array_no_zero(arena, U8, tex_shared->u2x_ring_size);
+  tex_shared->u2x_ring_base = arena.PushArrayNoZero<U8>(tex_shared->u2x_ring_size);
   tex_shared->u2x_ring_cv = os_condition_variable_alloc();
   tex_shared->u2x_ring_mutex = os_mutex_alloc();
   tex_shared->evictor_thread = os_thread_launch(tex_evictor_thread__entry_point, 0, 0);

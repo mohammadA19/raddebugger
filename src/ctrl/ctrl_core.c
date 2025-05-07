@@ -377,7 +377,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       
       // rjf: read path string
       read_off += str8_deserial_read_struct(string, read_off, &msg->path.size);
-      msg->path.str = push_array_no_zero(arena, U8, msg->path.size);
+      msg->path.str = arena.PushArrayNoZero<U8>(msg->path.size);
       read_off += str8_deserial_read(string, read_off, msg->path.str, msg->path.size, 1);
       
       // rjf: read entry point string list
@@ -387,7 +387,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &str.size);
-        str.str = push_array_no_zero(arena, U8, str.size);
+        str.str = arena.PushArrayNoZero<U8>(str.size);
         read_off += str8_deserial_read(string, read_off, str.str, str.size, 1);
         str8_list_push(arena, &msg->entry_points, str);
       }
@@ -399,7 +399,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 cmd_line_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &cmd_line_str.size);
-        cmd_line_str.str = push_array_no_zero(arena, U8, cmd_line_str.size);
+        cmd_line_str.str = arena.PushArrayNoZero<U8>(cmd_line_str.size);
         read_off += str8_deserial_read(string, read_off, cmd_line_str.str, cmd_line_str.size, 1);
         str8_list_push(arena, &msg->cmd_line_string_list, cmd_line_str);
       }
@@ -411,7 +411,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 env_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &env_str.size);
-        env_str.str = push_array_no_zero(arena, U8, env_str.size);
+        env_str.str = arena.PushArrayNoZero<U8>(env_str.size);
         read_off += str8_deserial_read(string, read_off, env_str.str, env_str.size, 1);
         str8_list_push(arena, &msg->env_string_list, env_str);
       }
@@ -451,12 +451,12 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
         CTRL_UserBreakpoint *bp = &n->v;
         read_off += str8_deserial_read_struct(string, read_off, &bp->kind);
         read_off += str8_deserial_read_struct(string, read_off, &bp->string.size);
-        bp->string.str = push_array_no_zero(arena, U8, bp->string.size);
+        bp->string.str = arena.PushArrayNoZero<U8>(bp->string.size);
         read_off += str8_deserial_read(string, read_off, bp->string.str, bp->string.size, 1);
         read_off += str8_deserial_read_struct(string, read_off, &bp->pt);
         read_off += str8_deserial_read_struct(string, read_off, &bp->u64);
         read_off += str8_deserial_read_struct(string, read_off, &bp->condition.size);
-        bp->condition.str = push_array_no_zero(arena, U8, bp->condition.size);
+        bp->condition.str = arena.PushArrayNoZero<U8>(bp->condition.size);
         read_off += str8_deserial_read(string, read_off, bp->condition.str, bp->condition.size, 1);
       }
       
@@ -559,7 +559,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
     read_off += str8_deserial_read_struct(string, read_off, &event.exception_code);
     read_off += str8_deserial_read_struct(string, read_off, &event.rgba);
     read_off += str8_deserial_read_struct(string, read_off, &event.string.size);
-    event.string.str = push_array_no_zero(arena, U8, event.string.size);
+    event.string.str = arena.PushArrayNoZero<U8>(event.string.size);
     read_off += str8_deserial_read(string, read_off, event.string.str, event.string.size, 1);
   }
   return event;
@@ -1285,12 +1285,12 @@ ctrl_init(void)
     ctrl_state->module_image_info_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->u2c_ring_size = KB(64);
-  ctrl_state->u2c_ring_base = push_array_no_zero(arena, U8, ctrl_state->u2c_ring_size);
+  ctrl_state->u2c_ring_base = arena.PushArrayNoZero<U8>(ctrl_state->u2c_ring_size);
   ctrl_state->u2c_ring_mutex = os_mutex_alloc();
   ctrl_state->u2c_ring_cv = os_condition_variable_alloc();
   ctrl_state->c2u_ring_size = KB(64);
   ctrl_state->c2u_ring_max_string_size = ctrl_state->c2u_ring_size/2;
-  ctrl_state->c2u_ring_base = push_array_no_zero(arena, U8, ctrl_state->c2u_ring_size);
+  ctrl_state->c2u_ring_base = arena.PushArrayNoZero<U8>(ctrl_state->c2u_ring_size);
   ctrl_state->c2u_ring_mutex = os_mutex_alloc();
   ctrl_state->c2u_ring_cv = os_condition_variable_alloc();
   {
@@ -2038,7 +2038,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
     U64 block_size = regs_block_size_from_arch(arch);
     for(U64 idx = 0; idx < dst.frames.count; idx += 1)
     {
-      dst.frames.v[idx].regs = push_array_no_zero(arena, U8, block_size);
+      dst.frames.v[idx].regs = arena.PushArrayNoZero<U8>(block_size);
       MemoryCopy(dst.frames.v[idx].regs, src->frames.v[idx].regs, block_size);
     }
   }
@@ -2954,7 +2954,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityStore *store, CTRL_Handle threa
       // rjf: valid step -> push frame
       CTRL_UnwindFrameNode *frame_node = push_array(scratch.arena, CTRL_UnwindFrameNode, 1);
       CTRL_UnwindFrame *frame = &frame_node->v;
-      frame->regs = push_array_no_zero(arena, U8, arch_reg_block_size);
+      frame->regs = arena.PushArrayNoZero<U8>(arch_reg_block_size);
       MemoryCopy(frame->regs, regs_block, arch_reg_block_size);
       DLLPushBack(first_frame_node, last_frame_node, frame_node);
       frame_node_count += 1;
@@ -6049,7 +6049,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
     }
     else
     {
-      range_base = push_array_no_zero(range_arena, U8, range_size);
+      range_base = range_arena.PushArrayNoZero<U8>(range_size);
       U64 bytes_read = 0;
       U64 retry_count = 0;
       U64 retry_limit = range_size > page_size ? 64 : 0;
