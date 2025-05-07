@@ -1219,7 +1219,7 @@ cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
   for(;cursor + sizeof(CV_RecHeader) <= cap;)
   {
     // setup a new chunk
-    CV_RecRangeChunk *cur_chunk = push_array_aligned(arena, CV_RecRangeChunk, 1, 64);
+    CV_RecRangeChunk *cur_chunk = arena.PushArrayAligned<CV_RecRangeChunk>(1, 64);
     SLLQueuePush(result->first_chunk, result->last_chunk, cur_chunk);
     U64 partial_count = 0;
     for(;partial_count < CV_REC_RANGE_CHUNK_SIZE && cursor + sizeof(CV_RecHeader) <= cap; partial_count += 1)

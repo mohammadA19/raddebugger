@@ -536,7 +536,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
           U32 num_steps = prev_n - n;
           
           // fill this bucket
-          U32 *bucket_offs = push_array_aligned(arena, U32, num_steps, 4);
+          U32 *bucket_offs = arena.PushArrayAligned<U32>(num_steps, 4);
           for (U32 j = num_steps; j > 0;){
             j -= 1;
             // * The "- 1" is more sloppy PDB magic.
@@ -966,7 +966,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
   
   
   // assemble result
-  CV_TypeId *itypes = push_array_aligned(arena, CV_TypeId, count, 8);
+  CV_TypeId *itypes = arena.PushArrayAligned<CV_TypeId>(count, 8);
   {
     CV_TypeId *itype_ptr = itypes;
     for (struct Chain *node = first;
