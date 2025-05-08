@@ -15,8 +15,8 @@
 typedef U64 ArenaFlags;
 enum
 {
-  ArenaFlag_NoChain    = (1<<0),
-  ArenaFlag_LargePages = (1<<1),
+  ArenaFlag.NoChain    = (1<<0),
+  ArenaFlag.LargePages = (1<<1),
 };
 
 typedef struct ArenaParams ArenaParams;
