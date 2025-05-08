@@ -68,47 +68,19 @@
 ////////////////////////////////
 //~ rjf: Units
 
-#define KB(n)  (((U64)(n)) << 10)
-#define MB(n)  (((U64)(n)) << 20)
-#define GB(n)  (((U64)(n)) << 30)
-#define TB(n)  (((U64)(n)) << 40)
-#define Thousand(n)   ((n)*1000)
-#define Million(n)    ((n)*1000000)
-#define Billion(n)    ((n)*1000000000)
-
-////////////////////////////////
-//~ rjf: Branch Predictor Hints
-
-#if defined(__clang__)
-# define Expect(expr, val) __builtin_expect((expr), (val))
-#else
-# define Expect(expr, val) (expr)
-#endif
-
-#define Likely(expr)            Expect(expr,1)
-#define Unlikely(expr)          Expect(expr,0)
+template KB(n: untyped) =  cast[U64](n) shl 10
+template MB(n: untyped) =  cast[U64](n) shl 20
+template GB(n: untyped) =  cast[U64](n) shl 30
+template TB(n: untyped) =  cast[U64](n) shl 40
+template Thousand(n: untyped) =   n * 1000
+template Million(n: untyped) =    n * 1000000
+template Billion(n: untyped) =    n * 1000000000
 
 ////////////////////////////////
 //~ rjf: Clamps, Mins, Maxes
 
-#define Min(A,B) (((A)<(B))?(A):(B))
-#define Max(A,B) (((A)>(B))?(A):(B))
-#define ClampTop(A,X) Min(A,X)
-#define ClampBot(X,B) Max(X,B)
-#define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
-
-////////////////////////////////
-//~ rjf: Type -> Alignment
-
-#if COMPILER_MSVC
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_CLANG
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_GCC
-# define AlignOf(T) __alignof__(T)
-#else
-# error AlignOf not defined for this compiler.
-#endif
+template clampTop(A: untyped, X: untyped) = Min(A,X)
+template clampBot(X: untyped, B: untyped) = Max(X,B)
 
 ////////////////////////////////
 //~ rjf: Member Offsets
@@ -352,12 +324,6 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 #define Extract16(word, pos)  (((word) >> ((pos)*16)) & max_U16)
 #define Extract32(word, pos)  (((word) >> ((pos)*32)) & max_U32)
 
-#if LANG_CPP
-# define zero_struct {}
-#else
-# define zero_struct {0}
-#endif
-
 #if COMPILER_MSVC && COMPILER_MSVC_YEAR < 2015
 # define this_function_name "unknown"
 #else
@@ -367,14 +333,6 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 ////////////////////////////////
 //~ rjf: Base Types
 
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
 typedef S8       B8;
 typedef S16      B16;
 typedef S32      B32;
@@ -382,33 +340,28 @@ typedef S64      B64;
 typedef float    F32;
 typedef double   F64;
 typedef void VoidProc(void);
-typedef union U128 U128;
-union U128
-{
-  U8 u8[16];
-  U16 u16[8];
-  U32 u32[4];
-  U64 u64[2];
-};
-typedef union U256 U256;
-union U256
-{
-  U8 u8[32];
-  U16 u16[16];
-  U32 u32[8];
-  U64 u64[4];
-  U128 u128[2];
-};
-typedef union U512 U512;
-union U512
-{
-  U8 u8[64];
-  U16 u16[32];
-  U32 u32[16];
-  U64 u64[8];
-  U128 u128[4];
-  U256 u256[2];
-};
+
+type
+  U128* {.union.} = object
+    u8: array[16, U8]
+    u16: array[8, U16]
+    u32: array[4, U32]
+    u64: array[2, U64]
+
+    U256* {.union.} = object
+      u8: array[32, U8]
+      u16: array[16, U16]
+      u32: array[8, U32]
+      u64: array[4, U64]
+      u128: array[2, U128]
+
+    U512* {.union.} = object
+      u8: array[64, U8]
+      u16: array[32, U16]
+      u32: array[16, U32]
+      u64: array[8, U64]
+      u128: array[4, U128]
+      u256: array[2, U256]
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
@@ -600,137 +553,138 @@ global S32 min_S32 = (S32)0xffffffff;
 global S16 min_S16 = (S16)0xffff;
 global S8  min_S8  =  (S8)0xff;
 
-global const U32 bitmask1  = 0x00000001;
-global const U32 bitmask2  = 0x00000003;
-global const U32 bitmask3  = 0x00000007;
-global const U32 bitmask4  = 0x0000000f;
-global const U32 bitmask5  = 0x0000001f;
-global const U32 bitmask6  = 0x0000003f;
-global const U32 bitmask7  = 0x0000007f;
-global const U32 bitmask8  = 0x000000ff;
-global const U32 bitmask9  = 0x000001ff;
-global const U32 bitmask10 = 0x000003ff;
-global const U32 bitmask11 = 0x000007ff;
-global const U32 bitmask12 = 0x00000fff;
-global const U32 bitmask13 = 0x00001fff;
-global const U32 bitmask14 = 0x00003fff;
-global const U32 bitmask15 = 0x00007fff;
-global const U32 bitmask16 = 0x0000ffff;
-global const U32 bitmask17 = 0x0001ffff;
-global const U32 bitmask18 = 0x0003ffff;
-global const U32 bitmask19 = 0x0007ffff;
-global const U32 bitmask20 = 0x000fffff;
-global const U32 bitmask21 = 0x001fffff;
-global const U32 bitmask22 = 0x003fffff;
-global const U32 bitmask23 = 0x007fffff;
-global const U32 bitmask24 = 0x00ffffff;
-global const U32 bitmask25 = 0x01ffffff;
-global const U32 bitmask26 = 0x03ffffff;
-global const U32 bitmask27 = 0x07ffffff;
-global const U32 bitmask28 = 0x0fffffff;
-global const U32 bitmask29 = 0x1fffffff;
-global const U32 bitmask30 = 0x3fffffff;
-global const U32 bitmask31 = 0x7fffffff;
-global const U32 bitmask32 = 0xffffffff;
+const
+  bitmask1 : U32  = 0x00000001
+  bitmask2 : U32  = 0x00000003
+  bitmask3 : U32  = 0x00000007
+  bitmask4 : U32  = 0x0000000f
+  bitmask5 : U32  = 0x0000001f
+  bitmask6 : U32  = 0x0000003f
+  bitmask7 : U32  = 0x0000007f
+  bitmask8 : U32  = 0x000000ff
+  bitmask9 : U32  = 0x000001ff
+  bitmask10 : U32 = 0x000003ff
+  bitmask11 : U32 = 0x000007ff
+  bitmask12 : U32 = 0x00000fff
+  bitmask13 : U32 = 0x00001fff
+  bitmask14 : U32 = 0x00003fff
+  bitmask15 : U32 = 0x00007fff
+  bitmask16 : U32 = 0x0000ffff
+  bitmask17 : U32 = 0x0001ffff
+  bitmask18 : U32 = 0x0003ffff
+  bitmask19 : U32 = 0x0007ffff
+  bitmask20 : U32 = 0x000fffff
+  bitmask21 : U32 = 0x001fffff
+  bitmask22 : U32 = 0x003fffff
+  bitmask23 : U32 = 0x007fffff
+  bitmask24 : U32 = 0x00ffffff
+  bitmask25 : U32 = 0x01ffffff
+  bitmask26 : U32 = 0x03ffffff
+  bitmask27 : U32 = 0x07ffffff
+  bitmask28 : U32 = 0x0fffffff
+  bitmask29 : U32 = 0x1fffffff
+  bitmask30 : U32 = 0x3fffffff
+  bitmask31 : U32 = 0x7fffffff
+  bitmask32 : U32 = 0xffffffff
 
-global const U64 bitmask33 = 0x00000001ffffffffull;
-global const U64 bitmask34 = 0x00000003ffffffffull;
-global const U64 bitmask35 = 0x00000007ffffffffull;
-global const U64 bitmask36 = 0x0000000fffffffffull;
-global const U64 bitmask37 = 0x0000001fffffffffull;
-global const U64 bitmask38 = 0x0000003fffffffffull;
-global const U64 bitmask39 = 0x0000007fffffffffull;
-global const U64 bitmask40 = 0x000000ffffffffffull;
-global const U64 bitmask41 = 0x000001ffffffffffull;
-global const U64 bitmask42 = 0x000003ffffffffffull;
-global const U64 bitmask43 = 0x000007ffffffffffull;
-global const U64 bitmask44 = 0x00000fffffffffffull;
-global const U64 bitmask45 = 0x00001fffffffffffull;
-global const U64 bitmask46 = 0x00003fffffffffffull;
-global const U64 bitmask47 = 0x00007fffffffffffull;
-global const U64 bitmask48 = 0x0000ffffffffffffull;
-global const U64 bitmask49 = 0x0001ffffffffffffull;
-global const U64 bitmask50 = 0x0003ffffffffffffull;
-global const U64 bitmask51 = 0x0007ffffffffffffull;
-global const U64 bitmask52 = 0x000fffffffffffffull;
-global const U64 bitmask53 = 0x001fffffffffffffull;
-global const U64 bitmask54 = 0x003fffffffffffffull;
-global const U64 bitmask55 = 0x007fffffffffffffull;
-global const U64 bitmask56 = 0x00ffffffffffffffull;
-global const U64 bitmask57 = 0x01ffffffffffffffull;
-global const U64 bitmask58 = 0x03ffffffffffffffull;
-global const U64 bitmask59 = 0x07ffffffffffffffull;
-global const U64 bitmask60 = 0x0fffffffffffffffull;
-global const U64 bitmask61 = 0x1fffffffffffffffull;
-global const U64 bitmask62 = 0x3fffffffffffffffull;
-global const U64 bitmask63 = 0x7fffffffffffffffull;
-global const U64 bitmask64 = 0xffffffffffffffffull;
+  bitmask33 : U64 = 0x00000001ffffffffull
+  bitmask34 : U64 = 0x00000003ffffffffull
+  bitmask35 : U64 = 0x00000007ffffffffull
+  bitmask36 : U64 = 0x0000000fffffffffull
+  bitmask37 : U64 = 0x0000001fffffffffull
+  bitmask38 : U64 = 0x0000003fffffffffull
+  bitmask39 : U64 = 0x0000007fffffffffull
+  bitmask40 : U64 = 0x000000ffffffffffull
+  bitmask41 : U64 = 0x000001ffffffffffull
+  bitmask42 : U64 = 0x000003ffffffffffull
+  bitmask43 : U64 = 0x000007ffffffffffull
+  bitmask44 : U64 = 0x00000fffffffffffull
+  bitmask45 : U64 = 0x00001fffffffffffull
+  bitmask46 : U64 = 0x00003fffffffffffull
+  bitmask47 : U64 = 0x00007fffffffffffull
+  bitmask48 : U64 = 0x0000ffffffffffffull
+  bitmask49 : U64 = 0x0001ffffffffffffull
+  bitmask50 : U64 = 0x0003ffffffffffffull
+  bitmask51 : U64 = 0x0007ffffffffffffull
+  bitmask52 : U64 = 0x000fffffffffffffull
+  bitmask53 : U64 = 0x001fffffffffffffull
+  bitmask54 : U64 = 0x003fffffffffffffull
+  bitmask55 : U64 = 0x007fffffffffffffull
+  bitmask56 : U64 = 0x00ffffffffffffffull
+  bitmask57 : U64 = 0x01ffffffffffffffull
+  bitmask58 : U64 = 0x03ffffffffffffffull
+  bitmask59 : U64 = 0x07ffffffffffffffull
+  bitmask60 : U64 = 0x0fffffffffffffffull
+  bitmask61 : U64 = 0x1fffffffffffffffull
+  bitmask62 : U64 = 0x3fffffffffffffffull
+  bitmask63 : U64 = 0x7fffffffffffffffull
+  bitmask64 : U64 = 0xffffffffffffffffull
 
-global const U32 bit1  = (1<<0);
-global const U32 bit2  = (1<<1);
-global const U32 bit3  = (1<<2);
-global const U32 bit4  = (1<<3);
-global const U32 bit5  = (1<<4);
-global const U32 bit6  = (1<<5);
-global const U32 bit7  = (1<<6);
-global const U32 bit8  = (1<<7);
-global const U32 bit9  = (1<<8);
-global const U32 bit10 = (1<<9);
-global const U32 bit11 = (1<<10);
-global const U32 bit12 = (1<<11);
-global const U32 bit13 = (1<<12);
-global const U32 bit14 = (1<<13);
-global const U32 bit15 = (1<<14);
-global const U32 bit16 = (1<<15);
-global const U32 bit17 = (1<<16);
-global const U32 bit18 = (1<<17);
-global const U32 bit19 = (1<<18);
-global const U32 bit20 = (1<<19);
-global const U32 bit21 = (1<<20);
-global const U32 bit22 = (1<<21);
-global const U32 bit23 = (1<<22);
-global const U32 bit24 = (1<<23);
-global const U32 bit25 = (1<<24);
-global const U32 bit26 = (1<<25);
-global const U32 bit27 = (1<<26);
-global const U32 bit28 = (1<<27);
-global const U32 bit29 = (1<<28);
-global const U32 bit30 = (1<<29);
-global const U32 bit31 = (1<<30);
-global const U32 bit32 = (1<<31);
+  bit1 : U32  = 1 shl 0
+  bit2 : U32  = 1 shl 1
+  bit3 : U32  = 1 shl 2
+  bit4 : U32  = 1 shl 3
+  bit5 : U32  = 1 shl 4
+  bit6 : U32  = 1 shl 5
+  bit7 : U32  = 1 shl 6
+  bit8 : U32  = 1 shl 7
+  bit9 : U32  = 1 shl 8
+  bit10 : U32 = 1 shl 9
+  bit11 : U32 = 1 shl 10
+  bit12 : U32 = 1 shl 11
+  bit13 : U32 = 1 shl 12
+  bit14 : U32 = 1 shl 13
+  bit15 : U32 = 1 shl 14
+  bit16 : U32 = 1 shl 15
+  bit17 : U32 = 1 shl 16
+  bit18 : U32 = 1 shl 17
+  bit19 : U32 = 1 shl 18
+  bit20 : U32 = 1 shl 19
+  bit21 : U32 = 1 shl 20
+  bit22 : U32 = 1 shl 21
+  bit23 : U32 = 1 shl 22
+  bit24 : U32 = 1 shl 23
+  bit25 : U32 = 1 shl 24
+  bit26 : U32 = 1 shl 25
+  bit27 : U32 = 1 shl 26
+  bit28 : U32 = 1 shl 27
+  bit29 : U32 = 1 shl 28
+  bit30 : U32 = 1 shl 29
+  bit31 : U32 = 1 shl 30
+  bit32 : U32 = 1 shl 31
 
-global const U64 bit33 = (1ull<<32);
-global const U64 bit34 = (1ull<<33);
-global const U64 bit35 = (1ull<<34);
-global const U64 bit36 = (1ull<<35);
-global const U64 bit37 = (1ull<<36);
-global const U64 bit38 = (1ull<<37);
-global const U64 bit39 = (1ull<<38);
-global const U64 bit40 = (1ull<<39);
-global const U64 bit41 = (1ull<<40);
-global const U64 bit42 = (1ull<<41);
-global const U64 bit43 = (1ull<<42);
-global const U64 bit44 = (1ull<<43);
-global const U64 bit45 = (1ull<<44);
-global const U64 bit46 = (1ull<<45);
-global const U64 bit47 = (1ull<<46);
-global const U64 bit48 = (1ull<<47);
-global const U64 bit49 = (1ull<<48);
-global const U64 bit50 = (1ull<<49);
-global const U64 bit51 = (1ull<<50);
-global const U64 bit52 = (1ull<<51);
-global const U64 bit53 = (1ull<<52);
-global const U64 bit54 = (1ull<<53);
-global const U64 bit55 = (1ull<<54);
-global const U64 bit56 = (1ull<<55);
-global const U64 bit57 = (1ull<<56);
-global const U64 bit58 = (1ull<<57);
-global const U64 bit59 = (1ull<<58);
-global const U64 bit60 = (1ull<<59);
-global const U64 bit61 = (1ull<<60);
-global const U64 bit62 = (1ull<<61);
-global const U64 bit63 = (1ull<<62);
-global const U64 bit64 = (1ull<<63);
+  bit33 : U64 = 1 shl 32
+  bit34 : U64 = 1 shl 33
+  bit35 : U64 = 1 shl 34
+  bit36 : U64 = 1 shl 35
+  bit37 : U64 = 1 shl 36
+  bit38 : U64 = 1 shl 37
+  bit39 : U64 = 1 shl 38
+  bit40 : U64 = 1 shl 39
+  bit41 : U64 = 1 shl 40
+  bit42 : U64 = 1 shl 41
+  bit43 : U64 = 1 shl 42
+  bit44 : U64 = 1 shl 43
+  bit45 : U64 = 1 shl 44
+  bit46 : U64 = 1 shl 45
+  bit47 : U64 = 1 shl 46
+  bit48 : U64 = 1 shl 47
+  bit49 : U64 = 1 shl 48
+  bit50 : U64 = 1 shl 49
+  bit51 : U64 = 1 shl 50
+  bit52 : U64 = 1 shl 51
+  bit53 : U64 = 1 shl 52
+  bit54 : U64 = 1 shl 53
+  bit55 : U64 = 1 shl 54
+  bit56 : U64 = 1 shl 55
+  bit57 : U64 = 1 shl 56
+  bit58 : U64 = 1 shl 57
+  bit59 : U64 = 1 shl 58
+  bit60 : U64 = 1 shl 59
+  bit61 : U64 = 1 shl 60
+  bit62 : U64 = 1 shl 61
+  bit63 : U64 = 1 shl 62
+  bit64 : U64 = 1 shl 63
 
 ////////////////////////////////
 //~ allen: Time

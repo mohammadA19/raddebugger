@@ -29,7 +29,7 @@ proc arena_alloc_(params: ptr ArenaParams) : ptr Arena =
   
   // rjf: panic on arena creation failure
   when OS_FEATURE_GRAPHICAL:
-    if Unlikely(base == nil):
+    if unlikely(base == nil):
       os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."))
       os_abort(1)
   
@@ -118,7 +118,7 @@ proc arena_push(arena: ptr Arena, size: uint64, align: uint64) : pointer =
   
   // rjf: panic on failure
   when OS_FEATURE_GRAPHICAL:
-    if Unlikely(result == nil):
+    if unlikely(result == nil):
       os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."))
       os_abort(1)
 
