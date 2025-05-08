@@ -35,24 +35,33 @@ type
       free_size*: uint64
       free_last*: ptr Arena
 
-StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check)
-
   Temp* = object
     arena*: ptr Arena
     pos*: uint64
+      
+StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check)
 
 ////////////////////////////////
 //~ rjf: Global Defaults
 
-var uint64 arena_default_reserve_size = MB(64)
-var uint64 arena_default_commit_size  = KB(64)
-var ArenaFlags arena_default_flags = 0
+var arena_default_reserve_size : uint64 = MB(64)
+var arena_default_commit_size : uint64  = KB(64)
+var arena_default_flags : ArenaFlags = 0
 
 //- rjf: arena creation/destruction
-#define arena_alloc(...) arena_alloc_(&(ArenaParams){.reserve_size = arena_default_reserve_size, .commit_size = arena_default_commit_size, .flags = arena_default_flags, __VA_ARGS__})
+proc arena_alloc(reserveSize = arena_default_reserve_size, commitSize = arena_default_commit_size, arena_flags = arena_default_flags, optional_backing_buffer : pointer = nil) : ptr Arena =
+  arena_alloc_(addr ArenaParams(flags: arena_flags, reserve_size: reserveSize, commit_size: commitSize, optional_backing_buffer: optional_backing_buffer))
 
 //- rjf: push helper macros
-#define push_array_no_zero_aligned(a, T, c, align) (ptr T )arena_push((a), sizeof(T)*(c), (align))
-#define push_array_aligned(a, T, c, align) (ptr T )MemoryZero(push_array_no_zero_aligned(a, T, c, align), sizeof(T)*(c))
-#define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, Max(8, AlignOf(T)))
-#define push_array(a, T, c) push_array_aligned(a, T, c, Max(8, AlignOf(T)))
+proc push_array_no_zero_aligned[T](a: ptr Arena, count: uint64, align: uint64) : ptr T =
+  cast[ptr T](arena_push(a, sizeof(T) * count, align))
+
+proc push_array_aligned[T](a: ptr Arena, count: uint64, align: uint64) : ptr T =
+  cast[ptr T]MemoryZero(push_array_no_zero_aligned[T](a, count, align), sizeof(T) * count)
+
+proc push_array_no_zero[T](a: ptr Arena, count: uint64) : ptr T =
+  push_array_no_zero_aligned[T](a, count, max(8, alignof(T)))
+
+proc push_array[T](a: ptr Arena, count: uint64) : ptr T =
+  push_array_aligned[T](a, count, max(8, alignof(T)))
+  
