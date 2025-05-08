@@ -5,15 +5,6 @@
 #define BASE_CORE_H
 
 ////////////////////////////////
-//~ rjf: Foreign Includes
-
-#include <stdio.h>
-#include <stdarg.h>
-#include <math.h>
-#include <string.h>
-#include <stdint.h>
-
-////////////////////////////////
 //~ rjf: Codebase Keywords
 
 #define internal      static
