@@ -21,7 +21,7 @@ typedef struct LNK_ChunkRef
   U64 chunk_id;
 } LNK_ChunkRef;
 
-typedef enum
+enum
 {
   LNK_Chunk_Null,
   LNK_Chunk_Leaf,
@@ -71,7 +71,7 @@ typedef struct LNK_ChunkList
   LNK_ChunkNode *last;
 } LNK_ChunkList;
 
-typedef enum LNK_ChunkOpType
+enum LNK_ChunkOpType
 {
   LNK_ChunkOp_Null,
   LNK_ChunkOp_WriteString,

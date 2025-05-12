@@ -85,7 +85,7 @@ DMN_W32_CTX_INTEL_DEBUG)
 ////////////////////////////////
 //~ rjf: Per-Entity State
 
-typedef enum DMN_W32_EntityKind
+enum DMN_W32_EntityKind
 {
   DMN_W32_EntityKind_Null,
   DMN_W32_EntityKind_Root,
@@ -94,9 +94,7 @@ typedef enum DMN_W32_EntityKind
   DMN_W32_EntityKind_Module,
   DMN_W32_EntityKind_COUNT
 }
-DMN_W32_EntityKind;
 
-typedef struct DMN_W32_Entity DMN_W32_Entity;
 struct DMN_W32_Entity
 {
   DMN_W32_Entity *first;
@@ -133,52 +131,47 @@ struct DMN_W32_Entity
     }
     module;
   };
-};
+}
 
-typedef struct DMN_W32_EntityNode DMN_W32_EntityNode;
 struct DMN_W32_EntityNode
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
-};
+}
 
-typedef struct DMN_W32_EntityIDHashNode DMN_W32_EntityIDHashNode;
 struct DMN_W32_EntityIDHashNode
 {
   DMN_W32_EntityIDHashNode *next;
   DMN_W32_EntityIDHashNode *prev;
   U64 id;
   DMN_W32_Entity *entity;
-};
+}
 
-typedef struct DMN_W32_EntityIDHashSlot DMN_W32_EntityIDHashSlot;
 struct DMN_W32_EntityIDHashSlot
 {
   DMN_W32_EntityIDHashNode *first;
   DMN_W32_EntityIDHashNode *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Injection Types
 
-typedef struct DMN_W32_InjectedBreak DMN_W32_InjectedBreak;
 struct DMN_W32_InjectedBreak
 {
   U64 code;
   U64 user_data;
-};
+}
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
 
 ////////////////////////////////
 //~ rjf: Image Info Types
 
-typedef struct DMN_W32_ImageInfo DMN_W32_ImageInfo;
 struct DMN_W32_ImageInfo
 {
   Arch arch;
   U32 size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Dynamically-Loaded Win32 Function Types
@@ -188,7 +181,6 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct DMN_W32_Shared DMN_W32_Shared;
 struct DMN_W32_Shared
 {
   // rjf: top-level info
@@ -229,7 +221,7 @@ struct DMN_W32_Shared
   // rjf: halting info
   DMN_Handle halter_process;
   U32 halter_tid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

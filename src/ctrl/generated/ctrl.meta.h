@@ -6,7 +6,7 @@
 #ifndef CTRL_META_H
 #define CTRL_META_H
 
-typedef enum CTRL_EntityKind
+enum CTRL_EntityKind
 {
 CTRL_EntityKind_Null,
 CTRL_EntityKind_Root,
@@ -22,7 +22,7 @@ CTRL_EntityKind_Breakpoint,
 CTRL_EntityKind_COUNT,
 } CTRL_EntityKind;
 
-typedef enum CTRL_ExceptionCodeKind
+enum CTRL_ExceptionCodeKind
 {
 CTRL_ExceptionCodeKind_Null,
 CTRL_ExceptionCodeKind_Win32CtrlC,

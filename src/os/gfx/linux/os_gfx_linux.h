@@ -16,7 +16,6 @@
 ////////////////////////////////
 //~ rjf: Window State
 
-typedef struct OS_LNX_Window OS_LNX_Window;
 struct OS_LNX_Window
 {
   OS_LNX_Window *next;
@@ -24,12 +23,11 @@ struct OS_LNX_Window
   Window window;
   XID counter_xid;
   U64 counter_value;
-};
+}
 
 ////////////////////////////////
 //~ rjf: State Bundle
 
-typedef struct OS_LNX_GfxState OS_LNX_GfxState;
 struct OS_LNX_GfxState
 {
   Arena *arena;
@@ -41,7 +39,7 @@ struct OS_LNX_GfxState
   Atom wm_sync_request_atom;
   Atom wm_sync_request_counter_atom;
   OS_GfxInfo gfx_info;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Cell Types
 
-typedef U32 RD_CellFlags;
-enum
+enum RD_CellFlags : U32
 {
   //- rjf: expander
   RD_CellFlag_Expander            = (1<<0),
@@ -40,9 +39,8 @@ enum
   RD_CellFlag_Border              = (1<<12),
   RD_CellFlag_NoBackground        = (1<<13),
   RD_CellFlag_Button              = (1<<14),
-};
+}
 
-typedef struct RD_CellParams RD_CellParams;
 struct RD_CellParams
 {
   //- rjf: catchall parameters
@@ -76,21 +74,19 @@ struct RD_CellParams
   U64 edit_buffer_size;
   U64 *edit_string_size_out;
   UI_Key *line_edit_key_out;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-typedef U32 RD_CodeSliceFlags;
-enum
+enum RD_CodeSliceFlags : U32
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
   RD_CodeSliceFlag_PriorityMargin    = (1<<1),
   RD_CodeSliceFlag_CatchallMargin    = (1<<2),
   RD_CodeSliceFlag_LineNums          = (1<<3),
-};
+}
 
-typedef struct RD_CodeSliceParams RD_CodeSliceParams;
 struct RD_CodeSliceParams
 {
   // rjf: content
@@ -117,15 +113,14 @@ struct RD_CodeSliceParams
   F32 line_num_width_px;
   F32 line_text_max_width_px;
   F32 margin_float_off_px;
-};
+}
 
-typedef struct RD_CodeSliceSignal RD_CodeSliceSignal;
 struct RD_CodeSliceSignal
 {
   UI_Signal base;
   TxtPt mouse_pt;
   TxtRng mouse_expr_rng;
-};
+}
 
 ////////////////////////////////
 //~ rjf: UI Building Helpers

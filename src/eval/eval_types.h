@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Type Unwrapping
 
-typedef U32 E_TypeUnwrapFlags;
-enum
+enum E_TypeUnwrapFlags : U32
 {
   E_TypeUnwrapFlag_Modifiers     = (1<<0),
   E_TypeUnwrapFlag_Pointers      = (1<<1),
@@ -18,7 +17,7 @@ enum
   E_TypeUnwrapFlag_Aliases       = (1<<5),
   E_TypeUnwrapFlag_All           = 0xffffffff,
   E_TypeUnwrapFlag_AllDecorative = (E_TypeUnwrapFlag_All & ~E_TypeUnwrapFlag_Pointers)
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
@@ -35,7 +34,7 @@ global read_only E_TypeExpandRule e_type_expand_rule__default =
   E_TYPE_EXPAND_RANGE_FUNCTION_NAME(default),
   E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
   E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Member Functions

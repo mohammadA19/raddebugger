@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Export Artifact Flags
 
-typedef U32 P2R_ConvertFlags;
-enum
+enum P2R_ConvertFlags : U32
 {
   P2R_ConvertFlag_Strings                 = (1<<0),
   P2R_ConvertFlag_IndexRuns               = (1<<1),
@@ -30,12 +29,11 @@ enum
   P2R_ConvertFlag_NormalSourcePathNameMap = (1<<17),
   P2R_ConvertFlag_Deterministic           = (1<<18),
   P2R_ConvertFlag_All = 0xffffffff,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
 
-typedef struct P2R_User2Convert P2R_User2Convert;
 struct P2R_User2Convert
 {
   String8 input_pdb_name;
@@ -45,133 +43,118 @@ struct P2R_User2Convert
   String8 output_name;
   P2R_ConvertFlags flags;
   String8List errors;
-};
+}
 
-typedef struct P2R_Convert2Bake P2R_Convert2Bake;
 struct P2R_Convert2Bake
 {
   RDIM_BakeParams bake_params;
-};
+}
 
-typedef struct P2R_Bake2Serialize P2R_Bake2Serialize;
 struct P2R_Bake2Serialize
 {
   RDIM_BakeResults bake_results;
-};
+}
 
-typedef struct P2R_Serialize2File P2R_Serialize2File;
 struct P2R_Serialize2File
 {
   RDIM_SerializedSectionBundle bundle;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Initial PDB Information Extraction & Conversion Preparation Task Types
 
 //- rjf: tpi hash parsing
 
-typedef struct P2R_TPIHashParseIn P2R_TPIHashParseIn;
 struct P2R_TPIHashParseIn
 {
   PDB_Strtbl *strtbl;
   PDB_TpiParsed *tpi;
   String8 hash_data;
   String8 aux_data;
-};
+}
 
 //- rjf: tpi leaves parsing
 
-typedef struct P2R_TPILeafParseIn P2R_TPILeafParseIn;
 struct P2R_TPILeafParseIn
 {
   String8 leaf_data;
   CV_TypeId itype_first;
-};
+}
 
 //- rjf: exe hashing
 
-typedef struct P2R_EXEHashIn P2R_EXEHashIn;
 struct P2R_EXEHashIn
 {
   String8 exe_data;
-};
+}
 
 //- rjf: symbol stream parsing
 
-typedef struct P2R_SymbolStreamParseIn P2R_SymbolStreamParseIn;
 struct P2R_SymbolStreamParseIn
 {
   String8 data;
-};
+}
 
 //- rjf: c13 line info stream parsing
 
-typedef struct P2R_C13StreamParseIn P2R_C13StreamParseIn;
 struct P2R_C13StreamParseIn
 {
   String8 data;
   String8 strtbl;
   COFF_SectionHeaderArray coff_sections;
-};
+}
 
 //- rjf: comp unit parsing
 
-typedef struct P2R_CompUnitParseIn P2R_CompUnitParseIn;
 struct P2R_CompUnitParseIn
 {
   String8 data;
-};
+}
 
 //- rjf: comp unit contribution table parsing
 
-typedef struct P2R_CompUnitContributionsParseIn P2R_CompUnitContributionsParseIn;
 struct P2R_CompUnitContributionsParseIn
 {
   String8 data;
   COFF_SectionHeaderArray coff_sections;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Conversion Data Structure & Task Types
 
 //- rjf: link name map (voff -> string)
 
-typedef struct P2R_LinkNameNode P2R_LinkNameNode;
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
   U64 voff;
   String8 name;
-};
+}
 
-typedef struct P2R_LinkNameMap P2R_LinkNameMap;
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode **buckets;
   U64 buckets_count;
   U64 bucket_collision_count;
   U64 link_name_count;
-};
+}
 
 //- rjf: normalized file path -> source file map
 
-typedef struct P2R_SrcFileNode P2R_SrcFileNode;
 struct P2R_SrcFileNode
 {
   P2R_SrcFileNode *next;
   RDIM_SrcFile *src_file;
-};
+}
 
-typedef struct P2R_SrcFileMap P2R_SrcFileMap;
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
   U64 slots_count;
-};
+}
 
 //- rjf: unit conversion tasks
 
-typedef struct P2R_UnitConvertIn P2R_UnitConvertIn;
 struct P2R_UnitConvertIn
 {
   PDB_Strtbl *pdb_strtbl;
@@ -180,30 +163,27 @@ struct P2R_UnitConvertIn
   PDB_CompUnitContributionArray *comp_unit_contributions;
   CV_SymParsed **comp_unit_syms;
   CV_C13Parsed **comp_unit_c13s;
-};
+}
 
-typedef struct P2R_UnitConvertOut P2R_UnitConvertOut;
 struct P2R_UnitConvertOut
 {
   RDIM_UnitChunkList units;
   RDIM_SrcFileChunkList src_files;
   RDIM_LineTableChunkList line_tables;
   RDIM_LineTable **units_first_inline_site_line_tables;
-};
+}
 
 //- rjf: link name map building tasks
 
-typedef struct P2R_LinkNameMapBuildIn P2R_LinkNameMapBuildIn;
 struct P2R_LinkNameMapBuildIn
 {
   CV_SymParsed *sym;
   COFF_SectionHeaderArray coff_sections;
   P2R_LinkNameMap *link_name_map;
-};
+}
 
 //- rjf: type forward resolution map build
 
-typedef struct P2R_ITypeFwdMapFillIn P2R_ITypeFwdMapFillIn;
 struct P2R_ITypeFwdMapFillIn
 {
   PDB_TpiHashParsed *tpi_hash;
@@ -211,18 +191,16 @@ struct P2R_ITypeFwdMapFillIn
   CV_TypeId itype_first;
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
-};
+}
 
 //- rjf: itype chain build
 
-typedef struct P2R_TypeIdChain P2R_TypeIdChain;
 struct P2R_TypeIdChain
 {
   P2R_TypeIdChain *next;
   CV_TypeId itype;
-};
+}
 
-typedef struct P2R_ITypeChainBuildIn P2R_ITypeChainBuildIn;
 struct P2R_ITypeChainBuildIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -230,11 +208,10 @@ struct P2R_ITypeChainBuildIn
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
   P2R_TypeIdChain **itype_chains;
-};
+}
 
 //- rjf: udt conversion
 
-typedef struct P2R_UDTConvertIn P2R_UDTConvertIn;
 struct P2R_UDTConvertIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -242,11 +219,10 @@ struct P2R_UDTConvertIn
   CV_TypeId itype_opl;
   CV_TypeId *itype_fwd_map;
   RDIM_Type **itype_type_ptrs;
-};
+}
 
 //- rjf: symbol stream conversion
 
-typedef struct P2R_SymbolStreamConvertIn P2R_SymbolStreamConvertIn;
 struct P2R_SymbolStreamConvertIn
 {
   B32 parsing_global_stream;
@@ -262,9 +238,8 @@ struct P2R_SymbolStreamConvertIn
   RDIM_Type **itype_type_ptrs;
   P2R_LinkNameMap *link_name_map;
   RDIM_LineTable *first_inline_site_line_table;
-};
+}
 
-typedef struct P2R_SymbolStreamConvertOut P2R_SymbolStreamConvertOut;
 struct P2R_SymbolStreamConvertOut
 {
   RDIM_SymbolChunkList procedures;
@@ -273,18 +248,17 @@ struct P2R_SymbolStreamConvertOut
   RDIM_ScopeChunkList scopes;
   RDIM_InlineSiteChunkList inline_sites;
   RDIM_TypeChunkList typedefs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Top-Level State
 
-typedef struct P2R_State P2R_State;
 struct P2R_State
 {
   Arena *arena;
   U64 work_thread_arenas_count;
   Arena **work_thread_arenas;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

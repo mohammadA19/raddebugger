@@ -17,7 +17,7 @@ enum
   MSCRT_FeatFlag_GUARD_EH_CONT = (1 << 14), // /guard:ehcont
   MSCRT_FeatFlag_NO_RTTI       = (1 << 17), // /GR-
   MSCRT_FeatFlag_KERNEL        = (1 << 30), // /kernel
-};
+}
 typedef U32 MSCRT_FeatFlags;
 
 typedef struct MSCRT_VCFeatures
@@ -35,13 +35,12 @@ typedef struct MSCRT_VCFeatures
 #define MSCRT_GSHandler_GetFlags(x)        (((x) & 0x00000007) >> 0)
 #define MSCRT_GSHandler_GetCookieOffset(x) (((x) & 0xFFFFFFF8) >> 3)
 
-typedef U8 MSCRT_GSHandlerFlags;
-enum
+enum MSCRT_GSHandlerFlags : U8
 {
   MSCRT_GSHandlerFlag_EHandler     = (1 << 0),
   MSCRT_GSHandlerFlag_UHandler     = (1 << 1),
   MSCRT_GSHandlerFlag_HasAlignment = (1 << 2)
-};
+}
 
 ////////////////////////////////
 // Exceptions < v4
@@ -59,21 +58,20 @@ enum
 
   // pure magic indicates that exception cannot be caught in native or managed code.
   MSCRT_PureMagic1 = 0x1994000,
-};
+}
 enum
 {
   MSCRT_MagicFlag_EHS         = (1 << 0),
   MSCRT_MagicFlag_DYNSTALKING = (1 << 1),
   MSCRT_MagicFlag_EHNOEXCEPT  = (1 << 2)
-};
+}
 
-typedef U32 MSCRT_Flags;
-enum
+enum MSCRT_Flags : U32
 {
   MSCRT_Flag_SynchronousExceptionOnly = (1 << 0),
   MSCRT_Flag_UNKNOWN                  = (1 << 1),
   MSCRT_Flag_StopUnwind               = (1 << 2), // When set unwinding can't continue.
-};
+}
 
 enum
 {
@@ -82,7 +80,7 @@ enum
   MSCRT_CatchableType_HasVirtualBase = (1 << 2), // type is a class with virtual base
   MSCRT_CatchableType_IsWinRTHandle  = (1 << 3), // type is a WinRT handle
   MSCRT_CatchableType_IsStdBadAlloc  = (1 << 4)  // type is a std::bad_alloc
-};
+}
 
 enum
 {
@@ -91,10 +89,9 @@ enum
   MSCRT_ThrowInfo_IsUnaligned = (1 << 2),
   MSCRT_ThrowInfo_IsPure      = (1 << 3), // thrown object is from pure module
   MSCRT_ThrowInfo_IsWinRT     = (1 << 4)  // thrown object is a WinRT exception
-};
+}
 
-typedef U32 MSCRT_EhHandlerTypeFlags;
-enum
+enum MSCRT_EhHandlerTypeFlags : U32
 {
   MSCRT_EhHandlerTypeFlag_IsConst     = (1 << 0), // referenced type is 'const'
   MSCRT_EhHandlerTypeFlag_IsVolatile  = (1 << 1), // referenced type is 'volatile'
@@ -103,7 +100,7 @@ enum
   MSCRT_EhHandlerTypeFlag_IsResumable = (1 << 4), // catch may choose to resume
   MSCRT_EhHandlerTypeFlag_IsStdDotDot = (1 << 6), // catch(...)
   MSCRT_EhHandlerTypeFlag_IsComplusEH = (1 << 31) // is handling EH in complus
-};
+}
 
 typedef struct MSCRT_FuncInfo32
 {
@@ -187,8 +184,7 @@ typedef struct MSCRT_FuncInfo
 ////////////////////////////////
 // C++ Exceptions V4
 
-typedef U8 MSCRT_FuncInfoV4Flags;
-enum
+enum MSCRT_FuncInfoV4Flags : U8
 {
   MSCRT_FuncInfoV4Flag_IsCatch     = (1 << 0), // catch funclet
   MSCRT_FuncInfoV4Flag_IsSeparated = (1 << 1), // func has separate code segment
@@ -198,27 +194,25 @@ enum
   MSCRT_FuncInfoV4Flag_EHs         = (1 << 5),
   MSCRT_FuncInfoV4Flag_NoExcept    = (1 << 6),
   MSCRT_FuncInfoV4Flag_Reserved    = (1 << 7)
-};
+}
 
-typedef U32 MSCRT_UnwindMapV4Type;
-enum
+enum MSCRT_UnwindMapV4Type : U32
 {
   MSCRT_UnwindMapV4Type_NoUW             = 0, // no unwind action associated with this state
   MSCRT_UnwindMapV4Type_DtorWithObj      = 1, // dtor with an object offset
   MSCRT_UnwindMapV4Type_DtorWithPtrToObj = 2, // dtor with an offset that contains a pointer to the object to be destroyed
   MSCRT_UnwindMapV4Type_VOFF             = 3, // dtor  that has a direct function that is called that knows where the object is and can perform more exotic destruction
-};
+}
 
 enum
 {
   MSCRT_ContV4Type_NoMetadata     = 1, // no metadata use whatever funclet returns
   MSCRT_ContV4Type_OneFuncRelAddr = 2,
   MSCRT_ContV4Type_TwoFuncRelAddr = 3
-};
+}
 
 #define MSCRT__EH_HANDLER_V4_FLAGS_EXTRACT_CONT_TYPE(x) (((x) & MSCRT_EhHandlerV4Flag_ContVOffMask) >> MSVC_CRTHandlerV4Flag_ContVOffShift)
-typedef U8 MSCRT_EhHandlerV4Flags;
-enum
+enum MSCRT_EhHandlerV4Flags : U8
 {
   MSCRT_EhHandlerV4Flag_Adjectives   = (1 << 0), // set if adjectives are present
   MSCRT_EhHandlerV4Flag_DispType     = (1 << 1), // set if type descriptors are present
@@ -227,7 +221,7 @@ enum
 
   MSCRT_EhHandlerV4Flag_ContVOffMask  = 0x30,
   MSCRT_EhHandlerV4Flag_ContVOffShift = 4,
-};
+}
 
 typedef struct MSCRT_EhHandlerTypeV4
 {

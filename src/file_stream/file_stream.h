@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Per-Path Info Cache Types
 
-typedef struct FS_RangeNode FS_RangeNode;
 struct FS_RangeNode
 {
   FS_RangeNode *next;
@@ -15,16 +14,14 @@ struct FS_RangeNode
   U64 request_count;
   U64 completion_count;
   U64 last_time_requested_us;
-};
+}
 
-typedef struct FS_RangeSlot FS_RangeSlot;
 struct FS_RangeSlot
 {
   FS_RangeNode *first;
   FS_RangeNode *last;
-};
+}
 
-typedef struct FS_Node FS_Node;
 struct FS_Node
 {
   FS_Node *next;
@@ -36,27 +33,24 @@ struct FS_Node
   // rjf: sub-table of per-requested-file-range info
   U64 slots_count;
   FS_RangeSlot *slots;
-};
+}
 
-typedef struct FS_Slot FS_Slot;
 struct FS_Slot
 {
   FS_Node *first;
   FS_Node *last;
-};
+}
 
-typedef struct FS_Stripe FS_Stripe;
 struct FS_Stripe
 {
   Arena *arena;
   OS_Handle cv;
   OS_Handle rw_mutex;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct FS_Shared FS_Shared;
 struct FS_Shared
 {
   Arena *arena;
@@ -78,7 +72,7 @@ struct FS_Shared
   
   // rjf: change detector threads
   OS_Handle detector_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

@@ -4,8 +4,7 @@
 #ifndef RADCON_H
 #define RADCON_H
 
-typedef U32 RC_Flags;
-enum
+enum RC_Flags : U32
 {
   RC_Flag_Strings                 = (1 <<  0),
   RC_Flag_IndexRuns               = (1 <<  1),
@@ -31,9 +30,9 @@ enum
   RC_Flag_CheckPdbGuid            = (1 << 21),
   RC_Flag_CheckElfChecksum        = (1 << 22),
   RC_Flag_All = 0xffffffff,
-};
+}
 
-typedef enum
+enum
 {
   RC_Driver_Null,
   RC_Driver_Dwarf,

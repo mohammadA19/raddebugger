@@ -226,15 +226,14 @@ typedef struct CV_C13InlineeLinesParsedList
 
 ////////////////////////////////
 
-typedef U32 CV_C13SubSectionIdxKind;
-enum
+enum CV_C13SubSectionIdxKind : U32
 {
   CV_C13SubSectionIdxKind_NULL,
 #define X(N,c) CV_C13SubSectionIdxKind_##N,
   CV_C13SubSectionKindXList(X)
 #undef X
   CV_C13SubSectionIdxKind_COUNT
-};
+}
 
 typedef struct CV_C13SubSectionList
 {

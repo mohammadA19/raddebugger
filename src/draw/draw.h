@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Fancy String Types
 
-typedef struct DR_FStrParams DR_FStrParams;
 struct DR_FStrParams
 {
   FNT_Tag font;
@@ -16,32 +15,28 @@ struct DR_FStrParams
   F32 size;
   F32 underline_thickness;
   F32 strikethrough_thickness;
-};
+}
 
-typedef struct DR_FStr DR_FStr;
 struct DR_FStr
 {
   String8 string;
   DR_FStrParams params;
-};
+}
 
-typedef struct DR_FStrNode DR_FStrNode;
 struct DR_FStrNode
 {
   DR_FStrNode *next;
   DR_FStr v;
-};
+}
 
-typedef struct DR_FStrList DR_FStrList;
 struct DR_FStrList
 {
   DR_FStrNode *first;
   DR_FStrNode *last;
   U64 node_count;
   U64 total_size;
-};
+}
 
-typedef struct DR_FRun DR_FRun;
 struct DR_FRun
 {
   FNT_Run run;
@@ -49,23 +44,21 @@ struct DR_FRun
   F32 underline_thickness;
   F32 strikethrough_thickness;
   B32 icon;
-};
+}
 
-typedef struct DR_FRunNode DR_FRunNode;
 struct DR_FRunNode
 {
   DR_FRunNode *next;
   DR_FRun v;
-};
+}
 
-typedef struct DR_FRunList DR_FRunList;
 struct DR_FRunList
 {
   DR_FRunNode *first;
   DR_FRunNode *last;
   U64 node_count;
   Vec2F32 dim;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -75,26 +68,23 @@ struct DR_FRunList
 ////////////////////////////////
 //~ rjf: Draw Bucket Types
 
-typedef struct DR_Bucket DR_Bucket;
 struct DR_Bucket
 {
   R_PassList passes;
   U64 stack_gen;
   U64 last_cmd_stack_gen;
   DR_BucketStackDecls;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct DR_BucketSelectionNode DR_BucketSelectionNode;
 struct DR_BucketSelectionNode
 {
   DR_BucketSelectionNode *next;
   DR_Bucket *bucket;
-};
+}
 
-typedef struct DR_ThreadCtx DR_ThreadCtx;
 struct DR_ThreadCtx
 {
   Arena *arena;
@@ -102,7 +92,7 @@ struct DR_ThreadCtx
   FNT_Tag icon_font;
   DR_BucketSelectionNode *top_bucket;
   DR_BucketSelectionNode *free_bucket_selection;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

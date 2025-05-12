@@ -6,7 +6,7 @@
 #ifndef DBG_ENGINE_META_H
 #define DBG_ENGINE_META_H
 
-typedef enum D_CmdKind
+enum D_CmdKind
 {
 D_CmdKind_Null,
 D_CmdKind_LaunchAndRun,
@@ -62,5 +62,5 @@ struct {B32 *value_ptr; String8 name;} DEV_toggle_table[] =
 {&DEV_eval_watch_key_tooltips, str8_lit_comp("eval_watch_key_tooltips")},
 {&DEV_cmd_context_tooltips, str8_lit_comp("cmd_context_tooltips")},
 {&DEV_updating_indicator, str8_lit_comp("updating_indicator")},
-};
+}
 #endif // DBG_ENGINE_META_H

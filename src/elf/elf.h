@@ -4,17 +4,15 @@
 #ifndef ELF_H
 #define ELF_H
 
-typedef U8 ELF_Class;
-enum
+enum ELF_Class : U8
 {
   ELF_Class_None  = 0,
   ELF_Class_32    = 1,
   ELF_Class_64    = 2,
   ELF_Class_Count = 3
-};
+}
 
-typedef U8 ELF_OsAbi;
-enum
+enum ELF_OsAbi : U8
 {
   ELF_OsAbi_None,
   ELF_OsAbi_SYSV,
@@ -28,17 +26,15 @@ enum
   ELF_OsAbi_TRU64,
   ELF_OsAbi_ARM = 97,
   ELF_OsAbi_STANDALONE = 255,
-};
+}
 
-typedef U8 ELF_Version;
-enum
+enum ELF_Version : U8
 {
   ELF_Version_None,
   ELF_Version_Current,
-};
+}
 
-typedef U16 ELF_MachineKind;
-enum
+enum ELF_MachineKind : U16
 {
   ELF_MachineKind_None        = 0,
   ELF_MachineKind_M32         = 1,
@@ -96,18 +92,16 @@ enum
   ELF_MachineKind_K1OM        = 181,
   ELF_MachineKind_RISCV       = 243,
   ELF_MachineKind_S390_OLD    = 0xA390,
-};
+}
 
-typedef U8 ELF_Data;
-enum
+enum ELF_Data : U8
 {
   ELF_Data_None = 0,
   ELF_Data_2LSB = 1,
   ELF_Data_2MSB = 2,
-};
+}
 
-typedef U32 ELF_PType;
-enum
+enum ELF_PType : U32
 {
   ELF_PType_Null        = 0,
   ELF_PType_Load        = 1,
@@ -132,18 +126,16 @@ enum
   ELF_PType_GnuRelro    = ELF_PType_LoOs + 0x474e551, // stack flags
   ELF_PType_GnuProperty = ELF_PType_LoOs + 0x474e552, // read-only after relocations
   ELF_PType_SunEHFrame  = ELF_PType_GnuEHFrame,
-};
+}
 
-typedef U32 ELF_PFlag;
-enum
+enum ELF_PFlag : U32
 {
   ELF_PFlag_Exec  = (1 << 0),
   ELF_PFlag_Write = (1 << 1),
   ELF_PFlag_Read  = (1 << 2),
-};
+}
 
-typedef U32 ELF_SectionCode;
-enum
+enum ELF_SectionCode : U32
 {
   ELF_SectionCode_Null                   = 0,
   ELF_SectionCode_ProgBits               = 1,
@@ -176,10 +168,9 @@ enum
   ELF_SectionCode_GNU_versym             = ELF_SectionCode_SUNW_versym,
   ELF_SectionCode_Proc,
   ELF_SectionCode_User,
-};
+}
 
-typedef U32 ELF_SectionIndex;
-enum
+enum ELF_SectionIndex : U32
 {
   
   ELF_SectionIndex_Undef             = 0,      // Symbol with section index is undefined and must be resolved by the link editor
@@ -203,10 +194,9 @@ enum
 
   ELF_SectionIndex_TIC6X_Common      = ELF_SectionIndex_LoReserve,
   ELF_SectionIndex_MIPS_SUndefined   = 0xff04,
-};
+}
 
-typedef U32 ELF_SectionFlag;
-enum
+enum ELF_SectionFlag : U32
 {
   ELF_Shf_Write            = (1 << 0),
   ELF_Shf_Alloc            = (1 << 1),
@@ -224,12 +214,11 @@ enum
   ELF_Shf_Ordered          = (1 << 30),
   ELF_Shf_Exclude          = (1 << 31),
   ELF_Shf_MaskProc_Shift   = 28, ELF_Shf_MaskProc_Mask = 0xf,
-};
+}
 
 #define ELF_SectionFlag_Extract_MaskOs(f)   (U8)(((f) >> ELF_SectionFlag_MaskOs_Shift)   & ELF_SectionFlag_MaskOs_Mask)
 #define ELF_SectionFlag_Extract_MaskProc(f) (U8)(((f) >> ELF_SectionFlag_MaskProc_shift) & ELF_SectionFlag_MaskProc_Mask)
-typedef U32 ELF_AuxType;
-enum
+enum ELF_AuxType : U32
 {
   ELF_AuxType_Null              = 0,
   ELF_AuxType_Phdr              = 3, // program headers
@@ -265,10 +254,9 @@ enum
   ELF_AuxType_L2_CacheGeometry  = 45,
   ELF_AuxType_L3_CacheSize      = 46,
   ELF_AuxType_L3_CacheGeometry  = 47,
-};
+}
 
-typedef U32 ELF_DynTag;
-enum
+enum ELF_DynTag : U32
 {
   ELF_DynTag_Null            = 0,
 
@@ -347,27 +335,24 @@ enum
   ELF_DynTag_VerSym          = 0x6ffffff0,
   ELF_DynTag_LoProc          = 0x70000000,
   ELF_DynTag_HiProc          = 0x7fffffff,
-};
+}
 
-typedef U32 ELF_DynFlag;
-enum
+enum ELF_DynFlag : U32
 {
   ELF_DynFlag_Origin    = (1 << 0),
   ELF_DynFlag_Symbolic  = (1 << 1),
   ELF_DynFlag_TextTel   = (1 << 2),
   ELF_DynFlag_BindNow   = (1 << 3),
   ELF_DynFlag_StaticTls = (1 << 4),
-};
+}
 
-typedef U32 ELF_DynFeatureFlag;
-enum
+enum ELF_DynFeatureFlag : U32
 {
   ELF_DynFeatureFlag_ParInit = (1 << 0),
   ELF_DynFeatureFlag_ConfExp = (1 << 1),
-};
+}
 
-typedef U8 ELF_SymBind;
-enum
+enum ELF_SymBind : U8
 {
   //  the same name may exists in multiple files without interfering with each other. 
   ELF_SymBind_Local  = 0,
@@ -377,10 +362,9 @@ enum
   ELF_SymBind_Weak   = 2,
   ELF_SymBind_LoProc = 13,
   ELF_SymBind_HiProc = 15,
-};
+}
 
-typedef U8 ELF_SymType;
-enum
+enum ELF_SymType : U8
 {
   ELF_SymType_NoType  = 0,
   //  Type is not specified.
@@ -396,19 +380,17 @@ enum
   ELF_SymType_Tls     = 6,
   ELF_SymType_LoProc  = 13,
   ELF_SymType_HiProc  = 15,
-};
+}
 
-typedef U8 ELF_SymVisibility;
-enum
+enum ELF_SymVisibility : U8
 {
   ELF_SymVisibility_Default   = 0,
   ELF_SymVisibility_Internal  = 1,
   ELF_SymVisibility_Hidden    = 2,
   ELF_SymVisibility_Protected = 3,
-};
+}
 
-typedef U32 ELF_RelocI386;
-enum
+enum ELF_RelocI386 : U32
 {
   ELF_RelocI386_None           = 0,
   ELF_RelocI386_32             = 1,
@@ -455,10 +437,9 @@ enum
   ELF_RelocI386_UsedByIntel200 = 200,
   ELF_RelocI386_GNU_VTInherit  = 250,
   ELF_RelocI386_GNU_VTEntry    = 251,
-};
+}
 
-typedef U32 ELF_RelocX8664;
-enum
+enum ELF_RelocX8664 : U32
 {
   ELF_RelocX8664_None           = 0,
   ELF_RelocX8664_64             = 1,
@@ -505,28 +486,25 @@ enum
   ELF_RelocX8664_RexGotPcRelx   = 42,
   ELF_RelocX8664_GNU_VTInherit  = 250,
   ELF_RelocX8664_GNU_VTEntry    = 251,
-};
+}
 
-typedef U32 ELF_ExternalVerFlag;
-enum
+enum ELF_ExternalVerFlag : U32
 {
   ELF_ExternalVerFlag_Base = (1 << 0),
   ELF_ExternalVerFlag_Weak = (1 << 1),
   ELF_ExternalVerFlag_Info = (1 << 2),
-};
+}
 
-typedef U32 ELF_NoteType;
-enum
+enum ELF_NoteType : U32
 {
   ELF_NoteType_GNU_Abi           = 1,
   ELF_NoteType_GNU_HwCap         = 2,
   ELF_NoteType_GNU_BuildId       = 3,
   ELF_NoteType_GNU_GoldVersion   = 4,
   ELF_NoteType_GNU_PropertyType0 = 5,
-};
+}
 
-typedef U32 ELF_GnuABITag;
-enum
+enum ELF_GnuABITag : U32
 {
   ELF_GnuABITag_Linux    = 0,
   ELF_GnuABITag_Hurd     = 1,
@@ -535,10 +513,9 @@ enum
   ELF_GnuABITag_NetBsd   = 4,
   ELF_GnuABITag_Syllable = 5,
   ELF_GnuABITag_Nacl     = 6,
-};
+}
 
-typedef S32 ELF_GnuProperty;
-enum
+enum ELF_GnuProperty : S32
 {
   ELF_GnuProperty_LoProc            = 0xc0000000,
   //  processor-specific range
@@ -548,19 +525,17 @@ enum
   ELF_GnuProperty_HiUser            = 0xffffffff,
   ELF_GnuProperty_StackSize         = 1,
   ELF_GnuProperty_NoCopyOnProtected = 2,
-};
+}
 
-typedef U32 ELF_GnuPropertyX86Isa1;
-enum
+enum ELF_GnuPropertyX86Isa1 : U32
 {
   ELF_GnuPropertyX86Isa1_BaseLine = (1 << 0),
   ELF_GnuPropertyX86Isa1_V2       = (1 << 1),
   ELF_GnuPropertyX86Isa1_V3       = (1 << 2),
   ELF_GnuPropertyX86Isa1_V4       = (1 << 3),
-};
+}
 
-typedef U32 ELF_GnuPropertyX86Compat1Isa1;
-enum
+enum ELF_GnuPropertyX86Compat1Isa1 : U32
 {
   ELF_GnuPropertyX86Compat1Isa1_486      = (1 << 0),
   ELF_GnuPropertyX86Compat1Isa1_586      = (1 << 1),
@@ -579,10 +554,9 @@ enum
   ELF_GnuPropertyX86Compat1Isa1_AVX512VL = (1 << 14),
   ELF_GnuPropertyX86Compat1Isa1_AVX512DQ = (1 << 15),
   ELF_GnuPropertyX86Compat1Isa1_AVX512BW = (1 << 16),
-};
+}
 
-typedef U32 ELF_GnuPropertyX86Compat2Isa1;
-enum
+enum ELF_GnuPropertyX86Compat2Isa1 : U32
 {
   ELF_GnuPropertyX86Compat2Isa1_CMOVE         = (1 << 0),
   ELF_GnuPropertyX86Compat2Isa1_SSE           = (1 << 1),
@@ -608,10 +582,9 @@ enum
   ELF_GnuPropertyX86Compat2Isa1_AVX512_VBMI2  = (1 << 21),
   ELF_GnuPropertyX86Compat2Isa1_AVX512_VNNI   = (1 << 22),
   ELF_GnuPropertyX86Compat2Isa1_AVX512_BF16   = (1 << 23),
-};
+}
 
-typedef S32 ELF_GnuPropertyX86;
-enum
+enum ELF_GnuPropertyX86 : S32
 {
   ELF_GnuPropertyX86_Feature1And         = 0xc0000002,
   ELF_GnuPropertyX86_Feature2Used        = 0xc0010001,
@@ -626,19 +599,17 @@ enum
   ELF_GnuPropertyX86_UInt32OrHi          = 0xc000ffff,
   ELF_GnuPropertyX86_UInt32OrAndLo       = 0xc0010000,
   ELF_GnuPropertyX86_UInt32OrAndHi       = 0xc0017fff,
-};
+}
 
-typedef U32 ELF_GnuPropertyX86Feature1;
-enum
+enum ELF_GnuPropertyX86Feature1 : U32
 {
   ELF_GnuPropertyX86Feature1_Ibt    = (1 << 0),
   ELF_GnuPropertyX86Feature1_Shstk  = (1 << 1),
   ELF_GnuPropertyX86Feature1_LamU48 = (1 << 2),
   ELF_GnuPropertyX86Feature1_LamU57 = (1 << 3),
-};
+}
 
-typedef U32 ELF_GnuPropertyX86Feature2;
-enum
+enum ELF_GnuPropertyX86Feature2 : U32
 {
   ELF_GnuPropertyX86Feature2_X86      = (1 << 0),
   ELF_GnuPropertyX86Feature2_X87      = (1 << 1),
@@ -652,12 +623,12 @@ enum
   ELF_GnuPropertyX86Feature2_XSAVEC   = (1 << 9),
   ELF_GnuPropertyX86Feature2_TMM      = (1 << 10),
   ELF_GnuPropertyX86Feature2_MASK     = (1 << 11),
-};
+}
 
 #define ELF_HdrIs64Bit(e_ident) (e_ident[ELF_Identifier_Class] == ELF_Class_64)
 #define ELF_HdrIs32Bit(e_ident) (e_ident[ELF_Identifier_Class] == ELF_Class_32)
 
-typedef enum ELF_Identifier
+enum ELF_Identifier
 {
   ELF_Identifier_Mag0       = 0,
   ELF_Identifier_Mag1       = 1,
@@ -671,8 +642,7 @@ typedef enum ELF_Identifier
   ELF_Identifier_Max        = 16,
 } ELF_Identifier;
 
-typedef U16 ELF_Type;
-typedef enum ELF_TypeEnum
+enum ELF_Type : U16 ELF_TypeEnum
 {
   ELF_Type_None   = 0,
   ELF_Type_Rel    = 1,
@@ -945,8 +915,7 @@ typedef struct
 ////////////////////////////////
 // Extensions
 
-typedef U8 ELF_CompressType;
-enum ELF_CompressTypeEnum
+enum ELF_CompressType : U8 ELF_CompressTypeEnum
 {
   ELF_CompressType_None = 0,
   ELF_CompressType_ZLib = 1,
@@ -957,7 +926,7 @@ enum ELF_CompressTypeEnum
 
   ELF_CompressType_LoProc = 0x70000000,
   ELF_CompressType_HiProc = 0x7fffffff,
-};
+}
 
 typedef struct ELF_Chdr32
 {

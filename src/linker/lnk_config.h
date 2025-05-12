@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum
+enum
 {
   LNK_CmdSwitch_Null,
   LNK_CmdSwitch_NotImplemented,
@@ -167,14 +167,14 @@ typedef enum
   LNK_CmdSwitch_Count
 } LNK_CmdSwitchType;
 
-typedef enum
+enum
 {
   LNK_SwitchState_Null,
   LNK_SwitchState_No,
   LNK_SwitchState_Yes
 } LNK_SwitchState;
 
-typedef enum 
+enum 
 {
   LNK_Input_Null,
   LNK_Input_Obj,
@@ -195,10 +195,10 @@ enum
   LNK_ConfigFlag_NoTsAware               = (1 << 6),
   LNK_ConfigFlag_WriteImageChecksum      = (1 << 8),
   LNK_ConfigFlag_ManifestEmbed           = (1 << 9),
-};
+}
 typedef U64 LNK_ConfigFlags;
 
-typedef enum
+enum
 {
   LNK_DebugMode_Null,
   LNK_DebugMode_None,
@@ -214,10 +214,10 @@ enum
   LNK_Guard_LongJmp = (1 << 1),
   LNK_Guard_EhCont  = (1 << 2),
   LNK_Guard_All     = LNK_Guard_Cf | LNK_Guard_LongJmp | LNK_Guard_EhCont
-};
+}
 typedef U32 LNK_GuardFlags;
 
-typedef enum
+enum
 {
   LNK_ManifestOpt_Null,
   LNK_ManifestOpt_WriteToFile,
@@ -267,13 +267,13 @@ typedef struct LNK_MergeDirectiveList
 
 
 
-typedef enum
+enum
 {
   LNK_DebugInfoGuid_Null,
   Lnk_DebugInfoGuid_ImageBlake3,
 } LNK_DebugInfoGuidType;
 
-typedef enum
+enum
 {
   LNK_TypeNameHashMode_Null,
   LNK_TypeNameHashMode_None,
@@ -375,7 +375,7 @@ typedef struct LNK_Config
   String8                     temp_rad_chunk_map_name;
 } LNK_Config;
 
-typedef enum
+enum
 {
   LNK_ParseU64Flag_CheckUnder32bit = (1 << 0),
   LNK_ParseU64Flag_CheckPow2       = (1 << 1),
@@ -383,7 +383,7 @@ typedef enum
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   LNK_MsErrorCode_Lnk1000 = 1000,
   LNK_MsErrorCode_Lnk1103 = 1103,

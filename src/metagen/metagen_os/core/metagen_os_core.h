@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: System Info
 
-typedef struct OS_SystemInfo OS_SystemInfo;
 struct OS_SystemInfo
 {
   U32 logical_processor_count;
@@ -15,12 +14,11 @@ struct OS_SystemInfo
   U64 large_page_size;
   U64 allocation_granularity;
   String8 machine_name;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Info
 
-typedef struct OS_ProcessInfo OS_ProcessInfo;
 struct OS_ProcessInfo
 {
   U32 pid;
@@ -30,13 +28,12 @@ struct OS_ProcessInfo
   String8 user_program_data_path;
   String8List module_load_paths;
   String8List environment;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Access Flags
 
-typedef U32 OS_AccessFlags;
-enum
+enum OS_AccessFlags : U32
 {
   OS_AccessFlag_Read        = (1<<0),
   OS_AccessFlag_Write       = (1<<1),
@@ -45,76 +42,67 @@ enum
   OS_AccessFlag_ShareRead   = (1<<4),
   OS_AccessFlag_ShareWrite  = (1<<5),
   OS_AccessFlag_Inherited   = (1<<6),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Files
 
-typedef U32 OS_FileIterFlags;
-enum
+enum OS_FileIterFlags : U32
 {
   OS_FileIterFlag_SkipFolders     = (1 << 0),
   OS_FileIterFlag_SkipFiles       = (1 << 1),
   OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
   OS_FileIterFlag_Done            = (1 << 31),
-};
+}
 
-typedef struct OS_FileIter OS_FileIter;
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
   U8 memory[800];
-};
+}
 
-typedef struct OS_FileInfo OS_FileInfo;
 struct OS_FileInfo
 {
   String8 name;
   FileProperties props;
-};
+}
 
 // nick: on-disk file identifier
-typedef struct OS_FileID OS_FileID;
 struct OS_FileID
 {
   U64 v[3];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Type
 
-typedef struct OS_Handle OS_Handle;
 struct OS_Handle
 {
   U64 u64[1];
-};
+}
 
-typedef struct OS_HandleNode OS_HandleNode;
 struct OS_HandleNode
 {
   OS_HandleNode *next;
   OS_Handle v;
-};
+}
 
-typedef struct OS_HandleList OS_HandleList;
 struct OS_HandleList
 {
   OS_HandleNode *first;
   OS_HandleNode *last;
   U64 count;
-};
+}
 
-typedef struct OS_HandleArray OS_HandleArray;
 struct OS_HandleArray
 {
   OS_Handle *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Process Launch Parameters
 
-typedef struct OS_ProcessLaunchParams OS_ProcessLaunchParams;
 struct OS_ProcessLaunchParams
 {
   String8List cmd_line;
@@ -126,7 +114,7 @@ struct OS_ProcessLaunchParams
   OS_Handle stdout_file;
   OS_Handle stderr_file;
   OS_Handle stdin_file;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Types

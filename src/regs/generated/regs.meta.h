@@ -6,7 +6,7 @@
 #ifndef REGS_META_H
 #define REGS_META_H
 
-typedef enum REGS_RegCodeX64
+enum REGS_RegCodeX64
 {
 REGS_RegCodeX64_NULL,
 REGS_RegCodeX64_rax,
@@ -112,7 +112,7 @@ REGS_RegCodeX64_k7,
 REGS_RegCodeX64_COUNT,
 } REGS_RegCodeX64;
 
-typedef enum REGS_AliasCodeX64
+enum REGS_AliasCodeX64
 {
 REGS_AliasCodeX64_NULL,
 REGS_AliasCodeX64_eax,
@@ -213,7 +213,7 @@ REGS_AliasCodeX64_mm7,
 REGS_AliasCodeX64_COUNT,
 } REGS_AliasCodeX64;
 
-typedef enum REGS_RegCodeX86
+enum REGS_RegCodeX86
 {
 REGS_RegCodeX86_NULL,
 REGS_RegCodeX86_eax,
@@ -279,7 +279,7 @@ REGS_RegCodeX86_ymm7,
 REGS_RegCodeX86_COUNT,
 } REGS_RegCodeX86;
 
-typedef enum REGS_AliasCodeX86
+enum REGS_AliasCodeX86
 {
 REGS_AliasCodeX86_NULL,
 REGS_AliasCodeX86_ax,
@@ -320,7 +320,6 @@ REGS_AliasCodeX86_mm7,
 REGS_AliasCodeX86_COUNT,
 } REGS_AliasCodeX86;
 
-typedef struct REGS_RegBlockX64 REGS_RegBlockX64;
 struct REGS_RegBlockX64
 {
 REGS_Reg64 rax;
@@ -423,9 +422,8 @@ REGS_Reg64 k4;
 REGS_Reg64 k5;
 REGS_Reg64 k6;
 REGS_Reg64 k7;
-};
+}
 
-typedef struct REGS_RegBlockX86 REGS_RegBlockX86;
 struct REGS_RegBlockX86
 {
 REGS_Reg32 eax;
@@ -488,7 +486,7 @@ REGS_Reg256 ymm4;
 REGS_Reg256 ymm5;
 REGS_Reg256 ymm6;
 REGS_Reg256 ymm7;
-};
+}
 
 C_LINKAGE_BEGIN
 extern REGS_UsageKind regs_g_reg_code_x64_usage_kind_table[101];

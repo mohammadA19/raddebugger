@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Messages
 
-typedef enum MD_MsgKind
+enum MD_MsgKind
 {
   MD_MsgKind_Null,
   MD_MsgKind_Note,
@@ -15,31 +15,27 @@ typedef enum MD_MsgKind
   MD_MsgKind_Error,
   MD_MsgKind_FatalError,
 }
-MD_MsgKind;
 
-typedef struct MD_Msg MD_Msg;
 struct MD_Msg
 {
   MD_Msg *next;
   struct MD_Node *node;
   MD_MsgKind kind;
   String8 string;
-};
+}
 
-typedef struct MD_MsgList MD_MsgList;
 struct MD_MsgList
 {
   MD_Msg *first;
   MD_Msg *last;
   U64 count;
   MD_MsgKind worst_message_kind;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Token Types
 
-typedef U32 MD_TokenFlags;
-enum
+enum MD_TokenFlags : U32
 {
   // rjf: base kind info
   MD_TokenFlag_Identifier          = (1<<0),
@@ -61,10 +57,9 @@ enum
   MD_TokenFlag_BrokenComment       = (1<<12),
   MD_TokenFlag_BrokenStringLiteral = (1<<13),
   MD_TokenFlag_BadCharacter        = (1<<14),
-};
+}
 
-typedef U32 MD_TokenGroups;
-enum
+enum MD_TokenGroups : U32
 {
   MD_TokenGroup_Comment    = MD_TokenFlag_Comment,
   MD_TokenGroup_Whitespace = (MD_TokenFlag_Whitespace|
@@ -79,44 +74,40 @@ enum
   MD_TokenGroup_Error      = (MD_TokenFlag_BrokenComment|
                               MD_TokenFlag_BrokenStringLiteral|
                               MD_TokenFlag_BadCharacter),
-};
+}
 
-typedef struct MD_Token MD_Token;
 struct MD_Token
 {
   Rng1U64 range;
   MD_TokenFlags flags;
-};
+}
 
-typedef struct MD_TokenChunkNode MD_TokenChunkNode;
 struct MD_TokenChunkNode
 {
   MD_TokenChunkNode *next;
   MD_Token *v;
   U64 count;
   U64 cap;
-};
+}
 
-typedef struct MD_TokenChunkList MD_TokenChunkList;
 struct MD_TokenChunkList
 {
   MD_TokenChunkNode *first;
   MD_TokenChunkNode *last;
   U64 chunk_count;
   U64 total_token_count;
-};
+}
 
-typedef struct MD_TokenArray MD_TokenArray;
 struct MD_TokenArray
 {
   MD_Token *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Node Types
 
-typedef enum MD_NodeKind
+enum MD_NodeKind
 {
   MD_NodeKind_Nil,
   MD_NodeKind_File,
@@ -127,10 +118,8 @@ typedef enum MD_NodeKind
   MD_NodeKind_Reference,
   MD_NodeKind_COUNT
 }
-MD_NodeKind;
 
-typedef U32 MD_NodeFlags;
-enum
+enum MD_NodeFlags : U32
 {
   MD_NodeFlag_MaskSetDelimiters          = (0x3F<<0),
   MD_NodeFlag_HasParenLeft               = (1<<0),
@@ -157,10 +146,9 @@ enum
   MD_NodeFlag_Identifier                 = (1<<15),
   MD_NodeFlag_StringLiteral              = (1<<16),
   MD_NodeFlag_Symbol                     = (1<<17),
-};
+}
 #define MD_NodeFlag_AfterFromBefore(f) ((f) << 1)
 
-typedef struct MD_Node MD_Node;
 struct MD_Node
 {
   // rjf: tree links
@@ -192,50 +180,45 @@ struct MD_Node
   
   // rjf: extra padding to 128 bytes
   U64 _unused_[2];
-};
+}
 
-typedef struct MD_NodeRec MD_NodeRec;
 struct MD_NodeRec
 {
   MD_Node *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
-typedef struct MD_NodePtrNode MD_NodePtrNode;
 struct MD_NodePtrNode
 {
   MD_NodePtrNode *next;
   MD_Node *v;
-};
+}
 
-typedef struct MD_NodePtrList MD_NodePtrList;
 struct MD_NodePtrList
 {
   MD_NodePtrNode *first;
   MD_NodePtrNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Text -> Tokens Types
 
-typedef struct MD_TokenizeResult MD_TokenizeResult;
 struct MD_TokenizeResult
 {
   MD_TokenArray tokens;
   MD_MsgList msgs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Tokens -> Tree Types
 
-typedef struct MD_ParseResult MD_ParseResult;
 struct MD_ParseResult
 {
   MD_Node *root;
   MD_MsgList msgs;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
@@ -249,7 +232,7 @@ global read_only MD_Node md_nil_node =
   &md_nil_node,
   &md_nil_node,
   &md_nil_node,
-};
+}
 
 ////////////////////////////////
 //~ rjf: Node Type Functions

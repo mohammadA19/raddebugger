@@ -20,7 +20,7 @@ typedef struct PDB_Strtbl
 ////////////////////////////////
 //~ PDB Parser Info Types
 
-typedef enum PDB_NamedStream
+enum PDB_NamedStream
 {
   PDB_NamedStream_HeaderBlock,
   PDB_NamedStream_StringTable,
@@ -59,7 +59,7 @@ typedef struct PDB_InfoHeader
 //~ PDB Parser DBI Types
 
 //  (this is not "literally" defined by the format - but helpful to have)
-typedef enum PDB_DbiRange
+enum PDB_DbiRange
 {
   PDB_DbiRange_ModuleInfo,
   PDB_DbiRange_SecCon,
@@ -72,7 +72,7 @@ typedef enum PDB_DbiRange
 } PDB_DbiRange;
 
 //  (this is not "literally" defined by the format - but helpful to have)
-typedef enum
+enum
 {
   PDB_DbiCompUnitRange_Symbols,
   PDB_DbiCompUnitRange_C11,

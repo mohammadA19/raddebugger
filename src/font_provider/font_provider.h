@@ -9,20 +9,17 @@
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U32 FP_RasterFlags;
-enum
+enum FP_RasterFlags : U32
 {
   FP_RasterFlag_Smooth = (1<<0),
   FP_RasterFlag_Hinted = (1<<1),
-};
+}
 
-typedef struct FP_Handle FP_Handle;
 struct FP_Handle
 {
   U64 u64[2];
-};
+}
 
-typedef struct FP_Metrics FP_Metrics;
 struct FP_Metrics
 {
   F32 design_units_per_em;
@@ -30,15 +27,14 @@ struct FP_Metrics
   F32 descent;
   F32 line_gap;
   F32 capital_height;
-};
+}
 
-typedef struct FP_RasterResult FP_RasterResult;
 struct FP_RasterResult
 {
   Vec2S16 atlas_dim;
   void *atlas;
   F32 advance;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Backend Hooks

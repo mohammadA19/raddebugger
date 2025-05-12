@@ -9,32 +9,28 @@
 
 typedef U64 RD_CfgID;
 
-typedef struct RD_CfgIDNode RD_CfgIDNode;
 struct RD_CfgIDNode
 {
   RD_CfgIDNode *next;
   RD_CfgID v;
-};
+}
 
-typedef struct RD_CfgIDList RD_CfgIDList;
 struct RD_CfgIDList
 {
   RD_CfgIDNode *first;
   RD_CfgIDNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Key Bindings
 
-typedef struct RD_Binding RD_Binding;
 struct RD_Binding
 {
   OS_Key key;
   OS_Modifiers modifiers;
-};
+}
 
-typedef struct RD_KeyMapNode RD_KeyMapNode;
 struct RD_KeyMapNode
 {
   RD_KeyMapNode *name_hash_next;
@@ -42,44 +38,39 @@ struct RD_KeyMapNode
   RD_CfgID cfg_id;
   String8 name;
   RD_Binding binding;
-};
+}
 
-typedef struct RD_KeyMapNodePtr RD_KeyMapNodePtr;
 struct RD_KeyMapNodePtr
 {
   RD_KeyMapNodePtr *next;
   RD_KeyMapNode *v;
-};
+}
 
-typedef struct RD_KeyMapNodePtrList RD_KeyMapNodePtrList;
 struct RD_KeyMapNodePtrList
 {
   RD_KeyMapNodePtr *first;
   RD_KeyMapNodePtr *last;
   U64 count;
-};
+}
 
-typedef struct RD_KeyMapSlot RD_KeyMapSlot;
 struct RD_KeyMapSlot
 {
   RD_KeyMapNode *first;
   RD_KeyMapNode *last;
-};
+}
 
-typedef struct RD_KeyMap RD_KeyMap;
 struct RD_KeyMap
 {
   U64 name_slots_count;
   RD_KeyMapSlot *name_slots;
   U64 binding_slots_count;
   RD_KeyMapSlot *binding_slots;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef U64 RD_EvalSpaceKind;
-enum
+enum RD_EvalSpaceKind : U64
 {
   RD_EvalSpaceKind_CtrlEntity = E_SpaceKind_FirstUserDefined,
   RD_EvalSpaceKind_MetaQuery,
@@ -88,7 +79,7 @@ enum
   RD_EvalSpaceKind_MetaTheme,
   RD_EvalSpaceKind_MetaCtrlEntity,
   RD_EvalSpaceKind_MetaUnattachedProcess,
-};
+}
 
 ////////////////////////////////
 //~ rjf: View UI Hook Types
@@ -98,51 +89,45 @@ enum
 #define RD_VIEW_UI_FUNCTION_DEF(name) internal RD_VIEW_UI_FUNCTION_SIG(RD_VIEW_UI_FUNCTION_NAME(name))
 typedef RD_VIEW_UI_FUNCTION_SIG(RD_ViewUIFunctionType);
 
-typedef struct RD_ViewUIRule RD_ViewUIRule;
 struct RD_ViewUIRule
 {
   String8 name;
   RD_ViewUIFunctionType *ui;
-};
+}
 
-typedef struct RD_ViewUIRuleNode RD_ViewUIRuleNode;
 struct RD_ViewUIRuleNode
 {
   RD_ViewUIRuleNode *next;
   RD_ViewUIRule v;
-};
+}
 
-typedef struct RD_ViewUIRuleSlot RD_ViewUIRuleSlot;
 struct RD_ViewUIRuleSlot
 {
   RD_ViewUIRuleNode *first;
   RD_ViewUIRuleNode *last;
-};
+}
 
-typedef struct RD_ViewUIRuleMap RD_ViewUIRuleMap;
 struct RD_ViewUIRuleMap
 {
   RD_ViewUIRuleSlot *slots;
   U64 slots_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
 
-typedef enum RD_DragDropState
+enum RD_DragDropState
 {
   RD_DragDropState_Null,
   RD_DragDropState_Dragging,
   RD_DragDropState_Dropping,
   RD_DragDropState_COUNT
 }
-RD_DragDropState;
 
 ////////////////////////////////
 //~ rjf: Command Kind Types
 
-typedef U32 RD_QueryFlags;
-enum
+enum RD_QueryFlags : U32
 {
   RD_QueryFlag_AllowFiles       = (1<<0),
   RD_QueryFlag_AllowFolders     = (1<<1),
@@ -151,28 +136,26 @@ enum
   RD_QueryFlag_SelectOldInput   = (1<<4),
   RD_QueryFlag_Floating         = (1<<5),
   RD_QueryFlag_Required         = (1<<6),
-};
+}
 
-typedef U32 RD_CmdKindFlags;
-enum
+enum RD_CmdKindFlags : U32
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
   RD_CmdKindFlag_ListInTab     = (1<<2),
   RD_CmdKindFlag_ListInTextPt  = (1<<3),
   RD_CmdKindFlag_ListInTextRng = (1<<4),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Autocompletion Cursor Info Type
 
-typedef struct RD_AutocompCursorInfo RD_AutocompCursorInfo;
 struct RD_AutocompCursorInfo
 {
   String8 list_expr;
   String8 filter;
   Rng1U64 replaced_range;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -182,14 +165,12 @@ struct RD_AutocompCursorInfo
 ////////////////////////////////
 //~ rjf: View State Types
 
-typedef struct RD_ArenaExt RD_ArenaExt;
 struct RD_ArenaExt
 {
   RD_ArenaExt *next;
   Arena *arena;
-};
+}
 
-typedef struct RD_ViewState RD_ViewState;
 struct RD_ViewState
 {
   // rjf: hash links & key
@@ -229,46 +210,41 @@ struct RD_ViewState
   
   // rjf: contents are focused (disables query focus)
   B32 contents_are_focused;
-};
+}
 
-typedef struct RD_ViewStateSlot RD_ViewStateSlot;
 struct RD_ViewStateSlot
 {
   RD_ViewState *first;
   RD_ViewState *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Vocabulary Map
 
-typedef struct RD_VocabInfoMapNode RD_VocabInfoMapNode;
 struct RD_VocabInfoMapNode
 {
   RD_VocabInfoMapNode *single_next;
   RD_VocabInfoMapNode *plural_next;
   RD_VocabInfo v;
-};
+}
 
-typedef struct RD_VocabInfoMapSlot RD_VocabInfoMapSlot;
 struct RD_VocabInfoMapSlot
 {
   RD_VocabInfoMapNode *first;
   RD_VocabInfoMapNode *last;
-};
+}
 
-typedef struct RD_VocabInfoMap RD_VocabInfoMap;
 struct RD_VocabInfoMap
 {
   U64 single_slots_count;
   RD_VocabInfoMapSlot *single_slots;
   U64 plural_slots_count;
   RD_VocabInfoMapSlot *plural_slots;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Config Tree
 
-typedef struct RD_Cfg RD_Cfg;
 struct RD_Cfg
 {
   RD_Cfg *first;
@@ -278,61 +254,54 @@ struct RD_Cfg
   RD_Cfg *parent;
   RD_CfgID id;
   String8 string;
-};
+}
 
-typedef struct RD_CfgNode RD_CfgNode;
 struct RD_CfgNode
 {
   RD_CfgNode *next;
   RD_CfgNode *prev;
   RD_Cfg *v;
-};
+}
 
-typedef struct RD_CfgSlot RD_CfgSlot;
 struct RD_CfgSlot
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
-};
+}
 
-typedef struct RD_CfgList RD_CfgList;
 struct RD_CfgList
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
   U64 count;
-};
+}
 
-typedef struct RD_CfgArray RD_CfgArray;
 struct RD_CfgArray
 {
   RD_Cfg **v;
   U64 count;
-};
+}
 
-typedef struct RD_CfgRec RD_CfgRec;
 struct RD_CfgRec
 {
   RD_Cfg *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Structured Locations, Parsed From Config Trees
 
-typedef struct RD_Location RD_Location;
 struct RD_Location
 {
   String8 file_path;
   TxtPt pt;
   String8 expr;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Structured Panel Trees, Parsed From Config Trees
 
-typedef struct RD_PanelNode RD_PanelNode;
 struct RD_PanelNode
 {
   // rjf: links data
@@ -354,75 +323,67 @@ struct RD_PanelNode
   // rjf: which tabs are attached
   RD_CfgList tabs;
   RD_Cfg *selected_tab;
-};
+}
 
-typedef struct RD_PanelTree RD_PanelTree;
 struct RD_PanelTree
 {
   RD_PanelNode *root;
   RD_PanelNode *focused;
-};
+}
 
-typedef struct RD_PanelNodeRec RD_PanelNodeRec;
 struct RD_PanelNodeRec
 {
   RD_PanelNode *next;
   S32 push_count;
   S32 pop_count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct RD_Cmd RD_Cmd;
 struct RD_Cmd
 {
   String8 name;
   RD_Regs *regs;
-};
+}
 
-typedef struct RD_CmdNode RD_CmdNode;
 struct RD_CmdNode
 {
   RD_CmdNode *next;
   RD_CmdNode *prev;
   RD_Cmd cmd;
-};
+}
 
-typedef struct RD_CmdList RD_CmdList;
 struct RD_CmdList
 {
   RD_CmdNode *first;
   RD_CmdNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Context Register Types
 
-typedef struct RD_RegsNode RD_RegsNode;
 struct RD_RegsNode
 {
   RD_RegsNode *next;
   RD_Regs v;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Structured Theme Types, Parsed From Config
 
-typedef enum RD_FontSlot
+enum RD_FontSlot
 {
   RD_FontSlot_Main,
   RD_FontSlot_Code,
   RD_FontSlot_Icons,
   RD_FontSlot_COUNT
 }
-RD_FontSlot;
 
 ////////////////////////////////
 //~ rjf: Per-Window State
 
-typedef struct RD_WindowState RD_WindowState;
 struct RD_WindowState
 {
   // rjf: links & metadata
@@ -495,14 +456,13 @@ struct RD_WindowState
   
   // rjf: per-frame drawing state
   DR_Bucket *draw_bucket;
-};
+}
 
-typedef struct RD_WindowStateSlot RD_WindowStateSlot;
 struct RD_WindowStateSlot
 {
   RD_WindowState *first;
   RD_WindowState *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
@@ -517,24 +477,21 @@ read_only global U64 rd_name_bucket_chunk_sizes[] =
   16384,
   65536,
   0xffffffffffffffffull,
-};
+}
 
-typedef struct RD_NameChunkNode RD_NameChunkNode;
 struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
   U64 size;
-};
+}
 
-typedef struct RD_AmbiguousPathNode RD_AmbiguousPathNode;
 struct RD_AmbiguousPathNode
 {
   RD_AmbiguousPathNode *next;
   String8 name;
   String8List paths;
-};
+}
 
-typedef struct RD_State RD_State;
 struct RD_State
 {
   // rjf: basics
@@ -697,7 +654,7 @@ struct RD_State
   B32 bind_change_active;
   RD_CfgID bind_change_binding_id;
   String8 bind_change_cmd_name;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals
@@ -711,7 +668,7 @@ read_only global RD_Cfg rd_nil_cfg =
   &rd_nil_cfg,
   &rd_nil_cfg,
   &rd_nil_cfg,
-};
+}
 
 read_only global RD_PanelNode rd_nil_panel_node =
 {
@@ -723,7 +680,7 @@ read_only global RD_PanelNode rd_nil_panel_node =
   0,
   &rd_nil_cfg,
   .selected_tab = &rd_nil_cfg,
-};
+}
 
 read_only global RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
 
@@ -732,13 +689,13 @@ read_only global RD_ViewUIRule rd_nil_view_ui_rule =
 {
   {0},
   RD_VIEW_UI_FUNCTION_NAME(null),
-};
+}
 
 read_only global RD_ViewState rd_nil_view_state =
 {
   &rd_nil_view_state,
   &rd_nil_view_state,
-};
+}
 
 read_only global RD_WindowState rd_nil_window_state =
 {
@@ -746,7 +703,7 @@ read_only global RD_WindowState rd_nil_window_state =
   &rd_nil_window_state,
   &rd_nil_window_state,
   &rd_nil_window_state,
-};
+}
 
 global RD_State *rd_state = 0;
 global RD_CfgID rd_last_drag_drop_panel = 0;

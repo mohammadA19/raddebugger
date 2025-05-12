@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Tick Input Types
 
-typedef struct D_Target D_Target;
 struct D_Target
 {
   String8 exe;
@@ -19,24 +18,21 @@ struct D_Target
   String8 stdin_path;
   B32 debug_subprocesses;
   String8List env;
-};
+}
 
-typedef struct D_TargetArray D_TargetArray;
 struct D_TargetArray
 {
   D_Target *v;
   U64 count;
-};
+}
 
-typedef U32 D_BreakpointFlags;
-enum
+enum D_BreakpointFlags : U32
 {
   D_BreakpointFlag_BreakOnWrite   = (1<<0),
   D_BreakpointFlag_BreakOnRead    = (1<<1),
   D_BreakpointFlag_BreakOnExecute = (1<<2),
-};
+}
 
-typedef struct D_Breakpoint D_Breakpoint;
 struct D_Breakpoint
 {
   D_BreakpointFlags flags;
@@ -46,42 +42,38 @@ struct D_Breakpoint
   String8 vaddr_expr;
   String8 condition;
   U64 size;
-};
+}
 
-typedef struct D_BreakpointArray D_BreakpointArray;
 struct D_BreakpointArray
 {
   D_Breakpoint *v;
   U64 count;
-};
+}
 
-typedef struct D_PathMap D_PathMap;
 struct D_PathMap
 {
   String8 src;
   String8 dst;
-};
+}
 
-typedef struct D_PathMapArray D_PathMapArray;
 struct D_PathMapArray
 {
   D_PathMap *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Tick Output Types
 
-typedef enum D_EventKind
+enum D_EventKind
 {
   D_EventKind_Null,
   D_EventKind_ProcessEnd,
   D_EventKind_Stop,
   D_EventKind_COUNT
 }
-D_EventKind;
 
-typedef enum D_EventCause
+enum D_EventCause
 {
   D_EventCause_Null,
   D_EventCause_UserBreakpoint,
@@ -89,9 +81,7 @@ typedef enum D_EventCause
   D_EventCause_SoftHalt,
   D_EventCause_COUNT
 }
-D_EventCause;
 
-typedef struct D_Event D_Event;
 struct D_Event
 {
   D_EventKind kind;
@@ -100,69 +90,62 @@ struct D_Event
   U64 vaddr;
   U64 code;
   U64 id;
-};
+}
 
-typedef struct D_EventNode D_EventNode;
 struct D_EventNode
 {
   D_EventNode *next;
   D_Event v;
-};
+}
 
-typedef struct D_EventList D_EventList;
 struct D_EventList
 {
   D_EventNode *first;
   D_EventNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Line Info Types
 
-typedef struct D_Line D_Line;
 struct D_Line
 {
   String8 file_path;
   TxtPt pt;
   Rng1U64 voff_range;
   DI_Key dbgi_key;
-};
+}
 
-typedef struct D_LineNode D_LineNode;
 struct D_LineNode
 {
   D_LineNode *next;
   D_Line v;
-};
+}
 
-typedef struct D_LineList D_LineList;
 struct D_LineList
 {
   D_LineNode *first;
   D_LineNode *last;
   U64 count;
-};
+}
 
-typedef struct D_LineListArray D_LineListArray;
 struct D_LineListArray
 {
   D_LineList *v;
   U64 count;
   DI_KeyList dbgi_keys;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Debug Engine Control Communication Types
 
-typedef enum D_RunKind
+enum D_RunKind
 {
   D_RunKind_Run,
   D_RunKind_SingleStep,
   D_RunKind_Step,
   D_RunKind_COUNT
 }
-D_RunKind;
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -172,7 +155,6 @@ D_RunKind;
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct D_CmdParams D_CmdParams;
 struct D_CmdParams
 {
   CTRL_Handle machine;
@@ -187,37 +169,33 @@ struct D_CmdParams
   U32 pid;
   U32 rgba;
   D_TargetArray targets;
-};
+}
 
-typedef struct D_Cmd D_Cmd;
 struct D_Cmd
 {
   D_CmdKind kind;
   D_CmdParams params;
-};
+}
 
-typedef struct D_CmdNode D_CmdNode;
 struct D_CmdNode
 {
   D_CmdNode *next;
   D_CmdNode *prev;
   D_Cmd cmd;
-};
+}
 
-typedef struct D_CmdList D_CmdList;
 struct D_CmdList
 {
   D_CmdNode *first;
   D_CmdNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main State Caches
 
 //- rjf: per-thread unwind cache
 
-typedef struct D_UnwindCacheNode D_UnwindCacheNode;
 struct D_UnwindCacheNode
 {
   D_UnwindCacheNode *next;
@@ -227,26 +205,23 @@ struct D_UnwindCacheNode
   Arena *arena;
   CTRL_Handle thread;
   CTRL_Unwind unwind;
-};
+}
 
-typedef struct D_UnwindCacheSlot D_UnwindCacheSlot;
 struct D_UnwindCacheSlot
 {
   D_UnwindCacheNode *first;
   D_UnwindCacheNode *last;
-};
+}
 
-typedef struct D_UnwindCache D_UnwindCache;
 struct D_UnwindCache
 {
   U64 slots_count;
   D_UnwindCacheSlot *slots;
   D_UnwindCacheNode *free_node;
-};
+}
 
 //- rjf: per-run tls-base-vaddr cache
 
-typedef struct D_RunTLSBaseCacheNode D_RunTLSBaseCacheNode;
 struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode *hash_next;
@@ -254,53 +229,47 @@ struct D_RunTLSBaseCacheNode
   U64 root_vaddr;
   U64 rip_vaddr;
   U64 tls_base_vaddr;
-};
+}
 
-typedef struct D_RunTLSBaseCacheSlot D_RunTLSBaseCacheSlot;
 struct D_RunTLSBaseCacheSlot
 {
   D_RunTLSBaseCacheNode *first;
   D_RunTLSBaseCacheNode *last;
-};
+}
 
-typedef struct D_RunTLSBaseCache D_RunTLSBaseCache;
 struct D_RunTLSBaseCache
 {
   Arena *arena;
   U64 slots_count;
   D_RunTLSBaseCacheSlot *slots;
-};
+}
 
 //- rjf: per-run locals cache
 
-typedef struct D_RunLocalsCacheNode D_RunLocalsCacheNode;
 struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode *hash_next;
   DI_Key dbgi_key;
   U64 voff;
   E_String2NumMap *locals_map;
-};
+}
 
-typedef struct D_RunLocalsCacheSlot D_RunLocalsCacheSlot;
 struct D_RunLocalsCacheSlot
 {
   D_RunLocalsCacheNode *first;
   D_RunLocalsCacheNode *last;
-};
+}
 
-typedef struct D_RunLocalsCache D_RunLocalsCache;
 struct D_RunLocalsCache
 {
   Arena *arena;
   U64 table_size;
   D_RunLocalsCacheSlot *table;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main State Types
 
-typedef struct D_State D_State;
 struct D_State
 {
   // rjf: top-level state
@@ -346,7 +315,7 @@ struct D_State
   CTRL_EntityStore *ctrl_entity_store;
   Arena *ctrl_stop_arena;
   CTRL_Event ctrl_last_stop_event;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

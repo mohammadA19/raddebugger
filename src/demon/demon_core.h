@@ -12,43 +12,38 @@
 // control thread, which blocks to control & receive events, will take this
 // parameter. All other APIs can be called from any thread.
 
-typedef struct DMN_CtrlCtx DMN_CtrlCtx;
 struct DMN_CtrlCtx
 {
   U64 u64[1];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Handle Types
 
-typedef union DMN_Handle DMN_Handle;
 union DMN_Handle
 {
   U32 u32[2];
   U64 u64[1];
-};
+}
 
-typedef struct DMN_HandleNode DMN_HandleNode;
 struct DMN_HandleNode
 {
   DMN_HandleNode *next;
   DMN_Handle v;
-};
+}
 
-typedef struct DMN_HandleList DMN_HandleList;
 struct DMN_HandleList
 {
   DMN_HandleNode *first;
   DMN_HandleNode *last;
   U64 count;
-};
+}
 
-typedef struct DMN_HandleArray DMN_HandleArray;
 struct DMN_HandleArray
 {
   DMN_Handle *handles;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -58,7 +53,6 @@ struct DMN_HandleArray
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef struct DMN_Event DMN_Event;
 struct DMN_Event
 {
   DMN_EventKind kind;
@@ -80,35 +74,31 @@ struct DMN_Event
   U64 stack_pointer;
   U64 user_data;
   B32 exception_repeated;
-};
+}
 
-typedef struct DMN_EventNode DMN_EventNode;
 struct DMN_EventNode
 {
   DMN_EventNode *next;
   DMN_Event v;
-};
+}
 
-typedef struct DMN_EventList DMN_EventList;
 struct DMN_EventList
 {
   DMN_EventNode *first;
   DMN_EventNode *last;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Run Control Types
 
-typedef U32 DMN_TrapFlags;
-enum
+enum DMN_TrapFlags : U32
 {
   DMN_TrapFlag_BreakOnWrite   = (1<<0),
   DMN_TrapFlag_BreakOnRead    = (1<<1),
   DMN_TrapFlag_BreakOnExecute = (1<<2),
-};
+}
 
-typedef struct DMN_Trap DMN_Trap;
 struct DMN_Trap
 {
   DMN_Handle process;
@@ -116,27 +106,24 @@ struct DMN_Trap
   U64 id;
   DMN_TrapFlags flags;
   U32 size;
-};
+}
 
-typedef struct DMN_TrapChunkNode DMN_TrapChunkNode;
 struct DMN_TrapChunkNode
 {
   DMN_TrapChunkNode *next;
   DMN_Trap *v;
   U64 cap;
   U64 count;
-};
+}
 
-typedef struct DMN_TrapChunkList DMN_TrapChunkList;
 struct DMN_TrapChunkList
 {
   DMN_TrapChunkNode *first;
   DMN_TrapChunkNode *last;
   U64 node_count;
   U64 trap_count;
-};
+}
 
-typedef struct DMN_RunCtrls DMN_RunCtrls;
 struct DMN_RunCtrls
 {
   DMN_Handle single_step_thread;
@@ -146,23 +133,21 @@ struct DMN_RunCtrls
   DMN_Handle *run_entities;
   U64 run_entity_count;
   DMN_TrapChunkList traps;
-};
+}
 
 ////////////////////////////////
 //~ rjf: System Process Listing Types
 
-typedef struct DMN_ProcessIter DMN_ProcessIter;
 struct DMN_ProcessIter
 {
   U64 v[2];
-};
+}
 
-typedef struct DMN_ProcessInfo DMN_ProcessInfo;
 struct DMN_ProcessInfo
 {
   String8 name;
   U32 pid;
-};
+}
 
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Blocking Control Thread Operations (Implemented Per-OS)

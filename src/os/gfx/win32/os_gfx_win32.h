@@ -25,14 +25,12 @@
 ////////////////////////////////
 //~ rjf: Windows
 
-typedef struct OS_W32_TitleBarClientArea OS_W32_TitleBarClientArea;
 struct OS_W32_TitleBarClientArea
 {
   OS_W32_TitleBarClientArea *next;
   Rng2F32 rect;
-};
+}
 
-typedef struct OS_W32_Window OS_W32_Window;
 struct OS_W32_Window
 {
   OS_W32_Window *next;
@@ -49,22 +47,20 @@ struct OS_W32_Window
   Arena *paint_arena;
   OS_W32_TitleBarClientArea *first_title_bar_client_area;
   OS_W32_TitleBarClientArea *last_title_bar_client_area;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Monitor Gathering Bundle
 
-typedef struct OS_W32_MonitorGatherBundle OS_W32_MonitorGatherBundle;
 struct OS_W32_MonitorGatherBundle
 {
   Arena *arena;
   OS_HandleList *list;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Global State
 
-typedef struct OS_W32_GfxState OS_W32_GfxState;
 struct OS_W32_GfxState
 {
   Arena *arena;
@@ -76,7 +72,7 @@ struct OS_W32_GfxState
   OS_W32_Window *last_window;
   OS_W32_Window *free_window;
   OS_Key key_from_vkey_table[256];
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

@@ -13,78 +13,69 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-typedef struct String8 String8;
 struct String8
 {
   U8 *str;
   U64 size;
-};
+}
 
-typedef struct String16 String16;
 struct String16
 {
   U16 *str;
   U64 size;
-};
+}
 
-typedef struct String32 String32;
 struct String32
 {
   U32 *str;
   U64 size;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String List & Array Types
 
-typedef struct String8Node String8Node;
 struct String8Node
 {
   String8Node *next;
   String8 string;
-};
+}
 
-typedef struct String8MetaNode String8MetaNode;
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
-};
+}
 
-typedef struct String8List String8List;
 struct String8List
 {
   String8Node *first;
   String8Node *last;
   U64 node_count;
   U64 total_size;
-};
+}
 
-typedef struct String8Array String8Array;
 struct String8Array
 {
   String8 *v;
   U64 count;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
 
-typedef U32 StringMatchFlags;
-enum
+enum StringMatchFlags : U32
 {
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
-};
+}
 
-typedef U32 StringSplitFlags;
-enum
+enum StringSplitFlags : U32
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
-};
+}
 
-typedef enum PathStyle
+enum PathStyle
 {
   PathStyle_Null,
   PathStyle_Relative,
@@ -99,47 +90,41 @@ typedef enum PathStyle
 # error "absolute path style is undefined for this OS"
 #endif
 }
-PathStyle;
 
-typedef struct StringJoin StringJoin;
 struct StringJoin
 {
   String8 pre;
   String8 sep;
   String8 post;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-typedef struct String8TxtPtPair String8TxtPtPair;
 struct String8TxtPtPair
 {
   String8 string;
   TxtPt pt;
-};
+}
 
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
 
-typedef struct UnicodeDecode UnicodeDecode;
 struct UnicodeDecode
 {
   U32 inc;
   U32 codepoint;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
 
-typedef struct FuzzyMatchRangeNode FuzzyMatchRangeNode;
 struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
-};
+}
 
-typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
 struct FuzzyMatchRangeList
 {
   FuzzyMatchRangeNode *first;
@@ -147,7 +132,7 @@ struct FuzzyMatchRangeList
   U64 count;
   U64 needle_part_count;
   U64 total_dim;
-};
+}
 
 ////////////////////////////////
 //~ rjf: String Constructors

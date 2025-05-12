@@ -28,7 +28,6 @@ typedef U16 MSF_StreamNumber;
 static char msf_msf20_magic[] = "Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0";
 static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 
-typedef struct MSF_Header20 MSF_Header20;
 struct MSF_Header20
 {
   U8  magic[sizeof(msf_msf20_magic)];
@@ -38,9 +37,8 @@ struct MSF_Header20
   U32 stream_table_size;
   U32 unknown;
   U16 root_pn;
-};
+}
 
-typedef struct MSF_Header70 MSF_Header70;
 struct MSF_Header70
 {
   U8             magic[sizeof(msf_msf70_magic)];
@@ -50,7 +48,7 @@ struct MSF_Header70
   MSF_UInt       stream_table_size;
   MSF_UInt       unknown; // always set to zero (used to be stream table page number, see SI_PERSIST in msf.cpp)
   MSF_PageNumber root_pn;
-};
+}
 
 ////////////////////////////////
 

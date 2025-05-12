@@ -57,8 +57,7 @@ typedef struct COFF_ParsedSymbol
   U8                   aux_symbol_count;
 } COFF_ParsedSymbol;
 
-typedef U32 COFF_SymbolValueInterpType;
-enum
+enum COFF_SymbolValueInterpType : U32
 {
   COFF_SymbolValueInterp_Regular,   // symbol has section and offset.
   COFF_SymbolValueInterp_Weak,      // symbol is overridable.
@@ -66,7 +65,7 @@ enum
   COFF_SymbolValueInterp_Common,    // symbol has no section but still has size.
   COFF_SymbolValueInterp_Abs,       // symbol has an absolute (non-relocatable) value and is not an address.
   COFF_SymbolValueInterp_Debug      // symbol is used to provide general type of debugging information.
-};
+}
 
 ////////////////////////////////
 
@@ -97,14 +96,13 @@ typedef struct COFF_RelocInfo
 
 ////////////////////////////////
 
-typedef U32 COFF_ResourceIDType;
-enum  COFF_ResourceIDTypeEnum
+enum COFF_ResourceIDType : U32  COFF_ResourceIDTypeEnum
 {
   COFF_ResourceIDType_Null,
   COFF_ResourceIDType_Number,
   COFF_ResourceIDType_String,
   COFF_ResourceIDType_Count
-};
+}
 
 typedef struct COFF_ResourceID16
 {
@@ -151,7 +149,7 @@ typedef struct COFF_ParsedResourceList
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   COFF_DataType_Null,
   COFF_DataType_Obj,
@@ -159,7 +157,7 @@ typedef enum
   COFF_DataType_Import
 } COFF_DataType;
 
-typedef enum
+enum
 {
   COFF_Archive_Null,
   COFF_Archive_Regular,

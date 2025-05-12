@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct GEO_Node GEO_Node;
 struct GEO_Node
 {
   GEO_Node *next;
@@ -19,55 +18,49 @@ struct GEO_Node
   U64 last_time_touched_us;
   U64 last_user_clock_idx_touched;
   U64 load_count;
-};
+}
 
-typedef struct GEO_Slot GEO_Slot;
 struct GEO_Slot
 {
   GEO_Node *first;
   GEO_Node *last;
-};
+}
 
-typedef struct GEO_Stripe GEO_Stripe;
 struct GEO_Stripe
 {
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct GEO_Touch GEO_Touch;
 struct GEO_Touch
 {
   GEO_Touch *next;
   U128 hash;
-};
+}
 
-typedef struct GEO_Scope GEO_Scope;
 struct GEO_Scope
 {
   GEO_Scope *next;
   GEO_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct GEO_TCTX GEO_TCTX;
 struct GEO_TCTX
 {
   Arena *arena;
   GEO_Scope *free_scope;
   GEO_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct GEO_Shared GEO_Shared;
 struct GEO_Shared
 {
   Arena *arena;
@@ -89,7 +82,7 @@ struct GEO_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

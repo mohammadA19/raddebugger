@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Interpretation Context
 
-typedef struct E_InterpretCtx E_InterpretCtx;
 struct E_InterpretCtx
 {
   void *space_rw_user_data;
@@ -20,7 +19,7 @@ struct E_InterpretCtx
   U64 *module_base;
   U64 *frame_base;
   U64 *tls_base;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

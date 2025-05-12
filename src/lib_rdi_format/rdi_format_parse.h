@@ -44,7 +44,7 @@
 ////////////////////////////////////////////////////////////////
 //~ Parsed Information Types
 
-typedef enum RDI_ParseStatus
+enum RDI_ParseStatus
 {
   RDI_ParseStatus_Good = 0,
   RDI_ParseStatus_HeaderDoesNotMatch = 1,
@@ -52,18 +52,15 @@ typedef enum RDI_ParseStatus
   RDI_ParseStatus_InvalidDataSecionLayout = 3,
   RDI_ParseStatus_MissingRequiredSection = 4,
 }
-RDI_ParseStatus;
 
-typedef struct RDI_Parsed RDI_Parsed;
 struct RDI_Parsed
 {
   RDI_U8 *raw_data;
   RDI_U64 raw_data_size;
   RDI_Section *sections;
   RDI_U64 sections_count;
-};
+}
 
-typedef struct RDI_ParsedLineTable RDI_ParsedLineTable;
 struct RDI_ParsedLineTable
 {
   // NOTE: Mapping VOFF -> LINE_INFO
@@ -75,9 +72,8 @@ struct RDI_ParsedLineTable
   RDI_Column* cols;  // [col_count]
   RDI_U64 count;
   RDI_U64 col_count;
-};
+}
 
-typedef struct RDI_ParsedSourceLineMap RDI_ParsedSourceLineMap;
 struct RDI_ParsedSourceLineMap
 {
   // NOTE: Mapping LINE_NUMBER -> VOFFs
@@ -93,16 +89,15 @@ struct RDI_ParsedSourceLineMap
   RDI_U64* voffs;  // [voff_count]
   RDI_U64 count;
   RDI_U64 voff_count;
-};
+}
 
-typedef struct RDI_ParsedNameMap RDI_ParsedNameMap;
 struct RDI_ParsedNameMap
 {
   RDI_NameMapBucket *buckets;
   RDI_NameMapNode *nodes;
   RDI_U64 bucket_count;
   RDI_U64 node_count;
-};
+}
 
 ////////////////////////////////
 //~ Global Nils

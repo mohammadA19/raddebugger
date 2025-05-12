@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum
+enum
 {
   LNK_Error_Null,
   
@@ -86,7 +86,7 @@ typedef enum
   LNK_Error_Count
 } LNK_ErrorCode;
 
-typedef enum
+enum
 {
   LNK_ErrorMode_Ignore,
   LNK_ErrorMode_Stop,
@@ -94,7 +94,7 @@ typedef enum
   LNK_ErrorMode_Warn,
 } LNK_ErrorMode;
 
-typedef enum
+enum
 {
   LNK_InternalError_Null,
   LNK_InternalError_NotImplemented,
@@ -103,7 +103,7 @@ typedef enum
   LNK_InternalError_OutOfMemory
 } LNK_InternalError;
 
-typedef enum
+enum
 {
   LNK_ErrorCodeStatus_Active,
   LNK_ErrorCodeStatus_Ignore,

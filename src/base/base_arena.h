@@ -12,23 +12,20 @@
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U64 ArenaFlags;
-enum
+enum ArenaFlags : U64
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
-};
+}
 
-typedef struct ArenaParams ArenaParams;
 struct ArenaParams
 {
   ArenaFlags flags;
   U64 reserve_size;
   U64 commit_size;
   void *optional_backing_buffer;
-};
+}
 
-typedef struct Arena Arena;
 struct Arena
 {
   Arena *prev;    // previous arena in chain
@@ -44,15 +41,14 @@ struct Arena
   U64 free_size;
   Arena *free_last;
 #endif
-};
+}
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
-typedef struct Temp Temp;
 struct Temp
 {
   Arena *arena;
   U64 pos;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Global Defaults

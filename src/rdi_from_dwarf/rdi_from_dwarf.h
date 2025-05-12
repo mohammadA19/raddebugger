@@ -3,14 +3,13 @@
 
 #pragma once
 
-typedef U64 D2R_ConvertFlags;
-enum
+enum D2R_ConvertFlags : U64
 {
 #define X(t,n,k) D2R_ConvertFlag_##t = (1ull << RDI_SectionKind_##t),
   RDI_SectionKind_XList
 #undef X
   D2R_ConvertFlag_StrictParse,
-};
+}
 
 typedef struct D2R_User2Convert
 {

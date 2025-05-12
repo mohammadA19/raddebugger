@@ -7,16 +7,15 @@
 ////////////////////////////////
 //~ rjf: Value Types
 
-typedef enum TXT_LineEndKind
+enum TXT_LineEndKind
 {
   TXT_LineEndKind_Null,
   TXT_LineEndKind_LF,
   TXT_LineEndKind_CRLF,
   TXT_LineEndKind_COUNT
 }
-TXT_LineEndKind;
 
-typedef enum TXT_TokenKind
+enum TXT_TokenKind
 {
   TXT_TokenKind_Null,
   TXT_TokenKind_Error,
@@ -30,63 +29,54 @@ typedef enum TXT_TokenKind
   TXT_TokenKind_Meta, // preprocessor, etc.
   TXT_TokenKind_COUNT
 }
-TXT_TokenKind;
 
-typedef struct TXT_Token TXT_Token;
 struct TXT_Token
 {
   TXT_TokenKind kind;
   Rng1U64 range;
-};
+}
 
-typedef struct TXT_TokenChunkNode TXT_TokenChunkNode;
 struct TXT_TokenChunkNode
 {
   TXT_TokenChunkNode *next;
   U64 count;
   U64 cap;
   TXT_Token *v;
-};
+}
 
-typedef struct TXT_TokenChunkList TXT_TokenChunkList;
 struct TXT_TokenChunkList
 {
   TXT_TokenChunkNode *first;
   TXT_TokenChunkNode *last;
   U64 chunk_count;
   U64 token_count;
-};
+}
 
-typedef struct TXT_TokenNode TXT_TokenNode;
 struct TXT_TokenNode
 {
   TXT_TokenNode *next;
   TXT_Token v;
-};
+}
 
-typedef struct TXT_TokenList TXT_TokenList;
 struct TXT_TokenList
 {
   TXT_TokenNode *first;
   TXT_TokenNode *last;
   U64 count;
-};
+}
 
-typedef struct TXT_TokenArray TXT_TokenArray;
 struct TXT_TokenArray
 {
   U64 count;
   TXT_Token *v;
-};
+}
 
-typedef struct TXT_TokenArrayArray TXT_TokenArrayArray;
 struct TXT_TokenArrayArray
 {
   U64 count;
   TXT_TokenArray *v;
-};
+}
 
-typedef struct TXT_TextInfo TXT_TextInfo;
 struct TXT_TextInfo
 {
   U64 lines_count;
@@ -96,18 +86,17 @@ struct TXT_TextInfo
   TXT_TokenArray tokens;
   U64 bytes_processed;
   U64 bytes_to_process;
-};
+}
 
-typedef struct TXT_LineTokensSlice TXT_LineTokensSlice;
 struct TXT_LineTokensSlice
 {
   TXT_TokenArray *line_tokens;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Language Kind Types
 
-typedef enum TXT_LangKind
+enum TXT_LangKind
 {
   TXT_LangKind_Null,
   TXT_LangKind_C,
@@ -118,14 +107,12 @@ typedef enum TXT_LangKind
   TXT_LangKind_DisasmX64Intel,
   TXT_LangKind_COUNT
 }
-TXT_LangKind;
 
 typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct TXT_Node TXT_Node;
 struct TXT_Node
 {
   // rjf: links
@@ -146,56 +133,50 @@ struct TXT_Node
   U64 last_time_touched_us;
   U64 last_user_clock_idx_touched;
   U64 load_count;
-};
+}
 
-typedef struct TXT_Slot TXT_Slot;
 struct TXT_Slot
 {
   TXT_Node *first;
   TXT_Node *last;
-};
+}
 
-typedef struct TXT_Stripe TXT_Stripe;
 struct TXT_Stripe
 {
   Arena *arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct TXT_Touch TXT_Touch;
 struct TXT_Touch
 {
   TXT_Touch *next;
   U128 hash;
   TXT_LangKind lang;
-};
+}
 
-typedef struct TXT_Scope TXT_Scope;
 struct TXT_Scope
 {
   TXT_Scope *next;
   TXT_Touch *top_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct TXT_TCTX TXT_TCTX;
 struct TXT_TCTX
 {
   Arena *arena;
   TXT_Scope *free_scope;
   TXT_Touch *free_touch;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct TXT_Shared TXT_Shared;
 struct TXT_Shared
 {
   Arena *arena;
@@ -220,7 +201,7 @@ struct TXT_Shared
   
   // rjf: evictor thread
   OS_Handle evictor_thread;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

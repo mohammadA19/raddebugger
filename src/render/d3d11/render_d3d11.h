@@ -23,7 +23,6 @@
 ////////////////////////////////
 //~ rjf: C-side Shader Types
 
-typedef struct R_D3D11_Uniforms_Rect R_D3D11_Uniforms_Rect;
 struct R_D3D11_Uniforms_Rect
 {
   Vec2F32 viewport_size;
@@ -34,9 +33,8 @@ struct R_D3D11_Uniforms_Rect
   Vec2F32 translate;
   Vec4F32 xform[3];
   Vec2F32 xform_scale;
-};
+}
 
-typedef struct R_D3D11_Uniforms_BlurPass R_D3D11_Uniforms_BlurPass;
 struct R_D3D11_Uniforms_BlurPass
 {
   Rng2F32 rect;
@@ -45,26 +43,23 @@ struct R_D3D11_Uniforms_BlurPass
   Vec2F32 viewport_size;
   U32 blur_count;
   U8 _padding0_[204];
-};
+}
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 
-typedef struct R_D3D11_Uniforms_Blur R_D3D11_Uniforms_Blur;
 struct R_D3D11_Uniforms_Blur
 {
   R_D3D11_Uniforms_BlurPass passes[Axis2_COUNT];
   Vec4F32 kernel[32];
-};
+}
 
-typedef struct R_D3D11_Uniforms_Mesh R_D3D11_Uniforms_Mesh;
 struct R_D3D11_Uniforms_Mesh
 {
   Mat4x4F32 xform;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Main State Types
 
-typedef struct R_D3D11_Tex2D R_D3D11_Tex2D;
 struct R_D3D11_Tex2D
 {
   R_D3D11_Tex2D *next;
@@ -74,9 +69,8 @@ struct R_D3D11_Tex2D
   R_ResourceKind kind;
   Vec2S32 size;
   R_Tex2DFormat format;
-};
+}
 
-typedef struct R_D3D11_Buffer R_D3D11_Buffer;
 struct R_D3D11_Buffer
 {
   R_D3D11_Buffer *next;
@@ -84,9 +78,8 @@ struct R_D3D11_Buffer
   ID3D11Buffer *buffer;
   R_ResourceKind kind;
   U64 size;
-};
+}
 
-typedef struct R_D3D11_Window R_D3D11_Window;
 struct R_D3D11_Window
 {
   R_D3D11_Window *next;
@@ -115,16 +108,14 @@ struct R_D3D11_Window
   
   // rjf: last state
   Vec2S32 last_resolution;
-};
+}
 
-typedef struct R_D3D11_FlushBuffer R_D3D11_FlushBuffer;
 struct R_D3D11_FlushBuffer
 {
   R_D3D11_FlushBuffer *next;
   ID3D11Buffer *buffer;
-};
+}
 
-typedef struct R_D3D11_State R_D3D11_State;
 struct R_D3D11_State
 {
   // rjf: state
@@ -165,7 +156,7 @@ struct R_D3D11_State
   Arena *buffer_flush_arena;
   R_D3D11_FlushBuffer *first_buffer_to_flush;
   R_D3D11_FlushBuffer *last_buffer_to_flush;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Globals

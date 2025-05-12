@@ -127,12 +127,11 @@ extern "C"
 
 //- helpers
 
-typedef struct RADDBG_MARKUP_UnicodeDecode RADDBG_MARKUP_UnicodeDecode;
 struct RADDBG_MARKUP_UnicodeDecode
 {
   unsigned __int32 inc;
   unsigned __int32 codepoint;
-};
+}
 static __int8 raddbg_utf8_class[32] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,2,2,2,2,3,3,4,5};
 
 static inline RADDBG_MARKUP_UnicodeDecode

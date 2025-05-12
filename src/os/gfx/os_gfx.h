@@ -7,28 +7,26 @@
 ////////////////////////////////
 //~ rjf: Graphics System Info
 
-typedef struct OS_GfxInfo OS_GfxInfo;
 struct OS_GfxInfo
 {
   F32 double_click_time;
   F32 caret_blink_time;
   F32 default_refresh_rate;
-};
+}
 
 ////////////////////////////////
 //~ rjf: Window Types
 
-typedef U32 OS_WindowFlags;
-enum
+enum OS_WindowFlags : U32
 {
   OS_WindowFlag_CustomBorder       = (1<<0),
   OS_WindowFlag_UseDefaultPosition = (1<<1),
-};
+}
 
 ////////////////////////////////
 //~ rjf: Cursor Types
 
-typedef enum OS_Cursor
+enum OS_Cursor
 {
   OS_Cursor_Pointer,
   OS_Cursor_IBar,
@@ -41,7 +39,6 @@ typedef enum OS_Cursor
   OS_Cursor_Disabled,
   OS_Cursor_COUNT,
 }
-OS_Cursor;
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -51,7 +48,7 @@ OS_Cursor;
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef enum OS_EventKind
+enum OS_EventKind
 {
   OS_EventKind_Null,
   OS_EventKind_Press,
@@ -65,17 +62,14 @@ typedef enum OS_EventKind
   OS_EventKind_Wakeup,
   OS_EventKind_COUNT
 }
-OS_EventKind;
 
-typedef U32 OS_Modifiers;
-enum
+enum OS_Modifiers : U32
 {
   OS_Modifier_Ctrl  = (1<<0),
   OS_Modifier_Shift = (1<<1),
   OS_Modifier_Alt   = (1<<2),
-};
+}
 
-typedef struct OS_Event OS_Event;
 struct OS_Event
 {
   OS_Event *next;
@@ -92,15 +86,14 @@ struct OS_Event
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
-};
+}
 
-typedef struct OS_EventList OS_EventList;
 struct OS_EventList
 {
   U64 count;
   OS_Event *first;
   OS_Event *last;
-};
+}
 
 ////////////////////////////////
 //~ rjf: @os_hooks Shell Operations

@@ -14,7 +14,7 @@ StaticAssert(sizeof(RDI_Header) == AlignPow2(sizeof(RDI_Header), 8), g_rdi_heade
 #define RDI_IsBuiltinType(x)                   (RDI_TypeKind_FirstBuiltIn <= (x) && (x) <= RDI_TypeKind_LastBuiltIn)
 #define RDI_IsPtrType(x)                       ((x) == RDI_TypeKind_Ptr || (x) == RDI_TypeKind_LRef || (x) == RDI_TypeKind_RRef)
 
-typedef enum
+enum
 {
   RDI_Checksum_Null,
   RDI_Checksum_MD5,
@@ -25,7 +25,7 @@ typedef enum
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   RDIB_DataModel_Null,
   RDIB_DataModel_ILP32,
@@ -270,12 +270,11 @@ typedef struct RDIB_InlineSite
   };
 } RDIB_InlineSite;
 
-typedef RDI_MemberKind RDI_MemberKindExt;
-enum
+enum RDI_MemberKindExt : RDI_MemberKind
 {
   RDI_MemberKind_COUNT = RDI_MemberKind_NestedType,
   RDI_MemberKindExt_MemberListPointer // NOTE: must always be last in the list!
-};
+}
 
 typedef struct RDIB_UDTMember
 {
@@ -343,7 +342,7 @@ enum
   RDI_TypeKindExt_Members,
   RDI_TypeKindExt_Params,
   RDI_TypeKindExt_Count,
-};
+}
 typedef RDI_TypeKind RDI_TypeKindExt;
 
 typedef struct RDIB_Type
