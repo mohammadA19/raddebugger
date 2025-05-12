@@ -271,56 +271,12 @@ thread_static DASM_TCTX *dasm_tctx = 0;
 global DASM_Shared *dasm_shared = 0;
 
 ////////////////////////////////
-//~ rjf: Instruction Decoding/Disassembling Type Functions
-
-internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
-
-////////////////////////////////
-//~ rjf: Control Flow Analysis
-
-internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
-
-////////////////////////////////
-//~ rjf: Parameter Type Functions
-
-internal B32 dasm_params_match(DASM_Params *a, DASM_Params *b);
-
-////////////////////////////////
-//~ rjf: Line Type Functions
-
-internal void dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *line);
-internal DASM_LineArray dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list);
-internal U64 dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off);
-internal U64 dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx);
-
-////////////////////////////////
-//~ rjf: Main Layer Initialization
-
-internal void dasm_init(void);
-
-////////////////////////////////
-//~ rjf: Scoped Access
-
-internal DASM_Scope *dasm_scope_open(void);
-internal void dasm_scope_close(DASM_Scope *scope);
-internal void dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node);
-
-////////////////////////////////
-//~ rjf: Cache Lookups
-
-internal DASM_Info dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params);
-internal DASM_Info dasm_info_from_key_params(DASM_Scope *scope, U128 key, DASM_Params *params, U128 *hash_out);
-
-////////////////////////////////
 //~ rjf: Parse Threads
 
-internal B32 dasm_u2p_enqueue_req(U128 hash, DASM_Params *params, U64 endt_us);
-internal void dasm_u2p_dequeue_req(Arena *arena, U128 *hash_out, DASM_Params *params_out);
 ASYNC_WORK_DEF(dasm_parse_work);
 
 ////////////////////////////////
 //~ rjf: Evictor/Detector Thread
 
-internal void dasm_evictor_detector_thread__entry_point(void *p);
 
 #endif // DASM_CACHE_H

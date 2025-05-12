@@ -335,8 +335,5 @@ global RDIM_HelpState *rdim_help_state = 0;
 
 ////////////////////////////////
 
-internal RDIM_HelpState *             rdim_help_init(void);
-internal RDIM_BakeResults             rdim_bake(RDIM_HelpState *state, RDIM_BakeParams *in);
-internal RDIM_SerializedSectionBundle rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in);
 
 #endif // RDIM_MAKE_HELP

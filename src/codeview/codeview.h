@@ -1147,8 +1147,6 @@ struct CV_SymStartSearch
   U16 segment;
 };
 
-//- (SymKind: END) (empty)
-
 //- (SymKind: RETURN)
 
 typedef U8 CV_GenericStyle;
@@ -1950,8 +1948,6 @@ struct CV_SymInlineSite2
   U32       invocations;
   // U8 annotations[] (rest of data)
 };
-
-//- (SymKind: INLINESITE_END) (empty)
 
 //- (SymKind: FILESTATIC)
 
@@ -2962,16 +2958,7 @@ struct CV_TypeIndexArray
 
 ////////////////////////////////
 
-internal CV_Arch               cv_arch_from_coff_machine(COFF_MachineType machine);
-internal U64                   cv_size_from_reg_x86(CV_Reg reg);
-internal U64                   cv_size_from_reg_x64(CV_Reg reg);
-internal U64                   cv_size_from_reg(CV_Arch arch, CV_Reg reg);
-internal B32                   cv_is_reg_sp(CV_Arch arch, CV_Reg reg);
-internal CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param);
-internal CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal U32                   cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg);
 
-internal String8 cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
 
 #endif // CODEVIEW_H
  

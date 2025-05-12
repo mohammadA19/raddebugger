@@ -29,14 +29,9 @@ typedef struct D2R_CompUnitContribMap
 
 ////////////////////////////////
 
-internal RDIM_BakeParams * d2r_convert(Arena *arena, RDIM_LocalState *local_state, RC_Context *in);
 
 ////////////////////////////////
 
-internal RDI_Language   rdi_language_from_dw_language(DW_Language v);
-internal RDI_RegCodeX86 rdi_reg_from_dw_reg_x86(DW_RegX86 v);
-internal B32            rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64 *size_out);
-internal B32            rdi_reg_from_dw_reg(Arch arch, DW_Reg v, RDI_RegCode *code_out, U64 *off_out, U64 *size_out);
 
 #endif // RADCON_DWARF_H
 

@@ -59,23 +59,7 @@ typedef struct LNK_ImportTable
   HashTable            *dll_ht;
 } LNK_ImportTable;
 
-internal LNK_ImportTable * lnk_import_table_alloc_static(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine);
-internal LNK_ImportTable * lnk_import_table_alloc_delayed(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable);
-internal void              lnk_import_table_release(LNK_ImportTable **imptab);
-internal LNK_ImportDLL *   lnk_import_table_push_dll_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine);
-internal LNK_ImportDLL *   lnk_import_table_push_dll_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine);
-internal LNK_ImportFunc *  lnk_import_table_push_func_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header);
-internal LNK_ImportFunc *  lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header);
-internal LNK_ImportDLL *   lnk_import_table_search_dll(LNK_ImportTable *imptab, String8 name);
-internal LNK_ImportFunc *  lnk_import_table_search_func(LNK_ImportDLL *dll, String8 name);
 
-internal String8 lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint);
 
-internal LNK_Chunk * lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *addr_ptr);
-internal LNK_Chunk * lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_addr_ptr, LNK_Symbol *tail_merge);
-internal LNK_Chunk * lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *dll_import_descriptor, LNK_Symbol *delay_load_helper);
 
-internal LNK_Symbol * lnk_emit_load_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name);
-internal LNK_Symbol * lnk_emit_jmp_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name);
-internal LNK_Symbol * lnk_emit_tail_merge_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name);
 

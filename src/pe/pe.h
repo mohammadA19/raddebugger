@@ -1051,70 +1051,7 @@ typedef struct PE_DebugInfoList
 } PE_DebugInfoList;
 
 ////////////////////////////////
-//~ rjf: Basic Enum Functions
-
-internal U32                 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode);
-internal PE_WindowsSubsystem pe_subsystem_from_string(String8 string);
-
-internal String8 pe_string_from_subsystem(PE_WindowsSubsystem x);
-internal String8 pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x);
-internal String8 pe_string_from_data_directory_index(PE_DataDirectoryIndex x);
-internal String8 pe_string_from_debug_directory_type(PE_DebugDirectoryType x);
-internal String8 pe_string_from_fpo_type(PE_FPOType x);
-internal String8 pe_string_from_misc_type(PE_DebugMiscType x);
-internal String8 pe_resource_kind_to_string(PE_ResourceKind x);
-
-internal String8 pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags);
-internal String8 pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags);
-internal String8 pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags);
-internal String8 pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars);
-
-////////////////////////////////
-//~ rjf: Parser Functions
-
-internal B32        pe_check_magic(String8 data);
-internal PE_BinInfo pe_bin_info_from_data(Arena *arena, String8 data);
-
-internal PE_DebugInfoList           pe_parse_debug_directory(Arena *arena, String8 raw_image, String8 raw_debug_dir);
-internal PE_ParsedStaticImportTable pe_static_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range);
-internal PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range);
-internal PE_ParsedExportTable       pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
-internal PE_ParsedTLS               pe_tls_from_data(Arena *arena, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 tls_frange);
-
-////////////////////////////////
-//~ rjf: Helpers
-
-internal U64                   pe_pdata_off_from_voff__binary_search_x8664(String8 raw_data, U64 voff);
-internal U64                   pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff);
-internal PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_relocs);
-internal Rng1U64               pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr);
-internal String8Array          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
-
-////////////////////////////////
-//~ Resource Helpers
-
-internal B32               pe_is_res(String8 data);
-internal void              pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 res_file);
-internal PE_ResourceNode * pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-internal PE_ResourceNode * pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
-internal PE_Resource *     pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data);
-internal PE_Resource *     pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-internal PE_ResourceNode * pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id);
-internal PE_Resource *     pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id);
-internal PE_ResourceArray  pe_resource_list_to_array(Arena *arena, PE_ResourceList *list);
-internal PE_ResourceDir *  pe_resource_table_from_directory_data(Arena *arena, String8 data);
-
-internal String8 pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data);
-
-////////////////////////////////
-//~ Debug Directory
-
-internal String8 pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path);
-internal String8 pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path);
-
-////////////////////////////////
 //~ Image Checksum
 
-internal U32 pe_compute_checksum(U8 *buffer, U64 buffer_size);
 
 #endif // PE_H

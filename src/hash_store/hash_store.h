@@ -114,47 +114,7 @@ thread_static HS_TCTX *hs_tctx = 0;
 global HS_Shared *hs_shared = 0;
 
 ////////////////////////////////
-//~ rjf: Basic Helpers
-
-internal U128 hs_hash_from_data(String8 data);
-
-////////////////////////////////
-//~ rjf: Main Layer Initialization
-
-internal void hs_init(void);
-
-////////////////////////////////
-//~ rjf: Thread Context Initialization
-
-internal void hs_tctx_ensure_inited(void);
-
-////////////////////////////////
-//~ rjf: Cache Submission/Derefs
-
-internal U128 hs_submit_data(U128 key, Arena **data_arena, String8 data);
-
-////////////////////////////////
-//~ rjf: Scoped Access
-
-internal HS_Scope *hs_scope_open(void);
-internal void hs_scope_close(HS_Scope *scope);
-internal void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node);
-
-////////////////////////////////
-//~ rjf: Downstream Accesses
-
-internal void hs_hash_downstream_inc(U128 hash);
-internal void hs_hash_downstream_dec(U128 hash);
-
-////////////////////////////////
-//~ rjf: Cache Lookups
-
-internal U128 hs_hash_from_key(U128 key, U64 rewind_count);
-internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
-
-////////////////////////////////
 //~ rjf: Evictor Thread
 
-internal void hs_evictor_thread__entry_point(void *p);
 
 #endif // HASH_STORE_H

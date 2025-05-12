@@ -292,37 +292,6 @@ struct P2R_State
 global P2R_State *p2r_state = 0;
 
 ////////////////////////////////
-//~ rjf: Basic Helpers
-
-internal U64 p2r_end_of_cplusplus_container_name(String8 str);
-internal U64 p2r_hash_from_voff(U64 voff);
-
-////////////////////////////////
-//~ rjf: Command Line -> Conversion Inputs
-
-internal P2R_User2Convert *p2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline);
-
-////////////////////////////////
-//~ rjf: COFF => RDI Canonical Conversions
-
-internal RDI_BinarySectionFlags p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags);
-
-////////////////////////////////
-//~ rjf: CodeView => RDI Canonical Conversions
-
-internal RDI_Arch     p2r_rdi_arch_from_cv_arch(CV_Arch arch);
-internal RDI_RegCode  p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code);
-internal RDI_Language p2r_rdi_language_from_cv_language(CV_Language language);
-internal RDI_TypeKind p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type);
-
-////////////////////////////////
-//~ rjf: Location Info Building Helpers
-
-internal RDIM_Location *p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
-internal RDI_RegCode p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count);
-
-////////////////////////////////
 //~ rjf: Initial Parsing & Preparation Pass Tasks
 
 ASYNC_WORK_DEF(p2r_exe_hash_work);
@@ -360,29 +329,6 @@ ASYNC_WORK_DEF(p2r_udt_convert_work);
 ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 
 ////////////////////////////////
-//~ rjf: Top-Level Conversion Entry Point
 
-internal P2R_Convert2Bake *p2r_convert(Arena *arena, P2R_User2Convert *in);
-
-////////////////////////////////
-//~ rjf: Top-Level Initialization
-
-internal void p2r_init(void);
-
-////////////////////////////////
-//~ rjf: Top-Level Baking Entry Point
-
-internal P2R_Bake2Serialize *p2r_bake(Arena *arena, P2R_Convert2Bake *in);
-
-////////////////////////////////
-//~ rjf: Top-Level Compression Entry Point
-
-internal P2R_Serialize2File *p2r_compress(Arena *arena, P2R_Serialize2File *in);
-
-////////////////////////////////
-
-internal B32 p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st);
-internal B32 p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st);
-internal B32 p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list);
 
 #endif // RDI_FROM_PDB_H

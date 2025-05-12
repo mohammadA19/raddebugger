@@ -320,7 +320,6 @@ struct RDIM_BakeIdxRunsIn
 
 ////////////////////////////////
 
-internal RDIM_DataModel rdim_infer_data_model(OperatingSystem os, RDI_Arch arch);
 
 ////////////////////////////////
 //~ rjf: Baking Stage Tasks
@@ -376,13 +375,8 @@ global RDIM_LocalState *rdim_local_state = 0;
 
 ////////////////////////////////
 
-internal RDIM_DataModel    rdim_infer_data_model(OperatingSystem os, RDI_Arch arch);
-internal RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections);
 
 ////////////////////////////////
 
-internal RDIM_LocalState *            rdim_local_init(void);
-internal RDIM_BakeResults             rdim_bake(RDIM_LocalState *state, RDIM_BakeParams *in);
-internal RDIM_SerializedSectionBundle rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in);
 
 #endif // RDI_MAKE_LOCAL_H
