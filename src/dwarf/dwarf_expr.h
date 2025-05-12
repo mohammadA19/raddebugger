@@ -28,9 +28,9 @@ typedef struct DW_RegsX64
       U64 r14;
       U64 r15;
       U64 rip;
-    };
+    }
     U64 r[17];
-  };
+  }
 } DW_RegsX64;
 
 ////////////////////////////////
@@ -141,8 +141,8 @@ typedef struct DW_SimpleLoc
     struct {
       DW_LocFailKind fail_kind;
       U64 fail_data;
-    };
-  };
+    }
+  }
 } DW_SimpleLoc;
 
 typedef struct DW_Piece

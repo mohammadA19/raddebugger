@@ -501,7 +501,7 @@ union Guid
     U16 data2;
     U16 data3;
     U8  data4[8];
-  };
+  }
   U8 v[16];
 }
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
@@ -735,12 +735,12 @@ struct DateTime
   {
     WeekDay week_day;
     U32 wday;
-  };
+  }
   union
   {
     Month month;
     U32 mon;
-  };
+  }
   U32 year; // 1 = 1 CE, 0 = 1 BC
 }
 

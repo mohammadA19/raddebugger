@@ -1289,7 +1289,7 @@ RDI_U32 byte_size;
         RDI_U32 param_idx_run_first;
         // when kind is 'MemberPtr'
         RDI_U32 owner_type_idx;
-      };
+      }
     }
     constructed;
     

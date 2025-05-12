@@ -719,7 +719,7 @@ union PE_UnwindCode
   {
     U8 off_in_prolog;
     U8 flags;
-  };
+  }
   U16 u16;
 }
 

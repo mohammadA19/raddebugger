@@ -159,7 +159,7 @@ struct R_Pass
     R_PassParams_UI *params_ui;
     R_PassParams_Blur *params_blur;
     R_PassParams_Geo3D *params_geo3d;
-  };
+  }
 }
 
 struct R_PassNode

@@ -15,7 +15,7 @@ union Vec2F32
   {
     F32 x;
     F32 y;
-  };
+  }
   F32 v[2];
 }
 
@@ -25,7 +25,7 @@ union Vec2S64
   {
     S64 x;
     S64 y;
-  };
+  }
   S64 v[2];
 }
 
@@ -35,7 +35,7 @@ union Vec2S32
   {
     S32 x;
     S32 y;
-  };
+  }
   S32 v[2];
 }
 
@@ -45,7 +45,7 @@ union Vec2S16
   {
     S16 x;
     S16 y;
-  };
+  }
   S16 v[2];
 }
 
@@ -58,17 +58,17 @@ union Vec3F32
     F32 x;
     F32 y;
     F32 z;
-  };
+  }
   struct
   {
     Vec2F32 xy;
     F32 _z0;
-  };
+  }
   struct
   {
     F32 _x0;
     Vec2F32 yz;
-  };
+  }
   F32 v[3];
 }
 
@@ -79,17 +79,17 @@ union Vec3S32
     S32 x;
     S32 y;
     S32 z;
-  };
+  }
   struct
   {
     Vec2S32 xy;
     S32 _z0;
-  };
+  }
   struct
   {
     S32 _x0;
     Vec2S32 yz;
-  };
+  }
   S32 v[3];
 }
 
@@ -103,22 +103,22 @@ union Vec4F32
     F32 y;
     F32 z;
     F32 w;
-  };
+  }
   struct
   {
     Vec2F32 xy;
     Vec2F32 zw;
-  };
+  }
   struct
   {
     Vec3F32 xyz;
     F32 _z0;
-  };
+  }
   struct
   {
     F32 _x0;
     Vec3F32 yzw;
-  };
+  }
   F32 v[4];
 }
 
@@ -130,22 +130,22 @@ union Vec4S32
     S32 y;
     S32 z;
     S32 w;
-  };
+  }
   struct
   {
     Vec2S32 xy;
     Vec2S32 zw;
-  };
+  }
   struct
   {
     Vec3S32 xyz;
     S32 _z0;
-  };
+  }
   struct
   {
     S32 _x0;
     Vec3S32 yzw;
-  };
+  }
   S32 v[4];
 }
 
@@ -173,7 +173,7 @@ union Rng1U32
   {
     U32 min;
     U32 max;
-  };
+  }
   U32 v[2];
 }
 
@@ -183,7 +183,7 @@ union Rng1S32
   {
     S32 min;
     S32 max;
-  };
+  }
   S32 v[2];
 }
 
@@ -193,7 +193,7 @@ union Rng1U64
   {
     U64 min;
     U64 max;
-  };
+  }
   U64 v[2];
 }
 
@@ -203,7 +203,7 @@ union Rng1S64
   {
     S64 min;
     S64 max;
-  };
+  }
   S64 v[2];
 }
 
@@ -213,7 +213,7 @@ union Rng1F32
   {
     F32 min;
     F32 max;
-  };
+  }
   F32 v[2];
 }
 
@@ -225,19 +225,19 @@ union Rng2S16
   {
     Vec2S16 min;
     Vec2S16 max;
-  };
+  }
   struct
   {
     Vec2S16 p0;
     Vec2S16 p1;
-  };
+  }
   struct
   {
     S16 x0;
     S16 y0;
     S16 x1;
     S16 y1;
-  };
+  }
   Vec2S16 v[2];
 }
 
@@ -247,19 +247,19 @@ union Rng2S32
   {
     Vec2S32 min;
     Vec2S32 max;
-  };
+  }
   struct
   {
     Vec2S32 p0;
     Vec2S32 p1;
-  };
+  }
   struct
   {
     S32 x0;
     S32 y0;
     S32 x1;
     S32 y1;
-  };
+  }
   Vec2S32 v[2];
 }
 
@@ -269,19 +269,19 @@ union Rng2F32
   {
     Vec2F32 min;
     Vec2F32 max;
-  };
+  }
   struct
   {
     Vec2F32 p0;
     Vec2F32 p1;
-  };
+  }
   struct
   {
     F32 x0;
     F32 y0;
     F32 x1;
     F32 y1;
-  };
+  }
   Vec2F32 v[2];
 }
 
@@ -291,19 +291,19 @@ union Rng2S64
   {
     Vec2S64 min;
     Vec2S64 max;
-  };
+  }
   struct
   {
     Vec2S64 p0;
     Vec2S64 p1;
-  };
+  }
   struct
   {
     S64 x0;
     S64 y0;
     S64 x1;
     S64 y1;
-  };
+  }
   Vec2S64 v[2];
 }
 

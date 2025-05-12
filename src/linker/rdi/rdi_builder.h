@@ -63,9 +63,9 @@ typedef struct RDIB_Location
     struct {
       RDI_RegCode reg_code;
       U64         offset;
-    };
+    }
     RDIB_EvalBytecode bytecode;
-  };
+  }
 
   // used by RDI builder
   U64 data_offset;
@@ -267,7 +267,7 @@ typedef struct RDIB_InlineSite
       U64   ud1;
       U64   ud2;
     } convert_ref;
-  };
+  }
 } RDIB_InlineSite;
 
 enum RDI_MemberKindExt : RDI_MemberKind
@@ -313,7 +313,7 @@ typedef struct RDIB_UDTMember
       String8 name;
       U64     value;
     } enumerate;
-  };
+  }
   struct RDIB_UDTMember      *next;
   struct RDIB_UDTMemberChunk *chunk;
 } RDIB_UDTMember;
@@ -412,7 +412,7 @@ typedef struct RDIB_Type
           String8      name;
           RDIB_TypeRef base_type;
         } enum_type;
-      };
+      }
     } udt;
     struct {
       U64           count;
@@ -425,7 +425,7 @@ typedef struct RDIB_Type
       B32 is_head;
       U64 first_member_idx;
     } members, enum_members;
-  };
+  }
   struct RDIB_TypeChunk *chunk;
 } RDIB_Type;
 
@@ -613,13 +613,13 @@ typedef struct RDIB_StringMapBucket
       struct {
         U32 lo;
         U32 hi;
-      };
+      }
       U64 v;
     } sorter;
 
     // after buckets are sorted we replace 'sorter' with indices into output array
     U64 idx;
-  };
+  }
 
   union {
     // depending on the usage context sotres: pointers to variables, procedures, and etc.
@@ -632,9 +632,9 @@ typedef struct RDIB_StringMapBucket
       union {
         U64 idx_run_bucket_idx;
         U32 match_idx;
-      };
-    };
-  };
+      }
+    }
+  }
 } RDIB_StringMapBucket;
 
 typedef struct RDIB_StringMap
@@ -683,7 +683,7 @@ typedef struct RDIB_IndexRunBucket
     struct {
       U32 lo;
       U32 hi;
-    };
+    }
     U64 v;
   } sorter;
   U32Array indices;
@@ -823,7 +823,7 @@ typedef struct
   union {
     RDI_Member     *udt_members_rdi;
     RDI_EnumMember *enum_members_rdi;
-  };
+  }
 } RDIB_MembersTask;
 
 typedef struct
@@ -864,7 +864,7 @@ typedef struct
     RDIB_UDTMemberChunk   **enum_members;
     RDIB_TypeChunk        **types;
     RDIB_PathTreeNodeList  *path_node_lists;
-  };
+  }
 } RDIB_CollectStringsTask;
 
 typedef struct
@@ -883,15 +883,15 @@ typedef struct
     struct {
       RDIB_VariableChunk **gvars_rdib;
       String8List         *gvars_out;
-    };
+    }
     struct {
       RDIB_VariableChunk **tvars_rdib;
       String8List         *tvars_out;
-    };
+    }
     struct {
       RDIB_ProcedureChunk **procs_rdib;
       String8List          *procs_out;
-    };
+    }
     struct {
       RDIB_ScopeChunk  **scopes_rdib;
       U64               *scope_voff_counts;
@@ -907,8 +907,8 @@ typedef struct
       RDI_Local         *locals_rdi;
       RDI_LocationBlock *loc_blocks_rdi;
       U8                *loc_data_rdi;
-    };
-  };
+    }
+  }
 } RDIB_BuildSymbolSectionTask;
 
 typedef union
@@ -922,14 +922,14 @@ typedef union
       RDIB_UnitChunk     **unit_chunks;
       RDIB_VariableChunk **gvar_chunks;
       RDIB_ScopeChunk    **scope_chunks;
-    };
-  };
+    }
+  }
 
   struct {
     U64             vmap_counts[3];
     RDIB_VMapRange *vmaps[3];
     String8List     raw_vmaps[3];
-  };
+  }
 } RDIB_VMapBuilderTask;
 
 typedef struct
@@ -942,7 +942,7 @@ typedef struct
   union {
     RDIB_TypeChunk       **type_chunks;
     RDIB_StringMapBucket **name_map_buckets;
-  };
+  }
 } RDIB_BuildIndexRunsTask;
 
 typedef struct

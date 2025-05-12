@@ -130,7 +130,7 @@ struct DMN_W32_Entity
       B32 name_is_unicode;
     }
     module;
-  };
+  }
 }
 
 struct DMN_W32_EntityNode

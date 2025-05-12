@@ -84,7 +84,7 @@ struct OS_LNX_Entity
       pthread_cond_t cond_handle;
       pthread_mutex_t rwlock_mutex_handle;
     } cv;
-  };
+  }
 }
 
 ////////////////////////////////

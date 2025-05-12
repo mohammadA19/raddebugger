@@ -286,7 +286,7 @@ raddbg_thread_name__impl(int id, char *fmt, ...)
       LPCSTR szName;
       DWORD dwThreadID;
       DWORD dwFlags;
-    };
+    }
 #pragma pack(pop)
     THREADNAME_INFO info;
     info.dwType = 0x1000;
@@ -319,7 +319,7 @@ raddbg_thread_color__impl(int id, unsigned int hexcode)
       DWORD _pad_0;
       DWORD rgba;
       DWORD _pad_1;
-    };
+    }
 #pragma pack(pop)
     RADDBG_ThreadColorInfo info;
     info.dwThreadID = id;
@@ -376,7 +376,7 @@ raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r, int w
       unsigned __int64 w;
       unsigned __int64 x;
       unsigned __int64 add;
-    };
+    }
 #pragma pack(pop)
     RADDBG_AddBreakpointInfo info;
     info.vaddr = (unsigned __int64)ptr;

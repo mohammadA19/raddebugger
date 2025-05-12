@@ -55,7 +55,7 @@ typedef struct LNK_DefinedSymbol
       U64                   chunk_offset;
       U32                   check_sum;
       COFF_ComdatSelectType selection;
-    };
+    }
     U64 va;
   } u;
 } LNK_DefinedSymbol;

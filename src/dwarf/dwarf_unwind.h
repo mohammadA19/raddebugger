@@ -108,9 +108,9 @@ typedef struct DW_CFICFACell
     struct {
       U64 reg_idx;
       S64 offset;
-    };
+    }
     Rng1U64 expr;
-  };
+  }
 } DW_CFICFACell;
 
 enum DW_CFIRegisterRule
@@ -130,7 +130,7 @@ typedef struct DW_CFICell
   union {
     S64 n;
     Rng1U64 expr;
-  };
+  }
 } DW_CFICell;
 
 typedef struct DW_CFIRow

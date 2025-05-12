@@ -295,7 +295,7 @@ typedef struct CV_StringBucket
     struct {
       U32 idx0;
       U32 idx1;
-    };
+    }
     U64 offset;
   } u;
 } CV_StringBucket;

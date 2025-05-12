@@ -63,7 +63,7 @@ struct OS_W32_Entity
     CRITICAL_SECTION mutex;
     SRWLOCK rw_mutex;
     CONDITION_VARIABLE cv;
-  };
+  }
 }
 
 ////////////////////////////////
