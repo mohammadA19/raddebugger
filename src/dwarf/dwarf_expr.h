@@ -26,7 +26,7 @@ typedef struct DW_RegsX64
       U64 r15;
       U64 rip;
     }
-    U64 r[17];
+    U64[17] r;
   }
 } DW_RegsX64;
 
@@ -41,21 +41,21 @@ typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
 
 typedef struct DW_ExprMachineCallConfig
 {
-  void                   *user_ptr;
-  DW_ExprResolveCallFunc *func;
+  void*                   user_ptr;
+  DW_ExprResolveCallFunc* func;
 } DW_ExprMachineCallConfig;
 
 typedef struct DW_ExprMachineConfig
 {
   U64                       max_step_count; // (read only in the eval functions)
-  DW_ReadMemorySig         *read_memory;
-  void                     *read_memory_ud;
-  DW_RegsX64               *regs;
-  U64                      *text_section_base;
-  U64                      *frame_base;
-  U64                      *object_address;
-  U64                      *tls_address;
-  U64                      *cfa;
+  DW_ReadMemorySig*         read_memory;
+  void*                     read_memory_ud;
+  DW_RegsX64*               regs;
+  U64*                      text_section_base;
+  U64*                      frame_base;
+  U64*                      object_address;
+  U64*                      tls_address;
+  U64*                      cfa;
   DW_ExprMachineCallConfig  call;
 } DW_ExprMachineConfig;
 
@@ -85,7 +85,7 @@ typedef struct DW_ExprAnalysis
 
 typedef struct DW_ExprAnalysisTask
 {
-  struct DW_ExprAnalysisTask *next;
+  DW_ExprAnalysisTask* next;
   U64                         p;
   String8                     data;
 } DW_ExprAnalysisTask;
@@ -150,7 +150,7 @@ typedef struct DW_Piece
   //  dst |= (src >> bit_off) << bit_cursor;
   // bit_cursor += bit_size;
   
-  struct DW_Piece *next;
+  DW_Piece* next;
   DW_SimpleLoc     loc;
   U64              bit_size;
   U64              bit_off;
@@ -182,8 +182,8 @@ typedef struct DW_Location
   //   or *all* of the location information about the data, there should never
   //   be a mix of piece-based location and non-piece-based location data.
   
-  DW_Piece *first_piece;
-  DW_Piece *last_piece;
+  DW_Piece* first_piece;
+  DW_Piece* last_piece;
   U64       count;
   
   DW_SimpleLoc non_piece_loc;
@@ -193,29 +193,29 @@ typedef struct DW_Location
 //- full evaluator state types
 typedef struct DW_ExprStackNode
 {
-  struct DW_ExprStackNode *next;
+  DW_ExprStackNode* next;
   U64                      val;
 } DW_ExprStackNode;
 
 typedef struct DW_ExprStack
 {
-  DW_ExprStackNode *stack;
-  DW_ExprStackNode *free_nodes;
+  DW_ExprStackNode* stack;
+  DW_ExprStackNode* free_nodes;
   U64               count;
 } DW_ExprStack;
 
 typedef struct DW_ExprCall
 {
-  struct DW_ExprCall *next;
-  void               *ptr;
+  DW_ExprCall* next;
+  void*               ptr;
   U64                 size;
   U64                 cursor;
 } DW_ExprCall;
 
 typedef struct DW_ExprCallStack
 {
-  DW_ExprCall *stack;
-  DW_ExprCall *free_calls;
+  DW_ExprCall* stack;
+  DW_ExprCall* free_calls;
   U64          depth;
 } DW_ExprCallStack;
 

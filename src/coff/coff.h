@@ -87,8 +87,8 @@ typedef struct COFF_BigObjHeader
   U16              version;           // 2
   COFF_MachineType machine;
   COFF_TimeStamp   time_stamp;
-  U8               magic[16];         // g_coff_big_header_magic
-  U8               unused[16];
+  U8[16]               magic;         // g_coff_big_header_magic
+  U8[16]               unused;
   U32              section_count;
   U32              symbol_table_foff;
   U32              symbol_count;
@@ -142,7 +142,7 @@ enum COFF_SectionFlags : U32
 
 typedef struct COFF_SectionHeader
 {
-  U8                name[8];
+  U8[8]                name;
   U32               vsize;
   U32               voff;
   U32               fsize;
@@ -224,7 +224,7 @@ enum COFF_SymDType : U8
 
 typedef union COFF_SymbolName
 {
-  U8 short_name[8];
+  U8[8] short_name;
   struct {
     // if this field is filled with zeroes we have a long name,
     // which means name is stored in the string table
@@ -282,17 +282,17 @@ typedef struct COFF_SymbolFuncDef
   U32 total_size;
   U32 ptr_to_ln;
   U32 ptr_to_next_func;
-  U8  unused[2];
+  U8[2]  unused;
 } COFF_SymbolFuncDef;
 
 // storage class: Function
 typedef struct COFF_SymbolFunc
 {
-  U8  unused[4];
+  U8[4]  unused;
   U16 ln;
-  U8  unused2[2];
+  U8[2]  unused2;
   U32 ptr_to_next_func;
-  U8  unused3[2];
+  U8[2]  unused3;
 } COFF_SymbolFunc;
 
 // storage class: WeakExternal
@@ -300,12 +300,12 @@ typedef struct COFF_SymbolWeakExt
 {
   U32              tag_index;
   COFF_WeakExtType characteristics;
-  U8               unused[10];
+  U8[10]               unused;
 } COFF_SymbolWeakExt;
 
 typedef struct COFF_SymbolFile 
 {
-  U8 name[18];
+  U8[18] name;
 } COFF_SymbolFile;
 
 enum COFF_ComdatSelectType : U8
@@ -490,13 +490,13 @@ typedef struct COFF_ResourceDirEntry
 
 typedef struct COFF_ArchiveMemberHeader
 {
-  U8 name[16];
-  U8 date[12];
-  U8 user_id[6];
-  U8 group_id[6];
-  U8 mode[8];
-  U8 size[10];
-  U8 end[2];
+  U8[16] name;
+  U8[12] date;
+  U8[6] user_id;
+  U8[6] group_id;
+  U8[8] mode;
+  U8[10] size;
+  U8[2] end;
 } COFF_ArchiveMemberHeader;
 
 #define COFF_ImportType_Invalid max_U16

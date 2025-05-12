@@ -46,14 +46,14 @@ enum OS_W32_EntityKind
 
 struct OS_W32_Entity
 {
-  OS_W32_Entity *next;
+  OS_W32_Entity* next;
   OS_W32_EntityKind kind;
   union
   {
     struct
     {
-      OS_ThreadFunctionType *func;
-      void *ptr;
+      OS_ThreadFunctionType* func;
+      void* ptr;
       HANDLE handle;
       DWORD tid;
     } thread;
@@ -68,7 +68,7 @@ struct OS_W32_Entity
 
 struct OS_W32_State
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: info
   OS_SystemInfo system_info;
@@ -77,8 +77,8 @@ struct OS_W32_State
   
   // rjf: entity storage
   CRITICAL_SECTION entity_mutex;
-  Arena *entity_arena;
-  OS_W32_Entity *entity_free;
+  Arena* entity_arena;
+  OS_W32_Entity* entity_free;
 }
 
 ////////////////////////////////

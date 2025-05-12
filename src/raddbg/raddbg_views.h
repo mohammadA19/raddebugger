@@ -22,7 +22,7 @@ struct RD_CodeViewState
   B32 center_cursor;
   B32 contain_cursor;
   B32 watch_expr_at_mouse;
-  Arena *find_text_arena;
+  Arena* find_text_arena;
   String8 find_text_fwd;
   String8 find_text_bwd;
 }
@@ -57,7 +57,7 @@ enum RD_WatchCellFlags : U32
 
 struct RD_WatchCell
 {
-  RD_WatchCell *next;
+  RD_WatchCell* next;
   RD_WatchCellKind kind;
   RD_WatchCellFlags flags;
   U64 index;
@@ -69,34 +69,34 @@ struct RD_WatchCell
 
 struct RD_WatchCellList
 {
-  RD_WatchCell *first;
-  RD_WatchCell *last;
+  RD_WatchCell* first;
+  RD_WatchCell* last;
   U64 count;
 }
 
 struct RD_WatchRowInfo
 {
-  CTRL_Entity *module;
+  CTRL_Entity* module;
   B32 can_expand;
   B32 expr_is_editable;
   String8 group_cfg_name;
-  RD_Cfg *group_cfg_parent;
-  RD_Cfg *group_cfg_child;
-  CTRL_Entity *group_entity;
-  CTRL_Entity *callstack_thread;
+  RD_Cfg* group_cfg_parent;
+  RD_Cfg* group_cfg_child;
+  CTRL_Entity* group_entity;
+  CTRL_Entity* callstack_thread;
   U64 callstack_unwind_index;
   U64 callstack_inline_depth;
   U64 callstack_vaddr;
   String8 cell_style_key;
   RD_WatchCellList cells;
-  RD_ViewUIRule *view_ui_rule;
+  RD_ViewUIRule* view_ui_rule;
 }
 
 struct RD_WatchRowCellInfo
 {
   RD_WatchCellFlags flags;
-  RD_Cfg *cfg;
-  CTRL_Entity *entity;
+  RD_Cfg* cfg;
+  CTRL_Entity* entity;
   String8 cmd_name;
   String8 file_path;
   DR_FStrList expr_fstrs;
@@ -104,7 +104,7 @@ struct RD_WatchRowCellInfo
   String8 description;
   String8 error_tooltip;
   String8 inheritance_tooltip;
-  RD_ViewUIRule *view_ui_rule;
+  RD_ViewUIRule* view_ui_rule;
 }
 
 struct RD_WatchPt
@@ -116,13 +116,13 @@ struct RD_WatchPt
 
 struct RD_WatchViewTextEditState
 {
-  RD_WatchViewTextEditState *pt_hash_next;
+  RD_WatchViewTextEditState* pt_hash_next;
   RD_WatchPt pt;
   TxtPt cursor;
   TxtPt mark;
-  U8 input_buffer[1024];
+  U8[1024] input_buffer;
   U64 input_size;
-  U8 initial_buffer[1024];
+  U8[1024] initial_buffer;
   U64 initial_size;
 }
 
@@ -131,7 +131,7 @@ struct RD_WatchViewState
   B32 initialized;
   
   // rjf: filter history
-  Arena *filter_arena;
+  Arena* filter_arena;
   String8 last_filter;
   
   // rjf; table cursor state
@@ -141,10 +141,10 @@ struct RD_WatchViewState
   RD_WatchPt next_mark;
   
   // rjf: text input state
-  Arena *text_edit_arena;
+  Arena* text_edit_arena;
   U64 text_edit_state_slots_count;
   RD_WatchViewTextEditState dummy_text_edit_state;
-  RD_WatchViewTextEditState **text_edit_state_slots;
+  RD_WatchViewTextEditState** text_edit_state_slots;
   B32 text_editing;
 }
 

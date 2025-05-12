@@ -11,7 +11,7 @@
 
 struct DMN_CtrlCtx
 {
-  U64 u64[1];
+  U64[1] u64;
 }
 
 ////////////////////////////////
@@ -19,26 +19,26 @@ struct DMN_CtrlCtx
 
 union DMN_Handle
 {
-  U32 u32[2];
-  U64 u64[1];
+  U32[2] u32;
+  U64[1] u64;
 }
 
 struct DMN_HandleNode
 {
-  DMN_HandleNode *next;
+  DMN_HandleNode* next;
   DMN_Handle v;
 }
 
 struct DMN_HandleList
 {
-  DMN_HandleNode *first;
-  DMN_HandleNode *last;
+  DMN_HandleNode* first;
+  DMN_HandleNode* last;
   U64 count;
 }
 
 struct DMN_HandleArray
 {
-  DMN_Handle *handles;
+  DMN_Handle* handles;
   U64 count;
 }
 
@@ -75,14 +75,14 @@ struct DMN_Event
 
 struct DMN_EventNode
 {
-  DMN_EventNode *next;
+  DMN_EventNode* next;
   DMN_Event v;
 }
 
 struct DMN_EventList
 {
-  DMN_EventNode *first;
-  DMN_EventNode *last;
+  DMN_EventNode* first;
+  DMN_EventNode* last;
   U64 count;
 }
 
@@ -107,16 +107,16 @@ struct DMN_Trap
 
 struct DMN_TrapChunkNode
 {
-  DMN_TrapChunkNode *next;
-  DMN_Trap *v;
+  DMN_TrapChunkNode* next;
+  DMN_Trap* v;
   U64 cap;
   U64 count;
 }
 
 struct DMN_TrapChunkList
 {
-  DMN_TrapChunkNode *first;
-  DMN_TrapChunkNode *last;
+  DMN_TrapChunkNode* first;
+  DMN_TrapChunkNode* last;
   U64 node_count;
   U64 trap_count;
 }
@@ -127,7 +127,7 @@ struct DMN_RunCtrls
   B8 ignore_previous_exception;
   B8 run_entities_are_unfrozen;
   B8 run_entities_are_processes;
-  DMN_Handle *run_entities;
+  DMN_Handle* run_entities;
   U64 run_entity_count;
   DMN_TrapChunkList traps;
 }
@@ -137,7 +137,7 @@ struct DMN_RunCtrls
 
 struct DMN_ProcessIter
 {
-  U64 v[2];
+  U64[2] v;
 }
 
 struct DMN_ProcessInfo

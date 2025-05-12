@@ -20,21 +20,21 @@ enum ASYNC_Priority
 
 struct ASYNC_WorkParams
 {
-  void *input;
-  void **output;
+  void* input;
+  void** output;
   OS_Handle semaphore;
-  U64 *completion_counter;
+  U64* completion_counter;
   U64 endt_us;
   ASYNC_Priority priority;
 }
 
 struct ASYNC_Work
 {
-  ASYNC_WorkFunctionType *work_function;
-  void *input;
-  void **output;
+  ASYNC_WorkFunctionType* work_function;
+  void* input;
+  void** output;
   OS_Handle semaphore;
-  U64 *completion_counter;
+  U64* completion_counter;
 }
 
 ////////////////////////////////
@@ -43,19 +43,19 @@ struct ASYNC_Work
 struct ASYNC_Task
 {
   OS_Handle semaphore;
-  void *output;
+  void* output;
 }
 
 struct ASYNC_TaskNode
 {
-  ASYNC_TaskNode *next;
-  ASYNC_Task *v;
+  ASYNC_TaskNode* next;
+  ASYNC_Task* v;
 }
 
 struct ASYNC_TaskList
 {
-  ASYNC_TaskNode *first;
-  ASYNC_TaskNode *last;
+  ASYNC_TaskNode* first;
+  ASYNC_TaskNode* last;
   U64 count;
 }
 
@@ -65,7 +65,7 @@ struct ASYNC_TaskList
 struct ASYNC_Ring
 {
   U64 ring_size;
-  U8 *ring_base;
+  U8* ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
   OS_Handle ring_mutex;
@@ -74,15 +74,15 @@ struct ASYNC_Ring
 
 struct ASYNC_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: user -> work thread ring buffers
-  ASYNC_Ring rings[ASYNC_Priority_COUNT];
+  ASYNC_Ring[ASYNC_Priority_COUNT] rings;
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
   
   // rjf: work threads
-  OS_Handle *work_threads;
+  OS_Handle* work_threads;
   U64 work_threads_count;
   U64 work_threads_live_count;
 }

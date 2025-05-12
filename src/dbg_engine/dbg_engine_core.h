@@ -19,7 +19,7 @@ struct D_Target
 
 struct D_TargetArray
 {
-  D_Target *v;
+  D_Target* v;
   U64 count;
 }
 
@@ -43,7 +43,7 @@ struct D_Breakpoint
 
 struct D_BreakpointArray
 {
-  D_Breakpoint *v;
+  D_Breakpoint* v;
   U64 count;
 }
 
@@ -55,7 +55,7 @@ struct D_PathMap
 
 struct D_PathMapArray
 {
-  D_PathMap *v;
+  D_PathMap* v;
   U64 count;
 }
 
@@ -91,14 +91,14 @@ struct D_Event
 
 struct D_EventNode
 {
-  D_EventNode *next;
+  D_EventNode* next;
   D_Event v;
 }
 
 struct D_EventList
 {
-  D_EventNode *first;
-  D_EventNode *last;
+  D_EventNode* first;
+  D_EventNode* last;
   U64 count;
 }
 
@@ -115,20 +115,20 @@ struct D_Line
 
 struct D_LineNode
 {
-  D_LineNode *next;
+  D_LineNode* next;
   D_Line v;
 }
 
 struct D_LineList
 {
-  D_LineNode *first;
-  D_LineNode *last;
+  D_LineNode* first;
+  D_LineNode* last;
   U64 count;
 }
 
 struct D_LineListArray
 {
-  D_LineList *v;
+  D_LineList* v;
   U64 count;
   DI_KeyList dbgi_keys;
 }
@@ -176,15 +176,15 @@ struct D_Cmd
 
 struct D_CmdNode
 {
-  D_CmdNode *next;
-  D_CmdNode *prev;
+  D_CmdNode* next;
+  D_CmdNode* prev;
   D_Cmd cmd;
 }
 
 struct D_CmdList
 {
-  D_CmdNode *first;
-  D_CmdNode *last;
+  D_CmdNode* first;
+  D_CmdNode* last;
   U64 count;
 }
 
@@ -195,33 +195,33 @@ struct D_CmdList
 
 struct D_UnwindCacheNode
 {
-  D_UnwindCacheNode *next;
-  D_UnwindCacheNode *prev;
+  D_UnwindCacheNode* next;
+  D_UnwindCacheNode* prev;
   U64 reggen;
   U64 memgen;
-  Arena *arena;
+  Arena* arena;
   CTRL_Handle thread;
   CTRL_Unwind unwind;
 }
 
 struct D_UnwindCacheSlot
 {
-  D_UnwindCacheNode *first;
-  D_UnwindCacheNode *last;
+  D_UnwindCacheNode* first;
+  D_UnwindCacheNode* last;
 }
 
 struct D_UnwindCache
 {
   U64 slots_count;
-  D_UnwindCacheSlot *slots;
-  D_UnwindCacheNode *free_node;
+  D_UnwindCacheSlot* slots;
+  D_UnwindCacheNode* free_node;
 }
 
 //- rjf: per-run tls-base-vaddr cache
 
 struct D_RunTLSBaseCacheNode
 {
-  D_RunTLSBaseCacheNode *hash_next;
+  D_RunTLSBaseCacheNode* hash_next;
   CTRL_Handle process;
   U64 root_vaddr;
   U64 rip_vaddr;
@@ -230,38 +230,38 @@ struct D_RunTLSBaseCacheNode
 
 struct D_RunTLSBaseCacheSlot
 {
-  D_RunTLSBaseCacheNode *first;
-  D_RunTLSBaseCacheNode *last;
+  D_RunTLSBaseCacheNode* first;
+  D_RunTLSBaseCacheNode* last;
 }
 
 struct D_RunTLSBaseCache
 {
-  Arena *arena;
+  Arena* arena;
   U64 slots_count;
-  D_RunTLSBaseCacheSlot *slots;
+  D_RunTLSBaseCacheSlot* slots;
 }
 
 //- rjf: per-run locals cache
 
 struct D_RunLocalsCacheNode
 {
-  D_RunLocalsCacheNode *hash_next;
+  D_RunLocalsCacheNode* hash_next;
   DI_Key dbgi_key;
   U64 voff;
-  E_String2NumMap *locals_map;
+  E_String2NumMap* locals_map;
 }
 
 struct D_RunLocalsCacheSlot
 {
-  D_RunLocalsCacheNode *first;
-  D_RunLocalsCacheNode *last;
+  D_RunLocalsCacheNode* first;
+  D_RunLocalsCacheNode* last;
 }
 
 struct D_RunLocalsCache
 {
-  Arena *arena;
+  Arena* arena;
   U64 table_size;
-  D_RunLocalsCacheSlot *table;
+  D_RunLocalsCacheSlot* table;
 }
 
 ////////////////////////////////
@@ -270,11 +270,11 @@ struct D_RunLocalsCache
 struct D_State
 {
   // rjf: top-level state
-  Arena *arena;
+  Arena* arena;
   U64 frame_index;
   
   // rjf: commands
-  Arena *cmds_arena;
+  Arena* cmds_arena;
   D_CmdList cmds;
   
   // rjf: output log key
@@ -284,17 +284,17 @@ struct D_State
   D_UnwindCache unwind_cache;
   U64 tls_base_cache_reggen_idx;
   U64 tls_base_cache_memgen_idx;
-  D_RunTLSBaseCache tls_base_caches[2];
+  D_RunTLSBaseCache[2] tls_base_caches;
   U64 tls_base_cache_gen;
   U64 locals_cache_reggen_idx;
-  D_RunLocalsCache locals_caches[2];
+  D_RunLocalsCache[2] locals_caches;
   U64 locals_cache_gen;
   U64 member_cache_reggen_idx;
-  D_RunLocalsCache member_caches[2];
+  D_RunLocalsCache[2] member_caches;
   U64 member_cache_gen;
   
   // rjf: user -> ctrl driving state
-  Arena *ctrl_last_run_arena;
+  Arena* ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
   U64 ctrl_last_run_frame_idx;
   CTRL_Handle ctrl_last_run_thread_handle;
@@ -305,12 +305,12 @@ struct D_State
   B32 ctrl_is_running;
   B32 ctrl_thread_run_state;
   B32 ctrl_soft_halt_issued;
-  Arena *ctrl_msg_arena;
+  Arena* ctrl_msg_arena;
   CTRL_MsgList ctrl_msgs;
   
   // rjf: ctrl -> user reading state
-  CTRL_EntityStore *ctrl_entity_store;
-  Arena *ctrl_stop_arena;
+  CTRL_EntityStore* ctrl_entity_store;
+  Arena* ctrl_stop_arena;
   CTRL_Event ctrl_last_stop_event;
 }
 

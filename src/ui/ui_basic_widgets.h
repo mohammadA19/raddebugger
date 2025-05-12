@@ -19,23 +19,23 @@ struct UI_ScrollListRowBlock
 
 struct UI_ScrollListRowBlockChunkNode
 {
-  UI_ScrollListRowBlockChunkNode *next;
-  UI_ScrollListRowBlock *v;
+  UI_ScrollListRowBlockChunkNode* next;
+  UI_ScrollListRowBlock* v;
   U64 count;
   U64 cap;
 }
 
 struct UI_ScrollListRowBlockChunkList
 {
-  UI_ScrollListRowBlockChunkNode *first;
-  UI_ScrollListRowBlockChunkNode *last;
+  UI_ScrollListRowBlockChunkNode* first;
+  UI_ScrollListRowBlockChunkNode* last;
   U64 chunk_count;
   U64 total_count;
 }
 
 struct UI_ScrollListRowBlockArray
 {
-  UI_ScrollListRowBlock *v;
+  UI_ScrollListRowBlock* v;
   U64 count;
 }
 
@@ -47,7 +47,7 @@ struct UI_ScrollListParams
   UI_ScrollListRowBlockArray row_blocks;
   Rng2S64 cursor_range;
   Rng1S64 item_range;
-  B32 cursor_min_is_empty_selection[Axis2_COUNT];
+  B32[Axis2_COUNT] cursor_min_is_empty_selection;
 }
 
 struct UI_ScrollListSignal

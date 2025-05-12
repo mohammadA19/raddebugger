@@ -13,14 +13,14 @@ struct MG_Msg
 
 struct MG_MsgNode
 {
-  MG_MsgNode *next;
+  MG_MsgNode* next;
   MG_Msg v;
 }
 
 struct MG_MsgList
 {
-  MG_MsgNode *first;
-  MG_MsgNode *last;
+  MG_MsgNode* first;
+  MG_MsgNode* last;
   U64 count;
 }
 
@@ -29,19 +29,19 @@ struct MG_MsgList
 
 struct MG_FileParse
 {
-  MD_Node *root;
+  MD_Node* root;
 }
 
 struct MG_FileParseNode
 {
-  MG_FileParseNode *next;
+  MG_FileParseNode* next;
   MG_FileParse v;
 }
 
 struct MG_FileParseList
 {
-  MG_FileParseNode *first;
-  MG_FileParseNode *last;
+  MG_FileParseNode* first;
+  MG_FileParseNode* last;
   U64 count;
 }
 
@@ -50,20 +50,20 @@ struct MG_FileParseList
 
 struct MG_MapNode
 {
-  MG_MapNode *next;
+  MG_MapNode* next;
   String8 key;
-  void *val;
+  void* val;
 }
 
 struct MG_MapSlot
 {
-  MG_MapNode *first;
-  MG_MapNode *last;
+  MG_MapNode* first;
+  MG_MapNode* last;
 }
 
 struct MG_Map
 {
-  MG_MapSlot *slots;
+  MG_MapSlot* slots;
   U64 slots_count;
 }
 
@@ -114,18 +114,18 @@ enum MG_StrExprOp
 
 struct MG_StrExpr
 {
-  MG_StrExpr *parent;
-  MG_StrExpr *left;
-  MG_StrExpr *right;
+  MG_StrExpr* parent;
+  MG_StrExpr* left;
+  MG_StrExpr* right;
   MG_StrExprOp op;
-  MD_Node *node;
+  MD_Node* node;
 }
 
 struct MG_StrExprParseResult
 {
-  MG_StrExpr *root;
+  MG_StrExpr* root;
   MD_MsgList msgs;
-  MD_Node *next_node;
+  MD_Node* next_node;
 }
 
 ////////////////////////////////
@@ -133,7 +133,7 @@ struct MG_StrExprParseResult
 
 struct MG_NodeArray
 {
-  MD_Node **v;
+  MD_Node** v;
   U64 count;
 }
 
@@ -163,14 +163,14 @@ struct MG_ColumnDesc
 struct MG_ColumnDescArray
 {
   U64 count;
-  MG_ColumnDesc *v;
+  MG_ColumnDesc* v;
 }
 
 struct MG_TableExpandTask
 {
-  MG_TableExpandTask *next;
+  MG_TableExpandTask* next;
   String8 expansion_label;
-  MG_NodeGrid *grid;
+  MG_NodeGrid* grid;
   MG_ColumnDescArray column_descs;
   U64 count;
   U64 idx;
@@ -178,7 +178,7 @@ struct MG_TableExpandTask
 
 struct MG_TableExpandInfo
 {
-  MG_TableExpandTask *first_expand_task;
+  MG_TableExpandTask* first_expand_task;
   String8 missing_value_fallback;
 }
 
@@ -208,20 +208,20 @@ struct MG_Layer
 
 struct MG_LayerNode
 {
-  MG_LayerNode *next;
+  MG_LayerNode* next;
   MG_Layer v;
 }
 
 struct MG_LayerSlot
 {
-  MG_LayerNode *first;
-  MG_LayerNode *last;
+  MG_LayerNode* first;
+  MG_LayerNode* last;
 }
 
 struct MG_State
 {
   U64 slots_count;
-  MG_LayerSlot *slots;
+  MG_LayerSlot* slots;
 }
 
 ////////////////////////////////

@@ -69,8 +69,8 @@ enum OS_Modifiers : U32
 
 struct OS_Event
 {
-  OS_Event *next;
-  OS_Event *prev;
+  OS_Event* next;
+  OS_Event* prev;
   U64 timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
@@ -88,8 +88,8 @@ struct OS_Event
 struct OS_EventList
 {
   U64 count;
-  OS_Event *first;
-  OS_Event *last;
+  OS_Event* first;
+  OS_Event* last;
 }
 
 ////////////////////////////////

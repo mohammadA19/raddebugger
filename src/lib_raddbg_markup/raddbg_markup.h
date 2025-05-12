@@ -346,7 +346,7 @@ static inline void
 raddbg_log__impl(char *fmt, ...)
 {
   // rjf: resolve variadic arguments
-  char buffer[4096];
+  char[4096] buffer;
   {
     va_list args;
     va_start(args, fmt);

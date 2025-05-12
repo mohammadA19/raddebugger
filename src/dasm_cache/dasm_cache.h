@@ -46,14 +46,14 @@ struct DASM_CtrlFlowPoint
 
 struct DASM_CtrlFlowPointNode
 {
-  DASM_CtrlFlowPointNode *next;
+  DASM_CtrlFlowPointNode* next;
   DASM_CtrlFlowPoint v;
 }
 
 struct DASM_CtrlFlowPointList
 {
-  DASM_CtrlFlowPointNode *first;
-  DASM_CtrlFlowPointNode *last;
+  DASM_CtrlFlowPointNode* first;
+  DASM_CtrlFlowPointNode* last;
   U64 count;
 }
 
@@ -106,23 +106,23 @@ struct DASM_Line
 
 struct DASM_LineChunkNode
 {
-  DASM_LineChunkNode *next;
-  DASM_Line *v;
+  DASM_LineChunkNode* next;
+  DASM_Line* v;
   U64 cap;
   U64 count;
 }
 
 struct DASM_LineChunkList
 {
-  DASM_LineChunkNode *first;
-  DASM_LineChunkNode *last;
+  DASM_LineChunkNode* first;
+  DASM_LineChunkNode* last;
   U64 node_count;
   U64 line_count;
 }
 
 struct DASM_LineArray
 {
-  DASM_Line *v;
+  DASM_Line* v;
   U64 count;
 }
 
@@ -150,8 +150,8 @@ struct DASM_Info
 struct DASM_Node
 {
   // rjf: links
-  DASM_Node *next;
-  DASM_Node *prev;
+  DASM_Node* next;
+  DASM_Node* prev;
   
   // rjf: key
   U128 hash;
@@ -161,7 +161,7 @@ struct DASM_Node
   U64 change_gen;
   
   // rjf: value
-  Arena *info_arena;
+  Arena* info_arena;
   DASM_Info info;
   
   // rjf: metadata
@@ -176,16 +176,16 @@ struct DASM_Node
 
 struct DASM_Slot
 {
-  DASM_Node *first;
-  DASM_Node *last;
+  DASM_Node* first;
+  DASM_Node* last;
 }
 
 struct DASM_Stripe
 {
-  Arena *arena;
+  Arena* arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
-  DASM_Node *free_node;
+  DASM_Node* free_node;
 }
 
 ////////////////////////////////
@@ -193,15 +193,15 @@ struct DASM_Stripe
 
 struct DASM_Touch
 {
-  DASM_Touch *next;
+  DASM_Touch* next;
   U128 hash;
   DASM_Params params;
 }
 
 struct DASM_Scope
 {
-  DASM_Scope *next;
-  DASM_Touch *top_touch;
+  DASM_Scope* next;
+  DASM_Touch* top_touch;
   U64 base_pos;
 }
 
@@ -210,7 +210,7 @@ struct DASM_Scope
 
 struct DASM_TCTX
 {
-  Arena *arena;
+  Arena* arena;
 }
 
 ////////////////////////////////
@@ -218,17 +218,17 @@ struct DASM_TCTX
 
 struct DASM_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: cache
   U64 slots_count;
   U64 stripes_count;
-  DASM_Slot *slots;
-  DASM_Stripe *stripes;
+  DASM_Slot* slots;
+  DASM_Stripe* stripes;
   
   // rjf: user -> parse thread
   U64 u2p_ring_size;
-  U8 *u2p_ring_base;
+  U8* u2p_ring_base;
   U64 u2p_ring_write_pos;
   U64 u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;

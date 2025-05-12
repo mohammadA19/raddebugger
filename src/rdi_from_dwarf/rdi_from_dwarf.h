@@ -24,26 +24,26 @@ typedef struct D2R_User2Convert
 
 typedef struct D2R_TypeTable
 {
-  HashTable          *ht;
-  RDIM_TypeChunkList *types;
+  HashTable*          ht;
+  RDIM_TypeChunkList* types;
   U64                 type_chunk_cap;
-  RDIM_Type          *void_type;
-  RDIM_Type          *varg_type;
+  RDIM_Type*          void_type;
+  RDIM_Type*          varg_type;
 } D2R_TypeTable;
 
 typedef struct D2R_TagNode
 {
-  struct D2R_TagNode *next;
-  DW_TagNode         *cur_node;
-  RDIM_Type          *type;
-  RDIM_Scope         *scope;
+  D2R_TagNode* next;
+  DW_TagNode*         cur_node;
+  RDIM_Type*          type;
+  RDIM_Scope*         scope;
 } D2R_TagNode;
 
 typedef struct D2R_CompUnitContribMap
 {
   U64               count;
-  U64              *info_off_arr;
-  RDIM_Rng1U64List *voff_range_arr;
+  U64*              info_off_arr;
+  RDIM_Rng1U64List* voff_range_arr;
 } D2R_CompUnitContribMap;
 
 ////////////////////////////////

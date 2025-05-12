@@ -22,14 +22,14 @@ struct DR_FStr
 
 struct DR_FStrNode
 {
-  DR_FStrNode *next;
+  DR_FStrNode* next;
   DR_FStr v;
 }
 
 struct DR_FStrList
 {
-  DR_FStrNode *first;
-  DR_FStrNode *last;
+  DR_FStrNode* first;
+  DR_FStrNode* last;
   U64 node_count;
   U64 total_size;
 }
@@ -45,14 +45,14 @@ struct DR_FRun
 
 struct DR_FRunNode
 {
-  DR_FRunNode *next;
+  DR_FRunNode* next;
   DR_FRun v;
 }
 
 struct DR_FRunList
 {
-  DR_FRunNode *first;
-  DR_FRunNode *last;
+  DR_FRunNode* first;
+  DR_FRunNode* last;
   U64 node_count;
   Vec2F32 dim;
 }
@@ -78,17 +78,17 @@ struct DR_Bucket
 
 struct DR_BucketSelectionNode
 {
-  DR_BucketSelectionNode *next;
-  DR_Bucket *bucket;
+  DR_BucketSelectionNode* next;
+  DR_Bucket* bucket;
 }
 
 struct DR_ThreadCtx
 {
-  Arena *arena;
+  Arena* arena;
   U64 arena_frame_start_pos;
   FNT_Tag icon_font;
-  DR_BucketSelectionNode *top_bucket;
-  DR_BucketSelectionNode *free_bucket_selection;
+  DR_BucketSelectionNode* top_bucket;
+  DR_BucketSelectionNode* free_bucket_selection;
 }
 
 ////////////////////////////////

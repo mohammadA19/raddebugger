@@ -5,19 +5,19 @@
 
 typedef struct LNK_Section
 {
-  Arena            *arena;
+  Arena*            arena;
   U64               id;
   String8           name;
   String8           symbol_name;
   COFF_SectionFlags flags;
   String8           sort_index;
 
-  LNK_ChunkManager *cman;
-  LNK_Chunk        *root;
+  LNK_ChunkManager* cman;
+  LNK_Chunk*        root;
 
   // overwhelming number of chunks don't have sort index and grouping
   // them speeds up sort step
-  LNK_Chunk *nosort_chunk;
+  LNK_Chunk* nosort_chunk;
 
   LNK_RelocList reloc_list;
 
@@ -27,7 +27,7 @@ typedef struct LNK_Section
 
   B32  is_merged;
   U64  merge_sect_id;
-  U64 *id_map;
+  U64* id_map;
 
   U64             isect;
   U64             virt_off;
@@ -37,32 +37,32 @@ typedef struct LNK_Section
 
 typedef struct LNK_SectionNode
 {
-  struct LNK_SectionNode *next;
+  LNK_SectionNode* next;
   LNK_Section             data;
 } LNK_SectionNode;
 
 typedef struct LNK_SectionList
 {
   U64              count;
-  LNK_SectionNode *first;
-  LNK_SectionNode *last;
+  LNK_SectionNode* first;
+  LNK_SectionNode* last;
 } LNK_SectionList;
 
 typedef struct LNK_SectionArray
 {
   U64          count;
-  LNK_Section *v;
+  LNK_Section* v;
 } LNK_SectionArray;
 
 typedef struct LNK_SectionPtrArray
 {
   U64           count;
-  LNK_Section **v;
+  LNK_Section** v;
 } LNK_SectionPtrArray;
 
 typedef struct LNK_SectionTable
 {
-  Arena           *arena;
+  Arena*           arena;
   U64              section_virt_off;
   U64              sect_align;
   U64              file_align;
@@ -70,7 +70,7 @@ typedef struct LNK_SectionTable
   LNK_SectionList  list;
   LNK_SectionList  merge_list;
   LNK_SectionList  empties_list;
-  LNK_SectionNode *null_sect;
+  LNK_SectionNode* null_sect;
 } LNK_SectionTable;
 
 ////////////////////////////////
@@ -78,8 +78,8 @@ typedef struct LNK_SectionTable
 typedef struct
 {
   COFF_MachineType  machine;
-  Rng1U64          *range_arr;
-  LNK_Section      **sect_arr;
+  Rng1U64*          range_arr;
+  LNK_Section**      sect_arr;
 } LNK_SectionDataBuilder;
 
 ////////////////////////////////

@@ -9,24 +9,24 @@
 
 struct HS_KeyNode
 {
-  HS_KeyNode *next;
+  HS_KeyNode* next;
   U128 key;
-  U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
+  U128[HS_KEY_HASH_HISTORY_COUNT] hash_history;
   U64 hash_history_gen;
 }
 
 struct HS_KeySlot
 {
-  HS_KeyNode *first;
-  HS_KeyNode *last;
+  HS_KeyNode* first;
+  HS_KeyNode* last;
 }
 
 struct HS_Node
 {
-  HS_Node *next;
-  HS_Node *prev;
+  HS_Node* next;
+  HS_Node* prev;
   U128 hash;
-  Arena *arena;
+  Arena* arena;
   String8 data;
   U64 scope_ref_count;
   U64 key_ref_count;
@@ -35,13 +35,13 @@ struct HS_Node
 
 struct HS_Slot
 {
-  HS_Node *first;
-  HS_Node *last;
+  HS_Node* first;
+  HS_Node* last;
 }
 
 struct HS_Stripe
 {
-  Arena *arena;
+  Arena* arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 }
@@ -51,14 +51,14 @@ struct HS_Stripe
 
 struct HS_Touch
 {
-  HS_Touch *next;
+  HS_Touch* next;
   U128 hash;
 }
 
 struct HS_Scope
 {
-  HS_Scope *next;
-  HS_Touch *top_touch;
+  HS_Scope* next;
+  HS_Touch* top_touch;
 }
 
 ////////////////////////////////
@@ -66,9 +66,9 @@ struct HS_Scope
 
 struct HS_TCTX
 {
-  Arena *arena;
-  HS_Scope *free_scope;
-  HS_Touch *free_touch;
+  Arena* arena;
+  HS_Scope* free_scope;
+  HS_Touch* free_touch;
 }
 
 ////////////////////////////////
@@ -76,20 +76,20 @@ struct HS_TCTX
 
 struct HS_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: main data cache
   U64 slots_count;
   U64 stripes_count;
-  HS_Slot *slots;
-  HS_Stripe *stripes;
-  HS_Node **stripes_free_nodes;
+  HS_Slot* slots;
+  HS_Stripe* stripes;
+  HS_Node** stripes_free_nodes;
   
   // rjf: key cache
   U64 key_slots_count;
   U64 key_stripes_count;
-  HS_KeySlot *key_slots;
-  HS_Stripe *key_stripes;
+  HS_KeySlot* key_slots;
+  HS_Stripe* key_stripes;
   
   // rjf: evictor thread
   OS_Handle evictor_thread;

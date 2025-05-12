@@ -20,13 +20,13 @@ struct ArenaParams
   ArenaFlags flags;
   U64 reserve_size;
   U64 commit_size;
-  void *optional_backing_buffer;
+  void* optional_backing_buffer;
 }
 
 struct Arena
 {
-  Arena *prev;    // previous arena in chain
-  Arena *current; // current arena in chain
+  Arena* prev;    // previous arena in chain
+  Arena* current; // current arena in chain
   ArenaFlags flags;
   U64 cmt_size;
   U64 res_size;
@@ -36,14 +36,14 @@ struct Arena
   U64 res;
 #if ARENA_FREE_LIST
   U64 free_size;
-  Arena *free_last;
+  Arena* free_last;
 #endif
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 struct Temp
 {
-  Arena *arena;
+  Arena* arena;
   U64 pos;
 }
 

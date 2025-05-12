@@ -25,8 +25,8 @@ typedef struct PDB_HashTableBucket
 
 typedef struct PDB_HashTable
 {
-  Arena               *arena;
-  PDB_HashTableBucket *bucket_arr;
+  Arena*               arena;
+  PDB_HashTableBucket* bucket_arr;
   U32Array             present_bits;
   U32Array             deleted_bits;
   U32   			         max;
@@ -52,13 +52,13 @@ typedef struct PDB_StringTableBucket
 
 typedef struct PDB_StringTable
 {
-  Arena *arena;
+  Arena* arena;
   U32    version;
   U32    size;
   U32    bucket_count;
   U32    bucket_max;
-  U32   *ibucket_array;
-  PDB_StringTableBucket **bucket_array;
+  U32*   ibucket_array;
+  PDB_StringTableBucket** bucket_array;
 } PDB_StringTable;
 
 enum
@@ -88,18 +88,18 @@ enum
 
 typedef struct PDB_TypeBucket
 {
-  struct PDB_TypeBucket *next;
+  PDB_TypeBucket* next;
   String8                raw_leaf;
   CV_TypeIndex           type_index;
 } PDB_TypeBucket;
 
 typedef struct PDB_TypeServer
 {
-  Arena             *arena;
+  Arena*             arena;
   CV_TypeIndex       ti_lo;
   String8List        leaf_list;
   U64                bucket_cap;
-  PDB_TypeBucket   **buckets;
+  PDB_TypeBucket**   buckets;
   MSF_StreamNumber   hash_sn;
   PDB_HashTable      hash_adj;
 } PDB_TypeServer;
@@ -120,17 +120,17 @@ typedef struct PDB_TypeServerParse
 typedef struct
 {
   CV_DebugT       debug_t;
-  U64            *udt_counts;
-  U64            *udt_offsets;
-  Rng1U64        *ranges;
-  PDB_TypeServer *type_server;
-  PDB_TypeBucket *udt_buckets;
+  U64*            udt_counts;
+  U64*            udt_offsets;
+  Rng1U64*        ranges;
+  PDB_TypeServer* type_server;
+  PDB_TypeBucket* udt_buckets;
 } PDB_PushLeafTask;
 
 typedef struct
 {
-  PDB_TypeServer *ts;
-  U32            *map;
+  PDB_TypeServer* ts;
+  U32*            map;
 } PDB_WriteTypeToBucketMap;
 
 typedef struct
@@ -138,11 +138,11 @@ typedef struct
   CV_TypeIndex    ti_lo;
   CV_TypeIndex    ti_hi;
   U64             hint_count;
-  PDB_TpiOffHint *hint_arr;
-  String8Node   **lf_arr;
-  Rng1U64        *lf_range_arr;
-  U64            *lf_cursor_arr;
-  U8             *lf_buf;
+  PDB_TpiOffHint* hint_arr;
+  String8Node**   lf_arr;
+  Rng1U64*        lf_range_arr;
+  U64*            lf_cursor_arr;
+  U8*             lf_buf;
   U64             lf_buf_size;
 } PDB_WriteTypesTask;
 
@@ -160,7 +160,7 @@ typedef struct PDB_InfoParse
 
 typedef struct PDB_InfoContext
 {
-  Arena            *arena;
+  Arena*            arena;
   COFF_TimeStamp    time_stamp;
   U32               age;
   Guid              guid;
@@ -194,12 +194,12 @@ enum
 
 typedef struct PDB_GsiContext
 {
-  Arena         *arena;
+  Arena*         arena;
   U64            word_size;
   U64            symbol_align;
   U64            bucket_count;
   U64            symbol_count;
-  CV_SymbolList *bucket_arr;
+  CV_SymbolList* bucket_arr;
 } PDB_GsiContext;
 
 typedef struct PDB_GsiSortRecord
@@ -213,12 +213,12 @@ typedef struct PDB_GsiBuildResult
 {
   PDB_GsiHeader      header;
   U64                hash_record_count;
-  PDB_GsiHashRecord *hash_record_arr;
-  PDB_GsiSortRecord *sort_record_arr;
+  PDB_GsiHashRecord* hash_record_arr;
+  PDB_GsiSortRecord* sort_record_arr;
   U64                bitmap_count;
-  U32               *bitmap;
+  U32*               bitmap;
   U64                compressed_bucket_count;
-  U32               *compressed_bucket_arr;
+  U32*               compressed_bucket_arr;
   U64                total_hash_size;
   String8            symbol_data;
 } PDB_GsiBuildResult;
@@ -226,12 +226,12 @@ typedef struct PDB_GsiBuildResult
 typedef struct PDB_GsiSerializeSymbolsTask
 {
   U64                  symbol_align;
-  CV_SymbolList       *bucket_arr;
-  U64                 *bucket_size_arr;
-  U64                 *bucket_off_arr;
-  U8                  *buffer;
-  PDB_GsiSortRecord  **sort_record_arr_arr;
-  PDB_GsiSortRecord   *sort_record_arr;
+  CV_SymbolList*       bucket_arr;
+  U64*                 bucket_size_arr;
+  U64*                 bucket_off_arr;
+  U8*                  buffer;
+  PDB_GsiSortRecord**  sort_record_arr_arr;
+  PDB_GsiSortRecord*   sort_record_arr;
 } PDB_GsiSerializeSymbolsTask;
 
 ////////////////////////////////
@@ -239,8 +239,8 @@ typedef struct PDB_GsiSerializeSymbolsTask
 
 typedef struct PDB_PsiContext
 {
-  Arena *arena;
-  PDB_GsiContext *gsi;
+  Arena* arena;
+  PDB_GsiContext* gsi;
 } PDB_PsiContext;
 
 ////////////////////////////////
@@ -250,7 +250,7 @@ typedef struct PDB_PsiContext
 
 typedef struct PDB_DbiModule
 {
-  struct PDB_DbiModule *next;
+  PDB_DbiModule* next;
   MSF_StreamNumber      sn;
   CV_ModIndex           imod;
   PDB_DbiSectionContrib first_sc;
@@ -265,40 +265,40 @@ typedef struct PDB_DbiModule
 
 typedef struct PDB_DbiModuleList
 {
-  PDB_DbiModule *first;
-  PDB_DbiModule *last;
+  PDB_DbiModule* first;
+  PDB_DbiModule* last;
   U64            count;
 } PDB_DbiModuleList;
 
 typedef struct PDB_DbiSectionContribNode
 {
-  struct PDB_DbiSectionContribNode *next;
+  PDB_DbiSectionContribNode* next;
   PDB_DbiSectionContrib             data;
 } PDB_DbiSectionContribNode;
 
 typedef struct PDB_DbiSectionContribList
 {
-  PDB_DbiSectionContribNode *first;
-  PDB_DbiSectionContribNode *last;
+  PDB_DbiSectionContribNode* first;
+  PDB_DbiSectionContribNode* last;
   U64                        count;
 } PDB_DbiSectionContribList;
 
 typedef struct PDB_DbiSectionNode
 {
-  struct PDB_DbiSectionNode *next;
+  PDB_DbiSectionNode* next;
   COFF_SectionHeader         data;
 } PDB_DbiSectionNode;
 
 typedef struct PDB_DbiSectionList
 {
   U64                 count;
-  PDB_DbiSectionNode *first;
-  PDB_DbiSectionNode *last;
+  PDB_DbiSectionNode* first;
+  PDB_DbiSectionNode* last;
 } PDB_DbiSectionList;
 
 typedef struct PDB_DbiContext
 {
-  Arena                *arena;
+  Arena*                arena;
   U32                   age;
   COFF_MachineType      machine;
   MSF_StreamNumber      globals_sn;
@@ -308,7 +308,7 @@ typedef struct PDB_DbiContext
   PDB_DbiSectionContribList sec_contrib_list;
   PDB_DbiSectionList    section_list;
   PDB_StringTable       ec_names;
-  MSF_StreamNumber      dbg_streams[PDB_DbiStream_COUNT];
+  MSF_StreamNumber[PDB_DbiStream_COUNT]      dbg_streams;
 } PDB_DbiContext;
 
 ////////////////////////////////
@@ -316,12 +316,12 @@ typedef struct PDB_DbiContext
 
 typedef struct PDB_Context
 {
-  Arena           *arena;
-  MSF_Context     *msf;
-  PDB_InfoContext *info;
-  PDB_DbiContext  *dbi;
-  PDB_GsiContext  *gsi;
-  PDB_PsiContext  *psi;
+  Arena*           arena;
+  MSF_Context*     msf;
+  PDB_InfoContext* info;
+  PDB_DbiContext*  dbi;
+  PDB_GsiContext*  gsi;
+  PDB_PsiContext*  psi;
   PDB_TypeServer  *type_servers[CV_TypeIndexSource_COUNT];
 } PDB_Context;
 
@@ -329,19 +329,19 @@ typedef struct PDB_Context
 
 typedef struct
 {
-  PDB_GsiContext *gsi;
-  Rng1U64        *ranges;
-  CV_SymbolNode **symbols;
-  U32            *hashes;
+  PDB_GsiContext* gsi;
+  Rng1U64*        ranges;
+  CV_SymbolNode** symbols;
+  U32*            hashes;
 } GSI_SymbolHasherTask;
 
 typedef struct
 {
   CV_StringHashTable   string_ht;
-  PDB_DbiModule      **mod_arr;
-  U16                 *imod_arr;
-  U16                 *source_file_name_count_arr;
-  U32                **source_file_name_offset_arr;
+  PDB_DbiModule**      mod_arr;
+  U16*                 imod_arr;
+  U16*                 source_file_name_count_arr;
+  U32**                source_file_name_offset_arr;
 } PDB_DbiBuildFileInfoTask;
 
 ////////////////////////////////

@@ -72,7 +72,7 @@ typedef struct DW_CIEUnpacked
 
 typedef struct DW_CIEUnpackedNode
 {
-  struct DW_CIEUnpackedNode *next;
+  DW_CIEUnpackedNode* next;
   DW_CIEUnpacked             cie;
   U64                        offset;
 } DW_CIEUnpackedNode;
@@ -132,17 +132,17 @@ typedef struct DW_CFICell
 
 typedef struct DW_CFIRow
 {
-  struct DW_CFIRow *next;
-  DW_CFICell       *cells;
+  DW_CFIRow* next;
+  DW_CFICell*       cells;
   DW_CFICFACell     cfa_cell;
 } DW_CFIRow;
 
 typedef struct DW_CFIMachine
 {
   U64             cells_per_row;
-  DW_CIEUnpacked *cie;
-  DW_EhPtrCtx    *ptr_ctx;
-  DW_CFIRow      *initial_row;
+  DW_CIEUnpacked* cie;
+  DW_EhPtrCtx*    ptr_ctx;
+  DW_CFIRow*      initial_row;
   U64             fde_ip;
 } DW_CFIMachine;
 

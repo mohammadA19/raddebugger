@@ -27,20 +27,20 @@ enum PDB_NamedStream
 
 typedef struct PDB_NamedStreamTable
 {
-  MSF_StreamNumber sn[PDB_NamedStream_Count];
+  MSF_StreamNumber[PDB_NamedStream_Count] sn;
 } PDB_NamedStreamTable;
 
 typedef struct PDB_InfoNode
 {
-  struct PDB_InfoNode *next;
+  PDB_InfoNode* next;
   String8 string;
   MSF_StreamNumber sn;
 } PDB_InfoNode;
 
 typedef struct PDB_Info
 {
-  PDB_InfoNode *first;
-  PDB_InfoNode *last;
+  PDB_InfoNode* first;
+  PDB_InfoNode* last;
   Guid auth_guid;
   PDB_FeatureFlags features;
 } PDB_Info;
@@ -84,14 +84,14 @@ typedef struct PDB_DbiParsed
   MSF_StreamNumber gsi_sn;
   MSF_StreamNumber psi_sn;
   MSF_StreamNumber sym_sn;
-  U64 range_off[(U64)(PDB_DbiRange_COUNT) + 1];
-  MSF_StreamNumber dbg_streams[PDB_DbiStream_COUNT];
+  U64[(U64)(PDB_DbiRange_COUNT) + 1] range_off;
+  MSF_StreamNumber[PDB_DbiStream_COUNT] dbg_streams;
 } PDB_DbiParsed;
 
 typedef struct PDB_CompUnit
 {
   MSF_StreamNumber sn;
-  U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
+  U32[(U32)(PDB_DbiCompUnitRange_COUNT) + 1] range_off;
   
   String8 obj_name;
   String8 group_name;
@@ -99,13 +99,13 @@ typedef struct PDB_CompUnit
 
 typedef struct PDB_CompUnitNode
 {
-  struct PDB_CompUnitNode *next;
+  PDB_CompUnitNode* next;
   PDB_CompUnit unit;
 } PDB_CompUnitNode;
 
 typedef struct PDB_CompUnitArray
 {
-  PDB_CompUnit **units;
+  PDB_CompUnit** units;
   U64 count;
 } PDB_CompUnitArray;
 
@@ -118,7 +118,7 @@ typedef struct PDB_CompUnitContribution
 
 typedef struct PDB_CompUnitContributionArray
 {
-  PDB_CompUnitContribution *contributions;
+  PDB_CompUnitContribution* contributions;
   U64 count;
 } PDB_CompUnitContributionArray;
 
@@ -152,9 +152,9 @@ typedef struct PDB_TpiParsed
 
 typedef struct PDB_TpiHashBlock
 {
-  struct PDB_TpiHashBlock *next;
+  PDB_TpiHashBlock* next;
   U32 local_count;
-  CV_TypeId itypes[13]; // 13 = (64 - 12)/4
+  CV_TypeId[13] itypes; // 13 = (64 - 12)/4
 } PDB_TpiHashBlock;
 
 typedef struct PDB_TpiHashParsed
@@ -162,7 +162,7 @@ typedef struct PDB_TpiHashParsed
   String8 data;
   String8 aux_data;
   
-  PDB_TpiHashBlock **buckets;
+  PDB_TpiHashBlock** buckets;
   U32 bucket_count;
   U32 bucket_mask;
 } PDB_TpiHashParsed;
@@ -172,13 +172,13 @@ typedef struct PDB_TpiHashParsed
 
 typedef struct PDB_GsiBucket
 {
-  U32 *offs;
+  U32* offs;
   U64 count;
 } PDB_GsiBucket;
 
 typedef struct PDB_GsiParsed
 {
-  PDB_GsiBucket buckets[4096];
+  PDB_GsiBucket[4096] buckets;
 } PDB_GsiParsed;
 
 ////////////////////////////////

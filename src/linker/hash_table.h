@@ -7,13 +7,13 @@ typedef struct KeyValuePair
 {
   union {
     String8 key_string;
-    void   *key_raw;
+    void*   key_raw;
     U32     key_u32;
     U64     key_u64;
   }
   union {
     String8  value_string;
-    void    *value_raw;
+    void*    value_raw;
     U32      value_u32;
     U64      value_u64;
   }
@@ -21,21 +21,21 @@ typedef struct KeyValuePair
 
 typedef struct BucketNode
 {
-  struct BucketNode *next;
+  BucketNode* next;
   KeyValuePair       v;
 } BucketNode;
 
 typedef struct BucketList
 {
-  BucketNode *first;
-  BucketNode *last;
+  BucketNode* first;
+  BucketNode* last;
 } BucketList;
 
 typedef struct HashTable
 {
   U64         count;
   U64         cap;
-  BucketList *buckets;
+  BucketList* buckets;
   BucketList  free_buckets;
 } HashTable;
 

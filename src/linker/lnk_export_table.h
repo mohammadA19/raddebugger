@@ -5,9 +5,9 @@
 
 typedef struct LNK_Export
 {
-  struct LNK_Export  *next;
+  LNK_Export*  next;
   String8             name;
-  LNK_Symbol         *symbol;
+  LNK_Symbol*         symbol;
   U32                 id;
   U16                 ordinal;
   COFF_ImportType     type;
@@ -17,24 +17,24 @@ typedef struct LNK_Export
 typedef struct LNK_ExportList
 {
   U64         count;
-  LNK_Export *first;
-  LNK_Export *last;
+  LNK_Export* first;
+  LNK_Export* last;
 } LNK_ExportList;
 
 typedef struct LNK_ExportArray
 {
   U64         count;
-  LNK_Export *v;
+  LNK_Export* v;
 } LNK_ExportArray;
 
 typedef struct LNK_ExportTable
 {
-  Arena         *arena;
-  HashTable     *name_export_ht;
-  HashTable     *noname_export_ht;
+  Arena*         arena;
+  HashTable*     name_export_ht;
+  HashTable*     noname_export_ht;
   U64            voff_size;
   U64            max_ordinal;
-  B8            *is_ordinal_used;
+  B8*            is_ordinal_used;
 } LNK_ExportTable;
 
 

@@ -74,7 +74,7 @@
 #define RDIM_String8_SizeMember size
 struct RDIM_String8
 {
-  RDI_U8 *str;
+  RDI_U8* str;
   RDI_U64 size;
 }
 #endif
@@ -85,7 +85,7 @@ struct RDIM_String8
 #define RDIM_String8Node_StringMember string
 struct RDIM_String8Node
 {
-  RDIM_String8Node *next;
+  RDIM_String8Node* next;
   RDIM_String8 string;
 }
 #endif
@@ -98,8 +98,8 @@ struct RDIM_String8Node
 #define RDIM_String8List_TotalSizeMember total_size
 struct RDIM_String8List
 {
-  RDIM_String8Node *first;
-  RDIM_String8Node *last;
+  RDIM_String8Node* first;
+  RDIM_String8Node* last;
   RDI_U64 node_count;
   RDI_U64 total_size;
 }
@@ -127,8 +127,8 @@ enum RDIM_StringMatchFlags : RDI_U32
 # define RDIM_Arena RDIM_Arena 
 struct RDIM_Arena
 {
-  RDIM_Arena *prev;
-  RDIM_Arena *current;
+  RDIM_Arena* prev;
+  RDIM_Arena* current;
   RDI_U64 base_pos;
   RDI_U64 pos;
   RDI_U64 cmt;
@@ -167,7 +167,7 @@ struct RDIM_Arena
 # define RDIM_Temp RDIM_Temp
 struct RDIM_Temp
 {
-  RDIM_Arena *arena;
+  RDIM_Arena* arena;
   RDI_U64 pos;
 }
 #define rdim_temp_arena(t) ((t).arena)
@@ -313,14 +313,14 @@ struct RDIM_Rng1U64
 
 struct RDIM_Rng1U64Node
 {
-  RDIM_Rng1U64Node *next;
+  RDIM_Rng1U64Node* next;
   RDIM_Rng1U64 v;
 }
 
 struct RDIM_Rng1U64List
 {
-  RDIM_Rng1U64Node *first;
-  RDIM_Rng1U64Node *last;
+  RDIM_Rng1U64Node* first;
+  RDIM_Rng1U64Node* last;
   RDI_U64 count;
   RDI_U64 min;
 }
@@ -329,15 +329,15 @@ struct RDIM_Rng1U64List
 
 struct RDIM_U64ToPtrNode
 {
-  RDIM_U64ToPtrNode *next;
+  RDIM_U64ToPtrNode* next;
   RDI_U64 _padding_;
-  RDI_U64 key[1];
+  RDI_U64[1] key;
   void *ptr[1];
 }
 
 struct RDIM_U64ToPtrMap
 {
-  RDIM_U64ToPtrNode **buckets;
+  RDIM_U64ToPtrNode** buckets;
   RDI_U64 buckets_count;
   RDI_U64 bucket_collision_count;
   RDI_U64 pair_count;
@@ -345,8 +345,8 @@ struct RDIM_U64ToPtrMap
 
 struct RDIM_U64ToPtrLookup
 {
-  void *match;
-  RDIM_U64ToPtrNode *fill_node;
+  void* match;
+  RDIM_U64ToPtrNode* fill_node;
   RDI_U32 fill_k;
 }
 
@@ -354,15 +354,15 @@ struct RDIM_U64ToPtrLookup
 
 struct RDIM_Str8ToPtrNode
 {
-  struct RDIM_Str8ToPtrNode *next;
+  RDIM_Str8ToPtrNode* next;
   RDIM_String8 key;
   RDI_U64 hash;
-  void *ptr;
+  void* ptr;
 }
 
 struct RDIM_Str8ToPtrMap
 {
-  RDIM_Str8ToPtrNode **buckets;
+  RDIM_Str8ToPtrNode** buckets;
   RDI_U64 buckets_count;
   RDI_U64 bucket_collision_count;
   RDI_U64 pair_count;
@@ -373,12 +373,12 @@ struct RDIM_Str8ToPtrMap
 struct RDIM_SortKey
 {
   RDI_U64 key;
-  void *val;
+  void* val;
 }
 
 struct RDIM_OrderedRange
 {
-  RDIM_OrderedRange *next;
+  RDIM_OrderedRange* next;
   RDI_U64 first;
   RDI_U64 opl;
 }
@@ -388,14 +388,14 @@ struct RDIM_OrderedRange
 
 struct RDIM_Msg
 {
-  RDIM_Msg *next;
+  RDIM_Msg* next;
   RDIM_String8 string;
 }
 
 struct RDIM_MsgList
 {
-  RDIM_Msg *first;
-  RDIM_Msg *last;
+  RDIM_Msg* first;
+  RDIM_Msg* last;
   RDI_U64 count;
 }
 
@@ -426,14 +426,14 @@ struct RDIM_BinarySection
 
 struct RDIM_BinarySectionNode
 {
-  RDIM_BinarySectionNode *next;
+  RDIM_BinarySectionNode* next;
   RDIM_BinarySection v;
 }
 
 struct RDIM_BinarySectionList
 {
-  RDIM_BinarySectionNode *first;
-  RDIM_BinarySectionNode *last;
+  RDIM_BinarySectionNode* first;
+  RDIM_BinarySectionNode* last;
   RDI_U64 count;
 }
 
@@ -442,22 +442,22 @@ struct RDIM_BinarySectionList
 
 struct RDIM_SrcFileLineMapFragment
 {
-  RDIM_SrcFileLineMapFragment *next;
-  struct RDIM_LineSequence *seq;
+  RDIM_SrcFileLineMapFragment* next;
+  RDIM_LineSequence* seq;
 }
 
 struct RDIM_SrcFile
 {
-  struct RDIM_SrcFileChunkNode *chunk;
+  RDIM_SrcFileChunkNode* chunk;
   RDIM_String8 normal_full_path;
-  RDIM_SrcFileLineMapFragment *first_line_map_fragment;
-  RDIM_SrcFileLineMapFragment *last_line_map_fragment;
+  RDIM_SrcFileLineMapFragment* first_line_map_fragment;
+  RDIM_SrcFileLineMapFragment* last_line_map_fragment;
 }
 
 struct RDIM_SrcFileChunkNode
 {
-  RDIM_SrcFileChunkNode *next;
-  RDIM_SrcFile *v;
+  RDIM_SrcFileChunkNode* next;
+  RDIM_SrcFile* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -466,8 +466,8 @@ struct RDIM_SrcFileChunkNode
 typedef struct  RDIM_SrcFileChunkList RDIM_SrcFileChunkList;
 struct RDIM_SrcFileChunkList
 {
-  RDIM_SrcFileChunkNode *first;
-  RDIM_SrcFileChunkNode *last;
+  RDIM_SrcFileChunkNode* first;
+  RDIM_SrcFileChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
   RDI_U64 source_line_map_count;
@@ -479,24 +479,24 @@ struct RDIM_SrcFileChunkList
 
 struct RDIM_LineSequence
 {
-  RDIM_SrcFile *src_file;
-  RDI_U64 *voffs;     // [line_count + 1] (sorted)
-  RDI_U32 *line_nums; // [line_count]
-  RDI_U16 *col_nums;  // [2*line_count]
+  RDIM_SrcFile* src_file;
+  RDI_U64* voffs;     // [line_count + 1] (sorted)
+  RDI_U32* line_nums; // [line_count]
+  RDI_U16* col_nums;  // [2*line_count]
   RDI_U64 line_count;
 }
 
 struct RDIM_LineSequenceNode
 {
-  RDIM_LineSequenceNode *next;
+  RDIM_LineSequenceNode* next;
   RDIM_LineSequence v;
 }
 
 struct RDIM_LineTable
 {
-  struct RDIM_LineTableChunkNode *chunk;
-  RDIM_LineSequenceNode *first_seq;
-  RDIM_LineSequenceNode *last_seq;
+  RDIM_LineTableChunkNode* chunk;
+  RDIM_LineSequenceNode* first_seq;
+  RDIM_LineSequenceNode* last_seq;
   RDI_U64 seq_count;
   RDI_U64 line_count;
   RDI_U64 col_count;
@@ -504,8 +504,8 @@ struct RDIM_LineTable
 
 struct RDIM_LineTableChunkNode
 {
-  RDIM_LineTableChunkNode *next;
-  RDIM_LineTable *v;
+  RDIM_LineTableChunkNode* next;
+  RDIM_LineTable* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -513,8 +513,8 @@ struct RDIM_LineTableChunkNode
 
 struct RDIM_LineTableChunkList
 {
-  RDIM_LineTableChunkNode *first;
-  RDIM_LineTableChunkNode *last;
+  RDIM_LineTableChunkNode* first;
+  RDIM_LineTableChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
   RDI_U64 total_seq_count;
@@ -527,7 +527,7 @@ struct RDIM_LineTableChunkList
 
 struct RDIM_Unit
 {
-  struct RDIM_UnitChunkNode *chunk;
+  RDIM_UnitChunkNode* chunk;
   RDIM_String8 unit_name;
   RDIM_String8 compiler_name;
   RDIM_String8 source_file;
@@ -535,14 +535,14 @@ struct RDIM_Unit
   RDIM_String8 archive_file;
   RDIM_String8 build_path;
   RDI_Language language;
-  RDIM_LineTable *line_table;
+  RDIM_LineTable* line_table;
   RDIM_Rng1U64List voff_ranges;
 }
 
 struct RDIM_UnitChunkNode
 {
-  RDIM_UnitChunkNode *next;
-  RDIM_Unit *v;
+  RDIM_UnitChunkNode* next;
+  RDIM_Unit* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -550,8 +550,8 @@ struct RDIM_UnitChunkNode
 
 struct RDIM_UnitChunkList
 {
-  RDIM_UnitChunkNode *first;
-  RDIM_UnitChunkNode *last;
+  RDIM_UnitChunkNode* first;
+  RDIM_UnitChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
 }
@@ -571,7 +571,7 @@ enum RDIM_DataModel : RDI_U32 RDIM_DataModelEnum
 
 struct RDIM_Type
 {
-  struct RDIM_TypeChunkNode *chunk;
+  RDIM_TypeChunkNode* chunk;
   RDI_TypeKind kind;
   RDI_U32 byte_size;
   RDI_U32 flags;
@@ -579,28 +579,28 @@ struct RDIM_Type
   RDI_U32 count;
   RDIM_String8 name;
   RDIM_String8 link_name;
-  RDIM_Type *direct_type;
-  RDIM_Type **param_types;
-  struct RDIM_UDT *udt;
+  RDIM_Type* direct_type;
+  RDIM_Type** param_types;
+  RDIM_UDT* udt;
 }
 
 struct RDIM_TypeNode
 {
-  struct RDIM_TypeNode *next;
-  RDIM_Type *v;
+  RDIM_TypeNode* next;
+  RDIM_Type* v;
 }
 
 struct RDIM_TypeList
 {
   U64            count;
-  RDIM_TypeNode *first;
-  RDIM_TypeNode *last;
+  RDIM_TypeNode* first;
+  RDIM_TypeNode* last;
 }
 
 struct RDIM_TypeChunkNode
 {
-  RDIM_TypeChunkNode *next;
-  RDIM_Type *v;
+  RDIM_TypeChunkNode* next;
+  RDIM_Type* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -608,8 +608,8 @@ struct RDIM_TypeChunkNode
 
 struct RDIM_TypeChunkList
 {
-  RDIM_TypeChunkNode *first;
-  RDIM_TypeChunkNode *last;
+  RDIM_TypeChunkNode* first;
+  RDIM_TypeChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
 }
@@ -619,39 +619,39 @@ struct RDIM_TypeChunkList
 
 struct RDIM_UDTMember
 {
-  RDIM_UDTMember *next;
+  RDIM_UDTMember* next;
   RDI_MemberKind kind;
   RDIM_String8 name;
-  RDIM_Type *type;
+  RDIM_Type* type;
   RDI_U32 off;
 }
 
 struct RDIM_UDTEnumVal
 {
-  RDIM_UDTEnumVal *next;
+  RDIM_UDTEnumVal* next;
   RDIM_String8 name;
   RDI_U64 val;
 }
 
 struct RDIM_UDT
 {
-  struct RDIM_UDTChunkNode *chunk;
-  RDIM_Type *self_type;
-  RDIM_UDTMember *first_member;
-  RDIM_UDTMember *last_member;
-  RDIM_UDTEnumVal *first_enum_val;
-  RDIM_UDTEnumVal *last_enum_val;
+  RDIM_UDTChunkNode* chunk;
+  RDIM_Type* self_type;
+  RDIM_UDTMember* first_member;
+  RDIM_UDTMember* last_member;
+  RDIM_UDTEnumVal* first_enum_val;
+  RDIM_UDTEnumVal* last_enum_val;
   RDI_U32 member_count;
   RDI_U32 enum_val_count;
-  RDIM_SrcFile *src_file;
+  RDIM_SrcFile* src_file;
   RDI_U32 line;
   RDI_U32 col;
 }
 
 struct RDIM_UDTChunkNode
 {
-  RDIM_UDTChunkNode *next;
-  RDIM_UDT *v;
+  RDIM_UDTChunkNode* next;
+  RDIM_UDT* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -659,8 +659,8 @@ struct RDIM_UDTChunkNode
 
 struct RDIM_UDTChunkList
 {
-  RDIM_UDTChunkNode *first;
-  RDIM_UDTChunkNode *last;
+  RDIM_UDTChunkNode* first;
+  RDIM_UDTChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
   RDI_U64 total_member_count;
@@ -672,7 +672,7 @@ struct RDIM_UDTChunkList
 
 struct RDIM_EvalBytecodeOp
 {
-  RDIM_EvalBytecodeOp *next;
+  RDIM_EvalBytecodeOp* next;
   RDI_EvalOp op;
   RDI_U32 p_size;
   RDI_U64 p;
@@ -680,8 +680,8 @@ struct RDIM_EvalBytecodeOp
 
 struct RDIM_EvalBytecode
 {
-  RDIM_EvalBytecodeOp *first_op;
-  RDIM_EvalBytecodeOp *last_op;
+  RDIM_EvalBytecodeOp* first_op;
+  RDIM_EvalBytecodeOp* last_op;
   RDI_U32 op_count;
   RDI_U32 encoded_size;
 }
@@ -696,15 +696,15 @@ struct RDIM_Location
 
 struct RDIM_LocationCase
 {
-  RDIM_LocationCase *next;
+  RDIM_LocationCase* next;
   RDIM_Rng1U64 voff_range;
-  RDIM_Location *location;
+  RDIM_Location* location;
 }
 
 struct RDIM_LocationSet
 {
-  RDIM_LocationCase *first_location_case;
-  RDIM_LocationCase *last_location_case;
+  RDIM_LocationCase* first_location_case;
+  RDIM_LocationCase* last_location_case;
   RDI_U64 location_case_count;
 }
 
@@ -722,22 +722,22 @@ enum RDIM_SymbolKind
 
 struct RDIM_Symbol
 {
-  struct RDIM_SymbolChunkNode *chunk;
+  RDIM_SymbolChunkNode* chunk;
   RDI_S32 is_extern;
   RDIM_String8 name;
   RDIM_String8 link_name;
-  RDIM_Type *type;
+  RDIM_Type* type;
   RDI_U64 offset;
-  RDIM_Symbol *container_symbol;
-  RDIM_Type *container_type;
-  struct RDIM_Scope *root_scope;
+  RDIM_Symbol* container_symbol;
+  RDIM_Type* container_type;
+  RDIM_Scope* root_scope;
   RDIM_LocationSet frame_base;
 }
 
 struct RDIM_SymbolChunkNode
 {
-  RDIM_SymbolChunkNode *next;
-  RDIM_Symbol *v;
+  RDIM_SymbolChunkNode* next;
+  RDIM_Symbol* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -745,8 +745,8 @@ struct RDIM_SymbolChunkNode
 
 struct RDIM_SymbolChunkList
 {
-  RDIM_SymbolChunkNode *first;
-  RDIM_SymbolChunkNode *last;
+  RDIM_SymbolChunkNode* first;
+  RDIM_SymbolChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
 }
@@ -756,17 +756,17 @@ struct RDIM_SymbolChunkList
 
 struct RDIM_InlineSite
 {
-  struct RDIM_InlineSiteChunkNode *chunk;
+  RDIM_InlineSiteChunkNode* chunk;
   RDIM_String8 name;
-  RDIM_Type *type;
-  RDIM_Type *owner;
-  RDIM_LineTable *line_table;
+  RDIM_Type* type;
+  RDIM_Type* owner;
+  RDIM_LineTable* line_table;
 }
 
 struct RDIM_InlineSiteChunkNode
 {
-  RDIM_InlineSiteChunkNode *next;
-  RDIM_InlineSite *v;
+  RDIM_InlineSiteChunkNode* next;
+  RDIM_InlineSite* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -774,8 +774,8 @@ struct RDIM_InlineSiteChunkNode
 
 struct RDIM_InlineSiteChunkList
 {
-  RDIM_InlineSiteChunkNode *first;
-  RDIM_InlineSiteChunkNode *last;
+  RDIM_InlineSiteChunkNode* first;
+  RDIM_InlineSiteChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
 }
@@ -785,32 +785,32 @@ struct RDIM_InlineSiteChunkList
 
 struct RDIM_Local
 {
-  RDIM_Local *next;
+  RDIM_Local* next;
   RDI_LocalKind kind;
   RDIM_String8 name;
-  RDIM_Type *type;
+  RDIM_Type* type;
   RDIM_LocationSet locset;
 }
 
 struct RDIM_Scope
 {
-  struct RDIM_ScopeChunkNode *chunk;
-  RDIM_Symbol *symbol;
-  RDIM_Scope *parent_scope;
-  RDIM_Scope *first_child;
-  RDIM_Scope *last_child;
-  RDIM_Scope *next_sibling;
+  RDIM_ScopeChunkNode* chunk;
+  RDIM_Symbol* symbol;
+  RDIM_Scope* parent_scope;
+  RDIM_Scope* first_child;
+  RDIM_Scope* last_child;
+  RDIM_Scope* next_sibling;
   RDIM_Rng1U64List voff_ranges;
-  RDIM_Local *first_local;
-  RDIM_Local *last_local;
+  RDIM_Local* first_local;
+  RDIM_Local* last_local;
   RDI_U32 local_count;
-  RDIM_InlineSite *inline_site;
+  RDIM_InlineSite* inline_site;
 }
 
 struct RDIM_ScopeChunkNode
 {
-  RDIM_ScopeChunkNode *next;
-  RDIM_Scope *v;
+  RDIM_ScopeChunkNode* next;
+  RDIM_Scope* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -818,8 +818,8 @@ struct RDIM_ScopeChunkNode
 
 struct RDIM_ScopeChunkList
 {
-  RDIM_ScopeChunkNode *first;
-  RDIM_ScopeChunkNode *last;
+  RDIM_ScopeChunkNode* first;
+  RDIM_ScopeChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
   RDI_U64 scope_voff_count;
@@ -852,7 +852,7 @@ struct RDIM_BakeParams
 
 struct RDIM_BakeSection
 {
-  void *data;
+  void* data;
   RDI_SectionEncoding encoding;
   RDI_U64 encoded_size;
   RDI_U64 unpacked_size;
@@ -862,14 +862,14 @@ struct RDIM_BakeSection
 
 struct RDIM_BakeSectionNode
 {
-  RDIM_BakeSectionNode *next;
+  RDIM_BakeSectionNode* next;
   RDIM_BakeSection v;
 }
 
 struct RDIM_BakeSectionList
 {
-  RDIM_BakeSectionNode *first;
-  RDIM_BakeSectionNode *last;
+  RDIM_BakeSectionNode* first;
+  RDIM_BakeSectionNode* last;
   RDI_U64 count;
 }
 
@@ -883,8 +883,8 @@ struct RDIM_BakeString
 
 struct RDIM_BakeStringChunkNode
 {
-  RDIM_BakeStringChunkNode *next;
-  RDIM_BakeString *v;
+  RDIM_BakeStringChunkNode* next;
+  RDIM_BakeString* v;
   RDI_U64 count;
   RDI_U64 cap;
   RDI_U64 base_idx;
@@ -892,8 +892,8 @@ struct RDIM_BakeStringChunkNode
 
 struct RDIM_BakeStringChunkList
 {
-  RDIM_BakeStringChunkNode *first;
-  RDIM_BakeStringChunkNode *last;
+  RDIM_BakeStringChunkNode* first;
+  RDIM_BakeStringChunkNode* last;
   RDI_U64 chunk_count;
   RDI_U64 total_count;
 }
@@ -905,18 +905,18 @@ struct RDIM_BakeStringMapTopology
 
 struct RDIM_BakeStringMapBaseIndices
 {
-  RDI_U64 *slots_base_idxs;
+  RDI_U64* slots_base_idxs;
 }
 
 struct RDIM_BakeStringMapLoose
 {
-  RDIM_BakeStringChunkList **slots;
+  RDIM_BakeStringChunkList** slots;
 }
 
 struct RDIM_BakeStringMapTight
 {
-  RDIM_BakeStringChunkList *slots;
-  RDI_U64 *slots_base_idxs;
+  RDIM_BakeStringChunkList* slots;
+  RDI_U64* slots_base_idxs;
   RDI_U64 slots_count;
   RDI_U64 total_count;
 }
@@ -925,9 +925,9 @@ struct RDIM_BakeStringMapTight
 
 struct RDIM_BakeIdxRunNode
 {
-  RDIM_BakeIdxRunNode *hash_next;
-  RDIM_BakeIdxRunNode *order_next;
-  RDI_U32 *idx_run;
+  RDIM_BakeIdxRunNode* hash_next;
+  RDIM_BakeIdxRunNode* order_next;
+  RDI_U32* idx_run;
   RDI_U64 hash;
   RDI_U32 count;
   RDI_U32 first_idx;
@@ -935,9 +935,9 @@ struct RDIM_BakeIdxRunNode
 
 struct RDIM_BakeIdxRunMap
 {
-  RDIM_BakeIdxRunNode *order_first;
-  RDIM_BakeIdxRunNode *order_last;
-  RDIM_BakeIdxRunNode **slots;
+  RDIM_BakeIdxRunNode* order_first;
+  RDIM_BakeIdxRunNode* order_last;
+  RDIM_BakeIdxRunNode** slots;
   RDI_U64 slots_count;
   RDI_U64 slot_collision_count;
   RDI_U32 count;
@@ -948,27 +948,27 @@ struct RDIM_BakeIdxRunMap
 
 struct RDIM_BakePathNode
 {
-  RDIM_BakePathNode *next_order;
-  RDIM_BakePathNode *parent;
-  RDIM_BakePathNode *first_child;
-  RDIM_BakePathNode *last_child;
-  RDIM_BakePathNode *next_sibling;
+  RDIM_BakePathNode* next_order;
+  RDIM_BakePathNode* parent;
+  RDIM_BakePathNode* first_child;
+  RDIM_BakePathNode* last_child;
+  RDIM_BakePathNode* next_sibling;
   RDIM_String8 name;
-  RDIM_SrcFile *src_file;
+  RDIM_SrcFile* src_file;
   RDI_U32 idx;
 }
 
 struct RDIM_BakeLineMapFragment
 {
-  RDIM_BakeLineMapFragment *next;
-  RDIM_LineSequence *seq;
+  RDIM_BakeLineMapFragment* next;
+  RDIM_LineSequence* seq;
 }
 
 struct RDIM_BakePathTree
 {
   RDIM_BakePathNode root;
-  RDIM_BakePathNode *first;
-  RDIM_BakePathNode *last;
+  RDIM_BakePathNode* first;
+  RDIM_BakePathNode* last;
   RDI_U32 count;
 }
 
@@ -976,27 +976,27 @@ struct RDIM_BakePathTree
 
 struct RDIM_BakeNameMapValNode
 {
-  RDIM_BakeNameMapValNode *next;
-  RDI_U32 val[6];
+  RDIM_BakeNameMapValNode* next;
+  RDI_U32[6] val;
 }
 
 struct RDIM_BakeNameMapNode
 {
-  RDIM_BakeNameMapNode *slot_next;
-  RDIM_BakeNameMapNode *order_next;
+  RDIM_BakeNameMapNode* slot_next;
+  RDIM_BakeNameMapNode* order_next;
   RDIM_String8 string;
-  RDIM_BakeNameMapValNode *val_first;
-  RDIM_BakeNameMapValNode *val_last;
+  RDIM_BakeNameMapValNode* val_first;
+  RDIM_BakeNameMapValNode* val_last;
   RDI_U64 val_count;
 }
 
 struct RDIM_BakeNameMap
 {
-  RDIM_BakeNameMapNode **slots;
+  RDIM_BakeNameMapNode** slots;
   RDI_U64 slots_count;
   RDI_U64 slot_collision_count;
-  RDIM_BakeNameMapNode *first;
-  RDIM_BakeNameMapNode *last;
+  RDIM_BakeNameMapNode* first;
+  RDIM_BakeNameMapNode* last;
   RDI_U64 name_count;
 }
 
@@ -1004,7 +1004,7 @@ struct RDIM_BakeNameMap
 
 struct RDIM_BakeVMap
 {
-  RDI_VMapEntry *vmap; // [count + 1]
+  RDI_VMapEntry* vmap; // [count + 1]
   RDI_U32 count;
 }
 
@@ -1018,18 +1018,18 @@ struct RDIM_VMapMarker
 
 struct RDIM_TopLevelInfoBakeResult
 {
-  RDI_TopLevelInfo *top_level_info;
+  RDI_TopLevelInfo* top_level_info;
 }
 
 struct RDIM_BinarySectionBakeResult
 {
-  RDI_BinarySection *binary_sections;
+  RDI_BinarySection* binary_sections;
   RDI_U64 binary_sections_count;
 }
 
 struct RDIM_UnitBakeResult
 {
-  RDI_Unit *units;
+  RDI_Unit* units;
   RDI_U64 units_count;
 }
 
@@ -1040,13 +1040,13 @@ struct RDIM_UnitVMapBakeResult
 
 struct RDIM_SrcFileBakeResult
 {
-  RDI_SourceFile *source_files;
+  RDI_SourceFile* source_files;
   RDI_U64 source_files_count;
-  RDI_SourceLineMap *source_line_maps;
+  RDI_SourceLineMap* source_line_maps;
   RDI_U64 source_line_maps_count;
-  RDI_U32 *source_line_map_nums;
-  RDI_U32 *source_line_map_rngs;
-  RDI_U64 *source_line_map_voffs;
+  RDI_U32* source_line_map_nums;
+  RDI_U32* source_line_map_rngs;
+  RDI_U64* source_line_map_voffs;
   RDI_U64 source_line_map_nums_count;
   RDI_U64 source_line_map_rngs_count;
   RDI_U64 source_line_map_voffs_count;
@@ -1054,35 +1054,35 @@ struct RDIM_SrcFileBakeResult
 
 struct RDIM_LineTableBakeResult
 {
-  RDI_LineTable *line_tables;
+  RDI_LineTable* line_tables;
   RDI_U64 line_tables_count;
-  RDI_U64 *line_table_voffs;
+  RDI_U64* line_table_voffs;
   RDI_U64 line_table_voffs_count;
-  RDI_Line *line_table_lines;
+  RDI_Line* line_table_lines;
   RDI_U64 line_table_lines_count;
-  RDI_Column *line_table_columns;
+  RDI_Column* line_table_columns;
   RDI_U64 line_table_columns_count;
 }
 
 struct RDIM_TypeNodeBakeResult
 {
-  RDI_TypeNode *type_nodes;
+  RDI_TypeNode* type_nodes;
   RDI_U64 type_nodes_count;
 }
 
 struct RDIM_UDTBakeResult
 {
-  RDI_UDT *udts;
+  RDI_UDT* udts;
   RDI_U64 udts_count;
-  RDI_Member *members;
+  RDI_Member* members;
   RDI_U64 members_count;
-  RDI_EnumMember *enum_members;
+  RDI_EnumMember* enum_members;
   RDI_U64 enum_members_count;
 }
 
 struct RDIM_GlobalVariableBakeResult
 {
-  RDI_GlobalVariable *global_variables;
+  RDI_GlobalVariable* global_variables;
   RDI_U64 global_variables_count;
 }
 
@@ -1093,23 +1093,23 @@ struct RDIM_GlobalVMapBakeResult
 
 struct RDIM_ThreadVariableBakeResult
 {
-  RDI_ThreadVariable *thread_variables;
+  RDI_ThreadVariable* thread_variables;
   RDI_U64 thread_variables_count;
 }
 
 struct RDIM_ProcedureBakeResult
 {
-  RDI_Procedure *procedures;
+  RDI_Procedure* procedures;
   RDI_U64 procedures_count;
 }
 
 struct RDIM_ScopeBakeResult
 {
-  RDI_Scope *scopes;
+  RDI_Scope* scopes;
   RDI_U64 scopes_count;
-  RDI_U64 *scope_voffs;
+  RDI_U64* scope_voffs;
   RDI_U64 scope_voffs_count;
-  RDI_Local *locals;
+  RDI_Local* locals;
   RDI_U64 locals_count;
 }
 
@@ -1120,41 +1120,41 @@ struct RDIM_ScopeVMapBakeResult
 
 struct RDIM_InlineSiteBakeResult
 {
-  RDI_InlineSite *inline_sites;
+  RDI_InlineSite* inline_sites;
   RDI_U64 inline_sites_count;
 }
 
 struct RDIM_TopLevelNameMapBakeResult
 {
-  RDI_NameMap *name_maps;
+  RDI_NameMap* name_maps;
   RDI_U64 name_maps_count;
 }
 
 struct RDIM_NameMapBakeResult
 {
-  RDI_NameMapBucket *buckets;
+  RDI_NameMapBucket* buckets;
   RDI_U64 buckets_count;
-  RDI_NameMapNode *nodes;
+  RDI_NameMapNode* nodes;
   RDI_U64 nodes_count;
 }
 
 struct RDIM_FilePathBakeResult
 {
-  RDI_FilePathNode *nodes;
+  RDI_FilePathNode* nodes;
   RDI_U64 nodes_count;
 }
 
 struct RDIM_StringBakeResult
 {
-  RDI_U32 *string_offs;
+  RDI_U32* string_offs;
   RDI_U64 string_offs_count;
-  RDI_U8 *string_data;
+  RDI_U8* string_data;
   RDI_U64 string_data_size;
 }
 
 struct RDIM_IndexRunBakeResult
 {
-  RDI_U32 *idx_runs;
+  RDI_U32* idx_runs;
   RDI_U64 idx_count;
 }
 
@@ -1189,7 +1189,7 @@ struct RDIM_BakeResults
 
 struct RDIM_SerializedSection
 {
-  void *data;
+  void* data;
   RDI_U64 encoded_size;
   RDI_U64 unpacked_size;
   RDI_SectionEncoding encoding;
@@ -1197,7 +1197,7 @@ struct RDIM_SerializedSection
 
 struct RDIM_SerializedSectionBundle
 {
-  RDIM_SerializedSection sections[RDI_SectionKind_COUNT];
+  RDIM_SerializedSection[RDI_SectionKind_COUNT] sections;
 }
 
 ////////////////////////////////

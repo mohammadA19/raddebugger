@@ -12,7 +12,7 @@ typedef struct ELF_BinInfo
 typedef struct ELF_Shdr64Array
 {
   U64         count;
-  ELF_Shdr64 *v;
+  ELF_Shdr64* v;
 } ELF_Shdr64Array;
 
 typedef struct ELF_GnuDebugLink

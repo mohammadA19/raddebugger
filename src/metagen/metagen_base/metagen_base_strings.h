@@ -12,19 +12,19 @@
 
 struct String8
 {
-  U8 *str;
+  U8* str;
   U64 size;
 }
 
 struct String16
 {
-  U16 *str;
+  U16* str;
   U64 size;
 }
 
 struct String32
 {
-  U32 *str;
+  U32* str;
   U64 size;
 }
 
@@ -33,27 +33,27 @@ struct String32
 
 struct String8Node
 {
-  String8Node *next;
+  String8Node* next;
   String8 string;
 }
 
 struct String8MetaNode
 {
-  String8MetaNode *next;
-  String8Node *node;
+  String8MetaNode* next;
+  String8Node* node;
 }
 
 struct String8List
 {
-  String8Node *first;
-  String8Node *last;
+  String8Node* first;
+  String8Node* last;
   U64 node_count;
   U64 total_size;
 }
 
 struct String8Array
 {
-  String8 *v;
+  String8* v;
   U64 count;
 }
 
@@ -118,14 +118,14 @@ struct UnicodeDecode
 
 struct FuzzyMatchRangeNode
 {
-  FuzzyMatchRangeNode *next;
+  FuzzyMatchRangeNode* next;
   Rng1U64 range;
 }
 
 struct FuzzyMatchRangeList
 {
-  FuzzyMatchRangeNode *first;
-  FuzzyMatchRangeNode *last;
+  FuzzyMatchRangeNode* first;
+  FuzzyMatchRangeNode* last;
   U64 count;
   U64 needle_part_count;
   U64 total_dim;

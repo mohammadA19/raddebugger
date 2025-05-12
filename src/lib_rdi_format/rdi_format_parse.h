@@ -52,9 +52,9 @@ enum RDI_ParseStatus
 
 struct RDI_Parsed
 {
-  RDI_U8 *raw_data;
+  RDI_U8* raw_data;
   RDI_U64 raw_data_size;
-  RDI_Section *sections;
+  RDI_Section* sections;
   RDI_U64 sections_count;
 }
 
@@ -90,8 +90,8 @@ struct RDI_ParsedSourceLineMap
 
 struct RDI_ParsedNameMap
 {
-  RDI_NameMapBucket *buckets;
-  RDI_NameMapNode *nodes;
+  RDI_NameMapBucket* buckets;
+  RDI_NameMapNode* nodes;
   RDI_U64 bucket_count;
   RDI_U64 node_count;
 }

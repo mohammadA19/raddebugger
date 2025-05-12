@@ -8,7 +8,7 @@
 
 typedef struct LNK_ImportFunc
 {
-  struct LNK_ImportFunc *next;
+  LNK_ImportFunc* next;
   String8                name;
   String8                thunk_symbol_name;
   String8                iat_symbol_name;
@@ -16,20 +16,20 @@ typedef struct LNK_ImportFunc
 
 typedef struct LNK_ImportDLL
 {
-  struct LNK_ImportDLL  *next;
-  struct LNK_ImportFunc *first_func;
-  struct LNK_ImportFunc *last_func;
-  LNK_Chunk             *dll_chunk;
-  LNK_Chunk             *int_table_chunk;
-  LNK_Chunk             *ilt_table_chunk;
-  LNK_Chunk             *iat_table_chunk;
-  LNK_Chunk             *biat_table_chunk;
-  LNK_Chunk             *uiat_table_chunk;
-  LNK_Chunk             *code_table_chunk;
-  LNK_Symbol            *tail_merge_symbol;
+  LNK_ImportDLL*  next;
+  LNK_ImportFunc* first_func;
+  LNK_ImportFunc* last_func;
+  LNK_Chunk*             dll_chunk;
+  LNK_Chunk*             int_table_chunk;
+  LNK_Chunk*             ilt_table_chunk;
+  LNK_Chunk*             iat_table_chunk;
+  LNK_Chunk*             biat_table_chunk;
+  LNK_Chunk*             uiat_table_chunk;
+  LNK_Chunk*             code_table_chunk;
+  LNK_Symbol*            tail_merge_symbol;
   String8                name;
   COFF_MachineType       machine;
-  HashTable             *func_ht;
+  HashTable*             func_ht;
 } LNK_ImportDLL;
 
 enum
@@ -41,22 +41,22 @@ typedef U32 LNK_ImportTableFlags;
 
 typedef struct LNK_ImportTable
 {
-  Arena                *arena;
+  Arena*                arena;
   COFF_MachineType      machine;
-  LNK_ImportDLL        *first_dll;
-  LNK_ImportDLL        *last_dll;
-  LNK_Section          *data_sect;
-  LNK_Section          *code_sect;
-  LNK_Chunk            *dll_table_chunk;
-  LNK_Chunk            *int_chunk;
-  LNK_Chunk            *handle_table_chunk;
-  LNK_Chunk            *iat_chunk;
-  LNK_Chunk            *ilt_chunk;
-  LNK_Chunk            *biat_chunk;
-  LNK_Chunk            *uiat_chunk;
-  LNK_Chunk            *code_chunk;
+  LNK_ImportDLL*        first_dll;
+  LNK_ImportDLL*        last_dll;
+  LNK_Section*          data_sect;
+  LNK_Section*          code_sect;
+  LNK_Chunk*            dll_table_chunk;
+  LNK_Chunk*            int_chunk;
+  LNK_Chunk*            handle_table_chunk;
+  LNK_Chunk*            iat_chunk;
+  LNK_Chunk*            ilt_chunk;
+  LNK_Chunk*            biat_chunk;
+  LNK_Chunk*            uiat_chunk;
+  LNK_Chunk*            code_chunk;
   LNK_ImportTableFlags  flags;
-  HashTable            *dll_ht;
+  HashTable*            dll_ht;
 } LNK_ImportTable;
 
 

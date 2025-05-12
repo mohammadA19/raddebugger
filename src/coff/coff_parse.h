@@ -20,28 +20,28 @@ typedef struct COFF_FileHeaderInfo
 typedef struct COFF_SectionHeaderArray
 {
   U64                 count;
-  COFF_SectionHeader *v;
+  COFF_SectionHeader* v;
 } COFF_SectionHeaderArray;
 
 ////////////////////////////////
 
 typedef struct COFF_Symbol16Node
 {
-  struct COFF_Symbol16Node *next;
+  COFF_Symbol16Node* next;
   COFF_Symbol16             data;
 } COFF_Symbol16Node;
 
 typedef struct COFF_Symbol16List
 {
   U64                count;
-  COFF_Symbol16Node *first;
-  COFF_Symbol16Node *last;
+  COFF_Symbol16Node* first;
+  COFF_Symbol16Node* last;
 } COFF_Symbol16List;
 
 typedef struct COFF_Symbol32Array
 {
   U64            count;
-  COFF_Symbol32 *v;
+  COFF_Symbol32* v;
 } COFF_Symbol32Array;
 
 typedef struct COFF_ParsedSymbol
@@ -68,21 +68,21 @@ enum COFF_SymbolValueInterpType : U32
 
 typedef struct COFF_RelocNode
 {
-  struct COFF_RelocNode *next;
+  COFF_RelocNode* next;
   COFF_Reloc             data;
 } COFF_RelocNode;
 
 typedef struct COFF_RelocList
 {
   U64             count;
-  COFF_RelocNode *first;
-  COFF_RelocNode *last;
+  COFF_RelocNode* first;
+  COFF_RelocNode* last;
 } COFF_RelocList;
 
 typedef struct COFF_RelocArray
 {
   U64         count;
-  COFF_Reloc *v;
+  COFF_Reloc* v;
 } COFF_RelocArray;
 
 typedef struct COFF_RelocInfo
@@ -133,15 +133,15 @@ typedef struct COFF_ParsedResource
 
 typedef struct COFF_ParsedResourceNode
 {
-  struct COFF_ParsedResourceNode *next;
+  COFF_ParsedResourceNode* next;
   COFF_ParsedResource             data;
 } COFF_ParsedResourceNode;
 
 typedef struct COFF_ParsedResourceList
 {
   U64                      count;
-  COFF_ParsedResourceNode *first;
-  COFF_ParsedResourceNode *last;
+  COFF_ParsedResourceNode* first;
+  COFF_ParsedResourceNode* last;
 } COFF_ParsedResourceList;
 
 ////////////////////////////////
@@ -197,7 +197,7 @@ typedef struct COFF_ArchiveFirstMember
 {
   U32      symbol_count;
   U64      member_offset_count;
-  U32     *member_offsets;
+  U32*     member_offsets;
   String8  string_table;
 } COFF_ArchiveFirstMember;
 
@@ -206,23 +206,23 @@ typedef struct COFF_ArchiveSecondMember
   U32      member_count;
   U32      symbol_count;
   U64      member_offset_count;
-  U32     *member_offsets;
+  U32*     member_offsets;
   U64      symbol_index_count;
-  U16     *symbol_indices;
+  U16*     symbol_indices;
   String8  string_table;
 } COFF_ArchiveSecondMember;
 
 typedef struct COFF_ArchiveMemberNode
 {
-  struct COFF_ArchiveMemberNode *next;
+  COFF_ArchiveMemberNode* next;
   COFF_ArchiveMember             data;
 } COFF_ArchiveMemberNode;
 
 typedef struct COFF_ArchiveMemberList
 {
   U64                     count;
-  COFF_ArchiveMemberNode *first;
-  COFF_ArchiveMemberNode *last;
+  COFF_ArchiveMemberNode* first;
+  COFF_ArchiveMemberNode* last;
 } COFF_ArchiveMemberList;
 
 typedef struct COFF_ArchiveParse

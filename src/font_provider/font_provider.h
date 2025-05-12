@@ -14,7 +14,7 @@ enum FP_RasterFlags : U32
 
 struct FP_Handle
 {
-  U64 u64[2];
+  U64[2] u64;
 }
 
 struct FP_Metrics
@@ -29,7 +29,7 @@ struct FP_Metrics
 struct FP_RasterResult
 {
   Vec2S16 atlas_dim;
-  void *atlas;
+  void* atlas;
   F32 advance;
 }
 

@@ -6,10 +6,10 @@ typedef struct
 {
   String8Array path_arr;
   String8Array data_arr;
-  OS_Handle   *handle_arr;
-  U64         *size_arr;
-  U64         *off_arr;
-  U8          *buffer;
+  OS_Handle*   handle_arr;
+  U64*         size_arr;
+  U64*         off_arr;
+  U8*          buffer;
 } LNK_DiskReader;
 
 ////////////////////////////////

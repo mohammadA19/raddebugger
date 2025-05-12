@@ -27,7 +27,7 @@ static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 
 struct MSF_Header20
 {
-  U8  magic[sizeof(msf_msf20_magic)];
+  U8[sizeof(msf_msf20_magic)]  magic;
   U32 page_size;
   U16 active_fpm;
   U16 page_count;
@@ -38,7 +38,7 @@ struct MSF_Header20
 
 struct MSF_Header70
 {
-  U8             magic[sizeof(msf_msf70_magic)];
+  U8[sizeof(msf_msf70_magic)]             magic;
   MSF_UInt       page_size;
   MSF_PageNumber active_fpm;
   MSF_PageNumber page_count;

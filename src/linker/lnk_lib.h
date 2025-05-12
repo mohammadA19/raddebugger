@@ -17,21 +17,21 @@ typedef struct LNK_Lib
 
 typedef struct LNK_LibNode
 {
-  struct LNK_LibNode *next;
+  LNK_LibNode* next;
   LNK_Lib             data;
 } LNK_LibNode;
 
 typedef struct LNK_LibNodeArray
 {
   U64          count;
-  LNK_LibNode *v;
+  LNK_LibNode* v;
 } LNK_LibNodeArray;
 
 typedef struct LNK_LibList
 {
   U64                 count;
-  struct LNK_LibNode *first;
-  struct LNK_LibNode *last;
+  LNK_LibNode* first;
+  LNK_LibNode* last;
 } LNK_LibList;
 
 ////////////////////////////////
@@ -44,15 +44,15 @@ typedef struct LNK_LibMember
 
 typedef struct LNK_LibMemberNode
 {
-  struct LNK_LibMemberNode *next;
+  LNK_LibMemberNode* next;
   LNK_LibMember             data;
 } LNK_LibMemberNode;
 
 typedef struct LNK_LibMemberList
 {
   U64                count;
-  LNK_LibMemberNode *first;
-  LNK_LibMemberNode *last;
+  LNK_LibMemberNode* first;
+  LNK_LibMemberNode* last;
 } LNK_LibMemberList;
 
 typedef struct LNK_LibSymbol
@@ -63,20 +63,20 @@ typedef struct LNK_LibSymbol
 
 typedef struct LNK_LibSymbolNode
 {
-  struct LNK_LibSymbolNode *next;
+  LNK_LibSymbolNode* next;
   LNK_LibSymbol             data;
 } LNK_LibSymbolNode;
 
 typedef struct LNK_LibSymbolList
 {
   U64                count;
-  LNK_LibSymbolNode *first;
-  LNK_LibSymbolNode *last;
+  LNK_LibSymbolNode* first;
+  LNK_LibSymbolNode* last;
 } LNK_LibSymbolList;
 
 typedef struct LNK_LibWriter
 {
-  Arena            *arena;
+  Arena*            arena;
   LNK_LibMemberList member_list;
   LNK_LibSymbolList symbol_list;
 } LNK_LibWriter;
@@ -85,17 +85,17 @@ typedef struct LNK_LibBuild
 {
   U64            symbol_count;
   U64            member_count;
-  LNK_LibSymbol *symbol_array;
-  LNK_LibMember *member_array;
+  LNK_LibSymbol* symbol_array;
+  LNK_LibMember* member_array;
 } LNK_LibBuild;
 
 ////////////////////////////////
 
 typedef struct
 {
-  LNK_LibNode     *node_arr;
-  String8         *data_arr;
-  String8         *path_arr;
+  LNK_LibNode*     node_arr;
+  String8*         data_arr;
+  String8*         path_arr;
   U64              base_input_idx;
 } LNK_LibIniter;
 

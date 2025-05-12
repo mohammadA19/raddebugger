@@ -115,14 +115,14 @@ typedef String8List LNK_InputLibList;
 typedef struct LNK_InputImport
 {
   COFF_ParsedArchiveImportHeader       import_header;
-  struct LNK_InputImport *next;
+  LNK_InputImport* next;
 } LNK_InputImport;
 
 typedef struct LNK_InputImportList
 {
   U64              count;
-  LNK_InputImport *first;
-  LNK_InputImport *last;
+  LNK_InputImport* first;
+  LNK_InputImport* last;
 } LNK_InputImportList;
 
 ////////////////////////////////
@@ -136,42 +136,42 @@ typedef struct LNK_BaseRelocPage
 
 typedef struct LNK_BaseRelocPageNode
 {
-  struct LNK_BaseRelocPageNode *next;
+  LNK_BaseRelocPageNode* next;
   LNK_BaseRelocPage             v;
 } LNK_BaseRelocPageNode;
 
 typedef struct LNK_BaseRelocPageList
 {
   U64                    count;
-  LNK_BaseRelocPageNode *first;
-  LNK_BaseRelocPageNode *last;
+  LNK_BaseRelocPageNode* first;
+  LNK_BaseRelocPageNode* last;
 } LNK_BaseRelocPageList;
 
 typedef struct LNK_BaseRelocPageArray
 {
   U64                count;
-  LNK_BaseRelocPage *v;
+  LNK_BaseRelocPage* v;
 } LNK_BaseRelocPageArray;
 
 typedef struct
 {
   U64                     page_size;
-  LNK_Section           **sect_id_map;
-  LNK_Reloc             **reloc_arr;
-  Rng1U64                *range_arr;
-  LNK_BaseRelocPageList  *list_arr;
-  HashTable             **page_ht_arr;
+  LNK_Section**           sect_id_map;
+  LNK_Reloc**             reloc_arr;
+  Rng1U64*                range_arr;
+  LNK_BaseRelocPageList*  list_arr;
+  HashTable**             page_ht_arr;
   B32                     is_large_addr_aware;
 } LNK_BaseRelocTask;
 
 typedef struct
 {
-  Rng1U64                *ranges;
+  Rng1U64*                ranges;
   U64                     page_size;
-  LNK_Section           **sect_id_map;
-  LNK_BaseRelocPageList  *list_arr;
-  LNK_Obj               **obj_arr;
-  HashTable             **page_ht_arr;
+  LNK_Section**           sect_id_map;
+  LNK_BaseRelocPageList*  list_arr;
+  LNK_Obj**               obj_arr;
+  HashTable**             page_ht_arr;
   B32                     is_large_addr_aware;
 } LNK_ObjBaseRelocTask;
 
@@ -185,15 +185,15 @@ typedef struct
 typedef struct
 {
   PathStyle               path_style;
-  LNK_SymbolTable        *symtab;
+  LNK_SymbolTable*        symtab;
   LNK_SymbolNodeArray     lookup_node_arr;
-  LNK_SymbolFinderResult *result_arr;
-  Rng1U64                *range_arr;
+  LNK_SymbolFinderResult* result_arr;
+  Rng1U64*                range_arr;
 } LNK_SymbolFinder;
 
 typedef struct
 {
-  LNK_SymbolTable  *symtab;
+  LNK_SymbolTable*  symtab;
   union {
     LNK_ObjNodeArray objs;
     LNK_LibNodeArray libs;
@@ -203,22 +203,22 @@ typedef struct
 typedef struct
 {
   String8            image_data;
-  LNK_SymbolTable   *symtab;
-  LNK_SectionTable  *sectab;
-  LNK_Section      **sect_id_map;
+  LNK_SymbolTable*   symtab;
+  LNK_SectionTable*  sectab;
+  LNK_Section**      sect_id_map;
   U64                base_addr;
-  LNK_Section      **sect_arr;
-  Rng1U64           *range_arr;
+  LNK_Section**      sect_arr;
+  Rng1U64*           range_arr;
 } LNK_SectionRelocPatcher;
 
 typedef struct
 {
   String8            image_data;
-  LNK_SymbolTable   *symtab;
-  LNK_SectionTable  *sectab;
-  LNK_Section      **sect_id_map;
+  LNK_SymbolTable*   symtab;
+  LNK_SectionTable*  sectab;
+  LNK_Section**      sect_id_map;
   U64                base_addr;
-  LNK_Obj          **obj_arr;
+  LNK_Obj**          obj_arr;
 } LNK_ObjRelocPatcher;
 
 typedef struct
@@ -231,8 +231,8 @@ typedef struct
 typedef struct
 {
   String8  data;
-  Rng1U64 *ranges;
-  U128    *hashes;
+  Rng1U64* ranges;
+  U128*    hashes;
 } LNK_Blake3Hasher;
 
 ////////////////////////////////

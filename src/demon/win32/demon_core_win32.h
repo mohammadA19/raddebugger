@@ -94,11 +94,11 @@ enum DMN_W32_EntityKind
 
 struct DMN_W32_Entity
 {
-  DMN_W32_Entity *first;
-  DMN_W32_Entity *last;
-  DMN_W32_Entity *next;
-  DMN_W32_Entity *prev;
-  DMN_W32_Entity *parent;
+  DMN_W32_Entity* first;
+  DMN_W32_Entity* last;
+  DMN_W32_Entity* next;
+  DMN_W32_Entity* prev;
+  DMN_W32_Entity* parent;
   DMN_W32_EntityKind kind;
   U32 gen;
   U64 id;
@@ -132,22 +132,22 @@ struct DMN_W32_Entity
 
 struct DMN_W32_EntityNode
 {
-  DMN_W32_EntityNode *next;
-  DMN_W32_Entity *v;
+  DMN_W32_EntityNode* next;
+  DMN_W32_Entity* v;
 }
 
 struct DMN_W32_EntityIDHashNode
 {
-  DMN_W32_EntityIDHashNode *next;
-  DMN_W32_EntityIDHashNode *prev;
+  DMN_W32_EntityIDHashNode* next;
+  DMN_W32_EntityIDHashNode* prev;
   U64 id;
-  DMN_W32_Entity *entity;
+  DMN_W32_Entity* entity;
 }
 
 struct DMN_W32_EntityIDHashSlot
 {
-  DMN_W32_EntityIDHashNode *first;
-  DMN_W32_EntityIDHashNode *last;
+  DMN_W32_EntityIDHashNode* first;
+  DMN_W32_EntityIDHashNode* last;
 }
 
 ////////////////////////////////
@@ -181,7 +181,7 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 struct DMN_W32_Shared
 {
   // rjf: top-level info
-  Arena *arena;
+  Arena* arena;
   String8List env_strings;
   
   // rjf: access locking mechanism
@@ -194,17 +194,17 @@ struct DMN_W32_Shared
   U64 reg_gen;
   
   // rjf: detaching info
-  Arena *detach_arena;
+  Arena* detach_arena;
   DMN_HandleList detach_processes;
   
   // rjf: entity state
-  Arena *entities_arena;
-  DMN_W32_Entity *entities_base;
-  DMN_W32_Entity *entities_first_free;
+  Arena* entities_arena;
+  DMN_W32_Entity* entities_base;
+  DMN_W32_Entity* entities_first_free;
   U64 entities_count;
-  DMN_W32_EntityIDHashSlot *entities_id_hash_slots;
+  DMN_W32_EntityIDHashSlot* entities_id_hash_slots;
   U64 entities_id_hash_slots_count;
-  DMN_W32_EntityIDHashNode *entities_id_hash_node_free;
+  DMN_W32_EntityIDHashNode* entities_id_hash_node_free;
   
   // rjf: launch state
   B32 new_process_pending;

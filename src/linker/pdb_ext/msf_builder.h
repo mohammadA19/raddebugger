@@ -15,20 +15,20 @@
 typedef struct MSF_PageNumberArray
 {
   U64             count;
-  MSF_PageNumber *v;
+  MSF_PageNumber* v;
 } MSF_PageNumberArray;
 
 typedef struct MSF_PageNode
 {
-  struct MSF_PageNode *next;
-  struct MSF_PageNode *prev;
+  MSF_PageNode* next;
+  MSF_PageNode* prev;
   MSF_PageNumber       pn;
 } MSF_PageNode;
 
 typedef struct MSF_PageList
 {
-  MSF_PageNode *first;
-  MSF_PageNode *last;
+  MSF_PageNode* first;
+  MSF_PageNode* last;
   MSF_UInt      count;
 } MSF_PageList;
 
@@ -37,41 +37,41 @@ typedef struct MSF_Stream
   MSF_StreamNumber sn;
   MSF_UInt         size;
   MSF_UInt         pos;
-  MSF_PageNode    *pos_page;
+  MSF_PageNode*    pos_page;
   MSF_PageList     page_list;
 } MSF_Stream;
 
 typedef struct MSF_StreamNode
 {
-  struct MSF_StreamNode *next;
-  struct MSF_StreamNode *prev;
+  MSF_StreamNode* next;
+  MSF_StreamNode* prev;
   MSF_Stream             data;
 } MSF_StreamNode;
 
 typedef struct MSF_StreamList
 {
   MSF_UInt        count;
-  MSF_StreamNode *first;
-  MSF_StreamNode *last;
+  MSF_StreamNode* first;
+  MSF_StreamNode* last;
 } MSF_StreamList;
 
 typedef struct MSF_PageDataNode
 {
-  struct MSF_PageDataNode *next;
-  struct MSF_PageDataNode *prev;
-  U8                      *data;
+  MSF_PageDataNode* next;
+  MSF_PageDataNode* prev;
+  U8*                      data;
 } MSF_PageDataNode;
 
 typedef struct MSF_PageDataList
 {
-  MSF_PageDataNode *first;
-  MSF_PageDataNode *last;
+  MSF_PageDataNode* first;
+  MSF_PageDataNode* last;
   MSF_UInt          count;
 } MSF_PageDataList;
 
 typedef struct MSF_Context
 {
-  Arena           *arena;
+  Arena*           arena;
   MSF_UInt         page_size;
   MSF_UInt         active_fpm;
   MSF_UInt         fpm_rover;
@@ -121,7 +121,7 @@ typedef struct
   MSF_PageList     page_list;
   MSF_UInt         stream_pos;
   String8          data;
-  Rng1U64         *range_arr;
+  Rng1U64*         range_arr;
 } MSF_WriteTask;
 
 ////////////////////////////////

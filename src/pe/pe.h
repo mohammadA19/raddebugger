@@ -22,10 +22,10 @@ struct PE_DosHeader
   U16 init_cs;
   U16 reloc_table_file_off;
   U16 overlay_number;
-  U16 reserved[4];
+  U16[4] reserved;
   U16 oem_id;
   U16 oem_info;
-  U16 reserved2[10];
+  U16[10] reserved2;
   U32 coff_file_offset;
 }
 
@@ -252,7 +252,7 @@ struct PE_DebugMisc
   PE_DebugMiscType data_type;
   U32              size;
   U8               unicode;
-  U8               pad[3];
+  U8[3]               pad;
   //char name[];
 }
 
@@ -758,19 +758,19 @@ struct PE_BaseRelocBlock
 {
   U64  page_virt_off;
   U64  entry_count;
-  U16 *entries;
+  U16* entries;
 }
 
 struct PE_BaseRelocBlockNode
 {
-  PE_BaseRelocBlockNode *next;
+  PE_BaseRelocBlockNode* next;
   PE_BaseRelocBlock      v;
 }
 
 struct PE_BaseRelocBlockList
 {
-  PE_BaseRelocBlockNode *first;
-  PE_BaseRelocBlockNode *last;
+  PE_BaseRelocBlockNode* first;
+  PE_BaseRelocBlockNode* last;
   U64                    count;
 }
 
@@ -783,7 +783,7 @@ struct PE_Resource
   union
   {
     COFF_ResourceDataEntry leaf;
-    struct PE_ResourceDir *dir;
+    PE_ResourceDir* dir;
     struct
     {
       COFF_ResourceID          type;
@@ -797,20 +797,20 @@ struct PE_Resource
 
 struct PE_ResourceNode
 {
-  PE_ResourceNode *next;
+  PE_ResourceNode* next;
   PE_Resource      data;
 }
 
 struct PE_ResourceList
 {
-  PE_ResourceNode *first;
-  PE_ResourceNode *last;
+  PE_ResourceNode* first;
+  PE_ResourceNode* last;
   U64              count;
 }
 
 struct PE_ResourceArray
 {
-  PE_Resource *v;
+  PE_Resource* v;
   U64          count;
 }
 
@@ -842,7 +842,7 @@ struct PE_ParsedExportTable
   U16              minor_ver;
   U64              ordinal_base;
   U64              export_count;
-  PE_ParsedExport *exports;
+  PE_ParsedExport* exports;
 }
 
 enum PE_ParsedImportType : U32 PE_ParsedImportTypeEnum
@@ -874,13 +874,13 @@ struct PE_ParsedStaticDLLImport
   COFF_TimeStamp   time_stamp;
   U64              forwarder_chain;
   U64              import_count;
-  PE_ParsedImport *imports;
+  PE_ParsedImport* imports;
 }
 
 struct PE_ParsedStaticImportTable
 {
   U64                       count;
-  PE_ParsedStaticDLLImport *v;
+  PE_ParsedStaticDLLImport* v;
 }
 
 struct PE_ParsedDelayDLLImport
@@ -894,24 +894,24 @@ struct PE_ParsedDelayDLLImport
   U64              unload_table_voff;
   COFF_TimeStamp   time_stamp;
   U64              bound_table_count;
-  U64             *bound_table;
+  U64*             bound_table;
   U64              unload_table_count;
-  U64             *unload_table;
+  U64*             unload_table;
   U64              import_count;
-  PE_ParsedImport *imports;
+  PE_ParsedImport* imports;
 }
 
 struct PE_ParsedDelayImportTable
 {
   U64                      count;
-  PE_ParsedDelayDLLImport *v;
+  PE_ParsedDelayDLLImport* v;
 }
 
 struct PE_ParsedTLS
 {
   PE_TLSHeader64 header;
   U64            callback_count;
-  U64           *callback_addrs;
+  U64*           callback_addrs;
 }
 
 ////////////////////////////////
@@ -940,7 +940,7 @@ struct PE_BinInfo
   Rng1U64         section_table_range;
   Rng1U64         symbol_table_range;
   Rng1U64         string_table_range;
-  Rng1U64        *data_dir_franges;
+  Rng1U64*        data_dir_franges;
   U32             data_dir_count;
   PE_TLSHeader64  tls_header;
 }
@@ -975,14 +975,14 @@ typedef struct PE_DebugInfo
 
 typedef struct PE_DebugInfoNode
 {
-  struct PE_DebugInfoNode *next;
+  PE_DebugInfoNode* next;
   PE_DebugInfo             v;
 } PE_DebugInfoNode;
 
 typedef struct PE_DebugInfoList
 {
-  PE_DebugInfoNode *first;
-  PE_DebugInfoNode *last;
+  PE_DebugInfoNode* first;
+  PE_DebugInfoNode* last;
   U64               count;
 } PE_DebugInfoList;
 

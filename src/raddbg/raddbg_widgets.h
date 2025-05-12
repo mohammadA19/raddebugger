@@ -50,27 +50,27 @@ struct RD_CellParams
   String8 description;
   
   //- rjf: expander r/w info
-  B32 *expanded_out;
+  B32* expanded_out;
   
   //- rjf: toggle-switch r/w info
-  B32 *toggled_out;
+  B32* toggled_out;
   
   //- rjf: slider info r/w info
-  F32 *slider_value_out;
+  F32* slider_value_out;
   
   //- rjf: bindings name w info
   String8 bindings_name;
   
   //- rjf: revert out
-  B32 *revert_out;
+  B32* revert_out;
   
   //- rjf: text editing r/w info
-  TxtPt *cursor;
-  TxtPt *mark;
-  U8 *edit_buffer;
+  TxtPt* cursor;
+  TxtPt* mark;
+  U8* edit_buffer;
   U64 edit_buffer_size;
-  U64 *edit_string_size_out;
-  UI_Key *line_edit_key_out;
+  U64* edit_string_size_out;
+  UI_Key* line_edit_key_out;
 }
 
 ////////////////////////////////
@@ -89,14 +89,14 @@ struct RD_CodeSliceParams
   // rjf: content
   RD_CodeSliceFlags flags;
   Rng1S64 line_num_range;
-  String8 *line_text;
-  Rng1U64 *line_ranges;
-  TXT_TokenArray *line_tokens;
-  RD_CfgList *line_bps;
-  CTRL_EntityList *line_ips;
-  RD_CfgList *line_pins;
-  U64 *line_vaddrs;
-  D_LineList *line_infos;
+  String8* line_text;
+  Rng1U64* line_ranges;
+  TXT_TokenArray* line_tokens;
+  RD_CfgList* line_bps;
+  CTRL_EntityList* line_ips;
+  RD_CfgList* line_pins;
+  U64* line_vaddrs;
+  D_LineList* line_infos;
   DI_KeyList relevant_dbgi_keys;
   
   // rjf: visual parameters

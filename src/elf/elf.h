@@ -654,7 +654,7 @@ enum ELF_Type : U16 ELF_TypeEnum
 
 typedef struct ELF_Hdr64
 {
-  U8              e_ident[ELF_Identifier_Max];
+  U8[ELF_Identifier_Max]              e_ident;
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
   U32             e_version;
@@ -672,7 +672,7 @@ typedef struct ELF_Hdr64
 
 typedef struct ELF_Hdr32
 {
-  U8              e_ident[ELF_Identifier_Max];
+  U8[ELF_Identifier_Max]              e_ident;
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
   U32             e_version;

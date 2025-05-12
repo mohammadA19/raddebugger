@@ -6,41 +6,41 @@
 
 struct E_IRCacheNode
 {
-  E_IRCacheNode *next;
-  E_Expr *expr;
-  E_IRNode *overridden_node;
+  E_IRCacheNode* next;
+  E_Expr* expr;
+  E_IRNode* overridden_node;
   E_IRTreeAndType irtree;
 }
 
 struct E_IRCacheSlot
 {
-  E_IRCacheNode *first;
-  E_IRCacheNode *last;
+  E_IRCacheNode* first;
+  E_IRCacheNode* last;
 }
 
 struct E_IRState
 {
-  Arena *arena;
+  Arena* arena;
   U64 arena_eval_start_pos;
   
   // rjf: ir context
-  E_IRCtx *ctx;
+  E_IRCtx* ctx;
   
   // rjf: unpacked ctx
-  RDI_Procedure *thread_ip_procedure;
+  RDI_Procedure* thread_ip_procedure;
   
   // rjf: overridden irtree
-  E_IRTreeAndType *overridden_irtree;
+  E_IRTreeAndType* overridden_irtree;
   B32 disallow_autohooks;
   B32 disallow_chained_fastpaths;
   
   // rjf: caches
-  E_UsedExprMap *used_expr_map;
-  E_TypeAutoHookCacheMap *type_auto_hook_cache_map;
+  E_UsedExprMap* used_expr_map;
+  E_TypeAutoHookCacheMap* type_auto_hook_cache_map;
   U64 string_id_gen;
-  E_StringIDMap *string_id_map;
+  E_StringIDMap* string_id_map;
   U64 ir_cache_slots_count;
-  E_IRCacheSlot *ir_cache_slots;
+  E_IRCacheSlot* ir_cache_slots;
 }
 
 ////////////////////////////////

@@ -25,7 +25,7 @@
 
 struct LNX_FileIter{
   int fd;
-  DIR *dir;
+  DIR* dir;
 }
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(LNX_FileIter), file_iter_memory_size);
 
@@ -40,13 +40,13 @@ enum LNX_EntityKind{
 }
 
 struct LNX_Entity{
-  LNX_Entity *next;
+  LNX_Entity* next;
   LNX_EntityKind kind;
   volatile U32 reference_mask;
   union{
     struct{
-      OS_ThreadFunctionType *func;
-      void *ptr;
+      OS_ThreadFunctionType* func;
+      void* ptr;
       pthread_t handle;
     } thread;
     pthread_mutex_t mutex;
@@ -58,9 +58,9 @@ struct LNX_Entity{
 //~ NOTE(allen): Safe Call Chain
 
 struct LNX_SafeCallChain{
-  LNX_SafeCallChain *next;
-  OS_ThreadFunctionType *fail_handler;
-  void *ptr;
+  LNX_SafeCallChain* next;
+  OS_ThreadFunctionType* fail_handler;
+  void* ptr;
 }
 
 ////////////////////////////////

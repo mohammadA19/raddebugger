@@ -8,8 +8,8 @@
 
 struct P2R_TPIHashParseIn
 {
-  PDB_Strtbl *strtbl;
-  PDB_TpiParsed *tpi;
+  PDB_Strtbl* strtbl;
+  PDB_TpiParsed* tpi;
   String8 hash_data;
   String8 aux_data;
 }
@@ -67,14 +67,14 @@ struct P2R_CompUnitContributionsParseIn
 
 struct P2R_LinkNameNode
 {
-  P2R_LinkNameNode *next;
+  P2R_LinkNameNode* next;
   U64 voff;
   String8 name;
 }
 
 struct P2R_LinkNameMap
 {
-  P2R_LinkNameNode **buckets;
+  P2R_LinkNameNode** buckets;
   U64 buckets_count;
   U64 bucket_collision_count;
   U64 link_name_count;
@@ -84,13 +84,13 @@ struct P2R_LinkNameMap
 
 struct P2R_SrcFileNode
 {
-  P2R_SrcFileNode *next;
-  RDIM_SrcFile *src_file;
+  P2R_SrcFileNode* next;
+  RDIM_SrcFile* src_file;
 }
 
 struct P2R_SrcFileMap
 {
-  P2R_SrcFileNode **slots;
+  P2R_SrcFileNode** slots;
   U64 slots_count;
 }
 
@@ -98,12 +98,12 @@ struct P2R_SrcFileMap
 
 struct P2R_UnitConvertIn
 {
-  PDB_Strtbl *pdb_strtbl;
+  PDB_Strtbl* pdb_strtbl;
   COFF_SectionHeaderArray coff_sections;
-  PDB_CompUnitArray *comp_units;
-  PDB_CompUnitContributionArray *comp_unit_contributions;
-  CV_SymParsed **comp_unit_syms;
-  CV_C13Parsed **comp_unit_c13s;
+  PDB_CompUnitArray* comp_units;
+  PDB_CompUnitContributionArray* comp_unit_contributions;
+  CV_SymParsed** comp_unit_syms;
+  CV_C13Parsed** comp_unit_c13s;
 }
 
 struct P2R_UnitConvertOut
@@ -111,26 +111,26 @@ struct P2R_UnitConvertOut
   RDIM_UnitChunkList units;
   RDIM_SrcFileChunkList src_files;
   RDIM_LineTableChunkList line_tables;
-  RDIM_LineTable **units_first_inline_site_line_tables;
+  RDIM_LineTable** units_first_inline_site_line_tables;
 }
 
 //- rjf: link name map building tasks
 
 struct P2R_LinkNameMapBuildIn
 {
-  CV_SymParsed *sym;
+  CV_SymParsed* sym;
   COFF_SectionHeaderArray coff_sections;
-  P2R_LinkNameMap *link_name_map;
+  P2R_LinkNameMap* link_name_map;
 }
 
 //- rjf: udt conversion
 
 struct P2R_UDTConvertIn
 {
-  CV_LeafParsed *tpi_leaf;
+  CV_LeafParsed* tpi_leaf;
   CV_TypeId itype_first;
   CV_TypeId itype_opl;
-  RDIM_Type **itype_type_ptrs;
+  RDIM_Type** itype_type_ptrs;
 }
 
 //- rjf: symbol stream conversion
@@ -139,15 +139,15 @@ struct P2R_SymbolStreamConvertIn
 {
   RDI_Arch arch;
   COFF_SectionHeaderArray coff_sections;
-  PDB_TpiHashParsed *tpi_hash;
-  CV_LeafParsed *tpi_leaf;
-  CV_LeafParsed *ipi_leaf;
-  CV_SymParsed *sym;
+  PDB_TpiHashParsed* tpi_hash;
+  CV_LeafParsed* tpi_leaf;
+  CV_LeafParsed* ipi_leaf;
+  CV_SymParsed* sym;
   U64 sym_ranges_first;
   U64 sym_ranges_opl;
-  RDIM_Type **itype_type_ptrs;
-  P2R_LinkNameMap *link_name_map;
-  RDIM_LineTable *first_inline_site_line_table;
+  RDIM_Type** itype_type_ptrs;
+  P2R_LinkNameMap* link_name_map;
+  RDIM_LineTable* first_inline_site_line_table;
 }
 
 struct P2R_SymbolStreamConvertOut

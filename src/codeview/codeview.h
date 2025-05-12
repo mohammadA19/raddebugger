@@ -2749,7 +2749,7 @@ enum CV_TypeIndexSource CV_TypeIndexSource;
 
 struct CV_TypeIndexInfo
 {
-  struct CV_TypeIndexInfo *next;
+  CV_TypeIndexInfo* next;
   U64                      offset;
   CV_TypeIndexSource       source;
 }
@@ -2757,14 +2757,14 @@ struct CV_TypeIndexInfo
 struct CV_TypeIndexInfoList
 {
   U64               count;
-  CV_TypeIndexInfo *first;
-  CV_TypeIndexInfo *last;
+  CV_TypeIndexInfo* first;
+  CV_TypeIndexInfo* last;
 }
 
 struct CV_TypeIndexArray
 {
   U32           count;
-  CV_TypeIndex *v;
+  CV_TypeIndex* v;
 }
 
 ////////////////////////////////

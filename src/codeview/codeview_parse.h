@@ -13,7 +13,7 @@
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
-  U8             *val;
+  U8*             val;
   U64             encoded_size;
 }
 
@@ -27,20 +27,20 @@ struct CV_RecRange
 
 struct CV_RecRangeChunk
 {
-  struct CV_RecRangeChunk *next;
-  CV_RecRange              ranges[CV_REC_RANGE_CHUNK_SIZE];
+  CV_RecRangeChunk* next;
+  CV_RecRange[CV_REC_RANGE_CHUNK_SIZE]              ranges;
 }
 
 struct CV_RecRangeStream
 {
-  CV_RecRangeChunk *first_chunk;
-  CV_RecRangeChunk *last_chunk;
+  CV_RecRangeChunk* first_chunk;
+  CV_RecRangeChunk* last_chunk;
   U64               total_count;
 }
 
 struct CV_RecRangeArray
 {
-  CV_RecRange *ranges;
+  CV_RecRange* ranges;
   U64          count;
 }
 
@@ -135,15 +135,15 @@ struct CV_C13LinesParsed
   
   // parsed info
   String8  file_name;
-  U64     *voffs;     // [line_count + 1]
-  U32     *line_nums; // [line_count]
-  U16     *col_nums;  // [2*line_count]
+  U64*     voffs;     // [line_count + 1]
+  U32*     line_nums; // [line_count]
+  U16*     col_nums;  // [2*line_count]
   U32      line_count;
 }
 
 struct CV_C13LinesParsedNode
 {
-  CV_C13LinesParsedNode *next;
+  CV_C13LinesParsedNode* next;
   CV_C13LinesParsed      v;
 }
 
@@ -154,26 +154,26 @@ struct CV_C13InlineeLinesParsed
   String8    file_name;
   U32        first_source_ln;
   U32        extra_file_count;
-  U32       *extra_files;
+  U32*       extra_files;
 }
 
 struct CV_C13InlineeLinesParsedNode
 {
-  CV_C13InlineeLinesParsedNode *next;
-  CV_C13InlineeLinesParsedNode *hash_next;
+  CV_C13InlineeLinesParsedNode* next;
+  CV_C13InlineeLinesParsedNode* hash_next;
   CV_C13InlineeLinesParsed      v;
 }
 
 struct CV_C13SubSectionNode
 {
-  struct CV_C13SubSectionNode  *next;
+  CV_C13SubSectionNode*  next;
   CV_C13SubSectionKind          kind;
   U32                           off;
   U32                           size;
-  CV_C13LinesParsedNode        *lines_first;
-  CV_C13LinesParsedNode        *lines_last;
-  CV_C13InlineeLinesParsedNode *inlinee_lines_first;
-  CV_C13InlineeLinesParsedNode *inlinee_lines_last;
+  CV_C13LinesParsedNode*        lines_first;
+  CV_C13LinesParsedNode*        lines_last;
+  CV_C13InlineeLinesParsedNode* inlinee_lines_first;
+  CV_C13InlineeLinesParsedNode* inlinee_lines_last;
 }
 
 struct CV_C13Parsed
@@ -182,15 +182,15 @@ struct CV_C13Parsed
   String8 data;
   
   // rjf: full sub-section list
-  CV_C13SubSectionNode *first_sub_section;
-  CV_C13SubSectionNode *last_sub_section;
+  CV_C13SubSectionNode* first_sub_section;
+  CV_C13SubSectionNode* last_sub_section;
   U64                   sub_section_count;
   
   // rjf: fastpath to file checksums section
-  CV_C13SubSectionNode *file_chksms_sub_section;
+  CV_C13SubSectionNode* file_chksms_sub_section;
   
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
-  CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots;
+  CV_C13InlineeLinesParsedNode** inlinee_lines_parsed_slots;
   U64                            inlinee_lines_parsed_slots_count;
 }
 
@@ -206,7 +206,7 @@ struct CV_UDTInfo
 
 struct CV_TypeIdArray
 {
-  CV_TypeId *itypes;
+  CV_TypeId* itypes;
   U64        count;
 }
 

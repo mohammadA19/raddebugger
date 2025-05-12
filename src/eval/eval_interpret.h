@@ -6,16 +6,16 @@
 
 struct E_InterpretCtx
 {
-  void *space_rw_user_data;
-  E_SpaceRWFunction *space_read;
-  E_SpaceRWFunction *space_write;
+  void* space_rw_user_data;
+  E_SpaceRWFunction* space_read;
+  E_SpaceRWFunction* space_write;
   E_Space primary_space;
   Arch reg_arch;
   E_Space reg_space;
   U64 reg_unwind_count;
-  U64 *module_base;
-  U64 *frame_base;
-  U64 *tls_base;
+  U64* module_base;
+  U64* frame_base;
+  U64* tls_base;
 }
 
 ////////////////////////////////

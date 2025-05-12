@@ -24,7 +24,7 @@ enum E_MsgKind
 
 struct E_Msg
 {
-  E_Msg *next;
+  E_Msg* next;
   E_MsgKind kind;
   Rng1U64 range;
   String8 text;
@@ -32,8 +32,8 @@ struct E_Msg
 
 struct E_MsgList
 {
-  E_Msg *first;
-  E_Msg *last;
+  E_Msg* first;
+  E_Msg* last;
   E_MsgKind max_kind;
   U64 count;
 }
@@ -68,7 +68,7 @@ enum
 
 struct E_Op
 {
-  E_Op *next;
+  E_Op* next;
   RDI_EvalOp opcode;
   E_Value value;
   String8 string;
@@ -76,8 +76,8 @@ struct E_Op
 
 struct E_OpList
 {
-  E_Op *first;
-  E_Op *last;
+  E_Op* first;
+  E_Op* last;
   U64 op_count;
   U64 encoded_size;
 }
@@ -129,7 +129,7 @@ struct E_Space
   E_SpaceKind kind;
   union
   {
-    U64 u64s[3];
+    U64[3] u64s;
     struct
     {
       U64 u64_0;
@@ -154,7 +154,7 @@ enum E_TypeKeyKind
 struct E_TypeKey
 {
   E_TypeKeyKind kind;
-  U32 u32[3];
+  U32[3] u32;
   // [0] -> E_TypeKind (Basic, Cons, Ext); Arch (Reg, RegAlias)
   // [1] -> Type Index In RDI (Ext); Code (Reg, RegAlias); Type Index In Constructed (Cons)
   // [2] -> RDI Index (Ext)
@@ -162,14 +162,14 @@ struct E_TypeKey
 
 struct E_TypeKeyNode
 {
-  E_TypeKeyNode *next;
+  E_TypeKeyNode* next;
   E_TypeKey v;
 }
 
 struct E_TypeKeyList
 {
-  E_TypeKeyNode *first;
-  E_TypeKeyNode *last;
+  E_TypeKeyNode* first;
+  E_TypeKeyNode* last;
   U64 count;
 }
 
@@ -189,23 +189,23 @@ struct E_Token
 
 struct E_TokenChunkNode
 {
-  E_TokenChunkNode *next;
-  E_Token *v;
+  E_TokenChunkNode* next;
+  E_Token* v;
   U64 count;
   U64 cap;
 }
 
 struct E_TokenChunkList
 {
-  E_TokenChunkNode *first;
-  E_TokenChunkNode *last;
+  E_TokenChunkNode* first;
+  E_TokenChunkNode* last;
   U64 node_count;
   U64 total_count;
 }
 
 struct E_TokenArray
 {
-  E_Token *v;
+  E_Token* v;
   U64 count;
 }
 
@@ -224,11 +224,11 @@ enum E_Mode
 
 struct E_Expr
 {
-  E_Expr *first;
-  E_Expr *last;
-  E_Expr *next;
-  E_Expr *prev;
-  E_Expr *ref;
+  E_Expr* first;
+  E_Expr* last;
+  E_Expr* next;
+  E_Expr* prev;
+  E_Expr* ref;
   Rng1U64 range;
   E_ExprKind kind;
   E_Mode mode;
@@ -242,29 +242,29 @@ struct E_Expr
 
 struct E_ExprChain
 {
-  E_Expr *first;
-  E_Expr *last;
+  E_Expr* first;
+  E_Expr* last;
 }
 
 struct E_ExprNode
 {
-  E_ExprNode *next;
-  E_Expr *v;
+  E_ExprNode* next;
+  E_Expr* v;
 }
 
 struct E_ExprList
 {
-  E_ExprNode *first;
-  E_ExprNode *last;
+  E_ExprNode* first;
+  E_ExprNode* last;
   U64 count;
 }
 
 struct E_Parse
 {
   E_TokenArray tokens;
-  E_Token *last_token;
-  E_Expr *expr;
-  E_Expr *last_expr;
+  E_Token* last_token;
+  E_Expr* expr;
+  E_Expr* last_expr;
   E_MsgList msgs;
 }
 
@@ -273,9 +273,9 @@ struct E_Parse
 
 struct E_IRNode
 {
-  E_IRNode *first;
-  E_IRNode *last;
-  E_IRNode *next;
+  E_IRNode* first;
+  E_IRNode* last;
+  E_IRNode* next;
   RDI_EvalOp op;
   E_Space space;
   String8 string;
@@ -284,12 +284,12 @@ struct E_IRNode
 
 struct E_IRTreeAndType
 {
-  E_IRNode *root;
+  E_IRNode* root;
   E_TypeKey type_key;
-  void *user_data;
+  void* user_data;
   E_Mode mode;
   E_MsgList msgs;
-  E_IRTreeAndType *prev;
+  E_IRTreeAndType* prev;
 }
 
 ////////////////////////////////
@@ -310,7 +310,7 @@ struct E_Eval
   E_Key key;
   E_Key parent_key;
   String8 string;
-  E_Expr *expr;
+  E_Expr* expr;
   E_IRTreeAndType irtree;
   String8 bytecode;
   E_InterpretationCode code;
@@ -364,20 +364,20 @@ struct E_Member
 
 struct E_MemberNode
 {
-  E_MemberNode *next;
+  E_MemberNode* next;
   E_Member v;
 }
 
 struct E_MemberList
 {
-  E_MemberNode *first;
-  E_MemberNode *last;
+  E_MemberNode* first;
+  E_MemberNode* last;
   U64 count;
 }
 
 struct E_MemberArray
 {
-  E_Member *v;
+  E_Member* v;
   U64 count;
 }
 
@@ -389,31 +389,31 @@ struct E_EnumVal
 
 struct E_EnumValNode
 {
-  E_EnumValNode *next;
+  E_EnumValNode* next;
   E_EnumVal v;
 }
 
 struct E_EnumValList
 {
-  E_EnumValNode *first;
-  E_EnumValNode *last;
+  E_EnumValNode* first;
+  E_EnumValNode* last;
   U64 count;
 }
 
 struct E_EnumValArray
 {
-  E_EnumVal *v;
+  E_EnumVal* v;
   U64 count;
 }
 
 struct E_IRExt
 {
-  void *user_data;
+  void* user_data;
 }
 
 struct E_TypeExpandInfo
 {
-  void *user_data;
+  void* user_data;
   U64 expr_count;
 }
 
@@ -449,10 +449,10 @@ typedef E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_SIG(E_TypeExpandNumFromIDFunctionType
 
 struct E_TypeExpandRule
 {
-  E_TypeExpandInfoFunctionType *info;
-  E_TypeExpandRangeFunctionType *range;
-  E_TypeExpandIDFromNumFunctionType *id_from_num;
-  E_TypeExpandNumFromIDFunctionType *num_from_id;
+  E_TypeExpandInfoFunctionType* info;
+  E_TypeExpandRangeFunctionType* range;
+  E_TypeExpandIDFromNumFunctionType* id_from_num;
+  E_TypeExpandNumFromIDFunctionType* num_from_id;
 }
 
 struct E_Type
@@ -467,12 +467,12 @@ struct E_Type
   Arch arch;
   E_TypeKey direct_type_key;
   E_TypeKey owner_type_key;
-  E_TypeKey *param_type_keys;
-  E_Member *members;
-  E_EnumVal *enum_vals;
-  E_Expr **args;
-  E_TypeIRExtFunctionType *irext;
-  E_TypeAccessFunctionType *access;
+  E_TypeKey* param_type_keys;
+  E_Member* members;
+  E_EnumVal* enum_vals;
+  E_Expr** args;
+  E_TypeIRExtFunctionType* irext;
+  E_TypeAccessFunctionType* access;
   E_TypeExpandRule expand;
 }
 
@@ -488,18 +488,18 @@ struct E_ConsTypeParams
   E_TypeKey direct_key;
   U64 count;
   U64 depth;
-  E_Member *members;
-  E_EnumVal *enum_vals;
-  E_Expr **args;
-  E_TypeIRExtFunctionType *irext;
-  E_TypeAccessFunctionType *access;
+  E_Member* members;
+  E_EnumVal* enum_vals;
+  E_Expr** args;
+  E_TypeIRExtFunctionType* irext;
+  E_TypeAccessFunctionType* access;
   E_TypeExpandRule expand;
 }
 
 struct E_ConsTypeNode
 {
-  E_ConsTypeNode *key_next;
-  E_ConsTypeNode *content_next;
+  E_ConsTypeNode* key_next;
+  E_ConsTypeNode* content_next;
   E_TypeKey key;
   E_ConsTypeParams params;
   U64 byte_size;
@@ -507,8 +507,8 @@ struct E_ConsTypeNode
 
 struct E_ConsTypeSlot
 {
-  E_ConsTypeNode *first;
-  E_ConsTypeNode *last;
+  E_ConsTypeNode* first;
+  E_ConsTypeNode* last;
 }
 
 ////////////////////////////////
@@ -516,7 +516,7 @@ struct E_ConsTypeSlot
 
 struct E_Module
 {
-  RDI_Parsed *rdi;
+  RDI_Parsed* rdi;
   Rng1U64 vaddr_range;
   Arch arch;
   E_Space space;
@@ -527,31 +527,31 @@ struct E_Module
 
 struct E_String2NumMapNode
 {
-  E_String2NumMapNode *order_next;
-  E_String2NumMapNode *hash_next;
+  E_String2NumMapNode* order_next;
+  E_String2NumMapNode* hash_next;
   String8 string;
   U64 num;
 }
 
 struct E_String2NumMapNodeArray
 {
-  E_String2NumMapNode **v;
+  E_String2NumMapNode** v;
   U64 count;
 }
 
 struct E_String2NumMapSlot
 {
-  E_String2NumMapNode *first;
-  E_String2NumMapNode *last;
+  E_String2NumMapNode* first;
+  E_String2NumMapNode* last;
 }
 
 struct E_String2NumMap
 {
   U64 slots_count;
   U64 node_count;
-  E_String2NumMapSlot *slots;
-  E_String2NumMapNode *first;
-  E_String2NumMapNode *last;
+  E_String2NumMapSlot* slots;
+  E_String2NumMapNode* first;
+  E_String2NumMapNode* last;
 }
 
 ////////////////////////////////
@@ -559,22 +559,22 @@ struct E_String2NumMap
 
 struct E_String2ExprMapNode
 {
-  E_String2ExprMapNode *hash_next;
+  E_String2ExprMapNode* hash_next;
   String8 string;
-  E_Expr *expr;
+  E_Expr* expr;
   U64 poison_count;
 }
 
 struct E_String2ExprMapSlot
 {
-  E_String2ExprMapNode *first;
-  E_String2ExprMapNode *last;
+  E_String2ExprMapNode* first;
+  E_String2ExprMapNode* last;
 }
 
 struct E_String2ExprMap
 {
   U64 slots_count;
-  E_String2ExprMapSlot *slots;
+  E_String2ExprMapSlot* slots;
 }
 
 ////////////////////////////////
@@ -582,21 +582,21 @@ struct E_String2ExprMap
 
 struct E_String2TypeKeyNode
 {
-  E_String2TypeKeyNode *next;
+  E_String2TypeKeyNode* next;
   String8 string;
   E_TypeKey key;
 }
 
 struct E_String2TypeKeySlot
 {
-  E_String2TypeKeyNode *first;
-  E_String2TypeKeyNode *last;
+  E_String2TypeKeyNode* first;
+  E_String2TypeKeyNode* last;
 }
 
 struct E_String2TypeKeyMap
 {
   U64 slots_count;
-  E_String2TypeKeySlot *slots;
+  E_String2TypeKeySlot* slots;
 }
 
 ////////////////////////////////
@@ -604,25 +604,25 @@ struct E_String2TypeKeyMap
 
 struct E_AutoHookNode
 {
-  E_AutoHookNode *hash_next;
-  E_AutoHookNode *pattern_order_next;
+  E_AutoHookNode* hash_next;
+  E_AutoHookNode* pattern_order_next;
   String8 type_string;
   String8List type_pattern_parts;
-  E_Expr *expr;
+  E_Expr* expr;
 }
 
 struct E_AutoHookSlot
 {
-  E_AutoHookNode *first;
-  E_AutoHookNode *last;
+  E_AutoHookNode* first;
+  E_AutoHookNode* last;
 }
 
 struct E_AutoHookMap
 {
   U64 slots_count;
-  E_AutoHookSlot *slots;
-  E_AutoHookNode *first_pattern;
-  E_AutoHookNode *last_pattern;
+  E_AutoHookSlot* slots;
+  E_AutoHookNode* first_pattern;
+  E_AutoHookNode* last_pattern;
 }
 
 struct E_AutoHookParams
@@ -650,27 +650,27 @@ struct E_BaseCtx
   U64 thread_unwind_count;
   
   // rjf: modules
-  E_Module *modules;
+  E_Module* modules;
   U64 modules_count;
-  E_Module *primary_module;
+  E_Module* primary_module;
   
   // rjf: space hooks
-  void *space_rw_user_data;
-  E_SpaceGenFunction *space_gen;
-  E_SpaceRWFunction *space_read;
-  E_SpaceRWFunction *space_write;
+  void* space_rw_user_data;
+  E_SpaceGenFunction* space_gen;
+  E_SpaceRWFunction* space_read;
+  E_SpaceRWFunction* space_write;
 }
 
 //- rjf: ir generation context
 
 struct E_IRCtx
 {
-  E_String2NumMap *regs_map;
-  E_String2NumMap *reg_alias_map;
-  E_String2NumMap *locals_map; // (within `primary_module`)
-  E_String2NumMap *member_map; // (within `primary_module`)
-  E_String2ExprMap *macro_map;
-  E_AutoHookMap *auto_hook_map;
+  E_String2NumMap* regs_map;
+  E_String2NumMap* reg_alias_map;
+  E_String2NumMap* locals_map; // (within `primary_module`)
+  E_String2NumMap* member_map; // (within `primary_module`)
+  E_String2ExprMap* macro_map;
+  E_AutoHookMap* auto_hook_map;
 }
 
 ////////////////////////////////
@@ -680,168 +680,168 @@ struct E_IRCtx
 
 struct E_TypeCacheNode
 {
-  E_TypeCacheNode *next;
+  E_TypeCacheNode* next;
   E_TypeKey key;
-  E_Type *type;
+  E_Type* type;
 }
 
 struct E_TypeCacheSlot
 {
-  E_TypeCacheNode *first;
-  E_TypeCacheNode *last;
+  E_TypeCacheNode* first;
+  E_TypeCacheNode* last;
 }
 
 //- rjf: member lookup cache types
 
 struct E_MemberHashNode
 {
-  E_MemberHashNode *next;
+  E_MemberHashNode* next;
   U64 member_idx;
 }
 
 struct E_MemberHashSlot
 {
-  E_MemberHashNode *first;
-  E_MemberHashNode *last;
+  E_MemberHashNode* first;
+  E_MemberHashNode* last;
 }
 
 struct E_MemberFilterNode
 {
-  E_MemberFilterNode *next;
+  E_MemberFilterNode* next;
   String8 filter;
   E_MemberArray members_filtered;
 }
 
 struct E_MemberFilterSlot
 {
-  E_MemberFilterNode *first;
-  E_MemberFilterNode *last;
+  E_MemberFilterNode* first;
+  E_MemberFilterNode* last;
 }
 
 struct E_MemberCacheNode
 {
-  E_MemberCacheNode *next;
+  E_MemberCacheNode* next;
   E_TypeKey key;
   E_MemberArray members;
   U64 member_hash_slots_count;
-  E_MemberHashSlot *member_hash_slots;
+  E_MemberHashSlot* member_hash_slots;
   U64 member_filter_slots_count;
-  E_MemberFilterSlot *member_filter_slots;
+  E_MemberFilterSlot* member_filter_slots;
 }
 
 struct E_MemberCacheSlot
 {
-  E_MemberCacheNode *first;
-  E_MemberCacheNode *last;
+  E_MemberCacheNode* first;
+  E_MemberCacheNode* last;
 }
 
 //- rjf: enum val lookup cache types
 
 struct E_EnumValHashNode
 {
-  E_EnumValHashNode *next;
+  E_EnumValHashNode* next;
   U64 val_idx;
 }
 
 struct E_EnumValHashSlot
 {
-  E_EnumValHashNode *first;
-  E_EnumValHashNode *last;
+  E_EnumValHashNode* first;
+  E_EnumValHashNode* last;
 }
 
 struct E_EnumValFilterNode
 {
-  E_EnumValFilterNode *next;
+  E_EnumValFilterNode* next;
   String8 filter;
   E_EnumValArray vals_filtered;
 }
 
 struct E_EnumValFilterSlot
 {
-  E_EnumValFilterNode *first;
-  E_EnumValFilterNode *last;
+  E_EnumValFilterNode* first;
+  E_EnumValFilterNode* last;
 }
 
 struct E_EnumValCacheNode
 {
-  E_EnumValCacheNode *next;
+  E_EnumValCacheNode* next;
   E_TypeKey key;
   U64 val_hash_slots_count;
-  E_EnumValHashSlot *val_hash_slots;
+  E_EnumValHashSlot* val_hash_slots;
   U64 val_filter_slots_count;
-  E_EnumValFilterSlot *val_filter_slots;
+  E_EnumValFilterSlot* val_filter_slots;
 }
 
 struct E_EnumValCacheSlot
 {
-  E_EnumValCacheNode *first;
-  E_EnumValCacheNode *last;
+  E_EnumValCacheNode* first;
+  E_EnumValCacheNode* last;
 }
 
 //- rjf: used expression map
 
 struct E_UsedExprNode
 {
-  E_UsedExprNode *next;
-  E_UsedExprNode *prev;
-  E_Expr *expr;
+  E_UsedExprNode* next;
+  E_UsedExprNode* prev;
+  E_Expr* expr;
 }
 
 struct E_UsedExprSlot
 {
-  E_UsedExprNode *first;
-  E_UsedExprNode *last;
+  E_UsedExprNode* first;
+  E_UsedExprNode* last;
 }
 
 struct E_UsedExprMap
 {
   U64 slots_count;
-  E_UsedExprSlot *slots;
+  E_UsedExprSlot* slots;
 }
 
 //- rjf: type key -> auto hook expression list cache
 
 struct E_TypeAutoHookCacheNode
 {
-  E_TypeAutoHookCacheNode *next;
+  E_TypeAutoHookCacheNode* next;
   E_TypeKey key;
   E_ExprList exprs;
 }
 
 struct E_TypeAutoHookCacheSlot
 {
-  E_TypeAutoHookCacheNode *first;
-  E_TypeAutoHookCacheNode *last;
+  E_TypeAutoHookCacheNode* first;
+  E_TypeAutoHookCacheNode* last;
 }
 
 struct E_TypeAutoHookCacheMap
 {
   U64 slots_count;
-  E_TypeAutoHookCacheSlot *slots;
+  E_TypeAutoHookCacheSlot* slots;
 }
 
 //- rjf: string ID cache
 
 struct E_StringIDNode
 {
-  E_StringIDNode *hash_next;
-  E_StringIDNode *id_next;
+  E_StringIDNode* hash_next;
+  E_StringIDNode* id_next;
   U64 id;
   String8 string;
 }
 
 struct E_StringIDSlot
 {
-  E_StringIDNode *first;
-  E_StringIDNode *last;
+  E_StringIDNode* first;
+  E_StringIDNode* last;
 }
 
 struct E_StringIDMap
 {
   U64 id_slots_count;
-  E_StringIDSlot *id_slots;
+  E_StringIDSlot* id_slots;
   U64 hash_slots_count;
-  E_StringIDSlot *hash_slots;
+  E_StringIDSlot* hash_slots;
 }
 
 //- rjf: cache evaluation bundles
@@ -870,28 +870,28 @@ struct E_CacheBundle
 
 struct E_CacheNode
 {
-  E_CacheNode *string_next;
-  E_CacheNode *key_next;
+  E_CacheNode* string_next;
+  E_CacheNode* key_next;
   E_CacheBundle bundle;
 }
 
 struct E_CacheLookup
 {
-  E_CacheNode *node;
+  E_CacheNode* node;
   U64 hash;
 }
 
 struct E_CacheSlot
 {
-  E_CacheNode *first;
-  E_CacheNode *last;
+  E_CacheNode* first;
+  E_CacheNode* last;
 }
 
 //- rjf: parent stack
 
 struct E_CacheParentNode
 {
-  E_CacheParentNode *next;
+  E_CacheParentNode* next;
   E_Key key;
 }
 
@@ -900,7 +900,7 @@ struct E_CacheParentNode
 struct E_Cache
 {
   //- rjf: root arena
-  Arena *arena;
+  Arena* arena;
   U64 arena_eval_start_pos;
   
   //- rjf: key ID generation counter
@@ -908,23 +908,23 @@ struct E_Cache
   
   //- rjf: key -> bundle, string -> bundle tables
   U64 key_slots_count;
-  E_CacheSlot *key_slots;
+  E_CacheSlot* key_slots;
   U64 string_slots_count;
-  E_CacheSlot *string_slots;
+  E_CacheSlot* string_slots;
   
   //- rjf: parent stack
-  E_CacheParentNode *top_parent_node;
-  E_CacheParentNode *free_parent_node;
+  E_CacheParentNode* top_parent_node;
+  E_CacheParentNode* free_parent_node;
   
   //- rjf: unpacked context
-  RDI_Procedure *thread_ip_procedure;
+  RDI_Procedure* thread_ip_procedure;
   
   //- rjf: [types] JIT-constructed types tables
   U64 cons_id_gen;
   U64 cons_content_slots_count;
   U64 cons_key_slots_count;
-  E_ConsTypeSlot *cons_content_slots;
-  E_ConsTypeSlot *cons_key_slots;
+  E_ConsTypeSlot* cons_content_slots;
+  E_ConsTypeSlot* cons_key_slots;
   
   //- rjf: [types] build-in constructed type keys
   E_TypeKey file_type_key;
@@ -932,27 +932,27 @@ struct E_Cache
   
   //- rjf: [types] member cache table
   U64 member_cache_slots_count;
-  E_MemberCacheSlot *member_cache_slots;
+  E_MemberCacheSlot* member_cache_slots;
   
   //- rjf: [types] enum val cache table
   U64 enum_val_cache_slots_count;
-  E_EnumValCacheSlot *enum_val_cache_slots;
+  E_EnumValCacheSlot* enum_val_cache_slots;
   
   //- rjf: [types] unpacked type cache
   U64 type_cache_slots_count;
-  E_TypeCacheSlot *type_cache_slots;
+  E_TypeCacheSlot* type_cache_slots;
   
   //- rjf: [ir] ir gen options
   B32 disallow_autohooks;
   B32 disallow_chained_fastpaths;
   
   //- rjf: [ir] ir caches
-  E_UsedExprMap *used_expr_map;
-  E_TypeAutoHookCacheMap *type_auto_hook_cache_map;
+  E_UsedExprMap* used_expr_map;
+  E_TypeAutoHookCacheMap* type_auto_hook_cache_map;
   
   //- rjf: [ir] string ID cache
   U64 string_id_gen;
-  E_StringIDMap *string_id_map;
+  E_StringIDMap* string_id_map;
 }
 
 ////////////////////////////////

@@ -8,123 +8,123 @@
 
 struct RDIM_BakeLineTablesIn
 {
-  RDIM_LineTableChunkList *line_tables;
+  RDIM_LineTableChunkList* line_tables;
 }
 
 //- rjf: string map baking task types
 
 struct RDIM_BakeSrcFilesStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_SrcFileChunkList *list;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_SrcFileChunkList* list;
 }
 
 struct RDIM_BakeUnitsStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_UnitChunkList *list;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_UnitChunkList* list;
 }
 
 struct RDIM_BakeUDTsStringsInNode
 {
-  RDIM_BakeUDTsStringsInNode *next;
-  RDIM_UDT *v;
+  RDIM_BakeUDTsStringsInNode* next;
+  RDIM_UDT* v;
   RDI_U64 count;
 }
 
 struct RDIM_BakeTypesStringsInNode
 {
-  RDIM_BakeTypesStringsInNode *next;
-  RDIM_Type *v;
+  RDIM_BakeTypesStringsInNode* next;
+  RDIM_Type* v;
   RDI_U64 count;
 }
 
 struct RDIM_BakeTypesStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_BakeTypesStringsInNode *first;
-  RDIM_BakeTypesStringsInNode *last;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_BakeTypesStringsInNode* first;
+  RDIM_BakeTypesStringsInNode* last;
 }
 
 struct RDIM_BakeUDTsStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_BakeUDTsStringsInNode *first;
-  RDIM_BakeUDTsStringsInNode *last;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_BakeUDTsStringsInNode* first;
+  RDIM_BakeUDTsStringsInNode* last;
 }
 
 struct RDIM_BakeSymbolsStringsInNode
 {
-  RDIM_BakeSymbolsStringsInNode *next;
-  RDIM_Symbol *v;
+  RDIM_BakeSymbolsStringsInNode* next;
+  RDIM_Symbol* v;
   RDI_U64 count;
 }
 
 struct RDIM_BakeSymbolsStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_BakeSymbolsStringsInNode *first;
-  RDIM_BakeSymbolsStringsInNode *last;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_BakeSymbolsStringsInNode* first;
+  RDIM_BakeSymbolsStringsInNode* last;
 }
 
 struct RDIM_BakeInlineSiteStringsInNode
 {
-  RDIM_BakeInlineSiteStringsInNode *next;
-  RDIM_InlineSite *v;
+  RDIM_BakeInlineSiteStringsInNode* next;
+  RDIM_InlineSite* v;
   RDI_U64 count;
 }
 
 struct RDIM_BakeInlineSiteStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_BakeInlineSiteStringsInNode *first;
-  RDIM_BakeInlineSiteStringsInNode *last;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_BakeInlineSiteStringsInNode* first;
+  RDIM_BakeInlineSiteStringsInNode* last;
 }
 
 struct RDIM_BakeScopesStringsInNode
 {
-  RDIM_BakeScopesStringsInNode *next;
-  RDIM_Scope *v;
+  RDIM_BakeScopesStringsInNode* next;
+  RDIM_Scope* v;
   RDI_U64 count;
 }
 
 struct RDIM_BakeScopesStringsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **maps;
-  RDIM_BakeScopesStringsInNode *first;
-  RDIM_BakeScopesStringsInNode *last;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** maps;
+  RDIM_BakeScopesStringsInNode* first;
+  RDIM_BakeScopesStringsInNode* last;
 }
 
 //- rjf: OLD string map baking types
 
 struct RDIM_BuildBakeStringMapIn
 {
-  RDIM_BakePathTree *path_tree;
-  RDIM_BakeParams *params;
+  RDIM_BakePathTree* path_tree;
+  RDIM_BakeParams* params;
 }
 
 struct RDIM_BuildBakeNameMapIn
 {
   RDI_NameMapKind k;
-  RDI_U64 *type_indices;
-  RDIM_BakeParams *params;
+  RDI_U64* type_indices;
+  RDIM_BakeParams* params;
 }
 
 //- rjf: string map joining task types
 
 struct RDIM_JoinBakeStringMapSlotsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose **src_maps;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose** src_maps;
   U64 src_maps_count;
-  RDIM_BakeStringMapLoose *dst_map;
+  RDIM_BakeStringMapLoose* dst_map;
   Rng1U64 slot_idx_range;
 }
 
@@ -132,9 +132,9 @@ struct RDIM_JoinBakeStringMapSlotsIn
 
 struct RDIM_SortBakeStringMapSlotsIn
 {
-  RDIM_BakeStringMapTopology *top;
-  RDIM_BakeStringMapLoose *src_map;
-  RDIM_BakeStringMapLoose *dst_map;
+  RDIM_BakeStringMapTopology* top;
+  RDIM_BakeStringMapLoose* src_map;
+  RDIM_BakeStringMapLoose* dst_map;
   U64 slot_idx;
   U64 slot_count;
 }
@@ -143,109 +143,109 @@ struct RDIM_SortBakeStringMapSlotsIn
 
 struct RDIM_BakeUnitsIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_BakePathTree *path_tree;
-  RDIM_UnitChunkList *units;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_BakePathTree* path_tree;
+  RDIM_UnitChunkList* units;
 }
 
 struct RDIM_BakeUnitVMapIn
 {
-  RDIM_UnitChunkList *units;
+  RDIM_UnitChunkList* units;
 }
 
 struct RDIM_BakeSrcFilesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_BakePathTree *path_tree;
-  RDIM_SrcFileChunkList *src_files;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_BakePathTree* path_tree;
+  RDIM_SrcFileChunkList* src_files;
 }
 
 struct RDIM_BakeUDTsIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_UDTChunkList *udts;
-  RDI_U64 *type_indices;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_UDTChunkList* udts;
+  RDI_U64* type_indices;
 }
 
 struct RDIM_BakeGlobalVariablesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_SymbolChunkList *global_variables;
-  RDI_U64 *type_indices;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_SymbolChunkList* global_variables;
+  RDI_U64* type_indices;
 }
 
 struct RDIM_BakeGlobalVMapIn
 {
-  RDIM_SymbolChunkList *global_variables;
+  RDIM_SymbolChunkList* global_variables;
 }
 
 struct RDIM_BakeThreadVariablesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_SymbolChunkList *thread_variables;
-  RDI_U64 *type_indices;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_SymbolChunkList* thread_variables;
+  RDI_U64* type_indices;
 }
 
 struct RDIM_BakeProceduresIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_SymbolChunkList *procedures;
-  RDI_U64 *type_indices;
-  RDIM_String8List *location_blocks;
-  RDIM_String8List *location_data_blobs;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_SymbolChunkList* procedures;
+  RDI_U64* type_indices;
+  RDIM_String8List* location_blocks;
+  RDIM_String8List* location_data_blobs;
 }
 
 struct RDIM_BakeScopesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_ScopeChunkList *scopes;
-  RDI_U64 *type_indices;
-  RDIM_String8List *location_blocks;
-  RDIM_String8List *location_data_blobs;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_ScopeChunkList* scopes;
+  RDI_U64* type_indices;
+  RDIM_String8List* location_blocks;
+  RDIM_String8List* location_data_blobs;
 }
 
 struct RDIM_BakeScopeVMapIn
 {
-  RDIM_ScopeChunkList *scopes;
+  RDIM_ScopeChunkList* scopes;
 }
 
 struct RDIM_BakeInlineSitesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_InlineSiteChunkList *inline_sites;
-  RDI_U64 *type_indices;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_InlineSiteChunkList* inline_sites;
+  RDI_U64* type_indices;
 }
 
 struct RDIM_BakeFilePathsIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_BakePathTree *path_tree;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_BakePathTree* path_tree;
 }
 
 struct RDIM_BakeStringsIn
 {
-  RDIM_BakeStringMapTight *strings;
+  RDIM_BakeStringMapTight* strings;
 }
 
 struct RDIM_BakeTypeNodesIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_BakeIdxRunMap *idx_runs;
-  RDIM_TypeChunkList *types;
-  RDI_U64 *type_indices;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_BakeIdxRunMap* idx_runs;
+  RDIM_TypeChunkList* types;
+  RDI_U64* type_indices;
 }
 
 struct RDIM_BakeNameMapIn
 {
-  RDIM_BakeStringMapTight *strings;
-  RDIM_BakeIdxRunMap *idx_runs;
-  RDIM_BakeNameMap *map;
+  RDIM_BakeStringMapTight* strings;
+  RDIM_BakeIdxRunMap* idx_runs;
+  RDIM_BakeNameMap* map;
   RDI_NameMapKind kind;
 }
 
 struct RDIM_BakeIdxRunsIn
 {
-  RDIM_BakeIdxRunMap *idx_runs;
+  RDIM_BakeIdxRunMap* idx_runs;
 }
 
 ////////////////////////////////
@@ -290,9 +290,9 @@ ASYNC_WORK_DEF(p2r_bake_idx_runs_work);
 
 struct RDIM_HelpState
 {
-  Arena *arena;
+  Arena* arena;
   U64 work_thread_arenas_count;
-  Arena **work_thread_arenas;
+  Arena** work_thread_arenas;
 }
 
 ////////////////////////////////

@@ -233,7 +233,7 @@ typedef struct LNK_AltNameList
 
 typedef struct LNK_ExportParse
 {
-  struct LNK_ExportParse *next;
+  LNK_ExportParse* next;
   String8                 name;
   String8                 alias;
   String8                 type;
@@ -242,8 +242,8 @@ typedef struct LNK_ExportParse
 typedef struct LNK_ExportParseList
 {
   U64              count;
-  LNK_ExportParse *first;
-  LNK_ExportParse *last;
+  LNK_ExportParse* first;
+  LNK_ExportParse* last;
 } LNK_ExportParseList;
 
 typedef struct LNK_MergeDirective
@@ -254,15 +254,15 @@ typedef struct LNK_MergeDirective
 
 typedef struct LNK_MergeDirectiveNode
 {
-  struct LNK_MergeDirectiveNode *next;
+  LNK_MergeDirectiveNode* next;
   LNK_MergeDirective             data;
 } LNK_MergeDirectiveNode;
 
 typedef struct LNK_MergeDirectiveList
 {
   U64                     count;
-  LNK_MergeDirectiveNode *first;
-  LNK_MergeDirectiveNode *last;
+  LNK_MergeDirectiveNode* first;
+  LNK_MergeDirectiveNode* last;
 } LNK_MergeDirectiveList;
 
 
@@ -318,8 +318,8 @@ typedef struct LNK_Config
   U64                         worker_count;
   U64                         max_worker_count;
   String8                     shared_thread_pool_name;
-  U64                        *function_pad_min;
-  U64                        *manifest_resource_id;
+  U64*                        function_pad_min;
+  U64*                        manifest_resource_id;
   B32                         no_default_libs;
   Version                     link_ver;
   Version                     os_ver;
@@ -345,7 +345,7 @@ typedef struct LNK_Config
   String8                     pdb_hash_type_name_map;
   U64                         pdb_hash_type_name_length;
   LNK_ExportParseList         export_symbol_list;
-  String8List                 input_list[LNK_Input_Count];
+  String8List[LNK_Input_Count]                 input_list;
   String8List                 input_default_lib_list;
   String8List                 disallow_lib_list;
   String8List                 delay_load_dll_list;

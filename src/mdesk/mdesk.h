@@ -15,16 +15,16 @@ enum MD_MsgKind
 
 struct MD_Msg
 {
-  MD_Msg *next;
-  struct MD_Node *node;
+  MD_Msg* next;
+  MD_Node* node;
   MD_MsgKind kind;
   String8 string;
 }
 
 struct MD_MsgList
 {
-  MD_Msg *first;
-  MD_Msg *last;
+  MD_Msg* first;
+  MD_Msg* last;
   U64 count;
   MD_MsgKind worst_message_kind;
 }
@@ -81,23 +81,23 @@ struct MD_Token
 
 struct MD_TokenChunkNode
 {
-  MD_TokenChunkNode *next;
-  MD_Token *v;
+  MD_TokenChunkNode* next;
+  MD_Token* v;
   U64 count;
   U64 cap;
 }
 
 struct MD_TokenChunkList
 {
-  MD_TokenChunkNode *first;
-  MD_TokenChunkNode *last;
+  MD_TokenChunkNode* first;
+  MD_TokenChunkNode* last;
   U64 chunk_count;
   U64 total_token_count;
 }
 
 struct MD_TokenArray
 {
-  MD_Token *v;
+  MD_Token* v;
   U64 count;
 }
 
@@ -149,15 +149,15 @@ enum MD_NodeFlags : U32
 struct MD_Node
 {
   // rjf: tree links
-  MD_Node *next;
-  MD_Node *prev;
-  MD_Node *parent;
-  MD_Node *first;
-  MD_Node *last;
+  MD_Node* next;
+  MD_Node* prev;
+  MD_Node* parent;
+  MD_Node* first;
+  MD_Node* last;
   
   // rjf: tag links
-  MD_Node *first_tag;
-  MD_Node *last_tag;
+  MD_Node* first_tag;
+  MD_Node* last_tag;
   
   // rjf: node info
   MD_NodeKind kind;
@@ -176,26 +176,26 @@ struct MD_Node
   U64 user_gen;
   
   // rjf: extra padding to 128 bytes
-  U64 _unused_[2];
+  U64[2] _unused_;
 }
 
 struct MD_NodeRec
 {
-  MD_Node *next;
+  MD_Node* next;
   S32 push_count;
   S32 pop_count;
 }
 
 struct MD_NodePtrNode
 {
-  MD_NodePtrNode *next;
-  MD_Node *v;
+  MD_NodePtrNode* next;
+  MD_Node* v;
 }
 
 struct MD_NodePtrList
 {
-  MD_NodePtrNode *first;
-  MD_NodePtrNode *last;
+  MD_NodePtrNode* first;
+  MD_NodePtrNode* last;
   U64 count;
 }
 
@@ -213,7 +213,7 @@ struct MD_TokenizeResult
 
 struct MD_ParseResult
 {
-  MD_Node *root;
+  MD_Node* root;
   MD_MsgList msgs;
 }
 

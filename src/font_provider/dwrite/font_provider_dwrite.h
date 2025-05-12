@@ -208,7 +208,7 @@ struct FP_DWrite_FontFileLoaderVTable
 
 struct FP_DWrite_FontFileLoader
 {
-  FP_DWrite_FontFileLoaderVTable *lpVtbl;
+  FP_DWrite_FontFileLoaderVTable* lpVtbl;
 }
 
 //- rjf: font file stream interface types
@@ -227,14 +227,14 @@ struct FP_DWrite_FontFileStreamVTable
 
 struct FP_DWrite_FontFileStream
 {
-  FP_DWrite_FontFileStreamVTable *lpVtbl;
-  String8 *data;
+  FP_DWrite_FontFileStreamVTable* lpVtbl;
+  String8* data;
 }
 
 struct FP_DWrite_FontFileStreamNode
 {
-  FP_DWrite_FontFileStreamNode *next;
-  FP_DWrite_FontFileStreamNode *prev;
+  FP_DWrite_FontFileStreamNode* next;
+  FP_DWrite_FontFileStreamNode* prev;
   FP_DWrite_FontFileStream stream;
 }
 
@@ -242,26 +242,26 @@ struct FP_DWrite_FontFileStreamNode
 
 struct FP_DWrite_State
 {
-  Arena *arena;
+  Arena* arena;
   B32 dwrite2_is_supported;
-  IDWriteFactory *factory;
-  IDWriteRenderingParams *base_rendering_params;
-  IDWriteRenderingParams *rendering_params_sharp_hinted;
-  IDWriteRenderingParams *rendering_params_sharp_unhinted;
-  IDWriteRenderingParams *rendering_params_smooth_hinted;
-  IDWriteRenderingParams *rendering_params_smooth_unhinted;
-  IDWriteGdiInterop *gdi_interop;
+  IDWriteFactory* factory;
+  IDWriteRenderingParams* base_rendering_params;
+  IDWriteRenderingParams* rendering_params_sharp_hinted;
+  IDWriteRenderingParams* rendering_params_sharp_unhinted;
+  IDWriteRenderingParams* rendering_params_smooth_hinted;
+  IDWriteRenderingParams* rendering_params_smooth_unhinted;
+  IDWriteGdiInterop* gdi_interop;
   Vec2S32 bitmap_render_target_dim;
-  IDWriteBitmapRenderTarget *bitmap_render_target;
-  FP_DWrite_FontFileStreamNode *first_stream_node;
-  FP_DWrite_FontFileStreamNode *last_stream_node;
-  FP_DWrite_FontFileStreamNode *free_stream_node;
+  IDWriteBitmapRenderTarget* bitmap_render_target;
+  FP_DWrite_FontFileStreamNode* first_stream_node;
+  FP_DWrite_FontFileStreamNode* last_stream_node;
+  FP_DWrite_FontFileStreamNode* free_stream_node;
 }
 
 struct FP_DWrite_Font
 {
-  IDWriteFontFile *file;
-  IDWriteFontFace *face;
+  IDWriteFontFile* file;
+  IDWriteFontFace* face;
 }
 
 ////////////////////////////////

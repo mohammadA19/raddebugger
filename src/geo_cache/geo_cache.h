@@ -6,8 +6,8 @@
 
 struct GEO_Node
 {
-  GEO_Node *next;
-  GEO_Node *prev;
+  GEO_Node* next;
+  GEO_Node* prev;
   U128 hash;
   R_Handle buffer;
   B32 is_working;
@@ -19,13 +19,13 @@ struct GEO_Node
 
 struct GEO_Slot
 {
-  GEO_Node *first;
-  GEO_Node *last;
+  GEO_Node* first;
+  GEO_Node* last;
 }
 
 struct GEO_Stripe
 {
-  Arena *arena;
+  Arena* arena;
   OS_Handle rw_mutex;
   OS_Handle cv;
 }
@@ -35,14 +35,14 @@ struct GEO_Stripe
 
 struct GEO_Touch
 {
-  GEO_Touch *next;
+  GEO_Touch* next;
   U128 hash;
 }
 
 struct GEO_Scope
 {
-  GEO_Scope *next;
-  GEO_Touch *top_touch;
+  GEO_Scope* next;
+  GEO_Touch* top_touch;
 }
 
 ////////////////////////////////
@@ -50,9 +50,9 @@ struct GEO_Scope
 
 struct GEO_TCTX
 {
-  Arena *arena;
-  GEO_Scope *free_scope;
-  GEO_Touch *free_touch;
+  Arena* arena;
+  GEO_Scope* free_scope;
+  GEO_Touch* free_touch;
 }
 
 ////////////////////////////////
@@ -60,18 +60,18 @@ struct GEO_TCTX
 
 struct GEO_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: cache
   U64 slots_count;
   U64 stripes_count;
-  GEO_Slot *slots;
-  GEO_Stripe *stripes;
-  GEO_Node **stripes_free_nodes;
+  GEO_Slot* slots;
+  GEO_Stripe* stripes;
+  GEO_Node** stripes_free_nodes;
   
   // rjf: user -> xfer thread
   U64 u2x_ring_size;
-  U8 *u2x_ring_base;
+  U8* u2x_ring_base;
   U64 u2x_ring_write_pos;
   U64 u2x_ring_read_pos;
   OS_Handle u2x_ring_cv;

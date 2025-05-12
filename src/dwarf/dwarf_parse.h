@@ -10,8 +10,8 @@ typedef struct DW_Section
 
 typedef struct DW_Input
 {
-  DW_Section sec[DW_Section_Count];
-  DW_Section sup[DW_Section_Count];
+  DW_Section[DW_Section_Count] sec;
+  DW_Section[DW_Section_Count] sup;
 } DW_Input;
 
 typedef struct DW_ListUnit
@@ -33,10 +33,10 @@ typedef struct DW_ListUnitInput
   Rng1U64Array  str_offset_ranges;
   Rng1U64Array  rnglist_ranges;
   Rng1U64Array  loclist_ranges;
-  DW_ListUnit  *addrs;
-  DW_ListUnit  *str_offsets;
-  DW_ListUnit  *rnglists;
-  DW_ListUnit  *loclists;
+  DW_ListUnit*  addrs;
+  DW_ListUnit*  str_offsets;
+  DW_ListUnit*  rnglists;
+  DW_ListUnit*  loclists;
 } DW_ListUnitInput;
 
 typedef struct DW_AbbrevTableEntry
@@ -48,7 +48,7 @@ typedef struct DW_AbbrevTableEntry
 struct DW_AbbrevTable
 {
   U64                  count;
-  DW_AbbrevTableEntry *entries;
+  DW_AbbrevTableEntry* entries;
 }
 
 enum DW_AbbrevKind
@@ -109,14 +109,14 @@ typedef struct DW_Attrib
 
 typedef struct DW_AttribNode
 {
-  struct DW_AttribNode *next;
+  DW_AttribNode* next;
   DW_Attrib             v;
 } DW_AttribNode;
 
 typedef struct DW_AttribList
 {
-  DW_AttribNode *first;
-  DW_AttribNode *last;
+  DW_AttribNode* first;
+  DW_AttribNode* last;
   U64            count;
 } DW_AttribList;
 
@@ -132,9 +132,9 @@ typedef struct DW_Tag
 typedef struct DW_TagNode
 {
   DW_Tag             tag;
-  struct DW_TagNode *sibling;
-  struct DW_TagNode *first_child;
-  struct DW_TagNode *last_child;
+  DW_TagNode* sibling;
+  DW_TagNode* first_child;
+  DW_TagNode* last_child;
 } DW_TagNode;
 
 typedef struct DW_Loc
@@ -146,14 +146,14 @@ typedef struct DW_Loc
 typedef struct DW_LocNode
 {
   DW_Loc             v;
-  struct DW_LocNode *next;
+  DW_LocNode* next;
 } DW_LocNode;
 
 typedef struct DW_LocList
 {
   U64         count;
-  DW_LocNode *first;
-  DW_LocNode *last;
+  DW_LocNode* first;
+  DW_LocNode* last;
 } DW_LocList;
 
 typedef struct DW_CompUnit
@@ -169,19 +169,19 @@ typedef struct DW_CompUnit
   U64             first_tag_info_off;
   DW_AbbrevTable  abbrev_table;
   String8         abbrev_data;
-  DW_ListUnit    *addr_lu;
-  DW_ListUnit    *str_offsets_lu;
-  DW_ListUnit    *rnglists_lu;
-  DW_ListUnit    *loclists_lu;
+  DW_ListUnit*    addr_lu;
+  DW_ListUnit*    str_offsets_lu;
+  DW_ListUnit*    rnglists_lu;
+  DW_ListUnit*    loclists_lu;
   U64             low_pc;
   U64             dwo_id;
   DW_Tag          tag;
-  HashTable      *tag_ht;
+  HashTable*      tag_ht;
 } DW_CompUnit;
 
 typedef struct DW_TagTree
 {
-  DW_TagNode *root;
+  DW_TagNode* root;
   U64         tag_count;
 } DW_TagTree;
 
@@ -197,21 +197,21 @@ typedef struct DW_LineFile
 
 typedef struct DW_LineVMFileNode
 {
-  struct DW_LineVMFileNode *next;
+  DW_LineVMFileNode* next;
   DW_LineFile               file;
 } DW_LineVMFileNode;
 
 typedef struct DW_LineVMFileList
 {
   U64                node_count;
-  DW_LineVMFileNode *first;
-  DW_LineVMFileNode *last;
+  DW_LineVMFileNode* first;
+  DW_LineVMFileNode* last;
 } DW_LineVMFileList;
 
 typedef struct DW_LineVMFileArray
 {
   U64          count;
-  DW_LineFile *v;
+  DW_LineFile* v;
 } DW_LineVMFileArray;
 
 typedef struct DW_LineVMHeader
@@ -228,7 +228,7 @@ typedef struct DW_LineVMHeader
   U8                  line_range;
   U8                  opcode_base;
   U64                 num_opcode_lens;
-  U8                 *opcode_lens;
+  U8*                 opcode_lens;
   DW_LineVMFileArray  dir_table;
   DW_LineVMFileArray  file_table;
 } DW_LineVMHeader;
@@ -270,24 +270,24 @@ typedef struct DW_Line
 
 typedef struct DW_LineNode
 {
-  struct DW_LineNode *next;
+  DW_LineNode* next;
   DW_Line             v;
 } DW_LineNode;
 
 typedef struct DW_LineSeqNode
 {
-  struct DW_LineSeqNode *next;
+  DW_LineSeqNode* next;
   U64                    count;
-  DW_LineNode           *first;
-  DW_LineNode           *last;
+  DW_LineNode*           first;
+  DW_LineNode*           last;
 } DW_LineSeqNode;
 
 typedef struct DW_LineTableParseResult
 {
   DW_LineVMHeader vm_header;
   U64             seq_count;
-  DW_LineSeqNode *first_seq;
-  DW_LineSeqNode *last_seq;
+  DW_LineSeqNode* first_seq;
+  DW_LineSeqNode* last_seq;
 } DW_LineTableParseResult;
 
 ////////////////////////////////
@@ -295,7 +295,7 @@ typedef struct DW_LineTableParseResult
 
 typedef struct DW_PubStringsBucket
 {
-  struct DW_PubStringsBucket *next;
+  DW_PubStringsBucket* next;
   String8                     string;
   U64                         info_off;
   U64                         cu_info_off;
@@ -304,12 +304,12 @@ typedef struct DW_PubStringsBucket
 typedef struct DW_PubStringsTable
 {
   U64                   size;
-  DW_PubStringsBucket **buckets;
+  DW_PubStringsBucket** buckets;
 } DW_PubStringsTable;
 
 typedef struct DW_Reference
 {
-  DW_CompUnit *cu;
+  DW_CompUnit* cu;
   U64          info_off;
 } DW_Reference;
 

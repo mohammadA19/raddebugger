@@ -38,7 +38,7 @@ StaticAssert(sizeof(DEMON_LNX_ThreadExt) <= sizeof(Member(DEMON_Entity, ext_u64)
 //- helpers
 
 struct DEMON_LNX_AttachNode{
-  DEMON_LNX_AttachNode *next;
+  DEMON_LNX_AttachNode* next;
   pid_t pid;
 }
 
@@ -56,7 +56,7 @@ struct DEMON_LNX_PhdrInfo{
 }
 
 struct DEMON_LNX_ModuleNode{
-  DEMON_LNX_ModuleNode *next;
+  DEMON_LNX_ModuleNode* next;
   U64 vaddr;
   U64 size;
   U64 name;
@@ -64,8 +64,8 @@ struct DEMON_LNX_ModuleNode{
 }
 
 struct DEMON_LNX_EntityNode{
-  DEMON_LNX_EntityNode *next;
-  DEMON_Entity *entity;
+  DEMON_LNX_EntityNode* next;
+  DEMON_Entity* entity;
 }
 
 ////////////////////////////////
@@ -114,8 +114,8 @@ struct DEMON_LNX_UserX64{
   S32 reserved, _pad1;
   U64 u_ar0, u_fpstate;
   U64 magic;
-  U8  u_comm[32];
-  U64 u_debugreg[8];
+  U8[32]  u_comm;
+  U64[8] u_debugreg;
 }
 
 struct DEMON_LNX_UserRegsX86{
@@ -146,8 +146,8 @@ struct DEMON_LNX_UserX86{
   S32 signal, reserved;
   U32 u_ar0, u_fpstate;
   U32 magic;
-  U8  u_comm[32];
-  U32 u_debugreg[8];
+  U8[32]  u_comm;
+  U32[8] u_debugreg;
 }
 
 ////////////////////////////////

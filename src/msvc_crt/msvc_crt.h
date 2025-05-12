@@ -158,24 +158,24 @@ typedef struct MSCRT_TryMapBlock
   S32                    try_high;
   S32                    catch_high;
   S32                    catch_handlers_count;
-  MSCRT_EhHandlerType32 *catch_handlers;
+  MSCRT_EhHandlerType32* catch_handlers;
 } MSCRT_TryMapBlock;
 
 typedef struct MSCRT_ExceptionSpecTypeList
 {
   S32                    count;
-  MSCRT_EhHandlerType32 *handlers;
+  MSCRT_EhHandlerType32* handlers;
 } MSCRT_ExceptionSpecTypeList;
 
 typedef struct MSCRT_FuncInfo
 {
   U32                          magic;
   U32                          max_state;
-  MSCRT_UnwindMap32           *unwind_map;
+  MSCRT_UnwindMap32*           unwind_map;
   U32                          try_block_map_count;
-  MSCRT_TryMapBlock           *try_block_map;
+  MSCRT_TryMapBlock*           try_block_map;
   U32                          ip_map_count;
-  MSCRT_IPState32             *ip_map;
+  MSCRT_IPState32*             ip_map;
   U32                          frame_offset_unwind_helper;
   MSCRT_ExceptionSpecTypeList  es_type_list;
   MSCRT_Flags                  eh_flags;
@@ -230,14 +230,14 @@ typedef struct MSCRT_EhHandlerTypeV4
   S32                      type_voff;
   U32                      catch_obj_voff;
   S32                      catch_code_voff;
-  U64                      catch_funclet_cont_addr[2];
+  U64[2]                      catch_funclet_cont_addr;
   U32                      catch_funclet_cont_addr_count;
 } MSCRT_EhHandlerTypeV4;
 
 typedef struct MSCRT_EhHandlerTypeV4Array
 {
   U64                    count;
-  MSCRT_EhHandlerTypeV4 *v;
+  MSCRT_EhHandlerTypeV4* v;
 } MSCRT_EhHandlerTypeV4Array;
 
 typedef struct MSCRT_TryBlockMap32V4
@@ -251,8 +251,8 @@ typedef struct MSCRT_TryBlockMap32V4
 typedef struct MSCRT_IP2State32V4
 {
   U32  count;
-  U32 *voffs;
-  S32 *states;
+  U32* voffs;
+  S32* states;
 } MSCRT_IP2State32V4;
 
 typedef struct MSCRT_SepIPState32V4
@@ -282,7 +282,7 @@ typedef struct MSCRT_UnwindEntryV4
 typedef struct MSCRT_UnwindMapV4
 {
   U32                  count;
-  MSCRT_UnwindEntryV4 *v;
+  MSCRT_UnwindEntryV4* v;
 } MSCRT_UnwindMapV4;
 
 typedef struct MSCRT_TryBlockMapV4
@@ -296,7 +296,7 @@ typedef struct MSCRT_TryBlockMapV4
 typedef struct MSCRT_TryBlockMapV4Array
 {
   U64                  count;
-  MSCRT_TryBlockMapV4 *v;
+  MSCRT_TryBlockMapV4* v;
 } MSCRT_TryBlockMapV4Array;
 
 typedef struct MSCRT_ParsedFuncInfoV4

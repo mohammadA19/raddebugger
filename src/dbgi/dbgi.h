@@ -12,20 +12,20 @@ struct DI_Key
 
 struct DI_KeyNode
 {
-  DI_KeyNode *next;
+  DI_KeyNode* next;
   DI_Key v;
 }
 
 struct DI_KeyList
 {
-  DI_KeyNode *first;
-  DI_KeyNode *last;
+  DI_KeyNode* first;
+  DI_KeyNode* last;
   U64 count;
 }
 
 struct DI_KeyArray
 {
-  DI_Key *v;
+  DI_Key* v;
   U64 count;
 }
 
@@ -49,14 +49,14 @@ struct DI_Event
 
 struct DI_EventNode
 {
-  DI_EventNode *next;
+  DI_EventNode* next;
   DI_Event v;
 }
 
 struct DI_EventList
 {
-  DI_EventNode *first;
-  DI_EventNode *last;
+  DI_EventNode* first;
+  DI_EventNode* last;
   U64 count;
 }
 
@@ -65,15 +65,15 @@ struct DI_EventList
 
 struct DI_StringChunkNode
 {
-  DI_StringChunkNode *next;
+  DI_StringChunkNode* next;
   U64 size;
 }
 
 struct DI_Node
 {
   // rjf: links
-  DI_Node *next;
-  DI_Node *prev;
+  DI_Node* next;
+  DI_Node* prev;
   
   // rjf: metadata
   U64 ref_count;
@@ -86,25 +86,25 @@ struct DI_Node
   // rjf: file handles
   OS_Handle file;
   OS_Handle file_map;
-  void *file_base;
+  void* file_base;
   FileProperties file_props;
   
   // rjf: parse artifacts
-  Arena *arena;
+  Arena* arena;
   RDI_Parsed rdi;
   B32 parse_done;
 }
 
 struct DI_Slot
 {
-  DI_Node *first;
-  DI_Node *last;
+  DI_Node* first;
+  DI_Node* last;
 }
 
 struct DI_Stripe
 {
-  Arena *arena;
-  DI_Node *free_node;
+  Arena* arena;
+  DI_Node* free_node;
   DI_StringChunkNode *free_string_chunks[8];
   OS_Handle rw_mutex;
   OS_Handle cv;
@@ -123,23 +123,23 @@ struct DI_SearchItem
 
 struct DI_SearchItemChunk
 {
-  DI_SearchItemChunk *next;
-  DI_SearchItem *v;
+  DI_SearchItemChunk* next;
+  DI_SearchItem* v;
   U64 count;
   U64 cap;
 }
 
 struct DI_SearchItemChunkList
 {
-  DI_SearchItemChunk *first;
-  DI_SearchItemChunk *last;
+  DI_SearchItemChunk* first;
+  DI_SearchItemChunk* last;
   U64 chunk_count;
   U64 total_count;
 }
 
 struct DI_SearchItemArray
 {
-  DI_SearchItem *v;
+  DI_SearchItem* v;
   U64 count;
 }
 
@@ -151,7 +151,7 @@ struct DI_SearchParams
 
 struct DI_SearchBucket
 {
-  Arena *arena;
+  Arena* arena;
   String8 query;
   U64 params_hash;
   DI_SearchParams params;
@@ -159,8 +159,8 @@ struct DI_SearchBucket
 
 struct DI_SearchNode
 {
-  DI_SearchNode *next;
-  DI_SearchNode *prev;
+  DI_SearchNode* next;
+  DI_SearchNode* prev;
   U128 key;
   U64 scope_refcount;
   U64 work_refcount;
@@ -168,20 +168,20 @@ struct DI_SearchNode
   U64 bucket_read_gen;
   U64 bucket_write_gen;
   U64 bucket_items_gen;
-  DI_SearchBucket buckets[6];
+  DI_SearchBucket[6] buckets;
   DI_SearchItemArray items;
 }
 
 struct DI_SearchSlot
 {
-  DI_SearchNode *first;
-  DI_SearchNode *last;
+  DI_SearchNode* first;
+  DI_SearchNode* last;
 }
 
 struct DI_SearchStripe
 {
-  Arena *arena;
-  DI_SearchNode *free_node;
+  Arena* arena;
+  DI_SearchNode* free_node;
   OS_Handle rw_mutex;
   OS_Handle cv;
 }
@@ -191,26 +191,26 @@ struct DI_SearchStripe
 
 struct DI_Touch
 {
-  DI_Touch *next;
-  DI_Node *node;
-  DI_SearchNode *search_node;
+  DI_Touch* next;
+  DI_Node* node;
+  DI_SearchNode* search_node;
 }
 
 struct DI_Scope
 {
-  DI_Scope *next;
-  DI_Scope *prev;
-  DI_Touch *first_touch;
-  DI_Touch *last_touch;
+  DI_Scope* next;
+  DI_Scope* prev;
+  DI_Touch* first_touch;
+  DI_Touch* last_touch;
 }
 
 struct DI_TCTX
 {
-  Arena *arena;
-  DI_Scope *first_scope;
-  DI_Scope *last_scope;
-  DI_Scope *free_scope;
-  DI_Touch *free_touch;
+  Arena* arena;
+  DI_Scope* first_scope;
+  DI_Scope* last_scope;
+  DI_Scope* free_scope;
+  DI_Touch* free_touch;
 }
 
 ////////////////////////////////
@@ -222,7 +222,7 @@ struct DI_SearchThread
   OS_Handle ring_mutex;
   OS_Handle ring_cv;
   U64 ring_size;
-  U8 *ring_base;
+  U8* ring_base;
   U64 ring_write_pos;
   U64 ring_read_pos;
 }
@@ -232,8 +232,8 @@ struct DI_SearchThread
 
 struct DI_Match
 {
-  DI_Match *next;
-  DI_Match *prev;
+  DI_Match* next;
+  DI_Match* prev;
   U64 dbgi_idx;
   RDI_SectionKind section;
   U32 idx;
@@ -242,10 +242,10 @@ struct DI_Match
 struct DI_MatchNameNode
 {
   // rjf: synchronously written by usage code
-  DI_MatchNameNode *next;
-  DI_MatchNameNode *prev;
-  DI_MatchNameNode *lru_next;
-  DI_MatchNameNode *lru_prev;
+  DI_MatchNameNode* next;
+  DI_MatchNameNode* prev;
+  DI_MatchNameNode* lru_next;
+  DI_MatchNameNode* lru_prev;
   U64 alloc_gen;
   U64 first_gen_touched;
   U64 last_gen_touched;
@@ -264,29 +264,29 @@ struct DI_MatchNameNode
 
 struct DI_MatchNameSlot
 {
-  DI_MatchNameNode *first;
-  DI_MatchNameNode *last;
+  DI_MatchNameNode* first;
+  DI_MatchNameNode* last;
 }
 
 struct DI_MatchStore
 {
-  Arena *arena;
+  Arena* arena;
   U64 gen;
   Arena *gen_arenas[2];
   
   // rjf: parameters
-  Arena *params_arena;
+  Arena* params_arena;
   OS_Handle params_rw_mutex;
   U64 params_hash;
   DI_KeyArray params_keys;
   
   // rjf: match cache
   U64 match_name_slots_count;
-  DI_MatchNameSlot *match_name_slots;
-  DI_MatchNameNode *first_free_match_name;
-  DI_Match *first_free_match;
-  DI_MatchNameNode *first_lru_match_name;
-  DI_MatchNameNode *last_lru_match_name;
+  DI_MatchNameSlot* match_name_slots;
+  DI_MatchNameNode* first_free_match_name;
+  DI_Match* first_free_match;
+  DI_MatchNameNode* first_lru_match_name;
+  DI_MatchNameNode* last_lru_match_name;
   U64 active_match_name_nodes_count;
   OS_Handle match_rw_mutex;
   OS_Handle match_cv;
@@ -295,7 +295,7 @@ struct DI_MatchStore
   OS_Handle u2m_ring_cv;
   OS_Handle u2m_ring_mutex;
   U64 u2m_ring_size;
-  U8 *u2m_ring_base;
+  U8* u2m_ring_base;
   U64 u2m_ring_write_pos;
   U64 u2m_ring_read_pos;
 }
@@ -305,25 +305,25 @@ struct DI_MatchStore
 
 struct DI_Shared
 {
-  Arena *arena;
+  Arena* arena;
   
   // rjf: debug info cache
   U64 slots_count;
-  DI_Slot *slots;
+  DI_Slot* slots;
   U64 stripes_count;
-  DI_Stripe *stripes;
+  DI_Stripe* stripes;
   
   // rjf: search cache
   U64 search_slots_count;
-  DI_SearchSlot *search_slots;
+  DI_SearchSlot* search_slots;
   U64 search_stripes_count;
-  DI_SearchStripe *search_stripes;
+  DI_SearchStripe* search_stripes;
   
   // rjf: user -> parse ring
   OS_Handle u2p_ring_mutex;
   OS_Handle u2p_ring_cv;
   U64 u2p_ring_size;
-  U8 *u2p_ring_base;
+  U8* u2p_ring_base;
   U64 u2p_ring_write_pos;
   U64 u2p_ring_read_pos;
   
@@ -331,13 +331,13 @@ struct DI_Shared
   OS_Handle p2u_ring_mutex;
   OS_Handle p2u_ring_cv;
   U64 p2u_ring_size;
-  U8 *p2u_ring_base;
+  U8* p2u_ring_base;
   U64 p2u_ring_write_pos;
   U64 p2u_ring_read_pos;
   
   // rjf: search threads
   U64 search_threads_count;
-  DI_SearchThread *search_threads;
+  DI_SearchThread* search_threads;
   OS_Handle search_evictor_thread;
 }
 

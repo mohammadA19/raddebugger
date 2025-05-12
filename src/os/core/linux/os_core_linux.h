@@ -35,8 +35,8 @@ int pthread_getname_np(pthread_t thread, char *name, size_t size);
 
 struct OS_LNX_FileIter
 {
-  DIR *dir;
-  struct dirent *dp;
+  DIR* dir;
+  dirent* dp;
   String8 path;
 }
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_lnx_file_iter_size_check);
@@ -46,9 +46,9 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_
 
 struct OS_LNX_SafeCallChain
 {
-  OS_LNX_SafeCallChain *next;
-  OS_ThreadFunctionType *fail_handler;
-  void *ptr;
+  OS_LNX_SafeCallChain* next;
+  OS_ThreadFunctionType* fail_handler;
+  void* ptr;
 }
 
 ////////////////////////////////
@@ -64,15 +64,15 @@ enum OS_LNX_EntityKind
 
 struct OS_LNX_Entity
 {
-  OS_LNX_Entity *next;
+  OS_LNX_Entity* next;
   OS_LNX_EntityKind kind;
   union
   {
     struct
     {
       pthread_t handle;
-      OS_ThreadFunctionType *func;
-      void *ptr;
+      OS_ThreadFunctionType* func;
+      void* ptr;
     } thread;
     pthread_mutex_t mutex_handle;
     pthread_rwlock_t rwmutex_handle;
@@ -89,12 +89,12 @@ struct OS_LNX_Entity
 
 struct OS_LNX_State
 {
-  Arena *arena;
+  Arena* arena;
   OS_SystemInfo system_info;
   OS_ProcessInfo process_info;
   pthread_mutex_t entity_mutex;
-  Arena *entity_arena;
-  OS_LNX_Entity *entity_free;
+  Arena* entity_arena;
+  OS_LNX_Entity* entity_free;
 }
 
 ////////////////////////////////

@@ -40,13 +40,13 @@ typedef struct LNK_Chunk
   String8           sort_idx;
   U64               input_idx;
   COFF_SectionFlags flags;
-  struct LNK_Chunk *associate;
+  LNK_Chunk* associate;
   union {
     String8                leaf;
-    struct LNK_ChunkList  *list;
-    struct LNK_ChunkArray *arr;
+    LNK_ChunkList*  list;
+    LNK_ChunkArray* arr;
   } u;
-  struct LNK_Obj *obj;
+  LNK_Obj* obj;
 #if LNK_DEBUG_CHUNKS
   String8 debug;
 #endif
@@ -54,21 +54,21 @@ typedef struct LNK_Chunk
 
 typedef struct LNK_ChunkNode
 {
-  struct LNK_ChunkNode *next;
+  LNK_ChunkNode* next;
   LNK_ChunkPtr          data;
 } LNK_ChunkNode;
 
 typedef struct LNK_ChunkArray
 {
   U64           count;
-  LNK_ChunkPtr *v;
+  LNK_ChunkPtr* v;
 } LNK_ChunkArray;
 
 typedef struct LNK_ChunkList
 {
   U64            count;
-  LNK_ChunkNode *first;
-  LNK_ChunkNode *last;
+  LNK_ChunkNode* first;
+  LNK_ChunkNode* last;
 } LNK_ChunkList;
 
 enum LNK_ChunkOpType
@@ -83,24 +83,24 @@ enum LNK_ChunkOpType
 
 typedef struct LNK_ChunkOp
 {
-  struct LNK_ChunkOp *next;
+  LNK_ChunkOp* next;
   LNK_ChunkOpType     type;
   union {
     String8    string;
-    LNK_Chunk *chunk;
+    LNK_Chunk* chunk;
     struct {
       U64 val;
       U64 x;
     } align;
-    LNK_Chunk *leaf;
+    LNK_Chunk* leaf;
   } u;
 } LNK_ChunkOp;
 
 typedef struct LNK_ChunkOpList
 {
   U64          total_chunk_count;
-  LNK_ChunkOp *first;
-  LNK_ChunkOp *last;
+  LNK_ChunkOp* first;
+  LNK_ChunkOp* last;
 } LNK_ChunkOpList;
 
 typedef struct LNK_ChunkPad
@@ -112,35 +112,35 @@ typedef struct LNK_ChunkPad
 typedef struct LNK_ChunkPadArray
 {
   U64           count;
-  LNK_ChunkPad *v;
+  LNK_ChunkPad* v;
 } LNK_ChunkPadArray;
 typedef struct LNK_ChunkPadArrayNode
 {
-  struct LNK_ChunkPadArrayNode *next;
+  LNK_ChunkPadArrayNode* next;
   U64                 cap;
   LNK_ChunkPadArray data;
 } LNK_ChunkPadArrayNode;
 typedef struct LNK_ChunkPadArrayList
 {
   U64                    count;
-  LNK_ChunkPadArrayNode *first;
-  LNK_ChunkPadArrayNode *last;
+  LNK_ChunkPadArrayNode* first;
+  LNK_ChunkPadArrayNode* last;
 } LNK_ChunkPadArrayList;
 
 typedef struct LNK_ChunkLayout
 {
   U64                     total_count;
-  LNK_Chunk             **chunk_ptr_array;       // discarded chunks point to g_null_chunk
-  U64                    *chunk_off_array;       // discarded chunks have offset set to max_U64
-  U64                    *chunk_file_size_array; // discarded chunks have offset set to max_U64
-  U64                    *chunk_virt_size_array; // discarded chunks have offset set to max_U64
+  LNK_Chunk**             chunk_ptr_array;       // discarded chunks point to g_null_chunk
+  U64*                    chunk_off_array;       // discarded chunks have offset set to max_U64
+  U64*                    chunk_file_size_array; // discarded chunks have offset set to max_U64
+  U64*                    chunk_virt_size_array; // discarded chunks have offset set to max_U64
   U64                     pad_array_count;
-  LNK_ChunkPadArray      *pad_array;
+  LNK_ChunkPadArray*      pad_array;
 } LNK_ChunkLayout;
 
 typedef struct LNK_ChunkManager
 {
-  LNK_Chunk *root;
+  LNK_Chunk* root;
   U64        total_chunk_count;
 } LNK_ChunkManager;
 
@@ -149,7 +149,7 @@ typedef struct LNK_ChunkManager
 typedef struct
 {
   U64              offset;
-  LNK_ChunkLayout *layout;
+  LNK_ChunkLayout* layout;
 } LNK_OffsetChunks;
 
 typedef struct
@@ -157,7 +157,7 @@ typedef struct
   LNK_ChunkLayout  layout;
   String8          buffer;
   U8               fill_byte;
-  Rng1U64         *ranges;
+  Rng1U64*         ranges;
 } LNK_ChunkLayoutSerializer;
 
 ////////////////////////////////

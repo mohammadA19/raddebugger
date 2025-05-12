@@ -13,20 +13,20 @@ enum LogMsgKind
 
 struct LogScope
 {
-  LogScope *next;
+  LogScope* next;
   U64 pos;
-  String8List strings[LogMsgKind_COUNT];
+  String8List[LogMsgKind_COUNT] strings;
 }
 
 struct LogScopeResult
 {
-  String8 strings[LogMsgKind_COUNT];
+  String8[LogMsgKind_COUNT] strings;
 }
 
 struct Log
 {
-  Arena *arena;
-  LogScope *top_scope;
+  Arena* arena;
+  LogScope* top_scope;
 }
 
 ////////////////////////////////

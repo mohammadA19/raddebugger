@@ -55,7 +55,7 @@ enum OS_FileIterFlags : U32
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
-  U8 memory[800];
+  U8[800] memory;
 }
 
 struct OS_FileInfo
@@ -67,7 +67,7 @@ struct OS_FileInfo
 // nick: on-disk file identifier
 struct OS_FileID
 {
-  U64 v[3];
+  U64[3] v;
 }
 
 ////////////////////////////////
@@ -75,25 +75,25 @@ struct OS_FileID
 
 struct OS_Handle
 {
-  U64 u64[1];
+  U64[1] u64;
 }
 
 struct OS_HandleNode
 {
-  OS_HandleNode *next;
+  OS_HandleNode* next;
   OS_Handle v;
 }
 
 struct OS_HandleList
 {
-  OS_HandleNode *first;
-  OS_HandleNode *last;
+  OS_HandleNode* first;
+  OS_HandleNode* last;
   U64 count;
 }
 
 struct OS_HandleArray
 {
-  OS_Handle *v;
+  OS_Handle* v;
   U64 count;
 }
 

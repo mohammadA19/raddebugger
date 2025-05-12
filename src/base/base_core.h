@@ -381,27 +381,27 @@ typedef double   F64;
 typedef void VoidProc(void);
 union U128
 {
-  U8 u8[16];
-  U16 u16[8];
-  U32 u32[4];
-  U64 u64[2];
+  U8[16] u8;
+  U16[8] u16;
+  U32[4] u32;
+  U64[2] u64;
 }
 union U256
 {
-  U8 u8[32];
-  U16 u16[16];
-  U32 u32[8];
-  U64 u64[4];
-  U128 u128[2];
+  U8[32] u8;
+  U16[16] u16;
+  U32[8] u32;
+  U64[4] u64;
+  U128[2] u128;
 }
 union U512
 {
-  U8 u8[64];
-  U16 u16[32];
-  U32 u32[16];
-  U64 u64[8];
-  U128 u128[4];
-  U256 u256[2];
+  U8[64] u8;
+  U16[32] u16;
+  U32[16] u32;
+  U64[8] u64;
+  U128[4] u128;
+  U256[2] u256;
 }
 
 ////////////////////////////////
@@ -520,9 +520,9 @@ union Guid
     U32 data1;
     U16 data2;
     U16 data3;
-    U8  data4[8];
+    U8[8]  data4;
   }
-  U8 v[16];
+  U8[16] v;
 }
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
@@ -532,22 +532,22 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 struct U16Array
 {
   U64  count;
-  U16 *v;
+  U16* v;
 }
 struct U32Array
 {
   U64  count;
-  U32 *v;
+  U32* v;
 }
 struct U64Array
 {
   U64  count;
-  U64 *v;
+  U64* v;
 }
 struct U128Array
 {
   U64   count;
-  U128 *v;
+  U128* v;
 }
 
 ////////////////////////////////

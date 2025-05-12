@@ -114,20 +114,20 @@ typedef struct RD_Marker
 typedef struct RD_MarkerArray
 {
   U64        count;
-  RD_Marker *v;
+  RD_Marker* v;
 } RD_MarkerArray;
 
 typedef struct MarkerNode
 {
-  struct MarkerNode *next;
+  MarkerNode* next;
   RD_Marker          v;
 } RD_MarkerNode;
 
 typedef struct RD_MarkerList
 {
   U64            count;
-  RD_MarkerNode *first;
-  RD_MarkerNode *last;
+  RD_MarkerNode* first;
+  RD_MarkerNode* last;
 } RD_MarkerList;
 
 typedef struct RD_DisasmResult
@@ -145,7 +145,7 @@ typedef struct RD_Section
 typedef struct RD_SectionArray
 {
   U64         count;
-  RD_Section *v;
+  RD_Section* v;
 } RD_SectionArray;
 
 typedef struct RD_Line

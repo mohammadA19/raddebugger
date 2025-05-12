@@ -15,7 +15,7 @@ struct TweakB32Info
 {
   String8 name;
   B32 default_value;
-  B32 *value_ptr;
+  B32* value_ptr;
 }
 
 struct TweakF32Info
@@ -23,31 +23,31 @@ struct TweakF32Info
   String8 name;
   F32 default_value;
   Rng1F32 value_range;
-  F32 *value_ptr;
+  F32* value_ptr;
 }
 
 struct TweakB32InfoTable
 {
-  TweakB32Info *v;
+  TweakB32Info* v;
   U64 count;
 }
 
 struct TweakF32InfoTable
 {
-  TweakF32Info *v;
+  TweakF32Info* v;
   U64 count;
 }
 
 struct EmbedInfo
 {
   String8 name;
-  String8 *data;
-  U128 *hash;
+  String8* data;
+  U128* hash;
 }
 
 struct EmbedInfoTable
 {
-  EmbedInfo *v;
+  EmbedInfo* v;
   U64 count;
 }
 
@@ -103,7 +103,7 @@ struct Member
 {
   String8 name;
   String8 pretty_name;
-  Type *type;
+  Type* type;
   U64 value;
   MemberFlags flags;
 }
@@ -113,11 +113,11 @@ struct Type
   TypeKind kind;
   TypeFlags flags;
   U64 size;
-  Type *direct;
+  Type* direct;
   String8 name;
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
   U64 count;
-  Member *members;
+  Member* members;
 }
 
 ////////////////////////////////
@@ -125,16 +125,16 @@ struct Type
 
 struct TypeSerializePtrRefInfo
 {
-  Type *type;           // pointers to this
-  void *indexify_base;  // can be indexified using this
-  void *offsetify_base; // can be offsetified using this
-  void *nil_ptr;        // is terminal if matching 0 or this
+  Type* type;           // pointers to this
+  void* indexify_base;  // can be indexified using this
+  void* offsetify_base; // can be offsetified using this
+  void* nil_ptr;        // is terminal if matching 0 or this
 }
 
 struct TypeSerializeParams
 {
-  U64 *advance_out;
-  TypeSerializePtrRefInfo *ptr_ref_infos;
+  U64* advance_out;
+  TypeSerializePtrRefInfo* ptr_ref_infos;
   U64 ptr_ref_infos_count;
 }
 

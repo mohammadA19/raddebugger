@@ -6,8 +6,8 @@
 
 struct CmdLineOpt
 {
-  CmdLineOpt *next;
-  CmdLineOpt *hash_next;
+  CmdLineOpt* next;
+  CmdLineOpt* hash_next;
   U64 hash;
   String8 string;
   String8List value_strings;
@@ -17,8 +17,8 @@ struct CmdLineOpt
 struct CmdLineOptList
 {
   U64 count;
-  CmdLineOpt *first;
-  CmdLineOpt *last;
+  CmdLineOpt* first;
+  CmdLineOpt* last;
 }
 
 struct CmdLine
@@ -27,9 +27,9 @@ struct CmdLine
   CmdLineOptList options;
   String8List inputs;
   U64 option_table_size;
-  CmdLineOpt **option_table;
+  CmdLineOpt** option_table;
   U64 argc;
-  char **argv;
+  char** argv;
 }
 
 ////////////////////////////////

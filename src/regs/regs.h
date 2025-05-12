@@ -18,20 +18,20 @@ typedef U8 REGS_AliasCode;
 
 union REGS_Reg16
 {
-  U8 v[2];
+  U8[2] v;
   U16 u16;
 }
 
 union REGS_Reg32
 {
-  U8 v[4];
+  U8[4] v;
   U32 u32;
   F32 f32;
 }
 
 union REGS_Reg64
 {
-  U8 v[8];
+  U8[8] v;
   U64 u64;
   F64 f64;
 }
@@ -46,29 +46,29 @@ struct REGS_Reg80
 
 union REGS_Reg128
 {
-  U8 v[16];
-  U32 u32[4];
-  F32 f32[4];
-  U64 u64[2];
-  F64 f64[2];
+  U8[16] v;
+  U32[4] u32;
+  F32[4] f32;
+  U64[2] u64;
+  F64[2] f64;
 }
 
 union REGS_Reg256
 {
-  U8 v[32];
-  U32 u32[8];
-  F32 f32[8];
-  U64 u64[4];
-  F64 f64[4];
+  U8[32] v;
+  U32[8] u32;
+  F32[8] f32;
+  U64[4] u64;
+  F64[4] f64;
 }
 
 union REGS_Reg512
 {
-  U8 v[64];
-  U32 u32[16];
-  F32 f32[16];
-  U64 u64[8];
-  F64 f64[8];
+  U8[64] v;
+  U32[16] u32;
+  F32[16] f32;
+  U64[8] u64;
+  F64[8] f64;
 }
 
 ////////////////////////////////

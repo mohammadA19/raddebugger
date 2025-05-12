@@ -101,7 +101,7 @@ typedef struct PDB_SrcHeaderBlockHeader
   U32 stream_size;
   U64 file_time;
   U32 age;
-  U8  pad[44];
+  U8[44]  pad;
 } PDB_SrcHeaderBlockHeader;
 
 enum
@@ -132,8 +132,8 @@ typedef struct PDB_SrcHeaderBlockEntry
   PDB_StringOffset   virt_path;
   PDB_SrcCompType    comp;
   PDB_SrcHeaderFlags flags;
-  U8                 pad[2];
-  U8                 reserved[8];
+  U8[2]                 pad;
+  U8[8]                 reserved;
 } PDB_SrcHeaderBlockEntry;
 
 ////////////////////////////////
