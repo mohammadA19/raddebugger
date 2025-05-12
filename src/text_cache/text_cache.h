@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef TEXT_CACHE_H
-#define TEXT_CACHE_H
-
 ////////////////////////////////
 //~ rjf: Value Types
 
@@ -218,4 +215,3 @@ ASYNC_WORK_DEF(txt_parse_work);
 //~ rjf: Evictor Threads
 
 
-#endif // TEXT_CACHE_H

@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_WIN32_H
-#define OS_GFX_WIN32_H
-
 ////////////////////////////////
 //~ rjf: Includes / Libraries
 
@@ -87,4 +84,3 @@ global B32 os_w32_new_window_custom_border = 0;
 //~ rjf: Monitors
 
 
-#endif // OS_GFX_WIN32_H

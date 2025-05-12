@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DBG_ENGINE_CORE_H
-#define DBG_ENGINE_CORE_H
-
 ////////////////////////////////
 //~ rjf: Tick Input Types
 
@@ -331,4 +328,3 @@ global D_State *d_state = 0;
 //~ rjf: Main Layer Top-Level Calls
 
 
-#endif // DBG_ENGINE_CORE_H

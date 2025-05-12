@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PDB_PARSE_H
-#define PDB_PARSE_H
-
 ////////////////////////////////
 //~ PDB Parser String Table Types
 
@@ -223,6 +220,4 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 seccontrib_data
 
                                                            PDB_StringIndex idx);
 
-
-#endif // PDB_PARSE_H
 

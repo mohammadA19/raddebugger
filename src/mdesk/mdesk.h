@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MDESK_H
-#define MDESK_H
-
 ////////////////////////////////
 //~ rjf: Messages
 
@@ -249,4 +246,3 @@ global read_only MD_Node md_nil_node =
 //~ rjf: Node Pointer List Functions
 
 
-#endif // MDESK_H

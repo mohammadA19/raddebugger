@@ -7,9 +7,6 @@
 // Defines standard RDI debug information format types and
 // functions.
 
-#ifndef RDI_FORMAT_H
-#define RDI_FORMAT_H
-
 ////////////////////////////////////////////////////////////////
 //~ Overridable Procedure Decoration
 
@@ -1498,4 +1495,3 @@ extern RDI_U16 rdi_section_element_size_table[37];
 extern RDI_U8 rdi_section_is_required_table[37];
 extern RDI_U16 rdi_eval_op_ctrlbits_table[52];
 
-#endif // RDI_FORMAT_H

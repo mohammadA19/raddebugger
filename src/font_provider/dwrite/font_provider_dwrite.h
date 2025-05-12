@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_PROVIDER_DWRITE_H
-#define FONT_PROVIDER_DWRITE_H
-
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "dwrite.lib")
 
@@ -271,4 +268,3 @@ struct FP_DWrite_Font
 //~ rjf: Helpers
 //- rjf: font file stream  interface function implementations
 
-#endif // FONT_PROVIDER_DWRITE_H

@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_CORE_H
-#define RADDBG_CORE_H
-
 ////////////////////////////////
 //~ rjf: Config IDs
 
@@ -766,4 +763,3 @@ global RD_CfgID rd_last_drag_drop_prev_tab = 0;
 //~ rjf: Main Layer Top-Level Calls
 
 
-#endif // RADDBG_CORE_H

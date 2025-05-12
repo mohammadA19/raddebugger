@@ -3,9 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef CTRL_META_H
-#define CTRL_META_H
-
 enum CTRL_EntityKind
 {
 CTRL_EntityKind_Null,
@@ -75,4 +72,3 @@ extern B8 ctrl_exception_code_kind_default_enable_table[38];
 
 C_LINKAGE_END
 
-#endif // CTRL_META_H

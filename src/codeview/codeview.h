@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CODEVIEW_H
-#define CODEVIEW_H
-
 // https://github.com/microsoft/microsoft-pdb/blob/master/include/cvinfo.h
 
 ////////////////////////////////
@@ -2774,5 +2771,4 @@ struct CV_TypeIndexArray
 
 
 
-#endif // CODEVIEW_H
  

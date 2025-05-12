@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_PARSE_H
-#define COFF_PARSE_H
-
 typedef struct COFF_FileHeaderInfo
 {
   B32              is_big_obj;
@@ -269,4 +266,3 @@ typedef struct COFF_ArchiveParse
 
 
 
-#endif // COFF_PARSE_H

@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CTRL_CORE_H
-#define CTRL_CORE_H
-
 ////////////////////////////////
 //~ rjf: ID Types
 
@@ -710,4 +707,3 @@ read_only global CTRL_Entity ctrl_entity_nil =
 //- rjf: entry point
 ASYNC_WORK_DEF(ctrl_mem_stream_work);
 
-#endif // CTRL_CORE_H

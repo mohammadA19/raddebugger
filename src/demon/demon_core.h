@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_CORE_H
-#define DEMON_CORE_H
-
 ////////////////////////////////
 //~ rjf: Control-Thread-Only Context
 //
@@ -164,4 +161,3 @@ struct DMN_ProcessInfo
 #define dmn_process_write_struct(process, vaddr, ptr) dmn_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 //- rjf: system process listing
 
-#endif // DEMON_CORE_H

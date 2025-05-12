@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADCON_PDB_H
-#define RADCON_PDB_H
-
 ////////////////////////////////
 //~ rjf: Initial PDB Information Extraction & Conversion Preparation Task Types
 
@@ -195,6 +192,4 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 
 ////////////////////////////////
 
-
-#endif // RADCON_PDB_H
 

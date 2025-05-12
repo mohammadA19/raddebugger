@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_CORE_H
-#define RENDER_CORE_H
-
 #define r_hook C_LINKAGE
 
 ////////////////////////////////
@@ -206,4 +203,3 @@ r_hook void              r_window_end_frame(OS_Handle window, R_Handle window_eq
 //- rjf: render pass submission
 r_hook void              r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes);
 
-#endif // RENDER_CORE_H

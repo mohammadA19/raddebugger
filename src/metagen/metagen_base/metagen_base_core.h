@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_CORE_H
-#define BASE_CORE_H
-
 ////////////////////////////////
 //~ rjf: Foreign Includes
 
@@ -791,4 +788,3 @@ struct FileProperties
 
 #define quick_sort(ptr, count, element_size, cmp_function) qsort((ptr), (count), (element_size), (int (*)(const void *, const void *))(cmp_function))
 
-#endif // BASE_CORE_H

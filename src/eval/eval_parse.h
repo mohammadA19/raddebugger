@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_PARSE_H
-#define EVAL_PARSE_H
-
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
@@ -13,4 +10,3 @@
 //~ rjf: Parsing Functions
 
 
-#endif // EVAL_PARSE_H

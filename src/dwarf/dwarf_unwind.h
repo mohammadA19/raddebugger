@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_UNWIND_H
-#define DWARF_UNWIND_H
-
 typedef struct DW_UnwindResult
 {
   B32 is_invalid;
@@ -199,6 +196,4 @@ dw_unwind_x64(String8           raw_text,
 
 
 
-
-#endif // DWARF_UNWIND_H
 

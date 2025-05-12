@@ -3,7 +3,3 @@
 
 //- GENERATED CODE
 
-#ifndef REGS_RDI_META_H
-#define REGS_RDI_META_H
-
-#endif // REGS_RDI_META_H

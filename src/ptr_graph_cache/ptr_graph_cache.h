@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PTR_GRAPH_CACHE_H
-#define PTR_GRAPH_CACHE_H
-
 ////////////////////////////////
 //~ rjf: Graph Search Key
 
@@ -180,4 +177,3 @@ global PTG_Shared *ptg_shared = 0;
 //~ rjf: Evictor Threads
 
 
-#endif // PTR_GRAPH_CACHE_H

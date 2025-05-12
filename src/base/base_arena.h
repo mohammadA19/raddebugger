@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_ARENA_H
-#define BASE_ARENA_H
-
 ////////////////////////////////
 //~ rjf: Constants
 
@@ -68,4 +65,3 @@ global ArenaFlags arena_default_flags = 0;
 #define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, Max(8, AlignOf(T)))
 #define push_array(a, T, c) push_array_aligned(a, T, c, Max(8, AlignOf(T)))
 
-#endif // BASE_ARENA_H

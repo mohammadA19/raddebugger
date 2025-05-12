@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_CONTEXT_CRACKING_H
-#define BASE_CONTEXT_CRACKING_H
-
 ////////////////////////////////
 //~ rjf: Clang OS/Arch Cracking
 
@@ -244,4 +241,3 @@
 # error You tried to build with an unsupported architecture. Currently, only building in x64 mode is supported.
 #endif
 
-#endif // BASE_CONTEXT_CRACKING_H

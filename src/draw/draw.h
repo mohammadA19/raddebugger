@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DRAW_H
-#define DRAW_H
-
 ////////////////////////////////
 //~ rjf: Fancy String Types
 
@@ -137,4 +134,3 @@ thread_static DR_ThreadCtx *dr_thread_ctx = 0;
 
 //- rjf: text
 
-#endif // DRAW_H

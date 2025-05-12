@@ -1,9 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ELF_H
-#define ELF_H
-
 enum ELF_Class : U8
 {
   ELF_Class_None  = 0,
@@ -950,6 +947,4 @@ typedef struct ELF_Chdr64
 
 ////////////////////////////////
 
-
-#endif // ELF_H
 

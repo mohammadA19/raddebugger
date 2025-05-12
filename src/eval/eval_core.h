@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_CORE_H
-#define EVAL_CORE_H
-
 ////////////////////////////////
 //~ rjf: Evaluation Key Type
 
@@ -1047,4 +1044,3 @@ thread_static E_Cache *e_cache = 0;
 //~ rjf: Debug Functions
 
 
-#endif // EVAL_CORE_H

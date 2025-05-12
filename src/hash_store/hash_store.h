@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef HASH_STORE_H
-#define HASH_STORE_H
-
 ////////////////////////////////
 //~ rjf: Cache Types
 
@@ -108,4 +105,3 @@ global HS_Shared *hs_shared = 0;
 //~ rjf: Evictor Thread
 
 
-#endif // HASH_STORE_H

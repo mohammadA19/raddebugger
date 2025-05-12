@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_PARSE_H
-#define DWARF_PARSE_H
-
 typedef struct DW_Section
 {
   String8 name;
@@ -368,4 +365,3 @@ typedef struct DW_Reference
 // helper for .debug_pubtypes and .debug_pubnames 
 
 
-#endif // DWARF_PARSE_H

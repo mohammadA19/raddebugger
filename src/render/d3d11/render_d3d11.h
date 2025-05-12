@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_D3D11_H
-#define RENDER_D3D11_H
-
 #include <combaseapi.h>
 #include <dcommon.h>
 #include <initguid.h>
@@ -170,4 +167,3 @@ global read_only R_D3D11_Buffer r_d3d11_buffer_nil = {&r_d3d11_buffer_nil};
 //~ rjf: Helpers
 
 
-#endif // RENDER_D3D11_H

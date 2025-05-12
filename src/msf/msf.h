@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MSF_H
-#define MSF_H
-
 ////////////////////////////////
 //~ rjf: MSF Format Types
 
@@ -53,4 +50,3 @@ struct MSF_Header70
 ////////////////////////////////
 
 
-#endif // MSF_H

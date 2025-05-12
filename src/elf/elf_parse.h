@@ -1,9 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ELF_PARSE_H
-#define ELF_PARSE_H
-
 ////////////////////////////////
 
 typedef struct ELF_BinInfo
@@ -28,4 +25,3 @@ typedef struct ELF_GnuDebugLink
 
 
 
-#endif // ELF_PARSE_H

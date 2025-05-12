@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef UI_H
-#define UI_H
-
 ////////////////////////////////
 //~ rjf: Icon Info
 
@@ -810,4 +807,3 @@ read_only global UI_AnimNode ui_nil_anim_node =
 //- rjf: debug
 #define UI_Debug UI_FlagsAdd(UI_BoxFlag_Debug)
 
-#endif // UI_H

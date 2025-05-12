@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_STRINGS_H
-#define BASE_STRINGS_H
-
 ////////////////////////////////
 //~ rjf: Third Party Includes
 
@@ -163,4 +160,3 @@ struct FuzzyMatchRangeList
 #define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
 #define str8_deserial_read_struct(string, off, ptr)       str8_deserial_read_array(string, off, ptr, 1)
 
-#endif // BASE_STRINGS_H

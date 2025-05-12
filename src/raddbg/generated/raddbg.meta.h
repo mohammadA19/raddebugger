@@ -3,9 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef RADDBG_META_H
-#define RADDBG_META_H
-
 enum RD_RegSlot
 {
 RD_RegSlot_Null,
@@ -5273,4 +5270,3 @@ read_only global String8 rd_icon_file_bytes = {rd_icon_file_bytes__data, sizeof(
 
 C_LINKAGE_END
 
-#endif // RADDBG_META_H

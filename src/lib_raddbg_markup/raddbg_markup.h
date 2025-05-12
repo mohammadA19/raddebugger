@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_MARKUP_H
-#define RADDBG_MARKUP_H
-
 ////////////////////////////////
 //~ Implementation Overrides
 
@@ -419,4 +416,3 @@ raddbg_type_view(std::basic_string_view<?>, array(_Mydata, _Mysize));
 # endif
 #endif // defined(_WIN32) && defined(RADDBG_MARKUP_IMPLEMENTATION) && RADDBG_MARKUP_STL_TYPE_VIEWS
 
-#endif // RADDBG_MARKUP_H

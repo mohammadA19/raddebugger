@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_VISUALIZATION_CORE_H
-#define EVAL_VISUALIZATION_CORE_H
-
 ////////////////////////////////
 //~ rjf: Key Type (Uniquely Refers To One Tree Node)
 
@@ -283,4 +280,3 @@ global read_only EV_Block ev_nil_block =
 //~ rjf: Stringification
 //- rjf: tree stringification iterator
 
-#endif // EVAL_VISUALIZATION_CORE_H

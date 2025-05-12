@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CTRL_INC_H
-#define CTRL_INC_H
-
 ////////////////////////////////
 //~ NOTE(rjf): Control Layer Overview (2023/8/29)
 //
@@ -74,4 +71,3 @@
 
 #include "ctrl_core.h"
 
-#endif // CTRL_INC_H

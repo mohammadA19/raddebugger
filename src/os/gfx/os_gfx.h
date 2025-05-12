@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_H
-#define OS_GFX_H
-
 ////////////////////////////////
 //~ rjf: Graphics System Info
 
@@ -99,4 +96,3 @@ struct OS_EventList
 //~ rjf: @os_hooks Shell Operations
 
 
-#endif // OS_GFX_H

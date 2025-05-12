@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_WIDGETS_H
-#define RADDBG_WIDGETS_H
-
 ////////////////////////////////
 //~ rjf: Cell Types
 
@@ -131,4 +128,3 @@ struct RD_CodeSliceSignal
 //~ rjf: UI Widgets: Line Edit
 
 
-#endif // RADDBG_WIDGETS_H

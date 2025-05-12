@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADCON_DWARF_H
-#define RADCON_DWARF_H
-
 typedef struct D2R_TypeTable
 {
   HashTable          *ht;
@@ -32,6 +29,4 @@ typedef struct D2R_CompUnitContribMap
 
 ////////////////////////////////
 
-
-#endif // RADCON_DWARF_H
 

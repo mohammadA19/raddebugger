@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_H
-#define DWARF_H
-
 enum DW_Version : U16 DW_VersionEnum
 {
   DW_Version_Null,
@@ -1708,4 +1705,3 @@ enum DW_RegX64 : DW_Reg DW_RegX64Enum
 #undef X
 } DW_RegX64Enum;
 
-#endif // DWARF_H

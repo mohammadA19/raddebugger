@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DBGI_H
-#define DBGI_H
-
 ////////////////////////////////
 //~ rjf: Cache Key Type
 
@@ -369,4 +366,3 @@ ASYNC_WORK_DEF(di_search_work);
 
 ASYNC_WORK_DEF(di_match_work);
 
-#endif // DBGI_H

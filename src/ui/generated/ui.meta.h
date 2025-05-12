@@ -3,9 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef UI_META_H
-#define UI_META_H
-
 typedef struct UI_ParentNode UI_ParentNode; struct UI_ParentNode{UI_ParentNode *next; UI_Box * v;};
 typedef struct UI_ChildLayoutAxisNode UI_ChildLayoutAxisNode; struct UI_ChildLayoutAxisNode{UI_ChildLayoutAxisNode *next; Axis2 v;};
 typedef struct UI_FixedXNode UI_FixedXNode; struct UI_FixedXNode{UI_FixedXNode *next; F32 v;};
@@ -224,4 +221,3 @@ if(state->blur_size_stack.auto_pop) { ui_pop_blur_size(); state->blur_size_stack
 if(state->text_padding_stack.auto_pop) { ui_pop_text_padding(); state->text_padding_stack.auto_pop = 0; }\
 if(state->text_alignment_stack.auto_pop) { ui_pop_text_alignment(); state->text_alignment_stack.auto_pop = 0; }\
 
-#endif // UI_META_H

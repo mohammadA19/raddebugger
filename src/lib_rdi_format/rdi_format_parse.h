@@ -38,9 +38,6 @@
 }
 #endif
 
-#ifndef RDI_FORMAT_PARSE_H
-#define RDI_FORMAT_PARSE_H
-
 ////////////////////////////////////////////////////////////////
 //~ Parsed Information Types
 
@@ -225,4 +222,3 @@ RDI_PROC RDI_U8 *rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode 
 RDI_PROC RDI_U64 rdi_cstring_length(char *cstr);
 RDI_PROC RDI_U64 rdi_size_from_bytecode_stream(RDI_U8 *ptr, RDI_U8 *opl);
 
-#endif // RDI_FORMAT_PARSE_H

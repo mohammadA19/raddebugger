@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_OS_LINUX_H
-#define DEMON_OS_LINUX_H
-
 // TODO(allen): Potential Upgrades:
 //
 // memory fd upgrade - Right now for each process we hold open a file

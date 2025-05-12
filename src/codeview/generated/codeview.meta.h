@@ -3,9 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef CODEVIEW_META_H
-#define CODEVIEW_META_H
-
 enum CV_NumericKind : U16 CV_NumericKindEnum
 {
 CV_NumericKind_CHAR = 0x8000,
@@ -511,4 +508,3 @@ CV_LeafKind_CLASS2 = 0x1608,
 CV_LeafKind_STRUCT2 = 0x1609,
 } CV_LeafKindEnum;
 
-#endif // CODEVIEW_META_H

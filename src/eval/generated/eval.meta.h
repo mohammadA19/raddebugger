@@ -3,9 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef EVAL_META_H
-#define EVAL_META_H
-
 enum E_TokenKind
 {
 E_TokenKind_Null,
@@ -175,4 +172,3 @@ extern String8 e_interpretation_code_display_strings[11];
 
 C_LINKAGE_END
 
-#endif // EVAL_META_H

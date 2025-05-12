@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MUTABLE_TEXT_H
-#define MUTABLE_TEXT_H
-
 ////////////////////////////////
 //~ rjf: Cache Types
 
@@ -74,4 +71,3 @@ global MTX_Shared *mtx_shared = 0;
 //~ rjf: Mutation Threads
 
 
-#endif // MUTABLE_TEXT_H

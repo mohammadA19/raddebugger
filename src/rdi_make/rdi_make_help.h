@@ -302,4 +302,4 @@ global RDIM_HelpState *rdim_help_state = 0;
 ////////////////////////////////
 
 
-#endif // RDIM_MAKE_HELP
+ELP

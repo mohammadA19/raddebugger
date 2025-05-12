@@ -1,9 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef REGS_H
-#define REGS_H
-
 ////////////////////////////////
 //~ rjf: Register Usage Kinds
 
@@ -99,4 +96,3 @@ struct REGS_Slice
 //~ rjf: Helpers
 
 
-#endif // REGS_H
