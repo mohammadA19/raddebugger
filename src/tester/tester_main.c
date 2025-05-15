@@ -34,10 +34,9 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32 frame(void) { return 0; }
+B32 frame(void) { return 0; }
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();
   E_TypeCtx *type_ctx = push_array(arena, E_TypeCtx, 1);

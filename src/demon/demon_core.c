@@ -11,23 +11,20 @@
 
 //- rjf: handles
 
-internal DMN_Handle
-dmn_handle_zero(void)
+DMN_Handle dmn_handle_zero(void)
 {
   DMN_Handle h = {0};
   return h;
 }
 
-internal B32
-dmn_handle_match(DMN_Handle a, DMN_Handle b)
+B32 dmn_handle_match(DMN_Handle a, DMN_Handle b)
 {
   return a.u32[0] == b.u32[0] && a.u32[1] == b.u32[1];
 }
 
 //- rjf: trap chunk lists
 
-internal void
-dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Trap *trap)
+void dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Trap *trap)
 {
   DMN_TrapChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -43,8 +40,7 @@ dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Tra
   list->trap_count += 1;
 }
 
-internal void
-dmn_trap_chunk_list_concat_in_place(DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
+void dmn_trap_chunk_list_concat_in_place(DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
 {
   if(dst->last == 0)
   {
@@ -60,8 +56,7 @@ dmn_trap_chunk_list_concat_in_place(DMN_TrapChunkList *dst, DMN_TrapChunkList *t
   MemoryZeroStruct(to_push);
 }
 
-internal void
-dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
+void dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
 {
   for(DMN_TrapChunkNode *src_n = to_push->first; src_n != 0; src_n = src_n->next)
   {
@@ -77,8 +72,7 @@ dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DM
 
 //- rjf: handle lists
 
-internal void
-dmn_handle_list_push(Arena *arena, DMN_HandleList *list, DMN_Handle handle)
+void dmn_handle_list_push(Arena *arena, DMN_HandleList *list, DMN_Handle handle)
 {
   DMN_HandleNode *node = push_array(arena, DMN_HandleNode, 1);
   SLLQueuePush(list->first, list->last, node);
@@ -86,8 +80,7 @@ dmn_handle_list_push(Arena *arena, DMN_HandleList *list, DMN_Handle handle)
   list->count += 1;
 }
 
-internal DMN_HandleArray
-dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
+DMN_HandleArray dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
 {
   DMN_HandleArray array = {0};
   array.count = list->count;
@@ -100,8 +93,7 @@ dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
   return array;
 }
 
-internal DMN_HandleArray
-dmn_handle_array_copy(Arena *arena, DMN_HandleArray *src)
+DMN_HandleArray dmn_handle_array_copy(Arena *arena, DMN_HandleArray *src)
 {
   DMN_HandleArray dst = {0};
   dst.count = src->count;
@@ -112,8 +104,7 @@ dmn_handle_array_copy(Arena *arena, DMN_HandleArray *src)
 
 //- rjf: event list building
 
-internal DMN_Event *
-dmn_event_list_push(Arena *arena, DMN_EventList *list)
+DMN_Event* dmn_event_list_push(Arena *arena, DMN_EventList *list)
 {
   DMN_EventNode *n = push_array(arena, DMN_EventNode, 1);
   SLLQueuePush(list->first, list->last, n);
@@ -125,8 +116,7 @@ dmn_event_list_push(Arena *arena, DMN_EventList *list)
 ////////////////////////////////
 //~ rjf: Thread Reading Helper Functions (Helpers, Implemented Once)
 
-internal U64
-dmn_rip_from_thread(DMN_Handle thread)
+U64 dmn_rip_from_thread(DMN_Handle thread)
 {
   U64 result = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -141,8 +131,7 @@ dmn_rip_from_thread(DMN_Handle thread)
   return result;
 }
 
-internal U64
-dmn_rsp_from_thread(DMN_Handle thread)
+U64 dmn_rsp_from_thread(DMN_Handle thread)
 {
   U64 result = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -160,8 +149,7 @@ dmn_rsp_from_thread(DMN_Handle thread)
 ////////////////////////////////
 //~ Memory Helpers
 
-internal String8
-dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
+String8 dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

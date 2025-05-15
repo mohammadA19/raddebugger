@@ -30,8 +30,7 @@ return top_val
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
-dr_hash_from_string(String8 string)
+U64 dr_hash_from_string(String8 string)
 {
   U64 result = 5381;
   for(U64 i = 0; i < string.size; i += 1)
@@ -44,8 +43,7 @@ dr_hash_from_string(String8 string)
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions
 
-internal void
-dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
+void dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
 {
   DR_FStrNode *n = push_array_no_zero(arena, DR_FStrNode, 1);
   MemoryCopyStruct(&n->v, str);
@@ -54,8 +52,7 @@ dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
   list->total_size += str->string.size;
 }
 
-internal void
-dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, String8 string)
+void dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, String8 string)
 {
   DR_FStr fstr = {string, *params};
   if(!fnt_tag_match(fnt_tag_zero(), overrides->font))
@@ -85,8 +82,7 @@ dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FS
   dr_fstrs_push(arena, list, &fstr);
 }
 
-internal void
-dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push)
+void dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push)
 {
   if(dst->last != 0 && to_push->first != 0)
   {
@@ -102,8 +98,7 @@ dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push)
   MemoryZeroStruct(to_push);
 }
 
-internal DR_FStrList
-dr_fstrs_copy(Arena *arena, DR_FStrList *src)
+DR_FStrList dr_fstrs_copy(Arena *arena, DR_FStrList *src)
 {
   DR_FStrList dst = {0};
   for(DR_FStrNode *src_n = src->first; src_n != 0; src_n = src_n->next)
@@ -115,8 +110,7 @@ dr_fstrs_copy(Arena *arena, DR_FStrList *src)
   return dst;
 }
 
-internal String8
-dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
+String8 dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
 {
   String8 result = {0};
   {
@@ -136,8 +130,7 @@ dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
   return result;
 }
 
-internal FuzzyMatchRangeList
-dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
+FuzzyMatchRangeList dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 fstrs_string = {0};
@@ -162,8 +155,7 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
   return ranges;
 }
 
-internal DR_FRunList
-dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
+DR_FRunList dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
 {
   ProfBeginFunction();
   DR_FRunList run_list = {0};
@@ -186,8 +178,7 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
   return run_list;
 }
 
-internal Vec2F32
-dr_dim_from_fstrs(DR_FStrList *fstrs)
+Vec2F32 dr_dim_from_fstrs(DR_FStrList *fstrs)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FRunList fruns = dr_fruns_from_fstrs(scratch.arena, 0, fstrs);
@@ -201,8 +192,7 @@ dr_dim_from_fstrs(DR_FStrList *fstrs)
 //
 // (Frame boundaries)
 
-internal void
-dr_begin_frame(FNT_Tag icon_font)
+void dr_begin_frame(FNT_Tag icon_font)
 {
   if(dr_thread_ctx == 0)
   {
@@ -217,8 +207,7 @@ dr_begin_frame(FNT_Tag icon_font)
   dr_thread_ctx->icon_font = icon_font;
 }
 
-internal void
-dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
+void dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 {
   r_window_submit(os_window, r_window, &bucket->passes);
 }
@@ -228,16 +217,14 @@ dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 //
 // (Bucket: Handle to sequence of many render passes, constructed by this layer)
 
-internal DR_Bucket *
-dr_bucket_make(void)
+DR_Bucket* dr_bucket_make(void)
 {
   DR_Bucket *bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
   DR_BucketStackInits(bucket);
   return bucket;
 }
 
-internal void
-dr_push_bucket(DR_Bucket *bucket)
+void dr_push_bucket(DR_Bucket *bucket)
 {
   DR_BucketSelectionNode *node = dr_thread_ctx->free_bucket_selection;
   if(node)
@@ -252,16 +239,14 @@ dr_push_bucket(DR_Bucket *bucket)
   node->bucket = bucket;
 }
 
-internal void
-dr_pop_bucket(void)
+void dr_pop_bucket(void)
 {
   DR_BucketSelectionNode *node = dr_thread_ctx->top_bucket;
   SLLStackPop(dr_thread_ctx->top_bucket);
   SLLStackPush(dr_thread_ctx->free_bucket_selection, node);
 }
 
-internal DR_Bucket *
-dr_top_bucket(void)
+DR_Bucket* dr_top_bucket(void)
 {
   DR_Bucket *bucket = 0;
   if(dr_thread_ctx->top_bucket != 0)
@@ -285,7 +270,7 @@ dr_top_bucket(void)
 
 //- rjf: rectangles
 
-internal inline R_Rect2DInst *
+inline R_Rect2DInst *
 dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
@@ -326,7 +311,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
 
 //- rjf: images
 
-internal inline R_Rect2DInst *
+inline R_Rect2DInst *
 dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
@@ -371,8 +356,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
 
 //- rjf: blurs
 
-internal R_PassParams_Blur *
-dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
+R_PassParams_Blur* dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -390,8 +374,7 @@ dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 
 //- rjf: 3d rendering pass params
 
-internal R_PassParams_Geo3D *
-dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
+R_PassParams_Geo3D* dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -405,8 +388,7 @@ dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 
 //- rjf: meshes
 
-internal R_Mesh3DInst *
-dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
+R_Mesh3DInst* dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -477,8 +459,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
 
 //- rjf: collating one pre-prepped bucket into parent bucket
 
-internal void
-dr_sub_bucket(DR_Bucket *bucket)
+void dr_sub_bucket(DR_Bucket *bucket)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *src = bucket;
@@ -526,8 +507,7 @@ dr_sub_bucket(DR_Bucket *bucket)
 
 //- rjf: text
 
-internal void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run)
+void dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
@@ -629,8 +609,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
   ProfEnd();
 }
 
-internal void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
 {
   for(FuzzyMatchRangeNode *match_n = ranges->first; match_n != 0; match_n = match_n->next)
   {
@@ -681,8 +660,7 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
   }
 }
 
-internal void
-dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
+void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 {
   ProfBeginFunction();
   F32 advance = 0;
@@ -708,8 +686,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
   ProfEnd();
 }
 
-internal void
-dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+void dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_run_from_string(font, size, base_align_px, tab_size_px, flags, string);

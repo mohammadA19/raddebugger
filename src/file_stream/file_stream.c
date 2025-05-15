@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
-fs_little_hash_from_string(String8 string)
+U64 fs_little_hash_from_string(String8 string)
 {
   U64 result = 5381;
   for(U64 i = 0; i < string.size; i += 1)
@@ -15,8 +14,7 @@ fs_little_hash_from_string(String8 string)
   return result;
 }
 
-internal U128
-fs_big_hash_from_string_range(String8 string, Rng1U64 range)
+U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 buffer_size = string.size + sizeof(U64)*2;
@@ -32,8 +30,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: Top-Level API
 
-internal void
-fs_init(void)
+void fs_init(void)
 {
   Arena *arena = arena_alloc();
   fs_shared = push_array(arena, FS_Shared, 1);
@@ -59,8 +56,7 @@ fs_init(void)
 ////////////////////////////////
 //~ rjf: Change Generation
 
-internal U64
-fs_change_gen(void)
+U64 fs_change_gen(void)
 {
   return ins_atomic_u64_eval(&fs_shared->change_gen);
 }
@@ -68,8 +64,7 @@ fs_change_gen(void)
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal U128
-fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
+U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -178,8 +173,7 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
   return result;
 }
 
-internal U128
-fs_key_from_path_range(String8 path, Rng1U64 range)
+U128 fs_key_from_path_range(String8 path, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   String8 path_normalized = path_normalized_from_string(scratch.arena, path);
@@ -189,8 +183,7 @@ fs_key_from_path_range(String8 path, Rng1U64 range)
   return key;
 }
 
-internal FileProperties
-fs_properties_from_path(String8 path)
+FileProperties fs_properties_from_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
   FileProperties result = {0};
@@ -218,8 +211,7 @@ fs_properties_from_path(String8 path)
 ////////////////////////////////
 //~ rjf: Streamer Threads
 
-internal B32
-fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
+B32 fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
 {
   B32 result = 0;
   path.size = Min(path.size, fs_shared->u2s_ring_size);
@@ -246,8 +238,7 @@ fs_u2s_enqueue_req(Rng1U64 range, String8 path, U64 endt_us)
   return result;
 }
 
-internal void
-fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out)
+void fs_u2s_dequeue_req(Arena *arena, Rng1U64 *range_out, String8 *path_out)
 {
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
@@ -359,8 +350,7 @@ ASYNC_WORK_DEF(fs_stream_work)
 ////////////////////////////////
 //~ rjf: Change Detector Thread
 
-internal void
-fs_detector_thread__entry_point(void *p)
+void fs_detector_thread__entry_point(void *p)
 {
   ThreadNameF("[fs] detector thread");
   for(;;)

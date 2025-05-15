@@ -53,8 +53,7 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   //- rjf: initialize state, unpack command line
   Arena *arena = arena_alloc();

@@ -1,5 +1,4 @@
-internal String8
-rdi_string_from_name_map_kind(RDI_NameMapKind kind)
+String8 rdi_string_from_name_map_kind(RDI_NameMapKind kind)
 {
   switch (kind) {
   case RDI_NameMapKind_NULL              : return str8_lit("NULL");

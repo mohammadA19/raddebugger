@@ -182,8 +182,7 @@ global read_only struct
   { RD_Option_Relocs,           "r",                   "Alias for -relocs"     },
 };
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();
 

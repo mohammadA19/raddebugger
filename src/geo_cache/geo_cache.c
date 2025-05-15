@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
-geo_init(void)
+void geo_init(void)
 {
   Arena *arena = arena_alloc();
   geo_shared = push_array(arena, GEO_Shared, 1);
@@ -31,8 +30,7 @@ geo_init(void)
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void
-geo_tctx_ensure_inited(void)
+void geo_tctx_ensure_inited(void)
 {
   if(geo_tctx == 0)
   {
@@ -45,8 +43,7 @@ geo_tctx_ensure_inited(void)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal GEO_Scope *
-geo_scope_open(void)
+GEO_Scope* geo_scope_open(void)
 {
   geo_tctx_ensure_inited();
   GEO_Scope *scope = geo_tctx->free_scope;
@@ -62,8 +59,7 @@ geo_scope_open(void)
   return scope;
 }
 
-internal void
-geo_scope_close(GEO_Scope *scope)
+void geo_scope_close(GEO_Scope *scope)
 {
   for(GEO_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -89,8 +85,7 @@ geo_scope_close(GEO_Scope *scope)
   SLLStackPush(geo_tctx->free_scope, scope);
 }
 
-internal void
-geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
+void geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 {
   GEO_Touch *touch = geo_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
@@ -112,8 +107,7 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal R_Handle
-geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
+R_Handle geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
 {
   R_Handle handle = {0};
   if(!u128_match(hash, u128_zero()))
@@ -177,8 +171,7 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
   return handle;
 }
 
-internal R_Handle
-geo_buffer_from_key(GEO_Scope *scope, U128 key)
+R_Handle geo_buffer_from_key(GEO_Scope *scope, U128 key)
 {
   R_Handle handle = {0};
   for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -196,8 +189,7 @@ geo_buffer_from_key(GEO_Scope *scope, U128 key)
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32
-geo_u2x_enqueue_req(U128 hash, U64 endt_us)
+B32 geo_u2x_enqueue_req(U128 hash, U64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
@@ -223,8 +215,7 @@ geo_u2x_enqueue_req(U128 hash, U64 endt_us)
   return good;
 }
 
-internal void
-geo_u2x_dequeue_req(U128 *hash_out)
+void geo_u2x_dequeue_req(U128 *hash_out)
 {
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
   {
@@ -305,8 +296,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void
-geo_evictor_thread__entry_point(void *p)
+void geo_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[geo] evictor thread");
   for(;;)

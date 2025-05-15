@@ -8,8 +8,7 @@
 
 ////////////////////////////////
 
-internal CV_Arch
-cv_arch_from_coff_machine(COFF_MachineType machine)
+CV_Arch cv_arch_from_coff_machine(COFF_MachineType machine)
 {
   CV_Arch arch = 0;
   switch(machine)
@@ -42,8 +41,7 @@ cv_arch_from_coff_machine(COFF_MachineType machine)
   return arch;
 }
 
-internal U64
-cv_size_from_reg(CV_Arch arch, CV_Reg reg)
+U64 cv_size_from_reg(CV_Arch arch, CV_Reg reg)
 {
   switch(arch)
   {
@@ -54,8 +52,7 @@ cv_size_from_reg(CV_Arch arch, CV_Reg reg)
   return 0;
 }
 
-internal B32
-cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
+B32 cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
 {
   switch(arch)
   {
@@ -66,8 +63,7 @@ cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
   return 0;
 }
 
-internal U64
-cv_size_from_reg_x86(CV_Reg reg)
+U64 cv_size_from_reg_x86(CV_Reg reg)
 {
   switch(reg)
   {
@@ -78,8 +74,7 @@ cv_size_from_reg_x86(CV_Reg reg)
   return 0;
 }
 
-internal U64
-cv_size_from_reg_x64(CV_Reg reg)
+U64 cv_size_from_reg_x64(CV_Reg reg)
 {
   switch(reg)
   {
@@ -90,8 +85,7 @@ cv_size_from_reg_x64(CV_Reg reg)
   return 0;
 }
 
-internal CV_EncodedFramePtrReg
-cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
+CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
 {
   CV_EncodedFramePtrReg fp_reg = 0;
   if(is_local_param)
@@ -105,8 +99,7 @@ cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
   return fp_reg;
 }
 
-internal CV_Reg
-cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
+CV_Reg cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
 {
   CV_Reg fp_reg = 0;
   switch (arch)
@@ -139,8 +132,7 @@ cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
   return fp_reg;
 }
 
-internal U32
-cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
+U32 cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
 {
   U32 r = 0;
   switch (arch) {
@@ -166,8 +158,7 @@ cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
 }
 
 
-internal String8
-cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
+String8 cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
 {
   switch (kind) {
     case CV_InlineRangeKind_Expr: return str8_lit("Expr");

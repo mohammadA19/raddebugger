@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
-dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
+String8 dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
   String8 result = {0};
 
@@ -42,8 +41,7 @@ exit:;
   return result;
 }
 
-internal String8
-dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
+String8 dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
 {
   switch (kind) {
   case DW_Tag_Null: return str8_lit("Null");
@@ -56,8 +54,7 @@ dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
-dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
+String8 dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
   #define X(_N,...) case DW_Attrib_##_N: return str8_lit(Stringify(_N));
 
@@ -109,8 +106,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   return str8_zero();
 }
 
-internal String8
-dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
+String8 dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
 {
   #define X(_N,...) case DW_Form_##_N: return str8_lit(Stringify(_N));
   switch (ver) {
@@ -137,8 +133,7 @@ dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
   return result;
 }
 
-internal String8
-dw_string_from_language(Arena *arena, DW_Language kind)
+String8 dw_string_from_language(Arena *arena, DW_Language kind)
 {
   switch (kind) {
     #define X(_N,_ID) case DW_Language_##_N: return str8_lit(Stringify(_N));
@@ -148,8 +143,7 @@ dw_string_from_language(Arena *arena, DW_Language kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
-dw_string_from_inl(Arena *arena, DW_InlKind kind)
+String8 dw_string_from_inl(Arena *arena, DW_InlKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return str8_lit(Stringify(_N));
@@ -159,8 +153,7 @@ dw_string_from_inl(Arena *arena, DW_InlKind kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
-dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
+String8 dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return str8_lit(Stringify(_N));
@@ -170,8 +163,7 @@ dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
-dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
+String8 dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return str8_lit(Stringify(_N));
@@ -181,8 +173,7 @@ dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
-dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
+String8 dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return str8_lit(Stringify(_N));
@@ -192,8 +183,7 @@ dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
   return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
-dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
+String8 dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
 {
   switch (kind) {
     #define X(_N,_ID) case DW_StdOpcode_##_N: return str8_lit(Stringify(_N));
@@ -203,8 +193,7 @@ dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
-dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
+String8 dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
 {
   switch (kind) {
     #define X(_N,_ID) case DW_ExtOpcode_##_N: return str8_lit(Stringify(_N));
@@ -215,29 +204,25 @@ dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
   return push_str8f(arena, "%x", kind);
 }
 
-internal String8
-dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind)
+String8 dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
-dw_string_from_section_kind(Arena *arena, DW_SectionKind kind)
+String8 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
-dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind)
+String8 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
-internal String8
-dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
+String8 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
 {
   String8 reg_str = str8_zero();
   switch (arch) {

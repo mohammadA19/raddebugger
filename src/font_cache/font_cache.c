@@ -10,8 +10,7 @@
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U128
-fnt_hash_from_string(String8 string)
+U128 fnt_hash_from_string(String8 string)
 {
   union
   {
@@ -23,15 +22,13 @@ fnt_hash_from_string(String8 string)
   return hash.u128;
 }
 
-internal U64
-fnt_little_hash_from_string(U64 seed, String8 string)
+U64 fnt_little_hash_from_string(U64 seed, String8 string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-internal Vec2S32
-fnt_vertex_from_corner(Corner corner)
+Vec2S32 fnt_vertex_from_corner(Corner corner)
 {
   Vec2S32 result = {0};
   switch(corner)
@@ -48,21 +45,18 @@ fnt_vertex_from_corner(Corner corner)
 ////////////////////////////////
 //~ rjf: Font Tags
 
-internal FNT_Tag
-fnt_tag_zero(void)
+FNT_Tag fnt_tag_zero(void)
 {
   FNT_Tag result = {0};
   return result;
 }
 
-internal B32
-fnt_tag_match(FNT_Tag a, FNT_Tag b)
+B32 fnt_tag_match(FNT_Tag a, FNT_Tag b)
 {
   return a.u64[0] == b.u64[0] && a.u64[1] == b.u64[1];
 }
 
-internal FP_Handle
-fnt_handle_from_tag(FNT_Tag tag)
+FP_Handle fnt_handle_from_tag(FNT_Tag tag)
 {
   ProfBeginFunction();
   U64 slot_idx = tag.u64[1] % fnt_state->font_hash_table_size;
@@ -86,8 +80,7 @@ fnt_handle_from_tag(FNT_Tag tag)
   return result;
 }
 
-internal FP_Metrics
-fnt_fp_metrics_from_tag(FNT_Tag tag)
+FP_Metrics fnt_fp_metrics_from_tag(FNT_Tag tag)
 {
   ProfBeginFunction();
   U64 slot_idx = tag.u64[1] % fnt_state->font_hash_table_size;
@@ -111,8 +104,7 @@ fnt_fp_metrics_from_tag(FNT_Tag tag)
   return result;
 }
 
-internal FNT_Tag
-fnt_tag_from_path(String8 path)
+FNT_Tag fnt_tag_from_path(String8 path)
 {
   ProfBeginFunction();
   
@@ -164,8 +156,7 @@ fnt_tag_from_path(String8 path)
   return result;
 }
 
-internal FNT_Tag
-fnt_tag_from_static_data_string(String8 *data_ptr)
+FNT_Tag fnt_tag_from_static_data_string(String8 *data_ptr)
 {
   ProfBeginFunction();
   
@@ -211,8 +202,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
   return result;
 }
 
-internal String8
-fnt_path_from_tag(FNT_Tag tag)
+String8 fnt_path_from_tag(FNT_Tag tag)
 {
   //- rjf: tag -> slot index
   U64 slot_idx = tag.u64[1] % fnt_state->font_hash_table_size;
@@ -243,8 +233,7 @@ fnt_path_from_tag(FNT_Tag tag)
 ////////////////////////////////
 //~ rjf: Atlas
 
-internal Rng2S16
-fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
+Rng2S16 fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
 {
   ProfBeginFunction();
   
@@ -360,8 +349,7 @@ fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
   return result;
 }
 
-internal void
-fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region)
+void fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region)
 {
   ProfBeginFunction();
   
@@ -469,8 +457,7 @@ fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region)
 ////////////////////////////////
 //~ rjf: Piece Type Functions
 
-internal FNT_Piece *
-fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
+FNT_Piece* fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
 {
   FNT_PieceChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -487,15 +474,13 @@ fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
   return result;
 }
 
-internal void
-fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece)
+void fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, U64 cap, FNT_Piece *piece)
 {
   FNT_Piece *new_piece = fnt_piece_chunk_list_push_new(arena, list, cap);
   MemoryCopyStruct(new_piece, piece);
 }
 
-internal FNT_PieceArray
-fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
+FNT_PieceArray fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
 {
   FNT_PieceArray array = {0};
   array.count = list->total_piece_count;
@@ -509,8 +494,7 @@ fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
   return array;
 }
 
-internal FNT_PieceArray
-fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
+FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
 {
   FNT_PieceArray dst = {0};
   dst.count = src->count;
@@ -522,8 +506,7 @@ fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
 ////////////////////////////////
 //~ rjf: Cache Usage
 
-internal FNT_Hash2StyleRasterCacheNode *
-fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
+FNT_Hash2StyleRasterCacheNode* fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
 {
   //- rjf: tag * size -> style hash
   U64 style_hash = {0};
@@ -573,8 +556,7 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
   return hash2style_node;
 }
 
-internal FNT_Run
-fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string)
+FNT_Run fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   
@@ -902,8 +884,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
   return run;
 }
 
-internal String8List
-fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max)
+String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max)
 {
   String8List list = {0};
   {
@@ -1015,8 +996,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F
   return list;
 }
 
-internal Vec2F32
-fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string)
+Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1028,8 +1008,7 @@ fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_s
   return result;
 }
 
-internal Vec2F32
-fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list)
+Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list)
 {
   ProfBeginFunction();
   Vec2F32 sum = {0};
@@ -1043,15 +1022,13 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 
   return sum;
 }
 
-internal F32
-fnt_column_size_from_tag_size(FNT_Tag tag, F32 size)
+F32 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size)
 {
   F32 result = fnt_dim_from_tag_size_string(tag, size, 0, 0, str8_lit("H")).x;
   return result;
 }
 
-internal U64
-fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p)
+U64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 best_offset_bytes = 0;
@@ -1081,8 +1058,7 @@ fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F3
 ////////////////////////////////
 //~ rjf: Metrics
 
-internal FNT_Metrics
-fnt_metrics_from_tag_size(FNT_Tag tag, F32 size)
+FNT_Metrics fnt_metrics_from_tag_size(FNT_Tag tag, F32 size)
 {
   ProfBeginFunction();
   FP_Metrics metrics = fnt_fp_metrics_from_tag(tag);
@@ -1097,8 +1073,7 @@ fnt_metrics_from_tag_size(FNT_Tag tag, F32 size)
   return result;
 }
 
-internal F32
-fnt_line_height_from_metrics(FNT_Metrics *metrics)
+F32 fnt_line_height_from_metrics(FNT_Metrics *metrics)
 {
   return metrics->ascent + metrics->descent + metrics->line_gap;
 }
@@ -1106,8 +1081,7 @@ fnt_line_height_from_metrics(FNT_Metrics *metrics)
 ////////////////////////////////
 //~ rjf: Main Calls
 
-internal void
-fnt_init(void)
+void fnt_init(void)
 {
   Arena *arena = arena_alloc();
   fnt_state = push_array(arena, FNT_State, 1);
@@ -1119,8 +1093,7 @@ fnt_init(void)
   fnt_reset();
 }
 
-internal void
-fnt_reset(void)
+void fnt_reset(void)
 {
   for(FNT_Atlas *a = fnt_state->first_atlas; a != 0; a = a->next)
   {
@@ -1132,8 +1105,7 @@ fnt_reset(void)
   fnt_state->hash2style_slots = push_array(fnt_state->raster_arena, FNT_Hash2StyleRasterCacheSlot, fnt_state->hash2style_slots_count);
 }
 
-internal void
-fnt_frame(void)
+void fnt_frame(void)
 {
   fnt_state->frame_index += 1;
   arena_clear(fnt_state->frame_arena);

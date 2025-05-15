@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64
-mscrt_parse_func_info(Arena              *arena,
+U64 mscrt_parse_func_info(Arena              *arena,
                       String8             raw_data,
                       U64                 section_count,
                       COFF_SectionHeader *sections,
@@ -86,8 +85,7 @@ mscrt_parse_func_info(Arena              *arena,
 
 ////////////////////////////////
 
-internal U64
-mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
+U64 mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
 {
   U64 cursor = offset;
 
@@ -124,14 +122,12 @@ mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
   return read_size;
 }
 
-internal U64
-mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32 *int_out)
+U64 mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32 *int_out)
 {
   return str8_deserial_read_struct(raw_data, offset, int_out);
 }
 
-internal U64
-mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
+U64 mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
 {
   U64 cursor = offset;
 
@@ -191,8 +187,7 @@ mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_E
   return read_size;
 }
 
-internal U64
-mscrt_parse_handler_type_v4_array(Arena                      *arena,
+U64 mscrt_parse_handler_type_v4_array(Arena                      *arena,
                                   String8                     raw_data,
                                   U64                         offset,
                                   U64                         func_voff,
@@ -217,8 +212,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
   return read_size;
 }
 
-internal U64
-mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
+U64 mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
 {
   U64 cursor = offset;
 
@@ -249,8 +243,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *e
   return read_size;
 }
 
-internal U64
-mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
+U64 mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
 {
   U64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out->count);
@@ -262,8 +255,7 @@ mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindM
   return read_size;
 }
 
-internal U64
-mscrt_parse_try_block_map_array_v4(Arena                   *arena,
+U64 mscrt_parse_try_block_map_array_v4(Arena                   *arena,
                                    String8                  raw_data,
                                    U64                      off,
                                    U64                      section_count,
@@ -297,8 +289,7 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
   return read_size;
 }
 
-internal U64
-mscrt_parse_ip2state_map_v4(Arena              *arena,
+U64 mscrt_parse_ip2state_map_v4(Arena              *arena,
                             String8             raw_data,
                             U64                 off,
                             U64                 func_voff,
@@ -333,8 +324,7 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
   return read_size;
 }
 
-internal U64
-mscrt_parse_func_info_v4(Arena                     *arena,
+U64 mscrt_parse_func_info_v4(Arena                     *arena,
                             String8                 raw_data,
                             U64                     section_count,
                             COFF_SectionHeader     *sections,
@@ -397,8 +387,7 @@ mscrt_parse_func_info_v4(Arena                     *arena,
 
 ////////////////////////////////
 
-internal Rng1U64List
-mscrt_catch_blocks_from_data_x8664(Arena              *arena,
+Rng1U64List mscrt_catch_blocks_from_data_x8664(Arena              *arena,
                                    String8             raw_data,
                                    U64                 section_count,
                                    COFF_SectionHeader *sections,

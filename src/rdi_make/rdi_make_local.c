@@ -5,8 +5,7 @@
 
 ////////////////////////////////
 
-internal RDIM_DataModel
-rdim_infer_data_model(OperatingSystem os, RDI_Arch arch)
+RDIM_DataModel rdim_infer_data_model(OperatingSystem os, RDI_Arch arch)
 {
   RDIM_DataModel data_model = RDIM_DataModel_Null;
   switch (os) {
@@ -39,8 +38,7 @@ rdim_infer_data_model(OperatingSystem os, RDI_Arch arch)
 
 ////////////////////////////////
 
-internal RDIM_TopLevelInfo
-rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
+RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
 {
   // convert arch
   RDI_Arch arch_rdi;
@@ -451,8 +449,7 @@ ASYNC_WORK_DEF(rdim_bake_idx_runs_work)
   return out;
 }
 
-internal U64
-rdim_local_hash(RDIM_String8 string)
+U64 rdim_local_hash(RDIM_String8 string)
 {
   U64 hash = 5381;
   U8 *ptr = string.str;
@@ -463,8 +460,7 @@ rdim_local_hash(RDIM_String8 string)
   return hash;
 }
 
-internal void
-rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList *udts)
+void rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList *udts)
 {
   ProfBeginFunction();
 
@@ -630,8 +626,7 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
   ProfEnd();
 }
 
-internal RDIM_LocalState *
-rdim_local_init(void)
+RDIM_LocalState* rdim_local_init(void)
 {
   Arena *arena = arena_alloc();
   RDIM_LocalState *state           = push_array(arena, RDIM_LocalState, 1);
@@ -645,8 +640,7 @@ rdim_local_init(void)
   return state;
 }
 
-internal RDIM_BakeResults
-rdim_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
+RDIM_BakeResults rdim_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
 {
   Temp scratch = scratch_begin(0,0);
   RDIM_BakeResults out = {0};
@@ -1132,8 +1126,7 @@ rdim_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
   return out;
 }
 
-internal RDIM_SerializedSectionBundle
-rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
+RDIM_SerializedSectionBundle rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
 {
   RDIM_SerializedSectionBundle out = {0};
 

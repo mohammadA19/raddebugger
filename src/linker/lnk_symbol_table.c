@@ -1,15 +1,13 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
-lnk_init_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolType type)
+void lnk_init_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolType type)
 {
   symbol->name = name;
   symbol->type = type;
 }
 
-internal void
-lnk_init_defined_symbol(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
+void lnk_init_defined_symbol(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
 {
   switch (visibility) {
   case LNK_DefinedSymbolVisibility_Static:   lnk_init_symbol(symbol, name, LNK_Symbol_DefinedStatic);   break;
@@ -21,8 +19,7 @@ lnk_init_defined_symbol(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisib
   def->value_type        = LNK_DefinedSymbolValue_Null;
 }
 
-internal void
-lnk_init_defined_symbol_chunk(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
+void lnk_init_defined_symbol_chunk(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
 {
   lnk_init_defined_symbol(symbol, name, visibility, flags);
   LNK_DefinedSymbol *def = &symbol->u.defined;
@@ -33,8 +30,7 @@ lnk_init_defined_symbol_chunk(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbo
   def->u.selection       = selection;
 }
 
-internal void
-lnk_init_defined_symbol_va(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
+void lnk_init_defined_symbol_va(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
 {
   lnk_init_defined_symbol(symbol, name, visibility, flags);
   LNK_DefinedSymbol *def = &symbol->u.defined;
@@ -42,15 +38,13 @@ lnk_init_defined_symbol_va(LNK_Symbol *symbol, String8 name, LNK_DefinedSymbolVi
   def->u.va              = va;
 }
 
-internal void
-lnk_init_undefined_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolScopeFlags scope_flags)
+void lnk_init_undefined_symbol(LNK_Symbol *symbol, String8 name, LNK_SymbolScopeFlags scope_flags)
 {
   lnk_init_symbol(symbol, name, LNK_Symbol_Undefined);
   symbol->u.undefined.scope_flags = scope_flags;
 }
 
-internal void
-lnk_init_weak_symbol(LNK_Symbol *symbol, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback)
+void lnk_init_weak_symbol(LNK_Symbol *symbol, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback)
 {
   lnk_init_symbol(symbol, name, LNK_Symbol_Weak);
   symbol->u.weak.scope_flags     = LNK_SymbolScopeFlag_Defined;
@@ -58,23 +52,21 @@ lnk_init_weak_symbol(LNK_Symbol *symbol, String8 name, COFF_WeakExtType lookup, 
   symbol->u.weak.fallback_symbol = fallback;
 }
 
-internal void
-lnk_init_lazy_symbol(LNK_Symbol *symbol, String8 name, LNK_Lib *lib, U64 member_offset)
+void lnk_init_lazy_symbol(LNK_Symbol *symbol, String8 name, LNK_Lib *lib, U64 member_offset)
 {
   lnk_init_symbol(symbol, name, LNK_Symbol_Lazy);
   symbol->u.lazy.lib           = lib;
   symbol->u.lazy.member_offset = member_offset;
 }
 
-internal LNK_Symbol *
-lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
+LNK_Symbol* lnk_make_defined_symbol(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
   lnk_init_defined_symbol(symbol, name, visibility, flags);
   return symbol;
 }
 
-internal LNK_Symbol * 
+LNK_Symbol*  
 lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
@@ -82,15 +74,14 @@ lnk_make_defined_symbol_chunk(Arena *arena, String8 name, LNK_DefinedSymbolVisib
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
+LNK_Symbol* lnk_make_defined_symbol_va(Arena *arena, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
   lnk_init_defined_symbol_va(symbol, name, visibility, flags, va);
   return symbol;
 }
 
-internal LNK_Symbol * 
+LNK_Symbol*  
 lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags flags)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
@@ -98,24 +89,21 @@ lnk_make_undefined_symbol(Arena *arena, String8 name, LNK_SymbolScopeFlags flags
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback)
+LNK_Symbol* lnk_make_weak_symbol(Arena *arena, String8 name, COFF_WeakExtType lookup, LNK_Symbol *fallback)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
   lnk_init_weak_symbol(symbol, name, lookup, fallback);
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_make_lazy_symbol(Arena *arena, String8 name, LNK_Lib *lib, U64 member_offset)
+LNK_Symbol* lnk_make_lazy_symbol(Arena *arena, String8 name, LNK_Lib *lib, U64 member_offset)
 {
   LNK_Symbol *symbol = push_array_no_zero(arena, LNK_Symbol, 1);
   lnk_init_lazy_symbol(symbol, name, lib, member_offset);
   return symbol;
 }
 
-internal LNK_Chunk *
-lnk_chunk_from_symbol(LNK_Symbol *symbol)
+LNK_Chunk* lnk_chunk_from_symbol(LNK_Symbol *symbol)
 {
   if (LNK_Symbol_IsDefined(symbol->type) && symbol->u.defined.value_type == LNK_DefinedSymbolValue_Chunk) {
     return symbol->u.defined.u.chunk;
@@ -125,15 +113,13 @@ lnk_chunk_from_symbol(LNK_Symbol *symbol)
 
 ////////////////////////////////
 
-internal void
-lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node)
+void lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node)
 {
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
 }
 
-internal LNK_SymbolNode *
-lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol)
+LNK_SymbolNode* lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol)
 {
   LNK_SymbolNode *node = push_array(arena, LNK_SymbolNode, 1);
   node->data           = symbol;
@@ -141,14 +127,12 @@ lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol)
   return node;
 }
 
-internal void
-lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat)
+void lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal LNK_SymbolNode *
-lnk_symbol_list_search_node(LNK_SymbolList list, String8 name, StringMatchFlags flags)
+LNK_SymbolNode* lnk_symbol_list_search_node(LNK_SymbolList list, String8 name, StringMatchFlags flags)
 {
   for (LNK_SymbolNode *node = list.first; node != 0; node = node->next) {
     if (str8_match(node->data->name, name, flags)) {
@@ -158,15 +142,13 @@ lnk_symbol_list_search_node(LNK_SymbolList list, String8 name, StringMatchFlags 
   return 0;
 }
 
-internal LNK_Symbol *
-lnk_symbol_list_search(LNK_SymbolList list, String8 name, StringMatchFlags flags)
+LNK_Symbol* lnk_symbol_list_search(LNK_SymbolList list, String8 name, StringMatchFlags flags)
 {
   LNK_SymbolNode *node = lnk_symbol_list_search_node(list, name, flags);
   return node ? node->data : 0;
 }
 
-internal LNK_SymbolList
-lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr)
+LNK_SymbolList lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr)
 {
   LNK_SymbolList list = {0};
   LNK_SymbolNode *node_arr = push_array_no_zero(arena, LNK_SymbolNode, arr.count);
@@ -179,8 +161,7 @@ lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr)
   return list;
 }
 
-internal LNK_SymbolNodeArray
-lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list)
+LNK_SymbolNodeArray lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolNodeArray result = {0};
   result.count               = 0;
@@ -191,8 +172,7 @@ lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list)
   return result;
 }
 
-internal LNK_SymbolArray
-lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list)
+LNK_SymbolArray lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolArray arr = {0};
   arr.count           = 0;
@@ -205,8 +185,7 @@ lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list)
 
 ////////////////////////////////
 
-internal LNK_SymbolHashTrie *
-lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *list, U64 cap)
+LNK_SymbolHashTrie* lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *list, U64 cap)
 {
   if (list->last == 0 || list->last->count >= list->last->cap) {
     LNK_SymbolHashTrieChunk *chunk = push_array(arena, LNK_SymbolHashTrieChunk, 1);
@@ -220,8 +199,7 @@ lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *
   return result;
 }
 
-internal B32
-lnk_can_replace_symbol(LNK_Symbol *dst, LNK_Symbol *src)
+B32 lnk_can_replace_symbol(LNK_Symbol *dst, LNK_Symbol *src)
 {
   Assert(src->type != LNK_Symbol_Undefined);
   Assert(dst != src);
@@ -348,8 +326,7 @@ lnk_can_replace_symbol(LNK_Symbol *dst, LNK_Symbol *src)
   return can_replace;
 }
 
-internal void
-lnk_on_symbol_replace(LNK_Symbol *dst, LNK_Symbol *src)
+void lnk_on_symbol_replace(LNK_Symbol *dst, LNK_Symbol *src)
 {
   Assert(dst != src);
 
@@ -382,8 +359,7 @@ lnk_on_symbol_replace(LNK_Symbol *dst, LNK_Symbol *src)
   }
 }
 
-internal void
-lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
+void lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
                                        LNK_SymbolHashTrieChunkList  *chunks,
                                        LNK_SymbolHashTrie          **trie,
                                        U64                           hash,
@@ -453,8 +429,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
   exit:;
 }
 
-internal LNK_SymbolHashTrie *
-lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
+LNK_SymbolHashTrie* lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
 {
   LNK_SymbolHashTrie  *result   = 0;
   LNK_SymbolHashTrie **curr_ptr = &trie;
@@ -474,8 +449,7 @@ lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
   return result;
 }
 
-internal void
-lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie)
+void lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie)
 {
   ins_atomic_ptr_eval_assign(&trie->name,   0);
   ins_atomic_ptr_eval_assign(&trie->symbol, 0);
@@ -483,8 +457,7 @@ lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie)
 
 ////////////////////////////////
 
-internal U64
-lnk_symbol_hash(String8 string)
+U64 lnk_symbol_hash(String8 string)
 {
   XXH3_state_t hasher; XXH3_64bits_reset(&hasher);
   XXH3_64bits_update(&hasher, &string.size, sizeof(string.size));
@@ -493,8 +466,7 @@ lnk_symbol_hash(String8 string)
   return result;
 }
 
-internal LNK_SymbolTable *
-lnk_symbol_table_init(TP_Arena *arena)
+LNK_SymbolTable* lnk_symbol_table_init(TP_Arena *arena)
 {
   LNK_SymbolTable *symtab = push_array(arena->v[0], LNK_SymbolTable, 1);
   symtab->arena           = arena;
@@ -504,8 +476,7 @@ lnk_symbol_table_init(TP_Arena *arena)
   return symtab;
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_search_hash(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope_flags, U64 hash, String8 name)
+LNK_Symbol* lnk_symbol_table_search_hash(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope_flags, U64 hash, String8 name)
 {
   LNK_Symbol *result = 0;
   while (scope_flags) {
@@ -521,15 +492,13 @@ lnk_symbol_table_search_hash(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope
   return result;
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, String8 name)
+LNK_Symbol* lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope, String8 name)
 {
   U64 hash = lnk_symbol_hash(name);
   return lnk_symbol_table_search_hash(symtab, scope, hash, name);
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope_flags, char *fmt, ...)
+LNK_Symbol* lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope_flags, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -544,14 +513,12 @@ lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScopeFlags scope_fla
   return symbol;
 }
 
-internal void
-lnk_symbol_table_push_(LNK_SymbolTable *symtab, Arena *arena, LNK_SymbolHashTrieChunkList *chunk_list, LNK_SymbolScopeIndex scope_idx, U64 hash, LNK_Symbol *symbol)
+void lnk_symbol_table_push_(LNK_SymbolTable *symtab, Arena *arena, LNK_SymbolHashTrieChunkList *chunk_list, LNK_SymbolScopeIndex scope_idx, U64 hash, LNK_Symbol *symbol)
 {
   lnk_symbol_hash_trie_insert_or_replace(arena, chunk_list, &symtab->scopes[scope_idx], hash, symbol);
 }
 
-internal void
-lnk_symbol_table_push_hash(LNK_SymbolTable *symtab, U64 hash, LNK_Symbol *symbol)
+void lnk_symbol_table_push_hash(LNK_SymbolTable *symtab, U64 hash, LNK_Symbol *symbol)
 {
   switch (symbol->type) {
   case LNK_Symbol_Null: break;
@@ -580,15 +547,13 @@ lnk_symbol_table_push_hash(LNK_SymbolTable *symtab, U64 hash, LNK_Symbol *symbol
   }
 }
 
-internal void
-lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_Symbol *symbol)
+void lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_Symbol *symbol)
 {
   U64 hash = lnk_symbol_hash(symbol->name);
   lnk_symbol_table_push_hash(symtab, hash, symbol);
 }
 
-internal void
-lnk_symbol_table_remove(LNK_SymbolTable *symtab, LNK_SymbolScopeIndex scope, String8 name)
+void lnk_symbol_table_remove(LNK_SymbolTable *symtab, LNK_SymbolScopeIndex scope, String8 name)
 {
   U64                 hash = lnk_symbol_hash(name);
   LNK_SymbolHashTrie *trie = lnk_symbol_hash_trie_search(symtab->scopes[scope], hash, name);
@@ -597,32 +562,28 @@ lnk_symbol_table_remove(LNK_SymbolTable *symtab, LNK_SymbolScopeIndex scope, Str
   }
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_push_defined_chunk(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
+LNK_Symbol* lnk_symbol_table_push_defined_chunk(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, LNK_Chunk *chunk, U64 offset, COFF_ComdatSelectType selection, U32 check_sum)
 {
   LNK_Symbol *symbol = lnk_make_defined_symbol_chunk(symtab->arena->v[0], name, visibility, flags, chunk, offset, selection, check_sum);
   lnk_symbol_table_push(symtab, symbol);
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_push_defined(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
+LNK_Symbol* lnk_symbol_table_push_defined(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags)
 {
   LNK_Symbol *symbol = lnk_make_defined_symbol(symtab->arena->v[0], name, visibility, flags);
   lnk_symbol_table_push(symtab, symbol);
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_push_defined_va(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
+LNK_Symbol* lnk_symbol_table_push_defined_va(LNK_SymbolTable *symtab, String8 name, LNK_DefinedSymbolVisibility visibility, LNK_DefinedSymbolFlags flags, U64 va)
 {
   LNK_Symbol *symbol = lnk_make_defined_symbol_va(symtab->arena->v[0], name, visibility, flags, va);
   lnk_symbol_table_push(symtab, symbol);
   return symbol;
 }
 
-internal LNK_Symbol *
-lnk_symbol_table_push_weak(LNK_SymbolTable *symtab, String8 weak_name, COFF_WeakExtType lookup, String8 strong_name)
+LNK_Symbol* lnk_symbol_table_push_weak(LNK_SymbolTable *symtab, String8 weak_name, COFF_WeakExtType lookup, String8 strong_name)
 {
   weak_name   = push_str8_copy(symtab->arena->v[0], weak_name);
   strong_name = push_str8_copy(symtab->arena->v[0], strong_name);
@@ -632,8 +593,7 @@ lnk_symbol_table_push_weak(LNK_SymbolTable *symtab, String8 weak_name, COFF_Weak
   return weak_symbol;
 }
 
-internal LNK_Symbol *
-lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_Symbol *resolve_symbol)
+LNK_Symbol* lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_Symbol *resolve_symbol)
 {
   LNK_Symbol *symbol = resolve_symbol;
   B32 run_resolver;
@@ -678,8 +638,7 @@ lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_Symbol *resolve_symbol)
 
 #if 0
 
-internal void
-lnk_symbol_hash_trie_debug(LNK_SymbolHashTrie *root)
+void lnk_symbol_hash_trie_debug(LNK_SymbolHashTrie *root)
 {
   Temp scratch = scratch_begin(0,0);
 

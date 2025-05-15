@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
-di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags)
+U64 di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags)
 {
   U64 result = seed;
   for(U64 i = 0; i < string.size; i += 1)
@@ -15,35 +14,30 @@ di_hash_from_seed_string(U64 seed, String8 string, StringMatchFlags match_flags)
   return result;
 }
 
-internal U64
-di_hash_from_string(String8 string, StringMatchFlags match_flags)
+U64 di_hash_from_string(String8 string, StringMatchFlags match_flags)
 {
   U64 hash = di_hash_from_seed_string(5381, string, match_flags);
   return hash;
 }
 
-internal U64
-di_hash_from_key(DI_Key *k)
+U64 di_hash_from_key(DI_Key *k)
 {
   U64 hash = di_hash_from_string(k->path, StringMatchFlag_CaseInsensitive);
   return hash;
 }
 
-internal DI_Key
-di_key_zero(void)
+DI_Key di_key_zero(void)
 {
   DI_Key key = {0};
   return key;
 }
 
-internal B32
-di_key_match(DI_Key *a, DI_Key *b)
+B32 di_key_match(DI_Key *a, DI_Key *b)
 {
   return (str8_match(a->path, b->path, StringMatchFlag_CaseInsensitive) && a->min_timestamp == b->min_timestamp);
 }
 
-internal DI_Key
-di_key_copy(Arena *arena, DI_Key *src)
+DI_Key di_key_copy(Arena *arena, DI_Key *src)
 {
   DI_Key dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -51,8 +45,7 @@ di_key_copy(Arena *arena, DI_Key *src)
   return dst;
 }
 
-internal DI_Key
-di_normalized_key_from_key(Arena *arena, DI_Key *src)
+DI_Key di_normalized_key_from_key(Arena *arena, DI_Key *src)
 {
   ProfBeginFunction();
   DI_Key dst = {path_normalized_from_string(arena, src->path), src->min_timestamp};
@@ -60,8 +53,7 @@ di_normalized_key_from_key(Arena *arena, DI_Key *src)
   return dst;
 }
 
-internal void
-di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
+void di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
 {
   DI_KeyNode *n = push_array(arena, DI_KeyNode, 1);
   MemoryCopyStruct(&n->v, key);
@@ -69,8 +61,7 @@ di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
   list->count += 1;
 }
 
-internal DI_KeyArray
-di_key_array_from_list(Arena *arena, DI_KeyList *list)
+DI_KeyArray di_key_array_from_list(Arena *arena, DI_KeyList *list)
 {
   DI_KeyArray array = {0};
   array.count = list->count;
@@ -83,8 +74,7 @@ di_key_array_from_list(Arena *arena, DI_KeyList *list)
   return array;
 }
 
-internal DI_KeyArray
-di_key_array_copy(Arena *arena, DI_KeyArray *src)
+DI_KeyArray di_key_array_copy(Arena *arena, DI_KeyArray *src)
 {
   DI_KeyArray dst = {0};
   dst.count = src->count;
@@ -96,8 +86,7 @@ di_key_array_copy(Arena *arena, DI_KeyArray *src)
   return dst;
 }
 
-internal DI_SearchParams
-di_search_params_copy(Arena *arena, DI_SearchParams *src)
+DI_SearchParams di_search_params_copy(Arena *arena, DI_SearchParams *src)
 {
   DI_SearchParams dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -105,8 +94,7 @@ di_search_params_copy(Arena *arena, DI_SearchParams *src)
   return dst;
 }
 
-internal U64
-di_hash_from_search_params(DI_SearchParams *params)
+U64 di_hash_from_search_params(DI_SearchParams *params)
 {
   U64 hash = 5381;
   hash = di_hash_from_seed_string(hash, str8_struct(&params->target), 0);
@@ -118,8 +106,7 @@ di_hash_from_search_params(DI_SearchParams *params)
   return hash;
 }
 
-internal void
-di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList *dst, DI_SearchItemChunkList *to_push)
+void di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList *dst, DI_SearchItemChunkList *to_push)
 {
   if(dst->first && to_push->first)
   {
@@ -135,8 +122,7 @@ di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList *dst, DI_Search
   MemoryZeroStruct(to_push);
 }
 
-internal U64
-di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray *array, U64 element_idx)
+U64 di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray *array, U64 element_idx)
 {
   U64 fuzzy_item_num = 0;
   for(U64 idx = 0; idx < array->count; idx += 1)
@@ -150,8 +136,7 @@ di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray *arr
   return fuzzy_item_num;
 }
 
-internal String8
-di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKind target, U64 element_idx)
+String8 di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKind target, U64 element_idx)
 {
   String8 result = {0};
   switch(target)
@@ -193,8 +178,7 @@ di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKi
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
-di_init(void)
+void di_init(void)
 {
   Arena *arena = arena_alloc();
   di_shared = push_array(arena, DI_Shared, 1);
@@ -243,8 +227,7 @@ di_init(void)
 ////////////////////////////////
 //~ rjf: Scope Functions
 
-internal DI_Scope *
-di_scope_open(void)
+DI_Scope* di_scope_open(void)
 {
   if(di_tctx == 0)
   {
@@ -266,8 +249,7 @@ di_scope_open(void)
   return scope;
 }
 
-internal void
-di_scope_close(DI_Scope *scope)
+void di_scope_close(DI_Scope *scope)
 {
   DLLRemove(di_tctx->first_scope, di_tctx->last_scope, scope);
   for(DI_Touch *t = scope->first_touch, *next = 0; t != 0; t = next)
@@ -286,8 +268,7 @@ di_scope_close(DI_Scope *scope)
   SLLStackPush(di_tctx->free_scope, scope);
 }
 
-internal void
-di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Node *node)
+void di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Node *node)
 {
   if(node != 0)
   {
@@ -307,8 +288,7 @@ di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Node *node)
   touch->node = node;
 }
 
-internal void
-di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchNode *node)
+void di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchNode *node)
 {
   if(node != 0)
   {
@@ -331,8 +311,7 @@ di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchNod
 ////////////////////////////////
 //~ rjf: Per-Slot Functions
 
-internal DI_Node *
-di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot *slot, DI_Key *key)
+DI_Node* di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot *slot, DI_Key *key)
 {
   ProfBeginFunction();
   DI_Node *node = 0;
@@ -355,8 +334,7 @@ di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot *slot, DI_Key *key)
 ////////////////////////////////
 //~ rjf: Per-Stripe Functions
 
-internal U64
-di_string_bucket_idx_from_string_size(U64 size)
+U64 di_string_bucket_idx_from_string_size(U64 size)
 {
   U64 size_rounded = u64_up_to_pow2(size+1);
   size_rounded = ClampBot((1<<4), size_rounded);
@@ -375,8 +353,7 @@ di_string_bucket_idx_from_string_size(U64 size)
   return bucket_idx;
 }
 
-internal String8
-di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
+String8 di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
 {
   if(string.size == 0) {return str8_zero();}
   U64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
@@ -436,8 +413,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
   return allocated_string;
 }
 
-internal void
-di_string_release__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
+void di_string_release__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
 {
   if(string.size == 0) {return;}
   U64 bucket_idx = di_string_bucket_idx_from_string_size(string.size);
@@ -449,8 +425,7 @@ di_string_release__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
 ////////////////////////////////
 //~ rjf: Key Opening/Closing
 
-internal void
-di_open(DI_Key *key)
+void di_open(DI_Key *key)
 {
   Temp scratch = scratch_begin(0, 0);
   if(key->path.size != 0)
@@ -510,8 +485,7 @@ di_open(DI_Key *key)
   scratch_end(scratch);
 }
 
-internal void
-di_close(DI_Key *key)
+void di_close(DI_Key *key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -578,8 +552,7 @@ di_close(DI_Key *key)
 ////////////////////////////////
 //~ rjf: Debug Info Cache Lookups
 
-internal RDI_Parsed *
-di_rdi_from_key(DI_Scope *scope, DI_Key *key, U64 endt_us)
+RDI_Parsed* di_rdi_from_key(DI_Scope *scope, DI_Key *key, U64 endt_us)
 {
   ProfBeginFunction();
   RDI_Parsed *result = &rdi_parsed_nil;
@@ -653,8 +626,7 @@ di_rdi_from_key(DI_Scope *scope, DI_Key *key, U64 endt_us)
 ////////////////////////////////
 //~ rjf: Search Cache Lookups
 
-internal DI_SearchItemArray
-di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams *params, String8 query, U64 endt_us, B32 *stale_out)
+DI_SearchItemArray di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams *params, String8 query, U64 endt_us, B32 *stale_out)
 {
   DI_SearchItemArray items = {0};
   {
@@ -750,8 +722,7 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
 ////////////////////////////////
 //~ rjf: Parse Threads
 
-internal B32
-di_u2p_enqueue_key(DI_Key *key, U64 endt_us)
+B32 di_u2p_enqueue_key(DI_Key *key, U64 endt_us)
 {
   B32 sent = 0;
   OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
@@ -780,8 +751,7 @@ di_u2p_enqueue_key(DI_Key *key, U64 endt_us)
   return sent;
 }
 
-internal void
-di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
+void di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
 {
   OS_MutexScope(di_shared->u2p_ring_mutex) for(;;)
   {
@@ -799,8 +769,7 @@ di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
   os_condition_variable_broadcast(di_shared->u2p_ring_cv);
 }
 
-internal void
-di_p2u_push_event(DI_Event *event)
+void di_p2u_push_event(DI_Event *event)
 {
   OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
   {
@@ -819,8 +788,7 @@ di_p2u_push_event(DI_Event *event)
   os_condition_variable_broadcast(di_shared->p2u_ring_cv);
 }
 
-internal DI_EventList
-di_p2u_pop_events(Arena *arena, U64 endt_us)
+DI_EventList di_p2u_pop_events(Arena *arena, U64 endt_us)
 {
   DI_EventList events = {0};
   OS_MutexScope(di_shared->p2u_ring_mutex) for(;;)
@@ -1137,8 +1105,7 @@ ASYNC_WORK_DEF(di_parse_work)
 ////////////////////////////////
 //~ rjf: Search Threads
 
-internal B32
-di_u2s_enqueue_req(U128 key, U64 endt_us)
+B32 di_u2s_enqueue_req(U128 key, U64 endt_us)
 {
   B32 result = 0;
   U64 thread_idx = key.u64[0]%di_shared->search_threads_count;
@@ -1166,8 +1133,7 @@ di_u2s_enqueue_req(U128 key, U64 endt_us)
   return result;
 }
 
-internal U128
-di_u2s_dequeue_req(U64 thread_idx)
+U128 di_u2s_dequeue_req(U64 thread_idx)
 {
   U128 key = {0};
   DI_SearchThread *thread = &di_shared->search_threads[thread_idx];
@@ -1185,7 +1151,6 @@ di_u2s_dequeue_req(U64 thread_idx)
   return key;
 }
 
-typedef struct DI_SearchWorkIn DI_SearchWorkIn;
 struct DI_SearchWorkIn
 {
   U128 key;
@@ -1197,7 +1162,6 @@ struct DI_SearchWorkIn
   String8 query;
   U64 dbgi_idx;
 };
-typedef struct DI_SearchWorkOut DI_SearchWorkOut;
 struct DI_SearchWorkOut
 {
   B32 cancelled;
@@ -1319,8 +1283,7 @@ ASYNC_WORK_DEF(di_search_work)
   return out;
 }
 
-internal int
-di_qsort_compare_search_items(DI_SearchItem *a, DI_SearchItem *b)
+int di_qsort_compare_search_items(DI_SearchItem *a, DI_SearchItem *b)
 {
   int result = 0;
   if(a->match_ranges.count > b->match_ranges.count)
@@ -1342,8 +1305,7 @@ di_qsort_compare_search_items(DI_SearchItem *a, DI_SearchItem *b)
   return result;
 }
 
-internal void
-di_search_thread__entry_point(void *p)
+void di_search_thread__entry_point(void *p)
 {
   U64 thread_idx = (U64)p;
   ThreadNameF("[di] search thread #%I64u", thread_idx);
@@ -1506,8 +1468,7 @@ di_search_thread__entry_point(void *p)
   }
 }
 
-internal void
-di_search_evictor_thread__entry_point(void *p)
+void di_search_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[di] search evictor thread");
   for(;;)
@@ -1555,8 +1516,7 @@ di_search_evictor_thread__entry_point(void *p)
 ////////////////////////////////
 //~ rjf: Match Store
 
-internal DI_MatchStore *
-di_match_store_alloc(void)
+DI_MatchStore* di_match_store_alloc(void)
 {
   Arena *arena = arena_alloc();
   DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);
@@ -1578,8 +1538,7 @@ di_match_store_alloc(void)
   return store;
 }
 
-internal void
-di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
+void di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
 {
   ProfBeginFunction();
   store->gen += 1;
@@ -1626,8 +1585,7 @@ di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
   ProfEnd();
 }
 
-internal RDI_SectionKind
-di_match_store_section_kind_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
+RDI_SectionKind di_match_store_section_kind_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
 {
   RDI_SectionKind result = 0;
   {

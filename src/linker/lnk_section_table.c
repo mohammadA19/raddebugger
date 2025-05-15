@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_SectionNode *
-lnk_section_list_remove(LNK_SectionList *list, String8 name)
+LNK_SectionNode* lnk_section_list_remove(LNK_SectionList *list, String8 name)
 {
   LNK_SectionNode *section = lnk_section_list_search_node(list, name);
   
@@ -32,8 +31,7 @@ lnk_section_list_remove(LNK_SectionList *list, String8 name)
   return section;
 }
 
-internal LNK_SectionNode *
-lnk_section_list_search_node(LNK_SectionList *list, String8 name)
+LNK_SectionNode* lnk_section_list_search_node(LNK_SectionList *list, String8 name)
 {
   LNK_SectionNode *node;
   for (node = list->first; node != 0; node = node->next) {
@@ -44,15 +42,13 @@ lnk_section_list_search_node(LNK_SectionList *list, String8 name)
   return node;
 }
 
-internal LNK_Section *
-lnk_section_list_search(LNK_SectionList *list, String8 name)
+LNK_Section* lnk_section_list_search(LNK_SectionList *list, String8 name)
 {
   LNK_SectionNode *node = lnk_section_list_search_node(list, name);
   return node != NULL ? &node->data : NULL;
 }
 
-internal LNK_SectionArray
-lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
+LNK_SectionArray lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
 {
   LNK_SectionArray result;
   result.count = 0;
@@ -64,8 +60,7 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
   return result;
 }
 
-internal LNK_SectionPtrArray
-lnk_section_ptr_array_from_list(Arena *arena, LNK_SectionList list)
+LNK_SectionPtrArray lnk_section_ptr_array_from_list(Arena *arena, LNK_SectionList list)
 {
   LNK_SectionPtrArray result;
   result.count = 0;
@@ -77,8 +72,7 @@ lnk_section_ptr_array_from_list(Arena *arena, LNK_SectionList list)
   return result;
 }
 
-internal String8
-lnk_make_section_sort_index(Arena *arena, String8 name, COFF_SectionFlags flags, U64 section_index)
+String8 lnk_make_section_sort_index(Arena *arena, String8 name, COFF_SectionFlags flags, U64 section_index)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -142,54 +136,46 @@ lnk_make_section_sort_index(Arena *arena, String8 name, COFF_SectionFlags flags,
   return result;
 }
 
-internal void
-lnk_section_associate_chunks(LNK_Section *sect, LNK_Chunk *head, LNK_Chunk *associate)
+void lnk_section_associate_chunks(LNK_Section *sect, LNK_Chunk *head, LNK_Chunk *associate)
 {
   lnk_chunk_associate(head, associate);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_raw(LNK_Section *sect, LNK_Chunk *parent, void *raw_ptr, U64 raw_size, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_raw(LNK_Section *sect, LNK_Chunk *parent, void *raw_ptr, U64 raw_size, String8 sort_index)
 {
   return lnk_chunk_push_leaf(sect->arena, sect->cman, parent, sort_index, raw_ptr, raw_size);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_data(LNK_Section *sect, LNK_Chunk *parent, String8 data, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_data(LNK_Section *sect, LNK_Chunk *parent, String8 data, String8 sort_index)
 {
   return lnk_section_push_chunk_raw(sect, parent, data.str, data.size, sort_index);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_u32(LNK_Section *sect, LNK_Chunk *parent, U32 value, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_u32(LNK_Section *sect, LNK_Chunk *parent, U32 value, String8 sort_index)
 {
   U32 *ptr = push_array_no_zero(sect->arena, U32, 1);
   *ptr = value;
   return lnk_section_push_chunk_raw(sect, parent, ptr, sizeof(*ptr), sort_index);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_u64(LNK_Section *sect, LNK_Chunk *parent, U32 value, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_u64(LNK_Section *sect, LNK_Chunk *parent, U32 value, String8 sort_index)
 {
   U64 *ptr = push_array_no_zero(sect->arena, U64, 1);
   *ptr = value;
   return lnk_section_push_chunk_raw(sect, parent, ptr, sizeof(*ptr), sort_index);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_bss(LNK_Section *sect, LNK_Chunk *parent, U64 size, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_bss(LNK_Section *sect, LNK_Chunk *parent, U64 size, String8 sort_index)
 {
   return lnk_section_push_chunk_raw(sect, parent, 0, size, sort_index);
 }
 
-internal LNK_Chunk *
-lnk_section_push_chunk_list(LNK_Section *sect, LNK_Chunk *parent, String8 sort_index)
+LNK_Chunk* lnk_section_push_chunk_list(LNK_Section *sect, LNK_Chunk *parent, String8 sort_index)
 {
   return lnk_chunk_push_list(sect->arena, sect->cman, parent, sort_index);
 }
 
-internal LNK_Reloc *
-lnk_section_push_reloc(LNK_Section *sect, LNK_Chunk *chunk, LNK_RelocType type, U64 apply_off, LNK_Symbol *symbol)
+LNK_Reloc* lnk_section_push_reloc(LNK_Section *sect, LNK_Chunk *chunk, LNK_RelocType type, U64 apply_off, LNK_Symbol *symbol)
 {
   Assert(symbol);
   LNK_Reloc *reloc = lnk_reloc_list_push(sect->arena, &sect->reloc_list);
@@ -200,16 +186,14 @@ lnk_section_push_reloc(LNK_Section *sect, LNK_Chunk *chunk, LNK_RelocType type, 
   return reloc;
 }
 
-internal LNK_Reloc *
-lnk_section_push_reloc_undefined(LNK_Section *sect, LNK_Chunk *chunk, LNK_RelocType type, U64 apply_off, String8 undefined_symbol_name, LNK_SymbolScopeFlags scope_flags)
+LNK_Reloc* lnk_section_push_reloc_undefined(LNK_Section *sect, LNK_Chunk *chunk, LNK_RelocType type, U64 apply_off, String8 undefined_symbol_name, LNK_SymbolScopeFlags scope_flags)
 {
   LNK_Symbol *symbol = lnk_make_undefined_symbol(sect->arena, undefined_symbol_name, scope_flags);
   LNK_Reloc *reloc = lnk_section_push_reloc(sect, chunk, type, apply_off, symbol);
   return reloc;
 }
 
-internal void
-lnk_section_merge(LNK_Section *dst, LNK_Section *src)
+void lnk_section_merge(LNK_Section *dst, LNK_Section *src)
 {
   ProfBeginFunction();
 
@@ -231,8 +215,7 @@ lnk_section_merge(LNK_Section *dst, LNK_Section *src)
   ProfEnd();
 }
 
-internal U8
-lnk_code_align_byte_from_machine(COFF_MachineType machine)
+U8 lnk_code_align_byte_from_machine(COFF_MachineType machine)
 {
   U8 align_byte = 0;
   switch (machine) {
@@ -247,8 +230,7 @@ lnk_code_align_byte_from_machine(COFF_MachineType machine)
   return align_byte;
 }
 
-internal void
-lnk_section_build_data(LNK_Section *sect, COFF_MachineType machine)
+void lnk_section_build_data(LNK_Section *sect, COFF_MachineType machine)
 {
   if (sect->is_loose) {
     if (sect->has_layout) {
@@ -266,8 +248,7 @@ lnk_section_build_data(LNK_Section *sect, COFF_MachineType machine)
   }
 }
 
-internal LNK_SectionTable *
-lnk_section_table_alloc(U64 section_virt_off, U64 sect_align, U64 file_align)
+LNK_SectionTable* lnk_section_table_alloc(U64 section_virt_off, U64 sect_align, U64 file_align)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -280,8 +261,7 @@ lnk_section_table_alloc(U64 section_virt_off, U64 sect_align, U64 file_align)
   return sectab;
 }
 
-internal void
-lnk_section_table_release(LNK_SectionTable **st_ptr)
+void lnk_section_table_release(LNK_SectionTable **st_ptr)
 {
   ProfBeginFunction();
   LNK_SectionTable *sectab = *st_ptr;
@@ -290,8 +270,7 @@ lnk_section_table_release(LNK_SectionTable **st_ptr)
   ProfEnd();
 }
 
-internal LNK_Section *
-lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags)
+LNK_Section* lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags)
 {
   ProfBeginFunction();
   LNK_SectionList *sect_list = &sectab->list;
@@ -344,8 +323,7 @@ lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags
   return sect;
 }
 
-internal LNK_Section *
-lnk_section_table_push_null(LNK_SectionTable *sectab)
+LNK_Section* lnk_section_table_push_null(LNK_SectionTable *sectab)
 {
   LNK_SectionList *list = &sectab->list;
   SLLQueuePushFront(list->first, list->last, sectab->null_sect);
@@ -374,8 +352,7 @@ LNK_CHUNK_VISITOR_SIG(lnk_chunk_mark_discarded)
   return stop;
 }
 
-internal void
-lnk_section_table_remove(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, String8 name)
+void lnk_section_table_remove(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, String8 name)
 {
   ProfBeginFunction();
   
@@ -396,14 +373,12 @@ lnk_section_table_remove(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, Stri
   ProfEnd();
 }
 
-internal LNK_Section *
-lnk_section_table_search(LNK_SectionTable *sectab, String8 name)
+LNK_Section* lnk_section_table_search(LNK_SectionTable *sectab, String8 name)
 {
   return lnk_section_list_search(&sectab->list, name);
 }
 
-internal LNK_Section *
-lnk_section_table_search_id(LNK_SectionTable *sectab, U64 id)
+LNK_Section* lnk_section_table_search_id(LNK_SectionTable *sectab, U64 id)
 {
   for (LNK_SectionNode *node = sectab->list.first; node != NULL; node = node->next) {
     if (node->data.id == id) {
@@ -413,8 +388,7 @@ lnk_section_table_search_id(LNK_SectionTable *sectab, U64 id)
   return NULL;
 }
 
-internal void
-lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_list)
+void lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -468,8 +442,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
   ProfEnd();
 }
 
-internal void
-lnk_section_table_remove_empties(LNK_SectionTable *sectab, LNK_SymbolTable *symtab)
+void lnk_section_table_remove_empties(LNK_SectionTable *sectab, LNK_SymbolTable *symtab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -494,8 +467,7 @@ lnk_section_table_remove_empties(LNK_SectionTable *sectab, LNK_SymbolTable *symt
   ProfEnd();
 }
 
-internal LNK_SectionArray
-lnk_section_table_get_output_sections(Arena *arena, LNK_SectionTable *sectab)
+LNK_SectionArray lnk_section_table_get_output_sections(Arena *arena, LNK_SectionTable *sectab)
 {
   LNK_SectionArray result = {0};
   result.count            = 0;
@@ -525,8 +497,7 @@ THREAD_POOL_TASK_FUNC(lnk_section_data_builder)
   }
 }
 
-internal void
-lnk_section_table_build_data(TP_Context *tp, LNK_SectionTable *sectab, COFF_MachineType machine)
+void lnk_section_table_build_data(TP_Context *tp, LNK_SectionTable *sectab, COFF_MachineType machine)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -543,8 +514,7 @@ lnk_section_table_build_data(TP_Context *tp, LNK_SectionTable *sectab, COFF_Mach
   ProfEnd();
 }
 
-internal void
-lnk_section_table_assign_virtual_offsets(LNK_SectionTable *sectab)
+void lnk_section_table_assign_virtual_offsets(LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -564,8 +534,7 @@ lnk_section_table_assign_virtual_offsets(LNK_SectionTable *sectab)
   ProfEnd();
 }
 
-internal void
-lnk_section_table_assign_file_offsets(LNK_SectionTable *sectab)
+void lnk_section_table_assign_file_offsets(LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
   U64 cursor = 0;
@@ -582,8 +551,7 @@ lnk_section_table_assign_file_offsets(LNK_SectionTable *sectab)
   ProfEnd();
 }
 
-internal void
-lnk_section_table_assign_indices(LNK_SectionTable *sectab)
+void lnk_section_table_assign_indices(LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
   U64 isect = 0;
@@ -596,8 +564,7 @@ lnk_section_table_assign_indices(LNK_SectionTable *sectab)
   ProfEnd();
 }
 
-internal String8
-lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *sectab, COFF_MachineType machine)
+String8 lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *sectab, COFF_MachineType machine)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -641,7 +608,7 @@ lnk_section_table_serialize(TP_Context *tp, Arena *arena, LNK_SectionTable *sect
   return image;
 }
 
-internal LNK_ChunkPtr **
+LNK_ChunkPtr* *
 lnk_chunk_id_map_from_section_table(Arena *arena, LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
@@ -658,7 +625,7 @@ lnk_chunk_id_map_from_section_table(Arena *arena, LNK_SectionTable *sectab)
   return chunk_id_map;
 }
 
-internal LNK_Section **
+LNK_Section* *
 lnk_sect_id_map_from_section_table(Arena *arena, LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
@@ -683,8 +650,7 @@ lnk_sect_id_map_from_section_table(Arena *arena, LNK_SectionTable *sectab)
   return map;
 }
 
-internal LNK_ChunkRef
-lnk_get_final_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+LNK_ChunkRef lnk_get_final_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = chunk_ref;
   if (sect_id_map[chunk_ref.sect_id]->is_merged) {
@@ -696,32 +662,28 @@ lnk_get_final_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return final_chunk_ref;
 }
 
-internal LNK_Section *
-lnk_sect_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef input_chunk_ref)
+LNK_Section* lnk_sect_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef input_chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, input_chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
   return sect;
 }
 
-internal LNK_Chunk *
-lnk_chunk_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkPtr **chunk_id_map, LNK_ChunkRef chunk_ref)
+LNK_Chunk* lnk_chunk_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkPtr **chunk_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Chunk *chunk = chunk_id_map[final_chunk_ref.sect_id][final_chunk_ref.chunk_id];
   return chunk;
 }
 
-internal U64
-lnk_isect_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_isect_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_Section *sect = lnk_sect_from_chunk_ref(sect_id_map, chunk_ref);
   U64 isect = sect->isect;
   return isect;
 }
 
-internal U64
-lnk_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -729,8 +691,7 @@ lnk_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return off;
 }
 
-internal U64
-lnk_virt_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_virt_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -739,8 +700,7 @@ lnk_virt_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return virt_off;
 }
 
-internal U64
-lnk_file_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_file_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -749,8 +709,7 @@ lnk_file_off_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return file_off;
 }
 
-internal U64
-lnk_virt_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_virt_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -758,8 +717,7 @@ lnk_virt_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return virt_size;
 }
 
-internal U64
-lnk_file_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+U64 lnk_file_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -767,8 +725,7 @@ lnk_file_size_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return file_size;
 }
 
-internal String8
-lnk_data_from_chunk_ref(LNK_Section **sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
+String8 lnk_data_from_chunk_ref(LNK_Section **sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef  final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section  *sect            = sect_id_map[final_chunk_ref.sect_id];
@@ -786,8 +743,7 @@ lnk_data_from_chunk_ref(LNK_Section **sect_id_map, String8 image_data, LNK_Chunk
   return chunk_data;
 }
 
-internal String8
-lnk_data_from_chunk_ref_no_pad(LNK_Section **sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
+String8 lnk_data_from_chunk_ref_no_pad(LNK_Section **sect_id_map, String8 image_data, LNK_ChunkRef chunk_ref)
 {
   LNK_ChunkRef final_chunk_ref = lnk_get_final_chunk_ref(sect_id_map, chunk_ref);
   LNK_Section *sect = sect_id_map[final_chunk_ref.sect_id];
@@ -806,8 +762,7 @@ lnk_data_from_chunk_ref_no_pad(LNK_Section **sect_id_map, String8 image_data, LN
   return chunk_data;
 }
 
-internal ISectOff
-lnk_sc_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
+ISectOff lnk_sc_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
 {
   ISectOff sc = {0};
   sc.isect = lnk_isect_from_chunk_ref(sect_id_map, chunk_ref);
@@ -815,16 +770,14 @@ lnk_sc_from_chunk_ref(LNK_Section **sect_id_map, LNK_ChunkRef chunk_ref)
   return sc;
 }
 
-internal U64
-lnk_virt_off_from_reloc(LNK_Section **sect_id_map, LNK_Reloc *reloc)
+U64 lnk_virt_off_from_reloc(LNK_Section **sect_id_map, LNK_Reloc *reloc)
 {
   U64 virt_off = lnk_virt_off_from_chunk_ref(sect_id_map, reloc->chunk->ref);
   virt_off += reloc->apply_off;
   return virt_off;
 }
 
-internal U64
-lnk_isect_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_isect_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   LNK_ChunkRef symbol_chunk_ref = symbol->u.defined.u.chunk->ref;
@@ -832,8 +785,7 @@ lnk_isect_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
   return symbol_isect;
 }
 
-internal U64
-lnk_sect_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_sect_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   LNK_ChunkRef symbol_chunk_ref = symbol->u.defined.u.chunk->ref;
@@ -842,8 +794,7 @@ lnk_sect_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
   return symbol_off;
 }
 
-internal U64
-lnk_virt_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_virt_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   LNK_ChunkRef symbol_chunk_ref = symbol->u.defined.u.chunk->ref;
@@ -852,8 +803,7 @@ lnk_virt_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
   return symbol_voff;
 }
 
-internal U64
-lnk_file_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_file_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   LNK_ChunkRef symbol_chunk_ref = symbol->u.defined.u.chunk->ref;
@@ -862,16 +812,14 @@ lnk_file_off_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
   return symbol_foff;
 }
 
-internal U64
-lnk_virt_size_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_virt_size_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   U64 symbol_chunk_virt_size = lnk_virt_size_from_chunk_ref(sect_id_map, symbol->u.defined.u.chunk->ref);
   return symbol_chunk_virt_size;
 }
 
-internal U64
-lnk_file_size_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
+U64 lnk_file_size_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 {
   Assert(LNK_Symbol_IsDefined(symbol->type));
   U64 symbol_chunk_file_size = lnk_file_size_from_chunk_ref(sect_id_map, symbol->u.defined.u.chunk->ref);
@@ -879,8 +827,7 @@ lnk_file_size_from_symbol(LNK_Section **sect_id_map, LNK_Symbol *symbol)
 }
 
 #if LNK_DEBUG_CHUNKS
-internal void
-lnk_dump_chunks(LNK_SectionTable *sectab)
+void lnk_dump_chunks(LNK_SectionTable *sectab)
 {
   Temp scratch = scratch_begin(0, 0);
   LNK_ChunkPtr **chunk_id_map = lnk_chunk_id_map_from_section_table(scratch.arena, sectab);

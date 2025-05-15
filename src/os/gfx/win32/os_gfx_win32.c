@@ -18,8 +18,7 @@ global w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal Rng2F32
-os_w32_rng2f32_from_rect(RECT rect)
+Rng2F32 os_w32_rng2f32_from_rect(RECT rect)
 {
   Rng2F32 r = {0};
   r.x0 = (F32)rect.left;
@@ -32,22 +31,19 @@ os_w32_rng2f32_from_rect(RECT rect)
 ////////////////////////////////
 //~ rjf: Windows
 
-internal OS_Handle
-os_w32_handle_from_window(OS_W32_Window *window)
+OS_Handle os_w32_handle_from_window(OS_W32_Window *window)
 {
   OS_Handle handle = {(U64)window};
   return handle;
 }
 
-internal OS_W32_Window *
-os_w32_window_from_handle(OS_Handle handle)
+OS_W32_Window* os_w32_window_from_handle(OS_Handle handle)
 {
   OS_W32_Window *window = (OS_W32_Window *)handle.u64[0];
   return window;
 }
 
-internal OS_W32_Window *
-os_w32_window_from_hwnd(HWND hwnd)
+OS_W32_Window* os_w32_window_from_hwnd(HWND hwnd)
 {
   OS_W32_Window *result = 0;
   for(OS_W32_Window *w = os_w32_gfx_state->first_window; w; w = w->next)
@@ -61,14 +57,12 @@ os_w32_window_from_hwnd(HWND hwnd)
   return result;
 }
 
-internal HWND
-os_w32_hwnd_from_window(OS_W32_Window *window)
+HWND os_w32_hwnd_from_window(OS_W32_Window *window)
 {
   return window->hwnd;
 }
 
-internal OS_W32_Window *
-os_w32_window_alloc(void)
+OS_W32_Window* os_w32_window_alloc(void)
 {
   OS_W32_Window *result = os_w32_gfx_state->free_window;
   if(result)
@@ -88,8 +82,7 @@ os_w32_window_alloc(void)
   return result;
 }
 
-internal void
-os_w32_window_release(OS_W32_Window *window)
+void os_w32_window_release(OS_W32_Window *window)
 {
   if(window->paint_arena != 0)
   {
@@ -100,8 +93,7 @@ os_w32_window_release(OS_W32_Window *window)
   SLLStackPush(os_w32_gfx_state->free_window, window);
 }
 
-internal OS_Event *
-os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
+OS_Event* os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
 {
   OS_Event *result = os_event_list_push_new(os_w32_event_arena, &os_w32_event_list, kind);
   result->window = os_w32_handle_from_window(window);
@@ -109,8 +101,7 @@ os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
   return result;
 }
 
-internal OS_Key
-os_w32_os_key_from_vkey(WPARAM vkey)
+OS_Key os_w32_os_key_from_vkey(WPARAM vkey)
 {
   local_persist B32 first = 1;
   local_persist OS_Key key_table[256];
@@ -221,8 +212,7 @@ os_w32_os_key_from_vkey(WPARAM vkey)
   return key;
 }
 
-internal WPARAM
-os_w32_vkey_from_os_key(OS_Key key)
+WPARAM os_w32_vkey_from_os_key(OS_Key key)
 {
   WPARAM result = 0;
   {
@@ -327,8 +317,7 @@ os_w32_vkey_from_os_key(OS_Key key)
   return result;
 }
 
-internal LRESULT
-os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   ProfBeginFunction();
   LRESULT result = 0;
@@ -783,8 +772,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 ////////////////////////////////
 //~ rjf: Monitors
 
-internal BOOL
-os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr)
+BOOL os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr)
 {
   OS_W32_MonitorGatherBundle *bundle = (OS_W32_MonitorGatherBundle *)bundle_ptr;
   OS_Handle handle = {(U64)monitor};
@@ -795,8 +783,7 @@ os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM b
 ////////////////////////////////
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
-internal void
-os_gfx_init(void)
+void os_gfx_init(void)
 {
   //- rjf: set up base shared state
   Arena *arena = arena_alloc();
@@ -960,8 +947,7 @@ os_gfx_init(void)
 ////////////////////////////////
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
-internal OS_GfxInfo *
-os_get_gfx_info(void)
+OS_GfxInfo* os_get_gfx_info(void)
 {
   return &os_w32_gfx_state->gfx_info;
 }
@@ -969,8 +955,7 @@ os_get_gfx_info(void)
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
-internal void
-os_set_clipboard_text(String8 string)
+void os_set_clipboard_text(String8 string)
 {
   if(OpenClipboard(0))
   {
@@ -988,8 +973,7 @@ os_set_clipboard_text(String8 string)
   }
 }
 
-internal String8
-os_get_clipboard_text(Arena *arena)
+String8 os_get_clipboard_text(Arena *arena)
 {
   String8 result = {0};
   if(IsClipboardFormatAvailable(CF_TEXT) &&
@@ -1014,8 +998,7 @@ os_get_clipboard_text(Arena *arena)
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
-internal OS_Handle
-os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
+OS_Handle os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
 {
   B32 custom_border = !!(flags & OS_WindowFlag_CustomBorder);
   B32 use_default_position = !!(flags & OS_WindowFlag_UseDefaultPosition);
@@ -1077,15 +1060,13 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
   return result;
 }
 
-internal void
-os_window_close(OS_Handle handle)
+void os_window_close(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   os_w32_window_release(window);
 }
 
-internal void
-os_window_set_title(OS_Handle handle, String8 title)
+void os_window_set_title(OS_Handle handle, String8 title)
 {
   Temp scratch = scratch_begin(0, 0);
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1094,8 +1075,7 @@ os_window_set_title(OS_Handle handle, String8 title)
   scratch_end(scratch);
 }
 
-internal void
-os_window_first_paint(OS_Handle window_handle)
+void os_window_first_paint(OS_Handle window_handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(window_handle);
   window->first_paint_done = 1;
@@ -1106,32 +1086,28 @@ os_window_first_paint(OS_Handle window_handle)
   }
 }
 
-internal void
-os_window_focus(OS_Handle handle)
+void os_window_focus(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   SetForegroundWindow(window->hwnd);
   SetFocus(window->hwnd);
 }
 
-internal B32
-os_window_is_focused(OS_Handle handle)
+B32 os_window_is_focused(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   HWND active_hwnd = GetActiveWindow();
   return active_hwnd == window->hwnd;
 }
 
-internal B32
-os_window_is_fullscreen(OS_Handle handle)
+B32 os_window_is_fullscreen(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   DWORD window_style = GetWindowLong(window->hwnd, GWL_STYLE);
   return !(window_style & WS_OVERLAPPEDWINDOW);
 }
 
-internal void
-os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
+void os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   DWORD window_style = GetWindowLong(window->hwnd, GWL_STYLE);
@@ -1164,8 +1140,7 @@ os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
   }
 }
 
-internal B32
-os_window_is_maximized(OS_Handle handle)
+B32 os_window_is_maximized(OS_Handle handle)
 {
   B32 result = 0;
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1176,8 +1151,7 @@ os_window_is_maximized(OS_Handle handle)
   return result;
 }
 
-internal void
-os_window_set_maximized(OS_Handle handle, B32 maximized)
+void os_window_set_maximized(OS_Handle handle, B32 maximized)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window != 0)
@@ -1198,8 +1172,7 @@ os_window_set_maximized(OS_Handle handle, B32 maximized)
   }
 }
 
-internal B32
-os_window_is_minimized(OS_Handle handle)
+B32 os_window_is_minimized(OS_Handle handle)
 {
   B32 result = 0;
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1210,8 +1183,7 @@ os_window_is_minimized(OS_Handle handle)
   return result;
 }
 
-internal void
-os_window_set_minimized(OS_Handle handle, B32 minimized)
+void os_window_set_minimized(OS_Handle handle, B32 minimized)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window != 0 && minimized != os_window_is_minimized(handle))
@@ -1225,8 +1197,7 @@ os_window_set_minimized(OS_Handle handle, B32 minimized)
   }
 }
 
-internal void
-os_window_bring_to_front(OS_Handle handle)
+void os_window_bring_to_front(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window != 0)
@@ -1235,8 +1206,7 @@ os_window_bring_to_front(OS_Handle handle)
   }
 }
 
-internal void
-os_window_set_monitor(OS_Handle window_handle, OS_Handle monitor)
+void os_window_set_monitor(OS_Handle window_handle, OS_Handle monitor)
 {
   OS_W32_Window *window = os_w32_window_from_handle(window_handle);
   HMONITOR hmonitor = (HMONITOR)monitor.u64[0];
@@ -1256,8 +1226,7 @@ os_window_set_monitor(OS_Handle window_handle, OS_Handle monitor)
   }
 }
 
-internal void
-os_window_clear_custom_border_data(OS_Handle handle)
+void os_window_clear_custom_border_data(OS_Handle handle)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window->custom_border)
@@ -1269,22 +1238,19 @@ os_window_clear_custom_border_data(OS_Handle handle)
   }
 }
 
-internal void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+void os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   window->custom_border_title_thickness = thickness;
 }
 
-internal void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+void os_window_push_custom_edges(OS_Handle handle, F32 thickness)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   window->custom_border_edge_thickness = thickness;
 }
 
-internal void
-os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
+void os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
 {
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window->custom_border)
@@ -1298,8 +1264,7 @@ os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
   }
 }
 
-internal Rng2F32
-os_rect_from_window(OS_Handle handle)
+Rng2F32 os_rect_from_window(OS_Handle handle)
 {
   Rng2F32 r = {0};
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1312,8 +1277,7 @@ os_rect_from_window(OS_Handle handle)
   return r;
 }
 
-internal Rng2F32
-os_client_rect_from_window(OS_Handle handle)
+Rng2F32 os_client_rect_from_window(OS_Handle handle)
 {
   Rng2F32 r = {0};
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1326,8 +1290,7 @@ os_client_rect_from_window(OS_Handle handle)
   return r;
 }
 
-internal F32
-os_dpi_from_window(OS_Handle handle)
+F32 os_dpi_from_window(OS_Handle handle)
 {
   F32 result = 96.f;
   OS_W32_Window *window = os_w32_window_from_handle(handle);
@@ -1341,8 +1304,7 @@ os_dpi_from_window(OS_Handle handle)
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
-internal OS_HandleArray
-os_push_monitors_array(Arena *arena)
+OS_HandleArray os_push_monitors_array(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   OS_HandleList list = {0};
@@ -1355,8 +1317,7 @@ os_push_monitors_array(Arena *arena)
   return array;
 }
 
-internal OS_Handle
-os_primary_monitor(void)
+OS_Handle os_primary_monitor(void)
 {
   POINT zero_pt = {0, 0};
   HMONITOR monitor = MonitorFromPoint(zero_pt, MONITOR_DEFAULTTOPRIMARY);
@@ -1364,8 +1325,7 @@ os_primary_monitor(void)
   return result;
 }
 
-internal OS_Handle
-os_monitor_from_window(OS_Handle window)
+OS_Handle os_monitor_from_window(OS_Handle window)
 {
   OS_W32_Window *w = os_w32_window_from_handle(window);
   HMONITOR handle = MonitorFromWindow(w->hwnd, MONITOR_DEFAULTTOPRIMARY);
@@ -1373,8 +1333,7 @@ os_monitor_from_window(OS_Handle window)
   return result;
 }
 
-internal String8
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+String8 os_name_from_monitor(Arena *arena, OS_Handle monitor)
 {
   String8 result = {0};
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1388,8 +1347,7 @@ os_name_from_monitor(Arena *arena, OS_Handle monitor)
   return result;
 }
 
-internal Vec2F32
-os_dim_from_monitor(OS_Handle monitor)
+Vec2F32 os_dim_from_monitor(OS_Handle monitor)
 {
   Vec2F32 result = {0};
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1403,8 +1361,7 @@ os_dim_from_monitor(OS_Handle monitor)
   return result;
 }
 
-internal F32
-os_dpi_from_monitor(OS_Handle monitor)
+F32 os_dpi_from_monitor(OS_Handle monitor)
 {
   F32 result = 96.f;
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1421,14 +1378,12 @@ os_dpi_from_monitor(OS_Handle monitor)
 ////////////////////////////////
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
-internal void
-os_send_wakeup_event(void)
+void os_send_wakeup_event(void)
 {
   PostThreadMessageA(os_w32_gfx_state->gfx_thread_tid, 0x401, 0, 0);
 }
 
-internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+OS_EventList os_get_events(Arena *arena, B32 wait)
 {
   os_w32_event_arena = arena;
   MemoryZeroStruct(&os_w32_event_list);
@@ -1449,8 +1404,7 @@ os_get_events(Arena *arena, B32 wait)
   return os_w32_event_list;
 }
 
-internal OS_Modifiers
-os_get_modifiers(void)
+OS_Modifiers os_get_modifiers(void)
 {
   OS_Modifiers modifiers = 0;
   if(GetKeyState(VK_CONTROL) & 0x8000)
@@ -1468,8 +1422,7 @@ os_get_modifiers(void)
   return modifiers;
 }
 
-internal B32
-os_key_is_down(OS_Key key)
+B32 os_key_is_down(OS_Key key)
 {
   B32 down = 0;
   WPARAM vkey = os_w32_vkey_from_os_key(key);
@@ -1480,8 +1433,7 @@ os_key_is_down(OS_Key key)
   return down;
 }
 
-internal Vec2F32
-os_mouse_from_window(OS_Handle handle)
+Vec2F32 os_mouse_from_window(OS_Handle handle)
 {
   ProfBeginFunction();
   Vec2F32 v = {0};
@@ -1500,8 +1452,7 @@ os_mouse_from_window(OS_Handle handle)
 ////////////////////////////////
 //~ rjf: @os_hooks Cursors (Implemented Per-OS)
 
-internal void
-os_set_cursor(OS_Cursor cursor)
+void os_set_cursor(OS_Cursor cursor)
 {
   B32 valid_cursor = 1;
   HCURSOR hcursor = 0;
@@ -1542,8 +1493,7 @@ hcursor = curs; }break;
 ////////////////////////////////
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
-internal void
-os_graphical_message(B32 error, String8 title, String8 message)
+void os_graphical_message(B32 error, String8 title, String8 message)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 title16 = str16_from_8(scratch.arena, title);
@@ -1555,8 +1505,7 @@ os_graphical_message(B32 error, String8 title, String8 message)
 ////////////////////////////////
 //~ rjf: @os_hooks Shell Operations
 
-internal void
-os_show_in_filesystem_ui(String8 path)
+void os_show_in_filesystem_ui(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
   String8 path_copy = push_str8_copy(scratch.arena, path);
@@ -1579,8 +1528,7 @@ os_show_in_filesystem_ui(String8 path)
   scratch_end(scratch);
 }
 
-internal void
-os_open_in_browser(String8 url)
+void os_open_in_browser(String8 url)
 {
   Temp scratch = scratch_begin(0, 0);
   String16 url16 = str16_from_8(scratch.arena, url);

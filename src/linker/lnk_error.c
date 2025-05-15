@@ -5,14 +5,12 @@ static LNK_ErrorMode g_error_mode_arr[LNK_Error_Count];
 static LNK_ErrorCodeStatus g_error_code_status_arr[LNK_Error_Count];
 static B32 g_log_status[LNK_Log_Count];
 
-internal void
-lnk_exit(int code)
+void lnk_exit(int code)
 {
   exit(code);
 }
 
-internal void
-lnk_init_error_handler(void)
+void lnk_init_error_handler(void)
 {
   for (int i = LNK_Error_StopFirst; i < LNK_Error_StopLast; ++i) {
     g_error_mode_arr[i] = LNK_ErrorMode_Stop;
@@ -25,8 +23,7 @@ lnk_init_error_handler(void)
   }
 }
 
-internal String8
-lnk_string_from_error_mode(LNK_ErrorMode mode)
+String8 lnk_string_from_error_mode(LNK_ErrorMode mode)
 {
   switch (mode) {
   case LNK_ErrorMode_Ignore:   return str8_lit("Ignore");
@@ -37,8 +34,7 @@ lnk_string_from_error_mode(LNK_ErrorMode mode)
   return str8_zero();
 }
 
-internal void
-lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
+void lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
 {
   if (g_error_mode_arr[code] == LNK_ErrorMode_Ignore) {
     return;
@@ -58,8 +54,7 @@ lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
   }
 }
 
-internal void
-lnk_error(LNK_ErrorCode code, char *fmt, ...)
+void lnk_error(LNK_ErrorCode code, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -67,8 +62,7 @@ lnk_error(LNK_ErrorCode code, char *fmt, ...)
   va_end(args);
 }
 
-internal void
-lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, va_list args)
+void lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, va_list args)
 {
   Temp scratch = scratch_begin(0, 0);
   String8 text = push_str8fv(scratch.arena, fmt, args);
@@ -84,16 +78,14 @@ lnk_error_with_loc_fv(LNK_ErrorCode code, String8 obj_path, String8 lib_path, ch
   scratch_end(scratch);
 }
 
-internal void
-lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, ...)
+void lnk_error_with_loc(LNK_ErrorCode code, String8 obj_path, String8 lib_path, char *fmt, ...)
 {
   va_list args; va_start(args, fmt);
   lnk_error_with_loc_fv(code, obj_path, lib_path, fmt, args);
   va_end(args);
 }
 
-internal void
-lnk_supplement_error(char *fmt, ...)
+void lnk_supplement_error(char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -109,28 +101,24 @@ lnk_supplement_error(char *fmt, ...)
   scratch_end(scratch);
 }
 
-internal void
-lnk_supplement_error_list(String8List list)
+void lnk_supplement_error_list(String8List list)
 {
   for (String8Node *node = list.first; node != 0; node = node->next) {
     lnk_supplement_error("%.*s", str8_varg(node->string));
   }
 }
 
-internal void
-lnk_suppress_error(LNK_ErrorCode code)
+void lnk_suppress_error(LNK_ErrorCode code)
 {
   g_error_code_status_arr[code] = LNK_ErrorCodeStatus_Ignore;
 }
 
-internal LNK_ErrorCodeStatus
-lnk_get_error_code_status(LNK_ErrorCode code)
+LNK_ErrorCodeStatus lnk_get_error_code_status(LNK_ErrorCode code)
 {
   return g_error_code_status_arr[code];
 }
 
-internal void
-lnk_internal_error(LNK_InternalError code, char *file, int line, char *fmt, ...)
+void lnk_internal_error(LNK_InternalError code, char *file, int line, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args;

@@ -1,16 +1,15 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64 dw_based_range_read(void *base, Rng1U64 range, U64 off, U64 size, void *out) { return 0; }
-internal U64 dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 off, U64 *out)    { return 0; }
-internal U64 dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 off, S64 *out)    { return 0; }
-internal U64 dw_based_range_read_length(void *base, Rng1U64 range, U64 off, U64 *out)     { return 0; }
+U64 dw_based_range_read(void *base, Rng1U64 range, U64 off, U64 size, void *out) { return 0; }
+U64 dw_based_range_read_uleb128(void *base, Rng1U64 range, U64 off, U64 *out)    { return 0; }
+U64 dw_based_range_read_sleb128(void *base, Rng1U64 range, U64 off, S64 *out)    { return 0; }
+U64 dw_based_range_read_length(void *base, Rng1U64 range, U64 off, U64 *out)     { return 0; }
 
 ////////////////////////////////
 // x64 Unwind Function
 
-internal DW_UnwindResult
-dw_unwind_x64(String8           raw_text,
+DW_UnwindResult dw_unwind_x64(String8           raw_text,
               String8           raw_eh_frame,
               String8           raw_eh_frame_hdr,
               Rng1U64           text_vrange,
@@ -123,8 +122,7 @@ dw_unwind_x64(String8           raw_text,
   return result;
 }
 
-internal DW_UnwindResult
-dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
+DW_UnwindResult dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
                                  DW_CFIRow        *row,
                                  U64               text_base_vaddr,
                                  DW_ReadMemorySig *read_memory,
@@ -281,8 +279,7 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
 ////////////////////////////////
 // Helper Functions
 
-internal void
-dw_unwind_init_x64(void)
+void dw_unwind_init_x64(void)
 {
   local_persist B32 did_init = 0;
   
@@ -320,8 +317,7 @@ dw_unwind_init_x64(void)
   }
 }
 
-internal U64
-dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *ptr_ctx, DW_EhPtrEnc encoding, U64 off, U64 *ptr_out)
+U64 dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *ptr_ctx, DW_EhPtrEnc encoding, U64 off, U64 *ptr_out)
 {
   // aligned offset
   U64 pointer_off = off;
@@ -412,8 +408,7 @@ dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *
 
 //- eh_frame parsing
 
-internal void
-dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off, DW_CIEUnpacked *cie_out)
+void dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off, DW_CIEUnpacked *cie_out)
 {
   NotImplemented;
 #if 0
@@ -531,8 +526,7 @@ dw_unwind_parse_cie_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, U64 off
 #endif
 }
 
-internal void
-dw_unwind_parse_fde_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_CIEUnpacked *cie, U64 off, DW_FDEUnpacked *fde_out)
+void dw_unwind_parse_fde_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_CIEUnpacked *cie, U64 off, DW_FDEUnpacked *fde_out)
 {
   // pull out pointer encoding field
   DW_EhPtrEnc ptr_enc = cie->addr_encoding;
@@ -584,8 +578,7 @@ dw_unwind_parse_fde_x64(void *base, Rng1U64 range, DW_EhPtrCtx *ptr_ctx, DW_CIEU
   fde_out->cfi_range.max     = cfi_off + cfi_size;
 }
 
-internal DW_CFIRecords
-dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_ctx, U64 ip_voff)
+DW_CFIRecords dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_ctx, U64 ip_voff)
 {
   Temp scratch = scratch_begin(0, 0);
 
@@ -678,8 +671,7 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_c
   return(result);
 }
 
-internal U64
-dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 location)
+U64 dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 location)
 {
   // Table contains only addresses for first instruction in a function and we cannot
   // guarantee that result is FDE that corresponds to the input location. 
@@ -732,8 +724,7 @@ dw_search_eh_frame_hdr_linear_x64(String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx
   return closest_address;
 }
 
-internal DW_CFIRecords
-dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 ip_voff)
+DW_CFIRecords dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 ip_voff)
 {
   DW_CFIRecords result = {0};
   
@@ -792,8 +783,7 @@ dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_fra
 
 //- cfi machine
 
-internal DW_CFIMachine
-dw_unwind_make_machine_x64(U64 cells_per_row, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx)
+DW_CFIMachine dw_unwind_make_machine_x64(U64 cells_per_row, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx)
 {
   DW_CFIMachine result = {0};
   result.cells_per_row = cells_per_row;
@@ -802,41 +792,35 @@ dw_unwind_make_machine_x64(U64 cells_per_row, DW_CIEUnpacked *cie, DW_EhPtrCtx *
   return result;
 }
 
-internal void
-dw_unwind_machine_equip_initial_row_x64(DW_CFIMachine *machine, DW_CFIRow *initial_row)
+void dw_unwind_machine_equip_initial_row_x64(DW_CFIMachine *machine, DW_CFIRow *initial_row)
 {
   machine->initial_row = initial_row;
 }
 
-internal void
-dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip)
+void dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip)
 {
   machine->fde_ip = fde_ip;
 }
 
-internal DW_CFIRow*
-dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row)
+DW_CFIRow* dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row)
 {
   DW_CFIRow *result = push_array(arena, DW_CFIRow, 1);
   result->cells     = push_array(arena, DW_CFICell, cells_per_row);
   return result;
 }
 
-internal void
-dw_unwind_row_zero_x64(DW_CFIRow *row, U64 cells_per_row) {
+void dw_unwind_row_zero_x64(DW_CFIRow *row, U64 cells_per_row) {
   MemorySet(row->cells, 0, sizeof(*row->cells)*cells_per_row);
   MemoryZeroStruct(&row->cfa_cell);
 }
 
-internal void
-dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, U64 cells_per_row)
+void dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, U64 cells_per_row)
 {
   MemoryCopy(dst->cells, src->cells, sizeof(*src->cells)*cells_per_row);
   dst->cfa_cell = src->cfa_cell;
 }
 
-internal B32
-dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machine, U64 target_ip, DW_CFIRow *row)
+B32 dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machine, U64 target_ip, DW_CFIRow *row)
 {
   Temp scratch = scratch_begin(0, 0);
 

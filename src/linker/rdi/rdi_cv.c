@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal RDI_Arch
-rdi_arch_from_cv_arch(CV_Arch arch)
+RDI_Arch rdi_arch_from_cv_arch(CV_Arch arch)
 {
   switch (arch) {
   case CV_Arch_8086: return RDI_Arch_X86;
@@ -72,8 +71,7 @@ rdi_arch_from_cv_arch(CV_Arch arch)
   }
 }
 
-internal RDI_Language
-rdi_language_from_cv_language(CV_Language language)
+RDI_Language rdi_language_from_cv_language(CV_Language language)
 {
   switch (language) {
   case CV_Language_C:      return RDI_Language_C;
@@ -100,8 +98,7 @@ rdi_language_from_cv_language(CV_Language language)
   }
 }
 
-internal RDI_TypeModifierFlags
-rdi_type_modifier_flags_from_cv_modifier_flags(CV_ModifierFlags flags)
+RDI_TypeModifierFlags rdi_type_modifier_flags_from_cv_modifier_flags(CV_ModifierFlags flags)
 {
   RDI_TypeModifierFlags result = 0;
   if (flags & CV_ModifierFlag_Const) {
@@ -113,8 +110,7 @@ rdi_type_modifier_flags_from_cv_modifier_flags(CV_ModifierFlags flags)
   return result;
 }
 
-internal RDI_TypeModifierFlags
-rdi_type_modifier_flags_from_cv_pointer_attribs(CV_PointerAttribs attribs)
+RDI_TypeModifierFlags rdi_type_modifier_flags_from_cv_pointer_attribs(CV_PointerAttribs attribs)
 {
   RDI_TypeModifierFlags result = 0;
   if (attribs & CV_PointerAttrib_Const) {
@@ -126,8 +122,7 @@ rdi_type_modifier_flags_from_cv_pointer_attribs(CV_PointerAttribs attribs)
   return result;
 }
 
-internal RDI_TypeKind
-rdi_type_kind_from_pointer(CV_PointerAttribs attribs, CV_PointerMode mode)
+RDI_TypeKind rdi_type_kind_from_pointer(CV_PointerAttribs attribs, CV_PointerMode mode)
 {
   RDI_TypeKind result = RDI_TypeKind_Ptr;
   
@@ -146,8 +141,7 @@ rdi_type_kind_from_pointer(CV_PointerAttribs attribs, CV_PointerMode mode)
   return result;
 }
 
-internal RDI_TypeKind
-rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
+RDI_TypeKind rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 {
   switch (basic_type) {
   case CV_BasicType_NOTYPE    : return RDI_TypeKind_NULL;
@@ -206,8 +200,7 @@ rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
   return RDI_TypeKind_NULL;
 }
 
-internal RDI_RegCode
-rdi_reg_code_from_cv(CV_Arch arch, CV_Reg reg)
+RDI_RegCode rdi_reg_code_from_cv(CV_Arch arch, CV_Reg reg)
 {
   RDI_RegCode result = 0;
   switch (arch) {
@@ -230,8 +223,7 @@ rdi_reg_code_from_cv(CV_Arch arch, CV_Reg reg)
   return result;
 }
 
-internal RDI_ChecksumKind
-rdi_checksum_from_cv_c13(CV_C13ChecksumKind kind)
+RDI_ChecksumKind rdi_checksum_from_cv_c13(CV_C13ChecksumKind kind)
 {
   switch (kind) {
   case CV_C13ChecksumKind_Null:   return RDI_Checksum_Null;

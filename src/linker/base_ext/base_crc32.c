@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U32
-update_crc32(U32 crc, U8 *ptr, U64 size)
+U32 update_crc32(U32 crc, U8 *ptr, U64 size)
 {
   // CRC-32 algo borrowed from stb.h
 
@@ -64,8 +63,7 @@ update_crc32(U32 crc, U8 *ptr, U64 size)
   return ~crc;
 }
 
-internal U32
-crc32_from_string(String8 string)
+U32 crc32_from_string(String8 string)
 {
   return update_crc32(0, string.str, string.size);
 }

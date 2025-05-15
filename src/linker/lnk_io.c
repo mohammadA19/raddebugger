@@ -53,8 +53,7 @@ lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_
 
 ////////////////////////////////
 
-internal String8List
-lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
+String8List lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -100,8 +99,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
   return match_list;
 }
 
-internal OS_Handle
-lnk_file_open_with_rename_permissions(String8 path)
+OS_Handle lnk_file_open_with_rename_permissions(String8 path)
 {
   OS_Handle file_handle = os_handle_zero();
 #if _WIN32
@@ -128,8 +126,7 @@ lnk_file_open_with_rename_permissions(String8 path)
   return file_handle;
 }
 
-internal B32
-lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
+B32 lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
 {
 #if _WIN32
   FILE_DISPOSITION_INFO file_disposition = {0};
@@ -141,8 +138,7 @@ lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
   return is_set;
 }
 
-internal B32
-lnk_file_rename(OS_Handle handle, String8 new_name)
+B32 lnk_file_rename(OS_Handle handle, String8 new_name)
 {
   Temp scratch = scratch_begin(0,0);
 #if _WIN32
@@ -165,14 +161,12 @@ lnk_file_rename(OS_Handle handle, String8 new_name)
   return is_renamed;
 }
 
-internal void
-lnk_log_read(String8 path, U64 size)
+void lnk_log_read(String8 path, U64 size)
 {
   lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
 
-internal String8
-lnk_read_data_from_file_path(Arena *arena, String8 path)
+String8 lnk_read_data_from_file_path(Arena *arena, String8 path)
 {
   String8 data = str8_zero();
   OS_Handle handle = {0};
@@ -232,8 +226,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   task->data_arr.v[task_id] = str8(buffer, read_size);
 }
 
-internal String8Array
-lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array path_arr)
+String8Array lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array path_arr)
 {
   Temp scratch = scratch_begin(&arena,1);
 
@@ -274,8 +267,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, String8Array
   return result;
 }
 
-internal void
-lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List data)
+void lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List data)
 {
   ProfBeginV("Write %M to %S", data.total_size, path);
 
@@ -346,8 +338,7 @@ lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List da
   ProfEnd();
 }
 
-internal void
-lnk_write_data_to_file_path(String8 path, String8 temp_path, String8 data)
+void lnk_write_data_to_file_path(String8 path, String8 temp_path, String8 data)
 {
   Temp scratch = scratch_begin(0,0);
   String8List data_list = {0};

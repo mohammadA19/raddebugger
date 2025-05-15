@@ -45,8 +45,7 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32
-frame(void)
+B32 frame(void)
 {
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
@@ -77,8 +76,7 @@ frame(void)
   return quit;
 }
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   OS_Handle window = os_window_open(v2f32(1280, 720), 0, str8_lit("Window"));
   os_window_first_paint(window);

@@ -12,8 +12,7 @@ C_LINKAGE thread_static Log *log_active = 0;
 ////////////////////////////////
 //~ rjf: Log Creation/Selection
 
-internal Log *
-log_alloc(void)
+Log* log_alloc(void)
 {
   Arena *arena = arena_alloc();
   Log *log = push_array(arena, Log, 1);
@@ -21,14 +20,12 @@ log_alloc(void)
   return log;
 }
 
-internal void
-log_release(Log *log)
+void log_release(Log *log)
 {
   arena_release(log->arena);
 }
 
-internal void
-log_select(Log *log)
+void log_select(Log *log)
 {
   log_active = log;
 }
@@ -36,8 +33,7 @@ log_select(Log *log)
 ////////////////////////////////
 //~ rjf: Log Building/Clearing
 
-internal void
-log_msg(LogMsgKind kind, String8 string)
+void log_msg(LogMsgKind kind, String8 string)
 {
   if(log_active != 0 && log_active->top_scope != 0)
   {
@@ -46,8 +42,7 @@ log_msg(LogMsgKind kind, String8 string)
   }
 }
 
-internal void
-log_msgf(LogMsgKind kind, char *fmt, ...)
+void log_msgf(LogMsgKind kind, char *fmt, ...)
 {
   if(log_active != 0)
   {
@@ -64,8 +59,7 @@ log_msgf(LogMsgKind kind, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Log Scopes
 
-internal void
-log_scope_begin(void)
+void log_scope_begin(void)
 {
   if(log_active != 0)
   {
@@ -76,8 +70,7 @@ log_scope_begin(void)
   }
 }
 
-internal LogScopeResult
-log_scope_end(Arena *arena)
+LogScopeResult log_scope_end(Arena *arena)
 {
   LogScopeResult result = {0};
   if(log_active != 0)

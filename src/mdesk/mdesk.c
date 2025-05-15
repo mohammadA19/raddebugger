@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Message Type Functions
 
-internal void
-md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string)
+void md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string)
 {
   MD_Msg *msg = push_array(arena, MD_Msg, 1);
   msg->node = node;
@@ -16,8 +15,7 @@ md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind,
   msgs->worst_message_kind = Max(kind, msgs->worst_message_kind);
 }
 
-internal void
-md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, char *fmt, ...)
+void md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -26,8 +24,7 @@ md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind
   va_end(args);
 }
 
-internal void
-md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push)
+void md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push)
 {
   if(to_push->first != 0)
   {
@@ -49,23 +46,20 @@ md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push)
 ////////////////////////////////
 //~ rjf: Token Type Functions
 
-internal MD_Token
-md_token_make(Rng1U64 range, MD_TokenFlags flags)
+MD_Token md_token_make(Rng1U64 range, MD_TokenFlags flags)
 {
   MD_Token token = {range, flags};
   return token;
 }
 
-internal B32
-md_token_match(MD_Token a, MD_Token b)
+B32 md_token_match(MD_Token a, MD_Token b)
 {
   return (a.range.min == b.range.min &&
           a.range.max == b.range.max &&
           a.flags == b.flags);
 }
 
-internal String8List
-md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags)
+String8List md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags)
 {
   String8List strs = {0};
   if(flags & MD_TokenFlag_Identifier          ){str8_list_push(arena, &strs, str8_lit("Identifier"));}
@@ -82,8 +76,7 @@ md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags)
   return strs;
 }
 
-internal void
-md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Token token)
+void md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Token token)
 {
   MD_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -99,8 +92,7 @@ md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Toke
   list->total_token_count += 1;
 }
 
-internal MD_TokenArray
-md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
+MD_TokenArray md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
 {
   MD_TokenArray result = {0};
   result.count = chunks->total_token_count;
@@ -114,8 +106,7 @@ md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
   return result;
 }
 
-internal String8
-md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
+String8 md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
 {
   U64 num_chop = 0;
   U64 num_skip = 0;
@@ -136,8 +127,7 @@ md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
 
 //- rjf: flag conversions
 
-internal MD_NodeFlags
-md_node_flags_from_token_flags(MD_TokenFlags flags)
+MD_NodeFlags md_node_flags_from_token_flags(MD_TokenFlags flags)
 {
   MD_NodeFlags result = 0;
   result |=         MD_NodeFlag_Identifier*!!(flags&MD_TokenFlag_Identifier);
@@ -153,16 +143,14 @@ md_node_flags_from_token_flags(MD_TokenFlags flags)
 
 //- rjf: nil
 
-internal B32
-md_node_is_nil(MD_Node *node)
+B32 md_node_is_nil(MD_Node *node)
 {
   return (node == 0 || node == &md_nil_node || node->kind == MD_NodeKind_Nil);
 }
 
 //- rjf: iteration
 
-internal MD_NodeRec
-md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64 sib_off)
+MD_NodeRec md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64 sib_off)
 {
   MD_NodeRec rec = {0};
   rec.next = &md_nil_node;
@@ -184,8 +172,7 @@ md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64
 
 //- rjf: tree building
 
-internal MD_Node *
-md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
+MD_Node* md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
 {
   MD_Node *node = push_array(arena, MD_Node, 1);
   node->first = node->last = node->parent = node->next = node->prev = node->first_tag = node->last_tag = &md_nil_node;
@@ -197,38 +184,33 @@ md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string,
   return node;
 }
 
-internal void
-md_node_insert_child(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
+void md_node_insert_child(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
 {
   node->parent = parent;
   DLLInsert_NPZ(&md_nil_node, parent->first, parent->last, prev_child, node, next, prev);
 }
 
-internal void
-md_node_insert_tag(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
+void md_node_insert_tag(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
 {
   node->kind = MD_NodeKind_Tag;
   node->parent = parent;
   DLLInsert_NPZ(&md_nil_node, parent->first_tag, parent->last_tag, prev_child, node, next, prev);
 }
 
-internal void
-md_node_push_child(MD_Node *parent, MD_Node *node)
+void md_node_push_child(MD_Node *parent, MD_Node *node)
 {
   node->parent = parent;
   DLLPushBack_NPZ(&md_nil_node, parent->first, parent->last, node, next, prev);
 }
 
-internal void
-md_node_push_tag(MD_Node *parent, MD_Node *node)
+void md_node_push_tag(MD_Node *parent, MD_Node *node)
 {
   node->kind = MD_NodeKind_Tag;
   node->parent = parent;
   DLLPushBack_NPZ(&md_nil_node, parent->first_tag, parent->last_tag, node, next, prev);
 }
 
-internal void
-md_unhook(MD_Node *node)
+void md_unhook(MD_Node *node)
 {
   MD_Node *parent = node->parent;
   if(!md_node_is_nil(parent))
@@ -247,8 +229,7 @@ md_unhook(MD_Node *node)
 
 //- rjf: tree introspection
 
-internal MD_Node *
-md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMatchFlags flags)
+MD_Node* md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMatchFlags flags)
 {
   MD_Node *result = &md_nil_node;
   for(MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next)
@@ -262,8 +243,7 @@ md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMa
   return result;
 }
 
-internal MD_Node *
-md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
+MD_Node* md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
 {
   MD_Node *result = &md_nil_node;
   S64 idx = 0;
@@ -278,8 +258,7 @@ md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
   return result;
 }
 
-internal MD_Node *
-md_node_from_chain_flags(MD_Node *first, MD_Node *opl, MD_NodeFlags flags)
+MD_Node* md_node_from_chain_flags(MD_Node *first, MD_Node *opl, MD_NodeFlags flags)
 {
   MD_Node *result = &md_nil_node;
   for(MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next)
@@ -293,8 +272,7 @@ md_node_from_chain_flags(MD_Node *first, MD_Node *opl, MD_NodeFlags flags)
   return result;
 }
 
-internal U64
-md_index_from_node(MD_Node *node)
+U64 md_index_from_node(MD_Node *node)
 {
   U64 index = 0;
   for(MD_Node *n = node->prev; !md_node_is_nil(n); n = n->prev)
@@ -304,8 +282,7 @@ md_index_from_node(MD_Node *node)
   return index;
 }
 
-internal MD_Node *
-md_root_from_node(MD_Node *node)
+MD_Node* md_root_from_node(MD_Node *node)
 {
   MD_Node *result = node;
   for(MD_Node *p = node->parent; (p->kind == MD_NodeKind_Main || p->kind == MD_NodeKind_Tag) && !md_node_is_nil(p); p = p->parent)
@@ -315,59 +292,50 @@ md_root_from_node(MD_Node *node)
   return result;
 }
 
-internal MD_Node *
-md_child_from_string(MD_Node *node, String8 child_string, StringMatchFlags flags)
+MD_Node* md_child_from_string(MD_Node *node, String8 child_string, StringMatchFlags flags)
 {
   return md_node_from_chain_string(node->first, &md_nil_node, child_string, flags);
 }
 
-internal MD_Node *
-md_tag_from_string(MD_Node *node, String8 tag_string, StringMatchFlags flags)
+MD_Node* md_tag_from_string(MD_Node *node, String8 tag_string, StringMatchFlags flags)
 {
   return md_node_from_chain_string(node->first_tag, &md_nil_node, tag_string, flags);
 }
 
-internal MD_Node *
-md_child_from_index(MD_Node *node, U64 index)
+MD_Node* md_child_from_index(MD_Node *node, U64 index)
 {
   return md_node_from_chain_index(node->first, &md_nil_node, index);
 }
 
-internal MD_Node *
-md_tag_from_index(MD_Node *node, U64 index)
+MD_Node* md_tag_from_index(MD_Node *node, U64 index)
 {
   return md_node_from_chain_index(node->first_tag, &md_nil_node, index);
 }
 
-internal MD_Node *
-md_tag_arg_from_index(MD_Node *node, String8 tag_string, StringMatchFlags flags, U64 index)
+MD_Node* md_tag_arg_from_index(MD_Node *node, String8 tag_string, StringMatchFlags flags, U64 index)
 {
   MD_Node *tag = md_tag_from_string(node, tag_string, flags);
   return md_child_from_index(tag, index);
 }
 
-internal MD_Node *
-md_tag_arg_from_string(MD_Node *node, String8 tag_string, StringMatchFlags tag_str_flags, String8 arg_string, StringMatchFlags arg_str_flags)
+MD_Node* md_tag_arg_from_string(MD_Node *node, String8 tag_string, StringMatchFlags tag_str_flags, String8 arg_string, StringMatchFlags arg_str_flags)
 {
   MD_Node *tag = md_tag_from_string(node, tag_string, tag_str_flags);
   MD_Node *arg = md_child_from_string(tag, arg_string, arg_str_flags);
   return arg;
 }
 
-internal B32
-md_node_has_child(MD_Node *node, String8 string, StringMatchFlags flags)
+B32 md_node_has_child(MD_Node *node, String8 string, StringMatchFlags flags)
 {
   return !md_node_is_nil(md_child_from_string(node, string, flags));
 }
 
-internal B32
-md_node_has_tag(MD_Node *node, String8 string, StringMatchFlags flags)
+B32 md_node_has_tag(MD_Node *node, String8 string, StringMatchFlags flags)
 {
   return !md_node_is_nil(md_tag_from_string(node, string, flags));
 }
 
-internal U64
-md_child_count_from_node(MD_Node *node)
+U64 md_child_count_from_node(MD_Node *node)
 {
   U64 result = 0;
   for(MD_Node *child = node->first; !md_node_is_nil(child); child = child->next)
@@ -377,8 +345,7 @@ md_child_count_from_node(MD_Node *node)
   return result;
 }
 
-internal U64
-md_tag_count_from_node(MD_Node *node)
+U64 md_tag_count_from_node(MD_Node *node)
 {
   U64 result = 0;
   for(MD_Node *child = node->first_tag; !md_node_is_nil(child); child = child->next)
@@ -388,8 +355,7 @@ md_tag_count_from_node(MD_Node *node)
   return result;
 }
 
-internal String8
-md_string_from_children(Arena *arena, MD_Node *root)
+String8 md_string_from_children(Arena *arena, MD_Node *root)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
@@ -408,8 +374,7 @@ md_string_from_children(Arena *arena, MD_Node *root)
 
 //- rjf: tree comparison
 
-internal B32
-md_node_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
+B32 md_node_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
 {
   B32 result = 0;
   if(a->kind == b->kind && str8_match(a->string, b->string, flags))
@@ -450,8 +415,7 @@ md_node_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
   return result;
 }
 
-internal B32
-md_tree_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
+B32 md_tree_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
 {
   B32 result = md_node_match(a, b, flags);
   if(result)
@@ -473,8 +437,7 @@ md_tree_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
 
 //- rjf: tree duplication
 
-internal MD_Node *
-md_tree_copy(Arena *arena, MD_Node *src_root)
+MD_Node* md_tree_copy(Arena *arena, MD_Node *src_root)
 {
   MD_Node *dst_root = &md_nil_node;
   MD_Node *dst_parent = dst_root;
@@ -516,8 +479,7 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
 ////////////////////////////////
 //~ rjf: Text -> Tokens Functions
 
-internal MD_TokenizeResult
-md_tokenize_from_text(Arena *arena, String8 text)
+MD_TokenizeResult md_tokenize_from_text(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   MD_TokenChunkList tokens = {0};
@@ -814,8 +776,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
 ////////////////////////////////
 //~ rjf: Tokens -> Tree Functions
 
-internal MD_ParseResult
-md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_TokenArray tokens)
+MD_ParseResult md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_TokenArray tokens)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1141,8 +1102,7 @@ if(work_top == 0) {work_top = &broken_work;}\
 ////////////////////////////////
 //~ rjf: Bundled Text -> Tree Functions
 
-internal MD_ParseResult
-md_parse_from_text(Arena *arena, String8 filename, String8 text)
+MD_ParseResult md_parse_from_text(Arena *arena, String8 filename, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   MD_TokenizeResult tokenize = md_tokenize_from_text(scratch.arena, text);
@@ -1154,8 +1114,7 @@ md_parse_from_text(Arena *arena, String8 filename, String8 text)
 ////////////////////////////////
 //~ rjf: Tree -> Text Functions
 
-internal String8List
-md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
+String8List md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
 {
   String8List strings = {0};
   {
@@ -1208,8 +1167,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
 ////////////////////////////////
 //~ rjf: Node Pointer List Functions
 
-internal void
-md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
+void md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
   MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
   n->v = node;
@@ -1217,8 +1175,7 @@ md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
   list->count += 1;
 }
 
-internal void
-md_node_ptr_list_push_front(Arena *arena, MD_NodePtrList *list, MD_Node *node)
+void md_node_ptr_list_push_front(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
   MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
   n->v = node;

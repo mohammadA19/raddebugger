@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
-coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
+String8 coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
 {
   String8 result;
   if (time_stamp == 0) {
@@ -57,8 +56,7 @@ read_only static struct {
   { "Const", COFF_ImportHeader_Const },
 };
 
-internal String8
-coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
+String8 coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 {
   String8 result = str8_zero();
   switch (type) {
@@ -73,8 +71,7 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
   return result;
 }
 
-internal String8
-coff_string_from_machine_type(COFF_MachineType machine)
+String8 coff_string_from_machine_type(COFF_MachineType machine)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (g_coff_machine_map[i].machine == machine) {
@@ -84,8 +81,7 @@ coff_string_from_machine_type(COFF_MachineType machine)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
+String8 coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -133,8 +129,7 @@ coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
   return result;
 }
 
-internal String8
-coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
+String8 coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -214,8 +209,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
   return result;
 }
 
-internal String8
-coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags)
+String8 coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -243,8 +237,7 @@ coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags fl
   return result;
 }
 
-internal String8
-coff_string_from_import_header_type(COFF_ImportType type)
+String8 coff_string_from_import_header_type(COFF_ImportType type)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (g_coff_import_header_type_map[i].type == type) {
@@ -254,8 +247,7 @@ coff_string_from_import_header_type(COFF_ImportType type)
   return str8(0,0);
 }
 
-internal String8
-coff_string_from_sym_dtype(COFF_SymDType x)
+String8 coff_string_from_sym_dtype(COFF_SymDType x)
 {
   switch (x) {
     case COFF_SymDType_Null:  return str8_lit("Null");
@@ -266,8 +258,7 @@ coff_string_from_sym_dtype(COFF_SymDType x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_sym_type(COFF_SymType x)
+String8 coff_string_from_sym_type(COFF_SymType x)
 {
   switch (x) {
     case COFF_SymType_Null:   return str8_lit("Null");
@@ -290,8 +281,7 @@ coff_string_from_sym_type(COFF_SymType x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_sym_storage_class(COFF_SymStorageClass x)
+String8 coff_string_from_sym_storage_class(COFF_SymStorageClass x)
 {
   switch (x) {
     case COFF_SymStorageClass_Null:            break;
@@ -325,8 +315,7 @@ coff_string_from_sym_storage_class(COFF_SymStorageClass x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_weak_ext_type(COFF_WeakExtType x)
+String8 coff_string_from_weak_ext_type(COFF_WeakExtType x)
 {
   switch (x) {
     case COFF_WeakExt_NoLibrary:     return str8_lit("NoLibrary");
@@ -336,8 +325,7 @@ coff_string_from_weak_ext_type(COFF_WeakExtType x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_reloc_x86(COFF_Reloc_X86 x)
+String8 coff_string_from_reloc_x86(COFF_Reloc_X86 x)
 {
   switch (x) {
     case COFF_Reloc_X86_Abs:      return str8_lit("Abs");
@@ -364,8 +352,7 @@ coff_string_from_reloc_x86(COFF_Reloc_X86 x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_reloc_x64(COFF_Reloc_X64 x)
+String8 coff_string_from_reloc_x64(COFF_Reloc_X64 x)
 {
   switch (x) {
     case COFF_Reloc_X64_Abs:      return str8_lit("Abs");
@@ -389,8 +376,7 @@ coff_string_from_reloc_x64(COFF_Reloc_X64 x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_reloc_arm(COFF_Reloc_Arm x)
+String8 coff_string_from_reloc_arm(COFF_Reloc_Arm x)
 {
   switch (x) {
     case COFF_Reloc_Arm_Abs:           return str8_lit("Abs");
@@ -417,8 +403,7 @@ coff_string_from_reloc_arm(COFF_Reloc_Arm x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
+String8 coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
 {
   switch (x) {
     case COFF_Reloc_Arm64_Abs:           return str8_lit("Abs");
@@ -442,8 +427,7 @@ coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
   return str8_zero();
 }
 
-internal String8
-coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
+String8 coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 {
   switch (machine) {
     case COFF_MachineType_X86:   return coff_string_from_reloc_x86(x);
@@ -454,8 +438,7 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
   return str8_zero();
 }
 
-internal COFF_MachineType
-coff_machine_from_string(String8 string)
+COFF_MachineType coff_machine_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
@@ -465,8 +448,7 @@ coff_machine_from_string(String8 string)
   return COFF_MachineType_Unknown;
 }
 
-internal COFF_ImportType
-coff_import_header_type_from_string(String8 name)
+COFF_ImportType coff_import_header_type_from_string(String8 name)
 {
   for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlag_CaseInsensitive)) {

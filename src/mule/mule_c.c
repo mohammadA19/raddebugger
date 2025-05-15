@@ -81,7 +81,6 @@ c_versions_of_same_types(void){
 ////////////////////////////////
 //~ NOTE(rjf): Bitfields
 
-typedef struct TypeWithBitfield TypeWithBitfield;
 struct TypeWithBitfield
 {
   int v : 14;
@@ -91,7 +90,6 @@ struct TypeWithBitfield
   int z : 10;
 };
 
-typedef struct BitfieldType64 BitfieldType64;
 struct BitfieldType64
 {
   uint64_t size    : 63;

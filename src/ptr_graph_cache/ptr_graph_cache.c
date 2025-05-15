@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
-ptg_init(void)
+void ptg_init(void)
 {
   Arena *arena = arena_alloc();
   ptg_shared = push_array(arena, PTG_Shared, 1);
@@ -36,14 +35,12 @@ ptg_init(void)
 ////////////////////////////////
 //~ rjf: User Clock
 
-internal void
-ptg_user_clock_tick(void)
+void ptg_user_clock_tick(void)
 {
   ins_atomic_u64_inc_eval(&ptg_shared->user_clock_idx);
 }
 
-internal U64
-ptg_user_clock_idx(void)
+U64 ptg_user_clock_idx(void)
 {
   return ins_atomic_u64_eval(&ptg_shared->user_clock_idx);
 }
@@ -51,8 +48,7 @@ ptg_user_clock_idx(void)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal PTG_Scope *
-ptg_scope_open(void)
+PTG_Scope* ptg_scope_open(void)
 {
   if(ptg_tctx == 0)
   {
@@ -73,8 +69,7 @@ ptg_scope_open(void)
   return scope;
 }
 
-internal void
-ptg_scope_close(PTG_Scope *scope)
+void ptg_scope_close(PTG_Scope *scope)
 {
   for(PTG_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -85,8 +80,7 @@ ptg_scope_close(PTG_Scope *scope)
   SLLStackPush(ptg_tctx->free_scope, scope);
 }
 
-internal void
-ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
+void ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 {
   PTG_Touch *touch = ptg_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
@@ -108,8 +102,7 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal PTG_Graph *
-ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
+PTG_Graph* ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
 {
   PTG_Graph *g = 0;
   return g;
@@ -118,8 +111,7 @@ ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32
-ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
+B32 ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
@@ -145,8 +137,7 @@ ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
   return good;
 }
 
-internal void
-ptg_u2b_dequeue_req(PTG_Key *key_out)
+void ptg_u2b_dequeue_req(PTG_Key *key_out)
 {
   OS_MutexScope(ptg_shared->u2b_ring_mutex) for(;;)
   {
@@ -161,8 +152,7 @@ ptg_u2b_dequeue_req(PTG_Key *key_out)
   os_condition_variable_broadcast(ptg_shared->u2b_ring_cv);
 }
 
-internal void
-ptg_builder_thread__entry_point(void *p)
+void ptg_builder_thread__entry_point(void *p)
 {
   for(;;)
   {
@@ -221,8 +211,7 @@ ptg_builder_thread__entry_point(void *p)
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void
-ptg_evictor_thread__entry_point(void *p)
+void ptg_evictor_thread__entry_point(void *p)
 {
   for(;;)
   {

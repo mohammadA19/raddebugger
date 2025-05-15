@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
-path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
+String8 path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -82,8 +81,7 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
   return dst_path;
 }
 
-internal String8
-path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
+String8 path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
 {
   String8 result = dst;
   PathStyle dst_style = path_style_from_str8(dst);
@@ -98,8 +96,7 @@ path_absolute_dst_from_relative_dst_src(Arena *arena, String8 dst, String8 src)
   return result;
 }
 
-internal String8List
-path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *style_out)
+String8List path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *style_out)
 {
   // analyze path
   PathStyle path_style = path_style_from_str8(path_string);
@@ -131,8 +128,7 @@ path_normalized_list_from_string(Arena *arena, String8 path_string, PathStyle *s
   return path;
 }
 
-internal String8
-path_normalized_from_string(Arena *arena, String8 path_string){
+String8 path_normalized_from_string(Arena *arena, String8 path_string){
   Temp scratch = scratch_begin(&arena, 1);
   
   PathStyle style = PathStyle_Relative;
@@ -143,8 +139,7 @@ path_normalized_from_string(Arena *arena, String8 path_string){
   return result;
 }
 
-internal B32
-path_match_normalized(String8 left, String8 right)
+B32 path_match_normalized(String8 left, String8 right)
 {
   Temp scratch = scratch_begin(0, 0);
   String8 left_normalized = path_normalized_from_string(scratch.arena, left);
@@ -154,8 +149,7 @@ path_match_normalized(String8 left, String8 right)
   return result;
 }
 
-internal String8
-path_char_from_style(PathStyle style)
+String8 path_char_from_style(PathStyle style)
 {
   String8 result = str8_zero();
   switch (style)
@@ -168,8 +162,7 @@ path_char_from_style(PathStyle style)
   return result;
 }
 
-internal StringMatchFlags
-path_match_flags_from_os(OperatingSystem os)
+StringMatchFlags path_match_flags_from_os(OperatingSystem os)
 {
   StringMatchFlags flags = StringMatchFlag_SlashInsensitive;
   switch(os)
@@ -188,8 +181,7 @@ path_match_flags_from_os(OperatingSystem os)
   return flags;
 }
 
-internal String8
-path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
+String8 path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = str8_split_path(scratch.arena, path);
@@ -200,8 +192,7 @@ path_convert_slashes(Arena *arena, String8 path, PathStyle path_style)
   return result;
 }
 
-internal String8
-path_replace_file_extension(Arena *arena, String8 file_name, String8 ext)
+String8 path_replace_file_extension(Arena *arena, String8 file_name, String8 ext)
 {
   String8 file_name_no_ext = str8_chop_last_dot(file_name);
   String8 result           = push_str8f(arena, "%S.%S", file_name_no_ext, ext);
@@ -221,8 +212,7 @@ global read_only struct
   { str8_lit_comp("system"),   PathStyle_SystemAbsolute  },
 };
 
-internal PathStyle
-path_style_from_string(String8 string)
+PathStyle path_style_from_string(String8 string)
 {
   for (U64 i = 0; i < ArrayCount(g_path_style_map); ++i)
   {
@@ -234,8 +224,7 @@ path_style_from_string(String8 string)
   return PathStyle_Null;
 }
 
-internal String8
-path_string_from_style(PathStyle style)
+String8 path_string_from_style(PathStyle style)
 {
   Assert(style < ArrayCount(g_path_style_map));
   return g_path_style_map[style].string;

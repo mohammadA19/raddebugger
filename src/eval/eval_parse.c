@@ -23,15 +23,13 @@ global read_only S64 e_max_precedence = 15;
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
-internal E_Token
-e_token_zero(void)
+E_Token e_token_zero(void)
 {
   E_Token t = zero_struct;
   return t;
 }
 
-internal void
-e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
+void e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
 {
   E_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -47,8 +45,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
   list->total_count += 1;
 }
 
-internal E_TokenArray
-e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
+E_TokenArray e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 {
   E_TokenArray array = {0};
   array.count = list->total_count;
@@ -61,8 +58,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
   return array;
 }
 
-internal E_TokenArray
-e_token_array_from_text(Arena *arena, String8 text)
+E_TokenArray e_token_array_from_text(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -288,8 +284,7 @@ e_token_array_from_text(Arena *arena, String8 text)
   return array;
 }
 
-internal E_TokenArray
-e_token_array_make_first_opl(E_Token *first, E_Token *opl)
+E_TokenArray e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 {
   E_TokenArray array = {first, (U64)(opl-first)};
   return array;
@@ -298,8 +293,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 ////////////////////////////////
 //~ rjf: Expression Tree Building Functions
 
-internal E_Expr *
-e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
+E_Expr* e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
 {
   E_Expr *e = push_array(arena, E_Expr, 1);
   e->first = e->last = e->next = e->prev = e->ref = &e_expr_nil;
@@ -308,34 +302,29 @@ e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
   return e;
 }
 
-internal void
-e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child)
+void e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child)
 {
   DLLInsert_NPZ(&e_expr_nil, parent->first, parent->last, prev, child, next, prev);
 }
 
-internal void
-e_expr_push_child(E_Expr *parent, E_Expr *child)
+void e_expr_push_child(E_Expr *parent, E_Expr *child)
 {
   DLLPushBack_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
 }
 
-internal void
-e_expr_remove_child(E_Expr *parent, E_Expr *child)
+void e_expr_remove_child(E_Expr *parent, E_Expr *child)
 {
   DLLRemove_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
 }
 
-internal E_Expr *
-e_expr_ref(Arena *arena, E_Expr *ref)
+E_Expr* e_expr_ref(Arena *arena, E_Expr *ref)
 {
   E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, ref->range);
   expr->ref = ref;
   return expr;
 }
 
-internal E_Expr *
-e_expr_copy(Arena *arena, E_Expr *src)
+E_Expr* e_expr_copy(Arena *arena, E_Expr *src)
 {
   E_Expr *result = &e_expr_nil;
   Temp scratch = scratch_begin(&arena, 1);
@@ -409,8 +398,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
   return result;
 }
 
-internal void
-e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
+void e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 {
   E_ExprNode *n = push_array(arena, E_ExprNode, 1);
   n->v = expr;
@@ -421,8 +409,7 @@ e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 ////////////////////////////////
 //~ rjf: Expression Tree -> String Conversions
 
-internal void
-e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string, String8List *out)
+void e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string, String8List *out)
 {
   switch(expr->kind)
   {
@@ -512,8 +499,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
   }
 }
 
-internal String8
-e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
+String8 e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
 {
   String8List strings = {0};
   e_append_strings_from_expr(arena, expr, parent_expr_string, &strings);
@@ -524,8 +510,7 @@ e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
 ////////////////////////////////
 //~ rjf: Parsing Functions
 
-internal E_TypeKey
-e_leaf_type_from_name(String8 name)
+E_TypeKey e_leaf_type_from_name(String8 name)
 {
   E_TypeKey key = zero_struct;
   B32 found = 0;
@@ -676,8 +661,7 @@ e_leaf_type_from_name(String8 name)
   return key;
 }
 
-internal E_TypeKey
-e_type_key_from_expr(E_Expr *expr)
+E_TypeKey e_type_key_from_expr(E_Expr *expr)
 {
   E_TypeKey result = zero_struct;
   E_ExprKind kind = expr->kind;
@@ -708,8 +692,7 @@ e_type_key_from_expr(E_Expr *expr)
   return result;
 }
 
-internal E_Parse
-e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray tokens)
+E_Parse e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray tokens)
 {
   E_Parse parse = {tokens, 0, &e_expr_nil, &e_expr_nil};
   E_Token *token_it = tokens.v;
@@ -799,8 +782,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
   return parse;
 }
 
-internal E_Parse
-e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
+E_Parse e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1497,8 +1479,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
   return result;
 }
 
-internal E_Parse
-e_push_parse_from_string(Arena *arena, String8 text)
+E_Parse e_push_parse_from_string(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TokenArray tokens = e_token_array_from_text(scratch.arena, text);

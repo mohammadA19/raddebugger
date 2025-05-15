@@ -3,16 +3,14 @@
 
 ////////////////////////////////
 
-internal U64
-pdb_hash_table_compute_load_factor(U64 count)
+U64 pdb_hash_table_compute_load_factor(U64 count)
 {
   // PDB/include/map.h:cdrLoadMax()
   U64 load_factor = count * 2/3 + 1;
   return load_factor;
 }
 
-internal void
-pdb_hash_table_alloc(PDB_HashTable *ht, U32 max)
+void pdb_hash_table_alloc(PDB_HashTable *ht, U32 max)
 {
   ProfBeginFunction();
   ht->arena        = arena_alloc();
@@ -25,8 +23,7 @@ pdb_hash_table_alloc(PDB_HashTable *ht, U32 max)
   ProfEnd();
 }
 
-internal void
-pdb_hash_table_release(PDB_HashTable *ht)
+void pdb_hash_table_release(PDB_HashTable *ht)
 {
   ProfBeginFunction();
   arena_release(ht->arena);
@@ -34,8 +31,7 @@ pdb_hash_table_release(PDB_HashTable *ht)
   ProfEnd();
 }
 
-internal PDB_HashTableParseError
-pdb_hash_table_from_data(PDB_HashTable *ht,
+PDB_HashTableParseError pdb_hash_table_from_data(PDB_HashTable *ht,
                          String8 data,
                          B32 has_local_data,
                          PDB_HashTableUnpackFunc *unpack_func,
@@ -148,8 +144,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
   return error;
 }
 
-internal String8
-pdb_data_from_hash_table(Arena *arena,
+String8 pdb_data_from_hash_table(Arena *arena,
                          PDB_HashTable *ht,
                          B32 has_local_data,
                          PDB_HashTablePackFunc *pack_func,
@@ -195,8 +190,7 @@ pdb_data_from_hash_table(Arena *arena,
   return data;
 }
 
-internal void
-pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity)
+void pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity)
 {
   ProfBeginFunction();
   PDB_HashTable new_ht;
@@ -213,14 +207,12 @@ pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity)
   ProfEnd();
 }
 
-internal U32
-pdb_hash_table_hash(String8 key)
+U32 pdb_hash_table_hash(String8 key)
 {
   return (U16)pdb_hash_v1(key);
 }
 
-internal B32
-pdb_hash_table_try_set(PDB_HashTable *ht, String8 key, String8 value)
+B32 pdb_hash_table_try_set(PDB_HashTable *ht, String8 key, String8 value)
 {
   ProfBeginFunction();
   B32 is_set = 0;
@@ -246,8 +238,7 @@ pdb_hash_table_try_set(PDB_HashTable *ht, String8 key, String8 value)
   return is_set;
 }
 
-internal void
-pdb_hash_table_set(PDB_HashTable *ht, String8 key, String8 value)
+void pdb_hash_table_set(PDB_HashTable *ht, String8 key, String8 value)
 {
   ProfBeginFunction();
 
@@ -264,8 +255,7 @@ pdb_hash_table_set(PDB_HashTable *ht, String8 key, String8 value)
   ProfEnd();
 }
 
-internal B32
-pdb_hash_table_get(PDB_HashTable *ht, String8 key, String8 *value_out)
+B32 pdb_hash_table_get(PDB_HashTable *ht, String8 key, String8 *value_out)
 {
   ProfBeginFunction();
   B32 is_get_ok = 0;
@@ -290,8 +280,7 @@ pdb_hash_table_get(PDB_HashTable *ht, String8 key, String8 *value_out)
   return is_get_ok;
 }
 
-internal void
-pdb_hash_table_delete(PDB_HashTable *ht, String8 key)
+void pdb_hash_table_delete(PDB_HashTable *ht, String8 key)
 {
   ProfBeginFunction();
   U32 best_ibucket = pdb_hash_table_hash(key) % ht->max;
@@ -314,22 +303,19 @@ pdb_hash_table_delete(PDB_HashTable *ht, String8 key)
   ProfEnd();
 }
 
-internal B32
-pdb_hash_table_is_present(PDB_HashTable *ht, U32 k)
+B32 pdb_hash_table_is_present(PDB_HashTable *ht, U32 k)
 {
   Assert(k < ht->max);
   return bit_array_is_bit_set(ht->present_bits, k);
 }
 
-internal B32
-pdb_hash_table_is_deleted(PDB_HashTable *ht, U32 k)
+B32 pdb_hash_table_is_deleted(PDB_HashTable *ht, U32 k)
 {
   Assert(k < ht->max);
   return bit_array_is_bit_set(ht->deleted_bits, k);
 }
 
-internal void
-pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out)
+void pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, String8Array *keys_out, String8Array *values_out)
 {
   *keys_out   = str8_array_reserve(arena, ht->count);
   *values_out = str8_array_reserve(arena, ht->count);
@@ -461,40 +447,34 @@ PDB_HASH_TABLE_PACK_FUNC(pdb_src_header_block_ht_pack)
 
 ////////////////////////////////
 
-internal PDB_HashTableParseError
-pdb_hash_adj_hash_table_from_data(PDB_HashTable *ht, String8 data, PDB_StringTable *strtab, U64 *read_bytes_out)
+PDB_HashTableParseError pdb_hash_adj_hash_table_from_data(PDB_HashTable *ht, String8 data, PDB_StringTable *strtab, U64 *read_bytes_out)
 {
   return pdb_hash_table_from_data(ht, data, 0, pdb_hash_adj_ht_unpack, strtab, read_bytes_out);
 }
 
-internal PDB_HashTableParseError
-pdb_src_header_block_ht_from_data(PDB_HashTable *ht, String8 data, PDB_StringTable *strtab, U64 *read_bytes_out)
+PDB_HashTableParseError pdb_src_header_block_ht_from_data(PDB_HashTable *ht, String8 data, PDB_StringTable *strtab, U64 *read_bytes_out)
 {
   return pdb_hash_table_from_data(ht, data, 0, pdb_src_header_block_ht_unpack, strtab, read_bytes_out);
 }
 
-internal PDB_HashTableParseError
-pdb_named_stream_ht_from_data(PDB_HashTable *ht, String8 data, U64 *read_bytes_out)
+PDB_HashTableParseError pdb_named_stream_ht_from_data(PDB_HashTable *ht, String8 data, U64 *read_bytes_out)
 {
   return pdb_hash_table_from_data(ht, data, 1, pdb_named_stream_ht_unpack, 0, read_bytes_out);
 }
 
-internal String8
-pdb_data_from_hash_adj_hash_table(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
+String8 pdb_data_from_hash_adj_hash_table(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 0, pdb_hash_adj_ht_pack, strtab);
   return data;
 }
 
-internal String8
-pdb_data_from_src_header_block_ht(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
+String8 pdb_data_from_src_header_block_ht(Arena *arena, PDB_HashTable *ht, PDB_StringTable *strtab)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 0, pdb_src_header_block_ht_pack, strtab);
   return data;
 }
 
-internal String8
-pdb_data_from_named_stream_ht(Arena *arena, PDB_HashTable *ht)
+String8 pdb_data_from_named_stream_ht(Arena *arena, PDB_HashTable *ht)
 {
   String8 data = pdb_data_from_hash_table(arena, ht, 1, pdb_named_stream_ht_pack, 0);
   return data;
@@ -502,8 +482,7 @@ pdb_data_from_named_stream_ht(Arena *arena, PDB_HashTable *ht)
 
 ////////////////////////////////
 
-internal void
-pdb_strtab_alloc(PDB_StringTable *strtab, U32 max)
+void pdb_strtab_alloc(PDB_StringTable *strtab, U32 max)
 {
   ProfBeginFunction();
   
@@ -525,8 +504,7 @@ pdb_strtab_alloc(PDB_StringTable *strtab, U32 max)
   ProfEnd();
 }
 
-internal PDB_StringTableOpenError
-pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
+PDB_StringTableOpenError pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
 
@@ -649,8 +627,7 @@ pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
   return err;
 }
 
-internal void
-pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
+void pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -698,8 +675,7 @@ pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
   ProfEnd();
 }
 
-internal void
-pdb_strtab_release(PDB_StringTable *strtab)
+void pdb_strtab_release(PDB_StringTable *strtab)
 {
   ProfBeginFunction();
   arena_release(strtab->arena);
@@ -707,8 +683,7 @@ pdb_strtab_release(PDB_StringTable *strtab)
   ProfEnd();
 }
 
-internal U32
-pdb_strtab_get_serialized_size(PDB_StringTable *strtab)
+U32 pdb_strtab_get_serialized_size(PDB_StringTable *strtab)
 {
   U32 result = 0;
   result += sizeof(PDB_StringTableHeader);
@@ -720,8 +695,7 @@ pdb_strtab_get_serialized_size(PDB_StringTable *strtab)
   return result;
 }
 
-internal U32
-pdb_strtab_hash(PDB_StringTable *strtab, String8 string)
+U32 pdb_strtab_hash(PDB_StringTable *strtab, String8 string)
 {
   U32 hash = 0;
   switch (strtab->version) {
@@ -732,8 +706,7 @@ pdb_strtab_hash(PDB_StringTable *strtab, String8 string)
   return ibucket;
 }
 
-internal B32
-pdb_strtab_add_(PDB_StringTable *strtab, U64 hash, PDB_StringTableBucket *bucket)
+B32 pdb_strtab_add_(PDB_StringTable *strtab, U64 hash, PDB_StringTableBucket *bucket)
 {
   U64 best_bucket_idx = hash;
   U64 bucket_idx      = best_bucket_idx;
@@ -749,8 +722,7 @@ pdb_strtab_add_(PDB_StringTable *strtab, U64 hash, PDB_StringTableBucket *bucket
   return 0;
 }
 
-internal void
-pdb_strtab_add_cv_string_hash_table(PDB_StringTable *strtab, CV_StringHashTable string_ht)
+void pdb_strtab_add_cv_string_hash_table(PDB_StringTable *strtab, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
 
@@ -780,8 +752,7 @@ pdb_strtab_add_cv_string_hash_table(PDB_StringTable *strtab, CV_StringHashTable 
   ProfEnd();
 }
 
-internal B32
-pdb_strtab_try_add(PDB_StringTable *strtab, String8 string, PDB_StringIndex *index_out)
+B32 pdb_strtab_try_add(PDB_StringTable *strtab, String8 string, PDB_StringIndex *index_out)
 {
   PDB_StringTableBucket *bucket = push_array(strtab->arena, PDB_StringTableBucket, 1);
   bucket->data                  = push_str8_copy(strtab->arena, string);
@@ -796,8 +767,7 @@ pdb_strtab_try_add(PDB_StringTable *strtab, String8 string, PDB_StringIndex *ind
   return was_added;
 }
 
-internal void
-pdb_strtab_grow(PDB_StringTable *strtab, U64 new_max)
+void pdb_strtab_grow(PDB_StringTable *strtab, U64 new_max)
 {
   ProfBeginFunction();
   
@@ -830,8 +800,7 @@ pdb_strtab_grow(PDB_StringTable *strtab, U64 new_max)
   ProfEnd();
 }
 
-internal PDB_StringIndex
-pdb_strtab_add(PDB_StringTable *strtab, String8 string)
+PDB_StringIndex pdb_strtab_add(PDB_StringTable *strtab, String8 string)
 {
   PDB_StringIndex index = 0;
   B32 is_pushed = pdb_strtab_try_add(strtab, string, &index);
@@ -846,8 +815,7 @@ pdb_strtab_add(PDB_StringTable *strtab, String8 string)
   return index;
 }
 
-internal B32
-pdb_strtab_search(PDB_StringTable *strtab, String8 string, PDB_StringIndex *index_out)
+B32 pdb_strtab_search(PDB_StringTable *strtab, String8 string, PDB_StringIndex *index_out)
 {
   B32 is_found = 0;
   U32 best_ibucket = pdb_strtab_hash(strtab, string);
@@ -869,8 +837,7 @@ pdb_strtab_search(PDB_StringTable *strtab, String8 string, PDB_StringIndex *inde
   return is_found;
 }
 
-internal String8
-pdb_strtab_string_from_offset(PDB_StringTable *strtab, PDB_StringOffset offset)
+String8 pdb_strtab_string_from_offset(PDB_StringTable *strtab, PDB_StringOffset offset)
 {
   String8 string = str8(0,0);
   for (U32 ibucket = 0; ibucket < strtab->bucket_max; ++ibucket) {
@@ -885,8 +852,7 @@ pdb_strtab_string_from_offset(PDB_StringTable *strtab, PDB_StringOffset offset)
   return string;
 }
 
-internal PDB_StringOffset
-pdb_strtab_string_to_offset(PDB_StringTable *strtab, PDB_StringIndex stridx)
+PDB_StringOffset pdb_strtab_string_to_offset(PDB_StringTable *strtab, PDB_StringIndex stridx)
 {
   Assert(stridx < strtab->bucket_max);
   U32 ibucket = strtab->ibucket_array[stridx];
@@ -894,8 +860,7 @@ pdb_strtab_string_to_offset(PDB_StringTable *strtab, PDB_StringIndex stridx)
   return offset;
 }
 
-internal String8
-pdb_string_from_string_table_open_error(PDB_StringTableOpenError err)
+String8 pdb_string_from_string_table_open_error(PDB_StringTableOpenError err)
 {
   String8 result = str8(0,0);
   switch (err) {
@@ -911,8 +876,7 @@ pdb_string_from_string_table_open_error(PDB_StringTableOpenError err)
 
 ////////////////////////////////
 
-internal PDB_OpenTypeServerError
-pdb_type_server_parse_from_data_v80(String8 data, PDB_TypeServerParse *parse)
+PDB_OpenTypeServerError pdb_type_server_parse_from_data_v80(String8 data, PDB_TypeServerParse *parse)
 {
   ProfBeginFunction();
 
@@ -940,8 +904,7 @@ pdb_type_server_parse_from_data_v80(String8 data, PDB_TypeServerParse *parse)
   return error;
 }
 
-internal PDB_OpenTypeServerError
-pdb_type_server_parse_from_data(String8 data, PDB_TypeServerParse *parse_out)
+PDB_OpenTypeServerError pdb_type_server_parse_from_data(String8 data, PDB_TypeServerParse *parse_out)
 {
   PDB_OpenTypeServerError error = PDB_OpenTypeServerError_UNKNOWN;
 
@@ -964,8 +927,7 @@ pdb_type_server_parse_from_data(String8 data, PDB_TypeServerParse *parse_out)
   return error;
 }
 
-internal PDB_TypeServer *
-pdb_type_server_alloc(U64 bucket_cap)
+PDB_TypeServer* pdb_type_server_alloc(U64 bucket_cap)
 {
   ProfBeginFunction();
   AssertAlways(0x1000 <= bucket_cap && bucket_cap <= 0x40000);
@@ -983,8 +945,7 @@ pdb_type_server_alloc(U64 bucket_cap)
   return ts;
 }
 
-internal PDB_TypeServer *
-pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable *strtab)
+PDB_TypeServer* pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable *strtab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1103,8 +1064,7 @@ pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable 
   return ts;
 }
 
-internal PDB_TypeServer *
-pdb_type_server_open(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable *strtab)
+PDB_TypeServer* pdb_type_server_open(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable *strtab)
 {
   ProfBeginFunction();
   
@@ -1150,8 +1110,7 @@ THREAD_POOL_TASK_FUNC(pdb_write_type_to_bucket_map_32_task)
   }
 }
 
-internal PDB_TypeHashStreamInfo
-pdb_type_hash_stream_build(TP_Context      *tp,
+PDB_TypeHashStreamInfo pdb_type_hash_stream_build(TP_Context      *tp,
                            PDB_TypeServer  *ts,
                            PDB_StringTable *strtab,
                            MSF_Context     *msf,
@@ -1242,8 +1201,7 @@ THREAD_POOL_TASK_FUNC(pdb_write_types_task)
   ProfEnd();
 }
 
-internal void
-pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
+void pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -1316,8 +1274,7 @@ pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strta
   ProfEnd();
 }
 
-internal void
-pdb_type_server_release(PDB_TypeServer **ts_ptr)
+void pdb_type_server_release(PDB_TypeServer **ts_ptr)
 {
   ProfBeginFunction();
   arena_release((*ts_ptr)->arena);
@@ -1325,8 +1282,7 @@ pdb_type_server_release(PDB_TypeServer **ts_ptr)
   ProfEnd();
 }
 
-internal String8Node *
-pdb_type_server_make_leaf(PDB_TypeServer *ts, CV_LeafKind kind, String8 data)
+String8Node* pdb_type_server_make_leaf(PDB_TypeServer *ts, CV_LeafKind kind, String8 data)
 {
   ProfBeginFunction();
 
@@ -1337,15 +1293,13 @@ pdb_type_server_make_leaf(PDB_TypeServer *ts, CV_LeafKind kind, String8 data)
   return node;
 }
 
-internal U32
-pdb_type_server_hash(String8 data)
+U32 pdb_type_server_hash(String8 data)
 {
   U32 hash = pdb_hash_v1(data);
   return hash;
 }
 
-internal PDB_TypeBucket *
-pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, String8 *raw_leaf_arr)
+PDB_TypeBucket* pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, String8 *raw_leaf_arr)
 {
   // check if type server already contains this leaf and if so move
   // it to the head of bucket list. 
@@ -1409,14 +1363,12 @@ pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, Strin
   return bucket_arr;
 }
 
-internal PDB_TypeBucket *
-pdb_type_server_push_udt(PDB_TypeServer *ts, U32 hash, String8 raw_leaf)
+PDB_TypeBucket* pdb_type_server_push_udt(PDB_TypeServer *ts, U32 hash, String8 raw_leaf)
 {
   return pdb_type_server_push_udt_arr(ts, 1, &hash, &raw_leaf);
 }
 
-internal void
-pdb_type_server_push(PDB_TypeServer *ts, String8 raw_leaf)
+void pdb_type_server_push(PDB_TypeServer *ts, String8 raw_leaf)
 {
   ProfBeginFunction();
 
@@ -1484,8 +1436,7 @@ THREAD_POOL_TASK_FUNC(pdb_push_udt_leaf_task)
   }
 }
 
-internal void
-pdb_type_server_push_parallel(TP_Context *tp, PDB_TypeServer *type_server, CV_DebugT debug_t)
+void pdb_type_server_push_parallel(TP_Context *tp, PDB_TypeServer *type_server, CV_DebugT debug_t)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1517,8 +1468,7 @@ pdb_type_server_push_parallel(TP_Context *tp, PDB_TypeServer *type_server, CV_De
 }
 
 #if 0
-internal CV_LeafNode *
-pdb_type_server_leaf_from_string(PDB_TypeServer *ts, String8 string)
+CV_LeafNode* pdb_type_server_leaf_from_string(PDB_TypeServer *ts, String8 string)
 {
   ProfBeginFunction();
   U32 hash = pdb_hash_v1(string);
@@ -1541,8 +1491,7 @@ pdb_type_server_leaf_from_string(PDB_TypeServer *ts, String8 string)
 ////////////////////////////////
 
 #if 0
-internal PDB_TypeIndexMap *
-pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf_list)
+PDB_TypeIndexMap* pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1647,8 +1596,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
 
 ////////////////////////////////
 
-internal PDB_InfoContext *
-pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid)
+PDB_InfoContext* pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -1665,8 +1613,7 @@ pdb_info_alloc(U32 age, COFF_TimeStamp time_stamp, Guid guid)
   return info;
 }
 
-internal void
-pdb_info_parse_from_data(String8 data, PDB_InfoParse *parse_out)
+void pdb_info_parse_from_data(String8 data, PDB_InfoParse *parse_out)
 {
   PDB_InfoVersion version = 0;
   str8_deserial_read_struct(data, 0, &version);
@@ -1700,8 +1647,7 @@ pdb_info_parse_from_data(String8 data, PDB_InfoParse *parse_out)
   }
 }
 
-internal PDB_InfoContext *
-pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
+PDB_InfoContext* pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -1780,8 +1726,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
   return info;
 }
 
-internal void
-pdb_info_build_src_header_block(PDB_InfoContext *info, MSF_Context *msf)
+void pdb_info_build_src_header_block(PDB_InfoContext *info, MSF_Context *msf)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -1818,8 +1763,7 @@ pdb_info_build_src_header_block(PDB_InfoContext *info, MSF_Context *msf)
   scratch_end(scratch);
 }
 
-internal void
-pdb_info_build_link_info(PDB_InfoContext *info, MSF_Context *msf)
+void pdb_info_build_link_info(PDB_InfoContext *info, MSF_Context *msf)
 {
   MSF_StreamNumber linkinfo_sn = pdb_find_named_stream(&info->named_stream_ht, PDB_LINK_INFO_STREAM_NAME);
   if (linkinfo_sn == MSF_INVALID_STREAM_NUMBER) {
@@ -1828,8 +1772,7 @@ pdb_info_build_link_info(PDB_InfoContext *info, MSF_Context *msf)
   // TODO: populate LINKINFO
 }
 
-internal void
-pdb_info_build_names(PDB_InfoContext *info, MSF_Context *msf)
+void pdb_info_build_names(PDB_InfoContext *info, MSF_Context *msf)
 {
   MSF_StreamNumber strtab_sn = pdb_find_named_stream(&info->named_stream_ht, PDB_NAMES_STREAM_NAME);
   if (strtab_sn == MSF_INVALID_STREAM_NUMBER) {
@@ -1838,8 +1781,7 @@ pdb_info_build_names(PDB_InfoContext *info, MSF_Context *msf)
   pdb_strtab_build(&info->strtab, msf, strtab_sn);
 }
 
-internal void
-pdb_info_build(PDB_InfoContext *info, MSF_Context *msf, MSF_StreamNumber sn)
+void pdb_info_build(PDB_InfoContext *info, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -1883,8 +1825,7 @@ pdb_info_build(PDB_InfoContext *info, MSF_Context *msf, MSF_StreamNumber sn)
   ProfEnd();
 }
 
-internal void
-pdb_info_release(PDB_InfoContext **info_ptr)
+void pdb_info_release(PDB_InfoContext **info_ptr)
 {
   ProfBeginFunction();
   arena_release((*info_ptr)->arena);
@@ -1892,8 +1833,7 @@ pdb_info_release(PDB_InfoContext **info_ptr)
   ProfEnd();
 }
 
-internal MSF_StreamNumber
-pdb_push_named_stream(PDB_HashTable *named_stream_ht, MSF_Context *msf, String8 name)
+MSF_StreamNumber pdb_push_named_stream(PDB_HashTable *named_stream_ht, MSF_Context *msf, String8 name)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -1906,8 +1846,7 @@ pdb_push_named_stream(PDB_HashTable *named_stream_ht, MSF_Context *msf, String8 
   return sn;
 }
 
-internal MSF_StreamNumber
-pdb_find_named_stream(PDB_HashTable *named_stream_ht, String8 name)
+MSF_StreamNumber pdb_find_named_stream(PDB_HashTable *named_stream_ht, String8 name)
 {
   ProfBeginFunction();
   MSF_StreamNumber result = MSF_INVALID_STREAM_NUMBER;
@@ -1920,8 +1859,7 @@ pdb_find_named_stream(PDB_HashTable *named_stream_ht, String8 name)
   return result;
 }
 
-internal PDB_SrcError
-pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 file_path, String8 file_data, PDB_SrcCompType comp)
+PDB_SrcError pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 file_path, String8 file_data, PDB_SrcCompType comp)
 {
   Temp scratch = scratch_begin(0,0);
   PDB_SrcError error_status = PDB_SrcError_UNKNOWN;
@@ -1999,8 +1937,7 @@ pdb_add_src(PDB_InfoContext *info, MSF_Context *msf, String8 file_path, String8 
 
 ////////////////////////////////
 
-internal PDB_GsiContext *
-gsi_alloc(void)
+PDB_GsiContext* gsi_alloc(void)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -2014,8 +1951,7 @@ gsi_alloc(void)
   return gsi;
 }
 
-internal PDB_GsiContext *
-gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
+PDB_GsiContext* gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
 {
   ProfBeginFunction();
   
@@ -2121,8 +2057,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
   return gsi;
 }
 
-internal void
-gsi_release(PDB_GsiContext **gsi_ptr)
+void gsi_release(PDB_GsiContext **gsi_ptr)
 {
   ProfBeginFunction();
   arena_release((*gsi_ptr)->arena);
@@ -2130,8 +2065,7 @@ gsi_release(PDB_GsiContext **gsi_ptr)
   ProfEnd();
 }
 
-internal void
-gsi_write_build_result(TP_Context         *tp,
+void gsi_write_build_result(TP_Context         *tp,
                        PDB_GsiBuildResult  build,
                        MSF_Context        *msf,
                        MSF_StreamNumber    gsi_sn,
@@ -2175,8 +2109,7 @@ gsi_write_build_result(TP_Context         *tp,
   ProfEnd();
 }
 
-internal int
-gsi_hash_record_compar_is_before(void *raw_a, void *raw_b)
+int gsi_hash_record_compar_is_before(void *raw_a, void *raw_b)
 {
   PDB_GsiSortRecord *a = raw_a;
   PDB_GsiSortRecord *b = raw_b;
@@ -2195,8 +2128,7 @@ gsi_hash_record_compar_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal int
-psi_addr_map_compar_is_before(void *raw_a, void *raw_b)
+int psi_addr_map_compar_is_before(void *raw_a, void *raw_b)
 {
   PDB_GsiSortRecord *a = raw_a;
   PDB_GsiSortRecord *b = raw_b;
@@ -2213,16 +2145,14 @@ psi_addr_map_compar_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal void
-gsi_record_sort_by_name(PDB_GsiSortRecord *arr, U64 count)
+void gsi_record_sort_by_name(PDB_GsiSortRecord *arr, U64 count)
 {
   ProfBeginFunction();
   radsort(arr, count, gsi_hash_record_compar_is_before);
   ProfEnd();
 }
 
-internal void
-gsi_record_sort_by_sc(PDB_GsiSortRecord *arr, U64 count)
+void gsi_record_sort_by_sc(PDB_GsiSortRecord *arr, U64 count)
 {
   ProfBeginFunction();
   radsort(arr, count, psi_addr_map_compar_is_before);
@@ -2324,8 +2254,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_symbols_task)
   gsi_record_sort_by_name(sort_record_arr, bucket_list.count);
 }
 
-internal PDB_GsiBuildResult
-gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 is_pub32, U64 msf_page_size)
+PDB_GsiBuildResult gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_base, B32 is_pub32, U64 msf_page_size)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena,1);
@@ -2421,8 +2350,7 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
   return result;
 }
 
-internal void
-gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn)
+void gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2435,15 +2363,13 @@ gsi_build(TP_Context *tp, PDB_GsiContext *gsi, MSF_Context *msf, MSF_StreamNumbe
   ProfEnd();
 }
 
-internal U32
-gsi_hash(PDB_GsiContext *gsi, String8 input)
+U32 gsi_hash(PDB_GsiContext *gsi, String8 input)
 { (void)gsi;
   U32 hash = pdb_hash_v1(input);
   return hash;
 }
 
-internal void
-gsi_push_(PDB_GsiContext *gsi, U32 hash, CV_SymbolNode *node)
+void gsi_push_(PDB_GsiContext *gsi, U32 hash, CV_SymbolNode *node)
 {
   U64 bucket_idx = hash % gsi->bucket_count;
   CV_SymbolList *list = &gsi->bucket_arr[bucket_idx];
@@ -2451,8 +2377,7 @@ gsi_push_(PDB_GsiContext *gsi, U32 hash, CV_SymbolNode *node)
   gsi->symbol_count += 1;
 }
 
-internal CV_SymbolNode *
-gsi_push(PDB_GsiContext *gsi, CV_Symbol *symbol)
+CV_SymbolNode* gsi_push(PDB_GsiContext *gsi, CV_Symbol *symbol)
 {
   String8 name = cv_name_from_symbol(symbol->kind, symbol->data);
   U32     hash = gsi_hash(gsi, name);
@@ -2481,8 +2406,7 @@ THREAD_POOL_TASK_FUNC(gsi_symbol_hasher_task)
   ProfEnd();
 }
 
-internal void
-gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode **symbols)
+void gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode **symbols)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -2504,8 +2428,7 @@ gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode 
   ProfEnd();
 }
 
-internal void
-gsi_push_many_list(PDB_GsiContext *gsi, U64 count, U32 *hash_arr, CV_SymbolList *list)
+void gsi_push_many_list(PDB_GsiContext *gsi, U64 count, U32 *hash_arr, CV_SymbolList *list)
 {
   Assert(count == list->count);
 
@@ -2522,8 +2445,7 @@ gsi_push_many_list(PDB_GsiContext *gsi, U64 count, U32 *hash_arr, CV_SymbolList 
   MemoryZeroStruct(list);
 }
 
-internal CV_SymbolNode *
-gsi_search(PDB_GsiContext *gsi, CV_Symbol *symbol)
+CV_SymbolNode* gsi_search(PDB_GsiContext *gsi, CV_Symbol *symbol)
 {
   String8 name    = cv_name_from_symbol(symbol->kind, symbol->data);
   U32     hash    = gsi_hash(gsi, name);
@@ -2542,8 +2464,7 @@ gsi_search(PDB_GsiContext *gsi, CV_Symbol *symbol)
 
 ////////////////////////////////
 
-internal PDB_PsiContext *
-psi_alloc(void)
+PDB_PsiContext* psi_alloc(void)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -2554,8 +2475,7 @@ psi_alloc(void)
   return psi;
 }
 
-internal PDB_PsiContext *
-psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
+PDB_PsiContext* psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
 {
   ProfBeginFunction();
   
@@ -2574,8 +2494,7 @@ psi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
   return psi;
 }
 
-internal void
-psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn)
+void psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumber sn, MSF_StreamNumber symbols_sn)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2620,8 +2539,7 @@ psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumbe
   ProfEnd();
 }
 
-internal void
-psi_release(PDB_PsiContext **psi_ptr)
+void psi_release(PDB_PsiContext **psi_ptr)
 {
   ProfBeginFunction();
   gsi_release(&(*psi_ptr)->gsi);
@@ -2630,8 +2548,7 @@ psi_release(PDB_PsiContext **psi_ptr)
   ProfEnd();
 }
 
-internal CV_SymbolNode *
-psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, U16 isect, String8 name)
+CV_SymbolNode* psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, U16 isect, String8 name)
 {
   CV_Symbol pub = cv_make_pub32(psi->arena, flags, offset, isect, name);
   CV_SymbolNode *node = gsi_push(psi->gsi, &pub);
@@ -2640,16 +2557,14 @@ psi_push(PDB_PsiContext *psi, CV_Pub32Flags flags, U32 offset, U16 isect, String
 
 ////////////////////////////////
 
-internal void
-dbi_sec_contrib_list_push_node(PDB_DbiSectionContribList *list, PDB_DbiSectionContribNode *node)
+void dbi_sec_contrib_list_push_node(PDB_DbiSectionContribList *list, PDB_DbiSectionContribNode *node)
 {
   node->next = 0;
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
 }
 
-internal PDB_DbiSectionContribNode *
-dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
+PDB_DbiSectionContribNode* dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
 {
   PDB_DbiSectionContribNode *node = push_array_no_zero(arena, PDB_DbiSectionContribNode, 1);
   node->next = 0;
@@ -2657,14 +2572,12 @@ dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
   return node;
 }
 
-internal void
-dbi_sec_list_concat_arr(PDB_DbiSectionContribList *list, U64 count, PDB_DbiSectionContribList *to_concat)
+void dbi_sec_list_concat_arr(PDB_DbiSectionContribList *list, U64 count, PDB_DbiSectionContribList *to_concat)
 {
   SLLConcatInPlaceArray(list, to_concat, count);
 }
 
-internal PDB_DbiContext *
-dbi_alloc(COFF_MachineType machine, U32 age)
+PDB_DbiContext* dbi_alloc(COFF_MachineType machine, U32 age)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -2683,8 +2596,7 @@ dbi_alloc(COFF_MachineType machine, U32 age)
   return dbi;
 }
 
-internal String8List *
-dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+String8List* dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2740,8 +2652,7 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
   return file_info;
 }
 
-internal PDB_DbiModuleList
-dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info)
+PDB_DbiModuleList dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header, String8List *file_info)
 {
   ProfBeginFunction();
   
@@ -2783,8 +2694,7 @@ dbi_open_module_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
   return list;
 }
 
-internal PDB_DbiSectionContribList
-dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+PDB_DbiSectionContribList dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   
@@ -2831,8 +2741,7 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
   return sec_contrib;
 }
 
-internal PDB_StringTable
-dbi_open_ec_names(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+PDB_StringTable dbi_open_ec_names(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   PDB_StringTable ec_names = {0};
@@ -2850,8 +2759,7 @@ dbi_open_ec_names(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHe
   return ec_names;
 }
 
-internal void
-dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
+void dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
   Assert(dbi_header->dbg_header_size % sizeof(dbg_streams[0]) == 0); // TODO: error handle
@@ -2867,8 +2775,7 @@ dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_Stream
   ProfEnd();
 }
 
-internal PDB_DbiSectionList
-dbi_open_section_headers(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
+PDB_DbiSectionList dbi_open_section_headers(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   PDB_DbiSectionList sec_list = {0};
@@ -2884,8 +2791,7 @@ dbi_open_section_headers(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
   return sec_list;
 }
 
-internal PDB_DbiContext *
-dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
+PDB_DbiContext* dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   
@@ -2927,8 +2833,7 @@ dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
 
 }
 
-internal void
-dbi_build_section_header_stream(PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber sn)
+void dbi_build_section_header_stream(PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber sn)
 {
   ProfBeginFunction();
   
@@ -2971,8 +2876,7 @@ THREAD_POOL_TASK_FUNC(dbi_build_file_info_assign_file_offsets_task)
   ProfEnd();
 }
 
-internal String8List
-dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV_StringHashTable string_ht)
+String8List dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3029,8 +2933,7 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
   return file_info_srl;
 }
 
-internal String8List
-dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
+String8List dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
 {
   ProfBeginFunction();
 
@@ -3097,8 +3000,7 @@ dbi_sc_compar(const PDB_DbiSectionContrib *a, const PDB_DbiSectionContrib *b)
 }
 #endif
 
-internal void
-lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_count)
+void lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_count)
 {
   ProfBeginFunction();
 
@@ -3229,8 +3131,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   ProfEnd();
 }
 
-internal String8List
-dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
+String8List dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
 {
   ProfBeginFunction();
 
@@ -3260,8 +3161,7 @@ dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
   return sec_con_list;
 }
 
-internal String8List
-dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
+String8List dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
 {
   ProfBeginFunction();
 
@@ -3313,8 +3213,7 @@ dbi_build_sec_map(Arena *arena, PDB_DbiContext *dbi)
   return sec_map_list;
 }
 
-internal String8List
-dbi_build_dbg_header(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
+String8List dbi_build_dbg_header(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
 {
   ProfBeginFunction();
   if (dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER] == MSF_INVALID_STREAM_NUMBER) {
@@ -3330,8 +3229,7 @@ dbi_build_dbg_header(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
   return dbg_header_srl;
 }
 
-internal void
-dbi_build(TP_Context *tp, PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber dbi_sn, CV_StringHashTable string_ht)
+void dbi_build(TP_Context *tp, PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumber dbi_sn, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -3392,8 +3290,7 @@ dbi_build(TP_Context *tp, PDB_DbiContext *dbi, MSF_Context *msf, MSF_StreamNumbe
   scratch_end(scratch);
 }
 
-internal void
-dbi_release(PDB_DbiContext **dbi_ptr)
+void dbi_release(PDB_DbiContext **dbi_ptr)
 {
   ProfBeginFunction();
   arena_release((*dbi_ptr)->arena);
@@ -3401,8 +3298,7 @@ dbi_release(PDB_DbiContext **dbi_ptr)
   ProfEnd();
 }
 
-internal PDB_DbiModule *
-dbi_push_module(PDB_DbiContext *dbi, String8 obj_path, String8 lib_path)
+PDB_DbiModule* dbi_push_module(PDB_DbiContext *dbi, String8 obj_path, String8 lib_path)
 {
   // init module
   PDB_DbiModule *mod = push_array(dbi->arena, PDB_DbiModule, 1);
@@ -3418,8 +3314,7 @@ dbi_push_module(PDB_DbiContext *dbi, String8 obj_path, String8 lib_path)
   return mod;
 }
 
-internal void
-dbi_module_push_section_contrib(PDB_DbiContext *dbi,
+void dbi_module_push_section_contrib(PDB_DbiContext *dbi,
                                 PDB_DbiModule *mod, 
                                 ISectOff isect_off,
                                 U32 size,  
@@ -3452,8 +3347,7 @@ dbi_module_push_section_contrib(PDB_DbiContext *dbi,
   ProfEnd();
 }
 
-internal String8
-dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+String8 dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 symbol_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3465,8 +3359,7 @@ dbi_module_read_symbol_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
   return symbol_data;
 }
 
-internal String8
-dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+String8 dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 c11_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3479,8 +3372,7 @@ dbi_module_read_c11_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
   return c11_data;
 }
 
-internal String8
-dbi_module_read_c13_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
+String8 dbi_module_read_c13_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
 {
   String8 c13_data = str8(0,0);
   if (mod->sn != MSF_INVALID_STREAM_NUMBER) {
@@ -3493,8 +3385,7 @@ dbi_module_read_c13_data(Arena *arena, MSF_Context *msf, PDB_DbiModule *mod)
   return c13_data;
 }
 
-internal void
-dbi_push_section(PDB_DbiContext *dbi, COFF_SectionHeader *hdr)
+void dbi_push_section(PDB_DbiContext *dbi, COFF_SectionHeader *hdr)
 {
   ProfBeginFunction();
   
@@ -3509,8 +3400,7 @@ dbi_push_section(PDB_DbiContext *dbi, COFF_SectionHeader *hdr)
 
 ////////////////////////////////
 
-internal MSF_Context *
-pdb_alloc_msf(U64 page_size)
+MSF_Context* pdb_alloc_msf(U64 page_size)
 {
   ProfBeginFunction();
   MSF_Context *msf = msf_alloc(page_size, MSF_DEFAULT_FPM);
@@ -3528,8 +3418,7 @@ pdb_alloc_msf(U64 page_size)
   return msf;
 }
 
-internal PDB_Context *
-pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid)
+PDB_Context* pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U32 age, Guid guid)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -3548,8 +3437,7 @@ pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U3
   return pdb;
 }
 
-internal PDB_Context *
-pdb_open(String8 data)
+PDB_Context* pdb_open(String8 data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -3584,8 +3472,7 @@ pdb_open(String8 data)
   return pdb;
 }
 
-internal void
-pdb_release(PDB_Context **pdb_ptr)
+void pdb_release(PDB_Context **pdb_ptr)
 {
   ProfBeginFunction();
   PDB_Context *pdb = *pdb_ptr;
@@ -3600,57 +3487,48 @@ pdb_release(PDB_Context **pdb_ptr)
   ProfEnd();
 }
 
-internal void
-pdb_set_machine(PDB_Context *pdb, COFF_MachineType machine)
+void pdb_set_machine(PDB_Context *pdb, COFF_MachineType machine)
 {
   pdb->dbi->machine = machine;
 }
 
-internal void
-pdb_set_guid(PDB_Context *pdb, Guid guid)
+void pdb_set_guid(PDB_Context *pdb, Guid guid)
 {
   pdb->info->guid = guid;
 }
 
-internal void
-pdb_set_time_stamp(PDB_Context *pdb, COFF_TimeStamp time_stamp)
+void pdb_set_time_stamp(PDB_Context *pdb, COFF_TimeStamp time_stamp)
 {
   pdb->info->time_stamp = time_stamp;
 }
 
-internal void
-pdb_set_age(PDB_Context *pdb, U32 age)
+void pdb_set_age(PDB_Context *pdb, U32 age)
 {
   pdb->dbi->age = age;
   pdb->info->age = age;
 }
 
-internal COFF_MachineType
-pdb_get_machine(PDB_Context *pdb)
+COFF_MachineType pdb_get_machine(PDB_Context *pdb)
 {
   return pdb->dbi->machine;
 }
 
-internal COFF_TimeStamp
-pdb_get_time_stamp(PDB_Context *pdb)
+COFF_TimeStamp pdb_get_time_stamp(PDB_Context *pdb)
 {
   return pdb->info->time_stamp;
 }
 
-internal U32
-pdb_get_age(PDB_Context *pdb)
+U32 pdb_get_age(PDB_Context *pdb)
 {
   return pdb->info->age;
 }
 
-internal Guid
-pdb_get_guid(PDB_Context *pdb)
+Guid pdb_get_guid(PDB_Context *pdb)
 {
   return pdb->info->guid;
 }
 
-internal void
-pdb_build(TP_Context *tp, TP_Arena *pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht)
+void pdb_build(TP_Context *tp, TP_Arena *pool_temp, PDB_Context *pdb, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
   
@@ -3685,8 +3563,7 @@ pdb_build(TP_Context *tp, TP_Arena *pool_temp, PDB_Context *pdb, CV_StringHashTa
 
 ////////////////////////////////
 
-internal String8
-pdb_string_from_src_error(PDB_SrcError error)
+String8 pdb_string_from_src_error(PDB_SrcError error)
 {
   switch (error) {
   case PDB_SrcError_OK:                      return str8_lit("OK");
@@ -3699,8 +3576,7 @@ pdb_string_from_src_error(PDB_SrcError error)
   return str8(0,0);
 }
 
-internal String8
-pdb_string_from_open_type_server_error(PDB_OpenTypeServerError error)
+String8 pdb_string_from_open_type_server_error(PDB_OpenTypeServerError error)
 {
   switch (error) {
   case PDB_OpenTypeServerError_OK:                    return str8_lit("OK");

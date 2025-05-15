@@ -18,8 +18,7 @@ lnk_export_ordinal_compar(const void *a_, const void *b_)
   return cmp;
 }
 
-internal LNK_ExportTable *
-lnk_export_table_alloc(void)
+LNK_ExportTable* lnk_export_table_alloc(void)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
@@ -36,8 +35,7 @@ lnk_export_table_alloc(void)
   return exptab;
 }
 
-internal void
-lnk_export_table_release(LNK_ExportTable **exptab_ptr)
+void lnk_export_table_release(LNK_ExportTable **exptab_ptr)
 {
   ProfBeginFunction();
   arena_release((*exptab_ptr)->arena);
@@ -45,8 +43,7 @@ lnk_export_table_release(LNK_ExportTable **exptab_ptr)
   ProfEnd();
 }
 
-internal LNK_Export *
-lnk_export_table_search(LNK_ExportTable *exptab, String8 name)
+LNK_Export* lnk_export_table_search(LNK_ExportTable *exptab, String8 name)
 {
   KeyValuePair *kv = hash_table_search_string(exptab->name_export_ht, name);
   if (kv) {
@@ -55,8 +52,7 @@ lnk_export_table_search(LNK_ExportTable *exptab, String8 name)
   return 0;
 }
 
-internal LNK_Export *
-lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, LNK_ExportParse *exp_parse)
+LNK_Export* lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, LNK_ExportParse *exp_parse)
 {
   LNK_Export *exp = 0;
   
@@ -156,8 +152,7 @@ lnk_export_table_push_export(LNK_ExportTable *exptab, LNK_SymbolTable *symtab, L
   return exp;
 }
 
-internal LNK_ExportArray
-lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
+LNK_ExportArray lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
 {
   ProfBeginFunction();
   LNK_ExportArray arr;
@@ -170,8 +165,7 @@ lnk_export_array_from_list(Arena *arena, LNK_ExportList list)
   return arr;
 }
 
-internal void
-lnk_build_edata(LNK_ExportTable *exptab, LNK_SectionTable *sectab, LNK_SymbolTable *symtab, String8 image_name, COFF_MachineType machine)
+void lnk_build_edata(LNK_ExportTable *exptab, LNK_SectionTable *sectab, LNK_SymbolTable *symtab, String8 image_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -287,8 +281,7 @@ exit:;
   ProfEnd();
 }
 
-internal void
-lnk_collect_exports_from_obj_directives(LNK_ExportTable *exptab, LNK_ObjList obj_list, LNK_SymbolTable *symtab)
+void lnk_collect_exports_from_obj_directives(LNK_ExportTable *exptab, LNK_ObjList obj_list, LNK_SymbolTable *symtab)
 {
   ProfBeginFunction();
   for (LNK_ObjNode *obj_node = obj_list.first; obj_node != 0; obj_node = obj_node->next) {

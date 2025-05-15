@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal D2R_User2Convert *
-d2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline)
+D2R_User2Convert* d2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline)
 {
   D2R_User2Convert *result = push_array(arena, D2R_User2Convert, 1);
 
@@ -68,8 +67,7 @@ d2r_user2convert_from_cmdln(Arena *arena, CmdLine *cmdline)
   return result;
 }
 
-internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code_x64(U64 reg_code)
+RDI_RegCode d2r_rdi_reg_from_dw_reg_code_x64(U64 reg_code)
 {
   switch (reg_code) {
 #define X(reg_name_dw, reg_code_dw, reg_name_rdi, reg_pos, reg_size) case DW_RegX64_##reg_name_dw: return RDI_RegCodeX64_##reg_name_rdi;
@@ -80,8 +78,7 @@ d2r_rdi_reg_from_dw_reg_code_x64(U64 reg_code)
   return 0;
 }
 
-internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code_x86(U64 reg_code)
+RDI_RegCode d2r_rdi_reg_from_dw_reg_code_x86(U64 reg_code)
 {
   switch (reg_code) {
 #define X(reg_name_dw, reg_code_dw, reg_name_rdi, reg_pos, reg_size) case DW_RegX86_##reg_name_dw: return RDI_RegCodeX86_##reg_name_rdi;
@@ -92,8 +89,7 @@ d2r_rdi_reg_from_dw_reg_code_x86(U64 reg_code)
   return 0;
 }
 
-internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code(RDI_Arch arch, U64 reg_code)
+RDI_RegCode d2r_rdi_reg_from_dw_reg_code(RDI_Arch arch, U64 reg_code)
 {
   switch (arch) {
   case RDI_Arch_NULL: return 0;
@@ -104,15 +100,13 @@ d2r_rdi_reg_from_dw_reg_code(RDI_Arch arch, U64 reg_code)
   return 0;
 }
 
-internal RDIM_Type *
-d2r_create_type(Arena *arena, D2R_TypeTable *type_table)
+RDIM_Type* d2r_create_type(Arena *arena, D2R_TypeTable *type_table)
 {
   RDIM_Type *type = rdim_type_chunk_list_push(arena, type_table->types, type_table->type_chunk_cap);
   return type;
 }
 
-internal RDIM_Type *
-d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64 info_off)
+RDIM_Type* d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64 info_off)
 {
   RDIM_Type *type = 0;
   KeyValuePair *is_type_present = hash_table_search_u64(type_table->ht, info_off);
@@ -125,8 +119,7 @@ d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64
   return type;
 }
 
-internal RDIM_Type *
-d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_Tag tag, DW_AttribKind kind)
+RDIM_Type* d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_Tag tag, DW_AttribKind kind)
 {
   RDIM_Type *type = 0;
 
@@ -156,8 +149,7 @@ d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, D
   return type;
 }
 
-internal Rng1U64List
-d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, DW_Tag tag)
+Rng1U64List d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, DW_Tag tag)
 {
   // collect non-contiguous range
   Rng1U64List ranges = dw_rnglist_from_attrib(arena, input, cu, tag, DW_Attrib_Ranges);
@@ -192,7 +184,7 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
   return ranges;
 }
 
-internal RDIM_Type **
+RDIM_Type* *
 d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_TagNode *cur_node, U64 *param_count_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -226,8 +218,7 @@ d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input
 }
 
 
-internal RDIM_EvalBytecode
-d2r_bytecode_from_expression(Arena *arena, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, String8 expr)
+RDIM_EvalBytecode d2r_bytecode_from_expression(Arena *arena, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, String8 expr)
 {
   RDIM_EvalBytecode bc = {0};
 
@@ -626,8 +617,7 @@ d2r_bytecode_from_expression(Arena *arena, U64 image_base, U64 address_size, RDI
   return bc;
 }
 
-internal RDIM_Location *
-d2r_transpile_expression(Arena *arena, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, String8 expr)
+RDIM_Location* d2r_transpile_expression(Arena *arena, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, String8 expr)
 {
   RDIM_Location *loc = 0;
   if (expr.size) {
@@ -638,8 +628,7 @@ d2r_transpile_expression(Arena *arena, U64 image_base, U64 address_size, RDI_Arc
   return loc;
 }
 
-internal RDIM_LocationSet
-d2r_convert_loclist(Arena *arena, RDIM_ScopeChunkList *scopes, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, DW_LocList loclist)
+RDIM_LocationSet d2r_convert_loclist(Arena *arena, RDIM_ScopeChunkList *scopes, U64 image_base, U64 address_size, RDI_Arch arch, DW_ListUnit *addr_lu, DW_LocList loclist)
 {
   RDIM_LocationSet locset = {0};
   for (DW_LocNode *loc_n = loclist.first; loc_n != 0; loc_n = loc_n->next) {
@@ -650,8 +639,7 @@ d2r_convert_loclist(Arena *arena, RDIM_ScopeChunkList *scopes, U64 image_base, U
   return locset;
 }
 
-internal RDIM_LocationSet
-d2r_locset_from_attrib(Arena               *arena,
+RDIM_LocationSet d2r_locset_from_attrib(Arena               *arena,
                        DW_Input            *input,
                        DW_CompUnit         *cu,
                        RDIM_ScopeChunkList *scopes,
@@ -685,8 +673,7 @@ d2r_locset_from_attrib(Arena               *arena,
   return result;
 }
 
-internal D2R_CompUnitContribMap
-d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
+D2R_CompUnitContribMap d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -782,8 +769,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
   return cm;
 }
 
-internal RDIM_Rng1U64List
-d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
+RDIM_Rng1U64List d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
 {
   RDIM_Rng1U64List voff_ranges   = {0};
   U64              voff_list_idx = u64_array_bsearch(map.info_off_arr, map.count, info_off);
@@ -793,8 +779,7 @@ d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
   return voff_ranges;
 }
 
-internal RDIM_Scope *
-d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D2R_TagNode *tag_stack, Rng1U64List ranges)
+RDIM_Scope* d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D2R_TagNode *tag_stack, Rng1U64List ranges)
 {
   // fill out scope
   RDIM_Scope *scope = rdim_scope_chunk_list_push(arena, scopes, scope_chunk_cap);
@@ -829,8 +814,7 @@ d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D
   return scope;
 }
 
-internal RDIM_BakeParams *
-d2r_convert(Arena *arena, D2R_User2Convert *in)
+RDIM_BakeParams* d2r_convert(Arena *arena, D2R_User2Convert *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1888,8 +1872,7 @@ rdim_make_type_indices(RDIM_Arena *arena, RDIM_TypeChunkList *types)
   return type_indices;
 }
 
-internal RDIM_BakeResults
-d2r_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
+RDIM_BakeResults d2r_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
 {
   ////////////////////////////////
   // resolve incomplete types
@@ -1907,15 +1890,13 @@ d2r_bake(RDIM_LocalState *state, RDIM_BakeParams *in_params)
   return rdim_bake(state, in_params);
 }
 
-internal RDIM_SerializedSectionBundle
-d2r_compress(Arena *arena, RDIM_SerializedSectionBundle in)
+RDIM_SerializedSectionBundle d2r_compress(Arena *arena, RDIM_SerializedSectionBundle in)
 {
   RDIM_SerializedSectionBundle result = {0};
   return result;
 }
 
-internal RDI_Language
-rdi_language_from_dw_language(DW_Language v)
+RDI_Language rdi_language_from_dw_language(DW_Language v)
 {
   RDI_Language result = RDI_Language_NULL;
   switch (v) {
@@ -1940,8 +1921,7 @@ rdi_language_from_dw_language(DW_Language v)
   return result;
 }
 
-internal RDI_RegCodeX86
-rdi_reg_from_dw_reg_x86(DW_RegX86 v)
+RDI_RegCodeX86 rdi_reg_from_dw_reg_x86(DW_RegX86 v)
 {
   RDI_RegCodeX86 result = RDI_RegCode_nil;
   switch (v) {
@@ -1953,8 +1933,7 @@ rdi_reg_from_dw_reg_x86(DW_RegX86 v)
   return result;
 }
 
-internal B32
-rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64 *size_out)
+B32 rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64 *size_out)
 {
   RDI_RegCodeX64 result = RDI_RegCode_nil;
   switch (v) {
@@ -1966,8 +1945,7 @@ rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64
   return result;
 }
 
-internal B32
-rdi_reg_from_dw_reg(Arch arch, DW_Reg v, RDI_RegCode *code_out, U64 *off_out, U64 *size_out)
+B32 rdi_reg_from_dw_reg(Arch arch, DW_Reg v, RDI_RegCode *code_out, U64 *off_out, U64 *size_out)
 {
   RDI_RegCode result = RDI_RegCode_nil;
   switch (arch) {

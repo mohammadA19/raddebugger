@@ -29,8 +29,7 @@ global FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vt
 
 //- rjf: handle conversion functions
 
-internal FP_DWrite_Font
-fp_dwrite_font_from_handle(FP_Handle handle)
+FP_DWrite_Font fp_dwrite_font_from_handle(FP_Handle handle)
 {
   FP_DWrite_Font result = {0};
   result.file = (IDWriteFontFile *)handle.u64[0];
@@ -38,8 +37,7 @@ fp_dwrite_font_from_handle(FP_Handle handle)
   return result;
 }
 
-internal FP_Handle
-fp_dwrite_handle_from_font(FP_DWrite_Font font)
+FP_Handle fp_dwrite_handle_from_font(FP_DWrite_Font font)
 {
   FP_Handle result = {0};
   result.u64[0] = (U64)font.file;
@@ -49,8 +47,7 @@ fp_dwrite_handle_from_font(FP_DWrite_Font font)
 
 //- rjf: file stream allocator
 
-internal FP_DWrite_FontFileStreamNode *
-fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
+FP_DWrite_FontFileStreamNode* fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
 {
   FP_DWrite_FontFileStreamNode *node = 0;
   for(FP_DWrite_FontFileStreamNode *n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
@@ -80,8 +77,7 @@ fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
   return node;
 }
 
-internal void
-fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
+void fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 {
   DLLPushBack(fp_dwrite_state->first_stream_node, fp_dwrite_state->last_stream_node, node);
   SLLStackPush(fp_dwrite_state->free_stream_node, node);
@@ -89,21 +85,18 @@ fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 
 //- rjf: iunknown no-op helpers
 
-internal HRESULT
-fp_dwrite_iunknown_noop__query_interface(void *obj, REFIID riid, void *ptr_to_object)
+HRESULT fp_dwrite_iunknown_noop__query_interface(void *obj, REFIID riid, void *ptr_to_object)
 {
   return E_NOINTERFACE;
 }
 
-internal ULONG
-fp_dwrite_iunknown_noop__add_ref(void *obj)
+ULONG fp_dwrite_iunknown_noop__add_ref(void *obj)
 {
   ULONG result = 1;
   return result;
 }
 
-internal ULONG
-fp_dwrite_iunknown_noop__release(void *obj)
+ULONG fp_dwrite_iunknown_noop__release(void *obj)
 {
   ULONG result = 1;
   return result;
@@ -111,8 +104,7 @@ fp_dwrite_iunknown_noop__release(void *obj)
 
 //- rjf: font file loader interface function implementations
 
-internal HRESULT
-fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
+HRESULT fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
 {
   HRESULT result = S_OK;
   String8 *key = *(String8 **)font_file_ref_key;
@@ -123,8 +115,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj
 
 //- rjf: font file stream  interface function implementations
 
-internal HRESULT
-fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
+HRESULT fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
 {
   HRESULT result = S_OK;
   *fragment_start = obj->data->str + file_offset;
@@ -132,23 +123,20 @@ fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *
   return result;
 }
 
-internal HRESULT
-fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream *obj, void *fragment_context)
+HRESULT fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream *obj, void *fragment_context)
 {
   HRESULT result = S_OK;
   return result;
 }
 
-internal HRESULT
-fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out)
+HRESULT fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out)
 {
   HRESULT result = S_OK;
   *size_out = obj->data->size;
   return result;
 }
 
-internal HRESULT
-fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out)
+HRESULT fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out)
 {
   HRESULT result = S_OK;
   *time_out = 0;

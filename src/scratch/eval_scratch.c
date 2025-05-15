@@ -23,8 +23,7 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();
   E_TypeCtx *type_ctx = push_array(arena, E_TypeCtx, 1);

@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_ImportTable *
-lnk_import_table_alloc_static(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine)
+LNK_ImportTable* lnk_import_table_alloc_static(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine)
 {
   ProfBeginFunction();
   
@@ -46,8 +45,7 @@ lnk_import_table_alloc_static(LNK_SectionTable *sectab, LNK_SymbolTable *symtab,
   return imptab;
 }
 
-internal LNK_ImportTable *
-lnk_import_table_alloc_delayed(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable)
+LNK_ImportTable* lnk_import_table_alloc_delayed(LNK_SectionTable *sectab, LNK_SymbolTable *symtab, COFF_MachineType machine, B32 is_unloadable, B32 is_bindable)
 {
   ProfBeginFunction();
   
@@ -116,8 +114,7 @@ lnk_import_table_alloc_delayed(LNK_SectionTable *sectab, LNK_SymbolTable *symtab
   return imptab;
 }
 
-internal void
-lnk_import_table_release(LNK_ImportTable **imptab_ptr)
+void lnk_import_table_release(LNK_ImportTable **imptab_ptr)
 {
   ProfBeginFunction();
   arena_release((*imptab_ptr)->arena);
@@ -125,8 +122,7 @@ lnk_import_table_release(LNK_ImportTable **imptab_ptr)
   ProfEnd();
 }
 
-internal BucketNode *
-lnk_import_table_push_dll_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll)
+BucketNode* lnk_import_table_push_dll_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll)
 {
   // update list
   SLLQueuePush(imptab->first_dll, imptab->last_dll, dll);
@@ -135,8 +131,7 @@ lnk_import_table_push_dll_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll)
   return hash_table_push_path_raw(imptab->arena, imptab->dll_ht, dll->name, dll);
 }
 
-internal BucketNode *
-lnk_import_table_push_func_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll, LNK_ImportFunc *func)
+BucketNode* lnk_import_table_push_func_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll, LNK_ImportFunc *func)
 {
   // update list
   SLLQueuePush(dll->first_func, dll->last_func, func);
@@ -145,8 +140,7 @@ lnk_import_table_push_func_node(LNK_ImportTable *imptab, LNK_ImportDLL *dll, LNK
   return hash_table_push_string_raw(imptab->arena, dll->func_ht, func->name, func);
 }
 
-internal LNK_ImportDLL *
-lnk_import_table_search_dll(LNK_ImportTable *imptab, String8 name)
+LNK_ImportDLL* lnk_import_table_search_dll(LNK_ImportTable *imptab, String8 name)
 {
   KeyValuePair *kv = hash_table_search_path(imptab->dll_ht, name);
   if (kv) {
@@ -156,8 +150,7 @@ lnk_import_table_search_dll(LNK_ImportTable *imptab, String8 name)
   return 0;
 }
 
-internal LNK_ImportFunc *
-lnk_import_table_search_func(LNK_ImportDLL *dll, String8 name)
+LNK_ImportFunc* lnk_import_table_search_func(LNK_ImportDLL *dll, String8 name)
 {
   KeyValuePair *kv = hash_table_search_string(dll->func_ht, name);
   if (kv) {
@@ -167,8 +160,7 @@ lnk_import_table_search_func(LNK_ImportDLL *dll, String8 name)
   return 0;
 }
 
-internal LNK_ImportDLL *
-lnk_import_table_push_dll_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine)
+LNK_ImportDLL* lnk_import_table_push_dll_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
 
@@ -237,8 +229,7 @@ lnk_import_table_push_dll_static(LNK_ImportTable *imptab, LNK_SymbolTable *symta
   return dll;
 }
 
-internal LNK_ImportDLL *
-lnk_import_table_push_dll_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine)
+LNK_ImportDLL* lnk_import_table_push_dll_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, String8 dll_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
 
@@ -390,8 +381,7 @@ lnk_import_table_push_dll_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symt
   return dll;
 }
 
-internal LNK_ImportFunc *
-lnk_import_table_push_func_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header)
+LNK_ImportFunc* lnk_import_table_push_func_static(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header)
 {
   ProfBeginFunction();
   
@@ -491,8 +481,7 @@ lnk_import_table_push_func_static(LNK_ImportTable *imptab, LNK_SymbolTable *symt
   return func;
 }
 
-internal LNK_ImportFunc *
-lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header)
+LNK_ImportFunc* lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *symtab, LNK_ImportDLL *dll, COFF_ParsedArchiveImportHeader *header)
 {
   ProfBeginFunction();
   
@@ -639,8 +628,7 @@ lnk_import_table_push_func_delayed(LNK_ImportTable *imptab, LNK_SymbolTable *sym
   return func;
 }
 
-internal String8
-lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
+String8 lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
 {
   String8 ordinal_data = str8_zero();
   switch (machine) {
@@ -659,8 +647,7 @@ lnk_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
   return ordinal_data;
 }
 
-internal LNK_Chunk *
-lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *addr_ptr)
+LNK_Chunk* lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *addr_ptr)
 {
   ProfBeginFunction();
   
@@ -678,8 +665,7 @@ lnk_emit_indirect_jump_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbo
   return jmp_chunk;
 }
 
-internal LNK_Chunk *
-lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_addr_ptr, LNK_Symbol *tail_merge)
+LNK_Chunk* lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_addr_ptr, LNK_Symbol *tail_merge)
 {
   ProfBeginFunction();
   
@@ -704,8 +690,7 @@ lnk_emit_load_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *imp_ad
   return load_thunk_chunk;
 }
 
-internal LNK_Chunk *
-lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *dll_import_descriptor, LNK_Symbol *delay_load_helper)
+LNK_Chunk* lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *dll_import_descriptor, LNK_Symbol *delay_load_helper)
 {
   ProfBeginFunction();
   
@@ -750,8 +735,7 @@ lnk_emit_tail_merge_thunk_x64(LNK_Section *sect, LNK_Chunk *parent, LNK_Symbol *
   return tail_merge_chunk;
 }
 
-internal LNK_Symbol *
-lnk_emit_load_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
+LNK_Symbol* lnk_emit_load_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
 {
   ProfBeginFunction();
   // emit load thunk symbol
@@ -761,8 +745,7 @@ lnk_emit_load_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 fu
   return load_thunk_symbol;
 }
 
-internal LNK_Symbol *
-lnk_emit_jmp_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
+LNK_Symbol* lnk_emit_jmp_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
 {
   ProfBeginFunction();
   String8     jmp_thunk_name   = push_str8f(symtab->arena->v[0], "%S", func_name);
@@ -771,8 +754,7 @@ lnk_emit_jmp_thunk_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 fun
   return jmp_thunk_symbol;
 }
 
-internal LNK_Symbol *
-lnk_emit_tail_merge_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
+LNK_Symbol* lnk_emit_tail_merge_symbol(LNK_SymbolTable *symtab, LNK_Chunk *chunk, String8 func_name)
 {
   ProfBeginFunction();
   String8     tail_merge_name   = push_str8f(symtab->arena->v[0], "__tailMerge_%S", func_name);

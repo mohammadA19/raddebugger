@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Type Kind Enum Functions
 
-internal E_TypeKind
-e_type_kind_from_base(TypeKind kind)
+E_TypeKind e_type_kind_from_base(TypeKind kind)
 {
   E_TypeKind result = E_TypeKind_Null;
   switch(kind)
@@ -35,8 +34,7 @@ e_type_kind_from_base(TypeKind kind)
   return result;
 }
 
-internal E_TypeKind
-e_type_kind_from_rdi(RDI_TypeKind kind)
+E_TypeKind e_type_kind_from_rdi(RDI_TypeKind kind)
 {
   E_TypeKind result = E_TypeKind_Null;
   switch(kind)
@@ -100,8 +98,7 @@ e_type_kind_from_rdi(RDI_TypeKind kind)
   return result;
 }
 
-internal E_MemberKind
-e_member_kind_from_rdi(RDI_MemberKind kind)
+E_MemberKind e_member_kind_from_rdi(RDI_MemberKind kind)
 {
   E_MemberKind result = E_MemberKind_Null;
   switch(kind)
@@ -120,8 +117,7 @@ e_member_kind_from_rdi(RDI_MemberKind kind)
   return result;
 }
 
-internal RDI_EvalTypeGroup
-e_type_group_from_kind(E_TypeKind kind)
+RDI_EvalTypeGroup e_type_group_from_kind(E_TypeKind kind)
 {
   RDI_EvalTypeGroup result = 0;
   switch(kind)
@@ -164,31 +160,27 @@ e_type_group_from_kind(E_TypeKind kind)
   return result;
 }
 
-internal B32
-e_type_kind_is_integer(E_TypeKind kind)
+B32 e_type_kind_is_integer(E_TypeKind kind)
 {
   B32 result = (E_TypeKind_FirstInteger <= kind && kind <= E_TypeKind_LastInteger);
   return result;
 }
 
-internal B32
-e_type_kind_is_signed(E_TypeKind kind)
+B32 e_type_kind_is_signed(E_TypeKind kind)
 {
   B32 result = ((E_TypeKind_FirstSigned1 <= kind && kind <= E_TypeKind_LastSigned1) ||
                 (E_TypeKind_FirstSigned2 <= kind && kind <= E_TypeKind_LastSigned2));
   return result;
 }
 
-internal B32
-e_type_kind_is_basic_or_enum(E_TypeKind kind)
+B32 e_type_kind_is_basic_or_enum(E_TypeKind kind)
 {
   B32 result = ((E_TypeKind_FirstBasic <= kind && kind <= E_TypeKind_LastBasic) ||
                 kind == E_TypeKind_Enum);
   return result;
 }
 
-internal B32
-e_type_kind_is_pointer_or_ref(E_TypeKind kind)
+B32 e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 {
   B32 result = (kind == E_TypeKind_Ptr || kind == E_TypeKind_LRef || kind == E_TypeKind_RRef);
   return result;
@@ -197,8 +189,7 @@ e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 ////////////////////////////////
 //~ rjf: Member Functions
 
-internal void
-e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
+void e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
 {
   E_MemberNode *n = push_array(arena, E_MemberNode, 1);
   MemoryCopyStruct(&n->v, member);
@@ -206,8 +197,7 @@ e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
   list->count += 1;
 }
 
-internal E_MemberArray
-e_member_array_from_list(Arena *arena, E_MemberList *list)
+E_MemberArray e_member_array_from_list(Arena *arena, E_MemberList *list)
 {
   E_MemberArray array = {0};
   array.count = list->count;
@@ -225,8 +215,7 @@ e_member_array_from_list(Arena *arena, E_MemberList *list)
 ////////////////////////////////
 //~ rjf: Enum Value Functions
 
-internal void
-e_enum_val_list_push(Arena *arena, E_EnumValList *list, E_EnumVal *enum_val)
+void e_enum_val_list_push(Arena *arena, E_EnumValList *list, E_EnumVal *enum_val)
 {
   E_EnumValNode *n = push_array(arena, E_EnumValNode, 1);
   MemoryCopyStruct(&n->v, enum_val);
@@ -234,8 +223,7 @@ e_enum_val_list_push(Arena *arena, E_EnumValList *list, E_EnumVal *enum_val)
   list->count += 1;
 }
 
-internal E_EnumValArray
-e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
+E_EnumValArray e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
 {
   E_EnumValArray array = {0};
   array.count = list->count;
@@ -255,23 +243,20 @@ e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
 
 //- rjf: key constructors
 
-internal E_TypeKey
-e_type_key_zero(void)
+E_TypeKey e_type_key_zero(void)
 {
   E_TypeKey k = zero_struct;
   return k;
 }
 
-internal E_TypeKey
-e_type_key_basic(E_TypeKind kind)
+E_TypeKey e_type_key_basic(E_TypeKind kind)
 {
   E_TypeKey key = {E_TypeKeyKind_Basic};
   key.u32[0] = (U32)kind;
   return key;
 }
 
-internal E_TypeKey
-e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
+E_TypeKey e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
 {
   E_TypeKey key = {E_TypeKeyKind_Ext};
   key.u32[0] = (U32)kind;
@@ -287,8 +272,7 @@ e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
   return key;
 }
 
-internal E_TypeKey
-e_type_key_reg(Arch arch, REGS_RegCode code)
+E_TypeKey e_type_key_reg(Arch arch, REGS_RegCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_Reg};
   key.u32[0] = (U32)arch;
@@ -296,8 +280,7 @@ e_type_key_reg(Arch arch, REGS_RegCode code)
   return key;
 }
 
-internal E_TypeKey
-e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
+E_TypeKey e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_RegAlias};
   key.u32[0] = (U32)arch;
@@ -307,8 +290,7 @@ e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 
 //- rjf: constructed type construction
 
-internal U64
-e_hash_from_cons_type_params(E_ConsTypeParams *params)
+U64 e_hash_from_cons_type_params(E_ConsTypeParams *params)
 {
   U32 buffer[] =
   {
@@ -327,8 +309,7 @@ e_hash_from_cons_type_params(E_ConsTypeParams *params)
   return hash;
 }
 
-internal B32
-e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
+B32 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
 {
   B32 result = (l->kind != E_TypeKind_Lens &&
                 l->kind == r->kind &&
@@ -366,8 +347,7 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
   return result;
 }
 
-internal E_TypeKey
-e_type_key_cons_(E_ConsTypeParams *params)
+E_TypeKey e_type_key_cons_(E_ConsTypeParams *params)
 {
   U64 content_hash = e_hash_from_cons_type_params(params);
   U64 content_slot_idx = content_hash%e_cache->cons_content_slots_count;
@@ -460,43 +440,37 @@ e_type_key_cons_(E_ConsTypeParams *params)
 
 //- rjf: constructed type helpers
 
-internal E_TypeKey
-e_type_key_cons_array(E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
+E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_Array, .direct_key = element_type_key, .count = count, .flags = flags);
   return key;
 }
 
-internal E_TypeKey
-e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
+E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
 {
   E_TypeKey key = e_type_key_cons(.arch = arch, .kind = E_TypeKind_Ptr, .flags = flags, .direct_key = element_type_key, .count = count);
   return key;
 }
 
-internal E_TypeKey
-e_type_key_cons_meta_expr(E_TypeKey type_key, String8 expr)
+E_TypeKey e_type_key_cons_meta_expr(E_TypeKey type_key, String8 expr)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaExpr, .direct_key = type_key, .name = expr);
   return key;
 }
 
-internal E_TypeKey
-e_type_key_cons_meta_display_name(E_TypeKey type_key, String8 name)
+E_TypeKey e_type_key_cons_meta_display_name(E_TypeKey type_key, String8 name)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaDisplayName, .direct_key = type_key, .name = name);
   return key;
 }
 
-internal E_TypeKey
-e_type_key_cons_meta_description(E_TypeKey type_key, String8 desc)
+E_TypeKey e_type_key_cons_meta_description(E_TypeKey type_key, String8 desc)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaDescription, .direct_key = type_key, .name = desc);
   return key;
 }
 
-internal E_TypeKey
-e_type_key_cons_base(Type *type)
+E_TypeKey e_type_key_cons_base(Type *type)
 {
   E_TypeKey result = e_type_key_zero();
   switch(type->kind)
@@ -542,15 +516,13 @@ e_type_key_cons_base(Type *type)
   return result;
 }
 
-internal E_TypeKey
-e_type_key_file(void)
+E_TypeKey e_type_key_file(void)
 {
   E_TypeKey key = e_cache->file_type_key;
   return key;
 }
 
-internal E_TypeKey
-e_type_key_folder(void)
+E_TypeKey e_type_key_folder(void)
 {
   E_TypeKey key = e_cache->folder_type_key;
   return key;
@@ -558,8 +530,7 @@ e_type_key_folder(void)
 
 //- rjf: basic type key functions
 
-internal B32
-e_type_key_match(E_TypeKey l, E_TypeKey r)
+B32 e_type_key_match(E_TypeKey l, E_TypeKey r)
 {
   B32 result = MemoryMatchStruct(&l, &r);
   return result;
@@ -567,8 +538,7 @@ e_type_key_match(E_TypeKey l, E_TypeKey r)
 
 //- rjf: type key -> info extraction
 
-internal U64
-e_hash_from_type(E_Type *type)
+U64 e_hash_from_type(E_Type *type)
 {
   U64 hash = 0;
   if(type != &e_type_nil)
@@ -614,8 +584,7 @@ e_hash_from_type(E_Type *type)
   return hash;
 }
 
-internal E_TypeKind
-e_type_kind_from_key(E_TypeKey key)
+E_TypeKind e_type_kind_from_key(E_TypeKey key)
 {
   E_TypeKind kind = E_TypeKind_Null;
   switch(key.kind)
@@ -630,8 +599,7 @@ e_type_kind_from_key(E_TypeKey key)
   return kind;
 }
 
-internal U64
-e_type_byte_size_from_key(E_TypeKey key)
+U64 e_type_byte_size_from_key(E_TypeKey key)
 {
   ProfBeginFunction();
   U64 result = 0;
@@ -672,8 +640,7 @@ e_type_byte_size_from_key(E_TypeKey key)
   return result;
 }
 
-internal E_Type *
-e_push_type_from_key(Arena *arena, E_TypeKey key)
+E_Type* e_push_type_from_key(Arena *arena, E_TypeKey key)
 {
   ProfBeginFunction();
   E_Type *type = &e_type_nil;
@@ -1246,8 +1213,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
   return type;
 }
 
-internal int
-e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
+int e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
 {
   int result = 0;
   if(a->kind < b->kind)
@@ -1269,8 +1235,7 @@ e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
   return result;
 }
 
-internal E_MemberArray
-e_type_data_members_from_key(Arena *arena, E_TypeKey key)
+E_MemberArray e_type_data_members_from_key(Arena *arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TypeKind root_type_kind = e_type_kind_from_key(key);
@@ -1413,8 +1378,7 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   return members;
 }
 
-internal E_TypeExpandRule *
-e_expand_rule_from_type_key(E_TypeKey key)
+E_TypeExpandRule* e_expand_rule_from_type_key(E_TypeKey key)
 {
   E_TypeExpandRule *rule = &e_type_expand_rule__default;
   {
@@ -1439,8 +1403,7 @@ e_expand_rule_from_type_key(E_TypeKey key)
 
 //- rjf: type key traversal
 
-internal E_TypeKey
-e_type_key_direct(E_TypeKey key)
+E_TypeKey e_type_key_direct(E_TypeKey key)
 {
   E_TypeKey result = zero_struct;
   switch(key.kind)
@@ -1456,8 +1419,7 @@ e_type_key_direct(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
-e_type_key_owner(E_TypeKey key)
+E_TypeKey e_type_key_owner(E_TypeKey key)
 {
   E_TypeKey result = zero_struct;
   switch(key.kind)
@@ -1473,8 +1435,7 @@ e_type_key_owner(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
-e_type_key_promote(E_TypeKey key)
+E_TypeKey e_type_key_promote(E_TypeKey key)
 {
   E_TypeKey result = key;
   E_TypeKind kind = e_type_kind_from_key(key);
@@ -1489,8 +1450,7 @@ e_type_key_promote(E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
-e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags)
+E_TypeKey e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags)
 {
   E_TypeKey result = key;
   E_TypeKind kind = e_type_kind_from_key(result);
@@ -1530,8 +1490,7 @@ e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags)
 
 //- rjf: type comparisons
 
-internal B32
-e_type_match(E_TypeKey l, E_TypeKey r)
+B32 e_type_match(E_TypeKey l, E_TypeKey r)
 {
   // rjf: unpack parameters
   E_TypeKey lu = e_type_key_unwrap(l, E_TypeUnwrapFlag_AllDecorative);
@@ -1644,8 +1603,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
 
 //- rjf: key -> string
 
-internal void
-e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
+void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
 {
   String8 keyword = {0};
   E_TypeKind kind = e_type_kind_from_key(key);
@@ -1798,8 +1756,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
   }
 }
 
-internal void
-e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec)
+void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec)
 {
   E_TypeKind kind = e_type_kind_from_key(key);
   switch(kind)
@@ -1878,8 +1835,7 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
   }
 }
 
-internal String8
-e_type_string_from_key(Arena *arena, E_TypeKey key)
+String8 e_type_string_from_key(Arena *arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -1891,8 +1847,7 @@ e_type_string_from_key(Arena *arena, E_TypeKey key)
   return result;
 }
 
-internal E_TypeKey
-e_default_expansion_type_from_key(E_TypeKey root_key)
+E_TypeKey e_default_expansion_type_from_key(E_TypeKey root_key)
 {
   E_TypeKey type_key = zero_struct;
   B32 hit_1ptr = 0;
@@ -1992,8 +1947,7 @@ e_default_expansion_type_from_key(E_TypeKey root_key)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal E_Type *
-e_type_from_key(E_TypeKey key)
+E_Type* e_type_from_key(E_TypeKey key)
 {
   E_Type *type = &e_type_nil;
   {
@@ -2022,8 +1976,7 @@ e_type_from_key(E_TypeKey key)
 
 //- rjf: member lookups
 
-internal E_MemberCacheNode *
-e_member_cache_node_from_type_key(E_TypeKey key)
+E_MemberCacheNode* e_member_cache_node_from_type_key(E_TypeKey key)
 {
   U64 hash = e_hash_from_string(5381, str8_struct(&key));
   U64 slot_idx = hash%e_cache->member_cache_slots_count;
@@ -2059,8 +2012,7 @@ e_member_cache_node_from_type_key(E_TypeKey key)
   return node;
 }
 
-internal E_MemberArray
-e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
+E_MemberArray e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
 {
   E_MemberArray members = {0};
   E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
@@ -2108,8 +2060,7 @@ e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
   return members;
 }
 
-internal E_MemberArray
-e_type_data_members_from_key__cached(E_TypeKey key)
+E_MemberArray e_type_data_members_from_key__cached(E_TypeKey key)
 {
   E_MemberArray members = {0};
   E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
@@ -2120,8 +2071,7 @@ e_type_data_members_from_key__cached(E_TypeKey key)
   return members;
 }
 
-internal E_Member
-e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
+E_Member e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
 {
   E_Member result = {0};
   E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
@@ -2143,8 +2093,7 @@ e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
 
 //- rjf: enum val lookups
 
-internal E_EnumValCacheNode *
-e_enum_val_cache_node_from_type_key(E_TypeKey key)
+E_EnumValCacheNode* e_enum_val_cache_node_from_type_key(E_TypeKey key)
 {
   U64 hash = e_hash_from_string(5381, str8_struct(&key));
   U64 slot_idx = hash%e_cache->enum_val_cache_slots_count;
@@ -2183,8 +2132,7 @@ e_enum_val_cache_node_from_type_key(E_TypeKey key)
   return node;
 }
 
-internal E_EnumValArray
-e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
+E_EnumValArray e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
 {
   E_EnumValArray enum_vals = {0};
   E_EnumValCacheNode *node = e_enum_val_cache_node_from_type_key(key);
@@ -2241,15 +2189,13 @@ e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
   return enum_vals;
 }
 
-internal E_EnumValArray
-e_type_enum_vals_from_key__cached(E_TypeKey key)
+E_EnumValArray e_type_enum_vals_from_key__cached(E_TypeKey key)
 {
   E_EnumValArray enum_vals = e_type_enum_vals_from_key_filter__cached(key, str8_zero());
   return enum_vals;
 }
 
-internal E_EnumVal
-e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name)
+E_EnumVal e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name)
 {
   E_EnumVal result = {0};
   E_EnumValCacheNode *node = e_enum_val_cache_node_from_type_key(key);
@@ -2544,7 +2490,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(array)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `slice` lens
 
-typedef struct E_SliceIRExt E_SliceIRExt;
 struct E_SliceIRExt
 {
   E_Member *base_ptr_member;
@@ -2552,7 +2497,6 @@ struct E_SliceIRExt
   E_Member *count_member;
 };
 
-typedef struct E_SliceAccel E_SliceAccel;
 struct E_SliceAccel
 {
   Arch arch;
@@ -2708,7 +2652,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(slice)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `folder` type
 
-typedef struct E_FolderAccel E_FolderAccel;
 struct E_FolderAccel
 {
   String8 folder_path;
@@ -2846,7 +2789,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `file` type
 
-typedef struct E_FileAccel E_FileAccel;
 struct E_FileAccel
 {
   String8 file_path;

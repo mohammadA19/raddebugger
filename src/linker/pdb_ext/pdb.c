@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U32
-pdb_hash_udt(CV_UDTInfo udt_info, String8 data)
+U32 pdb_hash_udt(CV_UDTInfo udt_info, String8 data)
 {
   B32 is_fwdref       = !!(udt_info.props & CV_TypeProp_FwdRef);
   B32 is_scoped       = !!(udt_info.props & CV_TypeProp_Scoped);
@@ -26,8 +25,7 @@ pdb_hash_udt(CV_UDTInfo udt_info, String8 data)
   return hash;
 }
 
-internal U32
-pdb_crc32_from_string(String8 string)
+U32 pdb_crc32_from_string(String8 string)
 {
   return ~update_crc32(~0, string.str, string.size);
 }

@@ -4,24 +4,21 @@
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-internal U16
-safe_cast_u16(U32 x)
+U16 safe_cast_u16(U32 x)
 {
   AssertAlways(x <= max_U16);
   U16 result = (U16)x;
   return result;
 }
 
-internal U32
-safe_cast_u32(U64 x)
+U32 safe_cast_u32(U64 x)
 {
   AssertAlways(x <= max_U32);
   U32 result = (U32)x;
   return result;
 }
 
-internal S32
-safe_cast_s32(S64 x)
+S32 safe_cast_s32(S64 x)
 {
   AssertAlways(x <= max_S32);
   S32 result = (S32)x;
@@ -31,22 +28,19 @@ safe_cast_s32(S64 x)
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
 
-internal U128
-u128_zero(void)
+U128 u128_zero(void)
 {
   U128 v = {0};
   return v;
 }
 
-internal U128
-u128_make(U64 v0, U64 v1)
+U128 u128_make(U64 v0, U64 v1)
 {
   U128 v = {v0, v1};
   return v;
 }
 
-internal B32
-u128_match(U128 a, U128 b)
+B32 u128_match(U128 a, U128 b)
 {
   return MemoryMatchStruct(&a, &b);
 }
@@ -54,14 +48,12 @@ u128_match(U128 a, U128 b)
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-internal U32
-u32_from_u64_saturate(U64 x){
+U32 u32_from_u64_saturate(U64 x){
   U32 x32 = (x > max_U32)?max_U32:(U32)x;
   return(x32);
 }
 
-internal U64
-u64_up_to_pow2(U64 x){
+U64 u64_up_to_pow2(U64 x){
   if (x == 0){
     x = 1;
   }
@@ -78,46 +70,40 @@ u64_up_to_pow2(U64 x){
   return(x);
 }
 
-internal S32
-extend_sign32(U32 x, U32 size){
+S32 extend_sign32(U32 x, U32 size){
   U32 high_bit = size * 8;
   U32 shift = 32 - high_bit;
   S32 result = ((S32)x << shift) >> shift;
   return result;
 }
 
-internal S64
-extend_sign64(U64 x, U64 size){
+S64 extend_sign64(U64 x, U64 size){
   U64 high_bit = size * 8;
   U64 shift = 64 - high_bit;
   S64 result = ((S64)x << shift) >> shift;
   return result;
 }
 
-internal F32
-inf32(void){
+F32 inf32(void){
   union { U32 u; F32 f; } x;
   x.u = exponent32;
   return(x.f);
 }
 
-internal F32
-neg_inf32(void){
+F32 neg_inf32(void){
   union { U32 u; F32 f; } x;
   x.u = sign32 | exponent32;
   return(x.f);
 }
 
-internal U16
-bswap_u16(U16 x)
+U16 bswap_u16(U16 x)
 {
   U16 result = (((x & 0xFF00) >> 8) |
                 ((x & 0x00FF) << 8));
   return result;
 }
 
-internal U32
-bswap_u32(U32 x)
+U32 bswap_u32(U32 x)
 {
   U32 result = (((x & 0xFF000000) >> 24) |
                 ((x & 0x00FF0000) >> 8)  |
@@ -126,8 +112,7 @@ bswap_u32(U32 x)
   return result;
 }
 
-internal U64
-bswap_u64(U64 x)
+U64 bswap_u64(U64 x)
 {
   // TODO(nick): naive bswap, replace with something that is faster like an intrinsic
   U64 result = (((x & 0xFF00000000000000ULL) >> 56) |
@@ -143,44 +128,38 @@ bswap_u64(U64 x)
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 
-internal U64
-count_bits_set32(U32 val)
+U64 count_bits_set32(U32 val)
 {
   return __popcnt(val);
 }
 
-internal U64
-count_bits_set64(U64 val)
+U64 count_bits_set64(U64 val)
 {
   return __popcnt64(val);
 }
 
-internal U64
-ctz32(U32 mask)
+U64 ctz32(U32 mask)
 {
   unsigned long idx;
   _BitScanForward(&idx, mask);
   return idx;
 }
 
-internal U64
-ctz64(U64 mask)
+U64 ctz64(U64 mask)
 {
   unsigned long idx;
   _BitScanForward64(&idx, mask);
   return idx;
 }
 
-internal U64
-clz32(U32 mask)
+U64 clz32(U32 mask)
 {
   unsigned long idx;
   _BitScanReverse(&idx, mask);
   return 31 - idx;
 }
 
-internal U64
-clz64(U64 mask)
+U64 clz64(U64 mask)
 {
   unsigned long idx;
   _BitScanReverse64(&idx, mask);
@@ -189,38 +168,32 @@ clz64(U64 mask)
 
 #elif COMPILER_CLANG || COMPILER_GCC
 
-internal U64
-count_bits_set32(U32 val)
+U64 count_bits_set32(U32 val)
 {
   return __builtin_popcount(val);
 }
 
-internal U64
-count_bits_set64(U64 val)
+U64 count_bits_set64(U64 val)
 {
   return __builtin_popcountll(val);
 }
 
-internal U64
-ctz32(U32 val)
+U64 ctz32(U32 val)
 {
   return __builtin_ctz(val);
 }
 
-internal U64
-clz32(U32 val)
+U64 clz32(U32 val)
 {
   return __builtin_clz(val);
 }
 
-internal U64
-ctz64(U64 val)
+U64 ctz64(U64 val)
 {
   return __builtin_ctzll(val);
 }
 
-internal U64
-clz64(U64 val)
+U64 clz64(U64 val)
 {
   return __builtin_clzll(val);
 }
@@ -232,21 +205,18 @@ clz64(U64 val)
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-internal S32
-sign_from_side_S32(Side side){
+S32 sign_from_side_S32(Side side){
   return((side == Side_Min)?-1:1);
 }
 
-internal F32
-sign_from_side_F32(Side side){
+F32 sign_from_side_F32(Side side){
   return((side == Side_Min)?-1.f:1.f);
 }
 
 ////////////////////////////////
 //~ rjf: Memory Functions
 
-internal B32
-memory_is_zero(void *ptr, U64 size){
+B32 memory_is_zero(void *ptr, U64 size){
   B32 result = 1;
   
   // break down size
@@ -284,8 +254,7 @@ memory_is_zero(void *ptr, U64 size){
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
 
-internal TxtPt
-txt_pt(S64 line, S64 column)
+TxtPt txt_pt(S64 line, S64 column)
 {
   TxtPt p = {0};
   p.line = line;
@@ -293,14 +262,12 @@ txt_pt(S64 line, S64 column)
   return p;
 }
 
-internal B32
-txt_pt_match(TxtPt a, TxtPt b)
+B32 txt_pt_match(TxtPt a, TxtPt b)
 {
   return a.line == b.line && a.column == b.column;
 }
 
-internal B32
-txt_pt_less_than(TxtPt a, TxtPt b)
+B32 txt_pt_less_than(TxtPt a, TxtPt b)
 {
   B32 result = 0;
   if(a.line < b.line)
@@ -314,8 +281,7 @@ txt_pt_less_than(TxtPt a, TxtPt b)
   return result;
 }
 
-internal TxtPt
-txt_pt_min(TxtPt a, TxtPt b)
+TxtPt txt_pt_min(TxtPt a, TxtPt b)
 {
   TxtPt result = b;
   if(txt_pt_less_than(a, b))
@@ -325,8 +291,7 @@ txt_pt_min(TxtPt a, TxtPt b)
   return result;
 }
 
-internal TxtPt
-txt_pt_max(TxtPt a, TxtPt b)
+TxtPt txt_pt_max(TxtPt a, TxtPt b)
 {
   TxtPt result = a;
   if(txt_pt_less_than(a, b))
@@ -336,8 +301,7 @@ txt_pt_max(TxtPt a, TxtPt b)
   return result;
 }
 
-internal TxtRng
-txt_rng(TxtPt min, TxtPt max)
+TxtRng txt_rng(TxtPt min, TxtPt max)
 {
   TxtRng range = {0};
   if(txt_pt_less_than(min, max))
@@ -353,8 +317,7 @@ txt_rng(TxtPt min, TxtPt max)
   return range;
 }
 
-internal TxtRng
-txt_rng_intersect(TxtRng a, TxtRng b)
+TxtRng txt_rng_intersect(TxtRng a, TxtRng b)
 {
   TxtRng result = {0};
   result.min = txt_pt_max(a.min, b.min);
@@ -366,8 +329,7 @@ txt_rng_intersect(TxtRng a, TxtRng b)
   return result;
 }
 
-internal TxtRng
-txt_rng_union(TxtRng a, TxtRng b)
+TxtRng txt_rng_union(TxtRng a, TxtRng b)
 {
   TxtRng result = {0};
   result.min = txt_pt_min(a.min, b.min);
@@ -375,8 +337,7 @@ txt_rng_union(TxtRng a, TxtRng b)
   return result;
 }
 
-internal B32
-txt_rng_contains(TxtRng r, TxtPt pt)
+B32 txt_rng_contains(TxtRng r, TxtPt pt)
 {
   B32 result = ((txt_pt_less_than(r.min, pt) || txt_pt_match(r.min, pt)) &&
                 txt_pt_less_than(pt, r.max));
@@ -386,8 +347,7 @@ txt_rng_contains(TxtRng r, TxtPt pt)
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-internal U64
-bit_size_from_arch(Arch arch)
+U64 bit_size_from_arch(Arch arch)
 {
   // TODO(rjf): metacode
   U64 arch_bitsize = 0;
@@ -402,15 +362,13 @@ bit_size_from_arch(Arch arch)
   return arch_bitsize;
 }
 
-internal U64
-max_instruction_size_from_arch(Arch arch)
+U64 max_instruction_size_from_arch(Arch arch)
 {
   // TODO(rjf): make this real
   return 64;
 }
 
-internal OperatingSystem
-operating_system_from_context(void){
+OperatingSystem operating_system_from_context(void){
   OperatingSystem os = OperatingSystem_Null;
 #if OS_WINDOWS
   os = OperatingSystem_Windows;
@@ -422,8 +380,7 @@ operating_system_from_context(void){
   return os;
 }
 
-internal Arch
-arch_from_context(void){
+Arch arch_from_context(void){
   Arch arch = Arch_Null;
 #if ARCH_X64
   arch = Arch_x64;
@@ -437,8 +394,7 @@ arch_from_context(void){
   return arch;
 }
 
-internal Compiler
-compiler_from_context(void){
+Compiler compiler_from_context(void){
   Compiler compiler = Compiler_Null;
 #if COMPILER_MSVC
   compiler = Compiler_msvc;
@@ -453,8 +409,7 @@ compiler_from_context(void){
 ////////////////////////////////
 //~ rjf: Time Functions
 
-internal DenseTime
-dense_time_from_date_time(DateTime date_time){
+DenseTime dense_time_from_date_time(DateTime date_time){
   DenseTime result = 0;
   result += date_time.year;
   result *= 12;
@@ -472,8 +427,7 @@ dense_time_from_date_time(DateTime date_time){
   return(result);
 }
 
-internal DateTime
-date_time_from_dense_time(DenseTime time){
+DateTime date_time_from_dense_time(DenseTime time){
   DateTime result = {0};
   result.msec = time%1000;
   time /= 1000;
@@ -492,8 +446,7 @@ date_time_from_dense_time(DenseTime time){
   return(result);
 }
 
-internal DateTime
-date_time_from_micro_seconds(U64 time){
+DateTime date_time_from_micro_seconds(U64 time){
   DateTime result = {0};
   result.micro_sec = time%1000;
   time /= 1000;
@@ -514,8 +467,7 @@ date_time_from_micro_seconds(U64 time){
   return(result);
 }
 
-internal DateTime
-date_time_from_unix_time(U64 unix_time)
+DateTime date_time_from_unix_time(U64 unix_time)
 {
   DateTime date = {0};
   date.year     = 1970;
@@ -571,8 +523,7 @@ date_time_from_unix_time(U64 unix_time)
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-internal U64
-ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
+U64 ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
@@ -588,8 +539,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
   return src_data_size;
 }
 
-internal U64
-ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
+U64 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
 {
   Assert(read_size <= ring_size);
   {

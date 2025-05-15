@@ -1,8 +1,7 @@
 ////////////////////////////////
 //~ rjf: CodeView <-> RDI Canonical Conversions
 
-internal RDI_Arch
-cv2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
+RDI_Arch cv2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
 {
   RDI_Arch result = 0;
   switch(cv_arch)
@@ -71,8 +70,7 @@ cv2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
   return(result);
 }
 
-internal RDI_RegCode
-cv2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
+RDI_RegCode cv2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
 {
   RDI_RegCode result = 0;
   switch(arch)
@@ -99,8 +97,7 @@ cv2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
   return(result);
 }
 
-internal RDI_Language
-cv2r_rdi_language_from_cv_language(CV_Language cv_language)
+RDI_Language cv2r_rdi_language_from_cv_language(CV_Language cv_language)
 {
   RDI_Language result = 0;
   switch(cv_language)
@@ -126,8 +123,7 @@ cv2r_rdi_language_from_cv_language(CV_Language cv_language)
   return(result);
 }
 
-internal RDI_RegCode
-cv2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg)
+RDI_RegCode cv2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg)
 {
   RDI_RegCode result = 0;
   switch(arch)
@@ -174,8 +170,7 @@ cv2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg enco
 }
 
 
-internal RDI_TypeKind
-cv2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
+RDI_TypeKind cv2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 {
   RDI_TypeKind result = RDI_TypeKind_NULL;
   switch(basic_type)

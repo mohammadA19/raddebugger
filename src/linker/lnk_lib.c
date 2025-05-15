@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_LibNode *
-lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, U64 count)
+LNK_LibNode* lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, U64 count)
 {
   LNK_LibNode *arr = 0;
   if (count) {
@@ -15,8 +14,7 @@ lnk_lib_list_reserve(Arena *arena, LNK_LibList *list, U64 count)
   return arr;
 }
 
-internal LNK_LibMemberNode *
-lnk_lib_member_list_push(Arena *arena, LNK_LibMemberList *list, LNK_LibMember member)
+LNK_LibMemberNode* lnk_lib_member_list_push(Arena *arena, LNK_LibMemberList *list, LNK_LibMember member)
 {
   LNK_LibMemberNode *n = push_array_no_zero(arena, LNK_LibMemberNode, 1);
   n->next              = 0;
@@ -28,8 +26,7 @@ lnk_lib_member_list_push(Arena *arena, LNK_LibMemberList *list, LNK_LibMember me
   return n;
 }
 
-internal LNK_LibMember *
-lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list)
+LNK_LibMember* lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list)
 {
   ProfBeginFunction();
   LNK_LibMember *arr = push_array_no_zero(arena, LNK_LibMember, list.count);
@@ -42,8 +39,7 @@ lnk_lib_member_array_from_list(Arena *arena, LNK_LibMemberList list)
   return arr;
 }
 
-internal LNK_LibSymbolNode *
-lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol symbol)
+LNK_LibSymbolNode* lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol symbol)
 {
   LNK_LibSymbolNode *n = push_array_no_zero(arena, LNK_LibSymbolNode, 1);
   n->next              = 0;
@@ -55,8 +51,7 @@ lnk_lib_symbol_list_push(Arena *arena, LNK_LibSymbolList *list, LNK_LibSymbol sy
   return n;
 }
 
-internal LNK_LibSymbol *
-lnk_lib_symbol_array_from_list(Arena *arena, LNK_LibSymbolList list)
+LNK_LibSymbol* lnk_lib_symbol_array_from_list(Arena *arena, LNK_LibSymbolList list)
 {
   LNK_LibSymbol *arr = push_array_no_zero(arena, LNK_LibSymbol, list.count + 2);
   LNK_LibSymbol *ptr = arr + 1;
@@ -85,8 +80,7 @@ lnk_lib_symbol_name_compar_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal void
-lnk_lib_symbol_array_sort(LNK_LibSymbol *arr, U64 count)
+void lnk_lib_symbol_array_sort(LNK_LibSymbol *arr, U64 count)
 {
   Assert(count >= 2);
   radsort(arr + 1, count - 2, lnk_lib_symbol_name_compar_is_before);
@@ -94,8 +88,7 @@ lnk_lib_symbol_array_sort(LNK_LibSymbol *arr, U64 count)
 
 ////////////////////////////////
 
-internal LNK_Lib
-lnk_lib_from_data(Arena *arena, String8 data, String8 path)
+LNK_Lib lnk_lib_from_data(Arena *arena, String8 data, String8 path)
 {
   ProfBeginFunction();
 
@@ -189,8 +182,7 @@ THREAD_POOL_TASK_FUNC(lnk_lib_initer)
   lib->input_idx = task->base_input_idx + task_id;
 }
 
-internal LNK_LibNodeArray
-lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr)
+LNK_LibNodeArray lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr)
 {
   Assert(data_arr.count == path_arr.count);
   U64 lib_count = data_arr.count;
@@ -209,8 +201,7 @@ lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, S
 }
 
 #if 0
-internal LNK_LibNode *
-lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data, String8 path)
+LNK_LibNode* lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data, String8 path)
 {
   ProfBeginFunction();
   
@@ -235,8 +226,7 @@ lnk_lib_list_push(Arena *arena, LNK_LibList *list, String8 data, String8 path)
 
 ////////////////////////////////
 
-internal LNK_LibWriter *
-lnk_lib_writer_alloc(void)
+LNK_LibWriter* lnk_lib_writer_alloc(void)
 {
   Arena *arena = arena_alloc();
   LNK_LibWriter *writer = push_array(arena, LNK_LibWriter, 1);
@@ -244,15 +234,13 @@ lnk_lib_writer_alloc(void)
   return writer;
 }
 
-internal void
-lnk_lib_writer_release(LNK_LibWriter **writer_ptr)
+void lnk_lib_writer_release(LNK_LibWriter **writer_ptr)
 {
   arena_release((*writer_ptr)->arena);
   *writer_ptr = 0;
 }
 
-internal void
-lnk_lib_writer_push_obj(LNK_LibWriter *writer, LNK_Obj *obj)
+void lnk_lib_writer_push_obj(LNK_LibWriter *writer, LNK_Obj *obj)
 {
   ProfBeginFunction();
   
@@ -279,8 +267,7 @@ lnk_lib_writer_push_obj(LNK_LibWriter *writer, LNK_Obj *obj)
   ProfEnd();
 }
 
-internal void
-lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, U64 time_stamp, String8 dll_name, LNK_Export *exp)
+void lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, U64 time_stamp, String8 dll_name, LNK_Export *exp)
 {
   ProfBeginFunction();
   
@@ -324,8 +311,7 @@ lnk_lib_writer_push_export(LNK_LibWriter *writer, COFF_MachineType machine, U64 
   ProfEnd();
 }
 
-internal LNK_LibBuild
-lnk_lib_build_from_writer(Arena *arena, LNK_LibWriter *writer)
+LNK_LibBuild lnk_lib_build_from_writer(Arena *arena, LNK_LibWriter *writer)
 {
   ProfBeginFunction();
   
@@ -340,8 +326,7 @@ lnk_lib_build_from_writer(Arena *arena, LNK_LibWriter *writer)
   return lib;
 }
 
-internal String8List
-lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second_member, COFF_TimeStamp time_stamp, U32 mode)
+String8List lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second_member, COFF_TimeStamp time_stamp, U32 mode)
 {
   ProfBeginFunction();
   
@@ -512,8 +497,7 @@ lnk_coff_archive_from_lib_build(Arena *arena, LNK_LibBuild *lib, B32 emit_second
 
 ////////////////////////////////
 
-internal LNK_LibBuild
-lnk_build_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, LNK_ObjList obj_list, LNK_ExportTable *exptab)
+LNK_LibBuild lnk_build_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, LNK_ObjList obj_list, LNK_ExportTable *exptab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -536,8 +520,7 @@ lnk_build_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp,
   return lib;
 }
 
-internal String8List
-lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType machine)
+String8List lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
   
@@ -735,8 +718,7 @@ lnk_build_import_entry_obj(Arena *arena, String8 dll_name, COFF_MachineType mach
   return list;
 }
 
-internal String8List
-lnk_build_null_import_descriptor_obj(Arena *arena, COFF_MachineType machine)
+String8List lnk_build_null_import_descriptor_obj(Arena *arena, COFF_MachineType machine)
 {
   ProfBeginFunction();
   
@@ -797,8 +779,7 @@ lnk_build_null_import_descriptor_obj(Arena *arena, COFF_MachineType machine)
   return list;
 }
 
-internal String8List
-lnk_build_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_MachineType machine)
+String8List lnk_build_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_MachineType machine)
 {
   ProfBeginFunction();
   
@@ -884,8 +865,7 @@ lnk_build_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_MachineType m
   return list;
 }
 
-internal String8
-lnk_build_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
+String8 lnk_build_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
 {
   ProfBeginFunction();
   
@@ -914,8 +894,7 @@ lnk_build_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stam
   return result;
 }
 
-internal String8List
-lnk_build_import_lib(TP_Context *tp, TP_Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 lib_name, String8 dll_name, LNK_ExportTable *exptab)
+String8List lnk_build_import_lib(TP_Context *tp, TP_Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 lib_name, String8 dll_name, LNK_ExportTable *exptab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena->v, arena->count);

@@ -3,20 +3,17 @@
 
 global LNK_Timer g_timers[LNK_Timer_Count];
 
-internal void
-lnk_timer_begin(LNK_TimerType timer)
+void lnk_timer_begin(LNK_TimerType timer)
 {
   g_timers[timer].begin = os_now_microseconds();
 }
 
-internal void
-lnk_timer_end(LNK_TimerType timer)
+void lnk_timer_end(LNK_TimerType timer)
 {
   g_timers[timer].end = os_now_microseconds();
 }
 
-internal String8
-lnk_string_from_timer_type(LNK_TimerType type)
+String8 lnk_string_from_timer_type(LNK_TimerType type)
 {
   switch (type) {
   case LNK_Timer_Image: return str8_lit("Image");

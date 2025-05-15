@@ -9,8 +9,7 @@
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal U64
-regs_rip_from_arch_block(Arch arch, void *block)
+U64 regs_rip_from_arch_block(Arch arch, void *block)
 {
   U64 result = 0;
   if(block != 0) switch(arch)
@@ -22,8 +21,7 @@ regs_rip_from_arch_block(Arch arch, void *block)
   return result;
 }
 
-internal U64
-regs_rsp_from_arch_block(Arch arch, void *block)
+U64 regs_rsp_from_arch_block(Arch arch, void *block)
 {
   U64 result = 0;
   if(block != 0) switch(arch)
@@ -35,8 +33,7 @@ regs_rsp_from_arch_block(Arch arch, void *block)
   return result;
 }
 
-internal void
-regs_arch_block_write_rip(Arch arch, void *block, U64 rip)
+void regs_arch_block_write_rip(Arch arch, void *block, U64 rip)
 {
   if(block != 0) switch(arch)
   {
@@ -46,8 +43,7 @@ regs_arch_block_write_rip(Arch arch, void *block, U64 rip)
   }
 }
 
-internal void
-regs_arch_block_write_rsp(Arch arch, void *block, U64 rsp)
+void regs_arch_block_write_rsp(Arch arch, void *block, U64 rsp)
 {
   if(block != 0) switch(arch)
   {

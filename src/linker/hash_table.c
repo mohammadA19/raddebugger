@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
-bucket_list_concat_in_place(BucketList *list, BucketList *to_concat)
+void bucket_list_concat_in_place(BucketList *list, BucketList *to_concat)
 {
   if (to_concat->first) {
     if (list->first) {
@@ -16,8 +15,7 @@ bucket_list_concat_in_place(BucketList *list, BucketList *to_concat)
   }
 }
 
-internal BucketNode *
-bucket_list_pop(BucketList *list)
+BucketNode* bucket_list_pop(BucketList *list)
 {
   BucketNode *result = list->first;
   SLLQueuePop(list->first, list->last);
@@ -26,15 +24,13 @@ bucket_list_pop(BucketList *list)
 
 ////////////////////////////////
 
-internal U64
-hash_table_hasher(String8 string)
+U64 hash_table_hasher(String8 string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;
 }
 
-internal HashTable *
-hash_table_init(Arena *arena, U64 cap)
+HashTable* hash_table_init(Arena *arena, U64 cap)
 {
   HashTable *ht = push_array(arena, HashTable, 1);
   ht->cap       = cap;
@@ -42,8 +38,7 @@ hash_table_init(Arena *arena, U64 cap)
   return ht;
 }
 
-internal void
-hash_table_purge(HashTable *ht)
+void hash_table_purge(HashTable *ht)
 {
   // reset key count
   ht->count = 0;
@@ -54,8 +49,7 @@ hash_table_purge(HashTable *ht)
   }
 }
 
-internal BucketNode *
-hash_table_push(Arena *arena, HashTable *ht, U64 hash, KeyValuePair v)
+BucketNode* hash_table_push(Arena *arena, HashTable *ht, U64 hash, KeyValuePair v)
 {
   BucketNode *node;
   if (ht->free_buckets.first != 0) {
@@ -73,64 +67,55 @@ hash_table_push(Arena *arena, HashTable *ht, U64 hash, KeyValuePair v)
   return node;
 }
 
-internal BucketNode *
-hash_table_push_string_string(Arena *arena, HashTable *ht, String8 key, String8 value)
+BucketNode* hash_table_push_string_string(Arena *arena, HashTable *ht, String8 key, String8 value)
 {
   U64 hash = hash_table_hasher(key);
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = key, .value_string = value });
 }
 
-internal BucketNode *
-hash_table_push_string_raw(Arena *arena, HashTable *ht, String8 key, void *value)
+BucketNode* hash_table_push_string_raw(Arena *arena, HashTable *ht, String8 key, void *value)
 {
   U64 hash = hash_table_hasher(key);
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = key, .value_raw = value });
 }
 
-internal BucketNode *
-hash_table_push_string_u64(Arena *arena, HashTable *ht, String8 key, U64 value)
+BucketNode* hash_table_push_string_u64(Arena *arena, HashTable *ht, String8 key, U64 value)
 {
   U64 hash = hash_table_hasher(key);
   return hash_table_push(arena, ht, hash, (KeyValuePair){.key_string = key, .value_u64 = value });
 }
 
-internal BucketNode *
-hash_table_push_u32_raw(Arena *arena, HashTable *ht, U32 key, void *value)
+BucketNode* hash_table_push_u32_raw(Arena *arena, HashTable *ht, U32 key, void *value)
 {
   U64 hash = hash_table_hasher(str8_struct(&key));
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u32 = key, .value_raw = value });
 }
 
-internal BucketNode *
-hash_table_push_u32_string(Arena *arena, HashTable *ht, U32 key, String8 value)
+BucketNode* hash_table_push_u32_string(Arena *arena, HashTable *ht, U32 key, String8 value)
 {
   U64 hash = hash_table_hasher(str8_struct(&key));
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u32 = key, .value_string = value });
 }
 
-internal BucketNode *
-hash_table_push_u64_raw(Arena *arena, HashTable *ht, U64 key, void *value)
+BucketNode* hash_table_push_u64_raw(Arena *arena, HashTable *ht, U64 key, void *value)
 {
   U64 hash = hash_table_hasher(str8_struct(&key));
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u64 = key, .value_raw = value });
 }
 
-internal BucketNode *
-hash_table_push_u64_string(Arena *arena, HashTable *ht, U64 key, String8 value)
+BucketNode* hash_table_push_u64_string(Arena *arena, HashTable *ht, U64 key, String8 value)
 {
   U64 hash = hash_table_hasher(str8_struct(&key));
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u64 = key, .value_string = value });
 }
 
-internal BucketNode *
-hash_table_push_u64_u64(Arena *arena, HashTable *ht, U64 key, U64 value)
+BucketNode* hash_table_push_u64_u64(Arena *arena, HashTable *ht, U64 key, U64 value)
 {
   U64 hash = hash_table_hasher(str8_struct(&key));
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u64 = key, .value_u64 = value });
 }
 
-internal String8
-hash_table_normalize_path_string(Arena *arena, String8 path)
+String8 hash_table_normalize_path_string(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8 result;
@@ -140,23 +125,20 @@ hash_table_normalize_path_string(Arena *arena, String8 path)
   return result;
 }
 
-internal BucketNode *
-hash_table_push_path_string(Arena *arena, HashTable *ht, String8 path, String8 value)
+BucketNode* hash_table_push_path_string(Arena *arena, HashTable *ht, String8 path, String8 value)
 {
   String8 path_canon = hash_table_normalize_path_string(arena, path); 
   return hash_table_push_string_string(arena, ht, path_canon, value);
 }
 
-internal BucketNode *
-hash_table_push_path_u64(Arena *arena, HashTable *ht, String8 path, U64 value)
+BucketNode* hash_table_push_path_u64(Arena *arena, HashTable *ht, String8 path, U64 value)
 {
   String8 path_canon = hash_table_normalize_path_string(arena, path);
   U64 hash = hash_table_hasher(path_canon);
   return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = path_canon, .value_u64 = value });
 }
 
-internal BucketNode *
-hash_table_push_path_raw(Arena *arena, HashTable *ht, String8 path, void *value)
+BucketNode* hash_table_push_path_raw(Arena *arena, HashTable *ht, String8 path, void *value)
 {
   String8 path_canon = hash_table_normalize_path_string(arena, path);
   U64 hash = hash_table_hasher(path_canon);
@@ -165,8 +147,7 @@ hash_table_push_path_raw(Arena *arena, HashTable *ht, String8 path, void *value)
 
 ////////////////////////////////
 
-internal KeyValuePair *
-hash_table_search_string(HashTable *ht, String8 key_string)
+KeyValuePair* hash_table_search_string(HashTable *ht, String8 key_string)
 {
   U64         hash    = hash_table_hasher(key_string);
   U64         ibucket = hash % ht->cap;
@@ -179,8 +160,7 @@ hash_table_search_string(HashTable *ht, String8 key_string)
   return 0;
 }
 
-internal KeyValuePair *
-hash_table_search_u32(HashTable *ht, U32 key_u32)
+KeyValuePair* hash_table_search_u32(HashTable *ht, U32 key_u32)
 {
   U64         hash    = hash_table_hasher(str8_struct(&key_u32));
   U64         ibucket = hash % ht->cap;
@@ -193,8 +173,7 @@ hash_table_search_u32(HashTable *ht, U32 key_u32)
   return 0;
 }
 
-internal KeyValuePair *
-hash_table_search_u64(HashTable *ht, U64 key_u64)
+KeyValuePair* hash_table_search_u64(HashTable *ht, U64 key_u64)
 {
   U64         hash    = hash_table_hasher(str8_struct(&key_u64));
   U64         ibucket = hash % ht->cap;
@@ -207,15 +186,13 @@ hash_table_search_u64(HashTable *ht, U64 key_u64)
   return 0;
 }
 
-internal void *
-hash_table_search_u64_raw(HashTable *ht, U64 key_u64)
+void* hash_table_search_u64_raw(HashTable *ht, U64 key_u64)
 {
   KeyValuePair *kv = hash_table_search_u64(ht, key_u64);
   return kv ? kv->value_raw : 0;
 }
 
-internal KeyValuePair *
-hash_table_search_path(HashTable *ht, String8 path)
+KeyValuePair* hash_table_search_path(HashTable *ht, String8 path)
 {
   Temp scratch = scratch_begin(0,0);
   String8 path_canon = path;
@@ -226,22 +203,19 @@ hash_table_search_path(HashTable *ht, String8 path)
   return result;
 }
 
-internal void *
-hash_table_search_path_raw(HashTable *ht, String8 path)
+void* hash_table_search_path_raw(HashTable *ht, String8 path)
 {
   KeyValuePair *kv = hash_table_search_path(ht, path);
   return kv ? kv->value_raw : 0;
 }
 
-internal void *
-hash_table_(HashTable *ht, String8 path)
+void* hash_table_(HashTable *ht, String8 path)
 {
   KeyValuePair *result = hash_table_search_path(ht, path);
   return result ? result->value_raw : 0;
 }
 
-internal B32
-hash_table_search_path_u64(HashTable *ht, String8 key, U64 *value_out)
+B32 hash_table_search_path_u64(HashTable *ht, String8 key, U64 *value_out)
 {
   KeyValuePair *result = hash_table_search_path(ht, key);
   if (result != 0) {
@@ -253,8 +227,7 @@ hash_table_search_path_u64(HashTable *ht, String8 key, U64 *value_out)
   return 0;
 }
 
-internal B32
-hash_table_search_string_u64(HashTable *ht, String8 key, U64 *value_out)
+B32 hash_table_search_string_u64(HashTable *ht, String8 key, U64 *value_out)
 {
   KeyValuePair *result = hash_table_search_string(ht, key);
   if (result != 0) {
@@ -268,24 +241,21 @@ hash_table_search_string_u64(HashTable *ht, String8 key, U64 *value_out)
 
 ////////////////////////////////
 
-internal int
-key_value_pair_is_before_u32(void *raw_a, void *raw_b)
+int key_value_pair_is_before_u32(void *raw_a, void *raw_b)
 {
   KeyValuePair *a = raw_a;
   KeyValuePair *b = raw_b;
   return a->key_u32 < b->key_u32;
 }
 
-internal int
-key_value_pair_is_before_u64(void *raw_a, void *raw_b)
+int key_value_pair_is_before_u64(void *raw_a, void *raw_b)
 {
   KeyValuePair *a = raw_a;
   KeyValuePair *b = raw_b;
   return a->key_u64 < b->key_u64;
 }
 
-internal U32 *
-keys_from_hash_table_u32(Arena *arena, HashTable *ht)
+U32* keys_from_hash_table_u32(Arena *arena, HashTable *ht)
 {
   U32 *result = push_array_no_zero(arena, U32, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
@@ -297,8 +267,7 @@ keys_from_hash_table_u32(Arena *arena, HashTable *ht)
   return result;
 }
 
-internal U64 *
-keys_from_hash_table_u64(Arena *arena, HashTable *ht)
+U64* keys_from_hash_table_u64(Arena *arena, HashTable *ht)
 {
   U64 *result = push_array_no_zero(arena, U64, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
@@ -310,8 +279,7 @@ keys_from_hash_table_u64(Arena *arena, HashTable *ht)
   return result;
 }
 
-internal KeyValuePair *
-key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
+KeyValuePair* key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
 {
   KeyValuePair *pairs = push_array_no_zero(arena, KeyValuePair, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
@@ -323,20 +291,17 @@ key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
   return pairs;
 }
 
-internal void
-sort_key_value_pairs_as_u32(KeyValuePair *pairs, U64 count)
+void sort_key_value_pairs_as_u32(KeyValuePair *pairs, U64 count)
 {
   radsort(pairs, count, key_value_pair_is_before_u32);
 }
 
-internal void
-sort_key_value_pairs_as_u64(KeyValuePair *pairs, U64 count)
+void sort_key_value_pairs_as_u64(KeyValuePair *pairs, U64 count)
 {
   radsort(pairs, count, key_value_pair_is_before_u64);
 }
 
-internal U64Array
-remove_duplicates_u64_array(Arena *arena, U64Array arr)
+U64Array remove_duplicates_u64_array(Arena *arena, U64Array arr)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -357,8 +322,7 @@ remove_duplicates_u64_array(Arena *arena, U64Array arr)
   return result;
 }
 
-internal String8List
-remove_duplicates_str8_list(Arena *arena, String8List list)
+String8List remove_duplicates_str8_list(Arena *arena, String8List list)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

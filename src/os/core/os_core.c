@@ -4,21 +4,18 @@
 ////////////////////////////////
 //~ rjf: Handle Type Functions (Helpers, Implemented Once)
 
-internal OS_Handle
-os_handle_zero(void)
+OS_Handle os_handle_zero(void)
 {
   OS_Handle handle = {0};
   return handle;
 }
 
-internal B32
-os_handle_match(OS_Handle a, OS_Handle b)
+B32 os_handle_match(OS_Handle a, OS_Handle b)
 {
   return a.u64[0] == b.u64[0];
 }
 
-internal void
-os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
+void os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 {
   OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
   n->v = handle;
@@ -26,8 +23,7 @@ os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
   handles->count += 1;
 }
 
-internal OS_HandleArray
-os_handle_array_from_list(Arena *arena, OS_HandleList *list)
+OS_HandleArray os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 {
   OS_HandleArray result = {0};
   result.count = list->count;
@@ -43,8 +39,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 ////////////////////////////////
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
-internal String8List
-os_string_list_from_argcv(Arena *arena, int argc, char **argv)
+String8List os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 {
   String8List result = {0};
   for(int i = 0; i < argc; i += 1)
@@ -58,8 +53,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 ////////////////////////////////
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
-internal String8
-os_data_from_file_path(Arena *arena, String8 path)
+String8 os_data_from_file_path(Arena *arena, String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   FileProperties props = os_properties_from_file(file);
@@ -68,8 +62,7 @@ os_data_from_file_path(Arena *arena, String8 path)
   return data;
 }
 
-internal B32
-os_write_data_to_file_path(String8 path, String8 data)
+B32 os_write_data_to_file_path(String8 path, String8 data)
 {
   B32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
@@ -82,8 +75,7 @@ os_write_data_to_file_path(String8 path, String8 data)
   return good;
 }
 
-internal B32
-os_write_data_list_to_file_path(String8 path, String8List list)
+B32 os_write_data_list_to_file_path(String8 path, String8List list)
 {
   B32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
@@ -101,8 +93,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   return good;
 }
 
-internal B32
-os_append_data_to_file_path(String8 path, String8 data)
+B32 os_append_data_to_file_path(String8 path, String8 data)
 {
   B32 good = 0;
   if(data.size != 0)
@@ -119,8 +110,7 @@ os_append_data_to_file_path(String8 path, String8 data)
   return good;
 }
 
-internal OS_FileID
-os_id_from_file_path(String8 path)
+OS_FileID os_id_from_file_path(String8 path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   OS_FileID id = os_id_from_file(file);
@@ -128,15 +118,13 @@ os_id_from_file_path(String8 path)
   return id;
 }
 
-internal S64
-os_file_id_compare(OS_FileID a, OS_FileID b)
+S64 os_file_id_compare(OS_FileID a, OS_FileID b)
 {
   S64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
   return cmp;
 }
 
-internal String8
-os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
+String8 os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 {
   U64 pre_pos = arena_pos(arena);
   String8 result;
@@ -154,8 +142,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: Process Launcher Helpers
 
-internal OS_Handle
-os_cmd_line_launch(String8 string)
+OS_Handle os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   U8 split_chars[] = {' '};
@@ -225,8 +212,7 @@ os_cmd_line_launch(String8 string)
   return handle;
 }
 
-internal OS_Handle
-os_cmd_line_launchf(char *fmt, ...)
+OS_Handle os_cmd_line_launchf(char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

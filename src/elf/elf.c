@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: 32 => 64 bit conversions
 
-internal ELF_Hdr64
-elf_hdr64_from_hdr32(ELF_Hdr32 h32)
+ELF_Hdr64 elf_hdr64_from_hdr32(ELF_Hdr32 h32)
 {
   ELF_Hdr64 h64  = {0};
   MemoryCopy(h64.e_ident, h32.e_ident, sizeof(h64.e_ident));
@@ -25,8 +24,7 @@ elf_hdr64_from_hdr32(ELF_Hdr32 h32)
   return h64;
 }
 
-internal ELF_Shdr64
-elf_shdr64_from_shdr32(ELF_Shdr32 h32)
+ELF_Shdr64 elf_shdr64_from_shdr32(ELF_Shdr32 h32)
 {
   ELF_Shdr64 h64   = {0};
   h64.sh_name      = h32.sh_name;
@@ -42,8 +40,7 @@ elf_shdr64_from_shdr32(ELF_Shdr32 h32)
   return h64;
 }
 
-internal ELF_Phdr64
-elf_phdr64_from_phdr32(ELF_Phdr32 h32)
+ELF_Phdr64 elf_phdr64_from_phdr32(ELF_Phdr32 h32)
 {
   ELF_Phdr64 h64 = {0};
   h64.p_type     = h32.p_type;
@@ -57,8 +54,7 @@ elf_phdr64_from_phdr32(ELF_Phdr32 h32)
   return h64;
 }
 
-internal ELF_Dyn64
-elf_dyn64_from_dyn32(ELF_Dyn32 h32)
+ELF_Dyn64 elf_dyn64_from_dyn32(ELF_Dyn32 h32)
 {
   ELF_Dyn64 h64 = {0};
   h64.tag       = (U64)h32.tag;
@@ -66,8 +62,7 @@ elf_dyn64_from_dyn32(ELF_Dyn32 h32)
   return h64;
 }
 
-internal ELF_Sym64
-elf_sym64_from_sym32(ELF_Sym32 sym32)
+ELF_Sym64 elf_sym64_from_sym32(ELF_Sym32 sym32)
 {
   ELF_Sym64 sym64 = {0};
   sym64.st_name   = sym32.st_name;
@@ -79,8 +74,7 @@ elf_sym64_from_sym32(ELF_Sym32 sym32)
   return sym64;
 }
 
-internal ELF_Rel64
-elf_rel64_from_rel32(ELF_Rel32 rel32)
+ELF_Rel64 elf_rel64_from_rel32(ELF_Rel32 rel32)
 {
   U32 sym  = ELF32_R_SYM(rel32.r_info);
   U32 type = ELF32_R_TYPE(rel32.r_info);
@@ -90,8 +84,7 @@ elf_rel64_from_rel32(ELF_Rel32 rel32)
   return rel64;
 }
 
-internal ELF_Rela64
-elf_rela64_from_rela32(ELF_Rela32 rela32)
+ELF_Rela64 elf_rela64_from_rela32(ELF_Rela32 rela32)
 {
   U32 sym  = ELF32_R_SYM(rela32.r_info);
   U32 type = ELF32_R_TYPE(rela32.r_info);
@@ -102,8 +95,7 @@ elf_rela64_from_rela32(ELF_Rela32 rela32)
   return rela64;
 }
 
-internal ELF_Chdr64
-elf_chdr64_from_chdr32(ELF_Chdr32 chdr32)
+ELF_Chdr64 elf_chdr64_from_chdr32(ELF_Chdr32 chdr32)
 {
   ELF_Chdr64 chdr64    = {0};
   chdr64.ch_type       = chdr32.ch_type;
@@ -114,8 +106,7 @@ elf_chdr64_from_chdr32(ELF_Chdr32 chdr32)
 
 ////////////////////////////////
 
-internal String8
-elf_string_from_class(Arena *arena, ELF_Class v)
+String8 elf_string_from_class(Arena *arena, ELF_Class v)
 {
   switch (v) {
   case ELF_Class_None: return str8_lit("None");
@@ -127,8 +118,7 @@ elf_string_from_class(Arena *arena, ELF_Class v)
 
 ////////////////////////////////
 
-internal Arch
-arch_from_elf_machine(ELF_MachineKind e_machine)
+Arch arch_from_elf_machine(ELF_MachineKind e_machine)
 {
   Arch arch = Arch_Null;
   switch (e_machine) {

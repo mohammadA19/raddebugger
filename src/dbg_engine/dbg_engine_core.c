@@ -18,21 +18,18 @@
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U64
-d_hash_from_seed_string(U64 seed, String8 string)
+U64 d_hash_from_seed_string(U64 seed, String8 string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-internal U64
-d_hash_from_string(String8 string)
+U64 d_hash_from_string(String8 string)
 {
   return d_hash_from_seed_string(5381, string);
 }
 
-internal U64
-d_hash_from_seed_string__case_insensitive(U64 seed, String8 string)
+U64 d_hash_from_seed_string__case_insensitive(U64 seed, String8 string)
 {
   U64 result = seed;
   for(U64 i = 0; i < string.size; i += 1)
@@ -42,8 +39,7 @@ d_hash_from_seed_string__case_insensitive(U64 seed, String8 string)
   return result;
 }
 
-internal U64
-d_hash_from_string__case_insensitive(String8 string)
+U64 d_hash_from_string__case_insensitive(String8 string)
 {
   return d_hash_from_seed_string__case_insensitive(5381, string);
 }
@@ -51,8 +47,7 @@ d_hash_from_string__case_insensitive(String8 string)
 ////////////////////////////////
 //~ rjf: Breakpoints
 
-internal D_BreakpointArray
-d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
+D_BreakpointArray d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
 {
   D_BreakpointArray dst = {0};
   dst.count = src->count;
@@ -70,8 +65,7 @@ d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-internal String8List
-d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path)
+String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path)
 {
   // NOTE(rjf): This path, given some target file path, scans all file path map
   // overrides, and collects the set of file paths which could've redirected
@@ -143,8 +137,7 @@ d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
 
-internal D_LineList
-d_line_list_copy(Arena *arena, D_LineList *list)
+D_LineList d_line_list_copy(Arena *arena, D_LineList *list)
 {
   D_LineList dst = {0};
   for(D_LineNode *src_n = list->first; src_n != 0; src_n = src_n->next)
@@ -164,8 +157,7 @@ d_line_list_copy(Arena *arena, D_LineList *list)
 
 //- rjf: command parameters
 
-internal D_CmdParams
-d_cmd_params_copy(Arena *arena, D_CmdParams *src)
+D_CmdParams d_cmd_params_copy(Arena *arena, D_CmdParams *src)
 {
   D_CmdParams dst = {0};
   MemoryCopyStruct(&dst, src);
@@ -186,8 +178,7 @@ d_cmd_params_copy(Arena *arena, D_CmdParams *src)
 
 //- rjf: command lists
 
-internal void
-d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params)
+void d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params)
 {
   D_CmdNode *n = push_array(arena, D_CmdNode, 1);
   n->cmd.kind = kind;
@@ -291,8 +282,7 @@ d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *
 // - for any instructions which may change the stack pointer, traps are placed
 //     at them with the "save-stack-pointer | single-step-after" behaviors.
 
-internal CTRL_TrapList
-d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread)
+CTRL_TrapList d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_TrapList result = {0};
@@ -328,8 +318,7 @@ d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread)
   return result;
 }
 
-internal CTRL_TrapList
-d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread)
+CTRL_TrapList d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   log_infof("step_over_line:\n{\n");
@@ -490,8 +479,7 @@ d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread)
   return result;
 }
 
-internal CTRL_TrapList
-d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread)
+CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_TrapList result = {0};
@@ -615,8 +603,7 @@ d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread)
 
 //- rjf: symbol -> voff lookups
 
-internal U64
-d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name)
+U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -696,8 +683,7 @@ d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name)
   return result;
 }
 
-internal U64
-d_type_num_from_dbgi_key_name(DI_Key *dbgi_key, String8 name)
+U64 d_type_num_from_dbgi_key_name(DI_Key *dbgi_key, String8 name)
 {
   ProfBeginFunction();
   DI_Scope *scope = di_scope_open();
@@ -737,8 +723,7 @@ d_type_num_from_dbgi_key_name(DI_Key *dbgi_key, String8 name)
 
 //- rjf: voff -> line info
 
-internal D_LineList
-d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
+D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DI_Scope *scope = di_scope_open();
@@ -830,8 +815,7 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
 
 // TODO(rjf): this depends on file path maps, needs to move
 
-internal D_LineListArray
-d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range)
+D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -924,8 +908,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
   return array;
 }
 
-internal D_LineListArray
-d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range)
+D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range)
 {
   D_LineListArray array = {0};
   {
@@ -1029,8 +1012,7 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
   return array;
 }
 
-internal D_LineList
-d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num)
+D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num)
 {
   D_LineListArray array = d_lines_array_from_dbgi_key_file_path_line_range(arena, dbgi_key, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1041,8 +1023,7 @@ d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 
   return list;
 }
 
-internal D_LineList
-d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num)
+D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num)
 {
   D_LineListArray array = d_lines_array_from_file_path_line_range(arena, file_path, r1s64(line_num, line_num+1));
   D_LineList list = {0};
@@ -1056,8 +1037,7 @@ d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num)
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
 
-internal U64
-d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr)
+U64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr)
 {
   ProfBeginFunction();
   U64 base_vaddr = 0;
@@ -1144,8 +1124,7 @@ d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64
 
 //- rjf: stopped info from the control thread
 
-internal CTRL_Event
-d_ctrl_last_stop_event(void)
+CTRL_Event d_ctrl_last_stop_event(void)
 {
   return d_state->ctrl_last_stop_event;
 }
@@ -1155,36 +1134,31 @@ d_ctrl_last_stop_event(void)
 
 //- rjf: frame data
 
-internal U64
-d_frame_index(void)
+U64 d_frame_index(void)
 {
   return d_state->frame_index;
 }
 
 //- rjf: control state
 
-internal D_RunKind
-d_ctrl_last_run_kind(void)
+D_RunKind d_ctrl_last_run_kind(void)
 {
   return d_state->ctrl_last_run_kind;
 }
 
-internal U64
-d_ctrl_last_run_frame_idx(void)
+U64 d_ctrl_last_run_frame_idx(void)
 {
   return d_state->ctrl_last_run_frame_idx;
 }
 
-internal B32
-d_ctrl_targets_running(void)
+B32 d_ctrl_targets_running(void)
 {
   return d_state->ctrl_is_running;
 }
 
 //- rjf: active entity based queries
 
-internal DI_KeyList
-d_push_active_dbgi_key_list(Arena *arena)
+DI_KeyList d_push_active_dbgi_key_list(Arena *arena)
 {
   DI_KeyList dbgis = {0};
   CTRL_EntityArray modules = ctrl_entity_array_from_kind(d_state->ctrl_entity_store, CTRL_EntityKind_Module);
@@ -1199,8 +1173,7 @@ d_push_active_dbgi_key_list(Arena *arena)
 
 //- rjf: per-run caches
 
-internal CTRL_Unwind
-d_query_cached_unwind_from_thread(CTRL_Entity *thread)
+CTRL_Unwind d_query_cached_unwind_from_thread(CTRL_Entity *thread)
 {
   Temp scratch = scratch_begin(0, 0);
   CTRL_Unwind result = {0};
@@ -1254,15 +1227,13 @@ d_query_cached_unwind_from_thread(CTRL_Entity *thread)
   return result;
 }
 
-internal U64
-d_query_cached_rip_from_thread(CTRL_Entity *thread)
+U64 d_query_cached_rip_from_thread(CTRL_Entity *thread)
 {
   U64 result = d_query_cached_rip_from_thread_unwind(thread, 0);
   return result;
 }
 
-internal U64
-d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, U64 unwind_count)
+U64 d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, U64 unwind_count)
 {
   U64 result = 0;
   if(unwind_count == 0)
@@ -1280,8 +1251,7 @@ d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, U64 unwind_count)
   return result;
 }
 
-internal U64
-d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr)
+U64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr)
 {
   U64 result = 0;
   for(U64 cache_idx = 0; cache_idx < ArrayCount(d_state->tls_base_caches); cache_idx += 1)
@@ -1331,8 +1301,7 @@ d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 ro
   return result;
 }
 
-internal E_String2NumMap *
-d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
+E_String2NumMap* d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
 {
   ProfBeginFunction();
   E_String2NumMap *map = &e_string2num_map_nil;
@@ -1385,8 +1354,7 @@ d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
   return map;
 }
 
-internal E_String2NumMap *
-d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
+E_String2NumMap* d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
 {
   ProfBeginFunction();
   E_String2NumMap *map = &e_string2num_map_nil;
@@ -1441,16 +1409,14 @@ d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
 
 //- rjf: top-level command dispatch
 
-internal void
-d_push_cmd(D_CmdKind kind, D_CmdParams *params)
+void d_push_cmd(D_CmdKind kind, D_CmdParams *params)
 {
   d_cmd_list_push_new(d_state->cmds_arena, &d_state->cmds, kind, params);
 }
 
 //- rjf: command iteration
 
-internal B32
-d_next_cmd(D_Cmd **cmd)
+B32 d_next_cmd(D_Cmd **cmd)
 {
   D_CmdNode *start_node = d_state->cmds.first;
   if(cmd[0] != 0)
@@ -1475,8 +1441,7 @@ d_next_cmd(D_Cmd **cmd)
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal void
-d_init(void)
+void d_init(void)
 {
   Arena *arena = arena_alloc();
   d_state = push_array(arena, D_State, 1);
@@ -1508,8 +1473,7 @@ d_init(void)
   d_state->ctrl_last_run_arena = arena_alloc();
 }
 
-internal D_EventList
-d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64])
+D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64])
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

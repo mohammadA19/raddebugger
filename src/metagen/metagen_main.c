@@ -24,8 +24,7 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
-entry_point(CmdLine *cmdline)
+void entry_point(CmdLine *cmdline)
 {
   //////////////////////////////
   //- rjf: set up state

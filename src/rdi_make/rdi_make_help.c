@@ -382,8 +382,7 @@ ASYNC_WORK_DEF(rdim_bake_idx_runs_work)
   return out;
 }
 
-internal RDIM_HelpState *
-rdim_help_init(void)
+RDIM_HelpState* rdim_help_init(void)
 {
   Arena *arena = arena_alloc();
   RDIM_HelpState *state           = push_array(arena, RDIM_HelpState, 1);
@@ -397,8 +396,7 @@ rdim_help_init(void)
   return state;
 }
 
-internal RDIM_BakeResults
-rdim_bake(RDIM_HelpState *state, RDIM_BakeParams *in_params)
+RDIM_BakeResults rdim_bake(RDIM_HelpState *state, RDIM_BakeParams *in_params)
 {
   Temp scratch = scratch_begin(0,0);
   RDIM_BakeResults out = {0};
@@ -890,8 +888,7 @@ rdim_bake(RDIM_HelpState *state, RDIM_BakeParams *in_params)
   return out;
 }
 
-internal RDIM_SerializedSectionBundle
-rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
+RDIM_SerializedSectionBundle rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
 {
   RDIM_SerializedSectionBundle out = {0};
 

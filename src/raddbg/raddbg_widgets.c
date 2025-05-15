@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Title Strings
 
-internal DR_FStrList
-rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg)
+DR_FStrList rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg)
 {
   DR_FStrList result = {0};
   {
@@ -418,8 +417,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg)
   return result;
 }
 
-internal DR_FStrList
-rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras)
+DR_FStrList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras)
 {
   DR_FStrList result = {0};
   
@@ -573,8 +571,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
   return result;
 }
 
-internal DR_FStrList
-rd_title_fstrs_from_code_name(Arena *arena, String8 code_name)
+DR_FStrList rd_title_fstrs_from_code_name(Arena *arena, String8 code_name)
 {
   DR_FStrList result = {0};
   {
@@ -611,8 +608,7 @@ rd_title_fstrs_from_code_name(Arena *arena, String8 code_name)
   return result;
 }
 
-internal DR_FStrList
-rd_title_fstrs_from_file_path(Arena *arena, String8 file_path)
+DR_FStrList rd_title_fstrs_from_file_path(Arena *arena, String8 file_path)
 {
   DR_FStrList fstrs = {0};
   String8 file_name = str8_skip_last_slash(file_path);
@@ -644,8 +640,7 @@ rd_title_fstrs_from_file_path(Arena *arena, String8 file_path)
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-internal void
-rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target)
+void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target)
 {
   if(loading_t >= 0.001f) UI_Focus(UI_FocusKind_Off)
   {
@@ -713,8 +708,7 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
 
-internal void
-rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
+void rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
 {
   Temp scratch = scratch_begin(0, 0);
   RD_KeyMapNodePtrList key_map_nodes = rd_key_map_node_ptr_list_from_name(scratch.arena, name);
@@ -869,16 +863,14 @@ rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
   scratch_end(scratch);
 }
 
-internal UI_Signal
-rd_menu_bar_button(String8 string)
+UI_Signal rd_menu_bar_button(String8 string)
 {
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
 }
 
-internal UI_Signal
-rd_cmd_spec_button(String8 name)
+UI_Signal rd_cmd_spec_button(String8 name)
 {
   RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(name);
   ui_set_next_child_layout_axis(Axis2_X);
@@ -923,8 +915,7 @@ rd_cmd_spec_button(String8 name)
   return sig;
 }
 
-internal void
-rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints)
+void rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints)
 {
   Temp scratch = scratch_begin(0, 0);
   for(U64 idx = 0; idx < count; idx += 1)
@@ -943,8 +934,7 @@ rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints
   scratch_end(scratch);
 }
 
-internal UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
+UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
 {
   String8 display_string = ui_display_part_from_key_string(string);
   ui_set_next_child_layout_axis(Axis2_X);
@@ -995,8 +985,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
   return result;
 }
 
-internal UI_Signal
-rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
+UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1011,7 +1000,6 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: UI Widgets: Text View
 
-typedef struct RD_ThreadBoxDrawExtData RD_ThreadBoxDrawExtData;
 struct RD_ThreadBoxDrawExtData
 {
   Vec4F32 thread_color;
@@ -1024,7 +1012,7 @@ struct RD_ThreadBoxDrawExtData
   B32 do_glow;
 };
 
-internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
+UI_BOX_CUSTOM_DRAW (rd_thread_box_draw_extensions)
 {
   RD_ThreadBoxDrawExtData *u = (RD_ThreadBoxDrawExtData *)box->custom_draw_user_data;
   
@@ -1095,7 +1083,6 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   }
 }
 
-typedef struct RD_BreakpointBoxDrawExtData RD_BreakpointBoxDrawExtData;
 struct RD_BreakpointBoxDrawExtData
 {
   Vec4F32 color;
@@ -1108,7 +1095,7 @@ struct RD_BreakpointBoxDrawExtData
   B32 is_conditioned;
 };
 
-internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
+UI_BOX_CUSTOM_DRAW (rd_bp_box_draw_extensions)
 {
   RD_BreakpointBoxDrawExtData *u = (RD_BreakpointBoxDrawExtData *)box->custom_draw_user_data;
   
@@ -1204,8 +1191,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   }
 }
 
-internal RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
+RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
@@ -2671,8 +2657,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   return result;
 }
 
-internal RD_CodeSliceSignal
-rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
+RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -2684,8 +2669,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
   return sig;
 }
 
-internal B32
-rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
@@ -2866,8 +2850,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
 
-internal DR_FStrList
-rd_fstrs_from_rich_string(Arena *arena, String8 string)
+DR_FStrList rd_fstrs_from_rich_string(Arena *arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   typedef U32 StringPartFlags;
@@ -2930,8 +2913,7 @@ rd_fstrs_from_rich_string(Arena *arena, String8 string)
   return fstrs;
 }
 
-internal UI_Signal
-rd_label(String8 string)
+UI_Signal rd_label(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FStrList fstrs = rd_fstrs_from_rich_string(scratch.arena, string);
@@ -2942,8 +2924,7 @@ rd_label(String8 string)
   return sig;
 }
 
-internal UI_Signal
-rd_error_label(String8 string)
+UI_Signal rd_error_label(String8 string)
 {
   UI_Box *box = ui_build_box_from_key(0, ui_key_zero());
   UI_Signal sig = ui_signal_from_box(box);
@@ -2958,8 +2939,7 @@ rd_error_label(String8 string)
   return sig;
 }
 
-internal B32
-rd_help_label(String8 string)
+B32 rd_help_label(String8 string)
 {
   B32 result = 0;
   UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
@@ -2984,8 +2964,7 @@ rd_help_label(String8 string)
   return result;
 }
 
-internal DR_FStrList
-rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+DR_FStrList rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3159,8 +3138,7 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
   return fstrs;
 }
 
-internal UI_Box *
-rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+UI_Box* rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FStrList fstrs = rd_fstrs_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
@@ -3173,8 +3151,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-internal UI_Signal
-rd_cell(RD_CellParams *params, String8 string)
+UI_Signal rd_cell(RD_CellParams *params, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -3967,8 +3944,7 @@ rd_cell(RD_CellParams *params, String8 string)
   return sig;
 }
 
-internal UI_Signal
-rd_cellf(RD_CellParams *params, char *fmt, ...)
+UI_Signal rd_cellf(RD_CellParams *params, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

@@ -11,8 +11,7 @@ global RDIM_LocalState *g_p2r_local_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
-p2r_end_of_cplusplus_container_name(String8 str)
+U64 p2r_end_of_cplusplus_container_name(String8 str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
   //       if no "::" is contained in str, then the returned index is 0.
@@ -33,8 +32,7 @@ p2r_end_of_cplusplus_container_name(String8 str)
   return(result);
 }
 
-internal U64
-p2r_hash_from_voff(U64 voff)
+U64 p2r_hash_from_voff(U64 voff)
 {
   U64 hash = (voff >> 3) ^ ((7 & voff) << 6);
   return hash;
@@ -43,8 +41,7 @@ p2r_hash_from_voff(U64 voff)
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *
-p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
+RDIM_Location* p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
   if(0 <= offset && offset <= (S64)max_U16)
@@ -75,8 +72,7 @@ p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code
   return result;
 }
 
-internal void
-p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
+void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
 {
   //- rjf: extract range info
   U64 voff_first = 0;
@@ -2124,8 +2120,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 ////////////////////////////////
 //~ rjf: Top-Level Conversion Entry Point
 
-internal RDIM_BakeParams *
-p2r_convert(Arena *arena, RDIM_LocalState *local_state, RC_Context *in)
+RDIM_BakeParams* p2r_convert(Arena *arena, RDIM_LocalState *local_state, RC_Context *in)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -3096,8 +3091,7 @@ p2r_convert(Arena *arena, RDIM_LocalState *local_state, RC_Context *in)
 
 ////////////////////////////////
 
-internal B32
-p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st)
+B32 p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st)
 {
   Temp scratch = scratch_begin(0,0);
   
@@ -3129,8 +3123,7 @@ p2r_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable
   return has_ref;
 }
 
-internal B32
-p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st)
+B32 p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st)
 {
   Temp scratch = scratch_begin(0,0);
   
@@ -3165,8 +3158,7 @@ p2r_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st
   return has_ref;
 }
 
-internal B32
-p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list)
+B32 p2r_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list)
 {
   Temp scratch = scratch_begin(0,0);
   

@@ -10,8 +10,7 @@
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U128
-hs_hash_from_data(String8 data)
+U128 hs_hash_from_data(String8 data)
 {
   U128 u128 = {0};
   XXH128_hash_t hash = XXH3_128bits(data.str, data.size);
@@ -22,8 +21,7 @@ hs_hash_from_data(String8 data)
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
-hs_init(void)
+void hs_init(void)
 {
   Arena *arena = arena_alloc();
   hs_shared = push_array(arena, HS_Shared, 1);
@@ -57,8 +55,7 @@ hs_init(void)
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void
-hs_tctx_ensure_inited(void)
+void hs_tctx_ensure_inited(void)
 {
   if(hs_tctx == 0)
   {
@@ -71,8 +68,7 @@ hs_tctx_ensure_inited(void)
 ////////////////////////////////
 //~ rjf: Cache Submission
 
-internal U128
-hs_submit_data(U128 key, Arena **data_arena, String8 data)
+U128 hs_submit_data(U128 key, Arena **data_arena, String8 data)
 {
   U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
   U64 key_stripe_idx = key_slot_idx%hs_shared->key_stripes_count;
@@ -188,8 +184,7 @@ hs_submit_data(U128 key, Arena **data_arena, String8 data)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal HS_Scope *
-hs_scope_open(void)
+HS_Scope* hs_scope_open(void)
 {
   hs_tctx_ensure_inited();
   HS_Scope *scope = hs_tctx->free_scope;
@@ -205,8 +200,7 @@ hs_scope_open(void)
   return scope;
 }
 
-internal void
-hs_scope_close(HS_Scope *scope)
+void hs_scope_close(HS_Scope *scope)
 {
   for(HS_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -232,8 +226,7 @@ hs_scope_close(HS_Scope *scope)
   SLLStackPush(hs_tctx->free_scope, scope);
 }
 
-internal void
-hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
+void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 {
   HS_Touch *touch = hs_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
@@ -253,8 +246,7 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 ////////////////////////////////
 //~ rjf: Downstream Accesses
 
-internal void
-hs_hash_downstream_inc(U128 hash)
+void hs_hash_downstream_inc(U128 hash)
 {
   U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
   U64 stripe_idx = slot_idx%hs_shared->stripes_count;
@@ -273,8 +265,7 @@ hs_hash_downstream_inc(U128 hash)
   }
 }
 
-internal void
-hs_hash_downstream_dec(U128 hash)
+void hs_hash_downstream_dec(U128 hash)
 {
   U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
   U64 stripe_idx = slot_idx%hs_shared->stripes_count;
@@ -296,8 +287,7 @@ hs_hash_downstream_dec(U128 hash)
 ////////////////////////////////
 //~ rjf: Cache Lookup
 
-internal U128
-hs_hash_from_key(U128 key, U64 rewind_count)
+U128 hs_hash_from_key(U128 key, U64 rewind_count)
 {
   U128 result = {0};
   U64 key_slot_idx = key.u64[1]%hs_shared->key_slots_count;
@@ -318,8 +308,7 @@ hs_hash_from_key(U128 key, U64 rewind_count)
   return result;
 }
 
-internal String8
-hs_data_from_hash(HS_Scope *scope, U128 hash)
+String8 hs_data_from_hash(HS_Scope *scope, U128 hash)
 {
   ProfBeginFunction();
   String8 result = {0};
@@ -346,8 +335,7 @@ hs_data_from_hash(HS_Scope *scope, U128 hash)
 ////////////////////////////////
 //~ rjf: Evictor Thread
 
-internal void
-hs_evictor_thread__entry_point(void *p)
+void hs_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[hs] evictor thread");
   for(;;)
