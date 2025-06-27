@@ -23,13 +23,13 @@ UI_StackTable:
   { MinHeight                          min_height                    F32                   0                                  }
   
   //- rjf: flags
-  { PermissionFlags                    permission_flags              UI_PermissionFlags    UI_PermissionFlag_All              }
+  { PermissionFlags                    permission_flags              UI_PermissionFlags    UI_PermissionFlags.All              }
   { Flags                              flags                         UI_BoxFlags           0                                  }
   { OmitFlags                          omit_flags                    UI_BoxFlags           0                                  }
   
   //- rjf: interaction
-  { FocusHot                           focus_hot                     UI_FocusKind          UI_FocusKind_Null                  }
-  { FocusActive                        focus_active                  UI_FocusKind          UI_FocusKind_Null                  }
+  { FocusHot                           focus_hot                     UI_FocusKind          UI_FocusKind.Null                  }
+  { FocusActive                        focus_active                  UI_FocusKind          UI_FocusKind.Null                  }
   { FastpathCodepoint                  fastpath_codepoint            U32                   0                                  }
   { GroupKey                           group_key                     UI_Key                `ui_key_zero()`                    }
   
@@ -63,7 +63,7 @@ UI_StackTable:
   
   //- rjf: text parameters
   { TextPadding                        text_padding                  F32                   0                                  }
-  { TextAlignment                      text_alignment                UI_TextAlign          UI_TextAlign_Left                  }
+  { TextAlignment                      text_alignment                UI_TextAlign          UI_TextAlign.Left                  }
 }
 
 //- rjf: declaring stack node types

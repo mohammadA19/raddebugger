@@ -91,11 +91,11 @@ state->pref_width_nil_stack_top.v = ui_px(250.f, 1.f);\
 state->pref_height_nil_stack_top.v = ui_px(30.f, 1.f);\
 state->min_width_nil_stack_top.v = 0;\
 state->min_height_nil_stack_top.v = 0;\
-state->permission_flags_nil_stack_top.v = UI_PermissionFlag_All;\
+state->permission_flags_nil_stack_top.v = UI_PermissionFlags.All;\
 state->flags_nil_stack_top.v = 0;\
 state->omit_flags_nil_stack_top.v = 0;\
-state->focus_hot_nil_stack_top.v = UI_FocusKind_Null;\
-state->focus_active_nil_stack_top.v = UI_FocusKind_Null;\
+state->focus_hot_nil_stack_top.v = UI_FocusKind.Null;\
+state->focus_active_nil_stack_top.v = UI_FocusKind.Null;\
 state->fastpath_codepoint_nil_stack_top.v = 0;\
 state->group_key_nil_stack_top.v = ui_key_zero();\
 state->transparency_nil_stack_top.v = 0;\
@@ -115,7 +115,7 @@ state->corner_radius_10_nil_stack_top.v = 0;\
 state->corner_radius_11_nil_stack_top.v = 0;\
 state->blur_size_nil_stack_top.v = 0;\
 state->text_padding_nil_stack_top.v = 0;\
-state->text_alignment_nil_stack_top.v = UI_TextAlign_Left;\
+state->text_alignment_nil_stack_top.v = UI_TextAlign.Left;\
 
 #define UI_DeclStacks \
 struct\
@@ -167,11 +167,11 @@ state->pref_width_stack.top = &state->pref_width_nil_stack_top; state->pref_widt
 state->pref_height_stack.top = &state->pref_height_nil_stack_top; state->pref_height_stack.bottom_val = ui_px(30.f, 1.f); state->pref_height_stack.free = 0; state->pref_height_stack.auto_pop = 0;\
 state->min_width_stack.top = &state->min_width_nil_stack_top; state->min_width_stack.bottom_val = 0; state->min_width_stack.free = 0; state->min_width_stack.auto_pop = 0;\
 state->min_height_stack.top = &state->min_height_nil_stack_top; state->min_height_stack.bottom_val = 0; state->min_height_stack.free = 0; state->min_height_stack.auto_pop = 0;\
-state->permission_flags_stack.top = &state->permission_flags_nil_stack_top; state->permission_flags_stack.bottom_val = UI_PermissionFlag_All; state->permission_flags_stack.free = 0; state->permission_flags_stack.auto_pop = 0;\
+state->permission_flags_stack.top = &state->permission_flags_nil_stack_top; state->permission_flags_stack.bottom_val = UI_PermissionFlags.All; state->permission_flags_stack.free = 0; state->permission_flags_stack.auto_pop = 0;\
 state->flags_stack.top = &state->flags_nil_stack_top; state->flags_stack.bottom_val = 0; state->flags_stack.free = 0; state->flags_stack.auto_pop = 0;\
 state->omit_flags_stack.top = &state->omit_flags_nil_stack_top; state->omit_flags_stack.bottom_val = 0; state->omit_flags_stack.free = 0; state->omit_flags_stack.auto_pop = 0;\
-state->focus_hot_stack.top = &state->focus_hot_nil_stack_top; state->focus_hot_stack.bottom_val = UI_FocusKind_Null; state->focus_hot_stack.free = 0; state->focus_hot_stack.auto_pop = 0;\
-state->focus_active_stack.top = &state->focus_active_nil_stack_top; state->focus_active_stack.bottom_val = UI_FocusKind_Null; state->focus_active_stack.free = 0; state->focus_active_stack.auto_pop = 0;\
+state->focus_hot_stack.top = &state->focus_hot_nil_stack_top; state->focus_hot_stack.bottom_val = UI_FocusKind.Null; state->focus_hot_stack.free = 0; state->focus_hot_stack.auto_pop = 0;\
+state->focus_active_stack.top = &state->focus_active_nil_stack_top; state->focus_active_stack.bottom_val = UI_FocusKind.Null; state->focus_active_stack.free = 0; state->focus_active_stack.auto_pop = 0;\
 state->fastpath_codepoint_stack.top = &state->fastpath_codepoint_nil_stack_top; state->fastpath_codepoint_stack.bottom_val = 0; state->fastpath_codepoint_stack.free = 0; state->fastpath_codepoint_stack.auto_pop = 0;\
 state->group_key_stack.top = &state->group_key_nil_stack_top; state->group_key_stack.bottom_val = ui_key_zero(); state->group_key_stack.free = 0; state->group_key_stack.auto_pop = 0;\
 state->transparency_stack.top = &state->transparency_nil_stack_top; state->transparency_stack.bottom_val = 0; state->transparency_stack.free = 0; state->transparency_stack.auto_pop = 0;\
@@ -191,7 +191,7 @@ state->corner_radius_10_stack.top = &state->corner_radius_10_nil_stack_top; stat
 state->corner_radius_11_stack.top = &state->corner_radius_11_nil_stack_top; state->corner_radius_11_stack.bottom_val = 0; state->corner_radius_11_stack.free = 0; state->corner_radius_11_stack.auto_pop = 0;\
 state->blur_size_stack.top = &state->blur_size_nil_stack_top; state->blur_size_stack.bottom_val = 0; state->blur_size_stack.free = 0; state->blur_size_stack.auto_pop = 0;\
 state->text_padding_stack.top = &state->text_padding_nil_stack_top; state->text_padding_stack.bottom_val = 0; state->text_padding_stack.free = 0; state->text_padding_stack.auto_pop = 0;\
-state->text_alignment_stack.top = &state->text_alignment_nil_stack_top; state->text_alignment_stack.bottom_val = UI_TextAlign_Left; state->text_alignment_stack.free = 0; state->text_alignment_stack.auto_pop = 0;\
+state->text_alignment_stack.top = &state->text_alignment_nil_stack_top; state->text_alignment_stack.bottom_val = UI_TextAlign.Left; state->text_alignment_stack.free = 0; state->text_alignment_stack.auto_pop = 0;\
 
 #define UI_AutoPopStacks(state) \
 if(state->parent_stack.auto_pop) { ui_pop_parent(); state->parent_stack.auto_pop = 0; }\

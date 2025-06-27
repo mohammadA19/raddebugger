@@ -432,10 +432,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     ui_set_next_pref_width(ui_px(code_area_dim.x, 1));
     ui_set_next_pref_height(ui_px(code_area_dim.y, 1));
     ui_set_next_child_layout_axis(Axis2_Y);
-    container_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|
-                                              UI_BoxFlag_Scroll|
-                                              UI_BoxFlag_AllowOverflowX|
-                                              UI_BoxFlag_AllowOverflowY,
+    container_box = ui_build_box_from_stringf(UI_BoxFlags.Clip|
+                                              UI_BoxFlags.Scroll|
+                                              UI_BoxFlags.AllowOverflowX|
+                                              UI_BoxFlags.AllowOverflowY,
                                               "###code_area");
   }
   
@@ -580,7 +580,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //- rjf: do keyboard interaction
   //
   B32 snap[Axis2_COUNT] = {0};
-  UI_Focus(UI_FocusKind_On)
+  UI_Focus(UI_FocusKind.On)
   {
     if(ui_is_focus_active() && visible_line_num_range.max >= visible_line_num_range.min)
     {
@@ -599,7 +599,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     
     //- rjf: build code slice
     RD_CodeSliceSignal sig = {0};
-    UI_Focus(UI_FocusKind_On)
+    UI_Focus(UI_FocusKind.On)
     {
       sig = rd_code_slicef(&code_slice_params, &rd_regs()->cursor, &rd_regs()->mark, &cv->preferred_column, "code_slice");
     }
@@ -775,7 +775,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       for(UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl && evt->modifiers & OS_Modifier_Shift)
+        if(evt->kind == UI_EventKind.Scroll && evt->modifiers & OS_Modifier_Ctrl && evt->modifiers & OS_Modifier_Shift)
         {
           ui_eat_event(evt);
           if(evt->delta_2f32.y < 0)
@@ -2104,8 +2104,8 @@ RD_VIEW_UI_FUNCTION_DEF(text)
         UI_PrefWidth(ui_text_dim(10, 1))
         UI_CornerRadius(ui_top_font_size()/3)
         UI_PrefWidth(ui_text_dim(10, 1))
-        UI_Focus(UI_FocusKind_On)
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_Focus(UI_FocusKind.On)
+        UI_TextAlignment(UI_TextAlign.Center)
         UI_TagF("pop")
         if(ui_clicked(ui_buttonf("Find alternative...")))
       {
@@ -2176,9 +2176,9 @@ RD_VIEW_UI_FUNCTION_DEF(text)
   if(!file_is_missing && key_has_data) UI_FontSize(main_font_size) UI_TagF(file_is_out_of_date ? "bad_pop" : ".")
   {
     ui_set_next_rect(shift_2f32(bottom_bar_rect, scale_2f32(rect.p0, -1.f)));
-    ui_set_next_flags(UI_BoxFlag_DrawBackground);
+    ui_set_next_flags(UI_BoxFlags.DrawBackground);
     UI_Row
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_text_dim(10, 1))
       UI_TagF("weak")
     {
@@ -2187,7 +2187,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
         UI_Box *box = &ui_nil_box;
         RD_Font(RD_FontSlot_Icons)
         {
-          box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_Clickable, "%S###file_ood_warning", rd_icon_kind_text_table[RD_IconKind_WarningBig]);
+          box = ui_build_box_from_stringf(UI_BoxFlags.DrawText|UI_BoxFlags.Clickable, "%S###file_ood_warning", rd_icon_kind_text_table[RD_IconKind_WarningBig]);
         }
         UI_Signal sig = ui_signal_from_box(box);
         if(ui_hovering(sig)) UI_Tooltip
@@ -2451,9 +2451,9 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   if(!is_loading && has_disasm) UI_FontSize(main_font_size)
   {
     ui_set_next_rect(shift_2f32(bottom_bar_rect, scale_2f32(rect.p0, -1.f)));
-    ui_set_next_flags(UI_BoxFlag_DrawBackground);
+    ui_set_next_flags(UI_BoxFlags.DrawBackground);
     UI_Row
-      UI_TextAlignment(UI_TextAlign_Center)
+      UI_TextAlignment(UI_TextAlign.Center)
       UI_PrefWidth(ui_text_dim(10, 1))
       UI_TagF("weak")
       RD_Font(RD_FontSlot_Code)
@@ -2671,7 +2671,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     need_update = 0;
     
     //- rjf: take keyboard controls
-    UI_Focus(UI_FocusKind_On) if(ui_is_focus_active())
+    UI_Focus(UI_FocusKind.On) if(ui_is_focus_active())
     {
       U64 next_cursor_base_vaddr = cursor_base_vaddr;
       U64 next_mark_base_vaddr = mark_base_vaddr;
@@ -2681,13 +2681,13 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         switch(evt->delta_unit)
         {
           default:{}break;
-          case UI_EventDeltaUnit_Char:
+          case UI_EventDeltaUnit.Char:
           {
             cell_delta.x = (S64)evt->delta_2s32.x;
             cell_delta.y = (S64)evt->delta_2s32.y;
           }break;
-          case UI_EventDeltaUnit_Word:
-          case UI_EventDeltaUnit_Page:
+          case UI_EventDeltaUnit.Word:
+          case UI_EventDeltaUnit.Page:
           {
             if(evt->delta_2s32.x < 0)
             {
@@ -2712,7 +2712,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         {
           good_action = 1;
         }
-        if(good_action && evt->flags & UI_EventFlag_ZeroDeltaOnSelect && cursor_base_vaddr != mark_base_vaddr)
+        if(good_action && evt->flags & UI_EventFlags.ZeroDeltaOnSelect && cursor_base_vaddr != mark_base_vaddr)
         {
           MemoryZeroStruct(&cell_delta);
         }
@@ -2723,7 +2723,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           next_cursor_base_vaddr += cell_delta.x;
           next_cursor_base_vaddr += cell_delta.y*num_columns;
         }
-        if(good_action && evt->flags & UI_EventFlag_PickSelectSide && cursor_base_vaddr != mark_base_vaddr)
+        if(good_action && evt->flags & UI_EventFlags.PickSelectSide && cursor_base_vaddr != mark_base_vaddr)
         {
           if(evt->delta_2s32.x < 0 || evt->delta_2s32.y < 0)
           {
@@ -2734,7 +2734,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             next_cursor_base_vaddr = Max(cursor_base_vaddr, mark_base_vaddr);
           }
         }
-        if(good_action && !(evt->flags & UI_EventFlag_KeepMark))
+        if(good_action && !(evt->flags & UI_EventFlags.KeepMark))
         {
           next_mark_base_vaddr = next_cursor_base_vaddr;
         }
@@ -3241,18 +3241,18 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   UI_Parent(container_box) UI_TagF("floating")
   {
     UI_Rect(r2f32p(0, 0, dim_2f32(rect).x - scroll_bar_dim, row_height_px))
-      header_box = ui_build_box_from_stringf(UI_BoxFlag_DrawSideBottom|
-                                             UI_BoxFlag_DrawBackground|
-                                             UI_BoxFlag_DrawDropShadow|
-                                             UI_BoxFlag_DrawBackgroundBlur|
-                                             UI_BoxFlag_Floating, "table_header");
+      header_box = ui_build_box_from_stringf(UI_BoxFlags.DrawSideBottom|
+                                             UI_BoxFlags.DrawBackground|
+                                             UI_BoxFlags.DrawDropShadow|
+                                             UI_BoxFlags.DrawBackgroundBlur|
+                                             UI_BoxFlags.Floating, "table_header");
     UI_Parent(header_box)
       RD_Font(RD_FontSlot_Code)
       UI_FontSize(font_size)
     {
       UI_PrefWidth(ui_px(big_glyph_advance*20.f, 1.f)) ui_labelf("Address");
       UI_PrefWidth(ui_px(cell_width_px, 1.f))
-        UI_TextAlignment(UI_TextAlign_Center)
+        UI_TextAlignment(UI_TextAlign.Center)
       {
         Rng1U64 col_selection_rng = r1u64(cursor_base_vaddr%num_columns, mark_base_vaddr%num_columns);
         for(U64 row_off = 0; row_off < num_columns; row_off += 1)
@@ -3276,7 +3276,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     ui_set_next_fixed_y(footer_rect.y0);
     ui_set_next_fixed_width(dim_2f32(footer_rect).x);
     ui_set_next_fixed_height(dim_2f32(footer_rect).y);
-    footer_box = ui_build_box_from_stringf(UI_BoxFlag_DrawSideTop|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBackgroundBlur|UI_BoxFlag_DrawDropShadow, "footer");
+    footer_box = ui_build_box_from_stringf(UI_BoxFlags.DrawSideTop|UI_BoxFlags.DrawBackground|UI_BoxFlags.DrawBackgroundBlur|UI_BoxFlags.DrawDropShadow, "footer");
     UI_Parent(footer_box) RD_Font(RD_FontSlot_Code)
     {
       UI_PrefWidth(ui_em(7.5f, 1.f)) UI_HeightFill UI_Column UI_TagF("weak")
@@ -3320,9 +3320,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     ui_set_next_fixed_y(content_rect.y0);
     ui_set_next_fixed_width(dim_2f32(content_rect).x);
     ui_set_next_fixed_height(dim_2f32(content_rect).y);
-    scrollable_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|
-                                               UI_BoxFlag_Scroll|
-                                               UI_BoxFlag_AllowOverflowY,
+    scrollable_box = ui_build_box_from_stringf(UI_BoxFlags.Clip|
+                                               UI_BoxFlags.Scroll|
+                                               UI_BoxFlags.AllowOverflowY,
                                                "scrollable_box");
     container_box->view_off.x = container_box->view_off_target.x = scroll_pos.x.idx + scroll_pos.x.off;
     scrollable_box->view_off.y = scrollable_box->view_off_target.y = floor_f32(row_height_px*mod_f32(scroll_pos.y.off, 1.f) + row_height_px*(scroll_pos.y.off < 0));
@@ -3336,10 +3336,10 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   UI_Parent(scrollable_box) UI_WidthFill UI_HeightFill
   {
     ui_set_next_child_layout_axis(Axis2_Y);
-    row_container_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "row_container");
+    row_container_box = ui_build_box_from_stringf(UI_BoxFlags.Clickable, "row_container");
     UI_Parent(row_container_box)
     {
-      row_overlay_box = ui_build_box_from_stringf(UI_BoxFlag_Floating, "row_overlay");
+      row_overlay_box = ui_build_box_from_stringf(UI_BoxFlags.Floating, "row_overlay");
     }
   }
   
@@ -3402,7 +3402,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     {
       for(UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if(evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
+        if(evt->kind == UI_EventKind.Scroll && evt->modifiers & OS_Modifier_Ctrl)
         {
           ui_eat_event(evt);
           if(evt->delta_2f32.y < 0)
@@ -3457,7 +3457,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           ui_labelf("0x%016I64x", row_range_bytes.min);
         }
         UI_PrefWidth(ui_px(cell_width_px, 1.f))
-          UI_TextAlignment(UI_TextAlign_Center)
+          UI_TextAlignment(UI_TextAlign.Center)
           UI_CornerRadius(0)
         {
           for(U64 col_idx = 0; col_idx < num_columns; col_idx += 1)
@@ -3489,51 +3489,51 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               Vec4F32 cell_bd_rgba = ui_color_from_name(str8_lit("text"));
               if(global_byte_num == mouse_hover_byte_num)
               {
-                cell_flags |= UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawDropShadow;
+                cell_flags |= UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawDropShadow;
               }
               if(annotation_node != 0)
               {
-                cell_flags |= UI_BoxFlag_DrawBackground;
+                cell_flags |= UI_BoxFlags.DrawBackground;
                 Vec4F32 cell_bg_color_rgba = annotation_node->v->color;
                 Vec4F32 cell_bg_color_hsva = hsva_from_rgba(cell_bg_color_rgba);
                 cell_bg_rgba = mix_4f32(cell_bg_color_rgba, main_bg_color_rgba, clamp_1f32(r1f32(0, 1), 1.f - abs_f32(cell_bg_color_hsva.z - main_tx_color_hsva.z)*0.5f));
               }
               if(selection.min == global_byte_idx)
               {
-                cell_flags |= UI_BoxFlag_DrawSideLeft;
+                cell_flags |= UI_BoxFlags.DrawSideLeft;
               }
               if(selection.max == global_byte_idx)
               {
-                cell_flags |= UI_BoxFlag_DrawSideRight;
+                cell_flags |= UI_BoxFlags.DrawSideRight;
               }
               if(row_idx == (selection.min - view_range.min)/num_columns && selection.min <= global_byte_idx && global_byte_idx <= selection.max)
               {
-                cell_flags |= UI_BoxFlag_DrawSideTop;
+                cell_flags |= UI_BoxFlags.DrawSideTop;
               }
               if(row_idx == (selection.max - view_range.min)/num_columns && selection.min <= global_byte_idx && global_byte_idx <= selection.max)
               {
-                cell_flags |= UI_BoxFlag_DrawSideBottom;
+                cell_flags |= UI_BoxFlags.DrawSideBottom;
               }
               if(contains_1u64(rich_hover_range, global_byte_idx)) UI_TagF("pop")
               {
-                cell_flags |= UI_BoxFlag_DrawBackground;
+                cell_flags |= UI_BoxFlags.DrawBackground;
                 cell_bg_rgba = ui_color_from_name(str8_lit("background"));
               }
               if(byte_is_changed) UI_TagF("fresh")
               {
-                cell_flags |= UI_BoxFlag_DrawBackground;
+                cell_flags |= UI_BoxFlags.DrawBackground;
                 cell_bg_rgba = ui_color_from_name(str8_lit("background"));
               }
               if(byte_is_bad) UI_TagF("bad_pop")
               {
-                cell_flags |= UI_BoxFlag_DrawBackground;
+                cell_flags |= UI_BoxFlags.DrawBackground;
                 cell_bg_rgba = ui_color_from_name(str8_lit("background"));
               }
               
               // rjf: build
               if(cell_bd_rgba.w != 0) { ui_set_next_border_color(cell_bd_rgba); }
               if(cell_bg_rgba.w != 0) { ui_set_next_background_color(cell_bg_rgba); }
-              UI_Box *cell_box = ui_build_box_from_key(UI_BoxFlag_DrawText|cell_flags, ui_key_zero());
+              UI_Box *cell_box = ui_build_box_from_key(UI_BoxFlags.DrawText|cell_flags, ui_key_zero());
               if(byte_is_selected || byte_is_changed)
               {
                 ui_box_equip_display_fstrs(cell_box, &byte_fstrs_selected[byte_value]);
@@ -3559,7 +3559,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                     ui_set_next_corner_radius_01(cell_width_px/8.f);
                     ui_set_next_corner_radius_10(cell_width_px/8.f);
                     ui_set_next_corner_radius_11(cell_width_px/8.f);
-                    ui_build_box_from_key(UI_BoxFlag_Floating|UI_BoxFlag_DrawSideLeft|UI_BoxFlag_DrawSideTop|UI_BoxFlag_DrawDropShadow, ui_key_zero());
+                    ui_build_box_from_key(UI_BoxFlags.Floating|UI_BoxFlags.DrawSideLeft|UI_BoxFlags.DrawSideTop|UI_BoxFlags.DrawDropShadow, ui_key_zero());
                   }
                   if(global_byte_idx+1 == a->vaddr_range.max) UI_Parent(row_overlay_box)
                   {
@@ -3574,7 +3574,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                     ui_set_next_corner_radius_01(cell_width_px/8.f);
                     ui_set_next_corner_radius_10(cell_width_px/8.f);
                     ui_set_next_corner_radius_11(cell_width_px/8.f);
-                    ui_build_box_from_key(UI_BoxFlag_Floating|UI_BoxFlag_DrawSideRight|UI_BoxFlag_DrawSideBottom|UI_BoxFlag_DrawDropShadow, ui_key_zero());
+                    ui_build_box_from_key(UI_BoxFlags.Floating|UI_BoxFlags.DrawSideRight|UI_BoxFlags.DrawSideBottom|UI_BoxFlags.DrawDropShadow, ui_key_zero());
                   }
                 }
               }
@@ -3594,7 +3594,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                     {
                       rd_code_label(1.f, 1, ui_color_from_name(str8_lit("code_type")), a->type_string);
                     }
-                    UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) ui_label(str8_from_memory_size(scratch.arena, dim_1u64(a->vaddr_range)));
+                    UI_FlagsAdd(UI_BoxFlags.DrawTextWeak) ui_label(str8_from_memory_size(scratch.arena, dim_1u64(a->vaddr_range)));
                     if(a_n->next != 0)
                     {
                       ui_spacer(ui_em(1.5f, 1.f));
@@ -3625,7 +3625,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             }
           }
           String8 ascii_text = str8(row_ascii_buffer, num_bytes_this_row);
-          UI_Box *ascii_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
+          UI_Box *ascii_box = ui_build_box_from_stringf(UI_BoxFlags.DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
           if(selection.max >= row_range_bytes.min && selection.min < row_range_bytes.max)
           {
             Rng1U64 selection_in_row = intersect_1u64(row_range_bytes, selection);
@@ -3892,7 +3892,7 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
   Rng2F32 canvas_rect = r2f32p(0, 0, canvas_dim.x, canvas_dim.y);
   UI_Rect(canvas_rect)
   {
-    canvas_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_Clickable|UI_BoxFlag_Scroll, "bmp_canvas");
+    canvas_box = ui_build_box_from_stringf(UI_BoxFlags.Clip|UI_BoxFlags.Clickable|UI_BoxFlags.Scroll, "bmp_canvas");
   }
   
   //////////////////////////////
@@ -4003,10 +4003,10 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
                                           img_rect_scr.y0 + (mouse_bmp.y+1)*pixel_size_scr);
       UI_Rect(indicator_rect_scr)
       {
-        ui_build_box_from_key(UI_BoxFlag_DrawBorder|UI_BoxFlag_Floating, ui_key_zero());
+        ui_build_box_from_key(UI_BoxFlags.DrawBorder|UI_BoxFlags.Floating, ui_key_zero());
       }
     }
-    UI_Rect(img_rect_scr) UI_Flags(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawDropShadow|UI_BoxFlag_Floating)
+    UI_Rect(img_rect_scr) UI_Flags(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawDropShadow|UI_BoxFlags.Floating)
     {
       ui_image(texture, R_Tex2DSampleKind_Nearest, r2f32p(0, 0, (F32)dim.x, (F32)dim.y), v4f32(1, 1, 1, 1), 0, str8_lit("bmp_image"));
     }
@@ -4217,7 +4217,7 @@ RD_VIEW_UI_FUNCTION_DEF(color)
           UI_BackgroundColor(linear_from_srgba(v4f32(rgba.x, rgba.y, rgba.z, 1.f)))
           UI_CornerRadius(4.f)
           UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-          ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
+          ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, str8_lit(""));
         ui_spacer(ui_em(2.f, 1.f));
         UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_children_sum(1)) UI_Row
         {
@@ -4300,7 +4300,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
   Rng2F32 clip = box->rect;
   for(UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
   {
-    if(b->flags & UI_BoxFlag_Clip)
+    if(b->flags & UI_BoxFlags.Clip)
     {
       clip = intersect_2f32(b->rect, clip);
     }
@@ -4403,7 +4403,7 @@ RD_VIEW_UI_FUNCTION_DEF(geo3d)
     UI_Box *box = &ui_nil_box;
     UI_FixedSize(dim)
     {
-      box = ui_build_box_from_stringf(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_Scroll, "geo_box");
+      box = ui_build_box_from_stringf(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground|UI_BoxFlags.Clickable|UI_BoxFlags.Scroll, "geo_box");
     }
     UI_Signal sig = ui_signal_from_box(box);
     if(ui_dragging(sig))

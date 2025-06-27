@@ -165,18 +165,18 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   switch(event->delta_unit)
   {
     default:{}break;
-    case UI_EventDeltaUnit_Char:
+    case UI_EventDeltaUnit.Char:
     {
       // TODO(rjf): this should account for multi-byte characters in UTF-8... for now, just assume ASCII and
       // no-op
     }break;
-    case UI_EventDeltaUnit_Word:
+    case UI_EventDeltaUnit.Word:
     {
       delta.x = (S32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
-    case UI_EventDeltaUnit_Line:
-    case UI_EventDeltaUnit_Whole:
-    case UI_EventDeltaUnit_Page:
+    case UI_EventDeltaUnit.Line:
+    case UI_EventDeltaUnit.Whole:
+    case UI_EventDeltaUnit.Page:
     {
       S64 first_nonwhitespace_column = 1;
       for(U64 idx = 0; idx < string.size; idx += 1)
@@ -193,25 +193,25 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: zero delta
-  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_ZeroDeltaOnSelect)
+  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlags.ZeroDeltaOnSelect)
   {
     delta = v2s32(0, 0);
   }
   
   //- rjf: form next cursor
-  if(txt_pt_match(cursor, mark) || !(event->flags & UI_EventFlag_ZeroDeltaOnSelect))
+  if(txt_pt_match(cursor, mark) || !(event->flags & UI_EventFlags.ZeroDeltaOnSelect))
   {
     next_cursor.column += delta.x;
   }
   
   //- rjf: cap at line
-  if(event->flags & UI_EventFlag_CapAtLine)
+  if(event->flags & UI_EventFlags.CapAtLine)
   {
     next_cursor.column = Clamp(1, next_cursor.column, (S64)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
-  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_PickSelectSide)
+  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlags.PickSelectSide)
   {
     if(original_delta.x < 0 || original_delta.y < 0)
     {
@@ -224,7 +224,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: copying
-  if(event->flags & UI_EventFlag_Copy)
+  if(event->flags & UI_EventFlags.Copy)
   {
     if(cursor.line == mark.line)
     {
@@ -238,7 +238,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: pasting
-  if(event->flags & UI_EventFlag_Paste)
+  if(event->flags & UI_EventFlags.Paste)
   {
     range = txt_rng(cursor, mark);
     replace = os_get_clipboard_text(arena);
@@ -246,7 +246,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: deletion
-  if(event->flags & UI_EventFlag_Delete)
+  if(event->flags & UI_EventFlags.Delete)
   {
     TxtPt new_pos = txt_pt_min(next_cursor, next_mark);
     range = txt_rng(next_cursor, next_mark);
@@ -255,7 +255,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: stick mark to cursor, when we don't want to keep it in the same spot
-  if(!(event->flags & UI_EventFlag_KeepMark))
+  if(!(event->flags & UI_EventFlags.KeepMark))
   {
     next_mark = next_cursor;
   }
@@ -528,53 +528,53 @@ ui_next_event(UI_Event **ev)
     for(UI_EventNode *n = start_node; n != 0; n = n->next)
     {
       B32 good = 1;
-      if(!(perms & UI_PermissionFlag_ClicksLeft) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+      if(!(perms & UI_PermissionFlags.ClicksLeft) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_LeftMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ClicksMiddle) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+      if(!(perms & UI_PermissionFlags.ClicksMiddle) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_MiddleMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ClicksRight) &&
-         (n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release) &&
+      if(!(perms & UI_PermissionFlags.ClicksRight) &&
+         (n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release) &&
          (n->v.key == OS_Key_RightMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollX) && (n->v.kind == UI_EventKind_Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers == OS_Modifier_Shift))
+      if(!(perms & UI_PermissionFlags.ScrollX) && (n->v.kind == UI_EventKind.Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers == OS_Modifier_Shift))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollY) && (n->v.kind == UI_EventKind_Scroll) && n->v.delta_2f32.y != 0 && n->v.modifiers == 0)
+      if(!(perms & UI_PermissionFlags.ScrollY) && (n->v.kind == UI_EventKind.Scroll) && n->v.delta_2f32.y != 0 && n->v.modifiers == 0)
       {
         good = 0;
       }
-      if((n->v.kind == UI_EventKind_Press ||
-          n->v.kind == UI_EventKind_Release ||
-          n->v.kind == UI_EventKind_Navigate ||
-          n->v.kind == UI_EventKind_Edit) &&
+      if((n->v.kind == UI_EventKind.Press ||
+          n->v.kind == UI_EventKind.Release ||
+          n->v.kind == UI_EventKind.Navigate ||
+          n->v.kind == UI_EventKind.Edit) &&
          (n->v.key != OS_Key_LeftMouseButton &&
           n->v.key != OS_Key_MiddleMouseButton &&
           n->v.key != OS_Key_RightMouseButton))
       {
-        if((perms & UI_PermissionFlag_Keyboard) == UI_PermissionFlag_KeyboardSecondary)
+        if((perms & UI_PermissionFlags.Keyboard) == UI_PermissionFlags.KeyboardSecondary)
         {
-          good = !!(n->v.flags & UI_EventFlag_Secondary);
+          good = !!(n->v.flags & UI_EventFlags.Secondary);
         }
-        else if(!(perms & UI_PermissionFlag_Keyboard))
+        else if(!(perms & UI_PermissionFlags.Keyboard))
         {
           good = 0;
         }
       }
-      else if(!(perms & UI_PermissionFlag_Text) && (n->v.kind == UI_EventKind_Text))
+      else if(!(perms & UI_PermissionFlags.Text) && (n->v.kind == UI_EventKind.Text))
       {
         good = 0;
       }
@@ -607,7 +607,7 @@ ui_key_press(OS_Modifiers mods, OS_Key key)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->key == key && evt->modifiers == mods)
+    if(evt->kind == UI_EventKind.Press && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -623,7 +623,7 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Release && evt->key == key && evt->modifiers == mods)
+    if(evt->kind == UI_EventKind.Release && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -641,7 +641,7 @@ ui_text(U32 character)
   String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Text && str8_match(character_text, evt->string, 0))
+    if(evt->kind == UI_EventKind.Text && str8_match(character_text, evt->string, 0))
     {
       result = 1;
       ui_eat_event(evt);
@@ -658,7 +658,7 @@ ui_slot_press(UI_EventActionSlot slot)
   B32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->slot == slot)
+    if(evt->kind == UI_EventKind.Press && evt->slot == slot)
     {
       result = 1;
       ui_eat_event(evt);
@@ -871,7 +871,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: detect mouse-moves
   for(UI_EventNode *n = events->first; n != 0; n = n->next)
   {
-    if(n->v.kind == UI_EventKind_MouseMove)
+    if(n->v.kind == UI_EventKind.MouseMove)
     {
       ui_state->last_time_mousemoved_us = os_now_microseconds();
     }
@@ -899,8 +899,8 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     ui_state->animation_dt = animation_dt;
     MemoryZeroStruct(&ui_state->icon_info);
     ui_state->icon_info.icon_font = icon_info->icon_font;
-    for(UI_IconKind icon_kind = UI_IconKind_Null;
-        icon_kind < UI_IconKind_COUNT;
+    for(UI_IconKind icon_kind = UI_IconKind.Null;
+        icon_kind < UI_IconKind.COUNT;
         icon_kind = (UI_IconKind)(icon_kind + 1))
     {
       ui_state->icon_info.icon_kind_text_map[icon_kind] = push_str8_copy(ui_build_arena(), icon_info->icon_kind_text_map[icon_kind]);
@@ -945,19 +945,19 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
               {
                 continue;
               }
-              if(((node->v.delta_2s32.x > 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
-                 ((node->v.delta_2s32.y > 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavY) || node->v.delta_2s32.y == 0))
+              if(((node->v.delta_2s32.x > 0 && nav_root->flags & UI_BoxFlags.DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
+                 ((node->v.delta_2s32.y > 0 && nav_root->flags & UI_BoxFlags.DefaultFocusNavY) || node->v.delta_2s32.y == 0))
               {
                 taken = 1;
                 nav_next = 1;
               }
-              if(((node->v.delta_2s32.x < 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
-                 ((node->v.delta_2s32.y < 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavY) || node->v.delta_2s32.y == 0))
+              if(((node->v.delta_2s32.x < 0 && nav_root->flags & UI_BoxFlags.DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
+                 ((node->v.delta_2s32.y < 0 && nav_root->flags & UI_BoxFlags.DefaultFocusNavY) || node->v.delta_2s32.y == 0))
               {
                 taken = 1;
                 nav_prev = 1;
               }
-              if(node->v.flags & UI_EventFlag_ExplicitDirectional)
+              if(node->v.flags & UI_EventFlags.ExplicitDirectional)
               {
                 axis_lock = node->v.delta_2s32.x != 0 ? Axis2_X : Axis2_Y;
               }
@@ -975,7 +975,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
-                if(box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
+                if(box != search_start && !(box->flags & UI_BoxFlags.FocusNavSkip) && (box->flags & UI_BoxFlags.Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, box);
                   if(axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
@@ -1014,7 +1014,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
-                if(box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
+                if(box != search_start && !(box->flags & UI_BoxFlags.FocusNavSkip) && (box->flags & UI_BoxFlags.Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, box);
                   if(axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
@@ -1091,7 +1091,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
         //- rjf: some child has the active focus -> accept escape keys to pop from the active key stack
         if(!ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
         {
-          for(;ui_slot_press(UI_EventActionSlot_Cancel);)
+          for(;ui_slot_press(UI_EventActionSlot.Cancel);)
           {
             UI_Box *prev_focus_root = nav_root;
             for(UI_Box *focus_root = ui_box_from_key(nav_root->default_nav_focus_active_key);
@@ -1159,15 +1159,15 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     }
     Vec2F32 anchor = add_2f32(ui_state->ctx_menu_anchor_box_last_pos, ui_state->ctx_menu_anchor_off);
     UI_FixedX(anchor.x) UI_FixedY(anchor.y) UI_PrefWidth(ui_children_sum(1.f)) UI_PrefHeight(ui_children_sum(1.f))
-      UI_Focus(UI_FocusKind_On)
+      UI_Focus(UI_FocusKind.On)
       UI_Squish(0.1f-ui_state->ctx_menu_open_t*0.1f)
       UI_Transparency(1-ui_state->ctx_menu_open_t)
     {
       ui_set_next_child_layout_axis(Axis2_Y);
-      ui_state->ctx_menu_root = ui_build_box_from_stringf(UI_BoxFlag_Clickable|
-                                                          UI_BoxFlag_SquishAnchored|
-                                                          UI_BoxFlag_DrawDropShadow|
-                                                          (ui_state->ctx_menu_open*UI_BoxFlag_DefaultFocusNavY),
+      ui_state->ctx_menu_root = ui_build_box_from_stringf(UI_BoxFlags.Clickable|
+                                                          UI_BoxFlags.SquishAnchored|
+                                                          UI_BoxFlags.DrawDropShadow|
+                                                          (ui_state->ctx_menu_open*UI_BoxFlags.DefaultFocusNavY),
                                                           "###ctx_menu_%I64x", window.u64[0]);
     }
   }
@@ -1199,7 +1199,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     if(!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
     {
       UI_Box *box = ui_box_from_key(ui_state->active_box_key[k]);
-      if(!ui_box_is_nil(box) && box->flags & UI_BoxFlag_Disabled)
+      if(!ui_box_is_nil(box) && box->flags & UI_BoxFlags.Disabled)
       {
         ui_state->active_box_key[k] = ui_key_zero();
       }
@@ -1217,7 +1217,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
   
   //- rjf: escape -> close context menu
-  if(ui_any_ctx_menu_is_open() && ui_slot_press(UI_EventActionSlot_Cancel))
+  if(ui_any_ctx_menu_is_open() && ui_slot_press(UI_EventActionSlot.Cancel))
   {
     ui_ctx_menu_close();
   }
@@ -1351,7 +1351,7 @@ ui_end_build(void)
           !ui_box_is_nil(box);
           box = box->hash_next)
       {
-        if(box->flags & UI_BoxFlag_RoundChildrenByParent)
+        if(box->flags & UI_BoxFlags.RoundChildrenByParent)
         {
           for(UI_Box *b = box; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, box).next)
           {
@@ -1434,12 +1434,12 @@ ui_end_build(void)
         // rjf: grab states informing animation
         B32 is_hot            = (ui_key_match(box->key, ui_state->hot_box_key) ||
                                  ui_key_match(box->key, ui_state->drop_hot_box_key));
-        B32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind_Left]);
-        B32 is_disabled       = !!(box->flags & UI_BoxFlag_Disabled) && (box->first_disabled_build_index+2 < ui_state->build_index ||
+        B32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind.Left]);
+        B32 is_disabled       = !!(box->flags & UI_BoxFlags.Disabled) && (box->first_disabled_build_index+2 < ui_state->build_index ||
                                                                          box->first_touched_build_index == box->first_disabled_build_index);
-        B32 is_focus_hot      = !!(box->flags & UI_BoxFlag_FocusHot) && !(box->flags & UI_BoxFlag_FocusHotDisabled);
-        B32 is_focus_active   = !!(box->flags & UI_BoxFlag_FocusActive) && !(box->flags & UI_BoxFlag_FocusActiveDisabled);
-        B32 is_focus_active_disabled = !!(box->flags & UI_BoxFlag_FocusActiveDisabled);
+        B32 is_focus_hot      = !!(box->flags & UI_BoxFlags.FocusHot) && !(box->flags & UI_BoxFlags.FocusHotDisabled);
+        B32 is_focus_active   = !!(box->flags & UI_BoxFlags.FocusActive) && !(box->flags & UI_BoxFlags.FocusActiveDisabled);
+        B32 is_focus_active_disabled = !!(box->flags & UI_BoxFlags.FocusActiveDisabled);
         
         // rjf: determine rates
         F32 hot_rate      = ui_state->animation_info.hot_animation_rate;
@@ -1457,11 +1457,11 @@ ui_end_build(void)
         box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.x - box->view_off.x) > 0.5f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.y - box->view_off.y) > 0.5f);
-        if(box->flags & UI_BoxFlag_AnimatePosX)
+        if(box->flags & UI_BoxFlags.AnimatePosX)
         {
           box_is_animating = (box_is_animating || abs_f32(box->fixed_position_animated.x - box->fixed_position.x) > 0.5f);
         }
-        if(box->flags & UI_BoxFlag_AnimatePosY)
+        if(box->flags & UI_BoxFlags.AnimatePosY)
         {
           box_is_animating = (box_is_animating || abs_f32(box->fixed_position_animated.y - box->fixed_position.y) > 0.5f);
         }
@@ -1470,7 +1470,7 @@ ui_end_build(void)
         if(box_is_animating)
         {
           box->overlay_color = v4f32(1, 0, 0, 0.1f);
-          box->flags |= UI_BoxFlag_DrawOverlay;
+          box->flags |= UI_BoxFlags.DrawOverlay;
         }
 #endif
         
@@ -1497,15 +1497,15 @@ ui_end_build(void)
         }
         
         // rjf: clamp view
-        if(box->flags & UI_BoxFlag_ViewClamp)
+        if(box->flags & UI_BoxFlags.ViewClamp)
         {
           Vec2F32 max_view_off_target =
           {
             ClampBot(0, box->view_bounds.x - box->fixed_size.x),
             ClampBot(0, box->view_bounds.y - box->fixed_size.y),
           };
-          if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-          if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+          if(box->flags & UI_BoxFlags.ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
+          if(box->flags & UI_BoxFlags.ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
         }
         
         // rjf: animate view offset
@@ -1545,7 +1545,7 @@ ui_end_build(void)
   {
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind_Press &&
+      if(evt->kind == UI_EventKind.Press &&
          (evt->key == OS_Key_LeftMouseButton || evt->key == OS_Key_RightMouseButton))
       {
         ui_ctx_menu_close();
@@ -1554,13 +1554,13 @@ ui_end_build(void)
   }
   
   //- rjf: hover cursor
-  if(!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_state->external_key))
+  if(!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], ui_state->external_key))
   {
     UI_Box *hot = ui_box_from_key(ui_state->hot_box_key);
-    UI_Box *active = ui_box_from_key(ui_state->active_box_key[UI_MouseButtonKind_Left]);
+    UI_Box *active = ui_box_from_key(ui_state->active_box_key[UI_MouseButtonKind.Left]);
     UI_Box *box = ui_box_is_nil(active) ? hot : active;
     OS_Cursor cursor = box->hover_cursor;
-    if(box->flags & UI_BoxFlag_Disabled && box->flags & UI_BoxFlag_Clickable)
+    if(box->flags & UI_BoxFlags.Disabled && box->flags & UI_BoxFlags.Clickable)
     {
       cursor = OS_Cursor_Disabled;
     }
@@ -1580,7 +1580,7 @@ ui_end_build(void)
       UI_BoxRec rec = {0};
       for(UI_Box *b = box; !ui_box_is_nil(b); rec = ui_box_rec_df_pre(b, box), b = rec.next)
       {
-        if(b->flags & UI_BoxFlag_DrawText && b->flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b->font, ui_icon_font()))
+        if(b->flags & UI_BoxFlags.DrawText && b->flags & UI_BoxFlags.HasDisplayString && !fnt_tag_match(b->font, ui_icon_font()))
         {
           String8 display_string = ui_box_display_string(b);
           str8_list_push(scratch.arena, &strs, display_string);
@@ -1618,12 +1618,12 @@ ui_end_build(void)
         S32 pop_idx = 0;
         for(UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
         {
-          if(b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
+          if(b->flags & UI_BoxFlags.DrawText && !(b->flags & UI_BoxFlags.DisableTextTrunc))
           {
             Rng2F32 rect = b->rect;
             for(UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
             {
-              if(p->flags & UI_BoxFlag_Clip)
+              if(p->flags & UI_BoxFlags.Clip)
               {
                 rect = intersect_2f32(rect, p->rect);
               }
@@ -1643,7 +1643,7 @@ ui_end_build(void)
                                                          Min(text_pos.x+drawn_text_dim.x, rect.x1),
                                                          rect.y1),
                                                   ui_state->mouse);
-            if(text_is_truncated && mouse_is_hovering && !(b->flags & UI_BoxFlag_DisableTruncatedHover))
+            if(text_is_truncated && mouse_is_hovering && !(b->flags & UI_BoxFlags.DisableTruncatedHover))
             {
               if(!str8_match(box_display_string, ui_state->string_hover_string, 0) || box->font_size != ui_state->string_hover_size)
               {
@@ -1662,7 +1662,7 @@ ui_end_build(void)
           {
             goto break_all_hover_string;
           }
-          if(b != box && contains_2f32(b->rect, ui_state->mouse) && b->flags & UI_BoxFlag_DrawText)
+          if(b != box && contains_2f32(b->rect, ui_state->mouse) && b->flags & UI_BoxFlags.DrawText)
           {
             goto break_all_hover_string;
           }
@@ -1696,11 +1696,11 @@ ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis)
     switch(b->pref_size[axis].kind)
     {
       default:{}break;
-      case UI_SizeKind_Pixels:
+      case UI_SizeKind.Pixels:
       {
         b->fixed_size.v[axis] = b->pref_size[axis].value;
       }break;
-      case UI_SizeKind_TextContent:
+      case UI_SizeKind.TextContent:
       {
         F32 padding = b->pref_size[axis].value;
         F32 text_size = b->display_fruns.dim.x;
@@ -1720,16 +1720,16 @@ ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
     switch(b->pref_size[axis].kind)
     {
       default:{}break;
-      case UI_SizeKind_ParentPct:
+      case UI_SizeKind.ParentPct:
       {
         // rjf: find parent that has a fixed size
         UI_Box *fixed_parent = &ui_nil_box;
         for(UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
         {
-          if(p->flags & (UI_BoxFlag_FixedWidth<<axis) ||
-             p->pref_size[axis].kind == UI_SizeKind_Pixels ||
-             p->pref_size[axis].kind == UI_SizeKind_TextContent ||
-             p->pref_size[axis].kind == UI_SizeKind_ParentPct)
+          if(p->flags & (UI_BoxFlags.FixedWidth<<axis) ||
+             p->pref_size[axis].kind == UI_SizeKind.Pixels ||
+             p->pref_size[axis].kind == UI_SizeKind.TextContent ||
+             p->pref_size[axis].kind == UI_SizeKind.ParentPct)
           {
             fixed_parent = p;
             break;
@@ -1760,12 +1760,12 @@ ui_calc_sizes_downwards_dependent__in_place(UI_Box *root, Axis2 axis)
         !ui_box_is_nil(b) && pop_idx <= rec.pop_count;
         b = b->parent, pop_idx += 1)
     {
-      if(b->pref_size[axis].kind == UI_SizeKind_ChildrenSum)
+      if(b->pref_size[axis].kind == UI_SizeKind.ChildrenSum)
       {
         F32 sum = 0;
         for(UI_Box *child = b->first; !ui_box_is_nil(child); child = child->next)
         {
-          if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+          if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
           {
             if(axis == b->child_layout_axis)
             {
@@ -1792,12 +1792,12 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
   for(UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
   {
     //- rjf: fixup children sizes (if we're solving along the *non-layout* axis)
-    if(axis != box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
+    if(axis != box->child_layout_axis && !(box->flags & (UI_BoxFlags.AllowOverflowX << axis)))
     {
       F32 allowed_size = box->fixed_size.v[axis];
       for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+        if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
         {
           F32 child_size = child->fixed_size.v[axis];
           F32 violation = child_size - allowed_size;
@@ -1812,7 +1812,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     }
     
     //- rjf: fixup children sizes (in the direction of the layout axis)
-    if(axis == box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
+    if(axis == box->child_layout_axis && !(box->flags & (UI_BoxFlags.AllowOverflowX << axis)))
     {
       // rjf: figure out total allowed size & total size
       F32 total_allowed_size = box->fixed_size.v[axis];
@@ -1820,7 +1820,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
       F32 total_weighted_size = 0;
       for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+        if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
         {
           total_size += child->fixed_size.v[axis];
           total_weighted_size += child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
@@ -1840,7 +1840,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
           U64 child_idx = 0;
           for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
-            if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+            if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
             {
               F32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
               fixup_size_this_child = ClampBot(0, fixup_size_this_child);
@@ -1855,7 +1855,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
           U64 child_idx = 0;
           for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
-            if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+            if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
             {
               F32 fixup_pct = (violation / total_weighted_size);
               fixup_pct = Clamp(0, fixup_pct, 1);
@@ -1869,11 +1869,11 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     }
     
     //- rjf: fixup upwards-relative sizes
-    if(box->flags & (UI_BoxFlag_AllowOverflowX << axis))
+    if(box->flags & (UI_BoxFlags.AllowOverflowX << axis))
     {
       for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(child->pref_size[axis].kind == UI_SizeKind_ParentPct)
+        if(child->pref_size[axis].kind == UI_SizeKind.ParentPct)
         {
           child->fixed_size.v[axis] = box->fixed_size.v[axis] * child->pref_size[axis].value;
         }
@@ -1906,7 +1906,7 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
       F32 original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
       
       // rjf: calculate fixed position & size
-      if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+      if(!(child->flags & (UI_BoxFlags.FloatingX<<axis)))
       {
         child->fixed_position.v[axis] = layout_position;
         if(box->child_layout_axis == axis)
@@ -1921,17 +1921,17 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
       }
       
       // rjf: determine final rect for child, given fixed_position & size
-      if(child->flags & (UI_BoxFlag_AnimatePosX<<axis))
+      if(child->flags & (UI_BoxFlags.AnimatePosX<<axis))
       {
         if(child->first_touched_build_index == child->last_touched_build_index)
         {
           child->fixed_position_animated = child->fixed_position;
         }
-        child->rect.p0.v[axis] = box->rect.p0.v[axis] + child->fixed_position_animated.v[axis] - !(child->flags&(UI_BoxFlag_SkipViewOffX<<axis))*floor_f32(box->view_off.v[axis]);
+        child->rect.p0.v[axis] = box->rect.p0.v[axis] + child->fixed_position_animated.v[axis] - !(child->flags&(UI_BoxFlags.SkipViewOffX<<axis))*floor_f32(box->view_off.v[axis]);
       }
       else
       {
-        child->rect.p0.v[axis] = box->rect.p0.v[axis] + child->fixed_position.v[axis] - !(child->flags&(UI_BoxFlag_SkipViewOffX<<axis))*floor_f32(box->view_off.v[axis]);
+        child->rect.p0.v[axis] = box->rect.p0.v[axis] + child->fixed_position.v[axis] - !(child->flags&(UI_BoxFlags.SkipViewOffX<<axis))*floor_f32(box->view_off.v[axis]);
       }
       child->rect.p1.v[axis] = child->rect.p0.v[axis] + child->fixed_size.v[axis];
       child->rect.p0.x = floor_f32(child->rect.p0.x);
@@ -2014,7 +2014,7 @@ ui_tooltip_begin(void)
   ui_tooltip_begin_base();
   ui_set_next_squish(0.1f-ui_state->tooltip_open_t*0.1f);
   ui_set_next_transparency(1-ui_state->tooltip_open_t);
-  UI_Flags(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBackgroundBlur|UI_BoxFlag_DrawDropShadow|UI_BoxFlag_SquishAnchored)
+  UI_Flags(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground|UI_BoxFlags.DrawBackgroundBlur|UI_BoxFlags.DrawDropShadow|UI_BoxFlags.SquishAnchored)
     UI_PrefWidth(ui_children_sum(1))
     UI_PrefHeight(ui_children_sum(1))
     UI_CornerRadius(ui_top_font_size()*0.25f)
@@ -2029,7 +2029,7 @@ ui_tooltip_begin(void)
     ui_column_begin();
   ui_push_pref_width(ui_text_dim(10.f, 1.f));
   ui_push_pref_height(ui_em(2.f, 1.f));
-  ui_push_text_alignment(UI_TextAlign_Center);
+  ui_push_text_alignment(UI_TextAlign.Center);
 }
 
 internal void
@@ -2078,20 +2078,20 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_parent(ui_state->ctx_menu_root);
   ui_push_pref_width(ui_bottom_pref_width());
   ui_push_pref_height(ui_bottom_pref_height());
-  ui_push_focus_hot(UI_FocusKind_Root);
-  ui_push_focus_active(UI_FocusKind_Root);
+  ui_push_focus_hot(UI_FocusKind.Root);
+  ui_push_focus_active(UI_FocusKind.Root);
   ui_push_tag(str8_lit("."));
   B32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
   if(is_open != 0) UI_TagF("floating")
   {
     ui_state->ctx_menu_touched_this_frame = 1;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_RoundChildrenByParent;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_DrawBackgroundBlur;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_DrawBackground;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_DisableFocusOverlay;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_DrawBorder;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_Clip;
-    ui_state->ctx_menu_root->flags |= UI_BoxFlag_Clickable;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.RoundChildrenByParent;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.DrawBackgroundBlur;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.DrawBackground;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.DisableFocusOverlay;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.DrawBorder;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.Clip;
+    ui_state->ctx_menu_root->flags |= UI_BoxFlags.Clickable;
     ui_state->ctx_menu_root->corner_radii[Corner_00] = ui_state->ctx_menu_root->corner_radii[Corner_01] = ui_state->ctx_menu_root->corner_radii[Corner_10] = ui_state->ctx_menu_root->corner_radii[Corner_11] = ui_top_font_size()*0.25f;
     ui_state->ctx_menu_root->tags_key = ui_top_tags_key();
     ui_state->ctx_menu_root->blur_size = ui_top_blur_size();
@@ -2137,16 +2137,16 @@ ui_any_ctx_menu_is_open(void)
 internal B32
 ui_is_focus_hot(void)
 {
-  B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
+  B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind.On);
   if(result)
   {
     for(UI_FocusHotNode *n = ui_state->focus_hot_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if(n->v == UI_FocusKind.Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if(n->v == UI_FocusKind.Off)
       {
         result = 0;
         break;
@@ -2159,16 +2159,16 @@ ui_is_focus_hot(void)
 internal B32
 ui_is_focus_active(void)
 {
-  B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
+  B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind.On);
   if(result)
   {
     for(UI_FocusActiveNode *n = ui_state->focus_active_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if(n->v == UI_FocusKind.Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if(n->v == UI_FocusKind.Off)
       {
         result = 0;
         break;
@@ -2188,7 +2188,7 @@ ui_is_key_auto_focus_active(UI_Key key)
   {
     for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
     {
-      if(p->flags & UI_BoxFlag_FocusActive && ui_key_match(key, p->default_nav_focus_active_key))
+      if(p->flags & UI_BoxFlags.FocusActive && ui_key_match(key, p->default_nav_focus_active_key))
       {
         result = 1;
         break;
@@ -2206,8 +2206,8 @@ ui_is_key_auto_focus_hot(UI_Key key)
   {
     for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
     {
-      if(p->flags & UI_BoxFlag_FocusHot &&
-         ((!(p->flags & UI_BoxFlag_FocusHotDisabled) &&
+      if(p->flags & UI_BoxFlags.FocusHot &&
+         ((!(p->flags & UI_BoxFlags.FocusHotDisabled) &&
            ui_key_match(key, p->default_nav_focus_hot_key)) ||
           ui_key_match(key, p->default_nav_focus_active_key)))
       {
@@ -2224,7 +2224,7 @@ ui_set_auto_focus_active_key(UI_Key key)
 {
   for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if(p->flags & UI_BoxFlags.DefaultFocusNav)
     {
       p->default_nav_focus_next_active_key = key;
       break;
@@ -2237,7 +2237,7 @@ ui_set_auto_focus_hot_key(UI_Key key)
 {
   for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if(p->flags & UI_BoxFlags.DefaultFocusNav)
     {
       p->default_nav_focus_next_hot_key = key;
       break;
@@ -2487,7 +2487,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     box->fastpath_codepoint = ui_state->fastpath_codepoint_stack.top->v;
     box->group_key = ui_state->group_key_stack.top->v;
     
-    if(ui_is_focus_active() && (box->flags & UI_BoxFlag_DefaultFocusNav) && ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
+    if(ui_is_focus_active() && (box->flags & UI_BoxFlags.DefaultFocusNav) && ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
     {
       ui_state->default_nav_root_key = box->key;
     }
@@ -2495,28 +2495,28 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     if(box_first_frame)
     {
       box->first_touched_build_index = ui_state->build_index;
-      box->disabled_t = (F32)!!(box->flags & UI_BoxFlag_Disabled);
+      box->disabled_t = (F32)!!(box->flags & UI_BoxFlags.Disabled);
     }
     box->last_touched_build_index = ui_state->build_index;
     
-    if(box->flags & UI_BoxFlag_Disabled && (!(last_flags & UI_BoxFlag_Disabled) || box_first_frame))
+    if(box->flags & UI_BoxFlags.Disabled && (!(last_flags & UI_BoxFlags.Disabled) || box_first_frame))
     {
       box->first_disabled_build_index = ui_state->build_index;
     }
     
     if(ui_state->fixed_x_stack.top != &ui_state->fixed_x_nil_stack_top)
     {
-      box->flags |= UI_BoxFlag_FloatingX;
+      box->flags |= UI_BoxFlags.FloatingX;
       box->fixed_position.x = ui_state->fixed_x_stack.top->v;
     }
     if(ui_state->fixed_y_stack.top != &ui_state->fixed_y_nil_stack_top)
     {
-      box->flags |= UI_BoxFlag_FloatingY;
+      box->flags |= UI_BoxFlags.FloatingY;
       box->fixed_position.y = ui_state->fixed_y_stack.top->v;
     }
     if(ui_state->fixed_width_stack.top != &ui_state->fixed_width_nil_stack_top)
     {
-      box->flags |= UI_BoxFlag_FixedWidth;
+      box->flags |= UI_BoxFlags.FixedWidth;
       box->fixed_size.x = ui_state->fixed_width_stack.top->v;
     }
     else
@@ -2525,7 +2525,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     }
     if(ui_state->fixed_height_stack.top != &ui_state->fixed_height_nil_stack_top)
     {
-      box->flags |= UI_BoxFlag_FixedHeight;
+      box->flags |= UI_BoxFlags.FixedHeight;
       box->fixed_size.y = ui_state->fixed_height_stack.top->v;
     }
     else
@@ -2539,21 +2539,21 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     B32 is_auto_focus_hot    = ui_is_key_auto_focus_hot(key);
     if(is_auto_focus_active)
     {
-      ui_set_next_focus_active(UI_FocusKind_On);
+      ui_set_next_focus_active(UI_FocusKind.On);
     }
     if(is_auto_focus_hot)
     {
-      ui_set_next_focus_hot(UI_FocusKind_On);
+      ui_set_next_focus_hot(UI_FocusKind.On);
     }
-    box->flags |= UI_BoxFlag_FocusHot    * (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
-    box->flags |= UI_BoxFlag_FocusActive * (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
-    if(box->flags & UI_BoxFlag_FocusHot && !ui_is_focus_hot())
+    box->flags |= UI_BoxFlags.FocusHot    * (ui_state->focus_hot_stack.top->v == UI_FocusKind.On);
+    box->flags |= UI_BoxFlags.FocusActive * (ui_state->focus_active_stack.top->v == UI_FocusKind.On);
+    if(box->flags & UI_BoxFlags.FocusHot && !ui_is_focus_hot())
     {
-      box->flags |= UI_BoxFlag_FocusHotDisabled;
+      box->flags |= UI_BoxFlags.FocusHotDisabled;
     }
-    if(box->flags & UI_BoxFlag_FocusActive && !ui_is_focus_active())
+    if(box->flags & UI_BoxFlags.FocusActive && !ui_is_focus_active())
     {
-      box->flags |= UI_BoxFlag_FocusActiveDisabled;
+      box->flags |= UI_BoxFlags.FocusActiveDisabled;
     }
     
     box->text_align = ui_state->text_alignment_stack.top->v;
@@ -2577,7 +2577,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     {
       box->tags_key = ui_state->tags_key_stack_top->key;
     }
-    if(box->flags & UI_BoxFlag_DrawBackground)
+    if(box->flags & UI_BoxFlags.DrawBackground)
     {
       if(ui_state->background_color_stack.top != &ui_state->background_color_nil_stack_top)
       {
@@ -2588,7 +2588,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
         box->background_color = ui_color_from_name(str8_lit("background"));
       }
     }
-    if(box->flags & UI_BoxFlag_DrawText)
+    if(box->flags & UI_BoxFlags.DrawText)
     {
       if(ui_state->text_color_stack.top != &ui_state->text_color_nil_stack_top)
       {
@@ -2599,11 +2599,11 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
         box->text_color = ui_color_from_name(str8_lit("text"));
       }
     }
-    if(box->flags & (UI_BoxFlag_DrawBorder|
-                     UI_BoxFlag_DrawSideRight|
-                     UI_BoxFlag_DrawSideLeft|
-                     UI_BoxFlag_DrawSideTop|
-                     UI_BoxFlag_DrawSideBottom))
+    if(box->flags & (UI_BoxFlags.DrawBorder|
+                     UI_BoxFlags.DrawSideRight|
+                     UI_BoxFlags.DrawSideLeft|
+                     UI_BoxFlags.DrawSideTop|
+                     UI_BoxFlags.DrawSideBottom))
     {
       if(ui_state->border_color_stack.top != &ui_state->border_color_nil_stack_top)
       {
@@ -2656,7 +2656,7 @@ ui_build_box_from_string(UI_BoxFlags flags, String8 string)
   
   //- rjf: build box from key, equip passed string
   UI_Box *box = ui_build_box_from_key(flags, key);
-  if(flags & UI_BoxFlag_DrawText)
+  if(flags & UI_BoxFlags.DrawText)
   {
     ui_box_equip_display_string(box, string);
   }
@@ -2686,9 +2686,9 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
 {
   ProfBeginFunction();
   box->string = push_str8_copy(ui_build_arena(), string);
-  box->flags |= UI_BoxFlag_HasDisplayString;
+  box->flags |= UI_BoxFlags.HasDisplayString;
   Vec4F32 text_color = box->text_color;
-  if(box->flags & UI_BoxFlag_DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
+  if(box->flags & UI_BoxFlags.DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlags.DrawTextFastpathCodepoint)))
   {
     String8 display_string = ui_box_display_string(box);
     DR_FStrNode fstr_n = {0, {display_string, {box->font, box->text_raster_flags, text_color, box->font_size, 0, 0}}};
@@ -2696,7 +2696,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
     box->display_fstrs = dr_fstrs_copy(ui_build_arena(), &fstrs);
     box->display_fruns = dr_fruns_from_fstrs(ui_build_arena(), box->tab_size, &box->display_fstrs);
   }
-  else if(box->flags & UI_BoxFlag_DrawText && box->flags & UI_BoxFlag_DrawTextFastpathCodepoint && box->fastpath_codepoint != 0)
+  else if(box->flags & UI_BoxFlags.DrawText && box->flags & UI_BoxFlags.DrawTextFastpathCodepoint && box->fastpath_codepoint != 0)
   {
     Temp scratch = scratch_begin(0, 0);
     String8 display_string = ui_box_display_string(box);
@@ -2727,7 +2727,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
 internal void
 ui_box_equip_display_fstrs(UI_Box *box, DR_FStrList *strings)
 {
-  box->flags |= UI_BoxFlag_HasDisplayString;
+  box->flags |= UI_BoxFlags.HasDisplayString;
   box->string = dr_string_from_fstrs(ui_build_arena(), strings);
   box->display_fstrs = dr_fstrs_copy(ui_build_arena(), strings);
   box->display_fruns = dr_fruns_from_fstrs(ui_build_arena(), box->tab_size, &box->display_fstrs);
@@ -2736,14 +2736,14 @@ ui_box_equip_display_fstrs(UI_Box *box, DR_FStrList *strings)
 internal inline void
 ui_box_equip_fuzzy_match_ranges(UI_Box *box, FuzzyMatchRangeList *matches)
 {
-  box->flags |= UI_BoxFlag_HasFuzzyMatchRanges;
+  box->flags |= UI_BoxFlags.HasFuzzyMatchRanges;
   box->fuzzy_match_ranges = fuzzy_match_range_list_copy(ui_build_arena(), matches);
 }
 
 internal void
 ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
 {
-  box->flags |= UI_BoxFlag_DrawBucket;
+  box->flags |= UI_BoxFlags.DrawBucket;
   if(box->draw_bucket != 0)
   {
     DR_BucketScope(box->draw_bucket) dr_sub_bucket(bucket);
@@ -2767,7 +2767,7 @@ internal String8
 ui_box_display_string(UI_Box *box)
 {
   String8 result = box->string;
-  if(!(box->flags & UI_BoxFlag_DisableIDString))
+  if(!(box->flags & UI_BoxFlags.DisableIDString))
   {
     result = ui_display_part_from_key_string(result);
   }
@@ -2785,17 +2785,17 @@ ui_box_text_position(UI_Box *box)
   switch(box->text_align)
   {
     default:
-    case UI_TextAlign_Left:
+    case UI_TextAlign.Left:
     {
       result.x = box->rect.p0.x + box->text_padding;
     }break;
-    case UI_TextAlign_Center:
+    case UI_TextAlign.Center:
     {
       Vec2F32 text_dim = box->display_fruns.dim;
       result.x = round_f32((box->rect.p0.x + box->rect.p1.x)/2 - text_dim.x/2);
       result.x = ClampBot(result.x, box->rect.x0);
     }break;
-    case UI_TextAlign_Right:
+    case UI_TextAlign.Right:
     {
       Vec2F32 text_dim = box->display_fruns.dim;
       result.x = round_f32((box->rect.p1.x) - text_dim.x - box->text_padding);
@@ -2823,7 +2823,7 @@ internal UI_Signal
 ui_signal_from_box(UI_Box *box)
 {
   ProfBeginFunction();
-  B32 is_focus_hot = box->flags & UI_BoxFlag_FocusHot && !(box->flags & UI_BoxFlag_FocusHotDisabled);
+  B32 is_focus_hot = box->flags & UI_BoxFlags.FocusHot && !(box->flags & UI_BoxFlags.FocusHotDisabled);
   UI_Signal sig = {box};
   sig.event_flags |= os_get_modifiers();
   
@@ -2833,7 +2833,7 @@ ui_signal_from_box(UI_Box *box)
   Rng2F32 rect = box->rect;
   for(UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
   {
-    if(b->flags & UI_BoxFlag_Clip)
+    if(b->flags & UI_BoxFlags.Clip)
     {
       rect = intersect_2f32(rect, b->rect);
     }
@@ -2875,36 +2875,36 @@ ui_signal_from_box(UI_Box *box)
     //- rjf: unpack event
     Vec2F32 evt_mouse = evt->pos;
     B32 evt_mouse_in_bounds = !contains_2f32(blacklist_rect, evt_mouse) && contains_2f32(rect, evt_mouse);
-    UI_MouseButtonKind evt_mouse_button_kind = (evt->key == OS_Key_LeftMouseButton   ? UI_MouseButtonKind_Left :
-                                                evt->key == OS_Key_MiddleMouseButton ? UI_MouseButtonKind_Middle :
-                                                evt->key == OS_Key_RightMouseButton  ? UI_MouseButtonKind_Right :
-                                                UI_MouseButtonKind_Left);
+    UI_MouseButtonKind evt_mouse_button_kind = (evt->key == OS_Key_LeftMouseButton   ? UI_MouseButtonKind.Left :
+                                                evt->key == OS_Key_MiddleMouseButton ? UI_MouseButtonKind.Middle :
+                                                evt->key == OS_Key_RightMouseButton  ? UI_MouseButtonKind.Right :
+                                                UI_MouseButtonKind.Left);
     B32 evt_key_is_mouse = (evt->key == OS_Key_LeftMouseButton ||
                             evt->key == OS_Key_MiddleMouseButton ||
                             evt->key == OS_Key_RightMouseButton);
     sig.event_flags |= evt->modifiers;
     
     //- rjf: mouse presses in box -> set hot/active; mark signal accordingly
-    if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Press &&
+    if(box->flags & UI_BoxFlags.MouseClickable &&
+       evt->kind == UI_EventKind.Press &&
        evt_mouse_in_bounds &&
        evt_key_is_mouse)
     {
       ui_state->hot_box_key = box->key;
       ui_state->active_box_key[evt_mouse_button_kind] = box->key;
-      sig.f |= (UI_SignalFlag_LeftPressed<<evt_mouse_button_kind);
+      sig.f |= (UI_SignalFlags.LeftPressed<<evt_mouse_button_kind);
       ui_state->drag_start_mouse = evt->pos;
       if(ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
          evt->timestamp_us-ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] <= 1000000*os_get_gfx_info()->double_click_time)
       {
-        sig.f |= (UI_SignalFlag_LeftDoubleClicked<<evt_mouse_button_kind);
+        sig.f |= (UI_SignalFlags.LeftDoubleClicked<<evt_mouse_button_kind);
       }
       if(ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
          ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][1]) &&
          evt->timestamp_us-ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] <= 1000000*os_get_gfx_info()->double_click_time &&
          ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] - ui_state->press_timestamp_history_us[evt_mouse_button_kind][1] <= 1000000*os_get_gfx_info()->double_click_time)
       {
-        sig.f |= (UI_SignalFlag_LeftTripleClicked<<evt_mouse_button_kind);
+        sig.f |= (UI_SignalFlags.LeftTripleClicked<<evt_mouse_button_kind);
       }
       MemoryCopy(&ui_state->press_timestamp_history_us[evt_mouse_button_kind][1], &ui_state->press_timestamp_history_us[evt_mouse_button_kind][0],
                  sizeof(ui_state->press_timestamp_history_us[evt_mouse_button_kind][0]) * ArrayCount(ui_state->press_timestamp_history_us[evt_mouse_button_kind])-1);
@@ -2919,45 +2919,45 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: mouse releases in active box -> unset active; mark signal accordingly
-    if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Release &&
+    if(box->flags & UI_BoxFlags.MouseClickable &&
+       evt->kind == UI_EventKind.Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        evt_mouse_in_bounds &&
        evt_key_is_mouse)
     {
       ui_state->active_box_key[evt_mouse_button_kind] = ui_key_zero();
-      sig.f |= (UI_SignalFlag_LeftReleased<<evt_mouse_button_kind);
-      sig.f |= (UI_SignalFlag_LeftClicked<<evt_mouse_button_kind);
+      sig.f |= (UI_SignalFlags.LeftReleased<<evt_mouse_button_kind);
+      sig.f |= (UI_SignalFlags.LeftClicked<<evt_mouse_button_kind);
       taken = 1;
     }
     
     //- rjf: mouse releases outside active box -> unset hot/active
-    if(box->flags & UI_BoxFlag_MouseClickable &&
-       evt->kind == UI_EventKind_Release &&
+    if(box->flags & UI_BoxFlags.MouseClickable &&
+       evt->kind == UI_EventKind.Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        !evt_mouse_in_bounds &&
        evt_key_is_mouse)
     {
       ui_state->hot_box_key = ui_key_zero();
       ui_state->active_box_key[evt_mouse_button_kind] = ui_key_zero();
-      sig.f |= (UI_SignalFlag_LeftReleased<<evt_mouse_button_kind);
+      sig.f |= (UI_SignalFlags.LeftReleased<<evt_mouse_button_kind);
       taken = 1;
     }
     
     //- rjf: focus is hot & keyboard click -> mark signal
-    if(box->flags & UI_BoxFlag_KeyboardClickable &&
+    if(box->flags & UI_BoxFlags.KeyboardClickable &&
        is_focus_hot &&
-       evt->kind == UI_EventKind_Press &&
-       evt->slot == UI_EventActionSlot_Accept)
+       evt->kind == UI_EventKind.Press &&
+       evt->slot == UI_EventActionSlot.Accept)
     {
-      sig.f |= UI_SignalFlag_KeyboardPressed;
+      sig.f |= UI_SignalFlags.KeyboardPressed;
       taken = 1;
     }
     
     //- rjf: focus is hot & copy event -> remember to copy this box tree's text content
     if(is_focus_hot &&
-       evt->flags & UI_EventFlag_Copy &&
-       !(evt->flags & UI_EventFlag_Delete) &&
+       evt->flags & UI_EventFlags.Copy &&
+       !(evt->flags & UI_EventFlags.Delete) &&
        !ui_key_match(ui_key_zero(), box->key))
     {
       ui_state->clipboard_copy_key = box->key;
@@ -2965,15 +2965,15 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: ancestor is focused & fastpath codepoint pressed -> press
-    if(box->flags & UI_BoxFlag_Clickable && box->fastpath_codepoint != 0 && evt->string.size != 0)
+    if(box->flags & UI_BoxFlags.Clickable && box->fastpath_codepoint != 0 && evt->string.size != 0)
     {
       B32 ancestor_is_focused = 0;
       for(UI_Box *parent = box->parent; !ui_box_is_nil(parent); parent = parent->parent)
       {
-        if(parent->flags & UI_BoxFlag_FocusActive)
+        if(parent->flags & UI_BoxFlags.FocusActive)
         {
           ancestor_is_focused = 1;
-          if(parent->flags & UI_BoxFlag_FocusActiveDisabled ||
+          if(parent->flags & UI_BoxFlags.FocusActiveDisabled ||
              !ui_key_match(parent->default_nav_focus_active_key, ui_key_zero()))
           {
             ancestor_is_focused = 0;
@@ -2988,15 +2988,15 @@ ui_signal_from_box(UI_Box *box)
         if(insertion32.size == 1 && insertion32.str[0] == box->fastpath_codepoint)
         {
           taken = 1;
-          sig.f |= UI_SignalFlag_Clicked|UI_SignalFlag_Pressed;
+          sig.f |= UI_SignalFlags.Clicked|UI_SignalFlags.Pressed;
         }
         scratch_end(scratch);
       }
     }
     
     //- rjf: scrolling
-    if(box->flags & UI_BoxFlag_Scroll &&
-       evt->kind == UI_EventKind_Scroll &&
+    if(box->flags & UI_BoxFlags.Scroll &&
+       evt->kind == UI_EventKind.Scroll &&
        (evt->modifiers == 0 || evt->modifiers == OS_Modifier_Shift) &&
        evt_mouse_in_bounds)
     {
@@ -3016,8 +3016,8 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: view scrolling
-    if(box->flags & UI_BoxFlag_ViewScroll && box->first_touched_build_index != box->last_touched_build_index &&
-       evt->kind == UI_EventKind_Scroll &&
+    if(box->flags & UI_BoxFlags.ViewScroll && box->first_touched_build_index != box->last_touched_build_index &&
+       evt->kind == UI_EventKind.Scroll &&
        (evt->modifiers == 0 || evt->modifiers == OS_Modifier_Shift) &&
        evt_mouse_in_bounds)
     {
@@ -3026,7 +3026,7 @@ ui_signal_from_box(UI_Box *box)
       {
         Swap(F32, delta.x, delta.y);
       }
-      if(!(box->flags & UI_BoxFlag_ViewScrollX))
+      if(!(box->flags & UI_BoxFlags.ViewScrollX))
       {
         if(delta.y == 0)
         {
@@ -3034,7 +3034,7 @@ ui_signal_from_box(UI_Box *box)
         }
         delta.x = 0;
       }
-      if(!(box->flags & UI_BoxFlag_ViewScrollY))
+      if(!(box->flags & UI_BoxFlags.ViewScrollY))
       {
         if(delta.x == 0)
         {
@@ -3058,28 +3058,28 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clamp view scrolling
   //
-  if(view_scrolled && box->flags & UI_BoxFlag_ViewClamp)
+  if(view_scrolled && box->flags & UI_BoxFlags.ViewClamp)
   {
     Vec2F32 max_view_off_target =
     {
       ClampBot(0, box->view_bounds.x - box->fixed_size.x),
       ClampBot(0, box->view_bounds.y - box->fixed_size.y),
     };
-    if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-    if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+    if(box->flags & UI_BoxFlags.ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
+    if(box->flags & UI_BoxFlags.ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
   }
   
   //////////////////////////////
   //- rjf: active -> dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if(box->flags & UI_BoxFlags.MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
       if(ui_key_match(ui_state->active_box_key[k], box->key) ||
-         sig.f & (UI_SignalFlag_LeftPressed<<k))
+         sig.f & (UI_SignalFlags.LeftPressed<<k))
       {
-        sig.f |= (UI_SignalFlag_LeftDragging<<k);
+        sig.f |= (UI_SignalFlags.LeftDragging<<k);
       }
     }
   }
@@ -3087,17 +3087,17 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: dragging started via double-click -> double-dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if(box->flags & UI_BoxFlags.MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(sig.f & (UI_SignalFlag_LeftDragging<<k) &&
+      if(sig.f & (UI_SignalFlags.LeftDragging<<k) &&
          ui_key_match(ui_state->press_key_history[k][0], box->key) &&
          ui_key_match(ui_state->press_key_history[k][1], box->key) &&
          ui_state->press_timestamp_history_us[k][0] - ui_state->press_timestamp_history_us[k][1] <= 1000000*os_get_gfx_info()->double_click_time &&
          length_2f32(sub_2f32(ui_state->press_pos_history[k][0], ui_state->press_pos_history[k][1])) < 10.f)
       {
-        sig.f |= (UI_SignalFlag_LeftDoubleDragging<<k);
+        sig.f |= (UI_SignalFlags.LeftDoubleDragging<<k);
       }
     }
   }
@@ -3105,11 +3105,11 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: dragging started via triple-click -> triple-dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if(box->flags & UI_BoxFlags.MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(sig.f & (UI_SignalFlag_LeftDragging<<k) &&
+      if(sig.f & (UI_SignalFlags.LeftDragging<<k) &&
          ui_key_match(ui_state->press_key_history[k][0], box->key) &&
          ui_key_match(ui_state->press_key_history[k][1], box->key) &&
          ui_key_match(ui_state->press_key_history[k][2], box->key) &&
@@ -3118,7 +3118,7 @@ ui_signal_from_box(UI_Box *box)
          length_2f32(sub_2f32(ui_state->press_pos_history[k][0], ui_state->press_pos_history[k][1])) < 10.f &&
          length_2f32(sub_2f32(ui_state->press_pos_history[k][1], ui_state->press_pos_history[k][2])) < 10.f)
       {
-        sig.f |= (UI_SignalFlag_LeftTripleDragging<<k);
+        sig.f |= (UI_SignalFlags.LeftTripleDragging<<k);
       }
     }
   }
@@ -3130,7 +3130,7 @@ ui_signal_from_box(UI_Box *box)
     if(contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse))
     {
-      sig.f |= UI_SignalFlag_MouseOver;
+      sig.f |= UI_SignalFlags.MouseOver;
     }
   }
   
@@ -3138,23 +3138,23 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is over this box's rect, no other hot key? -> set hot key, mark hovering
   //
   {
-    if(box->flags & UI_BoxFlag_MouseClickable &&
+    if(box->flags & UI_BoxFlags.MouseClickable &&
        contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse) &&
        (ui_key_match(ui_state->hot_box_key, ui_key_zero()) || ui_key_match(ui_state->hot_box_key, box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Middle], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Middle], box->key)) &&
-       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Right], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Right], box->key)))
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Left], box->key)) &&
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Middle], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Middle], box->key)) &&
+       (ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Right], ui_key_zero()) || ui_key_match(ui_state->active_box_key[UI_MouseButtonKind.Right], box->key)))
     {
       ui_state->hot_box_key = box->key;
-      sig.f |= UI_SignalFlag_Hovering;
+      sig.f |= UI_SignalFlags.Hovering;
     }
   }
   
   //////////////////////////////
   //- rjf: mouse is over this box's rect, currently-active-key has the same group key? -> set hot/active key
   //
-  if(box->flags & UI_BoxFlag_MouseClickable &&
+  if(box->flags & UI_BoxFlags.MouseClickable &&
      contains_2f32(rect, ui_state->mouse) &&
      !contains_2f32(blacklist_rect, ui_state->mouse) &&
      !ui_key_match(ui_key_zero(), box->group_key))
@@ -3166,7 +3166,7 @@ ui_signal_from_box(UI_Box *box)
       {
         ui_state->hot_box_key = box->key;
         ui_state->active_box_key[k] = box->key;
-        sig.f |= UI_SignalFlag_Hovering|(UI_SignalFlag_Dragging<<k);
+        sig.f |= UI_SignalFlags.Hovering|(UI_SignalFlags.Dragging<<k);
       }
     }
   }
@@ -3175,7 +3175,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is over this box's rect, drop site, no other drop hot key? -> set drop hot key
   //
   {
-    if(box->flags & UI_BoxFlag_DropSite &&
+    if(box->flags & UI_BoxFlags.DropSite &&
        contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse) &&
        (ui_key_match(ui_state->drop_hot_box_key, ui_key_zero()) || ui_key_match(ui_state->drop_hot_box_key, box->key)))
@@ -3188,7 +3188,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is not over this box's rect, but this is the drop hot key? -> zero drop hot key
   //
   {
-    if(box->flags & UI_BoxFlag_DropSite &&
+    if(box->flags & UI_BoxFlags.DropSite &&
        (!contains_2f32(rect, ui_state->mouse) ||
         contains_2f32(blacklist_rect, ui_state->mouse)) &&
        ui_key_match(ui_state->drop_hot_box_key, box->key))
@@ -3200,7 +3200,7 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clicking on something outside the context menu kills the context menu
   //
-  if(!ctx_menu_is_ancestor && sig.f & (UI_SignalFlag_LeftPressed|UI_SignalFlag_RightPressed|UI_SignalFlag_MiddlePressed))
+  if(!ctx_menu_is_ancestor && sig.f & (UI_SignalFlags.LeftPressed|UI_SignalFlags.RightPressed|UI_SignalFlags.MiddlePressed))
   {
     ui_ctx_menu_close();
   }
@@ -3211,7 +3211,7 @@ ui_signal_from_box(UI_Box *box)
   UI_Box *default_nav_parent = &ui_nil_box;
   for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if(p->flags & UI_BoxFlags.DefaultFocusNav)
     {
       default_nav_parent = p;
       break;
@@ -3221,7 +3221,7 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clicking in default nav -> set navigation state to this box
   //
-  if(box->flags & UI_BoxFlag_ClickToFocus && sig.f&UI_SignalFlag_Pressed && !ui_box_is_nil(default_nav_parent))
+  if(box->flags & UI_BoxFlags.ClickToFocus && sig.f&UI_SignalFlags.Pressed && !ui_box_is_nil(default_nav_parent))
   {
     default_nav_parent->default_nav_focus_next_hot_key = box->key;
     if(!ui_key_match(default_nav_parent->default_nav_focus_active_key, box->key))
@@ -3569,7 +3569,7 @@ ui_top_px_height(void)
   F32 result = ui_top_font_size();
   for(UI_PrefHeightNode *n = ui_state->pref_height_stack.top; n != 0; n = n->next)
   {
-    if(n->v.kind == UI_SizeKind_Pixels)
+    if(n->v.kind == UI_SizeKind.Pixels)
     {
       result = n->v.value;
       break;

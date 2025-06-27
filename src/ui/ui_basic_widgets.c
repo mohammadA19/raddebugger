@@ -13,7 +13,7 @@ ui_divider(UI_Size size)
   UI_Box *box = ui_build_box_from_key(0, ui_key_zero());
   UI_Parent(box) UI_PrefSize(parent->child_layout_axis, ui_pct(1, 0))
   {
-    ui_build_box_from_key(UI_BoxFlag_DrawSideBottom, ui_key_zero());
+    ui_build_box_from_key(UI_BoxFlags.DrawSideBottom, ui_key_zero());
     ui_build_box_from_key(0, ui_key_zero());
   }
 }
@@ -21,7 +21,7 @@ ui_divider(UI_Size size)
 internal UI_Signal
 ui_label(String8 string)
 {
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_zero());
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.DrawText, str8_zero());
   ui_box_equip_display_string(box, string);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
@@ -70,12 +70,12 @@ ui_label_multilinef(F32 max, char *fmt, ...)
 internal UI_Signal
 ui_button(String8 string)
 {
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|
-                                         UI_BoxFlag_DrawBackground|
-                                         UI_BoxFlag_DrawBorder|
-                                         UI_BoxFlag_DrawText|
-                                         UI_BoxFlag_DrawHotEffects|
-                                         UI_BoxFlag_DrawActiveEffects,
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|
+                                         UI_BoxFlags.DrawBackground|
+                                         UI_BoxFlags.DrawBorder|
+                                         UI_BoxFlags.DrawText|
+                                         UI_BoxFlags.DrawHotEffects|
+                                         UI_BoxFlags.DrawActiveEffects,
                                          string);
   UI_Signal interact = ui_signal_from_box(box);
   return interact;
@@ -97,11 +97,11 @@ ui_buttonf(char *fmt, ...)
 internal UI_Signal
 ui_hover_label(String8 string)
 {
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|UI_BoxFlags.DrawText, string);
   UI_Signal interact = ui_signal_from_box(box);
   if(ui_hovering(interact))
   {
-    box->flags |= UI_BoxFlag_DrawBorder;
+    box->flags |= UI_BoxFlags.DrawBorder;
   }
   return interact;
 }
@@ -172,22 +172,22 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   //- rjf: calculate focus
   B32 is_auto_focus_hot = ui_is_key_auto_focus_hot(key);
   B32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
-  ui_push_focus_hot(is_auto_focus_hot ? UI_FocusKind_On : UI_FocusKind_Null);
-  ui_push_focus_active(is_auto_focus_active ? UI_FocusKind_On : UI_FocusKind_Null);
+  ui_push_focus_hot(is_auto_focus_hot ? UI_FocusKind.On : UI_FocusKind.Null);
+  ui_push_focus_active(is_auto_focus_active ? UI_FocusKind.On : UI_FocusKind.Null);
   B32 is_focus_hot    = ui_is_focus_hot();
   B32 is_focus_active = ui_is_focus_active();
-  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind_On);
-  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind_On);
+  B32 is_focus_hot_disabled = (!is_focus_hot && ui_top_focus_hot() == UI_FocusKind.On);
+  B32 is_focus_active_disabled = (!is_focus_active && ui_top_focus_active() == UI_FocusKind.On);
   
   //- rjf: build top-level box
   ui_set_next_hover_cursor(is_focus_active ? OS_Cursor_IBar : OS_Cursor_Pointer);
-  UI_Box *box = ui_build_box_from_key(UI_BoxFlag_DrawBackground|
-                                      UI_BoxFlag_DrawBorder|
-                                      UI_BoxFlag_MouseClickable|
-                                      UI_BoxFlag_ClickToFocus|
-                                      ((is_auto_focus_hot || is_auto_focus_active)*UI_BoxFlag_KeyboardClickable)|
-                                      UI_BoxFlag_DrawHotEffects|
-                                      (is_focus_active || is_focus_active_disabled)*(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowX|UI_BoxFlag_ViewClamp),
+  UI_Box *box = ui_build_box_from_key(UI_BoxFlags.DrawBackground|
+                                      UI_BoxFlags.DrawBorder|
+                                      UI_BoxFlags.MouseClickable|
+                                      UI_BoxFlags.ClickToFocus|
+                                      ((is_auto_focus_hot || is_auto_focus_active)*UI_BoxFlags.KeyboardClickable)|
+                                      UI_BoxFlags.DrawHotEffects|
+                                      (is_focus_active || is_focus_active_disabled)*(UI_BoxFlags.Clip|UI_BoxFlags.AllowOverflowX|UI_BoxFlags.ViewClamp),
                                       key);
   
   //- rjf: take navigation actions for editing
@@ -200,7 +200,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
       String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
-      if((evt->kind != UI_EventKind_Edit && evt->kind != UI_EventKind_Navigate && evt->kind != UI_EventKind_Text) || evt->delta_2s32.y != 0)
+      if((evt->kind != UI_EventKind.Edit && evt->kind != UI_EventKind.Navigate && evt->kind != UI_EventKind.Text) || evt->delta_2s32.y != 0)
       {
         continue;
       }
@@ -255,7 +255,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
     {
       F32 total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       ui_set_next_pref_width(ui_px(total_text_width+ui_top_font_size()*5, 1.f));
-      UI_Box *editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
+      UI_Box *editstr_box = ui_build_box_from_stringf(UI_BoxFlags.DrawText|UI_BoxFlags.DisableTextTrunc, "###editstr");
       UI_LineEditDrawData *draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
       draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data->cursor = *cursor;
@@ -269,7 +269,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   
   //- rjf: interact
   UI_Signal sig = ui_signal_from_box(box);
-  if(!is_focus_active && sig.f&(UI_SignalFlag_DoubleClicked|UI_SignalFlag_KeyboardPressed))
+  if(!is_focus_active && sig.f&(UI_SignalFlags.DoubleClicked|UI_SignalFlags.KeyboardPressed))
   {
     String8 edit_string = pre_edit_value;
     edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
@@ -280,10 +280,10 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
     *cursor = txt_pt(1, edit_string.size+1);
     *mark = txt_pt(1, 1);
   }
-  if(is_focus_active && sig.f&UI_SignalFlag_KeyboardPressed)
+  if(is_focus_active && sig.f&UI_SignalFlags.KeyboardPressed)
   {
     ui_set_auto_focus_active_key(ui_key_zero());
-    sig.f |= UI_SignalFlag_Commit;
+    sig.f |= UI_SignalFlags.Commit;
   }
   if(is_focus_active && ui_dragging(sig))
   {
@@ -359,7 +359,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_image_draw)
     Rng2F32 clip = box->rect;
     for(UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
     {
-      if(b->flags & UI_BoxFlag_Clip)
+      if(b->flags & UI_BoxFlags.Clip)
       {
         clip = intersect_2f32(b->rect, clip);
       }
@@ -404,9 +404,9 @@ internal UI_Signal
 ui_expander(B32 is_expanded, String8 string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  ui_set_next_text_alignment(UI_TextAlign_Center);
+  ui_set_next_text_alignment(UI_TextAlign.Center);
   ui_set_next_font(ui_icon_font());
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|UI_BoxFlags.DrawText, string);
   ui_box_equip_display_string(box, is_expanded ? str8_lit("v") : str8_lit(">"));
   UI_Signal sig = ui_signal_from_box(box);
   return sig;
@@ -430,16 +430,16 @@ ui_sort_header(B32 sorting, B32 ascending, String8 string)
 {
   ui_set_next_child_layout_axis(Axis2_X);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawActiveEffects, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|UI_BoxFlags.DrawBackground|UI_BoxFlags.DrawActiveEffects, string);
   ui_push_parent(box);
   
   // rjf: make icon
   if(sorting)
   {
     ui_set_next_pref_width(ui_em(1.8f, 1.f));
-    ui_set_next_text_alignment(UI_TextAlign_Center);
+    ui_set_next_text_alignment(UI_TextAlign.Center);
     ui_set_next_font(ui_icon_font());
-    UI_Box *icon = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_lit(""));
+    UI_Box *icon = ui_build_box_from_string(UI_BoxFlags.DrawText, str8_lit(""));
     ui_box_equip_display_string(icon, ascending ? str8_lit("^") : str8_lit("v"));
   }
   
@@ -482,10 +482,10 @@ ui_do_color_tooltip_hsv(Vec3F32 hsv)
       UI_BackgroundColor(linear_from_srgba(v4f32(rgb.x, rgb.y, rgb.z, 1.f)))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
-    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
+    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
     {
       ui_labelf("Hex: #%02x%02x%02x", (U8)(rgb.x*255.f), (U8)(rgb.y*255.f), (U8)(rgb.z*255.f));
     }
@@ -521,10 +521,10 @@ ui_do_color_tooltip_hsva(Vec4F32 hsva)
       UI_BackgroundColor(linear_from_srgba(rgba))
         UI_CornerRadius(4.f)
         UI_PrefWidth(ui_em(6.f, 1.f)) UI_PrefHeight(ui_em(6.f, 1.f))
-        ui_build_box_from_string(UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, str8_lit(""));
+        ui_build_box_from_string(UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, str8_lit(""));
     }
     ui_spacer(ui_em(0.3f, 1.f));
-    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign_Center)
+    UI_PrefWidth(ui_em(22.f, 1.f)) UI_TextAlignment(UI_TextAlign.Center)
     {
       ui_labelf("Hex: #%02x%02x%02x%02x", (U8)(rgba.x*255.f), (U8)(rgba.y*255.f), (U8)(rgba.z*255.f), (U8)(rgba.w*255.f));
     }
@@ -617,7 +617,7 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable, string);
   UI_SatValDrawData *user = push_array(ui_build_arena(), UI_SatValDrawData, 1);
   ui_box_equip_custom_draw(box, ui_sat_val_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -636,7 +636,7 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
       Vec2F32 data = v2f32(*out_sat, *out_val);
       ui_store_drag_struct(&data);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       Vec2F32 data = *ui_get_drag_struct(Vec2F32);
       *out_sat = data.x;
@@ -726,7 +726,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable, string);
   UI_HueDrawData *user = push_array(ui_build_arena(), UI_HueDrawData, 1);
   ui_box_equip_custom_draw(box, ui_hue_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -742,7 +742,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
     {
       ui_store_drag_struct(out_hue);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       *out_hue = *ui_get_drag_struct(F32);
       ui_kill_action();
@@ -813,7 +813,7 @@ ui_alpha_picker(F32 *out_alpha, String8 string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable, string);
   UI_AlphaDrawData *user = push_array(ui_build_arena(), UI_AlphaDrawData, 1);
   ui_box_equip_custom_draw(box, ui_alpha_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
@@ -829,7 +829,7 @@ ui_alpha_picker(F32 *out_alpha, String8 string)
     {
       ui_store_drag_struct(out_alpha);
     }
-    if(ui_slot_press(UI_EventActionSlot_Cancel))
+    if(ui_slot_press(UI_EventActionSlot.Cancel))
     {
       *out_alpha = *ui_get_drag_struct(F32);
       ui_kill_action();
@@ -907,7 +907,7 @@ ui_pane_begin(Rng2F32 rect, String8 string)
 {
   ui_push_rect(rect);
   ui_set_next_child_layout_axis(Axis2_Y);
-  UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_Clip|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground, string);
+  UI_Box *box = ui_build_box_from_string(UI_BoxFlags.Clickable|UI_BoxFlags.Clip|UI_BoxFlags.DrawBorder|UI_BoxFlags.DrawBackground, string);
   ui_pop_rect();
   ui_push_parent(box);
   ui_push_pref_width(ui_pct(1, 0));
@@ -974,7 +974,7 @@ ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
     UI_Rect(rect)
     {
       ui_set_next_hover_cursor(OS_Cursor_LeftRight);
-      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_boundary_%I64u", table->string, column_idx);
+      UI_Box *box = ui_build_box_from_stringf(UI_BoxFlags.Clickable, "###%S_boundary_%I64u", table->string, column_idx);
       
       F32 *left_pct_ptr  = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx-1] : 0;
       F32 *right_pct_ptr = column_idx < ui_ts_col_pct_count ? column_pcts[column_idx] : 0;
@@ -1081,7 +1081,7 @@ ui_named_table_vector_begin(String8 string)
 {
   ui_set_next_pref_width(ui_pct(1, 0));
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box *vector = ui_build_box_from_string(UI_BoxFlag_DrawSideBottom, string);
+  UI_Box *vector = ui_build_box_from_string(UI_BoxFlags.DrawSideBottom, string);
   ui_ts_vector_idx += 1;
   ui_ts_cell_idx = 0;
   ui_push_parent(vector);
@@ -1139,7 +1139,7 @@ ui_table_cell_sized_begin(UI_Size size)
   ui_ts_cell_idx += 1;
   ui_set_next_pref_width(size);
   ui_set_next_child_layout_axis(Axis2_X);
-  UI_Box *cell = ui_build_box_from_stringf((column_idx > 0 ? UI_BoxFlag_DrawSideLeft : 0), "###tbl_cell_%p_%I64u", vector, ui_ts_cell_idx);
+  UI_Box *cell = ui_build_box_from_stringf((column_idx > 0 ? UI_BoxFlags.DrawSideLeft : 0), "###tbl_cell_%p_%I64u", vector, ui_ts_cell_idx);
   ui_push_parent(cell);
   return cell;
 }
@@ -1241,23 +1241,23 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   UI_BoxFlags disabled_flags = 0;
   if(idx_range.min == idx_range.max)
   {
-    disabled_flags |= UI_BoxFlag_Disabled;
+    disabled_flags |= UI_BoxFlags.Disabled;
   }
   
   //- rjf: build main container
   ui_set_next_pref_size(axis2_flip(axis), off_axis_size);
   ui_set_next_child_layout_axis(axis);
-  UI_Box *container_box = ui_build_box_from_key(UI_BoxFlag_DrawBorder, ui_key_zero());
+  UI_Box *container_box = ui_build_box_from_key(UI_BoxFlags.DrawBorder, ui_key_zero());
   
   //- rjf: build scroll-min button
   UI_Signal min_scroll_sig = {0};
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
-    UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
-    UI_TextAlignment(UI_TextAlign_Center)
+    UI_Flags(UI_BoxFlags.DrawBorder|disabled_flags)
+    UI_TextAlignment(UI_TextAlign.Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_LeftArrow : UI_IconKind_UpArrow);
+    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind.LeftArrow : UI_IconKind.UpArrow);
     min_scroll_sig = ui_buttonf("%S##_min_scroll_%i", arrow_string, axis);
   }
   
@@ -1278,7 +1278,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
       if(idx_range.max != idx_range.min)
       {
         ui_set_next_pref_size(axis, ui_pct((F32)((F64)(pt.idx-idx_range.min)/(F64)idx_range_dim), 0));
-        UI_Box *space_before_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "##scroll_area_before");
+        UI_Box *space_before_box = ui_build_box_from_stringf(UI_BoxFlags.Clickable, "##scroll_area_before");
         space_before_sig = ui_signal_from_box(space_before_box);
       }
       
@@ -1293,7 +1293,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
       if(idx_range.max != idx_range.min)
       {
         ui_set_next_pref_size(axis, ui_pct(1.f - (F32)((F64)(pt.idx-idx_range.min)/(F64)idx_range_dim), 0));
-        UI_Box *space_after_box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "##scroll_area_after");
+        UI_Box *space_after_box = ui_build_box_from_stringf(UI_BoxFlags.Clickable, "##scroll_area_after");
         space_after_sig = ui_signal_from_box(space_after_box);
       }
     }
@@ -1303,11 +1303,11 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   UI_Signal max_scroll_sig = {0};
   UI_Parent(container_box)
     UI_PrefSize(axis, off_axis_size)
-    UI_Flags(UI_BoxFlag_DrawBorder|disabled_flags)
-    UI_TextAlignment(UI_TextAlign_Center)
+    UI_Flags(UI_BoxFlags.DrawBorder|disabled_flags)
+    UI_TextAlignment(UI_TextAlign.Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_RightArrow : UI_IconKind_DownArrow);
+    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind.RightArrow : UI_IconKind.DownArrow);
     max_scroll_sig = ui_buttonf("%S##_max_scroll_%i", arrow_string, axis);
   }
   
@@ -1376,7 +1376,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
     for(UI_Event *evt = 0; ui_next_event(&evt);)
     {
       if((evt->delta_2s32.x == 0 && evt->delta_2s32.y == 0) ||
-         evt->flags & UI_EventFlag_Delete)
+         evt->flags & UI_EventFlags.Delete)
       {
         continue;
       }
@@ -1385,7 +1385,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
       switch(evt->delta_unit)
       {
         default:{moved = 0;}break;
-        case UI_EventDeltaUnit_Char:
+        case UI_EventDeltaUnit.Char:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
@@ -1401,15 +1401,15 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
             cursor.v[axis] = clamp_1s64(r1s64(params->cursor_range.min.v[axis], params->cursor_range.max.v[axis]), cursor.v[axis]);
           }
         }break;
-        case UI_EventDeltaUnit_Word:
-        case UI_EventDeltaUnit_Line:
-        case UI_EventDeltaUnit_Page:
+        case UI_EventDeltaUnit.Word:
+        case UI_EventDeltaUnit.Line:
+        case UI_EventDeltaUnit.Page:
         {
           cursor.x  = (evt->delta_2s32.x>0 ? params->cursor_range.max.x : evt->delta_2s32.x<0 ? params->cursor_range.min.x + !!params->cursor_min_is_empty_selection[Axis2_X] : cursor.x);
           cursor.y += ((evt->delta_2s32.y>0 ? +(num_possible_visible_rows-3) : evt->delta_2s32.y<0 ? -(num_possible_visible_rows-3) : 0));
           cursor.y = clamp_1s64(r1s64(params->cursor_range.min.y + !!params->cursor_min_is_empty_selection[Axis2_Y], params->cursor_range.max.y), cursor.y);
         }break;
-        case UI_EventDeltaUnit_Whole:
+        case UI_EventDeltaUnit.Whole:
         {
           for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis+1))
           {
@@ -1417,7 +1417,7 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
           }
         }break;
       }
-      if(!(evt->flags & UI_EventFlag_KeepMark))
+      if(!(evt->flags & UI_EventFlags.KeepMark))
       {
         mark = cursor;
       }
@@ -1493,12 +1493,12 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
   UI_Box *scrollable_container_box = &ui_nil_box;
   UI_Parent(container_box) UI_ChildLayoutAxis(Axis2_Y) UI_FixedWidth(params->dim_px.x-ui_scroll_list_scroll_bar_dim_px) UI_FixedHeight(params->dim_px.y)
   {
-    scrollable_container_box = ui_build_box_from_stringf(UI_BoxFlag_Clip|UI_BoxFlag_AllowOverflowY|UI_BoxFlag_Scroll, "###sp");
+    scrollable_container_box = ui_build_box_from_stringf(UI_BoxFlags.Clip|UI_BoxFlags.AllowOverflowY|UI_BoxFlags.Scroll, "###sp");
     scrollable_container_box->view_off.y = scrollable_container_box->view_off_target.y = params->row_height_px*mod_f32(scroll_pt->off, 1.f) + params->row_height_px*(scroll_pt->off < 0) - params->row_height_px*(scroll_pt->off == -1.f && scroll_pt->idx == 1);
   }
   
   //- rjf: build vertical scroll bar
-  UI_Parent(container_box) UI_Focus(UI_FocusKind_Null)
+  UI_Parent(container_box) UI_Focus(UI_FocusKind.Null)
   {
     ui_set_next_fixed_width(ui_scroll_list_scroll_bar_dim_px);
     ui_set_next_fixed_height(ui_scroll_list_dim_px.y);
