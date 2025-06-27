@@ -5,7 +5,7 @@
 //~ rjf: Globals
 
 [ThreadStatic] 
-public static UI_State* ui_state = 0;
+public static UI_State* ui_state = null;
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions
@@ -122,8 +122,8 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
 {
   S64 new_column = start_column;
   S64 delta = (!!side)*2 - 1;
-  B32 found_text = 0;
-  B32 found_non_space = 0;
+  B32 found_text = false;
+  B32 found_non_space = false;
   S64 start_off = delta < 0 ? delta : 0;
   for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
@@ -321,7 +321,7 @@ ui_push_string_replace_range(Arena* arena, String8 string, Rng1S64 col_range, St
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
-    if(replace.str != 0)
+    if(replace.str != null)
     {
       MemoryCopy(push_base+range.min, replace.str, replace.size);
     }
@@ -374,7 +374,7 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt* v, Rng1S64 range)
 public static B32
 ui_box_is_nil(UI_Box* box)
 {
-  return box == 0 || box == &ui_nil_box;
+  return box == null || box == &ui_nil_box;
 }
 
 public static UI_BoxRec
@@ -517,16 +517,16 @@ ui_next_event(UI_Event** ev)
 {
   UI_EventList* events = ui_state.events;
   UI_EventNode* start_node = events.first;
-  if(ev[0] != 0)
+  if(ev[0] != null)
   {
     start_node = CastFromMember(UI_EventNode, v, ev[0]);
     start_node = start_node.next;
-    ev[0] = 0;
+    ev[0] = null;
   }
-  if(start_node != 0)
+  if(start_node != null)
   {
     UI_PermissionFlags perms = ui_top_permission_flags();
-    for(UI_EventNode* n = start_node; n != 0; n = n.next)
+    for(UI_EventNode* n = start_node; n != null; n = n.next)
     {
       B32 good = 1;
       if(!(perms & UI_PermissionFlags.ClicksLeft) &&
@@ -534,29 +534,29 @@ ui_next_event(UI_Event** ev)
           n.v.kind == UI_EventKind.Release) &&
          (n.v.key == OS_Key_LeftMouseButton))
       {
-        good = 0;
+        good = false;
       }
       if(!(perms & UI_PermissionFlags.ClicksMiddle) &&
          (n.v.kind == UI_EventKind.Press ||
           n.v.kind == UI_EventKind.Release) &&
          (n.v.key == OS_Key_MiddleMouseButton))
       {
-        good = 0;
+        good = false;
       }
       if(!(perms & UI_PermissionFlags.ClicksRight) &&
          (n.v.kind == UI_EventKind.Press ||
           n.v.kind == UI_EventKind.Release) &&
          (n.v.key == OS_Key_RightMouseButton))
       {
-        good = 0;
+        good = false;
       }
       if(!(perms & UI_PermissionFlags.ScrollX) && (n.v.kind == UI_EventKind.Scroll) && (n.v.delta_2f32.x != 0 || n.v.modifiers == OS_Modifier_Shift))
       {
-        good = 0;
+        good = false;
       }
       if(!(perms & UI_PermissionFlags.ScrollY) && (n.v.kind == UI_EventKind.Scroll) && n.v.delta_2f32.y != 0 && n.v.modifiers == 0)
       {
-        good = 0;
+        good = false;
       }
       if((n.v.kind == UI_EventKind.Press ||
           n.v.kind == UI_EventKind.Release ||
@@ -572,12 +572,12 @@ ui_next_event(UI_Event** ev)
         }
         else if(!(perms & UI_PermissionFlags.Keyboard))
         {
-          good = 0;
+          good = false;
         }
       }
       else if(!(perms & UI_PermissionFlags.Text) && (n.v.kind == UI_EventKind.Text))
       {
-        good = 0;
+        good = false;
       }
       if(good)
       {
@@ -593,7 +593,7 @@ ui_next_event(UI_Event** ev)
 public static void
 ui_eat_event(UI_Event* ev)
 {
-  if(ev != 0)
+  if(ev != null)
   {
     UI_EventNode* n = CastFromMember(UI_EventNode, v, ev);
     ui_eat_event_node(ui_state.events, n);
@@ -605,8 +605,8 @@ ui_eat_event(UI_Event* ev)
 public static B32
 ui_key_press(OS_Modifiers mods, OS_Key key)
 {
-  B32 result = 0;
-  for(UI_Event* evt = 0; ui_next_event(&evt);)
+  B32 result = false;
+  for(UI_Event* evt = null; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind.Press && evt.key == key && evt.modifiers == mods)
     {
@@ -621,8 +621,8 @@ ui_key_press(OS_Modifiers mods, OS_Key key)
 public static B32
 ui_key_release(OS_Modifiers mods, OS_Key key)
 {
-  B32 result = 0;
-  for(UI_Event* evt = 0; ui_next_event(&evt);)
+  B32 result = false;
+  for(UI_Event* evt = null; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind.Release && evt.key == key && evt.modifiers == mods)
     {
@@ -637,10 +637,10 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
 public static B32
 ui_text(U32 character)
 {
-  B32 result = 0;
+  B32 result = false;
   Temp scratch = scratch_begin(0, 0);
   String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
-  for(UI_Event* evt = 0; ui_next_event(&evt);)
+  for(UI_Event* evt = null; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind.Text && str8_match(character_text, evt.string, 0))
     {
@@ -656,8 +656,8 @@ ui_text(U32 character)
 public static B32
 ui_slot_press(UI_EventActionSlot slot)
 {
-  B32 result = 0;
-  for(UI_Event* evt = 0; ui_next_event(&evt);)
+  B32 result = false;
+  for(UI_Event* evt = null; ui_next_event(&evt);)
   {
     if(evt.kind == UI_EventKind.Press && evt.slot == slot)
     {
@@ -811,15 +811,15 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   {
     UI_InitStacks(ui_state);
     ui_state.root = &ui_nil_box;
-    ui_state.ctx_menu_touched_this_frame = 0;
-    ui_state.is_animating = 0;
+    ui_state.ctx_menu_touched_this_frame = false;
+    ui_state.is_animating = false;
     ui_state.clipboard_copy_key = ui_key_zero();
     ui_state.last_build_box_count = ui_state.build_box_count;
     ui_state.build_box_count = 0;
-    ui_state.tooltip_open = 0;
-    ui_state.ctx_menu_changed = 0;
+    ui_state.tooltip_open = false;
+    ui_state.ctx_menu_changed = false;
     ui_state.default_animation_rate = 1 - pow_f32(2, (-60.f * ui_state.animation_dt));
-    ui_state.tooltip_can_overflow_window = 0;
+    ui_state.tooltip_can_overflow_window = false;
     ui_state.tooltip_anchor_key = ui_key_zero();
     ui_state.tags_key_stack_top = ui_state.tags_key_stack_free = 0;
     ui_state.tags_cache_slots_count = 512;
@@ -830,7 +830,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   //- rjf: prune unused animation nodes
   ProfScope("ui prune unused animation nodes")
   {
-    for(UI_AnimNode* n = ui_state.lru_anim_node, *next = &ui_nil_anim_node; n != &ui_nil_anim_node && n != 0; n = next)
+    for(UI_AnimNode* n = ui_state.lru_anim_node, *next = &ui_nil_anim_node; n != &ui_nil_anim_node && n != null; n = next)
     {
       next = n.lru_next;
       if(n.last_touched_build_index+2 < ui_state.build_index)
@@ -851,7 +851,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   //- rjf: prune unused theme pattern cache nodes
   ProfScope("ui prune unused theme pattern cache")
   {
-    for(UI_ThemePatternCacheNode* n = ui_state.lru_theme_pattern_cache_node, *next = 0; n != 0; n = next)
+    for(UI_ThemePatternCacheNode* n = ui_state.lru_theme_pattern_cache_node, next = null; n != null; n = next)
     {
       next = n.lru_next;
       if(n.last_build_index_accessed+2 < ui_state.build_index)
@@ -870,7 +870,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   }
   
   //- rjf: detect mouse-moves
-  for(UI_EventNode* n = events.first; n != 0; n = n.next)
+  for(UI_EventNode* n = events.first; n != null; n = n.next)
   {
     if(n.v.kind == UI_EventKind.MouseMove)
     {
@@ -922,13 +922,13 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
         {
           for(;;)
           {
-            B32 moved = 0;
+            B32 moved = false;
             UI_Box* focus_box = ui_box_from_key(nav_root.default_nav_focus_next_hot_key);
             UI_BoxList next_focus_box_candidates = default;
             
             // rjf: gather & consume events & nav actions
-            B32 nav_next = 0;
-            B32 nav_prev = 0;
+            B32 nav_next = false;
+            B32 nav_prev = false;
             Axis2 axis_lock = Axis2_Invalid;
             if(ui_key_press(0, OS_Key_Tab))
             {
@@ -938,10 +938,10 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             {
               nav_prev = 1;
             }
-            for(UI_EventNode* node = events.first, *next = 0; node != 0; node = next)
+            for(UI_EventNode* node = events.first, next = null; node != null; node = next)
             {
               next = node.next;
-              B32 taken = 0;
+              B32 taken = false;
               if(node.v.delta_2s32.x == 0 && node.v.delta_2s32.y == 0)
               {
                 continue;
@@ -1063,7 +1063,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             // rjf: scan candidates and grab next focus box
             UI_Box* next_focus_box = focus_box;
             F32 best_distance_from_start = 1000000;
-            for(UI_BoxNode* n = next_focus_box_candidates.first; n != 0; n = n.next)
+            for(UI_BoxNode* n = next_focus_box_candidates.first; n != null; n = n.next)
             {
               UI_Box* box = n.box;
               F32 distance_from_start = 0;
@@ -1082,7 +1082,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
             nav_root.default_nav_focus_next_hot_key = next_focus_box.key;
             
             // rjf: no movement -> break
-            if(moved == 0)
+            if(moved == false)
             {
               break;
             }
@@ -1175,7 +1175,7 @@ ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, U
   
   //- rjf: reset hot if we don't have an active widget
   {
-    B32 has_active = 0;
+    B32 has_active = false;
     for EachEnumVal(UI_MouseButtonKind, k)
     {
       if(!ui_key_match(ui_state.active_box_key[k], ui_key_zero()))
@@ -1234,7 +1234,7 @@ ui_end_build()
   {
     for(U64 slot_idx = 0; slot_idx < ui_state.box_table_size; slot_idx += 1)
     {
-      for(UI_Box* box = ui_state.box_table[slot_idx].hash_first, *next = 0;
+      for(UI_Box* box = ui_state.box_table[slot_idx].hash_first, next = null;
           !ui_box_is_nil(box);
           box = next)
       {
@@ -1392,7 +1392,7 @@ ui_end_build()
     for(U64 slot_idx = 0; slot_idx < ui_state.anim_slots_count; slot_idx += 1)
     {
       for(UI_AnimNode* n = ui_state.anim_slots[slot_idx].first;
-          n != &ui_nil_anim_node && n != 0;
+          n != &ui_nil_anim_node && n != null;
           n = n.slot_next)
       {
         n.current += (n.params.target - n.current) * n.params.rate;
@@ -1404,7 +1404,7 @@ ui_end_build()
     for(U64 slot_idx = 0; slot_idx < ui_state.theme_pattern_cache_slots_count; slot_idx += 1)
     {
       for(UI_ThemePatternCacheNode* n = ui_state.theme_pattern_cache_slots[slot_idx].first;
-          n != 0;
+          n != null;
           n = n.slot_next)
       {
         for EachIndex(idx, 4)
@@ -1449,7 +1449,7 @@ ui_end_build()
         F32 focus_rate    = ui_state.animation_info.focus_animation_rate;
         
         // rjf: determine animating status
-        B32 box_is_animating = 0;
+        B32 box_is_animating = false;
         box_is_animating = (box_is_animating || abs_f32((F32)is_hot          - box.hot_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32((F32)is_active       - box.active_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32((F32)is_disabled     - box.disabled_t) > 0.01f);
@@ -1544,7 +1544,7 @@ ui_end_build()
   
   //- rjf: close ctx menu if unconsumed clicks
   {
-    for(UI_Event* evt = 0; ui_next_event(&evt);)
+    for(UI_Event* evt = null; ui_next_event(&evt);)
     {
       if(evt.kind == UI_EventKind.Press &&
          (evt.key == OS_Key_LeftMouseButton || evt.key == OS_Key_RightMouseButton))
@@ -1605,14 +1605,14 @@ ui_end_build()
     {
       if(!ui_key_match(ui_key_zero(), ui_state.active_box_key[k]))
       {
-        inactive = 0;
+        inactive = false;
         break;
       }
     }
     if(inactive)
     {
-      B32 found = 0;
-      for(UI_Box* box = ui_state.root, *next = 0; !ui_box_is_nil(box); box = next)
+      B32 found = false;
+      for(UI_Box* box = ui_state.root, next = null; !ui_box_is_nil(box); box = next)
       {
         UI_BoxRec rec = ui_box_rec_df_pre(box, ui_state.root);
         next = rec.next;
@@ -2056,7 +2056,7 @@ ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
   anchor_off.y = (F32)(int)anchor_off.y;
   ui_state.next_ctx_menu_open = 1;
   ui_state.ctx_menu_changed = 1;
-  ui_state.ctx_menu_open_t = 0;
+  ui_state.ctx_menu_open_t = false;
   ui_state.ctx_menu_key = key;
   ui_state.next_ctx_menu_anchor_key = anchor_box_key;
   ui_state.ctx_menu_anchor_off = anchor_off;
@@ -2083,7 +2083,7 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_focus_active(UI_FocusKind.Root);
   ui_push_tag(str8_lit("."));
   B32 is_open = ui_key_match(key, ui_state.ctx_menu_key) && ui_state.ctx_menu_open;
-  if(is_open != 0) UI_TagF("floating")
+  if(is_open != false) UI_TagF("floating")
   {
     ui_state.ctx_menu_touched_this_frame = 1;
     ui_state.ctx_menu_root.flags |= UI_BoxFlags.RoundChildrenByParent;
@@ -2109,7 +2109,7 @@ ui_end_ctx_menu()
 {
   if(ui_state.is_in_open_ctx_menu)
   {
-    ui_state.is_in_open_ctx_menu = 0;
+    ui_state.is_in_open_ctx_menu = false;
     ui_spacer(ui_em(1.f, 1.f));
   }
   ui_pop_tag();
@@ -2141,7 +2141,7 @@ ui_is_focus_hot()
   B32 result = (ui_state.focus_hot_stack.top.v == UI_FocusKind.On);
   if(result)
   {
-    for(UI_FocusHotNode* n = ui_state.focus_hot_stack.top; n != 0; n = n.next)
+    for(UI_FocusHotNode* n = ui_state.focus_hot_stack.top; n != null; n = n.next)
     {
       if(n.v == UI_FocusKind.Root)
       {
@@ -2149,7 +2149,7 @@ ui_is_focus_hot()
       }
       if(n.v == UI_FocusKind.Off)
       {
-        result = 0;
+        result = false;
         break;
       }
     }
@@ -2163,7 +2163,7 @@ ui_is_focus_active()
   B32 result = (ui_state.focus_active_stack.top.v == UI_FocusKind.On);
   if(result)
   {
-    for(UI_FocusActiveNode* n = ui_state.focus_active_stack.top; n != 0; n = n.next)
+    for(UI_FocusActiveNode* n = ui_state.focus_active_stack.top; n != null; n = n.next)
     {
       if(n.v == UI_FocusKind.Root)
       {
@@ -2171,7 +2171,7 @@ ui_is_focus_active()
       }
       if(n.v == UI_FocusKind.Off)
       {
-        result = 0;
+        result = false;
         break;
       }
     }
@@ -2184,7 +2184,7 @@ ui_is_focus_active()
 public static B32
 ui_is_key_auto_focus_active(UI_Key key)
 {
-  B32 result = 0;
+  B32 result = false;
   if(!ui_key_match(ui_key_zero(), key))
   {
     for(UI_Box* p = ui_top_parent(); !ui_box_is_nil(p); p = p.parent)
@@ -2202,7 +2202,7 @@ ui_is_key_auto_focus_active(UI_Key key)
 public static B32
 ui_is_key_auto_focus_hot(UI_Key key)
 {
-  B32 result = 0;
+  B32 result = false;
   if(!ui_key_match(ui_key_zero(), key))
   {
     for(UI_Box* p = ui_top_parent(); !ui_box_is_nil(p); p = p.parent)
@@ -2252,7 +2252,7 @@ public static UI_Key
 ui_top_tags_key()
 {
   UI_Key key = ui_key_zero();
-  if(ui_state.tags_key_stack_top != 0)
+  if(ui_state.tags_key_stack_top != null)
   {
     key = ui_state.tags_key_stack_top.key;
   }
@@ -2284,9 +2284,9 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     //- rjf: map to existing node
     U64 slot_idx = final_key.u64[0]%ui_state.theme_pattern_cache_slots_count;
     UI_ThemePatternCacheSlot* slot = &ui_state.theme_pattern_cache_slots[slot_idx];
-    UI_ThemePatternCacheNode* node = 0;
+    UI_ThemePatternCacheNode* node = null;
     for(UI_ThemePatternCacheNode* n = slot.first;
-        n != 0;
+        n != null;
         n = n.slot_next)
     {
       if(ui_key_match(n.key, final_key))
@@ -2296,14 +2296,14 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: no node, or this node is stale? create and/or update
-    if(node == 0 || node.last_build_index_accessed < ui_state.build_index)
+    if(node == null || node.last_build_index_accessed < ui_state.build_index)
     {
       // rjf: map tags_key (without name) -> full list of tags
       String8Array tags = default;
       {
         U64 tags_cache_slot_idx = key.u64[0]%ui_state.tags_cache_slots_count;
         UI_TagsCacheSlot* tags_cache_slot = &ui_state.tags_cache_slots[tags_cache_slot_idx];
-        for(UI_TagsCacheNode* n = tags_cache_slot.first; n != 0; n = n.next)
+        for(UI_TagsCacheNode* n = tags_cache_slot.first; n != null; n = n.next)
         {
           if(ui_key_match(n.key, key))
           {
@@ -2315,17 +2315,17 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       
       // rjf: map tags to theme pattern
       UI_Theme* theme = ui_state.theme;
-      UI_ThemePattern* pattern = 0;
+      UI_ThemePattern* pattern = null;
       U64 best_match_count = 0;
       for(U64 idx = 0; idx < theme.patterns_count; idx += 1)
       {
         UI_ThemePattern* p = &theme.patterns[idx];
         U64 match_count = 0;
-        B32 name_matches = 0;
+        B32 name_matches = false;
         B32 all_p_tags_in_key = 1;
         for EachIndex(p_tags_idx, p.tags.count)
         {
-          B32 p_tag_in_key = 0;
+          B32 p_tag_in_key = false;
           for EachIndex(key_tags_idx, tags.count + extras.count)
           {
             String8 key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
@@ -2342,7 +2342,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
           }
           if(!p_tag_in_key)
           {
-            all_p_tags_in_key = 0;
+            all_p_tags_in_key = false;
             break;
           }
         }
@@ -2358,12 +2358,12 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       }
       
       // rjf: store in (key, name) -> (pattern) cache
-      B32 node_is_new = 0;
-      if(node == 0)
+      B32 node_is_new = false;
+      if(node == null)
       {
         node_is_new = 1;
         node = ui_state.theme_pattern_cache_node_free;
-        if(node != 0)
+        if(node != null)
         {
           SLLStackPop_N(ui_state.theme_pattern_cache_node_free, slot_next);
         }
@@ -2377,7 +2377,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       }
       
       // rjf: update node's target color
-      if(pattern != 0)
+      if(pattern != null)
       {
         node.target_rgba = pattern.linear;
         if(node_is_new)
@@ -2388,7 +2388,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: mark this node as most-recently-used
-    if(node != 0 && node.last_build_index_accessed < ui_state.build_index)
+    if(node != null && node.last_build_index_accessed < ui_state.build_index)
     {
       node.last_build_index_accessed = ui_state.build_index;
       DLLRemove_NP(ui_state.lru_theme_pattern_cache_node, ui_state.mru_theme_pattern_cache_node, node, lru_next, lru_prev);
@@ -2396,7 +2396,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: grab resultant color
-    if(node != 0)
+    if(node != null)
     {
       result = node.current_rgba;
     }
@@ -2443,7 +2443,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   //- rjf: allocate box if it doesn't yet exist
   if(box_first_frame)
   {
-    box = !box_is_transient ? ui_state.first_free_box : 0;
+    box = !box_is_transient ? ui_state.first_free_box : null;
     ui_state.is_animating = ui_state.is_animating || !box_is_transient;
     if(!ui_box_is_nil(box))
     {
@@ -2574,7 +2574,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     box.hover_cursor = ui_state.hover_cursor_stack.top.v;
     box.custom_draw = 0;
     box.tags_key = ui_key_zero();
-    if(ui_state.tags_key_stack_top != 0)
+    if(ui_state.tags_key_stack_top != null)
     {
       box.tags_key = ui_state.tags_key_stack_top.key;
     }
