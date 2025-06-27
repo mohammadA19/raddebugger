@@ -9,23 +9,23 @@ public const int ARENA_HEADER_SIZE = 128;
 ////////////////////////////////
 //~ rjf: Types
 
-enum ArenaFlags : U64
+public enum ArenaFlags : U64
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
 }
 
-struct ArenaParams
+public struct ArenaParams
 {
   ArenaFlags flags;
   U64 reserve_size;
   U64 commit_size;
   void* optional_backing_buffer;
-  char* allocation_site_file;
+  StringView allocation_site_file;
   int allocation_site_line;
 }
 
-struct Arena
+public struct Arena
 {
   Arena* prev;    // previous arena in chain
   Arena* current; // current arena in chain
@@ -45,7 +45,7 @@ struct Arena
 }
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
-struct Temp
+public struct Temp
 {
   Arena *arena;
   U64 pos;
@@ -54,18 +54,31 @@ struct Temp
 ////////////////////////////////
 //~ rjf: Global Defaults
 
-static U64 arena_default_reserve_size = MB(64);
-static U64 arena_default_commit_size  = KB(64);
-static ArenaFlags arena_default_flags = 0;
+public static U64 arena_default_reserve_size = MB(64);
+public static U64 arena_default_commit_size  = KB(64);
+public static ArenaFlags arena_default_flags = 0;
 
 ////////////////////////////////
 //~ rjf: Arena Functions
 
 //- rjf: arena creation/destruction
-#define arena_alloc(...) arena_alloc_(&(ArenaParams){.reserve_size = arena_default_reserve_size, .commit_size = arena_default_commit_size, .flags = arena_default_flags, .allocation_site_file = __FILE__, .allocation_site_line = __LINE__, __VA_ARGS__})
+public static void* arena_alloc(ArenaFlags flags, 
+  U64 reserve_size, 
+  U64 commit_size, 
+  void* optional_backing_buffer, 
+  StringView allocation_site_file = Compiler.CallerFilePath, 
+  int allocation_site_line = Compiler.CallerLineNum) 
+=> arena_alloc_(ArenaParams {reserve_size = arena_default_reserve_size, commit_size = arena_default_commit_size, flags = arena_default_flags, allocation_site_file = allocation_site_file, allocation_site_line = allocation_site_line});
 
 //- rjf: push helper macros
-#define push_array_no_zero_aligned(a, T, c, align) (T *)arena_push((a), sizeof(T)*(c), (align))
-#define push_array_aligned(a, T, c, align) (T *)MemoryZero(push_array_no_zero_aligned(a, T, c, align), sizeof(T)*(c))
-#define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, Max(8, AlignOf(T)))
-#define push_array(a, T, c) push_array_aligned(a, T, c, Max(8, AlignOf(T)))
+public static T* push_array_no_zero_aligned<T>(Arena* a, int c, int align)
+  => (T*)arena_push((a), sizeof(T)* c, align);
+
+public static T* push_array_aligned<T>(Arena* a, int c, int align)
+  => (T*)MemoryZero(push_array_no_zero_aligned(a, T, c, align), sizeof(T)* c);
+
+public static T* push_array_no_zero<T>(Arena* a, int c)
+  => push_array_no_zero_aligned(a, T, c, Max(8, AlignOf(T)));
+
+public static T* push_array<T>(Arena* a, int c)
+  => push_array_aligned(a, T, c, Max(8, AlignOf(T)));
