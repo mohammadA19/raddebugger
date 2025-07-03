@@ -6,8 +6,7 @@
 
 //- rjf: arena creation/destruction
 
-static Arena *
-arena_alloc_(ArenaParams *params)
+static Arena *arena_alloc_(ArenaParams *params)
 {
   // rjf: round up reserve/commit sizes
   U64 reserve_size = params->reserve_size;
@@ -70,8 +69,7 @@ arena_alloc_(ArenaParams *params)
   return arena;
 }
 
-static void
-arena_release(Arena *arena)
+static void arena_release(Arena *arena)
 {
   for(Arena *n = arena->current, *prev = 0; n != 0; n = prev)
   {
@@ -82,8 +80,7 @@ arena_release(Arena *arena)
 
 //- rjf: arena push/pop core functions
 
-static void *
-arena_push(Arena *arena, U64 size, U64 align)
+static void *arena_push(Arena *arena, U64 size, U64 align)
 {
   Arena *current = arena->current;
   U64 pos_pre = AlignPow2(current->pos, align);
@@ -179,16 +176,14 @@ arena_push(Arena *arena, U64 size, U64 align)
   return result;
 }
 
-static U64
-arena_pos(Arena *arena)
+static U64 arena_pos(Arena *arena)
 {
   Arena *current = arena->current;
   U64 pos = current->base_pos + current->pos;
   return pos;
 }
 
-static void
-arena_pop_to(Arena *arena, U64 pos)
+static void arena_pop_to(Arena *arena, U64 pos)
 {
   U64 big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
   Arena *current = arena->current;
@@ -218,14 +213,12 @@ arena_pop_to(Arena *arena, U64 pos)
 
 //- rjf: arena push/pop helpers
 
-static void
-arena_clear(Arena *arena)
+static void arena_clear(Arena *arena)
 {
   arena_pop_to(arena, 0);
 }
 
-static void
-arena_pop(Arena *arena, U64 amt)
+static void arena_pop(Arena *arena, U64 amt)
 {
   U64 pos_old = arena_pos(arena);
   U64 pos_new = pos_old;
@@ -238,16 +231,14 @@ arena_pop(Arena *arena, U64 amt)
 
 //- rjf: temporary arena scopes
 
-static Temp
-temp_begin(Arena *arena)
+static Temp temp_begin(Arena *arena)
 {
   U64 pos = arena_pos(arena);
   Temp temp = {arena, pos};
   return temp;
 }
 
-static void
-temp_end(Temp temp)
+static void temp_end(Temp temp)
 {
   arena_pop_to(temp.arena, temp.pos);
 }

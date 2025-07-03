@@ -1,25 +1,22 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_ARENA_H
-#define BASE_ARENA_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Constants
 
-#define ARENA_HEADER_SIZE 128
+const int ARENA_HEADER_SIZE = 128;
 
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U64 ArenaFlags;
-enum
+enum ArenaFlags : U64
 {
   ArenaFlag_NoChain    = (1<<0),
   ArenaFlag_LargePages = (1<<1),
 };
 
-typedef struct ArenaParams ArenaParams;
 struct ArenaParams
 {
   ArenaFlags flags;
@@ -30,7 +27,6 @@ struct ArenaParams
   int allocation_site_line;
 };
 
-typedef struct Arena Arena;
 struct Arena
 {
   Arena *prev;    // previous arena in chain
@@ -51,7 +47,6 @@ struct Arena
 };
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
-typedef struct Temp Temp;
 struct Temp
 {
   Arena *arena;
@@ -61,9 +56,9 @@ struct Temp
 ////////////////////////////////
 //~ rjf: Global Defaults
 
-global U64 arena_default_reserve_size = MB(64);
-global U64 arena_default_commit_size  = KB(64);
-global ArenaFlags arena_default_flags = 0;
+static U64 arena_default_reserve_size = MB(64);
+static U64 arena_default_commit_size  = KB(64);
+static ArenaFlags arena_default_flags = 0;
 
 ////////////////////////////////
 //~ rjf: Arena Functions
@@ -91,5 +86,3 @@ static void temp_end(Temp temp);
 #define push_array_aligned(a, T, c, align) (T *)MemoryZero(push_array_no_zero_aligned(a, T, c, align), sizeof(T)*(c))
 #define push_array_no_zero(a, T, c) push_array_no_zero_aligned(a, T, c, Max(8, alignof(T)))
 #define push_array(a, T, c) push_array_aligned(a, T, c, Max(8, alignof(T)))
-
-#endif // BASE_ARENA_H
