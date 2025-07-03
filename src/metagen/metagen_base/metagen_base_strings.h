@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_STRINGS_H
-#define BASE_STRINGS_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Third Party Includes
@@ -13,21 +12,18 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-typedef struct String8 String8;
 struct String8
 {
   U8 *str;
   U64 size;
 };
 
-typedef struct String16 String16;
 struct String16
 {
   U16 *str;
   U64 size;
 };
 
-typedef struct String32 String32;
 struct String32
 {
   U32 *str;
@@ -37,21 +33,18 @@ struct String32
 ////////////////////////////////
 //~ rjf: String List & Array Types
 
-typedef struct String8Node String8Node;
 struct String8Node
 {
   String8Node *next;
   String8 string;
 };
 
-typedef struct String8MetaNode String8MetaNode;
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
 };
 
-typedef struct String8List String8List;
 struct String8List
 {
   String8Node *first;
@@ -60,7 +53,6 @@ struct String8List
   U64 total_size;
 };
 
-typedef struct String8Array String8Array;
 struct String8Array
 {
   String8 *v;
@@ -101,7 +93,6 @@ typedef enum PathStyle
 }
 PathStyle;
 
-typedef struct StringJoin StringJoin;
 struct StringJoin
 {
   String8 pre;
@@ -112,7 +103,6 @@ struct StringJoin
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-typedef struct String8TxtPtPair String8TxtPtPair;
 struct String8TxtPtPair
 {
   String8 string;
@@ -122,7 +112,6 @@ struct String8TxtPtPair
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
 
-typedef struct UnicodeDecode UnicodeDecode;
 struct UnicodeDecode
 {
   U32 inc;
@@ -132,14 +121,12 @@ struct UnicodeDecode
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
 
-typedef struct FuzzyMatchRangeNode FuzzyMatchRangeNode;
 struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
 };
 
-typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
 struct FuzzyMatchRangeList
 {
   FuzzyMatchRangeNode *first;
@@ -182,13 +169,13 @@ static U64 cstring32_length(U32 *c);
 
 static String8  str8(U8 *str, U64 size);
 static String8  str8_range(U8 *first, U8 *one_past_last);
-static String8  str8_zero(void);
+static String8  str8_zero();
 static String16 str16(U16 *str, U64 size);
 static String16 str16_range(U16 *first, U16 *one_past_last);
-static String16 str16_zero(void);
+static String16 str16_zero();
 static String32 str32(U32 *str, U64 size);
 static String32 str32_range(U32 *first, U32 *one_past_last);
-static String32 str32_zero(void);
+static String32 str32_zero();
 static String8  str8_cstring(char *c);
 static String16 str16_cstring(U16 *c);
 static String32 str32_cstring(U32 *c);
@@ -408,5 +395,3 @@ static U64    str8_deserial_read_uleb128(String8 string, U64 off, U64 *value_out
 static U64    str8_deserial_read_sleb128(String8 string, U64 off, S64 *value_out);
 #define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
 #define str8_deserial_read_struct(string, off, ptr)       str8_deserial_read_array(string, off, ptr, 1)
-
-#endif // BASE_STRINGS_H
