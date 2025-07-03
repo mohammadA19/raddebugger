@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_STRINGS_H
-#define BASE_STRINGS_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Third Party Includes
@@ -13,21 +12,18 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-typedef struct String8 String8;
 struct String8
 {
   U8 *str;
   U64 size;
 };
 
-typedef struct String16 String16;
 struct String16
 {
   U16 *str;
   U64 size;
 };
 
-typedef struct String32 String32;
 struct String32
 {
   U32 *str;
@@ -37,21 +33,18 @@ struct String32
 ////////////////////////////////
 //~ rjf: String List & Array Types
 
-typedef struct String8Node String8Node;
 struct String8Node
 {
   String8Node *next;
   String8 string;
 };
 
-typedef struct String8MetaNode String8MetaNode;
 struct String8MetaNode
 {
   String8MetaNode *next;
   String8Node *node;
 };
 
-typedef struct String8List String8List;
 struct String8List
 {
   String8Node *first;
@@ -60,7 +53,6 @@ struct String8List
   U64 total_size;
 };
 
-typedef struct String8Array String8Array;
 struct String8Array
 {
   String8 *v;
@@ -70,21 +62,19 @@ struct String8Array
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
 
-typedef U32 StringMatchFlags;
-enum
+enum StringMatchFlags : U32
 {
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
 };
 
-typedef U32 StringSplitFlags;
-enum
+enum StringSplitFlags : U32
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
 };
 
-typedef enum PathStyle
+enum PathStyle
 {
   PathStyle_Null,
   PathStyle_Relative,
@@ -98,10 +88,8 @@ typedef enum PathStyle
 #else
 # error Absolute path style is undefined for this OS.
 #endif
-}
-PathStyle;
+};
 
-typedef struct StringJoin StringJoin;
 struct StringJoin
 {
   String8 pre;
@@ -112,7 +100,6 @@ struct StringJoin
 ////////////////////////////////
 //~ rjf: String Pair Types
 
-typedef struct String8TxtPtPair String8TxtPtPair;
 struct String8TxtPtPair
 {
   String8 string;
@@ -122,7 +109,6 @@ struct String8TxtPtPair
 ////////////////////////////////
 //~ rjf: UTF Decoding Types
 
-typedef struct UnicodeDecode UnicodeDecode;
 struct UnicodeDecode
 {
   U32 inc;
@@ -132,14 +118,12 @@ struct UnicodeDecode
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching Types
 
-typedef struct FuzzyMatchRangeNode FuzzyMatchRangeNode;
 struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
 };
 
-typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
 struct FuzzyMatchRangeList
 {
   FuzzyMatchRangeNode *first;
@@ -182,13 +166,13 @@ static U64 cstring32_length(U32 *c);
 
 static String8  str8(U8 *str, U64 size);
 static String8  str8_range(U8 *first, U8 *one_past_last);
-static String8  str8_zero(void);
+static String8  str8_zero();
 static String16 str16(U16 *str, U64 size);
 static String16 str16_range(U16 *first, U16 *one_past_last);
-static String16 str16_zero(void);
+static String16 str16_zero();
 static String32 str32(U32 *str, U64 size);
 static String32 str32_range(U32 *first, U32 *one_past_last);
-static String32 str32_zero(void);
+static String32 str32_zero();
 static String8  str8_cstring(char *c);
 static String16 str16_cstring(U16 *c);
 static String32 str32_cstring(U32 *c);
@@ -294,7 +278,7 @@ static String8List numeric_str8_list_from_data(Arena *arena, U32 radix, String8 
 ////////////////////////////////
 //~ rjf; String Arrays
 
-static String8Array str8_array_zero(void);
+static String8Array str8_array_zero();
 static String8Array str8_array_from_list(Arena *arena, String8List *list);
 static String8Array str8_array_reserve(Arena *arena, U64 count);
 static String8Array str8_array_copy(Arena *arena, String8Array array);
@@ -308,7 +292,7 @@ static String8 str8_from_version(Arena *arena, U64 version);
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-global read_only struct
+const struct
 {
   String8   string;
   PathStyle path_style;
@@ -468,5 +452,3 @@ static U64    str8_deserial_read_block(String8 string, U64 off, U64 size, String
 
 static U64 u64_hash_from_seed_str8(U64 seed, String8 string);
 static U64 u64_hash_from_str8(String8 string);
-
-#endif // BASE_STRINGS_H
