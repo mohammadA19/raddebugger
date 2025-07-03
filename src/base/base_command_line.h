@@ -1,13 +1,11 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_COMMAND_LINE_H
-#define BASE_COMMAND_LINE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Parsed Command Line Types
 
-typedef struct CmdLineOpt CmdLineOpt;
 struct CmdLineOpt
 {
   CmdLineOpt *next;
@@ -18,7 +16,6 @@ struct CmdLineOpt
   String8 value_string;
 };
 
-typedef struct CmdLineOptList CmdLineOptList;
 struct CmdLineOptList
 {
   U64 count;
@@ -26,7 +23,6 @@ struct CmdLineOptList
   CmdLineOpt *last;
 };
 
-typedef struct CmdLine CmdLine;
 struct CmdLine
 {
   String8 exe_name;
@@ -51,5 +47,3 @@ static String8List      cmd_line_strings(CmdLine *cmd_line, String8 name);
 static String8          cmd_line_string(CmdLine *cmd_line, String8 name);
 static B32              cmd_line_has_flag(CmdLine *cmd_line, String8 name);
 static B32              cmd_line_has_argument(CmdLine *cmd_line, String8 name);
-
-#endif // BASE_COMMAND_LINE_H

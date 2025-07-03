@@ -4,8 +4,7 @@
 ////////////////////////////////
 //~ rjf: Command Line Parsing Functions
 
-static CmdLineOpt **
-cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
+static CmdLineOpt **cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
 {
   CmdLineOpt **slot = 0;
   if(cmd_line->option_table_size != 0)
@@ -17,8 +16,7 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
   return slot;
 }
 
-static CmdLineOpt *
-cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
+static CmdLineOpt *cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
 {
   CmdLineOpt *result = 0;
   for(CmdLineOpt *var = *slot; var; var = var->hash_next)
@@ -32,15 +30,13 @@ cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
   return result;
 }
 
-static void
-cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
+static void cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 {
   SLLQueuePush(list->first, list->last, var);
   list->count += 1;
 }
 
-static CmdLineOpt *
-cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values)
+static CmdLineOpt *cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values)
 {
   CmdLineOpt *var = 0;
   CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
@@ -56,7 +52,7 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List
     var->hash = u64_hash_from_str8(string);
     var->string = push_str8_copy(arena, string);
     var->value_strings = values;
-    StringJoin join = {0};
+    StringJoin join = {};
     join.pre = str8_lit("");
     join.sep = str8_lit(",");
     join.post = str8_lit("");
@@ -67,10 +63,9 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List
   return var;
 }
 
-static CmdLine
-cmd_line_from_string_list(Arena *arena, String8List command_line)
+static CmdLine cmd_line_from_string_list(Arena *arena, String8List command_line)
 {
-  CmdLine parsed = {0};
+  CmdLine parsed = {};
   parsed.exe_name = command_line.first->string;
   parsed.option_table_size = 64;
   parsed.option_table = push_array(arena, CmdLineOpt *, parsed.option_table_size);
@@ -131,7 +126,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
       option_name = str8_prefix(option_name, value_signifier_position);
       
       // rjf: parse option's values
-      String8List values = {0};
+      String8List values = {};
       if(has_values)
       {
         for(String8Node *n = node; n; n = n->next)
@@ -183,16 +178,14 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   return parsed;
 }
 
-static CmdLineOpt *
-cmd_line_opt_from_string(CmdLine *cmd_line, String8 name)
+static CmdLineOpt *cmd_line_opt_from_string(CmdLine *cmd_line, String8 name)
 {
   return cmd_line_opt_from_slot(cmd_line_slot_from_string(cmd_line, name), name);
 }
 
-static String8List 
-cmd_line_strings(CmdLine *cmd_line, String8 name)
+static String8List cmd_line_strings(CmdLine *cmd_line, String8 name)
 {
-  String8List result = {0};
+  String8List result = {};
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   if(var != 0)
   {
@@ -201,10 +194,9 @@ cmd_line_strings(CmdLine *cmd_line, String8 name)
   return result;
 }
 
-static String8     
-cmd_line_string(CmdLine *cmd_line, String8 name)
+static String8 cmd_line_string(CmdLine *cmd_line, String8 name)
 {
-  String8 result = {0};
+  String8 result = {};
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   if(var != 0)
   {
@@ -213,15 +205,13 @@ cmd_line_string(CmdLine *cmd_line, String8 name)
   return result;
 }
 
-static B32
-cmd_line_has_flag(CmdLine *cmd_line, String8 name)
+static B32 cmd_line_has_flag(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return (var != 0);
 }
 
-static B32
-cmd_line_has_argument(CmdLine *cmd_line, String8 name)
+static B32 cmd_line_has_argument(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return (var != 0 && var->value_strings.node_count > 0);
