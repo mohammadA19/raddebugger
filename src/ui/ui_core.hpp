@@ -904,7 +904,7 @@ static UI_Signal ui_signal_from_box(UI_Box *box);
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-const UI_AnimNode ui_nil_anim_node =
+static const UI_AnimNode ui_nil_anim_node =
 {
   &ui_nil_anim_node,
   &ui_nil_anim_node,

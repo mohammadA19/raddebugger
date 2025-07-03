@@ -6,7 +6,7 @@
 ////////////////////////////////
 //~ rjf: Constants
 
-const int ARENA_HEADER_SIZE = 128;
+static const int ARENA_HEADER_SIZE = 128;
 
 ////////////////////////////////
 //~ rjf: Types

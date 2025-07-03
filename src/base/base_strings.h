@@ -292,7 +292,7 @@ static String8 str8_from_version(Arena *arena, U64 version);
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-const struct
+static const struct
 {
   String8   string;
   PathStyle path_style;
