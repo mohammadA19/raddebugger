@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Build Options
 
-#define BUILD_CONSOLE_INTERFACE 1
+static const int BUILD_CONSOLE_INTERFACE = 1;
 
 ////////////////////////////////
 //~ rjf: Includes
@@ -24,13 +24,12 @@
 ////////////////////////////////
 //~ rjf: Entry Point
 
-static void
-entry_point(CmdLine *cmdline)
+static void entry_point(CmdLine *cmdline)
 {
   //////////////////////////////
   //- rjf: set up state
   //
-  MG_MsgList msgs = {0};
+  MG_MsgList msgs = {};
   mg_arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(64));
   mg_state = push_array(mg_arena, MG_State, 1);
   mg_state->slots_count = 256;
@@ -46,7 +45,7 @@ entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: search code directories for all files to consider
   //
-  String8List file_paths = {0};
+  String8List file_paths = {};
   DeferLoop(printf("searching %.*s...", str8_varg(code_dir_path)), printf(" %i files found\n", (int)file_paths.node_count))
   {
     typedef struct Task Task;
@@ -61,7 +60,7 @@ entry_point(CmdLine *cmdline)
     for(Task *task = first_task; task != 0; task = task->next)
     {
       OS_FileIter *it = os_file_iter_begin(mg_arena, task->path, 0);
-      for(OS_FileInfo info = {0}; os_file_iter_next(mg_arena, it, &info);)
+      for(OS_FileInfo info = {}; os_file_iter_next(mg_arena, it, &info);)
       {
         String8 file_path = push_str8f(mg_arena, "%S/%S", task->path, info.name);
         if(info.props.flags & FilePropertyFlag_IsFolder)
@@ -82,7 +81,7 @@ entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: parse all metadesk files
   //
-  MG_FileParseList parses = {0};
+  MG_FileParseList parses = {};
   DeferLoop(printf("parsing metadesk..."), printf(" %i metadesk files parsed\n", (int)parses.count))
   {
     for(String8Node *n = file_paths.first; n != 0; n = n->next)
@@ -97,7 +96,7 @@ entry_point(CmdLine *cmdline)
         for(MD_Msg *m = parse.msgs.first; m != 0; m = m->next)
         {
           TxtPt pt = mg_txt_pt_from_string_off(data, m->node->src_offset);
-          String8 msg_kind_string = {0};
+          String8 msg_kind_string = {};
           switch(m->kind)
           {
             default:{}break;
@@ -445,7 +444,7 @@ entry_point(CmdLine *cmdline)
       //- rjf: generate markdown page
       if(md_node_has_tag(node, str8_lit("markdown"), 0))
       {
-        String8List md_strs = {0};
+        String8List md_strs = {};
         for(MD_Node *piece = node->first; !md_node_is_nil(piece); piece = piece->next)
         {
           if(md_node_has_tag(piece, str8_lit("title"), 0))
@@ -506,7 +505,7 @@ entry_point(CmdLine *cmdline)
       for(MG_LayerNode *n = slot->first; n != 0; n = n->next)
       {
         MG_Layer *layer = &n->v;
-        String8 layer_generated_folder = {0};
+        String8 layer_generated_folder = {};
         if(layer->gen_folder_name.size != 0)
         {
           String8 gen_folder = layer->gen_folder_name;
@@ -520,7 +519,7 @@ entry_point(CmdLine *cmdline)
         if(os_make_directory(layer_generated_folder))
         {
           String8List layer_key_parts = str8_split_path(mg_arena, layer->key);
-          StringJoin join = {0};
+          StringJoin join = {};
           join.sep = str8_lit("_");
           String8 layer_key_filename = str8_list_join(mg_arena, &layer_key_parts, &join);
           String8 layer_key_filename_upper = upper_from_str8(mg_arena, layer_key_filename);
