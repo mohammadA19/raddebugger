@@ -307,7 +307,7 @@ rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 
 //- decompression
 
-internal void
+static void
 rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header

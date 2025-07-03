@@ -20,7 +20,7 @@
 #include "coff/coff.c"
 #include "coff/coff_parse.c"
 
-internal void
+static void
 sld_main(CmdLine *cmdl)
 {
   B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
@@ -108,7 +108,7 @@ sld_main(CmdLine *cmdl)
   scratch_end(scratch);
 }
 
-internal void
+static void
 entry_point(CmdLine *cmdl)
 {
   sld_main(cmdl);

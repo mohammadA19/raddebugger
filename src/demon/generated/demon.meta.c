@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 dmn_event_kind_string_table[21] =
 {
 str8_lit_comp("Null"),
@@ -38,5 +38,5 @@ str8_lit_comp("MemoryExecute"),
 str8_lit_comp("CppThrow"),
 };
 
-C_LINKAGE_END
+}
 

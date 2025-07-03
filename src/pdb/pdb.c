@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U32
+static U32
 pdb_hash_v1(String8 string)
 {
   U32 result = 0;

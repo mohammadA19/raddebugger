@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal B32
+static B32
 elf_check_magic(String8 data)
 {
   U8 sig[ELF_Identifier_Max] = {0};
@@ -10,7 +10,7 @@ elf_check_magic(String8 data)
   return is_magic_valid;
 }
 
-internal ELF_BinInfo
+static ELF_BinInfo
 elf_bin_from_data(String8 data)
 {
   ELF_Hdr64 hdr64         = {0};
@@ -60,7 +60,7 @@ elf_bin_from_data(String8 data)
   return info;
 }
 
-internal ELF_Shdr64Array
+static ELF_Shdr64Array
 elf_shdr64_array_from_bin(Arena *arena, String8 raw_data, ELF_Hdr64 *hdr)
 {
   Rng1U64 shdr_range = rng_1u64(hdr->e_shoff, hdr->e_shoff + hdr->e_shentsize*hdr->e_shnum);
@@ -88,7 +88,7 @@ elf_shdr64_array_from_bin(Arena *arena, String8 raw_data, ELF_Hdr64 *hdr)
   return result;
 }
 
-internal String8
+static String8
 elf_name_from_shdr64(String8 raw_data, ELF_Hdr64 *hdr, Rng1U64 sh_name_range, ELF_Shdr64 *shdr)
 {
   String8 sh_names = str8_substr(raw_data, sh_name_range);
@@ -97,14 +97,14 @@ elf_name_from_shdr64(String8 raw_data, ELF_Hdr64 *hdr, Rng1U64 sh_name_range, EL
   return name;
 }
 
-internal U64
+static U64
 elf_base_addr_from_bin(ELF_Hdr64 *hdr)
 {
   NotImplemented;
   return 0;
 }
 
-internal B32
+static B32
 elf_parse_debug_link(String8 raw_data, ELF_BinInfo *elf, ELF_GnuDebugLink *debug_link_out)
 {
   Temp scratch = scratch_begin(0,0);

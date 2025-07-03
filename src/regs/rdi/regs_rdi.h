@@ -4,7 +4,7 @@
 #ifndef REGS_RDI_H
 #define REGS_RDI_H
 
-internal RDI_RegCode regs_rdi_code_from_arch_reg_code(Arch arch, REGS_RegCode code);
-internal REGS_RegCode regs_reg_code_from_arch_rdi_code(Arch arch, RDI_RegCode reg);
+static RDI_RegCode regs_rdi_code_from_arch_reg_code(Arch arch, REGS_RegCode code);
+static REGS_RegCode regs_reg_code_from_arch_rdi_code(Arch arch, RDI_RegCode reg);
 
 #endif //REGS_RDI_H

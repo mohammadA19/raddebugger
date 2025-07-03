@@ -341,7 +341,7 @@ global OS_Handle ipc_s2m_ring_cv = {0};
 ////////////////////////////////
 //~ rjf: IPC Signaler Thread
 
-internal void
+static void
 ipc_signaler_thread__entry_point(void *p)
 {
   ThreadNameF("[rd] ipc signaler thread");
@@ -378,7 +378,7 @@ ipc_signaler_thread__entry_point(void *p)
 ////////////////////////////////
 //~ rjf: Ctrl -> Main Thread Wakeup Hook
 
-internal CTRL_WAKEUP_FUNCTION_DEF(wakeup_hook_ctrl)
+static CTRL_WAKEUP_FUNCTION_DEF(wakeup_hook_ctrl)
 {
   os_send_wakeup_event();
 }
@@ -386,7 +386,7 @@ internal CTRL_WAKEUP_FUNCTION_DEF(wakeup_hook_ctrl)
 ////////////////////////////////
 //~ rjf: Per-Frame Entry Point
 
-internal B32
+static B32
 frame(void)
 {
   rd_frame();
@@ -396,7 +396,7 @@ frame(void)
 ////////////////////////////////
 //~ rjf: Entry Point
 
-internal void
+static void
 entry_point(CmdLine *cmd_line)
 {
   Temp scratch = scratch_begin(0, 0);

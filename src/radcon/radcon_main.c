@@ -86,7 +86,7 @@
 
 ////////////////////////////////
 
-internal void
+static void
 entry_point(CmdLine *cmdl)
 {
   rc_main(cmdl);

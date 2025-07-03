@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal COFF_ObjSymbol *
+static COFF_ObjSymbol *
 pe_make_indirect_jump_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *code_sect, COFF_ObjSymbol *iat_symbol, String8 thunk_name)
 {
   ProfBeginFunction();
@@ -23,7 +23,7 @@ pe_make_indirect_jump_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *cod
   return jmp_thunk_symbol;
 }
 
-internal COFF_ObjSymbol *
+static COFF_ObjSymbol *
 pe_make_load_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *code_sect, COFF_ObjSymbol *imp_addr_ptr, COFF_ObjSymbol *tail_merge, String8 func_name)
 {
   ProfBeginFunction();
@@ -54,7 +54,7 @@ pe_make_load_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *code_sect, C
   return load_thunk_symbol;
 }
 
-internal COFF_ObjSymbol *
+static COFF_ObjSymbol *
 pe_make_tail_merge_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *code_sect, String8 dll_name, String8 delay_load_helper_name, COFF_ObjSymbol *dll_import_descriptor)
 {
   ProfBeginFunction();
@@ -107,7 +107,7 @@ pe_make_tail_merge_thunk_x64(COFF_ObjWriter *obj_writer, COFF_ObjSection *code_s
   return tail_merge_symbol;
 }
 
-internal String8
+static String8
 pe_make_import_entry_obj_delayed(Arena *arena, String8 dll_name, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -129,7 +129,7 @@ pe_make_import_entry_obj_delayed(Arena *arena, String8 dll_name, COFF_TimeStamp 
   return obj;
 }
 
-internal String8
+static String8
 pe_make_null_import_descriptor_delayed(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -146,7 +146,7 @@ pe_make_null_import_descriptor_delayed(Arena *arena, COFF_TimeStamp time_stamp, 
   return obj;
 }
 
-internal String8
+static String8
 pe_make_null_thunk_data_obj_delayed(Arena *arena, String8 dll_name, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -168,7 +168,7 @@ pe_make_null_thunk_data_obj_delayed(Arena *arena, String8 dll_name, COFF_TimeSta
   return obj;
 }
 
-internal String8
+static String8
 pe_make_import_entry_obj(Arena *arena, String8 dll_name, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -199,7 +199,7 @@ pe_make_import_entry_obj(Arena *arena, String8 dll_name, COFF_TimeStamp time_sta
   return obj;
 }
 
-internal String8
+static String8
 pe_make_null_import_descriptor_obj(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -216,7 +216,7 @@ pe_make_null_import_descriptor_obj(Arena *arena, COFF_TimeStamp time_stamp, COFF
   return obj;
 }
 
-internal String8
+static String8
 pe_make_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 debug_symbols)
 {
   ProfBeginFunction();
@@ -236,7 +236,7 @@ pe_make_null_thunk_data_obj(Arena *arena, String8 dll_name, COFF_TimeStamp time_
   return obj;
 }
 
-internal String8
+static String8
 pe_make_import_dll_obj_static(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 dll_name, String8 debug_symbols, String8List import_headers)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(time_stamp, machine);
@@ -318,7 +318,7 @@ pe_make_import_dll_obj_static(Arena *arena, COFF_TimeStamp time_stamp, COFF_Mach
   return dll_obj;
 }
 
-internal String8
+static String8
 pe_make_import_dll_obj_delayed(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 dll_name, String8 delay_load_helper_name, String8 debug_symbols, String8List import_headers, B32 emit_biat, B32 emit_uiat)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(time_stamp, machine);

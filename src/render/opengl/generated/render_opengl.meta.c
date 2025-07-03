@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 r_ogl_shader_kind_name_table[2] =
 {
 str8_lit_comp("rect"),
@@ -34,5 +34,5 @@ R_OGL_AttributeArray r_ogl_shader_kind_output_attributes_table[2] =
 { r_ogl_single_color_output_attributes, ArrayCount(r_ogl_single_color_output_attributes) },
 };
 
-C_LINKAGE_END
+}
 

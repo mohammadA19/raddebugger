@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal VoidProc *
+static VoidProc *
 r_ogl_os_load_procedure(char *name)
 {
   VoidProc *p = (VoidProc*)wglGetProcAddress(name);
@@ -12,7 +12,7 @@ r_ogl_os_load_procedure(char *name)
   return p;
 }
 
-internal void
+static void
 r_ogl_os_init(CmdLine *cmdline)
 {
   //- rjf: create bootstrapping window
@@ -100,7 +100,7 @@ r_ogl_os_init(CmdLine *cmdline)
   wglSwapIntervalEXT(1);
 }
 
-internal R_Handle
+static R_Handle
 r_ogl_os_window_equip(OS_Handle window)
 {
   //- rjf: unpack window
@@ -154,12 +154,12 @@ r_ogl_os_window_equip(OS_Handle window)
   return result;
 }
 
-internal void
+static void
 r_ogl_os_window_unequip(OS_Handle os, R_Handle r)
 {
 }
 
-internal void
+static void
 r_ogl_os_select_window(OS_Handle os, R_Handle r)
 {
   OS_W32_Window *w = os_w32_window_from_handle(os);
@@ -171,7 +171,7 @@ r_ogl_os_select_window(OS_Handle os, R_Handle r)
   }
 }
 
-internal void
+static void
 r_ogl_os_window_swap(OS_Handle os, R_Handle r)
 {
   OS_W32_Window *w = os_w32_window_from_handle(os);

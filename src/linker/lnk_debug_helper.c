@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+static String8
 lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine)
 {
   String8 comp3_data = cv_make_comp3(arena,
@@ -20,7 +20,7 @@ lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine)
   return comp3_data;
 }
 
-internal String8
+static String8
 lnk_make_debug_s(Arena *arena, CV_SymbolList symbol_list)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -36,7 +36,7 @@ lnk_make_debug_s(Arena *arena, CV_SymbolList symbol_list)
   return debug_s_data;
 }
 
-internal String8
+static String8
 lnk_make_linker_debug_symbols(Arena *arena, COFF_MachineType machine)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -48,7 +48,7 @@ lnk_make_linker_debug_symbols(Arena *arena, COFF_MachineType machine)
   return debug_symbols;
 }
 
-internal String8
+static String8
 lnk_make_dll_import_debug_symbols(Arena *arena, COFF_MachineType machine, String8 dll_name)
 {
   Temp scratch = scratch_begin(&arena,1);

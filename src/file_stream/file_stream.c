@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+static U64
 fs_little_hash_from_string(String8 string)
 {
   U64 result = 5381;
@@ -18,7 +18,7 @@ fs_little_hash_from_string(String8 string)
   return result;
 }
 
-internal U128
+static U128
 fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -35,7 +35,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: Top-Level API
 
-internal void
+static void
 fs_init(void)
 {
   Arena *arena = arena_alloc();
@@ -62,7 +62,7 @@ fs_init(void)
 ////////////////////////////////
 //~ rjf: Change Generation
 
-internal U64
+static U64
 fs_change_gen(void)
 {
   return ins_atomic_u64_eval(&fs_shared->change_gen);
@@ -71,7 +71,7 @@ fs_change_gen(void)
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal HS_Key
+static HS_Key
 fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -200,7 +200,7 @@ fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
   return key;
 }
 
-internal U128
+static U128
 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
 {
   U128 hash = {0};
@@ -218,7 +218,7 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
   return hash;
 }
 
-internal FileProperties
+static FileProperties
 fs_properties_from_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -247,7 +247,7 @@ fs_properties_from_path(String8 path)
 ////////////////////////////////
 //~ rjf: Streamer Threads
 
-internal B32
+static B32
 fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us)
 {
   B32 result = 0;
@@ -276,7 +276,7 @@ fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us)
   return result;
 }
 
-internal void
+static void
 fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, String8 *path_out)
 {
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
@@ -390,7 +390,7 @@ ASYNC_WORK_DEF(fs_stream_work)
 ////////////////////////////////
 //~ rjf: Change Detector Thread
 
-internal void
+static void
 fs_detector_thread__entry_point(void *p)
 {
   ThreadNameF("[fs] detector thread");

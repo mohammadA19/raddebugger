@@ -244,7 +244,7 @@ typedef struct DW_ExprCallStack
 // If the expression contains more than one op than the analyzer fails with
 // "too complicated".
 
-internal DW_SimpleLoc dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base);
+static DW_SimpleLoc dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base);
 
 // This analyzer does a one-pass scan through the expression to
 // help a caller determine what to expect before doing a full evaluation which
@@ -276,26 +276,26 @@ internal DW_SimpleLoc dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_
 // includes features seen in all of the expressions that might be reached by
 // call ops from the initial expression.
 
-internal DW_ExprAnalysis dw_expr__analyze_details(void *base, Rng1U64 range, DW_ExprMachineCallConfig *call_config);
+static DW_ExprAnalysis dw_expr__analyze_details(void *base, Rng1U64 range, DW_ExprMachineCallConfig *call_config);
 
 //- full eval
-internal DW_Location dw_expr__eval(Arena *arena_optional, void *base, Rng1U64 range, DW_ExprMachineConfig *config);
+static DW_Location dw_expr__eval(Arena *arena_optional, void *base, Rng1U64 range, DW_ExprMachineConfig *config);
 
 //- dw expr val stack
-internal DW_ExprStack dw_expr__stack_make(Arena *arena);
-internal void         dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x);
-internal U64          dw_expr__stack_pop(DW_ExprStack *stack);
-internal U64          dw_expr__stack_pick(DW_ExprStack *stack, U64 idx);
-internal B32          dw_expr__stack_is_empty(DW_ExprStack *stack);
+static DW_ExprStack dw_expr__stack_make(Arena *arena);
+static void         dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x);
+static U64          dw_expr__stack_pop(DW_ExprStack *stack);
+static U64          dw_expr__stack_pick(DW_ExprStack *stack, U64 idx);
+static B32          dw_expr__stack_is_empty(DW_ExprStack *stack);
 
 //- dw expr call stack
-internal DW_ExprCall* dw_expr__call_top(DW_ExprCallStack *stack);
-internal void         dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size);
-internal void         dw_expr__call_pop(DW_ExprCallStack *stack);
+static DW_ExprCall* dw_expr__call_top(DW_ExprCallStack *stack);
+static void         dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size);
+static void         dw_expr__call_pop(DW_ExprCallStack *stack);
 
 
 //- analysis tasks
-internal DW_ExprAnalysisTask* dw_expr__analysis_task_from_p(DW_ExprAnalysisTask *first, U64 p);
+static DW_ExprAnalysisTask* dw_expr__analysis_task_from_p(DW_ExprAnalysisTask *first, U64 p);
 
 #endif //DWARF_EXPR_H
 

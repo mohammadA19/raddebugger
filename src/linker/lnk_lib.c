@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal LNK_LibNode *
+static LNK_LibNode *
 lnk_lib_list_pop_node_atomic(LNK_LibList *list)
 {
   for (;;) {
@@ -14,7 +14,7 @@ lnk_lib_list_pop_node_atomic(LNK_LibList *list)
   }
 }
 
-internal void
+static void
 lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
 {
   for (;;) {
@@ -28,14 +28,14 @@ lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
   }
 }
 
-internal void
+static void
 lnk_lib_list_push_node(LNK_LibList *list, LNK_LibNode *node)
 {
   SLLStackPush(list->first, node);
   list->count += 1;
 }
 
-internal LNK_LibList
+static LNK_LibList
 lnk_lib_list_reserve(Arena *arena, U64 count)
 {
   LNK_LibList result = {0};
@@ -44,7 +44,7 @@ lnk_lib_list_reserve(Arena *arena, U64 count)
   return result;
 }
 
-internal LNK_LibNodeArray
+static LNK_LibNodeArray
 lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 {
   LNK_LibNodeArray result = {0};
@@ -53,7 +53,7 @@ lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
   return result;
 }
 
-internal B32
+static B32
 lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
 {
   ProfBeginFunction();
@@ -132,7 +132,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   return 1;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_lib_initer)
 {
   LNK_LibIniter *task = raw_task;
@@ -148,13 +148,13 @@ THREAD_POOL_TASK_FUNC(lnk_lib_initer)
   }
 }
 
-internal int
+static int
 lnk_lib_node_is_before(void *a, void *b)
 {
   return ((LNK_LibNode*)a)->data.input_idx < ((LNK_LibNode*)b)->data.input_idx;
 }
 
-internal LNK_LibNodeArray
+static LNK_LibNodeArray
 lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr)
 {
   Temp scratch = scratch_begin(arena->v, arena->count);
@@ -189,7 +189,7 @@ lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, S
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_push_lib_symbols_task)
 {
   LNK_SymbolPusher *task   = raw_task;
@@ -203,7 +203,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_lib_symbols_task)
   }
 }
 
-internal void
+static void
 lnk_input_lib_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray libs)
 {
   ProfBeginFunction();

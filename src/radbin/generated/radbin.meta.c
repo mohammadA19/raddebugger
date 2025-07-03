@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 rb_file_format_display_name_table[10] =
 {
 {0},
@@ -18,5 +18,5 @@ str8_lit_comp("ELF64"),
 str8_lit_comp("RDI"),
 };
 
-C_LINKAGE_END
+}
 

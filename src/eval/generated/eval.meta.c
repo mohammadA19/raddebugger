@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 e_token_kind_strings[6] =
 {
 str8_lit_comp("Null"),
@@ -265,5 +265,5 @@ str8_lit_comp("Insufficient evaluation machine stack space."),
 str8_lit_comp("Malformed bytecode."),
 };
 
-C_LINKAGE_END
+}
 

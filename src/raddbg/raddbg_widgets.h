@@ -135,50 +135,50 @@ struct RD_CodeSliceSignal
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Title Strings
 
-internal DR_FStrList rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras);
-internal DR_FStrList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras);
-internal DR_FStrList rd_title_fstrs_from_code_name(Arena *arena, String8 code_name);
-internal DR_FStrList rd_title_fstrs_from_file_path(Arena *arena, String8 file_path);
+static DR_FStrList rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras);
+static DR_FStrList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras);
+static DR_FStrList rd_title_fstrs_from_code_name(Arena *arena, String8 code_name);
+static DR_FStrList rd_title_fstrs_from_file_path(Arena *arena, String8 file_path);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-internal void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target);
+static void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
 
-internal void rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new);
-internal UI_Signal rd_menu_bar_button(String8 string);
-internal UI_Signal rd_cmd_spec_button(String8 name);
-internal void rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints);
-internal UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string);
-internal UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...);
+static void rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new);
+static UI_Signal rd_menu_bar_button(String8 string);
+static UI_Signal rd_cmd_spec_button(String8 name);
+static void rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints);
+static UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string);
+static UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Text View
 
-internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
-internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
-internal RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string);
-internal RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...);
+static UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
+static UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
+static RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string);
+static RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...);
 
-internal B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column);
+static B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
 
-internal DR_FStrList rd_fstrs_from_rich_string(Arena *arena, String8 string);
-internal UI_Signal rd_label(String8 string);
-internal UI_Signal rd_error_label(String8 string);
-internal B32 rd_help_label(String8 string);
-internal DR_FStrList rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
-internal UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+static DR_FStrList rd_fstrs_from_rich_string(Arena *arena, String8 string);
+static UI_Signal rd_label(String8 string);
+static UI_Signal rd_error_label(String8 string);
+static B32 rd_help_label(String8 string);
+static DR_FStrList rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+static UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-internal UI_Signal rd_cell(RD_CellParams *params, String8 string);
-internal UI_Signal rd_cellf(RD_CellParams *params, char *fmt, ...);
+static UI_Signal rd_cell(RD_CellParams *params, String8 string);
+static UI_Signal rd_cellf(RD_CellParams *params, char *fmt, ...);
 
 #endif // RADDBG_WIDGETS_H

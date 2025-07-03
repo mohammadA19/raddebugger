@@ -4,7 +4,7 @@
 //- analyzers
 
 #if 0
-internal DW_SimpleLoc
+static DW_SimpleLoc
 dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
 {
   DW_SimpleLoc result = {DW_SimpleLocKind_Empty};
@@ -176,7 +176,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
   return result;
 }
 
-internal DW_ExprAnalysis
+static DW_ExprAnalysis
 dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConfig *call_config)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -555,7 +555,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
 
 //- full eval
 
-internal DW_Location
+static DW_Location
 dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_ExprMachineConfig *config)
 {
 #if 0
@@ -1335,14 +1335,14 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
 
 //- dw expr val stack
 
-internal DW_ExprStack
+static DW_ExprStack
 dw_expr__stack_make(Arena *arena)
 {
   DW_ExprStack result = {0};
   return result;
 }
 
-internal void
+static void
 dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
 {
   DW_ExprStackNode *node = stack->free_nodes;
@@ -1356,7 +1356,7 @@ dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
   stack->count += 1;
 }
 
-internal U64
+static U64
 dw_expr__stack_pop(DW_ExprStack *stack)
 {
   U64               result = 0;
@@ -1369,7 +1369,7 @@ dw_expr__stack_pop(DW_ExprStack *stack)
   return result;
 }
 
-internal U64
+static U64
 dw_expr__stack_pick(DW_ExprStack *stack, U64 idx)
 {
   U64 result = 0;
@@ -1384,7 +1384,7 @@ dw_expr__stack_pick(DW_ExprStack *stack, U64 idx)
   return result;
 }
 
-internal B32
+static B32
 dw_expr__stack_is_empty(DW_ExprStack *stack)
 {
   B32 result = (stack->count == 0);
@@ -1393,14 +1393,14 @@ dw_expr__stack_is_empty(DW_ExprStack *stack)
 
 //- dw expr call stack
 
-internal DW_ExprCall*
+static DW_ExprCall*
 dw_expr__call_top(DW_ExprCallStack *stack)
 {
   DW_ExprCall *call = stack->stack;
   return call;
 }
 
-internal void
+static void
 dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
 {
   DW_ExprCall *call = 0;
@@ -1414,7 +1414,7 @@ dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
   stack->depth += 1;
 }
 
-internal void
+static void
 dw_expr__call_pop(DW_ExprCallStack *stack)
 {
   DW_ExprCall *top = stack->stack;
@@ -1427,7 +1427,7 @@ dw_expr__call_pop(DW_ExprCallStack *stack)
 
 //- analysis tasks
 
-internal DW_ExprAnalysisTask*
+static DW_ExprAnalysisTask*
 dw_expr__analysis_task_from_p(DW_ExprAnalysisTask *first, U64 p)
 {
   DW_ExprAnalysisTask *result = 0;

@@ -21,9 +21,9 @@ RB_FileFormat_RDI,
 RB_FileFormat_COUNT,
 } RB_FileFormat;
 
-C_LINKAGE_BEGIN
+extern "C" {
 extern String8 rb_file_format_display_name_table[10];
 
-C_LINKAGE_END
+}
 
 #endif // RADBIN_META_H

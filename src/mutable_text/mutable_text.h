@@ -79,18 +79,18 @@ global MTX_Shared *mtx_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void mtx_init(void);
+static void mtx_init(void);
 
 ////////////////////////////////
 //~ rjf: Buffer Operations
 
-internal void mtx_push_op(HS_Key buffer_key, MTX_Op op);
+static void mtx_push_op(HS_Key buffer_key, MTX_Op op);
 
 ////////////////////////////////
 //~ rjf: Mutation Threads
 
-internal void mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op);
-internal void mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_Op *op_out);
-internal void mtx_mut_thread__entry_point(void *p);
+static void mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op);
+static void mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_Op *op_out);
+static void mtx_mut_thread__entry_point(void *p);
 
 #endif // MUTABLE_TEXT_H

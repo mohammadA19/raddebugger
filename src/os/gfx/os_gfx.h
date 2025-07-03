@@ -105,98 +105,98 @@ struct OS_EventList
 ////////////////////////////////
 //~ rjf: Application-Defined Frame Hook Forward Declaration
 
-internal B32 frame(void);
+static B32 frame(void);
 
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-internal String8 os_string_from_event_kind(OS_EventKind kind);
-internal String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
-internal String8 os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key);
-internal U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
-internal void os_eat_event(OS_EventList *events, OS_Event *event);
-internal B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-internal B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
-internal B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
-internal OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
-internal void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
-internal OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);
+static String8 os_string_from_event_kind(OS_EventKind kind);
+static String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
+static String8 os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key);
+static U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
+static void os_eat_event(OS_EventList *events, OS_Event *event);
+static B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
+static B32  os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
+static B32  os_text(OS_EventList *events, OS_Handle window, U32 character);
+static OS_EventList os_event_list_copy(Arena *arena, OS_EventList *src);
+static void os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push);
+static OS_Event *os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Main Initialization API (Implemented Per-OS)
 
-internal void os_gfx_init(void);
+static void os_gfx_init(void);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Graphics System Info (Implemented Per-OS)
 
-internal OS_GfxInfo *os_get_gfx_info(void);
+static OS_GfxInfo *os_get_gfx_info(void);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
-internal void    os_set_clipboard_text(String8 string);
-internal String8 os_get_clipboard_text(Arena *arena);
+static void    os_set_clipboard_text(String8 string);
+static String8 os_get_clipboard_text(Arena *arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
-internal OS_Handle      os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title);
-internal void           os_window_close(OS_Handle window);
-internal void           os_window_set_title(OS_Handle window, String8 title);
-internal void           os_window_first_paint(OS_Handle window);
-internal void           os_window_focus(OS_Handle window);
-internal B32            os_window_is_focused(OS_Handle window);
-internal B32            os_window_is_fullscreen(OS_Handle window);
-internal void           os_window_set_fullscreen(OS_Handle window, B32 fullscreen);
-internal B32            os_window_is_maximized(OS_Handle window);
-internal void           os_window_set_maximized(OS_Handle window, B32 maximized);
-internal B32            os_window_is_minimized(OS_Handle window);
-internal void           os_window_set_minimized(OS_Handle window, B32 minimized);
-internal void           os_window_bring_to_front(OS_Handle window);
-internal void           os_window_set_monitor(OS_Handle window, OS_Handle monitor);
-internal void           os_window_clear_custom_border_data(OS_Handle handle);
-internal void           os_window_push_custom_title_bar(OS_Handle handle, F32 thickness);
-internal void           os_window_push_custom_edges(OS_Handle handle, F32 thickness);
-internal void           os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect);
-internal Rng2F32        os_rect_from_window(OS_Handle window);
-internal Rng2F32        os_client_rect_from_window(OS_Handle window);
-internal F32            os_dpi_from_window(OS_Handle window);
+static OS_Handle      os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title);
+static void           os_window_close(OS_Handle window);
+static void           os_window_set_title(OS_Handle window, String8 title);
+static void           os_window_first_paint(OS_Handle window);
+static void           os_window_focus(OS_Handle window);
+static B32            os_window_is_focused(OS_Handle window);
+static B32            os_window_is_fullscreen(OS_Handle window);
+static void           os_window_set_fullscreen(OS_Handle window, B32 fullscreen);
+static B32            os_window_is_maximized(OS_Handle window);
+static void           os_window_set_maximized(OS_Handle window, B32 maximized);
+static B32            os_window_is_minimized(OS_Handle window);
+static void           os_window_set_minimized(OS_Handle window, B32 minimized);
+static void           os_window_bring_to_front(OS_Handle window);
+static void           os_window_set_monitor(OS_Handle window, OS_Handle monitor);
+static void           os_window_clear_custom_border_data(OS_Handle handle);
+static void           os_window_push_custom_title_bar(OS_Handle handle, F32 thickness);
+static void           os_window_push_custom_edges(OS_Handle handle, F32 thickness);
+static void           os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect);
+static Rng2F32        os_rect_from_window(OS_Handle window);
+static Rng2F32        os_client_rect_from_window(OS_Handle window);
+static F32            os_dpi_from_window(OS_Handle window);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
-internal OS_HandleArray os_push_monitors_array(Arena *arena);
-internal OS_Handle      os_primary_monitor(void);
-internal OS_Handle      os_monitor_from_window(OS_Handle window);
-internal String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
-internal Vec2F32        os_dim_from_monitor(OS_Handle monitor);
-internal F32            os_dpi_from_monitor(OS_Handle monitor);
+static OS_HandleArray os_push_monitors_array(Arena *arena);
+static OS_Handle      os_primary_monitor(void);
+static OS_Handle      os_monitor_from_window(OS_Handle window);
+static String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
+static Vec2F32        os_dim_from_monitor(OS_Handle monitor);
+static F32            os_dpi_from_monitor(OS_Handle monitor);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Events (Implemented Per-OS)
 
-internal void           os_send_wakeup_event(void);
-internal OS_EventList   os_get_events(Arena *arena, B32 wait);
-internal OS_Modifiers   os_get_modifiers(void);
-internal B32            os_key_is_down(OS_Key key);
-internal Vec2F32        os_mouse_from_window(OS_Handle window);
+static void           os_send_wakeup_event(void);
+static OS_EventList   os_get_events(Arena *arena, B32 wait);
+static OS_Modifiers   os_get_modifiers(void);
+static B32            os_key_is_down(OS_Key key);
+static Vec2F32        os_mouse_from_window(OS_Handle window);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Cursors (Implemented Per-OS)
 
-internal void           os_set_cursor(OS_Cursor cursor);
+static void           os_set_cursor(OS_Cursor cursor);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
-internal void           os_graphical_message(B32 error, String8 title, String8 message);
-internal String8        os_graphical_pick_file(Arena *arena, String8 initial_path);
+static void           os_graphical_message(B32 error, String8 title, String8 message);
+static String8        os_graphical_pick_file(Arena *arena, String8 initial_path);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Shell Operations
 
-internal void           os_show_in_filesystem_ui(String8 path);
-internal void           os_open_in_browser(String8 url);
+static void           os_show_in_filesystem_ui(String8 path);
+static void           os_open_in_browser(String8 url);
 
 #endif // OS_GFX_H

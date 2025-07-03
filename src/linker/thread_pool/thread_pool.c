@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
+static void
 tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 {
   for (;;) {
@@ -28,7 +28,7 @@ tp_run_tasks(TP_Context *pool, TP_Worker *worker)
   }
 }
 
-internal void
+static void
 tp_worker_main(void *raw_worker)
 {
   TP_Worker  *worker = raw_worker;
@@ -40,7 +40,7 @@ tp_worker_main(void *raw_worker)
   }
 }
 
-internal void
+static void
 tp_worker_main_shared(void *raw_worker)
 {
   TP_Worker  *worker = raw_worker;
@@ -54,7 +54,7 @@ tp_worker_main_shared(void *raw_worker)
   }
 }
 
-internal TP_Context * 
+static TP_Context * 
 tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
 {
   ProfBeginDynamic("Alloc Thread Pool [Worker Count: %u]", worker_count);
@@ -106,7 +106,7 @@ tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
   return pool;
 }
 
-internal void
+static void
 tp_release(TP_Context *pool)
 {
   pool->is_live = 0;
@@ -132,7 +132,7 @@ tp_release(TP_Context *pool)
   MemoryZeroStruct(pool);
 }
 
-internal TP_Arena *
+static TP_Arena *
 tp_arena_alloc(TP_Context *pool)
 {
   ProfBeginFunction();
@@ -151,7 +151,7 @@ tp_arena_alloc(TP_Context *pool)
   return worker_arena_arr;
 }
 
-internal void
+static void
 tp_arena_release(TP_Arena **arena_ptr)
 {
   ProfBeginFunction();
@@ -163,7 +163,7 @@ tp_arena_release(TP_Arena **arena_ptr)
   ProfEnd();
 }
 
-internal TP_Temp
+static TP_Temp
 tp_temp_begin(TP_Arena *arena)
 {
   ProfBeginFunction();
@@ -184,7 +184,7 @@ tp_temp_begin(TP_Arena *arena)
   return temp;
 }
 
-internal void
+static void
 tp_temp_end(TP_Temp temp)
 {
   ProfBeginFunction();
@@ -194,7 +194,7 @@ tp_temp_end(TP_Temp temp)
   ProfEnd();
 }
 
-internal void
+static void
 tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskFunc *task_func, void *task_data)
 {
   if (task_count > 0) {
@@ -228,7 +228,7 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
   }
 }
 
-internal Rng1U64 *
+static Rng1U64 *
 tp_divide_work(Arena *arena, U64 item_count, U32 worker_count)
 {
   U64      per_count = CeilIntegerDiv(item_count, worker_count);

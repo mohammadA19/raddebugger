@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal RDI_Arch
+static RDI_Arch
 c2r_rdi_arch_from_coff_machine(COFF_MachineType machine)
 {
   switch (machine) {
@@ -36,7 +36,7 @@ c2r_rdi_arch_from_coff_machine(COFF_MachineType machine)
   }
 }
 
-internal RDI_BinarySectionFlags
+static RDI_BinarySectionFlags
 c2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 {
   RDI_BinarySectionFlags result = 0;
@@ -55,7 +55,7 @@ c2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
   return(result);
 }
 
-internal RDIM_BinarySectionList
+static RDIM_BinarySectionList
 c2r_rdi_binary_sections_from_coff_sections(Arena *arena, String8 image_data, String8 string_table, U64 sectab_count, COFF_SectionHeader *sectab)
 {
   ProfBeginFunction();

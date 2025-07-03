@@ -3,7 +3,7 @@
 
 global U64 global_update_tick_idx = 0;
 
-internal void
+static void
 main_thread_base_entry_point(int arguments_count, char **arguments)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -100,7 +100,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   scratch_end(scratch);
 }
 
-internal void
+static void
 supplement_thread_base_entry_point(void (*entry_point)(void *params), void *params)
 {
   TCTX tctx;
@@ -109,14 +109,14 @@ supplement_thread_base_entry_point(void (*entry_point)(void *params), void *para
   tctx_release();
 }
 
-internal U64
+static U64
 update_tick_idx(void)
 {
   U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
   return result;
 }
 
-internal B32
+static B32
 update(void)
 {
   ProfTick(0);

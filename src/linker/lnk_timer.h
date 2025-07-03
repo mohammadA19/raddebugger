@@ -19,6 +19,6 @@ typedef struct LNK_Timer
   U64 end;
 } LNK_Timer;
 
-internal void lnk_timer_begin(LNK_TimerType timer);
-internal void lnk_timer_end(LNK_TimerType timer);
+static void lnk_timer_begin(LNK_TimerType timer);
+static void lnk_timer_end(LNK_TimerType timer);
 

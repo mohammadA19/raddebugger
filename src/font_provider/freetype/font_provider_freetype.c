@@ -4,14 +4,14 @@
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal FP_FT_Font
+static FP_FT_Font
 fp_ft_font_from_handle(FP_Handle handle)
 {
   FP_FT_Font result = {(FT_Face)handle.u64[0]};
   return result;
 }
 
-internal FP_Handle
+static FP_Handle
 fp_ft_handle_from_font(FP_FT_Font font)
 {
   FP_Handle result = {(U64)font.face};

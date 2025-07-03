@@ -418,6 +418,6 @@ typedef struct PDB_PsiHeader
 
 ////////////////////////////////
 
-internal U32 pdb_hash_v1(String8 string);
+static U32 pdb_hash_v1(String8 string);
 
 #endif // PDB_H

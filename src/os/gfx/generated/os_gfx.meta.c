@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 os_g_key_display_string_table[143] =
 {
 str8_lit_comp("Invalid Key"),
@@ -298,5 +298,5 @@ str8_lit_comp("middle_mouse"),
 str8_lit_comp("right_mouse"),
 };
 
-C_LINKAGE_END
+}
 

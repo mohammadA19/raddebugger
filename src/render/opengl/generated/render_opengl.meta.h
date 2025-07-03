@@ -13,7 +13,7 @@ R_OGL_ShaderKind_Blur,
 R_OGL_ShaderKind_COUNT,
 } R_OGL_ShaderKind;
 
-C_LINKAGE_BEGIN
+extern "C" {
 extern String8 r_ogl_shader_kind_name_table[2];
 extern String8 * r_ogl_shader_kind_vshad_src_table[2];
 extern String8 * r_ogl_shader_kind_pshad_src_table[2];
@@ -271,6 +271,6 @@ str8_lit_comp(
 );
 
 
-C_LINKAGE_END
+}
 
 #endif // RENDER_OPENGL_META_H

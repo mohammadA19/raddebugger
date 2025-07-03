@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8 ctrl_entity_kind_code_name_table[12] =
 {
 {0},
@@ -204,5 +204,5 @@ B8 ctrl_exception_code_kind_default_enable_table[38] =
 1,
 };
 
-C_LINKAGE_END
+}
 

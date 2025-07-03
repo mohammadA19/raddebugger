@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal DateTime
+static DateTime
 os_lnx_date_time_from_tm(tm in, U32 msec)
 {
   DateTime dt = {0};
@@ -18,7 +18,7 @@ os_lnx_date_time_from_tm(tm in, U32 msec)
   return dt;
 }
 
-internal tm
+static tm
 os_lnx_tm_from_date_time(DateTime dt)
 {
   tm result = {0};
@@ -31,7 +31,7 @@ os_lnx_tm_from_date_time(DateTime dt)
   return result;
 }
 
-internal timespec
+static timespec
 os_lnx_timespec_from_date_time(DateTime dt)
 {
   tm tm_val = os_lnx_tm_from_date_time(dt);
@@ -41,7 +41,7 @@ os_lnx_timespec_from_date_time(DateTime dt)
   return result;
 }
 
-internal DenseTime
+static DenseTime
 os_lnx_dense_time_from_timespec(timespec in)
 {
   DenseTime result = 0;
@@ -54,7 +54,7 @@ os_lnx_dense_time_from_timespec(timespec in)
   return result;
 }
 
-internal FileProperties
+static FileProperties
 os_lnx_file_properties_from_stat(struct stat *s)
 {
   FileProperties props = {0};
@@ -68,7 +68,7 @@ os_lnx_file_properties_from_stat(struct stat *s)
   return props;
 }
 
-internal void
+static void
 os_lnx_safe_call_sig_handler(int x)
 {
   OS_LNX_SafeCallChain *chain = os_lnx_safe_call_chain;
@@ -82,7 +82,7 @@ os_lnx_safe_call_sig_handler(int x)
 ////////////////////////////////
 //~ rjf: Entities
 
-internal OS_LNX_Entity *
+static OS_LNX_Entity *
 os_lnx_entity_alloc(OS_LNX_EntityKind kind)
 {
   OS_LNX_Entity *entity = 0;
@@ -104,7 +104,7 @@ os_lnx_entity_alloc(OS_LNX_EntityKind kind)
   return entity;
 }
 
-internal void
+static void
 os_lnx_entity_release(OS_LNX_Entity *entity)
 {
   DeferLoop(pthread_mutex_lock(&os_lnx_state.entity_mutex),
@@ -117,7 +117,7 @@ os_lnx_entity_release(OS_LNX_Entity *entity)
 ////////////////////////////////
 //~ rjf: Thread Entry Point
 
-internal void *
+static void *
 os_lnx_thread_entry_point(void *ptr)
 {
   OS_LNX_Entity *entity = (OS_LNX_Entity *)ptr;
@@ -133,19 +133,19 @@ os_lnx_thread_entry_point(void *ptr)
 ////////////////////////////////
 //~ rjf: @os_hooks System/Process Info (Implemented Per-OS)
 
-internal OS_SystemInfo *
+static OS_SystemInfo *
 os_get_system_info(void)
 {
   return &os_lnx_state.system_info;
 }
 
-internal OS_ProcessInfo *
+static OS_ProcessInfo *
 os_get_process_info(void)
 {
   return &os_lnx_state.process_info;
 }
 
-internal String8
+static String8
 os_get_current_path(Arena *arena)
 {
   char *cwdir = getcwd(0, 0);
@@ -154,7 +154,7 @@ os_get_current_path(Arena *arena)
   return string;
 }
 
-internal U32
+static U32
 os_get_process_start_time_unix(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -176,7 +176,7 @@ os_get_process_start_time_unix(void)
 
 //- rjf: basic
 
-internal void *
+static void *
 os_reserve(U64 size)
 {
   void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
@@ -187,21 +187,21 @@ os_reserve(U64 size)
   return result;
 }
 
-internal B32
+static B32
 os_commit(void *ptr, U64 size)
 {
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   return 1;
 }
 
-internal void
+static void
 os_decommit(void *ptr, U64 size)
 {
   madvise(ptr, size, MADV_DONTNEED);
   mprotect(ptr, size, PROT_NONE);
 }
 
-internal void
+static void
 os_release(void *ptr, U64 size)
 {
   munmap(ptr, size);
@@ -209,7 +209,7 @@ os_release(void *ptr, U64 size)
 
 //- rjf: large pages
 
-internal void *
+static void *
 os_reserve_large(U64 size)
 {
   void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0);
@@ -220,7 +220,7 @@ os_reserve_large(U64 size)
   return result;
 }
 
-internal B32
+static B32
 os_commit_large(void *ptr, U64 size)
 {
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
@@ -230,14 +230,14 @@ os_commit_large(void *ptr, U64 size)
 ////////////////////////////////
 //~ rjf: @os_hooks Thread Info (Implemented Per-OS)
 
-internal U32
+static U32
 os_tid(void)
 {
   U32 result = gettid();
   return result;
 }
 
-internal void
+static void
 os_set_thread_name(String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -250,7 +250,7 @@ os_set_thread_name(String8 name)
 ////////////////////////////////
 //~ rjf: @os_hooks Aborting (Implemented Per-OS)
 
-internal void
+static void
 os_abort(S32 exit_code)
 {
   exit(exit_code);
@@ -261,7 +261,7 @@ os_abort(S32 exit_code)
 
 //- rjf: files
 
-internal OS_Handle
+static OS_Handle
 os_file_open(OS_AccessFlags flags, String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -297,7 +297,7 @@ os_file_open(OS_AccessFlags flags, String8 path)
   return handle;
 }
 
-internal void
+static void
 os_file_close(OS_Handle file)
 {
   if(os_handle_match(file, os_handle_zero())) { return; }
@@ -305,7 +305,7 @@ os_file_close(OS_Handle file)
   close(fd);
 }
 
-internal U64
+static U64
 os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
@@ -329,7 +329,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
   return total_num_bytes_read;
 }
 
-internal U64
+static U64
 os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
@@ -353,7 +353,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
   return total_num_bytes_written;
 }
 
-internal B32
+static B32
 os_file_set_times(OS_Handle file, DateTime date_time)
 {
   if(os_handle_match(file, os_handle_zero())) { return 0; }
@@ -365,7 +365,7 @@ os_file_set_times(OS_Handle file, DateTime date_time)
   return good;
 }
 
-internal FileProperties
+static FileProperties
 os_properties_from_file(OS_Handle file)
 {
   if(os_handle_match(file, os_handle_zero())) { return (FileProperties){0}; }
@@ -380,7 +380,7 @@ os_properties_from_file(OS_Handle file)
   return props;
 }
 
-internal OS_FileID
+static OS_FileID
 os_id_from_file(OS_Handle file)
 {
   if(os_handle_match(file, os_handle_zero())) { return (OS_FileID){0}; }
@@ -396,7 +396,7 @@ os_id_from_file(OS_Handle file)
   return id;
 }
 
-internal B32
+static B32
 os_delete_file_at_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -410,7 +410,7 @@ os_delete_file_at_path(String8 path)
   return result;
 }
 
-internal B32
+static B32
 os_copy_file_path(String8 dst, String8 src)
 {
   B32 result = 0;
@@ -443,14 +443,14 @@ os_copy_file_path(String8 dst, String8 src)
   return result;
 }
 
-internal B32
+static B32
 os_move_file_path(String8 dst, String8 src)
 {
   // TODO(rjf)
   return 0;
 }
 
-internal String8
+static String8
 os_full_path_from_path(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -462,7 +462,7 @@ os_full_path_from_path(Arena *arena, String8 path)
   return result;
 }
 
-internal B32
+static B32
 os_file_path_exists(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -477,7 +477,7 @@ os_file_path_exists(String8 path)
   return result;
 }
 
-internal B32
+static B32
 os_folder_path_exists(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -493,7 +493,7 @@ os_folder_path_exists(String8 path)
   return exists;
 }
 
-internal FileProperties
+static FileProperties
 os_properties_from_file_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -511,21 +511,21 @@ os_properties_from_file_path(String8 path)
 
 //- rjf: file maps
 
-internal OS_Handle
+static OS_Handle
 os_file_map_open(OS_AccessFlags flags, OS_Handle file)
 {
   OS_Handle map = file;
   return map;
 }
 
-internal void
+static void
 os_file_map_close(OS_Handle map)
 {
   // NOTE(rjf): nothing to do; `map` handles are the same as `file` handles in
   // the linux implementation (on Windows they require separate handles)
 }
 
-internal void *
+static void *
 os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 {
   if(os_handle_match(map, os_handle_zero())) { return 0; }
@@ -542,7 +542,7 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
   return base;
 }
 
-internal void
+static void
 os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 {
   munmap(ptr, dim_1u64(range));
@@ -550,7 +550,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 
 //- rjf: directory iteration
 
-internal OS_FileIter *
+static OS_FileIter *
 os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 {
   OS_FileIter *base_iter = push_array(arena, OS_FileIter, 1);
@@ -564,7 +564,7 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
   return base_iter;
 }
 
-internal B32
+static B32
 os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
   B32 good = 0;
@@ -616,7 +616,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
   return good;
 }
 
-internal void
+static void
 os_file_iter_end(OS_FileIter *iter)
 {
   OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter->memory;
@@ -625,7 +625,7 @@ os_file_iter_end(OS_FileIter *iter)
 
 //- rjf: directory creation
 
-internal B32
+static B32
 os_make_directory(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -642,7 +642,7 @@ os_make_directory(String8 path)
 ////////////////////////////////
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
-internal OS_Handle
+static OS_Handle
 os_shared_memory_alloc(U64 size, String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -654,7 +654,7 @@ os_shared_memory_alloc(U64 size, String8 name)
   return result;
 }
 
-internal OS_Handle
+static OS_Handle
 os_shared_memory_open(String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -665,7 +665,7 @@ os_shared_memory_open(String8 name)
   return result;
 }
 
-internal void
+static void
 os_shared_memory_close(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())){return;}
@@ -673,7 +673,7 @@ os_shared_memory_close(OS_Handle handle)
   close(id);
 }
 
-internal void *
+static void *
 os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 {
   if(os_handle_match(handle, os_handle_zero())){return 0;}
@@ -686,7 +686,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
   return base;
 }
 
-internal void
+static void
 os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 {
   if(os_handle_match(handle, os_handle_zero())){return;}
@@ -696,7 +696,7 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-internal U64
+static U64
 os_now_microseconds(void)
 {
   struct timespec t;
@@ -705,14 +705,14 @@ os_now_microseconds(void)
   return result;
 }
 
-internal U32
+static U32
 os_now_unix(void)
 {
   time_t t = time(0);
   return (U32)t;
 }
 
-internal DateTime
+static DateTime
 os_now_universal_time(void)
 {
   time_t t = 0;
@@ -723,7 +723,7 @@ os_now_universal_time(void)
   return result;
 }
 
-internal DateTime
+static DateTime
 os_universal_time_from_local(DateTime *date_time)
 {
   // rjf: local DateTime -> universal time_t
@@ -738,7 +738,7 @@ os_universal_time_from_local(DateTime *date_time)
   return result;
 }
 
-internal DateTime
+static DateTime
 os_local_time_from_universal(DateTime *date_time)
 {
   // rjf: universal DateTime -> local time_t
@@ -753,7 +753,7 @@ os_local_time_from_universal(DateTime *date_time)
   return result;
 }
 
-internal void
+static void
 os_sleep_milliseconds(U32 msec)
 {
   usleep(msec*Thousand(1));
@@ -762,19 +762,19 @@ os_sleep_milliseconds(U32 msec)
 ////////////////////////////////
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
-internal OS_Handle
+static OS_Handle
 os_process_launch(OS_ProcessLaunchParams *params)
 {
   NotImplemented;
 }
 
-internal B32
+static B32
 os_process_join(OS_Handle handle, U64 endt_us)
 {
   NotImplemented;
 }
 
-internal void
+static void
 os_process_detach(OS_Handle handle)
 {
   NotImplemented;
@@ -783,7 +783,7 @@ os_process_detach(OS_Handle handle)
 ////////////////////////////////
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
-internal OS_Handle
+static OS_Handle
 os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_Thread);
@@ -801,7 +801,7 @@ os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
   return handle;
 }
 
-internal B32
+static B32
 os_thread_join(OS_Handle handle, U64 endt_us)
 {
   if(os_handle_match(handle, os_handle_zero())) { return 0; }
@@ -812,7 +812,7 @@ os_thread_join(OS_Handle handle, U64 endt_us)
   return result;
 }
 
-internal void
+static void
 os_thread_detach(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) { return; }
@@ -825,7 +825,7 @@ os_thread_detach(OS_Handle handle)
 
 //- rjf: mutexes
 
-internal OS_Handle
+static OS_Handle
 os_mutex_alloc(void)
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_Mutex);
@@ -843,7 +843,7 @@ os_mutex_alloc(void)
   return handle;
 }
 
-internal void
+static void
 os_mutex_release(OS_Handle mutex)
 {
   if(os_handle_match(mutex, os_handle_zero())) { return; }
@@ -852,7 +852,7 @@ os_mutex_release(OS_Handle mutex)
   os_lnx_entity_release(entity);
 }
 
-internal void
+static void
 os_mutex_take(OS_Handle mutex)
 {
   if(os_handle_match(mutex, os_handle_zero())) { return; }
@@ -860,7 +860,7 @@ os_mutex_take(OS_Handle mutex)
   pthread_mutex_lock(&entity->mutex_handle);
 }
 
-internal void
+static void
 os_mutex_drop(OS_Handle mutex)
 {
   if(os_handle_match(mutex, os_handle_zero())) { return; }
@@ -870,7 +870,7 @@ os_mutex_drop(OS_Handle mutex)
 
 //- rjf: reader/writer mutexes
 
-internal OS_Handle
+static OS_Handle
 os_rw_mutex_alloc(void)
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_RWMutex);
@@ -884,7 +884,7 @@ os_rw_mutex_alloc(void)
   return handle;
 }
 
-internal void
+static void
 os_rw_mutex_release(OS_Handle rw_mutex)
 {
   if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
@@ -893,7 +893,7 @@ os_rw_mutex_release(OS_Handle rw_mutex)
   os_lnx_entity_release(entity);
 }
 
-internal void
+static void
 os_rw_mutex_take_r(OS_Handle rw_mutex)
 {
   if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
@@ -901,7 +901,7 @@ os_rw_mutex_take_r(OS_Handle rw_mutex)
   pthread_rwlock_rdlock(&entity->rwmutex_handle);
 }
 
-internal void
+static void
 os_rw_mutex_drop_r(OS_Handle rw_mutex)
 {
   if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
@@ -909,7 +909,7 @@ os_rw_mutex_drop_r(OS_Handle rw_mutex)
   pthread_rwlock_unlock(&entity->rwmutex_handle);
 }
 
-internal void
+static void
 os_rw_mutex_take_w(OS_Handle rw_mutex)
 {
   if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
@@ -917,7 +917,7 @@ os_rw_mutex_take_w(OS_Handle rw_mutex)
   pthread_rwlock_wrlock(&entity->rwmutex_handle);
 }
 
-internal void
+static void
 os_rw_mutex_drop_w(OS_Handle rw_mutex)
 {
   if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
@@ -927,7 +927,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 
 //- rjf: condition variables
 
-internal OS_Handle
+static OS_Handle
 os_condition_variable_alloc(void)
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_ConditionVariable);
@@ -952,7 +952,7 @@ os_condition_variable_alloc(void)
   return handle;
 }
 
-internal void
+static void
 os_condition_variable_release(OS_Handle cv)
 {
   if(os_handle_match(cv, os_handle_zero())) { return; }
@@ -962,7 +962,7 @@ os_condition_variable_release(OS_Handle cv)
   os_lnx_entity_release(entity);
 }
 
-internal B32
+static B32
 os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
 {
   if(os_handle_match(cv, os_handle_zero())) { return 0; }
@@ -977,7 +977,7 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
   return result;
 }
 
-internal B32
+static B32
 os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 {
   // TODO(rjf): because pthread does not supply cv/rw natively, I had to hack
@@ -1012,7 +1012,7 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
   return result;
 }
 
-internal B32
+static B32
 os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 {
   // TODO(rjf): because pthread does not supply cv/rw natively, I had to hack
@@ -1047,7 +1047,7 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
   return result;
 }
 
-internal void
+static void
 os_condition_variable_signal(OS_Handle cv)
 {
   if(os_handle_match(cv, os_handle_zero())) { return; }
@@ -1055,7 +1055,7 @@ os_condition_variable_signal(OS_Handle cv)
   pthread_cond_signal(&cv_entity->cv.cond_handle);
 }
 
-internal void
+static void
 os_condition_variable_broadcast(OS_Handle cv)
 {
   if(os_handle_match(cv, os_handle_zero())) { return; }
@@ -1065,7 +1065,7 @@ os_condition_variable_broadcast(OS_Handle cv)
 
 //- rjf: cross-process semaphores
 
-internal OS_Handle
+static OS_Handle
 os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
 {
   OS_Handle result = {0};
@@ -1083,26 +1083,26 @@ os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
   return result;
 }
 
-internal void
+static void
 os_semaphore_release(OS_Handle semaphore)
 {
   int err = munmap((void*)semaphore.u64[0], sizeof(sem_t));
   AssertAlways(err == 0);
 }
 
-internal OS_Handle
+static OS_Handle
 os_semaphore_open(String8 name)
 {
   NotImplemented;
 }
 
-internal void
+static void
 os_semaphore_close(OS_Handle semaphore)
 {
   NotImplemented;
 }
 
-internal B32
+static B32
 os_semaphore_take(OS_Handle semaphore, U64 endt_us)
 {
   AssertAlways(endt_us == max_U64);
@@ -1121,7 +1121,7 @@ os_semaphore_take(OS_Handle semaphore, U64 endt_us)
   return 1;
 }
 
-internal void
+static void
 os_semaphore_drop(OS_Handle semaphore)
 {
   for (;;) {
@@ -1141,7 +1141,7 @@ os_semaphore_drop(OS_Handle semaphore)
 ////////////////////////////////
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
-internal OS_Handle
+static OS_Handle
 os_library_open(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1152,7 +1152,7 @@ os_library_open(String8 path)
   return lib;
 }
 
-internal VoidProc*
+static VoidProc*
 os_library_load_proc(OS_Handle lib, String8 name)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -1163,7 +1163,7 @@ os_library_load_proc(OS_Handle lib, String8 name)
   return proc;
 }
 
-internal void
+static void
 os_library_close(OS_Handle lib)
 {
   void *so = (void *)lib.u64;
@@ -1173,7 +1173,7 @@ os_library_close(OS_Handle lib)
 ////////////////////////////////
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)
 
-internal void
+static void
 os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr)
 {
   // rjf: push handler to chain
@@ -1210,7 +1210,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
 ////////////////////////////////
 //~ rjf: @os_hooks GUIDs (Implemented Per-OS)
 
-internal Guid
+static Guid
 os_make_guid(void)
 {
   Guid guid = {0};

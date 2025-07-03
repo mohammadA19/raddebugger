@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 #if PROFILE_SPALL
-internal inline void
+static inline void
 spall_begin(char *fmt, ...)
 {
   if(spall_buffer.data == 0)

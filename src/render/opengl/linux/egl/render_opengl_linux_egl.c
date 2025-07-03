@@ -1,14 +1,14 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal VoidProc *
+static VoidProc *
 r_ogl_os_load_procedure(char *name)
 {
   VoidProc *result = (VoidProc *)eglGetProcAddress(name);
   return result;
 }
 
-internal void
+static void
 r_ogl_os_init(CmdLine *cmdln)
 {
   //- rjf: set up state
@@ -78,7 +78,7 @@ r_ogl_os_init(CmdLine *cmdln)
   glDrawBuffer(GL_BACK);
 }
 
-internal R_Handle
+static R_Handle
 r_ogl_os_window_equip(OS_Handle window)
 {
   OS_LNX_Window *window_os = (OS_LNX_Window *)window.u64[0];
@@ -162,7 +162,7 @@ r_ogl_os_window_equip(OS_Handle window)
   return result;
 }
 
-internal void
+static void
 r_ogl_os_window_unequip(OS_Handle os, R_Handle r)
 {
   R_OGL_LNX_Window *w = (R_OGL_LNX_Window *)r.u64[0];
@@ -172,7 +172,7 @@ r_ogl_os_window_unequip(OS_Handle os, R_Handle r)
   SLLStackPush(r_ogl_lnx_state->free_window, w);
 }
 
-internal void
+static void
 r_ogl_os_select_window(OS_Handle os, R_Handle r)
 {
   OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];
@@ -180,7 +180,7 @@ r_ogl_os_select_window(OS_Handle os, R_Handle r)
   eglMakeCurrent(r_ogl_lnx_state->display, w_r->surface, w_r->surface, r_ogl_lnx_state->context);
 }
 
-internal void
+static void
 r_ogl_os_window_swap(OS_Handle os, R_Handle r)
 {
   OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];

@@ -3,7 +3,7 @@
 
 //- GENERATED CODE
 
-C_LINKAGE_BEGIN
+extern "C" {
 String8* r_d3d11_g_vshad_kind_source_table[5] =
 {
 &r_d3d11_g_rect_shader_src,
@@ -65,5 +65,5 @@ sizeof(R_D3D11_Uniforms_Blur),
 sizeof(R_D3D11_Uniforms_Mesh),
 };
 
-C_LINKAGE_END
+}
 

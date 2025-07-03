@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64
+static U64
 pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
 {
   U64 cursor = offset;
@@ -25,7 +25,7 @@ pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
   return read_size;
 }
 
-internal U64
+static U64
 pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32Array *bits_out)
 {
   // peek word count
@@ -44,7 +44,7 @@ pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32
   return parse_size;
 }
 
-internal B32
+static B32
 pdb_write_bit_vector(MSF_Context *msf, MSF_StreamNumber sn, B32 *flag_array, U64 flag_count)
 {
   B32 is_write_ok = 0;
@@ -74,7 +74,7 @@ pdb_write_bit_vector(MSF_Context *msf, MSF_StreamNumber sn, B32 *flag_array, U64
   return is_write_ok;
 }
 
-internal U64
+static U64
 pdb_get_bit_vector_size(U32 bucket_count)
 {
   U32 word_size = sizeof(U32);

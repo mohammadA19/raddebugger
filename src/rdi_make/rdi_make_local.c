@@ -5,7 +5,7 @@
 
 ////////////////////////////////
 
-internal RDIM_DataModel
+static RDIM_DataModel
 rdim_infer_data_model(OperatingSystem os, RDI_Arch arch)
 {
   RDIM_DataModel data_model = RDIM_DataModel_Null;
@@ -21,7 +21,7 @@ rdim_infer_data_model(OperatingSystem os, RDI_Arch arch)
 
 ////////////////////////////////
 
-internal RDIM_TopLevelInfo
+static RDIM_TopLevelInfo
 rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
 {
   // convert arch
@@ -444,7 +444,7 @@ ASYNC_WORK_DEF(rdim_bake_idx_runs_work)
   return out;
 }
 
-internal U64
+static U64
 rdim_local_hash(RDIM_String8 string)
 {
   U64 hash = 5381;
@@ -456,7 +456,7 @@ rdim_local_hash(RDIM_String8 string)
   return hash;
 }
 
-internal void
+static void
 rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList *udts)
 {
   ProfBeginFunction();
@@ -623,7 +623,7 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
   ProfEnd();
 }
 
-internal RDIM_BakeResults
+static RDIM_BakeResults
 rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1133,7 +1133,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   return out;
 }
 
-internal RDIM_SerializedSectionBundle
+static RDIM_SerializedSectionBundle
 rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
 {
   RDIM_SerializedSectionBundle out = {0};

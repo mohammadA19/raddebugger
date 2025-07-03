@@ -23,14 +23,14 @@ global read_only S64 e_max_precedence = 15;
 ////////////////////////////////
 //~ rjf: Tokenization Functions
 
-internal E_Token
+static E_Token
 e_token_zero(void)
 {
   E_Token t = zero_struct;
   return t;
 }
 
-internal void
+static void
 e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
 {
   E_TokenChunkNode *node = list->last;
@@ -47,7 +47,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
   list->total_count += 1;
 }
 
-internal E_TokenArray
+static E_TokenArray
 e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 {
   E_TokenArray array = {0};
@@ -62,7 +62,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
   return array;
 }
 
-internal E_TokenArray
+static E_TokenArray
 e_token_array_from_text(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -289,7 +289,7 @@ e_token_array_from_text(Arena *arena, String8 text)
   return array;
 }
 
-internal E_TokenArray
+static E_TokenArray
 e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 {
   E_TokenArray array = {first, (U64)(opl-first)};
@@ -299,7 +299,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 ////////////////////////////////
 //~ rjf: Expression Tree Building Functions
 
-internal E_Expr *
+static E_Expr *
 e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
 {
   E_Expr *e = push_array(arena, E_Expr, 1);
@@ -309,25 +309,25 @@ e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
   return e;
 }
 
-internal void
+static void
 e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child)
 {
   DLLInsert_NPZ(&e_expr_nil, parent->first, parent->last, prev, child, next, prev);
 }
 
-internal void
+static void
 e_expr_push_child(E_Expr *parent, E_Expr *child)
 {
   DLLPushBack_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
 }
 
-internal void
+static void
 e_expr_remove_child(E_Expr *parent, E_Expr *child)
 {
   DLLRemove_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
 }
 
-internal E_Expr *
+static E_Expr *
 e_expr_ref(Arena *arena, E_Expr *ref)
 {
   E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, ref->range);
@@ -335,7 +335,7 @@ e_expr_ref(Arena *arena, E_Expr *ref)
   return expr;
 }
 
-internal E_Expr *
+static E_Expr *
 e_expr_copy(Arena *arena, E_Expr *src)
 {
   E_Expr *result = &e_expr_nil;
@@ -410,7 +410,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
   return result;
 }
 
-internal void
+static void
 e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 {
   E_ExprNode *n = push_array(arena, E_ExprNode, 1);
@@ -422,7 +422,7 @@ e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 ////////////////////////////////
 //~ rjf: Expression Tree -> String Conversions
 
-internal void
+static void
 e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string, String8List *out)
 {
   switch(expr->kind)
@@ -513,7 +513,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
   }
 }
 
-internal String8
+static String8
 e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
 {
   String8List strings = {0};
@@ -525,7 +525,7 @@ e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
 ////////////////////////////////
 //~ rjf: Parsing Functions
 
-internal E_TypeKey
+static E_TypeKey
 e_leaf_type_from_name(String8 name)
 {
   ProfBeginFunction();
@@ -679,7 +679,7 @@ e_leaf_type_from_name(String8 name)
   return key;
 }
 
-internal E_TypeKey
+static E_TypeKey
 e_type_key_from_expr(E_Expr *expr)
 {
   E_TypeKey result = zero_struct;
@@ -711,7 +711,7 @@ e_type_key_from_expr(E_Expr *expr)
   return result;
 }
 
-internal E_Parse
+static E_Parse
 e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray tokens)
 {
   E_Parse parse = {tokens, 0, &e_expr_nil, &e_expr_nil};
@@ -802,7 +802,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
   return parse;
 }
 
-internal E_Parse
+static E_Parse
 e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
 {
   ProfBeginFunction();
@@ -1552,7 +1552,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
   return result;
 }
 
-internal E_Parse
+static E_Parse
 e_push_parse_from_string(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);

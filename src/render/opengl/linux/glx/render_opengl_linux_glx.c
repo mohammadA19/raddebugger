@@ -1,14 +1,14 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal VoidProc *
+static VoidProc *
 r_ogl_os_load_procedure(char *name)
 {
   VoidProc *result = (VoidProc *)glXGetProcAddressARB((U8 *)name);
   return result;
 }
 
-internal void
+static void
 r_ogl_os_init(CmdLine *cmdln)
 {
   //- rjf: require GLX 1.3+
@@ -78,27 +78,27 @@ r_ogl_os_init(CmdLine *cmdln)
   glXMakeCurrent(os_lnx_gfx_state->display, 0, r_ogl_lnx_ctx);
 }
 
-internal R_Handle
+static R_Handle
 r_ogl_os_window_equip(OS_Handle window)
 {
   R_Handle result = {0};
   return result;
 }
 
-internal void
+static void
 r_ogl_os_window_unequip(OS_Handle os, R_Handle r)
 {
   
 }
 
-internal void
+static void
 r_ogl_os_select_window(OS_Handle os, R_Handle r)
 {
   OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];
   glXMakeCurrent(os_lnx_gfx_state->display, w->window, r_ogl_lnx_ctx);
 }
 
-internal void
+static void
 r_ogl_os_window_swap(OS_Handle os, R_Handle r)
 {
   OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];
