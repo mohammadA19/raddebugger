@@ -67,7 +67,7 @@ coff_lib_writer_symbol_is_before(void *raw_a, void *raw_b)
 internal void
 coff_lib_writer_symbol_array_sort(COFF_LibWriterSymbol *arr, U64 count)
 {
-  Assert(count >= 2);
+  assert(count >= 2);
   radsort(arr + 1, count - 2, coff_lib_writer_symbol_is_before);
 }
 

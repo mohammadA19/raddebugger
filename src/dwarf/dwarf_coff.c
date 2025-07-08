@@ -51,7 +51,7 @@ dw_input_from_coff_section_table(Arena              *arena,
     
     if (s != DW_Section_Null) {
       if (sect_status[s]) {
-        Assert(!"too many debug sections with identical name, picking first");
+        assert(!"too many debug sections with identical name, picking first");
       } else {
         sect_status[s] = 1;
         DW_Section *d = &input.sec[s];

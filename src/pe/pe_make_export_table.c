@@ -105,7 +105,7 @@ pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
       if (exp_n->data.is_forwarder) {
         pe_export_parse_list_push_node(&forwarder_exports_list, exp_n);
       } else if (exp_n->data.is_noname_present) {
-        AssertAlways(exp_n->data.is_ordinal_assigned);
+        ensure(exp_n->data.is_ordinal_assigned);
         pe_export_parse_list_push_node(&ordinal_exports_list, exp_n);
       } else {
         pe_export_parse_list_push_node(&named_exports_list, exp_n);

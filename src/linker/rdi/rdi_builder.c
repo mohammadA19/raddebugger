@@ -714,9 +714,9 @@ rdib_idx_from_unit(RDIB_Unit *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -726,9 +726,9 @@ rdib_idx_from_scope(RDIB_Scope *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -738,9 +738,9 @@ rdib_idx_from_inline_site(RDIB_InlineSite *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -750,9 +750,9 @@ rdib_idx_from_variable(RDIB_Variable *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -762,9 +762,9 @@ rdib_idx_from_procedure(RDIB_Procedure *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -774,9 +774,9 @@ rdib_idx_from_source_file(RDIB_SourceFile *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -786,9 +786,9 @@ rdib_idx_from_line_table(RDIB_LineTable *n)
 {
   U32 idx = 0;
   if (n) {
-    Assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
+    assert(n->chunk->v <= n && n < (n->chunk->v + n->chunk->count));
     idx = safe_cast_u32(n->chunk->base + (n - n->chunk->v));
-    Assert(idx - n->chunk->base < n->chunk->count);
+    assert(idx - n->chunk->base < n->chunk->count);
   }
   return idx;
 }
@@ -1056,7 +1056,7 @@ rdib_size_from_type(RDIB_Type *type)
     case RDI_TypeKind_Function:
     case RDI_TypeKind_Method:
     case RDI_TypeKindExt_StaticMethod: {
-      Assert(!"check");
+      assert(!"check");
       return 0;
     }
     case RDI_TypeKind_Struct:
@@ -1070,7 +1070,7 @@ rdib_size_from_type(RDIB_Type *type)
       return type->udt.union_type.size;
 
     case RDI_TypeKind_Alias:
-      Assert(!"check");
+      assert(!"check");
 
     case RDI_TypeKind_Enum:
     case RDI_TypeKind_IncompleteEnum:
@@ -1195,7 +1195,7 @@ rdib_sizeof_type(RDIB_Type *type)
   } else if (type->kind == RDI_TypeKind_Array) {
     size = type->array.size;
   } else {
-    Assert(!"error: type doens't have a size");
+    assert(!"error: type doens't have a size");
   }
   return size;
 }
@@ -1263,7 +1263,7 @@ THREAD_POOL_TASK_FUNC(rdib_concat_members_task)
         curr = continuation->member_list_pointer;
 
         // other types should not reference any part of member list except for head type.
-        Assert(curr->kind == RDI_TypeKindExt_Members);
+        assert(curr->kind == RDI_TypeKindExt_Members);
         curr->kind = RDI_TypeKind_NULL;
       }
 
@@ -1319,7 +1319,7 @@ THREAD_POOL_TASK_FUNC(rdib_fill_udt_members_task)
   RDIB_TypeChunk   *chunk = task->type_chunks[task_id];
   for (U64 i = 0; i < chunk->count; ++i) {
     RDIB_Type *type = chunk->v + i;
-    Assert(type->kind == RDI_TypeKindExt_Members);
+    assert(type->kind == RDI_TypeKindExt_Members);
 
     U64 member_idx = 0;
     for (RDIB_UDTMember *src = type->members.list.first; src != 0; src = src->next, ++member_idx) {
@@ -1419,7 +1419,7 @@ THREAD_POOL_TASK_FUNC(rdib_fill_udts_task)
       type->udt.udt_idx = udt_cursor;
 
       // fill out struct/class UDT
-      Assert(udt_cursor < task->udt_base_idx[ichunk] + udt_cap);
+      assert(udt_cursor < task->udt_base_idx[ichunk] + udt_cap);
       RDI_UDT *udt       = &task->udts[udt_cursor++];
       udt->self_type_idx = rdib_idx_from_type(type);
       udt->flags         = type->kind == RDI_TypeKind_Enum ? RDI_UDTFlag_EnumMembers : 0;
@@ -1473,7 +1473,7 @@ THREAD_POOL_TASK_FUNC(rdib_type_nodes_task)
       dst->constructed.direct_type_idx = rdib_idx_from_type(src->ptr.type_ref);
     } else if (src->kind == RDI_TypeKind_Method) {
       RDIB_Type *params_type = src->method.params_type;
-      Assert(params_type->kind == RDI_TypeKindExt_Params);
+      assert(params_type->kind == RDI_TypeKindExt_Params);
       RDIB_IndexRunBucket *param_idx_run = task->idx_run_map->buckets[src->method.param_idx_run_bucket_idx];
 
       dst->kind                            = RDI_TypeKind_Method;
@@ -1484,7 +1484,7 @@ THREAD_POOL_TASK_FUNC(rdib_type_nodes_task)
       dst->constructed.param_idx_run_first = param_idx_run->index_in_output_array;
     } else if (src->kind == RDI_TypeKindExt_StaticMethod) {
       RDIB_Type *params_type = src->static_method.params_type;
-      Assert(params_type->kind == RDI_TypeKindExt_Params);
+      assert(params_type->kind == RDI_TypeKindExt_Params);
       RDIB_IndexRunBucket *param_idx_run = task->idx_run_map->buckets[src->static_method.param_idx_run_bucket_idx];
 
       dst->kind                            = RDI_TypeKind_Method;
@@ -1495,7 +1495,7 @@ THREAD_POOL_TASK_FUNC(rdib_type_nodes_task)
       dst->constructed.param_idx_run_first = param_idx_run->index_in_output_array;
     } else if (src->kind == RDI_TypeKind_Function) {
       RDIB_Type *params_type = src->func.params_type;
-      Assert(params_type->kind == RDI_TypeKindExt_Params);
+      assert(params_type->kind == RDI_TypeKindExt_Params);
       RDIB_IndexRunBucket *param_idx_run = task->idx_run_map->buckets[src->func.param_idx_run_bucket_idx];
 
       dst->kind                            = RDI_TypeKind_Function;
@@ -1796,7 +1796,7 @@ rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
   if (curr_sub_path != 0 && curr_sub_path->src_file != 0) {
     idx = curr_sub_path->node_idx;
   } else {
-    Assert(!"unable to find source file path");
+    assert(!"unable to find source file path");
   }
 
   scratch_end(scratch);
@@ -1843,7 +1843,7 @@ rdib_idx_from_string_map(RDIB_StringMap *string_map, String8 string)
     idx = (idx + 1) % string_map->cap;
   } while (idx != best_idx);
 
-  Assert(!"incomplete string map");
+  assert(!"incomplete string map");
   return max_U32;
 }
 
@@ -1916,7 +1916,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
   } while (idx != best_idx);
 
   // are there enough free buckets?
-  Assert(was_bucket_inserted_or_updated);
+  assert(was_bucket_inserted_or_updated);
 
   return result;
 }
@@ -2018,7 +2018,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_bucket_chunk_idx_histo_task)
   for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket = task->src[bucket_idx];
     U64 chunk_idx = bucket->sorter.hi;
-    Assert(chunk_idx < task->chunk_idx_opl);
+    assert(chunk_idx < task->chunk_idx_opl);
     ++range_histo[chunk_idx];
   }
 
@@ -2138,7 +2138,7 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
     RDIB_StringMapBucket *curr = buckets[i + 0];
     U32 prev_chunk_idx = prev->sorter.hi;
     U32 curr_chunk_idx = curr->sorter.hi;
-    AssertAlways(prev_chunk_idx <= curr_chunk_idx);
+    ensure(prev_chunk_idx <= curr_chunk_idx);
   }
 #endif
 
@@ -2167,7 +2167,7 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
       if (prev_chunk_idx == curr_chunk_idx) {
         U32 prev_elem_idx = prev->sorter.lo;
         U32 curr_elem_idx = curr->sorter.lo;
-        AssertAlways(prev_elem_idx < curr_elem_idx);
+        ensure(prev_elem_idx < curr_elem_idx);
       }
     }
   }
@@ -2557,7 +2557,7 @@ rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets,
   } while (idx != best_idx);
 
   // are there enough free buckets?
-  Assert(was_bucket_inserted_or_updated);
+  assert(was_bucket_inserted_or_updated);
 
   // output bucket index
   *bucket_idx_out = idx;
@@ -2642,7 +2642,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_bucket_chunk_idx_histo_task)
   for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket = task->src[bucket_idx];
     U32 chunk_idx = bucket->sorter.hi;
-    Assert(chunk_idx < task->chunk_idx_opl);
+    assert(chunk_idx < task->chunk_idx_opl);
     ++range_histo[chunk_idx];
   }
 
@@ -2762,7 +2762,7 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
     RDIB_StringMapBucket *curr = buckets[i + 0];
     U32 prev_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(prev->sorter);
     U32 curr_chunk_idx = RDIB_StringMap_ChunkIdx32FromSorter(curr->sorter);
-    AssertAlways(prev_chunk_idx <= curr_chunk_idx);
+    ensure(prev_chunk_idx <= curr_chunk_idx);
   }
 #endif
 
@@ -2791,7 +2791,7 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
       if (prev_chunk_idx == curr_chunk_idx) {
         U32 prev_elem_idx = prev->sorter.lo;
         U32 curr_elem_idx = curr->sorter.lo;
-        AssertAlways(prev_elem_idx < curr_elem_idx);
+        ensure(prev_elem_idx < curr_elem_idx);
       }
     }
   }
@@ -2817,7 +2817,7 @@ rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, U64 bucket_coun
 internal U64
 rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, U64 worker_id, U64 item_idx, U64 count, U32 *idxs)
 {
-  Assert(item_idx < max_U32);
+  assert(item_idx < max_U32);
 
   // do we have a free bucket?
   RDIB_IndexRunBucket *bucket = task->free_buckets[worker_id];
@@ -2839,7 +2839,7 @@ rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, U64 
                                                                          hash,
                                                                          bucket,
                                                                          &bucket_idx);
-  Assert(bucket_idx != max_U64);
+  assert(bucket_idx != max_U64);
 
   // recycle bucket
   task->free_buckets[worker_id] = free_bucket;
@@ -2977,7 +2977,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
 internal U32
 rdib_idx_from_params(RDIB_IndexRunMap *map, RDIB_Type *params)
 {
-  Assert(params->kind == RDI_TypeKindExt_Params);
+  assert(params->kind == RDI_TypeKindExt_Params);
   U32 idx = params->params.idx_run_bucket->index_in_output_array;
   return idx;
 }
@@ -3148,8 +3148,8 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_unit_task)
       RDIB_Unit *unit = &chunk->v[i];
       for (Rng1U64 *range_ptr = unit->virt_ranges, *range_opl = unit->virt_ranges + unit->virt_range_count;
            range_ptr < range_opl; ++range_ptr) {
-        Assert(range_cursor < range_cursor_opl);
-        Assert(range_ptr->min <= range_ptr->max);
+        assert(range_cursor < range_cursor_opl);
+        assert(range_ptr->min <= range_ptr->max);
 
         RDIB_VMapRange *vmap_range = task->vmap + range_cursor;
         vmap_range->voff           = range_ptr->min;
@@ -3177,8 +3177,8 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_gvar_task)
       RDIB_Variable *var = &chunk->v[var_idx];
       for (RDIB_LocationNode *loc_n = var->locations.first; loc_n != 0; loc_n = loc_n->next) {
         for (Rng1U64Node *range_n = loc_n->v.ranges.first; range_n != 0; range_n = range_n->next) {
-          Assert(range_cursor < range_cursor_opl);
-          Assert(range_n->v.min <= range_n->v.max);
+          assert(range_cursor < range_cursor_opl);
+          assert(range_n->v.min <= range_n->v.max);
           U64 size = range_n->v.max - range_n->v.min;
 
           RDIB_VMapRange *vmap_range = task->vmap + range_cursor;
@@ -3208,8 +3208,8 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_scope_task)
     for (U64 scope_idx = 0; scope_idx < chunk->count; ++scope_idx) {
       RDIB_Scope *scope = &chunk->v[scope_idx];
       for (Rng1U64Node *range_n = scope->ranges.first; range_n != 0; range_n = range_n->next) {
-        Assert(range_cursor  < range_cursor_opl);
-        Assert(range_n->v.min <= range_n->v.max);
+        assert(range_cursor  < range_cursor_opl);
+        assert(range_n->v.min <= range_n->v.max);
 
         RDIB_VMapRange *vmap_range = task->vmap + range_cursor;
         vmap_range->voff           = range_n->v.min;
@@ -3538,7 +3538,7 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
   for (String8Node *node = raw_vmap.first; node != 0; node = node->next) {
     RDI_VMapEntry *e = (RDI_VMapEntry*)node->string.str;
     for (U64 i = 0, c = node->string.size / sizeof(RDI_VMapEntry); i < c; ++i) {
-      Assert(e[i].voff != prev);
+      assert(e[i].voff != prev);
       prev = e[i].voff;
     }
   }
@@ -3677,7 +3677,7 @@ THREAD_POOL_TASK_FUNC(rdib_copy_string_data_task)
   for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket              = task->buckets[bucket_idx];
     U64                   string_table_offset = task->string_table[bucket_idx];
-    Assert(string_table_offset + bucket->string.size <= task->string_data_size);
+    assert(string_table_offset + bucket->string.size <= task->string_data_size);
     MemoryCopy(task->string_data + string_table_offset, bucket->string.str, bucket->string.size);
   }
 }
@@ -3778,7 +3778,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_file_path_nodes_task)
       dst->source_file_idx = rdib_idx_from_source_file(n->src_file);
     } else {
       // directories don't have a source file
-      Assert(n->src_file == 0);
+      assert(n->src_file == 0);
       dst->source_file_idx = 0;
     }
 
@@ -3886,12 +3886,12 @@ THREAD_POOL_TASK_FUNC(rdib_build_var_section_task)
       dst->link_flags      = src->link_flags;
 
       if (src->container_type != 0) {
-        Assert(!src->container_proc);
+        assert(!src->container_proc);
         dst->link_flags    |= RDI_LinkFlag_TypeScoped;
         dst->container_idx  = rdib_idx_from_udt_type(src->container_type);
       }
       if (src->container_proc != 0) {
-        Assert(!src->container_type);
+        assert(!src->container_type);
         dst->link_flags    |= RDI_LinkFlag_ProcScoped;
         dst->container_idx  = rdib_idx_from_procedure(src->container_proc);
       }
@@ -3958,12 +3958,12 @@ THREAD_POOL_TASK_FUNC(rdib_build_tvar_section_task)
       dst->type_idx        = rdib_idx_from_type(src->type);
 
       if (src->container_type != 0) {
-        Assert(!src->container_proc);
+        assert(!src->container_proc);
         dst->link_flags    |= RDI_LinkFlag_TypeScoped;
         dst->container_idx  = rdib_idx_from_udt_type(src->container_type);
       }
       if (src->container_proc != 0) {
-        Assert(!src->container_type);
+        assert(!src->container_type);
         dst->link_flags    |= RDI_LinkFlag_ProcScoped;
         dst->container_idx  = rdib_idx_from_procedure(src->container_proc);
       }
@@ -4025,15 +4025,15 @@ THREAD_POOL_TASK_FUNC(rdib_build_procs_section_task)
       dst->root_scope_idx       = rdib_idx_from_scope(src->scope);
 
       if (src->container_type != 0) {
-        AssertAlways(!src->container_proc);
+        ensure(!src->container_proc);
         dst->link_flags    |= RDI_LinkFlag_TypeScoped;
         dst->container_idx  = rdib_idx_from_udt_type(src->container_type);
       }
 
       if (src->container_proc != 0) {
-        AssertAlways(!src->container_type);
+        ensure(!src->container_type);
         dst->link_flags    |= RDI_LinkFlag_ProcScoped;
-        dst->container_idx  = rdib_idx_from_procedure(0); Assert(!"TODO"); // src->container_proc
+        dst->container_idx  = rdib_idx_from_procedure(0); assert(!"TODO"); // src->container_proc
       }
     }
 
@@ -4164,7 +4164,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
 
       // fill out scope voffs
       for (Rng1U64Node *range_n = scope_src->ranges.first; range_n != 0; range_n = range_n->next) {
-        Assert(scope_voff_cursor + 2 <= scope_voff_max);
+        assert(scope_voff_cursor + 2 <= scope_voff_max);
         scope_voff_ptr[scope_voff_cursor + 0] = range_n->v.min;
         scope_voff_ptr[scope_voff_cursor + 1] = range_n->v.max;
         scope_voff_cursor += 2;
@@ -4186,24 +4186,24 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
             // write opcodes & operands
             for (RDIB_EvalBytecodeOp *op_node = loc->bytecode.first; op_node != 0; op_node = op_node->next) {
               // opcode
-              Assert(loc_data_cursor + sizeof(op_node->op) <= loc_data_max);
+              assert(loc_data_cursor + sizeof(op_node->op) <= loc_data_max);
               MemoryCopy(loc_data + loc_data_cursor, &op_node->op, sizeof(op_node->op));
               loc_data_cursor += sizeof(op_node->op);
 
               // operand
-              Assert(loc_data_cursor + op_node->p_size <= loc_data_max);
+              assert(loc_data_cursor + op_node->p_size <= loc_data_max);
               MemoryCopy(loc_data + loc_data_cursor, &op_node->p, op_node->p_size);
               loc_data_cursor += op_node->p_size;
             }
 
             // stream ender
-            Assert(loc_data_cursor + 1 <= loc_data_max);
+            assert(loc_data_cursor + 1 <= loc_data_max);
             loc_data[loc_data_cursor] = 0;
             loc_data_cursor += 1;
           } break;
           case RDI_LocationKind_AddrRegPlusU16:
           case RDI_LocationKind_AddrAddrRegPlusU16: {
-            Assert(loc_data_cursor + sizeof(RDI_LocationRegPlusU16) <= loc_data_max);
+            assert(loc_data_cursor + sizeof(RDI_LocationRegPlusU16) <= loc_data_max);
             RDI_LocationRegPlusU16 *dst = (RDI_LocationRegPlusU16 *) (loc_data + loc_data_cursor);
             dst->kind                   = loc->kind;
             dst->reg_code               = loc->reg_code;
@@ -4212,7 +4212,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
             loc_data_cursor += sizeof(*dst);
           } break;
           case RDI_LocationKind_ValReg: {
-            Assert(loc_data_cursor + sizeof(RDI_LocationReg) <= loc_data_max);
+            assert(loc_data_cursor + sizeof(RDI_LocationReg) <= loc_data_max);
             RDI_LocationReg *dst  = (RDI_LocationReg *) (loc_data + loc_data_cursor);
             dst->kind             = loc->kind;
             dst->reg_code         = loc->reg_code;
@@ -4223,13 +4223,13 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
 
           // zero out align bytes
           U64 align_size = AlignPadPow2(loc_data_cursor, 8);
-          Assert(loc_data_cursor + align_size <= loc_data_max);
+          assert(loc_data_cursor + align_size <= loc_data_max);
           MemorySet(loc_data + loc_data_cursor, 0, align_size);
           loc_data_cursor += align_size;
 
           // fill out location block
           for (Rng1U64Node *range_n = loc->ranges.first; range_n != 0; range_n = range_n->next, ++loc_block_cursor) {
-            Assert(loc_block_cursor < loc_block_max);
+            assert(loc_block_cursor < loc_block_max);
             RDI_LocationBlock *loc_block_dst = &loc_blocks[loc_block_cursor];
             loc_block_dst->scope_off_first   = range_n->v.min;
             loc_block_dst->scope_off_opl     = range_n->v.max;
@@ -4237,7 +4237,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
           }
         }
 
-        Assert(local_cursor <= local_max);
+        assert(local_cursor <= local_max);
         RDI_Local *local_dst       = &locals[local_cursor];
         local_dst->kind            = local_src->kind;
         local_dst->name_string_idx = rdib_idx_from_string_map(task->string_map, local_src->name);
@@ -4253,9 +4253,9 @@ THREAD_POOL_TASK_FUNC(rdib_build_scopes_task)
     }
   }
 
-  Assert(scope_voff_cursor == scope_voff_max);
-  Assert(local_cursor == local_max);
-  Assert(loc_data_cursor == loc_data_max);
+  assert(scope_voff_cursor == scope_voff_max);
+  assert(local_cursor == local_max);
+  assert(loc_data_cursor == loc_data_max);
 
   ProfEnd();
 }
@@ -4549,7 +4549,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
     ProfEnd();
 
     // did we fill out voff array correctly?
-    Assert(voff_cursor == ln_voff_count);
+    assert(voff_cursor == ln_voff_count);
 
     // close last line range
     line_ranges[line_num_cursor] = voff_cursor;
@@ -5172,7 +5172,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     n = free_nodes;                                                 \
     SLLStackPop(free_nodes);                                        \
   }                                                                 \
-  Assert(t);                                                        \
+  assert(t);                                                        \
   n->type = t;                                                      \
   SLLStackPush(stack, n);                                           \
 } while (0)
@@ -5579,7 +5579,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
           for (String8Node *n = rdi_data.first; n != 0; n = n->next) {
             expected_total_size += n->string.size;
           }
-          Assert(expected_total_size == rdi_data.total_size);
+          assert(expected_total_size == rdi_data.total_size);
         }
 #endif
       }

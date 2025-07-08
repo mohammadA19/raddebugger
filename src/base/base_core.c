@@ -7,7 +7,7 @@
 internal U16
 safe_cast_u16(U32 x)
 {
-  AssertAlways(x <= max_U16);
+  ensure(x <= max_U16);
   U16 result = (U16)x;
   return result;
 }
@@ -15,7 +15,7 @@ safe_cast_u16(U32 x)
 internal U32
 safe_cast_u32(U64 x)
 {
-  AssertAlways(x <= max_U32);
+  ensure(x <= max_U32);
   U32 result = (U32)x;
   return result;
 }
@@ -23,7 +23,7 @@ safe_cast_u32(U64 x)
 internal S32
 safe_cast_s32(S64 x)
 {
-  AssertAlways(x <= max_S32);
+  ensure(x <= max_S32);
   S32 result = (S32)x;
   return result;
 }
@@ -487,7 +487,7 @@ date_time_from_dense_time(DenseTime time){
   time /= 31;
   result.mon  = time%12;
   time /= 12;
-  Assert(time <= max_U32);
+  assert(time <= max_U32);
   result.year = (U32)time;
   return(result);
 }
@@ -509,7 +509,7 @@ date_time_from_micro_seconds(U64 time){
   time /= 31;
   result.mon = time%12;
   time /= 12;
-  Assert(time <= max_U32);
+  assert(time <= max_U32);
   result.year = (U32)time;
   return(result);
 }
@@ -574,7 +574,7 @@ date_time_from_unix_time(U64 unix_time)
 internal U64
 ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
 {
-  Assert(src_data_size <= ring_size);
+  assert(src_data_size <= ring_size);
   {
     U64 ring_off = ring_pos%ring_size;
     U64 bytes_before_split = ring_size-ring_off;
@@ -591,7 +591,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
 internal U64
 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
 {
-  Assert(read_size <= ring_size);
+  assert(read_size <= ring_size);
   {
     U64 ring_off = ring_pos%ring_size;
     U64 bytes_before_split = ring_size-ring_off;

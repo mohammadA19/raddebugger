@@ -44,7 +44,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
 
     }
   }
-  AssertAlways(obj_sections_count <= max_U16);
+  ensure(obj_sections_count <= max_U16);
 
   //
   // serialize symbol table
@@ -77,7 +77,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
       }
 
       // symbol header
-      AssertAlways(s->aux_symbols.node_count <= max_U8);
+      ensure(s->aux_symbols.node_count <= max_U8);
       d->name             = name;
       d->value            = s->value;
       switch (s->loc.type) {
@@ -103,7 +103,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
         }
       } else if (s->storage_class == COFF_SymStorageClass_Static) {
         if (s->aux_symbols.node_count > 0) {
-          Assert(s->loc.type == COFF_SymbolLocation_Section);
+          assert(s->loc.type == COFF_SymbolLocation_Section);
           COFF_ObjSection *sect = s->loc.u.section;
 
           COFF_ObjSymbolSecDef *s_sd = (COFF_ObjSymbolSecDef *)s->aux_symbols.first->string.str;
@@ -162,7 +162,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
         str8_list_push_cstr(scratch.arena, &string_table, sect_name);
 
         sect_name = push_str8f(scratch.arena, "/%u", sect_name_off);
-        AssertAlways(sect_name.size <= sizeof(d->name));
+        ensure(sect_name.size <= sizeof(d->name));
       }
 
       // alloc zero nodes 
@@ -184,7 +184,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
       // section relocs
       U64 relocs_foff = 0;
       if (s->reloc_count) {
-        AssertAlways(s->reloc_count <= max_U16);
+        ensure(s->reloc_count <= max_U16);
         COFF_Reloc *relocs    = push_array(scratch.arena, COFF_Reloc, s->reloc_count);
         U64         reloc_idx = 0;
         for (COFF_ObjRelocNode *reloc_n = s->reloc_first; reloc_n != 0; reloc_n = reloc_n->next, reloc_idx += 1) {

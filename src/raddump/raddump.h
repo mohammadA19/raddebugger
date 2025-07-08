@@ -11,8 +11,8 @@
 #define rd_newline()      str8_list_pushf(arena, out, "");
 #define rd_errorf(f, ...)   rd_stderr("ERROR: "f, __VA_ARGS__)
 #define rd_warningf(f, ...) rd_stderr("WARNING: "f, __VA_ARGS__)
-#define rd_indent()       do { if (indent.size + RD_INDENT_WIDTH <= RD_INDENT_MAX) { indent.size += RD_INDENT_WIDTH; } else { Assert(!"indent overflow");   } } while (0)
-#define rd_unindent()     do { if (indent.size >= RD_INDENT_WIDTH)                 { indent.size -= RD_INDENT_WIDTH; } else { Assert(!"unbalanced indent"); } } while (0)
+#define rd_indent()       do { if (indent.size + RD_INDENT_WIDTH <= RD_INDENT_MAX) { indent.size += RD_INDENT_WIDTH; } else { assert(!"indent overflow");   } } while (0)
+#define rd_unindent()     do { if (indent.size >= RD_INDENT_WIDTH)                 { indent.size -= RD_INDENT_WIDTH; } else { assert(!"unbalanced indent"); } } while (0)
 
 typedef U64 RD_Option;
 

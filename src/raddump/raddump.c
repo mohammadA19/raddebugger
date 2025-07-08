@@ -549,7 +549,7 @@ rd_print_raw_data(Arena       *arena,
                   RD_Marker   *markers,
                   String8      raw_data)
 {
-  AssertAlways(bytes_per_row > 0);
+  ensure(bytes_per_row > 0);
   
   char temp_buffer[1024];
   
@@ -809,7 +809,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Address: %S, Flags: %S, Name: %S", cv_string_sec_off(scratch.arena, sym.sec, sym.off), cv_string_from_proc_flags(scratch.arena, sym.flags), name);
     } break;
     case CV_SymKind_COMPILE: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       CV_SymCompile sym            = {0};
       String8       version_string = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -830,7 +830,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_COMPILE2_ST:
     case CV_SymKind_COMPILE2: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       CV_SymCompile2 sym            = {0};
       String8        version_string = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1083,7 +1083,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       // Reserved for MS debugger
     } break;
     case CV_SymKind_SSEARCH: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymStartSearch sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1092,7 +1092,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Segment     : %#x", sym.segment);
     } break;
     case CV_SymKind_RETURN: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymReturn sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1109,7 +1109,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       }
     } break;
     case CV_SymKind_ENTRYTHIS: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       U16 symbol_size = 0, symbol_type = 0;
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &symbol_size);
@@ -1119,7 +1119,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       cv_print_symbol(arena, out, indent, arch, min_itype, type, raw_subsym);
     } break;
     case CV_SymKind_SLINK32: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymSLink32 sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1128,7 +1128,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Address   : %S", cv_string_from_reg_off(scratch.arena, arch, sym.reg, sym.offset));
     } break;
     case CV_SymKind_OEM: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymOEM sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1141,7 +1141,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("ID  : %S", string_from_guid(scratch.arena, sym.id));
     } break;
     case CV_SymKind_VFTABLE32:{
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymVPath32 sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1163,7 +1163,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_BPREL32_ST:
     case CV_SymKind_BPREL32: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymBPRel32 sym  = {0};
       String8       name = {0};
@@ -1175,7 +1175,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Type  : %S",  cv_string_from_itype(scratch.arena, min_itype, sym.itype));
     } break;
     case CV_SymKind_REGISTER: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymRegister sym  = {0};
       String8        name = {0};
@@ -1193,7 +1193,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     case CV_SymKind_LPROCREF:
     case CV_SymKind_PROCREF:
     case CV_SymKind_DATAREF: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymRef2 sym  = {0};
       String8    name = {0};
@@ -1206,7 +1206,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Symbol Stream Offset: %#x", sym.sym_off);
     } break;
     case CV_SymKind_SEPCODE: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymSepcode sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1221,7 +1221,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     case CV_SymKind_PARAMSLOT_ST:
     case CV_SymKind_LOCALSLOT_ST:
     case CV_SymKind_LOCALSLOT: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymSlot sym  = {0};
       String8    name = {0};
@@ -1233,7 +1233,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Type: %S", cv_string_from_itype(scratch.arena, min_itype, sym.itype));
     } break;
     case CV_SymKind_TRAMPOLINE: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymTrampoline sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1244,7 +1244,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Target    : %S", cv_string_sec_off(scratch.arena, sym.target_sec, sym.target_sec_off));
     } break;
     case CV_SymKind_POGODATA: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymPogoInfo sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1255,7 +1255,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Post inline static instruction count: %u", sym.post_inline_static_inst_count);
     } break;
     case CV_SymKind_MANYREG: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymManyreg sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1273,7 +1273,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_MANYREG2_ST:
     case CV_SymKind_MANYREG2: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymManyreg sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1290,7 +1290,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_unindent();
     } break;
     case CV_SymKind_SECTION: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymSection sym  = {0};
       String8       name = {0};
@@ -1320,7 +1320,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       }
     } break;
     case CV_SymKind_COFFGROUP: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymCoffGroup sym  = {0};
       String8         name = {0};
@@ -1333,7 +1333,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Address        : %S",       cv_string_sec_off(scratch.arena, sym.sec, sym.off));
     } break;
     case CV_SymKind_EXPORT: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymExport sym  = {0};
       String8      name = {0};
@@ -1345,7 +1345,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Flags  : %S",  cv_string_from_export_flags(scratch.arena, sym.flags));
     } break;
     case CV_SymKind_ANNOTATION: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymAnnotation sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1363,7 +1363,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_MANFRAMEREL:
     case CV_SymKind_ATTR_FRAMEREL: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymAttrFrameRel sym  = {0};
       String8            name = {0};
@@ -1377,7 +1377,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_MANREGISTER:
     case CV_SymKind_ATTR_REGISTER: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymAttrReg sym  = {0};
       String8       name = {0};
@@ -1390,7 +1390,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       cv_print_lvar_attr(arena, out, indent, sym.attr);
     } break;
     case CV_SymKind_ATTR_REGREL: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymAttrRegRel sym  = {0};
       String8          name = {0};
@@ -1405,7 +1405,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     case CV_SymKind_MANYREG_ST:
     case CV_SymKind_MANMANYREG:
     case CV_SymKind_ATTR_MANYREG: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymAttrManyReg sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1427,7 +1427,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     } break;
     case CV_SymKind_MOD_TYPEREF: {
       
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymModTypeRef sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1457,7 +1457,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("%S", flags_str);
     } break;
     case CV_SymKind_DISCARDED: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymDiscarded sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1472,7 +1472,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       cv_print_symbol(arena, out, indent, arch, min_itype, symbol_type, raw_subsym);
     } break;
     case CV_SymKind_PDBMAP: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       String8 from = {0};
       String8 to   = {0};
@@ -1483,7 +1483,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("To  : %S", to);
     } break;
     case CV_SymKind_FASTLINK: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymFastLink sym  = {0};
       String8        name = {0};
@@ -1495,7 +1495,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Type : %S",  cv_string_from_itype(arena, min_itype, sym.itype));
     } break;
     case CV_SymKind_ARMSWITCHTABLE: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymArmSwitchTable sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
@@ -1507,7 +1507,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       rd_printf("Switch Type   : %x", sym.kind);
     } break;
     case CV_SymKind_REF_MINIPDB: {
-      Assert(!"TODO: test");
+      assert(!"TODO: test");
       
       CV_SymRefMiniPdb sym  = {0};
       String8          name = {0};
@@ -3865,7 +3865,7 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
     rd_errorf("not enough bytes to read DOS header");
     goto exit;
   }
-  Assert(dos_header->magic == PE_DOS_MAGIC);
+  assert(dos_header->magic == PE_DOS_MAGIC);
   
   U32 pe_magic = 0;
   str8_deserial_read_struct(raw_data, dos_header->coff_file_offset, &pe_magic);
@@ -4123,7 +4123,7 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
           if (tag_stack) {
             struct TagNode *n = tag_stack;
             if ((n->tag.kind == DW_TagKind_SubProgram || n->tag.kind == DW_TagKind_LexicalBlock)) {
-              Assert(lexical_block_depth > 0);
+              assert(lexical_block_depth > 0);
               --lexical_block_depth;
             }
             SLLStackPop(tag_stack);

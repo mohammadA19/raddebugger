@@ -602,7 +602,7 @@ dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh
       cfi_range = fde.cfi_range;
       
       // calc parent CIE offset
-      AssertAlways(entry_start >= entry_id);
+      ensure(entry_start >= entry_id);
       U64 cie_offset = entry_start - entry_id; NotImplemented; // TODO: syms_safe_sub_u64(range.min + entry_start, entry_id);
       
       rd_printf("FDE @ %#llx, Length %u, Parent CIE @ %#llx", header_offset, length, cie_offset);
@@ -1073,7 +1073,7 @@ dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array 
     if (segment_selector < segment_ranges.count) {
       address += segment_ranges.v[segment_selector].min;
     } else {
-      Assert(!"invalid segment selector");
+      assert(!"invalid segment selector");
     }
   }
   

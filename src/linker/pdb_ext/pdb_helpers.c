@@ -37,7 +37,7 @@ pdb_read_bit_vector_msf(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U32
   U64 buffer_size = sizeof(word_count) + word_count * sizeof(U32);
   U8 *buffer = push_array(arena, U8, buffer_size);
   MSF_UInt read_size = msf_stream_read(msf, sn, buffer, buffer_size);
-  Assert(read_size == buffer_size);
+  assert(read_size == buffer_size);
   
   // parse words
   U64 parse_size = pdb_read_bit_vector_string(str8(buffer, buffer_size), 0, bits_out);

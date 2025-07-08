@@ -2,7 +2,7 @@ shared_function int
 lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, str8((U8*)path, path_size));
-  Assert(sizeof(handle) <= handle_buffer_max);
+  assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());
 }
@@ -11,7 +11,7 @@ shared_function int
 lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Write, str8((U8*)path, path_size));
-  Assert(sizeof(handle) <= handle_buffer_max);
+  assert(sizeof(handle) <= handle_buffer_max);
   MemoryCopy(handle_buffer, &handle, sizeof(handle));
   return !os_handle_match(handle, os_handle_zero());
 }
@@ -36,7 +36,7 @@ lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   U64 read_size = os_file_read(handle, rng_1u64(0, buffer_max), buffer);
-  Assert(read_size == buffer_max);
+  assert(read_size == buffer_max);
   return read_size;
 }
 
@@ -204,7 +204,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   U8       *buffer      = task->buffer + task->off_arr[task_id];
 
   U64 read_size = lnk_read_file(&handle, buffer, buffer_size);
-  Assert(read_size == buffer_size);
+  assert(read_size == buffer_size);
 
   task->data_arr.v[task_id] = str8(buffer, read_size);
 }

@@ -65,7 +65,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
     
     if (s != DW_Section_Null) {
       if (sect_status[s]) {
-        Assert(!"too many debug sections with identical name, picking first");
+        assert(!"too many debug sections with identical name, picking first");
       } else {
         Rng1U64 raw_data_range = rng_1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size);
         String8 data           = str8_substr(raw_image, raw_data_range);
@@ -80,7 +80,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           if (ELF_HdrIs64Bit(bin->hdr.e_ident)) {
             chdr_size = str8_deserial_read_struct(comp_data_with_header, 0, &chdr64);
             if (chdr_size != sizeof(chdr64)) {
-              Assert(!"not enough bytes to read header");
+              assert(!"not enough bytes to read header");
             }
           } else if (ELF_HdrIs32Bit(bin->hdr.e_ident)) {
             ELF_Chdr32 chdr32 = {0};
@@ -90,7 +90,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
             }
           }
           
-          AssertAlways(IsPow2(chdr64.ch_addr_align));
+          ensure(IsPow2(chdr64.ch_addr_align));
           
           // skip header
           String8 comp_data = str8_skip(comp_data_with_header, chdr_size);
@@ -102,7 +102,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           // decompress
           switch (chdr64.ch_type) {
             case ELF_CompressType_None: {
-              AssertAlways(!"unexpected compression type");
+              ensure(!"unexpected compression type");
             } break;
             case ELF_CompressType_ZLib: {
               actual_decomp_size = zsinflate(decomp_buffer, chdr64.ch_size, comp_data.str, comp_data.size);
@@ -115,7 +115,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           }
           
           // TODO: error handling
-          AssertAlways(actual_decomp_size == chdr64.ch_size);
+          ensure(actual_decomp_size == chdr64.ch_size);
           
           // set decompressed section data
           data = str8(decomp_buffer, actual_decomp_size);

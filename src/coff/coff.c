@@ -249,11 +249,11 @@ coff_pick_reloc_value_x64(COFF_Reloc_X64 type,
 internal String8
 coff_make_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
 {
-  Assert(name.size < 16);
-  Assert(user_id < 10000);
-  Assert(group_id < 10000);
-  Assert(mode < 10000);
-  Assert(size < 1000000000);
+  assert(name.size < 16);
+  assert(user_id < 10000);
+  assert(group_id < 10000);
+  assert(mode < 10000);
+  assert(size < 1000000000);
   
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -266,7 +266,7 @@ coff_make_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stam
   str8_list_pushf(scratch.arena, &list, "`\n");
   String8 result = str8_list_join(arena, &list, 0);
 
-  Assert(result.size == sizeof(COFF_ArchiveMemberHeader));
+  assert(result.size == sizeof(COFF_ArchiveMemberHeader));
   scratch_end(scratch);
   return result;
 }

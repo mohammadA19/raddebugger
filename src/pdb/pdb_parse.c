@@ -662,7 +662,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
       range_buf[PDB_DbiCompUnitRange_Symbols] = header->symbols_size;
       range_buf[PDB_DbiCompUnitRange_C11] = header->c11_lines_size;
       range_buf[PDB_DbiCompUnitRange_C13] = header->c13_lines_size;
-      Assert(PDB_DbiCompUnitRange_C13 + 1 == PDB_DbiCompUnitRange_COUNT);
+      assert(PDB_DbiCompUnitRange_C13 + 1 == PDB_DbiCompUnitRange_COUNT);
       
       // in-place sizes -> offs conversion
       U64 i = 0;

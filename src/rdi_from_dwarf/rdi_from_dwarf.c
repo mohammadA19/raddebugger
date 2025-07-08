@@ -81,12 +81,12 @@ d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, D
       DW_Reference ref = dw_ref_from_attrib(input, cu, attrib);
       
       // TODO: support for external compile unit references
-      AssertAlways(ref.cu == cu);
+      ensure(ref.cu == cu);
       
       // find or create type
       type = d2r_find_or_create_type_from_offset(arena, type_table, ref.info_off);
     } else {
-      Assert(!"unexpected attrib class");
+      assert(!"unexpected attrib class");
     }
   } else if (attrib->attrib_kind == DW_AttribKind_Null) {
     type = rdim_builtin_type_from_kind(*type_table->types, RDI_TypeKind_NULL);
@@ -104,8 +104,8 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
   // debase ranges
   for (Rng1U64Node *range_n = ranges.first; range_n != 0; range_n = range_n->next) {
     // TODO: error handling
-    AssertAlways(range_n->v.min >= image_base);
-    AssertAlways(range_n->v.max >= image_base);
+    ensure(range_n->v.min >= image_base);
+    ensure(range_n->v.max >= image_base);
     range_n->v.min -= image_base;
     range_n->v.max -= image_base;
   }
@@ -124,13 +124,13 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
       hi_pc = dw_const_u64_from_attrib(input, cu, hi_pc_attrib);
       hi_pc += lo_pc;
     } else {
-      AssertAlways(!"undefined attrib encoding");
+      ensure(!"undefined attrib encoding");
     }
     
     // TODO: error handling
-    AssertAlways(lo_pc >= image_base);
-    AssertAlways(hi_pc >= image_base);
-    AssertAlways(lo_pc <= hi_pc);
+    ensure(lo_pc >= image_base);
+    ensure(hi_pc >= image_base);
+    ensure(lo_pc <= hi_pc);
     
     U64 lo_voff = lo_pc - image_base;
     U64 hi_voff = hi_pc - image_base;
@@ -383,7 +383,7 @@ SLLStackPush(stack, f);                                       \
           push_of_type(addr_type_kind);
         } else {
           // TODO: error handling
-          AssertAlways(!"unable to relocate address");
+          ensure(!"unable to relocate address");
         }
         
         *is_addr_out = 1;
@@ -548,26 +548,26 @@ SLLStackPush(stack, f);                                       \
           rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_MemRead, deref_size_in_bytes);
         } else {
           // TODO: error handling
-          AssertAlways(!"ill formed expression");
+          ensure(!"ill formed expression");
         }
       } break;
       
       case DW_ExprOp_XDerefSize: {
         // TODO: error handling
-        AssertAlways(!"no suitable conversion");
+        ensure(!"no suitable conversion");
       } break;
       
       case DW_ExprOp_Call2:
       case DW_ExprOp_Call4:
       case DW_ExprOp_CallRef: {
         // TODO: error handling
-        AssertAlways(!"calls are not supported");
+        ensure(!"calls are not supported");
       } break;
       
       case DW_ExprOp_ImplicitPointer:
       case DW_ExprOp_GNU_ImplicitPointer: {
         // TODO:
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_Convert:
@@ -611,7 +611,7 @@ SLLStackPush(stack, f);                                       \
               default: InvalidPath;
             }
           } else {
-            AssertAlways(!"unexpected tag"); // TODO: error handling
+            ensure(!"unexpected tag"); // TODO: error handling
           }
         }
         
@@ -621,8 +621,8 @@ SLLStackPush(stack, f);                                       \
         }
         
         // TODO: error handling
-        AssertAlways(in != RDI_EvalTypeGroup_Other);
-        AssertAlways(out != RDI_EvalTypeGroup_Other);
+        ensure(in != RDI_EvalTypeGroup_Other);
+        ensure(out != RDI_EvalTypeGroup_Other);
         
         U16 operand = (U16)in | ((U16)out << 8);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_Convert, operand);
@@ -630,24 +630,24 @@ SLLStackPush(stack, f);                                       \
       
       case DW_ExprOp_GNU_ParameterRef: {
         // TODO:
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_DerefType:
       case DW_ExprOp_GNU_DerefType: {
         // TODO:
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_ConstType: 
       case DW_ExprOp_GNU_ConstType: {
         // TODO:
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_RegvalType: {
         // TODO:
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_EntryValue:
@@ -675,11 +675,11 @@ SLLStackPush(stack, f);                                       \
             rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_ModuleOff, voff);
           } else {
             // TODO: error handling
-            AssertAlways(!"unable to relocate address");
+            ensure(!"unable to relocate address");
           }
         } else {
           // TODO: error handling
-          AssertAlways(!"out of bounds index");
+          ensure(!"out of bounds index");
         }
       } break;
       
@@ -689,11 +689,11 @@ SLLStackPush(stack, f);                                       \
       
       case DW_ExprOp_FormTlsAddress: {
         // TODO:
-        AssertAlways(!"RDI_EvalOp_TLSOff accepts immediate");
+        ensure(!"RDI_EvalOp_TLSOff accepts immediate");
       } break;
       
       case DW_ExprOp_PushObjectAddress: {
-        AssertAlways(!"sample");
+        ensure(!"sample");
       } break;
       
       case DW_ExprOp_Nop: {
@@ -742,7 +742,7 @@ SLLStackPush(stack, f);                                       \
       
       case DW_ExprOp_XDeref: {
         // TODO: error handling
-        Assert(!"multiple address spaces are not supported");
+        assert(!"multiple address spaces are not supported");
       } break;
       
       case DW_ExprOp_Abs: {
@@ -786,19 +786,19 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_Rot: {
-        AssertAlways(!"no suitable conversion");
+        ensure(!"no suitable conversion");
       } break;
       
       case DW_ExprOp_Swap: {
-        AssertAlways(!"no suitable conversion");
+        ensure(!"no suitable conversion");
       } break;
       
       case DW_ExprOp_Dup: {
-        AssertAlways(!"no suitable conversion");
+        ensure(!"no suitable conversion");
       } break;
       
       case DW_ExprOp_Drop: {
-        AssertAlways(!"no suitable conversion");
+        ensure(!"no suitable conversion");
       } break;
       
       case DW_ExprOp_Over: {
@@ -884,7 +884,7 @@ d2r_locset_from_attrib(Arena               *arena,
       rdim_location_set_push_case(arena, scopes, &locset, range_n->v, location);
     }
   } else if (attrib_class != DW_AttribClass_Null) {
-    AssertAlways(!"unexpected attrib class");
+    ensure(!"unexpected attrib class");
   }
   
   return locset;
@@ -907,7 +907,7 @@ d2r_var_locset_from_tag(Arena               *arena,
   
   if (has_const_value && has_location) {
     // TODO: error handling
-    AssertAlways(!"unexpected variable encoding");
+    ensure(!"unexpected variable encoding");
   }
   
   if (has_const_value) {
@@ -966,7 +966,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
     unit_cursor += version;
     
     if (version != DW_Version_2) {
-      AssertAlways(!"unknown .debug_aranges version");
+      ensure(!"unknown .debug_aranges version");
       continue;
     }
     
@@ -1011,7 +1011,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
         }
         
         // TODO: error handling
-        AssertAlways(address >= image_base);
+        ensure(address >= image_base);
         
         U64 min = address - image_base;
         U64 max = min + length;
@@ -1274,7 +1274,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           for (; file_line_n != sentinel; file_line_n = file_line_n->next) {
             if (file_line_n->v.line != prev_ln) {
               // TODO: error handling
-              AssertAlways(file_line_n->v.address >= image_base);
+              ensure(file_line_n->v.address >= image_base);
               
               voffs[line_idx]     = file_line_n->v.address - image_base;
               line_nums[line_idx] = file_line_n->v.line;
@@ -1305,7 +1305,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         
         for (; file_line_n != 0; file_line_n = file_line_n->next, ++line_idx) {
           // TODO: error handling
-          AssertAlways(file_line_n->v.address >= image_base);
+          ensure(file_line_n->v.address >= image_base);
           voffs[line_idx]     = file_line_n->v.address - image_base;
           line_nums[line_idx] = file_line_n->v.line;
         }
@@ -1315,7 +1315,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         rdim_src_file_push_line_sequence(arena, &src_files, src_file, line_seq);
       }
       
-      //Assert(line_idx == line_seq->count);
+      //assert(line_idx == line_seq->count);
     }
   }
   
@@ -1391,7 +1391,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             if (is_decl) {
               type->kind = RDI_TypeKind_IncompleteClass;
               
-              Assert(!cur_node->first_child);
+              assert(!cur_node->first_child);
               visit_children = 0;
             } else {
               RDIM_UDT *udt  = rdim_udt_chunk_list_push(arena, &udts, UDT_CHUNK_CAP);
@@ -1414,7 +1414,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               type->kind = RDI_TypeKind_IncompleteStruct;
               
               // TODO: error handling
-              Assert(!cur_node->first_child);
+              assert(!cur_node->first_child);
               visit_children = 0;
             } else {
               RDIM_UDT  *udt  = rdim_udt_chunk_list_push(arena, &udts, UDT_CHUNK_CAP);
@@ -1436,7 +1436,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               type->kind = RDI_TypeKind_IncompleteUnion;
               
               // TODO: error handling
-              Assert(!cur_node->first_child);
+              assert(!cur_node->first_child);
               visit_children = 0;
             } else {
               RDIM_UDT *udt  = rdim_udt_chunk_list_push(arena, &udts, UDT_CHUNK_CAP);
@@ -1458,7 +1458,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               type->kind = RDI_TypeKind_IncompleteEnum;
               
               // TODO: error handling
-              Assert(!cur_node->first_child);
+              assert(!cur_node->first_child);
               visit_children = 0;
             } else {
               RDIM_UDT *udt  = rdim_udt_chunk_list_push(arena, &udts, UDT_CHUNK_CAP);
@@ -1482,7 +1482,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                 rdim_type_list_push(comp_temp.arena, &param_list, type_table->varg_type);
               } else {
                 // TODO: error handling
-                AssertAlways(!"unexpected tag");
+                ensure(!"unexpected tag");
               }
             }
             
@@ -1519,7 +1519,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 8:  kind = RDI_TypeKind_ComplexF64;  break;
                   case 10: kind = RDI_TypeKind_ComplexF80;  break;
                   case 16: kind = RDI_TypeKind_ComplexF128; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_Float: {
@@ -1529,7 +1529,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 6:  kind = RDI_TypeKind_F48;  break;
                   case 8:  kind = RDI_TypeKind_F64;  break;
                   case 16: kind = RDI_TypeKind_F128; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_Signed: {
@@ -1541,7 +1541,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 16: kind = RDI_TypeKind_S128; break;
                   case 32: kind = RDI_TypeKind_S256; break;
                   case 64: kind = RDI_TypeKind_S512; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_SignedChar: {
@@ -1549,7 +1549,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 1: kind = RDI_TypeKind_Char8;  break;
                   case 2: kind = RDI_TypeKind_Char16; break;
                   case 4: kind = RDI_TypeKind_Char32; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_Unsigned: {
@@ -1561,7 +1561,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 16: kind = RDI_TypeKind_U128; break;
                   case 32: kind = RDI_TypeKind_U256; break;
                   case 64: kind = RDI_TypeKind_U512; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_UnsignedChar: {
@@ -1569,7 +1569,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   case 1: kind = RDI_TypeKind_UChar8;  break;
                   case 2: kind = RDI_TypeKind_UChar16; break;
                   case 4: kind = RDI_TypeKind_UChar32; break;
-                  default: AssertAlways(!"unexpected size"); break; // TODO: error handling
+                  default: ensure(!"unexpected size"); break; // TODO: error handling
                 }
               } break;
               case DW_ATE_ImaginaryFloat: {
@@ -1602,7 +1602,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               case DW_ATE_Ascii: {
                 NotImplemented;
               } break;
-              default: AssertAlways(!"unexpected base type encoding"); break; // TODO: error handling
+              default: ensure(!"unexpected base type encoding"); break; // TODO: error handling
             }
             
             RDIM_Type *base_type = rdim_builtin_type_from_kind(types, kind);
@@ -1618,11 +1618,11 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             RDIM_Type *direct_type = d2r_type_from_attrib(arena, type_table, &input, cu, tag, DW_AttribKind_Type);
             
             // TODO:
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Allocated));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Associated));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_AddressClass));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Allocated));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Associated));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_AddressClass));
             
             U64 byte_size = arch_addr_size;
             if (cu->version == DW_Version_5 || cu->relaxed) {
@@ -1636,8 +1636,8 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           } break;
           case DW_TagKind_RestrictType: {
             // TODO:
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
             
             RDIM_Type *type   = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->kind        = RDI_TypeKind_Modifier;
@@ -1647,7 +1647,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           } break;
           case DW_TagKind_VolatileType: {
             // TODO:
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
             
             RDIM_Type *type   = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->kind        = RDI_TypeKind_Modifier;
@@ -1657,8 +1657,8 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           } break;
           case DW_TagKind_ConstType: {
             // TODO:
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
-            Assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
+            assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Alignment));
             
             RDIM_Type *type   = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->kind        = RDI_TypeKind_Modifier;
@@ -1699,7 +1699,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             for (DW_TagNode *n = cur_node->first_child; n != 0; n = n->sibling) {
               if (n->tag.kind != DW_TagKind_SubrangeType) {
                 // TODO: error handling
-                AssertAlways(!"unexpected tag");
+                ensure(!"unexpected tag");
                 continue;
               }
               
@@ -1739,21 +1739,21 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               ++subrange_count;
             }
             
-            Assert(t->direct_type == 0);
+            assert(t->direct_type == 0);
             t->direct_type = d2r_type_from_attrib(arena, type_table, &input, cu, tag, DW_AttribKind_Type);
             
             visit_children = 0;
           } break;
           case DW_TagKind_SubrangeType: {
             // TODO: error handling
-            AssertAlways(!"unexpected tag");
+            ensure(!"unexpected tag");
           } break;
           case DW_TagKind_Inheritance: {
             DW_TagNode *parent_node = tag_stack->next->cur_node;
             if (parent_node->tag.kind != DW_TagKind_StructureType &&
                 parent_node->tag.kind != DW_TagKind_ClassType) {
               // TODO: error handling
-              AssertAlways(!"unexpected parent tag");
+              ensure(!"unexpected parent tag");
             }
             
             RDIM_Type      *parent = tag_stack->next->type;
@@ -1766,7 +1766,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             DW_TagNode *parent_node = tag_stack->next->cur_node;
             if (parent_node->tag.kind != DW_TagKind_EnumerationType) {
               // TODO: error handling
-              AssertAlways(!"unexpected parent tag");
+              ensure(!"unexpected parent tag");
             }
             
             RDIM_Type       *type   = tag_stack->next->type;
@@ -1781,13 +1781,13 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                 parent_node->tag.kind != DW_TagKind_UnionType     &&
                 parent_node->tag.kind != DW_TagKind_EnumerationType) {
               // TODO: error handling
-              AssertAlways(!"unexpected parent tag");
+              ensure(!"unexpected parent tag");
             }
             
             DW_Attrib      *data_member_location       = dw_attrib_from_tag(&input, cu, tag, DW_AttribKind_DataMemberLocation);
             DW_AttribClass  data_member_location_class = dw_value_class_from_attrib(cu, data_member_location);
             if (data_member_location_class == DW_AttribClass_LocList) {
-              AssertAlways(!"UDT member with multiple locations are not supported");
+              ensure(!"UDT member with multiple locations are not supported");
             }
             
             RDIM_Type      *type   = tag_stack->next->type;
@@ -1860,7 +1860,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                   member->type           = type;
                   member->name           = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
                 } else if (parent_tag_kind != DW_TagKind_CompileUnit) {
-                  //AssertAlways(!"unexpected tag");
+                  //ensure(!"unexpected tag");
                 }
                 
                 tag_stack->scope = root_scope;
@@ -1949,7 +1949,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               param->locset     = d2r_var_locset_from_tag(arena, &input, cu, &scopes, scope, image_base, arch, tag);
             } else {
               // TODO: error handling
-              AssertAlways(!"this is a local variable");
+              ensure(!"this is a local variable");
             }
           } break;
           case DW_TagKind_LexicalBlock: {

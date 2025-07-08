@@ -76,8 +76,8 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   // try to init library from optional second member
   if (parse.second_member.member_count) {
     COFF_ArchiveSecondMember second_member = parse.second_member;
-    Assert(second_member.symbol_count == second_member.symbol_index_count);
-    Assert(second_member.member_count == second_member.member_offset_count);
+    assert(second_member.symbol_count == second_member.symbol_index_count);
+    assert(second_member.member_count == second_member.member_offset_count);
     
     symbol_count   = second_member.symbol_count;
     string_table   = second_member.string_table;
@@ -98,7 +98,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   // and lld-link with /DLL emits only first member
   else if (parse.first_member.symbol_count) {
     COFF_ArchiveFirstMember first_member = parse.first_member;
-    Assert(first_member.symbol_count == first_member.member_offset_count);
+    assert(first_member.symbol_count == first_member.member_offset_count);
     
     symbol_count   = first_member.symbol_count;
     string_table   = first_member.string_table;
@@ -116,7 +116,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   
   // parse string table
   String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, str8_lit("\0"), StringSplitFlag_KeepEmpties);
-  Assert(symbol_name_list.node_count >= symbol_count);
+  assert(symbol_name_list.node_count >= symbol_count);
   symbol_count = Min(symbol_count, symbol_name_list.node_count);
   
   // init lib
@@ -159,7 +159,7 @@ lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, S
 {
   Temp scratch = scratch_begin(arena->v, arena->count);
 
-  Assert(data_arr.count == path_arr.count);
+  assert(data_arr.count == path_arr.count);
   U64 lib_count = data_arr.count;
 
   // parse libs in parallel

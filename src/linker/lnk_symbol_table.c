@@ -123,9 +123,9 @@ lnk_error_multiply_defined_symbol(LNK_Symbol *dst, LNK_Symbol *src)
 internal B32
 lnk_can_replace_symbol(LNK_SymbolScope scope, LNK_Symbol *dst, LNK_Symbol *src)
 {
-  //Assert(src->type != LNK_Symbol_Undefined);
-  Assert(dst != src);
-  Assert(str8_match(dst->name, src->name, 0));
+  //assert(src->type != LNK_Symbol_Undefined);
+  assert(dst != src);
+  assert(str8_match(dst->name, src->name, 0));
 
   B32 can_replace = 0;
 
@@ -322,7 +322,7 @@ lnk_can_replace_symbol(LNK_SymbolScope scope, LNK_Symbol *dst, LNK_Symbol *src)
 internal void
 lnk_on_symbol_replace(LNK_SymbolScope scope, LNK_Symbol *dst, LNK_Symbol *src)
 {
-  Assert(dst != src);
+  assert(dst != src);
   if (scope == LNK_SymbolScope_Lib) {
     dst->u.lib = src->u.lib;
   } else if (scope == LNK_SymbolScope_Defined) {
@@ -337,7 +337,7 @@ lnk_on_symbol_replace(LNK_SymbolScope scope, LNK_Symbol *dst, LNK_Symbol *src)
     }
     if (src_interp == COFF_SymbolValueInterp_Regular) {
       COFF_SectionHeader *src_sect = lnk_coff_section_header_from_section_number(src->u.defined.obj, src_parsed.section_number);
-      AssertAlways(~src_sect->flags & COFF_SectionFlag_LnkRemove);
+      ensure(~src_sect->flags & COFF_SectionFlag_LnkRemove);
     }
   }
 }

@@ -430,9 +430,9 @@ dw_addr_from_list_unit(DW_ListUnit *lu, U64 index)
     MemoryCopy(&seg,  lu->entries.str + seg_off, lu->segment_selector_size);
     MemoryCopy(&addr, lu->entries.str + addr_off, lu->address_size);
     // TODO: segment-based addressing
-    AssertAlways(seg == 0);
+    ensure(seg == 0);
   } else {
-    Assert(!"out of bounds index");
+    assert(!"out of bounds index");
   }
   return addr;
 }
@@ -839,7 +839,7 @@ dw_read_tag(Arena          *arena,
   // read tag abbrev id
   U64 tag_abbrev_id    = 0;
   U64 tag_abbrev_id_size = str8_deserial_read_uleb128(tag_data, tag_cursor, &tag_abbrev_id);
-  Assert(tag_abbrev_id_size);
+  assert(tag_abbrev_id_size);
   tag_cursor += tag_abbrev_id_size;
   
   // read tag abbrev
@@ -871,7 +871,7 @@ dw_read_tag(Arena          *arena,
         U64 form_kind_size = str8_deserial_read_uleb128(tag_data, tag_cursor, &form_kind);
         
         if (form_kind_size == 0) {
-          Assert(!"unable to read indirect form kind");
+          assert(!"unable to read indirect form kind");
           break;
         }
         
@@ -930,7 +930,7 @@ dw_try_u64_from_const_value(U64 type_byte_size, DW_ATE type_encoding, String8 co
       }
       is_parsed = 1;
     } else {
-      Assert(!"out value overflow");
+      assert(!"out value overflow");
     }
   }
   return is_parsed;
@@ -941,7 +941,7 @@ dw_u64_from_const_value(String8 const_value)
 {
   U64 result       = 0;
   B32 is_converted = dw_try_u64_from_const_value(sizeof(U64), DW_ATE_Unsigned, const_value, &result);
-  Assert(is_converted); // TODO: error handling
+  assert(is_converted); // TODO: error handling
   return result;
 }
 
@@ -952,7 +952,7 @@ dw_interp_sec_offset(DW_FormKind form_kind, DW_Form form)
   if (form_kind == DW_Form_SecOffset) {
     sec_offset = form.sec_offset;
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return sec_offset;
 }
@@ -964,7 +964,7 @@ dw_interp_exprloc(DW_FormKind form_kind, DW_Form form)
   if (form_kind == DW_Form_ExprLoc) {
     expr = form.exprloc;
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return expr;
 }
@@ -972,7 +972,7 @@ dw_interp_exprloc(DW_FormKind form_kind, DW_Form form)
 internal U128
 dw_interp_const_u128(DW_FormKind form_kind, DW_Form form)
 {
-  AssertAlways(form.data.size <= sizeof(U128));
+  ensure(form.data.size <= sizeof(U128));
   U128 result = {0};
   MemoryCopy(&result.u64[0], form.data.str, form.data.size);
   return result;
@@ -985,10 +985,10 @@ dw_interp_const64(U64 type_byte_size, DW_ATE type_encoding, DW_FormKind form_kin
   if (form_kind == DW_Form_Data1 || form_kind == DW_Form_Data2 || form_kind == DW_Form_Data4 || form_kind == DW_Form_Data16) {
     if (form.data.size <= sizeof(result)) {
       if (!dw_try_u64_from_const_value(type_byte_size, type_encoding, form.data, &result)) {
-        Assert(!"unable to decode data");
+        assert(!"unable to decode data");
       }
     } else {
-      Assert(!"unable to cast U128 to U64");
+      assert(!"unable to cast U128 to U64");
     }
   } else if (form_kind == DW_Form_UData) {
     result = form.udata;
@@ -999,7 +999,7 @@ dw_interp_const64(U64 type_byte_size, DW_ATE type_encoding, DW_FormKind form_kin
   } else if (form_kind == DW_Form_Null) {
     // skip 
   } else {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return result;
 }
@@ -1040,22 +1040,22 @@ dw_interp_address(U64 address_size, U64 base_addr, DW_ListUnit *addr_lu, DW_Form
   U64 address = 0;
   if (form_kind == DW_Form_Addr) {
     if (!dw_try_u64_from_const_value(address_size, DW_ATE_Address, form.addr, &address)) {
-      AssertAlways(!"unable to decode address");
+      ensure(!"unable to decode address");
     }
   } else if (form_kind == DW_Form_Addrx || form_kind == DW_Form_Addrx1 || form_kind == DW_Form_Addrx2 ||
              form_kind == DW_Form_Addrx3 || form_kind == DW_Form_Addrx4) {
     address = dw_addr_from_list_unit(addr_lu, form.xval);
   } else if (form_kind == DW_Form_SecOffset) {
     if (addr_lu->segment_selector_size > 0) {
-      AssertAlways(!"TODO: support for segmented address space");
+      ensure(!"TODO: support for segmented address space");
     }
     if (form.sec_offset + addr_lu->segment_selector_size + addr_lu->address_size <= addr_lu->entries.size) {
       MemoryCopy(&address, addr_lu->entries.str + form.sec_offset, addr_lu->address_size);
     } else {
-      Assert(!"out of bounds .debug_addr offset");
+      assert(!"out of bounds .debug_addr offset");
     }
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return address;
 }
@@ -1079,29 +1079,29 @@ dw_interp_string(DW_Input    *input,
     string = form.string;
   } else if (form_kind == DW_Form_Strp) {
     U64 bytes_read = str8_deserial_read_cstr(input->sec[DW_Section_Str].data, form.sec_offset, &string);
-    Assert(bytes_read > 0);
+    assert(bytes_read > 0);
   } else if (form_kind == DW_Form_LineStrp) {
     U64 bytes_read = str8_deserial_read_cstr(input->sec[DW_Section_LineStr].data, form.sec_offset, &string);
-    Assert(bytes_read > 0);
+    assert(bytes_read > 0);
   } else if (form_kind == DW_Form_StrpSup) {
     U64 bytes_read = str8_deserial_read_cstr(input->sec[DW_Section_Str].data, form.strp_sup, &string);
-    Assert(bytes_read > 0);
+    assert(bytes_read > 0);
   } else if (form_kind == DW_Form_Strx || form_kind == DW_Form_Strx1 ||
              form_kind == DW_Form_Strx2 || form_kind == DW_Form_Strx3 ||
              form_kind == DW_Form_Strx4) {
     U64 sec_offset = dw_offset_from_list_unit(str_offsets, form.xval);
     if (sec_offset < input->sec[DW_Section_Str].data.size) {
       U64 bytes_read = str8_deserial_read_cstr(input->sec[DW_Section_Str].data, sec_offset, &string);
-      Assert(bytes_read > 0);
+      assert(bytes_read > 0);
     } else {
-      AssertAlways(!"unable to translate index to offset");
+      ensure(!"unable to translate index to offset");
     }
   } else if (form_kind == DW_Form_GNU_StrpAlt) {
     NotImplemented;
   } else if (form_kind == DW_Form_GNU_StrIndex) {
     NotImplemented;
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return string;
 }
@@ -1113,7 +1113,7 @@ dw_interp_line_ptr(DW_Input *input, DW_FormKind form_kind, DW_Form form)
   if (form_kind == DW_Form_SecOffset) {
     result = str8_skip(input->sec[DW_Section_Line].data, form.sec_offset);
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return result;
 }
@@ -1126,7 +1126,7 @@ dw_interp_file(DW_LineVMHeader *line_vm, DW_FormKind form_kind, DW_Form form)
   if (file_idx < line_vm->file_table.count) {
     result = &line_vm->file_table.v[file_idx];
   } else {
-    Assert(!"out of bounds file index");
+    assert(!"out of bounds file index");
   }
   return result;
 }
@@ -1147,7 +1147,7 @@ dw_interp_ref(DW_Input *input, DW_CompUnit *cu, DW_FormKind form_kind, DW_Form f
   } else if (form_kind == DW_Form_RefSup4 || form_kind == DW_Form_RefSup8) {
     NotImplemented;
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return ref;
 }
@@ -1165,10 +1165,10 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
       } else if (form_kind == DW_Form_Data8 || form_kind == DW_Form_Data4 ||
                  form_kind == DW_Form_Data2 || form_kind == DW_Form_Data1) {
         if (!dw_try_u64_from_const_value(form.data.size, DW_ATE_Unsigned, form.data, &sec_offset)) {
-          Assert(!"unable to extract section offset");
+          assert(!"unable to extract section offset");
         }
       } else if (form_kind == DW_Form_Null) {
-        Assert(!"unexpected form");
+        assert(!"unexpected form");
       }
       
       String8 sec       = str8_skip(input->sec[DW_Section_Loc].data, sec_offset);
@@ -1202,12 +1202,12 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
           U16 expr_size      = 0;
           U64 expr_size_size = str8_deserial_read_struct(sec, cursor, &expr_size);
           if (expr_size_size == 0) {
-            Assert(!"unable to read expression size");
+            assert(!"unable to read expression size");
             break;
           }
           cursor += expr_size_size;
           
-          Assert(cursor + expr_size <= sec.size);
+          assert(cursor + expr_size <= sec.size);
           Rng1U64 expr_range = rng_1u64(cursor, ClampTop(cursor + expr_size, sec.size));
           
           DW_LocNode *loc_n = push_array(arena, DW_LocNode, 1);
@@ -1222,7 +1222,7 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
         }
       }
     } else if (form_kind != DW_Form_Null) {
-      AssertAlways(!"unexpected form");
+      ensure(!"unexpected form");
     }
   } else {
     DW_Version version = DW_Version_Null;
@@ -1237,7 +1237,7 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
       raw_lle         = str8_skip(cu->loclists_lu->entries, entries_off);
       version         = cu->loclists_lu->version;
     } else if (form_kind != DW_Form_Null) {
-      AssertAlways(!"unexpected form");
+      ensure(!"unexpected form");
     }
     
     for (U64 cursor = 0, keep_parsing = 1, base_addr = cu->low_pc;
@@ -1248,7 +1248,7 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
       Rng1U64 range = {0};
       switch (kind) {
         default:
-        Assert(!"unknown kind");
+        assert(!"unknown kind");
         case DW_LLE_EndOfList: {
           keep_parsing = 0;
         } break;
@@ -1292,8 +1292,8 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
           
           U64 start = dw_addr_from_list_unit(cu->addr_lu, start_addrx);
           U64 end   = dw_addr_from_list_unit(cu->addr_lu, end_addrx);
-          Assert(start != max_U64);
-          Assert(end   != max_U64);
+          assert(start != max_U64);
+          assert(end   != max_U64);
           
           range = rng_1u64(start, end);
         } break;
@@ -1319,11 +1319,11 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
           
           if (cu->addr_lu) {
             U64 start = dw_addr_from_list_unit(cu->addr_lu, start_addrx);
-            Assert(start < max_U64);
+            assert(start < max_U64);
             
             range = rng_1u64(start, start + length);
           } else {
-            Assert(!".debug_addr section is missing -- unable to interpret address index");
+            assert(!".debug_addr section is missing -- unable to interpret address index");
           }
         } break;
         case DW_LLE_OffsetPair: {
@@ -1434,7 +1434,7 @@ dw_interp_flag(DW_FormKind form_kind, DW_Form form)
   if (form_kind == DW_Form_Flag || form_kind == DW_Form_FlagPresent) {
     flag = form.flag;
   } else if (form_kind != DW_Form_Null) {
-    AssertAlways(!"unexpected form");
+    ensure(!"unexpected form");
   }
   return flag;
 }
@@ -1452,10 +1452,10 @@ dw_interp_rnglist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
     } else if (form_kind == DW_Form_Data8 || form_kind == DW_Form_Data4 ||
                form_kind == DW_Form_Data2 || form_kind == DW_Form_Data1) {
       if (!dw_try_u64_from_const_value(form.data.size, DW_ATE_Unsigned, form.data, &sec_offset)) {
-        Assert(!"unable to extract section offset");
+        assert(!"unable to extract section offset");
       }
     } else if (form_kind != DW_Form_Null) {
-      Assert(!"unexpected form");
+      assert(!"unexpected form");
     }
     
     String8 sec       = str8_skip(input->sec[DW_Section_Ranges].data, sec_offset);
@@ -1501,7 +1501,7 @@ dw_interp_rnglist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
       U64 sec_offset = dw_offset_from_list_unit(cu->rnglists_lu, form.xval);
       raw_rle        = str8_skip(cu->rnglists_lu->entries, sec_offset);
     } else if (form_kind != DW_Form_Null) {
-      AssertAlways(!"unexpected form");
+      ensure(!"unexpected form");
     }
     
     U64 rle_invalid_value = DW_SentinelFromSize(cu->address_size);
@@ -1533,7 +1533,7 @@ dw_interp_rnglist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
             cursor += addrx_size;
           } else {
             keep_parsing = 0;
-            Assert(!"invalid addrx");
+            assert(!"invalid addrx");
           }
         } break;
         case DW_RLE_StartxLength: {
@@ -1554,7 +1554,7 @@ dw_interp_rnglist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
           
           if (cu->addr_lu) {
             U64 start = dw_addr_from_list_unit(cu->addr_lu, start_addrx);
-            AssertAlways(start < max_U64);
+            ensure(start < max_U64);
             range = rng_1u64(start, start + length);
           }
         } break;
@@ -1639,7 +1639,7 @@ dw_interp_secptr(DW_Input *input, DW_SectionKind section, DW_FormKind form_kind,
     Rng1U64 range = rng_1u64(form.sec_offset, sect.size);
     secptr = str8_substr(sect, range);
   } else if (form_kind != DW_Form_Null) {
-    Assert(!"unexpected form");
+    assert(!"unexpected form");
   }
   return secptr;
 }
@@ -1678,7 +1678,7 @@ internal String8
 dw_exprloc_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_ExprLoc || value_class == DW_AttribClass_Block);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_ExprLoc || value_class == DW_AttribClass_Block);
   return dw_interp_exprloc(attrib->form_kind, attrib->form);
 }
 
@@ -1686,7 +1686,7 @@ internal U128
 dw_const_u128_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_const_u128(attrib->form_kind, attrib->form);
 }
 
@@ -1694,7 +1694,7 @@ internal U64
 dw_const_u64_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_const_u64(attrib->form_kind, attrib->form);
 }
 
@@ -1702,7 +1702,7 @@ internal U32
 dw_const_u32_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_const_u32(attrib->form_kind, attrib->form);
 }
 
@@ -1710,7 +1710,7 @@ internal S64
 dw_const_s64_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_const_s64(attrib->form_kind, attrib->form);
 }
 
@@ -1718,7 +1718,7 @@ internal S32
 dw_const_s32_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_const_s32(attrib->form_kind, attrib->form);
 }
 
@@ -1726,7 +1726,7 @@ internal B32
 dw_flag_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Flag);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Flag);
   return dw_interp_flag(attrib->form_kind, attrib->form);
 }
 
@@ -1734,7 +1734,7 @@ internal U64
 dw_address_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null ||
+  ensure(value_class == DW_AttribClass_Null ||
                value_class == DW_AttribClass_Address ||
                value_class == DW_AttribClass_AddrPtr);
   DW_FormKind form_kind = attrib->form_kind;
@@ -1745,7 +1745,7 @@ dw_address_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
       
       
     } else {
-      AssertAlways(!"unexpected form");
+      ensure(!"unexpected form");
     }
     
     
@@ -1759,7 +1759,7 @@ internal String8
 dw_block_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Block);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Block);
   return dw_interp_block(input, cu, attrib->form_kind, attrib->form);
 }
 
@@ -1767,7 +1767,7 @@ internal String8
 dw_string_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_String || value_class == DW_AttribClass_StrOffsetsPtr);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_String || value_class == DW_AttribClass_StrOffsetsPtr);
   return dw_interp_string(input, cu->format, cu->str_offsets_lu, attrib->form_kind, attrib->form);
 }
 
@@ -1775,7 +1775,7 @@ internal String8
 dw_line_ptr_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_LinePtr);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_LinePtr);
   return dw_interp_line_ptr(input, attrib->form_kind, attrib->form);
 }
 
@@ -1783,7 +1783,7 @@ internal DW_LineFile *
 dw_file_from_attrib(DW_CompUnit *cu, DW_LineVMHeader *line_vm, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Const);
   return dw_interp_file(line_vm, attrib->form_kind, attrib->form);
 }
 
@@ -1791,7 +1791,7 @@ internal DW_Reference
 dw_ref_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Reference);
+  ensure(value_class == DW_AttribClass_Null || value_class == DW_AttribClass_Reference);
   return dw_interp_ref(input, cu, attrib->form_kind, attrib->form);
 }
 
@@ -1799,7 +1799,7 @@ internal DW_LocList
 dw_loclist_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_Attrib *attrib)
 {
   DW_AttribClass value_class = dw_value_class_from_attrib(cu, attrib);
-  AssertAlways(value_class == DW_AttribClass_Null ||
+  ensure(value_class == DW_AttribClass_Null ||
                value_class == DW_AttribClass_LocList ||
                value_class == DW_AttribClass_LocListPtr);
   return dw_interp_loclist(arena, input, cu, attrib->form_kind, attrib->form);
@@ -1813,7 +1813,7 @@ dw_rnglist_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_Attrib
   if (value_class == DW_AttribClass_RngListPtr || value_class == DW_AttribClass_RngList) {
     rnglist = dw_interp_rnglist(arena, input, cu, attrib->form_kind, attrib->form);
   } else if (value_class != DW_AttribClass_Null) {
-    Assert(!"unexpected value class");
+    assert(!"unexpected value class");
   }
   return rnglist;
 }
@@ -1944,7 +1944,7 @@ dw_try_byte_size_from_tag(DW_Input *input, DW_CompUnit *cu, DW_Tag tag, U64 *byt
   B32 has_bit_size  = dw_tag_has_attrib(input, cu, tag, DW_AttribKind_BitSize );
   
   if (has_byte_size && has_bit_size) {
-    Assert(!"ill formated byte size");
+    assert(!"ill formated byte size");
   }
   
   if (has_byte_size) {
@@ -2002,7 +2002,7 @@ dw_u64_from_attrib(DW_Input *input, DW_CompUnit *cu, DW_Tag tag, DW_AttribKind k
   } else if (attrib_class == DW_AttribClass_Reference) {
     NotImplemented;
   } else if (attrib_class != DW_AttribClass_Null) {
-    AssertAlways(!"unexpected attrib class");
+    ensure(!"unexpected attrib class");
   }
   return result;
 }
@@ -2121,8 +2121,8 @@ dw_cu_from_info_off(Arena *arena, DW_Input *input, DW_ListUnitInput lu_input, U6
         dw_read_tag(arena, data, cursor, range.min, abbrev_table, abbrev_data, version, format, address_size, &cu_tag);
         
         // TODO: handle these unit types
-        Assert(cu_tag.kind != DW_TagKind_SkeletonUnit);
-        Assert(cu_tag.kind != DW_TagKind_TypeUnit);
+        assert(cu_tag.kind != DW_TagKind_SkeletonUnit);
+        assert(cu_tag.kind != DW_TagKind_TypeUnit);
         
         if (cu_tag.kind == DW_TagKind_CompileUnit || cu_tag.kind == DW_TagKind_PartialUnit) {
           // fetch attribs for list sections
@@ -2351,15 +2351,15 @@ dw_read_line_file(String8       data,
           bytes_read = dw_read_form(data, cursor, version, format, address_size, form_kind, max_U64, &form);
           line_file_out->source = dw_interp_string(input, format, str_offsets, form_kind, form);
         } else {
-          Assert(!"extension not supported");
+          assert(!"extension not supported");
         }
       } break;
       default: {
         bytes_read = dw_read_form(data, cursor, version, format, address_size, form_kind, max_U64, &form);
-        Assert(!"unexpected LNTC encoding");
+        assert(!"unexpected LNTC encoding");
       } break;
     }
-    Assert(bytes_read);
+    assert(bytes_read);
     cursor += bytes_read;
   }
   U64 bytes_read = cursor - off;
@@ -2494,7 +2494,7 @@ dw_read_line_vm_header(Arena           *arena,
     }
     unit_cursor += max_ops_for_inst_size;
   }
-  Assert(max_ops_for_inst > 0);
+  assert(max_ops_for_inst > 0);
   
   U8  default_is_stmt      = 0;
   U64 default_is_stmt_size = str8_deserial_read_struct(unit_data, unit_cursor, &default_is_stmt);
@@ -3015,7 +3015,7 @@ dw_parsed_line_table_from_data(Arena       *arena,
             //
             // See the DWARF V4 spec (June 10, 2010), page 122.
             error = 1;
-            AssertAlways(!"UNHANDLED DEFINE FILE!!!");
+            ensure(!"UNHANDLED DEFINE FILE!!!");
           } break;
           
           case DW_ExtOpcode_SetDiscriminator: {

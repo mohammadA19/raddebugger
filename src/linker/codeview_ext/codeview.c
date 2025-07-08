@@ -52,13 +52,13 @@ cv_type_server_info_from_leaf(CV_Leaf leaf)
   case CV_LeafKind_TYPESERVER2: {
     CV_LeafTypeServer2 *ts = (CV_LeafTypeServer2 *) leaf.data.str;
     
-    Assert(sizeof(result.sig) == sizeof(ts->sig70));
+    assert(sizeof(result.sig) == sizeof(ts->sig70));
     MemoryCopy(&result.sig, &ts->sig70, sizeof(ts->sig70));
     result.name = str8_cstring_capped_reverse(ts + 1, leaf.data.str + leaf.data.size);
     result.age  = ts->age;
   } break;
   case CV_LeafKind_TYPESERVER_ST: {
-    Assert("TODO: LF_TYPESERVER_ST");
+    assert("TODO: LF_TYPESERVER_ST");
   } break;
   default: InvalidPath;
   }
@@ -111,13 +111,13 @@ cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_L
 
   // compute record size
   U64 record_size = sizeof(kind) + data.size;
-  Assert(record_size <= CV_LeafSize_Max);
+  assert(record_size <= CV_LeafSize_Max);
   CV_LeafSize record_size16 = (CV_LeafSize)record_size;
 
   // compute pad
   static U8 LEAF_PAD_ARR[] = { 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff };
   U64 pad_size = AlignPadPow2(data.size, align);
-  Assert(pad_size <= ArrayCount(LEAF_PAD_ARR));
+  assert(pad_size <= ArrayCount(LEAF_PAD_ARR));
 
   // write header
   CV_LeafHeader *header_ptr = (CV_LeafHeader *)(buffer + buffer_cursor);
@@ -168,22 +168,22 @@ internal U64
 cv_deserial_leaf(String8 raw_data, U64 off, U64 align, CV_Leaf *leaf_out)
 {
   // do we have enough bytes to read header?
-  Assert(raw_data.size >= sizeof(CV_LeafHeader));
+  assert(raw_data.size >= sizeof(CV_LeafHeader));
 
   CV_LeafHeader *header = (CV_LeafHeader*)(raw_data.str + off);
 
   // leaf size must have enough bytes for the kind enum
-  Assert(header->size >= sizeof(CV_LeafKind));
+  assert(header->size >= sizeof(CV_LeafKind));
 
   // do we have enough bytes to read leaf data?
-  Assert(sizeof(CV_LeafSize) + header->size <= raw_data.size);
+  assert(sizeof(CV_LeafSize) + header->size <= raw_data.size);
 
   // fill out leaf
   leaf_out->kind = header->kind;
   leaf_out->data = str8(raw_data.str + sizeof(CV_LeafHeader), header->size - sizeof(CV_LeafKind));
 
   U64 leaf_size = AlignPow2(sizeof(CV_LeafHeader) + leaf_out->data.size, align);
-  Assert(leaf_size <= raw_data.size);
+  assert(leaf_size <= raw_data.size);
   return leaf_size;
 }
 
@@ -212,13 +212,13 @@ internal U64
 cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align)
 {
   U64 write_size = cv_compute_symbol_record_size(symbol, align);
-  Assert(buffer_cursor + write_size <= buffer_size);
+  assert(buffer_cursor + write_size <= buffer_size);
 
   U64 record_size = 0;
   record_size += sizeof(symbol->kind);
   record_size += AlignPow2(symbol->data.size, align);
   
-  Assert(record_size <= CV_SymSize_Max);
+  assert(record_size <= CV_SymSize_Max);
   CV_SymSize record_size16 = (CV_SymSize)record_size;
 
   // init header
@@ -253,7 +253,7 @@ cv_make_symbol(Arena *arena, CV_SymKind kind, String8 data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
-  AssertAlways((data.size + sizeof(kind)) <= CV_SymSize_Max);
+  ensure((data.size + sizeof(kind)) <= CV_SymSize_Max);
   CV_SymSize symbol_size = (CV_SymSize)data.size + sizeof(kind);
   String8List srl = {0};
   str8_serial_begin(scratch.arena, &srl);
@@ -461,15 +461,15 @@ cv_parse_debug_s(Arena *arena, String8 raw_debug_s)
       result = cv_parse_debug_s_c13(arena, raw_debug_s_past_sig);
     } break;
     case CV_Signature_C6: {
-      Assert(!"TODO: handle C6");
+      assert(!"TODO: handle C6");
     } break;
     case CV_Signature_C7: {
-      Assert(!"TODO: handle C7");
+      assert(!"TODO: handle C7");
     } break;
     case CV_Signature_C11: {
-      Assert(!"TODO: handle C11");
+      assert(!"TODO: handle C11");
     } break;
-    default: Assert(!"invalid signature"); break;
+    default: assert(!"invalid signature"); break;
     }
   }
   return result;
@@ -663,7 +663,7 @@ cv_string_hash_table_insert_or_update(CV_StringBucket **buckets, U64 cap, U64 ha
   } while (idx != best_idx);
 
   // are there enough free buckets?
-  Assert(was_bucket_inserted_or_updated);
+  assert(was_bucket_inserted_or_updated);
 
   return result;
 }
@@ -679,9 +679,9 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
     CV_DebugS debug_s       = task->arr[range_n->debug_s_idx];
     String8   string_buffer = cv_string_table_from_debug_s(debug_s);
 
-    Assert(range_n->range.min <= range_n->range.max);
-    Assert(range_n->range.min <= string_buffer.size);
-    Assert(range_n->range.max <= string_buffer.size);
+    assert(range_n->range.min <= range_n->range.max);
+    assert(range_n->range.min <= string_buffer.size);
+    assert(range_n->range.max <= string_buffer.size);
 
     U64 count = 0;
     for (U64 i = range_n->range.min; i < range_n->range.max; ++i) {
@@ -938,7 +938,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
     retry:;
     CV_SymbolNode **curr_bucket = buckets[idx];
 
-    Assert(curr_bucket != new_bucket);
+    assert(curr_bucket != new_bucket);
 
     if (curr_bucket == 0) {
       CV_SymbolNode **compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
@@ -979,7 +979,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
     idx = (idx + 1) % cap;
   } while (idx != best_idx);
 
-  Assert(is_inserted_or_updated);
+  assert(is_inserted_or_updated);
 
   return result;
 }
@@ -1046,7 +1046,7 @@ cv_dedup_symbol_ptr_array(TP_Context *tp, CV_SymbolPtrArray *symbols)
   }
   ProfEnd();
 
-  Assert(unique_symbol_count <= symbols->count);
+  assert(unique_symbol_count <= symbols->count);
   symbols->count = unique_symbol_count;
 
   ProfBeginDynamic("Sort [Count %llu]", symbols->count);
@@ -1085,7 +1085,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
       CV_Leaf leaf;
       U64 read_size = cv_deserial_leaf(data, cursor, align, &leaf);
 
-      Assert(leaf_count < max_leaf_count);
+      assert(leaf_count < max_leaf_count);
       leaf_arr[leaf_count] = str8_deserial_get_raw_ptr(data, cursor, read_size);
       leaf_count += 1;
 
@@ -1112,7 +1112,7 @@ cv_debug_t_from_data(Arena *arena, String8 data, U64 align)
 internal CV_Leaf
 cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
 {
-  Assert(leaf_idx < debug_t.count);
+  assert(leaf_idx < debug_t.count);
 
   U8 *ptr = debug_t.v[leaf_idx];
   String8 data = str8(ptr, max_U64);
@@ -1121,7 +1121,7 @@ cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
   cv_deserial_leaf(data, 0, 1, &leaf);
 
   U64 size = cv_header_struct_size_from_leaf_kind(leaf.kind);
-  Assert(size <= leaf.data.size);
+  assert(size <= leaf.data.size);
 
   return leaf;
 }
@@ -1129,7 +1129,7 @@ cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
 internal String8
 cv_debug_t_get_raw_leaf(CV_DebugT debug_t, U64 leaf_idx)
 {
-  Assert(leaf_idx < debug_t.count);
+  assert(leaf_idx < debug_t.count);
   U8          *leaf_ptr   = debug_t.v[leaf_idx];
   CV_LeafSize *size_ptr   = (CV_LeafSize *)leaf_ptr;
   CV_LeafSize  total_size = sizeof(*size_ptr) + *size_ptr;
@@ -1140,7 +1140,7 @@ cv_debug_t_get_raw_leaf(CV_DebugT debug_t, U64 leaf_idx)
 internal CV_LeafHeader *
 cv_debug_t_get_leaf_header(CV_DebugT debug_t, U64 leaf_idx)
 {
-  Assert(leaf_idx < debug_t.count);
+  assert(leaf_idx < debug_t.count);
   CV_LeafHeader *leaf_header = (CV_LeafHeader *) debug_t.v[leaf_idx];
   return leaf_header;
 }
@@ -1223,14 +1223,14 @@ cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset
     
     // size from header has to be larger than 2 bytes
     if (header.size < sizeof(header.kind)) {
-      Assert(!"TODO: error handle invalid symbol data");
+      assert(!"TODO: error handle invalid symbol data");
       break;
     }
     
     // is there enough bytes in the range?
     U64 symbol_opl = cursor + (header.size - sizeof(header.kind));
     if (symbol_opl > opl) {
-      Assert(!"TODO: error handle corrupted symbol data");
+      assert(!"TODO: error handle corrupted symbol data");
       break;
     }
     
@@ -1306,7 +1306,7 @@ cv_symbol_list_push_many(Arena *arena, CV_SymbolList *list, U64 count)
 internal void
 cv_symbol_list_remove_node(CV_SymbolList *list, CV_SymbolNode *node)
 {
-  Assert(list->count > 0);
+  assert(list->count > 0);
   list->count -= 1;
   DLLRemove(list->first, list->last, node);
 }
@@ -1491,7 +1491,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, U64 base_offset, U64 align)
       // NOTE: We don't patch 'next' offset in PROC symbols because
       // it's not used by visual studio and MSVC leaves the offsets
       // zeroed. LLD is on the same page.
-      Assert(symbol.data.size >= sizeof(U32)*2);
+      assert(symbol.data.size >= sizeof(U32)*2);
 
       // patch symbol parent
       if (stack) {
@@ -1596,7 +1596,7 @@ cv_c13_collect_source_file_names(Arena *arena, CV_ChecksumList checksum_list, St
   for (CV_ChecksumNode *node = checksum_list.first; node != 0; node = node->next) {
     CV_Checksum *checksum = &node->data;
     CV_C13Checksum *header = checksum->header;
-    Assert(header->name_off < string_data.size);
+    assert(header->name_off < string_data.size);
     String8 name = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
     str8_list_push(arena, &source_file_name_list, name);
   }
@@ -1701,7 +1701,7 @@ cv_c13_patch_checksum_offsets_in_line_data_list(String8List line_data, U64 check
     String8 raw_data = node->string;
     if(raw_data.size < sizeof(CV_C13SubSecLinesHeader))
     {
-      Assert(!"unable to patch checksum in line sub seciton header");
+      assert(!"unable to patch checksum in line sub seciton header");
       continue;
     }
     CV_C13File *file_header = (CV_C13File *)(raw_data.str + sizeof(CV_C13SubSecLinesHeader));
@@ -1827,7 +1827,7 @@ cv_c13_make_lines_accel(Arena *arena, U64 lines_count, CV_LineArray *lines)
       map_idx += 1;
     }
   }
-  Assert(map_idx == total_voff_count);
+  assert(map_idx == total_voff_count);
 
   qsort(map, total_voff_count, sizeof(map[0]), cv_c13_voff_map_compar);
 
@@ -1890,7 +1890,7 @@ cv_c13_inlinee_lines_accel_push(CV_InlineeLinesAccel *accel, CV_C13InlineeLinesP
 {
   U64 load_factor = accel->bucket_max * 2/3 + 1;  
   if(accel->bucket_count > load_factor) {
-    Assert("TODO: increase max count and rehash buckets");
+    assert("TODO: increase max count and rehash buckets");
   }
 
   B32 is_pushed = 0;
@@ -2043,7 +2043,7 @@ cv_c13_parse_inline_binary_annots(Arena                    *arena,
           l->voffs[line_idx]     = line->voff;
           l->line_nums[line_idx] = (U32)line->ln;
         }
-        Assert(line_idx == file->line_count);
+        assert(line_idx == file->line_count);
         l->voffs[line_idx] = file->last_code_range.max;
       }
     }

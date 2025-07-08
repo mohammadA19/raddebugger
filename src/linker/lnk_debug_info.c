@@ -345,10 +345,10 @@ lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_ar
     CV_DebugT *debug_p = &debug_p_arr[obj_idx];
     CV_DebugT *debug_t = &debug_t_arr[obj_idx];
     if (debug_p->count) {
-      Assert(!debug_t->count);
+      assert(!debug_t->count);
       result[obj_idx] = *debug_p;
     } else if (debug_t->count) {
-      Assert(!debug_p->count);
+      assert(!debug_p->count);
       result[obj_idx] = *debug_t;
     } else {
       MemoryZeroStruct(&result[obj_idx]);
@@ -426,19 +426,19 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     B32 is_type_server = cv_debug_t_is_type_server(debug_t_arr[obj_idx]);
     if (is_type_server) {
-      Assert(internal_count + external_count < obj_count);
+      assert(internal_count + external_count < obj_count);
       U64 slot_idx = (obj_count - external_count - 1);
       ++external_count;
 
       // TODO: report error: somehow obj was compiled with /Zi and /Yc
-      Assert(debug_p_arr[obj_idx].count == 0);
+      assert(debug_p_arr[obj_idx].count == 0);
       
       sorted_obj_arr[slot_idx]     = *obj_arr[obj_idx];
       sorted_debug_s_arr[slot_idx] = debug_s_arr[obj_idx];
       sorted_debug_t_arr[slot_idx] = debug_t_arr[obj_idx];
       MemoryZeroStruct(&sorted_debug_p_arr[slot_idx]);
     } else {
-      Assert(internal_count + external_count < obj_count);
+      assert(internal_count + external_count < obj_count);
       U64 slot_idx = internal_count;
       ++internal_count;
       
@@ -496,7 +496,7 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
 
       // init worker input
       for (String8Node *data_n = raw_symbols.first; data_n != 0; data_n = data_n->next, ++input_idx) {
-        Assert(input_idx < total_symbol_input_count);
+        assert(input_idx < total_symbol_input_count);
         LNK_CodeViewSymbolsInput *in = &symbol_inputs[input_idx];
         in->obj_idx                  = obj_idx;
         in->symbol_list              = &reserved_lists[input_idx];
@@ -1009,7 +1009,7 @@ lnk_leaf_ref_from_loc_idx_and_ti(LNK_CodeViewInput  *input,
     U64 ts_idx = loc_idx;
 
     CV_TypeIndex ti_lo = input->external_ti_ranges[ts_idx][ti_source].min;
-    Assert(obj_ti >= ti_lo);
+    assert(obj_ti >= ti_lo);
 
     // encode leaf index for type server
     leaf_ref = lnk_ts_leaf_ref(ti_source, ts_idx, obj_ti - ti_lo);
@@ -1021,14 +1021,14 @@ lnk_leaf_ref_from_loc_idx_and_ti(LNK_CodeViewInput  *input,
     LNK_PchInfo pch = input->pch_arr[obj_idx];
     if (obj_ti < pch.ti_lo) {
       CV_TypeIndex ti_lo = CV_MinComplexTypeIndex;
-      Assert(obj_ti >= ti_lo);
+      assert(obj_ti >= ti_lo);
       leaf_ref = lnk_obj_leaf_ref(obj_idx, obj_ti - ti_lo);
     }
     // PCH indirection
     else if (obj_ti < pch.ti_hi) {
       // we don't support nested precompiled types
-      Assert(input->pch_arr[pch.debug_p_obj_idx].debug_p_obj_idx == /* null_obj: */ 0);
-      Assert(input->pch_arr[pch.debug_p_obj_idx].ti_lo == input->pch_arr[pch.debug_p_obj_idx].ti_hi);
+      assert(input->pch_arr[pch.debug_p_obj_idx].debug_p_obj_idx == /* null_obj: */ 0);
+      assert(input->pch_arr[pch.debug_p_obj_idx].ti_lo == input->pch_arr[pch.debug_p_obj_idx].ti_hi);
       leaf_ref = lnk_obj_leaf_ref(pch.debug_p_obj_idx, obj_ti - pch.ti_lo);
     } else {
       leaf_ref = lnk_obj_leaf_ref(obj_idx, pch.ti_lo + (obj_ti - pch.ti_hi) - CV_MinComplexTypeIndex);
@@ -1052,7 +1052,7 @@ lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef
   if (u128_match(a_hash, b_hash)) {
     CV_Leaf a_leaf = lnk_cv_leaf_from_leaf_ref(input, a);
     CV_Leaf b_leaf = lnk_cv_leaf_from_leaf_ref(input, b);
-    Assert(a_leaf.kind == b_leaf.kind);
+    assert(a_leaf.kind == b_leaf.kind);
 #if 0
     {
       Temp scratch = scratch_begin(0,0);
@@ -1062,7 +1062,7 @@ lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef
       for (U64 i = 0; i < a_raw_data_arr.count; ++i) {
         String8 a_chunk = a_raw_data_arr.v[i];
         String8 b_chunk = b_raw_data_arr.v[i];
-        Assert(str8_match(a_chunk, b_chunk, 0));
+        assert(str8_match(a_chunk, b_chunk, 0));
       }
       scratch_end(scratch);
     }
@@ -1103,7 +1103,7 @@ lnk_match_leaf_ref_deep(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *
       for (U64 i = 0; i < a_raw_data_arr.count; ++i) {
         String8 a_chunk = a_raw_data_arr.v[i];
         String8 b_chunk = b_raw_data_arr.v[i];
-        Assert(a_chunk.size == b_chunk.size);
+        assert(a_chunk.size == b_chunk.size);
         are_equal = str8_match(a_chunk, b_chunk, 0);
         if (!are_equal) {
           goto skip_type_index_compare;
@@ -1112,7 +1112,7 @@ lnk_match_leaf_ref_deep(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *
 
       CV_TypeIndex a_ti_lo = lnk_ti_lo_from_leaf_ref(input, a);
       CV_TypeIndex b_ti_lo = lnk_ti_lo_from_leaf_ref(input, b);
-      AssertAlways(a_ti_lo == b_ti_lo);
+      ensure(a_ti_lo == b_ti_lo);
 
       for (CV_TypeIndexInfo *ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info->next) {
         CV_TypeIndex *a_ti_ptr = (CV_TypeIndex *) (a_leaf.data.str + ti_info->offset);
@@ -1213,7 +1213,7 @@ lnk_hash_cv_leaf(Arena               *arena,
         U128 sub_hash = lnk_hash_from_leaf_ref(hashes, sub_leaf_ref);
 
         // make sure sub hash was computed (:zero_hash_array)
-        Assert(!u128_match(sub_hash, u128_zero()));
+        assert(!u128_match(sub_hash, u128_zero()));
 
         // mix-in sub hash
         blake3_hasher_update(&hasher, &sub_hash, sizeof sub_hash);
@@ -1292,7 +1292,7 @@ lnk_hash_cv_leaf_deep(Arena               *arena,
       // is index complex?
       if (*ti_ptr >= ti_ranges[curr_ti_info->source].min) {
         // TODO: handle malformed index
-        AssertAlways(*ti_ptr < ti_ranges[curr_ti_info->source].max);
+        ensure(*ti_ptr < ti_ranges[curr_ti_info->source].max);
         U64 ti_idx = (*ti_ptr - ti_ranges[curr_ti_info->source].min);
 
         // was leaf hashed?
@@ -1387,7 +1387,7 @@ lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInp
 
       if (leaf_cmp <= 0) {
         // are we inserting bucket that was already inserterd?
-        Assert(leaf_cmp < 0);
+        assert(leaf_cmp < 0);
 
         result = new_bucket;
 
@@ -1413,7 +1413,7 @@ lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInp
     idx = (idx + 1) % leaf_ht->cap;
   } while (idx != best_idx);
 
-  Assert(is_inserted_or_updated);
+  assert(is_inserted_or_updated);
 
   return result;
 }
@@ -1531,7 +1531,7 @@ THREAD_POOL_TASK_FUNC(lnk_hash_debug_t_task)
     Temp temp = temp_begin(fixed_arena);
 
     // :debug_zero_hash_assert make sure we don't write same hash more than once
-    //Assert(MemoryIsZeroStruct(&out_hash_arr.v[leaf_idx])); 
+    //assert(MemoryIsZeroStruct(&out_hash_arr.v[leaf_idx])); 
 
     CV_TypeIndex         curr_ti      = lnk_type_index_from_leaf_ref(task->input, lnk_leaf_ref(obj_idx, leaf_idx));
     CV_Leaf              leaf         = cv_debug_t_get_leaf(debug_t, leaf_idx);
@@ -1863,7 +1863,7 @@ THREAD_POOL_TASK_FUNC(lnk_loc_idx_radix_sort_task)
       U64 loc_bit = !!(bucket->leaf_ref.enc_loc_idx & LNK_LeafRefFlag_LocIdxExternal);
       digit2 |= loc_bit << loc_idx_bit_count_2;
 
-      Assert(counts_ptr[digit2] != max_U32);
+      assert(counts_ptr[digit2] != max_U32);
       task->dst[counts_ptr[digit2]++] = bucket;
     }
     ProfEnd();
@@ -1935,7 +1935,7 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
             digit_cursor += count;
           }
         }
-        Assert(digit_cursor == arr.count);
+        assert(digit_cursor == arr.count);
       }
       ProfEnd();
 
@@ -1953,9 +1953,9 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
 
 #if 0
     for (U64 i = 1; i < arr.count; ++i) {
-      AssertAlways(arr.v[i-1]->leaf_ref.enc_loc_idx <= arr.v[i]->leaf_ref.enc_loc_idx);
+      ensure(arr.v[i-1]->leaf_ref.enc_loc_idx <= arr.v[i]->leaf_ref.enc_loc_idx);
       if (arr.v[i-1]->leaf_ref.enc_loc_idx == arr.v[i]->leaf_ref.enc_loc_idx) {
-        AssertAlways(arr.v[i-1]->leaf_ref.enc_leaf_idx <= arr.v[i]->leaf_ref.enc_leaf_idx);
+        ensure(arr.v[i-1]->leaf_ref.enc_leaf_idx <= arr.v[i]->leaf_ref.enc_leaf_idx);
       }
     }
 #endif
@@ -2226,19 +2226,19 @@ THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
             if (leaf.data.size >= sizeof(CV_LeafFuncId)) {
               proc32->itype = ((CV_LeafFuncId *) leaf.data.str)->itype;
             } else {
-              Assert(!"TODO: error handle corrupt leaf");
+              assert(!"TODO: error handle corrupt leaf");
             }
           } else if (leaf.kind == CV_LeafKind_MFUNC_ID) {
             if (leaf.data.size >= sizeof(CV_LeafMFuncId)) {
               proc32->itype = ((CV_LeafMFuncId *) leaf.data.str)->itype;
             } else {
-              Assert(!"TODO: error handle corrupt leaf");
+              assert(!"TODO: error handle corrupt leaf");
             }
           } else {
-            Assert(!"TODO: erorr handle unexpected leaf type");
+            assert(!"TODO: erorr handle unexpected leaf type");
           }
         } else {
-          Assert("TODO: error handle corrupted type index");
+          assert("TODO: error handle corrupted type index");
         }
       } else {
         // TODO: in some cases destructors don't have a type, need a repro
@@ -2520,8 +2520,8 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
 
         if (is_lambda) {
           U64 size = lnk_format_u128(temp, sizeof(temp), hash_length, name_hash);
-          Assert(size < udt_info.name.size);
-          Assert(size < udt_info.unique_name.size);
+          assert(size < udt_info.name.size);
+          assert(size < udt_info.unique_name.size);
           MemoryCopy(udt_info.name.str, temp, size+1);
           MemoryCopy(udt_info.name.str+size+1, temp, size+1);
           udt_info.name.size        = size;
@@ -2703,14 +2703,14 @@ THREAD_POOL_TASK_FUNC(lnk_filter_out_gsi_symbols_task)
       if (cv_is_scope_symbol(curr->data.kind)) {
         ++depth;
       } else if (cv_is_end_symbol(curr->data.kind)) {
-        Assert(depth > 0);
+        assert(depth > 0);
         --depth;
       }
     }
   }
  
   // collect GSI symbols
-  Assert(gsi_list->count == 0);
+  assert(gsi_list->count == 0);
   cv_symbol_list_concat_in_place(gsi_list, &global_list);
   cv_symbol_list_concat_in_place(gsi_list, &typedef_list);
 }
@@ -2777,7 +2777,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
   ProfEnd();
 
   // output
-  Assert(task->symbol_data_arr[obj_idx].total_size == 0);
+  assert(task->symbol_data_arr[obj_idx].total_size == 0);
   str8_list_push(arena, &task->symbol_data_arr[obj_idx], str8(buffer, buffer_size));
   
   ProfEnd();
@@ -2899,11 +2899,11 @@ THREAD_POOL_TASK_FUNC(lnk_write_module_data_task)
   // during multi-thread write
   MSF_UInt stream_pos = msf_stream_get_pos(task->msf, mod->sn);
   if (stream_pos != 0) {
-    Assert(!"stream must be at start position");
+    assert(!"stream must be at start position");
   }
   MSF_UInt stream_cap = msf_stream_get_cap(task->msf, mod->sn);
   if (stream_cap < module_data.total_size) {
-    Assert(!"not enough bytes in destination stream to copy module data");
+    assert(!"not enough bytes in destination stream to copy module data");
   }
   
   // write data
@@ -2982,7 +2982,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
         continue;
       }
       sect_number = rng_1u64_array_bsearch(task->image_section_virt_ranges, obj_sect_header->voff);
-      Assert(sect_number < task->image_section_virt_ranges.count);
+      assert(sect_number < task->image_section_virt_ranges.count);
       sect_data   = str8_zero();
       sect_off    = obj_sect_header->voff - task->image_section_virt_ranges.v[sect_number].min;
       data_crc    = 0;
@@ -2991,7 +2991,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
         continue;
       }
       sect_number = rng_1u64_array_bsearch(task->image_section_file_ranges, obj_sect_header->foff);
-      Assert(sect_number < task->image_section_file_ranges.count);
+      assert(sect_number < task->image_section_file_ranges.count);
       sect_data   = str8_substr(task->image_data, rng_1u64(obj_sect_header->foff, obj_sect_header->foff + obj_sect_header->fsize));
       sect_off    = obj_sect_header->foff - task->image_section_file_ranges.v[sect_number].min;
       data_crc    = update_crc32(0, sect_data.str, sect_data.size);
@@ -3153,7 +3153,7 @@ lnk_build_pdb(TP_Context               *tp,
     mod_arr[obj_idx] = dbi_push_module(pdb->dbi, obj->path, obj->lib_path);
 
     // we don't support symbol append
-    Assert(mod_arr[obj_idx]->sn == MSF_INVALID_STREAM_NUMBER);
+    assert(mod_arr[obj_idx]->sn == MSF_INVALID_STREAM_NUMBER);
   }
   ProfEnd();
 
@@ -3193,7 +3193,7 @@ lnk_build_pdb(TP_Context               *tp,
       for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
         String8List *globrefs = &globrefs_arr[obj_idx];
         str8_serial_begin(tp_arena->v[0], globrefs);
-        Assert(globrefs->total_size == 0);
+        assert(globrefs->total_size == 0);
         str8_serial_push_u32(tp_arena->v[0], globrefs, globrefs->total_size);
       }
       ProfEnd();
@@ -3486,7 +3486,7 @@ lnk_push_converted_codeview_type(Arena *arena, RDIB_TypeChunkList *list, RDIB_Ty
   type->final_idx = 0;
   type->itype     = itype;
 
-  Assert(itype_map[itype] == 0);
+  assert(itype_map[itype] == 0);
   itype_map[itype] = type;
 
   return type;
@@ -3620,7 +3620,7 @@ lnk_rdib_type_from_itype(LNK_ConvertTypesToRDI *task, CV_TypeIndex itype)
 
   if (itype < tpi_range.min) {
     // check for supported CodeView pointer formats:
-    AssertAlways(BitExtract(itype, 8, 8) == /* near   */  0x1 ||
+    ensure(BitExtract(itype, 8, 8) == /* near   */  0x1 ||
                  BitExtract(itype, 8, 8) == /* 32 bit */  0x4 ||
                  BitExtract(itype, 8, 8) == /* 64 bit */  0x6 ||
                  BitExtract(itype, 8, 8) == /* regular */ 0x0);
@@ -3898,7 +3898,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
       CV_TypeIndex   *itypes  = (CV_TypeIndex *) (arglist + 1);
 
       if (arglist->count * sizeof(CV_TypeIndex) + sizeof(CV_LeafArgList) > src.data.size) {
-        AssertAlways("error: ill-formed LF_ARGLIST");
+        ensure("error: ill-formed LF_ARGLIST");
         break;
       }
 
@@ -4022,7 +4022,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
                 member->method.vftable_offset = vftable_offset;
               }
             } else {
-              Assert(!"error: expected LF_METHODLIST");
+              assert(!"error: expected LF_METHODLIST");
             }
           }
         } break;
@@ -4255,7 +4255,7 @@ lnk_src_file_insert_or_update(LNK_SourceFileBucket **buckets, U64 cap, U64 hash,
       int cmp = u64_compar(&curr_bucket->obj_idx, &new_bucket->obj_idx);
       if (cmp <= 0) {
         // are we inserting bucket that was already inserterd?
-        Assert(cmp < 0);
+        assert(cmp < 0);
 
         // don't need to update, more recent value is in the bucket
         break;
@@ -4342,7 +4342,7 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
                                                                     cursor + sizeof(CV_C13Checksum) + header->len));
 
       // grab file path
-      Assert(header->name_off < string_table.size);
+      assert(header->name_off < string_table.size);
       String8 file_path = str8_cstring_capped(string_table.str + header->name_off, string_table.str + string_table.size);
 
       // normalize file path
@@ -4402,7 +4402,7 @@ lnk_find_container_type(String8 name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket
 
   RDIB_Type *container = 0;
   if (container_itype > 0) {
-    Assert(container_itype < tpi_itype_range.max);
+    assert(container_itype < tpi_itype_range.max);
     container = tpi_itype_map[container_itype];
   }
 
@@ -4482,21 +4482,21 @@ THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
     for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next) {
       CV_Symbol symbol = symbol_n->data;
       if (symbol.kind == CV_SymKind_COMPILE) {
-        AssertAlways(sizeof(CV_SymCompile) <= symbol.data.size);
+        ensure(sizeof(CV_SymCompile) <= symbol.data.size);
         CV_SymCompile *compile = (CV_SymCompile *)symbol.data.str;
         comp_info->arch          = compile->machine;
         comp_info->language      = CV_CompileFlags_Extract_Language(compile->flags);
         comp_info->compiler_name = str8_cstring_capped(compile + 1, symbol.data.str + symbol.data.size);
         goto exit;
       } else if (symbol.kind == CV_SymKind_COMPILE2) {
-        AssertAlways(sizeof(CV_SymCompile2) <= symbol.data.size);
+        ensure(sizeof(CV_SymCompile2) <= symbol.data.size);
         CV_SymCompile2 *compile2 = (CV_SymCompile2 *)symbol.data.str;
         comp_info->arch          = compile2->machine;
         comp_info->language      = CV_Compile2Flags_Extract_Language(compile2->flags);
         comp_info->compiler_name = str8_cstring_capped(compile2 + 1, symbol.data.str + symbol.data.size);
         goto exit;
       } else if (symbol.kind == CV_SymKind_COMPILE3) {
-        AssertAlways(sizeof(CV_SymCompile3) <= symbol.data.size);
+        ensure(sizeof(CV_SymCompile3) <= symbol.data.size);
         CV_SymCompile3 *compile3 = (CV_SymCompile3 *)symbol.data.str;
         comp_info->arch          = compile3->machine;
         comp_info->language      = CV_Compile3Flags_Extract_Language(compile3->flags);
@@ -4700,8 +4700,8 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
 
 #if 0
       if (scope->parent) {
-        Assert(virt_range.min >= scope->parent->ranges.first->v.min);
-        Assert(virt_range.max <= scope->parent->ranges.first->v.max);
+        assert(virt_range.min >= scope->parent->ranges.first->v.min);
+        assert(virt_range.max <= scope->parent->ranges.first->v.max);
       }
 #endif
 
@@ -4800,7 +4800,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
     } break;
     case CV_SymKind_LPROC32_ID:
     case CV_SymKind_GPROC32_ID: {
-      AssertAlways(!"linker converts *_ID symbols in post-process step, if we ever get to this case then we have a bug in post-process step");
+      ensure(!"linker converts *_ID symbols in post-process step, if we ever get to this case then we have a bug in post-process step");
     } break;
     case CV_SymKind_LPROC32:
     case CV_SymKind_GPROC32: {
@@ -4900,7 +4900,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
             }
           }
           if (params != 0) {
-            AssertAlways(params->kind == RDI_TypeKindExt_Params);
+            ensure(params->kind == RDI_TypeKindExt_Params);
             scope_stack->param_count  = params->params.count;
             scope_stack->regrel32_idx = 0;
           }
@@ -5148,11 +5148,11 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
       U64 parent_voff = 0;
       if (scope_stack != 0) {
         RDIB_Scope *proc_scope = scope_stack->proc->scope;
-        Assert(proc_scope->ranges.count == 1);
+        assert(proc_scope->ranges.count == 1);
         Rng1U64 scope_vrange = proc_scope->ranges.first->v;
         parent_voff = scope_vrange.min;
       } else {
-        Assert(!"S_INLINESITE doesn't have a parent procedure symbol");
+        assert(!"S_INLINESITE doesn't have a parent procedure symbol");
       }
 
       // parse binary annots
@@ -5172,7 +5172,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
             type  = lnk_type_from_itype(mfunc_id->itype, task->tpi_itype_range, task->tpi_itype_map, obj, symbol.kind, symbol.offset);
             owner = lnk_type_from_itype(mfunc_id->owner_itype, task->tpi_itype_range, task->tpi_itype_map, obj, symbol.kind, symbol.offset);
           } else {
-            Assert(!"invalid leaf size");
+            assert(!"invalid leaf size");
           }
         } else if (leaf.kind == CV_LeafKind_FUNC_ID) {
           if (sizeof(CV_LeafFuncId) <= leaf.data.size) {
@@ -5181,13 +5181,13 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
             type  = lnk_type_from_itype(func_id->itype, task->tpi_itype_range, task->tpi_itype_map, obj, symbol.kind, symbol.offset);
             owner = lnk_type_from_itype(func_id->scope_string_id, task->tpi_itype_range, task->tpi_itype_map, obj, symbol.kind, symbol.offset);
           } else {
-            Assert(!"invalid leaf size");
+            assert(!"invalid leaf size");
           }
         } else {
-          Assert(!"inlinee must pointer to LF_FUNC_ID or LF_MFUNC_ID");
+          assert(!"inlinee must pointer to LF_FUNC_ID or LF_MFUNC_ID");
         }
       } else {
-        Assert(!"out of bounds inlinee");
+        assert(!"out of bounds inlinee");
       }
 
       // fill out inline site
@@ -5422,7 +5422,7 @@ lnk_build_rad_debug_info(TP_Context               *tp,
     lnk_push_basic_itypes(scratch.arena, data_model, tpi_itype_map, &input.types);
     ProfEnd();
 
-    Assert(tpi_itype_map[0] == 0);
+    assert(tpi_itype_map[0] == 0);
     tpi_itype_map[0] = input.null_type;
 
     ProfBegin("Build UDT Name Hash Table");

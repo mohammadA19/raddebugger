@@ -470,8 +470,8 @@ lnk_res_string_id_is_before(void *raw_a, void *raw_b)
 {
   PE_Resource *a = raw_a;
   PE_Resource *b = raw_b;
-  Assert(a->id.type == COFF_ResourceIDType_String);
-  Assert(b->id.type == COFF_ResourceIDType_String);
+  assert(a->id.type == COFF_ResourceIDType_String);
+  assert(b->id.type == COFF_ResourceIDType_String);
   int is_before = str8_is_before_case_sensitive(&a->id.u.string, &b->id.u.string);
   return is_before;
 }
@@ -481,8 +481,8 @@ lnk_res_number_id_is_before(void *raw_a, void *raw_b)
 {
   PE_Resource *a = raw_a;
   PE_Resource *b = raw_b;
-  Assert(a->id.type == COFF_ResourceIDType_Number);
-  Assert(b->id.type == COFF_ResourceIDType_Number);
+  assert(a->id.type == COFF_ResourceIDType_Number);
+  assert(b->id.type == COFF_ResourceIDType_Number);
   int is_before = u16_is_before(&a->id.u.number, &b->id.u.number);
   return is_before;
 }
@@ -748,7 +748,7 @@ lnk_make_res_obj(Arena            *arena,
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena,1);
   
-  Assert(res_data_list.node_count == res_path_list.node_count);
+  assert(res_data_list.node_count == res_path_list.node_count);
   
   // load res files
   PE_ResourceDir *root_dir       = push_array(scratch.arena, PE_ResourceDir, 1);
@@ -1117,7 +1117,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
             // 35 00000000 0000000001 0    NULL NULL EXTERNAL         .weak.bar.default.foo
             //
             // In this case linker needs to parse .weak.bar.default.foo and search for bar and foo as well.
-            Assert("TODO: MinGW weak symbol");
+            assert("TODO: MinGW weak symbol");
           } else {
             COFF_ParsedSymbol tag = lnk_parsed_symbol_from_coff_symbol_idx(symbol->u.defined.obj, weak_ext->tag_index);
             member_symbol = lnk_symbol_table_search(task->symtab, LNK_SymbolScope_Lib, tag.name);
@@ -2041,8 +2041,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             ProfEnd();
           } break;
           case LNK_ManifestOpt_Null: {
-            Assert(input_manifest_path_list.node_count == 0);
-            Assert(manifest_dep_list.node_count == 0);
+            assert(input_manifest_path_list.node_count == 0);
+            assert(manifest_dep_list.node_count == 0);
           } break;
           case LNK_ManifestOpt_No: {
             // omit manifest generation
@@ -2772,7 +2772,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_common_block_symbols_task)
     if (interp == COFF_SymbolValueInterp_Common) {
       LNK_Symbol       *defn        = lnk_symbol_table_search(task->symtab, LNK_SymbolScope_Defined, symbol.name);
       COFF_ParsedSymbol defn_parsed = lnk_parsed_symbol_from_coff_symbol_idx(defn->u.defined.obj, defn->u.defined.symbol_idx);
-      Assert(coff_interp_symbol(defn_parsed.section_number, defn_parsed.value, defn_parsed.storage_class) == COFF_SymbolValueInterp_Regular);
+      assert(coff_interp_symbol(defn_parsed.section_number, defn_parsed.value, defn_parsed.storage_class) == COFF_SymbolValueInterp_Regular);
       if (defn) {
         if (obj->header.is_big_obj) {
           COFF_Symbol32 *symbol32  = symbol.raw_symbol;
@@ -3221,7 +3221,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
       }
 
       // read addend
-      Assert(reloc_value.size <= section_data.size);
+      assert(reloc_value.size <= section_data.size);
       U64 raw_addend = 0;
       str8_deserial_read(section_data, reloc->apply_off, &raw_addend, reloc_value.size, 1);
 
@@ -3317,7 +3317,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
       // TODO: report invalid symbol index
       continue;
     }
-    Assert(coff_symbol_idx < obj_symbols.count);
+    assert(coff_symbol_idx < obj_symbols.count);
     LNK_Symbol *symbol = obj_symbols.v + coff_symbol_idx;
     lnk_symbol_list_push(arena, symbol_list, symbol);
   }
@@ -3326,12 +3326,12 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
 internal String8
 lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
 {
-  Assert(stride >= sizeof(U32));
+  assert(stride >= sizeof(U32));
   
   // check for duplicates
 #if DEBUG
   for (U64 i = 1; i < voff_arr.count; ++i) {
-    Assert(voff_arr.[i-1] != voff_ptr[i]);
+    assert(voff_arr.[i-1] != voff_ptr[i]);
   }
 #endif
   
@@ -3414,7 +3414,7 @@ lnk_build_guard_tables(TP_Context       *tp,
         if (~chunk->flags & COFF_SectionFlag_CntCode) {
           continue;
         }
-        Assert(chunk->type == LNK_Chunk_Leaf);
+        assert(chunk->type == LNK_Chunk_Leaf);
         for (LNK_Reloc *reloc = obj->sect_reloc_list_arr[isect].first; reloc != 0; reloc = reloc->next) {
           LNK_Symbol *symbol = lnk_resolve_symbol(symtab, reloc->symbol);
           if (!LNK_Symbol_IsDefined(symbol->type)) {
@@ -3502,7 +3502,7 @@ lnk_build_guard_tables(TP_Context       *tp,
       }
       U64 chunk_voff = lnk_virt_off_from_chunk_ref(sect_id_map, chunk->ref);
       U64 symbol_voff = chunk_voff + defined_symbol->u.chunk_offset;
-      Assert(symbol_voff != 0);
+      assert(symbol_voff != 0);
       u64_list_push(scratch.arena, &voff_list, symbol_voff);
     }
     U64Array voff_arr = u64_array_from_list(scratch.arena, &voff_list);
@@ -3881,7 +3881,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
           if (is_page_present) {
             // page exists concat voffs
             LNK_BaseRelocPageNode *page = is_page_present->value_raw;
-            Assert(page != src_page);
+            assert(page != src_page);
             u64_list_concat_in_place(&page->v.entries_addr32, &src_page->v.entries_addr32);
             u64_list_concat_in_place(&page->v.entries_addr64, &src_page->v.entries_addr64);
           } else {
@@ -3946,7 +3946,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
 
         // write entry
         U64 rel_off = i->data - page->voff;
-        Assert(rel_off <= config->machine_page_size);
+        assert(rel_off <= config->machine_page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_HIGHLOW, rel_off);
       }
       
@@ -3960,7 +3960,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
         
         // write entry
         U64 rel_off = i->data - page->voff;
-        Assert(rel_off <= config->machine_page_size);
+        assert(rel_off <= config->machine_page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_DIR64, rel_off);
       }
       
@@ -3976,7 +3976,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
       // write header
       *page_voff_ptr  = safe_cast_u32(page->voff);
       *block_size_ptr = safe_cast_u32(block_size);
-      Assert(*block_size_ptr <= buf_size);
+      assert(*block_size_ptr <= buf_size);
 
       // push page 
       str8_list_push(arena, &result, str8(buf, buf_size));
@@ -4211,7 +4211,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
     scratch_end(scratch);
   }
 
-  Assert(result.total_size == expected_image_header_size);
+  assert(result.total_size == expected_image_header_size);
   ProfEnd();
   return result;
 }
@@ -4365,7 +4365,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 #if BUILD_DEBUG
     for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
       for (LNK_SectionContribChunk *chunk = sect_n->data.contribs.first; chunk != 0; chunk = chunk->next) {
-        AssertAlways(chunk->count == chunk->cap);
+        ensure(chunk->count == chunk->cap);
       }
     }
 #endif
@@ -4386,7 +4386,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
             chunks[cursor++] = chunk_n;
           }
         }
-        Assert(cursor == total_chunk_count);
+        assert(cursor == total_chunk_count);
       }
       task.u.sort_contribs.chunks = chunks;
       tp_for_parallel(tp, 0, total_chunk_count, lnk_sort_contribs_task, &task);
@@ -4674,7 +4674,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
             LNK_SectionContrib *sc = sc_chunk->v[sc_idx];
 
             // fill align bytes
-            Assert(sc->u.off >= prev_sc_opl);
+            assert(sc->u.off >= prev_sc_opl);
             U64 fill_size = sc->u.off - prev_sc_opl;
             MemorySet(image_data.str + sect->foff + prev_sc_opl, fill_byte, fill_size);
             prev_sc_opl = sc->u.off + lnk_size_from_section_contrib(sc);
@@ -4683,7 +4683,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
             {
               U64 cursor = 0;
               for (String8Node *data_n = &sc->first_data_node; data_n != 0; data_n = data_n->next) {
-                Assert(sc->u.off + data_n->string.size <= sect->vsize);
+                assert(sc->u.off + data_n->string.size <= sect->vsize);
                 MemoryCopy(image_data.str + sect->foff + sc->u.off + cursor, data_n->string.str, data_n->string.size);
                 cursor += data_n->string.size;
               }
@@ -4820,7 +4820,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         LNK_Section *tls_sect  = lnk_section_table_search(sectab, str8_lit(".tls"), PE_TLS_SECTION_FLAGS);
         for (LNK_SectionContribChunk *sc_chunk = tls_sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
           for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
-            Assert(IsPow2(sc_chunk->v[sc_idx]->align));
+            assert(IsPow2(sc_chunk->v[sc_idx]->align));
             tls_align = Max(tls_align, sc_chunk->v[sc_idx]->align);
           }
         }
@@ -4957,7 +4957,7 @@ lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_
       if (lnk_is_section_removed(config, section_name))       { continue; }
 
       if (sect->voff <= section_header->voff && section_header->voff < sect->voff + sect->vsize) {
-        Assert(obj_sect_idxs_count < max_contribs);
+        assert(obj_sect_idxs_count < max_contribs);
         obj_sect_idxs[obj_sect_idxs_count].v0 = obj_idx;
         obj_sect_idxs[obj_sect_idxs_count].v1 = sect_idx;
         obj_sect_idxs_count += 1;

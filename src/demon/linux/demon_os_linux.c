@@ -973,7 +973,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
         DEMON_Entity *process = thread->parent;
         // NOTE(allen): hitting this assert should never ever be possible, if our entities
         // are wired up correctly. it doesn't matter what ptrace or waitpid are doing.
-        Assert(process != 0);
+        assert(process != 0);
         
         // read register info
         U64 instruction_pointer = 0;

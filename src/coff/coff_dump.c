@@ -314,7 +314,7 @@ coff_print_relocs(Arena              *arena,
         }
         
         U64 raw_apply;
-        AssertAlways(apply_size <= sizeof(raw_apply));
+        ensure(apply_size <= sizeof(raw_apply));
         MemoryCopy(&raw_apply, raw_data.str + apply_foff, apply_size);
         S64 apply = extend_sign64(raw_apply, apply_size);
         

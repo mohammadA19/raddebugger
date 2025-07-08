@@ -205,7 +205,7 @@ pdb_hash_table_grow(PDB_HashTable *ht, U64 new_capacity)
     if (bit_array_is_bit_set(ht->present_bits, i)) {
       PDB_HashTableBucket *bucket = &ht->bucket_arr[i];
       B32 is_set = pdb_hash_table_try_set(&new_ht, bucket->key, bucket->value);
-      Assert(is_set);
+      assert(is_set);
     }
   }
   pdb_hash_table_release(ht);
@@ -259,7 +259,7 @@ pdb_hash_table_set(PDB_HashTable *ht, String8 key, String8 value)
 
   // set new item
   B32 is_set = pdb_hash_table_try_set(ht, key, value);
-  AssertAlways(is_set);
+  ensure(is_set);
 
   ProfEnd();
 }
@@ -317,14 +317,14 @@ pdb_hash_table_delete(PDB_HashTable *ht, String8 key)
 internal B32
 pdb_hash_table_is_present(PDB_HashTable *ht, U32 k)
 {
-  Assert(k < ht->max);
+  assert(k < ht->max);
   return bit_array_is_bit_set(ht->present_bits, k);
 }
 
 internal B32
 pdb_hash_table_is_deleted(PDB_HashTable *ht, U32 k)
 {
-  Assert(k < ht->max);
+  assert(k < ht->max);
   return bit_array_is_bit_set(ht->deleted_bits, k);
 }
 
@@ -336,7 +336,7 @@ pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, Stri
   for (U64 bucket_idx = 0; bucket_idx < ht->max; bucket_idx += 1) {
     if (bit_array_is_bit_set(ht->present_bits, bucket_idx)) {
       PDB_HashTableBucket *bucket = &ht->bucket_arr[bucket_idx];
-      Assert(keys_out->count < ht->count);
+      assert(keys_out->count < ht->count);
       keys_out->v[keys_out->count++] = bucket->key;
       values_out->v[values_out->count++] = bucket->value;
     }
@@ -347,7 +347,7 @@ pdb_hash_table_get_present_keys_and_values(Arena *arena, PDB_HashTable *ht, Stri
 
 PDB_HASH_TABLE_UNPACK_FUNC(pdb_named_stream_ht_unpack)
 {
-  Assert(!ud);
+  assert(!ud);
 
   U32 key_data_offset = max_U32;
   *key_value_cursor += str8_deserial_read_struct(key_value_data, *key_value_cursor, &key_data_offset);
@@ -368,7 +368,7 @@ PDB_HASH_TABLE_UNPACK_FUNC(pdb_named_stream_ht_unpack)
 
 PDB_HASH_TABLE_UNPACK_FUNC(pdb_hash_adj_ht_unpack)
 {
-  Assert(local_data.size == 0);
+  assert(local_data.size == 0);
 
   if (*key_value_cursor + sizeof(PDB_StringOffset) > key_value_data.size){
     return 1;
@@ -416,8 +416,8 @@ PDB_HASH_TABLE_UNPACK_FUNC(pdb_src_header_block_ht_unpack)
 
 PDB_HASH_TABLE_PACK_FUNC(pdb_named_stream_ht_pack)
 {
-  Assert(!ud);
-  Assert(value.size == sizeof(U32));
+  assert(!ud);
+  assert(value.size == sizeof(U32));
 
   U64 key_data_offset = local_data_srl->total_size;
   str8_serial_push_cstr(arena, local_data_srl, key);
@@ -429,13 +429,13 @@ PDB_HASH_TABLE_PACK_FUNC(pdb_named_stream_ht_pack)
 
 PDB_HASH_TABLE_PACK_FUNC(pdb_hash_adj_ht_pack)
 {
-  Assert(value.size == sizeof(CV_TypeIndex));
+  assert(value.size == sizeof(CV_TypeIndex));
 
   PDB_StringTable *strtab = (PDB_StringTable*)ud;
 
   PDB_StringIndex string_idx = PDB_INVALID_STRING_INDEX;
   B32 is_found = pdb_strtab_search(strtab, key, &string_idx);
-  Assert(is_found);
+  assert(is_found);
 
   PDB_StringOffset type_name_offset = pdb_strtab_string_to_offset(strtab, string_idx);
 
@@ -445,13 +445,13 @@ PDB_HASH_TABLE_PACK_FUNC(pdb_hash_adj_ht_pack)
 
 PDB_HASH_TABLE_PACK_FUNC(pdb_src_header_block_ht_pack)
 {
-  Assert(value.size == sizeof(PDB_SrcHeaderBlockEntry));
+  assert(value.size == sizeof(PDB_SrcHeaderBlockEntry));
 
   PDB_StringTable *strtab = (PDB_StringTable*)ud;
 
   PDB_StringIndex path_idx = 0;
   B32 is_found = pdb_strtab_search(strtab, key, &path_idx);
-  Assert(is_found);
+  assert(is_found);
 
   PDB_StringOffset path_offset = pdb_strtab_string_to_offset(strtab, path_idx);
 
@@ -663,7 +663,7 @@ pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
     PDB_StringTableBucket *bucket = strtab->bucket_array[bucket_idx];
     if (bucket) {
       // store string offset
-      Assert(bucket->offset + bucket->data.size <= strtab->size);
+      assert(bucket->offset + bucket->data.size <= strtab->size);
       bucket_offset_arr[bucket_idx] = bucket->offset;
 
       // write c string at bucket offset
@@ -773,7 +773,7 @@ pdb_strtab_add_cv_string_hash_table(PDB_StringTable *strtab, CV_StringHashTable 
       // TODO: precompute hashes in parallel
       U64 hash = pdb_strtab_hash(strtab, dst->data);
       B32 was_added = pdb_strtab_add_(strtab, hash, dst);
-      Assert(was_added);
+      assert(was_added);
     }
   }
 
@@ -817,12 +817,12 @@ pdb_strtab_grow(PDB_StringTable *strtab, U64 new_max)
     
     PDB_StringIndex new_istr;
     B32 is_bucket_pushed = pdb_strtab_try_add(&new_strtab, bucket->data, &new_istr);
-    Assert(is_bucket_pushed);
-    Assert(new_istr == istr);
+    assert(is_bucket_pushed);
+    assert(new_istr == istr);
     
     U32 new_ibucket = new_strtab.ibucket_array[new_istr];
     PDB_StringTableBucket *new_bucket = new_strtab.bucket_array[new_ibucket];
-    Assert(new_bucket->offset == bucket->offset);
+    assert(new_bucket->offset == bucket->offset);
   }
   
   *strtab = new_strtab;
@@ -841,7 +841,7 @@ pdb_strtab_add(PDB_StringTable *strtab, String8 string)
 
     // now we have enough slots for the new string
     is_pushed = pdb_strtab_try_add(strtab, string, &index);
-    AssertAlways(is_pushed);
+    ensure(is_pushed);
   }
   return index;
 }
@@ -888,7 +888,7 @@ pdb_strtab_string_from_offset(PDB_StringTable *strtab, PDB_StringOffset offset)
 internal PDB_StringOffset
 pdb_strtab_string_to_offset(PDB_StringTable *strtab, PDB_StringIndex stridx)
 {
-  Assert(stridx < strtab->bucket_max);
+  assert(stridx < strtab->bucket_max);
   U32 ibucket = strtab->ibucket_array[stridx];
   PDB_StringOffset offset = strtab->bucket_array[ibucket]->offset;
   return offset;
@@ -920,7 +920,7 @@ pdb_type_server_parse_from_data_v80(String8 data, PDB_TypeServerParse *parse)
 
   PDB_TpiHeader header; MemoryZeroStruct(&header);
   str8_deserial_read_struct(data, 0, &header);
-  Assert(header.version == PDB_TpiVersion_IMPV80);
+  assert(header.version == PDB_TpiVersion_IMPV80);
 
   if (header.ti_lo >= CV_MinComplexTypeIndex &&
       header.ti_lo <= header.ti_hi) {
@@ -958,7 +958,7 @@ pdb_type_server_parse_from_data(String8 data, PDB_TypeServerParse *parse_out)
   case PDB_TpiVersion_IMPV70:
     error = PDB_OpenTypeServerError_UNSUPPORTED_VERSION;
   break;
-  default: Assert(!"unknown TPI version"); break;
+  default: assert(!"unknown TPI version"); break;
   }
 
   return error;
@@ -968,7 +968,7 @@ internal PDB_TypeServer *
 pdb_type_server_alloc(U64 bucket_cap)
 {
   ProfBeginFunction();
-  AssertAlways(0x1000 <= bucket_cap && bucket_cap <= 0x40000);
+  ensure(0x1000 <= bucket_cap && bucket_cap <= 0x40000);
 
   Arena *arena = arena_alloc();
   PDB_TypeServer *ts  = push_array(arena, PDB_TypeServer, 1);
@@ -1032,7 +1032,7 @@ pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable 
   U8 *hash_buffer = push_array(scratch.arena, U8, header.hash_vals.size);
   msf_stream_seek(msf, header.hash_sn, header.hash_vals.off);
   MSF_UInt hash_buffer_size = msf_stream_read(msf, header.hash_sn, hash_buffer, header.hash_vals.size);
-  Assert(hash_buffer_size == header.hash_vals.size);
+  assert(hash_buffer_size == header.hash_vals.size);
   
   // rebuild type buckets
   for (U64 cursor = 0, leaf_idx = 0; 
@@ -1062,7 +1062,7 @@ pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable 
   if (hash_adj_parse_error == PDB_HashTableParseError_OUT_OF_BYTES) {
     pdb_hash_table_alloc(&ts->hash_adj, 16);
   } else {
-    Assert(hash_adj_parse_error == PDB_HashTableParseError_OK);
+    assert(hash_adj_parse_error == PDB_HashTableParseError_OK);
   }
 
   // grab keys and values
@@ -1094,7 +1094,7 @@ pdb_type_server_open_v80(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable 
       ts->buckets[hash] = curr;
     }
     
-    Assert(curr);
+    assert(curr);
   }
   
   exit:;
@@ -1124,7 +1124,7 @@ pdb_type_server_open(MSF_Context *msf, MSF_StreamNumber sn, PDB_StringTable *str
   case PDB_TpiVersion_IMPV70: {
     NotImplemented;
   } break;
-  default: Assert(!"unknown TPI version"); break;
+  default: assert(!"unknown TPI version"); break;
   }
   
   ProfEnd();
@@ -1142,10 +1142,10 @@ THREAD_POOL_TASK_FUNC(pdb_write_type_to_bucket_map_32_task)
   PDB_TypeServer *ts   = task->ts;
   PDB_TypeBucket *head = ts->buckets[bucket_idx];
   for (PDB_TypeBucket *bucket = head; bucket != 0; bucket = bucket->next) {
-    Assert(bucket->type_index >= ts->ti_lo);
-    Assert(bucket->type_index - ts->ti_lo < ts->leaf_list.node_count);
+    assert(bucket->type_index >= ts->ti_lo);
+    assert(bucket->type_index - ts->ti_lo < ts->leaf_list.node_count);
     CV_TypeIndex type_idx = bucket->type_index - ts->ti_lo;
-    Assert(task->map[type_idx] == 0);
+    assert(task->map[type_idx] == 0);
     task->map[type_idx] = bucket_idx32;
   }
 }
@@ -1228,8 +1228,8 @@ THREAD_POOL_TASK_FUNC(pdb_write_types_task)
   for (U64 lf_idx = range.min; lf_idx < range.max; node = node->next, lf_idx += 1) {
     if (lf_idx % PDB_TYPE_HINT_STEP == 0) {
       U64 off_idx = lf_idx / PDB_TYPE_HINT_STEP;
-      Assert(off_idx < task->hint_count);
-      Assert(cursor < PDB_TYPE_OFFSET_MAX);
+      assert(off_idx < task->hint_count);
+      assert(cursor < PDB_TYPE_OFFSET_MAX);
       task->hint_arr[off_idx].itype = task->ti_lo + lf_idx;
       task->hint_arr[off_idx].off   = (PDB_TypeOffset)cursor;
     }
@@ -1394,8 +1394,8 @@ pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, Strin
     CV_Leaf leaf = cv_leaf_from_string(raw_leaf);
 
     // make sure we push a complete UDT
-    Assert(cv_is_udt(leaf.kind));
-    Assert(!(cv_get_udt_info(leaf.kind, leaf.data).props & CV_TypeProp_FwdRef));
+    assert(cv_is_udt(leaf.kind));
+    assert(!(cv_get_udt_info(leaf.kind, leaf.data).props & CV_TypeProp_FwdRef));
 
     PDB_TypeBucket *bucket = &bucket_arr[leaf_idx];
     bucket->next       = 0;
@@ -1590,7 +1590,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
       CV_TypeIndexInfoList ti_info_list = cv_get_leaf_type_index_offsets(temp.arena, leaf->kind, leaf->data);
       
       for (CV_TypeIndexInfo *ti_info = ti_info_list.first; ti_info != 0; ti_info = ti_info->next) {
-        Assert(ti_info->offset + sizeof(CV_TypeIndex) <= leaf->data.size);
+        assert(ti_info->offset + sizeof(CV_TypeIndex) <= leaf->data.size);
         CV_TypeIndex *ti_ptr = (CV_TypeIndex *)(leaf->data.str + ti_info->offset);
         CV_TypeIndex external_ti = *ti_ptr;
         
@@ -1696,7 +1696,7 @@ pdb_info_parse_from_data(String8 data, PDB_InfoParse *parse_out)
   case PDB_InfoVersion_VC140: {
       NotImplemented;
   } break;
-  default: Assert(!"invalid info stream version"); break;
+  default: assert(!"invalid info stream version"); break;
   }
 }
 
@@ -1737,11 +1737,11 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
         case PDB_FeatureSig_MINIMAL_DEBUG_INFO: {
           flags |= PDB_FeatureFlag_MINIMAL_DBG_INFO;
         } break;
-        default: Assert(!"unknown feature sig"); break;
+        default: assert(!"unknown feature sig"); break;
         }
       }
     } else {
-      Assert(!"unable to open named stream hash table");
+      assert(!"unable to open named stream hash table");
     }
   }
 
@@ -1750,7 +1750,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
   MSF_StreamNumber strtab_sn = pdb_find_named_stream(&named_stream_ht, PDB_NAMES_STREAM_NAME);
   if (strtab_sn != MSF_INVALID_STREAM_NUMBER) {
     PDB_StringTableOpenError err = pdb_strtab_open(&strtab, msf, strtab_sn);
-    Assert(err == PDB_StringTableOpenError_OK);
+    assert(err == PDB_StringTableOpenError_OK);
   }
 
   // open injected source files
@@ -1760,7 +1760,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
     U64 src_header_block_stream_size = msf_stream_get_size(msf, src_header_block_sn);
     String8 src_header_block_data = msf_stream_read_block(scratch.arena, msf, src_header_block_sn, src_header_block_stream_size);
     PDB_HashTableParseError err = pdb_src_header_block_ht_from_data(&src_header_block_ht, src_header_block_data, &strtab, 0);
-    Assert(err == PDB_HashTableParseError_OK);
+    assert(err == PDB_HashTableParseError_OK);
   }
     
   // fill out info
@@ -1793,7 +1793,7 @@ pdb_info_build_src_header_block(PDB_InfoContext *info, MSF_Context *msf)
 
   // build the hash table
   String8 hash_table_data = pdb_data_from_src_header_block_ht(scratch.arena, &info->src_header_block_ht, &info->strtab);
-  AssertAlways(hash_table_data.size);
+  ensure(hash_table_data.size);
 
   // compute stream size 
   U64 src_header_stream_size = 0;
@@ -1811,9 +1811,9 @@ pdb_info_build_src_header_block(PDB_InfoContext *info, MSF_Context *msf)
   // write to stream
   B32 is_header_written = msf_stream_write_struct(msf, src_header_block_sn, &src_header);
   B32 is_hash_table_written = msf_stream_write_string(msf, src_header_block_sn, hash_table_data);
-  AssertAlways(is_header_written);
-  AssertAlways(is_hash_table_written);
-  AssertAlways(msf_stream_get_size(msf, src_header_block_sn) == src_header.stream_size);
+  ensure(is_header_written);
+  ensure(is_hash_table_written);
+  ensure(msf_stream_get_size(msf, src_header_block_sn) == src_header.stream_size);
 
   scratch_end(scratch);
 }
@@ -1913,7 +1913,7 @@ pdb_find_named_stream(PDB_HashTable *named_stream_ht, String8 name)
   MSF_StreamNumber result = MSF_INVALID_STREAM_NUMBER;
   String8 value;
   if (pdb_hash_table_get(named_stream_ht, name, &value)) {
-    Assert(value.size == sizeof(U32));
+    assert(value.size == sizeof(U32));
     result = *(MSF_StreamNumber*)value.str;
   }
   ProfEnd();
@@ -2034,7 +2034,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
     if (header.version == PDB_GsiVersion_V70) {
       Temp scratch = scratch_begin(0, 0);
       
-      Assert(header.bucket_data_size >= PDB_GSI_V70_BITMAP_SIZE); // TODO: error handle
+      assert(header.bucket_data_size >= PDB_GSI_V70_BITMAP_SIZE); // TODO: error handle
       
       U64 hash_record_count = header.hash_record_arr_size / sizeof(PDB_GsiHashRecord);
       PDB_GsiHashRecord *hash_record_array = push_array(scratch.arena, PDB_GsiHashRecord, hash_record_count);
@@ -2056,7 +2056,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
         for (U32 ibit = 0; ibit < PDB_GSI_V70_WORD_SIZE; ibit += 1) {
           B32 is_bucket_compressed = !!(bitmap[imask] & (1 << ibit));
           if (is_bucket_compressed) {
-            Assert(compressed_offset_ptr < compressed_offset_opl);
+            assert(compressed_offset_ptr < compressed_offset_opl);
             
             U32 next_compressed_offset = compressed_offset_max;
             if (compressed_offset_ptr + 1 < compressed_offset_opl) {
@@ -2065,13 +2065,13 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
             U32 compressed_count = (next_compressed_offset - *compressed_offset_ptr) / sizeof(PDB_GsiHashRecordOffsetCalc);
             
             U64 hash_record_index = *compressed_offset_ptr / sizeof(PDB_GsiHashRecordOffsetCalc);
-            Assert(hash_record_index < hash_record_count);
+            assert(hash_record_index < hash_record_count);
             
             for (PDB_GsiHashRecord *hash_record_ptr = &hash_record_array[hash_record_index], *hash_record_opl = hash_record_ptr + compressed_count;
                  hash_record_ptr < hash_record_opl;
                  hash_record_ptr += 1) {
-              Assert(hash_record_ptr->symbol_off > 0);
-              Assert(hash_record_ptr->cref > 0);
+              assert(hash_record_ptr->symbol_off > 0);
+              assert(hash_record_ptr->cref > 0);
               
               U32 symbol_off = hash_record_ptr->symbol_off -1;
               U8 *symbol_ptr = symbol_data.str + symbol_off;
@@ -2085,7 +2085,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
                 symbol.data = str8(data_ptr, *size_ptr - sizeof(*kind_ptr));
                 gsi_push(gsi, &symbol);
               } else {
-                Assert(!"invalid global codeview symbol");
+                assert(!"invalid global codeview symbol");
               }
             }
             
@@ -2096,7 +2096,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
       
       scratch_end(scratch);
     } else {
-      Assert(!"unknown GSI version");
+      assert(!"unknown GSI version");
     }
   }
   
@@ -2111,7 +2111,7 @@ gsi_open(MSF_Context *msf, MSF_StreamNumber sn, String8 symbol_data)
         String8 a = pdb_get_symbol_name(prev->symbol.kind, prev->symbol.data);
         String8 b = pdb_get_symbol_name(curr->symbol.kind, curr->symbol.data);
         int compar = string_compar(a, b, false);
-        Assert(compar >= 0);
+        assert(compar >= 0);
       }
     }
   }
@@ -2257,7 +2257,7 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_pub32)
 
   for (CV_SymbolNode *node = bucket_list.first; node != 0; node = node->next) {
     CV_Symbol *symbol = &node->data;
-    Assert(symbol->kind == CV_SymKind_PUB32);
+    assert(symbol->kind == CV_SymKind_PUB32);
 
     CV_SymPub32 *pub32    = (CV_SymPub32 *)symbol->data.str;
     U8          *str_ptr  = (U8 *)(pub32 + 1);
@@ -2278,8 +2278,8 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_pub32)
     buffer_cursor += serial_size;
   }
 
-  Assert(sort_idx == bucket_list.count);
-  Assert(buffer_cursor == buffer_size);
+  assert(sort_idx == bucket_list.count);
+  assert(buffer_cursor == buffer_size);
 
   // sort symbols by name within bucket
   gsi_record_sort_by_name(sort_record_arr, bucket_list.count);
@@ -2317,8 +2317,8 @@ THREAD_POOL_TASK_FUNC(gsi_serialize_symbols_task)
     buffer_cursor += serial_size;
   }
 
-  Assert(sort_idx == bucket_list.count);
-  Assert(buffer_cursor == buffer_size);
+  assert(sort_idx == bucket_list.count);
+  assert(buffer_cursor == buffer_size);
 
   // sort symbols by name within bucket
   gsi_record_sort_by_name(sort_record_arr, bucket_list.count);
@@ -2377,7 +2377,7 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
     CV_SymbolList bucket_list = gsi->bucket_arr[bucket_idx];
     if (bucket_list.count) {
       U64 word_idx = bucket_idx / gsi->word_size;
-      Assert(word_idx < bitmap_count);
+      assert(word_idx < bitmap_count);
       bitmap[word_idx] |= 1 << (bucket_idx % gsi->word_size);
       compressed_offset_arr[compressed_offset_count] = hash_idx * sizeof(PDB_GsiHashRecordOffsetCalc); // store in-memory offset for first bucket
       compressed_offset_count += 1;
@@ -2507,7 +2507,7 @@ gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode 
 internal void
 gsi_push_many_list(PDB_GsiContext *gsi, U64 count, U32 *hash_arr, CV_SymbolList *list)
 {
-  Assert(count == list->count);
+  assert(count == list->count);
 
   U64 hash_idx = 0;
   for (CV_SymbolNode *curr = list->first, *next = 0; curr != 0; curr = next, ++hash_idx) {
@@ -2717,7 +2717,7 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
     sizeof(imod_array[0]) * mod_count +
     sizeof(mod_file_count[0]) * mod_count +
     sizeof(file_name_offset_array[0]) * total_file_count;
-  Assert(dbi_header->file_info_size >= file_name_buffer_offset);
+  assert(dbi_header->file_info_size >= file_name_buffer_offset);
   U64 file_name_buffer_size = dbi_header->file_info_size - file_name_buffer_offset;
   char *file_name_buffer = push_array(arena, char, file_name_buffer_size + 1);
   msf_stream_read_array(msf, sn, &file_name_buffer[0], file_name_buffer_size);
@@ -2729,7 +2729,7 @@ dbi_open_file_info(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiH
     String8List *file_list = &file_info[mod_idx];
     U16 file_count = mod_file_count[mod_idx];
     for (U16 ifile = 0; ifile < file_count; ifile += 1, file_name_offset_ptr += 1) {
-      Assert(*file_name_offset_ptr <= file_name_buffer_size);
+      assert(*file_name_offset_ptr <= file_name_buffer_size);
       String8 file_path = str8_cstring(file_name_buffer + *file_name_offset_ptr);
       str8_list_push(arena, file_list, file_path);
     }
@@ -2807,7 +2807,7 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
       U64 contrib_count = dbi_header->sec_con_size / sizeof(PDB_DbiSectionContrib);
       PDB_DbiSectionContrib *src_contrib_array = push_array(scratch.arena, PDB_DbiSectionContrib, contrib_count);
       MSF_UInt sec_con_read = msf_stream_read_array(msf, sn, &src_contrib_array[0], contrib_count);
-      Assert(sec_con_read == sizeof(src_contrib_array[0]) * contrib_count);
+      assert(sec_con_read == sizeof(src_contrib_array[0]) * contrib_count);
       
       PDB_DbiSectionContribNode *dst_contrib_array = push_array_no_zero(arena, PDB_DbiSectionContribNode, contrib_count);
       for (U64 icontrib = 0; icontrib < contrib_count; icontrib += 1) {
@@ -2819,11 +2819,11 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
     case PDB_DbiSectionContribVersion_2: {
       NotImplemented;
     } break;
-    default: Assert(!"unknown section contrib version"); break;
+    default: assert(!"unknown section contrib version"); break;
     }
     
     // have we exhausted sec-con bytes?
-    Assert(sec_con_pos + dbi_header->sec_con_size == msf_stream_get_pos(msf, sn));
+    assert(sec_con_pos + dbi_header->sec_con_size == msf_stream_get_pos(msf, sn));
     scratch_end(scratch);
   }
   
@@ -2854,7 +2854,7 @@ internal void
 dbi_open_dbg_streams(MSF_StreamNumber *dbg_streams, MSF_Context *msf, MSF_StreamNumber sn, PDB_DbiHeader *dbi_header)
 {
   ProfBeginFunction();
-  Assert(dbi_header->dbg_header_size % sizeof(dbg_streams[0]) == 0); // TODO: error handle
+  assert(dbi_header->dbg_header_size % sizeof(dbg_streams[0]) == 0); // TODO: error handle
   MSF_UInt dbg_stream_pos = sizeof(PDB_DbiHeader) 
     + dbi_header->module_info_size
     + dbi_header->sec_con_size
@@ -2907,7 +2907,7 @@ dbi_open(MSF_Context *msf, MSF_StreamNumber sn)
     case PDB_DbiVersion_50:
     case PDB_DbiVersion_60:
     case PDB_DbiVersion_110: {
-      Assert(!"TODO: support for older DBI versions");
+      assert(!"TODO: support for older DBI versions");
     } break;
     case PDB_DbiVersion_70: {
       String8List *file_info = dbi_open_file_info(dbi->arena, msf, sn, &header);
@@ -3056,7 +3056,7 @@ dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
     header->src_file             = 0;
     header->pdb_file             = 0;
 
-    Assert(header->sn != MSF_INVALID_STREAM_NUMBER);
+    assert(header->sn != MSF_INVALID_STREAM_NUMBER);
     
     // push module info
     str8_serial_push_struct(arena, &module_info_list, header);
@@ -3217,7 +3217,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   for (U64 i = 1; i < sc_count; i += 1) {
     U64 a = ((U64)arr[i - 1].base.sec << 32) | arr[i - 1].base.sec_off;
     U64 b = ((U64)arr[i    ].base.sec << 32) | arr[i    ].base.sec_off;
-    Assert(a <= b);
+    assert(a <= b);
   }
 #endif
 
@@ -3519,11 +3519,11 @@ pdb_alloc_msf(U64 page_size)
   MSF_StreamNumber tpi_sn = msf_stream_alloc(msf);
   MSF_StreamNumber dbi_sn = msf_stream_alloc(msf);
   MSF_StreamNumber ipi_sn = msf_stream_alloc(msf);
-  Assert(null_sn == 0);
-  Assert(info_sn == PDB_FixedStream_Info);
-  Assert(dbi_sn == PDB_FixedStream_Dbi);
-  Assert(tpi_sn == PDB_FixedStream_Tpi);
-  Assert(ipi_sn == PDB_FixedStream_Ipi);
+  assert(null_sn == 0);
+  assert(info_sn == PDB_FixedStream_Info);
+  assert(dbi_sn == PDB_FixedStream_Dbi);
+  assert(tpi_sn == PDB_FixedStream_Tpi);
+  assert(ipi_sn == PDB_FixedStream_Ipi);
   ProfEnd();
   return msf;
 }

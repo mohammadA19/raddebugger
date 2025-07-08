@@ -329,7 +329,7 @@ t_write_entry_obj(void)
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("entry"), 0, text_sect);
   String8 obj = coff_obj_writer_serialize(obj_writer->arena, obj_writer);
   if (!t_write_file(str8_lit("entry.obj"), obj)) {
-    AssertAlways(!"unable to write entry obj");
+    ensure(!"unable to write entry obj");
   }
   coff_obj_writer_release(&obj_writer);
 }
@@ -2022,7 +2022,7 @@ t_import_export(void)
 
   #if OS_WINDOWS
   BOOL is_dir_set = SetDllDirectoryA(g_wdir.str);
-  AssertAlways(is_dir_set);
+  ensure(is_dir_set);
 
   HANDLE export_dll = LoadLibrary("export.dll");
   DWORD last_error = GetLastError();
@@ -2697,8 +2697,8 @@ t_comdat_associative_out_of_bounds(void)
       String8 string_table = str8_substr(obj, header.string_table_range);
       String8 symbol_table = str8_substr(obj, header.symbol_table_range);
       COFF_ParsedSymbol symbol = coff_parse_symbol(header, string_table, symbol_table, 3);
-      AssertAlways(str8_match(symbol.name, str8_lit(".aa"), 0));
-      AssertAlways(symbol.aux_symbol_count == 1);
+      ensure(str8_match(symbol.name, str8_lit(".aa"), 0));
+      ensure(symbol.aux_symbol_count == 1);
       COFF_Symbol16 *symbol16 = symbol.raw_symbol;
       COFF_SymbolSecDef *secdef = (COFF_SymbolSecDef *)(symbol16 + 1);
       secdef->number_lo = 321;
@@ -3315,7 +3315,7 @@ t_import_kernel32(void)
     launch_opts.path = g_wdir;
     str8_list_pushf(scratch.arena, &launch_opts.cmd_line, "%S/a.exe", g_wdir);
     OS_Handle handle = os_process_launch(&launch_opts);
-    AssertAlways(!os_handle_match(handle, os_handle_zero()));
+    ensure(!os_handle_match(handle, os_handle_zero()));
     int exit_code = -1;
     os_process_join_exit_code(handle, max_U64, &exit_code);
     os_process_detach(handle);

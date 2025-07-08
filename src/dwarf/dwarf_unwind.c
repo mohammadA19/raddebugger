@@ -191,12 +191,12 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
       switch (cell->rule) {
         default:
         {
-          Assert(!"UNEXPECTED-RULE");
+          assert(!"UNEXPECTED-RULE");
         } break;
         
         case DW_CFIRegisterRule_Undefined:
         {
-          Assert(!"UNDEFINED");
+          assert(!"UNDEFINED");
         } break;
         
         case DW_CFIRegisterRule_SameValue:
@@ -398,7 +398,7 @@ dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *
       } break;
       case DW_EhPtrEnc_FuncRel:
       {
-        Assert(!"TODO: need a sample to verify implementation");
+        assert(!"TODO: need a sample to verify implementation");
         pointer = ptr_ctx->func_vaddr + raw_pointer;
       } break;
     }

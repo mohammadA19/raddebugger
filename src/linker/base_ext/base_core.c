@@ -4,7 +4,7 @@
 internal U16
 safe_cast_u16x(U64 x)
 {
-  AssertAlways(x <= max_U16);
+  ensure(x <= max_U16);
   return (U16)x;
 }
 

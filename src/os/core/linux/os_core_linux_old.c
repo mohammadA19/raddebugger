@@ -37,7 +37,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
       p += written_amt;
       ptr += written_amt;
       
-      Assert(ptr <= opl);
+      assert(ptr <= opl);
       if (ptr == opl){
         node = node->next;
         if (node == 0){
@@ -765,7 +765,7 @@ internal LNX_Entity*
 lnx_alloc_entity(LNX_EntityKind kind){
   pthread_mutex_lock(&lnx_mutex);
   LNX_Entity *result = lnx_entity_free;
-  Assert(result != 0);
+  assert(result != 0);
   SLLStackPop(lnx_entity_free);
   pthread_mutex_unlock(&lnx_mutex);
   result->kind = kind;
@@ -1053,7 +1053,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
     
     case OS_SystemPath_Initial:
     {
-      Assert(lnx_initial_path.str != 0);
+      assert(lnx_initial_path.str != 0);
       result = 1;
       str8_list_push(arena, out, lnx_initial_path);
     }break;

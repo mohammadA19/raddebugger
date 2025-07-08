@@ -4,7 +4,7 @@
 internal LNK_SectionContrib *
 lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count)
 {
-  Assert(chunk->count + count <= chunk->cap);
+  assert(chunk->count + count <= chunk->cap);
   LNK_SectionContrib *result = chunk->v[chunk->count];
   chunk->count += count;
   return result;
@@ -14,7 +14,7 @@ internal LNK_SectionContrib *
 lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count)
 {
   U64 pos = ins_atomic_u64_add_eval(&chunk->count, count) - count;
-  Assert(pos + count <= chunk->cap);
+  assert(pos + count <= chunk->cap);
   LNK_SectionContrib *result = chunk->v[pos];
   return result;
 }

@@ -315,7 +315,7 @@ keys_from_hash_table_u32(Arena *arena, HashTable *ht)
   U32 *result = push_array_no_zero(arena, U32, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
+      assert(cursor < ht->count);
       result[cursor++] = n->v.key_u32;
     }
   }
@@ -328,7 +328,7 @@ keys_from_hash_table_u64(Arena *arena, HashTable *ht)
   U64 *result = push_array_no_zero(arena, U64, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
+      assert(cursor < ht->count);
       result[cursor++] = n->v.key_u64;
     }
   }
@@ -341,7 +341,7 @@ keys_from_hash_table_string(Arena *arena, HashTable *ht)
   String8 *result = push_array_no_zero(arena, String8, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
+      assert(cursor < ht->count);
       result[cursor++] = n->v.key_string;
     }
   }
@@ -354,7 +354,7 @@ key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
   KeyValuePair *pairs = push_array_no_zero(arena, KeyValuePair, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
+      assert(cursor < ht->count);
       pairs[cursor++] = n->v;
     }
   }
@@ -367,7 +367,7 @@ values_from_hash_table_raw(Arena *arena, HashTable *ht)
   void **result = push_array(arena, void *, ht->count);
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
-      Assert(cursor < ht->count);
+      assert(cursor < ht->count);
       result[cursor++] = n->v.value_raw;
     }
   }

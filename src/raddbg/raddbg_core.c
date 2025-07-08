@@ -7585,7 +7585,7 @@ rd_window_frame(void)
                     't',
                     'x',
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                 }
                 
@@ -7607,7 +7607,7 @@ rd_window_frame(void)
                     'f',
                     's',
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                 }
                 
@@ -7647,7 +7647,7 @@ rd_window_frame(void)
                     0,
                     0,
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                 }
                 
@@ -7677,7 +7677,7 @@ rd_window_frame(void)
                     'p',
                     's',
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                 }
                 
@@ -7698,7 +7698,7 @@ rd_window_frame(void)
                     'r',
                     's',
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                   scratch_end(scratch);
                 }
@@ -7731,7 +7731,7 @@ rd_window_frame(void)
                     'a',
                     'd',
                   };
-                  Assert(ArrayCount(codepoints) == ArrayCount(cmds));
+                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
                   rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
                 }
                 

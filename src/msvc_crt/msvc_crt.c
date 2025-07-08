@@ -241,7 +241,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *e
       // no action and/or object is associated with this type
     } break;
     default: {
-      Assert(!"unknown unwind entry type");
+      assert(!"unknown unwind entry type");
     } break;
   }
   
@@ -379,7 +379,7 @@ mscrt_parse_func_info_v4(Arena                     *arena,
   
   MSCRT_IP2State32V4 ip2state_map = {0};
   if (func_info.header & MSCRT_FuncInfoV4Flag_IsSeparated) {
-    Assert(!"TODO: separated ip2state map");
+    assert(!"TODO: separated ip2state map");
   } else {
     U64 ip_to_state_map_foff = coff_foff_from_voff(sections, section_count, func_info.ip_to_state_map_voff);
     mscrt_parse_ip2state_map_v4(arena, raw_data, ip_to_state_map_foff, func_voff, &ip2state_map);

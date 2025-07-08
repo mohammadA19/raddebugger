@@ -522,7 +522,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         }
         else
         {
-          Assert(!"unable to read PE Optional Header");
+          assert(!"unable to read PE Optional Header");
         }
       }break;
       case PE_PE32PLUS_MAGIC:
@@ -541,7 +541,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         }
         else
         {
-          Assert(!"unable to read PE Optional Plus Header");
+          assert(!"unable to read PE Optional Plus Header");
         }
       }break;
     }
@@ -563,7 +563,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
       }
       else
       {
-        Assert(!"unable to read data directory");
+        assert(!"unable to read data directory");
       }
     }
 
@@ -579,7 +579,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
       }
       else
       {
-        Assert(!"unable to read data directory");
+        assert(!"unable to read data directory");
       }
     }
 
@@ -610,7 +610,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         }
         else
         {
-          Assert(!"unable to read TLS Header 32");
+          assert(!"unable to read TLS Header 32");
         }
       }break;
       case COFF_MachineType_X64:
@@ -618,7 +618,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         if(str8_deserial_read_struct(data, tls_header_frng.min, &tls_header) != sizeof(tls_header))
         {
           MemoryZeroStruct(&tls_header);
-          Assert(!"unable to read TLS Header 64");
+          assert(!"unable to read TLS Header 64");
         }
       }break;
     }
@@ -835,7 +835,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
     block->entry_count       = entries_size / sizeof(U16);
     block->entries           = push_array(arena, U16, block->entry_count);
     U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
-    Assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
+    assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
     
     off += entry_read_size;
   }
@@ -1306,7 +1306,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
         U16 ordinal_nb = ordinal_table[i];
         
         // mark ordinal
-        Assert(ordinal_nb < ordinal_max);
+        assert(ordinal_nb < ordinal_max);
         is_ordinal_used[ordinal_nb] = 1;
         
         // get voff
@@ -1566,7 +1566,7 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 re
     PE_Resource *check_res = pe_resource_dir_search(dir, res->name);
     if (check_res != NULL) {
       // TODO: how do we handle name conflicts?
-      Assert(!"name collision");
+      assert(!"name collision");
       continue;
     }
     

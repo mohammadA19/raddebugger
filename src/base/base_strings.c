@@ -1020,14 +1020,14 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
   U64 increase_size = 0;
   if (align > 1){
     // NOTE(allen): assert is power of 2
-    Assert(((align - 1) & align) == 0);
+    assert(((align - 1) & align) == 0);
     U64 mask = align - 1;
     new_size += mask;
     new_size &= (~mask);
     increase_size = new_size - list->total_size;
   }
   local_persist const U8 zeroes_buffer[64] = {0};
-  Assert(increase_size <= ArrayCount(zeroes_buffer));
+  assert(increase_size <= ArrayCount(zeroes_buffer));
   SLLQueuePush(list->first, list->last, node);
   list->node_count += 1;
   list->total_size = new_size;
@@ -1707,7 +1707,7 @@ path_style_from_string(String8 string)
 internal String8
 string_from_path_style(PathStyle style)
 {
-  Assert(style < ArrayCount(g_path_style_map));
+  assert(style < ArrayCount(g_path_style_map));
   return g_path_style_map[style].string;
 }
 
@@ -2568,7 +2568,7 @@ str8_serial_write_to_dst(String8List *srl, void *out){
 
 internal U64
 str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
-  Assert(IsPow2(align));
+  assert(IsPow2(align));
   
   U64 pos = srl->total_size;
   U64 new_pos = AlignPow2(pos, align);

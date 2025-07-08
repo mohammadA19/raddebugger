@@ -2772,7 +2772,7 @@ ctrl_unwind_step__pe_x64(CTRL_Handle process_handle, CTRL_Handle module_handle, 
         // rjf: ret / rep; ret
         case 0xF3:
         {
-          // Assert(!"Hit me!");
+          // assert(!"Hit me!");
         }break;
         case 0xC3:
         {
@@ -2797,7 +2797,7 @@ ctrl_unwind_step__pe_x64(CTRL_Handle process_handle, CTRL_Handle module_handle, 
         // rjf: jmp nnnn
         case 0xE9:
         {
-          // Assert(!"Hit Me");
+          // assert(!"Hit Me");
           // TODO(allen): general idea: read the immediate, move the ip, leave the sp, done
           // we don't have any cases to exercise this right now. no guess implementation!
         }break;
@@ -2805,7 +2805,7 @@ ctrl_unwind_step__pe_x64(CTRL_Handle process_handle, CTRL_Handle module_handle, 
         // rjf: Sjmp n
         case 0xEB:
         {
-          // Assert(!"Hit Me");
+          // assert(!"Hit Me");
           // TODO(allen): general idea: read the immediate, move the ip, leave the sp, done
           // we don't have any cases to exercise this right now. no guess implementation!
         }break;

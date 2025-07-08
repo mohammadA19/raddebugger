@@ -14,7 +14,7 @@ void_list_count_nodes(VoidNode *head)
 internal void
 void_node_concat(VoidNode **head, VoidNode *node)
 {
-  Assert(*head != node);
+  assert(*head != node);
   node->next = *head;
   *head = node;
 }
@@ -22,7 +22,7 @@ void_node_concat(VoidNode **head, VoidNode *node)
 internal void
 void_node_concat_atomic(VoidNode **head, VoidNode *node)
 {
-  Assert(*head != node);
+  assert(*head != node);
   node->next = ins_atomic_ptr_eval_assign(head, node);
 }
 

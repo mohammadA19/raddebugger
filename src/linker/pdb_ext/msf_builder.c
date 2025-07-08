@@ -128,7 +128,7 @@ msf_stream_list_push(Arena *arena, MSF_StreamList *list)
 internal void
 msf_stream_list_remove(MSF_StreamList *list, MSF_StreamNode *node)
 {
-  Assert(list->count > 0);
+  assert(list->count > 0);
   DLLRemove(list->first, list->last, node);
   list->count -= 1;
 }
@@ -216,7 +216,7 @@ msf_page_list_push_extant_page_arr(Arena *arena, MSF_PageList *list,
   U64 data_max = page_data_list.count * node_size;
   for (MSF_PageNumber *pn_ptr = pn_arr, *pn_opl = pn_ptr + pn_count; pn_ptr < pn_opl; pn_ptr += 1) {
     // is page number valid?
-    Assert(*pn_ptr * page_size + page_size <= data_max);
+    assert(*pn_ptr * page_size + page_size <= data_max);
     
     // init page node
     MSF_PageNode *page_node = msf_page_list_push(arena, list);
@@ -237,7 +237,7 @@ msf_check_fpm_bits_for_page_list(MSF_PageDataList page_data_list, MSF_UInt page_
   for (MSF_PageNode *page_node = page_list.first; page_node != 0; page_node = page_node->next) {
     MSF_UInt state = msf_get_fpm_page_bit_state(page_data_list, page_size, active_fpm, page_node->pn);
     if (state != test_state) {
-      //Assert(!"state bit doesn't match");
+      //assert(!"state bit doesn't match");
     }
   }
 }
@@ -306,7 +306,7 @@ msf_get_fpm_page_count(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_
 internal MSF_PageNumberArray
 msf_get_fpm_page_arr(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_UInt active_fpm)
 {
-  Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
+  assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
   MSF_UInt fpm_interval_wrong = msf_get_fpm_interval_wrong(page_size);
   MSF_UInt page_count = msf_get_page_count_cap(page_data_list, page_size);
@@ -322,7 +322,7 @@ msf_get_fpm_page_arr(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt pag
 internal MSF_PageNumber
 msf_get_fpm_from_page_number(MSF_UInt page_size, MSF_PageNumber active_fpm, MSF_PageNumber pn)
 {
-  Assert(active_fpm == 1 || active_fpm == 2);
+  assert(active_fpm == 1 || active_fpm == 2);
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
   MSF_UInt fpm_interval_wrong = msf_get_fpm_interval_wrong(page_size);
   MSF_PageNumber fpm_pn = active_fpm;
@@ -449,7 +449,7 @@ msf_shrink(MSF_Context *msf, MSF_PageNumber new_page_count)
   
   U64 new_page_count64 = AlignPow2((U64)new_page_count, (U64)fpm_interval_correct);
   new_page_count = safe_cast_u32(new_page_count64);
-  Assert(new_page_count < msf->page_count);
+  assert(new_page_count < msf->page_count);
   
   // compute number of FPM pages to deallocate
   MSF_PageNumber prev_fpm_page_count_wrong = msf_get_fpm_page_count(msf->page_data_list, msf->page_size, fpm_interval_wrong);
@@ -514,7 +514,7 @@ msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
   for (MSF_UInt alloc_idx = 0; alloc_idx < alloc_count; ) {
     // get FPM bits
     MSF_UInt fpm_idx = msf->fpm_rover / fpm_interval_correct;
-    Assert(fpm_idx < fpm_pn_arr.count);
+    assert(fpm_idx < fpm_pn_arr.count);
     MSF_PageNumber fpm_pn = fpm_pn_arr.v[fpm_idx];
     U32Array fpm_data = msf_fpm_data_from_pn(msf->page_data_list, msf->page_size, fpm_pn);
     
@@ -569,7 +569,7 @@ msf_free_pn_arr(MSF_Context *msf, MSF_PageNumber *pn_arr, MSF_UInt pn_count)
   }
   
   // update context
-  Assert(msf->page_count >= pn_count);
+  assert(msf->page_count >= pn_count);
   msf->page_count -= pn_count;
 }
 
@@ -759,7 +759,7 @@ msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **p
   }
   
   MSF_UInt bytes_read = buffer_pos;
-  //Assert(bytes_read == buffer_size);
+  //assert(bytes_read == buffer_size);
   
   return bytes_read;
 }
@@ -787,7 +787,7 @@ msf_read(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_
 internal MSF_StreamNode * 
 msf_stream_alloc_(Arena *arena, MSF_StreamList *list)
 {
-  Assert(list->count < MSF_STREAM_NUMBER_MAX);
+  assert(list->count < MSF_STREAM_NUMBER_MAX);
   MSF_UInt sn = list->count;
   MSF_StreamNode *stream_node = msf_stream_list_push(arena, list);
   MSF_Stream *stream = &stream_node->data;
@@ -869,7 +869,7 @@ msf_stream_set_size(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt size)
   if (stream) {
     stream->size = Min(size, stream->page_list.count * msf->page_size);
   } else {
-    Assert(!"invalid stream number");
+    assert(!"invalid stream number");
   }
 }
 
@@ -934,7 +934,7 @@ msf_stream_seek(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt new_pos)
   if (stream) {
     is_seek_ok = msf_stream_seek__(msf, stream, new_pos);
   } else {
-    Assert(!"failed to stream seek");
+    assert(!"failed to stream seek");
   }
   return is_seek_ok;
 }
@@ -959,7 +959,7 @@ msf_stream_write__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt 
   B32 is_write_ok = 0;
 
   // are we writing over limit?
-  Assert((U64)stream->pos + (U64)buffer_size <= (U64)MSF_UINT_MAX);
+  assert((U64)stream->pos + (U64)buffer_size <= (U64)MSF_UINT_MAX);
   
   // make sure we have enough space to write buffer
   MSF_UInt stream_cap = msf_stream_get_cap__(msf, stream);
@@ -991,7 +991,7 @@ msf_stream_write__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt 
   stream->size = Max(stream->size, stream->pos);
 
 exit:;
-  Assert(is_write_ok);
+  assert(is_write_ok);
   return is_write_ok;
 }
 
@@ -1008,10 +1008,10 @@ msf_stream_reserve__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt res)
 
   if (cur < res) {
     is_ok = msf_stream_write__(msf, stream, 0, res);
-    AssertAlways(is_ok);
+    ensure(is_ok);
 
     is_ok = msf_stream_seek__(msf, stream, pos);
-    AssertAlways(is_ok);
+    ensure(is_ok);
   }
 
   ProfEnd();
@@ -1165,15 +1165,15 @@ msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn,
 
     ProfBeginV("Write Buffer Pre %M", pre_size);
     B32 is_pre_written = msf_stream_write__(msf, stream, pre_ptr, pre_size);
-    AssertAlways(is_pre_written);
+    ensure(is_pre_written);
     ProfEnd();
 
     // write buffer mid
     if (mid_size > 0) {
 	  Temp scratch = scratch_begin(0,0);
 	  
-      Assert(stream->pos % msf->page_size == 0);
-      Assert(mid_size % msf->page_size == 0);
+      assert(stream->pos % msf->page_size == 0);
+      assert(mid_size % msf->page_size == 0);
 
       MSF_WriteTask task;
       task.page_size      = msf->page_size;
@@ -1187,18 +1187,18 @@ msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn,
       // we rely on low-level msf_write__ to copy bytes which doesn't advance stream pos
       U64 after_mid = stream->pos + mid_size;
       B32 is_seek_ok = msf_stream_seek__(msf, stream, after_mid);
-      AssertAlways(is_seek_ok);
+      ensure(is_seek_ok);
 	  
       scratch_end(scratch);
     }
 
     ProfBeginV("Write Buffer End %M", end_size);
     B32 is_end_ok = msf_stream_write__(msf, stream, end_ptr, end_size);
-    AssertAlways(is_end_ok);
+    ensure(is_end_ok);
     ProfEnd();
 
     // did we write bytes correctly?
-    AssertAlways(stream->pos == expected_pos);
+    ensure(stream->pos == expected_pos);
   }
 
   ProfEnd();
@@ -1217,7 +1217,7 @@ internal MSF_UInt
 msf_stream_read__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt buffer_size)
 {
   // are we reading over limit?
-  Assert((U64)stream->pos + (U64)buffer_size <= (U64)MSF_UINT_MAX);
+  assert((U64)stream->pos + (U64)buffer_size <= (U64)MSF_UINT_MAX);
   
   // lookup page for current stream position
   if (!stream->pos_page) {
@@ -1308,7 +1308,7 @@ msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 b
 {
   U8 *block_buffer = push_array(arena, U8, block_size);
   MSF_UInt block_read = msf_stream_read(msf, sn, block_buffer, block_size);
-  Assert((U64)block_read == block_size);
+  assert((U64)block_read == block_size);
   String8 block = str8(block_buffer, block_size);
   return block;
 }
@@ -1346,8 +1346,8 @@ internal MSF_Context *
 msf_alloc__(MSF_UInt page_size, MSF_PageNumber active_fpm)
 {
   ProfBeginFunction();
-  Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
-  Assert(IsPow2(page_size));
+  assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
+  assert(IsPow2(page_size));
   
   Arena *arena = arena_alloc();
   
@@ -1367,13 +1367,13 @@ msf_alloc(MSF_UInt page_size, MSF_UInt active_fpm)
   
   // reserve first page for header
   msf->header_page_list = msf_alloc_pages(msf, 1);
-  Assert(msf->header_page_list.count > 0);
-  Assert(msf->header_page_list.first->pn == 0);
+  assert(msf->header_page_list.count > 0);
+  assert(msf->header_page_list.first->pn == 0);
   
   // reserve root page close to start of the file so we don't have to seek too far (not required)
   msf->root_page_list = msf_alloc_pages(msf, 1);
-  Assert(msf->root_page_list.count == 1);
-  Assert(msf->root_page_list.first->pn == 3);
+  assert(msf->root_page_list.count == 1);
+  assert(msf->root_page_list.first->pn == 3);
   
   return msf;
 }
@@ -1638,8 +1638,8 @@ msf_open(String8 data, MSF_Context **msf_out)
       break;
     }
     
-    Assert(msf->page_size == header->page_size);
-    Assert(msf->active_fpm == header->active_fpm);
+    assert(msf->page_size == header->page_size);
+    assert(msf->active_fpm == header->active_fpm);
     msf->page_count       = header->page_count;
     msf->page_data_list   = page_data_list;
     msf->header_page_list = header_page_list;
@@ -1696,7 +1696,7 @@ msf_build_stream_table_data(Arena *arena, MSF_StreamList *sectab, MSF_UInt page_
     // is page list correct?
     MSF_UInt expected_stream_page_count = msf_count_pages(page_size, stream->size);
     if (expected_stream_page_count > stream->page_list.count) {
-      Assert(!"invalid page list ");
+      assert(!"invalid page list ");
     }
     
     // store stream sizes
@@ -1705,21 +1705,21 @@ msf_build_stream_table_data(Arena *arena, MSF_StreamList *sectab, MSF_UInt page_
     // store stream pages
     for (MSF_PageNode *page_node = stream->page_list.first; page_node != 0; page_node = page_node->next) {
       // first three pages are reserved for header, FPM0, and FPM1
-      Assert(page_node->pn > 2); 
+      assert(page_node->pn > 2); 
       
       // it's not necessarily a bug to use interval FPM pages,
       // but for sake of correctness make sure there is no stream
       // aside from FPM that uses these pages
       //
       // also, actual FPM pages should be asserted on: pn % (msf->page_size * MSF_BITS_PER_CHAR)
-      Assert((page_node->pn % page_size) != 1);
-      Assert((page_node->pn % page_size) != 2);
+      assert((page_node->pn % page_size) != 1);
+      assert((page_node->pn % page_size) != 2);
       
       // is there a stream with too many page nodes?
-      Assert(stream_page_count < page_count);
+      assert(stream_page_count < page_count);
       
       // is this page number allocated?
-      //Assert(msf_get_fpm_page_bit_state(msf, page_node->pn) == MSF_PAGE_STATE_ALLOC);
+      //assert(msf_get_fpm_page_bit_state(msf, page_node->pn) == MSF_PAGE_STATE_ALLOC);
       
       stream_pages_arr[stream_page_count] = page_node->pn;
       stream_page_count += 1;
@@ -1794,7 +1794,7 @@ msf_build_root_directory(MSF_Context *msf)
   }
   
   MSF_UInt root_page_count = msf_count_pages(msf->page_size, pn_count * sizeof(pn_arr[0]));
-  Assert(root_page_count == 1);
+  assert(root_page_count == 1);
   
   msf_free_pages(msf, &msf->root_page_list); // TODO: page reuse
   msf->root_page_list = msf_alloc_pages(msf, root_page_count);
@@ -1890,7 +1890,7 @@ msf_get_save_size(MSF_Context *msf)
 #if 0
   MSF_PageNumber max_pn = msf_find_max_pn(msf->page_data_list, msf->page_size);
   U64 size = ((U64)max_pn + 1) * (U64)msf->page_size;
-  Assert(msf_count_pages(size, msf->page_size) == msf->page_count);
+  assert(msf_count_pages(size, msf->page_size) == msf->page_count);
 #else
   U64 size = (U64)msf->page_count * msf->page_size;
 #endif
@@ -1925,7 +1925,7 @@ msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
   }
 
   B32 is_save_ok = (cursor == buffer_size);
-  Assert(is_save_ok);
+  assert(is_save_ok);
 
   ProfEnd();
   return is_save_ok;
@@ -2112,11 +2112,11 @@ test_msf_open_save(void)
   {
     MSF_Context *msf = 0;
     MSF_Error err = msf_open(data, &msf);
-    Assert(err == MSF_Error_OK);
+    assert(err == MSF_Error_OK);
     U32 read0 = msf_stream_read_u32(msf, stream);
-    Assert(read0 == item0);
+    assert(read0 == item0);
     U32 read1 = msf_stream_read_u32(msf, stream);
-    Assert(read1 == item1);
+    assert(read1 == item1);
     data1 = msf_save_arena(scratch.arena, msf);
     msf_release(&msf);
   }
@@ -2124,11 +2124,11 @@ test_msf_open_save(void)
   {
     MSF_Context *msf = 0;
     MSF_Error err = msf_open(data, &msf);
-    Assert(err == MSF_Error_OK);
+    assert(err == MSF_Error_OK);
     U32 read0 = msf_stream_read_u32(msf, stream);
-    Assert(read0 == item0);
+    assert(read0 == item0);
     U32 read1 = msf_stream_read_u32(msf, stream);
-    Assert(read1 == item1);
+    assert(read1 == item1);
     msf_release(&msf);
   }
   
@@ -2141,7 +2141,7 @@ test_size_limit(void)
   Temp scratch = scratch_begin(0, 0);
   
   MSF_Context *msf = msf_alloc(8192, MSF_DEFAULT_FPM);
-  Assert(msf);
+  assert(msf);
   
   U64 c = (1 * 1024 * 1024 * 1024) / msf->page_size;
   U64 stream_count = 8;
@@ -2151,7 +2151,7 @@ test_size_limit(void)
   
   for (U64 stream_idx = 0; stream_idx < stream_count; stream_idx += 1) {
     MSF_StreamNumber stream = msf_stream_alloc(msf);
-    Assert(stream != MSF_INVALID_STREAM_NUMBER);
+    assert(stream != MSF_INVALID_STREAM_NUMBER);
     
     MemorySet(&data[0], 1 + stream_idx, data_size);
     
@@ -2159,7 +2159,7 @@ test_size_limit(void)
     
     for (U64 i = 0; i < c; i += 1) {
       B32 is_written = msf_stream_write(msf, stream, data, data_size);
-      Assert(is_written);
+      assert(is_written);
     }
   }
   
@@ -2172,13 +2172,13 @@ test_size_limit(void)
   stream_count -= 3;
   
   String8 msf_data = msf_save_arena(scratch.arena, msf);
-  Assert(msf_data.size > 0);
+  assert(msf_data.size > 0);
   msf_release(&msf);
   
   //os_write_file(str8_lit("test.msf"), msf_data);
   
   MSF_Error err = msf_open(msf_data, &msf);
-  Assert(err == MSF_Error_OK);
+  assert(err == MSF_Error_OK);
   
 #if 1
   U8 *buffer = push_array(scratch.arena, U8, data_size);
@@ -2189,10 +2189,10 @@ test_size_limit(void)
     
     for (U64 i = 0; i < c; i += 1) {
       MSF_UInt read_size = msf_stream_read(msf, sn, buffer, data_size);
-      Assert(read_size == data_size);
+      assert(read_size == data_size);
       
       int cmp = MemoryCompare(buffer, data, data_size);
-      Assert(cmp == 0);
+      assert(cmp == 0);
     }
   }
 #endif

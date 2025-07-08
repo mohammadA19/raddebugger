@@ -49,7 +49,7 @@ elf_bin_from_data(String8 data)
         }
       }
     } break;
-    default: Assert(!"invalid elf header"); break;
+    default: assert(!"invalid elf header"); break;
     } 
   }
   

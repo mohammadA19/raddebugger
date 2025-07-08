@@ -321,11 +321,11 @@ entry_point(CmdLine *cmdl)
         
         for(CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
           if (0 < header_node->v.sec_idx && header_node->v.sec_idx <= sections.count) {
-            Assert(c13_lines_idx < c13_lines_count);
+            assert(c13_lines_idx < c13_lines_count);
             U64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
             c13_lines[c13_lines_idx++] = cv_c13_line_array_from_data(arena, raw_lines, sec_voff, header_node->v);
           } else {
-            Assert(!"error: out of bounds section index"); 
+            assert(!"error: out of bounds section index"); 
           }
         }
       }
@@ -361,7 +361,7 @@ entry_point(CmdLine *cmdl)
         scope_level += 1;
       } else if (symbol.kind == CV_SymKind_END) {
         if (parent_voff) {
-          Assert(scope_level > 0);
+          assert(scope_level > 0);
           scope_level -= 1;
           if (scope_level == 0) {
             parent_voff = 0;

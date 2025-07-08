@@ -172,15 +172,8 @@
 #else
 # error Unknown trap intrinsic for this compiler.
 #endif
-
-#define AssertAlways(x) do{if(!(x)) {Trap();}}while(0)
-#if BUILD_DEBUG
-# define Assert(x) AssertAlways(x)
-#else
-# define Assert(x) (void)(x)
-#endif
-#define InvalidPath        Assert(!"Invalid Path!")
-#define NotImplemented     Assert(!"Not Implemented!")
+#define InvalidPath        assert(!"Invalid Path!")
+#define NotImplemented     assert(!"Not Implemented!")
 #define NoOp               ((void)0)
 #define StaticAssert(C, ID) global U8 Glue(ID, __LINE__)[(C)?1:-1]
 

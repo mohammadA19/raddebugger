@@ -187,7 +187,7 @@ dw_attrib_class_from_attrib(DW_Version ver, DW_Ext ext, DW_AttribKind k)
   if (result == DW_AttribClass_Null) {
     switch (ver) {
       case DW_Version_Null: break;
-      case DW_Version_1:    AssertAlways(!"DWARF V1 is not supported");      break;
+      case DW_Version_1:    ensure(!"DWARF V1 is not supported");      break;
       case DW_Version_2:    result = dw_attrib_class_from_attrib_v2(k); break;
       case DW_Version_3:    result = dw_attrib_class_from_attrib_v3(k); break;
       case DW_Version_4:    result = dw_attrib_class_from_attrib_v4(k); break;

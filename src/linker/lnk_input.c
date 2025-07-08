@@ -41,7 +41,7 @@ lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
   U64 i = 0;
   for (LNK_InputObj *n = list.first; n != 0; n = n->next, ++i) {
-    Assert(i < list.count);
+    assert(i < list.count);
     result[i] = n;
   }
   return result;
@@ -137,7 +137,7 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
   LNK_InputImportNode **result = push_array_no_zero(arena, LNK_InputImportNode *, list.count);
   U64 idx = 0;
   for (LNK_InputImportNode *node = list.first; node != 0; node = node->next) {
-    Assert(idx < list.count);
+    assert(idx < list.count);
     result[idx++] = node;
   }
   return result;

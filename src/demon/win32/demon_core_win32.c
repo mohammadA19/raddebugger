@@ -796,7 +796,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
       {
         DWORD avx_length = 0;
         U8* avx_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
-        Assert(avx_length == 16 * sizeof(REGS_Reg128));
+        assert(avx_length == 16 * sizeof(REGS_Reg128));
         
         REGS_Reg512 *zmm_d = &dst->zmm0;
         for(U32 n = 0; n < 16; n += 1, avx_s += sizeof(REGS_Reg128), zmm_d += 1)
@@ -818,7 +818,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
       {
         DWORD kmask_length = 0;
         U64* kmask_s = (U64*)LocateXStateFeature(ctx, XSTATE_AVX512_KMASK, &kmask_length);
-        Assert(kmask_length == 8 * sizeof(U64));
+        assert(kmask_length == 8 * sizeof(U64));
         
         REGS_Reg64 *kmask_d = &dst->k0;
         for(U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
@@ -828,7 +828,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
         
         DWORD avx512h_length = 0;
         U8* avx512h_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
-        Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
+        assert(avx512h_length == 16 * sizeof(REGS_Reg256));
         
         REGS_Reg512 *zmmh_d = &dst->zmm0;
         for(U32 n = 0; n < 16; n += 1, avx512h_s += sizeof(REGS_Reg256), zmmh_d += 1)
@@ -838,7 +838,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
         
         DWORD avx512_length = 0;
         U8* avx512_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
-        Assert(avx512_length == 16 * sizeof(REGS_Reg512));
+        assert(avx512_length == 16 * sizeof(REGS_Reg512));
         
         REGS_Reg512 *zmm_d = &dst->zmm16;
         for(U32 n = 0; n < 16; n += 1, avx512_s += sizeof(REGS_Reg512), zmm_d += 1)
@@ -1063,7 +1063,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
       {
         DWORD avx_length = 0;
         U8* avx_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
-        Assert(avx_length == 16 * sizeof(REGS_Reg128));
+        assert(avx_length == 16 * sizeof(REGS_Reg128));
         
         REGS_Reg512 *zmm_s = &src->zmm0;
         for(U32 n = 0; n < 16; n += 1, avx_d += sizeof(REGS_Reg128), zmm_s += 1)
@@ -1077,7 +1077,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
       {
         DWORD kmask_length = 0;
         U64* kmask_d = (U64*)LocateXStateFeature(ctx, XSTATE_AVX512_KMASK, &kmask_length);
-        Assert(kmask_length == 8 * sizeof(*kmask_d));
+        assert(kmask_length == 8 * sizeof(*kmask_d));
         
         REGS_Reg64 *kmask_s = &src->k0;
         for(U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
@@ -1087,7 +1087,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
         
         DWORD avx512h_length = 0;
         U8* avx512h_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM_H, &avx512h_length);
-        Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
+        assert(avx512h_length == 16 * sizeof(REGS_Reg256));
         
         REGS_Reg512 *zmmh_s = &src->zmm0;
         for(U32 n = 0; n < 16; n += 1, avx512h_d += sizeof(REGS_Reg256), zmmh_s += 1)
@@ -1097,7 +1097,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
         
         DWORD avx512_length = 0;
         U8* avx512_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX512_ZMM, &avx512_length);
-        Assert(avx512_length == 16 * sizeof(REGS_Reg512));
+        assert(avx512_length == 16 * sizeof(REGS_Reg512));
         
         REGS_Reg512 *zmm_s = &src->zmm16;
         for(U32 n = 0; n < 16; n += 1, avx512_d += sizeof(REGS_Reg512), zmm_s += 1)

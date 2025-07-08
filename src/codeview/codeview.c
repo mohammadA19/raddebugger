@@ -116,7 +116,7 @@ cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
       switch (encoded_reg)
       {
         case CV_EncodedFramePtrReg_None    : break;
-        case CV_EncodedFramePtrReg_StackPtr: AssertAlways(!"TODO: not tested, this is a guess");
+        case CV_EncodedFramePtrReg_StackPtr: ensure(!"TODO: not tested, this is a guess");
         fp_reg = CV_Regx86_ESP; break;
         case CV_EncodedFramePtrReg_FramePtr: fp_reg = CV_Regx86_EBP; break;
         case CV_EncodedFramePtrReg_BasePtr : fp_reg = CV_Regx86_EBX; break;

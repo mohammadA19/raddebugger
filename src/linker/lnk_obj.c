@@ -214,7 +214,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
         hash_table_push_u64_u64(scratch.arena, visited_sections, curr_section, 0);
 
         // follow association
-        Assert(section_number > 0);
+        assert(section_number > 0);
         curr_section = section_number-1;
       }
 
@@ -374,7 +374,7 @@ THREAD_POOL_TASK_FUNC(lnk_input_coff_symbol_table)
         } else if (symbol.storage_class == COFF_SymStorageClass_Section) {
           // lookup is performed during image patching step
         } else {
-          Assert(!"unexpected storage class on undefined symbol");
+          assert(!"unexpected storage class on undefined symbol");
         }
       }
     } break;

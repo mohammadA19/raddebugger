@@ -13,10 +13,10 @@ bit_array_init32(Arena *arena, U64 word_count)
 internal U64
 bit_array_scan_left_to_right32(U32Array bit_array, U64 lo, U64 hi, B32 state)
 {
-  Assert(lo < bit_array.count*32);
-  Assert(hi <= bit_array.count*32);
-  Assert(lo <= hi);
-  Assert(state == 0 || state == 1);
+  assert(lo < bit_array.count*32);
+  assert(hi <= bit_array.count*32);
+  assert(lo <= hi);
+  assert(state == 0 || state == 1);
   
   U64 word_lo = lo / 32;
   U64 word_hi = CeilIntegerDiv(hi, 32) - 1;
@@ -75,8 +75,8 @@ bit_array_scan_left_to_right32(U32Array bit_array, U64 lo, U64 hi, B32 state)
 internal U64
 bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
 {
-  Assert(lo <= hi);
-  Assert(state == 0 || state == 1);
+  assert(lo <= hi);
+  assert(state == 0 || state == 1);
   
   S64 word_lo = lo / 32;
   S64 word_hi = CeilIntegerDiv(hi, 32) - 1;
@@ -234,7 +234,7 @@ bit_array_find_next_set_bit32(U32Array bit_array)
 internal void
 bit_array_set_bit32(U32Array bit_array, U64 idx, B32 state)
 {
-  Assert(idx < bit_array.count*32);
+  assert(idx < bit_array.count*32);
   U64 word_idx = idx / 32;
   U64 bit_idx = idx % 32;
   if (state) {
@@ -255,7 +255,7 @@ bit_array_set_bit_range32(U32Array bit_array, Rng1U64 range, B32 state)
 internal U32
 bit_array_get_bit32(U32Array bit_array, U64 idx)
 {
-  Assert(idx < bit_array.count*32);
+  assert(idx < bit_array.count*32);
   U64 word_idx = idx / 32;
   U64 bit_idx = idx % 32;
   U32 bit = (bit_array.v[word_idx] & (1 << bit_idx)) >> bit_idx;
@@ -266,7 +266,7 @@ internal B32
 bit_array_is_bit_set(U32Array bit_arr, U64 bit_pos)
 {
   U64 word_idx = bit_pos / 32;
-  Assert(word_idx < bit_arr.count);
+  assert(word_idx < bit_arr.count);
   U32 word = bit_arr.v[word_idx];
   U64 bit_idx = bit_pos % 32;
   B32 is_set = !!(word & (1 << bit_idx));

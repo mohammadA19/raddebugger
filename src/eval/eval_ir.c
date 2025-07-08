@@ -2583,7 +2583,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
         U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
         U64 extra_byte_count = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
         U8 *next_ptr = ptr + 1 + extra_byte_count;
-        Assert(next_ptr <= opl);
+        assert(next_ptr <= opl);
         
         // rjf: fill bytecode
         ptr[0] = opcode;
@@ -2597,7 +2597,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
       {
         // rjf: compute bytecode advance
         U8 *next_ptr = ptr + 2 + op->value.u64;
-        Assert(next_ptr <= opl);
+        assert(next_ptr <= opl);
         
         // rjf: fill
         ptr[0] = opcode;
@@ -2613,7 +2613,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
         // rjf: compute bytecode advance
         U64 size = op->string.size;
         U8 *next_ptr = ptr + size;
-        Assert(next_ptr <= opl);
+        assert(next_ptr <= opl);
         
         // rjf: fill bytecode
         MemoryCopy(ptr, op->string.str, size);
@@ -2627,7 +2627,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
         // rjf: compute bytecode advance
         U64 extra_byte_count = sizeof(E_Space);
         U8 *next_ptr = ptr + 1 + extra_byte_count;
-        Assert(next_ptr <= opl);
+        assert(next_ptr <= opl);
         
         // rjf: fill bytecode
         ptr[0] = opcode;

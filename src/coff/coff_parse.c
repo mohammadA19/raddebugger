@@ -282,8 +282,8 @@ coff_interp_symbol(U32 section_number, U32 value, COFF_SymStorageClass storage_c
 internal void
 coff_parse_secdef(COFF_ParsedSymbol symbol, B32 is_big_obj, COFF_ComdatSelectType *selection_out, U32 *number_out, U32 *length_out, U32 *check_sum_out)
 {
-  Assert(coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class) == COFF_SymbolValueInterp_Regular);
-  Assert(symbol.aux_symbol_count > 0);
+  assert(coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class) == COFF_SymbolValueInterp_Regular);
+  assert(symbol.aux_symbol_count > 0);
 
   if (is_big_obj) {
     COFF_SymbolSecDef *sd = (COFF_SymbolSecDef *)((COFF_Symbol32 *)symbol.raw_symbol + 1);
@@ -303,8 +303,8 @@ coff_parse_secdef(COFF_ParsedSymbol symbol, B32 is_big_obj, COFF_ComdatSelectTyp
 internal COFF_SymbolWeakExt *
 coff_parse_weak_tag(COFF_ParsedSymbol symbol, B32 is_big_obj)
 {
-  Assert(coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class) == COFF_SymbolValueInterp_Weak);
-  Assert(symbol.aux_symbol_count > 0);
+  assert(coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class) == COFF_SymbolValueInterp_Weak);
+  assert(symbol.aux_symbol_count > 0);
 
   void *tag;
   if (is_big_obj) {
@@ -347,7 +347,7 @@ coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader *header)
 internal String8
 coff_resource_string_from_str16(Arena *arena, String16 string)
 {
-  AssertAlways(string.size <= max_U16);
+  ensure(string.size <= max_U16);
   U16 size16 = (U16)string.size;
   
   U16 *buffer = push_array_no_zero(arena, U16, size16 + 1);
@@ -426,7 +426,7 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
   COFF_ResourceHeaderPrefix prefix = {0};
   header_cursor += str8_deserial_read_struct(raw_header, header_cursor, &prefix);
   
-  Assert(prefix.header_size >= sizeof(COFF_ResourceHeaderPrefix));
+  assert(prefix.header_size >= sizeof(COFF_ResourceHeaderPrefix));
   raw_header = str8_prefix(raw_header, prefix.header_size);
   
   // header
@@ -439,7 +439,7 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
   header_cursor += str8_deserial_read_struct(raw_header, header_cursor, &res_out->language_id);
   header_cursor += str8_deserial_read_struct(raw_header, header_cursor, &res_out->version);
   header_cursor += str8_deserial_read_struct(raw_header, header_cursor, &res_out->characteristics);
-  Assert(prefix.header_size == header_cursor);
+  assert(prefix.header_size == header_cursor);
   
   // convert utf-16 resource ids to utf-8
   res_out->type = coff_utf8_resource_id_from_utf16(arena, &type_16);
@@ -447,7 +447,7 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
   
   // read data
   U64 data_read_size = str8_deserial_read_block(raw_res, off + prefix.header_size, prefix.data_size, &res_out->data);
-  Assert(prefix.data_size == data_read_size);
+  assert(prefix.data_size == data_read_size);
   
   // compute read size
   U64 read_size = Max(prefix.header_size, sizeof(prefix)) + AlignPow2(prefix.data_size, COFF_ResourceAlign);
@@ -465,7 +465,7 @@ coff_resource_list_from_data(Arena *arena, String8 data)
     SLLQueuePush(list.first, list.last, node);
     ++list.count;
   }
-  Assert(cursor == data.size);
+  assert(cursor == data.size);
   return list;
 }
 
@@ -646,7 +646,7 @@ coff_parse_archive_member_header(String8 raw_archive, U64 offset, COFF_ParsedArc
 internal COFF_ArchiveFirstMember
 coff_parse_first_archive_member(COFF_ArchiveMember *member)
 {
-  Assert(str8_match_lit("/", member->header.name, 0));
+  assert(str8_match_lit("/", member->header.name, 0));
   
   U64 cursor = 0;
   
@@ -757,7 +757,7 @@ coff_parse_import(String8 raw_archive_member, U64 offset, COFF_ParsedArchiveImpo
     data_cursor += str8_deserial_read_cstr(raw_data, data_cursor, &header_out->func_name);
     data_cursor += str8_deserial_read_cstr(raw_data, data_cursor, &header_out->dll_name);
     
-    Assert(header_out->func_name.size + header_out->dll_name.size + /* nulls */ 2 == header_out->data_size);
+    assert(header_out->func_name.size + header_out->dll_name.size + /* nulls */ 2 == header_out->data_size);
     U64 read_size = sizeof(*header) + header->data_size;
     return read_size;
   }

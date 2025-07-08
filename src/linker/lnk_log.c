@@ -46,7 +46,7 @@ lnk_log_type_from_string(String8 string)
     "LinkStats",     LNK_Log_LinkStats,
     "Timers",        LNK_Log_Timers,
   };
-  Assert(ArrayCount(map) == LNK_Log_Count);
+  assert(ArrayCount(map) == LNK_Log_Count);
 
   for (U64 i = 0; i < ArrayCount(map); ++i) {
     if (str8_match(str8_cstring(map[i].name), string, StringMatchFlag_CaseInsensitive)) {

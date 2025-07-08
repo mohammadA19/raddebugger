@@ -96,7 +96,7 @@ os_w32_unix_time_from_file_time(FILETIME file_time)
   U64 win32_time = ((U64)file_time.dwHighDateTime << 32) | file_time.dwLowDateTime;
   U64 unix_time64 = ((win32_time - 0x19DB1DED53E8000ULL) / 10000000);
   
-  Assert(unix_time64 <= max_U32);
+  assert(unix_time64 <= max_U32);
   U32 unix_time32 = (U32)unix_time64;
   
   return unix_time32;
