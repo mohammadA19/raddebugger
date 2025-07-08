@@ -1560,7 +1560,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
   
   // 2. reserve type leafs on main thread
   PDB_TypeLeaf *leaf_arr_arr[CV_TypeIndexSource_COUNT];
-  for (U64 source_idx = 0; source_idx < ArrayCount(leaf_list_arr); source_idx += 1) {
+  for (U64 source_idx = 0; source_idx < len(leaf_list_arr); source_idx += 1) {
     PDB_TypeServer *type_server = type_server_arr[source_idx];
     CV_LeafList input_leaf_list = leaf_list_arr[source_idx];
     PDB_TypeLeaf *leaf_arr = pdb_type_server_reserve(type_server, input_leaf_list.count);
@@ -1569,7 +1569,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
   
   // 3. populate type index map in parallel
   PDB_TypeIndexMap *ti_map = pdb_type_index_map_alloc();
-  for (U64 source_idx = 0; source_idx < ArrayCount(leaf_list_arr); source_idx += 1) {
+  for (U64 source_idx = 0; source_idx < len(leaf_list_arr); source_idx += 1) {
     CV_LeafList input_leaf_list = leaf_list_arr[source_idx];
     PDB_TypeLeaf *leaf_arr = leaf_arr_arr[source_idx];
     for (U64 leaf_idx = 0; leaf_idx < input_leaf_list.count; leaf_idx += 1) {
@@ -1580,7 +1580,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
   }
   
   // 4. patch type indices in parallel
-  for (U64 source_idx = 0; source_idx < ArrayCount(leaf_list_arr); source_idx += 1) {
+  for (U64 source_idx = 0; source_idx < len(leaf_list_arr); source_idx += 1) {
     CV_LeafList list = leaf_list_arr[source_idx];
     for (CV_LeafNode *node = list.first; node != 0; node = node->next) {
       Temp temp = temp_begin(scratch.arena);
@@ -1621,7 +1621,7 @@ pdb_load_types_from_leaf_list(PDB_TypeServer **type_server_arr, CV_LeafList leaf
   }
   
   // 5. push types to hash table on main thread
-  for (U64 source_idx = 0; source_idx < ArrayCount(leaf_list_arr); source_idx += 1) {
+  for (U64 source_idx = 0; source_idx < len(leaf_list_arr); source_idx += 1) {
     PDB_TypeServer *type_server = type_server_arr[source_idx];
     CV_LeafList list = leaf_list_arr[source_idx];
     PDB_TypeLeaf *leaf_arr = leaf_arr_arr[source_idx];
@@ -2676,7 +2676,7 @@ dbi_alloc(COFF_MachineType machine, U32 age)
   dbi->publics_sn = MSF_INVALID_STREAM_NUMBER;
   dbi->symbols_sn = MSF_INVALID_STREAM_NUMBER;
   pdb_strtab_alloc(&dbi->ec_names, 8);
-  for (U64 istream = 0; istream < ArrayCount(dbi->dbg_streams); istream += 1) {
+  for (U64 istream = 0; istream < len(dbi->dbg_streams); istream += 1) {
     dbi->dbg_streams[istream] = MSF_INVALID_STREAM_NUMBER;
   }
   ProfEnd();
@@ -3130,9 +3130,9 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
     PDB_DbiSectionContrib *sc = src_arr + i;
     count_arr[sc->base.sec] += 1;
 
-    U64 digit_8lo = (sc->base.sec_off >> 0) % ArrayCount(count_8lo);
-    U64 digit_8hi = (sc->base.sec_off >> 8) % ArrayCount(count_8hi);
-    U64 digit_16 = (sc->base.sec_off >> 16) % ArrayCount(count_16);
+    U64 digit_8lo = (sc->base.sec_off >> 0) % len(count_8lo);
+    U64 digit_8hi = (sc->base.sec_off >> 8) % len(count_8hi);
+    U64 digit_16 = (sc->base.sec_off >> 16) % len(count_16);
     count_8lo[digit_8lo] += 1;
     count_8hi[digit_8hi] += 1;
     count_16[digit_16] += 1;
@@ -3146,7 +3146,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   ProfBegin("Offsets");
   U32 offset_8lo = 0;
   U32 offset_8hi = 0;
-  for (U64 i = 1; i <= ArrayCount(count_8lo); i += 1) {
+  for (U64 i = 1; i <= len(count_8lo); i += 1) {
     U32 current_8lo = count_8lo[i - 1];
     U32 current_8hi = count_8hi[i - 1];
     count_8lo[i - 1] = offset_8lo;
@@ -3156,7 +3156,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   }
 
   U32 offset_16 = 0;
-  for (U64 i = 1; i <= ArrayCount(count_16); i += 1) {
+  for (U64 i = 1; i <= len(count_16); i += 1) {
     U32 current_16 = count_16[i - 1];
     count_16[i - 1] = offset_16;
     offset_16 += current_16;
@@ -3170,7 +3170,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   ProfBegin("Order 8 Lo");
   for (U64 i = 0; i < sc_count; i += 1) {
     PDB_DbiSectionContrib *sc = &src_arr[i];
-    U64 digit = (sc->base.sec_off >> 0) % ArrayCount(count_8lo);
+    U64 digit = (sc->base.sec_off >> 0) % len(count_8lo);
     dst_arr[count_8lo[digit]++] = *sc;
   }
   ProfEnd();
@@ -3178,7 +3178,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   ProfBegin("Order 8 Hi");
   for (U64 i = 0; i < sc_count; i += 1) {
     PDB_DbiSectionContrib *sc = &dst_arr[i];
-    U64 digit = (sc->base.sec_off >> 8) % ArrayCount(count_8hi);
+    U64 digit = (sc->base.sec_off >> 8) % len(count_8hi);
     src_arr[count_8hi[digit]++] = *sc;
   }
   ProfEnd();
@@ -3186,7 +3186,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
   ProfBegin("Order 16");
   for (U64 i = 0; i < sc_count; i += 1) {
     PDB_DbiSectionContrib *sc = &src_arr[i];
-    U64 digit = (sc->base.sec_off >> 16) % ArrayCount(count_16);
+    U64 digit = (sc->base.sec_off >> 16) % len(count_16);
     dst_arr[count_16[digit]++] = *sc;
   }
   ProfEnd();
@@ -3324,7 +3324,7 @@ dbi_build_dbg_header(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
   
   String8List dbg_header_srl = {0};
   str8_serial_begin(arena, &dbg_header_srl);
-  str8_serial_push_array(arena, &dbg_header_srl, dbi->dbg_streams, ArrayCount(dbi->dbg_streams));
+  str8_serial_push_array(arena, &dbg_header_srl, dbi->dbg_streams, len(dbi->dbg_streams));
   
   ProfEnd();
   return dbg_header_srl;
@@ -3541,7 +3541,7 @@ pdb_alloc(U64 page_size, COFF_MachineType machine, COFF_TimeStamp time_stamp, U3
   pdb->gsi   = gsi_alloc();
   pdb->psi   = psi_alloc();
   pdb->type_servers[CV_TypeIndexSource_NULL] = push_array(arena, PDB_TypeServer, 1);
-  for (U64 i = CV_TypeIndexSource_NULL + 1; i < ArrayCount(pdb->type_servers); ++i) {
+  for (U64 i = CV_TypeIndexSource_NULL + 1; i < len(pdb->type_servers); ++i) {
     pdb->type_servers[i] = pdb_type_server_alloc(PDB_TYPE_SERVER_HASH_BUCKET_COUNT_CURRENT);
   }
   ProfEnd();
@@ -3592,7 +3592,7 @@ pdb_release(PDB_Context **pdb_ptr)
   msf_release(&pdb->msf);
   dbi_release(&pdb->dbi);
   gsi_release(&pdb->gsi);
-  for (U64 i = 1; i < ArrayCount(pdb->type_servers); ++i) {
+  for (U64 i = 1; i < len(pdb->type_servers); ++i) {
 	pdb_type_server_release(&pdb->type_servers[i]);
   }
   arena_release(pdb->arena);

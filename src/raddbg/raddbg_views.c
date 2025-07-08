@@ -2861,7 +2861,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     UI_TagF("neutral") full_color = ui_color_from_name(str8_lit("text"));
     Vec4F32 zero_color = full_color;
     UI_TagF("weak") zero_color = ui_color_from_name(str8_lit("text"));
-    for(U64 idx = 0; idx < ArrayCount(byte_fstrs); idx += 1)
+    for(U64 idx = 0; idx < len(byte_fstrs); idx += 1)
     {
       U8 byte = (U8)idx;
       F32 pct = (byte/255.f);
@@ -3034,7 +3034,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               annotation->name_string = push_str8_copy(scratch.arena, local_name);
               annotation->kind_string = str8_lit("Local");
               annotation->type_string = e_type_string_from_key(scratch.arena, local_eval.irtree.type_key);
-              annotation->color = color_gen_table[(vaddr_rng.min/7)%ArrayCount(color_gen_table)];
+              annotation->color = color_gen_table[(vaddr_rng.min/7)%len(color_gen_table)];
               annotation->vaddr_range = vaddr_rng;
             }
             for(U64 vaddr = vaddr_rng_in_visible.min; vaddr < vaddr_rng_in_visible.max; vaddr += 1)
@@ -3090,7 +3090,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               {
                 annotation->name_string = push_str8_copy(scratch.arena, procedure_name);
                 annotation->kind_string = str8_lit("Procedure");
-                annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+                annotation->color = color_gen_table[(vaddr_range.min/7)%len(color_gen_table)];
                 annotation->vaddr_range = vaddr_range;
               }
               for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
@@ -3146,7 +3146,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               {
                 annotation->name_string = push_str8_copy(scratch.arena, gvar_name);
                 annotation->kind_string = str8_lit("Global");
-                annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+                annotation->color = color_gen_table[(vaddr_range.min/7)%len(color_gen_table)];
                 annotation->vaddr_range = vaddr_range;
               }
               for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
@@ -3188,7 +3188,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           {
             annotation->name_string = push_str8_copy(scratch.arena, name);
             annotation->kind_string = str8_lit("Annotation");
-            annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+            annotation->color = color_gen_table[(vaddr_range.min/7)%len(color_gen_table)];
             annotation->vaddr_range = vaddr_range;
           }
           for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)

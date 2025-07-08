@@ -1027,7 +1027,7 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
     increase_size = new_size - list->total_size;
   }
   local_persist const U8 zeroes_buffer[64] = {0};
-  assert(increase_size <= ArrayCount(zeroes_buffer));
+  assert(increase_size <= len(zeroes_buffer));
   SLLQueuePush(list->first, list->last, node);
   list->node_count += 1;
   list->total_size = new_size;
@@ -1694,7 +1694,7 @@ path_match_normalized(String8 left, String8 right)
 internal PathStyle
 path_style_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_path_style_map); ++i)
+  for (U64 i = 0; i < len(g_path_style_map); ++i)
   {
     if(str8_match(g_path_style_map[i].string, string, StringMatchFlag_CaseInsensitive))
     {
@@ -1707,7 +1707,7 @@ path_style_from_string(String8 string)
 internal String8
 string_from_path_style(PathStyle style)
 {
-  assert(style < ArrayCount(g_path_style_map));
+  assert(style < len(g_path_style_map));
   return g_path_style_map[style].string;
 }
 
@@ -2011,12 +2011,12 @@ read_only global struct
   { str8_lit_comp("Linux"),   OperatingSystem_Linux,   },
   { str8_lit_comp("Mac"),     OperatingSystem_Mac,     },
 };
-StaticAssert(ArrayCount(g_os_enum_map) == OperatingSystem_COUNT, g_os_enum_map_count_check);
+StaticAssert(len(g_os_enum_map) == OperatingSystem_COUNT, g_os_enum_map_count_check);
 
 internal OperatingSystem
 operating_system_from_string(String8 string)
 {
-  for(U64 i = 0; i < ArrayCount(g_os_enum_map); ++i)
+  for(U64 i = 0; i < len(g_os_enum_map); ++i)
   {
     if(str8_match(g_os_enum_map[i].string, string, StringMatchFlag_CaseInsensitive))
     {
@@ -2061,7 +2061,7 @@ internal String8
 string_from_operating_system(OperatingSystem os)
 {
   String8 result = g_os_enum_map[OperatingSystem_Null].string;
-  if(os < ArrayCount(g_os_enum_map))
+  if(os < len(g_os_enum_map))
   {
     result = g_os_enum_map[os].string;
   }
@@ -2455,7 +2455,7 @@ rgba_from_hex_string_4f32(String8 hex_string)
 {
   U8 byte_text[8] = {0};
   U64 byte_text_idx = 0;
-  for(U64 idx = 0; idx < hex_string.size && byte_text_idx < ArrayCount(byte_text); idx += 1)
+  for(U64 idx = 0; idx < hex_string.size && byte_text_idx < len(byte_text); idx += 1)
   {
     if(char_is_digit(hex_string.str[idx], 16))
     {

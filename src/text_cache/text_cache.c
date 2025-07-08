@@ -417,7 +417,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
             str8_lit_comp("xor_eq"),
           };
           String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
-          for(U64 keyword_idx = 0; keyword_idx < ArrayCount(cpp_keywords); keyword_idx += 1)
+          for(U64 keyword_idx = 0; keyword_idx < len(cpp_keywords); keyword_idx += 1)
           {
             if(str8_match(cpp_keywords[keyword_idx], token_string, 0))
             {
@@ -458,7 +458,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
-            for(U64 idx = 0; idx < ArrayCount(c_cpp_multichar_symbol_strings); idx += 1)
+            for(U64 idx = 0; idx < len(c_cpp_multichar_symbol_strings); idx += 1)
             {
               if(str8_match(str8_substr(token_string, r1u64(off, off+c_cpp_multichar_symbol_strings[idx].size)),
                             c_cpp_multichar_symbol_strings[idx],
@@ -704,7 +704,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
             str8_lit_comp("import"),
           };
           String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
-          for(U64 keyword_idx = 0; keyword_idx < ArrayCount(odin_keywords); keyword_idx += 1)
+          for(U64 keyword_idx = 0; keyword_idx < len(odin_keywords); keyword_idx += 1)
           {
             if(str8_match(odin_keywords[keyword_idx], token_string, 0))
             {
@@ -745,7 +745,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
-            for(U64 idx = 0; idx < ArrayCount(odin_multichar_symbol_strings); idx += 1)
+            for(U64 idx = 0; idx < len(odin_multichar_symbol_strings); idx += 1)
             {
               if(str8_match(str8_substr(token_string, r1u64(off, off+odin_multichar_symbol_strings[idx].size)),
                             odin_multichar_symbol_strings[idx],
@@ -989,7 +989,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
             str8_lit_comp("xx"),
           };
           String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
-          for(U64 keyword_idx = 0; keyword_idx < ArrayCount(jai_keywords); keyword_idx += 1)
+          for(U64 keyword_idx = 0; keyword_idx < len(jai_keywords); keyword_idx += 1)
           {
             if(str8_match(jai_keywords[keyword_idx], token_string, 0))
             {
@@ -1030,7 +1030,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
-            for(U64 idx = 0; idx < ArrayCount(jai_multichar_symbol_strings); idx += 1)
+            for(U64 idx = 0; idx < len(jai_multichar_symbol_strings); idx += 1)
             {
               if(str8_match(str8_substr(token_string, r1u64(off, off+jai_multichar_symbol_strings[idx].size)),
                             jai_multichar_symbol_strings[idx],
@@ -1280,7 +1280,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
             str8_lit_comp("while"),
           };
           String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
-          for(U64 keyword_idx = 0; keyword_idx < ArrayCount(zig_keywords); keyword_idx += 1)
+          for(U64 keyword_idx = 0; keyword_idx < len(zig_keywords); keyword_idx += 1)
           {
             if(str8_match(zig_keywords[keyword_idx], token_string, 0))
             {
@@ -1321,7 +1321,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
-            for(U64 idx = 0; idx < ArrayCount(zig_multichar_symbol_strings); idx += 1)
+            for(U64 idx = 0; idx < len(zig_multichar_symbol_strings); idx += 1)
             {
               if(str8_match(str8_substr(token_string, r1u64(off, off+zig_multichar_symbol_strings[idx].size)),
                             zig_multichar_symbol_strings[idx],

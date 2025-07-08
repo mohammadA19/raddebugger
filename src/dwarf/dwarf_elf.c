@@ -42,7 +42,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
   Temp scratch = scratch_begin(&arena, 1);
   
   DW_Input result                              = {0};
-  B32      sect_status[ArrayCount(result.sec)] = {0};
+  B32      sect_status[len(result.sec)] = {0};
   
   ELF_Shdr64Array sections = elf_shdr64_array_from_bin(scratch.arena, raw_image, &bin->hdr);
   

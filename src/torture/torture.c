@@ -1920,7 +1920,7 @@ t_import_export(void)
       "ord",
     };
 
-    for (U64 i = 0; i < ArrayCount(import_symbols); ++i) {
+    for (U64 i = 0; i < len(import_symbols); ++i) {
       COFF_ObjSymbol *symbol = coff_obj_writer_push_symbol_undef(obj_writer, str8_cstring(import_symbols[i]));
       coff_obj_writer_section_push_reloc_voff(obj_writer, data_sect, i * 4, symbol);
     }
@@ -1990,13 +1990,13 @@ t_import_export(void)
       };
       U64 match_count = 0;
       for (U64 i = 0; i < export_table.export_count; i += 1) {
-        for (U64 k = 0; k < ArrayCount(expected_symbols); k += 1) {
+        for (U64 k = 0; k < len(expected_symbols); k += 1) {
           if (str8_match(export_table.exports[i].name, expected_symbols[k], 0)) {
             match_count += 1;
           }
         }
       }
-      if (match_count != ArrayCount(expected_symbols)) {
+      if (match_count != len(expected_symbols)) {
         goto exit;
       }
     }
@@ -2008,13 +2008,13 @@ t_import_export(void)
       };
       U64 match_count = 0;
       for (U64 i = 0; i < export_table.export_count; i += 1) {
-        for (U64 k = 0; k < ArrayCount(expected_forwarders); k += 1) {
+        for (U64 k = 0; k < len(expected_forwarders); k += 1) {
           if (str8_match(export_table.exports[i].forwarder, expected_forwarders[k], 0)) {
             match_count += 1;
           }
         }
       }
-      if (match_count != ArrayCount(expected_forwarders)) {
+      if (match_count != len(expected_forwarders)) {
         goto exit;
       }
     }
@@ -2031,7 +2031,7 @@ t_import_export(void)
   }
 
   char *export_dll_procs[] = { "foo", "bar", "baz", "baf" };
-  for (U64 i = 0; i < ArrayCount(export_dll_procs); ++i) {
+  for (U64 i = 0; i < len(export_dll_procs); ++i) {
     void *proc = GetProcAddress(export_dll, export_dll_procs[i]);
     if (proc == 0) {
       goto exit;
@@ -2039,7 +2039,7 @@ t_import_export(void)
   }
 
   U16 export_dll_ordinals[] = { 5 };
-  for (U64 i = 0; i < ArrayCount(export_dll_ordinals); ++i) {
+  for (U64 i = 0; i < len(export_dll_ordinals); ++i) {
     void *proc = GetProcAddress(export_dll, MAKEINTRESOURCE(export_dll_ordinals[i]));
     if (proc == 0) {
       goto exit;
@@ -3174,7 +3174,7 @@ t_communal_var_vs_regular(void)
   if (linker_exit_code != 0) { goto exit; }
 
   char *exes[] = { "a.exe", "b.exe" };
-  for (U64 i = 0; i < ArrayCount(exes); i += 1) {
+  for (U64 i = 0; i < len(exes); i += 1) {
     String8             exe           = t_read_file(scratch.arena, str8_cstring(exes[i]));
     PE_BinInfo          pe            = pe_bin_info_from_data(scratch.arena, exe);
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(exe, pe.section_table_range).str;
@@ -3243,7 +3243,7 @@ t_communal_var_vs_regular_comdat(void)
   if (linker_exit_code != 0) { goto exit; }
 
   char *exes[] = { "a.exe", "b.exe" };
-  for (U64 i = 0; i < ArrayCount(exes); i += 1) {
+  for (U64 i = 0; i < len(exes); i += 1) {
     String8             exe           = t_read_file(scratch.arena, str8_cstring(exes[i]));
     PE_BinInfo          pe            = pe_bin_info_from_data(scratch.arena, exe);
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(exe, pe.section_table_range).str;
@@ -3749,7 +3749,7 @@ entry_point(CmdLine *cmdline)
   {
     if (cmd_line_has_flag(cmdline, str8_lit("list"))) {
       fprintf(stdout, "--- Targets --------------------------------------------------------------------\n");
-      for (U64 i = 0; i < ArrayCount(target_array); i += 1) {
+      for (U64 i = 0; i < len(target_array); i += 1) {
         fprintf(stdout, "  %s\n", target_array[i].label);
       }
       os_abort(0);
@@ -3843,7 +3843,7 @@ entry_point(CmdLine *cmdline)
   //
   {
     U64 max_label_size = 0;
-    for (U64 i = 0; i < ArrayCount(target_array); i += 1) { max_label_size = max(max_label_size, cstring8_length(target_array[i].label)); }
+    for (U64 i = 0; i < len(target_array); i += 1) { max_label_size = max(max_label_size, cstring8_length(target_array[i].label)); }
 
     U64 dots_min = 10;
     U64 dots_size = max_label_size+dots_min;
@@ -3853,8 +3853,8 @@ entry_point(CmdLine *cmdline)
     U64  target_indices_count;
     U64 *target_indices;
     if (target.node_count == 0) {
-      target_indices_count = ArrayCount(target_array);
-      target_indices       = push_array(scratch.arena, U64, ArrayCount(target_array));
+      target_indices_count = len(target_array);
+      target_indices       = push_array(scratch.arena, U64, len(target_array));
       for (U64 i = 0; i < target_indices_count; i += 1) { target_indices[i] = i; }
     } else {
       target_indices_count = 0;
@@ -3862,7 +3862,7 @@ entry_point(CmdLine *cmdline)
 
       for (String8Node *target_n = target.first; target_n != 0; target_n = target_n->next) {
         B32 is_target_unknown = 1;
-        for (U64 i = 0; i < ArrayCount(target_array); i += 1) {
+        for (U64 i = 0; i < len(target_array); i += 1) {
           if (str8_match(str8_cstring(target_array[i].label), target_n->string, 0)) {
             target_indices[target_indices_count++] = i;
             is_target_unknown = 0;

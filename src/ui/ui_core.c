@@ -436,7 +436,7 @@ ui_state_release(UI_State *state)
 {
   arena_release(state->string_hover_arena);
   arena_release(state->drag_state_arena);
-  for(int i = 0; i < ArrayCount(state->build_arenas); i += 1)
+  for(int i = 0; i < len(state->build_arenas); i += 1)
   {
     arena_release(state->build_arenas[i]);
   }
@@ -475,7 +475,7 @@ ui_get_selected_state(void)
 internal Arena *
 ui_build_arena(void)
 {
-  Arena *result = ui_state->build_arenas[ui_state->build_index%ArrayCount(ui_state->build_arenas)];
+  Arena *result = ui_state->build_arenas[ui_state->build_index%len(ui_state->build_arenas)];
   return result;
 }
 
@@ -1309,7 +1309,7 @@ ui_end_build(void)
     !ui_state->tooltip_can_overflow_window,
     1,
   };
-  for(U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
+  for(U64 idx = 0; idx < len(floating_roots); idx += 1)
   {
     UI_Box *root = floating_roots[idx];
     if(!ui_box_is_nil(root))
@@ -2907,11 +2907,11 @@ ui_signal_from_box(UI_Box *box)
         sig.f |= (UI_SignalFlag_LeftTripleClicked<<evt_mouse_button_kind);
       }
       MemoryCopy(&ui_state->press_timestamp_history_us[evt_mouse_button_kind][1], &ui_state->press_timestamp_history_us[evt_mouse_button_kind][0],
-                 sizeof(ui_state->press_timestamp_history_us[evt_mouse_button_kind][0]) * ArrayCount(ui_state->press_timestamp_history_us[evt_mouse_button_kind])-1);
+                 sizeof(ui_state->press_timestamp_history_us[evt_mouse_button_kind][0]) * len(ui_state->press_timestamp_history_us[evt_mouse_button_kind])-1);
       MemoryCopy(&ui_state->press_key_history[evt_mouse_button_kind][1], &ui_state->press_key_history[evt_mouse_button_kind][0],
-                 sizeof(ui_state->press_key_history[evt_mouse_button_kind][0]) * ArrayCount(ui_state->press_key_history[evt_mouse_button_kind])-1);
+                 sizeof(ui_state->press_key_history[evt_mouse_button_kind][0]) * len(ui_state->press_key_history[evt_mouse_button_kind])-1);
       MemoryCopy(&ui_state->press_pos_history[evt_mouse_button_kind][1], &ui_state->press_pos_history[evt_mouse_button_kind][0],
-                 sizeof(ui_state->press_pos_history[evt_mouse_button_kind][0]) * ArrayCount(ui_state->press_pos_history[evt_mouse_button_kind])-1);
+                 sizeof(ui_state->press_pos_history[evt_mouse_button_kind][0]) * len(ui_state->press_pos_history[evt_mouse_button_kind])-1);
       ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] = evt->timestamp_us;
       ui_state->press_key_history[evt_mouse_button_kind][0] = box->key;
       ui_state->press_pos_history[evt_mouse_button_kind][0] = evt_mouse;

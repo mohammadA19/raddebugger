@@ -926,7 +926,7 @@ coff_regular_archive_parse_from_data(String8 raw_archive)
   COFF_ArchiveMemberList list = {0};
   COFF_ArchiveMemberNode node_arr[3] = {0};
   U64 cursor = coff_regular_archive_member_iter_init(raw_archive);
-  for (U64 i = 0; i < ArrayCount(node_arr); ++i) {
+  for (U64 i = 0; i < len(node_arr); ++i) {
     COFF_ArchiveMemberNode *node = &node_arr[i];
     if (!coff_regular_archive_member_iter_next(raw_archive, &cursor, &node->data)) {
       break;
@@ -942,7 +942,7 @@ coff_thin_archive_parse_from_data(String8 raw_archive)
   COFF_ArchiveMemberList list = {0};
   COFF_ArchiveMemberNode node_arr[3] = {0};
   U64 cursor = coff_thin_archive_member_iter_init(raw_archive);
-  for (U64 i = 0; i < ArrayCount(node_arr); i += 1) {
+  for (U64 i = 0; i < len(node_arr); i += 1) {
     COFF_ArchiveMemberNode *node = &node_arr[i];
     if (!coff_thin_archive_member_iter_next(raw_archive, &cursor, &node->data)) {
       break;

@@ -523,7 +523,7 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
   COFF_ObjSection *rsrc2 = coff_obj_writer_push_section(obj_writer, str8_lit(".rsrc$02"), PE_RSRC2_SECTION_FLAGS, str8_zero());
   
   for (; stack; ) {
-    for (; stack->arr_idx < ArrayCount(stack->res_arr); stack->arr_idx += 1) {
+    for (; stack->arr_idx < len(stack->res_arr); stack->arr_idx += 1) {
       for (; stack->res_idx[stack->arr_idx] < stack->res_arr[stack->arr_idx].count; ) {
         U64          res_idx = stack->res_idx[stack->arr_idx]++;
         PE_Resource *res     = &stack->res_arr[stack->arr_idx].v[res_idx];
@@ -1607,12 +1607,12 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         ProfBegin("Input Libs");
 
         // input libs from command line only
-        U64 input_source_opl = ArrayCount(input_libs);
+        U64 input_source_opl = len(input_libs);
         if (config->no_default_libs) {
           input_source_opl = LNK_InputSource_Default;
         }
         
-        for (U64 input_source = 0; input_source < ArrayCount(input_libs); ++input_source) {
+        for (U64 input_source = 0; input_source < len(input_libs); ++input_source) {
           ProfBeginV("Input Source %S", lnk_string_from_input_source(input_source));
 
           Temp             temp                  = temp_begin(scratch.arena);
@@ -2143,7 +2143,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
     }
     {
       B32 have_pending_lib_inputs = 0;
-      for (U64 i = 0; i < ArrayCount(input_libs); ++i) {
+      for (U64 i = 0; i < len(input_libs); ++i) {
         if (input_libs[i].node_count) {
           have_pending_lib_inputs = 1;
           break;
@@ -2198,7 +2198,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
     }
     if (lnk_get_log_status(LNK_Log_InputLib)) {
       U64 total_input_size = 0;
-      for (U64 i = 0; i < ArrayCount(lib_index); ++i) {
+      for (U64 i = 0; i < len(lib_index); ++i) {
         LNK_LibList list = lib_index[i];
         for (LNK_LibNode *lib_n = list.first; lib_n != 0; lib_n = lib_n->next) { total_input_size += lib_n->data.data.size; }
       }
@@ -2213,7 +2213,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
   link_ctx.objs_count         = obj_list.count;
   link_ctx.objs               = lnk_array_from_obj_list(tp_arena->v[0], obj_list);
   link_ctx.export_symbol_list = export_symbol_list;
-  MemoryCopyTyped(&link_ctx.lib_index[0], &lib_index[0], ArrayCount(lib_index));
+  MemoryCopyTyped(&link_ctx.lib_index[0], &lib_index[0], len(lib_index));
 
   ProfEnd();
   scratch_end(scratch);
@@ -3462,7 +3462,7 @@ lnk_build_guard_tables(TP_Context       *tp,
 #if 0
   // push thunks
   LNK_SymbolScope scope_array[] = { LNK_SymbolScope_Defined, LNK_SymbolScope_Internal };
-  for (U64 iscope = 0; iscope < ArrayCount(scope_array); ++iscope) {
+  for (U64 iscope = 0; iscope < len(scope_array); ++iscope) {
     LNK_SymbolScope scope = scope_array[iscope];
     for (U64 ibucket = 0; ibucket < symtab->bucket_count[scope]; ++ibucket) {
       for (LNK_SymbolNode *symbol_node = symtab->buckets[scope][ibucket].first;
@@ -3484,7 +3484,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   
   // compute symbols virtual offsets
   U64Array guard_voff_arr_table[GUARD_COUNT];
-  for (U64 i = 0; i < ArrayCount(guard_symbol_list_table); ++i) {
+  for (U64 i = 0; i < len(guard_symbol_list_table); ++i) {
     U64List voff_list; MemoryZeroStruct(&voff_list);
     LNK_SymbolList symbol_list = guard_symbol_list_table[i];
     for (LNK_SymbolNode *symbol_node = symbol_list.first; symbol_node != NULL; symbol_node = symbol_node->next) {
@@ -3521,7 +3521,7 @@ lnk_build_guard_tables(TP_Context       *tp,
     { ".gljmp",   LNK_GLJMP_SYMBOL_NAME,   LNK_GLJMP_SECTION_FLAGS   },
     { ".gehcont", LNK_GEHCONT_SYMBOL_NAME, LNK_GEHCONT_SECTION_FLAGS },
   };
-  for (U64 i = 0; i < ArrayCount(sect_layout); ++i) {
+  for (U64 i = 0; i < len(sect_layout); ++i) {
     LNK_Section *sect = lnk_section_table_push(sectab, str8_cstring(sect_layout[i].name), sect_layout[i].flags);
   }
   

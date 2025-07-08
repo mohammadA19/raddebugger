@@ -262,7 +262,7 @@ e_token_array_from_text(Arena *arena, String8 text)
         {
           advance2 = 1;
           for(U64 multichar_symbol_idx = 0;
-              multichar_symbol_idx < ArrayCount(e_multichar_symbol_strings);
+              multichar_symbol_idx < len(e_multichar_symbol_strings);
               multichar_symbol_idx += 1)
           {
             String8 multichar_symbol_string = e_multichar_symbol_strings[multichar_symbol_idx];
@@ -439,7 +439,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
       U64 sep_idx = 0;
       for(E_Expr *child = expr->first;; child = child->next)
       {
-        if(sep_idx == ArrayCount(seps)-1 && child != &e_expr_nil)
+        if(sep_idx == len(seps)-1 && child != &e_expr_nil)
         {
           str8_list_push(arena, out, op_info->chain);
         }

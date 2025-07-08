@@ -24,14 +24,14 @@ String8 * r_ogl_shader_kind_pshad_src_table[2] =
 
 R_OGL_AttributeArray r_ogl_shader_kind_input_attributes_table[2] =
 {
-{ r_ogl_rect_input_attributes, ArrayCount(r_ogl_rect_input_attributes) },
+{ r_ogl_rect_input_attributes, len(r_ogl_rect_input_attributes) },
 { 0,  },
 };
 
 R_OGL_AttributeArray r_ogl_shader_kind_output_attributes_table[2] =
 {
-{ r_ogl_single_color_output_attributes, ArrayCount(r_ogl_single_color_output_attributes) },
-{ r_ogl_single_color_output_attributes, ArrayCount(r_ogl_single_color_output_attributes) },
+{ r_ogl_single_color_output_attributes, len(r_ogl_single_color_output_attributes) },
+{ r_ogl_single_color_output_attributes, len(r_ogl_single_color_output_attributes) },
 };
 
 C_LINKAGE_END

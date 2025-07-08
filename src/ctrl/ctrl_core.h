@@ -195,7 +195,7 @@ struct CTRL_EntityCtxRWStore
   CTRL_EntityCtx ctx;
   CTRL_Entity *free;
   CTRL_EntityHashNode *hash_node_free;
-  CTRL_EntityStringChunkNode *free_string_chunks[ArrayCount(ctrl_entity_string_bucket_chunk_sizes)];
+  CTRL_EntityStringChunkNode *free_string_chunks[len(ctrl_entity_string_bucket_chunk_sizes)];
 };
 
 typedef struct CTRL_EntityCtxLookupAccel CTRL_EntityCtxLookupAccel;

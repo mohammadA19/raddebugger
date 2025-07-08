@@ -139,7 +139,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
     os_lnx_gfx_state->wm_delete_window_atom,
     os_lnx_gfx_state->wm_sync_request_atom,
   };
-  XSetWMProtocols(os_lnx_gfx_state->display, w->window, protocols, ArrayCount(protocols));
+  XSetWMProtocols(os_lnx_gfx_state->display, w->window, protocols, len(protocols));
   {
     XSyncValue initial_value;
     XSyncIntToValue(&initial_value, 0);

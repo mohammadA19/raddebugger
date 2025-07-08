@@ -669,7 +669,7 @@ struct RD_State
   RD_DragDropState drag_drop_state;
   
   // rjf: cfg state
-  RD_NameChunkNode *free_name_chunks[ArrayCount(rd_name_bucket_chunk_sizes)];
+  RD_NameChunkNode *free_name_chunks[len(rd_name_bucket_chunk_sizes)];
   RD_Cfg *free_cfg;
   RD_Cfg *root_cfg;
   U64 cfg_id_slots_count;

@@ -184,7 +184,7 @@ hs_root_release(HS_Root root)
             // rjf: release reference to all hashes
             for(U64 history_idx = 0; history_idx < HS_KEY_HASH_HISTORY_STRONG_REF_COUNT && history_idx < n->hash_history_gen; history_idx += 1)
             {
-              U128 hash = n->hash_history[(n->hash_history_gen+history_idx)%ArrayCount(n->hash_history)];
+              U128 hash = n->hash_history[(n->hash_history_gen+history_idx)%len(n->hash_history)];
               U64 hash_slot_idx = hash.u64[1]%hs_shared->slots_count;
               U64 hash_stripe_idx = hash_slot_idx%hs_shared->stripes_count;
               HS_Slot *hash_slot = &hs_shared->slots[hash_slot_idx];
@@ -315,9 +315,9 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
     {
       if(key_node->hash_history_gen >= HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)
       {
-        key_expired_hash = key_node->hash_history[(key_node->hash_history_gen-HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)%ArrayCount(key_node->hash_history)];
+        key_expired_hash = key_node->hash_history[(key_node->hash_history_gen-HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)%len(key_node->hash_history)];
       }
-      key_node->hash_history[key_node->hash_history_gen%ArrayCount(key_node->hash_history)] = hash;
+      key_node->hash_history[key_node->hash_history_gen%len(key_node->hash_history)] = hash;
       key_node->hash_history_gen += 1;
     }
     
@@ -509,7 +509,7 @@ hs_hash_from_key(HS_Key key, U64 rewind_count)
     {
       if(hs_key_match(n->key, key) && n->hash_history_gen > 0 && n->hash_history_gen-1 >= rewind_count)
       {
-        result = n->hash_history[(n->hash_history_gen-1-rewind_count)%ArrayCount(n->hash_history)];
+        result = n->hash_history[(n->hash_history_gen-1-rewind_count)%len(n->hash_history)];
         break;
       }
     }

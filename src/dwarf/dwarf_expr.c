@@ -727,7 +727,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           U64         reg_idx = op - DW_ExprOp_BReg0;
           DW_RegsX64 *regs    = config->regs;
           if (regs != 0) {
-            if (reg_idx < ArrayCount(regs->r)) {
+            if (reg_idx < len(regs->r)) {
               U64 x = regs->r[reg_idx] + offset;
               dw_expr__stack_push(scratch.arena, &stack, x);
             } else {
@@ -751,7 +751,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           
           DW_RegsX64 *regs = config->regs;
           if (regs != 0) {
-            if (reg_idx < ArrayCount(regs->r)) {
+            if (reg_idx < len(regs->r)) {
               U64 x = regs->r[reg_idx] + offset;
               dw_expr__stack_push(scratch.arena, &stack, x);
             } else {

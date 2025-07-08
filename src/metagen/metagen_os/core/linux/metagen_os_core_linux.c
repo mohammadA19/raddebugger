@@ -1189,10 +1189,10 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
   {
     SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP,
   };
-  struct sigaction og_act[ArrayCount(signals_to_handle)] = {0};
+  struct sigaction og_act[len(signals_to_handle)] = {0};
   
   // rjf: attach handler info for all signals
-  for(U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
+  for(U32 i = 0; i < len(signals_to_handle); i += 1)
   {
     sigaction(signals_to_handle[i], &new_act, &og_act[i]);
   }
@@ -1201,7 +1201,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
   func(ptr);
   
   // rjf: reset handler info for all signals
-  for(U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
+  for(U32 i = 0; i < len(signals_to_handle); i += 1)
   {
     sigaction(signals_to_handle[i], &og_act[i], 0);
   }

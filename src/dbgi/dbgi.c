@@ -377,7 +377,7 @@ di_string_bucket_idx_from_string_size(U64 size)
     case 1<<8: {bucket_idx = 4;}break;
     case 1<<9: {bucket_idx = 5;}break;
     case 1<<10:{bucket_idx = 6;}break;
-    default:{bucket_idx = ArrayCount(((DI_Stripe *)0)->free_string_chunks)-1;}break;
+    default:{bucket_idx = len(((DI_Stripe *)0)->free_string_chunks)-1;}break;
   }
   return bucket_idx;
 }
@@ -392,7 +392,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
   // rjf: pull from bucket free list
   if(node != 0)
   {
-    if(bucket_idx == ArrayCount(stripe->free_string_chunks)-1)
+    if(bucket_idx == len(stripe->free_string_chunks)-1)
     {
       node = 0;
       DI_StringChunkNode *prev = 0;
@@ -425,7 +425,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
   if(node == 0)
   {
     U64 chunk_size = 0;
-    if(bucket_idx < ArrayCount(stripe->free_string_chunks)-1)
+    if(bucket_idx < len(stripe->free_string_chunks)-1)
     {
       chunk_size = 1<<(bucket_idx+4);
     }
@@ -690,7 +690,7 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
         }
         DLLPushBack(slot->first, slot->last, node);
         node->key = key;
-        for(U64 idx = 0; idx < ArrayCount(node->buckets); idx += 1)
+        for(U64 idx = 0; idx < len(node->buckets); idx += 1)
         {
           node->buckets[idx].arena = arena_alloc();
         }
@@ -707,8 +707,8 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
       {
         di_scope_touch_search_node__stripe_mutex_r_guarded(scope, stripe, node);
         items = node->items;
-        params_stale = (params_hash != node->buckets[node->bucket_read_gen%ArrayCount(node->buckets)].params_hash);
-        query_stale = !str8_match(query, node->buckets[node->bucket_read_gen%ArrayCount(node->buckets)].query, 0);
+        params_stale = (params_hash != node->buckets[node->bucket_read_gen%len(node->buckets)].params_hash);
+        query_stale = !str8_match(query, node->buckets[node->bucket_read_gen%len(node->buckets)].query, 0);
         results_stale = (node->bucket_read_gen < node->bucket_write_gen);
       }
       if(stale_out != 0)
@@ -717,15 +717,15 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
       }
       
       // rjf: if query or params stale -> request again
-      if((query_stale || params_stale) && node->bucket_read_gen <= node->bucket_write_gen && node->bucket_write_gen < node->bucket_read_gen + ArrayCount(node->buckets)-1)
+      if((query_stale || params_stale) && node->bucket_read_gen <= node->bucket_write_gen && node->bucket_write_gen < node->bucket_read_gen + len(node->buckets)-1)
       {
         node->bucket_write_gen += 1;
-        if(node->bucket_write_gen >= node->bucket_items_gen + ArrayCount(node->buckets))
+        if(node->bucket_write_gen >= node->bucket_items_gen + len(node->buckets))
         {
           MemoryZeroStruct(&node->items);
           MemoryZeroStruct(&items);
         }
-        U64 new_bucket_idx = node->bucket_write_gen%ArrayCount(node->buckets);
+        U64 new_bucket_idx = node->bucket_write_gen%len(node->buckets);
         arena_clear(node->buckets[new_bucket_idx].arena);
         node->buckets[new_bucket_idx].query = push_str8_copy(node->buckets[new_bucket_idx].arena, query);
         node->buckets[new_bucket_idx].params = di_search_params_copy(node->buckets[new_bucket_idx].arena, params);
@@ -1379,7 +1379,7 @@ di_search_thread__entry_point(void *p)
       {
         if(u128_match(n->key, key))
         {
-          U64 bucket_idx = n->bucket_write_gen%ArrayCount(n->buckets);
+          U64 bucket_idx = n->bucket_write_gen%len(n->buckets);
           n->work_refcount += 1;
           arena  = n->buckets[bucket_idx].arena;
           query  = push_str8_copy(scratch.arena, n->buckets[bucket_idx].query);
@@ -1602,7 +1602,7 @@ di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
 {
   ProfBeginFunction();
   store->gen += 1;
-  arena_clear(store->gen_arenas[store->gen%ArrayCount(store->gen_arenas)]);
+  arena_clear(store->gen_arenas[store->gen%len(store->gen_arenas)]);
   
   // rjf: hash parameters
   U64 params_hash = 5381;
@@ -1700,7 +1700,7 @@ di_match_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
     
     // rjf: touch node for this gen
     node->last_gen_touched = store->gen;
-    node->name = push_str8_copy(store->gen_arenas[store->gen%ArrayCount(store->gen_arenas)], name);
+    node->name = push_str8_copy(store->gen_arenas[store->gen%len(store->gen_arenas)], name);
     DLLRemove_NP(store->first_lru_match_name, store->last_lru_match_name, node, lru_next, lru_prev);
     DLLInsert_NP(store->first_lru_match_name, store->last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
     

@@ -117,7 +117,7 @@ cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_L
   // compute pad
   static U8 LEAF_PAD_ARR[] = { 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff };
   U64 pad_size = AlignPadPow2(data.size, align);
-  assert(pad_size <= ArrayCount(LEAF_PAD_ARR));
+  assert(pad_size <= len(LEAF_PAD_ARR));
 
   // write header
   CV_LeafHeader *header_ptr = (CV_LeafHeader *)(buffer + buffer_cursor);
@@ -478,7 +478,7 @@ cv_parse_debug_s(Arena *arena, String8 raw_debug_s)
 internal void
 cv_debug_s_concat_in_place(CV_DebugS *dst, CV_DebugS *src)
 {
-  for (U64 sub_sect_idx = 0; sub_sect_idx < ArrayCount(dst->data_list); sub_sect_idx += 1) {
+  for (U64 sub_sect_idx = 0; sub_sect_idx < len(dst->data_list); sub_sect_idx += 1) {
     str8_list_concat_in_place(&dst->data_list[sub_sect_idx], &src->data_list[sub_sect_idx]);
   }
 }
@@ -511,7 +511,7 @@ cv_data_c13_from_debug_s(Arena *arena, CV_DebugS *debug_s, B32 write_sig)
     CV_C13SubSectionKind_XfgHashVirtual,
   };
   
-  for (U64 layout_idx = 0; layout_idx < ArrayCount(layout_arr); layout_idx += 1) {
+  for (U64 layout_idx = 0; layout_idx < len(layout_arr); layout_idx += 1) {
     CV_C13SubSectionKind kind = layout_arr[layout_idx];
     String8List *data = cv_sub_section_ptr_from_debug_s(debug_s, kind);
     if (data->total_size > 0) {

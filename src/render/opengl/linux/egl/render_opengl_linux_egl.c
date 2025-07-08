@@ -118,7 +118,7 @@ r_ogl_os_window_equip(OS_Handle window)
           
           EGL_NONE,
         };
-        if(!eglChooseConfig(r_ogl_lnx_state->display, options, configs, ArrayCount(configs), &configs_count) || configs_count == 0)
+        if(!eglChooseConfig(r_ogl_lnx_state->display, options, configs, len(configs), &configs_count) || configs_count == 0)
         {
           os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't choose EGL configuration."));
           os_abort(1);

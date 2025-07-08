@@ -232,7 +232,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
         str8_lit_comp(".rsrc"),
         str8_lit_comp(".reloc"),
       };
-      for (U64 i = 0; i < ArrayCount(illegal_merge_sections); i += 1) {
+      for (U64 i = 0; i < len(illegal_merge_sections); i += 1) {
         if (str8_match(merge->src, illegal_merge_sections[i], 0)) {
           lnk_error(LNK_Error_IllegalSectionMerge, "illegal to merge %S with %S", illegal_merge_sections[i], merge->dst);
         }

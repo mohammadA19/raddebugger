@@ -207,7 +207,7 @@ os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   U8 split_chars[] = {' '};
-  String8List parts = str8_split(scratch.arena, string, split_chars, ArrayCount(split_chars), 0);
+  String8List parts = str8_split(scratch.arena, string, split_chars, len(split_chars), 0);
   OS_Handle handle = {0};
   if(parts.node_count != 0)
   {

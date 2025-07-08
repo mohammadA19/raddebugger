@@ -456,7 +456,7 @@ entry_point(CmdLine *cmd_line)
         GetStdHandle(STD_OUTPUT_HANDLE),
         GetStdHandle(STD_ERROR_HANDLE),
       };
-      for(U64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
+      for(U64 idx = 0; idx < len(output_handles); idx += 1)
       {
         B32 duplicate = 0;
         for(U64 idx2 = 0; idx2 < idx; idx2 += 1)
@@ -472,7 +472,7 @@ entry_point(CmdLine *cmd_line)
           output_handles[idx] = 0;
         }
       }
-      for(U64 idx = 0; idx < ArrayCount(output_handles); idx += 1)
+      for(U64 idx = 0; idx < len(output_handles); idx += 1)
       {
         if(output_handles[idx] != 0)
         {

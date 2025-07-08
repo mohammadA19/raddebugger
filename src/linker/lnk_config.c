@@ -199,7 +199,7 @@ global read_only struct
 internal LNK_CmdSwitchType
 lnk_cmd_switch_type_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_cmd_switch_map); i += 1) {
+  for (U64 i = 0; i < len(g_cmd_switch_map); i += 1) {
     if (str8_match_cstr(g_cmd_switch_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
       return g_cmd_switch_map[i].type;
     }
@@ -210,7 +210,7 @@ lnk_cmd_switch_type_from_string(String8 name)
 internal LNK_CmdSwitch *
 lnk_cmd_switch_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_cmd_switch_map); i += 1) {
+  for (U64 i = 0; i < len(g_cmd_switch_map); i += 1) {
     if (str8_match_cstr(g_cmd_switch_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
       return &g_cmd_switch_map[i];
     }
@@ -221,7 +221,7 @@ lnk_cmd_switch_from_string(String8 name)
 internal LNK_CmdSwitch *
 lnk_cmd_switch_from_type(LNK_CmdSwitchType type)
 {
-  for (U64 cmd_idx = 0; cmd_idx < ArrayCount(g_cmd_switch_map); cmd_idx += 1) {
+  for (U64 cmd_idx = 0; cmd_idx < len(g_cmd_switch_map); cmd_idx += 1) {
     if (g_cmd_switch_map[cmd_idx].type == type) {
       return &g_cmd_switch_map[cmd_idx];
     }
@@ -239,7 +239,7 @@ lnk_string_from_cmd_switch_type(LNK_CmdSwitchType type)
 internal LNK_InputType
 lnk_input_type_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_input_type_map); i += 1) {
+  for (U64 i = 0; i < len(g_input_type_map); i += 1) {
     if (str8_match_cstr(g_input_type_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
       return g_input_type_map[i].type;
     }
@@ -250,7 +250,7 @@ lnk_input_type_from_string(String8 name)
 internal LNK_DebugMode
 lnk_debug_mode_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_debug_mode_map); i += 1) {
+  for (U64 i = 0; i < len(g_debug_mode_map); i += 1) {
     if (str8_match_cstr(g_debug_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
       return g_debug_mode_map[i].mode;
     }
@@ -261,7 +261,7 @@ lnk_debug_mode_from_string(String8 name)
 internal LNK_TypeNameHashMode
 lnk_type_name_hash_mode_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_type_name_hash_mode_map); i += 1) {
+  for (U64 i = 0; i < len(g_type_name_hash_mode_map); i += 1) {
     if (str8_match_cstr(g_type_name_hash_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
       return g_type_name_hash_mode_map[i].mode;
     }
@@ -957,7 +957,7 @@ lnk_print_help(void)
   fprintf(stdout, "\n");
 
   fprintf(stdout, "  Options:\n");
-  for (U64 i = 0; i < ArrayCount(g_cmd_switch_map); ++i) {
+  for (U64 i = 0; i < len(g_cmd_switch_map); ++i) {
     Temp temp = temp_begin(scratch.arena);
 
     char *name = g_cmd_switch_map[i].name;

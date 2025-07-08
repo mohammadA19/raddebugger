@@ -35,7 +35,7 @@ dw_input_from_coff_section_table(Arena              *arena,
                                  COFF_SectionHeader *section_table)
 {
   DW_Input input                              = {0};
-  B32      sect_status[ArrayCount(input.sec)] = {0};
+  B32      sect_status[len(input.sec)] = {0};
   
   for (U64 i = 0; i < section_count; ++i) {
     COFF_SectionHeader *header         = &section_table[i];

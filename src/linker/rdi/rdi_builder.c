@@ -2065,9 +2065,9 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem = task->dst[i];
       U32 elem_idx  = elem->sorter.lo;
-      U32 digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
-      U32 digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32 digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
+      U32 digit_bot = (elem_idx >>  0) % len(histo_bot);
+      U32 digit_mid = (elem_idx >> 10) % len(histo_mid);
+      U32 digit_top = (elem_idx >> 21) % len(histo_top);
       histo_bot[digit_bot] += 1;
       histo_mid[digit_mid] += 1;
       histo_top[digit_top] += 1;
@@ -2075,16 +2075,16 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
     ProfEnd();
 
     ProfBegin("Histogram Counts -> Offsets");
-    counts_to_offsets_array_u32(ArrayCount(histo_bot), &histo_bot[0]);
-    counts_to_offsets_array_u32(ArrayCount(histo_mid), &histo_mid[0]);
-    counts_to_offsets_array_u32(ArrayCount(histo_top), &histo_top[0]);
+    counts_to_offsets_array_u32(len(histo_bot), &histo_bot[0]);
+    counts_to_offsets_array_u32(len(histo_mid), &histo_mid[0]);
+    counts_to_offsets_array_u32(len(histo_top), &histo_top[0]);
     ProfEnd();
 
     ProfBegin("Sort Bot");
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->dst[i];
       U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
+      U32                   digit    = (elem_idx >> 0) % len(histo_bot);
       U32                   src_idx  = range_lo + histo_bot[digit]++;
       task->src[src_idx] = elem;
     }
@@ -2094,7 +2094,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->src[i];
       U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
+      U32                   digit    = (elem_idx >> 10) % len(histo_mid);
       U32                   dst_idx  = range_lo + histo_mid[digit]++;
       task->dst[dst_idx] = elem;
     }
@@ -2104,7 +2104,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_StringMapBucket *elem     = task->dst[i];
       U32                   elem_idx = elem->sorter.lo;
-      U32                   digit    = (elem_idx >> 21) % ArrayCount(histo_top);
+      U32                   digit    = (elem_idx >> 21) % len(histo_top);
       U32                   src_idx  = range_lo + histo_top[digit]++;
       task->src[src_idx] = elem;
     }
@@ -2689,9 +2689,9 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem = task->dst[i];
       U32 elem_idx  = elem->sorter.lo;
-      U32 digit_bot = (elem_idx >>  0) % ArrayCount(histo_bot);
-      U32 digit_mid = (elem_idx >> 10) % ArrayCount(histo_mid);
-      U32 digit_top = (elem_idx >> 21) % ArrayCount(histo_top);
+      U32 digit_bot = (elem_idx >>  0) % len(histo_bot);
+      U32 digit_mid = (elem_idx >> 10) % len(histo_mid);
+      U32 digit_top = (elem_idx >> 21) % len(histo_top);
       histo_bot[digit_bot] += 1;
       histo_mid[digit_mid] += 1;
       histo_top[digit_top] += 1;
@@ -2699,16 +2699,16 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
     ProfEnd();
 
     ProfBegin("Histogram Counts -> Offsets");
-    counts_to_offsets_array_u32(ArrayCount(histo_bot), &histo_bot[0]);
-    counts_to_offsets_array_u32(ArrayCount(histo_mid), &histo_mid[0]);
-    counts_to_offsets_array_u32(ArrayCount(histo_top), &histo_top[0]);
+    counts_to_offsets_array_u32(len(histo_bot), &histo_bot[0]);
+    counts_to_offsets_array_u32(len(histo_mid), &histo_mid[0]);
+    counts_to_offsets_array_u32(len(histo_top), &histo_top[0]);
     ProfEnd();
 
     ProfBegin("Sort Bot");
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->dst[i];
       U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 0) % ArrayCount(histo_bot);
+      U32                  digit    = (elem_idx >> 0) % len(histo_bot);
       U32                  src_idx  = range_lo + histo_bot[digit]++;
       task->src[src_idx] = elem;
     }
@@ -2718,7 +2718,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->src[i];
       U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 10) % ArrayCount(histo_mid);
+      U32                  digit    = (elem_idx >> 10) % len(histo_mid);
       U32                  dst_idx  = range_lo + histo_mid[digit]++;
       task->dst[dst_idx] = elem;
     }
@@ -2728,7 +2728,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
     for (U64 i = range_lo; i < range_hi; ++i) {
       RDIB_IndexRunBucket *elem     = task->dst[i];
       U32                  elem_idx = elem->sorter.lo;
-      U32                  digit    = (elem_idx >> 21) % ArrayCount(histo_top);
+      U32                  digit    = (elem_idx >> 21) % len(histo_top);
       U32                  src_idx  = range_lo + histo_top[digit]++;
       task->src[src_idx] = elem;
     }
@@ -3243,9 +3243,9 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   for (U64 i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
 
-    U64 digit_8lo  = (p->scope->ranges.first->v.min >> 0)  % ArrayCount(count_8lo);
-    U64 digit_8hi  = (p->scope->ranges.first->v.min >> 8)  % ArrayCount(count_8hi);
-    U64 digit_16   = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
+    U64 digit_8lo  = (p->scope->ranges.first->v.min >> 0)  % len(count_8lo);
+    U64 digit_8hi  = (p->scope->ranges.first->v.min >> 8)  % len(count_8hi);
+    U64 digit_16   = (p->scope->ranges.first->v.min >> 16) % len(count_16);
 
     count_8lo[digit_8lo]  += 1;
     count_8hi[digit_8hi]  += 1;
@@ -3254,15 +3254,15 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   ProfEnd();
 
   ProfBegin("Counts -> Offsets");
-  counts_to_offsets_array_u32(ArrayCount(count_8lo),  count_8lo);
-  counts_to_offsets_array_u32(ArrayCount(count_8hi),  count_8hi);
-  counts_to_offsets_array_u32(ArrayCount(count_16),   count_16 );
+  counts_to_offsets_array_u32(len(count_8lo),  count_8lo);
+  counts_to_offsets_array_u32(len(count_8hi),  count_8hi);
+  counts_to_offsets_array_u32(len(count_16),   count_16 );
   ProfEnd();
 
   ProfBegin("Order 8 Lo");
   for (U64 i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 0) % ArrayCount(count_8lo);
+    U64 digit = (p->scope->ranges.first->v.min >> 0) % len(count_8lo);
     dst[count_8lo[digit]++] = p;
   }
   ProfEnd();
@@ -3270,7 +3270,7 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   ProfBegin("Order 8 Hi");
   for (U64 i = 0; i < count; i += 1) {
     RDIB_Procedure *p = dst[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 8) % ArrayCount(count_8hi);
+    U64 digit = (p->scope->ranges.first->v.min >> 8) % len(count_8hi);
     src[count_8hi[digit]++] = p;
   }
   ProfEnd();
@@ -3278,7 +3278,7 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   ProfBegin("Order 16");
   for (U64 i = 0; i < count; i += 1) {
     RDIB_Procedure *p = src[i];
-    U64 digit = (p->scope->ranges.first->v.min >> 16) % ArrayCount(count_16);
+    U64 digit = (p->scope->ranges.first->v.min >> 16) % len(count_16);
     dst[count_16[digit]++] = p;
   }
   ProfEnd();
@@ -5461,7 +5461,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   ProfBegin("Extract Name Maps Buckets");
   RDIB_StringMapBucket **name_map_buckets[RDI_NameMapKind_COUNT];
   U64                    name_map_bucket_counts[RDI_NameMapKind_COUNT];
-  for (U64 i = 0; i < ArrayCount(name_map_buckets); ++i) {
+  for (U64 i = 0; i < len(name_map_buckets); ++i) {
     ProfBeginDynamic("Name Map: %.*s", str8_varg(rdi_string_from_name_map_kind(i)));
     name_map_buckets[i] = rdib_extant_buckets_from_string_map(tp, scratch.arena, name_maps[i], &name_map_bucket_counts[i]);
     rdib_string_map_sort_buckets(tp, name_map_buckets[i], name_map_bucket_counts[i], tp->worker_count);
@@ -5477,7 +5477,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
   {
     // TODO: we over-allocate for name map index runs since not every bucket has > 1 value
     U64 total_name_map_value_count = 0;
-    for (U64 i = 0; i < ArrayCount(name_map_bucket_counts); ++i) {
+    for (U64 i = 0; i < len(name_map_bucket_counts); ++i) {
       total_name_map_value_count += name_map_bucket_counts[i];
     }
 
@@ -5497,7 +5497,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     ProfEnd();
 
     ProfBegin("Name Maps Pass - Build Index Runs");
-    for (U64 name_map_kind = 0; name_map_kind < ArrayCount(name_maps); ++name_map_kind) {
+    for (U64 name_map_kind = 0; name_map_kind < len(name_maps); ++name_map_kind) {
       ProfBeginDynamic("Name Map: %.*s", str8_varg(rdi_string_from_name_map_kind(name_map_kind)));
       task.name_map_kind     = name_map_kind;
       task.ranges            = tp_divide_work(scratch.arena, name_map_bucket_counts[name_map_kind], tp->worker_count);

@@ -215,7 +215,7 @@ pe_make_edata_obj(Arena               *arena,
   {
     B8 *is_ordinal_bound = push_array(scratch.arena, B8, max_U16);
 
-    for (U64 arr_idx = 0; arr_idx < ArrayCount(finalized_exports.all); arr_idx += 1) {
+    for (U64 arr_idx = 0; arr_idx < len(finalized_exports.all); arr_idx += 1) {
       for (U64 exp_idx = 0; exp_idx < finalized_exports.all[arr_idx].count; exp_idx += 1) {
         PE_ExportParse *exp = finalized_exports.all[arr_idx].v[exp_idx];
         if (is_ordinal_bound[exp->ordinal] == 0) {
@@ -249,7 +249,7 @@ pe_make_edata_obj(Arena               *arena,
 
   ProfBegin("Named & Forwarder Exports");
   {
-    for (U64 arr_idx = 0; arr_idx < ArrayCount(finalized_exports.exports_with_names); arr_idx += 1) {
+    for (U64 arr_idx = 0; arr_idx < len(finalized_exports.exports_with_names); arr_idx += 1) {
       PE_ExportParsePtrArray exports = finalized_exports.exports_with_names[arr_idx];
       for (U64 exp_idx = 0; exp_idx < exports.count; exp_idx += 1) {
         PE_ExportParse *exp = exports.v[exp_idx];

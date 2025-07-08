@@ -1942,7 +1942,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           }
           if(has_line_info)
           {
-            Vec4F32 color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
+            Vec4F32 color = code_line_bgs[line_info_line_num % len(code_line_bgs)];
             color.w *= line_info_t;
             bg_color = color;
           }
@@ -2692,7 +2692,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           // rjf: matches => highlight background
           if(matches)
           {
-            Vec4F32 highlight_color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
+            Vec4F32 highlight_color = code_line_bgs[line_info_line_num % len(code_line_bgs)];
             highlight_color.w *= 0.2f;
             dr_rect(line_box->rect, highlight_color, 0, 0, 0);
           }

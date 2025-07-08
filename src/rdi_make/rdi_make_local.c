@@ -754,7 +754,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         &in_params->procedures,
         &in_params->constants,
       };
-      for(U64 list_idx = 0; list_idx < ArrayCount(symbol_lists); list_idx += 1)
+      for(U64 list_idx = 0; list_idx < len(symbol_lists); list_idx += 1)
       {
         U64 items_per_task = 4096;
         U64 num_tasks = (symbol_lists[list_idx]->total_count+items_per_task-1)/items_per_task;
@@ -1120,7 +1120,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   //
   ProfScope("join all name map bakes into final name map bake")
   {
-    out.name_maps = rdim_name_map_bake_results_combine(arena, name_map_bakes, ArrayCount(name_map_bakes));
+    out.name_maps = rdim_name_map_bake_results_combine(arena, name_map_bakes, len(name_map_bakes));
   }
   
   ////////////////////////////////

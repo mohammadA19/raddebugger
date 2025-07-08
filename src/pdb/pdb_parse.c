@@ -144,7 +144,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
   // build baked table
   PDB_NamedStreamTable *result = push_array(arena, PDB_NamedStreamTable, 1);
   struct StreamNameIndexPair *p = pairs;
-  for (U64 i = 0; i < ArrayCount(pairs); i += 1, p += 1){
+  for (U64 i = 0; i < len(pairs); i += 1, p += 1){
     String8 name = p->name;
     
     // get info node with this name
@@ -266,7 +266,7 @@ pdb_dbi_from_data(Arena *arena, String8 data){
     if (dbg_streams_size < sizeof(result->dbg_streams)){
       U64 filled_count = dbg_streams_size/sizeof(MSF_StreamNumber);
       MemorySet(result->dbg_streams + filled_count, 0xff,
-                (ArrayCount(result->dbg_streams) - filled_count)*sizeof(MSF_StreamNumber));
+                (len(result->dbg_streams) - filled_count)*sizeof(MSF_StreamNumber));
     }
   }
   
@@ -346,7 +346,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
       // save to map
       if (bucket_idx < bucket_count){
         PDB_TpiHashBlock *block = buckets[bucket_idx];
-        if (block == 0 || block->local_count == ArrayCount(block->itypes)){
+        if (block == 0 || block->local_count == len(block->itypes)){
           block = push_array(arena, PDB_TpiHashBlock, 1);
           SLLStackPush(buckets[bucket_idx], block);
         }
@@ -413,7 +413,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
             prev_block = block, block = block->next)
         {
           for(U32 local_idx = 0;
-              local_idx < block->local_count && local_idx < ArrayCount(block->itypes);
+              local_idx < block->local_count && local_idx < len(block->itypes);
               local_idx += 1)
           {
             if(block->itypes[local_idx] == type_id)
@@ -583,7 +583,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
   U64 result = max_U64;
   
   U32           hash       = pdb_hash_v1(string);
-  U32           bucket_idx = hash % ArrayCount(gsi->buckets);
+  U32           bucket_idx = hash % len(gsi->buckets);
   PDB_GsiBucket bucket     = gsi->buckets[bucket_idx];
   
   for(U64 i = 0; i < bucket.count; ++i)

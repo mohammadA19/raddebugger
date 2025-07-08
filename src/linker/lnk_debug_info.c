@@ -1523,7 +1523,7 @@ THREAD_POOL_TASK_FUNC(lnk_hash_debug_t_task)
   U128Array  out_hashes  = task->hashes->v[LNK_LeafLocType_Internal][obj_idx][CV_TypeIndexSource_TPI];
 
   Rng1U64 ti_ranges[CV_TypeIndexSource_COUNT];
-  for (U64 ti_source = 0; ti_source < ArrayCount(ti_ranges); ++ti_source) {
+  for (U64 ti_source = 0; ti_source < len(ti_ranges); ++ti_source) {
     ti_ranges[ti_source] = rng_1u64(task->input->pch_arr[obj_idx].ti_lo, task->input->pch_arr[obj_idx].ti_hi + debug_t.count);
   }
 
@@ -3556,7 +3556,7 @@ lnk_push_basic_itypes(Arena *arena, RDIB_DataModel data_model, RDIB_Type **itype
     { "__pointer"            , ptr_type                , CV_BasicType_PTR        , 0, 0, 0 }
   };
 
-  for (U64 i = 0; i < ArrayCount(table); ++i) {
+  for (U64 i = 0; i < len(table); ++i) {
     U64 builtin_size;
     if (table[i].kind_rdi == RDI_TypeKind_Void || table[i].kind_rdi == RDI_TypeKind_Handle) {
       builtin_size = rdi_size_from_basic_type_kind(ptr_type);
@@ -5404,7 +5404,7 @@ lnk_build_rad_debug_info(TP_Context               *tp,
 
   // assing low and high type indices per source
   Rng1U64 itype_ranges[CV_TypeIndexSource_COUNT];
-  for (U64 i = 0; i < ArrayCount(itype_ranges); ++i) {
+  for (U64 i = 0; i < len(itype_ranges); ++i) {
     itype_ranges[i] = rng_1u64(CV_MinComplexTypeIndex, CV_MinComplexTypeIndex + types[i].count);
   }
 

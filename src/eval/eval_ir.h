@@ -95,7 +95,7 @@ E_IdentifierResolutionPath e_default_identifier_resolution_paths[] =
 E_IdentifierResolutionRule e_default_identifier_resolution_rule =
 {
   e_default_identifier_resolution_paths,
-  ArrayCount(e_default_identifier_resolution_paths),
+  len(e_default_identifier_resolution_paths),
 };
 
 E_IdentifierResolutionPath e_callable_identifier_resolution_paths[] =
@@ -115,7 +115,7 @@ E_IdentifierResolutionPath e_callable_identifier_resolution_paths[] =
 E_IdentifierResolutionRule e_callable_identifier_resolution_rule =
 {
   e_callable_identifier_resolution_paths,
-  ArrayCount(e_callable_identifier_resolution_paths),
+  len(e_callable_identifier_resolution_paths),
 };
 
 ////////////////////////////////

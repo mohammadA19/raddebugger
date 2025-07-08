@@ -663,7 +663,7 @@ d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name)
     if(rdi != &rdi_parsed_nil)
     {
       for(U64 name_map_kind_idx = 0;
-          name_map_kind_idx < ArrayCount(name_map_kinds);
+          name_map_kind_idx < len(name_map_kinds);
           name_map_kind_idx += 1)
       {
         RDI_NameMapKind name_map_kind = name_map_kinds[name_map_kind_idx];
@@ -1223,9 +1223,9 @@ internal U64
 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr)
 {
   U64 result = 0;
-  for(U64 cache_idx = 0; cache_idx < ArrayCount(d_state->tls_base_caches); cache_idx += 1)
+  for(U64 cache_idx = 0; cache_idx < len(d_state->tls_base_caches); cache_idx += 1)
   {
-    D_RunTLSBaseCache *cache = &d_state->tls_base_caches[(d_state->tls_base_cache_gen+cache_idx)%ArrayCount(d_state->tls_base_caches)];
+    D_RunTLSBaseCache *cache = &d_state->tls_base_caches[(d_state->tls_base_cache_gen+cache_idx)%len(d_state->tls_base_caches)];
     if(cache_idx == 0 && cache->slots_count == 0)
     {
       cache->slots_count = 256;
@@ -1275,9 +1275,9 @@ d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
 {
   ProfBeginFunction();
   E_String2NumMap *map = &e_string2num_map_nil;
-  for(U64 cache_idx = 0; cache_idx < ArrayCount(d_state->locals_caches); cache_idx += 1)
+  for(U64 cache_idx = 0; cache_idx < len(d_state->locals_caches); cache_idx += 1)
   {
-    D_RunLocalsCache *cache = &d_state->locals_caches[(d_state->locals_cache_gen+cache_idx)%ArrayCount(d_state->locals_caches)];
+    D_RunLocalsCache *cache = &d_state->locals_caches[(d_state->locals_cache_gen+cache_idx)%len(d_state->locals_caches)];
     if(cache_idx == 0 && cache->table_size == 0)
     {
       cache->table_size = 256;
@@ -1329,9 +1329,9 @@ d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
 {
   ProfBeginFunction();
   E_String2NumMap *map = &e_string2num_map_nil;
-  for(U64 cache_idx = 0; cache_idx < ArrayCount(d_state->member_caches); cache_idx += 1)
+  for(U64 cache_idx = 0; cache_idx < len(d_state->member_caches); cache_idx += 1)
   {
-    D_RunLocalsCache *cache = &d_state->member_caches[(d_state->member_cache_gen+cache_idx)%ArrayCount(d_state->member_caches)];
+    D_RunLocalsCache *cache = &d_state->member_caches[(d_state->member_cache_gen+cache_idx)%len(d_state->member_caches)];
     if(cache_idx == 0 && cache->table_size == 0)
     {
       cache->table_size = 256;
@@ -1428,15 +1428,15 @@ d_init(void)
   d_state->ctrl_msg_arena = arena_alloc();
   
   // rjf: set up caches
-  for(U64 idx = 0; idx < ArrayCount(d_state->tls_base_caches); idx += 1)
+  for(U64 idx = 0; idx < len(d_state->tls_base_caches); idx += 1)
   {
     d_state->tls_base_caches[idx].arena = arena_alloc();
   }
-  for(U64 idx = 0; idx < ArrayCount(d_state->locals_caches); idx += 1)
+  for(U64 idx = 0; idx < len(d_state->locals_caches); idx += 1)
   {
     d_state->locals_caches[idx].arena = arena_alloc();
   }
-  for(U64 idx = 0; idx < ArrayCount(d_state->member_caches); idx += 1)
+  for(U64 idx = 0; idx < len(d_state->member_caches); idx += 1)
   {
     d_state->member_caches[idx].arena = arena_alloc();
   }
@@ -1593,7 +1593,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
        !d_ctrl_targets_running())
     {
       d_state->tls_base_cache_gen += 1;
-      D_RunTLSBaseCache *cache = &d_state->tls_base_caches[d_state->tls_base_cache_gen%ArrayCount(d_state->tls_base_caches)];
+      D_RunTLSBaseCache *cache = &d_state->tls_base_caches[d_state->tls_base_cache_gen%len(d_state->tls_base_caches)];
       arena_clear(cache->arena);
       cache->slots_count = 0;
       cache->slots = 0;
@@ -1606,7 +1606,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
        !d_ctrl_targets_running())
     {
       d_state->locals_cache_gen += 1;
-      D_RunLocalsCache *cache = &d_state->locals_caches[d_state->locals_cache_gen%ArrayCount(d_state->locals_caches)];
+      D_RunLocalsCache *cache = &d_state->locals_caches[d_state->locals_cache_gen%len(d_state->locals_caches)];
       arena_clear(cache->arena);
       cache->table_size = 0;
       cache->table = 0;
@@ -1618,7 +1618,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
        !d_ctrl_targets_running())
     {
       d_state->member_cache_gen += 1;
-      D_RunLocalsCache *cache = &d_state->member_caches[d_state->member_cache_gen%ArrayCount(d_state->member_caches)];
+      D_RunLocalsCache *cache = &d_state->member_caches[d_state->member_cache_gen%len(d_state->member_caches)];
       arena_clear(cache->arena);
       cache->table_size = 0;
       cache->table = 0;
@@ -2109,7 +2109,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
             breakpoints,
             &run_extra_bps,
           };
-          for(U64 batch_idx = 0; batch_idx < ArrayCount(bp_batches); batch_idx += 1)
+          for(U64 batch_idx = 0; batch_idx < len(bp_batches); batch_idx += 1)
           {
             D_BreakpointArray *batch_breakpoints = bp_batches[batch_idx];
             for(U64 idx = 0; idx < batch_breakpoints->count; idx += 1)

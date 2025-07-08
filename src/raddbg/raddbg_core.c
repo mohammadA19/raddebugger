@@ -197,7 +197,7 @@ rd_name_alloc(String8 string)
   RD_NameChunkNode *node = 0;
   {
     U64 bucket_num = rd_name_bucket_num_from_string_size(string.size);
-    if(bucket_num == ArrayCount(rd_name_bucket_chunk_sizes))
+    if(bucket_num == len(rd_name_bucket_chunk_sizes))
     {
       RD_NameChunkNode *best_node = 0;
       RD_NameChunkNode *best_node_prev = 0;
@@ -260,7 +260,7 @@ internal void
 rd_name_release(String8 string)
 {
   U64 bucket_num = rd_name_bucket_num_from_string_size(string.size);
-  if(1 <= bucket_num && bucket_num <= ArrayCount(rd_name_bucket_chunk_sizes))
+  if(1 <= bucket_num && bucket_num <= len(rd_name_bucket_chunk_sizes))
   {
     U64 bucket_idx = bucket_num-1;
     RD_NameChunkNode *node = (RD_NameChunkNode *)string.str;
@@ -3113,7 +3113,7 @@ rd_view_ui(Rng2F32 rect)
                 {&ewv->cursor, cursor_tbl},
                 {&ewv->mark, mark_tbl},
               };
-              for(U64 point_idx = 0; point_idx < ArrayCount(points); point_idx += 1)
+              for(U64 point_idx = 0; point_idx < len(points); point_idx += 1)
               {
                 EV_Key last_key = points[point_idx].pt_state->key;
                 EV_Key last_parent_key = points[point_idx].pt_state->parent_key;
@@ -5978,7 +5978,7 @@ rd_window_frame(void)
       &rd_nil_cfg,
       &rd_nil_cfg,
     };
-    for EachIndex(idx, ArrayCount(theme_parents))
+    for EachIndex(idx, len(theme_parents))
     {
       RD_Cfg *parent_cfg = theme_parents[idx];
       if(theme_cfgs[idx] == &rd_nil_cfg)
@@ -6101,7 +6101,7 @@ rd_window_frame(void)
     F32 font_size = rd_font_size();
     RD_FontSlot english_font_slots[] = {RD_FontSlot_Main, RD_FontSlot_Code};
     RD_FontSlot icon_font_slot = RD_FontSlot_Icons;
-    for(U64 idx = 0; idx < ArrayCount(english_font_slots); idx += 1)
+    for(U64 idx = 0; idx < len(english_font_slots); idx += 1)
     {
       Temp scratch = scratch_begin(0, 0);
       RD_FontSlot slot = english_font_slots[idx];
@@ -6572,7 +6572,7 @@ rd_window_frame(void)
         }
         
         //- rjf: toggles
-        for(U64 idx = 0; idx < ArrayCount(DEV_toggle_table); idx += 1)
+        for(U64 idx = 0; idx < len(DEV_toggle_table); idx += 1)
         {
           if(ui_clicked(rd_icon_button(*DEV_toggle_table[idx].value_ptr ? RD_IconKind_CheckFilled : RD_IconKind_CheckHollow, 0, DEV_toggle_table[idx].name)))
           {
@@ -7585,8 +7585,8 @@ rd_window_frame(void)
                     't',
                     'x',
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                 }
                 
                 // rjf: window menu
@@ -7607,8 +7607,8 @@ rd_window_frame(void)
                     'f',
                     's',
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                 }
                 
                 // rjf: panel menu
@@ -7647,8 +7647,8 @@ rd_window_frame(void)
                     0,
                     0,
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                 }
                 
                 // rjf: view menu
@@ -7677,8 +7677,8 @@ rd_window_frame(void)
                     'p',
                     's',
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                 }
                 
                 // rjf: targets menu
@@ -7698,8 +7698,8 @@ rd_window_frame(void)
                     'r',
                     's',
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                   scratch_end(scratch);
                 }
                 
@@ -7731,8 +7731,8 @@ rd_window_frame(void)
                     'a',
                     'd',
                   };
-                  assert(ArrayCount(codepoints) == ArrayCount(cmds));
-                  rd_cmd_list_menu_buttons(ArrayCount(cmds), cmds, codepoints);
+                  assert(len(codepoints) == len(cmds));
+                  rd_cmd_list_menu_buttons(len(cmds), cmds, codepoints);
                 }
                 
                 // rjf: help menu
@@ -7801,7 +7801,7 @@ rd_window_frame(void)
                   // rjf: determine if one of the menus is already open
                   B32 menu_open = 0;
                   U64 open_menu_idx = 0;
-                  for(U64 idx = 0; idx < ArrayCount(items); idx += 1)
+                  for(U64 idx = 0; idx < len(items); idx += 1)
                   {
                     if(ui_ctx_menu_is_open(items[idx].menu_key))
                     {
@@ -7822,12 +7822,12 @@ rd_window_frame(void)
                       {
                         taken = 1;
                         open_menu_idx_prime += 1;
-                        open_menu_idx_prime = open_menu_idx_prime%ArrayCount(items);
+                        open_menu_idx_prime = open_menu_idx_prime%len(items);
                       }
                       if(evt->delta_2s32.x < 0)
                       {
                         taken = 1;
-                        open_menu_idx_prime = open_menu_idx_prime > 0 ? open_menu_idx_prime-1 : (ArrayCount(items)-1);
+                        open_menu_idx_prime = open_menu_idx_prime > 0 ? open_menu_idx_prime-1 : (len(items)-1);
                       }
                       if(taken)
                       {
@@ -7837,7 +7837,7 @@ rd_window_frame(void)
                   }
                   
                   // rjf: make ui
-                  for(U64 idx = 0; idx < ArrayCount(items); idx += 1)
+                  for(U64 idx = 0; idx < len(items); idx += 1)
                   {
                     ui_set_next_fastpath_codepoint(items[idx].codepoint);
                     B32 alt_fastpath_key = 0;
@@ -8647,7 +8647,7 @@ rd_window_frame(void)
                 },
               };
               UI_CornerRadius(corner_radius)
-                for(U64 idx = 0; idx < ArrayCount(sites); idx += 1)
+                for(U64 idx = 0; idx < len(sites); idx += 1)
               {
                 UI_Key key = sites[idx].key;
                 Dir2 dir = sites[idx].split_dir;
@@ -8729,7 +8729,7 @@ rd_window_frame(void)
                   }
                 }
               }
-              for(U64 idx = 0; idx < ArrayCount(sites); idx += 1)
+              for(U64 idx = 0; idx < len(sites); idx += 1)
               {
                 B32 is_drop_hot = ui_key_match(ui_drop_hot_key(), sites[idx].key);
                 if(is_drop_hot)
@@ -9786,7 +9786,7 @@ rd_window_frame(void)
           if(b->flags & UI_BoxFlag_Clickable && !(b->flags & UI_BoxFlag_DisableFocusOverlay) && b->focus_hot_t > 0.01f)
           {
             String8 extras[] = {str8_lit("focus"), str8_lit("overlay")};
-            String8Array extras_array = {extras, ArrayCount(extras)};
+            String8Array extras_array = {extras, len(extras)};
             Vec4F32 color = ui_color_from_tags_key_extras(b->tags_key, extras_array);
             color.w *= b->focus_hot_t;
             R_Rect2DInst *inst = dr_rect(b->rect, color, 0, 0, 0.f);
@@ -9803,7 +9803,7 @@ rd_window_frame(void)
               rect = intersect_2f32(window_rect, rect);
             }
             String8 extras[] = {str8_lit("focus"), str8_lit("border")};
-            String8Array extras_array = {extras, ArrayCount(extras)};
+            String8Array extras_array = {extras, len(extras)};
             Vec4F32 color = ui_color_from_tags_key_extras(b->tags_key, extras_array);
             color.w *= b->focus_active_t;
             R_Rect2DInst *inst = dr_rect(rect, color, 0, 1.f, border_softness*1.f);
@@ -10564,7 +10564,7 @@ rd_request_frame(void)
 internal Arena *
 rd_frame_arena(void)
 {
-  return rd_state->frame_arenas[rd_state->frame_index%ArrayCount(rd_state->frame_arenas)];
+  return rd_state->frame_arenas[rd_state->frame_index%len(rd_state->frame_arenas)];
 }
 
 ////////////////////////////////
@@ -10737,7 +10737,7 @@ internal RD_CmdKind
 rd_cmd_kind_from_string(String8 string)
 {
   RD_CmdKind result = RD_CmdKind_Null;
-  for(U64 idx = 0; idx < ArrayCount(rd_cmd_kind_info_table); idx += 1)
+  for(U64 idx = 0; idx < len(rd_cmd_kind_info_table); idx += 1)
   {
     if(str8_match(string, rd_cmd_kind_info_table[idx].string, 0))
     {
@@ -10776,7 +10776,7 @@ rd_push_cmd(String8 name, RD_Regs *regs)
 internal B32
 rd_next_cmd(RD_Cmd **cmd)
 {
-  U64 slot = rd_state->cmds_gen%ArrayCount(rd_state->cmds);
+  U64 slot = rd_state->cmds_gen%len(rd_state->cmds);
   RD_CmdNode *start_node = rd_state->cmds[slot].first;
   if(cmd[0] != 0)
   {
@@ -10831,7 +10831,7 @@ rd_init(CmdLine *cmdln)
   rd_state->project_cfg_string_key   = hs_key_make(hs_root_alloc(), hs_id_make(0, 0));
   rd_state->cmdln_cfg_string_key     = hs_key_make(hs_root_alloc(), hs_id_make(0, 0));
   rd_state->transient_cfg_string_key = hs_key_make(hs_root_alloc(), hs_id_make(0, 0));
-  for(U64 idx = 0; idx < ArrayCount(rd_state->frame_arenas); idx += 1)
+  for(U64 idx = 0; idx < len(rd_state->frame_arenas); idx += 1)
   {
     rd_state->frame_arenas[idx] = arena_alloc();
   }
@@ -10850,7 +10850,7 @@ rd_init(CmdLine *cmdln)
   rd_state->seconds_until_autosave = 0.5f;
   rd_state->match_store = di_match_store_alloc();
   rd_state->eval_cache = e_cache_alloc();
-  for(U64 idx = 0; idx < ArrayCount(rd_state->cmds_arenas); idx += 1)
+  for(U64 idx = 0; idx < len(rd_state->cmds_arenas); idx += 1)
   {
     rd_state->cmds_arenas[idx] = arena_alloc();
   }
@@ -10865,7 +10865,7 @@ rd_init(CmdLine *cmdln)
   
   // rjf: set up schemas
   {
-    U64 schemas_count = ArrayCount(rd_name_schema_info_table);
+    U64 schemas_count = len(rd_name_schema_info_table);
     rd_state->schemas = push_array(rd_state->arena, MD_NodePtrList, schemas_count);
     for EachIndex(idx, schemas_count)
     {
@@ -11354,7 +11354,7 @@ rd_frame(void)
   //
   U64 frame_time_history_avg_us = 0;
   {
-    U64 num_frames_in_history = min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
+    U64 num_frames_in_history = min(len(rd_state->frame_time_us_history), rd_state->frame_index);
     U64 frame_time_history_sum_us = 0;
     if(num_frames_in_history > 0)
     {
@@ -11380,7 +11380,7 @@ rd_frame(void)
     F32 possible_alternate_hz_targets[] = {target_hz, 60.f, 75.f, 120.f, 144.f, 165.f, 240.f, 360.f};
     F32 best_target_hz = target_hz;
     S64 best_target_hz_frame_time_us_diff = max_S64;
-    for(U64 idx = 0; idx < ArrayCount(possible_alternate_hz_targets); idx += 1)
+    for(U64 idx = 0; idx < len(possible_alternate_hz_targets); idx += 1)
     {
       F32 candidate = possible_alternate_hz_targets[idx];
       if(candidate <= target_hz)
@@ -11521,7 +11521,7 @@ rd_frame(void)
             else
             {
               name = child->string;
-              for(U64 idx = 0; idx < ArrayCount(rd_binding_version_remap_old_name_table); idx += 1)
+              for(U64 idx = 0; idx < len(rd_binding_version_remap_old_name_table); idx += 1)
               {
                 if(str8_match(rd_binding_version_remap_old_name_table[idx], name, StringMatchFlag_CaseInsensitive))
                 {
@@ -14152,7 +14152,7 @@ rd_frame(void)
               str8_lit_comp("cxx"),
               str8_lit_comp("cpp"),
             };
-            for(U64 idx = 0; idx < ArrayCount(partner_ext_candidates); idx += 1)
+            for(U64 idx = 0; idx < len(partner_ext_candidates); idx += 1)
             {
               if(!str8_match(partner_ext_candidates[idx], file_ext, StringMatchFlag_CaseInsensitive))
               {
@@ -16931,12 +16931,12 @@ rd_frame(void)
       RD_CmdList first_cmds = rd_state->cmds[0];
       MemoryCopy(rd_state->cmds_arenas,
                  rd_state->cmds_arenas+1,
-                 sizeof(rd_state->cmds_arenas[0])*(ArrayCount(rd_state->cmds_arenas)-1));
+                 sizeof(rd_state->cmds_arenas[0])*(len(rd_state->cmds_arenas)-1));
       MemoryCopy(rd_state->cmds,
                  rd_state->cmds+1,
-                 sizeof(rd_state->cmds[0])*(ArrayCount(rd_state->cmds)-1));
-      rd_state->cmds_arenas[ArrayCount(rd_state->cmds_arenas)-1] = first_arena;
-      rd_state->cmds[ArrayCount(rd_state->cmds_arenas)-1] = first_cmds;
+                 sizeof(rd_state->cmds[0])*(len(rd_state->cmds)-1));
+      rd_state->cmds_arenas[len(rd_state->cmds_arenas)-1] = first_arena;
+      rd_state->cmds[len(rd_state->cmds_arenas)-1] = first_cmds;
     }
     
     // rjf: clear next batch
@@ -17169,7 +17169,7 @@ rd_frame(void)
   //
   U64 end_time_us = os_now_microseconds();
   U64 frame_time_us = end_time_us-begin_time_us;
-  rd_state->frame_time_us_history[rd_state->frame_index%ArrayCount(rd_state->frame_time_us_history)] = frame_time_us;
+  rd_state->frame_time_us_history[rd_state->frame_index%len(rd_state->frame_time_us_history)] = frame_time_us;
   
   //////////////////////////////
   //- rjf: bump frame time counters

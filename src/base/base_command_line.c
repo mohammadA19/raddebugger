@@ -143,7 +143,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
             string = value_portion_this_string;
           }
           U8 splits[] = { ',' };
-          String8List values_in_this_string = str8_split(arena, string, splits, ArrayCount(splits), 0);
+          String8List values_in_this_string = str8_split(arena, string, splits, len(splits), 0);
           for(String8Node *sub_val = values_in_this_string.first; sub_val; sub_val = sub_val->next)
           {
             str8_list_push(arena, &values, sub_val->string);

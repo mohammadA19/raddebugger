@@ -41,7 +41,7 @@ os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
     str8_lit("Shift"),
     str8_lit("Alt"),
   };
-  str8_list_from_flags(arena, &result, modifiers, modifier_strs, ArrayCount(modifier_strs));
+  str8_list_from_flags(arena, &result, modifiers, modifier_strs, len(modifier_strs));
   return result;
 }
 
@@ -166,7 +166,7 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   }
   
   // rjf: check special-case map
-  for(U64 idx = 0; idx < ArrayCount(map); idx += 1)
+  for(U64 idx = 0; idx < len(map); idx += 1)
   {
     if(map[idx].key == key && map[idx].modifiers == modifiers)
     {

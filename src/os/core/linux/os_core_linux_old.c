@@ -829,7 +829,7 @@ os_init(void)
   MemoryZeroArray(lnx_entity_buffer);
   {
     LNX_Entity *ptr = lnx_entity_free = lnx_entity_buffer;
-    for (U64 i = 1; i < ArrayCount(lnx_entity_buffer); i += 1, ptr += 1){
+    for (U64 i = 1; i < len(lnx_entity_buffer); i += 1, ptr += 1){
       ptr->next = ptr + 1;
     }
     ptr->next = 0;
@@ -1654,15 +1654,15 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
   int signals_to_handle[] = {
     SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGTRAP,
   };
-  struct sigaction og_act[ArrayCount(signals_to_handle)] = {0};
+  struct sigaction og_act[len(signals_to_handle)] = {0};
   
-  for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
+  for (U32 i = 0; i < len(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &new_act, &og_act[i]);
   }
   
   func(ptr);
   
-  for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1){
+  for (U32 i = 0; i < len(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &og_act[i], 0);
   }
 }

@@ -349,7 +349,7 @@ ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs)
       str8_serial_push_struct(scratch.arena, &msgs_srlzed, &msg->exit_code);
       str8_serial_push_struct(scratch.arena, &msgs_srlzed, &msg->env_inherit);
       str8_serial_push_struct(scratch.arena, &msgs_srlzed, &msg->debug_subprocesses);
-      str8_serial_push_array (scratch.arena, &msgs_srlzed, &msg->exception_code_filters[0], ArrayCount(msg->exception_code_filters));
+      str8_serial_push_array (scratch.arena, &msgs_srlzed, &msg->exception_code_filters[0], len(msg->exception_code_filters));
       
       // rjf: write path string
       str8_serial_push_struct(scratch.arena, &msgs_srlzed, &msg->path.size);
@@ -448,7 +448,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &msg->exit_code);
       read_off += str8_deserial_read_struct(string, read_off, &msg->env_inherit);
       read_off += str8_deserial_read_struct(string, read_off, &msg->debug_subprocesses);
-      read_off += str8_deserial_read_array (string, read_off, &msg->exception_code_filters[0], ArrayCount(msg->exception_code_filters));
+      read_off += str8_deserial_read_array (string, read_off, &msg->exception_code_filters[0], len(msg->exception_code_filters));
       
       // rjf: read path string
       read_off += str8_deserial_read_struct(string, read_off, &msg->path.size);
@@ -898,7 +898,7 @@ ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
   CTRL_EntityStringChunkNode *node = 0;
   {
     U64 bucket_num = ctrl_name_bucket_num_from_string_size(string.size);
-    if(bucket_num == ArrayCount(ctrl_entity_string_bucket_chunk_sizes))
+    if(bucket_num == len(ctrl_entity_string_bucket_chunk_sizes))
     {
       CTRL_EntityStringChunkNode *best_node = 0;
       CTRL_EntityStringChunkNode *best_node_prev = 0;
@@ -961,7 +961,7 @@ internal void
 ctrl_entity_string_release(CTRL_EntityCtxRWStore *store, String8 string)
 {
   U64 bucket_num = ctrl_name_bucket_num_from_string_size(string.size);
-  if(1 <= bucket_num && bucket_num <= ArrayCount(rd_name_bucket_chunk_sizes))
+  if(1 <= bucket_num && bucket_num <= len(rd_name_bucket_chunk_sizes))
   {
     U64 bucket_idx = bucket_num-1;
     CTRL_EntityStringChunkNode *node = (CTRL_EntityStringChunkNode *)string.str;
@@ -6136,7 +6136,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             str8_lit("main"),
             str8_lit("wmain"),
           };
-          for(U64 idx = 0; idx < ArrayCount(hi_entry_points); idx += 1)
+          for(U64 idx = 0; idx < len(hi_entry_points); idx += 1)
           {
             U32 procedure_id = 0;
             {
@@ -6181,7 +6181,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             str8_lit("mainCRTStartup"),
             str8_lit("wmainCRTStartup"),
           };
-          for(U64 idx = 0; idx < ArrayCount(lo_entry_points); idx += 1)
+          for(U64 idx = 0; idx < len(lo_entry_points); idx += 1)
           {
             U32 procedure_id = 0;
             {

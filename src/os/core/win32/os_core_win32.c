@@ -1464,7 +1464,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   int buflen = 0;
   
   DWORD exception_code = exception_ptrs->ExceptionRecord->ExceptionCode;
-  buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"A fatal exception (code 0x%x) occurred. The process is terminating.\n", exception_code);
+  buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"A fatal exception (code 0x%x) occurred. The process is terminating.\n", exception_code);
   
   // load dbghelp dynamically just in case if it is missing
   BOOL (WINAPI *dbg_MiniDumpWriteDump)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType, PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, PMINIDUMP_CALLBACK_INFORMATION CallbackParam) = 0;
@@ -1500,7 +1500,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
       CONTEXT* context = exception_ptrs->ContextRecord;
       
       WCHAR module_path[MAX_PATH];
-      GetModuleFileNameW(NULL, module_path, ArrayCount(module_path));
+      GetModuleFileNameW(NULL, module_path, len(module_path));
       PathRemoveFileSpecW(module_path);
       
       dbg_SymSetOptions(SYMOPT_EXACT_SYMBOLS | SYMOPT_FAIL_CRITICAL_ERRORS | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
@@ -1551,7 +1551,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
             const U32 max_frames = 32;
             if(idx == max_frames)
             {
-              buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"...");
+              buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"...");
               break;
             }
             
@@ -1569,16 +1569,16 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
             if(idx==0)
             {
 #if BUILD_CONSOLE_INTERFACE
-              buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"\nCreate a new issue with this report at %S.\n\n", BUILD_ISSUES_LINK_STRING_LITERAL);
+              buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"\nCreate a new issue with this report at %S.\n\n", BUILD_ISSUES_LINK_STRING_LITERAL);
 #else
-              buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen,
+              buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen,
                                    L"\nPress Ctrl+C to copy this text to clipboard, then create a new issue at\n"
                                    L"<a href=\"%S\">%S</a>\n\n", BUILD_ISSUES_LINK_STRING_LITERAL, BUILD_ISSUES_LINK_STRING_LITERAL);
 #endif
-              buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"Call stack:\n");
+              buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"Call stack:\n");
             }
             
-            buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"%u. [0x%I64x]", idx + 1, address);
+            buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"%u. [0x%I64x]", idx + 1, address);
             
             struct {
               SYMBOL_INFOW info;
@@ -1591,7 +1591,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
             DWORD64 displacement = 0;
             if(dbg_SymFromAddrW(process, address, &displacement, &symbol.info))
             {
-              buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L" %s +%u", symbol.info.Name, (DWORD)displacement);
+              buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L" %s +%u", symbol.info.Name, (DWORD)displacement);
               
               IMAGEHLP_LINEW64 line = {0};
               line.SizeOfStruct = sizeof(line);
@@ -1599,7 +1599,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
               DWORD line_displacement = 0;
               if(dbg_SymGetLineFromAddrW64(process, address, &line_displacement, &line))
               {
-                buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L", %s line %u", PathFindFileNameW(line.FileName), line.LineNumber);
+                buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L", %s line %u", PathFindFileNameW(line.FileName), line.LineNumber);
               }
             }
             else
@@ -1608,18 +1608,18 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
               module.SizeOfStruct = sizeof(module);
               if(dbg_SymGetModuleInfoW64(process, address, &module))
               {
-                buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L" %s", module.ModuleName);
+                buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L" %s", module.ModuleName);
               }
             }
             
-            buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"\n");
+            buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"\n");
           }
         }
       }
     }
   }
   
-  buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"\nVersion: %S%S", BUILD_VERSION_STRING_LITERAL, BUILD_GIT_HASH_STRING_LITERAL_APPEND);
+  buflen += wnsprintfW(buffer + buflen, len(buffer) - buflen, L"\nVersion: %S%S", BUILD_VERSION_STRING_LITERAL, BUILD_GIT_HASH_STRING_LITERAL_APPEND);
   
   B32 generate_crash_dump = win32_g_gen_dump;
 #if BUILD_CONSOLE_INTERFACE
@@ -1647,7 +1647,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
     WCHAR desktop_path[512] = {0};
     SHGetFolderPathW(0, CSIDL_DESKTOP, 0, 0, desktop_path);
     WCHAR dump_file_path[512] = {0};
-    wnsprintfW(dump_file_path, ArrayCount(dump_file_path), L"%s\\raddbg_crash_dump.dmp", desktop_path);
+    wnsprintfW(dump_file_path, len(dump_file_path), L"%s\\raddbg_crash_dump.dmp", desktop_path);
     SECURITY_ATTRIBUTES security_attributes = {sizeof(security_attributes), 0, 0};
     HANDLE file = CreateFileW(dump_file_path, GENERIC_WRITE, 0, &security_attributes, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
     BOOL dump_successful = dbg_MiniDumpWriteDump(GetCurrentProcess(), os_get_process_info()->pid, file, MiniDumpNormal, 0, 0, 0);

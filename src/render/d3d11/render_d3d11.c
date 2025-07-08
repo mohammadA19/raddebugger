@@ -180,7 +180,7 @@ r_init(CmdLine *cmdln)
                             driver_type,
                             0,
                             creation_flags,
-                            feature_levels, ArrayCount(feature_levels),
+                            feature_levels, len(feature_levels),
                             D3D11_SDK_VERSION,
                             &r_d3d11_state->base_device, 0, &r_d3d11_state->base_device_ctx);
   if(FAILED(error) && driver_type == D3D_DRIVER_TYPE_HARDWARE)
@@ -190,7 +190,7 @@ r_init(CmdLine *cmdln)
                               D3D_DRIVER_TYPE_WARP,
                               0,
                               creation_flags,
-                              feature_levels, ArrayCount(feature_levels),
+                              feature_levels, len(feature_levels),
                               D3D11_SDK_VERSION,
                               &r_d3d11_state->base_device, 0, &r_d3d11_state->base_device_ctx);
   }
@@ -1248,9 +1248,9 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           // rjf: set up uniforms
           R_D3D11_Uniforms_Blur uniforms = { 0 };
           {
-            F32 weights[ArrayCount(uniforms.kernel)*2] = {0};
+            F32 weights[len(uniforms.kernel)*2] = {0};
             
-            F32 blur_size = min(params->blur_size, ArrayCount(weights));
+            F32 blur_size = min(params->blur_size, len(weights));
             U64 blur_count = (U64)round_f32(blur_size);
             
             F32 stdev = (blur_size-1.f)/2.f;
@@ -1363,14 +1363,14 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           
           // horizontal pass
           d_ctx->lpVtbl->OMSetRenderTargets(d_ctx, 1, &wnd->stage_scratch_color_rtv, 0);
-          d_ctx->lpVtbl->PSSetConstantBuffers1(d_ctx, 0, ArrayCount(uniforms_buffers), uniforms_buffers, uniform_offset[Axis2_X], uniform_count[Axis2_X]);
+          d_ctx->lpVtbl->PSSetConstantBuffers1(d_ctx, 0, len(uniforms_buffers), uniforms_buffers, uniform_offset[Axis2_X], uniform_count[Axis2_X]);
           d_ctx->lpVtbl->PSSetShaderResources(d_ctx, 0, 1, &wnd->stage_color_srv);
           d_ctx->lpVtbl->Draw(d_ctx, 4, 0);
           d_ctx->lpVtbl->PSSetShaderResources(d_ctx, 0, 1, &srv);
           
           // vertical pass
           d_ctx->lpVtbl->OMSetRenderTargets(d_ctx, 1, &wnd->stage_color_rtv, 0);
-          d_ctx->lpVtbl->PSSetConstantBuffers1(d_ctx, 0, ArrayCount(uniforms_buffers), uniforms_buffers, uniform_offset[Axis2_Y], uniform_count[Axis2_Y]);
+          d_ctx->lpVtbl->PSSetConstantBuffers1(d_ctx, 0, len(uniforms_buffers), uniforms_buffers, uniform_offset[Axis2_Y], uniform_count[Axis2_Y]);
           d_ctx->lpVtbl->PSSetShaderResources(d_ctx, 0, 1, &wnd->stage_scratch_color_srv);
           d_ctx->lpVtbl->Draw(d_ctx, 4, 0);
           d_ctx->lpVtbl->PSSetShaderResources(d_ctx, 0, 1, &srv);

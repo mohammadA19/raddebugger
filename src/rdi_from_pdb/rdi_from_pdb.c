@@ -3781,7 +3781,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       itype_type_ptrs[CV_BasicType_HRESULT] = rdim_builtin_type_from_kind(all_types, RDI_TypeKind_HResult);
       itype_type_ptrs[CV_BasicType_VOID]    = rdim_builtin_type_from_kind(all_types, RDI_TypeKind_Void);
       
-      for(U64 i = 0; i < ArrayCount(table); i += 1)
+      for(U64 i = 0; i < len(table); i += 1)
       {
         RDIM_Type *builtin_alias   = rdim_type_chunk_list_push(arena, &all_types, tpi_leaf->itype_opl);
         builtin_alias->kind        = RDI_TypeKind_Alias;

@@ -45,12 +45,12 @@ read_only struct
   { str8_lit_comp("xbox"),                     PE_WindowsSubsystem_XBOX                     },
   { str8_lit_comp("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
 };
-StaticAssert(ArrayCount(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_subsystem_map_count_check);
+StaticAssert(len(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_subsystem_map_count_check);
 
 internal String8
 pe_string_from_subsystem(PE_WindowsSubsystem subsystem)
 {
-  for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
+  for (U64 i = 0; i < len(g_pe_subsystem_map); i += 1) {
     if (g_pe_subsystem_map[i].type == subsystem) {
       return g_pe_subsystem_map[i].string;
     }
@@ -397,7 +397,7 @@ pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars
 internal PE_WindowsSubsystem
 pe_subsystem_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
+  for (U64 i = 0; i < len(g_pe_subsystem_map); i += 1) {
     if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
       return g_pe_subsystem_map[i].type;
     }
@@ -943,14 +943,14 @@ pe_get_entry_point_names(COFF_MachineType            machine,
       };
       
       entry_point_names.v = &dll_entry_point_arr[0];
-      entry_point_names.count = ArrayCount(dll_entry_point_arr);
+      entry_point_names.count = len(dll_entry_point_arr);
     } else {
       read_only static String8 dll_entry_point_arr[] = {
         str8_lit_comp("_DllMainCRTStartup"),
       };
       
       entry_point_names.v = &dll_entry_point_arr[0];
-      entry_point_names.count = ArrayCount(dll_entry_point_arr);
+      entry_point_names.count = len(dll_entry_point_arr);
     }
   } else {
     switch (subsystem) {
@@ -964,7 +964,7 @@ pe_get_entry_point_names(COFF_MachineType            machine,
         };
         
         entry_point_names.v = &gui_entry_point_arr[0];
-        entry_point_names.count = ArrayCount(gui_entry_point_arr);
+        entry_point_names.count = len(gui_entry_point_arr);
       } break;
       case PE_WindowsSubsystem_WINDOWS_CUI: {
         read_only static String8 cui_entry_point_arr[] = {
@@ -975,7 +975,7 @@ pe_get_entry_point_names(COFF_MachineType            machine,
         };
         
         entry_point_names.v = &cui_entry_point_arr[0];
-        entry_point_names.count = ArrayCount(cui_entry_point_arr);
+        entry_point_names.count = len(cui_entry_point_arr);
       } break;
       case PE_WindowsSubsystem_NATIVE:
       case PE_WindowsSubsystem_OS2_CUI:
