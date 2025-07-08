@@ -87,14 +87,8 @@
 ////////////////////////////////
 //~ rjf: Branch Predictor Hints
 
-#if defined(__clang__)
-# define Expect(expr, val) __builtin_expect((expr), (val))
-#else
-# define Expect(expr, val) (expr)
-#endif
-
-#define Likely(expr)            Expect(expr,1)
-#define Unlikely(expr)          Expect(expr,0)
+#define Likely(expr)            expect(expr, true)
+#define Unlikely(expr)          expect(expr, false)
 
 ////////////////////////////////
 //~ rjf: Clamps, Mins, Maxes
