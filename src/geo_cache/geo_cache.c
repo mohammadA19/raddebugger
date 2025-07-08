@@ -82,7 +82,7 @@ geo_scope_close(GEO_Scope *scope)
       {
         if(u128_match(hash, n->hash))
         {
-          ins_atomic_u64_dec_eval(&n->scope_ref_count);
+          atomic_sub(&n->scope_ref_count);
           break;
         }
       }
@@ -96,7 +96,7 @@ internal void
 geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 {
   GEO_Touch *touch = geo_tctx->free_touch;
-  ins_atomic_u64_inc_eval(&node->scope_ref_count);
+  atomic_add(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
   if(touch != 0)
@@ -294,7 +294,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
       {
         n->buffer = buffer;
         ins_atomic_u32_eval_assign(&n->is_working, 0);
-        ins_atomic_u64_inc_eval(&n->load_count);
+        atomic_add(&n->load_count);
         break;
       }
     }

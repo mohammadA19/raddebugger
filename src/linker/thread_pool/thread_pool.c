@@ -5,7 +5,7 @@ internal void
 tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 {
   for (;;) {
-    S64 task_left = ins_atomic_u64_dec_eval(&pool->task_left);
+    S64 task_left = atomic_sub(&pool->task_left);
 
     // are there any tasks left to run?
     if (task_left < 0) {
@@ -21,7 +21,7 @@ tp_run_tasks(TP_Context *pool, TP_Worker *worker)
     U64 task_count = pool->task_count;
 
     // on last task ping main thread
-    U64 task_done = ins_atomic_u64_inc_eval(&pool->task_done);
+    U64 task_done = atomic_add(&pool->task_done);
     if (task_done == task_count) {
       os_semaphore_drop(pool->main_semaphore);
     }

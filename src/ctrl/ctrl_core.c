@@ -1445,7 +1445,7 @@ ctrl_scope_close(CTRL_Scope *scope)
   for(CTRL_ScopeCallStackTouch *t = scope->first_call_stack_touch, *next = 0; t != 0; t = next)
   {
     next = t->next;
-    ins_atomic_u64_dec_eval(&t->node->scope_touch_count);
+    atomic_sub(&t->node->scope_touch_count);
     os_condition_variable_broadcast(t->stripe->cv);
     SLLStackPush(ctrl_tctx->free_call_stack_touch, t);
   }
@@ -1455,7 +1455,7 @@ ctrl_scope_close(CTRL_Scope *scope)
 internal void
 ctrl_scope_touch_call_stack_node__stripe_r_guarded(CTRL_Scope *scope, CTRL_CallStackCacheStripe *stripe, CTRL_CallStackCacheNode *node)
 {
-  ins_atomic_u64_inc_eval(&node->scope_touch_count);
+  atomic_add(&node->scope_touch_count);
   CTRL_ScopeCallStackTouch *touch = ctrl_tctx->free_call_stack_touch;
   if(touch != 0)
   {
@@ -1985,7 +1985,7 @@ ctrl_process_write(CTRL_Handle process, Rng1U64 range, void *src)
   //- rjf: success -> bump generation
   if(result)
   {
-    ins_atomic_u64_inc_eval(&ctrl_state->mem_gen);
+    atomic_add(&ctrl_state->mem_gen);
   }
   
   //- rjf: success -> wait for cache updates, for small regions - prefer relatively seamless
@@ -2154,7 +2154,7 @@ ctrl_thread_write_reg_block(CTRL_Handle thread, void *block)
   B32 good = dmn_thread_write_reg_block(thread.dmn_handle, block);
   if(good)
   {
-    ins_atomic_u64_inc_eval(&ctrl_state->reg_gen);
+    atomic_add(&ctrl_state->reg_gen);
   }
   return good;
 }
@@ -3425,7 +3425,7 @@ ctrl_call_stack_from_thread(CTRL_Scope *scope, CTRL_EntityCtx *entity_ctx, CTRL_
   //////////////////////////////
   //- rjf: loop: try to grab cached call stack; request; wait
   //
-  B32 can_request = !ins_atomic_u64_eval(&ctrl_state->ctrl_thread_run_state);
+  B32 can_request = !atomic_load(&ctrl_state->ctrl_thread_run_state);
   for(;;)
   {
     //- rjf: [read-only] try to look for current call stack; wait if working
@@ -3529,21 +3529,21 @@ ctrl_halt(void)
 internal U64
 ctrl_run_gen(void)
 {
-  U64 result = ins_atomic_u64_eval(&ctrl_state->run_gen);
+  U64 result = atomic_load(&ctrl_state->run_gen);
   return result;
 }
 
 internal U64
 ctrl_mem_gen(void)
 {
-  U64 result = ins_atomic_u64_eval(&ctrl_state->mem_gen);
+  U64 result = atomic_load(&ctrl_state->mem_gen);
   return result;
 }
 
 internal U64
 ctrl_reg_gen(void)
 {
-  U64 result = ins_atomic_u64_eval(&ctrl_state->reg_gen);
+  U64 result = atomic_load(&ctrl_state->reg_gen);
   return result;
 }
 
@@ -3863,9 +3863,9 @@ ctrl_thread__entry_point(void *p)
       }
       ins_atomic_u64_eval_assign(&ctrl_state->ctrl_thread_run_state, 0);
     }
-    ins_atomic_u64_inc_eval(&ctrl_state->run_gen);
-    ins_atomic_u64_inc_eval(&ctrl_state->mem_gen);
-    ins_atomic_u64_inc_eval(&ctrl_state->reg_gen);
+    atomic_add(&ctrl_state->run_gen);
+    atomic_add(&ctrl_state->mem_gen);
+    atomic_add(&ctrl_state->reg_gen);
     
     //- rjf: gather & output logs
     LogScopeResult log = log_scope_end(scratch.arena);
@@ -4583,9 +4583,9 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
           }
         }
         DMN_EventList events = dmn_ctrl_run(scratch.arena, ctrl_ctx, run_ctrls);
-        ins_atomic_u64_inc_eval(&ctrl_state->mem_gen);
-        ins_atomic_u64_inc_eval(&ctrl_state->reg_gen);
-        ins_atomic_u64_inc_eval(&ctrl_state->run_gen);
+        atomic_add(&ctrl_state->mem_gen);
+        atomic_add(&ctrl_state->reg_gen);
+        atomic_add(&ctrl_state->run_gen);
         for(DMN_EventNode *src_n = events.first; src_n != 0; src_n = src_n->next)
         {
           DMN_EventNode *dst_n = ctrl_state->free_dmn_event_node;
@@ -6852,7 +6852,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
   void *range_base = 0;
   U64 zero_terminated_size = 0;
   U64 pre_read_mem_gen = ctrl_mem_gen();
-  B32 pre_run_state = ins_atomic_u64_eval(&ctrl_state->ctrl_thread_run_state);
+  B32 pre_run_state = atomic_load(&ctrl_state->ctrl_thread_run_state);
 #if CTRL_MEM_STREAM_WORK_DEBUG
   Log *log = log_alloc();
   log_select(log);
@@ -6919,7 +6919,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
     }
   }
   U64 post_read_mem_gen = ctrl_mem_gen();
-  B32 post_run_state = ins_atomic_u64_eval(&ctrl_state->ctrl_thread_run_state);
+  B32 post_run_state = atomic_load(&ctrl_state->ctrl_thread_run_state);
   // NOTE(rjf): debugging
 #if CTRL_MEM_STREAM_WORK_DEBUG
   {
@@ -7219,7 +7219,7 @@ ASYNC_WORK_DEF(ctrl_call_stack_build_work)
     {
       if(ctrl_handle_match(n->thread, thread_handle))
       {
-        ins_atomic_u64_dec_eval(&n->working_count);
+        atomic_sub(&n->working_count);
         break;
       }
     }

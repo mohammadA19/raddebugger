@@ -39,13 +39,13 @@ ptg_init(void)
 internal void
 ptg_user_clock_tick(void)
 {
-  ins_atomic_u64_inc_eval(&ptg_shared->user_clock_idx);
+  atomic_add(&ptg_shared->user_clock_idx);
 }
 
 internal U64
 ptg_user_clock_idx(void)
 {
-  return ins_atomic_u64_eval(&ptg_shared->user_clock_idx);
+  return atomic_load(&ptg_shared->user_clock_idx);
 }
 
 ////////////////////////////////
@@ -79,7 +79,7 @@ ptg_scope_close(PTG_Scope *scope)
   for(PTG_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     next = touch->next;
-    ins_atomic_u64_dec_eval(&touch->node->scope_ref_count);
+    atomic_sub(&touch->node->scope_ref_count);
     SLLStackPush(ptg_tctx->free_touch, touch);
   }
   SLLStackPush(ptg_tctx->free_scope, scope);
@@ -89,7 +89,7 @@ internal void
 ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 {
   PTG_Touch *touch = ptg_tctx->free_touch;
-  ins_atomic_u64_inc_eval(&node->scope_ref_count);
+  atomic_add(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, ptg_user_clock_idx());
   if(touch != 0)
@@ -208,7 +208,7 @@ ptg_builder_thread__entry_point(void *p)
         {
           
           ins_atomic_u32_eval_assign(&n->is_working, 0);
-          ins_atomic_u64_inc_eval(&n->load_count);
+          atomic_add(&n->load_count);
           break;
         }
       }

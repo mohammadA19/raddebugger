@@ -314,7 +314,7 @@ dasm_scope_close(DASM_Scope *scope)
       {
         if(u128_match(t->hash, n->hash) && dasm_params_match(&t->params, &n->params))
         {
-          ins_atomic_u64_dec_eval(&n->scope_ref_count);
+          atomic_sub(&n->scope_ref_count);
           break;
         }
       }
@@ -327,7 +327,7 @@ internal void
 dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
 {
   DASM_Touch *touch = push_array(dasm_tctx->arena, DASM_Touch, 1);
-  ins_atomic_u64_inc_eval(&node->scope_ref_count);
+  atomic_add(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
   touch->hash = node->hash;
@@ -408,7 +408,7 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
           
           // rjf: gather work kickoff params
           node_is_new = 1;
-          ins_atomic_u64_inc_eval(&node->working_count);
+          atomic_add(&node->working_count);
           node_working_count = &node->working_count;
           root = node->root;
         }
@@ -780,7 +780,7 @@ dasm_evictor_detector_thread__entry_point(void *p)
           if(n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
              n->last_user_clock_idx_touched+evict_threshold_user_clocks <= check_time_user_clocks &&
-             ins_atomic_u64_eval(&n->working_count) == 0)
+             atomic_load(&n->working_count) == 0)
           {
             slot_has_work = 1;
             break;
@@ -802,7 +802,7 @@ dasm_evictor_detector_thread__entry_point(void *p)
           if(n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
              n->last_user_clock_idx_touched+evict_threshold_user_clocks <= check_time_user_clocks &&
-             ins_atomic_u64_eval(&n->working_count) == 0)
+             atomic_load(&n->working_count) == 0)
           {
             DLLRemove(slot->first, slot->last, n);
             if(n->info_arena != 0)

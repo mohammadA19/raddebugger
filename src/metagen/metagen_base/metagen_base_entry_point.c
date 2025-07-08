@@ -112,7 +112,7 @@ supplement_thread_base_entry_point(void (*entry_point)(void *params), void *para
 internal U64
 update_tick_idx(void)
 {
-  U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
+  U64 result = atomic_load(&global_update_tick_idx);
   return result;
 }
 
@@ -120,7 +120,7 @@ internal B32
 update(void)
 {
   ProfTick(0);
-  ins_atomic_u64_inc_eval(&global_update_tick_idx);
+  atomic_add(&global_update_tick_idx);
 #if OS_FEATURE_GRAPHICAL
   B32 result = frame();
 #else

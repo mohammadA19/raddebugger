@@ -70,7 +70,7 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
   B32 need_to_execute_on_this_thread = 0;
   OS_MutexScope(ring->ring_mutex) for(;;)
   {
-    U64 num_available_work_threads = (async_shared->work_threads_count - ins_atomic_u64_eval(&async_shared->work_threads_live_count));
+    U64 num_available_work_threads = (async_shared->work_threads_count - atomic_load(&async_shared->work_threads_live_count));
     if(num_available_work_threads == 0 && async_work_thread_depth > 0)
     {
       need_to_execute_on_this_thread = 1;
@@ -153,7 +153,7 @@ async_task_join(ASYNC_Task *task)
     os_semaphore_take(task->semaphore, max_U64);
     os_semaphore_release(task->semaphore);
     MemoryZeroStruct(&task->semaphore);
-    result = (void *)ins_atomic_u64_eval(&task->output);
+    result = (void *)atomic_load(&task->output);
   }
   return result;
 }
@@ -224,13 +224,13 @@ async_execute_work(ASYNC_Work work)
   //- rjf: increment completion counter
   if(work.completion_counter != 0)
   {
-    ins_atomic_u64_inc_eval(work.completion_counter);
+    atomic_add(work.completion_counter);
   }
   
   //- rjf: decrement working counter
   if(work.working_counter != 0)
   {
-    ins_atomic_u64_dec_eval(work.working_counter);
+    atomic_sub(work.working_counter);
   }
 }
 
@@ -279,8 +279,8 @@ async_work_thread__entry_point(void *p)
   for(;;)
   {
     ASYNC_Work work = async_pop_work();
-    ins_atomic_u64_inc_eval(&async_shared->work_threads_live_count);
+    atomic_add(&async_shared->work_threads_live_count);
     async_execute_work(work);
-    ins_atomic_u64_dec_eval(&async_shared->work_threads_live_count);
+    atomic_sub(&async_shared->work_threads_live_count);
   }
 }

@@ -158,14 +158,9 @@
 #if COMPILER_MSVC
 # include <intrin.h>
 # if ARCH_X64
-#  define ins_atomic_u64_eval(x)                 *((volatile U64 *)(x))
-#  define ins_atomic_u64_inc_eval(x)             InterlockedIncrement64((volatile __int64 *)(x))
-#  define ins_atomic_u64_dec_eval(x)             InterlockedDecrement64((volatile __int64 *)(x))
 #  define ins_atomic_u64_eval_assign(x,c)        InterlockedExchange64((volatile __int64 *)(x),(c))
 #  define ins_atomic_u64_add_eval(x,c)           InterlockedAdd64((volatile __int64 *)(x), c)
 #  define ins_atomic_u64_eval_cond_assign(x,k,c) InterlockedCompareExchange64((volatile __int64 *)(x),(k),(c))
-#  define ins_atomic_u32_eval(x)                 *((volatile U32 *)(x))
-#  define ins_atomic_u32_inc_eval(x)             InterlockedIncrement((volatile LONG *)x)
 #  define ins_atomic_u32_eval_assign(x,c)        InterlockedExchange((volatile LONG *)(x),(c))
 #  define ins_atomic_u32_eval_cond_assign(x,k,c) InterlockedCompareExchange((volatile LONG *)(x),(k),(c))
 #  define ins_atomic_u32_add_eval(x,c)           InterlockedAdd((volatile LONG *)(x), c)
@@ -173,14 +168,9 @@
 #  error Atomic intrinsics not defined for this compiler / architecture combination.
 # endif
 #elif COMPILER_CLANG || COMPILER_GCC
-#  define ins_atomic_u64_eval(x)                 __atomic_load_n(x, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u64_inc_eval(x)             (__atomic_fetch_add((volatile U64 *)(x), 1, __ATOMIC_SEQ_CST) + 1)
-#  define ins_atomic_u64_dec_eval(x)             (__atomic_fetch_sub((volatile U64 *)(x), 1, __ATOMIC_SEQ_CST) - 1)
 #  define ins_atomic_u64_eval_assign(x,c)        __atomic_exchange_n(x, c, __ATOMIC_SEQ_CST)
 #  define ins_atomic_u64_add_eval(x,c)           (__atomic_fetch_add((volatile U64 *)(x), c, __ATOMIC_SEQ_CST) + (c))
 #  define ins_atomic_u64_eval_cond_assign(x,k,c) ({ U64 _new = (c); __atomic_compare_exchange_n((volatile U64 *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
-#  define ins_atomic_u32_eval(x)                 __atomic_load_n(x, __ATOMIC_SEQ_CST)
-#  define ins_atomic_u32_inc_eval(x)             (__atomic_fetch_add((volatile U32 *)(x), 1, __ATOMIC_SEQ_CST) + 1)
 #  define ins_atomic_u32_add_eval(x,c)           (__atomic_fetch_add((volatile U32 *)(x), c, __ATOMIC_SEQ_CST) + (c))
 #  define ins_atomic_u32_eval_assign(x,c)        __atomic_exchange_n(x, c, __ATOMIC_SEQ_CST)
 #  define ins_atomic_u32_eval_cond_assign(x,k,c) ({ U32 _new = (c); __atomic_compare_exchange_n((volatile U32 *)(x),&_new,(k),0,__ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST); _new; })
@@ -191,11 +181,11 @@
 #if ARCH_64BIT
 # define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u64_eval_cond_assign((volatile U64 *)(x), (U64)(k), (U64)(c))
 # define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u64_eval_assign((volatile U64 *)(x), (U64)(c))
-# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u64_eval((volatile U64 *)x)
+# define ins_atomic_ptr_eval(x)                 (void*)atomic_load((volatile U64 *)x)
 #elif ARCH_32BIT
 # define ins_atomic_ptr_eval_cond_assign(x,k,c) (void*)ins_atomic_u32_eval_cond_assign((volatile U32 *)(x), (U32)(k), (U32)(c))
 # define ins_atomic_ptr_eval_assign(x,c)        (void*)ins_atomic_u32_eval_assign((volatile U32 *)(x), (U32)(c))
-# define ins_atomic_ptr_eval(x)                 (void*)ins_atomic_u32_eval((volatile U32 *)x)
+# define ins_atomic_ptr_eval(x)                 (void*)atomic_load((volatile U32 *)x)
 #else
 # error Atomic intrinsics for pointers not defined for this architecture.
 #endif

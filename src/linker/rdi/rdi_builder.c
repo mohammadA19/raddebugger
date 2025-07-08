@@ -2039,7 +2039,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_chunk_idx_task)
   for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_StringMapBucket *bucket    = task->src[bucket_idx];
     U32                   chunk_idx = bucket->sorter.hi;
-    U32                   dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
+    U32                   dst_idx   = atomic_add(&task->chunk_offsets[chunk_idx]) - 1;
     task->dst[dst_idx] = bucket;
   }
   ProfEnd();
@@ -2663,7 +2663,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_chunk_idx_task)
   for (U64 bucket_idx = task->ranges[task_id].min; bucket_idx < task->ranges[task_id].max; ++bucket_idx) {
     RDIB_IndexRunBucket *bucket    = task->src[bucket_idx];
     U32                  chunk_idx = bucket->sorter.hi;
-    U32                  dst_idx   = ins_atomic_u32_inc_eval(&task->chunk_offsets[chunk_idx]) - 1;
+    U32                  dst_idx   = atomic_add(&task->chunk_offsets[chunk_idx]) - 1;
     task->dst[dst_idx] = bucket;
   }
   ProfEnd();

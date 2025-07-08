@@ -65,7 +65,7 @@ fs_init(void)
 internal U64
 fs_change_gen(void)
 {
-  return ins_atomic_u64_eval(&fs_shared->change_gen);
+  return atomic_load(&fs_shared->change_gen);
 }
 
 ////////////////////////////////
@@ -173,10 +173,10 @@ fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
       }
       
       // rjf: try to send stream request
-      if(ins_atomic_u64_eval(&range_node->working_count) == 0 &&
+      if(atomic_load(&range_node->working_count) == 0 &&
          fs_u2s_enqueue_req(key, range, path, endt_us))
       {
-        ins_atomic_u64_inc_eval(&range_node->working_count);
+        atomic_add(&range_node->working_count);
         DeferLoop(os_rw_mutex_drop_w(path_stripe->rw_mutex), os_rw_mutex_take_w(path_stripe->rw_mutex))
         {
           async_push_work(fs_stream_work, .working_counter = &range_node->working_count);
@@ -374,7 +374,7 @@ ASYNC_WORK_DEF(fs_stream_work)
     {
       if(node->props.modified != 0)
       {
-        ins_atomic_u64_inc_eval(&fs_shared->change_gen);
+        atomic_add(&fs_shared->change_gen);
       }
       node->props = post_props;
     }
@@ -416,10 +416,10 @@ fs_detector_thread__entry_point(void *p)
                   range_n = range_n->next)
               {
                 HS_Key key = hs_key_make(n->root, range_n->id);
-                if(ins_atomic_u64_eval(&range_n->working_count) == 0 &&
+                if(atomic_load(&range_n->working_count) == 0 &&
                    fs_u2s_enqueue_req(key, r1u64(key.id.u128[0].u64[0], key.id.u128[0].u64[1]), n->path, os_now_microseconds()+100000))
                 {
-                  ins_atomic_u64_inc_eval(&range_n->working_count);
+                  atomic_add(&range_n->working_count);
                   async_push_work(fs_stream_work, .working_counter = &range_n->working_count);
                 }
               }

@@ -113,7 +113,7 @@ internal HS_Root
 hs_root_alloc(void)
 {
   HS_Root root = {0};
-  root.u64[0] = ins_atomic_u64_inc_eval(&hs_shared->root_id_gen);
+  root.u64[0] = atomic_add(&hs_shared->root_id_gen);
   U64 slot_idx = root.u64[0]%hs_shared->root_slots_count;
   U64 stripe_idx = slot_idx%hs_shared->root_stripes_count;
   HS_RootSlot *slot = &hs_shared->root_slots[slot_idx];
@@ -195,7 +195,7 @@ hs_root_release(HS_Root root)
                 {
                   if(u128_match(n->hash, hash))
                   {
-                    ins_atomic_u64_dec_eval(&n->key_ref_count);
+                    atomic_sub(&n->key_ref_count);
                     break;
                   }
                 }
@@ -368,7 +368,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
       {
         if(u128_match(n->hash, key_expired_hash))
         {
-          ins_atomic_u64_dec_eval(&n->key_ref_count);
+          atomic_sub(&n->key_ref_count);
           break;
         }
       }
@@ -420,7 +420,7 @@ hs_scope_close(HS_Scope *scope)
       {
         if(u128_match(hash, n->hash))
         {
-          ins_atomic_u64_dec_eval(&n->scope_ref_count);
+          atomic_sub(&n->scope_ref_count);
           break;
         }
       }
@@ -434,7 +434,7 @@ internal void
 hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 {
   HS_Touch *touch = hs_tctx->free_touch;
-  ins_atomic_u64_inc_eval(&node->scope_ref_count);
+  atomic_add(&node->scope_ref_count);
   if(touch != 0)
   {
     SLLStackPop(hs_tctx->free_touch);
@@ -464,7 +464,7 @@ hs_hash_downstream_inc(U128 hash)
     {
       if(u128_match(hash, n->hash))
       {
-        ins_atomic_u64_inc_eval(&n->downstream_ref_count);
+        atomic_add(&n->downstream_ref_count);
         break;
       }
     }
@@ -484,7 +484,7 @@ hs_hash_downstream_dec(U128 hash)
     {
       if(u128_match(hash, n->hash))
       {
-        ins_atomic_u64_dec_eval(&n->downstream_ref_count);
+        atomic_sub(&n->downstream_ref_count);
         break;
       }
     }
@@ -561,9 +561,9 @@ hs_evictor_thread__entry_point(void *p)
       {
         for(HS_Node *n = slot->first; n != 0; n = n->next)
         {
-          U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
-          U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
-          U64 downstream_ref_count = ins_atomic_u64_eval(&n->downstream_ref_count);
+          U64 key_ref_count = atomic_load(&n->key_ref_count);
+          U64 scope_ref_count = atomic_load(&n->scope_ref_count);
+          U64 downstream_ref_count = atomic_load(&n->downstream_ref_count);
           if(key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
           {
             slot_has_work = 1;
@@ -576,9 +576,9 @@ hs_evictor_thread__entry_point(void *p)
         for(HS_Node *n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
-          U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
-          U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
-          U64 downstream_ref_count = ins_atomic_u64_eval(&n->downstream_ref_count);
+          U64 key_ref_count = atomic_load(&n->key_ref_count);
+          U64 scope_ref_count = atomic_load(&n->scope_ref_count);
+          U64 downstream_ref_count = atomic_load(&n->downstream_ref_count);
           if(key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
           {
             DLLRemove(slot->first, slot->last, n);

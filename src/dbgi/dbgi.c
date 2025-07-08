@@ -278,12 +278,12 @@ di_scope_close(DI_Scope *scope)
     next = t->next;
     if(t->node != 0)
     {
-      ins_atomic_u64_dec_eval(&t->node->touch_count);
+      atomic_sub(&t->node->touch_count);
       os_condition_variable_broadcast(t->stripe->cv);
     }
     if(t->search_node != 0)
     {
-      ins_atomic_u64_dec_eval(&t->search_node->scope_refcount);
+      atomic_sub(&t->search_node->scope_refcount);
       os_condition_variable_broadcast(t->search_stripe->cv);
     }
     SLLStackPush(di_tctx->free_touch, t);
@@ -296,7 +296,7 @@ di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Stripe *stripe, 
 {
   if(node != 0)
   {
-    ins_atomic_u64_inc_eval(&node->touch_count);
+    atomic_add(&node->touch_count);
   }
   DI_Touch *touch = di_tctx->free_touch;
   if(touch != 0)
@@ -318,7 +318,7 @@ di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchStr
 {
   if(node != 0)
   {
-    ins_atomic_u64_inc_eval(&node->scope_refcount);
+    atomic_add(&node->scope_refcount);
   }
   DI_Touch *touch = di_tctx->free_touch;
   if(touch != 0)
@@ -541,7 +541,7 @@ di_close(DI_Key *key)
         if(node->ref_count == 0) for(;;)
         {
           //- rjf: release
-          if(ins_atomic_u64_eval(&node->touch_count) == 0)
+          if(atomic_load(&node->touch_count) == 0)
           {
             di_string_release__stripe_mutex_w_guarded(stripe, node->key.path);
             if(node->file_base != 0)
@@ -619,7 +619,7 @@ di_rdi_from_key(DI_Scope *scope, DI_Key *key, B32 high_priority, U64 endt_us)
       //- rjf: parse not done, not working -> ask for parse
       if(node != 0 &&
          !node->parse_done &&
-         !ins_atomic_u64_eval(&node->is_working) &&
+         !atomic_load(&node->is_working) &&
          di_u2p_enqueue_key(key, endt_us))
       {
         ProfScope("ask for parse")
@@ -1705,8 +1705,8 @@ di_match_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
     DLLInsert_NP(store->first_lru_match_name, store->last_lru_match_name, (DI_MatchNameNode *)0, node, lru_next, lru_prev);
     
     // rjf: if this node is new w.r.t. the store's current parameters, request it
-    U64 completed_params_hash = ins_atomic_u64_eval(&node->cmp_params_hash);
-    if(completed_params_hash != store->params_hash && node->req_count == ins_atomic_u64_eval(&node->cmp_count))
+    U64 completed_params_hash = atomic_load(&node->cmp_params_hash);
+    if(completed_params_hash != store->params_hash && node->req_count == atomic_load(&node->cmp_count))
     {
       B32 sent = 0;
       OS_MutexScope(store->u2m_ring_mutex) for(;;)
@@ -1743,7 +1743,7 @@ di_match_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
     {
       OS_MutexScopeR(store->match_rw_mutex) for(;;)
       {
-        if(node->req_params_hash == ins_atomic_u64_eval(&node->cmp_params_hash))
+        if(node->req_params_hash == atomic_load(&node->cmp_params_hash))
         {
           break;
         }
