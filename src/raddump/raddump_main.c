@@ -217,7 +217,7 @@ entry_point(CmdLine *cmdline)
   if (opts & RD_Option_Help) {
     int longest_cmd_switch = 0;
     for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
-      longest_cmd_switch = Max(longest_cmd_switch, strlen(g_rd_dump_option_map[opt_idx].name));
+      longest_cmd_switch = max(longest_cmd_switch, strlen(g_rd_dump_option_map[opt_idx].name));
     }
     rd_printf(BUILD_TITLE_STRING_LITERAL);
     rd_newline();

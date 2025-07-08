@@ -206,7 +206,7 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
     pool->task_done  = 0;
     ins_atomic_u64_eval_assign(&pool->task_left, task_count);
 
-    U64 drop_count = Min(task_count, pool->worker_count);
+    U64 drop_count = min(task_count, pool->worker_count);
 
     // if we are in shared mode ping local semaphore
     if (!os_handle_match(pool->exec_semaphore, os_handle_zero())) {
@@ -234,8 +234,8 @@ tp_divide_work(Arena *arena, U64 item_count, U32 worker_count)
   U64      per_count = CeilIntegerDiv(item_count, worker_count);
   Rng1U64 *range_arr = push_array_no_zero(arena, Rng1U64, worker_count + 1);
   for (U64 i = 0; i < worker_count; i += 1) {
-    range_arr[i] = rng_1u64(Min(item_count, i * per_count), 
-                            Min(item_count, i * per_count + per_count));
+    range_arr[i] = rng_1u64(min(item_count, i * per_count), 
+                            min(item_count, i * per_count + per_count));
   }
 
   // thread_pool_dummy_range:

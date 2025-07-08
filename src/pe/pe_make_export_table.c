@@ -134,7 +134,7 @@ pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
   for (PE_ExportParseNode *exp_n = export_list.first; exp_n != 0; exp_n = exp_n->next) {
     PE_ExportParse *exp = &exp_n->data;
     if (exp->is_ordinal_assigned) {
-      ordinal_low = Min(ordinal_low, exp->ordinal);
+      ordinal_low = min(ordinal_low, exp->ordinal);
       is_ordinal_used[exp->ordinal] = 1;
     }
   }

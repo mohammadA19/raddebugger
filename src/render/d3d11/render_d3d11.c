@@ -1250,7 +1250,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
           {
             F32 weights[ArrayCount(uniforms.kernel)*2] = {0};
             
-            F32 blur_size = Min(params->blur_size, ArrayCount(weights));
+            F32 blur_size = min(params->blur_size, ArrayCount(weights));
             U64 blur_count = (U64)round_f32(blur_size);
             
             F32 stdev = (blur_size-1.f)/2.f;

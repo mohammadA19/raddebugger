@@ -703,7 +703,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
   
   rd_printf(".debug_loc");
   rd_indent();
-  rd_printf("%-8s %-8s %-8s %s", "Offset", "Min", "Max", "Expression");
+  rd_printf("%-8s %-8s %-8s %s", "Offset", "min", "max", "Expression");
   for (U32 comp_idx = 0; comp_idx < cu_range_list.count; ++comp_idx) {
     Temp locs_temp = temp_begin(scratch.arena);
     
@@ -832,7 +832,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
   
   rd_printf("# %S", sections->v[DW_Section_Ranges].name);
   rd_indent();
-  rd_printf("%-8s %-8s %-8s", "Offset", "Min", "Max");
+  rd_printf("%-8s %-8s %-8s", "Offset", "min", "max");
   for (U32 comp_idx = 0; comp_idx < cu_range_list.count; ++comp_idx) {
     U64Array locs = u64_array_from_list(scratch.arena, &loc_lists[comp_idx]);
     u64_array_sort(locs.count, locs.v);

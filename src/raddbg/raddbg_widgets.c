@@ -711,8 +711,8 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
                indicator_region_rect.y0,
                indicator_region_rect.x0 + width*t + min_thickness/2 + trail*v,
                indicator_region_rect.y1);
-      indicator_rect.x0 = Clamp(indicator_region_rect.x0, indicator_rect.x0, indicator_region_rect.x1);
-      indicator_rect.x1 = Clamp(indicator_region_rect.x0, indicator_rect.x1, indicator_region_rect.x1);
+      indicator_rect.x0 = clamp(indicator_region_rect.x0, indicator_rect.x0, indicator_region_rect.x1);
+      indicator_rect.x1 = clamp(indicator_region_rect.x0, indicator_rect.x1, indicator_region_rect.x1);
       indicator_rect = pad_2f32(indicator_rect, -1.f);
       
       // rjf: does the view have loading *progress* info? -> draw extra progress layer
@@ -1561,7 +1561,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                   Vec4F32 weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
                   F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
-                  progress_t = Clamp(0, progress_t, 1);
+                  progress_t = clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
               }
@@ -1715,7 +1715,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                   Vec4F32 weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
                   F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
-                  progress_t = Clamp(0, progress_t, 1);
+                  progress_t = clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
               }
@@ -1991,7 +1991,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     {
       DR_FStrList line_fstrs = lines_fstrs[line_idx];
       F32 line_text_dim = dr_dim_from_fstrs(params->tab_size, &line_fstrs).x + params->line_num_width_px + params->catchall_margin_width_px + params->priority_margin_width_px;
-      line_extras_off[line_idx] = Max(line_text_dim, params->font_size*30);
+      line_extras_off[line_idx] = max(line_text_dim, params->font_size*30);
     }
   }
   
@@ -2774,7 +2774,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       if(evt->delta_unit == UI_EventDeltaUnit_Char && delta.y > 0 && cursor->line+1 <= line_count)
       {
         cursor->line += 1;
-        cursor->column = Min(*preferred_column, next_line.size+1);
+        cursor->column = min(*preferred_column, next_line.size+1);
         change = 1;
         taken = 1;
       }
@@ -2783,7 +2783,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       if(evt->delta_unit == UI_EventDeltaUnit_Char && delta.y < 0 && cursor->line-1 >= 1)
       {
         cursor->line -= 1;
-        cursor->column = Min(*preferred_column, prev_line.size+1);
+        cursor->column = min(*preferred_column, prev_line.size+1);
         change = 1;
         taken = 1;
       }
@@ -2839,7 +2839,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       {
         cursor->line += line_count_per_page;
         cursor->column = 1;
-        cursor->line = Clamp(1, cursor->line, line_count);
+        cursor->line = clamp(1, cursor->line, line_count);
         change = 1;
         taken = 1;
       }
@@ -2849,7 +2849,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       {
         cursor->line -= line_count_per_page;
         cursor->column = 1;
-        cursor->line = Clamp(1, cursor->line, line_count);
+        cursor->line = clamp(1, cursor->line, line_count);
         change = 1;
         taken = 1;
       }
@@ -3650,7 +3650,7 @@ rd_cell(RD_CellParams *params, String8 string)
           fill_box = ui_build_box_from_key(UI_BoxFlag_DrawBackground|UI_BoxFlag_DrawBorder, ui_key_zero());
         UI_Parent(fill_box)
         {
-          ui_spacer(ui_pct(Clamp(0, params->slider_value_out[0], 1), 0.f));
+          ui_spacer(ui_pct(clamp(0, params->slider_value_out[0], 1), 0.f));
           UI_BackgroundColor(ui_color_from_name(str8_lit("text")))
             UI_PrefWidth(ui_px(height_px, 1.f))
           {
@@ -3664,7 +3664,7 @@ rd_cell(RD_CellParams *params, String8 string)
             }
           }
         }
-        ui_spacer(ui_pct(1-Clamp(0, params->slider_value_out[0], 1), 0.f));
+        ui_spacer(ui_pct(1-clamp(0, params->slider_value_out[0], 1), 0.f));
       }
     }
     ui_spacer(ui_em(1.f, 1.f));
@@ -3739,7 +3739,7 @@ rd_cell(RD_CellParams *params, String8 string)
     if(start_editing_via_sig || start_editing_via_typing)
     {
       String8 edit_string = params->pre_edit_value;
-      edit_string.size = Min(params->edit_buffer_size, params->pre_edit_value.size);
+      edit_string.size = min(params->edit_buffer_size, params->pre_edit_value.size);
       MemoryCopy(params->edit_buffer, edit_string.str, edit_string.size);
       params->edit_string_size_out[0] = edit_string.size;
       ui_set_auto_focus_active_key(key);
@@ -3793,7 +3793,7 @@ rd_cell(RD_CellParams *params, String8 string)
         RD_WindowState *ws = rd_window_state_from_cfg(window);
         RD_AutocompCursorInfo *autocomp_cursor_info = &ws->autocomp_cursor_info;
         String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(autocomp_cursor_info->replaced_range.min+1, autocomp_cursor_info->replaced_range.max+1), autocomplete_hint_string);
-        new_string.size = Min(params->edit_buffer_size, new_string.size);
+        new_string.size = min(params->edit_buffer_size, new_string.size);
         MemoryCopy(params->edit_buffer, new_string.str, new_string.size);
         params->edit_string_size_out[0] = new_string.size;
         params->cursor[0] = params->mark[0] = txt_pt(1, 1+autocomp_cursor_info->replaced_range.min+autocomplete_hint_string.size);
@@ -3806,7 +3806,7 @@ rd_cell(RD_CellParams *params, String8 string)
       if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
       {
         String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
-        new_string.size = Min(params->edit_buffer_size, new_string.size);
+        new_string.size = min(params->edit_buffer_size, new_string.size);
         MemoryCopy(params->edit_buffer, new_string.str, new_string.size);
         params->edit_string_size_out[0] = new_string.size;
       }
@@ -4031,8 +4031,8 @@ rd_cell(RD_CellParams *params, String8 string)
       cursor_range_px.max = ClampBot(0, cursor_range_px.max);
       F32 min_delta = cursor_range_px.min-visible_range_px.min;
       F32 max_delta = cursor_range_px.max-visible_range_px.max;
-      min_delta = Min(min_delta, 0);
-      max_delta = Max(max_delta, 0);
+      min_delta = min(min_delta, 0);
+      max_delta = max(max_delta, 0);
       scrollable_box->view_off_target.x += min_delta;
       scrollable_box->view_off_target.x += max_delta;
     }

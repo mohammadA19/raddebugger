@@ -398,7 +398,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
   {
     void *bytes_src = (U8 *)data + src_off;
     U64 bytes_left = total_write_size - src_off;
-    DWORD write_size = Min(MB(1), bytes_left);
+    DWORD write_size = min(MB(1), bytes_left);
     DWORD bytes_written = 0;
     OVERLAPPED overlapped = {0};
     overlapped.Offset = (dst_off&0x00000000ffffffffull);
@@ -518,7 +518,7 @@ internal String8
 os_full_path_from_path(Arena *arena, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
+  DWORD     buffer_size = max(MAX_PATH, path.size * 2) + 1;
   String16  path16      = str16_from_8(scratch.arena, path);
   WCHAR    *buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
   DWORD     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
@@ -1738,7 +1738,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
        str8_match(arg8, str8_lit("-large_pages"), StringMatchFlag_CaseInsensitive))
     {
       arena_default_flags        = ArenaFlag_LargePages;
-      arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);
+      arena_default_reserve_size = max(MB(64), os_w32_state.system_info.large_page_size);
       arena_default_commit_size  = arena_default_reserve_size;
     }
     if(str8_match(arg8, str8_lit("--gen_crash_dump"), StringMatchFlag_CaseInsensitive) ||

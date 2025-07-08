@@ -776,7 +776,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
         task_weight = 0;
       }
 
-      U64 max_range_weight = Min(per_task_weight, string_table.size - cursor);
+      U64 max_range_weight = min(per_task_weight, string_table.size - cursor);
 
       CV_StringTableRange *node = push_array(scratch.arena, CV_StringTableRange, 1);
       node->range               = rng_1u64(cursor, cursor + max_range_weight);
@@ -1628,7 +1628,7 @@ cv_c13_lines_from_sub_sections(Arena *arena, String8 c13_data, Rng1U64 ss_range)
       //
       // TODO: export columns
       U64  max_line_count = (sub_sect_data.size - cursor) / sizeof(CV_C13Line);
-      U32  line_count     = Min(file->num_lines, max_line_count);
+      U32  line_count     = min(file->num_lines, max_line_count);
 
       // TODO(allen): check order correctness here
 
@@ -1747,7 +1747,7 @@ cv_c13_inlinee_lines_from_sub_sections(Arena *arena, String8List raw_inlinee_lin
           cursor += sizeof(*extra_file_count_ptr);
 
           U32 max_extra_file_count = (raw_data_node->string.size - cursor) / sizeof(U32);
-          U32 extra_file_count     = Min(*extra_file_count_ptr, max_extra_file_count);
+          U32 extra_file_count     = min(*extra_file_count_ptr, max_extra_file_count);
           U32 *extra_files         = (U32 *)(raw_data_node->string.str + cursor);
           cursor += sizeof(*extra_files) * extra_file_count;
 

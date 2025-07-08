@@ -181,7 +181,7 @@ max_array_u64(U64 count, U64 *v)
 {
   U64 result = 0;
   for (U64 i = 0; i < count; i += 1) {
-    result = Max(v[i], result);
+    result = max(v[i], result);
   }
   return result;
 }
@@ -191,7 +191,7 @@ min_array_u64(U64 count, U64 *v)
 {
   U64 result = max_U64;
   for (U64 i = 0; i < count; i += 1) {
-    result = Min(v[i], result);
+    result = min(v[i], result);
   }
   return result;
 }

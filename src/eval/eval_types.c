@@ -412,7 +412,7 @@ e_type_key_cons_(E_ConsTypeParams *params)
         node->params.members[idx].name = push_str8_copy(e_cache->arena, node->params.members[idx].name);
         node->params.members[idx].inheritance_key_chain = e_type_key_list_copy(e_cache->arena, &node->params.members[idx].inheritance_key_chain);
         U64 opl_off = (node->params.members[idx].off + e_type_byte_size_from_key(node->params.members[idx].type_key));
-        node->byte_size = Max(node->byte_size, opl_off);
+        node->byte_size = max(node->byte_size, opl_off);
       }
     }
     else if(params->enum_vals != 0)
@@ -741,7 +741,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                 for(U64 idx = 0; idx < type->count; idx += 1)
                 {
                   U64 opl_byte = type->members[idx].off + e_type_byte_size_from_key(type->members[idx].type_key);
-                  type->byte_size = Max(type->byte_size, opl_byte);
+                  type->byte_size = max(type->byte_size, opl_byte);
                 }
               }break;
               case E_TypeKind_Enum:

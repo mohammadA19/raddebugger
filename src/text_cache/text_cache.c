@@ -165,7 +165,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
-  U64 chunk_size = Clamp(8, string.size/8, 4096);
+  U64 chunk_size = clamp(8, string.size/8, 4096);
   
   //- rjf: generate token list
   TXT_TokenChunkList tokens = {0};
@@ -1601,7 +1601,7 @@ txt_init(void)
   txt_shared->arena = arena;
   txt_shared->slots_count = 1024;
   txt_shared->slots = push_array(arena, TXT_Slot, txt_shared->slots_count);
-  txt_shared->stripes_count = Min(txt_shared->slots_count, os_get_system_info()->logical_processor_count);
+  txt_shared->stripes_count = min(txt_shared->slots_count, os_get_system_info()->logical_processor_count);
   txt_shared->stripes = push_array(arena, TXT_Stripe, txt_shared->stripes_count);
   txt_shared->stripes_free_nodes = push_array(arena, TXT_Node *, txt_shared->stripes_count);
   for(U64 idx = 0; idx < txt_shared->stripes_count; idx += 1)
@@ -2001,7 +2001,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
   Temp scratch = scratch_begin(&arena, 1);
   if(info->lines_count != 0)
   {
-    Rng1S64 line_range_clamped = r1s64(Clamp(1, line_range.min, (S64)info->lines_count), Clamp(1, line_range.max, (S64)info->lines_count));
+    Rng1S64 line_range_clamped = r1s64(clamp(1, line_range.min, (S64)info->lines_count), clamp(1, line_range.max, (S64)info->lines_count));
     U64 line_count = (U64)dim_1s64(line_range_clamped)+1;
     
     // rjf: allocate output arrays
@@ -2197,7 +2197,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     if(bytes_to_process_ptr)
     {
       //                                               (line ending calc)     (line counting)    (line measuring)   (lexing)
-      ins_atomic_u64_eval_assign(bytes_to_process_ptr, Min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind_Null));
+      ins_atomic_u64_eval_assign(bytes_to_process_ptr, min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind_Null));
     }
     
     //- rjf: detect line end kind
@@ -2230,7 +2230,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, Min(data.size, 1024));
+      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024));
     }
     
     //- rjf: count # of lines
@@ -2255,7 +2255,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, Min(data.size, 1024) + data.size);
+      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size);
     }
     
     //- rjf: allocate & store line ranges
@@ -2270,7 +2270,7 @@ ASYNC_WORK_DEF(txt_parse_work)
         Rng1U64 line_range = r1u64(line_start_idx, idx);
         U64 line_size = dim_1u64(line_range);
         info.lines_ranges[line_idx] = line_range;
-        info.lines_max_size = Max(info.lines_max_size, line_size);
+        info.lines_max_size = max(info.lines_max_size, line_size);
         line_idx += 1;
         line_start_idx = idx+1;
         if(idx < data.size && data.str[idx] == '\r')
@@ -2288,7 +2288,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, Min(data.size, 1024) + data.size + data.size);
+      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size);
     }
     
     //- rjf: lang -> lex function
@@ -2305,7 +2305,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, Min(data.size, 1024) + data.size + data.size + data.size*(lex_function != 0));
+      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size + data.size*(lex_function != 0));
     }
   }
   

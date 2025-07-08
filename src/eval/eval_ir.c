@@ -85,7 +85,7 @@ e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
   E_Op *node = push_array_no_zero(arena, E_Op, 1);
   node->opcode = opcode;
   node->string = string;
-  node->value.u64 = Min(string.size, 64);
+  node->value.u64 = min(string.size, 64);
   SLLQueuePush(list->first, list->last, node);
   list->op_count += 1;
   list->encoded_size += 1 + p_size + node->value.u64;
@@ -220,7 +220,7 @@ e_irtree_mem_read_type(Arena *arena, E_IRNode *c, E_TypeKey type_key)
 {
   E_IRNode *result = &e_irnode_nil;
   U64 byte_size = e_type_byte_size_from_key(type_key);
-  byte_size = Min(64, byte_size);
+  byte_size = min(64, byte_size);
   
   // rjf: build the read node
   E_IRNode *read_node = e_push_irnode(arena, RDI_EvalOp_MemRead);
@@ -1802,7 +1802,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                     {
                       U64 past_next_dbl_colon_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("::"), 0)+2;
                       U64 past_next_dot_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("."), 0)+1;
-                      U64 past_next_scope_resolution_pos = Min(past_next_dbl_colon_pos, past_next_dot_pos);
+                      U64 past_next_scope_resolution_pos = min(past_next_dbl_colon_pos, past_next_dot_pos);
                       if(past_next_scope_resolution_pos >= containing_procedure_name.size)
                       {
                         break;

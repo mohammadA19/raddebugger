@@ -113,14 +113,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
                                                 scroll_pos.y.idx + 1 + num_possible_visible_lines);
   U64 visible_line_count = 0;
   {
-    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
-    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
-    visible_line_num_range.min = Max(1, visible_line_num_range.min);
-    visible_line_num_range.max = Max(1, visible_line_num_range.max);
-    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
-    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
-    target_visible_line_num_range.min = Max(1, target_visible_line_num_range.min);
-    target_visible_line_num_range.max = Max(1, target_visible_line_num_range.max);
+    visible_line_num_range.min = clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
+    visible_line_num_range.max = clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
+    visible_line_num_range.min = max(1, visible_line_num_range.min);
+    visible_line_num_range.max = max(1, visible_line_num_range.max);
+    target_visible_line_num_range.min = clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
+    target_visible_line_num_range.max = clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
+    target_visible_line_num_range.min = max(1, target_visible_line_num_range.min);
+    target_visible_line_num_range.max = max(1, target_visible_line_num_range.max);
     visible_line_count = (U64)dim_1s64(visible_line_num_range)+1;
   }
   
@@ -571,7 +571,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   {
     S64 line_num = cv->goto_line_num;
     cv->goto_line_num = 0;
-    line_num = Clamp(1, line_num, text_info->lines_count);
+    line_num = clamp(1, line_num, text_info->lines_count);
     rd_regs()->cursor = rd_regs()->mark = txt_pt(line_num, 1);
     cv->center_cursor = !cv->force_contain_only && (!cv->contain_cursor || (line_num < target_visible_line_num_range.min+4 || target_visible_line_num_range.max-4 < line_num));
   }
@@ -666,7 +666,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         // rjf: scroll x
         {
           S64 new_idx = (S64)(cursor_advance - code_area_dim.x/2);
-          new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
+          new_idx = clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
           ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
           snap[Axis2_X] = 0;
         }
@@ -674,7 +674,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         // rjf: scroll y
         {
           S64 new_idx = (cursor.line-1) - num_possible_visible_lines/2 + 2;
-          new_idx = Clamp(scroll_idx_rng[Axis2_Y].min, new_idx, scroll_idx_rng[Axis2_Y].max);
+          new_idx = clamp(scroll_idx_rng[Axis2_Y].min, new_idx, scroll_idx_rng[Axis2_Y].max);
           ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
           snap[Axis2_Y] = 0;
         }
@@ -696,10 +696,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         cursor_off - (S64)(big_glyph_advance*4) - (S64)(priority_margin_width_px + catchall_margin_width_px + line_num_width_px),
         cursor_off + (S64)(big_glyph_advance*4),
       };
-      S64 min_delta = Min(0, cursor_pixel_range.min - visible_pixel_range.min);
-      S64 max_delta = Max(0, cursor_pixel_range.max - visible_pixel_range.max);
+      S64 min_delta = min(0, cursor_pixel_range.min - visible_pixel_range.min);
+      S64 max_delta = max(0, cursor_pixel_range.max - visible_pixel_range.max);
       S64 new_idx = scroll_pos.x.idx+min_delta+max_delta;
-      new_idx = Clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
+      new_idx = clamp(scroll_idx_rng[Axis2_X].min, new_idx, scroll_idx_rng[Axis2_X].max);
       ui_scroll_pt_target_idx(&scroll_pos.x, new_idx);
     }
     
@@ -709,10 +709,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       Rng1S64 cursor_visibility_range = r1s64(cursor.line-4, cursor.line+4);
       cursor_visibility_range.min = ClampBot(0, cursor_visibility_range.min);
       cursor_visibility_range.max = ClampBot(0, cursor_visibility_range.max);
-      S64 min_delta = Min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
-      S64 max_delta = Max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
+      S64 min_delta = min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
+      S64 max_delta = max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
       S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
-      new_idx = Clamp(0, new_idx, (S64)text_info->lines_count-1);
+      new_idx = clamp(0, new_idx, (S64)text_info->lines_count-1);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
   }
@@ -2727,11 +2727,11 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         {
           if(evt->delta_2s32.x < 0 || evt->delta_2s32.y < 0)
           {
-            next_cursor_base_vaddr = Min(cursor_base_vaddr, mark_base_vaddr);
+            next_cursor_base_vaddr = min(cursor_base_vaddr, mark_base_vaddr);
           }
           else
           {
-            next_cursor_base_vaddr = Max(cursor_base_vaddr, mark_base_vaddr);
+            next_cursor_base_vaddr = max(cursor_base_vaddr, mark_base_vaddr);
           }
         }
         if(good_action && !(evt->flags & UI_EventFlag_KeepMark))
@@ -2795,8 +2795,8 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
       viz_range_nonoccluded_rows.max = clamp_1s64(scroll_idx_rng, viz_range_nonoccluded_rows.max);
       S64 cursor_row_idx = (cursor_base_vaddr - view_range.min) / num_columns;
       Rng1S64 cursor_viz_range = r1s64(clamp_1s64(scroll_idx_rng, cursor_row_idx-2), clamp_1s64(scroll_idx_rng, cursor_row_idx+3));
-      S64 min_delta = Min(0, cursor_viz_range.min-viz_range_nonoccluded_rows.min);
-      S64 max_delta = Max(0, cursor_viz_range.max-viz_range_nonoccluded_rows.max);
+      S64 min_delta = min(0, cursor_viz_range.min-viz_range_nonoccluded_rows.min);
+      S64 max_delta = max(0, cursor_viz_range.max-viz_range_nonoccluded_rows.max);
       S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
       new_idx = clamp_1s64(scroll_idx_rng, new_idx);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
@@ -3080,7 +3080,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                                        rdi_opl_voff_from_scope(rdi, root_scope));
             Rng1U64 vaddr_range = ctrl_vaddr_range_from_voff_range(module, voff_range);
             next_vaddr = vaddr_range.max;
-            next_vaddr = Max(next_vaddr, vaddr+1);
+            next_vaddr = max(next_vaddr, vaddr+1);
             Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
             if(vaddr_range_in_visible.min < vaddr_range_in_visible.max)
             {
@@ -3136,7 +3136,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             Rng1U64 voff_range = r1u64(gvar->voff, gvar->voff + type_node->byte_size);
             Rng1U64 vaddr_range = ctrl_vaddr_range_from_voff_range(module, voff_range);
             next_vaddr = vaddr_range.max;
-            next_vaddr = Max(next_vaddr, vaddr+1);
+            next_vaddr = max(next_vaddr, vaddr+1);
             Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
             if(vaddr_range_in_visible.min < vaddr_range_in_visible.max)
             {
@@ -3374,7 +3374,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         mouse_hover_byte_num = viz_range_bytes.min + row_idx*num_columns + col_idx + 1;
       }
       
-      mouse_hover_byte_num = Clamp(1, mouse_hover_byte_num, 0x7FFFFFFFFFFFull+1);
+      mouse_hover_byte_num = clamp(1, mouse_hover_byte_num, 0x7FFFFFFFFFFFull+1);
     }
     
     // rjf: press -> focus panel
@@ -3782,7 +3782,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
   Rng2F32 rect_scrn = box->rect;
   Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data->view_center_pos, draw_data->zoom, rect_scrn, rect_scrn);
   F32 grid_cell_size_cvs = box->font_size*10.f;
-  F32 grid_line_thickness_px = Max(2.f, box->font_size*0.1f);
+  F32 grid_line_thickness_px = max(2.f, box->font_size*0.1f);
   Vec4F32 grid_line_color = {0};
   UI_TagF("weak")
   {
@@ -3916,7 +3916,7 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
     if(canvas_sig.scroll.y != 0)
     {
       F32 new_zoom = zoom - zoom*canvas_sig.scroll.y/10.f;
-      new_zoom = Clamp(1.f/256.f, new_zoom, 256.f);
+      new_zoom = clamp(1.f/256.f, new_zoom, 256.f);
       Vec2F32 mouse_scr_pre = sub_2f32(ui_mouse(), rect.p0);
       Vec2F32 mouse_cvs = rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, canvas_rect, mouse_scr_pre);
       zoom = new_zoom;
@@ -4181,10 +4181,10 @@ RD_VIEW_UI_FUNCTION_DEF(color)
   //- rjf: calculate dimensions
   //
   Vec2F32 dim = dim_2f32(rect);
-  F32 sv_dim_px = Min(dim.x, dim.y);
+  F32 sv_dim_px = min(dim.x, dim.y);
   F32 padding = sv_dim_px*0.2f;
   sv_dim_px -= padding*2.f;
-  sv_dim_px = Min(sv_dim_px, ui_top_font_size()*70.f);
+  sv_dim_px = min(sv_dim_px, ui_top_font_size()*70.f);
   
   //////////////////////////////
   //- rjf: build UI
@@ -4420,8 +4420,8 @@ RD_VIEW_UI_FUNCTION_DEF(geo3d)
       pitch_target = drag_start_data.y + drag_delta.y/dim.y;
     }
     zoom_target += sig.scroll.y;
-    zoom_target = Clamp(0.1f, zoom_target, 100.f);
-    pitch_target = Clamp(-0.49f, pitch_target, -0.01f);
+    zoom_target = clamp(0.1f, zoom_target, 100.f);
+    pitch_target = clamp(-0.49f, pitch_target, -0.01f);
     RD_Geo3DBoxDrawData *draw_data = push_array(ui_build_arena(), RD_Geo3DBoxDrawData, 1);
     draw_data->yaw   = state->yaw;
     draw_data->pitch = state->pitch;

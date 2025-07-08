@@ -1022,7 +1022,7 @@ rb_entry_point(CmdLine *cmdline)
     {
       for(U64 off = 0; off < n->string.size;)
       {
-        U64 size_to_write = Min(n->string.size - off, GB(2));
+        U64 size_to_write = min(n->string.size - off, GB(2));
         fwrite(n->string.str + off, size_to_write, 1, stdout);
         off += size_to_write;
       }

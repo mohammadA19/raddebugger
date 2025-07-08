@@ -2999,8 +2999,8 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
     }
   }
 
-  U16 total_source_file_count16    = Min(max_U16, total_source_file_count);
-  U16 mod_count16                  = Min(max_U16, mod_list.count);
+  U16 total_source_file_count16    = min(max_U16, total_source_file_count);
+  U16 mod_count16                  = min(max_U16, mod_list.count);
 
   PDB_DbiBuildFileInfoTask task    = {0};
   task.string_ht                   = string_ht;
@@ -3050,7 +3050,7 @@ dbi_build_module_info(Arena *arena, PDB_DbiContext *dbi, MSF_Context *msf)
     header->symbols_size         = mod->sym_data_size;
     header->c11_lines_size       = mod->c11_data_size;
     header->c13_lines_size       = mod->c13_data_size;
-    header->num_contrib_files    = Min(max_U16, mod->source_file_list.node_count);
+    header->num_contrib_files    = min(max_U16, mod->source_file_list.node_count);
     header->file_names_offset    = 0; // TODO: fill out the offset
     // TODO: generate EC info
     header->src_file             = 0;

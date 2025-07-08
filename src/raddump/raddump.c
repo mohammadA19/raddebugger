@@ -3498,7 +3498,7 @@ pe_print_exceptions_x8664(Arena              *arena,
         rd_printf("Function Info:");
         rd_indent();
         rd_printf("Magic:                      %#x", func_info.magic);
-        rd_printf("Max State:                  %u",  func_info.max_state);
+        rd_printf("max State:                  %u",  func_info.max_state);
         rd_printf("Try Block Count:            %u",  func_info.try_block_map_count);
         rd_printf("IP Map Count:               %u",  func_info.ip_map_count);
         rd_printf("Frame Offset Unwind Helper: %#x", func_info.frame_offset_unwind_helper);

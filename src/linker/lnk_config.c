@@ -141,7 +141,7 @@ global read_only LNK_CmdSwitch g_cmd_switch_map[] =
   { LNK_CmdSwitch_Rad_OsVer,                      0, "RAD_OS_VER",                         ":##,##", ""                                                                                    },
   { LNK_CmdSwitch_Rad_PageSize,                   0, "RAD_PAGE_SIZE",                      ":#",        "Must be power of two."                                                            },
   { LNK_CmdSwitch_Rad_PathStyle,                  0, "RAD_PATH_STYLE",                     ":{WindowsAbsolute|UnixAbsolute}", ""                                                           },
-  { LNK_CmdSwitch_Rad_PdbHashTypeNameLength,      0, "RAD_PDB_HASH_TYPE_NAME_LENGTH",      ":#",        "Number of hash bytes to use to replace type name. Default 8 bytes (Max 16)."      },
+  { LNK_CmdSwitch_Rad_PdbHashTypeNameLength,      0, "RAD_PDB_HASH_TYPE_NAME_LENGTH",      ":#",        "Number of hash bytes to use to replace type name. Default 8 bytes (max 16)."      },
   { LNK_CmdSwitch_Rad_PdbHashTypeNameMap,         0, "RAD_PDB_HASH_TYPE_NAME_MAP",         ":FILENAME", "Produce map file with hash -> type name mappings."                                },
   { LNK_CmdSwitch_Rad_PdbHashTypeNames,           0, "RAD_PDB_HASH_TYPE_NAMES",            ":{NONE|LENIENT|FULL}", "Replace type names in LF_STRUCTURE and LF_CLASS with hashes."          },
   { LNK_CmdSwitch_Rad_RemoveSection,              0, "RAD_REMOVE_SECTION",                 ":NAME",     "Removes a section from output image."                                             },

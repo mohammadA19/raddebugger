@@ -11,7 +11,7 @@ ptg_init(void)
   ptg_shared = push_array(arena, PTG_Shared, 1);
   ptg_shared->arena = arena;
   ptg_shared->slots_count = 1024;
-  ptg_shared->stripes_count = Min(ptg_shared->slots_count, os_get_system_info()->logical_processor_count);
+  ptg_shared->stripes_count = min(ptg_shared->slots_count, os_get_system_info()->logical_processor_count);
   ptg_shared->slots = push_array(arena, PTG_GraphSlot, ptg_shared->slots_count);
   ptg_shared->stripes = push_array(arena, PTG_GraphStripe, ptg_shared->stripes_count);
   for(U64 idx = 0; idx < ptg_shared->stripes_count; idx += 1)
@@ -24,7 +24,7 @@ ptg_init(void)
   ptg_shared->u2b_ring_base = push_array_no_zero(arena, U8, ptg_shared->u2b_ring_size);
   ptg_shared->u2b_ring_cv = os_condition_variable_alloc();
   ptg_shared->u2b_ring_mutex = os_mutex_alloc();
-  ptg_shared->builder_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
+  ptg_shared->builder_thread_count = clamp(1, os_get_system_info()->logical_processor_count-1, 4);
   ptg_shared->builder_threads = push_array(arena, OS_Handle, ptg_shared->builder_thread_count);
   for(U64 idx = 0; idx < ptg_shared->builder_thread_count; idx += 1)
   {

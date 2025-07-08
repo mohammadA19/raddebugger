@@ -340,13 +340,13 @@ fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
         {
           InvalidPath;
         }
-        parent->max_free_size[p_corner].x = Max(Max(p->max_free_size[Corner_00].x,
+        parent->max_free_size[p_corner].x = max(max(p->max_free_size[Corner_00].x,
                                                     p->max_free_size[Corner_01].x),
-                                                Max(p->max_free_size[Corner_10].x,
+                                                max(p->max_free_size[Corner_10].x,
                                                     p->max_free_size[Corner_11].x));
-        parent->max_free_size[p_corner].y = Max(Max(p->max_free_size[Corner_00].y,
+        parent->max_free_size[p_corner].y = max(max(p->max_free_size[Corner_00].y,
                                                     p->max_free_size[Corner_01].y),
-                                                Max(p->max_free_size[Corner_10].y,
+                                                max(p->max_free_size[Corner_10].y,
                                                     p->max_free_size[Corner_11].y));
       }
     }
@@ -452,13 +452,13 @@ fnt_atlas_region_release(FNT_Atlas *atlas, Rng2S16 region)
         {
           InvalidPath;
         }
-        parent->max_free_size[p_corner].x = Max(Max(p->max_free_size[Corner_00].x,
+        parent->max_free_size[p_corner].x = max(max(p->max_free_size[Corner_00].x,
                                                     p->max_free_size[Corner_01].x),
-                                                Max(p->max_free_size[Corner_10].x,
+                                                max(p->max_free_size[Corner_10].x,
                                                     p->max_free_size[Corner_11].x));
-        parent->max_free_size[p_corner].y = Max(Max(p->max_free_size[Corner_00].y,
+        parent->max_free_size[p_corner].y = max(max(p->max_free_size[Corner_00].y,
                                                     p->max_free_size[Corner_01].y),
-                                                Max(p->max_free_size[Corner_10].y,
+                                                max(p->max_free_size[Corner_10].y,
                                                     p->max_free_size[Corner_11].y));
       }
     }
@@ -867,7 +867,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
           }
           base_align_px += advance;
           dim.x += piece->advance;
-          dim.y = Max(dim.y, info->raster_dim.y);
+          dim.y = max(dim.y, info->raster_dim.y);
         }
       }
     }
@@ -1037,7 +1037,7 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 
   {
     Vec2F32 str_dim = fnt_dim_from_tag_size_string(tag, size, base_align_px, tab_size_px, n->string);
     sum.x += str_dim.x;
-    sum.y = Max(sum.y, str_dim.y);
+    sum.y = max(sum.y, str_dim.y);
   }
   ProfEnd();
   return sum;

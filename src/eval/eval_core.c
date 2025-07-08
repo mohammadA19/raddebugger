@@ -134,7 +134,7 @@ e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, String8 text
   E_Msg *msg = push_array(arena, E_Msg, 1);
   SLLQueuePush(msgs->first, msgs->last, msg);
   msgs->count += 1;
-  msgs->max_kind = Max(kind, msgs->max_kind);
+  msgs->max_kind = max(kind, msgs->max_kind);
   msg->kind = kind;
   msg->range = range;
   msg->text = text;
@@ -158,7 +158,7 @@ e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
     dst->last->next = to_push->first;
     dst->last = to_push->last;
     dst->count += to_push->count;
-    dst->max_kind = Max(dst->max_kind, to_push->max_kind);
+    dst->max_kind = max(dst->max_kind, to_push->max_kind);
   }
   else if(to_push->first != 0)
   {

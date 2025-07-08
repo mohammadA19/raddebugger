@@ -494,7 +494,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
       DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
       F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
-      atlas_dim.x = Max(atlas_dim.x, (S16)(advance+1));
+      atlas_dim.x = max(atlas_dim.x, (S16)(advance+1));
       if(idx == 0)
       {
         left_side_bearing = (96.f/72.f) * size * glyph_metrics->leftSideBearing    / design_units_per_em;

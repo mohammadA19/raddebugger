@@ -357,7 +357,7 @@ ipc_signaler_thread__entry_point(void *p)
       {
         IPCInfo *ipc_info = (IPCInfo *)ipc_sender2main_shared_memory_base;
         String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
-        msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
+        msg.size = min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
         OS_MutexScope(ipc_s2m_ring_mutex) for(;;)
         {
           U64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
@@ -625,7 +625,7 @@ entry_point(CmdLine *cmd_line)
                 consumed = 1;
                 ipc_command_frame = 1;
                 ipc_s2m_ring_read_pos += ring_read_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, &msg.size);
-                msg.size = Min(msg.size, unconsumed_size);
+                msg.size = min(msg.size, unconsumed_size);
                 msg.str = push_array(scratch.arena, U8, msg.size);
                 ipc_s2m_ring_read_pos += ring_read(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, msg.str, msg.size);
               }
@@ -704,7 +704,7 @@ entry_point(CmdLine *cmd_line)
               U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
               StringJoin join = {str8_lit(""), str8_lit("\0"), str8_lit("")};
               String8 msg = str8_list_join(scratch.arena, &rd_state->cmd_outputs, &join);
-              ipc_info->msg_size = Min(buffer_max, msg.size);
+              ipc_info->msg_size = min(buffer_max, msg.size);
               MemoryCopy(buffer, msg.str, ipc_info->msg_size);
               os_semaphore_drop(ipc_main2sender_signal_semaphore);
               os_semaphore_drop(ipc_main2sender_lock_semaphore);
@@ -780,7 +780,7 @@ entry_point(CmdLine *cmd_line)
         String8List parts = os_string_list_from_argcv(scratch.arena, cmd_line->argc - 1, cmd_line->argv + 1);
         StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
         String8 msg = str8_list_join(scratch.arena, &parts, &join);
-        ipc_info->msg_size = Min(buffer_max, msg.size);
+        ipc_info->msg_size = min(buffer_max, msg.size);
         MemoryCopy(buffer, msg.str, ipc_info->msg_size);
         os_semaphore_drop(ipc_sender2main_signal_semaphore);
         os_semaphore_drop(ipc_sender2main_lock_semaphore);
@@ -796,7 +796,7 @@ entry_point(CmdLine *cmd_line)
         {
           IPCInfo *ipc_info = (IPCInfo *)ipc_main2sender_shared_memory_base;
           String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
-          msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
+          msg.size = min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
           U8 split_char = 0;
           outputs = str8_split(scratch.arena, msg, &split_char, 1, 0);
           os_semaphore_drop(ipc_main2sender_lock_semaphore);

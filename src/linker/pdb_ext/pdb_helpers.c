@@ -58,7 +58,7 @@ pdb_write_bit_vector(MSF_Context *msf, MSF_StreamNumber sn, B32 *flag_array, U64
     for (U64 iword = 0, iflag = 0; iword < word_count; ++iword) {
       U32 word = 0;
       
-      for (U64 iflag_opl = Min(flag_count, iflag + MSF_BITS_PER_CHAR); iflag < iflag_opl; ++iflag) {
+      for (U64 iflag_opl = min(flag_count, iflag + MSF_BITS_PER_CHAR); iflag < iflag_opl; ++iflag) {
         if (flag_array[iflag]) {
           word |= 1 << (iflag % bits_per_word);
         }

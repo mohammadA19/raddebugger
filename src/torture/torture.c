@@ -3843,7 +3843,7 @@ entry_point(CmdLine *cmdline)
   //
   {
     U64 max_label_size = 0;
-    for (U64 i = 0; i < ArrayCount(target_array); i += 1) { max_label_size = Max(max_label_size, cstring8_length(target_array[i].label)); }
+    for (U64 i = 0; i < ArrayCount(target_array); i += 1) { max_label_size = max(max_label_size, cstring8_length(target_array[i].label)); }
 
     U64 dots_min = 10;
     U64 dots_size = max_label_size+dots_min;

@@ -2313,7 +2313,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           if(procedure_num > procedure_frameprocs_cap) { break; }
           CV_SymFrameproc *frameproc = (CV_SymFrameproc*)sym_header_struct_base;
           procedure_frameprocs[procedure_num-1] = frameproc;
-          procedure_frameprocs_count = Max(procedure_frameprocs_count, procedure_num);
+          procedure_frameprocs_count = max(procedure_frameprocs_count, procedure_num);
         }break;
         
         //- rjf: LPROC32/GPROC32
@@ -3408,7 +3408,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     for(;coff_sec_ptr < coff_ptr_opl; coff_sec_ptr += 1)
     {
       U64 sec_voff_max = coff_sec_ptr->voff + coff_sec_ptr->vsize;
-      exe_voff_max = Max(exe_voff_max, sec_voff_max);
+      exe_voff_max = max(exe_voff_max, sec_voff_max);
     }
   }
   

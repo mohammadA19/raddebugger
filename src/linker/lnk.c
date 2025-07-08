@@ -4079,7 +4079,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
     if (sect->flags & COFF_SectionFlag_CntCode) { 
       sizeof_code += sect->fsize;
     }
-    sizeof_image = Max(sizeof_image, sects.v[sect_idx]->voff + sects.v[sect_idx]->vsize);
+    sizeof_image = max(sizeof_image, sects.v[sect_idx]->voff + sects.v[sect_idx]->vsize);
   }
   sizeof_code          = AlignPow2(sizeof_code, config->file_align);
   sizeof_inited_data   = AlignPow2(sizeof_inited_data, config->file_align);
@@ -4170,7 +4170,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
       }
 
       MemorySet(&coff_section->name[0], 0, sizeof(coff_section->name));
-      MemoryCopy(&coff_section->name[0], sect->name.str, Min(sect->name.size, sizeof(coff_section->name)));
+      MemoryCopy(&coff_section->name[0], sect->name.str, min(sect->name.size, sizeof(coff_section->name)));
       coff_section->vsize       = sect->vsize;
       coff_section->voff        = sect->voff;
       coff_section->fsize       = sect->fsize;
@@ -4431,7 +4431,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         for (U64 contrib_idx = 0; contrib_idx < common_block_contribs_count; contrib_idx += 1) {
           LNK_CommonBlockContrib *contrib = &common_block_contribs[contrib_idx];
           U32 size  = contrib->u.size;
-          U32 align = Min(32, u64_up_to_pow2(size)); // link.exe caps align at 32 bytes
+          U32 align = min(32, u64_up_to_pow2(size)); // link.exe caps align at 32 bytes
           common_block_cursor = AlignPow2(common_block_cursor, align);
           contrib->u.offset = common_block_cursor;
           common_block_cursor += size;
@@ -4821,7 +4821,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         for (LNK_SectionContribChunk *sc_chunk = tls_sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
           for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
             assert(IsPow2(sc_chunk->v[sc_idx]->align));
-            tls_align = Max(tls_align, sc_chunk->v[sc_idx]->align);
+            tls_align = max(tls_align, sc_chunk->v[sc_idx]->align);
           }
         }
 

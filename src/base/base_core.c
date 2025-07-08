@@ -578,7 +578,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
   {
     U64 ring_off = ring_pos%ring_size;
     U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
+    U64 pre_split_bytes = min(bytes_before_split, src_data_size);
     U64 pst_split_bytes = src_data_size-pre_split_bytes;
     void *pre_split_data = src_data;
     void *pst_split_data = ((U8 *)src_data + pre_split_bytes);
@@ -595,7 +595,7 @@ ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_s
   {
     U64 ring_off = ring_pos%ring_size;
     U64 bytes_before_split = ring_size-ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, read_size);
+    U64 pre_split_bytes = min(bytes_before_split, read_size);
     U64 pst_split_bytes = read_size-pre_split_bytes;
     MemoryCopy(dst_data, ring_base+ring_off, pre_split_bytes);
     MemoryCopy((U8 *)dst_data + pre_split_bytes, ring_base+0, pst_split_bytes);

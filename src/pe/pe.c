@@ -551,7 +551,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     data_dir_count = ClampTop(reported_data_dir_count, data_dir_max);
     
     // rjf: convert PE directories to ranges
-    data_dir_franges = push_array(arena, Rng1U64, Max(data_dir_count, PE_DataDirectoryIndex_COUNT));
+    data_dir_franges = push_array(arena, Rng1U64, max(data_dir_count, PE_DataDirectoryIndex_COUNT));
     for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
     {
       U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;

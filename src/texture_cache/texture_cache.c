@@ -11,8 +11,8 @@ internal TEX_Topology
 tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
 {
   TEX_Topology top = {0};
-  top.dim.x = (S16)Clamp(0, dim.x, max_S32);
-  top.dim.y = (S16)Clamp(0, dim.y, max_S32);
+  top.dim.x = (S16)clamp(0, dim.x, max_S32);
+  top.dim.y = (S16)clamp(0, dim.y, max_S32);
   top.fmt = fmt;
   return top;
 }
@@ -27,7 +27,7 @@ tex_init(void)
   tex_shared = push_array(arena, TEX_Shared, 1);
   tex_shared->arena = arena;
   tex_shared->slots_count = 1024;
-  tex_shared->stripes_count = Min(tex_shared->slots_count, os_get_system_info()->logical_processor_count);
+  tex_shared->stripes_count = min(tex_shared->slots_count, os_get_system_info()->logical_processor_count);
   tex_shared->slots = push_array(arena, TEX_Slot, tex_shared->slots_count);
   tex_shared->stripes = push_array(arena, TEX_Stripe, tex_shared->stripes_count);
   tex_shared->stripes_free_nodes = push_array(arena, TEX_Node *, tex_shared->stripes_count);

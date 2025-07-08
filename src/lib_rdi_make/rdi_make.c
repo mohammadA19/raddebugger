@@ -2936,7 +2936,7 @@ rdim_bake_src_files(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Ba
               
               // rjf: update unique voff counter & max line number
               voff_count += 1;
-              max_line_num = Max(max_line_num, line_num);
+              max_line_num = max(max_line_num, line_num);
               
               // rjf: find match
               RDIM_SrcLineMapBucket *match = 0;

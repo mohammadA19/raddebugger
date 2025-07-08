@@ -557,7 +557,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       {
         expansion_row_count = viz_expand_info.row_count;
       }
-      expansion_row_count = Min(0x0fffffffffffffffull, expansion_row_count);
+      expansion_row_count = min(0x0fffffffffffffffull, expansion_row_count);
       
       // rjf: determine if this expansion supports child expansions
       B32 allow_child_expansions = 1;
@@ -935,12 +935,12 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         if(vnum_range.min > block_global_range.min)
         {
           num_skipped = (vnum_range.min - block_global_range.min);
-          num_skipped = Min(num_skipped, block_num_visual_rows);
+          num_skipped = min(num_skipped, block_num_visual_rows);
         }
         if(vnum_range.max < block_global_range.max)
         {
           num_chopped = (block_global_range.max - vnum_range.max);
-          num_chopped = Min(num_chopped, block_num_visual_rows);
+          num_chopped = min(num_chopped, block_num_visual_rows);
         }
       }
       

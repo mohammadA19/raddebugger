@@ -212,7 +212,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
       if(!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
       {
         String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
-        new_string.size = Min(edit_buffer_size, new_string.size);
+        new_string.size = min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
       }
@@ -272,7 +272,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   if(!is_focus_active && sig.f&(UI_SignalFlag_DoubleClicked|UI_SignalFlag_KeyboardPressed))
   {
     String8 edit_string = pre_edit_value;
-    edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
+    edit_string.size = min(edit_buffer_size, pre_edit_value.size);
     MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
     edit_string_size_out[0] = edit_string.size;
     ui_set_auto_focus_active_key(key);
@@ -302,8 +302,8 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
     cursor_range_px.max = ClampBot(0, cursor_range_px.max);
     F32 min_delta = cursor_range_px.min-visible_range_px.min;
     F32 max_delta = cursor_range_px.max-visible_range_px.max;
-    min_delta = Min(min_delta, 0);
-    max_delta = Max(max_delta, 0);
+    min_delta = min(min_delta, 0);
+    max_delta = max(max_delta, 0);
     box->view_off_target.x += min_delta;
     box->view_off_target.x += max_delta;
   }
@@ -628,8 +628,8 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
     Vec2F32 dim = dim_2f32(box->rect);
     *out_sat = (ui_mouse().x - box->rect.x0) / dim.x;
     *out_val = 1 - (ui_mouse().y - box->rect.y0) / dim.y;
-    *out_sat = Clamp(0, *out_sat, 1);
-    *out_val = Clamp(0, *out_val, 1);
+    *out_sat = clamp(0, *out_sat, 1);
+    *out_val = clamp(0, *out_val, 1);
     ui_do_color_tooltip_hsv(v3f32(hue, *out_sat, *out_val));
     if(ui_pressed(sig))
     {
@@ -736,7 +736,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
   {
     Vec2F32 dim = dim_2f32(box->rect);
     *out_hue = (ui_mouse().y - box->rect.y0) / dim.y;
-    *out_hue = Clamp(0, *out_hue, 1);
+    *out_hue = clamp(0, *out_hue, 1);
     ui_do_color_tooltip_hsv(v3f32(*out_hue, sat, val));
     if(ui_pressed(sig))
     {
@@ -823,7 +823,7 @@ ui_alpha_picker(F32 *out_alpha, String8 string)
   {
     Vec2F32 dim = dim_2f32(box->rect);
     F32 drag_pct = (ui_mouse().y - box->rect.y0) / dim.y; 
-    drag_pct = Clamp(0, drag_pct, 1);
+    drag_pct = clamp(0, drag_pct, 1);
     *out_alpha = 1-drag_pct;
     if(ui_pressed(sig))
     {
@@ -1235,7 +1235,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
   ui_push_font_size(ui_bottom_font_size()*0.65f);
   
   //- rjf: unpack
-  S64 idx_range_dim = Max(dim_1s64(idx_range), 1);
+  S64 idx_range_dim = max(dim_1s64(idx_range), 1);
   
   //- rjf: produce extra flags for cases in which scrolling is disabled
   UI_BoxFlags disabled_flags = 0;
@@ -1283,7 +1283,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
       }
       
       // rjf: scroller
-      UI_Flags(disabled_flags) UI_PrefSize(axis, ui_pct(Clamp(0.05f, (F32)((F64)Max(view_num_indices, 1)/(F64)idx_range_dim), 1.f), 0.f))
+      UI_Flags(disabled_flags) UI_PrefSize(axis, ui_pct(clamp(0.05f, (F32)((F64)max(view_num_indices, 1)/(F64)idx_range_dim), 1.f), 0.f))
       {
         scroller_sig = ui_buttonf("##_scroller_%i", axis);
         scroller_box = scroller_sig.box;
@@ -1332,20 +1332,20 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
       F32 drag_delta = ui_drag_delta().v[axis];
       F32 drag_pct = drag_delta / drag_data->scroll_space_px;
       S64 new_idx = original_pt.idx + drag_pct*idx_range_dim;
-      new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
+      new_idx = clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
       new_pt.off = 0;
     }
     if(ui_dragging(min_scroll_sig) || ui_dragging(space_before_sig))
     {
       S64 new_idx = new_pt.idx-1;
-      new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
+      new_idx = clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
     }
     if(ui_dragging(max_scroll_sig) || ui_dragging(space_after_sig))
     {
       S64 new_idx = new_pt.idx+1;
-      new_idx = Clamp(idx_range.min, new_idx, idx_range.max);
+      new_idx = clamp(idx_range.min, new_idx, idx_range.max);
       ui_scroll_pt_target_idx(&new_pt, new_idx);
     }
   }
@@ -1455,8 +1455,8 @@ ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S6
       }
       
       //- rjf: compute deltas & apply
-      S64 min_delta = Min(0, cursor_visibility_row_range.min-visible_row_range.min);
-      S64 max_delta = Max(0, cursor_visibility_row_range.max-visible_row_range.max);
+      S64 min_delta = min(0, cursor_visibility_row_range.min-visible_row_range.min);
+      S64 max_delta = max(0, cursor_visibility_row_range.max-visible_row_range.max);
       S64 new_idx = scroll_pt->idx+min_delta+max_delta;
       new_idx = clamp_1s64(scroll_row_idx_range, new_idx);
       ui_scroll_pt_target_idx(scroll_pt, new_idx);

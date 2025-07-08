@@ -40,7 +40,7 @@ msf_page_data_list_pop(MSF_PageDataList *list, MSF_UInt count)
 {
   MSF_PageDataList result = {0};
   
-  MSF_UInt to_remove = Min(count, list->count);
+  MSF_UInt to_remove = min(count, list->count);
   for (MSF_UInt i = 0; i < to_remove; i += 1) {
     MSF_PageDataNode *node = list->last;
     DLLRemove(list->first, list->last, node);
@@ -405,7 +405,7 @@ msf_grow(MSF_Context *msf, MSF_PageNumber new_page_count)
   
   // are there unused data nodes?
   if (msf->page_data_pool.count) {
-    MSF_PageNumber pool_alloc_count = Min(msf->page_data_pool.count, alloc_count_correct);
+    MSF_PageNumber pool_alloc_count = min(msf->page_data_pool.count, alloc_count_correct);
     MSF_PageDataList page_data_list = msf_page_data_list_pop(&msf->page_data_pool, pool_alloc_count);
     msf_page_data_list_concat_in_place(&msf->page_data_list, &page_data_list);
     to_alloc -= pool_alloc_count;
@@ -565,7 +565,7 @@ msf_free_pn_arr(MSF_Context *msf, MSF_PageNumber *pn_arr, MSF_UInt pn_count)
     msf_set_fpm_bit(msf->page_data_list, msf->page_size, msf->active_fpm, pn, MSF_PAGE_STATE_FREE);
 
     // update FPM cursor
-    msf->fpm_rover = Min(msf->fpm_rover, pn);
+    msf->fpm_rover = min(msf->fpm_rover, pn);
   }
   
   // update context
@@ -649,7 +649,7 @@ msf_find_max_pn_(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNu
     
     // compute max page number
     MSF_PageNumber pn = bit_idx + (MSF_UInt)fpm_pn_idx * fpm_interval_correct;
-    max_pn = Max(max_pn, pn);
+    max_pn = max(max_pn, pn);
     
     break;
   }
@@ -665,7 +665,7 @@ msf_find_max_pn(MSF_PageDataList page_data_list, MSF_UInt page_size)
   MSF_PageNumberArray fpm1_pn_arr = msf_get_fpm_page_arr(scratch.arena, page_data_list, page_size, MSF_FPM1);
   MSF_PageNumber fpm0_max = msf_find_max_pn_(page_data_list, page_size, fpm0_pn_arr);
   MSF_PageNumber fpm1_max = msf_find_max_pn_(page_data_list, page_size, fpm1_pn_arr);
-  MSF_PageNumber max_pn = Max(fpm0_max, fpm1_max);
+  MSF_PageNumber max_pn = max(fpm0_max, fpm1_max);
   scratch_end(scratch);
   return max_pn;
 }
@@ -685,7 +685,7 @@ msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **
     // compute copy size
     MSF_UInt buffer_bytes_left = buffer_size - buffer_pos;
     MSF_UInt page_bytes_left   = page_size - page_offset;
-    MSF_UInt copy_size         = Min(buffer_bytes_left, page_bytes_left);
+    MSF_UInt copy_size         = min(buffer_bytes_left, page_bytes_left);
 
     // fetch page bytes
     MSF_PageNumber page_number = (*page_ptr)->pn;
@@ -732,7 +732,7 @@ msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **p
     // compute copy size
     MSF_UInt buffer_bytes_left = buffer_size - buffer_pos;
     MSF_UInt page_bytes_left   = page_size - page_offset;
-    MSF_UInt copy_size         = Min(buffer_bytes_left, page_bytes_left);
+    MSF_UInt copy_size         = min(buffer_bytes_left, page_bytes_left);
     
     // fetch page bytes
     MSF_PageNumber page_number = (*page_ptr)->pn;
@@ -830,8 +830,8 @@ msf_stream_resize_ex(MSF_Context *msf, MSF_Stream *stream, MSF_UInt size)
   }
   
   // update stream
-  stream->size = Min(stream->size, stream->page_list.count * msf->page_size);
-  stream->pos = Min(stream->pos, stream->size);
+  stream->size = min(stream->size, stream->page_list.count * msf->page_size);
+  stream->pos = min(stream->pos, stream->size);
   stream->pos_page = 0;
 
   return 1;
@@ -867,7 +867,7 @@ msf_stream_set_size(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt size)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   if (stream) {
-    stream->size = Min(size, stream->page_list.count * msf->page_size);
+    stream->size = min(size, stream->page_list.count * msf->page_size);
   } else {
     assert(!"invalid stream number");
   }
@@ -921,7 +921,7 @@ msf_stream_get_pos(MSF_Context *msf, MSF_StreamNumber sn)
 internal B32
 msf_stream_seek__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt new_pos) 
 { (void)msf;
-  stream->pos = Min(new_pos, stream->size);
+  stream->pos = min(new_pos, stream->size);
   stream->pos_page = 0;
   return 1;
 }
@@ -988,7 +988,7 @@ msf_stream_write__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt 
   }
   
   // update stream size
-  stream->size = Max(stream->size, stream->pos);
+  stream->size = max(stream->size, stream->pos);
 
 exit:;
   assert(is_write_ok);
@@ -1155,7 +1155,7 @@ msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn,
   if (is_write_ok) {
     U64 expected_pos = stream->pos + buffer_size;
 
-    U64 pre_size = Min(AlignPadPow2(stream->pos, msf->page_size), buffer_size);
+    U64 pre_size = min(AlignPadPow2(stream->pos, msf->page_size), buffer_size);
     U64 mid_size = AlignDownPow2(buffer_size - pre_size, msf->page_size);
     U64 end_size = buffer_size - (pre_size + mid_size);
 
@@ -1875,7 +1875,7 @@ msf_get_page_data_nodes(Arena *arena, MSF_Context *msf)
 
   for (MSF_PageDataNode *data_node = msf->page_data_list.first; data_node != 0; data_node = data_node->next) {
     // compute byte count for the node
-    U64 to_copy = Min(bytes_left, node_size);
+    U64 to_copy = min(bytes_left, node_size);
     bytes_left -= to_copy;
 
     String8 data = str8(data_node->data, to_copy);
@@ -1908,7 +1908,7 @@ msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
   for (MSF_PageDataNode *node = msf->page_data_list.first; node != 0; node = node->next) {
     // compute byte count for the copy
     U64 bytes_in_buffer = buffer_size - cursor;
-    U64 to_copy = Min(bytes_in_buffer, node_size);
+    U64 to_copy = min(bytes_in_buffer, node_size);
 
     // copy MSF bytes to output buffer
     U8 *dst = (U8 *)buffer + cursor;
@@ -2043,7 +2043,7 @@ msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start,
   U8 *row_buffer = push_array(scratch.arena, U8, stride);
   U64 stream_size = msf_stream_get_size(msf, sn);
   U64 cursor = start;
-  U64 end = Min(start + byte_count, stream_size);
+  U64 end = min(start + byte_count, stream_size);
   while (cursor < stream_size) {
     MSF_UInt read_size = msf_stream_read(msf, sn, row_buffer, stride);
     

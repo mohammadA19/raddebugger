@@ -251,7 +251,7 @@ internal B32
 fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us)
 {
   B32 result = 0;
-  path.size = Min(path.size, fs_shared->u2s_ring_size);
+  path.size = min(path.size, fs_shared->u2s_ring_size);
   OS_MutexScope(fs_shared->u2s_ring_mutex) for(;;)
   {
     U64 unconsumed_size = fs_shared->u2s_ring_write_pos - fs_shared->u2s_ring_read_pos;
@@ -319,7 +319,7 @@ ASYNC_WORK_DEF(fs_stream_work)
   ProfBegin("load \"%.*s\"", str8_varg(path));
   FileProperties pre_props = os_properties_from_file_path(path);
   U64 range_size = dim_1u64(range);
-  U64 read_size = Min(pre_props.size - range.min, range_size);
+  U64 read_size = min(pre_props.size - range.min, range_size);
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead|OS_AccessFlag_ShareWrite, path);
   B32 file_handle_is_valid = !os_handle_match(os_handle_zero(), file);
   U64 data_arena_size = read_size+ARENA_HEADER_SIZE;

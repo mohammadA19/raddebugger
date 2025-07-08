@@ -1480,7 +1480,7 @@ lnk_cv_debug_t_count_leaves_per_source(TP_Context *tp, U64 count, CV_DebugT *deb
       U64 cap = per_task_leaf_count - task_weight;
 
       LNK_LeafRange *leaf_range = push_array(scratch.arena, LNK_LeafRange, 1);
-      leaf_range->range         = rng_1u64(k, Min(k + cap, debug_t->count));
+      leaf_range->range         = rng_1u64(k, min(k + cap, debug_t->count));
       leaf_range->debug_t       = debug_t;
 
       LNK_LeafRangeList *list = &leaf_ranges_per_task[task_id];
@@ -1890,12 +1890,12 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
   if (arr.count > 140000) {
     ProfBegin("Radix");
 
-    U32 loc_idx_max_bits = 32 - clz32(Max(obj_count, type_server_count));
+    U32 loc_idx_max_bits = 32 - clz32(max(obj_count, type_server_count));
 
     LNK_LeafRadixSortTask task = {0};
-    task.loc_idx_bit_count_0   = Clamp(0, (S32)loc_idx_max_bits - 21, 11);
-    task.loc_idx_bit_count_1   = Clamp(0, (S32)loc_idx_max_bits - 10, 11);
-    task.loc_idx_bit_count_2   = Clamp(0, (S32)loc_idx_max_bits,      10);
+    task.loc_idx_bit_count_0   = clamp(0, (S32)loc_idx_max_bits - 21, 11);
+    task.loc_idx_bit_count_1   = clamp(0, (S32)loc_idx_max_bits - 10, 11);
+    task.loc_idx_bit_count_2   = clamp(0, (S32)loc_idx_max_bits,      10);
     task.counts_max            = (1 << 11);
     task.loc_idx_max           = arr.count;
     task.ranges                = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
@@ -2632,7 +2632,7 @@ lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT de
   LNK_TypeNameReplacer task = {0};
   task.debug_t              = debug_t;
   task.ranges               = tp_divide_work(scratch.arena, debug_t.count, tp->worker_count);
-  task.hash_length          = Clamp(1, hash_length, 16);
+  task.hash_length          = clamp(1, hash_length, 16);
 
   if (map_name.size > 0) {
     task.make_map  = 1;
@@ -5372,7 +5372,7 @@ lnk_build_rad_debug_info(TP_Context               *tp,
     U64 image_vsize = 0;
     for (U64 sect_idx = 0; sect_idx < image_sects.count; sect_idx++) {
       COFF_SectionHeader *sect = &image_sects.v[sect_idx];
-      image_vsize = Max(image_vsize, sect->voff + sect->vsize);
+      image_vsize = max(image_vsize, sect->voff + sect->vsize);
     }
 
     input.top_level_info.arch            = arch;

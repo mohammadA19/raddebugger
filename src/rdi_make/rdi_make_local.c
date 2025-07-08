@@ -37,7 +37,7 @@ rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_Binar
   // find max VOFF
   U64 exe_voff_max = 0;
   for (RDIM_BinarySectionNode *sect_n = sections.first; sect_n != 0 ; sect_n = sect_n->next) {
-    exe_voff_max = Max(exe_voff_max, sect_n->v.voff_opl);
+    exe_voff_max = max(exe_voff_max, sect_n->v.voff_opl);
   }
   
   
@@ -695,7 +695,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeTypesStringsInNode *n = push_array(scratch.arena, RDIM_BakeTypesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -727,7 +727,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeUDTsStringsInNode *n = push_array(scratch.arena, RDIM_BakeUDTsStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -768,7 +768,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
           U64 items_left = items_per_task;
           for(;chunk != 0 && items_left > 0;)
           {
-            U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+            U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
             RDIM_BakeSymbolsStringsInNode *n = push_array(scratch.arena, RDIM_BakeSymbolsStringsInNode, 1);
             SLLQueuePush(in->first, in->last, n);
             n->v = chunk->v + chunk_off;
@@ -801,7 +801,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeInlineSiteStringsInNode *n = push_array(scratch.arena, RDIM_BakeInlineSiteStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -833,7 +833,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
-          U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
+          U64 items_in_this_chunk = min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeScopesStringsInNode *n = push_array(scratch.arena, RDIM_BakeScopesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
@@ -895,7 +895,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       in->src_maps_count = async_thread_count();
       in->dst_map = unsorted_bake_string_map;
       in->slot_idx_range = r1u64(task_idx*slots_per_task, task_idx*slots_per_task + slots_per_task);
-      in->slot_idx_range.max = Min(in->slot_idx_range.max, in->top->slots_count);
+      in->slot_idx_range.max = min(in->slot_idx_range.max, in->top->slots_count);
       tasks[task_idx] = async_task_launch(scratch.arena, rdim_bake_string_map_join_work, .input = in);
     }
     

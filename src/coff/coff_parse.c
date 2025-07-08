@@ -208,7 +208,7 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
     sym32->aux_symbol_count = sym16->aux_symbol_count;
     
     // copy aux symbols
-    for (U64 iaux = isymbol+1, iaux_hi = Min(count, iaux+sym16->aux_symbol_count); iaux < iaux_hi; iaux += 1) {
+    for (U64 iaux = isymbol+1, iaux_hi = min(count, iaux+sym16->aux_symbol_count); iaux < iaux_hi; iaux += 1) {
       COFF_Symbol16 *aux16 = sym16_arr + iaux;
       COFF_Symbol32 *aux32 = result.v  + iaux;
       
@@ -450,7 +450,7 @@ coff_read_resource(Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *
   assert(prefix.data_size == data_read_size);
   
   // compute read size
-  U64 read_size = Max(prefix.header_size, sizeof(prefix)) + AlignPow2(prefix.data_size, COFF_ResourceAlign);
+  U64 read_size = max(prefix.header_size, sizeof(prefix)) + AlignPow2(prefix.data_size, COFF_ResourceAlign);
   return read_size;
 }
 
@@ -547,7 +547,7 @@ coff_resource_id_compar(void *raw_a, void *raw_b)
       default:
       case COFF_ResourceIDType_Null:   cmp = 0; break;
       case COFF_ResourceIDType_Number: cmp = MemoryCompare(&a->u.number, &b->u.number, sizeof(a->u.number)); break;
-      case COFF_ResourceIDType_String: cmp = strncmp((char *)a->u.string.str, (char *)b->u.string.str, Min(a->u.string.size, b->u.string.size)); break;
+      case COFF_ResourceIDType_String: cmp = strncmp((char *)a->u.string.str, (char *)b->u.string.str, min(a->u.string.size, b->u.string.size)); break;
     }
   } else {
     cmp = a->type < b->type ? -1 : a->type > b->type ? +1 : 0;

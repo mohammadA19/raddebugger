@@ -921,7 +921,7 @@ dw_try_u64_from_const_value(U64 type_byte_size, DW_ATE type_encoding, String8 co
 {
   B32 is_parsed = 0;
   if (const_value.size <= type_byte_size) {
-    U64 value_size = Min(type_byte_size, const_value.size);
+    U64 value_size = min(type_byte_size, const_value.size);
     if (value_size <= sizeof(*value_out)) {
       MemoryZeroStruct(value_out);
       MemoryCopy(value_out, const_value.str, value_size);
@@ -3056,7 +3056,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_Input *input, DW_Sect
     }
     cursor += unit_length_size;
     
-    U64 cursor_opl = Min(cursor + unit_length, section_data.size);
+    U64 cursor_opl = min(cursor + unit_length, section_data.size);
     if (cursor >= cursor_opl) {
       break;
     }

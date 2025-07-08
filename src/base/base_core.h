@@ -93,11 +93,8 @@
 ////////////////////////////////
 //~ rjf: Clamps, Mins, Maxes
 
-#define Min(A,B) (((A)<(B))?(A):(B))
-#define Max(A,B) (((A)>(B))?(A):(B))
-#define ClampTop(A,X) Min(A,X)
-#define ClampBot(X,B) Max(X,B)
-#define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
+#define ClampTop(A,X) min(A,X)
+#define ClampBot(X,B) max(X,B)
 
 ////////////////////////////////
 //~ rjf: Type -> Alignment

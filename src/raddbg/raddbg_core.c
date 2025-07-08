@@ -2250,7 +2250,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
         got_commit_data = 1;
         E_Eval src_eval = e_eval_from_stringf("(%S)(%S)", e_type_string_from_key(scratch.arena, type_key), string);
         commit_data = push_str8_copy(scratch.arena, str8_struct(&src_eval.value));
-        commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(type_key));
+        commit_data.size = min(commit_data.size, e_type_byte_size_from_key(type_key));
       }
       
       //- rjf: pointer or array to characters/integers? -> try to treat
@@ -2323,8 +2323,8 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
         {
           got_commit_data = 1;
           commit_data = push_str8_copy(scratch.arena, str8_struct(&src_eval.value));
-          commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(src_eval.irtree.type_key));
-          commit_data.size = Min(commit_data.size, e_type_byte_size_from_key(type_key));
+          commit_data.size = min(commit_data.size, e_type_byte_size_from_key(src_eval.irtree.type_key));
+          commit_data.size = min(commit_data.size, e_type_byte_size_from_key(type_key));
         }
       }
     }
@@ -2605,7 +2605,7 @@ rd_view_ui(Rng2F32 rect)
     RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
     
     //- rjf: store cfg's string into view's
-    vs->query_string_size = Min(sizeof(vs->query_buffer), current_input.size);
+    vs->query_string_size = min(sizeof(vs->query_buffer), current_input.size);
     MemoryCopy(vs->query_buffer, current_input.str, vs->query_string_size);
     
     //- rjf: clamp cursor
@@ -2618,7 +2618,7 @@ rd_view_ui(Rng2F32 rect)
     //- rjf: determine dimensions
     F32 search_row_height_target = ui_top_px_height();
     F32 search_row_height = search_row_open_t*search_row_height_target;
-    search_row_height = Min(search_row_height, dim_2f32(rect).y);
+    search_row_height = min(search_row_height, dim_2f32(rect).y);
     rect.y0 += search_row_height;
     rect.y0 = floor_f32(rect.y0);
     
@@ -3169,8 +3169,8 @@ rd_view_ui(Rng2F32 rect)
               }
               
               // rjf: form selection range table coordinates
-              selection_tbl = r2s64p(Min(cursor_tbl.x, mark_tbl.x), Min(cursor_tbl.y, mark_tbl.y),
-                                     Max(cursor_tbl.x, mark_tbl.x), Max(cursor_tbl.y, mark_tbl.y));
+              selection_tbl = r2s64p(min(cursor_tbl.x, mark_tbl.x), min(cursor_tbl.y, mark_tbl.y),
+                                     max(cursor_tbl.x, mark_tbl.x), max(cursor_tbl.y, mark_tbl.y));
             }
             
             //////////////////////////
@@ -3193,8 +3193,8 @@ rd_view_ui(Rng2F32 rect)
                 cursor_visibility_row_num_range.max = cursor_visibility_row_num_range.min + 3;
                 
                 //- rjf: compute deltas & apply
-                S64 min_delta = Min(0, cursor_visibility_row_num_range.min-visible_row_num_range.min);
-                S64 max_delta = Max(0, cursor_visibility_row_num_range.max-visible_row_num_range.max);
+                S64 min_delta = min(0, cursor_visibility_row_num_range.min-visible_row_num_range.min);
+                S64 max_delta = max(0, cursor_visibility_row_num_range.max-visible_row_num_range.max);
                 S64 new_num = (S64)scroll_pt->idx + 1 + min_delta + max_delta;
                 new_num = clamp_1s64(global_vnum_range, new_num);
                 if(new_num > 0)
@@ -3459,7 +3459,7 @@ rd_view_ui(Rng2F32 rect)
               Vec2S64 selection_dim = dim_2s64(selection_tbl);
               arena_clear(ewv->text_edit_arena);
               ewv->text_edit_state_slots_count = u64_up_to_pow2(selection_dim.y+1);
-              ewv->text_edit_state_slots_count = Max(ewv->text_edit_state_slots_count, 64);
+              ewv->text_edit_state_slots_count = max(ewv->text_edit_state_slots_count, 64);
               ewv->text_edit_state_slots = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState*, ewv->text_edit_state_slots_count);
               EV_WindowedRowList rows = ev_rows_from_num_range(scratch.arena, eval_view, &block_ranges, r1u64(selection_tbl.min.y, selection_tbl.max.y+1));
               EV_WindowedRowNode *row_node = rows.first;
@@ -3488,7 +3488,7 @@ rd_view_ui(Rng2F32 rect)
                     {
                       string = dr_string_from_fstrs(scratch.arena, &cell_info.eval_fstrs);
                     }
-                    string.size = Min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
+                    string.size = min(string.size, sizeof(ewv->dummy_text_edit_state.input_buffer));
                     RD_WatchPt pt = {row->block->key, row->key, rd_id_from_watch_cell(cell)};
                     U64 hash = ev_hash_from_key(pt.key);
                     U64 slot_idx = hash%ewv->text_edit_state_slots_count;
@@ -3622,7 +3622,7 @@ rd_view_ui(Rng2F32 rect)
                       RD_WindowState *ws = rd_window_state_from_cfg(window);
                       RD_AutocompCursorInfo *autocomp_cursor_info = &ws->autocomp_cursor_info;
                       String8 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(autocomp_cursor_info->replaced_range.min+1, autocomp_cursor_info->replaced_range.max+1), autocomplete_string);
-                      new_string.size = Min(sizeof(edit_state->input_buffer), new_string.size);
+                      new_string.size = min(sizeof(edit_state->input_buffer), new_string.size);
                       MemoryCopy(edit_state->input_buffer, new_string.str, new_string.size);
                       edit_state->input_size = new_string.size;
                       edit_state->cursor = edit_state->mark = txt_pt(1, 1+autocomp_cursor_info->replaced_range.min+autocomplete_string.size);
@@ -3644,7 +3644,7 @@ rd_view_ui(Rng2F32 rect)
                     }
                     
                     // rjf: commit to edit state
-                    new_string.size = Min(new_string.size, sizeof(edit_state->input_buffer));
+                    new_string.size = min(new_string.size, sizeof(edit_state->input_buffer));
                     MemoryCopy(edit_state->input_buffer, new_string.str, new_string.size);
                     edit_state->input_size = new_string.size;
                     edit_state->cursor = op.cursor;
@@ -4623,7 +4623,7 @@ rd_view_ui(Rng2F32 rect)
                       B32 cell_is_fresh = 0;
                       B32 cell_is_bad = 0;
                       U64 cell_vaddr_rng_size = e_type_byte_size_from_key(cell->eval.irtree.type_key);
-                      cell_vaddr_rng_size = Min(cell_vaddr_rng_size, 64);
+                      cell_vaddr_rng_size = min(cell_vaddr_rng_size, 64);
                       Rng1U64 cell_vaddr_rng = r1u64(cell->eval.value.u64, cell->eval.value.u64+cell_vaddr_rng_size);
                       if(!(cell_info.flags & RD_WatchCellFlag_NoEval))
                       {
@@ -5374,19 +5374,19 @@ rd_view_ui(Rng2F32 rect)
                           if(e_type_kind_is_integer(slider_value_type_kind))
                           {
                             S64 new_value = (S64)((next_cell_slider_value * (cell_slider_max.s64 - cell_slider_min.s64)) + cell_slider_min.s64);
-                            new_value = Clamp(cell_slider_min.s64, new_value, cell_slider_max.s64);
+                            new_value = clamp(cell_slider_min.s64, new_value, cell_slider_max.s64);
                             new_value_string = push_str8f(scratch.arena, "%I64d", new_value);
                           }break;
                           case E_TypeKind_F32:
                           {
                             F32 new_value = (next_cell_slider_value * (cell_slider_max.f32 - cell_slider_min.f32)) + cell_slider_min.f32;
-                            new_value = Clamp(cell_slider_min.f32, new_value, cell_slider_max.f32);
+                            new_value = clamp(cell_slider_min.f32, new_value, cell_slider_max.f32);
                             new_value_string = push_str8f(scratch.arena, "%f", new_value);
                           }break;
                           case E_TypeKind_F64:
                           {
                             F64 new_value = (F64)((next_cell_slider_value * (cell_slider_max.f64 - cell_slider_min.f64)) + cell_slider_min.f64);
-                            new_value = Clamp(cell_slider_min.f64, new_value, cell_slider_max.f64);
+                            new_value = clamp(cell_slider_min.f64, new_value, cell_slider_max.f64);
                             new_value_string = push_str8f(scratch.arena, "%f", new_value);
                           }break;
                         }
@@ -6967,7 +6967,7 @@ rd_window_frame(void)
         }
         F32 row_height_px = ui_top_px_height();
         U64 max_row_count = (U64)floor_f32(ui_top_font_size()*30.f / row_height_px);
-        U64 needed_row_count = Min(max_row_count, predicted_block_tree.total_row_count - 1);
+        U64 needed_row_count = min(max_row_count, predicted_block_tree.total_row_count - 1);
         F32 width_px = floor_f32(30.f*ui_top_font_size());
         F32 height_px = needed_row_count*row_height_px;
         
@@ -7082,7 +7082,7 @@ rd_window_frame(void)
           {
             max_row_count *= 3;
           }
-          U64 needed_row_count = Min(max_row_count, predicted_block_tree.total_row_count);
+          U64 needed_row_count = min(max_row_count, predicted_block_tree.total_row_count);
           F32 width_px = floor_f32(70.f*ui_top_font_size());
           F32 height_px = needed_row_count*row_height_px;
           
@@ -7241,7 +7241,7 @@ rd_window_frame(void)
                                             .epsilon = 0.01f,
                                             .rate    = rd_state->menu_animation_rate);
             query_height_px = row_height_px * (predicted_block_tree.total_row_count - !root_is_explicit) + ui_top_px_height()*search_row_open_t;
-            query_height_px = Min(query_height_px, max_query_height_px);
+            query_height_px = min(query_height_px, max_query_height_px);
           }
           rect = r2f32p(content_rect_center.x - query_width_px/2,
                         content_rect_center.y - max_query_height_px/2.f,
@@ -7310,7 +7310,7 @@ rd_window_frame(void)
             if(!axis_mask[axis]) { continue; }
             F32 max_delta = rect.p1.v[axis] - window_rect.p1.v[axis];
             F32 min_delta = window_rect.p0.v[axis] - rect.p0.v[axis];
-            F32 total_delta = Max(min_delta, 0) - Max(max_delta, 0);
+            F32 total_delta = max(min_delta, 0) - max(max_delta, 0);
             rect.p0.v[axis] += total_delta;
             rect.p1.v[axis] += total_delta;
           }
@@ -8593,8 +8593,8 @@ rd_window_frame(void)
             if(rd_drag_is_active() && rd_state->drag_drop_regs_slot == RD_RegSlot_View && view != &rd_nil_cfg && contains_2f32(panel_rect, ui_mouse()) && ui_key_match(ui_drop_hot_key(), ui_key_zero()))
             {
               F32 drop_site_dim_px = ceil_f32(ui_top_font_size()*7.f);
-              drop_site_dim_px = Min(drop_site_dim_px, dim_2f32(panel_rect).v[panel->split_axis]/4.f);
-              drop_site_dim_px = Max(drop_site_dim_px, ceil_f32(ui_top_font_size()*3.f));
+              drop_site_dim_px = min(drop_site_dim_px, dim_2f32(panel_rect).v[panel->split_axis]/4.f);
+              drop_site_dim_px = max(drop_site_dim_px, ceil_f32(ui_top_font_size()*3.f));
               Vec2F32 drop_site_half_dim = v2f32(drop_site_dim_px/2, drop_site_dim_px/2);
               Vec2F32 panel_center = center_2f32(panel_rect);
               F32 corner_radius = ui_top_font_size()*0.5f;
@@ -8960,7 +8960,7 @@ rd_window_frame(void)
                 t->tab = tab;
                 t->fstrs = rd_title_fstrs_from_cfg(scratch.arena, tab, 0);
                 F32 tab_width_target = dr_dim_from_fstrs(ui_top_tab_size(), &t->fstrs).x + tab_close_width_px + ui_top_font_size()*1.f;
-                tab_width_target = Min(max_tab_width_px, tab_width_target);
+                tab_width_target = min(max_tab_width_px, tab_width_target);
                 t->tab_width = floor_f32(ui_anim(ui_key_from_stringf(ui_key_zero(), "tab_width_%p", tab), tab_width_target, .initial = reset ? tab_width_target : 0, .rate = rd_state->menu_animation_rate));
                 SLLQueuePush(first_tab_task, last_tab_task, t);
                 tab_task_count += 1;
@@ -9547,9 +9547,9 @@ rd_window_frame(void)
             }
             Vec2F32 center = ui_mouse();
             Vec2F32 box_dim = dim_2f32(box->rect);
-            F32 max_dim = Max(box_dim.x, box_dim.y);
+            F32 max_dim = max(box_dim.x, box_dim.y);
             F32 radius = box->font_size*12.f;
-            radius = Min(max_dim, radius);
+            radius = min(max_dim, radius);
             dr_rect(pad_2f32(r2f32(center, center), radius), color, radius, 0, radius/3.f);
           }
         }
@@ -9564,8 +9564,8 @@ rd_window_frame(void)
             (box->rect.x1 - box->rect.x0)*0.60f*box->active_t,
             (box->rect.y1 - box->rect.y0)*0.60f*box->active_t,
           };
-          shadow_size.x = Clamp(0, shadow_size.x, box->font_size*2.f);
-          shadow_size.y = Clamp(0, shadow_size.y, box->font_size*2.f);
+          shadow_size.x = clamp(0, shadow_size.x, box->font_size*2.f);
+          shadow_size.y = clamp(0, shadow_size.y, box->font_size*2.f);
           
           // rjf: top -> bottom dark effect
           {
@@ -9848,7 +9848,7 @@ rd_window_frame(void)
         U64 y = bucket_idx / heatmap_bucket_pitch;
         U64 bucket = heatmap_buckets[bucket_idx];
         F32 pct = (F32)bucket / uniform_dist_count;
-        pct = Clamp(0, pct, 1);
+        pct = clamp(0, pct, 1);
         Vec3F32 hsv = v3f32((1-pct) * 0.9411f, 1, 0.5f);
         Vec3F32 rgb = rgb_from_hsv(hsv);
         Rng2F32 rect = r2f32p(x*heatmap_bucket_size, y*heatmap_bucket_size, (x+1)*heatmap_bucket_size, (y+1)*heatmap_bucket_size);
@@ -10316,7 +10316,7 @@ internal F32
 rd_font_size(void)
 {
   F32 size = rd_setting_f32_from_name(str8_lit("font_size"));
-  size = Clamp(6.f, size, 72.f);
+  size = clamp(6.f, size, 72.f);
   return size;
 }
 
@@ -11057,7 +11057,7 @@ rd_init(CmdLine *cmdln)
     ICO_Entry *entries = push_array(scratch.arena, ICO_Entry, hdr.num_images);
     {
       U64 bytes_to_read = sizeof(ICO_Entry)*entries_count;
-      bytes_to_read = Min(bytes_to_read, opl-ptr);
+      bytes_to_read = min(bytes_to_read, opl-ptr);
       MemoryCopy(entries, ptr, bytes_to_read);
       ptr += bytes_to_read;
     }
@@ -11354,7 +11354,7 @@ rd_frame(void)
   //
   U64 frame_time_history_avg_us = 0;
   {
-    U64 num_frames_in_history = Min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
+    U64 num_frames_in_history = min(ArrayCount(rd_state->frame_time_us_history), rd_state->frame_index);
     U64 frame_time_history_sum_us = 0;
     if(num_frames_in_history > 0)
     {
@@ -11731,7 +11731,7 @@ rd_frame(void)
     U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
     U64 tls_root_vaddr = ctrl_tls_root_vaddr_from_thread(&d_state->ctrl_entity_store->ctx, thread->handle);
     CTRL_EntityArray all_modules = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Module);
-    U64 eval_modules_count = Max(1, all_modules.count);
+    U64 eval_modules_count = max(1, all_modules.count);
     E_Module *eval_modules = push_array(scratch.arena, E_Module, eval_modules_count);
     E_Module *eval_modules_primary = &eval_modules[0];
     eval_modules_primary->rdi = &rdi_parsed_nil;
@@ -13316,7 +13316,7 @@ rd_frame(void)
             fnt_reset();
             F32 current_font_size = rd_font_size();
             F32 new_font_size = current_font_size+1;
-            new_font_size = Clamp(6.f, new_font_size, 72.f);
+            new_font_size = clamp(6.f, new_font_size, 72.f);
             RD_Cfg *font_size_cfg = rd_cfg_child_from_string_or_alloc(cfg, str8_lit("font_size"));
             rd_cfg_new_replacef(font_size_cfg, "%I64u", (U64)new_font_size);
           }break;
@@ -13328,7 +13328,7 @@ rd_frame(void)
             fnt_reset();
             F32 current_font_size = rd_font_size();
             F32 new_font_size = current_font_size-1;
-            new_font_size = Clamp(6.f, new_font_size, 72.f);
+            new_font_size = clamp(6.f, new_font_size, 72.f);
             RD_Cfg *font_size_cfg = rd_cfg_child_from_string_or_alloc(cfg, str8_lit("font_size"));
             rd_cfg_new_replacef(font_size_cfg, "%I64u", (U64)new_font_size);
           }break;
@@ -15466,7 +15466,7 @@ rd_frame(void)
             rd_cfg_new_replace(input, rd_regs()->string);
             RD_ViewState *vs = rd_view_state_from_cfg(view);
             vs->query_cursor = vs->query_mark = txt_pt(1, rd_regs()->string.size+1);
-            vs->query_string_size = Min(sizeof(vs->query_buffer), rd_regs()->string.size);
+            vs->query_string_size = min(sizeof(vs->query_buffer), rd_regs()->string.size);
             MemoryCopy(vs->query_buffer, rd_regs()->string.str, vs->query_string_size);
           }break;
           
@@ -17200,7 +17200,7 @@ rd_frame(void)
       String8 error_log_string = str8_list_join(scratch.arena, &error_log_lines, &(StringJoin){.sep = str8_lit(" ")});
       for(RD_WindowState *ws = rd_state->first_window_state; ws != &rd_nil_window_state; ws = ws->order_next)
       {
-        ws->error_string_size = Min(sizeof(ws->error_buffer), error_log_string.size);
+        ws->error_string_size = min(sizeof(ws->error_buffer), error_log_string.size);
         MemoryCopy(ws->error_buffer, error_log_string.str, ws->error_string_size);
         ws->error_t = 1.f;
       }

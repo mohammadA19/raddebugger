@@ -204,7 +204,7 @@ di_init(void)
   di_shared->arena = arena;
   di_shared->slots_count = 4096;
   di_shared->slots = push_array(arena, DI_Slot, di_shared->slots_count);
-  di_shared->stripes_count = Min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
+  di_shared->stripes_count = min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
   di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
   for(U64 idx = 0; idx < di_shared->stripes_count; idx += 1)
   {
@@ -214,7 +214,7 @@ di_init(void)
   }
   di_shared->search_slots_count = 512;
   di_shared->search_slots = push_array(arena, DI_SearchSlot, di_shared->search_slots_count);
-  di_shared->search_stripes_count = Min(di_shared->search_slots_count, os_get_system_info()->logical_processor_count);
+  di_shared->search_stripes_count = min(di_shared->search_slots_count, os_get_system_info()->logical_processor_count);
   di_shared->search_stripes = push_array(arena, DI_SearchStripe, di_shared->search_stripes_count);
   for(U64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
   {

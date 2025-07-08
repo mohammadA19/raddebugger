@@ -13,7 +13,7 @@ md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind,
   msg->string = string;
   SLLQueuePush(msgs->first, msgs->last, msg);
   msgs->count += 1;
-  msgs->worst_message_kind = Max(kind, msgs->worst_message_kind);
+  msgs->worst_message_kind = max(kind, msgs->worst_message_kind);
 }
 
 internal void
@@ -36,7 +36,7 @@ md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push)
       dst->last->next = to_push->first;
       dst->last = to_push->last;
       dst->count += to_push->count;
-      dst->worst_message_kind = Max(dst->worst_message_kind, to_push->worst_message_kind);
+      dst->worst_message_kind = max(dst->worst_message_kind, to_push->worst_message_kind);
     }
     else
     {

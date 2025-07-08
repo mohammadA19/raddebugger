@@ -179,7 +179,7 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
     SLLQueuePush(run_list.first, run_list.last, dst_n);
     run_list.node_count += 1;
     run_list.dim.x += dst_n->v.run.dim.x;
-    run_list.dim.y = Max(run_list.dim.y, dst_n->v.run.dim.y);
+    run_list.dim.y = max(run_list.dim.y, dst_n->v.run.dim.y);
     base_align_px += dst_n->v.run.dim.x;
   }
   ProfEnd();
@@ -577,8 +577,8 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
         // dr_rect(dst, v4f32(0, 1, 0, 0.5f), 0, 1.f, 0.f);
       }
       advance += piece->advance;
-      pixel_range.min = Min(pre_advance, pixel_range.min);
-      pixel_range.max = Max(advance, pixel_range.max);
+      pixel_range.min = min(pre_advance, pixel_range.min);
+      pixel_range.max = max(advance, pixel_range.max);
     }
     if(fr->underline_thickness > 0)
     {
@@ -658,8 +658,8 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
         {
           F32 pre_advance  = advance + piece->offset.x;
           F32 post_advance = advance + piece->advance;
-          pixel_range.min = Min(pre_advance,  pixel_range.min);
-          pixel_range.max = Max(post_advance, pixel_range.max);
+          pixel_range.min = min(pre_advance,  pixel_range.min);
+          pixel_range.max = max(post_advance, pixel_range.max);
         }
         if(!fr->icon)
         {
@@ -674,8 +674,8 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
                             p.y - descent - ascent - ascent/8.f,
                             p.x + pixel_range.max + ascent/4.f,
                             p.y - descent - ascent + ascent/8.f + list->dim.y);
-      rect.x0 = Min(rect.x0, p.x+max_x);
-      rect.x1 = Min(rect.x1, p.x+max_x);
+      rect.x0 = min(rect.x0, p.x+max_x);
+      rect.x1 = min(rect.x1, p.x+max_x);
       dr_rect(rect, color, (descent+ascent)/4.f, 0, 1.f);
     }
   }

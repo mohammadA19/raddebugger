@@ -599,7 +599,7 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
     str8_serial_push_struct(scratch.arena, &srl, &event->rgba);
     str8_serial_push_struct(scratch.arena, &srl, &event->bp_flags);
     String8 string = event->string;
-    string.size = Min(string.size, max-srl.total_size);
+    string.size = min(string.size, max-srl.total_size);
     str8_serial_push_struct(scratch.arena, &srl, &string.size);
     str8_serial_push_data(scratch.arena, &srl, string.str, string.size);
   }
@@ -4959,7 +4959,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                 DI_Key key = {push_str8f(scratch.arena, "%S/%S", t->path, info.name), info.props.modified};
                 di_open(&key);
                 di_key_list_push(scratch.arena, &preemptively_loaded_keys, &key);
-                if(preemptively_loaded_keys.count >= Max(1, async_thread_count()/2))
+                if(preemptively_loaded_keys.count >= max(1, async_thread_count()/2))
                 {
                   for(DI_KeyNode *n = preemptively_loaded_keys.first; n != 0; n = n->next)
                   {
@@ -5078,7 +5078,7 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
   //////////////////////////////
   //- rjf: gather evaluation modules
   //
-  U64 eval_modules_count = Max(1, entity_ctx->entity_kind_counts[CTRL_EntityKind_Module]);
+  U64 eval_modules_count = max(1, entity_ctx->entity_kind_counts[CTRL_EntityKind_Module]);
   E_Module *eval_modules = push_array(arena, E_Module, eval_modules_count);
   E_Module *eval_modules_primary = &eval_modules[0];
   eval_modules_primary->rdi = &rdi_parsed_nil;
@@ -6841,9 +6841,9 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
   //- rjf: clamp vaddr range
   Rng1U64 vaddr_range_clamped = vaddr_range;
   {
-    vaddr_range_clamped.max = Max(vaddr_range_clamped.max, vaddr_range_clamped.min);
-    U64 max_size_cap = Min(max_U64-vaddr_range_clamped.min, GB(1));
-    vaddr_range_clamped.max = Min(vaddr_range_clamped.max, vaddr_range_clamped.min+max_size_cap);
+    vaddr_range_clamped.max = max(vaddr_range_clamped.max, vaddr_range_clamped.min);
+    U64 max_size_cap = min(max_U64-vaddr_range_clamped.min, GB(1));
+    vaddr_range_clamped.max = min(vaddr_range_clamped.max, vaddr_range_clamped.min+max_size_cap);
   }
   
   //- rjf: task was taken -> read memory
