@@ -77,7 +77,7 @@ ev_hash_from_key(EV_Key key)
 internal E_TypeKey
 ev_expansion_type_from_key(E_TypeKey type_key)
 {
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   for(E_TypeKey key = type_key;
       !e_type_key_match(key, e_type_key_zero());
       key = e_type_key_direct(key))

@@ -258,7 +258,7 @@ e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
 internal E_TypeKey
 e_type_key_zero(void)
 {
-  E_TypeKey k = zero_struct;
+  E_TypeKey k = {};
   return k;
 }
 
@@ -381,7 +381,7 @@ e_type_key_cons_(E_ConsTypeParams *params)
       break;
     }
   }
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   if(node == 0)
   {
     E_TypeKey key = {E_TypeKeyKind_Cons};
@@ -818,7 +818,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             name.str = rdi_string_from_idx(rdi, rdi_type->user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
-            E_TypeKey direct_type_key = zero_struct;
+            E_TypeKey direct_type_key = {};
             if(rdi_type->user_defined.direct_type_idx < type_node_idx)
             {
               RDI_TypeNode *direct_type_node = rdi_element_from_name_idx(rdi, TypeNodes, rdi_type->user_defined.direct_type_idx);
@@ -861,7 +861,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
           {
             // rjf: unpack direct type
             B32 direct_type_is_good = 0;
-            E_TypeKey direct_type_key = zero_struct;
+            E_TypeKey direct_type_key = {};
             U64 direct_type_byte_size = 0;
             if(rdi_type->constructed.direct_type_idx < type_node_idx)
             {
@@ -988,7 +988,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
               case RDI_TypeKind_MemberPtr:
               {
                 // rjf: unpack owner type
-                E_TypeKey owner_type_key = zero_struct;
+                E_TypeKey owner_type_key = {};
                 if(rdi_type->constructed.owner_type_idx < type_node_idx)
                 {
                   RDI_TypeNode *owner_type_node = rdi_element_from_name_idx(rdi, TypeNodes, rdi_type->constructed.owner_type_idx);
@@ -1013,7 +1013,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             name.str = rdi_string_from_idx(rdi, rdi_type->user_defined.name_string_idx, &name.size);
             
             // rjf: unpack direct type
-            E_TypeKey direct_type_key = zero_struct;
+            E_TypeKey direct_type_key = {};
             U64 direct_type_byte_size = 0;
             if(rdi_type->user_defined.direct_type_idx < type_node_idx)
             {
@@ -1036,7 +1036,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
           else if(RDI_TypeKind_Bitfield == rdi_type->kind)
           {
             // rjf: unpack direct type
-            E_TypeKey direct_type_key = zero_struct;
+            E_TypeKey direct_type_key = {};
             U64 direct_type_byte_size = 0;
             if(rdi_type->bitfield.direct_type_idx < type_node_idx)
             {
@@ -1443,7 +1443,7 @@ e_expand_rule_from_type_key(E_TypeKey key)
 internal E_TypeKey
 e_type_key_direct(E_TypeKey key)
 {
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   switch(key.kind)
   {
     default:{}break;
@@ -1460,7 +1460,7 @@ e_type_key_direct(E_TypeKey key)
 internal E_TypeKey
 e_type_key_owner(E_TypeKey key)
 {
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   switch(key.kind)
   {
     default:{}break;
@@ -1895,7 +1895,7 @@ e_type_string_from_key(Arena *arena, E_TypeKey key)
 internal E_TypeKey
 e_default_expansion_type_from_key(E_TypeKey root_key)
 {
-  E_TypeKey type_key = zero_struct;
+  E_TypeKey type_key = {};
   B32 hit_1ptr = 0;
   for(E_TypeKey key = root_key;
       !e_type_key_match(e_type_key_zero(), key);

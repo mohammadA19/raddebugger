@@ -396,9 +396,9 @@ E_TYPE_ACCESS_FUNCTION_DEF(default)
       e_msg_list_concat_in_place(&result.msgs, &l.msgs);
       
       // rjf: look up member
-      E_Member member = zero_struct;
+      E_Member member = {};
       B32 r_found = 0;
-      E_TypeKey r_type = zero_struct;
+      E_TypeKey r_type = {};
       U64 r_value = 0;
       String8 r_query_name = {0};
       B32 r_is_constant_value = 0;
@@ -888,7 +888,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       {
         // rjf: unpack operand
         E_Expr *r_expr = expr->first;
-        E_TypeKey r_type = zero_struct;
+        E_TypeKey r_type = {};
         E_Space space = r_expr->space;
         E_IRTreeAndType r_tree = e_push_irtree_and_type_from_expr(arena, parent, &e_default_identifier_resolution_rule, 1, 1, r_expr);
         e_msg_list_concat_in_place(&result.msgs, &r_tree.msgs);
@@ -1568,7 +1568,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       {
         U64 val = expr->value.u64;
         E_IRNode *new_tree = e_irtree_const_u(arena, val);
-        E_TypeKey type_key = zero_struct;
+        E_TypeKey type_key = {};
         if(0){}
         else if(val <= max_S32){type_key = e_type_key_basic(E_TypeKind_S32);}
         else if(val <= max_S64){type_key = e_type_key_basic(E_TypeKind_S64);}
@@ -1607,11 +1607,11 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         String8 string__redirected = string;
         B32 string_mapped = 0;
         B32 string_is_implicit_member_name = 0;
-        E_TypeKey mapped_type_key = zero_struct;
+        E_TypeKey mapped_type_key = {};
         E_Module *mapped_location_block_module = &e_module_nil;
         RDI_LocationBlock *mapped_location_block = 0;
         E_Mode mapped_bytecode_mode = E_Mode_Offset;
-        E_Space mapped_bytecode_space = zero_struct;
+        E_Space mapped_bytecode_space = {};
         String8 mapped_bytecode = {0};
         void *mapped_user_data = 0;
         B32 generated = 0;
@@ -2460,7 +2460,7 @@ e_append_oplist_from_irtree(Arena *arena, E_IRNode *root, E_Space *current_space
 {
   U32 op = root->op;
   {
-    E_Space zero_space = zero_struct;
+    E_Space zero_space = {};
     if(!MemoryMatchStruct(&root->space, &zero_space) &&
        !MemoryMatchStruct(&root->space, current_space))
     {

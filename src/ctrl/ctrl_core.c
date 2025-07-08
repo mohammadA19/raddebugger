@@ -255,7 +255,7 @@ ctrl_user_breakpoint_list_copy(Arena *arena, CTRL_UserBreakpointList *src)
   CTRL_UserBreakpointList dst = {0};
   for(CTRL_UserBreakpointNode *src_n = src->first; src_n != 0; src_n = src_n->next)
   {
-    CTRL_UserBreakpoint dst_bp = zero_struct;
+    CTRL_UserBreakpoint dst_bp = {};
     MemoryCopyStruct(&dst_bp, &src_n->v);
     dst_bp.string = push_str8_copy(arena, src_n->v.string);
     dst_bp.condition = push_str8_copy(arena, src_n->v.condition);
@@ -611,7 +611,7 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
 internal CTRL_Event
 ctrl_event_from_serialized_string(Arena *arena, String8 string)
 {
-  CTRL_Event event = zero_struct;
+  CTRL_Event event = {};
   {
     U64 read_off = 0;
     read_off += str8_deserial_read_struct(string, read_off, &event.kind);
@@ -6341,7 +6341,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
           for(String8Node *condition_n = conditions.first; condition_n != 0; condition_n = condition_n->next)
           {
             // rjf: evaluate
-            E_Eval eval = zero_struct;
+            E_Eval eval = {};
             ProfScope("evaluate expression")
             {
               eval = e_eval_from_string(condition_n->string);

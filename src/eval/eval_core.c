@@ -416,7 +416,7 @@ e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, String8 stri
 internal E_TypeKey
 e_string2typekey_map_lookup(E_String2TypeKeyMap *map, String8 string)
 {
-  E_TypeKey key = zero_struct;
+  E_TypeKey key = {};
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map->slots_count;
   for(E_String2TypeKeyNode *n = map->slots[slot_idx].first; n != 0; n = n->next)

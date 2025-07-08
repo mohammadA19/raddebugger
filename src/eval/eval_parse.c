@@ -26,7 +26,7 @@ global read_only S64 e_max_precedence = 15;
 internal E_Token
 e_token_zero(void)
 {
-  E_Token t = zero_struct;
+  E_Token t = {};
   return t;
 }
 
@@ -601,7 +601,7 @@ e_leaf_type_key_from_name(String8 name)
 internal E_TypeKey
 e_type_key_from_expr(E_Expr *expr)
 {
-  E_TypeKey result = zero_struct;
+  E_TypeKey result = {};
   E_ExprKind kind = expr->kind;
   switch(kind)
   {
@@ -1399,7 +1399,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           
           // rjf: expect :
           B32 got_colon = 0;
-          E_Token colon_token = zero_struct;
+          E_Token colon_token = {};
           String8 colon_token_string = {0};
           {
             E_Token colon_token_maybe = e_token_at_it(it, &tokens);

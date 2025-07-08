@@ -3225,7 +3225,7 @@ rd_view_ui(Rng2F32 rect)
             {
               break;
             }
-            UI_Event dummy_evt = zero_struct;
+            UI_Event dummy_evt = {};
             UI_Event *evt = &dummy_evt;
             if(next_event_good)
             {
@@ -4663,8 +4663,8 @@ rd_view_ui(Rng2F32 rect)
                       ////////////
                       //- rjf: compute slider parameters
                       //
-                      E_Value cell_slider_min = zero_struct;
-                      E_Value cell_slider_max = zero_struct;
+                      E_Value cell_slider_min = {};
+                      E_Value cell_slider_max = {};
                       E_TypeKind slider_value_type_kind = E_TypeKind_Null;
                       F32 cell_slider_value = 0.f;
                       if(str8_match(cell_type->name, str8_lit("range1"), 0) && cell_type->args != 0 && cell_type->count >= 2)
@@ -16010,7 +16010,7 @@ rd_frame(void)
             RD_WindowState *ws = rd_window_state_from_os_handle(os_event->window);
             if(os_event != 0 && ws != &rd_nil_window_state)
             {
-              UI_Event ui_event = zero_struct;
+              UI_Event ui_event = {};
               UI_EventKind kind = UI_EventKind_Null;
               {
                 switch(os_event->kind)
@@ -16110,7 +16110,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Edit;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16119,7 +16119,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Accept;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16128,7 +16128,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Press;
             evt.slot       = UI_EventActionSlot_Cancel;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16144,7 +16144,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16155,7 +16155,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_PickSelectSide|UI_EventFlag_ZeroDeltaOnSelect|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16166,7 +16166,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16177,7 +16177,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16188,7 +16188,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16199,7 +16199,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16210,7 +16210,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16221,7 +16221,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16232,7 +16232,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16243,7 +16243,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16254,7 +16254,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16265,7 +16265,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_ExplicitDirectional|UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16276,7 +16276,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16287,7 +16287,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16298,7 +16298,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16309,7 +16309,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16320,7 +16320,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16331,7 +16331,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16342,7 +16342,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16353,7 +16353,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark|UI_EventFlag_ExplicitDirectional;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16364,7 +16364,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16375,7 +16375,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Page;
@@ -16386,7 +16386,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16397,7 +16397,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16408,7 +16408,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Reorder;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16419,7 +16419,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Reorder;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16430,7 +16430,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Line;
             evt.delta_2s32 = v2s32(-1, +0);
@@ -16440,7 +16440,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.delta_unit = UI_EventDeltaUnit_Line;
             evt.delta_2s32 = v2s32(+1, +0);
@@ -16450,7 +16450,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Line;
@@ -16461,7 +16461,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_KeepMark;
             evt.delta_unit = UI_EventDeltaUnit_Line;
@@ -16472,12 +16472,12 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt1 = zero_struct;
+            UI_Event evt1 = {};
             evt1.kind       = UI_EventKind_Navigate;
             evt1.delta_unit = UI_EventDeltaUnit_Whole;
             evt1.delta_2s32 = v2s32(-1, +0);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt1);
-            UI_Event evt2 = zero_struct;
+            UI_Event evt2 = {};
             evt2.kind       = UI_EventKind_Navigate;
             evt2.flags      = UI_EventFlag_KeepMark;
             evt2.delta_unit = UI_EventDeltaUnit_Whole;
@@ -16488,7 +16488,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16499,7 +16499,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16510,7 +16510,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16521,7 +16521,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Edit;
             evt.flags      = UI_EventFlag_Delete|UI_EventFlag_ZeroDeltaOnSelect;
             evt.delta_unit = UI_EventDeltaUnit_Word;
@@ -16532,7 +16532,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind  = UI_EventKind_Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_KeepMark;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16541,7 +16541,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind  = UI_EventKind_Edit;
             evt.flags = UI_EventFlag_Copy|UI_EventFlag_Delete;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16550,7 +16550,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
             evt.string = os_get_clipboard_text(scratch.arena);
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16559,7 +16559,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind   = UI_EventKind_Text;
             evt.string = rd_regs()->string;
             ui_event_list_push(scratch.arena, &ws->ui_events, &evt);
@@ -16570,7 +16570,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;
@@ -16581,7 +16581,7 @@ rd_frame(void)
           {
             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
             RD_WindowState *ws = rd_window_state_from_cfg(window);
-            UI_Event evt = zero_struct;
+            UI_Event evt = {};
             evt.kind       = UI_EventKind_Navigate;
             evt.flags      = UI_EventFlag_Secondary;
             evt.delta_unit = UI_EventDeltaUnit_Char;

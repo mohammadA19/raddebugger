@@ -302,7 +302,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
       RD_Cfg *cfg = ext->cfg;
       CTRL_Entity *entity = ext->entity;
       RD_Cfg *child = rd_cfg_child_from_string(cfg, child_schema->string);
-      E_TypeKey child_type_key = zero_struct;
+      E_TypeKey child_type_key = {};
       B32 wrap_child_w_meta_expr = 0;
       if(0){}
       
@@ -464,7 +464,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
       }
       
       //- rjf: evaluate
-      E_Space child_eval_space = zero_struct;
+      E_Space child_eval_space = {};
       if(cfg != &rd_nil_cfg)
       {
         child_eval_space = e_space_make(RD_EvalSpaceKind_MetaCfg);

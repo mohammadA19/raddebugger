@@ -329,12 +329,6 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 #define Extract16(word, pos)  (((word) >> ((pos)*16)) & max_U16)
 #define Extract32(word, pos)  (((word) >> ((pos)*32)) & max_U32)
 
-#if LANG_CPP
-# define zero_struct {}
-#else
-# define zero_struct {0}
-#endif
-
 #if COMPILER_MSVC && COMPILER_MSVC_YEAR < 2015
 # define this_function_name "unknown"
 #else

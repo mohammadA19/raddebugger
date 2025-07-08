@@ -1180,7 +1180,7 @@ internal E_TypeKey e_string2typekey_map_lookup(E_String2TypeKeyMap *map, String8
 //- rjf: auto hooks
 internal E_AutoHookMap e_auto_hook_map_make(Arena *arena, U64 slots_count);
 internal void e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *params);
-#define e_auto_hook_map_insert_new(arena, map, ...) e_auto_hook_map_insert_new_((arena), (map), &(E_AutoHookParams){.type_key = zero_struct, __VA_ARGS__})
+#define e_auto_hook_map_insert_new(arena, map, ...) e_auto_hook_map_insert_new_((arena), (map), &(E_AutoHookParams){.type_key = {}, __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Debug-Info-Driven Map Building Functions
