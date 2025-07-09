@@ -1,8 +1,8 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_META_H
-#define BASE_META_H
+
+
 
 ////////////////////////////////
 //~ rjf: Meta Markup Features
@@ -306,4 +306,4 @@ Type String8List__type =
 #define struct_from_serialized(arena, T, string, ...) (T *)deserialized_from_typed_data((arena), type(T), (string), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str
 #define deep_copy_from_struct(arena, T, ptr, ...)     (T *)deep_copy_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str
 
-#endif // BASE_META_H
+

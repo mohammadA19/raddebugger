@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FILE_STREAM_H
-#define FILE_STREAM_H
+
+
 
 ////////////////////////////////
 //~ rjf: Per-Path Info Cache Types
@@ -127,4 +127,4 @@ ASYNC_WORK_DEF(fs_stream_work);
 
 
 
-#endif // FILE_STREAM_H
+

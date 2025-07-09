@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CODEVIEW_PARSE_H
-#define CODEVIEW_PARSE_H
+
+
 
 ////////////////////////////////
 //~ CodeView Common Parser Types
@@ -265,5 +265,5 @@ struct CV_TypeIdArray
 
 //- rjf: leaf stream parsing
 
-#endif // CODEVIEW_PARSE_H
+
 

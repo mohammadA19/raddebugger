@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_INTERPRET_H
-#define EVAL_INTERPRET_H
+
+
 
 ////////////////////////////////
 //~ rjf: Interpretation Context
@@ -45,4 +45,4 @@ struct E_InterpretCtx
 
 
 
-#endif // EVAL_INTERPRET_H
+

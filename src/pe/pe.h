@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PE_H
-#define PE_H
+
+
 
 ////////////////////////////////
 //~ rjf: PE Format-Defined Types/Constants
@@ -1153,4 +1153,4 @@ typedef struct PE_DebugInfoList
 
 
 
-#endif // PE_H
+

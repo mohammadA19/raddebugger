@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_D3D11_H
-#define RENDER_D3D11_H
+
+
 
 #include <combaseapi.h>
 #include <dcommon.h>
@@ -196,4 +196,4 @@ global @(rodata) R_D3D11_Buffer r_d3d11_buffer_nil = {&r_d3d11_buffer_nil};
 
 
 
-#endif // RENDER_D3D11_H
+

@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef UI_H
-#define UI_H
+
+
 
 ////////////////////////////////
 //~ rjf: Icon Info
@@ -1232,4 +1232,4 @@ struct UI_State
 //- rjf: debug
 #define UI_Debug UI_FlagsAdd(UI_BoxFlag_Debug)
 
-#endif // UI_H
+

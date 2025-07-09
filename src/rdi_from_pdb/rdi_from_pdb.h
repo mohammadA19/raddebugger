@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_FROM_PDB_H
-#define RDI_FROM_PDB_H
+
+
 
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
@@ -382,4 +382,4 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 
 
 
-#endif // RDI_FROM_PDB_H
+

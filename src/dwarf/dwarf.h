@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_H
-#define DWARF_H
+
+
 
 typedef U16 DW_Version;
 typedef enum DW_VersionEnum
@@ -1750,4 +1750,4 @@ typedef enum DW_RegX64Enum
 ////////////////////////////////
 //~ rjf: String <=> Enum
 
-#endif // DWARF_H
+

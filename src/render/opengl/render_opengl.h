@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_H
-#define RENDER_OPENGL_H
+
+
 
 ////////////////////////////////
 //~ rjf: Defines
@@ -222,4 +222,4 @@ global R_OGL_State *r_ogl_state = 0;
 ////////////////////////////////
 //~ rjf: OS-Specific Hooks
 
-#endif // RENDER_OPENGL_H
+

@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MDESK_H
-#define MDESK_H
+
+
 
 ////////////////////////////////
 //~ rjf: Messages
@@ -355,4 +355,4 @@ global @(rodata) MD_Node md_nil_node =
 
 
 
-#endif // MDESK_H
+

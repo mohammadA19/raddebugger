@@ -1,8 +1,8 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_LOG_H
-#define BASE_LOG_H
+
+
 
 ////////////////////////////////
 //~ rjf: Log Types
@@ -65,4 +65,4 @@ struct Log
 
 
 
-#endif // BASE_LOG_H
+

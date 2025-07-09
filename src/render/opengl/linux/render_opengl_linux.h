@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_LINUX_H
-#define RENDER_OPENGL_LINUX_H
+
+
 
 ////////////////////////////////
 //~ rjf: Backend Constants
@@ -28,4 +28,4 @@
 # error Linux OpenGL backend not specified.
 #endif
 
-#endif // RENDER_OPENGL_LINUX_H
+

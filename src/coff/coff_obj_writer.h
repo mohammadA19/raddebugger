@@ -1,5 +1,5 @@
-#ifndef COFF_OBJ_WRITER_H
-#define COFF_OBJ_WRITER_H
+
+
 
 typedef enum
 {
@@ -95,5 +95,5 @@ typedef struct COFF_ObjWriter
 
 ////////////////////////////////
 
-#endif // COFF_OBJ_WRITER_H
+
 

@@ -3,8 +3,8 @@
 
 //- GENERATED CODE
 
-#ifndef CODEVIEW_META_H
-#define CODEVIEW_META_H
+
+
 
 typedef U16 CV_NumericKind;
 typedef enum CV_NumericKindEnum
@@ -525,4 +525,4 @@ CV_LeafKind_STRUCT2 = 0x1609,
 
 
 
-#endif // CODEVIEW_META_H
+

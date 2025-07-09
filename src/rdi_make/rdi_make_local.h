@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_MAKE_LOCAL_H
-#define RDI_MAKE_LOCAL_H
+
+
 
 //- rjf: base layer memory ops
 #define RDIM_MEMSET_OVERRIDE
@@ -418,4 +418,4 @@ global ASYNC_Root *rdim_local_async_root = 0;
 
 
 
-#endif // RDI_MAKE_LOCAL_H
+

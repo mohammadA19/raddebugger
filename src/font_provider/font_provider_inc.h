@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_PROVIDER_INC_H
-#define FONT_PROVIDER_INC_H
+
+
 
 ////////////////////////////////
 //~ rjf: Backend Constants
@@ -37,4 +37,4 @@
 # error Font provider backend not specified.
 #endif
 
-#endif // FONT_PROVIDER_INC_H
+

@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDUMP_H
-#define RADDUMP_H
+
+
 
 #define RD_INDENT_WIDTH 2
 #define RD_INDENT_MAX   4096
@@ -176,5 +176,5 @@ typedef struct RD_Line
 
 // PE
 
-#endif // RADDUMP_H
+
 

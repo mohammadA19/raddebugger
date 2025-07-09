@@ -3,8 +3,8 @@
 
 //- GENERATED CODE
 
-#ifndef UI_META_H
-#define UI_META_H
+
+
 
 typedef struct UI_ParentNode UI_ParentNode; struct UI_ParentNode{UI_ParentNode *next; UI_Box * v;};
 typedef struct UI_ChildLayoutAxisNode UI_ChildLayoutAxisNode; struct UI_ChildLayoutAxisNode{UI_ChildLayoutAxisNode *next; Axis2 v;};
@@ -405,4 +405,4 @@ if(state->text_alignment_stack.auto_pop) { ui_pop_text_alignment(); state->text_
 
 
 
-#endif // UI_META_H
+

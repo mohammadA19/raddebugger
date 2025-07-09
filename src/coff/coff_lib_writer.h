@@ -1,8 +1,8 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_LIB_WRITER_H
-#define COFF_LIB_WRITER_H
+
+
 
 typedef struct COFF_LibWriterMember
 {
@@ -51,5 +51,5 @@ typedef struct COFF_LibWriter
 
 ////////////////////////////////
 
-#endif // COFF_LIB_WRITER_H
+
 

@@ -3,8 +3,8 @@
 
 //- GENERATED CODE
 
-#ifndef DRAW_META_H
-#define DRAW_META_H
+
+
 
 typedef struct DR_Tex2DSampleKindNode DR_Tex2DSampleKindNode; struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
 typedef struct DR_XForm2DNode DR_XForm2DNode; struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
@@ -46,4 +46,4 @@ DR_TransparencyNode *top_transparency;\
 #define DR_ClipScope(v)             DeferLoop(dr_push_clip(v), dr_pop_clip())
 #define DR_TransparencyScope(v)     DeferLoop(dr_push_transparency(v), dr_pop_transparency())
 #endif
-#endif // DRAW_META_H
+

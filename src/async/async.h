@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ASYNC_H
-#define ASYNC_H
+
+
 
 ////////////////////////////////
 //~ rjf: Work Function Type
@@ -151,4 +151,4 @@ global ASYNC_Shared *async_shared = 0;
 ////////////////////////////////
 //~ rjf: Work Thread Entry Point
 
-#endif // ASYNC_H
+

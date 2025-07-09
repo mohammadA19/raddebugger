@@ -3,8 +3,8 @@
 
 //- GENERATED CODE
 
-#ifndef RENDER_D3D11_META_H
-#define RENDER_D3D11_META_H
+
+
 
 typedef enum R_D3D11_VShadKind
 {
@@ -480,4 +480,4 @@ str8_lit_comp(
 
 C_LINKAGE_END
 
-#endif // RENDER_D3D11_META_H
+

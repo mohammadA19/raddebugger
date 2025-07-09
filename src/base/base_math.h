@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_MATH_H
-#define BASE_MATH_H
+
+
 
 ////////////////////////////////
 //~ rjf: Vector Types
@@ -698,4 +698,4 @@ struct Rng1S64Array
 
 
 
-#endif // BASE_MATH_H
+

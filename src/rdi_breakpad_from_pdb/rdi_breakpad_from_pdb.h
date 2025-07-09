@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_BREAKPAD_FROM_PDB_H
-#define RDI_BREAKPAD_FROM_PDB_H
+
+
 
 ////////////////////////////////
 //~ rjf: Baking Tasks
@@ -47,4 +47,4 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work);
 
 global ASYNC_Root *p2b_async_root = 0;
 
-#endif // RDI_BREAKPAD_FROM_PDB_H
+

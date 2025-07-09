@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_CORE_WIN32_H
-#define DEMON_CORE_WIN32_H
+
+
 
 ////////////////////////////////
 //~ rjf: Windows Includes
@@ -288,4 +288,4 @@ global DMN_W32_GetThreadDescriptionFunctionType *dmn_w32_GetThreadDescription = 
 //- rjf: remote thread injection
 
 
-#endif // DEMON_CORE_WIN32_H
+

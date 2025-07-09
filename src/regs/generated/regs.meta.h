@@ -3,8 +3,8 @@
 
 //- GENERATED CODE
 
-#ifndef REGS_META_H
-#define REGS_META_H
+
+
 
 typedef enum REGS_RegCodeX64
 {
@@ -508,4 +508,4 @@ extern REGS_Slice regs_g_alias_code_x86_slice_table[36];
 
 C_LINKAGE_END
 
-#endif // REGS_META_H
+

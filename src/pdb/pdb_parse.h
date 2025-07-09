@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PDB_PARSE_H
-#define PDB_PARSE_H
+
+
 
 ////////////////////////////////
 //~ PDB Parser String Table Types
@@ -229,4 +229,4 @@ internal String8              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
 ////////////////////////////////
 //~ rjf: Thin Lookup Fast Paths
 
-#endif // PDB_PARSE_H
+

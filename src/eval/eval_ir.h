@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_IR_H
-#define EVAL_IR_H
+
+
 
 ////////////////////////////////
 //~ rjf: Identifier Resolution Rule Types
@@ -171,4 +171,4 @@ E_TYPE_ACCESS_FUNCTION_DEF(default);
 //- rjf: leaf-bytecode expression extensions
 
 
-#endif // EVAL_IR_H
+

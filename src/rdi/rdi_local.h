@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_FORMAT_LOCAL_H
-#define RDI_FORMAT_LOCAL_H
+
+
 
 #include "lib_rdi/rdi.h"
 #include "lib_rdi/rdi_parse.h"
@@ -75,4 +75,4 @@ enum RDI_DumpSubsetFlags : U32
 ////////////////////////////////
 //~ rjf: RDI Dumping
 
-#endif // RDI_FORMAT_LOCAL_H
+

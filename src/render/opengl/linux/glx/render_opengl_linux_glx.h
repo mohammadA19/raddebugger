@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_LINUX_GLX_H
-#define RENDER_OPENGL_LINUX_GLX_H
+
+
 
 #define glTexImage3D glTexImage3D__static
 #define glTexSubImage3D glTexSubImage3D__static
@@ -22,4 +22,4 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXC
 
 global GLXContext r_ogl_lnx_ctx = 0;
 
-#endif // RENDER_OPENGL_LINUX_GLX_H
+

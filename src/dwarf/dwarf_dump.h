@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_DUMP_H
-#define DWARF_DUMP_H
+
+
 
 ////////////////////////////////
 //~ rjf: Dump Subset Types
@@ -63,4 +63,4 @@ enum DW_DumpSubsetFlags : U32
 ////////////////////////////////
 //~ rjf: Dump Entry Point
 
-#endif // DWARF_DUMP_H
+

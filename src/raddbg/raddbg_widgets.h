@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_WIDGETS_H
-#define RADDBG_WIDGETS_H
+
+
 
 ////////////////////////////////
 //~ rjf: Cell Types
@@ -184,4 +184,4 @@ struct RD_CodeSliceSignal
 
 
 
-#endif // RADDBG_WIDGETS_H
+

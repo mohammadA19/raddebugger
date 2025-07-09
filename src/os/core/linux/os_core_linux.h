@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_CORE_LINUX_H
-#define OS_CORE_LINUX_H
+
+
 
 ////////////////////////////////
 //~ rjf: Includes
@@ -140,4 +140,4 @@ global OS_LNX_State os_lnx_state = {0};
 
 
 
-#endif // OS_CORE_LINUX_H
+

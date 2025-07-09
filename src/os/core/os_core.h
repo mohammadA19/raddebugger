@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_CORE_H
-#define OS_CORE_H
+
+
 
 ////////////////////////////////
 //~ rjf: System Info
@@ -346,4 +346,4 @@ raddbg_entry_point(entry_point);
 
 #endif
 
-#endif // OS_CORE_H
+

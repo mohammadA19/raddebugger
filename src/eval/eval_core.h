@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_CORE_H
-#define EVAL_CORE_H
+
+
 
 ////////////////////////////////
 //~ rjf: Evaluation Key Type
@@ -1389,4 +1389,4 @@ struct E_Cache
 
 
 
-#endif // EVAL_CORE_H
+

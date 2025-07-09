@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef GEO_CACHE_H
-#define GEO_CACHE_H
+
+
 
 ////////////////////////////////
 //~ rjf: Cache Types

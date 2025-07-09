@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_H
-#define OS_GFX_H
+
+
 
 ////////////////////////////////
 //~ rjf: Graphics System Info
@@ -202,4 +202,4 @@ struct OS_EventList
 
 
 
-#endif // OS_GFX_H
+

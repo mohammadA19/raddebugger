@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef UI_BASIC_WIDGETS_H
-#define UI_BASIC_WIDGETS_H
+
+
 
 ////////////////////////////////
 //~ rjf: Scroll List Types
@@ -186,4 +186,4 @@ struct UI_ScrollListSignal
 
 #define UI_ScrollList(params, scroll_pt_out, cursor_out, mark_out, visible_row_range_out, signal_out) DeferLoop(ui_scroll_list_begin((params), (scroll_pt_out), (cursor_out), (mark_out), (visible_row_range_out), (signal_out)), ui_scroll_list_end())
 
-#endif // UI_BASIC_WIDGETS_H
+

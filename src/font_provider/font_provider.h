@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_PROVIDER_H
-#define FONT_PROVIDER_H
+
+
 
 #define fp_hook C_LINKAGE
 
@@ -59,4 +59,4 @@ fp_hook void fp_font_close(FP_Handle handle);
 fp_hook FP_Metrics fp_metrics_from_font(FP_Handle font);
 fp_hook NO_ASAN FP_RasterResult fp_raster(Arena *arena, FP_Handle font, F32 size, FP_RasterFlags flags, String8 string);
 
-#endif // FONT_PROVIDER_H
+

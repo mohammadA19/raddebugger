@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_H
-#define COFF_H
+
+
 
 ////////////////////////////////
 //~ rjf: COFF Format Types
@@ -583,4 +583,4 @@ typedef struct COFF_RelocValue
 ////////////////////////////////
 //~ rjf: Enum <=> String
 
-#endif // COFF_H
+

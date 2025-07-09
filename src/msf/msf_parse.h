@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MSF_PARSE_H
-#define MSF_PARSE_H
+
+
 
 ////////////////////////////////
 //~ rjf: MSF Parser Helper Types
@@ -43,4 +43,4 @@ struct MSF_Parsed
 ////////////////////////////////
 //~ rjf: MSF Parser Functions
 
-#endif // MSF_PARSE_H
+

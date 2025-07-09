@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DRAW_H
-#define DRAW_H
+
+
 
 ////////////////////////////////
 //~ rjf: Fancy String Types
@@ -211,4 +211,4 @@ struct DR_ThreadCtx
 
 
 
-#endif // DRAW_H
+

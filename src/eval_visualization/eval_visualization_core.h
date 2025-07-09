@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_VISUALIZATION_CORE_H
-#define EVAL_VISUALIZATION_CORE_H
+
+
 
 ////////////////////////////////
 //~ rjf: Key Type (Uniquely Refers To One Tree Node)
@@ -404,4 +404,4 @@ global @(rodata) EV_Block ev_nil_block =
 
 
 
-#endif // EVAL_VISUALIZATION_CORE_H
+

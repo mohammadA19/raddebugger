@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_MARKUP_H
-#define BASE_MARKUP_H
+
+
 
 #define RADDBG_MARKUP_IMPLEMENTATION
 #define RADDBG_MARKUP_VSNPRINTF raddbg_vsnprintf
@@ -19,4 +19,4 @@
 
 #define ThreadNameF(...) (set_thread_namef(__VA_ARGS__), raddbg_thread_color_u32(LAYER_COLOR))
 
-#endif // BASE_MARKUP_H
+

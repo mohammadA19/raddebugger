@@ -1,8 +1,8 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PE_MAKE_EXPORT_TABLE_H
-#define PE_MAKE_EXPORT_TABLE_H
+
+
 
 typedef struct PE_ExportParse
 {
@@ -55,4 +55,4 @@ typedef struct PE_FinalizedExports
 
 ////////////////////////////////
 
-#endif // COFF_EXPORT_TABLE_H
+

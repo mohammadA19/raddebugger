@@ -1,8 +1,8 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_CORE_WIN32_H
-#define OS_CORE_WIN32_H
+
+
 
 ////////////////////////////////
 //~ rjf: Includes / Libraries
@@ -121,4 +121,4 @@ global OS_W32_State os_w32_state = {0};
 
 
 
-#endif // OS_CORE_WIN32_H
+

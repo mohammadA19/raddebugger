@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADCON_H
-#define RADCON_H
+
+
 
 enum RC_Flags : U32
 {
@@ -56,5 +56,5 @@ typedef struct RC_Context
 
 ////////////////////////////////
 
-#endif // RADCON_H
+
 

@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef HASH_STORE_H
-#define HASH_STORE_H
+
+
 
 ////////////////////////////////
 //~ NOTE(rjf): Hash Store Notes (2025/05/18)
@@ -283,4 +283,4 @@ global HS_Shared *hs_shared = 0;
 
 
 
-#endif // HASH_STORE_H
+

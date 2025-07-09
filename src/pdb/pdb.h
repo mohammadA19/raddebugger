@@ -1,8 +1,8 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PDB_H
-#define PDB_H
+
+
 
 // https://github.com/microsoft/microsoft-pdb/tree/master/PDB
 
@@ -420,4 +420,4 @@ typedef struct PDB_PsiHeader
 
 
 
-#endif // PDB_H
+
