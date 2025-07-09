@@ -72,19 +72,6 @@
 #define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
 
 ////////////////////////////////
-//~ rjf: Type -> Alignment
-
-#if COMPILER_MSVC
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_CLANG
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_GCC
-# define AlignOf(T) __alignof__(T)
-#else
-# error AlignOf not defined for this compiler.
-#endif
-
-////////////////////////////////
 //~ rjf: Member Offsets
 
 #define Member(T,m)                 (((T*)0)->m)
@@ -404,38 +391,6 @@ union Guid
   U8 v[16];
 };
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
-
-////////////////////////////////
-//~ Arrays
-
-
-
-struct U16Array
-{
-  U64  count;
-  U16 *v;
-};
-
-
-struct U32Array
-{
-  U64  count;
-  U32 *v;
-};
-
-
-struct U64Array
-{
-  U64  count;
-  U64 *v;
-};
-
-
-struct U128Array
-{
-  U64   count;
-  U128 *v;
-};
 
 ////////////////////////////////
 //~ NOTE(allen): Constants

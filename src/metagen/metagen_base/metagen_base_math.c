@@ -619,10 +619,10 @@ rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
   }
 }
 
-internal Rng1U64Array
+internal Rng1[]u64
 rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 {
-  Rng1U64Array arr = {0};
+  Rng1[]u64 arr = {0};
   arr.count        = list->count;
   arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
   U64 idx = 0;

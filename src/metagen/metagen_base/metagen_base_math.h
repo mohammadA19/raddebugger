@@ -350,7 +350,7 @@ struct Rng1U64List
 
 
 
-struct Rng1U64Array
+struct Rng1[]u64
 {
   Rng1U64 *v;
   U64 count;

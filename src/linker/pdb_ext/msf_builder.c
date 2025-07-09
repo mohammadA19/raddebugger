@@ -263,11 +263,11 @@ msf_get_page_count_cap(MSF_PageDataList page_data_list, MSF_UInt page_size)
 
 ////////////////////////////////
 
-internal U32Array
+internal []u32
 msf_fpm_data_from_pn(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber fpm_pn)
 {
   String8 raw_fpm = msf_data_from_pn(page_data_list, page_size, fpm_pn);
-  U32Array fpm_data;
+  []u32 fpm_data;
   fpm_data.count = raw_fpm.size / sizeof(fpm_data.v[0]);
   fpm_data.v = (U32*)raw_fpm.str;
   return fpm_data;
@@ -335,7 +335,7 @@ msf_get_fpm_page_bit_state(MSF_PageDataList page_data_list, MSF_UInt page_size, 
 {
   // fetch FPM
   MSF_PageNumber fpm_pn = msf_get_fpm_from_page_number(page_size, active_fpm, pn);
-  U32Array fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
+  []u32 fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
   
   // get page bit
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
@@ -350,7 +350,7 @@ msf_set_fpm_bit_(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNu
 {
   // fetch FPM
   MSF_PageNumber fpm_pn = msf_get_fpm_from_page_number(page_size, active_fpm, pn);
-  U32Array fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
+  []u32 fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
   
   // set page bit
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
@@ -516,7 +516,7 @@ msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
     MSF_UInt fpm_idx = msf->fpm_rover / fpm_interval_correct;
     assert(fpm_idx < fpm_pn_arr.count);
     MSF_PageNumber fpm_pn = fpm_pn_arr.v[fpm_idx];
-    U32Array fpm_data = msf_fpm_data_from_pn(msf->page_data_list, msf->page_size, fpm_pn);
+    []u32 fpm_data = msf_fpm_data_from_pn(msf->page_data_list, msf->page_size, fpm_pn);
     
     // scan FPM for free bit
     MSF_UInt fpm_rover_page_relative = msf->fpm_rover % fpm_interval_correct;
@@ -625,7 +625,7 @@ msf_find_max_pn_(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNu
   MSF_UInt fpm_page_count = fpm_interval_correct / fpm_interval_wrong;
   for (MSF_Int fpm_pn_idx = (MSF_Int)fpm_pn_arr.count - 1; fpm_pn_idx >= 0; fpm_pn_idx -= 1) {
     MSF_PageNumber fpm_pn = fpm_pn_arr.v[fpm_pn_idx];
-    U32Array fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
+    []u32 fpm_data = msf_fpm_data_from_pn(page_data_list, page_size, fpm_pn);
     
     // we have to work around the fact that FPM bits are always alloced
     // and also there is a trail of unused FPM groups too

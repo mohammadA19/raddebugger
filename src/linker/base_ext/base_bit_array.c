@@ -1,17 +1,17 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U32Array
+internal []u32
 bit_array_init32(Arena *arena, U64 word_count)
 {
-  U32Array result;
+  []u32 result;
   result.count = CeilIntegerDiv(word_count, 32);
   result.v = push_array(arena, U32, word_count);
   return result;
 }
 
 internal U64
-bit_array_scan_left_to_right32(U32Array bit_array, U64 lo, U64 hi, B32 state)
+bit_array_scan_left_to_right32([]u32 bit_array, U64 lo, U64 hi, B32 state)
 {
   assert(lo < bit_array.count*32);
   assert(hi <= bit_array.count*32);
@@ -73,7 +73,7 @@ bit_array_scan_left_to_right32(U32Array bit_array, U64 lo, U64 hi, B32 state)
 }
 
 internal U64
-bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
+bit_array_scan_right_to_left32([]u32 bit_array, U64 lo, U64 hi, B32 state)
 {
   assert(lo <= hi);
   assert(state == 0 || state == 1);
@@ -136,7 +136,7 @@ bit_array_scan_right_to_left32(U32Array bit_array, U64 lo, U64 hi, B32 state)
 }
 
 internal Rng1U64
-bit_array_scan_left_to_right32_contiguous(U32Array bit_array, U64 lo, U64 hi, B32 state, U64 in_row_count)
+bit_array_scan_left_to_right32_contiguous([]u32 bit_array, U64 lo, U64 hi, B32 state, U64 in_row_count)
 {
   Rng1U64 result = rng_1u64(max_U64, max_U64);
   
@@ -177,7 +177,7 @@ bit_array_scan_left_to_right32_contiguous(U32Array bit_array, U64 lo, U64 hi, B3
 }
 
 internal Rng1U64
-bit_array_scan_right_to_left32_contiguous(U32Array bit_array, U64 lo, U64 hi, B32 state, U64 in_row_count)
+bit_array_scan_right_to_left32_contiguous([]u32 bit_array, U64 lo, U64 hi, B32 state, U64 in_row_count)
 {
   Rng1U64 result = rng_1u64(max_U64, max_U64);
   
@@ -218,21 +218,21 @@ bit_array_scan_right_to_left32_contiguous(U32Array bit_array, U64 lo, U64 hi, B3
 }
 
 internal U64
-bit_array_find_next_unset_bit32(U32Array bit_array)
+bit_array_find_next_unset_bit32([]u32 bit_array)
 {
   U64 result = bit_array_scan_left_to_right32(bit_array, 0, bit_array.count*32, 0);
   return result;
 }
 
 internal U64
-bit_array_find_next_set_bit32(U32Array bit_array)
+bit_array_find_next_set_bit32([]u32 bit_array)
 {
   U64 result = bit_array_scan_left_to_right32(bit_array, 0, bit_array.count*32, 1);
   return result;
 }
 
 internal void
-bit_array_set_bit32(U32Array bit_array, U64 idx, B32 state)
+bit_array_set_bit32([]u32 bit_array, U64 idx, B32 state)
 {
   assert(idx < bit_array.count*32);
   U64 word_idx = idx / 32;
@@ -245,7 +245,7 @@ bit_array_set_bit32(U32Array bit_array, U64 idx, B32 state)
 }
 
 internal void
-bit_array_set_bit_range32(U32Array bit_array, Rng1U64 range, B32 state)
+bit_array_set_bit_range32([]u32 bit_array, Rng1U64 range, B32 state)
 {
   for (U64 idx = range.min ; idx < range.max; idx += 1) {
     bit_array_set_bit32(bit_array, idx, state);
@@ -253,7 +253,7 @@ bit_array_set_bit_range32(U32Array bit_array, Rng1U64 range, B32 state)
 }
 
 internal U32
-bit_array_get_bit32(U32Array bit_array, U64 idx)
+bit_array_get_bit32([]u32 bit_array, U64 idx)
 {
   assert(idx < bit_array.count*32);
   U64 word_idx = idx / 32;
@@ -263,7 +263,7 @@ bit_array_get_bit32(U32Array bit_array, U64 idx)
 }
 
 internal B32
-bit_array_is_bit_set(U32Array bit_arr, U64 bit_pos)
+bit_array_is_bit_set([]u32 bit_arr, U64 bit_pos)
 {
   U64 word_idx = bit_pos / 32;
   assert(word_idx < bit_arr.count);

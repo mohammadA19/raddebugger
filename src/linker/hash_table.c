@@ -393,8 +393,8 @@ sort_key_value_pairs_as_string_sensitive(KeyValuePair *pairs, U64 count)
   radsort(pairs, count, key_value_pair_is_before_string_sensitive);
 }
 
-internal U64Array
-remove_duplicates_u64_array(Arena *arena, U64Array arr)
+internal []u64
+remove_duplicates_u64_array(Arena *arena, []u64 arr)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -407,7 +407,7 @@ remove_duplicates_u64_array(Arena *arena, U64Array arr)
     }
   }
   
-  U64Array result = {0};
+  []u64 result = {0};
   result.count    = ht->count;
   result.v        = keys_from_hash_table_u64(arena, ht);
   

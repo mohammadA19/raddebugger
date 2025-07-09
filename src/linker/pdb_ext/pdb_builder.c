@@ -51,8 +51,8 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
   String8  local_data      = str8(0,0);
   U32      count           = 0;
   U32      max             = 0;
-  U32Array present_bits    = {0};
-  U32Array deleted_bits    = {0};
+  []u32 present_bits    = {0};
+  []u32 deleted_bits    = {0};
 
   do {
     error = PDB_HashTableParseError_OUT_OF_BYTES;
@@ -91,8 +91,8 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
     if (is_count_ok && is_load_factor_ok && is_present_bits_ok && is_deleted_bits_ok) {
       Arena *arena = arena_alloc();
       PDB_HashTableBucket *bucket_arr = push_array_no_zero(arena, PDB_HashTableBucket, max);
-      U32Array present_bits_new = bit_array_init32(arena, max);
-      U32Array deleted_bits_new = bit_array_init32(arena, max);
+      []u32 present_bits_new = bit_array_init32(arena, max);
+      []u32 deleted_bits_new = bit_array_init32(arena, max);
       MemoryCopyTyped(&present_bits_new.v[0], &present_bits.v[0], present_bits.count);
       MemoryCopyTyped(&deleted_bits_new.v[0], &deleted_bits.v[0], deleted_bits.count);
 

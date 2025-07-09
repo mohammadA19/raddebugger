@@ -112,10 +112,10 @@ typedef struct
 typedef union
 {
   struct {
-    U128Array **internal_hashes;
-    U128Array **external_hashes;
+    []u128 **internal_hashes;
+    []u128 **external_hashes;
   };
-  U128Array **v[CV_TypeIndexSource_COUNT];
+  []u128 **v[CV_TypeIndexSource_COUNT];
 } LNK_LeafHashes;
 
 // --- Symbol Parsing Tasks ----------------------------------------------------
@@ -316,13 +316,13 @@ typedef struct
   PDB_DbiModule             **mod_arr;
   PDB_DbiSectionContribList  *sc_list;
   String8                     image_data;
-  Rng1U64Array                image_section_file_ranges;
-  Rng1U64Array                image_section_virt_ranges;
+  Rng1[]u64                image_section_file_ranges;
+  Rng1[]u64                image_section_virt_ranges;
 } LNK_PushDbiSecContribTaskData;
 
 typedef struct
 {
-  U32Array      *hash_arr_arr;
+  []u32      *hash_arr_arr;
   CV_SymbolList *list_arr;
 } LNK_HashCVSymbolListTask;
 

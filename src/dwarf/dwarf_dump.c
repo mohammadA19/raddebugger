@@ -710,10 +710,10 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
     DW_Version ver = ver_arr[comp_idx];
     DW_Ext     ext = ext_arr[comp_idx];
     
-    U64Array locs = u64_array_from_list(locs_temp.arena, &loc_lists[comp_idx]);
+    []u64 locs = u64_array_from_list(locs_temp.arena, &loc_lists[comp_idx]);
     u64_array_sort(locs.count, locs.v);
     
-    U64Array locs_set      = remove_duplicates_u64_array(locs_temp.arena, locs);
+    []u64 locs_set      = remove_duplicates_u64_array(locs_temp.arena, locs);
     U64      address_size  = address_sizes[comp_idx];
     U64      base_selector = (address_size == 8) ? max_U64 : max_U32;
     
@@ -834,9 +834,9 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
   rd_indent();
   rd_printf("%-8s %-8s %-8s", "Offset", "min", "max");
   for (U32 comp_idx = 0; comp_idx < cu_range_list.count; ++comp_idx) {
-    U64Array locs = u64_array_from_list(scratch.arena, &loc_lists[comp_idx]);
+    []u64 locs = u64_array_from_list(scratch.arena, &loc_lists[comp_idx]);
     u64_array_sort(locs.count, locs.v);
-    U64Array locs_set      = remove_duplicates_u64_array(scratch.arena, locs);
+    []u64 locs_set      = remove_duplicates_u64_array(scratch.arena, locs);
     U64      address_size  = address_sizes[comp_idx];
     U64      base_selector = (address_size == 8) ? max_U64 : max_U32;
     
@@ -1055,7 +1055,7 @@ dw_print_debug_addr(Arena *arena, String8List *out, String8 indent, DW_Input *in
 }
 
 internal U64
-dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array segment_ranges, U8 segment_selector_size, U8 address_size, U64 *address_out)
+dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1[]u64 segment_ranges, U8 segment_selector_size, U8 address_size, U64 *address_out)
 {
   U64 read_offset = offset;
   
@@ -1082,7 +1082,7 @@ dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array 
 }
 
 internal void
-dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1U64Array segment_virtual_ranges, Arch arch)
+dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1[]u64 segment_virtual_ranges, Arch arch)
 {
   NotImplemented;
 #if 0
@@ -1235,7 +1235,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input
 }
 
 internal void
-dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1U64Array segment_ranges)
+dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1[]u64 segment_ranges)
 {
   NotImplemented;
 #if 0
@@ -1557,10 +1557,10 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
 #define DumpSubset(name) if(subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(str8_lit("\n")))
   Temp scratch = scratch_begin(&arena, 1);
-  Rng1U64Array segment_vranges = {0};
+  Rng1[]u64 segment_vranges = {0};
   DW_ListUnitInput lu_input = dw_list_unit_input_from_input(scratch.arena, input);
   Rng1U64List unit_ranges_list = dw_unit_ranges_from_data(scratch.arena, input->sec[DW_Section_Info].data);
-  Rng1U64Array unit_ranges = rng1u64_array_from_list(scratch.arena, &unit_ranges_list);
+  Rng1[]u64 unit_ranges = rng1u64_array_from_list(scratch.arena, &unit_ranges_list);
   B32 relaxed  = 1;
   
   //////////////////////////////

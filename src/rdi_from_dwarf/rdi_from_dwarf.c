@@ -1189,7 +1189,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   ProfBegin("Parse Comop Unit Ranges");
   DW_ListUnitInput lu_input      = dw_list_unit_input_from_input(scratch.arena, &input);
   Rng1U64List      cu_range_list = dw_unit_ranges_from_data(scratch.arena, input.sec[DW_Section_Info].data);
-  Rng1U64Array     cu_ranges     = rng1u64_array_from_list(scratch.arena, &cu_range_list);
+  Rng1[]u64     cu_ranges     = rng1u64_array_from_list(scratch.arena, &cu_range_list);
   ProfEnd();
   
   ////////////////////////////////

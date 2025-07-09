@@ -684,7 +684,7 @@ typedef struct RDIB_IndexRunBucket
     };
     U64 v;
   } sorter;
-  U32Array indices;
+  []u32 indices;
   U64      index_in_output_array;
 } RDIB_IndexRunBucket;
 

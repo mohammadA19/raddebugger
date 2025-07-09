@@ -45,10 +45,10 @@ u64_list_concat_in_place(U64List *list, U64List *to_concat)
   SLLConcatInPlace(list, to_concat);
 }
 
-internal U64Array
+internal []u64
 u64_array_from_list(Arena *arena, U64List *list)
 {
-  U64Array result;
+  []u64 result;
   result.count = 0;
   result.v = push_array(arena, U64, list->count);
   for (U64Node *n = list->first; n != NULL; n = n->next) {
@@ -119,7 +119,7 @@ u32_pair_radix_sort(U64 count, PairU32 *arr)
 }
 
 internal B32
-u32_array_compare(U32Array a, U32Array b)
+u32_array_compare([]u32 a, []u32 b)
 {
   B32 are_equal = 0;
   if (a.count == b.count) {
@@ -129,10 +129,10 @@ u32_array_compare(U32Array a, U32Array b)
   return are_equal;
 }
 
-internal U64Array
-u64_array_remove_duplicates(Arena *arena, U64Array in)
+internal []u64
+u64_array_remove_duplicates(Arena *arena, []u64 in)
 {
-  U64Array result;
+  []u64 result;
   result.count = 0;
   result.v = push_array(arena, U64, in.count);
   

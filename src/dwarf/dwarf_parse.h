@@ -32,10 +32,10 @@ typedef struct DW_ListUnitInput
   U64           str_offset_count;
   U64           rnglist_count;
   U64           loclist_count;
-  Rng1U64Array  addr_ranges;
-  Rng1U64Array  str_offset_ranges;
-  Rng1U64Array  rnglist_ranges;
-  Rng1U64Array  loclist_ranges;
+  Rng1[]u64  addr_ranges;
+  Rng1[]u64  str_offset_ranges;
+  Rng1[]u64  rnglist_ranges;
+  Rng1[]u64  loclist_ranges;
   DW_ListUnit  *addrs;
   DW_ListUnit  *str_offsets;
   DW_ListUnit  *rnglists;
