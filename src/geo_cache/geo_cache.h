@@ -100,36 +100,36 @@ global GEO_Shared *geo_shared = 0;
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void geo_init(void);
+
 
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void geo_tctx_ensure_inited(void);
+
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal GEO_Scope *geo_scope_open(void);
-internal void geo_scope_close(GEO_Scope *scope);
-internal void geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node);
+
+
+
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal R_Handle geo_buffer_from_hash(GEO_Scope *scope, U128 hash);
-internal R_Handle geo_buffer_from_key(GEO_Scope *scope, HS_Key key);
+
+
 
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32 geo_u2x_enqueue_req(U128 hash, U64 endt_us);
-internal void geo_u2x_dequeue_req(U128 *hash_out);
+
+
 ASYNC_WORK_DEF(geo_xfer_work);
 
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void geo_evictor_thread__entry_point(void *p);
+
 
 #endif //GEO_CACHE_H

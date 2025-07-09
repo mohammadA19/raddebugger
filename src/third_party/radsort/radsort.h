@@ -42,7 +42,6 @@
 // this is the maximum size of struct that we treat as a "simple" struct
 typedef struct RS_MAX_SIMPLE_BUF { char b[32]; } RS_MAX_SIMPLE_BUF;  // todo, 64-bit
 
-
 // ==============================================================================================================
 //  swap and move utility functions
 typedef struct bytes64 { char b[64]; } bytes64;  // copying with this turns into m512 moves (when arch is set)
@@ -97,7 +96,6 @@ RS_SIMPLE_SIZES
 #undef rsmoverfunc
 #undef rsswapperfunc
 
-
 // ==============================================================================================================
 
 typedef int is_before_func( void * elementa, void * elementb );
@@ -125,7 +123,6 @@ radsortmovesize( sizeof( (start)[0] ) ), \
 ); \
 } while (0)
 #define radheapsort( start, len, is_before_func )  do { radheapsortinteral( start, len, sizeof( ((start)[0]) ), is_before_func, radsortswapsize( sizeof( ((start)[0]) ) ) ); } while (0)
-
 
 //===================================================================================================
 // small heap sort - this sort is around 200 bytes compiled - can use directly when size is important
@@ -225,7 +222,6 @@ static RSFORCEINLINE void radsortgetmedian5( void * output, void * left, void * 
   if ( is_before( &mb4, &mb2 ) ) mover( output, &mb4, element_size );
 }
 
-
 static RSFORCEINLINE void radsortgetmedian9( void * output, void * left, void * right, size_t length, size_t element_size, is_before_func * is_before, swap_func * swapper, move_func * mover )
 {
   RS_MAX_SIMPLE_BUF mb0,mb1,mb2,mb3,mb4,mb5,mb6,mb7,mb8; // todo, temp mem!
@@ -290,8 +286,6 @@ static RSFORCEINLINE void radsortgetmedian( void * output, void * left, void * r
   else
     radsortgetmedian5( output, left, right, length, element_size, is_before, swapper, mover );
 }
-
-
 
 //===================================================================================================
 //  bubble 2 routines - for partitions <= 16 count
@@ -381,7 +375,6 @@ static RSFORCEINLINE int rss_byte_is_before_func( void * elementa, void * elemen
   size_t element_size = rs_es;
   return rs_ib( rsadd_ptr_elements( rs_start, a ), rsadd_ptr_elements( rs_start, b ) );
 }
-
 
 // do bubble sort of offsets, and THEN do all the swaps - faster on biy structures
 static RSFORCEINLINE void radsortbubble2offsets( void * left, size_t n, size_t element_size, is_before_func * is_before, swap_func * swapper, move_func * mover ) 

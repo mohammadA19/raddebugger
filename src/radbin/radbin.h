@@ -48,6 +48,6 @@ struct RB_FileList
 ////////////////////////////////
 //~ rjf: Top-Level Entry Point
 
-internal void rb_entry_point(CmdLine *cmdline);
+
 
 #endif //RADBIN_H

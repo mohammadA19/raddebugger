@@ -3,5 +3,3 @@
 
 #pragma once
 
-internal RDI_Arch rdi_arch_from_coff_machine(COFF_MachineType machine);
-

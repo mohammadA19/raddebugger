@@ -1734,68 +1734,21 @@ typedef enum DW_RegX64Enum
 
 ////////////////////////////////
 
-internal U64 dw_reg_size_from_code_x86(DW_Reg reg_code);
-internal U64 dw_reg_pos_from_code_x86(DW_Reg reg_code);
-internal U64 dw_reg_size_from_code_x64(DW_Reg reg_code);
-internal U64 dw_reg_pos_from_code_x64(DW_Reg reg_code);
-internal U64 dw_reg_size_from_code(Arch arch, DW_Reg reg_code);
-internal U64 dw_reg_pos_from_code(Arch arch, DW_Reg reg_code);
-
 //- Attrib Class Encodings
 
 // Speced Encodings
-internal DW_AttribClass dw_attrib_class_from_attrib_v2(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_v3(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_v4(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_v5(DW_AttribKind k);
 
 // Extensions
-internal DW_AttribClass dw_attrib_class_from_attrib_gnu  (DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_llvm (DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_apple(DW_AttribKind k);
-internal DW_AttribClass dw_attrib_class_from_attrib_mips (DW_AttribKind k);
-
-internal DW_AttribClass dw_attrib_class_from_attrib(DW_Version ver, DW_Ext ext, DW_AttribKind v);
 
 //- Form Class Encodings
 
-internal DW_AttribClass dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k);
-
-internal B32 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attrib_class, DW_FormKind form_kind);
-
 //- Section Names
 
-internal String8 dw_name_string_from_section_kind     (DW_SectionKind k);
-internal String8 dw_mach_name_string_from_section_kind(DW_SectionKind k);
-internal String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
-
 ////////////////////////////////
 
-internal U64 dw_size_from_format(DW_Format format);
-
 ////////////////////////////////
-
-internal DW_AttribClass dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKind attrib, DW_FormKind form_kind);
-
-internal U64 dw_pick_default_lower_bound(DW_Language lang);
 
 ////////////////////////////////
 //~ rjf: String <=> Enum
-
-internal String8 dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op);
-internal String8 dw_string_from_tag_kind(Arena *arena, DW_TagKind kind);
-internal String8 dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind);
-internal String8 dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind);
-internal String8 dw_string_from_language(Arena *arena, DW_Language kind);
-internal String8 dw_string_from_inl(Arena *arena, DW_InlKind kind);
-internal String8 dw_string_from_access_kind(Arena *arena, DW_AccessKind kind);
-internal String8 dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind);
-internal String8 dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind);
-internal String8 dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind);
-internal String8 dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind);
-internal String8 dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind);
-internal String8 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind);
-internal String8 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind);
-internal String8 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id);
 
 #endif // DWARF_H

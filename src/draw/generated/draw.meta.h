@@ -27,18 +27,18 @@ DR_TransparencyNode *top_transparency;\
 (b)->top_transparency = &dr_nil_transparency;\
 }while(0)
 #if 0
-internal R_Tex2DSampleKind          dr_push_tex2d_sample_kind(R_Tex2DSampleKind v);
-internal Mat3x3F32                  dr_push_xform2d(Mat3x3F32 v);
-internal Rng2F32                    dr_push_clip(Rng2F32 v);
-internal F32                        dr_push_transparency(F32 v);
-internal R_Tex2DSampleKind          dr_pop_tex2d_sample_kind(void);
-internal Mat3x3F32                  dr_pop_xform2d(void);
-internal Rng2F32                    dr_pop_clip(void);
-internal F32                        dr_pop_transparency(void);
-internal R_Tex2DSampleKind          dr_top_tex2d_sample_kind(void);
-internal Mat3x3F32                  dr_top_xform2d(void);
-internal Rng2F32                    dr_top_clip(void);
-internal F32                        dr_top_transparency(void);
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
 #if 0
 #define DR_Tex2DSampleKindScope(v)  DeferLoop(dr_push_tex2d_sample_kind(v), dr_pop_tex2d_sample_kind())

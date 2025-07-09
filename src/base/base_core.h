@@ -421,7 +421,6 @@ struct TxtRng
 ////////////////////////////////
 //~ Globally Unique Ids
 
-
 union Guid
 {
   struct

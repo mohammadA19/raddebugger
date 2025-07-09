@@ -220,51 +220,51 @@ global HS_Shared *hs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 hs_little_hash_from_data(String8 data);
-internal U128 hs_hash_from_data(String8 data);
-internal HS_ID hs_id_make(U64 u64_0, U64 u64_1);
-internal B32 hs_id_match(HS_ID a, HS_ID b);
-internal HS_Key hs_key_make(HS_Root root, HS_ID id);
-internal B32 hs_key_match(HS_Key a, HS_Key b);
+
+
+
+
+
+
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void hs_init(void);
+
 
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-internal HS_Root hs_root_alloc(void);
-internal void hs_root_release(HS_Root root);
+
+
 
 ////////////////////////////////
 //~ rjf: Cache Submission
 
-internal U128 hs_submit_data(HS_Key key, Arena **data_arena, String8 data);
+
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal HS_Scope *hs_scope_open(void);
-internal void hs_scope_close(HS_Scope *scope);
-internal void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node);
+
+
+
 
 ////////////////////////////////
 //~ rjf: Downstream Accesses
 
-internal void hs_hash_downstream_inc(U128 hash);
-internal void hs_hash_downstream_dec(U128 hash);
+
+
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal U128 hs_hash_from_key(HS_Key key, U64 rewind_count);
-internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
+
+
 
 ////////////////////////////////
 //~ rjf: Evictor Thread
 
-internal void hs_evictor_thread__entry_point(void *p);
+
 
 #endif // HASH_STORE_H

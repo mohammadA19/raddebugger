@@ -345,17 +345,8 @@ typedef struct MSCRT_ParsedFuncInfoV4
 
 //- Exception info < v4
 
-internal U64 mscrt_parse_func_info(Arena *arena, String8 raw_data, U64 section_count, COFF_SectionHeader *sections, U64 off, MSCRT_FuncInfo *func_info);
-
 //- Exception info v4
 
-internal U64 mscrt_parse_handler_type_v4       (String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler);
-internal U64 mscrt_parse_unwind_v4_entry       (String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out);
-internal U64 mscrt_parse_handler_type_v4_array (Arena *arena, String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4Array *array_out);
-internal U64 mscrt_parse_unwind_map_v4         (Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out);
-internal U64 mscrt_parse_try_block_map_array_v4(Arena *arena, String8 raw_data, U64 off, U64 section_count, COFF_SectionHeader *sections, U64 func_voff, MSCRT_TryBlockMapV4Array *map_out);
-internal U64 mscrt_parse_ip2state_map_v4       (Arena *arena, String8 raw_data, U64 off, U64 func_voff, MSCRT_IP2State32V4 *ip2state_map_out);
-internal U64 mscrt_parse_func_info_v4          (Arena *arena, String8 raw_data, U64 section_count, COFF_SectionHeader *sections, U64 off, U64 func_voff, MSCRT_ParsedFuncInfoV4 *func_info_out);
 internal Rng1U64List
 mscrt_catch_blocks_from_data_x8664(Arena              *arena,
                                    String8             raw_data,
@@ -365,8 +356,6 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
 
 ////////////////////////////////
 //~ rjf: Enum -> String
-
-internal String8 mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjectives);
 
 #endif // MSVC_CRT
 

@@ -198,7 +198,6 @@ void blake3_hash_many(const uint8_t *const *inputs, size_t num_inputs,
 
 size_t blake3_simd_degree(void);
 
-
 // Declarations for implementation-specific functions.
 void blake3_compress_in_place_portable(uint32_t cv[8],
                                        const uint8_t block[BLAKE3_BLOCK_LEN],
@@ -280,6 +279,5 @@ void blake3_hash_many_neon(const uint8_t *const *inputs, size_t num_inputs,
                            uint8_t flags, uint8_t flags_start,
                            uint8_t flags_end, uint8_t *out);
 #endif
-
 
 #endif /* BLAKE3_IMPL_H */
