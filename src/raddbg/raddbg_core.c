@@ -178,7 +178,7 @@ rd_name_bucket_num_from_string_size(U64 size)
   U64 bucket_num = 0;
   if(size > 0)
   {
-    for EachElement(idx, rd_name_bucket_chunk_sizes)
+    for idx in 0..<len(rd_name_bucket_chunk_sizes)
     {
       if(size <= rd_name_bucket_chunk_sizes[idx])
       {
@@ -1267,7 +1267,7 @@ internal MD_NodePtrList
 rd_schemas_from_name(String8 name)
 {
   MD_NodePtrList schemas = {0};
-  for EachElement(idx, rd_name_schema_info_table)
+  for idx in 0..<len(rd_name_schema_info_table)
   {
     if(str8_match(name, rd_name_schema_info_table[idx].name, 0))
     {
@@ -2457,7 +2457,7 @@ rd_view_from_eval(RD_Cfg *parent, E_Eval eval)
     {
       MD_NodePtrList schemas = rd_schemas_from_name(schema_name);
       U64 unnamed_order_idx = 0;
-      for EachIndex(arg_idx, args_count)
+      for arg_idx in 0..<args_count
       {
         E_Expr *arg = args[arg_idx];
         String8 param_name = {0};
@@ -3949,7 +3949,7 @@ rd_view_ui(Rng2F32 rect)
                 // rjf: find selection keys within the block in which we are doing reordering
                 EV_Key selection_keys_in_block[2] = {0};
                 {
-                  for EachElement(idx, selection_endpoint_blocks)
+                  for idx in 0..<len(selection_endpoint_blocks)
                   {
                     EV_Block *endpoint_block = selection_endpoint_blocks[idx];
                     if(endpoint_block == selection_block)
@@ -3969,14 +3969,14 @@ rd_view_ui(Rng2F32 rect)
                     }
                   }
                   EV_Key fallback_key = {0};
-                  for EachElement(idx, selection_endpoint_blocks)
+                  for idx in 0..<len(selection_endpoint_blocks)
                   {
                     if(!ev_key_match(selection_keys_in_block[idx], ev_key_zero()))
                     {
                       fallback_key = selection_keys_in_block[idx];
                     }
                   }
-                  for EachElement(idx, selection_endpoint_blocks)
+                  for idx in 0..<len(selection_endpoint_blocks)
                   {
                     if(ev_key_match(selection_keys_in_block[idx], ev_key_zero()))
                     {
@@ -5657,7 +5657,7 @@ rd_arch_from_eval(E_Eval eval)
   E_Type *type = e_type_from_key(eval.irtree.type_key);
   if(type->kind == E_TypeKind_Lens)
   {
-    for EachIndex(idx, type->count)
+    for idx in 0..<type->count
     {
       E_Expr *arg = type->args[idx];
       {
@@ -5830,7 +5830,7 @@ rd_window_state_from_cfg(RD_Cfg *cfg)
       size.x = (F32)f64_from_str8(size_cfg->first->string);
       size.y = (F32)f64_from_str8(size_cfg->first->next->string);
       OS_HandleArray monitors = os_push_monitors_array(scratch.arena);
-      for EachIndex(idx, monitors.count)
+      for idx in 0..<monitors.count
       {
         String8 monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
         if(str8_match(monitor_name, monitor_cfg->first->string, StringMatchFlag_CaseInsensitive))
@@ -5978,7 +5978,7 @@ rd_window_frame(void)
       &rd_nil_cfg,
       &rd_nil_cfg,
     };
-    for EachIndex(idx, len(theme_parents))
+    for idx in 0..<len(theme_parents)
     {
       RD_Cfg *parent_cfg = theme_parents[idx];
       if(theme_cfgs[idx] == &rd_nil_cfg)
@@ -6599,7 +6599,7 @@ rd_window_frame(void)
           {str8_lit("regs"),       rd_regs()},
           {str8_lit("hover_regs"), rd_state->hover_regs},
         };
-        for EachElement(idx, regs_info)
+        for idx in 0..<len(regs_info)
         {
           ui_divider(ui_em(1.f, 1.f));
           ui_label(regs_info[idx].name);
@@ -7905,7 +7905,7 @@ rd_window_frame(void)
             {rd_cmd_kind_info_table[RD_CmdKind_StepOut].string,  str8_lit("weak"),    processes.count != 0 && can_send_signal},
           };
           UI_TextAlignment(UI_TextAlign_Center)
-            for EachElement(idx, center_button_tasks)
+            for idx in 0..<len(center_button_tasks)
             UI_Flags(center_button_tasks[idx].is_enabled ? 0 : UI_BoxFlag_Disabled)
             UI_Tag(center_button_tasks[idx].is_enabled ? center_button_tasks[idx].tag : str8_lit("weak"))
           {
@@ -10867,7 +10867,7 @@ rd_init(CmdLine *cmdln)
   {
     U64 schemas_count = len(rd_name_schema_info_table);
     rd_state->schemas = push_array(rd_state->arena, MD_NodePtrList, schemas_count);
-    for EachIndex(idx, schemas_count)
+    for idx in 0..<schemas_count
     {
       Temp scratch = scratch_begin(0, 0);
       typedef struct SchemaParseTask SchemaParseTask;
@@ -10887,7 +10887,7 @@ rd_init(CmdLine *cmdln)
         {
           if(str8_match(tag->string, str8_lit("inherit"), 0))
           {
-            for EachIndex(idx2, schemas_count)
+            for idx2 in 0..<schemas_count
             {
               if(str8_match(rd_name_schema_info_table[idx2].name, tag->first->string, 0))
               {
@@ -10918,7 +10918,7 @@ rd_init(CmdLine *cmdln)
     rd_state->vocab_info_map.single_slots = push_array(rd_state->arena, RD_VocabInfoMapSlot, rd_state->vocab_info_map.single_slots_count);
     rd_state->vocab_info_map.plural_slots_count = 1024;
     rd_state->vocab_info_map.plural_slots = push_array(rd_state->arena, RD_VocabInfoMapSlot, rd_state->vocab_info_map.plural_slots_count);
-    for EachElement(idx, rd_vocab_info_table)
+    for idx in 0..<len(rd_vocab_info_table)
     {
       RD_VocabInfoMapNode *n = push_array(rd_state->arena, RD_VocabInfoMapNode, 1);
       MemoryCopyStruct(&n->v, &rd_vocab_info_table[idx]);
@@ -11131,7 +11131,7 @@ rd_frame(void)
       {rd_state->cmdln_cfg_string_key, str8_lit("command_line")},
       {rd_state->transient_cfg_string_key, str8_lit("transient")},
     };
-    for EachElement(idx, table)
+    for idx in 0..<len(table)
     {
       Arena *arena = arena_alloc();
       String8 data = rd_string_from_cfg_tree(arena,
@@ -11232,7 +11232,7 @@ rd_frame(void)
   //
   if(rd_state->frame_depth == 1)
   {
-    for EachIndex(slot_idx, rd_state->view_state_slots_count)
+    for slot_idx in 0..<rd_state->view_state_slots_count
     {
       for(RD_ViewState *vs = rd_state->view_state_slots[slot_idx].first, *next; vs != 0; vs = next)
       {
@@ -11293,7 +11293,7 @@ rd_frame(void)
   {
     F32 slow_rate = 1 - pow_f32(2, (-10.f * rd_state->frame_dt));
     F32 fast_rate = 1 - pow_f32(2, (-40.f * rd_state->frame_dt));
-    for EachIndex(slot_idx, rd_state->view_state_slots_count)
+    for slot_idx in 0..<rd_state->view_state_slots_count
     {
       for(RD_ViewState *vs = rd_state->view_state_slots[slot_idx].first;
           vs != 0;
@@ -11739,7 +11739,7 @@ rd_frame(void)
     DI_Key primary_dbgi_key = {0};
     ProfScope("produce all eval modules")
     {
-      for EachIndex(eval_module_idx, all_modules.count)
+      for eval_module_idx in 0..<all_modules.count
       {
         CTRL_Entity *m = all_modules.v[eval_module_idx];
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(m);
@@ -11810,7 +11810,7 @@ rd_frame(void)
           str8_lit("text_pt_commands"),
           str8_lit("text_range_commands"),
         };
-        for EachElement(idx, names)
+        for idx in 0..<len(names)
         {
           String8 name = names[idx];
           E_TypeKey type_key = e_type_key_cons(.kind = E_TypeKind_Set,
@@ -11835,7 +11835,7 @@ rd_frame(void)
         {
           str8_lit("themes"),
         };
-        for EachElement(idx, names)
+        for idx in 0..<len(names)
         {
           String8 name = names[idx];
           E_TypeKey type_key = e_type_key_cons(.kind = E_TypeKind_Set,
@@ -11855,7 +11855,7 @@ rd_frame(void)
       }
       
       //- rjf: build schema types & cache (name -> type) mapping
-      for EachElement(idx, rd_name_schema_info_table)
+      for idx in 0..<len(rd_name_schema_info_table)
       {
         String8 name = rd_name_schema_info_table[idx].name;
         E_TypeKey type_key = e_type_key_cons(.name = name,
@@ -11907,7 +11907,7 @@ rd_frame(void)
         str8_lit("recent_project"),
         str8_lit("recent_file"),
       };
-      for EachElement(cfg_name_idx, evallable_cfg_names)
+      for cfg_name_idx in 0..<len(evallable_cfg_names)
       {
         String8 cfg_name = evallable_cfg_names[cfg_name_idx];
         String8 collection_name = rd_plural_from_code_name(cfg_name);
@@ -11930,7 +11930,7 @@ rd_frame(void)
       
       //- rjf: add macros for evallable top-level individual config entity trees -
       // things with names either explicitly attached, or that we can infer
-      for EachElement(idx, rd_name_schema_info_table)
+      for idx in 0..<len(rd_name_schema_info_table)
       {
         String8 name = rd_name_schema_info_table[idx].name;
         MD_NodePtrList schemas = rd_schemas_from_name(name);
@@ -12088,13 +12088,13 @@ rd_frame(void)
         str8_lit("thread"),
         str8_lit("module"),
       };
-      for EachElement(idx, evallable_ctrl_names)
+      for idx in 0..<len(evallable_ctrl_names)
       {
         String8 name = evallable_ctrl_names[idx];
         CTRL_EntityKind kind = ctrl_entity_kind_from_string(name);
         CTRL_EntityArray array = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, kind);
         E_TypeKey type_key = e_string2typekey_map_lookup(rd_state->meta_name2type_map, name);
-        for EachIndex(idx, array.count)
+        for idx in 0..<array.count
         {
           CTRL_Entity *entity = array.v[idx];
           E_Space space = rd_eval_space_from_ctrl_entity(entity, RD_EvalSpaceKind_MetaCtrlEntity);
@@ -12126,7 +12126,7 @@ rd_frame(void)
       }
       
       //- rjf: add macros for all ctrl entity collections
-      for EachElement(ctrl_name_idx, evallable_ctrl_names)
+      for ctrl_name_idx in 0..<len(evallable_ctrl_names)
       {
         String8 kind_name = evallable_ctrl_names[ctrl_name_idx];
         String8 collection_name = rd_plural_from_code_name(kind_name);
@@ -12239,7 +12239,7 @@ rd_frame(void)
           Collection(registers),
 #undef Collection
         };
-        for EachElement(idx, collection_infos)
+        for idx in 0..<len(collection_infos)
         {
           String8 collection_name = collection_infos[idx].name;
           E_Expr *expr = e_push_expr(scratch.arena, E_ExprKind_LeafOffset, r1u64(0, 0));
@@ -12264,7 +12264,7 @@ rd_frame(void)
         str8_lit_comp("globals"),
         str8_lit_comp("types"),
       };
-      for EachElement(idx, debug_info_table_collection_names)
+      for idx in 0..<len(debug_info_table_collection_names)
       {
         String8 name = debug_info_table_collection_names[idx];
         E_Expr *expr = e_push_expr(scratch.arena, E_ExprKind_LeafOffset, r1u64(0, 0));
@@ -12314,7 +12314,7 @@ rd_frame(void)
           {rd_state->cmdln_cfg_string_key, str8_lit("raddbg_command_line_data")},
           {rd_state->transient_cfg_string_key, str8_lit("raddbg_transient_data")},
         };
-        for EachElement(idx, table)
+        for idx in 0..<len(table)
         {
           HS_Scope *hs_scope = hs_scope_open();
           HS_Key key = table[idx].key;
@@ -12376,7 +12376,7 @@ rd_frame(void)
       
       //- rjf: fill lenses in ev expand rule map, rd view ui rule map
       {
-        for EachElement(idx, lens_table)
+        for idx in 0..<len(lens_table)
         {
           if(lens_table[idx].ui != 0)
           {
@@ -12390,7 +12390,7 @@ rd_frame(void)
       }
       
       //- rjf: fill macros w/ types for lenses
-      for EachElement(idx, lens_table)
+      for idx in 0..<len(lens_table)
       {
         E_TypeFlags type_flags = 0;
         if(lens_table[idx].inherited_by_members)
@@ -12424,7 +12424,7 @@ rd_frame(void)
     CTRL_EntityArray modules = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Module);
     ProfScope("gather config from loaded modules")
     {
-      for EachIndex(idx, modules.count)
+      for idx in 0..<modules.count
       {
         CTRL_Entity *module = modules.v[idx];
         String8 raddbg_data = ctrl_raddbg_data_from_module(scratch.arena, module->handle);
@@ -12479,7 +12479,7 @@ rd_frame(void)
       };
       if(rd_state->use_default_stl_type_views)
       {
-        for EachElement(idx, type_views)
+        for idx in 0..<len(type_views)
         {
           if((type_views[idx].stl && rd_state->use_default_stl_type_views) ||
              (type_views[idx].ue  && rd_state->use_default_ue_type_views))
@@ -12506,7 +12506,7 @@ rd_frame(void)
         type_views,
         immediate_type_views,
       };
-      for EachElement(list_idx, rules_lists)
+      for list_idx in 0..<len(rules_lists)
       {
         RD_CfgList list = rules_lists[list_idx];
         for(RD_CfgNode *n = list.first; n != 0; n = n->next)
@@ -12944,7 +12944,7 @@ rd_frame(void)
               rd_cfg_release(n->v);
             }
             RD_Cfg *keybindings = rd_cfg_new(user, str8_lit("keybindings"));
-            for EachElement(idx, rd_default_binding_table)
+            for idx in 0..<len(rd_default_binding_table)
             {
               String8 name = rd_default_binding_table[idx].string;
               RD_Binding binding = rd_default_binding_table[idx].binding;
@@ -17068,7 +17068,7 @@ rd_frame(void)
   //- rjf: garbage collect untouched window states
   //
   {
-    for EachIndex(slot_idx, rd_state->window_state_slots_count)
+    for slot_idx in 0..<rd_state->window_state_slots_count
     {
       for(RD_WindowState *ws = rd_state->window_state_slots[slot_idx].first, *next; ws != 0; ws = next)
       {

@@ -1411,7 +1411,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
     };
     E_TokenArray tokens = parse.tokens;
     str8_list_pushf(scratch.arena, &strings, "    tokens:\n");
-    for EachIndex(idx, tokens.count)
+    for idx in 0..<tokens.count
     {
       E_Token token = tokens.v[idx];
       String8 token_string = str8_substr(expr_text, token.range);

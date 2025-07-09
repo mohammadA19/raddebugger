@@ -262,7 +262,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
       CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
-      for EachIndex(idx, threads.count)
+      for idx in 0..<threads.count
       {
         CTRL_Entity *thread = threads.v[idx];
         CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
@@ -338,7 +338,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
       CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
-      for EachIndex(idx, threads.count)
+      for idx in 0..<threads.count
       {
         CTRL_Entity *thread = threads.v[idx];
         U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
@@ -4131,7 +4131,7 @@ rd_eval_color_from_eval(E_Eval eval)
       result.rgba_evals[2] = component_evals[1];
       result.rgba_evals[3] = component_evals[0];
     }
-    for EachIndex(idx, 4)
+    for idx in 0..<4
     {
       result.rgba.v[idx] = e_value_eval_from_eval(result.rgba_evals[idx]).value.f32;
     }

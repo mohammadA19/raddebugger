@@ -166,7 +166,7 @@ hs_root_release(HS_Root root)
   //- rjf: release all IDs
   for(HS_RootIDChunkNode *id_chunk_n = root_ids.first; id_chunk_n != 0; id_chunk_n = id_chunk_n->next)
   {
-    for EachIndex(chunk_idx, id_chunk_n->count)
+    for chunk_idx in 0..<id_chunk_n->count
     {
       HS_ID id = id_chunk_n->v[chunk_idx];
       HS_Key key = hs_key_make(root, id);

@@ -1568,8 +1568,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
   //
   DumpSubset(DebugInfo)
   {
-    for EachIndex(unit_idx, unit_ranges.count)
-    {
+    for unit_idx in 0..<unit_ranges.count {
       Temp unit_temp = temp_begin(scratch.arena);
       
       //- rjf: unpack unit
@@ -1822,8 +1821,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
   //
   DumpSubset(DebugLine)
   {
-    for EachIndex(unit_idx, unit_ranges.count)
-    {
+    for unit_idx in 0..<unit_ranges.count {
       Temp unit_temp = temp_begin(scratch.arena);
       
       // rjf: unpack unit
@@ -1865,8 +1863,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
       DeferLoop(dumpf("  directory_table:\n  {\n"), dumpf("  }\n\n"))
       {
         dumpf("    // %-4s %-8s\n", "no.", "name");
-        for EachIndex(dir_idx, line_vm.dir_table.count)
-        {
+        for dir_idx in 0..<line_vm.dir_table.count {
           dumpf("    {  %-4llu %S  }\n", dir_idx, line_vm.dir_table.v[dir_idx]);
         }
       }
@@ -1875,8 +1872,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
       DeferLoop(dumpf("  file_table:\n  {\n"), dumpf("  }\n\n"))
       {
         dumpf("  // %-4s %-8s %-8s %-33s %-8s %-8s\n", "no.", "dir_idx", "time", "md5", "size", "name");
-        for EachIndex(file_idx, line_vm.file_table.count)
-        {
+        for file_idx in 0..<line_vm.file_table.count {
           DW_LineFile *file = &line_vm.file_table.v[file_idx];
           dumpf("  {  %-4llu %-8llu %-8llu %016llx-%016llx %-8llu %S  }\n",
                 file_idx,

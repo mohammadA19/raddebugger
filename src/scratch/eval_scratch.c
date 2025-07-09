@@ -43,7 +43,7 @@ entry_point(CmdLine *cmdline)
     str8_lit("foo(bar)"),
     str8_lit("foo(bar(baz))"),
   };
-  for EachElement(idx, exprs)
+  for idx in 0..<len(exprs)
   {
     String8 debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
     raddbg_log("%S", debug_string);

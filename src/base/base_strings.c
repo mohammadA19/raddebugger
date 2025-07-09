@@ -1174,7 +1174,7 @@ numeric_str8_list_from_data(Arena *arena, U32 radix, String8 data, U64 stride)
 {
   String8List strs = {0};
   U64 count = data.size/stride;
-  for EachIndex(idx, count)
+  for idx in 0..<count
   {
     U64 val = 0;
     MemoryCopy(&val, data.str + idx*stride, stride);
@@ -1232,7 +1232,7 @@ str8_array_copy(Arena *arena, String8Array array)
   String8Array result = {0};
   result.count = array.count;
   result.v = push_array(arena, String8, result.count);
-  for EachIndex(idx, result.count)
+  for idx in 0..<result.count
   {
     result.v[idx] = push_str8_copy(arena, array.v[idx]);
   }

@@ -428,7 +428,7 @@ e_type_key_cons_(E_ConsTypeParams *params)
     else if(params->args != 0)
     {
       node->params.args = push_array(e_cache->arena, E_Expr *, params->count);
-      for EachIndex(idx, params->count)
+      for idx in 0..<params->count
       {
         node->params.args[idx] = e_expr_copy(e_cache->arena, params->args[idx]);
       }
@@ -590,7 +590,7 @@ e_hash_from_type(E_Type *type)
     str8_serial_push_struct(scratch.arena, &strings, &owner_hash);
     if(type->param_type_keys != 0)
     {
-      for EachIndex(idx, type->count)
+      for idx in 0..<type->count
       {
         String8 param_type_string = e_type_string_from_key(scratch.arena, type->param_type_keys[idx]);
         U64 param_type_hash = e_hash_from_string(5381, param_type_string);
@@ -599,7 +599,7 @@ e_hash_from_type(E_Type *type)
     }
     else if(type->members != 0)
     {
-      for EachIndex(idx, type->count)
+      for idx in 0..<type->count
       {
         String8 member_type_string = e_type_string_from_key(scratch.arena, type->members[idx].type_key);
         U64 member_type_hash = e_hash_from_string(5381, member_type_string);
@@ -727,7 +727,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
               {
                 type->args = push_array(arena, E_Expr *, type->count);
                 MemoryCopy(type->args, node->params.args, sizeof(E_Expr *)*type->count);
-                for EachIndex(idx, type->count)
+                for idx in 0..<type->count
                 {
                   type->args[idx] = e_expr_copy(arena, type->args[idx]);
                 }
@@ -1737,7 +1737,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       E_TypeKey direct = e_type_key_direct(key);
       String8 direct_string = e_type_string_from_key(arena, direct);
       str8_list_push(arena, out, direct_string);
-      for EachIndex(idx, type->count)
+      for idx in 0..<type->count
       {
         String8 string = e_string_from_expr(arena, type->args[idx], str8_zero());
         str8_list_pushf(arena, out, ", ");
@@ -2048,7 +2048,7 @@ e_member_cache_node_from_type_key(E_TypeKey key)
     node->member_hash_slots = push_array(e_cache->arena, E_MemberHashSlot, node->member_hash_slots_count);
     node->member_filter_slots_count = 16;
     node->member_filter_slots = push_array(e_cache->arena, E_MemberFilterSlot, node->member_filter_slots_count);
-    for EachIndex(idx, node->members.count)
+    for idx in 0..<node->members.count
     {
       U64 hash = e_hash_from_string(5381, node->members.v[idx].name);
       U64 slot_idx = hash%node->member_hash_slots_count;
@@ -2091,7 +2091,7 @@ e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
         filter_node = push_array(e_cache->arena, E_MemberFilterNode, 1);
         filter_node->filter = push_str8_copy(e_cache->arena, filter);
         E_MemberList member_list__filtered = {0};
-        for EachIndex(idx, node->members.count)
+        for idx in 0..<node->members.count
         {
           E_Member *member = &node->members.v[idx];
           FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, member->name);
@@ -2171,7 +2171,7 @@ e_enum_val_cache_node_from_type_key(E_TypeKey key)
       node->val_hash_slots = push_array(e_cache->arena, E_EnumValHashSlot, node->val_hash_slots_count);
       node->val_filter_slots_count = 16;
       node->val_filter_slots = push_array(e_cache->arena, E_EnumValFilterSlot, node->val_filter_slots_count);
-      for EachIndex(idx, type->count)
+      for idx in 0..<type->count
       {
         U64 hash = e_hash_from_string(5381, type->enum_vals[idx].name);
         U64 slot_idx = hash%node->val_hash_slots_count;
@@ -2223,7 +2223,7 @@ e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
         E_EnumValList enum_val_list__filtered = {0};
         if(type->kind == E_TypeKind_Enum)
         {
-          for EachIndex(idx, type->count)
+          for idx in 0..<type->count
           {
             E_EnumVal *enum_val = &type->enum_vals[idx];
             FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, enum_val->name);
@@ -2429,7 +2429,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(rows)
   accel->root_evals_ranges = push_array(arena, Rng1U64, type->count);
   E_ParentKey(eval.key)
   {
-    for EachIndex(idx, type->count)
+    for idx in 0..<type->count
     {
       accel->root_evals[idx] = e_eval_from_expr(type->args[idx]);
       accel->root_evals_ranges[idx] = r1u64(idx, idx+1);
@@ -2466,18 +2466,18 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(omit)
       if(expand_info.expr_count < 4096)
       {
         E_Eval *evals = push_array(scratch.arena, E_Eval, expand_info.expr_count);
-        for EachIndex(idx, expand_info.expr_count)
+        for idx in 0..<expand_info.expr_count
         {
           evals[idx] = e_eval_nil;
         }
         expand_rule->range(scratch.arena, expand_info.user_data, eval_stripped, filter, r1u64(0, expand_info.expr_count), evals);
-        for EachIndex(idx, expand_info.expr_count)
+        for idx in 0..<expand_info.expr_count
         {
           if(evals[idx].expr->kind == E_ExprKind_MemberAccess)
           {
             String8 name = evals[idx].expr->first->next->string;
             B32 name_is_allowed = 1;
-            for EachIndex(arg_idx, type->count)
+            for arg_idx in 0..<type->count
             {
               if(str8_match(type->args[arg_idx]->string, name, 0))
               {

@@ -2232,7 +2232,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         B32 matches_shorthand = 0;
         if(chained_expr->kind == E_ExprKind_LeafIdentifier)
         {
-          for EachElement(shorthand_idx, shorthand_lens_pair_table)
+          for shorthand_idx in 0..<len(shorthand_lens_pair_table)
           {
             if(str8_match(chained_expr->string, shorthand_lens_pair_table[shorthand_idx].shorthand, 0))
             {

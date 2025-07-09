@@ -63,7 +63,7 @@ os_gfx_init(void)
       {OS_Cursor_HandPoint,       XC_hand1},
       {OS_Cursor_Disabled,        XC_X_cursor},
     };
-    for EachElement(idx, map)
+    for idx in 0..<len(map)
     {
       os_lnx_gfx_state->cursors[map[idx].cursor] = XCreateFontCursor(os_lnx_gfx_state->display, map[idx].id);
     }

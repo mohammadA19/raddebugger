@@ -1406,7 +1406,7 @@ ui_end_build(void)
           n != 0;
           n = n->slot_next)
       {
-        for EachIndex(idx, 4)
+        for idx in 0..<4
         {
           n->current_rgba.v[idx] += (n->target_rgba.v[idx] - n->current_rgba.v[idx]) * slow_rate;
           ui_state->is_animating = (ui_state->is_animating || abs_f32(n->target_rgba.v[idx] - n->current_rgba.v[idx]) > 0.001f);
@@ -2275,7 +2275,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
   {
     //- rjf: compute final key, mixing (tags_key, extras)
     UI_Key final_key = key;
-    for EachIndex(idx, extras.count)
+    for idx in 0..<extras.count
     {
       final_key = ui_key_from_string(final_key, extras.v[idx]);
     }
@@ -2322,10 +2322,10 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
         U64 match_count = 0;
         B32 name_matches = 0;
         B32 all_p_tags_in_key = 1;
-        for EachIndex(p_tags_idx, p->tags.count)
+        for p_tags_idx in 0..<p->tags.count
         {
           B32 p_tag_in_key = 0;
-          for EachIndex(key_tags_idx, tags.count + extras.count)
+          for key_tags_idx in 0..<tags.count + extras.count
           {
             String8 key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
             if(str8_match(p->tags.v[p_tags_idx], key_string, 0))

@@ -94,7 +94,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       push_str8f(arena, "%S/mule_main/mule_main.pdb", test_data_folder_path),
       push_str8f(arena, "%S/mule_main/mule_module.pdb", test_data_folder_path),
     };
-    for EachElement(pdb_idx, pdb_paths)
+    for pdb_idx in 0..<len(pdb_paths)
     {
       // rjf: unpack paths, make output directory
       String8 pdb_path = path_normalized_from_string(arena, pdb_paths[pdb_idx]);
@@ -106,8 +106,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       String8List dump_paths = {0};
       {
         OS_HandleList processes = {0};
-        for EachIndex(repeat_idx, num_repeats_per_pdb)
-        {
+        for repeat_idx in 0..<num_repeats_per_pdb {
           String8 rdi_path = push_str8f(arena, "%S/repeat_%I64u.rdi", repeat_folder, repeat_idx);
           str8_list_push(arena, &rdi_paths, rdi_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
@@ -168,16 +167,14 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       
       // rjf: determine if all hashes match
       B32 matches = 1;
-      for EachIndex(idx, rdi_hashes_count)
-      {
+      for idx in 0..<rdi_hashes_count {
         if(!u128_match(rdi_hashes[idx], rdi_hashes[0]))
         {
           matches = 0;
           break;
         }
       }
-      for EachIndex(idx, dump_hashes_count)
-      {
+      for idx in 0..<dump_hashes_count {
         if(!u128_match(dump_hashes[idx], dump_hashes[0]))
         {
           matches = 0;
@@ -190,12 +187,10 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       {
         test->good = 0;
         str8_list_pushf(arena, &test->out, "  pdb[%I64u] \"%S\"\n", pdb_idx, pdb_path);
-        for EachIndex(idx, rdi_hashes_count)
-        {
+        for idx in 0..<rdi_hashes_count {
           str8_list_pushf(arena, &test->out, "    rdi[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, rdi_paths_array[idx], rdi_hashes[idx].u64[0], rdi_hashes[idx].u64[1]);
         }
-        for EachIndex(idx, dump_hashes_count)
-        {
+        for idx in 0..<dump_hashes_count {
           str8_list_pushf(arena, &test->out, "    dump[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, dump_paths_array[idx], dump_hashes[idx].u64[0], dump_hashes[idx].u64[1]);
         }
       }
@@ -216,7 +211,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       str8_lit("foo(bar(baz))"),
     };
     String8List logs = {0};
-    for EachElement(idx, exprs)
+    for idx in 0..<len(exprs)
     {
       String8 log = e_debug_log_from_expr_string(arena, exprs[idx]);
       str8_list_push(arena, &logs, log);

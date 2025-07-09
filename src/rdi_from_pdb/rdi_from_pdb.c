@@ -1096,7 +1096,7 @@ ASYNC_WORK_DEF(p2r_src_file_seq_equip_work)
   P2R_SrcFileSeqEquipIn *in = (P2R_SrcFileSeqEquipIn *)input;
   for(RDIM_LineTableChunkNode *line_table_chunk_n = in->line_tables.first; line_table_chunk_n != 0; line_table_chunk_n = line_table_chunk_n->next)
   {
-    for EachIndex(chunk_line_table_idx, line_table_chunk_n->count)
+    for chunk_line_table_idx in 0..<line_table_chunk_n->count
     {
       RDIM_LineTable *line_table = &line_table_chunk_n->v[chunk_line_table_idx];
       for(RDIM_LineSequenceNode *s = line_table->first_seq; s != 0; s = s->next)
@@ -3497,7 +3497,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     P2R_GatherUnitSrcFilesIn *tasks_inputs = push_array(scratch.arena, P2R_GatherUnitSrcFilesIn, tasks_count);
     P2R_GatherUnitSrcFilesOut *tasks_outputs = push_array(scratch.arena, P2R_GatherUnitSrcFilesOut, tasks_count);
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
-    for EachIndex(idx, tasks_count)
+    for idx in 0..<tasks_count
     {
       tasks_inputs[idx].pdb_strtbl     = strtbl;
       tasks_inputs[idx].coff_sections  = coff_sections;
@@ -3507,16 +3507,16 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       tasks[idx] = async_task_launch(scratch.arena, p2r_gather_unit_src_file_work, .input = &tasks_inputs[idx]);
     }
     U64 total_path_count = 0;
-    for EachIndex(idx, tasks_count)
+    for idx in 0..<tasks_count
     {
       tasks_outputs[idx] = *async_task_join_struct(tasks[idx], P2R_GatherUnitSrcFilesOut);
       total_path_count += tasks_outputs[idx].src_file_paths.count;
     }
     src_file_map.slots_count = total_path_count + total_path_count/2 + 1;
     src_file_map.slots = push_array(scratch.arena, P2R_SrcFileNode *, src_file_map.slots_count);
-    for EachIndex(idx, tasks_count)
+    for idx in 0..<tasks_count
     {
-      for EachIndex(path_idx, tasks_outputs[idx].src_file_paths.count)
+      for path_idx in 0..<tasks_outputs[idx].src_file_paths.count
       {
         String8 file_path_normalized = tasks_outputs[idx].src_file_paths.v[path_idx];
         U64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
@@ -3547,7 +3547,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   U64 unit_convert_tasks_count = comp_unit_count;
   P2R_UnitConvertIn *unit_convert_tasks_ins = push_array(scratch.arena, P2R_UnitConvertIn, unit_convert_tasks_count);
   ASYNC_Task **unit_convert_tasks = push_array(scratch.arena, ASYNC_Task *, unit_convert_tasks_count);
-  for EachIndex(idx, unit_convert_tasks_count)
+  for idx in 0..<unit_convert_tasks_count
   {
     P2R_UnitConvertIn *in = &unit_convert_tasks_ins[idx];
     in->comp_unit_idx           = idx;
@@ -4262,7 +4262,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   RDIM_LineTable **units_first_inline_site_line_tables = push_array(arena, RDIM_LineTable *, unit_convert_tasks_count);
   ProfScope("join unit conversion & src file tasks")
   {
-    for EachIndex(idx, unit_convert_tasks_count)
+    for idx in 0..<unit_convert_tasks_count
     {
       P2R_UnitConvertOut *out = async_task_join_struct(unit_convert_tasks[idx], P2R_UnitConvertOut);
       rdim_unit_chunk_list_concat_in_place(&all_units, &out->units);

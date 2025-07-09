@@ -206,7 +206,7 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
   U128 hash = {0};
   {
     HS_Key key = fs_key_from_path_range(path, range, endt_us);
-    for EachIndex(rewind_idx, HS_KEY_HASH_HISTORY_COUNT)
+    for rewind_idx in 0..<HS_KEY_HASH_HISTORY_COUNT
     {
       hash = hs_hash_from_key(key, rewind_idx);
       if(!u128_match(hash, u128_zero()))

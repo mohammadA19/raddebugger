@@ -973,7 +973,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         B32 is_standalone_row = 0;
         U64 range_exprs_count = dim_1u64(block_relative_range__windowed);
         E_Eval *range_evals = push_array(arena, E_Eval, range_exprs_count);
-        for EachIndex(idx, range_exprs_count)
+        for idx in 0..<range_exprs_count
         {
           range_evals[idx] = e_eval_nil;
         }
@@ -1003,7 +1003,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         }
         
         // rjf: expansion operator applied -> call, and add rows for all expressions in the viewable range
-        else for EachIndex(idx, range_exprs_count)
+        else for idx in 0..<range_exprs_count
         {
           U64 child_num = block_relative_range.min + num_skipped + idx + 1;
           U64 child_id = ev_block_id_from_num(n->v.block, child_num);
@@ -1675,7 +1675,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               String8List strings = {0};
               {
                 str8_list_pushf(scratch.arena, &strings, "%S(", type->name);
-                for EachIndex(idx, type->count)
+                for idx in 0..<type->count
                 {
                   String8 string = e_string_from_expr(scratch.arena, type->args[idx]);
                   str8_list_push(scratch.arena, &strings, string);
@@ -1874,7 +1874,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               U64 vaddr = ptr_data->value_eval.value.u64;
               E_Module *module = &e_module_nil;
               U32 module_idx = 0;
-              for EachIndex(idx, e_base_ctx->modules_count)
+              for idx in 0..<e_base_ctx->modules_count
               {
                 if(contains_1u64(e_base_ctx->modules[idx].vaddr_range, vaddr))
                 {

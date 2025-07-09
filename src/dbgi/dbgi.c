@@ -92,7 +92,7 @@ di_key_array_copy(Arena *arena, DI_KeyArray *src)
   DI_KeyArray dst = {0};
   dst.count = src->count;
   dst.v = push_array(arena, DI_Key, dst.count);
-  for EachIndex(idx, dst.count)
+  for idx in 0..<dst.count
   {
     dst.v[idx] = di_key_copy(arena, &src->v[idx]);
   }
@@ -232,7 +232,7 @@ di_init(void)
   di_shared->p2u_ring_base = push_array_no_zero(arena, U8, di_shared->p2u_ring_size);
   di_shared->search_threads_count = 1;
   di_shared->search_threads = push_array(arena, DI_SearchThread, di_shared->search_threads_count);
-  for EachIndex(idx, di_shared->search_threads_count)
+  for idx in 0..<di_shared->search_threads_count
   {
     di_shared->search_threads[idx].ring_mutex = os_mutex_alloc();
     di_shared->search_threads[idx].ring_cv    = os_condition_variable_alloc();
@@ -1396,7 +1396,7 @@ di_search_thread__entry_point(void *p)
     //- rjf: get all rdis
     U64 rdis_count = params.dbgi_keys.count;
     RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
-    for EachIndex(idx, rdis_count)
+    for idx in 0..<rdis_count
     {
       rdis[idx] = di_rdi_from_key(di_scope, &params.dbgi_keys.v[idx], 1, max_U64);
     }
@@ -1408,7 +1408,7 @@ di_search_thread__entry_point(void *p)
     {
       U64 elements_per_task = 16384;
       work_thread_arenas = push_array(arena, Arena *, async_thread_count());
-      for EachIndex(idx, rdis_count)
+      for idx in 0..<rdis_count
       {
         RDI_Parsed *rdi = rdis[idx];
         U64 element_count_in_this_rdi = 0;
@@ -1454,7 +1454,7 @@ di_search_thread__entry_point(void *p)
       for(DI_SearchItemChunk *chunk = items_list.first; chunk != 0; chunk = chunk->next)
       {
         MemoryCopy(items.v + off, chunk->v, sizeof(chunk->v[0])*chunk->count);
-        for EachIndex(idx, chunk->count)
+        for idx in 0..<chunk->count
         {
           items.v[off + idx].match_ranges = fuzzy_match_range_list_copy(arena, &items.v[off + idx].match_ranges);
         }
@@ -1465,7 +1465,7 @@ di_search_thread__entry_point(void *p)
     //- rjf: release all search work artifact arenas
     if(work_thread_arenas != 0)
     {
-      for EachIndex(idx, async_thread_count())
+      for idx in 0..<async_thread_count()
       {
         if(work_thread_arenas[idx] != 0)
         {
@@ -1553,7 +1553,7 @@ di_search_evictor_thread__entry_point(void *p)
           {
             DLLRemove(slot->first, slot->last, n);
             SLLStackPush(stripe->free_node, n);
-            for EachElement(idx, n->buckets)
+            for idx in 0..<len(n->buckets)
             {
               arena_release(n->buckets[idx].arena);
               MemoryZeroStruct(&n->buckets[idx]);
@@ -1576,7 +1576,7 @@ di_match_store_alloc(void)
   Arena *arena = arena_alloc();
   DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);
   store->arena                  = arena;
-  for EachElement(idx, store->gen_arenas)
+  for idx in 0..<len(store->gen_arenas)
   {
     store->gen_arenas[idx] = arena_alloc();
   }
@@ -1606,7 +1606,7 @@ di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys)
   
   // rjf: hash parameters
   U64 params_hash = 5381;
-  for EachIndex(idx, keys.count)
+  for idx in 0..<keys.count
   {
     params_hash = di_hash_from_seed_string(params_hash, str8_struct(&keys.v[idx].min_timestamp), 0);
     params_hash = di_hash_from_seed_string(params_hash, keys.v[idx].path, StringMatchFlag_CaseInsensitive);
@@ -1826,12 +1826,12 @@ ASYNC_WORK_DEF(di_match_work)
     };
     ProfScope("do match") 
     {
-      for EachIndex(dbgi_idx, params_keys.count)
+      for dbgi_idx in 0..<params_keys.count
       {
         DI_Scope *di_scope = di_scope_open();
         DI_Key key = params_keys.v[dbgi_idx];
         RDI_Parsed *rdi = di_rdi_from_key(di_scope, &key, 1, os_now_microseconds()+1000);
-        for EachElement(name_map_kind_idx, name_map_kinds)
+        for name_map_kind_idx in 0..<len(name_map_kinds)
         {
           RDI_NameMap *name_map = rdi_element_from_name_idx(rdi, NameMaps, name_map_kinds[name_map_kind_idx]);
           RDI_ParsedNameMap parsed_name_map = {0};

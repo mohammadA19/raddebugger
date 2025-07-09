@@ -99,7 +99,7 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     
     //- rjf: measure
     S32 total_width = 0;
-    for EachIndex(idx, string32.size)
+    for idx in 0..<string32.size
     {
       FT_Load_Char(face, string32.str[idx], FT_LOAD_RENDER);
       total_width += (face->glyph->advance.x >> 6);
@@ -111,7 +111,7 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     U8 *atlas = push_array(arena, U8, atlas_size);
     S32 baseline = ascent;
     S32 atlas_write_x = 0;
-    for EachIndex(idx, string32.size)
+    for idx in 0..<string32.size
     {
       FT_Load_Char(face, string32.str[idx], FT_LOAD_RENDER);
       FT_Bitmap *bmp = &face->glyph->bitmap;

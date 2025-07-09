@@ -209,7 +209,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
           
           // rjf: get all reversed path parts for each collision
           String8List *collision_parts_reversed = push_array(scratch.arena, String8List, collisions.count);
-          for EachIndex(idx, collisions.count)
+          for idx in 0..<collisions.count
           {
             String8List parts = str8_split_path(scratch.arena, collisions.v[idx]);
             for(String8Node *n = parts.first; n != 0; n = n->next)
@@ -232,14 +232,14 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
           {
             U64 num_collisions_left = collisions.count;
             String8Node **collision_nodes = push_array(scratch.arena, String8Node *, collisions.count);
-            for EachIndex(idx, collisions.count)
+            for idx in 0..<collisions.count
             {
               collision_nodes[idx] = collision_parts_reversed[idx].first;
             }
             for(String8Node *n = parts_reversed.first; num_collisions_left > 1 && n != 0; n = n->next)
             {
               B32 part_is_qualifier = 0;
-              for EachIndex(idx, collisions.count)
+              for idx in 0..<collisions.count
               {
                 if(collision_nodes[idx] != 0 && !str8_match(collision_nodes[idx]->string, n->string, StringMatchFlag_CaseInsensitive))
                 {
@@ -2134,7 +2134,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         params->line_pins[line_idx],
         immediate_pins,
       };
-      E_ParentKey(e_key_zero()) for EachElement(list_idx, pin_lists)
+      E_ParentKey(e_key_zero()) for list_idx in 0..<len(pin_lists)
       {
         RD_CfgList pins = pin_lists[list_idx];
         if(pins.count != 0) UI_Parent(line_extras_boxes[line_idx])
@@ -3581,7 +3581,7 @@ rd_cell(RD_CellParams *params, String8 string)
           UI_Key *keys = (UI_Key *)all_keys_data.str;
           U64 keys_count = all_keys_data.size / sizeof(UI_Key);
           B32 key_is_touched = 0;
-          for EachIndex(idx, keys_count)
+          for idx in 0..<keys_count
           {
             if(ui_key_match(keys[idx], switch_box->key))
             {

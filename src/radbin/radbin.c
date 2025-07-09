@@ -145,7 +145,7 @@ rb_entry_point(CmdLine *cmdline)
               COFF_SectionHeader *section_hdrs = push_array(scratch.arena, COFF_SectionHeader, section_count);
               os_file_read(file, r1u64(sizeof(header_maybe), sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader)), section_hdrs);
               B32 section_ranges_valid = 1;
-              for EachIndex(section_hdr_idx, section_count)
+              for section_hdr_idx in 0..<section_count
               {
                 COFF_SectionHeader *hdr = &section_hdrs[section_hdr_idx];
                 if(!(hdr->flags & COFF_SectionFlag_CntUninitializedData))

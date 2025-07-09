@@ -1180,7 +1180,7 @@ d_push_active_dbgi_key_list(Arena *arena)
 {
   DI_KeyList dbgis = {0};
   CTRL_EntityArray modules = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Module);
-  for EachIndex(idx, modules.count)
+  for idx in 0..<modules.count
   {
     CTRL_Entity *module = modules.v[idx];
     DI_Key key = ctrl_dbgi_key_from_module(module);
@@ -1635,7 +1635,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
     String8List strings = {0};
     {
       CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
-      for EachIndex(idx, threads.count)
+      for idx in 0..<threads.count
       {
         CTRL_Entity *thread = threads.v[idx];
         if(thread->is_frozen)
@@ -1830,7 +1830,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
           CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
           if(threads.count > 0)
           {
-            for EachIndex(idx, threads.count)
+            for idx in 0..<threads.count
             {
               CTRL_Entity *thread = threads.v[idx];
               if(!thread->is_frozen)

@@ -125,7 +125,7 @@ r_init(CmdLine *cmdln)
       {GL_VERTEX_SHADER,   r_ogl_shader_kind_vshad_src_table[k]},
       {GL_FRAGMENT_SHADER, r_ogl_shader_kind_pshad_src_table[k]},
     };
-    for EachElement(idx, stages)
+    for idx in 0..<len(stages)
     {
       stages[idx].out = glCreateShader(stages[idx].type);
       GLint src_size = stages[idx].src->size;
@@ -146,22 +146,20 @@ r_init(CmdLine *cmdln)
     
     // rjf: attach compilations to program
     GLuint program = glCreateProgram();
-    for EachElement(idx, stages)
+    for idx in 0..<len(stages)
     {
       glAttachShader(program, stages[idx].out);
     }
     
     // rjf: bind inputs
     R_OGL_AttributeArray inputs = r_ogl_shader_kind_input_attributes_table[k];
-    for EachIndex(idx, inputs.count)
-    {
+    for idx in 0..<inputs.count {
       glBindAttribLocation(program, inputs.v[idx].index, (char *)inputs.v[idx].name.str);
     }
     
     // rjf: bind outputs
     R_OGL_AttributeArray outputs = r_ogl_shader_kind_output_attributes_table[k];
-    for EachIndex(idx, outputs.count)
-    {
+    for idx in 0..<outputs.count {
       glBindFragDataLocation(program, outputs.v[idx].index, (char *)outputs.v[idx].name.str);
     }
     
@@ -429,8 +427,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             {
               R_OGL_AttributeArray inputs = r_ogl_shader_kind_input_attributes_table[R_OGL_ShaderKind_Rect];
               U64 off = 0;
-              for EachIndex(idx, inputs.count)
-              {
+              for idx in 0..<inputs.count {
                 glEnableVertexAttribArray(inputs.v[idx].index);
                 glVertexAttribDivisor(inputs.v[idx].index, 1);
                 glVertexAttribPointer(inputs.v[idx].index, inputs.v[idx].count, inputs.v[idx].type, GL_FALSE, sizeof(R_Rect2DInst), (void *)(off));

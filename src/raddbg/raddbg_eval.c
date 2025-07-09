@@ -168,8 +168,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(locals)
     E_String2NumMapNodeArray nodes = e_string2num_map_node_array_from_map(scratch.arena, e_ir_ctx->locals_map);
     e_string2num_map_node_array_sort__in_place(&nodes);
     String8List exprs_filtered = {0};
-    for EachIndex(idx, nodes.count)
-    {
+    for idx in 0..<nodes.count {
       String8 local_expr_string = nodes.v[idx]->string;
       FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, local_expr_string);
       if(matches.count == matches.needle_part_count)
@@ -780,8 +779,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
     if(filter.size != 0)
     {
       RD_CfgList cfgs_list__filtered = {0};
-      for EachIndex(idx, ext->cfgs.count)
-      {
+      for idx in 0..<ext->cfgs.count {
         RD_Cfg *cfg = ext->cfgs.v[idx];
         DR_FStrList fstrs = rd_title_fstrs_from_cfg(scratch.arena, cfg, 1);
         String8 string = dr_string_from_fstrs(scratch.arena, &fstrs);
@@ -922,8 +920,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(cfgs_slice)
       num = id;
       num &= ~(1ull<<63);
     }
-    else for EachIndex(idx, accel->cfgs.count)
-    {
+    else for idx in 0..<accel->cfgs.count {
       if(accel->cfgs.v[idx]->id == id)
       {
         num = idx + accel->cfgs_idx_range.min + 1;
@@ -1094,8 +1091,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(environment)
   RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
   if(id != 0 && id != max_U64)
   {
-    for EachIndex(idx, accel->cfgs.count)
-    {
+    for idx in 0..<accel->cfgs.count {
       if(accel->cfgs.v[idx]->id == id)
       {
         num = idx+1;
@@ -1173,8 +1169,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(watches)
     {
       Temp scratch = scratch_begin(&arena, 1);
       RD_CfgList cfgs_list__filtered = {0};
-      for EachIndex(idx, ext->cfgs.count)
-      {
+      for idx in 0..<ext->cfgs.count {
         RD_Cfg *watch = ext->cfgs.v[idx];
         String8 string = watch->first->string;
         FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, string);
@@ -1231,8 +1226,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(watches)
   RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
   if(id != 0 && id != max_U64)
   {
-    for EachIndex(idx, accel->cfgs.count)
-    {
+    for idx in 0..<accel->cfgs.count {
       if(accel->cfgs.v[idx]->id == id)
       {
         num = idx+1;
@@ -1337,8 +1331,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
     Node *first = 0;
     Node *last = 0;
     U64 count = 0;
-    for EachIndex(idx, machines.count)
-    {
+    for idx in 0..<machines.count {
       CTRL_Entity *machine = machines.v[idx];
       DMN_ProcessIter iter = {0};
       dmn_process_iter_begin(&iter);
@@ -1490,8 +1483,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
     if(filter.size != 0)
     {
       CTRL_EntityList list__filtered = {0};
-      for EachIndex(idx, array.count)
-      {
+      for idx in 0..<array.count {
         CTRL_Entity *entity = array.v[idx];
         DR_FStrList fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, entity, 1);
         String8 title_string = dr_string_from_fstrs(scratch.arena, &fstrs);
@@ -1597,8 +1589,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
   Temp scratch = scratch_begin(&arena, 1);
   RD_DebugInfoTableLookupAccel *accel = (RD_DebugInfoTableLookupAccel *)user_data;
   U64 needed_row_count = dim_1u64(idx_range);
-  for EachIndex(idx, needed_row_count)
-  {
+  for idx in 0..<needed_row_count {
     // rjf: unpack row
     DI_SearchItem *item = &accel->items.v[idx_range.min + idx];
     
@@ -1671,8 +1662,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
     {
       B32 string_can_be_evalled = 1;
       E_TokenArray tokens = e_token_array_from_text(scratch.arena, item_string);
-      for EachIndex(idx, tokens.count)
-      {
+      for idx in 0..<tokens.count {
         String8 token_string = str8_substr(item_string, tokens.v[idx].range);
         if(tokens.v[idx].kind != E_TokenKind_Identifier &&
            !str8_match(token_string, str8_lit("."), 0))

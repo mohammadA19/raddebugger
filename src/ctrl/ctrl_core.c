@@ -879,7 +879,7 @@ ctrl_name_bucket_num_from_string_size(U64 size)
   U64 bucket_num = 0;
   if(size > 0)
   {
-    for EachElement(idx, ctrl_entity_string_bucket_chunk_sizes)
+    for idx in 0..<len(ctrl_entity_string_bucket_chunk_sizes)
     {
       if(size <= ctrl_entity_string_bucket_chunk_sizes[idx])
       {
@@ -1162,7 +1162,7 @@ ctrl_modules_from_dbgi_key(Arena *arena, CTRL_EntityCtx *ctx, DI_Key *dbgi_key)
 {
   CTRL_EntityList list = {0};
   CTRL_EntityArray all_modules = ctrl_entity_array_from_kind(ctx, CTRL_EntityKind_Module);
-  for EachIndex(idx, all_modules.count)
+  for idx in 0..<all_modules.count
   {
     CTRL_Entity *module = all_modules.v[idx];
     DI_Key module_dbgi_key = ctrl_dbgi_key_from_module(module);
@@ -1179,7 +1179,7 @@ ctrl_thread_from_id(CTRL_EntityCtx *ctx, U64 id)
 {
   CTRL_Entity *thread = &ctrl_entity_nil;
   CTRL_EntityArray threads = ctrl_entity_array_from_kind(ctx, CTRL_EntityKind_Thread);
-  for EachIndex(idx, threads.count)
+  for idx in 0..<threads.count
   {
     if(threads.v[idx]->id == id)
     {
@@ -1259,7 +1259,7 @@ ctrl_entity_store_apply_events(CTRL_EntityCtxRWStore *store, CTRL_EventList *lis
           ctrl_entity_equip_string(store, thread, str8_lit("main_thread"));
         }
         CTRL_EntityArray pending_thread_names = ctrl_entity_array_from_kind(&store->ctx, CTRL_EntityKind_PendingThreadName);
-        for EachIndex(idx, pending_thread_names.count)
+        for idx in 0..<pending_thread_names.count
         {
           CTRL_Entity *entity = pending_thread_names.v[idx];
           if(entity->id == event->entity_id)
@@ -1270,7 +1270,7 @@ ctrl_entity_store_apply_events(CTRL_EntityCtxRWStore *store, CTRL_EventList *lis
           }
         }
         CTRL_EntityArray pending_thread_colors = ctrl_entity_array_from_kind(&store->ctx, CTRL_EntityKind_PendingThreadColor);
-        for EachIndex(idx, pending_thread_colors.count)
+        for idx in 0..<pending_thread_colors.count
         {
           CTRL_Entity *entity = pending_thread_colors.v[idx];
           if(entity->id == event->entity_id)
@@ -3743,7 +3743,7 @@ ctrl_thread__entry_point(void *p)
             E_Parse addr_parse = e_push_parse_from_string(scratch.arena, n->v.string);
             E_Parse cnd_parse = e_push_parse_from_string(scratch.arena, n->v.condition);
             E_Expr *exprs[] = {addr_parse.expr, cnd_parse.expr};
-            for EachElement(idx, exprs)
+            for idx in 0..<len(exprs)
             {
               typedef struct ExprWalkTask ExprWalkTask;
               struct ExprWalkTask
@@ -4225,7 +4225,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
         U64 sec_count = file_header.section_count;
         COFF_SectionHeader *sec = push_array(scratch.arena, COFF_SectionHeader, sec_count);
         dmn_process_read(process.dmn_handle, r1u64(vaddr_range.min + sec_array_off, vaddr_range.min + sec_array_off + sec_count*sizeof(COFF_SectionHeader)), sec);
-        for EachIndex(idx, sec_count)
+        for idx in 0..<sec_count
         {
           String8 section_name = str8_cstring((char *)sec[idx].name);
           if(str8_match(section_name, str8_lit(".raddbg"), 0))
@@ -5488,7 +5488,7 @@ ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   };
   Task *first_task = 0;
   Task *last_task = 0;
-  for EachIndex(idx, initial_processes.count)
+  for idx in 0..<initial_processes.count
   {
     CTRL_Entity *entity = initial_processes.v[idx];
     Task *t = push_array(scratch.arena, Task, 1);
