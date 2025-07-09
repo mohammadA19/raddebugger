@@ -90,8 +90,8 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 {
   PTG_Touch *touch = ptg_tctx->free_touch;
   atomic_add(&node->scope_ref_count);
-  ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
-  ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, ptg_user_clock_idx());
+  atomic_exchange(&node->last_time_touched_us, os_now_microseconds());
+  atomic_exchange(&node->last_user_clock_idx_touched, ptg_user_clock_idx());
   if(touch != 0)
   {
     SLLStackPop(ptg_tctx->free_touch);
@@ -186,7 +186,7 @@ ptg_builder_thread__entry_point(void *p)
       {
         if(MemoryMatchStruct(&n->key, &key))
         {
-          got_task = !ins_atomic_u32_eval_cond_assign(&n->is_working, 1, 0);
+          got_task = !atomic_compare_exchange_strong(&n->is_working, 1, 0);
           break;
         }
       }
@@ -207,7 +207,7 @@ ptg_builder_thread__entry_point(void *p)
         if(MemoryMatchStruct(&n->key, &key))
         {
           
-          ins_atomic_u32_eval_assign(&n->is_working, 0);
+          atomic_exchange(&n->is_working, 0);
           atomic_add(&n->load_count);
           break;
         }

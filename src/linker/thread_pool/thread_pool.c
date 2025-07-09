@@ -204,7 +204,7 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
     pool->task_data  = task_data;
     pool->task_count = task_count;
     pool->task_done  = 0;
-    ins_atomic_u64_eval_assign(&pool->task_left, task_count);
+    atomic_exchange(&pool->task_left, task_count);
 
     U64 drop_count = min(task_count, pool->worker_count);
 

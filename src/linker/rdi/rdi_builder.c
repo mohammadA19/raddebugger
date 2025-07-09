@@ -1861,7 +1861,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
     RDIB_StringMapBucket *curr_bucket = buckets[idx];
 
     if (curr_bucket == 0) {
-      RDIB_StringMapBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      RDIB_StringMapBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -1891,7 +1891,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
         new_bucket->raw_values->next = buckets[idx]->raw_values;
       }
 
-      RDIB_StringMapBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      RDIB_StringMapBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
 
@@ -2024,7 +2024,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_bucket_chunk_idx_histo_task)
 
   // add in per thread sorter counts
   for (U64 i = 0; i < task->chunk_idx_opl; ++i) {
-    ins_atomic_u32_add_eval(&task->chunk_histo[i], range_histo[i]);
+    atomic_add(&task->chunk_histo[i], range_histo[i]);
   }
 
   scratch_end(scratch);
@@ -2208,7 +2208,7 @@ RDIB_STRING_MAP_UPDATE_FUNC(rdib_string_map_update_null)
 
 RDIB_STRING_MAP_UPDATE_FUNC(rdib_string_map_update_concat_void_list_atomic)
 {
-  node->next = ins_atomic_ptr_eval_assign(head, node);
+  node->next = atomic_exchange(head, node);
 }
 
 ////////////////////////////////
@@ -2518,7 +2518,7 @@ rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets,
     RDIB_IndexRunBucket *curr_bucket = buckets[idx];
 
     if (curr_bucket == 0) {
-      RDIB_IndexRunBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      RDIB_IndexRunBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -2538,7 +2538,7 @@ rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets,
         break;
       }
 
-      RDIB_IndexRunBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      RDIB_IndexRunBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
       if (compare_bucket == curr_bucket) {
         // recycle bucket
         result = compare_bucket;
@@ -2648,7 +2648,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_bucket_chunk_idx_histo_task)
 
   // add in per thread sorter counts
   for (U64 i = 0; i < task->chunk_idx_opl; ++i) {
-    ins_atomic_u32_add_eval(&task->chunk_histo[i], range_histo[i]);
+    atomic_add(&task->chunk_histo[i], range_histo[i]);
   }
 
   scratch_end(scratch);

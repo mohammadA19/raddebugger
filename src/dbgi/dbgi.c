@@ -504,7 +504,7 @@ di_open(DI_Key *key)
         if(node->ref_count == 1)
         {
           di_u2p_enqueue_key(key, max_U64);
-          ins_atomic_u64_eval_assign(&node->is_working, 1);
+          atomic_exchange(&node->is_working, 1);
           DeferLoop(os_rw_mutex_drop_w(stripe->rw_mutex), os_rw_mutex_take_w(stripe->rw_mutex))
           {
             async_push_work(di_parse_work);
@@ -624,7 +624,7 @@ di_rdi_from_key(DI_Scope *scope, DI_Key *key, B32 high_priority, U64 endt_us)
       {
         ProfScope("ask for parse")
         {
-          ins_atomic_u64_eval_assign(&node->is_working, 1);
+          atomic_exchange(&node->is_working, 1);
           DeferLoop(os_rw_mutex_drop_r(stripe->rw_mutex), os_rw_mutex_take_r(stripe->rw_mutex))
           {
             async_push_work(di_parse_work, .priority = high_priority ? ASYNC_Priority_High : ASYNC_Priority_Low);
@@ -1802,8 +1802,8 @@ ASYNC_WORK_DEF(di_match_work)
     }
     
     //- rjf: zero match info
-    ins_atomic_u64_eval_assign(&node->primary_match.dbgi_idx, 0);
-    ins_atomic_u32_eval_assign(&node->primary_match.idx, 0);
+    atomic_exchange(&node->primary_match.dbgi_idx, 0);
+    atomic_exchange(&node->primary_match.idx, 0);
     
     //- rjf: gather matches
     DI_MatchNode *first_match = 0;
@@ -1842,9 +1842,9 @@ ASYNC_WORK_DEF(di_match_work)
           if(num != 0)
           {
             // rjf: atomically update the node's primary match
-            ins_atomic_u64_eval_assign(&node->primary_match.dbgi_idx, dbgi_idx);
-            ins_atomic_u32_eval_assign(&node->primary_match.section, name_map_section_kinds[name_map_kind_idx]);
-            ins_atomic_u32_eval_assign(&node->primary_match.idx, run[0]);
+            atomic_exchange(&node->primary_match.dbgi_idx, dbgi_idx);
+            atomic_exchange(&node->primary_match.section, name_map_section_kinds[name_map_kind_idx]);
+            atomic_exchange(&node->primary_match.idx, run[0]);
             
             // rjf: gather all alternate matches
             for(U32 match_idx = 1; match_idx < num; match_idx += 1)
@@ -1859,7 +1859,7 @@ ASYNC_WORK_DEF(di_match_work)
         }
         di_scope_close(di_scope);
       }
-      ins_atomic_u64_eval_assign(&node->cmp_params_hash, params_hash);
+      atomic_exchange(&node->cmp_params_hash, params_hash);
     }
   }
   scratch_end(scratch);

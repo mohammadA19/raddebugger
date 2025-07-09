@@ -23,7 +23,7 @@ internal void
 void_node_concat_atomic(VoidNode **head, VoidNode *node)
 {
   assert(*head != node);
-  node->next = ins_atomic_ptr_eval_assign(head, node);
+  node->next = atomic_exchange(head, node);
 }
 
 internal U64Node *

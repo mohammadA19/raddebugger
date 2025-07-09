@@ -212,7 +212,7 @@ async_execute_work(ASYNC_Work work)
   //- rjf: store output
   if(work.output != 0)
   {
-    ins_atomic_u64_eval_assign((U64 *)work.output, (U64)work_out);
+    atomic_exchange((U64 *)work.output, (U64)work_out);
   }
   
   //- rjf: release semaphore

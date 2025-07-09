@@ -1372,7 +1372,7 @@ lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInp
     LNK_LeafBucket *curr_bucket = leaf_ht->bucket_arr[idx];
 
     if (curr_bucket == 0) {
-      LNK_LeafBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&leaf_ht->bucket_arr[idx], new_bucket, curr_bucket);
+      LNK_LeafBucket *compare_bucket = atomic_compare_exchange_strong(&leaf_ht->bucket_arr[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -1397,7 +1397,7 @@ lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInp
         break;
       }
 
-      LNK_LeafBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&leaf_ht->bucket_arr[idx], new_bucket, curr_bucket);
+      LNK_LeafBucket *compare_bucket = atomic_compare_exchange_strong(&leaf_ht->bucket_arr[idx], new_bucket, curr_bucket);
       if (compare_bucket == curr_bucket) {
         result = compare_bucket;
 
@@ -3391,7 +3391,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_udt_name_hash_table_task)
             LNK_UDTNameBucket *curr_bucket = task->buckets[bucket_idx];
 
             if (curr_bucket == 0) {
-              LNK_UDTNameBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&task->buckets[bucket_idx], new_bucket, curr_bucket);
+              LNK_UDTNameBucket *compare_bucket = atomic_compare_exchange_strong(&task->buckets[bucket_idx], new_bucket, curr_bucket);
 
               if (compare_bucket == curr_bucket) {
                 // success, bucket was inserted
@@ -3405,7 +3405,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_udt_name_hash_table_task)
               // there is more than one UDT with identical name, pick most recent and ignore others
               
               if (leaf_idx < curr_bucket->leaf_idx) {
-                LNK_UDTNameBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&task->buckets[bucket_idx], new_bucket, curr_bucket);
+                LNK_UDTNameBucket *compare_bucket = atomic_compare_exchange_strong(&task->buckets[bucket_idx], new_bucket, curr_bucket);
                 if (compare_bucket == curr_bucket) {
                   is_inserted_or_updated = 1;
                   break;
@@ -4240,7 +4240,7 @@ lnk_src_file_insert_or_update(LNK_SourceFileBucket **buckets, U64 cap, U64 hash,
     LNK_SourceFileBucket *curr_bucket = buckets[idx];
 
     if (curr_bucket == 0) {
-      LNK_SourceFileBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      LNK_SourceFileBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -4261,7 +4261,7 @@ lnk_src_file_insert_or_update(LNK_SourceFileBucket **buckets, U64 cap, U64 hash,
         break;
       }
 
-      LNK_SourceFileBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      LNK_SourceFileBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -4307,7 +4307,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_source_files_task)
   }
 
   // update total count
-  ins_atomic_u64_add_eval(&task->total_src_file_count, count);
+  atomic_add(&task->total_src_file_count, count);
 }
 
 internal
@@ -4596,7 +4596,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
       frag->col_count  = lines.col_count;
 
       // build list of line table fragments per file
-      frag->next_src_file = ins_atomic_ptr_eval_assign(&src_file->line_table_frags, frag);
+      frag->next_src_file = atomic_exchange(&src_file->line_table_frags, frag);
     }
   }
 
@@ -5291,7 +5291,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
       rdib_line_table_push_fragment_node(inline_site->line_table, frag);
 
       // build list of line table fragments per file
-      frag->next_src_file = ins_atomic_ptr_eval_assign(&src_file->line_table_frags, frag);
+      frag->next_src_file = atomic_exchange(&src_file->line_table_frags, frag);
     }
   }
 

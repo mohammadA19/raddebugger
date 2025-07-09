@@ -97,8 +97,8 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 {
   GEO_Touch *touch = geo_tctx->free_touch;
   atomic_add(&node->scope_ref_count);
-  ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
-  ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
+  atomic_exchange(&node->last_time_touched_us, os_now_microseconds());
+  atomic_exchange(&node->last_user_clock_idx_touched, update_tick_idx());
   if(touch != 0)
   {
     SLLStackPop(geo_tctx->free_touch);
@@ -265,7 +265,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
     {
       if(u128_match(n->hash, hash))
       {
-        got_task = !ins_atomic_u32_eval_cond_assign(&n->is_working, 1, 0);
+        got_task = !atomic_compare_exchange_strong(&n->is_working, 1, 0);
         break;
       }
     }
@@ -293,7 +293,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
       if(u128_match(n->hash, hash))
       {
         n->buffer = buffer;
-        ins_atomic_u32_eval_assign(&n->is_working, 0);
+        atomic_exchange(&n->is_working, 0);
         atomic_add(&n->load_count);
         break;
       }

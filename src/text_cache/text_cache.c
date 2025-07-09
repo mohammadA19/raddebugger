@@ -185,7 +185,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
       {
-        ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
+        atomic_add(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
       }
       
@@ -529,7 +529,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
       {
-        ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
+        atomic_add(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
       }
       
@@ -815,7 +815,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
       {
-        ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
+        atomic_add(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
       }
       
@@ -1100,7 +1100,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
       // rjf: update counter
       if(bytes_processed_counter != 0 && ((idx-byte_process_start_idx) >= 1000 || idx == string.size))
       {
-        ins_atomic_u64_add_eval(bytes_processed_counter, (idx-byte_process_start_idx));
+        atomic_add(bytes_processed_counter, (idx-byte_process_start_idx));
         byte_process_start_idx = idx;
       }
       
@@ -1683,8 +1683,8 @@ txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
 {
   TXT_Touch *touch = txt_tctx->free_touch;
   atomic_add(&node->scope_ref_count);
-  ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
-  ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
+  atomic_exchange(&node->last_time_touched_us, os_now_microseconds());
+  atomic_exchange(&node->last_user_clock_idx_touched, update_tick_idx());
   if(touch != 0)
   {
     SLLStackPop(txt_tctx->free_touch);
@@ -2158,7 +2158,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     {
       if(u128_match(n->hash, hash) && n->lang == lang)
       {
-        got_task = !ins_atomic_u32_eval_cond_assign(&n->is_working, 1, 0);
+        got_task = !atomic_compare_exchange_strong(&n->is_working, 1, 0);
         break;
       }
     }
@@ -2197,7 +2197,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     if(bytes_to_process_ptr)
     {
       //                                               (line ending calc)     (line counting)    (line measuring)   (lexing)
-      ins_atomic_u64_eval_assign(bytes_to_process_ptr, min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind_Null));
+      atomic_exchange(bytes_to_process_ptr, min(data.size, 1024) + data.size        + data.size        + data.size*(lang != TXT_LangKind_Null));
     }
     
     //- rjf: detect line end kind
@@ -2230,7 +2230,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024));
+      atomic_exchange(bytes_processed_ptr, min(data.size, 1024));
     }
     
     //- rjf: count # of lines
@@ -2248,14 +2248,14 @@ ASYNC_WORK_DEF(txt_parse_work)
       }
       if(idx && idx%1000 == 0)
       {
-        ins_atomic_u64_add_eval(bytes_processed_ptr, 1000);
+        atomic_add(bytes_processed_ptr, 1000);
       }
     }
     
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size);
+      atomic_exchange(bytes_processed_ptr, min(data.size, 1024) + data.size);
     }
     
     //- rjf: allocate & store line ranges
@@ -2281,14 +2281,14 @@ ASYNC_WORK_DEF(txt_parse_work)
       }
       if(idx && idx%1000 == 0)
       {
-        ins_atomic_u64_add_eval(bytes_processed_ptr, 1000);
+        atomic_add(bytes_processed_ptr, 1000);
       }
     }
     
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size);
+      atomic_exchange(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size);
     }
     
     //- rjf: lang -> lex function
@@ -2305,7 +2305,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     //- rjf: bump progress
     if(bytes_processed_ptr)
     {
-      ins_atomic_u64_eval_assign(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size + data.size*(lex_function != 0));
+      atomic_exchange(bytes_processed_ptr, min(data.size, 1024) + data.size + data.size + data.size*(lex_function != 0));
     }
   }
   
@@ -2321,7 +2321,7 @@ ASYNC_WORK_DEF(txt_parse_work)
         info.bytes_processed = n->info.bytes_processed;
         info.bytes_to_process = n->info.bytes_to_process;
         MemoryCopyStruct(&n->info, &info);
-        ins_atomic_u32_eval_assign(&n->is_working, 0);
+        atomic_exchange(&n->is_working, 0);
         atomic_add(&n->load_count);
         break;
       }

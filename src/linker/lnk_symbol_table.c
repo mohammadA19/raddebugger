@@ -353,7 +353,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
   LNK_SymbolHashTrie **curr_trie_ptr = trie;
   for (U64 h = hash; ; h <<= 2) {
     // load current pointer
-    LNK_SymbolHashTrie *curr_trie = ins_atomic_ptr_eval(curr_trie_ptr);
+    LNK_SymbolHashTrie *curr_trie = atomic_add(curr_trie_ptr);
 
     if (curr_trie == 0) {
       // init node
@@ -363,7 +363,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
       MemoryZeroArray(new_trie->child);
 
       // try to insert new node
-      LNK_SymbolHashTrie *cmp = ins_atomic_ptr_eval_cond_assign(curr_trie_ptr, new_trie, curr_trie);
+      LNK_SymbolHashTrie *cmp = atomic_compare_exchange_strong(curr_trie_ptr, new_trie, curr_trie);
 
       // was symbol inserted?
       if (cmp == curr_trie) {
@@ -378,12 +378,12 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
     }
 
     // load current symbol
-    String8 *curr_name = ins_atomic_ptr_eval(&curr_trie->name);
+    String8 *curr_name = atomic_add(&curr_trie->name);
 
     if (curr_name && str8_match(*curr_name, symbol->name, 0)) {
       for (LNK_Symbol *src = symbol;;) {
         // try replacing current symbol with zero, otherwise loop back and retry
-        LNK_Symbol *leader = ins_atomic_ptr_eval_assign(&curr_trie->symbol, 0);
+        LNK_Symbol *leader = atomic_exchange(&curr_trie->symbol, 0);
 
         // apply replacement
         if (leader) {
@@ -401,7 +401,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
         }
 
         // try replacing symbol, if another thread has already taken the slot, rerun replacement loop again
-        LNK_Symbol *was_replaced = ins_atomic_ptr_eval_cond_assign(&curr_trie->symbol, leader, 0);
+        LNK_Symbol *was_replaced = atomic_compare_exchange_strong(&curr_trie->symbol, leader, 0);
 
         // symbol replaced, exit
         if (was_replaced == 0) {
@@ -422,7 +422,7 @@ lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
   LNK_SymbolHashTrie  *result   = 0;
   LNK_SymbolHashTrie **curr_ptr = &trie;
   for (U64 h = hash; ; h <<= 2) {
-    LNK_SymbolHashTrie *curr = ins_atomic_ptr_eval(curr_ptr);
+    LNK_SymbolHashTrie *curr = atomic_add(curr_ptr);
     if (curr == 0) {
       break;
     }
@@ -438,8 +438,8 @@ lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
 internal void
 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie)
 {
-  ins_atomic_ptr_eval_assign(&trie->name,   0);
-  ins_atomic_ptr_eval_assign(&trie->symbol, 0);
+  atomic_exchange(&trie->name,   0);
+  atomic_exchange(&trie->symbol, 0);
 }
 
 internal U64

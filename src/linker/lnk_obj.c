@@ -41,7 +41,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   // set & check machine compatibility
   //
   if (header.machine != COFF_MachineType_Unknown) {
-    COFF_MachineType current_machine = ins_atomic_u32_eval_cond_assign(&task->machine, header.machine, COFF_MachineType_Unknown);
+    COFF_MachineType current_machine = atomic_compare_exchange_strong(&task->machine, header.machine, COFF_MachineType_Unknown);
     if (current_machine != COFF_MachineType_Unknown && current_machine != header.machine) {
       lnk_error_with_loc(LNK_Error_IncompatibleMachine, input->path, input->lib_path,
           "conflicting machine types expected %S but got %S",

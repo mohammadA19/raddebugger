@@ -328,8 +328,8 @@ dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
 {
   DASM_Touch *touch = push_array(dasm_tctx->arena, DASM_Touch, 1);
   atomic_add(&node->scope_ref_count);
-  ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
-  ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
+  atomic_exchange(&node->last_time_touched_us, os_now_microseconds());
+  atomic_exchange(&node->last_user_clock_idx_touched, update_tick_idx());
   touch->hash = node->hash;
   MemoryCopyStruct(&touch->params, &node->params);
   touch->params.dbgi_key = di_key_copy(dasm_tctx->arena, &touch->params.dbgi_key);

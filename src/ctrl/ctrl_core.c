@@ -3715,7 +3715,7 @@ ctrl_thread__entry_point(void *p)
     //- rjf: process messages
     DMN_CtrlExclusiveAccessScope
     {
-      ins_atomic_u64_eval_assign(&ctrl_state->ctrl_thread_run_state, 1);
+      atomic_exchange(&ctrl_state->ctrl_thread_run_state, 1);
       for(CTRL_MsgNode *msg_n = msgs.first; msg_n != 0; msg_n = msg_n->next)
       {
         CTRL_Msg *msg = &msg_n->v;
@@ -3861,7 +3861,7 @@ ctrl_thread__entry_point(void *p)
           }break;
         }
       }
-      ins_atomic_u64_eval_assign(&ctrl_state->ctrl_thread_run_state, 0);
+      atomic_exchange(&ctrl_state->ctrl_thread_run_state, 0);
     }
     atomic_add(&ctrl_state->run_gen);
     atomic_add(&ctrl_state->mem_gen);

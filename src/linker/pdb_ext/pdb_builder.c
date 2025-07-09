@@ -1478,7 +1478,7 @@ THREAD_POOL_TASK_FUNC(pdb_push_udt_leaf_task)
         PDB_TypeBucket *bucket = &new_buckets[bucket_cursor++];
         bucket->raw_leaf       = cv_debug_t_get_raw_leaf(debug_t, leaf_idx);
         bucket->type_index     = base_type_index + leaf_idx;
-        bucket->next           = ins_atomic_ptr_eval_assign(&type_ht_buckets[bucket_idx], bucket);
+        bucket->next           = atomic_exchange(&type_ht_buckets[bucket_idx], bucket);
       }
     }
   }

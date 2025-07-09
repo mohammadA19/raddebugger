@@ -6,7 +6,7 @@ lnk_lib_list_pop_node_atomic(LNK_LibList *list)
 {
   for (;;) {
     LNK_LibNode *expected = list->first;
-    LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list->first, expected->next, expected);
+    LNK_LibNode *current  = atomic_compare_exchange_strong(&list->first, expected->next, expected);
     if (expected == current) { 
       atomic_sub(&list->count);
       return expected;
@@ -19,7 +19,7 @@ lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
 {
   for (;;) {
     LNK_LibNode *expected = list->first;
-    LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list->first, node, expected);
+    LNK_LibNode *current  = atomic_compare_exchange_strong(&list->first, node, expected);
     if (current == expected) {
       node->next = expected;
       atomic_add(&list->count);

@@ -621,7 +621,7 @@ cv_string_hash_table_insert_or_update(CV_StringBucket **buckets, U64 cap, U64 ha
     CV_StringBucket *curr_bucket = buckets[idx];
 
     if (curr_bucket == 0) {
-      CV_StringBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_StringBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -642,7 +642,7 @@ cv_string_hash_table_insert_or_update(CV_StringBucket **buckets, U64 cap, U64 ha
         break;
       }
 
-      CV_StringBucket *compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_StringBucket *compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
 
@@ -691,7 +691,7 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
       }
     }
 
-    ins_atomic_u64_add_eval(&task->string_counts[range_n->debug_s_idx], count);
+    atomic_add(&task->string_counts[range_n->debug_s_idx], count);
   }
 
   ProfEnd();
@@ -740,8 +740,8 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
     }
   }
 
-  ins_atomic_u64_add_eval(&task->total_string_size, total_string_size);
-  ins_atomic_u64_add_eval(&task->total_insert_count, total_insert_count);
+  atomic_add(&task->total_string_size, total_string_size);
+  atomic_add(&task->total_insert_count, total_insert_count);
 
   scratch_end(scratch);
   ProfEnd();
@@ -941,7 +941,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
     assert(curr_bucket != new_bucket);
 
     if (curr_bucket == 0) {
-      CV_SymbolNode **compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_SymbolNode **compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
 
       if (compare_bucket == curr_bucket) {
         // success, bucket was inserted
@@ -963,7 +963,7 @@ cv_symbol_deduper_insert_or_update(CV_SymbolNode ***buckets, U64 cap, U64 hash, 
         break;
       }
 
-      CV_SymbolNode **compare_bucket = ins_atomic_ptr_eval_cond_assign(&buckets[idx], new_bucket, curr_bucket);
+      CV_SymbolNode **compare_bucket = atomic_compare_exchange_strong(&buckets[idx], new_bucket, curr_bucket);
       if (compare_bucket == curr_bucket) {
         result = compare_bucket;
 
