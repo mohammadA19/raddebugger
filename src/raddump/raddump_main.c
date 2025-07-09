@@ -98,7 +98,7 @@
 
 ////////////////////////////////
 
-global read_only struct
+global @(rodata) struct
 {
   RD_Option opt;
   char     *name;

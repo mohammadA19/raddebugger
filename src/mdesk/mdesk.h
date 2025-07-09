@@ -240,7 +240,7 @@ struct MD_ParseResult
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only MD_Node md_nil_node =
+global @(rodata) MD_Node md_nil_node =
 {
   &md_nil_node,
   &md_nil_node,

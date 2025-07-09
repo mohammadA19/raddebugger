@@ -107,7 +107,7 @@ struct DR_ThreadCtx
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static DR_ThreadCtx *dr_thread_ctx = 0;
+@(thread_local) DR_ThreadCtx *dr_thread_ctx = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

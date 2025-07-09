@@ -225,7 +225,7 @@ struct TXT_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static TXT_TCTX *txt_tctx = 0;
+@(thread_local) TXT_TCTX *txt_tctx = 0;
 global TXT_Shared *txt_shared = 0;
 
 ////////////////////////////////

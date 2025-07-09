@@ -12452,7 +12452,7 @@ rd_frame(void)
     //
     ProfScope("construct default immediate-mode configs based on loaded modules")
     {
-      local_persist read_only struct
+      local_persist @(rodata) struct
       {
         B32 stl;
         B32 ue;

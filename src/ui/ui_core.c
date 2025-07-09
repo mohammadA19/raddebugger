@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static UI_State *ui_state = 0;
+@(thread_local) UI_State *ui_state = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Type Functions

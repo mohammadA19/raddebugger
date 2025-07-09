@@ -25,7 +25,7 @@ pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode)
   return result;
 }
 
-read_only struct
+@(rodata) struct
 {
   String8             string;
   PE_WindowsSubsystem type;
@@ -938,14 +938,14 @@ pe_get_entry_point_names(COFF_MachineType            machine,
   
   if (file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) {
     if (machine == COFF_MachineType_X86) {
-      read_only static String8 dll_entry_point_arr[] = {
+      @(rodata) static String8 dll_entry_point_arr[] = {
         str8_lit_comp("__DllMainCRTStartup@12"),
       };
       
       entry_point_names.v = &dll_entry_point_arr[0];
       entry_point_names.count = len(dll_entry_point_arr);
     } else {
-      read_only static String8 dll_entry_point_arr[] = {
+      @(rodata) static String8 dll_entry_point_arr[] = {
         str8_lit_comp("_DllMainCRTStartup"),
       };
       
@@ -956,7 +956,7 @@ pe_get_entry_point_names(COFF_MachineType            machine,
     switch (subsystem) {
       case PE_WindowsSubsystem_UNKNOWN: break;
       case PE_WindowsSubsystem_WINDOWS_GUI: {
-        read_only static String8 gui_entry_point_arr[] = {
+        @(rodata) static String8 gui_entry_point_arr[] = {
           str8_lit_comp("WinMain"),
           str8_lit_comp("wWinMain"),
           str8_lit_comp("WinMainCRTStartup"),
@@ -967,7 +967,7 @@ pe_get_entry_point_names(COFF_MachineType            machine,
         entry_point_names.count = len(gui_entry_point_arr);
       } break;
       case PE_WindowsSubsystem_WINDOWS_CUI: {
-        read_only static String8 cui_entry_point_arr[] = {
+        @(rodata) static String8 cui_entry_point_arr[] = {
           str8_lit_comp("main"),
           str8_lit_comp("wmain"),
           str8_lit_comp("mainCRTStartup"),

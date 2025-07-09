@@ -1104,16 +1104,16 @@ struct E_Cache
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global E_String2NumMap e_string2num_map_nil = {0};
-read_only global E_String2ExprMap e_string2expr_map_nil = {0};
-read_only global E_Expr e_expr_nil = {&e_expr_nil, &e_expr_nil, &e_expr_nil, &e_expr_nil, &e_expr_nil};
-read_only global E_IRNode e_irnode_nil = {&e_irnode_nil, &e_irnode_nil, &e_irnode_nil};
-read_only global E_Eval e_eval_nil = {{0}, {0}, {0}, &e_expr_nil, {&e_irnode_nil}};
-read_only global E_Module e_module_nil = {&rdi_parsed_nil};
-read_only global E_CacheBundle e_cache_bundle_nil = {0, {0}, {0}, {0}, {{0}, 0, &e_expr_nil, &e_expr_nil}, {&e_irnode_nil}};
-thread_static E_BaseCtx *e_base_ctx = 0;
-thread_static E_IRCtx *e_ir_ctx = 0;
-thread_static E_Cache *e_cache = 0;
+@(rodata) global E_String2NumMap e_string2num_map_nil = {0};
+@(rodata) global E_String2ExprMap e_string2expr_map_nil = {0};
+@(rodata) global E_Expr e_expr_nil = {&e_expr_nil, &e_expr_nil, &e_expr_nil, &e_expr_nil, &e_expr_nil};
+@(rodata) global E_IRNode e_irnode_nil = {&e_irnode_nil, &e_irnode_nil, &e_irnode_nil};
+@(rodata) global E_Eval e_eval_nil = {{0}, {0}, {0}, &e_expr_nil, {&e_irnode_nil}};
+@(rodata) global E_Module e_module_nil = {&rdi_parsed_nil};
+@(rodata) global E_CacheBundle e_cache_bundle_nil = {0, {0}, {0}, {0}, {{0}, 0, &e_expr_nil, &e_expr_nil}, {&e_irnode_nil}};
+@(thread_local) E_BaseCtx *e_base_ctx = 0;
+@(thread_local) E_IRCtx *e_ir_ctx = 0;
+@(thread_local) E_Cache *e_cache = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

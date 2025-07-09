@@ -509,7 +509,7 @@ struct RD_WindowStateSlot
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
 
-read_only global U64 rd_name_bucket_chunk_sizes[] =
+@(rodata) global U64 rd_name_bucket_chunk_sizes[] =
 {
   16,
   64,
@@ -707,9 +707,9 @@ struct RD_State
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global RD_VocabInfo rd_nil_vocab_info = {0};
+@(rodata) global RD_VocabInfo rd_nil_vocab_info = {0};
 
-read_only global RD_Cfg rd_nil_cfg =
+@(rodata) global RD_Cfg rd_nil_cfg =
 {
   &rd_nil_cfg,
   &rd_nil_cfg,
@@ -718,7 +718,7 @@ read_only global RD_Cfg rd_nil_cfg =
   &rd_nil_cfg,
 };
 
-read_only global RD_PanelNode rd_nil_panel_node =
+@(rodata) global RD_PanelNode rd_nil_panel_node =
 {
   &rd_nil_panel_node,
   &rd_nil_panel_node,
@@ -730,22 +730,22 @@ read_only global RD_PanelNode rd_nil_panel_node =
   .selected_tab = &rd_nil_cfg,
 };
 
-read_only global RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
+@(rodata) global RD_CmdKindInfo rd_nil_cmd_kind_info = {0};
 
 RD_VIEW_UI_FUNCTION_DEF(null);
-read_only global RD_ViewUIRule rd_nil_view_ui_rule =
+@(rodata) global RD_ViewUIRule rd_nil_view_ui_rule =
 {
   {0},
   RD_VIEW_UI_FUNCTION_NAME(null),
 };
 
-read_only global RD_ViewState rd_nil_view_state =
+@(rodata) global RD_ViewState rd_nil_view_state =
 {
   &rd_nil_view_state,
   &rd_nil_view_state,
 };
 
-read_only global RD_WindowState rd_nil_window_state =
+@(rodata) global RD_WindowState rd_nil_window_state =
 {
   &rd_nil_window_state,
   &rd_nil_window_state,

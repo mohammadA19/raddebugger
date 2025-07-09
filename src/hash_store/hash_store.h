@@ -214,7 +214,7 @@ struct HS_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static HS_TCTX *hs_tctx = 0;
+@(thread_local) HS_TCTX *hs_tctx = 0;
 global HS_Shared *hs_shared = 0;
 
 ////////////////////////////////

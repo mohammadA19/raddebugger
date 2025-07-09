@@ -35,7 +35,7 @@ R_D3D11_UniformTypeKind_COUNT,
 } R_D3D11_UniformTypeKind;
 
 C_LINKAGE_BEGIN
-read_only global String8 r_d3d11_g_rect_shader_src =
+@(rodata) global String8 r_d3d11_g_rect_shader_src =
 str8_lit_comp(
 ""
 "\n"
@@ -220,7 +220,7 @@ str8_lit_comp(
 ""
 );
 
-read_only global String8 r_d3d11_g_blur_shader_src =
+@(rodata) global String8 r_d3d11_g_blur_shader_src =
 str8_lit_comp(
 ""
 "\n"
@@ -330,7 +330,7 @@ str8_lit_comp(
 ""
 );
 
-read_only global String8 r_d3d11_g_mesh_shader_src =
+@(rodata) global String8 r_d3d11_g_mesh_shader_src =
 str8_lit_comp(
 ""
 "\n"
@@ -370,7 +370,7 @@ str8_lit_comp(
 ""
 );
 
-read_only global String8 r_d3d11_g_geo3dcomposite_shader_src =
+@(rodata) global String8 r_d3d11_g_geo3dcomposite_shader_src =
 str8_lit_comp(
 ""
 "\n"
@@ -423,7 +423,7 @@ str8_lit_comp(
 ""
 );
 
-read_only global String8 r_d3d11_g_finalize_shader_src =
+@(rodata) global String8 r_d3d11_g_finalize_shader_src =
 str8_lit_comp(
 ""
 "\n"

@@ -308,7 +308,7 @@ internal String8 str8_from_version(Arena *arena, U64 version);
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-global read_only struct
+global @(rodata) struct
 {
   String8   string;
   PathStyle path_style;

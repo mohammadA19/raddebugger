@@ -112,8 +112,8 @@ struct ASYNC_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static B32 async_work_thread_depth = 0;
-thread_static U64 async_work_thread_idx = 0;
+@(thread_local) B32 async_work_thread_depth = 0;
+@(thread_local) U64 async_work_thread_idx = 0;
 global ASYNC_Shared *async_shared = 0;
 
 ////////////////////////////////

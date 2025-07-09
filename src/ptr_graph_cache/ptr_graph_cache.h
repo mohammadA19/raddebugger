@@ -190,7 +190,7 @@ struct PTG_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static PTG_TCTX *ptg_tctx = 0;
+@(thread_local) PTG_TCTX *ptg_tctx = 0;
 global PTG_Shared *ptg_shared = 0;
 
 ////////////////////////////////

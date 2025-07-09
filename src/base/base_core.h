@@ -17,32 +17,6 @@
 #define global        static
 #define local_persist static
 
-#if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
-# pragma section(".rdata$", read)
-# define read_only __declspec(allocate(".rdata$"))
-#elif (COMPILER_CLANG && OS_LINUX)
-# define read_only __attribute__((section(".rodata")))
-#else
-// NOTE(rjf): I don't know of a useful way to do this in GCC land.
-// __attribute__((section(".rodata"))) looked promising, but it introduces a
-// strange warning about malformed section attributes, and it doesn't look
-// like writing to that section reliably produces access violations, strangely
-// enough. (It does on Clang)
-# define read_only
-#endif
-
-#if COMPILER_MSVC
-# define thread_static __declspec(thread)
-#elif COMPILER_CLANG || COMPILER_GCC
-# define thread_static __thread
-#endif
-
-#if COMPILER_MSVC
-# define force_inline __forceinline
-#elif COMPILER_CLANG || COMPILER_GCC
-# define force_inline __attribute__((always_inline))
-#endif
-
 ////////////////////////////////
 //~ rjf: Linkage Keyword Macros
 

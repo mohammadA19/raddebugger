@@ -166,7 +166,7 @@ struct CTRL_EntityStringChunkNode
   U64 size;
 };
 
-read_only global U64 ctrl_entity_string_bucket_chunk_sizes[] =
+@(rodata) global U64 ctrl_entity_string_bucket_chunk_sizes[] =
 {
   16,
   64,
@@ -859,7 +859,7 @@ struct CTRL_State
 //~ rjf: Globals
 
 global CTRL_State *ctrl_state = 0;
-read_only global CTRL_Entity ctrl_entity_nil =
+@(rodata) global CTRL_Entity ctrl_entity_nil =
 {
   &ctrl_entity_nil,
   &ctrl_entity_nil,
@@ -867,8 +867,8 @@ read_only global CTRL_Entity ctrl_entity_nil =
   &ctrl_entity_nil,
   &ctrl_entity_nil,
 };
-thread_static CTRL_TCTX *ctrl_tctx = 0;
-thread_static CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
+@(thread_local) CTRL_TCTX *ctrl_tctx = 0;
+@(thread_local) CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
 
 ////////////////////////////////
 //~ rjf: Logging Markup

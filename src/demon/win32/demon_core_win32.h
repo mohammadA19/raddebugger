@@ -233,7 +233,7 @@ struct DMN_W32_Shared
 global DMN_W32_Shared *dmn_w32_shared = 0;
 global DMN_W32_Entity dmn_w32_entity_nil = {&dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil};
 global DMN_W32_GetThreadDescriptionFunctionType *dmn_w32_GetThreadDescription = 0;
-thread_static B32 dmn_w32_ctrl_thread = 0;
+@(thread_local) B32 dmn_w32_ctrl_thread = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

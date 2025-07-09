@@ -42,7 +42,7 @@ struct RB_FileList
   U64 count;
 };
 
-read_only global RB_File rb_file_nil = {0};
+@(rodata) global RB_File rb_file_nil = {0};
 #define rb_file_list_first(list) ((list)->first ? (list)->first->v : &rb_file_nil)
 
 ////////////////////////////////

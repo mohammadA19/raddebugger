@@ -25,7 +25,7 @@ struct E_InterpretCtx
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static E_InterpretCtx *e_interpret_ctx = 0;
+@(thread_local) E_InterpretCtx *e_interpret_ctx = 0;
 
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)

@@ -794,7 +794,7 @@ internal void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range);
 ////////////////////////////////
 //~ rjf: Box Type Functions
 
-read_only global UI_Box ui_nil_box =
+@(rodata) global UI_Box ui_nil_box =
 {
   &ui_nil_box,
   &ui_nil_box,
@@ -945,7 +945,7 @@ internal UI_Signal ui_signal_from_box(UI_Box *box);
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-read_only global UI_AnimNode ui_nil_anim_node =
+@(rodata) global UI_AnimNode ui_nil_anim_node =
 {
   &ui_nil_anim_node,
   &ui_nil_anim_node,

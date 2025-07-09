@@ -12,7 +12,7 @@ global String8List lnx_cmd_line_args = {0};
 global LNX_Entity lnx_entity_buffer[1024];
 global LNX_Entity *lnx_entity_free = 0;
 global String8 lnx_initial_path = {0};
-thread_static LNX_SafeCallChain *lnx_safe_call_chain = 0;
+@(thread_local) LNX_SafeCallChain *lnx_safe_call_chain = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers
